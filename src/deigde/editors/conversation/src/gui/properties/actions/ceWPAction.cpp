@@ -68,17 +68,17 @@ class cTextDelay : public igdeTextFieldListener {
 	ceWPAction &pPanel;
 	
 public:
-	cTextDelay( ceWPAction &panel ) : pPanel( panel ){ }
+	cTextDelay(ceWPAction &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
 		const float delay = textField->GetFloat();
-		if( fabsf( delay - action->GetDelay() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(delay - action->GetDelay()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -91,14 +91,14 @@ class cActionWaitForActor : public igdeAction{
 	ceWPAction &pPanel;
 	
 public:
-	cActionWaitForActor( ceWPAction &panel ) : igdeAction( "Wait for actor",
-		"Wait for actor(s) to finish speaking and return false if asked to wait" ),
-		pPanel( panel ){ }
+	cActionWaitForActor(ceWPAction &panel) : igdeAction("Wait for actor",
+		"Wait for actor(s) to finish speaking and return false if asked to wait"),
+		pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
@@ -108,8 +108,8 @@ public:
 	
 	virtual void Update(){
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		SetEnabled( action );
-		SetSelected( action && action->GetWaitForActor() );
+		SetEnabled(action);
+		SetSelected(action && action->GetWaitForActor());
 	}
 };
 
@@ -117,14 +117,14 @@ class cActionWaitSpeakOnly : public igdeAction{
 	ceWPAction &pPanel;
 	
 public:
-	cActionWaitSpeakOnly( ceWPAction &panel ) : igdeAction( "Wait speak only",
-		"Waiting considers only actor speaking not actor waiting" ),
-		pPanel( panel ){ }
+	cActionWaitSpeakOnly(ceWPAction &panel) : igdeAction("Wait speak only",
+		"Waiting considers only actor speaking not actor waiting"),
+		pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
@@ -134,8 +134,8 @@ public:
 	
 	virtual void Update(){
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		SetEnabled( action );
-		SetSelected( action && action->GetWaitSpeakOnly() );
+		SetEnabled(action);
+		SetSelected(action && action->GetWaitSpeakOnly());
 	}
 };
 
@@ -143,12 +143,12 @@ class cComboWaitForActorID : public igdeComboBoxListener {
 	ceWPAction &pPanel;
 	
 public:
-	cComboWaitForActorID( ceWPAction &panel ) : pPanel( panel ){ }
+	cComboWaitForActorID(ceWPAction &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
-		if( ! topic || ! action || comboBox->GetText() == action->GetWaitForActorID() ){
+		if(!topic || !action || comboBox->GetText() == action->GetWaitForActorID()){
 			return;
 		}
 		
@@ -167,9 +167,9 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAction::ceWPAction( ceWPTopic &parentPanel ) :
-igdeContainerForm( parentPanel.GetEnvironment() ),
-pParentPanel( parentPanel ){
+ceWPAction::ceWPAction(ceWPTopic &parentPanel) :
+igdeContainerForm(parentPanel.GetEnvironment()),
+pParentPanel(parentPanel){
 }
 
 ceWPAction::~ceWPAction(){
@@ -180,30 +180,30 @@ ceWPAction::~ceWPAction(){
 // Management
 ///////////////
 
-void ceWPAction::CreateGUICommon( igdeContainerForm &container ){
+void ceWPAction::CreateGUICommon(igdeContainerForm &container){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.EditFloat( container, "Delay:",
+	helper.EditFloat(container, "Delay:",
 		"Delay the processing of the action after waiting conditions are fulfilled",
-		pEditDelay, new cTextDelay( *this ) );
+		pEditDelay, new cTextDelay(*this));
 	
-	helper.CheckBoxOnly( container, pChkWaitForActor, new cActionWaitForActor( *this ), true );
-	helper.ComboBox( container, true, "ID of actor to wait for or empty string to wait for all actors",
-		pCBWaitForActorID, new cComboWaitForActorID( *this ) );
+	helper.CheckBoxOnly(container, pChkWaitForActor, new cActionWaitForActor(*this), true);
+	helper.ComboBox(container, true, "ID of actor to wait for or empty string to wait for all actors",
+		pCBWaitForActorID, new cComboWaitForActorID(*this));
 	
-	helper.CheckBox( container, pChkWaitSpeakOnly, new cActionWaitSpeakOnly( *this ), true );
+	helper.CheckBox(container, pChkWaitSpeakOnly, new cActionWaitSpeakOnly(*this), true);
 }
 
 void ceWPAction::UpdateCommonParams(){
-	if( ! pEditDelay ){
+	if(!pEditDelay){
 		return;
 	}
 	
 	const ceConversationAction * const action = pParentPanel.GetTreeAction();
 	
-	if( action ){
-		pEditDelay->SetFloat( action->GetDelay() );
-		pCBWaitForActorID->SetText( action->GetWaitForActorID() );
+	if(action){
+		pEditDelay->SetFloat(action->GetDelay());
+		pCBWaitForActorID->SetText(action->GetWaitForActorID());
 		
 	}else{
 		pEditDelay->ClearText();
@@ -216,27 +216,27 @@ void ceWPAction::UpdateCommonParams(){
 
 
 
-void ceWPAction::UpdateComboBoxWithActorIDList( igdeComboBox &combobox ){
+void ceWPAction::UpdateComboBoxWithActorIDList(igdeComboBox &combobox){
 	const ceConversation * const conversation = pParentPanel.GetConversation();
-	const decString selection( combobox.GetText() );
+	const decString selection(combobox.GetText());
 	
 	combobox.RemoveAllItems();
 	
-	if( conversation ){
+	if(conversation){
 		const ceConversationActorList &list = conversation->GetActorList();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( ! list.GetAt( i )->GetID().IsEmpty() ){
-				const decString &id = list.GetAt( i )->GetID();
-				const decString &aliasID = list.GetAt( i )->GetAliasID();
+		for(i=0; i<count; i++){
+			if(!list.GetAt(i)->GetID().IsEmpty()){
+				const decString &id = list.GetAt(i)->GetID();
+				const decString &aliasID = list.GetAt(i)->GetAliasID();
 				
-				if( ! combobox.HasItem( id ) ){
-					combobox.AddItem( id );
+				if(!combobox.HasItem(id)){
+					combobox.AddItem(id);
 				}
-				if( ! aliasID.IsEmpty() && ! combobox.HasItem( aliasID ) ){
-					combobox.AddItem( aliasID );
+				if(!aliasID.IsEmpty() && !combobox.HasItem(aliasID)){
+					combobox.AddItem(aliasID);
 				}
 			}
 		}
@@ -244,30 +244,30 @@ void ceWPAction::UpdateComboBoxWithActorIDList( igdeComboBox &combobox ){
 		combobox.SortItems();
 	}
 	
-	combobox.SetText( selection );
+	combobox.SetText(selection);
 }
 
-void ceWPAction::UpdateComboBoxWithConvoCoordSysIDList( igdeComboBox &combobox ){
+void ceWPAction::UpdateComboBoxWithConvoCoordSysIDList(igdeComboBox &combobox){
 	const ceConversation * const conversation = pParentPanel.GetConversation();
-	const decString selection( combobox.GetText() );
+	const decString selection(combobox.GetText());
 	
 	combobox.RemoveAllItems();
 	
-	if( conversation ){
+	if(conversation){
 		const ceCoordSystemList &list = conversation->GetCoordSystemList();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( ! list.GetAt( i )->GetID().IsEmpty() ){
-				const decString &id = list.GetAt( i )->GetID();
-				const decString &aliasID = list.GetAt( i )->GetAliasID();
+		for(i=0; i<count; i++){
+			if(!list.GetAt(i)->GetID().IsEmpty()){
+				const decString &id = list.GetAt(i)->GetID();
+				const decString &aliasID = list.GetAt(i)->GetAliasID();
 				
-				if( ! combobox.HasItem( id ) ){
-					combobox.AddItem( id );
+				if(!combobox.HasItem(id)){
+					combobox.AddItem(id);
 				}
-				if( ! aliasID.IsEmpty() && ! combobox.HasItem( aliasID ) ){
-					combobox.AddItem( aliasID );
+				if(!aliasID.IsEmpty() && !combobox.HasItem(aliasID)){
+					combobox.AddItem(aliasID);
 				}
 			}
 		}
@@ -275,7 +275,7 @@ void ceWPAction::UpdateComboBoxWithConvoCoordSysIDList( igdeComboBox &combobox )
 		combobox.SortItems();
 	}
 	
-	combobox.SetText( selection );
+	combobox.SetText(selection);
 }
 
 void ceWPAction::UpdateActorIDLists(){

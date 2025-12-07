@@ -40,18 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPropertyRemove::gdeUGDWPropertyRemove( gdeGameDefinition *gamedef, gdeProperty *property ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDWPropertyRemove::gdeUGDWPropertyRemove(gdeGameDefinition *gamedef, gdeProperty *property) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! gamedef->GetWorldProperties().Has( property ) ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef->GetWorldProperties().Has(property)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition remove property" );
+	SetShortInfo("Game definition remove property");
 	
 	pGameDefinition = gamedef;
 	gamedef->AddReference();
@@ -61,10 +61,10 @@ pProperty( NULL )
 }
 
 gdeUGDWPropertyRemove::~gdeUGDWPropertyRemove(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUGDWPropertyRemove::~gdeUGDWPropertyRemove(){
 ///////////////
 
 void gdeUGDWPropertyRemove::Undo(){
-	pGameDefinition->GetWorldProperties().Add( pProperty );
+	pGameDefinition->GetWorldProperties().Add(pProperty);
 	pGameDefinition->NotifyWorldPropertiesChanged();
 }
 
 void gdeUGDWPropertyRemove::Redo(){
-	pGameDefinition->GetWorldProperties().Remove( pProperty );
+	pGameDefinition->GetWorldProperties().Remove(pProperty);
 	pGameDefinition->NotifyWorldPropertiesChanged();
 }

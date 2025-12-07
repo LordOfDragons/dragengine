@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create callback. */
-	dewmAudioTrackCallback( deVideoWebm &module );
+	dewmAudioTrackCallback(deVideoWebm &module);
 	
 	/** Clean up callback. */
 	virtual ~dewmAudioTrackCallback();
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set resource buffers to use for next read. */
-	void SetResBuffer( void *buffer, int samples );
+	void SetResBuffer(void *buffer, int samples);
 	
 	/** Resource buffer. */
 	inline uint8_t *GetResBuffer() const{ return pResBuffer; }
@@ -81,15 +81,15 @@ public:
 	void Rewind();
 	
 	/** Open track. */
-	bool OpenTrack( const webm::TrackEntry &track );
+	bool OpenTrack(const webm::TrackEntry &track);
 	
 	/** Update audio information. */
-	void UpdateInfos( dewmInfos &infos );
+	void UpdateInfos(dewmInfos &infos);
 	
 	
 	
 	/** Advance resource buffer position. */
-	void AdvanceResPosition( int bytes );
+	void AdvanceResPosition(int bytes);
 	
 	/** Frame buffer. */
 	inline const std::uint8_t *GetFrameBuffer() const{ return pGetBuffer(); }
@@ -98,15 +98,15 @@ public:
 	
 	
 protected:
-	virtual bool pOpenTrack( const webm::TrackEntry &track );
-	virtual void pProcessFrame( webm::Reader &reader, std::uint64_t &bytes_remaining );
+	virtual bool pOpenTrack(const webm::TrackEntry &track);
+	virtual void pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining);
 	virtual void pEndSegment();
 	
 	
 	
 private:
 	void pCopySamples();
-	void pLoadFrameData( webm::Reader &reader, std::uint64_t &bytes_remaining );
+	void pLoadFrameData(webm::Reader &reader, std::uint64_t &bytes_remaining);
 };
 
 #endif

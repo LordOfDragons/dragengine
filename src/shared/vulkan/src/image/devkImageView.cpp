@@ -38,24 +38,24 @@
 // class devkImageView
 ////////////////////////
 
-devkImageView::devkImageView( devkImage *image ) :
-pImage( image ),
-pImageView( VK_NULL_HANDLE )
+devkImageView::devkImageView(devkImage *image) :
+pImage(image),
+pImageView(VK_NULL_HANDLE)
 {
-	if( ! image ){
-		DETHROW_INFO( deeNullPointer, "image" );
+	if(!image){
+		DETHROW_INFO(deeNullPointer, "image");
 	}
 	
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan(); )
+		VK_IF_CHECK(deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan();)
 		const devkImageConfiguration &config = image->GetConfiguration();
 		
 		VkImageViewCreateInfo imageViewInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 		imageViewInfo.image = image->GetImage();
 		
-		switch( config.GetType() ){
+		switch(config.GetType()){
 		case VK_IMAGE_TYPE_1D:
-			if( config.GetLayerCount() > 1 ){
+			if(config.GetLayerCount() > 1){
 				imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_1D_ARRAY;
 				
 			}else{
@@ -64,15 +64,15 @@ pImageView( VK_NULL_HANDLE )
 			break;
 			
 		case VK_IMAGE_TYPE_2D:
-			if( config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT ){
-				if( config.GetLayerCount() > 6 ){
+			if(config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT){
+				if(config.GetLayerCount() > 6){
 					imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
 					
 				}else{
 					imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
 				}
 				
-			}else if( config.GetLayerCount() > 1 ){
+			}else if(config.GetLayerCount() > 1){
 				imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 				
 			}else{
@@ -85,7 +85,7 @@ pImageView( VK_NULL_HANDLE )
 			break;
 			
 		default:
-			DETHROW_INFO( deeInvalidParam, "unsupported image type" );
+			DETHROW_INFO(deeInvalidParam, "unsupported image type");
 		}
 		
 		imageViewInfo.format = config.GetFormat();
@@ -101,7 +101,7 @@ pImageView( VK_NULL_HANDLE )
 		imageViewInfo.subresourceRange.baseArrayLayer = 0;
 		imageViewInfo.subresourceRange.layerCount = config.GetLayerCount();
 		
-		if( config.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT ){
+		if(config.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT){
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
 			
@@ -109,45 +109,45 @@ pImageView( VK_NULL_HANDLE )
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
 		}
 		
-		VK_CHECK( vulkan, image->GetDevice().vkCreateImageView( image->GetDevice().GetDevice(),
-			&imageViewInfo, VK_NULL_HANDLE, &pImageView ) );
+		VK_CHECK(vulkan, image->GetDevice().vkCreateImageView(image->GetDevice().GetDevice(),
+			&imageViewInfo, VK_NULL_HANDLE, &pImageView));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-devkImageView::devkImageView( devkImage *image, int layer ) :
-pImage( image ),
-pImageView( VK_NULL_HANDLE )
+devkImageView::devkImageView(devkImage *image, int layer) :
+pImage(image),
+pImageView(VK_NULL_HANDLE)
 {
-	if( ! image ){
-		DETHROW_INFO( deeNullPointer, "image" );
+	if(!image){
+		DETHROW_INFO(deeNullPointer, "image");
 	}
 	
 	const devkImageConfiguration &config = image->GetConfiguration();
 	
-	if( layer < 0 ){
-		DETHROW_INFO( deeNullPointer, "layer < 0" );
+	if(layer < 0){
+		DETHROW_INFO(deeNullPointer, "layer < 0");
 	}
-	if( layer >= config.GetLayerCount() ){
-		DETHROW_INFO( deeNullPointer, "layer >= image.layerCount" );
+	if(layer >= config.GetLayerCount()){
+		DETHROW_INFO(deeNullPointer, "layer >= image.layerCount");
 	}
 	
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan(); )
+		VK_IF_CHECK(deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan();)
 		
 		VkImageViewCreateInfo imageViewInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 		imageViewInfo.image = image->GetImage();
 		
-		switch( config.GetType() ){
+		switch(config.GetType()){
 		case VK_IMAGE_TYPE_1D:
 			imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_1D;
 			break;
 			
 		case VK_IMAGE_TYPE_2D:
-			if( config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT ){
+			if(config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT){
 				imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
 				
 			}else{
@@ -160,7 +160,7 @@ pImageView( VK_NULL_HANDLE )
 			break;
 			
 		default:
-			DETHROW_INFO( deeInvalidParam, "unsupported image type" );
+			DETHROW_INFO(deeInvalidParam, "unsupported image type");
 		}
 		
 		imageViewInfo.format = config.GetFormat();
@@ -173,16 +173,16 @@ pImageView( VK_NULL_HANDLE )
 		imageViewInfo.subresourceRange.baseMipLevel = 0;
 		imageViewInfo.subresourceRange.levelCount = config.GetMipMapCount();
 		
-		if( config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT ){
-			imageViewInfo.subresourceRange.baseArrayLayer = ( uint32_t )( 6 * layer );
+		if(config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT){
+			imageViewInfo.subresourceRange.baseArrayLayer = (uint32_t)(6 * layer);
 			imageViewInfo.subresourceRange.layerCount = 6;
 			
 		}else{
-			imageViewInfo.subresourceRange.baseArrayLayer = ( uint32_t )layer;
+			imageViewInfo.subresourceRange.baseArrayLayer = (uint32_t)layer;
 			imageViewInfo.subresourceRange.layerCount = 1;
 		}
 		
-		if( config.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT ){
+		if(config.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT){
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
 			
@@ -190,51 +190,51 @@ pImageView( VK_NULL_HANDLE )
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
 		}
 		
-		VK_CHECK( vulkan, image->GetDevice().vkCreateImageView( image->GetDevice().GetDevice(),
-			&imageViewInfo, VK_NULL_HANDLE, &pImageView ) );
+		VK_CHECK(vulkan, image->GetDevice().vkCreateImageView(image->GetDevice().GetDevice(),
+			&imageViewInfo, VK_NULL_HANDLE, &pImageView));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-devkImageView::devkImageView( devkImage *image, int layer, int level ) :
-pImage( image ),
-pImageView( VK_NULL_HANDLE )
+devkImageView::devkImageView(devkImage *image, int layer, int level) :
+pImage(image),
+pImageView(VK_NULL_HANDLE)
 {
-	if( ! image ){
-		DETHROW_INFO( deeNullPointer, "image" );
+	if(!image){
+		DETHROW_INFO(deeNullPointer, "image");
 	}
 	
 	const devkImageConfiguration &config = image->GetConfiguration();
 	
-	if( layer < 0 ){
-		DETHROW_INFO( deeNullPointer, "layer < 0" );
+	if(layer < 0){
+		DETHROW_INFO(deeNullPointer, "layer < 0");
 	}
-	if( layer >= config.GetLayerCount() ){
-		DETHROW_INFO( deeNullPointer, "layer >= image.layerCount" );
+	if(layer >= config.GetLayerCount()){
+		DETHROW_INFO(deeNullPointer, "layer >= image.layerCount");
 	}
-	if( level < 0 ){
-		DETHROW_INFO( deeNullPointer, "level < 0" );
+	if(level < 0){
+		DETHROW_INFO(deeNullPointer, "level < 0");
 	}
-	if( level >= config.GetMipMapCount() ){
-		DETHROW_INFO( deeNullPointer, "level >= image.mipMapCount" );
+	if(level >= config.GetMipMapCount()){
+		DETHROW_INFO(deeNullPointer, "level >= image.mipMapCount");
 	}
 	
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan(); )
+		VK_IF_CHECK(deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan();)
 		
 		VkImageViewCreateInfo imageViewInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 		imageViewInfo.image = image->GetImage();
 		
-		switch( config.GetType() ){
+		switch(config.GetType()){
 		case VK_IMAGE_TYPE_1D:
 			imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_1D;
 			break;
 			
 		case VK_IMAGE_TYPE_2D:
-			if( config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT ){
+			if(config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT){
 				imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
 				
 			}else{
@@ -247,7 +247,7 @@ pImageView( VK_NULL_HANDLE )
 			break;
 			
 		default:
-			DETHROW_INFO( deeInvalidParam, "unsupported image type" );
+			DETHROW_INFO(deeInvalidParam, "unsupported image type");
 		}
 		
 		imageViewInfo.format = config.GetFormat();
@@ -257,19 +257,19 @@ pImageView( VK_NULL_HANDLE )
 		imageViewInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
 		imageViewInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
 		
-		imageViewInfo.subresourceRange.baseMipLevel = ( uint32_t )level;
+		imageViewInfo.subresourceRange.baseMipLevel = (uint32_t)level;
 		imageViewInfo.subresourceRange.levelCount = 1;
 		
-		if( config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT ){
-			imageViewInfo.subresourceRange.baseArrayLayer = ( uint32_t )( 6 * layer );
+		if(config.GetFlags() & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT){
+			imageViewInfo.subresourceRange.baseArrayLayer = (uint32_t)(6 * layer);
 			imageViewInfo.subresourceRange.layerCount = 6;
 			
 		}else{
-			imageViewInfo.subresourceRange.baseArrayLayer = ( uint32_t )layer;
+			imageViewInfo.subresourceRange.baseArrayLayer = (uint32_t)layer;
 			imageViewInfo.subresourceRange.layerCount = 1;
 		}
 		
-		if( config.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT ){
+		if(config.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT){
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
 			
@@ -277,10 +277,10 @@ pImageView( VK_NULL_HANDLE )
 			imageViewInfo.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
 		}
 		
-		VK_CHECK( vulkan, image->GetDevice().vkCreateImageView( image->GetDevice().GetDevice(),
-			&imageViewInfo, VK_NULL_HANDLE, &pImageView ) );
+		VK_CHECK(vulkan, image->GetDevice().vkCreateImageView(image->GetDevice().GetDevice(),
+			&imageViewInfo, VK_NULL_HANDLE, &pImageView));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -301,7 +301,7 @@ devkImageView::~devkImageView(){
 //////////////////////
 
 void devkImageView::pCleanUp(){
-	if( pImage && pImageView ){
-		pImage->GetDevice().vkDestroyImageView( pImage->GetDevice().GetDevice(), pImageView, VK_NULL_HANDLE );
+	if(pImage && pImageView){
+		pImage->GetDevice().vkDestroyImageView(pImage->GetDevice().GetDevice(), pImageView, VK_NULL_HANDLE);
 	}
 }

@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeMapping( meWindowVegetation &windowVegetation, meHTVRuleMapping *rule );
+	meWVNodeMapping(meWindowVegetation &windowVegetation, meHTVRuleMapping *rule);
 	
 protected:
 	/** \brief Clean up object. */

@@ -38,19 +38,19 @@
 // class devkDescriptorPoolPool
 /////////////////////////////////
 
-devkDescriptorPoolPool::devkDescriptorPoolPool( devkDescriptorPool &owner,
-	const VkDescriptorPoolCreateInfo &poolCreateInfo ) :
-pOwner( owner ),
-pOutOfMemory( false )
+devkDescriptorPoolPool::devkDescriptorPoolPool(devkDescriptorPool &owner,
+	const VkDescriptorPoolCreateInfo &poolCreateInfo) :
+pOwner(owner),
+pOutOfMemory(false)
 {
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = owner.GetDevice().GetInstance().GetVulkan() );
+		VK_IF_CHECK(deSharedVulkan &vulkan = owner.GetDevice().GetInstance().GetVulkan());
 		VkDevice device = owner.GetDevice().GetDevice();
 		
-		VK_CHECK( vulkan, owner.GetDevice().vkCreateDescriptorPool(
-			device, &poolCreateInfo, VK_NULL_HANDLE, &pPool ) );
+		VK_CHECK(vulkan, owner.GetDevice().vkCreateDescriptorPool(
+			device, &poolCreateInfo, VK_NULL_HANDLE, &pPool));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -67,34 +67,34 @@ devkDescriptorPoolPool::~devkDescriptorPoolPool(){
 
 devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 	// return next free slot if present
-	if( pFreeSlots.GetCount() > 0 ){
+	if(pFreeSlots.GetCount() > 0){
 		const int index = pFreeSlots.GetCount() - 1;
-		devkDescriptorPoolSlot * const slot = ( devkDescriptorPoolSlot* )pFreeSlots.GetAt( index );
+		devkDescriptorPoolSlot * const slot = (devkDescriptorPoolSlot*)pFreeSlots.GetAt(index);
 		slot->AddReference(); // caller holds reference
-		pFreeSlots.RemoveFrom( index );
+		pFreeSlots.RemoveFrom(index);
 		return slot;
 	}
 	
 	// if the pool ran out of memory do not try allocating new sets
-	if( pOutOfMemory ){
+	if(pOutOfMemory){
 		return nullptr;
 	}
 	
 	// no free slots present. try allocate a new descriptor set. this can fail if
 	// the pool has not enough free memory left
-	VK_IF_CHECK( deSharedVulkan &vulkan = pOwner.GetDevice().GetInstance().GetVulkan() );
+	VK_IF_CHECK(deSharedVulkan &vulkan = pOwner.GetDevice().GetInstance().GetVulkan());
 	VkDevice device = pOwner.GetDevice().GetDevice();
 	
-	const VkDescriptorSetLayout setLayouts[ 1 ] = { pOwner.GetLayout()->GetLayout() };
+	const VkDescriptorSetLayout setLayouts[1] = {pOwner.GetLayout()->GetLayout()};
 	VkDescriptorSetAllocateInfo allocInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
 	allocInfo.descriptorPool = pPool;
 	allocInfo.pSetLayouts = setLayouts;
 	allocInfo.descriptorSetCount = 1;
 	
 	VkDescriptorSet set = VK_NULL_HANDLE;
-	VkResult result = pOwner.GetDevice().vkAllocateDescriptorSets( device, &allocInfo, &set );
+	VkResult result = pOwner.GetDevice().vkAllocateDescriptorSets(device, &allocInfo, &set);
 	
-	switch( result ){
+	switch(result){
 	case VK_SUCCESS:
 		break;
 		
@@ -105,24 +105,24 @@ devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 		
 	default:
 		#ifdef VK_CHECKCOMMANDS
-		VK_CHECK( vulkan, result );
+		VK_CHECK(vulkan, result);
 		#endif
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 	
 	// create slot for set and return it. caller holds reference
-	return new devkDescriptorPoolSlot( *this, set );
+	return new devkDescriptorPoolSlot(*this, set);
 }
 
-void devkDescriptorPoolPool::Return( devkDescriptorPoolSlot *slot ){
-	if( ! slot ){
-		DETHROW_INFO( deeNullPointer, "slot" );
+void devkDescriptorPoolPool::Return(devkDescriptorPoolSlot *slot){
+	if(!slot){
+		DETHROW_INFO(deeNullPointer, "slot");
 	}
-	if( &slot->GetPool() != this ){
-		DETHROW_INFO( deeInvalidParam, "slot pool mismatch" );
+	if(&slot->GetPool() != this){
+		DETHROW_INFO(deeInvalidParam, "slot pool mismatch");
 	}
 	
-	pFreeSlots.Add( slot );
+	pFreeSlots.Add(slot);
 	slot->FreeReference(); // caller held reference
 }
 
@@ -132,7 +132,7 @@ void devkDescriptorPoolPool::Return( devkDescriptorPoolSlot *slot ){
 //////////////////////
 
 void devkDescriptorPoolPool::pCleanUp(){
-	if( pPool ){
-		pOwner.GetDevice().vkDestroyDescriptorPool( pOwner.GetDevice().GetDevice(), pPool, VK_NULL_HANDLE );
+	if(pPool){
+		pOwner.GetDevice().vkDestroyDescriptorPool(pOwner.GetDevice().GetDevice(), pPool, VK_NULL_HANDLE);
 	}
 }

@@ -98,7 +98,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a collider bone. */
-	debpColliderBone( debpCollider *collider, int index );
+	debpColliderBone(debpCollider *collider, int index);
 	
 	/** Clean up collider bone. */
 	~debpColliderBone();
@@ -128,23 +128,23 @@ public:
 	inline bool GetColBoneDynamic() const{ return pColBoneDynamic; }
 	
 	/** Set bone matrices. */
-	void SetBoneMatrices( const decDMatrix &matrix );
+	void SetBoneMatrices(const decDMatrix &matrix);
 	
 	/** Set collider matrices. */
-	void SetColliderMatrices( const decDMatrix &matrix );
+	void SetColliderMatrices(const decDMatrix &matrix);
 	
 	/** Set local matrix. */
-	void SetLocalMatrix( const decDMatrix &matrix );
+	void SetLocalMatrix(const decDMatrix &matrix);
 	
 	/** Set real matrix. */
-	void SetRealMatrix( const decDMatrix &matrix );
+	void SetRealMatrix(const decDMatrix &matrix);
 	
 	/** Dirty. */
 	inline bool GetDirty() const{ return pDirty; }
-	void SetDirty( bool dirty );
+	void SetDirty(bool dirty);
 	
 	/** Set matching collider bone is set dynamic. */
-	void SetColBoneDynamic( bool dynamic );
+	void SetColBoneDynamic(bool dynamic);
 	
 	/** Parent bone index with -1 meaning not parent. */
 	inline int GetParent() const{ return pParent; }
@@ -157,7 +157,7 @@ public:
 	inline const debpShapeList &GetShapes() const{ return pShapes; }
 	
 	/** Set parameters from rig bone. */
-	void SetFromRigBone( const deRigBone &bone );
+	void SetFromRigBone(const deRigBone &bone);
 	
 	
 	
@@ -165,19 +165,19 @@ public:
 	int GetConstraintCount() const;
 	
 	/** Constraint at index. */
-	debpColliderConstraint *GetConstraintAt( int index ) const;
+	debpColliderConstraint *GetConstraintAt(int index) const;
 	
 	/** Index of constraint or -1 if absent. */
-	int IndexOfConstraint( debpColliderConstraint *constraint ) const;
+	int IndexOfConstraint(debpColliderConstraint *constraint) const;
 	
 	/** Constraint is present. */
-	bool HasConstraint( debpColliderConstraint *constraint ) const;
+	bool HasConstraint(debpColliderConstraint *constraint) const;
 	
 	/** Add constraint. */
-	void AddConstraint( debpColliderConstraint *constraint );
+	void AddConstraint(debpColliderConstraint *constraint);
 	
 	/** Remove constraint. */
-	void RemoveConstraint( debpColliderConstraint *constraint );
+	void RemoveConstraint(debpColliderConstraint *constraint);
 	
 	/** Remove all constraints. */
 	void RemoveAllConstraints();
@@ -206,13 +206,13 @@ public:
 	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Set debug drawer or \em NULL if not activated. */
-	void SetDebugDrawer( deDebugDrawer *debugDrawer );
+	void SetDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
 	
 	/** Set debug drawer shape or \em NULL if not activated. */
-	void SetDDSShape( deDebugDrawerShape *shape );
+	void SetDDSShape(deDebugDrawerShape *shape);
 	/*@}*/
 	
 	

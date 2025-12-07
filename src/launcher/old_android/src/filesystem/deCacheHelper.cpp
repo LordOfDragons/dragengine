@@ -54,13 +54,13 @@ number of files per directory limited improving searching for free slots.
 // Constructor, destructor
 ////////////////////////////
 
-deCacheHelper::deCacheHelper( deVirtualFileSystem *vfs, const decPath &cachePath ) :
-pVFS( NULL ),
-pCachePath( cachePath ),
-pCompressionMethod( ecmZCompression )
+deCacheHelper::deCacheHelper(deVirtualFileSystem *vfs, const decPath &cachePath) :
+pVFS(NULL),
+pCachePath(cachePath),
+pCompressionMethod(ecmZCompression)
 {
-	if( ! vfs ){
-		DETHROW( deeInvalidParam );
+	if(!vfs){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pVFS = vfs;
@@ -70,7 +70,7 @@ pCompressionMethod( ecmZCompression )
 }
 
 deCacheHelper::~deCacheHelper(){
-	if( pVFS ){
+	if(pVFS){
 		pVFS->FreeReference();
 	}
 }
@@ -81,116 +81,116 @@ deCacheHelper::~deCacheHelper(){
 // Management
 ///////////////
 
-void deCacheHelper::SetCompressionMethod( eCompressionMethods compressionMethod ){
+void deCacheHelper::SetCompressionMethod(eCompressionMethods compressionMethod){
 	pCompressionMethod = compressionMethod;
 }
 
 
 
-decBaseFileReader *deCacheHelper::Read( const char *id ){
-	const int slot = pMapping.IndexOf( id );
-	if( slot == -1 ){
+decBaseFileReader *deCacheHelper::Read(const char *id){
+	const int slot = pMapping.IndexOf(id);
+	if(slot == -1){
 		return NULL;
 	}
 	
-	decPath path( pCachePath );
+	decPath path(pCachePath);
 	decString fileTitle;
 	
-	fileTitle.Format( "f%i", slot );
+	fileTitle.Format("f%i", slot);
 	
-	path.AddComponent( fileTitle );
+	path.AddComponent(fileTitle);
 	
 	decBaseFileReader *reader = NULL;
 	decZFileReader *zreader = NULL;
 	
-	if( pVFS->CanReadFile( path ) ){
+	if(pVFS->CanReadFile(path)){
 		decString testID;
 		
-		pVFS->TouchFile( path );
+		pVFS->TouchFile(path);
 		
 		try{
-			reader = pVFS->OpenFileForReading( path );
+			reader = pVFS->OpenFileForReading(path);
 			
-			reader->ReadString16Into( testID );
-			if( testID != id ){
-				pMapping.SetAt( slot, "" );
+			reader->ReadString16Into(testID);
+			if(testID != id){
+				pMapping.SetAt(slot, "");
 				reader->FreeReference();
 				return NULL;
 			}
 			
 			const int compression = reader->ReadByte();
-			if( compression == 'z' ){
-				zreader = new decZFileReader( reader );
+			if(compression == 'z'){
+				zreader = new decZFileReader(reader);
 				reader->FreeReference();
 				reader = zreader;
 				zreader = NULL;
 			}
 			
-		}catch( const deException & ){
-			if( zreader ){
+		}catch(const deException &){
+			if(zreader){
 				zreader->FreeReference();
 			}
-			if( reader ){
+			if(reader){
 				reader->FreeReference();
 			}
 			throw;
 		}
 		
 	}else{
-		pMapping.SetAt( slot, "" );
+		pMapping.SetAt(slot, "");
 	}
 	
 	return reader;
 }
 
-decBaseFileWriter *deCacheHelper::Write( const char *id ){
-	int slot = pMapping.IndexOf( id );
+decBaseFileWriter *deCacheHelper::Write(const char *id){
+	int slot = pMapping.IndexOf(id);
 	
-	if( slot == -1 ){
+	if(slot == -1){
 		const int slotCount = pMapping.GetCount();
 		
-		for( slot=0; slot<slotCount; slot++ ){
-			if( pMapping.GetAt( slot ).IsEmpty() ){
-				pMapping.SetAt( slot, id );
+		for(slot=0; slot<slotCount; slot++){
+			if(pMapping.GetAt(slot).IsEmpty()){
+				pMapping.SetAt(slot, id);
 				break;
 			}
 		}
 		
-		if( slot == slotCount ){
-			pMapping.Add( id );
+		if(slot == slotCount){
+			pMapping.Add(id);
 		}
 	}
 	
-	decPath path( pCachePath );
+	decPath path(pCachePath);
 	decString fileTitle;
 	
-	fileTitle.Format( "f%i", slot );
+	fileTitle.Format("f%i", slot);
 	
-	path.AddComponent( fileTitle );
+	path.AddComponent(fileTitle);
 	
 	decBaseFileWriter *writer = NULL;
 	decZFileWriter *zwriter = NULL;
 	
 	try{
-		writer = pVFS->OpenFileForWriting( path );
-		writer->WriteString16( id );
+		writer = pVFS->OpenFileForWriting(path);
+		writer->WriteString16(id);
 		
-		if( pCompressionMethod == ecmZCompression ){
-			writer->WriteByte( 'z' ); // z-compressed
-			zwriter = new decZFileWriter( writer );
+		if(pCompressionMethod == ecmZCompression){
+			writer->WriteByte('z'); // z-compressed
+			zwriter = new decZFileWriter(writer);
 			writer->FreeReference();
 			writer = zwriter;
 			zwriter = NULL;
 			
 		}else{ // no compression
-			writer->WriteByte( '-' ); // no compression
+			writer->WriteByte('-'); // no compression
 		}
 		
-	}catch( const deException & ){
-		if( zwriter ){
+	}catch(const deException &){
+		if(zwriter){
 			zwriter->FreeReference();
 		}
-		if( writer ){
+		if(writer){
 			writer->FreeReference();
 		}
 		throw;
@@ -199,41 +199,41 @@ decBaseFileWriter *deCacheHelper::Write( const char *id ){
 	return writer;
 }
 
-void deCacheHelper::Delete( const char *id ){
-	const int slot = pMapping.IndexOf( id );
-	if( slot == -1 ){
+void deCacheHelper::Delete(const char *id){
+	const int slot = pMapping.IndexOf(id);
+	if(slot == -1){
 		return;
 	}
 	
-	decPath path( pCachePath );
+	decPath path(pCachePath);
 	decString fileTitle;
 	
-	fileTitle.Format( "f%i", slot );
+	fileTitle.Format("f%i", slot);
 	
-	path.AddComponent( fileTitle );
+	path.AddComponent(fileTitle);
 	
-	pVFS->DeleteFile( path );
+	pVFS->DeleteFile(path);
 	
-	pMapping.SetAt( slot, "" );
+	pMapping.SetAt(slot, "");
 }
 
 void deCacheHelper::DeleteAll(){
 	const int count = pMapping.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pMapping.GetAt( i ).IsEmpty() ){
+	for(i=0; i<count; i++){
+		if(pMapping.GetAt(i).IsEmpty()){
 			continue;
 		}
 		
-		decPath path( pCachePath );
+		decPath path(pCachePath);
 		decString fileTitle;
-		fileTitle.Format( "f%i", i );
-		path.AddComponent( fileTitle );
+		fileTitle.Format("f%i", i);
+		path.AddComponent(fileTitle);
 		
-		pVFS->DeleteFile( path );
+		pVFS->DeleteFile(path);
 		
-		pMapping.SetAt( i, "" );
+		pMapping.SetAt(i, "");
 	}
 }
 
@@ -241,8 +241,8 @@ void deCacheHelper::DeleteAll(){
 
 void deCacheHelper::BuildMapping(){
 	// find all cache files
-	deCollectFileSearchVisitor collect( "f*" );
-	pVFS->SearchFiles( pCachePath, collect );
+	deCollectFileSearchVisitor collect("f*");
+	pVFS->SearchFiles(pCachePath, collect);
 	
 	// determine the largest slot number used by all the cache files
 	const dePathList &files = collect.GetFiles();
@@ -250,18 +250,18 @@ void deCacheHelper::BuildMapping(){
 	int maxSlot = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const int slot = decString( files.GetAt( i ).GetLastComponent() ).GetMiddle( 1 ).ToInt();
+	for(i=0; i<count; i++){
+		const int slot = decString(files.GetAt(i).GetLastComponent()).GetMiddle(1).ToInt();
 		
-		if( slot >= maxSlot ){
+		if(slot >= maxSlot){
 			maxSlot = slot + 1;
 		}
 	}
 	
 	// create mapping table with the required number of empty entries
 	pMapping.RemoveAll();
-	for( i=0; i<maxSlot; i++ ){
-		pMapping.Add( "" );
+	for(i=0; i<maxSlot; i++){
+		pMapping.Add("");
 	}
 	
 	// read the IDs from all cache files entering them into the proper slot of the mapping table
@@ -269,36 +269,36 @@ void deCacheHelper::BuildMapping(){
 	decString id;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			const decPath &file = files.GetAt( i );
-			const int slot = decString( file.GetLastComponent() ).GetMiddle( 1 ).ToInt();
+		for(i=0; i<count; i++){
+			const decPath &file = files.GetAt(i);
+			const int slot = decString(file.GetLastComponent()).GetMiddle(1).ToInt();
 			
-			reader = pVFS->OpenFileForReading( file );
-			reader->ReadString16Into( id );
+			reader = pVFS->OpenFileForReading(file);
+			reader->ReadString16Into(id);
 			reader->FreeReference();
 			reader = NULL;
 			
-			pMapping.SetAt( slot, id );
+			pMapping.SetAt(slot, id);
 		}
 		
-	}catch( const deException & ){
-		if( reader ){
+	}catch(const deException &){
+		if(reader){
 			reader->FreeReference();
 		}
 		throw;
 	}
 }
 
-void deCacheHelper::DebugPrint( deLogger &logger, const char *loggingSource ){
+void deCacheHelper::DebugPrint(deLogger &logger, const char *loggingSource){
 	const int count = pMapping.GetCount();
 	int i;
 	
-	logger.LogInfoFormat( loggingSource, "Cache Directory '%s'", pCachePath.GetPathUnix().GetString() );
-	for( i=0; i<count; i++ ){
-		const decString &id = pMapping.GetAt( i );
+	logger.LogInfoFormat(loggingSource, "Cache Directory '%s'", pCachePath.GetPathUnix().GetString());
+	for(i=0; i<count; i++){
+		const decString &id = pMapping.GetAt(i);
 		
-		if( ! id.IsEmpty() ){
-			logger.LogInfoFormat( loggingSource, "- Slot %i: '%s' => f%i", i, id.GetString(), i );
+		if(!id.IsEmpty()){
+			logger.LogInfoFormat(loggingSource, "- Slot %i: '%s' => f%i", i, id.GetString(), i);
 		}
 	}
 }

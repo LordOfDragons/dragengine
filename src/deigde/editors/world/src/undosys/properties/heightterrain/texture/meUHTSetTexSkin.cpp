@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexSkin::meUHTSetTexSkin( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath ){
-	if( ! world || ! sector || ! texture || ! newPath ) DETHROW( deeInvalidParam );
+meUHTSetTexSkin::meUHTSetTexSkin(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath){
+	if(!world || !sector || !texture || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
@@ -51,7 +51,7 @@ meUHTSetTexSkin::meUHTSetTexSkin( meWorld *world, meHeightTerrainSector *sector,
 	pOldPath = texture->GetPathSkin();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Set Height Terrain Texture Skin" );
+	SetShortInfo("Set Height Terrain Texture Skin");
 	
 	world->AddReference();
 	
@@ -60,8 +60,8 @@ meUHTSetTexSkin::meUHTSetTexSkin( meWorld *world, meHeightTerrainSector *sector,
 }
 
 meUHTSetTexSkin::~meUHTSetTexSkin(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -71,9 +71,9 @@ meUHTSetTexSkin::~meUHTSetTexSkin(){
 
 
 void meUHTSetTexSkin::Undo(){
-	pTexture->SetPathSkin( pOldPath.GetString() );
+	pTexture->SetPathSkin(pOldPath.GetString());
 }
 
 void meUHTSetTexSkin::Redo(){
-	pTexture->SetPathSkin( pNewPath.GetString() );
+	pTexture->SetPathSkin(pNewPath.GetString());
 }

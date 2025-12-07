@@ -63,8 +63,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create command pool. */
-	devkDescriptorPool( devkDevice &device, VkDescriptorType type,
-		devkDescriptorSetLayout *layout, int maxSetCount = 1000 );
+	devkDescriptorPool(devkDevice &device, VkDescriptorType type,
+		devkDescriptorSetLayout *layout, int maxSetCount = 1000);
 	
 protected:
 	/** Clean up queue. */

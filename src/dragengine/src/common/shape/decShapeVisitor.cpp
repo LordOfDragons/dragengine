@@ -52,25 +52,25 @@ decShapeVisitor::~decShapeVisitor(){
 // Visiting
 /////////////
 
-void decShapeVisitor::VisitShape( decShape &shape ){
+void decShapeVisitor::VisitShape(decShape &shape){
 }
 
-void decShapeVisitor::VisitShapeSphere( decShapeSphere &sphere ){
-	VisitShape( sphere );
+void decShapeVisitor::VisitShapeSphere(decShapeSphere &sphere){
+	VisitShape(sphere);
 }
 
-void decShapeVisitor::VisitShapeBox( decShapeBox &box ){
-	VisitShape( box );
+void decShapeVisitor::VisitShapeBox(decShapeBox &box){
+	VisitShape(box);
 }
 
-void decShapeVisitor::VisitShapeCylinder( decShapeCylinder &cylinder ){
-	VisitShape( cylinder );
+void decShapeVisitor::VisitShapeCylinder(decShapeCylinder &cylinder){
+	VisitShape(cylinder);
 }
 
-void decShapeVisitor::VisitShapeCapsule( decShapeCapsule &capsule ){
-	VisitShape( capsule );
+void decShapeVisitor::VisitShapeCapsule(decShapeCapsule &capsule){
+	VisitShape(capsule);
 }
 
-void decShapeVisitor::VisitShapeHull( decShapeHull &hull ){
-	VisitShape( hull );
+void decShapeVisitor::VisitShapeHull(decShapeHull &hull){
+	VisitShape(hull);
 }

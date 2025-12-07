@@ -47,17 +47,17 @@
 // Class igdeEditDirectory::cListenerTextField
 ////////////////////////////////////////////////
 
-igdeEditDirectory::cListenerTextField::cListenerTextField( igdeEditDirectory &editDirectory ) :
-pEditDirectory( editDirectory ){
+igdeEditDirectory::cListenerTextField::cListenerTextField(igdeEditDirectory &editDirectory) :
+pEditDirectory(editDirectory){
 }
 
 igdeEditDirectory::cListenerTextField::~cListenerTextField(){
 }
 
-void igdeEditDirectory::cListenerTextField::OnTextChanged( igdeTextField *textField ){
+void igdeEditDirectory::cListenerTextField::OnTextChanged(igdeTextField *textField){
 	// SetDirectory checks against textField->GetText() so ValidateDirectory() would be skipped
 	//pEditDirectory.SetDirectory( textField->GetText() );
-	if( pEditDirectory.GetAutoValidateDirectory() ){
+	if(pEditDirectory.GetAutoValidateDirectory()){
 		pEditDirectory.ValidateDirectory();
 	}
 	pEditDirectory.NotifyEditDirectoryChanged();
@@ -68,12 +68,12 @@ void igdeEditDirectory::cListenerTextField::OnTextChanged( igdeTextField *textFi
 // Class igdeEditDirectory::cActionButton
 //////////////////////////////////////
 
-igdeEditDirectory::cActionButton::cActionButton( igdeEditDirectory &editDirectory,
-	igdeTextField &textField, const char *description ) :
-igdeActionSelectDirectory( editDirectory.GetEnvironment(), textField, editDirectory.GetUseGameVFS() ),
-pEditDirectory( editDirectory )
+igdeEditDirectory::cActionButton::cActionButton(igdeEditDirectory &editDirectory,
+	igdeTextField &textField, const char *description) :
+igdeActionSelectDirectory(editDirectory.GetEnvironment(), textField, editDirectory.GetUseGameVFS()),
+pEditDirectory(editDirectory)
 {
-	SetDescription( description );
+	SetDescription(description);
 }
 
 igdeEditDirectory::cActionButton::~cActionButton(){
@@ -84,8 +84,8 @@ decString igdeEditDirectory::cActionButton::DefaultDirectory(){
 }
 
 void igdeEditDirectory::cActionButton::Update(){
-	SetDescription( pEditDirectory.GetDescription() );
-	SetEnabled( pEditDirectory.GetEnabled() );
+	SetDescription(pEditDirectory.GetDescription());
+	SetEnabled(pEditDirectory.GetEnabled());
 }
 
 
@@ -96,15 +96,15 @@ void igdeEditDirectory::cActionButton::Update(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditDirectory::igdeEditDirectory( igdeUIHelper &helper, const char *description, bool useGameVFS ) :
-igdeContainerFlow( helper.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst, 2 ),
-pAutoValidateDirectory( true ),
-pUseGameVFS( useGameVFS )
+igdeEditDirectory::igdeEditDirectory(igdeUIHelper &helper, const char *description, bool useGameVFS) :
+igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst, 2),
+pAutoValidateDirectory(true),
+pUseGameVFS(useGameVFS)
 {
-	helper.EditString( *this, description, pText, new cListenerTextField( *this ) );
+	helper.EditString(*this, description, pText, new cListenerTextField(*this));
 	
-	pActionButton.TakeOver( new cActionButton( *this, pText, description ) );
-	helper.Button( *this, pButton, pActionButton );
+	pActionButton.TakeOver(new cActionButton(*this, pText, description));
+	helper.Button(*this, pButton, pActionButton);
 }
 
 igdeEditDirectory::~igdeEditDirectory(){
@@ -120,28 +120,28 @@ const decString &igdeEditDirectory::GetDirectory() const{
 	return pText->GetText();
 }
 
-void igdeEditDirectory::SetDirectory( const char *directory ){
-	if( pText->GetText() == directory ){
+void igdeEditDirectory::SetDirectory(const char *directory){
+	if(pText->GetText() == directory){
 		return;
 	}
 	
-	pText->SetText( directory );
-	if( pAutoValidateDirectory ){
+	pText->SetText(directory);
+	if(pAutoValidateDirectory){
 		ValidateDirectory();
 	}
 }
 
 void igdeEditDirectory::ClearDirectory(){
 	pText->ClearText();
-	pText->SetInvalidValue( false );
+	pText->SetInvalidValue(false);
 }
 
 bool igdeEditDirectory::GetEnabled() const{
 	return pText->GetEnabled();
 }
 
-void igdeEditDirectory::SetEnabled( bool enabled ){
-	pText->SetEnabled( enabled );
+void igdeEditDirectory::SetEnabled(bool enabled){
+	pText->SetEnabled(enabled);
 	pActionButton->Update();
 }
 
@@ -149,29 +149,29 @@ const decString &igdeEditDirectory::GetDescription() const{
 	return pText->GetDescription();
 }
 
-void igdeEditDirectory::SetDescription( const char *description ){
-	pText->SetDescription( description );
+void igdeEditDirectory::SetDescription(const char *description){
+	pText->SetDescription(description);
 	pActionButton->Update();
 }
 
-void igdeEditDirectory::SetDefaultDirectory( const char *path ){
+void igdeEditDirectory::SetDefaultDirectory(const char *path){
 	pDefaultDirectory = path;
 }
 
 bool igdeEditDirectory::IsDirectoryValid() const{
-	return ! pText->GetInvalidValue();
+	return !pText->GetInvalidValue();
 }
 
 void igdeEditDirectory::ValidateDirectory(){
 	// path can be absolute or relative. if relative we are missing additional information
 	// what path to use. so for the time being only absolute path are verified
-	if( decPath::IsUnixPathAbsolute( pText->GetText() ) ){
-		if( pUseGameVFS ){
-			if( ! pText->GetText().IsEmpty() ){
+	if(decPath::IsUnixPathAbsolute(pText->GetText())){
+		if(pUseGameVFS){
+			if(!pText->GetText().IsEmpty()){
 				deVirtualFileSystem &vfs = *GetEnvironment().GetFileSystemGame();
-				const decPath path( decPath::CreatePathUnix( pText->GetText() ) );
-				pText->SetInvalidValue( ! vfs.ExistsFile( path )
-					|| vfs.GetFileType( path ) != deVFSContainer::eftDirectory );
+				const decPath path(decPath::CreatePathUnix(pText->GetText()));
+				pText->SetInvalidValue(!vfs.ExistsFile(path)
+					|| vfs.GetFileType(path) != deVFSContainer::eftDirectory);
 			}
 			
 		}else{
@@ -179,36 +179,36 @@ void igdeEditDirectory::ValidateDirectory(){
 		}
 	}
 	
-	pText->SetInvalidValue( false );
+	pText->SetInvalidValue(false);
 }
 
 void igdeEditDirectory::Focus(){
 	pText->Focus();
 }
 
-void igdeEditDirectory::SetAutoValidateDirectory( bool autoValidateDirectory ){
+void igdeEditDirectory::SetAutoValidateDirectory(bool autoValidateDirectory){
 	pAutoValidateDirectory = autoValidateDirectory;
 }
 
 
 
-void igdeEditDirectory::AddListener( igdeEditDirectoryListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeEditDirectory::AddListener(igdeEditDirectoryListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeEditDirectory::RemoveListener( igdeEditDirectoryListener *listener ){
-	pListeners.Remove( listener );
+void igdeEditDirectory::RemoveListener(igdeEditDirectoryListener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeEditDirectory::NotifyEditDirectoryChanged(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeEditDirectoryListener* )listeners.GetAt( i ) )->OnEditDirectoryChanged( this );
+	for(i=0; i<count; i++){
+		((igdeEditDirectoryListener*)listeners.GetAt(i))->OnEditDirectoryChanged(this);
 	}
 }

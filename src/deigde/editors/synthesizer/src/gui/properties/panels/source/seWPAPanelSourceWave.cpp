@@ -61,21 +61,21 @@ protected:
 	seWPAPanelSourceWave &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPAPanelSourceWave &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPAPanelSourceWave &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
-		seSourceWave * const source = ( seSourceWave* )pPanel.GetSource();
-		if( ! source ){
+	virtual void OnTextChanged(igdeTextField *textField){
+		seSourceWave * const source = (seSourceWave*)pPanel.GetSource();
+		if(!source){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, source ) ));
-		if( undo ){
-			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, source)));
+		if(undo){
+			source->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSourceWave *source ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSourceWave *source) = 0;
 };
 
 
@@ -83,17 +83,17 @@ class cComboType : public igdeComboBoxListener{
 	seWPAPanelSourceWave &pPanel;
 	
 public:
-	cComboType( seWPAPanelSourceWave &panel ) : pPanel( panel ){ }
+	cComboType(seWPAPanelSourceWave &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		seSourceWave * const source = ( seSourceWave* )pPanel.GetSource();
-		if( ! source || ! comboBox->GetSelectedItem() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		seSourceWave * const source = (seSourceWave*)pPanel.GetSource();
+		if(!source || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
-		const deSynthesizerSourceWave::eWaveType type = ( deSynthesizerSourceWave::eWaveType )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( type == source->GetWaveType() ){
+		const deSynthesizerSourceWave::eWaveType type = (deSynthesizerSourceWave::eWaveType)
+			(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(type == source->GetWaveType()){
 			return;
 		}
 		
@@ -104,23 +104,23 @@ public:
 
 class cTextMinFrequency : public cBaseTextFieldListener {
 public:
-	cTextMinFrequency( seWPAPanelSourceWave &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMinFrequency(seWPAPanelSourceWave &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSourceWave *source ){
-		const float value = ( float )textField->GetInteger();
-		return fabsf( value - source->GetMinFrequency() ) < FLOAT_SAFE_EPSILON
-			? new seUSourceWaveSetMinFrequency( source, value ) : NULL;
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSourceWave *source){
+		const float value = (float)textField->GetInteger();
+		return fabsf(value - source->GetMinFrequency()) < FLOAT_SAFE_EPSILON
+			? new seUSourceWaveSetMinFrequency(source, value) : NULL;
 	}
 };
 
 class cTextMaxFrequency : public cBaseTextFieldListener {
 public:
-	cTextMaxFrequency( seWPAPanelSourceWave &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMaxFrequency(seWPAPanelSourceWave &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSourceWave *source ){
-		const float value = ( float )textField->GetInteger();
-		return fabsf( value - source->GetMaxFrequency() ) < FLOAT_SAFE_EPSILON
-			? new seUSourceWaveSetMaxFrequency( source, value ) : NULL;
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSourceWave *source){
+		const float value = (float)textField->GetInteger();
+		return fabsf(value - source->GetMaxFrequency()) < FLOAT_SAFE_EPSILON
+			? new seUSourceWaveSetMaxFrequency(source, value) : NULL;
 	}
 };
 
@@ -134,26 +134,26 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPAPanelSourceWave::seWPAPanelSourceWave( seWPSource &wpSource ) :
-seWPAPanelSource( wpSource, deSynthesizerSourceVisitorIdentify::estWave )
+seWPAPanelSourceWave::seWPAPanelSourceWave(seWPSource &wpSource) :
+seWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estWave)
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Wave:" );
+	helper.GroupBox(*this, groupBox, "Wave:");
 	
-	helper.ComboBox( groupBox, "Wave Type:", "Select wave type", pCBType, new cComboType( *this ) );
-	pCBType->AddItem( "Sine", NULL, ( void* )( intptr_t )deSynthesizerSourceWave::ewtSine );
-	pCBType->AddItem( "Square", NULL, ( void* )( intptr_t )deSynthesizerSourceWave::ewtSquare );
-	pCBType->AddItem( "Saw-Tooth", NULL, ( void* )( intptr_t )deSynthesizerSourceWave::ewtSawTooth );
-	pCBType->AddItem( "Triangle", NULL, ( void* )( intptr_t )deSynthesizerSourceWave::ewtTriangle );
+	helper.ComboBox(groupBox, "Wave Type:", "Select wave type", pCBType, new cComboType(*this));
+	pCBType->AddItem("Sine", NULL, (void*)(intptr_t)deSynthesizerSourceWave::ewtSine);
+	pCBType->AddItem("Square", NULL, (void*)(intptr_t)deSynthesizerSourceWave::ewtSquare);
+	pCBType->AddItem("Saw-Tooth", NULL, (void*)(intptr_t)deSynthesizerSourceWave::ewtSawTooth);
+	pCBType->AddItem("Triangle", NULL, (void*)(intptr_t)deSynthesizerSourceWave::ewtTriangle);
 	
-	helper.EditInteger( groupBox, "Minimum Frequency:", "Minimum frequency in Hz.",
-		pEditMinFrequency, new cTextMinFrequency( *this ) );
-	helper.EditInteger( groupBox, "Maximum Frequency:", "Maximum frequency in Hz",
-		pEditMaxFrequency, new cTextMaxFrequency( *this ) );
+	helper.EditInteger(groupBox, "Minimum Frequency:", "Minimum frequency in Hz.",
+		pEditMinFrequency, new cTextMinFrequency(*this));
+	helper.EditInteger(groupBox, "Maximum Frequency:", "Maximum frequency in Hz",
+		pEditMaxFrequency, new cTextMaxFrequency(*this));
 }
 
 seWPAPanelSourceWave::~seWPAPanelSourceWave(){
@@ -167,30 +167,30 @@ seWPAPanelSourceWave::~seWPAPanelSourceWave(){
 void seWPAPanelSourceWave::UpdateSource(){
 	seWPAPanelSource::UpdateSource();
 	
-	const seSourceWave * const source = ( seSourceWave* )GetSource();
-	if( source ){
-		pCBType->SetSelectionWithData( ( void* )( intptr_t )source->GetWaveType() );
-		pEditMinFrequency->SetInteger( ( int )( source->GetMinFrequency() + 0.1f ) );
-		pEditMaxFrequency->SetInteger( ( int )( source->GetMaxFrequency() + 0.1f ) );
+	const seSourceWave * const source = (seSourceWave*)GetSource();
+	if(source){
+		pCBType->SetSelectionWithData((void*)(intptr_t)source->GetWaveType());
+		pEditMinFrequency->SetInteger((int)(source->GetMinFrequency() + 0.1f));
+		pEditMaxFrequency->SetInteger((int)(source->GetMaxFrequency() + 0.1f));
 		
 	}else{
-		pCBType->SetSelectionWithData( ( void* )( intptr_t )deSynthesizerSourceWave::ewtSine );
+		pCBType->SetSelectionWithData((void*)(intptr_t)deSynthesizerSourceWave::ewtSine);
 		pEditMinFrequency->ClearText();
 		pEditMaxFrequency->ClearText();
 	}
 	
 	const bool enabled = source;
-	pCBType->SetEnabled( enabled );
-	pEditMinFrequency->SetEnabled( enabled );
-	pEditMaxFrequency->SetEnabled( enabled );
+	pCBType->SetEnabled(enabled);
+	pEditMinFrequency->SetEnabled(enabled);
+	pEditMaxFrequency->SetEnabled(enabled);
 }
 
 void seWPAPanelSourceWave::UpdateTargetList(){
-	seSourceWave *source = ( seSourceWave* )GetSource();
+	seSourceWave *source = (seSourceWave*)GetSource();
 	
 	seWPAPanelSource::UpdateTargetList();
 	
-	if( source ){
-		AddTarget( "Frequency", &source->GetTargetFrequency() );
+	if(source){
+		AddTarget("Frequency", &source->GetTargetFrequency());
 	}
 }

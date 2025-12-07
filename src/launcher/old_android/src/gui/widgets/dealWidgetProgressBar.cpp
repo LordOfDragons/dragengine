@@ -42,28 +42,28 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetProgressBar::dealWidgetProgressBar( dealDisplay &display ) :
-dealWidgetLayoutStack( display, true ),
+dealWidgetProgressBar::dealWidgetProgressBar(dealDisplay &display) :
+dealWidgetLayoutStack(display, true),
 
-pBoxProgress( NULL ),
-pLabelProgress( NULL ),
+pBoxProgress(NULL),
+pLabelProgress(NULL),
 
-pMinProgress( 0 ),
-pMaxProgress( 100 ),
-pProgress( 0 )
+pMinProgress(0),
+pMaxProgress(100),
+pProgress(0)
 {
 	pBuildContent();
 }
 
-dealWidgetProgressBar::dealWidgetProgressBar( dealDisplay &display, int minProgress, int maxProgress ) :
-dealWidgetLayoutStack( display, true ),
+dealWidgetProgressBar::dealWidgetProgressBar(dealDisplay &display, int minProgress, int maxProgress) :
+dealWidgetLayoutStack(display, true),
 
-pBoxProgress( NULL ),
-pLabelProgress( NULL ),
+pBoxProgress(NULL),
+pLabelProgress(NULL),
 
-pMinProgress( minProgress ),
-pMaxProgress( decMath::max( maxProgress, minProgress ) ),
-pProgress( minProgress )
+pMinProgress(minProgress),
+pMaxProgress(decMath::max(maxProgress, minProgress)),
+pProgress(minProgress)
 {
 	pBuildContent();
 }
@@ -76,24 +76,24 @@ dealWidgetProgressBar::~dealWidgetProgressBar(){
 // Management
 ///////////////
 
-void dealWidgetProgressBar::SetRange( int minProgress, int maxProgress ){
-	maxProgress = decMath::max( maxProgress, minProgress );
+void dealWidgetProgressBar::SetRange(int minProgress, int maxProgress){
+	maxProgress = decMath::max(maxProgress, minProgress);
 	
-	if( pMinProgress == minProgress && pMaxProgress == maxProgress ){
+	if(pMinProgress == minProgress && pMaxProgress == maxProgress){
 		return;
 	}
 	
 	pMinProgress = minProgress;
 	pMaxProgress = maxProgress;
-	pProgress = decMath::clamp( pProgress, minProgress, maxProgress );
+	pProgress = decMath::clamp(pProgress, minProgress, maxProgress);
 	
 	pUpdateContent();
 }
 
-void dealWidgetProgressBar::SetProgress( int progress ){
-	progress = decMath::clamp( progress, pMinProgress, pMaxProgress );
+void dealWidgetProgressBar::SetProgress(int progress){
+	progress = decMath::clamp(progress, pMinProgress, pMaxProgress);
 	
-	if( pProgress == progress ){
+	if(pProgress == progress){
 		return;
 	}
 	
@@ -103,7 +103,7 @@ void dealWidgetProgressBar::SetProgress( int progress ){
 }
 
 float dealWidgetProgressBar::GetProgressPercentage() const{
-	return decMath::linearStep( ( float )pProgress, ( float )pMinProgress, ( float )pMaxProgress );
+	return decMath::linearStep((float)pProgress, (float)pMinProgress, (float)pMaxProgress);
 }
 
 
@@ -124,32 +124,32 @@ void dealWidgetProgressBar::OnPaddingChanged(){
 void dealWidgetProgressBar::pBuildContent(){
 	dealDisplay &display = GetDisplay();
 	
-	dealWidgetLayoutFlow * const layoutBox = new dealWidgetLayoutFlow( display,
-		true, 0, dealWidgetLayoutFlow::eltTop, dealWidgetLayoutFlow::eltFill );
-	layoutBox->SetBackgroundColor( decColor( 0.2f, 0.2f, 0.2f ) );
+	dealWidgetLayoutFlow * const layoutBox = new dealWidgetLayoutFlow(display,
+		true, 0, dealWidgetLayoutFlow::eltTop, dealWidgetLayoutFlow::eltFill);
+	layoutBox->SetBackgroundColor(decColor(0.2f, 0.2f, 0.2f));
 	
-	pBoxProgress = new dealWidget( display );
-	pBoxProgress->SetBackgroundColor( decColor( 0.0f, 0.0f, 1.0f ) );
-	layoutBox->AddWidget( pBoxProgress );
-	AddWidget( layoutBox );
+	pBoxProgress = new dealWidget(display);
+	pBoxProgress->SetBackgroundColor(decColor(0.0f, 0.0f, 1.0f));
+	layoutBox->AddWidget(pBoxProgress);
+	AddWidget(layoutBox);
 	layoutBox->FreeReference();
 	
-	pLabelProgress = new dealWidgetLabel( display, "0 %" );
-	AddWidget( pLabelProgress );
+	pLabelProgress = new dealWidgetLabel(display, "0 %");
+	AddWidget(pLabelProgress);
 }
 
 void dealWidgetProgressBar::pUpdateContent(){
 	const float percentage = GetProgressPercentage();
 	
 	decString text;
-	text.Format( "%.0f %%", percentage * 100.0f );
-	pLabelProgress->SetText( text );
+	text.Format("%.0f %%", percentage * 100.0f);
+	pLabelProgress->SetText(text);
 	
-	const float colorBlend = decMath::linearStep( percentage, 0.4f, 0.6f );
-	const decColor color1( 1.0f, 1.0f, 1.0f );
-	const decColor color2( 1.0f, 1.0f, 0.0f );
-	pLabelProgress->SetColor( color1 * ( 1.0f - colorBlend ) + color2 * colorBlend );
+	const float colorBlend = decMath::linearStep(percentage, 0.4f, 0.6f);
+	const decColor color1(1.0f, 1.0f, 1.0f);
+	const decColor color2(1.0f, 1.0f, 0.0f);
+	pLabelProgress->SetColor(color1 * (1.0f - colorBlend) + color2 * colorBlend);
 	
-	const int width = ( int )( percentage * ( float )GetContentArea().x );
-	pBoxProgress->SetExplicitMinimumSize( decPoint( width, 0 ) );
+	const int width = (int)(percentage * (float)GetContentArea().x);
+	pBoxProgress->SetExplicitMinimumSize(decPoint(width, 0));
 }

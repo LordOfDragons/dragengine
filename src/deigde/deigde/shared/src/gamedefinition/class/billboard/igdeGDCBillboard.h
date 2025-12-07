@@ -68,7 +68,7 @@ private:
 	decDVector pPosition;
 	decString pBoneName;
 	
-	decString pPropertyNames[ epAttachPosition + 1 ];
+	decString pPropertyNames[epAttachPosition + 1];
 	
 	
 	
@@ -79,7 +79,7 @@ public:
 	igdeGDCBillboard();
 	
 	/** \brief Create game definition billboard as a copy of another game definition billboard. */
-	igdeGDCBillboard( const igdeGDCBillboard &billboard );
+	igdeGDCBillboard(const igdeGDCBillboard &billboard);
 	
 	/** \brief Clean up game definition billboard. */
 	virtual ~igdeGDCBillboard();
@@ -93,43 +93,43 @@ public:
 	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	
 	/** \brief Set skin path. */
-	void SetSkinPath( const char *path );
+	void SetSkinPath(const char *path);
 	
 	/** \brief Axis. */
 	inline const decVector &GetAxis() const{ return pAxis; }
 	
 	/** \brief Set axis. */
-	void SetAxis( const decVector &axis );
+	void SetAxis(const decVector &axis);
 	
 	/** \brief Size. */
 	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
-	void SetSize( const decVector2 &size );
+	void SetSize(const decVector2 &size);
 	
 	/** \brief Offset. */
 	inline const decVector2 &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset. */
-	void SetOffset( const decVector2 &offset );
+	void SetOffset(const decVector2 &offset);
 	
 	/** \brief Determines if the billboard is locked. */
 	inline bool GetLocked() const{ return pLocked; }
 	
 	/** \brief Set billboard is locked. */
-	void SetLocked( bool locked );
+	void SetLocked(bool locked);
 	
 	/** \brief Determines if the billboard is spherical. */
 	inline bool GetSpherical() const{ return pSpherical; }
 	
 	/** \brief Sets if the billboard is spherical. */
-	void SetSpherical( bool spherical );
+	void SetSpherical(bool spherical);
 	
 	/** \brief Determines if the billboard size is fixed to the screen size. */
 	inline bool GetSizeFixedToScreen() const{ return pSizeFixedToScreen; }
 	
 	/** \brief Sets if the billboard size is fixed to the screen size. */
-	void SetSizeFixedToScreen( bool sizeFixedToScreen );
+	void SetSizeFixedToScreen(bool sizeFixedToScreen);
 	
 	
 	
@@ -137,46 +137,46 @@ public:
 	inline bool GetDoNotScale() const{ return pDoNotScale; }
 	
 	/** \brief Sets if this billboard should not be scaled. */
-	void SetDoNotScale( bool doNotScale );
+	void SetDoNotScale(bool doNotScale);
 	
 	/** \brief Determines if the billboard can be partially hidden. */
 	inline bool GetPartialHide() const{ return pPartialHide; }
 	
 	/** \brief Sets if the billboard can be partially hidden. */
-	void SetPartialHide( bool partiallyHidden );
+	void SetPartialHide(bool partiallyHidden);
 	
 	/** \brief Determines if the billboard is rendered into environment map probes. */
 	inline bool GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** \brief Sets if the billboard is rendered into environment map probes. */
-	void SetRenderEnvMap( bool renderEnvMap );
+	void SetRenderEnvMap(bool renderEnvMap);
 	
 	/** \brief Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Name of the bone to attach to or empty string. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of bone to attach to or empty string. */
-	void SetBoneName( const char *boneName );
+	void SetBoneName(const char *boneName);
 	
 	
 	
 	
 	/** \brief Determines if the name of a property is set or not (empty string). */
-	bool IsPropertySet( eProperties property ) const;
+	bool IsPropertySet(eProperties property) const;
 	
 	/** \brief Name of the given property. */
-	const decString &GetPropertyName( eProperties property ) const;
+	const decString &GetPropertyName(eProperties property) const;
 	
 	/** \brief Set name of the given property. */
-	void SetPropertyName( eProperties property, const char *name );
+	void SetPropertyName(eProperties property, const char *name);
 	
 	/** \brief Determines if one or more properties use a name. */
-	bool HasPropertyWithName( const char *name ) const;
+	bool HasPropertyWithName(const char *name) const;
 	/*@}*/
 };
 

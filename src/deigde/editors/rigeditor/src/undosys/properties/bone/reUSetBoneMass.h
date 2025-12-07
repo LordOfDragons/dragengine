@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetBoneMass( reRigBone *bone, float mass );
+	reUSetBoneMass(reRigBone *bone, float mass);
 	
 protected:
 	/** \brief Clean up undo. */

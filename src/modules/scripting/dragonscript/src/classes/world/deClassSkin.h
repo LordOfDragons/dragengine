@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSkin( deScriptingDragonScript &ds );
+	deClassSkin(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSkin();
@@ -61,13 +61,13 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Skin from object. */
-	deSkin *GetSkin( dsRealObject *myself ) const;
+	deSkin *GetSkin(dsRealObject *myself) const;
 	
 	/** \brief Pushe skin. */
-	void PushSkin( dsRunTime *rt, deSkin *skin );
+	void PushSkin(dsRunTime *rt, deSkin *skin);
 	
 	inline dsClass *GetClassSkinPropertyType() const{ return pClsSkinPropertyType; }
 	/*@}*/
@@ -92,33 +92,33 @@ private:
 		dsClass *clsSkinPropertyType;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfLoad );
-	DEF_NATFUNC( nfLoadAsynchron );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfLoad);
+	DEF_NATFUNC(nfLoadAsynchron);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
-	DEF_NATFUNC( nfGetTextureCount );
-	DEF_NATFUNC( nfIndexOfTextureNamed );
+	DEF_NATFUNC(nfGetFilename);
+	DEF_NATFUNC(nfGetTextureCount);
+	DEF_NATFUNC(nfIndexOfTextureNamed);
 	
-	DEF_NATFUNC( nfTextureGetName );
-	DEF_NATFUNC( nfTextureGetPropertyCount );
-	DEF_NATFUNC( nfTextureIndexOfPropertyNamed );
+	DEF_NATFUNC(nfTextureGetName);
+	DEF_NATFUNC(nfTextureGetPropertyCount);
+	DEF_NATFUNC(nfTextureIndexOfPropertyNamed);
 	
-	DEF_NATFUNC( nfPropertyGetName );
-	DEF_NATFUNC( nfPropertyGetRenderable );
-	DEF_NATFUNC( nfPropertyGetType );
-	DEF_NATFUNC( nfPropertyGetValue );
-	DEF_NATFUNC( nfPropertyGetColor );
-	DEF_NATFUNC( nfPropertyGetImage );
-	DEF_NATFUNC( nfPropertyGetVideo );
+	DEF_NATFUNC(nfPropertyGetName);
+	DEF_NATFUNC(nfPropertyGetRenderable);
+	DEF_NATFUNC(nfPropertyGetType);
+	DEF_NATFUNC(nfPropertyGetValue);
+	DEF_NATFUNC(nfPropertyGetColor);
+	DEF_NATFUNC(nfPropertyGetImage);
+	DEF_NATFUNC(nfPropertyGetVideo);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

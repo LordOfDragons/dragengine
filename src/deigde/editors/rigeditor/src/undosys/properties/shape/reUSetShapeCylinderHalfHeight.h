@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeCylinderHalfHeight( reRigShapeCylinder *shape, float halfHeight );
+	reUSetShapeCylinderHalfHeight(reRigShapeCylinder *shape, float halfHeight);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -43,21 +43,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskSharedInstance::deoglRenderTaskSharedInstance( deoglRenderTaskSharedPool &pool, int index ) :
-pPool( pool ),
-pIndex( index ),
+deoglRenderTaskSharedInstance::deoglRenderTaskSharedInstance(deoglRenderTaskSharedPool &pool, int index) :
+pPool(pool),
+pIndex(index),
 
-pParamBlock( NULL ),
-pParamBlockSpecial( NULL ),
+pParamBlock(NULL),
+pParamBlockSpecial(NULL),
 
-pFirstPoint( 0 ),
-pPointCount( 0 ),
-pFirstIndex( 0 ),
-pIndexCount( 0 ),
-pSubInstanceCount( 0 ),
-pSubInstanceSPB( NULL ),
-pPrimitiveType( GL_TRIANGLES ),
-pTessPatchVertexCount( 3 ){
+pFirstPoint(0),
+pPointCount(0),
+pFirstIndex(0),
+pIndexCount(0),
+pSubInstanceCount(0),
+pSubInstanceSPB(NULL),
+pPrimitiveType(GL_TRIANGLES),
+pTessPatchVertexCount(3){
 }
 
 deoglRenderTaskSharedInstance::~deoglRenderTaskSharedInstance(){
@@ -68,43 +68,43 @@ deoglRenderTaskSharedInstance::~deoglRenderTaskSharedInstance(){
 // Management
 ///////////////
 
-void deoglRenderTaskSharedInstance::SetParameterBlock( deoglShaderParameterBlock *block ){
+void deoglRenderTaskSharedInstance::SetParameterBlock(deoglShaderParameterBlock *block){
 	pParamBlock = block;
 }
 
-void deoglRenderTaskSharedInstance::SetParameterBlockSpecial( deoglShaderParameterBlock *block ){
+void deoglRenderTaskSharedInstance::SetParameterBlockSpecial(deoglShaderParameterBlock *block){
 	pParamBlockSpecial = block;
 }
 
-void deoglRenderTaskSharedInstance::SetFirstPoint( int firstPoint ){
+void deoglRenderTaskSharedInstance::SetFirstPoint(int firstPoint){
 	pFirstPoint = firstPoint;
 }
 
-void deoglRenderTaskSharedInstance::SetPointCount( int pointCount ){
+void deoglRenderTaskSharedInstance::SetPointCount(int pointCount){
 	pPointCount = pointCount;
 }
 
-void deoglRenderTaskSharedInstance::SetFirstIndex( int firstIndex ){
+void deoglRenderTaskSharedInstance::SetFirstIndex(int firstIndex){
 	pFirstIndex = firstIndex;
 }
 
-void deoglRenderTaskSharedInstance::SetIndexCount( int indexCount ){
+void deoglRenderTaskSharedInstance::SetIndexCount(int indexCount){
 	pIndexCount = indexCount;
 }
 
-void deoglRenderTaskSharedInstance::SetSubInstanceCount( int subInstanceCount ){
+void deoglRenderTaskSharedInstance::SetSubInstanceCount(int subInstanceCount){
 	pSubInstanceCount = subInstanceCount;
 }
 
-void deoglRenderTaskSharedInstance::SetSubInstanceSPB( deoglSharedSPB *spb ){
+void deoglRenderTaskSharedInstance::SetSubInstanceSPB(deoglSharedSPB *spb){
 	pSubInstanceSPB = spb;
 }
 
-void deoglRenderTaskSharedInstance::SetPrimitiveType( GLenum primitiveType ){
+void deoglRenderTaskSharedInstance::SetPrimitiveType(GLenum primitiveType){
 	pPrimitiveType = primitiveType;
 }
 
-void deoglRenderTaskSharedInstance::SetTessPatchVertexCount( int count ){
+void deoglRenderTaskSharedInstance::SetTessPatchVertexCount(int count){
 	pTessPatchVertexCount = count;
 }
 
@@ -125,5 +125,5 @@ void deoglRenderTaskSharedInstance::Clear(){
 }
 
 void deoglRenderTaskSharedInstance::ReturnToPool(){
-	pPool.ReturnInstance( this );
+	pPool.ReturnInstance(this);
 }

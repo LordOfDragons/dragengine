@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerSetMaximumValue::aeUControllerSetMaximumValue( aeController *controller, float newValue ) :
-pController( controller ),
-pNewValue( newValue )
+aeUControllerSetMaximumValue::aeUControllerSetMaximumValue(aeController *controller, float newValue) :
+pController(controller),
+pNewValue(newValue)
 {
-	if( ! controller || ! controller->GetAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(!controller || !controller->GetAnimator()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = controller->GetMaximumValue();
-	SetShortInfo( "Set controller maximum value" );
+	SetShortInfo("Set controller maximum value");
 }
 
 aeUControllerSetMaximumValue::~aeUControllerSetMaximumValue(){
@@ -61,9 +61,9 @@ aeUControllerSetMaximumValue::~aeUControllerSetMaximumValue(){
 ///////////////
 
 void aeUControllerSetMaximumValue::Undo(){
-	( ( aeController& )( deObject& )pController ).SetMaximumValue( pOldValue );
+	((aeController&)(deObject&)pController).SetMaximumValue(pOldValue);
 }
 
 void aeUControllerSetMaximumValue::Redo(){
-	( ( aeController& )( deObject& )pController ).SetMaximumValue( pNewValue );
+	((aeController&)(deObject&)pController).SetMaximumValue(pNewValue);
 }

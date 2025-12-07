@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitPasteCondition::ceUCAWaitPasteCondition( ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition ) :
-ceUCAWaitSetCondition( topic, wait, newCondition ){
-	SetShortInfo( "Action Wait Paste Condition" );
+ceUCAWaitPasteCondition::ceUCAWaitPasteCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition) :
+ceUCAWaitSetCondition(topic, wait, newCondition){
+	SetShortInfo("Action Wait Paste Condition");
 }

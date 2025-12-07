@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeSwitcher::igdeSwitcher( igdeEnvironment &environment ) :
-igdeContainer( environment ),
-pCurrent( -1 ){
+igdeSwitcher::igdeSwitcher(igdeEnvironment &environment) :
+igdeContainer(environment),
+pCurrent(-1){
 }
 
 igdeSwitcher::~igdeSwitcher(){
@@ -53,19 +53,19 @@ igdeSwitcher::~igdeSwitcher(){
 // Management
 ///////////////
 
-void igdeSwitcher::SetCurrent( int index ){
-	if( index == pCurrent ){
+void igdeSwitcher::SetCurrent(int index){
+	if(index == pCurrent){
 		return;
 	}
 	
-	if( GetChildCount() > 0 ){
-		if( index < 0 || index >= GetChildCount() ){
-			DETHROW( deeInvalidParam );
+	if(GetChildCount() > 0){
+		if(index < 0 || index >= GetChildCount()){
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		if( index != -1 ){
-			DETHROW( deeInvalidParam );
+		if(index != -1){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
@@ -76,25 +76,25 @@ void igdeSwitcher::SetCurrent( int index ){
 
 
 
-void igdeSwitcher::AddChild( igdeWidget *child ){
-	igdeContainer::AddChild( child );
+void igdeSwitcher::AddChild(igdeWidget *child){
+	igdeContainer::AddChild(child);
 	pCurrent = 0;
 }
 
-void igdeSwitcher::RemoveChild( igdeWidget *child ){
-	const int index = IndexOfChild( child );
-	igdeContainer::RemoveChild( child );
+void igdeSwitcher::RemoveChild(igdeWidget *child){
+	const int index = IndexOfChild(child);
+	igdeContainer::RemoveChild(child);
 	
 	int current = pCurrent;
 	
-	if( index < current ){
+	if(index < current){
 		current--;
 		
-	}else if( current >= GetChildCount() ){
+	}else if(current >= GetChildCount()){
 		current = GetChildCount() - 1;
 	}
 	
-	SetCurrent( current );
+	SetCurrent(current);
 }
 
 void igdeSwitcher::RemoveAllChildren(){
@@ -105,12 +105,12 @@ void igdeSwitcher::RemoveAllChildren(){
 
 
 void igdeSwitcher::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeSwitcher * const native = igdeNativeSwitcher::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeSwitcher * const native = igdeNativeSwitcher::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -119,11 +119,11 @@ void igdeSwitcher::CreateNativeWidget(){
 }
 
 void igdeSwitcher::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeSwitcher* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeSwitcher*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -133,7 +133,7 @@ void igdeSwitcher::DestroyNativeWidget(){
 ////////////////////////
 
 void igdeSwitcher::OnCurrentChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeSwitcher* )GetNativeWidget() )->UpdateCurrent();
+	if(GetNativeWidget()){
+		((igdeNativeSwitcher*)GetNativeWidget())->UpdateCurrent();
 	}
 }

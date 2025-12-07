@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new class. */
-	deClassRig( deScriptingDragonScript *ds );
+	deClassRig(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
 	virtual ~deClassRig();
 	/*@}*/
@@ -54,12 +54,12 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Retrieves the rig from an object. Returns NULL if myself is NULL. */
-	deRig *GetRig( dsRealObject *myself ) const;
+	deRig *GetRig(dsRealObject *myself) const;
 	/** \brief Pushes a rig. Null is pushed as NULL rig object. */
-	void PushRig( dsRunTime *rt, deRig *rig );
+	void PushRig(dsRunTime *rt, deRig *rig);
 	/*@}*/
 
 private:
@@ -68,50 +68,50 @@ private:
 		dsClass *clsRN, *clsVec, *clsQuat, *clsCCon, *clsShapeList, *clsMat;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfLoadAsynchron );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfLoadAsynchron);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
+	DEF_NATFUNC(nfGetFilename);
 	
-	DEF_NATFUNC( nfGetBoneCount );
-	DEF_NATFUNC( nfIndexOfBoneNamed );
-	DEF_NATFUNC( nfBoneGetName );
-	DEF_NATFUNC( nfBoneGetPosition );
-	DEF_NATFUNC( nfBoneGetOrientation );
-	DEF_NATFUNC( nfBoneGetRotation );
-	DEF_NATFUNC( nfBoneGetMatrix );
-	DEF_NATFUNC( nfBoneGetInverseMatrix );
-	DEF_NATFUNC( nfBoneGetCentralMassPoint );
-	DEF_NATFUNC( nfBoneGetMass );
-	DEF_NATFUNC( nfBoneGetDynamic );
-	DEF_NATFUNC( nfBoneGetIKLimitsLower );
-	DEF_NATFUNC( nfBoneGetIKLimitsUpper );
-	DEF_NATFUNC( nfBoneGetIKResistance );
-	DEF_NATFUNC( nfBoneGetIKLocked );
-	DEF_NATFUNC( nfBoneGetConstraintCount );
-	DEF_NATFUNC( nfBoneGetConstraintAt );
-	DEF_NATFUNC( nfBoneConstraintGetReferencePosition );
-	DEF_NATFUNC( nfBoneConstraintGetReferenceOrientation );
-	DEF_NATFUNC( nfBoneConstraintGetBoneOffset );
-	DEF_NATFUNC( nfBoneGetShapes );
-	DEF_NATFUNC( nfBoneShapeGetProperty );
-	DEF_NATFUNC( nfBoneGetParent );
+	DEF_NATFUNC(nfGetBoneCount);
+	DEF_NATFUNC(nfIndexOfBoneNamed);
+	DEF_NATFUNC(nfBoneGetName);
+	DEF_NATFUNC(nfBoneGetPosition);
+	DEF_NATFUNC(nfBoneGetOrientation);
+	DEF_NATFUNC(nfBoneGetRotation);
+	DEF_NATFUNC(nfBoneGetMatrix);
+	DEF_NATFUNC(nfBoneGetInverseMatrix);
+	DEF_NATFUNC(nfBoneGetCentralMassPoint);
+	DEF_NATFUNC(nfBoneGetMass);
+	DEF_NATFUNC(nfBoneGetDynamic);
+	DEF_NATFUNC(nfBoneGetIKLimitsLower);
+	DEF_NATFUNC(nfBoneGetIKLimitsUpper);
+	DEF_NATFUNC(nfBoneGetIKResistance);
+	DEF_NATFUNC(nfBoneGetIKLocked);
+	DEF_NATFUNC(nfBoneGetConstraintCount);
+	DEF_NATFUNC(nfBoneGetConstraintAt);
+	DEF_NATFUNC(nfBoneConstraintGetReferencePosition);
+	DEF_NATFUNC(nfBoneConstraintGetReferenceOrientation);
+	DEF_NATFUNC(nfBoneConstraintGetBoneOffset);
+	DEF_NATFUNC(nfBoneGetShapes);
+	DEF_NATFUNC(nfBoneShapeGetProperty);
+	DEF_NATFUNC(nfBoneGetParent);
 	
-	DEF_NATFUNC( nfGetShapes );
-	DEF_NATFUNC( nfShapeGetProperty );
-	DEF_NATFUNC( nfGetCentralMassPoint );
-	DEF_NATFUNC( nfGetRootBone );
+	DEF_NATFUNC(nfGetShapes);
+	DEF_NATFUNC(nfShapeGetProperty);
+	DEF_NATFUNC(nfGetCentralMassPoint);
+	DEF_NATFUNC(nfGetRootBone);
 	
-	DEF_NATFUNC( nfSave );
+	DEF_NATFUNC(nfSave);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

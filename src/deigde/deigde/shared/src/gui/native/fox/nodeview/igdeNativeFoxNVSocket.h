@@ -35,7 +35,7 @@ class igdeGuiTheme;
  * \brief FOX toolkit Native NodeView Socket.
  */
 class igdeNativeFoxNVSocket : public FXFrame{
-	FXDECLARE( igdeNativeFoxNVSocket )
+	FXDECLARE(igdeNativeFoxNVSocket)
 protected:
 	   igdeNativeFoxNVSocket();
 	
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxNVSocket( FXComposite *parent, FXObject *target, int selector,
-		int flags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxNVSocket(FXComposite *parent, FXObject *target, int selector,
+		int flags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxNVSocket();
@@ -73,25 +73,25 @@ public:
 	inline bool GetChecked() const{ return pChecked; }
 	
 	/** \brief Set checked. */
-	void SetChecked( bool checked );
+	void SetChecked(bool checked);
 	
 	/** \brief Frame color. */
 	inline FXColor GetColorFrame() const{ return pColorFrame; }
 	
 	/** \brief Set frame color. */
-	void SetColorFrame( FXColor color );
+	void SetColorFrame(FXColor color);
 	
 	/** \brief Checked fill color. */
 	inline FXColor GetColorFillChecked() const{ return pColorFillChecked; }
 	
 	/** \brief Set checked fill color. */
-	void SetColorFillChecked( FXColor color );
+	void SetColorFillChecked(FXColor color);
 	
 	/** \brief Unchecked fill color. */
 	inline FXColor GetColorFillUnchecked() const{ return pColorFillUnchecked; }
 	
 	/** \brief Set unchecked fill color. */
-	void SetColorFillUnchecked( FXColor color );
+	void SetColorFillUnchecked(FXColor color);
 	
 	
 	
@@ -105,15 +105,15 @@ public:
 	decPoint GetBorderRight() const;
 	
 	/** \brief Is point inside socket. */
-	bool IsInsideSocket( const decPoint &point ) const;
+	bool IsInsideSocket(const decPoint &point) const;
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onPaint( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onPaint(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 	

@@ -58,19 +58,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create collider owner for object. */
-	meColliderOwner( meObject *object );
+	meColliderOwner(meObject *object);
 	
 	/** \brief Create collider owner for object shape. */
-	meColliderOwner( meObjectShape *shape );
+	meColliderOwner(meObjectShape *shape);
 	
 	/** \brief Create collider owner for object snap point. */
-	meColliderOwner( meObjectSnapPoint *snapPoint );
+	meColliderOwner(meObjectSnapPoint *snapPoint);
 	
 	/** \brief Create collider owner for decal. */
-	meColliderOwner( meDecal *decal );
+	meColliderOwner(meDecal *decal);
 	
 	/** \brief Create collider owner for navigation space. */
-	meColliderOwner( meNavigationSpace *navspace );
+	meColliderOwner(meNavigationSpace *navspace);
 	/*@}*/
 	
 	
@@ -96,7 +96,7 @@ public:
 	
 	/** \brief Get collider owner for collider or \em NULL if not set. */
 	static const meColliderOwner *GetColliderOwner(
-		igdeEnvironment &environment, deCollider *collider );
+		igdeEnvironment &environment, deCollider *collider);
 	/*@}*/
 };
 

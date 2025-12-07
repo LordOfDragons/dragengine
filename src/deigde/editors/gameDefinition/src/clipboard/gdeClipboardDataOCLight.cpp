@@ -38,12 +38,12 @@ const char * const gdeClipboardDataOCLight::TYPE_NAME = "OCLight";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCLight::gdeClipboardDataOCLight( gdeOCLight *light ) :
-igdeClipboardData( TYPE_NAME ),
-pLight( NULL )
+gdeClipboardDataOCLight::gdeClipboardDataOCLight(gdeOCLight *light) :
+igdeClipboardData(TYPE_NAME),
+pLight(NULL)
 {
-	if( ! light ){
-		DETHROW( deeInvalidParam );
+	if(!light){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLight = light;
@@ -51,7 +51,7 @@ pLight( NULL )
 }
 
 gdeClipboardDataOCLight::~gdeClipboardDataOCLight(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
 }

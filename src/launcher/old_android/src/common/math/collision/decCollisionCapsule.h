@@ -75,7 +75,7 @@ public:
 	 * @param topRadius Radius of the top cap. Has to be greater than 0.
 	 * @param bottomRadius Radius of the bottom cap. Has to be greater than 0.
 	 */
-	decCollisionCapsule( const decVector &position, float halfHeight, float topRadius, float bottomRadius );
+	decCollisionCapsule(const decVector &position, float halfHeight, float topRadius, float bottomRadius);
 	/**
 	 * Creates a new oriented capsule.
 	 * @param position Center of the capsule.
@@ -84,46 +84,46 @@ public:
 	 * @param bottomRadius Radius of the bottom cap. Has to be greater than 0.
 	 * @param orientation Orientation of the capsule as normalized quaternion.
 	 */
-	decCollisionCapsule( const decVector &position, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation );
+	decCollisionCapsule(const decVector &position, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation);
 	/** Cleans up the collision Capsule. */
 	virtual ~decCollisionCapsule();
 	/*@}*/
 	
 	/** @name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume( decCollisionVolume *volume );
-	virtual float VolumeMoveHitsVolume( decCollisionVolume *volume, const decVector &displacement, decVector *normal );
+	virtual bool VolumeHitsVolume(decCollisionVolume *volume);
+	virtual float VolumeMoveHitsVolume(decCollisionVolume *volume, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume( decCollisionSphere *sphere );
-	virtual bool CylinderHitsVolume( decCollisionCylinder *cylinder );
-	virtual bool CapsuleHitsVolume( decCollisionCapsule *capsule );
-	virtual bool BoxHitsVolume( decCollisionBox *box );
-	virtual bool TriangleHitsVolume( decCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( decCollisionFrustum *frustum );
-	virtual float SphereMoveHitsVolume( decCollisionSphere *sphere, const decVector &displacement, decVector *normal );
-	virtual float CylinderMoveHitsVolume( decCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
-	virtual float CapsuleMoveHitsVolume( decCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
-	virtual float BoxMoveHitsVolume( decCollisionBox *box, const decVector &displacement, decVector *normal );
-	virtual float TriangleMoveHitsVolume( decCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
-	virtual float FrustumMoveHitsVolume( decCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
-	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
+	virtual bool SphereHitsVolume(decCollisionSphere *sphere);
+	virtual bool CylinderHitsVolume(decCollisionCylinder *cylinder);
+	virtual bool CapsuleHitsVolume(decCollisionCapsule *capsule);
+	virtual bool BoxHitsVolume(decCollisionBox *box);
+	virtual bool TriangleHitsVolume(decCollisionTriangle *triangle);
+	virtual bool FrustumHitsVolume(decCollisionFrustum *frustum);
+	virtual float SphereMoveHitsVolume(decCollisionSphere *sphere, const decVector &displacement, decVector *normal);
+	virtual float CylinderMoveHitsVolume(decCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
+	virtual float CapsuleMoveHitsVolume(decCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
+	virtual float BoxMoveHitsVolume(decCollisionBox *box, const decVector &displacement, decVector *normal);
+	virtual float TriangleMoveHitsVolume(decCollisionTriangle *triangle, const decVector &displacement, decVector *normal);
+	virtual float FrustumMoveHitsVolume(decCollisionFrustum *frustum, const decVector &displacement, decVector *normal);
+	virtual float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( decCollisionSphere *sphere );
-	virtual void GetEnclosingBox( decCollisionBox *box );
+	virtual void GetEnclosingSphere(decCollisionSphere *sphere);
+	virtual void GetEnclosingBox(decCollisionBox *box);
 	/*@}*/
 	
 	/** @name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decVector &point );
+	virtual bool IsPointInside(const decVector &point);
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo( const decVector &point );
+	virtual decVector ClosestPointTo(const decVector &point);
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -133,7 +133,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decVector NormalAtPoint( const decVector &point );
+	virtual decVector NormalAtPoint(const decVector &point);
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -142,41 +142,41 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
+	virtual bool RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance);
 	/*@}*/
 	
 	/** @name Visiting */
 	/*{*/
-	virtual void Visit( decCollisionVolumeVisitor *visitor );
+	virtual void Visit(decCollisionVolumeVisitor *visitor);
 	/*}*/
 	
 	/** @name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this capsule. */
-	bool SphereHitsCapsule( decCollisionSphere *sphere );
+	bool SphereHitsCapsule(decCollisionSphere *sphere);
 	/**
 	 * Determines if the given cylinder hits this capsule.
 	 * @warning Not implemented yet and always returns false.
 	 */
-	bool CylinderHitsCapsule( decCollisionCylinder *cylinder );
+	bool CylinderHitsCapsule(decCollisionCylinder *cylinder);
 	/** Determines if the given capsule hits this capsule. */
-	bool CapsuleHitsCapsule( decCollisionCapsule *capsule );
+	bool CapsuleHitsCapsule(decCollisionCapsule *capsule);
 	
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this capsule.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float SphereMoveHitsCapsule( decCollisionSphere *sphere, const decVector &displacement, decVector *normal );
+	float SphereMoveHitsCapsule(decCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given cylinder to move until colliding with this capsule.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CylinderMoveHitsCapsule( decCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
+	float CylinderMoveHitsCapsule(decCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given capsule to move until colliding with this capsule.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CapsuleMoveHitsCapsule( decCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
+	float CapsuleMoveHitsCapsule(decCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Management */
@@ -189,14 +189,14 @@ public:
 	 * Sets the position.
 	 * @param position Center of capsule.
 	 */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** Retrieves the orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	/**
 	 * Sets the orientation.
 	 * @param orientation Normalized rotation quaternion.
 	 */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	/** Clears the orientation of the capsule setting it to the identity quaternion. */
 	void ClearOrientation();
 	/** Retrieves the half height. */
@@ -205,26 +205,26 @@ public:
 	 * Sets the half height.
 	 * @param halfHeight Half the height of the capsule. Has to be greater than 0.
 	 */
-	void SetHalfHeight( float halfHeight );
+	void SetHalfHeight(float halfHeight);
 	/** Retrieves the top radius. */
 	inline float GetTopRadius() const{ return pTopRadius; }
 	/**
 	 * Sets the top radius.
 	 * @param radius Radius of the top capsule cap. Has to be greater than 0.
 	 */
-	void SetTopRadius( float radius );
+	void SetTopRadius(float radius);
 	/** Retrieves the bottom radius. */
 	inline float GetBottomRadius() const{ return pBottomRadius; }
 	/**
 	 * Sets the bottom radius.
 	 * @param radius Radius of the bottom capsule cap. Has to be greater than 0.
 	 */
-	void SetBottomRadius( float radius );
+	void SetBottomRadius(float radius);
 	/**
 	 * Sets both radi to the same value.
 	 * @param radius Radius of both the top and bottom cap. Has to be greater than 0.
 	 */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/**
 	 * Determines if this capsule is oriented.
@@ -235,7 +235,7 @@ public:
 	 * Determines if this capsule is axis aligned.
 	 * @return True if the capsule has an orientation equal to the identity quaternion.
 	 */
-	inline bool GetAxisAligned() const{ return ! pOriented; }
+	inline bool GetAxisAligned() const{ return !pOriented; }
 	/**
 	 * Determines if this capsule is tapered.
 	 * @return True if the top and bottom radius are not identical.
@@ -259,13 +259,13 @@ public:
 	inline const decVector &GetAxisZ() const{ return pAxisZ; }
 	
 	/** Transforms a point from world coordinates into local coordinates. */
-	decVector WorldToLocal( const decVector &point ) const;
+	decVector WorldToLocal(const decVector &point) const;
 	/** Transforms a point from local coordinates into world coordinates. */
-	decVector LocalToWorld( const decVector &point ) const;
+	decVector LocalToWorld(const decVector &point) const;
 	/** Transforms a normal from world coordinates into local coordinates. */
-	decVector NormalWorldToLocal( const decVector &normal ) const;
+	decVector NormalWorldToLocal(const decVector &normal) const;
 	/** Transforms a normal from local coordinates into world coordinates. */
-	decVector NormalLocalToWorld( const decVector &normal ) const;
+	decVector NormalLocalToWorld(const decVector &normal) const;
 	/*@}*/
 	
 private:

@@ -41,27 +41,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddConstraint::reUAddConstraint( reRig *rig, reRigBone *bone, reRigConstraint *constraint ){
-	if( ! constraint || ( ! rig && ! bone ) ) DETHROW( deeInvalidParam );
+reUAddConstraint::reUAddConstraint(reRig *rig, reRigBone *bone, reRigConstraint *constraint){
+	if(!constraint || (!rig && !bone)) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
-	if( rig ) rig->AddReference();
+	if(rig) rig->AddReference();
 	
 	pBone = bone;
-	if( bone ) bone->AddReference();
+	if(bone) bone->AddReference();
 	
 	pConstraint = constraint;
 	constraint->AddReference();
 	
 	try{
-		if( bone ){
-			SetShortInfo( "Add Bone Constraint" );
+		if(bone){
+			SetShortInfo("Add Bone Constraint");
 			
 		}else{
-			SetShortInfo( "Add Rig Constraint" );
+			SetShortInfo("Add Rig Constraint");
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -81,15 +81,15 @@ void reUAddConstraint::Undo(){
 	
 	reSelectionConstraints *selection = rig->GetSelectionConstraints();
 	
-	if( pConstraint->GetSelected() ){
-		selection->RemoveConstraint( pConstraint );
+	if(pConstraint->GetSelected()){
+		selection->RemoveConstraint(pConstraint);
 	}
 	
-	if( pBone ){
-		pBone->RemoveConstraint( pConstraint );
+	if(pBone){
+		pBone->RemoveConstraint(pConstraint);
 		
 	}else{
-		rig->RemoveConstraint( pConstraint );
+		rig->RemoveConstraint(pConstraint);
 	}
 }
 
@@ -98,15 +98,15 @@ void reUAddConstraint::Redo(){
 	
 	reSelectionConstraints *selection = rig->GetSelectionConstraints();
 	
-	if( pBone ){
-		pBone->AddConstraint( pConstraint );
+	if(pBone){
+		pBone->AddConstraint(pConstraint);
 		
 	}else{
-		rig->AddConstraint( pConstraint );
+		rig->AddConstraint(pConstraint);
 	}
 	
 	selection->RemoveAllConstraints();
-	selection->AddConstraint( pConstraint );
+	selection->AddConstraint(pConstraint);
 }
 
 
@@ -115,16 +115,16 @@ void reUAddConstraint::Redo(){
 //////////////////////
 
 void reUAddConstraint::pCleanUp(){
-	if( pConstraint ) pConstraint->FreeReference();
-	if( pBone ) pBone->FreeReference();
-	if( pRig ) pRig->FreeReference();
+	if(pConstraint) pConstraint->FreeReference();
+	if(pBone) pBone->FreeReference();
+	if(pRig) pRig->FreeReference();
 }
 
 reRig *reUAddConstraint::pGetRig(){
-	if( pRig ) return pRig;
+	if(pRig) return pRig;
 	
 	reRig *rig = pBone->GetRig();
-	if( ! rig ) DETHROW( deeInvalidParam );
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	return rig;
 }

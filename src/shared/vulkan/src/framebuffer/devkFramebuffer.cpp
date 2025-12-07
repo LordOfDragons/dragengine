@@ -38,13 +38,13 @@
 // class devkFramebuffer
 //////////////////////////
 
-devkFramebuffer::devkFramebuffer( devkRenderPass *renderPass, const devkFramebufferConfiguration &configuration ) :
-pRenderPass( renderPass ),
-pConfiguration( configuration ),
-pFramebuffer( VK_NULL_HANDLE )
+devkFramebuffer::devkFramebuffer(devkRenderPass *renderPass, const devkFramebufferConfiguration &configuration) :
+pRenderPass(renderPass),
+pConfiguration(configuration),
+pFramebuffer(VK_NULL_HANDLE)
 {
-	if( ! renderPass ){
-		DETHROW_INFO( deeNullPointer, "renderPass" );
+	if(!renderPass){
+		DETHROW_INFO(deeNullPointer, "renderPass");
 	}
 	
 	const int attachmentCount = configuration.GetAttachmentCount();
@@ -54,33 +54,33 @@ pFramebuffer( VK_NULL_HANDLE )
 	
 	try{
 		devkDevice &device = renderPass->GetDevice();
-		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
+		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan();)
 		
 		VkFramebufferCreateInfo framebufferInfo{VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO};
 		framebufferInfo.renderPass = renderPass->GetRenderPass();
-		framebufferInfo.width = ( uint32_t )configuration.GetSize().x;
-		framebufferInfo.height = ( uint32_t )configuration.GetSize().y;
-		framebufferInfo.layers = ( uint32_t )configuration.GetLayerCount();
+		framebufferInfo.width = (uint32_t)configuration.GetSize().x;
+		framebufferInfo.height = (uint32_t)configuration.GetSize().y;
+		framebufferInfo.layers = (uint32_t)configuration.GetLayerCount();
 		
-		if( attachmentCount > 0 ){
-			attachments  = new VkImageView[ attachmentCount ];
-			for( i=0; i<attachmentCount; i++ ){
-				attachments[ i ] = configuration.GetAttachmentAt( i )->GetImageView();
+		if(attachmentCount > 0){
+			attachments  = new VkImageView[attachmentCount];
+			for(i=0; i<attachmentCount; i++){
+				attachments[i] = configuration.GetAttachmentAt(i)->GetImageView();
 			}
 			
 			framebufferInfo.attachmentCount = attachmentCount;
 			framebufferInfo.pAttachments = attachments;
 		}
 		
-		VK_CHECK( vulkan, device.vkCreateFramebuffer( device.GetDevice(),
-			&framebufferInfo, VK_NULL_HANDLE, &pFramebuffer ) );
+		VK_CHECK(vulkan, device.vkCreateFramebuffer(device.GetDevice(),
+			&framebufferInfo, VK_NULL_HANDLE, &pFramebuffer));
 		
-		if( attachments ){
+		if(attachments){
 			delete [] attachments;
 		}
 		
-	}catch( const deException & ){
-		if( attachments ){
+	}catch(const deException &){
+		if(attachments){
 			delete [] attachments;
 		}
 		pCleanUp();
@@ -103,8 +103,8 @@ devkFramebuffer::~devkFramebuffer(){
 //////////////////////
 
 void devkFramebuffer::pCleanUp(){
-	if( pFramebuffer ){
+	if(pFramebuffer){
 		pRenderPass->GetDevice().vkDestroyFramebuffer(
-			pRenderPass->GetDevice().GetDevice(), pFramebuffer, VK_NULL_HANDLE );
+			pRenderPass->GetDevice().GetDevice(), pFramebuffer, VK_NULL_HANDLE);
 	}
 }

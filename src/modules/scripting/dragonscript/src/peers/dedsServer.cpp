@@ -43,19 +43,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsServer::dedsServer( deScriptingDragonScript *ds, deServer *server ){
-	if( ! ds || ! server ){
-		DSTHROW( dueInvalidParam );
+dedsServer::dedsServer(deScriptingDragonScript *ds, deServer *server){
+	if(!ds || !server){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	pDS = ds;
 	pServer = server;
 	pHasCB = false;
-	pValCB = ds->GetScriptEngine()->GetMainRunTime()->CreateValue( pDS->GetClassServerListener() );
+	pValCB = ds->GetScriptEngine()->GetMainRunTime()->CreateValue(pDS->GetClassServerListener());
 }
 
 dedsServer::~dedsServer(){
-	if( ! pValCB ){
+	if(!pValCB){
 		return;
 	}
 	
@@ -63,11 +63,11 @@ dedsServer::~dedsServer(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
-	if( pServer && pServer->GetRefCount() > 0 ){
-		pDS->AddValueDeleteLater( pValCB );
+	if(pServer && pServer->GetRefCount() > 0){
+		pDS->AddValueDeleteLater(pValCB);
 		
 	}else{
-		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
 	pValCB = nullptr;
@@ -83,19 +83,19 @@ dsRealObject *dedsServer::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsServer::SetCallback( dsRealObject *object ){
-	if( ! pValCB ){
+void dedsServer::SetCallback(dsRealObject *object){
+	if(!pValCB){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS->GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValCB, object );
+	if(object){
+		rt.SetObject(pValCB, object);
 		pHasCB = true;
 		
 	}else{
-		rt.SetNull( pValCB, pDS->GetClassServerListener() );
+		rt.SetNull(pValCB, pDS->GetClassServerListener());
 		pHasCB = false;
 	}
 }
@@ -105,8 +105,8 @@ void dedsServer::SetCallback( dsRealObject *object ){
 // Notifications
 //////////////////
 
-void dedsServer::ClientConnected( deConnection *connection ){
-	if( ! pHasCB ){
+void dedsServer::ClientConnected(deConnection *connection){
+	if(!pHasCB){
 		connection->Disconnect();
 		return;
 	}
@@ -115,10 +115,10 @@ void dedsServer::ClientConnected( deConnection *connection ){
 	deClassConnection &clsCon = *pDS->GetClassConnection();
 	
 	try{
-		clsCon.PushConnection( rt, connection );
-		rt->RunFunction( pValCB, "clientConnected", 1 );
+		clsCon.PushConnection(rt, connection);
+		rt->RunFunction(pValCB, "clientConnected", 1);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 		connection->Disconnect();

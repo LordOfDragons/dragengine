@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky resource. */
-	deSky( deSkyManager *manager );
+	deSky(deSkyManager *manager);
 	
 protected:
 	/**
@@ -97,7 +97,7 @@ public:
 	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** \brief Set background color. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	/*@}*/
 	
 	
@@ -112,17 +112,17 @@ public:
 	 * 
 	 * Sets all controllers to default vaules.
 	 */
-	void SetControllerCount( int count );
+	void SetControllerCount(int count);
 	
 	/**
 	 * \brief Controller at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
 	 * to GetControllerCount().
 	 */
-	deSkyController &GetControllerAt( int index ) const;
+	deSkyController &GetControllerAt(int index) const;
 	
 	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	
 	
@@ -134,14 +134,14 @@ public:
 	 * 
 	 * Sets all links to default vaules.
 	 */
-	void SetLinkCount( int count );
+	void SetLinkCount(int count);
 	
 	/**
 	 * \brief Link at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
 	 * to GetLinkCount().
 	 */
-	deSkyLink &GetLinkAt( int index ) const;
+	deSkyLink &GetLinkAt(int index) const;
 	
 	
 	
@@ -153,14 +153,14 @@ public:
 	 * 
 	 * Sets all links to default vaules.
 	 */
-	void SetLayerCount( int count );
+	void SetLayerCount(int count);
 	
 	/**
 	 * \brief Layer at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
 	 * to GetLayerCount().
 	 */
-	deSkyLayer &GetLayerAt( int index ) const;
+	deSkyLayer &GetLayerAt(int index) const;
 	
 	
 	
@@ -181,7 +181,7 @@ public:
 	inline deBaseGraphicSky *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicSky *peer );
+	void SetPeerGraphic(deBaseGraphicSky *peer);
 	/*@}*/
 };
 

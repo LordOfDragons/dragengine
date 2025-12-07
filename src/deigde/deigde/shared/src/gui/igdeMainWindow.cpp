@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMainWindow::igdeMainWindow( igdeEnvironment &environment, const char *title ) :
-igdeWindow( environment, title, NULL, true ),
-pEngineController( NULL ),
-pWindowState( ewsNormal ),
+igdeMainWindow::igdeMainWindow(igdeEnvironment &environment, const char *title) :
+igdeWindow(environment, title, NULL, true),
+pEngineController(NULL),
+pWindowState(ewsNormal),
 pNormalPosition(GetPosition()),
 pNormalSize(GetSize()),
 pNormalPositionSet(false),
@@ -58,7 +58,7 @@ pNormalSizeSet(false){
 igdeMainWindow::~igdeMainWindow(){
 	igdeMainWindow::DestroyNativeWidget();
 	
-	if( pEngineController ){
+	if(pEngineController){
 		delete pEngineController;
 	}
 }
@@ -68,8 +68,8 @@ igdeMainWindow::~igdeMainWindow(){
 // Management
 ///////////////
 
-void igdeMainWindow::SetWindowState( eWindowStates windowState ){
-	if( windowState == pWindowState ){
+void igdeMainWindow::SetWindowState(eWindowStates windowState){
+	if(windowState == pWindowState){
 		return;
 	}
 	
@@ -90,7 +90,7 @@ void igdeMainWindow::SetNormalSize(const decPoint &size){
 }
 
 void igdeMainWindow::StartEngine(){
-	if( pEngineController->GetRunning() ){
+	if(pEngineController->GetRunning()){
 		return;
 	}
 	
@@ -104,7 +104,7 @@ void igdeMainWindow::StartEngine(){
 }
 
 void igdeMainWindow::StopEngine(){
-	if( ! pEngineController || ! pEngineController->GetRunning() ){
+	if(!pEngineController || !pEngineController->GetRunning()){
 		return;
 	}
 	
@@ -143,7 +143,7 @@ void igdeMainWindow::Close(){
 ////////////////////////
 
 void igdeMainWindow::CreateEngineController(){
-	pEngineController = new igdeEngineController( *this );
+	pEngineController = new igdeEngineController(*this);
 	AddNullModules();
 	ActivateNullModules();
 }
@@ -160,26 +160,26 @@ void igdeMainWindow::AddNullModules(){
 }
 
 void igdeMainWindow::ActivateNullModules(){
-	pEngineController->ActivateModule( igdeEngineController::esInput, "NullInput" );
-	pEngineController->ActivateModule( igdeEngineController::esScripting, "NullScript" );
-	pEngineController->ActivateModule( igdeEngineController::esCrashRecovery, "NullCrashRecovery" );
+	pEngineController->ActivateModule(igdeEngineController::esInput, "NullInput");
+	pEngineController->ActivateModule(igdeEngineController::esScripting, "NullScript");
+	pEngineController->ActivateModule(igdeEngineController::esCrashRecovery, "NullCrashRecovery");
 }
 
 
 
 void igdeMainWindow::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMainWindow * const native = igdeNativeMainWindow::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeMainWindow * const native = igdeNativeMainWindow::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	CreateChildWidgetNativeWidgets();
 	native->PostCreateNativeWidget();
 }
 
 void igdeMainWindow::DropNativeWidget(){
-	if( pEngineController ){
+	if(pEngineController){
 		pEngineController->UnparentMainRenderWindow();
 	}
 	
@@ -187,11 +187,11 @@ void igdeMainWindow::DropNativeWidget(){
 }
 
 void igdeMainWindow::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMainWindow &native = *( ( igdeNativeMainWindow* )GetNativeWidget() );
+	igdeNativeMainWindow &native = *((igdeNativeMainWindow*)GetNativeWidget());
 	DropNativeWidget();
 	native.DestroyNativeWidget();
 }
@@ -199,26 +199,26 @@ void igdeMainWindow::DestroyNativeWidget(){
 
 
 void igdeMainWindow::OnTitleChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateTitle();
+	if(GetNativeWidget()){
+		((igdeNativeMainWindow*)GetNativeWidget())->UpdateTitle();
 	}
 }
 
 void igdeMainWindow::OnIconChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateIcon();
+	if(GetNativeWidget()){
+		((igdeNativeMainWindow*)GetNativeWidget())->UpdateIcon();
 	}
 }
 
 void igdeMainWindow::OnSizeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateSize();
+	if(GetNativeWidget()){
+		((igdeNativeMainWindow*)GetNativeWidget())->UpdateSize();
 	}
 }
 
 void igdeMainWindow::OnPositionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdatePosition();
+	if(GetNativeWidget()){
+		((igdeNativeMainWindow*)GetNativeWidget())->UpdatePosition();
 	}
 }
 
@@ -227,13 +227,13 @@ void igdeMainWindow::OnVisibleChanged(){
 }
 
 void igdeMainWindow::OnEnabledChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateEnabled();
+	if(GetNativeWidget()){
+		((igdeNativeMainWindow*)GetNativeWidget())->UpdateEnabled();
 	}
 }
 
 void igdeMainWindow::OnWindowStateChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateWindowState();
+	if(GetNativeWidget()){
+		((igdeNativeMainWindow*)GetNativeWidget())->UpdateWindowState();
 	}
 }

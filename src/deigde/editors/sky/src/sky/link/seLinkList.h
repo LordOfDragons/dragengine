@@ -58,34 +58,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Link at index. */
-	seLink *GetAt( int index ) const;
+	seLink *GetAt(int index) const;
 	
 	/** \brief Index of link or -1 if absent. */
-	int IndexOf( seLink *link ) const;
+	int IndexOf(seLink *link) const;
 	
 	/** \brief Link is absent. */
-	bool Has( seLink *link ) const;
+	bool Has(seLink *link) const;
 	
 	/** \brief Add link. */
-	void Add( seLink *link );
+	void Add(seLink *link);
 	
 	/** \brief Insert link. */
-	void InsertAt( seLink *link, int index );
+	void InsertAt(seLink *link, int index);
 	
 	/** \brief Move link. */
-	void MoveTo( seLink *link, int index );
+	void MoveTo(seLink *link, int index);
 	
 	/** \brief Remove link. */
-	void Remove( seLink *link );
+	void Remove(seLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAll();
 	
 	/** \brief Set list from another list. */
-	seLinkList &operator=( const seLinkList &list );
+	seLinkList &operator=(const seLinkList &list);
 	
 	/** \brief Add list. */
-	seLinkList &operator+=( const seLinkList &list );
+	seLinkList &operator+=(const seLinkList &list);
 	/*@}*/
 };
 

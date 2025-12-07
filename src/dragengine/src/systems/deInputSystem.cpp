@@ -45,18 +45,18 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deInputSystem::deInputSystem( deEngine *engine ) :
-deBaseSystem( engine, "Input", deModuleSystem::emtInput ),
-pActiveModule( NULL ),
-pEventQueue( NULL ),
-pCaptureInputDevices( false ),
-pDropInputCount( 0 )
+deInputSystem::deInputSystem(deEngine *engine) :
+deBaseSystem(engine, "Input", deModuleSystem::emtInput),
+pActiveModule(NULL),
+pEventQueue(NULL),
+pCaptureInputDevices(false),
+pDropInputCount(0)
 {
-	pEventQueue = new deInputEventQueue( 100 );
+	pEventQueue = new deInputEventQueue(100);
 }
 
 deInputSystem::~deInputSystem(){
-	if( pEventQueue ){
+	if(pEventQueue){
 		delete pEventQueue;
 	}
 }
@@ -67,33 +67,33 @@ deInputSystem::~deInputSystem(){
 ///////////////
 
 void deInputSystem::ClearEventQueues(){
-	GetEngine()->GetOS()->ProcessEventLoop( false );
-	if( GetIsRunning() ){
+	GetEngine()->GetOS()->ProcessEventLoop(false);
+	if(GetIsRunning()){
 		pActiveModule->ClearEvents();
 	}
 	pEventQueue->RemoveAllEvents();
 }
 
 void deInputSystem::ScreenSizeChanged(){
-	if( GetIsRunning() ){
+	if(GetIsRunning()){
 		pActiveModule->ScreenSizeChanged();
 	}
 }
 
 void deInputSystem::AppActivationChanged(){
-	if( GetIsRunning() ){
+	if(GetIsRunning()){
 		pActiveModule->AppActivationChanged();
 	}
 }
 
-void deInputSystem::SetCaptureInputDevices( bool captureInputDevices ){
-	if( captureInputDevices == pCaptureInputDevices ){
+void deInputSystem::SetCaptureInputDevices(bool captureInputDevices){
+	if(captureInputDevices == pCaptureInputDevices){
 		return;
 	}
 	
 	pCaptureInputDevices = captureInputDevices;
 	
-	if( GetIsRunning() ){
+	if(GetIsRunning()){
 		pActiveModule->CaptureInputDevicesChanged();
 	}
 }
@@ -103,7 +103,7 @@ void deInputSystem::StartDropInput(){
 }
 
 void deInputSystem::StopDropInput(){
-	DEASSERT_TRUE( pDropInputCount > 0 )
+	DEASSERT_TRUE(pDropInputCount > 0)
 	pDropInputCount--;
 }
 
@@ -112,11 +112,11 @@ bool deInputSystem::GetDropModeEnabled() const{
 }
 
 bool deInputSystem::DropEvent(const deInputEvent& event) const{
-	if( pDropInputCount == 0 ){
+	if(pDropInputCount == 0){
 		return false;
 	}
 	
-	switch( event.GetType() ){
+	switch(event.GetType()){
 	case deInputEvent::eeKeyPress:
 	case deInputEvent::eeKeyRelease:
 	case deInputEvent::eeMousePress:
@@ -145,9 +145,9 @@ bool deInputSystem::DropEvent(const deInputEvent& event) const{
 
 
 
-void deInputSystem::SetActiveModule( deLoadableModule *module ){
-	deBaseSystem::SetActiveModule( module );
-	pActiveModule = ( deBaseInputModule* )module->GetModule();
+void deInputSystem::SetActiveModule(deLoadableModule *module){
+	deBaseSystem::SetActiveModule(module);
+	pActiveModule = (deBaseInputModule*)module->GetModule();
 }
 
 void deInputSystem::ClearPermanents(){
@@ -156,14 +156,14 @@ void deInputSystem::ClearPermanents(){
 }
 
 void deInputSystem::PostStart(){
-	if( ! pActiveModule->Init() ){
-		DETHROW( deeInvalidAction );
+	if(!pActiveModule->Init()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
 void deInputSystem::PreStop(){
 	// remove all parallel tasks if present
-	GetEngine()->GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
+	GetEngine()->GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);
 	
 	pActiveModule->CleanUp();
 }

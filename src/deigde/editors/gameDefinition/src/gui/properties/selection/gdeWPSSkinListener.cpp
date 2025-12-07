@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSSkinListener::gdeWPSSkinListener( gdeWPSSkin &panel ) :
-pPanel( panel ){
+gdeWPSSkinListener::gdeWPSSkinListener(gdeWPSSkin &panel) :
+pPanel(panel){
 }
 
 gdeWPSSkinListener::~gdeWPSSkinListener(){
@@ -52,18 +52,18 @@ gdeWPSSkinListener::~gdeWPSSkinListener(){
 // Management
 ///////////////
 
-void gdeWPSSkinListener::SkinCategoriesChanged( gdeGameDefinition* ){
+void gdeWPSSkinListener::SkinCategoriesChanged(gdeGameDefinition*){
 	pPanel.UpdateCategoryList();
 }
 
 
 
-void gdeWPSSkinListener::SkinChanged( gdeGameDefinition*, gdeSkin *skin ){
-	if( pPanel.GetSkin() == skin ){
+void gdeWPSSkinListener::SkinChanged(gdeGameDefinition*, gdeSkin *skin){
+	if(pPanel.GetSkin() == skin){
 		pPanel.UpdateSkin();
 	}
 }
 
-void gdeWPSSkinListener::ActiveSkinChanged( gdeGameDefinition* ){
+void gdeWPSSkinListener::ActiveSkinChanged(gdeGameDefinition*){
 	pPanel.UpdateSkin();
 }

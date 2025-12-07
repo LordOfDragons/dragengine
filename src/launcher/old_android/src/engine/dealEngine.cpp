@@ -70,13 +70,13 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dealEngine::dealEngine( dealLauncher &launcher ) :
-pLauncher( launcher ),
-pLogFile( "delauncherandroid-engine.log" ),
+dealEngine::dealEngine(dealLauncher &launcher) :
+pLauncher(launcher),
+pLogFile("delauncherandroid-engine.log"),
 
-pHandleLibDragengine( NULL ),
-pHandleLibEngine( NULL ),
-pEngine( NULL ){
+pHandleLibDragengine(NULL),
+pHandleLibEngine(NULL),
+pEngine(NULL){
 }
 
 dealEngine::~dealEngine(){
@@ -88,111 +88,111 @@ dealEngine::~dealEngine(){
 // Management
 ///////////////
 
-void dealEngine::SetPathConfig( const char *path ){
+void dealEngine::SetPathConfig(const char *path){
 	pPathConfig = path;
 }
 
-void dealEngine::SetPathShare( const char *path ){
+void dealEngine::SetPathShare(const char *path){
 	pPathShare = path;
 }
 
-void dealEngine::SetPathLib( const char *path ){
+void dealEngine::SetPathLib(const char *path){
 	pPathLib = path;
 }
 
-void dealEngine::SetPathCache( const char *path ){
+void dealEngine::SetPathCache(const char *path){
 	pPathCache = path;
 }
 
-void dealEngine::SetLogFile( const char *path ){
+void dealEngine::SetLogFile(const char *path){
 	pLogFile = path;
 }
 
 
 
-void dealEngine::Start( const char *cacheAppID ){
-	if( pEngine || ! cacheAppID ){
+void dealEngine::Start(const char *cacheAppID){
+	if(pEngine || !cacheAppID){
 		return;
 	}
 	
 	// load libdragengine.so if not loaded yet
 	decString pathLib;
-	pathLib.Format( "%s/%s/lib", pLauncher.GetInternalPath(), ANDROID_JNIDIR );
+	pathLib.Format("%s/%s/lib", pLauncher.GetInternalPath(), ANDROID_JNIDIR);
 	
-	if( ! pHandleLibDragengine ){
-		decString pathLibDragengine( pathLib + "/libdragengine.so" );
-		pHandleLibDragengine = dlopen( pathLibDragengine, RTLD_NOW );
+	if(!pHandleLibDragengine){
+		decString pathLibDragengine(pathLib + "/libdragengine.so");
+		pHandleLibDragengine = dlopen(pathLibDragengine, RTLD_NOW);
 		
-		if( ! pHandleLibDragengine ){
-			pLauncher.GetLogger().LogErrorFormat( LOGSOURCE, "libdragengine.so dlerror: %s.", dlerror() );
-			DETHROW( deeInvalidAction );
+		if(!pHandleLibDragengine){
+			pLauncher.GetLogger().LogErrorFormat(LOGSOURCE, "libdragengine.so dlerror: %s.", dlerror());
+			DETHROW(deeInvalidAction);
 		}
 		
-		pLauncher.GetLogger().LogInfo( LOGSOURCE, "Loaded libdragengine.so" );
+		pLauncher.GetLogger().LogInfo(LOGSOURCE, "Loaded libdragengine.so");
 	}
 	
 	// load libdelauncher_engine.so if not loaded
-	if( ! pHandleLibEngine ){
-		decString pathLibEngine( pathLib + "/libdelauncher_engine.so" );
-		pHandleLibEngine = dlopen( pathLibEngine, RTLD_NOW );
+	if(!pHandleLibEngine){
+		decString pathLibEngine(pathLib + "/libdelauncher_engine.so");
+		pHandleLibEngine = dlopen(pathLibEngine, RTLD_NOW);
 		
-		if( ! pHandleLibEngine ){
-			pLauncher.GetLogger().LogErrorFormat( LOGSOURCE, "libdelauncher_engine.so dlerror: %s.", dlerror() );
-			DETHROW( deeInvalidAction );
+		if(!pHandleLibEngine){
+			pLauncher.GetLogger().LogErrorFormat(LOGSOURCE, "libdelauncher_engine.so dlerror: %s.", dlerror());
+			DETHROW(deeInvalidAction);
 		}
 		
-		pLauncher.GetLogger().LogInfo( LOGSOURCE, "Loaded libdelauncher_engine.so" );
+		pLauncher.GetLogger().LogInfo(LOGSOURCE, "Loaded libdelauncher_engine.so");
 	}
 	
 	// create engine
-	typedef dealIEngineInstance* ( *FUNC_CREATEENGINE )( android_app* );
-	FUNC_CREATEENGINE funcCreateModule = ( FUNC_CREATEENGINE )dlsym( pHandleLibEngine, "CreateEngine" );
+	typedef dealIEngineInstance* (*FUNC_CREATEENGINE)(android_app*);
+	FUNC_CREATEENGINE funcCreateModule = (FUNC_CREATEENGINE)dlsym(pHandleLibEngine, "CreateEngine");
 	
-	if( ! funcCreateModule ){
-		pLauncher.GetLogger().LogError( LOGSOURCE, "Library function CreateEngine not found" );
-		DETHROW( deeInvalidAction );
+	if(!funcCreateModule){
+		pLauncher.GetLogger().LogError(LOGSOURCE, "Library function CreateEngine not found");
+		DETHROW(deeInvalidAction);
 	}
 	
-	pEngine = funcCreateModule( &pLauncher.GetAndroidApp() );
-	if( ! pEngine ){
-		DETHROW( deeInvalidAction );
+	pEngine = funcCreateModule(&pLauncher.GetAndroidApp());
+	if(!pEngine){
+		DETHROW(deeInvalidAction);
 	}
 	
-	pLauncher.GetLogger().LogInfo( LOGSOURCE, "Engine created" );
+	pLauncher.GetLogger().LogInfo(LOGSOURCE, "Engine created");
 	
 	// start engine
 	decPath logfile;
-	logfile.SetFromNative( pLauncher.GetConfiguration().GetPathLogs() );
-	logfile.AddUnixPath( pLogFile );
+	logfile.SetFromNative(pLauncher.GetConfiguration().GetPathLogs());
+	logfile.AddUnixPath(pLogFile);
 	
-	if( ! pEngine->Start( logfile.GetPathNative(), cacheAppID ) ){
-		DETHROW( deeInvalidAction );
+	if(!pEngine->Start(logfile.GetPathNative(), cacheAppID)){
+		DETHROW(deeInvalidAction);
 	}
-	pLauncher.GetLogger().LogInfo( LOGSOURCE, "Engine started" );
+	pLauncher.GetLogger().LogInfo(LOGSOURCE, "Engine started");
 }
 
 void dealEngine::Stop(){
-	if( pEngine ){
+	if(pEngine){
 		delete pEngine;
 		pEngine = NULL;
 	}
 	
-	if( pHandleLibEngine ){
-		dlclose( pHandleLibEngine );
+	if(pHandleLibEngine){
+		dlclose(pHandleLibEngine);
 		pHandleLibEngine = NULL;
 	}
 	
-	if( pHandleLibDragengine ){
-		dlclose( pHandleLibDragengine );
+	if(pHandleLibDragengine){
+		dlclose(pHandleLibDragengine);
 		pHandleLibDragengine = NULL;
 	}
 }
 
-void dealEngine::ProcessInputEvent( const AInputEvent &event ){
-	if( ! pEngine ){
+void dealEngine::ProcessInputEvent(const AInputEvent &event){
+	if(!pEngine){
 		return;
 	}
-	pEngine->ProcessInputEvent( event );
+	pEngine->ProcessInputEvent(event);
 }
 
 
@@ -200,28 +200,28 @@ void dealEngine::ProcessInputEvent( const AInputEvent &event ){
 void dealEngine::LoadModuleList(){
 	pModuleList.RemoveAllModules();
 	
-	pLauncher.GetLogger().LogInfo( LOGSOURCE, "loading module list" );
-	AddModulesFrom( "/engine/lib/modules/crashrecovery", dealEngineModule::emtCrashRecovery );
-	AddModulesFrom( "/engine/lib/modules/graphic", dealEngineModule::emtGraphic );
-	AddModulesFrom( "/engine/lib/modules/input", dealEngineModule::emtInput );
-	AddModulesFrom( "/engine/lib/modules/physics", dealEngineModule::emtPhysics );
-	AddModulesFrom( "/engine/lib/modules/audio", dealEngineModule::emtAudio );
-	AddModulesFrom( "/engine/lib/modules/network", dealEngineModule::emtNetwork );
-	AddModulesFrom( "/engine/lib/modules/scripting", dealEngineModule::emtScript );
-	AddModulesFrom( "/engine/lib/modules/animator", dealEngineModule::emtAnimator );
-	AddModulesFrom( "/engine/lib/modules/synthesizer", dealEngineModule::emtSynthesizer );
-	AddModulesFrom( "/engine/lib/modules/ai", dealEngineModule::emtAI );
+	pLauncher.GetLogger().LogInfo(LOGSOURCE, "loading module list");
+	AddModulesFrom("/engine/lib/modules/crashrecovery", dealEngineModule::emtCrashRecovery);
+	AddModulesFrom("/engine/lib/modules/graphic", dealEngineModule::emtGraphic);
+	AddModulesFrom("/engine/lib/modules/input", dealEngineModule::emtInput);
+	AddModulesFrom("/engine/lib/modules/physics", dealEngineModule::emtPhysics);
+	AddModulesFrom("/engine/lib/modules/audio", dealEngineModule::emtAudio);
+	AddModulesFrom("/engine/lib/modules/network", dealEngineModule::emtNetwork);
+	AddModulesFrom("/engine/lib/modules/scripting", dealEngineModule::emtScript);
+	AddModulesFrom("/engine/lib/modules/animator", dealEngineModule::emtAnimator);
+	AddModulesFrom("/engine/lib/modules/synthesizer", dealEngineModule::emtSynthesizer);
+	AddModulesFrom("/engine/lib/modules/ai", dealEngineModule::emtAI);
 	
-	AddModulesFrom( "/engine/lib/modules/animation", dealEngineModule::emtAnimation );
-	AddModulesFrom( "/engine/lib/modules/font", dealEngineModule::emtFont );
-	AddModulesFrom( "/engine/lib/modules/image", dealEngineModule::emtImage );
-	AddModulesFrom( "/engine/lib/modules/model", dealEngineModule::emtModel );
-	AddModulesFrom( "/engine/lib/modules/rig", dealEngineModule::emtRig );
-	AddModulesFrom( "/engine/lib/modules/skin", dealEngineModule::emtSkin );
-	AddModulesFrom( "/engine/lib/modules/langpack", dealEngineModule::emtLanguagePack );
-	AddModulesFrom( "/engine/lib/modules/sound", dealEngineModule::emtSound );
-	AddModulesFrom( "/engine/lib/modules/video", dealEngineModule::emtVideo );
-	AddModulesFrom( "/engine/lib/modules/occlusionmesh", dealEngineModule::emtOcclusionMesh );
+	AddModulesFrom("/engine/lib/modules/animation", dealEngineModule::emtAnimation);
+	AddModulesFrom("/engine/lib/modules/font", dealEngineModule::emtFont);
+	AddModulesFrom("/engine/lib/modules/image", dealEngineModule::emtImage);
+	AddModulesFrom("/engine/lib/modules/model", dealEngineModule::emtModel);
+	AddModulesFrom("/engine/lib/modules/rig", dealEngineModule::emtRig);
+	AddModulesFrom("/engine/lib/modules/skin", dealEngineModule::emtSkin);
+	AddModulesFrom("/engine/lib/modules/langpack", dealEngineModule::emtLanguagePack);
+	AddModulesFrom("/engine/lib/modules/sound", dealEngineModule::emtSound);
+	AddModulesFrom("/engine/lib/modules/video", dealEngineModule::emtVideo);
+	AddModulesFrom("/engine/lib/modules/occlusionmesh", dealEngineModule::emtOcclusionMesh);
 	
 	CheckModules();
 }
@@ -234,68 +234,68 @@ void dealEngine::CheckModules(){
 	int status;
 	int j;
 	
-	for( i=0; i<count; i++ ){
-		dealEngineModule &module = *pModuleList.GetModuleAt( i );
+	for(i=0; i<count; i++){
+		dealEngineModule &module = *pModuleList.GetModuleAt(i);
 		dealEMParameterList &parameterList = module.GetParameterList();
 		
 		try{
 			// get module status
-			if( ! pEngine->GetModuleStatus( module.GetName(), module.GetVersion(), status ) ){
-				DETHROW( deeInvalidParam );
+			if(!pEngine->GetModuleStatus(module.GetName(), module.GetVersion(), status)){
+				DETHROW(deeInvalidParam);
 			}
 			
-			module.SetErrorCode( status );
+			module.SetErrorCode(status);
 			
-			if( module.GetErrorCode() == dealEngineModule::eecSuccess ){
-				module.SetStatus( dealEngineModule::emsReady );
+			if(module.GetErrorCode() == dealEngineModule::eecSuccess){
+				module.SetStatus(dealEngineModule::emsReady);
 				
 			}else{
-				module.SetStatus( dealEngineModule::emsBroken );
+				module.SetStatus(dealEngineModule::emsBroken);
 				continue;
 			}
 			
 			// get module parameters
-			if( ! pEngine->GetModuleParameterCount( module.GetName(), module.GetVersion(), parameterCount ) ){
-				DETHROW( deeInvalidParam );
+			if(!pEngine->GetModuleParameterCount(module.GetName(), module.GetVersion(), parameterCount)){
+				DETHROW(deeInvalidParam);
 			}
 			
-			for( j=0; j<parameterCount; j++ ){
+			for(j=0; j<parameterCount; j++){
 				const char *name;
 				const char *desc;
 				const char *value;
 				
-				if( ! pEngine->GetModuleParameterData( module.GetName(),
-						module.GetVersion(), j, name, desc, value ) ){
-					DETHROW( deeInvalidParam );
+				if(!pEngine->GetModuleParameterData(module.GetName(),
+						module.GetVersion(), j, name, desc, value)){
+					DETHROW(deeInvalidParam);
 				}
 				
 				parameter = new dealEMParameter;
-				parameter->SetIndex( j );
-				parameter->SetName( name );
-				parameter->SetDescription( desc );
-				parameter->SetValue( value );
+				parameter->SetIndex(j);
+				parameter->SetName(name);
+				parameter->SetDescription(desc);
+				parameter->SetValue(value);
 				
-				parameterList.AddParameter( parameter );
+				parameterList.AddParameter(parameter);
 				parameter->FreeReference();
 			}
 			
-		}catch( const deException &e ){
-			if( parameter ){
+		}catch(const deException &e){
+			if(parameter){
 				parameter->FreeReference();
 				parameter = NULL;
 			}
 			
-			pLauncher.GetLogger().LogErrorFormat( LOGSOURCE,
+			pLauncher.GetLogger().LogErrorFormat(LOGSOURCE,
 				"Engine.CheckModules failed with exception (module=%s)",
-				module.GetName().GetString() );
-			pLauncher.GetLogger().LogException( LOGSOURCE, e );
-			module.SetStatus( dealEngineModule::emsBroken );
+				module.GetName().GetString());
+			pLauncher.GetLogger().LogException(LOGSOURCE, e);
+			module.SetStatus(dealEngineModule::emsBroken);
 		}
 	}
 }
 
-void dealEngine::AddModulesFrom( const char *directory, int type ){
-	dealEngineModuleXML moduleXML( &pLauncher.GetLogger(), LOGSOURCE );
+void dealEngine::AddModulesFrom(const char *directory, int type){
+	dealEngineModuleXML moduleXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
 	decBaseFileReader *reader;
@@ -304,49 +304,49 @@ void dealEngine::AddModulesFrom( const char *directory, int type ){
 	int i, j;
 	
 	deCollectDirectorySearchVisitor collect;
-	vfs.SearchFiles( decPath::CreatePathUnix( directory ), collect );
+	vfs.SearchFiles(decPath::CreatePathUnix(directory), collect);
 	
 	const dePathList &moduleDirs = collect.GetDirectories();
 	const int count = moduleDirs.GetCount();
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		deCollectDirectorySearchVisitor collect2;
-		vfs.SearchFiles( moduleDirs.GetAt( i ), collect2 );
+		vfs.SearchFiles(moduleDirs.GetAt(i), collect2);
 		
 		const dePathList &versionDirs = collect2.GetDirectories();
 		const int count2 = versionDirs.GetCount();
-		for( j=0; j<count2; j++ ){
-			const decPath &versionDir = versionDirs.GetAt( j );
+		for(j=0; j<count2; j++){
+			const decPath &versionDir = versionDirs.GetAt(j);
 			
-			pattern.SetFrom( versionDir );
-			pattern.AddComponent( "module.xml" );
+			pattern.SetFrom(versionDir);
+			pattern.AddComponent("module.xml");
 			
-			if( ! vfs.ExistsFile( pattern ) || vfs.GetFileType( pattern ) != deVFSContainer::eftRegularFile ){
+			if(!vfs.ExistsFile(pattern) || vfs.GetFileType(pattern) != deVFSContainer::eftRegularFile){
 				continue;
 			}
 			
-			logger.LogInfoFormat( LOGSOURCE, "Reading module definition from '%s'", pattern.GetPathUnix().GetString() );
+			logger.LogInfoFormat(LOGSOURCE, "Reading module definition from '%s'", pattern.GetPathUnix().GetString());
 			reader = NULL;
 			module = NULL;
 			
 			try{
-				reader = vfs.OpenFileForReading( pattern );
+				reader = vfs.OpenFileForReading(pattern);
 				
 				module = new dealEngineModule;
 				
-				moduleXML.ReadFromFile( *reader, *module );
+				moduleXML.ReadFromFile(*reader, *module);
 				reader->FreeReference();
 				reader = NULL;
 				
-				pModuleList.AddModule( module );
+				pModuleList.AddModule(module);
 				module->FreeReference();
 				
-			}catch( const deException &e ){
-				logger.LogErrorFormat( LOGSOURCE, "Engine.AddModulesFrom failed reading module file with exception (dir=%s,type=%i)", directory, type );
-				logger.LogException( LOGSOURCE, e );
-				if( module ){
+			}catch(const deException &e){
+				logger.LogErrorFormat(LOGSOURCE, "Engine.AddModulesFrom failed reading module file with exception (dir=%s,type=%i)", directory, type);
+				logger.LogException(LOGSOURCE, e);
+				if(module){
 					module->FreeReference();
 				}
-				if( reader ){
+				if(reader){
 					reader->FreeReference();
 				}
 			}
@@ -354,7 +354,7 @@ void dealEngine::AddModulesFrom( const char *directory, int type ){
 	}
 }
 
-dealEngineModule *dealEngine::GetBestModuleForType( int moduleType ){
+dealEngineModule *dealEngine::GetBestModuleForType(int moduleType){
 	int i, count = pModuleList.GetModuleCount();
 	dealEngineModule *bestModule = NULL;
 	dealEngineModule *module;
@@ -362,18 +362,18 @@ dealEngineModule *dealEngine::GetBestModuleForType( int moduleType ){
 	// for the time being we simply pick the first module which matches the type and is ready
 	// to be used. later on this has to be improved to use a matching metrics which tells
 	// how well a module matches a given set of feature requirements.
-	for( i=0; i<count; i++ ){
-		module = pModuleList.GetModuleAt( i );
+	for(i=0; i<count; i++){
+		module = pModuleList.GetModuleAt(i);
 		
-		if( module->GetType() == moduleType && module->GetStatus() == dealEngineModule::emsReady ){
+		if(module->GetType() == moduleType && module->GetStatus() == dealEngineModule::emsReady){
 			// non-fallback > fallback > none
-			if( module->GetIsFallback() ){
-				if( ! bestModule ){
+			if(module->GetIsFallback()){
+				if(!bestModule){
 					bestModule = module;
 				}
 				
 			}else{
-				if( ! bestModule || bestModule->GetIsFallback() ){
+				if(!bestModule || bestModule->GetIsFallback()){
 					bestModule = module;
 				}
 			}
@@ -395,77 +395,77 @@ void dealEngine::PutEngineIntoVFS(){
 	
 	try{
 		// get the properties from the engine
-		if( ! pEngine->GetProperty( dealIEngineInstance::epPathEngineConfig, value ) ){
-			DETHROW( deeInvalidParam );
+		if(!pEngine->GetProperty(dealIEngineInstance::epPathEngineConfig, value)){
+			DETHROW(deeInvalidParam);
 		}
 		pPathConfig = value;
 		
-		if( ! pEngine->GetProperty( dealIEngineInstance::epPathEngineShare, value ) ){
-			DETHROW( deeInvalidParam );
+		if(!pEngine->GetProperty(dealIEngineInstance::epPathEngineShare, value)){
+			DETHROW(deeInvalidParam);
 		}
 		pPathShare = value;
 		
-		if( ! pEngine->GetProperty( dealIEngineInstance::epPathEngineLib, value ) ){
-			DETHROW( deeInvalidParam );
+		if(!pEngine->GetProperty(dealIEngineInstance::epPathEngineLib, value)){
+			DETHROW(deeInvalidParam);
 		}
 		pPathLib = value;
 		
-		if( ! pEngine->GetProperty( dealIEngineInstance::epPathEngineCache, value ) ){
-			DETHROW( deeInvalidParam );
+		if(!pEngine->GetProperty(dealIEngineInstance::epPathEngineCache, value)){
+			DETHROW(deeInvalidParam);
 		}
 		pPathCache = value;
 		
 		// log information
-		logger.LogInfoFormat( LOGSOURCE, "Engine config path = '%s'", pPathConfig.GetString() );
-		logger.LogInfoFormat( LOGSOURCE, "Engine share path = '%s'", pPathShare.GetString() );
-		logger.LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'", pPathLib.GetString() );
-		logger.LogInfoFormat( LOGSOURCE, "Engine cache path = '%s'", pPathCache.GetString() );
+		logger.LogInfoFormat(LOGSOURCE, "Engine config path = '%s'", pPathConfig.GetString());
+		logger.LogInfoFormat(LOGSOURCE, "Engine share path = '%s'", pPathShare.GetString());
+		logger.LogInfoFormat(LOGSOURCE, "Engine lib path = '%s'", pPathLib.GetString());
+		logger.LogInfoFormat(LOGSOURCE, "Engine cache path = '%s'", pPathCache.GetString());
 		
 		// add the directories so they can be easily used later on.
-		if( ! pPathConfig.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/engine/config" );
-			pathDiskDir.SetFromNative( pPathConfig.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
+		if(!pPathConfig.IsEmpty()){
+			pathRootDir.SetFromUnix("/engine/config");
+			pathDiskDir.SetFromNative(pPathConfig.GetString());
+			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir->SetReadOnly(false);
+			vfs.AddContainer(diskDir);
 			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
-		if( ! pPathShare.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/engine/share" );
-			pathDiskDir.SetFromNative( pPathShare.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
+		if(!pPathShare.IsEmpty()){
+			pathRootDir.SetFromUnix("/engine/share");
+			pathDiskDir.SetFromNative(pPathShare.GetString());
+			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir->SetReadOnly(false);
+			vfs.AddContainer(diskDir);
 			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
-		if( ! pPathLib.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/engine/lib" );
-			pathDiskDir.SetFromNative( pPathLib.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
+		if(!pPathLib.IsEmpty()){
+			pathRootDir.SetFromUnix("/engine/lib");
+			pathDiskDir.SetFromNative(pPathLib.GetString());
+			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir->SetReadOnly(false);
+			vfs.AddContainer(diskDir);
 			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
-		if( ! pPathCache.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/engine/cache" );
-			pathDiskDir.SetFromNative( pPathCache );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
+		if(!pPathCache.IsEmpty()){
+			pathRootDir.SetFromUnix("/engine/cache");
+			pathDiskDir.SetFromNative(pPathCache);
+			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir->SetReadOnly(false);
+			vfs.AddContainer(diskDir);
 			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
-	}catch( const deException &e ){
-		logger.LogError( LOGSOURCE, "Engine.PutEngineIntoVFS failed with exception:" );
-		logger.LogException( LOGSOURCE, e );
-		if( diskDir ){
+	}catch(const deException &e){
+		logger.LogError(LOGSOURCE, "Engine.PutEngineIntoVFS failed with exception:");
+		logger.LogException(LOGSOURCE, e);
+		if(diskDir){
 			diskDir->FreeReference();
 		}
 		throw;
@@ -474,8 +474,8 @@ void dealEngine::PutEngineIntoVFS(){
 
 
 
-const char *dealEngine::GetModuleTypeText( int moduleType ) const{
-	switch( moduleType ){
+const char *dealEngine::GetModuleTypeText(int moduleType) const{
+	switch(moduleType){
 	case dealEngineModule::emtAI:
 		return "AI";
 		
@@ -544,66 +544,66 @@ const char *dealEngine::GetModuleTypeText( int moduleType ) const{
 
 
 void dealEngine::LoadConfig(){
-	dealEngineConfigXML configXML( &pLauncher.GetLogger(), LOGSOURCE );
+	dealEngineConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
 	decBaseFileReader *reader = NULL;
 	decString filename;
 	decPath pathFile;
 	
-	pathFile.SetFromUnix( "/config/user/engine.xml" );
+	pathFile.SetFromUnix("/config/user/engine.xml");
 	
-	if( vfs.ExistsFile( pathFile ) ){
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfo( LOGSOURCE, "Reading engine configuration file" );
+	if(vfs.ExistsFile(pathFile)){
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			logger.LogInfo(LOGSOURCE, "Reading engine configuration file");
 			reader = NULL;
 			
 			try{
-				reader = vfs.OpenFileForReading( pathFile );
-				configXML.ReadFromFile( *reader, pLauncher );
+				reader = vfs.OpenFileForReading(pathFile);
+				configXML.ReadFromFile(*reader, pLauncher);
 				reader->FreeReference();
 				
-			}catch( const deException & ){
-				if( reader ){
+			}catch(const deException &){
+				if(reader){
 					reader->FreeReference();
 				}
 				throw;
 			}
 			
 		}else{
-			logger.LogErrorFormat( LOGSOURCE, "Engine configuration file is not a regular file" );
-			DETHROW( deeInvalidParam );
+			logger.LogErrorFormat(LOGSOURCE, "Engine configuration file is not a regular file");
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		logger.LogInfo( LOGSOURCE, "Engine configuration file not found, will be created upon exiting" );
+		logger.LogInfo(LOGSOURCE, "Engine configuration file not found, will be created upon exiting");
 	}
 }
 
 void dealEngine::SaveConfig(){
-	dealEngineConfigXML configXML( &pLauncher.GetLogger(), LOGSOURCE );
+	dealEngineConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
 	decBaseFileWriter *writer = NULL;
 	decString filename;
 	decPath pathFile;
 	
-	pathFile.SetFromUnix( "/config/user/engine.xml" );
+	pathFile.SetFromUnix("/config/user/engine.xml");
 	
-	if( vfs.CanWriteFile( pathFile ) ){
-		logger.LogInfo( LOGSOURCE, "Writing engine configuration file" );
+	if(vfs.CanWriteFile(pathFile)){
+		logger.LogInfo(LOGSOURCE, "Writing engine configuration file");
 		
 		try{
-			writer = vfs.OpenFileForWriting( pathFile );
-			configXML.WriteToFile( *writer, pLauncher );
+			writer = vfs.OpenFileForWriting(pathFile);
+			configXML.WriteToFile(*writer, pLauncher);
 			writer->FreeReference();
 			
-		}catch( const deException &e ){
-			if( writer ){
+		}catch(const deException &e){
+			if(writer){
 				writer->FreeReference();
 			}
-			logger.LogErrorFormat( LOGSOURCE, "Failed to write engine configuration file (file permission problem)" );
-			logger.LogException( LOGSOURCE, e );
+			logger.LogErrorFormat(LOGSOURCE, "Failed to write engine configuration file (file permission problem)");
+			logger.LogException(LOGSOURCE, e);
 			// DIALOG BOX
 			// "Engine configuration can not be written!\n"
 			// "Make sure you have write permission for the file and parent directory.\n"
@@ -611,7 +611,7 @@ void dealEngine::SaveConfig(){
 		}
 		
 	}else{
-		logger.LogErrorFormat( LOGSOURCE, "Failed to write engine configuration file (writing file problem)" );
+		logger.LogErrorFormat(LOGSOURCE, "Failed to write engine configuration file (writing file problem)");
 		// DIALOG BOX
 		// "Engine configuration can not be written!\n"
 		// "Make sure you have write permission for the file and parent directory.\n"
@@ -622,55 +622,55 @@ void dealEngine::SaveConfig(){
 
 
 void dealEngine::FocusGained(){
-	if( ! pEngine ){
+	if(!pEngine){
 		return;
 	}
-	if( ! pEngine->FocusGained() ){
-		DETHROW( deeInvalidAction );
+	if(!pEngine->FocusGained()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
 void dealEngine::FocusLost(){
-	if( ! pEngine ){
+	if(!pEngine){
 		return;
 	}
-	if( ! pEngine->FocusLost() ){
-		DETHROW( deeInvalidAction );
+	if(!pEngine->FocusLost()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
 void dealEngine::Freeze(){
-	if( ! pEngine ){
+	if(!pEngine){
 		return;
 	}
-	if( ! pEngine->Freeze() ){
-		DETHROW( deeInvalidAction );
+	if(!pEngine->Freeze()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
 void dealEngine::Thaw(){
-	if( ! pEngine ){
+	if(!pEngine){
 		return;
 	}
-	if( ! pEngine->Thaw() ){
-		DETHROW( deeInvalidAction );
+	if(!pEngine->Thaw()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
 void dealEngine::InitAppWindow(){
-	if( ! pEngine ){
+	if(!pEngine){
 		return;
 	}
-	if( ! pEngine->InitAppWindow() ){
-		DETHROW( deeInvalidAction );
+	if(!pEngine->InitAppWindow()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
 void dealEngine::TerminateAppWindow(){
-	if( ! pEngine ){
+	if(!pEngine){
 		return;
 	}
-	if( ! pEngine->TerminateAppWindow() ){
-		DETHROW( deeInvalidAction );
+	if(!pEngine->TerminateAppWindow()){
+		DETHROW(deeInvalidAction);
 	}
 }

@@ -56,7 +56,7 @@ public:
 	/** Creates a new conversation action. */
 	ceCAActorCommand();
 	/** Creates a new conversation action. */
-	ceCAActorCommand( const ceCAActorCommand &action );
+	ceCAActorCommand(const ceCAActorCommand &action);
 	/** Cleans up the conversation action. */
 	virtual ~ceCAActorCommand();
 	/*@}*/
@@ -66,11 +66,11 @@ public:
 	/** Retrieves the actor id. */
 	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	/** Retrieves the command string. */
 	inline const decString &GetCommand() const{ return pCommand; }
 	/** Sets the command string. */
-	void SetCommand( const char *command );
+	void SetCommand(const char *command);
 	
 	/** Create a copy of this action. */
     virtual ceConversationAction *CreateCopy() const;

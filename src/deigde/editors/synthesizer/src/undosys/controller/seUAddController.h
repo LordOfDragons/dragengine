@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	seUAddController( seSynthesizer *synthesizer, seController *controller );
+	seUAddController(seSynthesizer *synthesizer, seController *controller);
 	
 protected:
 	/** \brief Clean up undo object. */

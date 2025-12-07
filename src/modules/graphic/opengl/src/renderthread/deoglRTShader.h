@@ -92,7 +92,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglTexUnitsConfigList *pTexUnitsConfigList;
-	deoglTexSamplerConfig *pTexSamplerConfigs[ ETSC_COUNT ];
+	deoglTexSamplerConfig *pTexSamplerConfigs[ETSC_COUNT];
 	
 	deoglShaderManager *pShaderManager;
 	deoglSkinShaderManager *pSkinShaderManager;
@@ -108,7 +108,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread texture related object. */
-	deoglRTShader( deoglRenderThread &renderThread );
+	deoglRTShader(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread texture related object. */
 	virtual ~deoglRTShader();
@@ -122,7 +122,7 @@ public:
 	inline deoglTexUnitsConfigList &GetTexUnitsConfigList() const{ return *pTexUnitsConfigList; }
 	
 	/** Texture sampler configuration. */
-	deoglTexSamplerConfig *GetTexSamplerConfig( const eTextureSamplerConfigurations type ) const;
+	deoglTexSamplerConfig *GetTexSamplerConfig(const eTextureSamplerConfigurations type) const;
 	
 	/** Shader manager. */
 	inline deoglShaderManager &GetShaderManager() const{ return *pShaderManager; }
@@ -137,10 +137,10 @@ public:
 	inline const deoglShaderProgram *GetActiveShader() const{ return pCurShaderProg; }
 	
 	/** Activate shader if not active yet. */
-	void ActivateShader( const deoglShaderProgram *shader );
+	void ActivateShader(const deoglShaderProgram *shader);
 	
 	/** Add common defines. */
-	void SetCommonDefines( deoglShaderDefines &defines ) const;
+	void SetCommonDefines(deoglShaderDefines &defines) const;
 	
 	
 	

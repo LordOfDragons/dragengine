@@ -56,15 +56,15 @@ namespace {
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeRandom::meWVNodeRandom( meWindowVegetation &windowVegetation, meHTVRuleRandom *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleRandom( rule )
+meWVNodeRandom::meWVNodeRandom(meWindowVegetation &windowVegetation, meHTVRuleRandom *rule) :
+meWVNode(windowVegetation, rule),
+pRuleRandom(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 // 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Random" );
+	SetTitle("Random");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -72,8 +72,8 @@ pRuleRandom( rule )
 		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 }
 
 meWVNodeRandom::~meWVNodeRandom(){

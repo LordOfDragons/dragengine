@@ -42,29 +42,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceActionsPasteActions::ceWPTMAPChoiceActionsPasteActions( ceWindowMain &windowMain,
+ceWPTMAPChoiceActionsPasteActions::ceWPTMAPChoiceActionsPasteActions(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, int index ) :
-ceWPTMAPasteActions( windowMain, conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pIndex( index )
+ceCAPlayerChoice &playerChoice, int index) :
+ceWPTMAPasteActions(windowMain, conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pIndex(index)
 {
-	if( index < 0 || index > playerChoice.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > playerChoice.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
-ceWPTMAPChoiceActionsPasteActions::ceWPTMAPChoiceActionsPasteActions( ceWindowMain &windowMain,
+ceWPTMAPChoiceActionsPasteActions::ceWPTMAPChoiceActionsPasteActions(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, int index, const char *text ) :
-ceWPTMAPasteActions( windowMain, conversation, text ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pIndex( index )
+ceCAPlayerChoice &playerChoice, int index, const char *text) :
+ceWPTMAPasteActions(windowMain, conversation, text),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pIndex(index)
 {
-	if( index < 0 || index > playerChoice.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > playerChoice.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -73,6 +73,6 @@ pIndex( index )
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAPChoiceActionsPasteActions::CreateUndo( const ceConversationActionList &actions ){
-	return new ceUCAPChoiceActionPaste( pTopic, pPlayerChoice, NULL, actions, pIndex );
+ceUCActionPaste *ceWPTMAPChoiceActionsPasteActions::CreateUndo(const ceConversationActionList &actions){
+	return new ceUCAPChoiceActionPaste(pTopic, pPlayerChoice, NULL, actions, pIndex);
 }

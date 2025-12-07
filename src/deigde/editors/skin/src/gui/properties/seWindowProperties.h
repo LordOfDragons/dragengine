@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWindowProperties( seWindowMain &windowMain );
+	seWindowProperties(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Cleanup window. */
@@ -70,7 +70,7 @@ public:
 	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Skin path changed. */
 	void OnSkinPathChanged();

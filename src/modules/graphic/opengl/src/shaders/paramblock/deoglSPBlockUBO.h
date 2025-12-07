@@ -56,10 +56,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader parameter block. */
-	deoglSPBlockUBO( deoglRenderThread &renderThread );
+	deoglSPBlockUBO(deoglRenderThread &renderThread);
 	
 	/** Create copy of shader storage buffer object. */
-	deoglSPBlockUBO( const deoglSPBlockUBO &paramBlock );
+	deoglSPBlockUBO(const deoglSPBlockUBO &paramBlock);
 	
 protected:
 	/** Clean up shader parameter block. */
@@ -78,25 +78,25 @@ public:
 	inline int GetBindingPoint() const{ return pBindingPoint; }
 	
 	/** Set binding point. */
-	void SetBindingPoint( int bindingPoint );
+	void SetBindingPoint(int bindingPoint);
 	
 	/** Compact elements. If true mapping individual elements is prohibited. */
 	inline bool GetCompact() const{ return pCompact; }
 	
 	/** Set if elements are compact. If true mapping individual elements is prohibited. */
-	void SetCompact( bool compact );
+	void SetCompact(bool compact);
 	
 	/** Activate buffer. */
 	virtual void Activate() const;
 	
 	/** Activate buffer overriding binding point. */
-	virtual void Activate( int bindingPoint ) const;
+	virtual void Activate(int bindingPoint) const;
 	
 	/** Deactivate buffer. */
 	virtual void Deactivate() const;
 	
 	/** Deactivate buffer overriding binding point. */
-	virtual void Deactivate( int bindingPoint ) const;
+	virtual void Deactivate(int bindingPoint) const;
 	
 	/** Map buffer discarding content. */
 	virtual void MapBuffer();
@@ -107,7 +107,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element );
+	virtual void MapBuffer(int element);
 	
 	/**
 	 * Map buffer for specific elements discarding content.
@@ -115,7 +115,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element, int count );
+	virtual void MapBuffer(int element, int count);
 	
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
@@ -130,7 +130,7 @@ public:
 	virtual deoglShaderParameterBlock *Copy() const;
 	
 	/** Debug print configuration. */
-	void DebugPrintConfig( const char *name );
+	void DebugPrintConfig(const char *name);
 	/*@}*/
 	
 	
@@ -141,7 +141,7 @@ protected:
 	
 	
 private:
-	void pGrowWriteBuffer( int size );
+	void pGrowWriteBuffer(int size);
 };
 
 #endif

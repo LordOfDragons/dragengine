@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new load/save system. */
-	saeLoadSaveSystem( saeWindowMain &windowMain );
+	saeLoadSaveSystem(saeWindowMain &windowMain);
 	
 	/** Cleans up the load/save system. */
 	~saeLoadSaveSystem();
@@ -64,9 +64,9 @@ public:
 	inline saeLoadSaveSAnimation *GetLSSAnim(){ return pLSSAnim; }
 	
 	/** Loads the speech animation from file. */
-	saeSAnimation *LoadSAnimation( const char *filename );
+	saeSAnimation *LoadSAnimation(const char *filename);
 	/** Saves the speech animation to file. */
-	void SaveSAnimation( saeSAnimation *sanimation, const char *filename );
+	void SaveSAnimation(saeSAnimation *sanimation, const char *filename);
 	/** Retrieves the file pattern list. */
 	inline const igdeFilePatternList *GetFilePatternList() const{ return &pFilePatternList; }
 	/*@}*/

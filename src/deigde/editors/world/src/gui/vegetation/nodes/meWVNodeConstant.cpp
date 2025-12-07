@@ -57,10 +57,10 @@ protected:
 	meWVNodeConstant &pNode;
 	
 public:
-	cEditVector( meWVNodeConstant &node ) : pNode( node ){ }
+	cEditVector(meWVNodeConstant &node) : pNode(node){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
-		if( editVector->GetVector().IsEqualTo( pNode.GetRuleConstant()->GetVector() ) ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
+		if(editVector->GetVector().IsEqualTo(pNode.GetRuleConstant()->GetVector())){
 			return;
 		}
 		
@@ -80,15 +80,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeConstant::meWVNodeConstant( meWindowVegetation &windowVegetation, meHTVRuleConstant *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleConstant( rule )
+meWVNodeConstant::meWVNodeConstant(meWindowVegetation &windowVegetation, meHTVRuleConstant *rule) :
+meWVNode(windowVegetation, rule),
+pRuleConstant(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Constant" );
+	SetTitle("Constant");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -108,10 +108,10 @@ pRuleConstant( rule )
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosZ));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 	
-	helper.EditVector( pFraParameters, "Vector:", "Vector value.", pEditVector, new cEditVector( *this ) );
+	helper.EditVector(pFraParameters, "Vector:", "Vector value.", pEditVector, new cEditVector(*this));
 }
 
 meWVNodeConstant::~meWVNodeConstant(){
@@ -125,5 +125,5 @@ meWVNodeConstant::~meWVNodeConstant(){
 void meWVNodeConstant::Update(){
 	meWVNode::Update();
 	
-	pEditVector->SetVector( pRuleConstant->GetVector() );
+	pEditVector->SetVector(pRuleConstant->GetVector());
 }

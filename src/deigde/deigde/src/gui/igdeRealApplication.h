@@ -68,7 +68,7 @@ protected:
 	 * \brief Initialize application.
 	 * \returns true to run application or false to abord.
 	 */
-	virtual bool Initialize( const decUnicodeStringList &arguments );
+	virtual bool Initialize(const decUnicodeStringList &arguments);
 	
 	/** \brief Clean up application. */
 	virtual void CleanUp();

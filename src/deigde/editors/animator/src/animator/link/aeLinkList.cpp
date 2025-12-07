@@ -43,8 +43,8 @@
 aeLinkList::aeLinkList(){
 }
 
-aeLinkList::aeLinkList( const aeLinkList &copy ) :
-pLinks( copy.pLinks ){
+aeLinkList::aeLinkList(const aeLinkList &copy) :
+pLinks(copy.pLinks){
 }
 
 aeLinkList::~aeLinkList(){
@@ -59,21 +59,21 @@ int aeLinkList::GetCount() const{
 	return pLinks.GetCount();
 }
 
-aeLink *aeLinkList::GetAt( int index ) const{
-	return ( aeLink* )pLinks.GetAt( index );
+aeLink *aeLinkList::GetAt(int index) const{
+	return (aeLink*)pLinks.GetAt(index);
 }
 
-aeLink *aeLinkList::GetNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+aeLink *aeLinkList::GetNamed(const char *name) const{
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pLinks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		aeLink * const link = ( aeLink* )pLinks.GetAt( i );
-		if( link->GetName() == name ){
+	for(i=0; i<count; i++){
+		aeLink * const link = (aeLink*)pLinks.GetAt(i);
+		if(link->GetName() == name){
 			return link;
 		}
 	}
@@ -81,38 +81,38 @@ aeLink *aeLinkList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int aeLinkList::IndexOf( aeLink *link ) const{
-	return pLinks.IndexOf( link );
+int aeLinkList::IndexOf(aeLink *link) const{
+	return pLinks.IndexOf(link);
 }
 
-bool aeLinkList::Has( aeLink *link ) const{
-	return pLinks.Has( link );
+bool aeLinkList::Has(aeLink *link) const{
+	return pLinks.Has(link);
 }
 
-bool aeLinkList::HasNamed( const char *name ) const{
-	return GetNamed( name ) != NULL;
+bool aeLinkList::HasNamed(const char *name) const{
+	return GetNamed(name) != NULL;
 }
 
-void aeLinkList::Add( aeLink *link ){
-	if( ! link || Has( link ) ){
-		DETHROW( deeInvalidParam );
+void aeLinkList::Add(aeLink *link){
+	if(!link || Has(link)){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Add( link );
+	pLinks.Add(link);
 }
 
-void aeLinkList::Insert( aeLink *link, int index ){
-	if( ! link || Has( link ) ){
-		DETHROW( deeInvalidParam );
+void aeLinkList::Insert(aeLink *link, int index){
+	if(!link || Has(link)){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Insert( link, index );
+	pLinks.Insert(link, index);
 }
 
-void aeLinkList::Move( aeLink *link, int index ){
-	pLinks.Move( link, index );
+void aeLinkList::Move(aeLink *link, int index){
+	pLinks.Move(link, index);
 }
 
-void aeLinkList::Remove( aeLink *link ){
-	pLinks.Remove( link );
+void aeLinkList::Remove(aeLink *link){
+	pLinks.Remove(link);
 }
 
 void aeLinkList::RemoveAll(){
@@ -124,12 +124,12 @@ void aeLinkList::RemoveAll(){
 // Operators
 //////////////
 
-aeLinkList &aeLinkList::operator=( const aeLinkList &list ){
+aeLinkList &aeLinkList::operator=(const aeLinkList &list){
 	pLinks = list.pLinks;
 	return *this;
 }
 
-aeLinkList &aeLinkList::operator+=( const aeLinkList &list ){
+aeLinkList &aeLinkList::operator+=(const aeLinkList &list){
 	pLinks += list.pLinks;
 	return *this;
 }

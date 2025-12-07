@@ -48,12 +48,12 @@ private:
 	
 public:
 	// constructor
-	deClassConnectionListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassConnectionListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassConnectionListener();
 	
 	// internal functions
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 	inline deClassNetworkMessage *GetClassNetworkMessage() const{ return pClsNM; }
@@ -73,16 +73,16 @@ private:
 		dsClass *clsConL, *clsVoid, *clsInt, *clsBool, *clsNM, *clsNS;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfConnectionClosed );
-	DEF_NATFUNC( nfMessageProgress );
-	DEF_NATFUNC( nfMessageReceived );
-	DEF_NATFUNC( nfLinkState );
+	DEF_NATFUNC(nfConnectionClosed);
+	DEF_NATFUNC(nfMessageProgress);
+	DEF_NATFUNC(nfMessageReceived);
+	DEF_NATFUNC(nfLinkState);
 #undef DEF_NATFUNC
 };
 

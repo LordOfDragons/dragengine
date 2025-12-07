@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	stClassGraphicSystem( ScriptingSmalltalk &st );
+	stClassGraphicSystem(ScriptingSmalltalk &st);
 	
 	/** \brief Clean up class. */
 	virtual ~stClassGraphicSystem();
@@ -64,19 +64,19 @@ public:
 	/** \name cCall Methods */
 	/*@{*/
 	/** \brief Width of the render window. */
-	static int ccGetWindowWidth( OOP self );
+	static int ccGetWindowWidth(OOP self);
 	
 	/** \brief Height of the render window. */
-	static int ccGetWindowHeight( OOP self );
+	static int ccGetWindowHeight(OOP self);
 	
 	/** \brief Set window geometry. */
-	static void ccSetWindowSize( OOP self, int width, int height );
+	static void ccSetWindowSize(OOP self, int width, int height);
 	
 	/** \brief Set window title. */
-	static void ccSetWindowTitle( OOP self, const char *title );
+	static void ccSetWindowTitle(OOP self, const char *title);
 	
 	/** \brief Primary render target canvas view. */
-	static OOP ccGetPrimaryCanvas( OOP self );
+	static OOP ccGetPrimaryCanvas(OOP self);
 	/*@}*/
 };
 

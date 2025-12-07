@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDSRenderableVideoFrame::deDSRenderableVideoFrame( const char *name ) : deDSRenderable( name ){
+deDSRenderableVideoFrame::deDSRenderableVideoFrame(const char *name) : deDSRenderable(name){
 }
 
 deDSRenderableVideoFrame::~deDSRenderableVideoFrame(){
@@ -51,7 +51,7 @@ deDSRenderableVideoFrame::~deDSRenderableVideoFrame(){
 // Management
 ///////////////
 
-void deDSRenderableVideoFrame::SetVideoPlayer( deVideoPlayer *videoPlayer ){
+void deDSRenderableVideoFrame::SetVideoPlayer(deVideoPlayer *videoPlayer){
 	pVideoPlayer = videoPlayer;
 }
 
@@ -60,6 +60,6 @@ void deDSRenderableVideoFrame::SetVideoPlayer( deVideoPlayer *videoPlayer ){
 // Visiting
 /////////////
 
-void deDSRenderableVideoFrame::Visit( deDSRenderableVisitor &visitor ){
-	visitor.VisitVideoFrame( *this );
+void deDSRenderableVideoFrame::Visit(deDSRenderableVisitor &visitor){
+	visitor.VisitVideoFrame(*this);
 }

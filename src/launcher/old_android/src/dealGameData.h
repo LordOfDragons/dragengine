@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	dealGameData( dealLauncher &launcher, jobject objUri );
+	dealGameData(dealLauncher &launcher, jobject objUri);
 	
 protected:
 	/** \brief Clean up game data. */
@@ -94,7 +94,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pOpenParcelFileDescriptor( jobject objUri );
+	void pOpenParcelFileDescriptor(jobject objUri);
 	void pReadGameDefinitions();
 	void pCloseParcelFileDescriptor();
 };

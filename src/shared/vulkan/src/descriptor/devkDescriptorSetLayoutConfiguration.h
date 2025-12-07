@@ -47,7 +47,7 @@ public:
 	devkDescriptorSetLayoutConfiguration();
 	
 	/** Create copy of descriptor set layout configuration. */
-	devkDescriptorSetLayoutConfiguration( const devkDescriptorSetLayoutConfiguration &configuration );
+	devkDescriptorSetLayoutConfiguration(const devkDescriptorSetLayoutConfiguration &configuration);
 	
 	/** Clean up descriptor set layout configuration. */
 	~devkDescriptorSetLayoutConfiguration();
@@ -62,13 +62,13 @@ public:
 	inline VkDescriptorType GetType() const{ return pType; }
 	
 	/** Set Type. */
-	void SetType( VkDescriptorType type );
+	void SetType(VkDescriptorType type);
 	
 	/** Shader stage flags. */
 	inline VkShaderStageFlags GetShaderStageFlags() const{ return pShaderStageFlags; }
 	
 	/** Set shader stage flags. */
-	void SetShaderStageFlags( VkShaderStageFlags flags );
+	void SetShaderStageFlags(VkShaderStageFlags flags);
 	
 	
 	
@@ -76,16 +76,16 @@ public:
 	inline int GetLayoutBindingCount() const{ return pLayoutBindingCount; }
 	
 	/** Set layout binding count. */
-	void SetLayoutBindingCount( int count );
+	void SetLayoutBindingCount(int count);
 	
 	/** Layout binding at index. */
-	const VkDescriptorSetLayoutBinding &GetLayoutBindingAt( int index ) const;
+	const VkDescriptorSetLayoutBinding &GetLayoutBindingAt(int index) const;
 	
 	/** Set layout binding at index. */
-	void SetLayoutBindingAt( int index, const VkDescriptorSetLayoutBinding &binding );
+	void SetLayoutBindingAt(int index, const VkDescriptorSetLayoutBinding &binding);
 	
-	void SetLayoutBindingAt( int index, int binding, VkDescriptorType type,
-		VkShaderStageFlags flags = VK_SHADER_STAGE_ALL );
+	void SetLayoutBindingAt(int index, int binding, VkDescriptorType type,
+		VkShaderStageFlags flags = VK_SHADER_STAGE_ALL);
 	/*@}*/
 	
 	
@@ -93,10 +93,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Configurations are equal. */
-	bool operator==( const devkDescriptorSetLayoutConfiguration &configuration ) const;
+	bool operator==(const devkDescriptorSetLayoutConfiguration &configuration) const;
 	
 	/** Copy Configurations. */
-	devkDescriptorSetLayoutConfiguration &operator=( const devkDescriptorSetLayoutConfiguration &configuration );
+	devkDescriptorSetLayoutConfiguration &operator=(const devkDescriptorSetLayoutConfiguration &configuration);
 	/*@}*/
 };
 

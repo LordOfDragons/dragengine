@@ -79,32 +79,32 @@ struct sArRNatDat{
 /////////////////////
 
 // protected func new()
-deClassAnimatorRule::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsArR,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+deClassAnimatorRule::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsArR,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
-void deClassAnimatorRule::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+void deClassAnimatorRule::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	nd.animator = NULL;
 	nd.rule = NULL;
 }
 
 // public func destructor()
-deClassAnimatorRule::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsArR,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassAnimatorRule::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsArR,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassAnimatorRule::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassAnimatorRule::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->FreeReference();
 		nd.animator = NULL;
 	}
 	
-	if( nd.rule ){
+	if(nd.rule){
 		nd.rule->FreeReference();
 		nd.rule = NULL;
 	}
@@ -113,84 +113,84 @@ void deClassAnimatorRule::nfDestructor::RunFunction( dsRunTime *rt, dsValue *mys
 
 
 // public func void setEnabled( bool enabled )
-deClassAnimatorRule::nfSetEnabled::nfSetEnabled( const sInitData &init ) : dsFunction( init.clsArR,
-"setEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassAnimatorRule::nfSetEnabled::nfSetEnabled(const sInitData &init) : dsFunction(init.clsArR,
+"setEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassAnimatorRule::nfSetEnabled::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
-	const bool enabled = rt->GetValue( 0 )->GetBool();
+void deClassAnimatorRule::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
+	const bool enabled = rt->GetValue(0)->GetBool();
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
-	if( nd.rule->GetEnabled() == enabled ){
+	if(nd.rule->GetEnabled() == enabled){
 		return;
 	}
 	
-	nd.rule->SetEnabled( enabled );
+	nd.rule->SetEnabled(enabled);
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setBlendMode( AnimatorRuleBlendMode blendMode )
-deClassAnimatorRule::nfSetBlendMode::nfSetBlendMode( const sInitData &init ) : dsFunction( init.clsArR,
-"setBlendMode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsAnimatorRuleBlendMode ); // blendMode
+deClassAnimatorRule::nfSetBlendMode::nfSetBlendMode(const sInitData &init) : dsFunction(init.clsArR,
+"setBlendMode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsAnimatorRuleBlendMode); // blendMode
 }
-void deClassAnimatorRule::nfSetBlendMode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+void deClassAnimatorRule::nfSetBlendMode::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	
-	if( ! nd.rule || ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule || !rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	nd.rule->SetBlendMode( ( deAnimatorRule::eBlendModes )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	nd.rule->SetBlendMode((deAnimatorRule::eBlendModes)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setBlendFactor( float factor )
-deClassAnimatorRule::nfSetBlendFactor::nfSetBlendFactor( const sInitData &init ) : dsFunction( init.clsArR,
-"setBlendFactor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // factor
+deClassAnimatorRule::nfSetBlendFactor::nfSetBlendFactor(const sInitData &init) : dsFunction(init.clsArR,
+"setBlendFactor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // factor
 }
-void deClassAnimatorRule::nfSetBlendFactor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+void deClassAnimatorRule::nfSetBlendFactor::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
-	nd.rule->SetBlendFactor( rt->GetValue( 0 )->GetFloat() );
+	nd.rule->SetBlendFactor(rt->GetValue(0)->GetFloat());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setInvertBlendFactor(bool invertBlendFactor)
-deClassAnimatorRule::nfSetInvertBlendFactor::nfSetInvertBlendFactor( const sInitData &init ) :
-dsFunction( init.clsArR, "setInvertBlendFactor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // invertBlendFactor
+deClassAnimatorRule::nfSetInvertBlendFactor::nfSetInvertBlendFactor(const sInitData &init) :
+dsFunction(init.clsArR, "setInvertBlendFactor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // invertBlendFactor
 }
-void deClassAnimatorRule::nfSetInvertBlendFactor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+void deClassAnimatorRule::nfSetInvertBlendFactor::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
-	nd.rule->SetInvertBlendFactor( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetInvertBlendFactor(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -198,63 +198,63 @@ void deClassAnimatorRule::nfSetInvertBlendFactor::RunFunction( dsRunTime *rt, ds
 
 
 // public func void addBone( String boneName )
-deClassAnimatorRule::nfAddBone::nfAddBone( const sInitData &init ) : dsFunction( init.clsArR,
-"addBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // boneName
+deClassAnimatorRule::nfAddBone::nfAddBone(const sInitData &init) : dsFunction(init.clsArR,
+"addBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // boneName
 }
-void deClassAnimatorRule::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+void deClassAnimatorRule::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
-	nd.rule->GetListBones().Add( rt->GetValue( 0 )->GetString() );
+	nd.rule->GetListBones().Add(rt->GetValue(0)->GetString());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void removeAllBones()
-deClassAnimatorRule::nfRemoveAllBones::nfRemoveAllBones( const sInitData &init ) : dsFunction( init.clsArR,
-"removeAllBones", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassAnimatorRule::nfRemoveAllBones::nfRemoveAllBones(const sInitData &init) : dsFunction(init.clsArR,
+"removeAllBones", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassAnimatorRule::nfRemoveAllBones::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+void deClassAnimatorRule::nfRemoveAllBones::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
 	nd.rule->GetListBones().RemoveAll();
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void copyBonesFrom( AnimatorRule rule )
-deClassAnimatorRule::nfCopyBonesFrom::nfCopyBonesFrom( const sInitData &init ) : dsFunction( init.clsArR,
-"copyBonesFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsArR ); // rule
+deClassAnimatorRule::nfCopyBonesFrom::nfCopyBonesFrom(const sInitData &init) : dsFunction(init.clsArR,
+"copyBonesFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsArR); // rule
 }
-void deClassAnimatorRule::nfCopyBonesFrom::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
-	deClassAnimatorRule &clsArR = *( ( deClassAnimatorRule* )GetOwnerClass() );
+void deClassAnimatorRule::nfCopyBonesFrom::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
+	deClassAnimatorRule &clsArR = *((deClassAnimatorRule*)GetOwnerClass());
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
-	const deAnimatorRule *rule = clsArR.GetRule( rt->GetValue( 0 )->GetRealObject() );
-	if( ! rule ){
-		DSTHROW( dueNullPointer );
+	const deAnimatorRule *rule = clsArR.GetRule(rt->GetValue(0)->GetRealObject());
+	if(!rule){
+		DSTHROW(dueNullPointer);
 	}
 	
 	nd.rule->GetListBones() = rule->GetListBones();
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -262,63 +262,63 @@ void deClassAnimatorRule::nfCopyBonesFrom::RunFunction( dsRunTime *rt, dsValue *
 
 
 // public func void addVertexPositionSet(String name)
-deClassAnimatorRule::nfAddVertexPositionSet::nfAddVertexPositionSet( const sInitData &init ) :
-dsFunction( init.clsArR, "addVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // name
+deClassAnimatorRule::nfAddVertexPositionSet::nfAddVertexPositionSet(const sInitData &init) :
+dsFunction(init.clsArR, "addVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // name
 }
-void deClassAnimatorRule::nfAddVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+void deClassAnimatorRule::nfAddVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
-	nd.rule->GetListVertexPositionSets().Add( rt->GetValue( 0 )->GetString() );
+	nd.rule->GetListVertexPositionSets().Add(rt->GetValue(0)->GetString());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void removeAllVertexPositionSets()
-deClassAnimatorRule::nfRemoveAllVertexPositionSets::nfRemoveAllVertexPositionSets( const sInitData &init ) :
-dsFunction( init.clsArR, "removeAllVertexPositionSets", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassAnimatorRule::nfRemoveAllVertexPositionSets::nfRemoveAllVertexPositionSets(const sInitData &init) :
+dsFunction(init.clsArR, "removeAllVertexPositionSets", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassAnimatorRule::nfRemoveAllVertexPositionSets::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+void deClassAnimatorRule::nfRemoveAllVertexPositionSets::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
 	nd.rule->GetListVertexPositionSets().RemoveAll();
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void copyVertexPositionSetsFrom(AnimatorRule rule)
-deClassAnimatorRule::nfCopyVertexPositionSetsFrom::nfCopyVertexPositionSetsFrom( const sInitData &init ) :
-dsFunction( init.clsArR, "copyVertexPositionSetsFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsArR ); // rule
+deClassAnimatorRule::nfCopyVertexPositionSetsFrom::nfCopyVertexPositionSetsFrom(const sInitData &init) :
+dsFunction(init.clsArR, "copyVertexPositionSetsFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsArR); // rule
 }
-void deClassAnimatorRule::nfCopyVertexPositionSetsFrom::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
-	deClassAnimatorRule &clsArR = *( ( deClassAnimatorRule* )GetOwnerClass() );
+void deClassAnimatorRule::nfCopyVertexPositionSetsFrom::RunFunction(dsRunTime *rt, dsValue *myself){
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself));
+	deClassAnimatorRule &clsArR = *((deClassAnimatorRule*)GetOwnerClass());
 	
-	if( ! nd.rule ){
-		DSTHROW( dueNullPointer );
+	if(!nd.rule){
+		DSTHROW(dueNullPointer);
 	}
 	
-	const deAnimatorRule *rule = clsArR.GetRule( rt->GetValue( 0 )->GetRealObject() );
-	if( ! rule ){
-		DSTHROW( dueNullPointer );
+	const deAnimatorRule *rule = clsArR.GetRule(rt->GetValue(0)->GetRealObject());
+	if(!rule){
+		DSTHROW(dueNullPointer);
 	}
 	
 	nd.rule->GetListVertexPositionSets() = rule->GetListVertexPositionSets();
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -331,13 +331,13 @@ void deClassAnimatorRule::nfCopyVertexPositionSetsFrom::RunFunction( dsRunTime *
 // Constructor
 ////////////////
 
-deClassAnimatorRule::deClassAnimatorRule( deScriptingDragonScript &ds ) :
-dsClass( "AnimatorRule", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds ){
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+deClassAnimatorRule::deClassAnimatorRule(deScriptingDragonScript &ds) :
+dsClass("AnimatorRule", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds){
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sArRNatDat ) );
+	p_SetNativeDataSize(sizeof(sArRNatDat));
 }
 
 deClassAnimatorRule::~deClassAnimatorRule(){
@@ -348,8 +348,8 @@ deClassAnimatorRule::~deClassAnimatorRule(){
 // Management
 ///////////////
 
-void deClassAnimatorRule::CreateClassMembers( dsEngine *engine ){
-	pClsAnimatorRuleBlendMode = engine->GetClass( "Dragengine.Scenery.AnimatorRuleBlendMode" );
+void deClassAnimatorRule::CreateClassMembers(dsEngine *engine){
+	pClsAnimatorRuleBlendMode = engine->GetClass("Dragengine.Scenery.AnimatorRuleBlendMode");
 	
 	sInitData init;
 	init.clsArR = this;
@@ -362,145 +362,145 @@ void deClassAnimatorRule::CreateClassMembers( dsEngine *engine ){
 	init.clsAnimatorRuleBlendMode = pClsAnimatorRuleBlendMode;
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfSetEnabled( init ) );
-	AddFunction( new nfSetBlendMode( init ) );
-	AddFunction( new nfSetBlendFactor( init ) );
-	AddFunction( new nfSetInvertBlendFactor( init ) );
+	AddFunction(new nfSetEnabled(init));
+	AddFunction(new nfSetBlendMode(init));
+	AddFunction(new nfSetBlendFactor(init));
+	AddFunction(new nfSetInvertBlendFactor(init));
 	
-	AddFunction( new nfAddBone( init ) );
-	AddFunction( new nfRemoveAllBones( init ) );
-	AddFunction( new nfCopyBonesFrom( init ) );
+	AddFunction(new nfAddBone(init));
+	AddFunction(new nfRemoveAllBones(init));
+	AddFunction(new nfCopyBonesFrom(init));
 	
-	AddFunction( new nfAddVertexPositionSet( init ) );
-	AddFunction( new nfRemoveAllVertexPositionSets( init ) );
-	AddFunction( new nfCopyVertexPositionSetsFrom( init ) );
+	AddFunction(new nfAddVertexPositionSet(init));
+	AddFunction(new nfRemoveAllVertexPositionSets(init));
+	AddFunction(new nfCopyVertexPositionSetsFrom(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deAnimatorRule *deClassAnimatorRule::GetRule( dsRealObject *myself ) const{
-	if( ! myself ){
+deAnimatorRule *deClassAnimatorRule::GetRule(dsRealObject *myself) const{
+	if(!myself){
 		return NULL;
 	}
 	
-	return ( ( sArRNatDat* )p_GetNativeData( myself->GetBuffer() ) )->rule;
+	return ((sArRNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassAnimatorRule::AssignRule( dsRealObject *myself, deAnimatorRule *rule ){
-	if( ! myself ){
-		DSTHROW( dueInvalidParam );
+void deClassAnimatorRule::AssignRule(dsRealObject *myself, deAnimatorRule *rule){
+	if(!myself){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself->GetBuffer() ) );
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself->GetBuffer()));
 	
-	if( rule == nd.rule ){
+	if(rule == nd.rule){
 		return;
 	}
 	
-	if( nd.rule ){
+	if(nd.rule){
 		nd.rule->FreeReference();
 	}
 	
 	nd.rule = rule;
 	
-	if( rule ){
+	if(rule){
 		rule->AddReference();
 	}
 }
 
-void deClassAnimatorRule::AssignAnimator( dsRealObject *myself, deAnimator *animator ){
-	if( ! myself ){
-		DSTHROW( dueInvalidParam );
+void deClassAnimatorRule::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+	if(!myself){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself->GetBuffer() ) );
+	sArRNatDat &nd = *((sArRNatDat*)p_GetNativeData(myself->GetBuffer()));
 	
-	if( animator == nd.animator ){
+	if(animator == nd.animator){
 		return;
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->FreeReference();
 	}
 	
 	nd.animator = animator;
 	
-	if( animator ){
+	if(animator){
 		animator->AddReference();
 	}
 }
 
-void deClassAnimatorRule::PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRule *rule ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassAnimatorRule::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRule *rule){
+	if(!rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! rule ){
-		rt->PushObject( NULL, this );
+	if(!rule){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
 	deAnimatorRuleVisitorIdentify visitor;
-	rule->Visit( visitor );
+	rule->Visit(visitor);
 	
-	switch( visitor.GetType() ){
+	switch(visitor.GetType()){
 	case deAnimatorRuleVisitorIdentify::ertAnimation:
-		pDS.GetClassARAnimation()->PushRule( rt, animator, &visitor.CastToAnimation() );
+		pDS.GetClassARAnimation()->PushRule(rt, animator, &visitor.CastToAnimation());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationDifference:
-		pDS.GetClassARAnimationDifference()->PushRule( rt, animator, &visitor.CastToAnimationDifference() );
+		pDS.GetClassARAnimationDifference()->PushRule(rt, animator, &visitor.CastToAnimationDifference());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationSelect:
-		pDS.GetClassARAnimationSelect()->PushRule( rt, animator, &visitor.CastToAnimationSelect() );
+		pDS.GetClassARAnimationSelect()->PushRule(rt, animator, &visitor.CastToAnimationSelect());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertBoneTransformator:
-		pDS.GetClassARBoneTransformator()->PushRule( rt, animator, &visitor.CastToBoneTransformator() );
+		pDS.GetClassARBoneTransformator()->PushRule(rt, animator, &visitor.CastToBoneTransformator());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertInverseKinematic:
-		pDS.GetClassARInverseKinematic()->PushRule( rt, animator, &visitor.CastToInverseKinematic() );
+		pDS.GetClassARInverseKinematic()->PushRule(rt, animator, &visitor.CastToInverseKinematic());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:
-		pDS.GetClassARStateManipulator()->PushRule( rt, animator, &visitor.CastToStateManipulator() );
+		pDS.GetClassARStateManipulator()->PushRule(rt, animator, &visitor.CastToStateManipulator());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertStateSnapshot:
-		pDS.GetClassARStateSnapshot()->PushRule( rt, animator, &visitor.CastToStateSnapshot() );
+		pDS.GetClassARStateSnapshot()->PushRule(rt, animator, &visitor.CastToStateSnapshot());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertForeignState:
-		pDS.GetClassARForeignState()->PushRule( rt, animator, &visitor.CastToForeignState() );
+		pDS.GetClassARForeignState()->PushRule(rt, animator, &visitor.CastToForeignState());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-		pDS.GetClassARSubAnimator()->PushRule( rt, animator, &visitor.CastToSubAnimator() );
+		pDS.GetClassARSubAnimator()->PushRule(rt, animator, &visitor.CastToSubAnimator());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:
-		pDS.GetClassARTrackTo()->PushRule( rt, animator, &visitor.CastToTrackTo() );
+		pDS.GetClassARTrackTo()->PushRule(rt, animator, &visitor.CastToTrackTo());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertLimit:
-		pDS.GetClassARLimit()->PushRule( rt, animator, &visitor.CastToLimit() );
+		pDS.GetClassARLimit()->PushRule(rt, animator, &visitor.CastToLimit());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertGroup:
-		pDS.GetClassARGroup()->PushRule( rt, animator, &visitor.CastToGroup() );
+		pDS.GetClassARGroup()->PushRule(rt, animator, &visitor.CastToGroup());
 		break;
 		
 	case deAnimatorRuleVisitorIdentify::ertMirror:
-		pDS.GetClassARMirror()->PushRule( rt, animator, &visitor.CastToMirror() );
+		pDS.GetClassARMirror()->PushRule(rt, animator, &visitor.CastToMirror());
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 }

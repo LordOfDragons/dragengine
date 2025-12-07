@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullProgressBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullProgressBar* CreateNativeWidget( igdeProgressBar &owner );
+	static igdeNativeNullProgressBar* CreateNativeWidget(igdeProgressBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

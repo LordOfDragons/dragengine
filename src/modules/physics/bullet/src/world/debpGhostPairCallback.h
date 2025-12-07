@@ -48,11 +48,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Add overlapping pair to a ghost object. */
-	virtual btBroadphasePair *addOverlappingPair( btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1 );
+	virtual btBroadphasePair *addOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1);
 	/** \brief Remove an overlapping pair from a ghost object. */
-	virtual void *removeOverlappingPair( btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1, btDispatcher *dispatcher );
+	virtual void *removeOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1, btDispatcher *dispatcher);
 	/** \brief Remove an overlapping pair from all ghost objects. */
-	virtual void removeOverlappingPairsContainingProxy( btBroadphaseProxy *proxy0, btDispatcher *dispatcher );
+	virtual void removeOverlappingPairsContainingProxy(btBroadphaseProxy *proxy0, btDispatcher *dispatcher);
 	/*@}*/
 };
 

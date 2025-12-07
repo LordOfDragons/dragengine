@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetRenderable( seMapped *mapped, const char *newRenderable );
+	seUMappedSetRenderable(seMapped *mapped, const char *newRenderable);
 	
 protected:
 	/** Clean up undo. */

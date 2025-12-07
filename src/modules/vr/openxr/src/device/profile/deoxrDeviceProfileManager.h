@@ -58,10 +58,10 @@ public:
 	int GetCount() const;
 	
 	/** Profile at index. */
-	deoxrDeviceProfile *GetAt( int index ) const;
+	deoxrDeviceProfile *GetAt(int index) const;
 	
 	/** Add profile. */
-	void Add( deoxrDeviceProfile *profile );
+	void Add(deoxrDeviceProfile *profile);
 	
 	/** Remove all profiles. */
 	void RemoveAll();
@@ -79,7 +79,7 @@ public:
 	void ClearActions();
 	
 	/** Remove device if matching type. */
-	void RemoveDevice( deInputDevice::eDeviceTypes type );
+	void RemoveDevice(deInputDevice::eDeviceTypes type);
 	
 	/** Sessions ends. */
 	void OnSessionEnd();

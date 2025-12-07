@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared video player. */
-	deoglSharedVideoPlayer( deGraphicOpenGl &ogl, deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer );
+	deoglSharedVideoPlayer(deGraphicOpenGl &ogl, deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer);
 	
 	/** Clean up shared video player. */
 	~deoglSharedVideoPlayer();
@@ -83,7 +83,7 @@ public:
 	 * Update the video player.
 	 * \details Called from the main thread.
 	 */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/**
 	 * Update render thread counterparts.

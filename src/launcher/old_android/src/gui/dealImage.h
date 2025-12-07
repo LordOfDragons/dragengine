@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create image from file. */
-	dealImage( dealDisplay &display, const char *filename );
+	dealImage(dealDisplay &display, const char *filename);
 	
 	/** \brief Clean up image. */
 	virtual ~dealImage();
@@ -78,8 +78,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pLoadImage( const char *filename );
-	void pCreateTexture( decTgaImage &tgaImage );
+	void pLoadImage(const char *filename);
+	void pCreateTexture(decTgaImage &tgaImage);
 };
 
 #endif

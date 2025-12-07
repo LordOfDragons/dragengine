@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create decoder. */
-	dethVideoAudioDecoder( deVideoTheora &module, decBaseFileReader &reader );
+	dethVideoAudioDecoder(deVideoTheora &module, decBaseFileReader &reader);
 	
 	/** \brief Clean up decoder. */
 	virtual ~dethVideoAudioDecoder();
@@ -96,7 +96,7 @@ public:
 	virtual int GetPosition();
 	
 	/** \brief Set file position in samples from the beginning. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/**
 	 * \brief Read chunk of sound data from current file position and advance.
@@ -107,7 +107,7 @@ public:
 	 * has been reached. If reading fails an error is signaled using the engine error
 	 * signaling and 0 returned.
 	 */
-	virtual int ReadSamples( void *buffer, int size );
+	virtual int ReadSamples(void *buffer, int size);
 	/*@}*/
 	
 	
@@ -115,11 +115,11 @@ public:
 private:
 	void pCleanUp();
 	void pFindAudioStream();
-	int pReadFromFile( char *buffer, int size );
-	bool pReadPage( ogg_page &page );
-	bool pReadVorbisHeader( vorbis_info &info, vorbis_comment &comment, bool &finished );
+	int pReadFromFile(char *buffer, int size);
+	bool pReadPage(ogg_page &page);
+	bool pReadVorbisHeader(vorbis_info &info, vorbis_comment &comment, bool &finished);
 	void pRewind();
-	void pSeek ( int sample );
+	void pSeek (int sample);
 };
 
 #endif

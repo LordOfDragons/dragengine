@@ -111,7 +111,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create gesture. */
-	ceGesture( const char *name = "Gesture" );
+	ceGesture(const char *name = "Gesture");
 	
 	/** Clean up gesture. */
 	virtual ~ceGesture();
@@ -125,31 +125,31 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation or \em NULL if not set. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Name of animator to use. */
 	inline const decString &GetAnimator() const{ return pAnimator; }
 	
 	/** Set name of animator to use. */
-	void SetAnimator( const char *animator );
+	void SetAnimator(const char *animator);
 	
 	/** Hold gesture after finishing it. */
 	inline bool GetHold() const{ return pHold; }
 	
 	/** Set if gesture is hold after finishing it. */
-	void SetHold( bool hold );
+	void SetHold(bool hold);
 	
 	/** Duration in seconds. */
 	inline float GetDuration() const{ return pDuration; }
 	
 	/** Set duration in seconds. */
-	void SetDuration( float duration );
+	void SetDuration(float duration);
 	/*@}*/
 };
 

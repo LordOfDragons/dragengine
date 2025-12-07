@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullTabBook();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullTabBook* CreateNativeWidget( igdeTabBook &owner );
+	static igdeNativeNullTabBook* CreateNativeWidget(igdeTabBook &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,10 +55,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void AddHeader( const igdeTabBook::cHeader &header );
-	virtual void RemoveHeader( int index );
+	virtual void AddHeader(const igdeTabBook::cHeader &header);
+	virtual void RemoveHeader(int index);
 	virtual void RemoveAllHeaders();
-	virtual void ChangePanel( int index );
+	virtual void ChangePanel(int index);
 	virtual void *GetNativeContainer();
 	/*@}*/
 };

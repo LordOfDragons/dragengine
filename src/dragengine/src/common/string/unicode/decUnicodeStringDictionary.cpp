@@ -37,27 +37,27 @@
 //////////////////////////////////////////////////
 
 decUnicodeStringDictionary::sDictEntry::sDictEntry() :
-hash( 0 ),
-next( NULL )
+hash(0),
+next(NULL)
 {
 	hash = 0;
 	next = NULL;
 }
 
 decUnicodeStringDictionary::sDictEntry::sDictEntry(
-const decUnicodeStringDictionary::sDictEntry &entry ) :
-hash( entry.hash ),
-key( entry.key ),
-value( entry.value ),
-next( NULL ){
+const decUnicodeStringDictionary::sDictEntry &entry) :
+hash(entry.hash),
+key(entry.key),
+value(entry.value),
+next(NULL){
 }
 
-decUnicodeStringDictionary::sDictEntry::sDictEntry( unsigned int nhash,
-const decUnicodeString &nkey, const decUnicodeString &nvalue ) :
-hash( nhash ),
-key( nkey ),
-value( nvalue ),
-next( NULL ){
+decUnicodeStringDictionary::sDictEntry::sDictEntry(unsigned int nhash,
+const decUnicodeString &nkey, const decUnicodeString &nvalue) :
+hash(nhash),
+key(nkey),
+value(nvalue),
+next(NULL){
 }
 
 decUnicodeStringDictionary::sDictEntry::~sDictEntry(){
@@ -77,58 +77,58 @@ decUnicodeStringDictionary::decUnicodeStringDictionary(){
 	pBucketCount = 8;
 	pEntryCount = 0;
 	
-	pBuckets = new sDictEntry*[ pBucketCount ];
+	pBuckets = new sDictEntry*[pBucketCount];
 	
 	int i;
-	for( i=0; i<pBucketCount; i++ ){
-		pBuckets[ i ] = NULL;
+	for(i=0; i<pBucketCount; i++){
+		pBuckets[i] = NULL;
 	}
 }
 
-decUnicodeStringDictionary::decUnicodeStringDictionary( int bucketCount ){
-	if( bucketCount < 1 ){
-		DETHROW( deeInvalidParam );
+decUnicodeStringDictionary::decUnicodeStringDictionary(int bucketCount){
+	if(bucketCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBuckets = NULL;
 	pBucketCount = bucketCount;
 	pEntryCount = 0;
 	
-	pBuckets = new sDictEntry*[ bucketCount ];
+	pBuckets = new sDictEntry*[bucketCount];
 	
 	int i;
-	for( i=0; i<bucketCount; i++ ){
-		pBuckets[ i ] = NULL;
+	for(i=0; i<bucketCount; i++){
+		pBuckets[i] = NULL;
 	}
 }
 
-decUnicodeStringDictionary::decUnicodeStringDictionary( const decUnicodeStringDictionary &dict ){
+decUnicodeStringDictionary::decUnicodeStringDictionary(const decUnicodeStringDictionary &dict){
 	pBuckets = NULL;
 	pBucketCount = dict.pBucketCount;
 	pEntryCount = dict.pEntryCount;
 	
-	pBuckets = new sDictEntry*[ pBucketCount ];
+	pBuckets = new sDictEntry*[pBucketCount];
 	
 	int i;
-	for( i=0; i<pBucketCount; i++ ){
-		pBuckets[ i ] = NULL;
+	for(i=0; i<pBucketCount; i++){
+		pBuckets[i] = NULL;
 	}
 	
 	sDictEntry *newEntry;
 	try{
-		for( i=0; i<pBucketCount; i++ ){
-			sDictEntry *iterEntry = dict.pBuckets[ i ];
+		for(i=0; i<pBucketCount; i++){
+			sDictEntry *iterEntry = dict.pBuckets[i];
 			sDictEntry *lastEntry = NULL;
 			newEntry = NULL;
 			
-			while( iterEntry ){
-				newEntry = new sDictEntry( *iterEntry );
+			while(iterEntry){
+				newEntry = new sDictEntry(*iterEntry);
 				
-				if( lastEntry ){
+				if(lastEntry){
 					lastEntry->next = newEntry;
 					
 				}else{
-					pBuckets[ i ] = newEntry;
+					pBuckets[i] = newEntry;
 				}
 				lastEntry = newEntry;
 				
@@ -136,8 +136,8 @@ decUnicodeStringDictionary::decUnicodeStringDictionary( const decUnicodeStringDi
 			}
 		}
 		
-	}catch( const deException & ){
-		if( newEntry ){
+	}catch(const deException &){
+		if(newEntry){
 			delete newEntry;
 		}
 		throw;
@@ -147,7 +147,7 @@ decUnicodeStringDictionary::decUnicodeStringDictionary( const decUnicodeStringDi
 decUnicodeStringDictionary::~decUnicodeStringDictionary(){
 	RemoveAll();
 	
-	if( pBuckets ){
+	if(pBuckets){
 		delete [] pBuckets;
 		pBuckets = NULL;
 	}
@@ -160,17 +160,17 @@ decUnicodeStringDictionary::~decUnicodeStringDictionary(){
 // Management
 ///////////////
 
-bool decUnicodeStringDictionary::Has( const decUnicodeString &key ) const{
-	if( ! key ){
-		DETHROW( deeInvalidParam );
+bool decUnicodeStringDictionary::Has(const decUnicodeString &key) const{
+	if(!key){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const unsigned int hash = key.Hash();
 	
-	sDictEntry *iterEntry = pBuckets[ hash % pBucketCount ];
+	sDictEntry *iterEntry = pBuckets[hash % pBucketCount];
 	
-	while( iterEntry ){
-		if( iterEntry->hash == hash && iterEntry->key == key ){
+	while(iterEntry){
+		if(iterEntry->hash == hash && iterEntry->key == key){
 			return true;
 		}
 		iterEntry = iterEntry->next;
@@ -179,26 +179,26 @@ bool decUnicodeStringDictionary::Has( const decUnicodeString &key ) const{
 	return false;
 }
 
-const decUnicodeString &decUnicodeStringDictionary::GetAt( const decUnicodeString &key ) const{
+const decUnicodeString &decUnicodeStringDictionary::GetAt(const decUnicodeString &key) const{
 	decUnicodeString *string;
-	if( ! GetAt( key,&string ) ){
-		DETHROW( deeInvalidParam );
+	if(!GetAt(key,&string)){
+		DETHROW(deeInvalidParam);
 	}
 	return *string;
 }
 
-bool decUnicodeStringDictionary::GetAt( const decUnicodeString &key, decUnicodeString **string ) const{
-	if( ! key || ! string ){
-		DETHROW( deeInvalidParam );
+bool decUnicodeStringDictionary::GetAt(const decUnicodeString &key, decUnicodeString **string) const{
+	if(!key || !string){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const unsigned int hash = key.Hash();
 	
-	sDictEntry *iterEntry = pBuckets[ hash % pBucketCount ];
+	sDictEntry *iterEntry = pBuckets[hash % pBucketCount];
 	
-	while( iterEntry ){
-		if( iterEntry->hash == hash ){
-			if( iterEntry->key == key ){
+	while(iterEntry){
+		if(iterEntry->hash == hash){
+			if(iterEntry->key == key){
 				*string = &iterEntry->value;
 				return true;
 			}
@@ -209,19 +209,19 @@ bool decUnicodeStringDictionary::GetAt( const decUnicodeString &key, decUnicodeS
 	return false;
 }
 
-void decUnicodeStringDictionary::SetAt( const decUnicodeString &key, const decUnicodeString &value ){
-	if( ! key || key[ 0 ] == '\0' ){
-		DETHROW( deeInvalidParam);
+void decUnicodeStringDictionary::SetAt(const decUnicodeString &key, const decUnicodeString &value){
+	if(!key || key[0] == '\0'){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const unsigned int hash = key.Hash();
 	const int bucketIndex = hash % pBucketCount;
 	
-	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
+	sDictEntry *iterEntry = pBuckets[bucketIndex];
 	sDictEntry *lastEntry = NULL;
 	
-	while( iterEntry ){
-		if( iterEntry->hash == hash && iterEntry->key == key ){
+	while(iterEntry){
+		if(iterEntry->hash == hash && iterEntry->key == key){
 			iterEntry->value = value;
 			pEntryCount++;
 			CheckLoad();
@@ -233,17 +233,17 @@ void decUnicodeStringDictionary::SetAt( const decUnicodeString &key, const decUn
 	
 	sDictEntry *newEntry = NULL;
 	try{
-		newEntry = new sDictEntry( hash, key, value );
+		newEntry = new sDictEntry(hash, key, value);
 		
-		if( lastEntry ){
+		if(lastEntry){
 			lastEntry->next = newEntry;
 			
 		}else{
-			pBuckets[ bucketIndex ] = newEntry;
+			pBuckets[bucketIndex] = newEntry;
 		}
 		
-	}catch( const deException & ){
-		if( newEntry ){
+	}catch(const deException &){
+		if(newEntry){
 			delete newEntry;
 		}
 		throw;
@@ -253,24 +253,24 @@ void decUnicodeStringDictionary::SetAt( const decUnicodeString &key, const decUn
 	CheckLoad();
 }
 
-void decUnicodeStringDictionary::Remove( const decUnicodeString &key ){
-	if( ! key ){
-		DETHROW( deeInvalidParam );
+void decUnicodeStringDictionary::Remove(const decUnicodeString &key){
+	if(!key){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const unsigned int hash = key.Hash();
 	const int bucketIndex = hash % pBucketCount;
 	
-	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
+	sDictEntry *iterEntry = pBuckets[bucketIndex];
 	sDictEntry *lastEntry = NULL;
 	
-	while( iterEntry ){
-		if( iterEntry->hash == hash && iterEntry->key == key ){
-			if( lastEntry ){
+	while(iterEntry){
+		if(iterEntry->hash == hash && iterEntry->key == key){
+			if(lastEntry){
 				lastEntry->next = iterEntry->next;
 				
 			}else{
-				pBuckets[ bucketIndex ] = iterEntry->next;
+				pBuckets[bucketIndex] = iterEntry->next;
 			}
 			
 			pEntryCount--;
@@ -283,27 +283,27 @@ void decUnicodeStringDictionary::Remove( const decUnicodeString &key ){
 		iterEntry = iterEntry->next;
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void decUnicodeStringDictionary::RemoveIfPresent( const decUnicodeString &key ){
-	if( ! key ){
-		DETHROW( deeInvalidParam );
+void decUnicodeStringDictionary::RemoveIfPresent(const decUnicodeString &key){
+	if(!key){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const unsigned int hash = key.Hash();
 	const int bucketIndex = hash % pBucketCount;
 	
-	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
+	sDictEntry *iterEntry = pBuckets[bucketIndex];
 	sDictEntry *lastEntry = NULL;
 	
-	while( iterEntry ){
-		if( iterEntry->hash == hash && iterEntry->key == key ){
-			if( lastEntry ){
+	while(iterEntry){
+		if(iterEntry->hash == hash && iterEntry->key == key){
+			if(lastEntry){
 				lastEntry->next = iterEntry->next;
 				
 			}else{
-				pBuckets[ bucketIndex ] = iterEntry->next;
+				pBuckets[bucketIndex] = iterEntry->next;
 			}
 			
 			pEntryCount--;
@@ -318,15 +318,15 @@ void decUnicodeStringDictionary::RemoveIfPresent( const decUnicodeString &key ){
 }
 
 void decUnicodeStringDictionary::RemoveAll(){
-	if( pBuckets ){
+	if(pBuckets){
 		int i;
 		
-		for( i=0; i<pBucketCount; i++ ){
-			if( pBuckets[ i ] ){
-				sDictEntry *iterEntry = pBuckets[ i ];
-				pBuckets[ i ] = NULL;
+		for(i=0; i<pBucketCount; i++){
+			if(pBuckets[i]){
+				sDictEntry *iterEntry = pBuckets[i];
+				pBuckets[i] = NULL;
 				
-				while( iterEntry ){
+				while(iterEntry){
 					sDictEntry * const delbucket = iterEntry;
 					iterEntry = iterEntry->next;
 					delete delbucket;
@@ -344,11 +344,11 @@ decUnicodeStringList decUnicodeStringDictionary::GetKeys() const{
 	decUnicodeStringList keys;
 	int i;
 	
-	for( i=0; i<pBucketCount; i++ ){
-		sDictEntry *iterEntry = pBuckets[ i ];
+	for(i=0; i<pBucketCount; i++){
+		sDictEntry *iterEntry = pBuckets[i];
 		
-		while( iterEntry ){
-			keys.Add( iterEntry->key );
+		while(iterEntry){
+			keys.Add(iterEntry->key);
 			iterEntry = iterEntry->next;
 		}
 	}
@@ -360,11 +360,11 @@ decUnicodeStringList decUnicodeStringDictionary::GetValues() const{
 	decUnicodeStringList values;
 	int i;
 	
-	for( i=0; i<pBucketCount; i++ ){
-		sDictEntry *iterEntry = pBuckets[ i ];
+	for(i=0; i<pBucketCount; i++){
+		sDictEntry *iterEntry = pBuckets[i];
 		
-		while( iterEntry ){
-			values.Add( iterEntry->value );
+		while(iterEntry){
+			values.Add(iterEntry->value);
 			iterEntry = iterEntry->next;
 		}
 	}
@@ -374,19 +374,19 @@ decUnicodeStringList decUnicodeStringDictionary::GetValues() const{
 
 
 
-bool decUnicodeStringDictionary::Equals( const decUnicodeStringDictionary &dict ) const{
+bool decUnicodeStringDictionary::Equals(const decUnicodeStringDictionary &dict) const{
 	decUnicodeString *string;
 	int i;
 	
-	if( dict.pEntryCount != pEntryCount ){
+	if(dict.pEntryCount != pEntryCount){
 		return false;
 	}
 	
-	for( i=0; i<pBucketCount; i++ ){
-		sDictEntry *iterEntry = pBuckets[ i ];
+	for(i=0; i<pBucketCount; i++){
+		sDictEntry *iterEntry = pBuckets[i];
 		
-		while( iterEntry ){
-			if( ! dict.GetAt( iterEntry->key, &string ) || *string != iterEntry->value ){
+		while(iterEntry){
+			if(!dict.GetAt(iterEntry->key, &string) || *string != iterEntry->value){
 				return false;
 			}
 			iterEntry = iterEntry->next;
@@ -399,36 +399,36 @@ bool decUnicodeStringDictionary::Equals( const decUnicodeStringDictionary &dict 
 
 
 void decUnicodeStringDictionary::CheckLoad(){
-	if( ( float )pEntryCount / ( float )pBucketCount > 0.7 ){
-		const int newBucketCount = pBucketCount + ( pBucketCount >> 1 ); // +50%
-		sDictEntry ** const newBuckets = new sDictEntry*[ newBucketCount ];
+	if((float)pEntryCount / (float)pBucketCount > 0.7){
+		const int newBucketCount = pBucketCount + (pBucketCount >> 1); // +50%
+		sDictEntry ** const newBuckets = new sDictEntry*[newBucketCount];
 		int i;
 		
-		if( ! newBuckets ){
-			DETHROW( deeInvalidParam );
+		if(!newBuckets){
+			DETHROW(deeInvalidParam);
 		}
-		for( i=0; i<newBucketCount; i++ ){
-			newBuckets[ i ] = NULL;
+		for(i=0; i<newBucketCount; i++){
+			newBuckets[i] = NULL;
 		}
 		
-		for( i=0; i<pBucketCount; i++ ){
-			sDictEntry *iterEntry = pBuckets[ i ];
+		for(i=0; i<pBucketCount; i++){
+			sDictEntry *iterEntry = pBuckets[i];
 			
-			while( iterEntry ){
+			while(iterEntry){
 				sDictEntry * const moveEntry = iterEntry;
 				iterEntry = iterEntry->next;
 				
-				const int bucketIndex = ( moveEntry->hash % newBucketCount );
-				sDictEntry *iterEntry2 = newBuckets[ bucketIndex ];
+				const int bucketIndex = (moveEntry->hash % newBucketCount);
+				sDictEntry *iterEntry2 = newBuckets[bucketIndex];
 				
-				if( iterEntry2 ){
-					while( iterEntry2->next ){
+				if(iterEntry2){
+					while(iterEntry2->next){
 						iterEntry2 = iterEntry2->next;
 					}
 					iterEntry2->next = moveEntry;
 					
 				}else{
-					newBuckets[ bucketIndex ] = moveEntry;
+					newBuckets[bucketIndex] = moveEntry;
 				}
 				
 				moveEntry->next = NULL;
@@ -447,19 +447,19 @@ void decUnicodeStringDictionary::CheckLoad(){
 // Operators
 //////////////
 
-bool decUnicodeStringDictionary::operator==( const decUnicodeStringDictionary &dict ) const{
-	return Equals( dict );
+bool decUnicodeStringDictionary::operator==(const decUnicodeStringDictionary &dict) const{
+	return Equals(dict);
 }
 
-decUnicodeStringDictionary decUnicodeStringDictionary::operator+( const decUnicodeStringDictionary &dict ) const{
-	decUnicodeStringDictionary ndict( *this );
+decUnicodeStringDictionary decUnicodeStringDictionary::operator+(const decUnicodeStringDictionary &dict) const{
+	decUnicodeStringDictionary ndict(*this);
 	int i;
 	
-	for( i=0; i<dict.pBucketCount; i++ ){
-		sDictEntry *iterEntry = dict.pBuckets[ i ];
+	for(i=0; i<dict.pBucketCount; i++){
+		sDictEntry *iterEntry = dict.pBuckets[i];
 		
-		while( iterEntry ){
-			ndict.SetAt( iterEntry->key, iterEntry->value );
+		while(iterEntry){
+			ndict.SetAt(iterEntry->key, iterEntry->value);
 			iterEntry = iterEntry->next;
 		}
 	}
@@ -467,25 +467,25 @@ decUnicodeStringDictionary decUnicodeStringDictionary::operator+( const decUnico
 	return ndict;
 }
 
-const decUnicodeString &decUnicodeStringDictionary::operator[]( const decUnicodeString &key ) const{
-	return GetAt( key );
+const decUnicodeString &decUnicodeStringDictionary::operator[](const decUnicodeString &key) const{
+	return GetAt(key);
 }
 
 
 
-decUnicodeStringDictionary &decUnicodeStringDictionary::operator=( const decUnicodeStringDictionary &dict ){
+decUnicodeStringDictionary &decUnicodeStringDictionary::operator=(const decUnicodeStringDictionary &dict){
 	RemoveAll();
 	return *this += dict;
 }
 
-decUnicodeStringDictionary &decUnicodeStringDictionary::operator+=( const decUnicodeStringDictionary &dict ){
+decUnicodeStringDictionary &decUnicodeStringDictionary::operator+=(const decUnicodeStringDictionary &dict){
 	int i;
 	
-	for( i=0; i<dict.pBucketCount; i++ ){
-		sDictEntry *iterEntry = dict.pBuckets[ i ];
+	for(i=0; i<dict.pBucketCount; i++){
+		sDictEntry *iterEntry = dict.pBuckets[i];
 		
-		while( iterEntry ){
-			SetAt( iterEntry->key, iterEntry->value );
+		while(iterEntry){
+			SetAt(iterEntry->key, iterEntry->value);
 			iterEntry = iterEntry->next;
 		}
 	}

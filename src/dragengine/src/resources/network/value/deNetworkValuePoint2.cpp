@@ -37,11 +37,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkValuePoint2::deNetworkValuePoint2( eValueFormats format, const decPoint &value ) :
-pFormat( format ),
-pValue( value )
+deNetworkValuePoint2::deNetworkValuePoint2(eValueFormats format, const decPoint &value) :
+pFormat(format),
+pValue(value)
 {
-	switch( format ){
+	switch(format){
 	case evfSInt8:
 	case evfSInt16:
 	case evfSInt32:
@@ -51,7 +51,7 @@ pValue( value )
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -63,7 +63,7 @@ deNetworkValuePoint2::~deNetworkValuePoint2(){
 // Management
 ///////////////
 
-void deNetworkValuePoint2::SetPoint( const decPoint &value ){
+void deNetworkValuePoint2::SetPoint(const decPoint &value){
 	pValue = value;
 }
 
@@ -72,6 +72,6 @@ void deNetworkValuePoint2::SetPoint( const decPoint &value ){
 // Visiting
 /////////////
 
-void deNetworkValuePoint2::Visit( deNetworkValueVisitor &visitor ){
-	visitor.VisitPoint2( this );
+void deNetworkValuePoint2::Visit(deNetworkValueVisitor &visitor){
+	visitor.VisitPoint2(this);
 }

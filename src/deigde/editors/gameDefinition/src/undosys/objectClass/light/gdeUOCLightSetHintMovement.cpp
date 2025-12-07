@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintMovement::gdeUOCLightSetHintMovement( gdeObjectClass *objectClass,
-gdeOCLight *light, deLight::eMovementHints newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetHintMovement::gdeUOCLightSetHintMovement(gdeObjectClass *objectClass,
+gdeOCLight *light, deLight::eMovementHints newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set hint movement" );
+	SetShortInfo("Light set hint movement");
 	
 	pOldValue = light->GetHintMovement();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetHintMovement::~gdeUOCLightSetHintMovement(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetHintMovement::~gdeUOCLightSetHintMovement(){
 ///////////////
 
 void gdeUOCLightSetHintMovement::Undo(){
-	pLight->SetHintMovement( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHintMovement(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetHintMovement::Redo(){
-	pLight->SetHintMovement( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHintMovement(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

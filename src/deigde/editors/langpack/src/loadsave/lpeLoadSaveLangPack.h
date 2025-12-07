@@ -48,7 +48,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new load/save object. */
-	lpeLoadSaveLangPack( deBaseLanguagePackModule *module );
+	lpeLoadSaveLangPack(deBaseLanguagePackModule *module);
 	/** Cleans up the load/save object. */
 	~lpeLoadSaveLangPack();
 	/*@}*/
@@ -58,16 +58,16 @@ public:
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	/** Sets the pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** Loads a langpack. */
-	void LoadLangPack( lpeLangPack *langpack, decBaseFileReader *file );
+	void LoadLangPack(lpeLangPack *langpack, decBaseFileReader *file);
 	/** Saves a langpack. */
-	void SaveLangPack( lpeLangPack *langpack, decBaseFileWriter *file );
+	void SaveLangPack(lpeLangPack *langpack, decBaseFileWriter *file);
 	/*@}*/
 };
 

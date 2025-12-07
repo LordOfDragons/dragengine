@@ -57,7 +57,7 @@ public:
 	igdeGDCSnapPoint();
 	
 	/** \brief Create copy of snap point. */
-	igdeGDCSnapPoint( const igdeGDCSnapPoint &snapPoint );
+	igdeGDCSnapPoint(const igdeGDCSnapPoint &snapPoint);
 	
 protected:
 	/** \brief Clean up snap point. */
@@ -73,7 +73,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
@@ -81,13 +81,13 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set snap position relative to parent object. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Snap orientation relative to parent object. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set snap orientation relative to parent object. */
-	void SetRotation( const decVector &orientation );
+	void SetRotation(const decVector &orientation);
 	
 	
 	
@@ -95,13 +95,13 @@ public:
 	inline float GetSnapDistance() const{ return pSnapDistance; }
 	
 	/** \brief Set snap distance in meters. */
-	void SetSnapDistance( float distance );
+	void SetSnapDistance(float distance);
 	
 	/** \brief Snap to orientation. */
 	inline bool GetSnapToRotation() const{ return pSnapToRotation; }
 	
 	/** \brief Set snap to orientation. */
-	void SetSnapToRotation( bool snapToRotation );
+	void SetSnapToRotation(bool snapToRotation);
 	/*@}*/
 };
 

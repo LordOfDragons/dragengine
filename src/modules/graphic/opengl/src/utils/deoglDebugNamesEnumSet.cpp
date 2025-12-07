@@ -31,8 +31,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDebugNamesEnumSet::deoglDebugNamesEnumSet( const char *name, const sEntry *entries ) :
-deoglDebugNamesEnum( name, entries ){
+deoglDebugNamesEnumSet::deoglDebugNamesEnumSet(const char *name, const sEntry *entries) :
+deoglDebugNamesEnum(name, entries){
 }
 
 
@@ -40,19 +40,19 @@ deoglDebugNamesEnum( name, entries ){
 // Management
 ///////////////
 
-decString deoglDebugNamesEnumSet::SetName( int value, bool full ) const{
+decString deoglDebugNamesEnumSet::SetName(int value, bool full) const{
 	decString name;
-	if( full ){
+	if(full){
 		name = pName;
 	}
-	name.AppendCharacter( '{' );
+	name.AppendCharacter('{');
 	
 	const char *separator = "";
 	const sEntry *entry = pEntries;
 	
-	while( entry->name ){
-		if( value & entry->value ){
-			name.AppendFormat( "%s%s", separator, entry->name );
+	while(entry->name){
+		if(value & entry->value){
+			name.AppendFormat("%s%s", separator, entry->name);
 			separator = ", ";
 			value &= ~entry->value;
 		}
@@ -60,13 +60,13 @@ decString deoglDebugNamesEnumSet::SetName( int value, bool full ) const{
 	}
 	
 	int i;
-	for( i=0; i<31; i++ ){
-		if( value & ( 1 << i ) ){
-			name.AppendFormat( "%s%x", separator, 1 << i );
+	for(i=0; i<31; i++){
+		if(value & (1 << i)){
+			name.AppendFormat("%s%x", separator, 1 << i);
 			separator = ", ";
 		}
 	}
 	
-	name.AppendCharacter( '}' );
+	name.AppendCharacter('}');
 	return name;
 }

@@ -51,8 +51,8 @@ public:
 	struct sFace{
 		decVector normal;
 		decVector baseVertex;
-		decVector edgeNormal[ 3 ];
-		float edgeDistance[ 3 ];
+		decVector edgeNormal[3];
+		float edgeDistance[3];
 		int indexFace;
 		int indexTexture;
 	};
@@ -128,7 +128,7 @@ public:
 	
 	
 	/** \brief Build from faces. */
-	void Build( const deoalModelFace *faces, int faceCount );
+	void Build(const deoalModelFace *faces, int faceCount);
 	
 	/** \brief Drop temporary build data. */
 	void DropBuildData();
@@ -139,10 +139,10 @@ public:
 private:
 	void pCleanUp();
 	int pAddBuildNode();
-	void pUpdateNodeExtends( sBuildNode &node ) const;
-	void pSplitNode( int nodeIndex );
-	void pNodeAddFace( sBuildNode &node, int faceIndex );
-	void pBuildVisitNode( const sBuildNode &buildNode );
+	void pUpdateNodeExtends(sBuildNode &node) const;
+	void pSplitNode(int nodeIndex);
+	void pNodeAddFace(sBuildNode &node, int faceIndex);
+	void pBuildVisitNode(const sBuildNode &buildNode);
 };
 
 #endif

@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUShapeHullSetPoint( reRigShapeHull *shape, const decVector &pointNew, int index );
+	reUShapeHullSetPoint(reRigShapeHull *shape, const decVector &pointNew, int index);
 	
 protected:
 	/** \brief Clean up undo. */

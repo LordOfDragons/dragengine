@@ -47,29 +47,29 @@ saeWord::saeWord(){
 	pActive = false;
 }
 
-saeWord::saeWord( const char *name ) :
-pSAnimation( NULL ),
-pName( name ),
-pActive( false )
+saeWord::saeWord(const char *name) :
+pSAnimation(NULL),
+pName(name),
+pActive(false)
 {
-	if( pName.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pName.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-saeWord::saeWord( const char *name, const decUnicodeString &phonetics ) :
-pSAnimation( NULL ),
-pName( name ),
-pPhonetics( phonetics ),
-pActive( false )
+saeWord::saeWord(const char *name, const decUnicodeString &phonetics) :
+pSAnimation(NULL),
+pName(name),
+pPhonetics(phonetics),
+pActive(false)
 {
-	if( pName.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pName.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 saeWord::~saeWord(){
-	SetSAnimation( NULL );
+	SetSAnimation(NULL);
 }
 
 
@@ -77,38 +77,38 @@ saeWord::~saeWord(){
 // Management
 ///////////////
 
-void saeWord::SetSAnimation( saeSAnimation *sanimation ){
+void saeWord::SetSAnimation(saeSAnimation *sanimation){
 	pSAnimation = sanimation;
 }
 
 
 
-void saeWord::SetName( const char *name ){
-	if( pName.Equals( name ) ){
+void saeWord::SetName(const char *name){
+	if(pName.Equals(name)){
 		return;
 	}
 	
-	if( pSAnimation && pSAnimation->GetWordList().HasNamed( name ) ){
-		DETHROW( deeInvalidParam );
+	if(pSAnimation && pSAnimation->GetWordList().HasNamed(name)){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
 	
-	if( pSAnimation ){
-		pSAnimation->NotifyWordNameChanged( this );
+	if(pSAnimation){
+		pSAnimation->NotifyWordNameChanged(this);
 	}
 }
 
-void saeWord::SetPhonetics( const decUnicodeString &phonetics ){
-	if( pPhonetics != phonetics ){
+void saeWord::SetPhonetics(const decUnicodeString &phonetics){
+	if(pPhonetics != phonetics){
 		pPhonetics = phonetics;
 		
-		if( pSAnimation ){
-			pSAnimation->NotifyWordChanged( this );
+		if(pSAnimation){
+			pSAnimation->NotifyWordChanged(this);
 		}
 	}
 }
 
-void saeWord::SetActive( bool active ){
+void saeWord::SetActive(bool active){
 	pActive = active;
 }

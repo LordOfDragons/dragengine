@@ -81,7 +81,7 @@ public:
 	 * Determines if this volume collides with the given one. The
 	 * subclass has to dispatch to a second stage function here.
 	 */
-	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume ) = 0;
+	virtual bool VolumeHitsVolume(deoglCollisionVolume *volume) = 0;
 	/**
 	 * Retrieves the distance travelled along a given displacement
 	 * vector until this volume hits another one. The returned value
@@ -92,7 +92,7 @@ public:
 	 * you are not interested in this information.
 	 * The subclass has to dispatch to a second stage function here.
 	 */
-	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal ) = 0;
+	virtual float VolumeMoveHitsVolume(deoglCollisionVolume *volume, const decVector &displacement, decVector *normal) = 0;
 	/*@}*/
 	
 	/** \name Second Stage Dispatch */
@@ -101,32 +101,32 @@ public:
 	 * Determines if the given sphere collides with this volume. The
 	 * subclass has to dispatch to a collision function here.
 	 */
-	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere ) = 0;
+	virtual bool SphereHitsVolume(deoglCollisionSphere *sphere) = 0;
 	/**
 	 * Determines if the given cylinder collides with this volume. The
 	 * subclass has to dispatch to a collision function here.
 	 */
-	virtual bool CylinderHitsVolume( deoglCollisionCylinder *cylinder ) = 0;
+	virtual bool CylinderHitsVolume(deoglCollisionCylinder *cylinder) = 0;
 	/**
 	 * Determines if the given capsule collides with this volume. The
 	 * subclass has to dispatch to a collision function here.
 	 */
-	virtual bool CapsuleHitsVolume( deoglCollisionCapsule *capsule ) = 0;
+	virtual bool CapsuleHitsVolume(deoglCollisionCapsule *capsule) = 0;
 	/**
 	 * Determines if the given box collides with this volume. The
 	 * subclass has to dispatch to a collision function here.
 	 */
-	virtual bool BoxHitsVolume( deoglCollisionBox *box ) = 0;
+	virtual bool BoxHitsVolume(deoglCollisionBox *box) = 0;
 	/**
 	 * Determines if the given triangle collides with this volume. The
 	 * subclass has to dispatch to a collision function here.
 	 */
-	virtual bool TriangleHitsVolume( deoglCollisionTriangle *triangle ) = 0;
+	virtual bool TriangleHitsVolume(deoglCollisionTriangle *triangle) = 0;
 	/**
 	 * Determines if the given frustum collides with this volume. The
 	 * subclass has to dispatch to a collision function here.
 	 */
-	virtual bool FrustumHitsVolume( deoglCollisionFrustum *frustum ) = 0;
+	virtual bool FrustumHitsVolume(deoglCollisionFrustum *frustum) = 0;
 	
 	/**
 	 * Retrieves the distance travelled along a given displacement
@@ -138,7 +138,7 @@ public:
 	 * you are not interested in this information.
 	 * The subclass has to dispatch to a collision function here.
 	 */
-	virtual float SphereMoveHitsVolume( deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal ) = 0;
+	virtual float SphereMoveHitsVolume(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal) = 0;
 	/**
 	 * Retrieves the distance travelled along a given displacement
 	 * vector until this volume hits a cylinder. The returned value
@@ -149,7 +149,7 @@ public:
 	 * you are not interested in this information.
 	 * The subclass has to dispatch to a collision function here.
 	 */
-	virtual float CylinderMoveHitsVolume( deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal ) = 0;
+	virtual float CylinderMoveHitsVolume(deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal) = 0;
 	/**
 	 * Retrieves the distance travelled along a given displacement
 	 * vector until this volume hits a capsule. The returned value
@@ -160,7 +160,7 @@ public:
 	 * you are not interested in this information.
 	 * The subclass has to dispatch to a collision function here.
 	 */
-	virtual float CapsuleMoveHitsVolume( deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal ) = 0;
+	virtual float CapsuleMoveHitsVolume(deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal) = 0;
 	/**
 	 * Retrieves the distance travelled along a given displacement
 	 * vector until this volume hits a box. The returned value
@@ -171,7 +171,7 @@ public:
 	 * you are not interested in this information.
 	 * The subclass has to dispatch to a collision function here.
 	 */
-	virtual float BoxMoveHitsVolume( deoglCollisionBox *box, const decVector &displacement, decVector *normal ) = 0;
+	virtual float BoxMoveHitsVolume(deoglCollisionBox *box, const decVector &displacement, decVector *normal) = 0;
 	/**
 	 * Retrieves the distance travelled along a given displacement
 	 * vector until this volume hits a triangle. The returned value
@@ -182,7 +182,7 @@ public:
 	 * you are not interested in this information.
 	 * The subclass has to dispatch to a collision function here.
 	 */
-	virtual float TriangleMoveHitsVolume( deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal ) = 0;
+	virtual float TriangleMoveHitsVolume(deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal) = 0;
 	/**
 	 * Retrieves the distance travelled along a given displacement
 	 * vector until this volume hits a frustum. The returned value
@@ -193,7 +193,7 @@ public:
 	 * you are not interested in this information.
 	 * The subclass has to dispatch to a collision function here.
 	 */
-	virtual float FrustumMoveHitsVolume( deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal ) = 0;
+	virtual float FrustumMoveHitsVolume(deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal) = 0;
 
 	/**
 	 * Retrieves the distance travelled along a given displacement
@@ -205,7 +205,7 @@ public:
 	 * you are not interested in this information.
 	 * The subclass has to dispatch to a collision function here.
 	 */
-	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal ) = 0;
+	virtual float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal) = 0;
 	/*@}*/
 	
 	/** \name Enclosing Volumes */
@@ -213,19 +213,19 @@ public:
 	/**
 	 * Retrieves the sphere volume best enclosing this volume.
 	 */
-	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere ) = 0;
+	virtual void GetEnclosingSphere(deoglCollisionSphere *sphere) = 0;
 	/**
 	 * Retrieves the box volume best enclosing this volume.
 	 */
-	virtual void GetEnclosingBox( deoglCollisionBox *box ) = 0;
+	virtual void GetEnclosingBox(deoglCollisionBox *box) = 0;
 	/*@}*/
 
 	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decVector &point ) = 0;
+	virtual bool IsPointInside(const decVector &point) = 0;
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo( const decVector &point ) = 0;
+	virtual decVector ClosestPointTo(const decVector &point) = 0;
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
 	 * surface or near to it. This function is relaxing in this case and tries to calculate
@@ -234,7 +234,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decVector NormalAtPoint( const decVector &point );
+	virtual decVector NormalAtPoint(const decVector &point);
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -243,13 +243,13 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
+	virtual bool RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance);
 	/*@}*/
 	
 	/** \name Visiting */
 	/*{*/
 	/** Visits the collision volume. */
-	virtual void Visit( deoglCollisionVolumeVisitor *visitor ) = 0;
+	virtual void Visit(deoglCollisionVolumeVisitor *visitor) = 0;
 	/*}*/
 };
 

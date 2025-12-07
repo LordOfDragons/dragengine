@@ -67,7 +67,7 @@ public:
 	 * 
 	 * \warning Do not modify the parameter block after creating the shared object.
 	 */
-	deoglSharedSPB( const deoglShaderParameterBlock::Ref &parameterBlock );
+	deoglSharedSPB(const deoglShaderParameterBlock::Ref &parameterBlock);
 	
 protected:
 	/** Clean up shared shader parameter block. */
@@ -89,7 +89,7 @@ public:
 	inline int GetElementCount() const{ return pCount; }
 	
 	/** Element at index or \em NULL of not assigned. */
-	deoglSharedSPBElement *GetElementAt( int index ) const;
+	deoglSharedSPBElement *GetElementAt(int index) const;
 	
 	/**
 	 * Obtain element.
@@ -106,7 +106,7 @@ public:
 	 * 
 	 * \warning For use by deoglSharedSPBElement only.
 	 */
-	void RemoveElement( int index );
+	void RemoveElement(int index);
 	/*@}*/
 	
 private:

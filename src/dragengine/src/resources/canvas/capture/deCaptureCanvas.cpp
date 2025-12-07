@@ -41,16 +41,16 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCaptureCanvas::deCaptureCanvas( deCaptureCanvasManager *manager ) :
-deResource( manager ),
+deCaptureCanvas::deCaptureCanvas(deCaptureCanvasManager *manager) :
+deResource(manager),
 
-pCapture( false ),
+pCapture(false),
 
-pPeerGraphic( NULL ){
+pPeerGraphic(NULL){
 }
 
 deCaptureCanvas::~deCaptureCanvas(){
-	SetPeerGraphic( NULL );
+	SetPeerGraphic(NULL);
 }
 
 
@@ -58,38 +58,38 @@ deCaptureCanvas::~deCaptureCanvas(){
 // Management
 ///////////////
 
-void deCaptureCanvas::SetCanvasView( deCanvasView *canvasView ){
-	if( canvasView == pCanvasView ){
+void deCaptureCanvas::SetCanvasView(deCanvasView *canvasView){
+	if(canvasView == pCanvasView){
 		return;
 	}
 	
 	pCanvasView = canvasView;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->CanvasViewChanged();
 	}
 }
 
-void deCaptureCanvas::SetImage( deImage *image ){
-	if( image == pImage ){
+void deCaptureCanvas::SetImage(deImage *image){
+	if(image == pImage){
 		return;
 	}
 	
 	pImage = image;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ImageChanged();
 	}
 }
 
-void deCaptureCanvas::SetCapture( bool capture ){
-	if( capture == pCapture ){
+void deCaptureCanvas::SetCapture(bool capture){
+	if(capture == pCapture){
 		return;
 	}
 	
 	pCapture = capture;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->CaptureChanged();
 	}
 }
@@ -99,12 +99,12 @@ void deCaptureCanvas::SetCapture( bool capture ){
 // System Peers
 /////////////////
 
-void deCaptureCanvas::SetPeerGraphic( deBaseGraphicCaptureCanvas *peer ){
-	if( peer == pPeerGraphic ){
+void deCaptureCanvas::SetPeerGraphic(deBaseGraphicCaptureCanvas *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWPRuleListener( aeWPRule &panel );
+	aeWPRuleListener(aeWPRule &panel);
 	
 	/** Clean up listener. */
 	virtual ~aeWPRuleListener();
@@ -55,37 +55,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Model changed. */
-	virtual void ModelChanged( aeAnimator *animator );
+	virtual void ModelChanged(aeAnimator *animator);
 	
 	/** Rig changed. */
-	virtual void RigChanged( aeAnimator *animator );
+	virtual void RigChanged(aeAnimator *animator);
 	
 	/** Animation changed. */
-	virtual void AnimationChanged( aeAnimator *animator );
+	virtual void AnimationChanged(aeAnimator *animator);
 	
 	/** Controller named changed. */
-	virtual void ControllerNameChanged( aeAnimator *animator, aeController *controller );
+	virtual void ControllerNameChanged(aeAnimator *animator, aeController *controller);
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged( aeAnimator *animator );
+	virtual void ControllerStructureChanged(aeAnimator *animator);
 	
 	/** Link name changed. */
-	virtual void LinkNameChanged( aeAnimator *animator, aeLink *link );
+	virtual void LinkNameChanged(aeAnimator *animator, aeLink *link);
 	
 	/** Link count or order changed. */
-	virtual void LinkStructureChanged( aeAnimator *animator );
+	virtual void LinkStructureChanged(aeAnimator *animator);
 	
 	/** Active rule changed. */
-	virtual void ActiveRuleChanged( aeAnimator *animator, aeRule *rule );
+	virtual void ActiveRuleChanged(aeAnimator *animator, aeRule *rule);
 	
 	/** Rule changed. */
-	virtual void RuleChanged( aeAnimator *animator, aeRule *rule );
+	virtual void RuleChanged(aeAnimator *animator, aeRule *rule);
 	
 	/** Rule name changed. */
-	virtual void RuleNameChanged( aeAnimator *animator, aeRule *rule );
+	virtual void RuleNameChanged(aeAnimator *animator, aeRule *rule);
 	
 	/** Rule count or order changed. */
-	virtual void RuleStructureChanged( aeAnimator *animator );
+	virtual void RuleStructureChanged(aeAnimator *animator);
 	/*@}*/
 };
 

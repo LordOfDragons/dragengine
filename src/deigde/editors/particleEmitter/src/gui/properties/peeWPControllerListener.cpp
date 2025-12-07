@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWPControllerListener::peeWPControllerListener( peeWPController &panel ) :
-pPanel( panel ){
+peeWPControllerListener::peeWPControllerListener(peeWPController &panel) :
+pPanel(panel){
 }
 
 peeWPControllerListener::~peeWPControllerListener(){
@@ -53,26 +53,26 @@ peeWPControllerListener::~peeWPControllerListener(){
 ///////////////
 
 
-void peeWPControllerListener::ControllerStructureChanged( peeEmitter* ){
+void peeWPControllerListener::ControllerStructureChanged(peeEmitter*){
 	pPanel.UpdateControllerList();
 }
 
-void peeWPControllerListener::ControllerChanged( peeEmitter*, peeController *controller ){
-	if( controller->GetActive() ){
+void peeWPControllerListener::ControllerChanged(peeEmitter*, peeController *controller){
+	if(controller->GetActive()){
 		pPanel.UpdateController();
 	}
 }
 
-void peeWPControllerListener::ControllerNameChanged( peeEmitter*, peeController* ){
+void peeWPControllerListener::ControllerNameChanged(peeEmitter*, peeController*){
 	pPanel.UpdateControllerList();
 }
 
-void peeWPControllerListener::ControllerValueChanged( peeEmitter*, peeController *controller ){
-	if( controller->GetActive() ){
+void peeWPControllerListener::ControllerValueChanged(peeEmitter*, peeController *controller){
+	if(controller->GetActive()){
 		pPanel.UpdateControllerValue();
 	}
 }
 
-void peeWPControllerListener::ActiveControllerChanged( peeEmitter* ){
+void peeWPControllerListener::ActiveControllerChanged(peeEmitter*){
 	pPanel.SelectActiveController();
 }

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAMusic( ceWPTopic &parentPanel );
+	ceWPAMusic(ceWPTopic &parentPanel);
 	
 protected:
 	/** Clean up panel. */

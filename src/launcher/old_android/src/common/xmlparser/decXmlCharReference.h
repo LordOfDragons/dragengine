@@ -60,7 +60,7 @@ public:
 	 * \param data Character Data
 	 * \param radix Value from eRadices
 	 */
-	decXmlCharReference( const char *data, eRadices radix );
+	decXmlCharReference(const char *data, eRadices radix);
 	
 protected:
 	/** \brief Clean up xml character data. */
@@ -85,16 +85,16 @@ public:
 	inline bool IsHexadecimal() const{ return pRadix == erHexadecimal; }
 	
 	/** \brief Set data. */
-	void SetData( const char *data );
+	void SetData(const char *data);
 	
 	/** \brief Set radix. */
-	void SetRadix( eRadices radix );
+	void SetRadix(eRadices radix);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	

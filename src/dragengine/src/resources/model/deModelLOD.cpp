@@ -44,10 +44,10 @@
 ////////////////////////////
 
 deModelLOD::deModelLOD() :
-pHasLodError( false ),
-pLodError( 0.01f ),
-pVertexPositionSets( nullptr ),
-pVertexPositionSetCount( 0 )
+pHasLodError(false),
+pLodError(0.01f),
+pVertexPositionSets(nullptr),
+pVertexPositionSetCount(0)
 {
 	pWeights = NULL;
 	pWeightCount = 0;
@@ -69,22 +69,22 @@ pVertexPositionSetCount( 0 )
 }
 
 deModelLOD::~deModelLOD(){
-	if( pVertexPositionSets ){
+	if(pVertexPositionSets){
 		delete [] pVertexPositionSets;
 	}
-	if( pTextureCoordinatesSets ){
+	if(pTextureCoordinatesSets){
 		delete [] pTextureCoordinatesSets;
 	}
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
-	if( pWeightGroups ){
+	if(pWeightGroups){
 		delete [] pWeightGroups;
 	}
-	if( pWeights ){
+	if(pWeights){
 		delete [] pWeights;
 	}
 }
@@ -94,12 +94,12 @@ deModelLOD::~deModelLOD(){
 // Management
 ///////////////////////////
 
-void deModelLOD::SetHasLodError( bool hasError ){
+void deModelLOD::SetHasLodError(bool hasError){
 	pHasLodError = hasError;
 }
 
-void deModelLOD::SetLodError( float error ){
-	pLodError = decMath::max( error, 0.001f );
+void deModelLOD::SetLodError(float error){
+	pLodError = decMath::max(error, 0.001f);
 }
 
 
@@ -107,68 +107,68 @@ void deModelLOD::SetLodError( float error ){
 // Weight Sets Management
 ///////////////////////////
 
-void deModelLOD::SetWeightCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetWeightCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pWeightCount ){
-		if( pWeights ){
+	if(count != pWeightCount){
+		if(pWeights){
 			delete [] pWeights;
 		}
 		pWeights = NULL;
 		pWeightCount = 0;
 		
-		if( count > 0 ){
-			pWeights = new deModelWeight[ count ];
+		if(count > 0){
+			pWeights = new deModelWeight[count];
 			pWeightCount = count;
 		}
 	}
 }
 
-deModelWeight &deModelLOD::GetWeightAt( int index ) const{
-	if( index < 0 || index >= pWeightCount ){
-		DETHROW( deeInvalidParam );
+deModelWeight &deModelLOD::GetWeightAt(int index) const{
+	if(index < 0 || index >= pWeightCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pWeights[ index ];
+	return pWeights[index];
 }
 
 
 
-void deModelLOD::SetWeightGroupCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetWeightGroupCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pWeightGroupCount ){
-		if( pWeightGroups ){
+	if(count != pWeightGroupCount){
+		if(pWeightGroups){
 			delete [] pWeightGroups;
 		}
 		pWeightGroups = NULL;
 		pWeightGroupCount = 0;
 		
-		if( count > 0 ){
-			pWeightGroups = new int[ count ];
+		if(count > 0){
+			pWeightGroups = new int[count];
 			pWeightGroupCount = count;
 		}
 	}
 }
 
-int deModelLOD::GetWeightGroupAt( int index ) const{
-	if( index < 0 || index >= pWeightGroupCount ){
-		DETHROW( deeInvalidParam );
+int deModelLOD::GetWeightGroupAt(int index) const{
+	if(index < 0 || index >= pWeightGroupCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pWeightGroups[ index ];
+	return pWeightGroups[index];
 }
 
-void deModelLOD::SetWeightGroupAt( int index, int weightSetCount ) const{
-	if( index < 0 || index >= pWeightGroupCount || weightSetCount < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetWeightGroupAt(int index, int weightSetCount) const{
+	if(index < 0 || index >= pWeightGroupCount || weightSetCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pWeightGroups[ index ] = weightSetCount;
+	pWeightGroups[index] = weightSetCount;
 }
 
 
@@ -176,31 +176,31 @@ void deModelLOD::SetWeightGroupAt( int index, int weightSetCount ) const{
 // Vertex Management
 //////////////////////
 
-void deModelLOD::SetVertexCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetVertexCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pVertexCount ){
-		if( pVertices ){
+	if(count != pVertexCount){
+		if(pVertices){
 			delete [] pVertices;
 		}
 		pVertices = NULL;
 		pVertexCount = 0;
 		
-		if( count > 0 ){
-			pVertices = new deModelVertex[ count ];
+		if(count > 0){
+			pVertices = new deModelVertex[count];
 			pVertexCount = count;
 		}
 	}
 }
 
-deModelVertex &deModelLOD::GetVertexAt( int index ) const{
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+deModelVertex &deModelLOD::GetVertexAt(int index) const{
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pVertices[ index ];
+	return pVertices[index];
 }
 
 
@@ -208,47 +208,47 @@ deModelVertex &deModelLOD::GetVertexAt( int index ) const{
 // Face Management
 ////////////////////
 
-void deModelLOD::SetNormalCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetNormalCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNormalCount = count;
 }
 
-void deModelLOD::SetTangentCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetTangentCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTangentCount = count;
 }
 
-void deModelLOD::SetFaceCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetFaceCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pFaceCount ){
-		if( pFaces ){
+	if(count != pFaceCount){
+		if(pFaces){
 			delete [] pFaces;
 		}
 		pFaces = NULL;
 		pFaceCount = 0;
 		
-		if( count > 0 ){
-			pFaces = new deModelFace[ count ];
+		if(count > 0){
+			pFaces = new deModelFace[count];
 			pFaceCount = count;
 		}
 	}
 }
 
-deModelFace &deModelLOD::GetFaceAt( int index ) const{
-	if( index < 0 || index >= pFaceCount ){
-		DETHROW( deeInvalidParam );
+deModelFace &deModelLOD::GetFaceAt(int index) const{
+	if(index < 0 || index >= pFaceCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pFaces[ index ];
+	return pFaces[index];
 }
 
 
@@ -256,39 +256,39 @@ deModelFace &deModelLOD::GetFaceAt( int index ) const{
 // Texture Coordinates Sets
 /////////////////////////////
 
-void deModelLOD::SetTextureCoordinatesCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetTextureCoordinatesCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTextureCoordinatesCount = count;
 }
 
-void deModelLOD::SetTextureCoordinatesSetCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelLOD::SetTextureCoordinatesSetCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pTextureCoordinatesSetsCount ){
-		if( pTextureCoordinatesSets ){
+	if(count != pTextureCoordinatesSetsCount){
+		if(pTextureCoordinatesSets){
 			delete [] pTextureCoordinatesSets;
 		}
 		pTextureCoordinatesSets = NULL;
 		pTextureCoordinatesSetsCount = 0;
 		
-		if( count > 0 ){
-			pTextureCoordinatesSets = new deModelTextureCoordinatesSet[ count ];
+		if(count > 0){
+			pTextureCoordinatesSets = new deModelTextureCoordinatesSet[count];
 			pTextureCoordinatesSetsCount = count;
 		}
 	}
 }
 
-deModelTextureCoordinatesSet &deModelLOD::GetTextureCoordinatesSetAt( int index ) const{
-	if( index < 0 || index >= pTextureCoordinatesSetsCount ){
-		DETHROW( deeInvalidParam );
+deModelTextureCoordinatesSet &deModelLOD::GetTextureCoordinatesSetAt(int index) const{
+	if(index < 0 || index >= pTextureCoordinatesSetsCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTextureCoordinatesSets[ index ];
+	return pTextureCoordinatesSets[index];
 }
 
 
@@ -296,28 +296,28 @@ deModelTextureCoordinatesSet &deModelLOD::GetTextureCoordinatesSetAt( int index 
 // Vertex position sets
 /////////////////////////
 
-void deModelLOD::SetVertexPositionSetCount( int count ){
-	DEASSERT_TRUE( count >= 0 )
+void deModelLOD::SetVertexPositionSetCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
-	if( count == pVertexPositionSetCount ){
+	if(count == pVertexPositionSetCount){
 		return;
 	}
 	
-	if( pVertexPositionSets ){
+	if(pVertexPositionSets){
 		delete [] pVertexPositionSets;
 	}
 	pVertexPositionSets = nullptr;
 	pVertexPositionSetCount = 0;
 	
-	if( count > 0 ){
-		pVertexPositionSets = new deModelLodVertexPositionSet[ count ];
+	if(count > 0){
+		pVertexPositionSets = new deModelLodVertexPositionSet[count];
 		pVertexPositionSetCount = count;
 	}
 }
 
-deModelLodVertexPositionSet &deModelLOD::GetVertexPositionSetAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pVertexPositionSetCount )
+deModelLodVertexPositionSet &deModelLOD::GetVertexPositionSetAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pVertexPositionSetCount)
 	
-	return pVertexPositionSets[ index ];
+	return pVertexPositionSets[index];
 }

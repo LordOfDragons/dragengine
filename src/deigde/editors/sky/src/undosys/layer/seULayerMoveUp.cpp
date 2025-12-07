@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerMoveUp::seULayerMoveUp( seLayer *layer ) :
-pLayer( NULL ),
-pIndex( 0 )
+seULayerMoveUp::seULayerMoveUp(seLayer *layer) :
+pLayer(NULL),
+pIndex(0)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const seSky * const sky = layer->GetSky();
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Move Layer Up" );
+	SetShortInfo("Move Layer Up");
 	
-	pIndex = sky->GetLayers().IndexOf( layer );
-	if( pIndex < 1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = sky->GetLayers().IndexOf(layer);
+	if(pIndex < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLayer = layer;
@@ -65,7 +65,7 @@ pIndex( 0 )
 }
 
 seULayerMoveUp::~seULayerMoveUp(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -76,9 +76,9 @@ seULayerMoveUp::~seULayerMoveUp(){
 ///////////////
 
 void seULayerMoveUp::Undo(){
-	pLayer->GetSky()->MoveLayerTo( pLayer, pIndex );
+	pLayer->GetSky()->MoveLayerTo(pLayer, pIndex);
 }
 
 void seULayerMoveUp::Redo(){
-	pLayer->GetSky()->MoveLayerTo( pLayer, pIndex - 1 );
+	pLayer->GetSky()->MoveLayerTo(pLayer, pIndex - 1);
 }

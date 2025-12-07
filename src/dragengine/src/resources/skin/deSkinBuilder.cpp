@@ -43,5 +43,5 @@ deSkinBuilder::~deSkinBuilder(){
 // Management
 ///////////////
 
-void deSkinBuilder::BuildSkin( deSkin *skin ){
+void deSkinBuilder::BuildSkin(deSkin *skin){
 }

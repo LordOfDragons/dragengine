@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new crash recovery system linked to the given engine. */
-	deCrashRecoverySystem( deEngine *engine );
+	deCrashRecoverySystem(deEngine *engine);
 	
 	/** \brief Clean up physics system. */
 	~deCrashRecoverySystem();
@@ -70,7 +70,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

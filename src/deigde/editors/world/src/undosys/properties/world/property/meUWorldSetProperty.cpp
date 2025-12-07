@@ -38,25 +38,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetProperty::meUWorldSetProperty( meWorld *world, const char *key,
-const char *oldValue, const char *newValue ) :
-pWorld( NULL ),
-pKey( key ),
-pOldValue( oldValue ),
-pNewValue( newValue )
+meUWorldSetProperty::meUWorldSetProperty(meWorld *world, const char *key,
+const char *oldValue, const char *newValue) :
+pWorld(NULL),
+pKey(key),
+pOldValue(oldValue),
+pNewValue(newValue)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set world property" );
+	SetShortInfo("Set world property");
 	
 	pWorld = world;
 	world->AddReference();
 }
 
 meUWorldSetProperty::~meUWorldSetProperty(){
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }
@@ -66,18 +66,18 @@ meUWorldSetProperty::~meUWorldSetProperty(){
 // Management
 ///////////////
 
-void meUWorldSetProperty::SetNewValue( const char *value ){
+void meUWorldSetProperty::SetNewValue(const char *value){
 	pNewValue = value;
 }
 
 
 
 void meUWorldSetProperty::Undo(){
-	pWorld->SetProperty( pKey, pOldValue );
+	pWorld->SetProperty(pKey, pOldValue);
 }
 
 void meUWorldSetProperty::Redo(){
-	pWorld->SetProperty( pKey, pNewValue );
+	pWorld->SetProperty(pKey, pNewValue);
 }
 
 void meUWorldSetProperty::ProgressiveRedo(){

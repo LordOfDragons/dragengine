@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create status line. */
-	igdeStatusBar( igdeEnvironment &environment );
+	igdeStatusBar(igdeEnvironment &environment);
 	
 	
 	
@@ -74,7 +74,7 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Clear text. */
 	void ClearText();

@@ -90,7 +90,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer. */
-	seSynthesizer( igdeEnvironment *environment, seLoadSaveSystem &lssys );
+	seSynthesizer(igdeEnvironment *environment, seLoadSaveSystem &lssys);
 	
 	/** \brief Clean up synthesizer. */
 	virtual ~seSynthesizer();
@@ -118,25 +118,25 @@ public:
 	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Set number of channels. */
-	void SetChannelCount( int channelCount );
+	void SetChannelCount(int channelCount);
 	
 	/** \brief Sample rate. */
 	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Set sample rate. */
-	void SetSampleRate( int sampleRate );
+	void SetSampleRate(int sampleRate);
 	
 	/** \brief Bytes per sample. */
 	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Set bytes per sample. */
-	void SetBytesPerSample( int bytesPerSample );
+	void SetBytesPerSample(int bytesPerSample);
 	
 	/** \brief Number of samples to create. */
 	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples to create. */
-	void SetSampleCount( int sampleCount );
+	void SetSampleCount(int sampleCount);
 	
 	/** \brief Play time in seconds. */
 	inline float GetPlayTime() const{ return pPlayTime; }
@@ -147,7 +147,7 @@ public:
 	bool GetLooping() const;
 	
 	/** \brief Set if synthesizer is looping. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	/** \brief Synthesizer is stopped. */
 	bool GetStopped() const;
@@ -171,13 +171,13 @@ public:
 	float GetSpeed() const;
 	
 	/** \brief Set playback speed. */
-	void SetSpeed( float speed );
+	void SetSpeed(float speed);
 	
 	/** \brief Volume. */
 	float GetVolume() const;
 	
 	/** \brief Set volume. */
-	void SetVolume( float volume );
+	void SetVolume(float volume);
 	
 	
 	
@@ -185,7 +185,7 @@ public:
 	void Dispose();
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Reset synthesizer. */
 	void Reset();
@@ -202,16 +202,16 @@ public:
 	inline const seControllerList &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
-	void AddController( seController *controller );
+	void AddController(seController *controller);
 	
 	/** \brief Insert controller. */
-	void InsertControllerAt( seController *controller, int index );
+	void InsertControllerAt(seController *controller, int index);
 	
 	/** \brief Move controllerposition. */
-	void MoveControllerTo( seController *controller, int index );
+	void MoveControllerTo(seController *controller, int index);
 	
 	/** \brief Remove controller. */
-	void RemoveController( seController *controller );
+	void RemoveController(seController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
@@ -220,7 +220,7 @@ public:
 	inline seController *GetActiveController() const{ return pActiveController; }
 	
 	/** \brief Set active controller or \em NULL if not set. */
-	void SetActiveController( seController *controller );
+	void SetActiveController(seController *controller);
 	/*@}*/
 	
 	
@@ -231,16 +231,16 @@ public:
 	inline const seLinkList &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
-	void AddLink( seLink *link );
+	void AddLink(seLink *link);
 	
 	/** \brief Insert link. */
-	void InsertLinkAt( seLink *link, int index );
+	void InsertLinkAt(seLink *link, int index);
 	
 	/** \brief Move link. */
-	void MoveLinkTo( seLink *link, int index );
+	void MoveLinkTo(seLink *link, int index);
 	
 	/** \brief Remove link. */
-	void RemoveLink( seLink *link );
+	void RemoveLink(seLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
@@ -249,10 +249,10 @@ public:
 	inline seLink *GetActiveLink() const{ return pActiveLink; }
 	
 	/** \brief Set active link or \em NULL if not set. */
-	void SetActiveLink( seLink *link );
+	void SetActiveLink(seLink *link);
 	
 	/** \brief Number of targets using link. */
-	int CountLinkUsage( seLink *link ) const;
+	int CountLinkUsage(seLink *link) const;
 	/*@}*/
 	
 	
@@ -263,16 +263,16 @@ public:
 	inline const seSourceList &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
-	void AddSource( seSource *source );
+	void AddSource(seSource *source);
 	
 	/** \brief Insert source. */
-	void InsertSourceAt( seSource *source, int index );
+	void InsertSourceAt(seSource *source, int index);
 	
 	/** \brief Move source. */
-	void MoveSourceTo( seSource *source, int index );
+	void MoveSourceTo(seSource *source, int index);
 	
 	/** \brief Remove source. */
-	void RemoveSource( seSource *source );
+	void RemoveSource(seSource *source);
 	
 	/** \brief Remove all sources. */
 	void RemoveAllSources();
@@ -281,7 +281,7 @@ public:
 	inline seSource *GetActiveSource() const{ return pActiveSource; }
 	
 	/** \brief Set active source or \em NULL if not set. */
-	void SetActiveSource( seSource *source );
+	void SetActiveSource(seSource *source);
 	
 	/** \brief Rebuild sources. */
 	void RebuildSources();
@@ -295,10 +295,10 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** \brief Add notifier. */
-	void AddNotifier( seSynthesizerNotifier *notifier );
+	void AddNotifier(seSynthesizerNotifier *notifier);
 	
 	/** \brief Remove notifier. */
-	void RemoveNotifier( seSynthesizerNotifier *notifier );
+	void RemoveNotifier(seSynthesizerNotifier *notifier);
 	
 	
 	
@@ -320,16 +320,16 @@ public:
 	void NotifyActiveControllerChanged();
 	
 	/** \brief Notify listeners controller changed. */
-	void NotifyControllerChanged( seController *controller );
+	void NotifyControllerChanged(seController *controller);
 	
 	/** \brief Notify listeners controller name changed. */
-	void NotifyControllerNameChanged( seController *controller );
+	void NotifyControllerNameChanged(seController *controller);
 	
 	/** \brief Notify listeners controller range changed. */
-	void NotifyControllerRangeChanged( seController *controller );
+	void NotifyControllerRangeChanged(seController *controller);
 	
 	/** \brief Notify listeners controller curve changed. */
-	void NotifyControllerCurveChanged( seController *controller );
+	void NotifyControllerCurveChanged(seController *controller);
 	
 	/** \brief Notify listeners order or count of controllers changed. */
 	void NotifyControllerStructureChanged();
@@ -340,10 +340,10 @@ public:
 	void NotifyActiveLinkChanged();
 	
 	/** \brief Notify listeners link changed. */
-	void NotifyLinkChanged( seLink *link );
+	void NotifyLinkChanged(seLink *link);
 	
 	/** \brief Notify listeners link name changed. */
-	void NotifyLinkNameChanged( seLink *link );
+	void NotifyLinkNameChanged(seLink *link);
 	
 	/** \brief Notify listeners order or count of links changed. */
 	void NotifyLinkStructureChanged();
@@ -354,22 +354,22 @@ public:
 	void NotifyActiveSourceChanged();
 	
 	/** \brief Notify listeners source changed. */
-	void NotifySourceChanged( seSource *source );
+	void NotifySourceChanged(seSource *source);
 	
 	/** \brief Notify listeners source name changed. */
-	void NotifySourceNameChanged( seSource *source );
+	void NotifySourceNameChanged(seSource *source);
 	
 	/** \brief Notify listeners order or count of sources changed. */
 	void NotifySourceStructureChanged();
 	
 	/** \brief Notify listeners active effect changed. */
-	void NotifyActiveEffectChanged( seSource *source );
+	void NotifyActiveEffectChanged(seSource *source);
 	
 	/** \brief Notify listeners effect changed. */
-	void NotifyEffectChanged( seSource *source, seEffect *effect );
+	void NotifyEffectChanged(seSource *source, seEffect *effect);
 	
 	/** \brief Notify listeners order or count of effects changed. */
-	void NotifyEffectStructureChanged( seSource *source );
+	void NotifyEffectStructureChanged(seSource *source);
 	/*@}*/
 	
 	

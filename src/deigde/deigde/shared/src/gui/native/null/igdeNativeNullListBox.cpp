@@ -36,7 +36,7 @@ igdeNativeNullListBox::igdeNativeNullListBox(){
 igdeNativeNullListBox::~igdeNativeNullListBox(){
 }
 
-igdeNativeNullListBox *igdeNativeNullListBox::CreateNativeWidget( igdeListBox& ){
+igdeNativeNullListBox *igdeNativeNullListBox::CreateNativeWidget(igdeListBox&){
 	return new igdeNativeNullListBox;
 }
 
@@ -55,7 +55,7 @@ void igdeNativeNullListBox::DestroyNativeWidget(){
 void igdeNativeNullListBox::BuildList(){
 }
 
-void igdeNativeNullListBox::UpdateItem( int ){
+void igdeNativeNullListBox::UpdateItem(int){
 }
 
 void igdeNativeNullListBox::UpdateStyles(){
@@ -67,19 +67,19 @@ void igdeNativeNullListBox::UpdateSelection(){
 void igdeNativeNullListBox::Focus(){
 }
 
-void igdeNativeNullListBox::MakeItemVisible( int ){
+void igdeNativeNullListBox::MakeItemVisible(int){
 }
 
-void igdeNativeNullListBox::InsertItem( int ){
+void igdeNativeNullListBox::InsertItem(int){
 }
 
-void igdeNativeNullListBox::RemoveItem( int ){
+void igdeNativeNullListBox::RemoveItem(int){
 }
 
 void igdeNativeNullListBox::RemoveAllItems(){
 }
 
-void igdeNativeNullListBox::MoveItem( int, int ){
+void igdeNativeNullListBox::MoveItem(int, int){
 }
 
 void igdeNativeNullListBox::UpdateEnabled(){

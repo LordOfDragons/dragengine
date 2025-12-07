@@ -42,36 +42,36 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLoadableModule::deLoadableModule( deModuleSystem *system ) :
-pSystem( system ),
+deLoadableModule::deLoadableModule(deModuleSystem *system) :
+pSystem(system),
 	
-pName( "Unnamed" ),
-pType( deModuleSystem::emtUnknown ),
+pName("Unnamed"),
+pType(deModuleSystem::emtUnknown),
 
-pDescription( "No description" ),
-pAuthor( "Unknown" ),
-pVersion( "1.0" ),
+pDescription("No description"),
+pAuthor("Unknown"),
+pVersion("1.0"),
 
-pPriority( 0 ),
-pFallback( false ),
-pNoSaving( false ),
-pNoCompress( false ),
+pPriority(0),
+pFallback(false),
+pNoSaving(false),
+pNoCompress(false),
 
-pEnabled( true ),
+pEnabled(true),
 
-pModule( NULL ),
-pLockCount( 0 ),
+pModule(NULL),
+pLockCount(0),
 
-pErrorCode( eecSuccess )
+pErrorCode(eecSuccess)
 {
-	if( ! system ){
-		DETHROW( deeInvalidParam );
+	if(!system){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
 		SetDefaultLoggingName();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pLMCleanUp();
 		throw;
 	}
@@ -86,7 +86,7 @@ deLoadableModule::~deLoadableModule(){
 // Module management
 //////////////////////
 
-void deLoadableModule::SetLoggingName( const char *name ){
+void deLoadableModule::SetLoggingName(const char *name){
 	pLoggingName = name;
 }
 
@@ -96,51 +96,51 @@ void deLoadableModule::SetDefaultLoggingName(){
 
 
 
-void deLoadableModule::SetName( const char *name ){
+void deLoadableModule::SetName(const char *name){
 	pName = name;
 }
 
-void deLoadableModule::SetType( deModuleSystem::eModuleTypes type ){
+void deLoadableModule::SetType(deModuleSystem::eModuleTypes type){
 	pType = type;
 }
 
-void deLoadableModule::SetDescription( const char *description ){
+void deLoadableModule::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void deLoadableModule::SetAuthor( const char *author ){
+void deLoadableModule::SetAuthor(const char *author){
 	pAuthor = author;
 }
 
-void deLoadableModule::SetVersion( const char *version ){
+void deLoadableModule::SetVersion(const char *version){
 	pVersion = version;
 }
 
-void deLoadableModule::SetDefaultExtension( const char *extension ){
+void deLoadableModule::SetDefaultExtension(const char *extension){
 	pDefaultExtension = extension;
 }
 
-void deLoadableModule::SetDirectoryName( const char *dirName ){
+void deLoadableModule::SetDirectoryName(const char *dirName){
 	pDirName = dirName;
 }
 
-void deLoadableModule::SetPriority( int priority ){
+void deLoadableModule::SetPriority(int priority){
 	pPriority = priority;
 }
 
-void deLoadableModule::SetIsFallback( bool fallback ){
+void deLoadableModule::SetIsFallback(bool fallback){
 	pFallback = fallback;
 }
 
-void deLoadableModule::SetNoSaving( bool noSaving ){
+void deLoadableModule::SetNoSaving(bool noSaving){
 	pNoSaving = noSaving;
 }
 
-void deLoadableModule::SetNoCompress( bool noCompress ){
+void deLoadableModule::SetNoCompress(bool noCompress){
 	pNoCompress = noCompress;
 }
 
-void deLoadableModule::SetEnabled( bool enabled ){
+void deLoadableModule::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
@@ -149,8 +149,8 @@ void deLoadableModule::SetEnabled( bool enabled ){
 // Module Management
 //////////////////////
 
-void deLoadableModule::SetModule( deBaseModule *module ){
-	if( pModule ){
+void deLoadableModule::SetModule(deBaseModule *module){
+	if(pModule){
 		delete pModule;
 	}
 	pModule = module;
@@ -160,7 +160,7 @@ bool deLoadableModule::IsLoaded() const{
 	return pModule != NULL;
 }
 
-void deLoadableModule::SetErrorCode( int code ){
+void deLoadableModule::SetErrorCode(int code){
 	pErrorCode = code;
 }
 
@@ -169,8 +169,8 @@ void deLoadableModule::Lock(){
 }
 
 void deLoadableModule::Unlock(){
-	if( pLockCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(pLockCount == 0){
+		DETHROW(deeInvalidParam);
 	}
 	pLockCount--;
 }
@@ -189,11 +189,11 @@ bool deLoadableModule::IsLibraryModule() const{
 }
 
 deInternalModule *deLoadableModule::CastToInternalModule(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 deLibraryModule *deLoadableModule::CastToLibraryModule(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 
@@ -201,8 +201,8 @@ deLibraryModule *deLoadableModule::CastToLibraryModule(){
 // visiting
 /////////////
 
-void deLoadableModule::Visit( deLoadableModuleVisitor &visitor ){
-	visitor.VisitLoadableModule( *this );
+void deLoadableModule::Visit(deLoadableModuleVisitor &visitor){
+	visitor.VisitLoadableModule(*this);
 }
 
 
@@ -211,7 +211,7 @@ void deLoadableModule::Visit( deLoadableModuleVisitor &visitor ){
 //////////////////////
 
 void deLoadableModule::pLMCleanUp(){
-	if( pModule ){
+	if(pModule){
 		delete pModule;
 	}
 }

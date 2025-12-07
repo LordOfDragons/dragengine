@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sub animator. */
-	aeSubAnimator( deEngine *engine );
+	aeSubAnimator(deEngine *engine);
 	/** Cleans up the sub animator. */
 	~aeSubAnimator();
 	/*@}*/
@@ -77,36 +77,36 @@ public:
 	/** Retrieves the path to the animator file. */
 	inline const decString &GetPathAnimator() const{ return pPathAnimator; }
 	/** Sets the path to the animator file. */
-	void SetPathAnimator( const char *path );
+	void SetPathAnimator(const char *path);
 	/** Loads the engine animator using the stored path. */
-	void LoadAnimator( aeLoadSaveSystem &lssys );
+	void LoadAnimator(aeLoadSaveSystem &lssys);
 	
 	/** Clears the animator. */
 	void ClearAnimator();
 	/** Adds a controler. */
-	void AddController( const char *name, float minimum, float maximum, bool clamp );
+	void AddController(const char *name, float minimum, float maximum, bool clamp);
 	/** Sets a controller value. */
-	void SetControllerValue( int controller, float value );
+	void SetControllerValue(int controller, float value);
 	/** Adds a link. */
-	void AddLink( int controller, const decCurveBezier &curve );
+	void AddLink(int controller, const decCurveBezier &curve);
 	/** Adds a state snapshot rule. */
 	void AddRuleSS();
 	/** Adds an inverse kinematic rule. */
-	void AddRuleIK( const decVector &localPosition, const decVector &localOrientation, const char *solverBone,
-		int linkSourceFactor );
+	void AddRuleIK(const decVector &localPosition, const decVector &localOrientation, const char *solverBone,
+		int linkSourceFactor);
 	/** Adds a bone to a rule. */
-	void AddBoneToRule( int rule, const char *bone );
+	void AddBoneToRule(int rule, const char *bone);
 	/** Enables or disabled a rule. */
-	void EnableRule( int rule, bool enable );
+	void EnableRule(int rule, bool enable);
 	
 	/** Set component and animation. */
-	void SetComponent( deComponent *component );
+	void SetComponent(deComponent *component);
 	
 	/** Set component and animation. */
-	void SetComponentAndAnimation( deComponent *component, deAnimation *animation );
+	void SetComponentAndAnimation(deComponent *component, deAnimation *animation);
 	
 	/** Apply controllers from another animator instance. */
-	void CopyControllers( deAnimatorInstance &instance );
+	void CopyControllers(deAnimatorInstance &instance);
 	/** Apply. */
 	void Apply();
 	/*@}*/

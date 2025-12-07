@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native scroll bar.
  */
 class igdeNativeFoxScrollBar : public FXScrollBar{
-	FXDECLARE( igdeNativeFoxScrollBar )
+	FXDECLARE(igdeNativeFoxScrollBar)
 	
 protected:
 	igdeNativeFoxScrollBar();
@@ -55,13 +55,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxScrollBar( igdeScrollBar &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxScrollBar(igdeScrollBar &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxScrollBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxScrollBar* CreateNativeWidget( igdeScrollBar &owner );
+	static igdeNativeFoxScrollBar* CreateNativeWidget(igdeScrollBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -80,14 +80,14 @@ public:
 	virtual void UpdateValue();
 	virtual void UpdateEnabled();
 	
-	static int ScrollBarFlags( const igdeScrollBar &owner );
+	static int ScrollBarFlags(const igdeScrollBar &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

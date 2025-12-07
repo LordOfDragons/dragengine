@@ -70,19 +70,19 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position relative to the rig bone coordinate system. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation relative to the rig bone coordinate system. */
 	inline const decQuaternion &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set rotation relative to the rig bone coordinate system. */
-	void SetRotation( const decQuaternion &rotation );
+	void SetRotation(const decQuaternion &rotation);
 	
 	/** \brief Scaling relative to the rig bone coordinate system. */
 	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scaling relative to the rig bone coordinate system. */
-	void SetScale( const decVector &scale );
+	void SetScale(const decVector &scale);
 	
 	/**
 	 * \brief Bone matrix relative to the component coordinate system.
@@ -97,7 +97,7 @@ public:
 	 * Marks the inverse matrix dirty causing the inverse matrix to be
 	 * calculated the next time GetInverseMatrix is called.
 	 */
-	void SetMatrix( const decMatrix &matrix );
+	void SetMatrix(const decMatrix &matrix);
 	
 	/**
 	 * \brief Inverse bone matrix relative to the component coordinate system.
@@ -114,13 +114,13 @@ public:
 	inline const decMatrix &GetInverseOriginalMatrix() const{ return pInvOrgMatrix; }
 	
 	/** \brief Set the original matrix and original inverse matrix. */
-	void SetOriginalMatrix( const decVector &position, const decVector &rotation );
+	void SetOriginalMatrix(const decVector &position, const decVector &rotation);
 	
 	/** \brief Parent bone index. */
 	inline int GetParentBone() const{ return pParentBone; }
 	
 	/** \brief Parent bone index. */
-	void SetParentBone( int parentBone );
+	void SetParentBone(int parentBone);
 	/*@}*/
 };
 

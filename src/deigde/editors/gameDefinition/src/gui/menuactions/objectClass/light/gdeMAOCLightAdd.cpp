@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCLightAdd::gdeMAOCLightAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Light...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class light" )
+gdeMAOCLightAdd::gdeMAOCLightAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Light...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class light")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Light...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCLightAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddLight(&objectClass, gdeOCLight::Ref::NewWith());
 }
 
 void gdeMAOCLightAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

@@ -91,25 +91,25 @@ public:
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Set if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** \brief Move time target. */
 	inline deAnimatorControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
@@ -125,7 +125,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	virtual void Visit(deAnimatorRuleVisitor &visitor);
 	/*@}*/
 };
 

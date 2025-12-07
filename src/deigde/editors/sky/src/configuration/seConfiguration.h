@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new configuration. */
-	seConfiguration( seWindowMain &windowMain );
+	seConfiguration(seWindowMain &windowMain);
 	/** \brief Clean up the configuration. */
 	~seConfiguration();
 	/*@}*/
@@ -61,7 +61,7 @@ public:
 	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
-	void SetPreventSaving( bool preventSaving );
+	void SetPreventSaving(bool preventSaving);
 	
 	/**
 	 * Load the configuration. Tries to locate the configuration file in

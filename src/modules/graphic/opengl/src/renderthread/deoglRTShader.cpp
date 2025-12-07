@@ -54,35 +54,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTShader::deoglRTShader( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pTexUnitsConfigList( nullptr ),
-pShaderManager( nullptr ),
-pSkinShaderManager( nullptr ),
-pLightShaderManager( nullptr ),
-pCurShaderProg( nullptr ),
-pDirtySSBOSkinTextures( true )
+deoglRTShader::deoglRTShader(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pTexUnitsConfigList(nullptr),
+pShaderManager(nullptr),
+pSkinShaderManager(nullptr),
+pLightShaderManager(nullptr),
+pCurShaderProg(nullptr),
+pDirtySSBOSkinTextures(true)
 {
 	int i;
-	for( i=0; i<ETSC_COUNT; i++ ){
-		pTexSamplerConfigs[ i ] = nullptr;
+	for(i=0; i<ETSC_COUNT; i++){
+		pTexSamplerConfigs[i] = nullptr;
 	}
 	
 	try{
-		pTexUnitsConfigList = new deoglTexUnitsConfigList( renderThread );
+		pTexUnitsConfigList = new deoglTexUnitsConfigList(renderThread);
 		pCreateTexSamplerConfigs();
 		
-		pShaderManager = new deoglShaderManager( renderThread );
+		pShaderManager = new deoglShaderManager(renderThread);
 		pShaderManager->LoadUnitSourceCodes();
 		pShaderManager->LoadSources();
 		pShaderManager->ValidateCaches();
 		
-		pSkinShaderManager = new deoglSkinShaderManager( renderThread );
-		pLightShaderManager = new deoglLightShaderManager( renderThread );
+		pSkinShaderManager = new deoglSkinShaderManager(renderThread);
+		pLightShaderManager = new deoglLightShaderManager(renderThread);
 		
 		// NOTE we can not create here SSBOs or alike due to the initialization order
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -97,62 +97,62 @@ deoglRTShader::~deoglRTShader(){
 // Management
 ///////////////
 
-deoglTexSamplerConfig *deoglRTShader::GetTexSamplerConfig( const deoglRTShader::eTextureSamplerConfigurations type ) const{
-	if( type < 0 || type >= ETSC_COUNT ){
-		DETHROW( deeInvalidParam );
+deoglTexSamplerConfig *deoglRTShader::GetTexSamplerConfig(const deoglRTShader::eTextureSamplerConfigurations type) const{
+	if(type < 0 || type >= ETSC_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTexSamplerConfigs[ type ];
+	return pTexSamplerConfigs[type];
 }
 
-void deoglRTShader::ActivateShader( const deoglShaderProgram *shader ){
-	if( shader == pCurShaderProg ){
+void deoglRTShader::ActivateShader(const deoglShaderProgram *shader){
+	if(shader == pCurShaderProg){
 		return;
 	}
 	
-	if( shader ){
+	if(shader){
 		deoglShaderCompiled * const compiled = shader->GetCompiled();
-		DEASSERT_NOTNULL( compiled )
+		DEASSERT_NOTNULL(compiled)
 		compiled->Activate();
 		
 	}else{
-		OGL_CHECK( pRenderThread, pglUseProgram( 0 ) );
+		OGL_CHECK(pRenderThread, pglUseProgram(0));
 	}
 	
 	pCurShaderProg = shader;
 }
 
-void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
-	defines.SetDefine( "HIGH_PRECISION", true );
-	defines.SetDefine( "HIGHP", "highp" ); // if not supported by GPU medp
+void deoglRTShader::SetCommonDefines(deoglShaderDefines &defines) const{
+	defines.SetDefine("HIGH_PRECISION", true);
+	defines.SetDefine("HIGHP", "highp"); // if not supported by GPU medp
 	
-	if( pglUniformBlockBinding ){
-		defines.SetDefine( "UBO", true );
+	if(pglUniformBlockBinding){
+		defines.SetDefine("UBO", true);
 		
-		if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-			defines.SetDefine( "UBO_IDMATACCBUG", true );
+		if(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken()){
+			defines.SetDefine("UBO_IDMATACCBUG", true);
 		}
-		if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-			defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
+		if(pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken()){
+			defines.SetDefine("BUG_UBO_DIRECT_LINK_DEAD_LOOP", true);
 		}
 	}
 	
-	if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-		defines.SetDefine( "GS_INSTANCING", true );
+	if(pRenderThread.GetExtensions().SupportsGSInstancing()){
+		defines.SetDefine("GS_INSTANCING", true);
 	}
 	
 	// OpenGL extensions would define symbols for these extentions which would work in
 	// shaders but our pre-processor does not know about them. so add them manually.
 	// this is mainly required for broken intel and nvidia drivers
-	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_viewport_layer_array ) ){
-		defines.SetDefine( "EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY", true );
+	if(pRenderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_ARB_shader_viewport_layer_array)){
+		defines.SetDefine("EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY", true);
 		
-	}else if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_AMD_vertex_shader_layer ) ){
-		defines.SetDefine( "EXT_AMD_VERTEX_SHADER_LAYER", true );
+	}else if(pRenderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_AMD_vertex_shader_layer)){
+		defines.SetDefine("EXT_AMD_VERTEX_SHADER_LAYER", true);
 	}
 	
-	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_draw_parameters ) ){
-		defines.SetDefine( "EXT_ARB_SHADER_DRAW_PARAMETERS", true );
+	if(pRenderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_ARB_shader_draw_parameters)){
+		defines.SetDefine("EXT_ARB_SHADER_DRAW_PARAMETERS", true);
 	}
 	
 	#ifdef OS_ANDROID_QUEST
@@ -177,58 +177,58 @@ void deoglRTShader::InvalidateSSBOSkinTextures(){
 }
 
 void deoglRTShader::UpdateSSBOSkinTextures(){
-	if( ! pDirtySSBOSkinTextures ){
+	if(!pDirtySSBOSkinTextures){
 		return;
 	}
 	
 	pDirtySSBOSkinTextures = false;
 	
-	if( ! pSSBOSkinTextures ){
-		pSSBOSkinTextures.TakeOver( new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etStream ) );
-		pSSBOSkinTextures->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		pSSBOSkinTextures->SetParameterCount( 1 );
-		pSSBOSkinTextures->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
+	if(!pSSBOSkinTextures){
+		pSSBOSkinTextures.TakeOver(new deoglSPBlockSSBO(pRenderThread, deoglSPBlockSSBO::etStream));
+		pSSBOSkinTextures->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
+		pSSBOSkinTextures->SetParameterCount(1);
+		pSSBOSkinTextures->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 4, 1, 1); // uvec4
 		pSSBOSkinTextures->MapToStd140();
-		pSSBOSkinTextures->SetElementCount( 1 );
+		pSSBOSkinTextures->SetElementCount(1);
 	}
 	
 	deoglRenderTaskSharedPool &pool = pRenderThread.GetRenderTaskSharedPool();
-	const deMutexGuard guard( pool.GetMutexSkinTextures() );
+	const deMutexGuard guard(pool.GetMutexSkinTextures());
 	
 	const int pipelinesPerTexture = deoglSkinTexturePipelinesList::PipelineTypesCount
 		* deoglSkinTexturePipelines::TypeCount * deoglSkinTexturePipelines::ModifiersPerType;
 	const int count = pool.GetSkinTextureCount();
 	const int pipelineCount = count * pipelinesPerTexture;
 	const int pipelinesPerElement = 8;
-	const int elementCount = ( ( pipelineCount - 1 ) / pipelinesPerElement ) + 1;
+	const int elementCount = ((pipelineCount - 1) / pipelinesPerElement) + 1;
 	deoglSPBlockSSBO &ssbo = pSSBOSkinTextures;
 	int i, j, k, l;
 	
-	if( elementCount > ssbo.GetElementCount() ){
-		ssbo.SetElementCount( elementCount );
+	if(elementCount > ssbo.GetElementCount()){
+		ssbo.SetElementCount(elementCount);
 	}
 	
-	const deoglSPBMapBuffer mapped( ssbo );
-	uint16_t *values = ( uint16_t* )ssbo.GetMappedBuffer();
+	const deoglSPBMapBuffer mapped(ssbo);
+	uint16_t *values = (uint16_t*)ssbo.GetMappedBuffer();
 	
-	for( i=0; i<count; i++ ){
-		const deoglSkinTexture * const texture = pool.GetSkinTextureAt( i );
-		if( ! texture ){
-			for( j=0; j<pipelinesPerTexture; j++ ){
+	for(i=0; i<count; i++){
+		const deoglSkinTexture * const texture = pool.GetSkinTextureAt(i);
+		if(!texture){
+			for(j=0; j<pipelinesPerTexture; j++){
 				*( values++ ) = 0;
 			}
 			continue;
 		}
 		
 		const deoglSkinTexturePipelinesList &stpsl = texture->GetPipelines();
-		for( j=0; j<deoglSkinTexturePipelinesList::PipelineTypesCount; j++ ){
-			const deoglSkinTexturePipelines &stps = stpsl.GetAt( ( deoglSkinTexturePipelinesList::ePipelineTypes )j );
+		for(j=0; j<deoglSkinTexturePipelinesList::PipelineTypesCount; j++){
+			const deoglSkinTexturePipelines &stps = stpsl.GetAt((deoglSkinTexturePipelinesList::ePipelineTypes)j);
 			
-			for( k=0; k<deoglSkinTexturePipelines::TypeCount; k++ ){
-				for( l=0; l<deoglSkinTexturePipelines::ModifiersPerType; l++ ){
-					const deoglSkinTexturePipeline * const stp = stps.GetWith( ( deoglSkinTexturePipelines::eTypes )k, l );
+			for(k=0; k<deoglSkinTexturePipelines::TypeCount; k++){
+				for(l=0; l<deoglSkinTexturePipelines::ModifiersPerType; l++){
+					const deoglSkinTexturePipeline * const stp = stps.GetWith((deoglSkinTexturePipelines::eTypes)k, l);
 					
-					if( stp ){
+					if(stp){
 						*( values++ ) = ( uint16_t )decMath::max( stp->GetPipeline()->GetRTSIndex(), 0 );
 						
 					}else{
@@ -248,23 +248,23 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 void deoglRTShader::pCleanUp(){
 	int i;
 	
-	if( pLightShaderManager ){
+	if(pLightShaderManager){
 		delete pLightShaderManager;
 	}
-	if( pSkinShaderManager ){
+	if(pSkinShaderManager){
 		delete pSkinShaderManager;
 	}
-	if( pShaderManager ){
+	if(pShaderManager){
 		delete pShaderManager;
 	}
 	
-	for( i=0; i<ETSC_COUNT; i++ ){
-		if( pTexSamplerConfigs[ i ] ){
-			delete pTexSamplerConfigs[ i ];
+	for(i=0; i<ETSC_COUNT; i++){
+		if(pTexSamplerConfigs[i]){
+			delete pTexSamplerConfigs[i];
 		}
 	}
 	
-	if( pTexUnitsConfigList ){
+	if(pTexUnitsConfigList){
 		delete pTexUnitsConfigList;
 	}
 }
@@ -272,69 +272,69 @@ void deoglRTShader::pCleanUp(){
 
 
 void deoglRTShader::pCreateTexSamplerConfigs(){
-	pTexSamplerConfigs[ etscClampNearest ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscClampNearest ]->SetFilterMode( deoglTextureStageManager::etfNearest );
-	pTexSamplerConfigs[ etscClampNearest ]->SetWrapMode( GL_CLAMP_TO_EDGE );
-	pTexSamplerConfigs[ etscClampNearest ]->SetDepthCompareMode( false );
+	pTexSamplerConfigs[etscClampNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
+	pTexSamplerConfigs[etscClampNearest]->SetWrapMode(GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampNearest]->SetDepthCompareMode(false);
 	
-	pTexSamplerConfigs[ etscClampLinear ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscClampLinear ]->SetFilterMode( deoglTextureStageManager::etfLinear );
-	pTexSamplerConfigs[ etscClampLinear ]->SetWrapMode( GL_CLAMP_TO_EDGE );
-	pTexSamplerConfigs[ etscClampLinear ]->SetDepthCompareMode( false );
+	pTexSamplerConfigs[etscClampLinear] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
+	pTexSamplerConfigs[etscClampLinear]->SetWrapMode(GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampLinear]->SetDepthCompareMode(false);
 	
-	pTexSamplerConfigs[ etscClampNearestMipMap ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscClampNearestMipMap ]->SetFilterMode( deoglTextureStageManager::etfNearestMipMap );
-	pTexSamplerConfigs[ etscClampNearestMipMap ]->SetWrapMode( GL_CLAMP_TO_EDGE );
-	pTexSamplerConfigs[ etscClampNearestMipMap ]->SetDepthCompareMode( false );
+	pTexSamplerConfigs[etscClampNearestMipMap] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampNearestMipMap]->SetFilterMode(deoglTextureStageManager::etfNearestMipMap);
+	pTexSamplerConfigs[etscClampNearestMipMap]->SetWrapMode(GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampNearestMipMap]->SetDepthCompareMode(false);
 	
-	pTexSamplerConfigs[ etscClampLinearMipMap ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscClampLinearMipMap ]->SetFilterMode( deoglTextureStageManager::etfLinearMipMap );
-	pTexSamplerConfigs[ etscClampLinearMipMap ]->SetWrapMode( GL_CLAMP_TO_EDGE );
-	pTexSamplerConfigs[ etscClampLinearMipMap ]->SetDepthCompareMode( false );
+	pTexSamplerConfigs[etscClampLinearMipMap] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampLinearMipMap]->SetFilterMode(deoglTextureStageManager::etfLinearMipMap);
+	pTexSamplerConfigs[etscClampLinearMipMap]->SetWrapMode(GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampLinearMipMap]->SetDepthCompareMode(false);
 	
-	pTexSamplerConfigs[ etscClampLinearMipMapNearest ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscClampLinearMipMapNearest ]->SetFilterMode( deoglTextureStageManager::etfLinearMipMapNearest );
-	pTexSamplerConfigs[ etscClampLinearMipMapNearest ]->SetWrapMode( GL_CLAMP_TO_EDGE );
-	pTexSamplerConfigs[ etscClampLinearMipMapNearest ]->SetDepthCompareMode( false );
+	pTexSamplerConfigs[etscClampLinearMipMapNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscClampLinearMipMapNearest]->SetFilterMode(deoglTextureStageManager::etfLinearMipMapNearest);
+	pTexSamplerConfigs[etscClampLinearMipMapNearest]->SetWrapMode(GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscClampLinearMipMapNearest]->SetDepthCompareMode(false);
 	
-	pTexSamplerConfigs[ etscRepeatNearest ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscRepeatNearest ]->SetFilterMode( deoglTextureStageManager::etfNearest );
-	pTexSamplerConfigs[ etscRepeatNearest ]->SetWrapMode( GL_REPEAT );
-	pTexSamplerConfigs[ etscRepeatNearest ]->SetDepthCompareMode( false );
+	pTexSamplerConfigs[etscRepeatNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscRepeatNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
+	pTexSamplerConfigs[etscRepeatNearest]->SetWrapMode(GL_REPEAT);
+	pTexSamplerConfigs[etscRepeatNearest]->SetDepthCompareMode(false);
 	
-	pTexSamplerConfigs[ etscRepeatLinear ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscRepeatLinear ]->SetFilterMode( deoglTextureStageManager::etfLinear );
-	pTexSamplerConfigs[ etscRepeatLinear ]->SetWrapMode( GL_REPEAT );
-	pTexSamplerConfigs[ etscRepeatLinear ]->SetDepthCompareMode( false );
+	pTexSamplerConfigs[etscRepeatLinear] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscRepeatLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
+	pTexSamplerConfigs[etscRepeatLinear]->SetWrapMode(GL_REPEAT);
+	pTexSamplerConfigs[etscRepeatLinear]->SetDepthCompareMode(false);
 	
-	pTexSamplerConfigs[ etscRepeatLinearMipMap ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscRepeatLinearMipMap ]->SetFilterMode( deoglTextureStageManager::etfLinearMipMap );
-	pTexSamplerConfigs[ etscRepeatLinearMipMap ]->SetWrapMode( GL_REPEAT );
-	pTexSamplerConfigs[ etscRepeatLinearMipMap ]->SetDepthCompareMode( false );
+	pTexSamplerConfigs[etscRepeatLinearMipMap] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscRepeatLinearMipMap]->SetFilterMode(deoglTextureStageManager::etfLinearMipMap);
+	pTexSamplerConfigs[etscRepeatLinearMipMap]->SetWrapMode(GL_REPEAT);
+	pTexSamplerConfigs[etscRepeatLinearMipMap]->SetDepthCompareMode(false);
 	
-	pTexSamplerConfigs[ etscShadowClampNearest ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscShadowClampNearest ]->SetFilterMode( deoglTextureStageManager::etfNearest );
-	pTexSamplerConfigs[ etscShadowClampNearest ]->SetWrapMode( GL_CLAMP_TO_EDGE );
-	pTexSamplerConfigs[ etscShadowClampNearest ]->SetDepthCompareMode( true );
+	pTexSamplerConfigs[etscShadowClampNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscShadowClampNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
+	pTexSamplerConfigs[etscShadowClampNearest]->SetWrapMode(GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscShadowClampNearest]->SetDepthCompareMode(true);
 	
-	pTexSamplerConfigs[ etscShadowClampLinear ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscShadowClampLinear ]->SetFilterMode( deoglTextureStageManager::etfLinear );
-	pTexSamplerConfigs[ etscShadowClampLinear ]->SetWrapMode( GL_CLAMP_TO_EDGE );
-	pTexSamplerConfigs[ etscShadowClampLinear ]->SetDepthCompareMode( true );
+	pTexSamplerConfigs[etscShadowClampLinear] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscShadowClampLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
+	pTexSamplerConfigs[etscShadowClampLinear]->SetWrapMode(GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscShadowClampLinear]->SetDepthCompareMode(true);
 	
-	pTexSamplerConfigs[ etscShadowClampLinearInverse ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscShadowClampLinearInverse ]->SetFilterMode( deoglTextureStageManager::etfLinear );
-	pTexSamplerConfigs[ etscShadowClampLinearInverse ]->SetWrapMode( GL_CLAMP_TO_EDGE );
-	pTexSamplerConfigs[ etscShadowClampLinearInverse ]->SetDepthCompareMode( true );
-	pTexSamplerConfigs[ etscShadowClampLinearInverse ]->SetDepthCompareFunc( GL_GEQUAL );
+	pTexSamplerConfigs[etscShadowClampLinearInverse] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscShadowClampLinearInverse]->SetFilterMode(deoglTextureStageManager::etfLinear);
+	pTexSamplerConfigs[etscShadowClampLinearInverse]->SetWrapMode(GL_CLAMP_TO_EDGE);
+	pTexSamplerConfigs[etscShadowClampLinearInverse]->SetDepthCompareMode(true);
+	pTexSamplerConfigs[etscShadowClampLinearInverse]->SetDepthCompareFunc(GL_GEQUAL);
 	
-	pTexSamplerConfigs[ etscShadowRepeatNearest ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscShadowRepeatNearest ]->SetFilterMode( deoglTextureStageManager::etfNearest );
-	pTexSamplerConfigs[ etscShadowRepeatNearest ]->SetWrapMode( GL_REPEAT );
-	pTexSamplerConfigs[ etscShadowRepeatNearest ]->SetDepthCompareMode( true );
+	pTexSamplerConfigs[etscShadowRepeatNearest] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscShadowRepeatNearest]->SetFilterMode(deoglTextureStageManager::etfNearest);
+	pTexSamplerConfigs[etscShadowRepeatNearest]->SetWrapMode(GL_REPEAT);
+	pTexSamplerConfigs[etscShadowRepeatNearest]->SetDepthCompareMode(true);
 	
-	pTexSamplerConfigs[ etscShadowRepeatLinear ] = new deoglTexSamplerConfig( pRenderThread );
-	pTexSamplerConfigs[ etscShadowRepeatLinear ]->SetFilterMode( deoglTextureStageManager::etfLinear );
-	pTexSamplerConfigs[ etscShadowRepeatLinear ]->SetWrapMode( GL_REPEAT );
-	pTexSamplerConfigs[ etscShadowRepeatLinear ]->SetDepthCompareMode( true );
+	pTexSamplerConfigs[etscShadowRepeatLinear] = new deoglTexSamplerConfig(pRenderThread);
+	pTexSamplerConfigs[etscShadowRepeatLinear]->SetFilterMode(deoglTextureStageManager::etfLinear);
+	pTexSamplerConfigs[etscShadowRepeatLinear]->SetWrapMode(GL_REPEAT);
+	pTexSamplerConfigs[etscShadowRepeatLinear]->SetDepthCompareMode(true);
 }

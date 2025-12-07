@@ -42,23 +42,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureMove::ceUCAASpeakGestureMove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *gesture, int newIndex ){
-	if( ! topic || ! actorSpeak || ! gesture ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakGestureMove::ceUCAASpeakGestureMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *gesture, int newIndex){
+	if(!topic || !actorSpeak || !gesture){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pGesture = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetGestureList().IndexOf( gesture );
+	pOldIndex = actorSpeak->GetGestureList().IndexOf(gesture);
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= actorSpeak->GetGestureList().GetCount() ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetGestureList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move Gesture" );
+	SetShortInfo("Move Gesture");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -71,13 +71,13 @@ ceStrip *gesture, int newIndex ){
 }
 
 ceUCAASpeakGestureMove::~ceUCAASpeakGestureMove(){
-	if( pGesture ){
+	if(pGesture){
 		pGesture->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -88,11 +88,11 @@ ceUCAASpeakGestureMove::~ceUCAASpeakGestureMove(){
 ///////////////
 
 void ceUCAASpeakGestureMove::Undo(){
-	pActorSpeak->GetGestureList().MoveTo( pGesture, pOldIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetGestureList().MoveTo(pGesture, pOldIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakGestureMove::Redo(){
-	pActorSpeak->GetGestureList().MoveTo( pGesture, pNewIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetGestureList().MoveTo(pGesture, pNewIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

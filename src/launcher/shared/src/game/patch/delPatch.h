@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game patch. */
-	delPatch( );
+	delPatch();
 	
 protected:
 	/** \brief Clean up game aptch. */
@@ -80,49 +80,49 @@ public:
 	inline const decUuid &GetIdentifier() const{ return pIdentifier; }
 	
 	/** \brief Set identifier. */
-	void SetIdentifier( const decUuid &identifier );
+	void SetIdentifier(const decUuid &identifier);
 	
 	/** \brief Display name. */
 	inline const decUnicodeString &GetName() const{ return pName; }
 	
 	/** \brief Set display name. */
-	void SetName( const decUnicodeString &name );
+	void SetName(const decUnicodeString &name);
 	
 	/** \brief Description. */
 	inline const decUnicodeString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const decUnicodeString &description );
+	void SetDescription(const decUnicodeString &description);
 	
 	/** \brief Creator. */
 	inline const decUnicodeString &GetCreator() const{ return pCreator; }
 	
 	/** \brief Set creator. */
-	void SetCreator( const decUnicodeString &creator );
+	void SetCreator(const decUnicodeString &creator);
 	
 	/** \brief Homepage. */
 	inline const decString &GetHomepage() const{ return pHomepage; }
 	
 	/** \brief Set homepage. */
-	void SetHomepage( const char *homepage );
+	void SetHomepage(const char *homepage);
 	
 	/** \brief Patch directory. */
 	inline const decString &GetPatchDirectory() const{ return pPatchDirectory; }
 	
 	/** \brief Set patch dir. */
-	void SetPatchDirectory( const char *directory );
+	void SetPatchDirectory(const char *directory);
 	
 	/** \brief Data directory. */
 	inline const decString &GetDataDirectory() const{ return pDataDirectory; }
 	
 	/** \brief Set data dir. */
-	void SetDataDirectory( const char *directory );
+	void SetDataDirectory(const char *directory);
 	
 	/** \brief Game identifier. */
 	inline const decUuid &GetGameID() const{ return pGameID; }
 	
 	/** \brief Set game identifier. */
-	void SetGameID( const decUuid &id );
+	void SetGameID(const decUuid &id);
 	
 	/** \brief Required patch identifiers. */
 	inline decUuidSet &GetRequiredPatches(){ return pRequiresPatches; }
@@ -132,7 +132,7 @@ public:
 	inline const decString &GetDelgaFile() const{ return pDelgaFile; }
 	
 	/** \brief Set delga file or empty string. */
-	void SetDelgaFile( const char *file );
+	void SetDelgaFile(const char *file);
 	
 	/**
 	 * \brief Set of path to hide.

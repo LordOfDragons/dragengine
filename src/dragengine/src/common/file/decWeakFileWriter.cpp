@@ -35,10 +35,10 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decWeakFileWriter::decWeakFileWriter( decBaseFileWriter *writer ) :
-pWriter( writer )
+decWeakFileWriter::decWeakFileWriter(decBaseFileWriter *writer) :
+pWriter(writer)
 {
-	DEASSERT_NOTNULL( writer );
+	DEASSERT_NOTNULL(writer);
 }
 
 decWeakFileWriter::~decWeakFileWriter(){
@@ -68,22 +68,22 @@ int decWeakFileWriter::GetPosition(){
 	return pWriter->GetPosition();
 }
 
-void decWeakFileWriter::SetPosition( int position ){
-	return pWriter->SetPosition( position );
+void decWeakFileWriter::SetPosition(int position){
+	return pWriter->SetPosition(position);
 }
 
-void decWeakFileWriter::MovePosition( int offset ){
-	pWriter->MovePosition( offset );
+void decWeakFileWriter::MovePosition(int offset){
+	pWriter->MovePosition(offset);
 }
 
-void decWeakFileWriter::SetPositionEnd( int position ){
-	pWriter->SetPositionEnd( position );
+void decWeakFileWriter::SetPositionEnd(int position){
+	pWriter->SetPositionEnd(position);
 }
 
-void decWeakFileWriter::Write( const void *buffer, int size ){
-	pWriter->Write( buffer, size );
+void decWeakFileWriter::Write(const void *buffer, int size){
+	pWriter->Write(buffer, size);
 }
 
 decBaseFileWriter::Ref decWeakFileWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New( new decWeakFileWriter( pWriter ) );
+	return decBaseFileWriter::Ref::New(new decWeakFileWriter(pWriter));
 }

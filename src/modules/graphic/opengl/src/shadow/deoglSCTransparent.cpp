@@ -53,42 +53,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSCTransparent::deoglSCTransparent( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglSCTransparent::deoglSCTransparent(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pStaticShadowMap( NULL ),
-pStaticColorMap( NULL ),
-pStaticShadowCubeMap( NULL ),
-pStaticColorCubeMap( NULL ),
-pLastUseStatic( 0 ),
-pHasStatic( false ),
+pStaticShadowMap(NULL),
+pStaticColorMap(NULL),
+pStaticShadowCubeMap(NULL),
+pStaticColorCubeMap(NULL),
+pLastUseStatic(0),
+pHasStatic(false),
 
-pDynamicShadowMap( NULL ),
-pDynamicColorMap( NULL ),
-pDynamicShadowCubeMap( NULL ),
-pDynamicColorCubeMap( NULL ),
-pLastUseDynamic( 0 ),
-pHasDynamic( false ),
-pDirtyDynamic( true ),
+pDynamicShadowMap(NULL),
+pDynamicColorMap(NULL),
+pDynamicShadowCubeMap(NULL),
+pDynamicColorCubeMap(NULL),
+pLastUseDynamic(0),
+pHasDynamic(false),
+pDirtyDynamic(true),
 
-pTemporaryShadowMap( NULL ),
-pTemporaryColorMap( NULL ),
-pTemporaryShadowCubeMap( NULL ),
-pTemporaryColorCubeMap( NULL ),
+pTemporaryShadowMap(NULL),
+pTemporaryColorMap(NULL),
+pTemporaryShadowCubeMap(NULL),
+pTemporaryColorCubeMap(NULL),
 
-pLastSizeStatic( 0 ),
-pNextSizeStatic( 0 ),
-pLastSizeDynamic( 0 ),
-pNextSizeDynamic( 0 ),
+pLastSizeStatic(0),
+pNextSizeStatic(0),
+pLastSizeDynamic(0),
+pNextSizeDynamic(0),
 
-pMemUseStaMapDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticMapDepth ),
-pMemUseStaMapColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticMapColor ),
-pMemUseStaCubeDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticCubeDepth ),
-pMemUseStaCubeColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticCubeColor ),
-pMemUseDynMapDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicMapDepth ),
-pMemUseDynMapColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicMapColor ),
-pMemUseDynCubeDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicCubeDepth ),
-pMemUseDynCubeColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicCubeColor ){
+pMemUseStaMapDepth(renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticMapDepth),
+pMemUseStaMapColor(renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticMapColor),
+pMemUseStaCubeDepth(renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticCubeDepth),
+pMemUseStaCubeColor(renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticCubeColor),
+pMemUseDynMapDepth(renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicMapDepth),
+pMemUseDynMapColor(renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicMapColor),
+pMemUseDynCubeDepth(renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicCubeDepth),
+pMemUseDynCubeColor(renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicCubeColor){
 }
 
 deoglSCTransparent::~deoglSCTransparent(){
@@ -100,26 +100,26 @@ deoglSCTransparent::~deoglSCTransparent(){
 // Management
 ///////////////
 
-deoglTexture *deoglSCTransparent::ObtainStaticShadowMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglTexture *deoglSCTransparent::ObtainStaticShadowMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pStaticShadowMap ){
-		if( pStaticShadowMap->GetWidth() == size
-		&& pStaticShadowMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+	if(pStaticShadowMap){
+		if(pStaticShadowMap->GetWidth() == size
+		&& pStaticShadowMap->GetFormat()->GetIsDepthFloat() == useFloat){
 			return pStaticShadowMap;
 		}
 		
-		if( pStaticShadowMap ){
+		if(pStaticShadowMap){
 			delete pStaticShadowMap;
 			pStaticShadowMap = NULL;
 		}
 	}
 	
-	pStaticShadowMap = new deoglTexture( pRenderThread );
-	pStaticShadowMap->SetDepthFormat( false, useFloat );
-	pStaticShadowMap->SetSize( size, size );
+	pStaticShadowMap = new deoglTexture(pRenderThread);
+	pStaticShadowMap->SetDepthFormat(false, useFloat);
+	pStaticShadowMap->SetSize(size, size);
 	pStaticShadowMap->CreateTexture();
 	pMemUseStaMapDepth = pStaticShadowMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
@@ -129,25 +129,25 @@ deoglTexture *deoglSCTransparent::ObtainStaticShadowMapWithSize( int size, bool 
 	return pStaticShadowMap;
 }
 
-deoglTexture *deoglSCTransparent::ObtainStaticColorMapWithSize( int size ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglTexture *deoglSCTransparent::ObtainStaticColorMapWithSize(int size){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pStaticColorMap ){
-		if( pStaticColorMap->GetWidth() == size ){
+	if(pStaticColorMap){
+		if(pStaticColorMap->GetWidth() == size){
 			return pStaticColorMap;
 		}
 		
-		if( pStaticColorMap ){
+		if(pStaticColorMap){
 			delete pStaticColorMap;
 			pStaticColorMap = NULL;
 		}
 	}
 	
-	pStaticColorMap = new deoglTexture( pRenderThread );
-	pStaticColorMap->SetFBOFormat( 4, false );
-	pStaticColorMap->SetSize( size, size );
+	pStaticColorMap = new deoglTexture(pRenderThread);
+	pStaticColorMap->SetFBOFormat(4, false);
+	pStaticColorMap->SetSize(size, size);
 	pStaticColorMap->CreateTexture();
 	pMemUseStaMapColor = pStaticColorMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
@@ -157,26 +157,26 @@ deoglTexture *deoglSCTransparent::ObtainStaticColorMapWithSize( int size ){
 	return pStaticColorMap;
 }
 
-deoglCubeMap *deoglSCTransparent::ObtainStaticShadowCubeMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglCubeMap *deoglSCTransparent::ObtainStaticShadowCubeMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pStaticShadowCubeMap ){
-		if( pStaticShadowCubeMap->GetSize() == size
-		&& pStaticShadowCubeMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+	if(pStaticShadowCubeMap){
+		if(pStaticShadowCubeMap->GetSize() == size
+		&& pStaticShadowCubeMap->GetFormat()->GetIsDepthFloat() == useFloat){
 			return pStaticShadowCubeMap;
 		}
 		
-		if( pStaticShadowCubeMap ){
+		if(pStaticShadowCubeMap){
 			delete pStaticShadowCubeMap;
 			pStaticShadowCubeMap = NULL;
 		}
 	}
 	
-	pStaticShadowCubeMap = new deoglCubeMap( pRenderThread );
-	pStaticShadowCubeMap->SetSize( size );
-	pStaticShadowCubeMap->SetDepthFormat( useFloat );
+	pStaticShadowCubeMap = new deoglCubeMap(pRenderThread);
+	pStaticShadowCubeMap->SetSize(size);
+	pStaticShadowCubeMap->SetDepthFormat(useFloat);
 	pStaticShadowCubeMap->CreateCubeMap();
 	pMemUseStaCubeDepth = pStaticShadowCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
@@ -186,25 +186,25 @@ deoglCubeMap *deoglSCTransparent::ObtainStaticShadowCubeMapWithSize( int size, b
 	return pStaticShadowCubeMap;
 }
 
-deoglCubeMap *deoglSCTransparent::ObtainStaticColorCubeMapWithSize( int size ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglCubeMap *deoglSCTransparent::ObtainStaticColorCubeMapWithSize(int size){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pStaticColorCubeMap ){
-		if( pStaticColorCubeMap->GetSize() == size ){
+	if(pStaticColorCubeMap){
+		if(pStaticColorCubeMap->GetSize() == size){
 			return pStaticColorCubeMap;
 		}
 		
-		if( pStaticColorCubeMap ){
+		if(pStaticColorCubeMap){
 			delete pStaticColorCubeMap;
 			pStaticColorCubeMap = NULL;
 		}
 	}
 	
-	pStaticColorCubeMap = new deoglCubeMap( pRenderThread );
-	pStaticColorCubeMap->SetSize( size );
-	pStaticColorCubeMap->SetFBOFormat( 4, false );
+	pStaticColorCubeMap = new deoglCubeMap(pRenderThread);
+	pStaticColorCubeMap->SetSize(size);
+	pStaticColorCubeMap->SetFBOFormat(4, false);
 	pStaticColorCubeMap->CreateCubeMap();
 	pMemUseStaCubeColor = pStaticColorCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
@@ -220,19 +220,19 @@ void deoglSCTransparent::DropStatic(){
 	pMemUseStaCubeDepth = 0;
 	pMemUseStaCubeColor = 0;
 	
-	if( pStaticShadowMap ){
+	if(pStaticShadowMap){
 		delete pStaticShadowMap;
 		pStaticShadowMap = NULL;
 	}
-	if( pStaticColorMap ){
+	if(pStaticColorMap){
 		delete pStaticColorMap;
 		pStaticColorMap = NULL;
 	}
-	if( pStaticShadowCubeMap ){
+	if(pStaticShadowCubeMap){
 		delete pStaticShadowCubeMap;
 		pStaticShadowCubeMap = NULL;
 	}
-	if( pStaticColorCubeMap ){
+	if(pStaticColorCubeMap){
 		delete pStaticColorCubeMap;
 		pStaticColorCubeMap = NULL;
 	}
@@ -251,26 +251,26 @@ void deoglSCTransparent::ResetLastUseStatic(){
 
 
 
-deoglTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pDynamicShadowMap ){
-		if( pDynamicShadowMap->GetWidth() == size
-		&& pDynamicShadowMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+	if(pDynamicShadowMap){
+		if(pDynamicShadowMap->GetWidth() == size
+		&& pDynamicShadowMap->GetFormat()->GetIsDepthFloat() == useFloat){
 			return pDynamicShadowMap;
 		}
 		
-		if( pDynamicShadowMap ){
+		if(pDynamicShadowMap){
 			delete pDynamicShadowMap;
 			pDynamicShadowMap = NULL;
 		}
 	}
 	
-	pDynamicShadowMap = new deoglTexture( pRenderThread );
-	pDynamicShadowMap->SetDepthFormat( false, useFloat );
-	pDynamicShadowMap->SetSize( size, size );
+	pDynamicShadowMap = new deoglTexture(pRenderThread);
+	pDynamicShadowMap->SetDepthFormat(false, useFloat);
+	pDynamicShadowMap->SetSize(size, size);
 	pDynamicShadowMap->CreateTexture();
 	pMemUseDynMapDepth = pDynamicShadowMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
@@ -281,25 +281,25 @@ deoglTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize( int size, bool
 	return pDynamicShadowMap;
 }
 
-deoglTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize( int size ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize(int size){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pDynamicColorMap ){
-		if( pDynamicColorMap->GetWidth() == size ){
+	if(pDynamicColorMap){
+		if(pDynamicColorMap->GetWidth() == size){
 			return pDynamicColorMap;
 		}
 		
-		if( pDynamicColorMap ){
+		if(pDynamicColorMap){
 			delete pDynamicColorMap;
 			pDynamicColorMap = NULL;
 		}
 	}
 	
-	pDynamicColorMap = new deoglTexture( pRenderThread );
-	pDynamicColorMap->SetFBOFormat( 4, false );
-	pDynamicColorMap->SetSize( size, size );
+	pDynamicColorMap = new deoglTexture(pRenderThread);
+	pDynamicColorMap->SetFBOFormat(4, false);
+	pDynamicColorMap->SetSize(size, size);
 	pDynamicColorMap->CreateTexture();
 	pMemUseDynMapColor = pDynamicColorMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
@@ -310,26 +310,26 @@ deoglTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize( int size ){
 	return pDynamicColorMap;
 }
 
-deoglCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pDynamicShadowCubeMap ){
-		if( pDynamicShadowCubeMap->GetSize() == size
-		&& pDynamicShadowCubeMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+	if(pDynamicShadowCubeMap){
+		if(pDynamicShadowCubeMap->GetSize() == size
+		&& pDynamicShadowCubeMap->GetFormat()->GetIsDepthFloat() == useFloat){
 			return pDynamicShadowCubeMap;
 		}
 		
-		if( pDynamicShadowCubeMap ){
+		if(pDynamicShadowCubeMap){
 			delete pDynamicShadowCubeMap;
 			pDynamicShadowCubeMap = NULL;
 		}
 	}
 	
-	pDynamicShadowCubeMap = new deoglCubeMap( pRenderThread );
-	pDynamicShadowCubeMap->SetSize( size );
-	pDynamicShadowCubeMap->SetDepthFormat( useFloat );
+	pDynamicShadowCubeMap = new deoglCubeMap(pRenderThread);
+	pDynamicShadowCubeMap->SetSize(size);
+	pDynamicShadowCubeMap->SetDepthFormat(useFloat);
 	pDynamicShadowCubeMap->CreateCubeMap();
 	pMemUseDynCubeDepth = pDynamicShadowCubeMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
@@ -340,25 +340,25 @@ deoglCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithSize( int size, 
 	return pDynamicShadowCubeMap;
 }
 
-deoglCubeMap *deoglSCTransparent::ObtainDynamicColorCubeMapWithSize( int size ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglCubeMap *deoglSCTransparent::ObtainDynamicColorCubeMapWithSize(int size){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pDynamicColorCubeMap ){
-		if( pDynamicColorCubeMap->GetSize() == size ){
+	if(pDynamicColorCubeMap){
+		if(pDynamicColorCubeMap->GetSize() == size){
 			return pDynamicColorCubeMap;
 		}
 		
-		if( pDynamicColorCubeMap ){
+		if(pDynamicColorCubeMap){
 			delete pDynamicColorCubeMap;
 			pDynamicColorCubeMap = NULL;
 		}
 	}
 	
-	pDynamicColorCubeMap = new deoglCubeMap( pRenderThread );
-	pDynamicColorCubeMap->SetSize( size );
-	pDynamicColorCubeMap->SetFBOFormat( 4, false );
+	pDynamicColorCubeMap = new deoglCubeMap(pRenderThread);
+	pDynamicColorCubeMap->SetSize(size);
+	pDynamicColorCubeMap->SetFBOFormat(4, false);
 	pDynamicColorCubeMap->CreateCubeMap();
 	pMemUseDynCubeColor = pDynamicColorCubeMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
@@ -375,19 +375,19 @@ void deoglSCTransparent::DropDynamic(){
 	pMemUseDynCubeDepth = 0;
 	pMemUseDynCubeColor = 0;
 	
-	if( pDynamicShadowMap ){
+	if(pDynamicShadowMap){
 		delete pDynamicShadowMap;
 		pDynamicShadowMap = NULL;
 	}
-	if( pDynamicColorMap ){
+	if(pDynamicColorMap){
 		delete pDynamicColorMap;
 		pDynamicColorMap = NULL;
 	}
-	if( pDynamicShadowCubeMap ){
+	if(pDynamicShadowCubeMap){
 		delete pDynamicShadowCubeMap;
 		pDynamicShadowCubeMap = NULL;
 	}
-	if( pDynamicColorCubeMap ){
+	if(pDynamicColorCubeMap){
 		delete pDynamicColorCubeMap;
 		pDynamicColorCubeMap = NULL;
 	}
@@ -405,114 +405,114 @@ void deoglSCTransparent::ResetLastUseDynamic(){
 	pLastUseDynamic = 0;
 }
 
-void deoglSCTransparent::SetDirtyDynamic( bool dirty ){
+void deoglSCTransparent::SetDirtyDynamic(bool dirty){
 	pDirtyDynamic = dirty;
 }
 
 
 
-deoglRenderableDepthTexture *deoglSCTransparent::ObtainTemporaryShadowMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglRenderableDepthTexture *deoglSCTransparent::ObtainTemporaryShadowMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTemporaryShadowMap ){
-		if( pTemporaryShadowMap->GetWidth() == size
-		&& pTemporaryShadowMap->GetUseFloat() == useFloat ){
+	if(pTemporaryShadowMap){
+		if(pTemporaryShadowMap->GetWidth() == size
+		&& pTemporaryShadowMap->GetUseFloat() == useFloat){
 			return pTemporaryShadowMap;
 		}
 		DropTemporary();
 	}
 	
 	pTemporaryShadowMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
-		.GetTextureWith( size, size, false, false );
+		.GetTextureWith(size, size, false, false);
 	
 	return pTemporaryShadowMap;
 }
 
-deoglRenderableColorTexture *deoglSCTransparent::ObtainTemporaryColorMapWithSize( int size ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglRenderableColorTexture *deoglSCTransparent::ObtainTemporaryColorMapWithSize(int size){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTemporaryColorMap ){
-		if( pTemporaryColorMap->GetWidth() == size ){
+	if(pTemporaryColorMap){
+		if(pTemporaryColorMap->GetWidth() == size){
 			return pTemporaryColorMap;
 		}
 		DropTemporary();
 	}
 	
 	pTemporaryColorMap = pRenderThread.GetTexture().GetRenderableColorTexture()
-		.GetTextureWith( size, size, 4, false );
+		.GetTextureWith(size, size, 4, false);
 	
 	return pTemporaryColorMap;
 }
 
-deoglRenderableDepthCubeMap *deoglSCTransparent::ObtainTemporaryShadowCubeMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglRenderableDepthCubeMap *deoglSCTransparent::ObtainTemporaryShadowCubeMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTemporaryShadowCubeMap ){
-		if( pTemporaryShadowCubeMap->GetSize() == size
-		&& pTemporaryShadowCubeMap->GetUseFloat() == useFloat ){
+	if(pTemporaryShadowCubeMap){
+		if(pTemporaryShadowCubeMap->GetSize() == size
+		&& pTemporaryShadowCubeMap->GetUseFloat() == useFloat){
 			return pTemporaryShadowCubeMap;
 		}
 		DropTemporary();
 	}
 	
-	pTemporaryShadowCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size, useFloat );
+	pTemporaryShadowCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith(size, useFloat);
 	
 	return pTemporaryShadowCubeMap;
 }
 
-deoglRenderableColorCubeMap *deoglSCTransparent::ObtainTemporaryColorCubeMapWithSize( int size ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglRenderableColorCubeMap *deoglSCTransparent::ObtainTemporaryColorCubeMapWithSize(int size){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTemporaryColorCubeMap ){
-		if( pTemporaryColorCubeMap->GetSize() == size ){
+	if(pTemporaryColorCubeMap){
+		if(pTemporaryColorCubeMap->GetSize() == size){
 			return pTemporaryColorCubeMap;
 		}
 		DropTemporary();
 	}
 	
 	pTemporaryColorCubeMap = pRenderThread.GetTexture().GetRenderableColorCubeMap().
-		GetCubeMapWith( size, 4, false );
+		GetCubeMapWith(size, 4, false);
 	
 	return pTemporaryColorCubeMap;
 }
 
 void deoglSCTransparent::DropTemporary(){
-	if( pTemporaryShadowMap ){
-		pTemporaryShadowMap->SetInUse( false );
+	if(pTemporaryShadowMap){
+		pTemporaryShadowMap->SetInUse(false);
 		pTemporaryShadowMap = NULL;
 	}
-	if( pTemporaryColorMap ){
-		pTemporaryColorMap->SetInUse( false );
+	if(pTemporaryColorMap){
+		pTemporaryColorMap->SetInUse(false);
 		pTemporaryColorMap = NULL;
 	}
-	if( pTemporaryShadowCubeMap ){
-		pTemporaryShadowCubeMap->SetInUse( false );
+	if(pTemporaryShadowCubeMap){
+		pTemporaryShadowCubeMap->SetInUse(false);
 		pTemporaryShadowCubeMap = NULL;
 	}
-	if( pTemporaryColorCubeMap ){
-		pTemporaryColorCubeMap->SetInUse( false );
+	if(pTemporaryColorCubeMap){
+		pTemporaryColorCubeMap->SetInUse(false);
 		pTemporaryColorCubeMap = NULL;
 	}
 }
 
 
 
-void deoglSCTransparent::SetLargestNextSizeStatic( int size ){
-	if( size > pNextSizeStatic ){
+void deoglSCTransparent::SetLargestNextSizeStatic(int size){
+	if(size > pNextSizeStatic){
 		pNextSizeStatic = size;
 	}
 }
 
-void deoglSCTransparent::SetLargestNextSizeDynamic( int size ){
-	if( size > pNextSizeDynamic ){
+void deoglSCTransparent::SetLargestNextSizeDynamic(int size){
+	if(size > pNextSizeDynamic){
 		pNextSizeDynamic = size;
 	}
 }
@@ -520,19 +520,19 @@ void deoglSCTransparent::SetLargestNextSizeDynamic( int size ){
 
 
 void deoglSCTransparent::Update(){
-	if( pHasStatic && pLastUseStatic++ > 5 ){ // for the time being 5 frames
+	if(pHasStatic && pLastUseStatic++ > 5){ // for the time being 5 frames
 		DropStatic();
 	}
-	if( pHasDynamic && pLastUseDynamic++ > 5 ){ // for the time being 5 frames
+	if(pHasDynamic && pLastUseDynamic++ > 5){ // for the time being 5 frames
 		DropDynamic();
 	}
 	
-	if( pNextSizeStatic > 0 ){
+	if(pNextSizeStatic > 0){
 		pLastSizeStatic = pNextSizeStatic;
 		pNextSizeStatic = 0;
 	}
 	
-	if( pNextSizeDynamic > 0 ){
+	if(pNextSizeDynamic > 0){
 		pLastSizeDynamic = pNextSizeDynamic;
 		pNextSizeDynamic = 0;
 	}

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap manager. */
-	deoglRenderableColorCubeMapManager( deoglRenderThread &renderThread );
+	deoglRenderableColorCubeMapManager(deoglRenderThread &renderThread);
 	/** Cleans up the renderable cubemap manager. */
 	~deoglRenderableColorCubeMapManager();
 	/*@}*/
@@ -63,10 +63,10 @@ public:
 	/** Retrieves the number of renderable cubemaps. */
 	inline int GetCubeMapCount() const{ return pCubeMapCount; }
 	/** Retrieves the renderable cubemap for reading only at the given location. */
-	const deoglRenderableColorCubeMap *GetCubeMapAt( int index ) const;
+	const deoglRenderableColorCubeMap *GetCubeMapAt(int index) const;
 	
 	/** Retrieves the renderable cubemap for the given format. */
-	deoglRenderableColorCubeMap *GetCubeMapWith( int size, int componentCount, bool isFloat );
+	deoglRenderableColorCubeMap *GetCubeMapWith(int size, int componentCount, bool isFloat);
 	/*@}*/
 };
 

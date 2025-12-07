@@ -54,48 +54,48 @@ int meDecalList::GetCount() const{
 	return pObjects.GetCount();
 }
 
-meDecal *meDecalList::GetAt( int position ) const{
-	return ( meDecal* )pObjects.GetAt( position );
+meDecal *meDecalList::GetAt(int position) const{
+	return (meDecal*)pObjects.GetAt(position);
 }
 
-int meDecalList::IndexOf( meDecal *decal ) const{
-	return pObjects.IndexOf( decal );
+int meDecalList::IndexOf(meDecal *decal) const{
+	return pObjects.IndexOf(decal);
 }
 
-bool meDecalList::Has( meDecal *decal ) const{
-	return pObjects.Has( decal );
+bool meDecalList::Has(meDecal *decal) const{
+	return pObjects.Has(decal);
 }
 
-void meDecalList::Add( meDecal *decal ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+void meDecalList::Add(meDecal *decal){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjects.Add( decal );
+	pObjects.Add(decal);
 }
 
-void meDecalList::AddIfAbsent( meDecal *decal ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+void meDecalList::AddIfAbsent(meDecal *decal){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjects.AddIfAbsent( decal );
+	pObjects.AddIfAbsent(decal);
 }
 
-void meDecalList::Remove( meDecal *decal ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+void meDecalList::Remove(meDecal *decal){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjects.Remove( decal );
+	pObjects.Remove(decal);
 }
 
-void meDecalList::RemoveIfPresent( meDecal *decal ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+void meDecalList::RemoveIfPresent(meDecal *decal){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjects.RemoveIfPresent( decal );
+	pObjects.RemoveIfPresent(decal);
 }
 
 void meDecalList::RemoveAll(){
@@ -104,7 +104,7 @@ void meDecalList::RemoveAll(){
 
 
 
-meDecalList &meDecalList::operator=( const meDecalList &list ){
+meDecalList &meDecalList::operator=(const meDecalList &list){
 	pObjects = list.pObjects;
 	return *this;
 }

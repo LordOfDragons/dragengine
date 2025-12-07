@@ -41,18 +41,18 @@
 ////////////////////////////
 
 meHTVRuleResult::meHTVRuleResult() :
-meHTVRule( ertResult, 2 ),
-pProbability( 0.0f ),
-pVariation( 0 )
+meHTVRule(ertResult, 2),
+pProbability(0.0f),
+pVariation(0)
 {
-	GetSlotAt( eisProbability ).SetIsInput( true );
-	GetSlotAt( eisVariation ).SetIsInput( true );
+	GetSlotAt(eisProbability).SetIsInput(true);
+	GetSlotAt(eisVariation).SetIsInput(true);
 }
 
-meHTVRuleResult::meHTVRuleResult( const meHTVRuleResult &rule ) :
-meHTVRule( rule ),
-pProbability( rule.pProbability ),
-pVariation( rule.pVariation ){
+meHTVRuleResult::meHTVRuleResult(const meHTVRuleResult &rule) :
+meHTVRule(rule),
+pProbability(rule.pProbability),
+pVariation(rule.pVariation){
 }
 
 meHTVRuleResult::~meHTVRuleResult(){
@@ -63,66 +63,66 @@ meHTVRuleResult::~meHTVRuleResult(){
 // Management
 ///////////////
 
-void meHTVRuleResult::SetProbability( float probability ){
+void meHTVRuleResult::SetProbability(float probability){
 	pProbability = probability;
 }
 
-void meHTVRuleResult::SetVariation( int variation ){
+void meHTVRuleResult::SetVariation(int variation){
 	pVariation = variation;
 }
 
 
 
-void meHTVRuleResult::Evaluate( meHTVEvaluationEnvironment &evalEnv ){
-	meHTVRSlot &slotPropbability = GetSlotAt( eisProbability );
-	meHTVRSlot &slotVariation = GetSlotAt( eisVariation );
+void meHTVRuleResult::Evaluate(meHTVEvaluationEnvironment &evalEnv){
+	meHTVRSlot &slotPropbability = GetSlotAt(eisProbability);
+	meHTVRSlot &slotVariation = GetSlotAt(eisVariation);
 	
 	// probability
 	int linkCount = slotPropbability.GetLinkCount();
 	float value;
 	
-	if( linkCount > 0 ){
+	if(linkCount > 0){
 		float probability = 1.0f;
 		int l;
 		
-		for( l=0; l<linkCount; l++ ){
-			meHTVRLink &link = *slotPropbability.GetLinkAt( l );
+		for(l=0; l<linkCount; l++){
+			meHTVRLink &link = *slotPropbability.GetLinkAt(l);
 			
-			value = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+			value = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 				
-			if( value < 0.0f ){
+			if(value < 0.0f){
 				probability = 0.0f;
 				
-			}else if( value < 1.0f ){
+			}else if(value < 1.0f){
 				probability *= value;
 			}
 		}
 		
-		evalEnv.SetProbability( probability );
+		evalEnv.SetProbability(probability);
 		
 	}else{
-		evalEnv.SetProbability( pProbability );
+		evalEnv.SetProbability(pProbability);
 	}
 	
 	// variation
-	if( slotVariation.GetLinkCount() > 0 ){
-		meHTVRLink &link = *slotVariation.GetLinkAt( 0 );
+	if(slotVariation.GetLinkCount() > 0){
+		meHTVRLink &link = *slotVariation.GetLinkAt(0);
 		meHTVegetationLayer *vlayer = evalEnv.GetVLayer();
 		int variationCount = 0;
 		
-		if( vlayer ){
+		if(vlayer){
 			variationCount = vlayer->GetVariationCount();
 		}
 		
-		value = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		value = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 		
-		evalEnv.SetVariation( ( int )floorf( value * ( float )variationCount + 0.5f ) );
+		evalEnv.SetVariation((int)floorf(value * (float)variationCount + 0.5f));
 		
 	}else{
-		evalEnv.SetVariation( pVariation );
+		evalEnv.SetVariation(pVariation);
 	}
 }
 
 meHTVRule *meHTVRuleResult::Copy() const{
-	return new meHTVRuleResult( *this );
+	return new meHTVRuleResult(*this);
 }

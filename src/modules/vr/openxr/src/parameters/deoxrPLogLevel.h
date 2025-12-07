@@ -46,7 +46,7 @@ public:
 	decString GetParameterValue() override;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

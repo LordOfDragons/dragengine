@@ -36,7 +36,7 @@
 // Inline Functions
 /////////////////////
 
-inline float squaredOrientationDifference( const decQuaternion &q1, const decQuaternion &q2 ){
+inline float squaredOrientationDifference(const decQuaternion &q1, const decQuaternion &q2){
 	const decQuaternion q3 = q1.Conjugate() * q2;
 	
 	// diff-squared = x*x + y*y + z*z + (w-1)*(w-1)
@@ -59,16 +59,16 @@ const float deoglSkyLayerTracker::THRESHOLD_ONE_DEGREE_ORIENTATION = 7.615902e-5
 ////////////////////////////
 
 deoglSkyLayerTracker::deoglSkyLayerTracker() :
-pThresholdOrientation( 0.0f ),
-pThresholdIntensity( 0.0f ),
-pThresholdTransparency( 0.0f ),
-pThresholdColor( 0.0f ),
+pThresholdOrientation(0.0f),
+pThresholdIntensity(0.0f),
+pThresholdTransparency(0.0f),
+pThresholdColor(0.0f),
 
-pIntensity( 0.0f ),
-pTransparency( 1.0f ),
+pIntensity(0.0f),
+pTransparency(1.0f),
 
-pLightIntensity( 0.0f ),
-pAmbientIntensity( 0.0f ){
+pLightIntensity(0.0f),
+pAmbientIntensity(0.0f){
 }
 
 deoglSkyLayerTracker::~deoglSkyLayerTracker(){
@@ -79,26 +79,26 @@ deoglSkyLayerTracker::~deoglSkyLayerTracker(){
 // Management
 ///////////////
 
-void deoglSkyLayerTracker::SetThresholdOrientation( float threshold ){
+void deoglSkyLayerTracker::SetThresholdOrientation(float threshold){
 	pThresholdOrientation = threshold;
 }
 
-void deoglSkyLayerTracker::SetThresholdIntensity( float threshold ){
+void deoglSkyLayerTracker::SetThresholdIntensity(float threshold){
 	pThresholdIntensity = threshold;
 }
 
-void deoglSkyLayerTracker::SetThresholdTransparency( float threshold ){
+void deoglSkyLayerTracker::SetThresholdTransparency(float threshold){
 	pThresholdTransparency = threshold;
 }
 
-void deoglSkyLayerTracker::SetThresholdColor( float threshold ){
+void deoglSkyLayerTracker::SetThresholdColor(float threshold){
 	pThresholdColor = threshold;
 }
 
 
 
-bool deoglSkyLayerTracker::UpdateOrientation( const decQuaternion &orientation ) {
-	if( squaredOrientationDifference( orientation, pOrientation ) <= pThresholdOrientation ){
+bool deoglSkyLayerTracker::UpdateOrientation(const decQuaternion &orientation) {
+	if(squaredOrientationDifference(orientation, pOrientation) <= pThresholdOrientation){
 		return false;
 		
 	}else{
@@ -108,8 +108,8 @@ bool deoglSkyLayerTracker::UpdateOrientation( const decQuaternion &orientation )
 	}
 }
 
-bool deoglSkyLayerTracker::UpdateColor( const decColor &color ){
-	if( color.IsEqualTo( pColor, pThresholdColor ) ){
+bool deoglSkyLayerTracker::UpdateColor(const decColor &color){
+	if(color.IsEqualTo(pColor, pThresholdColor)){
 		return false;
 		
 	}else{
@@ -119,8 +119,8 @@ bool deoglSkyLayerTracker::UpdateColor( const decColor &color ){
 	}
 }
 
-bool deoglSkyLayerTracker::UpdateIntensity( float intensity ){
-	if( fabsf( intensity - pIntensity ) < pThresholdIntensity ){
+bool deoglSkyLayerTracker::UpdateIntensity(float intensity){
+	if(fabsf(intensity - pIntensity) < pThresholdIntensity){
 		return false;
 		
 	}else{
@@ -130,8 +130,8 @@ bool deoglSkyLayerTracker::UpdateIntensity( float intensity ){
 	}
 }
 
-bool deoglSkyLayerTracker::UpdateTransparency( float transparency ){
-	if( fabsf( transparency - pTransparency ) < pThresholdTransparency ){
+bool deoglSkyLayerTracker::UpdateTransparency(float transparency){
+	if(fabsf(transparency - pTransparency) < pThresholdTransparency){
 		return false;
 		
 	}else{
@@ -141,8 +141,8 @@ bool deoglSkyLayerTracker::UpdateTransparency( float transparency ){
 	}
 }
 
-bool deoglSkyLayerTracker::UpdateLightOrientation( const decQuaternion &orientation ){
-	if( squaredOrientationDifference( orientation, pLightOrientation ) < pThresholdOrientation ){
+bool deoglSkyLayerTracker::UpdateLightOrientation(const decQuaternion &orientation){
+	if(squaredOrientationDifference(orientation, pLightOrientation) < pThresholdOrientation){
 		return false;
 		
 	}else{
@@ -152,8 +152,8 @@ bool deoglSkyLayerTracker::UpdateLightOrientation( const decQuaternion &orientat
 	}
 }
 
-bool deoglSkyLayerTracker::UpdateLightColor( const decColor &color ){
-	if( color.IsEqualTo( pLightColor, pThresholdColor ) ){
+bool deoglSkyLayerTracker::UpdateLightColor(const decColor &color){
+	if(color.IsEqualTo(pLightColor, pThresholdColor)){
 		return false;
 		
 	}else{
@@ -163,8 +163,8 @@ bool deoglSkyLayerTracker::UpdateLightColor( const decColor &color ){
 	}
 }
 
-bool deoglSkyLayerTracker::UpdateLightIntensity( float intensity ){
-	if( fabsf( intensity - pLightIntensity ) < pThresholdIntensity ){
+bool deoglSkyLayerTracker::UpdateLightIntensity(float intensity){
+	if(fabsf(intensity - pLightIntensity) < pThresholdIntensity){
 		return false;
 		
 	}else{
@@ -174,8 +174,8 @@ bool deoglSkyLayerTracker::UpdateLightIntensity( float intensity ){
 	}
 }
 
-bool deoglSkyLayerTracker::UpdateAmbientIntensity( float intensity ){
-	if( fabsf( intensity - pAmbientIntensity ) < pThresholdIntensity ){
+bool deoglSkyLayerTracker::UpdateAmbientIntensity(float intensity){
+	if(fabsf(intensity - pAmbientIntensity) < pThresholdIntensity){
 		return false;
 		
 	}else{

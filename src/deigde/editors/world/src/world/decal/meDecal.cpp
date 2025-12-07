@@ -76,7 +76,7 @@ private:
 	meDecal &pDecal;
 	
 public:
-	meDecalTimerReattachDecals( meDecal &decal ) : igdeTimer( *decal.GetEnvironment() ), pDecal( decal ){
+	meDecalTimerReattachDecals(meDecal &decal) : igdeTimer(*decal.GetEnvironment()), pDecal(decal){
 	}
 	
 	virtual void OnTimeout(){
@@ -92,90 +92,90 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meDecal::meDecal( igdeEnvironment *environment ) :
-pEnvironment( environment ),
+meDecal::meDecal(igdeEnvironment *environment) :
+pEnvironment(environment),
 
-pEngSkin( NULL ),
+pEngSkin(NULL),
 
-pAttachedDecals( NULL ),
-pAttachedDecalCount( 0 ),
+pAttachedDecals(NULL),
+pAttachedDecalCount(0),
 
-pWorld( NULL ),
+pWorld(NULL),
 
-pDebugDrawer( NULL ),
-pDDSDecal( NULL ),
-pCollider( NULL ),
+pDebugDrawer(NULL),
+pDDSDecal(NULL),
+pCollider(NULL),
 
-pParentObject( NULL ),
+pParentObject(NULL),
 
-pSize( 0.5f, 0.5f, 1.0f ),
-pTexCoordScaling( 1.0f, 1.0f ),
-pTexCoordRotation( 0.0f ),
+pSize(0.5f, 0.5f, 1.0f),
+pTexCoordScaling(1.0f, 1.0f),
+pTexCoordRotation(0.0f),
 
-pColorTint( 1.0f, 1.0f, 1.0f ),
+pColorTint(1.0f, 1.0f, 1.0f),
 
-pDynamicSkin( NULL ),
+pDynamicSkin(NULL),
 
-pID( 0 ),
-pVisible( true ),
+pID(0),
+pVisible(true),
 
-pSelected( false ),
-pActive( false ),
+pSelected(false),
+pActive(false),
 
-pColliderOwner( this )
+pColliderOwner(this)
 {
-	if( ! environment ){
-		DETHROW( deeInvalidParam );
+	if(!environment){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pInitShared();
 }
 
-meDecal::meDecal( const meDecal &decal ) :
-pEnvironment( decal.pEnvironment ),
+meDecal::meDecal(const meDecal &decal) :
+pEnvironment(decal.pEnvironment),
 
-pEngSkin( NULL ),
+pEngSkin(NULL),
 
-pAttachedDecals( NULL ),
-pAttachedDecalCount( 0 ),
+pAttachedDecals(NULL),
+pAttachedDecalCount(0),
 
-pWorld( NULL ),
+pWorld(NULL),
 
-pDebugDrawer( NULL ),
-pDDSDecal( NULL ),
-pCollider( NULL ),
+pDebugDrawer(NULL),
+pDDSDecal(NULL),
+pCollider(NULL),
 
-pParentObject( NULL ),
+pParentObject(NULL),
 
-pSkinPath( decal.pSkinPath ),
-pTextureName( decal.pTextureName ),
-pPosition( decal.pPosition ),
-pRotation( decal.pRotation ),
-pSize( decal.pSize ),
-pTexCoordOffset( decal.pTexCoordOffset ),
-pTexCoordScaling( decal.pTexCoordScaling ),
-pTexCoordRotation( decal.pTexCoordRotation ),
+pSkinPath(decal.pSkinPath),
+pTextureName(decal.pTextureName),
+pPosition(decal.pPosition),
+pRotation(decal.pRotation),
+pSize(decal.pSize),
+pTexCoordOffset(decal.pTexCoordOffset),
+pTexCoordScaling(decal.pTexCoordScaling),
+pTexCoordRotation(decal.pTexCoordRotation),
 
-pProperties( decal.pProperties ),
-pActiveProperty( decal.pActiveProperty ),
+pProperties(decal.pProperties),
+pActiveProperty(decal.pActiveProperty),
 
-pColorTint( decal.pColorTint ),
+pColorTint(decal.pColorTint),
 
-pDynamicSkin( NULL ),
+pDynamicSkin(NULL),
 
-pID( 0 ),
-pVisible( decal.pVisible ),
+pID(0),
+pVisible(decal.pVisible),
 
-pSelected( false ),
-pActive( false ),
+pSelected(false),
+pActive(false),
 
-pColliderOwner( this )
+pColliderOwner(this)
 {
 	pInitShared();
 	
 	try{
 		pEngSkin = decal.pEngSkin;
-		if( pEngSkin ){
+		if(pEngSkin){
 			pEngSkin->AddReference();
 		}
 		// pUpdateSkin(); // not needed as there are no decals yet
@@ -186,7 +186,7 @@ pColliderOwner( this )
 		
 		UpdateDynamicSkin();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -201,27 +201,27 @@ meDecal::~meDecal(){
 // Management
 ///////////////
 
-void meDecal::SetWorld( meWorld *world ){
+void meDecal::SetWorld(meWorld *world){
 	DetachDecals();
 	
-	if( pWorld ){
-		pWorld->GetEngineWorld()->RemoveCollider( pCollider );
-		pWorld->GetEngineWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pWorld){
+		pWorld->GetEngineWorld()->RemoveCollider(pCollider);
+		pWorld->GetEngineWorld()->RemoveDebugDrawer(pDebugDrawer);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->GetEngineWorld()->AddDebugDrawer( pDebugDrawer );
-		world->GetEngineWorld()->AddCollider( pCollider );
+	if(world){
+		world->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
+		world->GetEngineWorld()->AddCollider(pCollider);
 	}
 	
 	ShowStateChanged();
 	InvalidateDecals();
 }
 
-void meDecal::SetParentObject( meObject *object ){
-	if( object == pParentObject ){
+void meDecal::SetParentObject(meObject *object){
+	if(object == pParentObject){
 		return;
 	}
 	
@@ -231,16 +231,16 @@ void meDecal::SetParentObject( meObject *object ){
 
 
 
-void meDecal::SetSkinPath( const char *path ){
-	if( pSkinPath == path ){
+void meDecal::SetSkinPath(const char *path){
+	if(pSkinPath == path){
 		return;
 	}
 	
 	pSkinPath = path;
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalChanged(this);
 	}
 	
 	LoadSkin();
@@ -251,76 +251,76 @@ void meDecal::LoadSkin(){
 	pUpdateSkin();
 }
 
-decVector meDecal::GetDefaultSize( float baseSize ) const{
-	if( ! pEngSkin ){
-		return decVector( baseSize, baseSize, baseSize );
+decVector meDecal::GetDefaultSize(float baseSize) const{
+	if(!pEngSkin){
+		return decVector(baseSize, baseSize, baseSize);
 	}
 	
-	if( pEngSkin->GetTextureCount() == 0 ){
-		return decVector( baseSize, baseSize, baseSize );
+	if(pEngSkin->GetTextureCount() == 0){
+		return decVector(baseSize, baseSize, baseSize);
 	}
 	
-	const deSkinTexture &texture = *pEngSkin->GetTextureAt( 0 );
+	const deSkinTexture &texture = *pEngSkin->GetTextureAt(0);
 	const int count = texture.GetPropertyCount();
 	deSkinPropertyVisitorIdentify identify;
 	decPoint size;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		texture.GetPropertyAt( i )->Visit( identify );
+	for(i=0; i<count; i++){
+		texture.GetPropertyAt(i)->Visit(identify);
 		
-		if( identify.IsImage() ){
+		if(identify.IsImage()){
 			const deImage * const image = identify.CastToImage().GetImage();
-			size.Set( image->GetWidth(), image->GetHeight() );
+			size.Set(image->GetWidth(), image->GetHeight());
 			
-		}else if( identify.IsVideo() ){
+		}else if(identify.IsVideo()){
 			const deVideo * const video = identify.CastToVideo().GetVideo();
-			size.Set( video->GetWidth(), video->GetHeight() );
+			size.Set(video->GetWidth(), video->GetHeight());
 			
-		}else if( identify.IsConstructed() ){
+		}else if(identify.IsConstructed()){
 			const decPoint3 &contentSize = identify.CastToConstructed().GetContent().GetSize();
-			size.Set( contentSize.x, contentSize.y );
+			size.Set(contentSize.x, contentSize.y);
 			
 		}else{
 			continue;
 		}
 		
-		if( size.x > size.y ){
-			return decVector( baseSize, baseSize * ( float )size.y / ( float )size.x, baseSize );
+		if(size.x > size.y){
+			return decVector(baseSize, baseSize * (float)size.y / (float)size.x, baseSize);
 			
 		}else{
-			return decVector( baseSize * ( float )size.x / ( float )size.y, baseSize, baseSize );
+			return decVector(baseSize * (float)size.x / (float)size.y, baseSize, baseSize);
 		}
 	}
 	
-	return decVector( baseSize, baseSize, baseSize );
+	return decVector(baseSize, baseSize, baseSize);
 }
 
-void meDecal::SetTextureName( const char *texture ){
-	if( pTextureName == texture ){
+void meDecal::SetTextureName(const char *texture){
+	if(pTextureName == texture){
 		return;
 	}
 	
 	pTextureName = texture;
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalChanged(this);
 	}
 	
 	pUpdateSkin();
 }
 
-void meDecal::SetPosition( const decDVector &position ){
-	if( pPosition.IsEqualTo( position ) ){
+void meDecal::SetPosition(const decDVector &position){
+	if(pPosition.IsEqualTo(position)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalGeometryChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalGeometryChanged(this);
 	}
 	
 	pRepositionShapes();
@@ -328,16 +328,16 @@ void meDecal::SetPosition( const decDVector &position ){
 	InvalidateDecals();
 }
 
-void meDecal::SetRotation( const decVector &rotation ){
-	if( pRotation.IsEqualTo( rotation ) ){
+void meDecal::SetRotation(const decVector &rotation){
+	if(pRotation.IsEqualTo(rotation)){
 		return;
 	}
 	
 	pRotation = rotation;
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalGeometryChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalGeometryChanged(this);
 	}
 	
 	pRepositionShapes();
@@ -345,103 +345,103 @@ void meDecal::SetRotation( const decVector &rotation ){
 	InvalidateDecals();
 }
 
-void meDecal::SetSize( const decVector &size ){
-	const decVector csize( decVector( 0.001f, 0.001f, 0.001f ).Largest( size ) );
-	if( pSize.IsEqualTo( csize ) ){
+void meDecal::SetSize(const decVector &size){
+	const decVector csize(decVector(0.001f, 0.001f, 0.001f).Largest(size));
+	if(pSize.IsEqualTo(csize)){
 		return;
 	}
 	
 	pSize = size;
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalGeometryChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalGeometryChanged(this);
 	}
 	
 	pUpdateShapes();
 	InvalidateDecals();
 }
 
-void meDecal::SetTexCoordOffset( const decVector2 &offset ){
-	if( pTexCoordOffset.IsEqualTo( offset ) ){
+void meDecal::SetTexCoordOffset(const decVector2 &offset){
+	if(pTexCoordOffset.IsEqualTo(offset)){
 		return;
 	}
 	
 	pTexCoordOffset = offset;
 	pUpdateTransform();
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalChanged(this);
 	}
 }
 
-void meDecal::SetTexCoordScaling( const decVector2 &scaling ){
-	if( pTexCoordScaling.IsEqualTo( scaling ) ){
+void meDecal::SetTexCoordScaling(const decVector2 &scaling){
+	if(pTexCoordScaling.IsEqualTo(scaling)){
 		return;
 	}
 	
 	pTexCoordScaling = scaling;
 	pUpdateTransform();
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalChanged(this);
 	}
 }
 
-void meDecal::SetTexCoordRotation( float rotation ){
-	if( fabsf( pTexCoordRotation - rotation ) < 1e-5f ){
+void meDecal::SetTexCoordRotation(float rotation){
+	if(fabsf(pTexCoordRotation - rotation) < 1e-5f){
 		return;
 	}
 	
 	pTexCoordRotation = rotation;
 	pUpdateTransform();
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalChanged(this);
 	}
 }
 
-void meDecal::SetColorTint( const decColor &color ){
-	if( color.IsEqualTo( pColorTint ) ){
+void meDecal::SetColorTint(const decColor &color){
+	if(color.IsEqualTo(pColorTint)){
 		return;
 	}
 	
 	pColorTint = color;
 	UpdateDynamicSkin();
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalChanged(this);
 	}
 }
 
 void meDecal::UpdateDynamicSkin(){
-	const bool hasTint = ! decColor( 1.0f, 1.0f, 1.0f ).IsEqualTo( pColorTint );
+	const bool hasTint = !decColor(1.0f, 1.0f, 1.0f).IsEqualTo(pColorTint);
 	bool requiresDynamicSkin = false;
 	
-	if( hasTint ){
+	if(hasTint){
 		requiresDynamicSkin = true;
 	}
 	
-	if( requiresDynamicSkin ){
-		if( ! pDynamicSkin ){
+	if(requiresDynamicSkin){
+		if(!pDynamicSkin){
 			deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
 			pDynamicSkin = engine.GetDynamicSkinManager()->CreateDynamicSkin();
 		}
 		
 		pDynamicSkin->RemoveAllRenderables();
 		
-		if( hasTint ){
-			deDSRenderableColor *renderable = new deDSRenderableColor( "tint" );
-			renderable->SetColor( pColorTint );
-			pDynamicSkin->AddRenderable( renderable );
+		if(hasTint){
+			deDSRenderableColor *renderable = new deDSRenderableColor("tint");
+			renderable->SetColor(pColorTint);
+			pDynamicSkin->AddRenderable(renderable);
 		}
 		
 	}else{
-		if( pDynamicSkin ){
+		if(pDynamicSkin){
 			pDynamicSkin->FreeReference();
 			pDynamicSkin = NULL;
 		}
@@ -452,12 +452,12 @@ void meDecal::UpdateDynamicSkin(){
 
 
 
-void meDecal::SetID( int id ){
+void meDecal::SetID(int id){
 	pID = id;
 }
 
-void meDecal::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void meDecal::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
@@ -467,21 +467,21 @@ void meDecal::SetVisible( bool visible ){
 	/*
 	// hiding the decal is bad as the user needs to know what the decal is. hence keep it visible.
 	// maybe later on a visual cue can be used of some sort
-	for( a=0; a<pAttachedDecalCount; a++ ){
-		pAttachedDecals[ a ]->GetEngineDecal()->SetVisible( visible );
+	for(a=0; a<pAttachedDecalCount; a++){
+		pAttachedDecals[a]->GetEngineDecal()->SetVisible(visible);
 	}
 	*/
 	
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyDecalChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyDecalChanged(this);
 	}
 }
 
 
 
-void meDecal::SetSelected( bool selected ){
-	if( selected == pSelected ){
+void meDecal::SetSelected(bool selected){
+	if(selected == pSelected){
 		return;
 	}
 	
@@ -489,8 +489,8 @@ void meDecal::SetSelected( bool selected ){
 	pUpdateDDSColors();
 }
 
-void meDecal::SetActive( bool active ){
-	if( active == pActive ){
+void meDecal::SetActive(bool active){
+	if(active == pActive){
 		return;
 	}
 	
@@ -509,18 +509,18 @@ void meDecal::NotifyParentChanged(){
 
 
 void meDecal::ShowStateChanged(){
-	if( pWorld ){
+	if(pWorld){
 		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
 		const meWorldGuiParameters::eElementModes elementMode = guiParams.GetElementMode();
-		const bool modeDecal = ( elementMode == meWorldGuiParameters::eemDecal );
+		const bool modeDecal = (elementMode == meWorldGuiParameters::eemDecal);
 		
-		pDDSDecal->SetVisible( modeDecal );
+		pDDSDecal->SetVisible(modeDecal);
 	}
 }
 
 void meDecal::InvalidateDecals(){
 	DetachDecals();
-	pTimerReattachDecals->Start( 250, false );
+	pTimerReattachDecals->Start(250, false);
 }
 
 void meDecal::OnGameDefinitionChanged(){
@@ -533,12 +533,12 @@ void meDecal::OnGameDefinitionChanged(){
 // Properties
 ///////////////
 
-void meDecal::SetProperty( const char *key, const char *value ){
+void meDecal::SetProperty(const char *key, const char *value){
 	bool activeChanged = false;
 	
-	pProperties.SetAt( key, value );
+	pProperties.SetAt(key, value);
 	
-	if( pActiveProperty.IsEmpty() ){
+	if(pActiveProperty.IsEmpty()){
 		pActiveProperty = key;
 		activeChanged = true;
 	}
@@ -546,19 +546,19 @@ void meDecal::SetProperty( const char *key, const char *value ){
 	//UpdateProperties();
 	
 	NotifyPropertiesChanged();
-	if( activeChanged ){
+	if(activeChanged){
 		NotifyActivePropertyChanged();
 	}
 }
 
-void meDecal::SetProperties( const decStringDictionary &properties ){
+void meDecal::SetProperties(const decStringDictionary &properties){
 	pProperties = properties;
 	
-	if( pProperties.GetCount() == 0 ){
+	if(pProperties.GetCount() == 0){
 		pActiveProperty = "";
 		
 	}else{
-		pActiveProperty = pProperties.GetAt( pProperties.GetKeys().GetAt( 0 ) );
+		pActiveProperty = pProperties.GetAt(pProperties.GetKeys().GetAt(0));
 	}
 	
 	//UpdateProperties();
@@ -567,21 +567,21 @@ void meDecal::SetProperties( const decStringDictionary &properties ){
 	NotifyActivePropertyChanged();
 }
 
-void meDecal::RemoveProperty( const char *key ){
-	if( ! pProperties.Has( key ) ){
+void meDecal::RemoveProperty(const char *key){
+	if(!pProperties.Has(key)){
 		return;
 	}
 	
 	bool activeChanged = false;
 	
-	pProperties.Remove( key );
+	pProperties.Remove(key);
 	
-	if( pActiveProperty == key ){
-		if( pProperties.GetCount() == 0 ){
+	if(pActiveProperty == key){
+		if(pProperties.GetCount() == 0){
 			pActiveProperty = "";
 			
 		}else{
-			pActiveProperty = pProperties.GetAt( pProperties.GetKeys().GetAt( 0 ) );
+			pActiveProperty = pProperties.GetAt(pProperties.GetKeys().GetAt(0));
 		}
 		activeChanged = true;
 	}
@@ -589,13 +589,13 @@ void meDecal::RemoveProperty( const char *key ){
 	//UpdateProperties();
 	
 	NotifyPropertiesChanged();
-	if( activeChanged ){
+	if(activeChanged){
 		NotifyActivePropertyChanged();
 	}
 }
 
 void meDecal::RemoveAllProperties(){
-	if( pProperties.GetCount() == 0 ){
+	if(pProperties.GetCount() == 0){
 		return;
 	}
 	
@@ -608,8 +608,8 @@ void meDecal::RemoveAllProperties(){
 	NotifyActivePropertyChanged();
 }
 
-void meDecal::SetActiveProperty( const char *property ){
-	if( pActiveProperty == property ){
+void meDecal::SetActiveProperty(const char *property){
+	if(pActiveProperty == property){
 		return;
 	}
 	
@@ -621,28 +621,28 @@ void meDecal::SetActiveProperty( const char *property ){
 
 
 void meDecal::NotifyPropertiesChanged(){
-	if( ! pWorld ){
+	if(!pWorld){
 		return;
 	}
 	
-	pWorld->SetChanged( true );
+	pWorld->SetChanged(true);
 	
 	meWorld * const world = pWorld;
-	if( world ){
-		world->NotifyDecalPropertiesChanged( this );
+	if(world){
+		world->NotifyDecalPropertiesChanged(this);
 	}
 }
 
 void meDecal::NotifyActivePropertyChanged(){
-	if( ! pWorld ){
+	if(!pWorld){
 		return;
 	}
 	
-	pWorld->SetChanged( true );
+	pWorld->SetChanged(true);
 	
 	meWorld * const world = pWorld;
-	if( world ){
-		world->NotifyDecalActivePropertyChanged( this );
+	if(world){
+		world->NotifyDecalActivePropertyChanged(this);
 	}
 }
 
@@ -655,62 +655,62 @@ void meDecal::pInitShared(){
 	deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
 	
 	try{
-		pTimerReattachDecals.TakeOver( new meDecalTimerReattachDecals( *this ) );
+		pTimerReattachDecals.TakeOver(new meDecalTimerReattachDecals(*this));
 		
 		pCollider = engine.GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertKinematic );
-		pCollider->SetUseLocalGravity( true );
+		pCollider->SetEnabled(true);
+		pCollider->SetResponseType(deCollider::ertKinematic);
+		pCollider->SetUseLocalGravity(true);
 		
 		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmDecals );
+		collisionCategory.SetBit(meWorld::eclmDecals);
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
+		collisionFilter.SetBit(meWorld::eclmEditing);
 		
-		pCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+		pCollider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 		
-		pEnvironment->SetColliderUserPointer( pCollider, &pColliderOwner );
+		pEnvironment->SetColliderUserPointer(pCollider, &pColliderOwner);
 		
 		// create debug drawer and shapes
 		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
+		pDebugDrawer->SetXRay(true);
 		
 		pDDSDecal = new igdeWDebugDrawerShape;
-		pDDSDecal->SetVisible( true );
-		pDDSDecal->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		pDDSDecal->SetParentDebugDrawer( pDebugDrawer );
+		pDDSDecal->SetVisible(true);
+		pDDSDecal->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
+		pDDSDecal->SetParentDebugDrawer(pDebugDrawer);
 		
 		pUpdateDDSColors();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
 void meDecal::pCleanUp(){
-	SetWorld( NULL );
-	SetParentObject( NULL );
+	SetWorld(NULL);
+	SetParentObject(NULL);
 	
-	if( pCollider ){
-		pEnvironment->SetColliderUserPointer( pCollider, NULL );
+	if(pCollider){
+		pEnvironment->SetColliderUserPointer(pCollider, NULL);
 		pCollider->FreeReference();
 	}
 	
 	DetachDecals();
 	
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
-	if( pEngSkin ){
+	if(pEngSkin){
 		pEngSkin->FreeReference();
 	}
 	
-	if( pDDSDecal ){
+	if(pDDSDecal){
 		delete pDDSDecal;
 	}
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
 }
@@ -718,13 +718,13 @@ void meDecal::pCleanUp(){
 
 
 void meDecal::DetachDecals(){
-	if( ! pAttachedDecals ){
+	if(!pAttachedDecals){
 		return;
 	}
 	
-	while( pAttachedDecalCount > 0 ){
+	while(pAttachedDecalCount > 0){
 		pAttachedDecalCount--;
-		delete pAttachedDecals[ pAttachedDecalCount ];
+		delete pAttachedDecals[pAttachedDecalCount];
 	}
 	
 	delete [] pAttachedDecals;
@@ -735,45 +735,45 @@ void meDecal::AttachDecals(){
 	DetachDecals();
 	
 	meWorld *world = NULL;
-	if( pWorld ){
+	if(pWorld){
 		world = pWorld;
 	}
 	
-	if( world ){
+	if(world){
 		meCLCollect collect(*world);
 		
-		decDMatrix matrix = decDMatrix::CreateRT( pRotation * DEG2RAD, pPosition );
-		const decVector halfSize( decVector( 0.001f, 0.001f, 0.001f ).Largest( decVector( pSize * 0.5f ) ) );
+		decDMatrix matrix = decDMatrix::CreateRT(pRotation * DEG2RAD, pPosition);
+		const decVector halfSize(decVector(0.001f, 0.001f, 0.001f).Largest(decVector(pSize * 0.5f)));
 		
 		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmEditing );
+		collisionCategory.SetBit(meWorld::eclmEditing);
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmObjects );
-		collisionFilter.SetBit( meWorld::eclmHeightTerrains );
+		collisionFilter.SetBit(meWorld::eclmObjects);
+		collisionFilter.SetBit(meWorld::eclmHeightTerrains);
 		
 		collect.SetTestObjects(true);
 		
-		world->CollisionTestBox( matrix * decDVector( 0.0, 0.0, -halfSize.z ), matrix.ToQuaternion(),
-			halfSize, &collect, decCollisionFilter( collisionCategory, collisionFilter ) );
+		world->CollisionTestBox(matrix * decDVector(0.0, 0.0, -halfSize.z), matrix.ToQuaternion(),
+			halfSize, &collect, decCollisionFilter(collisionCategory, collisionFilter));
 		
 		const meCLHitList &hitlist = collect.GetCollectedElements();
 		int e, entryCount = hitlist.GetEntryCount();
 		
-		if( entryCount > 0 ){
-			pAttachedDecals = new meAttachedDecal*[ entryCount ];
+		if(entryCount > 0){
+			pAttachedDecals = new meAttachedDecal*[entryCount];
 			pAttachedDecalCount = 0;
 			
-			for( e=0; e<entryCount; e++ ){
-				meObject * const object = hitlist.GetEntryAt( e )->GetObject();
-				if( ! object ){
+			for(e=0; e<entryCount; e++){
+				meObject * const object = hitlist.GetEntryAt(e)->GetObject();
+				if(!object){
 					continue;
 				}
 				
-				pAttachedDecals[ pAttachedDecalCount ] = new meAttachedDecal(
-					pEnvironment->GetEngineController()->GetEngine(), this );
-				meAttachedDecal &attachedDecal = *pAttachedDecals[ pAttachedDecalCount++ ];
-				attachedDecal.SetParentObject( object );
+				pAttachedDecals[pAttachedDecalCount] = new meAttachedDecal(
+					pEnvironment->GetEngineController()->GetEngine(), this);
+				meAttachedDecal &attachedDecal = *pAttachedDecals[pAttachedDecalCount++];
+				attachedDecal.SetParentObject(object);
 				attachedDecal.AttachToParent();
 			}
 		}
@@ -789,35 +789,35 @@ void meDecal::pRepositionShapes(){
 	decQuaternion orientation;
 	decDVector position;
 	
-	if( pParentObject ){
-		const decDMatrix matrix = decDMatrix::CreateRT( decDVector( pRotation * DEG2RAD ), pPosition )
+	if(pParentObject){
+		const decDMatrix matrix = decDMatrix::CreateRT(decDVector(pRotation * DEG2RAD), pPosition)
 			* decDMatrix::CreateSRT( decDVector( pParentObject->GetScaling() ),
-				decDVector( pParentObject->GetRotation() ), pParentObject->GetPosition() );
+				decDVector(pParentObject->GetRotation()), pParentObject->GetPosition());
 		
 		position = matrix.GetPosition();
 		orientation = matrix.ToQuaternion();
 		
 	}else{
 		position = pPosition;
-		orientation = decMatrix::CreateRotation( pRotation * DEG2RAD ).ToQuaternion();
+		orientation = decMatrix::CreateRotation(pRotation * DEG2RAD).ToQuaternion();
 	}
 	
-	pDebugDrawer->SetPosition( position );
-	pDebugDrawer->SetOrientation( orientation );
+	pDebugDrawer->SetPosition(position);
+	pDebugDrawer->SetOrientation(orientation);
 	
-	pCollider->SetPosition( position );
-	pCollider->SetOrientation( orientation );
+	pCollider->SetPosition(position);
+	pCollider->SetOrientation(orientation);
 }
 
 void meDecal::pUpdateDDSColors(){
-	if( pActive ){
-		pDDSDecal->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
+	if(pActive){
+		pDDSDecal->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 1.0));
 		
-	}else if( pSelected ){
-		pDDSDecal->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 1.0 ) );
+	}else if(pSelected){
+		pDDSDecal->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 1.0));
 		
 	}else{
-		pDDSDecal->SetEdgeColor( decColor( 0.5f, 0.5f, 0.5f, 1.0f ) );
+		pDDSDecal->SetEdgeColor(decColor(0.5f, 0.5f, 0.5f, 1.0f));
 	}
 }
 
@@ -825,67 +825,67 @@ void meDecal::pUpdateShapes(){
 	decShapeBox *box = NULL;
 	
 	// size has to be kept above a minimum to avoid problems and to keep the decal selectable by the user
-	const decVector size( decVector( 0.01f, 0.01f, 0.01f ).Largest( decVector( pSize * 0.5f ) ) );
-	decVector position = decVector( 0.0f, 0.0f, -size.z );
+	const decVector size(decVector(0.01f, 0.01f, 0.01f).Largest(decVector(pSize * 0.5f)));
+	decVector position = decVector(0.0f, 0.0f, -size.z);
 	
 	// update debug drawer shape
 	pDDSDecal->RemoveAllShapes();
-	pDDSDecal->AddBoxShape( size, position, decQuaternion() );
+	pDDSDecal->AddBoxShape(size, position, decQuaternion());
 	
 	// update collider shape
 	decShapeList shapeList;
 	
-	if( pCollider ){
+	if(pCollider){
 		try{
-			box = new decShapeBox( size, position );
-			shapeList.Add( box );
+			box = new decShapeBox(size, position);
+			shapeList.Add(box);
 			box = NULL;
 			
-		}catch( const deException & ){
-			if( box ) delete box;
+		}catch(const deException &){
+			if(box) delete box;
 			throw;
 		}
 	}
 	
-	pCollider->SetShapes( shapeList );
+	pCollider->SetShapes(shapeList);
 }
 
 void meDecal::pUpdateTransform(){
-	decVector2 transformScale( pTexCoordScaling );
-	decVector2 transformOffset( pTexCoordOffset );
+	decVector2 transformScale(pTexCoordScaling);
+	decVector2 transformOffset(pTexCoordOffset);
 	float transformRotation = pTexCoordRotation;
 	int a;
 	
-	if( transformScale.x == 0.0f ){
+	if(transformScale.x == 0.0f){
 		transformScale.x = 1.0f;
 	}
-	if( transformScale.y == 0.0f ){
+	if(transformScale.y == 0.0f){
 		transformScale.y = 1.0f;
 	}
 	
 	const decTexMatrix2 transformMatrix(
-		decTexMatrix2::CreateScale( transformScale.x, transformScale.y ) *
-		decTexMatrix2::CreateRotation( transformRotation * DEG2RAD ) *
-		decTexMatrix2::CreateTranslation( transformOffset.x, transformOffset.y ) );
+		decTexMatrix2::CreateScale(transformScale.x, transformScale.y) *
+		decTexMatrix2::CreateRotation(transformRotation * DEG2RAD) *
+		decTexMatrix2::CreateTranslation(transformOffset.x, transformOffset.y));
 	
-	for( a=0; a<pAttachedDecalCount; a++ ){
-		pAttachedDecals[ a ]->GetEngineDecal()->SetTransform( transformMatrix );
+	for(a=0; a<pAttachedDecalCount; a++){
+		pAttachedDecals[a]->GetEngineDecal()->SetTransform(transformMatrix);
 	}
 }
 
 /*
 void meDecal::pUpdateShapes(){
-	if( pDDVolume ){
+	if(pDDVolume){
 		decVector view, up, right, size, pos;
 		decShapeBox *shapeBox = NULL;
 		decMatrix matrix;
 		
-		matrix.SetSRT( decVector( pSize.x * 0.5f, pSize.y * 0.5f, 0.01f ),
-			pRotation * DEG2RAD, pPosition );
+		matrix.SetSRT(decVector(pSize.x * 0.5f, pSize.y * 0.5f, 0.01f),
+			pRotation * DEG2RAD, pPosition);
 		
-		if( pParentObject ){
-			matrix *= decMatrix::CreateSRT( pParentObject->GetScaling(),
-				pParentObject->GetRotation(), pParentObject->GetPosition().ToVector() );
+		if(pParentObject){
+			matrix *= decMatrix::CreateSRT(pParentObject->GetScaling(),
+				pParentObject->GetRotation(), pParentObject->GetPosition().ToVector());
 		}
 		
 		view = matrix.TransformView();
@@ -897,17 +897,17 @@ void meDecal::pUpdateShapes(){
 		size.y = up.Length();
 		size.z = view.Length();
 		
-		matrix.SetVU( view, up );
+		matrix.SetVU(view, up);
 		
 		pDDVolume->RemoveAllShapes();
 		
 		try{
-			shapeBox = new decShapeBox( size, pos, matrix.ToQuaternion() );
+			shapeBox = new decShapeBox(size, pos, matrix.ToQuaternion());
 			
-			pDDVolume->AddShape( shapeBox );
+			pDDVolume->AddShape(shapeBox);
 			
-		}catch( const deException & ){
-			if( shapeBox ) delete shapeBox;
+		}catch(const deException &){
+			if(shapeBox) delete shapeBox;
 		}
 	}
 }
@@ -920,17 +920,17 @@ void meDecal::pLoadSkin(){
 	deSkinManager *skinMgr = engine.GetSkinManager();
 	deSkin *skin = NULL;
 	
-	if( ! pSkinPath.IsEmpty() ){
+	if(!pSkinPath.IsEmpty()){
 		try{
-			skin = skinMgr->LoadSkin( pSkinPath, "/" );
+			skin = skinMgr->LoadSkin(pSkinPath, "/");
 			
-		}catch( const deException & ){
-			skin = pEnvironment->GetStockSkin( igdeEnvironment::essError );
+		}catch(const deException &){
+			skin = pEnvironment->GetStockSkin(igdeEnvironment::essError);
 			skin->AddReference();
 		}
 	}
 	
-	if( pEngSkin ){
+	if(pEngSkin){
 		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
@@ -941,25 +941,25 @@ void meDecal::pLoadSkin(){
 void meDecal::pUpdateSkin(){
 	int i;
 	
-	for( i=0; i<pAttachedDecalCount; i++ ){
-		deDecal &engDecal = *pAttachedDecals[ i ]->GetEngineDecal();
+	for(i=0; i<pAttachedDecalCount; i++){
+		deDecal &engDecal = *pAttachedDecals[i]->GetEngineDecal();
 		
-		engDecal.SetSkin( pEngSkin );
+		engDecal.SetSkin(pEngSkin);
 		
-		if( pEngSkin ){
-			const int textureIndex = pEngSkin->IndexOfTextureNamed( pTextureName );
+		if(pEngSkin){
+			const int textureIndex = pEngSkin->IndexOfTextureNamed(pTextureName);
 			
-			if( textureIndex == -1 ){
-				engDecal.SetTexture( 0 );
+			if(textureIndex == -1){
+				engDecal.SetTexture(0);
 				
 			}else{
-				engDecal.SetTexture( textureIndex );
+				engDecal.SetTexture(textureIndex);
 			}
 			
 		}else{
-			engDecal.SetTexture( 0 );
+			engDecal.SetTexture(0);
 		}
 		
-		engDecal.SetDynamicSkin( pDynamicSkin );
+		engDecal.SetDynamicSkin(pDynamicSkin);
 	}
 }

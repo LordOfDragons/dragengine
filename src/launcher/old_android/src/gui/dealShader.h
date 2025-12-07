@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shader. */
-	dealShader( dealDisplay &display );
+	dealShader(dealDisplay &display);
 	
 	/** \brief Clean up shader. */
 	virtual ~dealShader();
@@ -89,19 +89,19 @@ public:
 	
 	
 	/** \brief Compile vertex program. */
-	void CompileVertexProgram( const char *source );
+	void CompileVertexProgram(const char *source);
 	
 	/** \brief Compile vertex program from asset source file. */
-	void CompileVertexProgramAsset( const char *filename );
+	void CompileVertexProgramAsset(const char *filename);
 	
 	/** \brief Compile fragment program. */
-	void CompileFragmentProgram( const char *source );
+	void CompileFragmentProgram(const char *source);
 	
 	/** \brief Compile fragment program from asset source file. */
-	void CompileFragmentProgramAsset( const char *filename );
+	void CompileFragmentProgramAsset(const char *filename);
 	
 	/** \brief Bind attribute location. */
-	void BindAttributeLocation( const char *attribute, int location );
+	void BindAttributeLocation(const char *attribute, int location);
 	
 	/** \brief Link shader. */
 	void Link();
@@ -110,56 +110,56 @@ public:
 	void Activate();
 	
 	/** \brief Bind texture unit location. */
-	void BindTextureUnitLocation( const char *textureUnit, int location );
+	void BindTextureUnitLocation(const char *textureUnit, int location);
 	
 	/** \brief Resolve parameter adding it to the list of known parameters. */
-	void ResolveParameter( const char *parameter );
+	void ResolveParameter(const char *parameter);
 	
 	
 	
 	/** \brief Set float parameter. */
-	void SetParameterFloat( int index, float p1 );
+	void SetParameterFloat(int index, float p1);
 	
 	/** \brief Set float parameter. */
-	void SetParameterFloat( int index, float p1, float p2 );
+	void SetParameterFloat(int index, float p1, float p2);
 	
 	/** \brief Set float parameter. */
-	void SetParameterFloat( int index, float p1, float p2, float p3 );
+	void SetParameterFloat(int index, float p1, float p2, float p3);
 	
 	/** \brief Set float parameter. */
-	void SetParameterFloat( int index, float p1, float p2, float p3, float p4 );
+	void SetParameterFloat(int index, float p1, float p2, float p3, float p4);
 	
 	/** \brief Set 3-color parameter. */
-	void SetParameterColor3( int index, const decColor &color );
+	void SetParameterColor3(int index, const decColor &color);
 	
 	/** \brief Set 4-color parameter. */
-	void SetParameterColor4( int index, const decColor &color );
+	void SetParameterColor4(int index, const decColor &color);
 	
 	/** \brief Set 4-color parameter with explicit alpha. */
-	void SetParameterColor4( int index, const decColor &color, float alpha );
+	void SetParameterColor4(int index, const decColor &color, float alpha);
 	
 	/** \brief Set 2-component vector parameter. */
-	void SetParameterVector2( int index, const decVector2 &vector );
+	void SetParameterVector2(int index, const decVector2 &vector);
 	
 	/** \brief Set 3x3 texture matrix parameter. */
-	void SetParameterTexMatrix3x3( int index, const decTexMatrix &matrix );
+	void SetParameterTexMatrix3x3(int index, const decTexMatrix &matrix);
 	
 	/** \brief Set 3x3 texture matrix parameter. */
-	void SetParameterTexMatrix3x3( int index, const decTexMatrix2 &matrix );
+	void SetParameterTexMatrix3x3(int index, const decTexMatrix2 &matrix);
 	
 	/**
 	 * \brief Set color matrix parameters.
 	 * \details The left most 4x4 part is set to the first parameter and the
 	 *          right most colon to the second parameter.
 	 */
-	void SetParameterColorMatrix5x4( int index1, int index2, const decColorMatrix &matrix );
+	void SetParameterColorMatrix5x4(int index1, int index2, const decColorMatrix &matrix);
 	
 	/**
 	 * \brief Set color matrix parameters.
 	 * \details The left most 4x4 part is set to the first parameter and the
 	 *          right most colon to the second parameter.
 	 */
-	void SetParameterColorMatrix5x4( int index1, int index2, const decColorMatrix3 &matrix );
+	void SetParameterColorMatrix5x4(int index1, int index2, const decColorMatrix3 &matrix);
 	/*@}*/
 	
 private:

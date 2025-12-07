@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAComment::ceWPTTIMAComment( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAComment *action ) :
-ceWPTTIMAction( windowMain, etActionComment, conversation, action )
+ceWPTTIMAComment::ceWPTTIMAComment(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAComment *action) :
+ceWPTTIMAction(windowMain, etActionComment, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionComment() );
+	SetIcon(windowMain.GetIconActionComment());
 	Update();
 }
 
@@ -61,19 +61,19 @@ void ceWPTTIMAComment::Update(){
 	const ceCAComment &action = *GetActionComment();
 	decString text;
 	
-	if( action.GetComment().IsEmpty() ){
+	if(action.GetComment().IsEmpty()){
 		text = "Comment";
 		
 	}else{
-		const decString lineComment( action.GetComment().Split( '\n' ).GetAt( 0 ) );
-		if( lineComment.GetLength() > 40 ){
-			text = lineComment.GetLeft( 40 ) + "...";
+		const decString lineComment(action.GetComment().Split('\n').GetAt(0));
+		if(lineComment.GetLength() > 40){
+			text = lineComment.GetLeft(40) + "...";
 			
 		}else{
 			text = lineComment;
 		}
 	}
 	
-	SetText( text );
-	SetDescription( action.GetComment() );
+	SetText(text);
+	SetDescription(action.GetComment());
 }

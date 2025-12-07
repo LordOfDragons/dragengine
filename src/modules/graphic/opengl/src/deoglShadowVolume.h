@@ -59,7 +59,7 @@ private:
 	bool pHasTris, pHasQuads;
 public:
 	// constructor, destructor
-	deoglShadowVolume( deoglRenderThread &renderThread );
+	deoglShadowVolume(deoglRenderThread &renderThread);
 	~deoglShadowVolume();
 	// management
 	void Clear();

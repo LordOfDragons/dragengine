@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	debnParameterInt( deNetworkBasic &network );
+	debnParameterInt(deNetworkBasic &network);
 	/*@}*/
 	
 	
@@ -48,13 +48,13 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	
 	/** Current value. */
 	virtual int GetParameterInt() = 0;
 	
 	/** Set current value. */
-	virtual void SetParameterInt( int value ) = 0;
+	virtual void SetParameterInt(int value) = 0;
 	/*@}*/
 };
 

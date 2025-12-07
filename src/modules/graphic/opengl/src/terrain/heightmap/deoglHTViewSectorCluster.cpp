@@ -48,15 +48,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglHTViewSectorCluster::deoglHTViewSectorCluster( deoglHTViewSector &sector, const decPoint &coordinate ) :
-pSector( sector ),
-pCoordinate( coordinate ),
-pLodLevel( 0 )
+deoglHTViewSectorCluster::deoglHTViewSectorCluster(deoglHTViewSector &sector, const decPoint &coordinate) :
+pSector(sector),
+pCoordinate(coordinate),
+pLodLevel(0)
 {
-	pBorderTargets[ ebLeft ] = ebtLeft;
-	pBorderTargets[ ebTop ] = ebtTop;
-	pBorderTargets[ ebRight ] = ebtRight;
-	pBorderTargets[ ebBottom ] = ebtBottom;
+	pBorderTargets[ebLeft] = ebtLeft;
+	pBorderTargets[ebTop] = ebtTop;
+	pBorderTargets[ebRight] = ebtRight;
+	pBorderTargets[ebBottom] = ebtBottom;
 }
 
 deoglHTViewSectorCluster::~deoglHTViewSectorCluster(){
@@ -68,62 +68,62 @@ deoglHTViewSectorCluster::~deoglHTViewSectorCluster(){
 // Management
 ///////////////
 
-void deoglHTViewSectorCluster::SetLodLevel( int lodLevel ){
+void deoglHTViewSectorCluster::SetLodLevel(int lodLevel){
 	pLodLevel = lodLevel;
 }
 
-deoglHTViewSectorCluster::eBorderTargets deoglHTViewSectorCluster::GetBorderTarget( eBorders border ) const{
-	return pBorderTargets[ border ];
+deoglHTViewSectorCluster::eBorderTargets deoglHTViewSectorCluster::GetBorderTarget(eBorders border) const{
+	return pBorderTargets[border];
 }
 
-void deoglHTViewSectorCluster::SetBorderTarget( eBorders border,  eBorderTargets target ){
-	pBorderTargets[ border ] = target;
+void deoglHTViewSectorCluster::SetBorderTarget(eBorders border,  eBorderTargets target){
+	pBorderTargets[border] = target;
 }
 
 void deoglHTViewSectorCluster::Reset(){
 	pLodLevel = 0;
-	pBorderTargets[ ebLeft ] = ebtLeft;
-	pBorderTargets[ ebTop ] = ebtTop;
-	pBorderTargets[ ebRight ] = ebtRight;
-	pBorderTargets[ ebBottom ] = ebtBottom;
+	pBorderTargets[ebLeft] = ebtLeft;
+	pBorderTargets[ebTop] = ebtTop;
+	pBorderTargets[ebRight] = ebtRight;
+	pBorderTargets[ebBottom] = ebtBottom;
 }
 
 
 
-deoglRenderTaskSharedInstance *deoglHTViewSectorCluster::GetRTSInstanceAt( int texture, int index ) const{
+deoglRenderTaskSharedInstance *deoglHTViewSectorCluster::GetRTSInstanceAt(int texture, int index) const{
 	const int rtsIndex = texture * 5 + index;
-	if( rtsIndex >= pRTSInstances.GetCount() ){
+	if(rtsIndex >= pRTSInstances.GetCount()){
 		return NULL;
 	}
-	return ( deoglRenderTaskSharedInstance* )pRTSInstances.GetAt( rtsIndex );
+	return (deoglRenderTaskSharedInstance*)pRTSInstances.GetAt(rtsIndex);
 }
 
 void deoglHTViewSectorCluster::UpdateRTSInstances(){
 	pRemoveAllRTSInstances();
 	
-	if( pLodLevel < 0 ){
+	if(pLodLevel < 0){
 		return;
 	}
 	
 	const deoglRHTSector &sector = pSector.GetSector();
-	if( ! sector.GetValid() || ! sector.GetValidTextures() ){
+	if(!sector.GetValid() || !sector.GetValidTextures()){
 		return;
 	}
 	
 	deoglRenderTaskSharedPool &pool = sector.GetHeightTerrain().GetRenderThread().GetRenderTaskSharedPool();
-	const deoglHTSCluster &htscluster = sector.GetClusterAt( pCoordinate );
-	const deoglHTSClusterLOD &clod = htscluster.GetLODAt( pLodLevel );
+	const deoglHTSCluster &htscluster = sector.GetClusterAt(pCoordinate);
+	const deoglHTSClusterLOD &clod = htscluster.GetLODAt(pLodLevel);
 	const int vboOffsetFaces = htscluster.GetOffsetVBODataFaces();
 	const int textureCount = sector.GetTextureCount();
 	deoglRenderTaskSharedInstance *rtinstance;
 	int i, j;
 	
-	for( i=0; i<textureCount; i++ ){
-		const deoglHTSTexture &httexture = sector.GetTextureAt( i );
+	for(i=0; i<textureCount; i++){
+		const deoglHTSTexture &httexture = sector.GetTextureAt(i);
 		const deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
-		if( ! skinTexture ){
-			for( j=0; j<5; j++ ){
-				pRTSInstances.Add( NULL );
+		if(!skinTexture){
+			for(j=0; j<5; j++){
+				pRTSInstances.Add(NULL);
 			}
 			continue;
 		}
@@ -132,31 +132,31 @@ void deoglHTViewSectorCluster::UpdateRTSInstances(){
 		
 		// add an instance for this cluster
 		rtinstance = pool.GetInstance();
-		rtinstance->SetParameterBlock( &spbInstance );
-		rtinstance->SetFirstPoint( 0 );
-		rtinstance->SetFirstIndex( vboOffsetFaces + clod.firstBasePoint );
-		rtinstance->SetIndexCount( clod.basePointCount );
-		rtinstance->SetPrimitiveType( GL_TRIANGLES );
-		pRTSInstances.Add( rtinstance );
+		rtinstance->SetParameterBlock(&spbInstance);
+		rtinstance->SetFirstPoint(0);
+		rtinstance->SetFirstIndex(vboOffsetFaces + clod.firstBasePoint);
+		rtinstance->SetIndexCount(clod.basePointCount);
+		rtinstance->SetPrimitiveType(GL_TRIANGLES);
+		pRTSInstances.Add(rtinstance);
 		
 		// add instances for borders if required
-		if( pLodLevel < 1 ){
-			for( j=0; j<4; j++ ){
-				pRTSInstances.Add( NULL );
+		if(pLodLevel < 1){
+			for(j=0; j<4; j++){
+				pRTSInstances.Add(NULL);
 			}
 			continue;
 		}
 		
-		for( j=0; j<4; j++ ){
-			const eBorderTargets target = pBorderTargets[ j ];
+		for(j=0; j<4; j++){
+			const eBorderTargets target = pBorderTargets[j];
 			
 			rtinstance = pool.GetInstance();
-			rtinstance->SetParameterBlock( &spbInstance );
-			rtinstance->SetFirstPoint( 0 );
-			rtinstance->SetFirstIndex( vboOffsetFaces + clod.firstBorderPoint[ target ] );
-			rtinstance->SetIndexCount( clod.borderPointCount[ target ] );
-			rtinstance->SetPrimitiveType( GL_TRIANGLES );
-			pRTSInstances.Add( rtinstance );
+			rtinstance->SetParameterBlock(&spbInstance);
+			rtinstance->SetFirstPoint(0);
+			rtinstance->SetFirstIndex(vboOffsetFaces + clod.firstBorderPoint[target]);
+			rtinstance->SetIndexCount(clod.borderPointCount[target]);
+			rtinstance->SetPrimitiveType(GL_TRIANGLES);
+			pRTSInstances.Add(rtinstance);
 		}
 	}
 }
@@ -170,10 +170,10 @@ void deoglHTViewSectorCluster::pRemoveAllRTSInstances(){
 	const int count = pRTSInstances.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		deoglRenderTaskSharedInstance * const rtinstance =
-			( deoglRenderTaskSharedInstance* )pRTSInstances.GetAt( i );
-		if( rtinstance ){
+			(deoglRenderTaskSharedInstance*)pRTSInstances.GetAt(i);
+		if(rtinstance){
 			rtinstance->ReturnToPool();
 		}
 	}

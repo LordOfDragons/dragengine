@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create link. */
-	dearLink( dearAnimatorInstance &instance, const deAnimatorLink &link,
-		const decIntList &controllerMapping );
+	dearLink(dearAnimatorInstance &instance, const deAnimatorLink &link,
+		const decIntList &controllerMapping);
 	
 	/** Clean up link. */
 	~dearLink();
@@ -82,13 +82,13 @@ public:
 	
 	
 	/** Value of link. */
-	float GetValue( float defaultValue ) const;
+	float GetValue(float defaultValue) const;
 	
 	/** Vector of link. */
-	void GetVector( decVector &vector ) const;
+	void GetVector(decVector &vector) const;
 	
 	/** Quaternion of link. */
-	void GetQuaternion( decQuaternion &quaternion ) const;
+	void GetQuaternion(decQuaternion &quaternion) const;
 	/*@}*/
 };
 

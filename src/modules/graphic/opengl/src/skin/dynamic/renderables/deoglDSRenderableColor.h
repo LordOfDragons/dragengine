@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableColor( deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable );
+	deoglDSRenderableColor(deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable);
 	
 	/** Clean up peer. */
 	virtual ~deoglDSRenderableColor();

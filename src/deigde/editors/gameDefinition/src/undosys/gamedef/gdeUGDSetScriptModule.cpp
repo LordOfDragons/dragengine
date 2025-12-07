@@ -40,15 +40,15 @@
 ////////////////////////////
 
 gdeUGDSetScriptModule::gdeUGDSetScriptModule(
-gdeGameDefinition *gameDefinition, const char *newValue ) :
-pGameDefinition( NULL ),
-pNewValue( newValue )
+gdeGameDefinition *gameDefinition, const char *newValue) :
+pGameDefinition(NULL),
+pNewValue(newValue)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set script module" );
+	SetShortInfo("Game definition set script module");
 	
 	pOldValue = gameDefinition->GetScriptModule();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 gdeUGDSetScriptModule::~gdeUGDSetScriptModule(){
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUGDSetScriptModule::~gdeUGDSetScriptModule(){
 ///////////////
 
 void gdeUGDSetScriptModule::Undo(){
-	pGameDefinition->SetScriptModule( pOldValue );
+	pGameDefinition->SetScriptModule(pOldValue);
 }
 
 void gdeUGDSetScriptModule::Redo(){
-	pGameDefinition->SetScriptModule( pNewValue );
+	pGameDefinition->SetScriptModule(pNewValue);
 }

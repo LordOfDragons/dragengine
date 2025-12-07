@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky instance. */
-	deoglRSkyInstance( deoglRenderThread &renderThread );
+	deoglRSkyInstance(deoglRenderThread &renderThread);
 	
 	/** Clean up render sky instance. */
 	virtual ~deoglRSkyInstance();
@@ -96,7 +96,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL. */
-	void SetParentWorld( deoglRWorld *world );
+	void SetParentWorld(deoglRWorld *world);
 	
 	
 	
@@ -108,7 +108,7 @@ public:
 	 * 
 	 * Called during synchronization time.
 	 */
-	void SetRSky( deoglRSky *rsky );
+	void SetRSky(deoglRSky *rsky);
 	
 	
 	
@@ -116,13 +116,13 @@ public:
 	inline int GetOrder() const{ return pOrder; }
 	
 	/** Set rendering order. */
-	void SetOrder( int order );
+	void SetOrder(int order);
 	
 	/** Layer mask. */
 	inline  const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Passthrough transparency factor. */
 	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
@@ -135,14 +135,14 @@ public:
 	inline int GetControllerStateCount() const{ return pControllerStateCount; }
 	
 	/** Controller state at index. */
-	float GetControllerStateAt( int index ) const;
+	float GetControllerStateAt(int index) const;
 	
 	/**
 	 * Update controller states.
 	 * 
 	 * Called during synchronization time.
 	 */
-	void UpdateControllerStates( const deSkyInstance &instance );
+	void UpdateControllerStates(const deSkyInstance &instance);
 	
 	
 	
@@ -150,7 +150,7 @@ public:
 	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Layer at index. */
-	deoglRSkyInstanceLayer &GetLayerAt( int index ) const;
+	deoglRSkyInstanceLayer &GetLayerAt(int index) const;
 	
 	/** Rebuild layers. */
 	void RebuildLayers();
@@ -175,7 +175,7 @@ public:
 	inline float GetEnvironmentMapTimer() const{ return pEnvMapTimer; }
 	
 	/** Set environment map timer. */
-	void SetEnvironmentMapTimer( float timer );
+	void SetEnvironmentMapTimer(float timer);
 	
 	
 	
@@ -186,7 +186,7 @@ public:
 	void NotifySkyChanged();
 	
 	/** Drop all pointers to GI State. */
-	void DropGIState( const deoglGIState *giState );
+	void DropGIState(const deoglGIState *giState);
 	
 	/** Drop all pointers to GI States. */
 	void DropAllGIStates();
@@ -197,7 +197,7 @@ public:
 	void PrepareQuickDispose();
 	
 	/** Notify skies render static component changed requiring updates. */
-	void NotifyUpdateStaticComponent( deoglRComponent *component );
+	void NotifyUpdateStaticComponent(deoglRComponent *component);
 	/*@}*/
 	
 	
@@ -214,7 +214,7 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 };
 

@@ -41,40 +41,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected( const meObjectList &list, meObjectTexture *texture ){
+meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectList &list, meObjectTexture *texture){
 	const char *textureName = texture->GetName().GetString();
 	meUndoDataObjectTexture *undoData = NULL;
 	const int count = list.GetCount();
 	meObject *object;
 	int i;
 	
-	if( ! texture || count < 1 ){
-		DETHROW( deeInvalidParam );
+	if(!texture || count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTexture = NULL;
 	
 	try{
-		SetShortInfo( "Copy object texture to selected" );
+		SetShortInfo("Copy object texture to selected");
 		
-		for( i=0; i<count; i++ ){
-			object = list.GetAt( i );
-			if( ! object->GetWorld() ){
-				DETHROW( deeInvalidParam );
+		for(i=0; i<count; i++){
+			object = list.GetAt(i);
+			if(!object->GetWorld()){
+				DETHROW(deeInvalidParam);
 			}
 			
-			undoData = new meUndoDataObjectTexture( object );
-			undoData->SetOldTexture( object->GetTextureNamed( textureName ) );
+			undoData = new meUndoDataObjectTexture(object);
+			undoData->SetOldTexture(object->GetTextureNamed(textureName));
 			
-			if( undoData->GetOldTexture() != texture ){
-				pList.Add( undoData );
+			if(undoData->GetOldTexture() != texture){
+				pList.Add(undoData);
 			}
 			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( undoData ){
+	}catch(const deException &){
+		if(undoData){
 			undoData->FreeReference();
 		}
 		pCleanUp();
@@ -100,15 +100,15 @@ void meUObjectTextureCopyToSelected::Undo(){
 	meObject *object;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		undoData = ( meUndoDataObjectTexture* )pList.GetAt( i );
+	for(i=0; i<count; i++){
+		undoData = (meUndoDataObjectTexture*)pList.GetAt(i);
 		object = undoData->GetObject();
 		
-		if( undoData->GetNewTexture() ){
-			object->RemoveTexture( undoData->GetNewTexture() );
+		if(undoData->GetNewTexture()){
+			object->RemoveTexture(undoData->GetNewTexture());
 		}
-		if( undoData->GetOldTexture() ){
-			object->AddTexture( undoData->GetOldTexture() );
+		if(undoData->GetOldTexture()){
+			object->AddTexture(undoData->GetOldTexture());
 		}
 	}
 }
@@ -120,29 +120,29 @@ void meUObjectTextureCopyToSelected::Redo(){
 	meObject *object;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		undoData = ( meUndoDataObjectTexture* )pList.GetAt( i );
+	for(i=0; i<count; i++){
+		undoData = (meUndoDataObjectTexture*)pList.GetAt(i);
 		object = undoData->GetObject();
 		
-		if( ! undoData->GetNewTexture() ){
+		if(!undoData->GetNewTexture()){
 			try{
-				texture = new meObjectTexture( *pTexture );
-				undoData->SetNewTexture( texture );
+				texture = new meObjectTexture(*pTexture);
+				undoData->SetNewTexture(texture);
 				texture->FreeReference();
 				texture = NULL;
 				
-			}catch( const deException & ){
-				if( texture ){
+			}catch(const deException &){
+				if(texture){
 					texture->FreeReference();
 				}
 				throw;
 			}
 		}
 		
-		if( undoData->GetOldTexture() ){
-			object->RemoveTexture( undoData->GetOldTexture() );
+		if(undoData->GetOldTexture()){
+			object->RemoveTexture(undoData->GetOldTexture());
 		}
-		object->AddTexture( undoData->GetNewTexture() );
+		object->AddTexture(undoData->GetNewTexture());
 	}
 }
 

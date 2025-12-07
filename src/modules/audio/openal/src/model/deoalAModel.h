@@ -98,7 +98,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create audio model. */
-	deoalAModel( deoalAudioThread &audioThread, const deModel &model );
+	deoalAModel(deoalAudioThread &audioThread, const deModel &model);
 	
 protected:
 	/** \brief Clean up model peer. */
@@ -130,7 +130,7 @@ public:
 	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Face at index. */
-	const deoalModelFace &GetFaceAt( int index ) const;
+	const deoalModelFace &GetFaceAt(int index) const;
 	
 	
 	
@@ -190,15 +190,15 @@ public:
 	
 private:
 	void pCleanUp();
-	void pInitBoneNames( const deModel &model );
-	void pInitTextureNames( const deModel &model );
-	void pBuildWeights( const deModelLOD &lod );
-	void pBuildFaces( const deModelLOD &lod );
+	void pInitBoneNames(const deModel &model);
+	void pInitTextureNames(const deModel &model);
+	void pBuildWeights(const deModelLOD &lod);
+	void pBuildFaces(const deModelLOD &lod);
 	void pBuildOctree();
 // 	void pInitRTSphere( const deModelLOD &lod );
 	
-	void pDebugLogOctreePerfMetrics( const deoalModelOctree &octree );
-	void pDebugLogOctreePerfMetrics( const deoalModelOctree &node, int level, int &count );
+	void pDebugLogOctreePerfMetrics(const deoalModelOctree &octree);
+	void pDebugLogOctreePerfMetrics(const deoalModelOctree &node, int level, int &count);
 };
 
 #endif

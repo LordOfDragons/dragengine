@@ -35,11 +35,11 @@
 // Class deBaseArchiveContainer
 /////////////////////////////////
 
-deBaseArchiveContainer::deBaseArchiveContainer( decBaseFileReader *reader ) :
-pReader( NULL )
+deBaseArchiveContainer::deBaseArchiveContainer(decBaseFileReader *reader) :
+pReader(NULL)
 {
-	if( ! reader ){
-		DETHROW( deeInvalidParam );
+	if(!reader){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pReader = reader;
@@ -47,7 +47,7 @@ pReader( NULL )
 }
 
 deBaseArchiveContainer::~deBaseArchiveContainer(){
-	if( pReader ){
+	if(pReader){
 		pReader->FreeReference();
 	}
 }

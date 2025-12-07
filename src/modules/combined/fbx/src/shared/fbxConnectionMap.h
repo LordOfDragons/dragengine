@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection id map. */
-	fbxConnectionMap( int expectedCount );
+	fbxConnectionMap(int expectedCount);
 	
 	/** \brief Clean up connection id map. */
 	~fbxConnectionMap();
@@ -71,10 +71,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Add connection. */
-	void Add( fbxConnection *connection );
+	void Add(fbxConnection *connection);
 	
 	/** \brief Add connections matching ID to list. */
-	void Get( int64_t id, decPointerList &list ) const;
+	void Get(int64_t id, decPointerList &list) const;
 	/*@}*/
 };
 

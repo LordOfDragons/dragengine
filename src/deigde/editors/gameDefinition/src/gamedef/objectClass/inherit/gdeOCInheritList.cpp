@@ -43,8 +43,8 @@
 gdeOCInheritList::gdeOCInheritList(){
 }
 
-gdeOCInheritList::gdeOCInheritList( const gdeOCInheritList &list ) :
-pInheritObjectClasses( list.pInheritObjectClasses ){
+gdeOCInheritList::gdeOCInheritList(const gdeOCInheritList &list) :
+pInheritObjectClasses(list.pInheritObjectClasses){
 }
 
 gdeOCInheritList::~gdeOCInheritList(){
@@ -59,28 +59,28 @@ int gdeOCInheritList::GetCount() const{
 	return pInheritObjectClasses.GetCount();
 }
 
-gdeOCInherit *gdeOCInheritList::GetAt( int index ) const{
-	return ( gdeOCInherit* )pInheritObjectClasses.GetAt( index );
+gdeOCInherit *gdeOCInheritList::GetAt(int index) const{
+	return (gdeOCInherit*)pInheritObjectClasses.GetAt(index);
 }
 
-int gdeOCInheritList::IndexOf( gdeOCInherit *inherit ) const{
-	return pInheritObjectClasses.IndexOf( inherit );
+int gdeOCInheritList::IndexOf(gdeOCInherit *inherit) const{
+	return pInheritObjectClasses.IndexOf(inherit);
 }
 
-bool gdeOCInheritList::Has( gdeOCInherit *inherit ) const{
-	return pInheritObjectClasses.Has( inherit );
+bool gdeOCInheritList::Has(gdeOCInherit *inherit) const{
+	return pInheritObjectClasses.Has(inherit);
 }
 
-void gdeOCInheritList::Add( gdeOCInherit *inherit ){
-	if( ! inherit ){
-		DETHROW( deeInvalidParam );
+void gdeOCInheritList::Add(gdeOCInherit *inherit){
+	if(!inherit){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pInheritObjectClasses.Add( inherit );
+	pInheritObjectClasses.Add(inherit);
 }
 
-void gdeOCInheritList::Remove( gdeOCInherit *inherit ){
-	pInheritObjectClasses.Remove( inherit );
+void gdeOCInheritList::Remove(gdeOCInherit *inherit){
+	pInheritObjectClasses.Remove(inherit);
 }
 
 void gdeOCInheritList::RemoveAll(){
@@ -89,7 +89,7 @@ void gdeOCInheritList::RemoveAll(){
 
 
 
-gdeOCInheritList &gdeOCInheritList::operator=( const gdeOCInheritList &list ){
+gdeOCInheritList &gdeOCInheritList::operator=(const gdeOCInheritList &list){
 	pInheritObjectClasses = list.pInheritObjectClasses;
 	return *this;
 }

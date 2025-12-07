@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakWordSet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, ceStrip *newStrip );
+	ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, ceStrip *newStrip);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakWordSet();

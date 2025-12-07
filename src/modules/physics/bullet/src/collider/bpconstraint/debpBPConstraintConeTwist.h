@@ -39,9 +39,9 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new constraint. */
-	debpBPConstraintConeTwist( btRigidBody &rbA, btRigidBody &rbB, const btTransform &rbAFrame, const btTransform &rbBFrame );
+	debpBPConstraintConeTwist(btRigidBody &rbA, btRigidBody &rbB, const btTransform &rbAFrame, const btTransform &rbBFrame);
 	/** Creates a new constraint. */
-	debpBPConstraintConeTwist( btRigidBody &rbA,const btTransform &rbAFrame, const btTransform &rbBFrame );
+	debpBPConstraintConeTwist(btRigidBody &rbA,const btTransform &rbAFrame, const btTransform &rbBFrame);
 	/** Cleans up the constraint. */
 	virtual ~debpBPConstraintConeTwist();
 	

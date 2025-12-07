@@ -137,7 +137,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	meWPSObject( meWPSelection &wpselection );
+	meWPSObject(meWPSelection &wpselection);
 	
 protected:
 	/** Clean up . */
@@ -156,7 +156,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Active object. */
 	meObject *GetActiveObject() const;
@@ -242,7 +242,7 @@ public:
 	void OnGameDefinitionChanged();
 	
 	/** For use by listeners only. */
-	void SlideLightProperty( igdeGDCLight::eProperties property, const char *value, bool scrubbing );
+	void SlideLightProperty(igdeGDCLight::eProperties property, const char *value, bool scrubbing);
 	
 	
 	inline igdeAction *GetActionClassBrowse() const{ return pActionClassBrowse; }
@@ -266,8 +266,8 @@ public:
 	
 	
 private:
-	bool pPropertyValue( const meObject &object, const decString &prefix,
-		const decString &name, decString &value ) const;
+	bool pPropertyValue(const meObject &object, const decString &prefix,
+		const decString &name, decString &value) const;
 };
 
 #endif

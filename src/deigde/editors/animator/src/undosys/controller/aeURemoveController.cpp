@@ -41,29 +41,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURemoveController::aeURemoveController( aeAnimator *animator, aeController *controller ) :
-pAnimator( NULL ),
-pController( NULL ),
-pIndex( -1 )
+aeURemoveController::aeURemoveController(aeAnimator *animator, aeController *controller) :
+pAnimator(NULL),
+pController(NULL),
+pIndex(-1)
 {
-	if( ! animator || ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!animator || !controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove controller" );
+	SetShortInfo("Remove controller");
 	
-	pIndex = animator->GetControllers().IndexOf( controller );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = animator->GetControllers().IndexOf(controller);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const aeLinkList &links = animator->GetLinks();
 	const int count = links.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		aeLink * const link = links.GetAt( i );
-		if( link->GetController() == controller ){
-			pLinksUsingController.Add( link );
+	for(i=0; i<count; i++){
+		aeLink * const link = links.GetAt(i);
+		if(link->GetController() == controller){
+			pLinksUsingController.Add(link);
 		}
 	}
 	
@@ -84,23 +84,23 @@ aeURemoveController::~aeURemoveController(){
 ///////////////
 
 void aeURemoveController::Undo(){
-	pAnimator->InsertControllerAt( pController, pIndex );
+	pAnimator->InsertControllerAt(pController, pIndex);
 	
 	const int count = pLinksUsingController.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pLinksUsingController.GetAt( i )->SetController( pController, false );
+	for(i=0; i<count; i++){
+		pLinksUsingController.GetAt(i)->SetController(pController, false);
 	}
 }
 
 void aeURemoveController::Redo(){
 	const int count = pLinksUsingController.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pLinksUsingController.GetAt( i )->SetController( NULL, false );
+	for(i=0; i<count; i++){
+		pLinksUsingController.GetAt(i)->SetController(NULL, false);
 	}
 	
-	pAnimator->RemoveController( pController );
+	pAnimator->RemoveController(pController);
 }
 
 
@@ -109,10 +109,10 @@ void aeURemoveController::Redo(){
 //////////////////////
 
 void aeURemoveController::pCleanUp(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pAnimator ){
+	if(pAnimator){
 		pAnimator->FreeReference();
 	}
 }

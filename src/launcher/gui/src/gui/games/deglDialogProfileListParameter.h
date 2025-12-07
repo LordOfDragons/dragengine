@@ -68,9 +68,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deglDialogProfileListParameter( delEMParameter &parameter, delGameProfile &profile,
+	deglDialogProfileListParameter(delEMParameter &parameter, delGameProfile &profile,
 		const char *moduleName, FXMatrix *container, FXObject *target, 
-		int labelSelector, int valueSelector );
+		int labelSelector, int valueSelector);
 	
 protected:
 	/** Clean up parameter. */
@@ -86,28 +86,28 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** Sender matches label. */
-	bool SenderMatchesLabel( FXObject *sender ) const;
+	bool SenderMatchesLabel(FXObject *sender) const;
 	
 	/** Sender matches edit widget. */
-	bool SenderMatchesEdit( FXObject *sender ) const;
+	bool SenderMatchesEdit(FXObject *sender) const;
 	
 	/**
 	 * Process command message if sender is edit widget of this parameter.
 	 * \returns true if processed or false if not destined for this parameter.
 	 */
-	bool ProcessSelCommand( FXObject *sender );
+	bool ProcessSelCommand(FXObject *sender);
 	
 	/**
 	 * Process changed message if sender is edit widget of this parameter.
 	 * \returns true if processed or false if not destined for this parameter.
 	 */
-	bool ProcessSelChanged( FXObject *sender );
+	bool ProcessSelChanged(FXObject *sender);
 	
 	/** Set parameter value. */
-	void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value);
 	
 	/** Set parameter value. */
-	void SetParameterValue( FXdouble value );
+	void SetParameterValue(FXdouble value);
 	
 	/** Update edit widget value from parameter value. */
 	void Update();
@@ -116,7 +116,7 @@ public:
 	void Reset();
 	
 	/** Update visibility. */
-	void UpdateVisibility( deModuleParameter::eCategory category );
+	void UpdateVisibility(deModuleParameter::eCategory category);
 	/*@}*/
 };
 

@@ -30,63 +30,63 @@
 // Class deECCommon
 /////////////////////
 
-uint32_t deECCommon::UInt32( const deServiceObject &so ){
-	return UInt32( so.GetString() );
+uint32_t deECCommon::UInt32(const deServiceObject &so){
+	return UInt32(so.GetString());
 }
 
-deServiceObject::Ref deECCommon::UInt32( uint32_t value ){
-	return deServiceObject::NewString( UInt32ToString( value ) );
+deServiceObject::Ref deECCommon::UInt32(uint32_t value){
+	return deServiceObject::NewString(UInt32ToString(value));
 }
 
-uint32_t deECCommon::UInt32( const decString &string ){
-	return ( uint32_t )string.ToLongValid();
+uint32_t deECCommon::UInt32(const decString &string){
+	return (uint32_t)string.ToLongValid();
 }
 
-decString deECCommon::UInt32ToString( uint32_t value ){
+decString deECCommon::UInt32ToString(uint32_t value){
 	decString string;
-	string.AppendValue( ( unsigned int )value );
+	string.AppendValue((unsigned int)value);
 	return string;
 }
 
-EOS_EpicAccountId deECCommon::AccountID( const deServiceObject &so ){
-	return AccountID( so.GetString() );
+EOS_EpicAccountId deECCommon::AccountID(const deServiceObject &so){
+	return AccountID(so.GetString());
 }
 
-deServiceObject::Ref deECCommon::AccountID( const EOS_EpicAccountId &id ){
-	return deServiceObject::NewString( AccountIDToString( id ) );
+deServiceObject::Ref deECCommon::AccountID(const EOS_EpicAccountId &id){
+	return deServiceObject::NewString(AccountIDToString(id));
 }
 
-EOS_EpicAccountId deECCommon::AccountID( const decString &string ){
-	return EOS_EpicAccountId_FromString( string );
+EOS_EpicAccountId deECCommon::AccountID(const decString &string){
+	return EOS_EpicAccountId_FromString(string);
 }
 
-decString deECCommon::AccountIDToString( const EOS_EpicAccountId &id ){
-	char buffer[ EOS_EPICACCOUNTID_MAX_LENGTH + 1 ];
+decString deECCommon::AccountIDToString(const EOS_EpicAccountId &id){
+	char buffer[EOS_EPICACCOUNTID_MAX_LENGTH + 1];
 	int32_t len = EOS_EPICACCOUNTID_MAX_LENGTH;
-	const EOS_EResult res = EOS_EpicAccountId_ToString( id, buffer, &len );
-	DEASSERT_TRUE( res == EOS_EResult::EOS_Success )
+	const EOS_EResult res = EOS_EpicAccountId_ToString(id, buffer, &len);
+	DEASSERT_TRUE(res == EOS_EResult::EOS_Success)
 	return buffer;
 }
 
-decStringList deECCommon::StringList( const deServiceObject &so ){
+decStringList deECCommon::StringList(const deServiceObject &so){
 	const int count = so.GetChildCount();
 	decStringList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		list.Add( so.GetChildAt( i )->GetString() );
+	for(i=0; i<count; i++){
+		list.Add(so.GetChildAt(i)->GetString());
 	}
 	
 	return list;
 }
 
-deServiceObject::Ref deECCommon::StringList( const decStringList &list ){
-	const deServiceObject::Ref so( deServiceObject::NewList() );
+deServiceObject::Ref deECCommon::StringList(const decStringList &list){
+	const deServiceObject::Ref so(deServiceObject::NewList());
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		so->AddStringChild( list.GetAt( i ) );
+	for(i=0; i<count; i++){
+		so->AddStringChild(list.GetAt(i));
 	}
 	
 	return so;

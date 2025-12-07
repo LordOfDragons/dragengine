@@ -48,8 +48,8 @@
 /////////////////////////////////
 
 deoalRTWOVRayHitsElement::deoalRTWOVRayHitsElement() :
-pResult( NULL ),
-pThresholdTransmit( 1e-3f )
+pResult(NULL),
+pThresholdTransmit(1e-3f)
 {
 	(void)pThresholdTransmit; // not used yet
 }
@@ -62,7 +62,7 @@ deoalRTWOVRayHitsElement::~deoalRTWOVRayHitsElement(){
 // Visiting
 /////////////
 
-void deoalRTWOVRayHitsElement::SetResult( deoalRayTraceResult *result ){
+void deoalRTWOVRayHitsElement::SetResult(deoalRayTraceResult *result){
 	pResult = result;
 }
 
@@ -86,17 +86,17 @@ void deoalRTWOVRayHitsElement::StartTiming(){
 void deoalRTWOVRayHitsElement::EndTiming(){
 }
 
-void deoalRTWOVRayHitsElement::VisitBVH( const deoalRTWorldBVH &bvh ){
+void deoalRTWOVRayHitsElement::VisitBVH(const deoalRTWorldBVH &bvh){
 	timingAllCount++;
 	timerAll.Reset();
-	deoalRTWorldBVHVisitor::VisitBVH( bvh );
+	deoalRTWorldBVHVisitor::VisitBVH(bvh);
 	timingAll += timerAll.GetElapsedTime();
 }
 #endif
 
 
 
-void deoalRTWOVRayHitsElement::VisitComponent( const deoalRTWorldBVH::sVisitComponent &rtcomponent ){
+void deoalRTWOVRayHitsElement::VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent){
 	// WARNING everything in here has to be thread-safe
 	#ifdef RTWOVRAYHITSELEMENT_DO_TIMING
 	timingComponentCount++;
@@ -106,23 +106,23 @@ void deoalRTWOVRayHitsElement::VisitComponent( const deoalRTWorldBVH::sVisitComp
 	const deoalAComponent &component = *rtcomponent.component;
 	const deoalAModel &model = *component.GetModel();
 	
-	const decVector rayOrigin( rtcomponent.inverseMatrix * GetRayOrigin() );
-	const decVector rayDirection( rtcomponent.inverseMatrix.TransformNormal( GetRayDirection() ) );
+	const decVector rayOrigin(rtcomponent.inverseMatrix * GetRayOrigin());
+	const decVector rayDirection(rtcomponent.inverseMatrix.TransformNormal(GetRayDirection()));
 	
-	deoalMOVRayHitsFaces visitor( *rtcomponent.component, model );
-	visitor.SetRay( rayOrigin, rayDirection );
-	visitor.SetResult( pResult );
-	visitor.SetResultInWorldSpace( true );
+	deoalMOVRayHitsFaces visitor(*rtcomponent.component, model);
+	visitor.SetRay(rayOrigin, rayDirection);
+	visitor.SetResult(pResult);
+	visitor.SetResultInWorldSpace(true);
 	
 	#ifdef RTWOVRAYHITSELEMENT_DO_TIMING
 	timingComponent += timerComponent.GetElapsedTime();
 	#endif
 	
-	if( component.GetBVH() ){
-		visitor.VisitBVH( *component.GetBVH() );
+	if(component.GetBVH()){
+		visitor.VisitBVH(*component.GetBVH());
 		
 	}else{
-		visitor.VisitBVH( *model.GetRTBVH() );
+		visitor.VisitBVH(*model.GetRTBVH());
 	}
 	
 	#ifdef RTWOVRAYHITSELEMENT_DO_TIMING
@@ -136,30 +136,30 @@ void deoalRTWOVRayHitsElement::VisitComponent( const deoalRTWorldBVH::sVisitComp
 	#endif
 }
 
-void deoalRTWOVRayHitsElement::pVisitNode( const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node ){
+void deoalRTWOVRayHitsElement::pVisitNode(const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node){
 	// visit components
-	if( node.componentCount > 0 ){
+	if(node.componentCount > 0){
 		const deoalRTWorldBVH::sVisitComponent * const components =
 			bvh.GetVisitComponents() + node.firstComponent;
 		int i;
 		
-		for( i=0; i<node.componentCount; i++ ){
-			const deoalRTWorldBVH::sVisitComponent &component = components[ i ];
-			if( pRayHitsBox( component.center, component.halfSize ) ){
-				VisitComponent( component );
+		for(i=0; i<node.componentCount; i++){
+			const deoalRTWorldBVH::sVisitComponent &component = components[i];
+			if(pRayHitsBox(component.center, component.halfSize)){
+				VisitComponent(component);
 			}
 		}
 		
 	// visit child nodes if hit by ray
 	}else{
-		const deoalRTWorldBVH::sVisitNode &child1 = bvh.GetVisitNodes()[ node.node1 ];
-		if( pRayHitsBox( child1.center, child1.halfSize ) ){
-			pVisitNode( bvh, child1 );
+		const deoalRTWorldBVH::sVisitNode &child1 = bvh.GetVisitNodes()[node.node1];
+		if(pRayHitsBox(child1.center, child1.halfSize)){
+			pVisitNode(bvh, child1);
 		}
 		
-		const deoalRTWorldBVH::sVisitNode &child2 = bvh.GetVisitNodes()[ node.node2 ];
-		if( pRayHitsBox( child2.center, child2.halfSize ) ){
-			pVisitNode( bvh, child2 );
+		const deoalRTWorldBVH::sVisitNode &child2 = bvh.GetVisitNodes()[node.node2];
+		if(pRayHitsBox(child2.center, child2.halfSize)){
+			pVisitNode(bvh, child2);
 		}
 	}
 }

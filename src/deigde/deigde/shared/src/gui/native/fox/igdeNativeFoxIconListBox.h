@@ -41,7 +41,7 @@ class igdeNativeFoxResizer;
  * \brief FOX toolkit Native icon list box.
  */
 class igdeNativeFoxIconListBox : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxIconListBox )
+	FXDECLARE(igdeNativeFoxIconListBox)
 protected:
 	   igdeNativeFoxIconListBox();
 	
@@ -66,14 +66,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxIconListBox( igdeIconListBox &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxIconListBox(igdeIconListBox &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxIconListBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxIconListBox* CreateNativeWidget( igdeIconListBox &owner );
+	static igdeNativeFoxIconListBox* CreateNativeWidget(igdeIconListBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -96,10 +96,10 @@ public:
 	
 	virtual void BuildHeader();
 	virtual void BuildList();
-	virtual void InsertItem( int index, igdeListItem &item );
-	virtual void UpdateItem( int index );
-	virtual void MoveItem( int fromIndex, int toIndex );
-	virtual void RemoveItem( int index );
+	virtual void InsertItem(int index, igdeListItem &item);
+	virtual void UpdateItem(int index);
+	virtual void MoveItem(int fromIndex, int toIndex);
+	virtual void RemoveItem(int index);
 	virtual void UpdateSelection();
 	virtual void UpdateHeader();
 	virtual void UpdateStyles();
@@ -107,16 +107,16 @@ public:
 	virtual void UpdateEnabled();
 	virtual void UpdateMinimumSize();
 	virtual void Focus();
-	virtual void MakeItemVisible( int index );
+	virtual void MakeItemVisible(int index);
 	virtual void RemoveAllItems();
 	
-	static int IconListBoxFlagsBorder( const igdeIconListBox &owner );
-	static int IconListBoxFlags( const igdeIconListBox &owner );
-	static igdeFont *IconListBoxFont( const igdeIconListBox &owner, const igdeGuiTheme &guitheme );
-	static int IconListBoxPadLeft( const igdeGuiTheme &guitheme );
-	static int IconListBoxPadRight( const igdeGuiTheme &guitheme );
-	static int IconListBoxPadTop( const igdeGuiTheme &guitheme );
-	static int IconListBoxPadBottom( const igdeGuiTheme &guitheme );
+	static int IconListBoxFlagsBorder(const igdeIconListBox &owner);
+	static int IconListBoxFlags(const igdeIconListBox &owner);
+	static igdeFont *IconListBoxFont(const igdeIconListBox &owner, const igdeGuiTheme &guitheme);
+	static int IconListBoxPadLeft(const igdeGuiTheme &guitheme);
+	static int IconListBoxPadRight(const igdeGuiTheme &guitheme);
+	static int IconListBoxPadTop(const igdeGuiTheme &guitheme);
+	static int IconListBoxPadBottom(const igdeGuiTheme &guitheme);
 	
 	virtual FXint getDefaultWidth();
 	virtual FXint getDefaultHeight();
@@ -126,17 +126,17 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onListCommand( FXObject*, FXSelector, void* );
-	long onListChanged( FXObject*, FXSelector, void* );
-	long onListSelected( FXObject*, FXSelector, void* );
-	long onListDeselected( FXObject*, FXSelector, void* );
-	long onListHeaderChanged( FXObject*, FXSelector, void* );
-	long onListHeaderClicked( FXObject*, FXSelector, void* );
-	long onListRightMouseDown( FXObject*, FXSelector, void* );
-	long onListRightMouseUp( FXObject*, FXSelector, void* );
-	long onListDoubleClicked( FXObject*, FXSelector, void* );
+	long onListCommand(FXObject*, FXSelector, void*);
+	long onListChanged(FXObject*, FXSelector, void*);
+	long onListSelected(FXObject*, FXSelector, void*);
+	long onListDeselected(FXObject*, FXSelector, void*);
+	long onListHeaderChanged(FXObject*, FXSelector, void*);
+	long onListHeaderClicked(FXObject*, FXSelector, void*);
+	long onListRightMouseDown(FXObject*, FXSelector, void*);
+	long onListRightMouseUp(FXObject*, FXSelector, void*);
+	long onListDoubleClicked(FXObject*, FXSelector, void*);
 	
-	long onResizerDrag( FXObject*, FXSelector, void* );
+	long onResizerDrag(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

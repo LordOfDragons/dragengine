@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeWindowMainListener::lpeWindowMainListener( lpeWindowMain &window ) :
-pWindow( window ){
+lpeWindowMainListener::lpeWindowMainListener(lpeWindowMain &window) :
+pWindow(window){
 }
 
 lpeWindowMainListener::~lpeWindowMainListener(){
@@ -55,22 +55,22 @@ lpeWindowMainListener::~lpeWindowMainListener(){
 // Management
 ///////////////
 
-void lpeWindowMainListener::StateChanged( lpeLangPack *langpack ){
+void lpeWindowMainListener::StateChanged(lpeLangPack *langpack){
 	pWindow.GetActionLangPackSave()->Update();
 }
 
-void lpeWindowMainListener::UndoChanged( lpeLangPack *langpack ){
+void lpeWindowMainListener::UndoChanged(lpeLangPack *langpack){
 	pWindow.GetActionEditUndo()->Update();
 	pWindow.GetActionEditRedo()->Update();
 }
 
 
 
-void lpeWindowMainListener::EntryStructureChanged( lpeLangPack *langpack ){
+void lpeWindowMainListener::EntryStructureChanged(lpeLangPack *langpack){
 	pWindow.GetActionEntryAdd()->Update();
 	pWindow.GetActionEntryRemove()->Update();
 }
 
-void lpeWindowMainListener::EntrySelectionChanged( lpeLangPack *langpack ){
+void lpeWindowMainListener::EntrySelectionChanged(lpeLangPack *langpack){
 	pWindow.GetActionEntryRemove()->Update();
 }

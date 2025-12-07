@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakWordsScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakWordsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakWordsScale();
 	/*@}*/

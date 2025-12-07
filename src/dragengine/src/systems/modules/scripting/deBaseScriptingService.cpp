@@ -40,11 +40,11 @@ deBaseScriptingService::~deBaseScriptingService(){
 //////////////////
 
 void deBaseScriptingService::RequestResponse(
-const decUniqueID &, const deServiceObject::Ref &, bool ){
+const decUniqueID &, const deServiceObject::Ref &, bool){
 }
 
-void deBaseScriptingService::RequestFailed( const decUniqueID &, const deServiceObject::Ref & ){
+void deBaseScriptingService::RequestFailed(const decUniqueID &, const deServiceObject::Ref &){
 }
 
-void deBaseScriptingService::EventReceived( const deServiceObject::Ref & ){
+void deBaseScriptingService::EventReceived(const deServiceObject::Ref &){
 }

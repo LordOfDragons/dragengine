@@ -47,7 +47,7 @@ public:
 	virtual ~igdeNativeNullColorBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullColorBox* CreateNativeWidget( igdeColorBox &owner );
+	static igdeNativeNullColorBox* CreateNativeWidget(igdeColorBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -64,7 +64,7 @@ public:
 	virtual void UpdateDescription();
 	virtual void UpdateEnabled();
 	
-	virtual void ClipboardPutColor( const decColor &color );
+	virtual void ClipboardPutColor(const decColor &color);
 	virtual decColor ClipboardGetColor();
 	/*@}*/
 };

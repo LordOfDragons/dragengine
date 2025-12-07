@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetAmbientIntensity::seULayerSetAmbientIntensity( seLayer *layer, float newIntensity ) :
-pLayer( NULL ),
-pNewIntensity( newIntensity )
+seULayerSetAmbientIntensity::seULayerSetAmbientIntensity(seLayer *layer, float newIntensity) :
+pLayer(NULL),
+pNewIntensity(newIntensity)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Layer Ambient Intensity" );
+	SetShortInfo("Set Layer Ambient Intensity");
 	
 	pOldIntensity = layer->GetAmbientIntensity();
 	
@@ -56,7 +56,7 @@ pNewIntensity( newIntensity )
 }
 
 seULayerSetAmbientIntensity::~seULayerSetAmbientIntensity(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seULayerSetAmbientIntensity::~seULayerSetAmbientIntensity(){
 ///////////////
 
 void seULayerSetAmbientIntensity::Undo(){
-	pLayer->SetAmbientIntensity( pOldIntensity );
+	pLayer->SetAmbientIntensity(pOldIntensity);
 }
 
 void seULayerSetAmbientIntensity::Redo(){
-	pLayer->SetAmbientIntensity( pNewIntensity );
+	pLayer->SetAmbientIntensity(pNewIntensity);
 }

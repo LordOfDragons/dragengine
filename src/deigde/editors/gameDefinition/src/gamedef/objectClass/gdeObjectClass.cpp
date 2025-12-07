@@ -57,108 +57,108 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeObjectClass::gdeObjectClass( const char *name ) :
-pGameDefinition( NULL ),
-pName( name ),
-pScaleMode( esmUniform ),
+gdeObjectClass::gdeObjectClass(const char *name) :
+pGameDefinition(NULL),
+pName(name),
+pScaleMode(esmUniform),
 
-pIsGhost( false ),
-pCanInstantiate( true ),
+pIsGhost(false),
+pCanInstantiate(true),
 pIsAttachableBehavior(false),
-pInheritSubObjects( igdeGDClass::FilterSubObjectsAll ){
+pInheritSubObjects(igdeGDClass::FilterSubObjectsAll){
 }
 
-gdeObjectClass::gdeObjectClass( const gdeObjectClass &objectClass ) :
-pGameDefinition( NULL ),
-pName( objectClass.pName ),
-pDescription( objectClass.pDescription ),
-pScaleMode( objectClass.pScaleMode ),
+gdeObjectClass::gdeObjectClass(const gdeObjectClass &objectClass) :
+pGameDefinition(NULL),
+pName(objectClass.pName),
+pDescription(objectClass.pDescription),
+pScaleMode(objectClass.pScaleMode),
 
-pPropertyValues( objectClass.pPropertyValues ),
+pPropertyValues(objectClass.pPropertyValues),
 
-pCategory( objectClass.pCategory ),
-pHideTags( objectClass.pHideTags ),
-pPartialHideTags( objectClass.pPartialHideTags ),
+pCategory(objectClass.pCategory),
+pHideTags(objectClass.pHideTags),
+pPartialHideTags(objectClass.pPartialHideTags),
 
-pIsGhost( objectClass.pIsGhost ),
-pCanInstantiate( objectClass.pCanInstantiate ),
+pIsGhost(objectClass.pIsGhost),
+pCanInstantiate(objectClass.pCanInstantiate),
 pIsAttachableBehavior(objectClass.pIsAttachableBehavior),
-pInheritSubObjects( objectClass.pInheritSubObjects )
+pInheritSubObjects(objectClass.pInheritSubObjects)
 {
 	int i, count;
 	
 	try{
 		count = objectClass.pProperties.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pProperties.Add(gdeProperty::Ref::NewWith(*objectClass.pProperties.GetAt(i)));
 		}
 		
 		count = objectClass.pTextureProperties.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pTextureProperties.Add(gdeProperty::Ref::NewWith(*objectClass.pTextureProperties.GetAt(i)));
 		}
 		
 		count = objectClass.pInherits.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pInherits.Add(gdeOCInherit::Ref::NewWith(*objectClass.pInherits.GetAt(i)));
 		}
 		
 		count = objectClass.pBillboards.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pBillboards.Add(gdeOCBillboard::Ref::NewWith(*objectClass.pBillboards.GetAt(i)));
 		}
 		
 		count = objectClass.pCameras.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pCameras.Add(gdeOCCamera::Ref::NewWith(*objectClass.pCameras.GetAt(i)));
 		}
 		
 		count = objectClass.pComponents.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pComponents.Add(gdeOCComponent::Ref::NewWith(*objectClass.pComponents.GetAt(i)));
 		}
 		
 		count = objectClass.pEnvMapProbes.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pEnvMapProbes.Add(gdeOCEnvMapProbe::Ref::NewWith(*objectClass.pEnvMapProbes.GetAt(i)));
 		}
 		
 		count = objectClass.pLights.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pLights.Add(gdeOCLight::Ref::NewWith(*objectClass.pLights.GetAt(i)));
 		}
 		
 		count = objectClass.pNavigationBlockers.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pNavigationBlockers.Add(gdeOCNavigationBlocker::Ref::NewWith(
 				*objectClass.pNavigationBlockers.GetAt(i)));
 		}
 		
 		count = objectClass.pNavigationSpaces.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pNavigationSpaces.Add(gdeOCNavigationSpace::Ref::NewWith(
 				*objectClass.pNavigationSpaces.GetAt(i)));
 		}
 		
 		count = objectClass.pParticleEmitters.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pParticleEmitters.Add(gdeOCParticleEmitter::Ref::NewWith(
 				*objectClass.pParticleEmitters.GetAt(i)));
 		}
 		
 		count = objectClass.pForceFields.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pForceFields.Add(gdeOCForceField::Ref::NewWith(
 				*objectClass.pForceFields.GetAt(i)));
 		}
 		
 		count = objectClass.pSnapPoints.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pSnapPoints.Add(gdeOCSnapPoint::Ref::NewWith(*objectClass.pSnapPoints.GetAt(i)));
 		}
 		
 		count = objectClass.pSpeakers.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pSpeakers.Add(gdeOCSpeaker::Ref::NewWith(*objectClass.pSpeakers.GetAt(i)));
 		}
 		
@@ -168,11 +168,11 @@ pInheritSubObjects( objectClass.pInheritSubObjects )
 		}
 		
 		count = objectClass.pTextures.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pTextures.Add(gdeOCComponentTexture::Ref::NewWith(*objectClass.pTextures.GetAt(i)));
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -187,340 +187,340 @@ gdeObjectClass::~gdeObjectClass(){
 // Management
 ///////////////
 
-void gdeObjectClass::SetGameDefinition( gdeGameDefinition *gamedef ){
+void gdeObjectClass::SetGameDefinition(gdeGameDefinition *gamedef){
 	pGameDefinition = gamedef;
 }
 
 
 
-void gdeObjectClass::SetName( const char *name ){
-	if( pName == name ){
+void gdeObjectClass::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassNameChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassNameChanged(this);
 	}
 }
 
-void gdeObjectClass::SetDescription( const char *description ){
-	if( pDescription == description ){
+void gdeObjectClass::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
 	pDescription = description;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
 
 
-void gdeObjectClass::SetScaleMode( eScaleModes mode ){
-	if( mode < esmFixed || mode > esmFree ){
-		DETHROW( deeInvalidParam );
+void gdeObjectClass::SetScaleMode(eScaleModes mode){
+	if(mode < esmFixed || mode > esmFree){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pScaleMode == mode ){
+	if(pScaleMode == mode){
 		return;
 	}
 	
 	pScaleMode = mode;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
 
 
-void gdeObjectClass::SetCategory( const char *category ){
-	if( pCategory == category ){
+void gdeObjectClass::SetCategory(const char *category){
+	if(pCategory == category){
 		return;
 	}
 	
 	pCategory = category;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
-void gdeObjectClass::SetHideTags( const decStringSet &tags ){
-	if( pHideTags == tags ){
+void gdeObjectClass::SetHideTags(const decStringSet &tags){
+	if(pHideTags == tags){
 		return;
 	}
 	
 	pHideTags = tags;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
-void gdeObjectClass::SetPartialHideTags( const decStringSet &tags ){
-	if( pPartialHideTags == tags ){
+void gdeObjectClass::SetPartialHideTags(const decStringSet &tags){
+	if(pPartialHideTags == tags){
 		return;
 	}
 	
 	pPartialHideTags = tags;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
 
 
 
-void gdeObjectClass::NotifyPropertyChanged( gdeProperty *property ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCPropertyChanged( this, property );
+void gdeObjectClass::NotifyPropertyChanged(gdeProperty *property){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCPropertyChanged(this, property);
 	}
 }
 
-void gdeObjectClass::NotifyPropertyNameChanged( gdeProperty *property ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCPropertyNameChanged( this, property );
+void gdeObjectClass::NotifyPropertyNameChanged(gdeProperty *property){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCPropertyNameChanged(this, property);
 	}
 }
 
 void gdeObjectClass::NotifyPropertiesChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCPropertiesChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCPropertiesChanged(this);
 	}
 }
 
 void gdeObjectClass::NotifyPropertyValuesChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCPropertyValuesChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCPropertyValuesChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyTexturePropertyChanged( gdeProperty *property ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCTexturePropertyChanged( this, property );
+void gdeObjectClass::NotifyTexturePropertyChanged(gdeProperty *property){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCTexturePropertyChanged(this, property);
 	}
 }
 
-void gdeObjectClass::NotifyTexturePropertyNameChanged( gdeProperty *property ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCTexturePropertyNameChanged( this, property );
+void gdeObjectClass::NotifyTexturePropertyNameChanged(gdeProperty *property){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCTexturePropertyNameChanged(this, property);
 	}
 }
 
 void gdeObjectClass::NotifyTexturePropertiesChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCTexturePropertiesChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCTexturePropertiesChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyInheritChanged( gdeOCInherit *inherit ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCInheritChanged( this, inherit );
+void gdeObjectClass::NotifyInheritChanged(gdeOCInherit *inherit){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCInheritChanged(this, inherit);
 	}
 }
 
 void gdeObjectClass::NotifyInheritsChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCInheritsChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCInheritsChanged(this);
 	}
 }
 
-void gdeObjectClass::SetDefaultInheritPropertyPrefix( const char *propertyName ){
-	if( pDefaultInheritPropertyPrefix == propertyName ){
+void gdeObjectClass::SetDefaultInheritPropertyPrefix(const char *propertyName){
+	if(pDefaultInheritPropertyPrefix == propertyName){
 		return;
 	}
 	
 	pDefaultInheritPropertyPrefix = propertyName;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
-bool gdeObjectClass::InheritsFrom( const gdeObjectClass *objectClass ) const{
+bool gdeObjectClass::InheritsFrom(const gdeObjectClass *objectClass) const{
 	const int count = pInherits.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const inheritOC = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( inheritOC && inheritOC->IsOrInheritsFrom( objectClass ) ){
+	for(i=0; i<count; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const inheritOC = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(inheritOC && inheritOC->IsOrInheritsFrom(objectClass)){
 			return true;
 		}
 	}
 	return false;
 }
 
-bool gdeObjectClass::IsOrInheritsFrom( const gdeObjectClass *objectClass ) const{
-	return this == objectClass || InheritsFrom( objectClass );
+bool gdeObjectClass::IsOrInheritsFrom(const gdeObjectClass *objectClass) const{
+	return this == objectClass || InheritsFrom(objectClass);
 }
 
-bool gdeObjectClass::IsOrInheritsFrom( const char *name ) const{
-	const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( name );
-	return objectClass && IsOrInheritsFrom( objectClass );
+bool gdeObjectClass::IsOrInheritsFrom(const char *name) const{
+	const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass(name);
+	return objectClass && IsOrInheritsFrom(objectClass);
 }
 
 
 void gdeObjectClass::NotifyBillboardsChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCBillboardsChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCBillboardsChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyBillboardChanged( gdeOCBillboard *billboard ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCBillboardChanged( this, billboard );
+void gdeObjectClass::NotifyBillboardChanged(gdeOCBillboard *billboard){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCBillboardChanged(this, billboard);
 	}
 }
 
 void gdeObjectClass::NotifyCamerasChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCCamerasChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCCamerasChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyCameraChanged( gdeOCCamera *camera ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCCameraChanged( this, camera );
+void gdeObjectClass::NotifyCameraChanged(gdeOCCamera *camera){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCCameraChanged(this, camera);
 	}
 }
 
 void gdeObjectClass::NotifyComponentsChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCComponentsChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCComponentsChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyComponentChanged( gdeOCComponent *component ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCComponentChanged( this, component );
+void gdeObjectClass::NotifyComponentChanged(gdeOCComponent *component){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCComponentChanged(this, component);
 	}
 }
 
-void gdeObjectClass::NotifyComponentTextureChanged( gdeOCComponent *component,
-gdeOCComponentTexture *texture ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCComponentTextureChanged( this, component, texture );
+void gdeObjectClass::NotifyComponentTextureChanged(gdeOCComponent *component,
+gdeOCComponentTexture *texture){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCComponentTextureChanged(this, component, texture);
 	}
 }
 
-void gdeObjectClass::NotifyComponentTextureNameChanged( gdeOCComponent *component,
-gdeOCComponentTexture *texture ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCComponentTextureNameChanged( this, component, texture );
+void gdeObjectClass::NotifyComponentTextureNameChanged(gdeOCComponent *component,
+gdeOCComponentTexture *texture){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCComponentTextureNameChanged(this, component, texture);
 	}
 }
 
-void gdeObjectClass::NotifyComponentTexturePropertiesChanged( gdeOCComponent *component,
-gdeOCComponentTexture *texture ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCComponentTexturePropertiesChanged( this, component, texture );
+void gdeObjectClass::NotifyComponentTexturePropertiesChanged(gdeOCComponent *component,
+gdeOCComponentTexture *texture){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCComponentTexturePropertiesChanged(this, component, texture);
 	}
 }
 
 void gdeObjectClass::NotifyEnvMapProbesChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCEnvMapProbesChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCEnvMapProbesChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyEnvMapProbeChanged( gdeOCEnvMapProbe *envMapProbe ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCEnvMapProbeChanged( this, envMapProbe );
+void gdeObjectClass::NotifyEnvMapProbeChanged(gdeOCEnvMapProbe *envMapProbe){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCEnvMapProbeChanged(this, envMapProbe);
 	}
 }
 
 void gdeObjectClass::NotifyLightsChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCLightsChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCLightsChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyLightChanged( gdeOCLight *light ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCLightChanged( this, light );
+void gdeObjectClass::NotifyLightChanged(gdeOCLight *light){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCLightChanged(this, light);
 	}
 }
 
 void gdeObjectClass::NotifyNavigationBlockersChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCNavigationBlockersChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCNavigationBlockersChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyNavigationBlockerChanged( gdeOCNavigationBlocker *navblocker ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCNavigationBlockerChanged( this, navblocker );
+void gdeObjectClass::NotifyNavigationBlockerChanged(gdeOCNavigationBlocker *navblocker){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCNavigationBlockerChanged(this, navblocker);
 	}
 }
 
 void gdeObjectClass::NotifyNavigationSpacesChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCNavigationSpacesChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCNavigationSpacesChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyNavigationSpaceChanged( gdeOCNavigationSpace *navspace ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCNavigationSpaceChanged( this, navspace );
+void gdeObjectClass::NotifyNavigationSpaceChanged(gdeOCNavigationSpace *navspace){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCNavigationSpaceChanged(this, navspace);
 	}
 }
 
 void gdeObjectClass::NotifyParticleEmittersChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCParticleEmittersChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCParticleEmittersChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyParticleEmitterChanged( gdeOCParticleEmitter *emitter ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCParticleEmitterChanged( this, emitter );
+void gdeObjectClass::NotifyParticleEmitterChanged(gdeOCParticleEmitter *emitter){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCParticleEmitterChanged(this, emitter);
 	}
 }
 
 void gdeObjectClass::NotifyForceFieldsChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCForceFieldsChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCForceFieldsChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyForceFieldChanged( gdeOCForceField *field ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCForceFieldChanged( this, field );
+void gdeObjectClass::NotifyForceFieldChanged(gdeOCForceField *field){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCForceFieldChanged(this, field);
 	}
 }
 
 void gdeObjectClass::NotifySnapPointsChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCSnapPointsChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCSnapPointsChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifySnapPointChanged( gdeOCSnapPoint *snappoint ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCSnapPointChanged( this, snappoint );
+void gdeObjectClass::NotifySnapPointChanged(gdeOCSnapPoint *snappoint){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCSnapPointChanged(this, snappoint);
 	}
 }
 
-void gdeObjectClass::NotifySnapPointNameChanged( gdeOCSnapPoint *snappoint ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCSnapPointNameChanged( this, snappoint );
+void gdeObjectClass::NotifySnapPointNameChanged(gdeOCSnapPoint *snappoint){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCSnapPointNameChanged(this, snappoint);
 	}
 }
 
 void gdeObjectClass::NotifySpeakersChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCSpeakersChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCSpeakersChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifySpeakerChanged( gdeOCSpeaker *speaker ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCSpeakerChanged( this, speaker );
+void gdeObjectClass::NotifySpeakerChanged(gdeOCSpeaker *speaker){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCSpeakerChanged(this, speaker);
 	}
 }
 
@@ -538,57 +538,57 @@ void gdeObjectClass::NotifyWorldChanged(gdeOCWorld *world){
 
 
 
-void gdeObjectClass::SetActiveTexture( gdeOCComponentTexture *texture ){
+void gdeObjectClass::SetActiveTexture(gdeOCComponentTexture *texture){
 	pActiveTexture = texture;
 }
 
 void gdeObjectClass::NotifyTexturesChanged(){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCTexturesChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCTexturesChanged(this);
 	}
 }
 
-void gdeObjectClass::NotifyTextureChanged( gdeOCComponentTexture *texture ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifyOCTextureChanged( this, texture );
+void gdeObjectClass::NotifyTextureChanged(gdeOCComponentTexture *texture){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCTextureChanged(this, texture);
 	}
 }
 
 
 
-void gdeObjectClass::SetIsGhost( bool isGhost ){
-	if( pIsGhost == isGhost ){
+void gdeObjectClass::SetIsGhost(bool isGhost){
+	if(pIsGhost == isGhost){
 		return;
 	}
 	
 	pIsGhost = isGhost;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
-void gdeObjectClass::SetCanInstantiate( bool canInstantiate ){
-	if( pCanInstantiate == canInstantiate ){
+void gdeObjectClass::SetCanInstantiate(bool canInstantiate){
+	if(pCanInstantiate == canInstantiate){
 		return;
 	}
 	
 	pCanInstantiate = canInstantiate;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
-void gdeObjectClass::SetInheritSubObjects( int filter ){
-	if( pInheritSubObjects == filter ){
+void gdeObjectClass::SetInheritSubObjects(int filter){
+	if(pInheritSubObjects == filter){
 		return;
 	}
 	
 	pInheritSubObjects = filter;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyObjectClassChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
 	}
 }
 
@@ -605,35 +605,35 @@ void gdeObjectClass::SetIsAttachableBehavior(bool isAttachableBehavior){
 }
 
 
-bool gdeObjectClass::DeepGetNamedProperty( const char *name, const gdeObjectClass* &objectClass,
-const gdeProperty* &property ) const{
-	property = pProperties.GetNamed( name );
-	if( property ){
+bool gdeObjectClass::DeepGetNamedProperty(const char *name, const gdeObjectClass* &objectClass,
+const gdeProperty* &property) const{
+	property = pProperties.GetNamed(name);
+	if(property){
 		objectClass = this;
 		return true;
 	}
 	
-	if( ! pGameDefinition ){
+	if(!pGameDefinition){
 		return false;
 	}
 	
-	const int nameLen = ( int )strlen( name );
+	const int nameLen = (int)strlen(name);
 	const int count = pInherits.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( ! ioc ){
+	for(i=0; i<count; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(!ioc){
 			continue;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
-		if( nameLen < prefixLen || strncmp( name, prefix, prefixLen ) != 0 ){
+		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
 			continue;
 		}
 		
-		if( ioc->DeepGetNamedProperty( name + prefixLen, objectClass, property ) ){
+		if(ioc->DeepGetNamedProperty(name + prefixLen, objectClass, property)){
 			return true;
 		}
 	}
@@ -641,36 +641,36 @@ const gdeProperty* &property ) const{
 	return false;
 }
 
-bool gdeObjectClass::NamedPropertyDefaultValue( const char *name, decString &value ) const{
+bool gdeObjectClass::NamedPropertyDefaultValue(const char *name, decString &value) const{
 	const decString *propertyValue = NULL;
-	if( pPropertyValues.GetAt( name, &propertyValue ) ){
+	if(pPropertyValues.GetAt(name, &propertyValue)){
 		value = *propertyValue;
 		return true;
 	}
 	
-	const gdeProperty * const property = pProperties.GetNamed( name );
-	if( property ){
+	const gdeProperty * const property = pProperties.GetNamed(name);
+	if(property){
 		value = property->GetDefaultValue();
 		return true;
 	}
 	
-	const int nameLen = ( int )strlen( name );
+	const int nameLen = (int)strlen(name);
 	const int count = pInherits.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( ! ioc ){
+	for(i=0; i<count; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(!ioc){
 			continue;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
-		if( nameLen < prefixLen || strncmp( name, prefix, prefixLen ) != 0 ){
+		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
 			continue;
 		}
 		
-		if( ioc->NamedPropertyDefaultValue( name + prefixLen, value ) ){
+		if(ioc->NamedPropertyDefaultValue(name + prefixLen, value)){
 			return true;
 		}
 	}
@@ -678,96 +678,96 @@ bool gdeObjectClass::NamedPropertyDefaultValue( const char *name, decString &val
 	return false;
 }
 
-void gdeObjectClass::AddPropertyNamesTo( decStringSet &set, bool inherited ) const{
+void gdeObjectClass::AddPropertyNamesTo(decStringSet &set, bool inherited) const{
 	const int propertyCount = pProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		set.Add( pProperties.GetAt( i )->GetName() );
+	for(i=0; i<propertyCount; i++){
+		set.Add(pProperties.GetAt(i)->GetName());
 	}
 	
-	if( ! pGameDefinition || ! inherited ){
+	if(!pGameDefinition || !inherited){
 		return;
 	}
 	
 	const int inheritCount = pInherits.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( objectClass ){
-			objectClass->pAddPropertyNames( set, inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(objectClass){
+			objectClass->pAddPropertyNames(set, inherit.GetPropertyPrefix());
 		}
 	}
 }
 
-void gdeObjectClass::AddTexturePropertyNamesTo( decStringSet &set, bool inherited ) const{
+void gdeObjectClass::AddTexturePropertyNamesTo(decStringSet &set, bool inherited) const{
 	const int propertyCount = pTextureProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		set.Add( pTextureProperties.GetAt( i )->GetName() );
+	for(i=0; i<propertyCount; i++){
+		set.Add(pTextureProperties.GetAt(i)->GetName());
 	}
 	
-	if( ! pGameDefinition || ! inherited ){
+	if(!pGameDefinition || !inherited){
 		return;
 	}
 	
 	const int inheritCount = pInherits.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( objectClass ){
-			objectClass->pAddTexturePropertyNames( set, inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(objectClass){
+			objectClass->pAddTexturePropertyNames(set, inherit.GetPropertyPrefix());
 		}
 	}
 }
 
-void gdeObjectClass::AddPropertiesTo( decStringDictionary &properties, bool inherited, bool includeValues ) const{
-	if( inherited ){
+void gdeObjectClass::AddPropertiesTo(decStringDictionary &properties, bool inherited, bool includeValues) const{
+	if(inherited){
 		const int inheritCount = pInherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeOCInherit &inherit = *pInherits.GetAt( i );
-			const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( inherit.GetName() );
-			if( objectClass ){
-				objectClass->pAddPropertiesTo( properties, inherit.GetPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeOCInherit &inherit = *pInherits.GetAt(i);
+			const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass(inherit.GetName());
+			if(objectClass){
+				objectClass->pAddPropertiesTo(properties, inherit.GetPropertyPrefix());
 			}
 		}
 	}
 	
 	const int propertyCount = pProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		const gdeProperty &property = *pProperties.GetAt( i );
-		properties.SetAt( property.GetName(), property.GetDefaultValue() );
+	for(i=0; i<propertyCount; i++){
+		const gdeProperty &property = *pProperties.GetAt(i);
+		properties.SetAt(property.GetName(), property.GetDefaultValue());
 	}
 	
-	if( includeValues ){
+	if(includeValues){
 		properties += pPropertyValues;
 	}
 }
 
-void gdeObjectClass::GetDefinedUsedIDs( decStringSet &definedIDs, decStringSet &usedIDs ) const{
+void gdeObjectClass::GetDefinedUsedIDs(decStringSet &definedIDs, decStringSet &usedIDs) const{
 	const int inheritCount = pInherits.GetCount();
 	int i;
-	for( i=0; i<inheritCount; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( objectClass ){
-			objectClass->GetDefinedUsedIDs( definedIDs, usedIDs );
+	for(i=0; i<inheritCount; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(objectClass){
+			objectClass->GetDefinedUsedIDs(definedIDs, usedIDs);
 		}
 	}
 	
 	const int propertyCount = pProperties.GetCount();
-	for( i=0; i<propertyCount; i++ ){
-		const gdeProperty &property = *pProperties.GetAt( i );
-		if( property.GetType() != gdeProperty::eptIdentifier || property.GetIdentifierGroup().IsEmpty() ){
+	for(i=0; i<propertyCount; i++){
+		const gdeProperty &property = *pProperties.GetAt(i);
+		if(property.GetType() != gdeProperty::eptIdentifier || property.GetIdentifierGroup().IsEmpty()){
 			continue;
 		}
 		
-		if( property.GetIdentifierUsage() ){
-			definedIDs.Add( property.GetIdentifierGroup() );
+		if(property.GetIdentifierUsage()){
+			definedIDs.Add(property.GetIdentifierGroup());
 			
 		}else{
-			usedIDs.Add( property.GetIdentifierGroup() );
+			usedIDs.Add(property.GetIdentifierGroup());
 		}
 	}
 }
@@ -781,64 +781,64 @@ void gdeObjectClass::pCleanUp(){
 // 	gdePropertyList pProperties;
 // 	gdePropertyList pTextureProperties;
 	
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 }
 
-void gdeObjectClass::pAddPropertyNames( decStringSet &set, const decString &prefix ) const{
+void gdeObjectClass::pAddPropertyNames(decStringSet &set, const decString &prefix) const{
 	const int propertyCount = pProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		set.Add( prefix + pProperties.GetAt( i )->GetName() );
+	for(i=0; i<propertyCount; i++){
+		set.Add(prefix + pProperties.GetAt(i)->GetName());
 	}
 	
 	const int inheritCount = pInherits.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( objectClass ){
-			objectClass->pAddPropertyNames( set, prefix + inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(objectClass){
+			objectClass->pAddPropertyNames(set, prefix + inherit.GetPropertyPrefix());
 		}
 	}
 }
 
-void gdeObjectClass::pAddTexturePropertyNames( decStringSet &set, const decString &prefix ) const{
+void gdeObjectClass::pAddTexturePropertyNames(decStringSet &set, const decString &prefix) const{
 	const int propertyCount = pTextureProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		set.Add( prefix + pTextureProperties.GetAt( i )->GetName() );
+	for(i=0; i<propertyCount; i++){
+		set.Add(prefix + pTextureProperties.GetAt(i)->GetName());
 	}
 	
 	const int inheritCount = pInherits.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( objectClass ){
-			objectClass->pAddTexturePropertyNames( set, prefix + inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(objectClass){
+			objectClass->pAddTexturePropertyNames(set, prefix + inherit.GetPropertyPrefix());
 		}
 	}
 }
 
-void gdeObjectClass::pAddPropertiesTo( decStringDictionary &properties, const decString &prefix ) const{
+void gdeObjectClass::pAddPropertiesTo(decStringDictionary &properties, const decString &prefix) const{
 	const int inheritCount = pInherits.GetCount();
 	int i;
-	for( i=0; i<inheritCount; i++ ){
-		const gdeOCInherit &inherit = *pInherits.GetAt( i );
-		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( inherit.GetName() );
-		if( objectClass ){
-			objectClass->pAddPropertiesTo( properties, prefix + inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const gdeOCInherit &inherit = *pInherits.GetAt(i);
+		const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass(inherit.GetName());
+		if(objectClass){
+			objectClass->pAddPropertiesTo(properties, prefix + inherit.GetPropertyPrefix());
 		}
 	}
 	
 	const int propertyCount = pProperties.GetCount();
-	for( i=0; i<propertyCount; i++ ){
-		const gdeProperty &property = *pProperties.GetAt( i );
-		properties.SetAt( prefix + property.GetName(), property.GetDefaultValue() );
+	for(i=0; i<propertyCount; i++){
+		const gdeProperty &property = *pProperties.GetAt(i);
+		properties.SetAt(prefix + property.GetName(), property.GetDefaultValue());
 	}
 	
-	const decStringList keys( pPropertyValues.GetKeys() );
+	const decStringList keys(pPropertyValues.GetKeys());
 	const int keyCount = keys.GetCount();
-	for( i=0; i<keyCount; i++ ){
-		const decString &key = keys.GetAt( i );
-		properties.SetAt( prefix + key, pPropertyValues.GetAt( key ) );
+	for(i=0; i<keyCount; i++){
+		const decString &key = keys.GetAt(i);
+		properties.SetAt(prefix + key, pPropertyValues.GetAt(key));
 	}
 }

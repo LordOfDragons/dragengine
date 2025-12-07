@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetOptions::gdeUGDWPSetOptions( gdeGameDefinition *gamedef,
-gdeProperty *property, const decStringList &newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDWPSetOptions::gdeUGDWPSetOptions(gdeGameDefinition *gamedef,
+gdeProperty *property, const decStringList &newValue) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set options" );
+	SetShortInfo("Game definition property set options");
 	
 	pOldValue = property->GetOptions();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pProperty( NULL )
 }
 
 gdeUGDWPSetOptions::~gdeUGDWPSetOptions(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -77,10 +77,10 @@ gdeUGDWPSetOptions::~gdeUGDWPSetOptions(){
 
 void gdeUGDWPSetOptions::Undo(){
 	pProperty->GetOptions() = pOldValue;
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }
 
 void gdeUGDWPSetOptions::Redo(){
 	pProperty->GetOptions() = pNewValue;
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }

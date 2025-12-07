@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOBillboard( igdeWObject &wrapper, const igdeGDCBillboard &gdBillboard, const decString &prefix );
+	igdeWOSOBillboard(igdeWObject &wrapper, const igdeGDCBillboard &gdBillboard, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	~igdeWOSOBillboard() override;
@@ -93,13 +93,13 @@ public:
 	void CameraChanged() override;
 	
 	/** \brief Frame update. */
-	void Update( float elapsed ) override;
+	void Update(float elapsed) override;
 	
 	/** \brief Visit. */
-	void Visit( igdeWOSOVisitor &visitor ) override;
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	
 	/**
 	 * \brief Sub object is visible.

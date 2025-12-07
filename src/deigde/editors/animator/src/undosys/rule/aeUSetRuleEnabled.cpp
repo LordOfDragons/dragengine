@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleEnabled::aeUSetRuleEnabled( aeRule *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleEnabled::aeUSetRuleEnabled(aeRule *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -48,9 +48,9 @@ aeUSetRuleEnabled::aeUSetRuleEnabled( aeRule *rule ){
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Set rule enabled" );
+		SetShortInfo("Set rule enabled");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ aeUSetRuleEnabled::~aeUSetRuleEnabled(){
 ///////////////
 
 void aeUSetRuleEnabled::Undo(){
-	pRule->SetEnabled( ! pRule->GetEnabled() );
+	pRule->SetEnabled(!pRule->GetEnabled());
 }
 
 void aeUSetRuleEnabled::Redo(){
-	pRule->SetEnabled( ! pRule->GetEnabled() );
+	pRule->SetEnabled(!pRule->GetEnabled());
 }
 
 
@@ -79,5 +79,5 @@ void aeUSetRuleEnabled::Redo(){
 //////////////////////
 
 void aeUSetRuleEnabled::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleAdd::meUHTVRuleAdd( meHTVegetationLayer *vlayer, meHTVRule *rule ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleAdd::meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;
 	
-	SetShortInfo( "Add Vegetation Layer Rule" );
-	SetMemoryConsumption( sizeof( meUHTVRuleAdd ) );
+	SetShortInfo("Add Vegetation Layer Rule");
+	SetMemoryConsumption(sizeof(meUHTVRuleAdd));
 	
 	pVLayer = vlayer;
 	vlayer->AddReference();
@@ -56,8 +56,8 @@ meUHTVRuleAdd::meUHTVRuleAdd( meHTVegetationLayer *vlayer, meHTVRule *rule ){
 }
 
 meUHTVRuleAdd::~meUHTVRuleAdd(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -66,9 +66,9 @@ meUHTVRuleAdd::~meUHTVRuleAdd(){
 ///////////////
 
 void meUHTVRuleAdd::Undo(){
-	pVLayer->RemoveRule( pRule );
+	pVLayer->RemoveRule(pRule);
 }
 
 void meUHTVRuleAdd::Redo(){
-	pVLayer->AddRule( pRule );
+	pVLayer->AddRule(pRule);
 }

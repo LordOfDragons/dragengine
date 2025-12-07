@@ -40,10 +40,10 @@
 /////////////////////////////////
 
 deoalRTWorldOctreeVisitor::deoalRTWorldOctreeVisitor() :
-pCheckAxisX( false ),
-pCheckAxisY( false ),
-pCheckAxisZ( false ),
-pRayLength( 0.0f )
+pCheckAxisX(false),
+pCheckAxisY(false),
+pCheckAxisZ(false),
+pRayLength(0.0f)
 //,pSphereDot( 0.0f )
 {
 }
@@ -56,49 +56,49 @@ deoalRTWorldOctreeVisitor::~deoalRTWorldOctreeVisitor(){
 // Visiting
 /////////////
 
-void deoalRTWorldOctreeVisitor::SetRay( const decVector &origin, const decVector &direction ){
+void deoalRTWorldOctreeVisitor::SetRay(const decVector &origin, const decVector &direction){
 	pRayOrigin = origin;
 	pRayTarget = origin + direction;
 	pRayDirection = direction;
 	pRayLength = direction.Length();
 	
 	pInvRayDirection.SetZero();
-	pCheckAxisX = fabsf( direction.x ) > FLOAT_SAFE_EPSILON;
-	pCheckAxisY = fabsf( direction.y ) > FLOAT_SAFE_EPSILON;
-	pCheckAxisZ = fabsf( direction.z ) > FLOAT_SAFE_EPSILON;
+	pCheckAxisX = fabsf(direction.x) > FLOAT_SAFE_EPSILON;
+	pCheckAxisY = fabsf(direction.y) > FLOAT_SAFE_EPSILON;
+	pCheckAxisZ = fabsf(direction.z) > FLOAT_SAFE_EPSILON;
 	
-	if( pCheckAxisX ){
+	if(pCheckAxisX){
 		pInvRayDirection.x = 1.0f / direction.x;
 	}
-	if( pCheckAxisY ){
+	if(pCheckAxisY){
 		pInvRayDirection.y = 1.0f / direction.y;
 	}
-	if( pCheckAxisZ ){
+	if(pCheckAxisZ){
 		pInvRayDirection.z = 1.0f / direction.z;
 	}
 	
-	const decVector margin( 0.0005f, 0.0005f, 0.0005f );
-	pRayBoxMin = pRayOrigin.Smallest( pRayTarget ) - margin;
-	pRayBoxMax = pRayOrigin.Largest( pRayTarget ) + margin;
+	const decVector margin(0.0005f, 0.0005f, 0.0005f);
+	pRayBoxMin = pRayOrigin.Smallest(pRayTarget) - margin;
+	pRayBoxMax = pRayOrigin.Largest(pRayTarget) + margin;
 	
 // 	pRayNormDir = pRayDirection / pRayLength;
 // 	pSphereDot = -( origin * pRayNormDir );
 }
 
-void deoalRTWorldOctreeVisitor::SetRay( const deoalRTWorldOctree &octree,
-const decDVector &origin, const decDVector &direction ){
-	SetRay( origin - octree.GetPosition(), direction );
+void deoalRTWorldOctreeVisitor::SetRay(const deoalRTWorldOctree &octree,
+const decDVector &origin, const decDVector &direction){
+	SetRay(origin - octree.GetPosition(), direction);
 }
 
 
 
-void deoalRTWorldOctreeVisitor::VisitOctree( const deoalRTWorldOctree &octree ){
-	if( octree.GetVisitNodeCount() > 0 ){
-		pVisitNode( octree, octree.GetVisitNodes()[ 0 ] );
+void deoalRTWorldOctreeVisitor::VisitOctree(const deoalRTWorldOctree &octree){
+	if(octree.GetVisitNodeCount() > 0){
+		pVisitNode(octree, octree.GetVisitNodes()[0]);
 	}
 }
 
-void deoalRTWorldOctreeVisitor::VisitComponent( const deoalRTWorldOctree::sVisitComponent & ){
+void deoalRTWorldOctreeVisitor::VisitComponent(const deoalRTWorldOctree::sVisitComponent &){
 }
 
 
@@ -106,58 +106,58 @@ void deoalRTWorldOctreeVisitor::VisitComponent( const deoalRTWorldOctree::sVisit
 // Protected Functions
 ////////////////////////
 
-void deoalRTWorldOctreeVisitor::pVisitNode( const deoalRTWorldOctree &octree,
-const deoalRTWorldOctree::sVisitNode &node ){
+void deoalRTWorldOctreeVisitor::pVisitNode(const deoalRTWorldOctree &octree,
+const deoalRTWorldOctree::sVisitNode &node){
 	// visit components
 	const deoalRTWorldOctree::sVisitComponent * const components =
 		octree.GetVisitComponents() + node.firstComponent;
 	int i;
 	
-	for( i=0; i<node.componentCount; i++ ){
-		const deoalRTWorldOctree::sVisitComponent &component = components[ i ];
-		if( /*pRayHitsSphere( component.sphereCenter, component.sphereRadiusSquared )
-		&& */pRayHitsBox( component.center, component.halfSize ) ){
-			VisitComponent( component );
+	for(i=0; i<node.componentCount; i++){
+		const deoalRTWorldOctree::sVisitComponent &component = components[i];
+		if(/*pRayHitsSphere(component.sphereCenter, component.sphereRadiusSquared)
+		&& */pRayHitsBox(component.center, component.halfSize)){
+			VisitComponent(component);
 		}
 	}
 	
 	// visit child nodes if hit by ray
 	const deoalRTWorldOctree::sVisitNode * const nodes = octree.GetVisitNodes() + node.firstNode;
-	for( i=0; i<node.nodeCount; i++ ){
-		const deoalRTWorldOctree::sVisitNode &child = nodes[ i ];
-		if( pRayHitsBox( child.center, child.halfSize ) ){
-			pVisitNode( octree, child );
+	for(i=0; i<node.nodeCount; i++){
+		const deoalRTWorldOctree::sVisitNode &child = nodes[i];
+		if(pRayHitsBox(child.center, child.halfSize)){
+			pVisitNode(octree, child);
 		}
 	}
 }
 
-bool deoalRTWorldOctreeVisitor::pRayHitsBox( const decVector &center, const decVector &halfExtends ) const{
-	const decVector point( pRayOrigin - center );
-	if( point.Absolute() <= halfExtends || ( pRayTarget - center ).Absolute() <= halfExtends ){
+bool deoalRTWorldOctreeVisitor::pRayHitsBox(const decVector &center, const decVector &halfExtends) const{
+	const decVector point(pRayOrigin - center);
+	if(point.Absolute() <= halfExtends || (pRayTarget - center).Absolute() <= halfExtends){
 		return true;
 	}
 	
 	// x axis
-	if( pCheckAxisX ){
+	if(pCheckAxisX){
 		// face on the positive side
-		const float lambda1 = pInvRayDirection.x * ( halfExtends.x - point.x );
-		if( lambda1 >= 0.0f && lambda1 <= 1.0f ){
+		const float lambda1 = pInvRayDirection.x * (halfExtends.x - point.x);
+		if(lambda1 >= 0.0f && lambda1 <= 1.0f){
 			const float y = point.y + pRayDirection.y * lambda1;
-			if( y >= -halfExtends.y && y <= halfExtends.y ){
+			if(y >= -halfExtends.y && y <= halfExtends.y){
 				const float z = point.z + pRayDirection.z * lambda1;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
 					return true;
 				}
 			}
 		}
 		
 		// face on the negative side
-		const float lambda2 = pInvRayDirection.x * ( -halfExtends.x - point.x );
-		if( lambda2 >= 0.0f && lambda2 <= 1.0f ){
+		const float lambda2 = pInvRayDirection.x * (-halfExtends.x - point.x);
+		if(lambda2 >= 0.0f && lambda2 <= 1.0f){
 			const float y = point.y + pRayDirection.y * lambda2;
-			if( y >= -halfExtends.y && y <= halfExtends.y ){
+			if(y >= -halfExtends.y && y <= halfExtends.y){
 				const float z = point.z + pRayDirection.z * lambda2;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
 					return true;
 				}
 			}
@@ -165,26 +165,26 @@ bool deoalRTWorldOctreeVisitor::pRayHitsBox( const decVector &center, const decV
 	}
 	
 	// y axis
-	if( pCheckAxisY ){
+	if(pCheckAxisY){
 		// face on the positive side
-		const float lambda1 = pInvRayDirection.y * ( halfExtends.y - point.y );
-		if( lambda1 >= 0.0f && lambda1 <= 1.0f ){
+		const float lambda1 = pInvRayDirection.y * (halfExtends.y - point.y);
+		if(lambda1 >= 0.0f && lambda1 <= 1.0f){
 			const float x = point.x + pRayDirection.x * lambda1;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const float z = point.z + pRayDirection.z * lambda1;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
 					return true;
 				}
 			}
 		}
 		
 		// face on the negative side
-		const float lambda2 = pInvRayDirection.y * ( -halfExtends.y - point.y );
-		if( lambda2 >= 0.0f && lambda2 <= 1.0f ){
+		const float lambda2 = pInvRayDirection.y * (-halfExtends.y - point.y);
+		if(lambda2 >= 0.0f && lambda2 <= 1.0f){
 			const float x = point.x + pRayDirection.x * lambda2;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const float z = point.z + pRayDirection.z * lambda2;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
 					return true;
 				}
 			}
@@ -192,26 +192,26 @@ bool deoalRTWorldOctreeVisitor::pRayHitsBox( const decVector &center, const decV
 	}
 	
 	// z axis
-	if( pCheckAxisZ ){
+	if(pCheckAxisZ){
 		// face on the positive side
-		const float lambda1 = pInvRayDirection.z * ( halfExtends.z - point.z );
-		if( lambda1 >= 0.0f && lambda1 <= 1.0f ){
+		const float lambda1 = pInvRayDirection.z * (halfExtends.z - point.z);
+		if(lambda1 >= 0.0f && lambda1 <= 1.0f){
 			const float x = point.x + pRayDirection.x * lambda1;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const float y = point.y + pRayDirection.y * lambda1;
-				if( y >= -halfExtends.y && y <= halfExtends.y ){
+				if(y >= -halfExtends.y && y <= halfExtends.y){
 					return true;
 				}
 			}
 		}
 		
 		// face on the negative side
-		const float lambda2 = pInvRayDirection.z * ( -halfExtends.z - point.z );
-		if( lambda2 >= 0.0f && lambda2 <= 1.0f ){
+		const float lambda2 = pInvRayDirection.z * (-halfExtends.z - point.z);
+		if(lambda2 >= 0.0f && lambda2 <= 1.0f){
 			const float x = point.x + pRayDirection.x * lambda2;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const float y = point.y + pRayDirection.y * lambda2;
-				if( y >= -halfExtends.y && y <= halfExtends.y ){
+				if(y >= -halfExtends.y && y <= halfExtends.y){
 					return true;
 				}
 			}
@@ -223,17 +223,17 @@ bool deoalRTWorldOctreeVisitor::pRayHitsBox( const decVector &center, const decV
 }
 
 /*
-bool deoalRTWorldOctreeVisitor::pRayHitsSphere( const decVector &center, float radiusSquared ) const{
-	const float distance = decMath::clamp( center * pRayNormDir + pSphereDot, 0.0f, pRayLength );
-	const decVector closestPoint( pRayOrigin + pRayNormDir * distance );
-	return ( center - closestPoint ).LengthSquared() <= radiusSquared;
+bool deoalRTWorldOctreeVisitor::pRayHitsSphere(const decVector &center, float radiusSquared) const{
+	const float distance = decMath::clamp(center * pRayNormDir + pSphereDot, 0.0f, pRayLength);
+	const decVector closestPoint(pRayOrigin + pRayNormDir * distance);
+	return (center - closestPoint).LengthSquared() <= radiusSquared;
 }
 */
 
-bool deoalRTWorldOctreeVisitor::pRayHitsBox( const decVector &center, const decVector &halfExtends,
-float &closestDistance ) const{
-	const decVector point( pRayOrigin - center );
-	if( point.Absolute() <= halfExtends ){
+bool deoalRTWorldOctreeVisitor::pRayHitsBox(const decVector &center, const decVector &halfExtends,
+float &closestDistance) const{
+	const decVector point(pRayOrigin - center);
+	if(point.Absolute() <= halfExtends){
 		closestDistance = 0.0f;
 		return true;
 	}
@@ -242,15 +242,15 @@ float &closestDistance ) const{
 	closestDistance = 1.0f;
 	
 	// x axis
-	if( pCheckAxisX ){
+	if(pCheckAxisX){
 		// face on the positive side
-		const float lambda1 = pInvRayDirection.x * ( halfExtends.x - point.x );
-		if( lambda1 >= 0.0f && lambda1 <= 1.0f ){
+		const float lambda1 = pInvRayDirection.x * (halfExtends.x - point.x);
+		if(lambda1 >= 0.0f && lambda1 <= 1.0f){
 			const float y = point.y + pRayDirection.y * lambda1;
-			if( y >= -halfExtends.y && y <= halfExtends.y ){
+			if(y >= -halfExtends.y && y <= halfExtends.y){
 				const float z = point.z + pRayDirection.z * lambda1;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
-					if( lambda1 < closestDistance ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
+					if(lambda1 < closestDistance){
 						closestDistance = lambda1;
 					}
 					hasHit = true;
@@ -259,13 +259,13 @@ float &closestDistance ) const{
 		}
 		
 		// face on the negative side
-		const float lambda2 = pInvRayDirection.x * ( -halfExtends.x - point.x );
-		if( lambda2 >= 0.0f && lambda2 <= 1.0f ){
+		const float lambda2 = pInvRayDirection.x * (-halfExtends.x - point.x);
+		if(lambda2 >= 0.0f && lambda2 <= 1.0f){
 			const float y = point.y + pRayDirection.y * lambda2;
-			if( y >= -halfExtends.y && y <= halfExtends.y ){
+			if(y >= -halfExtends.y && y <= halfExtends.y){
 				const float z = point.z + pRayDirection.z * lambda2;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
-					if( lambda2 < closestDistance ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
+					if(lambda2 < closestDistance){
 						closestDistance = lambda2;
 					}
 					hasHit = true;
@@ -275,15 +275,15 @@ float &closestDistance ) const{
 	}
 	
 	// y axis
-	if( pCheckAxisY ){
+	if(pCheckAxisY){
 		// face on the positive side
-		const float lambda1 = pInvRayDirection.y * ( halfExtends.y - point.y );
-		if( lambda1 >= 0.0f && lambda1 <= 1.0f ){
+		const float lambda1 = pInvRayDirection.y * (halfExtends.y - point.y);
+		if(lambda1 >= 0.0f && lambda1 <= 1.0f){
 			const float x = point.x + pRayDirection.x * lambda1;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const float z = point.z + pRayDirection.z * lambda1;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
-					if( lambda1 < closestDistance ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
+					if(lambda1 < closestDistance){
 						closestDistance = lambda1;
 					}
 					hasHit = true;
@@ -292,13 +292,13 @@ float &closestDistance ) const{
 		}
 		
 		// face on the negative side
-		const float lambda2 = pInvRayDirection.y * ( -halfExtends.y - point.y );
-		if( lambda2 >= 0.0f && lambda2 <= 1.0f ){
+		const float lambda2 = pInvRayDirection.y * (-halfExtends.y - point.y);
+		if(lambda2 >= 0.0f && lambda2 <= 1.0f){
 			const float x = point.x + pRayDirection.x * lambda2;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const float z = point.z + pRayDirection.z * lambda2;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
-					if( lambda2 < closestDistance ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
+					if(lambda2 < closestDistance){
 						closestDistance = lambda2;
 					}
 					hasHit = true;
@@ -308,15 +308,15 @@ float &closestDistance ) const{
 	}
 	
 	// z axis
-	if( pCheckAxisZ ){
+	if(pCheckAxisZ){
 		// face on the positive side
-		const float lambda1 = pInvRayDirection.z * ( halfExtends.z - point.z );
-		if( lambda1 >= 0.0f && lambda1 <= 1.0f ){
+		const float lambda1 = pInvRayDirection.z * (halfExtends.z - point.z);
+		if(lambda1 >= 0.0f && lambda1 <= 1.0f){
 			const float x = point.x + pRayDirection.x * lambda1;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const float y = point.y + pRayDirection.y * lambda1;
-				if( y >= -halfExtends.y && y <= halfExtends.y ){
-					if( lambda1 < closestDistance ){
+				if(y >= -halfExtends.y && y <= halfExtends.y){
+					if(lambda1 < closestDistance){
 						closestDistance = lambda1;
 					}
 					hasHit = true;
@@ -325,13 +325,13 @@ float &closestDistance ) const{
 		}
 		
 		// face on the negative side
-		const float lambda2 = pInvRayDirection.z * ( -halfExtends.z - point.z );
-		if( lambda2 >= 0.0f && lambda2 <= 1.0f ){
+		const float lambda2 = pInvRayDirection.z * (-halfExtends.z - point.z);
+		if(lambda2 >= 0.0f && lambda2 <= 1.0f){
 			const float x = point.x + pRayDirection.x * lambda2;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const float y = point.y + pRayDirection.y * lambda2;
-				if( y >= -halfExtends.y && y <= halfExtends.y ){
-					if( lambda2 < closestDistance ){
+				if(y >= -halfExtends.y && y <= halfExtends.y){
+					if(lambda2 < closestDistance){
 						closestDistance = lambda2;
 					}
 					hasHit = true;

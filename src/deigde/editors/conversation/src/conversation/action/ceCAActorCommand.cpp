@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAActorCommand::ceCAActorCommand() : ceConversationAction( eatActorCommand ){
+ceCAActorCommand::ceCAActorCommand() : ceConversationAction(eatActorCommand){
 }
 
-ceCAActorCommand::ceCAActorCommand( const ceCAActorCommand &action ) : ceConversationAction( action ){
+ceCAActorCommand::ceCAActorCommand(const ceCAActorCommand &action) : ceConversationAction(action){
 	pActor = action.GetActor();
 	pCommand = action.GetCommand();
 }
@@ -54,16 +54,16 @@ ceCAActorCommand::~ceCAActorCommand(){
 // Management
 ///////////////
 
-void ceCAActorCommand::SetActor( const char *id ){
+void ceCAActorCommand::SetActor(const char *id){
 	pActor = id;
 }
 
-void ceCAActorCommand::SetCommand( const char *command ){
+void ceCAActorCommand::SetCommand(const char *command){
 	pCommand = command;
 }
 
 
 
 ceConversationAction *ceCAActorCommand::CreateCopy() const{
-	return new ceCAActorCommand( *this );
+	return new ceCAActorCommand(*this);
 }

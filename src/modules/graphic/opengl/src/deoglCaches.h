@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create caches. */
-	deoglCaches( deGraphicOpenGl &ogl );
+	deoglCaches(deGraphicOpenGl &ogl);
 	
 	/** Cleans up caches. */
 	~deoglCaches();

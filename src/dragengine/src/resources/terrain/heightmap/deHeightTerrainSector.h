@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sector. */
-	deHeightTerrainSector( const decPoint &sector );
+	deHeightTerrainSector(const decPoint &sector);
 	
 	/** \brief Clean up sector. */
 	~deHeightTerrainSector();
@@ -89,13 +89,13 @@ public:
 	inline deHeightTerrain *GetParentHeightTerrain() const{ return pParentHeightTerrain; }
 	
 	/** \brief Set parent height terrain. */
-	void SetParentHeightTerrain( deHeightTerrain *heightTerrain );
+	void SetParentHeightTerrain(deHeightTerrain *heightTerrain);
 	
 	/** \brief Sector index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set sector index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	
 	
@@ -103,14 +103,14 @@ public:
 	inline deImage *GetHeightImage() const{ return pHeightImage; }
 	
 	/** \brief Set height image or NULL if not set. */
-	void SetHeightImage( deImage *heightImage );
+	void SetHeightImage(deImage *heightImage);
 	
 	/**
 	 * \brief Calculate height extends.
 	 * 
 	 * The extends contain the base height and scaling has been taken into account.
 	 */
-	void CalculateHeightExtends( float &minHeight, float &maxHeight );
+	void CalculateHeightExtends(float &minHeight, float &maxHeight);
 	/*@}*/
 	
 	
@@ -118,13 +118,13 @@ public:
 	/** \name Face Visibility */
 	/*@{*/
 	/** \brief Face at coordinate is visible. */
-	bool GetFaceVisibleAt( int x, int y ) const;
+	bool GetFaceVisibleAt(int x, int y) const;
 	
 	/** \brief Set if face at coordinate is visible. */
-	void SetFaceVisibleAt( int x, int y, bool visible );
+	void SetFaceVisibleAt(int x, int y, bool visible);
 	
 	/** \brief Set visibility of all faces. */
-	void SetAllFacesVisible( bool visible );
+	void SetAllFacesVisible(bool visible);
 	/*@}*/
 	
 	
@@ -135,19 +135,19 @@ public:
 	int GetTextureCount() const;
 	
 	/** \brief Texture at index. */
-	deHeightTerrainTexture *GetTextureAt( int index ) const;
+	deHeightTerrainTexture *GetTextureAt(int index) const;
 	
 	/** \brief Index of texture or -1 if absent. */
-	int IndexOfTexture( deHeightTerrainTexture *texture ) const;
+	int IndexOfTexture(deHeightTerrainTexture *texture) const;
 	
 	/** \brief Texture is present. */
-	bool HasTexture( deHeightTerrainTexture *texture ) const;
+	bool HasTexture(deHeightTerrainTexture *texture) const;
 	
 	/** \brief Add texture. */
-	void AddTexture( deHeightTerrainTexture *texture );
+	void AddTexture(deHeightTerrainTexture *texture);
 	
 	/** \brief Remove texture. */
-	void RemoveTexture( deHeightTerrainTexture *texture );
+	void RemoveTexture(deHeightTerrainTexture *texture);
 	
 	/** \brief Remove all textures. */
 	void RemoveAllTextures();
@@ -168,14 +168,14 @@ public:
 	 * \throws deeInvalidParam \em decal is NULL.
 	 * \throws deeInvalidParam \em decal has a parent world.
 	 */
-	void AddDecal( deDecal *decal );
+	void AddDecal(deDecal *decal);
 	
 	/**
 	 * \brief Remove decal.
 	 * \throws deeInvalidParam \em decal is NULL.
 	 * \throws deeInvalidParam Parent world of \em decal is not this world.
 	 */
-	void RemoveDecal( deDecal *decal );
+	void RemoveDecal(deDecal *decal);
 	
 	/** \brief Remove all decals. */
 	void RemoveAllDecals();
@@ -189,34 +189,34 @@ public:
 	int GetNavSpaceCount() const;
 	
 	/** \brief Navigation space at index. */
-	deHeightTerrainNavSpace *GetNavSpaceAt( int index ) const;
+	deHeightTerrainNavSpace *GetNavSpaceAt(int index) const;
 	
 	/** \brief Index of navigation space or -1 if absent. */
-	int IndexOfNavSpace( deHeightTerrainNavSpace *navspace ) const;
+	int IndexOfNavSpace(deHeightTerrainNavSpace *navspace) const;
 	
 	/** \brief Navigation space is present. */
-	bool HasNavSpace( deHeightTerrainNavSpace *navspace ) const;
+	bool HasNavSpace(deHeightTerrainNavSpace *navspace) const;
 	
 	/** \brief Add navigation space. */
-	void AddNavSpace( deHeightTerrainNavSpace *navspace );
+	void AddNavSpace(deHeightTerrainNavSpace *navspace);
 	
 	/** \brief Remove navigation space. */
-	void RemoveNavSpace( deHeightTerrainNavSpace *navspace );
+	void RemoveNavSpace(deHeightTerrainNavSpace *navspace);
 	
 	/** \brief Remove all navigation spaces. */
 	void RemoveAllNavSpaces();
 	
 	/** \brief Notify peers navigation space layer changed. */
-	void NotifyNavSpaceLayerChanged( int navspace );
+	void NotifyNavSpaceLayerChanged(int navspace);
 	
 	/** \brief Notify peers navigation space type changed. */
-	void NotifyNavSpaceTypeChanged( int navspace );
+	void NotifyNavSpaceTypeChanged(int navspace);
 	
 	/** \brief Notify peers navigation space snapping changed. */
-	void NotifyNavSpaceSnappingChanged( int navspace );
+	void NotifyNavSpaceSnappingChanged(int navspace);
 	
 	/** \brief Notify peers navigation space layout changed. */
-	void NotifyNavSpaceLayoutChanged( int navspace );
+	void NotifyNavSpaceLayoutChanged(int navspace);
 	/*@}*/
 	
 	

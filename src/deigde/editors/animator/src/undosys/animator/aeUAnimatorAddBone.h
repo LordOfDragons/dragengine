@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAnimatorAddBone( aeAnimator *rule, const char *pattern );
+	aeUAnimatorAddBone(aeAnimator *rule, const char *pattern);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUAnimatorAddBone();

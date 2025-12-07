@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new ai system  linked to the given engine. */
-	deAISystem( deEngine *engine );
+	deAISystem(deEngine *engine);
 	
 	/** \brief Clean up ai system. */
 	virtual ~deAISystem();
@@ -70,16 +70,16 @@ public:
 	inline deBaseAIModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Create peer object for the given world using the active module and assigns it. */
-	void LoadWorld( deWorld *world );
+	void LoadWorld(deWorld *world);
 	
 	/** \brief Create peer object for the given navigation space using the active module and assigns it. */
-	void LoadNavigationSpace( deNavigationSpace *navspace );
+	void LoadNavigationSpace(deNavigationSpace *navspace);
 	
 	/** \brief Create peer object for the given navigation blocker using the active module and assigns it. */
-	void LoadNavigationBlocker( deNavigationBlocker *blocker );
+	void LoadNavigationBlocker(deNavigationBlocker *blocker);
 	
 	/** \brief Create peer object for the given navigator using the active module and assigns it. */
-	void LoadNavigator( deNavigator *navigator );
+	void LoadNavigator(deNavigator *navigator);
 	
 	/**
 	 * \brief Create peer for height terrain using the active module and assigns it.
@@ -89,7 +89,7 @@ public:
 	 * \throws deeInvalidParam \em heightTerrain has an AI peer.
 	 * \throws deeInvalidParam AI module failed to create the peer.
 	 */
-	void LoadHeightTerrain( deHeightTerrain &heightTerrain );
+	void LoadHeightTerrain(deHeightTerrain &heightTerrain);
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

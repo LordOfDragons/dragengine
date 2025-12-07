@@ -69,17 +69,17 @@ igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeWSky::igdeWSky( igdeEnvironment &environment ) :
-pEnvironment( environment ),
-pAsyncLoadFinished( NULL ),
-pAsyncLoadCounter( 0 )
+igdeWSky::igdeWSky(igdeEnvironment &environment) :
+pEnvironment(environment),
+pAsyncLoadFinished(NULL),
+pAsyncLoadCounter(0)
 {
-	pEngSkyInstance.TakeOver( environment.GetEngineController()->GetEngine()
-		->GetSkyInstanceManager()->CreateSkyInstance() );
+	pEngSkyInstance.TakeOver(environment.GetEngineController()->GetEngine()
+		->GetSkyInstanceManager()->CreateSkyInstance());
 }
 
 igdeWSky::~igdeWSky(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 }
 
 
@@ -87,19 +87,19 @@ igdeWSky::~igdeWSky(){
 // Management
 ///////////////
 
-void igdeWSky::SetWorld( deWorld *world ){
-	if( world == pEngWorld ){
+void igdeWSky::SetWorld(deWorld *world){
+	if(world == pEngWorld){
 		return;
 	}
 	
-	if( pEngWorld && pEngSkyInstance ){
-		pEngWorld->RemoveSky( pEngSkyInstance );
+	if(pEngWorld && pEngSkyInstance){
+		pEngWorld->RemoveSky(pEngSkyInstance);
 	}
 	
 	pEngWorld = world;
 	
-	if( world ){
-		world->AddSky( pEngSkyInstance );
+	if(world){
+		world->AddSky(pEngSkyInstance);
 	}
 }
 
@@ -107,54 +107,54 @@ int igdeWSky::GetControllerCount() const{
 	return pEngSkyInstance->GetControllerCount();
 }
 
-const deSkyController &igdeWSky::GetControllerAt( int index ) const{
-	return pEngSkyInstance->GetControllerAt( index );
+const deSkyController &igdeWSky::GetControllerAt(int index) const{
+	return pEngSkyInstance->GetControllerAt(index);
 }
 
-void igdeWSky::SetControllerValue( int index, float value ){
-	pEngSkyInstance->GetControllerAt( index ).SetCurrentValue( value );
-	pEngSkyInstance->NotifyControllerChangedAt( index );
+void igdeWSky::SetControllerValue(int index, float value){
+	pEngSkyInstance->GetControllerAt(index).SetCurrentValue(value);
+	pEngSkyInstance->NotifyControllerChangedAt(index);
 }
 
 const deSky *igdeWSky::GetSky() const{
 	return pEngSkyInstance->GetSky();
 }
 
-void igdeWSky::SetSky( deSky *sky ){
-	if( pEngSkyInstance->GetSky() == sky ){
+void igdeWSky::SetSky(deSky *sky){
+	if(pEngSkyInstance->GetSky() == sky){
 		return;
 	}
 	
-	pEngSkyInstance->SetSky( sky );
+	pEngSkyInstance->SetSky(sky);
 	pGDSky = NULL;
 	pPath.Empty();
 	
 	pMaxLightIntensity = 0.0f;
-	if( sky ){
+	if(sky){
 		const int countLayers = sky->GetLayerCount();
 		int i;
 		
-		for( i=0; i<countLayers; i++ ){
-			const deSkyLayer &layer = sky->GetLayerAt( i );
+		for(i=0; i<countLayers; i++){
+			const deSkyLayer &layer = sky->GetLayerAt(i);
 			pMaxLightIntensity += layer.GetLightIntensity() + layer.GetAmbientIntensity();
 		}
 	}
 }
 
 void igdeWSky::SetGDDefaultSky(){
-	SetPath( pEnvironment.GetGameProject()->GetGameDefinition()->GetSkyManager()->GetDefaultPath() );
+	SetPath(pEnvironment.GetGameProject()->GetGameDefinition()->GetSkyManager()->GetDefaultPath());
 }
 
-void igdeWSky::SetGDSky( igdeGDSky *gdsky ){
-	if( pGDSky == gdsky ){
+void igdeWSky::SetGDSky(igdeGDSky *gdsky){
+	if(pGDSky == gdsky){
 		return;
 	}
 	
-	if( gdsky ){
-		pLoadSky( gdsky->GetPath() );
+	if(gdsky){
+		pLoadSky(gdsky->GetPath());
 		
 	}else{
-		SetSky( NULL );
+		SetSky(NULL);
 	}
 	
 	// SetSky sets pGDSky to NULL if sky is different from the sky in the sky instance.
@@ -164,74 +164,74 @@ void igdeWSky::SetGDSky( igdeGDSky *gdsky ){
 	pGDSky = gdsky;
 }
 
-void igdeWSky::SetPath( const char *path ){
+void igdeWSky::SetPath(const char *path){
 	igdeGDSky *gdsky = pEnvironment.GetGameProject()->GetGameDefinition()
-		->GetSkyManager()->GetSkyList().GetWithPath( path );
+		->GetSkyManager()->GetSkyList().GetWithPath(path);
 	
-	if( ! gdsky ){
+	if(!gdsky){
 		gdsky = pEnvironment.GetGameProject()->GetGameDefinition()
-			->GetSkyManager()->GetSkyList().GetWithPath( path );
+			->GetSkyManager()->GetSkyList().GetWithPath(path);
 	}
 	
-	if( gdsky ){
-		SetGDSky( gdsky );
+	if(gdsky){
+		SetGDSky(gdsky);
 		
 	}else{
-		pLoadSky( path );
+		pLoadSky(path);
 	}
 }
 
-void igdeWSky::SetAsyncLoadFinished( cAsyncLoadFinished *listener ){
+void igdeWSky::SetAsyncLoadFinished(cAsyncLoadFinished *listener){
 	pAsyncLoadFinished = listener;
 }
 
 
 
 void igdeWSky::OnGameDefinitionChanged(){
-	if( ! pGDSky ){
+	if(!pGDSky){
 		return; // custom sky or loaded from file
 	}
 	
 	decStringList names;
 	int i;
-	if( pEngSkyInstance ){
+	if(pEngSkyInstance){
 		const int count = pEngSkyInstance->GetControllerCount();
-		for( i=0; i<count; i++ ){
-			names.Add( pEngSkyInstance->GetControllerAt( i ).GetName() );
+		for(i=0; i<count; i++){
+			names.Add(pEngSkyInstance->GetControllerAt(i).GetName());
 		}
 	}
 	
 	float *values = NULL;
-	if( pEngSkyInstance ){
+	if(pEngSkyInstance){
 		const int count = pEngSkyInstance->GetControllerCount();
-		if( count > 0 ){
-			values = new float[ count ];
-			for( i=0; i<count; i++ ){
-				values[ i ] = pEngSkyInstance->GetControllerAt( i ).GetCurrentValue();
+		if(count > 0){
+			values = new float[count];
+			for(i=0; i<count; i++){
+				values[i] = pEngSkyInstance->GetControllerAt(i).GetCurrentValue();
 			}
 		}
 	}
 	
 	try{
-		SetPath( pGDSky->GetPath() );
+		SetPath(pGDSky->GetPath());
 		
-		if( pEngSkyInstance ){
+		if(pEngSkyInstance){
 			const int count = names.GetCount();
-			for( i=0; i<count; i++ ){
-				const int index = names.IndexOf( names.GetAt( i ) );
-				if( index != -1 ){
-					pEngSkyInstance->GetControllerAt( index ).SetCurrentValue( values[ i ] );
-					pEngSkyInstance->NotifyControllerChangedAt( index );
+			for(i=0; i<count; i++){
+				const int index = names.IndexOf(names.GetAt(i));
+				if(index != -1){
+					pEngSkyInstance->GetControllerAt(index).SetCurrentValue(values[i]);
+					pEngSkyInstance->NotifyControllerChangedAt(index);
 				}
 			}
 		}
 		
-		if( values ){
+		if(values){
 			delete [] values;
 		}
 		
-	}catch( const deException & ){
-		if( values ){
+	}catch(const deException &){
+		if(values){
 			delete [] values;
 		}
 		throw;
@@ -243,30 +243,30 @@ void igdeWSky::OnGameDefinitionChanged(){
 // Private Functions
 /////////////////////
 
-void igdeWSky::pLoadSky( const char *path ){
+void igdeWSky::pLoadSky(const char *path){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	
 	pAsyncLoadCounter = 0;
 	
-	const decPath vfsPath( decPath::CreatePathUnix( path ) );
-	if( ! engine.GetVirtualFileSystem()->ExistsFile( vfsPath ) ){
+	const decPath vfsPath(decPath::CreatePathUnix(path));
+	if(!engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 		pCheckAsyncLoadFinished();
 		return;
 	}
 	
-	igdeLoadSky loadsky( pEnvironment, pEnvironment.GetLogger(), "igdeWSky" );
+	igdeLoadSky loadsky(pEnvironment, pEnvironment.GetLogger(), "igdeWSky");
 	decBaseFileReader::Ref reader;
 	deSky::Ref sky;
 	
 	try{
-		sky.TakeOver( engine.GetSkyManager()->CreateSky() );
+		sky.TakeOver(engine.GetSkyManager()->CreateSky());
 		
-		reader.TakeOver( engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) );
-		loadsky.Load( path, sky, reader );
+		reader.TakeOver(engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
+		loadsky.Load(path, sky, reader);
 		
-		SetSky( sky );
+		SetSky(sky);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCheckAsyncLoadFinished();
 		throw;
 	}
@@ -276,11 +276,11 @@ void igdeWSky::pLoadSky( const char *path ){
 }
 
 void igdeWSky::pCheckAsyncLoadFinished(){
-	if( pAsyncLoadCounter != 0 ){
+	if(pAsyncLoadCounter != 0){
 		return;
 	}
 	
-	if( pAsyncLoadFinished ){
-		pAsyncLoadFinished->LoadFinished( *this, true );
+	if(pAsyncLoadFinished){
+		pAsyncLoadFinished->LoadFinished(*this, true);
 	}
 }

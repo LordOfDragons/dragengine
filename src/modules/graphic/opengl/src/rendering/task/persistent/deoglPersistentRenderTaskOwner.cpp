@@ -40,10 +40,10 @@
 ////////////////////////////
 
 deoglPersistentRenderTaskOwner::deoglPersistentRenderTaskOwner() :
-pLLTask( this ),
-pOwner( NULL ),
-pHash( 0 ),
-pComponent( NULL ){
+pLLTask(this),
+pOwner(NULL),
+pHash(0),
+pComponent(NULL){
 }
 
 deoglPersistentRenderTaskOwner::~deoglPersistentRenderTaskOwner(){
@@ -54,19 +54,19 @@ deoglPersistentRenderTaskOwner::~deoglPersistentRenderTaskOwner(){
 // Management
 ///////////////
 
-void deoglPersistentRenderTaskOwner::SetOwner( void *owner, unsigned int hash ){
+void deoglPersistentRenderTaskOwner::SetOwner(void *owner, unsigned int hash){
 	pOwner = owner;
 	pHash = hash;
 }
 
-void deoglPersistentRenderTaskOwner::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+void deoglPersistentRenderTaskOwner::SetExtends(const decDVector &minExtend, const decDVector &maxExtend){
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 }
 
 
 
-void deoglPersistentRenderTaskOwner::SetComponent( deoglRComponent *component ){
+void deoglPersistentRenderTaskOwner::SetComponent(deoglRComponent *component){
 	pComponent = component;
 }
 
@@ -76,15 +76,15 @@ int deoglPersistentRenderTaskOwner::GetInstanceCount() const{
 	return pInstances.GetCount();
 }
 
-deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskOwner::GetInstanceAt( int index ) const{
-	return ( deoglPersistentRenderTaskInstance* )pInstances.GetAt( index );
+deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskOwner::GetInstanceAt(int index) const{
+	return (deoglPersistentRenderTaskInstance*)pInstances.GetAt(index);
 }
 
-void deoglPersistentRenderTaskOwner::AddInstance( deoglPersistentRenderTaskInstance *instance ){
-	if( ! instance ){
-		DETHROW( deeInvalidParam );
+void deoglPersistentRenderTaskOwner::AddInstance(deoglPersistentRenderTaskInstance *instance){
+	if(!instance){
+		DETHROW(deeInvalidParam);
 	}
-	pInstances.Add( instance );
+	pInstances.Add(instance);
 }
 
 void deoglPersistentRenderTaskOwner::RemoveAllInstances(){
@@ -97,15 +97,15 @@ int deoglPersistentRenderTaskOwner::GetSubInstanceCount() const{
 	return pSubInstances.GetCount();
 }
 
-deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskOwner::GetSubInstanceAt( int index ) const{
-	return ( deoglPersistentRenderTaskSubInstance* )pSubInstances.GetAt( index );
+deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskOwner::GetSubInstanceAt(int index) const{
+	return (deoglPersistentRenderTaskSubInstance*)pSubInstances.GetAt(index);
 }
 
-void deoglPersistentRenderTaskOwner::AddSubInstance( deoglPersistentRenderTaskSubInstance *subInstance ){
-	if( ! subInstance ){
-		DETHROW( deeInvalidParam );
+void deoglPersistentRenderTaskOwner::AddSubInstance(deoglPersistentRenderTaskSubInstance *subInstance){
+	if(!subInstance){
+		DETHROW(deeInvalidParam);
 	}
-	pSubInstances.Add( subInstance );
+	pSubInstances.Add(subInstance);
 }
 
 void deoglPersistentRenderTaskOwner::RemoveAllSubInstances(){

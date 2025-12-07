@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create ambient caster. */
-	deoglSCAmbient( deoglRenderThread &renderThread );
+	deoglSCAmbient(deoglRenderThread &renderThread);
 	
 	/** Clean up ambient caster. */
 	~deoglSCAmbient();
@@ -87,13 +87,13 @@ public:
 	inline deoglTexture *GetStaticMap() const{ return pStaticMap; }
 	
 	/** Request static map with size if absent. */
-	deoglTexture *ObtainStaticMapWithSize( int size, bool useFloat );
+	deoglTexture *ObtainStaticMapWithSize(int size, bool useFloat);
 	
 	/** Static cube map if present or \em NULL otherwise. */
 	inline deoglCubeMap *GetStaticCubeMap() const{ return pStaticCubeMap; }
 	
 	/** Request static cube map with size if absent. */
-	deoglCubeMap *ObtainStaticCubeMapWithSize( int size, bool useFloat );
+	deoglCubeMap *ObtainStaticCubeMapWithSize(int size, bool useFloat);
 	
 	/** Drop static maps if present. */
 	void DropStatic();
@@ -114,13 +114,13 @@ public:
 	inline deoglTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
 	/** Obtain dynamic map with size if absent. */
-	deoglTexture *ObtainDynamicMapWithSize( int size, bool useFloat );
+	deoglTexture *ObtainDynamicMapWithSize(int size, bool useFloat);
 	
 	/** Dynamic shadow cube map if present or \em NULL otherwise. */
 	inline deoglCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglCubeMap *ObtainDynamicCubeMapWithSize( int size, bool useFloat );
+	deoglCubeMap *ObtainDynamicCubeMapWithSize(int size, bool useFloat);
 	
 	/** Drop dynamic map if present. */
 	void DropDynamic();
@@ -138,7 +138,7 @@ public:
 	inline bool GetDirtyDynamic() const{ return pDirtyDynamic; }
 	
 	/** Set dynamic shadow map dirty. */
-	void SetDirtyDynamic( bool dirty );
+	void SetDirtyDynamic(bool dirty);
 	
 	
 	
@@ -146,13 +146,13 @@ public:
 	inline deoglRenderableDepthTexture *GetTemporaryMap() const{ return pTemporaryMap; }
 	
 	/** Obtain temporary map with size if absent. */
-	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize( int size, bool useFloat );
+	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize(int size, bool useFloat);
 	
 	/** Temporary shadow cube map if present or \em NULL otherwise. */
 	inline deoglRenderableDepthCubeMap *GetTemporaryCubeMap() const{ return pTemporaryCubeMap; }
 	
 	/** Obtain temporary shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize( int size, bool useFloat );
+	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize(int size, bool useFloat);
 	
 	/** Drop temporary map if present. */
 	void DropTemporary();
@@ -167,7 +167,7 @@ public:
 	inline int GetNextSizeStatic() const{ return pNextSizeStatic; }
 	
 	/** Set next frame static size to largest value. */
-	void SetLargestNextSizeStatic( int size );
+	void SetLargestNextSizeStatic(int size);
 	
 	/** Last frame dynamic size or 0. */
 	inline int GetLastSizeDynamic() const{ return pLastSizeDynamic; }
@@ -176,7 +176,7 @@ public:
 	inline int GetNextSizeDynamic() const{ return pNextSizeDynamic; }
 	
 	/** Set next frame dynamic size to largest value. */
-	void SetLargestNextSizeDynamic( int size );
+	void SetLargestNextSizeDynamic(int size);
 	
 	
 	

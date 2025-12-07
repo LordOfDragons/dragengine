@@ -44,9 +44,9 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxSlider ) igdeNativeFoxSliderMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxSlider::ID_SELF, igdeNativeFoxSlider::onCommand ),
-	FXMAPFUNC( SEL_CHANGED, igdeNativeFoxSlider::ID_SELF, igdeNativeFoxSlider::onChanged )
+FXDEFMAP(igdeNativeFoxSlider) igdeNativeFoxSliderMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxSlider::ID_SELF, igdeNativeFoxSlider::onCommand),
+	FXMAPFUNC(SEL_CHANGED, igdeNativeFoxSlider::ID_SELF, igdeNativeFoxSlider::onChanged)
 };
 
 
@@ -54,47 +54,47 @@ FXDEFMAP( igdeNativeFoxSlider ) igdeNativeFoxSliderMap[] = {
 // Class igdeNativeFoxSlider
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxSlider, FXSlider, igdeNativeFoxSliderMap, ARRAYNUMBER( igdeNativeFoxSliderMap ) )
+FXIMPLEMENT(igdeNativeFoxSlider, FXSlider, igdeNativeFoxSliderMap, ARRAYNUMBER(igdeNativeFoxSliderMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxSlider::igdeNativeFoxSlider(){ }
+igdeNativeFoxSlider::igdeNativeFoxSlider(){}
 
-igdeNativeFoxSlider::igdeNativeFoxSlider( igdeSlider &powner, FXComposite *pparent, int layoutFlags ) :
-FXSlider( pparent, this, ID_SELF, layoutFlags | SliderFlags( powner ) ),
-pOwner( &powner )
+igdeNativeFoxSlider::igdeNativeFoxSlider(igdeSlider &powner, FXComposite *pparent, int layoutFlags) :
+FXSlider(pparent, this, ID_SELF, layoutFlags | SliderFlags(powner)),
+pOwner(&powner)
 {
 	UpdateScale();
 	UpdateRange();
 	UpdateValue();
-	if( ! powner.GetEnabled() ){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	
-	setTipText( powner.GetDescription().GetString() );
-	setHelpText( powner.GetDescription().GetString() );
+	setTipText(powner.GetDescription().GetString());
+	setHelpText(powner.GetDescription().GetString());
 }
 
 igdeNativeFoxSlider::~igdeNativeFoxSlider(){
 }
 
-igdeNativeFoxSlider *igdeNativeFoxSlider::CreateNativeWidget( igdeSlider &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxSlider *igdeNativeFoxSlider::CreateNativeWidget(igdeSlider &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxSlider( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxSlider(powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxSlider::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -113,22 +113,22 @@ void igdeNativeFoxSlider::Focus(){
 }
 
 void igdeNativeFoxSlider::UpdateScale(){
-	pScale = powf( 10.0f, ( float )pOwner->GetPrecision() );
+	pScale = powf(10.0f, (float)pOwner->GetPrecision());
 	pInvScale = 1.0f / pScale;
 }
 
 void igdeNativeFoxSlider::UpdateRange(){
-	setRange( ( FXint )( pOwner->GetLower() * pScale + 0.5f ),
-		( FXint )( pOwner->GetUpper() * pScale + 0.5f ) );
-	setTickDelta( ( FXint )( pOwner->GetTickSpacing() * pScale + 0.5f ) );
+	setRange((FXint)(pOwner->GetLower() * pScale + 0.5f),
+		(FXint)(pOwner->GetUpper() * pScale + 0.5f));
+	setTickDelta((FXint)(pOwner->GetTickSpacing() * pScale + 0.5f));
 }
 
 void igdeNativeFoxSlider::UpdateValue(){
-	setValue( ( FXint )( pOwner->GetValue() * pScale + 0.5f ) );
+	setValue((FXint)(pOwner->GetValue() * pScale + 0.5f));
 }
 
 void igdeNativeFoxSlider::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -138,14 +138,14 @@ void igdeNativeFoxSlider::UpdateEnabled(){
 
 void igdeNativeFoxSlider::UpdateDescription(){
 	const char * const description = pOwner->GetDescription();
-	setTipText( description );
-	setHelpText( description );
+	setTipText(description);
+	setHelpText(description);
 }
 
 
 
-int igdeNativeFoxSlider::SliderFlags( const igdeSlider &powner ){
-	switch( powner.GetOrientation() ){
+int igdeNativeFoxSlider::SliderFlags(const igdeSlider &powner){
+	switch(powner.GetOrientation()){
 	case igdeSlider::eoHorizontal:
 		return SLIDER_HORIZONTAL | SLIDER_ARROW_DOWN | SLIDER_TICKS_BOTTOM;
 		
@@ -162,8 +162,8 @@ int igdeNativeFoxSlider::SliderFlags( const igdeSlider &powner ){
 // Events
 ///////////
 
-long igdeNativeFoxSlider::onCommand( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxSlider::onCommand(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -174,41 +174,41 @@ long igdeNativeFoxSlider::onCommand( FXObject*, FXSelector, void* ){
 	// 
 	// we can re-enable this code if we start tracking ourself if the value changed by a
 	// previous SEL_CHANGED. but this would need first a true gain to be obvious
-	const float value = ( float )getValue() * pInvScale;
+	const float value = (float)getValue() * pInvScale;
 	/*if( fabsf( pOwner->GetValue() - value ) < FLOAT_SAFE_EPSILON ){
 		return 0;
 	}*/
 	
 	try{
-		pOwner->SetValue( value );
+		pOwner->SetValue(value);
 		pOwner->NotifyValueChanged();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	
 	return 1;
 }
 
-long igdeNativeFoxSlider::onChanged( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxSlider::onChanged(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
-	const float value = ( float )getValue() * pInvScale;
-	if( fabsf( pOwner->GetValue() - value ) < FLOAT_SAFE_EPSILON ){
+	const float value = (float)getValue() * pInvScale;
+	if(fabsf(pOwner->GetValue() - value) < FLOAT_SAFE_EPSILON){
 		return 0;
 	}
 	
 	try{
-		pOwner->SetValue( value );
+		pOwner->SetValue(value);
 		pOwner->NotifyValueChanging();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	

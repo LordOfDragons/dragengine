@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetFromMove( aeController *controller, float newMinimumValue, float newMaximumValue );
+	aeUControllerSetFromMove(aeController *controller, float newMinimumValue, float newMaximumValue);
 	
 protected:
 	/** Clean up undo. */

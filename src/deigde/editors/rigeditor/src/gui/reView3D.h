@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create 3d view. */
-	reView3D( reWindowMain &windowMain );
+	reView3D(reWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up 3d view. */
@@ -86,10 +86,10 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Create canvas. */
 	virtual void CreateCanvas();

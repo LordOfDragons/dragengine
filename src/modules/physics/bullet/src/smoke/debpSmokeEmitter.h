@@ -79,7 +79,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpSmokeEmitter( dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter );
+	debpSmokeEmitter(dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter);
 	/** Cleans up the peer. */
 	virtual ~debpSmokeEmitter();
 	/*@}*/
@@ -94,7 +94,7 @@ public:
 	/** Retrieves the parent world. */
 	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
-	void SetParentWorld( debpWorld *parentWorld );
+	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the density points. */
 	inline debpSmokeDensityPoint *GetPoints() const{ return pPoints; }
@@ -105,17 +105,17 @@ public:
 	const decMatrix &GetEmitterMatrix();
 	
 	/** Prepare stepping. */
-	void PreparePoints( float elapsed );
+	void PreparePoints(float elapsed);
 	/** Steps the points. */
-	void StepPoints( float elapsed );
+	void StepPoints(float elapsed);
 	
 	/** Cast a point. */
 	void CastPoint();
 	/** Kill a point. */
-	void KillPoint( int index );
+	void KillPoint(int index);
 	
 	/** Applies forces caused by a force field. */
-	void ApplyForceField( debpForceField *forceField, float elapsed );
+	void ApplyForceField(debpForceField *forceField, float elapsed);
 	/*@}*/
 	
 	/** @name Notifications */

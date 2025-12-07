@@ -115,7 +115,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new emitter. */
-	peeEmitter( igdeEnvironment *environment, peeLoadSaveSystem &loadSaveSystem );
+	peeEmitter(igdeEnvironment *environment, peeLoadSaveSystem &loadSaveSystem);
 	/** \brief Clean up the emitter. */
 	virtual ~peeEmitter();
 	/*@}*/
@@ -143,38 +143,38 @@ public:
 	/** Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** Retrieves the orientation. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	/** Sets the orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** Retrieves the warm up time. */
 	inline float GetWarmUpTime() const{ return pWarmUpTime; }
 	/** Sets the warm up time. */
-	void SetWarmUpTime( float warmUpTime );
+	void SetWarmUpTime(float warmUpTime);
 	/** Retrieves the burst lifetime. */
 	inline float GetBurstLifetime() const{ return pBurstLifetime; }
 	/** Sets the burst lifetime. */
-	void SetBurstLifetime( float lifetime );
+	void SetBurstLifetime(float lifetime);
 	/** Determines if particles are emit as burst or continuous. */
 	inline bool GetEmitBurst() const{ return pEmitBurst; }
 	/** Sets if particles are emit as burst (using particle count curve) or continuous (using interval curve). */
-	void SetEmitBurst( bool emitBurst );
+	void SetEmitBurst(bool emitBurst);
 	/** Determines if casting is enabled. */
 	inline bool GetEnableCasting() const{ return pEnableCasting; }
 	/** Sets if casting is enabled. */
-	void SetEnableCasting( bool enableCasting );
+	void SetEnableCasting(bool enableCasting);
 	
 	/** Retrieves the burst interval in seconds. */
 	inline float GetBurstInterval() const{ return pBurstInterval; }
 	/** Sets the burst interval in seconds. */
-	void SetBurstInterval( float interval );
+	void SetBurstInterval(float interval);
 	
 	/** Dispose of all resources. */
 	void Dispose();
 	/** Updates the emitter. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/** Resets the emitter. */
 	void Reset();
 	
@@ -189,13 +189,13 @@ public:
 	/** Retrieves the controller list read-only. */
 	inline const peeControllerList &GetControllers() const{ return pControllerList; }
 	/** Adds a new controller. */
-	void AddController( peeController *controller );
+	void AddController(peeController *controller);
 	/** Inserts a new controller. */
-	void InsertControllerAt( peeController *controller, int index );
+	void InsertControllerAt(peeController *controller, int index);
 	/** Moves a controller to a new position. */
-	void MoveControllerTo( peeController *controller, int index );
+	void MoveControllerTo(peeController *controller, int index);
 	/** Removes a controller. */
-	void RemoveController( peeController *controller );
+	void RemoveController(peeController *controller);
 	/** Removes all controllers. */
 	void RemoveAllControllers();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -203,7 +203,7 @@ public:
 	/** Determines if there is an active controller or not. */
 	bool HasActiveController() const;
 	/** Sets the active controller or NULL if none is active. */
-	void SetActiveController( peeController *controller );
+	void SetActiveController(peeController *controller);
 	/*@}*/
 	
 	/** \name Types */
@@ -211,13 +211,13 @@ public:
 	/** Retrieves the type list read-only. */
 	inline const peeTypeList &GetTypeList() const{ return pTypeList; }
 	/** Adds a new type. */
-	void AddType( peeType *type );
+	void AddType(peeType *type);
 	/** Inserts a new type. */
-	void InsertTypeAt( peeType *type, int index );
+	void InsertTypeAt(peeType *type, int index);
 	/** Moves a type to a new position. */
-	void MoveTypeTo( peeType *type, int index );
+	void MoveTypeTo(peeType *type, int index);
 	/** Removes a type. */
-	void RemoveType( peeType *type );
+	void RemoveType(peeType *type);
 	/** Removes all types. */
 	void RemoveAllTypes();
 	/** Retrieves the active type or NULL if none is active. */
@@ -225,15 +225,15 @@ public:
 	/** Determines if there is an active type or not. */
 	bool HasActiveType() const;
 	/** Sets the active type or NULL if none is active. */
-	void SetActiveType( peeType *type );
+	void SetActiveType(peeType *type);
 	/*@}*/
 	
 	/** \name Notifiers */
 	/*@{*/
 	/** Adds a listener. */
-	void AddListener( peeEmitterListener *listener );
+	void AddListener(peeEmitterListener *listener);
 	/** Removes a listener. */
-	void RemoveListener( peeEmitterListener *listener );
+	void RemoveListener(peeEmitterListener *listener);
 	
 	/** Notifies all listeners that the changed or saved state changed. */
 	virtual void NotifyStateChanged();
@@ -255,13 +255,13 @@ public:
 	void NotifyControllerStructureChanged();
 	
 	/** \brief Notify controller changed. */
-	void NotifyControllerChanged( peeController *controller );
+	void NotifyControllerChanged(peeController *controller);
 	
 	/** \brief Notify controller name changed. */
-	void NotifyControllerNameChanged( peeController *controller );
+	void NotifyControllerNameChanged(peeController *controller);
 	
 	/** \brief Notify controller value changed. */
-	void NotifyControllerValueChanged( peeController *controller );
+	void NotifyControllerValueChanged(peeController *controller);
 	
 	/** \brief Active controller changed. */
 	void NotifyActiveControllerChanged();
@@ -269,15 +269,15 @@ public:
 	/** Notifies all that the type count or order changed. */
 	void NotifyTypeStructureChanged();
 	/** Notifies all that a type changed. */
-	void NotifyTypeChanged( peeType *type );
+	void NotifyTypeChanged(peeType *type);
 	/** Notifies all that the active type trail controller changed. */
-	void NotifyTypeActiveTrailControllerChanged( peeType *type );
+	void NotifyTypeActiveTrailControllerChanged(peeType *type);
 	/** Notifies all that the active type emit controller changed. */
-	void NotifyTypeActiveEmitControllerChanged( peeType *type );
+	void NotifyTypeActiveEmitControllerChanged(peeType *type);
 	/** Notifies all that a type parameter changed. */
-	void NotifyTypeParameterChanged( peeType *type, peeParameter *parameter );
+	void NotifyTypeParameterChanged(peeType *type, peeParameter *parameter);
 	/** Notifies all that the active type parameter changed. */
-	void NotifyActiveTypeParameterChanged( peeType *type );
+	void NotifyActiveTypeParameterChanged(peeType *type);
 	/** Notifies all that the active type changed. */
 	void NotifyActiveTypeChanged();
 	/*@}*/

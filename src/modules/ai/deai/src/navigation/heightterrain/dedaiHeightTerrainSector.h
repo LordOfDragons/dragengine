@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sector. */
-	dedaiHeightTerrainSector( dedaiHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
+	dedaiHeightTerrainSector(dedaiHeightTerrain &heightTerrain, const deHeightTerrainSector &sector);
 	
 protected:
 	/** \brief Clean up sector. */
@@ -96,7 +96,7 @@ public:
 	int GetNavSpaceCount() const;
 	
 	/** \brief Navigation space at index. */
-	dedaiHeightTerrainNavSpace *GetNavSpaceAt( int index ) const;
+	dedaiHeightTerrainNavSpace *GetNavSpaceAt(int index) const;
 	/*@}*/
 	
 	
@@ -110,28 +110,28 @@ public:
 	void SectorChanged();
 	
 	/** \brief Sector heights changed. */
-	void HeightChanged( const decPoint &from, const decPoint &to );
+	void HeightChanged(const decPoint &from, const decPoint &to);
 	
 	/** \brief Navigation space added. */
-	void NavSpaceAdded( deHeightTerrainNavSpace *navspace );
+	void NavSpaceAdded(deHeightTerrainNavSpace *navspace);
 	
 	/** \brief Navigation space removed. */
-	void NavSpaceRemoved( int index );
+	void NavSpaceRemoved(int index);
 	
 	/** \brief All navigation spaces removed. */
 	void AllNavSpacesRemoved();
 	
 	/** \brief Navigation space layer changed. */
-	void NavSpaceLayerChanged( int index );
+	void NavSpaceLayerChanged(int index);
 	
 	/** \brief Navigation space type changed. */
-	void NavSpaceTypeChanged( int index );
+	void NavSpaceTypeChanged(int index);
 	
 	/** \brief Navigation space snapping parameters changed. */
-	void NavSpaceSnappingChanged( int index );
+	void NavSpaceSnappingChanged(int index);
 	
 	/** \brief Navigation space layout changed. */
-	void NavSpaceLayoutChanged( int index );
+	void NavSpaceLayoutChanged(int index);
 	/*@}*/
 	
 	
@@ -140,7 +140,7 @@ private:
 	void pCleanUp();
 	
 	void pUpdateHeights();
-	void pUpdateHeights( const decPoint &from, const decPoint &to );
+	void pUpdateHeights(const decPoint &from, const decPoint &to);
 };
 
 #endif

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin image renderable. */
-	deoglRDSRenderableVideoFrame( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableVideoFrame(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin image renderable. */
 	virtual ~deoglRDSRenderableVideoFrame();
@@ -58,10 +58,10 @@ public:
 	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player. */
-	void SetVideoPlayer( deoglRVideoPlayer *videoPlayer );
+	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.

@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetBlockingPriority( gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, int newValue );
+	gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

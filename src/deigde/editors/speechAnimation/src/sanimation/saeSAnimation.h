@@ -98,7 +98,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new speech animation. */
-	saeSAnimation( igdeEnvironment *environment );
+	saeSAnimation(igdeEnvironment *environment);
 	/** Cleans up the speech animation. */
 	virtual ~saeSAnimation();
 	/*@}*/
@@ -122,41 +122,41 @@ public:
 	/** Retrieves the display model path. */
 	inline const decString &GetDisplayModelPath() const{ return pDisplayModelPath; }
 	/** Sets the display model path. */
-	void SetDisplayModelPath( const char *path );
+	void SetDisplayModelPath(const char *path);
 	/** Retrieves the display skin path. */
 	inline const decString &GetDisplaySkinPath() const{ return pDisplaySkinPath; }
 	/** Sets the display skin path. */
-	void SetDisplaySkinPath( const char *path );
+	void SetDisplaySkinPath(const char *path);
 	/** Retrieves the display rig path. */
 	inline const decString &GetDisplayRigPath() const{ return pDisplayRigPath; }
 	/** Sets the display rig path. */
-	void SetDisplayRigPath( const char *path );
+	void SetDisplayRigPath(const char *path);
 	
 	/** Retrieves the rig path. */
 	inline const decString &GetRigPath() const{ return pRigPath; }
 	/** Sets the rig path. */
-	void SetRigPath( const char *path );
+	void SetRigPath(const char *path);
 	/** Retrieves the rig path. */
 	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	/** Sets the rig path. */
-	void SetAnimationPath( const char *path );
+	void SetAnimationPath(const char *path);
 	
 	/** Neutral move name. */
 	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }
 	
 	/** Set neutral move name. */
-	void SetNeutralMoveName( const char *name );
+	void SetNeutralMoveName(const char *name);
 	
 	/** Neutral vertex position sets. */
 	inline const decStringSet &GetNeutralVertexPositionSets() const{ return pNeutralVertexPositionSets; }
 	
 	/** Set neutral vertex position sets. */
-	void SetNeutralVertexPositionSets( const decStringSet &sets );
+	void SetNeutralVertexPositionSets(const decStringSet &sets);
 	
 	/** Retrieves the display mode. */
 	inline eDisplayModes GetDisplayMode() const{ return pDisplayMode; }
 	/** Sets the display mode. */
-	void SetDisplayMode( eDisplayModes displayMode );
+	void SetDisplayMode(eDisplayModes displayMode);
 	
 	/** Rebuild animator if required. */
 	void RebuildAnimator();
@@ -164,7 +164,7 @@ public:
 	/** Dispose of all resources. */
 	void Dispose();
 	/** Updates the sky. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/** Resets the sky. */
 	void Reset();
 	/*@}*/
@@ -174,9 +174,9 @@ public:
 	/** Retrieves the phoneme list read-only. */
 	inline const saePhonemeList &GetPhonemeList() const{ return pPhonemeList; }
 	/** Adds a new phoneme. */
-	void AddPhoneme( saePhoneme *phoneme );
+	void AddPhoneme(saePhoneme *phoneme);
 	/** Removes a phoneme. */
-	void RemovePhoneme( saePhoneme *phoneme );
+	void RemovePhoneme(saePhoneme *phoneme);
 	/** Removes all phonemes. */
 	void RemoveAllPhonemes();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -184,7 +184,7 @@ public:
 	/** Determines if there is an active phoneme or not. */
 	bool HasActivePhoneme() const;
 	/** Sets the active phoneme or NULL if none is active. */
-	void SetActivePhoneme( saePhoneme *phoneme );
+	void SetActivePhoneme(saePhoneme *phoneme);
 	/*@}*/
 	
 	/** \name Words */
@@ -192,9 +192,9 @@ public:
 	/** Retrieves the word list read-only. */
 	inline const saeWordList &GetWordList() const{ return pWordList; }
 	/** Adds a new word. */
-	void AddWord( saeWord *word );
+	void AddWord(saeWord *word);
 	/** Removes a word. */
-	void RemoveWord( saeWord *word );
+	void RemoveWord(saeWord *word);
 	/** Removes all words. */
 	void RemoveAllWords();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -202,14 +202,14 @@ public:
 	/** Determines if there is an active word or not. */
 	bool HasActiveWord() const;
 	/** Sets the active word or NULL if none is active. */
-	void SetActiveWord( saeWord *word );
+	void SetActiveWord(saeWord *word);
 	/*@}*/
 	
 	/** \name Notifiers */
 	/*@{*/
-	void AddListener( saeSAnimationListener *listener );
+	void AddListener(saeSAnimationListener *listener);
 	/** Removes a listener. */
-	void RemoveListener( saeSAnimationListener *listener );
+	void RemoveListener(saeSAnimationListener *listener);
 	
 	/** Notifies all listeners that the changed or saved state changed. */
 	virtual void NotifyStateChanged();
@@ -229,16 +229,16 @@ public:
 	/** Notifies all that the phoneme count or order changed. */
 	void NotifyPhonemeStructureChanged();
 	/** Notifies all that a phoneme changed. */
-	void NotifyPhonemeChanged( saePhoneme *phoneme );
+	void NotifyPhonemeChanged(saePhoneme *phoneme);
 	/** Notifies all that the active phoneme changed. */
 	void NotifyActivePhonemeChanged();
 	
 	/** Notifies all that the word count or order changed. */
 	void NotifyWordStructureChanged();
 	/** Notifies all that a word changed. */
-	void NotifyWordNameChanged( saeWord *word );
+	void NotifyWordNameChanged(saeWord *word);
 	/** Notifies all that a word changed. */
-	void NotifyWordChanged( saeWord *word );
+	void NotifyWordChanged(saeWord *word);
 	/** Notifies all that the active word changed. */
 	void NotifyActiveWordChanged();
 	/*@}*/

@@ -20,10 +20,10 @@ public:
 	const char *GetTestName();
 	
 private:
-	void pTestCreatePath( int testNumber );
-	void pTestParenting( int testNumber );
-	void pTestComposite( int testNumber );
-	void pTestMatchPattern( int testNumber );
+	void pTestCreatePath(int testNumber);
+	void pTestParenting(int testNumber);
+	void pTestComposite(int testNumber);
+	void pTestMatchPattern(int testNumber);
 };
 
 // end of include only once

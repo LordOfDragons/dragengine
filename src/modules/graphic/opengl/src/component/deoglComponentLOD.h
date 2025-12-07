@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component lod. */
-	deoglComponentLOD( deoglComponent &component, int lodIndex );
+	deoglComponentLOD(deoglComponent &component, int lodIndex);
 	
 	/** Clean up component lod. */
 	~deoglComponentLOD();

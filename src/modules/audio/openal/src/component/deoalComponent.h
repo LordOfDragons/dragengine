@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component peer. */
-	deoalComponent( deAudioOpenAL &audioThread, deComponent &component );
+	deoalComponent(deAudioOpenAL &audioThread, deComponent &component);
 	
 	/** \brief Clean up component peer. */
 	virtual ~deoalComponent();
@@ -104,7 +104,7 @@ public:
 	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deoalWorld *world );
+	void SetParentWorld(deoalWorld *world);
 	
 	/** \brief Model or NULL. */
 	inline deoalModel *GetModel() const{ return pModel; }
@@ -134,7 +134,7 @@ public:
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** \brief Texture at index. */
-	deoalComponentTexture &GetTextureAt( int index ) const;
+	deoalComponentTexture &GetTextureAt(int index) const;
 	
 	
 	
@@ -196,7 +196,7 @@ public:
 	virtual void ParametersChanged();
 	
 	/** \brief Texture changed. */
-	virtual void TextureChanged( int index, deComponentTexture &texture );
+	virtual void TextureChanged(int index, deComponentTexture &texture);
 	
 	/** \brief Dynamic skin changed. */
 	virtual void DynamicSkinChanged();

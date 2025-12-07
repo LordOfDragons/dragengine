@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordSetName::saeUWordSetName( saeWord *word, const char *newName ){
-	if( ! word || ! newName ) DETHROW( deeInvalidParam );
+saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
+	if(!word || !newName) DETHROW(deeInvalidParam);
 	
 	pWord = NULL;
 	
-	SetShortInfo( "Word Set Name" );
+	SetShortInfo("Word Set Name");
 	
 	pOldName = word->GetName();
 	pNewName = newName;
@@ -54,7 +54,7 @@ saeUWordSetName::saeUWordSetName( saeWord *word, const char *newName ){
 }
 
 saeUWordSetName::~saeUWordSetName(){
-	if( pWord ){
+	if(pWord){
 		pWord->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ saeUWordSetName::~saeUWordSetName(){
 ///////////////
 
 void saeUWordSetName::Undo(){
-	pWord->SetName( pOldName.GetString() );
+	pWord->SetName(pOldName.GetString());
 }
 
 void saeUWordSetName::Redo(){
-	pWord->SetName( pNewName.GetString() );
+	pWord->SetName(pNewName.GetString());
 }

@@ -88,7 +88,7 @@ public:
 	inline int GetDataLength() const{ return pDataLength; }
 	
 	/** \brief Set length of the message data. */
-	void SetDataLength( int dataLength );
+	void SetDataLength(int dataLength);
 	
 	/** \brief Clear message data. */
 	void Clear();
@@ -97,7 +97,7 @@ public:
 	inline TIME_SYSTEM GetTimeStamp() const{ return pTimeStamp; }
 	
 	/** \brief Set time stamp. */
-	void SetTimeStamp( TIME_SYSTEM timeStamp );
+	void SetTimeStamp(TIME_SYSTEM timeStamp);
 	/*@}*/
 };
 

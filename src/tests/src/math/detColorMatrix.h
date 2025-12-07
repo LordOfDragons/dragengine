@@ -19,7 +19,7 @@ public:
 	const char *GetTestName();
 	
 private:
-	void pRandomInitMatrix( decColorMatrix &matrix );
+	void pRandomInitMatrix(decColorMatrix &matrix);
 	void pTestInitial();
 	void pTestCreationTranslation();
 	void pTestCreationScaling();

@@ -41,12 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetName::seUControllerSetName( seController *controller, const char *newValue ) :
-pController( controller ),
-pNewValue( newValue )
+seUControllerSetName::seUControllerSetName(seController *controller, const char *newValue) :
+pController(controller),
+pNewValue(newValue)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetName();
 }
@@ -60,9 +60,9 @@ seUControllerSetName::~seUControllerSetName(){
 ///////////////
 
 void seUControllerSetName::Undo(){
-	( ( seController& )( deObject& )pController ).SetName( pOldValue );
+	((seController&)(deObject&)pController).SetName(pOldValue);
 }
 
 void seUControllerSetName::Redo(){
-	( ( seController& )( deObject& )pController ).SetName( pNewValue );
+	((seController&)(deObject&)pController).SetName(pNewValue);
 }

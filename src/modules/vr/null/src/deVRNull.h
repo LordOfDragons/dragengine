@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create null VR module. */
-	deVRNull( deLoadableModule &loadableModule );
+	deVRNull(deLoadableModule &loadableModule);
 	
 	/** Clean up null VR module. */
 	virtual ~deVRNull();
@@ -100,7 +100,7 @@ public:
 	 * 
 	 * If set to nullptr fades back to safe scene as defined by VR Runtime.
 	 */
-	virtual void SetCamera( deCamera *camera );
+	virtual void SetCamera(deCamera *camera);
 	/*@}*/
 	
 	
@@ -111,47 +111,47 @@ public:
 	virtual int GetDeviceCount();
 	
 	/** Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index );
+	virtual deInputDevice *GetDeviceAt(int index);
 	
 	/** Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id );
+	virtual int IndexOfDeviceWithID(const char *id);
 	
 	/** Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id );
+	virtual int IndexOfButtonWithID(int device, const char *id);
 	
 	/** Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id );
+	virtual int IndexOfAxisWithID(int device, const char *id);
 	
 	/** Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id );
+	virtual int IndexOfFeedbackWithID(int device, const char *id);
 	
 	/** \brief Index of component with identifier on device at index or -1 if absent. */
-	virtual int IndexOfComponentWithID( int device, const char *id );
+	virtual int IndexOfComponentWithID(int device, const char *id);
 	
 	/** Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed( int device, int button );
+	virtual bool GetButtonPressed(int device, int button);
 	
 	/** Button at index on device at index is touched. */
-	virtual bool GetButtonTouched( int device, int button );
+	virtual bool GetButtonTouched(int device, int button);
 	
 	/** User finger is near button at index on device at index. */
 	virtual bool GetButtonNear(int device, int button);
 	
 	/** Value of axis at index on device at index. */
-	virtual float GetAxisValue( int device, int axis );
+	virtual float GetAxisValue(int device, int axis);
 	
 	/** Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue( int device, int feedback );
+	virtual float GetFeedbackValue(int device, int feedback);
 	
 	/** Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue( int device, int feedback, float value );
+	virtual void SetFeedbackValue(int device, int feedback, float value);
 	
 	/** Device pose or identity if not supported. */
-	virtual void GetDevicePose( int device, deInputDevicePose &pose );
+	virtual void GetDevicePose(int device, deInputDevicePose &pose);
 	
 	/** Device bone pose or identity if not supported. */
-	virtual void GetDeviceBonePose( int device, int bone,
-		bool withController, deInputDevicePose &pose );
+	virtual void GetDeviceBonePose(int device, int bone,
+		bool withController, deInputDevicePose &pose);
 	/*@}*/
 	
 	
@@ -178,17 +178,17 @@ public:
 	virtual decPoint GetRenderSize();
 	
 	/** VR render projection matrix parameters. */
-	virtual void GetProjectionParameters( eEye eye, float &left,
-		float &right, float &top, float &bottom );
+	virtual void GetProjectionParameters(eEye eye, float &left,
+		float &right, float &top, float &bottom);
 	
 	/** VR render matrix transforming from camera space to eye space. */
-	virtual decMatrix GetMatrixViewEye( eEye eye );
+	virtual decMatrix GetMatrixViewEye(eEye eye);
 	
 	/** VR render hidden area model or nullptr if not supported. */
-	virtual deModel *GetHiddenArea( eEye eye );
+	virtual deModel *GetHiddenArea(eEye eye);
 	
 	/** VR render distortion image or nullptr if not supported. */
-	virtual deImage *GetDistortionMap( eEye eye );
+	virtual deImage *GetDistortionMap(eEye eye);
 	
 	/** Start begin frame. */
 	virtual void StartBeginFrame();
@@ -197,8 +197,8 @@ public:
 	virtual void WaitBeginFrameFinished();
 	
 	/** Submit OpenGL rendered image to the HMD. */
-	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
-		const decVector2 &tcTo, bool distortionApplied );
+	virtual void SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,
+		const decVector2 &tcTo, bool distortionApplied);
 	
 	/** End frame. */
 	virtual void EndFrame();

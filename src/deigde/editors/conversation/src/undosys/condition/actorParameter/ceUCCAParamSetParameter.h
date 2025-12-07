@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCAParamSetParameter( ceConversationTopic *topic, ceConversationAction *action, ceCConditionActorParameter *condition, const char *newParameter );
+	ceUCCAParamSetParameter(ceConversationTopic *topic, ceConversationAction *action, ceCConditionActorParameter *condition, const char *newParameter);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCAParamSetParameter();

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetCurve( seMapped *mapped, const decCurveBezier &newCurve );
+	seUMappedSetCurve(seMapped *mapped, const decCurveBezier &newCurve);
 	
 protected:
 	/** Clean up undo. */
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/** Undo action. */
 	virtual void Undo();

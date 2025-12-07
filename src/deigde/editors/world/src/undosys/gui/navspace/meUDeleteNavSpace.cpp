@@ -38,42 +38,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDeleteNavSpace::meUDeleteNavSpace( meWorld *world ) :
-pWorld( NULL ),
-pNavSpaces( NULL ),
-pNavSpaceCount( 0 )
+meUDeleteNavSpace::meUDeleteNavSpace(meWorld *world) :
+pWorld(NULL),
+pNavSpaces(NULL),
+pNavSpaceCount(0)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const meNavigationSpaceList &list = world->GetSelectionNavigationSpace().GetSelected();
 	int count = list.GetCount();
 	decString text;
 	
-	SetShortInfo( "Delete Objects" );
-	if( count > 1 ){
-		text.Format( "%i objects", count );
+	SetShortInfo("Delete Objects");
+	if(count > 1){
+		text.Format("%i objects", count);
 		
 	}else{
 		text = "1 object";
 	}
-	SetLongInfo( text );
+	SetLongInfo(text);
 	
 	try{
 		pWorld = world;
 		world->AddReference();
 		
-		if( count > 0 ){
-			pNavSpaces = new meUndoDataNavSpace*[ count ];
+		if(count > 0){
+			pNavSpaces = new meUndoDataNavSpace*[count];
 			
-			while( pNavSpaceCount < count ){
-				pNavSpaces[ pNavSpaceCount ] = new meUndoDataNavSpace( list.GetAt( pNavSpaceCount ) );
+			while(pNavSpaceCount < count){
+				pNavSpaces[pNavSpaceCount] = new meUndoDataNavSpace(list.GetAt(pNavSpaceCount));
 				pNavSpaceCount++;
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -94,11 +94,11 @@ void meUDeleteNavSpace::Undo(){
 	
 	selection.Reset();
 	
-	for( i=0; i<pNavSpaceCount; i++ ){
-		meNavigationSpace * const navspace = pNavSpaces[ i ]->GetNavSpace();
+	for(i=0; i<pNavSpaceCount; i++){
+		meNavigationSpace * const navspace = pNavSpaces[i]->GetNavSpace();
 		
-		pWorld->AddNavSpace( navspace );
-		selection.Add( navspace );
+		pWorld->AddNavSpace(navspace);
+		selection.Add(navspace);
 		
 		pWorld->NotifyNavSpaceCountChanged();
 	}
@@ -112,15 +112,15 @@ void meUDeleteNavSpace::Redo(){
 	meNavigationSpaceSelection &selection = pWorld->GetSelectionNavigationSpace();
 	int i;
 	
-	for( i=0; i<pNavSpaceCount; i++ ){
-		meNavigationSpace * const navspace = pNavSpaces[ i ]->GetNavSpace();
+	for(i=0; i<pNavSpaceCount; i++){
+		meNavigationSpace * const navspace = pNavSpaces[i]->GetNavSpace();
 		
-		selection.Remove( navspace );
-		if( navspace->GetActive() ){
+		selection.Remove(navspace);
+		if(navspace->GetActive()){
 			selection.ActivateNext();
 		}
 		
-		pWorld->RemoveNavSpace( pNavSpaces[ i ]->GetNavSpace() );
+		pWorld->RemoveNavSpace(pNavSpaces[i]->GetNavSpace());
 		
 		pWorld->NotifyNavSpaceCountChanged();
 	}
@@ -134,16 +134,16 @@ void meUDeleteNavSpace::Redo(){
 //////////////////////
 
 void meUDeleteNavSpace::pCleanUp(){
-	if( pNavSpaces ){
-		while( pNavSpaceCount > 0 ){
+	if(pNavSpaces){
+		while(pNavSpaceCount > 0){
 			pNavSpaceCount--;
-			delete pNavSpaces[ pNavSpaceCount ];
+			delete pNavSpaces[pNavSpaceCount];
 		}
 		
 		delete [] pNavSpaces;
 	}
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }

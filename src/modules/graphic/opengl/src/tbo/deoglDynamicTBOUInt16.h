@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dynamic tbo. */
-	deoglDynamicTBOUInt16( deoglRenderThread &renderThread, int componentCount );
+	deoglDynamicTBOUInt16(deoglRenderThread &renderThread, int componentCount);
 	
 protected:
 	/** Clean up dynamic tbo. */
@@ -52,46 +52,46 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */
-	inline uint16_t *GetDataUInt(){ return ( uint16_t* )pData; }
-	inline const uint16_t *GetDataUInt() const{ return ( uint16_t* )pData; }
+	inline uint16_t *GetDataUInt(){ return (uint16_t*)pData; }
+	inline const uint16_t *GetDataUInt() const{ return (uint16_t*)pData; }
 	
 	/**
 	 * Add boolean value.
 	 * 
 	 * True adds 1 and False 0.
 	 */
-	void AddBool( bool value );
+	void AddBool(bool value);
 	
 	/** Add integer value. */
-	void AddInt( uint16_t value );
+	void AddInt(uint16_t value);
 	
 	/** Add two integer values. */
-	void AddVec2( uint16_t value1, uint16_t value2 );
-	void AddVec2( const decPoint &value );
+	void AddVec2(uint16_t value1, uint16_t value2);
+	void AddVec2(const decPoint &value);
 	
 	/** Add three integer values. */
-	void AddVec3( uint16_t value1, uint16_t value2, uint16_t value3 );
-	void AddVec3( const decPoint3 &value );
+	void AddVec3(uint16_t value1, uint16_t value2, uint16_t value3);
+	void AddVec3(const decPoint3 &value);
 	
 	/** Add four integer values. */
-	void AddVec4( uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4 );
+	void AddVec4(uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4);
 	
 	/** Set boolean value at offset in components. True adds 1 and False 0. */
-	void SetBoolAt( int offset, bool value );
+	void SetBoolAt(int offset, bool value);
 	
 	/** Set integer value at offset in components. */
-	void SetIntAt( int offset, uint16_t value );
+	void SetIntAt(int offset, uint16_t value);
 	
 	/** Set two integer values at offset in components. */
-	void SetVec2At( int offset, uint16_t value1, uint16_t value2 );
-	void SetVec2At( int offset, const decPoint &value );
+	void SetVec2At(int offset, uint16_t value1, uint16_t value2);
+	void SetVec2At(int offset, const decPoint &value);
 	
 	/** Set three integer values at offset in components. */
-	void SetVec3At( int offset, uint16_t value1, uint16_t value2, uint16_t value3 );
-	void SetVec3At( int offset, const decPoint3 &value );
+	void SetVec3At(int offset, uint16_t value1, uint16_t value2, uint16_t value3);
+	void SetVec3At(int offset, const decPoint3 &value);
 	
 	/** Set four integer values at offset in components. */
-	void SetVec4At( int offset, uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4 );
+	void SetVec4At(int offset, uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4);
 	
 	/** Debug print. */
 	virtual void DebugPrint();

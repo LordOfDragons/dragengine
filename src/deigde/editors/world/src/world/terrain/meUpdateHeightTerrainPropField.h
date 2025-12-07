@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	meUpdateHeightTerrainPropField( meHeightTerrainPropField *propField );
+	meUpdateHeightTerrainPropField(meHeightTerrainPropField *propField);
 	/** Cleans up the object. */
 	virtual ~meUpdateHeightTerrainPropField();
 	/*@}*/
@@ -68,12 +68,12 @@ public:
 	 * indicates the percentage of instances to use compared to a fully populated
 	 * prop field.
 	 */
-	virtual void CreateInstances( float density );
+	virtual void CreateInstances(float density);
 	/*@}*/
 	
 private:
 	void pProjectToGround();
-	float pGetMaskDensity( const meByteArray *mask, float positionX, float positionY ) const;
+	float pGetMaskDensity(const meByteArray *mask, float positionX, float positionY) const;
 };
 
 // end of include only once

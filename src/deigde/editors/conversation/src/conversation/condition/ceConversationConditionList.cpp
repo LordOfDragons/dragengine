@@ -55,36 +55,36 @@ int ceConversationConditionList::GetCount() const{
 	return pConditions.GetCount();
 }
 
-ceConversationCondition *ceConversationConditionList::GetAt( int index ) const{
-	return ( ceConversationCondition* )pConditions.GetAt( index );
+ceConversationCondition *ceConversationConditionList::GetAt(int index) const{
+	return (ceConversationCondition*)pConditions.GetAt(index);
 }
 
-int ceConversationConditionList::IndexOf( ceConversationCondition *condition ) const{
-	return pConditions.IndexOf( condition );
+int ceConversationConditionList::IndexOf(ceConversationCondition *condition) const{
+	return pConditions.IndexOf(condition);
 }
 
-bool ceConversationConditionList::Has( ceConversationCondition *condition ) const{
-	return pConditions.Has( condition );
+bool ceConversationConditionList::Has(ceConversationCondition *condition) const{
+	return pConditions.Has(condition);
 }
 
-void ceConversationConditionList::Add( ceConversationCondition *condition ){
-	if( ! condition ) DETHROW( deeInvalidParam );
+void ceConversationConditionList::Add(ceConversationCondition *condition){
+	if(!condition) DETHROW(deeInvalidParam);
 	
-	pConditions.Add( condition );
+	pConditions.Add(condition);
 }
 
-void ceConversationConditionList::InsertAt( ceConversationCondition *condition, int index ){
-	if( ! condition ) DETHROW( deeInvalidParam );
+void ceConversationConditionList::InsertAt(ceConversationCondition *condition, int index){
+	if(!condition) DETHROW(deeInvalidParam);
 	
-	pConditions.Insert( condition, index );
+	pConditions.Insert(condition, index);
 }
 
-void ceConversationConditionList::MoveTo( ceConversationCondition *condition, int index ){
-	pConditions.Move( condition, index );
+void ceConversationConditionList::MoveTo(ceConversationCondition *condition, int index){
+	pConditions.Move(condition, index);
 }
 
-void ceConversationConditionList::Remove( ceConversationCondition *condition ){
-	pConditions.Remove( condition );
+void ceConversationConditionList::Remove(ceConversationCondition *condition){
+	pConditions.Remove(condition);
 }
 
 void ceConversationConditionList::RemoveAll(){
@@ -93,7 +93,7 @@ void ceConversationConditionList::RemoveAll(){
 
 
 
-ceConversationConditionList &ceConversationConditionList::operator=( const ceConversationConditionList &list ){
+ceConversationConditionList &ceConversationConditionList::operator=(const ceConversationConditionList &list){
 	pConditions = list.pConditions;
 	return *this;
 }

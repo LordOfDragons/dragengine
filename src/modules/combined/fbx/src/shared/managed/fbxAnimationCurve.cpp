@@ -40,25 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxAnimationCurve::fbxAnimationCurve( fbxNode &nodeCurve ) :
-pNodeCurve( nodeCurve ),
-pPropertyTime( nullptr ),
-pPropertyValue( nullptr ){
-	const fbxNode &nodeTime = *nodeCurve.FirstNodeNamed( "KeyTime" );
-	pPropertyTime = nodeTime.GetPropertyAt( 0 );
+fbxAnimationCurve::fbxAnimationCurve(fbxNode &nodeCurve) :
+pNodeCurve(nodeCurve),
+pPropertyTime(nullptr),
+pPropertyValue(nullptr){
+	const fbxNode &nodeTime = *nodeCurve.FirstNodeNamed("KeyTime");
+	pPropertyTime = nodeTime.GetPropertyAt(0);
 	
-	const fbxNode * const nodeValueTime = nodeCurve.FirstNodeNamed( "KeyValueFloat" );
-	if( nodeValueTime ){
-		pPropertyValue = nodeValueTime->GetPropertyAt( 0 );
+	const fbxNode * const nodeValueTime = nodeCurve.FirstNodeNamed("KeyValueFloat");
+	if(nodeValueTime){
+		pPropertyValue = nodeValueTime->GetPropertyAt(0);
 	}
 	
-	if( ! pPropertyValue ){
-		DETHROW_INFO( deeInvalidParam, "AnimationCurve missing KeyValueFloat" );
+	if(!pPropertyValue){
+		DETHROW_INFO(deeInvalidParam, "AnimationCurve missing KeyValueFloat");
 	}
 	
-	pDefaultValue.x = nodeCurve.GetPropertyFloat( "d|X", 0.0f );
-	pDefaultValue.y = nodeCurve.GetPropertyFloat( "d|Y", 0.0f );
-	pDefaultValue.z = nodeCurve.GetPropertyFloat( "d|Z", 0.0f );
+	pDefaultValue.x = nodeCurve.GetPropertyFloat("d|X", 0.0f);
+	pDefaultValue.y = nodeCurve.GetPropertyFloat("d|Y", 0.0f);
+	pDefaultValue.z = nodeCurve.GetPropertyFloat("d|Z", 0.0f);
 }
 
 fbxAnimationCurve::~fbxAnimationCurve(){

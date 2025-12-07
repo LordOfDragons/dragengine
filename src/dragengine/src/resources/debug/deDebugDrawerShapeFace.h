@@ -71,7 +71,7 @@ public:
 	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set face normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	/**
 	 * \brief Calculate face normal from points.
@@ -84,13 +84,13 @@ public:
 	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Vertex at index. */
-	const decVector &GetVertexAt( int index ) const;
+	const decVector &GetVertexAt(int index) const;
 	
 	/** \brief Set vertex at index. */
-	void SetVertexAt( int index, const decVector &vertex );
+	void SetVertexAt(int index, const decVector &vertex);
 	
 	/** \brief Add vertex. */
-	void AddVertex( const decVector &vertex );
+	void AddVertex(const decVector &vertex);
 	
 	/** \brief Remove all vertices. */
 	void RemoveAllVertices();
@@ -105,7 +105,7 @@ public:
 	 * 
 	 * All vertices are moved to be in the plane defined by the given vertex and the face normal.
 	 */
-	void MakeCoplanarTo( const decVector &position );
+	void MakeCoplanarTo(const decVector &position);
 	/*@}*/
 };
 

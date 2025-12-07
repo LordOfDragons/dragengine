@@ -40,10 +40,10 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-decDOctree::decDOctree( const decDVector &center, const decDVector &halfSize ){
+decDOctree::decDOctree(const decDVector &center, const decDVector &halfSize){
 	int i;
 	
-	for( i=0; i<8; i++ ) pNodes[ i ] = NULL;
+	for(i=0; i<8; i++) pNodes[i] = NULL;
 	pCenter = center;
 	pHalfSize = halfSize;
 	pParent = NULL;
@@ -52,8 +52,8 @@ decDOctree::decDOctree( const decDVector &center, const decDVector &halfSize ){
 decDOctree::~decDOctree(){
 	int i;
 	
-	for( i=0; i<8; i++ ){
-		if( pNodes[ i ] ) delete pNodes[ i ];
+	for(i=0; i<8; i++){
+		if(pNodes[i]) delete pNodes[i];
 	}
 }
 
@@ -62,68 +62,68 @@ decDOctree::~decDOctree(){
 // Management
 ///////////////
 
-void decDOctree::SetParent( decDOctree *parent ){
+void decDOctree::SetParent(decDOctree *parent){
 	pParent = parent;
 }
 
-decDOctree *decDOctree::GetNodeAt( int octant ) const{
-	if( octant < 0 || octant > 7 ) DETHROW( deeInvalidParam );
-	return pNodes[ octant ];
+decDOctree *decDOctree::GetNodeAt(int octant) const{
+	if(octant < 0 || octant > 7) DETHROW(deeInvalidParam);
+	return pNodes[octant];
 }
 
-void decDOctree::SetNodeAt( int octant, decDOctree *node ){
-	if( octant < 0 || octant > 7 ) DETHROW( deeInvalidParam );
-	if( pNodes[ octant ] != node ){
-		if( pNodes[ octant ] ) delete pNodes[ octant ];
-		pNodes[ octant ] = node;
+void decDOctree::SetNodeAt(int octant, decDOctree *node){
+	if(octant < 0 || octant > 7) DETHROW(deeInvalidParam);
+	if(pNodes[octant] != node){
+		if(pNodes[octant]) delete pNodes[octant];
+		pNodes[octant] = node;
 	}
 }
 
-decDOctree *decDOctree::GetNodeAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize ){
-	int octant = FindOctantAtBox( boxCenter, boxHalfSize );
+decDOctree *decDOctree::GetNodeAtBox(const decDVector &boxCenter, const decDVector &boxHalfSize){
+	int octant = FindOctantAtBox(boxCenter, boxHalfSize);
 	
 	// if we found no matching octant return NULL
-	if( octant == eoNotFound ) return NULL;
+	if(octant == eoNotFound) return NULL;
 	
 	// if the node does not exist create it
-	if( ! pNodes[ octant ] ){
-		pNodes[ octant ] = CreateOctree( octant );
-		pNodes[ octant ]->SetParent( this );
+	if(!pNodes[octant]){
+		pNodes[octant] = CreateOctree(octant);
+		pNodes[octant]->SetParent(this);
 	}
 	
 	// return the node that we found
-	return pNodes[ octant ];
+	return pNodes[octant];
 }
 
-decDOctree *decDOctree::FindNodeAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
-	int octant = FindOctantAtBox( boxCenter, boxHalfSize );
+decDOctree *decDOctree::FindNodeAtBox(const decDVector &boxCenter, const decDVector &boxHalfSize) const{
+	int octant = FindOctantAtBox(boxCenter, boxHalfSize);
 	
 	// if we found no matching octant return NULL
-	if( octant == eoNotFound ) return NULL;
+	if(octant == eoNotFound) return NULL;
 	
 	// return the node that we found
-	return pNodes[ octant ];
+	return pNodes[octant];
 }
 
-int decDOctree::FindOctantAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
+int decDOctree::FindOctantAtBox(const decDVector &boxCenter, const decDVector &boxHalfSize) const{
 	int octant = 0;
 	
 	// determine the bit mask of the box compared to the center of the node.
 	// a positive axis becomes a 1 bit and a negative axis a 0 bit. if an
 	// axis does not split no octant is found.
-	if( boxCenter.x - boxHalfSize.x >= pCenter.x ){
+	if(boxCenter.x - boxHalfSize.x >= pCenter.x){
 		octant |= 4;
-	}else if( boxCenter.x + boxHalfSize.x >= pCenter.x ){
+	}else if(boxCenter.x + boxHalfSize.x >= pCenter.x){
 		return eoNotFound;
 	}
-	if( boxCenter.y - boxHalfSize.y >= pCenter.y ){
+	if(boxCenter.y - boxHalfSize.y >= pCenter.y){
 		octant |= 2;
-	}else if( boxCenter.y + boxHalfSize.y >= pCenter.y ){
+	}else if(boxCenter.y + boxHalfSize.y >= pCenter.y){
 		return eoNotFound;
 	}
-	if( boxCenter.z - boxHalfSize.z >= pCenter.z ){
+	if(boxCenter.z - boxHalfSize.z >= pCenter.z){
 		octant |= 1;
-	}else if( boxCenter.z + boxHalfSize.z >= pCenter.z ){
+	}else if(boxCenter.z + boxHalfSize.z >= pCenter.z){
 		return eoNotFound;
 	}
 	
@@ -131,131 +131,131 @@ int decDOctree::FindOctantAtBox( const decDVector &boxCenter, const decDVector &
 	return octant;
 }
 
-bool decDOctree::ContainsBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
-	return ( boxCenter - boxHalfSize ) >= ( pCenter - pHalfSize )
-		&& ( boxCenter + boxHalfSize ) < ( pCenter + pHalfSize );
+bool decDOctree::ContainsBox(const decDVector &boxCenter, const decDVector &boxHalfSize) const{
+	return (boxCenter - boxHalfSize) >= (pCenter - pHalfSize)
+		&& (boxCenter + boxHalfSize) < (pCenter + pHalfSize);
 }
 
-decDOctree *decDOctree::FindNodeAtPoint( const decDVector &point ) const{
-	int octant = FindOctantAtPoint( point );
+decDOctree *decDOctree::FindNodeAtPoint(const decDVector &point) const{
+	int octant = FindOctantAtPoint(point);
 	
 	// if we found no matching octant return NULL
-	if( octant == eoNotFound ) return NULL;
+	if(octant == eoNotFound) return NULL;
 	
 	// return the node that we found
-	return pNodes[ octant ];
+	return pNodes[octant];
 }
 
-int decDOctree::FindOctantAtPoint( const decDVector &point ) const{
+int decDOctree::FindOctantAtPoint(const decDVector &point) const{
 	int bitmask = 0;
 	
 	// determine the bit mask of the box compared to the center of the node.
 	// a positive axis becomes a 1 bit and a negative axis a 0 bit.
-	if( point.x >= pCenter.x ) bitmask |= 4;
-	if( point.y >= pCenter.y ) bitmask |= 2;
-	if( point.z >= pCenter.z ) bitmask |= 1;
+	if(point.x >= pCenter.x) bitmask |= 4;
+	if(point.y >= pCenter.y) bitmask |= 2;
+	if(point.z >= pCenter.z) bitmask |= 1;
 	
 	// return the found octant
 	return bitmask;
 }
 
-bool decDOctree::ContainsPoint( const decDVector &point ) const{
-	return point >= ( pCenter - pHalfSize ) &&  point < ( pCenter + pHalfSize );
+bool decDOctree::ContainsPoint(const decDVector &point) const{
+	return point >= (pCenter - pHalfSize) &&  point < (pCenter + pHalfSize);
 }
 
 
 
-decDOctree *decDOctree::SearchTreeForBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
-	decDOctree *nextNode = FindNodeAtBox( boxCenter, boxHalfSize );
-	decDOctree *curNode = ( decDOctree* )this;
+decDOctree *decDOctree::SearchTreeForBox(const decDVector &boxCenter, const decDVector &boxHalfSize) const{
+	decDOctree *nextNode = FindNodeAtBox(boxCenter, boxHalfSize);
+	decDOctree *curNode = (decDOctree*)this;
 	
-	while( nextNode ){
+	while(nextNode){
 		curNode = nextNode;
-		nextNode = curNode->FindNodeAtBox( boxCenter, boxHalfSize );
+		nextNode = curNode->FindNodeAtBox(boxCenter, boxHalfSize);
 	}
 	
 	return curNode;
 }
 
-decDOctree *decDOctree::SearchTreeForPoint( const decDVector &point ) const{
-	decDOctree *nextNode = FindNodeAtPoint( point );
-	decDOctree *curNode = ( decDOctree* )this;
+decDOctree *decDOctree::SearchTreeForPoint(const decDVector &point) const{
+	decDOctree *nextNode = FindNodeAtPoint(point);
+	decDOctree *curNode = (decDOctree*)this;
 	
-	while( nextNode ){
+	while(nextNode){
 		curNode = nextNode;
-		nextNode = curNode->FindNodeAtPoint( point );
+		nextNode = curNode->FindNodeAtPoint(point);
 	}
 	
 	return curNode;
 }
 
-void decDOctree::VisitNodes( decDOctreeVisitor *visitor ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
+void decDOctree::VisitNodes(decDOctreeVisitor *visitor){
+	if(!visitor) DETHROW(deeInvalidParam);
 	int i;
 	
 	// visit
-	visitor->VisitNode( this, decDCollisionDetection::eirInside );
+	visitor->VisitNode(this, decDCollisionDetection::eirInside);
 	
 	// visit each child node
-	for( i=0; i<8; i++ ){
-		if( pNodes[ i ] ) pNodes[ i ]->VisitNodes( visitor );
+	for(i=0; i<8; i++){
+		if(pNodes[i]) pNodes[i]->VisitNodes(visitor);
 	}
 }
 
-void decDOctree::VisitNodesColliding( decDOctreeVisitor *visitor, decDCollisionVolume *volume ){
-	if( ! visitor || ! volume ) DETHROW( deeInvalidParam );
-	decDCollisionBox colBox( pCenter, pHalfSize );
+void decDOctree::VisitNodesColliding(decDOctreeVisitor *visitor, decDCollisionVolume *volume){
+	if(!visitor || !volume) DETHROW(deeInvalidParam);
+	decDCollisionBox colBox(pCenter, pHalfSize);
 	int i;
 	
 	// exit if this node is not in the collision volume
-	if( ! volume->BoxHitsVolume( &colBox ) ) return;
+	if(!volume->BoxHitsVolume(&colBox)) return;
 	
 	// visit
-	visitor->VisitNode( this, decDCollisionDetection::eirPartial );
+	visitor->VisitNode(this, decDCollisionDetection::eirPartial);
 	
 	// test each child node
-	for( i=0; i<8; i++ ){
-		if( pNodes[ i ] ) pNodes[ i ]->VisitNodesColliding( visitor, volume );
+	for(i=0; i<8; i++){
+		if(pNodes[i]) pNodes[i]->VisitNodesColliding(visitor, volume);
 	}
 }
 
-void decDOctree::VisitNodesColliding( decDOctreeVisitor *visitor, const decDVector &boxMinExtend, const decDVector &boxMaxExtend ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
+void decDOctree::VisitNodesColliding(decDOctreeVisitor *visitor, const decDVector &boxMinExtend, const decDVector &boxMaxExtend){
+	if(!visitor) DETHROW(deeInvalidParam);
 	int i, result;
 	
-	result = decDCollisionDetection::AABoxIntersectsAABox( pCenter - pHalfSize, pCenter + pHalfSize, boxMinExtend, boxMaxExtend );
+	result = decDCollisionDetection::AABoxIntersectsAABox(pCenter - pHalfSize, pCenter + pHalfSize, boxMinExtend, boxMaxExtend);
 	
-	if( result == decDCollisionDetection::eirOutside ) return;
+	if(result == decDCollisionDetection::eirOutside) return;
 	
-	visitor->VisitNode( this, result );
+	visitor->VisitNode(this, result);
 	
-	if( result == decDCollisionDetection::eirInside ){
-		for( i=0; i<8; i++ ){
-			if( pNodes[ i ] ){
-				pNodes[ i ]->VisitNodes( visitor );
+	if(result == decDCollisionDetection::eirInside){
+		for(i=0; i<8; i++){
+			if(pNodes[i]){
+				pNodes[i]->VisitNodes(visitor);
 			}
 		}
 		
 	}else{
-		for( i=0; i<8; i++ ){
-			if( pNodes[ i ] ){
-				pNodes[ i ]->VisitNodesColliding( visitor, boxMinExtend, boxMaxExtend );
+		for(i=0; i<8; i++){
+			if(pNodes[i]){
+				pNodes[i]->VisitNodesColliding(visitor, boxMinExtend, boxMaxExtend);
 			}
 		}
 	}
 }
 
-void decDOctree::ClearTree( bool clearNodes ){
+void decDOctree::ClearTree(bool clearNodes){
 	int i;
 	
 	ClearNodeContent();
 	
-	for( i=0; i<8; i++ ){
-		if( pNodes[ i ] ){
-			pNodes[ i ]->ClearTree( clearNodes );
-			if( clearNodes ){
-				delete pNodes[ i ];
-				pNodes[ i ] = NULL;
+	for(i=0; i<8; i++){
+		if(pNodes[i]){
+			pNodes[i]->ClearTree(clearNodes);
+			if(clearNodes){
+				delete pNodes[i];
+				pNodes[i] = NULL;
 			}
 		}
 	}

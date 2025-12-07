@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceActionsCopyActions::ceWPTMAPChoiceActionsCopyActions( ceWindowMain &windowMain,
-const ceCAPlayerChoice &playerChoice ) :
-ceWPTMACopyActions( windowMain, playerChoice.GetActions() ){
+ceWPTMAPChoiceActionsCopyActions::ceWPTMAPChoiceActionsCopyActions(ceWindowMain &windowMain,
+const ceCAPlayerChoice &playerChoice) :
+ceWPTMACopyActions(windowMain, playerChoice.GetActions()){
 }

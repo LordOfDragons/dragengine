@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetPathHT::meUHTSetPathHT( meWorld *world, meHeightTerrain *heightTerrain, const char *newPath ){
-	if( ! world || ! heightTerrain || ! newPath ){
-		DETHROW( deeInvalidParam );
+meUHTSetPathHT::meUHTSetPathHT(meWorld *world, meHeightTerrain *heightTerrain, const char *newPath){
+	if(!world || !heightTerrain || !newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWorld = world;
@@ -51,13 +51,13 @@ meUHTSetPathHT::meUHTSetPathHT( meWorld *world, meHeightTerrain *heightTerrain, 
 	pOldPath = heightTerrain->GetPathHT();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Set Height Terrain Path" );
+	SetShortInfo("Set Height Terrain Path");
 	
 	world->AddReference();
 }
 
 meUHTSetPathHT::~meUHTSetPathHT(){
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -67,9 +67,9 @@ meUHTSetPathHT::~meUHTSetPathHT(){
 
 
 void meUHTSetPathHT::Undo(){
-	pHeightTerrain->SetPathHT( pOldPath.GetString() );
+	pHeightTerrain->SetPathHT(pOldPath.GetString());
 }
 
 void meUHTSetPathHT::Redo(){
-	pHeightTerrain->SetPathHT( pNewPath.GetString() );
+	pHeightTerrain->SetPathHT(pNewPath.GetString());
 }

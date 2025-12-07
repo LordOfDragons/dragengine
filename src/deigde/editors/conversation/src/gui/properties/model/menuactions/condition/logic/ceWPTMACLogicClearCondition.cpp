@@ -47,15 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACLogicClearCondition::ceWPTMACLogicClearCondition( ceWindowMain &windowMain,
+ceWPTMACLogicClearCondition::ceWPTMACLogicClearCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceConversationAction &action, ceCConditionLogic &logic ) :
-ceWPTMenuAction( windowMain, "Logic: Clear Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pAction( &action ),
-pLogic( &logic ){
+ceConversationAction &action, ceCConditionLogic &logic) :
+ceWPTMenuAction(windowMain, "Logic: Clear Condition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pAction(&action),
+pLogic(&logic){
 }
 
 

@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavBlockerPaste::gdeMAOCNavBlockerPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Blocker",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class navigation blocker" )
+gdeMAOCNavBlockerPaste::gdeMAOCNavBlockerPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Paste Object Class Navigation Blocker",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste object class navigation blocker")
 {
 }
 
@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Blocker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavBlockerPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCNavBlocker::TYPE_NAME ) );
-	if( ! clip ){
+igdeUndo *gdeMAOCNavBlockerPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCNavBlocker::TYPE_NAME));
+	if(!clip){
 		return NULL;
 	}
 	
 	const gdeClipboardDataOCNavBlocker &clipOCNavigationBlocker =
-		( const gdeClipboardDataOCNavBlocker & )( igdeClipboardData& )clip;
+		(const gdeClipboardDataOCNavBlocker &)(igdeClipboardData&)clip;
 	
 	const gdeOCNavigationBlocker::Ref navBlocker(gdeOCNavigationBlocker::Ref::NewWith(*clipOCNavigationBlocker.GetNavBlocker()));
 	
-	igdeUndo * const undo = new gdeUOCAddNavBlocker( &objectClass,
-		navBlocker );
-	undo->SetShortInfo( "Paste object class navigation blocker" );
+	igdeUndo * const undo = new gdeUOCAddNavBlocker(&objectClass,
+		navBlocker);
+	undo->SetShortInfo("Paste object class navigation blocker");
 	return undo;
 }
 
 void gdeMAOCNavBlockerPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCNavBlocker::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != NULL
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCNavBlocker::TYPE_NAME));
 }

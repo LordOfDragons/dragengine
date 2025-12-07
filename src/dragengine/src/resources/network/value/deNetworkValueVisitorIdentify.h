@@ -143,34 +143,34 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void VisitValue( deNetworkValue *value );
+	virtual void VisitValue(deNetworkValue *value);
 	
 	/** \brief Visit integer network value. */
-	virtual void VisitInteger( deNetworkValueInteger *value );
+	virtual void VisitInteger(deNetworkValueInteger *value);
 	
 	/** \brief Visit float network value. */
-	virtual void VisitFloat( deNetworkValueFloat *value );
+	virtual void VisitFloat(deNetworkValueFloat *value);
 	
 	/** \brief Visit string network value. */
-	virtual void VisitString( deNetworkValueString *value );
+	virtual void VisitString(deNetworkValueString *value);
 	
 	/** \brief Visit data network value. */
-	virtual void VisitData( deNetworkValueData *value );
+	virtual void VisitData(deNetworkValueData *value);
 	
 	/** \brief Visit point-2 network value. */
-	virtual void VisitPoint2( deNetworkValuePoint2 *value );
+	virtual void VisitPoint2(deNetworkValuePoint2 *value);
 	
 	/** \brief Visit point-3 network value. */
-	virtual void VisitPoint3( deNetworkValuePoint3 *value );
+	virtual void VisitPoint3(deNetworkValuePoint3 *value);
 	
 	/** \brief Visit vector-2 network value. */
-	virtual void VisitVector2( deNetworkValueVector2 *value );
+	virtual void VisitVector2(deNetworkValueVector2 *value);
 	
 	/** \brief Visit vector-3 network value. */
-	virtual void VisitVector3( deNetworkValueVector3 *value );
+	virtual void VisitVector3(deNetworkValueVector3 *value);
 	
 	/** \brief Visit quaternion network value. */
-	virtual void VisitQuaternion( deNetworkValueQuaternion *value );
+	virtual void VisitQuaternion(deNetworkValueQuaternion *value);
 	/*@}*/
 };
 

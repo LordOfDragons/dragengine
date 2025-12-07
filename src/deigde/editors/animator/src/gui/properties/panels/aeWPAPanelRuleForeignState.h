@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleForeignState( aeWPRule &wpRule );
+	aeWPAPanelRuleForeignState(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

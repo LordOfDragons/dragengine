@@ -43,8 +43,8 @@
 gdePropertyList::gdePropertyList(){
 }
 
-gdePropertyList::gdePropertyList( const gdePropertyList &list ) :
-pProperties( list.pProperties ){
+gdePropertyList::gdePropertyList(const gdePropertyList &list) :
+pProperties(list.pProperties){
 }
 
 gdePropertyList::~gdePropertyList(){
@@ -59,18 +59,18 @@ int gdePropertyList::GetCount() const{
 	return pProperties.GetCount();
 }
 
-gdeProperty *gdePropertyList::GetAt( int index ) const{
-	return ( gdeProperty* )pProperties.GetAt( index );
+gdeProperty *gdePropertyList::GetAt(int index) const{
+	return (gdeProperty*)pProperties.GetAt(index);
 }
 
-gdeProperty *gdePropertyList::GetNamed( const char *name ) const{
+gdeProperty *gdePropertyList::GetNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeProperty * const property = ( gdeProperty* )pProperties.GetAt( i );
+	for(i=0; i<count; i++){
+		gdeProperty * const property = (gdeProperty*)pProperties.GetAt(i);
 		
-		if( property->GetName() == name ){
+		if(property->GetName() == name){
 			return property;
 		}
 	}
@@ -78,16 +78,16 @@ gdeProperty *gdePropertyList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int gdePropertyList::IndexOf( gdeProperty *property ) const{
-	return pProperties.IndexOf( property );
+int gdePropertyList::IndexOf(gdeProperty *property) const{
+	return pProperties.IndexOf(property);
 }
 
-int gdePropertyList::IndexOfNamed( const char *name ) const{
+int gdePropertyList::IndexOfNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeProperty* )pProperties.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((gdeProperty*)pProperties.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -95,16 +95,16 @@ int gdePropertyList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool gdePropertyList::Has( gdeProperty *property ) const{
-	return pProperties.Has( property );
+bool gdePropertyList::Has(gdeProperty *property) const{
+	return pProperties.Has(property);
 }
 
-bool gdePropertyList::HasNamed( const char *name ) const{
+bool gdePropertyList::HasNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeProperty* )pProperties.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((gdeProperty*)pProperties.GetAt(i))->GetName() == name){
 			return true;
 		}
 	}
@@ -112,16 +112,16 @@ bool gdePropertyList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void gdePropertyList::Add( gdeProperty *property ){
-	if( ! property || HasNamed( property->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void gdePropertyList::Add(gdeProperty *property){
+	if(!property || HasNamed(property->GetName())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProperties.Add( property );
+	pProperties.Add(property);
 }
 
-void gdePropertyList::Remove( gdeProperty *property ){
-	pProperties.Remove( property );
+void gdePropertyList::Remove(gdeProperty *property){
+	pProperties.Remove(property);
 }
 
 void gdePropertyList::RemoveAll(){
@@ -130,7 +130,7 @@ void gdePropertyList::RemoveAll(){
 
 
 
-gdePropertyList &gdePropertyList::operator=( const gdePropertyList &list ){
+gdePropertyList &gdePropertyList::operator=(const gdePropertyList &list){
 	pProperties = list.pProperties;
 	return *this;
 }

@@ -134,9 +134,9 @@ public:
 	/*@{*/
 	/** \brief Create process. */
 	#ifdef OS_W32
-	projTestRunProcess( HANDLE pipeIn, HANDLE pipeOut );
+	projTestRunProcess(HANDLE pipeIn, HANDLE pipeOut);
 	#else
-	projTestRunProcess( int pipeIn, int pipeOut );
+	projTestRunProcess(int pipeIn, int pipeOut);
 	#endif
 	
 	/** \brief Clean up process. */
@@ -162,19 +162,19 @@ public:
 	#endif
 	
 	/** \brief Write unsigned char to pipe. */
-	void WriteUCharToPipe( int value );
+	void WriteUCharToPipe(int value);
 	
 	/** \brief Write uint16_t to pipe. */
-	void WriteUShortToPipe( int value );
+	void WriteUShortToPipe(int value);
 	
 	/** \brief Write float to pipe. */
-	void WriteFloatToPipe( float value );
+	void WriteFloatToPipe(float value);
 	
 	/** \brief Write string to pipe using uint16_t as length. */
-	void WriteString16ToPipe( const char *string );
+	void WriteString16ToPipe(const char *string);
 	
 	/** \brief Write data to pipe. */
-	void WriteToPipe( const void *data, int length );
+	void WriteToPipe(const void *data, int length);
 	
 	/** \brief Read unsigned char from pipe. */
 	int ReadUCharFromPipe();
@@ -189,7 +189,7 @@ public:
 	decString ReadString16FromPipe();
 	
 	/** \brief Read data from pipe. */
-	void ReadFromPipe( void *data, int length );
+	void ReadFromPipe(void *data, int length);
 	
 	
 	

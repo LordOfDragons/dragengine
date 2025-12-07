@@ -14,7 +14,7 @@ class KDEVDSDUCHAIN_EXPORT DumpChain{
 public:
 	DumpChain();
 	virtual ~DumpChain();
-	void dump( DUContext* context, bool imported = false);
+	void dump(DUContext* context, bool imported = false);
 
 private:
     int indent;

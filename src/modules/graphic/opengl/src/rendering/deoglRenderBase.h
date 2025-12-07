@@ -74,7 +74,7 @@ protected:
 	
 	const deoglPipeline *pPipelineClearBuffers;
 	
-	decTimer pDebugTimer[ 4 ];
+	decTimer pDebugTimer[4];
 	
 	
 private:
@@ -97,7 +97,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create base renderer. */
-	deoglRenderBase( deoglRenderThread &renderThread );
+	deoglRenderBase(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderBase();
@@ -116,10 +116,10 @@ public:
 	
 	
 	/** Add basic defines for shaders. */
-	void AddBasicDefines( deoglShaderDefines &defines );
+	void AddBasicDefines(deoglShaderDefines &defines);
 	
 	/** Add shared SPB defines for shaders. */
-	void AddSharedSPBDefines( deoglShaderDefines &defines );
+	void AddSharedSPBDefines(deoglShaderDefines &defines);
 	
 	/** Clamped nearest sampler. */
 	deoglTexSamplerConfig &GetSamplerClampNearest() const;
@@ -153,14 +153,14 @@ public:
 	
 	
 	/** Set viewport and scissor to render plan size. */
-	void SetViewport( const deoglRenderPlan &plan ) const;
+	void SetViewport(const deoglRenderPlan &plan) const;
 	
 	/** Set viewport and scissor size. */
-	void SetViewport( int width, int height ) const;
-	void SetViewport( const decPoint &point ) const;
-	void SetViewport( const decPoint3 &point ) const;
-	void SetViewport( int x, int y, int width, int height ) const;
-	void SetViewport( const decPoint &offset, const decPoint &size ) const;
+	void SetViewport(int width, int height) const;
+	void SetViewport(const decPoint &point) const;
+	void SetViewport(const decPoint3 &point) const;
+	void SetViewport(int x, int y, int width, int height) const;
+	void SetViewport(const decPoint &offset, const decPoint &size) const;
 	
 	/** Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to be active. */
 	void RenderFullScreenQuad() const;
@@ -170,7 +170,7 @@ public:
 	 * be active. If stereo rendering is active and specific hardware support is present
 	 * renders two quads using multi-draw instead of one.
 	 */
-	void RenderFullScreenQuad( const deoglRenderPlan &plan ) const;
+	void RenderFullScreenQuad(const deoglRenderPlan &plan) const;
 	
 	/** Render full screen quad with changing VAO. */
 	void RenderFullScreenQuadVAO() const;
@@ -179,8 +179,8 @@ public:
 	 * Render full screen quad with changing VAO. If stereo rendering is active and specific
 	 * hardware support is present renders two quads using multi-draw instead of one.
 	 */
-	void RenderFullScreenQuadVAO( const deoglRenderPlan &plan ) const;
-	void RenderFullScreenQuadVAO( bool useStereo ) const;
+	void RenderFullScreenQuadVAO(const deoglRenderPlan &plan) const;
+	void RenderFullScreenQuadVAO(bool useStereo) const;
 	/*@}*/
 	
 	
@@ -188,58 +188,58 @@ public:
 	/** \name Debug */
 	/*@{*/
 	/** Direct access debug timer. */
-	inline decTimer& GetDebugTimerAt( int index ){ return pDebugTimer[ index ]; }
+	inline decTimer& GetDebugTimerAt(int index){ return pDebugTimer[index]; }
 	
 	/** Reset all debug timers if plan has debug enabled. */
-	void DebugTimersReset( const deoglRenderPlan &plan, bool waitGPU );
+	void DebugTimersReset(const deoglRenderPlan &plan, bool waitGPU);
 	
 	/** Reset first debug timer if plan has debug enabled. */
-	void DebugTimer1Reset( const deoglRenderPlan &plan, bool waitGPU );
+	void DebugTimer1Reset(const deoglRenderPlan &plan, bool waitGPU);
 	
 	/** Sample first debug timer if plan has debug enabled updating debug information. */
-	void DebugTimer1Sample( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		bool waitGPU );
+	void DebugTimer1Sample(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		bool waitGPU);
 	
 	/** Sample first debug timer if plan has debug enabled updating debug information. */
-	void DebugTimer1SampleCount( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		int count, bool waitGPU );
+	void DebugTimer1SampleCount(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		int count, bool waitGPU);
 	
 	/** Reset second debug timer if plan has debug enabled. */
-	void DebugTimer2Reset( const deoglRenderPlan &plan, bool waitGPU );
+	void DebugTimer2Reset(const deoglRenderPlan &plan, bool waitGPU);
 	
 	/** Sample second debug timer if plan has debug enabled updating debug information. */
-	void DebugTimer2Sample( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		bool waitGPU );
+	void DebugTimer2Sample(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		bool waitGPU);
 	
 	/** Sample second debug timer if plan has debug enabled updating debug information. */
-	void DebugTimer2SampleCount( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		int count, bool waitGPU );
+	void DebugTimer2SampleCount(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		int count, bool waitGPU);
 	
 	/** Reset third debug timer if plan has debug enabled. */
-	void DebugTimer3Reset( const deoglRenderPlan &plan, bool waitGPU );
+	void DebugTimer3Reset(const deoglRenderPlan &plan, bool waitGPU);
 	
 	/** Sample third debug timer if plan has debug enabled updating debug information. */
-	void DebugTimer3Sample( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		bool waitGPU );
+	void DebugTimer3Sample(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		bool waitGPU);
 	
 	/** Sample third debug timer if plan has debug enabled updating debug information. */
-	void DebugTimer3SampleCount( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		int count, bool waitGPU );
+	void DebugTimer3SampleCount(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		int count, bool waitGPU);
 	
 	/** Reset fourthed debug timer if plan has debug enabled. */
-	void DebugTimer4Reset( const deoglRenderPlan &plan, bool waitGPU );
+	void DebugTimer4Reset(const deoglRenderPlan &plan, bool waitGPU);
 	
 	/** Sample fourthed debug timer if plan has debug enabled updating debug information. */
-	void DebugTimer4Sample( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		bool waitGPU );
+	void DebugTimer4Sample(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		bool waitGPU);
 	
 	/** Sample fourthed debug timer if plan has debug enabled updating debug information. */
-	void DebugTimer4SampleCount( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		int count, bool waitGPU );
+	void DebugTimer4SampleCount(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		int count, bool waitGPU);
 	
 	/** Increment debug timer. */
-	void DebugTimerIncrement( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
-		float elapsed, int count );
+	void DebugTimerIncrement(const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		float elapsed, int count);
 	
 	
 	
@@ -265,13 +265,13 @@ protected:
 	
 	
 private:
-	void pDebugTimerReset( decTimer &timer, const deoglRenderPlan &plan, bool waitGPU );
+	void pDebugTimerReset(decTimer &timer, const deoglRenderPlan &plan, bool waitGPU);
 	
-	void pDebugTimerSample( decTimer &timer, const deoglRenderPlan &plan,
-		deoglDebugInformation &debugInfo, bool waitGPU );
+	void pDebugTimerSample(decTimer &timer, const deoglRenderPlan &plan,
+		deoglDebugInformation &debugInfo, bool waitGPU);
 	
-	void pDebugTimerSampleCount( decTimer &timer, const deoglRenderPlan &plan,
-		deoglDebugInformation &debugInfo, int count, bool waitGPU );
+	void pDebugTimerSampleCount(decTimer &timer, const deoglRenderPlan &plan,
+		deoglDebugInformation &debugInfo, int count, bool waitGPU);
 	/*@}*/
 };
 

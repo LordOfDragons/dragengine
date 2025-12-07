@@ -39,7 +39,7 @@ class deVirtualFileSystem;
  * Shows a path in a virtual file system as a combo box.
  */
 class igdeNativeFoxVFSDirectoryBox : public FXTreeListBox{
-	FXDECLARE( igdeNativeFoxVFSDirectoryBox )
+	FXDECLARE(igdeNativeFoxVFSDirectoryBox)
 	
 protected:
 	igdeNativeFoxVFSDirectoryBox();
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new virtual file system list. */
-	igdeNativeFoxVFSDirectoryBox( deVirtualFileSystem *vfs, FXComposite *p,FXObject* tgt=NULL,FXSelector sel=0,FXuint opts=FRAME_SUNKEN|FRAME_THICK|TREELISTBOX_NORMAL,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=DEFAULT_PAD,FXint pr=DEFAULT_PAD,FXint pt=DEFAULT_PAD,FXint pb=DEFAULT_PAD );
+	igdeNativeFoxVFSDirectoryBox(deVirtualFileSystem *vfs, FXComposite *p,FXObject* tgt=NULL,FXSelector sel=0,FXuint opts=FRAME_SUNKEN|FRAME_THICK|TREELISTBOX_NORMAL,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=DEFAULT_PAD,FXint pr=DEFAULT_PAD,FXint pt=DEFAULT_PAD,FXint pb=DEFAULT_PAD);
 	/** Cleans up the virtual file system list. */
 	virtual ~igdeNativeFoxVFSDirectoryBox();
 	/*@}*/
@@ -64,9 +64,9 @@ public:
 	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
 	
 	/** Retrieves the current directory. */
-	void GetPath( decPath &path );
+	void GetPath(decPath &path);
 	/** Sets the current directory. */
-	void SetPath( const decPath &path );
+	void SetPath(const decPath &path);
 	
 	/** Create server-side resources. */
 	virtual void create();
@@ -81,8 +81,8 @@ public:
 	/*@}*/
 	
 private:
-	FXTreeItem *pBuildListFrom( const decPath &path );
-	void pGetPathFor( decPath &path, FXTreeItem *item );
+	FXTreeItem *pBuildListFrom(const decPath &path);
+	void pGetPathFor(decPath &path, FXTreeItem *item);
 };
 
 // end of include only once

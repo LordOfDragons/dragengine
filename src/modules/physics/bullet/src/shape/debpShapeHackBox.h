@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shape. */
-	debpShapeHackBox( decShapeBox *shape );
+	debpShapeHackBox(decShapeBox *shape);
 	
 	/** \brief Clean up shape. */
 	virtual ~debpShapeHackBox();

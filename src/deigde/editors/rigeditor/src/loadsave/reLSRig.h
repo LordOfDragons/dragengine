@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load-save. */
-	reLSRig( deBaseRigModule *module );
+	reLSRig(deBaseRigModule *module);
 	
 	/** \brief Clean up load-save. */
 	~reLSRig();
@@ -67,13 +67,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	/*@}*/
 	
 	
@@ -81,10 +81,10 @@ public:
 	/** \name Loading and Saving */
 	/*@{*/
 	/** \brief Load from file. */
-	void LoadRig( reRig *rig, decBaseFileReader *file );
+	void LoadRig(reRig *rig, decBaseFileReader *file);
 	
 	/** \brief Write to file. */
-	void SaveRig( reRig *rig, decBaseFileWriter *file );
+	void SaveRig(reRig *rig, decBaseFileWriter *file);
 	/*@}*/
 };
 

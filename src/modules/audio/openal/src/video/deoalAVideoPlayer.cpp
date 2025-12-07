@@ -47,27 +47,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalAVideoPlayer::deoalAVideoPlayer( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pPlayState( deVideoPlayer::epsStopped ),
-pPlayPosition( 0.0f ),
-pPlayFrom( 0.0f ),
-pPlayTo( 0.0f ),
-pPlaySpeed( 1.0f ),
-pLooping( false ),
-pBytesPerSample( 1 ),
-pChannelCount( 1 ),
-pSampleRate( 11025 ),
-pSampleCount( 0 ),
-pBufferSampleSize( pBytesPerSample * pSampleRate ),
-pSeekNextRead( false ),
-pUpdateTracker( 1 )
+deoalAVideoPlayer::deoalAVideoPlayer(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pPlayState(deVideoPlayer::epsStopped),
+pPlayPosition(0.0f),
+pPlayFrom(0.0f),
+pPlayTo(0.0f),
+pPlaySpeed(1.0f),
+pLooping(false),
+pBytesPerSample(1),
+pChannelCount(1),
+pSampleRate(11025),
+pSampleCount(0),
+pBufferSampleSize(pBytesPerSample * pSampleRate),
+pSeekNextRead(false),
+pUpdateTracker(1)
 {
-	LEAK_CHECK_CREATE( audioThread, VideoPlayer );
+	LEAK_CHECK_CREATE(audioThread, VideoPlayer);
 }
 
 deoalAVideoPlayer::~deoalAVideoPlayer(){
-	LEAK_CHECK_FREE( pAudioThread, VideoPlayer );
+	LEAK_CHECK_FREE(pAudioThread, VideoPlayer);
 	
 	pCleanUp();
 }
@@ -77,7 +77,7 @@ deoalAVideoPlayer::~deoalAVideoPlayer(){
 // Management
 ///////////////
 
-void deoalAVideoPlayer::SetVideo( deVideo *video ){
+void deoalAVideoPlayer::SetVideo(deVideo *video){
 	// WARNING Called during synchronization time by main thread
 	
 	pDecoder = NULL;
@@ -87,11 +87,11 @@ void deoalAVideoPlayer::SetVideo( deVideo *video ){
 	pSampleCount = 0;
 	pBufferSampleSize = pBytesPerSample * pSampleRate;
 	
-	if( ! video ){
+	if(!video){
 		return;
 	}
 	
-	switch( video->GetBytesPerSample() ){
+	switch(video->GetBytesPerSample()){
 	case 1:
 	case 2:
 		break;
@@ -100,7 +100,7 @@ void deoalAVideoPlayer::SetVideo( deVideo *video ){
 		return;
 	}
 	
-	pDecoder.TakeOver( pAudioThread.GetOal().GetGameEngine()->GetVideoManager()->CreateAudioDecoder( video ) );
+	pDecoder.TakeOver(pAudioThread.GetOal().GetGameEngine()->GetVideoManager()->CreateAudioDecoder(video));
 	pBytesPerSample = video->GetBytesPerSample();
 	pChannelCount = video->GetChannelCount();
 	pSampleRate = video->GetSampleRate();
@@ -110,60 +110,60 @@ void deoalAVideoPlayer::SetVideo( deVideo *video ){
 	pAdvanceUpdateTracker();
 }
 
-void deoalAVideoPlayer::SetPlayState( deVideoPlayer::ePlayState playState ){
+void deoalAVideoPlayer::SetPlayState(deVideoPlayer::ePlayState playState){
 	pPlayState = playState;
 }
 
-void deoalAVideoPlayer::SetPlayPosition( float position, bool seeking ){
+void deoalAVideoPlayer::SetPlayPosition(float position, bool seeking){
 	pPlayPosition = position;
 	pSeekNextRead |= seeking;
 }
 
-void deoalAVideoPlayer::SetPlayRange( float from, float to ){
+void deoalAVideoPlayer::SetPlayRange(float from, float to){
 	pPlayFrom = from;
 	pPlayTo = to;
 }
 
-void deoalAVideoPlayer::SetPlaySpeed( float playSpeed ){
+void deoalAVideoPlayer::SetPlaySpeed(float playSpeed){
 	pPlaySpeed = playSpeed;
 }
 
-void deoalAVideoPlayer::SetLooping( bool looping ){
+void deoalAVideoPlayer::SetLooping(bool looping){
 	pLooping = looping;
 }
 
 
 
-void deoalAVideoPlayer::ReadSamples( void *buffer, int bufferSize, int offset, int samples ){
-	char *dataBuffer = ( char* )buffer;
+void deoalAVideoPlayer::ReadSamples(void *buffer, int bufferSize, int offset, int samples){
+	char *dataBuffer = (char*)buffer;
 	
-	if( pSeekNextRead ){
+	if(pSeekNextRead){
 		pSeekNextRead = false;
-		pDecoder->SetPosition( ( int )( pPlayPosition * pSampleRate ) );
+		pDecoder->SetPosition((int)(pPlayPosition * pSampleRate));
 	}
 	
-	while( true ){
-		const int writtenCount = pDecoder->ReadSamples( dataBuffer, samples * pBufferSampleSize ) / pBufferSampleSize;
-		if( writtenCount == samples ){
+	while(true){
+		const int writtenCount = pDecoder->ReadSamples(dataBuffer, samples * pBufferSampleSize) / pBufferSampleSize;
+		if(writtenCount == samples){
 			return;
 		}
 		
-		if( pLooping ){
+		if(pLooping){
 			dataBuffer += pBufferSampleSize * writtenCount;
 			samples -= writtenCount;
 			
 		}else{
 			int i;
-			if( pBytesPerSample == 1 ){
-				int8_t * const silenceData = ( int8_t* )dataBuffer + writtenCount;
-				for( i=writtenCount; i<samples; i++ ){
-					silenceData[ i ] = 0;
+			if(pBytesPerSample == 1){
+				int8_t * const silenceData = (int8_t*)dataBuffer + writtenCount;
+				for(i=writtenCount; i<samples; i++){
+					silenceData[i] = 0;
 				}
 				
 			}else{
-				int16_t * const silenceData = ( int16_t* )dataBuffer + writtenCount * 2;
-				for( i=writtenCount; i<samples; i++ ){
-					silenceData[ i ] = 0;
+				int16_t * const silenceData = (int16_t*)dataBuffer + writtenCount * 2;
+				for(i=writtenCount; i<samples; i++){
+					silenceData[i] = 0;
 				}
 			}
 			return;
@@ -181,7 +181,7 @@ void deoalAVideoPlayer::pCleanUp(){
 
 void deoalAVideoPlayer::pAdvanceUpdateTracker(){
 	pUpdateTracker++;
-	if( pUpdateTracker == 0 ){
+	if(pUpdateTracker == 0){
 		pUpdateTracker = 1;
 	}
 }

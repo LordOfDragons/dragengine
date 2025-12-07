@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create occlusion map. */
-	deoglOcclusionMap( deoglRenderThread &renderThread, int width, int height, int layerCount );
+	deoglOcclusionMap(deoglRenderThread &renderThread, int width, int height, int layerCount);
 	
 	/** Clean up occlusion map. */
 	~deoglOcclusionMap();

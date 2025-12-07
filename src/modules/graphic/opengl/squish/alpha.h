@@ -30,11 +30,11 @@
 
 namespace squish {
 
-void CompressAlphaDxt3( u8 const* rgba, int mask, void* block );
-void CompressAlphaDxt5( u8 const* rgba, int mask, void* block );
+void CompressAlphaDxt3(u8 const* rgba, int mask, void* block);
+void CompressAlphaDxt5(u8 const* rgba, int mask, void* block);
 
-void DecompressAlphaDxt3( u8* rgba, void const* block );
-void DecompressAlphaDxt5( u8* rgba, void const* block );
+void DecompressAlphaDxt3(u8* rgba, void const* block);
+void DecompressAlphaDxt5(u8* rgba, void const* block);
 
 } // namespace squish
 

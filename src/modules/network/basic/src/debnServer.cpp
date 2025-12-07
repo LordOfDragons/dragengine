@@ -54,9 +54,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnServer::debnServer( deNetworkBasic *netBasic, deServer *server ){
-	if( ! netBasic || ! server ){
-		DETHROW( deeInvalidParam );
+debnServer::debnServer(deNetworkBasic *netBasic, deServer *server){
+	if(!netBasic || !server){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNetBasic = netBasic;
@@ -79,16 +79,16 @@ debnServer::~debnServer(){
 // Management
 ///////////////
 
-void debnServer::ProcessConnectionRequest( debnAddress &address, decBaseFileReader &reader ){
+void debnServer::ProcessConnectionRequest(debnAddress &address, decBaseFileReader &reader){
 	// reject connection if not listening or there is no script module peer
 	deBaseScriptingServer * const scrSvr = pServer->GetPeerScripting();
-	if( ! pListening || ! scrSvr ){
+	if(!pListening || !scrSvr){
 		decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
-		sendWriter.SetPosition( 0 );
+		sendWriter.SetPosition(0);
 		pNetBasic->GetSharedSendDatagram()->Clear();
-		sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
-		sendWriter.WriteByte( ( uint8_t )ecaRejected );
-		pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
+		sendWriter.WriteByte((uint8_t)eccConnectionAck);
+		sendWriter.WriteByte((uint8_t)ecaRejected);
+		pSocket->SendDatagram(*pNetBasic->GetSharedSendDatagram(), address);
 		return;
 	}
 	
@@ -96,17 +96,17 @@ void debnServer::ProcessConnectionRequest( debnAddress &address, decBaseFileRead
 	decIntSet clientProtocols;
 	const int clientProtocolCount = reader.ReadUShort();
 	int i;
-	for( i=0; i<clientProtocolCount; i++ ){
-		clientProtocols.Add( reader.ReadUShort() );
+	for(i=0; i<clientProtocolCount; i++){
+		clientProtocols.Add(reader.ReadUShort());
 	}
 	
-	if( ! clientProtocols.Has( epDENetworkProtocol ) ){
+	if(!clientProtocols.Has(epDENetworkProtocol)){
 		decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
-		sendWriter.SetPosition( 0 );
+		sendWriter.SetPosition(0);
 		pNetBasic->GetSharedSendDatagram()->Clear();
-		sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
-		sendWriter.WriteByte( ( uint8_t )ecaNoCommonProtocol );
-		pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
+		sendWriter.WriteByte((uint8_t)eccConnectionAck);
+		sendWriter.WriteByte((uint8_t)ecaNoCommonProtocol);
+		pSocket->SendDatagram(*pNetBasic->GetSharedSendDatagram(), address);
 		return;
 	}
 	
@@ -114,61 +114,61 @@ void debnServer::ProcessConnectionRequest( debnAddress &address, decBaseFileRead
 	
 	// create connection 
 	deConnection::Ref connection(deConnection::Ref::New(
-		 pNetBasic->GetGameEngine()->GetConnectionManager()->CreateConnection() ));
-	( ( debnConnection* )connection->GetPeerNetwork() )->AcceptConnection( pSocket, address, protocol );
+		 pNetBasic->GetGameEngine()->GetConnectionManager()->CreateConnection()));
+	((debnConnection*)connection->GetPeerNetwork())->AcceptConnection(pSocket, address, protocol);
 	
 	// send back result
 	decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
-	sendWriter.SetPosition( 0 );
+	sendWriter.SetPosition(0);
 	pNetBasic->GetSharedSendDatagram()->Clear();
-	sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
-	sendWriter.WriteByte( ( uint8_t )ecaAccepted );
-	sendWriter.WriteUShort( protocol );
-	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
+	sendWriter.WriteByte((uint8_t)eccConnectionAck);
+	sendWriter.WriteByte((uint8_t)ecaAccepted);
+	sendWriter.WriteUShort(protocol);
+	pSocket->SendDatagram(*pNetBasic->GetSharedSendDatagram(), address);
 	
 	// notify script about client connected
-	scrSvr->ClientConnected( connection );
+	scrSvr->ClientConnected(connection);
 }
 
-bool debnServer::ListenOn( const char *address ){
-	if( pListening ){
-		pNetBasic->LogWarn( "Already listening." );
+bool debnServer::ListenOn(const char *address){
+	if(pListening){
+		pNetBasic->LogWarn("Already listening.");
 		return false;
 	}
 	
-	decString useAddress( address );
+	decString useAddress(address);
 	
-	if( useAddress == "*" ){
+	if(useAddress == "*"){
 		decStringList publicAddresses;
-		pNetBasic->FindPublicAddresses( publicAddresses );
+		pNetBasic->FindPublicAddresses(publicAddresses);
 		
-		if( publicAddresses.GetCount() > 0 ){
-			useAddress = publicAddresses.GetAt( 0 );
+		if(publicAddresses.GetCount() > 0){
+			useAddress = publicAddresses.GetAt(0);
 			
 		}else{
-			pNetBasic->LogWarn( "debnServer.ListenOn: No public address found. Using localhost" );
+			pNetBasic->LogWarn("debnServer.ListenOn: No public address found. Using localhost");
 			useAddress = "localhost";
 		}
 	}
 	
-	pNetBasic->LogInfoFormat( "debnServer.ListenOn: Listening on '%s'", useAddress.GetString() );
+	pNetBasic->LogInfoFormat("debnServer.ListenOn: Listening on '%s'", useAddress.GetString());
 	
 	try{
-		pSocket = new debnSocket( *pNetBasic );
+		pSocket = new debnSocket(*pNetBasic);
 		
-		pSocket->GetAddress().SetFromString( useAddress );
+		pSocket->GetAddress().SetFromString(useAddress);
 		pSocket->Bind();
 		
 		pListening = true;
 		
-		pNetBasic->RegisterServer( this );
+		pNetBasic->RegisterServer(this);
 		
-	}catch( const deException &e ){
-		if( pSocket ){
+	}catch(const deException &e){
+		if(pSocket){
 			pSocket->FreeReference();
 			pSocket = nullptr;
 		}
-		pNetBasic->LogException( e );
+		pNetBasic->LogException(e);
 		return false;
 	}
 	
@@ -176,16 +176,16 @@ bool debnServer::ListenOn( const char *address ){
 }
 
 void debnServer::StopListening(){
-	if( ! pListening ){
+	if(!pListening){
 		return;
 	}
 	
-	if( pNetBasic ){
-		if( pSocket ){
-			pNetBasic->CloseConnections( pSocket );
+	if(pNetBasic){
+		if(pSocket){
+			pNetBasic->CloseConnections(pSocket);
 		}
 		
-		pNetBasic->UnregisterServer( this );
+		pNetBasic->UnregisterServer(this);
 	}
 	
 	pSocket->FreeReference();
@@ -199,15 +199,15 @@ void debnServer::StopListening(){
 // Linked List
 ////////////////
 
-void debnServer::SetPreviousServer( debnServer *server ){
+void debnServer::SetPreviousServer(debnServer *server){
 	pPreviousServer = server;
 }
 
-void debnServer::SetNextServer( debnServer *server ){
+void debnServer::SetNextServer(debnServer *server){
 	pNextServer = server;
 }
 
-void debnServer::SetIsRegistered( bool isRegistered ){
+void debnServer::SetIsRegistered(bool isRegistered){
 	pIsRegistered = isRegistered;
 }
 

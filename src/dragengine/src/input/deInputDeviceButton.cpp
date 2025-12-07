@@ -34,19 +34,19 @@
 //////////////////////////////
 
 deInputDeviceButton::deInputDeviceButton() :
-pType( ebtGeneric ),
-pTouchable( false ),
+pType(ebtGeneric),
+pTouchable(false),
 pApproachable(false){
 }
 
-deInputDeviceButton::deInputDeviceButton( const deInputDeviceButton &button ) :
-pID( button.pID ),
-pName( button.pName ),
-pType( button.pType ),
-pDisplayImage( button.pDisplayImage ),
-pDisplayIcons( button.pDisplayIcons ),
-pDisplayText( button.pDisplayText ),
-pTouchable( button.pTouchable ),
+deInputDeviceButton::deInputDeviceButton(const deInputDeviceButton &button) :
+pID(button.pID),
+pName(button.pName),
+pType(button.pType),
+pDisplayImage(button.pDisplayImage),
+pDisplayIcons(button.pDisplayIcons),
+pDisplayText(button.pDisplayText),
+pTouchable(button.pTouchable),
 pApproachable(button.pApproachable){
 }
 
@@ -58,23 +58,23 @@ deInputDeviceButton::~deInputDeviceButton(){
 // Device information
 ///////////////////////
 
-void deInputDeviceButton::SetID( const char *id ){
+void deInputDeviceButton::SetID(const char *id){
 	pID = id;
 }
 
-void deInputDeviceButton::SetName( const char *name ){
+void deInputDeviceButton::SetName(const char *name){
 	pName = name;
 }
 
-void deInputDeviceButton::SetType(deInputDeviceButton:: eButtonTypes type ){
+void deInputDeviceButton::SetType(deInputDeviceButton:: eButtonTypes type){
 	pType = type;
 }
 
-void deInputDeviceButton::SetComponent( const char *component ){
+void deInputDeviceButton::SetComponent(const char *component){
 	pComponent = component;
 }
 
-void deInputDeviceButton::SetDisplayImage( deImage *image ){
+void deInputDeviceButton::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
@@ -82,22 +82,22 @@ int deInputDeviceButton::GetDisplayIconCount() const{
 	return pDisplayIcons.GetCount();
 }
 
-deImage *deInputDeviceButton::GetDisplayIconAt( int index ) const{
-	return ( deImage* )pDisplayIcons.GetAt( index );
+deImage *deInputDeviceButton::GetDisplayIconAt(int index) const{
+	return (deImage*)pDisplayIcons.GetAt(index);
 }
 
-void deInputDeviceButton::AddDisplayIcon( deImage *image ){
-	if( ! image ){
-		DETHROW( deeNullPointer );
+void deInputDeviceButton::AddDisplayIcon(deImage *image){
+	if(!image){
+		DETHROW(deeNullPointer);
 	}
-	pDisplayIcons.Add( image );
+	pDisplayIcons.Add(image);
 }
 
-void deInputDeviceButton::SetDisplayText( const char *text ){
+void deInputDeviceButton::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
-void deInputDeviceButton::SetTouchable( bool touchable ){
+void deInputDeviceButton::SetTouchable(bool touchable){
 	pTouchable = touchable;
 }
 
@@ -110,7 +110,7 @@ void deInputDeviceButton::SetApproachable(bool approachable){
 // Operators
 //////////////
 
-deInputDeviceButton &deInputDeviceButton::operator=( const deInputDeviceButton &button ){
+deInputDeviceButton &deInputDeviceButton::operator=(const deInputDeviceButton &button){
 	pID = button.pID;
 	pName = button.pName;
 	pType = button.pType;

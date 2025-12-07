@@ -70,10 +70,10 @@ public:
 		sEntry();
 		
 		/** \brief Copy constructor. */
-		sEntry( const sEntry &entry );
+		sEntry(const sEntry &entry);
 		
 		/** \brief Assign entry. */
-		sEntry &operator=( const sEntry &entry );
+		sEntry &operator=(const sEntry &entry);
 	};
 	
 	
@@ -111,27 +111,27 @@ public:
 	int GetEntryCount();
 	
 	/** \brief Copy of entry at index. */
-	sEntry GetEntryAt( int index );
+	sEntry GetEntryAt(int index);
 	
 	/** \brief Add entry. */
-	void AddEntry( eMessageTypes type, const decString &source, const decString &message );
+	void AddEntry(eMessageTypes type, const decString &source, const decString &message);
 	
 	/** \brief Clear buffer. */
 	void Clear();
 	
 	/** \brief Send messages in the buffer to a logger and clear the buffer afterwards. */
-	void SendToLogger( deLogger &logger );
+	void SendToLogger(deLogger &logger);
 	
 	
 	
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	/*@}*/
 	
 	
@@ -143,7 +143,7 @@ protected:
 	
 private:
 	void pClear();
-	void pAddEntry( eMessageTypes type, const decString &source, const decString &message );
+	void pAddEntry(eMessageTypes type, const decString &source, const decString &message);
 };
 
 #endif

@@ -45,8 +45,8 @@
 ////////////////////////////
 
 gdeWPSTIMCategoryParticleEmitter::gdeWPSTIMCategoryParticleEmitter(
-	gdeWPSTreeModel &tree, gdeCategory *category ) :
-gdeWPSTIMCategory( tree, etCategoryParticleEmitter, category ){
+	gdeWPSTreeModel &tree, gdeCategory *category) :
+gdeWPSTIMCategory(tree, etCategoryParticleEmitter, category){
 }
 
 gdeWPSTIMCategoryParticleEmitter::~gdeWPSTIMCategoryParticleEmitter(){
@@ -58,22 +58,22 @@ gdeWPSTIMCategoryParticleEmitter::~gdeWPSTIMCategoryParticleEmitter(){
 ///////////////
 
 gdeWPSTIMCategoryParticleEmitter *gdeWPSTIMCategoryParticleEmitter::GetChildWith(
-gdeCategory* category, bool deep ) const{
-	gdeWPSTIMCategoryParticleEmitter *child = ( gdeWPSTIMCategoryParticleEmitter* )GetFirstChild();
+gdeCategory* category, bool deep) const{
+	gdeWPSTIMCategoryParticleEmitter *child = (gdeWPSTIMCategoryParticleEmitter*)GetFirstChild();
 	
-	while( child ){
-		if( child->GetCategory() == category ){
+	while(child){
+		if(child->GetCategory() == category){
 			return child;
 		}
 		
-		if( deep ){
-			gdeWPSTIMCategoryParticleEmitter * const deepChild = child->GetChildWith( category, true );
-			if( deepChild ){
+		if(deep){
+			gdeWPSTIMCategoryParticleEmitter * const deepChild = child->GetChildWith(category, true);
+			if(deepChild){
 				return deepChild;
 			}
 		}
 		
-		child = ( gdeWPSTIMCategoryParticleEmitter* )child->GetNext();
+		child = (gdeWPSTIMCategoryParticleEmitter*)child->GetNext();
 	}
 	
 	return NULL;
@@ -88,27 +88,27 @@ void gdeWPSTIMCategoryParticleEmitter::CategoriesChanged(){
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeCategory * const category = list.GetAt( i );
-		gdeWPSTIMCategoryParticleEmitter * const modelCategory = GetChildWith( category, false );
+	for(i=0; i<count; i++){
+		gdeCategory * const category = list.GetAt(i);
+		gdeWPSTIMCategoryParticleEmitter * const modelCategory = GetChildWith(category, false);
 		
-		if( modelCategory ){
+		if(modelCategory){
 			modelCategory->CategoriesChanged();
 			
 		}else{
-			item.TakeOver( new gdeWPSTIMCategoryParticleEmitter( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+			item.TakeOver(new gdeWPSTIMCategoryParticleEmitter(GetTree(), list.GetAt(i)));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMCategoryParticleEmitter * const modelCategory = ( gdeWPSTIMCategoryParticleEmitter* )child;
+	while(child){
+		gdeWPSTIMCategoryParticleEmitter * const modelCategory = (gdeWPSTIMCategoryParticleEmitter*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelCategory->GetCategory() ) ){
-			RemoveModel( modelCategory );
+		if(!list.Has(modelCategory->GetCategory())){
+			RemoveModel(modelCategory);
 		}
 	}
 	
@@ -124,41 +124,41 @@ void gdeWPSTIMCategoryParticleEmitter::OnAddedToTree(){
 	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMCategoryParticleEmitter( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item.TakeOver(new gdeWPSTIMCategoryParticleEmitter(GetTree(), list.GetAt(i)));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
 void gdeWPSTIMCategoryParticleEmitter::OnSelected(){
-	GetGameDefinition().SetActiveCategory( GetCategory() );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotCategoryParticleEmitter );
+	GetGameDefinition().SetActiveCategory(GetCategory());
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotCategoryParticleEmitter);
 }
 
-void gdeWPSTIMCategoryParticleEmitter::OnContextMenu( igdeMenuCascade &contextMenu ){
-	gdeWPSTIMCategory::OnContextMenu( contextMenu );
+void gdeWPSTIMCategoryParticleEmitter::OnContextMenu(igdeMenuCascade &contextMenu){
+	gdeWPSTIMCategory::OnContextMenu(contextMenu);
 }
 
-void gdeWPSTIMCategoryParticleEmitter::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMCategoryParticleEmitter::SelectBestMatching(const char *string){
+	if(!string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	igdeTreeItem *child = GetFirstChild();
 	
-	while( child ){
-		gdeCategory * const category = ( ( gdeWPSTIMCategoryParticleEmitter* )child )->GetCategory();
+	while(child){
+		gdeCategory * const category = ((gdeWPSTIMCategoryParticleEmitter*)child)->GetCategory();
 		child = child->GetNext();
 		
-		if( category->GetName().GetLower().FindString( searchString ) == -1 ){
+		if(category->GetName().GetLower().FindString(searchString) == -1){
 			continue;
 		}
 		
-		GetGameDefinition().SetActiveCategory( category );
-		GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotCategoryParticleEmitter );
+		GetGameDefinition().SetActiveCategory(category);
+		GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotCategoryParticleEmitter);
 		return;
 	}
 }

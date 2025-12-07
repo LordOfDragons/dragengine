@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetName( ceCameraShot *cameraShot, const char *newName );
+	ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetName();
@@ -70,8 +70,8 @@ public:
 	/*@}*/
 	
 private:
-	void pSetName( const char *name );
-	void pAddActions( ceConversationTopic *topic, const ceConversationActionList &list );
+	void pSetName(const char *name);
+	void pAddActions(ceConversationTopic *topic, const ceConversationActionList &list);
 };
 
 #endif

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPShapeListener( reWPShape &panel );
+	reWPShapeListener(reWPShape &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~reWPShapeListener();
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief A shape changed. */
-	virtual void ShapeChanged( reRig *rig, reRigShape *shape );
+	virtual void ShapeChanged(reRig *rig, reRigShape *shape);
 	
 	/** \brief A shape changed selection state. */
-	virtual void ShapeSelectedChanged( reRig *rig, reRigShape *shape );
+	virtual void ShapeSelectedChanged(reRig *rig, reRigShape *shape);
 	
 	/** \brief All shapes have been deselected. */
-	virtual void AllShapesDeselected( reRig *rig );
+	virtual void AllShapesDeselected(reRig *rig);
 	
 	/** \brief The active shape changed. */
-	virtual void ActiveShapeChanged( reRig *rig );
+	virtual void ActiveShapeChanged(reRig *rig);
 	/*@}*/
 };
 

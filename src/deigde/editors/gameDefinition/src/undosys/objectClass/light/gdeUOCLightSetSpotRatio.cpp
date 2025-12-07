@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetSpotRatio::gdeUOCLightSetSpotRatio( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetSpotRatio::gdeUOCLightSetSpotRatio(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set spot ratio" );
+	SetShortInfo("Light set spot ratio");
 	
 	pOldValue = light->GetSpotRatio();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetSpotRatio::~gdeUOCLightSetSpotRatio(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetSpotRatio::~gdeUOCLightSetSpotRatio(){
 ///////////////
 
 void gdeUOCLightSetSpotRatio::Undo(){
-	pLight->SetSpotRatio( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotRatio(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetSpotRatio::Redo(){
-	pLight->SetSpotRatio( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotRatio(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetReachCenter::aeURuleIKSetReachCenter( aeRuleInverseKinematic *rule, const decVector &newValue ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleIKSetReachCenter::aeURuleIKSetReachCenter(aeRuleInverseKinematic *rule, const decVector &newValue){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	
-	SetShortInfo( "Inverse kinematic set reach center" );
+	SetShortInfo("Inverse kinematic set reach center");
 	
 	pOldValue = rule->GetReachCenter();
 	pNewValue = newValue;
@@ -56,7 +56,7 @@ aeURuleIKSetReachCenter::aeURuleIKSetReachCenter( aeRuleInverseKinematic *rule, 
 }
 
 aeURuleIKSetReachCenter::~aeURuleIKSetReachCenter(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ aeURuleIKSetReachCenter::~aeURuleIKSetReachCenter(){
 ///////////////
 
 void aeURuleIKSetReachCenter::Undo(){
-	pRule->SetReachCenter( pOldValue );
+	pRule->SetReachCenter(pOldValue);
 }
 
 void aeURuleIKSetReachCenter::Redo(){
-	pRule->SetReachCenter( pNewValue );
+	pRule->SetReachCenter(pNewValue);
 }

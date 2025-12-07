@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetBoneParent( reRigBone *bone, reRigBone *parent );
+	reUSetBoneParent(reRigBone *bone, reRigBone *parent);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseAnimationModule( deLoadableModule &loadableModule );
+	deBaseAnimationModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseAnimationModule();
@@ -52,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load animation. */
-	virtual void LoadAnimation( decBaseFileReader &reader, deAnimation &animation ) = 0;
+	virtual void LoadAnimation(decBaseFileReader &reader, deAnimation &animation) = 0;
 	
 	/** \brief Save animation. */
-	virtual void SaveAnimation( decBaseFileWriter &writer, const deAnimation &animation ) = 0;
+	virtual void SaveAnimation(decBaseFileWriter &writer, const deAnimation &animation) = 0;
 	/*@}*/
 };
 

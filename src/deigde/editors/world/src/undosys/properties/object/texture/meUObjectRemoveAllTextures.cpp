@@ -41,29 +41,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRemoveAllTextures::meUObjectRemoveAllTextures( meObject *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+meUObjectRemoveAllTextures::meUObjectRemoveAllTextures(meObject *object){
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = object->GetTextureCount();
 	int i;
 	
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
+	if(count == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pObject = NULL;
 	
-	SetShortInfo( "Remove All Object Textures" );
+	SetShortInfo("Remove All Object Textures");
 	
-	for( i=0; i<count; i++ ){
-		pTextureList.AddTexture( object->GetTextureAt( i ) );
+	for(i=0; i<count; i++){
+		pTextureList.AddTexture(object->GetTextureAt(i));
 	}
 	
 	pObject = object;
@@ -72,7 +72,7 @@ meUObjectRemoveAllTextures::meUObjectRemoveAllTextures( meObject *object ){
 
 meUObjectRemoveAllTextures::~meUObjectRemoveAllTextures(){
 	pTextureList.RemoveAllTextures();
-	if( pObject ){
+	if(pObject){
 		pObject->FreeReference();
 	}
 }
@@ -86,8 +86,8 @@ void meUObjectRemoveAllTextures::Undo(){
 	const int count = pTextureList.GetTextureCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pObject->AddTexture( pTextureList.GetTextureAt( i ) );
+	for(i=0; i<count; i++){
+		pObject->AddTexture(pTextureList.GetTextureAt(i));
 	}
 }
 

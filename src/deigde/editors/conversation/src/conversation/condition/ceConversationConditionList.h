@@ -52,24 +52,24 @@ public:
 	/** Retrieves the number of conditions. */
 	int GetCount() const;
 	/** Retrieves the condition at the given position. */
-	ceConversationCondition *GetAt( int index ) const;
+	ceConversationCondition *GetAt(int index) const;
 	/** Retrieves the index of the given condition or -1 if not found. */
-	int IndexOf( ceConversationCondition *condition ) const;
+	int IndexOf(ceConversationCondition *condition) const;
 	/** Determines if a condition exists. */
-	bool Has( ceConversationCondition *condition ) const;
+	bool Has(ceConversationCondition *condition) const;
 	/** Adds a condition. */
-	void Add( ceConversationCondition *condition );
+	void Add(ceConversationCondition *condition);
 	/** Inserts a new condition. */
-	void InsertAt( ceConversationCondition *condition, int index );
+	void InsertAt(ceConversationCondition *condition, int index);
 	/** Moves a condition to a new position. */
-	void MoveTo( ceConversationCondition *condition, int index );
+	void MoveTo(ceConversationCondition *condition, int index);
 	/** Removes a condition. */
-	void Remove( ceConversationCondition *condition );
+	void Remove(ceConversationCondition *condition);
 	/** Removes all conditions. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceConversationConditionList &operator=( const ceConversationConditionList &list );
+	ceConversationConditionList &operator=(const ceConversationConditionList &list);
 	/*@}*/
 };
 

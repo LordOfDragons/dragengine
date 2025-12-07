@@ -49,9 +49,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeLoadSaveNavSpace::igdeLoadSaveNavSpace( igdeEnvironment *environment, const char *loggingSource ){
-	if( ! environment || ! loggingSource ){
-		DETHROW( deeInvalidParam );
+igdeLoadSaveNavSpace::igdeLoadSaveNavSpace(igdeEnvironment *environment, const char *loggingSource){
+	if(!environment || !loggingSource){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEnvironment = environment;
@@ -70,15 +70,15 @@ igdeLoadSaveNavSpace::~igdeLoadSaveNavSpace(){
 // Management
 ///////////////
 
-void igdeLoadSaveNavSpace::SetName( const char *name ){
+void igdeLoadSaveNavSpace::SetName(const char *name){
 	pName = name;
 }
 
-void igdeLoadSaveNavSpace::SetPattern( const char *pattern ){
+void igdeLoadSaveNavSpace::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
-void igdeLoadSaveNavSpace::SetDefaultExtension( const char *extension ){
+void igdeLoadSaveNavSpace::SetDefaultExtension(const char *extension){
 	pDefaultExtension = extension;
 }
 
@@ -87,7 +87,7 @@ void igdeLoadSaveNavSpace::SetDefaultExtension( const char *extension ){
 // Loading and saving
 ///////////////////////
 
-void igdeLoadSaveNavSpace::Load( deNavigationSpace &navspace, decBaseFileReader &reader ){
+void igdeLoadSaveNavSpace::Load(deNavigationSpace &navspace, decBaseFileReader &reader){
 	const char signatureCheck[] = "Drag[en]gine Navigation Space";
 	int vertexCount = 0;
 	int edgeCount = 0;
@@ -95,95 +95,95 @@ void igdeLoadSaveNavSpace::Load( deNavigationSpace &navspace, decBaseFileReader 
 	int faceCount = 0;
 	int wallCount = 0;
 	int roomCount = 0;
-	char signature[ 29 ];
+	char signature[29];
 	int version; //, flags;
 	decVector position;
 	int i;
 	
 	// clear the navigation space
-	navspace.SetRoomCount( 0 );
-	navspace.SetWallCount( 0 );
-	navspace.SetFaceCount( 0 );
-	navspace.SetCornerCount( 0 );
-	navspace.SetEdgeCount( 0 );
-	navspace.SetVertexCount( 0 );
-	navspace.SetType( deNavigationSpace::estGrid );
+	navspace.SetRoomCount(0);
+	navspace.SetWallCount(0);
+	navspace.SetFaceCount(0);
+	navspace.SetCornerCount(0);
+	navspace.SetEdgeCount(0);
+	navspace.SetVertexCount(0);
+	navspace.SetType(deNavigationSpace::estGrid);
 	
 	// read header
-	reader.Read( &signature, 29 );
-	if( strncmp( &signature[ 0 ], &signatureCheck[ 0 ], 29 ) != 0 ){
-		DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
+	reader.Read(&signature, 29);
+	if(strncmp(&signature[0], &signatureCheck[0], 29) != 0){
+		DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 	}
 	
-	version = ( int )reader.ReadUShort();
+	version = (int)reader.ReadUShort();
 	/*flags = ( int )*/reader.ReadUShort();
 	
-	if( version == 1 ){
+	if(version == 1){
 		// read counts
-		vertexCount = ( int )reader.ReadUShort();
-		edgeCount = ( int )reader.ReadUShort();
-		cornerCount = ( int )reader.ReadUShort();
-		faceCount = ( int )reader.ReadUShort();
-		wallCount = ( int )reader.ReadUShort();
-		roomCount = ( int )reader.ReadUShort();
+		vertexCount = (int)reader.ReadUShort();
+		edgeCount = (int)reader.ReadUShort();
+		cornerCount = (int)reader.ReadUShort();
+		faceCount = (int)reader.ReadUShort();
+		wallCount = (int)reader.ReadUShort();
+		roomCount = (int)reader.ReadUShort();
 		
-		navspace.SetType( ( deNavigationSpace::eSpaceTypes )reader.ReadUShort() );
+		navspace.SetType((deNavigationSpace::eSpaceTypes)reader.ReadUShort());
 		
-		navspace.SetVertexCount( vertexCount );
-		navspace.SetEdgeCount( edgeCount );
-		navspace.SetCornerCount( cornerCount );
-		navspace.SetFaceCount( faceCount );
-		navspace.SetWallCount( wallCount );
-		navspace.SetRoomCount( roomCount );
+		navspace.SetVertexCount(vertexCount);
+		navspace.SetEdgeCount(edgeCount);
+		navspace.SetCornerCount(cornerCount);
+		navspace.SetFaceCount(faceCount);
+		navspace.SetWallCount(wallCount);
+		navspace.SetRoomCount(roomCount);
 		
 		// read vertices
-		for( i=0; i<vertexCount; i++ ){
+		for(i=0; i<vertexCount; i++){
 			position.x = reader.ReadFloat();
 			position.y = reader.ReadFloat();
 			position.z = reader.ReadFloat();
-			navspace.SetVertexAt( i, position );
+			navspace.SetVertexAt(i, position);
 		}
 		
 		// read edges
-		for( i=0; i<edgeCount; i++ ){
-			deNavigationSpaceEdge &edge = navspace.GetEdgeAt( i );
-			edge.SetVertex1( reader.ReadUShort() );
-			edge.SetVertex2( reader.ReadUShort() );
-			edge.SetType1( reader.ReadUShort() );
-			edge.SetType2( reader.ReadUShort() );
+		for(i=0; i<edgeCount; i++){
+			deNavigationSpaceEdge &edge = navspace.GetEdgeAt(i);
+			edge.SetVertex1(reader.ReadUShort());
+			edge.SetVertex2(reader.ReadUShort());
+			edge.SetType1(reader.ReadUShort());
+			edge.SetType2(reader.ReadUShort());
 		}
 		
 		// read corners
-		for( i=0; i<cornerCount; i++ ){
-			deNavigationSpaceCorner &corner = navspace.GetCornerAt( i );
-			corner.SetVertex( reader.ReadUShort() );
-			corner.SetType( reader.ReadUShort() );
+		for(i=0; i<cornerCount; i++){
+			deNavigationSpaceCorner &corner = navspace.GetCornerAt(i);
+			corner.SetVertex(reader.ReadUShort());
+			corner.SetType(reader.ReadUShort());
 		}
 		
 		// read faces
-		for( i=0; i<faceCount; i++ ){
-			deNavigationSpaceFace &face = navspace.GetFaceAt( i );
-			face.SetCornerCount( reader.ReadUShort() );
-			face.SetType( reader.ReadUShort() );
+		for(i=0; i<faceCount; i++){
+			deNavigationSpaceFace &face = navspace.GetFaceAt(i);
+			face.SetCornerCount(reader.ReadUShort());
+			face.SetType(reader.ReadUShort());
 		}
 		
 		// read walls
-		for( i=0; i<wallCount; i++ ){
-			deNavigationSpaceWall &wall = navspace.GetWallAt( i );
-			wall.SetFace( reader.ReadUShort() );
-			wall.SetType( reader.ReadUShort() );
+		for(i=0; i<wallCount; i++){
+			deNavigationSpaceWall &wall = navspace.GetWallAt(i);
+			wall.SetFace(reader.ReadUShort());
+			wall.SetType(reader.ReadUShort());
 		}
 		
 		// read rooms
-		for( i=0; i<roomCount; i++ ){
-			deNavigationSpaceRoom &room = navspace.GetRoomAt( i );
-			room.SetFrontWallCount( reader.ReadUShort() );
-			room.SetBackWallCount( reader.ReadUShort() );
-			room.SetType( reader.ReadUShort() );
+		for(i=0; i<roomCount; i++){
+			deNavigationSpaceRoom &room = navspace.GetRoomAt(i);
+			room.SetFrontWallCount(reader.ReadUShort());
+			room.SetBackWallCount(reader.ReadUShort());
+			room.SetType(reader.ReadUShort());
 		}
 	}
 }
 
-void igdeLoadSaveNavSpace::Save( const deNavigationSpace &navspace, decBaseFileWriter &writer ){
-	DETHROW_INFO( deeInvalidAction, "Not implemented yet" );
+void igdeLoadSaveNavSpace::Save(const deNavigationSpace &navspace, decBaseFileWriter &writer){
+	DETHROW_INFO(deeInvalidAction, "Not implemented yet");
 }

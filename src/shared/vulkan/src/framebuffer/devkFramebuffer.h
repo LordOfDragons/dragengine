@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkFramebuffer( devkRenderPass *renderPass, const devkFramebufferConfiguration &configuration );
+	devkFramebuffer(devkRenderPass *renderPass, const devkFramebufferConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */

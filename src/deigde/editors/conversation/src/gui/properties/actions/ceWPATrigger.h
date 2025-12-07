@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPATrigger( ceWPTopic &parentPanel );
+	ceWPATrigger(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Cleans up the property window. */

@@ -50,10 +50,10 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	decIntOrderedSet( int capacity );
+	decIntOrderedSet(int capacity);
 	
 	/** \brief Create copy of a set. */
-	decIntOrderedSet( const decIntOrderedSet &set );
+	decIntOrderedSet(const decIntOrderedSet &set);
 	
 	/** \brief Clean up the set. */
 	~decIntOrderedSet();
@@ -70,75 +70,75 @@ public:
 	 * \brief Value at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	int GetAt( int index ) const;
+	int GetAt(int index) const;
 	
 	/** \brief Index of the a value or -1 if not found. */
-	int IndexOf( int value ) const;
+	int IndexOf(int value) const;
 	
 	/** \brief Determine if a value exists. */
-	bool Has( int value ) const;
+	bool Has(int value) const;
 	
 	/**
 	 * \brief Add value.
 	 * \throws deeInvalidParam \em value is contained in the set.
 	 */
-	void Add( int value );
+	void Add(int value);
 	
 	/** \brief Add value if not existing. */
-	void AddIfAbsent( int value );
+	void AddIfAbsent(int value);
 	
 	/**
 	 * \brief Insert value.
 	 * \throws deeInvalidParam \em value is contained in the set.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void Insert( int value, int index );
+	void Insert(int value, int index);
 	
 	/**
 	 * \brief Move value.
 	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
 	 */
-	void Move( int value, int to );
+	void Move(int value, int to);
 	
 	/**
 	 * \brief Remove value.
 	 * \throws deeInvalidParam \em value is absent from the set.
 	 */
-	void Remove( int value );
+	void Remove(int value);
 	
 	/** \brief Remove value if present. */
-	void RemoveIfPresent( int value );
+	void RemoveIfPresent(int value);
 	
 	/** \brief Removes all values. */
 	void RemoveAll();
 	
 	/** \brief Determine if this set is equal to another set. */
-	bool Equals( const decIntOrderedSet &set ) const;
+	bool Equals(const decIntOrderedSet &set) const;
 	
 	/**
 	 * \brief New set with values from the beginning of this set.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	decIntOrderedSet GetHead( int count ) const;
+	decIntOrderedSet GetHead(int count) const;
 	
 	/**
 	 * \brief Set set to values from the beginning of this set.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void GetHead( decIntOrderedSet &list, int count ) const;
+	void GetHead(decIntOrderedSet &list, int count) const;
 	
 	/**
 	 * \brief New set with values from the end of this set.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	decIntOrderedSet GetTail( int count ) const;
+	decIntOrderedSet GetTail(int count) const;
 	
 	/**
 	 * \brief Set set to values from the end of this set.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void GetTail( decIntOrderedSet &list, int count ) const;
+	void GetTail(decIntOrderedSet &list, int count) const;
 	
 	/**
 	 * \brief New set with values from the middle of this set.
@@ -148,7 +148,7 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
-	decIntOrderedSet GetMiddle( int from, int to ) const;
+	decIntOrderedSet GetMiddle(int from, int to) const;
 	
 	/**
 	 * \brief Set set to values from the middle of this set.
@@ -158,7 +158,7 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
-	void GetMiddle( decIntOrderedSet &list, int from, int to ) const;
+	void GetMiddle(decIntOrderedSet &list, int from, int to) const;
 	
 	/**
 	 * \brief New set with values from the middle of this set using a step size.
@@ -169,7 +169,7 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
-	decIntOrderedSet GetSliced( int from, int to, int step ) const;
+	decIntOrderedSet GetSliced(int from, int to, int step) const;
 	
 	/**
 	 * \brief Set set to values from the middle of this set using a step size.
@@ -180,7 +180,7 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
-	void GetSliced( decIntOrderedSet &list, int from, int to, int step ) const;
+	void GetSliced(decIntOrderedSet &list, int from, int to, int step) const;
 	/*@}*/
 	
 	
@@ -188,22 +188,22 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if this set is equal to another set. */
-	bool operator==( const decIntOrderedSet &set ) const;
+	bool operator==(const decIntOrderedSet &set) const;
 	
 	/** \brief New set with all values from this set followed by all values of another set. */
-	decIntOrderedSet operator+( const decIntOrderedSet &set ) const;
+	decIntOrderedSet operator+(const decIntOrderedSet &set) const;
 	
 	/**
 	 * \brief Value at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	int operator[]( int index ) const;
+	int operator[](int index) const;
 	
 	/** \brief Copy set to this set. */
-	decIntOrderedSet &operator=( const decIntOrderedSet &set );
+	decIntOrderedSet &operator=(const decIntOrderedSet &set);
 	
 	/** \brief Append absent values of set to this set. */
-	decIntOrderedSet &operator+=( const decIntOrderedSet &set );
+	decIntOrderedSet &operator+=(const decIntOrderedSet &set);
 	/*@}*/
 };
 

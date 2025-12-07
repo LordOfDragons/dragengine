@@ -41,26 +41,26 @@
 ////////////////////////////
 
 seUSourceSynthSetConController::seUSourceSynthSetConController(
-seSourceSynthesizer *source, int target, seController *newController ) :
-pSource( NULL )
+seSourceSynthesizer *source, int target, seController *newController) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTarget = target;
 	pOldController = NULL;
 	pNewController = NULL;
 	
-	SetShortInfo( "Synthesizer source set connection controller" );
+	SetShortInfo("Synthesizer source set connection controller");
 	
-	pOldController = source->GetControllerAt( target );
-	if( pOldController ){
+	pOldController = source->GetControllerAt(target);
+	if(pOldController){
 		pOldController->AddReference();
 	}
 	
 	pNewController = newController;
-	if( pNewController ){
+	if(pNewController){
 		pNewController->AddReference();
 	}
 	
@@ -69,13 +69,13 @@ pSource( NULL )
 }
 
 seUSourceSynthSetConController::~seUSourceSynthSetConController(){
-	if( pNewController ){
+	if(pNewController){
 		pNewController->FreeReference();
 	}
-	if( pOldController ){
+	if(pOldController){
 		pOldController->FreeReference();
 	}
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -86,9 +86,9 @@ seUSourceSynthSetConController::~seUSourceSynthSetConController(){
 ///////////////
 
 void seUSourceSynthSetConController::Undo(){
-	pSource->SetControllerAt( pTarget, pOldController );
+	pSource->SetControllerAt(pTarget, pOldController);
 }
 
 void seUSourceSynthSetConController::Redo(){
-	pSource->SetControllerAt( pTarget, pNewController );
+	pSource->SetControllerAt(pTarget, pNewController);
 }

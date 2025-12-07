@@ -77,7 +77,7 @@ public:
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Set matrix. */
-	void SetMatrix( const decMatrix &matrix );
+	void SetMatrix(const decMatrix &matrix);
 	
 	
 	
@@ -85,13 +85,13 @@ public:
 	inline const decColor &GetEdgeColor() const{ return pEdgeColor; }
 	
 	/** Set edge color. */
-	void SetEdgeColor( const decColor &color );
+	void SetEdgeColor(const decColor &color);
 	
 	/** Fill color. */
 	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	
 	
@@ -99,7 +99,7 @@ public:
 	inline const decShapeList &GetShapeList() const{ return pShapeList; }
 	
 	/** Set shape list. */
-	void SetShapeList( const decShapeList &shapes );
+	void SetShapeList(const decShapeList &shapes);
 	
 	
 	
@@ -107,33 +107,33 @@ public:
 	inline int GetFillFirstPoint() const{ return pFillFirstPoint; }
 	
 	/** Set first point for rendering fill triangles. */
-	void SetFillFirstPoint( int firstPoint );
+	void SetFillFirstPoint(int firstPoint);
 	
 	/** Point count for rendering fill triangles. */
 	inline int GetFillPointCount() const{ return pFillPointCount; }
 	
 	/** Set point count for rendering fill triangles. */
-	void SetFillPointCount( int pointCount );
+	void SetFillPointCount(int pointCount);
 	
 	/** First point for rendering lines. */
 	inline int GetLineFirstPoint() const{ return pLineFirstPoint; }
 	
 	/** Set first point for rendering lines. */
-	void SetLineFirstPoint( int firstPoint );
+	void SetLineFirstPoint(int firstPoint);
 	
 	/** Point count for rendering lines. */
 	inline int GetLinePointCount() const{ return pLinePointCount; }
 	
 	/** Set point count for rendering lines. */
-	void SetLinePointCount( int pointCount );
+	void SetLinePointCount(int pointCount);
 	
 	
 	
 	/** Calculate the number of points required and stores them. */
-	int CalcRequiredPoints( const deDebugDrawerShape &ddshape, int firstPoint );
+	int CalcRequiredPoints(const deDebugDrawerShape &ddshape, int firstPoint);
 	
 	/** Write points to VBO data. */
-	void WriteVBOData( const deDebugDrawerShape &ddshape, oglVector3 *vboData );
+	void WriteVBOData(const deDebugDrawerShape &ddshape, oglVector3 *vboData);
 	/*@}*/
 	
 	

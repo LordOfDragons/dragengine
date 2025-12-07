@@ -55,27 +55,27 @@ public:
 	/** Retrieves the number of occlusion meshes. */
 	inline int GetCount() const{ return pOcclusionMeshCount; }
 	/** Retrieves the index of the occlusion mesh or -1 if not in the list. */
-	int IndexOfOcclusionMesh( deoglOcclusionMesh *occlusionMesh ) const;
+	int IndexOfOcclusionMesh(deoglOcclusionMesh *occlusionMesh) const;
 	/** Determines if the occlusion mesh exists. */
-	bool Has( deoglOcclusionMesh *occlusionMesh ) const;
+	bool Has(deoglOcclusionMesh *occlusionMesh) const;
 	/** Retrieves the occlusion mesh at the given index. */
-	deoglOcclusionMesh *GetAt( int index ) const;
+	deoglOcclusionMesh *GetAt(int index) const;
 	/** Adds a occlusion mesh. */
-	void Add( deoglOcclusionMesh *occlusionMesh );
+	void Add(deoglOcclusionMesh *occlusionMesh);
 	/** Adds a occlusion mesh if missing in the list. Returns true if added. */
-	bool AddIfMissing( deoglOcclusionMesh *occlusionMesh );
+	bool AddIfMissing(deoglOcclusionMesh *occlusionMesh);
 	/** Removes occlusion mesh. */
-	void Remove( deoglOcclusionMesh *occlusionMesh );
+	void Remove(deoglOcclusionMesh *occlusionMesh);
 	/** Removes occlusion mesh if existing in the list. Returns true if removed. */
-	bool RemoveIfExisting( deoglOcclusionMesh *occlusionMesh );
+	bool RemoveIfExisting(deoglOcclusionMesh *occlusionMesh);
 	/** Removes occlusion mesh from the given index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	/** Removes all occlusion meshes. */
 	void RemoveAll();
 	/*@}*/
 	
 private:
-	void pAddOcclusionMesh( deoglOcclusionMesh *occlusionMesh );
+	void pAddOcclusionMesh(deoglOcclusionMesh *occlusionMesh);
 };
 
 #endif

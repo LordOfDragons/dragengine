@@ -43,10 +43,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDeviceComponent::deoxrDeviceComponent( deoxrDevice &device ) :
-pDevice( device ),
-pIndex( -1 ),
-pType( deInputDeviceComponent::ectGeneric ){
+deoxrDeviceComponent::deoxrDeviceComponent(deoxrDevice &device) :
+pDevice(device),
+pIndex(-1),
+pType(deInputDeviceComponent::ectGeneric){
 }
 
 deoxrDeviceComponent::~deoxrDeviceComponent(){
@@ -57,29 +57,29 @@ deoxrDeviceComponent::~deoxrDeviceComponent(){
 // Management
 ///////////////
 
-void deoxrDeviceComponent::SetIndex( int index ){
+void deoxrDeviceComponent::SetIndex(int index){
 	pIndex = index;
 }
 
-void deoxrDeviceComponent::SetID( const char *id ){
+void deoxrDeviceComponent::SetID(const char *id){
 	pID = id;
 }
 
-void deoxrDeviceComponent::SetName( const char *name ){
+void deoxrDeviceComponent::SetName(const char *name){
 	pName = name;
 }
 
-void deoxrDeviceComponent::SetType( deInputDeviceComponent::eComponentTypes type ){
+void deoxrDeviceComponent::SetType(deInputDeviceComponent::eComponentTypes type){
 	pType = type;
 }
 
 
 
-void deoxrDeviceComponent::SetDisplayImages( const char *name ){
+void deoxrDeviceComponent::SetDisplayImages(const char *name){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(!name){
 		return;
 	}
 	
@@ -88,39 +88,39 @@ void deoxrDeviceComponent::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/component";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
+	const int sizes[4] = {128, 64, 32, 16};
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		pDisplayIcons.Add( deImage::Ref::New( imageManager.LoadImage( vfs, filename, "/" ) ) );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		pDisplayIcons.Add(deImage::Ref::New(imageManager.LoadImage(vfs, filename, "/")));
 	}
 }
 
-void deoxrDeviceComponent::SetDisplayImages( const deoxrDeviceComponent &component ){
+void deoxrDeviceComponent::SetDisplayImages(const deoxrDeviceComponent &component){
 	pDisplayImage = component.pDisplayImage;
 	pDisplayIcons = component.pDisplayIcons;
 }
 
-void deoxrDeviceComponent::SetDisplayText( const char *text ){
+void deoxrDeviceComponent::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
 
 
-void deoxrDeviceComponent::GetInfo( deInputDeviceComponent &info ) const{
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
+void deoxrDeviceComponent::GetInfo(deInputDeviceComponent &info) const{
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
 	
-	info.SetDisplayImage( pDisplayImage );
+	info.SetDisplayImage(pDisplayImage);
 	
 	int i;
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	for(i=0; i<pDisplayIcons.GetCount(); i++){
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayText(pDisplayText);
 }

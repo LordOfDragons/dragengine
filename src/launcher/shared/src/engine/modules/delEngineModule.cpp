@@ -48,17 +48,17 @@
 /////////////////////////////////
 
 delEngineModule::delEngineModule() :
-pType( deModuleSystem::emtUnknown ),
-pPriority( 0 ),
-pIsFallback( false ),
-pStatus( emsNotTested ),
-pErrorCode( 0 ),
+pType(deModuleSystem::emtUnknown),
+pPriority(0),
+pIsFallback(false),
+pStatus(emsNotTested),
+pErrorCode(0),
 
-pLibFileSizeShould( 0 ),
-pLibFileSizeIs( 0 )
+pLibFileSizeShould(0),
+pLibFileSizeIs(0)
 {
-	pLibFileHashIs.Set( '0', 20 );
-	pLibFileHashShould.Set( '0', 20 );
+	pLibFileHashIs.Set('0', 20);
+	pLibFileHashShould.Set('0', 20);
 }
 
 delEngineModule::delEngineModule(const deInternalModule &module) :
@@ -83,127 +83,127 @@ delEngineModule::~delEngineModule(){
 // Management
 ///////////////
 
-void delEngineModule::SetType( deModuleSystem::eModuleTypes type ){
+void delEngineModule::SetType(deModuleSystem::eModuleTypes type){
 	pType = type;
 }
 
-void delEngineModule::SetName( const char *name ){
+void delEngineModule::SetName(const char *name){
 	pName = name;
 }
 
-void delEngineModule::SetDescription( const decUnicodeString &description ){
+void delEngineModule::SetDescription(const decUnicodeString &description){
 	pDescription = description;
 }
 
-void delEngineModule::SetAuthor( const decUnicodeString &author ){
+void delEngineModule::SetAuthor(const decUnicodeString &author){
 	pAuthor = author;
 }
 
-void delEngineModule::SetVersion( const char *version ){
+void delEngineModule::SetVersion(const char *version){
 	pVersion = version;
 }
 
-void delEngineModule::SetDirectoryName( const char *dirname ){
+void delEngineModule::SetDirectoryName(const char *dirname){
 	pDirName = dirname;
 }
 
-void delEngineModule::SetPattern( const char *pattern ){
+void delEngineModule::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
-void delEngineModule::SetPriority( int priority ){
+void delEngineModule::SetPriority(int priority){
 	pPriority = priority;
 }
 
-void delEngineModule::SetIsFallback( bool isFallback ){
+void delEngineModule::SetIsFallback(bool isFallback){
 	pIsFallback = isFallback;
 }
 
-void delEngineModule::SetStatus( eModuleStatus status ){
+void delEngineModule::SetStatus(eModuleStatus status){
 	pStatus = status;
 }
 
-void delEngineModule::SetErrorCode( int errorCode ){
+void delEngineModule::SetErrorCode(int errorCode){
 	pErrorCode = errorCode;
 }
 
 
 
-void delEngineModule::SetLibFileName( const char *name ){
+void delEngineModule::SetLibFileName(const char *name){
 	pLibFileName = name;
 }
 
-void delEngineModule::SetLibFileSizeShould( int size ){
-	if( size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "size < 0" );
+void delEngineModule::SetLibFileSizeShould(int size){
+	if(size < 0){
+		DETHROW_INFO(deeInvalidParam, "size < 0");
 	}
 	pLibFileSizeShould = size;
 }
 
-void delEngineModule::SetLibFileSizeIs( int size ){
-	if( size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "size < 0" );
+void delEngineModule::SetLibFileSizeIs(int size){
+	if(size < 0){
+		DETHROW_INFO(deeInvalidParam, "size < 0");
 	}
 	pLibFileSizeIs = size;
 }
 
-void delEngineModule::SetLibFileHashShould( const char *hash ){
+void delEngineModule::SetLibFileHashShould(const char *hash){
 	pLibFileHashShould = hash;
 }
 
-void delEngineModule::SetLibFileHashIs( const char *hash ){
+void delEngineModule::SetLibFileHashIs(const char *hash){
 	pLibFileHashIs = hash;
 }
 
-void delEngineModule::SetLibFileEntryPoint( const char *name ){
+void delEngineModule::SetLibFileEntryPoint(const char *name){
 	pLibFileEntryPoint = name;
 }
 
-void delEngineModule::CalcSizeAndHashes( delLauncher &launcher ){
+void delEngineModule::CalcSizeAndHashes(delLauncher &launcher){
 	pLibFileSizeIs = 0;
-	pLibFileHashIs.Set( '0', 20 );
+	pLibFileHashIs.Set('0', 20);
 	
 	if(pLibFileName.IsEmpty()){
 		return; // internal module
 	}
 	
 	decBaseFileReader::Ref reader;
-	unsigned char buffer[ 4096 ];
-	unsigned int values[ 5 ];
+	unsigned char buffer[4096];
+	unsigned int values[5];
 	decPath path;
 	SHA1 sha1;
 	int i;
 	
 	try{
-		if( decPath::IsNativePathAbsolute( pLibFileName ) ){
-			reader.TakeOver( new decDiskFileReader( pLibFileName ) );
+		if(decPath::IsNativePathAbsolute(pLibFileName)){
+			reader.TakeOver(new decDiskFileReader(pLibFileName));
 			
 		}else{
-			path.SetFromUnix( "/engine/lib/modules" );
-			path.AddComponent( deModuleSystem::GetTypeDirectory( pType ) );
-			path.AddUnixPath( pDirName );
-			path.AddComponent( pVersion );
-			path.AddUnixPath( pLibFileName );
-			reader.TakeOver( launcher.GetVFS()->OpenFileForReading( path ) );
+			path.SetFromUnix("/engine/lib/modules");
+			path.AddComponent(deModuleSystem::GetTypeDirectory(pType));
+			path.AddUnixPath(pDirName);
+			path.AddComponent(pVersion);
+			path.AddUnixPath(pLibFileName);
+			reader.TakeOver(launcher.GetVFS()->OpenFileForReading(path));
 		}
 		
 		pLibFileSizeIs = reader->GetLength();
 		
 		sha1.Reset();
-		for( i=0; i<pLibFileSizeIs; i+=4096 ){
-			const int bytes = decMath::min( 4096, pLibFileSizeIs - i );
-			reader->Read( buffer, bytes );
-			sha1.Input( buffer, bytes );
+		for(i=0; i<pLibFileSizeIs; i+=4096){
+			const int bytes = decMath::min(4096, pLibFileSizeIs - i);
+			reader->Read(buffer, bytes);
+			sha1.Input(buffer, bytes);
 		}
 		
-		if( sha1.Result( values ) ){
-			pLibFileHashIs.Format( "%08x%08x%08x%08x%08x",
-				values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ], values[ 4 ] );
+		if(sha1.Result(values)){
+			pLibFileHashIs.Format("%08x%08x%08x%08x%08x",
+				values[0], values[1], values[2], values[3], values[4]);
 		}
 		
-	}catch( const deException &e ){
-		launcher.GetLogger()->LogErrorFormat( launcher.GetLogSource(),
-			"EngineModule.CalcSizeAndHashes failed with exception (module=%s)", pName.GetString() );
-		launcher.GetLogger()->LogException( launcher.GetLogSource(), e );
+	}catch(const deException &e){
+		launcher.GetLogger()->LogErrorFormat(launcher.GetLogSource(),
+			"EngineModule.CalcSizeAndHashes failed with exception (module=%s)", pName.GetString());
+		launcher.GetLogger()->LogException(launcher.GetLogSource(), e);
 	}
 }

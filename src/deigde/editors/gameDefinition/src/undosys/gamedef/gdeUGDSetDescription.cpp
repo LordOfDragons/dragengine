@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetDescription::gdeUGDSetDescription( gdeGameDefinition *gameDefinition,
-const char *newValue ) :
-pGameDefinition( NULL )
+gdeUGDSetDescription::gdeUGDSetDescription(gdeGameDefinition *gameDefinition,
+const char *newValue) :
+pGameDefinition(NULL)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set description" );
+	SetShortInfo("Game definition set description");
 	
 	pOldValue = gameDefinition->GetDescription();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pGameDefinition( NULL )
 }
 
 gdeUGDSetDescription::~gdeUGDSetDescription(){
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUGDSetDescription::~gdeUGDSetDescription(){
 ///////////////
 
 void gdeUGDSetDescription::Undo(){
-	pGameDefinition->SetDescription( pOldValue );
+	pGameDefinition->SetDescription(pOldValue);
 }
 
 void gdeUGDSetDescription::Redo(){
-	pGameDefinition->SetDescription( pNewValue );
+	pGameDefinition->SetDescription(pNewValue);
 }

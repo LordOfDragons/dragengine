@@ -119,16 +119,16 @@ private:
 	igdeIcon::Ref pIconSettingsTexPropList;
 	
 	static const int pStockImageCount = igdeEnvironment::esiConfig + 1;
-	igdeIcon::Ref pStockIcons[ pStockImageCount ];
+	igdeIcon::Ref pStockIcons[pStockImageCount];
 	
 	static const int pStockSkinCount = igdeEnvironment::essEditRimOutline + 1;
-	deSkin::Ref pStockSkins[ pStockSkinCount ];
+	deSkin::Ref pStockSkins[pStockSkinCount];
 	
 	static const int pStockRigCount = igdeEnvironment::esrGizmoMove + 1;
-	deRig::Ref pStockRigs[ pStockRigCount ];
+	deRig::Ref pStockRigs[pStockRigCount];
 	
 	static const int pStockModelCount = igdeEnvironment::esmGizmoMove + 1;
-	deModel::Ref pStockModels[ pStockModelCount ];
+	deModel::Ref pStockModels[pStockModelCount];
 	
 	igdeAction::Ref pActionGameNew;
 	igdeAction::Ref pActionGameOpen;
@@ -183,7 +183,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create main window. */
-	igdeWindowMain( igdeEnvironmentIGDE &environment );
+	igdeWindowMain(igdeEnvironmentIGDE &environment);
 	
 protected:
 	/** Clean up main window. */
@@ -231,7 +231,7 @@ public:
 	inline igdeWindowLogger *GetWindowLogger() const{ return pWindowLogger; }
 	
 	/** Named GuiTheme or default if not found. */
-	igdeGuiTheme *GetGuiThemeNamed( const char *name );
+	igdeGuiTheme *GetGuiThemeNamed(const char *name);
 	
 	/** Default GuiTheme. */
 	inline igdeGuiTheme *GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
@@ -262,12 +262,12 @@ public:
 	 * Process command line.
 	 * \returns True to keep the application running or false to shut it down.
 	 */
-	bool ProcessCommandLine( const decUnicodeStringList &arguments );
+	bool ProcessCommandLine(const decUnicodeStringList &arguments);
 	
 	/** Retrieves the active game project. */
 	inline igdeGameProject *GetGameProject() const{ return pGameProject; }
 	/** Sets the active game project. */
-	void SetGameProject( igdeGameProject *project );
+	void SetGameProject(igdeGameProject *project);
 	/**
 	 * Creates a new game project.
 	 * \returns True of the project has been created or false otherwise.
@@ -276,17 +276,17 @@ public:
 	/** Creates a placeholder game project. */
 	void CreatePlaceholderGameProject();
 	/** Load game project. */
-	bool LoadGameProject( const char *filename );
+	bool LoadGameProject(const char *filename);
 	/** Save game project. */
-	void SaveGameProject( const char *filename );
+	void SaveGameProject(const char *filename);
 	/** Add entry to recently loaded file list and update the menus. */
-	void AddRecentGameProject( const char *filename );
+	void AddRecentGameProject(const char *filename);
 	
 	/** Create a new game definition. */
 	igdeGameDefinition *CreateNewGameDefinition();
 	
 	/** Displays an exception error. */
-	void DisplayException( const deException &exception );
+	void DisplayException(const deException &exception);
 	
 	/** Active module shared menus changed. */
 	void ActiveModuleSharedMenusChanged();
@@ -295,7 +295,7 @@ public:
 	void ActiveModuleSharedToolBarsChanged();
 	
 	/** Activate editor and bring it to the front. */
-	void ActivateEditor( igdeEditorModule *editor );
+	void ActivateEditor(igdeEditorModule *editor);
 	
 	/** Rebuilds the menu using the given game definition. */
 	void RebuildMenu();
@@ -358,17 +358,17 @@ public:
 	
 	
 	/** Sets the visibility of the progress bar in the status bar. */
-	void SetProgressVisible( bool visible );
+	void SetProgressVisible(bool visible);
 	/** Sets the progress bar progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	/** Sets the progress text. */
-	void SetProgressText( const char *text );
+	void SetProgressText(const char *text);
 	
 	/** Retrieves the minimum frame update time. */
 	inline float GetMinUpdateTime() const{ return pMinUpdateTime; }
 
 	/** Sets the minimum frame update time. */
-	void SetMinUpdateTime( float seconds );
+	void SetMinUpdateTime(float seconds);
 	
 	/** Hook method called before the engine starts. */
 	virtual void OnBeforeEngineStart();
@@ -427,15 +427,15 @@ public:
 	 *                    Message is optional and can be \em NULL.
 	 * \returns \em true if user wants to continue the action or \em false to abort.
 	 */
-	bool RequestSaveDocuments( const char *title, const char* message );
+	bool RequestSaveDocuments(const char *title, const char* message);
 	/*@}*/
 	
 	/** \name Stock resources */
 	/*@{*/
-	igdeIcon *GetStockIcon( igdeEnvironment::eStockIcons icon ) const;
-	const deSkin::Ref &GetStockSkin( igdeEnvironment::eStockSkins skin ) const;
-	const deRig::Ref &GetStockRig( igdeEnvironment::eStockRigs rig ) const;
-	const deModel::Ref &GetStockModel( igdeEnvironment::eStockModels model ) const;
+	igdeIcon *GetStockIcon(igdeEnvironment::eStockIcons icon) const;
+	const deSkin::Ref &GetStockSkin(igdeEnvironment::eStockSkins skin) const;
+	const deRig::Ref &GetStockRig(igdeEnvironment::eStockRigs rig) const;
+	const deModel::Ref &GetStockModel(igdeEnvironment::eStockModels model) const;
 	/*@}*/
 	
 	
@@ -489,16 +489,16 @@ private:
 	void pRebuildToolBarEditors();
 	
 	void pCreateMenu();
-	void pCreateMenuGame( igdeMenuCascade &menu );
-	void pCreateMenuSettings( igdeMenuCascade &menu );
-	void pUpdateMenuRecentProjects( igdeMenuCascade &menu );
-	void pUpdateMenuWindow( igdeMenuCascade &menu );
+	void pCreateMenuGame(igdeMenuCascade &menu);
+	void pCreateMenuSettings(igdeMenuCascade &menu);
+	void pUpdateMenuRecentProjects(igdeMenuCascade &menu);
+	void pUpdateMenuWindow(igdeMenuCascade &menu);
 	
 	void pUpdatePauseUpdating();
 	
-	void pLoadXMLElementClasses( igdeGameProject &gameProject );
-	void pFindAndAddSkins( igdeGameProject &gameProject );
-	void pFindAndAddSkies( igdeGameProject &gameProject );
+	void pLoadXMLElementClasses(igdeGameProject &gameProject);
+	void pFindAndAddSkins(igdeGameProject &gameProject);
+	void pFindAndAddSkies(igdeGameProject &gameProject);
 };
 
 #endif

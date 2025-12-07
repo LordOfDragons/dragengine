@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device list. */
-	demoiDeviceManager( deMacOSInput &module );
+	demoiDeviceManager(deMacOSInput &module);
 	
 	/** \brief Clean up device list. */
 	~demoiDeviceManager();
@@ -71,13 +71,13 @@ public:
 	int GetCount() const;
 	
 	/** \brief Device at index. */
-	demoiDevice *GetAt( int index ) const;
+	demoiDevice *GetAt(int index) const;
 	
 	/** \brief Device with identifier or \em NULL if absent. */
-	demoiDevice *GetWithID( const char *id );
+	demoiDevice *GetWithID(const char *id);
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id );
+	int IndexOfWithID(const char *id);
 	
 	
 	

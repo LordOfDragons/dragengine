@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create height terrain sector. */
-	deoglHTSector( deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
+	deoglHTSector(deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector);
 	
 protected:
 	/** Clean up height terrain sector. */
@@ -83,7 +83,7 @@ public:
 	void SectorChanged();
 	
 	/** Heights changed. */
-	void HeightChanged( const decPoint &from, const decPoint &to );
+	void HeightChanged(const decPoint &from, const decPoint &to);
 	/*@}*/
 };
 

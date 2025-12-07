@@ -42,13 +42,13 @@ decBSPTreeFace::decBSPTreeFace(){
 	pVertexSize = 0;
 	pUserData = NULL;
 	
-	pVertices = new decVector[ 3 ];
-	if( ! pVertices ) DETHROW( deeOutOfMemory );
+	pVertices = new decVector[3];
+	if(!pVertices) DETHROW(deeOutOfMemory);
 	pVertexSize = 3;
 }
 
 decBSPTreeFace::~decBSPTreeFace(){
-	if( pVertices ) delete [] pVertices;
+	if(pVertices) delete [] pVertices;
 }
 
 
@@ -56,25 +56,25 @@ decBSPTreeFace::~decBSPTreeFace(){
 // Management
 ///////////////
 
-const decVector &decBSPTreeFace::GetVertexAt( int index ) const{
-	if( index < 0 || index >= pVertexCount ) DETHROW( deeInvalidParam );
+const decVector &decBSPTreeFace::GetVertexAt(int index) const{
+	if(index < 0 || index >= pVertexCount) DETHROW(deeInvalidParam);
 	
-	return pVertices[ index ];
+	return pVertices[index];
 }
 
-void decBSPTreeFace::AddVertex( const decVector &vertex ){
-	if( pVertexCount == pVertexSize ){
+void decBSPTreeFace::AddVertex(const decVector &vertex){
+	if(pVertexCount == pVertexSize){
 		int newSize = pVertexSize * 3 / 2 + 1;
-		decVector *newArray = new decVector[ newSize ];
-		if( pVertices ){
-			memcpy( newArray, pVertices, sizeof( decVector ) * pVertexSize );
+		decVector *newArray = new decVector[newSize];
+		if(pVertices){
+			memcpy(newArray, pVertices, sizeof(decVector) * pVertexSize);
 			delete [] pVertices;
 		}
 		pVertices = newArray;
 		pVertexSize = newSize;
 	}
 	
-	pVertices[ pVertexCount ] = vertex;
+	pVertices[pVertexCount] = vertex;
 	pVertexCount++;
 }
 
@@ -82,6 +82,6 @@ void decBSPTreeFace::RemoveAllVertices(){
 	pVertexCount = 0;
 }
 
-void decBSPTreeFace::SetUserData( void *userData ){
+void decBSPTreeFace::SetUserData(void *userData){
 	pUserData = userData;
 }

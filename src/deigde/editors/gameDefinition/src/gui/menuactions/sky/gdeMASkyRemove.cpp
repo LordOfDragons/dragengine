@@ -44,10 +44,10 @@
 // Constructor
 ////////////////
 
-gdeMASkyRemove::gdeMASkyRemove( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Remove Sky",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove sky" )
+gdeMASkyRemove::gdeMASkyRemove(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "Remove Sky",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove sky")
 {
 }
 
@@ -56,27 +56,27 @@ gdeBaseAction( windowMain, "Remove Sky",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkyRemove::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo *gdeMASkyRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeSky * const category = gameDefinition.GetActiveSky();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotSky ){
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotSky){
 		return NULL;
 	}
 	
 	gdeSky * const sky = gameDefinition.GetActiveSky();
-	if( ! sky ){
+	if(!sky){
 		return NULL;
 	}
 	
-	return new gdeURemoveSky( &gameDefinition, sky );
+	return new gdeURemoveSky(&gameDefinition, sky);
 }
 
 void gdeMASkyRemove::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSky 
-		&& gameDefinition->GetActiveSky() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSky 
+		&& gameDefinition->GetActiveSky() != NULL);
 }

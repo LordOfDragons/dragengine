@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create occlusion test. */
-	deoglOcclusionTest( deoglRenderThread &renderThread );
+	deoglOcclusionTest(deoglRenderThread &renderThread);
 	
 	/** Clean up occlusion test. */
 	~deoglOcclusionTest();
@@ -83,8 +83,8 @@ public:
 	 * to be applied to the world box extends before using them as input data.
 	 * The rotation and projection is handled on the shader side.
 	 */
-	int AddInputData( const decVector &minExtend, const decVector &maxExtend,
-		deoglOcclusionTestListener *listener );
+	int AddInputData(const decVector &minExtend, const decVector &maxExtend,
+		deoglOcclusionTestListener *listener);
 	
 	/** Remove all input data. */
 	void RemoveAllInputData();
@@ -107,7 +107,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pResizeInputData( int size );
+	void pResizeInputData(int size);
 };
 
 #endif

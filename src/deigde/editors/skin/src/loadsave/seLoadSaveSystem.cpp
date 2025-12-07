@@ -54,8 +54,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seLoadSaveSystem::seLoadSaveSystem( seWindowMain &windowMain ) :
-pWindowMain( windowMain )
+seLoadSaveSystem::seLoadSaveSystem(seWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
 	pLSSkins = NULL;
 	pLSSkinCount = 0;
@@ -66,7 +66,7 @@ pWindowMain( windowMain )
 
 seLoadSaveSystem::~seLoadSaveSystem(){
 	RemoveAllLSSkins();
-	if( pLSSkins ) delete [] pLSSkins;
+	if(pLSSkins) delete [] pLSSkins;
 }
 
 
@@ -74,18 +74,18 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seLoadSaveSkin *seLoadSaveSystem::GetLSSkinAt( int index ) const{
-	if( index < 0 || index >= pLSSkinCount ) DETHROW( deeInvalidParam );
+seLoadSaveSkin *seLoadSaveSystem::GetLSSkinAt(int index) const{
+	if(index < 0 || index >= pLSSkinCount) DETHROW(deeInvalidParam);
 	
-	return pLSSkins[ index ];
+	return pLSSkins[index];
 }
 
-int seLoadSaveSystem::IndexOfLSSkin( seLoadSaveSkin *lsSkin ) const{
-	if( ! lsSkin ) DETHROW( deeInvalidParam );
+int seLoadSaveSystem::IndexOfLSSkin(seLoadSaveSkin *lsSkin) const{
+	if(!lsSkin) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pLSSkinCount; i++ ){
-		if( lsSkin == pLSSkins[ i ] ){
+	for(i=0; i<pLSSkinCount; i++){
+		if(lsSkin == pLSSkins[i]){
 			return i;
 		}
 	}
@@ -93,12 +93,12 @@ int seLoadSaveSystem::IndexOfLSSkin( seLoadSaveSkin *lsSkin ) const{
 	return -1;
 }
 
-bool seLoadSaveSystem::HasLSSkin( seLoadSaveSkin *lsSkin ) const{
-	if( ! lsSkin ) DETHROW( deeInvalidParam );
+bool seLoadSaveSystem::HasLSSkin(seLoadSaveSkin *lsSkin) const{
+	if(!lsSkin) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pLSSkinCount; i++ ){
-		if( lsSkin == pLSSkins[ i ] ){
+	for(i=0; i<pLSSkinCount; i++){
+		if(lsSkin == pLSSkins[i]){
 			return true;
 		}
 	}
@@ -106,12 +106,12 @@ bool seLoadSaveSystem::HasLSSkin( seLoadSaveSkin *lsSkin ) const{
 	return false;
 }
 
-int seLoadSaveSystem::IndexOfLSSkinMatching( const char *filename ){
-	const decString testFilename( filename );
+int seLoadSaveSystem::IndexOfLSSkinMatching(const char *filename){
+	const decString testFilename(filename);
 	int i;
 	
-	for( i=0; i<pLSSkinCount; i++ ){
-		if( testFilename.MatchesPattern( pLSSkins[ i ]->GetPattern() ) ){
+	for(i=0; i<pLSSkinCount; i++){
+		if(testFilename.MatchesPattern(pLSSkins[i]->GetPattern())){
 			return i;
 		}
 	}
@@ -119,31 +119,31 @@ int seLoadSaveSystem::IndexOfLSSkinMatching( const char *filename ){
 	return -1;
 }
 
-void seLoadSaveSystem::AddLSSkin( seLoadSaveSkin *lsSkin ){
-	if( HasLSSkin( lsSkin ) ) DETHROW( deeInvalidParam );
+void seLoadSaveSystem::AddLSSkin(seLoadSaveSkin *lsSkin){
+	if(HasLSSkin(lsSkin)) DETHROW(deeInvalidParam);
 	
-	if( pLSSkinCount == pLSSkinSize ){
+	if(pLSSkinCount == pLSSkinSize){
 		int newSize = pLSSkinSize * 3 / 2 + 1;
-		seLoadSaveSkin **newArray = new seLoadSaveSkin*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pLSSkins ){
-			memcpy( newArray, pLSSkins, sizeof( seLoadSaveSkin* ) * pLSSkinSize );
+		seLoadSaveSkin **newArray = new seLoadSaveSkin*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pLSSkins){
+			memcpy(newArray, pLSSkins, sizeof(seLoadSaveSkin*) * pLSSkinSize);
 			delete [] pLSSkins;
 		}
 		pLSSkins = newArray;
 		pLSSkinSize = newSize;
 	}
 	
-	pLSSkins[ pLSSkinCount ] = lsSkin;
+	pLSSkins[pLSSkinCount] = lsSkin;
 	pLSSkinCount++;
 }
 
-void seLoadSaveSystem::RemoveLSSkin( seLoadSaveSkin *lsSkin ){
-	int i, index = IndexOfLSSkin( lsSkin );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void seLoadSaveSystem::RemoveLSSkin(seLoadSaveSkin *lsSkin){
+	int i, index = IndexOfLSSkin(lsSkin);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pLSSkinCount; i++ ){
-		pLSSkins[ i - 1 ] = pLSSkins[ i ];
+	for(i=index+1; i<pLSSkinCount; i++){
+		pLSSkins[i - 1] = pLSSkins[i];
 	}
 	pLSSkinCount--;
 	
@@ -151,9 +151,9 @@ void seLoadSaveSystem::RemoveLSSkin( seLoadSaveSkin *lsSkin ){
 }
 
 void seLoadSaveSystem::RemoveAllLSSkins(){
-	while( pLSSkinCount > 0 ){
+	while(pLSSkinCount > 0){
 		pLSSkinCount--;
-		delete pLSSkins[ pLSSkinCount ];
+		delete pLSSkins[pLSSkinCount];
 	}
 }
 
@@ -170,91 +170,91 @@ void seLoadSaveSystem::UpdateLSSkins(){
 	try{
 		// add a new load save skin for each skin module found in the engine that is also
 		// running and usable therefore
-		for( m=0; m<moduleCount; m++ ){
-			loadableModule = modSys->GetModuleAt( m );
+		for(m=0; m<moduleCount; m++){
+			loadableModule = modSys->GetModuleAt(m);
 			
-			if( loadableModule->GetType() != deModuleSystem::emtSkin ) continue;
-			if( ! loadableModule->IsLoaded() ) continue;
+			if(loadableModule->GetType() != deModuleSystem::emtSkin) continue;
+			if(!loadableModule->IsLoaded()) continue;
 			
-			lsSkin = new seLoadSaveSkin( ( deBaseSkinModule* )loadableModule->GetModule() );
-			if( ! lsSkin ) DETHROW( deeOutOfMemory );
+			lsSkin = new seLoadSaveSkin((deBaseSkinModule*)loadableModule->GetModule());
+			if(!lsSkin) DETHROW(deeOutOfMemory);
 			
-			AddLSSkin( lsSkin );
+			AddLSSkin(lsSkin);
 			lsSkin = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( lsSkin ) delete lsSkin;
+	}catch(const deException &){
+		if(lsSkin) delete lsSkin;
 		throw;
 	}
 }
 
 
 
-seSkin *seLoadSaveSystem::LoadSkin( const char *filename, igdeGameDefinition *gameDefinition ){
-	if( ! filename || ! gameDefinition ) DETHROW( deeInvalidParam );
+seSkin *seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gameDefinition){
+	if(!filename || !gameDefinition) DETHROW(deeInvalidParam);
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	decBaseFileReader *fileReader = NULL;
 	seSkin *skin = NULL;
 	decPath path;
 	int lsIndex;
 	
-	lsIndex = IndexOfLSSkinMatching( filename );
-	if( lsIndex == -1 ) DETHROW( deeInvalidParam );
+	lsIndex = IndexOfLSSkinMatching(filename);
+	if(lsIndex == -1) DETHROW(deeInvalidParam);
 	
-	path.SetFromUnix( filename );
+	path.SetFromUnix(filename);
 	
 	try{
-		fileReader = engine->GetVirtualFileSystem()->OpenFileForReading( path );
+		fileReader = engine->GetVirtualFileSystem()->OpenFileForReading(path);
 		
-		skin = new seSkin( &pWindowMain.GetEnvironment() );
-		skin->SetFilePath( filename ); // required here so the relative path can be resolved properly
+		skin = new seSkin(&pWindowMain.GetEnvironment());
+		skin->SetFilePath(filename); // required here so the relative path can be resolved properly
 		
-		pLSSkins[ lsIndex ]->LoadSkin( skin, fileReader, *pWindowMain.GetEnvironment().GetTexturePropertyList() );
+		pLSSkins[lsIndex]->LoadSkin(skin, fileReader, *pWindowMain.GetEnvironment().GetTexturePropertyList());
 		fileReader->FreeReference();
 	
-	}catch( const deException & ){
-		if( fileReader ){
+	}catch(const deException &){
+		if(fileReader){
 			fileReader->FreeReference();
 		}
-		if( skin ) skin->FreeReference();
+		if(skin) skin->FreeReference();
 		throw;
 	}
 	
-	skin->SetSaved( true );
-	skin->SetChanged( false );
+	skin->SetSaved(true);
+	skin->SetChanged(false);
 	
 	return skin;
 }
 
-void seLoadSaveSystem::SaveSkin( seSkin *skin, const char *filename ){
-	if( ! skin || ! filename ) DETHROW( deeInvalidParam );
+void seLoadSaveSystem::SaveSkin(seSkin *skin, const char *filename){
+	if(!skin || !filename) DETHROW(deeInvalidParam);
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	decBaseFileWriter *fileWriter = NULL;
 	decPath path;
 	int lsIndex;
 	
-	lsIndex = IndexOfLSSkinMatching( filename );
-	if( lsIndex == -1 ) DETHROW( deeInvalidParam );
+	lsIndex = IndexOfLSSkinMatching(filename);
+	if(lsIndex == -1) DETHROW(deeInvalidParam);
 	
-	path.SetFromUnix( filename );
+	path.SetFromUnix(filename);
 	
 	try{
-		fileWriter = engine->GetVirtualFileSystem()->OpenFileForWriting( path );
+		fileWriter = engine->GetVirtualFileSystem()->OpenFileForWriting(path);
 		
-		skin->SetFilePath( filename ); // required here so the relative path can be resolved properly
+		skin->SetFilePath(filename); // required here so the relative path can be resolved properly
 		
-		pLSSkins[ lsIndex ]->SaveSkin( skin, fileWriter );
+		pLSSkins[lsIndex]->SaveSkin(skin, fileWriter);
 		
 		fileWriter->FreeReference();
 		
-	}catch( const deException & ){
-		if( fileWriter ){
+	}catch(const deException &){
+		if(fileWriter){
 			fileWriter->FreeReference();
 		}
 		throw;
 	}
 	
-	skin->SetSaved( true );
-	skin->SetChanged( false );
+	skin->SetSaved(true);
+	skin->SetChanged(false);
 }

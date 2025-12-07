@@ -33,19 +33,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDebugTraceGroup::deoglDebugTraceGroup( const deoglRenderThread &renderThread, const char *name, int id ) :
-pRenderThread( renderThread ),
-pOpen( true )
+deoglDebugTraceGroup::deoglDebugTraceGroup(const deoglRenderThread &renderThread, const char *name, int id) :
+pRenderThread(renderThread),
+pOpen(true)
 {
-	renderThread.GetDebug().BeginDebugGroup( name, id );
+	renderThread.GetDebug().BeginDebugGroup(name, id);
 }
 
-deoglDebugTraceGroup::deoglDebugTraceGroup( deoglDebugTraceGroup &closeGroup, const char *name, int id ) :
-pRenderThread( closeGroup.pRenderThread ),
-pOpen( true )
+deoglDebugTraceGroup::deoglDebugTraceGroup(deoglDebugTraceGroup &closeGroup, const char *name, int id) :
+pRenderThread(closeGroup.pRenderThread),
+pOpen(true)
 {
 	closeGroup.Close();
-	pRenderThread.GetDebug().BeginDebugGroup( name, id );
+	pRenderThread.GetDebug().BeginDebugGroup(name, id);
 }
 
 deoglDebugTraceGroup::~deoglDebugTraceGroup(){
@@ -58,7 +58,7 @@ deoglDebugTraceGroup::~deoglDebugTraceGroup(){
 ///////////////
 
 void deoglDebugTraceGroup::Close(){
-	if( pOpen ){
+	if(pOpen){
 		pOpen = false;
 		pRenderThread.GetDebug().EndDebugGroup();
 	}

@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPropertyName::gdeUOCSpeakerSetPropertyName( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, gdeOCSpeaker::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL ),
-pProperty( property )
+gdeUOCSpeakerSetPropertyName::gdeUOCSpeakerSetPropertyName(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, gdeOCSpeaker::eProperties property, const char *newValue) :
+pObjectClass(NULL),
+pSpeaker(NULL),
+pProperty(property)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set property name" );
+	SetShortInfo("Speaker set property name");
 	
-	pOldValue = speaker->GetPropertyName( property );
+	pOldValue = speaker->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
@@ -62,10 +62,10 @@ pProperty( property )
 }
 
 gdeUOCSpeakerSetPropertyName::~gdeUOCSpeakerSetPropertyName(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCSpeakerSetPropertyName::~gdeUOCSpeakerSetPropertyName(){
 ///////////////
 
 void gdeUOCSpeakerSetPropertyName::Undo(){
-	pSpeaker->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetPropertyName::Redo(){
-	pSpeaker->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

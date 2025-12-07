@@ -44,13 +44,13 @@
 ////////////////////////////
 
 fbxPropertyFloat::fbxPropertyFloat() :
-fbxProperty( etFloat ),
-pValue( 0.0f ){
+fbxProperty(etFloat),
+pValue(0.0f){
 }
 
-fbxPropertyFloat::fbxPropertyFloat( decBaseFileReader &reader ) :
-fbxProperty( etFloat ),
-pValue( reader.ReadFloat() ){
+fbxPropertyFloat::fbxPropertyFloat(decBaseFileReader &reader) :
+fbxProperty(etFloat),
+pValue(reader.ReadFloat()){
 }
 
 fbxPropertyFloat::~fbxPropertyFloat(){
@@ -61,7 +61,7 @@ fbxPropertyFloat::~fbxPropertyFloat(){
 // Loading and Saving
 ///////////////////////
 
-void fbxPropertyFloat::SetValue( float value ){
+void fbxPropertyFloat::SetValue(float value){
 	pValue = value;
 }
 
@@ -74,11 +74,11 @@ bool fbxPropertyFloat::GetValueAsBool() const{
 }
 
 int fbxPropertyFloat::GetValueAsInt() const{
-	return ( int )pValue;
+	return (int)pValue;
 }
 
 int64_t fbxPropertyFloat::GetValueAsLong() const{
-	return ( int64_t )pValue;
+	return (int64_t)pValue;
 }
 
 float fbxPropertyFloat::GetValueAsFloat() const{
@@ -91,9 +91,9 @@ double fbxPropertyFloat::GetValueAsDouble() const{
 
 
 
-void fbxPropertyFloat::Save(decBaseFileWriter &writer ){
+void fbxPropertyFloat::Save(decBaseFileWriter &writer){
 }
 
-void fbxPropertyFloat::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
-	module.LogInfoFormat( "%sProperty Float: %g", prefix.GetString(), pValue );
+void fbxPropertyFloat::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
+	module.LogInfoFormat("%sProperty Float: %g", prefix.GetString(), pValue);
 }

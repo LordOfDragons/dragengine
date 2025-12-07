@@ -42,19 +42,19 @@
 ////////////////////////////
 
 deColliderCollisionTest::deColliderCollisionTest() :
-pLocalDirection( true ),
-pEnabled( true ){
+pLocalDirection(true),
+pEnabled(true){
 }
 
-deColliderCollisionTest::deColliderCollisionTest( const deColliderCollisionTest &collisionTest ) :
-pTouchSensor( collisionTest.pTouchSensor ),
-pCollisionFilter( collisionTest.pCollisionFilter ),
-pComponent( collisionTest.pComponent ),
-pBone( collisionTest.pBone ),
-pOrigin( collisionTest.pOrigin ),
-pDirection( collisionTest.pDirection ),
-pLocalDirection( collisionTest.pLocalDirection ),
-pEnabled( collisionTest.pEnabled ){
+deColliderCollisionTest::deColliderCollisionTest(const deColliderCollisionTest &collisionTest) :
+pTouchSensor(collisionTest.pTouchSensor),
+pCollisionFilter(collisionTest.pCollisionFilter),
+pComponent(collisionTest.pComponent),
+pBone(collisionTest.pBone),
+pOrigin(collisionTest.pOrigin),
+pDirection(collisionTest.pDirection),
+pLocalDirection(collisionTest.pLocalDirection),
+pEnabled(collisionTest.pEnabled){
 }
 
 deColliderCollisionTest::~deColliderCollisionTest(){
@@ -65,63 +65,63 @@ deColliderCollisionTest::~deColliderCollisionTest(){
 // Management
 ///////////////
 
-void deColliderCollisionTest::SetTouchSensor( deTouchSensor *touchSensor ){
+void deColliderCollisionTest::SetTouchSensor(deTouchSensor *touchSensor){
 	pTouchSensor = touchSensor;
 }
 
 
 
-void deColliderCollisionTest::SetCollider( deCollider *collider ){
-	if( collider == pCollider ){
+void deColliderCollisionTest::SetCollider(deCollider *collider){
+	if(collider == pCollider){
 		return;
 	}
 	
 	pCollider = collider;
 	
-	if( collider ){
-		collider->SetCollisionFilter( pCollisionFilter );
+	if(collider){
+		collider->SetCollisionFilter(pCollisionFilter);
 	}
 }
 
-void deColliderCollisionTest::SetCollisionFilter( const decCollisionFilter &filter ){
-	if( filter == pCollisionFilter ){
+void deColliderCollisionTest::SetCollisionFilter(const decCollisionFilter &filter){
+	if(filter == pCollisionFilter){
 		return;
 	}
 	
 	pCollisionFilter = filter;
 	
-	if( pCollider ){
-		pCollider->SetCollisionFilter( filter );
+	if(pCollider){
+		pCollider->SetCollisionFilter(filter);
 	}
 }
 
 
 
-void deColliderCollisionTest::SetComponent( deComponent *component ){
+void deColliderCollisionTest::SetComponent(deComponent *component){
 	pComponent = component;
 }
 
-void deColliderCollisionTest::SetBone( const char *name ){
+void deColliderCollisionTest::SetBone(const char *name){
 	pBone = name;
 }
 
-void deColliderCollisionTest::SetOrigin( const decVector &origin ){
+void deColliderCollisionTest::SetOrigin(const decVector &origin){
 	pOrigin = origin;
 }
 
-void deColliderCollisionTest::SetOrientation( const decQuaternion &orientation ){
+void deColliderCollisionTest::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void deColliderCollisionTest::SetDirection( const decVector &direction ){
+void deColliderCollisionTest::SetDirection(const decVector &direction){
 	pDirection = direction;
 }
 
-void deColliderCollisionTest::SetLocalDirection( bool localDirection ){
+void deColliderCollisionTest::SetLocalDirection(bool localDirection){
 	pLocalDirection = localDirection;
 }
 
-void deColliderCollisionTest::SetEnabled( bool enabled ){
+void deColliderCollisionTest::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
@@ -131,12 +131,12 @@ int deColliderCollisionTest::GetCollisionInfoCount() const{
 	return pCollisionInfo.GetCount();
 }
 
-deCollisionInfo *deColliderCollisionTest::GetCollisionInfoAt( int index ) const{
-	return ( deCollisionInfo* )pCollisionInfo.GetAt( index );
+deCollisionInfo *deColliderCollisionTest::GetCollisionInfoAt(int index) const{
+	return (deCollisionInfo*)pCollisionInfo.GetAt(index);
 }
 
-void deColliderCollisionTest::AddCollisionInfo( deCollisionInfo *info ){
-	pCollisionInfo.Add( info );
+void deColliderCollisionTest::AddCollisionInfo(deCollisionInfo *info){
+	pCollisionInfo.Add(info);
 }
 
 void deColliderCollisionTest::RemoveAllCollisionInfo(){
@@ -145,15 +145,15 @@ void deColliderCollisionTest::RemoveAllCollisionInfo(){
 
 
 
-void deColliderCollisionTest::SetTestOrigin( const decDVector &testOrigin ){
+void deColliderCollisionTest::SetTestOrigin(const decDVector &testOrigin){
 	pTestOrigin = testOrigin;
 }
 
-void deColliderCollisionTest::SetTestOrientation( const decQuaternion &orientation ){
+void deColliderCollisionTest::SetTestOrientation(const decQuaternion &orientation){
 	pTestOrientation = orientation;
 }
 
-void deColliderCollisionTest::SetTestDirection( const decDVector &testDirection ){
+void deColliderCollisionTest::SetTestDirection(const decDVector &testDirection){
 	pTestDirection = testDirection;
 }
 
@@ -162,7 +162,7 @@ void deColliderCollisionTest::SetTestDirection( const decDVector &testDirection 
 // Operators
 //////////////
 
-deColliderCollisionTest &deColliderCollisionTest::operator=( const deColliderCollisionTest &collisionTest ){
+deColliderCollisionTest &deColliderCollisionTest::operator=(const deColliderCollisionTest &collisionTest){
 	pTouchSensor = collisionTest.pTouchSensor;
 	pCollisionFilter = collisionTest.pCollisionFilter;
 	pComponent = collisionTest.pComponent;
@@ -172,6 +172,6 @@ deColliderCollisionTest &deColliderCollisionTest::operator=( const deColliderCol
 	pOrigin = collisionTest.pOrigin;
 	pDirection = collisionTest.pDirection;
 	
-	SetCollider( collisionTest.pCollider );
+	SetCollider(collisionTest.pCollider);
 	return *this;
 }

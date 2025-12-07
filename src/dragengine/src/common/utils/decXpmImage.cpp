@@ -106,7 +106,7 @@ decXpmImage::decXpmImage(const char *xpmData[], bool flip){
 		}
 		// clean up
 		delete [] colorTable;
-	}catch( const deException & ){
+	}catch(const deException &){
 		if(pData) delete [] pData;
 		if(colorTable) delete [] colorTable;
 		throw;

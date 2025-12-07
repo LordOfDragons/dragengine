@@ -44,13 +44,13 @@
 ////////////////////////////
 
 cePlaybackActionStackEntry::cePlaybackActionStackEntry() :
-pParentTopic( NULL ),
-pParentList( NULL ),
+pParentTopic(NULL),
+pParentList(NULL),
 
-pLoopCondition( NULL ),
-pLooping( false ),
+pLoopCondition(NULL),
+pLooping(false),
 
-pNextIndex( 0 ){
+pNextIndex(0){
 }
 
 cePlaybackActionStackEntry::~cePlaybackActionStackEntry(){
@@ -62,69 +62,69 @@ cePlaybackActionStackEntry::~cePlaybackActionStackEntry(){
 // Management
 ///////////////
 
-void cePlaybackActionStackEntry::SetParentTopic( ceConversationTopic *topic ){
-	if( topic == pParentTopic ){
+void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic *topic){
+	if(topic == pParentTopic){
 		return;
 	}
 	
-	if( pParentTopic ){
+	if(pParentTopic){
 		pParentTopic->FreeReference();
 	}
 	
 	pParentTopic = topic;
 	
-	if( topic ){
+	if(topic){
 		topic->AddReference();
 	}
 }
 
-void cePlaybackActionStackEntry::SetParentAction( ceConversationAction *action ){
+void cePlaybackActionStackEntry::SetParentAction(ceConversationAction *action){
 	pParentAction = action;
 }
 
-void cePlaybackActionStackEntry::SetParentList( const ceConversationActionList *list ){
+void cePlaybackActionStackEntry::SetParentList(const ceConversationActionList *list){
 	pParentList = list;
 }
 
 
 
-void cePlaybackActionStackEntry::SetLoopCondition( ceConversationCondition *condition ){
-	if( condition == pLoopCondition ){
+void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition *condition){
+	if(condition == pLoopCondition){
 		return;
 	}
 	
-	if( pLoopCondition ){
+	if(pLoopCondition){
 		pLoopCondition->FreeReference();
 	}
 	
 	pLoopCondition = condition;
 	
-	if( condition ){
+	if(condition){
 		condition->AddReference();
 	}
 }
 
-void cePlaybackActionStackEntry::SetLooping( bool looping ){
+void cePlaybackActionStackEntry::SetLooping(bool looping){
 	pLooping = looping;
 }
 
 
 
-void cePlaybackActionStackEntry::SetNextIndex( int index ){
-	if( ! pParentList ){
+void cePlaybackActionStackEntry::SetNextIndex(int index){
+	if(!pParentList){
 		pNextIndex = 0;
 		pNextAction = NULL;
 		return;
 	}
 	
-	if( index < 0 || index > pParentList->GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index > pParentList->GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNextIndex = index;
 	
-	if( pNextIndex < pParentList->GetCount() ){
-		pNextAction = pParentList->GetAt( pNextIndex );
+	if(pNextIndex < pParentList->GetCount()){
+		pNextAction = pParentList->GetAt(pNextIndex);
 		
 	}else{
 		pNextAction = NULL;
@@ -132,7 +132,7 @@ void cePlaybackActionStackEntry::SetNextIndex( int index ){
 }
 
 void cePlaybackActionStackEntry::AdvanceIndex(){
-	if( ! pParentList ){
+	if(!pParentList){
 		pNextIndex = 0;
 		pNextAction = NULL;
 		return;
@@ -140,14 +140,14 @@ void cePlaybackActionStackEntry::AdvanceIndex(){
 	
 	const int nextIndex = pNextIndex + 1;
 	
-	if( nextIndex < pParentList->GetCount() ){
-		SetNextIndex( nextIndex );
+	if(nextIndex < pParentList->GetCount()){
+		SetNextIndex(nextIndex);
 		
-	}else if( pLooping ){
-		SetNextIndex( 0 );
+	}else if(pLooping){
+		SetNextIndex(0);
 		
 	}else{
-		SetNextIndex( pParentList->GetCount() );
+		SetNextIndex(pParentList->GetCount());
 	}
 }
 
@@ -159,41 +159,41 @@ void cePlaybackActionStackEntry::Clear(){
 	pNextAction = NULL;
 	pNextIndex = 0;
 	
-	SetLoopCondition( NULL );
-	SetLooping( false );
+	SetLoopCondition(NULL);
+	SetLooping(false);
 	
-	SetParentList( NULL );
-	SetParentAction( NULL );
-	SetParentTopic( NULL );
+	SetParentList(NULL);
+	SetParentAction(NULL);
+	SetParentTopic(NULL);
 }
 
 void cePlaybackActionStackEntry::ForwardLast(){
-	if( ! pParentList ){
+	if(!pParentList){
 		pNextIndex = 0;
 		pNextAction = NULL;
 		return;
 	}
 	
-	if( pParentList->GetCount() == 0 ){
-		SetNextIndex( 0 );
+	if(pParentList->GetCount() == 0){
+		SetNextIndex(0);
 		
 	}else{
-		SetNextIndex( pParentList->GetCount() - 1 );
+		SetNextIndex(pParentList->GetCount() - 1);
 	}
 }
 
 void cePlaybackActionStackEntry::ForwardEnd(){
-	if( ! pParentList ){
+	if(!pParentList){
 		pNextIndex = 0;
 		pNextAction = NULL;
 		return;
 	}
 	
-	SetNextIndex( pParentList->GetCount() );
+	SetNextIndex(pParentList->GetCount());
 }
 
 void cePlaybackActionStackEntry::CancelLooping(){
-	SetLooping( false );
-	SetLoopCondition( NULL );
+	SetLooping(false);
+	SetLoopCondition(NULL);
 	ForwardEnd();
 }

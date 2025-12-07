@@ -40,21 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deadArchiveFileReader::deadArchiveFileReader( deadContextUnpack *context, const deadArchiveFile &file ) :
-pContext( context ),
-pArchivePosition( file.GetArchivePosition() ),
-pFilename( file.GetFilename() ),
-pFilesize( file.GetFileSize() ),
-pModificationTime( file.GetModificationTime() ),
-pPosition( 0 )
+deadArchiveFileReader::deadArchiveFileReader(deadContextUnpack *context, const deadArchiveFile &file) :
+pContext(context),
+pArchivePosition(file.GetArchivePosition()),
+pFilename(file.GetFilename()),
+pFilesize(file.GetFileSize()),
+pModificationTime(file.GetModificationTime()),
+pPosition(0)
 {
-	DEASSERT_NOTNULL( context )
+	DEASSERT_NOTNULL(context)
 }
 
 deadArchiveFileReader::~deadArchiveFileReader(){
 	pContext->CloseFile();
-	if( pContext->GetContainer() ){
-		pContext->GetContainer()->ReleaseContextUnpack( pContext );
+	if(pContext->GetContainer()){
+		pContext->GetContainer()->ReleaseContextUnpack(pContext);
 	}
 }
 
@@ -79,33 +79,33 @@ int deadArchiveFileReader::GetPosition(){
 	return pPosition;
 }
 
-void deadArchiveFileReader::SetPosition( int position ){
-	DEASSERT_TRUE( position >= 0 )
-	DEASSERT_TRUE( position < pFilesize )
+void deadArchiveFileReader::SetPosition(int position){
+	DEASSERT_TRUE(position >= 0)
+	DEASSERT_TRUE(position < pFilesize)
 	
-	if( position > pPosition ){
-		pContext->SeekMoveZipFile( position - pPosition );
+	if(position > pPosition){
+		pContext->SeekMoveZipFile(position - pPosition);
 		pPosition = position;
 		
-	}else if( position < pPosition ){
-		pContext->SeekSetZipFile( position );
+	}else if(position < pPosition){
+		pContext->SeekSetZipFile(position);
 		pPosition = position;
 	}
 }
 
-void deadArchiveFileReader::MovePosition( int offset ){
-	SetPosition( pPosition + offset );
+void deadArchiveFileReader::MovePosition(int offset){
+	SetPosition(pPosition + offset);
 }
 
-void deadArchiveFileReader::SetPositionEnd( int position ){
-	SetPosition( pFilesize - 1 - position );
+void deadArchiveFileReader::SetPositionEnd(int position){
+	SetPosition(pFilesize - 1 - position);
 }
 
-void deadArchiveFileReader::Read( void *buffer, int size ){
-	pContext->ReadZipFileData( buffer, size );
+void deadArchiveFileReader::Read(void *buffer, int size){
+	pContext->ReadZipFileData(buffer, size);
 	pPosition += size;
 }
 
 decBaseFileReader::Ref deadArchiveFileReader::Duplicate(){
-	DETHROW_INFO( deeInvalidAction, "not supported" );
+	DETHROW_INFO(deeInvalidAction, "not supported");
 }

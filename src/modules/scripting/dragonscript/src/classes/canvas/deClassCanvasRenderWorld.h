@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	deClassCanvasRenderWorld( deScriptingDragonScript &ds );
+	deClassCanvasRenderWorld(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassCanvasRenderWorld();
@@ -60,19 +60,19 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve canvas render world from a script object.
 	 * \details Returns \em NULL if \em myself is \em NULL.
 	 */
-	deCanvasRenderWorld *GetCanvas( dsRealObject *myself ) const;
+	deCanvasRenderWorld *GetCanvas(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push canvas render world onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas( dsRunTime *rt, deCanvasRenderWorld *canvas );
+	void PushCanvas(dsRunTime *rt, deCanvasRenderWorld *canvas);
 	/*@}*/
 	
 private:
@@ -92,22 +92,22 @@ private:
 		dsClass *clsPoint;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetCamera );
-	DEF_NATFUNC( nfSetCamera );
+	DEF_NATFUNC(nfGetCamera);
+	DEF_NATFUNC(nfSetCamera);
 	
-	DEF_NATFUNC( nfProject );
-	DEF_NATFUNC( nfBackProject );
+	DEF_NATFUNC(nfProject);
+	DEF_NATFUNC(nfBackProject);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

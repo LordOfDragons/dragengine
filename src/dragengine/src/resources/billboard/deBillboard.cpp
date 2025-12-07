@@ -42,25 +42,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-deBillboard::deBillboard( deBillboardManager *manager ) :
-deResource( manager ),
+deBillboard::deBillboard(deBillboardManager *manager) :
+deResource(manager),
 
-pAxis( 0.0f, 1.0f, 0.0f ),
-pSize( 1.0f, 1.0f ),
-pLocked( true ),
-pSpherical( true ),
-pSizeFixedToScreen( false ),
-pVisible( true ),
+pAxis(0.0f, 1.0f, 0.0f),
+pSize(1.0f, 1.0f),
+pLocked(true),
+pSpherical(true),
+pSizeFixedToScreen(false),
+pVisible(true),
 
-pPeerGraphic( NULL ),
+pPeerGraphic(NULL),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ){
+pParentWorld(NULL),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL){
 }
 
 deBillboard::~deBillboard(){
-	SetPeerGraphic( NULL );
+	SetPeerGraphic(NULL);
 }
 
 
@@ -68,135 +68,135 @@ deBillboard::~deBillboard(){
 // Management
 ///////////////
 
-void deBillboard::SetPosition( const decDVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void deBillboard::SetPosition(const decDVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->PositionChanged();
 	}
 }
 
-void deBillboard::SetAxis( const decVector &axis ){
-	if( axis.IsEqualTo( pAxis ) ){
+void deBillboard::SetAxis(const decVector &axis){
+	if(axis.IsEqualTo(pAxis)){
 		return;
 	}
 	
 	pAxis = axis;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->AxisChanged();
 	}
 }
 
-void deBillboard::SetSize( const decVector2 &size ){
-	const decVector2 realSize( decVector2( FLOAT_SAFE_EPSILON, FLOAT_SAFE_EPSILON ).Largest( size ) );
-	if( realSize.IsEqualTo( pSize ) ){
+void deBillboard::SetSize(const decVector2 &size){
+	const decVector2 realSize(decVector2(FLOAT_SAFE_EPSILON, FLOAT_SAFE_EPSILON).Largest(size));
+	if(realSize.IsEqualTo(pSize)){
 		return;
 	}
 	
 	pSize = realSize;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->SizeChanged();
 	}
 }
 
-void deBillboard::SetOffset( const decVector2 &offset ){
-	if( offset.IsEqualTo( pOffset ) ){
+void deBillboard::SetOffset(const decVector2 &offset){
+	if(offset.IsEqualTo(pOffset)){
 		return;
 	}
 	
 	pOffset = offset;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->OffsetChanged();
 	}
 }
 
-void deBillboard::SetSkin( deSkin *skin ){
-	if( pSkin == skin ){
+void deBillboard::SetSkin(deSkin *skin){
+	if(pSkin == skin){
 		return;
 	}
 	
 	pSkin = skin;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->SkinChanged();
 	}
 }
 
-void deBillboard::SetDynamicSkin( deDynamicSkin *dynamicSkin ){
-	if( pDynamicSkin == dynamicSkin ){
+void deBillboard::SetDynamicSkin(deDynamicSkin *dynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
 	pDynamicSkin = dynamicSkin;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->DynamicSkinChanged();
 	}
 }
 
-void deBillboard::SetLocked( bool locked ){
-	if( locked == pLocked ){
+void deBillboard::SetLocked(bool locked){
+	if(locked == pLocked){
 		return;
 	}
 	
 	pLocked = locked;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ParametersChanged();
 	}
 }
 
-void deBillboard::SetSpherical( bool spherical ){
-	if( spherical == pSpherical ){
+void deBillboard::SetSpherical(bool spherical){
+	if(spherical == pSpherical){
 		return;
 	}
 	
 	pSpherical = spherical;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ParametersChanged();
 	}
 }
 
-void deBillboard::SetSizeFixedToScreen( bool sizeFixedToScreen ){
-	if( sizeFixedToScreen == pSizeFixedToScreen ){
+void deBillboard::SetSizeFixedToScreen(bool sizeFixedToScreen){
+	if(sizeFixedToScreen == pSizeFixedToScreen){
 		return;
 	}
 	
 	pSizeFixedToScreen = sizeFixedToScreen;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ParametersChanged();
 	}
 }
 
-void deBillboard::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void deBillboard::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
 	pVisible = visible;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->VisibilityChanged();
 	}
 }
 
-void deBillboard::SetLayerMask( const decLayerMask &layerMask ){
-	if( layerMask == pLayerMask ){
+void deBillboard::SetLayerMask(const decLayerMask &layerMask){
+	if(layerMask == pLayerMask){
 		return;
 	}
 	
 	pLayerMask = layerMask;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->LayerMaskChanged();
 	}
 }
@@ -206,12 +206,12 @@ void deBillboard::SetLayerMask( const decLayerMask &layerMask ){
 // System Peers
 /////////////////
 
-void deBillboard::SetPeerGraphic( deBaseGraphicBillboard *peer ){
-	if( peer == pPeerGraphic ){
+void deBillboard::SetPeerGraphic(deBaseGraphicBillboard *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;
@@ -222,14 +222,14 @@ void deBillboard::SetPeerGraphic( deBaseGraphicBillboard *peer ){
 // Linked List
 ////////////////
 
-void deBillboard::SetParentWorld( deWorld *world ){
+void deBillboard::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deBillboard::SetLLWorldPrev( deBillboard *billboard ){
+void deBillboard::SetLLWorldPrev(deBillboard *billboard){
 	pLLWorldPrev = billboard;
 }
 
-void deBillboard::SetLLWorldNext( deBillboard *billboard ){
+void deBillboard::SetLLWorldNext(deBillboard *billboard){
 	pLLWorldNext = billboard;
 }

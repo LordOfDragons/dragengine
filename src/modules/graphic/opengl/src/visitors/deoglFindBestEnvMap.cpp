@@ -54,7 +54,7 @@ deoglFindBestEnvMap::~deoglFindBestEnvMap(){
 // Visiting
 /////////////
 
-void deoglFindBestEnvMap::SetPosition( const decDVector &position ){
+void deoglFindBestEnvMap::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
@@ -65,23 +65,23 @@ void deoglFindBestEnvMap::Reset(){
 
 
 
-void deoglFindBestEnvMap::VisitNode( deoglDOctree *node, int intersection ){
-	VisitList( ( ( deoglWorldOctree* )node )->GetEnvMapList() );
+void deoglFindBestEnvMap::VisitNode(deoglDOctree *node, int intersection){
+	VisitList(((deoglWorldOctree*)node)->GetEnvMapList());
 }
 
-void deoglFindBestEnvMap::VisitList( const deoglEnvironmentMapList &list ){
+void deoglFindBestEnvMap::VisitList(const deoglEnvironmentMapList &list){
 	const int count = list.GetCount();
 	deoglEnvironmentMap *envmap;
 	double distance;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		envmap = list.GetAt( i );
+	for(i=0; i<count; i++){
+		envmap = list.GetAt(i);
 		
-		if( ! envmap->GetSkyOnly() ){
-			distance = ( envmap->GetPosition() - pPosition ).Length();
+		if(!envmap->GetSkyOnly()){
+			distance = (envmap->GetPosition() - pPosition).Length();
 			
-			if( ! pEnvMap || distance < pDistance ){
+			if(!pEnvMap || distance < pDistance){
 				pEnvMap = envmap;
 				pDistance = distance;
 			}

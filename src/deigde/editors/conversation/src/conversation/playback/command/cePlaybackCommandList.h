@@ -44,7 +44,7 @@ public:
 	/** \brief Creates a new list. */
 	cePlaybackCommandList();
 	/** \brief Creates a copy of a list. */
-	cePlaybackCommandList( const cePlaybackCommandList &list );
+	cePlaybackCommandList(const cePlaybackCommandList &list);
 	/** \brief Cleans up the list. */
 	~cePlaybackCommandList();
 	/*@}*/
@@ -54,26 +54,26 @@ public:
 	/** \brief Retrieves the number of commands. */
 	int GetCount() const;
 	/** \brief Retrieves the command at the given position. */
-	cePlaybackCommand *GetAt( int index ) const;
+	cePlaybackCommand *GetAt(int index) const;
 	/** \brief Retrieves the command by command or NULL if not found. */
-	cePlaybackCommand *GetWith( const char *command ) const;
+	cePlaybackCommand *GetWith(const char *command) const;
 	/** \brief Retrieves the index of a command or -1 if not found. */
-	int IndexOf( cePlaybackCommand *command ) const;
+	int IndexOf(cePlaybackCommand *command) const;
 	/** \brief Retrieves the index of a command by command or -1 if not found. */
-	int IndexWith( const char *command ) const;
+	int IndexWith(const char *command) const;
 	/** \brief Determines if a command exists. */
-	bool Has( cePlaybackCommand *command ) const;
+	bool Has(cePlaybackCommand *command) const;
 	/** \brief Determines if a command by command exists. */
-	bool HasWith( const char *command ) const;
+	bool HasWith(const char *command) const;
 	/** \brief Adds a command. */
-	void Add( cePlaybackCommand *command );
+	void Add(cePlaybackCommand *command);
 	/** \brief Removes a command. */
-	void Remove( cePlaybackCommand *command );
+	void Remove(cePlaybackCommand *command);
 	/** \brief Removes all commands. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	cePlaybackCommandList &operator=( const cePlaybackCommandList &list );
+	cePlaybackCommandList &operator=(const cePlaybackCommandList &list);
 	/*@}*/
 };
 

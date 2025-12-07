@@ -37,8 +37,8 @@
 
 // Events
 ///////////
-FXDEFMAP( decrbPanelModuleStatus ) decrbPanelModuleStatusMap[] = {
-	FXMAPFUNC( SEL_COMMAND, decrbPanelModuleStatus::ID_CBMODULE, decrbPanelModuleStatus::onCBModuleChanged ),
+FXDEFMAP(decrbPanelModuleStatus) decrbPanelModuleStatusMap[] = {
+	FXMAPFUNC(SEL_COMMAND, decrbPanelModuleStatus::ID_CBMODULE, decrbPanelModuleStatus::onCBModuleChanged),
 };
 
 
@@ -46,8 +46,8 @@ FXDEFMAP( decrbPanelModuleStatus ) decrbPanelModuleStatusMap[] = {
 // Sorting
 ////////////
 
-static FXint fSortClasses( const FXListItem *item1, const FXListItem *item2 ){
-	return strcmp( item1->getText().text(), item2->getText().text() );
+static FXint fSortClasses(const FXListItem *item1, const FXListItem *item2){
+	return strcmp(item1->getText().text(), item2->getText().text());
 }
 
 
@@ -55,16 +55,16 @@ static FXint fSortClasses( const FXListItem *item1, const FXListItem *item2 ){
 // Class decrbPanelModuleStatus
 ////////////////////////////
 	
-FXIMPLEMENT( decrbPanelModuleStatus, FXVerticalFrame, decrbPanelModuleStatusMap, ARRAYNUMBER( decrbPanelModuleStatusMap ) )
+FXIMPLEMENT(decrbPanelModuleStatus, FXVerticalFrame, decrbPanelModuleStatusMap, ARRAYNUMBER(decrbPanelModuleStatusMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-decrbPanelModuleStatus::decrbPanelModuleStatus(){ }
+decrbPanelModuleStatus::decrbPanelModuleStatus(){}
 
-decrbPanelModuleStatus::decrbPanelModuleStatus( decrbWindowMain *windowMain, FXComposite *container ) :
-FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5 ){
-	if( ! windowMain ) DETHROW( deeInvalidParam );
+decrbPanelModuleStatus::decrbPanelModuleStatus(decrbWindowMain *windowMain, FXComposite *container) :
+FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5){
+	if(!windowMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	
@@ -72,92 +72,92 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	pWndMain = windowMain;
 	
 	// module selection
-	FXHorizontalFrame *frameLine = new FXHorizontalFrame( this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Module:" );
-	pCBModule = new FXComboBox( frameLine, 10, this, ID_CBMODULE, FRAME_SUNKEN | LAYOUT_FILL_X );
-	pCBModule->setEditable( false );
-	pCBModule->setNumVisible( 10 );
-	pCBModule->setSortFunc( fSortClasses );
+	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Module:");
+	pCBModule = new FXComboBox(frameLine, 10, this, ID_CBMODULE, FRAME_SUNKEN | LAYOUT_FILL_X);
+	pCBModule->setEditable(false);
+	pCBModule->setNumVisible(10);
+	pCBModule->setSortFunc(fSortClasses);
 	
 	// module information
-	FXGroupBox *groupBox = new FXGroupBox( this, "Information:",
+	FXGroupBox *groupBox = new FXGroupBox(this, "Information:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X, 0, 0, 0, 0,
-		padding, padding, padding, padding );
-	FXVerticalFrame *frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
+		padding, padding, padding, padding);
+	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Description:" );
-	pEditDescription = new FXText( frameLine, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
-		| TEXT_WORDWRAP | LAYOUT_FILL_X );
-	pEditDescription->setVisibleRows( 4 );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Description:");
+	pEditDescription = new FXText(frameLine, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
+		| TEXT_WORDWRAP | LAYOUT_FILL_X);
+	pEditDescription->setVisibleRows(4);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Type:" );
-	pEditType = new FXTextField( frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
-	new FXLabel( frameLine, "Version:" );
-	pEditVersion = new FXTextField( frameLine, 5, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
-	pChkFallback = new FXCheckButton( frameLine, "Fallback Module", NULL, 0, CHECKBUTTON_NORMAL );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Type:");
+	pEditType = new FXTextField(frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	new FXLabel(frameLine, "Version:");
+	pEditVersion = new FXTextField(frameLine, 5, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	pChkFallback = new FXCheckButton(frameLine, "Fallback Module", NULL, 0, CHECKBUTTON_NORMAL);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Directory:" );
-	pEditDirName = new FXTextField( frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
-	new FXLabel( frameLine, "Author:" );
-	pEditAuthor = new FXTextField( frameLine, 30, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Directory:");
+	pEditDirName = new FXTextField(frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	new FXLabel(frameLine, "Author:");
+	pEditAuthor = new FXTextField(frameLine, 30, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	
 	// file handling information
-	groupBox = new FXGroupBox( this, "File Handling Information:",
+	groupBox = new FXGroupBox(this, "File Handling Information:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X, 0, 0, 0, 0,
-		padding, padding, padding, padding );
-	frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
+		padding, padding, padding, padding);
+	frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "File Pattern:" );
-	pEditPattern = new FXTextField( frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "File Pattern:");
+	pEditPattern = new FXTextField(frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Default Extension:" );
-	pEditDefaultExtension= new FXTextField( frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Default Extension:");
+	pEditDefaultExtension= new FXTextField(frameLine, 15, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
 	// library module information
-	groupBox = new FXGroupBox( this, "Library Module Information:",
+	groupBox = new FXGroupBox(this, "Library Module Information:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X, 0, 0, 0, 0,
-		padding, padding, padding, padding );
-	frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
+		padding, padding, padding, padding);
+	frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Filename:" );
-	pEditLibName = new FXTextField( frameLine, 10, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
-		| LAYOUT_FILL_X );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Filename:");
+	pEditLibName = new FXTextField(frameLine, 10, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
+		| LAYOUT_FILL_X);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "File Size:" );
-	pEditLibSize = new FXTextField( frameLine, 10, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
-	new FXLabel( frameLine, "CRC:" );
-	pEditLibHash = new FXTextField( frameLine, 40, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "File Size:");
+	pEditLibSize = new FXTextField(frameLine, 10, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
+	new FXLabel(frameLine, "CRC:");
+	pEditLibHash = new FXTextField(frameLine, 40, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY);
 	
 	// status
-	groupBox = new FXGroupBox( this, "Module Status:",
+	groupBox = new FXGroupBox(this, "Module Status:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X, 0, 0, 0, 0,
-		padding, padding, padding, padding );
-	frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
+		padding, padding, padding, padding);
+	frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	pEditStatus = new FXTextField( groupBox, 20, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
-		| LAYOUT_FILL_X );
+	pEditStatus = new FXTextField(groupBox, 20, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY
+		| LAYOUT_FILL_X);
 	
 	// load the modules list
 	UpdateModulesList();
@@ -177,202 +177,202 @@ void decrbPanelModuleStatus::UpdateModuleStatus(){
 	deLoadableModule *loadedModule;
 	decString numBuf;
 	
-	if( selection == -1 ){
-		pEditType->setText( "?" );
-		pEditDescription->setText( "?" );
-		pEditAuthor->setText( "?" );
-		pEditVersion->setText( "?" );
-		pEditPattern->setText( "?" );
-		pEditDefaultExtension->setText( "?" );
-		pEditDirName->setText( "?" );
-		pEditStatus->setText( "?" );
+	if(selection == -1){
+		pEditType->setText("?");
+		pEditDescription->setText("?");
+		pEditAuthor->setText("?");
+		pEditVersion->setText("?");
+		pEditPattern->setText("?");
+		pEditDefaultExtension->setText("?");
+		pEditDirName->setText("?");
+		pEditStatus->setText("?");
 		
-		pEditLibName->setText( "?" );
-		pEditLibSize->setText( "?" );
-		pEditLibHash->setText( "?" );
+		pEditLibName->setText("?");
+		pEditLibSize->setText("?");
+		pEditLibHash->setText("?");
 		
-		pChkFallback->setCheck( false );
+		pChkFallback->setCheck(false);
 		
 	}else{
-		loadedModule = ( deLoadableModule* )pCBModule->getItemData( selection );
+		loadedModule = (deLoadableModule*)pCBModule->getItemData(selection);
 		
-		pEditDescription->setText( loadedModule->GetDescription().GetString() );
-		pEditAuthor->setText( loadedModule->GetAuthor().GetString() );
-		pEditVersion->setText( loadedModule->GetVersion().GetString() );
+		pEditDescription->setText(loadedModule->GetDescription().GetString());
+		pEditAuthor->setText(loadedModule->GetAuthor().GetString());
+		pEditVersion->setText(loadedModule->GetVersion().GetString());
 		
 		const decStringList &patternList = loadedModule->GetPatternList();
 		const int patternCount = patternList.GetCount();
 		decString patterns;
 		int i;
 		
-		for( i=0; i<patternCount; i++ ){
-			if( i > 0 ){
-				patterns.AppendCharacter( ',' );
+		for(i=0; i<patternCount; i++){
+			if(i > 0){
+				patterns.AppendCharacter(',');
 			}
-			patterns.AppendCharacter( '*' );
-			patterns.Append( patternList.GetAt( i ) );
+			patterns.AppendCharacter('*');
+			patterns.Append(patternList.GetAt(i));
 		}
-		pEditPattern->setText( patterns.GetString() );
+		pEditPattern->setText(patterns.GetString());
 		
-		pEditDefaultExtension->setText( loadedModule->GetDefaultExtension().GetString() );
-		pEditDirName->setText( loadedModule->GetDirectoryName().GetString() );
-		pChkFallback->setCheck( loadedModule->GetIsFallback() );
+		pEditDefaultExtension->setText(loadedModule->GetDefaultExtension().GetString());
+		pEditDirName->setText(loadedModule->GetDirectoryName().GetString());
+		pChkFallback->setCheck(loadedModule->GetIsFallback());
 		
-		switch( loadedModule->GetType() ){
+		switch(loadedModule->GetType()){
 		case deModuleSystem::emtGraphic:
-			pEditType->setText( "Graphic" );
+			pEditType->setText("Graphic");
 			break;
 			
 		case deModuleSystem::emtSound:
-			pEditType->setText( "Sound" );
+			pEditType->setText("Sound");
 			break;
 			
 		case deModuleSystem::emtInput:
-			pEditType->setText( "Input" );
+			pEditType->setText("Input");
 			break;
 			
 		case deModuleSystem::emtNetwork:
-			pEditType->setText( "Network" );
+			pEditType->setText("Network");
 			break;
 			
 		case deModuleSystem::emtPhysics:
-			pEditType->setText( "Physics" );
+			pEditType->setText("Physics");
 			break;
 			
 		case deModuleSystem::emtImage:
-			pEditType->setText( "Image" );
+			pEditType->setText("Image");
 			break;
 			
 		case deModuleSystem::emtVideo:
-			pEditType->setText( "Video" );
+			pEditType->setText("Video");
 			break;
 			
 		case deModuleSystem::emtScript:
-			pEditType->setText( "Scripting" );
+			pEditType->setText("Scripting");
 			break;
 			
 		case deModuleSystem::emtModel:
-			pEditType->setText( "Model" );
+			pEditType->setText("Model");
 			break;
 			
 		case deModuleSystem::emtRig:
-			pEditType->setText( "Rig" );
+			pEditType->setText("Rig");
 			break;
 			
 		case deModuleSystem::emtSkin:
-			pEditType->setText( "Skin" );
+			pEditType->setText("Skin");
 			break;
 			
 		case deModuleSystem::emtAnimation:
-			pEditType->setText( "Animation" );
+			pEditType->setText("Animation");
 			break;
 			
 		case deModuleSystem::emtFont:
-			pEditType->setText( "Font" );
+			pEditType->setText("Font");
 			break;
 			
 		case deModuleSystem::emtCrashRecovery:
-			pEditType->setText( "Crash Recovery" );
+			pEditType->setText("Crash Recovery");
 			break;
 			
 		case deModuleSystem::emtLanguagePack:
-			pEditType->setText( "Language Pack" );
+			pEditType->setText("Language Pack");
 			break;
 			
 		case deModuleSystem::emtAnimator:
-			pEditType->setText( "Animator" );
+			pEditType->setText("Animator");
 			break;
 			
 		case deModuleSystem::emtSynthesizer:
-			pEditType->setText( "Synthesizer" );
+			pEditType->setText("Synthesizer");
 			break;
 			
 		case deModuleSystem::emtArchive:
-			pEditType->setText( "Archive" );
+			pEditType->setText("Archive");
 			break;
 			
 		case deModuleSystem::emtService:
-			pEditType->setText( "Service" );
+			pEditType->setText("Service");
 			break;
 			
 		default:
-			pEditType->setText( "Unknown Type" );
+			pEditType->setText("Unknown Type");
 		}
 		
-		if( loadedModule->IsInternalModule() ){
+		if(loadedModule->IsInternalModule()){
 			deInternalModule *internalModule = loadedModule->CastToInternalModule();
 			
-			pEditLibName->setText( "?" );
-			pEditLibSize->setText( "?" );
-			pEditLibHash->setText( "?" );
+			pEditLibName->setText("?");
+			pEditLibSize->setText("?");
+			pEditLibHash->setText("?");
 			
-			switch( internalModule->GetErrorCode() ){
+			switch(internalModule->GetErrorCode()){
 			case deLoadableModule::eecSuccess:
-				pEditStatus->setText( "Everything OK" );
+				pEditStatus->setText("Everything OK");
 				break;
 				
 			case deLoadableModule::eecCreateModuleFailed:
-				pEditStatus->setText( "Creation of module failed" );
+				pEditStatus->setText("Creation of module failed");
 				break;
 				
 			default:
-				pEditStatus->setText( "Unknown error code" );
+				pEditStatus->setText("Unknown error code");
 			}
 			
-		}else if( loadedModule->IsLibraryModule() ){
+		}else if(loadedModule->IsLibraryModule()){
 			deLibraryModule *libraryModule = loadedModule->CastToLibraryModule();
 			
-			pEditLibName->setText( libraryModule->GetLibFileName().GetString() );
-			numBuf.Format( "%d", libraryModule->GetLibFileSize() );
-			pEditLibSize->setText( numBuf.GetString() );
-			pEditLibHash->setText( libraryModule->GetLibFileHash().GetString() );
+			pEditLibName->setText(libraryModule->GetLibFileName().GetString());
+			numBuf.Format("%d", libraryModule->GetLibFileSize());
+			pEditLibSize->setText(numBuf.GetString());
+			pEditLibHash->setText(libraryModule->GetLibFileHash().GetString());
 			
-			switch( libraryModule->GetErrorCode() ){
+			switch(libraryModule->GetErrorCode()){
 			case deLoadableModule::eecSuccess:
-				pEditStatus->setText( "Everything OK" );
+				pEditStatus->setText("Everything OK");
 				break;
 				
 			case deLoadableModule::eecCreateModuleFailed:
-				pEditStatus->setText( "Creation of module failed" );
+				pEditStatus->setText("Creation of module failed");
 				break;
 				
 			case deLibraryModule::eecLibFileNotFound:
-				pEditStatus->setText( "Library file could not be found" );
+				pEditStatus->setText("Library file could not be found");
 				break;
 				
 			case deLibraryModule::eecLibFileNotRegularFile:
-				pEditStatus->setText( "Library file is not a regular file" );
+				pEditStatus->setText("Library file is not a regular file");
 				break;
 				
 			case deLibraryModule::eecLibFileSizeMismatch:
-				pEditStatus->setText( "Size of library file does not match expected size" );
+				pEditStatus->setText("Size of library file does not match expected size");
 				break;
 				
 			case deLibraryModule::eecLibFileCheckSumMismatch:
-				pEditStatus->setText( "Check sum of library file does not match expected value" );
+				pEditStatus->setText("Check sum of library file does not match expected value");
 				break;
 				
 			case deLibraryModule::eecLibFileOpenFailed:
-				pEditStatus->setText( "Library file could not be opened" );
+				pEditStatus->setText("Library file could not be opened");
 				break;
 				
 			case deLibraryModule::eecLibFileEntryPointNotFound:
-				pEditStatus->setText( "Entry point function could not be found" );
+				pEditStatus->setText("Entry point function could not be found");
 				break;
 				
 			case deLibraryModule::eecLibFileCreateModuleFailed:
-				pEditStatus->setText( "Creating module using entry function failed" );
+				pEditStatus->setText("Creating module using entry function failed");
 				break;
 				
 			default:
-				pEditStatus->setText( "Unknown error code" );
+				pEditStatus->setText("Unknown error code");
 			}
 			
 		}else{
-			pEditStatus->setText( "?" );
-			pEditLibName->setText( "?" );
-			pEditLibSize->setText( "?" );
-			pEditLibHash->setText( "?" );
+			pEditStatus->setText("?");
+			pEditLibName->setText("?");
+			pEditLibSize->setText("?");
+			pEditLibHash->setText("?");
 		}
 	}
 }
@@ -384,10 +384,10 @@ void decrbPanelModuleStatus::UpdateModulesList(){
 	deLoadableModule *loadedModule;
 	FXString text;
 	
-	for( i=0; i<count; i++ ){
-		loadedModule = modSys->GetModuleAt( i );
-		text.format( "%s %s", loadedModule->GetName().GetString(), loadedModule->GetVersion().GetString() );
-		pCBModule->appendItem( text, loadedModule );
+	for(i=0; i<count; i++){
+		loadedModule = modSys->GetModuleAt(i);
+		text.format("%s %s", loadedModule->GetName().GetString(), loadedModule->GetVersion().GetString());
+		pCBModule->appendItem(text, loadedModule);
 	}
 	pCBModule->sortItems();
 }
@@ -397,7 +397,7 @@ void decrbPanelModuleStatus::UpdateModulesList(){
 // Events
 ///////////
 
-long decrbPanelModuleStatus::onCBModuleChanged( FXObject*, FXSelector, void* ){
+long decrbPanelModuleStatus::onCBModuleChanged(FXObject*, FXSelector, void*){
 	UpdateModuleStatus();
 	return 1;
 }

@@ -44,7 +44,7 @@ class deglWindowMain;
  * Profiles Panel.
  */
 class deglDialogProfileList : public FXDialogBox{
-	FXDECLARE( deglDialogProfileList )
+	FXDECLARE(deglDialogProfileList)
 protected:
 	deglDialogProfileList();
 	
@@ -125,8 +125,8 @@ private:
 		
 	public:
 		typedef deTObjectReference<cEditProfile> Ref;
-		cEditProfile( deglDialogProfileList &dialog, const char *name );
-		cEditProfile( deglDialogProfileList &dialog, delGameProfile *profile, delGame *gameCustom );
+		cEditProfile(deglDialogProfileList &dialog, const char *name);
+		cEditProfile(deglDialogProfileList &dialog, delGameProfile *profile, delGame *gameCustom);
 		inline delGameProfile *GetOriginal() const{ return pOriginal; }
 		inline delGameProfile *GetEdit() const{ return pEdit; }
 		inline delGame *GetGameCustom() const{ return pGameCustom; }
@@ -205,7 +205,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dialog. */
-	deglDialogProfileList( deglWindowMain *windowMain, FXWindow *owner, delGameProfile *selectProfile );
+	deglDialogProfileList(deglWindowMain *windowMain, FXWindow *owner, delGameProfile *selectProfile);
 	/** Cleans up the dialog. */
 	virtual ~deglDialogProfileList();
 	/*@}*/
@@ -226,15 +226,15 @@ public:
 	/** Update the selected profile if any. */
 	void UpdateProfile();
 	/** Update a system. */
-	void UpdateSystem( sSystem &system, const char *moduleName, const char *moduleVersion );
+	void UpdateSystem(sSystem &system, const char *moduleName, const char *moduleVersion);
 	/** Disable a system. */
-	void DisableSystem( sSystem &system );
+	void DisableSystem(sSystem &system);
 	
 	/** Update module versions. */
-	void UpdateModuleVersions( sSystem &system, const char *moduleName, const char *moduleVersion );
+	void UpdateModuleVersions(sSystem &system, const char *moduleName, const char *moduleVersion);
 	
 	/** Get selected module name. */
-	bool GetSelectedMPModuleName( FXString &name );
+	bool GetSelectedMPModuleName(FXString &name);
 	/** Update modules. */
 	void UpdateMPModuleList();
 	/** Update parameters list. */
@@ -248,86 +248,86 @@ public:
 	void UpdateCBDisabledModuleVersionsVersion();
 	
 	/** Run modal invocation of the dialog. */
-	virtual FXuint execute( FXuint placement = PLACEMENT_OWNER );
+	virtual FXuint execute(FXuint placement = PLACEMENT_OWNER);
 	/*@}*/
 	
 	/** \name Events */
 	/*@{*/
-	long onListProfilesChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnProfAdd( FXObject *sender, FXSelector selector, void *data );
-	long onBtnProfDup( FXObject *sender, FXSelector selector, void *data );
-	long onBtnProfDel( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnProfDel( FXObject *sender, FXSelector selector, void *data );
-	long onBtnProfRename( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnProfRename( FXObject *sender, FXSelector selector, void *data );
+	long onListProfilesChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnProfAdd(FXObject *sender, FXSelector selector, void *data);
+	long onBtnProfDup(FXObject *sender, FXSelector selector, void *data);
+	long onBtnProfDel(FXObject *sender, FXSelector selector, void *data);
+	long updateBtnProfDel(FXObject *sender, FXSelector selector, void *data);
+	long onBtnProfRename(FXObject *sender, FXSelector selector, void *data);
+	long updateBtnProfRename(FXObject *sender, FXSelector selector, void *data);
 	
-	long onCBModGraChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModGraVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnGraModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModInpChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModInpVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnInpModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModPhyChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModPhyVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnPhyModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAmrChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAmrVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnAmrModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAIChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAIVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnAIModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModCRChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModCRVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnCRModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAudChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAudVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnAudModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModNetChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModNetVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnNetModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModSynChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModSynVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnSynModInfo( FXObject *sender, FXSelector selector, void *data );
-	long onCBModVRChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModVRVersionChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnVRModInfo( FXObject *sender, FXSelector selector, void *data );
+	long onCBModGraChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModGraVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnGraModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModInpChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModInpVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnInpModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModPhyChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModPhyVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnPhyModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAmrChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAmrVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnAmrModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAIChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAIVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnAIModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModCRChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModCRVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnCRModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAudChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAudVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnAudModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModNetChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModNetVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnNetModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModSynChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModSynVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnSynModInfo(FXObject *sender, FXSelector selector, void *data);
+	long onCBModVRChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModVRVersionChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnVRModInfo(FXObject *sender, FXSelector selector, void *data);
 	
-	long onListMPModulesChanged( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterValueCommand( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterValueChanged( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterValueFocusIn( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterLabelLMPress( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterLabelLMRelease( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterLabelRMPress( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterLabelRMRelease( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterOptBasic( FXObject *sender, FXSelector selector, void *data );
-	long updateMPParameterOptBasic( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterOptAdvanced( FXObject *sender, FXSelector selector, void *data );
-	long updateMPParameterOptAdvanced( FXObject *sender, FXSelector selector, void *data );
-	long onMPParameterOptExpert( FXObject *sender, FXSelector selector, void *data );
-	long updateMPParameterOptExpert( FXObject *sender, FXSelector selector, void *data );
+	long onListMPModulesChanged(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterValueCommand(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterValueChanged(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterValueFocusIn(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterLabelLMPress(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterLabelLMRelease(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterLabelRMPress(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterLabelRMRelease(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterOptBasic(FXObject *sender, FXSelector selector, void *data);
+	long updateMPParameterOptBasic(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterOptAdvanced(FXObject *sender, FXSelector selector, void *data);
+	long updateMPParameterOptAdvanced(FXObject *sender, FXSelector selector, void *data);
+	long onMPParameterOptExpert(FXObject *sender, FXSelector selector, void *data);
+	long updateMPParameterOptExpert(FXObject *sender, FXSelector selector, void *data);
 	
-	long onEditRunArgsChanged( FXObject *sender, FXSelector selector, void *data );
-	long onChkReplaceRunArgsChanged( FXObject *sender, FXSelector selector, void *data );
-	long onEditWidthChanged( FXObject *sender, FXSelector selector, void *data );
-	long onEditHeightChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBFullScreenResolutionsChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBDisableModuleVersionModuleChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnDisableModuleVersionAdd( FXObject *sender, FXSelector selector, void *data );
-	long onBtnDisableModuleVersionRemove( FXObject *sender, FXSelector selector, void *data );
+	long onEditRunArgsChanged(FXObject *sender, FXSelector selector, void *data);
+	long onChkReplaceRunArgsChanged(FXObject *sender, FXSelector selector, void *data);
+	long onEditWidthChanged(FXObject *sender, FXSelector selector, void *data);
+	long onEditHeightChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBFullScreenResolutionsChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBDisableModuleVersionModuleChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnDisableModuleVersionAdd(FXObject *sender, FXSelector selector, void *data);
+	long onBtnDisableModuleVersionRemove(FXObject *sender, FXSelector selector, void *data);
 	
-	long onPUParamReset( FXObject *sender, FXSelector selector, void *data );
+	long onPUParamReset(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 	
 private:
-	void pCreateSystem( sSystem &system, const char *textLabel, const char *toolText,
+	void pCreateSystem(sSystem &system, const char *textLabel, const char *toolText,
 		int comboBoxSelector, int comboBoxVersionSelector, int buttonSelector,
-		FXComposite *container );
+		FXComposite *container);
 	void pUpdateMPParamVisiblity();
 	cEditProfile *pGetSelectedProfile() const;
-	void pSetSelectedProfile( delGameProfile *profile );
-	void pSetSelectedProfile( cEditProfile *profile );
-	cEditProfile *pGetProfileNamed( const char *name ) const;
+	void pSetSelectedProfile(delGameProfile *profile);
+	void pSetSelectedProfile(cEditProfile *profile);
+	cEditProfile *pGetProfileNamed(const char *name) const;
 };
 
 // end of include only once

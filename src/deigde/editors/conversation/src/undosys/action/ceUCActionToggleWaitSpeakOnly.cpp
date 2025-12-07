@@ -42,14 +42,14 @@
 ////////////////////////////
 
 ceUCActionToggleWaitSpeakOnly::ceUCActionToggleWaitSpeakOnly(
-ceConversationTopic *topic, ceConversationAction *action )
+ceConversationTopic *topic, ceConversationAction *action)
 {
-	DEASSERT_NOTNULL( topic )
+	DEASSERT_NOTNULL(topic)
 	
 	pTopic = NULL;
 	pAction = NULL;
 	
-	SetShortInfo( "Action Toggle Wait Speak Only" );
+	SetShortInfo("Action Toggle Wait Speak Only");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceConversationTopic *topic, ceConversationAction *action )
 }
 
 ceUCActionToggleWaitSpeakOnly::~ceUCActionToggleWaitSpeakOnly(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -77,6 +77,6 @@ void ceUCActionToggleWaitSpeakOnly::Undo(){
 }
 
 void ceUCActionToggleWaitSpeakOnly::Redo(){
-	pAction->SetWaitSpeakOnly( ! pAction->GetWaitSpeakOnly() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetWaitSpeakOnly(!pAction->GetWaitSpeakOnly());
+	pTopic->NotifyActionChanged(pAction);
 }

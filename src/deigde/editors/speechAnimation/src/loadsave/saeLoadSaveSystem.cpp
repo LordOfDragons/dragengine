@@ -64,15 +64,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeLoadSaveSystem::saeLoadSaveSystem( saeWindowMain &windowMain ) :
-pWindowMain( windowMain )
+saeLoadSaveSystem::saeLoadSaveSystem(saeWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	pLSSAnim = new saeLoadSaveSAnimation( this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE );
+	pLSSAnim = new saeLoadSaveSAnimation(this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE);
 	pBuildFilePattern();
 }
 
 saeLoadSaveSystem::~saeLoadSaveSystem(){
-	if( pLSSAnim ){
+	if(pLSSAnim){
 		delete pLSSAnim;
 	}
 }
@@ -82,34 +82,34 @@ saeLoadSaveSystem::~saeLoadSaveSystem(){
 // Management
 ///////////////
 
-saeSAnimation *saeLoadSaveSystem::LoadSAnimation( const char *filename ){
-	const decBaseFileReader::Ref fileReader( decBaseFileReader::Ref::New(
+saeSAnimation *saeLoadSaveSystem::LoadSAnimation(const char *filename){
+	const decBaseFileReader::Ref fileReader(decBaseFileReader::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->
-			OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) );
+			OpenFileForReading(decPath::CreatePathUnix(filename))));
 	
-	const saeSAnimation::Ref sanim( saeSAnimation::Ref::New(
-		new saeSAnimation( &pWindowMain.GetEnvironment() ) ) );
+	const saeSAnimation::Ref sanim(saeSAnimation::Ref::New(
+		new saeSAnimation(&pWindowMain.GetEnvironment())));
 	
-	sanim->SetFilePath( filename );  // required for relative loading
+	sanim->SetFilePath(filename);  // required for relative loading
 	
-	pLSSAnim->LoadSAnimation( sanim, fileReader );
-	sanim->SetChanged( false );
-	sanim->SetSaved( true );
+	pLSSAnim->LoadSAnimation(sanim, fileReader);
+	sanim->SetChanged(false);
+	sanim->SetSaved(true);
 	
 	sanim->AddReference(); // required to hand over reference to caller
 	return sanim;
 }
 
-void saeLoadSaveSystem::SaveSAnimation( saeSAnimation *sanimation, const char *filename ){
-	if( ! sanimation || ! filename ){
-		DETHROW( deeInvalidParam );
+void saeLoadSaveSystem::SaveSAnimation(saeSAnimation *sanimation, const char *filename){
+	if(!sanimation || !filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileWriter::Ref fileWriter;
 	
-	fileWriter.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()->
-		OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
-	pLSSAnim->SaveSAnimation( *sanimation, fileWriter );
+	fileWriter.TakeOver(pWindowMain.GetEnvironment().GetFileSystemGame()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
+	pLSSAnim->SaveSAnimation(*sanimation, fileWriter);
 }
 
 
@@ -123,12 +123,12 @@ void saeLoadSaveSystem::pBuildFilePattern(){
 	decString pattern;
 	
 	try{
-		pattern.Format( "*%s", pLSSAnim->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSSAnim->GetName(), pattern, pLSSAnim->GetPattern() );
-		pFilePatternList.AddFilePattern( filePattern );
+		pattern.Format("*%s", pLSSAnim->GetPattern().GetString());
+		filePattern = new igdeFilePattern(pLSSAnim->GetName(), pattern, pLSSAnim->GetPattern());
+		pFilePatternList.AddFilePattern(filePattern);
 		
-	}catch( const deException & ){
-		if( filePattern ){
+	}catch(const deException &){
+		if(filePattern){
 			delete filePattern;
 		}
 		throw;

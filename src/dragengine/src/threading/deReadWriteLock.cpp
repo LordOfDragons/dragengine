@@ -42,30 +42,30 @@
 
 deReadWriteLock::deReadWriteLock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	if( pthread_rwlock_init( &pRWLock, NULL ) != 0 ){
-		DETHROW( deeOutOfMemory );
+	if(pthread_rwlock_init(&pRWLock, NULL) != 0){
+		DETHROW(deeOutOfMemory);
 	}
 	#endif
 	
 	#ifdef OS_W32
-	InitializeSRWLock( &pRWLock );
+	InitializeSRWLock(&pRWLock);
 	#endif
 }
 
 deReadWriteLock::~deReadWriteLock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	const int result = pthread_rwlock_destroy( &pRWLock );
-	if( result != 0 ){
-		switch( result ){
+	const int result = pthread_rwlock_destroy(&pRWLock);
+	if(result != 0){
+		switch(result){
 		case EBUSY:
-			printf( "[RWLOCK] %p: Still locked!\n", this );
+			printf("[RWLOCK] %p: Still locked!\n", this);
 			break;
 			
 		case EINVAL:
-			printf( "[RWLOCK] %p: Invalid lock!\n", this );
+			printf("[RWLOCK] %p: Invalid lock!\n", this);
 			break;
 		}
-		printf( "[RWLOCK] %p: Cleanup failed (%i)\n", this, result );
+		printf("[RWLOCK] %p: Cleanup failed (%i)\n", this, result);
 	}
 	#endif
 	
@@ -81,19 +81,19 @@ deReadWriteLock::~deReadWriteLock(){
 
 void deReadWriteLock::ReadLock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	if( pthread_rwlock_rdlock( &pRWLock ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_rwlock_rdlock(&pRWLock) != 0){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
-	AcquireSRWLockShared( &pRWLock );
+	AcquireSRWLockShared(&pRWLock);
 	#endif
 }
 
 bool deReadWriteLock::TryReadLock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	switch( pthread_rwlock_tryrdlock( &pRWLock ) ){
+	switch(pthread_rwlock_tryrdlock(&pRWLock)){
 	case 0:
 		return true;
 		
@@ -101,24 +101,24 @@ bool deReadWriteLock::TryReadLock(){
 		return false;
 		
 	default:
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
-	return TryAcquireSRWLockShared( &pRWLock ) != 0;
+	return TryAcquireSRWLockShared(&pRWLock) != 0;
 	#endif
 }
 
 void deReadWriteLock::ReadUnlock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	if( pthread_rwlock_unlock( &pRWLock ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_rwlock_unlock(&pRWLock) != 0){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
-	ReleaseSRWLockShared( &pRWLock );
+	ReleaseSRWLockShared(&pRWLock);
 	#endif
 }
 
@@ -126,19 +126,19 @@ void deReadWriteLock::ReadUnlock(){
 
 void deReadWriteLock::WriteLock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	if( pthread_rwlock_wrlock( &pRWLock ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_rwlock_wrlock(&pRWLock) != 0){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
-	AcquireSRWLockExclusive( &pRWLock );
+	AcquireSRWLockExclusive(&pRWLock);
 	#endif
 }
 
 bool deReadWriteLock::TryWriteLock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	switch( pthread_rwlock_trywrlock( &pRWLock ) ){
+	switch(pthread_rwlock_trywrlock(&pRWLock)){
 	case 0:
 		return true;
 		
@@ -146,23 +146,23 @@ bool deReadWriteLock::TryWriteLock(){
 		return false;
 		
 	default:
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
-	return TryAcquireSRWLockExclusive( &pRWLock ) != 0;
+	return TryAcquireSRWLockExclusive(&pRWLock) != 0;
 	#endif
 }
 
 void deReadWriteLock::WriteUnlock(){
 	#if defined OS_UNIX || defined OS_BEOS
-	if( pthread_rwlock_unlock( &pRWLock ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_rwlock_unlock(&pRWLock) != 0){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
-	ReleaseSRWLockExclusive( &pRWLock );
+	ReleaseSRWLockExclusive(&pRWLock);
 	#endif
 }

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render font. */
-	deoglRFont( deoglRenderThread &renderThread, const deFont &font );
+	deoglRFont(deoglRenderThread &renderThread, const deFont &font);
 	
 protected:
 	/** Clean up render font. */

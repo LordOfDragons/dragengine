@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug names enumeration. */
-	deoglDebugNamesEnum( const char *name, const sEntry *entries );
+	deoglDebugNamesEnum(const char *name, const sEntry *entries);
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	inline const char *Name() const{ return pName; }
 	
 	/** Name of enumeration constant. */
-	decString EntryName( int value, bool full = false ) const;
+	decString EntryName(int value, bool full = false) const;
 	/*@}*/
 };
 

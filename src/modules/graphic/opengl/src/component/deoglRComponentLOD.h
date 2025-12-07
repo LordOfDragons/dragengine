@@ -98,14 +98,14 @@ public:
 	deoglGIBVHDynamic *pGIBVHDynamic;
 	bool pDirtyGIBVHPositions;
 	
-	deoglRenderTaskConfig pRenderTaskConfigs[ 6 ];
+	deoglRenderTaskConfig pRenderTaskConfigs[6];
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render component lod. */
-	deoglRComponentLOD( deoglRComponent &component, int lodIndex );
+	deoglRComponentLOD(deoglRComponent &component, int lodIndex);
 	
 	/** Clean up render component lod. */
 	virtual ~deoglRComponentLOD();
@@ -233,7 +233,7 @@ public:
 	
 	
 	/** Render task configuration or NULL. */
-	const deoglRenderTaskConfig *GetRenderTaskConfig( deoglSkinTexturePipelines::eTypes type ) const;
+	const deoglRenderTaskConfig *GetRenderTaskConfig(deoglSkinTexturePipelines::eTypes type) const;
 	
 	/** Update render task configuration. */
 	void UpdateRenderTaskConfigurations();
@@ -245,18 +245,18 @@ private:
 	void pCleanUp();
 	
 	void pEnsureVBO();
-	void pBuildVBO( const deoglModelLOD &modelLOD );
-	void pWriteVBOData( const deoglModelLOD &modelLOD );
-	void pUpdateVAO( deoglModelLOD &modelLOD );
+	void pBuildVBO(const deoglModelLOD &modelLOD);
+	void pWriteVBOData(const deoglModelLOD &modelLOD);
+	void pUpdateVAO(deoglModelLOD &modelLOD);
 	
-	void pCalculateWeights( const deoglModelLOD &modelLOD );
-	void pTransformVertices( const deoglModelLOD &modelLOD );
-	void pCalculateNormalsAndTangents( const deoglModelLOD &modelLOD );
+	void pCalculateWeights(const deoglModelLOD &modelLOD);
+	void pTransformVertices(const deoglModelLOD &modelLOD);
+	void pCalculateNormalsAndTangents(const deoglModelLOD &modelLOD);
 	
-	void pPrepareVBOLayout( const deoglModelLOD &modelLOD );
+	void pPrepareVBOLayout(const deoglModelLOD &modelLOD);
 	
-	void pUpdateRenderTaskConfig( deoglRenderTaskConfig &config, deoglSkinTexturePipelines::eTypes type,
-		int renderTaskFlags, int renderTaskFlagMask, bool shadow );
+	void pUpdateRenderTaskConfig(deoglRenderTaskConfig &config, deoglSkinTexturePipelines::eTypes type,
+		int renderTaskFlags, int renderTaskFlagMask, bool shadow);
 };
 
 #endif

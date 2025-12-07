@@ -136,9 +136,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model lod. */
-	deoglModelLOD( deoglRModel &model, int lodIndex, const deModel &engModel );
+	deoglModelLOD(deoglRModel &model, int lodIndex, const deModel &engModel);
 	/** Creates a new model lod from cache. */
-	deoglModelLOD( deoglRModel &model, int lodIndex, decBaseFileReader &cacheReader );
+	deoglModelLOD(deoglRModel &model, int lodIndex, decBaseFileReader &cacheReader);
 	/** Cleans up the model lod. */
 	~deoglModelLOD();
 	/*@}*/
@@ -180,11 +180,11 @@ public:
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Texture at index. */
-	deoglModelTexture &GetTextureAt( int index );
-	const deoglModelTexture &GetTextureAt( int index ) const;
+	deoglModelTexture &GetTextureAt(int index);
+	const deoglModelTexture &GetTextureAt(int index) const;
 	
 	/** Texture render task instance group. */
-	deoglSharedSPBRTIGroupList &GetSharedSPBRTIGroupListAt( int texture ) const;
+	deoglSharedSPBRTIGroupList &GetSharedSPBRTIGroupListAt(int texture) const;
 	
 	/** Model has double sided textures. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
@@ -236,13 +236,13 @@ public:
 	/** Retrieves the number of texture coordinate sets. */
 	inline int GetTextureCoordinateSetCount() const{ return pTexCoordSetCount; }
 	/** Retrieves the texture coordinate set at the given index. */
-	const deoglModelLODTexCoordSet &GetTextureCoordSetAt( int index ) const;
+	const deoglModelLODTexCoordSet &GetTextureCoordSetAt(int index) const;
 	
 	/** Count of vertex position sets. */
 	inline int GetVertexPositionSetCount() const{ return pVertPosSetCount; }
 	
 	/** Vertex position set at index. */
-	const deoglModelLODVertPosSet &GetVertexPositionSetAt( int index ) const;
+	const deoglModelLODVertPosSet &GetVertexPositionSetAt(int index) const;
 	
 	/** Octree or \em NULL if there is none. */
 	inline deoglModelOctree *GetOctree() const{ return pOctree; }
@@ -256,9 +256,9 @@ public:
 	inline float GetAvgError() const{ return pAvgError; }
 	
 	/** Load from cache file. */
-	void LoadFromCache( decBaseFileReader &reader );
+	void LoadFromCache(decBaseFileReader &reader);
 	/** Save to cache file. */
-	void SaveToCache( decBaseFileWriter &writer );
+	void SaveToCache(decBaseFileWriter &writer);
 	
 	
 	
@@ -272,8 +272,8 @@ public:
 private:
 	void pCleanUp();
 	void pCalcTangents();
-	void pBuildArrays( const deModel &engModel );
-	void pCalcErrorMetrics( const deModel &engModel );
+	void pBuildArrays(const deModel &engModel);
+	void pCalcErrorMetrics(const deModel &engModel);
 	void pOptimizeVertexCache();
 	void pWriteVBOData();
 	// void pWriteVBODataPositionWeight();

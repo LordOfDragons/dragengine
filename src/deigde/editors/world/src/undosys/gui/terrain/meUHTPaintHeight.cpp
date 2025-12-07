@@ -44,26 +44,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTPaintHeight::meUHTPaintHeight( int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid,
-const decPoint &size, float *oldHeights ){
-	if( ! world || ! oldHeights ) DETHROW( deeInvalidParam );
+meUHTPaintHeight::meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid,
+const decPoint &size, float *oldHeights){
+	if(!world || !oldHeights) DETHROW(deeInvalidParam);
 	
 	meHeightTerrain *hterrain = world->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
 	int pixelCount = size.x * size.y;
 	int adjustX, adjustY;
 	
-	if( drawMode == meWorldGuiParameters::ehpdmRaise ){
-		SetShortInfo( "Raise Terrain" );
+	if(drawMode == meWorldGuiParameters::ehpdmRaise){
+		SetShortInfo("Raise Terrain");
 		
-	}else if( drawMode == meWorldGuiParameters::ehpdmLower ){
-		SetShortInfo( "Lower Terrain" );
+	}else if(drawMode == meWorldGuiParameters::ehpdmLower){
+		SetShortInfo("Lower Terrain");
 		
-	}else if( drawMode == meWorldGuiParameters::ehpdmLevel ){
-		SetShortInfo( "Level Terrain" );
+	}else if(drawMode == meWorldGuiParameters::ehpdmLevel){
+		SetShortInfo("Level Terrain");
 		
 	}else{
-		SetShortInfo( "Smooth Terrain" );
+		SetShortInfo("Smooth Terrain");
 	}
 	
 	pWorld = world;
@@ -85,22 +85,22 @@ const decPoint &size, float *oldHeights ){
 	pSector.y2 = sector.y + adjustY;
 	pGrid.x2 -= adjustX * imageDim;
 	pGrid.y2 -= adjustY * imageDim;
-	pWorld->GetLogger()->LogInfoFormat( "World Editor", "UHTPaintHeight: s=(%i,%i,%i,%i) g=(%i,%i,%i,%i)", pSector.x1, pSector.y1, pSector.x2, pSector.y2, pGrid.x1, pGrid.y1, pGrid.x2, pGrid.y2 );
+	pWorld->GetLogger()->LogInfoFormat("World Editor", "UHTPaintHeight: s=(%i,%i,%i,%i) g=(%i,%i,%i,%i)", pSector.x1, pSector.y1, pSector.x2, pSector.y2, pGrid.x1, pGrid.y1, pGrid.x2, pGrid.y2);
 	
-	SetMemoryConsumption( sizeof( meUHTPaintHeight ) + sizeof( float ) * pixelCount );
+	SetMemoryConsumption(sizeof(meUHTPaintHeight) + sizeof(float) * pixelCount);
 	
 	try{
-		pOldHeights = new float[ pixelCount ];
-		if( ! pOldHeights ) DETHROW( deeOutOfMemory );
+		pOldHeights = new float[pixelCount];
+		if(!pOldHeights) DETHROW(deeOutOfMemory);
 		
-		pNewHeights = new float[ pixelCount ];
-		if( ! pNewHeights ) DETHROW( deeOutOfMemory );
+		pNewHeights = new float[pixelCount];
+		if(!pNewHeights) DETHROW(deeOutOfMemory);
 		
 		pSaveHeights();
 		
-		memcpy( pOldHeights, oldHeights, sizeof( float ) * pixelCount );
+		memcpy(pOldHeights, oldHeights, sizeof(float) * pixelCount);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -116,11 +116,11 @@ meUHTPaintHeight::~meUHTPaintHeight(){
 ///////////////
 
 void meUHTPaintHeight::Undo(){
-	pRestoreHeights( pOldHeights );
+	pRestoreHeights(pOldHeights);
 }
 
 void meUHTPaintHeight::Redo(){
-	pRestoreHeights( pNewHeights );
+	pRestoreHeights(pNewHeights);
 }
 
 
@@ -129,8 +129,8 @@ void meUHTPaintHeight::Redo(){
 //////////////////////
 
 void meUHTPaintHeight::pCleanUp(){
-	if( pNewHeights ) delete [] pNewHeights;
-	if( pOldHeights ) delete [] pOldHeights;
+	if(pNewHeights) delete [] pNewHeights;
+	if(pOldHeights) delete [] pOldHeights;
 }
 
 void meUHTPaintHeight::pSaveHeights(){
@@ -143,8 +143,8 @@ void meUHTPaintHeight::pSaveHeights(){
 	int adjust;
 	int x, y;
 	
-	for( y=0; y<pSize.y; y++ ){
-		for( x=0; x<pSize.x; x++ ){
+	for(y=0; y<pSize.y; y++){
+		for(x=0; x<pSize.x; x++){
 			sgx = pGrid.x1 + x;
 			adjust = sgx / imageDim;
 			scoord.x = pSector.x1 + adjust;
@@ -155,19 +155,19 @@ void meUHTPaintHeight::pSaveHeights(){
 			scoord.y = pSector.y1 + adjust;
 			sgy -= adjust * imageDim;
 			
-			htsector = hterrain->GetSectorWith( scoord );
-			if( htsector ){
+			htsector = hterrain->GetSectorWith(scoord);
+			if(htsector){
 				pixels = htsector->GetHeightImage()->GetDataGrayscale32();
-				pNewHeights[ y * pSize.x + x ] = pixels[ sgy * imageDim + sgx ].value;
+				pNewHeights[y * pSize.x + x] = pixels[sgy * imageDim + sgx].value;
 				
 			}else{
-				pNewHeights[ y * pSize.x + x ] = 0.0f;
+				pNewHeights[y * pSize.x + x] = 0.0f;
 			}
 		}
 	}
 }
 
-void meUHTPaintHeight::pRestoreHeights( float *heights ){
+void meUHTPaintHeight::pRestoreHeights(float *heights){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	int s, sectorCount = hterrain->GetSectorCount();
 	int imageDim = hterrain->GetSectorResolution();
@@ -178,8 +178,8 @@ void meUHTPaintHeight::pRestoreHeights( float *heights ){
 	int adjust;
 	int x, y;
 	
-	for( y=0; y<pSize.y; y++ ){
-		for( x=0; x<pSize.x; x++ ){
+	for(y=0; y<pSize.y; y++){
+		for(x=0; x<pSize.x; x++){
 			sgx = pGrid.x1 + x;
 			adjust = sgx / imageDim;
 			scoord.x = pSector.x1 + adjust;
@@ -190,23 +190,23 @@ void meUHTPaintHeight::pRestoreHeights( float *heights ){
 			scoord.y = pSector.y1 + adjust;
 			sgy -= adjust * imageDim;
 			
-			htsector = hterrain->GetSectorWith( scoord );
-			if( htsector ){
+			htsector = hterrain->GetSectorWith(scoord);
+			if(htsector){
 				pixels = htsector->GetHeightImage()->GetDataGrayscale32();
-				pixels[ sgy * imageDim + sgx ].value = heights[ y * pSize.x + x ];
+				pixels[sgy * imageDim + sgx].value = heights[y * pSize.x + x];
 			}
 		}
 	}
 	
-	hterrain->NotifyHeightsChanged( pSector, pGrid );
+	hterrain->NotifyHeightsChanged(pSector, pGrid);
 	
-	for( s=0; s<sectorCount; s++ ){
-		htsector = hterrain->GetSectorAt( s );
+	for(s=0; s<sectorCount; s++){
+		htsector = hterrain->GetSectorAt(s);
 		const decPoint &scoord2 = htsector->GetCoordinates();
 		
-		if( scoord2.x >= pSector.x1 && scoord2.y >= pSector.y1 && scoord2.x <= pSector.x2 && scoord2.y <= pSector.y2 ){
-			htsector->SetHeightImageChanged( true );
-			pWorld->NotifyHTSHeightChanged( htsector );
+		if(scoord2.x >= pSector.x1 && scoord2.y >= pSector.y1 && scoord2.x <= pSector.x2 && scoord2.y <= pSector.y2){
+			htsector->SetHeightImageChanged(true);
+			pWorld->NotifyHTSHeightChanged(htsector);
 		}
 	}
 }

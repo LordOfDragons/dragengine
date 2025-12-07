@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetScriptModule( gdeGameDefinition *gameDefinition, const char *newValue );
+	gdeUGDSetScriptModule(gdeGameDefinition *gameDefinition, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

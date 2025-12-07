@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCGameCommand( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionGameCommand *condition );
+	ceWPTTIMCGameCommand(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionGameCommand *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -52,7 +52,7 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionGameCommand *GetConditionGameCommand() const{
-		return ( ceCConditionGameCommand* )GetCondition();
+		return (ceCConditionGameCommand*)GetCondition();
 	}
 	
 	/** \brief Update condition. */

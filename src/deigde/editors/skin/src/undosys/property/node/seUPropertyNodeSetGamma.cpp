@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetGamma::seUPropertyNodeSetGamma( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetGamma::seUPropertyNodeSetGamma(sePropertyNode *node, float newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set gamma" );
+	SetShortInfo("Node set gamma");
 	
 	pOldValue = node->GetGamma();
 	
@@ -55,7 +55,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetGamma::~seUPropertyNodeSetGamma(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ seUPropertyNodeSetGamma::~seUPropertyNodeSetGamma(){
 ///////////////
 
 void seUPropertyNodeSetGamma::Undo(){
-	pNode->SetGamma( pOldValue );
+	pNode->SetGamma(pOldValue);
 }
 
 void seUPropertyNodeSetGamma::Redo(){
-	pNode->SetGamma( pNewValue );
+	pNode->SetGamma(pNewValue);
 }

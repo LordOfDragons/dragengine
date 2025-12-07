@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	devkTPoolReference() : pSlot( nullptr ){
+	devkTPoolReference() : pSlot(nullptr){
 	}
 	
-	devkTPoolReference( T *slot ) : pSlot( nullptr ){
+	devkTPoolReference(T *slot) : pSlot(nullptr){
 		*this = slot;
 	}
 	
@@ -72,8 +72,8 @@ public:
 	 * \throws deeNullPointer if slot is nullptr.
 	 */
 	operator T&() const{
-		if( ! pSlot ){
-			DETHROW( deeNullPointer );
+		if(!pSlot){
+			DETHROW(deeNullPointer);
 		}
 		return *pSlot;
 	}
@@ -82,25 +82,25 @@ public:
 	 * \throws deeNullPointer if slot is nullptr.
 	 */
 	T* operator->() const{
-		if( ! pSlot ){
-			DETHROW( deeNullPointer );
+		if(!pSlot){
+			DETHROW(deeNullPointer);
 		}
 		return pSlot;
 	}
 	
-	devkTPoolReference &operator=( T *slot ){
-		if( pSlot ){
+	devkTPoolReference &operator=(T *slot){
+		if(pSlot){
 			pSlot->ReturnToPool();
 		}
 		pSlot = slot;
 		return *this;
 	}
 	
-	inline bool operator==( T *slot ) const{
+	inline bool operator==(T *slot) const{
 		return pSlot == slot;
 	}
 	
-	inline bool operator!=( T *slot ) const{
+	inline bool operator!=(T *slot) const{
 		return pSlot != slot;
 	}
 	/*@}*/
@@ -108,12 +108,12 @@ public:
 	
 	
 private:
-	devkTPoolReference( const devkTPoolReference & ){
-		DETHROW( deeInvalidAction );
+	devkTPoolReference(const devkTPoolReference &){
+		DETHROW(deeInvalidAction);
 	}
 	
-	devkTPoolReference &operator=( const devkTPoolReference & ){
-		DETHROW( deeInvalidAction );
+	devkTPoolReference &operator=(const devkTPoolReference &){
+		DETHROW(deeInvalidAction);
 	}
 };
 

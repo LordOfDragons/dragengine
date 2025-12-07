@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlElementTag::decXmlElementTag( const char *name ){
-	SetName( name );
+decXmlElementTag::decXmlElementTag(const char *name){
+	SetName(name);
 }
 
 decXmlElementTag::~decXmlElementTag(){
@@ -55,21 +55,21 @@ decXmlElementTag::~decXmlElementTag(){
 // Management
 ///////////////
 
-void decXmlElementTag::SetName( const char *name ){
+void decXmlElementTag::SetName(const char *name){
 	pName = name;
 	
-	const decStringList parts( pName.Split( ':' ) );
+	const decStringList parts(pName.Split(':'));
 	
-	if( parts.GetCount() == 2 ){
-		pNamespace = parts.GetAt( 0 );
-		pLocalName = parts.GetAt( 1 );
+	if(parts.GetCount() == 2){
+		pNamespace = parts.GetAt(0);
+		pLocalName = parts.GetAt(1);
 		
-	}else if( parts.GetCount() < 2 ){
+	}else if(parts.GetCount() < 2){
 		pNamespace.Empty();
 		pLocalName = pName;
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -79,13 +79,13 @@ decXmlCharacterData *decXmlElementTag::GetFirstData() const{
 	const int count = GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		decXmlElement &element = *GetElementAt( i );
+	for(i=0; i<count; i++){
+		decXmlElement &element = *GetElementAt(i);
 		
-		if( element.CanCastToCharacterData() ){
+		if(element.CanCastToCharacterData()){
 			return element.CastToCharacterData();
 			
-		}else if( element.CanCastToCDSect() ){
+		}else if(element.CanCastToCDSect()){
 			return element.CastToCDSect();
 		}
 	}
@@ -93,10 +93,10 @@ decXmlCharacterData *decXmlElementTag::GetFirstData() const{
 	return NULL;
 }
 
-decXmlElementTag *decXmlElementTag::GetElementIfTag( int index ) const{
-	decXmlElement &element = *GetElementAt( index );
+decXmlElementTag *decXmlElementTag::GetElementIfTag(int index) const{
+	decXmlElement &element = *GetElementAt(index);
 	
-	if( element.CanCastToElementTag() ){
+	if(element.CanCastToElementTag()){
 		return element.CastToElementTag();
 		
 	}else{
@@ -104,18 +104,18 @@ decXmlElementTag *decXmlElementTag::GetElementIfTag( int index ) const{
 	}
 }
 
-decXmlAttValue *decXmlElementTag::FindAttribute( const char *name ) const{
+decXmlAttValue *decXmlElementTag::FindAttribute(const char *name) const{
 	const int count = GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		decXmlElement &element = *GetElementAt( i );
-		if( ! element.CanCastToAttValue() ){
+	for(i=0; i<count; i++){
+		decXmlElement &element = *GetElementAt(i);
+		if(!element.CanCastToAttValue()){
 			continue;
 		}
 		
 		decXmlAttValue * const attribute = element.CastToAttValue();
-		if( attribute->GetName() == name ){
+		if(attribute->GetName() == name){
 			return attribute;
 		}
 	}
@@ -125,8 +125,8 @@ decXmlAttValue *decXmlElementTag::FindAttribute( const char *name ) const{
 
 
 
-void decXmlElementTag::Visit( decXmlVisitor &visitor ){
-	visitor.VisitElementTag( *this );
+void decXmlElementTag::Visit(decXmlVisitor &visitor){
+	visitor.VisitElementTag(*this);
 }
 
 

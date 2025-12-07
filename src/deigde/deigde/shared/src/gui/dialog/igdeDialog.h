@@ -58,7 +58,7 @@ public:
 	public:
 		typedef deTObjectReference<AcceptDialog> Ref;
 		
-		AcceptDialog( igdeDialog &dialog, const char *text, igdeIcon *icon = NULL );
+		AcceptDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = NULL);
 		virtual ~AcceptDialog();
 		
 		virtual void OnAction();
@@ -75,7 +75,7 @@ public:
 	public:
 		typedef deTObjectReference<CancelDialog> Ref;
 		
-		CancelDialog( igdeDialog &dialog, const char *text, igdeIcon *icon = NULL );
+		CancelDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = NULL);
 		virtual ~CancelDialog();
 		
 		virtual void OnAction();
@@ -93,8 +93,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialog( igdeEnvironment &environment, const char *title,
-		igdeIcon *icon = NULL, bool canResize = true );
+	igdeDialog(igdeEnvironment &environment, const char *title,
+		igdeIcon *icon = NULL, bool canResize = true);
 	
 	
 	
@@ -119,7 +119,7 @@ public:
 	
 	
 	/** \brief Add child. */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	
 	
 	
@@ -131,7 +131,7 @@ public:
 	 * the content container. Content and button bar widget have to be created by the
 	 * user. CreateButtonBar() can be used to create the button bar easily.
 	 */
-	void AddContent( igdeWidget *content, igdeWidget *buttonBar );
+	void AddContent(igdeWidget *content, igdeWidget *buttonBar);
 	
 	/**
 	 * \brief Add button bar with content above with header.
@@ -142,7 +142,7 @@ public:
 	 * button bar widget have to be created by the user. CreateButtonBar() can be
 	 * used to create the button bar easily.
 	 */
-	void AddContent( igdeWidget *content, igdeWidget *header, igdeWidget *buttonBar );
+	void AddContent(igdeWidget *content, igdeWidget *header, igdeWidget *buttonBar);
 	
 	/**
 	 * \brief Add button bar with content above with header and optional side panels.
@@ -154,33 +154,33 @@ public:
 	 * side panels and button bar widget have to be created by the user. CreateButtonBar()
 	 * can be used to create the button bar easily.
 	 */
-	void AddContent( igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
-		igdeWidget *rightPanel, igdeWidget *buttonBar );
+	void AddContent(igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
+		igdeWidget *rightPanel, igdeWidget *buttonBar);
 	
 	/**
 	 * \brief Create button bar using actions.
 	 */
-	void CreateButtonBar( igdeContainer::Ref &buttonBar, igdeAction *action );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar, igdeAction *action);
 	
-	void CreateButtonBar( igdeContainer::Ref &buttonBar,
-		igdeAction *action1, igdeAction *action2 );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar,
+		igdeAction *action1, igdeAction *action2);
 	
-	void CreateButtonBar( igdeContainer::Ref &buttonBar,
-		igdeAction *action1, igdeAction *action2, igdeAction *action3 );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar,
+		igdeAction *action1, igdeAction *action2, igdeAction *action3);
 	
-	void CreateButtonBar( igdeContainer::Ref &buttonBar,
-		igdeAction **actions, int actionCount );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar,
+		igdeAction **actions, int actionCount);
 	
 	/**
 	 * \brief Create button bar with action CancelDialog.
 	 */
-	void CreateButtonBar( igdeContainer::Ref &buttonBar, const char *text );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar, const char *text);
 	
 	/**
 	 * \brief Create button bar with action AcceptDialog and CancelDialog.
 	 */
-	void CreateButtonBar( igdeContainer::Ref &buttonBar,
-		const char *textAccept, const char *textCancel );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar,
+		const char *textAccept, const char *textCancel);
 	
 	
 	
@@ -188,7 +188,7 @@ public:
 	 * \brief Run dialog modal.
 	 * \returns \em true if dialog has been accepted or \em false if cancelled.
 	 */
-	bool Run( igdeWidget *owner );
+	bool Run(igdeWidget *owner);
 	
 	
 	
@@ -216,7 +216,7 @@ public:
 	virtual bool Cancel();
 	
 	/** \brief Close dialog and makes Run() exit with accepted value. */
-	virtual void CloseDialog( bool accepted );
+	virtual void CloseDialog(bool accepted);
 	
 	
 	
@@ -259,8 +259,8 @@ public:
 	
 	
 protected:
-	void pAddContent( igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
-		igdeWidget *rightPanel, igdeWidget *buttonBar );
+	void pAddContent(igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
+		igdeWidget *rightPanel, igdeWidget *buttonBar);
 	
 	/**
 	 * \brief Window title changed.

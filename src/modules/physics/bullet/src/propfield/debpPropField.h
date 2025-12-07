@@ -59,7 +59,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpPropField( dePhysicsBullet *bullet, dePropField *forceField );
+	debpPropField(dePhysicsBullet *bullet, dePropField *forceField);
 	/** Cleans up the peer. */
 	virtual ~debpPropField();
 	/*@}*/
@@ -74,10 +74,10 @@ public:
 	/** Retrieves the number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
 	/** Retrieves the type at the given index. */
-	debpPropFieldType *GetTypeAt( int index ) const;
+	debpPropFieldType *GetTypeAt(int index) const;
 	
 	/** Updates the prop field if required. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 	
 	/** @name Notification */
@@ -86,24 +86,24 @@ public:
 	virtual void PositionChanged();
 	
 	/** Type has been added. */
-	virtual void TypeAdded( int index, dePropFieldType *type );
+	virtual void TypeAdded(int index, dePropFieldType *type);
 	/** Type has been removed. */
-	virtual void TypeRemoved( int index, dePropFieldType *type );
+	virtual void TypeRemoved(int index, dePropFieldType *type);
 	/** All types have been removed. */
 	virtual void AllTypesRemoved();
 	/** Type changed. */
-	virtual void TypeChanged( int index, dePropFieldType *type );
+	virtual void TypeChanged(int index, dePropFieldType *type);
 	
 	/** Instances changed. */
-	virtual void InstancesChanged( int index, dePropFieldType *type );
+	virtual void InstancesChanged(int index, dePropFieldType *type);
 	
 	/** Project all instances to the given ground. */
-	virtual void ProjectInstances( const dePropFieldGround &ground, const decVector &direction );
+	virtual void ProjectInstances(const dePropFieldGround &ground, const decVector &direction);
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	void pProjectInstancesDown( const dePropFieldGround &ground );
+	void pProjectInstancesDown(const dePropFieldGround &ground);
 };
 
 // end of include only once

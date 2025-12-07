@@ -53,23 +53,23 @@ lpeLangPackEntrySelection::~lpeLangPackEntrySelection(){
 // Management
 ///////////////
 
-void lpeLangPackEntrySelection::Add( lpeLangPackEntry *entry ){
-	DEASSERT_NOTNULL( entry )
+void lpeLangPackEntrySelection::Add(lpeLangPackEntry *entry){
+	DEASSERT_NOTNULL(entry)
 	
-	entry->SetSelected( true );
+	entry->SetSelected(true);
 	
-	if( ! pSelection.Has( entry ) ){
-		pSelection.Add( entry );
+	if(!pSelection.Has(entry)){
+		pSelection.Add(entry);
 	}
 }
 
-void lpeLangPackEntrySelection::Remove( lpeLangPackEntry *entry ){
-	DEASSERT_NOTNULL( entry )
+void lpeLangPackEntrySelection::Remove(lpeLangPackEntry *entry){
+	DEASSERT_NOTNULL(entry)
 	
-	entry->SetSelected( false );
+	entry->SetSelected(false);
 	
-	if( pSelection.Has( entry ) ){
-		pSelection.Remove( entry );
+	if(pSelection.Has(entry)){
+		pSelection.Remove(entry);
 	}
 }
 
@@ -77,8 +77,8 @@ void lpeLangPackEntrySelection::RemoveAll(){
 	const int count = pSelection.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSelection.GetAt( i )->SetSelected( false );
+	for(i=0; i<count; i++){
+		pSelection.GetAt(i)->SetSelected(false);
 	}
 	
 	pSelection.RemoveAll();
@@ -90,26 +90,26 @@ bool lpeLangPackEntrySelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void lpeLangPackEntrySelection::SetActive( lpeLangPackEntry *entry ){
-	if( entry == pActive ){
+void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry *entry){
+	if(entry == pActive){
 		return;
 	}
 	
-	if( entry ){
-		DEASSERT_TRUE( pSelection.Has( entry ) )
-		DEASSERT_TRUE( entry->GetSelected() )
+	if(entry){
+		DEASSERT_TRUE(pSelection.Has(entry))
+		DEASSERT_TRUE(entry->GetSelected())
 	}
 	
-	if( pActive ){
-		pActive->SetActive( false );
+	if(pActive){
+		pActive->SetActive(false);
 		pActive->FreeReference();
 	}
 	
 	pActive = entry;
 	
-	if( entry ){
+	if(entry){
 		entry->AddReference();
-		entry->SetActive( true );
+		entry->SetActive(true);
 	}
 }
 
@@ -118,17 +118,17 @@ void lpeLangPackEntrySelection::ActivateNext(){
 	lpeLangPackEntry *next = NULL;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pActive != pSelection.GetAt( i ) ){
-			next = pSelection.GetAt( i );
+	for(i=0; i<count; i++){
+		if(pActive != pSelection.GetAt(i)){
+			next = pSelection.GetAt(i);
 			break;
 		}
 	}
 	
-	SetActive( next );
+	SetActive(next);
 }
 
 void lpeLangPackEntrySelection::Reset(){
-	SetActive( nullptr );
+	SetActive(nullptr);
 	RemoveAll();
 }

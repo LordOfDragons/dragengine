@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakSetMinSpeechTime( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime );
+	ceUCAASpeakSetMinSpeechTime(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakSetMinSpeechTime();
 	/*@}*/

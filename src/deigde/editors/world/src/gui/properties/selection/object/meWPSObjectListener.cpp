@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPSObjectListener::meWPSObjectListener( meWPSObject &panel ) :
-pPanel( panel ){
+meWPSObjectListener::meWPSObjectListener(meWPSObject &panel) :
+pPanel(panel){
 }
 
 meWPSObjectListener::~meWPSObjectListener(){
@@ -56,13 +56,13 @@ meWPSObjectListener::~meWPSObjectListener(){
 // Management
 ///////////////
 
-void meWPSObjectListener::TriggerTableChanged( meWorld* ){
+void meWPSObjectListener::TriggerTableChanged(meWorld*){
 	pPanel.UpdateTriggerTargetLists();
 }
 
 
 
-void meWPSObjectListener::ObjectSelectionChanged( meWorld *world ){
+void meWPSObjectListener::ObjectSelectionChanged(meWorld *world){
 	meObject * const object = world->GetSelectionObject().GetActive();
 	
 	pPanel.UpdateSelection();
@@ -76,13 +76,13 @@ void meWPSObjectListener::ObjectSelectionChanged( meWorld *world ){
 	pPanel.UpdateIdentifierLists();
 	pPanel.UpdateLight();
 	
-	if( object && ! object->GetActiveTexture() && object->GetTextureCount() > 0 ){
+	if(object && !object->GetActiveTexture() && object->GetTextureCount() > 0){
 		// combo box displays textures in sorted order. using first texture from object would
 		// not necessarily select the top most texture. ensure this is the case
 		decStringList names;
-		object->GetTextureNameList( names );
+		object->GetTextureNameList(names);
 		names.SortAscending();
-		object->SetActiveTexture( object->GetTextureNamed( names.GetAt( 0 ) ) );
+		object->SetActiveTexture(object->GetTextureNamed(names.GetAt(0)));
 		// the above call has already caused an update so no need to do it again
 		return;
 	}
@@ -93,16 +93,16 @@ void meWPSObjectListener::ObjectSelectionChanged( meWorld *world ){
 	pPanel.UpdateTexProperties();
 }
 
-void meWPSObjectListener::ObjectChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectListener::ObjectChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateObject();
 }
 
-void meWPSObjectListener::ObjectClassChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectListener::ObjectClassChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -111,16 +111,16 @@ void meWPSObjectListener::ObjectClassChanged( meWorld*, meObject *object ){
 	pPanel.UpdateTexPropertyKeys();
 }
 
-void meWPSObjectListener::ObjectGeometryChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectListener::ObjectGeometryChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateGeometry();
 }
 
-void meWPSObjectListener::ObjectPropertiesChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectListener::ObjectPropertiesChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -129,8 +129,8 @@ void meWPSObjectListener::ObjectPropertiesChanged( meWorld*, meObject *object ){
 	pPanel.UpdateLight();
 }
 
-void meWPSObjectListener::ObjectActivePropertyChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectListener::ObjectActivePropertyChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -155,20 +155,20 @@ void meWPSObjectListener::ObjectActiveAttachBehaviorChanged(meWorld*, meObject *
 	pPanel.SelectActiveAttachBehavior();
 }
 
-void meWPSObjectListener::ObjectTextureCountChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectListener::ObjectTextureCountChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateTextureList();
 	
-	if( ! object->GetActiveTexture() && object->GetTextureCount() > 0 ){
+	if(!object->GetActiveTexture() && object->GetTextureCount() > 0){
 		// combo box displays textures in sorted order. using first texture from object would
 		// not necessarily select the top most texture. ensure this is the case
 		decStringList names;
-		object->GetTextureNameList( names );
+		object->GetTextureNameList(names);
 		names.SortAscending();
-		object->SetActiveTexture( object->GetTextureNamed( names.GetAt( 0 ) ) );
+		object->SetActiveTexture(object->GetTextureNamed(names.GetAt(0)));
 		// the above call has already caused an update so no need to do it again
 		return;
 	}
@@ -177,8 +177,8 @@ void meWPSObjectListener::ObjectTextureCountChanged( meWorld*, meObject *object 
 	pPanel.UpdateTexture();
 }
 
-void meWPSObjectListener::ObjectActiveTextureChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectListener::ObjectActiveTextureChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
@@ -188,16 +188,16 @@ void meWPSObjectListener::ObjectActiveTextureChanged( meWorld*, meObject *object
 	pPanel.UpdateTexProperties();
 }
 
-void meWPSObjectListener::ObjectTextureChanged( meWorld*, meObject *object, meObjectTexture *texture ){
-	if( ! object->GetActive() || texture != object->GetActiveTexture() ){
+void meWPSObjectListener::ObjectTextureChanged(meWorld*, meObject *object, meObjectTexture *texture){
+	if(!object->GetActive() || texture != object->GetActiveTexture()){
 		return;
 	}
 	
 	pPanel.UpdateTexture();
 }
 
-void meWPSObjectListener::ObjectTexturePropertiesChanged( meWorld*, meObject *object, meObjectTexture *texture ){
-	if( ! object->GetActive() || texture != object->GetActiveTexture() ){
+void meWPSObjectListener::ObjectTexturePropertiesChanged(meWorld*, meObject *object, meObjectTexture *texture){
+	if(!object->GetActive() || texture != object->GetActiveTexture()){
 		return;
 	}
 	
@@ -205,11 +205,11 @@ void meWPSObjectListener::ObjectTexturePropertiesChanged( meWorld*, meObject *ob
 	pPanel.UpdateIdentifierLists();
 }
 
-void meWPSObjectListener::ObjectTextureActivePropertyChanged( meWorld*, meObject *object, meObjectTexture *texture ){
-	if( ! object->GetActive() ){
+void meWPSObjectListener::ObjectTextureActivePropertyChanged(meWorld*, meObject *object, meObjectTexture *texture){
+	if(!object->GetActive()){
 		return;
 	}
-	if( texture != object->GetActiveTexture() ){
+	if(texture != object->GetActiveTexture()){
 		return;
 	}
 	

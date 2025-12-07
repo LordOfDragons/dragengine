@@ -41,10 +41,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMACategoryAdd( gdeWindowMain &windowMain );
+	gdeMACategoryAdd(gdeWindowMain &windowMain);
 	
 	/** \brief Create menu actions. */
-	gdeMACategoryAdd( gdeWindowMain &windowMain, const char *text, igdeIcon *icon, const char *description );
+	gdeMACategoryAdd(gdeWindowMain &windowMain, const char *text, igdeIcon *icon, const char *description);
 	/*@}*/
 	
 	
@@ -52,12 +52,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	virtual igdeUndo *OnAction(gdeGameDefinition &gameDefinition);
 	
 	/** \brief Add category. */
-	igdeUndo *AddCategory( gdeGameDefinition &gameDefinition,
+	igdeUndo *AddCategory(gdeGameDefinition &gameDefinition,
 		gdeCategory *parent, const gdeCategoryList &list,
-		gdeUCategoryBase::eCategoryType categoryType ) const;
+		gdeUCategoryBase::eCategoryType categoryType) const;
 	/*@}*/
 };
 

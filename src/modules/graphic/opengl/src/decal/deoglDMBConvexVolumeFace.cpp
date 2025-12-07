@@ -39,7 +39,7 @@
 ////////////////////////////
 
 deoglDMBConvexVolumeFace::deoglDMBConvexVolumeFace() :
-pDecalFace( false ){
+pDecalFace(false){
 }
 
 deoglDMBConvexVolumeFace::~deoglDMBConvexVolumeFace(){
@@ -50,6 +50,6 @@ deoglDMBConvexVolumeFace::~deoglDMBConvexVolumeFace(){
 // Management
 ///////////////
 
-void deoglDMBConvexVolumeFace::SetDecalFace( bool decalFace ){
+void deoglDMBConvexVolumeFace::SetDecalFace(bool decalFace){
 	pDecalFace = decalFace;
 }

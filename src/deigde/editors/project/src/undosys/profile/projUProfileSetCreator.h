@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetCreator( projProfile *profile, const char *newValue );
+	projUProfileSetCreator(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetCreator();

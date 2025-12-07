@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullToolBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullToolBar* CreateNativeWidget( igdeToolBar &owner );
+	static igdeNativeNullToolBar* CreateNativeWidget(igdeToolBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

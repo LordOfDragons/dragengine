@@ -35,17 +35,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUShapeHullRemovePoint::reUShapeHullRemovePoint( reRigShapeHull *shape, int index ) :
-pShape( shape ),
-pIndex( index )
+reUShapeHullRemovePoint::reUShapeHullRemovePoint(reRigShapeHull *shape, int index) :
+pShape(shape),
+pIndex(index)
 {
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
+	if(!shape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPoint = shape->GetPointAt( index );
+	pPoint = shape->GetPointAt(index);
 	
-	SetShortInfo( "Shape hull remove point" );
+	SetShortInfo("Shape hull remove point");
 }
 
 reUShapeHullRemovePoint::~reUShapeHullRemovePoint(){
@@ -57,9 +57,9 @@ reUShapeHullRemovePoint::~reUShapeHullRemovePoint(){
 ///////////////
 
 void reUShapeHullRemovePoint::Undo(){
-	( ( reRigShapeHull& )( deObject& )pShape ).InsertPoint( pPoint, pIndex );
+	((reRigShapeHull&)(deObject&)pShape).InsertPoint(pPoint, pIndex);
 }
 
 void reUShapeHullRemovePoint::Redo(){
-	( ( reRigShapeHull& )( deObject& )pShape ).RemovePoint( pIndex );
+	((reRigShapeHull&)(deObject&)pShape).RemovePoint(pIndex);
 }

@@ -45,15 +45,15 @@ protected:
 	class cEditPosition : public igdeEditVectorListener{
 		reWPPanelShape &pPanel;
 	public:
-		cEditPosition( reWPPanelShape &panel );
-		virtual void OnVectorChanged( igdeEditVector *editVector );
+		cEditPosition(reWPPanelShape &panel);
+		virtual void OnVectorChanged(igdeEditVector *editVector);
 	};
 	
 	class cEditRotation : public igdeEditVectorListener{
 		reWPPanelShape &pPanel;
 	public:
-		cEditRotation( reWPPanelShape &panel );
-		virtual void OnVectorChanged( igdeEditVector *editVector );
+		cEditRotation(reWPPanelShape &panel);
+		virtual void OnVectorChanged(igdeEditVector *editVector);
 	};
 	
 	
@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShape( reWPShape &wpShape, reRigShape::eShapeTypes requiredShapeType );
+	reWPPanelShape(reWPShape &wpShape, reRigShape::eShapeTypes requiredShapeType);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -100,7 +100,7 @@ public:
 	inline reRigShape *GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
-	void SetShape( reRig *rig, reRigShape *shape );
+	void SetShape(reRig *rig, reRigShape *shape);
 	
 	
 	

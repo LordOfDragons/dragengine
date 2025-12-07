@@ -43,13 +43,13 @@ private:
 	int pIndexMotorY;
 	int pIndexMotorZ;
 	
-	btScalar pOrgLimitLinearLower[ 3 ];
-	btScalar pOrgLimitLinearUpper[ 3 ];
-	btScalar pOrgLimitAngularLower[ 3 ];
-	btScalar pOrgLimitAngularUpper[ 3 ];
+	btScalar pOrgLimitLinearLower[3];
+	btScalar pOrgLimitLinearUpper[3];
+	btScalar pOrgLimitAngularLower[3];
+	btScalar pOrgLimitAngularUpper[3];
 	
-	bool pHasJointFrictionLinear[ 3 ];
-	bool pHasJointFrictionAngular[ 3 ];
+	bool pHasJointFrictionLinear[3];
+	bool pHasJointFrictionAngular[3];
 	
 	btScalar pDamping;
 	
@@ -59,12 +59,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create constraint. */
-	debpBPConstraint6Dof( debpColliderConstraint &constraint, btRigidBody &rbA,
-		btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB );
+	debpBPConstraint6Dof(debpColliderConstraint &constraint, btRigidBody &rbA,
+		btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB);
 	
 	/** Create constraint. */
-	debpBPConstraint6Dof( debpColliderConstraint &constraint, btRigidBody &rbA,
-		const btTransform &frameInA, const btTransform &frameInB );
+	debpBPConstraint6Dof(debpColliderConstraint &constraint, btRigidBody &rbA,
+		const btTransform &frameInA, const btTransform &frameInB);
 	
 	/** Clean up constraint. */
 	virtual ~debpBPConstraint6Dof();
@@ -75,22 +75,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set motor indices. */
-	void SetMotorIndices( int x, int y, int z );
+	void SetMotorIndices(int x, int y, int z);
 	
 	/** Save limits for special use. */
 	void SaveLimits();
 	
 	/** Set if linear joint friction is present. */
-	void SetHasJointFrictionLinear( int index, bool enabled );
+	void SetHasJointFrictionLinear(int index, bool enabled);
 	
 	/** Set if angular joint friction is present. */
-	void SetHasJointFrictionAngular( int index, bool enabled );
+	void SetHasJointFrictionAngular(int index, bool enabled);
 	
 	/** Damping. */
 	inline btScalar GetDamping() const{ return pDamping; }
 	
 	/** Set damping. */
-	void SetDamping( btScalar damping );
+	void SetDamping(btScalar damping);
 	
 	/**
 	 * Prepare constraint for next simulation step.
@@ -114,7 +114,7 @@ public:
 	 * This call is used by subclasses of constraint solvers to add constraint friction. This composes
 	 * of static and kinematic joint friction.
 	 */
-	virtual void GetConstraintFriction( btTypedConstraint::btConstraintInfo2 &info );
+	virtual void GetConstraintFriction(btTypedConstraint::btConstraintInfo2 &info);
 	
 	
 	
@@ -122,20 +122,20 @@ public:
 	 * Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
-	virtual void getInfo1( btConstraintInfo1 *info );
+	virtual void getInfo1(btConstraintInfo1 *info);
 	
 	/**
 	 * Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
-	virtual void getInfo2( btConstraintInfo2 *info );
+	virtual void getInfo2(btConstraintInfo2 *info);
 	/*@}*/
 	
 	
 	
 private:
 	btScalar pConstraintInvMass() const;
-	btScalar pFrictionFactor( btScalar timeStep ) const;
+	btScalar pFrictionFactor(btScalar timeStep) const;
 	btScalar pGetMassA() const;
 	btScalar pGetMassB() const;
 };

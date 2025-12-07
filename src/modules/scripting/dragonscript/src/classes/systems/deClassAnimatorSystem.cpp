@@ -51,97 +51,97 @@
 ///////////////
 
 // public static func int getParameterCount()
-deClassAnimatorSystem::nfGetParameterCount::nfGetParameterCount( const sInitData &init ) :
-dsFunction( init.clsAmrSys, "getParameterCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+deClassAnimatorSystem::nfGetParameterCount::nfGetParameterCount(const sInitData &init) :
+dsFunction(init.clsAmrSys, "getParameterCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 }
-void deClassAnimatorSystem::nfGetParameterCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAnimatorSystem *clsAmrSys = ( deClassAnimatorSystem* )GetOwnerClass();
+void deClassAnimatorSystem::nfGetParameterCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAnimatorSystem *clsAmrSys = (deClassAnimatorSystem*)GetOwnerClass();
 	deAnimatorSystem *amrSys = clsAmrSys->GetDS().GetGameEngine()->GetAnimatorSystem();
 	deBaseAnimatorModule *module = amrSys->GetActiveModule();
 	
-	rt->PushInt( module->GetParameterCount() );
+	rt->PushInt(module->GetParameterCount());
 }
 
 // public static func ModuleParameter getParameterInfo( int index )
-deClassAnimatorSystem::nfGetParameterInfo::nfGetParameterInfo( const sInitData &init ) :
-dsFunction( init.clsAmrSys, "getParameterInfo", DSFT_FUNCTION,
+deClassAnimatorSystem::nfGetParameterInfo::nfGetParameterInfo(const sInitData &init) :
+dsFunction(init.clsAmrSys, "getParameterInfo", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
-	p_AddParameter( init.clsInteger ); // index
+	p_AddParameter(init.clsInteger); // index
 }
-void deClassAnimatorSystem::nfGetParameterInfo::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAnimatorSystem *clsAmrSys = ( deClassAnimatorSystem* )GetOwnerClass();
+void deClassAnimatorSystem::nfGetParameterInfo::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAnimatorSystem *clsAmrSys = (deClassAnimatorSystem*)GetOwnerClass();
 	deAnimatorSystem *amrSys = clsAmrSys->GetDS().GetGameEngine()->GetAnimatorSystem();
 	deBaseAnimatorModule *module = amrSys->GetActiveModule();
-	int index = rt->GetValue( 0 )->GetInt();
+	int index = rt->GetValue(0)->GetInt();
 	
-	if( index < 0 || index >= module->GetParameterCount() ) DSTHROW( dueInvalidParam );
+	if(index < 0 || index >= module->GetParameterCount()) DSTHROW(dueInvalidParam);
 	
-	clsAmrSys->GetDS().GetClassModuleParameter()->PushParameter( rt, module, index );
+	clsAmrSys->GetDS().GetClassModuleParameter()->PushParameter(rt, module, index);
 }
 
 // public static func ModuleParameter getParameterInfo( String name )
-deClassAnimatorSystem::nfGetParameterInfo2::nfGetParameterInfo2( const sInitData &init ) :
-dsFunction( init.clsAmrSys, "getParameterInfo", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar ){
-	p_AddParameter( init.clsString ); // name
+deClassAnimatorSystem::nfGetParameterInfo2::nfGetParameterInfo2(const sInitData &init) :
+dsFunction(init.clsAmrSys, "getParameterInfo", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
+	p_AddParameter(init.clsString); // name
 }
-void deClassAnimatorSystem::nfGetParameterInfo2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassAnimatorSystem* )GetOwnerClass() )->GetDS();
+void deClassAnimatorSystem::nfGetParameterInfo2::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassAnimatorSystem*)GetOwnerClass())->GetDS();
 	const deAnimatorSystem &amrSys = *ds.GetGameEngine()->GetAnimatorSystem();
 	deBaseAnimatorModule * const module = amrSys.GetActiveModule();
 	
-	ds.GetClassModuleParameter()->PushParameter( rt, module,
-		module->IndexOfParameterNamed( rt->GetValue( 0 )->GetString() ) );
+	ds.GetClassModuleParameter()->PushParameter(rt, module,
+		module->IndexOfParameterNamed(rt->GetValue(0)->GetString()));
 }
 
 // public static func String getParameterValue( String name )
-deClassAnimatorSystem::nfGetParameterValue::nfGetParameterValue( const sInitData &init ) :
-dsFunction( init.clsAmrSys, "getParameterValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
-	p_AddParameter( init.clsString ); // name
+deClassAnimatorSystem::nfGetParameterValue::nfGetParameterValue(const sInitData &init) :
+dsFunction(init.clsAmrSys, "getParameterValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
+	p_AddParameter(init.clsString); // name
 }
-void deClassAnimatorSystem::nfGetParameterValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAnimatorSystem *clsAmrSys = ( deClassAnimatorSystem* )GetOwnerClass();
+void deClassAnimatorSystem::nfGetParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAnimatorSystem *clsAmrSys = (deClassAnimatorSystem*)GetOwnerClass();
 	deAnimatorSystem *amrSys = clsAmrSys->GetDS().GetGameEngine()->GetAnimatorSystem();
 	deBaseAnimatorModule *module = amrSys->GetActiveModule();
-	rt->PushString( module->GetParameterValue( rt->GetValue( 0 )->GetString() ) );
+	rt->PushString(module->GetParameterValue(rt->GetValue(0)->GetString()));
 }
 
 // public static func void setParameterValue( String name, String value )
-deClassAnimatorSystem::nfSetParameterValue::nfSetParameterValue( const sInitData &init ) :
-dsFunction( init.clsAmrSys, "setParameterValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsString ); // name
-	p_AddParameter( init.clsString ); // value
+deClassAnimatorSystem::nfSetParameterValue::nfSetParameterValue(const sInitData &init) :
+dsFunction(init.clsAmrSys, "setParameterValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsString); // name
+	p_AddParameter(init.clsString); // value
 }
-void deClassAnimatorSystem::nfSetParameterValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAnimatorSystem *clsAmrSys = ( deClassAnimatorSystem* )GetOwnerClass();
+void deClassAnimatorSystem::nfSetParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAnimatorSystem *clsAmrSys = (deClassAnimatorSystem*)GetOwnerClass();
 	deAnimatorSystem *amrSys = clsAmrSys->GetDS().GetGameEngine()->GetAnimatorSystem();
 	deBaseAnimatorModule *module = amrSys->GetActiveModule();
 	
-	module->SetParameterValue( rt->GetValue( 0 )->GetString(), rt->GetValue( 1 )->GetString() );
+	module->SetParameterValue(rt->GetValue(0)->GetString(), rt->GetValue(1)->GetString());
 }
 
 
 
 // public static func String sendCommand( String command )
-deClassAnimatorSystem::nfSendCommand::nfSendCommand( const sInitData &init ) : dsFunction( init.clsAmrSys,
-"sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
-	p_AddParameter( init.clsString ); // command
+deClassAnimatorSystem::nfSendCommand::nfSendCommand(const sInitData &init) : dsFunction(init.clsAmrSys,
+"sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
+	p_AddParameter(init.clsString); // command
 }
-void deClassAnimatorSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassAnimatorSystem* )GetOwnerClass() )->GetDS();
+void deClassAnimatorSystem::nfSendCommand::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassAnimatorSystem*)GetOwnerClass())->GetDS();
 	const deAnimatorSystem &animatorSystem = *ds.GetGameEngine()->GetAnimatorSystem();
 	deBaseAnimatorModule &module = *animatorSystem.GetActiveModule();
 	decUnicodeArgumentList argList;
 	decUnicodeString command;
 	decUnicodeString answer;
 	
-	command.SetFromUTF8( rt->GetValue( 0 )->GetString() );
-	argList.ParseCommand( command );
-	module.SendCommand( argList, answer );
-	rt->PushString( answer.ToUTF8() );
+	command.SetFromUTF8(rt->GetValue(0)->GetString());
+	argList.ParseCommand(command);
+	module.SendCommand(argList, answer);
+	rt->PushString(answer.ToUTF8());
 }
 
 
@@ -152,14 +152,14 @@ void deClassAnimatorSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *
 // Constructor, Destructor
 ////////////////////////////
 
-deClassAnimatorSystem::deClassAnimatorSystem( deScriptingDragonScript &ds ) :
-dsClass( "AnimatorSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds )
+deClassAnimatorSystem::deClassAnimatorSystem(deScriptingDragonScript &ds) :
+dsClass("AnimatorSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassAnimatorSystem::~deClassAnimatorSystem(){
@@ -170,7 +170,7 @@ deClassAnimatorSystem::~deClassAnimatorSystem(){
 // Management
 ///////////////
 
-void deClassAnimatorSystem::CreateClassMembers( dsEngine *engine ){
+void deClassAnimatorSystem::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -183,10 +183,10 @@ void deClassAnimatorSystem::CreateClassMembers( dsEngine *engine ){
 	init.clsModPar = pDS.GetClassModuleParameter();
 	
 	// add functions
-	AddFunction( new nfGetParameterCount( init ) );
-	AddFunction( new nfGetParameterInfo( init ) );
-	AddFunction( new nfGetParameterInfo2( init ) );
-	AddFunction( new nfGetParameterValue( init ) );
-	AddFunction( new nfSetParameterValue( init ) );
-	AddFunction( new nfSendCommand( init ) );
+	AddFunction(new nfGetParameterCount(init));
+	AddFunction(new nfGetParameterInfo(init));
+	AddFunction(new nfGetParameterInfo2(init));
+	AddFunction(new nfGetParameterValue(init));
+	AddFunction(new nfSetParameterValue(init));
+	AddFunction(new nfSendCommand(init));
 }

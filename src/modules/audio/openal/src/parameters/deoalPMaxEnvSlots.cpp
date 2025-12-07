@@ -36,23 +36,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalPMaxEnvSlots::deoalPMaxEnvSlots( deAudioOpenAL &oal ) : deoalParameterInt( oal )
+deoalPMaxEnvSlots::deoalPMaxEnvSlots(deAudioOpenAL &oal) : deoalParameterInt(oal)
 {
-	SetName( "maxEnvs" );
-	SetDescription( "Maximum count of environments to use for software auralization."
+	SetName("maxEnvs");
+	SetDescription("Maximum count of environments to use for software auralization."
 		" Larger values allow to simulate more different kinds of audio environments"
 		" but is expensive. Smaller values runs faster but has less audio diversity."
 		" If audio stutters or emits clicks try lowering this value."
 		" This parameter is only used if 'AuralizationMode' is set to 'full'."
-	);
-	SetType( deModuleParameter::eptRanged );
-	SetMinimumValue( 2.0f );
-	SetMaximumValue( 8.0f );
-	SetValueStepSize( 1.0f );
+);
+	SetType(deModuleParameter::eptRanged);
+	SetMinimumValue(2.0f);
+	SetMaximumValue(8.0f);
+	SetValueStepSize(1.0f);
 	
-	SetCategory( ecBasic );
-	SetDisplayName( "Maximum Environments" );
-	SetDefaultValue( "8" );
+	SetCategory(ecBasic);
+	SetDisplayName("Maximum Environments");
+	SetDefaultValue("8");
 }
 
 deoalPMaxEnvSlots::~deoalPMaxEnvSlots(){
@@ -67,6 +67,6 @@ int deoalPMaxEnvSlots::GetParameterInt(){
 	return pOal.GetConfiguration().GetMaxSharedEffectSlots();
 }
 
-void deoalPMaxEnvSlots::SetParameterInt( int value ){
-	pOal.GetConfiguration().SetMaxSharedEffectSlots( value );
+void deoalPMaxEnvSlots::SetParameterInt(int value){
+	pOal.GetConfiguration().SetMaxSharedEffectSlots(value);
 }

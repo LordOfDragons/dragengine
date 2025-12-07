@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader parameter block. */
-	deoglSPBlockMemory( deoglRenderThread &renderThread );
+	deoglSPBlockMemory(deoglRenderThread &renderThread);
 	
 	/** Create copy of shader storage buffer object. */
-	deoglSPBlockMemory( const deoglSPBlockMemory &paramBlock );
+	deoglSPBlockMemory(const deoglSPBlockMemory &paramBlock);
 	
 protected:
 	/** Clean up shader parameter block. */
@@ -69,13 +69,13 @@ public:
 	virtual void Activate() const;
 	
 	/** Activate buffer overriding binding point. */
-	virtual void Activate( int bindingPoint ) const;
+	virtual void Activate(int bindingPoint) const;
 	
 	/** Always throws an exception. */
 	virtual void Deactivate() const;
 	
 	/** Deactivate buffer overriding binding point. */
-	virtual void Deactivate( int bindingPoint ) const;
+	virtual void Deactivate(int bindingPoint) const;
 	
 	/** Map buffer discarding content. */
 	virtual void MapBuffer();
@@ -86,7 +86,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element );
+	virtual void MapBuffer(int element);
 	
 	/**
 	 * Map buffer for specific elements discarding content.
@@ -94,7 +94,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element, int count );
+	virtual void MapBuffer(int element, int count);
 	
 	/** Has no effect. */
 	virtual void UnmapBuffer();

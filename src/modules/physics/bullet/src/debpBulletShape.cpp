@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpBulletShape::debpBulletShape( btCollisionShape *shape ) :
-pShape( shape ){
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
+debpBulletShape::debpBulletShape(btCollisionShape *shape) :
+pShape(shape){
+	if(!shape){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 debpBulletShape::~debpBulletShape(){
-	if( pShape ){
+	if(pShape){
 		delete pShape;
 	}
 }

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleStateSnapshot( aeWPRule &wpRule );
+	aeWPAPanelRuleStateSnapshot(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

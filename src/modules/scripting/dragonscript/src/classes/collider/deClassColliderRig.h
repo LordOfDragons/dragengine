@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new script class. */
-	deClassColliderRig( deScriptingDragonScript &ds );
+	deClassColliderRig(deScriptingDragonScript &ds);
 	/** \brief Clean up the script class. */
 	virtual ~deClassColliderRig();
 	/*@}*/
@@ -57,22 +57,22 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve collider from a script object.
 	 * \details Returns NULL if \em myself is NULL.
 	 */
-	deColliderRig *GetCollider( dsRealObject *myself ) const;
+	deColliderRig *GetCollider(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push collider onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is NULL.
 	 */
-	void PushCollider( dsRunTime *rt, deColliderRig *collider );
+	void PushCollider(dsRunTime *rt, deColliderRig *collider);
 	
 	/** \brief Assigns collider or \em NULL. */
-	void AssignCollider( dsRealObject *myself, deColliderRig *collider );
+	void AssignCollider(dsRealObject *myself, deColliderRig *collider);
 	/*@}*/
 	
 private:
@@ -82,48 +82,48 @@ private:
 		dsClass *clsCI;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfAttachRig );
-	DEF_NATFUNC( nfAttachBone );
-	DEF_NATFUNC( nfAttachBone2 );
-	DEF_NATFUNC( nfAttachWeight );
+	DEF_NATFUNC(nfAttachRig);
+	DEF_NATFUNC(nfAttachBone);
+	DEF_NATFUNC(nfAttachBone2);
+	DEF_NATFUNC(nfAttachWeight);
 	
-	DEF_NATFUNC( nfBoneApplyImpuls );
-	DEF_NATFUNC( nfBoneApplyImpulsAt );
-	DEF_NATFUNC( nfBoneApplyTorqueImpuls );
-	DEF_NATFUNC( nfBoneApplyForce );
-	DEF_NATFUNC( nfBoneApplyForceAt );
-	DEF_NATFUNC( nfBoneApplyTorque );
+	DEF_NATFUNC(nfBoneApplyImpuls);
+	DEF_NATFUNC(nfBoneApplyImpulsAt);
+	DEF_NATFUNC(nfBoneApplyTorqueImpuls);
+	DEF_NATFUNC(nfBoneApplyForce);
+	DEF_NATFUNC(nfBoneApplyForceAt);
+	DEF_NATFUNC(nfBoneApplyTorque);
 	
-	DEF_NATFUNC( nfGetRig );
-	DEF_NATFUNC( nfSetRig );
+	DEF_NATFUNC(nfGetRig);
+	DEF_NATFUNC(nfSetRig);
 	
-	DEF_NATFUNC( nfCopyStatesFromCollider );
-	DEF_NATFUNC( nfCopyStateFromCollider );
-	DEF_NATFUNC( nfCopyStateFromCollider2 );
-	DEF_NATFUNC( nfBoneGetPosition );
-	DEF_NATFUNC( nfBoneSetPosition );
-	DEF_NATFUNC( nfBoneGetOrientation );
-	DEF_NATFUNC( nfBoneSetOrientation );
-	DEF_NATFUNC( nfBoneGetLinearVelocity );
-	DEF_NATFUNC( nfBoneSetLinearVelocity );
-	DEF_NATFUNC( nfBoneGetAngularVelocity );
-	DEF_NATFUNC( nfBoneSetAngularVelocity );
-	DEF_NATFUNC( nfBoneGetMatrix );
-	DEF_NATFUNC( nfBoneGetInverseMatrix );
+	DEF_NATFUNC(nfCopyStatesFromCollider);
+	DEF_NATFUNC(nfCopyStateFromCollider);
+	DEF_NATFUNC(nfCopyStateFromCollider2);
+	DEF_NATFUNC(nfBoneGetPosition);
+	DEF_NATFUNC(nfBoneSetPosition);
+	DEF_NATFUNC(nfBoneGetOrientation);
+	DEF_NATFUNC(nfBoneSetOrientation);
+	DEF_NATFUNC(nfBoneGetLinearVelocity);
+	DEF_NATFUNC(nfBoneSetLinearVelocity);
+	DEF_NATFUNC(nfBoneGetAngularVelocity);
+	DEF_NATFUNC(nfBoneSetAngularVelocity);
+	DEF_NATFUNC(nfBoneGetMatrix);
+	DEF_NATFUNC(nfBoneGetInverseMatrix);
 	
-	DEF_NATFUNC( nfEnableRigBoneConstraints );
+	DEF_NATFUNC(nfEnableRigBoneConstraints);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfEquals2 );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfEquals2);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

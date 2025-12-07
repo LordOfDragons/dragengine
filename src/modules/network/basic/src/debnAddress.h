@@ -72,7 +72,7 @@ public:
 	
 private:
 	eAddressType pType;
-	unsigned char pValues[ 16 ];
+	unsigned char pValues[16];
 	int pValueCount;
 	int pPort;
 	
@@ -96,7 +96,7 @@ public:
 	inline eAddressType GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( eAddressType type );
+	void SetType(eAddressType type);
 	
 	/**
 	 * \brief Number of address values.
@@ -110,27 +110,27 @@ public:
 	 * 
 	 * The location is  measured from the start of the address which is the left most value.
 	 */
-	int GetValueAt( int location ) const;
+	int GetValueAt(int location) const;
 	
 	/**
 	 * \brief Set address value at the given location.
 	 * 
 	 * The location is measured from the start of the address which is the left most value.
 	 */
-	void SetValueAt( int location, int value );
+	void SetValueAt(int location, int value);
 	
 	/** \brief Port. */
 	inline int GetPort() const{ return pPort; }
 	
 	/** \brief Set port. */
-	void SetPort( int port );
+	void SetPort(int port);
 	
 	/**
 	 * \brief Set address to an IPv4 address.
 	 * 
 	 * The values represent the address values with 0 being the left most value.
 	 */
-	void SetIPv4( int values[ 4 ], int port );
+	void SetIPv4(int values[4], int port);
 	
 	/** \brief Set address to an IPv4 any address. */
 	void SetIPv4Any();
@@ -139,17 +139,17 @@ public:
 	void SetIPv4Loopback();
 	
 	/** \brief Set address to an IPv4 address from a socket address. */
-	void SetIPv4FromSocket( const sockaddr_in &address );
+	void SetIPv4FromSocket(const sockaddr_in &address);
 	
 	/** \brief Set address in a socket address. */
-	void SetSocketIPv4( sockaddr_in &address ) const;
+	void SetSocketIPv4(sockaddr_in &address) const;
 	
 	/**
 	 * \brief Set IPv6 address.
 	 * 
 	 * The values represent the address values with 0 being the left most value.
 	 */
-	void SetIPv6( int values[ 16 ], int port );
+	void SetIPv6(int values[16], int port);
 	
 	/** \brief Set IPv6 any address. */
 	void SetIPv6Any();
@@ -158,10 +158,10 @@ public:
 	void SetIPv6Loopback();
 	
 	/** \brief Set address to an IPv6 address from a socket address. */
-	void SetIPv6FromSocket( const sockaddr_in6 &address );
+	void SetIPv6FromSocket(const sockaddr_in6 &address);
 	
 	/** \brief Set address in a socket address. */
-	void SetSocketIPv6( sockaddr_in6 &address ) const;
+	void SetSocketIPv6(sockaddr_in6 &address) const;
 	
 	/**
 	 * \brief Set address to an IPv4/IPv6 address using the provided string.
@@ -176,7 +176,7 @@ public:
 	 * - "hostname:port"
 	 * - "hostname"
 	 */
-	void SetFromString( const char *address );
+	void SetFromString(const char *address);
 	
 	/** \brief Address in string form. */
 	decString ToString() const;
@@ -187,10 +187,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Assign. */
-	debnAddress &operator=( const debnAddress &address );
+	debnAddress &operator=(const debnAddress &address);
 	
 	/** \brief Equals. */
-	bool operator==( const debnAddress &address ) const;
+	bool operator==(const debnAddress &address) const;
 	/*@}*/
 };
 

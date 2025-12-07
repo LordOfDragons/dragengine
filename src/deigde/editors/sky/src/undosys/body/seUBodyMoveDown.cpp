@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyMoveDown::seUBodyMoveDown( seBody *body ) :
-pBody( NULL ),
-pIndex( 0 )
+seUBodyMoveDown::seUBodyMoveDown(seBody *body) :
+pBody(NULL),
+pIndex(0)
 {
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const seLayer * const layer = body->GetLayer();
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Move Body Down" );
+	SetShortInfo("Move Body Down");
 	
-	pIndex = layer->GetBodies().IndexOf( body );
-	if( pIndex == -1 || pIndex == layer->GetBodies().GetCount() - 1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = layer->GetBodies().IndexOf(body);
+	if(pIndex == -1 || pIndex == layer->GetBodies().GetCount() - 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBody = body;
@@ -65,7 +65,7 @@ pIndex( 0 )
 }
 
 seUBodyMoveDown::~seUBodyMoveDown(){
-	if( pBody ){
+	if(pBody){
 		pBody->FreeReference();
 	}
 }
@@ -76,9 +76,9 @@ seUBodyMoveDown::~seUBodyMoveDown(){
 ///////////////
 
 void seUBodyMoveDown::Undo(){
-	pBody->GetLayer()->MoveBodyTo( pBody, pIndex );
+	pBody->GetLayer()->MoveBodyTo(pBody, pIndex);
 }
 
 void seUBodyMoveDown::Redo(){
-	pBody->GetLayer()->MoveBodyTo( pBody, pIndex + 1 );
+	pBody->GetLayer()->MoveBodyTo(pBody, pIndex + 1);
 }

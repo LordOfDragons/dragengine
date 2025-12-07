@@ -54,46 +54,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalWorld::deoalWorld( deAudioOpenAL &oal, deWorld &world ) :
-pOal( oal ),
-pWorld( world ),
-pAWorld( NULL ),
+deoalWorld::deoalWorld(deAudioOpenAL &oal, deWorld &world) :
+pOal(oal),
+pWorld(world),
+pAWorld(NULL),
 
-pDirtyComponents( false ),
-pDirtySpeakers( false ),
-pDirtyMicrophones( false ),
-pDirtySoundLevelMeters( false ),
-pDirtyAllMicLayerMask( true ),
-pDirtyAudioParameters( true )
+pDirtyComponents(false),
+pDirtySpeakers(false),
+pDirtyMicrophones(false),
+pDirtySoundLevelMeters(false),
+pDirtyAllMicLayerMask(true),
+pDirtyAudioParameters(true)
 {
 	try{
-		pAWorld = new deoalAWorld( oal.GetAudioThread(), world.GetSize() * 0.5 );
+		pAWorld = new deoalAWorld(oal.GetAudioThread(), world.GetSize() * 0.5);
 		
 		deComponent *component = world.GetRootComponent();
-		while( component ){
-			ComponentAdded( component );
+		while(component){
+			ComponentAdded(component);
 			component = component->GetLLWorldNext();
 		}
 		
 		deSpeaker *speaker = world.GetRootSpeaker();
-		while( speaker ){
-			SpeakerAdded( speaker );
+		while(speaker){
+			SpeakerAdded(speaker);
 			speaker = speaker->GetLLWorldNext();
 		}
 		
 		deMicrophone *microphone = world.GetRootMicrophone();
-		while( microphone ){
-			MicrophoneAdded( microphone );
+		while(microphone){
+			MicrophoneAdded(microphone);
 			microphone = microphone->GetLLWorldNext();
 		}
 		
 		deSoundLevelMeter *soundLevelMeter = world.GetRootSoundLevelMeter();
-		while( soundLevelMeter ){
-			SoundLevelMeterAdded( soundLevelMeter );
+		while(soundLevelMeter){
+			SoundLevelMeterAdded(soundLevelMeter);
 			soundLevelMeter = soundLevelMeter->GetLLWorldNext();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -128,83 +128,83 @@ void deoalWorld::SetDirtyAllMicLayerMask(){
 
 void deoalWorld::DevModeChanged(){
 	deComponent *component = pWorld.GetRootComponent();
-	while( component ){
-		( ( deoalComponent* )component->GetPeerAudio() )->DevModeChanged();
+	while(component){
+		((deoalComponent*)component->GetPeerAudio())->DevModeChanged();
 		component = component->GetLLWorldNext();
 	}
 }
 
 
 
-void deoalWorld::AddSyncComponent( deoalComponent *component ){
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+void deoalWorld::AddSyncComponent(deoalComponent *component){
+	if(!component){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! component->GetLLSyncWorld().GetList() ){
-		pListSyncComponents.Add( &component->GetLLSyncWorld() );
-	}
-}
-
-void deoalWorld::RemoveSyncComponent( deoalComponent *component ){
-	if( ! component ){
-		DETHROW( deeInvalidParam );
-	}
-	if( component->GetLLSyncWorld().GetList() ){
-		pListSyncComponents.Remove( &component->GetLLSyncWorld() );
+	if(!component->GetLLSyncWorld().GetList()){
+		pListSyncComponents.Add(&component->GetLLSyncWorld());
 	}
 }
 
-void deoalWorld::AddSyncSpeaker( deoalSpeaker *speaker ){
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+void deoalWorld::RemoveSyncComponent(deoalComponent *component){
+	if(!component){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! speaker->GetLLSyncWorld().GetList() ){
-		pListSyncSpeakers.Add( &speaker->GetLLSyncWorld() );
-	}
-}
-
-void deoalWorld::RemoveSyncSpeaker( deoalSpeaker *speaker ){
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
-	}
-	if( speaker->GetLLSyncWorld().GetList() ){
-		pListSyncSpeakers.Remove( &speaker->GetLLSyncWorld() );
+	if(component->GetLLSyncWorld().GetList()){
+		pListSyncComponents.Remove(&component->GetLLSyncWorld());
 	}
 }
 
-void deoalWorld::AddSyncMicrophone( deoalMicrophone *microphone ){
-	if( ! microphone ){
-		DETHROW( deeInvalidParam );
+void deoalWorld::AddSyncSpeaker(deoalSpeaker *speaker){
+	if(!speaker){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! microphone->GetLLSyncWorld().GetList() ){
-		pListSyncMicrophones.Add( &microphone->GetLLSyncWorld() );
-	}
-}
-
-void deoalWorld::RemoveSyncMicrophone( deoalMicrophone *microphone ){
-	if( ! microphone ){
-		DETHROW( deeInvalidParam );
-	}
-	if( microphone->GetLLSyncWorld().GetList() ){
-		pListSyncMicrophones.Remove( &microphone->GetLLSyncWorld() );
+	if(!speaker->GetLLSyncWorld().GetList()){
+		pListSyncSpeakers.Add(&speaker->GetLLSyncWorld());
 	}
 }
 
-void deoalWorld::AddSyncSoundLevelMeter( deoalSoundLevelMeter *soundLevelMeter ){
-	if( ! soundLevelMeter ){
-		DETHROW( deeInvalidParam );
+void deoalWorld::RemoveSyncSpeaker(deoalSpeaker *speaker){
+	if(!speaker){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! soundLevelMeter->GetLLSyncWorld().GetList() ){
-		pListSyncSoundLevelMeters.Add( &soundLevelMeter->GetLLSyncWorld() );
+	if(speaker->GetLLSyncWorld().GetList()){
+		pListSyncSpeakers.Remove(&speaker->GetLLSyncWorld());
 	}
 }
 
-void deoalWorld::RemoveSyncSoundLevelMeter( deoalSoundLevelMeter *soundLevelMeter ){
-	if( ! soundLevelMeter ){
-		DETHROW( deeInvalidParam );
+void deoalWorld::AddSyncMicrophone(deoalMicrophone *microphone){
+	if(!microphone){
+		DETHROW(deeInvalidParam);
 	}
-	if( soundLevelMeter->GetLLSyncWorld().GetList() ){
-		pListSyncSoundLevelMeters.Remove( &soundLevelMeter->GetLLSyncWorld() );
+	if(!microphone->GetLLSyncWorld().GetList()){
+		pListSyncMicrophones.Add(&microphone->GetLLSyncWorld());
+	}
+}
+
+void deoalWorld::RemoveSyncMicrophone(deoalMicrophone *microphone){
+	if(!microphone){
+		DETHROW(deeInvalidParam);
+	}
+	if(microphone->GetLLSyncWorld().GetList()){
+		pListSyncMicrophones.Remove(&microphone->GetLLSyncWorld());
+	}
+}
+
+void deoalWorld::AddSyncSoundLevelMeter(deoalSoundLevelMeter *soundLevelMeter){
+	if(!soundLevelMeter){
+		DETHROW(deeInvalidParam);
+	}
+	if(!soundLevelMeter->GetLLSyncWorld().GetList()){
+		pListSyncSoundLevelMeters.Add(&soundLevelMeter->GetLLSyncWorld());
+	}
+}
+
+void deoalWorld::RemoveSyncSoundLevelMeter(deoalSoundLevelMeter *soundLevelMeter){
+	if(!soundLevelMeter){
+		DETHROW(deeInvalidParam);
+	}
+	if(soundLevelMeter->GetLLSyncWorld().GetList()){
+		pListSyncSoundLevelMeters.Remove(&soundLevelMeter->GetLLSyncWorld());
 	}
 }
 
@@ -213,20 +213,20 @@ void deoalWorld::RemoveSyncSoundLevelMeter( deoalSoundLevelMeter *soundLevelMete
 // Notifications
 //////////////////
 
-void deoalWorld::Update( float ){
+void deoalWorld::Update(float){
 	// this is a special check. only one world can be audible. if playback is started on a speaker
 	// in a not audible world then the playback does not advance. once the world becomes audible
 	// all speakers start playing at the position they have been set to start playback from. for
 	// looping speakers this is not a problem but for non-looping speakers as typically used for
 	// sound effects this is a problem. first too many sources are required to play them back and
 	// second the speakers should have finished already a long time ago but did not get processed.
-	if( IsAudible() ){
+	if(IsAudible()){
 		return;
 	}
 	
 	deSpeaker *speaker = pWorld.GetRootSpeaker();
-	while( speaker ){
-		if( speaker->GetPlaying() && ! speaker->GetLooping() ){
+	while(speaker){
+		if(speaker->GetPlaying() && !speaker->GetLooping()){
 			speaker->Stop();
 		}
 		speaker = speaker->GetLLWorldNext();
@@ -242,29 +242,29 @@ void deoalWorld::AudioChanged(){
 	pDirtyAudioParameters = true;
 }
 
-void deoalWorld::SpeakerAdded( deSpeaker *speaker ){
-	deoalSpeaker * const oalSpeaker = ( deoalSpeaker* )speaker->GetPeerAudio();
-	oalSpeaker->SetParentWorld( this );
-	AddSyncSpeaker( oalSpeaker );
+void deoalWorld::SpeakerAdded(deSpeaker *speaker){
+	deoalSpeaker * const oalSpeaker = (deoalSpeaker*)speaker->GetPeerAudio();
+	oalSpeaker->SetParentWorld(this);
+	AddSyncSpeaker(oalSpeaker);
 	pDirtySpeakers = true;
 }
 
-void deoalWorld::SpeakerRemoved( deSpeaker *speaker ){
-	deoalSpeaker * const oalSpeaker = ( deoalSpeaker* )speaker->GetPeerAudio();
-	RemoveSyncSpeaker( oalSpeaker );
-	oalSpeaker->GetASpeaker()->SetWorldMarkedRemove( true );
-	oalSpeaker->SetParentWorld( NULL );
+void deoalWorld::SpeakerRemoved(deSpeaker *speaker){
+	deoalSpeaker * const oalSpeaker = (deoalSpeaker*)speaker->GetPeerAudio();
+	RemoveSyncSpeaker(oalSpeaker);
+	oalSpeaker->GetASpeaker()->SetWorldMarkedRemove(true);
+	oalSpeaker->SetParentWorld(NULL);
 	pDirtySpeakers = true;
 }
 
 void deoalWorld::AllSpeakersRemoved(){
 	deSpeaker *speaker = pWorld.GetRootSpeaker();
 	
-	while( speaker ){
-		deoalSpeaker * const oalSpeaker = ( deoalSpeaker* )speaker->GetPeerAudio();
-		RemoveSyncSpeaker( oalSpeaker );
-		oalSpeaker->GetASpeaker()->SetWorldMarkedRemove( true );
-		oalSpeaker->SetParentWorld( NULL );
+	while(speaker){
+		deoalSpeaker * const oalSpeaker = (deoalSpeaker*)speaker->GetPeerAudio();
+		RemoveSyncSpeaker(oalSpeaker);
+		oalSpeaker->GetASpeaker()->SetWorldMarkedRemove(true);
+		oalSpeaker->SetParentWorld(NULL);
 		speaker = speaker->GetLLWorldNext();
 	}
 	
@@ -273,19 +273,19 @@ void deoalWorld::AllSpeakersRemoved(){
 
 
 
-void deoalWorld::MicrophoneAdded( deMicrophone *microphone ){
-	deoalMicrophone * const oalMicrophone = ( deoalMicrophone* )microphone->GetPeerAudio();
-	oalMicrophone->SetParentWorld( this );
-	AddSyncMicrophone( oalMicrophone );
+void deoalWorld::MicrophoneAdded(deMicrophone *microphone){
+	deoalMicrophone * const oalMicrophone = (deoalMicrophone*)microphone->GetPeerAudio();
+	oalMicrophone->SetParentWorld(this);
+	AddSyncMicrophone(oalMicrophone);
 	pDirtyMicrophones = true;
 	pDirtyAllMicLayerMask = true;
 }
 
-void deoalWorld::MicrophoneRemoved( deMicrophone *microphone ){
-	deoalMicrophone * const oalMicrophone = ( deoalMicrophone* )microphone->GetPeerAudio();
-	RemoveSyncMicrophone( oalMicrophone );
-	oalMicrophone->GetAMicrophone()->SetWorldMarkedRemove( true );
-	oalMicrophone->SetParentWorld( NULL );
+void deoalWorld::MicrophoneRemoved(deMicrophone *microphone){
+	deoalMicrophone * const oalMicrophone = (deoalMicrophone*)microphone->GetPeerAudio();
+	RemoveSyncMicrophone(oalMicrophone);
+	oalMicrophone->GetAMicrophone()->SetWorldMarkedRemove(true);
+	oalMicrophone->SetParentWorld(NULL);
 	pDirtyMicrophones = true;
 	pDirtyAllMicLayerMask = true;
 }
@@ -293,11 +293,11 @@ void deoalWorld::MicrophoneRemoved( deMicrophone *microphone ){
 void deoalWorld::AllMicrophonesRemoved(){
 	deMicrophone *microphone = pWorld.GetRootMicrophone();
 	
-	while( microphone ){
-		deoalMicrophone * const oalMicrophone = ( deoalMicrophone* )microphone->GetPeerAudio();
-		RemoveSyncMicrophone( oalMicrophone );
-		oalMicrophone->GetAMicrophone()->SetWorldMarkedRemove( true );
-		oalMicrophone->SetParentWorld( NULL );
+	while(microphone){
+		deoalMicrophone * const oalMicrophone = (deoalMicrophone*)microphone->GetPeerAudio();
+		RemoveSyncMicrophone(oalMicrophone);
+		oalMicrophone->GetAMicrophone()->SetWorldMarkedRemove(true);
+		oalMicrophone->SetParentWorld(NULL);
 		microphone = microphone->GetLLWorldNext();
 	}
 	
@@ -307,29 +307,29 @@ void deoalWorld::AllMicrophonesRemoved(){
 
 
 
-void deoalWorld::ComponentAdded( deComponent *component ){
-	deoalComponent * const oalComponent = ( deoalComponent* )component->GetPeerAudio();
-	oalComponent->SetParentWorld( this );
-	AddSyncComponent( oalComponent );
+void deoalWorld::ComponentAdded(deComponent *component){
+	deoalComponent * const oalComponent = (deoalComponent*)component->GetPeerAudio();
+	oalComponent->SetParentWorld(this);
+	AddSyncComponent(oalComponent);
 	pDirtyComponents = true;
 }
 
-void deoalWorld::ComponentRemoved( deComponent *component ){
-	deoalComponent * const oalComponent = ( deoalComponent* )component->GetPeerAudio();
-	RemoveSyncComponent( oalComponent );
-	oalComponent->GetAComponent()->SetWorldMarkedRemove( true );
-	oalComponent->SetParentWorld( NULL );
+void deoalWorld::ComponentRemoved(deComponent *component){
+	deoalComponent * const oalComponent = (deoalComponent*)component->GetPeerAudio();
+	RemoveSyncComponent(oalComponent);
+	oalComponent->GetAComponent()->SetWorldMarkedRemove(true);
+	oalComponent->SetParentWorld(NULL);
 	pDirtyComponents = true;
 }
 
 void deoalWorld::AllComponentsRemoved(){
 	deComponent *component = pWorld.GetRootComponent();
 	
-	while( component ){
-		deoalComponent * const oalComponent = ( deoalComponent* )component->GetPeerAudio();
-		RemoveSyncComponent( oalComponent );
-		oalComponent->GetAComponent()->SetWorldMarkedRemove( true );
-		oalComponent->SetParentWorld( NULL );
+	while(component){
+		deoalComponent * const oalComponent = (deoalComponent*)component->GetPeerAudio();
+		RemoveSyncComponent(oalComponent);
+		oalComponent->GetAComponent()->SetWorldMarkedRemove(true);
+		oalComponent->SetParentWorld(NULL);
 		component = component->GetLLWorldNext();
 	}
 	
@@ -338,32 +338,32 @@ void deoalWorld::AllComponentsRemoved(){
 
 
 
-void deoalWorld::SoundLevelMeterAdded( deSoundLevelMeter *soundLevelMeter ){
+void deoalWorld::SoundLevelMeterAdded(deSoundLevelMeter *soundLevelMeter){
 	deoalSoundLevelMeter * const oalSoundLevelMeter =
-		( deoalSoundLevelMeter* )soundLevelMeter->GetPeerAudio();
-	oalSoundLevelMeter->SetParentWorld( this );
-	AddSyncSoundLevelMeter( oalSoundLevelMeter );
+		(deoalSoundLevelMeter*)soundLevelMeter->GetPeerAudio();
+	oalSoundLevelMeter->SetParentWorld(this);
+	AddSyncSoundLevelMeter(oalSoundLevelMeter);
 	pDirtySoundLevelMeters = true;
 }
 
-void deoalWorld::SoundLevelMeterRemoved( deSoundLevelMeter *soundLevelMeter ){
+void deoalWorld::SoundLevelMeterRemoved(deSoundLevelMeter *soundLevelMeter){
 	deoalSoundLevelMeter * const oalSoundLevelMeter =
-		( deoalSoundLevelMeter* )soundLevelMeter->GetPeerAudio();
-	RemoveSyncSoundLevelMeter( oalSoundLevelMeter );
-	oalSoundLevelMeter->GetASoundLevelMeter()->SetWorldMarkedRemove( true );
-	oalSoundLevelMeter->SetParentWorld( NULL );
+		(deoalSoundLevelMeter*)soundLevelMeter->GetPeerAudio();
+	RemoveSyncSoundLevelMeter(oalSoundLevelMeter);
+	oalSoundLevelMeter->GetASoundLevelMeter()->SetWorldMarkedRemove(true);
+	oalSoundLevelMeter->SetParentWorld(NULL);
 	pDirtySoundLevelMeters = true;
 }
 
 void deoalWorld::AllSoundLevelMetersRemoved(){
 	deSoundLevelMeter *soundLevelMeter = pWorld.GetRootSoundLevelMeter();
 	
-	while( soundLevelMeter ){
+	while(soundLevelMeter){
 		deoalSoundLevelMeter * const oalSoundLevelMeter =
-			( deoalSoundLevelMeter* )soundLevelMeter->GetPeerAudio();
-		RemoveSyncSoundLevelMeter( oalSoundLevelMeter );
-		oalSoundLevelMeter->GetASoundLevelMeter()->SetWorldMarkedRemove( true );
-		oalSoundLevelMeter->SetParentWorld( NULL );
+			(deoalSoundLevelMeter*)soundLevelMeter->GetPeerAudio();
+		RemoveSyncSoundLevelMeter(oalSoundLevelMeter);
+		oalSoundLevelMeter->GetASoundLevelMeter()->SetWorldMarkedRemove(true);
+		oalSoundLevelMeter->SetParentWorld(NULL);
 		soundLevelMeter = soundLevelMeter->GetLLWorldNext();
 	}
 	
@@ -376,7 +376,7 @@ void deoalWorld::AllSoundLevelMetersRemoved(){
 //////////////////////
 
 void deoalWorld::pCleanUp(){
-	if( pAWorld ){
+	if(pAWorld){
 		pAWorld->FreeReference();
 		pAWorld = NULL;
 	}
@@ -389,15 +389,15 @@ void deoalWorld::pCleanUp(){
 
 void deoalWorld::pSyncComponents(){
 	// add new components
-	if( pDirtyComponents ){
+	if(pDirtyComponents){
 		pAWorld->RemoveRemovalMarkedComponents();
 		
 		deComponent *engComponent = pWorld.GetRootComponent();
-		while( engComponent ){
+		while(engComponent){
 			deoalAComponent * const component =
-				( ( deoalComponent* )engComponent->GetPeerAudio() )->GetAComponent();
-			if( component->GetParentWorld() != pAWorld ){
-				pAWorld->AddComponent( component );
+				((deoalComponent*)engComponent->GetPeerAudio())->GetAComponent();
+			if(component->GetParentWorld() != pAWorld){
+				pAWorld->AddComponent(component);
 			}
 			engComponent = engComponent->GetLLWorldNext();
 		}
@@ -407,14 +407,14 @@ void deoalWorld::pSyncComponents(){
 	
 	// synchronize components requiring to be synchronized
 	decPointerLinkedList::cListEntry * const tailComponent = pListSyncComponents.GetTail();
-	while( pListSyncComponents.GetRoot() ){
+	while(pListSyncComponents.GetRoot()){
 		decPointerLinkedList::cListEntry * const entry = pListSyncComponents.GetRoot();
-		deoalComponent &component = *( ( deoalComponent* )entry->GetOwner() );
-		pListSyncComponents.Remove( entry );
+		deoalComponent &component = *((deoalComponent*)entry->GetOwner());
+		pListSyncComponents.Remove(entry);
 		
 		component.Synchronize(); // can potentially re-add the component
 		
-		if( entry == tailComponent ){
+		if(entry == tailComponent){
 			break; // processed last component. re-added component will come next
 		}
 	}
@@ -422,15 +422,15 @@ void deoalWorld::pSyncComponents(){
 
 void deoalWorld::pSyncSpeakers(){
 	// add new speakers
-	if( pDirtySpeakers ){
+	if(pDirtySpeakers){
 		pAWorld->RemoveRemovalMarkedSpeakers();
 		
 		deSpeaker *engSpeaker = pWorld.GetRootSpeaker();
-		while( engSpeaker ){
+		while(engSpeaker){
 			deoalASpeaker * const speaker =
-				( ( deoalSpeaker* )engSpeaker->GetPeerAudio() )->GetASpeaker();
-			if( speaker->GetParentWorld() != pAWorld ){
-				pAWorld->AddSpeaker( speaker );
+				((deoalSpeaker*)engSpeaker->GetPeerAudio())->GetASpeaker();
+			if(speaker->GetParentWorld() != pAWorld){
+				pAWorld->AddSpeaker(speaker);
 			}
 			engSpeaker = engSpeaker->GetLLWorldNext();
 		}
@@ -440,14 +440,14 @@ void deoalWorld::pSyncSpeakers(){
 	
 	// synchronize speakers requiring to be synchronized
 	decPointerLinkedList::cListEntry * const tailSpeaker = pListSyncSpeakers.GetTail();
-	while( pListSyncSpeakers.GetRoot() ){
+	while(pListSyncSpeakers.GetRoot()){
 		decPointerLinkedList::cListEntry * const entry = pListSyncSpeakers.GetRoot();
-		deoalSpeaker &speaker = *( ( deoalSpeaker* )entry->GetOwner() );
-		pListSyncSpeakers.Remove( entry );
+		deoalSpeaker &speaker = *((deoalSpeaker*)entry->GetOwner());
+		pListSyncSpeakers.Remove(entry);
 		
 		speaker.Synchronize(); // can potentially re-add the speaker
 		
-		if( entry == tailSpeaker ){
+		if(entry == tailSpeaker){
 			break; // processed last speaker. re-added speaker will come next
 		}
 	}
@@ -455,15 +455,15 @@ void deoalWorld::pSyncSpeakers(){
 
 void deoalWorld::pSyncMicrophones(){
 	// add new microphones
-	if( pDirtyMicrophones ){
+	if(pDirtyMicrophones){
 		pAWorld->RemoveRemovalMarkedMicrophones();
 		
 		deMicrophone *engMicrophone = pWorld.GetRootMicrophone();
-		while( engMicrophone ){
+		while(engMicrophone){
 			deoalAMicrophone * const microphone =
-				( ( deoalMicrophone* )engMicrophone->GetPeerAudio() )->GetAMicrophone();
-			if( microphone->GetParentWorld() != pAWorld ){
-				pAWorld->AddMicrophone( microphone );
+				((deoalMicrophone*)engMicrophone->GetPeerAudio())->GetAMicrophone();
+			if(microphone->GetParentWorld() != pAWorld){
+				pAWorld->AddMicrophone(microphone);
 			}
 			engMicrophone = engMicrophone->GetLLWorldNext();
 		}
@@ -473,14 +473,14 @@ void deoalWorld::pSyncMicrophones(){
 	
 	// synchronize microphones requiring to be synchronized
 	decPointerLinkedList::cListEntry * const tailMicrophone = pListSyncMicrophones.GetTail();
-	while( pListSyncMicrophones.GetRoot() ){
+	while(pListSyncMicrophones.GetRoot()){
 		decPointerLinkedList::cListEntry * const entry = pListSyncMicrophones.GetRoot();
-		deoalMicrophone &microphone = *( ( deoalMicrophone* )entry->GetOwner() );
-		pListSyncMicrophones.Remove( entry );
+		deoalMicrophone &microphone = *((deoalMicrophone*)entry->GetOwner());
+		pListSyncMicrophones.Remove(entry);
 		
 		microphone.Synchronize(); // can potentially re-add the microphone
 		
-		if( entry == tailMicrophone ){
+		if(entry == tailMicrophone){
 			break; // processed last microphone. re-added microphone will come next
 		}
 	}
@@ -488,15 +488,15 @@ void deoalWorld::pSyncMicrophones(){
 
 void deoalWorld::pSyncSoundLevelMeters(){
 	// add new soundLevelMeters
-	if( pDirtySoundLevelMeters ){
+	if(pDirtySoundLevelMeters){
 		pAWorld->RemoveRemovalMarkedSoundLevelMeters();
 		
 		deSoundLevelMeter *engSoundLevelMeter = pWorld.GetRootSoundLevelMeter();
-		while( engSoundLevelMeter ){
+		while(engSoundLevelMeter){
 			deoalASoundLevelMeter * const soundLevelMeter =
-				( ( deoalSoundLevelMeter* )engSoundLevelMeter->GetPeerAudio() )->GetASoundLevelMeter();
-			if( soundLevelMeter->GetParentWorld() != pAWorld ){
-				pAWorld->AddSoundLevelMeter( soundLevelMeter );
+				((deoalSoundLevelMeter*)engSoundLevelMeter->GetPeerAudio())->GetASoundLevelMeter();
+			if(soundLevelMeter->GetParentWorld() != pAWorld){
+				pAWorld->AddSoundLevelMeter(soundLevelMeter);
 			}
 			engSoundLevelMeter = engSoundLevelMeter->GetLLWorldNext();
 		}
@@ -506,21 +506,21 @@ void deoalWorld::pSyncSoundLevelMeters(){
 	
 	// synchronize soundLevelMeters requiring to be synchronized
 	decPointerLinkedList::cListEntry * const tailSoundLevelMeter = pListSyncSoundLevelMeters.GetTail();
-	while( pListSyncSoundLevelMeters.GetRoot() ){
+	while(pListSyncSoundLevelMeters.GetRoot()){
 		decPointerLinkedList::cListEntry * const entry = pListSyncSoundLevelMeters.GetRoot();
-		deoalSoundLevelMeter &soundLevelMeter = *( ( deoalSoundLevelMeter* )entry->GetOwner() );
-		pListSyncSoundLevelMeters.Remove( entry );
+		deoalSoundLevelMeter &soundLevelMeter = *((deoalSoundLevelMeter*)entry->GetOwner());
+		pListSyncSoundLevelMeters.Remove(entry);
 		
 		soundLevelMeter.Synchronize(); // can potentially re-add the soundLevelMeter
 		
-		if( entry == tailSoundLevelMeter ){
+		if(entry == tailSoundLevelMeter){
 			break; // processed last soundLevelMeter. re-added soundLevelMeter will come next
 		}
 	}
 }
 
 void deoalWorld::pSyncAllMicLayerMask(){
-	if( ! pDirtyAllMicLayerMask ){
+	if(!pDirtyAllMicLayerMask){
 		return;
 	}
 	
@@ -528,31 +528,31 @@ void deoalWorld::pSyncAllMicLayerMask(){
 	decLayerMask layerMask;
 	
 	deMicrophone *engMicrophone = pWorld.GetRootMicrophone();
-	while( engMicrophone ){
+	while(engMicrophone){
 		layerMask |= engMicrophone->GetLayerMask();
 		engMicrophone = engMicrophone->GetLLWorldNext();
 	}
 	
 	deSoundLevelMeter *engSoundLevelMeter = pWorld.GetRootSoundLevelMeter();
-	while( engSoundLevelMeter ){
+	while(engSoundLevelMeter){
 		layerMask |= engSoundLevelMeter->GetLayerMask();
 		engSoundLevelMeter = engSoundLevelMeter->GetLLWorldNext();
 	}
 	
 	// if the layer mask changed remove all components, clear the octree and mark
 	// all components dirty for octree update
-	if( layerMask == pAWorld->GetAllMicLayerMask() ){
+	if(layerMask == pAWorld->GetAllMicLayerMask()){
 		pDirtyAllMicLayerMask = false;
 		return;
 	}
 	
 	pAWorld->GetOctree()->ClearComponents();
 	
-	pAWorld->SetAllMicLayerMask( layerMask );
+	pAWorld->SetAllMicLayerMask(layerMask);
 	
 	deComponent *engComponent = pWorld.GetRootComponent();
-	while( engComponent ){
-		( ( deoalComponent* )engComponent->GetPeerAudio() )->LayerMaskChanged();
+	while(engComponent){
+		((deoalComponent*)engComponent->GetPeerAudio())->LayerMaskChanged();
 		engComponent = engComponent->GetLLWorldNext();
 	}
 	
@@ -560,11 +560,11 @@ void deoalWorld::pSyncAllMicLayerMask(){
 }
 
 void deoalWorld::pSyncAudioParameters(){
-	if( ! pDirtyAudioParameters ){
+	if(!pDirtyAudioParameters){
 		return;
 	}
 	
 	pDirtyAudioParameters = false;
 	
-	pAWorld->SetSpeakerGain( pWorld.GetSpeakerGain() );
+	pAWorld->SetSpeakerGain(pWorld.GetSpeakerGain());
 }

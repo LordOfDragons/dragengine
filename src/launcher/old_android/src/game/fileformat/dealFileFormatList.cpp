@@ -55,32 +55,32 @@ int dealFileFormatList::GetFormatCount() const{
 	return pFormats.GetCount();
 }
 
-dealFileFormat *dealFileFormatList::GetFormatAt( int index ) const{
-	return ( dealFileFormat* )pFormats.GetAt( index );
+dealFileFormat *dealFileFormatList::GetFormatAt(int index) const{
+	return (dealFileFormat*)pFormats.GetAt(index);
 }
 
-bool dealFileFormatList::HasFormat( dealFileFormat *format ) const{
-	return pFormats.Has( format );
+bool dealFileFormatList::HasFormat(dealFileFormat *format) const{
+	return pFormats.Has(format);
 }
 
-int dealFileFormatList::IndexOfFormat( dealFileFormat *format ) const{
-	return pFormats.IndexOf( format );
+int dealFileFormatList::IndexOfFormat(dealFileFormat *format) const{
+	return pFormats.IndexOf(format);
 }
 
-void dealFileFormatList::AddFormat( dealFileFormat *format ){
-	if( ! format ){
-		DETHROW( deeInvalidParam );
+void dealFileFormatList::AddFormat(dealFileFormat *format){
+	if(!format){
+		DETHROW(deeInvalidParam);
 	}
-	pFormats.Add( format );
+	pFormats.Add(format);
 }
 
-void dealFileFormatList::RemoveFormat( dealFileFormat *format ){
-	const int index = IndexOfFormat( format );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void dealFileFormatList::RemoveFormat(dealFileFormat *format){
+	const int index = IndexOfFormat(format);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pFormats.RemoveFrom( index );
+	pFormats.RemoveFrom(index);
 }
 
 void dealFileFormatList::RemoveAllFormats(){

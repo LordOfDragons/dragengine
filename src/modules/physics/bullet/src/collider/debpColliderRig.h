@@ -82,7 +82,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rigged collider. */
-	debpColliderRig( dePhysicsBullet *bullet, deColliderRig &collider );
+	debpColliderRig(dePhysicsBullet *bullet, deColliderRig &collider);
 	/** Cleans up the rigged collider. */
 	~debpColliderRig() override;
 	/*@}*/
@@ -102,7 +102,7 @@ public:
 	void DirtyAttachments();
 	
 	/** \brief Parent world changed. */
-	void SetParentWorld( debpWorld *parentWorld ) override;
+	void SetParentWorld(debpWorld *parentWorld) override;
 	
 	/** Create physics body if not existing already. */
 	void CreateBody() override;
@@ -116,7 +116,7 @@ public:
 	void PrepareForStep() override;
 	
 	/** Prepares the collision detection. */
-	void PrepareDetection( float elapsed ) override;
+	void PrepareDetection(float elapsed) override;
 	/** Finished the collision detection updating the collider and send notifications. */
 	void FinishDetection() override;
 	
@@ -147,7 +147,7 @@ public:
 	/** Updates shapes with the current matrix. */
 	void UpdateShapes() override;
 	/** Updates shapes using a transformation matrix. */
-	void UpdateShapesWithMatrix( const decDMatrix &transformation ) override;
+	void UpdateShapesWithMatrix(const decDMatrix &transformation) override;
 	
 	/** Determines if the shape is simple. */
 	bool IsSimpleShape() const;
@@ -181,30 +181,30 @@ public:
 	/** \name Actions */
 	/*@{*/
 	/** \brief Enable or disable a component or rigged collider bone constraint. */
-	void EnableBoneConstraint( int bone, int constraint, bool enable ) override;
+	void EnableBoneConstraint(int bone, int constraint, bool enable) override;
 	/**
 	 * \brief Replace a component or rigged collider bone constraint.
 	 * \details The provided rig constraint only serves as source to copy the
 	 *          new parameters. It has to be freed by the called afterwards.
 	 */
-	void ReplaceBoneConstraint( int bone, int constraint, const deRigConstraint &replacement ) override;
+	void ReplaceBoneConstraint(int bone, int constraint, const deRigConstraint &replacement) override;
 	/*@}*/
 	
 	/** @name Forces */
 	/*@{*/
 	/** Applies a force at the center mass point. */
-	void ApplyForce( const decVector &force ) override;
+	void ApplyForce(const decVector &force) override;
 	/** Applies a force relative to the collider position. */
-	void ApplyForceAt( const decVector &force, const decVector &point ) override;
+	void ApplyForceAt(const decVector &force, const decVector &point) override;
 	/** Applies a torque force at the center mass point. */
-	void ApplyTorque( const decVector &torque ) override;
+	void ApplyTorque(const decVector &torque) override;
 	
 	/** Applies a force at the center mass point of the given bone. */
-	void ApplyBoneForce( int bone, const decVector &force ) override;
+	void ApplyBoneForce(int bone, const decVector &force) override;
 	/** Applies a force relative to the bone position. */
-	void ApplyBoneForceAt( int bone, const decVector &force, const decVector &point ) override;
+	void ApplyBoneForceAt(int bone, const decVector &force, const decVector &point) override;
 	/** Applies a torque force at the center mass point of the given bone. */
-	void ApplyBoneTorque( int bone, const decVector &torque ) override;
+	void ApplyBoneTorque(int bone, const decVector &torque) override;
 	/*@}*/
 	
 	
@@ -253,13 +253,13 @@ public:
 	
 	
 	/** \brief Attachment added. */
-	void AttachmentAdded( int index, deColliderAttachment *attachment ) override;
+	void AttachmentAdded(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief Attachment changed. */
-	void AttachmentChanged( int index, deColliderAttachment *attachment ) override;
+	void AttachmentChanged(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief Attachment removed. */
-	void AttachmentRemoved( int index, deColliderAttachment *attachment ) override;
+	void AttachmentRemoved(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief All attachments removed. */
 	void AllAttachmentsRemoved() override;
@@ -270,37 +270,37 @@ public:
 	
 	
 	/** \brief Bone position changed. */
-	void BonePositionChanged( int index ) override;
+	void BonePositionChanged(int index) override;
 	
 	/** \brief Bone orientation changed. */
-	void BoneOrientationChanged( int index ) override;
+	void BoneOrientationChanged(int index) override;
 	
 	/** \brief Bone linear velocity changed. */
-	void BoneLinearVelocityChanged( int index ) override;
+	void BoneLinearVelocityChanged(int index) override;
 	
 	/** \brief Bone angular velocity changed. */
-	void BoneAngularVelocityChanged( int index ) override;
+	void BoneAngularVelocityChanged(int index) override;
 	
 	/** \brief Bone properties changed. */
-	void BonePropertiesChanged( int index ) override;
+	void BonePropertiesChanged(int index) override;
 	
 	/** \brief Bone dynamic changed. */
-	void BoneDynamicChanged( int index ) override;
+	void BoneDynamicChanged(int index) override;
 	
 	
 	
 	/** \brief Constraint added. */
-	void ConstraintAdded( int index, deColliderConstraint *constraint ) override;
+	void ConstraintAdded(int index, deColliderConstraint *constraint) override;
 	
 	/** \brief Constraint changed. */
-	void ConstraintChanged( int index, deColliderConstraint *constraint ) override;
+	void ConstraintChanged(int index, deColliderConstraint *constraint) override;
 	/*@}*/
 	
 private:
 	void pUpdateShapeExtends();
 	void pCleanUp();
 	void pUpdateBones();
-	void pUpdateAttachments( bool force );
+	void pUpdateAttachments(bool force);
 	void pUpdateIsMoving();
 };
 

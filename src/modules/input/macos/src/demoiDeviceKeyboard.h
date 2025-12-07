@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	demoiDeviceKeyboard( deMacOSInput &module );
+	demoiDeviceKeyboard(deMacOSInput &module);
 	
 protected:
 	/** \brief Clean up device. */
@@ -52,16 +52,16 @@ public:
 	/** \name Module Management */
 	/*@{*/
     /** \brief Get key code for MO key code. */
-    static deInputEvent::eKeyCodes KeyCodeForMOCode( int code );
+    static deInputEvent::eKeyCodes KeyCodeForMOCode(int code);
     
     /** \brief Get key code for MO key code or empty if unknown. */
-    static decString NameForMOCode( int code );
+    static decString NameForMOCode(int code);
     
     /** \brief Get matching priority for MO key code. */
-    int MatchingPriorityForMOCode( int code ) const;
+    int MatchingPriorityForMOCode(int code) const;
     
     /** \brief Button matching key char. */
-    int ButtonMatchingKeyChar( int keyChar ) const;
+    int ButtonMatchingKeyChar(int keyChar) const;
 	/*@}*/
 };
 

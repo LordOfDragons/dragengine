@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	gdeTaskSyncGameDefinition( gdeWindowMain &windowMain );
+	gdeTaskSyncGameDefinition(gdeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	virtual ~gdeTaskSyncGameDefinition();

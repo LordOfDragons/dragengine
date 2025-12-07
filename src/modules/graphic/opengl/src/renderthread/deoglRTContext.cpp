@@ -80,8 +80,8 @@
 // event function (local)
 #ifdef OS_UNIX_X11
 /*
-static Bool lfWaitForNotify( Display *d, XEvent *e, char *arg ){
-	return ( e->type == MapNotify ) && ( e->xmap.window == (Window)arg );
+static Bool lfWaitForNotify(Display *d, XEvent *e, char *arg){
+	return (e->type == MapNotify) && (e->xmap.window == (Window)arg);
 }
 */
 
@@ -89,12 +89,12 @@ static Bool lfWaitForNotify( Display *d, XEvent *e, char *arg ){
 #elif defined OS_W32
 static deoglRTContext *oglW32WndFuncContext = NULL;
 
-static LRESULT CALLBACK oglW32WndFunc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam ){
-	if( oglW32WndFuncContext ){
-		return oglW32WndFuncContext->ProcessWindowMessage( hwnd, message, wParam, lParam );
+static LRESULT CALLBACK oglW32WndFunc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
+	if(oglW32WndFuncContext){
+		return oglW32WndFuncContext->ProcessWindowMessage(hwnd, message, wParam, lParam);
 		
 	}else{
-		return DefWindowProc( hwnd, message, wParam, lParam );
+		return DefWindowProc(hwnd, message, wParam, lParam);
 	}
 }
 #endif // OS_*
@@ -105,8 +105,8 @@ struct sOpenGlVersion{
 	int minor;
 };
 static const int vOpenGLVersionCount = 9;
-static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
-	{ 4, 6 }, { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 }, { 3, 2 } };
+static const sOpenGlVersion vOpenGLVersions[vOpenGLVersionCount] = {
+	{4, 6}, {4, 5}, {4, 4}, {4, 3}, {4, 2}, {4, 1}, {4, 0}, {3, 3}, {3, 2} };
 #endif // WITH_OPENGLES
 
 
@@ -122,30 +122,30 @@ pRenderThread(renderThread),
 pCompileContextCount(0),
 
 #ifdef OS_UNIX_X11
-pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
+pOSUnix(renderThread.GetOgl().GetOS()->CastToOSUnix()),
 
-pDisplay( NULL ),
-pScreen( 0 ),
+pDisplay(NULL),
+pScreen(0),
 
 #ifdef BACKEND_OPENGL
-pContext( nullptr ),
-pLoaderContext( nullptr ),
+pContext(nullptr),
+pLoaderContext(nullptr),
 #endif // BACKEND_OPENGL
 
-pColMap( 0 ),
-pVisInfo( NULL ),
+pColMap(0),
+pVisInfo(NULL),
 
 #elif defined OS_ANDROID
-pOSAndroid( renderThread.GetOgl().GetOS()->CastToOSAndroid() ),
+pOSAndroid(renderThread.GetOgl().GetOS()->CastToOSAndroid()),
 
-pDisplay( EGL_NO_DISPLAY ),
-pSurface( EGL_NO_SURFACE ),
-pContext( EGL_NO_CONTEXT ),
-pLoaderSurface( EGL_NO_SURFACE ),
-pLoaderContext( EGL_NO_CONTEXT ),
+pDisplay(EGL_NO_DISPLAY),
+pSurface(EGL_NO_SURFACE),
+pContext(EGL_NO_CONTEXT),
+pLoaderSurface(EGL_NO_SURFACE),
+pLoaderContext(EGL_NO_CONTEXT),
 
-pScreenWidth( 0 ),
-pScreenHeight( 0 ),
+pScreenWidth(0),
+pScreenHeight(0),
 
 #elif defined OS_WEBWASM
 pOSWebWasm(renderThread.GetOgl().GetOS()->CastToOSWebWasm()),
@@ -155,25 +155,25 @@ pScreenWidth(0),
 pScreenHeight(0),
 
 #elif defined OS_BEOS
-pOSBeOS( renderThread.GetOgl().GetOS()->CastToOSBeOS() ),
+pOSBeOS(renderThread.GetOgl().GetOS()->CastToOSBeOS()),
 //pContext( NULL ),
 
 #elif defined OS_MACOS
-pOSMacOS( renderThread.GetOgl().GetOS()->CastToOSMacOS() ),
-pPixelFormat( NULL ),
-pContext( nullptr ),
-pLoaderContext( nullptr ),
+pOSMacOS(renderThread.GetOgl().GetOS()->CastToOSMacOS()),
+pPixelFormat(NULL),
+pContext(nullptr),
+pLoaderContext(nullptr),
 
 #elif defined OS_W32
-pWindowClassname( "DEOpenGLWindow" ),
-pOSWindows( renderThread.GetOgl().GetOS()->CastToOSWindows() ),
-pContext( NULL ),
-pLoaderContext( NULL ),
+pWindowClassname("DEOpenGLWindow"),
+pOSWindows(renderThread.GetOgl().GetOS()->CastToOSWindows()),
+pContext(NULL),
+pLoaderContext(NULL),
 #endif // OS_*
 
-pActiveRRenderWindow( NULL ),
-pUserRequestedQuit( false ),
-pAppActivated( true )
+pActiveRRenderWindow(NULL),
+pUserRequestedQuit(false),
+pAppActivated(true)
 {
 #ifdef OS_UNIX_X11
 	#ifdef BACKEND_OPENGL
@@ -218,18 +218,18 @@ deoglRTContext::~deoglRTContext(){
 // Management
 ///////////////
 
-void deoglRTContext::InitPhase1( deRenderWindow* ){
+void deoglRTContext::InitPhase1(deRenderWindow*){
 	// NOTE called from the main thread after creating the context. do here everything required to be
 	//      linked to the main thread and required by render thread initialization.
-	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 1 Entering" );
+	pRenderThread.GetLogger().LogInfo("RTContext Init Phase 1 Entering");
 	
-	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 1 Exiting" );
+	pRenderThread.GetLogger().LogInfo("RTContext Init Phase 1 Exiting");
 }
 
-void deoglRTContext::InitPhase2( deRenderWindow* ){
+void deoglRTContext::InitPhase2(deRenderWindow*){
 	// NOTE called from the render thread after starting initialization. do here everything required
 	//      to be linked to the render thread after prerequisited have been done in the main thread
-	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 2 Entering" );
+	pRenderThread.GetLogger().LogInfo("RTContext Init Phase 2 Entering");
 	
 #ifdef OS_UNIX_X11
 	pOpenDisplay();
@@ -254,13 +254,13 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 	pCreateContext();
 #endif // OS_*
 	
-	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 2 Exiting" );
+	pRenderThread.GetLogger().LogInfo("RTContext Init Phase 2 Exiting");
 }
 
-void deoglRTContext::InitPhase3( deRenderWindow *renderWindow ){
+void deoglRTContext::InitPhase3(deRenderWindow *renderWindow){
 	// NOTE called from the main thread after first thread initialization. do here everything required to be
 	//      linked to the main thread that requires some render thread objects to be present
-	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 3 Entering" );
+	pRenderThread.GetLogger().LogInfo("RTContext Init Phase 3 Entering");
 	
 	// register window class in main thread so the window function is linked to the main thread
 #ifdef OS_W32
@@ -273,55 +273,55 @@ void deoglRTContext::InitPhase3( deRenderWindow *renderWindow ){
 	// triggered below has to be in the main thread to keep all window handling there
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	
-	if( ! renderWindow->GetCanvasView()->GetPeerGraphic() ){
-		renderWindow->GetCanvasView()->SetPeerGraphic( new deoglCanvasView( ogl, *renderWindow->GetCanvasView() ) );
+	if(!renderWindow->GetCanvasView()->GetPeerGraphic()){
+		renderWindow->GetCanvasView()->SetPeerGraphic(new deoglCanvasView(ogl, *renderWindow->GetCanvasView()));
 	}
 	
-	if( ! renderWindow->GetPeerGraphic() ){
+	if(!renderWindow->GetPeerGraphic()){
 		// deoglRenderWindow is calling CreateWindow. this one is important to be in the main thread
-		renderWindow->SetPeerGraphic( new deoglRenderWindow( ogl, *renderWindow ) );
-		if( ! renderWindow->GetPeerGraphic() ){
-			DETHROW( deeOutOfMemory );
+		renderWindow->SetPeerGraphic(new deoglRenderWindow(ogl, *renderWindow));
+		if(!renderWindow->GetPeerGraphic()){
+			DETHROW(deeOutOfMemory);
 		}
 	}
 	
-	if( ! renderWindow->GetHostWindow() ){
-		( ( deoglRenderWindow* )renderWindow->GetPeerGraphic() )->GetRRenderWindow()->CenterOnScreen();
+	if(!renderWindow->GetHostWindow()){
+		((deoglRenderWindow*)renderWindow->GetPeerGraphic())->GetRRenderWindow()->CenterOnScreen();
 	}
 	
 	// HACK assign window. the constructor above ensures the window is created
 #ifdef OS_UNIX_X11
-	pOSUnix->SetWindow( renderWindow->GetWindow() );
+	pOSUnix->SetWindow(renderWindow->GetWindow());
 	
 #elif defined OS_ANDROID
 	//pOSAndroid->SetWindow( renderWindow->GetWindow() );
 	
 #elif defined OS_BEOS
-	pOSBeOS->SetWindow( renderWindow->GetWindow() );
+	pOSBeOS->SetWindow(renderWindow->GetWindow());
 	
 #elif defined OS_MACOS
-	pOSMacOS->SetWindow( renderWindow->GetWindow() );
+	pOSMacOS->SetWindow(renderWindow->GetWindow());
 	
 #elif defined OS_W32
-	pOSWindows->SetWindow( renderWindow->GetWindow() );
+	pOSWindows->SetWindow(renderWindow->GetWindow());
 #endif // OS_*
 	
-	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 3 Exiting" );
+	pRenderThread.GetLogger().LogInfo("RTContext Init Phase 3 Exiting");
 }
 
-void deoglRTContext::InitPhase4( deRenderWindow *renderWindow ){
+void deoglRTContext::InitPhase4(deRenderWindow *renderWindow){
 	// NOTE called from the render thread to finish thread initialization. do here everything required to be
 	//      linked to the render thread that requires some in between main thread objects to be present
-	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 4 Entering" );
+	pRenderThread.GetLogger().LogInfo("RTContext Init Phase 4 Entering");
 	
 	// activate render window
-	ActivateRRenderWindow( ( ( deoglRenderWindow* )renderWindow->GetPeerGraphic() )->GetRRenderWindow() );
+	ActivateRRenderWindow(((deoglRenderWindow*)renderWindow->GetPeerGraphic())->GetRRenderWindow());
 	
 #ifdef OS_W32
 	pCreateContext();
 #endif
 	
-	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 4 Exiting" );
+	pRenderThread.GetLogger().LogInfo("RTContext Init Phase 4 Exiting");
 }
 
 void deoglRTContext::CleanUp(){
@@ -331,28 +331,28 @@ void deoglRTContext::CleanUp(){
 	// ensure the active deoglRRenderWindow is dropped. if there are still deoglRRenderWindow
 	// around this will not work but at this point in time no deoglRRenderWindow should exist 
 	// anymore in the render thread otherwise something is wrong
-	if( pRenderThread.GetRRenderWindowList().GetCount() > 0 ){
+	if(pRenderThread.GetRRenderWindowList().GetCount() > 0){
 		pRenderThread.GetLogger().LogWarnFormat(
 			"deoglRTContext.CleanUp: Render thread still has %d RRenderWindows!",
-			pRenderThread.GetRRenderWindowList().GetCount() );
+			pRenderThread.GetRRenderWindowList().GetCount());
 	}
 	
 	// we need to forcefully drop the active window in case the list above is not empty otherwise
 	// we end up with another window being active
-	ActivateRRenderWindow( NULL, true );
+	ActivateRRenderWindow(NULL, true);
 	
 	// HACK unassign window
 #ifdef OS_UNIX_X11
-	pOSUnix->SetWindow( 0 );
+	pOSUnix->SetWindow(0);
 	
 #elif defined OS_BEOS
-	pOSBeOS->SetWindow( NULL );
+	pOSBeOS->SetWindow(NULL);
 	
 #elif defined OS_MACOS
-	pOSMacOS->SetWindow( NULL );
+	pOSMacOS->SetWindow(NULL);
 	
 #elif defined OS_W32
-	pOSWindows->SetWindow( NULL );
+	pOSWindows->SetWindow(NULL);
 #endif // OS_*
 	
 	// free operating system specific objects
@@ -385,17 +385,17 @@ void deoglRTContext::InitAppWindow(){
 }
 
 void deoglRTContext::TerminateAppWindow(){
-	if( pDisplay == EGL_NO_DISPLAY ){
+	if(pDisplay == EGL_NO_DISPLAY){
 		return;
 	}
-	if( pSurface == EGL_NO_SURFACE ){
+	if(pSurface == EGL_NO_SURFACE){
 		return;
 	}
 	
-	pRenderThread.GetLogger().LogInfo( "Destroy surface (close window)" );
-	eglMakeCurrent( pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+	pRenderThread.GetLogger().LogInfo("Destroy surface (close window)");
+	eglMakeCurrent(pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	
-	eglDestroySurface( pDisplay, pSurface );
+	eglDestroySurface(pDisplay, pSurface);
 	pSurface = EGL_NO_SURFACE;
 }
 
@@ -409,34 +409,34 @@ void deoglRTContext::TerminateAppWindow(){
 
 
 
-void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, bool forceIfNull ){
+void deoglRTContext::ActivateRRenderWindow(deoglRRenderWindow *rrenderWindow, bool forceIfNull){
 	// NULL should be prevented for the time being. pick the first available window if possible
-	if( ! rrenderWindow && pRenderThread.GetRRenderWindowList().GetCount() > 0 && ! forceIfNull ){
-		rrenderWindow = ( deoglRRenderWindow* )pRenderThread.GetRRenderWindowList().GetAt( 0 );
+	if(!rrenderWindow && pRenderThread.GetRRenderWindowList().GetCount() > 0 && !forceIfNull){
+		rrenderWindow = (deoglRRenderWindow*)pRenderThread.GetRRenderWindowList().GetAt(0);
 	}
 	
-	if( pActiveRRenderWindow == rrenderWindow ){
+	if(pActiveRRenderWindow == rrenderWindow){
 		return;
 	}
 	
 #ifdef OS_BEOS
-	if( pActiveRRenderWindow ){
+	if(pActiveRRenderWindow){
 		pActiveRRenderWindow->GetGLView()->UnlockGL();
 	}
 #endif // OS_BEOS
 	
 	pActiveRRenderWindow = rrenderWindow;
 	
-	if( rrenderWindow ){
+	if(rrenderWindow){
 #ifdef OS_UNIX_X11
 		#ifdef BACKEND_OPENGL
 			// printf( "glXMakeCurrent(%lu,%p) previous(%lu,%p)\n", rrenderWindow->GetWindow(), pContext, glXGetCurrentDrawable(), glXGetCurrentContext() );
-			OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, rrenderWindow->GetWindow(), pContext ) );
+			OGLX_CHECK(pRenderThread, glXMakeCurrent(pDisplay, rrenderWindow->GetWindow(), pContext));
 		#endif // BACKEND_OPENGL
 		
 #elif defined OS_ANDROID
-		if( eglMakeCurrent( pDisplay, pSurface, pSurface, pContext ) == EGL_FALSE ){
-			DETHROW( deeInvalidParam );
+		if(eglMakeCurrent(pDisplay, pSurface, pSurface, pContext) == EGL_FALSE){
+			DETHROW(deeInvalidParam);
 		}
 		
 #elif defined OS_WEBWASM
@@ -446,49 +446,49 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		rrenderWindow->GetGLView()->LockGL();
 		
 #elif defined OS_MACOS
-		pContextMakeCurrent( rrenderWindow->GetView() );
+		pContextMakeCurrent(rrenderWindow->GetView());
 		
 #elif defined OS_W32
-		if( ! wglMakeCurrent( rrenderWindow->GetWindowDC(), pContext ) ){
-			pRenderThread.GetLogger().LogErrorFormat( "wglMakeCurrent failed (%s:%i): error=0x%lx\n",
-				__FILE__, __LINE__, GetLastError() );
+		if(!wglMakeCurrent(rrenderWindow->GetWindowDC(), pContext)){
+			pRenderThread.GetLogger().LogErrorFormat("wglMakeCurrent failed (%s:%i): error=0x%lx\n",
+				__FILE__, __LINE__, GetLastError());
 		}
 #endif // OS_*
 		
 #ifndef OS_BEOS
 		#ifdef BACKEND_OPENGL
-		if( pLoaderContext ){
+		if(pLoaderContext){
 			// this check is required for windows to work correctly because on windows the window
 			// is activated before the loader context is created which would cause problems
-			pRenderThread.GetLoaderThread().EnableContext( true );
+			pRenderThread.GetLoaderThread().EnableContext(true);
 		}
 		#endif // BACKEND_OPENGL
 #endif // OS_BEOS
 		
 	}else{
-		pRenderThread.GetLoaderThread().EnableContext( false );
+		pRenderThread.GetLoaderThread().EnableContext(false);
 		
 #ifdef OS_UNIX_X11
 		#ifdef BACKEND_OPENGL
 // 		printf( "glXMakeCurrent(clear) previous(%lu,%p)\n", glXGetCurrentDrawable(), glXGetCurrentContext() );
-		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, None, NULL ) );
+		OGLX_CHECK(pRenderThread, glXMakeCurrent(pDisplay, None, NULL));
 		#endif // BACKEND_OPENGL
 		
 #elif defined OS_ANDROID
-		if( eglMakeCurrent( pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE ){
-			DETHROW( deeInvalidParam );
+		if(eglMakeCurrent(pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT) == EGL_FALSE){
+			DETHROW(deeInvalidParam);
 		}
 		
 #elif defined OS_WEBWASM
 		OGL_WASM_CHECK(pRenderThread, emscripten_webgl_make_context_current(0));
 		
 #elif defined OS_MACOS
-		pGLContextMakeCurrent( NULL );
+		pGLContextMakeCurrent(NULL);
 		
 #elif defined OS_W32
-		if( ! wglMakeCurrent( NULL, NULL ) ){
-			pRenderThread.GetLogger().LogErrorFormat( "wglMakeCurrent failed (%s:%i): error=0x%lx\n",
-				__FILE__, __LINE__, GetLastError() );
+		if(!wglMakeCurrent(NULL, NULL)){
+			pRenderThread.GetLogger().LogErrorFormat("wglMakeCurrent failed (%s:%i): error=0x%lx\n",
+				__FILE__, __LINE__, GetLastError());
 		}
 #endif // OS_*
 	}
@@ -555,30 +555,30 @@ void deoglRTContext::DropCompileContexts(int count){
 
 
 #ifdef BACKEND_OPENGL
-void *deoglRTContext::GetFunctionPointer( const char *funcName ){
+void *deoglRTContext::GetFunctionPointer(const char *funcName){
 	// linux
 #ifdef OS_UNIX_X11
 	#ifndef HAS_OGL_GETPROC
-		return ( void* )glXGetProcAddressARB( ( const GLubyte * )funcName );
+		return (void*)glXGetProcAddressARB((const GLubyte *)funcName);
 	#else
-		return ( void* )glXGetProcAddress( ( const GLubyte * )funcName );
+		return (void*)glXGetProcAddress((const GLubyte *)funcName);
 	#endif
 	
 #elif defined OS_WEBWASM
 	return wasmGetProcAddress(pRenderThread, funcName);
 	
 #elif defined WITH_OPENGLES
-	return ( void* )androidGetProcAddress(pRenderThread, funcName);
+	return (void*)androidGetProcAddress(pRenderThread, funcName);
 	
 #elif defined OS_BEOS
-	DEASSERT_NOTNULL( pActiveRRenderWindow )
-	return ( void* )pActiveRRenderWindow->GetGLView()->GetGLProcAddress( funcName );
+	DEASSERT_NOTNULL(pActiveRRenderWindow)
+	return (void*)pActiveRRenderWindow->GetGLView()->GetGLProcAddress(funcName);
 	
 #elif defined OS_MACOS
-	return ( void* )macosGetProcAddress( funcName );
+	return (void*)macosGetProcAddress(funcName);
 	
 #elif defined OS_W32
-	return ( void* )wglGetProcAddress( funcName );
+	return (void*)wglGetProcAddress(funcName);
 #endif // OS_*
 }
 #endif // BACKEND_OPENGL
@@ -618,28 +618,28 @@ void deoglRTContext::CheckConfigurationChanged(){
 
 
 #elif defined OS_W32
-LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam ){
+LRESULT deoglRTContext::ProcessWindowMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
 	// WARNING send by main thread while processing events
 	
-	switch( message ){
+	switch(message){
 	case WM_SETCURSOR:{
 		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
 		const int count = windows.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			deoglRenderWindow &window = *windows.GetAt( i );
-			if( window.GetRRenderWindow()->GetWindow() == hwnd ){
-				if( window.GetRRenderWindow()->GetHostWindow() ){
-					return DefWindowProc( hwnd, message, wParam, lParam );
+		for(i=0; i<count; i++){
+			deoglRenderWindow &window = *windows.GetAt(i);
+			if(window.GetRRenderWindow()->GetWindow() == hwnd){
+				if(window.GetRRenderWindow()->GetHostWindow()){
+					return DefWindowProc(hwnd, message, wParam, lParam);
 				}
 				break;
 			}
 		}
-		if( LOWORD( lParam ) != HTCLIENT ){
-			return DefWindowProc( hwnd, message, wParam, lParam );
+		if(LOWORD(lParam) != HTCLIENT){
+			return DefWindowProc(hwnd, message, wParam, lParam);
 		}
 
-		SetCursor( NULL );
+		SetCursor(NULL);
 		}return TRUE;
 		
 	case WM_CLOSE:
@@ -656,12 +656,12 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 		// the input module
 		{
 		MSG msg;
-		memset( &msg, 0, sizeof( msg ) );
+		memset(&msg, 0, sizeof(msg));
 		msg.hwnd = hwnd;
 		msg.message = message;
 		msg.wParam = wParam;
 		msg.lParam = lParam;
-		pRenderThread.GetOgl().GetGameEngine()->GetInputSystem()->GetActiveModule()->EventLoop( msg );
+		pRenderThread.GetOgl().GetGameEngine()->GetInputSystem()->GetActiveModule()->EventLoop(msg);
 		}
 		return 0;
 		
@@ -676,19 +676,19 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 		//const int width = LOWORD( lParam ); // outer height
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			deoglRenderWindow &window = *windows.GetAt( i );
-			if( window.GetRRenderWindow()->GetWindow() == hwnd ){
+		for(i=0; i<count; i++){
+			deoglRenderWindow &window = *windows.GetAt(i);
+			if(window.GetRRenderWindow()->GetWindow() == hwnd){
 				// for fullscreen windows the size is incorrect while the window style is changed.
 				// to avoid problems ignore size change if the window is full screen
-				if( window.GetRRenderWindow()->GetFullScreen() ){
+				if(window.GetRRenderWindow()->GetFullScreen()){
 					break;
 				}
 
 				// the size provided in the message are the outer size of the window not the inner size.
 				// for non-fullscreen windows we have to calculate the correct inner size
-				const decPoint innerSize( window.GetRRenderWindow()->GetInnerSize() );
-				window.GetRenderWindow().SetSize( innerSize.x, innerSize.y );
+				const decPoint innerSize(window.GetRRenderWindow()->GetInnerSize());
+				window.GetRenderWindow().SetSize(innerSize.x, innerSize.y);
 				break;
 			}
 		}
@@ -724,11 +724,11 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 
 	/*
 	case WM_SIZING:{
-		RECT rect( *( ( RECT* )lParam ) );
+		RECT rect(*((RECT*)lParam));
 		RECT inverseRect;
-		SetRectEmpty( &inverseRect );
-		if( AdjustWindowRectEx( &inverseRect, GetWindowLong( hwnd, GWL_STYLE ),
-		FALSE, GetWindowLong( hwnd, GWL_EXSTYLE ) ) ){
+		SetRectEmpty(&inverseRect);
+		if(AdjustWindowRectEx(&inverseRect, GetWindowLong(hwnd, GWL_STYLE),
+		FALSE, GetWindowLong(hwnd, GWL_EXSTYLE))){
 			rect.left -= inverseRect.left;
 			rect.top -= inverseRect.top;
 			rect.right -= inverseRect.right;
@@ -740,10 +740,10 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 		const int height = rect.right - rect.left;
 		const int width = rect.bottom - rect.top;
 		int i;
-		for( i=0; i<count; i++ ){
-			deoglRRenderWindow &window = *( ( deoglRRenderWindow* )windows.GetAt( i ) );
-			if( window.GetWindow() == hwnd ){
-				window.OnResize( width, height );
+		for(i=0; i<count; i++){
+			deoglRRenderWindow &window = *((deoglRRenderWindow*)windows.GetAt(i));
+			if(window.GetWindow() == hwnd){
+				window.OnResize(width, height);
 				break;
 			}
 		}
@@ -751,7 +751,7 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	*/
 	}
 	
-	return DefWindowProc( hwnd, message, wParam, lParam );
+	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 #endif // OS_*
 
@@ -767,30 +767,30 @@ Display *deoglRTContext::GetMainThreadDisplay() const{
 }
 
 void deoglRTContext::pOpenDisplay(){
-	const char *dispName = getenv( "DISPLAY" );
+	const char *dispName = getenv("DISPLAY");
 	
 	// open display
-	if( ! dispName ){
+	if(!dispName){
 		dispName = "";
 	}
-	pDisplay = XOpenDisplay( dispName );
-	if( ! pDisplay ){
-		pRenderThread.GetLogger().LogErrorFormat( "Cannot not open display %s\n", XDisplayName( dispName ) );
-		DETHROW( deeInvalidAction );
+	pDisplay = XOpenDisplay(dispName);
+	if(!pDisplay){
+		pRenderThread.GetLogger().LogErrorFormat("Cannot not open display %s\n", XDisplayName(dispName));
+		DETHROW(deeInvalidAction);
 	}
 	
-	pScreen = XDefaultScreen( pDisplay );
+	pScreen = XDefaultScreen(pDisplay);
 }
 
 void deoglRTContext::ProcessEventLoop(){
 	XEvent event;
-	while( XPending( pDisplay ) ){
-		XNextEvent( pDisplay, &event );
+	while(XPending(pDisplay)){
+		XNextEvent(pDisplay, &event);
 		
-		switch( event.type ){
+		switch(event.type){
 		case ClientMessage:
-			if( event.xclient.message_type == pAtomProtocols
-			&& event.xclient.data.l[0] == ( int )pAtomDeleteWindow ){
+			if(event.xclient.message_type == pAtomProtocols
+			&& event.xclient.data.l[0] == (int)pAtomDeleteWindow){
 				pUserRequestedQuit = true;
 			}
 			break;
@@ -807,10 +807,10 @@ void deoglRTContext::ProcessEventLoop(){
 			const decObjectOrderedSet &windows = pRenderThread.GetRRenderWindowList();
 			const int count = windows.GetCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				deoglRRenderWindow &window = *( ( deoglRRenderWindow* )windows.GetAt( i ) );
-				if( window.GetWindow() == event.xconfigure.window ){
-					window.OnResize( event.xconfigure.width, event.xconfigure.height );
+			for(i=0; i<count; i++){
+				deoglRRenderWindow &window = *((deoglRRenderWindow*)windows.GetAt(i));
+				if(window.GetWindow() == event.xconfigure.window){
+					window.OnResize(event.xconfigure.width, event.xconfigure.height);
 					break;
 				}
 			}
@@ -825,37 +825,37 @@ void deoglRTContext::pPrintVisualInfo(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	int value;
 	
-	logger.LogInfo( "Visual Infos:" );
+	logger.LogInfo("Visual Infos:");
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_RED_SIZE, &value );
-	logger.LogInfoFormat( "  Red Bit Count:      %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_RED_SIZE, &value);
+	logger.LogInfoFormat("  Red Bit Count:      %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_GREEN_SIZE, &value );
-	logger.LogInfoFormat( "  Green Bit Count:    %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_GREEN_SIZE, &value);
+	logger.LogInfoFormat("  Green Bit Count:    %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_BLUE_SIZE, &value );
-	logger.LogInfoFormat( "  Blue Bit Count:     %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_BLUE_SIZE, &value);
+	logger.LogInfoFormat("  Blue Bit Count:     %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_ALPHA_SIZE, &value );
-	logger.LogInfoFormat( "  Alpha Bit Count:    %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_ALPHA_SIZE, &value);
+	logger.LogInfoFormat("  Alpha Bit Count:    %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_DEPTH_SIZE, &value );
-	logger.LogInfoFormat( "  Depth Bit Count:    %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_DEPTH_SIZE, &value);
+	logger.LogInfoFormat("  Depth Bit Count:    %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_STENCIL_SIZE, &value );
-	logger.LogInfoFormat( "  Stencil Bit Count:  %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_STENCIL_SIZE, &value);
+	logger.LogInfoFormat("  Stencil Bit Count:  %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_ACCUM_RED_SIZE, &value );
-	logger.LogInfoFormat( "  Accumulation Buffer Red Bit Count:    %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_ACCUM_RED_SIZE, &value);
+	logger.LogInfoFormat("  Accumulation Buffer Red Bit Count:    %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_ACCUM_GREEN_SIZE, &value );
-	logger.LogInfoFormat( "  Accumulation Buffer Green Bit Count:  %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_ACCUM_GREEN_SIZE, &value);
+	logger.LogInfoFormat("  Accumulation Buffer Green Bit Count:  %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_ACCUM_BLUE_SIZE, &value );
-	logger.LogInfoFormat( "  Accumulation Buffer Blue Bit Count:   %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_ACCUM_BLUE_SIZE, &value);
+	logger.LogInfoFormat("  Accumulation Buffer Blue Bit Count:   %i", value);
 	
-	glXGetConfig( pDisplay, pVisInfo, GLX_ACCUM_ALPHA_SIZE, &value );
-	logger.LogInfoFormat( "  Accumulation Buffer Alpha Bit Count:  %i", value );
+	glXGetConfig(pDisplay, pVisInfo, GLX_ACCUM_ALPHA_SIZE, &value);
+	logger.LogInfoFormat("  Accumulation Buffer Alpha Bit Count:  %i", value);
 }
 
 void deoglRTContext::pChooseFBConfig(){
@@ -878,13 +878,13 @@ void deoglRTContext::pChooseFBConfig(){
 		GLX_DEPTH_SIZE, 24,
 		GLX_STENCIL_SIZE, 8,
 		GLX_DOUBLEBUFFER, True,
-		None };
+		None};
 	
 	try{
 		// try to find a matching fbconfig
-		configs = glXChooseFBConfig( pDisplay, pScreen, attribs, &configCount );
-		if( configCount == 0 || ! configs ){
-			DETHROW_INFO( deeInvalidAction, "glXChooseFBConfig failed" );
+		configs = glXChooseFBConfig(pDisplay, pScreen, attribs, &configCount);
+		if(configCount == 0 || !configs){
+			DETHROW_INFO(deeInvalidAction, "glXChooseFBConfig failed");
 		}
 		
 		// find the best config that is not over-sized
@@ -908,36 +908,36 @@ void deoglRTContext::pChooseFBConfig(){
 //		if(bestConfig == configCount) bestConfig = configCount - 1;
 		
 		// store the best config away and free memory
-		pBestFBConfig = configs[ bestConfig ];
-		XFree( configs );
+		pBestFBConfig = configs[bestConfig];
+		XFree(configs);
 		configs = NULL;
 		
 		// print out the stats of the best config we have chose
-		if( pRenderThread.GetConfiguration().GetDoLogDebug() ){
-			logger.LogInfo( "glXChooseFBConfig:" );
+		if(pRenderThread.GetConfiguration().GetDoLogDebug()){
+			logger.LogInfo("glXChooseFBConfig:");
 			
-			glXGetFBConfigAttrib( pDisplay, pBestFBConfig, GLX_RED_SIZE, &configValue );
-			logger.LogInfoFormat( "  Red Bit Count:      %i", configValue );
+			glXGetFBConfigAttrib(pDisplay, pBestFBConfig, GLX_RED_SIZE, &configValue);
+			logger.LogInfoFormat("  Red Bit Count:      %i", configValue);
 			
-			glXGetFBConfigAttrib( pDisplay, pBestFBConfig, GLX_GREEN_SIZE, &configValue );
-			logger.LogInfoFormat( "  Green Bit Count:    %i", configValue );
+			glXGetFBConfigAttrib(pDisplay, pBestFBConfig, GLX_GREEN_SIZE, &configValue);
+			logger.LogInfoFormat("  Green Bit Count:    %i", configValue);
 			
-			glXGetFBConfigAttrib( pDisplay, pBestFBConfig, GLX_BLUE_SIZE, &configValue );
-			logger.LogInfoFormat( "  Blue Bit Count:     %i", configValue );
+			glXGetFBConfigAttrib(pDisplay, pBestFBConfig, GLX_BLUE_SIZE, &configValue);
+			logger.LogInfoFormat("  Blue Bit Count:     %i", configValue);
 			
-			glXGetFBConfigAttrib( pDisplay, pBestFBConfig, GLX_ALPHA_SIZE, &configValue );
-			logger.LogInfoFormat( "  Alpha Bit Count:    %i", configValue );
+			glXGetFBConfigAttrib(pDisplay, pBestFBConfig, GLX_ALPHA_SIZE, &configValue);
+			logger.LogInfoFormat("  Alpha Bit Count:    %i", configValue);
 			
-			glXGetFBConfigAttrib( pDisplay, pBestFBConfig, GLX_DEPTH_SIZE, &configValue );
-			logger.LogInfoFormat( "  Depth Bit Count:    %i", configValue );
+			glXGetFBConfigAttrib(pDisplay, pBestFBConfig, GLX_DEPTH_SIZE, &configValue);
+			logger.LogInfoFormat("  Depth Bit Count:    %i", configValue);
 			
-			glXGetFBConfigAttrib( pDisplay, pBestFBConfig, GLX_STENCIL_SIZE, &configValue );
-			logger.LogInfoFormat( "  Stencil Bit Count:  %i", configValue );
+			glXGetFBConfigAttrib(pDisplay, pBestFBConfig, GLX_STENCIL_SIZE, &configValue);
+			logger.LogInfoFormat("  Stencil Bit Count:  %i", configValue);
 		}
 		
-	}catch( const deException & ){
-		if( configs ){
-			XFree( configs );
+	}catch(const deException &){
+		if(configs){
+			XFree(configs);
 		}
 		throw;
 	}
@@ -953,15 +953,15 @@ void deoglRTContext::pChooseVisual(){
 		GLX_DEPTH_SIZE, 24,
 		GLX_STENCIL_SIZE, 8,
 		GLX_DOUBLEBUFFER,
-		None };
+		None};
 	
-	pVisInfo = glXChooseVisual( pDisplay, pScreen, attrList );
+	pVisInfo = glXChooseVisual(pDisplay, pScreen, attrList);
 	
-	if( ! pVisInfo ){
-		DETHROW( deeInvalidAction );
+	if(!pVisInfo){
+		DETHROW(deeInvalidAction);
 	}
 	
-	if( pRenderThread.GetConfiguration().GetDoLogDebug() ){
+	if(pRenderThread.GetConfiguration().GetDoLogDebug()){
 		pPrintVisualInfo();
 	}
 }
@@ -969,14 +969,14 @@ void deoglRTContext::pChooseVisual(){
 #endif // BACKEND_OPENGL
 
 void deoglRTContext::pCreateColorMap(){
-	Window rootWindow = RootWindow( pDisplay, pVisInfo->screen );
+	Window rootWindow = RootWindow(pDisplay, pVisInfo->screen);
 	
-	pColMap = XCreateColormap( pDisplay, rootWindow, pVisInfo->visual, AllocNone );
+	pColMap = XCreateColormap(pDisplay, rootWindow, pVisInfo->visual, AllocNone);
 }
 
 void deoglRTContext::pCreateAtoms(){
-	pAtomProtocols = XInternAtom( pDisplay, "WM_PROTOCOLS", False );
-	pAtomDeleteWindow = XInternAtom( pDisplay, "WM_DELETE_WINDOW", False );
+	pAtomProtocols = XInternAtom(pDisplay, "WM_PROTOCOLS", False);
+	pAtomDeleteWindow = XInternAtom(pDisplay, "WM_DELETE_WINDOW", False);
 }
 
 void deoglRTContext::pCreateContext(){
@@ -991,15 +991,15 @@ void deoglRTContext::pCreateContext(){
 	//      some driver implementations have bugged "No-ARB" version of the function
 	//      returning NULL. the "ARB" version seems less error prone
 	PFNGLXCREATECONTEXTATTRIBSARBPROC pglXCreateContextAttribs = NULL;
-	pglXCreateContextAttribs = ( PFNGLXCREATECONTEXTATTRIBSARBPROC )
-		GetFunctionPointer( "glXCreateContextAttribsARB" );
-	if( ! pglXCreateContextAttribs ){
-		pglXCreateContextAttribs = ( PFNGLXCREATECONTEXTATTRIBSARBPROC )
-			GetFunctionPointer( "glXCreateContextAttribs" );
+	pglXCreateContextAttribs = (PFNGLXCREATECONTEXTATTRIBSARBPROC)
+		GetFunctionPointer("glXCreateContextAttribsARB");
+	if(!pglXCreateContextAttribs){
+		pglXCreateContextAttribs = (PFNGLXCREATECONTEXTATTRIBSARBPROC)
+			GetFunctionPointer("glXCreateContextAttribs");
 	}
 	
-	if( pglXCreateContextAttribs ){
-		logger.LogInfo( "Creating OpenGL Context using new method" );
+	if(pglXCreateContextAttribs){
+		logger.LogInfo("Creating OpenGL Context using new method");
 		
 		int contextFlags = 0;
 		
@@ -1009,8 +1009,8 @@ void deoglRTContext::pCreateContext(){
 		contextFlags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
 		#endif
 		
-		if( pRenderThread.GetConfiguration().GetDebugContext() ){
-			logger.LogInfo( "Enable debug context" );
+		if(pRenderThread.GetConfiguration().GetDebugContext()){
+			logger.LogInfo("Enable debug context");
 			contextFlags |= GLX_CONTEXT_DEBUG_BIT_ARB;
 		}
 		
@@ -1033,19 +1033,19 @@ void deoglRTContext::pCreateContext(){
 			GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
 			GLX_CONTEXT_FLAGS_ARB, contextFlags,
 			None, None,
-			None };
+			None};
 // 		int contextAttribCount = 10;
 		
 		int i;
-		for( i=0; i<vOpenGLVersionCount; i++ ){
-			contextAttribs[ 1 ] = vOpenGLVersions[ i ].major;
-			contextAttribs[ 3 ] = vOpenGLVersions[ i ].minor;
+		for(i=0; i<vOpenGLVersionCount; i++){
+			contextAttribs[1] = vOpenGLVersions[i].major;
+			contextAttribs[3] = vOpenGLVersions[i].minor;
 			
-			pContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, NULL, True, contextAttribs );
-			if( pContext ){
-				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
-					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
-				pLoaderContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, pContext, True, contextAttribs );
+			pContext = pglXCreateContextAttribs(pDisplay, pBestFBConfig, NULL, True, contextAttribs);
+			if(pContext){
+				logger.LogInfoFormat("- Trying %d.%d Core... Success",
+					vOpenGLVersions[i].major, vOpenGLVersions[i].minor);
+				pLoaderContext = pglXCreateContextAttribs(pDisplay, pBestFBConfig, pContext, True, contextAttribs);
 				int j;
 				for(j=0; j<compileContextCount; j++){
 					pCompileContext[j] = pglXCreateContextAttribs(pDisplay, pBestFBConfig, pContext, True, contextAttribs);
@@ -1058,15 +1058,15 @@ void deoglRTContext::pCreateContext(){
 				break;
 			}
 			
-			logger.LogInfoFormat( "- Trying %d.%d Core... Failed",
-				vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+			logger.LogInfoFormat("- Trying %d.%d Core... Failed",
+				vOpenGLVersions[i].major, vOpenGLVersions[i].minor);
 		}
 		
-		if( ! pContext ){
-			logger.LogWarn( "No supported OpenGL Context could be created with new method. "
-				"Creating OpenGL Context using old method" );
-			pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
-			pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
+		if(!pContext){
+			logger.LogWarn("No supported OpenGL Context could be created with new method. "
+				"Creating OpenGL Context using old method");
+			pContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True);
+			pLoaderContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
 			for(i=0; i<compileContextCount; i++){
 				pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
 				if(!pCompileContext[i]){
@@ -1078,9 +1078,9 @@ void deoglRTContext::pCreateContext(){
 		}
 		
 	}else{
-		logger.LogInfo( "Creating OpenGL Context using old method" );
-		pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
-		pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
+		logger.LogInfo("Creating OpenGL Context using old method");
+		pContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True);
+		pLoaderContext = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
 		int i;
 		for(i=0; i<compileContextCount; i++){
 			pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
@@ -1092,12 +1092,12 @@ void deoglRTContext::pCreateContext(){
 		logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 	}
 	
-	DEASSERT_NOTNULL( pContext )
-	DEASSERT_NOTNULL( pLoaderContext )
+	DEASSERT_NOTNULL(pContext)
+	DEASSERT_NOTNULL(pLoaderContext)
 	
-	if( ! glXIsDirect( pDisplay, pContext ) ){
-		logger.LogError( "No matching direct rendering context found!" );
-		DETHROW( deeInvalidAction );
+	if(!glXIsDirect(pDisplay, pContext)){
+		logger.LogError("No matching direct rendering context found!");
+		DETHROW(deeInvalidAction);
 	}
 	
 #elif defined BACKEND_VULKAN
@@ -1116,7 +1116,7 @@ void deoglRTContext::pCreateContext(){
 }
 
 void deoglRTContext::pFreeContext(){
-	if( ! pDisplay ){
+	if(!pDisplay){
 		return;
 	}
 	
@@ -1128,13 +1128,13 @@ void deoglRTContext::pFreeContext(){
 			pCompileContext[i] = nullptr;
 		}
 	}
-	if( pLoaderContext ){
-		glXDestroyContext( pDisplay, pLoaderContext );
+	if(pLoaderContext){
+		glXDestroyContext(pDisplay, pLoaderContext);
 		pLoaderContext = nullptr;
 	}
-	if( pContext ){
-		pRenderThread.GetLogger().LogInfo( "Free Context" );
-		glXDestroyContext( pDisplay, pContext );
+	if(pContext){
+		pRenderThread.GetLogger().LogInfo("Free Context");
+		glXDestroyContext(pDisplay, pContext);
 		pContext = nullptr;
 	}
 	
@@ -1145,15 +1145,15 @@ void deoglRTContext::pFreeContext(){
 }
 
 void deoglRTContext::pFreeVisualInfo(){
-	if( pVisInfo ){
-		XFree( pVisInfo );
+	if(pVisInfo){
+		XFree(pVisInfo);
 		pVisInfo = NULL;
 	}
 }
 
 void deoglRTContext::pCloseDisplay(){
-	if( pDisplay ){
-		XCloseDisplay( pDisplay );
+	if(pDisplay){
+		XCloseDisplay(pDisplay);
 		pDisplay = NULL;
 	}
 }
@@ -1162,7 +1162,7 @@ void deoglRTContext::pCloseDisplay(){
 #elif defined OS_ANDROID
 
 void deoglRTContext::pInitDisplay(){
-	if( pSurface != EGL_NO_SURFACE ){
+	if(pSurface != EGL_NO_SURFACE){
 		return;
 	}
 	
@@ -1171,14 +1171,14 @@ void deoglRTContext::pInitDisplay(){
 	DEASSERT_NOTNULL(pOSAndroid->GetNativeWindow())
 	
 	// initialize display
-	if( pDisplay == EGL_NO_DISPLAY ){
-		pRenderThread.GetLogger().LogInfo( "Init display" );
-		pDisplay = eglGetDisplay( EGL_DEFAULT_DISPLAY );
-		if( pDisplay == EGL_NO_DISPLAY ){
-			DETHROW( deeInvalidParam );
+	if(pDisplay == EGL_NO_DISPLAY){
+		pRenderThread.GetLogger().LogInfo("Init display");
+		pDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+		if(pDisplay == EGL_NO_DISPLAY){
+			DETHROW(deeInvalidParam);
 		}
 		
-		eglInitialize( pDisplay, 0, 0 );
+		eglInitialize(pDisplay, 0, 0);
 		
 		// choose configuration
 		const EGLint attribs[] = {
@@ -1191,22 +1191,22 @@ void deoglRTContext::pInitDisplay(){
 			EGL_NONE
 		};
 		EGLint configCount;
-		eglChooseConfig( pDisplay, attribs, &pConfig, 1, &configCount );
-		if( configCount == 0 ){
-			DETHROW( deeInvalidParam );
+		eglChooseConfig(pDisplay, attribs, &pConfig, 1, &configCount);
+		if(configCount == 0){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
 	// set buffer geometry
 	/*
 	EGLint format;
-	eglGetConfigAttrib( pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format );
-	ANativeWindow_setBuffersGeometry( pOSAndroid->GetNativeWindow(), 0, 0, format );
+	eglGetConfigAttrib(pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format);
+	ANativeWindow_setBuffersGeometry(pOSAndroid->GetNativeWindow(), 0, 0, format);
 	*/
 	
 	// create surface
-	pSurface = eglCreateWindowSurface( pDisplay, pConfig, pOSAndroid->GetNativeWindow(), NULL );
-	if( pSurface == EGL_NO_SURFACE ){
+	pSurface = eglCreateWindowSurface(pDisplay, pConfig, pOSAndroid->GetNativeWindow(), NULL);
+	if(pSurface == EGL_NO_SURFACE){
 #ifdef OS_ANDROID_QUEST
 		// happens if VR-Mode is enabled. in this case we need a small off-screen surface
 		logger.LogInfo("Window surface already connected (VR-Mode). Creating tiny PBuffer surface");
@@ -1219,7 +1219,7 @@ void deoglRTContext::pInitDisplay(){
 		pSurface = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
 		DEASSERT_FALSE(pSurface == EGL_NO_SURFACE)
 #else
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 #endif
 	}
 	
@@ -1227,11 +1227,11 @@ void deoglRTContext::pInitDisplay(){
 	const int compileContextCount = decMath::min(MaxCompileContextCount,
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
 	
-	if( pContext == EGL_NO_CONTEXT ){
+	if(pContext == EGL_NO_CONTEXT){
 		//EGLint contextFlags = 0;
 		EGLint valUseDebugContext = EGL_FALSE;
-		if( pRenderThread.GetConfiguration().GetDebugContext() ){
-			logger.LogInfo( "Enable debug context" );
+		if(pRenderThread.GetConfiguration().GetDebugContext()){
+			logger.LogInfo("Enable debug context");
 			//contextFlags |= EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR;
 			valUseDebugContext = EGL_TRUE;
 		}
@@ -1243,7 +1243,7 @@ void deoglRTContext::pInitDisplay(){
 			// ^== fails on meta quest
 			EGL_CONTEXT_OPENGL_DEBUG, valUseDebugContext,
 			EGL_NONE, EGL_NONE,
-			EGL_NONE };
+			EGL_NONE};
 		
 		pContext = eglCreateContext(pDisplay, pConfig, EGL_NO_CONTEXT, eglAttribList);
 		DEASSERT_FALSE(pContext == EGL_NO_CONTEXT)
@@ -1283,18 +1283,18 @@ void deoglRTContext::pInitDisplay(){
 	}
 	
 	// make surface current. we have to make it current each render loop
-	if( eglMakeCurrent( pDisplay, pSurface, pSurface, pContext ) == EGL_FALSE ){
-		DETHROW( deeInvalidParam );
+	if(eglMakeCurrent(pDisplay, pSurface, pSurface, pContext) == EGL_FALSE){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// query display parameters
-	eglQuerySurface( pDisplay, pSurface, EGL_WIDTH, &pScreenWidth );
-	eglQuerySurface( pDisplay, pSurface, EGL_HEIGHT, &pScreenHeight );
-	pRenderThread.GetLogger().LogInfoFormat( "Display size %ix%i", pScreenWidth, pScreenHeight );
+	eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &pScreenWidth);
+	eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &pScreenHeight);
+	pRenderThread.GetLogger().LogInfoFormat("Display size %ix%i", pScreenWidth, pScreenHeight);
 }
 
 void deoglRTContext::pCloseDisplay(){
-	if( pDisplay == EGL_NO_DISPLAY ){
+	if(pDisplay == EGL_NO_DISPLAY){
 		return;
 	}
 	
@@ -1321,12 +1321,12 @@ void deoglRTContext::pCloseDisplay(){
 		pLoaderSurface = EGL_NO_SURFACE;
 	}
 	
-	if( pContext != EGL_NO_CONTEXT ){
-		eglDestroyContext( pDisplay, pContext );
+	if(pContext != EGL_NO_CONTEXT){
+		eglDestroyContext(pDisplay, pContext);
 		pContext = EGL_NO_CONTEXT;
 	}
 	
-	eglTerminate( pDisplay );
+	eglTerminate(pDisplay);
 	pDisplay = EGL_NO_DISPLAY;
 }
 
@@ -1466,22 +1466,22 @@ void deoglRTContext::pRegisterWindowClass(){
 	oglW32WndFuncContext = this;
 	
 	WNDCLASSEX wce;
-	memset( &wce, 0, sizeof( wce ) );
+	memset(&wce, 0, sizeof(wce));
 	wce.hInstance = pOSWindows->GetInstApp();
-	wchar_t wideClassName[ 200 ];
-	deOSWindows::Utf8ToWide( pWindowClassname, wideClassName, MAX_PATH );
+	wchar_t wideClassName[200];
+	deOSWindows::Utf8ToWide(pWindowClassname, wideClassName, MAX_PATH);
 	wce.lpszClassName = wideClassName;
 	wce.lpfnWndProc = oglW32WndFunc;
-	wce.cbSize = sizeof( wce );
-	wce.hIcon = NULL; //LoadIcon( NULL, IDI_APPLICATION );
-	wce.hIconSm = NULL; //LoadIcon( NULL, IDI_APPLICATION );
-	wce.hCursor = NULL; //LoadCursor( NULL, IDC_ARROW );
+	wce.cbSize = sizeof(wce);
+	wce.hIcon = NULL; //LoadIcon(NULL, IDI_APPLICATION);
+	wce.hIconSm = NULL; //LoadIcon(NULL, IDI_APPLICATION);
+	wce.hCursor = NULL; //LoadCursor(NULL, IDC_ARROW);
 	wce.lpszMenuName = NULL;
 	wce.hbrBackground = NULL;
 	wce.style = CS_OWNDC;
 	
-	if( ! RegisterClassEx( &wce ) ){
-		DETHROW( deeOutOfMemory );
+	if(!RegisterClassEx(&wce)){
+		DETHROW(deeOutOfMemory);
 	}
 }
 
@@ -1495,36 +1495,36 @@ void deoglRTContext::pCreateContext(){
 	// been created. unfortunately the wglCreateContextAttribs is such a function pointer so we
 	// need a fake context first before we can obtain that method. for this reason we first
 	// create a context using the old method
-	logger.LogInfo( "Creating OpenGL Context using old method" );
-	pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
-	if( ! pContext ){
-		logger.LogErrorFormat( "wglCreateContext failed with code %d", ( int )GetLastError() );
-		DETHROW( deeOutOfMemory );
+	logger.LogInfo("Creating OpenGL Context using old method");
+	pContext = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
+	if(!pContext){
+		logger.LogErrorFormat("wglCreateContext failed with code %d", (int)GetLastError());
+		DETHROW(deeOutOfMemory);
 	}
 	
-	wglMakeCurrent( pActiveRRenderWindow->GetWindowDC(), pContext );
+	wglMakeCurrent(pActiveRRenderWindow->GetWindowDC(), pContext);
 	
 	// now we check if we can find the function pointer to create a new version context. if this
 	// is the case we destroy the old context and create a new one using the function pointer
 	// we just obtained. should this fail we create again an old context
 	PFNWGLCREATECONTEXTATTRIBSARBPROC pwglCreateContextAttribs = NULL;
-	pwglCreateContextAttribs = ( PFNWGLCREATECONTEXTATTRIBSARBPROC )
-		GetFunctionPointer( "wglCreateContextAttribs" );
-	if( ! pwglCreateContextAttribs ){
-		pwglCreateContextAttribs = ( PFNWGLCREATECONTEXTATTRIBSARBPROC )
-			GetFunctionPointer( "wglCreateContextAttribsARB" );
+	pwglCreateContextAttribs = (PFNWGLCREATECONTEXTATTRIBSARBPROC)
+		GetFunctionPointer("wglCreateContextAttribs");
+	if(!pwglCreateContextAttribs){
+		pwglCreateContextAttribs = (PFNWGLCREATECONTEXTATTRIBSARBPROC)
+			GetFunctionPointer("wglCreateContextAttribsARB");
 	}
 	
-	if( pwglCreateContextAttribs ){
-		logger.LogInfoFormat( "Re-creating OpenGL Context using new method" );
+	if(pwglCreateContextAttribs){
+		logger.LogInfoFormat("Re-creating OpenGL Context using new method");
 		
-		wglDeleteContext( pContext );
+		wglDeleteContext(pContext);
 		pContext = NULL;
 		
 		int contextFlags = 0;
 		
-		if( pRenderThread.GetConfiguration().GetDebugContext() ){
-			logger.LogInfo( "Enable debug context" );
+		if(pRenderThread.GetConfiguration().GetDebugContext()){
+			logger.LogInfo("Enable debug context");
 			contextFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
 		}
 		
@@ -1546,18 +1546,18 @@ void deoglRTContext::pCreateContext(){
 			WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
 			WGL_CONTEXT_FLAGS_ARB, contextFlags,
 			0, 0,
-			0 };
+			0};
 		
 		int i;
-		for( i=0; i<vOpenGLVersionCount; i++ ){
-			contextAttribs[ 1 ] = vOpenGLVersions[ i ].major;
-			contextAttribs[ 3 ] = vOpenGLVersions[ i ].minor;
+		for(i=0; i<vOpenGLVersionCount; i++){
+			contextAttribs[1] = vOpenGLVersions[i].major;
+			contextAttribs[3] = vOpenGLVersions[i].minor;
 			
-			pContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), NULL, contextAttribs );
-			if( pContext ){
-				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
-					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
-				pLoaderContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs );
+			pContext = pwglCreateContextAttribs(pActiveRRenderWindow->GetWindowDC(), NULL, contextAttribs);
+			if(pContext){
+				logger.LogInfoFormat("- Trying %d.%d Core... Success",
+					vOpenGLVersions[i].major, vOpenGLVersions[i].minor);
+				pLoaderContext = pwglCreateContextAttribs(pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs);
 				int j;
 				for(j=0; j<compileContextCount; j++){
 					pCompileContext[j] = pwglCreateContextAttribs(pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs);
@@ -1570,16 +1570,16 @@ void deoglRTContext::pCreateContext(){
 				break;
 			}
 			
-			logger.LogInfoFormat( "- Trying %d.%d Core... Failed",
-				vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+			logger.LogInfoFormat("- Trying %d.%d Core... Failed",
+				vOpenGLVersions[i].major, vOpenGLVersions[i].minor);
 		}
 		
-		if( ! pContext ){
-			logger.LogWarn( "No supported OpenGL Context could be created with new method. "
-				"Creating OpenGL Context using old method" );
-			pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
-			pLoaderContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
-			DEASSERT_TRUE( wglShareLists( pLoaderContext, pContext ) )
+		if(!pContext){
+			logger.LogWarn("No supported OpenGL Context could be created with new method. "
+				"Creating OpenGL Context using old method");
+			pContext = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
+			pLoaderContext = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
+			DEASSERT_TRUE(wglShareLists(pLoaderContext, pContext))
 			int i;
 			for(i=0; i<compileContextCount; i++){
 				pCompileContext[i] = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
@@ -1597,32 +1597,32 @@ void deoglRTContext::pCreateContext(){
 		}
 		
 	}else{
-		logger.LogInfoFormat( "Functions required for new OpenGL Context creation not found" );
+		logger.LogInfoFormat("Functions required for new OpenGL Context creation not found");
 	}
 	
-	if( ! pContext ){
-		logger.LogErrorFormat( "wglCreateContext with code %i", ( int )GetLastError() );
-		DETHROW( deeOutOfMemory );
+	if(!pContext){
+		logger.LogErrorFormat("wglCreateContext with code %i", (int)GetLastError());
+		DETHROW(deeOutOfMemory);
 	}
-	DEASSERT_NOTNULL( pLoaderContext )
+	DEASSERT_NOTNULL(pLoaderContext)
 	
 	// show the new render window
 	//pOSWindows->SetWindow( pActiveRRenderWindow->GetWindow() ); // problem, hangs if called from render-thread
 	
 	// attach to context
-	wglMakeCurrent( pActiveRRenderWindow->GetWindowDC(), pContext );
+	wglMakeCurrent(pActiveRRenderWindow->GetWindowDC(), pContext);
 
 	// for windows we have to delay starting the make sure the loader thread is enabled after the loader
 	// context is ready. before this point AcivateRRenderWindow() is called and then the loader context
 	// is nullptr which causes problems. ActivateRRenderWindow() thus avoids enabling the loader if
 	// no loader context exists. we thus have to do it here to make sure enabling works
-	pRenderThread.GetLoaderThread().EnableContext( true );
+	pRenderThread.GetLoaderThread().EnableContext(true);
 }
 
 void deoglRTContext::pUnregisterWindowClass(){
-	wchar_t wideClassName[ 200 ];
-	deOSWindows::Utf8ToWide( pWindowClassname, wideClassName, MAX_PATH );
-	UnregisterClass( wideClassName, pOSWindows->GetInstApp() );
+	wchar_t wideClassName[200];
+	deOSWindows::Utf8ToWide(pWindowClassname, wideClassName, MAX_PATH);
+	UnregisterClass(wideClassName, pOSWindows->GetInstApp());
 	oglW32WndFuncContext = NULL;
 }
 
@@ -1637,13 +1637,13 @@ void deoglRTContext::pFreeContext(){
 			pCompileContext[i] = NULL;
 		}
 	}
-	if( pLoaderContext ){
-		wglDeleteContext( pLoaderContext );
+	if(pLoaderContext){
+		wglDeleteContext(pLoaderContext);
 		pLoaderContext = NULL;
 	}
-	if( pContext ){
-		pRenderThread.GetLogger().LogInfo( "Free Context" );
-		wglDeleteContext( pContext );
+	if(pContext){
+		pRenderThread.GetLogger().LogInfo("Free Context");
+		wglDeleteContext(pContext);
 		pContext = NULL;
 	}
 }

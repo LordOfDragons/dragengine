@@ -41,36 +41,36 @@
 ////////////////////////////
 
 meUDecalClonePropertiesToSelected::meUDecalClonePropertiesToSelected(
-const meDecalList &list, const decStringDictionary &properties ){
+const meDecalList &list, const decStringDictionary &properties){
 	meUndoDataDecalProperty *undoData = NULL;
 	const int count = list.GetCount();
 	meDecal *decal;
 	int i;
 	
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		SetShortInfo( "Clone decal properties to selected" );
+		SetShortInfo("Clone decal properties to selected");
 		pPropertyList = properties;
 		
-		for( i=0; i<count; i++ ){
-			decal = list.GetAt( i );
-			if( ! decal->GetWorld() ){
-				DETHROW( deeInvalidParam );
+		for(i=0; i<count; i++){
+			decal = list.GetAt(i);
+			if(!decal->GetWorld()){
+				DETHROW(deeInvalidParam);
 			}
 			
-			undoData = new meUndoDataDecalProperty( decal );
+			undoData = new meUndoDataDecalProperty(decal);
 			undoData->GetOldProperties() = decal->GetProperties();
 			
-			pList.Add( undoData );
+			pList.Add(undoData);
 			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( undoData ){
+	}catch(const deException &){
+		if(undoData){
 			undoData->FreeReference();
 		}
 		pCleanUp();
@@ -91,9 +91,9 @@ void meUDecalClonePropertiesToSelected::Undo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataDecalProperty &undoData = *( ( meUndoDataDecalProperty* )pList.GetAt( i ) );
-		undoData.GetDecal()->SetProperties( undoData.GetOldProperties() );
+	for(i=0; i<count; i++){
+		const meUndoDataDecalProperty &undoData = *((meUndoDataDecalProperty*)pList.GetAt(i));
+		undoData.GetDecal()->SetProperties(undoData.GetOldProperties());
 	}
 }
 
@@ -101,9 +101,9 @@ void meUDecalClonePropertiesToSelected::Redo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataDecalProperty &undoData = *( ( meUndoDataDecalProperty* )pList.GetAt( i ) );
-		undoData.GetDecal()->SetProperties( pPropertyList );
+	for(i=0; i<count; i++){
+		const meUndoDataDecalProperty &undoData = *((meUndoDataDecalProperty*)pList.GetAt(i));
+		undoData.GetDecal()->SetProperties(pPropertyList);
 	}
 }
 

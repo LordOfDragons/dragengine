@@ -48,7 +48,7 @@ public:
 	/** \brief Creates a new string set. */
 	decStringSet();
 	/** \brief Creates a new string set as a copy of another string list. */
-	decStringSet( const decStringSet &set );
+	decStringSet(const decStringSet &set);
 	/** \brief Cleans up the string set. */
 	~decStringSet();
 	/*@}*/
@@ -58,19 +58,19 @@ public:
 	/** \brief Retrieves the number of strings. */
 	inline int GetCount() const{ return pStringCount; }
 	/** \brief Retrieves the string at the given index. */
-	const decString &GetAt( int index ) const;
+	const decString &GetAt(int index) const;
 	/** \brief Retrieves the index of the string or -1 if not found. */
-	int IndexOf( const decString &string ) const;
-	int IndexOf( const char *string ) const;
+	int IndexOf(const decString &string) const;
+	int IndexOf(const char *string) const;
 	/** \brief Determines if the given string is part of the set. */
-	bool Has( const decString &string ) const;
-	bool Has( const char *string ) const;
+	bool Has(const decString &string) const;
+	bool Has(const char *string) const;
 	/** \brief Adds a string if not already part of the set. */
-	void Add( const decString &string );
-	void Add( const char *string );
+	void Add(const decString &string);
+	void Add(const char *string);
 	/** \brief Removes the string if part of the set. */
-	void Remove( const decString &string );
-	void Remove( const char *string );
+	void Remove(const decString &string);
+	void Remove(const char *string);
 	/** \brief Removes all strings. */
 	void RemoveAll();
 	/** \brief Sorts strings in ascending order. */
@@ -82,30 +82,30 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Retrieves the string at the given index. */
-	const decString &operator[]( int index ) const;
+	const decString &operator[](int index) const;
 	/** \brief Set this list to the content of another set. */
-	decStringSet &operator=( const decStringSet &set );
+	decStringSet &operator=(const decStringSet &set);
 	/** \brief Determines if this set is equal to another set. */
-	bool operator==( const decStringSet &set ) const;
+	bool operator==(const decStringSet &set) const;
 	/** \brief Determines if this set is not equal to another set. */
-	bool operator!=( const decStringSet &set ) const;
+	bool operator!=(const decStringSet &set) const;
 	/** \brief Retrieves a new list containing the concatenation of this set and another one. */
-	decStringSet operator+( const decStringSet &set ) const;
+	decStringSet operator+(const decStringSet &set) const;
 	/** \brief Appends another list to this set. */
-	decStringSet &operator+=( const decStringSet &set );
+	decStringSet &operator+=(const decStringSet &set);
 	/** \brief Retrieves a new list containing this set with the given string added to it. */
-	decStringSet operator+( const decString &string ) const;
+	decStringSet operator+(const decString &string) const;
 	/** \brief Retrieves a new list containing this set with the given string added to it. */
-	decStringSet operator+( const char *string ) const;
+	decStringSet operator+(const char *string) const;
 	/** \brief Appends a string to this set. */
-	decStringSet &operator+=( const decString &string );
+	decStringSet &operator+=(const decString &string);
 	/** \brief Appends a string to this set. */
-	decStringSet &operator+=( const char *string );
+	decStringSet &operator+=(const char *string);
 	/*@}*/
 	
 private:
-	void pSortAscending( int left, int right );
-	void pSortDescending( int left, int right );
+	void pSortAscending(int left, int right);
+	void pSortDescending(int left, int right);
 };
 
 #endif

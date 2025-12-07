@@ -40,15 +40,15 @@
 ////////////////////////////
 
 projUProjectSetPathCapture::projUProjectSetPathCapture(
-projProject *project, const char *newValue ) :
-pProject( NULL ),
-pNewValue( newValue )
+projProject *project, const char *newValue) :
+pProject(NULL),
+pNewValue(newValue)
 {
-	if( ! project ){
-		DETHROW( deeInvalidParam );
+	if(!project){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Project set capture path" );
+	SetShortInfo("Project set capture path");
 	
 	pOldValue = project->GetPathCapture();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 projUProjectSetPathCapture::~projUProjectSetPathCapture(){
-	if( pProject ){
+	if(pProject){
 		pProject->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ projUProjectSetPathCapture::~projUProjectSetPathCapture(){
 ///////////////
 
 void projUProjectSetPathCapture::Undo(){
-	pProject->SetPathCapture( pOldValue );
+	pProject->SetPathCapture(pOldValue);
 }
 
 void projUProjectSetPathCapture::Redo(){
-	pProject->SetPathCapture( pNewValue );
+	pProject->SetPathCapture(pNewValue);
 }

@@ -37,12 +37,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetMinAngle::aeURuleBTransSetMinAngle( aeRuleBoneTransformator *rule, float newValue ) :
-pRule( rule ),
-pOldValue( rule->GetMinimumAngle() ),
-pNewValue( newValue )
+aeURuleBTransSetMinAngle::aeURuleBTransSetMinAngle(aeRuleBoneTransformator *rule, float newValue) :
+pRule(rule),
+pOldValue(rule->GetMinimumAngle()),
+pNewValue(newValue)
 {
-	SetShortInfo( "Bone transformator set minimum angle" );
+	SetShortInfo("Bone transformator set minimum angle");
 }
 
 aeURuleBTransSetMinAngle::~aeURuleBTransSetMinAngle(){
@@ -54,9 +54,9 @@ aeURuleBTransSetMinAngle::~aeURuleBTransSetMinAngle(){
 ///////////////
 
 void aeURuleBTransSetMinAngle::Undo(){
-	pRule->SetMinimumAngle( pOldValue );
+	pRule->SetMinimumAngle(pOldValue);
 }
 
 void aeURuleBTransSetMinAngle::Redo(){
-	pRule->SetMinimumAngle( pNewValue );
+	pRule->SetMinimumAngle(pNewValue);
 }

@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize( aeRuleStateSnapshot *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize(aeRuleStateSnapshot *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,9 +50,9 @@ aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize( aeRuleStateSnapshot *r
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule state snapshot toggle enable size" );
+		SetShortInfo("Rule state snapshot toggle enable size");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ aeURuleSnapToggleEnableSize::~aeURuleSnapToggleEnableSize(){
 ///////////////
 
 void aeURuleSnapToggleEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleSnapToggleEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 
@@ -81,7 +81,7 @@ void aeURuleSnapToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableSize::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

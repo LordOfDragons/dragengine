@@ -76,7 +76,7 @@ public:
 	 * - VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT : ?
 	 * - VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT : ?
 	 */
-	devkBuffer( devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage );
+	devkBuffer(devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage);
 	
 protected:
 	/** Clean up buffer. */
@@ -104,10 +104,10 @@ public:
 	inline VkBufferUsageFlagBits GetUsage() const{ return pUsage; }
 	
 	/** Copy data to host memory. */
-	void SetData( const void *data );
+	void SetData(const void *data);
 	
 	/** Copy data to host memory. */
-	void SetData( const void *data, uint32_t offset, uint32_t size );
+	void SetData(const void *data, uint32_t offset, uint32_t size);
 	
 	/**
 	 * Transfer data from host memory to device memory.
@@ -120,10 +120,10 @@ public:
 	void FetchFromDevice(devkCommandBuffer &commandBuffer);
 	
 	/** Copy data from host memory. */
-	void GetData( void *data );
+	void GetData(void *data);
 	
 	/** Copy data from host memory. */
-	void GetData( void *data, uint32_t offset, uint32_t size );
+	void GetData(void *data, uint32_t offset, uint32_t size);
 	
 	/** If command is active wait for command to be signaled. */
 	void Wait();
@@ -142,8 +142,8 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateBuffer( VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
-		VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size );
+	void pCreateBuffer(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
+		VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size);
 };
 
 #endif

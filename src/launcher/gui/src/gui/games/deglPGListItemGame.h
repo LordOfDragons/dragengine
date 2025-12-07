@@ -38,7 +38,7 @@ class deglPanelGames;
  * Games Panel List Item Game.
  */
 class deglPGListItemGame : public FXIconItem{
-	FXDECLARE( deglPGListItemGame )
+	FXDECLARE(deglPGListItemGame)
 protected:
 	deglPGListItemGame();
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list item. */
-	deglPGListItemGame( deglPanelGames *panelGames, delGame *game );
+	deglPGListItemGame(deglPanelGames *panelGames, delGame *game);
 	
 	/** Clean up list item. */
 	virtual ~deglPGListItemGame();

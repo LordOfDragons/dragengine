@@ -75,21 +75,21 @@ protected:
 	seWPAPanelEffect &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPAPanelEffect &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPAPanelEffect &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seEffect * const effect = pPanel.GetEffect();
-		if( ! effect ){
+		if(!effect){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, effect ) ));
-		if( undo ){
-			effect->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, effect)));
+		if(undo){
+			effect->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seEffect *effect ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seEffect *effect) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -97,21 +97,21 @@ protected:
 	seWPAPanelEffect &pPanel;
 	
 public:
-	cBaseComboBoxListener( seWPAPanelEffect &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(seWPAPanelEffect &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seEffect * const effect = pPanel.GetEffect();
-		if( ! effect ){
+		if(!effect){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, effect ) ));
-		if( undo ){
-			effect->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, effect)));
+		if(undo){
+			effect->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, seEffect *effect ) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seEffect *effect) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -119,53 +119,53 @@ protected:
 	seWPAPanelEffect &pPanel;
 	
 public:
-	cBaseAction( seWPAPanelEffect &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPAPanelEffect &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		seEffect * const effect = pPanel.GetEffect();
-		if( ! effect ){
+		if(!effect){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( effect ) ));
-		if( undo ){
-			effect->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(effect)));
+		if(undo){
+			effect->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( seEffect *effect ) = 0;
+	virtual igdeUndo *OnAction(seEffect *effect) = 0;
 };
 
 
 class cTextStrength : public cBaseTextFieldListener {
 public:
-	cTextStrength( seWPAPanelEffect &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextStrength(seWPAPanelEffect &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seEffect *effect ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffect *effect){
 		const float value = textField->GetFloat();
-		return fabsf( value - effect->GetStrength() ) > FLOAT_SAFE_EPSILON
-			? new seUEffectSetStrength( effect, value ) : NULL;
+		return fabsf(value - effect->GetStrength()) > FLOAT_SAFE_EPSILON
+			? new seUEffectSetStrength(effect, value) : NULL;
 	}
 };
 
 class cActionEnable : public cBaseAction {
 public:
-	cActionEnable( seWPAPanelEffect &panel ) : cBaseAction( panel, "Enable effect",
-		NULL, "Determines if the effect is affecting the source" ){ }
+	cActionEnable(seWPAPanelEffect &panel) : cBaseAction(panel, "Enable effect",
+		NULL, "Determines if the effect is affecting the source"){ }
 	
-	virtual igdeUndo *OnAction( seEffect *effect ){
-		return new seUEffectToggleEnabled( effect );
+	virtual igdeUndo *OnAction(seEffect *effect){
+		return new seUEffectToggleEnabled(effect);
 	}
 };
 
 
 class cComboTarget : public cBaseComboBoxListener {
 public:
-	cComboTarget( seWPAPanelEffect &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboTarget(seWPAPanelEffect &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeComboBox*, seEffect* ){
+	virtual igdeUndo * OnChanged(igdeComboBox*, seEffect*){
 		pPanel.UpdateTarget();
 		return NULL;
 	}
@@ -175,50 +175,50 @@ class cListLinks : public igdeListBoxListener{
 	seWPAPanelEffect &pPanel;
 	
 public:
-	cListLinks( seWPAPanelEffect &panel ) : pPanel( panel ){ }
+	cListLinks(seWPAPanelEffect &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( menu, pPanel.GetActionLinkAdd() );
-		helper.MenuCommand( menu, pPanel.GetActionLinkRemove() );
+		helper.MenuCommand(menu, pPanel.GetActionLinkAdd());
+		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());
 	}
 };
 
 class cActionLinkAdd : public cBaseAction {
 public:
-	cActionLinkAdd( seWPAPanelEffect &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add link" ){ }
+	cActionLinkAdd(seWPAPanelEffect &panel) : cBaseAction(panel, "Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"){}
 	
-	virtual igdeUndo *OnAction( seEffect *effect ){
+	virtual igdeUndo *OnAction(seEffect *effect){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetCBLink();
-		return target && link && ! target->HasLink( link )
-			? new seUEffectTargetAddLink( effect, target, link ) : NULL;
+		return target && link && !target->HasLink(link)
+			? new seUEffectTargetAddLink(effect, target, link) : NULL;
 	}
 	
 	virtual void Update(){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetCBLink();
-		SetSelected( target && link && ! target->HasLink( link ) );
+		SetSelected(target && link && !target->HasLink(link));
 	}
 };
 
 class cActionLinkRemove : public cBaseAction {
 public:
-	cActionLinkRemove( seWPAPanelEffect &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove link" ){ }
+	cActionLinkRemove(seWPAPanelEffect &panel) : cBaseAction(panel, "Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
 	
-	virtual igdeUndo *OnAction( seEffect *effect ){
+	virtual igdeUndo *OnAction(seEffect *effect){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetListLink();
-		return target && link && target->HasLink( link )
-			? new seUEffectTargetRemoveLink( effect, target, link ) : NULL;
+		return target && link && target->HasLink(link)
+			? new seUEffectTargetRemoveLink(effect, target, link) : NULL;
 	}
 	
 	virtual void Update(){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetListLink();
-		SetSelected( target && link && target->HasLink( link ) );
+		SetSelected(target && link && target->HasLink(link));
 	}
 };
 
@@ -232,40 +232,40 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPAPanelEffect::seWPAPanelEffect( seWPEffect &wpEffect,
-	deSynthesizerEffectVisitorIdentify::eEffectTypes requiredType ) :
-igdeContainerFlow( wpEffect.GetEnvironment(), igdeContainerFlow::eaY ),
-pWPEffect( wpEffect ),
-pRequiredType( requiredType )
+seWPAPanelEffect::seWPAPanelEffect(seWPEffect &wpEffect,
+	deSynthesizerEffectVisitorIdentify::eEffectTypes requiredType) :
+igdeContainerFlow(wpEffect.GetEnvironment(), igdeContainerFlow::eaY),
+pWPEffect(wpEffect),
+pRequiredType(requiredType)
 {
 	igdeEnvironment &env = wpEffect.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox, form, formLine;
 	
 	
-	pActionLinkAdd.TakeOver( new cActionLinkAdd( *this ) );
-	pActionLinkRemove.TakeOver( new cActionLinkRemove( *this ) );
+	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));
+	pActionLinkRemove.TakeOver(new cActionLinkRemove(*this));
 	
 	
 	// general settings
-	helper.GroupBox( *this, groupBox, "General Settings:" );
-	helper.EditString( groupBox, "Strength:", "Set effect strength", pEditStrength, new cTextStrength( *this ) );
-	helper.CheckBox( groupBox, pChkEnabled, new cActionEnable( *this ), true );
+	helper.GroupBox(*this, groupBox, "General Settings:");
+	helper.EditString(groupBox, "Strength:", "Set effect strength", pEditStrength, new cTextStrength(*this));
+	helper.CheckBox(groupBox, pChkEnabled, new cActionEnable(*this), true);
 	
 	
 	// targets and links
-	helper.GroupBoxFlow( *this, groupBox, "Targets and Links:" );
+	helper.GroupBoxFlow(*this, groupBox, "Targets and Links:");
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( form );
-	helper.ComboBox( form, "Target:", "Displays all links of for a given target",
-		pCBTarget, new cComboTarget( *this ) );
+	form.TakeOver(new igdeContainerForm(env));
+	groupBox->AddChild(form);
+	helper.ComboBox(form, "Target:", "Displays all links of for a given target",
+		pCBTarget, new cComboTarget(*this));
 	
-	helper.FormLineStretchFirst( form, "Link:", "Link to add to target", formLine );
-	helper.ComboBox( formLine, "Link to add to target", pCBLinks, new cComboTarget( *this ) );
-	helper.Button( formLine, pBtnLinkAdd, pActionLinkAdd );
+	helper.FormLineStretchFirst(form, "Link:", "Link to add to target", formLine);
+	helper.ComboBox(formLine, "Link to add to target", pCBLinks, new cComboTarget(*this));
+	helper.Button(formLine, pBtnLinkAdd, pActionLinkAdd);
 	
-	helper.ListBox( groupBox, 4, "Links used by target", pListLinks, new cListLinks( *this ) );
+	helper.ListBox(groupBox, 4, "Links used by target", pListLinks, new cListLinks(*this));
 	pListLinks->SetDefaultSorter();
 }
 
@@ -291,17 +291,17 @@ seEffect *seWPAPanelEffect::GetEffect() const{
 
 seControllerTarget *seWPAPanelEffect::GetTarget() const{
 	const igdeListItem * const selection = pCBTarget->GetSelectedItem();
-	return selection ? ( seControllerTarget* )selection->GetData() : NULL;
+	return selection ? (seControllerTarget*)selection->GetData() : NULL;
 }
 
 seLink *seWPAPanelEffect::GetCBLink() const{
 	const igdeListItem * const selection = pCBLinks->GetSelectedItem();
-	return selection ? ( seLink* )selection->GetData() : NULL;
+	return selection ? (seLink*)selection->GetData() : NULL;
 }
 
 seLink *seWPAPanelEffect::GetListLink() const{
 	const igdeListItem * const selection = pListLinks->GetSelectedItem();
-	return selection ? ( seLink* )selection->GetData() : NULL;
+	return selection ? (seLink*)selection->GetData() : NULL;
 }
 
 
@@ -320,8 +320,8 @@ void seWPAPanelEffect::RemoveAllTargets(){
 	pCBTarget->RemoveAllItems();
 }
 
-void seWPAPanelEffect::AddTarget( const char *name, seControllerTarget *target ){
-	pCBTarget->AddItem( name, NULL, target );
+void seWPAPanelEffect::AddTarget(const char *name, seControllerTarget *target){
+	pCBTarget->AddItem(name, NULL, target);
 }
 
 
@@ -330,42 +330,42 @@ void seWPAPanelEffect::UpdateControllerList(){
 }
 
 void seWPAPanelEffect::UpdateLinkList(){
-	seLink * const selection = pCBLinks->GetSelectedItem() ? ( seLink* )pCBLinks->GetSelectedItem()->GetData() : NULL;
+	seLink * const selection = pCBLinks->GetSelectedItem() ? (seLink*)pCBLinks->GetSelectedItem()->GetData() : NULL;
 	
 	pCBLinks->RemoveAllItems();
 	
 	const seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		const seLinkList &list = synthesizer->GetLinks();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			seLink * const link = list.GetAt( i );
-			pCBLinks->AddItem( link->GetName(), NULL, link );
+		for(i=0; i<count; i++){
+			seLink * const link = list.GetAt(i);
+			pCBLinks->AddItem(link->GetName(), NULL, link);
 		}
 	}
 	
 	pCBLinks->SortItems();
 	
-	pCBLinks->SetSelectionWithData( selection );
+	pCBLinks->SetSelectionWithData(selection);
 }
 
 void seWPAPanelEffect::UpdateEffect(){
 	const seEffect * const effect = GetEffect();
 	
-	if( effect ){
-		pEditStrength->SetFloat( effect->GetStrength() );
-		pChkEnabled->SetChecked( effect->GetEnabled() );
+	if(effect){
+		pEditStrength->SetFloat(effect->GetStrength());
+		pChkEnabled->SetChecked(effect->GetEnabled());
 		
 	}else{
 		pEditStrength->ClearText();
-		pChkEnabled->SetChecked( false );
+		pChkEnabled->SetChecked(false);
 	}
 	
 	const bool enabled = effect;
-	pEditStrength->SetEnabled( enabled );
-	pChkEnabled->SetEnabled( enabled );
+	pEditStrength->SetEnabled(enabled);
+	pChkEnabled->SetEnabled(enabled);
 	
 	UpdateTarget();
 }
@@ -374,23 +374,23 @@ void seWPAPanelEffect::UpdateTargetList(){
 	pCBTarget->RemoveAllItems();
 	
 	seEffect * const effect = GetEffect();
-	if( effect ){
-		AddTarget( "Strength", &effect->GetTargetStrength() );
+	if(effect){
+		AddTarget("Strength", &effect->GetTargetStrength());
 	}
 }
 
 void seWPAPanelEffect::UpdateTarget(){
 	seControllerTarget * const target = GetTarget();
 	
-	if( target ){
+	if(target){
 		const int count = target->GetLinkCount();
 		int i;
 		
 		pListLinks->RemoveAllItems();
 		
-		for( i=0; i<count; i++ ){
-			seLink * const link = target->GetLinkAt( i );
-			pListLinks->AddItem( link->GetName(), NULL, link );
+		for(i=0; i<count; i++){
+			seLink * const link = target->GetLinkAt(i);
+			pListLinks->AddItem(link->GetName(), NULL, link);
 		}
 		
 		pListLinks->SortItems();
@@ -399,6 +399,6 @@ void seWPAPanelEffect::UpdateTarget(){
 		pListLinks->RemoveAllItems();
 	}
 	
-	pListLinks->SetEnabled( target );
+	pListLinks->SetEnabled(target);
 	pBtnLinkAdd->GetAction()->Update();
 }

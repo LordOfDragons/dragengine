@@ -42,33 +42,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-meInfoBubble::meInfoBubble( meView3D &view ) :
-pView( view )
+meInfoBubble::meInfoBubble(meView3D &view) :
+pView(view)
 {
 	deCanvasManager &manager = *view.GetEnvironment().GetEngineController()->GetEngine()->GetCanvasManager();
 	
-	pCanvasBubble.TakeOver( manager.CreateCanvasView() );
-	pCanvasBubble->SetOrder( 1000.0f );
-	pCanvasBubble->SetVisible( false );
-	view.AddCanvas( pCanvasBubble );
+	pCanvasBubble.TakeOver(manager.CreateCanvasView());
+	pCanvasBubble->SetOrder(1000.0f);
+	pCanvasBubble->SetVisible(false);
+	view.AddCanvas(pCanvasBubble);
 	
-	pCanvasBorder.TakeOver( manager.CreateCanvasPaint() );
-	pCanvasBorder->SetShapeType( deCanvasPaint::estRectangle );
-	pCanvasBorder->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.5f ) );
-	pCanvasBorder->SetLineColor( decColor( 0.0f, 0.0f, 0.5f, 0.9f ) );
-	pCanvasBorder->SetThickness( 1.0f );
-	pCanvasBorder->SetOrder( 0.0f );
-	pCanvasBubble->AddCanvas( pCanvasBorder );
+	pCanvasBorder.TakeOver(manager.CreateCanvasPaint());
+	pCanvasBorder->SetShapeType(deCanvasPaint::estRectangle);
+	pCanvasBorder->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.5f));
+	pCanvasBorder->SetLineColor(decColor(0.0f, 0.0f, 0.5f, 0.9f));
+	pCanvasBorder->SetThickness(1.0f);
+	pCanvasBorder->SetOrder(0.0f);
+	pCanvasBubble->AddCanvas(pCanvasBorder);
 	
-	pCanvasContent.TakeOver( manager.CreateCanvasView() );
-	pCanvasContent->SetOrder( 1.0f );
-	pCanvasBubble->AddCanvas( pCanvasContent );
+	pCanvasContent.TakeOver(manager.CreateCanvasView());
+	pCanvasContent->SetOrder(1.0f);
+	pCanvasBubble->AddCanvas(pCanvasContent);
 }
 
 meInfoBubble::~meInfoBubble(){
-	if( pCanvasBubble ){
-		if( pCanvasBubble->GetParentView() ){
-			pView.RemoveCanvas( pCanvasBubble );
+	if(pCanvasBubble){
+		if(pCanvasBubble->GetParentView()){
+			pView.RemoveCanvas(pCanvasBubble);
 		}
 		pCanvasBubble->RemoveAllCanvas();
 	}
@@ -79,14 +79,14 @@ meInfoBubble::~meInfoBubble(){
 // Management
 ///////////////
 
-void meInfoBubble::ShowAt( const decPoint &position, ePlacement placement ){
+void meInfoBubble::ShowAt(const decPoint &position, ePlacement placement){
 	pResize();
-	pCanvasBubble->SetPosition( pPlace( position, placement ) );
-	pCanvasBubble->SetVisible( true );
+	pCanvasBubble->SetPosition(pPlace(position, placement));
+	pCanvasBubble->SetVisible(true);
 }
 
 void meInfoBubble::Hide(){
-	pCanvasBubble->SetVisible( false );
+	pCanvasBubble->SetVisible(false);
 }
 
 
@@ -95,19 +95,19 @@ void meInfoBubble::Hide(){
 //////////////////////
 
 void meInfoBubble::pResize(){
-	const decPoint padding( 3, 3 );
-	const decPoint size( pCanvasContent->GetSize() + padding * 2 );
+	const decPoint padding(3, 3);
+	const decPoint size(pCanvasContent->GetSize() + padding * 2);
 	
-	pCanvasContent->SetPosition( padding );
-	pCanvasBorder->SetSize( size );
-	pCanvasBubble->SetSize( size );
+	pCanvasContent->SetPosition(padding);
+	pCanvasBorder->SetSize(size);
+	pCanvasBubble->SetSize(size);
 }
 
-decPoint meInfoBubble::pPlace( const decPoint &position, ePlacement placement ){
+decPoint meInfoBubble::pPlace(const decPoint &position, ePlacement placement){
 	const decPoint &size = pCanvasBubble->GetSize();
 	decPoint npos;
 	
-	switch( placement ){
+	switch(placement){
 	case epTopLeft:
 		npos = position - size;
 		break;

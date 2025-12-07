@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetWidth::feUGlyphSetWidth( feFontGlyph *glyph, int newWidth ){
-	SetShortInfo( "GLyph set width" );
+feUGlyphSetWidth::feUGlyphSetWidth(feFontGlyph *glyph, int newWidth){
+	SetShortInfo("GLyph set width");
 	
 	pOldWidth = glyph->GetWidth();
 	pNewWidth = newWidth;
@@ -50,7 +50,7 @@ feUGlyphSetWidth::feUGlyphSetWidth( feFontGlyph *glyph, int newWidth ){
 }
 
 feUGlyphSetWidth::~feUGlyphSetWidth(){
-	if( pGlyph ) pGlyph->FreeReference();
+	if(pGlyph) pGlyph->FreeReference();
 }
 
 
@@ -59,9 +59,9 @@ feUGlyphSetWidth::~feUGlyphSetWidth(){
 ///////////////
 
 void feUGlyphSetWidth::Undo(){
-	pGlyph->SetWidth( pOldWidth );
+	pGlyph->SetWidth(pOldWidth);
 }
 
 void feUGlyphSetWidth::Redo(){
-	pGlyph->SetWidth( pNewWidth );
+	pGlyph->SetWidth(pNewWidth);
 }

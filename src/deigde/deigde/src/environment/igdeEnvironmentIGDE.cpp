@@ -60,9 +60,9 @@
 ////////////////////////////
 
 igdeEnvironmentIGDE::igdeEnvironmentIGDE() :
-pWindowMain( NULL )
+pWindowMain(NULL)
 {
-	pLogger.TakeOver( new deLoggerConsoleColor );
+	pLogger.TakeOver(new deLoggerConsoleColor);
 }
 
 igdeEnvironmentIGDE::~igdeEnvironmentIGDE(){
@@ -73,11 +73,11 @@ igdeEnvironmentIGDE::~igdeEnvironmentIGDE(){
 // Management
 ///////////////
 
-void igdeEnvironmentIGDE::SetWindowMain( igdeWindowMain *windowMain ){
+void igdeEnvironmentIGDE::SetWindowMain(igdeWindowMain *windowMain){
 	pWindowMain = windowMain;
 }
 
-void igdeEnvironmentIGDE::SetLogger( deLogger *logger ){
+void igdeEnvironmentIGDE::SetLogger(deLogger *logger){
 	pLogger = logger;
 }
 
@@ -95,8 +95,8 @@ igdeGameDefinition *igdeEnvironmentIGDE::GetGameDefinition(){
 	return pWindowMain->GetIGDEGameDefinition();
 }
 
-igdeGameDefinition *igdeEnvironmentIGDE::GetSharedGameDefinition( const char *id ){
-	return pWindowMain->GetSharedGameDefinitions().GetWithID( id );
+igdeGameDefinition *igdeEnvironmentIGDE::GetSharedGameDefinition(const char *id){
+	return pWindowMain->GetSharedGameDefinitions().GetWithID(id);
 }
 
 igdeGDPreviewManager *igdeEnvironmentIGDE::GetGDPreviewManager(){
@@ -111,152 +111,152 @@ igdeGameProject *igdeEnvironmentIGDE::GetGameProject(){
 	return pWindowMain->GetGameProject();
 }
 
-const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList( eFilePatternListTypes type ){
+const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePatternListTypes type){
 	igdeLoadSaveSystem &lssys = *pWindowMain->GetLoadSaveSystem();
 	
-	switch( type ){
+	switch(type){
 	case efpltAll:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplAll );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplAll);
 		
 	case efpltAnimation:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplAnimation );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplAnimation);
 		
 	case efpltAnimator:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplAnimator );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplAnimator);
 		
 	case efpltFont:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplFont );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplFont);
 		
 	case efpltImage:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplImage );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplImage);
 		
 	case efpltLanguagePack:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplLanguagePack );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplLanguagePack);
 		
 	case efpltModel:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplModel );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplModel);
 		
 	case efpltNavigationSpace:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplNavigationSpace );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplNavigationSpace);
 		
 	case efpltOcclusionMesh:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplOcclusionMesh );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplOcclusionMesh);
 		
 	case efpltParticleEmitter:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplParticleEmitter );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplParticleEmitter);
 		
 	case efpltRig:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplRig );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplRig);
 		
 	case efpltSkin:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSkin );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSkin);
 		
 	case efpltSky:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSky );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
 		
 	case efpltSound:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSound );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSound);
 		
 	case efpltSynthesizer:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSynthesizer );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSynthesizer);
 		
 	case efpltVideo:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplVideo );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplVideo);
 		
 	case efpltSpeechAnimation:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSpeechAnimation );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSpeechAnimation);
 		
 	case efpltCamera:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplCamera );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplCamera);
 		
 	case efpltWorld:
 		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplWorld);
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList( eFilePatternListTypes type ){
+const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePatternListTypes type){
 	igdeLoadSaveSystem &lssys = *pWindowMain->GetLoadSaveSystem();
 	
-	switch( type ){
+	switch(type){
 	case efpltAll:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAll );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplAll);
 		
 	case efpltAnimation:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAnimation );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplAnimation);
 		
 	case efpltAnimator:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAnimator );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplAnimator);
 		
 	case efpltFont:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplFont );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplFont);
 		
 	case efpltImage:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplImage );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplImage);
 		
 	case efpltLanguagePack:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplLanguagePack );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplLanguagePack);
 		
 	case efpltModel:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplModel );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplModel);
 		
 	case efpltNavigationSpace:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplNavigationSpace );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplNavigationSpace);
 		
 	case efpltOcclusionMesh:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplOcclusionMesh );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplOcclusionMesh);
 		
 	case efpltParticleEmitter:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplParticleEmitter );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplParticleEmitter);
 		
 	case efpltRig:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplRig );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplRig);
 		
 	case efpltSky:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSky );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
 		
 	case efpltSkin:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSkin );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSkin);
 		
 	case efpltSound:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSound );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSound);
 		
 	case efpltSynthesizer:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSynthesizer );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSynthesizer);
 		
 	case efpltVideo:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplVideo );
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplVideo);
 		
 	case efpltSpeechAnimation:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSpeechAnimation );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSpeechAnimation);
 		
 	case efpltCamera:
-		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplCamera );
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplCamera);
 		
 	case efpltWorld:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplWorld);
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeIcon *igdeEnvironmentIGDE::GetStockIcon( eStockIcons icon ){
-	return pWindowMain->GetStockIcon( icon );
+igdeIcon *igdeEnvironmentIGDE::GetStockIcon(eStockIcons icon){
+	return pWindowMain->GetStockIcon(icon);
 }
 
-deSkin::Ref igdeEnvironmentIGDE::GetStockSkin( eStockSkins skin ){
-	return pWindowMain->GetStockSkin( skin );
+deSkin::Ref igdeEnvironmentIGDE::GetStockSkin(eStockSkins skin){
+	return pWindowMain->GetStockSkin(skin);
 }
 
-deRig::Ref igdeEnvironmentIGDE::GetStockRig( eStockRigs rig ){
-	return pWindowMain->GetStockRig( rig );
+deRig::Ref igdeEnvironmentIGDE::GetStockRig(eStockRigs rig){
+	return pWindowMain->GetStockRig(rig);
 }
 
-deModel::Ref igdeEnvironmentIGDE::GetStockModel( eStockModels model ){
-	return pWindowMain->GetStockModel( model );
+deModel::Ref igdeEnvironmentIGDE::GetStockModel(eStockModels model){
+	return pWindowMain->GetStockModel(model);
 }
 
 deLogger *igdeEnvironmentIGDE::GetLogger(){
@@ -271,25 +271,25 @@ deVirtualFileSystem *igdeEnvironmentIGDE::GetFileSystemIGDE(){
 	return pWindowMain->GetVirtualFileSystem();
 }
 
-void igdeEnvironmentIGDE::GetApplicationFont( igdeFont::sConfiguration &config ){
-	igdeApplication::app().GetAppFontConfig( config );
+void igdeEnvironmentIGDE::GetApplicationFont(igdeFont::sConfiguration &config){
+	igdeApplication::app().GetAppFontConfig(config);
 }
 
-igdeFont *igdeEnvironmentIGDE::GetSharedFont( const igdeFont::sConfiguration &configuration ){
-	return pWindowMain->GetSharedFontList().GetFontWith( configuration );
+igdeFont *igdeEnvironmentIGDE::GetSharedFont(const igdeFont::sConfiguration &configuration){
+	return pWindowMain->GetSharedFontList().GetFontWith(configuration);
 }
 
-decColor igdeEnvironmentIGDE::GetSystemColor( eSystemColors color ){
-	return igdeApplication::app().GetSystemColor( color );
+decColor igdeEnvironmentIGDE::GetSystemColor(eSystemColors color){
+	return igdeApplication::app().GetSystemColor(color);
 }
 
 deRig *igdeEnvironmentIGDE::GetSharedModelCollisionRig(){
 	return pWindowMain->GetSharedModelCollisionRig();
 }
 
-void igdeEnvironmentIGDE::AsyncLoadResource( const char *filename,
-deResourceLoader::eResourceType resourceType, igdeResourceLoaderListener *listener ){
-	pWindowMain->GetResourceLoader().RequestResource( filename, resourceType, listener );
+void igdeEnvironmentIGDE::AsyncLoadResource(const char *filename,
+deResourceLoader::eResourceType resourceType, igdeResourceLoaderListener *listener){
+	pWindowMain->GetResourceLoader().RequestResource(filename, resourceType, listener);
 }
 
 igdeUIHelper &igdeEnvironmentIGDE::GetUIHelper(){
@@ -300,8 +300,8 @@ igdeUIHelper &igdeEnvironmentIGDE::GetUIHelperProperties(){
 	return pWindowMain->GetUIHelperProperties();
 }
 
-igdeGuiTheme *igdeEnvironmentIGDE::GetGuiThemeNamed( const char *name ){
-	igdeGuiTheme *guitheme = pWindowMain->GetGuiThemeNamed( name );
+igdeGuiTheme *igdeEnvironmentIGDE::GetGuiThemeNamed(const char *name){
+	igdeGuiTheme *guitheme = pWindowMain->GetGuiThemeNamed(name);
 	return guitheme ? guitheme : pWindowMain->GetDefaultGuiTheme();
 }
 
@@ -311,16 +311,16 @@ igdeGuiTheme *igdeEnvironmentIGDE::GetDefaultGuiTheme(){
 
 
 
-void igdeEnvironmentIGDE::SetProgressVisible( bool visible ){
-	pWindowMain->SetProgressVisible( visible );
+void igdeEnvironmentIGDE::SetProgressVisible(bool visible){
+	pWindowMain->SetProgressVisible(visible);
 }
 
-void igdeEnvironmentIGDE::SetProgress( float progress ){
-	pWindowMain->SetProgress( progress );
+void igdeEnvironmentIGDE::SetProgress(float progress){
+	pWindowMain->SetProgress(progress);
 }
 
-void igdeEnvironmentIGDE::SetProgressText( const char *text ){
-	pWindowMain->SetProgressText( text );
+void igdeEnvironmentIGDE::SetProgressText(const char *text){
+	pWindowMain->SetProgressText(text);
 }
 
 
@@ -333,64 +333,64 @@ void igdeEnvironmentIGDE::ActiveModuleSharedToolBarsChanged(){
 	pWindowMain->ActiveModuleSharedToolBarsChanged();
 }
 
-void igdeEnvironmentIGDE::ActivateEditor( igdeEditorModule *editor ){
-	pWindowMain->ActivateEditor( editor );
+void igdeEnvironmentIGDE::ActivateEditor(igdeEditorModule *editor){
+	pWindowMain->ActivateEditor(editor);
 }
 
 
 
-void igdeEnvironmentIGDE::SetColliderDelegee( deCollider *collider,
-deBaseScriptingCollider *delegee ){
-	DEASSERT_NOTNULL( collider )
+void igdeEnvironmentIGDE::SetColliderDelegee(deCollider *collider,
+deBaseScriptingCollider *delegee){
+	DEASSERT_NOTNULL(collider)
 	
-	igdeSMCollider * const peer = ( igdeSMCollider* )collider->GetPeerScripting();
-	DEASSERT_NOTNULL( peer )
+	igdeSMCollider * const peer = (igdeSMCollider*)collider->GetPeerScripting();
+	DEASSERT_NOTNULL(peer)
 	
-	peer->SetDelegee( delegee );
+	peer->SetDelegee(delegee);
 }
 
-void *igdeEnvironmentIGDE::GetColliderUserPointer( deCollider *collider ){
-	DEASSERT_NOTNULL( collider )
+void *igdeEnvironmentIGDE::GetColliderUserPointer(deCollider *collider){
+	DEASSERT_NOTNULL(collider)
 	
-	const igdeSMCollider * const peer = ( const igdeSMCollider * )collider->GetPeerScripting();
-	DEASSERT_NOTNULL( peer )
+	const igdeSMCollider * const peer = (const igdeSMCollider *)collider->GetPeerScripting();
+	DEASSERT_NOTNULL(peer)
 	
 	return peer->GetUserPointer();
 }
 
-void igdeEnvironmentIGDE::SetColliderUserPointer( deCollider *collider, void *userPointer ){
-	DEASSERT_NOTNULL( collider )
+void igdeEnvironmentIGDE::SetColliderUserPointer(deCollider *collider, void *userPointer){
+	DEASSERT_NOTNULL(collider)
 	
-	igdeSMCollider * const peer = ( igdeSMCollider* )collider->GetPeerScripting();
-	DEASSERT_NOTNULL( peer )
+	igdeSMCollider * const peer = (igdeSMCollider*)collider->GetPeerScripting();
+	DEASSERT_NOTNULL(peer)
 	
-	peer->SetUserPointer( userPointer );
+	peer->SetUserPointer(userPointer);
 }
 
-void igdeEnvironmentIGDE::SetTouchSensorDelegee( deTouchSensor *touchSensor,
-deBaseScriptingTouchSensor *delegee ){
-	DEASSERT_NOTNULL( touchSensor )
+void igdeEnvironmentIGDE::SetTouchSensorDelegee(deTouchSensor *touchSensor,
+deBaseScriptingTouchSensor *delegee){
+	DEASSERT_NOTNULL(touchSensor)
 	
-	igdeSMTouchSensor * const peer = ( igdeSMTouchSensor* )touchSensor->GetPeerScripting();
-	DEASSERT_NOTNULL( peer )
+	igdeSMTouchSensor * const peer = (igdeSMTouchSensor*)touchSensor->GetPeerScripting();
+	DEASSERT_NOTNULL(peer)
 	
-	peer->SetDelegee( delegee );
+	peer->SetDelegee(delegee);
 }
 
-void igdeEnvironmentIGDE::SetPropFieldDelegee( dePropField *propField,
-deBaseScriptingPropField *delegee ){
-	DEASSERT_NOTNULL( propField )
+void igdeEnvironmentIGDE::SetPropFieldDelegee(dePropField *propField,
+deBaseScriptingPropField *delegee){
+	DEASSERT_NOTNULL(propField)
 	
-	igdeSMPropField * const peer = ( igdeSMPropField* )propField->GetPeerScripting();
-	DEASSERT_NOTNULL( peer )
+	igdeSMPropField * const peer = (igdeSMPropField*)propField->GetPeerScripting();
+	DEASSERT_NOTNULL(peer)
 	
-	peer->SetDelegee( delegee );
+	peer->SetDelegee(delegee);
 }
 
 
 
-void igdeEnvironmentIGDE::RunModalWhileShown( igdeWindow &window ){
-	igdeApplication::app().RunModalWhileShown( window );
+void igdeEnvironmentIGDE::RunModalWhileShown(igdeWindow &window){
+	igdeApplication::app().RunModalWhileShown(window);
 }
 
 
@@ -403,33 +403,33 @@ void igdeEnvironmentIGDE::ReloadXMLElementClasses(){
 	pWindowMain->ReloadXMLElementClasses();
 }
 
-bool igdeEnvironmentIGDE::OpenFileInEditor( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+bool igdeEnvironmentIGDE::OpenFileInEditor(const char *filename){
+	if(!filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return false;
 }
 
-bool igdeEnvironmentIGDE::RequestSaveDocuments( const char *title, const char* message ){
-	return pWindowMain->RequestSaveDocuments( title, message );
+bool igdeEnvironmentIGDE::RequestSaveDocuments(const char *title, const char* message){
+	return pWindowMain->RequestSaveDocuments(title, message);
 }
 
 const decStringList &igdeEnvironmentIGDE::GetRecentEditorFiles(){
 	return pWindowMain->GetConfigurationLocal().GetRecentEditorFiles().GetFiles();
 }
 
-void igdeEnvironmentIGDE::AddRecentEditorFile( const char *filename ){
+void igdeEnvironmentIGDE::AddRecentEditorFile(const char *filename){
 	igdeConfigurationLocal &configuration = pWindowMain->GetConfigurationLocal();
-	const int index = configuration.GetRecentEditorFiles().GetFiles().IndexOf( filename );
-	configuration.GetRecentEditorFiles().AddFile( filename );
-	if( index != 0 ){
+	const int index = configuration.GetRecentEditorFiles().GetFiles().IndexOf(filename);
+	configuration.GetRecentEditorFiles().AddFile(filename);
+	if(index != 0){
 		configuration.SaveConfiguration();
 	}
 }
 
 void igdeEnvironmentIGDE::CloseApplication(){
-	if( pWindowMain->CloseWindow() ){
+	if(pWindowMain->CloseWindow()){
 		pWindowMain->Close();
 	}
 }

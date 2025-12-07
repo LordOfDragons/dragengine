@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	peeUTypeAdd( peeEmitter *emitter, peeType *type );
+	peeUTypeAdd(peeEmitter *emitter, peeType *type);
 	
 protected:
 	/** \brief Clean up the undo object. */

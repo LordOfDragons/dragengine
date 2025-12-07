@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetCurve( seLink *link, const decCurveBezier &newCurve );
+	seULinkSetCurve(seLink *link, const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up undo action. */
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new curve. */
-	void SetNewCurve( const decCurveBezier &curve );
+	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** \brief Undo. */
 	virtual void Undo();

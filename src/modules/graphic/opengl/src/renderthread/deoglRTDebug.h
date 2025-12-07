@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread texture related object. */
-	deoglRTDebug( deoglRenderThread &renderThread );
+	deoglRTDebug(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread texture related object. */
 	virtual ~deoglRTDebug();
@@ -78,7 +78,7 @@ public:
 	 * \details Creates a temporary file writer with the content written to the actual file
 	 *          once the render thread synchronizes with the main thread.
 	 */
-	decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	decBaseFileWriter *OpenFileForWriting(const decPath &path);
 	
 	/** Debug information list. */
 	inline deoglDebugInformationList &GetDebugInformationList(){ return pDebugInformation; }
@@ -88,7 +88,7 @@ public:
 	inline bool GetEnableHwDebugOutput() const{ return pEnableHwDebugOutput; }
 	
 	/** Set enable hardware debug output. */
-	void SetEnableHwDebugOutput( bool enable );
+	void SetEnableHwDebugOutput(bool enable);
 	
 	/** Debug memory consumption. */
 	inline deoglDebugMemoryConsumption &GetDebugMemoryConsumption(){ return pDebugMemoryConsumption; }
@@ -98,13 +98,13 @@ public:
 	inline bool GetEnableDebugTrace() const{ return pEnableDebugTrace; }
 	
 	/** Begin debug group for structuring GPU traces. */
-	void BeginDebugGroup( const char *name, int id );
+	void BeginDebugGroup(const char *name, int id);
 	
 	/** End debug group for structuring GPU traces. */
 	void EndDebugGroup();
 	
 	/** Set debug object label. */
-	void SetDebugObjectLabel( GLenum type, GLuint object, const char *name );
+	void SetDebugObjectLabel(GLenum type, GLuint object, const char *name);
 	/*@}*/
 	
 	

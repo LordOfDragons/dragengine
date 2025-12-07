@@ -39,8 +39,8 @@
 ////////////////////////////
 
 deoglSkinStateBone::deoglSkinStateBone() :
-pSkinBone( nullptr ),
-pBoneIndex( -1 ){
+pSkinBone(nullptr),
+pBoneIndex(-1){
 }
 
 deoglSkinStateBone::~deoglSkinStateBone(){
@@ -51,31 +51,31 @@ deoglSkinStateBone::~deoglSkinStateBone(){
 // Management
 ///////////////
 
-void deoglSkinStateBone::SetSkinBone( const deoglSkinBone *skinBone ){
+void deoglSkinStateBone::SetSkinBone(const deoglSkinBone *skinBone){
 	pSkinBone = skinBone;
 }
 
-void deoglSkinStateBone::MapBone( const deComponent &component ){
+void deoglSkinStateBone::MapBone(const deComponent &component){
 	pBoneIndex = -1;
 	
-	if( ! pSkinBone || ! component.GetRig() ){
+	if(!pSkinBone || !component.GetRig()){
 		return;
 	}
 	
 	const deRig &rig = *component.GetRig();
 	const decString &name = pSkinBone->GetName();
-	if( name.IsEmpty() ){
+	if(name.IsEmpty()){
 		return;
 	}
 	
-	pBoneIndex = rig.IndexOfBoneNamed( name );
+	pBoneIndex = rig.IndexOfBoneNamed(name);
 }
 
-void deoglSkinStateBone::UpdateBone( const deComponent &component ){
+void deoglSkinStateBone::UpdateBone(const deComponent &component){
 	const int boneCount = component.GetBoneCount();
-	if( pBoneIndex < 0 || pBoneIndex >= boneCount ){
+	if(pBoneIndex < 0 || pBoneIndex >= boneCount){
 		return;
 	}
 	
-	pBoneMatrix = component.GetBoneAt( pBoneIndex ).GetMatrix();
+	pBoneMatrix = component.GetBoneAt(pBoneIndex).GetMatrix();
 }

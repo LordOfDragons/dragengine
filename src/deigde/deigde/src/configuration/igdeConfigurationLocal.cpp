@@ -58,10 +58,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeConfigurationLocal::igdeConfigurationLocal( igdeWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pRecentEditorFiles( windowMain.GetEnvironment(), true, 20 ),
-pPreventSaving( false ){
+igdeConfigurationLocal::igdeConfigurationLocal(igdeWindowMain &windowMain) :
+pWindowMain(windowMain),
+pRecentEditorFiles(windowMain.GetEnvironment(), true, 20),
+pPreventSaving(false){
 }
 
 igdeConfigurationLocal::~igdeConfigurationLocal(){
@@ -72,7 +72,7 @@ igdeConfigurationLocal::~igdeConfigurationLocal(){
 // Management
 ///////////////
 
-void igdeConfigurationLocal::SetPreventSaving( bool preventSaving ){
+void igdeConfigurationLocal::SetPreventSaving(bool preventSaving){
 	pPreventSaving = preventSaving;
 }
 
@@ -86,41 +86,41 @@ void igdeConfigurationLocal::LoadConfiguration(){
 		pWindowMain.GetModuleManager().ResetRecentUsedPosition();
 		pWindowMain.GetModuleManager().ActivateProjectManager();
 		
-		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/igde.xml" ) );
-		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		const decPath pathFile(decPath::CreatePathUnix("/igde/local/igde.xml"));
+		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
 		
-		igdeConfigurationLocalXML(pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile(
+		igdeConfigurationLocalXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
 			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pPreventSaving = false;
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
 void igdeConfigurationLocal::SaveConfiguration(){
-	if( pPreventSaving ){
+	if(pPreventSaving){
 		return;
 	}
 	
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/igde.xml" ) );
-	if( ! vfs.CanWriteFile( pathFile ) ){
+	const decPath pathFile(decPath::CreatePathUnix("/igde/local/igde.xml"));
+	if(!vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	
 	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
-		igdeConfigurationLocalXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
+		igdeConfigurationLocalXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
 		
-	}catch( const deException &e ){
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 

@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpBPConstraintShared::debpBPConstraintShared( debpColliderConstraint *constraint ){
-	if( ! constraint ){
-		DETHROW( deeInvalidParam );
+debpBPConstraintShared::debpBPConstraintShared(debpColliderConstraint *constraint){
+	if(!constraint){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -57,79 +57,79 @@ debpBPConstraintShared::~debpBPConstraintShared(){
 // Management
 ///////////////
 
-bool debpBPConstraintShared::IsAxisBroke( eBreakingAxes axis ) const{
-	if( axis < ebaLinearX || axis > ebaAngularZ ){
-		DETHROW( deeInvalidParam );
+bool debpBPConstraintShared::IsAxisBroke(eBreakingAxes axis) const{
+	if(axis < ebaLinearX || axis > ebaAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pAxisBroke[ axis ];
+	return pAxisBroke[axis];
 }
 
-void debpBPConstraintShared::SetAxisBroke( eBreakingAxes axis, bool broke ){
-	if( axis < ebaLinearX || axis > ebaAngularZ ){
-		DETHROW( deeInvalidParam );
+void debpBPConstraintShared::SetAxisBroke(eBreakingAxes axis, bool broke){
+	if(axis < ebaLinearX || axis > ebaAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pAxisBroke[ axis ] = broke;
+	pAxisBroke[axis] = broke;
 }
 
-void debpBPConstraintShared::SetLinearXBroke( bool broke ){
-	pAxisBroke[ ebaLinearX ] = broke;
+void debpBPConstraintShared::SetLinearXBroke(bool broke){
+	pAxisBroke[ebaLinearX] = broke;
 }
 
-void debpBPConstraintShared::SetLinearYBroke( bool broke ){
-	pAxisBroke[ ebaLinearY ] = broke;
+void debpBPConstraintShared::SetLinearYBroke(bool broke){
+	pAxisBroke[ebaLinearY] = broke;
 }
 
-void debpBPConstraintShared::SetLinearZBroke( bool broke ){
-	pAxisBroke[ ebaLinearZ ] = broke;
+void debpBPConstraintShared::SetLinearZBroke(bool broke){
+	pAxisBroke[ebaLinearZ] = broke;
 }
 
-void debpBPConstraintShared::SetAngularXBroke( bool broke ){
-	pAxisBroke[ ebaAngularX ] = broke;
+void debpBPConstraintShared::SetAngularXBroke(bool broke){
+	pAxisBroke[ebaAngularX] = broke;
 }
 
-void debpBPConstraintShared::SetAngularYBroke( bool broke ){
-	pAxisBroke[ ebaAngularY ] = broke;
+void debpBPConstraintShared::SetAngularYBroke(bool broke){
+	pAxisBroke[ebaAngularY] = broke;
 }
 
-void debpBPConstraintShared::SetAngularZBroke( bool broke ){
-	pAxisBroke[ ebaAngularZ ] = broke;
+void debpBPConstraintShared::SetAngularZBroke(bool broke){
+	pAxisBroke[ebaAngularZ] = broke;
 }
 
 void debpBPConstraintShared::ResetAxisBreaking(){
-	pAxisBroke[ ebaLinearX ] = false;
-	pAxisBroke[ ebaLinearY ] = false;
-	pAxisBroke[ ebaLinearZ ] = false;
-	pAxisBroke[ ebaAngularX ] = false;
-	pAxisBroke[ ebaAngularY ] = false;
-	pAxisBroke[ ebaAngularZ ] = false;
+	pAxisBroke[ebaLinearX] = false;
+	pAxisBroke[ebaLinearY] = false;
+	pAxisBroke[ebaLinearZ] = false;
+	pAxisBroke[ebaAngularX] = false;
+	pAxisBroke[ebaAngularY] = false;
+	pAxisBroke[ebaAngularZ] = false;
 }
 
 
 
-void debpBPConstraintShared::SolverPrepareBreaking( eBreakingAxes axis,
-btTypedConstraint::btConstraintInfo2 &info, int row ) const{
-	if( axis < ebaLinearX || axis > ebaAngularZ ){
-		DETHROW( deeInvalidParam );
+void debpBPConstraintShared::SolverPrepareBreaking(eBreakingAxes axis,
+btTypedConstraint::btConstraintInfo2 &info, int row) const{
+	if(axis < ebaLinearX || axis > ebaAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int offset = info.rowskip * row;
 	
 	btScalar breakingImpulse = SIMD_INFINITY;
-	if( axis == ebaAngularZ ){
-		breakingImpulse = ( btScalar )40.0;
+	if(axis == ebaAngularZ){
+		breakingImpulse = (btScalar)40.0;
 	}
 	
-	if( info.m_upperLimit[ offset ] >= breakingImpulse ){
-		info.m_upperLimit[ offset ] = breakingImpulse;
+	if(info.m_upperLimit[offset] >= breakingImpulse){
+		info.m_upperLimit[offset] = breakingImpulse;
 	}
-	if( info.m_lowerLimit[ offset ] <= -breakingImpulse ){
-		info.m_lowerLimit[ offset ] = -breakingImpulse;
+	if(info.m_lowerLimit[offset] <= -breakingImpulse){
+		info.m_lowerLimit[offset] = -breakingImpulse;
 	}
 }
 
-bool debpBPConstraintShared::TestBreaking( eBreakingAxes axis, btTypedConstraint::btConstraintInfo2 &info, int row ){
+bool debpBPConstraintShared::TestBreaking(eBreakingAxes axis, btTypedConstraint::btConstraintInfo2 &info, int row){
 	return false;
 }
 

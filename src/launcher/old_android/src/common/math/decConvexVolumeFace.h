@@ -69,29 +69,29 @@ public:
 	/** Retrieves the face normal. */
 	inline const decVector &GetNormal() const{ return pNormal; }
 	/** Sets the face normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	/** Retrieves the marker value. */
 	inline int GetMarker() const{ return pMarker; }
 	/** Sets the marker value. */
-	void SetMarker( int marker );
+	void SetMarker(int marker);
 	
 	/** Retrieves the number of vertices. */
 	inline int GetVertexCount() const{ return pVertexCount; }
 	/** Retrieves the index of the vertex at the given position. */
-	int GetVertexAt( int position ) const;
+	int GetVertexAt(int position) const;
 	/** Determines if the given vertex exists. */
-	bool HasVertex( int vertex ) const;
+	bool HasVertex(int vertex) const;
 	/** Retrieves the index of the given vertex or -1 if not found. */
-	int IndexOfVertex( int vertex ) const;
+	int IndexOfVertex(int vertex) const;
 	/** Adds a vertex index. */
-	void AddVertex( int vertex );
+	void AddVertex(int vertex);
 	/** Removes all vertices. */
 	void RemoveAllVertices();
 	
 	/** Sorts the vertices in clockwise order around the face normal. */
-	void SortVertices( const decConvexVolume &volume );
+	void SortVertices(const decConvexVolume &volume);
 	/** Determines if the triangle is too small. */
-	bool IsTooSmall( const decConvexVolume &volume ) const;
+	bool IsTooSmall(const decConvexVolume &volume) const;
 	/*@}*/
 };
 

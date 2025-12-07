@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPSObjectShapeListener( meWPSObjectShape &panel );
+	meWPSObjectShapeListener(meWPSObjectShape &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWPSObjectShapeListener();
@@ -55,25 +55,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object selection changed. */
-	virtual void ObjectSelectionChanged( meWorld *world );
+	virtual void ObjectSelectionChanged(meWorld *world);
 	
 	/** \brief Object class changed. */
-	virtual void ObjectClassChanged( meWorld *world, meObject *object );
+	virtual void ObjectClassChanged(meWorld *world, meObject *object);
 	
 	/** \brief Object geometry changed. */
-	virtual void ObjectGeometryChanged( meWorld *world, meObject *object );
+	virtual void ObjectGeometryChanged(meWorld *world, meObject *object);
 	
 	/** \brief Object properties changed. */
-	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object );
+	virtual void ObjectPropertiesChanged(meWorld *world, meObject *object);
 	
 	/** \brief Object active property changed. */
-	virtual void ObjectActivePropertyChanged( meWorld *world, meObject *object );
+	virtual void ObjectActivePropertyChanged(meWorld *world, meObject *object);
 	
 	/** \brief Object shape list changed. */
-	virtual void ObjectShapeListChanged( meWorld *world );
+	virtual void ObjectShapeListChanged(meWorld *world);
 	
 	/** \brief Object shape selection changed. */
-	virtual void ObjectShapeSelectionChanged( meWorld *world );
+	virtual void ObjectShapeSelectionChanged(meWorld *world);
 	/*@}*/
 };
 

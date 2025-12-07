@@ -60,7 +60,7 @@ extern const int *vResourcePeerCreationOrder;
 // Constructor, destructor
 ////////////////////////////
 
-deAudioSystem::deAudioSystem( deEngine *engine ) : deBaseSystem( engine, "Audio", deModuleSystem::emtAudio ){
+deAudioSystem::deAudioSystem(deEngine *engine) : deBaseSystem(engine, "Audio", deModuleSystem::emtAudio){
 	pActiveModule = NULL;
 	pActiveMic = NULL;
 }
@@ -74,9 +74,9 @@ deAudioSystem::~deAudioSystem(){
 // Overloadables
 //////////////////
 
-void deAudioSystem::SetActiveModule( deLoadableModule *module ){
-	deBaseSystem::SetActiveModule( module );
-	pActiveModule = ( deBaseAudioModule* )module->GetModule();
+void deAudioSystem::SetActiveModule(deLoadableModule *module){
+	deBaseSystem::SetActiveModule(module);
+	pActiveModule = (deBaseAudioModule*)module->GetModule();
 }
 
 void deAudioSystem::ClearPermanents(){
@@ -88,13 +88,13 @@ void deAudioSystem::PostStart(){
 	int i;
 	
 	// init module
-	if( ! pActiveModule->Init( pActiveMic ) ){
-		DETHROW( deeInvalidAction );
+	if(!pActiveModule->Init(pActiveMic)){
+		DETHROW(deeInvalidAction);
 	}
 	
 	// load audio system related stuff
-	for( i=0; i<engine.GetResourceManagerCount(); i++ ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemAudioLoad();
+	for(i=0; i<engine.GetResourceManagerCount(); i++){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemAudioLoad();
 	}
 }
 
@@ -103,14 +103,14 @@ void deAudioSystem::PreStop(){
 	int i;
 	
 	// unset the active microphone
-	SetActiveMicrophone( NULL );
+	SetActiveMicrophone(NULL);
 	
 	// remove all parallel tasks if present
-	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
+	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);
 	
 	// unload audio system related stuff
-	for( i=engine.GetResourceManagerCount()-1; i>=0; i-- ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemAudioUnload();
+	for(i=engine.GetResourceManagerCount()-1; i>=0; i--){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemAudioUnload();
 	}
 	
 	// shutdown current module
@@ -122,23 +122,23 @@ void deAudioSystem::PreStop(){
 // Management
 ///////////////
 
-void deAudioSystem::SetActiveMicrophone( deMicrophone *microphone ){
-	if( microphone == pActiveMic ){
+void deAudioSystem::SetActiveMicrophone(deMicrophone *microphone){
+	if(microphone == pActiveMic){
 		return;
 	}
 	
-	if( pActiveMic ){
+	if(pActiveMic){
 		pActiveMic->FreeReference();
 	}
 	
 	pActiveMic = microphone;
 	
-	if( microphone ){
+	if(microphone){
 		microphone->AddReference();
 	}
 	
-	if( GetIsRunning() ){
-		pActiveModule->SetActiveMicrophone( microphone );
+	if(GetIsRunning()){
+		pActiveModule->SetActiveMicrophone(microphone);
 	}
 }
 
@@ -148,199 +148,199 @@ void deAudioSystem::SetActiveMicrophone( deMicrophone *microphone ){
 //////////////////////
 
 void deAudioSystem::ProcessAudio(){
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
 	pActiveModule->ProcessAudio();
 }
 
-void deAudioSystem::LoadWorld( deWorld *world ){
-	if( ! world ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadWorld(deWorld *world){
+	if(!world){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( world->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(world->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	world->SetPeerAudio( pActiveModule->CreateWorld( world ) );
+	world->SetPeerAudio(pActiveModule->CreateWorld(world));
 }
 
-void deAudioSystem::LoadSound( deSound *sound ){
-	if( ! sound ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadSound(deSound *sound){
+	if(!sound){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( sound->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(sound->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	sound->SetPeerAudio( pActiveModule->CreateSound( sound ) );
+	sound->SetPeerAudio(pActiveModule->CreateSound(sound));
 }
 
-void deAudioSystem::LoadSpeaker( deSpeaker *speaker ){
-	if( ! speaker ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadSpeaker(deSpeaker *speaker){
+	if(!speaker){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( speaker->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(speaker->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	speaker->SetPeerAudio( pActiveModule->CreateSpeaker( speaker ) );
+	speaker->SetPeerAudio(pActiveModule->CreateSpeaker(speaker));
 }
 
-void deAudioSystem::LoadMicrophone( deMicrophone *microphone ){
-	if( ! microphone ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadMicrophone(deMicrophone *microphone){
+	if(!microphone){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( microphone->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(microphone->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	microphone->SetPeerAudio( pActiveModule->CreateMicrophone( microphone ) );
+	microphone->SetPeerAudio(pActiveModule->CreateMicrophone(microphone));
 }
 
-void deAudioSystem::LoadComponent( deComponent *component ){
-	if( ! component ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadComponent(deComponent *component){
+	if(!component){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( component->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(component->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	component->SetPeerAudio( pActiveModule->CreateComponent( component ) );
+	component->SetPeerAudio(pActiveModule->CreateComponent(component));
 }
 
-void deAudioSystem::LoadSkin( deSkin *skin ){
-	if( ! skin ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadSkin(deSkin *skin){
+	if(!skin){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( skin->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(skin->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	skin->SetPeerAudio( pActiveModule->CreateSkin( skin ) );
+	skin->SetPeerAudio(pActiveModule->CreateSkin(skin));
 }
 
-void deAudioSystem::LoadModel( deModel *model ){
-	if( ! model ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadModel(deModel *model){
+	if(!model){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( model->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(model->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	model->SetPeerAudio ( pActiveModule->CreateModel( model ) );
+	model->SetPeerAudio (pActiveModule->CreateModel(model));
 }
 
-void deAudioSystem::LoadDecal( deDecal *decal ){
-	if( ! decal ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadDecal(deDecal *decal){
+	if(!decal){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( decal->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(decal->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decal->SetPeerAudio( pActiveModule->CreateDecal( decal ) );
+	decal->SetPeerAudio(pActiveModule->CreateDecal(decal));
 }
 
-void deAudioSystem::LoadSoundLevelMeter( deSoundLevelMeter *meter ){
-	if( ! meter ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadSoundLevelMeter(deSoundLevelMeter *meter){
+	if(!meter){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( meter->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(meter->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	meter->SetPeerAudio( pActiveModule->CreateSoundLevelMeter( meter ) );
+	meter->SetPeerAudio(pActiveModule->CreateSoundLevelMeter(meter));
 }
 
-void deAudioSystem::LoadVideoPlayer( deVideoPlayer *videoPlayer ){
-	if( ! videoPlayer ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadVideoPlayer(deVideoPlayer *videoPlayer){
+	if(!videoPlayer){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( videoPlayer->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(videoPlayer->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	videoPlayer->SetPeerAudio( pActiveModule->CreateVideoPlayer( videoPlayer ) );
+	videoPlayer->SetPeerAudio(pActiveModule->CreateVideoPlayer(videoPlayer));
 }
 
-void deAudioSystem::LoadSynthesizerInstance( deSynthesizerInstance *instance ){
-	if( ! instance ){
-		DETHROW( deeNullPointer );
+void deAudioSystem::LoadSynthesizerInstance(deSynthesizerInstance *instance){
+	if(!instance){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( instance->GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(instance->GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	instance->SetPeerAudio( pActiveModule->CreateSynthesizerInstance( instance ) );
+	instance->SetPeerAudio(pActiveModule->CreateSynthesizerInstance(instance));
 }
 
-void deAudioSystem::LoadHeightTerrain( deHeightTerrain &heightTerrain ){
-	if( ! GetIsRunning() ){
+void deAudioSystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( heightTerrain.GetPeerAudio() ){
-		DETHROW( deeInvalidParam );
+	if(heightTerrain.GetPeerAudio()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	heightTerrain.SetPeerAudio( pActiveModule->CreateHeightTerrain( heightTerrain ) );
+	heightTerrain.SetPeerAudio(pActiveModule->CreateHeightTerrain(heightTerrain));
 }
 
 
@@ -349,7 +349,7 @@ void deAudioSystem::LoadHeightTerrain( deHeightTerrain &heightTerrain ){
 //////////////////////
 
 void deAudioSystem::pCleanUp(){
-	if( pActiveMic ){
+	if(pActiveMic){
 		pActiveMic->FreeReference();
 	}
 }

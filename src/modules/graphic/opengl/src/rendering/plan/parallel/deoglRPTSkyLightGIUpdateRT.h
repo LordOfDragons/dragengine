@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightGIUpdateRT( deoglRenderPlanSkyLight &plan );
+	deoglRPTSkyLightGIUpdateRT(deoglRenderPlanSkyLight &plan);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTSkyLightGIUpdateRT();
@@ -77,7 +77,7 @@ public:
 private:
 	void pUpdateStaticRT();
 	void pUpdateDynamicRT();
-	bool pIsComponentStatic( const deoglRComponent &component ) const;
+	bool pIsComponentStatic(const deoglRComponent &component) const;
 };
 
 #endif

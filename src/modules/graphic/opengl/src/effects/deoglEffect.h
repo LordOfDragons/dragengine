@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffect( deGraphicOpenGl &ogl, const deEffect &effect );
+	deoglEffect(deGraphicOpenGl &ogl, const deEffect &effect);
 	
 	/** Clean up effect. */
 	virtual ~deoglEffect();
@@ -84,7 +84,7 @@ public:
 	/*@}*/
 	
 protected:
-	void InitREffect( deoglREffect *reffect );
+	void InitREffect(deoglREffect *reffect);
 };
 
 #endif

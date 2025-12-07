@@ -54,50 +54,50 @@ public:
 	/**
 	 * Creates a new collision box with the given parameters.
 	 */
-	debpCollisionBox( const decVector &center, const decVector &halfSize );
+	debpCollisionBox(const decVector &center, const decVector &halfSize);
 	/**
 	 * Creates a new collision box with the given parameters.
 	 */
-	debpCollisionBox( const decVector &center, const decVector &halfSize, const decQuaternion &orientation );
+	debpCollisionBox(const decVector &center, const decVector &halfSize, const decQuaternion &orientation);
 	/** Cleans up the collision box. */
 	virtual ~debpCollisionBox();
 	/*@}*/
 	
 	/** @name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume( debpCollisionVolume *volume );
-	virtual float VolumeMoveHitsVolume( debpCollisionVolume *volume, const decVector &displacement, decVector *normal );
+	virtual bool VolumeHitsVolume(debpCollisionVolume *volume);
+	virtual float VolumeMoveHitsVolume(debpCollisionVolume *volume, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume( debpCollisionSphere *sphere );
-	virtual bool CylinderHitsVolume( debpCollisionCylinder *cylinder );
-	virtual bool CapsuleHitsVolume( debpCollisionCapsule *capsule );
-	virtual bool BoxHitsVolume( debpCollisionBox *box );
-	virtual bool TriangleHitsVolume( debpCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( debpCollisionFrustum *frustum );
-	virtual float SphereMoveHitsVolume( debpCollisionSphere *sphere, const decVector &displacement, decVector *normal );
-	virtual float CylinderMoveHitsVolume( debpCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
-	virtual float CapsuleMoveHitsVolume( debpCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
-	virtual float BoxMoveHitsVolume( debpCollisionBox *box, const decVector &displacement, decVector *normal );
-	virtual float TriangleMoveHitsVolume( debpCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
-	virtual float FrustumMoveHitsVolume( debpCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
-	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
+	virtual bool SphereHitsVolume(debpCollisionSphere *sphere);
+	virtual bool CylinderHitsVolume(debpCollisionCylinder *cylinder);
+	virtual bool CapsuleHitsVolume(debpCollisionCapsule *capsule);
+	virtual bool BoxHitsVolume(debpCollisionBox *box);
+	virtual bool TriangleHitsVolume(debpCollisionTriangle *triangle);
+	virtual bool FrustumHitsVolume(debpCollisionFrustum *frustum);
+	virtual float SphereMoveHitsVolume(debpCollisionSphere *sphere, const decVector &displacement, decVector *normal);
+	virtual float CylinderMoveHitsVolume(debpCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
+	virtual float CapsuleMoveHitsVolume(debpCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
+	virtual float BoxMoveHitsVolume(debpCollisionBox *box, const decVector &displacement, decVector *normal);
+	virtual float TriangleMoveHitsVolume(debpCollisionTriangle *triangle, const decVector &displacement, decVector *normal);
+	virtual float FrustumMoveHitsVolume(debpCollisionFrustum *frustum, const decVector &displacement, decVector *normal);
+	virtual float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( debpCollisionSphere *sphere );
-	virtual void GetEnclosingBox( debpCollisionBox *box );
+	virtual void GetEnclosingSphere(debpCollisionSphere *sphere);
+	virtual void GetEnclosingBox(debpCollisionBox *box);
 	/*@}*/
 	
 	/** @name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decVector &point );
+	virtual bool IsPointInside(const decVector &point);
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo( const decVector &point );
+	virtual decVector ClosestPointTo(const decVector &point);
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -107,7 +107,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decVector NormalAtPoint( const decVector &point );
+	virtual decVector NormalAtPoint(const decVector &point);
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -116,48 +116,48 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
+	virtual bool RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance);
 	/*@}*/
 	
 	/** @name Visiting */
 	/*{*/
-	virtual void Visit( debpCollisionVolumeVisitor *visitor );
+	virtual void Visit(debpCollisionVolumeVisitor *visitor);
 	/*}*/
 	
 	/** @name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this box. */
-	bool SphereHitsBox( debpCollisionSphere *sphere );
+	bool SphereHitsBox(debpCollisionSphere *sphere);
 	/**
 	 * Determines if the given cylinder hits this box.
 	 * @warning Not implemented yet and returns always false.
 	 */
-	bool CylinderHitsBox( debpCollisionCylinder *cylinder );
+	bool CylinderHitsBox(debpCollisionCylinder *cylinder);
 	/** Determines if the given capsule hits this box. */
-	bool CapsuleHitsBox( debpCollisionCapsule *capsule );
+	bool CapsuleHitsBox(debpCollisionCapsule *capsule);
 	/** Determines if the given box hits this box. */
-	bool BoxHitsBox( debpCollisionBox *box );
+	bool BoxHitsBox(debpCollisionBox *box);
 	
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this box.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float SphereMoveHitsBox( debpCollisionSphere *sphere, const decVector &displacement, decVector *normal );
+	float SphereMoveHitsBox(debpCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given cylinder to move until colliding with this box.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CylinderMoveHitsBox( debpCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
+	float CylinderMoveHitsBox(debpCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given capsule to move until colliding with this box.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CapsuleMoveHitsBox( debpCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
+	float CapsuleMoveHitsBox(debpCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given box to move until colliding with this box.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float BoxMoveHitsBox( debpCollisionBox *box, const decVector &displacement, decVector *normal );
+	float BoxMoveHitsBox(debpCollisionBox *box, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Parameters */
@@ -169,7 +169,7 @@ public:
 	/** Retrieves the orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	/** Determines if this box is axis aligned. */
-	inline bool GetAxisAligned() const{ return ! pOriented; }
+	inline bool GetAxisAligned() const{ return !pOriented; }
 	/** Determines if this box is oriented. */
 	inline bool GetOriented() const{ return pOriented; }
 	/** Retrieves the x axis. */
@@ -179,11 +179,11 @@ public:
 	/** Retrieves the z axis. */
 	inline const decVector &GetAxisZ() const{ return pAxisZ; }
 	/** Sets the center. */
-	void SetCenter( const decVector &center );
+	void SetCenter(const decVector &center);
 	/** Sets the half sizes. All components have to be at least 0. */
-	void SetHalfSize( const decVector &halfSize );
+	void SetHalfSize(const decVector &halfSize);
 	/** Sets the orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	/** Clears the rotation and turns the box into an axis aligned box. */
 	void ClearOrientation();
 	/**
@@ -191,21 +191,21 @@ public:
 	 * define the minimal and maximal values on the approriate axis
 	 * the box has to spawn. The resulting box is axis aligned.
 	 */
-	void SetFromExtends( const decVector &minExtend, const decVector &maxExtend );
+	void SetFromExtends(const decVector &minExtend, const decVector &maxExtend);
 	/** Moves the center of the box by the given offset. */
-	void MoveBy( const decVector &offset );
+	void MoveBy(const decVector &offset);
 	/** Projects the extends of the box to the given axis. */
-	inline float ProjectExtends( const decVector &axis ) const{
-		return fabsf( axis * pAxisX ) * pHalfSize.x + fabsf( axis * pAxisY ) * pHalfSize.y + fabsf( axis * pAxisZ ) * pHalfSize.z;
+	inline float ProjectExtends(const decVector &axis) const{
+		return fabsf(axis * pAxisX) * pHalfSize.x + fabsf(axis * pAxisY) * pHalfSize.y + fabsf(axis * pAxisZ) * pHalfSize.z;
 	}
 	/*@}*/
 
-	decVector WorldToLocal( const decVector &point ) const;
-	decVector LocalToWorld( const decVector &point ) const;
-	decVector NormalWorldToLocal( const decVector &normal ) const;
-	decVector NormalLocalToWorld( const decVector &normal ) const;
+	decVector WorldToLocal(const decVector &point) const;
+	decVector LocalToWorld(const decVector &point) const;
+	decVector NormalWorldToLocal(const decVector &normal) const;
+	decVector NormalLocalToWorld(const decVector &normal) const;
 private:
-	decVector pAxisAlignedCPTo( const decVector &point );
+	decVector pAxisAlignedCPTo(const decVector &point);
 };
 
 

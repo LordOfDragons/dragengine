@@ -54,7 +54,7 @@ public:
 		bool pPrevPreventUpdate;
 		
 	public:
-		PreventUpdateGuard( ceWPTTreeModel &model );
+		PreventUpdateGuard(ceWPTTreeModel &model);
 		~PreventUpdateGuard();
 	};
 	
@@ -79,8 +79,8 @@ public:
 	/** Constructors and Destructors */
 	/*@{*/
 	/** Create new tree model. */
-	ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation,
-		ceConversationListener &forwardListener );
+	ceWPTTreeModel(ceWindowMain &windowMain, ceConversation *conversation,
+		ceConversationListener &forwardListener);
 	
 	/** Clean up tree model. */
 	~ceWPTTreeModel();
@@ -103,16 +103,16 @@ public:
 	int GetChildCount() const;
 	
 	/** Child at index. */
-	ceWPTTreeItemModel *GetChildAt( int index ) const;
+	ceWPTTreeItemModel *GetChildAt(int index) const;
 	
 	/** Add child. */
-	void AddChild( ceWPTTreeItemModel *child );
+	void AddChild(ceWPTTreeItemModel *child);
 	
 	/** Insert child at position. */
-	void InsertChild( ceWPTTreeItemModel *child, int position );
+	void InsertChild(ceWPTTreeItemModel *child, int position);
 	
 	/** Remove child. */
-	void RemoveChild( ceWPTTreeItemModel *child );
+	void RemoveChild(ceWPTTreeItemModel *child);
 	
 	/** Remove all children. */
 	void RemoveAllChildren();
@@ -120,17 +120,17 @@ public:
 	/**
 	 * Move child before or after another child.
 	 */
-	void MoveChild( ceWPTTreeItemModel *child, int to );
+	void MoveChild(ceWPTTreeItemModel *child, int to);
 	
 	/**
 	 * Move child before or after another child.
 	 */
-	void MoveChild( int from, int to );
+	void MoveChild(int from, int to);
 	
 	
 	
 	/** Child with action or \em NULL. */
-	ceWPTTIMAction *GetChildWith( ceConversationAction *action ) const;
+	ceWPTTIMAction *GetChildWith(ceConversationAction *action) const;
 	
 	
 	
@@ -146,24 +146,24 @@ public:
 	 * 
 	 * If tree list is not \em NULL fully updates tree with stored data.
 	 */
-	void SetTreeList( igdeTreeList *treeList );
+	void SetTreeList(igdeTreeList *treeList);
 	
 	
 	
 	/** User requests context menu for selected item. */
-	void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** User requests context menu for selected child action. */
-	void ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action );
+	void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action);
 	
 	/** User requests context menu for topic specifi actions. */
-	void ContextMenuTopic( igdeMenuCascade &contextMenu );
+	void ContextMenuTopic(igdeMenuCascade &contextMenu);
 	
 	/** Deep find action. */
-	ceWPTTIMAction *DeepFindAction( ceConversationAction *action ) const;
+	ceWPTTIMAction *DeepFindAction(ceConversationAction *action) const;
 	
 	/** Deep find condition. */
-	ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition ) const;
+	ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition) const;
 	
 	/** Select topic active element. */
 	void SelectTopicActive();

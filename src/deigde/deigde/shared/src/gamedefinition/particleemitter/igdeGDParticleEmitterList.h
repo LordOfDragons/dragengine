@@ -58,55 +58,55 @@ public:
 	int GetCount() const;
 	
 	/** \brief Emitter by index. */
-	igdeGDParticleEmitter *GetAt( int index ) const;
+	igdeGDParticleEmitter *GetAt(int index) const;
 	
 	/** \brief Emitter with the given path or NULL if not found. */
-	igdeGDParticleEmitter *GetWithPath( const char *path ) const;
+	igdeGDParticleEmitter *GetWithPath(const char *path) const;
 	
 	/** \brief Emitter with the given name or NULL if not found. */
-	igdeGDParticleEmitter *GetWithName( const char *name ) const;
+	igdeGDParticleEmitter *GetWithName(const char *name) const;
 	
 	/** \brief Index of an emitter or -1 if not found. */
-	int IndexOf( igdeGDParticleEmitter *emitter ) const;
+	int IndexOf(igdeGDParticleEmitter *emitter) const;
 	
 	/** \brief Index of the enitter with the given path or -1 if not found. */
-	int IndexOfWithPath( const char *path ) const;
+	int IndexOfWithPath(const char *path) const;
 	
 	/** \brief Index of the emitter with the given name or -1 if not found. */
-	int IndexOfWithName( const char *name ) const;
+	int IndexOfWithName(const char *name) const;
 	
 	/** \brief Index of the emitter with the given name or -1 if not found. */
-	int IndexOfWithPathOrName( const char *path, const char *name ) const;
+	int IndexOfWithPathOrName(const char *path, const char *name) const;
 	
 	/** \brief Determines if an emitter exists. */
-	bool Has( igdeGDParticleEmitter *emitter ) const;
+	bool Has(igdeGDParticleEmitter *emitter) const;
 	
 	/** \brief Determines if an emitter with the given path exists. */
-	bool HasWithPath( const char *path ) const;
+	bool HasWithPath(const char *path) const;
 	
 	/** \brief Determines if an emitter with the given name exists. */
-	bool HasWithName( const char *name ) const;
+	bool HasWithName(const char *name) const;
 	
 	/** \brief Determines if an emitter with the given name or path exists. */
-	bool HasWithPathOrName( const char *path, const char *name ) const;
+	bool HasWithPathOrName(const char *path, const char *name) const;
 	
 	/** \brief Adds an emitter. */
-	void Add( igdeGDParticleEmitter *emitter );
+	void Add(igdeGDParticleEmitter *emitter);
 	
 	/** \brief Inserts a new emitter. */
-	void InsertAt( igdeGDParticleEmitter *emitter, int index );
+	void InsertAt(igdeGDParticleEmitter *emitter, int index);
 	
 	/** \brief Moves an emitter to a new position. */
-	void MoveTo( igdeGDParticleEmitter *emitter, int index );
+	void MoveTo(igdeGDParticleEmitter *emitter, int index);
 	
 	/** \brief Removes an emitter. */
-	void Remove( igdeGDParticleEmitter *emitter );
+	void Remove(igdeGDParticleEmitter *emitter);
 	
 	/** \brief Removes all emitters. */
 	void RemoveAll();
 	
 	/** \brief Set list from another list. */
-	igdeGDParticleEmitterList &operator=( const igdeGDParticleEmitterList &list );
+	igdeGDParticleEmitterList &operator=(const igdeGDParticleEmitterList &list);
 	/*@}*/
 };
 

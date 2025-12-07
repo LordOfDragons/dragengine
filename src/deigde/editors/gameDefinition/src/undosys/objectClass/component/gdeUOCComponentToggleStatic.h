@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentToggleStatic( gdeObjectClass *objectClass, gdeOCComponent *component );
+	gdeUOCComponentToggleStatic(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 protected:
 	/** \brief Clean up undo action. */

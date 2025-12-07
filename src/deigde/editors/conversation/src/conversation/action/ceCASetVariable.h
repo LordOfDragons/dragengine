@@ -67,7 +67,7 @@ public:
 	ceCASetVariable();
 	
 	/** \brief Create conversation action. */
-	ceCASetVariable( const ceCASetVariable &action );
+	ceCASetVariable(const ceCASetVariable &action);
 	
 	/** \brief Clean up conversation action. */
 	virtual ~ceCASetVariable();
@@ -81,25 +81,25 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name of variable to set. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Operator. */
 	inline eOperators GetOperator() const{ return pOperator; }
 	
 	/** \brief Set operator. */
-	void SetOperator( eOperators aOperator );
+	void SetOperator(eOperators aOperator);
 	
 	/** \brief Value used for operation. */
 	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value used for operation. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief Variable used for operation or empty string to use value. */
 	inline const decString &GetValueVariable() const{ return pValueVariable; }
 	
 	/** \brief Set variable used for operation or empty string to use value. */
-	void SetValueVariable( const char *value );
+	void SetValueVariable(const char *value);
 	
 	
 	

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleAnimationDifference( aeWPRule &wpRule );
+	aeWPAPanelRuleAnimationDifference(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

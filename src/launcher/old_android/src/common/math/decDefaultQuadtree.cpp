@@ -37,7 +37,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-decDefaultQuadtree::decDefaultQuadtree( const decVector2 &center, const decVector2 &halfSize ) : decQuadtree( center, halfSize ){
+decDefaultQuadtree::decDefaultQuadtree(const decVector2 &center, const decVector2 &halfSize) : decQuadtree(center, halfSize){
 	pElements = NULL;
 	pElementCount = 0;
 	pElementSize = 0;
@@ -45,7 +45,7 @@ decDefaultQuadtree::decDefaultQuadtree( const decVector2 &center, const decVecto
 
 decDefaultQuadtree::~decDefaultQuadtree(){
 	RemoveAllElements();
-	if( pElements ) delete [] pElements;
+	if(pElements) delete [] pElements;
 }
 
 
@@ -53,27 +53,27 @@ decDefaultQuadtree::~decDefaultQuadtree(){
 // Management
 ///////////////
 
-decQuadtree *decDefaultQuadtree::CreateQuadtree( int quadrant ) const{
+decQuadtree *decDefaultQuadtree::CreateQuadtree(int quadrant) const{
 	decVector2 halfSize = GetHalfSize() * 0.5f;
 	const decVector2 &center = GetCenter();
-	decQuadtree *node = ( decDefaultQuadtree* )NULL;
+	decQuadtree *node = (decDefaultQuadtree*)NULL;
 	decVector2 nc;
 	
 	// determine the smallest and largest coordinates
-	if( ( quadrant & 2 ) == 2 ){
+	if((quadrant & 2) == 2){
 		nc.x = center.x + halfSize.x;
 	}else{
 		nc.x = center.x - halfSize.x;
 	}
-	if( ( quadrant & 1 ) == 1 ){
+	if((quadrant & 1) == 1){
 		nc.y = center.y + halfSize.y;
 	}else{
 		nc.y = center.y - halfSize.y;
 	}
 	
 	// create child node
-	node = ( decDefaultQuadtree* )new decDefaultQuadtree( nc, halfSize );
-	if( ! node ) DETHROW( deeOutOfMemory );
+	node = (decDefaultQuadtree*)new decDefaultQuadtree(nc, halfSize);
+	if(!node) DETHROW(deeOutOfMemory);
 	return node;
 }
 
@@ -81,19 +81,19 @@ void decDefaultQuadtree::ClearNodeContent(){
 	RemoveAllElements();
 }
 
-decDefaultQuadtree *decDefaultQuadtree::InsertIntoTree( void *element, const decVector2 &boxCenter, const decVector2 &boxHalfSize, int maxDepth ){
+decDefaultQuadtree *decDefaultQuadtree::InsertIntoTree(void *element, const decVector2 &boxCenter, const decVector2 &boxHalfSize, int maxDepth){
 	decQuadtree *curNode = this;
 	decQuadtree *nextNode;
 	int d;
 	
-	for( d=0; d<maxDepth; d++ ){
-		nextNode = curNode->GetNodeAtBox( boxCenter, boxHalfSize );
-		if( ! nextNode ) break;
+	for(d=0; d<maxDepth; d++){
+		nextNode = curNode->GetNodeAtBox(boxCenter, boxHalfSize);
+		if(!nextNode) break;
 		curNode = nextNode;
 	}
 	
-	( ( decDefaultQuadtree* )curNode )->AddElement( element );
-	return ( decDefaultQuadtree* )curNode;
+	((decDefaultQuadtree*)curNode)->AddElement(element);
+	return (decDefaultQuadtree*)curNode;
 }
 
 
@@ -101,44 +101,44 @@ decDefaultQuadtree *decDefaultQuadtree::InsertIntoTree( void *element, const dec
 // Elements
 /////////////
 
-void *decDefaultQuadtree::GetElementAt( int index ) const{
-	if( index < 0 || index >= pElementCount ) DETHROW( deeInvalidParam );
-	return pElements[ index ];
+void *decDefaultQuadtree::GetElementAt(int index) const{
+	if(index < 0 || index >= pElementCount) DETHROW(deeInvalidParam);
+	return pElements[index];
 }
 
-int decDefaultQuadtree::IndexOfElement( void *element ) const{
+int decDefaultQuadtree::IndexOfElement(void *element) const{
 	int i;
-	for( i=0; i<pElementCount; i++ ){
-		if( pElements[ i ] == element ) return i;
+	for(i=0; i<pElementCount; i++){
+		if(pElements[i] == element) return i;
 	}
 	return -1;
 }
 
-void decDefaultQuadtree::AddElement( void *element ){
-	if( ! element ) DETHROW( deeInvalidParam );
+void decDefaultQuadtree::AddElement(void *element){
+	if(!element) DETHROW(deeInvalidParam);
 	
-	if( pElementCount == pElementSize ){
+	if(pElementCount == pElementSize){
 		int i, newSize = pElementSize * 3 / 2 + 1;
-		void **newArray = new void*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pElements ){
-			for( i=0; i<pElementSize; i++ ) newArray[ i ] = pElements[ i ];
+		void **newArray = new void*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pElements){
+			for(i=0; i<pElementSize; i++) newArray[i] = pElements[i];
 			delete [] pElements;
 		}
 		pElements = newArray;
 		pElementSize = newSize;
 	}
 	
-	pElements[ pElementCount ] = element;
+	pElements[pElementCount] = element;
 	pElementCount++;
 }
 
-void decDefaultQuadtree::RemoveElement( void *element ){
-	int i, index = IndexOfElement( element );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void decDefaultQuadtree::RemoveElement(void *element){
+	int i, index = IndexOfElement(element);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pElementCount; i++ ) pElements[ i - 1 ] = pElements[ i ];
-	pElements[ pElementCount - 1 ] = NULL;
+	for(i=index+1; i<pElementCount; i++) pElements[i - 1] = pElements[i];
+	pElements[pElementCount - 1] = NULL;
 	pElementCount--;
 }
 

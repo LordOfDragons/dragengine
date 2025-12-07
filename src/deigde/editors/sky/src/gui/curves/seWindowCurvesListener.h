@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWindowCurvesListener( seWindowCurves &window );
+	seWindowCurvesListener(seWindowCurves &window);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWindowCurvesListener();
@@ -54,16 +54,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Link added or removed. */
-	virtual void LinkStructureChanged ( seSky *sky );
+	virtual void LinkStructureChanged (seSky *sky);
 	
 	/** \brief Link changed. */
-	virtual void LinkChanged( seSky *sky, seLink *link );
+	virtual void LinkChanged(seSky *sky, seLink *link);
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged( seSky *sky, seLink *link );
+	virtual void LinkNameChanged(seSky *sky, seLink *link);
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveLinkChanged( seSky *sky );
+	virtual void ActiveLinkChanged(seSky *sky);
 	/*@}*/
 };
 

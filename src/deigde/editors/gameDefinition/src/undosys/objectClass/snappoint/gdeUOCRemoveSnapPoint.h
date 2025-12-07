@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveSnapPoint( gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint );
+	gdeUOCRemoveSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint);
 	
 protected:
 	/** \brief Clean up undo action. */

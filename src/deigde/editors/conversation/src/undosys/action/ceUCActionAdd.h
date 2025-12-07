@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionAdd( ceConversationTopic *topic, ceConversationAction *action, int index );
+	ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *action, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionAdd();

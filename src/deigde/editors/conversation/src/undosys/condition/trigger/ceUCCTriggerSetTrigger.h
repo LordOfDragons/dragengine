@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCTriggerSetTrigger( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionTrigger *condition, const char *newTrigger );
+	ceUCCTriggerSetTrigger(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionTrigger *condition, const char *newTrigger);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCTriggerSetTrigger();
 	/*@}*/

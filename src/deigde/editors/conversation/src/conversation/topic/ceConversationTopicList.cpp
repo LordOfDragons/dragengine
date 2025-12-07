@@ -55,19 +55,19 @@ int ceConversationTopicList::GetCount() const{
 	return pTopics.GetCount();
 }
 
-ceConversationTopic *ceConversationTopicList::GetAt( int index ) const{
-	return ( ceConversationTopic* )pTopics.GetAt( index );
+ceConversationTopic *ceConversationTopicList::GetAt(int index) const{
+	return (ceConversationTopic*)pTopics.GetAt(index);
 }
 
-ceConversationTopic *ceConversationTopicList::GetWithID( const char *id ) const{
+ceConversationTopic *ceConversationTopicList::GetWithID(const char *id) const{
 	const int count = pTopics.GetCount();
 	ceConversationTopic *file;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		file = ( ceConversationTopic* )pTopics.GetAt( i );
+	for(i=0; i<count; i++){
+		file = (ceConversationTopic*)pTopics.GetAt(i);
 		
-		if( file->GetID().Equals( id ) ){
+		if(file->GetID().Equals(id)){
 			return file;
 		}
 	}
@@ -75,16 +75,16 @@ ceConversationTopic *ceConversationTopicList::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-int ceConversationTopicList::IndexOf( ceConversationTopic *file ) const{
-	return pTopics.IndexOf( file );
+int ceConversationTopicList::IndexOf(ceConversationTopic *file) const{
+	return pTopics.IndexOf(file);
 }
 
-int ceConversationTopicList::IndexOfWithID( const char *id ) const{
+int ceConversationTopicList::IndexOfWithID(const char *id) const{
 	const int count = pTopics.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceConversationTopic* )pTopics.GetAt( i ) )->GetID().Equals( id ) ){
+	for(i=0; i<count; i++){
+		if(((ceConversationTopic*)pTopics.GetAt(i))->GetID().Equals(id)){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int ceConversationTopicList::IndexOfWithID( const char *id ) const{
 	return -1;
 }
 
-bool ceConversationTopicList::Has( ceConversationTopic *file ) const{
-	return pTopics.Has( file );
+bool ceConversationTopicList::Has(ceConversationTopic *file) const{
+	return pTopics.Has(file);
 }
 
-bool ceConversationTopicList::HasWithID( const char *id ) const{
+bool ceConversationTopicList::HasWithID(const char *id) const{
 	const int count = pTopics.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceConversationTopic* )pTopics.GetAt( i ) )->GetID().Equals( id ) ){
+	for(i=0; i<count; i++){
+		if(((ceConversationTopic*)pTopics.GetAt(i))->GetID().Equals(id)){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool ceConversationTopicList::HasWithID( const char *id ) const{
 	return false;
 }
 
-void ceConversationTopicList::Add( ceConversationTopic *file ){
-	if( ! file || HasWithID( file->GetID().GetString() ) ) DETHROW( deeInvalidParam );
+void ceConversationTopicList::Add(ceConversationTopic *file){
+	if(!file || HasWithID(file->GetID().GetString())) DETHROW(deeInvalidParam);
 	
-	pTopics.Add( file );
+	pTopics.Add(file);
 }
 
-void ceConversationTopicList::Remove( ceConversationTopic *file ){
-	pTopics.Remove( file );
+void ceConversationTopicList::Remove(ceConversationTopic *file){
+	pTopics.Remove(file);
 }
 
 void ceConversationTopicList::RemoveAll(){
@@ -125,12 +125,12 @@ void ceConversationTopicList::RemoveAll(){
 
 
 
-ceConversationTopicList &ceConversationTopicList::operator=( const ceConversationTopicList &list ){
+ceConversationTopicList &ceConversationTopicList::operator=(const ceConversationTopicList &list){
 	pTopics = list.pTopics;
 	return *this;
 }
 
-ceConversationTopicList &ceConversationTopicList::operator+=( const ceConversationTopicList &list ){
+ceConversationTopicList &ceConversationTopicList::operator+=(const ceConversationTopicList &list){
 	pTopics += list.pTopics;
 	return *this;
 }

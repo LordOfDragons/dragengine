@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglEnvMapSlotManager::deoglEnvMapSlotManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+deoglEnvMapSlotManager::deoglEnvMapSlotManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 	pArrayTexture = NULL;
 	
 	pWidth = 512;
@@ -64,15 +64,15 @@ pRenderThread( renderThread ){
 	// ((245*128*3*2)*4/3) = 250880 bytes ~= 0.25MB
 	
 	try{
-		pSlots = new deoglEnvMapSlot[ pLayerCount ];
+		pSlots = new deoglEnvMapSlot[pLayerCount];
 		
-		pArrayTexture = new deoglArrayTexture( renderThread );
-		pArrayTexture->SetSize( pWidth, pHeight, pLayerCount );
-		pArrayTexture->SetFBOFormat( 3, true );
-		pArrayTexture->SetMipMapped( true );
+		pArrayTexture = new deoglArrayTexture(renderThread);
+		pArrayTexture->SetSize(pWidth, pHeight, pLayerCount);
+		pArrayTexture->SetFBOFormat(3, true);
+		pArrayTexture->SetMipMapped(true);
 		pArrayTexture->CreateTexture();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -87,23 +87,23 @@ deoglEnvMapSlotManager::~deoglEnvMapSlotManager(){
 // Management
 ///////////////
 
-deoglEnvMapSlot &deoglEnvMapSlotManager::GetSlotAt( int index ) const{
-	if( index < 0 || index >= pLayerCount ){
-		DETHROW( deeInvalidParam );
+deoglEnvMapSlot &deoglEnvMapSlotManager::GetSlotAt(int index) const{
+	if(index < 0 || index >= pLayerCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pSlots[ index ];
+	return pSlots[index];
 }
 
-int deoglEnvMapSlotManager::IndexOfSlotWith( deoglEnvironmentMap *envmap ) const{
-	if( ! envmap ){
-		DETHROW( deeInvalidParam );
+int deoglEnvMapSlotManager::IndexOfSlotWith(deoglEnvironmentMap *envmap) const{
+	if(!envmap){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pLayerCount; i++ ){
-		if( envmap == pSlots[ i ].GetEnvMap() ){
+	for(i=0; i<pLayerCount; i++){
+		if(envmap == pSlots[i].GetEnvMap()){
 			return i;
 		}
 	}
@@ -116,14 +116,14 @@ int deoglEnvMapSlotManager::IndexOfOldestUnusedSlot() const{
 	int slotIndex = -1;
 	int i;
 	
-	for( i=0; i<pLayerCount; i++ ){
+	for(i=0; i<pLayerCount; i++){
 		// also protect all slots used in this and the last frame?
 		// if( ! pSlots[ i ].GetInUse() && pSlots[ i ].GetLastUsed() > 1 && ( slotIndex == -1 || pSlots[ i ].GetLastUsed() > oldestLastUsed ) ){
 		// or used in this frame?
 		// if( ! pSlots[ i ].GetInUse() && pSlots[ i ].GetLastUsed() > 0 && ( slotIndex == -1 || pSlots[ i ].GetLastUsed() > oldestLastUsed ) ){
-		if( ! pSlots[ i ].GetInUse() && ( slotIndex == -1 || pSlots[ i ].GetLastUsed() > oldestLastUsed ) ){
+		if(!pSlots[i].GetInUse() && (slotIndex == -1 || pSlots[i].GetLastUsed() > oldestLastUsed)){
 			slotIndex = i;
-			oldestLastUsed = pSlots[ i ].GetLastUsed();
+			oldestLastUsed = pSlots[i].GetLastUsed();
 		}
 	}
 	
@@ -135,50 +135,50 @@ int deoglEnvMapSlotManager::IndexOfOldestUnusedSlot() const{
 void deoglEnvMapSlotManager::MarkSlotsUnused(){
 	int i;
 	
-	for( i=0; i<pLayerCount; i++ ){
-		pSlots[ i ].SetInUse( false );
+	for(i=0; i<pLayerCount; i++){
+		pSlots[i].SetInUse(false);
 	}
 }
 
-void deoglEnvMapSlotManager::AddEnvironmentMap( deoglEnvironmentMap *envmap ){
-	if( ! envmap ){
-		DETHROW( deeInvalidParam );
+void deoglEnvMapSlotManager::AddEnvironmentMap(deoglEnvironmentMap *envmap){
+	if(!envmap){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int slotIndex = envmap->GetSlotIndex();
 	
-	if( slotIndex == -1 ){
+	if(slotIndex == -1){
 		// if the environment map is not hosted by any slots find the oldest unused slot
 		slotIndex = IndexOfOldestUnusedSlot();
 		
-		if( slotIndex == -1 ){
+		if(slotIndex == -1){
 			// if there are no empty slots available we have to increase the layer count to make room for more
 			const int newLayerCount = pLayerCount + 5;
 			int i;
 			
-			pRenderThread.GetLogger().LogInfoFormat( "EnvMapSlotManager.AddEnvironmentMap: Increase layer count from %i to %i", pLayerCount, newLayerCount );
+			pRenderThread.GetLogger().LogInfoFormat("EnvMapSlotManager.AddEnvironmentMap: Increase layer count from %i to %i", pLayerCount, newLayerCount);
 			//printf( "EnvMapSlotManager.AddEnvironmentMap: Increase layer count from %i to %i\n", pLayerCount, newLayerCount );
 			
 			slotIndex = pLayerCount; // this is going to be the new slot to assign the environment map to
 			
 			// enlarge also the array texture. this unfortunately erases all the content so we have to copy
 			// the textures of all environment maps to the corresponding layer
-			pArrayTexture->SetSize( pWidth, pHeight, newLayerCount );
+			pArrayTexture->SetSize(pWidth, pHeight, newLayerCount);
 			pArrayTexture->CreateTexture();
 			pArrayTexture->CreateMipMaps(); // would be better to have a quicker init here to make sure the mip map levels exist
 			
-			for( i=0; i<pLayerCount; i++ ){
-				if( pSlots[ i ].GetEnvMap() && pSlots[ i ].GetEnvMap()->GetEquiEnvMap() && pSlots[ i ].GetEnvMap()->GetEquiEnvMap()->GetTexture() ){
-					pRenderThread.GetLogger().LogInfoFormat( "EnvMapSlotManager.AddEnvironmentMap(IncreaseLayer): Copy EnvMap %p to layer %i", pSlots[ i ].GetEnvMap(), i );
+			for(i=0; i<pLayerCount; i++){
+				if(pSlots[i].GetEnvMap() && pSlots[i].GetEnvMap()->GetEquiEnvMap() && pSlots[i].GetEnvMap()->GetEquiEnvMap()->GetTexture()){
+					pRenderThread.GetLogger().LogInfoFormat("EnvMapSlotManager.AddEnvironmentMap(IncreaseLayer): Copy EnvMap %p to layer %i", pSlots[i].GetEnvMap(), i);
 					//printf( "EnvMapSlotManager.AddEnvironmentMap(IncreaseLayer): Copy EnvMap %p to layer %i\n", pSlots[ i ].GetEnvMap(), i );
-					pArrayTexture->CopyFrom( *pSlots[ i ].GetEnvMap()->GetEquiEnvMap(), true, i );
+					pArrayTexture->CopyFrom(*pSlots[i].GetEnvMap()->GetEquiEnvMap(), true, i);
 				}
 			}
 			
 			// add more slots
-			deoglEnvMapSlot * const newArray = new deoglEnvMapSlot[ newLayerCount ];
+			deoglEnvMapSlot * const newArray = new deoglEnvMapSlot[newLayerCount];
 			
-			memcpy( newArray, pSlots, sizeof( deoglEnvMapSlot ) * pLayerCount );
+			memcpy(newArray, pSlots, sizeof(deoglEnvMapSlot) * pLayerCount);
 			delete [] pSlots;
 			
 			pSlots = newArray;
@@ -186,59 +186,59 @@ void deoglEnvMapSlotManager::AddEnvironmentMap( deoglEnvironmentMap *envmap ){
 		}
 		
 		// assign the environment map to the found slot and copy the texture to the corresponding level in the array texture
-		if( pSlots[ slotIndex ].GetEnvMap() ){
-			pSlots[ slotIndex ].GetEnvMap()->SetSlotIndex( -1 );
+		if(pSlots[slotIndex].GetEnvMap()){
+			pSlots[slotIndex].GetEnvMap()->SetSlotIndex(-1);
 		}
 		
-		pSlots[ slotIndex ].SetEnvMap( envmap );
-		envmap->SetSlotIndex( slotIndex );
+		pSlots[slotIndex].SetEnvMap(envmap);
+		envmap->SetSlotIndex(slotIndex);
 		
-		pRenderThread.GetLogger().LogInfoFormat( "EnvMapSlotManager.AddEnvironmentMap: Copy EnvMap %p to layer %i", envmap, slotIndex );
+		pRenderThread.GetLogger().LogInfoFormat("EnvMapSlotManager.AddEnvironmentMap: Copy EnvMap %p to layer %i", envmap, slotIndex);
 		//printf( "EnvMapSlotManager.AddEnvironmentMap: Copy EnvMap %p to layer %i\n", envmap, slotIndex );
-		pArrayTexture->CopyFrom( *pSlots[ slotIndex ].GetEnvMap()->GetEquiEnvMap(), true, slotIndex );
+		pArrayTexture->CopyFrom(*pSlots[slotIndex].GetEnvMap()->GetEquiEnvMap(), true, slotIndex);
 	}
 	
 	// in all cases mark the slot in use and reset the last used counter to 0
-	pSlots[ slotIndex ].SetInUse( true );
-	pSlots[ slotIndex ].ResetLastUsed();
+	pSlots[slotIndex].SetInUse(true);
+	pSlots[slotIndex].ResetLastUsed();
 }
 
 void deoglEnvMapSlotManager::IncreaseSlotLastUsedCounters(){
 	int i;
 	
-	for( i=0; i<pLayerCount; i++ ){
-		pSlots[ i ].IncrementLastUsed();
+	for(i=0; i<pLayerCount; i++){
+		pSlots[i].IncrementLastUsed();
 	}
 }
 
-void deoglEnvMapSlotManager::NotifyEnvMapChanged( int slotIndex ){
-	if( slotIndex < 0 || slotIndex >= pLayerCount || ! pSlots[ slotIndex ].GetEnvMap() ){
-		DETHROW( deeInvalidParam );
+void deoglEnvMapSlotManager::NotifyEnvMapChanged(int slotIndex){
+	if(slotIndex < 0 || slotIndex >= pLayerCount || !pSlots[slotIndex].GetEnvMap()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRenderThread.GetLogger().LogInfoFormat( "EnvMapSlotManager.NotifyEnvMapChanged: Copy EnvMap %p to layer %i", pSlots[ slotIndex ].GetEnvMap(), slotIndex );
+	pRenderThread.GetLogger().LogInfoFormat("EnvMapSlotManager.NotifyEnvMapChanged: Copy EnvMap %p to layer %i", pSlots[slotIndex].GetEnvMap(), slotIndex);
 	//printf( "EnvMapSlotManager.NotifyEnvMapChanged: Copy EnvMap %p to layer %i\n", pSlots[ slotIndex ].GetEnvMap(), slotIndex );
-	pArrayTexture->CopyFrom( *pSlots[ slotIndex ].GetEnvMap()->GetEquiEnvMap(), true, slotIndex );
+	pArrayTexture->CopyFrom(*pSlots[slotIndex].GetEnvMap()->GetEquiEnvMap(), true, slotIndex);
 }
 
 
 
-int deoglEnvMapSlotManager::GetUsedSlotIndexAt( int index ) const{
-	if( index < 0 || index >= pUsedSlotsCount ){
-		DETHROW( deeInvalidParam );
+int deoglEnvMapSlotManager::GetUsedSlotIndexAt(int index) const{
+	if(index < 0 || index >= pUsedSlotsCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pUsedSlots[ index ];
+	return pUsedSlots[index];
 }
 
 void deoglEnvMapSlotManager::UpdateUsedSlots(){
 	int i;
 	
-	if( pUsedSlotsSize < pLayerCount ){
-		int * const newArray = new int[ pLayerCount ];
+	if(pUsedSlotsSize < pLayerCount){
+		int * const newArray = new int[pLayerCount];
 		
-		if( pUsedSlots ){
-			memcpy( newArray, pUsedSlots, sizeof( int ) * pUsedSlotsSize );
+		if(pUsedSlots){
+			memcpy(newArray, pUsedSlots, sizeof(int) * pUsedSlotsSize);
 			delete [] pUsedSlots;
 		}
 		
@@ -248,9 +248,9 @@ void deoglEnvMapSlotManager::UpdateUsedSlots(){
 	
 	pUsedSlotsCount = 0;
 	
-	for( i=0; i<pLayerCount; i++ ){
-		if( pSlots[ i ].GetInUse() ){
-			pUsedSlots[ pUsedSlotsCount++ ] = i;
+	for(i=0; i<pLayerCount; i++){
+		if(pSlots[i].GetInUse()){
+			pUsedSlots[pUsedSlotsCount++] = i;
 		}
 	}
 }
@@ -261,13 +261,13 @@ void deoglEnvMapSlotManager::UpdateUsedSlots(){
 //////////////////////
 
 void deoglEnvMapSlotManager::pCleanUp(){
-	if( pArrayTexture ){
+	if(pArrayTexture){
 		delete pArrayTexture;
 	}
-	if( pUsedSlots ){
+	if(pUsedSlots){
 		delete [] pUsedSlots;
 	}
-	if( pSlots ){
+	if(pSlots){
 		delete [] pSlots;
 	}
 }

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesBillboard::deoglSTPipelinesBillboard( const deoglSkinTexture &texture ) :
-deoglSkinTexturePipelines( texture ){
+deoglSTPipelinesBillboard::deoglSTPipelinesBillboard(const deoglSkinTexture &texture) :
+deoglSkinTexturePipelines(texture){
 }
 
 deoglSTPipelinesBillboard::~deoglSTPipelinesBillboard(){
@@ -60,16 +60,16 @@ const char *deoglSTPipelinesBillboard::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesBillboard::pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched ){
+void deoglSTPipelinesBillboard::pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.SetSharedSPB( true );
-	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmBillboard );
+	baseShaderConfig.SetSharedSPB(true);
+	baseShaderConfig.SetGeometryMode(deoglSkinShaderConfig::egmBillboard);
 	
-	pPrepareGeometry( baseShaderConfig, cinfo, batched);
+	pPrepareGeometry(baseShaderConfig, cinfo, batched);
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
-	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
-	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
-	pPrepareMask( baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth(baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter(baseShaderConfig, cinfo, batched);
+	pPrepareMask(baseShaderConfig, cinfo, batched);
 	// pPrepareAllShadow( baseShaderConfig, cinfo, batched);
 	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);
 	// pPrepareLuminance( baseShaderConfig, cinfo, batched);

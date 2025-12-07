@@ -59,7 +59,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpHeightTerrain( dePhysicsBullet *bullet, deHeightTerrain *heightTerrain );
+	debpHeightTerrain(dePhysicsBullet *bullet, deHeightTerrain *heightTerrain);
 	/** Cleans up the peer. */
 	virtual ~debpHeightTerrain();
 	/*@}*/
@@ -74,14 +74,14 @@ public:
 	/** Retrieves the parent world. */
 	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	/** Sets the parent world. */
-	void SetParentWorld( debpWorld *parentWorld );
+	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the number of sectors. */
 	inline int GetSectorCount() const{ return pSectorCount; }
 	/** Retrieves the sector at the given index. */
-	debpHTSector *GetSectorAt( int index ) const;
+	debpHTSector *GetSectorAt(int index) const;
 	/** Retrieves the sector with the given coordinates or NULL if not found. */
-	debpHTSector *GetSectorWith( int x, int y ) const;
+	debpHTSector *GetSectorWith(int x, int y) const;
 	
 	/** Update. */
 	void Update();
@@ -95,24 +95,24 @@ public:
 	/** Layer mask changed. */
 	virtual void CollisionFilterChanged();
 	/** Sector heights changed. */
-	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates );
+	virtual void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates);
 	
 	/** Sector has been added. */
-	virtual void SectorAdded( deHeightTerrainSector *sector );
+	virtual void SectorAdded(deHeightTerrainSector *sector);
 	/** Sector has been removed. */
-	virtual void SectorRemoved( int index );
+	virtual void SectorRemoved(int index);
 	/** All sectors have been removed. */
 	virtual void AllSectorsRemoved();
 	/** Sector changed. */
-	virtual void SectorChanged( int index );
+	virtual void SectorChanged(int index);
 	
 	/** Decal has been added. */
-	virtual void DecalAdded( int sector, deDecal *decal );
+	virtual void DecalAdded(int sector, deDecal *decal);
 	/** Decal has been removed. */
-	virtual void DecalRemoved( int sector, deDecal *decal );
+	virtual void DecalRemoved(int sector, deDecal *decal);
 	/** All decals have been removed. */
-	virtual void AllDecalsRemoved( int sector );
+	virtual void AllDecalsRemoved(int sector);
 	/*@}*/
 	
 	/** @name Collision Detection */
@@ -122,11 +122,11 @@ public:
 	 * list. The point is best taken from an earlier collision test and is in world
 	 * coordinates.
 	 */
-	virtual void FindDecalsAt( const decDVector &point, deDecalList &list );
+	virtual void FindDecalsAt(const decDVector &point, deDecalList &list);
 	/**
 	 * Stores all decals in contact with the given shape into the provided list.
 	 */
-	virtual void FindDecalsTouching( const decShape &shape, deDecalList &list );
+	virtual void FindDecalsTouching(const decShape &shape, deDecalList &list);
 	/*@}*/
 	
 private:

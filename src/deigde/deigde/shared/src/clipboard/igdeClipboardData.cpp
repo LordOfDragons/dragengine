@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeClipboardData::igdeClipboardData( const char *typeName ) :
-pTypeName( typeName ){
+igdeClipboardData::igdeClipboardData(const char *typeName) :
+pTypeName(typeName){
 }
 
 igdeClipboardData::~igdeClipboardData(){

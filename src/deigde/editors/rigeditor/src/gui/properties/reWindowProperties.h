@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	reWindowProperties( reWindowMain &windowMain );
+	reWindowProperties(reWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -73,7 +73,7 @@ public:
 	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	/*@}*/
 };
 

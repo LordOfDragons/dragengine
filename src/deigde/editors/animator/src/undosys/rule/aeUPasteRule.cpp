@@ -42,28 +42,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUPasteRule::aeUPasteRule( aeAnimator *animator, const aeRuleList &ruleList, int index ) :
-pAnimator( NULL ),
-pIndex( index ){
+aeUPasteRule::aeUPasteRule(aeAnimator *animator, const aeRuleList &ruleList, int index) :
+pAnimator(NULL),
+pIndex(index){
 	const int ruleCount = ruleList.GetCount();
 	
-	if( ! animator || ruleCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(!animator || ruleCount == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	aeRule *rule = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<ruleCount; i++ ){
-			rule = ruleList.GetAt( i )->CreateCopy();
-			pRuleList.Add( rule );
+		for(i=0; i<ruleCount; i++){
+			rule = ruleList.GetAt(i)->CreateCopy();
+			pRuleList.Add(rule);
 			rule->FreeReference();
 			rule = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( rule ){
+	}catch(const deException &){
+		if(rule){
 			rule->FreeReference();
 		}
 		throw;
@@ -87,21 +87,21 @@ void aeUPasteRule::Undo(){
 	int i;
 	
 	// remove the rules
-	for( i=0; i<ruleCount; i++ ){
-		pAnimator->RemoveRule( pRuleList.GetAt( i ) );
+	for(i=0; i<ruleCount; i++){
+		pAnimator->RemoveRule(pRuleList.GetAt(i));
 	}
 	
 	// remove links added in a prior redo
 	const int linkCount = pRemoveLinkList.GetCount();
-	for( i=0; i<linkCount; i++ ){
-		pAnimator->RemoveLink( pRemoveLinkList.GetAt( i ) );
+	for(i=0; i<linkCount; i++){
+		pAnimator->RemoveLink(pRemoveLinkList.GetAt(i));
 	}
 	pRemoveLinkList.RemoveAll();
 	
 	// remove controller added in a prior redo
 	const int controllerCount = pRemoveControllerList.GetCount();
-	for( i=0; i<controllerCount; i++ ){
-		pAnimator->RemoveController( pRemoveControllerList.GetAt( i ) );
+	for(i=0; i<controllerCount; i++){
+		pAnimator->RemoveController(pRemoveControllerList.GetAt(i));
 	}
 	pRemoveControllerList.RemoveAll();
 }
@@ -115,17 +115,17 @@ void aeUPasteRule::Redo(){
 	pRemoveLinkList.RemoveAll();
 	pRemoveControllerList.RemoveAll();
 	
-	for( i=0; i<ruleCount; i++ ){
-		aeRule * const rule = pRuleList.GetAt( i );
+	for(i=0; i<ruleCount; i++){
+		aeRule * const rule = pRuleList.GetAt(i);
 		
 		// check if links exist in the animator. if not add them and mark them to remove during undo
 		aeLinkList linkList;
-		rule->ListLinks( linkList );
+		rule->ListLinks(linkList);
 		
 		const int linkCount = linkList.GetCount();
-		for( j=0; j<linkCount; j++ ){
-			aeLink * const link = linkList.GetAt( j );
-			if( links.Has( link ) ){
+		for(j=0; j<linkCount; j++){
+			aeLink * const link = linkList.GetAt(j);
+			if(links.Has(link)){
 				continue;
 			}
 			
@@ -134,25 +134,25 @@ void aeUPasteRule::Redo(){
 			// added modify all links. this should be safe since only pasted links not present
 			// in the animator can be potentially modified
 			aeController * const controller = link->GetController();
-			if( controller && ! controllers.Has( controller ) ){
-				aeController * const sameNameController = controllers.GetNamed( controller->GetName() );
+			if(controller && !controllers.Has(controller)){
+				aeController * const sameNameController = controllers.GetNamed(controller->GetName());
 				
-				if( sameNameController ){
-					link->SetController( sameNameController, false );
+				if(sameNameController){
+					link->SetController(sameNameController, false);
 					
 				}else{
-					link->SetController( controller, false );
-					pRemoveControllerList.Add( controller );
-					pAnimator->AddController( controller );
+					link->SetController(controller, false);
+					pRemoveControllerList.Add(controller);
+					pAnimator->AddController(controller);
 				}
 			}
 			
-			pRemoveLinkList.Add( link );
-			pAnimator->AddLink( link );
+			pRemoveLinkList.Add(link);
+			pAnimator->AddLink(link);
 		}
 		
 		// insert the rule
-		pAnimator->InsertRuleAt( rule, pIndex + i );
+		pAnimator->InsertRuleAt(rule, pIndex + i);
 	}
 }
 
@@ -162,7 +162,7 @@ void aeUPasteRule::Redo(){
 //////////////////////
 
 void aeUPasteRule::pCleanUp(){
-	if( pAnimator ){
+	if(pAnimator){
 		pAnimator->FreeReference();
 	}
 }

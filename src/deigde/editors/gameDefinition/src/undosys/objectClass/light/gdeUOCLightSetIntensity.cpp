@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetIntensity::gdeUOCLightSetIntensity( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetIntensity::gdeUOCLightSetIntensity(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set intensity" );
+	SetShortInfo("Light set intensity");
 	
 	pOldValue = light->GetIntensity();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetIntensity::~gdeUOCLightSetIntensity(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetIntensity::~gdeUOCLightSetIntensity(){
 ///////////////
 
 void gdeUOCLightSetIntensity::Undo(){
-	pLight->SetIntensity( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetIntensity(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetIntensity::Redo(){
-	pLight->SetIntensity( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetIntensity(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

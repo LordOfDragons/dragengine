@@ -61,40 +61,40 @@ public:
 	inline bool GetIsInput() const{ return pIsInput; }
 	
 	/** \brief Set is input slot. */
-	void SetIsInput( bool isInput );
+	void SetIsInput(bool isInput);
 	
 	/** \brief Number of links. */
 	int GetLinkCount() const;
 	
 	/** \brief Link at the given index. */
-	meHTVRLink *GetLinkAt( int index ) const;
+	meHTVRLink *GetLinkAt(int index) const;
 	
 	/** \brief Index of the link or -1 if not found. */
-	int IndexOfLink( meHTVRLink *link ) const;
+	int IndexOfLink(meHTVRLink *link) const;
 	
 	/** \brief Link exists. */
-	bool HasLink( meHTVRLink *link ) const;
+	bool HasLink(meHTVRLink *link) const;
 	
 	/** \brief Add link. */
-	void AddLink( meHTVRLink *link );
+	void AddLink(meHTVRLink *link);
 	
 	/** \brief Remove link. */
-	void RemoveLink( meHTVRLink *link );
+	void RemoveLink(meHTVRLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
 	
 	/** \brief Link with the given source node and slot. */
-	bool HasLinkWithSource( meHTVRule *rule, int slot ) const;
+	bool HasLinkWithSource(meHTVRule *rule, int slot) const;
 	
 	/** \brief Link with the given source node and slot or NULL if not found. */
-	meHTVRLink *GetLinkWithSource( meHTVRule *rule, int slot ) const;
+	meHTVRLink *GetLinkWithSource(meHTVRule *rule, int slot) const;
 	
 	/** \brief Link with the given destination node and slot. */
-	bool HasLinkWithDestination( meHTVRule *rule, int slot ) const;
+	bool HasLinkWithDestination(meHTVRule *rule, int slot) const;
 	
 	/** \brief Link with the given destination node and slot or NULL if not found. */
-	meHTVRLink *GetLinkWithDestination( meHTVRule *rule, int slot ) const;
+	meHTVRLink *GetLinkWithDestination(meHTVRule *rule, int slot) const;
 	/*@}*/
 };
 

@@ -43,7 +43,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeMenuSeparator( igdeEnvironment &environment );
+	igdeMenuSeparator(igdeEnvironment &environment);
 	
 	
 	

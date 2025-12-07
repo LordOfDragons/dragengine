@@ -52,29 +52,29 @@ public:
 	/** Retrieves the number of targets. */
 	int GetCount() const;
 	/** Retrieves the target at the given position. */
-	ceTarget *GetAt( int index ) const;
+	ceTarget *GetAt(int index) const;
 	/** Retrieves the named target or NULL if not found. */
-	ceTarget *GetNamed( const char *name ) const;
+	ceTarget *GetNamed(const char *name) const;
 	/** Retrieves the index of a target or -1 if not found. */
-	int IndexOf( ceTarget *target ) const;
+	int IndexOf(ceTarget *target) const;
 	/** Retrieves the index of the named target or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a target exists. */
-	bool Has( ceTarget *target ) const;
+	bool Has(ceTarget *target) const;
 	/** Determines if a named target exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a target. */
-	void Add( ceTarget *target );
+	void Add(ceTarget *target);
 	/** Removes a target. */
-	void Remove( ceTarget *target );
+	void Remove(ceTarget *target);
 	/** Removes all targets. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceTargetList &operator=( const ceTargetList &list );
+	ceTargetList &operator=(const ceTargetList &list);
 	
 	/** \brief Add targets to list if absent. */
-	ceTargetList &operator+=( const ceTargetList &list );
+	ceTargetList &operator+=(const ceTargetList &list);
 	/*@}*/
 };
 

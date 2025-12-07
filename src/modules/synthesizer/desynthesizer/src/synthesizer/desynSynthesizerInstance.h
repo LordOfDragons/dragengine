@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer instance peer. */
-	desynSynthesizerInstance( deDESynthesizer &module, deSynthesizerInstance &instance );
+	desynSynthesizerInstance(deDESynthesizer &module, deSynthesizerInstance &instance);
 	
 	/** \brief Clean up synthesizer instance peer. */
 	virtual ~desynSynthesizerInstance();
@@ -102,7 +102,7 @@ public:
 	
 	
 	/** \brief Controller at index. */
-	desynSynthesizerController &GetControllerAt( int index ) const;
+	desynSynthesizerController &GetControllerAt(int index) const;
 	
 	
 	
@@ -139,7 +139,7 @@ public:
 	virtual void SynthesizerChanged();
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int index );
+	virtual void ControllerChanged(int index);
 	
 	/** \brief Play time changed. */
 	virtual void PlayTimeChanged();
@@ -170,7 +170,7 @@ public:
 	 * \throws EInvalidParam \em buffer is NULL.
 	 * \throws EInvalidParam Assigned synthesizer object changed while in use.
 	 */
-	virtual void GenerateSound( void *buffer, int bufferSize, int offset, int samples );
+	virtual void GenerateSound(void *buffer, int bufferSize, int offset, int samples);
 	/*@}*/
 	
 	
@@ -184,10 +184,10 @@ private:
 	void pClearControllers();
 	void pCreateControllers();
 	
-	void pGenerateSilence( void *buffer, int samples );
-	void pGenerateSound( desynSharedBuffer *sharedBuffer, void *buffer, int samples );
+	void pGenerateSilence(void *buffer, int samples);
+	void pGenerateSound(desynSharedBuffer *sharedBuffer, void *buffer, int samples);
 	
-	void pUpdateControllerValues( int samples, int offset );
+	void pUpdateControllerValues(int samples, int offset);
 	
 	void pCreateStateData();
 	void pFreeStateData();

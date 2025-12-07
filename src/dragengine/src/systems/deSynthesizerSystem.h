@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer system. */
-	deSynthesizerSystem( deEngine *engine );
+	deSynthesizerSystem(deEngine *engine);
 	
 	/** \brief Clean up synthesizer system. */
 	virtual ~deSynthesizerSystem();
@@ -67,13 +67,13 @@ public:
 	inline deBaseSynthesizerModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Create and assign peer for sound using the active module. */
-	void LoadSound( deSound *sound );
+	void LoadSound(deSound *sound);
 	
 	/** \brief Create and assign peer for synthesizer using the active module. */
-	void LoadSynthesizer( deSynthesizer *synthesizer );
+	void LoadSynthesizer(deSynthesizer *synthesizer);
 	
 	/** \brief Create and assign peer for synthesizer instance using the active module. */
-	void LoadSynthesizerInstance( deSynthesizerInstance *instance );
+	void LoadSynthesizerInstance(deSynthesizerInstance *instance);
 	/*@}*/
 	
 	
@@ -85,7 +85,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

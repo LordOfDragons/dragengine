@@ -64,37 +64,37 @@
 ////////////////////////////
 
 deoglAddToPersistentRenderTask::deoglAddToPersistentRenderTask(
-	deoglRenderThread &renderThread, deoglPersistentRenderTask &renderTask ) :
-pRenderThread( renderThread  ),
-pRenderTask( renderTask  ),
+	deoglRenderThread &renderThread, deoglPersistentRenderTask &renderTask) :
+pRenderThread(renderThread),
+pRenderTask(renderTask),
 
-pSkinPipelineType( deoglSkinTexturePipelines::etGeometry ),
+pSkinPipelineType(deoglSkinTexturePipelines::etGeometry),
 
-pSolid( false ),
-pNoShadowNone( false ),
-pNoNotReflected( false ),
-pNoRendered( false ),
-pOutline( false ),
+pSolid(false),
+pNoShadowNone(false),
+pNoNotReflected(false),
+pNoRendered(false),
+pOutline(false),
 
-pFilterXRay( false ),
-pXRay( false ),
+pFilterXRay(false),
+pXRay(false),
 
-pFilterHoles( false ),
-pWithHoles( false ),
+pFilterHoles(false),
+pWithHoles(false),
 
-pFilterDoubleSided( false ),
-pDoubleSided( false ),
-pForceDoubleSided( false ),
+pFilterDoubleSided(false),
+pDoubleSided(false),
+pForceDoubleSided(false),
 
-pFilterDecal( false ),
-pDecal( false ),
+pFilterDecal(false),
+pDecal(false),
 
-pFilterCubeFace( -1 ),
+pFilterCubeFace(-1),
 
-pUseSpecialParamBlock( false ),
+pUseSpecialParamBlock(false),
 
-pEnforcePipeline( nullptr ),
-pEnforceParamBlock( nullptr ){
+pEnforcePipeline(nullptr),
+pEnforceParamBlock(nullptr){
 }
 
 deoglAddToPersistentRenderTask::~deoglAddToPersistentRenderTask(){
@@ -105,154 +105,154 @@ deoglAddToPersistentRenderTask::~deoglAddToPersistentRenderTask(){
 // Management
 ///////////////
 
-void deoglAddToPersistentRenderTask::SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type ){
+void deoglAddToPersistentRenderTask::SetSkinPipelineType(deoglSkinTexturePipelines::eTypes type){
 	pSkinPipelineType = type;
 }
 
-void deoglAddToPersistentRenderTask::SetSkinPipelineModifier( int modifier ){
+void deoglAddToPersistentRenderTask::SetSkinPipelineModifier(int modifier){
 	pSkinPipelineModifier = modifier;
 }
 
-void deoglAddToPersistentRenderTask::SetSolid( bool solid ){
+void deoglAddToPersistentRenderTask::SetSolid(bool solid){
 	pSolid = solid;
 }
 
-void deoglAddToPersistentRenderTask::SetNoNotReflected( bool noNotReflected ){
+void deoglAddToPersistentRenderTask::SetNoNotReflected(bool noNotReflected){
 	pNoNotReflected = noNotReflected;
 }
 
-void deoglAddToPersistentRenderTask::SetNoRendered( bool noRendered ){
+void deoglAddToPersistentRenderTask::SetNoRendered(bool noRendered){
 	pNoRendered = noRendered;
 }
 
-void deoglAddToPersistentRenderTask::SetOutline( bool outline ){
+void deoglAddToPersistentRenderTask::SetOutline(bool outline){
 	pOutline = outline;
 }
 
-void deoglAddToPersistentRenderTask::SetFilterXRay( bool filterXRay ){
+void deoglAddToPersistentRenderTask::SetFilterXRay(bool filterXRay){
 	pFilterXRay = filterXRay;
 }
 
-void deoglAddToPersistentRenderTask::SetXRay( bool xray ){
+void deoglAddToPersistentRenderTask::SetXRay(bool xray){
 	pXRay = xray;
 }
 
-void deoglAddToPersistentRenderTask::SetNoShadowNone( bool noShadowNone ){
+void deoglAddToPersistentRenderTask::SetNoShadowNone(bool noShadowNone){
 	pNoShadowNone = noShadowNone;
 }
 
-void deoglAddToPersistentRenderTask::SetFilterHoles( bool filterHoles ){
+void deoglAddToPersistentRenderTask::SetFilterHoles(bool filterHoles){
 	pFilterHoles = filterHoles;
 }
 
-void deoglAddToPersistentRenderTask::SetWithHoles( bool withHoles ){
+void deoglAddToPersistentRenderTask::SetWithHoles(bool withHoles){
 	pWithHoles = withHoles;
 }
 
-void deoglAddToPersistentRenderTask::SetFilterDoubleSided( bool filterDoubleSided ){
+void deoglAddToPersistentRenderTask::SetFilterDoubleSided(bool filterDoubleSided){
 	pFilterDoubleSided = filterDoubleSided;
 }
-void deoglAddToPersistentRenderTask::SetDoubleSided( bool doubleSided ){
+void deoglAddToPersistentRenderTask::SetDoubleSided(bool doubleSided){
 	pDoubleSided = doubleSided;
 }
 
-void deoglAddToPersistentRenderTask::SetForceDoubleSided( bool doubleSided ){
+void deoglAddToPersistentRenderTask::SetForceDoubleSided(bool doubleSided){
 	pForceDoubleSided = doubleSided;
 }
 
-void deoglAddToPersistentRenderTask::SetFilterDecal( bool filterDecal ){
+void deoglAddToPersistentRenderTask::SetFilterDecal(bool filterDecal){
 	pFilterDecal = filterDecal;
 }
 
-void deoglAddToPersistentRenderTask::SetDecal( bool decal ){
+void deoglAddToPersistentRenderTask::SetDecal(bool decal){
 	pDecal = decal;
 }
 
-void deoglAddToPersistentRenderTask::SetFilterCubeFace( int cubeFace ){
+void deoglAddToPersistentRenderTask::SetFilterCubeFace(int cubeFace){
 	pFilterCubeFace = cubeFace;
 }
 
-void deoglAddToPersistentRenderTask::SetUseSpecialParamBlock( bool use ){
+void deoglAddToPersistentRenderTask::SetUseSpecialParamBlock(bool use){
 	pUseSpecialParamBlock = use;
 }
 
-void deoglAddToPersistentRenderTask::SetEnforcePipeline( const deoglPipeline *pipeline ){
+void deoglAddToPersistentRenderTask::SetEnforcePipeline(const deoglPipeline *pipeline){
 	pEnforcePipeline = pipeline;
 }
 
-void deoglAddToPersistentRenderTask::SetEnforceParamBlock( const deoglSPBlockUBO *block ){
+void deoglAddToPersistentRenderTask::SetEnforceParamBlock(const deoglSPBlockUBO *block){
 	pEnforceParamBlock = block;
 }
 
-void deoglAddToPersistentRenderTask::AddComponent( deoglPersistentRenderTaskOwner &owner,
-const deoglCollideListComponent &clcomponent ){
+void deoglAddToPersistentRenderTask::AddComponent(deoglPersistentRenderTaskOwner &owner,
+const deoglCollideListComponent &clcomponent){
 	deoglRComponent &component = *clcomponent.GetComponent();
-	if( ! component.GetParentWorld() || ! component.GetModel() ){
+	if(!component.GetParentWorld() || !component.GetModel()){
 		return;
 	}
-	if( pFilterCubeFace != -1 && ! clcomponent.GetCubeFaceMaskAt( pFilterCubeFace ) ){
+	if(pFilterCubeFace != -1 && !clcomponent.GetCubeFaceMaskAt(pFilterCubeFace)){
 		return;
 	}
 	
 	const int lodLevel = clcomponent.GetLODLevel();
 	const int specialFlags = clcomponent.GetSpecialFlags();
 	const deoglRModel &model = component.GetModel();
-	const deoglModelLOD &modelLOD = model.GetLODAt( lodLevel );
+	const deoglModelLOD &modelLOD = model.GetLODAt(lodLevel);
 	const int textureCount = modelLOD.GetTextureCount();
 	int i;
 	
-	for( i=0; i<textureCount; i++ ){
-		const deoglModelTexture &texture = modelLOD.GetTextureAt( i );
-		if( texture.GetFaceCount() > 0 ){
-			AddComponentFaces( owner, component, i, texture.GetFirstFace(), texture.GetFaceCount(), lodLevel, specialFlags );
+	for(i=0; i<textureCount; i++){
+		const deoglModelTexture &texture = modelLOD.GetTextureAt(i);
+		if(texture.GetFaceCount() > 0){
+			AddComponentFaces(owner, component, i, texture.GetFirstFace(), texture.GetFaceCount(), lodLevel, specialFlags);
 		}
 	}
 }
 
-void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
-const deoglRComponent &component, int texture, int lodLevel, int specialFlags ){
-	if( ! component.GetModel() ){
+void deoglAddToPersistentRenderTask::AddComponentFaces(deoglPersistentRenderTaskOwner &owner,
+const deoglRComponent &component, int texture, int lodLevel, int specialFlags){
+	if(!component.GetModel()){
 		return;
 	}
 	
-	const deoglModelTexture &t = component.GetModel()->GetLODAt( lodLevel ).GetTextureAt( texture );
-	if( t.GetFaceCount() > 0 ){
-		AddComponentFaces( owner, component, texture, t.GetFirstFace(), t.GetFaceCount(), lodLevel, specialFlags );
+	const deoglModelTexture &t = component.GetModel()->GetLODAt(lodLevel).GetTextureAt(texture);
+	if(t.GetFaceCount() > 0){
+		AddComponentFaces(owner, component, texture, t.GetFirstFace(), t.GetFaceCount(), lodLevel, specialFlags);
 	}
 }
 
-void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
-const deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel, int specialFlags ){
-	const deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
-	if( componentTexture.GetIsRendered() ){
+void deoglAddToPersistentRenderTask::AddComponentFaces(deoglPersistentRenderTaskOwner &owner,
+const deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel, int specialFlags){
+	const deoglRComponentTexture &componentTexture = component.GetTextureAt(texture);
+	if(componentTexture.GetIsRendered()){
 		return;
 	}
 	
 	const deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
-	if( ! skinTexture ){
+	if(!skinTexture){
 		return;
 	}
-	if( pFilterReject( skinTexture ) ){
+	if(pFilterReject(skinTexture)){
 		return;
 	}
 	
 	const bool doubleSided = componentTexture.GetUseDoubleSided();
-	if( pFilterDoubleSided && pDoubleSided != doubleSided ){
+	if(pFilterDoubleSided && pDoubleSided != doubleSided){
 		return;
 	}
-	if( pFilterDecal && pDecal != componentTexture.GetUseDecal() ){
+	if(pFilterDecal && pDecal != componentTexture.GetUseDecal()){
 		return;
 	}
 	
 	// obtain render task vao and add faces
-	deoglVAO * const vao = component.GetVAO( lodLevel );
-	if( ! vao ){
+	deoglVAO * const vao = component.GetVAO(lodLevel);
+	if(!vao){
 		return;
 	}
 	
 	deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType;
 	
-	if( componentTexture.GetUseDecal() ){
+	if(componentTexture.GetUseDecal()){
 		pipelinesType = deoglSkinTexturePipelinesList::eptDecal;
 		
 	}else{
@@ -260,7 +260,7 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 	}
 	
 	int pipelineModifier = pSkinPipelineModifier;
-	if( doubleSided || pForceDoubleSided ){
+	if(doubleSided || pForceDoubleSided){
 		pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
 	}
 	
@@ -269,17 +269,17 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 		*skinTexture, componentTexture.GetTUCForPipelineType ( pSkinPipelineType ), vao );
 	
 	const deoglSharedSPBElement &spbElement = *componentTexture.GetSharedSPBElement();
-	const deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup( lodLevel );
+	const deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup(lodLevel);
 	
-	deoglPersistentRenderTaskInstance *rti = rtvao->GetInstanceWith( &group );
-	if( ! rti ){
-		rti = rtvao->AddInstance( &spbElement.GetSPB(), &group );
-		rti->SetFirstPoint( component.GetPointOffset( lodLevel ) );
-		rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
-		rti->SetIndexCount( faceCount * 3 );
+	deoglPersistentRenderTaskInstance *rti = rtvao->GetInstanceWith(&group);
+	if(!rti){
+		rti = rtvao->AddInstance(&spbElement.GetSPB(), &group);
+		rti->SetFirstPoint(component.GetPointOffset(lodLevel));
+		rti->SetFirstIndex(component.GetIndexOffset(lodLevel) + firstFace * 3);
+		rti->SetIndexCount(faceCount * 3);
 	}
 	
-	owner.AddSubInstance( rti->AddSubInstance( spbElement.GetIndex(), specialFlags ) );
+	owner.AddSubInstance(rti->AddSubInstance(spbElement.GetIndex(), specialFlags));
 }
 
 
@@ -287,47 +287,47 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 // Private Functions
 //////////////////////
 
-bool deoglAddToPersistentRenderTask::pFilterReject( const deoglSkinTexture *skinTexture ) const{
-	if( ! skinTexture ){
+bool deoglAddToPersistentRenderTask::pFilterReject(const deoglSkinTexture *skinTexture) const{
+	if(!skinTexture){
 		return true;
 	}
-	if( pOutline ){
-		if( ! skinTexture->GetHasOutline() ){
+	if(pOutline){
+		if(!skinTexture->GetHasOutline()){
 			return true;
 		}
-		if( pSolid != skinTexture->GetIsOutlineSolid() ){
+		if(pSolid != skinTexture->GetIsOutlineSolid()){
 			return true;
 		}
 		
 	}else{
-		if( pSolid != skinTexture->GetSolid() ){
+		if(pSolid != skinTexture->GetSolid()){
 			return true;
 		}
 	}
 	
-	if( pFilterRejectNoSolid( skinTexture ) ){
+	if(pFilterRejectNoSolid(skinTexture)){
 		return true;
 	}
 	return false;
 }
 
-bool deoglAddToPersistentRenderTask::pFilterRejectNoSolid( const deoglSkinTexture *skinTexture ) const{
-	if( ! skinTexture ){
+bool deoglAddToPersistentRenderTask::pFilterRejectNoSolid(const deoglSkinTexture *skinTexture) const{
+	if(!skinTexture){
 		return true;
 	}
-	if( pFilterXRay && pXRay != skinTexture->GetXRay() ){
+	if(pFilterXRay && pXRay != skinTexture->GetXRay()){
 		return true;
 	}
-	if( pFilterHoles && pWithHoles != skinTexture->GetHasHoles() ){
+	if(pFilterHoles && pWithHoles != skinTexture->GetHasHoles()){
 		return true;
 	}
-	if( pNoRendered && skinTexture->GetRendered() ){
+	if(pNoRendered && skinTexture->GetRendered()){
 		return true;
 	}
-	if( pNoShadowNone && skinTexture->GetShadowNone() ){
+	if(pNoShadowNone && skinTexture->GetShadowNone()){
 		return true;
 	}
-	if( pNoNotReflected && ! skinTexture->GetReflected() ){
+	if(pNoNotReflected && !skinTexture->GetReflected()){
 		return true;
 	}
 	return false;
@@ -336,44 +336,44 @@ bool deoglAddToPersistentRenderTask::pFilterRejectNoSolid( const deoglSkinTextur
 deoglPersistentRenderTaskVAO *deoglAddToPersistentRenderTask::pGetTaskVAO(
 deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
 deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,
-const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const{
+const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deoglVAO *vao) const{
 	// retrieve the shader and texture units configuration to use
 	const deoglPipeline *pipeline = pEnforcePipeline;
 	int spbInstanceIndexBase = -1, drawIDOffset = -1;
 	
-	if( ! pipeline ){
+	if(!pipeline){
 		const deoglSkinTexturePipeline * const skinPipeline = skinTexture.GetPipelines().
-			GetAt( pipelinesType ).GetWith( pipelineType, pipelineModifier );
-		if( skinPipeline ){
+			GetAt(pipelinesType).GetWith(pipelineType, pipelineModifier);
+		if(skinPipeline){
 			pipeline = skinPipeline->GetPipeline();
 			spbInstanceIndexBase = skinPipeline->GetShader()->GetTargetSPBInstanceIndexBase();
 			drawIDOffset = skinPipeline->GetShader()->GetTargetDrawIDOffset();
 		}
 	}
 	
-	DEASSERT_NOTNULL( pipeline )
+	DEASSERT_NOTNULL(pipeline)
 	
-	if( ! tuc ){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	deoglPersistentRenderTaskPipeline *rtpipeline = pRenderTask.GetPipelineWith( pipeline );
-	if( ! rtpipeline ){
-		rtpipeline = pRenderTask.AddPipeline( pipeline );
-		rtpipeline->SetParameterBlock( NULL );
-		rtpipeline->SetSPBInstanceIndexBase( spbInstanceIndexBase );
-		rtpipeline->SetDrawIDOffset( drawIDOffset );
+	deoglPersistentRenderTaskPipeline *rtpipeline = pRenderTask.GetPipelineWith(pipeline);
+	if(!rtpipeline){
+		rtpipeline = pRenderTask.AddPipeline(pipeline);
+		rtpipeline->SetParameterBlock(NULL);
+		rtpipeline->SetSPBInstanceIndexBase(spbInstanceIndexBase);
+		rtpipeline->SetDrawIDOffset(drawIDOffset);
 	}
 	
-	deoglPersistentRenderTaskTexture *rttexture = rtpipeline->GetTextureWith( tuc );
-	if( ! rttexture ){
-		rttexture = rtpipeline->AddTexture( tuc );
-		rttexture->SetParameterBlock( skinTexture.GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	deoglPersistentRenderTaskTexture *rttexture = rtpipeline->GetTextureWith(tuc);
+	if(!rttexture){
+		rttexture = rtpipeline->AddTexture(tuc);
+		rttexture->SetParameterBlock(skinTexture.GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	deoglPersistentRenderTaskVAO *rtvao = rttexture->GetVAOWith( vao );
-	if( ! rtvao ){
-		rtvao = rttexture->AddVAO( vao );
+	deoglPersistentRenderTaskVAO *rtvao = rttexture->GetVAOWith(vao);
+	if(!rtvao){
+		rtvao = rttexture->AddVAO(vao);
 	}
 	
 	return rtvao;

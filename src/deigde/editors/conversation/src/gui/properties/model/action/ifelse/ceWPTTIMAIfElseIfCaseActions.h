@@ -40,8 +40,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElseIfCaseActions( ceWindowMain &windowMain,
-		ceConversation &conversation, const ceConversationActionList &actions );
+	ceWPTTIMAIfElseIfCaseActions(ceWindowMain &windowMain,
+		ceConversation &conversation, const ceConversationActionList &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -62,10 +62,10 @@ public:
 	
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief User requests context menu for selected child action. */
-	virtual void ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action );
+	virtual void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action);
 	
 	/** \brief Update action. */
 	virtual void Update();

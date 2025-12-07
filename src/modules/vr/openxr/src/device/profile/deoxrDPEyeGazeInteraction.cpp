@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPEyeGazeInteraction::deoxrDPEyeGazeInteraction( deoxrInstance &instance ) :
-deoxrDeviceProfile( instance,
-	deoxrPath( instance, "/interaction_profiles/ext/eye_gaze_interaction" ),
-	"Eye Gaze Interaction" ){
+deoxrDPEyeGazeInteraction::deoxrDPEyeGazeInteraction(deoxrInstance &instance) :
+deoxrDeviceProfile(instance,
+	deoxrPath(instance, "/interaction_profiles/ext/eye_gaze_interaction"),
+	"Eye Gaze Interaction"){
 }
 
 deoxrDPEyeGazeInteraction::~deoxrDPEyeGazeInteraction(){
@@ -55,7 +55,7 @@ deoxrDPEyeGazeInteraction::~deoxrDPEyeGazeInteraction(){
 ///////////////
 
 void deoxrDPEyeGazeInteraction::CheckAttached(){
-	if( GetInstance().SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
+	if(GetInstance().SupportsExtension(deoxrInstance::extEXTEyeGazeInteraction)){
 		pAddDevice();
 		
 	}else{
@@ -64,7 +64,7 @@ void deoxrDPEyeGazeInteraction::CheckAttached(){
 }
 
 void deoxrDPEyeGazeInteraction::SuggestBindings(){
-	if( ! GetInstance().SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
+	if(!GetInstance().SupportsExtension(deoxrInstance::extEXTEyeGazeInteraction)){
 		return;
 	}
 	
@@ -75,12 +75,12 @@ void deoxrDPEyeGazeInteraction::SuggestBindings(){
 	// - /input/gaze_ext/pose
 	
 	const int bindingCount = 1;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
-	pAdd( b, deVROpenXR::eiaPose, "/user/eyes_ext/input/gaze_ext/pose" );
+	pAdd(b, deVROpenXR::eiaPose, "/user/eyes_ext/input/gaze_ext/pose");
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 }
 
 void deoxrDPEyeGazeInteraction::ClearActions(){
@@ -93,34 +93,34 @@ void deoxrDPEyeGazeInteraction::ClearActions(){
 //////////////////////
 
 void deoxrDPEyeGazeInteraction::pAddDevice() {
-	if( pDevice ){
+	if(pDevice){
 		return;
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	pDevice.TakeOver( new deoxrDevice( oxr, *this ) );
+	pDevice.TakeOver(new deoxrDevice(oxr, *this));
 	
 	decString id;
 	
-	pDevice->SetType( deInputDevice::edtVREyeTracker );
-	pDevice->SetName( "Eye Tracker" );
-	id.Format( "%segi", OXR_DEVID_PREFIX );
+	pDevice->SetType(deInputDevice::edtVREyeTracker);
+	pDevice->SetName("Eye Tracker");
+	id.Format("%segi", OXR_DEVID_PREFIX);
 	
-	pDevice->SetActionPose( oxr.GetAction( deVROpenXR::eiaPose ) );
-	pDevice->SetID( id );
+	pDevice->SetActionPose(oxr.GetAction(deVROpenXR::eiaPose));
+	pDevice->SetID(id);
 	
-	pDevice->SetSpacePose( deoxrSpace::Ref::NewWith(*pGetSession(),
-		pDevice->GetActionPose(), pDevice->GetSubactionPath(), GetDeviceRotation()) );
+	pDevice->SetSpacePose(deoxrSpace::Ref::NewWith(*pGetSession(),
+		pDevice->GetActionPose(), pDevice->GetSubactionPath(), GetDeviceRotation()));
 	
-	GetInstance().GetOxr().GetDevices().Add( pDevice );
+	GetInstance().GetOxr().GetDevices().Add(pDevice);
 }
 
 void deoxrDPEyeGazeInteraction::pRemoveDevice() {
-	if( ! pDevice ){
+	if(!pDevice){
 		return;
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	oxr.GetDevices().Remove( pDevice );
+	oxr.GetDevices().Remove(pDevice);
 	pDevice = nullptr;
 }

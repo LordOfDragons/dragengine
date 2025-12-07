@@ -47,7 +47,7 @@ public:
 	gdeOCForceFieldList();
 	
 	/** \brief Create copy of object class force field list. */
-	gdeOCForceFieldList( const gdeOCForceFieldList &list );
+	gdeOCForceFieldList(const gdeOCForceFieldList &list);
 	
 	/** \brief Clean up object class force field list. */
 	~gdeOCForceFieldList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class force field at position. */
-	gdeOCForceField *GetAt( int index ) const;
+	gdeOCForceField *GetAt(int index) const;
 	
 	/** \brief Index of named object class force field or -1 if absent. */
-	int IndexOf( gdeOCForceField *field ) const;
+	int IndexOf(gdeOCForceField *field) const;
 	
 	/** \brief Object class force field is present. */
-	bool Has( gdeOCForceField *field ) const;
+	bool Has(gdeOCForceField *field) const;
 	
 	/** \brief Add object class force field. */
-	void Add( gdeOCForceField *field );
+	void Add(gdeOCForceField *field);
 	
 	/** \brief Remove object class force field. */
-	void Remove( gdeOCForceField *field );
+	void Remove(gdeOCForceField *field);
 	
 	/** \brief Remove all object class force fields. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class force field list. */
-	gdeOCForceFieldList &operator=( const gdeOCForceFieldList &list );
+	gdeOCForceFieldList &operator=(const gdeOCForceFieldList &list);
 	/*@}*/
 };
 

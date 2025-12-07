@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	igdeLoadParticleEmitter( igdeEnvironment &environment, deLogger *logger,
-		const char *loggerSource );
+	igdeLoadParticleEmitter(igdeEnvironment &environment, deLogger *logger,
+		const char *loggerSource);
 	
 	/** \brief Clean up loader. */
 	virtual ~igdeLoadParticleEmitter();
@@ -70,39 +70,39 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name to display in a file dialog. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern to display in a file dialog. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern to display in a file dialog. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default file extension. */
 	inline const decString &GetDefaultExtension() const{ return pDefaultExtension; }
 	
 	/** \brief Set default file extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	
 	
 	
 	/** \brief Load particle emitter using a file reader. */
-	void Load( const decString &path, deParticleEmitter &particleEmitter, decBaseFileReader &reader );
+	void Load(const decString &path, deParticleEmitter &particleEmitter, decBaseFileReader &reader);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadEmitter( const decXmlElementTag &root, const char *basePath,
-		deParticleEmitter &particleEmitter );
+	void pReadEmitter(const decXmlElementTag &root, const char *basePath,
+		deParticleEmitter &particleEmitter);
 	
-	void pReadController( const decXmlElementTag &root, deParticleEmitter &particleEmitter );
+	void pReadController(const decXmlElementTag &root, deParticleEmitter &particleEmitter);
 	
-	void pReadType( const decXmlElementTag &root, const char *basePath,
-		deParticleEmitter &particleEmitter, deParticleEmitterType &type );
+	void pReadType(const decXmlElementTag &root, const char *basePath,
+		deParticleEmitter &particleEmitter, deParticleEmitterType &type);
 	
-	void pReadParameter( const decXmlElementTag &root, deParticleEmitter &particleEmitter,
-		deParticleEmitterType &type );
+	void pReadParameter(const decXmlElementTag &root, deParticleEmitter &particleEmitter,
+		deParticleEmitterType &type);
 };
 
 #endif

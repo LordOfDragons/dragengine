@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAGameCommand::ceWPTTIMAGameCommand( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAGameCommand *action ) :
-ceWPTTIMAction( windowMain, etActionGameCommand, conversation, action )
+ceWPTTIMAGameCommand::ceWPTTIMAGameCommand(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAGameCommand *action) :
+ceWPTTIMAction(windowMain, etActionGameCommand, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionCommand() );
+	SetIcon(windowMain.GetIconActionCommand());
 	Update();
 }
 
@@ -61,20 +61,20 @@ void ceWPTTIMAGameCommand::Update(){
 	const ceCAGameCommand &action = *GetActionGameCommand();
 	decString text;
 	
-	if( action.GetCommand().IsEmpty() ){
+	if(action.GetCommand().IsEmpty()){
 		text = "Game Command";
 		
 	}else{
-		const decString lineCommand( action.GetCommand().Split( '\n' ).GetAt( 0 ) );
+		const decString lineCommand(action.GetCommand().Split('\n').GetAt(0));
 		
-		if( lineCommand.GetLength() > 40 ){
-			text = lineCommand.GetLeft( 40 ) + "...";
+		if(lineCommand.GetLength() > 40){
+			text = lineCommand.GetLeft(40) + "...";
 			
 		}else{
 			text = lineCommand;
 		}
 	}
 	
-	SetText( text );
-	SetDescription( action.GetCommand() );
+	SetText(text);
+	SetDescription(action.GetCommand());
 }

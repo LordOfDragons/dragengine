@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPCVariable( ceWPTopic &parentPanel );
+	ceWPCVariable(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */

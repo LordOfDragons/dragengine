@@ -46,25 +46,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsCollider::dedsCollider( deScriptingDragonScript &ds, deCollider *collider ) :
-pDS( ds ),
-pCollider( collider ),
-pValOwner( NULL ),
-pEnableCanHitCallback( false ),
-pValCB( NULL ),
-pHasCB( false ),
-pValCBBreaking( NULL ),
-pHasCBBreaking( false )
+dedsCollider::dedsCollider(deScriptingDragonScript &ds, deCollider *collider) :
+pDS(ds),
+pCollider(collider),
+pValOwner(NULL),
+pEnableCanHitCallback(false),
+pValCB(NULL),
+pHasCB(false),
+pValCBBreaking(NULL),
+pHasCBBreaking(false)
 {
-	if( ! collider ){
-		DSTHROW( dueInvalidParam );
+	if(!collider){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	dsRunTime &rt = *ds.GetScriptEngine()->GetMainRunTime();
 	
 	pValOwner = rt.CreateValue();
-	pValCB = rt.CreateValue( pDS.GetClassColliderListener() );
-	pValCBBreaking = rt.CreateValue( ds.GetClassColliderBreakingListener() );
+	pValCB = rt.CreateValue(pDS.GetClassColliderListener());
+	pValCBBreaking = rt.CreateValue(ds.GetClassColliderBreakingListener());
 }
 
 dedsCollider::~dedsCollider(){
@@ -72,39 +72,39 @@ dedsCollider::~dedsCollider(){
 	// the case we can end up re-entering this destructor due to the collider resource
 	// being deleted due to links breaking while freeing the value. if this is the
 	// case delay the deletion until a safe time
-	if( pCollider && pCollider->GetRefCount() > 0 ){
-		if( pValCBBreaking ){
-			pDS.AddValueDeleteLater( pValCBBreaking );
+	if(pCollider && pCollider->GetRefCount() > 0){
+		if(pValCBBreaking){
+			pDS.AddValueDeleteLater(pValCBBreaking);
 			pValCBBreaking = NULL;
 			pHasCBBreaking = false;
 		}
 		
-		if( pValCB ){
-			pDS.AddValueDeleteLater( pValCB );
+		if(pValCB){
+			pDS.AddValueDeleteLater(pValCB);
 			pValCB = NULL;
 			pHasCB = false;
 		}
 		
-		if( pValOwner ){
-			pDS.AddValueDeleteLater( pValOwner );
+		if(pValOwner){
+			pDS.AddValueDeleteLater(pValOwner);
 			pValOwner = NULL;
 		}
 		
 	}else{
-		if( pValCBBreaking ){
-			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCBBreaking );
+		if(pValCBBreaking){
+			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCBBreaking);
 			pValCBBreaking = NULL;
 			pHasCBBreaking = false;
 		}
 		
-		if( pValCB ){
-			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		if(pValCB){
+			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 			pValCB = NULL;
 			pHasCB = false;
 		}
 		
-		if( pValOwner ){
-			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValOwner );
+		if(pValOwner){
+			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValOwner);
 			pValOwner = NULL;
 		}
 	}
@@ -115,7 +115,7 @@ dedsCollider::~dedsCollider(){
 // Management
 ///////////////
 
-void dedsCollider::SetEnableCanHitCallback( bool enable ){
+void dedsCollider::SetEnableCanHitCallback(bool enable){
 	pEnableCanHitCallback = enable;
 }
 
@@ -125,18 +125,18 @@ dsRealObject *dedsCollider::GetOwner() const{
 	return pValOwner->GetRealObject();
 }
 
-void dedsCollider::SetOwner( dsRealObject *object ){
-	if( ! pValOwner ){
+void dedsCollider::SetOwner(dsRealObject *object){
+	if(!pValOwner){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValOwner, object );
+	if(object){
+		rt.SetObject(pValOwner, object);
 		
 	}else{
-		rt.ClearValue( pValOwner );
+		rt.ClearValue(pValOwner);
 	}
 }
 
@@ -146,20 +146,20 @@ dsRealObject *dedsCollider::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsCollider::SetCallback( dsRealObject *object ){
-	if( ! pValCB ){
+void dedsCollider::SetCallback(dsRealObject *object){
+	if(!pValCB){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValCB, object );
-		rt.CastValueTo( pValCB, pValCB, pDS.GetClassColliderListener() );
+	if(object){
+		rt.SetObject(pValCB, object);
+		rt.CastValueTo(pValCB, pValCB, pDS.GetClassColliderListener());
 		pHasCB = true;
 		
 	}else{
-		rt.SetNull( pValCB, pDS.GetClassColliderListener() );
+		rt.SetNull(pValCB, pDS.GetClassColliderListener());
 		pHasCB = false;
 	}
 }
@@ -170,20 +170,20 @@ dsRealObject *dedsCollider::GetCallbackBreaking() const{
 	return pValCBBreaking->GetRealObject();
 }
 
-void dedsCollider::SetCallbackBreaking( dsRealObject *object ){
-	if( ! pValCBBreaking ){
+void dedsCollider::SetCallbackBreaking(dsRealObject *object){
+	if(!pValCBBreaking){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValCBBreaking, object );
-		rt.CastValueTo( pValCBBreaking, pValCBBreaking, pDS.GetClassColliderBreakingListener() );
+	if(object){
+		rt.SetObject(pValCBBreaking, object);
+		rt.CastValueTo(pValCBBreaking, pValCBBreaking, pDS.GetClassColliderBreakingListener());
 		pHasCBBreaking = true;
 		
 	}else{
-		rt.SetNull( pValCBBreaking, pDS.GetClassColliderBreakingListener() );
+		rt.SetNull(pValCBBreaking, pDS.GetClassColliderBreakingListener());
 		pHasCBBreaking = false;
 	}
 }
@@ -202,13 +202,13 @@ void dedsCollider::SetCallbackBreaking( dsRealObject *object ){
 	int timerColliderChangedCount = 0;
 #endif
 
-void dedsCollider::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( ! pHasCB ){
+void dedsCollider::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(!pHasCB){
 		return;
 	}
 	
-	if( ! owner || ! info ){
-		DSTHROW( dueInvalidParam );
+	if(!owner || !info){
+		DSTHROW(dueInvalidParam);
 	}
 	
 		#ifdef DO_TIMING
@@ -222,28 +222,28 @@ void dedsCollider::CollisionResponse( deCollider *owner, deCollisionInfo *info )
 	deClassCollider &clsCol = *pDS.GetClassCollider();
 	
 	try{
-		clsCI.PushInfo( rt, info ); // info
-		clsCol.PushCollider( rt, owner ); // owner
-		rt->RunFunctionFast( pValCB, funcIndex );
+		clsCI.PushInfo(rt, info); // info
+		clsCol.PushCollider(rt, owner); // owner
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 	
 		#ifdef DO_TIMING
-		timerCollisionResponse += ( int )( timer.GetElapsedTime() * 1e6f );
+		timerCollisionResponse += (int)(timer.GetElapsedTime() * 1e6f);
 		timerCollisionResponseCount++;
 		#endif
 }
 
-bool dedsCollider::CanHitCollider( deCollider *owner, deCollider *collider ){
-	if( ! pEnableCanHitCallback || ! pHasCB ){
+bool dedsCollider::CanHitCollider(deCollider *owner, deCollider *collider){
+	if(!pEnableCanHitCallback || !pHasCB){
 		return true;
 	}
 	
-	if( ! owner || ! collider ){
-		DSTHROW( dueInvalidParam );
+	if(!owner || !collider){
+		DSTHROW(dueInvalidParam);
 	}
 	
 		#ifdef DO_TIMING
@@ -257,31 +257,31 @@ bool dedsCollider::CanHitCollider( deCollider *owner, deCollider *collider ){
 	bool retVal = true;
 	
 	try{
-		clsCol->PushCollider( rt, collider ); // collider
-		clsCol->PushCollider( rt, owner ); // owner
-		rt->RunFunctionFast( pValCB, funcIndex );
+		clsCol->PushCollider(rt, collider); // collider
+		clsCol->PushCollider(rt, owner); // owner
+		rt->RunFunctionFast(pValCB, funcIndex);
 		retVal = rt->GetReturnBool();
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 	
 		#ifdef DO_TIMING
-		timerCanHitCollider += ( int )( timer.GetElapsedTime() * 1e6f );
+		timerCanHitCollider += (int)(timer.GetElapsedTime() * 1e6f);
 		timerCanHitColliderCount++;
 		#endif
 	
 	return retVal;
 }
 
-void dedsCollider::ColliderChanged( deCollider *owner ){
-	if( ! pHasCB ){
+void dedsCollider::ColliderChanged(deCollider *owner){
+	if(!pHasCB){
 		return;
 	}
 	
-	if( ! owner ){
-		DSTHROW( dueInvalidParam );
+	if(!owner){
+		DSTHROW(dueInvalidParam);
 	}
 	
 		#ifdef DO_TIMING
@@ -294,30 +294,30 @@ void dedsCollider::ColliderChanged( deCollider *owner ){
 	deClassCollider *clsCol = pDS.GetClassCollider();
 	
 	try{
-		clsCol->PushCollider( rt, owner ); // owner
-		rt->RunFunctionFast( pValCB, funcIndex );
+		clsCol->PushCollider(rt, owner); // owner
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 	
 		#ifdef DO_TIMING
-		timerColliderChanged += ( int )( timer.GetElapsedTime() * 1e6f );
+		timerColliderChanged += (int)(timer.GetElapsedTime() * 1e6f);
 		timerColliderChangedCount++;
 		#endif
 }
 
 
 
-void dedsCollider::ColliderConstraintBroke( deCollider *owner,
-int index, deColliderConstraint *constraint ){
-	if( ! pHasCBBreaking ){
+void dedsCollider::ColliderConstraintBroke(deCollider *owner,
+int index, deColliderConstraint *constraint){
+	if(!pHasCBBreaking){
 		return;
 	}
 	
-	if( ! owner ){
-		DSTHROW( dueInvalidParam );
+	if(!owner){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	const int funcIndex = pDS.GetClassColliderBreakingListener()->GetFuncIndexColliderConstraintBroke();
@@ -325,24 +325,24 @@ int index, deColliderConstraint *constraint ){
 	deClassCollider &clsCol = *pDS.GetClassCollider();
 	
 	try{
-		rt->PushInt( index ); // index
-		clsCol.PushCollider( rt, owner ); // owner
-		rt->RunFunctionFast( pValCBBreaking, funcIndex );
+		rt->PushInt(index); // index
+		clsCol.PushCollider(rt, owner); // owner
+		rt->RunFunctionFast(pValCBBreaking, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 }
 
-void dedsCollider::RigConstraintBroke( deCollider *owner,
-int bone, int index, deRigConstraint *constraint ) {
-	if( ! pHasCBBreaking ){
+void dedsCollider::RigConstraintBroke(deCollider *owner,
+int bone, int index, deRigConstraint *constraint) {
+	if(!pHasCBBreaking){
 		return;
 	}
 	
-	if( ! owner ){
-		DSTHROW( dueInvalidParam );
+	if(!owner){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	const int funcIndex = pDS.GetClassColliderBreakingListener()->GetFuncIndexRigConstraintBroke();
@@ -350,12 +350,12 @@ int bone, int index, deRigConstraint *constraint ) {
 	deClassCollider &clsCol = *pDS.GetClassCollider();
 	
 	try{
-		rt->PushInt( index ); // index
-		rt->PushInt( bone ); // bone
-		clsCol.PushCollider( rt, owner ); // owner
-		rt->RunFunctionFast( pValCBBreaking, funcIndex );
+		rt->PushInt(index); // index
+		rt->PushInt(bone); // bone
+		clsCol.PushCollider(rt, owner); // owner
+		rt->RunFunctionFast(pValCBBreaking, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}

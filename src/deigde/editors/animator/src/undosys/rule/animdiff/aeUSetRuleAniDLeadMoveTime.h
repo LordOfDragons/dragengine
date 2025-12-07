@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleAniDLeadMoveTime( aeRuleAnimationDifference *rule, float newTime );
+	aeUSetRuleAniDLeadMoveTime(aeRuleAnimationDifference *rule, float newTime);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleAniDLeadMoveTime();

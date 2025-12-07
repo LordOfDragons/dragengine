@@ -38,7 +38,7 @@ class igdeNativeFoxResizer;
  * \brief FOX toolkit Native Text Area.
  */
 class igdeNativeFoxTextArea : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxTextArea )
+	FXDECLARE(igdeNativeFoxTextArea)
 protected:
 	   igdeNativeFoxTextArea();
 	
@@ -62,14 +62,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text widget. */
-	igdeNativeFoxTextArea( igdeTextArea &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxTextArea(igdeTextArea &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up text widget. */
 	virtual ~igdeNativeFoxTextArea();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxTextArea* CreateNativeWidget( igdeTextArea &owner );
+	static igdeNativeFoxTextArea* CreateNativeWidget(igdeTextArea &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -96,38 +96,38 @@ public:
 	virtual void UpdateEditable();
 	virtual void Focus();
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition( int position );
+	virtual void SetCursorPosition(int position);
 	virtual int GetCursorColumn() const;
 	virtual int GetCursorRow() const;
-	virtual void SetCursorColumn( int column );
-	virtual void SetCursorRow( int row );
+	virtual void SetCursorColumn(int column);
+	virtual void SetCursorRow(int row);
 	virtual int GetTopLine() const;
-	virtual void SetTopLine( int line );
+	virtual void SetTopLine(int line);
 	virtual int GetBottomLine() const;
-	virtual void SetBottomLine( int line );
+	virtual void SetBottomLine(int line);
 	virtual int GetLineCount() const;
 	virtual void UpdateColumns();
 	virtual void UpdateRows();
 	
-	static int TextAreaFlagsBorder( const igdeTextArea &owner );
-	static int TextAreaFlags( const igdeTextArea &owner );
-	static igdeFont *TextAreaFont( const igdeTextArea &owner, const igdeGuiTheme &guitheme );
-	static int TextAreaPadLeft( const igdeGuiTheme &guitheme );
-	static int TextAreaPadRight( const igdeGuiTheme &guitheme );
-	static int TextAreaPadTop( const igdeGuiTheme &guitheme );
-	static int TextAreaPadBottom( const igdeGuiTheme &guitheme );
+	static int TextAreaFlagsBorder(const igdeTextArea &owner);
+	static int TextAreaFlags(const igdeTextArea &owner);
+	static igdeFont *TextAreaFont(const igdeTextArea &owner, const igdeGuiTheme &guitheme);
+	static int TextAreaPadLeft(const igdeGuiTheme &guitheme);
+	static int TextAreaPadRight(const igdeGuiTheme &guitheme);
+	static int TextAreaPadTop(const igdeGuiTheme &guitheme);
+	static int TextAreaPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onMouseLeftPress( FXObject*, FXSelector, void* );
-	long onMouseLeftRelease( FXObject*, FXSelector, void* );
-	long onCommand( FXObject*, FXSelector, void* );
-	long onChanged( FXObject*, FXSelector, void* );
+	long onMouseLeftPress(FXObject*, FXSelector, void*);
+	long onMouseLeftRelease(FXObject*, FXSelector, void*);
+	long onCommand(FXObject*, FXSelector, void*);
+	long onChanged(FXObject*, FXSelector, void*);
 	
-	long onResizerDrag( FXObject*, FXSelector, void* );
+	long onResizerDrag(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 	

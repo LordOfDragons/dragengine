@@ -51,8 +51,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsClearCondition( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait );
+	ceWPTMAWaitActionsClearCondition(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait);
 	/*@}*/
 	
 	

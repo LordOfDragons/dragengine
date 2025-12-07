@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjTexAddProperty( meObjectTexture *texture, const char *key, const char *value );
+	meUObjTexAddProperty(meObjectTexture *texture, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

@@ -41,7 +41,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimatorCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimatorCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -51,13 +51,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimatorCreateModule( deLoadableModule *loa
 // Entry function
 ///////////////////
 
-deBaseModule *DEAnimatorCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *DEAnimatorCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deDEAnimator( *loadableModule );
+		module = new deDEAnimator(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -72,8 +72,8 @@ deBaseModule *DEAnimatorCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deDEAnimator::deDEAnimator( deLoadableModule &loadableModule ) :
-deBaseAnimatorModule( loadableModule ){
+deDEAnimator::deDEAnimator(deLoadableModule &loadableModule) :
+deBaseAnimatorModule(loadableModule){
 }
 
 deDEAnimator::~deDEAnimator(){
@@ -96,20 +96,20 @@ void deDEAnimator::CleanUp(){
 // Management
 ///////////////
 
-deBaseAnimatorAnimator *deDEAnimator::CreateAnimator( deAnimator *animator ){
-	return new dearAnimator( *this, *animator );
+deBaseAnimatorAnimator *deDEAnimator::CreateAnimator(deAnimator *animator){
+	return new dearAnimator(*this, *animator);
 }
 
-deBaseAnimatorAnimatorInstance *deDEAnimator::CreateAnimatorInstance( deAnimatorInstance *instance ){
-	return new dearAnimatorInstance( *this, *instance );
+deBaseAnimatorAnimatorInstance *deDEAnimator::CreateAnimatorInstance(deAnimatorInstance *instance){
+	return new dearAnimatorInstance(*this, *instance);
 }
 
-deBaseAnimatorAnimation *deDEAnimator::CreateAnimation( deAnimation *animation ){
-	return new dearAnimation( this, animation );
+deBaseAnimatorAnimation *deDEAnimator::CreateAnimation(deAnimation *animation){
+	return new dearAnimation(this, animation);
 }
 
-deBaseAnimatorComponent *deDEAnimator::CreateComponent( deComponent *component ){
-	return new dearComponent( *this, *component );
+deBaseAnimatorComponent *deDEAnimator::CreateComponent(deComponent *component){
+	return new dearComponent(*this, *component);
 }
 
 #ifdef WITH_INTERNAL_MODULE

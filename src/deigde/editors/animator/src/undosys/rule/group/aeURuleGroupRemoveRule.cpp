@@ -39,17 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupRemoveRule::aeURuleGroupRemoveRule( aeRuleGroup *group, aeRule *rule ){
-	if( ! group || ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleGroupRemoveRule::aeURuleGroupRemoveRule(aeRuleGroup *group, aeRule *rule){
+	if(!group || !rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGroup = NULL;
 	pRule = NULL;
 	
-	pIndex = group->GetRules().IndexOf( rule );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = group->GetRules().IndexOf(rule);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGroup = group;
@@ -69,11 +69,11 @@ aeURuleGroupRemoveRule::~aeURuleGroupRemoveRule(){
 ///////////////
 
 void aeURuleGroupRemoveRule::Undo(){
-	pGroup->InsertRuleAt( pRule, pIndex );
+	pGroup->InsertRuleAt(pRule, pIndex);
 }
 
 void aeURuleGroupRemoveRule::Redo(){
-	pGroup->RemoveRule( pRule );
+	pGroup->RemoveRule(pRule);
 }
 
 
@@ -82,10 +82,10 @@ void aeURuleGroupRemoveRule::Redo(){
 //////////////////////
 
 void aeURuleGroupRemoveRule::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
-	if( pGroup ){
+	if(pGroup){
 		pGroup->FreeReference();
 	}
 }

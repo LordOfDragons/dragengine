@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reSelectionBones::reSelectionBones( reRig *rig ){
-	if( ! rig ) DETHROW( deeInvalidParam );
+reSelectionBones::reSelectionBones(reRig *rig){
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	
@@ -53,7 +53,7 @@ reSelectionBones::reSelectionBones( reRig *rig ){
 
 reSelectionBones::~reSelectionBones(){
 	Reset();
-	if( pBones ) delete [] pBones;
+	if(pBones) delete [] pBones;
 }
 
 
@@ -61,18 +61,18 @@ reSelectionBones::~reSelectionBones(){
 // Management
 ///////////////
 
-reRigBone *reSelectionBones::GetBoneAt( int index ) const{
-	if( index < 0 || index >= pBoneCount ) DETHROW( deeOutOfBoundary );
+reRigBone *reSelectionBones::GetBoneAt(int index) const{
+	if(index < 0 || index >= pBoneCount) DETHROW(deeOutOfBoundary);
 	
-	return pBones[ index ];
+	return pBones[index];
 }
 
-bool reSelectionBones::HasBone( reRigBone *bone ) const{
-	if( ! bone ) DETHROW( deeInvalidParam );
+bool reSelectionBones::HasBone(reRigBone *bone) const{
+	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pBoneCount; i++ ){
-		if( bone == pBones[ i ] ){
+	for(i=0; i<pBoneCount; i++){
+		if(bone == pBones[i]){
 			return true;
 		}
 	}
@@ -80,12 +80,12 @@ bool reSelectionBones::HasBone( reRigBone *bone ) const{
 	return false;
 }
 	
-int reSelectionBones::IndexOfBone( reRigBone *bone ) const{
-	if( ! bone ) DETHROW( deeInvalidParam );
+int reSelectionBones::IndexOfBone(reRigBone *bone) const{
+	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pBoneCount; i++ ){
-		if( bone == pBones[ i ] ){
+	for(i=0; i<pBoneCount; i++){
+		if(bone == pBones[i]){
 			return i;
 		}
 	}
@@ -93,12 +93,12 @@ int reSelectionBones::IndexOfBone( reRigBone *bone ) const{
 	return -1;
 }
 
-int reSelectionBones::IndexOfBoneWith( deColliderVolume *collider ) const{
-	if( ! collider ) DETHROW( deeInvalidParam );
+int reSelectionBones::IndexOfBoneWith(deColliderVolume *collider) const{
+	if(!collider) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pBoneCount; i++ ){
-		if( collider == pBones[ i ]->GetCollider() ){
+	for(i=0; i<pBoneCount; i++){
+		if(collider == pBones[i]->GetCollider()){
 			return i;
 		}
 	}
@@ -106,71 +106,71 @@ int reSelectionBones::IndexOfBoneWith( deColliderVolume *collider ) const{
 	return -1;
 }
 
-void reSelectionBones::AddBone( reRigBone *bone ){
-	if( HasBone( bone ) ) DETHROW( deeInvalidParam );
+void reSelectionBones::AddBone(reRigBone *bone){
+	if(HasBone(bone)) DETHROW(deeInvalidParam);
 	
-	if( pBoneCount == pBoneSize ){
+	if(pBoneCount == pBoneSize){
 		int newSize = pBoneSize * 3 / 2 + 1;
-		reRigBone **newArray = new reRigBone*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pBones ){
-			memcpy( newArray, pBones, sizeof( reRigBone* ) * pBoneSize );
+		reRigBone **newArray = new reRigBone*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pBones){
+			memcpy(newArray, pBones, sizeof(reRigBone*) * pBoneSize);
 			delete [] pBones;
 		}
 		pBones = newArray;
 		pBoneSize = newSize;
 	}
 	
-	pBones[ pBoneCount ] = bone;
+	pBones[pBoneCount] = bone;
 	pBoneCount++;
 	
 	bone->AddReference();
 	
-	bone->SetSelected( true );
+	bone->SetSelected(true);
 	
-	pRig->NotifyBoneSelectedChanged( bone );
+	pRig->NotifyBoneSelectedChanged(bone);
 	
-	if( ! pActiveBone ){
-		SetActiveBone( bone );
+	if(!pActiveBone){
+		SetActiveBone(bone);
 	}
 }
 
-void reSelectionBones::RemoveBone( reRigBone *bone ){
-	int i, index = IndexOfBone( bone );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void reSelectionBones::RemoveBone(reRigBone *bone){
+	int i, index = IndexOfBone(bone);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pBoneCount; i++ ){
-		pBones[ i - 1 ] = pBones[ i ];
+	for(i=index+1; i<pBoneCount; i++){
+		pBones[i - 1] = pBones[i];
 	}
-	pBones[ pBoneCount - 1 ] = NULL;
+	pBones[pBoneCount - 1] = NULL;
 	pBoneCount--;
 	
-	bone->SetSelected( false );
+	bone->SetSelected(false);
 	
-	if( bone == pActiveBone ){
-		if( pBoneCount > 0 ){
-			SetActiveBone( pBones[ 0 ] );
+	if(bone == pActiveBone){
+		if(pBoneCount > 0){
+			SetActiveBone(pBones[0]);
 			
 		}else{
-			SetActiveBone( NULL );
+			SetActiveBone(NULL);
 		}
 	}
 	
-	pRig->NotifyBoneSelectedChanged( bone );
+	pRig->NotifyBoneSelectedChanged(bone);
 	
 	bone->FreeReference();
 }
 
 void reSelectionBones::RemoveAllBones(){
-	SetActiveBone( NULL );
+	SetActiveBone(NULL);
 	
 	pRig->NotifyAllBonesDeselected();
 	
-	while( pBoneCount > 0 ){
+	while(pBoneCount > 0){
 		pBoneCount--;
 		
-		pBones[ pBoneCount ]->SetSelected( false );
-		pBones[ pBoneCount ]->FreeReference();
+		pBones[pBoneCount]->SetSelected(false);
+		pBones[pBoneCount]->FreeReference();
 	}
 }
 
@@ -180,18 +180,18 @@ bool reSelectionBones::HasActiveBone() const{
 	return pActiveBone != NULL;
 }
 
-void reSelectionBones::SetActiveBone( reRigBone *bone ){
-	if( bone != pActiveBone ){
-		if( bone && ! HasBone( bone ) ) DETHROW( deeInvalidParam );
+void reSelectionBones::SetActiveBone(reRigBone *bone){
+	if(bone != pActiveBone){
+		if(bone && !HasBone(bone)) DETHROW(deeInvalidParam);
 		
-		if( pActiveBone ){
-			pActiveBone->SetActive( false );
+		if(pActiveBone){
+			pActiveBone->SetActive(false);
 		}
 		
 		pActiveBone = bone;
 		
-		if( bone ){
-			bone->SetActive( true );
+		if(bone){
+			bone->SetActive(true);
 		}
 		
 		pRig->NotifyActiveBoneChanged();

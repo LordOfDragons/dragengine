@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create decode buffer. */
-	desynDecodeBuffer( int size );
+	desynDecodeBuffer(int size);
 	
 	/** \brief Clean up decode buffer. */
 	~desynDecodeBuffer();
@@ -60,7 +60,7 @@ public:
 	inline int GetSize() const{ return pSize; }
 	
 	/** \brief Set size of buffer. */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/**
 	 * \brief Decode samples using decoder.
@@ -69,7 +69,7 @@ public:
 	 * then the buffer is first resized to be large enough. Returns the number
 	 * of bytes written to the buffer.
 	 */
-	int Decode( deSoundDecoder &decoder, int size );
+	int Decode(deSoundDecoder &decoder, int size);
 	
 	/**
 	 * \brief Decode samples using decoder.
@@ -80,7 +80,7 @@ public:
 	 * starts from the beginning to fill up the buffer with size bytes. Returns
 	 * the number of bytes written to the buffer.
 	 */
-	int DecodeLooping( deSoundDecoder &decoder, int size );
+	int DecodeLooping(deSoundDecoder &decoder, int size);
 	/*@}*/
 };
 

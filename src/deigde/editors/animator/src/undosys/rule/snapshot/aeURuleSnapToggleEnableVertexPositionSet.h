@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSnapToggleEnableVertexPositionSet( aeRuleStateSnapshot *rule );
+	aeURuleSnapToggleEnableVertexPositionSet(aeRuleStateSnapshot *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleSnapToggleEnableVertexPositionSet();

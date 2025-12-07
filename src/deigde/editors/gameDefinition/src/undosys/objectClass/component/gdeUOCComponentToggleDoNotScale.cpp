@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCComponentToggleDoNotScale::gdeUOCComponentToggleDoNotScale(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle do not scale" );
+	SetShortInfo("Component toggle do not scale");
 	
 	pComponent = component;
 	component->AddReference();
@@ -59,10 +59,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentToggleDoNotScale::~gdeUOCComponentToggleDoNotScale(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCComponentToggleDoNotScale::~gdeUOCComponentToggleDoNotScale(){
 ///////////////
 
 void gdeUOCComponentToggleDoNotScale::Undo(){
-	pComponent->SetDoNotScale( ! pComponent->GetDoNotScale() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetDoNotScale(!pComponent->GetDoNotScale());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentToggleDoNotScale::Redo(){

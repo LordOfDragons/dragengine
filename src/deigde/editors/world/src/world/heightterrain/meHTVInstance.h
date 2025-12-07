@@ -62,22 +62,22 @@ public:
 	/** Retrieves the vegetation variation index. */
 	inline short GetVariation() const{ return pVariation; }
 	/** Sets the vegetation layer and variation index. */
-	void SetVLayer( int vlayer, int variation );
+	void SetVLayer(int vlayer, int variation);
 	
 	/** Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	/** Sets the position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** Retrieves the rotation. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	/** Sets the rotation. */
-	void SetRotation( const decVector &rotation );
+	void SetRotation(const decVector &rotation);
 	/** Retrieves the scaling. */
 	inline float GetScaling() const{ return pScaling; }
 	/** Sets the scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	/** Sets all parameters at once. */
-	void SetParameters( int vlayer, int variation, const decVector &position, const decVector &rotation, float scaling );
+	void SetParameters(int vlayer, int variation, const decVector &position, const decVector &rotation, float scaling);
 	/*@}*/
 };
 

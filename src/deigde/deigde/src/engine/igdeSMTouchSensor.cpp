@@ -51,7 +51,7 @@ igdeSMTouchSensor::~igdeSMTouchSensor(){
 // Management
 ///////////////
 
-void igdeSMTouchSensor::SetDelegee( deBaseScriptingTouchSensor *delegee ){
+void igdeSMTouchSensor::SetDelegee(deBaseScriptingTouchSensor *delegee){
 	pDelegee = delegee;
 }
 
@@ -60,14 +60,14 @@ void igdeSMTouchSensor::SetDelegee( deBaseScriptingTouchSensor *delegee ){
 // Notifications
 //////////////////
 
-void igdeSMTouchSensor::ColliderEntered( deCollider *collider ){
-	if( pDelegee ){
-		pDelegee->ColliderEntered( collider );
+void igdeSMTouchSensor::ColliderEntered(deCollider *collider){
+	if(pDelegee){
+		pDelegee->ColliderEntered(collider);
 	}
 }
 
-void igdeSMTouchSensor::ColliderLeft( deCollider *collider ){
-	if( pDelegee ){
-		pDelegee->ColliderLeft( collider );
+void igdeSMTouchSensor::ColliderLeft(deCollider *collider){
+	if(pDelegee){
+		pDelegee->ColliderLeft(collider);
 	}
 }

@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetShapeInfluence( gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *component, const decShapeList &newValue );
+	gdeUOCEnvMapProbeSetShapeInfluence(gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *component, const decShapeList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

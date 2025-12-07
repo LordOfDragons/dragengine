@@ -43,7 +43,7 @@ public:
 	virtual ~igdeNativeNullComboBoxFilter();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullComboBoxFilter* CreateNativeWidget( igdeComboBoxFilter &owner );
+	static igdeNativeNullComboBoxFilter* CreateNativeWidget(igdeComboBoxFilter &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -57,15 +57,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	virtual void BuildList();
-	virtual void UpdateItem( int index );
+	virtual void UpdateItem(int index);
 	virtual void UpdateFilterString();
-	virtual void SyncSelection( bool changing );
+	virtual void SyncSelection(bool changing);
 	virtual void OnInvalidValueChanged();
 	virtual void UpdateText();
-	virtual void InsertItem( int index, const igdeListItem &item );
-	virtual void RemoveItem( int index );
+	virtual void InsertItem(int index, const igdeListItem &item);
+	virtual void RemoveItem(int index);
 	virtual void RemoveAllItems();
-	virtual void MoveItem( int fromIndex, int toIndex );
+	virtual void MoveItem(int fromIndex, int toIndex);
 	virtual void Focus();
 	virtual void UpdateRowCount();
 	virtual void UpdateEnabled();

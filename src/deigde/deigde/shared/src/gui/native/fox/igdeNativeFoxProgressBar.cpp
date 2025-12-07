@@ -45,7 +45,7 @@
 // Event map
 //////////////
 
-FXIMPLEMENT( igdeNativeFoxProgressBar, FXProgressBar, nullptr, 0 )
+FXIMPLEMENT(igdeNativeFoxProgressBar, FXProgressBar, nullptr, 0)
 
 
 
@@ -55,17 +55,17 @@ FXIMPLEMENT( igdeNativeFoxProgressBar, FXProgressBar, nullptr, 0 )
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxProgressBar::igdeNativeFoxProgressBar(){ }
+igdeNativeFoxProgressBar::igdeNativeFoxProgressBar(){}
 
-igdeNativeFoxProgressBar::igdeNativeFoxProgressBar( igdeProgressBar &powner, FXComposite *pparent,
-	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme ) :
-FXProgressBar( pparent, NULL, 0, layoutFlags.flags | ProgressBarFlags( powner ), 0, 0, 0, 0,
-	ProgressBarPadLeft( guitheme ), ProgressBarPadRight( guitheme ),
-	ProgressBarPadTop( guitheme ), ProgressBarPadBottom( guitheme ) ),
-pOwner( &powner )
+igdeNativeFoxProgressBar::igdeNativeFoxProgressBar(igdeProgressBar &powner, FXComposite *pparent,
+	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme) :
+FXProgressBar(pparent, NULL, 0, layoutFlags.flags | ProgressBarFlags(powner), 0, 0, 0, 0,
+	ProgressBarPadLeft(guitheme), ProgressBarPadRight(guitheme),
+	ProgressBarPadTop(guitheme), ProgressBarPadBottom(guitheme)),
+pOwner(&powner)
 {
-	setFont( (FXFont*)ProgressBarFont( powner, guitheme )->GetNativeFont() );
-	if( ! pOwner->GetVisible() ){
+	setFont((FXFont*)ProgressBarFont(powner, guitheme)->GetNativeFont());
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 	
@@ -77,23 +77,23 @@ pOwner( &powner )
 igdeNativeFoxProgressBar::~igdeNativeFoxProgressBar(){
 }
 
-igdeNativeFoxProgressBar *igdeNativeFoxProgressBar::CreateNativeWidget( igdeProgressBar &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxProgressBar *igdeNativeFoxProgressBar::CreateNativeWidget(igdeProgressBar &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxProgressBar( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( &powner ), *powner.GetGuiTheme() );
+	return new igdeNativeFoxProgressBar(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll(&powner), *powner.GetGuiTheme());
 }
 
 void igdeNativeFoxProgressBar::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -108,15 +108,15 @@ void igdeNativeFoxProgressBar::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxProgressBar::UpdateRange(){
-	setTotal( pOwner->GetUpper() - pOwner->GetLower() );
+	setTotal(pOwner->GetUpper() - pOwner->GetLower());
 }
 
 void igdeNativeFoxProgressBar::UpdateValue(){
-	setProgress( pOwner->GetValue() - pOwner->GetLower() );
+	setProgress(pOwner->GetValue() - pOwner->GetLower());
 }
 
 void igdeNativeFoxProgressBar::UpdateEnabled(){
-	if( pOwner->GetEngine() ){
+	if(pOwner->GetEngine()){
 		enable();
 		
 	}else{
@@ -125,15 +125,15 @@ void igdeNativeFoxProgressBar::UpdateEnabled(){
 }
 
 void igdeNativeFoxProgressBar::UpdateDescription(){
-	setHelpTag( pOwner->GetDescription().GetString() );
+	setHelpTag(pOwner->GetDescription().GetString());
 }
 
 
 
-int igdeNativeFoxProgressBar::ProgressBarFlags( const igdeProgressBar &powner ){
+int igdeNativeFoxProgressBar::ProgressBarFlags(const igdeProgressBar &powner){
 	int fflags = PROGRESSBAR_NORMAL;
 	
-	switch( powner.GetOrientation() ){
+	switch(powner.GetOrientation()){
 	case igdeProgressBar::eoHorizontal:
 		fflags |= PROGRESSBAR_HORIZONTAL;
 		break;
@@ -149,44 +149,44 @@ int igdeNativeFoxProgressBar::ProgressBarFlags( const igdeProgressBar &powner ){
 	return fflags;
 }
 
-igdeFont *igdeNativeFoxProgressBar::ProgressBarFont( const igdeProgressBar &powner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxProgressBar::ProgressBarFont(const igdeProgressBar &powner, const igdeGuiTheme &guitheme){
 	igdeFont::sConfiguration configuration;
-	powner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::progressBarFontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::progressBarFontSizeAbsolute, 0 );
+	if(guitheme.HasProperty(igdeGuiThemePropertyNames::progressBarFontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::progressBarFontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::progressBarFontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::progressBarFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::progressBarFontSize, 1.0f );
+			igdeGuiThemePropertyNames::progressBarFontSize, 1.0f);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
+			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
 	
-	return powner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont(configuration);
 }
 
-int igdeNativeFoxProgressBar::ProgressBarPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::progressBarPaddingLeft, DEFAULT_PAD );
+int igdeNativeFoxProgressBar::ProgressBarPadLeft(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::progressBarPaddingLeft, DEFAULT_PAD);
 }
 
-int igdeNativeFoxProgressBar::ProgressBarPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::progressBarPaddingRight, DEFAULT_PAD );
+int igdeNativeFoxProgressBar::ProgressBarPadRight(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::progressBarPaddingRight, DEFAULT_PAD);
 }
 
-int igdeNativeFoxProgressBar::ProgressBarPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::progressBarPaddingTop, DEFAULT_PAD );
+int igdeNativeFoxProgressBar::ProgressBarPadTop(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::progressBarPaddingTop, DEFAULT_PAD);
 }
 
-int igdeNativeFoxProgressBar::ProgressBarPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::progressBarPaddingBottom, DEFAULT_PAD );
+int igdeNativeFoxProgressBar::ProgressBarPadBottom(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::progressBarPaddingBottom, DEFAULT_PAD);
 }
 
 #endif

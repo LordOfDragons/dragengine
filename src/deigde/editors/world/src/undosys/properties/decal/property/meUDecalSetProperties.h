@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalSetProperties( meDecal *decal, const decStringDictionary &newValues );
+	meUDecalSetProperties(meDecal *decal, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo decal. */

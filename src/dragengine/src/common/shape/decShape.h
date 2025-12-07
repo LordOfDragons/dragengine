@@ -52,10 +52,10 @@ public:
 	decShape();
 	
 	/** \brief Create shape with the given position and orientation (0,0,0,1). */
-	decShape( const decVector &position );
+	decShape(const decVector &position);
 	
 	/** \brief Create shape with the given position and orientation. */
-	decShape( const decVector &position, const decQuaternion &orientation );
+	decShape(const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Clean up shape. */
 	virtual ~decShape();
@@ -69,13 +69,13 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	
 	
@@ -88,7 +88,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit( decShapeVisitor &visitor );
+	virtual void Visit(decShapeVisitor &visitor);
 	/*@}*/
 };
 

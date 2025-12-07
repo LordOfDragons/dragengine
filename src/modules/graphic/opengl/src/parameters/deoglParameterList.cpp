@@ -55,12 +55,12 @@ int deoglParameterList::GetParameterCount() const{
 	return pParameters.GetCount();
 }
 
-int deoglParameterList::IndexOfParameterNamed( const char *name ) const{
+int deoglParameterList::IndexOfParameterNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deoglParameter* )pParameters.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((deoglParameter*)pParameters.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -68,37 +68,37 @@ int deoglParameterList::IndexOfParameterNamed( const char *name ) const{
 	return -1;
 }
 
-deoglParameter &deoglParameterList::GetParameterAt( int index ) const{
-	return *( ( deoglParameter* )pParameters.GetAt( index ) );
+deoglParameter &deoglParameterList::GetParameterAt(int index) const{
+	return *((deoglParameter*)pParameters.GetAt(index));
 }
 
-deoglParameter &deoglParameterList::GetParameterNamed( const char *name ) const{
+deoglParameter &deoglParameterList::GetParameterNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglParameter &parameter = *( ( deoglParameter* )pParameters.GetAt( i ) );
-		if( parameter.GetName() == name ){
+	for(i=0; i<count; i++){
+		deoglParameter &parameter = *((deoglParameter*)pParameters.GetAt(i));
+		if(parameter.GetName() == name){
 			return parameter;
 		}
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void deoglParameterList::AddParameter( deoglParameter *parameter ){
-	if( ! parameter || IndexOfParameterNamed( parameter->GetName() ) != -1 ){
-		DETHROW( deeInvalidParam );
+void deoglParameterList::AddParameter(deoglParameter *parameter){
+	if(!parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
+		DETHROW(deeInvalidParam);
 	}
-	pParameters.Add( parameter );
+	pParameters.Add(parameter);
 }
 
 void deoglParameterList::RemoveAllParameters(){
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoglParameter* )pParameters.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoglParameter*)pParameters.GetAt(i);
 	}
 	pParameters.RemoveAll();
 }

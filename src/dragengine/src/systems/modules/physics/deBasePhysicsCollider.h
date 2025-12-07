@@ -96,16 +96,16 @@ public:
 	
 	
 	/** \brief Post physics collision test added. */
-	virtual void CollisionTestAdded( int index );
+	virtual void CollisionTestAdded(int index);
 	
 	/** \brief Post physics collision test changed. */
-	virtual void CollisionTestChanged( int index );
+	virtual void CollisionTestChanged(int index);
 	
 	/** \brief Post physics collision test enabled changed. */
-	virtual void CollisionTestEnabledChanged( int index );
+	virtual void CollisionTestEnabledChanged(int index);
 	
 	/** \brief Post physics collision test removed. */
-	virtual void CollisionTestRemoved( int index );
+	virtual void CollisionTestRemoved(int index);
 	
 	/** \brief All post physics collision tests removed. */
 	virtual void AllCollisionTestsRemoved();
@@ -127,22 +127,22 @@ public:
 	/** \name Bones */
 	/*@{*/
 	/** \brief Bone position changed. */
-	virtual void BonePositionChanged( int index );
+	virtual void BonePositionChanged(int index);
 	
 	/** \brief Bone orientation changed. */
-	virtual void BoneOrientationChanged( int index );
+	virtual void BoneOrientationChanged(int index);
 	
 	/** \brief Bone linear velocity changed. */
-	virtual void BoneLinearVelocityChanged( int index );
+	virtual void BoneLinearVelocityChanged(int index);
 	
 	/** \brief Bone angular velocity changed. */
-	virtual void BoneAngularVelocityChanged( int index );
+	virtual void BoneAngularVelocityChanged(int index);
 	
 	/** \brief Bone properties changed. */
-	virtual void BonePropertiesChanged( int index );
+	virtual void BonePropertiesChanged(int index);
 	
 	/** \brief Bone dynamic changed. */
-	virtual void BoneDynamicChanged( int index );
+	virtual void BoneDynamicChanged(int index);
 	/*@}*/
 	
 	
@@ -150,42 +150,42 @@ public:
 	/** \name Force and Impuls */
 	/*@{*/
 	/** \brief Apply impuls at the center mass point. */
-	virtual void ApplyImpuls( const decVector &impuls );
+	virtual void ApplyImpuls(const decVector &impuls);
 	
 	/** \brief Apply impuls relative to the collider position. */
-	virtual void ApplyImpulsAt( const decVector &impuls, const decVector &position );
+	virtual void ApplyImpulsAt(const decVector &impuls, const decVector &position);
 	
 	/** \brief Apply torque impuls at the center mass point. */
-	virtual void ApplyTorqueImpuls( const decVector &torqueImpuls );
+	virtual void ApplyTorqueImpuls(const decVector &torqueImpuls);
 	
 	/** \brief Apply force at the center mass point. */
-	virtual void ApplyForce( const decVector &force );
+	virtual void ApplyForce(const decVector &force);
 	
 	/** \brief Apply force relative to the collider position. */
-	virtual void ApplyForceAt( const decVector &force, const decVector &position );
+	virtual void ApplyForceAt(const decVector &force, const decVector &position);
 	
 	/** \brief Apply torque force at the center mass point. */
-	virtual void ApplyTorque( const decVector &torque );
+	virtual void ApplyTorque(const decVector &torque);
 	
 	
 	
 	/** \brief Apply impuls at the center mass point of the given bone. */
-	virtual void ApplyBoneImpuls( int bone, const decVector &impuls );
+	virtual void ApplyBoneImpuls(int bone, const decVector &impuls);
 	
 	/** \brief Apply impuls relative to the bone position. */
-	virtual void ApplyBoneImpulsAt( int bone, const decVector &impuls, const decVector &position );
+	virtual void ApplyBoneImpulsAt(int bone, const decVector &impuls, const decVector &position);
 	
 	/** \brief Apply torque impuls force at the center mass point of the given bone. */
-	virtual void ApplyBoneTorqueImpuls( int bone, const decVector &torqueImpuls );
+	virtual void ApplyBoneTorqueImpuls(int bone, const decVector &torqueImpuls);
 	
 	/** \brief Apply force at the center mass point of the given bone. */
-	virtual void ApplyBoneForce( int bone, const decVector &force );
+	virtual void ApplyBoneForce(int bone, const decVector &force);
 	
 	/** \brief Apply force relative to the bone position. */
-	virtual void ApplyBoneForceAt( int bone, const decVector &force, const decVector &position );
+	virtual void ApplyBoneForceAt(int bone, const decVector &force, const decVector &position);
 	
 	/** \brief Apply torque force at the center mass point of the given bone. */
-	virtual void ApplyBoneTorque( int bone, const decVector &torque );
+	virtual void ApplyBoneTorque(int bone, const decVector &torque);
 	/*@}*/
 	
 	
@@ -193,13 +193,13 @@ public:
 	/** \name Attachments */
 	/*@{*/
 	/** \brief Attachment added. */
-	virtual void AttachmentAdded( int index, deColliderAttachment *attachment );
+	virtual void AttachmentAdded(int index, deColliderAttachment *attachment);
 	
 	/** \brief Attachment changed. */
-	virtual void AttachmentChanged( int index, deColliderAttachment *attachment );
+	virtual void AttachmentChanged(int index, deColliderAttachment *attachment);
 	
 	/** \brief Attachment removed. */
-	virtual void AttachmentRemoved( int index, deColliderAttachment *attachment );
+	virtual void AttachmentRemoved(int index, deColliderAttachment *attachment);
 	
 	/** \brief All attachments removed. */
 	virtual void AllAttachmentsRemoved();
@@ -212,7 +212,7 @@ public:
 	 * 
 	 * Default implementation throws EInvalidParams.
 	 */
-	virtual void InitWeightAttachment( deColliderAttachment &attachment, int face );
+	virtual void InitWeightAttachment(deColliderAttachment &attachment, int face);
 	/*@}*/
 	
 	
@@ -221,13 +221,13 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** \brief Constraint added. */
-	virtual void ConstraintAdded( int index, deColliderConstraint *constraint );
+	virtual void ConstraintAdded(int index, deColliderConstraint *constraint);
 	
 	/** \brief Constraint changed. */
-	virtual void ConstraintChanged( int index, deColliderConstraint *constraint );
+	virtual void ConstraintChanged(int index, deColliderConstraint *constraint);
 	
 	/** \brief Constraint removed. */
-	virtual void ConstraintRemoved( int index, deColliderConstraint *constraint );
+	virtual void ConstraintRemoved(int index, deColliderConstraint *constraint);
 	
 	/** \brief All constraints removed. */
 	virtual void AllConstraintsRemoved();
@@ -235,7 +235,7 @@ public:
 	
 	
 	/** \brief Enable or disable a component or rigged collider bone constraint. */
-	virtual void EnableBoneConstraint( int bone, int constraint, bool enable );
+	virtual void EnableBoneConstraint(int bone, int constraint, bool enable);
 	
 	/**
 	 * \brief Replace a component or rigged collider bone constraint.
@@ -243,7 +243,7 @@ public:
 	 * The provided rig constraint only serves as source to copy the
 	 * new parameters. It has to be freed by the called afterwards.
 	 */
-	virtual void ReplaceBoneConstraint( int bone, int constraint, const deRigConstraint &replacement );
+	virtual void ReplaceBoneConstraint(int bone, int constraint, const deRigConstraint &replacement);
 	/*@}*/
 	
 	
@@ -251,7 +251,7 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** \brief Test if a point is located inside the collider. */
-	virtual bool PointInside( const decDVector &point );
+	virtual bool PointInside(const decDVector &point);
 	
 	/**
 	 * \brief Test ray for collision with the collider.
@@ -264,8 +264,8 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	virtual void RayHits( const decDVector &rayOrigin, const decVector &rayDirection,
-		deBaseScriptingCollider *listener );
+	virtual void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+		deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test collider for collision with collider.
@@ -277,7 +277,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	virtual void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
+	virtual void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test moving collider for collision with collider.
@@ -289,8 +289,8 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	virtual void ColliderMoveHits( deCollider *collider, const decVector &displacement,
-		deBaseScriptingCollider *listener );
+	virtual void ColliderMoveHits(deCollider *collider, const decVector &displacement,
+		deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test rotating collider for collision with collider.
@@ -302,8 +302,8 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	virtual void ColliderRotateHits( deCollider *collider, const decVector &rotation,
-		deBaseScriptingCollider *listener );
+	virtual void ColliderRotateHits(deCollider *collider, const decVector &rotation,
+		deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test moving and rotating collider for collision with collider.
@@ -315,8 +315,8 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	virtual void ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-		const decVector &rotation, deBaseScriptingCollider *listener );
+	virtual void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+		const decVector &rotation, deBaseScriptingCollider *listener);
 	/*@}*/
 };
 

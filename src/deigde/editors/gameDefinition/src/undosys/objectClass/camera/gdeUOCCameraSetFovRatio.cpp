@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetFovRatio::gdeUOCCameraSetFovRatio( gdeObjectClass *objectClass, gdeOCCamera *camera, float newValue ) :
-pObjectClass( NULL ),
-pCamera( NULL )
+gdeUOCCameraSetFovRatio::gdeUOCCameraSetFovRatio(gdeObjectClass *objectClass, gdeOCCamera *camera, float newValue) :
+pObjectClass(NULL),
+pCamera(NULL)
 {
-	if( ! objectClass || ! camera ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !camera){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Camera set fov ratio" );
+	SetShortInfo("Camera set fov ratio");
 	
 	pOldValue = camera->GetFovRatio();
 	pNewValue = newValue;
@@ -61,10 +61,10 @@ pCamera( NULL )
 }
 
 gdeUOCCameraSetFovRatio::~gdeUOCCameraSetFovRatio(){
-	if( pCamera ){
+	if(pCamera){
 		pCamera->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUOCCameraSetFovRatio::~gdeUOCCameraSetFovRatio(){
 ///////////////
 
 void gdeUOCCameraSetFovRatio::Undo(){
-	pCamera->SetFovRatio( pOldValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetFovRatio(pOldValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }
 
 void gdeUOCCameraSetFovRatio::Redo(){
-	pCamera->SetFovRatio( pNewValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetFovRatio(pNewValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }

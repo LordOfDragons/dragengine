@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPView( seWindowProperties &windowProperties );
+	seWPView(seWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Cleanup panel. */
@@ -92,7 +92,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *sky );
+	void SetSkin(seSkin *sky);
 	
 	/** \brief Update view. */
 	void UpdateView();

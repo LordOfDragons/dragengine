@@ -71,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create capture canvas. */
-	deCaptureCanvas( deCaptureCanvasManager *manager );
+	deCaptureCanvas(deCaptureCanvasManager *manager);
 	
 protected:
 	/**
@@ -92,19 +92,19 @@ public:
 	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Set canvas view to capture. */
-	void SetCanvasView( deCanvasView *canvasView );
+	void SetCanvasView(deCanvasView *canvasView);
 	
 	/** \brief Image to capture canvas view into. */
 	inline deImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image to capture canvas view into. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	/** \brief Capture in progress. */
 	inline bool GetCapture() const{ return pCapture; }
 	
 	/** \brief Set if capture is in progress. */
-	void SetCapture( bool capture );
+	void SetCapture(bool capture);
 	/*@}*/
 	
 	
@@ -115,7 +115,7 @@ public:
 	inline deBaseGraphicCaptureCanvas *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object or NULL if not set. */
-	void SetPeerGraphic( deBaseGraphicCaptureCanvas *peer );
+	void SetPeerGraphic(deBaseGraphicCaptureCanvas *peer);
 	/*@}*/
 };
 

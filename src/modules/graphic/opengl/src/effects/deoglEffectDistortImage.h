@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectDistortImage( deGraphicOpenGl &ogl, const deEffectDistortImage &effect );
+	deoglEffectDistortImage(deGraphicOpenGl &ogl, const deEffectDistortImage &effect);
 	
 	/** Clean up effect. */
 	virtual ~deoglEffectDistortImage();

@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world peer. */
-	deoalAWorld( deoalAudioThread &audioThread, const decDVector &size );
+	deoalAWorld(deoalAudioThread &audioThread, const decDVector &size);
 	
 protected:
 	/** Clean up world peer. */
@@ -96,8 +96,8 @@ public:
 	inline deoalWorldOctree *GetOctree() const{ return pOctree; }
 	
 	/** Visit content of world. */
-	void VisitRegion( const decDVector &center, const decDVector &halfSize,
-		deoalWorldOctreeVisitor &visitor );
+	void VisitRegion(const decDVector &center, const decDVector &halfSize,
+		deoalWorldOctreeVisitor &visitor);
 	
 	/** Layer mask containing all bits of all microphones. */
 	inline const decLayerMask &GetAllMicLayerMask() const{ return pAllMicLayerMask; }
@@ -106,13 +106,13 @@ public:
 	inline float GetSpeakerGain() const{ return pSpeakerGain; }
 	
 	/** Set speaker gain. */
-	void SetSpeakerGain( float gain );
+	void SetSpeakerGain(float gain);
 	
 	
 	
 	/** Invalidate environment probes. */
-	void InvalidateEnvProbes( const decDVector &minExtend, const decDVector &maxExtend,
-		const decLayerMask &layerMask );
+	void InvalidateEnvProbes(const decDVector &minExtend, const decDVector &maxExtend,
+		const decLayerMask &layerMask);
 	
 	
 	
@@ -123,13 +123,13 @@ public:
 	 * Enable or disable all speakers in the world.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetAllSpeakersEnabled( bool enabled );
+	void SetAllSpeakersEnabled(bool enabled);
 	
 	/**
 	 * Set all microphone layer mask.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetAllMicLayerMask( const decLayerMask &layerMask );
+	void SetAllMicLayerMask(const decLayerMask &layerMask);
 	
 	/** Update all speakers. */
 	void UpdateAllSpeakers();
@@ -155,10 +155,10 @@ public:
 	inline deoalAComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
-	void AddComponent( deoalAComponent *component );
+	void AddComponent(deoalAComponent *component);
 	
 	/** Remove component. */
-	void RemoveComponent( deoalAComponent *component );
+	void RemoveComponent(deoalAComponent *component);
 	
 	/** Remove all component. */
 	void RemoveAllComponents();
@@ -181,13 +181,13 @@ public:
 	 * Add speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void AddSpeaker( deoalASpeaker *speaker );
+	void AddSpeaker(deoalASpeaker *speaker);
 	
 	/**
 	 * Remove speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void RemoveSpeaker( deoalASpeaker *speaker );
+	void RemoveSpeaker(deoalASpeaker *speaker);
 	
 	/**
 	 * Remove all speaker.
@@ -213,10 +213,10 @@ public:
 	inline deoalAMicrophone *GetRootMicrophone() const{ return pRootMicrophone; }
 	
 	/** Add microphone. */
-	void AddMicrophone( deoalAMicrophone *microphone );
+	void AddMicrophone(deoalAMicrophone *microphone);
 	
 	/** Remove microphone. */
-	void RemoveMicrophone( deoalAMicrophone *microphone );
+	void RemoveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Remove all microphone. */
 	void RemoveAllMicrophones();
@@ -239,13 +239,13 @@ public:
 	 * Add sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void AddSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
+	void AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	
 	/**
 	 * Remove sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void RemoveSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
+	void RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	
 	/**
 	 * Remove all sound level meter.

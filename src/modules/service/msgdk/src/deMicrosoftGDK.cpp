@@ -250,7 +250,7 @@ void deMicrosoftGdk::pInitGdk(const deServiceObject::Ref& data)
 		// call below fails if this BOM is present. why add a BOM if the function
 		// consuming the data later fails if BOM is present? detect the BOM and
 		// remove it to avoid problems
-		if( strncmp( useGameConfig, "\xef\xbb\xbf", 3 ) == 0 ){
+		if(strncmp(useGameConfig, "\xef\xbb\xbf", 3) == 0){
 			useGameConfig += 3;
 		}
 

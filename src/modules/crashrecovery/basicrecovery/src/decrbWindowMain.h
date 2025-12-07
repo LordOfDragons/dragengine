@@ -44,7 +44,7 @@ class decrbPanelConsole;
 
 // class decrbWindowMain
 class decrbWindowMain : public FXMainWindow{
-	FXDECLARE( decrbWindowMain )
+	FXDECLARE(decrbWindowMain)
 	
 protected:
 	decrbWindowMain();
@@ -74,7 +74,7 @@ private:
 	
 public:
 	// constructor, destructor
-	decrbWindowMain( FXApp* app, deCRBasic *crBasic );
+	decrbWindowMain(FXApp* app, deCRBasic *crBasic);
 	virtual ~decrbWindowMain();
 	virtual void create();
 	
@@ -82,12 +82,12 @@ public:
 	void CleanUp();
 	
 	inline deEngine *GetEngine() const{ return pEngine; }
-	static const char *GetTextForError( const char *error );
+	static const char *GetTextForError(const char *error);
 	
 	// callbacks
-	long onClose( FXObject *sender, FXSelector selector, void *data );
-	long onBtnContinue( FXObject *sender, FXSelector selector, void *data );
-	long onBtnShutdown( FXObject *sender, FXSelector selector, void *data );
+	long onClose(FXObject *sender, FXSelector selector, void *data);
+	long onBtnContinue(FXObject *sender, FXSelector selector, void *data);
+	long onBtnShutdown(FXObject *sender, FXSelector selector, void *data);
 };
 
 // end of include only once

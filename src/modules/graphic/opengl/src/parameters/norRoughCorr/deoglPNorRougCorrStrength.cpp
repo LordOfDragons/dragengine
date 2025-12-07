@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPNorRougCorrStrength::deoglPNorRougCorrStrength( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPNorRougCorrStrength::deoglPNorRougCorrStrength(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "normalRoughnessCorrectionStrength" );
-	SetDescription( "Sets the roughness correction based on normal variance."
+	SetName("normalRoughnessCorrectionStrength");
+	SetDescription("Sets the roughness correction based on normal variance."
 		" Mip mapping averages normals at the distance turning smooth but bumpy surfaces"
 		" into near-like mirrors."
 		" Furthermore this results in shimmering artifacts while moving the camera."
@@ -59,10 +59,10 @@ deoglParameterFloat( ogl )
 		" The default value is 0.75."
 		" This applies roughly 75% of normal variance to the roughness."
 		" This accounts for interreflections happening reducing the correction at the distance a bit."
-		" Values between 50-100% are reasonable." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Normal Roughness Correction" );
-	SetDefaultValue( "0.75" );
+		" Values between 50-100% are reasonable.");
+	SetCategory(ecExpert);
+	SetDisplayName("Normal Roughness Correction");
+	SetDefaultValue("0.75");
 }
 
 deoglPNorRougCorrStrength::~deoglPNorRougCorrStrength(){
@@ -77,6 +77,6 @@ float deoglPNorRougCorrStrength::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetNormalRoughnessCorrectionStrength();
 }
 
-void deoglPNorRougCorrStrength::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetNormalRoughnessCorrectionStrength( value );
+void deoglPNorRougCorrStrength::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetNormalRoughnessCorrectionStrength(value);
 }

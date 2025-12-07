@@ -112,7 +112,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPConversation( ceWindowProperties &windowProperties );
+	ceWPConversation(ceWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -131,7 +131,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Update conversation. */
 	void UpdateConversation();
@@ -185,7 +185,7 @@ public:
 	void UpdateFPControllerList();
 	
 	/** \brief Select face pose controller. */
-	void SelectFacePoseController( ceControllerValue *controller );
+	void SelectFacePoseController(ceControllerValue *controller);
 	
 	/** \brief Update the active face pose controller. */
 	void UpdateFPController();

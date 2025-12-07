@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deoglSCConstructedDynamic::deoglSCConstructedDynamic() :
-pDynamic( false ){
+pDynamic(false){
 }
 
 deoglSCConstructedDynamic::~deoglSCConstructedDynamic(){
@@ -49,66 +49,66 @@ deoglSCConstructedDynamic::~deoglSCConstructedDynamic(){
 // Visiting
 /////////////
 
-bool deoglSCConstructedDynamic::IsDynamic( deSkinPropertyNode &node ){
+bool deoglSCConstructedDynamic::IsDynamic(deSkinPropertyNode &node){
 	deoglSCConstructedDynamic visitor;
-	node.Visit( visitor );
+	node.Visit(visitor);
 	return visitor.pDynamic;
 }
 
-void deoglSCConstructedDynamic::VisitNode( deSkinPropertyNode &node ){
-	if( pDynamic ){
+void deoglSCConstructedDynamic::VisitNode(deSkinPropertyNode &node){
+	if(pDynamic){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<deSkinPropertyNode::MappedCount; i++ ){
-		if( node.GetMappedFor( ( deSkinPropertyNode::eMapped )i ) != -1 ){
+	for(i=0; i<deSkinPropertyNode::MappedCount; i++){
+		if(node.GetMappedFor((deSkinPropertyNode::eMapped)i) != -1){
 			pDynamic = true;
 			return;
 		}
 	}
 }
 
-void deoglSCConstructedDynamic::VisitGroup( deSkinPropertyNodeGroup &node ){
-	deSkinPropertyNodeVisitor::VisitGroup( node );
+void deoglSCConstructedDynamic::VisitGroup(deSkinPropertyNodeGroup &node){
+	deSkinPropertyNodeVisitor::VisitGroup(node);
 	
 	const int count = node.GetNodeCount();
 	int i;
-	for( i=0; !pDynamic && i<count; i++ ){
-		node.GetNodeAt( i )->Visit( *this );
+	for(i=0; !pDynamic && i<count; i++){
+		node.GetNodeAt(i)->Visit(*this);
 	}
 }
 
-void deoglSCConstructedDynamic::VisitImage( deSkinPropertyNodeImage &node ){
-	deSkinPropertyNodeVisitor::VisitImage( node );
+void deoglSCConstructedDynamic::VisitImage(deSkinPropertyNodeImage &node){
+	deSkinPropertyNodeVisitor::VisitImage(node);
 }
 
-void deoglSCConstructedDynamic::VisitShape( deSkinPropertyNodeShape &node ){
-	deSkinPropertyNodeVisitor::VisitShape( node );
+void deoglSCConstructedDynamic::VisitShape(deSkinPropertyNodeShape &node){
+	deSkinPropertyNodeVisitor::VisitShape(node);
 	
-	if( pDynamic ){
+	if(pDynamic){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<deSkinPropertyNodeShape::ShapeMappedCount; i++ ){
-		if( node.GetShapeMappedFor( ( deSkinPropertyNodeShape::eShapeMapped )i ) != -1 ){
+	for(i=0; i<deSkinPropertyNodeShape::ShapeMappedCount; i++){
+		if(node.GetShapeMappedFor((deSkinPropertyNodeShape::eShapeMapped)i) != -1){
 			pDynamic = true;
 			return;
 		}
 	}
 }
 
-void deoglSCConstructedDynamic::VisitText( deSkinPropertyNodeText &node ){
-	deSkinPropertyNodeVisitor::VisitText( node );
+void deoglSCConstructedDynamic::VisitText(deSkinPropertyNodeText &node){
+	deSkinPropertyNodeVisitor::VisitText(node);
 	
-	if( pDynamic ){
+	if(pDynamic){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<deSkinPropertyNodeText::TextMappedCount; i++ ){
-		if( node.GetTextMappedFor( ( deSkinPropertyNodeText::eTextMapped )i ) != -1 ){
+	for(i=0; i<deSkinPropertyNodeText::TextMappedCount; i++){
+		if(node.GetTextMappedFor((deSkinPropertyNodeText::eTextMapped)i) != -1){
 			pDynamic = true;
 			return;
 		}

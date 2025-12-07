@@ -37,13 +37,13 @@
 decShape::decShape(){
 }
 
-decShape::decShape( const decVector &position ) :
-pPosition( position ){
+decShape::decShape(const decVector &position) :
+pPosition(position){
 }
 
-decShape::decShape( const decVector &position, const decQuaternion &orientation ) :
-pPosition( position ),
-pOrientation( orientation ){
+decShape::decShape(const decVector &position, const decQuaternion &orientation) :
+pPosition(position),
+pOrientation(orientation){
 }
 
 decShape::~decShape(){
@@ -54,18 +54,18 @@ decShape::~decShape(){
 // Management
 ///////////////
 
-void decShape::SetPosition( const decVector &position ){
+void decShape::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void decShape::SetOrientation( const decQuaternion &orientation ){
+void decShape::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
 
 
 decShape *decShape::Copy() const{
-	return new decShape( pPosition, pOrientation );
+	return new decShape(pPosition, pOrientation);
 }
 
 
@@ -73,6 +73,6 @@ decShape *decShape::Copy() const{
 // Visiting
 /////////////
 
-void decShape::Visit( decShapeVisitor &visitor ){
-	visitor.VisitShape( *this );
+void decShape::Visit(decShapeVisitor &visitor){
+	visitor.VisitShape(*this);
 }

@@ -37,10 +37,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPSamsungOdysseyController::deoxrDPSamsungOdysseyController( deoxrInstance &instance ) :
-deoxrDPMicrosoftMixedRealityMotionController( instance,
-	deoxrPath( instance, "/interaction_profiles/samsung/odyssey_controller" ),
-	"Samsung Odyssey Controller" )
+deoxrDPSamsungOdysseyController::deoxrDPSamsungOdysseyController(deoxrInstance &instance) :
+deoxrDPMicrosoftMixedRealityMotionController(instance,
+	deoxrPath(instance, "/interaction_profiles/samsung/odyssey_controller"),
+	"Samsung Odyssey Controller")
 {
 }
 
@@ -52,7 +52,7 @@ deoxrDPSamsungOdysseyController::~deoxrDPSamsungOdysseyController(){
 ////////////////////////
 
 bool deoxrDPSamsungOdysseyController::pProfileEnabled() const{
-	return GetInstance().SupportsExtension( deoxrInstance::extEXTSamsungOdysseyController );
+	return GetInstance().SupportsExtension(deoxrInstance::extEXTSamsungOdysseyController);
 }
 
 const char *deoxrDPSamsungOdysseyController::pDeviceIdPrefix() const{

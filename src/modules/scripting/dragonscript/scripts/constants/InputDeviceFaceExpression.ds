@@ -120,8 +120,8 @@ fixed class InputDeviceFaceExpression
 	
 	public static fixed var int cheekUpRight = 63
 	public static fixed var int cheekUpLeft = 64
-	public static fixed var int cheekSuckRight = 65 //<! Detail expression of cheekSuck
-	public static fixed var int cheekSuckLeft = 66 //<! Detail expression of cheekSuck
+	public static fixed var int cheekSuckRight = 65 //!<  Detail expression of cheekSuck
+	public static fixed var int cheekSuckLeft = 66 //!<  Detail expression of cheekSuck
 	
 	public static fixed var int chinUpperUp = 67
 	public static fixed var int chinLowerUp = 68
@@ -130,8 +130,8 @@ fixed class InputDeviceFaceExpression
 	public static fixed var int mouthDimpleLeft = 70
 	public static fixed var int mouthPressRight = 71
 	public static fixed var int mouthPressLeft = 72
-	public static fixed var int mouthPoutRight = 73 //<! Detail expression of mouthPout
-	public static fixed var int mouthPoutLeft = 74 //<! Detail expression of mouthPout
+	public static fixed var int mouthPoutRight = 73 //!<  Detail expression of mouthPout
+	public static fixed var int mouthPoutLeft = 74 //!<  Detail expression of mouthPout
 	public static fixed var int mouthStretchRight = 75
 	public static fixed var int mouthStretchLeft = 76
 	public static fixed var int mouthRight = 77

@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetActor::ceUCAASpeakSetActor( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newActorID ){
-	if( ! topic || ! newActorID ) DETHROW( deeInvalidParam );
+ceUCAASpeakSetActor::ceUCAASpeakSetActor(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newActorID){
+	if(!topic || !newActorID) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pOldActorID = actorSpeak->GetActor();
 	pNewActorID = newActorID;
 	
-	SetShortInfo( "Actor Speak Set Actor ID" );
+	SetShortInfo("Actor Speak Set Actor ID");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCAASpeakSetActor::ceUCAASpeakSetActor( ceConversationTopic *topic, ceCAActorS
 }
 
 ceUCAASpeakSetActor::~ceUCAASpeakSetActor(){
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCAASpeakSetActor::~ceUCAASpeakSetActor(){
 ///////////////
 
 void ceUCAASpeakSetActor::Undo(){
-	pActorSpeak->SetActor( pOldActorID.GetString() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetActor(pOldActorID.GetString());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakSetActor::Redo(){
-	pActorSpeak->SetActor( pNewActorID.GetString() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetActor(pNewActorID.GetString());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

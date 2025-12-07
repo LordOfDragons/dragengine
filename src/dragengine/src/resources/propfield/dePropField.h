@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new prop field. */
-	dePropField( dePropFieldManager *manager );
+	dePropField(dePropFieldManager *manager);
 	
 protected:
 	/**
@@ -96,46 +96,46 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
 	
 	/** \brief Type at the given index. */
-	dePropFieldType *GetTypeAt( int index ) const;
+	dePropFieldType *GetTypeAt(int index) const;
 	
 	/** \brief Index of the given type of -1 if not found. */
-	int IndexOfType( dePropFieldType *type ) const;
+	int IndexOfType(dePropFieldType *type) const;
 	
 	/** \brief Adds a type. */
-	void AddType( dePropFieldType *type );
+	void AddType(dePropFieldType *type);
 	
 	/** \brief Removes the given type. */
-	void RemoveType( dePropFieldType *type );
+	void RemoveType(dePropFieldType *type);
 	
 	/** \brief Removes all types. */
 	void RemoveAllTypes();
 	
 	/** \brief Notifies the peers that the given type changed. */
-	void NotifyTypeChanged( int type );
+	void NotifyTypeChanged(int type);
 	
 	/** \brief Notifies the peers that the given type instances changed. */
-	void NotifyInstancesChanged( int type );
+	void NotifyInstancesChanged(int type);
 	
 	/** \brief Notifies the peers that the given type instances to bend states assignments changed. */
-	void NotifyAssignmentsChanged( int type );
+	void NotifyAssignmentsChanged(int type);
 	
 	/** \brief Notifies the peers that the given type bend states changed. */
-	void NotifyBendStatesChanged( int type );
+	void NotifyBendStatesChanged(int type);
 	
 	/** \brief Notifies the graphic module that the ground changed. */
 	void NotifyGroundChanged();
 	
 	/** \brief Requests the scripting module to create instances using the given density. */
-	void NotifyCreateInstances( float density );
+	void NotifyCreateInstances(float density);
 	
 	/** \brief Requests the physics module to project all instances to the given ground. */
-	void NotifyProjectInstances( const dePropFieldGround &ground, const decVector &direction );
+	void NotifyProjectInstances(const dePropFieldGround &ground, const decVector &direction);
 	/*@}*/
 	
 	
@@ -146,19 +146,19 @@ public:
 	inline deBaseGraphicPropField *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
-	void SetPeerGraphic( deBaseGraphicPropField *peer );
+	void SetPeerGraphic(deBaseGraphicPropField *peer);
 	
 	/** \brief Physics system peer object. */
 	inline deBasePhysicsPropField *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
-	void SetPeerPhysics( deBasePhysicsPropField *peer );
+	void SetPeerPhysics(deBasePhysicsPropField *peer);
 	
 	/** \brief Scripting system peer object. */
 	inline deBaseScriptingPropField *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
-	void SetPeerScripting( deBaseScriptingPropField *peer );
+	void SetPeerScripting(deBaseScriptingPropField *peer);
 	/*@}*/
 	
 	
@@ -169,19 +169,19 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous prop field in the parent world linked list. */
 	inline dePropField *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next prop field in the parent world linked list. */
-	void SetLLWorldPrev( dePropField *propField );
+	void SetLLWorldPrev(dePropField *propField);
 	
 	/** \brief Next prop field in the parent world linked list. */
 	inline dePropField *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next prop field in the parent world linked list. */
-	void SetLLWorldNext( dePropField *propField );
+	void SetLLWorldNext(dePropField *propField);
 	/*@}*/
 };
 

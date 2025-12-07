@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file resource manager. */
-	deFileResourceManager( deEngine *engine, eResourceType type );
+	deFileResourceManager(deEngine *engine, eResourceType type);
 	
 	/** \brief Clean up resource manager. */
 	virtual ~deFileResourceManager();
@@ -65,16 +65,16 @@ public:
 	 * \brief Path to file relative to base path.
 	 * \returns true if found and \em path has been set otherwise false.
 	 */
-	bool FindFileForReading( decPath &path, const deVirtualFileSystem &vfs,
-		const char *filename, const char *basePath ) const;
+	bool FindFileForReading(decPath &path, const deVirtualFileSystem &vfs,
+		const char *filename, const char *basePath) const;
 	
 	/** \brief Open file for reading using. */
-	decBaseFileReader *OpenFileForReading( const deVirtualFileSystem &vfs,
-		const char *filename ) const;
+	decBaseFileReader *OpenFileForReading(const deVirtualFileSystem &vfs,
+		const char *filename) const;
 	
 	/** \brief Open file for writing using. */
-	decBaseFileWriter *OpenFileForWriting( const deVirtualFileSystem &vfs,
-		const char *filename ) const;
+	decBaseFileWriter *OpenFileForWriting(const deVirtualFileSystem &vfs,
+		const char *filename) const;
 	/*@}*/
 };
 

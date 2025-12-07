@@ -93,7 +93,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create playback. */
-	cePlayback( ceConversation &conversation );
+	cePlayback(ceConversation &conversation);
 	
 	/** Clean up playback. */
 	~cePlayback();
@@ -116,7 +116,7 @@ public:
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** Set topic to play back. */
-	void SetTopic( ceConversationTopic *topic );
+	void SetTopic(ceConversationTopic *topic);
 	
 	
 	
@@ -124,13 +124,13 @@ public:
 	inline bool GetRunning() const{ return pRunning; }
 	
 	/** Set conversation is running. */
-	void SetRunning( bool running );
+	void SetRunning(bool running);
 	
 	/** Conversation is paused. */
 	inline bool GetPaused() const{ return pPaused; }
 	
 	/** Set conversation is paused. */
-	void SetPaused( bool paused );
+	void SetPaused(bool paused);
 	
 	/** Rewind to beginning of topic. */
 	void Rewind();
@@ -142,13 +142,13 @@ public:
 	inline eCameraHandling GetCameraHandling() const{ return pCameraHandling; }
 	
 	/** Set camera handling. */
-	void SetCameraHandling( eCameraHandling handling );
+	void SetCameraHandling(eCameraHandling handling);
 	
 	/** Auto advance certain commands or wait for user. */
 	inline bool GetAutoAdvanceCommands() const{ return pAutoAdvanceCommands; }
 	
 	/** Set to auto advance certain commands or wait for user. */
-	void SetAutoAdvanceCommands( bool autoAdvance );
+	void SetAutoAdvanceCommands(bool autoAdvance);
 	
 	
 	
@@ -183,7 +183,7 @@ public:
 	
 	
 	/** Play single action. */
-	void PlaySingleAction( ceConversationAction *action, float time );
+	void PlaySingleAction(ceConversationAction *action, float time);
 	
 	
 	
@@ -191,21 +191,21 @@ public:
 	inline int GetActorCount() const{ return pActorCount; }
 	
 	/** Set number of actors. */
-	void SetActorCount( int count );
+	void SetActorCount(int count);
 	
 	/** Actor. */
-	cePlaybackActor &GetActorAt( int index ) const;
+	cePlaybackActor &GetActorAt(int index) const;
 	
 	
 	
 	/** Update playback. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Update camera. */
-	void UpdateCamera( float elapsed );
+	void UpdateCamera(float elapsed);
 	
 	/** Process actions. */
-	void ProcessActions( float elapsed );
+	void ProcessActions(float elapsed);
 	
 	/** Advance to next action. */
 	void AdvanceToNextAction();
@@ -214,7 +214,7 @@ public:
 	void FastForwardSpeaking();
 	
 	/** Cancel looping action list. */
-	void CancelLoopingLayer( int stackDepth );
+	void CancelLoopingLayer(int stackDepth);
 	
 	/** Last action played back or \em NULL if not set. */
 	inline ceConversationAction *GetLastPlayedAction() const{ return pLastPlayedAction; }
@@ -225,7 +225,7 @@ public:
 	
 	
 	/** Set text box text. */
-	void SetTextBoxText( const decUnicodeString &text );
+	void SetTextBoxText(const decUnicodeString &text);
 	
 	/** Clear text box text. */
 	void ClearTextBoxText();
@@ -235,7 +235,7 @@ public:
 	
 private:
 	void pProcessActions(float elapsed);
-	void SetLastPlayedAction( ceConversationTopic *topic, ceConversationAction *action );
+	void SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action);
 };
 
 #endif

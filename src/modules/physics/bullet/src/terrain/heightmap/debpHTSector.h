@@ -83,7 +83,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sector. */
-	debpHTSector( debpHeightTerrain *heightTerrain, deHeightTerrainSector *sector );
+	debpHTSector(debpHeightTerrain *heightTerrain, deHeightTerrainSector *sector);
 	/** Cleans up the sector. */
 	~debpHTSector();
 	/*@}*/
@@ -101,7 +101,7 @@ public:
 	/** Retrieves the number of clusters in the both direction. */
 	inline int GetClusterCount() const{ return pClusterCount; }
 	/** Retrieves the cluster at the given location. */
-	debpHTSCluster &GetClusterAt( int x, int z ) const;
+	debpHTSCluster &GetClusterAt(int x, int z) const;
 	/** Retrieves the list of clusters. */
 	inline debpHTSCluster *GetClusters() const{ return pClusters; }
 	
@@ -113,13 +113,13 @@ public:
 	/** Retrieves the marked flag. */
 	inline bool GetMarked() const{ return pMarked; }
 	/** Sets the marked flag. */
-	inline void SetMarked( bool marked ){ pMarked = marked; }
+	inline void SetMarked(bool marked){pMarked = marked;}
 	
 	/** Retrieves the points for a height map with or without modifications. */
 	inline decVector *GetPoints() const{ return pPoints; }
 	
 	/** Update heights. */
-	void UpdateHeights( int fromX, int fromY, int toX, int toY );
+	void UpdateHeights(int fromX, int fromY, int toX, int toY);
 	
 	/** Update. */
 	void Update();

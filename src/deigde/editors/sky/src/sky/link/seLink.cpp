@@ -42,20 +42,20 @@
 ////////////////////////////
 
 seLink::seLink() :
-pSky( NULL ),
-pIndex( -1 ),
+pSky(NULL),
+pIndex(-1),
 
-pName( "Link" ),
+pName("Link"),
 
-pController( NULL ),
-pRepeat( 1 ),
+pController(NULL),
+pRepeat(1),
 
-pSelected( false ),
-pActive( false ){
+pSelected(false),
+pActive(false){
 }
 
 seLink::~seLink(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -65,69 +65,69 @@ seLink::~seLink(){
 // Management
 ///////////////
 
-void seLink::SetSky( seSky *sky ){
+void seLink::SetSky(seSky *sky){
 	pSky = sky;
 }
 
-void seLink::SetIndex( int index ){
+void seLink::SetIndex(int index){
 	pIndex = index;
 }
 
-void seLink::SetName( const char *name ){
-	if( pName == name ){
+void seLink::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
-	if( pSky ){
-		pSky->NotifyLinkNameChanged( this );
+	if(pSky){
+		pSky->NotifyLinkNameChanged(this);
 	}
 }
 
 void seLink::NotifyCurveChanged(){
-	if( pSky ){
-		pSky->NotifyLinkChanged( this );
+	if(pSky){
+		pSky->NotifyLinkChanged(this);
 	}
 }
 
-void seLink::SetController( seController *controller ){
-	if( controller == pController ){
+void seLink::SetController(seController *controller){
+	if(controller == pController){
 		return;
 	}
 	
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 	
 	pController = controller;
 	
-	if( controller ){
+	if(controller){
 		controller->AddReference();
 	}
 	
-	if( pSky ){
-		pSky->NotifyLinkChanged( this );
+	if(pSky){
+		pSky->NotifyLinkChanged(this);
 	}
 }
 
-void seLink::SetRepeat( int repeat ){
-	if( repeat == pRepeat ){
+void seLink::SetRepeat(int repeat){
+	if(repeat == pRepeat){
 		return;
 	}
 	
 	pRepeat = repeat;
 	
-	if( pSky ){
-		pSky->NotifyLinkChanged( this );
+	if(pSky){
+		pSky->NotifyLinkChanged(this);
 	}
 }
 
 
 
-void seLink::SetSelected( bool selected ){
+void seLink::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void seLink::SetActive( bool active ){
+void seLink::SetActive(bool active){
 	pActive = active;
 }

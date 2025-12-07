@@ -43,7 +43,7 @@
 ////////////////////////////
 
 deAnimatorRuleSubAnimator::deAnimatorRuleSubAnimator() :
-pEnableVertexPositionSet( true )
+pEnableVertexPositionSet(true)
 {
 	pConnections = NULL;
 	pConnectionCount = 0;
@@ -54,7 +54,7 @@ pEnableVertexPositionSet( true )
 }
 
 deAnimatorRuleSubAnimator::~deAnimatorRuleSubAnimator(){
-	if( pConnections ){
+	if(pConnections){
 		delete [] pConnections;
 	}
 }
@@ -64,8 +64,8 @@ deAnimatorRuleSubAnimator::~deAnimatorRuleSubAnimator(){
 // Management
 ///////////////
 
-void deAnimatorRuleSubAnimator::SetSubAnimator( deAnimator *animator ){
-	if( animator == pSubAnimator ){
+void deAnimatorRuleSubAnimator::SetSubAnimator(deAnimator *animator){
+	if(animator == pSubAnimator){
 		return;
 	}
 	
@@ -73,75 +73,75 @@ void deAnimatorRuleSubAnimator::SetSubAnimator( deAnimator *animator ){
 	UpdateConnectionCount();
 }
 
-void deAnimatorRuleSubAnimator::SetEnablePosition( bool enabled ){
+void deAnimatorRuleSubAnimator::SetEnablePosition(bool enabled){
 	pEnablePosition = enabled;
 }
 
-void deAnimatorRuleSubAnimator::SetEnableOrientation( bool enabled ){
+void deAnimatorRuleSubAnimator::SetEnableOrientation(bool enabled){
 	pEnableOrientation = enabled;
 }
 
-void deAnimatorRuleSubAnimator::SetEnableSize( bool enabled ){
+void deAnimatorRuleSubAnimator::SetEnableSize(bool enabled){
 	pEnableSize = enabled;
 }
 
-void deAnimatorRuleSubAnimator::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
 
 
 void deAnimatorRuleSubAnimator::UpdateConnectionCount(){
-	if( pConnections ){
+	if(pConnections){
 		delete [] pConnections;
 		pConnections = NULL;
 		pConnectionCount = 0;
 	}
 	
-	if( ! pSubAnimator ){
+	if(!pSubAnimator){
 		return;
 	}
 	
 	int controllerCount = pSubAnimator->GetControllerCount();
-	if( controllerCount == 0 ){
+	if(controllerCount == 0){
 		return;
 	}
 	
-	pConnections = new int[ controllerCount ];
-	for( pConnectionCount=0; pConnectionCount<controllerCount; pConnectionCount++ ){
-		pConnections[ pConnectionCount ] = -1;
+	pConnections = new int[controllerCount];
+	for(pConnectionCount=0; pConnectionCount<controllerCount; pConnectionCount++){
+		pConnections[pConnectionCount] = -1;
 	}
 }
 
-int deAnimatorRuleSubAnimator::GetConnectionAt( int targetController ) const{
-	if( targetController < 0 || targetController >= pConnectionCount ) DETHROW( deeInvalidParam );
+int deAnimatorRuleSubAnimator::GetConnectionAt(int targetController) const{
+	if(targetController < 0 || targetController >= pConnectionCount) DETHROW(deeInvalidParam);
 	
-	return pConnections[ targetController ];
+	return pConnections[targetController];
 }
 
-void deAnimatorRuleSubAnimator::SetConnectionAt( int targetController, int localController ){
-	if( targetController < 0 || targetController >= pConnectionCount ) DETHROW( deeInvalidParam );
-	if( localController < -1 ) DETHROW( deeInvalidParam );
+void deAnimatorRuleSubAnimator::SetConnectionAt(int targetController, int localController){
+	if(targetController < 0 || targetController >= pConnectionCount) DETHROW(deeInvalidParam);
+	if(localController < -1) DETHROW(deeInvalidParam);
 	
-	pConnections[ targetController ] = localController;
+	pConnections[targetController] = localController;
 }
 
-void deAnimatorRuleSubAnimator::SetMatchingConnections( const deAnimator &animator ){
-	if( ! pSubAnimator ){
+void deAnimatorRuleSubAnimator::SetMatchingConnections(const deAnimator &animator){
+	if(!pSubAnimator){
 		ClearConnections();
 		return;
 	}
 	
 	int i;
-	for( i=0; i<pConnectionCount; i++ ){
-		pConnections[ i ] = animator.IndexOfControllerNamed( pSubAnimator->GetControllerAt( i )->GetName() );
+	for(i=0; i<pConnectionCount; i++){
+		pConnections[i] = animator.IndexOfControllerNamed(pSubAnimator->GetControllerAt(i)->GetName());
 	}
 }
 
 void deAnimatorRuleSubAnimator::ClearConnections(){
 	int i;
-	for( i=0; i<pConnectionCount; i++ ){
-		pConnections[ i ] = -1;
+	for(i=0; i<pConnectionCount; i++){
+		pConnections[i] = -1;
 	}
 }
 
@@ -150,6 +150,6 @@ void deAnimatorRuleSubAnimator::ClearConnections(){
 // Visiting
 /////////////
 
-void deAnimatorRuleSubAnimator::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitSubAnimator( *this );
+void deAnimatorRuleSubAnimator::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitSubAnimator(*this);
 }

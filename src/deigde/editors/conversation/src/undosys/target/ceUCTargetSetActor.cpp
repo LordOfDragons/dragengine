@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetActor::ceUCTargetSetActor( ceTarget *target, const char *newID ){
-	if( ! target || ! newID ) DETHROW( deeInvalidParam );
+ceUCTargetSetActor::ceUCTargetSetActor(ceTarget *target, const char *newID){
+	if(!target || !newID) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;
 	
-	SetShortInfo( "Target Set Actor ID" );
+	SetShortInfo("Target Set Actor ID");
 	
 	pOldID = target->GetActor();
 	pNewID = newID;
@@ -54,7 +54,7 @@ ceUCTargetSetActor::ceUCTargetSetActor( ceTarget *target, const char *newID ){
 }
 
 ceUCTargetSetActor::~ceUCTargetSetActor(){
-	if( pTarget ){
+	if(pTarget){
 		pTarget->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ ceUCTargetSetActor::~ceUCTargetSetActor(){
 ///////////////
 
 void ceUCTargetSetActor::Undo(){
-	pTarget->SetActor( pOldID );
+	pTarget->SetActor(pOldID);
 }
 
 void ceUCTargetSetActor::Redo(){
-	pTarget->SetActor( pNewID );
+	pTarget->SetActor(pNewID);
 }

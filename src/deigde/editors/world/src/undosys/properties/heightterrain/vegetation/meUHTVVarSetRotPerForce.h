@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVarSetRotPerForce( meHTVVariation *variation, float newRotPerForce );
+	meUHTVVarSetRotPerForce(meHTVVariation *variation, float newRotPerForce);
 	
 protected:
 	/** \brief Clean up undo object. */

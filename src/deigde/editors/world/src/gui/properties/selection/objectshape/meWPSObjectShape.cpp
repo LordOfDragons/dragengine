@@ -98,10 +98,10 @@ class cSpinActive : public igdeSpinTextFieldListener{
 	meWPSObjectShape &pPanel;
 	
 public:
-	cSpinActive( meWPSObjectShape &panel ) : pPanel( panel ){ }
+	cSpinActive(meWPSObjectShape &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged( igdeSpinTextField *textField ){
-		if( ! pPanel.IsActivePropertyShape() ){
+	virtual void OnValueChanged(igdeSpinTextField *textField){
+		if(!pPanel.IsActivePropertyShape()){
 			return;
 		}
 		
@@ -109,7 +109,7 @@ public:
 		const meObjectShapeList &shapeList = selection.GetSelected();
 		const int index = textField->GetValue();
 		
-		selection.SetActive( index >= 0 && index <= shapeList.GetCount() ? shapeList.GetAt( index ) : NULL );
+		selection.SetActive(index >= 0 && index <= shapeList.GetCount() ? shapeList.GetAt(index) : NULL);
 		
 		pPanel.GetWorld()->NotifyObjectShapeSelectionChanged();
 	}
@@ -120,13 +120,13 @@ class cComboProperties : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
-	cComboProperties( meWPSObjectShape &panel, bool &preventUpdate ) :
-		pPanel( panel ), pPreventUpdate( preventUpdate ){ }
+	cComboProperties(meWPSObjectShape &panel, bool &preventUpdate) :
+		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		meObject * const object = pPanel.GetActiveObject();
-		if( object && ! pPreventUpdate ){
-			object->SetActiveProperty( comboBox->GetText() );
+		if(object && !pPreventUpdate){
+			object->SetActiveProperty(comboBox->GetText());
 		}
 	}
 };
@@ -135,9 +135,9 @@ class cShapeValueVector : public igdeEditVectorListener{
 	meWPSObjectShape &pPanel;
 	
 public:
-	cShapeValueVector( meWPSObjectShape &panel ) : pPanel( panel ){ }
+	cShapeValueVector(meWPSObjectShape &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector* ){
+	virtual void OnVectorChanged(igdeEditVector*){
 		pPanel.OnShapeChanged();
 	}
 };
@@ -146,9 +146,9 @@ class cShapeValueFloat : public igdeTextFieldListener{
 	meWPSObjectShape &pPanel;
 	
 public:
-	cShapeValueFloat( meWPSObjectShape &panel ) : pPanel( panel ){ }
+	cShapeValueFloat(meWPSObjectShape &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField* ){
+	virtual void OnTextChanged(igdeTextField*){
 		pPanel.OnShapeChanged();
 	}
 };
@@ -163,55 +163,55 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWPSObjectShape::meWPSObjectShape( meWPSelection &wpselection ) :
-igdeContainerScroll( wpselection.GetEnvironment(), false, true ),
-pWPSelection( wpselection ),
-pListener( NULL ),
-pWorld( NULL ),
-pPreventUpdate( false )
+meWPSObjectShape::meWPSObjectShape(meWPSelection &wpselection) :
+igdeContainerScroll(wpselection.GetEnvironment(), false, true),
+pWPSelection(wpselection),
+pListener(NULL),
+pWorld(NULL),
+pPreventUpdate(false)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, form, formLine;
 	
-	pListener = new meWPSObjectShapeListener( *this );
+	pListener = new meWPSObjectShapeListener(*this);
 	
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	content->AddChild( form );
+	form.TakeOver(new igdeContainerForm(env));
+	content->AddChild(form);
 	
-	helper.EditString( form, "Class:", "Name of the active object class.", pEditObjectClass, NULL );
-	pEditObjectClass->SetEditable( false );
+	helper.EditString(form, "Class:", "Name of the active object class.", pEditObjectClass, NULL);
+	pEditObjectClass->SetEditable(false);
 	
-	helper.ComboBox( form, "Property:", "Name of the active object property.",
-		pCBProperties, new cComboProperties( *this, pPreventUpdate ) );
+	helper.ComboBox(form, "Property:", "Name of the active object property.",
+		pCBProperties, new cComboProperties(*this, pPreventUpdate));
 	pCBProperties->SetDefaultSorter();
 	
-	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10 ) );
-	content->AddChild( formLine );
-	helper.Label( formLine, "Count:" );
-	helper.EditInteger( formLine, "Count of shapes", 3, pEditShapeCount, NULL );
-	pEditShapeCount->SetEditable( false );
-	helper.Label( formLine, "Active:" );
-	helper.EditSpinInteger( formLine, "Active shape to edit", 0, 0, pSpinActive, new cSpinActive( *this ) );
+	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10));
+	content->AddChild(formLine);
+	helper.Label(formLine, "Count:");
+	helper.EditInteger(formLine, "Count of shapes", 3, pEditShapeCount, NULL);
+	pEditShapeCount->SetEditable(false);
+	helper.Label(formLine, "Active:");
+	helper.EditSpinInteger(formLine, "Active shape to edit", 0, 0, pSpinActive, new cSpinActive(*this));
 	
-	helper.EditString( content, "Property information", pTextInfos, 6, NULL );
-	pTextInfos->SetEditable( false );
+	helper.EditString(content, "Property information", pTextInfos, 6, NULL);
+	pTextInfos->SetEditable(false);
 	
 	
 	pCreateShapePanels();
-	content->AddChild( pSwitcherShapeType );
+	content->AddChild(pSwitcherShapeType);
 	
 	UpdateShapeNone();
 }
 
 meWPSObjectShape::~meWPSObjectShape(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -221,24 +221,24 @@ meWPSObjectShape::~meWPSObjectShape(){
 // Management
 ///////////////
 
-void meWPSObjectShape::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWPSObjectShape::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pWorld ){
-		pWorld->RemoveNotifier( pListener );
+	if(pWorld){
+		pWorld->RemoveNotifier(pListener);
 		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
+	if(world){
+		world->AddNotifier(pListener);
 		world->AddReference();
 	}
 	
-	UpdateListProperties( false );
+	UpdateListProperties(false);
 	UpdateSelection();
 	UpdateActiveShape();
 }
@@ -258,13 +258,13 @@ const decString &meWPSObjectShape::GetActiveProperty() const{
 bool meWPSObjectShape::IsActivePropertyShape() const{
 	meObject * const activeObject = GetActiveObject();
 	const decString &activeProperty = GetActiveProperty();
-	return activeObject && ! activeProperty.IsEmpty()
-		&& activeObject->IsPropertyShapeOrShapeList( activeProperty );
+	return activeObject && !activeProperty.IsEmpty()
+		&& activeObject->IsPropertyShapeOrShapeList(activeProperty);
 }
 
 
 
-void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
+void meWPSObjectShape::UpdateListProperties(bool retainSelection){
 	meObject * const activeObject = GetActiveObject();
 	const decString &activeProperty = GetActiveProperty();
 	const bool isPropertyShape = IsActivePropertyShape();
@@ -272,19 +272,19 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 	int selectionIndexActive = -1;
 	
 	// create list of indices from the currently selected object shapes and the active shape if set
-	if( retainSelection && isPropertyShape ){
+	if(retainSelection && isPropertyShape){
 		const meObjectShapeSelection &selection = pWorld->GetSelectionObjectShape();
 		const meObjectShapeList &selectionList = selection.GetSelected();
 		const meObjectShapeList &shapeList = pWorld->GetObjectShapes();
 		const int count = selectionList.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			selectionIndexList.Add( shapeList.IndexOf( selectionList.GetAt( i ) ) );
+		for(i=0; i<count; i++){
+			selectionIndexList.Add(shapeList.IndexOf(selectionList.GetAt(i)));
 		}
 		
-		if( selection.GetActive() ){
-			selectionIndexActive = shapeList.IndexOf( selection.GetActive() );
+		if(selection.GetActive()){
+			selectionIndexActive = shapeList.IndexOf(selection.GetActive());
 		}
 	}
 	
@@ -293,16 +293,16 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 	try{
 		pCBProperties->RemoveAllItems();
 		
-		if( activeObject ){
+		if(activeObject){
 			const decStringDictionary &properties = activeObject->GetProperties();
-			const decStringList keys( properties.GetKeys() );
+			const decStringList keys(properties.GetKeys());
 			const int count = keys.GetCount();
 			int i;
 			
-			pEditObjectClass->SetText( activeObject->GetClassName() );
+			pEditObjectClass->SetText(activeObject->GetClassName());
 			
-			for( i=0; i<count; i++ ){
-				pCBProperties->AddItem( keys.GetAt( i ) );
+			for(i=0; i<count; i++){
+				pCBProperties->AddItem(keys.GetAt(i));
 			}
 			
 			pCBProperties->SortItems();
@@ -313,74 +313,74 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 		
 		pPreventUpdate = false;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}
 	
-	pCBProperties->SetSelection( pCBProperties->IndexOfItem( activeProperty ) );
+	pCBProperties->SetSelection(pCBProperties->IndexOfItem(activeProperty));
 	
 	// reset the list of selected object shapes, the selection and active state
-	if( pWorld ){
+	if(pWorld){
 		meObjectShapeList &shapeList = pWorld->GetObjectShapes();
 		int count = shapeList.GetCount();
 		int i;
 		
 		pWorld->GetSelectionObjectShape().Reset();
 		
-		for( i=0; i<count; i++ ){
-			meObjectShape &shape = *shapeList.GetAt( i );
-			shape.SetParentObject( NULL );
-			shape.SetWorld( NULL );
+		for(i=0; i<count; i++){
+			meObjectShape &shape = *shapeList.GetAt(i);
+			shape.SetParentObject(NULL);
+			shape.SetWorld(NULL);
 		}
 		
 		shapeList.RemoveAll();
 	}
 	
 	// rebuild the shape list from the currently selected property
-	if( isPropertyShape){
+	if(isPropertyShape){
 		igdeCodecPropertyString codec;
 		decShapeList shapeList;
 		int i, count;
 		
 		try{
-			codec.DecodeShapeList( activeObject->GetProperties().GetAt( activeProperty ), shapeList );
+			codec.DecodeShapeList(activeObject->GetProperties().GetAt(activeProperty), shapeList);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			shapeList.RemoveAll();
 		}
 		
 		count = shapeList.GetCount();
 		
-		if( activeObject->IsPropertyShape( activeProperty ) && count > 1 ){
+		if(activeObject->IsPropertyShape(activeProperty) && count > 1){
 			count = 1;
 		}
 		
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			const meObjectShape::Ref objectShape(meObjectShape::Ref::NewWith(
 				pWorld->GetEnvironment(), *shapeList.GetAt(i)));
-			objectShape->SetWorld( pWorld );
-			objectShape->SetParentObject( activeObject );
-			pWorld->GetObjectShapes().Add( objectShape );
+			objectShape->SetWorld(pWorld);
+			objectShape->SetParentObject(activeObject);
+			pWorld->GetObjectShapes().Add(objectShape);
 		}
 	}
 	
 	// rebuild the selected and active state using the indices stored before. drop indices outside the new list
-	if( isPropertyShape ){
+	if(isPropertyShape){
 		meObjectShapeSelection &selection = pWorld->GetSelectionObjectShape();
 		const meObjectShapeList &shapeList = pWorld->GetObjectShapes();
 		const int count = selectionIndexList.GetCount();
 		const int shapeCount = shapeList.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( selectionIndexList.GetAt( i ) < shapeCount ){
-				selection.Add( shapeList.GetAt( selectionIndexList.GetAt( i ) ) );
+		for(i=0; i<count; i++){
+			if(selectionIndexList.GetAt(i) < shapeCount){
+				selection.Add(shapeList.GetAt(selectionIndexList.GetAt(i)));
 			}
 		}
 		
-		if( selectionIndexActive >= 0 && selectionIndexActive < shapeCount ){
-			selection.SetActive( shapeList.GetAt( selectionIndexActive ) );
+		if(selectionIndexActive >= 0 && selectionIndexActive < shapeCount){
+			selection.SetActive(shapeList.GetAt(selectionIndexActive));
 		}
 		
 		// the idea is the following. most of the time the property value is changed using the object shape properties
@@ -403,34 +403,34 @@ void meWPSObjectShape::UpdateSelection(){
 	int active = 0;
 	int count = 0;
 	
-	if( IsActivePropertyShape() ){
+	if(IsActivePropertyShape()){
 		const meObjectShapeSelection &selection = pWorld->GetSelectionObjectShape();
 		count = selection.GetSelected().GetCount();
-		if( selection.HasActive() ){
-			active = selection.GetSelected().IndexOf( selection.GetActive() );
+		if(selection.HasActive()){
+			active = selection.GetSelected().IndexOf(selection.GetActive());
 		}
 	}
 	
-	pEditShapeCount->SetInteger( count );
+	pEditShapeCount->SetInteger(count);
 	
-	pSpinActive->SetRange( 0, count - 1 );
-	pSpinActive->SetValue( active );
-	pSpinActive->SetEnabled( count > 0 );
+	pSpinActive->SetRange(0, count - 1);
+	pSpinActive->SetValue(active);
+	pSpinActive->SetEnabled(count > 0);
 }
 
 void meWPSObjectShape::UpdateActiveShape(){
 	decShape *shape = NULL;
 	
-	if( pWorld ){
+	if(pWorld){
 		meObjectShape * const objectShape = pWorld->GetSelectionObjectShape().GetActive();
-		if( objectShape ){
-			shape = ( decShape* )objectShape->GetShape();
+		if(objectShape){
+			shape = (decShape*)objectShape->GetShape();
 		}
 	}
 	
-	if( shape ){
-		meWPSObjectShapeUpdater visitor( *this );
-		shape->Visit( visitor );
+	if(shape){
+		meWPSObjectShapeUpdater visitor(*this);
+		shape->Visit(visitor);
 		
 	}else{
 		UpdateShapeNone();
@@ -443,7 +443,7 @@ void meWPSObjectShape::UpdateActiveShape(){
 
 void meWPSObjectShape::UpdateObjectShapeShapes(){
 	const meObject * const activeObject = GetActiveObject();
-	if( ! activeObject || ! activeObject->GetActive() ){
+	if(!activeObject || !activeObject->GetActive()){
 		return;
 	}
 	
@@ -451,67 +451,67 @@ void meWPSObjectShape::UpdateObjectShapeShapes(){
 	const int count = shapeList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		shapeList.GetAt( i )->UpdateShape();
+	for(i=0; i<count; i++){
+		shapeList.GetAt(i)->UpdateShape();
 	}
 }
 
 
 
 void meWPSObjectShape::UpdateShapeNone(){
-	pSwitcherShapeType->SetCurrent( espNone );
+	pSwitcherShapeType->SetCurrent(espNone);
 }
 
-void meWPSObjectShape::UpdateShapeSphere( const decShapeSphere &sphere ){
-	pEditSpherePosition->SetVector( sphere.GetPosition() );
-	pEditSphereRadius->SetFloat( sphere.GetRadius() );
-	pSwitcherShapeType->SetCurrent( espSphere );
+void meWPSObjectShape::UpdateShapeSphere(const decShapeSphere &sphere){
+	pEditSpherePosition->SetVector(sphere.GetPosition());
+	pEditSphereRadius->SetFloat(sphere.GetRadius());
+	pSwitcherShapeType->SetCurrent(espSphere);
 }
 
-void meWPSObjectShape::UpdateShapeBox( const decShapeBox &box ){
-	pEditBoxPosition->SetVector( box.GetPosition() );
-	pEditBoxRotation->SetVector( decMatrix::CreateFromQuaternion(
-		box.GetOrientation() ).GetEulerAngles() / DEG2RAD );
-	pEditBoxExtends->SetVector( box.GetHalfExtends() );
-	pSwitcherShapeType->SetCurrent( espBox );
+void meWPSObjectShape::UpdateShapeBox(const decShapeBox &box){
+	pEditBoxPosition->SetVector(box.GetPosition());
+	pEditBoxRotation->SetVector(decMatrix::CreateFromQuaternion(
+		box.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	pEditBoxExtends->SetVector(box.GetHalfExtends());
+	pSwitcherShapeType->SetCurrent(espBox);
 }
 
-void meWPSObjectShape::UpdateShapeCylinder( const decShapeCylinder &cylinder ){
-	pEditCylinderPosition->SetVector( cylinder.GetPosition() );
-	pEditCylinderRotation->SetVector( decMatrix::CreateFromQuaternion(
-		cylinder.GetOrientation() ).GetEulerAngles() / DEG2RAD );
-	pEditCylinderHeight->SetFloat( cylinder.GetHalfHeight() );
-	pEditCylinderRadiusTop->SetFloat( cylinder.GetTopRadius() );
-	pEditCylinderRadiusBottom->SetFloat( cylinder.GetBottomRadius() );
-	pSwitcherShapeType->SetCurrent( espCylinder );
+void meWPSObjectShape::UpdateShapeCylinder(const decShapeCylinder &cylinder){
+	pEditCylinderPosition->SetVector(cylinder.GetPosition());
+	pEditCylinderRotation->SetVector(decMatrix::CreateFromQuaternion(
+		cylinder.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	pEditCylinderHeight->SetFloat(cylinder.GetHalfHeight());
+	pEditCylinderRadiusTop->SetFloat(cylinder.GetTopRadius());
+	pEditCylinderRadiusBottom->SetFloat(cylinder.GetBottomRadius());
+	pSwitcherShapeType->SetCurrent(espCylinder);
 }
 
-void meWPSObjectShape::UpdateShapeCapsule( const decShapeCapsule &capsule ){
-	pEditCapsulePosition->SetVector( capsule.GetPosition() );
-	pEditCapsuleRotation->SetVector( decMatrix::CreateFromQuaternion(
-			capsule.GetOrientation() ).GetEulerAngles() / DEG2RAD );
-	pEditCapsuleHeight->SetFloat( capsule.GetHalfHeight() );
-	pEditCapsuleRadiusTop->SetFloat( capsule.GetTopRadius() );
-	pEditCapsuleRadiusBottom->SetFloat( capsule.GetBottomRadius() );
-	pSwitcherShapeType->SetCurrent( espCapsule );
+void meWPSObjectShape::UpdateShapeCapsule(const decShapeCapsule &capsule){
+	pEditCapsulePosition->SetVector(capsule.GetPosition());
+	pEditCapsuleRotation->SetVector(decMatrix::CreateFromQuaternion(
+			capsule.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	pEditCapsuleHeight->SetFloat(capsule.GetHalfHeight());
+	pEditCapsuleRadiusTop->SetFloat(capsule.GetTopRadius());
+	pEditCapsuleRadiusBottom->SetFloat(capsule.GetBottomRadius());
+	pSwitcherShapeType->SetCurrent(espCapsule);
 }
 
 void meWPSObjectShape::OnGameDefinitionChanged(){
-	UpdateListProperties( true );
+	UpdateListProperties(true);
 }
 
 
 
 void meWPSObjectShape::OnShapeChanged(){
-	const eShapePanels activePanel = ( eShapePanels )pSwitcherShapeType->GetCurrent();
+	const eShapePanels activePanel = (eShapePanels)pSwitcherShapeType->GetCurrent();
 	const decString &activeProperty = GetActiveProperty();
 	meObject * const object = GetActiveObject();
-	if( ! object || activeProperty.IsEmpty() || activePanel == espNone ){
+	if(!object || activeProperty.IsEmpty() || activePanel == espNone){
 		return;
 	}
 	
-	const int shapeIndex = pWorld->GetObjectShapes().IndexOf( pWorld->GetSelectionObjectShape().GetActive() );
-	if( shapeIndex == -1 ){
+	const int shapeIndex = pWorld->GetObjectShapes().IndexOf(pWorld->GetSelectionObjectShape().GetActive());
+	if(shapeIndex == -1){
 		return;
 	}
 	
@@ -519,52 +519,52 @@ void meWPSObjectShape::OnShapeChanged(){
 	decShape *shape = NULL;
 	
 	try{
-		switch( activePanel ){
+		switch(activePanel){
 		case espSphere:
 			shape = new decShapeSphere(
-				decMath::max( pEditSphereRadius->GetFloat(), 0.001f ),
-				pEditSpherePosition->GetVector() );
+				decMath::max(pEditSphereRadius->GetFloat(), 0.001f),
+				pEditSpherePosition->GetVector());
 			break;
 			
 		case espBox:
 			shape = new decShapeBox(
-				decVector( 0.001f, 0.001f, 0.001f ).Largest( pEditBoxExtends->GetVector() ),
+				decVector(0.001f, 0.001f, 0.001f).Largest(pEditBoxExtends->GetVector()),
 				pEditBoxPosition->GetVector(),
-				decMatrix::CreateRotation( pEditBoxRotation->GetVector() * DEG2RAD ).ToQuaternion() );
+				decMatrix::CreateRotation(pEditBoxRotation->GetVector() * DEG2RAD).ToQuaternion());
 			break;
 			
 		case espCylinder:
 			shape = new decShapeCylinder(
-				decMath::max( pEditCylinderHeight->GetFloat(), 0.001f ),
-				decMath::max( pEditCylinderRadiusTop->GetFloat(), 0.001f ),
-				decMath::max( pEditCylinderRadiusBottom->GetFloat(), 0.001f ),
+				decMath::max(pEditCylinderHeight->GetFloat(), 0.001f),
+				decMath::max(pEditCylinderRadiusTop->GetFloat(), 0.001f),
+				decMath::max(pEditCylinderRadiusBottom->GetFloat(), 0.001f),
 				pEditCylinderPosition->GetVector(),
-				decMatrix::CreateRotation( pEditCylinderRotation->GetVector() * DEG2RAD ).ToQuaternion() );
+				decMatrix::CreateRotation(pEditCylinderRotation->GetVector() * DEG2RAD).ToQuaternion());
 			break;
 			
 		case espCapsule:
 			shape = new decShapeCapsule(
-				decMath::max( pEditCapsuleHeight->GetFloat(), 0.001f ),
-				decMath::max( pEditCapsuleRadiusTop->GetFloat(), 0.001f ),
-				decMath::max( pEditCapsuleRadiusBottom->GetFloat(), 0.001f ),
+				decMath::max(pEditCapsuleHeight->GetFloat(), 0.001f),
+				decMath::max(pEditCapsuleRadiusTop->GetFloat(), 0.001f),
+				decMath::max(pEditCapsuleRadiusBottom->GetFloat(), 0.001f),
 				pEditCapsulePosition->GetVector(),
-				decMatrix::CreateRotation( pEditCapsuleRotation->GetVector() * DEG2RAD ).ToQuaternion() );
+				decMatrix::CreateRotation(pEditCapsuleRotation->GetVector() * DEG2RAD).ToQuaternion());
 			break;
 			
 		default:
 			return;
 		}
 		
-		undo.TakeOver( new meUObjectShapeReplace( object, activeProperty, shapeIndex, *shape ) );
+		undo.TakeOver(new meUObjectShapeReplace(object, activeProperty, shapeIndex, *shape));
 		
-	}catch( const deException & ){
-		if( shape ){
+	}catch(const deException &){
+		if(shape){
 			delete shape;
 		}
 		throw;
 	}
 	
-	pWorld->GetUndoSystem()->Add( undo );
+	pWorld->GetUndoSystem()->Add(undo);
 }
 
 
@@ -578,89 +578,89 @@ void meWPSObjectShape::pCreateShapePanels(){
 	igdeContainer::Ref groupBox;
 	
 	
-	pSwitcherShapeType.TakeOver( new igdeSwitcher( env ) );
+	pSwitcherShapeType.TakeOver(new igdeSwitcher(env));
 	
 	
 	// none
-	helper.Label( pSwitcherShapeType, "No Shape Selected" );
+	helper.Label(pSwitcherShapeType, "No Shape Selected");
 	
 	
 	// sphere
-	helper.GroupBoxStatic( pSwitcherShapeType, groupBox, "Sphere:" );
-	helper.EditVector( groupBox, "Position:", "Position of the sphere.",
-		pEditSpherePosition, new cShapeValueVector( *this ) );
-	helper.EditFloat( groupBox, "Radius:", "Radius of the sphere.",
-		pEditSphereRadius, new cShapeValueFloat( *this ) );
+	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "Sphere:");
+	helper.EditVector(groupBox, "Position:", "Position of the sphere.",
+		pEditSpherePosition, new cShapeValueVector(*this));
+	helper.EditFloat(groupBox, "Radius:", "Radius of the sphere.",
+		pEditSphereRadius, new cShapeValueFloat(*this));
 	
 	
 	// box
-	helper.GroupBoxStatic( pSwitcherShapeType, groupBox, "Box:" );
-	helper.EditVector( groupBox, "Position:", "Position of the box.",
-		pEditBoxPosition, new cShapeValueVector( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation of the box.",
-		pEditBoxRotation, new cShapeValueVector( *this ) );
-	helper.EditVector( groupBox, "Extends:", "Extends of the box.",
-		pEditBoxExtends, new cShapeValueVector( *this ) );
+	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "Box:");
+	helper.EditVector(groupBox, "Position:", "Position of the box.",
+		pEditBoxPosition, new cShapeValueVector(*this));
+	helper.EditVector(groupBox, "Rotation:", "Rotation of the box.",
+		pEditBoxRotation, new cShapeValueVector(*this));
+	helper.EditVector(groupBox, "Extends:", "Extends of the box.",
+		pEditBoxExtends, new cShapeValueVector(*this));
 	
 	
 	// cylinder
-	helper.GroupBoxStatic( pSwitcherShapeType, groupBox, "Cylinder:" );
-	helper.EditVector( groupBox, "Position:", "Position of the cylinder.",
-		pEditCylinderPosition, new cShapeValueVector( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation of the cylinder.",
-		pEditCylinderRotation, new cShapeValueVector( *this ) );
-	helper.EditFloat( groupBox, "Height:", "Height of the cylinder.",
-		pEditCylinderHeight, new cShapeValueFloat( *this ) );
-	helper.EditFloat( groupBox, "Radius Top:", "Top radius of the cylinder.",
-		pEditCylinderRadiusTop, new cShapeValueFloat( *this ) );
-	helper.EditFloat( groupBox, "Radius Bottom:", "Bottom radius of the cylinder.",
-		pEditCylinderRadiusBottom, new cShapeValueFloat( *this ) );
+	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "Cylinder:");
+	helper.EditVector(groupBox, "Position:", "Position of the cylinder.",
+		pEditCylinderPosition, new cShapeValueVector(*this));
+	helper.EditVector(groupBox, "Rotation:", "Rotation of the cylinder.",
+		pEditCylinderRotation, new cShapeValueVector(*this));
+	helper.EditFloat(groupBox, "Height:", "Height of the cylinder.",
+		pEditCylinderHeight, new cShapeValueFloat(*this));
+	helper.EditFloat(groupBox, "Radius Top:", "Top radius of the cylinder.",
+		pEditCylinderRadiusTop, new cShapeValueFloat(*this));
+	helper.EditFloat(groupBox, "Radius Bottom:", "Bottom radius of the cylinder.",
+		pEditCylinderRadiusBottom, new cShapeValueFloat(*this));
 	
 	
 	// capsule
-	helper.GroupBoxStatic( pSwitcherShapeType, groupBox, "Capsule:" );
-	helper.EditVector( groupBox, "Position:", "Position of the capsule.",
-		pEditCapsulePosition, new cShapeValueVector( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation of the capsule.",
-		pEditCapsuleRotation, new cShapeValueVector( *this ) );
-	helper.EditFloat( groupBox, "Height:", "Height of the capsule.",
-		pEditCapsuleHeight, new cShapeValueFloat( *this ) );
-	helper.EditFloat( groupBox, "Radius Top:", "Top radius of the capsule.",
-		pEditCapsuleRadiusTop, new cShapeValueFloat( *this ) );
-	helper.EditFloat( groupBox, "Radius Bottom:", "Bottom radius of the capsule.",
-		pEditCapsuleRadiusBottom, new cShapeValueFloat( *this ) );
+	helper.GroupBoxStatic(pSwitcherShapeType, groupBox, "Capsule:");
+	helper.EditVector(groupBox, "Position:", "Position of the capsule.",
+		pEditCapsulePosition, new cShapeValueVector(*this));
+	helper.EditVector(groupBox, "Rotation:", "Rotation of the capsule.",
+		pEditCapsuleRotation, new cShapeValueVector(*this));
+	helper.EditFloat(groupBox, "Height:", "Height of the capsule.",
+		pEditCapsuleHeight, new cShapeValueFloat(*this));
+	helper.EditFloat(groupBox, "Radius Top:", "Top radius of the capsule.",
+		pEditCapsuleRadiusTop, new cShapeValueFloat(*this));
+	helper.EditFloat(groupBox, "Radius Bottom:", "Bottom radius of the capsule.",
+		pEditCapsuleRadiusBottom, new cShapeValueFloat(*this));
 }
 
 void meWPSObjectShape::pDisplayPropertyInfo(){
 	const meObject * const object = GetActiveObject();
-	if( ! object ){
+	if(!object){
 		pTextInfos->ClearText();
 		return;
 	}
 	
 	const decString &property = object->GetActiveProperty();
-	if( property.IsEmpty() ){
+	if(property.IsEmpty()){
 		pTextInfos->ClearText();
 		return;
 	}
 	
 	const igdeGDClass *gdclass = object->GetGDClass();
 	igdeGDProperty *gdproperty = NULL;
-	if( gdclass ){
-		gdproperty = gdclass->GetPropertyNamed( property );
+	if(gdclass){
+		gdproperty = gdclass->GetPropertyNamed(property);
 	}
 	
 	decString text;
-	if( gdproperty ){
-		text.Format( "Object Class: %s\nProperty: %s\nDefault: '%s'\n\n%s",
+	if(gdproperty){
+		text.Format("Object Class: %s\nProperty: %s\nDefault: '%s'\n\n%s",
 			object->GetClassName().GetString(), property.GetString(),
 			gdproperty->GetDefaultValue().GetString(),
-			gdproperty->GetDescription().GetString() );
+			gdproperty->GetDescription().GetString());
 		
 	}else{
-		text.Format( "Object Class: %s\nProperty: %s\nDefault: ''",
-			object->GetClassName().GetString(), property.GetString() );
+		text.Format("Object Class: %s\nProperty: %s\nDefault: ''",
+			object->GetClassName().GetString(), property.GetString());
 	}
 	
-	pTextInfos->SetText( text );
+	pTextInfos->SetText(text);
 }

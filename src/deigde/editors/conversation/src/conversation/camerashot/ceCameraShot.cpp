@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCameraShot::ceCameraShot( const char *name ) :
-pName( name )
+ceCameraShot::ceCameraShot(const char *name) :
+pName(name)
 {
 	pConversation = NULL;
 	pActorCount = 1;
-	pOffsetCameraFrom.Set( 0.0f, 1.65f, 0.0f );
+	pOffsetCameraFrom.Set(0.0f, 1.65f, 0.0f);
 	pCameraDistanceFrom = 0.5f;
-	pOffsetLookAtFrom.Set( 0.0f, 1.65f, 0.0f );
+	pOffsetLookAtFrom.Set(0.0f, 1.65f, 0.0f);
 	pTiltFrom = 0.0f;
 	pFovFrom = 90.0f;
 	pOffsetCameraTo = pOffsetCameraFrom;
@@ -62,7 +62,7 @@ pName( name )
 	pLockLookAtTarget = true;
 }
 
-ceCameraShot::ceCameraShot( const ceCameraShot &cameraShot ){
+ceCameraShot::ceCameraShot(const ceCameraShot &cameraShot){
 	int i;
 	
 	pConversation = NULL;
@@ -97,8 +97,8 @@ ceCameraShot::ceCameraShot( const ceCameraShot &cameraShot ){
 	pLockCameraTarget = cameraShot.pLockCameraTarget;
 	pLockLookAtTarget = cameraShot.pLockLookAtTarget;
 	
-	for( i=0; i<EP_COUNT; i++ ){
-		pCurve[ i ] = cameraShot.pCurve[ i ];
+	for(i=0; i<EP_COUNT; i++){
+		pCurve[i] = cameraShot.pCurve[i];
 	}
 }
 
@@ -110,304 +110,304 @@ ceCameraShot::~ceCameraShot(){
 // Management
 ///////////////
 
-void ceCameraShot::SetConversation( ceConversation *conversation ){
+void ceCameraShot::SetConversation(ceConversation *conversation){
 	pConversation = conversation;
 }
 
-void ceCameraShot::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+void ceCameraShot::SetName(const char *name){
+	if(!name) DETHROW(deeInvalidParam);
 	
-	if( ! pName.Equals( name ) ){
-		if( pConversation && pConversation->GetCameraShotList().HasNamed( name ) ) DETHROW( deeInvalidParam );
+	if(!pName.Equals(name)){
+		if(pConversation && pConversation->GetCameraShotList().HasNamed(name)) DETHROW(deeInvalidParam);
 		
 		pName = name;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetActorCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void ceCameraShot::SetActorCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pActorCount ){
+	if(count != pActorCount){
 		pActorCount = count;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
 
 
-void ceCameraShot::SetCameraTarget( const char *target ){
-	if( ! target ){
-		DETHROW( deeInvalidParam );
+void ceCameraShot::SetCameraTarget(const char *target){
+	if(!target){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pCameraTarget != target ){
+	if(pCameraTarget != target){
 		pCameraTarget = target;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetOffsetCameraFrom( const decVector& offset ){
-	if( ! offset.IsEqualTo( pOffsetCameraFrom ) ){
+void ceCameraShot::SetOffsetCameraFrom(const decVector& offset){
+	if(!offset.IsEqualTo(pOffsetCameraFrom)){
 		pOffsetCameraFrom = offset;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetOffsetCameraTo( const decVector& offset ){
-	if( ! offset.IsEqualTo( pOffsetCameraTo ) ){
+void ceCameraShot::SetOffsetCameraTo(const decVector& offset){
+	if(!offset.IsEqualTo(pOffsetCameraTo)){
 		pOffsetCameraTo = offset;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
 
 
-void ceCameraShot::SetLookAtTarget( const char *target ){
-	if( ! target ){
-		DETHROW( deeInvalidParam );
+void ceCameraShot::SetLookAtTarget(const char *target){
+	if(!target){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pLookAtTarget != target ){
+	if(pLookAtTarget != target){
 		pLookAtTarget = target;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetOffsetLookAtFrom( const decVector& offset ){
-	if( ! offset.IsEqualTo( pOffsetLookAtFrom ) ){
+void ceCameraShot::SetOffsetLookAtFrom(const decVector& offset){
+	if(!offset.IsEqualTo(pOffsetLookAtFrom)){
 		pOffsetLookAtFrom = offset;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetOffsetLookAtTo( const decVector& offset ){
-	if( ! offset.IsEqualTo( pOffsetLookAtTo ) ){
+void ceCameraShot::SetOffsetLookAtTo(const decVector& offset){
+	if(!offset.IsEqualTo(pOffsetLookAtTo)){
 		pOffsetLookAtTo = offset;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
 
 
-void ceCameraShot::SetCameraOrbitFrom( const decVector &rotation ){
-	if( ! rotation.IsEqualTo( pCameraOrbitFrom ) ){
+void ceCameraShot::SetCameraOrbitFrom(const decVector &rotation){
+	if(!rotation.IsEqualTo(pCameraOrbitFrom)){
 		pCameraOrbitFrom = rotation;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetCameraOrbitTo( const decVector &rotation ){
-	if( ! rotation.IsEqualTo( pCameraOrbitTo ) ){
+void ceCameraShot::SetCameraOrbitTo(const decVector &rotation){
+	if(!rotation.IsEqualTo(pCameraOrbitTo)){
 		pCameraOrbitTo = rotation;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetCameraDistanceFrom( float distance ){
-	if( fabsf( distance - pCameraDistanceFrom ) > 1e-6f ){
+void ceCameraShot::SetCameraDistanceFrom(float distance){
+	if(fabsf(distance - pCameraDistanceFrom) > 1e-6f){
 		pCameraDistanceFrom = distance;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetCameraDistanceTo( float distance ){
-	if( fabsf( distance - pCameraDistanceTo ) > 1e-6f ){
+void ceCameraShot::SetCameraDistanceTo(float distance){
+	if(fabsf(distance - pCameraDistanceTo) > 1e-6f){
 		pCameraDistanceTo = distance;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
 
 
-void ceCameraShot::SetPositionFrom( const decVector &position ){
-	if( ! position.IsEqualTo( pPositionFrom ) ){
+void ceCameraShot::SetPositionFrom(const decVector &position){
+	if(!position.IsEqualTo(pPositionFrom)){
 		pPositionFrom = position;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetPositionTo( const decVector &position ){
-	if( ! position.IsEqualTo( pPositionTo ) ){
+void ceCameraShot::SetPositionTo(const decVector &position){
+	if(!position.IsEqualTo(pPositionTo)){
 		pPositionTo = position;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetRotationFrom( const decVector &rotation ){
-	if( ! rotation.IsEqualTo( pRotationFrom ) ){
+void ceCameraShot::SetRotationFrom(const decVector &rotation){
+	if(!rotation.IsEqualTo(pRotationFrom)){
 		pRotationFrom = rotation;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetRotationTo( const decVector &rotation ){
-	if( ! rotation.IsEqualTo( pRotationTo ) ){
+void ceCameraShot::SetRotationTo(const decVector &rotation){
+	if(!rotation.IsEqualTo(pRotationTo)){
 		pRotationTo = rotation;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetTiltFrom( float tilt ){
-	if( fabsf( tilt - pTiltFrom ) > 1e-6f ){
+void ceCameraShot::SetTiltFrom(float tilt){
+	if(fabsf(tilt - pTiltFrom) > 1e-6f){
 		pTiltFrom = tilt;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetTiltTo( float tilt ){
-	if( fabsf( tilt - pTiltTo ) > 1e-6f ){
+void ceCameraShot::SetTiltTo(float tilt){
+	if(fabsf(tilt - pTiltTo) > 1e-6f){
 		pTiltTo = tilt;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetFovFrom( float fov ){
-	if( fabsf( fov - pFovFrom ) > 1e-6f ){
+void ceCameraShot::SetFovFrom(float fov){
+	if(fabsf(fov - pFovFrom) > 1e-6f){
 		pFovFrom = fov;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetFovTo( float fov ){
-	if( fabsf( fov - pFovTo ) > 1e-6f ){
+void ceCameraShot::SetFovTo(float fov){
+	if(fabsf(fov - pFovTo) > 1e-6f){
 		pFovTo = fov;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
 
 
-void ceCameraShot::SetLockUpAxis( bool lockUpAxis ){
-	if( lockUpAxis != pLockUpAxis ){
+void ceCameraShot::SetLockUpAxis(bool lockUpAxis){
+	if(lockUpAxis != pLockUpAxis){
 		pLockUpAxis = lockUpAxis;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetAlignTargets( bool alignTargets ){
-	if( alignTargets != pAlignTargets ){
+void ceCameraShot::SetAlignTargets(bool alignTargets){
+	if(alignTargets != pAlignTargets){
 		pAlignTargets = alignTargets;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetRelativeToLookAt( bool relativeToLookAt ){
-	if( relativeToLookAt != pRelativeToLookAt ){
+void ceCameraShot::SetRelativeToLookAt(bool relativeToLookAt){
+	if(relativeToLookAt != pRelativeToLookAt){
 		pRelativeToLookAt = relativeToLookAt;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetLockCameraTarget( bool lock ){
-	if( lock != pLockCameraTarget ){
+void ceCameraShot::SetLockCameraTarget(bool lock){
+	if(lock != pLockCameraTarget){
 		pLockCameraTarget = lock;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
-void ceCameraShot::SetLockLookAtTarget( bool lock ){
-	if( lock != pLockLookAtTarget ){
+void ceCameraShot::SetLockLookAtTarget(bool lock){
+	if(lock != pLockLookAtTarget){
 		pLockLookAtTarget = lock;
 		
-		if( pConversation ){
-			pConversation->NotifyCameraShotChanged( this );
+		if(pConversation){
+			pConversation->NotifyCameraShotChanged(this);
 		}
 	}
 }
 
 
 
-const decCurveBezier &ceCameraShot::GetParameterCurve( int parameter ) const{
-	if( parameter < 0 || parameter >= EP_COUNT ){
-		DETHROW( deeInvalidParam );
+const decCurveBezier &ceCameraShot::GetParameterCurve(int parameter) const{
+	if(parameter < 0 || parameter >= EP_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCurve[ parameter ];
+	return pCurve[parameter];
 }
 
-void ceCameraShot::SetParameterCurve( int parameter, const decCurveBezier &curve ){
-	if( parameter < 0 || parameter >= EP_COUNT ){
-		DETHROW( deeInvalidParam );
+void ceCameraShot::SetParameterCurve(int parameter, const decCurveBezier &curve){
+	if(parameter < 0 || parameter >= EP_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCurve[ parameter ] = curve;
+	pCurve[parameter] = curve;
 	
-	if( pConversation ){
-		pConversation->NotifyCameraShotChanged( this );
+	if(pConversation){
+		pConversation->NotifyCameraShotChanged(this);
 	}
 }

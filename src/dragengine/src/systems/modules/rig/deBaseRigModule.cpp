@@ -28,8 +28,8 @@
 // Class deBaseRigModule
 //////////////////////////
 
-deBaseRigModule::deBaseRigModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseRigModule::deBaseRigModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseRigModule::~deBaseRigModule(){

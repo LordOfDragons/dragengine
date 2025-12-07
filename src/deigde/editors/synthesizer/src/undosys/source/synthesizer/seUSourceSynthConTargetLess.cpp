@@ -40,18 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceSynthConTargetLess::seUSourceSynthConTargetLess( seSourceSynthesizer *source ) :
-pSource( NULL ),
-pOldController( NULL )
+seUSourceSynthConTargetLess::seUSourceSynthConTargetLess(seSourceSynthesizer *source) :
+pSource(NULL),
+pOldController(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Synthesizer source less connection targets" );
+	SetShortInfo("Synthesizer source less connection targets");
 	
-	pOldController = source->GetControllerAt( source->GetConnectionCount() - 1 );
-	if( pOldController ){
+	pOldController = source->GetControllerAt(source->GetConnectionCount() - 1);
+	if(pOldController){
 		pOldController->AddReference();
 	}
 	
@@ -60,10 +60,10 @@ pOldController( NULL )
 }
 
 seUSourceSynthConTargetLess::~seUSourceSynthConTargetLess(){
-	if( pOldController ){
+	if(pOldController){
 		pOldController->FreeReference();
 	}
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -76,10 +76,10 @@ seUSourceSynthConTargetLess::~seUSourceSynthConTargetLess(){
 void seUSourceSynthConTargetLess::Undo(){
 	const int index = pSource->GetConnectionCount();
 	
-	pSource->SetConnectionCount( index + 1 );
-	pSource->SetControllerAt( index, pOldController );
+	pSource->SetConnectionCount(index + 1);
+	pSource->SetControllerAt(index, pOldController);
 }
 
 void seUSourceSynthConTargetLess::Redo(){
-	pSource->SetConnectionCount( pSource->GetConnectionCount() - 1 );
+	pSource->SetConnectionCount(pSource->GetConnectionCount() - 1);
 }

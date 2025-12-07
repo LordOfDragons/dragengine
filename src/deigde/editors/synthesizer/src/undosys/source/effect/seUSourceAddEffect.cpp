@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceAddEffect::seUSourceAddEffect( seSource *source, seEffect *effect, int index ) :
-pSource( NULL ),
-pEffect( NULL ),
-pIndex( index )
+seUSourceAddEffect::seUSourceAddEffect(seSource *source, seEffect *effect, int index) :
+pSource(NULL),
+pEffect(NULL),
+pIndex(index)
 {
-	if( ! source || ! effect ){
-		DETHROW( deeInvalidParam );
+	if(!source || !effect){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSource = source;
@@ -66,11 +66,11 @@ seUSourceAddEffect::~seUSourceAddEffect(){
 ///////////////
 
 void seUSourceAddEffect::Undo(){
-	pSource->RemoveEffect( pEffect );
+	pSource->RemoveEffect(pEffect);
 }
 
 void seUSourceAddEffect::Redo(){
-	pSource->InsertEffectAt( pEffect, pIndex );
+	pSource->InsertEffectAt(pEffect, pIndex);
 }
 
 
@@ -79,10 +79,10 @@ void seUSourceAddEffect::Redo(){
 //////////////////////
 
 void seUSourceAddEffect::pCleanUp(){
-	if( pEffect ){
+	if(pEffect){
 		pEffect->FreeReference();
 	}
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deInternalModule::deInternalModule( deModuleSystem *system ) : deLoadableModule( system ){
+deInternalModule::deInternalModule(deModuleSystem *system) : deLoadableModule(system){
 }
 
 deInternalModule::~deInternalModule(){
@@ -53,17 +53,17 @@ deInternalModule::~deInternalModule(){
 //////////////////////
 
 void deInternalModule::LoadModule(){
-	if( IsLoaded() ) DETHROW( deeInvalidAction );
+	if(IsLoaded()) DETHROW(deeInvalidAction);
 	
 	// creates the module using the subclassed function.
 	CreateModule();
-	if( GetErrorCode() != eecSuccess ) return;
+	if(GetErrorCode() != eecSuccess) return;
 }
 
 void deInternalModule::UnloadModule(){
-	if( ! IsLoaded() || IsLocked() ) DETHROW( deeInvalidAction );
-	SetModule( NULL );
-	SetErrorCode( eecSuccess );
+	if(!IsLoaded() || IsLocked()) DETHROW(deeInvalidAction);
+	SetModule(NULL);
+	SetErrorCode(eecSuccess);
 }
 
 
@@ -84,6 +84,6 @@ deInternalModule *deInternalModule::CastToInternalModule(){
 // visiting
 /////////////
 
-void deInternalModule::Visit( deLoadableModuleVisitor &visitor ){
-	visitor.VisitInternalModule( *this );
+void deInternalModule::Visit(deLoadableModuleVisitor &visitor){
+	visitor.VisitInternalModule(*this);
 }

@@ -53,7 +53,7 @@ public:
 	deoalRayTraceConfig();
 	
 	/** \brief Create ray trace config. */
-	deoalRayTraceConfig( const deoalRayTraceConfig &config );
+	deoalRayTraceConfig(const deoalRayTraceConfig &config);
 	
 	/** \brief Clean up ray trace config. */
 	~deoalRayTraceConfig();
@@ -91,19 +91,19 @@ public:
 	
 	
 	/** \brief Set from vertices (creates copy). */
-	void SetFromVertices( const decVector *vertices, int count, float openingAngle );
+	void SetFromVertices(const decVector *vertices, int count, float openingAngle);
 	
 	/**
 	 * \brief Rotate rays.
 	 * \param[in] rotation Rotation in degrees.
 	 */
-	void Rotate( float rx, float ry, float rz );
+	void Rotate(float rx, float ry, float rz);
 	
 	/** \brief Set ray directions approximatly equally spaces points on a sphere. */
-	void SetRaysEquallySpaced( int rayCount );
+	void SetRaysEquallySpaced(int rayCount);
 	
 	/** \brief Set from ico sphere vertices. */
-	void SetFromIcoSphere( const deoalIcoSphere &icoSphere );
+	void SetFromIcoSphere(const deoalIcoSphere &icoSphere);
 	/*@}*/
 };
 

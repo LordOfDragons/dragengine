@@ -42,7 +42,7 @@
 igdeGDCEnvMapProbeList::igdeGDCEnvMapProbeList(){
 }
 
-igdeGDCEnvMapProbeList::igdeGDCEnvMapProbeList( const igdeGDCEnvMapProbeList &list ){
+igdeGDCEnvMapProbeList::igdeGDCEnvMapProbeList(const igdeGDCEnvMapProbeList &list){
 	pProbes = list.pProbes;
 }
 
@@ -58,40 +58,40 @@ int igdeGDCEnvMapProbeList::GetCount() const{
 	return pProbes.GetCount();
 }
 
-igdeGDCEnvMapProbe *igdeGDCEnvMapProbeList::GetAt( int index ) const{
-	return ( igdeGDCEnvMapProbe* )pProbes.GetAt( index );
+igdeGDCEnvMapProbe *igdeGDCEnvMapProbeList::GetAt(int index) const{
+	return (igdeGDCEnvMapProbe*)pProbes.GetAt(index);
 }
 
-int igdeGDCEnvMapProbeList::IndexOf( igdeGDCEnvMapProbe *probe ) const{
-	return pProbes.IndexOf( probe );
+int igdeGDCEnvMapProbeList::IndexOf(igdeGDCEnvMapProbe *probe) const{
+	return pProbes.IndexOf(probe);
 }
 
-bool igdeGDCEnvMapProbeList::Has( igdeGDCEnvMapProbe *probe ) const{
-	return pProbes.Has( probe );
+bool igdeGDCEnvMapProbeList::Has(igdeGDCEnvMapProbe *probe) const{
+	return pProbes.Has(probe);
 }
 
-void igdeGDCEnvMapProbeList::Add( igdeGDCEnvMapProbe *probe ){
-	if( ! probe ){
-		DETHROW( deeInvalidParam );
+void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe *probe){
+	if(!probe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProbes.Add( probe );
+	pProbes.Add(probe);
 }
 
-void igdeGDCEnvMapProbeList::InsertAt( igdeGDCEnvMapProbe *probe, int index ){
-	if( ! probe ){
-		DETHROW( deeInvalidParam );
+void igdeGDCEnvMapProbeList::InsertAt(igdeGDCEnvMapProbe *probe, int index){
+	if(!probe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProbes.Insert( probe, index );
+	pProbes.Insert(probe, index);
 }
 
-void igdeGDCEnvMapProbeList::MoveTo( igdeGDCEnvMapProbe *probe, int index ){
-	pProbes.Move( probe, index );
+void igdeGDCEnvMapProbeList::MoveTo(igdeGDCEnvMapProbe *probe, int index){
+	pProbes.Move(probe, index);
 }
 
-void igdeGDCEnvMapProbeList::Remove( igdeGDCEnvMapProbe *probe ){
-	pProbes.Remove( probe );
+void igdeGDCEnvMapProbeList::Remove(igdeGDCEnvMapProbe *probe){
+	pProbes.Remove(probe);
 }
 
 void igdeGDCEnvMapProbeList::RemoveAll(){
@@ -100,22 +100,22 @@ void igdeGDCEnvMapProbeList::RemoveAll(){
 
 
 
-void igdeGDCEnvMapProbeList::SetToDeepCopyFrom( const igdeGDCEnvMapProbeList &list ){
+void igdeGDCEnvMapProbeList::SetToDeepCopyFrom(const igdeGDCEnvMapProbeList &list){
 	const int count = list.GetCount();
 	igdeGDCEnvMapProbe *probe = NULL;
 	
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			probe = new igdeGDCEnvMapProbe( *list.GetAt( i ) );
-			Add( probe );
+		for(i=0; i<count; i++){
+			probe = new igdeGDCEnvMapProbe(*list.GetAt(i));
+			Add(probe);
 			probe->FreeReference();
 			probe = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( probe ){
+	}catch(const deException &){
+		if(probe){
 			probe->FreeReference();
 		}
 		throw;
@@ -127,7 +127,7 @@ void igdeGDCEnvMapProbeList::SetToDeepCopyFrom( const igdeGDCEnvMapProbeList &li
 // Operators
 //////////////
 
-igdeGDCEnvMapProbeList &igdeGDCEnvMapProbeList::operator=( const igdeGDCEnvMapProbeList &list ){
+igdeGDCEnvMapProbeList &igdeGDCEnvMapProbeList::operator=(const igdeGDCEnvMapProbeList &list){
 	pProbes = list.pProbes;
 	return *this;
 }

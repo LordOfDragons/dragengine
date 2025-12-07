@@ -47,15 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCLVisitorElements::deoglCLVisitorElements( deoglCollideList *collideList, deoglDCollisionVolume *volume ){
-	if( ! collideList || ! volume ) DETHROW( deeInvalidParam );
+deoglCLVisitorElements::deoglCLVisitorElements(deoglCollideList *collideList, deoglDCollisionVolume *volume){
+	if(!collideList || !volume) DETHROW(deeInvalidParam);
 	
 	pCollideList = collideList;
 	pVolume = volume;
 	
-	SetVisitBillboards( true );
-	SetVisitComponents( true );
-	SetVisitLights( true );
+	SetVisitBillboards(true);
+	SetVisitComponents(true);
+	SetVisitLights(true);
 }
 
 
@@ -68,89 +68,89 @@ deoglCLVisitorElements::deoglCLVisitorElements( deoglCollideList *collideList, d
 // Visiting
 /////////////
 
-void deoglCLVisitorElements::VisitNode( deoglDOctree *node, int intersection ){
-	const deoglWorldOctree &sonode = *( ( deoglWorldOctree* )node );
+void deoglCLVisitorElements::VisitNode(deoglDOctree *node, int intersection){
+	const deoglWorldOctree &sonode = *((deoglWorldOctree*)node);
 	deoglDCollisionBox box;
 	int i;
 	
-	if( GetVisitParticleEmitters() ){
+	if(GetVisitParticleEmitters()){
 		const deoglParticleEmitterInstanceList &nodeList = sonode.GetParticleEmittersList();
 		deoglParticleEmitterInstanceList &clList = pCollideList->GetParticleEmitterList();
 		const int count = nodeList.GetCount();
 		
-		if( intersection == deoglDCollisionDetection::eirInside ){
-			for( i=0; i<count; i++ ){
-				clList.Add( nodeList.GetAt( i ) );
+		if(intersection == deoglDCollisionDetection::eirInside){
+			for(i=0; i<count; i++){
+				clList.Add(nodeList.GetAt(i));
 			}
 			
 		}else{
-			for( i=0; i<count; i++ ){
-				deoglRParticleEmitterInstance * const emitter = nodeList.GetAt( i );
+			for(i=0; i<count; i++){
+				deoglRParticleEmitterInstance * const emitter = nodeList.GetAt(i);
 				
-				box.SetFromExtends( emitter->GetMinExtend(), emitter->GetMaxExtend() );
-				if( pVolume->BoxHitsVolume( &box ) ){
-					clList.Add( emitter );
+				box.SetFromExtends(emitter->GetMinExtend(), emitter->GetMaxExtend());
+				if(pVolume->BoxHitsVolume(&box)){
+					clList.Add(emitter);
 				}
 			}
 		}
 	}
 	
-	if( GetVisitComponents() ){
+	if(GetVisitComponents()){
 		const int count = sonode.GetComponentCount();
 		deoglRComponent *component;
 		
-		if( intersection == deoglDCollisionDetection::eirInside ){
-			for( i=0; i<count; i++ ){
-				pCollideList->AddComponent( sonode.GetComponentAt( i ) );
+		if(intersection == deoglDCollisionDetection::eirInside){
+			for(i=0; i<count; i++){
+				pCollideList->AddComponent(sonode.GetComponentAt(i));
 			}
 			
 		}else{
-			for( i=0; i<count; i++ ){
-				component = sonode.GetComponentAt( i );
+			for(i=0; i<count; i++){
+				component = sonode.GetComponentAt(i);
 				
-				box.SetFromExtends( component->GetMinimumExtend(), component->GetMaximumExtend() );
-				if( pVolume->BoxHitsVolume( &box ) ){
-					pCollideList->AddComponent( component );
+				box.SetFromExtends(component->GetMinimumExtend(), component->GetMaximumExtend());
+				if(pVolume->BoxHitsVolume(&box)){
+					pCollideList->AddComponent(component);
 				}
 			}
 		}
 	}
 	
-	if( GetVisitBillboards() ){
+	if(GetVisitBillboards()){
 		const int count = sonode.GetBillboardList().GetCount();
 		
-		if( intersection == deoglDCollisionDetection::eirInside ){
-			for( i=0; i<count; i++ ){
-				pCollideList->AddBillboard( sonode.GetBillboardList().GetAt( i ) );
+		if(intersection == deoglDCollisionDetection::eirInside){
+			for(i=0; i<count; i++){
+				pCollideList->AddBillboard(sonode.GetBillboardList().GetAt(i));
 			}
 			
 		}else{
-			for( i=0; i<count; i++ ){
-				deoglRBillboard * const billboard = sonode.GetBillboardList().GetAt( i );
+			for(i=0; i<count; i++){
+				deoglRBillboard * const billboard = sonode.GetBillboardList().GetAt(i);
 				
-				box.SetFromExtends( billboard->GetMinimumExtend(), billboard->GetMaximumExtend() );
-				if( pVolume->BoxHitsVolume( &box ) ){
-					pCollideList->AddBillboard( billboard );
+				box.SetFromExtends(billboard->GetMinimumExtend(), billboard->GetMaximumExtend());
+				if(pVolume->BoxHitsVolume(&box)){
+					pCollideList->AddBillboard(billboard);
 				}
 			}
 		}
 	}
 	
-	if( GetVisitLights() ){
+	if(GetVisitLights()){
 		const int count = sonode.GetLightCount();
 		deoglRLight *light;
 		
-		if( intersection == deoglDCollisionDetection::eirInside ){
-			for( i=0; i<count; i++ ){
-				pCollideList->AddLight( sonode.GetLightAt( i ) );
+		if(intersection == deoglDCollisionDetection::eirInside){
+			for(i=0; i<count; i++){
+				pCollideList->AddLight(sonode.GetLightAt(i));
 			}
 			
 		}else{
-			for( i=0; i<count; i++ ){
-				light = sonode.GetLightAt( i );
+			for(i=0; i<count; i++){
+				light = sonode.GetLightAt(i);
 				
-				if( light->GetCollisionVolume()->VolumeHitsVolume( pVolume ) ){
-					pCollideList->AddLight( light );
+				if(light->GetCollisionVolume()->VolumeHitsVolume(pVolume)){
+					pCollideList->AddLight(light);
 				}
 			}
 		}

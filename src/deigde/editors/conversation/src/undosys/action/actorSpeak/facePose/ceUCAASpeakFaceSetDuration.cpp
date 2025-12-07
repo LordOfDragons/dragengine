@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceSetDuration::ceUCAASpeakFaceSetDuration( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *facePose, float newDuration )
-: ceUCAASpeakStripSetDuration( topic, actorSpeak, facePose, newDuration ){
-	SetShortInfo( "Face Pose Set Duration" );
+ceUCAASpeakFaceSetDuration::ceUCAASpeakFaceSetDuration(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *facePose, float newDuration)
+: ceUCAASpeakStripSetDuration(topic, actorSpeak, facePose, newDuration){
+	SetShortInfo("Face Pose Set Duration");
 }
 
 ceUCAASpeakFaceSetDuration::~ceUCAASpeakFaceSetDuration(){

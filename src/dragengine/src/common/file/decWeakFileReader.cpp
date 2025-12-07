@@ -35,10 +35,10 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decWeakFileReader::decWeakFileReader( decBaseFileReader *reader ) :
-pReader( reader )
+decWeakFileReader::decWeakFileReader(decBaseFileReader *reader) :
+pReader(reader)
 {
-	DEASSERT_NOTNULL( reader );
+	DEASSERT_NOTNULL(reader);
 }
 
 decWeakFileReader::~decWeakFileReader(){
@@ -76,22 +76,22 @@ int decWeakFileReader::GetPosition(){
 	return pReader->GetPosition();
 }
 
-void decWeakFileReader::SetPosition( int position ){
-	pReader->SetPosition( position );
+void decWeakFileReader::SetPosition(int position){
+	pReader->SetPosition(position);
 }
 
-void decWeakFileReader::MovePosition( int offset ){
-	pReader->MovePosition( offset );
+void decWeakFileReader::MovePosition(int offset){
+	pReader->MovePosition(offset);
 }
 
-void decWeakFileReader::SetPositionEnd( int position ){
-	pReader->SetPositionEnd( position );
+void decWeakFileReader::SetPositionEnd(int position){
+	pReader->SetPositionEnd(position);
 }
 
-void decWeakFileReader::Read( void *buffer, int size ){
-	pReader->Read( buffer, size );
+void decWeakFileReader::Read(void *buffer, int size){
+	pReader->Read(buffer, size);
 }
 
 decBaseFileReader::Ref decWeakFileReader::Duplicate(){
-	return decBaseFileReader::Ref::New( new decWeakFileReader( pReader ) );
+	return decBaseFileReader::Ref::New(new decWeakFileReader(pReader));
 }

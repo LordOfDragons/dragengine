@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render render target. */
-	deoglRenderTarget( deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount );
+	deoglRenderTarget(deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount);
 	
 	/** Clean up render render target. */
 	virtual ~deoglRenderTarget();
@@ -82,7 +82,7 @@ public:
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Set size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	
 	
@@ -104,7 +104,7 @@ public:
 	inline bool GetTextureDirty() const{ return pDirtyTexture; }
 	
 	/** Set texture dirty. */
-	void SetTextureDirty( bool dirty );
+	void SetTextureDirty(bool dirty);
 	
 	// texture management
 	inline deoglTexture *GetTexture() const{ return pTexture; }

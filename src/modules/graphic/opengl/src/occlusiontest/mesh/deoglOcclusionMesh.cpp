@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglOcclusionMesh::deoglOcclusionMesh( deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh ) :
-pOgl( ogl ),
-pOcclusionMesh( occlusionMesh ),
-pROcclusionMesh( NULL )
+deoglOcclusionMesh::deoglOcclusionMesh(deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh) :
+pOgl(ogl),
+pOcclusionMesh(occlusionMesh),
+pROcclusionMesh(NULL)
 {
 	try{
-		pROcclusionMesh = new deoglROcclusionMesh( ogl.GetRenderThread(), occlusionMesh );
+		pROcclusionMesh = new deoglROcclusionMesh(ogl.GetRenderThread(), occlusionMesh);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -70,7 +70,7 @@ deoglOcclusionMesh::~deoglOcclusionMesh(){
 //////////////////////
 
 void deoglOcclusionMesh::pCleanUp(){
-	if( pROcclusionMesh ){
+	if(pROcclusionMesh){
 		pROcclusionMesh->FreeReference();
 	}
 }

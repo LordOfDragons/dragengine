@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceSynthConTargetMore::seUSourceSynthConTargetMore( seSourceSynthesizer *source ) :
-pSource( NULL )
+seUSourceSynthConTargetMore::seUSourceSynthConTargetMore(seSourceSynthesizer *source) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Synthesizer source more connection targets" );
+	SetShortInfo("Synthesizer source more connection targets");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSourceSynthConTargetMore::~seUSourceSynthConTargetMore(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -64,12 +64,12 @@ seUSourceSynthConTargetMore::~seUSourceSynthConTargetMore(){
 ///////////////
 
 void seUSourceSynthConTargetMore::Undo(){
-	pSource->SetConnectionCount( pSource->GetConnectionCount() - 1 );
+	pSource->SetConnectionCount(pSource->GetConnectionCount() - 1);
 }
 
 void seUSourceSynthConTargetMore::Redo(){
 	const int index = pSource->GetConnectionCount();
 	
-	pSource->SetConnectionCount( index + 1 );
-	pSource->SetControllerAt( index, NULL );
+	pSource->SetConnectionCount(index + 1);
+	pSource->SetControllerAt(index, NULL);
 }

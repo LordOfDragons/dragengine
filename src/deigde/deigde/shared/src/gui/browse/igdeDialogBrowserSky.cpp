@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogBrowserSky::igdeDialogBrowserSky( igdeEnvironment &environment,
-const char *title, bool canResize ) : igdeDialogBrowser( environment, title, canResize ){
+igdeDialogBrowserSky::igdeDialogBrowserSky(igdeEnvironment &environment,
+const char *title, bool canResize) : igdeDialogBrowser(environment, title, canResize){
 	UpdateCategoryList();
 	UpdateItemList();
 }
@@ -61,31 +61,31 @@ igdeDialogBrowserSky::~igdeDialogBrowserSky(){
 
 igdeGDSky *igdeDialogBrowserSky::GetSelectedSky() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? ( igdeGDSky* )selection->GetData() : NULL;
+	return selection ? (igdeGDSky*)selection->GetData() : NULL;
 }
 
-void igdeDialogBrowserSky::SetSelectedSky( igdeGDSky *gdSky ){
-	if( ! gdSky ){
+void igdeDialogBrowserSky::SetSelectedSky(igdeGDSky *gdSky){
+	if(!gdSky){
 		return;
 	}
 	
 	igdeGDCategory * const category = GetRootCategory()->GetCategoryWithPath(
-		decPath::CreatePathUnix( gdSky->GetCategory() ) );
+		decPath::CreatePathUnix(gdSky->GetCategory()));
 	
-	SelectCategory( category );
-	SelectListItemWithData( gdSky );
+	SelectCategory(category);
+	SelectListItemWithData(gdSky);
 }
 
 
 
-bool igdeDialogBrowserSky::SelectSky( igdeWidget *owner, igdeGDSky* &sky, const char *title ){
+bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, igdeGDSky* &sky, const char *title){
 	igdeDialogBrowserSky::Ref dialog(igdeDialogBrowserSky::Ref::NewWith(
 		owner->GetEnvironment(), title));
-	if( sky ){
-		dialog->SetSelectedSky( sky );
+	if(sky){
+		dialog->SetSelectedSky(sky);
 	}
 	
-	if( dialog->Run( owner ) && dialog->GetSelectedSky() ){
+	if(dialog->Run(owner) && dialog->GetSelectedSky()){
 		sky = dialog->GetSelectedSky();
 		return true;
 		
@@ -94,10 +94,10 @@ bool igdeDialogBrowserSky::SelectSky( igdeWidget *owner, igdeGDSky* &sky, const 
 	}
 }
 
-bool igdeDialogBrowserSky::SelectSky( igdeWidget *owner, decString &sky, const char *title ){
+bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, decString &sky, const char *title){
 	const igdeGDSkyManager &skyManager = *owner->GetGameDefinition()->GetSkyManager();
-	igdeGDSky *gdSky = skyManager.GetSkyList().GetWithPath( sky );
-	if( SelectSky( owner, gdSky, title ) ){
+	igdeGDSky *gdSky = skyManager.GetSkyList().GetWithPath(sky);
+	if(SelectSky(owner, gdSky, title)){
 		sky = gdSky->GetPath();
 		return true;
 		
@@ -115,28 +115,28 @@ igdeGDCategory *igdeDialogBrowserSky::GetRootCategory() const{
 	return GetGameDefinition()->GetSkyManager()->GetCategories();
 }
 
-void igdeDialogBrowserSky::AddItemsToList( igdeGDAddToListVisitor &visitor ){
+void igdeDialogBrowserSky::AddItemsToList(igdeGDAddToListVisitor &visitor){
 	const decString &filter = GetFilter();
 	
-	if( filter.IsEmpty() ){
-		GetGameDefinition()->GetSkyManager()->VisitSkiesMatchingCategory( visitor, GetSelectedCategory() );
+	if(filter.IsEmpty()){
+		GetGameDefinition()->GetSkyManager()->VisitSkiesMatchingCategory(visitor, GetSelectedCategory());
 		
 	}else{
-		GetGameDefinition()->GetSkyManager()->VisitMatchingFilter( visitor, filter );
+		GetGameDefinition()->GetSkyManager()->VisitMatchingFilter(visitor, filter);
 	}
 }
 
-void igdeDialogBrowserSky::RebuildItemPreview( igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener ){
+void igdeDialogBrowserSky::RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener){
 	igdeGDSky * const gdSky = GetSelectedSky();
-	if( gdSky ){
-		pvmgr.ClearPreviewSky( gdSky );
-		pvmgr.CreatePreviewSky( gdSky, listener );
+	if(gdSky){
+		pvmgr.ClearPreviewSky(gdSky);
+		pvmgr.CreatePreviewSky(gdSky, listener);
 	}
 }
 
-void igdeDialogBrowserSky::GetSelectedItemInfo( decString &info ){
+void igdeDialogBrowserSky::GetSelectedItemInfo(decString &info){
 	const igdeGDSky * const gdSky = GetSelectedSky();
-	if( gdSky ){
-		info.Format( "%s:\n%s", gdSky->GetName().GetString(), gdSky->GetDescription().GetString() );
+	if(gdSky){
+		info.Format("%s:\n%s", gdSky->GetName().GetString(), gdSky->GetDescription().GetString());
 	}
 }

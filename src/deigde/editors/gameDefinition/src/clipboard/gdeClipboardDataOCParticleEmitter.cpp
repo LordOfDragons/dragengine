@@ -39,12 +39,12 @@ const char * const gdeClipboardDataOCParticleEmitter::TYPE_NAME = "OCParticleEmi
 ////////////////////////////
 
 gdeClipboardDataOCParticleEmitter::gdeClipboardDataOCParticleEmitter(
-gdeOCParticleEmitter *particleEmitter ) :
-igdeClipboardData( TYPE_NAME ),
-pParticleEmitter( NULL )
+gdeOCParticleEmitter *particleEmitter) :
+igdeClipboardData(TYPE_NAME),
+pParticleEmitter(NULL)
 {
-	if( ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pParticleEmitter = particleEmitter;
@@ -52,7 +52,7 @@ pParticleEmitter( NULL )
 }
 
 gdeClipboardDataOCParticleEmitter::~gdeClipboardDataOCParticleEmitter(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
 }

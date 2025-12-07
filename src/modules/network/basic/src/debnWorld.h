@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create world. */
-	debnWorld( deNetworkBasic *oal, deWorld *world );
+	debnWorld(deNetworkBasic *oal, deWorld *world);
 	
 	/** \brief Clean up world. */
 	virtual ~debnWorld();
@@ -72,7 +72,7 @@ public:
 	inline bool GetCanCreateStates() const{ return pCanCreateStates; }
 	
 	/** \brief Set if user is allowed to create states. */
-	void SetCanCreateStates( bool canCreateStates );
+	void SetCanCreateStates(bool canCreateStates);
 	
 	/** \brief Initialize network states. */
 	void InitStates();
@@ -81,7 +81,7 @@ public:
 	inline debnNetwork *GetParentNetwork() const{ return pParentNetwork; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentNetwork( debnNetwork *network );
+	void SetParentNetwork(debnNetwork *network);
 	/*@}*/
 	
 	
@@ -89,10 +89,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief NetworkState has been added. */
-	virtual void NetworkStateAdded( deNetworkState *state );
+	virtual void NetworkStateAdded(deNetworkState *state);
 	
 	/** \brief NetworkState has been removed. */
-	virtual void NetworkStateRemoved( deNetworkState *state );
+	virtual void NetworkStateRemoved(deNetworkState *state);
 	
 	/** \brief All states have been removed. */
 	virtual void AllNetworkStatesRemoved();

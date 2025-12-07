@@ -40,7 +40,7 @@ public:
 	/*@{*/
 	/** \brief Action to set active after action is removed. */
 	static ceConversationAction *ActivateActionAfterRemove(
-		const ceConversationActionList &list, ceConversationAction *removedAction );
+		const ceConversationActionList &list, ceConversationAction *removedAction);
 	/*@}*/
 };
 

@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-seURemoveSource::seURemoveSource( seSynthesizer *synthesizer, seSource *source ) :
-pSynthesizer( NULL ),
-pSource( NULL )
+seURemoveSource::seURemoveSource(seSynthesizer *synthesizer, seSource *source) :
+pSynthesizer(NULL),
+pSource(NULL)
 {
-	if( ! synthesizer || ! source ){
-		DETHROW( deeInvalidParam );
+	if(!synthesizer || !source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pIndex = synthesizer->GetSources().IndexOf( source );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = synthesizer->GetSources().IndexOf(source);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSynthesizer = synthesizer;
@@ -70,11 +70,11 @@ seURemoveSource::~seURemoveSource(){
 ///////////////
 
 void seURemoveSource::Undo(){
-	pSynthesizer->InsertSourceAt( pSource, pIndex );
+	pSynthesizer->InsertSourceAt(pSource, pIndex);
 }
 
 void seURemoveSource::Redo(){
-	pSynthesizer->RemoveSource( pSource );
+	pSynthesizer->RemoveSource(pSource);
 }
 
 
@@ -83,10 +83,10 @@ void seURemoveSource::Redo(){
 //////////////////////
 
 void seURemoveSource::pCleanUp(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPBrowserListener( meWPBrowser &panel );
+	meWPBrowserListener(meWPBrowser &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWPBrowserListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Editing parameters changed. */
-	virtual void EditingChanged( meWorld *world );
+	virtual void EditingChanged(meWorld *world);
 	/*@}*/
 };
 

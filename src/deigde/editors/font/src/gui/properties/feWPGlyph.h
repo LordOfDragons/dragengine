@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	feWPGlyph( feWindowProperties &windowProperties );
+	feWPGlyph(feWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
 	virtual ~feWPGlyph();
@@ -75,13 +75,13 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	
 	/** \brief Glyph. */
 	inline feFontGlyph *GetGlyph() const{ return pGlyph; }
 	
 	/** \brief Set glyph. */
-	void SetGlyph( feFontGlyph *glyph );
+	void SetGlyph(feFontGlyph *glyph);
 	
 	/** \brief Update glyph list. */
 	void UpdateGlyphList();

@@ -39,15 +39,15 @@
 ////////////////////////////
 
 seUPropertyNodeTextSetPath::seUPropertyNodeTextSetPath(
-sePropertyNodeText *node, const char *newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeText *node, const char *newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node text set path" );
+	SetShortInfo("Node text set path");
 	
 	pOldValue = node->GetPath();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeTextSetPath::~seUPropertyNodeTextSetPath(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUPropertyNodeTextSetPath::~seUPropertyNodeTextSetPath(){
 ///////////////
 
 void seUPropertyNodeTextSetPath::Undo(){
-	pNode->SetPath( pOldValue );
+	pNode->SetPath(pOldValue);
 }
 
 void seUPropertyNodeTextSetPath::Redo(){
-	pNode->SetPath( pNewValue );
+	pNode->SetPath(pNewValue);
 }

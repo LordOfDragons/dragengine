@@ -41,23 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleCombine::meHTVRuleCombine() : meHTVRule( ertCombine, 4 ){
+meHTVRuleCombine::meHTVRuleCombine() : meHTVRule(ertCombine, 4){
 	pX = 0.0f;
 	pY = 0.0f;
 	pZ = 0.0f;
 	
-	GetSlotAt( eisX ).SetIsInput( true );
-	GetSlotAt( eisY ).SetIsInput( true );
-	GetSlotAt( eisZ ).SetIsInput( true );
+	GetSlotAt(eisX).SetIsInput(true);
+	GetSlotAt(eisY).SetIsInput(true);
+	GetSlotAt(eisZ).SetIsInput(true);
 	
-	GetSlotAt( eosVector ).SetIsInput( false );
+	GetSlotAt(eosVector).SetIsInput(false);
 }
 
-meHTVRuleCombine::meHTVRuleCombine( const meHTVRuleCombine &rule ) :
-meHTVRule( rule ),
-pX( rule.pX ),
-pY( rule.pY ),
-pZ( rule.pZ ){
+meHTVRuleCombine::meHTVRuleCombine(const meHTVRuleCombine &rule) :
+meHTVRule(rule),
+pX(rule.pX),
+pY(rule.pY),
+pZ(rule.pZ){
 }
 
 meHTVRuleCombine::~meHTVRuleCombine(){
@@ -68,66 +68,66 @@ meHTVRuleCombine::~meHTVRuleCombine(){
 // Management
 ///////////////
 
-void meHTVRuleCombine::SetX( float x ){
+void meHTVRuleCombine::SetX(float x){
 	pX = x;
 }
 
-void meHTVRuleCombine::SetY( float y ){
+void meHTVRuleCombine::SetY(float y){
 	pY = y;
 }
 
-void meHTVRuleCombine::SetZ( float z ){
+void meHTVRuleCombine::SetZ(float z){
 	pZ = z;
 }
 
 
 
-float meHTVRuleCombine::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != eosVector ) DETHROW( deeInvalidParam );
+float meHTVRuleCombine::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != eosVector) DETHROW(deeInvalidParam);
 	
 	// Incorrect usage, we yield the x component in this case
-	meHTVRSlot &inputX = GetSlotAt( eisX );
+	meHTVRSlot &inputX = GetSlotAt(eisX);
 	
-	if( inputX.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputX.GetLinkAt( 0 );
+	if(inputX.GetLinkCount() > 0){
+		meHTVRLink &link = *inputX.GetLinkAt(0);
 		
-		return link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		return link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 		
 	}else{
 		return 0.0f;
 	}
 }
 
-decVector meHTVRuleCombine::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != eosVector ) DETHROW( deeInvalidParam );
+decVector meHTVRuleCombine::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != eosVector) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &inputX = GetSlotAt( eisX );
-	meHTVRSlot &inputY = GetSlotAt( eisY );
-	meHTVRSlot &inputZ = GetSlotAt( eisZ );
+	meHTVRSlot &inputX = GetSlotAt(eisX);
+	meHTVRSlot &inputY = GetSlotAt(eisY);
+	meHTVRSlot &inputZ = GetSlotAt(eisZ);
 	
-	decVector vector( pX, pY, pZ );
+	decVector vector(pX, pY, pZ);
 	
-	if( inputX.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputX.GetLinkAt( 0 );
+	if(inputX.GetLinkCount() > 0){
+		meHTVRLink &link = *inputX.GetLinkAt(0);
 		
-		vector.x = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		vector.x = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if( inputY.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputY.GetLinkAt( 0 );
+	if(inputY.GetLinkCount() > 0){
+		meHTVRLink &link = *inputY.GetLinkAt(0);
 		
-		vector.y = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		vector.y = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if( inputZ.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputZ.GetLinkAt( 0 );
+	if(inputZ.GetLinkCount() > 0){
+		meHTVRLink &link = *inputZ.GetLinkAt(0);
 		
-		vector.z = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		vector.z = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
 	return vector;
 }
 
 meHTVRule *meHTVRuleCombine::Copy() const{
-	return new meHTVRuleCombine( *this );
+	return new meHTVRuleCombine(*this);
 }

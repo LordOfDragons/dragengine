@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassAdd::gdeMAObjectClassAdd( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Add Object Class...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class" )
+gdeMAObjectClassAdd::gdeMAObjectClassAdd(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "Add Object Class...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class")
 {
 }
 
@@ -58,18 +58,18 @@ gdeBaseAction( windowMain, "Add Object Class...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassAdd::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo *gdeMAObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
 	const gdeObjectClassList &list = gameDefinition.GetObjectClasses();
-	decString name( "Object Class" );
+	decString name("Object Class");
 	
-	while( igdeCommonDialogs::GetString( &pWindowMain, "Add Object Class", "Name:", name ) ){
-		if( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindowMain, "Add Object Class", "Object Class exists already." );
+	while(igdeCommonDialogs::GetString(&pWindowMain, "Add Object Class", "Name:", name)){
+		if(list.HasNamed(name)){
+			igdeCommonDialogs::Error(&pWindowMain, "Add Object Class", "Object Class exists already.");
 			continue;
 		}
 		
 		const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::NewWith(name));
-		return new gdeUAddObjectClass( &gameDefinition, objectClass );
+		return new gdeUAddObjectClass(&gameDefinition, objectClass);
 	}
 	
 	return NULL;

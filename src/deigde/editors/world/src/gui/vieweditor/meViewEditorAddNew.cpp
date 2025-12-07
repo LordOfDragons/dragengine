@@ -73,30 +73,30 @@ pAddDecal(nullptr),
 pUndoAddObject(nullptr),
 pUndoAddNavSpace(nullptr)
 {
-	pCLCollider.TakeOver( view.GetWindowMain().GetEngine()->GetColliderManager()->CreateColliderVolume() );
+	pCLCollider.TakeOver(view.GetWindowMain().GetEngine()->GetColliderManager()->CreateColliderVolume());
 	
 	decLayerMask collisionCategory;
-	collisionCategory.SetBit( meWorld::eclmEditing );
+	collisionCategory.SetBit(meWorld::eclmEditing);
 	
 	decLayerMask collisionFilter;
-	collisionFilter.SetBit( meWorld::eclmSnapPoint );
+	collisionFilter.SetBit(meWorld::eclmSnapPoint);
 	
-	pCLCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+	pCLCollider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 }
 
 meViewEditorAddNew::~meViewEditorAddNew(){
-	if( pAddDecal ){
+	if(pAddDecal){
 		delete pAddDecal;
 	}
 	
-	if( pCLSnapPoint ){
+	if(pCLSnapPoint){
 		delete pCLSnapPoint;
 	}
 	
-	if( pClosestElement ){
+	if(pClosestElement){
 		delete pClosestElement;
 	}
-	if( pFilterObjectsByClass ){
+	if(pFilterObjectsByClass){
 		delete pFilterObjectsByClass;
 	}
 }
@@ -111,12 +111,12 @@ meViewEditorAddNew::~meViewEditorAddNew(){
 // Callbacks
 //////////////
 
-bool meViewEditorAddNew::OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control ){
-	return meViewEditorNavigation::OnKeyPress( key, shift, control );
+bool meViewEditorAddNew::OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control){
+	return meViewEditorNavigation::OnKeyPress(key, shift, control);
 }
 
-void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonPress( x, y, shift, control );
+void meViewEditorAddNew::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonPress(x, y, shift, control);
 	
 	const meWorldGuiParameters &guiparams = GetWorldGuiParameters();
 	const meCamera &camera = GetActiveCamera();
@@ -128,12 +128,12 @@ void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 	pUndoAddObject = nullptr;
 	pUndoAddNavSpace = nullptr;
 	
-	if( pCLSnapPoint ){
+	if(pCLSnapPoint){
 		delete pCLSnapPoint;
 		pCLSnapPoint = nullptr;
 	}
 	
-	if( elementMode == meWorldGuiParameters::eemObject ){
+	if(elementMode == meWorldGuiParameters::eemObject){
 		if(guiparams.GetBrowseClass().IsEmpty()){
 			return;
 		}
@@ -143,15 +143,15 @@ void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 		meObject *object = nullptr;
 		
 		try{
-			object = new meObject( world.GetEnvironment() );
-			object->SetClassName( guiparams.GetBrowseClass().GetString() );
-			object->SetID( world.NextObjectID() );
+			object = new meObject(world.GetEnvironment());
+			object->SetClassName(guiparams.GetBrowseClass().GetString());
+			object->SetID(world.NextObjectID());
 			
-			pUndoAddObject.TakeOver( new meUAddObject( &world, object ) );
+			pUndoAddObject.TakeOver(new meUAddObject(&world, object));
 			object->FreeReference();
 			
-		}catch( const deException &e ){
-			if( object ){
+		}catch(const deException &e){
+			if(object){
 				object->FreeReference();
 			}
 			pUndoAddObject = nullptr;
@@ -159,37 +159,37 @@ void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 			delete pClosestElement;
 			pClosestElement = nullptr;
 			
-			LogException( e );
+			LogException(e);
 			return;
 		}
 		
-		pClosestElement->GetIgnoreObjects().Add( object );
+		pClosestElement->GetIgnoreObjects().Add(object);
 		
 		// create snap point visitor
-		pCLSnapPoint = new meCLSnapPoint( world, object );
+		pCLSnapPoint = new meCLSnapPoint(world, object);
 		
 		decShapeList shapeList;
-		pCLSnapPoint->CalcBoundingBoxShape( shapeList );
-		( ( deColliderVolume& )( deCollider& )pCLCollider ).SetShapes( shapeList );
+		pCLSnapPoint->CalcBoundingBoxShape(shapeList);
+		((deColliderVolume&)(deCollider&)pCLCollider).SetShapes(shapeList);
 		
 		// update undo
 		pUndoAddObject->Redo(); // from here on we only manipulate the object parameters
-		pUpdateUndo( shift, control );
+		pUpdateUndo(shift, control);
 		
-	}else if( elementMode == meWorldGuiParameters::eemDecal ){
-		if( pAddDecal ){
-			DETHROW( deeInvalidParam );
+	}else if(elementMode == meWorldGuiParameters::eemDecal){
+		if(pAddDecal){
+			DETHROW(deeInvalidParam);
 		}
 		
-		pAddDecal = new meCLAddDecal( &GetView().GetWindowMain(), &world );
+		pAddDecal = new meCLAddDecal(&GetView().GetWindowMain(), &world);
 		
-		pAddDecal->SetRay( camera.GetViewMatrix().GetPosition(),
-			camera.GetDirectionFor( GetViewWidth(), GetViewHeight(), x, y ) );
-		pAddDecal->SetAlignWithNormal( ! shift );
+		pAddDecal->SetRay(camera.GetViewMatrix().GetPosition(),
+			camera.GetDirectionFor(GetViewWidth(), GetViewHeight(), x, y));
+		pAddDecal->SetAlignWithNormal(!shift);
 		
-		pUpdateUndo( shift, control );
+		pUpdateUndo(shift, control);
 		
-	}if( elementMode == meWorldGuiParameters::eemNavSpace ){
+	}if(elementMode == meWorldGuiParameters::eemNavSpace){
 		pCreateClosestElementVisitor();
 		
 		const meNavigationSpace::Ref navspace(meNavigationSpace::Ref::New(
@@ -201,7 +201,7 @@ void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 			
 		}catch(const deException &e){
 			pUndoAddNavSpace = nullptr;
-			LogException( e );
+			LogException(e);
 			return;
 		}
 		
@@ -214,37 +214,37 @@ void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 	}
 }
 
-void meViewEditorAddNew::OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonRelease( x, y, shift, control );
+void meViewEditorAddNew::OnLeftMouseButtonRelease(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonRelease(x, y, shift, control);
 	
-	if( pUndoAddNavSpace ){
-		GetWorld().GetUndoSystem()->Add( pUndoAddNavSpace, false );
+	if(pUndoAddNavSpace){
+		GetWorld().GetUndoSystem()->Add(pUndoAddNavSpace, false);
 		pUndoAddNavSpace = nullptr;
 	}
-	if( pUndoAddObject ){
-		GetWorld().GetUndoSystem()->Add( pUndoAddObject, false );
+	if(pUndoAddObject){
+		GetWorld().GetUndoSystem()->Add(pUndoAddObject, false);
 		pUndoAddObject = nullptr;
 	}
 	
-	if( pClosestElement ){
+	if(pClosestElement){
 		delete pClosestElement;
 		pClosestElement = nullptr;
 	}
 	
-	if( pAddDecal ){
+	if(pAddDecal){
 		pAddDecal->Finish();
 		delete pAddDecal;
 		pAddDecal = nullptr;
 	}
 	
-	if( pCLSnapPoint ){
+	if(pCLSnapPoint){
 		delete pCLSnapPoint;
 		pCLSnapPoint = nullptr;
 	}
 }
 
-void meViewEditorAddNew::OnMouseMove( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnMouseMove( x, y, shift, control );
+void meViewEditorAddNew::OnMouseMove(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
 	/*if( pUndoAddObject ){
 		pUndoAddObject->Undo(); // overkill
@@ -257,15 +257,15 @@ void meViewEditorAddNew::OnMouseMove( int x, int y, bool shift, bool control ){
 
 
 
-void meViewEditorAddNew::pUpdateUndo( bool shift, bool control ){
+void meViewEditorAddNew::pUpdateUndo(bool shift, bool control){
 	const meCamera &camera = GetActiveCamera();
 	const int elementMode = GetElementMode();
 	const decPoint& pt = GetDragCurrent();
 	
-	decDVector rayDirection = camera.GetDirectionFor( GetViewWidth(), GetViewHeight(), pt.x, pt.y );
+	decDVector rayDirection = camera.GetDirectionFor(GetViewWidth(), GetViewHeight(), pt.x, pt.y);
 	const decDVector rayPosition = camera.GetViewMatrix().GetPosition();
 	
-	if( elementMode == meWorldGuiParameters::eemObject ){
+	if(elementMode == meWorldGuiParameters::eemObject){
 		if(!pUndoAddObject || !((meUAddObject&)(igdeUndo&)pUndoAddObject).GetObject()){
 			return;
 		}
@@ -284,7 +284,7 @@ void meViewEditorAddNew::pUpdateUndo( bool shift, bool control ){
 		undoObject.SetRotation(params.rotation);
 		//pUndoAddObject->RedoAction(); // overkill
 		
-		GetWorld().NotifyObjectGeometryChanged( &undoObject );
+		GetWorld().NotifyObjectGeometryChanged(&undoObject);
 		
 	}else if(elementMode == meWorldGuiParameters::eemNavSpace){
 		if(!pUndoAddNavSpace || !((meUAddNavSpace&)(igdeUndo&)pUndoAddNavSpace).GetNavSpace()){
@@ -342,9 +342,9 @@ void meViewEditorAddNew::pCreateClosestElementVisitor(){
 	// TODO: the height terrain is currently hit even if there is no texture on
 	// it or it has a hole. the test has to be refined to avoid scoring a hit
 	// on the height terrain if there is no texture or a hole
-	pClosestElement->SetTestHeightTerrain( true );
-	pClosestElement->SetTestObjects( true );
-	pClosestElement->SetFilterObjects( pFilterObjectsByClass );
+	pClosestElement->SetTestHeightTerrain(true);
+	pClosestElement->SetTestObjects(true);
+	pClosestElement->SetFilterObjects(pFilterObjectsByClass);
 }
 
 void meViewEditorAddNew::pCastIntoWorld(sCastIntoWorldParams &params){

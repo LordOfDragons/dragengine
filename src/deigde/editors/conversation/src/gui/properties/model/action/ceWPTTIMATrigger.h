@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMATrigger( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCATrigger *action );
+	ceWPTTIMATrigger(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCATrigger *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -51,10 +51,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCATrigger *GetActionTrigger() const{ return ( ceCATrigger* )GetAction(); }
+	inline ceCATrigger *GetActionTrigger() const{ return (ceCATrigger*)GetAction(); }
 	
 	/** \brief Text representation for action. */
-	static const char *GetActionText( ceCATrigger::eActions action );
+	static const char *GetActionText(ceCATrigger::eActions action);
 	
 	/** \brief Update action. */
 	virtual void Update();

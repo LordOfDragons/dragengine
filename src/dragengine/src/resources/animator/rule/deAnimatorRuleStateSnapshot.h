@@ -93,37 +93,37 @@ public:
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Sets if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** \brief Last state of the component is used or only the stored state. */
 	inline bool GetUseLastState() const{ return pUseLastState; }
 	
 	/** \brief Set if last state of the component is used or only the stored state. */
-	void SetUseLastState( bool useLastState );
+	void SetUseLastState(bool useLastState);
 	
 	/** \brief Identifier to snapshot state using animator instance. */
 	inline int GetID() const{ return pID; }
 	
 	/** \brief Set identifier to snapshot state using animator instance. */
-	void SetID( int id );
+	void SetID(int id);
 	/*@}*/
 	
 	
@@ -131,7 +131,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	virtual void Visit(deAnimatorRuleVisitor &visitor);
 	/*@}*/
 };
 

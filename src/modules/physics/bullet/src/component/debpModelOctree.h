@@ -45,8 +45,8 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model octree. */
-	debpModelOctree( const decDVector &center, const decDVector &halfSize );
-	debpModelOctree( const decVector &center, const decVector &halfSize );
+	debpModelOctree(const decDVector &center, const decDVector &halfSize);
+	debpModelOctree(const decVector &center, const decVector &halfSize);
 	/** Cleans up the model object. */
 	virtual ~debpModelOctree();
 	/*@}*/
@@ -58,31 +58,31 @@ public:
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual debpDOctree *CreateOctree( int octant ) const;
+	virtual debpDOctree *CreateOctree(int octant) const;
 	/** Clears the content of this node. */
 	virtual void ClearNodeContent();
 	
 	/** Clears all faces from the entire octree. */
 	void ClearFaces();
 	/** Insert face into octree. */
-	void InsertFaceIntoTree( int face, const decVector &center, const decVector &halfSize, int maxDepth = 8 );
+	void InsertFaceIntoTree(int face, const decVector &center, const decVector &halfSize, int maxDepth = 8);
 	
 	/** Retrieves the number of faces. */
 	inline int GetFaceCount() const{ return pFaceCount; }
 	/** Retrieves the face at the given index. */
-	int GetFaceAt( int index ) const;
+	int GetFaceAt(int index) const;
 	/** Retrieves the index of the given face or -1 if not found. */
-	int IndexOfFace( int face ) const;
+	int IndexOfFace(int face) const;
 	/** Adds a face. */
-	void AddFace( int face );
+	void AddFace(int face);
 	/** Removes a face. */
-	void RemoveFace( int face );
+	void RemoveFace(int face);
 	/** Removes all faces. */
 	void RemoveAllFaces();
 	/*@}*/
 	
 private:
-	debpModelOctree *pGetNodeFor( const decVector &center, const decVector &halfSize, int maxDepth );
+	debpModelOctree *pGetNodeFor(const decVector &center, const decVector &halfSize, int maxDepth);
 };
 
 // end of include only once

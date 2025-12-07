@@ -53,9 +53,9 @@ extern const int *vResourcePeerCreationOrder;
 // Constructor, destructor
 ////////////////////////////
 
-deAISystem::deAISystem( deEngine *engine ) :
-deBaseSystem( engine, "AI", deModuleSystem::emtAI ),
-pActiveModule( NULL ){
+deAISystem::deAISystem(deEngine *engine) :
+deBaseSystem(engine, "AI", deModuleSystem::emtAI),
+pActiveModule(NULL){
 }
 
 deAISystem::~deAISystem(){
@@ -66,66 +66,66 @@ deAISystem::~deAISystem(){
 // Management
 ///////////////
 
-void deAISystem::LoadWorld( deWorld *world ){
-	if( GetIsRunning() ){
-		if( world->GetPeerAI() ){
-			DETHROW( deeInvalidParam );
+void deAISystem::LoadWorld(deWorld *world){
+	if(GetIsRunning()){
+		if(world->GetPeerAI()){
+			DETHROW(deeInvalidParam);
 		}
-		world->SetPeerAI( pActiveModule->CreateWorld( world ) );
-		if( ! world->GetPeerAI() ){
-			DETHROW( deeOutOfMemory );
-		}
-	}
-}
-
-void deAISystem::LoadNavigationSpace( deNavigationSpace *navspace ){
-	if( GetIsRunning() ){
-		if( navspace->GetPeerAI() ){
-			DETHROW( deeInvalidParam );
-		}
-		navspace->SetPeerAI( pActiveModule->CreateNavigationSpace( navspace ) );
-		if( ! navspace->GetPeerAI() ){
-			DETHROW( deeOutOfMemory );
+		world->SetPeerAI(pActiveModule->CreateWorld(world));
+		if(!world->GetPeerAI()){
+			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
-void deAISystem::LoadNavigationBlocker( deNavigationBlocker *blocker ){
-	if( GetIsRunning() ){
-		if( blocker->GetPeerAI() ){
-			DETHROW( deeInvalidParam );
+void deAISystem::LoadNavigationSpace(deNavigationSpace *navspace){
+	if(GetIsRunning()){
+		if(navspace->GetPeerAI()){
+			DETHROW(deeInvalidParam);
+		}
+		navspace->SetPeerAI(pActiveModule->CreateNavigationSpace(navspace));
+		if(!navspace->GetPeerAI()){
+			DETHROW(deeOutOfMemory);
+		}
+	}
+}
+
+void deAISystem::LoadNavigationBlocker(deNavigationBlocker *blocker){
+	if(GetIsRunning()){
+		if(blocker->GetPeerAI()){
+			DETHROW(deeInvalidParam);
 		}
 		
-		blocker->SetPeerAI( pActiveModule->CreateNavigationBlocker( blocker ) );
-		if( ! blocker->GetPeerAI() ){
-			DETHROW( deeOutOfMemory );
+		blocker->SetPeerAI(pActiveModule->CreateNavigationBlocker(blocker));
+		if(!blocker->GetPeerAI()){
+			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
-void deAISystem::LoadNavigator( deNavigator *navigator ){
-	if( GetIsRunning() ){
-		if( navigator->GetPeerAI() ){
-			DETHROW( deeInvalidParam );
+void deAISystem::LoadNavigator(deNavigator *navigator){
+	if(GetIsRunning()){
+		if(navigator->GetPeerAI()){
+			DETHROW(deeInvalidParam);
 		}
-		navigator->SetPeerAI( pActiveModule->CreateNavigator( navigator ) );
-		if( ! navigator->GetPeerAI() ){
-			DETHROW( deeOutOfMemory );
+		navigator->SetPeerAI(pActiveModule->CreateNavigator(navigator));
+		if(!navigator->GetPeerAI()){
+			DETHROW(deeOutOfMemory);
 		}
 	}
 }
 
-void deAISystem::LoadHeightTerrain( deHeightTerrain &heightTerrain ){
-	if( ! GetIsRunning() ){
+void deAISystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
+	if(!GetIsRunning()){
 		return;
 	}
 	
-	if( heightTerrain.GetPeerAI() ){
-		DETHROW( deeInvalidParam );
+	if(heightTerrain.GetPeerAI()){
+		DETHROW(deeInvalidParam);
 	}
-	heightTerrain.SetPeerAI( pActiveModule->CreateHeightTerrain( heightTerrain ) );
-	if( ! heightTerrain.GetPeerAI() ){
-		DETHROW( deeOutOfMemory );
+	heightTerrain.SetPeerAI(pActiveModule->CreateHeightTerrain(heightTerrain));
+	if(!heightTerrain.GetPeerAI()){
+		DETHROW(deeOutOfMemory);
 	}
 }
 
@@ -134,9 +134,9 @@ void deAISystem::LoadHeightTerrain( deHeightTerrain &heightTerrain ){
 // Overloadables
 //////////////////
 
-void deAISystem::SetActiveModule( deLoadableModule *module ){
-	deBaseSystem::SetActiveModule( module );
-	pActiveModule = ( deBaseAIModule* )module->GetModule();
+void deAISystem::SetActiveModule(deLoadableModule *module){
+	deBaseSystem::SetActiveModule(module);
+	pActiveModule = (deBaseAIModule*)module->GetModule();
 }
 
 void deAISystem::ClearPermanents(){
@@ -149,13 +149,13 @@ void deAISystem::PostStart(){
 	int i;
 	
 	// init module
-	if( ! pActiveModule->Init() ){
-		DETHROW( deeInvalidAction );
+	if(!pActiveModule->Init()){
+		DETHROW(deeInvalidAction);
 	}
 	
 	// load animator system related stuff
-	for( i=0; i<engine.GetResourceManagerCount(); i++ ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemAILoad();
+	for(i=0; i<engine.GetResourceManagerCount(); i++){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemAILoad();
 	}
 }
 
@@ -164,11 +164,11 @@ void deAISystem::PreStop(){
 	int i;
 	
 	// remove all parallel tasks if present
-	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
+	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);
 	
 	// unload animator system related stuff
-	for( i=engine.GetResourceManagerCount()-1; i>=0; i-- ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemAIUnload();
+	for(i=engine.GetResourceManagerCount()-1; i>=0; i--){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemAIUnload();
 	}
 	
 	// shutdown current module

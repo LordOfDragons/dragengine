@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpParameterBool::debpParameterBool( dePhysicsBullet &bullet ) : debpParameter( bullet )
+debpParameterBool::debpParameterBool(dePhysicsBullet &bullet) : debpParameter(bullet)
 {
-	SetType( deModuleParameter::eptBoolean );
+	SetType(deModuleParameter::eptBoolean);
 }
 
 debpParameterBool::~debpParameterBool(){
@@ -55,6 +55,6 @@ decString debpParameterBool::GetParameterValue(){
 	return GetParameterBool() ? "1" : "0";
 }
 
-void debpParameterBool::SetParameterValue( const char *value ){
-	SetParameterBool( decString( value ) == "1" );
+void debpParameterBool::SetParameterValue(const char *value){
+	SetParameterBool(decString(value) == "1");
 }

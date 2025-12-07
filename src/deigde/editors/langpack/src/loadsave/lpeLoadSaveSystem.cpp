@@ -54,9 +54,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeLoadSaveSystem::lpeLoadSaveSystem( lpeWindowMain *windowMain ){
-	if( ! windowMain ){
-		DETHROW( deeInvalidParam );
+lpeLoadSaveSystem::lpeLoadSaveSystem(lpeWindowMain *windowMain){
+	if(!windowMain){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWindowMain = windowMain;
@@ -72,7 +72,7 @@ lpeLoadSaveSystem::lpeLoadSaveSystem( lpeWindowMain *windowMain ){
 lpeLoadSaveSystem::~lpeLoadSaveSystem(){
 	RemoveAllLSLangPacks();
 	
-	if( pLSLangPacks ){
+	if(pLSLangPacks){
 		delete [] pLSLangPacks;
 	}
 }
@@ -82,23 +82,23 @@ lpeLoadSaveSystem::~lpeLoadSaveSystem(){
 // Management
 ///////////////
 
-lpeLoadSaveLangPack *lpeLoadSaveSystem::GetLSLangPackAt( int index ) const{
-	if( index < 0 || index >= pLSLangPackCount ){
-		DETHROW( deeInvalidParam );
+lpeLoadSaveLangPack *lpeLoadSaveSystem::GetLSLangPackAt(int index) const{
+	if(index < 0 || index >= pLSLangPackCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pLSLangPacks[ index ];
+	return pLSLangPacks[index];
 }
 
-int lpeLoadSaveSystem::IndexOfLSLangPack( lpeLoadSaveLangPack *lsLangPack ) const{
-	if( ! lsLangPack ){
-		DETHROW( deeInvalidParam );
+int lpeLoadSaveSystem::IndexOfLSLangPack(lpeLoadSaveLangPack *lsLangPack) const{
+	if(!lsLangPack){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pLSLangPackCount; i++ ){
-		if( lsLangPack == pLSLangPacks[ i ] ){
+	for(i=0; i<pLSLangPackCount; i++){
+		if(lsLangPack == pLSLangPacks[i]){
 			return i;
 		}
 	}
@@ -106,15 +106,15 @@ int lpeLoadSaveSystem::IndexOfLSLangPack( lpeLoadSaveLangPack *lsLangPack ) cons
 	return -1;
 }
 
-bool lpeLoadSaveSystem::HasLSLangPack( lpeLoadSaveLangPack *lsLangPack ) const{
-	if( ! lsLangPack ){
-		DETHROW( deeInvalidParam );
+bool lpeLoadSaveSystem::HasLSLangPack(lpeLoadSaveLangPack *lsLangPack) const{
+	if(!lsLangPack){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pLSLangPackCount; i++ ){
-		if( lsLangPack == pLSLangPacks[ i ] ){
+	for(i=0; i<pLSLangPackCount; i++){
+		if(lsLangPack == pLSLangPacks[i]){
 			return true;
 		}
 	}
@@ -122,12 +122,12 @@ bool lpeLoadSaveSystem::HasLSLangPack( lpeLoadSaveLangPack *lsLangPack ) const{
 	return false;
 }
 
-int lpeLoadSaveSystem::IndexOfLSLangPackMatching( const char *filename ){
-	const decString testFilename( filename );
+int lpeLoadSaveSystem::IndexOfLSLangPackMatching(const char *filename){
+	const decString testFilename(filename);
 	int i;
 	
-	for( i=0; i<pLSLangPackCount; i++ ){
-		if( testFilename.MatchesPattern( pLSLangPacks[ i ]->GetPattern() ) ){
+	for(i=0; i<pLSLangPackCount; i++){
+		if(testFilename.MatchesPattern(pLSLangPacks[i]->GetPattern())){
 			return i;
 		}
 	}
@@ -135,33 +135,33 @@ int lpeLoadSaveSystem::IndexOfLSLangPackMatching( const char *filename ){
 	return -1;
 }
 
-void lpeLoadSaveSystem::AddLSLangPack( lpeLoadSaveLangPack *lsLangPack ){
-	if( HasLSLangPack( lsLangPack ) ){
-		DETHROW( deeInvalidParam );
+void lpeLoadSaveSystem::AddLSLangPack(lpeLoadSaveLangPack *lsLangPack){
+	if(HasLSLangPack(lsLangPack)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pLSLangPackCount == pLSLangPackSize ){
+	if(pLSLangPackCount == pLSLangPackSize){
 		int newSize = pLSLangPackSize * 3 / 2 + 1;
-		lpeLoadSaveLangPack **newArray = new lpeLoadSaveLangPack*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pLSLangPacks ){
-			memcpy( newArray, pLSLangPacks, sizeof( lpeLoadSaveLangPack* ) * pLSLangPackSize );
+		lpeLoadSaveLangPack **newArray = new lpeLoadSaveLangPack*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pLSLangPacks){
+			memcpy(newArray, pLSLangPacks, sizeof(lpeLoadSaveLangPack*) * pLSLangPackSize);
 			delete [] pLSLangPacks;
 		}
 		pLSLangPacks = newArray;
 		pLSLangPackSize = newSize;
 	}
 	
-	pLSLangPacks[ pLSLangPackCount ] = lsLangPack;
+	pLSLangPacks[pLSLangPackCount] = lsLangPack;
 	pLSLangPackCount++;
 }
 
-void lpeLoadSaveSystem::RemoveLSLangPack( lpeLoadSaveLangPack *lsLangPack ){
-	int i, index = IndexOfLSLangPack( lsLangPack );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void lpeLoadSaveSystem::RemoveLSLangPack(lpeLoadSaveLangPack *lsLangPack){
+	int i, index = IndexOfLSLangPack(lsLangPack);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pLSLangPackCount; i++ ){
-		pLSLangPacks[ i - 1 ] = pLSLangPacks[ i ];
+	for(i=index+1; i<pLSLangPackCount; i++){
+		pLSLangPacks[i - 1] = pLSLangPacks[i];
 	}
 	pLSLangPackCount--;
 	
@@ -169,9 +169,9 @@ void lpeLoadSaveSystem::RemoveLSLangPack( lpeLoadSaveLangPack *lsLangPack ){
 }
 
 void lpeLoadSaveSystem::RemoveAllLSLangPacks(){
-	while( pLSLangPackCount > 0 ){
+	while(pLSLangPackCount > 0){
 		pLSLangPackCount--;
-		delete pLSLangPacks[ pLSLangPackCount ];
+		delete pLSLangPacks[pLSLangPackCount];
 	}
 }
 
@@ -188,91 +188,91 @@ void lpeLoadSaveSystem::UpdateLSLangPacks(){
 	try{
 		// add a new load save langpack for each langpack module found in the engine that is also
 		// running and usable therefore
-		for( m=0; m<moduleCount; m++ ){
-			loadableModule = modSys->GetModuleAt( m );
+		for(m=0; m<moduleCount; m++){
+			loadableModule = modSys->GetModuleAt(m);
 			
-			if( loadableModule->GetType() != deModuleSystem::emtLanguagePack ) continue;
-			if( ! loadableModule->IsLoaded() ) continue;
+			if(loadableModule->GetType() != deModuleSystem::emtLanguagePack) continue;
+			if(!loadableModule->IsLoaded()) continue;
 			
-			lsLangPack = new lpeLoadSaveLangPack( ( deBaseLanguagePackModule* )loadableModule->GetModule() );
-			if( ! lsLangPack ) DETHROW( deeOutOfMemory );
+			lsLangPack = new lpeLoadSaveLangPack((deBaseLanguagePackModule*)loadableModule->GetModule());
+			if(!lsLangPack) DETHROW(deeOutOfMemory);
 			
-			AddLSLangPack( lsLangPack );
+			AddLSLangPack(lsLangPack);
 			lsLangPack = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( lsLangPack ) delete lsLangPack;
+	}catch(const deException &){
+		if(lsLangPack) delete lsLangPack;
 		throw;
 	}
 }
 
 
 
-lpeLangPack *lpeLoadSaveSystem::LoadLangPack( const char *filename ){
-	if( ! filename ) DETHROW( deeInvalidParam );
+lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
+	if(!filename) DETHROW(deeInvalidParam);
 	decBaseFileReader *fileReader = NULL;
 	lpeLangPack *langpack = NULL;
 	decPath path;
 	int lsIndex;
 	
-	lsIndex = IndexOfLSLangPackMatching( filename );
-	if( lsIndex == -1 ) DETHROW( deeInvalidParam );
+	lsIndex = IndexOfLSLangPackMatching(filename);
+	if(lsIndex == -1) DETHROW(deeInvalidParam);
 	
-	path.SetFromUnix( filename );
+	path.SetFromUnix(filename);
 	
 	try{
-		fileReader = pWindowMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading( path );
+		fileReader = pWindowMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(path);
 		
-		langpack = new lpeLangPack( &pWindowMain->GetEnvironment() );
-		langpack->SetFilePath( filename ); // required here so the relative path can be resolved properly
+		langpack = new lpeLangPack(&pWindowMain->GetEnvironment());
+		langpack->SetFilePath(filename); // required here so the relative path can be resolved properly
 		
-		pLSLangPacks[ lsIndex ]->LoadLangPack( langpack, fileReader );
+		pLSLangPacks[lsIndex]->LoadLangPack(langpack, fileReader);
 		fileReader->FreeReference();
 	
-	}catch( const deException & ){
-		if( fileReader ){
+	}catch(const deException &){
+		if(fileReader){
 			fileReader->FreeReference();
 		}
-		if( langpack ) langpack->FreeReference();
+		if(langpack) langpack->FreeReference();
 		throw;
 	}
 	
-	langpack->SetSaved( true );
-	langpack->SetChanged( false );
+	langpack->SetSaved(true);
+	langpack->SetChanged(false);
 	
 	return langpack;
 }
 
-void lpeLoadSaveSystem::SaveLangPack( lpeLangPack *langpack, const char *filename ){
-	if( ! langpack || ! filename ) DETHROW( deeInvalidParam );
+void lpeLoadSaveSystem::SaveLangPack(lpeLangPack *langpack, const char *filename){
+	if(!langpack || !filename) DETHROW(deeInvalidParam);
 	decBaseFileWriter *fileWriter = NULL;
 	decPath path;
 	int lsIndex;
 	
-	lsIndex = IndexOfLSLangPackMatching( filename );
-	if( lsIndex == -1 ) DETHROW( deeInvalidParam );
+	lsIndex = IndexOfLSLangPackMatching(filename);
+	if(lsIndex == -1) DETHROW(deeInvalidParam);
 	
-	path.SetFromUnix( filename );
+	path.SetFromUnix(filename);
 	
 	try{
-		fileWriter = pWindowMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting( path );
+		fileWriter = pWindowMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(path);
 		
-		langpack->SetFilePath( filename ); // required here so the relative path can be resolved properly
+		langpack->SetFilePath(filename); // required here so the relative path can be resolved properly
 		
-		pLSLangPacks[ lsIndex ]->SaveLangPack( langpack, fileWriter );
+		pLSLangPacks[lsIndex]->SaveLangPack(langpack, fileWriter);
 		
 		fileWriter->FreeReference();
 		
-	}catch( const deException & ){
-		if( fileWriter ){
+	}catch(const deException &){
+		if(fileWriter){
 			fileWriter->FreeReference();
 		}
 		throw;
 	}
 	
-	langpack->SetSaved( true );
-	langpack->SetChanged( false );
+	langpack->SetSaved(true);
+	langpack->SetChanged(false);
 }
 
 
@@ -288,18 +288,18 @@ void lpeLoadSaveSystem::pRebuildFPListLangPack(){
 	pFPListLangPack.RemoveAllFilePatterns();
 	
 	try{
-		for( i=0; i<pLSLangPackCount; i++ ){
-			pattern.Format( "*%s", pLSLangPacks[ i ]->GetPattern().GetString() );
+		for(i=0; i<pLSLangPackCount; i++){
+			pattern.Format("*%s", pLSLangPacks[i]->GetPattern().GetString());
 			
-			filePattern = new igdeFilePattern( pLSLangPacks[ i ]->GetName(),
-				pattern, pLSLangPacks[ i ]->GetPattern() );
+			filePattern = new igdeFilePattern(pLSLangPacks[i]->GetName(),
+				pattern, pLSLangPacks[i]->GetPattern());
 			
-			pFPListLangPack.AddFilePattern( filePattern );
+			pFPListLangPack.AddFilePattern(filePattern);
 			filePattern = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( filePattern ){
+	}catch(const deException &){
+		if(filePattern){
 			delete filePattern;
 		}
 		throw;

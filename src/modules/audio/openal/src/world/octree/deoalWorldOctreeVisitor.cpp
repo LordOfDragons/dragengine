@@ -47,11 +47,11 @@
 /////////////////////////////////
 
 deoalWorldOctreeVisitor::deoalWorldOctreeVisitor() :
-pVisitMicrophones( true ),
-pVisitComponents( true ),
-pVisitSpeakers( true ),
-pVisitEnvProbes( true ),
-pVisitSoundLevelMeters( true ){
+pVisitMicrophones(true),
+pVisitComponents(true),
+pVisitSpeakers(true),
+pVisitEnvProbes(true),
+pVisitSoundLevelMeters(true){
 }
 
 deoalWorldOctreeVisitor::~deoalWorldOctreeVisitor(){
@@ -62,27 +62,27 @@ deoalWorldOctreeVisitor::~deoalWorldOctreeVisitor(){
 // Management
 ///////////////
 
-void deoalWorldOctreeVisitor::SetVisitComponents( bool visitComponents ){
+void deoalWorldOctreeVisitor::SetVisitComponents(bool visitComponents){
 	pVisitComponents = visitComponents;
 }
 
-void deoalWorldOctreeVisitor::SetVisitMicrophones( bool visitMicrophones ){
+void deoalWorldOctreeVisitor::SetVisitMicrophones(bool visitMicrophones){
 	pVisitMicrophones = visitMicrophones;
 }
 
-void deoalWorldOctreeVisitor::SetVisitSpeakers( bool visitSpeakers ){
+void deoalWorldOctreeVisitor::SetVisitSpeakers(bool visitSpeakers){
 	pVisitSpeakers = visitSpeakers;
 }
 
-void deoalWorldOctreeVisitor::SetVisitEnvProbes( bool visitEnvProbes ){
+void deoalWorldOctreeVisitor::SetVisitEnvProbes(bool visitEnvProbes){
 	pVisitEnvProbes = visitEnvProbes;
 }
 
-void deoalWorldOctreeVisitor::SetVisitSoundLevelMeters( bool visitSoundLevelMeters ){
+void deoalWorldOctreeVisitor::SetVisitSoundLevelMeters(bool visitSoundLevelMeters){
 	pVisitSoundLevelMeters = visitSoundLevelMeters;
 }
 
-void deoalWorldOctreeVisitor::SetVisitAll( bool visitAll ){
+void deoalWorldOctreeVisitor::SetVisitAll(bool visitAll){
 	pVisitComponents = visitAll;
 	pVisitMicrophones = visitAll;
 	pVisitSpeakers = visitAll;
@@ -95,66 +95,66 @@ void deoalWorldOctreeVisitor::SetVisitAll( bool visitAll ){
 // Visiting
 /////////////
 
-void deoalWorldOctreeVisitor::VisitNode( deoalWorldOctree &node ){
-	VisitNode( &node, deoalDCollisionDetection::eirPartial );
+void deoalWorldOctreeVisitor::VisitNode(deoalWorldOctree &node){
+	VisitNode(&node, deoalDCollisionDetection::eirPartial);
 }
 
-void deoalWorldOctreeVisitor::VisitNode( deoalDOctree *node, int ){
-	const deoalWorldOctree &sonode = *( ( deoalWorldOctree* )node );
+void deoalWorldOctreeVisitor::VisitNode(deoalDOctree *node, int){
+	const deoalWorldOctree &sonode = *((deoalWorldOctree*)node);
 	int i;
 	
-	if( pVisitComponents ){
+	if(pVisitComponents){
 		const int count = sonode.GetComponentCount();
 		
-		for( i=0; i<count; i++ ){
-			VisitComponent( sonode.GetComponentAt( i ) );
+		for(i=0; i<count; i++){
+			VisitComponent(sonode.GetComponentAt(i));
 		}
 	}
 	
-	if( pVisitMicrophones ){
+	if(pVisitMicrophones){
 		const int count = sonode.GetMicrophoneCount();
 		
-		for( i=0; i<count; i++ ){
-			VisitMicrophone( sonode.GetMicrophoneAt( i ) );
+		for(i=0; i<count; i++){
+			VisitMicrophone(sonode.GetMicrophoneAt(i));
 		}
 	}
 	
-	if( pVisitSpeakers ){
+	if(pVisitSpeakers){
 		const int count = sonode.GetSpeakerCount();
 		
-		for( i=0; i<count; i++ ){
-			VisitSpeaker( sonode.GetSpeakerAt( i ) );
+		for(i=0; i<count; i++){
+			VisitSpeaker(sonode.GetSpeakerAt(i));
 		}
 	}
 	
-	if( pVisitEnvProbes ){
+	if(pVisitEnvProbes){
 		const int count = sonode.GetEnvProbeCount();
 		
-		for( i=0; i<count; i++ ){
-			VisitEnvProbe( sonode.GetEnvProbeAt( i ) );
+		for(i=0; i<count; i++){
+			VisitEnvProbe(sonode.GetEnvProbeAt(i));
 		}
 	}
 	
-	if( pVisitSoundLevelMeters ){
+	if(pVisitSoundLevelMeters){
 		const int count = sonode.GetSoundLevelMeterCount();
 		
-		for( i=0; i<count; i++ ){
-			VisitSoundLevelMeter( sonode.GetSoundLevelMeterAt( i ) );
+		for(i=0; i<count; i++){
+			VisitSoundLevelMeter(sonode.GetSoundLevelMeterAt(i));
 		}
 	}
 }
 
-void deoalWorldOctreeVisitor::VisitComponent( deoalAComponent* ){
+void deoalWorldOctreeVisitor::VisitComponent(deoalAComponent*){
 }
 
-void deoalWorldOctreeVisitor::VisitMicrophone( deoalAMicrophone* ){
+void deoalWorldOctreeVisitor::VisitMicrophone(deoalAMicrophone*){
 }
 
-void deoalWorldOctreeVisitor::VisitSpeaker( deoalASpeaker* ){
+void deoalWorldOctreeVisitor::VisitSpeaker(deoalASpeaker*){
 }
 
-void deoalWorldOctreeVisitor::VisitEnvProbe( deoalEnvProbe* ){
+void deoalWorldOctreeVisitor::VisitEnvProbe(deoalEnvProbe*){
 }
 
-void deoalWorldOctreeVisitor::VisitSoundLevelMeter( deoalASoundLevelMeter* ){
+void deoalWorldOctreeVisitor::VisitSoundLevelMeter(deoalASoundLevelMeter*){
 }

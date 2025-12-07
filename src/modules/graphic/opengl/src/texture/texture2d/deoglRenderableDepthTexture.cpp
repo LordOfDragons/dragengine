@@ -41,28 +41,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableDepthTexture::deoglRenderableDepthTexture( deoglRenderThread &renderThread,
-int width, int height, bool withStencil, bool useFloat ) :
-pWidth( width ),
-pHeight( height ),
-pWithStencil( withStencil ),
-pUseFloat( useFloat ),
-pInUse( false ),
-pTexture( NULL ),
-pMemoryUsageGPU( 0 )
+deoglRenderableDepthTexture::deoglRenderableDepthTexture(deoglRenderThread &renderThread,
+int width, int height, bool withStencil, bool useFloat) :
+pWidth(width),
+pHeight(height),
+pWithStencil(withStencil),
+pUseFloat(useFloat),
+pInUse(false),
+pTexture(NULL),
+pMemoryUsageGPU(0)
 {
-	if( width < 1 || height < 1 ){
-		DETHROW( deeInvalidParam );
+	if(width < 1 || height < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		pTexture = new deoglTexture( renderThread );
-		pTexture->SetSize( width, height );
-		pTexture->SetDepthFormat( withStencil, useFloat );
+		pTexture = new deoglTexture(renderThread);
+		pTexture->SetSize(width, height);
+		pTexture->SetDepthFormat(withStencil, useFloat);
 		pTexture->CreateTexture();
 		UpdateMemoryUsage();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -78,20 +78,20 @@ deoglRenderableDepthTexture::~deoglRenderableDepthTexture(){
 // Management
 ///////////////
 
-bool deoglRenderableDepthTexture::Matches( int width, int height, bool withStencil, bool useFloat ) const{
+bool deoglRenderableDepthTexture::Matches(int width, int height, bool withStencil, bool useFloat) const{
 	return width == pWidth
 		&& height == pHeight
 		&& withStencil == pWithStencil
 		&& useFloat == pUseFloat;
 }
 
-void deoglRenderableDepthTexture::SetInUse( bool inUse ){
+void deoglRenderableDepthTexture::SetInUse(bool inUse){
 	pInUse = inUse;
 }
 
 void deoglRenderableDepthTexture::UpdateMemoryUsage(){
-	if( pTexture ){
-		pMemoryUsageGPU = ( int )pTexture->GetMemoryConsumption().Total();
+	if(pTexture){
+		pMemoryUsageGPU = (int)pTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;
@@ -104,7 +104,7 @@ void deoglRenderableDepthTexture::UpdateMemoryUsage(){
 //////////////////////
 
 void deoglRenderableDepthTexture::pCleanUp(){
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }

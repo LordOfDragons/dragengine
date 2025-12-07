@@ -45,36 +45,36 @@ private:
 	
 public:
 	// constructor, destructor
-	meSaveSupport( meWindowMain *windowMain );
+	meSaveSupport(meWindowMain *windowMain);
 	~meSaveSupport();
 	
 	// management
 	/** Saves a world including all dependencies. */
-	void SaveWorldWithDependencies( meWorld *world, bool forceAskForFilename );
+	void SaveWorldWithDependencies(meWorld *world, bool forceAskForFilename);
 	
 	/** Saves a world. */
-	void SaveWorld( meWorld *world, bool forceAskForFilename );
+	void SaveWorld(meWorld *world, bool forceAskForFilename);
 	/** Saves a height terrain. */
-	void SaveHeightTerrain( meWorld &world, bool forceAskForFilename );
+	void SaveHeightTerrain(meWorld &world, bool forceAskForFilename);
 	/** Saves a height terrain height map image. */
-	void SaveHTHeightImage( meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename );
+	void SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename);
 	/** Saves a height terrain visibility image. */
-	void SaveHTVisibilityImage( meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename );
+	void SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename);
 	/** Saves a height terrain texture mask image. */
-	void SaveHTTextureMaskImage( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, bool forceAskForFilename );
+	void SaveHTTextureMaskImage(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, bool forceAskForFilename);
 	
 	/** \brief Save height terrain navigation space. */
-	void SaveHTNavSpace( meWorld &world, meHeightTerrainNavSpace &navspace, bool forceAskForFilename );
+	void SaveHTNavSpace(meWorld &world, meHeightTerrainNavSpace &navspace, bool forceAskForFilename);
 	
 	/** Saves a height terrain prop field cache. */
-	void SaveHTPFCache( meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename );
+	void SaveHTPFCache(meWorld *world, meHeightTerrainSector *sector, bool forceAskForFilename);
 	/** Saves a navigation space. */
-	void SaveNavigationSpace( meWorld *world, meNavigationSpace *navspace, bool forceAskForFilename );
+	void SaveNavigationSpace(meWorld *world, meNavigationSpace *navspace, bool forceAskForFilename);
 	
 	/** Fills the given file pattern list with file patterns for world files. */
-	void GetWorldPatterns( igdeFilePatternList &patternList ) const;
+	void GetWorldPatterns(igdeFilePatternList &patternList) const;
 	/** Fills the given file pattern list with file patterns for height terrain sector files. */
-	void GetHeightTerrainSectorPatterns( igdeFilePatternList &patternList ) const;
+	void GetHeightTerrainSectorPatterns(igdeFilePatternList &patternList) const;
 };
 
 // end of include only once

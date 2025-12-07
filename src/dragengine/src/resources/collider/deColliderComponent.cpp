@@ -46,8 +46,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deColliderComponent::deColliderComponent( deColliderManager *manager ) :
-deColliderRig( manager ){
+deColliderComponent::deColliderComponent(deColliderManager *manager) :
+deColliderRig(manager){
 }
 
 deColliderComponent::~deColliderComponent(){
@@ -58,8 +58,8 @@ deColliderComponent::~deColliderComponent(){
 // Management
 ///////////////
 
-void deColliderComponent::SetComponent( deComponent *component ){
-	if( component == pComponent ){
+void deColliderComponent::SetComponent(deComponent *component){
+	if(component == pComponent){
 		return;
 	}
 	
@@ -67,18 +67,18 @@ void deColliderComponent::SetComponent( deComponent *component ){
 	
 	pNotifyComponentChanged();
 	
-	if( component ){
-		SetRig( component->GetRig() );
+	if(component){
+		SetRig(component->GetRig());
 		
 	}else{
-		SetRig( NULL );
+		SetRig(NULL);
 	}
 }
 
 
 
 void deColliderComponent::CopyStatesFromComponent(){
-	if( ! pComponent ){
+	if(!pComponent){
 		return;
 	}
 	
@@ -92,27 +92,27 @@ void deColliderComponent::CopyStatesFromComponent(){
 	const int boneCount = GetBoneCount();
 	int i;
 	
-	for( i=0; i <boneCount; i++ ){
-		const decDMatrix boneMatrix( decDMatrix( pComponent->GetBoneAt( i ).GetMatrix() )
-			.QuickMultiply( componentMatrix ) );
-		deColliderBone &bone = GetBoneAt( i );
+	for(i=0; i <boneCount; i++){
+		const decDMatrix boneMatrix(decDMatrix(pComponent->GetBoneAt(i).GetMatrix())
+			.QuickMultiply(componentMatrix));
+		deColliderBone &bone = GetBoneAt(i);
 		
-		if( rig ){
-			bone.SetPosition( boneMatrix * rig->GetBoneAt( i ).GetCentralMassPoint() );
+		if(rig){
+			bone.SetPosition(boneMatrix * rig->GetBoneAt(i).GetCentralMassPoint());
 			
 		}else{
-			bone.SetPosition( boneMatrix.GetPosition() );
+			bone.SetPosition(boneMatrix.GetPosition());
 		}
 		
-		bone.SetOrientation( boneMatrix.ToQuaternion() );
-		bone.SetLinearVelocity( linearVelocity );
-		bone.SetAngularVelocity( angularVelocity );
+		bone.SetOrientation(boneMatrix.ToQuaternion());
+		bone.SetLinearVelocity(linearVelocity);
+		bone.SetAngularVelocity(angularVelocity);
 		bone.UpdateMatrix();
 	}
 }
 
-void deColliderComponent::CopyStateFromComponent( int bone ){
-	if( ! pComponent || bone < 0 || bone >= GetBoneCount() ){
+void deColliderComponent::CopyStateFromComponent(int bone){
+	if(!pComponent || bone < 0 || bone >= GetBoneCount()){
 		return;
 	}
 	
@@ -124,25 +124,25 @@ void deColliderComponent::CopyStateFromComponent( int bone ){
 	const decVector &linearVelocity = GetLinearVelocity();
 	const deRig * const rig = pComponent->GetRig();
 	
-	const decDMatrix boneMatrix( decDMatrix( pComponent->GetBoneAt( bone ).GetMatrix() )
-		.QuickMultiply( componentMatrix ) );
-	deColliderBone &colBone = GetBoneAt( bone );
+	const decDMatrix boneMatrix(decDMatrix(pComponent->GetBoneAt(bone).GetMatrix())
+		.QuickMultiply(componentMatrix));
+	deColliderBone &colBone = GetBoneAt(bone);
 	
-	if( rig ){
-		colBone.SetPosition( boneMatrix * rig->GetBoneAt( bone ).GetCentralMassPoint() );
+	if(rig){
+		colBone.SetPosition(boneMatrix * rig->GetBoneAt(bone).GetCentralMassPoint());
 		
 	}else{
-		colBone.SetPosition( boneMatrix.GetPosition() );
+		colBone.SetPosition(boneMatrix.GetPosition());
 	}
 	
-	colBone.SetOrientation( boneMatrix.ToQuaternion() );
-	colBone.SetLinearVelocity( linearVelocity );
-	colBone.SetAngularVelocity( angularVelocity );
+	colBone.SetOrientation(boneMatrix.ToQuaternion());
+	colBone.SetLinearVelocity(linearVelocity);
+	colBone.SetAngularVelocity(angularVelocity);
 	colBone.UpdateMatrix();
 }
 
 void deColliderComponent::CopyStatesToComponent() const{
-	if( ! pComponent ){
+	if(!pComponent){
 		return;
 	}
 	
@@ -154,41 +154,41 @@ void deColliderComponent::CopyStatesToComponent() const{
 	const int boneCount = GetBoneCount();
 	int i;
 	
-	for( i=0; i<boneCount; i++ ){
-		deComponentBone &bone = pComponent->GetBoneAt( i );
-		if( rig ){
-			if( ! rig->GetBoneAt( i ).GetDynamic() ){
-				pComponent->UpdateBoneAt( i );
+	for(i=0; i<boneCount; i++){
+		deComponentBone &bone = pComponent->GetBoneAt(i);
+		if(rig){
+			if(!rig->GetBoneAt(i).GetDynamic()){
+				pComponent->UpdateBoneAt(i);
 				continue; // state is not defined
 			}
 		}
 		
-		decMatrix matrix( GetBoneAt( i ).GetMatrix().QuickMultiply( invCompMatrix ) );
+		decMatrix matrix(GetBoneAt(i).GetMatrix().QuickMultiply(invCompMatrix));
 		
-		if( rig ){
-			const decVector cmpPosition( matrix * -rig->GetBoneAt( i ).GetCentralMassPoint() );
+		if(rig){
+			const decVector cmpPosition(matrix * -rig->GetBoneAt(i).GetCentralMassPoint());
 			matrix.a14 = cmpPosition.x;
 			matrix.a24 = cmpPosition.y;
 			matrix.a34 = cmpPosition.z;
 		}
 		
-		bone.SetMatrix( matrix );
+		bone.SetMatrix(matrix);
 		
-		if( bone.GetParentBone() != -1 ){
-			matrix = matrix.QuickMultiply( pComponent->GetBoneAt( bone.GetParentBone() ).GetInverseMatrix() );
+		if(bone.GetParentBone() != -1){
+			matrix = matrix.QuickMultiply(pComponent->GetBoneAt(bone.GetParentBone()).GetInverseMatrix());
 		}
-		matrix = matrix.QuickMultiply( bone.GetInverseOriginalMatrix() );
+		matrix = matrix.QuickMultiply(bone.GetInverseOriginalMatrix());
 		
-		bone.SetPosition( matrix.GetPosition() );
-		bone.SetRotation( matrix.ToQuaternion() );
-		bone.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
+		bone.SetPosition(matrix.GetPosition());
+		bone.SetRotation(matrix.ToQuaternion());
+		bone.SetScale(decVector(1.0f, 1.0f, 1.0f));
 	}
 	
 	pComponent->ValidateBones();
 }
 
-void deColliderComponent::CopyStateToComponent( int bone ) const{
-	if( ! pComponent || bone < 0 || bone >= GetBoneCount() ){
+void deColliderComponent::CopyStateToComponent(int bone) const{
+	if(!pComponent || bone < 0 || bone >= GetBoneCount()){
 		return;
 	}
 	
@@ -198,34 +198,34 @@ void deColliderComponent::CopyStateToComponent( int bone ) const{
 	const decDMatrix &inverseComponentMatrix = pComponent->GetInverseMatrix();
 	const deRig * const rig = pComponent->GetRig();
 	
-	decMatrix matrix( GetBoneAt( bone ).GetMatrix().QuickMultiply( inverseComponentMatrix ) );
-	if( rig ){
-		const decVector cmpPosition( matrix * -rig->GetBoneAt( bone ).GetCentralMassPoint() );
+	decMatrix matrix(GetBoneAt(bone).GetMatrix().QuickMultiply(inverseComponentMatrix));
+	if(rig){
+		const decVector cmpPosition(matrix * -rig->GetBoneAt(bone).GetCentralMassPoint());
 		matrix.a14 = cmpPosition.x;
 		matrix.a24 = cmpPosition.y;
 		matrix.a34 = cmpPosition.z;
 	}
 	
-	deComponentBone &componentBone = pComponent->GetBoneAt( bone );
-	if( componentBone.GetParentBone() != -1 ){
-		matrix = matrix.QuickMultiply( pComponent->GetBoneAt( componentBone.GetParentBone() ).GetInverseMatrix() );
+	deComponentBone &componentBone = pComponent->GetBoneAt(bone);
+	if(componentBone.GetParentBone() != -1){
+		matrix = matrix.QuickMultiply(pComponent->GetBoneAt(componentBone.GetParentBone()).GetInverseMatrix());
 	}
-	matrix = matrix.QuickMultiply( componentBone.GetInverseOriginalMatrix() );
+	matrix = matrix.QuickMultiply(componentBone.GetInverseOriginalMatrix());
 	
-	componentBone.SetPosition( matrix.GetPosition() );
-	componentBone.SetRotation( matrix.ToQuaternion() );
-	componentBone.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
+	componentBone.SetPosition(matrix.GetPosition());
+	componentBone.SetRotation(matrix.ToQuaternion());
+	componentBone.SetScale(decVector(1.0f, 1.0f, 1.0f));
 	
 	pComponent->InvalidateBones();
 }
 
-void deColliderComponent::InitWeightAttachment( deColliderAttachment &attachment, int face ){
+void deColliderComponent::InitWeightAttachment(deColliderAttachment &attachment, int face){
 	deBasePhysicsCollider * const peer = GetPeerPhysics();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
+	if(!peer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	peer->InitWeightAttachment( attachment, face );
+	peer->InitWeightAttachment(attachment, face);
 }
 
 
@@ -233,6 +233,6 @@ void deColliderComponent::InitWeightAttachment( deColliderAttachment &attachment
 // Visiting
 /////////////
 
-void deColliderComponent::Visit( deColliderVisitor &visitor ){
-	visitor.VisitComponent( *this );
+void deColliderComponent::Visit(deColliderVisitor &visitor){
+	visitor.VisitComponent(*this);
 }

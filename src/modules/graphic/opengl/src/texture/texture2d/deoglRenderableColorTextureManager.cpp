@@ -40,18 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableColorTextureManager::deoglRenderableColorTextureManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pTextures( NULL ),
-pTextureCount( 0 ),
-pTextureSize( 0 ){
+deoglRenderableColorTextureManager::deoglRenderableColorTextureManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pTextures(NULL),
+pTextureCount(0),
+pTextureSize(0){
 }
 
 deoglRenderableColorTextureManager::~deoglRenderableColorTextureManager(){
-	if( pTextures ){
-		while( pTextureCount > 0 ){
+	if(pTextures){
+		while(pTextureCount > 0){
 			pTextureCount--;
-			delete pTextures[ pTextureCount ];
+			delete pTextures[pTextureCount];
 		}
 		delete [] pTextures;
 	}
@@ -62,34 +62,34 @@ deoglRenderableColorTextureManager::~deoglRenderableColorTextureManager(){
 // Management
 ///////////////
 
-const deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ){
-		DETHROW( deeInvalidParam );
+const deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureAt(int index) const{
+	if(index < 0 || index >= pTextureCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTextures[ index ];
+	return pTextures[index];
 }
 
-deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureWith( int width, int height, int componentCount, bool isFloat ){
+deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureWith(int width, int height, int componentCount, bool isFloat){
 	deoglRenderableColorTexture *texture = NULL;
 	int i;
 	
 	// find the texture with the matching format
-	for( i=0; i<pTextureCount; i++ ){
-		if( ! pTextures[ i ]->GetInUse() && pTextures[ i ]->Matches( width, height, componentCount, isFloat ) ){
-			texture = pTextures[ i ];
+	for(i=0; i<pTextureCount; i++){
+		if(!pTextures[i]->GetInUse() && pTextures[i]->Matches(width, height, componentCount, isFloat)){
+			texture = pTextures[i];
 			break;
 		}
 	}
 	
 	// if not found create a new one
-	if( ! texture ){
-		if( pTextureCount == pTextureSize ){
+	if(!texture){
+		if(pTextureCount == pTextureSize){
 			int newSize = pTextureSize * 3 / 2 + 1;
-			deoglRenderableColorTexture **newArray = new deoglRenderableColorTexture*[ newSize ];
+			deoglRenderableColorTexture **newArray = new deoglRenderableColorTexture*[newSize];
 			
-			if( pTextures ){
-				memcpy( newArray, pTextures, sizeof( deoglRenderableColorTexture* ) * pTextureSize );
+			if(pTextures){
+				memcpy(newArray, pTextures, sizeof(deoglRenderableColorTexture*) * pTextureSize);
 				delete [] pTextures;
 			}
 			
@@ -97,13 +97,13 @@ deoglRenderableColorTexture *deoglRenderableColorTextureManager::GetTextureWith(
 			pTextureSize = newSize;
 		}
 		
-		texture = new deoglRenderableColorTexture( pRenderThread, width, height, componentCount, isFloat );
+		texture = new deoglRenderableColorTexture(pRenderThread, width, height, componentCount, isFloat);
 		
-		pTextures[ pTextureCount ] = texture;
+		pTextures[pTextureCount] = texture;
 		pTextureCount++;
 	}
 	
 	// mark the texture in use and return it
-	texture->SetInUse( true );
+	texture->SetInUse(true);
 	return texture;
 }

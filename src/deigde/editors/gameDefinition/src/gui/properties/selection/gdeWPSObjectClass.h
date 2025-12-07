@@ -126,7 +126,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSObjectClass( gdeWindowProperties &windowMain );
+	gdeWPSObjectClass(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -145,7 +145,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
@@ -228,7 +228,7 @@ public:
 	void UpdateInherit();
 	
 	/** \brief Select inherit. */
-	void SelectInherit( gdeOCInherit *inherit );
+	void SelectInherit(gdeOCInherit *inherit);
 	
 	/** \brief Update hide tags. */
 	void UpdateHideTags();
@@ -250,7 +250,7 @@ public:
 	
 private:
 	/** \brief Update category list. */
-	void pUpdateCategoryList( const gdeCategoryList &list, const char *prefix );
+	void pUpdateCategoryList(const gdeCategoryList &list, const char *prefix);
 };
 
 #endif

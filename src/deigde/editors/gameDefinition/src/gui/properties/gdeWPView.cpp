@@ -56,34 +56,34 @@ protected:
 	gdeWPView &pPanel;
 	
 public:
-	cBaseAction( gdeWPView &panel, const char *text, const char *description ) :
-	igdeAction( text, description ),
-	pPanel( panel ){ }
+	cBaseAction(gdeWPView &panel, const char *text, const char *description) :
+	igdeAction(text, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gameDefinition = pPanel.GetGameDefinition();
-		if( gameDefinition ){
-			OnAction( *gameDefinition );
+		if(gameDefinition){
+			OnAction(*gameDefinition);
 		}
 	}
 	
-	virtual void OnAction( gdeGameDefinition &gameDefinition ) = 0;
+	virtual void OnAction(gdeGameDefinition &gameDefinition) = 0;
 };
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	cActionCameraChanged( gdeWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cActionCameraChanged(gdeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction( gdeGameDefinition &gameDefinition ){
+	virtual void OnAction(gdeGameDefinition &gameDefinition){
 		gameDefinition.NotifyCameraChanged();
 	}
 };
 
 class cActionSkyChanged : public cBaseAction{
 public:
-	cActionSkyChanged( gdeWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cActionSkyChanged(gdeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction( gdeGameDefinition &gameDefinition ){
+	virtual void OnAction(gdeGameDefinition &gameDefinition){
 		gameDefinition.NotifySkyChanged();
 	}
 };
@@ -98,31 +98,31 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPView::gdeWPView( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pGameDefinition( NULL ),
-pListener( NULL )
+gdeWPView::gdeWPView(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pGameDefinition(NULL),
+pListener(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener = new gdeWPViewListener( *this );
+	pListener = new gdeWPViewListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
-	helper.WPCamera( content, pWPCamera, new cActionCameraChanged( *this ),
-		"Camera:", false, false, true );
-	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ),
-		"Environment Object:", false, false, true );
+	helper.WPCamera(content, pWPCamera, new cActionCameraChanged(*this),
+		"Camera:", false, false, true);
+	helper.WPSky(content, pWPSky, new cActionSkyChanged(*this),
+		"Environment Object:", false, false, true);
 }
 
 gdeWPView::~gdeWPView(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -132,27 +132,27 @@ gdeWPView::~gdeWPView(){
 // Management
 ///////////////
 
-void gdeWPView::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPView::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	pWPSky->SetSky( NULL );
-	pWPCamera->SetCamera( NULL );
+	pWPSky->SetSky(NULL);
+	pWPCamera->SetCamera(NULL);
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 		gameDefinition->AddReference();
 		
-		pWPCamera->SetCamera( gameDefinition->GetCamera() );
-		pWPSky->SetSky( gameDefinition->GetSky() );
+		pWPCamera->SetCamera(gameDefinition->GetCamera());
+		pWPSky->SetSky(gameDefinition->GetSky());
 	}
 	
 	UpdateView();

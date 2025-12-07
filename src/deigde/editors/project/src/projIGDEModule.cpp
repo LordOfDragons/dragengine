@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projIGDEModule::projIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+projIGDEModule::projIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 projIGDEModule::~projIGDEModule(){
@@ -51,14 +51,14 @@ projIGDEModule::~projIGDEModule(){
 ///////////////
 
 void projIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new projWindowMain( *this ) );
+	if(!GetEditorWindow()){
+		SetEditorWindow(new projWindowMain(*this));
 	}
 }
 
-bool projIGDEModule::ProcessCommandLine( decUnicodeStringList &arguments ){
-	if( GetEditorWindow() ){
-		return ( ( projWindowMain* )GetEditorWindow() )->ProcessCommandLine( arguments );
+bool projIGDEModule::ProcessCommandLine(decUnicodeStringList &arguments){
+	if(GetEditorWindow()){
+		return ((projWindowMain*)GetEditorWindow())->ProcessCommandLine(arguments);
 	}
-	return igdeEditorModule::ProcessCommandLine( arguments );
+	return igdeEditorModule::ProcessCommandLine(arguments);
 }

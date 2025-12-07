@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUParticleEmitterSetName::gdeUParticleEmitterSetName(
-gdeParticleEmitter *particleEmitter, const char *newValue ) :
-pParticleEmitter( NULL )
+gdeParticleEmitter *particleEmitter, const char *newValue) :
+pParticleEmitter(NULL)
 {
-	if( ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set name" );
+	SetShortInfo("Particle emitter set name");
 	
 	pOldValue = particleEmitter->GetName();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pParticleEmitter( NULL )
 }
 
 gdeUParticleEmitterSetName::~gdeUParticleEmitterSetName(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUParticleEmitterSetName::~gdeUParticleEmitterSetName(){
 ///////////////
 
 void gdeUParticleEmitterSetName::Undo(){
-	pParticleEmitter->SetName( pOldValue );
+	pParticleEmitter->SetName(pOldValue);
 }
 
 void gdeUParticleEmitterSetName::Redo(){
-	pParticleEmitter->SetName( pNewValue );
+	pParticleEmitter->SetName(pNewValue);
 }

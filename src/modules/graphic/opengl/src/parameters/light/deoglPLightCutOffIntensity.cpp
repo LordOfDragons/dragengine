@@ -39,13 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPLightCutOffIntensity::deoglPLightCutOffIntensity( deGraphicOpenGl &ogl ) : deoglParameterFloat( ogl ){
-	SetName( "lightCutOffIntensity" );
-	SetDescription( "Sets the cut off intensity for light sources."
-		" Lights are set to 0 beyond the distance where the intensity drops below this intensity." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Light Cut-Off Intensity" );
-	SetDefaultValue( "0.01" );
+deoglPLightCutOffIntensity::deoglPLightCutOffIntensity(deGraphicOpenGl &ogl) : deoglParameterFloat(ogl){
+	SetName("lightCutOffIntensity");
+	SetDescription("Sets the cut off intensity for light sources."
+		" Lights are set to 0 beyond the distance where the intensity drops below this intensity.");
+	SetCategory(ecExpert);
+	SetDisplayName("Light Cut-Off Intensity");
+	SetDefaultValue("0.01");
 }
 
 deoglPLightCutOffIntensity::~deoglPLightCutOffIntensity(){
@@ -60,6 +60,6 @@ float deoglPLightCutOffIntensity::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetLightCutOffIntensity();
 }
 
-void deoglPLightCutOffIntensity::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetLightCutOffIntensity( value );
+void deoglPLightCutOffIntensity::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetLightCutOffIntensity(value);
 }

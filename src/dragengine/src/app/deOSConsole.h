@@ -81,7 +81,7 @@ public:
 	 * to false if you want to clear the event queue after a lengthy operation to
 	 * avoid an event flood resulting in strange initial inputs.
 	 */
-	virtual void ProcessEventLoop( bool sendToInputModule );
+	virtual void ProcessEventLoop(bool sendToInputModule);
 	
 	/**
 	 * \brief Current user locale language (ISO 639 language code) in lower case.
@@ -104,7 +104,7 @@ public:
 	 * 
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
-	virtual int GetDisplayCurrentScaleFactor( int display );
+	virtual int GetDisplayCurrentScaleFactor(int display);
 	/*@}*/
 	
 	
@@ -120,7 +120,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual decPoint GetDisplayCurrentResolution( int display );
+	virtual decPoint GetDisplayCurrentResolution(int display);
 	
 	/**
 	 * \brief Current refresh rate of display.
@@ -128,7 +128,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayCurrentRefreshRate( int display );
+	virtual int GetDisplayCurrentRefreshRate(int display);
 	
 	/**
 	 * \brief Number of resolutions supported on display.
@@ -136,7 +136,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayResolutionCount( int display );
+	virtual int GetDisplayResolutionCount(int display);
 	
 	/**
 	 * \brief Resolution by index for display.
@@ -147,7 +147,7 @@ public:
 	 * \throws deeInvalidParam \em resolution is less than 0 or equal to or greater than
 	 *                         GetDisplayResolutionCount(display).
 	 */
-	virtual decPoint GetDisplayResolution( int display, int resolution );
+	virtual decPoint GetDisplayResolution(int display, int resolution);
 	/*@}*/
 	
 	

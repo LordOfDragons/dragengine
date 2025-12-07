@@ -112,7 +112,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSkinTexturePipelines( const deoglSkinTexture &texture );
+	deoglSkinTexturePipelines(const deoglSkinTexture &texture);
 	
 protected:
 	/** Clean up skin texture pipeline. */
@@ -128,10 +128,10 @@ public:
 	inline const deoglSkinTexture &GetTexture() const{ return pTexture; }
 	
 	/** Pipeline with type and modifiers or nullptr. */
-	const deoglSkinTexturePipeline *GetWith( eTypes type, int modifiers = 0 ) const;
+	const deoglSkinTexturePipeline *GetWith(eTypes type, int modifiers = 0) const;
 	
 	/** Pipeline with type and modifiers or throws exception. */
-	const deoglSkinTexturePipeline &GetWithRef( eTypes type, int modifiers = 0 ) const;
+	const deoglSkinTexturePipeline &GetWithRef(eTypes type, int modifiers = 0) const;
 	
 	/** Prepare pipelines. */
 	void Prepare(deoglBatchedShaderLoading &batched);
@@ -148,140 +148,140 @@ protected:
 		bool hasTextures;
 	};
 	
-	typedef sChannelInfo ChannelInfo[ deoglSkinChannel::CHANNEL_COUNT ];
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched ) = 0;
+	typedef sChannelInfo ChannelInfo[deoglSkinChannel::CHANNEL_COUNT];
+	virtual void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) = 0;
 	
-	virtual void pPrepareGeometry( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareGeometry(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareGeometryDepthTest( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareGeometryDepthTest(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareAllDepth( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareAllDepth(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareDepth( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareDepth(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareDepthClipPlane( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareDepthClipPlane(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareDepthReversed( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareDepthReversed(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareDepthClipPlaneReversed( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareDepthClipPlaneReversed(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareAllCounter( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareAllCounter(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareCounter( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareCounter(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareCounterClipPlane( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareCounterClipPlane(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareMask( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareMask(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareAllShadow( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareAllShadow(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareShadowProjection( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowProjection(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareShadowProjectionCube( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowProjectionCube(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareShadowOrthogonal( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowOrthogonal(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowOrthogonalCascaded(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareShadowDistance( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowDistance(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareShadowDistanceCube( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowDistanceCube(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareEnvMap( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareEnvMap(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareLuminance( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareLuminance(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareGIMaterial( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPrepareGIMaterial(deoglSkinShaderConfig &baseShaderConfig,
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pInitChannelInfo( ChannelInfo &cinfo );
+	virtual void pInitChannelInfo(ChannelInfo &cinfo);
 	
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigDepth( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigDepthReversed( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigMask( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigShadowProjection( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigShadowOrthogonal( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigShadowDistance( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigGIMaterial( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigGeometryDepthTest(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigDepth(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigDepthReversed(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigCounter(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigMask(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigShadowProjection(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigShadowOrthogonal(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigShadowDistance(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigGIMaterial(deoglPipelineConfiguration &config);
 	
-	virtual void pPipelineConfigSetShadowOffsetProjection( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigSetShadowOffsetOrthogonal( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigSetShadowOffsetDistance( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigSetShadowOffsetProjection(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigSetShadowOffsetOrthogonal(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigSetShadowOffsetDistance(deoglPipelineConfiguration &config);
 	
-	virtual void pSetBase( deoglSkinShaderConfig &config );
+	virtual void pSetBase(deoglSkinShaderConfig &config);
 	
-	virtual void pSetGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetGeometryDepthTest( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetShadowProjection( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetShadowProjectionCube( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetShadowOrthogonal( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetShadowOrthogonalCascaded( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetShadowDistance( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetShadowDistanceCube( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetEnvMap( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetLuminance( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetGIMaterial( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetGeometryDepthTest(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetCounter(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetMask(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetShadowProjection(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetShadowProjectionCube(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetShadowOrthogonal(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetShadowOrthogonalCascaded(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetShadowDistance(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetShadowDistanceCube(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetEnvMap(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetLuminance(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetGIMaterial(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 	
-	virtual void pSetMaskedSolidity( deoglSkinShaderConfig &config );
-	virtual void pSetSkinClipping( deoglSkinShaderConfig &config );
+	virtual void pSetMaskedSolidity(deoglSkinShaderConfig &config);
+	virtual void pSetSkinClipping(deoglSkinShaderConfig &config);
 	
-	virtual void pSetTypeGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetTypeDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetTypeCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetTypeMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetTypeShadow( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetTypeGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetTypeDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetTypeCounter(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetTypeMask(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetTypeShadow(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 	
-	virtual void pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetTexturesGeometryLuminance( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetTexturesGeometryGI( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetTexturesGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetTexturesGeometryLuminance(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetTexturesGeometryGI(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 	
-	virtual void pSetDynamicGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDynamicsGeometryLuminance( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDynamicDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDynamicCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDynamicMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetDynamicGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetDynamicsGeometryLuminance(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetDynamicDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetDynamicCounter(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetDynamicMask(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 	
-	virtual void pCreatePipelines( const deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pCreatePipelines(const deoglPipelineConfiguration &basePipelineConfig,
 		const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 };
 
 #endif

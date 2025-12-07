@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAMusic::ceCAMusic() : ceConversationAction( eatMusic ){
+ceCAMusic::ceCAMusic() : ceConversationAction(eatMusic){
 }
 
-ceCAMusic::ceCAMusic( const ceCAMusic &action ): ceConversationAction( action ){
+ceCAMusic::ceCAMusic(const ceCAMusic &action): ceConversationAction(action){
 	pName = action.GetName();
 }
 
@@ -53,8 +53,8 @@ ceCAMusic::~ceCAMusic(){
 // Management
 ///////////////
 
-void ceCAMusic::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+void ceCAMusic::SetName(const char *name){
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }
@@ -62,5 +62,5 @@ void ceCAMusic::SetName( const char *name ){
 
 
 ceConversationAction *ceCAMusic::CreateCopy() const{
-	return new ceCAMusic( *this );
+	return new ceCAMusic(*this);
 }

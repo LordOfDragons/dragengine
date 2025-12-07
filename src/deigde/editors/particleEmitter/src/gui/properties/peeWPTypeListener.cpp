@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWPTypeListener::peeWPTypeListener( peeWPType &panel ) :
-pPanel( panel ){
+peeWPTypeListener::peeWPTypeListener(peeWPType &panel) :
+pPanel(panel){
 }
 
 peeWPTypeListener::~peeWPTypeListener(){
@@ -52,53 +52,53 @@ peeWPTypeListener::~peeWPTypeListener(){
 // Management
 ///////////////
 
-void peeWPTypeListener::ControllerStructureChanged( peeEmitter* ){
+void peeWPTypeListener::ControllerStructureChanged(peeEmitter*){
 	pPanel.UpdateControllerList();
 }
 
-void peeWPTypeListener::ControllerChanged( peeEmitter*, peeController* ){
+void peeWPTypeListener::ControllerChanged(peeEmitter*, peeController*){
 	pPanel.UpdateControllerList();
 }
 
 
 
-void peeWPTypeListener::TypeStructureChanged( peeEmitter* ){
+void peeWPTypeListener::TypeStructureChanged(peeEmitter*){
 	pPanel.UpdateTypeList();
 	pPanel.UpdateParameter();
 }
 
-void peeWPTypeListener::TypeChanged( peeEmitter*, peeType* ){
+void peeWPTypeListener::TypeChanged(peeEmitter*, peeType*){
 	pPanel.UpdateTypeList();
 }
 
-void peeWPTypeListener::TypeActiveTrailControllerChanged( peeEmitter*, peeType *type ){
-	if( type->GetActive() ){
+void peeWPTypeListener::TypeActiveTrailControllerChanged(peeEmitter*, peeType *type){
+	if(type->GetActive()){
 		pPanel.SelectActiveTrailController();
 		pPanel.UpdateType();
 	}
 }
 
-void peeWPTypeListener::TypeActiveEmitControllerChanged( peeEmitter*, peeType *type ){
-	if( type->GetActive() ){
+void peeWPTypeListener::TypeActiveEmitControllerChanged(peeEmitter*, peeType *type){
+	if(type->GetActive()){
 		pPanel.SelectActiveEmitController();
 		pPanel.UpdateType();
 	}
 }
 
-void peeWPTypeListener::TypeParameterChanged( peeEmitter*, peeType *type, peeParameter *parameter ){
-	if( type->GetActive() ){
+void peeWPTypeListener::TypeParameterChanged(peeEmitter*, peeType *type, peeParameter *parameter){
+	if(type->GetActive()){
 		pPanel.UpdateParameter();
 	}
-	pPanel.UpdateParameterUsage( *parameter );
+	pPanel.UpdateParameterUsage(*parameter);
 }
 
-void peeWPTypeListener::ActiveTypeParameterChanged( peeEmitter*, peeType *type ){
-	if( type->GetActive() ){
+void peeWPTypeListener::ActiveTypeParameterChanged(peeEmitter*, peeType *type){
+	if(type->GetActive()){
 		pPanel.SelectActiveParameter();
 	}
 }
 
-void peeWPTypeListener::ActiveTypeChanged( peeEmitter* ){
+void peeWPTypeListener::ActiveTypeChanged(peeEmitter*){
 	pPanel.SelectActiveType();
 	pPanel.UpdateParameter();
 }

@@ -99,19 +99,19 @@ public:
 	int GetSourceCount() const;
 	
 	/** \brief Source at index. */
-	deSynthesizerSource *GetSourceAt( int index ) const;
+	deSynthesizerSource *GetSourceAt(int index) const;
 	
 	/** \brief Index of source or -1 if absent. */
-	int IndexOfSource( deSynthesizerSource *source ) const;
+	int IndexOfSource(deSynthesizerSource *source) const;
 	
 	/** \brief Source is present. */
-	bool HasSource( deSynthesizerSource *source ) const;
+	bool HasSource(deSynthesizerSource *source) const;
 	
 	/** \brief Add source. */
-	void AddSource( deSynthesizerSource *source );
+	void AddSource(deSynthesizerSource *source);
 	
 	/** \brief Remove source. */
-	void RemoveSource( deSynthesizerSource *source );
+	void RemoveSource(deSynthesizerSource *source);
 	
 	/** \brief Remove all sources. */
 	void RemoveAllSources();
@@ -122,7 +122,7 @@ public:
 	inline eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set source application type. */
-	void SetApplicationType( eApplicationTypes type );
+	void SetApplicationType(eApplicationTypes type);
 	
 	/** \brief Select target. */
 	inline deSynthesizerControllerTarget &GetTargetSelect(){ return pTargetSelect; }
@@ -134,7 +134,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	virtual void Visit(deSynthesizerSourceVisitor &visitor);
 	/*@}*/
 };
 

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creat panel. */
-	seWPAPanelSourceWave( seWPSource &wpSource );
+	seWPAPanelSourceWave(seWPSource &wpSource);
 	
 protected:
 	/** \brief Clean up panel. */

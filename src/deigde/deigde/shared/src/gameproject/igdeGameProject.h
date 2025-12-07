@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create project. */
-	igdeGameProject( igdeEnvironment &environment );
+	igdeGameProject(igdeEnvironment &environment);
 	
 	/** \brief Clean up game definition. */
 	virtual ~igdeGameProject();
@@ -100,37 +100,37 @@ public:
 	inline const decString &GetFilePath() const{ return pPathFile; }
 	
 	/** \brief Set file path. */
-	void SetFilePath( const char *path );
+	void SetFilePath(const char *path);
 	
 	/** \brief Project name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set project name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Project description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set project description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Path to data relative to project directory. */
 	inline const decString &GetPathData() const{ return pPathData; }
 	
 	/** \brief Set path to data relative to project directory. */
-	void SetPathData( const char *path );
+	void SetPathData(const char *path);
 	
 	/** \brief Path to cache relative to project directory. */
 	inline const decString &GetPathCache() const{ return pPathCache; }
 	
 	/** \brief Set path to cache relative to project directory. */
-	void SetPathCache( const char *path );
+	void SetPathCache(const char *path);
 	
 	/** \brief Path to local data relative to project directory. */
 	inline const decString &GetPathLocal() const{ return pPathLocal; }
 	
 	/** \brief Set path to local data relative to project directory. */
-	void SetPathLocal( const char *path );
+	void SetPathLocal(const char *path);
 	
 	
 	
@@ -142,7 +142,7 @@ public:
 	inline const decString &GetPathProjectGameDefinition() const{ return pPathProjectGameDefinition; }
 	
 	/** \brief Set project game definition path relative to project directory. */
-	void SetPathProjectGameDefinition( const char *path );
+	void SetPathProjectGameDefinition(const char *path);
 	
 	/** \brief Base game definition list. */
 	inline igdeGameDefinitionList &GetBaseGameDefinitionList(){ return pBaseGameDefinitionList; }
@@ -162,7 +162,7 @@ public:
 	 * \note Make sure a valid game definition is set before using this object in the editors.
 	 *       If the game definition name is not found set it to a default game definition instead.
 	 */
-	void SetProjectGameDefinition( igdeGameDefinition *gameDefinition );
+	void SetProjectGameDefinition(igdeGameDefinition *gameDefinition);
 	
 	/**
 	 * \brief XML Element Class game definition.
@@ -205,13 +205,13 @@ public:
 	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	
 	/** \brief Set name of script module to use. */
-	void SetScriptModule( const char *moduleName );
+	void SetScriptModule(const char *moduleName);
 	
 	/** \brief Minimum script module version or empty string. */
 	inline const decString &GetScriptModuleVersion() const{ return pScriptModuleVersion; }
 	
 	/** \brief Set minimum script module version or empty string. */
-	void SetScriptModuleVersion( const char *version );
+	void SetScriptModuleVersion(const char *version);
 	
 	
 	
@@ -223,7 +223,7 @@ public:
 	 * 
 	 * If this is different than the current changed state a notification is send to all listeners.
 	 */
-	void SetChanged( bool changed );
+	void SetChanged(bool changed);
 	
 	
 	

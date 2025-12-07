@@ -68,10 +68,10 @@ public:
 	inline const decDVector &GetBoxMax() const{ return pBoxMax; }
 	
 	/** \brief Set box. */
-	void SetBox( const decDVector &minimum, const decDVector &maximum );
+	void SetBox(const decDVector &minimum, const decDVector &maximum);
 	
 	/** \brief Set box. */
-	void SetBoxRange( const decDVector &position, double range );
+	void SetBoxRange(const decDVector &position, double range);
 	
 	/** \brief Reset. */
 	void Reset();
@@ -82,12 +82,12 @@ public:
 	int GetComponentCount() const;
 	
 	/** \brief Component at index. */
-	deoalAComponent *GetComponentAt( int index ) const;
+	deoalAComponent *GetComponentAt(int index) const;
 	
 	
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( deoalAComponent *component );
+	virtual void VisitComponent(deoalAComponent *component);
 	/*@}*/
 };
 

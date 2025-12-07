@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAStopTopic::ceWPTTIMAStopTopic( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAStopTopic *action ) :
-ceWPTTIMAction( windowMain, etActionStopTopic, conversation, action )
+ceWPTTIMAStopTopic::ceWPTTIMAStopTopic(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAStopTopic *action) :
+ceWPTTIMAction(windowMain, etActionStopTopic, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionStop() );
+	SetIcon(windowMain.GetIconActionStop());
 	Update();
 }
 
@@ -58,5 +58,5 @@ ceWPTTIMAStopTopic::~ceWPTTIMAStopTopic(){
 ///////////////
 
 void ceWPTTIMAStopTopic::Update(){
-	SetText( "Stop Topic" );
+	SetText("Stop Topic");
 }

@@ -46,8 +46,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWeather::meWeather( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meWeather::meWeather(meWorld *world){
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 }
@@ -60,5 +60,5 @@ meWeather::~meWeather(){
 // Management
 ///////////////
 
-void meWeather::Update( float elapsed ){
+void meWeather::Update(float elapsed){
 }

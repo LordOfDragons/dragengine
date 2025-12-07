@@ -20,20 +20,20 @@ class KDEVDSCODECOMPLETION_EXPORT DSCodeCompletionModel : public CodeCompletionM
 	Q_OBJECT
 	
 public:
-	DSCodeCompletionModel( QObject *parent );
+	DSCodeCompletionModel(QObject *parent);
 	~DSCodeCompletionModel() override;
 	
 	CodeCompletionWorker *createCompletionWorker() override;
 	
-	Range completionRange( View *view, const Cursor &position ) override;
+	Range completionRange(View *view, const Cursor &position) override;
 	
-	bool shouldStartCompletion( View *view, const QString &inserted,
-		bool userInsertion, const Cursor &position ) override;
+	bool shouldStartCompletion(View *view, const QString &inserted,
+		bool userInsertion, const Cursor &position) override;
 	
-	bool shouldAbortCompletion( View *view, const Range &range,
-		const QString &currentCompletion ) override;
+	bool shouldAbortCompletion(View *view, const Range &range,
+		const QString &currentCompletion) override;
 	
-	QString filterString( View *view, const Range &range, const Cursor &position ) override;
+	QString filterString(View *view, const Range &range, const Cursor &position) override;
 	
 private:
 	QUrl pDocument;

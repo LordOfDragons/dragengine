@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDSRenderableColor::deDSRenderableColor( const char *name ) : deDSRenderable( name ){
+deDSRenderableColor::deDSRenderableColor(const char *name) : deDSRenderable(name){
 }
 
 deDSRenderableColor::~deDSRenderableColor(){
@@ -50,7 +50,7 @@ deDSRenderableColor::~deDSRenderableColor(){
 // Management
 ///////////////
 
-void deDSRenderableColor::SetColor( const decColor &color ){
+void deDSRenderableColor::SetColor(const decColor &color){
 	pColor = color;
 }
 
@@ -59,6 +59,6 @@ void deDSRenderableColor::SetColor( const decColor &color ){
 // Visiting
 /////////////
 
-void deDSRenderableColor::Visit( deDSRenderableVisitor &visitor ){
-	visitor.VisitColor( *this );
+void deDSRenderableColor::Visit(deDSRenderableVisitor &visitor){
+	visitor.VisitColor(*this);
 }

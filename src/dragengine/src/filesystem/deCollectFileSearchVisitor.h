@@ -51,7 +51,7 @@ public:
 	deCollectFileSearchVisitor();
 	
 	/** \brief Create file search visitor with pattern. */
-	deCollectFileSearchVisitor( const char *pattern, bool recursive = false );
+	deCollectFileSearchVisitor(const char *pattern, bool recursive = false);
 	
 	/** \brief Clean up file search visitor. */
 	virtual ~deCollectFileSearchVisitor();
@@ -66,13 +66,13 @@ public:
 	inline const dePathList &GetPatterns() const{ return pPatterns; }
 	
 	/** \brief Add pattern. */
-	void AddPattern( const char *pattern );
+	void AddPattern(const char *pattern);
 	
 	/** \brief Enable recursion. */
 	inline bool GetRecursive() const{ return pRecursive; }
 	
 	/** \brief Set if recursion is enabled. */
-	void SetRecursive( bool recursive );
+	void SetRecursive(bool recursive);
 	
 	/** \brief Found files. */
 	inline dePathList &GetFiles(){ return pFiles; }
@@ -90,7 +90,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path);
 	
 	/**
 	 * \brief Visit directory.
@@ -99,7 +99,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path);
 	
 	/**
 	 * \brief Visit special.
@@ -108,7 +108,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitSpecial( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path);
 	/*@}*/
 };
 

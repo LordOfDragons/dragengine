@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUEmitterSetBurstLifetime::peeUEmitterSetBurstLifetime( peeEmitter *emitter, float newLifetime ){
-	if( ! emitter ){
-		DETHROW( deeInvalidParam );
+peeUEmitterSetBurstLifetime::peeUEmitterSetBurstLifetime(peeEmitter *emitter, float newLifetime){
+	if(!emitter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEmitter = NULL;
 	
-	SetShortInfo( "Set Emitter Burst Lifetime" );
+	SetShortInfo("Set Emitter Burst Lifetime");
 	
 	pOldLifetime = emitter->GetBurstInterval();
 	pNewLifetime = newLifetime;
@@ -56,7 +56,7 @@ peeUEmitterSetBurstLifetime::peeUEmitterSetBurstLifetime( peeEmitter *emitter, f
 }
 
 peeUEmitterSetBurstLifetime::~peeUEmitterSetBurstLifetime(){
-	if( pEmitter ){
+	if(pEmitter){
 		pEmitter->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ peeUEmitterSetBurstLifetime::~peeUEmitterSetBurstLifetime(){
 ///////////////
 
 void peeUEmitterSetBurstLifetime::Undo(){
-	pEmitter->SetBurstLifetime( pOldLifetime );
+	pEmitter->SetBurstLifetime(pOldLifetime);
 }
 
 void peeUEmitterSetBurstLifetime::Redo(){
-	pEmitter->SetBurstLifetime( pNewLifetime );
+	pEmitter->SetBurstLifetime(pNewLifetime);
 }

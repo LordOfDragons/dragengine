@@ -57,22 +57,22 @@ public:
 	/** Retrieves the number of states. */
 	inline int GetStateCount() const{ return pStateCount; }
 	/** Sets the number of states. */
-	void SetStateCount( int count );
+	void SetStateCount(int count);
 	
 	/** Retrieves the value of a state. */
-	float GetValueAt( int state ) const;
+	float GetValueAt(int state) const;
 	/** Retrieves the vector of a state. */
-	const decVector &GetVectorAt( int state ) const;
+	const decVector &GetVectorAt(int state) const;
 	/** Sets the value of a state. */
-	void SetValueAt( int state, float value );
+	void SetValueAt(int state, float value);
 	/** Sets the vector of a state. */
-	void SetVectorAt( int state, const decVector &vector );
+	void SetVectorAt(int state, const decVector &vector);
 	/** Sets the state. */
-	void SetStateAt( int state, float value, const decVector &vector );
+	void SetStateAt(int state, float value, const decVector &vector);
 	/** Resets a state. */
-	void ResetStateAt( int state );
+	void ResetStateAt(int state);
 	/** Set state from another controller states. */
-	void SetStateFrom( int destState, const dearControllerStates &sourceStates, int sourceState );
+	void SetStateFrom(int destState, const dearControllerStates &sourceStates, int sourceState);
 	/*@}*/
 };
 

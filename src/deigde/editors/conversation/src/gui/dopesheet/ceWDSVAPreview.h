@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dope sheet lane. */
-	ceWDSVAPreview( ceWindowDopeSheet &dopeSheet );
+	ceWDSVAPreview(ceWindowDopeSheet &dopeSheet);
 	
 	/** \brief Clean up dope sheet lane. */
 	~ceWDSVAPreview();
@@ -89,10 +89,10 @@ public:
 	inline float GetCurTime() const{ return pCurTime; }
 	
 	/** \brief Set current time. */
-	void SetCurTime( float time );
+	void SetCurTime(float time);
 	
 	/** \brief Set preview speaker. */
-	void SetSpeaker( deSpeaker *speaker );
+	void SetSpeaker(deSpeaker *speaker);
 	
 	
 	

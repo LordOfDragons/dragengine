@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPSkyListener::seWPSkyListener( seWPSky &panel ) :
-pPanel( panel ){
+seWPSkyListener::seWPSkyListener(seWPSky &panel) :
+pPanel(panel){
 }
 
 seWPSkyListener::~seWPSkyListener(){
@@ -52,6 +52,6 @@ seWPSkyListener::~seWPSkyListener(){
 ///////////////
 
 
-void seWPSkyListener::SkyChanged( seSky *sky ){
+void seWPSkyListener::SkyChanged(seSky *sky){
 	pPanel.UpdateSky();
 }

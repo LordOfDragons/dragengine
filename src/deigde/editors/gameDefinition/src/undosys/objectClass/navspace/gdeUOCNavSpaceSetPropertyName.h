@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetPropertyName( gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace,
-		gdeOCNavigationSpace::eProperties property, const char *newValue );
+	gdeUOCNavSpaceSetPropertyName(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace,
+		gdeOCNavigationSpace::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

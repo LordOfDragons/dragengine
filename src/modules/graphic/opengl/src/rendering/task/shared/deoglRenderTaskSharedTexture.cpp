@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskSharedTexture::deoglRenderTaskSharedTexture( deoglRenderTaskSharedPool &pool, int index ) :
-pPool( pool ),
-pIndex( index ),
-pTUC( NULL ){
+deoglRenderTaskSharedTexture::deoglRenderTaskSharedTexture(deoglRenderTaskSharedPool &pool, int index) :
+pPool(pool),
+pIndex(index),
+pTUC(NULL){
 }
 
 deoglRenderTaskSharedTexture::~deoglRenderTaskSharedTexture(){
@@ -53,7 +53,7 @@ deoglRenderTaskSharedTexture::~deoglRenderTaskSharedTexture(){
 // Management
 ///////////////
 
-void deoglRenderTaskSharedTexture::SetTUC( deoglTexUnitsConfig *tuc ){
+void deoglRenderTaskSharedTexture::SetTUC(deoglTexUnitsConfig *tuc){
 	pTUC = tuc;
 }
 
@@ -64,5 +64,5 @@ void deoglRenderTaskSharedTexture::Clear(){
 }
 
 void deoglRenderTaskSharedTexture::ReturnToPool(){
-	pPool.ReturnTexture( this );
+	pPool.ReturnTexture(this);
 }

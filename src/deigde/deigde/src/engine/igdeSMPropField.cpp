@@ -51,7 +51,7 @@ igdeSMPropField::~igdeSMPropField(){
 // Management
 ///////////////
 
-void igdeSMPropField::SetDelegee( deBaseScriptingPropField *delegee ){
+void igdeSMPropField::SetDelegee(deBaseScriptingPropField *delegee){
 	pDelegee = delegee;
 }
 
@@ -60,8 +60,8 @@ void igdeSMPropField::SetDelegee( deBaseScriptingPropField *delegee ){
 // Notifications
 //////////////////
 
-void igdeSMPropField::CreateInstances( float density ){
-	if( pDelegee ){
-		pDelegee->CreateInstances( density );
+void igdeSMPropField::CreateInstances(float density){
+	if(pDelegee){
+		pDelegee->CreateInstances(density);
 	}
 }

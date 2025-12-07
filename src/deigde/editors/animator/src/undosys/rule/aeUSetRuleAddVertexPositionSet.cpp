@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleAddVertexPositionSet::aeUSetRuleAddVertexPositionSet( aeRule *rule, const char *pattern ){
-	DEASSERT_NOTNULL( rule )
-	DEASSERT_NOTNULL( pattern )
+aeUSetRuleAddVertexPositionSet::aeUSetRuleAddVertexPositionSet(aeRule *rule, const char *pattern){
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(pattern)
 	
 	pRule = nullptr;
 	
@@ -49,29 +49,29 @@ aeUSetRuleAddVertexPositionSet::aeUSetRuleAddVertexPositionSet( aeRule *rule, co
 	const deComponent * const engComponent = rule->GetAnimator()->GetEngineComponent();
 	const deModel * const engModel = engComponent ? engComponent->GetModel() : nullptr;
 	
-	if( engModel ){
+	if(engModel){
 		const int setCount = engModel->GetVertexPositionSetCount();
 		int i;
 		
-		for( i=0; i<setCount; i++ ){
-			const decString &set = engModel->GetVertexPositionSetAt( i )->GetName();
+		for(i=0; i<setCount; i++){
+			const decString &set = engModel->GetVertexPositionSetAt(i)->GetName();
 			
-			if( set.MatchesPattern( pattern ) && ! sets.Has( set ) ){
-				pVertexPositionSets.Add( set );
+			if(set.MatchesPattern(pattern) && !sets.Has(set)){
+				pVertexPositionSets.Add(set);
 			}
 		}
 		
 	}else{
-		if( ! sets.Has( pattern ) ){
-			pVertexPositionSets.Add( pattern );
+		if(!sets.Has(pattern)){
+			pVertexPositionSets.Add(pattern);
 		}
 	}
 	
-	if( pVertexPositionSets.GetCount() == 1 ){
-		SetShortInfo( "Add vertex position set to rule" );
+	if(pVertexPositionSets.GetCount() == 1){
+		SetShortInfo("Add vertex position set to rule");
 		
 	}else{
-		SetShortInfo( "Add vertex position sets to rule" );
+		SetShortInfo("Add vertex position sets to rule");
 	}
 	
 	pRule = rule;
@@ -79,7 +79,7 @@ aeUSetRuleAddVertexPositionSet::aeUSetRuleAddVertexPositionSet( aeRule *rule, co
 }
 
 aeUSetRuleAddVertexPositionSet::~aeUSetRuleAddVertexPositionSet(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -93,8 +93,8 @@ void aeUSetRuleAddVertexPositionSet::Undo(){
 	const int count = pVertexPositionSets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pRule->RemoveVertexPositionSet( pVertexPositionSets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->RemoveVertexPositionSet(pVertexPositionSets.GetAt(i));
 	}
 }
 
@@ -102,7 +102,7 @@ void aeUSetRuleAddVertexPositionSet::Redo(){
 	const int count = pVertexPositionSets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pRule->AddVertexPositionSet( pVertexPositionSets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->AddVertexPositionSet(pVertexPositionSets.GetAt(i));
 	}
 }

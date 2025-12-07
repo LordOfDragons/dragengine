@@ -45,14 +45,14 @@ public:
 		typedef deTObjectReference<cMatchName> Ref;
 	
 	
-		cMatchName( const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type );
+		cMatchName(const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type);
 		
 		inline const decString &GetFirst() const{ return pFirst; }
 		inline const decString &GetSecond() const{ return pSecond; }
 		inline deAnimatorRuleMirror::eMatchNameType GetType() const{ return pType; }
 		
-		bool operator==( const cMatchName &matchName ) const;
-		bool operator!=( const cMatchName &matchName ) const;
+		bool operator==(const cMatchName &matchName) const;
+		bool operator!=(const cMatchName &matchName) const;
 		
 	private:
 		const decString pFirst;
@@ -80,7 +80,7 @@ public:
 	aeRuleMirror();
 	
 	/** Create copy of rule. */
-	aeRuleMirror( const aeRuleMirror &copy );
+	aeRuleMirror(const aeRuleMirror &copy);
 	
 	/** Create rule with default settings. */
 	static aeRuleMirror *CreateDefault();
@@ -99,37 +99,37 @@ public:
 	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return pMirrorAxis; }
 	
 	/** Set mirror axis. */
-	void SetMirrorAxis( deAnimatorRuleMirror::eMirrorAxis axis );
+	void SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis axis);
 	
 	/** Name of mirror bone or empty string to use component. */
 	inline const decString &GetMirrorBone() const{ return pMirrorBone; }
 	
 	/** Set name of mirror bone or empty string to use component. */
-	void SetMirrorBone( const char *boneName );
+	void SetMirrorBone(const char *boneName);
 	
 	/** Count of match names. */
 	int GetMatchNameCount() const;
 	
 	/** Match name at index. */
-	cMatchName *GetMatchNameAt( int index ) const;
+	cMatchName *GetMatchNameAt(int index) const;
 	
 	/** Match name is present. */
-	bool HasMatchName( cMatchName *matchName ) const;
+	bool HasMatchName(cMatchName *matchName) const;
 	
 	/** Index of match name or -1 if not found. */
-	int IndexOfMatchName( cMatchName *matchName ) const;
+	int IndexOfMatchName(cMatchName *matchName) const;
 	
 	/** Add match name. */
-	void AddMatchName( aeRuleMirror::cMatchName *matchName );
+	void AddMatchName(aeRuleMirror::cMatchName *matchName);
 	
 	/** Insert match name. */
-	void InsertMatchName( aeRuleMirror::cMatchName *matchName, int index );
+	void InsertMatchName(aeRuleMirror::cMatchName *matchName, int index);
 	
 	/** Set match name at index. */
-	void SetMatchNameAt( int index, aeRuleMirror::cMatchName *matchName );
+	void SetMatchNameAt(int index, aeRuleMirror::cMatchName *matchName);
 	
 	/** Remove match name. */
-	void RemoveMatchName( cMatchName *matchName );
+	void RemoveMatchName(cMatchName *matchName);
 	
 	/** Remove all match names. */
 	void RemoveAllMatchNames();
@@ -138,25 +138,25 @@ public:
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** Orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** Size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** Vertex position set manipulation is enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	
 	
@@ -172,7 +172,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy from another rule. */
-	virtual aeRuleMirror &operator=( const aeRuleMirror &copy );
+	virtual aeRuleMirror &operator=(const aeRuleMirror &copy);
 	/*@}*/
 	
 	

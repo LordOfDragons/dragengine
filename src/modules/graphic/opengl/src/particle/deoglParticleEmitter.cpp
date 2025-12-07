@@ -50,19 +50,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglParticleEmitter::deoglParticleEmitter( deGraphicOpenGl &ogl, const deParticleEmitter &emitter ) :
-pOgl( ogl ),
-pParticleEmitter( emitter ),
-pREmitter( NULL ),
-pTypes( NULL ),
-pTypeCount( 0 ),
-pDirtyTypes( true )
+deoglParticleEmitter::deoglParticleEmitter(deGraphicOpenGl &ogl, const deParticleEmitter &emitter) :
+pOgl(ogl),
+pParticleEmitter(emitter),
+pREmitter(NULL),
+pTypes(NULL),
+pTypeCount(0),
+pDirtyTypes(true)
 {
 	try{
-		pREmitter = new deoglRParticleEmitter( ogl.GetRenderThread() );
+		pREmitter = new deoglRParticleEmitter(ogl.GetRenderThread());
 		TypeCountChanged();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 	}
 }
@@ -79,26 +79,26 @@ deoglParticleEmitter::~deoglParticleEmitter(){
 void deoglParticleEmitter::SyncToRender(){
 	int i;
 	
-	if( pDirtyTypes ){
+	if(pDirtyTypes){
 		pREmitter->RemoveAllTypes();
-		for( i=0; i<pTypeCount; i++ ){
-			pREmitter->AddType( pTypes[ i ]->GetRType() );
+		for(i=0; i<pTypeCount; i++){
+			pREmitter->AddType(pTypes[i]->GetRType());
 		}
 		pDirtyTypes = false;
 	}
 	
-	for( i=0; i<pTypeCount; i++ ){
-		pTypes[ i ]->SyncToRender();
+	for(i=0; i<pTypeCount; i++){
+		pTypes[i]->SyncToRender();
 	}
 }
 
 
 
-deoglParticleEmitterType &deoglParticleEmitter::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+deoglParticleEmitterType &deoglParticleEmitter::GetTypeAt(int index) const{
+	if(index < 0 || index >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
-	return *pTypes[ index ];
+	return *pTypes[index];
 }
 
 
@@ -109,34 +109,34 @@ deoglParticleEmitterType &deoglParticleEmitter::GetTypeAt( int index ) const{
 void deoglParticleEmitter::ControllerCountChanged(){
 }
 
-void deoglParticleEmitter::ControllerChanged( int controller ){
+void deoglParticleEmitter::ControllerChanged(int controller){
 }
 
 void deoglParticleEmitter::TypeCountChanged(){
 	const int typeCount = pParticleEmitter.GetTypeCount();
 	
-	if( pTypes ){
-		while( pTypeCount > 0 ){
+	if(pTypes){
+		while(pTypeCount > 0){
 			pTypeCount--;
-			delete pTypes[ pTypeCount ];
+			delete pTypes[pTypeCount];
 		}
 		delete [] pTypes;
 		pTypes = NULL;
 	}
 	pTypeCount = 0;
 	
-	if( typeCount > 0 ){
-		pTypes = new deoglParticleEmitterType*[ typeCount ];
-		for( pTypeCount=0; pTypeCount<typeCount; pTypeCount++ ){
-			pTypes[ pTypeCount ] = new deoglParticleEmitterType( *this, pParticleEmitter.GetTypeAt( pTypeCount ) );
+	if(typeCount > 0){
+		pTypes = new deoglParticleEmitterType*[typeCount];
+		for(pTypeCount=0; pTypeCount<typeCount; pTypeCount++){
+			pTypes[pTypeCount] = new deoglParticleEmitterType(*this, pParticleEmitter.GetTypeAt(pTypeCount));
 		}
 	}
 	
 	pDirtyTypes = true;
 }
 
-void deoglParticleEmitter::TypeChanged( int type ){
-	pTypes[ type ]->TypeChanged();
+void deoglParticleEmitter::TypeChanged(int type){
+	pTypes[type]->TypeChanged();
 }
 
 
@@ -145,16 +145,16 @@ void deoglParticleEmitter::TypeChanged( int type ){
 //////////////////////
 
 void deoglParticleEmitter::pCleanUp(){
-	if( pTypes ){
-		while( pTypeCount > 0 ){
+	if(pTypes){
+		while(pTypeCount > 0){
 			pTypeCount--;
-			delete pTypes[ pTypeCount ];
+			delete pTypes[pTypeCount];
 		}
 		delete [] pTypes;
 	}
 	
 	// types holds a reference to pREmitter. do not remove it earlier
-	if( pREmitter ){
+	if(pREmitter){
 		pREmitter->FreeReference();
 		pREmitter = NULL;
 	}

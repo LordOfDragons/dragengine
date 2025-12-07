@@ -41,12 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetCurve::seUControllerSetCurve( seController *controller, const decCurveBezier &newValue ) :
-pController( controller ),
-pNewValue( newValue )
+seUControllerSetCurve::seUControllerSetCurve(seController *controller, const decCurveBezier &newValue) :
+pController(controller),
+pNewValue(newValue)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetCurve();
 }
@@ -59,14 +59,14 @@ seUControllerSetCurve::~seUControllerSetCurve(){
 // Management
 ///////////////
 
-void seUControllerSetCurve::SetNewValue( const decCurveBezier &value ){
+void seUControllerSetCurve::SetNewValue(const decCurveBezier &value){
 	pNewValue = value;
 }
 
 void seUControllerSetCurve::Undo(){
-	( ( seController& )( deObject& )pController ).SetCurve( pOldValue );
+	((seController&)(deObject&)pController).SetCurve(pOldValue);
 }
 
 void seUControllerSetCurve::Redo(){
-	( ( seController& )( deObject& )pController ).SetCurve( pNewValue );
+	((seController&)(deObject&)pController).SetCurve(pNewValue);
 }

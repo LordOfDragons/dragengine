@@ -85,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create camera. */
-	igdeCamera( deEngine *engine );
+	igdeCamera(deEngine *engine);
 	
 	/** \brief Clean up camera object. */
 	virtual ~igdeCamera();
@@ -105,49 +105,49 @@ public:
 	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Attach camera to world. */
-	void SetEngineWorld( deWorld *world );
+	void SetEngineWorld(deWorld *world);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation of the camera. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation of the camera. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Field of view in radians. */
 	inline float GetFov() const{ return pFov; }
 	
 	/** \brief Set field of view in radians. */
-	void SetFov( float fov );
+	void SetFov(float fov);
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
 	inline float GetFovRatio() const{ return pFovRatio; }
 	
 	/** \brief Set aspect ratio of the horizonral field of view to the vertical field of view. */
-	void SetFovRatio( float ratio );
+	void SetFovRatio(float ratio);
 	
 	/** \brief Distance to the image plane. */
 	inline float GetImageDistance() const{ return pImageDistance; }
 	
 	/** \brief Set distance to the image plane. */
-	void SetImageDistance( float distance );
+	void SetImageDistance(float distance);
 	
 	/** \brief View distance. */
 	inline float GetViewDistance() const{ return pViewDistance; }
 	
 	/** \brief Set view distance. */
-	void SetViewDistance( float viewDistance );
+	void SetViewDistance(float viewDistance);
 	
 	
 	
@@ -155,37 +155,37 @@ public:
 	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
 	
 	/** \brief Set to enable high definition range rendering (HDRR) if supported. */
-	void SetEnableHDRR( bool enable );
+	void SetEnableHDRR(bool enable);
 	
 	/** \brief Exposure. */
 	inline float GetExposure() const{ return pExposure; }
 	
 	/** \brief Set exposure. */
-	void SetExposure( float exposure );
+	void SetExposure(float exposure);
 	
 	/** \brief Lowest intensity the eye can adapt to. */
 	inline float GetLowestIntensity() const{ return pLowestIntensity; }
 	
 	/** \brief Set lowest intensity the eye can adapt to. */
-	void SetLowestIntensity( float lowestIntensity );
+	void SetLowestIntensity(float lowestIntensity);
 	
 	/** \brief Highest intensity the eye can adapt to. */
 	inline float GetHighestIntensity() const{ return pHighestIntensity; }
 	
 	/** \brief Set highest intensity the eye can adapt to. */
-	void SetHighestIntensity( float highestIntensity );
+	void SetHighestIntensity(float highestIntensity);
 	
 	/** \brief Adaption time of the eye in seconds. */
 	inline float GetAdaptionTime() const{ return pAdaptionTime; }
 	
 	/** \brief Set adaption time of the eye in seconds. */
-	void SetAdaptionTime( float adaptionTime );
+	void SetAdaptionTime(float adaptionTime);
 	
 	/** \brief Distance of camera to the center point along the view direction. */
 	inline float GetDistance() const{ return pDistance; }
 	
 	/** \brief Set distance of camera to the center point along the view direction. */
-	void SetDistance( float distance );
+	void SetDistance(float distance);
 	
 	
 	
@@ -193,7 +193,7 @@ public:
 	inline bool GetEnableGI() const{ return pEnableGI; }
 	
 	/** \brief Set to enable global illumination (GI) if supported. */
-	void SetEnableGI( bool enable );
+	void SetEnableGI(bool enable);
 	
 	
 	
@@ -207,7 +207,7 @@ public:
 	 * \brief Set white intensity multiplier.
 	 * \version 1.21
 	 */
-	void SetWhiteIntensity( float intensity );
+	void SetWhiteIntensity(float intensity);
 	
 	/**
 	 * \brief Bloom intensity multiplier.
@@ -219,7 +219,7 @@ public:
 	 * \brief Set bloom intensity multiplier.
 	 * \version 1.21
 	 */
-	void SetBloomIntensity( float intensity );
+	void SetBloomIntensity(float intensity);
 	
 	/**
 	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
@@ -231,7 +231,7 @@ public:
 	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	void SetBloomStrength( float strength );
+	void SetBloomStrength(float strength);
 	
 	/**
 	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
@@ -243,7 +243,7 @@ public:
 	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	void SetBloomBlend( float blend );
+	void SetBloomBlend(float blend);
 	
 	/**
 	 * \brief Bloom size as percentage of screen width.
@@ -255,7 +255,7 @@ public:
 	 * \brief Bloom size as percentage of screen width.
 	 * \version 1.21
 	 */
-	void SetBloomSize( float size );
+	void SetBloomSize(float size);
 	
 	
 	
@@ -270,7 +270,7 @@ public:
 	 * \version 1.21
 	 * \note If enabled make sure to set the matching white intensity as it defaults to 4.
 	 */
-	void SetToneMapCurve( const decCurveBezier &curve );
+	void SetToneMapCurve(const decCurveBezier &curve);
 	
 	
 	
@@ -282,13 +282,13 @@ public:
 	 * 
 	 * The width and height are the size of the screen.
 	 */
-	decVector GetDirectionFor( int width, int height, int x, int y ) const;
+	decVector GetDirectionFor(int width, int height, int x, int y) const;
 	
 	/**
 	 * \brief Set default parameters.
 	 * \version 1.21
 	 */
-	void SetDefaultParameters( float lowestIntensity, float highestIntensity, float adaptionTime );
+	void SetDefaultParameters(float lowestIntensity, float highestIntensity, float adaptionTime);
 	
 	
 	

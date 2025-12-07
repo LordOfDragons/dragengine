@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create memory consumption usage. */
-	deoglMemoryConsumptionSkinUse( deoglMemoryConsumptionSkin &tracker );
+	deoglMemoryConsumptionSkinUse(deoglMemoryConsumptionSkin &tracker);
 	
 	/** Clean up vbo memory consumption. */
 	~deoglMemoryConsumptionSkinUse();

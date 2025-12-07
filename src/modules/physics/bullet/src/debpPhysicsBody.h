@@ -114,19 +114,19 @@ public:
 	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
 	
 	/** \brief Dynamic world or \em NULL. */
-	void SetDynamicsWorld( debpCollisionWorld *dynWorld );
+	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	
 	/** \brief Collision shape or \em NULL. */
 	inline debpBulletShape *GetShape() const{ return pShape; }
 	
 	/** \brief Set collision shape or \em NULL. */
-	void SetShape( debpBulletShape *shape );
+	void SetShape(debpBulletShape *shape);
 	
 	/** \brief Shape surface. */
 	inline float GetShapeSurface() const{ return pShapeSurface; }
 	
 	/** \brief Set shape surface. */
-	void SetShapeSurface( float surface );
+	void SetShapeSurface(float surface);
 	
 	
 	
@@ -145,43 +145,43 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Linear velocity. */
 	inline const decVector &GetLinearVelocity() const{ return pLinVelo; }
 	
 	/** \brief Set linear velocity. */
-	void SetLinearVelocity( const decVector &linVelo );
+	void SetLinearVelocity(const decVector &linVelo);
 	
 	/** \brief Angular velocity. */
 	inline const decVector &GetAngularVelocity() const{ return pAngVelo; }
 	
 	/** \brief Set anglular velocity. */
-	void SetAngularVelocity( const decVector &angVelo );
+	void SetAngularVelocity(const decVector &angVelo);
 	
 	/** \brief Gravity. */
 	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/** \brief Set gravity. */
-	void SetGravity( const decVector &gravity );
+	void SetGravity(const decVector &gravity);
 	
 	/** \brief Mass. */
 	inline float GetMass() const{ return pMass; }
 	
 	/** \brief Set mass. */
-	void SetMass( float mass );
+	void SetMass(float mass);
 	
 	/** \brief Response type. */
 	inline eResponseTypes GetResponseType() const{ return pResponseType; }
 	
 	/** \brief Set response type. */
-	void SetResponseType( eResponseTypes responseType );
+	void SetResponseType(eResponseTypes responseType);
 	
 	/** \brief Reset interpolation states if the rigid body is kinematic or static. */
 	void ResetKinematicInterpolation();
@@ -190,7 +190,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if physics body is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Physics body is active. */
 	bool GetIsActive() const;
@@ -210,12 +210,12 @@ public:
 	inline float GetCcdRadius() const{ return pCcdRadius; }
 	
 	/** \brief Set ccd parameters. */
-	void SetCcdParameters( float threshold, float radius );
+	void SetCcdParameters(float threshold, float radius);
 	
 	
 	
 	/** \brief Apply gravity to linear velocity. */
-	void ApplyGravity( float elapsed );
+	void ApplyGravity(float elapsed);
 	
 	/** \brief Update dynamic world AABB if dirty. */
 	void UpdateAABB();
@@ -226,22 +226,22 @@ public:
 	/** \name Force and Impuls */
 	/*@{*/
 	/** \brief Apply an impuls at the center mass point. */
-	void ApplyImpuls( const decVector &impuls );
+	void ApplyImpuls(const decVector &impuls);
 	
 	/** \brief Apply an impuls relative to the body position. */
-	void ApplyImpulsAt( const decVector &impuls, const decVector &position );
+	void ApplyImpulsAt(const decVector &impuls, const decVector &position);
 	
 	/** \brief Apply a torque impuls at the center mass point. */
-	void ApplyTorqueImpuls( const decVector &torqueImpuls );
+	void ApplyTorqueImpuls(const decVector &torqueImpuls);
 	
 	/** \brief Apply a force at the center mass point. */
-	void ApplyForce( const decVector &force );
+	void ApplyForce(const decVector &force);
 	
 	/** \brief Apply a force relative to the body position. */
-	void ApplyForceAt( const decVector &force, const decVector &position );
+	void ApplyForceAt(const decVector &force, const decVector &position);
 	
 	/** \brief Apply a torque force at the center mass point. */
-	void ApplyTorque( const decVector &torque );
+	void ApplyTorque(const decVector &torque);
 	/*@}*/
 	
 	
@@ -252,19 +252,19 @@ public:
 	inline int GetConstraintCount() const{ return pConstraintCount; }
 	
 	/** \brief Linked constraint at index. */
-	debpColliderConstraint *GetConstraintAt( int index ) const;
+	debpColliderConstraint *GetConstraintAt(int index) const;
 	
 	/** \brief Index of constraint or -1 if absent. */
-	int IndexOfConstraint( debpColliderConstraint *constraint ) const;
+	int IndexOfConstraint(debpColliderConstraint *constraint) const;
 	
 	/** \brief Constraint is present. */
-	bool HasConstraint( debpColliderConstraint *constraint ) const;
+	bool HasConstraint(debpColliderConstraint *constraint) const;
 	
 	/** \brief Add linked constraint. */
-	void AddConstraint( debpColliderConstraint *constraint );
+	void AddConstraint(debpColliderConstraint *constraint);
 	
 	/** \brief Remove linked constraint. */
-	void RemoveConstraint( debpColliderConstraint *constraint );
+	void RemoveConstraint(debpColliderConstraint *constraint);
 	/*@}*/
 	
 	

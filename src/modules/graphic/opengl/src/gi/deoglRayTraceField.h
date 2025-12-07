@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create ray trace field. */
-	deoglRayTraceField( deoglRenderThread &renderThread );
+	deoglRayTraceField(deoglRenderThread &renderThread);
 	
 	/** Clean up ray trace field. */
 	~deoglRayTraceField();
@@ -121,15 +121,15 @@ public:
 	 * The method adds a border around the object of roughly 1m size.
 	 * This border ensures tracing picks up valid resoluts from outside the object.
 	 */
-	void Init( const decVector &minExtend, const decVector &maxExtend );
+	void Init(const decVector &minExtend, const decVector &maxExtend);
 	
 	
 	
 	/** Probe coordinate closest to position. */
-	decPoint3 Position2Coord( const decVector &position ) const;
+	decPoint3 Position2Coord(const decVector &position) const;
 	
 	/** Position closest to probe coordinate. */
-	decVector Coord2Position( const decPoint3 &coord ) const;
+	decVector Coord2Position(const decPoint3 &coord) const;
 	
 	
 	
@@ -146,7 +146,7 @@ public:
 	
 	
 	/** Render field. */
-	void RenderField( deoglROcclusionMesh &occlusionMesh );
+	void RenderField(deoglROcclusionMesh &occlusionMesh);
 	
 	/** Drop rays FBO. */
 	void DropFBO();

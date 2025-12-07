@@ -58,8 +58,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object snap point. */
-	gdeVAOSnapPoint( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint );
+	gdeVAOSnapPoint(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint);
 	
 protected:
 	/**

@@ -54,9 +54,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShape::reRigShape( deEngine *engine, reRigShape::eShapeTypes shapeType ){
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+reRigShape::reRigShape(deEngine *engine, reRigShape::eShapeTypes shapeType){
+	if(!engine){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEngine = engine;
@@ -77,24 +77,24 @@ reRigShape::reRigShape( deEngine *engine, reRigShape::eShapeTypes shapeType ){
 	try{
 		
 		pCollider = engine->GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertKinematic );
-		pCollider->SetUseLocalGravity( true );
+		pCollider->SetEnabled(true);
+		pCollider->SetResponseType(deCollider::ertKinematic);
+		pCollider->SetUseLocalGravity(true);
 		
 		decLayerMask layerMask;
-		layerMask.SetBit( reRig::eclmShapes );
+		layerMask.SetBit(reRig::eclmShapes);
 		
-		pCollider->SetCollisionFilter( decCollisionFilter( layerMask ) );
+		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
+		pDebugDrawer->SetXRay(true);
 		
 		pDDSShape = new igdeWDebugDrawerShape;
 		pUpdateDDSColor();
-		pDDSShape->SetParentDebugDrawer( pDebugDrawer );
+		pDDSShape->SetParentDebugDrawer(pDebugDrawer);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pRSCleanUp();
 		throw;
 	}
@@ -109,12 +109,12 @@ reRigShape::~reRigShape(){
 // Management
 ///////////////
 
-void reRigShape::SetRig( reRig *rig ){
+void reRigShape::SetRig(reRig *rig){
 	pSetRig(rig, true);
 }
 
-void reRigShape::SetRigBone( reRigBone *rigBone ){
-	if( rigBone == pRigBone ){
+void reRigShape::SetRigBone(reRigBone *rigBone){
+	if(rigBone == pRigBone){
 		return;
 	}
 	
@@ -123,8 +123,8 @@ void reRigShape::SetRigBone( reRigBone *rigBone ){
 	ShowStateChanged();
 }
 
-void reRigShape::SetPosition( const decVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void reRigShape::SetPosition(const decVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
@@ -133,8 +133,8 @@ void reRigShape::SetPosition( const decVector &position ){
 	NotifyShapeChanged();
 }
 
-void reRigShape::SetOrientation( const decVector &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void reRigShape::SetOrientation(const decVector &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
@@ -142,8 +142,8 @@ void reRigShape::SetOrientation( const decVector &orientation ){
 	NotifyShapeChanged();
 }
 
-void reRigShape::SetProperty( const char *property ){
-	if( pProperty == property ){
+void reRigShape::SetProperty(const char *property){
+	if(pProperty == property){
 		return;
 	}
 	
@@ -152,8 +152,8 @@ void reRigShape::SetProperty( const char *property ){
 	NotifyShapeChanged();
 }
 
-void reRigShape::SetSelected( bool selected ){
-	if( selected == pSelected ){
+void reRigShape::SetSelected(bool selected){
+	if(selected == pSelected){
 		return;
 	}
 	
@@ -162,8 +162,8 @@ void reRigShape::SetSelected( bool selected ){
 	pUpdateDDSColor();
 }
 
-void reRigShape::SetActive( bool active ){
-	if( active == pActive ){
+void reRigShape::SetActive(bool active){
+	if(active == pActive){
 		return;
 	}
 	
@@ -177,12 +177,12 @@ void reRigShape::SetActive( bool active ){
 void reRigShape::ShowStateChanged(){
 	const bool visible = IsVisible();
 	
-	if( pRig ){
-		pDebugDrawer->SetXRay( pRig->GetShapeXRay() );
+	if(pRig){
+		pDebugDrawer->SetXRay(pRig->GetShapeXRay());
 	}
 	
-	pDebugDrawer->SetVisible( visible );
-	pCollider->SetEnabled( visible );
+	pDebugDrawer->SetVisible(visible);
+	pCollider->SetEnabled(visible);
 }
 
 void reRigShape::Update(){
@@ -191,8 +191,8 @@ void reRigShape::Update(){
 }
 
 void reRigShape::NotifyShapeChanged(){
-	if( pRig ){
-		pRig->NotifyAllShapeChanged( this );
+	if(pRig){
+		pRig->NotifyAllShapeChanged(this);
 	}
 	
 	InvalidateShape();
@@ -210,8 +210,8 @@ void reRigShape::InvalidatePosition(){
 
 
 bool reRigShape::IsVisible() const{
-	if( pRig ){
-		if( pRigBone ){
+	if(pRig){
+		if(pRigBone){
 			return pRig->GetShowAllBoneShapes() || pRigBone->GetSelected();
 		}
 		
@@ -230,14 +230,14 @@ void reRigShape::pRSCleanUp(){
 	pRigBone = nullptr;
 	pSetRig(nullptr, false);
 	
-	if( pCollider ){
+	if(pCollider){
 		pCollider->FreeReference();
 	}
 	
-	if( pDDSShape ){
+	if(pDDSShape){
 		delete pDDSShape;
 	}
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
 }
@@ -247,40 +247,40 @@ void reRigShape::pRSCleanUp(){
 void reRigShape::pRepositionShapes(){
 	decDMatrix matrix;
 	
-	if( pRigBone ){
+	if(pRigBone){
 		matrix = pRigBone->GetPoseMatrix();
 		
-	}else if( pRig ){
+	}else if(pRig){
 		matrix = pRig->GetPoseMatrix();
 	}
 	
 	const decDVector position = matrix.GetPosition();
 	const decQuaternion orientation = matrix.ToQuaternion();
 	
-	pDebugDrawer->SetPosition( position );
-	pDebugDrawer->SetOrientation( orientation );
+	pDebugDrawer->SetPosition(position);
+	pDebugDrawer->SetOrientation(orientation);
 	
-	pCollider->SetPosition( position );
-	pCollider->SetOrientation( orientation );
+	pCollider->SetPosition(position);
+	pCollider->SetOrientation(orientation);
 }
 
 void reRigShape::pUpdateDDSColor(){
-	if( pActive ){
-		pDDSShape->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
-		pDDSShape->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
+	if(pActive){
+		pDDSShape->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 1.0f));
+		pDDSShape->SetFillColor(decColor(1.0f, 0.5f, 0.0f, 0.1f));
 		
-	}else if( pSelected ){
-		pDDSShape->SetEdgeColor( decColor( 0.75f, 0.75f, 0.0f, 1.0f ) );
-		pDDSShape->SetFillColor( decColor( 0.75f, 0.75f, 0.0f, 0.1f ) );
+	}else if(pSelected){
+		pDDSShape->SetEdgeColor(decColor(0.75f, 0.75f, 0.0f, 1.0f));
+		pDDSShape->SetFillColor(decColor(0.75f, 0.75f, 0.0f, 0.1f));
 		
 	}else{
-		pDDSShape->SetEdgeColor( decColor( 0.5f, 0.5f, 0.0f, 1.0f ) );
-		pDDSShape->SetFillColor( decColor( 0.5f, 0.5f, 0.0f, 0.1f ) );
+		pDDSShape->SetEdgeColor(decColor(0.5f, 0.5f, 0.0f, 1.0f));
+		pDDSShape->SetFillColor(decColor(0.5f, 0.5f, 0.0f, 0.1f));
 	}
 }
 
 void reRigShape::pUpdateShapes(){
-	if( ! pDirtyShape ){
+	if(!pDirtyShape){
 		return;
 	}
 	
@@ -290,10 +290,10 @@ void reRigShape::pUpdateShapes(){
 	
 	try{
 		shape = CreateShape();
-		pDDSShape->AddShape( shape );
+		pDDSShape->AddShape(shape);
 		
-	}catch( const deException & ){
-		if( shape ){
+	}catch(const deException &){
+		if(shape){
 			delete shape;
 		}
 		throw;
@@ -305,16 +305,16 @@ void reRigShape::pUpdateShapes(){
 	
 	try{
 		shape = CreateShape();
-		shapeList.Add( shape );
+		shapeList.Add(shape);
 		
-	}catch( const deException & ){
-		if( shape ){
+	}catch(const deException &){
+		if(shape){
 			delete shape;
 		}
 		throw;
 	}
 	
-	pCollider->SetShapes( shapeList );
+	pCollider->SetShapes(shapeList);
 	
 	// no more dirty
 	pDirtyShape = false;

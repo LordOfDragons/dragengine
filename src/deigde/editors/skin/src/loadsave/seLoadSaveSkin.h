@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new load/save object. */
-	seLoadSaveSkin( deBaseSkinModule *module );
+	seLoadSaveSkin(deBaseSkinModule *module);
 	
 	/** \brief Clean up load/save object. */
 	~seLoadSaveSkin();
@@ -69,30 +69,30 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	
 	
 	/** \brief Load skin. */
-	void LoadSkin( seSkin *skin, decBaseFileReader *file, const igdeTexturePropertyList &knownPropertyList );
+	void LoadSkin(seSkin *skin, decBaseFileReader *file, const igdeTexturePropertyList &knownPropertyList);
 	
 	/** \brief Load propery node group. */
-	sePropertyNodeGroup *LoadPropertyNodeGroup( seSkin &skin, const deSkinPropertyNodeGroup &engNodeGroup );
+	sePropertyNodeGroup *LoadPropertyNodeGroup(seSkin &skin, const deSkinPropertyNodeGroup &engNodeGroup);
 	
 	/** \brief Load propery node. */
-	sePropertyNode *LoadPropertyNode( seSkin &skin, deSkinPropertyNode &engNode );
+	sePropertyNode *LoadPropertyNode(seSkin &skin, deSkinPropertyNode &engNode);
 	
 	/** \brief Load common propery node parameters. */
-	void LoadPropertyNodeCommon( seSkin &skin, sePropertyNode &node, const deSkinPropertyNode &engNode );
+	void LoadPropertyNodeCommon(seSkin &skin, sePropertyNode &node, const deSkinPropertyNode &engNode);
 	
 	/** \brief Save skin. */
-	void SaveSkin( seSkin *skin, decBaseFileWriter *file );
+	void SaveSkin(seSkin *skin, decBaseFileWriter *file);
 	/*@}*/
 };
 

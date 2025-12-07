@@ -85,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deModioService( deModio &module, deService *service, const deServiceObject::Ref &data );
+	deModioService(deModio &module, deService *service, const deServiceObject::Ref &data);
 	
 	/** Delete module. */
 	~deModioService() override;
@@ -110,49 +110,49 @@ public:
 	 * in responses to allow matching them to requests. The id can also be used to cancel
 	 * a request at any time.
 	 */
-	void StartRequest( const decUniqueID &id, const deServiceObject &request ) override;
+	void StartRequest(const decUniqueID &id, const deServiceObject &request) override;
 	
 	/**
 	 * \brief Cancel service request if running.
 	 */
-	void CancelRequest( const decUniqueID &id ) override;
+	void CancelRequest(const decUniqueID &id) override;
 	
 	/**
 	 * \brief Run action returning result immediately.
 	 */
-	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	deServiceObject::Ref RunAction(const deServiceObject &action) override;
 	
 	/** Frame update. */
-	void FrameUpdate( float elapsed );
+	void FrameUpdate(float elapsed);
 	/*@}*/
 	
 	
 	
 	/** \name Request */
 	/*@{*/
-	deModioPendingRequest *GetPendingRequestWithId( const decUniqueID &id ) const;
-	deModioPendingRequest::Ref RemoveFirstPendingRequestWithId( const decUniqueID &id );
-	deModioPendingRequest::Ref RemoveFirstPendingRequestWithFunction( const char *function );
-	deModioPendingRequest::Ref NewPendingRequest( const decUniqueID &id,
-		const decString &function, const deServiceObject::Ref &data = nullptr );
+	deModioPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
+	deModioPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
+	deModioPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
+	deModioPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
+		const decString &function, const deServiceObject::Ref &data = nullptr);
 	
-	void ListAllMods( const decUniqueID &id, const deServiceObject &request );
-	void LoadModResource( const decUniqueID &id, const deServiceObject &request );
-	void PauseModManagement( const decUniqueID &id, const deServiceObject &request );
-	void AuthenticateUserExternal( const decUniqueID &id, const deServiceObject &request );
-	void ClearUserData( const decUniqueID &id, const deServiceObject &request );
-	void SubscribeToMod( const decUniqueID &id, const deServiceObject &request );
-	void UnsubscribeFromMod( const decUniqueID &id, const deServiceObject &request );
-	void GetModInfo( const decUniqueID &id, const deServiceObject &request );
-	void SubmitModRating( const decUniqueID &id, const deServiceObject &request );
-	void RevokeModRating( const decUniqueID &id, const deServiceObject &request );
-	void ReportMod( const decUniqueID &id, const deServiceObject &request );
-	void GetModTagOptions( const decUniqueID &id, const deServiceObject &request );
-	void LoadUserResource( const decUniqueID &id, const deServiceObject &request );
-	void GetUserWalletBalance( const decUniqueID &id, const deServiceObject &request );
-	void ReportUser( const decUniqueID &id, const deServiceObject &request );
-	void GetUserPurchasedMods( const decUniqueID &id, const deServiceObject &request );
-	void PurchaseMod( const decUniqueID &id, const deServiceObject &request );
+	void ListAllMods(const decUniqueID &id, const deServiceObject &request);
+	void LoadModResource(const decUniqueID &id, const deServiceObject &request);
+	void PauseModManagement(const decUniqueID &id, const deServiceObject &request);
+	void AuthenticateUserExternal(const decUniqueID &id, const deServiceObject &request);
+	void ClearUserData(const decUniqueID &id, const deServiceObject &request);
+	void SubscribeToMod(const decUniqueID &id, const deServiceObject &request);
+	void UnsubscribeFromMod(const decUniqueID &id, const deServiceObject &request);
+	void GetModInfo(const decUniqueID &id, const deServiceObject &request);
+	void SubmitModRating(const decUniqueID &id, const deServiceObject &request);
+	void RevokeModRating(const decUniqueID &id, const deServiceObject &request);
+	void ReportMod(const decUniqueID &id, const deServiceObject &request);
+	void GetModTagOptions(const decUniqueID &id, const deServiceObject &request);
+	void LoadUserResource(const decUniqueID &id, const deServiceObject &request);
+	void GetUserWalletBalance(const decUniqueID &id, const deServiceObject &request);
+	void ReportUser(const decUniqueID &id, const deServiceObject &request);
+	void GetUserPurchasedMods(const decUniqueID &id, const deServiceObject &request);
+	void PurchaseMod(const decUniqueID &id, const deServiceObject &request);
 	
 	void ActivateMods();
 	deServiceObject::Ref IsAuthenticated();
@@ -160,18 +160,18 @@ public:
 	deServiceObject::Ref QueryUserSubscriptions();
 	deServiceObject::Ref QuerySystemInstallations();
 	deServiceObject::Ref QueryUserProfile();
-	void SetModDisabled( const deServiceObject &action );
-	deServiceObject::Ref ModHasMatchingFiles( const deServiceObject &action );
+	void SetModDisabled(const deServiceObject &action);
+	deServiceObject::Ref ModHasMatchingFiles(const deServiceObject &action);
 	deServiceObject::Ref GetActiveMods();
 	deServiceObject::Ref GetModsFeatures();
 	deServiceObject::Ref GetUserFeatures();
 	
-	void FailRequest( const decUniqueID &id, const deException &e );
-	void FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec );
-	void FailRequest( const deModioPendingRequest::Ref &request, const deException &e );
-	void FailRequest( const deModioPendingRequest::Ref &request, const Modio::ErrorCode &ec );
+	void FailRequest(const decUniqueID &id, const deException &e);
+	void FailRequest(const decUniqueID &id, const Modio::ErrorCode &ec);
+	void FailRequest(const deModioPendingRequest::Ref &request, const deException &e);
+	void FailRequest(const deModioPendingRequest::Ref &request, const Modio::ErrorCode &ec);
 	
-	void OnFinishedLoadResource( const decUniqueID &id, const decString &path, deResource *resource );
+	void OnFinishedLoadResource(const decUniqueID &id, const decString &path, deResource *resource);
 	
 	void AddRequiresEventHandlingCount();
 	void RemoveRequiresEventHandlingCount();
@@ -182,52 +182,52 @@ public:
 private:
 	/** \name Callbacks */
 	/*@{*/
-	void pOnInitialize( Modio::ErrorCode ec );
-	void pOnInitializeGetGameInfo( Modio::ErrorCode ec, Modio::Optional<Modio::GameInfo> info );
-	void pOnInitializeFetchUpdates( Modio::ErrorCode ec );
-	void pOnRequestFinished( const decUniqueID &id, Modio::ErrorCode ec );
+	void pOnInitialize(Modio::ErrorCode ec);
+	void pOnInitializeGetGameInfo(Modio::ErrorCode ec, Modio::Optional<Modio::GameInfo> info);
+	void pOnInitializeFetchUpdates(Modio::ErrorCode ec);
+	void pOnRequestFinished(const decUniqueID &id, Modio::ErrorCode ec);
 	
-	void pOnListAllModsFinished( const decUniqueID &id, Modio::ErrorCode ec,
-		Modio::Optional<Modio::ModInfoList> results );
+	void pOnListAllModsFinished(const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::ModInfoList> results);
 	
-	void pOnLoadResourceFinished( const decUniqueID &id, Modio::ErrorCode ec,
-		Modio::Optional<std::string> filename );
+	void pOnLoadResourceFinished(const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<std::string> filename);
 	
-	void pOnGetModInfo( const decUniqueID &id, Modio::ErrorCode ec,
-		Modio::Optional<Modio::ModInfo> info );
+	void pOnGetModInfo(const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::ModInfo> info);
 	
-	void pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec );
-	void pOnAuthenticateUserExternalFetchUpdates( const decUniqueID &id, Modio::ErrorCode ec );
-	void pOnClearUserData( const decUniqueID &id, Modio::ErrorCode ec );
+	void pOnAuthenticateUserExternal(const decUniqueID &id, Modio::ErrorCode ec);
+	void pOnAuthenticateUserExternalFetchUpdates(const decUniqueID &id, Modio::ErrorCode ec);
+	void pOnClearUserData(const decUniqueID &id, Modio::ErrorCode ec);
 	
-	void pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode ec );
-	void pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorCode ec );
+	void pOnSubscribeToMod(const decUniqueID &id, Modio::ErrorCode ec);
+	void pOnUnsubscribeFromMod(const decUniqueID &id, Modio::ErrorCode ec);
 	
-	void pOnGetModTagOptions( const decUniqueID &id, Modio::ErrorCode ec,
-		Modio::Optional<Modio::ModTagOptions> tagOptions );
+	void pOnGetModTagOptions(const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::ModTagOptions> tagOptions);
 	
-	void pOnGetUserWalletBalance( const decUniqueID &id, Modio::ErrorCode ec,
-		Modio::Optional<uint64_t> amount );
+	void pOnGetUserWalletBalance(const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<uint64_t> amount);
 	
-	void pOnGetUserPurchasedMods( const decUniqueID &id, Modio::ErrorCode ec );
+	void pOnGetUserPurchasedMods(const decUniqueID &id, Modio::ErrorCode ec);
 	
-	void pOnPurchaseMod( const decUniqueID &id, Modio::ErrorCode ec,
-		Modio::Optional<Modio::TransactionRecord> record );
+	void pOnPurchaseMod(const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::TransactionRecord> record);
 	
-	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
-	void pOnModManagement( Modio::ModManagementEvent event );
+	void pOnLogCallback(Modio::LogLevel level, const std::string &message);
+	void pOnModManagement(Modio::ModManagementEvent event);
 	/*@}*/
 	
 	void pPrintBaseInfos();
 	void pInitVFS();
 	void pUpdateModManagementEnabled();
-	void pCheckProgressUpdate( float elapsed );
+	void pCheckProgressUpdate(float elapsed);
 	void pActivateMods();
 	
-	deModioPendingRequest::Ref pOnBaseResponseInit( const decUniqueID &id, Modio::ErrorCode ec,
-		bool peekPendingRequest = false );
+	deModioPendingRequest::Ref pOnBaseResponseInit(const decUniqueID &id, Modio::ErrorCode ec,
+		bool peekPendingRequest = false);
 	
-	bool pOnBaseResponseExit( const deModioPendingRequest::Ref &pr );
+	bool pOnBaseResponseExit(const deModioPendingRequest::Ref &pr);
 };
 
 #endif

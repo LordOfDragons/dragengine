@@ -45,19 +45,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglEffectDistortImage::deoglEffectDistortImage( deGraphicOpenGl &ogl,
-const deEffectDistortImage &effect ) :
-deoglEffect( ogl, effect ),
+deoglEffectDistortImage::deoglEffectDistortImage(deGraphicOpenGl &ogl,
+const deEffectDistortImage &effect) :
+deoglEffect(ogl, effect),
 
-pEffectDistortImage( effect ),
+pEffectDistortImage(effect),
 
-pREffectDistortImage( NULL ),
+pREffectDistortImage(NULL),
 
-pDirtyStrength( true ),
-pDirtyImage( true )
+pDirtyStrength(true),
+pDirtyImage(true)
 {
-	pREffectDistortImage = new deoglREffectDistortImage( ogl.GetRenderThread() );
-	InitREffect( pREffectDistortImage );
+	pREffectDistortImage = new deoglREffectDistortImage(ogl.GetRenderThread());
+	InitREffect(pREffectDistortImage);
 }
 
 deoglEffectDistortImage::~deoglEffectDistortImage(){
@@ -71,21 +71,21 @@ deoglEffectDistortImage::~deoglEffectDistortImage(){
 void deoglEffectDistortImage::SyncToRender(){
 	deoglEffect::SyncToRender();
 	
-	if( pDirtyImage ){
-		if( pEffectDistortImage.GetImage() ){
-			deoglImage * const oglImage = ( deoglImage* )pEffectDistortImage.GetImage()->GetPeerGraphic();
+	if(pDirtyImage){
+		if(pEffectDistortImage.GetImage()){
+			deoglImage * const oglImage = (deoglImage*)pEffectDistortImage.GetImage()->GetPeerGraphic();
 			oglImage->SyncToRender();
-			pREffectDistortImage->SetImage( oglImage->GetRImage() );
+			pREffectDistortImage->SetImage(oglImage->GetRImage());
 			
 		}else{
-			pREffectDistortImage->SetImage( NULL );
+			pREffectDistortImage->SetImage(NULL);
 		}
 		
 		pDirtyImage = false;
 	}
 	
-	if( pDirtyStrength ){
-		pREffectDistortImage->SetStrength( decVector2( pEffectDistortImage.GetStrengthU(), pEffectDistortImage.GetStrengthV() ) );
+	if(pDirtyStrength){
+		pREffectDistortImage->SetStrength(decVector2(pEffectDistortImage.GetStrengthU(), pEffectDistortImage.GetStrengthV()));
 		pDirtyStrength = false;
 	}
 }

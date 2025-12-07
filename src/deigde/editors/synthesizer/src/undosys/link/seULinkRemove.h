@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkRemove( seLink *link );
+	seULinkRemove(seLink *link);
 	
 protected:
 	/** \brief Clean up undo action. */
@@ -80,8 +80,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pAddTargetsForSource( seLink *link, int targetCount, seSource *source );
-	void pAddTarget( int targetCount, seSource *source, seControllerTarget *target );
+	void pAddTargetsForSource(seLink *link, int targetCount, seSource *source);
+	void pAddTarget(int targetCount, seSource *source, seControllerTarget *target);
 };
 
 #endif

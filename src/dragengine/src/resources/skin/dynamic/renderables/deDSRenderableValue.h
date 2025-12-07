@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableValue( const char *name );
+	deDSRenderableValue(const char *name);
 	
 	/** \brief Clean up renderable. */
 	virtual ~deDSRenderableValue();
@@ -61,7 +61,7 @@ public:
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/*@}*/
 	
 	
@@ -69,7 +69,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	virtual void Visit(deDSRenderableVisitor &visitor);
 };
 
 #endif

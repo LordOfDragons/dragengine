@@ -59,46 +59,46 @@ public:
 	int GetCount() const;
 	
 	/** \brief Module at index. */
-	delEngineModule *GetAt( int index ) const;
+	delEngineModule *GetAt(int index) const;
 	
 	/** \brief Highest version named module or nullptr if absent. */
-	delEngineModule *GetNamed( const char *name ) const;
+	delEngineModule *GetNamed(const char *name) const;
 	
 	/** \brief Named module with version or nullptr if absent. */
-	delEngineModule *GetNamed( const char *name, const char *version ) const;
+	delEngineModule *GetNamed(const char *name, const char *version) const;
 	
 	/** \brief Named module with at least version or nullptr if absent. */
-	delEngineModule *GetNamedAtLeast( const char *name, const char *version ) const;
+	delEngineModule *GetNamedAtLeast(const char *name, const char *version) const;
 	
 	/** \brief List of all versions of named module in undefined order. */
-	void GetNamed( decObjectList &list, const char *name ) const;
+	void GetNamed(decObjectList &list, const char *name) const;
 	
 	/** \brief List of all module names. */
-	void GetNames( decStringList &list ) const;
+	void GetNames(decStringList &list) const;
 	
 	/** \brief Module is present. */
-	bool Has( delEngineModule *module ) const;
+	bool Has(delEngineModule *module) const;
 	
 	/** \brief Named module is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Named module with version is present. */
-	bool HasNamed( const char *name, const char *version ) const;
+	bool HasNamed(const char *name, const char *version) const;
 	
 	/** \brief Index of module or -1 if absent. */
-	int IndexOf( delEngineModule *module ) const;
+	int IndexOf(delEngineModule *module) const;
 	
 	/** \brief Index of higtest version named module or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Index of named module with version or -1 if absent. */
-	int IndexOfNamed( const char *name, const char *version ) const;
+	int IndexOfNamed(const char *name, const char *version) const;
 	
 	/** \brief Add module. */
-	void Add( delEngineModule *module );
+	void Add(delEngineModule *module);
 	
 	/** \brief Remove module. */
-	void Remove( delEngineModule *module );
+	void Remove(delEngineModule *module);
 	
 	/** \brief Remove all modules. */
 	void RemoveAll();

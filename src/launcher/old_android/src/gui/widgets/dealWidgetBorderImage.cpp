@@ -42,13 +42,13 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetBorderImage::dealWidgetBorderImage( dealDisplay &display, dealImage *image, int borderLeft,
-int borderTop, int borderRight, int borderBottom ) :
-dealWidgetImage( display, image ),
-pBorderLeft( decMath::max( borderLeft, 0 ) ),
-pBorderTop( decMath::max( borderTop, 0 ) ),
-pBorderRight( decMath::max( borderRight, 0 ) ),
-pBorderBottom( decMath::max( borderBottom, 0 ) ){
+dealWidgetBorderImage::dealWidgetBorderImage(dealDisplay &display, dealImage *image, int borderLeft,
+int borderTop, int borderRight, int borderBottom) :
+dealWidgetImage(display, image),
+pBorderLeft(decMath::max(borderLeft, 0)),
+pBorderTop(decMath::max(borderTop, 0)),
+pBorderRight(decMath::max(borderRight, 0)),
+pBorderBottom(decMath::max(borderBottom, 0)){
 }
 
 dealWidgetBorderImage::~dealWidgetBorderImage(){
@@ -59,9 +59,9 @@ dealWidgetBorderImage::~dealWidgetBorderImage(){
 // Management
 ///////////////
 
-void dealWidgetBorderImage::SetBorderLeft( int size ){
-	size = decMath::max( size, 0 );
-	if( size == pBorderLeft ){
+void dealWidgetBorderImage::SetBorderLeft(int size){
+	size = decMath::max(size, 0);
+	if(size == pBorderLeft){
 		return;
 	}
 	
@@ -70,9 +70,9 @@ void dealWidgetBorderImage::SetBorderLeft( int size ){
 	DirtyParentLayout();
 }
 
-void dealWidgetBorderImage::SetBorderTop( int size ){
-	size = decMath::max( size, 0 );
-	if( size == pBorderTop ){
+void dealWidgetBorderImage::SetBorderTop(int size){
+	size = decMath::max(size, 0);
+	if(size == pBorderTop){
 		return;
 	}
 	
@@ -81,9 +81,9 @@ void dealWidgetBorderImage::SetBorderTop( int size ){
 	DirtyParentLayout();
 }
 
-void dealWidgetBorderImage::SetBorderRight( int size ){
-	size = decMath::max( size, 0 );
-	if( size == pBorderRight ){
+void dealWidgetBorderImage::SetBorderRight(int size){
+	size = decMath::max(size, 0);
+	if(size == pBorderRight){
 		return;
 	}
 	
@@ -92,9 +92,9 @@ void dealWidgetBorderImage::SetBorderRight( int size ){
 	DirtyParentLayout();
 }
 
-void dealWidgetBorderImage::SetBorderBottom( int size ){
-	size = decMath::max( size, 0 );
-	if( size == pBorderBottom ){
+void dealWidgetBorderImage::SetBorderBottom(int size){
+	size = decMath::max(size, 0);
+	if(size == pBorderBottom){
 		return;
 	}
 	
@@ -103,13 +103,13 @@ void dealWidgetBorderImage::SetBorderBottom( int size ){
 	DirtyParentLayout();
 }
 
-void dealWidgetBorderImage::SetBorders( int left, int top, int right, int bottom ){
-	left = decMath::max( left, 0 );
-	top = decMath::max( top, 0 );
-	right = decMath::max( right, 0 );
-	bottom = decMath::max( bottom, 0 );
+void dealWidgetBorderImage::SetBorders(int left, int top, int right, int bottom){
+	left = decMath::max(left, 0);
+	top = decMath::max(top, 0);
+	right = decMath::max(right, 0);
+	bottom = decMath::max(bottom, 0);
 	
-	if( left == pBorderLeft && top == pBorderTop && right == pBorderRight && bottom == pBorderBottom ){
+	if(left == pBorderLeft && top == pBorderTop && right == pBorderRight && bottom == pBorderBottom){
 		return;
 	}
 	
@@ -123,112 +123,112 @@ void dealWidgetBorderImage::SetBorders( int left, int top, int right, int bottom
 
 
 
-void dealWidgetBorderImage::RenderContent( const sRenderContext &context ){
+void dealWidgetBorderImage::RenderContent(const sRenderContext &context){
 	dealImage * const image = GetImage();
-	if( ! image ){
+	if(!image){
 		return;
 	}
 	
 	const int imageWidth = image->GetWidth();
 	const int imageHeight = image->GetHeight();
-	if( imageWidth == 0 || imageHeight == 0 ){
+	if(imageWidth == 0 || imageHeight == 0){
 		return;
 	}
 	
 	const decPoint &size = GetSize();
-	if( size.x == 0 || size.y == 0 ){
+	if(size.x == 0 || size.y == 0){
 		return;
 	}
 	
 	const float scaling = GetScaling();
-	const int borderLeft = ( int )( ( float )pBorderLeft * scaling );
-	const int borderTop = ( int )( ( float )pBorderTop * scaling );
-	const int borderRight = ( int )( ( float )size.x - ( float )pBorderRight * scaling );
-	const int borderBottom = ( int )( ( float )size.y - ( float )pBorderBottom * scaling );
+	const int borderLeft = (int)((float)pBorderLeft * scaling);
+	const int borderTop = (int)((float)pBorderTop * scaling);
+	const int borderRight = (int)((float)size.x - (float)pBorderRight * scaling);
+	const int borderBottom = (int)((float)size.y - (float)pBorderBottom * scaling);
 	
-	const float factorU = 1.0f / ( float )( imageWidth - 1 );
-	const float factorV = 1.0f / ( float )( imageHeight - 1 );
-	const float tcLeft = factorU * ( float )pBorderLeft;
-	const float tcTop = factorV * ( float )pBorderTop;
-	const float tcRight = factorU * ( float )( imageWidth - 1 - pBorderRight );
-	const float tcBottom = factorV * ( float )( imageHeight - 1 - pBorderBottom );
+	const float factorU = 1.0f / (float)(imageWidth - 1);
+	const float factorV = 1.0f / (float)(imageHeight - 1);
+	const float tcLeft = factorU * (float)pBorderLeft;
+	const float tcTop = factorV * (float)pBorderTop;
+	const float tcRight = factorU * (float)(imageWidth - 1 - pBorderRight);
+	const float tcBottom = factorV * (float)(imageHeight - 1 - pBorderBottom);
 	
 	dealShader &shader = *GetDisplay().GetTexturedShapeShader();
 	shader.Activate();
 	
-	if( GetEnabled() ){
-		ShaderSetColorMatrix( shader, GetColorize() );
+	if(GetEnabled()){
+		ShaderSetColorMatrix(shader, GetColorize());
 		
 	}else{
-		ShaderSetColorMatrixDisabled( shader, GetColorize() );
+		ShaderSetColorMatrixDisabled(shader, GetColorize());
 	}
 	
-	ShaderSetGamma( shader, 1.0f );
-	ShaderSetClipRect( context, shader );
-	ShaderSetTCClamp( shader );
+	ShaderSetGamma(shader, 1.0f);
+	ShaderSetClipRect(context, shader);
+	ShaderSetTCClamp(shader);
 	
-	BindTexture( 0, *image, true, false );
+	BindTexture(0, *image, true, false);
 	
 	// center
-	ShaderSetTransform( context, shader, borderLeft, borderTop, borderRight, borderBottom );
-	ShaderSetTCTransform( shader, tcLeft, tcTop, tcRight, tcBottom );
+	ShaderSetTransform(context, shader, borderLeft, borderTop, borderRight, borderBottom);
+	ShaderSetTCTransform(shader, tcLeft, tcTop, tcRight, tcBottom);
 	DrawRectangle();
 	
 	// left side
-	if( borderLeft > 0 ){
-		ShaderSetTransform( context, shader, 0, borderTop, borderLeft, borderBottom );
-		ShaderSetTCTransform( shader, 0.0f, tcTop, tcLeft, tcBottom );
+	if(borderLeft > 0){
+		ShaderSetTransform(context, shader, 0, borderTop, borderLeft, borderBottom);
+		ShaderSetTCTransform(shader, 0.0f, tcTop, tcLeft, tcBottom);
 		DrawRectangle();
 	}
 	
 	// top side
-	if( borderTop > 0 ){
-		ShaderSetTransform( context, shader, borderLeft, 0, borderRight, borderTop );
-		ShaderSetTCTransform( shader, tcLeft, 0.0f, tcRight, tcTop );
+	if(borderTop > 0){
+		ShaderSetTransform(context, shader, borderLeft, 0, borderRight, borderTop);
+		ShaderSetTCTransform(shader, tcLeft, 0.0f, tcRight, tcTop);
 		DrawRectangle();
 	}
 	
 	// right side
-	if( borderRight > 0 ){
-		ShaderSetTransform( context, shader, borderRight - 1, borderTop, size.x, borderBottom );
-		ShaderSetTCTransform( shader, tcRight, tcTop, 1.0f, tcBottom );
+	if(borderRight > 0){
+		ShaderSetTransform(context, shader, borderRight - 1, borderTop, size.x, borderBottom);
+		ShaderSetTCTransform(shader, tcRight, tcTop, 1.0f, tcBottom);
 		DrawRectangle();
 	}
 	
 	// bottom side
-	if( borderBottom > 0 ){
-		ShaderSetTransform( context, shader, borderLeft, borderBottom - 1, borderRight, size.y );
-		ShaderSetTCTransform( shader, tcLeft, tcBottom, tcRight, 1.0f );
+	if(borderBottom > 0){
+		ShaderSetTransform(context, shader, borderLeft, borderBottom - 1, borderRight, size.y);
+		ShaderSetTCTransform(shader, tcLeft, tcBottom, tcRight, 1.0f);
 		DrawRectangle();
 	}
 	
 	// top left corner
-	if( borderLeft > 0 && borderTop > 0 ){
-		ShaderSetTransform( context, shader, 0, 0, borderLeft, borderTop );
-		ShaderSetTCTransform( shader, 0.0f, 0.0f, tcLeft, tcTop );
+	if(borderLeft > 0 && borderTop > 0){
+		ShaderSetTransform(context, shader, 0, 0, borderLeft, borderTop);
+		ShaderSetTCTransform(shader, 0.0f, 0.0f, tcLeft, tcTop);
 		DrawRectangle();
 	}
 	
 	// top right corner
-	if( borderRight > 0 && borderTop > 0 ){
-		ShaderSetTransform( context, shader, borderRight - 1, 0, size.x, borderTop );
-		ShaderSetTCTransform( shader, tcRight, 0.0f, 1.0f, tcTop );
+	if(borderRight > 0 && borderTop > 0){
+		ShaderSetTransform(context, shader, borderRight - 1, 0, size.x, borderTop);
+		ShaderSetTCTransform(shader, tcRight, 0.0f, 1.0f, tcTop);
 		DrawRectangle();
 	}
 	
 	// bottom left corner
-	if( borderLeft > 0 && borderBottom > 0 ){
-		ShaderSetTransform( context, shader, 0, borderBottom - 1, borderLeft, size.y );
-		ShaderSetTCTransform( shader, 0.0f, tcBottom, tcLeft, 1.0f );
+	if(borderLeft > 0 && borderBottom > 0){
+		ShaderSetTransform(context, shader, 0, borderBottom - 1, borderLeft, size.y);
+		ShaderSetTCTransform(shader, 0.0f, tcBottom, tcLeft, 1.0f);
 		DrawRectangle();
 	}
 	
 	// bottom right corner
-	if( borderRight > 0 && borderBottom > 0 ){
-		ShaderSetTransform( context, shader, borderRight - 1, borderBottom - 1, size.x, size.y );
-		ShaderSetTCTransform( shader, tcRight, tcBottom, 1.0f, 1.0f );
+	if(borderRight > 0 && borderBottom > 0){
+		ShaderSetTransform(context, shader, borderRight - 1, borderBottom - 1, size.x, size.y);
+		ShaderSetTCTransform(shader, tcRight, tcBottom, 1.0f, 1.0f);
 		DrawRectangle();
 	}
 	
-	OGL_CHECK( GetDisplay().GetLauncher(), glBindTexture( GL_TEXTURE_2D, 0 ) );
+	OGL_CHECK(GetDisplay().GetLauncher(), glBindTexture(GL_TEXTURE_2D, 0));
 }

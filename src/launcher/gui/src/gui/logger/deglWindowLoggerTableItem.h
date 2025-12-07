@@ -35,7 +35,7 @@
  * text color and text font.
  */
 class deglWindowLoggerTableItem : public FXTableItem{
-	FXDECLARE( deglWindowLoggerTableItem )
+	FXDECLARE(deglWindowLoggerTableItem)
 	
 protected:
 	deglWindowLoggerTableItem();
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new item. */
-	deglWindowLoggerTableItem( const FXString &text, FXIcon *ic = nullptr, void *ptr = nullptr );
+	deglWindowLoggerTableItem(const FXString &text, FXIcon *ic = nullptr, void *ptr = nullptr);
 	/** Cleans up the item. */
 	virtual ~deglWindowLoggerTableItem();
 	/*@}*/
@@ -58,28 +58,28 @@ public:
 	/** Retrieves the text color. */
 	inline FXColor GetTextColor() const{ return pTextColor; }
 	/** Sets the text color. */
-	void SetTextColor( FXColor color );
+	void SetTextColor(FXColor color);
 	/** Retrieves the text font or nullptr to use the table font. */
 	inline FXFont *GetFont() const{ return pFont; }
 	/** Sets the text font or nullptr to use the table font. */
-	void SetFont( FXFont *font );
+	void SetFont(FXFont *font);
 	
 	/*
 	/ * Create input control for editing this item. * /
-	virtual FXWindow *getControlFor( FXTable *table );
+	virtual FXWindow *getControlFor(FXTable *table);
 	
 	/ * Set value from input control. * /
-	virtual void setFromControl( FXWindow *control );
+	virtual void setFromControl(FXWindow *control);
 	*/
 	
 	/** Retrieves the width of the item. */
-	virtual FXint getWidth( const FXTable *table ) const;
+	virtual FXint getWidth(const FXTable *table) const;
 	/** Retrieves the height of the item. */
-	virtual FXint getHeight( const FXTable *table ) const;
+	virtual FXint getHeight(const FXTable *table) const;
 	/** Render background. */
-	virtual void drawBackground( const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h ) const;
+	virtual void drawBackground(const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const;
 	/** Render text. */
-	virtual void drawContent( const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h ) const;
+	virtual void drawContent(const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const;
 	/*@}*/
 };
 

@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesHeightMap1( const deoglSkinTexture &texture );
+	deoglSTPipelinesHeightMap1(const deoglSkinTexture &texture);
 	
 protected:
 	/** Clean up skin texture pipeline. */
@@ -55,13 +55,13 @@ public:
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
 	
-	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowOrthogonalCascaded(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 };
 
 #endif

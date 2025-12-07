@@ -54,8 +54,8 @@ dealGameProfile::dealGameProfile(){
 	pValid = false;
 }
 
-dealGameProfile::dealGameProfile( const dealGameProfile &profile ){
-	CopyFrom( profile );
+dealGameProfile::dealGameProfile(const dealGameProfile &profile){
+	CopyFrom(profile);
 }
 
 dealGameProfile::~dealGameProfile(){
@@ -66,117 +66,117 @@ dealGameProfile::~dealGameProfile(){
 // Management
 ///////////////
 
-void dealGameProfile::SetName( const char *name ){
+void dealGameProfile::SetName(const char *name){
 	pName = name;
 }
 
 
 
-void dealGameProfile::SetModuleGraphic( const char *moduleName ){
+void dealGameProfile::SetModuleGraphic(const char *moduleName){
 	pModuleGraphic = moduleName;
 }
 
-void dealGameProfile::SetModuleInput( const char *moduleName ){
+void dealGameProfile::SetModuleInput(const char *moduleName){
 	pModuleInput = moduleName;
 }
 
-void dealGameProfile::SetModulePhysics( const char *moduleName ){
+void dealGameProfile::SetModulePhysics(const char *moduleName){
 	pModulePhysics = moduleName;
 }
 
-void dealGameProfile::SetModuleAnimator( const char *moduleName ){
+void dealGameProfile::SetModuleAnimator(const char *moduleName){
 	pModuleAnimator = moduleName;
 }
 
-void dealGameProfile::SetModuleAI( const char *moduleName ){
+void dealGameProfile::SetModuleAI(const char *moduleName){
 	pModuleAI = moduleName;
 }
 
-void dealGameProfile::SetModuleCrashRecovery( const char *moduleName ){
+void dealGameProfile::SetModuleCrashRecovery(const char *moduleName){
 	pModuleCrashRecovery = moduleName;
 }
 
-void dealGameProfile::SetModuleAudio( const char *moduleName ){
+void dealGameProfile::SetModuleAudio(const char *moduleName){
 	pModuleAudio = moduleName;
 }
 
-void dealGameProfile::SetModuleSynthesizer( const char *moduleName ){
+void dealGameProfile::SetModuleSynthesizer(const char *moduleName){
 	pModuleSynthesizer = moduleName;
 }
 
-void dealGameProfile::SetModuleNetwork( const char *moduleName ){
+void dealGameProfile::SetModuleNetwork(const char *moduleName){
 	pModuleNetwork = moduleName;
 }
 
 
 
-void dealGameProfile::SetModuleGraphicVersion( const char *moduleVersion ){
+void dealGameProfile::SetModuleGraphicVersion(const char *moduleVersion){
 	pModuleGraphicVersion = moduleVersion;
 }
 
-void dealGameProfile::SetModuleInputVersion( const char *moduleVersion ){
+void dealGameProfile::SetModuleInputVersion(const char *moduleVersion){
 	pModuleInputVersion = moduleVersion;
 }
 
-void dealGameProfile::SetModulePhysicsVersion( const char *moduleVersion ){
+void dealGameProfile::SetModulePhysicsVersion(const char *moduleVersion){
 	pModulePhysicsVersion = moduleVersion;
 }
 
-void dealGameProfile::SetModuleAnimatorVersion( const char *moduleVersion ){
+void dealGameProfile::SetModuleAnimatorVersion(const char *moduleVersion){
 	pModuleAnimatorVersion = moduleVersion;
 }
 
-void dealGameProfile::SetModuleAIVersion( const char *moduleVersion ){
+void dealGameProfile::SetModuleAIVersion(const char *moduleVersion){
 	pModuleAIVersion = moduleVersion;
 }
 
-void dealGameProfile::SetModuleCrashRecoveryVersion( const char *moduleVersion ){
+void dealGameProfile::SetModuleCrashRecoveryVersion(const char *moduleVersion){
 	pModuleCrashRecoveryVersion = moduleVersion;
 }
 
-void dealGameProfile::SetModuleAudioVersion( const char *moduleVersion ){
+void dealGameProfile::SetModuleAudioVersion(const char *moduleVersion){
 	pModuleAudioVersion = moduleVersion;
 }
 
-void dealGameProfile::SetModuleSynthesizerVersion( const char *moduleVersion ){
+void dealGameProfile::SetModuleSynthesizerVersion(const char *moduleVersion){
 	pModuleSynthesizerVersion = moduleVersion;
 }
 
-void dealGameProfile::SetModuleNetworkVersion( const char *moduleVersion ){
+void dealGameProfile::SetModuleNetworkVersion(const char *moduleVersion){
 	pModuleNetworkVersion = moduleVersion;
 }
 
 
 
-void dealGameProfile::SetRunArguments( const char *arguments ){
+void dealGameProfile::SetRunArguments(const char *arguments){
 	pRunArgs = arguments;
 }
 
-void dealGameProfile::SetReplaceRunArguments( bool replaceRunArguments ){
+void dealGameProfile::SetReplaceRunArguments(bool replaceRunArguments){
 	pReplaceRunArgs = replaceRunArguments;
 }
 
-void dealGameProfile::SetWidth( int width ){
-	if( width < 1 ){
-		DETHROW( deeInvalidParam );
+void dealGameProfile::SetWidth(int width){
+	if(width < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pWidth = width;
 }
 
-void dealGameProfile::SetHeight( int height ){
-	if( height < 1 ){
-		DETHROW( deeInvalidParam );
+void dealGameProfile::SetHeight(int height){
+	if(height < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pHeight = height;
 }
 
-void dealGameProfile::SetFullScreen( bool fullScreen ){
+void dealGameProfile::SetFullScreen(bool fullScreen){
 	pFullScreen = fullScreen;
 }
 
 
 
-void dealGameProfile::CopyFrom( const dealGameProfile &profile ){
+void dealGameProfile::CopyFrom(const dealGameProfile &profile){
 	const dealGPModuleList &moduleList = profile.GetModuleList();
 	const int moduleCount = moduleList.GetModuleCount();
 	dealGPModule *module = NULL;
@@ -209,14 +209,14 @@ void dealGameProfile::CopyFrom( const dealGameProfile &profile ){
 	pModuleList.RemoveAllModules();
 	
 	try{
-		for( i=0; i<moduleCount; i++ ){
-			module = new dealGPModule( *moduleList.GetModuleAt( i ) );
-			pModuleList.AddModule( module );
+		for(i=0; i<moduleCount; i++){
+			module = new dealGPModule(*moduleList.GetModuleAt(i));
+			pModuleList.AddModule(module);
 			module = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( module ){
+	}catch(const deException &){
+		if(module){
 			module->FreeReference();
 		}
 		throw;
@@ -231,44 +231,44 @@ void dealGameProfile::CopyFrom( const dealGameProfile &profile ){
 	pValid = profile.pValid;
 }
 
-void dealGameProfile::Verify( dealLauncher &launcher ){
+void dealGameProfile::Verify(dealLauncher &launcher){
 	pValid = true;
-	pValid &= VerifyModule( launcher, pModuleGraphic, pModuleGraphicVersion, dealEngineModule::emtGraphic );
-	pValid &= VerifyModule( launcher, pModuleInput, pModuleInputVersion, dealEngineModule::emtInput );
-	pValid &= VerifyModule( launcher, pModulePhysics, pModulePhysicsVersion, dealEngineModule::emtPhysics );
-	pValid &= VerifyModule( launcher, pModuleAnimator, pModuleAnimatorVersion, dealEngineModule::emtAnimator );
-	pValid &= VerifyModule( launcher, pModuleAI, pModuleAIVersion, dealEngineModule::emtAI );
-	pValid &= VerifyModule( launcher, pModuleCrashRecovery, pModuleCrashRecoveryVersion, dealEngineModule::emtCrashRecovery );
-	pValid &= VerifyModule( launcher, pModuleAudio, pModuleAudioVersion, dealEngineModule::emtAudio );
-	pValid &= VerifyModule( launcher, pModuleSynthesizer, pModuleSynthesizerVersion, dealEngineModule::emtSynthesizer );
-	pValid &= VerifyModule( launcher, pModuleNetwork, pModuleNetworkVersion, dealEngineModule::emtNetwork );
+	pValid &= VerifyModule(launcher, pModuleGraphic, pModuleGraphicVersion, dealEngineModule::emtGraphic);
+	pValid &= VerifyModule(launcher, pModuleInput, pModuleInputVersion, dealEngineModule::emtInput);
+	pValid &= VerifyModule(launcher, pModulePhysics, pModulePhysicsVersion, dealEngineModule::emtPhysics);
+	pValid &= VerifyModule(launcher, pModuleAnimator, pModuleAnimatorVersion, dealEngineModule::emtAnimator);
+	pValid &= VerifyModule(launcher, pModuleAI, pModuleAIVersion, dealEngineModule::emtAI);
+	pValid &= VerifyModule(launcher, pModuleCrashRecovery, pModuleCrashRecoveryVersion, dealEngineModule::emtCrashRecovery);
+	pValid &= VerifyModule(launcher, pModuleAudio, pModuleAudioVersion, dealEngineModule::emtAudio);
+	pValid &= VerifyModule(launcher, pModuleSynthesizer, pModuleSynthesizerVersion, dealEngineModule::emtSynthesizer);
+	pValid &= VerifyModule(launcher, pModuleNetwork, pModuleNetworkVersion, dealEngineModule::emtNetwork);
 }
 
-bool dealGameProfile::VerifyModule( dealLauncher &launcher, const char *moduleName, const char *moduleVersion, int requiredType ) const{
+bool dealGameProfile::VerifyModule(dealLauncher &launcher, const char *moduleName, const char *moduleVersion, int requiredType) const{
 	const dealEngineModuleList &moduleList = launcher.GetEngine().GetModuleList();
 	dealEngineModule *module;
 	
-	if( strlen( moduleVersion ) == 0 ){
-		module = moduleList.GetModuleNamed( moduleName );
+	if(strlen(moduleVersion) == 0){
+		module = moduleList.GetModuleNamed(moduleName);
 		
 	}else{
-		module = moduleList.GetModuleNamed( moduleName, moduleVersion );
+		module = moduleList.GetModuleNamed(moduleName, moduleVersion);
 	}
 	
-	if( ! module ){
+	if(!module){
 		return false;
 	}
-	if( module->GetType() != requiredType ){
+	if(module->GetType() != requiredType){
 		return false;
 	}
-	if( module->GetStatus() != dealEngineModule::emsReady ){
+	if(module->GetStatus() != dealEngineModule::emsReady){
 		return false;
 	}
 	
 	return true;
 }
 
-void dealGameProfile::Activate( dealLauncher &launcher ) const{
+void dealGameProfile::Activate(dealLauncher &launcher) const{
 	// disable module versions. this affects all modules
 	dealIEngineInstance &engineInstance = *launcher.GetEngine().GetEngine();
 	const dealEngineModuleList &engineModuleList = launcher.GetEngine().GetModuleList();
@@ -276,51 +276,51 @@ void dealGameProfile::Activate( dealLauncher &launcher ) const{
 	const int disableModuleVersionCount = pDisableModuleVersionList.GetCount();
 	int i;
 	
-	for( i=0; i<disableModuleVersionCount; i++ ){
-		const dealGPDisableModuleVersion &version = *pDisableModuleVersionList.GetAt( i );
-		dealEngineModule * const module = engineModuleList.GetModuleNamed( version.GetName(), version.GetVersion() );
-		if( module ){
-			if( ! engineInstance.EnableModule( module->GetName(), module->GetVersion(), false ) ){
-				DETHROW( deeInvalidAction );
+	for(i=0; i<disableModuleVersionCount; i++){
+		const dealGPDisableModuleVersion &version = *pDisableModuleVersionList.GetAt(i);
+		dealEngineModule * const module = engineModuleList.GetModuleNamed(version.GetName(), version.GetVersion());
+		if(module){
+			if(!engineInstance.EnableModule(module->GetName(), module->GetVersion(), false)){
+				DETHROW(deeInvalidAction);
 			}
 		}
 	}
 	
 	// activate modules
-	if( ! engineInstance.ActivateModule( pModuleCrashRecovery, pModuleCrashRecoveryVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModuleCrashRecovery, pModuleCrashRecoveryVersion)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ! engineInstance.ActivateModule( pModuleGraphic, pModuleGraphicVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModuleGraphic, pModuleGraphicVersion)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ! engineInstance.ActivateModule( pModuleInput, pModuleInputVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModuleInput, pModuleInputVersion)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ! engineInstance.ActivateModule( pModulePhysics, pModulePhysicsVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModulePhysics, pModulePhysicsVersion)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ! engineInstance.ActivateModule( pModuleAnimator, pModuleAnimatorVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModuleAnimator, pModuleAnimatorVersion)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ! engineInstance.ActivateModule( pModuleAI, pModuleAIVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModuleAI, pModuleAIVersion)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ! engineInstance.ActivateModule( pModuleAudio, pModuleAudioVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModuleAudio, pModuleAudioVersion)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ! engineInstance.ActivateModule( pModuleSynthesizer, pModuleSynthesizerVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModuleSynthesizer, pModuleSynthesizerVersion)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ! engineInstance.ActivateModule( pModuleNetwork, pModuleNetworkVersion ) ){
-		DETHROW( deeInvalidAction );
+	if(!engineInstance.ActivateModule(pModuleNetwork, pModuleNetworkVersion)){
+		DETHROW(deeInvalidAction);
 	}
 	
 	// set module properties
-	for( i=0; i<moduleCount; i++ ){
-		dealGPModule &module = *pModuleList.GetModuleAt( i );
-		dealEngineModule * const engineModule = engineModuleList.GetModuleNamed( module.GetName() );
-		if( engineModule ){
-			module.ApplyParameters( engineModule->GetVersion(), launcher, engineInstance );
+	for(i=0; i<moduleCount; i++){
+		dealGPModule &module = *pModuleList.GetModuleAt(i);
+		dealEngineModule * const engineModule = engineModuleList.GetModuleNamed(module.GetName());
+		if(engineModule){
+			module.ApplyParameters(engineModule->GetVersion(), launcher, engineInstance);
 		}
 	}
 }

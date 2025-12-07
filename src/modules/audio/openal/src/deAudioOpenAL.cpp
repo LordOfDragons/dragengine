@@ -72,7 +72,7 @@ extern "C" {
 #ifdef OS_UNIX
 __attribute__ ((visibility ("default")))
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *OpenALCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *OpenALCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -93,21 +93,21 @@ deBaseModule *OpenALCreateModule(deLoadableModule *loadableModule){
 // Constructor, destructor
 ////////////////////////////
 
-deAudioOpenAL::deAudioOpenAL( deLoadableModule &loadableModule ) :
-deBaseAudioModule( loadableModule ),
+deAudioOpenAL::deAudioOpenAL(deLoadableModule &loadableModule) :
+deBaseAudioModule(loadableModule),
 
-pAudioThread( NULL ),
+pAudioThread(NULL),
 
-pConfiguration( NULL ),
-pCommandExecuter( NULL ),
-pParameters( NULL ),
+pConfiguration(NULL),
+pCommandExecuter(NULL),
+pParameters(NULL),
 
-pDevMode( NULL ),
+pDevMode(NULL),
 
-pActiveMicrophone( NULL )
+pActiveMicrophone(NULL)
 {
 	try{
-		pCommandExecuter = new deoalCommandExecuter( *this );
+		pCommandExecuter = new deoalCommandExecuter(*this);
 		pConfiguration = new deoalConfiguration;
 		
 		pParameters = new deoalParameterList;
@@ -117,8 +117,8 @@ pActiveMicrophone( NULL )
 		pParameters->AddParameter(new deoalPMaxEnvSlots(*this));
 		pParameters->AddParameter(new deoalPLogLevel(*this));
 		
-	}catch( const deException &e ){
-		LogException( e );
+	}catch(const deException &e){
+		LogException(e);
 		throw;
 	}
 }
@@ -126,13 +126,13 @@ pActiveMicrophone( NULL )
 deAudioOpenAL::~deAudioOpenAL(){
 	CleanUp();
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		delete pConfiguration;
 	}
-	if( pCommandExecuter ){
+	if(pCommandExecuter){
 		delete pCommandExecuter;
 	}
-	if( pParameters ){
+	if(pParameters){
 		delete pParameters;
 	}
 }
@@ -149,7 +149,7 @@ bool deAudioOpenAL::HasAudioThread() const{
 
 
 deoalWorld *deAudioOpenAL::GetActiveWorld() const{
-	if( ! pActiveMicrophone ){
+	if(!pActiveMicrophone){
 		return NULL;
 	}
 	return pActiveMicrophone->GetParentWorld();
@@ -157,26 +157,26 @@ deoalWorld *deAudioOpenAL::GetActiveWorld() const{
 
 
 
-bool deAudioOpenAL::Init( deMicrophone *activeMic ){
+bool deAudioOpenAL::Init(deMicrophone *activeMic){
 	#ifdef OAL_THREAD_CHECK
-	LogWarn( "OpenAL calls only in audio thread check enabled. Disable for production builds." );
+	LogWarn("OpenAL calls only in audio thread check enabled. Disable for production builds.");
 	#endif
 	#ifdef OAL_CHECKCOMMANDS
-	LogWarn( "OpenAL command failure check enabled. Disable for production builds." );
+	LogWarn("OpenAL command failure check enabled. Disable for production builds.");
 	#endif
 	
 	try{
-		deoalLSConfiguration( *this, *pConfiguration ).LoadConfig();
+		deoalLSConfiguration(*this, *pConfiguration).LoadConfig();
 		
-		pAudioThread = new deoalAudioThread( *this );
+		pAudioThread = new deoalAudioThread(*this);
 		pAudioThread->Init();
 		
-		SetActiveMicrophone( activeMic );
+		SetActiveMicrophone(activeMic);
 		
-		pDevMode = new deoalDevMode( *this );
+		pDevMode = new deoalDevMode(*this);
 		
-	}catch( const deException &e ){
-		LogException( e );
+	}catch(const deException &e){
+		LogException(e);
 		return false;
 	}
 	
@@ -184,17 +184,17 @@ bool deAudioOpenAL::Init( deMicrophone *activeMic ){
 }
 
 void deAudioOpenAL::CleanUp(){
-	if( pConfiguration ){
-		deoalLSConfiguration( *this, *pConfiguration ).SaveConfig();
+	if(pConfiguration){
+		deoalLSConfiguration(*this, *pConfiguration).SaveConfig();
 	}
 	
-	if( pAudioThread ){
+	if(pAudioThread){
 		pAudioThread->CleanUp();
 		delete pAudioThread;
 		pAudioThread = NULL;
 	}
 	
-	if( pDevMode ){
+	if(pDevMode){
 		delete pDevMode;
 		pDevMode = NULL;
 	}
@@ -205,7 +205,7 @@ void deAudioOpenAL::ProcessAudio(){
 	// finished soon enough to wait for this event or to skip synchronization and running
 	// another game frame update. this method returns only true if the main thread is allowed
 	// to modify synchronization data. in all other situations false is returned
-	if( ! pAudioThread->MainThreadWaitFinishAudio() ){
+	if(!pAudioThread->MainThreadWaitFinishAudio()){
 		return; // enough time left to run another game frame update
 	}
 	
@@ -217,10 +217,10 @@ void deAudioOpenAL::ProcessAudio(){
 	
 	// synchronize active microphone parent world. this is done in the main thread and is
 	// a synchronization point
-	if( pActiveMicrophone ){
-		pAudioThread->SetActiveMicrophone( pActiveMicrophone->GetAMicrophone() );
+	if(pActiveMicrophone){
+		pAudioThread->SetActiveMicrophone(pActiveMicrophone->GetAMicrophone());
 		
-		if( pActiveMicrophone->GetParentWorld() ){
+		if(pActiveMicrophone->GetParentWorld()){
 			pActiveMicrophone->GetParentWorld()->Synchronize();
 			
 		}else{
@@ -228,27 +228,27 @@ void deAudioOpenAL::ProcessAudio(){
 		}
 		
 	}else{
-		pAudioThread->SetActiveMicrophone( NULL );
+		pAudioThread->SetActiveMicrophone(NULL);
 	}
 	
 	// synchronize audio thread and trigger next audio cycle
 	pAudioThread->Synchronize();
 }
 
-void deAudioOpenAL::SetActiveMicrophone( deMicrophone *microphone ){
+void deAudioOpenAL::SetActiveMicrophone(deMicrophone *microphone){
 	deoalMicrophone *oalMicrophone = NULL;
-	if( microphone ){
-		oalMicrophone = ( deoalMicrophone* )microphone->GetPeerAudio();
+	if(microphone){
+		oalMicrophone = (deoalMicrophone*)microphone->GetPeerAudio();
 	}
 	
-	if( pActiveMicrophone ){
-		pActiveMicrophone->SetActive( false );
+	if(pActiveMicrophone){
+		pActiveMicrophone->SetActive(false);
 	}
 	
 	pActiveMicrophone = oalMicrophone;
 	
-	if( oalMicrophone ){
-		oalMicrophone->SetActive( true );
+	if(oalMicrophone){
+		oalMicrophone->SetActive(true);
 	}
 }
 
@@ -261,51 +261,51 @@ int deAudioOpenAL::GetFPSRate(){
 // Audio Management
 /////////////////////
 
-deBaseAudioWorld *deAudioOpenAL::CreateWorld( deWorld *world ){
-	return new deoalWorld( *this, *world );
+deBaseAudioWorld *deAudioOpenAL::CreateWorld(deWorld *world){
+	return new deoalWorld(*this, *world);
 }
 
-deBaseAudioSound *deAudioOpenAL::CreateSound( deSound *sound ){
-	return new deoalSound( *this, *sound );
+deBaseAudioSound *deAudioOpenAL::CreateSound(deSound *sound){
+	return new deoalSound(*this, *sound);
 }
 
-deBaseAudioSpeaker *deAudioOpenAL::CreateSpeaker( deSpeaker *speaker ){
-	return new deoalSpeaker( *this, *speaker );
+deBaseAudioSpeaker *deAudioOpenAL::CreateSpeaker(deSpeaker *speaker){
+	return new deoalSpeaker(*this, *speaker);
 }
 
-deBaseAudioMicrophone *deAudioOpenAL::CreateMicrophone( deMicrophone *microphone ){
-	return new deoalMicrophone( *this, *microphone );
+deBaseAudioMicrophone *deAudioOpenAL::CreateMicrophone(deMicrophone *microphone){
+	return new deoalMicrophone(*this, *microphone);
 }
 
-deBaseAudioComponent *deAudioOpenAL::CreateComponent( deComponent *component ){
-	return new deoalComponent( *this, *component );
+deBaseAudioComponent *deAudioOpenAL::CreateComponent(deComponent *component){
+	return new deoalComponent(*this, *component);
 }
 
-deBaseAudioModel *deAudioOpenAL::CreateModel( deModel *model ){
-	return new deoalModel( *this, *model );
+deBaseAudioModel *deAudioOpenAL::CreateModel(deModel *model){
+	return new deoalModel(*this, *model);
 }
 
-deBaseAudioSkin *deAudioOpenAL::CreateSkin( deSkin *skin ){
-	return new deoalSkin( *this, *skin );
+deBaseAudioSkin *deAudioOpenAL::CreateSkin(deSkin *skin){
+	return new deoalSkin(*this, *skin);
 }
 
-deBaseAudioDecal *deAudioOpenAL::CreateDecal( deDecal */*decal*/ ){
+deBaseAudioDecal *deAudioOpenAL::CreateDecal(deDecal */*decal*/){
 	return new deBaseAudioDecal;
 }
 
-deBaseAudioSoundLevelMeter *deAudioOpenAL::CreateSoundLevelMeter( deSoundLevelMeter *meter ){
-	return new deoalSoundLevelMeter( *this, *meter );
+deBaseAudioSoundLevelMeter *deAudioOpenAL::CreateSoundLevelMeter(deSoundLevelMeter *meter){
+	return new deoalSoundLevelMeter(*this, *meter);
 }
 
-deBaseAudioVideoPlayer *deAudioOpenAL::CreateVideoPlayer( deVideoPlayer *videoPlayer ){
-	return new deoalVideoPlayer( *this, *videoPlayer );
+deBaseAudioVideoPlayer *deAudioOpenAL::CreateVideoPlayer(deVideoPlayer *videoPlayer){
+	return new deoalVideoPlayer(*this, *videoPlayer);
 }
 
-deBaseAudioSynthesizerInstance *deAudioOpenAL::CreateSynthesizerInstance( deSynthesizerInstance *instance ){
-	return new deoalSynthesizerInstance( *this, *instance );
+deBaseAudioSynthesizerInstance *deAudioOpenAL::CreateSynthesizerInstance(deSynthesizerInstance *instance){
+	return new deoalSynthesizerInstance(*this, *instance);
 }
 
-deBaseAudioHeightTerrain * deAudioOpenAL::CreateHeightTerrain( deHeightTerrain &heightTerrain ){
+deBaseAudioHeightTerrain * deAudioOpenAL::CreateHeightTerrain(deHeightTerrain &heightTerrain){
 	return NULL;
 }
 
@@ -326,28 +326,28 @@ int deAudioOpenAL::GetParameterCount() const{
 	return pParameters->GetParameterCount();
 }
 
-void deAudioOpenAL::GetParameterInfo( int index, deModuleParameter &info ) const{
-	info = pParameters->GetParameterAt( index );
+void deAudioOpenAL::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameters->GetParameterAt(index);
 }
 
-int deAudioOpenAL::IndexOfParameterNamed( const char *name ) const{
-	return pParameters->IndexOfParameterNamed( name );
+int deAudioOpenAL::IndexOfParameterNamed(const char *name) const{
+	return pParameters->IndexOfParameterNamed(name);
 }
 
-decString deAudioOpenAL::GetParameterValue( const char *name ) const{
-	return pParameters->GetParameterNamed( name ).GetParameterValue();
+decString deAudioOpenAL::GetParameterValue(const char *name) const{
+	return pParameters->GetParameterNamed(name).GetParameterValue();
 }
 
-void deAudioOpenAL::SetParameterValue( const char *name, const char *value ){
-	pParameters->GetParameterNamed( name ).SetParameterValue( value );
+void deAudioOpenAL::SetParameterValue(const char *name, const char *value){
+	pParameters->GetParameterNamed(name).SetParameterValue(value);
 }
 
-void deAudioOpenAL::SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( pCommandExecuter ){
-		pCommandExecuter->ExecuteCommand( command, answer );
+void deAudioOpenAL::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(pCommandExecuter){
+		pCommandExecuter->ExecuteCommand(command, answer);
 		
 	}else{
-		answer.SetFromUTF8( "Internal Error!" );
+		answer.SetFromUTF8("Internal Error!");
 	}
 }
 

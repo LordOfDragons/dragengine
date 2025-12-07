@@ -42,7 +42,7 @@ class deglDGPPanelFileFormats;
  * support to solve the problems.
  */
 class deglDialogGameProblems : public FXDialogBox{
-	FXDECLARE( deglDialogGameProblems )
+	FXDECLARE(deglDialogGameProblems)
 protected:
 	deglDialogGameProblems();
 	
@@ -84,8 +84,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	deglDialogGameProblems( deglWindowMain *windowMain,
-		delGame *game, delGameProfile *profile, FXWindow *owner );
+	deglDialogGameProblems(deglWindowMain *windowMain,
+		delGame *game, delGameProfile *profile, FXWindow *owner);
 	
 	/** Clean up dialog. */
 	virtual ~deglDialogGameProblems();

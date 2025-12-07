@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	deoalParameterInt( deAudioOpenAL &oal );
+	deoalParameterInt(deAudioOpenAL &oal);
 	
 	/** \brief Clean up parameter. */
 	virtual ~deoalParameterInt();
@@ -50,13 +50,13 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	
 	/** \brief Current value. */
 	virtual int GetParameterInt() = 0;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterInt( int value ) = 0;
+	virtual void SetParameterInt(int value) = 0;
 	/*@}*/
 };
 

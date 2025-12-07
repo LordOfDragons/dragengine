@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetGamma( sePropertyNode *node, float newValue );
+	seUPropertyNodeSetGamma(sePropertyNode *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

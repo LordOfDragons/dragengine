@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer. */
-	deSynthesizer( deSynthesizerManager *manager );
+	deSynthesizer(deSynthesizerManager *manager);
 	
 protected:
 	/**
@@ -89,25 +89,25 @@ public:
 	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Set number of channels. */
-	void SetChannelCount( int channelCount );
+	void SetChannelCount(int channelCount);
 	
 	/** \brief Sample rate. */
 	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Set sample rate. */
-	void SetSampleRate( int sampleRate );
+	void SetSampleRate(int sampleRate);
 	
 	/** \brief Bytes per sample. */
 	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Set bytes per sample. */
-	void SetBytesPerSample( int bytesPerSample );
+	void SetBytesPerSample(int bytesPerSample);
 	
 	/** \brief Number of samples to create. */
 	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples to create. */
-	void SetSampleCount( int sampleCount );
+	void SetSampleCount(int sampleCount);
 	/*@}*/
 	
 	
@@ -121,25 +121,25 @@ public:
 	 * \brief Controller at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetControllerCount().
 	 */
-	deSynthesizerController *GetControllerAt( int index ) const;
+	deSynthesizerController *GetControllerAt(int index) const;
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController( deSynthesizerController *controller ) const;
+	int IndexOfController(deSynthesizerController *controller) const;
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	/** \brief Controller is present. */
-	bool HasController( deSynthesizerController *controller ) const;
+	bool HasController(deSynthesizerController *controller) const;
 	
 	/** \brief Add controller. */
-	void AddController( deSynthesizerController *controller );
+	void AddController(deSynthesizerController *controller);
 	
 	/**
 	 * \brief Remove controller.
 	 * \throws deeInvalidParam \em controller is absent.
 	 */
-	void RemoveController( deSynthesizerController *controller );
+	void RemoveController(deSynthesizerController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
@@ -159,22 +159,22 @@ public:
 	 * \brief Link at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetLinkCount().
 	 */
-	deSynthesizerLink *GetLinkAt( int index ) const;
+	deSynthesizerLink *GetLinkAt(int index) const;
 	
 	/** \brief Index of link or -1 if absent. */
-	int IndexOfLink( deSynthesizerLink *link ) const;
+	int IndexOfLink(deSynthesizerLink *link) const;
 	
 	/** \brief Link is present. */
-	bool HasLink( deSynthesizerLink *link ) const;
+	bool HasLink(deSynthesizerLink *link) const;
 	
 	/** \brief Add link. */
-	void AddLink( deSynthesizerLink *link );
+	void AddLink(deSynthesizerLink *link);
 	
 	/**
 	 * \brief Remove link.
 	 * \throws deeInvalidParam \em link is absent.
 	 */
-	void RemoveLink( deSynthesizerLink *link );
+	void RemoveLink(deSynthesizerLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
@@ -194,22 +194,22 @@ public:
 	 * \brief Source at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetSourceCount().
 	 */
-	deSynthesizerSource *GetSourceAt( int index ) const;
+	deSynthesizerSource *GetSourceAt(int index) const;
 	
 	/** \brief Index of source or -1 if absent. */
-	int IndexOfSource( deSynthesizerSource *source ) const;
+	int IndexOfSource(deSynthesizerSource *source) const;
 	
 	/** \brief Source is present. */
-	bool HasSource( deSynthesizerSource *source ) const;
+	bool HasSource(deSynthesizerSource *source) const;
 	
 	/** \brief Add source. */
-	void AddSource( deSynthesizerSource *source );
+	void AddSource(deSynthesizerSource *source);
 	
 	/**
 	 * \brief Remove source.
 	 * \throws deeOutOfBoundary \em source is absent.
 	 */
-	void RemoveSource( deSynthesizerSource *source );
+	void RemoveSource(deSynthesizerSource *source);
 	
 	/** \brief Remove all sources. */
 	void RemoveAllSources();
@@ -226,7 +226,7 @@ public:
 	inline deBaseSynthesizerSynthesizer *GetPeerSynthesizer() const{ return pPeerSynthesizer; }
 	
 	/** \brief Set synthesizer system peer. */
-	void SetPeerSynthesizer( deBaseSynthesizerSynthesizer *peer );
+	void SetPeerSynthesizer(deBaseSynthesizerSynthesizer *peer);
 	/*@}*/
 };
 

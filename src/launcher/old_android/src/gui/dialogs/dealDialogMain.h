@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	dealDialogMain( dealDisplay &display );
+	dealDialogMain(dealDisplay &display);
 	
 	/** \brief Clean up dialog. */
 	virtual ~dealDialogMain();
@@ -71,7 +71,7 @@ public:
 	
 	
 	/** \brief Set if run button is enabled. */
-	void SetRunEnabled( bool enabled );
+	void SetRunEnabled(bool enabled);
 	/*@}*/
 	
 	

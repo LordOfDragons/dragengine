@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetLocalPosition::aeURuleIKSetLocalPosition( aeRuleInverseKinematic *rule, const decVector &newPos ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeURuleIKSetLocalPosition::aeURuleIKSetLocalPosition(aeRuleInverseKinematic *rule, const decVector &newPos){
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -51,9 +51,9 @@ aeURuleIKSetLocalPosition::aeURuleIKSetLocalPosition( aeRuleInverseKinematic *ru
 		pOldPos = rule->GetLocalPosition();
 		pNewPos = newPos;
 		
-		SetShortInfo( "Set inverse kinematic rule local position" );
+		SetShortInfo("Set inverse kinematic rule local position");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +69,11 @@ aeURuleIKSetLocalPosition::~aeURuleIKSetLocalPosition(){
 ///////////////
 
 void aeURuleIKSetLocalPosition::Undo(){
-	pRule->SetLocalPosition( pOldPos );
+	pRule->SetLocalPosition(pOldPos);
 }
 
 void aeURuleIKSetLocalPosition::Redo(){
-	pRule->SetLocalPosition( pNewPos );
+	pRule->SetLocalPosition(pNewPos);
 }
 
 
@@ -82,5 +82,5 @@ void aeURuleIKSetLocalPosition::Redo(){
 //////////////////////
 
 void aeURuleIKSetLocalPosition::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

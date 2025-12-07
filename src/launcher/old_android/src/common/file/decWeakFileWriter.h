@@ -52,7 +52,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em writer is NULL.
 	 */
-	decWeakFileWriter( decBaseFileWriter *writer );
+	decWeakFileWriter(decBaseFileWriter *writer);
 	
 protected:
 	/**
@@ -90,7 +90,7 @@ public:
 	 * \throws deeInvalidParam \em size is less than 0.
 	 * \throws deeInvalidParam Error compressing data.
 	 */
-	virtual void Write( const void *buffer, int size );
+	virtual void Write(const void *buffer, int size);
 	/*@}*/
 };
 

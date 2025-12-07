@@ -45,53 +45,53 @@
 ////////////////////////////
 
 deCollisionInfo::deCollisionInfo() :
-pOwnerBone( -1 ),
-pOwnerShape( -1 ),
-pOwnerFace( -1 ),
+pOwnerBone(-1),
+pOwnerShape(-1),
+pOwnerFace(-1),
 
-pHeightTerrain( NULL ),
-pHTSector( NULL ),
-pCollider( NULL ),
-pBone( -1 ),
-pShape( -1 ),
-pFace( -1 ),
+pHeightTerrain(NULL),
+pHTSector(NULL),
+pCollider(NULL),
+pBone(-1),
+pShape(-1),
+pFace(-1),
 
-pParticleLifetime( 0.0f ),
-pParticleMass( 0.0f ),
-pParticleResponse( deParticleEmitterType::ecrDestroy ),
+pParticleLifetime(0.0f),
+pParticleMass(0.0f),
+pParticleResponse(deParticleEmitterType::ecrDestroy),
 
-pDistance( 0.0f ),
-pImpulse( 0.0f ),
+pDistance(0.0f),
+pImpulse(0.0f),
 
-pStopTesting( false ){
+pStopTesting(false){
 }
 
-deCollisionInfo::deCollisionInfo( const deCollisionInfo &info ) :
-pOwnerBone( info.pOwnerBone ),
-pOwnerShape( info.pOwnerShape ),
-pOwnerFace( info.pOwnerFace ),
+deCollisionInfo::deCollisionInfo(const deCollisionInfo &info) :
+pOwnerBone(info.pOwnerBone),
+pOwnerShape(info.pOwnerShape),
+pOwnerFace(info.pOwnerFace),
 
-pHeightTerrain( NULL ),
-pHTSector( info.pHTSector ),
-pCollider( NULL ),
-pBone( info.pBone ),
-pShape( info.pShape ),
-pFace( info.pFace ),
+pHeightTerrain(NULL),
+pHTSector(info.pHTSector),
+pCollider(NULL),
+pBone(info.pBone),
+pShape(info.pShape),
+pFace(info.pFace),
 
-pParticleLifetime( info.pParticleLifetime ),
-pParticleMass( info.pParticleMass ),
-pParticleResponse( info.pParticleResponse ),
+pParticleLifetime(info.pParticleLifetime),
+pParticleMass(info.pParticleMass),
+pParticleResponse(info.pParticleResponse),
 
-pDistance( info.pDistance ),
-pImpulse( info.pImpulse ),
+pDistance(info.pDistance),
+pImpulse(info.pImpulse),
 
-pStopTesting( info.pStopTesting )
+pStopTesting(info.pStopTesting)
 {
-	if( info.pHeightTerrain ){
+	if(info.pHeightTerrain){
 		pHeightTerrain = info.pHeightTerrain;
 		pHeightTerrain->AddReference();
 	}
-	if( info.pCollider ){
+	if(info.pCollider){
 		pCollider = info.pCollider;
 		pCollider->AddReference();
 	}
@@ -106,23 +106,23 @@ deCollisionInfo::~deCollisionInfo(){
 // Management
 ///////////////
 
-void deCollisionInfo::SetOwnerBone( int bone ){
-	if( bone < -1 ){
-		DETHROW( deeInvalidParam );
+void deCollisionInfo::SetOwnerBone(int bone){
+	if(bone < -1){
+		DETHROW(deeInvalidParam);
 	}
 	pOwnerBone = bone;
 }
 
-void deCollisionInfo::SetOwnerShape( int shape ){
-	if( shape < -1 ){
-		DETHROW( deeInvalidParam );
+void deCollisionInfo::SetOwnerShape(int shape){
+	if(shape < -1){
+		DETHROW(deeInvalidParam);
 	}
 	pOwnerShape = shape;
 }
 
-void deCollisionInfo::SetOwnerFace( int face ){
-	if( face < -1 ){
-		DETHROW( deeInvalidParam );
+void deCollisionInfo::SetOwnerFace(int face){
+	if(face < -1){
+		DETHROW(deeInvalidParam);
 	}
 	pOwnerFace = face;
 }
@@ -141,9 +141,9 @@ bool deCollisionInfo::HasCollision() const{
 	return pHTSector != NULL || pCollider != NULL;
 }
 
-void deCollisionInfo::SetHTSector( deHeightTerrain *heightTerrain, deHeightTerrainSector *sector ){
-	if( ! heightTerrain || ! sector ){
-		DETHROW( deeInvalidParam );
+void deCollisionInfo::SetHTSector(deHeightTerrain *heightTerrain, deHeightTerrainSector *sector){
+	if(!heightTerrain || !sector){
+		DETHROW(deeInvalidParam);
 	}
 	
 	Clear();
@@ -153,9 +153,9 @@ void deCollisionInfo::SetHTSector( deHeightTerrain *heightTerrain, deHeightTerra
 	pHTSector = sector;
 }
 
-void deCollisionInfo::SetCollider( deCollider *collider, int bone, int shape, int face ){
-	if( ! collider || bone < -1 || shape < -1 || face < -1 ){
-		DETHROW( deeInvalidParam );
+void deCollisionInfo::SetCollider(deCollider *collider, int bone, int shape, int face){
+	if(!collider || bone < -1 || shape < -1 || face < -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	Clear();
@@ -168,13 +168,13 @@ void deCollisionInfo::SetCollider( deCollider *collider, int bone, int shape, in
 }
 
 void deCollisionInfo::Clear(){
-	if( pHeightTerrain ){
+	if(pHeightTerrain){
 		pHeightTerrain->FreeReference();
 		pHeightTerrain = NULL;
 	}
 	pHTSector = NULL;
 	
-	if( pCollider ){
+	if(pCollider){
 		pCollider->FreeReference();
 		pCollider = NULL;
 	}
@@ -195,47 +195,47 @@ void deCollisionInfo::Clear(){
 
 
 
-void deCollisionInfo::SetParticleLifetime( float lifetime ){
+void deCollisionInfo::SetParticleLifetime(float lifetime){
 	pParticleLifetime = lifetime;
 }
 
-void deCollisionInfo::SetParticleMass( float mass ){
+void deCollisionInfo::SetParticleMass(float mass){
 	pParticleMass = mass;
 }
 
-void deCollisionInfo::SetParticlePosition( const decDVector &position ){
+void deCollisionInfo::SetParticlePosition(const decDVector &position){
 	pParticlePosition = position;
 }
 
-void deCollisionInfo::SetParticleVelocity( const decVector &velocity ){
+void deCollisionInfo::SetParticleVelocity(const decVector &velocity){
 	pParticleVelocity = velocity;
 }
 
-void deCollisionInfo::SetParticleResponse( deParticleEmitterType::eCollisionResponses response ){
+void deCollisionInfo::SetParticleResponse(deParticleEmitterType::eCollisionResponses response){
 	pParticleResponse = response;
 }
 
 
 
-void deCollisionInfo::SetDistance( float distance ){
+void deCollisionInfo::SetDistance(float distance){
 	pDistance = distance;
 }
 
-void deCollisionInfo::SetNormal( const decVector &normal ){
+void deCollisionInfo::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
-void deCollisionInfo::SetPosition( const decDVector &position ){
+void deCollisionInfo::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void deCollisionInfo::SetImpulse( float impulse ){
+void deCollisionInfo::SetImpulse(float impulse){
 	pImpulse = impulse;
 }
 
 
 
-void deCollisionInfo::SetStopTesting( bool stopTesting ){
+void deCollisionInfo::SetStopTesting(bool stopTesting){
 	pStopTesting = stopTesting;
 }
 
@@ -244,7 +244,7 @@ void deCollisionInfo::SetStopTesting( bool stopTesting ){
 // Operators
 //////////////
 
-deCollisionInfo &deCollisionInfo::operator=( const deCollisionInfo &info ){
+deCollisionInfo &deCollisionInfo::operator=(const deCollisionInfo &info){
 	Clear();
 	
 	pOwnerBone = info.pOwnerBone;
@@ -252,12 +252,12 @@ deCollisionInfo &deCollisionInfo::operator=( const deCollisionInfo &info ){
 	pOwnerFace = info.pOwnerFace;
 	
 	pHeightTerrain = info.pHeightTerrain;
-	if( pHeightTerrain ){
+	if(pHeightTerrain){
 		pHeightTerrain->AddReference();
 	}
 	pHTSector = info.pHTSector;
 	pCollider = info.pCollider;
-	if( pCollider ){
+	if(pCollider){
 		pCollider->AddReference();
 	}
 	pBone = info.pBone;

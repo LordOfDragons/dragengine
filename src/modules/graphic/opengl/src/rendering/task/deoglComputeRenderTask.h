@@ -101,7 +101,7 @@ public:
 		const deoglWorldCompute &pWorldCompute;
 		
 	public:
-		cGuard( deoglComputeRenderTask &renderTask, const deoglWorldCompute &worldCompute, int passCount );
+		cGuard(deoglComputeRenderTask &renderTask, const deoglWorldCompute &worldCompute, int passCount);
 		~cGuard();
 	};
 	
@@ -170,7 +170,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create compute render task. */
-	deoglComputeRenderTask( deoglRenderThread &renderThread );
+	deoglComputeRenderTask(deoglRenderThread &renderThread);
 	
 	/** Clean up compute render task. */
 	~deoglComputeRenderTask();
@@ -198,16 +198,16 @@ public:
 	inline eStates GetState() const{ return pState; }
 	
 	/** Begin preparing render task. */
-	void BeginPrepare( int passCount );
+	void BeginPrepare(int passCount);
 	
 	/** Clear. */
 	void Clear();
 	
 	/** End pass switching to the next one. */
-	void EndPass( const deoglWorldCompute &worldCompute );
+	void EndPass(const deoglWorldCompute &worldCompute);
 	
 	/** Finish preparing render task. */
-	void EndPrepare( const deoglWorldCompute &worldCompute );
+	void EndPrepare(const deoglWorldCompute &worldCompute);
 	
 	/**
 	 * Read back render task steps.
@@ -238,19 +238,19 @@ public:
 	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
 	
 	/** Set use instance flags. */
-	void SetUseSPBInstanceFlags( bool useFlags );
+	void SetUseSPBInstanceFlags(bool useFlags);
 	
 	/** Use vertex shader stereo rendering. */
 	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
 	
 	/** Set use vertex shader stereo rendering. */
-	void SetRenderVSStereo( bool renderVSStereo );
+	void SetRenderVSStereo(bool renderVSStereo);
 	
 	/** Render parameter shader parameter block or nullptr. */
 	inline const deoglSPBlockUBO::Ref &GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
 	/** Set render parameter shader parameter block or nullptr. */
-	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
+	void SetRenderParamBlock(deoglSPBlockUBO *paramBlock);
 	
 	
 	
@@ -258,25 +258,25 @@ public:
 	inline int GetSkinPipelineLists() const{ return pSkinPipelineLists; }
 	
 	/** Set pipeline list mask. */
-	void SetSkinPipelineLists( int mask );
+	void SetSkinPipelineLists(int mask);
 	
 	/** Enable pipeline list. */
-	void EnableSkinPipelineList( deoglSkinTexturePipelinesList::ePipelineTypes list );
+	void EnableSkinPipelineList(deoglSkinTexturePipelinesList::ePipelineTypes list);
 	
 	/** Disable pipeline list. */
-	void DisableSkinPipelineList( deoglSkinTexturePipelinesList::ePipelineTypes list );
+	void DisableSkinPipelineList(deoglSkinTexturePipelinesList::ePipelineTypes list);
 	
 	/** Pipeline type. */
 	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
 	/** Set pipeline type. */
-	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
+	void SetSkinPipelineType(deoglSkinTexturePipelines::eTypes type);
 	
 	/** Pipeline modifier. */
 	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
 	
 	/** Set pipeline modifier. */
-	void SetSkinPipelineModifier( int modifier );
+	void SetSkinPipelineModifier(int modifier);
 	
 	
 	
@@ -284,13 +284,13 @@ public:
 	inline bool GetSolid() const{ return pSolid; }
 	
 	/** Set if solid or transparent texture are added. */
-	void SetSolid( bool solid );
+	void SetSolid(bool solid);
 	
 	/** Filter solid. */
 	inline bool GetFilterSolid() const{ return pFilterSolid; }
 	
 	/** Set to filter solid. */
-	void SetFilterSolid( bool filterSolid );
+	void SetFilterSolid(bool filterSolid);
 	
 	
 	
@@ -298,37 +298,37 @@ public:
 	inline bool GetNoShadowNone() const{ return pNoShadowNone; }
 	
 	/** Set if textures with the shadow none property are not added. */
-	void SetNoShadowNone( bool noShadowNone );
+	void SetNoShadowNone(bool noShadowNone);
 	
 	/** Textures without the reflected property are not added. */
 	inline bool GetNoNotReflected() const{ return pNoNotReflected; }
 	
 	/** Set if textures without the reflected property are not added. */
-	void SetNoNotReflected( bool noNotReflected );
+	void SetNoNotReflected(bool noNotReflected);
 	
 	/** Rendered textures are not added. */
 	inline bool GetNoRendered() const{ return pNoRendered; }
 	
 	/** Set if rendered textures are not added. */
-	void SetNoRendered( bool noRendered );
+	void SetNoRendered(bool noRendered);
 	
 	/** Outline textures are added. */
 	inline bool GetOutline() const{ return pOutline; }
 	
 	/** Set if outline transparent texture are added. */
-	void SetOutline( bool outline );
+	void SetOutline(bool outline);
 	
 	/** Force double sided. */
 	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
 	
 	/** Set to force double sided. */
-	void SetForceDoubleSided( bool forceDoubleSided );
+	void SetForceDoubleSided(bool forceDoubleSided);
 	
 	/** Occlusion. */
 	inline bool GetOcclusion() const{ return pOcclusion; }
 	
 	/** Set occlusion. */
-	void SetOcclusion( bool occlusion );
+	void SetOcclusion(bool occlusion);
 	
 	
 	
@@ -336,19 +336,19 @@ public:
 	inline bool GetShadow() const{ return pShadow; }
 	
 	/** Set shadow. */
-	void SetShadow( bool shadow );
+	void SetShadow(bool shadow);
 	
 	/** Filter shadow. */
 	inline bool GetFilterShadow() const{ return pFilterShadow; }
 	
 	/** Set filter shadow. */
-	void SetFilterShadow( bool filter );
+	void SetFilterShadow(bool filter);
 	
 	/** Compact shadow. */
 	inline bool GetCompactShadow() const{ return pCompactShadow; }
 	
 	/** Set compact shadow. */
-	void SetCompactShadow( bool compactShadow );
+	void SetCompactShadow(bool compactShadow);
 	
 	
 	
@@ -356,13 +356,13 @@ public:
 	inline bool GetFilterDoubleSided() const{ return pFilterDoubleSided; }
 	
 	/** Set if filtering for double sided is enabled. */
-	void SetFilterDoubleSided( bool filterDoubleSided );
+	void SetFilterDoubleSided(bool filterDoubleSided);
 	
 	/** Double sided textures are added. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
 	/** Set if double sided texture are added. */
-	void SetDoubleSided( bool doubleSided );
+	void SetDoubleSided(bool doubleSided);
 	
 	
 	
@@ -370,13 +370,13 @@ public:
 	inline bool GetFilterXRay() const{ return pFilterXRay; }
 	
 	/** Set if filtering for XRay is enabled. */
-	void SetFilterXRay( bool filterXRay );
+	void SetFilterXRay(bool filterXRay);
 	
 	/** XRay textures are added. */
 	inline bool GetXRay() const{ return pXRay; }
 	
 	/** Set if XRay texture are added. */
-	void SetXRay( bool xray );
+	void SetXRay(bool xray);
 	
 	
 	
@@ -384,13 +384,13 @@ public:
 	inline bool GetFilterHoles() const{ return pFilterHoles; }
 	
 	/** Set if filtering for holes is enabled. */
-	void SetFilterHoles( bool filterHoles );
+	void SetFilterHoles(bool filterHoles);
 	
 	/** Textures with or without holes are added. */
 	inline bool GetWithHoles() const{ return pWithHoles; }
 	
 	/** Set if textures with or without holes are added. */
-	void SetWithHoles( bool withHoles );
+	void SetWithHoles(bool withHoles);
 	
 	
 	
@@ -398,13 +398,13 @@ public:
 	inline bool GetFilterDecal() const{ return pFilterDecal; }
 	
 	/** Set if filtering for decal is enabled. */
-	void SetFilterDecal( bool filterDecal );
+	void SetFilterDecal(bool filterDecal);
 	
 	/** Decal textures are selected if decal filtering is enabled. */
 	inline bool GetDecal() const{ return pDecal; }
 	
 	/** Set if decal textures are selected if decal filtering is enabled. */
-	void SetDecal( bool decal );
+	void SetDecal(bool decal);
 	
 	
 	
@@ -412,7 +412,7 @@ public:
 	inline int GetFilterCubeFace() const{ return pFilterCubeFace; }
 	
 	/** Set filter by cube face test result or -1 if disabled. */
-	void SetFilterCubeFace( int cubeFace );
+	void SetFilterCubeFace(int cubeFace);
 	
 	
 	
@@ -420,13 +420,13 @@ public:
 	inline const deoglPipeline *GetPipelineDoubleSided() const{ return pPipelineDoubleSided; }
 	
 	/** Set pipeline for double sided occlusion or nullptr. */
-	void SetPipelineDoubleSided( const deoglPipeline *pipeline );
+	void SetPipelineDoubleSided(const deoglPipeline *pipeline);
 	
 	/** Pipeline for single sided occlusion or nullptr. */
 	inline const deoglPipeline *GetPipelineSingleSided() const{ return pPipelineSingleSided; }
 	
 	/** Set pipeline for single sided occlusion or nullptr. */
-	void SetPipelineSingleSided( const deoglPipeline *pipeline );
+	void SetPipelineSingleSided(const deoglPipeline *pipeline);
 	
 	
 	
@@ -434,7 +434,7 @@ public:
 	inline bool GetUseSpecialParamBlock() const{ return pUseSpecialParamBlock; }
 	
 	/** Set if special shader parameter blocks are used. */
-	void SetUseSpecialParamBlock( bool use );
+	void SetUseSpecialParamBlock(bool use);
 	
 	
 	
@@ -453,13 +453,13 @@ public:
 	/** \name Debug */
 	/*@{*/
 	/** Debug print. */
-	void DebugSimple( deoglRTLogger &logger, bool sorted );
+	void DebugSimple(deoglRTLogger &logger, bool sorted);
 	/*@}*/
 	
 	
 	
 private:
-	void pRenderFilter( int &filter, int &mask ) const;
+	void pRenderFilter(int &filter, int &mask) const;
 	void pClearCounters();
 };
 

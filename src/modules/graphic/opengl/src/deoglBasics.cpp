@@ -56,14 +56,14 @@ void ogldbgInitMainThreadCheck(){
 
 void ogldbgOnMainThreadCheck(){
 	#ifdef OS_UNIX
-	if( pthread_self() != pMainThreadPid ){
-		DETHROW( deeInvalidAction );
+	if(pthread_self() != pMainThreadPid){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
-	if( GetCurrentThreadId() != pMainThreadPid ){
-		DETHROW( deeInvalidAction );
+	if(GetCurrentThreadId() != pMainThreadPid){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 }
@@ -71,15 +71,15 @@ void ogldbgOnMainThreadCheck(){
 void dbgOnRenderThreadCheck(){
 	#ifdef OS_UNIX
 	const pthread_t t = pthread_self();
-	if( t != pRenderThreadPid && t != pLoaderThreadPid ){
-		DETHROW( deeInvalidAction );
+	if(t != pRenderThreadPid && t != pLoaderThreadPid){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
 	const DWORD t = GetCurrentThreadId();
-	if( t != pRenderThreadPid && t != pLoaderThreadPid ){
-		DETHROW( deeInvalidAction );
+	if(t != pRenderThreadPid && t != pLoaderThreadPid){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 }
@@ -87,15 +87,15 @@ void dbgOnRenderThreadCheck(){
 void dbgOnMainOrRenderThreadCheck(){
 	#ifdef OS_UNIX
 	const pthread_t t = pthread_self();
-	if( t != pMainThreadPid && t != pRenderThreadPid &&  t != pLoaderThreadPid ){
-		DETHROW( deeInvalidAction );
+	if(t != pMainThreadPid && t != pRenderThreadPid &&  t != pLoaderThreadPid){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 	
 	#ifdef OS_W32
 	const DWORD t = GetCurrentThreadId();
-	if( t != pMainThreadPid && t != pRenderThreadPid && t != pLoaderThreadPid ){
-		DETHROW( deeInvalidAction );
+	if(t != pMainThreadPid && t != pRenderThreadPid && t != pLoaderThreadPid){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 }
@@ -111,16 +111,16 @@ private:
 	float pThreshold;
 	
 public:
-	PrintDelayTimer( float threshold ) :
-	pElapsed( 0.0f ),
-	pThreshold( threshold ){
+	PrintDelayTimer(float threshold) :
+	pElapsed(0.0f),
+	pThreshold(threshold){
 	};
 	
 	bool Check(){
 		pElapsed += pTimer.GetElapsedTime();
 		
-		if( pElapsed >= pThreshold ){
-			pElapsed = fmodf( pElapsed, pThreshold );
+		if(pElapsed >= pThreshold){
+			pElapsed = fmodf(pElapsed, pThreshold);
 			return true;
 			
 		}else{
@@ -133,7 +133,7 @@ public:
 
 // Prints memory usage
 //static PrintDelayTimer( 1.0f );
-void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
+void dbgPrintMemoryUsage(deoglRenderThread &renderThread){
 	deoglMemoryConsumption &consumption = renderThread.GetMemoryManager().GetConsumption();
 	const deoglMemoryConsumptionSkin &conSkin = consumption.skin;
 	const deoglMemoryConsumptionTexture &conTex2D = consumption.texture2D;
@@ -158,13 +158,13 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		" ubo(%d,%dM)"
 		" tbo(%d,%dM)"
 		,
-		( conSkin.all.GetConsumption() + conTex2D.all.GetConsumption()
+		(conSkin.all.GetConsumption() + conTex2D.all.GetConsumption()
 		+ conTex2DRen.all.GetConsumption() + conTex3D.all.GetConsumption()
 		+ conTex3DRen.all.GetConsumption() + conTexArr.all.GetConsumption()
 		+ conTexArrRen.all.GetConsumption() + conTexCube.all.GetConsumption()
 		+ conTexCubeRen.all.GetConsumption() + conBO.vbo.GetConsumption()
 		+ conBO.ibo.GetConsumption() + conBO.ubo.GetConsumption()
-		+ conBO.tbo.GetConsumption() + conBO.ssbo.GetConsumption() ) / 1000000ull,
+		+ conBO.tbo.GetConsumption() + conBO.ssbo.GetConsumption()) / 1000000ull,
 		
 		conSkin.all.GetCount(), conSkin.all.GetConsumptionMB(),
 		conTex2D.all.GetCount(), conTex2D.all.GetConsumptionMB(),
@@ -181,42 +181,42 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		conBO.iboShared.GetCount(), conBO.iboShared.GetConsumptionMB(),
 		conBO.ubo.GetCount(), conBO.ubo.GetConsumptionMB(),
 		conBO.tbo.GetCount(), conBO.tbo.GetConsumptionMB()
-	);
+);
 }
 
 void oglClearError(){
-	while( glGetError() != GL_NO_ERROR );
+	while(glGetError() != GL_NO_ERROR);
 }
 
 void dbgCheckOglError(deoglRenderThread&, const char *file, int line, bool withRenderThreadCheck){
 	const GLenum err = glGetError();
 	
-	switch( err ){
+	switch(err){
 	case GL_NO_ERROR:
 		break;
 		
 	case GL_INVALID_ENUM:
-		throw deeInvalidParam( file, line, "GL_INVALID_ENUM" );
+		throw deeInvalidParam(file, line, "GL_INVALID_ENUM");
 		
 	case GL_INVALID_VALUE:
-		throw deeInvalidParam( file, line, "GL_INVALID_VALUE" );
+		throw deeInvalidParam(file, line, "GL_INVALID_VALUE");
 		
 	case GL_INVALID_OPERATION:
-		throw deeInvalidParam( file, line, "GL_INVALID_OPERATION" );
+		throw deeInvalidParam(file, line, "GL_INVALID_OPERATION");
 		
 	case GL_STACK_OVERFLOW:
-		throw deeInvalidParam( file, line, "GL_STACK_OVERFLOW" );
+		throw deeInvalidParam(file, line, "GL_STACK_OVERFLOW");
 		
 	case GL_STACK_UNDERFLOW:
-		throw deeInvalidParam( file, line, "GL_STACK_UNDERFLOW" );
+		throw deeInvalidParam(file, line, "GL_STACK_UNDERFLOW");
 		
 	case GL_OUT_OF_MEMORY:
-		throw deeInvalidParam( file, line, "GL_OUT_OF_MEMORY" );
+		throw deeInvalidParam(file, line, "GL_OUT_OF_MEMORY");
 		
 	default:{
 		decString message;
-		message.Format( "Error %x (%d)", err, err );
-		throw deeInvalidParam( file, line, message );
+		message.Format("Error %x (%d)", err, err);
+		throw deeInvalidParam(file, line, message);
 		}
 	}
 	

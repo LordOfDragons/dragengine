@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	deoalMOVRayHitsFaces( deoalAComponent &component, const deoalAModel &model );
+	deoalMOVRayHitsFaces(deoalAComponent &component, const deoalAModel &model);
 	
 	/** \brief Clean up visitor. */
 	virtual ~deoalMOVRayHitsFaces();
@@ -108,7 +108,7 @@ public:
 	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
-	void SetRay( const decVector &origin, const decVector &direction );
+	void SetRay(const decVector &origin, const decVector &direction);
 	
 	
 	
@@ -116,13 +116,13 @@ public:
 	inline deoalRayTraceResult *GetResult() const{ return pResult; }
 	
 	/** \brief Set result or NULL if not set. */
-	void SetResult( deoalRayTraceResult *result );
+	void SetResult(deoalRayTraceResult *result);
 	
 	/** \brief Transform result into world space. */
 	inline bool GetResultInWorldSpace() const{ return pResultInWorldSpace; }
 	
 	/** \brief Set to transform result into world space. */
-	void SetResultInWorldSpace( bool resultInWorldSpace );
+	void SetResultInWorldSpace(bool resultInWorldSpace);
 	
 	
 	
@@ -136,24 +136,24 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalModelOctree &node );
+	virtual void VisitNode(deoalModelOctree &node);
 	
 	/** \brief Visit octree node. */
-	virtual void VisitNode( deoalOctree *node, int intersection );
+	virtual void VisitNode(deoalOctree *node, int intersection);
 	
 	/** \brief Visit optimized ray-trace octree node. */
-	void VisitOctree( const deoalModelRTOctree &octree );
+	void VisitOctree(const deoalModelRTOctree &octree);
 	
 	/** \brief Visit optimized ray-trace BVH node. */
-	void VisitBVH( const deoalModelRTBVH &bvh );
+	void VisitBVH(const deoalModelRTBVH &bvh);
 	/*@}*/
 	
 	
 	
 protected:
-	void pVisitNode( const deoalModelRTOctree &octree, const deoalModelRTOctree::sNode &node );
-	void pVisitNode( const deoalModelRTBVH &bvh, const deoalModelRTBVH::sNode &node );
-	bool pRayHitsBox( const decVector &center, const decVector &halfExtends );
+	void pVisitNode(const deoalModelRTOctree &octree, const deoalModelRTOctree::sNode &node);
+	void pVisitNode(const deoalModelRTBVH &bvh, const deoalModelRTBVH::sNode &node);
+	bool pRayHitsBox(const decVector &center, const decVector &halfExtends);
 };
 
 #endif

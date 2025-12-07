@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create icon. */
-	delGameIcon( int size, const char *path );
+	delGameIcon(int size, const char *path);
 	
 	/** \brief Clean up icon. */
 	virtual ~delGameIcon();
@@ -72,7 +72,7 @@ public:
 	inline decMemoryFile *GetContent() const{ return pContent; }
 	
 	/** \brief Set content or nullptr if not loaded. */
-	void SetContent( decMemoryFile *content );
+	void SetContent(decMemoryFile *content);
 	/*@}*/
 	
 	

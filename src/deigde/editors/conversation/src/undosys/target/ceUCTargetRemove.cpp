@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetRemove::ceUCTargetRemove( ceTarget *target ){
-	if( ! target ) DETHROW( deeInvalidParam );
+ceUCTargetRemove::ceUCTargetRemove(ceTarget *target){
+	if(!target) DETHROW(deeInvalidParam);
 	
 	ceConversation *conversation = target->GetConversation();
-	if( ! conversation ) DETHROW( deeInvalidParam );
+	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pTarget = NULL;
 	
-	SetShortInfo( "Remove Target" );
+	SetShortInfo("Remove Target");
 	
 	pConversation = conversation;
 	conversation->AddReference();
@@ -67,9 +67,9 @@ ceUCTargetRemove::~ceUCTargetRemove(){
 ///////////////
 
 void ceUCTargetRemove::Undo(){
-	pConversation->AddTarget( pTarget );
+	pConversation->AddTarget(pTarget);
 }
 
 void ceUCTargetRemove::Redo(){
-	pConversation->RemoveTarget( pTarget );
+	pConversation->RemoveTarget(pTarget);
 }

@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create descriptor set. */
-	devkDescriptorSet( devkDescriptorPool &pool );
+	devkDescriptorSet(devkDescriptorPool &pool);
 	
 protected:
 	/** Clean up descriptor set. */
@@ -87,11 +87,11 @@ public:
 	inline VkDescriptorSet GetSet() const{ return pSet; }
 	
 	/** Set binding. */
-	void SetBinding( int index, devkBuffer *buffer,
-		VkDeviceSize offset = 0, VkDeviceSize range = VK_WHOLE_SIZE );
+	void SetBinding(int index, devkBuffer *buffer,
+		VkDeviceSize offset = 0, VkDeviceSize range = VK_WHOLE_SIZE);
 	
 	/** Clear binding. */
-	void ClearBinding( int index );
+	void ClearBinding(int index);
 	
 	/** Clear all bindings. */
 	void ClearAllBindings();

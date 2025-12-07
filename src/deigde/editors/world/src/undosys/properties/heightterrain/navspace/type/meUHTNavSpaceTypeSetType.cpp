@@ -39,24 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeSetType::meUHTNavSpaceTypeSetType( meHeightTerrainNavSpaceType *type, int newType ) :
-pType( NULL ),
-pNewType( newType )
+meUHTNavSpaceTypeSetType::meUHTNavSpaceTypeSetType(meHeightTerrainNavSpaceType *type, int newType) :
+pType(NULL),
+pNewType(newType)
 {
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldType = type->GetType();
 	
-	SetShortInfo( "Height terrain nav-space type set type" );
+	SetShortInfo("Height terrain nav-space type set type");
 	
 	pType = type;
 	type->AddReference();
 }
 
 meUHTNavSpaceTypeSetType::~meUHTNavSpaceTypeSetType(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ meUHTNavSpaceTypeSetType::~meUHTNavSpaceTypeSetType(){
 ///////////////
 
 void meUHTNavSpaceTypeSetType::Undo(){
-	pType->SetType( pOldType );
+	pType->SetType(pOldType);
 }
 
 void meUHTNavSpaceTypeSetType::Redo(){
-	pType->SetType( pNewType );
+	pType->SetType(pNewType);
 }

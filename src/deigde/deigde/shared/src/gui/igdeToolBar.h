@@ -40,7 +40,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeToolBar( igdeEnvironment &environment );
+	igdeToolBar(igdeEnvironment &environment);
 	
 	
 	

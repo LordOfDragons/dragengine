@@ -43,19 +43,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDebugDrawer::deoglDebugDrawer( deGraphicOpenGl &ogl, const deDebugDrawer &debugDrawer ) :
-pOgl( ogl ),
-pDebugDrawer( debugDrawer ),
+deoglDebugDrawer::deoglDebugDrawer(deGraphicOpenGl &ogl, const deDebugDrawer &debugDrawer) :
+pOgl(ogl),
+pDebugDrawer(debugDrawer),
 
-pRDebugDrawer( NULL ),
+pRDebugDrawer(NULL),
 
-pDirtyDebugDrawer( true ),
-pDirtyShapes( true )
+pDirtyDebugDrawer(true),
+pDirtyShapes(true)
 {
 	try{
-		pRDebugDrawer = new deoglRDebugDrawer( ogl.GetRenderThread() );
+		pRDebugDrawer = new deoglRDebugDrawer(ogl.GetRenderThread());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,16 +71,16 @@ deoglDebugDrawer::~deoglDebugDrawer(){
 ///////////////
 
 void deoglDebugDrawer::SyncToRender(){
-	if( pDirtyDebugDrawer ){
-		pRDebugDrawer->SetMatrix( decDMatrix::CreateWorld( pDebugDrawer.GetPosition(),
-			pDebugDrawer.GetOrientation(), pDebugDrawer.GetScale() ) );
-		pRDebugDrawer->SetVisible( pDebugDrawer.GetVisible() );
-		pRDebugDrawer->SetXRay( pDebugDrawer.GetXRay() );
+	if(pDirtyDebugDrawer){
+		pRDebugDrawer->SetMatrix(decDMatrix::CreateWorld(pDebugDrawer.GetPosition(),
+			pDebugDrawer.GetOrientation(), pDebugDrawer.GetScale()));
+		pRDebugDrawer->SetVisible(pDebugDrawer.GetVisible());
+		pRDebugDrawer->SetXRay(pDebugDrawer.GetXRay());
 		pDirtyDebugDrawer = false;
 	}
 	
-	if( pDirtyShapes ){
-		pRDebugDrawer->UpdateShapes( pDebugDrawer );
+	if(pDirtyShapes){
+		pRDebugDrawer->UpdateShapes(pDebugDrawer);
 		pDirtyShapes = false;
 	}
 }
@@ -134,7 +134,7 @@ void deoglDebugDrawer::ShapeLayoutChanged(){
 //////////////////////
 
 void deoglDebugDrawer::pCleanUp(){
-	if( pRDebugDrawer ){
+	if(pRDebugDrawer){
 		pRDebugDrawer->FreeReference();
 	}
 }

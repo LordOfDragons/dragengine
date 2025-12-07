@@ -41,9 +41,9 @@
 ////////////////////////////
 
 deoglVBOAttribute::deoglVBOAttribute() :
-pComponentCount( 0 ),
-pDataType( edtFloat ),
-pOffset( 0 ){
+pComponentCount(0),
+pDataType(edtFloat),
+pOffset(0){
 }
 
 deoglVBOAttribute::~deoglVBOAttribute(){
@@ -54,111 +54,111 @@ deoglVBOAttribute::~deoglVBOAttribute(){
 // Management
 ///////////////
 
-void deoglVBOAttribute::SetComponentCount( int componentCount ){
-	if( componentCount < 0 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
+void deoglVBOAttribute::SetComponentCount(int componentCount){
+	if(componentCount < 0 || componentCount > 4){
+		DETHROW(deeInvalidParam);
 	}
 	pComponentCount = componentCount;
 }
 
-void deoglVBOAttribute::SetDataType( eDataTypes dataType ){
+void deoglVBOAttribute::SetDataType(eDataTypes dataType){
 	pDataType = dataType;
 }
 
-void deoglVBOAttribute::SetOffset( int offset ){
-	if( offset < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglVBOAttribute::SetOffset(int offset){
+	if(offset < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pOffset = offset;
 }
 
 
 
-void deoglVBOAttribute::SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int stride ) const{
-	SetVAOAttributeAt( renderThread, attribute, stride, 0 );
+void deoglVBOAttribute::SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int stride) const{
+	SetVAOAttributeAt(renderThread, attribute, stride, 0);
 }
 
-void deoglVBOAttribute::SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int stride, int offset ) const{
-	if( attribute < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglVBOAttribute::SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int stride, int offset) const{
+	if(attribute < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pComponentCount == 0 ){
+	if(pComponentCount == 0){
 		return;
 	}
 	
-	const GLvoid * const pointer = ( const GLvoid * )( intptr_t )( offset + ( int )pOffset );
+	const GLvoid * const pointer = (const GLvoid *)(intptr_t)(offset + (int)pOffset);
 	
-	OGL_CHECK( renderThread, pglEnableVertexAttribArray( attribute ) );
+	OGL_CHECK(renderThread, pglEnableVertexAttribArray(attribute));
 	
-	switch( pDataType ){
+	switch(pDataType){
 	case edtFloat:
-		OGL_CHECK( renderThread, pglVertexAttribPointer( attribute,
-			pComponentCount, GL_FLOAT, GL_FALSE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribPointer(attribute,
+			pComponentCount, GL_FLOAT, GL_FALSE, stride, pointer));
 		break;
 		
 	case edtByte:
-		OGL_CHECK( renderThread, pglVertexAttribPointer( attribute,
-			pComponentCount, GL_BYTE, GL_TRUE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribPointer(attribute,
+			pComponentCount, GL_BYTE, GL_TRUE, stride, pointer));
 		break;
 		
 	case edtUByte:
-		OGL_CHECK( renderThread, pglVertexAttribPointer( attribute,
-			pComponentCount, GL_UNSIGNED_BYTE, GL_TRUE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribPointer(attribute,
+			pComponentCount, GL_UNSIGNED_BYTE, GL_TRUE, stride, pointer));
 		break;
 		
 	case edtShort:
-		OGL_CHECK( renderThread, pglVertexAttribPointer( attribute,
-			pComponentCount, GL_SHORT, GL_TRUE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribPointer(attribute,
+			pComponentCount, GL_SHORT, GL_TRUE, stride, pointer));
 		break;
 		
 	case edtUShort:
-		OGL_CHECK( renderThread, pglVertexAttribPointer( attribute,
-			pComponentCount, GL_UNSIGNED_SHORT, GL_TRUE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribPointer(attribute,
+			pComponentCount, GL_UNSIGNED_SHORT, GL_TRUE, stride, pointer));
 		break;
 		
 	case edtInt:
-		OGL_CHECK( renderThread, pglVertexAttribPointer( attribute,
-			pComponentCount, GL_INT, GL_TRUE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribPointer(attribute,
+			pComponentCount, GL_INT, GL_TRUE, stride, pointer));
 		break;
 		
 	case edtUInt:
-		OGL_CHECK( renderThread, pglVertexAttribPointer( attribute,
-			pComponentCount, GL_UNSIGNED_INT, GL_TRUE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribPointer(attribute,
+			pComponentCount, GL_UNSIGNED_INT, GL_TRUE, stride, pointer));
 		break;
 		
 	case edtIByte:
-		OGL_CHECK( renderThread, pglVertexAttribIPointer( attribute,
-			pComponentCount, GL_BYTE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribIPointer(attribute,
+			pComponentCount, GL_BYTE, stride, pointer));
 		break;
 		
 	case edtIUByte:
-		OGL_CHECK( renderThread, pglVertexAttribIPointer( attribute,
-			pComponentCount, GL_UNSIGNED_BYTE, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribIPointer(attribute,
+			pComponentCount, GL_UNSIGNED_BYTE, stride, pointer));
 		break;
 		
 	case edtIShort:
-		OGL_CHECK( renderThread, pglVertexAttribIPointer( attribute,
-			pComponentCount, GL_SHORT, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribIPointer(attribute,
+			pComponentCount, GL_SHORT, stride, pointer));
 		break;
 		
 	case edtIUShort:
-		OGL_CHECK( renderThread, pglVertexAttribIPointer( attribute,
-			pComponentCount, GL_UNSIGNED_SHORT, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribIPointer(attribute,
+			pComponentCount, GL_UNSIGNED_SHORT, stride, pointer));
 		break;
 		
 	case edtIInt:
-		OGL_CHECK( renderThread, pglVertexAttribIPointer( attribute,
-			pComponentCount, GL_INT, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribIPointer(attribute,
+			pComponentCount, GL_INT, stride, pointer));
 		break;
 		
 	case edtIUInt:
-		OGL_CHECK( renderThread, pglVertexAttribIPointer( attribute,
-			pComponentCount, GL_UNSIGNED_INT, stride, pointer ) );
+		OGL_CHECK(renderThread, pglVertexAttribIPointer(attribute,
+			pComponentCount, GL_UNSIGNED_INT, stride, pointer));
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -167,20 +167,20 @@ void deoglVBOAttribute::SetVAOAttributeAt( deoglRenderThread &renderThread, int 
 // Operators
 //////////////
 
-deoglVBOAttribute &deoglVBOAttribute::operator=( const deoglVBOAttribute &attribute ){
+deoglVBOAttribute &deoglVBOAttribute::operator=(const deoglVBOAttribute &attribute){
 	pComponentCount = attribute.pComponentCount;
 	pDataType = attribute.pDataType;
 	pOffset = attribute.pOffset;
 	return *this;
 }
 
-bool deoglVBOAttribute::operator==( const deoglVBOAttribute &attribute ) const{
+bool deoglVBOAttribute::operator==(const deoglVBOAttribute &attribute) const{
 	return pComponentCount == attribute.pComponentCount
 		&& pDataType == attribute.pDataType
 		&& pOffset == attribute.pOffset;
 }
 
-bool deoglVBOAttribute::operator!=( const deoglVBOAttribute &attribute ) const{
+bool deoglVBOAttribute::operator!=(const deoglVBOAttribute &attribute) const{
 	return pComponentCount != attribute.pComponentCount
 		|| pDataType != attribute.pDataType
 		|| pOffset != attribute.pOffset;

@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create property panel. */
-	gdeWPGameDefinition( gdeWindowProperties &windowProperties );
+	gdeWPGameDefinition(gdeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up property panel. */
@@ -95,7 +95,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Active world property. */
 	gdeProperty *GetActiveWorldProperty() const;

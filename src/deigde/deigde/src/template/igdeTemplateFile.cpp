@@ -41,20 +41,20 @@
 ////////////////////////////
 
 igdeTemplateFile::igdeTemplateFile() :
-pDirectory( edData ){
+pDirectory(edData){
 }
 
-igdeTemplateFile::igdeTemplateFile( const igdeTemplateFile &file ) :
-pPath( file.pPath ),
-pPathRename( file.pPathRename ),
-pPattern( file.pPattern ),
-pDirectory( file.pDirectory )
+igdeTemplateFile::igdeTemplateFile(const igdeTemplateFile &file) :
+pPath(file.pPath),
+pPathRename(file.pPathRename),
+pPattern(file.pPattern),
+pDirectory(file.pDirectory)
 {
 	const int count = file.pReplacements.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pReplacements.Add( new igdeTemplateReplace( *file.pReplacements.GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		pReplacements.Add(new igdeTemplateReplace(*file.pReplacements.GetAt(i)));
 	}
 }
 
@@ -66,18 +66,18 @@ igdeTemplateFile::~igdeTemplateFile(){
 // Management
 ///////////////
 
-void igdeTemplateFile::SetPath( const char *path ){
+void igdeTemplateFile::SetPath(const char *path){
 	pPath = path;
 }
 
-void igdeTemplateFile::SetPathRename( const char *path ){
+void igdeTemplateFile::SetPathRename(const char *path){
 	pPathRename = path;
 }
 
-void igdeTemplateFile::SetPattern( const char *pattern ){
+void igdeTemplateFile::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
-void igdeTemplateFile::SetDirectory( eDirectories directory ){
+void igdeTemplateFile::SetDirectory(eDirectories directory){
 	pDirectory = directory;
 }

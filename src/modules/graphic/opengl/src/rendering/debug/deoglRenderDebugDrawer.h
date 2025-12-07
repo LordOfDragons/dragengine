@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderDebugDrawer( deoglRenderThread &renderThread );
+	deoglRenderDebugDrawer(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderDebugDrawer();
@@ -63,7 +63,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render debug drawers. */
-	void RenderDebugDrawers( deoglRenderPlan &plan );
+	void RenderDebugDrawers(deoglRenderPlan &plan);
 	/*@}*/
 	
 	
@@ -71,11 +71,11 @@ public:
 private:
 	void pCleanUp();
 	
-	void pRenderDDSShapes( const deoglRenderPlan &plan, const decDMatrix &matrixModel,
-		deoglRDebugDrawer &debugDrawer );
+	void pRenderDDSShapes(const deoglRenderPlan &plan, const decDMatrix &matrixModel,
+		deoglRDebugDrawer &debugDrawer);
 	
-	void pRenderDDSFaces( const deoglRenderPlan &plan, const decDMatrix &matrixModel,
-		deoglRDebugDrawer &debugDrawer );
+	void pRenderDDSFaces(const deoglRenderPlan &plan, const decDMatrix &matrixModel,
+		deoglRDebugDrawer &debugDrawer);
 };
 
 #endif

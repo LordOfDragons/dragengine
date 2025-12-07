@@ -20,18 +20,18 @@ class Highlighting;
 
 class HighlightingInstance : public CodeHighlightingInstance {
 public:
-	HighlightingInstance( const Highlighting *highlighting );
+	HighlightingInstance(const Highlighting *highlighting);
 	
 	/**
 	 * \brief Highlight use.
 	 */
-	void highlightUse( DUContext *context, int index, const QColor &color ) override;
+	void highlightUse(DUContext *context, int index, const QColor &color) override;
 	
 	/**
 	 * Decides whether to apply auto-generated rainbow colors to @p dec.
 	 * Default implementation only applies that to local variables in functions.
 	 */
-	bool useRainbowColor( Declaration *dec ) const override;
+	bool useRainbowColor(Declaration *dec) const override;
 	
 private:
 };
@@ -40,7 +40,7 @@ private:
 class Highlighting : public CodeHighlighting{
 Q_OBJECT
 public:
-	Highlighting( QObject *parent );
+	Highlighting(QObject *parent);
 	HighlightingInstance *createInstance() const override;
 };
 

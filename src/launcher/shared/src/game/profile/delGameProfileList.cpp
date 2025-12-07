@@ -55,21 +55,21 @@ int delGameProfileList::GetCount() const{
 	return pProfiles.GetCount();
 }
 
-delGameProfile *delGameProfileList::GetAt( int index ) const{
-	return ( delGameProfile* )pProfiles.GetAt( index );
+delGameProfile *delGameProfileList::GetAt(int index) const{
+	return (delGameProfile*)pProfiles.GetAt(index);
 }
 
-delGameProfile *delGameProfileList::GetNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW_INFO( deeNullPointer, "name" );
+delGameProfile *delGameProfileList::GetNamed(const char *name) const{
+	if(!name){
+		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
 	const int count = pProfiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGameProfile * const profile = ( delGameProfile* )pProfiles.GetAt( i );
-		if( profile->GetName() == name ){
+	for(i=0; i<count; i++){
+		delGameProfile * const profile = (delGameProfile*)pProfiles.GetAt(i);
+		if(profile->GetName() == name){
 			return profile;
 		}
 	}
@@ -77,28 +77,28 @@ delGameProfile *delGameProfileList::GetNamed( const char *name ) const{
 	return nullptr;
 }
 
-bool delGameProfileList::Has( delGameProfile *profile ) const{
-	return pProfiles.Has( profile );
+bool delGameProfileList::Has(delGameProfile *profile) const{
+	return pProfiles.Has(profile);
 }
 
-bool delGameProfileList::HasNamed( const char *name ) const{
-	return GetNamed ( name );
+bool delGameProfileList::HasNamed(const char *name) const{
+	return GetNamed (name);
 }
 
-int delGameProfileList::IndexOf( delGameProfile *profile ) const{
-	return pProfiles.IndexOf( profile );
+int delGameProfileList::IndexOf(delGameProfile *profile) const{
+	return pProfiles.IndexOf(profile);
 }
 
-int delGameProfileList::IndexOfNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW_INFO( deeNullPointer, "name" );
+int delGameProfileList::IndexOfNamed(const char *name) const{
+	if(!name){
+		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
 	const int count = pProfiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( delGameProfile* )pProfiles.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((delGameProfile*)pProfiles.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -106,35 +106,35 @@ int delGameProfileList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-void delGameProfileList::Add( delGameProfile *profile ){
-	if( ! profile ){
-		DETHROW_INFO( deeNullPointer, "profile" );
+void delGameProfileList::Add(delGameProfile *profile){
+	if(!profile){
+		DETHROW_INFO(deeNullPointer, "profile");
 	}
-	if( HasNamed ( profile->GetName() ) ){
-		DETHROW_INFO( deeInvalidParam, "named profile is present" );
+	if(HasNamed (profile->GetName())){
+		DETHROW_INFO(deeInvalidParam, "named profile is present");
 	}
 	
-	pProfiles.Add( profile );
+	pProfiles.Add(profile);
 }
 
-void delGameProfileList::Remove( delGameProfile *profile ){
-	const int index = IndexOf ( profile );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "profile is absent" );
+void delGameProfileList::Remove(delGameProfile *profile){
+	const int index = IndexOf (profile);
+	if(index == -1){
+		DETHROW_INFO(deeInvalidParam, "profile is absent");
 	}
 	
-	pProfiles.RemoveFrom( index );
+	pProfiles.RemoveFrom(index);
 }
 
 void delGameProfileList::RemoveAll(){
 	pProfiles.RemoveAll();
 }
 
-void delGameProfileList::ValidateAll( delLauncher &launcher ){
+void delGameProfileList::ValidateAll(delLauncher &launcher){
 	const int count = pProfiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( delGameProfile* )pProfiles.GetAt( i ) )->Verify( launcher );
+	for(i=0; i<count; i++){
+		((delGameProfile*)pProfiles.GetAt(i))->Verify(launcher);
 	}
 }

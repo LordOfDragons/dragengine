@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUConvoSetImportConvoPath::ceUConvoSetImportConvoPath( ceLoadSaveSystem &lssystem,
-	ceConversation *conversation, const decStringList &newValue ) :
-pLSSystem( lssystem ),
-pConversation( conversation ),
-pNewValue( newValue )
+ceUConvoSetImportConvoPath::ceUConvoSetImportConvoPath(ceLoadSaveSystem &lssystem,
+	ceConversation *conversation, const decStringList &newValue) :
+pLSSystem(lssystem),
+pConversation(conversation),
+pNewValue(newValue)
 {
-	if( ! conversation ){
-		DETHROW( deeInvalidParam );
+	if(!conversation){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = conversation->GetImportConversationPath();
 	
-	SetShortInfo( "Set Import Conversation Path List" );
+	SetShortInfo("Set Import Conversation Path List");
 }
 
 ceUConvoSetImportConvoPath::~ceUConvoSetImportConvoPath(){
@@ -63,13 +63,13 @@ ceUConvoSetImportConvoPath::~ceUConvoSetImportConvoPath(){
 ///////////////
 
 void ceUConvoSetImportConvoPath::Undo(){
-	pConversation->SetImportConversationPath( pOldValue );
-	pConversation->UpdateImportedConversations( pLSSystem );
+	pConversation->SetImportConversationPath(pOldValue);
+	pConversation->UpdateImportedConversations(pLSSystem);
 	pConversation->NotifyConversationChanged();
 }
 
 void ceUConvoSetImportConvoPath::Redo(){
-	pConversation->SetImportConversationPath( pNewValue );
-	pConversation->UpdateImportedConversations( pLSSystem );
+	pConversation->SetImportConversationPath(pNewValue);
+	pConversation->UpdateImportedConversations(pLSSystem);
 	pConversation->NotifyConversationChanged();
 }

@@ -33,7 +33,7 @@ private:
 	void pTestZFile();
 	
 	void pOutputCompressedToFile();
-	void pOutputTestBufferToFile( int size );
+	void pOutputTestBufferToFile(int size);
 	
 	void pCreateZWriter();
 	void pDestroyZWriter();

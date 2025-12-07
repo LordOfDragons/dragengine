@@ -43,12 +43,12 @@
 
 
 // public func void createInstances( PropField propfield, float density )
-deClassPropFieldListener::nfCreateInstances::nfCreateInstances( const sInitData &init ) :
-dsFunction( init.clsPFL, "createInstances", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsPF ); // propfield
-	p_AddParameter( init.clsFlt ); // density
+deClassPropFieldListener::nfCreateInstances::nfCreateInstances(const sInitData &init) :
+dsFunction(init.clsPFL, "createInstances", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsPF); // propfield
+	p_AddParameter(init.clsFlt); // density
 }
-void deClassPropFieldListener::nfCreateInstances::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassPropFieldListener::nfCreateInstances::RunFunction(dsRunTime *rt, dsValue *myself){
 }
 
 
@@ -59,15 +59,15 @@ void deClassPropFieldListener::nfCreateInstances::RunFunction( dsRunTime *rt, ds
 // Constructor, destructor
 ////////////////////////////
 
-deClassPropFieldListener::deClassPropFieldListener( deScriptingDragonScript *ds ) :
-dsClass( "PropFieldListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! ds ) DSTHROW( dueInvalidParam );
+deClassPropFieldListener::deClassPropFieldListener(deScriptingDragonScript *ds) :
+dsClass("PropFieldListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
-	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetParent(DENS_SCENERY);
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassPropFieldListener::~deClassPropFieldListener(){
@@ -78,7 +78,7 @@ deClassPropFieldListener::~deClassPropFieldListener(){
 // Management
 ///////////////
 
-void deClassPropFieldListener::CreateClassMembers( dsEngine *engine ){
+void deClassPropFieldListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -88,12 +88,12 @@ void deClassPropFieldListener::CreateClassMembers( dsEngine *engine ){
 	init.clsPF = pDS->GetClassPropField();
 	
 	// add functions
-	AddFunction( new nfCreateInstances( init ) ); // function 0
+	AddFunction(new nfCreateInstances(init)); // function 0
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 	
 	// store function index for fast calling
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexCreateInstances = funcList.GetIndexOf( GetFunction( 0 ) );
+	pFuncIndexCreateInstances = funcList.GetIndexOf(GetFunction(0));
 }

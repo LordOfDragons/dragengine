@@ -43,22 +43,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGITraceRays::deoglGITraceRays( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread  ),
-pRaysPerProbe( ConfigRaysPerProbe( renderThread.GetConfiguration() ) ),
-pProbesPerLine( 8 ),
-pProbeCount( ConfigProbeCount( renderThread.GetConfiguration() ) ),
-pTexPosition( renderThread ),
-pTexNormal( renderThread ),
-pTexDiffuse( renderThread ),
-pTexReflectivity( renderThread ),
-pTexLight( renderThread ),
+deoglGITraceRays::deoglGITraceRays(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pRaysPerProbe(ConfigRaysPerProbe(renderThread.GetConfiguration())),
+pProbesPerLine(8),
+pProbeCount(ConfigProbeCount(renderThread.GetConfiguration())),
+pTexPosition(renderThread),
+pTexNormal(renderThread),
+pTexDiffuse(renderThread),
+pTexReflectivity(renderThread),
+pTexLight(renderThread),
 pFBOLight(deoglFramebuffer::Ref::NewWith(renderThread, false))
 {
 	try{
 		pCreateFBORay();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -73,8 +73,8 @@ deoglGITraceRays::~deoglGITraceRays(){
 // Management
 ///////////////
 
-int deoglGITraceRays::ConfigRaysPerProbe( const deoglConfiguration &config ){
-	switch( config.GetGIQuality() ){
+int deoglGITraceRays::ConfigRaysPerProbe(const deoglConfiguration &config){
+	switch(config.GetGIQuality()){
 	case deoglConfiguration::egiqVeryHigh:
 		return 256;
 		
@@ -97,8 +97,8 @@ int deoglGITraceRays::ConfigRaysPerProbe( const deoglConfiguration &config ){
 	}
 }
 
-int deoglGITraceRays::ConfigProbeCount( const deoglConfiguration &config ){
-	switch( config.GetGIUpdateSpeed() ){
+int deoglGITraceRays::ConfigProbeCount(const deoglConfiguration &config){
+	switch(config.GetGIUpdateSpeed()){
 	case deoglConfiguration::egiusVeryHigh:
 		return 2048;
 		
@@ -118,9 +118,9 @@ int deoglGITraceRays::ConfigProbeCount( const deoglConfiguration &config ){
 }
 
 void deoglGITraceRays::UpdateFromConfig(){
-	const int raysPerProbe = ConfigRaysPerProbe( pRenderThread.GetConfiguration() );
-	const int probeCount = ConfigProbeCount( pRenderThread.GetConfiguration() );
-	if( raysPerProbe == pRaysPerProbe && probeCount == pProbeCount ){
+	const int raysPerProbe = ConfigRaysPerProbe(pRenderThread.GetConfiguration());
+	const int probeCount = ConfigProbeCount(pRenderThread.GetConfiguration());
+	if(raysPerProbe == pRaysPerProbe && probeCount == pProbeCount){
 		return;
 	}
 	
@@ -148,33 +148,33 @@ void deoglGITraceRays::pCreateFBORay(){
 	// 
 	// total: (63M, 16M) [62914560, 15728640]
 	//
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
-	const GLenum buffers[ 5 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
-		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
+	const deoglRestoreFramebuffer restoreFbo(pRenderThread);
+	const GLenum buffers[5] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
+		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4};
 	
 	const int width = pProbesPerLine * pRaysPerProbe;
 	const int height = GI_MAX_PROBE_COUNT / pProbesPerLine;
 		// ^== can not use pProbeCount since GI cascades are allowed to temporarily use the
 		//     maximum update probe count no matter what config option is set
 	
-	pTexPosition.SetFBOFormat( 4, true );
-	pTexPosition.SetSize( width, height );
+	pTexPosition.SetFBOFormat(4, true);
+	pTexPosition.SetSize(width, height);
 	pTexPosition.CreateTexture();
 	
-	pTexNormal.SetFBOFormatSNorm( 4, 8 ); // image load/store supports only 1, 2 and 4 not 3
-	pTexNormal.SetSize( width, height );
+	pTexNormal.SetFBOFormatSNorm(4, 8); // image load/store supports only 1, 2 and 4 not 3
+	pTexNormal.SetSize(width, height);
 	pTexNormal.CreateTexture();
 	
-	pTexDiffuse.SetFBOFormat( 4, false ); // image load/store supports only 1, 2 and 4 not 3
-	pTexDiffuse.SetSize( width, height );
+	pTexDiffuse.SetFBOFormat(4, false); // image load/store supports only 1, 2 and 4 not 3
+	pTexDiffuse.SetSize(width, height);
 	pTexDiffuse.CreateTexture();
 	
-	pTexReflectivity.SetFBOFormat( 4, false );
-	pTexReflectivity.SetSize( width, height );
+	pTexReflectivity.SetFBOFormat(4, false);
+	pTexReflectivity.SetSize(width, height);
 	pTexReflectivity.CreateTexture();
 	
-	pTexLight.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
-	pTexLight.SetSize( width, height );
+	pTexLight.SetFBOFormat(4, true); // image load/store supports only 1, 2 and 4 not 3
+	pTexLight.SetSize(width, height);
 	pTexLight.CreateTexture();
 	
 	pRenderThread.GetFramebuffer().Activate(pFBOLight);

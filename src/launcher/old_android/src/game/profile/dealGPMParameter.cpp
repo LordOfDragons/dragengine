@@ -45,8 +45,8 @@
 dealGPMParameter::dealGPMParameter(){
 }
 
-dealGPMParameter::dealGPMParameter( const dealGPMParameter &parameter ){
-	CopyFrom( parameter );
+dealGPMParameter::dealGPMParameter(const dealGPMParameter &parameter){
+	CopyFrom(parameter);
 }
 
 dealGPMParameter::~dealGPMParameter(){
@@ -57,17 +57,17 @@ dealGPMParameter::~dealGPMParameter(){
 // Management
 ///////////////
 
-void dealGPMParameter::SetName( const char *name ){
+void dealGPMParameter::SetName(const char *name){
 	pName = name;
 }
 
-void dealGPMParameter::SetValue( const char *value ){
+void dealGPMParameter::SetValue(const char *value){
 	pValue = value;
 }
 
 
 
-void dealGPMParameter::CopyFrom( const dealGPMParameter &parameter ){
+void dealGPMParameter::CopyFrom(const dealGPMParameter &parameter){
 	pName = parameter.pName;
 	pValue = parameter.pValue;
 }

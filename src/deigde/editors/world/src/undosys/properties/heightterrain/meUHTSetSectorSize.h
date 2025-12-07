@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetSectorSize( meWorld *world, meHeightTerrain *heightTerrain, float newSectorSize );
+	meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTerrain, float newSectorSize);
 	
 protected:
 	/** \brief Clean up object. */

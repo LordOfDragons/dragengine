@@ -42,23 +42,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakHeadLAMove::ceUCAASpeakHeadLAMove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *headLookAt, int newIndex ){
-	if( ! topic || ! actorSpeak || ! headLookAt ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakHeadLAMove::ceUCAASpeakHeadLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *headLookAt, int newIndex){
+	if(!topic || !actorSpeak || !headLookAt){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pHeadLA = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetHeadLookAtList().IndexOf( headLookAt );
+	pOldIndex = actorSpeak->GetHeadLookAtList().IndexOf(headLookAt);
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= actorSpeak->GetHeadLookAtList().GetCount() ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetHeadLookAtList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move HeadLookAt" );
+	SetShortInfo("Move HeadLookAt");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -71,13 +71,13 @@ ceStrip *headLookAt, int newIndex ){
 }
 
 ceUCAASpeakHeadLAMove::~ceUCAASpeakHeadLAMove(){
-	if( pHeadLA ){
+	if(pHeadLA){
 		pHeadLA->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -88,11 +88,11 @@ ceUCAASpeakHeadLAMove::~ceUCAASpeakHeadLAMove(){
 ///////////////
 
 void ceUCAASpeakHeadLAMove::Undo(){
-	pActorSpeak->GetHeadLookAtList().MoveTo( pHeadLA, pOldIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetHeadLookAtList().MoveTo(pHeadLA, pOldIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakHeadLAMove::Redo(){
-	pActorSpeak->GetHeadLookAtList().MoveTo( pHeadLA, pNewIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetHeadLookAtList().MoveTo(pHeadLA, pNewIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

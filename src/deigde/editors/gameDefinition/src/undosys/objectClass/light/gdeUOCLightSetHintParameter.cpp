@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintParameter::gdeUOCLightSetHintParameter( gdeObjectClass *objectClass,
-gdeOCLight *light, deLight::eParameterHints newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetHintParameter::gdeUOCLightSetHintParameter(gdeObjectClass *objectClass,
+gdeOCLight *light, deLight::eParameterHints newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set hint parameter" );
+	SetShortInfo("Light set hint parameter");
 	
 	pOldValue = light->GetHintParameter();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetHintParameter::~gdeUOCLightSetHintParameter(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetHintParameter::~gdeUOCLightSetHintParameter(){
 ///////////////
 
 void gdeUOCLightSetHintParameter::Undo(){
-	pLight->SetHintParameter( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHintParameter(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetHintParameter::Redo(){
-	pLight->SetHintParameter( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHintParameter(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

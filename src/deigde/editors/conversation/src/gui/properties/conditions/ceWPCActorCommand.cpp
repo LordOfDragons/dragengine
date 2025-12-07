@@ -69,13 +69,13 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	cComboActor( ceWPCActorCommand &panel ) : pPanel( panel ){ }
+	cComboActor(ceWPCActorCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || comboBox->GetText() == condition->GetActor() ){
+		if(!topic || !action || !condition || comboBox->GetText() == condition->GetActor()){
 			return;
 		}
 		
@@ -89,13 +89,13 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	cTextCommand( ceWPCActorCommand &panel ) : pPanel( panel ){ }
+	cTextCommand(ceWPCActorCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || textField->GetText() == condition->GetCommand() ){
+		if(!topic || !action || !condition || textField->GetText() == condition->GetCommand()){
 			return;
 		}
 		
@@ -108,23 +108,23 @@ class cActionEditCommand : public igdeAction {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	cActionEditCommand( ceWPCActorCommand &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	cActionEditCommand(ceWPCActorCommand &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"Edit command in larger dialog"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
-		decString text( condition->GetCommand() );
-		if( ! igdeCommonDialogs::GetMultilineString(
+		decString text(condition->GetCommand());
+		if(!igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text )
-		|| text == condition->GetCommand() ){
+			"Edit Command", "Command:", text)
+		|| text == condition->GetCommand()){
 			return;
 		}
 		
@@ -137,14 +137,14 @@ class cActionNegate : public igdeAction {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	cActionNegate( ceWPCActorCommand &panel ) : igdeAction( "Negate", NULL,
-		"True if the result of the command is negated" ), pPanel( panel ){ }
+	cActionNegate(ceWPCActorCommand &panel) : igdeAction("Negate", NULL,
+		"True if the result of the command is negated"), pPanel(panel){ }
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
@@ -162,18 +162,18 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCActorCommand::ceWPCActorCommand( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
+ceWPCActorCommand::ceWPCActorCommand(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox( *this, "Actor ID:", true, "Actor ID to test", pCBActorID, new cComboActor( *this ) );
+	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActorID, new cComboActor(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst( *this, "Command:", "Command to send", formLine );
-	helper.EditString( formLine, "Command to send", pEditCommand, new cTextCommand( *this ) );
-	helper.Button( formLine, pBtnCommand, new cActionEditCommand( *this ), true );
+	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
+	helper.EditString(formLine, "Command to send", pEditCommand, new cTextCommand(*this));
+	helper.Button(formLine, pBtnCommand, new cActionEditCommand(*this), true);
 	
-	helper.CheckBox( formLine, pChkNegate, new cActionNegate( *this ), true );
+	helper.CheckBox(formLine, pChkNegate, new cActionNegate(*this), true);
 }
 
 ceWPCActorCommand::~ceWPCActorCommand(){
@@ -187,8 +187,8 @@ ceWPCActorCommand::~ceWPCActorCommand(){
 ceCConditionActorCommand *ceWPCActorCommand::GetCondition() const{
 	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
-	if( condition && condition->GetType() == ceConversationCondition::ectActorCommand ){
-		return ( ceCConditionActorCommand* )condition;
+	if(condition && condition->GetType() == ceConversationCondition::ectActorCommand){
+		return (ceCConditionActorCommand*)condition;
 		
 	}else{
 		return NULL;
@@ -198,20 +198,20 @@ ceCConditionActorCommand *ceWPCActorCommand::GetCondition() const{
 void ceWPCActorCommand::UpdateCondition(){
 	const ceCConditionActorCommand * const condition = GetCondition();
 	
-	if( condition ){
-		pCBActorID->SetText( condition->GetActor() );
-		pEditCommand->SetText( condition->GetCommand() );
-		pChkNegate->SetChecked( condition->GetNegate() );
+	if(condition){
+		pCBActorID->SetText(condition->GetActor());
+		pEditCommand->SetText(condition->GetCommand());
+		pChkNegate->SetChecked(condition->GetNegate());
 		
 	}else{
 		pCBActorID->ClearText();
 		pEditCommand->ClearText();
-		pChkNegate->SetChecked( false );
+		pChkNegate->SetChecked(false);
 	}
 }
 
 
 
 void ceWPCActorCommand::UpdateActorIDList(){
-	UpdateComboBoxWithActorIDList( pCBActorID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
 }

@@ -73,7 +73,7 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

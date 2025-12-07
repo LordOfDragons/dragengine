@@ -72,7 +72,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new type. */
-	debpPropFieldType( debpPropField *propField, dePropFieldType *type );
+	debpPropFieldType(debpPropField *propField, dePropFieldType *type);
 	/** Cleans up the type. */
 	~debpPropFieldType();
 	/*@}*/
@@ -82,7 +82,7 @@ public:
 	/** Retrieves the number of bend states. */
 	inline int GetBendStateCount() const{ return pBendStateCount; }
 	/** Sets the size of states keeping the state values intact where possible. */
-	void SetBendStateSize( int count );
+	void SetBendStateSize(int count);
 	/** Retrieves the instances. */
 	inline debpPropFieldBendState *GetBendStates() const{ return pBendStates; }
 	
@@ -90,7 +90,7 @@ public:
 	void MarkDirty();
 	
 	/** Updates the bend states. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 };
 

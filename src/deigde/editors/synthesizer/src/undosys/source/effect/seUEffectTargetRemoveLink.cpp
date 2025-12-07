@@ -42,16 +42,16 @@
 ////////////////////////////
 
 seUEffectTargetRemoveLink::seUEffectTargetRemoveLink(
-seEffect *effect, seControllerTarget *target, seLink *link ) :
-pEffect( NULL ),
-pTarget( NULL ),
-pLink( NULL )
+seEffect *effect, seControllerTarget *target, seLink *link) :
+pEffect(NULL),
+pTarget(NULL),
+pLink(NULL)
 {
-	if( ! effect || ! target || ! link ){
-		DETHROW( deeInvalidParam );
+	if(!effect || !target || !link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Effect target remove link" );
+	SetShortInfo("Effect target remove link");
 	
 	pEffect = effect;
 	pEffect->AddReference();
@@ -63,10 +63,10 @@ pLink( NULL )
 }
 
 seUEffectTargetRemoveLink::~seUEffectTargetRemoveLink(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
-	if( pEffect ){
+	if(pEffect){
 		pEffect->FreeReference();
 	}
 }
@@ -77,11 +77,11 @@ seUEffectTargetRemoveLink::~seUEffectTargetRemoveLink(){
 ///////////////
 
 void seUEffectTargetRemoveLink::Undo(){
-	pTarget->AddLink( pLink );
+	pTarget->AddLink(pLink);
 	pEffect->NotifyEffectChanged();
 }
 
 void seUEffectTargetRemoveLink::Redo(){
-	pTarget->RemoveLink( pLink );
+	pTarget->RemoveLink(pLink);
 	pEffect->NotifyEffectChanged();
 }

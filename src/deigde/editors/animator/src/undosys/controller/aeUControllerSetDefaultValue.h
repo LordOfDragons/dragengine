@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetDefaultValue( aeController *controller, float newValue );
+	aeUControllerSetDefaultValue(aeController *controller, float newValue);
 	
 protected:
 	/** Clean up undo. */

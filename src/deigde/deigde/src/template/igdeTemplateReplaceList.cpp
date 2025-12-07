@@ -42,8 +42,8 @@
 igdeTemplateReplaceList::igdeTemplateReplaceList(){
 }
 
-igdeTemplateReplaceList::igdeTemplateReplaceList( const igdeTemplateReplaceList &list ) :
-pReplaces( list.pReplaces ){
+igdeTemplateReplaceList::igdeTemplateReplaceList(const igdeTemplateReplaceList &list) :
+pReplaces(list.pReplaces){
 }
 
 igdeTemplateReplaceList::~igdeTemplateReplaceList(){
@@ -58,27 +58,27 @@ int igdeTemplateReplaceList::GetCount() const{
 	return pReplaces.GetCount();
 }
 
-igdeTemplateReplace *igdeTemplateReplaceList::GetAt( int index ) const{
-	return ( igdeTemplateReplace* )pReplaces.GetAt( index );
+igdeTemplateReplace *igdeTemplateReplaceList::GetAt(int index) const{
+	return (igdeTemplateReplace*)pReplaces.GetAt(index);
 }
 
-int igdeTemplateReplaceList::IndexOf( igdeTemplateReplace *replace ) const{
-	return pReplaces.IndexOf( replace );
+int igdeTemplateReplaceList::IndexOf(igdeTemplateReplace *replace) const{
+	return pReplaces.IndexOf(replace);
 }
 
-bool igdeTemplateReplaceList::Has( igdeTemplateReplace *replace ) const{
-	return pReplaces.Has( replace );
+bool igdeTemplateReplaceList::Has(igdeTemplateReplace *replace) const{
+	return pReplaces.Has(replace);
 }
 
-void igdeTemplateReplaceList::Add( igdeTemplateReplace *replace ){
-	if( ! replace ){
-		DETHROW( deeInvalidParam );
+void igdeTemplateReplaceList::Add(igdeTemplateReplace *replace){
+	if(!replace){
+		DETHROW(deeInvalidParam);
 	}
-	pReplaces.Add( replace );
+	pReplaces.Add(replace);
 }
 
-void igdeTemplateReplaceList::Remove( igdeTemplateReplace *replace ){
-	pReplaces.Remove( replace );
+void igdeTemplateReplaceList::Remove(igdeTemplateReplace *replace){
+	pReplaces.Remove(replace);
 }
 
 void igdeTemplateReplaceList::RemoveAll(){
@@ -90,7 +90,7 @@ void igdeTemplateReplaceList::RemoveAll(){
 // Operators
 //////////////
 
-igdeTemplateReplaceList &igdeTemplateReplaceList::operator=( const igdeTemplateReplaceList &list ){
+igdeTemplateReplaceList &igdeTemplateReplaceList::operator=(const igdeTemplateReplaceList &list){
 	pReplaces = list.pReplaces;
 	return *this;
 }

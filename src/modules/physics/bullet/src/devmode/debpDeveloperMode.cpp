@@ -54,12 +54,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpDeveloperMode::debpDeveloperMode( dePhysicsBullet &bullet ) :
-pBullet( bullet ),
-pEnabled( false ),
-pTakeSnapshot( false ),
-pHighlightResponseType( -1 ),
-pHighlightDeactivation( false )
+debpDeveloperMode::debpDeveloperMode(dePhysicsBullet &bullet) :
+pBullet(bullet),
+pEnabled(false),
+pTakeSnapshot(false),
+pHighlightResponseType(-1),
+pHighlightDeactivation(false)
 {
 	(void)pBullet; // for future use
 }
@@ -72,38 +72,38 @@ debpDeveloperMode::~debpDeveloperMode(){
 // Management
 ///////////////
 
-bool debpDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.MatchesArgumentAt( 0, "dm_enable" ) ){
-		pCmdEnable( command, answer );
+bool debpDeveloperMode::ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.MatchesArgumentAt(0, "dm_enable")){
+		pCmdEnable(command, answer);
 		return true;
 	}
 	
-	if( ! pEnabled ){
+	if(!pEnabled){
 		return false;
 	}
 	
-	if( command.MatchesArgumentAt( 0, "dm_help" ) ){
-		pCmdHelp( command, answer );
+	if(command.MatchesArgumentAt(0, "dm_help")){
+		pCmdHelp(command, answer);
 		return true;
 		
-	}else if( command.MatchesArgumentAt( 0, "dm_take_snapshot" ) ){
-		pCmdTakeSnapshot( command, answer );
+	}else if(command.MatchesArgumentAt(0, "dm_take_snapshot")){
+		pCmdTakeSnapshot(command, answer);
 		return true;
 		
-	}else if( command.MatchesArgumentAt( 0, "dm_show_category" ) ){
-		pCmdShowCategory( command, answer );
+	}else if(command.MatchesArgumentAt(0, "dm_show_category")){
+		pCmdShowCategory(command, answer);
 		return true;
 		
-	}else if( command.MatchesArgumentAt( 0, "dm_highlight_response_type" ) ){
-		pCmdHighlightResponseType( command, answer );
+	}else if(command.MatchesArgumentAt(0, "dm_highlight_response_type")){
+		pCmdHighlightResponseType(command, answer);
 		return true;
 		
-	}else if( command.MatchesArgumentAt( 0, "dm_highlight_deactivation" ) ){
-		pCmdHighlightDeactivation( command, answer );
+	}else if(command.MatchesArgumentAt(0, "dm_highlight_deactivation")){
+		pCmdHighlightDeactivation(command, answer);
 		return true;
 		
-	}else if( command.MatchesArgumentAt( 0, "dm_debug" ) ){
-		pCmdDebugEnable( command, answer );
+	}else if(command.MatchesArgumentAt(0, "dm_debug")){
+		pCmdDebugEnable(command, answer);
 		return true;
 	}
 	
@@ -112,9 +112,9 @@ bool debpDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, d
 
 
 
-void debpDeveloperMode::TakeSnapshot( debpWorld *world ){
-	if( pTakeSnapshot ){
-		if( ! world ) DETHROW( deeInvalidParam );
+void debpDeveloperMode::TakeSnapshot(debpWorld *world){
+	if(pTakeSnapshot){
+		if(!world) DETHROW(deeInvalidParam);
 		
 		// determine the file to save to. currently this is a hack in that we store
 		// the file into the shared path of the module which is of course in a real
@@ -124,7 +124,7 @@ void debpDeveloperMode::TakeSnapshot( debpWorld *world ){
 		// access to.
 		decPath path;
 		
-		path.SetFromNative( "/var/snapshot.dae" );
+		path.SetFromNative("/var/snapshot.dae");
 		
 		// take the snapshot.
 		// NOTE: this is not working at all. too many dependencies on external files
@@ -144,38 +144,38 @@ void debpDeveloperMode::TakeSnapshot( debpWorld *world ){
 // Private functions
 //////////////////////
 
-void debpDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	answer.SetFromUTF8( "dm_help => Displays this help screen.\n" );
-	answer.AppendFromUTF8( "dm_take_snapshot => Snapshot next world into a COLLADA file.\n" );
-	answer.AppendFromUTF8( "dm_show_category => Show collision objects with collision category (comma-separated list of bit-numbers or 'off').\n" );
-	answer.AppendFromUTF8( "dm_highlight_response_type => Highlight response type if dm_show_category is used.\n" );
-	answer.AppendFromUTF8( "dm_highlight_deactivation {1 | 0} => Hilight deactivation state if dm_show_category is used.\n" );
-	answer.AppendFromUTF8( "dm_debug {enable | disable} => Enable performance debugging.\n" );
+void debpDeveloperMode::pCmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	answer.SetFromUTF8("dm_help => Displays this help screen.\n");
+	answer.AppendFromUTF8("dm_take_snapshot => Snapshot next world into a COLLADA file.\n");
+	answer.AppendFromUTF8("dm_show_category => Show collision objects with collision category (comma-separated list of bit-numbers or 'off').\n");
+	answer.AppendFromUTF8("dm_highlight_response_type => Highlight response type if dm_show_category is used.\n");
+	answer.AppendFromUTF8("dm_highlight_deactivation {1 | 0} => Hilight deactivation state if dm_show_category is used.\n");
+	answer.AppendFromUTF8("dm_debug {enable | disable} => Enable performance debugging.\n");
 }
 
-void debpDeveloperMode::pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void debpDeveloperMode::pCmdEnable(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	pEnabled = true;
-	answer.AppendFromUTF8( "Developer Mode is enabled" );
+	answer.AppendFromUTF8("Developer Mode is enabled");
 }
 
-void debpDeveloperMode::pCmdTakeSnapshot( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void debpDeveloperMode::pCmdTakeSnapshot(const decUnicodeArgumentList &command, decUnicodeString &answer){
 	pTakeSnapshot = true;
 }
 
-void debpDeveloperMode::pCmdShowCategory( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		const decString newValue( command.GetArgumentAt( 1 )->ToUTF8() );
+void debpDeveloperMode::pCmdShowCategory(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.GetArgumentCount() == 2){
+		const decString newValue(command.GetArgumentAt(1)->ToUTF8());
 		
 		pShowCategory.ClearMask();
 		
-		if( ! newValue.EqualsInsensitive( "off" ) ){
-			const decStringList bits( newValue.Split( ',' ) );
+		if(!newValue.EqualsInsensitive("off")){
+			const decStringList bits(newValue.Split(','));
 			const int count = bits.GetCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				const int bit = bits.GetAt( i ).ToInt();
-				if( bit >= 0 && bit < 64 ){
-					pShowCategory.SetBit( bit );
+			for(i=0; i<count; i++){
+				const int bit = bits.GetAt(i).ToInt();
+				if(bit >= 0 && bit < 64){
+					pShowCategory.SetBit(bit);
 				}
 			}
 		}
@@ -185,77 +185,77 @@ void debpDeveloperMode::pCmdShowCategory( const decUnicodeArgumentList &command,
 	decString text;
 	
 	int i;
-	for( i=0; i<63; i++ ){
-		if( pShowCategory.IsBitSet( i ) ){
-			if( ! bitString.IsEmpty() ){
-				bitString.AppendCharacter( ',' );
+	for(i=0; i<63; i++){
+		if(pShowCategory.IsBitSet(i)){
+			if(!bitString.IsEmpty()){
+				bitString.AppendCharacter(',');
 			}
-			bitString.AppendValue( i );
+			bitString.AppendValue(i);
 		}
 	}
-	if( bitString.IsEmpty() ){
+	if(bitString.IsEmpty()){
 		bitString = "off";
 	}
 	
-	text.Format( "dm_show_category = %s\n", bitString.GetString() );
-	answer.AppendFromUTF8( text );
+	text.Format("dm_show_category = %s\n", bitString.GetString());
+	answer.AppendFromUTF8(text);
 }
 
-void debpDeveloperMode::pCmdHighlightResponseType( const decUnicodeArgumentList &command,
-decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		const decString newValue( command.GetArgumentAt( 1 )->ToUTF8() );
+void debpDeveloperMode::pCmdHighlightResponseType(const decUnicodeArgumentList &command,
+decUnicodeString &answer){
+	if(command.GetArgumentCount() == 2){
+		const decString newValue(command.GetArgumentAt(1)->ToUTF8());
 		
-		if( newValue == "static" || newValue == "s" ){
+		if(newValue == "static" || newValue == "s"){
 			pHighlightResponseType = deCollider::ertStatic;
 			
-		}else if( newValue == "kinematic" || newValue == "k" ){
+		}else if(newValue == "kinematic" || newValue == "k"){
 			pHighlightResponseType = deCollider::ertKinematic;
 			
-		}else if( newValue == "dynamic" || newValue == "d" ){
+		}else if(newValue == "dynamic" || newValue == "d"){
 			pHighlightResponseType = deCollider::ertDynamic;
 			
-		}else if( newValue == "off" ){
+		}else if(newValue == "off"){
 			pHighlightResponseType = -1;
 			
 		}else{
-			answer.AppendFromUTF8( "dm_highlight_response_type {off | (s)tatic | (k)inematic | (d)ynamic}" );
+			answer.AppendFromUTF8("dm_highlight_response_type {off | (s)tatic | (k)inematic | (d)ynamic}");
 			return;
 		}
 	}
 	
-	switch( pHighlightResponseType ){
+	switch(pHighlightResponseType){
 	case deCollider::ertStatic:
-		answer.AppendFromUTF8( "dm_highlight_response_type = static" );
+		answer.AppendFromUTF8("dm_highlight_response_type = static");
 		break;
 		
 	case deCollider::ertKinematic:
-		answer.AppendFromUTF8( "dm_highlight_response_type = kinematic" );
+		answer.AppendFromUTF8("dm_highlight_response_type = kinematic");
 		break;
 		
 	case deCollider::ertDynamic:
-		answer.AppendFromUTF8( "dm_highlight_response_type = dynamic" );
+		answer.AppendFromUTF8("dm_highlight_response_type = dynamic");
 		break;
 		
 	default:
-		answer.AppendFromUTF8( "dm_highlight_response_type = off" );
+		answer.AppendFromUTF8("dm_highlight_response_type = off");
 		break;
 	}
 }
 
-void debpDeveloperMode::pCmdHighlightDeactivation( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pHighlightDeactivation = command.GetArgumentAt( 1 )->ToInt() != 0;
+void debpDeveloperMode::pCmdHighlightDeactivation(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.GetArgumentCount() == 2){
+		pHighlightDeactivation = command.GetArgumentAt(1)->ToInt() != 0;
 	}
-	answer.AppendFormat( "dm_highlight_deactivation = %d", pHighlightDeactivation ? 1 : 0 );
+	answer.AppendFormat("dm_highlight_deactivation = %d", pHighlightDeactivation ? 1 : 0);
 }
 
-void debpDeveloperMode::pCmdDebugEnable( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pBullet.GetDebug().SetEnabled( command.GetArgumentAt( 1 )->ToUTF8() == "enable" );
+void debpDeveloperMode::pCmdDebugEnable(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.GetArgumentCount() == 2){
+		pBullet.GetDebug().SetEnabled(command.GetArgumentAt(1)->ToUTF8() == "enable");
 	}
 	
 	decString text;
-	text.Format( "dm_debug = %s\n", pBullet.GetDebug().GetEnabled() ? "enabled" : "disabled" );
-	answer.AppendFromUTF8( text );
+	text.Format("dm_debug = %s\n", pBullet.GetDebug().GetEnabled() ? "enabled" : "disabled");
+	answer.AppendFromUTF8(text);
 }

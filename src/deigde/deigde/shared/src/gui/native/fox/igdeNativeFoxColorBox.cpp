@@ -51,10 +51,10 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxColorBox ) igdeNativeFoxColorBoxMap[] = {
-	FXMAPFUNC( SEL_PAINT, 0, igdeNativeFoxColorBox::onPaint ),
-	FXMAPFUNC( SEL_LEFTBUTTONPRESS, 0, igdeNativeFoxColorBox::onClicked ),
-	FXMAPFUNC( SEL_RIGHTBUTTONPRESS, 0, igdeNativeFoxColorBox::onRClicked )
+FXDEFMAP(igdeNativeFoxColorBox) igdeNativeFoxColorBoxMap[] = {
+	FXMAPFUNC(SEL_PAINT, 0, igdeNativeFoxColorBox::onPaint),
+	FXMAPFUNC(SEL_LEFTBUTTONPRESS, 0, igdeNativeFoxColorBox::onClicked),
+	FXMAPFUNC(SEL_RIGHTBUTTONPRESS, 0, igdeNativeFoxColorBox::onRClicked)
 };
 
 
@@ -64,20 +64,20 @@ FXDEFMAP( igdeNativeFoxColorBox ) igdeNativeFoxColorBoxMap[] = {
 
 decColor igdeNativeFoxColorBox::vCopyColor;
 
-FXIMPLEMENT( igdeNativeFoxColorBox, FXFrame, igdeNativeFoxColorBoxMap, ARRAYNUMBER( igdeNativeFoxColorBoxMap ) )
+FXIMPLEMENT(igdeNativeFoxColorBox, FXFrame, igdeNativeFoxColorBoxMap, ARRAYNUMBER(igdeNativeFoxColorBoxMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxColorBox::igdeNativeFoxColorBox(){ }
+igdeNativeFoxColorBox::igdeNativeFoxColorBox(){}
 
-igdeNativeFoxColorBox::igdeNativeFoxColorBox( igdeColorBox &powner, FXComposite *pparent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXFrame( pparent, layoutFlags | ColorBoxFlags( powner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &powner ),
-pColor( ColorIgdeToFx( powner.GetColor() ) ),
-pDefaultHeight( ColorBoxHeight( guitheme ) ),
-pDefaultWidth( pDefaultHeight * 2 )
+igdeNativeFoxColorBox::igdeNativeFoxColorBox(igdeColorBox &powner, FXComposite *pparent,
+int layoutFlags, const igdeGuiTheme &guitheme) :
+FXFrame(pparent, layoutFlags | ColorBoxFlags(powner), 0, 0, 0, 0, 0, 0, 0, 0),
+pOwner(&powner),
+pColor(ColorIgdeToFx(powner.GetColor())),
+pDefaultHeight(ColorBoxHeight(guitheme)),
+pDefaultWidth(pDefaultHeight * 2)
 {
 	UpdateEnabled();
 	UpdateDescription();
@@ -86,23 +86,23 @@ pDefaultWidth( pDefaultHeight * 2 )
 igdeNativeFoxColorBox::~igdeNativeFoxColorBox(){
 }
 
-igdeNativeFoxColorBox *igdeNativeFoxColorBox::CreateNativeWidget( igdeColorBox &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxColorBox *igdeNativeFoxColorBox::CreateNativeWidget(igdeColorBox &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxColorBox( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
+	return new igdeNativeFoxColorBox(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner), *powner.GetGuiTheme());
 }
 
 void igdeNativeFoxColorBox::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -126,7 +126,7 @@ int igdeNativeFoxColorBox::getDefaultHeight(){
 
 
 void igdeNativeFoxColorBox::UpdateColor(){
-	pColor = ColorIgdeToFx( pOwner->GetColor() );
+	pColor = ColorIgdeToFx(pOwner->GetColor());
 	update();
 }
 
@@ -137,7 +137,7 @@ void igdeNativeFoxColorBox::UpdateDescription(){
 }
 
 void igdeNativeFoxColorBox::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -145,7 +145,7 @@ void igdeNativeFoxColorBox::UpdateEnabled(){
 	}
 }
 
-void igdeNativeFoxColorBox::ClipboardPutColor( const decColor &color ){
+void igdeNativeFoxColorBox::ClipboardPutColor(const decColor &color){
 	igdeNativeFoxColorBox::vCopyColor = color;
 }
 
@@ -155,28 +155,28 @@ decColor igdeNativeFoxColorBox::ClipboardGetColor(){
 
 
 
-int igdeNativeFoxColorBox::ColorBoxFlags( const igdeColorBox & ){
+int igdeNativeFoxColorBox::ColorBoxFlags(const igdeColorBox &){
 	return FRAME_NORMAL;
 }
 
-FXColor igdeNativeFoxColorBox::ColorIgdeToFx( const decColor &color ){
+FXColor igdeNativeFoxColorBox::ColorIgdeToFx(const decColor &color){
 	return FXRGBA(
-		( int )( color.r * 255.0f ),
-		( int )( color.g * 255.0f ),
-		( int )( color.b * 255.0f ),
-		( int )( color.a * 255.0f ) );
+		(int)(color.r * 255.0f),
+		(int)(color.g * 255.0f),
+		(int)(color.b * 255.0f),
+		(int)(color.a * 255.0f));
 }
 
-decColor igdeNativeFoxColorBox::ColorFxToIgde( FXColor color ){
+decColor igdeNativeFoxColorBox::ColorFxToIgde(FXColor color){
 	return decColor(
-		( float )( FXREDVAL( color ) ) / 255.0f,
-		( float )( FXGREENVAL( color ) ) / 255.0f,
-		( float )( FXBLUEVAL( color ) ) / 255.0f,
-		( float )( FXALPHAVAL( color ) ) / 255.0f );
+		(float)(FXREDVAL(color)) / 255.0f,
+		(float)(FXGREENVAL(color)) / 255.0f,
+		(float)(FXBLUEVAL(color)) / 255.0f,
+		(float)(FXALPHAVAL(color)) / 255.0f);
 }
 
-int igdeNativeFoxColorBox::ColorBoxHeight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::colorBoxHeight, 15 );
+int igdeNativeFoxColorBox::ColorBoxHeight(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::colorBoxHeight, 15);
 }
 
 
@@ -184,78 +184,78 @@ int igdeNativeFoxColorBox::ColorBoxHeight( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxColorBox::onPaint( FXObject*, FXSelector, void *pdata ){
-	FXDCWindow dc( this, ( FXEvent* )pdata );
+long igdeNativeFoxColorBox::onPaint(FXObject*, FXSelector, void *pdata){
+	FXDCWindow dc(this, (FXEvent*)pdata);
 	int focusBorder = 0;
 	
-	dc.setForeground( backColor );
+	dc.setForeground(backColor);
 	
-	if( hasSelection() ){
+	if(hasSelection()){
 		focusBorder = FOCUSBORDER;
 	}
 	
-	dc.fillRectangle( 0, 0, width, focusBorder );
-	dc.fillRectangle( 0, focusBorder, focusBorder, height - focusBorder * 2 );
-	dc.fillRectangle( width - focusBorder, focusBorder, focusBorder, height - focusBorder * 2 );
-	dc.fillRectangle( 0, height - focusBorder, width, focusBorder );
-	if( hasSelection() ){
-		dc.setForeground( borderColor );
-		dc.drawRectangle( 1, 1, width - 3, height - 3 );
+	dc.fillRectangle(0, 0, width, focusBorder);
+	dc.fillRectangle(0, focusBorder, focusBorder, height - focusBorder * 2);
+	dc.fillRectangle(width - focusBorder, focusBorder, focusBorder, height - focusBorder * 2);
+	dc.fillRectangle(0, height - focusBorder, width, focusBorder);
+	if(hasSelection()){
+		dc.setForeground(borderColor);
+		dc.drawRectangle(1, 1, width - 3, height - 3);
 	}
 	
-	dc.setForeground( pColor );
-	dc.fillRectangle( focusBorder + 1, focusBorder + 1,
-		width - focusBorder * 2 - 2, height - focusBorder * 2 - 2 );
+	dc.setForeground(pColor);
+	dc.fillRectangle(focusBorder + 1, focusBorder + 1,
+		width - focusBorder * 2 - 2, height - focusBorder * 2 - 2);
 	
-	drawSunkenRectangle( dc, focusBorder, focusBorder,
-		width - focusBorder * 2, height - focusBorder * 2 );
+	drawSunkenRectangle(dc, focusBorder, focusBorder,
+		width - focusBorder * 2, height - focusBorder * 2);
 	
-	if( hasFocus() ){
-		dc.drawFocusRectangle( 0, 0, width, height );
+	if(hasFocus()){
+		dc.drawFocusRectangle(0, 0, width, height);
 	}
 	
 	return 1;
 }
 
-long igdeNativeFoxColorBox::onClicked( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxColorBox::onClicked(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
-	FXColorDialog dialog( this, "Select Color" );
+	FXColorDialog dialog(this, "Select Color");
 	
-	dialog.setOpaqueOnly( false );
-	dialog.setRGBA( pColor );
+	dialog.setOpaqueOnly(false);
+	dialog.setRGBA(pColor);
 	
-	if( ! dialog.execute( PLACEMENT_OWNER ) ){
+	if(!dialog.execute(PLACEMENT_OWNER)){
 		return 0;
 	}
 	
 	const FXColor color = dialog.getRGBA();
-	if( color == pColor ){
+	if(color == pColor){
 		return 0;
 	}
 	
 	try{
-		pOwner->SetColor( ColorFxToIgde( color ) );
+		pOwner->SetColor(ColorFxToIgde(color));
 		pOwner->NotifyColorChanged();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	
 	return 1;
 }
 
-long igdeNativeFoxColorBox::onRClicked( FXObject*, FXSelector, void *pdata ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxColorBox::onRClicked(FXObject*, FXSelector, void *pdata){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )pdata );
-	pOwner->ShowContextMenu( decPoint( event.win_x, event.win_y ) );
+	const FXEvent &event = *((FXEvent*)pdata);
+	pOwner->ShowContextMenu(decPoint(event.win_x, event.win_y));
 	return 1;
 }
 

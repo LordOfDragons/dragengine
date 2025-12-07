@@ -40,26 +40,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deForceField::deForceField( deForceFieldManager *manager ) :
-deResource( manager ),
+deForceField::deForceField(deForceFieldManager *manager) :
+deResource(manager),
 
-pRadius( 1.0f ),
-pExponent( 1.0f ),
-pFieldType( eftRadial ),
-pApplicationType( eatDirect ),
-pForce( 1.0f ),
-pFluctuationDirection( 0.0f ),
-pFluctuationForce( 0.0f ),
-pEnabled( true ),
-pPeerPhysics ( NULL ),
+pRadius(1.0f),
+pExponent(1.0f),
+pFieldType(eftRadial),
+pApplicationType(eatDirect),
+pForce(1.0f),
+pFluctuationDirection(0.0f),
+pFluctuationForce(0.0f),
+pEnabled(true),
+pPeerPhysics (NULL),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ){
+pParentWorld(NULL),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL){
 }
 
 deForceField::~deForceField(){
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 		pPeerPhysics = NULL;
 	}
@@ -70,165 +70,165 @@ deForceField::~deForceField(){
 // Management
 ///////////////
 
-void deForceField::SetPosition( const decDVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void deForceField::SetPosition(const decDVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->PositionChanged();
 	}
 }
 
-void deForceField::SetOrientation( const decQuaternion &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void deForceField::SetOrientation(const decQuaternion &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->OrientationChanged();
 	}
 }
 
 
 
-void deForceField::SetInfluenceArea( const decShapeList &area ){
+void deForceField::SetInfluenceArea(const decShapeList &area){
 	pInfluenceArea = area;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->InfluenceAreaChanged();
 	}
 }
 
-void deForceField::SetRadius( float radius ){
-	radius = decMath::max( radius, 0.0f );
-	if( fabsf( radius - pRadius ) < FLOAT_SAFE_EPSILON ){
+void deForceField::SetRadius(float radius){
+	radius = decMath::max(radius, 0.0f);
+	if(fabsf(radius - pRadius) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pRadius = radius;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->RadiusChanged();
 	}
 }
 
-void deForceField::SetExponent( float exponent ){
-	exponent = decMath::max( exponent, 0.0f );
-	if( fabsf( exponent - pExponent ) < FLOAT_SAFE_EPSILON ){
+void deForceField::SetExponent(float exponent){
+	exponent = decMath::max(exponent, 0.0f);
+	if(fabsf(exponent - pExponent) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pExponent = exponent;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->ExponentChanged();
 	}
 }
 
 
 
-void deForceField::SetFieldType( eFieldTypes type ){
-	if( type == pFieldType ){
+void deForceField::SetFieldType(eFieldTypes type){
+	if(type == pFieldType){
 		return;
 	}
 	
-	if( type < eftRadial || type > eftVortex ){
-		DETHROW( deeInvalidParam );
+	if(type < eftRadial || type > eftVortex){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFieldType = type;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->TypeChanged();
 	}
 }
 
-void deForceField::SetApplicationType( eApplicationTypes type ){
-	if( type == pApplicationType ){
+void deForceField::SetApplicationType(eApplicationTypes type){
+	if(type == pApplicationType){
 		return;
 	}
 	
-	if( type < eatDirect || type > eatSpeed ){
-		DETHROW( deeInvalidParam );
+	if(type < eatDirect || type > eatSpeed){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pApplicationType = type;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->TypeChanged();;
 	}
 }
 
-void deForceField::SetDirection( const decVector &direction ){
-	if( direction.IsEqualTo( pDirection ) ){
+void deForceField::SetDirection(const decVector &direction){
+	if(direction.IsEqualTo(pDirection)){
 		return;
 	}
 	
 	pDirection = direction;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->DirectionChanged();
 	}
 }
 
-void deForceField::SetForce( float force ){
-	if( fabsf( force - pForce ) < FLOAT_SAFE_EPSILON ){
+void deForceField::SetForce(float force){
+	if(fabsf(force - pForce) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pForce = force;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->ForceChanged();
 	}
 }
 
-void deForceField::SetFluctuationDirection( float fluctuation ){
-	if( fabsf( fluctuation - pFluctuationDirection ) < FLOAT_SAFE_EPSILON ){
+void deForceField::SetFluctuationDirection(float fluctuation){
+	if(fabsf(fluctuation - pFluctuationDirection) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pFluctuationDirection = fluctuation;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->FluctuationChanged();
 	}
 }
 
-void deForceField::SetFluctuationForce( float fluctuation ){
-	if( fabsf( fluctuation - pFluctuationForce ) < FLOAT_SAFE_EPSILON ){
+void deForceField::SetFluctuationForce(float fluctuation){
+	if(fabsf(fluctuation - pFluctuationForce) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pFluctuationForce = fluctuation;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->FluctuationChanged();
 	}
 }
 
 
 
-void deForceField::SetShape( const decShapeList &shape ){
+void deForceField::SetShape(const decShapeList &shape){
 	pShape = shape;
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->ShapeChanged();
 	}
 }
 
-void deForceField::SetCollisionFilter( const decCollisionFilter &filter ){
-	if( filter == pCollisionFilter ){
+void deForceField::SetCollisionFilter(const decCollisionFilter &filter){
+	if(filter == pCollisionFilter){
 		return;
 	}
 	
 	pCollisionFilter = filter;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->CollisionFilterChanged();;
 	}
 }
 
-void deForceField::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void deForceField::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
 	pEnabled = enabled;
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->EnabledChanged();
 	}
 }
@@ -238,12 +238,12 @@ void deForceField::SetEnabled( bool enabled ){
 // System Peers
 /////////////////
 
-void deForceField::SetPeerPhysics( deBasePhysicsForceField *peer ){
-	if( peer == pPeerPhysics ){
+void deForceField::SetPeerPhysics(deBasePhysicsForceField *peer){
+	if(peer == pPeerPhysics){
 		return;
 	}
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 	}
 	pPeerPhysics = peer;
@@ -254,14 +254,14 @@ void deForceField::SetPeerPhysics( deBasePhysicsForceField *peer ){
 // Linked List
 ////////////////
 
-void deForceField::SetParentWorld( deWorld *world ){
+void deForceField::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deForceField::SetLLWorldPrev( deForceField *forceField ){
+void deForceField::SetLLWorldPrev(deForceField *forceField){
 	pLLWorldPrev = forceField;
 }
 
-void deForceField::SetLLWorldNext( deForceField *forceField ){
+void deForceField::SetLLWorldNext(deForceField *forceField){
 	pLLWorldNext = forceField;
 }

@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleComponents::meHTVRuleComponents() : meHTVRule( ertComponents, 4 ){
-	GetSlotAt( eisVector ).SetIsInput( true );
+meHTVRuleComponents::meHTVRuleComponents() : meHTVRule(ertComponents, 4){
+	GetSlotAt(eisVector).SetIsInput(true);
 	
-	GetSlotAt( eosX ).SetIsInput( false );
-	GetSlotAt( eosY ).SetIsInput( false );
-	GetSlotAt( eosZ ).SetIsInput( false );
+	GetSlotAt(eosX).SetIsInput(false);
+	GetSlotAt(eosY).SetIsInput(false);
+	GetSlotAt(eosZ).SetIsInput(false);
 }
 
-meHTVRuleComponents::meHTVRuleComponents( const meHTVRuleComponents &rule ) :
-meHTVRule( rule ),
-pVector( rule.pVector ){
+meHTVRuleComponents::meHTVRuleComponents(const meHTVRuleComponents &rule) :
+meHTVRule(rule),
+pVector(rule.pVector){
 }
 
 meHTVRuleComponents::~meHTVRuleComponents(){
@@ -62,26 +62,26 @@ meHTVRuleComponents::~meHTVRuleComponents(){
 // Management
 ///////////////
 
-void meHTVRuleComponents::SetVector( const decVector &vector ){
+void meHTVRuleComponents::SetVector(const decVector &vector){
 	pVector = vector;
 }
 
 
 
-float meHTVRuleComponents::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot < 0 || slot > 2 ) DETHROW( deeInvalidParam );
+float meHTVRuleComponents::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot < 0 || slot > 2) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &slotResult = GetSlotAt( eisVector );
+	meHTVRSlot &slotResult = GetSlotAt(eisVector);
 	
-	if( slotResult.GetLinkCount() > 0 ){
-		meHTVRLink &link = *slotResult.GetLinkAt( 0 );
+	if(slotResult.GetLinkCount() > 0){
+		meHTVRLink &link = *slotResult.GetLinkAt(0);
 		
-		decVector vector = link.GetSourceRule()->GetOutputSlotVectorAt( link.GetSourceSlot(), evalEnv );
+		decVector vector = link.GetSourceRule()->GetOutputSlotVectorAt(link.GetSourceSlot(), evalEnv);
 		
-		if( slot == eosX ){
+		if(slot == eosX){
 			return vector.x;
 			
-		}else if( slot == eosY ){
+		}else if(slot == eosY){
 			return vector.y;
 			
 		}else{ // slot == eosZ
@@ -89,10 +89,10 @@ float meHTVRuleComponents::GetOutputSlotValueAt( int slot, meHTVEvaluationEnviro
 		}
 		
 	}else{
-		if( slot == eosX ){
+		if(slot == eosX){
 			return pVector.x;
 			
-		}else if( slot == eosY ){
+		}else if(slot == eosY){
 			return pVector.y;
 			
 		}else{ // slot == eosZ
@@ -101,12 +101,12 @@ float meHTVRuleComponents::GetOutputSlotValueAt( int slot, meHTVEvaluationEnviro
 	}
 }
 
-decVector meHTVRuleComponents::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	float value = GetOutputSlotValueAt( slot, evalEnv );
+decVector meHTVRuleComponents::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	float value = GetOutputSlotValueAt(slot, evalEnv);
 	
-	return decVector( value, value, value );
+	return decVector(value, value, value);
 }
 
 meHTVRule *meHTVRuleComponents::Copy() const{
-	return new meHTVRuleComponents( *this );
+	return new meHTVRuleComponents(*this);
 }

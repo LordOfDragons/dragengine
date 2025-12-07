@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAttachTo::meUObjectAttachTo( meWorld *world, const meObjectList &objects, meObject *attachTo ){
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects, meObject *attachTo){
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = objects.GetCount();
 	meObject *object;
 	decString text;
 	
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
+	if(count == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWorld = NULL;
@@ -59,42 +59,42 @@ meUObjectAttachTo::meUObjectAttachTo( meWorld *world, const meObjectList &object
 	pObjects = NULL;
 	pObjectCount = 0;
 	
-	if( attachTo ){
-		SetShortInfo( "Attach Objects To" );
+	if(attachTo){
+		SetShortInfo("Attach Objects To");
 		
 	}else{
-		SetShortInfo( "Detach Objects" );
+		SetShortInfo("Detach Objects");
 	}
 	
-	if( count > 1 ){
-		text.Format( "%i objects", count );
+	if(count > 1){
+		text.Format("%i objects", count);
 		
 	}else{
 		text = "1 object";
 	}
-	SetLongInfo( text.GetString() );
+	SetLongInfo(text.GetString());
 	
 	try{
-		pObjects = new sObject[ count ];
+		pObjects = new sObject[count];
 		
-		for( pObjectCount=0; pObjectCount<count; pObjectCount++ ){
-			object = objects.GetAt( pObjectCount );
+		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
+			object = objects.GetAt(pObjectCount);
 			
-			pObjects[ pObjectCount ].object = object;
+			pObjects[pObjectCount].object = object;
 			object->AddReference();
-			pObjects[ pObjectCount ].oldAttachTo = object->GetAttachedTo();
-			if( pObjects[ pObjectCount ].oldAttachTo ){
-				pObjects[ pObjectCount ].oldAttachTo->AddReference();
+			pObjects[pObjectCount].oldAttachTo = object->GetAttachedTo();
+			if(pObjects[pObjectCount].oldAttachTo){
+				pObjects[pObjectCount].oldAttachTo->AddReference();
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
 	pAttachTo = attachTo;
-	if( attachTo ){
+	if(attachTo){
 		attachTo->AddReference();
 	}
 	
@@ -115,12 +115,12 @@ void meUObjectAttachTo::Undo(){
 	meObject *object;
 	int o;
 	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ].object;
+	for(o=0; o<pObjectCount; o++){
+		object = pObjects[o].object;
 		
-		if( object != pObjects[ o ].oldAttachTo ){
-			object->SetAttachedTo( pObjects[ o ].oldAttachTo );
-			pWorld->NotifyObjectGeometryChanged( object );
+		if(object != pObjects[o].oldAttachTo){
+			object->SetAttachedTo(pObjects[o].oldAttachTo);
+			pWorld->NotifyObjectGeometryChanged(object);
 		}
 	}
 }
@@ -129,12 +129,12 @@ void meUObjectAttachTo::Redo(){
 	meObject *object;
 	int o;
 	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ].object;
+	for(o=0; o<pObjectCount; o++){
+		object = pObjects[o].object;
 		
-		if( object != pAttachTo ){
-			object->SetAttachedTo( pAttachTo );
-			pWorld->NotifyObjectGeometryChanged( object );
+		if(object != pAttachTo){
+			object->SetAttachedTo(pAttachTo);
+			pWorld->NotifyObjectGeometryChanged(object);
 		}
 	}
 }
@@ -145,23 +145,23 @@ void meUObjectAttachTo::Redo(){
 //////////////////////
 
 void meUObjectAttachTo::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
+	if(pObjects){
+		while(pObjectCount > 0){
 			pObjectCount--;
-			if( pObjects[ pObjectCount ].oldAttachTo ){
-				pObjects[ pObjectCount ].oldAttachTo->FreeReference();
+			if(pObjects[pObjectCount].oldAttachTo){
+				pObjects[pObjectCount].oldAttachTo->FreeReference();
 			}
-			pObjects[ pObjectCount ].object->FreeReference();
+			pObjects[pObjectCount].object->FreeReference();
 		}
 		
 		delete [] pObjects;
 	}
 	
-	if( pAttachTo ){
+	if(pAttachTo){
 		pAttachTo->FreeReference();
 	}
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }

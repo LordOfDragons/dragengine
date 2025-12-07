@@ -55,25 +55,25 @@ public:
 	inline int GetX() const{ return pX; }
 	
 	/** \brief Set x position. */
-	void SetX( int x );
+	void SetX(int x);
 	
 	/** \brief Y position. */
 	inline int GetY() const{ return pY; }
 	
 	/** \brief Set y position. */
-	void SetY( int y );
+	void SetY(int y);
 	
 	/** \brief Width. */
 	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Set widht. */
-	void SetWidth( int width );
+	void SetWidth(int width);
 	
 	/** \brief Height. */
 	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Set height. */
-	void SetHeight( int height );
+	void SetHeight(int height);
 	/*@}*/
 };
 

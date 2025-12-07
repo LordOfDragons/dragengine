@@ -40,21 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPLogLevel::deoglPLogLevel( deGraphicOpenGl &ogl ) : deoglParameter( ogl ){
-		SetName( "logLevel" );
-	SetDescription( "Log level." );
-	SetType( deModuleParameter::eptSelection );
-	SetCategory( ecAdvanced );
-	SetDisplayName( "Log Level" );
+deoglPLogLevel::deoglPLogLevel(deGraphicOpenGl &ogl) : deoglParameter(ogl){
+		SetName("logLevel");
+	SetDescription("Log level.");
+	SetType(deModuleParameter::eptSelection);
+	SetCategory(ecAdvanced);
+	SetDisplayName("Log Level");
 	
-	const deModuleParameter::SelectionEntry entries[ 4 ] = {
-		{ "error", "Error", "Log only errors." },
-		{ "warning", "Warning", "Log errors and warnings." },
-		{ "info", "Info", "Log errors, warnings and information." },
-		{ "debug", "Debug", "Log everything" }
+	const deModuleParameter::SelectionEntry entries[4] = {
+		{"error", "Error", "Log only errors."},
+		{"warning", "Warning", "Log errors and warnings."},
+		{"info", "Info", "Log errors, warnings and information."},
+		{"debug", "Debug", "Log everything"}
 	};
-	AddSelectionEntries( entries, 4 );
-	SetDefaultValue( "info" );
+	AddSelectionEntries(entries, 4);
+	SetDefaultValue("info");
 }
 
 deoglPLogLevel::~deoglPLogLevel(){
@@ -66,7 +66,7 @@ deoglPLogLevel::~deoglPLogLevel(){
 ////////////////////
 
 decString deoglPLogLevel::GetParameterValue(){
-	switch( pOgl.GetConfiguration().GetLogLevel() ){
+	switch(pOgl.GetConfiguration().GetLogLevel()){
 	case deoglConfiguration::ellError:
 		return "error";
 		
@@ -80,25 +80,25 @@ decString deoglPLogLevel::GetParameterValue(){
 		return "debug";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void deoglPLogLevel::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
-	if( checkValue == "error" ){
-		pOgl.GetConfiguration().SetLogLevel( deoglConfiguration::ellError );
+void deoglPLogLevel::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
+	if(checkValue == "error"){
+		pOgl.GetConfiguration().SetLogLevel(deoglConfiguration::ellError);
 		
-	}else if( checkValue == "warning" ){
-		pOgl.GetConfiguration().SetLogLevel( deoglConfiguration::ellWarning );
+	}else if(checkValue == "warning"){
+		pOgl.GetConfiguration().SetLogLevel(deoglConfiguration::ellWarning);
 		
-	}else if( checkValue == "info" ){
-		pOgl.GetConfiguration().SetLogLevel( deoglConfiguration::ellInfo );
+	}else if(checkValue == "info"){
+		pOgl.GetConfiguration().SetLogLevel(deoglConfiguration::ellInfo);
 		
-	}else if( checkValue == "debug" ){
-		pOgl.GetConfiguration().SetLogLevel( deoglConfiguration::ellDebug );
+	}else if(checkValue == "debug"){
+		pOgl.GetConfiguration().SetLogLevel(deoglConfiguration::ellDebug);
 		
 	}else{
-		pOgl.GetConfiguration().SetLogLevel( deoglConfiguration::ellError );
+		pOgl.GetConfiguration().SetLogLevel(deoglConfiguration::ellError);
 	}
 }

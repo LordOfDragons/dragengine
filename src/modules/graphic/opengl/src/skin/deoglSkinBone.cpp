@@ -34,9 +34,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinBone::deoglSkinBone( const decString &name ) :
-pName( name ),
-pBone( -1 ){
+deoglSkinBone::deoglSkinBone(const decString &name) :
+pName(name),
+pBone(-1){
 }
 
 deoglSkinBone::~deoglSkinBone(){
@@ -47,7 +47,7 @@ deoglSkinBone::~deoglSkinBone(){
 // Management
 ///////////////
 
-void deoglSkinBone::SetBone( int bone ){
-	DEASSERT_TRUE( bone >= -1 )
+void deoglSkinBone::SetBone(int bone){
+	DEASSERT_TRUE(bone >= -1)
 	pBone = bone;
 }

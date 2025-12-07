@@ -43,15 +43,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRCanvasImage::deoglRCanvasImage( deoglRenderThread &renderThread ) :
-deoglRCanvas( renderThread ),
-pTCClampMin( 0.0f, 0.0f ),
-pTCClampMax( 1.0f, 1.0f ){
-	LEAK_CHECK_CREATE( renderThread, CanvasImage );
+deoglRCanvasImage::deoglRCanvasImage(deoglRenderThread &renderThread) :
+deoglRCanvas(renderThread),
+pTCClampMin(0.0f, 0.0f),
+pTCClampMax(1.0f, 1.0f){
+	LEAK_CHECK_CREATE(renderThread, CanvasImage);
 }
 
 deoglRCanvasImage::~deoglRCanvasImage(){
-	LEAK_CHECK_FREE( GetRenderThread(), CanvasImage );
+	LEAK_CHECK_FREE(GetRenderThread(), CanvasImage);
 }
 
 
@@ -59,40 +59,40 @@ deoglRCanvasImage::~deoglRCanvasImage(){
 // Management
 ///////////////
 
-void deoglRCanvasImage::SetImage( deoglRImage *image ){
+void deoglRCanvasImage::SetImage(deoglRImage *image){
 	pImage = image;
 }
 
-void deoglRCanvasImage::SetTCTransform( const decTexMatrix2 &transform ){
+void deoglRCanvasImage::SetTCTransform(const decTexMatrix2 &transform){
 	pTCTransform = transform;
 }
 
-void deoglRCanvasImage::SetTCClampMinimum( const decVector2 &clamp ){
+void deoglRCanvasImage::SetTCClampMinimum(const decVector2 &clamp){
 	pTCClampMin = clamp;
 }
 
-void deoglRCanvasImage::SetTCClampMaximum( const decVector2 &clamp ){
+void deoglRCanvasImage::SetTCClampMaximum(const decVector2 &clamp){
 	pTCClampMax = clamp;
 }
 
 
 
-void deoglRCanvasImage::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
-	if( ! pImage ){
+void deoglRCanvasImage::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+	if(!pImage){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender( renderPlanMask );
+	deoglRCanvas::PrepareForRender(renderPlanMask);
 	pImage->PrepareForRender();
 }
 
-void deoglRCanvasImage::Render( const deoglRenderCanvasContext &context ){
-	if( ! pImage ){
+void deoglRCanvasImage::Render(const deoglRenderCanvasContext &context){
+	if(!pImage){
 		return;
 	}
 	
-	deoglRenderCanvasContext imageContext( context, *this );
-	imageContext.SetTCClampMinimum( pTCClampMin );
-	imageContext.SetTCClampMaximum( pTCClampMax );
-	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasImage( imageContext, *this );
+	deoglRenderCanvasContext imageContext(context, *this);
+	imageContext.SetTCClampMinimum(pTCClampMin);
+	imageContext.SetTCClampMaximum(pTCClampMax);
+	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasImage(imageContext, *this);
 }

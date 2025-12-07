@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt( ceCameraShot *cameraShot ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt(ceCameraShot *cameraShot){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Toggle Relative To Look-At" );
+	SetShortInfo("Camera Shot Toggle Relative To Look-At");
 	
 	pCameraShot = cameraShot;
 	cameraShot->AddReference();
 }
 
 ceUCCShotToggleRelativeToLookAt::~ceUCCShotToggleRelativeToLookAt(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -62,9 +62,9 @@ ceUCCShotToggleRelativeToLookAt::~ceUCCShotToggleRelativeToLookAt(){
 ///////////////
 
 void ceUCCShotToggleRelativeToLookAt::Undo(){
-	pCameraShot->SetRelativeToLookAt( ! pCameraShot->GetRelativeToLookAt() );
+	pCameraShot->SetRelativeToLookAt(!pCameraShot->GetRelativeToLookAt());
 }
 
 void ceUCCShotToggleRelativeToLookAt::Redo(){
-	pCameraShot->SetRelativeToLookAt( ! pCameraShot->GetRelativeToLookAt() );
+	pCameraShot->SetRelativeToLookAt(!pCameraShot->GetRelativeToLookAt());
 }

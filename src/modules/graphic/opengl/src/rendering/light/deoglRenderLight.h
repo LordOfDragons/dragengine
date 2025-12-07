@@ -92,7 +92,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light renderer. */
-	deoglRenderLight( deoglRenderThread &renderThread, deoglRTRenderers &renderers );
+	deoglRenderLight(deoglRenderThread &renderThread, deoglRTRenderers &renderers);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderLight();
@@ -140,7 +140,7 @@ public:
 	
 	
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray);
 	
 	/**
 	 * Render ambient occlusion.
@@ -167,13 +167,13 @@ public:
 	 *      read and AO-Solidity Red/Green Channel written in one go. Still requires
 	 *      GPU Data Load there but it's only once not twice.
 	 */
-	void RenderAO( deoglRenderPlan &plan, bool solid );
+	void RenderAO(deoglRenderPlan &plan, bool solid);
 	
 	/** Render screen space sub surface scattering. */
-	void RenderSSSSS( deoglRenderPlan &plan, bool solid );
+	void RenderSSSSS(deoglRenderPlan &plan, bool solid);
 	
 	/** Copy first depth to third depth. */
-	void CopyDepth1ToDepth3( deoglRenderPlan &plan );
+	void CopyDepth1ToDepth3(deoglRenderPlan &plan);
 	
 	
 	

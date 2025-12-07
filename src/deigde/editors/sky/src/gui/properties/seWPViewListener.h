@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPViewListener( seWPView &panel );
+	seWPViewListener(seWPView &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPViewListener();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment component changed. */
-	virtual void EnvObjectChanged( seSky *sky );
+	virtual void EnvObjectChanged(seSky *sky);
 	
 	/** \brief View changed. */
-	virtual void ViewChanged( seSky *sky );
+	virtual void ViewChanged(seSky *sky);
 	
 	/** \brief Camera changed. */
-	virtual void CameraChanged( seSky *sky );
+	virtual void CameraChanged(seSky *sky);
 	/*@}*/
 };
 

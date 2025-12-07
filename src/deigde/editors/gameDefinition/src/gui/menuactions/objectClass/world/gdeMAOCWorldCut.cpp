@@ -53,7 +53,7 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class World",
 ///////////////
 
 igdeUndo *gdeMAOCWorldCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCWorld){
 		return nullptr;
 	}

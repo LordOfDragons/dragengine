@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPSimpleController::deoxrDPSimpleController( deoxrInstance &instance ) :
-deoxrDPBaseTwoHandController( instance,
-	deoxrPath( instance, "/interaction_profiles/khr/simple_controller" ),
-	"Simple Controller" )
+deoxrDPSimpleController::deoxrDPSimpleController(deoxrInstance &instance) :
+deoxrDPBaseTwoHandController(instance,
+	deoxrPath(instance, "/interaction_profiles/khr/simple_controller"),
+	"Simple Controller")
 {
 }
 
@@ -66,44 +66,44 @@ void deoxrDPSimpleController::pSuggestBindings(){
 	// - /output/haptic
 	
 	const int bindingCount = 5 * 2;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
+	const decString basePathList[2] = {"/user/hand/left", "/user/hand/right"};
 	int i;
 	
-	for( i=0; i<2; i++ ){
-		const decString &basePath = basePathList[ i ];
+	for(i=0; i<2; i++){
+		const decString &basePath = basePathList[i];
 		
-		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
-		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd(b, pPoseAction(i == 0), basePath + "/input/grip/pose");
+		pAdd(b, pPoseAction2(i == 0), basePath + "/input/aim/pose");
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
+		pAdd(b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click");
 		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
 	}
 	
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 }
 
-void deoxrDPSimpleController::pAddDevice( bool left ){
+void deoxrDPSimpleController::pAddDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if( device ){
+	if(device){
 		return;
 	}
 	
-	pCreateDevice( device, left, "sc_", true );
+	pCreateDevice(device, left, "sc_", true);
 	
-	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
-	pAddButtonTrigger( device, trigger, false ); // has to be button 0
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
+	pAddButtonTrigger(device, trigger, false); // has to be button 0
 	
-	pAddButton( device, ebaPrimary, eblHome, false ); // has to be button 1
+	pAddButton(device, ebaPrimary, eblHome, false); // has to be button 1
 	
 	pAddHandTracker(device, left, true);
 	
-	GetInstance().GetOxr().GetDevices().Add( device );
+	GetInstance().GetOxr().GetDevices().Add(device);
 }

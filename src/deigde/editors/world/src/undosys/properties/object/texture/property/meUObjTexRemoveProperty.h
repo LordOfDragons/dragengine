@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjTexRemoveProperty( meObjectTexture *object, const char *key, const char *value );
+	meUObjTexRemoveProperty(meObjectTexture *object, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */

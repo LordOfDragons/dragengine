@@ -58,31 +58,31 @@ public:
 	static decTexMatrix CreateIdentity();
 	
 	/** \brief Create new translation matrix. */
-	static decTexMatrix CreateTranslation( float u, float v );
+	static decTexMatrix CreateTranslation(float u, float v);
 	
 	/** \brief Create new translation matrix. */
-	static decTexMatrix CreateTranslation( const decVector2 &t );
+	static decTexMatrix CreateTranslation(const decVector2 &t);
 	
 	/** \brief Create new scaling matrix. */
-	static decTexMatrix CreateScale( float su, float sv );
+	static decTexMatrix CreateScale(float su, float sv);
 	
 	/** \brief Create new scaling matrix. */
-	static decTexMatrix CreateScale( const decVector2 &s );
+	static decTexMatrix CreateScale(const decVector2 &s);
 	
 	/** \brief Create new rotation matrix. */
-	static decTexMatrix CreateRotation( float arc );
+	static decTexMatrix CreateRotation(float arc);
 	
 	/** \brief Create shear matrix. */
-	static decTexMatrix CreateShear( float shearU, float shearV );
+	static decTexMatrix CreateShear(float shearU, float shearV);
 	
 	/** \brief Create shear matrix. */
-	static decTexMatrix CreateShear( const decVector2 &shear );
+	static decTexMatrix CreateShear(const decVector2 &shear);
 	
 	/** \brief Create scale-translation matrix. */
-	static decTexMatrix CreateST( float su, float sv, float tu, float tv );
+	static decTexMatrix CreateST(float su, float sv, float tu, float tv);
 	
 	/** \brief Create scale-translation matrix. */
-	static decTexMatrix CreateST( const decVector2 &scaling, const decVector2 &translation );
+	static decTexMatrix CreateST(const decVector2 &scaling, const decVector2 &translation);
 	
 	/** \brief Create rotation-translation matrix. */
 	static decTexMatrix CreateRT(float rotation, float tu, float tv);
@@ -91,19 +91,19 @@ public:
 	static decTexMatrix CreateRT(float rotation, const decVector2 &translation);
 	
 	/** \brief Create scale-rotation-translation matrix. */
-	static decTexMatrix CreateSRT( float su, float sv, float rotation, float tu, float tv );
+	static decTexMatrix CreateSRT(float su, float sv, float rotation, float tu, float tv);
 	
 	/** \brief Create scale-rotation-translation matrix. */
-	static decTexMatrix CreateSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	static decTexMatrix CreateSRT(const decVector2 &scaling, float rotation, const decVector2 &translation);
 	
 	/** \brief Create center scale-rotation-translation matrix. */
-	static decTexMatrix CreateCenterSRT( float su, float sv, float rotation, float tu, float tv );
+	static decTexMatrix CreateCenterSRT(float su, float sv, float rotation, float tu, float tv);
 	
 	/** \brief Create center scale-rotation-translation matrix. */
-	static decTexMatrix CreateCenterSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	static decTexMatrix CreateCenterSRT(const decVector2 &scaling, float rotation, const decVector2 &translation);
 	
 	/** \brief Create center rotation matrix. */
-	static decTexMatrix CreateCenterRotation( float rotation );
+	static decTexMatrix CreateCenterRotation(float rotation);
 	/*@}*/
 	
 	
@@ -114,37 +114,37 @@ public:
 	void SetIdentity();
 	
 	/** \brief Set translation matrix. */
-	void SetTranslation( float u, float v );
+	void SetTranslation(float u, float v);
 	
 	/** \brief Set translation matrix. */
-	void SetTranslation( const decVector2 &translation );
+	void SetTranslation(const decVector2 &translation);
 	
 	/** \brief Set scaling matrix. */
-	void SetScale( float su, float sv );
+	void SetScale(float su, float sv);
 	
 	/** \brief Set scaling matrix. */
-	void SetScale( const decVector2 &scaling );
+	void SetScale(const decVector2 &scaling);
 	
 	/** \brief Set rotation matrix. */
-	void SetRotation( float rotation );
+	void SetRotation(float rotation);
 	
 	/** \brief Set shear matrix. */
-	void SetShear( float shearU, float shearV );
+	void SetShear(float shearU, float shearV);
 	
 	/** \brief Set shear matrix. */
-	void SetShear( const decVector2 &shear );
+	void SetShear(const decVector2 &shear);
 	
 	/** \brief Set scale-translation matrix. */
-	void SetST( float su, float sv, float tu, float tv );
+	void SetST(float su, float sv, float tu, float tv);
 	
 	/** \brief Set scale-translation matrix. */
-	void SetST( const decVector2 &scaling, const decVector2 &translation );
+	void SetST(const decVector2 &scaling, const decVector2 &translation);
 	
 	/** \brief Set scale-rotation-translation matrix. */
-	void SetSRT( float su, float sv, float rotation, float tu, float tv );
+	void SetSRT(float su, float sv, float rotation, float tu, float tv);
 	
 	/** \brief Set scale-rotation-translation matrix. */
-	void SetSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	void SetSRT(const decVector2 &scaling, float rotation, const decVector2 &translation);
 	
 	/** \brief Set rotation-translation matrix. */
 	void SetRT(float rotation, float tu, float tv);
@@ -153,16 +153,16 @@ public:
 	void SetRT(float rotation, const decVector2 &translation);
 	
 	/** \brief Set scale-rotation-translation matrix. */
-	void SetCenterSRT( float su, float sv, float rotation, float tu, float tv );
+	void SetCenterSRT(float su, float sv, float rotation, float tu, float tv);
 	
 	/** \brief Set center scale-rotation-translation matrix. */
-	void SetCenterSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	void SetCenterSRT(const decVector2 &scaling, float rotation, const decVector2 &translation);
 	
 	/** \brief Set center rotation matrix. */
 	void SetCenterRotation(float rotation);
 	
 	/** \brief Matrix is cell wise equal to anither one in respect to a threshold. */
-	bool IsEqualTo( const decTexMatrix &matrix, float threshold = TEXEL_THRESHOLD ) const;
+	bool IsEqualTo(const decTexMatrix &matrix, float threshold = TEXEL_THRESHOLD) const;
 	
 	/** \brief Determinant. */
 	float Determinant() const;
@@ -239,47 +239,47 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set cells of this matrix to the values of another one. */
-	decTexMatrix &operator=( const decTexMatrix &m );
+	decTexMatrix &operator=(const decTexMatrix &m);
 	
 	/** \brief Adds the cells of another matrix to this one. */
-	decTexMatrix &operator+=( const decTexMatrix &m );
+	decTexMatrix &operator+=(const decTexMatrix &m);
 	
 	/** \brief Subtracts the cells of another matrix from this vector. */
-	decTexMatrix &operator-=( const decTexMatrix &m );
+	decTexMatrix &operator-=(const decTexMatrix &m);
 	
 	/** \brief Multiplies the cells of this matrix with a value k. */
-	decTexMatrix &operator*=( float k );
+	decTexMatrix &operator*=(float k);
 	
 	/**
 	 * \brief Divide cells of this matrix by a value k.
 	 * 
 	 * If the value k is 0 an exception is thrown.
 	 */
-	decTexMatrix &operator/=( float k );
+	decTexMatrix &operator/=(float k);
 	
 	/** \brief Multiplies this matrix with another one. */
-	decTexMatrix &operator*=( const decTexMatrix &m );
+	decTexMatrix &operator*=(const decTexMatrix &m);
 	
 	/** \brief Retrieves a new matrix with the sum of this matrix with another one. */
-	decTexMatrix operator+( const decTexMatrix &m ) const;
+	decTexMatrix operator+(const decTexMatrix &m) const;
 	
 	/** \brief Retrieves a new matrix with the difference of this matrix to another one. */
-	decTexMatrix operator-( const decTexMatrix &m ) const;
+	decTexMatrix operator-(const decTexMatrix &m) const;
 	
 	/** \brief Retrieves a new matrix with this matrix scaled by k. */
-	decTexMatrix operator*( float k ) const;
+	decTexMatrix operator*(float k) const;
 	
 	/**
 	 * \brief Matrix with this matrix divided by k.
 	 * 
 	 * If k is 0 an exception is thrown.
 	 */
-	decTexMatrix operator/( float k ) const;
+	decTexMatrix operator/(float k) const;
 	
 	/** \brief Retrieves a new matrix with this matrix multiplied with another one. */
-	decTexMatrix operator*( const decTexMatrix &m ) const;
+	decTexMatrix operator*(const decTexMatrix &m) const;
 	
 	/** \brief Transforms vector by this matrix. */
-	decVector2 operator*( const decVector2 &v ) const;
+	decVector2 operator*(const decVector2 &v) const;
 	/*@}*/
 };

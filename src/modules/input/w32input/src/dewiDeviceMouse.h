@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	dewiDeviceMouse( deWindowsInput &module );
+	dewiDeviceMouse(deWindowsInput &module);
 	
 protected:
 	/** \brief Clean up device. */

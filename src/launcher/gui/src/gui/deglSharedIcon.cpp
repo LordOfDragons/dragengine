@@ -36,16 +36,16 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deglSharedIcon::deglSharedIcon( FXIcon *icon ) :
-pIcon( icon )
+deglSharedIcon::deglSharedIcon(FXIcon *icon) :
+pIcon(icon)
 {
-	if( ! icon ){
-		DETHROW( deeNullPointer );
+	if(!icon){
+		DETHROW(deeNullPointer);
 	}
 }
 
 deglSharedIcon::~deglSharedIcon(){
-	if( pIcon ){
+	if(pIcon){
 		delete pIcon;
 	}
 }

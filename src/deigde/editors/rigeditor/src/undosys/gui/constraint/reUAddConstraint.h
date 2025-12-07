@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUAddConstraint( reRig *pRig, reRigBone *bone, reRigConstraint *constraint );
+	reUAddConstraint(reRig *pRig, reRigBone *bone, reRigConstraint *constraint);
 	
 protected:
 	/** \brief Clean up undo. */

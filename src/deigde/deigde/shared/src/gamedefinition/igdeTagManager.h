@@ -47,7 +47,7 @@ public:
 	igdeTagManager();
 	
 	/** \brief Create tag manager as a copy of another tag manager. */
-	igdeTagManager( const igdeTagManager &tagManager );
+	igdeTagManager(const igdeTagManager &tagManager);
 	
 	/** \brief Clean up tag manager. */
 	~igdeTagManager();
@@ -61,19 +61,19 @@ public:
 	int GetTagCount() const;
 	
 	/** \brief Tag at the given index. */
-	const decString &GetTagAt( int index ) const;
+	const decString &GetTagAt(int index) const;
 	
 	/** \brief Determines if the given tag exists. */
-	bool HasTag( const char *tag ) const;
+	bool HasTag(const char *tag) const;
 	
 	/** \brief Index of the given tag or -1 if not found. */
-	int IndexOfTag( const char *tag ) const;
+	int IndexOfTag(const char *tag) const;
 	
 	/** \brief Adds a new tag if not already existing. */
-	void AddTag( const char *tag );
+	void AddTag(const char *tag);
 	
 	/** \brief Removes the given tag if existing. */
-	void RemoveTag( const char *tag );
+	void RemoveTag(const char *tag);
 	
 	/** \brief Removes all tags. */
 	void RemoveAllTags();
@@ -83,16 +83,16 @@ public:
 	 * 
 	 * If the other tag manager contains no tags false is returned.
 	 */
-	bool HasAllOf( const igdeTagManager &tags ) const;
+	bool HasAllOf(const igdeTagManager &tags) const;
 	
 	/** \brief Determines if at least one tag of another tag manager is present in this tag manager. */
-	bool HasAnyOf( const igdeTagManager &tags ) const;
+	bool HasAnyOf(const igdeTagManager &tags) const;
 	
 	/** \brief Determines if no tag of another tag manager is present in this tag manager. */
-	bool HasNoneOf( const igdeTagManager &tags ) const;
+	bool HasNoneOf(const igdeTagManager &tags) const;
 	
 	/** \brief Adds tags from another tag manager if not existing yet. */
-	void AddTagsFrom( const igdeTagManager &tags );
+	void AddTagsFrom(const igdeTagManager &tags);
 	
 	/** \brief Get tags as string set. */
 	decStringSet ToSet() const;
@@ -103,10 +103,10 @@ public:
 	/** \name Operators. */
 	/*@{*/
 	/** \brief Set tags to the same as another tag manager. */
-	igdeTagManager &operator=( const igdeTagManager &tags );
+	igdeTagManager &operator=(const igdeTagManager &tags);
 	
 	/** \brief Set tags. */
-	igdeTagManager &operator=( const decStringSet &tags );
+	igdeTagManager &operator=(const decStringSet &tags);
 	
 	/** \brief Get tags as string set. */
 	operator decStringSet() const;

@@ -42,10 +42,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create array. */
-	meUShortArray( int colons, int rows );
+	meUShortArray(int colons, int rows);
 	
 	/** \brief Create copy of array. */
-	meUShortArray( const meUShortArray &array );
+	meUShortArray(const meUShortArray &array);
 	
 	/** \brief Clean up array. */
 	~meUShortArray();
@@ -62,13 +62,13 @@ public:
 	inline int GetRows() const{ return pRows; }
 	
 	/** \brief Value at coordinate. */
-	int GetValueAt( int x, int y ) const;
+	int GetValueAt(int x, int y) const;
 	
 	/** \brief Set value at coordinate. */
-	void SetValueAt( int x, int y, int value );
+	void SetValueAt(int x, int y, int value);
 	
 	/** \brief Set all values. */
-	void SetAll( int value );
+	void SetAll(int value);
 	/*@}*/
 	
 	
@@ -76,10 +76,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Arrays are equal. */
-	bool operator==( const meUShortArray &array ) const;
+	bool operator==(const meUShortArray &array) const;
 	
 	/** \brief Copy operator. */
-	meUShortArray &operator=( const meUShortArray &array );
+	meUShortArray &operator=(const meUShortArray &array);
 	/*@}*/
 };
 

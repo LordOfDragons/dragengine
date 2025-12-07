@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWPUndoHistoryListener::aeWPUndoHistoryListener( aeWPUndoHistory &panel ) :
-pPanel( panel ){
+aeWPUndoHistoryListener::aeWPUndoHistoryListener(aeWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 aeWPUndoHistoryListener::~aeWPUndoHistoryListener(){
@@ -51,6 +51,6 @@ aeWPUndoHistoryListener::~aeWPUndoHistoryListener(){
 // Notifications
 //////////////////
 
-void aeWPUndoHistoryListener::UndoChanged( aeAnimator* ){
+void aeWPUndoHistoryListener::UndoChanged(aeAnimator*){
 	pPanel.UpdateUndo();
 }

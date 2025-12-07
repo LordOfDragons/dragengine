@@ -55,19 +55,19 @@ int ceControllerValueList::GetCount() const{
 	return pList.GetCount();
 }
 
-ceControllerValue *ceControllerValueList::GetAt( int index ) const{
-	return ( ceControllerValue* )pList.GetAt( index );
+ceControllerValue *ceControllerValueList::GetAt(int index) const{
+	return (ceControllerValue*)pList.GetAt(index);
 }
 
-ceControllerValue *ceControllerValueList::GetNamed( const char *controller ) const{
+ceControllerValue *ceControllerValueList::GetNamed(const char *controller) const{
 	const int count = pList.GetCount();
 	ceControllerValue *entry;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		entry = ( ceControllerValue* )pList.GetAt( i );
+	for(i=0; i<count; i++){
+		entry = (ceControllerValue*)pList.GetAt(i);
 		
-		if( entry->GetController() == controller ){
+		if(entry->GetController() == controller){
 			return entry;
 		}
 	}
@@ -75,16 +75,16 @@ ceControllerValue *ceControllerValueList::GetNamed( const char *controller ) con
 	return NULL;
 }
 
-int ceControllerValueList::IndexOf( ceControllerValue *entry ) const{
-	return pList.IndexOf( entry );
+int ceControllerValueList::IndexOf(ceControllerValue *entry) const{
+	return pList.IndexOf(entry);
 }
 
-int ceControllerValueList::IndexOfNamed( const char *controller ) const{
+int ceControllerValueList::IndexOfNamed(const char *controller) const{
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceControllerValue* )pList.GetAt( i ) )->GetController() == controller ){
+	for(i=0; i<count; i++){
+		if(((ceControllerValue*)pList.GetAt(i))->GetController() == controller){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int ceControllerValueList::IndexOfNamed( const char *controller ) const{
 	return -1;
 }
 
-bool ceControllerValueList::Has( ceControllerValue *entry ) const{
-	return pList.Has( entry );
+bool ceControllerValueList::Has(ceControllerValue *entry) const{
+	return pList.Has(entry);
 }
 
-bool ceControllerValueList::HasNamed( const char *controller ) const{
+bool ceControllerValueList::HasNamed(const char *controller) const{
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceControllerValue* )pList.GetAt( i ) )->GetController() == controller ){
+	for(i=0; i<count; i++){
+		if(((ceControllerValue*)pList.GetAt(i))->GetController() == controller){
 			return true;
 		}
 	}
@@ -109,16 +109,16 @@ bool ceControllerValueList::HasNamed( const char *controller ) const{
 	return false;
 }
 
-void ceControllerValueList::Add( ceControllerValue *entry ){
-	if( ! entry || HasNamed ( entry->GetController() ) ){
-		DETHROW( deeInvalidParam );
+void ceControllerValueList::Add(ceControllerValue *entry){
+	if(!entry || HasNamed (entry->GetController())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pList.Add( entry );
+	pList.Add(entry);
 }
 
-void ceControllerValueList::Remove( ceControllerValue *entry ){
-	pList.Remove( entry );
+void ceControllerValueList::Remove(ceControllerValue *entry){
+	pList.Remove(entry);
 }
 
 void ceControllerValueList::RemoveAll(){
@@ -127,7 +127,7 @@ void ceControllerValueList::RemoveAll(){
 
 
 
-ceControllerValueList &ceControllerValueList::operator=( const ceControllerValueList &list ){
+ceControllerValueList &ceControllerValueList::operator=(const ceControllerValueList &list){
 	pList = list.pList;
 	return *this;
 }

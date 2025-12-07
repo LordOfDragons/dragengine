@@ -38,11 +38,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUToggleRuleInvertBlendFactor::aeUToggleRuleInvertBlendFactor( aeRule *rule ) :
-pRule( rule )
+aeUToggleRuleInvertBlendFactor::aeUToggleRuleInvertBlendFactor(aeRule *rule) :
+pRule(rule)
 {
-	DEASSERT_NOTNULL( rule )
-	SetShortInfo( "Rule toggle invert blend factor" );
+	DEASSERT_NOTNULL(rule)
+	SetShortInfo("Rule toggle invert blend factor");
 }
 
 aeUToggleRuleInvertBlendFactor::~aeUToggleRuleInvertBlendFactor(){
@@ -54,9 +54,9 @@ aeUToggleRuleInvertBlendFactor::~aeUToggleRuleInvertBlendFactor(){
 ///////////////
 
 void aeUToggleRuleInvertBlendFactor::Undo(){
-	pRule->SetInvertBlendFactor( ! pRule->GetInvertBlendFactor() );
+	pRule->SetInvertBlendFactor(!pRule->GetInvertBlendFactor());
 }
 
 void aeUToggleRuleInvertBlendFactor::Redo(){
-	pRule->SetInvertBlendFactor( ! pRule->GetInvertBlendFactor() );
+	pRule->SetInvertBlendFactor(!pRule->GetInvertBlendFactor());
 }

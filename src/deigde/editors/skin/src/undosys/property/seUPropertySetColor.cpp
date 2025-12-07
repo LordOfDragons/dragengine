@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetColor::seUPropertySetColor( seProperty *property, const decColor &newColor ){
-	if( ! property ) DETHROW( deeInvalidParam );
+seUPropertySetColor::seUPropertySetColor(seProperty *property, const decColor &newColor){
+	if(!property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	
-	SetShortInfo( "Property Set Color" );
+	SetShortInfo("Property Set Color");
 	
 	pOldColor = property->GetColor();
 	pNewColor = newColor;
@@ -53,7 +53,7 @@ seUPropertySetColor::seUPropertySetColor( seProperty *property, const decColor &
 }
 
 seUPropertySetColor::~seUPropertySetColor(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -64,9 +64,9 @@ seUPropertySetColor::~seUPropertySetColor(){
 ///////////////
 
 void seUPropertySetColor::Undo(){
-	pProperty->SetColor( pOldColor );
+	pProperty->SetColor(pOldColor);
 }
 
 void seUPropertySetColor::Redo(){
-	pProperty->SetColor( pNewColor );
+	pProperty->SetColor(pNewColor);
 }

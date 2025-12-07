@@ -34,20 +34,20 @@
 ////////////////////////////
 
 aeURuleMirrorRemoveMatchName::aeURuleMirrorRemoveMatchName(
-aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName ) :
-pRule( rule ),
-pMatchName( matchName )
+aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName) :
+pRule(rule),
+pMatchName(matchName)
 {
-	if( ! rule || ! matchName ){
-		DETHROW( deeInvalidAction );
+	if(!rule || !matchName){
+		DETHROW(deeInvalidAction);
 	}
 	
-	pIndex = rule->IndexOfMatchName( matchName );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidAction );
+	pIndex = rule->IndexOfMatchName(matchName);
+	if(pIndex == -1){
+		DETHROW(deeInvalidAction);
 	}
 	
-	SetShortInfo( "Mirror rule remove match name" );
+	SetShortInfo("Mirror rule remove match name");
 }
 
 aeURuleMirrorRemoveMatchName::~aeURuleMirrorRemoveMatchName(){
@@ -59,9 +59,9 @@ aeURuleMirrorRemoveMatchName::~aeURuleMirrorRemoveMatchName(){
 ///////////////
 
 void aeURuleMirrorRemoveMatchName::Undo(){
-	pRule->InsertMatchName( pMatchName, pIndex );
+	pRule->InsertMatchName(pMatchName, pIndex);
 }
 
 void aeURuleMirrorRemoveMatchName::Redo(){
-	pRule->RemoveMatchName( pMatchName );
+	pRule->RemoveMatchName(pMatchName);
 }

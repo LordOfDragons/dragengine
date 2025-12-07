@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionPaste( ceConversationTopic *topic, const ceConversationActionList &actions, int index );
+	ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionPaste();
@@ -74,10 +74,10 @@ public:
 	/*@}*/
 	
 protected:
-	void pInsertActions( ceConversationActionList &list );
-	void pRemoveActions( ceConversationActionList &list );
+	void pInsertActions(ceConversationActionList &list);
+	void pRemoveActions(ceConversationActionList &list);
 	void pSelectInserted();
-	ceConversationAction *ActivateActionAfterRemove( const ceConversationActionList &list ) const;
+	ceConversationAction *ActivateActionAfterRemove(const ceConversationActionList &list) const;
 };
 
 #endif

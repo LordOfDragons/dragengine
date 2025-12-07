@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassSkyTarget( deScriptingDragonScript &ds );
+	deClassSkyTarget(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassSkyTarget();
@@ -62,10 +62,10 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push target. */
-	void PushTarget( dsRunTime *rt, deSky *sky, int layer, deSkyLayer::eTargets target );
+	void PushTarget(dsRunTime *rt, deSky *sky, int layer, deSkyLayer::eTargets target);
 	/*@}*/
 	
 	
@@ -84,25 +84,25 @@ private:
 		dsClass *clsSky;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetSky );
-	DEF_NATFUNC( nfGetLayerIndex );
-	DEF_NATFUNC( nfGetTarget );
+	DEF_NATFUNC(nfGetSky);
+	DEF_NATFUNC(nfGetLayerIndex);
+	DEF_NATFUNC(nfGetTarget);
 	
-	DEF_NATFUNC( nfGetLinkCount );
-	DEF_NATFUNC( nfGetLinkAt );
-	DEF_NATFUNC( nfAddLink );
-	DEF_NATFUNC( nfRemoveLink );
-	DEF_NATFUNC( nfRemoveAllLinks );
+	DEF_NATFUNC(nfGetLinkCount);
+	DEF_NATFUNC(nfGetLinkAt);
+	DEF_NATFUNC(nfAddLink);
+	DEF_NATFUNC(nfRemoveLink);
+	DEF_NATFUNC(nfRemoveAllLinks);
 	
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

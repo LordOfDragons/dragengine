@@ -52,97 +52,97 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderPlanTasks::deoglRenderPlanTasks( deoglRenderPlan &plan ) :
-pPlan( plan ),
+deoglRenderPlanTasks::deoglRenderPlanTasks(deoglRenderPlan &plan) :
+pPlan(plan),
 
-pSolidDepthTask( nullptr ),
-pSolidDepthOutlineTask( nullptr ),
-pSolidGeometryTask( nullptr ),
-pSolidGeometryHeight1Task( nullptr ),
-pSolidGeometryHeight2Task( nullptr ),
-pSolidGeometryOutlineTask( nullptr ),
-pSolidDecalsTask( nullptr ),
+pSolidDepthTask(nullptr),
+pSolidDepthOutlineTask(nullptr),
+pSolidGeometryTask(nullptr),
+pSolidGeometryHeight1Task(nullptr),
+pSolidGeometryHeight2Task(nullptr),
+pSolidGeometryOutlineTask(nullptr),
+pSolidDecalsTask(nullptr),
 
-pSolidDepthXRayTask( nullptr ),
-pSolidDepthOutlineXRayTask( nullptr ),
-pSolidGeometryXRayTask( nullptr ),
-pSolidGeometryHeight1XRayTask( nullptr ),
-pSolidGeometryHeight2XRayTask( nullptr ),
-pSolidGeometryOutlineXRayTask( nullptr ),
-pSolidDecalsXRayTask( nullptr ),
+pSolidDepthXRayTask(nullptr),
+pSolidDepthOutlineXRayTask(nullptr),
+pSolidGeometryXRayTask(nullptr),
+pSolidGeometryHeight1XRayTask(nullptr),
+pSolidGeometryHeight2XRayTask(nullptr),
+pSolidGeometryOutlineXRayTask(nullptr),
+pSolidDecalsXRayTask(nullptr),
 
-pTaskDepth( NULL ),
-pTaskGeometry( NULL )
+pTaskDepth(NULL),
+pTaskGeometry(NULL)
 {
 	deoglRenderThread &renderthread = plan.GetRenderThread();
 	
-	pSolidDepthTask = new deoglRenderTask( renderthread );
-	pSolidDepthOutlineTask = new deoglRenderTask( renderthread );
-	pSolidGeometryTask = new deoglRenderTask( renderthread );
-	pSolidGeometryHeight1Task = new deoglRenderTask( renderthread );
-	pSolidGeometryHeight2Task = new deoglRenderTask( renderthread );
-	pSolidGeometryOutlineTask = new deoglRenderTask( renderthread );
-	pSolidDecalsTask = new deoglRenderTask( renderthread );
+	pSolidDepthTask = new deoglRenderTask(renderthread);
+	pSolidDepthOutlineTask = new deoglRenderTask(renderthread);
+	pSolidGeometryTask = new deoglRenderTask(renderthread);
+	pSolidGeometryHeight1Task = new deoglRenderTask(renderthread);
+	pSolidGeometryHeight2Task = new deoglRenderTask(renderthread);
+	pSolidGeometryOutlineTask = new deoglRenderTask(renderthread);
+	pSolidDecalsTask = new deoglRenderTask(renderthread);
 	
-	pSolidDepthXRayTask = new deoglRenderTask( renderthread );
-	pSolidDepthOutlineXRayTask = new deoglRenderTask( renderthread );
-	pSolidGeometryXRayTask = new deoglRenderTask( renderthread );
-	pSolidGeometryHeight1XRayTask = new deoglRenderTask( renderthread );
-	pSolidGeometryHeight2XRayTask = new deoglRenderTask( renderthread );
-	pSolidGeometryOutlineXRayTask = new deoglRenderTask( renderthread );
-	pSolidDecalsXRayTask = new deoglRenderTask( renderthread );
+	pSolidDepthXRayTask = new deoglRenderTask(renderthread);
+	pSolidDepthOutlineXRayTask = new deoglRenderTask(renderthread);
+	pSolidGeometryXRayTask = new deoglRenderTask(renderthread);
+	pSolidGeometryHeight1XRayTask = new deoglRenderTask(renderthread);
+	pSolidGeometryHeight2XRayTask = new deoglRenderTask(renderthread);
+	pSolidGeometryOutlineXRayTask = new deoglRenderTask(renderthread);
+	pSolidDecalsXRayTask = new deoglRenderTask(renderthread);
 	
-	pCRTSolidDepth.TakeOver( new deoglComputeRenderTask( renderthread ) );
-	pCRTSolidGeometry.TakeOver( new deoglComputeRenderTask( renderthread ) );
+	pCRTSolidDepth.TakeOver(new deoglComputeRenderTask(renderthread));
+	pCRTSolidGeometry.TakeOver(new deoglComputeRenderTask(renderthread));
 	
-	pCRTSolidDepthXRay.TakeOver( new deoglComputeRenderTask( renderthread ) );
-	pCRTSolidGeometryXRay.TakeOver( new deoglComputeRenderTask( renderthread ) );
+	pCRTSolidDepthXRay.TakeOver(new deoglComputeRenderTask(renderthread));
+	pCRTSolidGeometryXRay.TakeOver(new deoglComputeRenderTask(renderthread));
 }
 
 deoglRenderPlanTasks::~deoglRenderPlanTasks(){
 	CleanUp();
 	
-	if( pSolidDepthTask ){
+	if(pSolidDepthTask){
 		delete pSolidDepthTask;
 	}
-	if( pSolidDepthOutlineTask ){
+	if(pSolidDepthOutlineTask){
 		delete pSolidDepthOutlineTask;
 	}
-	if( pSolidGeometryTask ){
+	if(pSolidGeometryTask){
 		delete pSolidGeometryTask;
 	}
-	if( pSolidGeometryHeight1Task ){
+	if(pSolidGeometryHeight1Task){
 		delete pSolidGeometryHeight1Task;
 	}
-	if( pSolidGeometryHeight2Task ){
+	if(pSolidGeometryHeight2Task){
 		delete pSolidGeometryHeight2Task;
 	}
-	if( pSolidGeometryOutlineTask ){
+	if(pSolidGeometryOutlineTask){
 		delete pSolidGeometryOutlineTask;
 	}
-	if( pSolidDecalsTask ){
+	if(pSolidDecalsTask){
 		delete pSolidDecalsTask;
 	}
 	
-	if( pSolidDepthXRayTask ){
+	if(pSolidDepthXRayTask){
 		delete pSolidDepthXRayTask;
 	}
-	if( pSolidDepthOutlineXRayTask ){
+	if(pSolidDepthOutlineXRayTask){
 		delete pSolidDepthOutlineXRayTask;
 	}
-	if( pSolidGeometryXRayTask ){
+	if(pSolidGeometryXRayTask){
 		delete pSolidGeometryXRayTask;
 	}
-	if( pSolidGeometryHeight1XRayTask ){
+	if(pSolidGeometryHeight1XRayTask){
 		delete pSolidGeometryHeight1XRayTask;
 	}
-	if( pSolidGeometryHeight2XRayTask ){
+	if(pSolidGeometryHeight2XRayTask){
 		delete pSolidGeometryHeight2XRayTask;
 	}
-	if( pSolidGeometryOutlineXRayTask ){
+	if(pSolidGeometryOutlineXRayTask){
 		delete pSolidGeometryOutlineXRayTask;
 	}
-	if( pSolidDecalsXRayTask ){
+	if(pSolidDecalsXRayTask){
 		delete pSolidDecalsXRayTask;
 	}
 }
@@ -152,98 +152,98 @@ deoglRenderPlanTasks::~deoglRenderPlanTasks(){
 // Management
 ///////////////
 
-void deoglRenderPlanTasks::BuildComputeRenderTasks( const deoglRenderPlanMasked *mask, bool rebuild ){
+void deoglRenderPlanTasks::BuildComputeRenderTasks(const deoglRenderPlanMasked *mask, bool rebuild){
 	deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
-	const deoglDebugTraceGroup dt( pPlan.GetRenderThread(), "PlanTasks.BuildRenderTasks" );
+	const deoglDebugTraceGroup dt(pPlan.GetRenderThread(), "PlanTasks.BuildRenderTasks");
 	const deoglRenderPlanCompute &compute = pPlan.GetCompute();
 	
-	renderCompute.ClearCullResult( pPlan );
-	renderCompute.UpdateCullResult( pPlan, compute.GetUBOFindConfig(),
-		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), 0 );
-	renderCompute.FindGeometries( pPlan );
+	renderCompute.ClearCullResult(pPlan);
+	renderCompute.UpdateCullResult(pPlan, compute.GetUBOFindConfig(),
+		compute.GetSSBOVisibleElements(), compute.GetSSBOCounters(), 0);
+	renderCompute.FindGeometries(pPlan);
 	
 	// we check state here since this could be a rebuild due to too small SSBO size.
 	// rebuilding is not required for all render tasks so check first
-	if( ! ( rebuild && pCRTSolidDepth->GetState() == deoglComputeRenderTask::esReady ) ){
-		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidDepth" );
-		pBuildCRTSolidDepth( pCRTSolidDepth, mask, false );
-		renderCompute.BuildRenderTask( pPlan, pCRTSolidDepth );
+	if(!(rebuild && pCRTSolidDepth->GetState() == deoglComputeRenderTask::esReady)){
+		const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "SolidDepth");
+		pBuildCRTSolidDepth(pCRTSolidDepth, mask, false);
+		renderCompute.BuildRenderTask(pPlan, pCRTSolidDepth);
 	}
 	
-	if( ! ( rebuild && pCRTSolidGeometry->GetState() == deoglComputeRenderTask::esReady ) ){
-		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "SolidGeometry" );
-		if( pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esBuilding ){
-			pBuildCRTSolidGeometry( pCRTSolidGeometry, mask, false );
+	if(!(rebuild && pCRTSolidGeometry->GetState() == deoglComputeRenderTask::esReady)){
+		const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "SolidGeometry");
+		if(pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esBuilding){
+			pBuildCRTSolidGeometry(pCRTSolidGeometry, mask, false);
 		}
-		renderCompute.BuildRenderTask( pPlan, pCRTSolidGeometry );
+		renderCompute.BuildRenderTask(pPlan, pCRTSolidGeometry);
 	}
 	
-	if( ! ( rebuild && pCRTSolidDepthXRay->GetState() == deoglComputeRenderTask::esReady ) ){
-		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidDepth" );
-		if( pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esBuilding ){
-			pBuildCRTSolidDepth( pCRTSolidDepthXRay, mask, true );
+	if(!(rebuild && pCRTSolidDepthXRay->GetState() == deoglComputeRenderTask::esReady)){
+		const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "XRay.SolidDepth");
+		if(pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esBuilding){
+			pBuildCRTSolidDepth(pCRTSolidDepthXRay, mask, true);
 		}
-		renderCompute.BuildRenderTask( pPlan, pCRTSolidDepthXRay );
+		renderCompute.BuildRenderTask(pPlan, pCRTSolidDepthXRay);
 	}
 	
-	if( ! ( rebuild && pCRTSolidGeometryXRay->GetState() == deoglComputeRenderTask::esReady ) ){
-		const deoglDebugTraceGroup dt2( pPlan.GetRenderThread(), "XRay.SolidGeometry" );
-		if( pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esBuilding ){
-			pBuildCRTSolidGeometry( pCRTSolidGeometryXRay, mask, true );
+	if(!(rebuild && pCRTSolidGeometryXRay->GetState() == deoglComputeRenderTask::esReady)){
+		const deoglDebugTraceGroup dt2(pPlan.GetRenderThread(), "XRay.SolidGeometry");
+		if(pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esBuilding){
+			pBuildCRTSolidGeometry(pCRTSolidGeometryXRay, mask, true);
 		}
-		renderCompute.BuildRenderTask( pPlan, pCRTSolidGeometryXRay );
+		renderCompute.BuildRenderTask(pPlan, pCRTSolidGeometryXRay);
 	}
 }
 
-void deoglRenderPlanTasks::FinishReadBackComputeRenderTasks( const deoglRenderPlanMasked *mask ){
+void deoglRenderPlanTasks::FinishReadBackComputeRenderTasks(const deoglRenderPlanMasked *mask){
 	bool ssbosLargeEnough = true;
 	ssbosLargeEnough &= pCRTSolidDepth->ReadBackSteps();
 	ssbosLargeEnough &= pCRTSolidGeometry->ReadBackSteps();
 	ssbosLargeEnough &= pCRTSolidDepthXRay->ReadBackSteps();
 	ssbosLargeEnough &= pCRTSolidGeometryXRay->ReadBackSteps();
-	if( ssbosLargeEnough ){
+	if(ssbosLargeEnough){
 		return;
 	}
 	
-	BuildComputeRenderTasks( mask, true );
+	BuildComputeRenderTasks(mask, true);
 	
-	if( pCRTSolidDepth->GetState() != deoglComputeRenderTask::esReady ){
-		DEASSERT_TRUE( pCRTSolidDepth->ReadBackSteps() )
+	if(pCRTSolidDepth->GetState() != deoglComputeRenderTask::esReady){
+		DEASSERT_TRUE(pCRTSolidDepth->ReadBackSteps())
 	}
-	if( pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esReady ){
-		DEASSERT_TRUE( pCRTSolidGeometry->ReadBackSteps() )
+	if(pCRTSolidGeometry->GetState() != deoglComputeRenderTask::esReady){
+		DEASSERT_TRUE(pCRTSolidGeometry->ReadBackSteps())
 	}
-	if( pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esReady ){
-		DEASSERT_TRUE( pCRTSolidDepthXRay->ReadBackSteps() )
+	if(pCRTSolidDepthXRay->GetState() != deoglComputeRenderTask::esReady){
+		DEASSERT_TRUE(pCRTSolidDepthXRay->ReadBackSteps())
 	}
-	if( pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esReady ){
-		DEASSERT_TRUE( pCRTSolidGeometryXRay->ReadBackSteps() )
+	if(pCRTSolidGeometryXRay->GetState() != deoglComputeRenderTask::esReady){
+		DEASSERT_TRUE(pCRTSolidGeometryXRay->ReadBackSteps())
 	}
 }
 
-void deoglRenderPlanTasks::StartBuildTasks( const deoglRenderPlanMasked *mask ){
-	if( pTaskDepth || pTaskGeometry ){
-		DETHROW( deeInvalidParam );
+void deoglRenderPlanTasks::StartBuildTasks(const deoglRenderPlanMasked *mask){
+	if(pTaskDepth || pTaskGeometry){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	
-	pTaskDepth = new deoglRPTBuildRTsDepth( *this, mask );
-	pp.AddTaskAsync( pTaskDepth );
+	pTaskDepth = new deoglRPTBuildRTsDepth(*this, mask);
+	pp.AddTaskAsync(pTaskDepth);
 	
-	pTaskGeometry = new deoglRPTBuildRTsGeometry( *this, mask );
-	pp.AddTaskAsync( pTaskGeometry );
+	pTaskGeometry = new deoglRPTBuildRTsGeometry(*this, mask);
+	pp.AddTaskAsync(pTaskGeometry);
 }
 
 void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
-	if( ! pTaskDepth ){
+	if(!pTaskDepth){
 		return;
 	}
 	
 	pTaskDepth->GetSemaphore().Wait();
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
-	rc.SampleDebugInfoPlanPrepareBuildRTs( pPlan, pTaskDepth->GetElapsedTime() );
+	rc.SampleDebugInfoPlanPrepareBuildRTs(pPlan, pTaskDepth->GetElapsedTime());
 	
 	pTaskDepth->FreeReference();
 	pTaskDepth = NULL;
@@ -302,14 +302,14 @@ static void LogRT(deoglRTLogger &l, const char *name, int pass, const deoglRende
 // DEBUG
 
 void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
-	if( ! pTaskGeometry ){
+	if(!pTaskGeometry){
 		return;
 	}
 	
 	pTaskGeometry->GetSemaphore().Wait();
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
-	rc.SampleDebugInfoPlanPrepareBuildRTs( pPlan, pTaskGeometry->GetElapsedTime() );
+	rc.SampleDebugInfoPlanPrepareBuildRTs(pPlan, pTaskGeometry->GetElapsedTime());
 	
 	pTaskGeometry->FreeReference();
 	pTaskGeometry = NULL;
@@ -363,63 +363,63 @@ void deoglRenderPlanTasks::CleanUp(){
 // Private Functions
 //////////////////////
 
-void deoglRenderPlanTasks::pBuildCRTSolidDepth( deoglComputeRenderTask &renderTask,
-const deoglRenderPlanMasked *mask, bool xray ){
+void deoglRenderPlanTasks::pBuildCRTSolidDepth(deoglComputeRenderTask &renderTask,
+const deoglRenderPlanMasked *mask, bool xray){
 	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
 	const deoglComputeRenderTask::cGuard guard(renderTask, worldCompute, 2);
 	
 	renderTask.Clear();
 	
-	renderTask.SetSolid( true );
-	renderTask.SetNoNotReflected( pPlan.GetNoReflections() );
-	renderTask.SetNoRendered( mask );
-	if( xray ){
-		renderTask.SetFilterXRay( true );
-		renderTask.SetXRay( true );
+	renderTask.SetSolid(true);
+	renderTask.SetNoNotReflected(pPlan.GetNoReflections());
+	renderTask.SetNoRendered(mask);
+	if(xray){
+		renderTask.SetFilterXRay(true);
+		renderTask.SetXRay(true);
 	}
-	renderTask.SetRenderVSStereo( pPlan.GetRenderStereo()
-		&& pPlan.GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
+	renderTask.SetRenderVSStereo(pPlan.GetRenderStereo()
+		&& pPlan.GetRenderThread().GetChoices().GetRenderStereoVSLayer());
 	
-	if( mask && mask->GetUseClipPlane() ){
-		renderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepthClipPlane );
+	if(mask && mask->GetUseClipPlane()){
+		renderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etDepthClipPlane);
 		
 	}else{
-		renderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepth );
+		renderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etDepth);
 	}
 	
 	int pipelineModifier = 0;
-	if( pPlan.GetFlipCulling() ){
+	if(pPlan.GetFlipCulling()){
 		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
 	}
-	if( pPlan.GetRenderStereo() ){
+	if(pPlan.GetRenderStereo()){
 		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
 	}
-	renderTask.SetSkinPipelineModifier( pipelineModifier );
+	renderTask.SetSkinPipelineModifier(pipelineModifier);
 	
 	
 	// pass 1: regular depth
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptBillboard );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropField );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropFieldImposter );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap1 );
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptComponent);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptBillboard);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptPropField);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptPropFieldImposter);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptHeightMap1);
 	
-	if( pPlan.GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+	if(pPlan.GetRenderThread().GetChoices().GetRealTransparentParticles()){
 		// addToRenderTask.AddParticles( collideList );
 	}
 	
-	renderTask.EndPass( worldCompute );
+	renderTask.EndPass(worldCompute);
 	
 	
 	// pass 2: outline depth
-	renderTask.SetOutline( true );
-	renderTask.SetFilterDecal( true );
-	renderTask.SetDecal( false );
+	renderTask.SetOutline(true);
+	renderTask.SetFilterDecal(true);
+	renderTask.SetDecal(false);
 	
-	renderTask.SetSkinPipelineLists( 0 );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptOutline );
+	renderTask.SetSkinPipelineLists(0);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptOutline);
 	
-	renderTask.EndPass( worldCompute );
+	renderTask.EndPass(worldCompute);
 	
 	
 	// pass 3: model decals depth, decals depth but only if parent is fully solid
@@ -436,64 +436,64 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	*/
 }
 
-void deoglRenderPlanTasks::pBuildCRTSolidGeometry( deoglComputeRenderTask &renderTask,
-const deoglRenderPlanMasked*, bool xray ){
+void deoglRenderPlanTasks::pBuildCRTSolidGeometry(deoglComputeRenderTask &renderTask,
+const deoglRenderPlanMasked*, bool xray){
 	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
-	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 4 );
+	const deoglComputeRenderTask::cGuard guard(renderTask, worldCompute, 4);
 	
 	renderTask.Clear();
 	
-	renderTask.SetSolid( true );
-	renderTask.SetNoNotReflected( pPlan.GetNoReflections() );
-	renderTask.SetNoRendered( true );
-	renderTask.SetFilterXRay( true );
-	renderTask.SetXRay( xray );
-	renderTask.SetRenderVSStereo( pPlan.GetRenderStereo()
-		&& pPlan.GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
+	renderTask.SetSolid(true);
+	renderTask.SetNoNotReflected(pPlan.GetNoReflections());
+	renderTask.SetNoRendered(true);
+	renderTask.SetFilterXRay(true);
+	renderTask.SetXRay(xray);
+	renderTask.SetRenderVSStereo(pPlan.GetRenderStereo()
+		&& pPlan.GetRenderThread().GetChoices().GetRenderStereoVSLayer());
 	
-	renderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	renderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etGeometry);
 	
 	int pipelineModifier = 0;
-	if( pPlan.GetFlipCulling() ){
+	if(pPlan.GetFlipCulling()){
 		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
 	}
-	if( pPlan.GetRenderStereo() ){
+	if(pPlan.GetRenderStereo()){
 		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
 	}
-	renderTask.SetSkinPipelineModifier( pipelineModifier );
+	renderTask.SetSkinPipelineModifier(pipelineModifier);
 	
 	
 	// pass 1: regular, no decals, no overdraw, no outline
-	renderTask.SetFilterDecal( true );
-	renderTask.SetDecal( false );
+	renderTask.SetFilterDecal(true);
+	renderTask.SetDecal(false);
 	
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptBillboard );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropField );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptPropFieldImposter );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap1 );
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptComponent);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptBillboard);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptPropField);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptPropFieldImposter);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptHeightMap1);
 	
-	if( pPlan.GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+	if(pPlan.GetRenderThread().GetChoices().GetRealTransparentParticles()){
 		// addToRenderTask.AddParticles( collideList );
 	}
 	
-	renderTask.EndPass( worldCompute );
+	renderTask.EndPass(worldCompute);
 	
 	
 	// pass 2: height terrain overdraw, no outline
-	renderTask.SetSkinPipelineLists( 0 );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptHeightMap2 );
+	renderTask.SetSkinPipelineLists(0);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptHeightMap2);
 	
-	renderTask.EndPass( worldCompute );
+	renderTask.EndPass(worldCompute);
 	
 	
 	// pass 3: outline
-	renderTask.SetOutline( true );
+	renderTask.SetOutline(true);
 	
-	renderTask.SetSkinPipelineLists( 0 );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptOutline );
+	renderTask.SetSkinPipelineLists(0);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptOutline);
 	
-	renderTask.EndPass( worldCompute );
+	renderTask.EndPass(worldCompute);
 	
 	
 	// pass 4: model decals, decals but only if not on potentially non-solid geometry

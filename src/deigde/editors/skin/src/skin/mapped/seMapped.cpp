@@ -37,36 +37,36 @@
 // Constructor, destructor
 ////////////////////////////
 
-seMapped::seMapped( const char *name ) :
-pSkin( nullptr ),
-pName( name ),
-pInputType( deSkinMapped::eitTime ),
-pInputLower( 0.0f ),
-pInputUpper( 1.0f ),
-pInputClamped( false ),
-pOutputLower( 0.0f ),
-pOutputUpper( 1.0f ),
-pRenderableComponent( deSkinMapped::ercRed ),
-pSelected( false ),
-pActive( false )
+seMapped::seMapped(const char *name) :
+pSkin(nullptr),
+pName(name),
+pInputType(deSkinMapped::eitTime),
+pInputLower(0.0f),
+pInputUpper(1.0f),
+pInputClamped(false),
+pOutputLower(0.0f),
+pOutputUpper(1.0f),
+pRenderableComponent(deSkinMapped::ercRed),
+pSelected(false),
+pActive(false)
 {
-	DEASSERT_FALSE( pName.IsEmpty() )
+	DEASSERT_FALSE(pName.IsEmpty())
 }
 
-seMapped::seMapped( const seMapped &mapped ) :
-pSkin( nullptr ),
-pName( mapped.pName ),
-pCurve( mapped.pCurve ),
-pInputType( mapped.pInputType ),
-pInputLower( mapped.pInputLower ),
-pInputUpper( mapped.pInputUpper ),
-pInputClamped( mapped.pInputClamped ),
-pOutputLower( mapped.pOutputLower ),
-pOutputUpper( mapped.pOutputUpper ),
-pRenderable( mapped.pRenderable ),
-pRenderableComponent( mapped.pRenderableComponent ),
-pSelected( false ),
-pActive( false ){
+seMapped::seMapped(const seMapped &mapped) :
+pSkin(nullptr),
+pName(mapped.pName),
+pCurve(mapped.pCurve),
+pInputType(mapped.pInputType),
+pInputLower(mapped.pInputLower),
+pInputUpper(mapped.pInputUpper),
+pInputClamped(mapped.pInputClamped),
+pOutputLower(mapped.pOutputLower),
+pOutputUpper(mapped.pOutputUpper),
+pRenderable(mapped.pRenderable),
+pRenderableComponent(mapped.pRenderableComponent),
+pSelected(false),
+pActive(false){
 }
 
 seMapped::~seMapped(){
@@ -77,14 +77,14 @@ seMapped::~seMapped(){
 // Management
 ///////////////
 
-void seMapped::SetSkin( seSkin *skin ){
+void seMapped::SetSkin(seSkin *skin){
 	pSkin = skin;
 }
 
 
 
-void seMapped::SetName( const char *name ){
-	if( pName == name ){
+void seMapped::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
@@ -92,23 +92,23 @@ void seMapped::SetName( const char *name ){
 	NotifyNameChanged();
 }
 
-void seMapped::MakeNameUnique( const seMappedList &list ){
-	if( ! list.HasNamed( pName ) ){
+void seMapped::MakeNameUnique(const seMappedList &list){
+	if(!list.HasNamed(pName)){
 		return;
 	}
 	
-	decString name( pName );
+	decString name(pName);
 	int counter = 2;
 	
-	while( list.HasNamed( name ) ){
-		name.Format( "%s #%d", pName.GetString(), counter++ );
+	while(list.HasNamed(name)){
+		name.Format("%s #%d", pName.GetString(), counter++);
 	}
 	
-	SetName( name );
+	SetName(name);
 }
 
-void seMapped::SetCurve( const decCurveBezier &curve ){
-	if( curve == pCurve ){
+void seMapped::SetCurve(const decCurveBezier &curve){
+	if(curve == pCurve){
 		return;
 	}
 	
@@ -116,8 +116,8 @@ void seMapped::SetCurve( const decCurveBezier &curve ){
 	NotifyChanged();
 }
 
-void seMapped::SetInputType( deSkinMapped::eInputTypes inputType ){
-	if( inputType == pInputType ){
+void seMapped::SetInputType(deSkinMapped::eInputTypes inputType){
+	if(inputType == pInputType){
 		return;
 	}
 	
@@ -125,8 +125,8 @@ void seMapped::SetInputType( deSkinMapped::eInputTypes inputType ){
 	NotifyChanged();
 }
 
-void seMapped::SetInputLower( float lower ){
-	if( fabsf( lower - pInputLower ) < FLOAT_SAFE_EPSILON ){
+void seMapped::SetInputLower(float lower){
+	if(fabsf(lower - pInputLower) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -134,8 +134,8 @@ void seMapped::SetInputLower( float lower ){
 	NotifyChanged();
 }
 
-void seMapped::SetInputUpper( float upper ){
-	if( fabsf( upper - pInputUpper ) < FLOAT_SAFE_EPSILON ){
+void seMapped::SetInputUpper(float upper){
+	if(fabsf(upper - pInputUpper) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -143,8 +143,8 @@ void seMapped::SetInputUpper( float upper ){
 	NotifyChanged();
 }
 
-void seMapped::SetInputClamped( bool inputClamped ){
-	if( inputClamped == pInputClamped ){
+void seMapped::SetInputClamped(bool inputClamped){
+	if(inputClamped == pInputClamped){
 		return;
 	}
 	
@@ -152,8 +152,8 @@ void seMapped::SetInputClamped( bool inputClamped ){
 	NotifyChanged();
 }
 
-void seMapped::SetOutputLower( float lower ){
-	if( fabsf( lower - pOutputLower ) < FLOAT_SAFE_EPSILON ){
+void seMapped::SetOutputLower(float lower){
+	if(fabsf(lower - pOutputLower) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -161,8 +161,8 @@ void seMapped::SetOutputLower( float lower ){
 	NotifyChanged();
 }
 
-void seMapped::SetOutputUpper( float upper ){
-	if( fabsf( upper - pOutputUpper ) < FLOAT_SAFE_EPSILON ){
+void seMapped::SetOutputUpper(float upper){
+	if(fabsf(upper - pOutputUpper) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -170,8 +170,8 @@ void seMapped::SetOutputUpper( float upper ){
 	NotifyChanged();
 }
 
-void seMapped::SetBone( const char *bone ){
-	if( pBone == bone ){
+void seMapped::SetBone(const char *bone){
+	if(pBone == bone){
 		return;
 	}
 	
@@ -179,8 +179,8 @@ void seMapped::SetBone( const char *bone ){
 	NotifyChanged();
 }
 
-void seMapped::SetRenderable( const char *renderable ){
-	if( pRenderable == renderable ){
+void seMapped::SetRenderable(const char *renderable){
+	if(pRenderable == renderable){
 		return;
 	}
 	
@@ -188,8 +188,8 @@ void seMapped::SetRenderable( const char *renderable ){
 	NotifyChanged();
 }
 
-void seMapped::SetRenderableComponent( deSkinMapped::eRenderableComponent component ){
-	if( pRenderableComponent == component ){
+void seMapped::SetRenderableComponent(deSkinMapped::eRenderableComponent component){
+	if(pRenderableComponent == component){
 		return;
 	}
 	
@@ -199,24 +199,24 @@ void seMapped::SetRenderableComponent( deSkinMapped::eRenderableComponent compon
 
 
 
-void seMapped::SetSelected( bool selected ){
+void seMapped::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void seMapped::SetActive( bool active ){
+void seMapped::SetActive(bool active){
 	pActive = active;
 }
 
 
 
 void seMapped::NotifyChanged(){
-	if( pSkin ){
-		pSkin->NotifyMappedChanged( this );
+	if(pSkin){
+		pSkin->NotifyMappedChanged(this);
 	}
 }
 
 void seMapped::NotifyNameChanged(){
-	if( pSkin ){
-		pSkin->NotifyMappedNameChanged( this );
+	if(pSkin){
+		pSkin->NotifyMappedNameChanged(this);
 	}
 }

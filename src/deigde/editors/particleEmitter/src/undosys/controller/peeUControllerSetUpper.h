@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUControllerSetUpper( peeController *controller, float newValue );
+	peeUControllerSetUpper(peeController *controller, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

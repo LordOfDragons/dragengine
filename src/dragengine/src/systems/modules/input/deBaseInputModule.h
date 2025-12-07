@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseInputModule( deLoadableModule &loadableModule );
+	deBaseInputModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseInputModule();
@@ -106,34 +106,34 @@ public:
 	virtual int GetDeviceCount() = 0;
 	
 	/** \brief Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index ) = 0;
+	virtual deInputDevice *GetDeviceAt(int index) = 0;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id ) = 0;
+	virtual int IndexOfDeviceWithID(const char *id) = 0;
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id ) = 0;
+	virtual int IndexOfButtonWithID(int device, const char *id) = 0;
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id ) = 0;
+	virtual int IndexOfAxisWithID(int device, const char *id) = 0;
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id ) = 0;
+	virtual int IndexOfFeedbackWithID(int device, const char *id) = 0;
 	
 	/**
 	 * \brief Index of component with identifier on device at index or -1 if absent.
 	 * \version 1.6
 	 */
-	virtual int IndexOfComponentWithID( int device, const char *id );
+	virtual int IndexOfComponentWithID(int device, const char *id);
 	
 	/** \brief Button at index on device is pressed down. */
-	virtual bool GetButtonPressed( int device, int button ) = 0;
+	virtual bool GetButtonPressed(int device, int button) = 0;
 	
 	/**
 	 * \brief Button at index on device is touched.
 	 * \version 1.6
 	 */
-	virtual bool GetButtonTouched( int device, int button );
+	virtual bool GetButtonTouched(int device, int button);
 	
 	/**
 	 * \brief User finger is near button at index on device.
@@ -142,32 +142,32 @@ public:
 	virtual bool GetButtonNear(int device, int button);
 	
 	/** \brief Value of axis at index on device. */
-	virtual float GetAxisValue( int device, int axis ) = 0;
+	virtual float GetAxisValue(int device, int axis) = 0;
 	
 	/** \brief Value of feedback at index on device. */
-	virtual float GetFeedbackValue( int device, int feedback ) = 0;
+	virtual float GetFeedbackValue(int device, int feedback) = 0;
 	
 	/** \brief Set value of feedback at index on device. */
-	virtual void SetFeedbackValue( int device, int feedback, float value ) = 0;
+	virtual void SetFeedbackValue(int device, int feedback, float value) = 0;
 	
 	/**
 	 * \brief Device pose or identity if not supported.
 	 * \version 1.6
 	 */
-	virtual void GetDevicePose( int device, deInputDevicePose &pose );
+	virtual void GetDevicePose(int device, deInputDevicePose &pose);
 	
 	/**
 	 * \brief Device bone pose or identity if not supported.
 	 * \version 1.6
 	 */
-	virtual void GetDeviceBonePose( int device, int bone,
-		bool withController, deInputDevicePose &pose );
+	virtual void GetDeviceBonePose(int device, int bone,
+		bool withController, deInputDevicePose &pose);
 	
 	/**
 	 * \brief Device face expression or 0 if not supported.
 	 * \version 1.12
 	 */
-	virtual float GetDeviceFaceExpression( int device, int expression );
+	virtual float GetDeviceFaceExpression(int device, int expression);
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.
@@ -180,7 +180,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode ) = 0;
+	virtual int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode) = 0;
 	
 	/**
 	 * \brief Index of button best matching character or -1 if not found.
@@ -199,7 +199,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character ) = 0;
+	virtual int ButtonMatchingKeyChar(int device, int character) = 0;
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.
@@ -208,8 +208,8 @@ public:
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
-		deInputEvent::eKeyLocation location );
+	virtual int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode,
+		deInputEvent::eKeyLocation location);
 	
 	/**
 	 * \brief Index of button best matching character or -1 if not found.
@@ -218,8 +218,8 @@ public:
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character,
-		deInputEvent::eKeyLocation location );
+	virtual int ButtonMatchingKeyChar(int device, int character,
+		deInputEvent::eKeyLocation location);
 	/*@}*/
 	
 	
@@ -257,16 +257,16 @@ public:
 	virtual void EventLoop(const sWebInputEvent &event);
 	
 	#elif defined OS_BEOS
-	virtual void EventLoop( const BMessage &message );
+	virtual void EventLoop(const BMessage &message);
 	
 	#elif defined OS_MACOS
-	virtual void EventLoop( const NSEvent &event );
+	virtual void EventLoop(const NSEvent &event);
 	
 	#elif defined OS_UNIX_X11
-	virtual void EventLoop( XEvent &event );
+	virtual void EventLoop(XEvent &event);
 	
 	#elif defined OS_W32
-	virtual void EventLoop( const MSG &message );
+	virtual void EventLoop(const MSG &message);
 	#endif
 	/*@}*/
 };

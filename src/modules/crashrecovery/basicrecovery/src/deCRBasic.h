@@ -44,7 +44,7 @@ private:
 	
 public:
 	// constructor, destructor
-	deCRBasic( deLoadableModule &loadableModule );
+	deCRBasic(deLoadableModule &loadableModule);
 	~deCRBasic();
 	// management
 	bool Init();
@@ -52,13 +52,13 @@ public:
 	// crash management
 	bool RecoverFromError();
 	// internal functions for module classes only
-	void SetQuitEngine( bool quitEngine );
+	void SetQuitEngine(bool quitEngine);
 	
 	/** \brief Log trace to console. */
 	void LogTrace();
 	
 	/** \brief Log sub value error to console. */
-	void LogTraceSubValues( const deErrorTraceValue &traceValue, const char *indent );
+	void LogTraceSubValues(const deErrorTraceValue &traceValue, const char *indent);
 };
 
 // end of include only once

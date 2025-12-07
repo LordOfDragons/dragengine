@@ -82,10 +82,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	seSource( deSynthesizerSourceVisitorIdentify::eSourceTypes type );
+	seSource(deSynthesizerSourceVisitorIdentify::eSourceTypes type);
 	
 	/** \brief Create a copy of an synthesizer source. */
-	seSource( const seSource &copy );
+	seSource(const seSource &copy);
 	
 	/** \brief Clean up the synthesizer source. */
 	virtual ~seSource();
@@ -99,7 +99,7 @@ public:
 	seSynthesizer *GetSynthesizer() const;
 	
 	/** \brief Set parent synthesizer. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	
 	
@@ -107,13 +107,13 @@ public:
 	inline deSynthesizerSource *GetEngineSource() const{ return pEngSource; }
 	
 	/** \brief Set the engine synthesizer source or \em NULL. */
-	void SetEngineSource( deSynthesizerSource *source );
+	void SetEngineSource(deSynthesizerSource *source);
 	
 	/** \brief Create an engine synthesizer source. */
 	virtual deSynthesizerSource *CreateEngineSource() = 0;
 	
 	/** \brief Init the given engine source with the default source properties. */
-	void InitEngineSource( deSynthesizerSource *engSource ) const;
+	void InitEngineSource(deSynthesizerSource *engSource) const;
 	
 	/** \brief Retrieve the source type. */
 	inline deSynthesizerSourceVisitorIdentify::eSourceTypes GetType() const{ return pType; }
@@ -122,7 +122,7 @@ public:
 	inline seSourceGroup *GetParentGroup() const{ return pParentGroup; }
 	
 	/** \brief Set the parent group or \em NULL if there is none. */
-	void SetParentGroup( seSourceGroup *group );
+	void SetParentGroup(seSourceGroup *group);
 	
 	
 	
@@ -130,25 +130,25 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *filename );
+	void SetName(const char *filename);
 	
 	/** \brief Source is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if source is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Mix mode. */
 	inline deSynthesizerSource::eMixModes GetMixMode() const{ return pMixMode; }
 	
 	/** \brief Set mix mode. */
-	void SetMixMode( deSynthesizerSource::eMixModes mode );
+	void SetMixMode(deSynthesizerSource::eMixModes mode);
 	
 	/** \brief Blend factor. */
 	inline float GetBlendFactor() const{ return pBlendFactor; }
 	
 	/** \brief Set blend factor. */
-	void SetBlendFactor( float factor );
+	void SetBlendFactor(float factor);
 	
 	
 	
@@ -156,25 +156,25 @@ public:
 	inline float GetMinVolume() const{ return pMinVolume; }
 	
 	/** \brief Set minimum volume relative to speaker volume in the range from 0 to 1. */
-	void SetMinVolume( float volume );
+	void SetMinVolume(float volume);
 	
 	/** \brief Maximum volume relative to speaker volume in the range from 0 to 1. */
 	inline float GetMaxVolume() const{ return pMaxVolume; }
 	
 	/** \brief Set maximum volume relative to speaker volume in the range from 0 to 1. */
-	void SetMaxVolume( float volume );
+	void SetMaxVolume(float volume);
 	
 	/** \brief Minimum panning in the range from -1(left) to 1(right). */
 	inline float GetMinPanning() const{ return pMinPanning; }
 	
 	/** \brief Set minimum panning in the range from -1(left) to 1(right). */
-	void SetMinPanning( float panning );
+	void SetMinPanning(float panning);
 	
 	/** \brief Maximum panning in the range from -1(left) to 1(right). */
 	inline float GetMaxPanning() const{ return pMaxPanning; }
 	
 	/** \brief Set maximum panning in the range from -1(left) to 1(right). */
-	void SetMaxPanning( float panning );
+	void SetMaxPanning(float panning);
 	
 	
 	
@@ -182,10 +182,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** \brief Number of targets using link. */
-	virtual int CountLinkUsage( seLink *link ) const;
+	virtual int CountLinkUsage(seLink *link) const;
 	
 	/** \brief Remove link from all targets using it. */
-	virtual void RemoveLinkFromTargets( seLink *link );
+	virtual void RemoveLinkFromTargets(seLink *link);
 	
 	/** \brief Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -203,7 +203,7 @@ public:
 	inline const seControllerTarget &GetTargetPanning() const{ return pTargetPanning; }
 	
 	/** \brief List all links of all source targets. */
-	virtual void ListLinks( seLinkList& list );
+	virtual void ListLinks(seLinkList& list);
 	
 	/** \brief Notify engine and listeners that the source changed. */
 	void NotifySourceChanged();
@@ -229,22 +229,22 @@ public:
 	inline seEffect *GetActiveEffect() const{ return pActiveEffect; }
 	
 	/** \brief Set active effect or \em NULL if none is active. */
-	void SetActiveEffect( seEffect *effect );
+	void SetActiveEffect(seEffect *effect);
 	
 	/** \brief Effects. */
 	inline const seEffectList &GetEffects() const{ return pEffects; }
 	
 	/** \brief Add effect. */
-	void AddEffect( seEffect *effect );
+	void AddEffect(seEffect *effect);
 	
 	/** \brief Insert effect. */
-	void InsertEffectAt( seEffect *effect, int index );
+	void InsertEffectAt(seEffect *effect, int index);
 	
 	/** \brief Move effect. */
-	void MoveEffectTo( seEffect *effect, int index );
+	void MoveEffectTo(seEffect *effect, int index);
 	
 	/** \brief Remove effect. */
-	void RemoveEffect( seEffect *effect );
+	void RemoveEffect(seEffect *effect);
 	
 	/** \brief Remove all effects. */
 	void RemoveAllEffects();
@@ -255,7 +255,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another synthesizer source to this synthesizer source. */
-	seSource &operator=( const seSource &copy );
+	seSource &operator=(const seSource &copy);
 	/*@}*/
 	
 	
@@ -263,7 +263,7 @@ public:
 	/** \name Helper */
 	/*@{*/
 	/** \brief Create a new source from a source type. */
-	static seSource *CreateSourceFromType( deEngine *engine, deSynthesizerSourceVisitorIdentify::eSourceTypes type );
+	static seSource *CreateSourceFromType(deEngine *engine, deSynthesizerSourceVisitorIdentify::eSourceTypes type);
 	/*@}*/
 };
 

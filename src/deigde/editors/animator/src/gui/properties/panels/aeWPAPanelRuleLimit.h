@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new panel. */
-	aeWPAPanelRuleLimit( aeWPRule &wpRule );
+	aeWPAPanelRuleLimit(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

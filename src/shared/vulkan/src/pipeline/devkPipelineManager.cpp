@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-devkPipelineManager::devkPipelineManager( devkDevice &device ) :
-pDevice( device ){
+devkPipelineManager::devkPipelineManager(devkDevice &device) :
+pDevice(device){
 }
 
 devkPipelineManager::~devkPipelineManager(){
@@ -54,44 +54,44 @@ int devkPipelineManager::GetCount() const{
 	return pLayouts.GetCount();
 }
 
-devkPipeline *devkPipelineManager::GetAt( int index ) const{
-	return ( devkPipeline* )pLayouts.GetAt( index );
+devkPipeline *devkPipelineManager::GetAt(int index) const{
+	return (devkPipeline*)pLayouts.GetAt(index);
 }
 
-devkPipeline *devkPipelineManager::GetWith( const devkPipelineConfiguration &configuration ){
+devkPipeline *devkPipelineManager::GetWith(const devkPipelineConfiguration &configuration){
 	const int count = pLayouts.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		devkPipeline * const layout = ( devkPipeline* )pLayouts.GetAt( i );
-		if( layout->GetConfiguration() == configuration ){
+	for(i=0; i<count; i++){
+		devkPipeline * const layout = (devkPipeline*)pLayouts.GetAt(i);
+		if(layout->GetConfiguration() == configuration){
 			return layout;
 		}
 	}
 	
 	devkPipeline::Ref layout;
 	
-	switch( configuration.GetType() ){
+	switch(configuration.GetType()){
 	case devkPipelineConfiguration::etGraphics:
-		layout.TakeOver( new devkPipelineGraphic( pDevice, configuration ) );
+		layout.TakeOver(new devkPipelineGraphic(pDevice, configuration));
 		break;
 		
 	case devkPipelineConfiguration::etCompute:
-		layout.TakeOver( new devkPipelineCompute( pDevice, configuration ) );
+		layout.TakeOver(new devkPipelineCompute(pDevice, configuration));
 		break;
 		
 	case devkPipelineConfiguration::etRaytracing:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLayouts.Add( layout );
+	pLayouts.Add(layout);
 	return layout;
 }
 
-bool devkPipelineManager::HasWith( const devkPipelineConfiguration &configuration ) const{
+bool devkPipelineManager::HasWith(const devkPipelineConfiguration &configuration) const{
 	const int count = pLayouts.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( ( ( devkPipeline* )pLayouts.GetAt( i ) )->GetConfiguration() == configuration ){
+	for(i=0; i<count; i++){
+		if(((devkPipeline*)pLayouts.GetAt(i))->GetConfiguration() == configuration){
 			return true;
 		}
 	}

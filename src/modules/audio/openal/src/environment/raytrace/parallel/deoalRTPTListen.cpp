@@ -49,24 +49,24 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalRTPTListen::deoalRTPTListen( deoalRTParallelEnvProbe &owner ) :
-deParallelTask( &owner.GetAudioThread().GetOal() ),
-pOwner( owner ),
-pWorld( NULL ),
-    pRTWorldBVH( NULL ),
-pFirstRay( 0 ),
+deoalRTPTListen::deoalRTPTListen(deoalRTParallelEnvProbe &owner) :
+deParallelTask(&owner.GetAudioThread().GetOal()),
+pOwner(owner),
+pWorld(NULL),
+    pRTWorldBVH(NULL),
+pFirstRay(0),
 #ifndef RTPTL_ONE_TASK_PER_RAY
-pRayCount( 0 ),
+pRayCount(0),
 #endif
-pListenProbe( NULL ),
-pSourceProbe( NULL )
+pListenProbe(NULL),
+pSourceProbe(NULL)
 {
 	(void)pOwner; // silence compiler warning
 	
-	pWOVRayHitsElement.SetResult( &pRTResult );
-	pRTWOVRayHitsElement.SetResult( &pRTResult );
-	SetMarkFinishedAfterRun( true );
-	SetLowPriority( true );
+	pWOVRayHitsElement.SetResult(&pRTResult);
+	pRTWOVRayHitsElement.SetResult(&pRTResult);
+	SetMarkFinishedAfterRun(true);
+	SetLowPriority(true);
 }
 
 deoalRTPTListen::~deoalRTPTListen(){
@@ -77,50 +77,50 @@ deoalRTPTListen::~deoalRTPTListen(){
 // Manegement
 ///////////////
 
-void deoalRTPTListen::SetWorld( deoalAWorld *world, deoalRTWorldBVH *rtWorldBVH ){
+void deoalRTPTListen::SetWorld(deoalAWorld *world, deoalRTWorldBVH *rtWorldBVH){
 	pWorld = world;
 	pRTWorldBVH = rtWorldBVH;
 }
 
-void deoalRTPTListen::SetFirstRay( int firstRay ){
+void deoalRTPTListen::SetFirstRay(int firstRay){
 	pFirstRay = firstRay;
 }
 
 #ifndef RTPTL_ONE_TASK_PER_RAY
-void deoalRTPTListen::SetRayCount( int rayCount ){
+void deoalRTPTListen::SetRayCount(int rayCount){
 	pRayCount = rayCount;
 }
 #endif
 
-void deoalRTPTListen::SetListenPosition( const decDVector &position ){
+void deoalRTPTListen::SetListenPosition(const decDVector &position){
 	pListenPosition = position;
 }
 
-void deoalRTPTListen::SetListenProbe( const deoalEnvProbe *probe ){
+void deoalRTPTListen::SetListenProbe(const deoalEnvProbe *probe){
 	pListenProbe = probe;
 }
 
-void deoalRTPTListen::SetSourceProbe( const deoalEnvProbe *probe ){
+void deoalRTPTListen::SetSourceProbe(const deoalEnvProbe *probe){
 	pSourceProbe = probe;
 }
 
-void deoalRTPTListen::SetLayerMask( const decLayerMask &layerMask ){
+void deoalRTPTListen::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
 
 
 void deoalRTPTListen::Run(){
-	if( ! pSourceProbe ){
-		DETHROW( deeInvalidParam );
+	if(!pSourceProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
 	#ifdef RTWOVRAYBLOCKED_DO_TIMING
 	pRTWOVRayBlocked.StartTiming();
 	#endif
 	
-	pWOVRayHitsElement.SetLayerMask( pLayerMask );
-	pWOVRayBlocked.SetLayerMask( pLayerMask );
+	pWOVRayHitsElement.SetLayerMask(pLayerMask);
+	pWOVRayBlocked.SetLayerMask(pLayerMask);
 	
 	const float range = pSourceProbe->GetRange();
 	
@@ -164,10 +164,10 @@ void deoalRTPTListen::Run(){
 	pLimitRevTimeCount = 0;
 	pUnlimitRevTimeCount = 0;
 	
-	pDirectSoundDistance = ( float )( ( pListenPosition - pSourceProbe->GetPosition() ).Length() );
+	pDirectSoundDistance = (float)((pListenPosition - pSourceProbe->GetPosition()).Length());
 	
 	pSepDistFirstLateRefl = pDirectSoundDistance;
-	if( pListenProbe ){
+	if(pListenProbe){
 		//pSepDistFirstLateRefl += decMath::max( pSourceProbe->GetSepTimeFirstLateRefl(),
 		//	pListenProbe->GetSepTimeFirstLateRefl() ) * SOUND_SPEED;
 		pSepDistFirstLateRefl += pListenProbe->GetSepTimeFirstLateRefl() * SOUND_SPEED;
@@ -287,8 +287,8 @@ void deoalRTPTListen::Run(){
 void deoalRTPTListen::Finished(){
 	// this task never runs alone. it is always a dependency and clean up by these tasks
 	/*
-	if( GetDependedOnBy().GetCount() == 0 ){
-		pOwner.Enable( this );
+	if(GetDependedOnBy().GetCount() == 0){
+		pOwner.Enable(this);
 	}
 	*/
 }
@@ -316,18 +316,18 @@ void deoalRTPTListen::RunLinearBeam(){
 		pListenProbe->GetSoundRayList() : pSourceProbe->GetSoundRayList();
 	const decVector &targetPositionWorld = pListenProbe ?
 		pSourceProbe->GetPosition() : pListenPosition;
-	const decVector targetPosition( targetPositionWorld - ( pListenProbe ?
-		pListenProbe->GetPosition() : pSourceProbe->GetPosition() ) );
-	const decVector gainPosition( pListenProbe ?
-		decVector( pListenPosition - pListenProbe->GetPosition() ) : targetPosition );
+	const decVector targetPosition(targetPositionWorld - (pListenProbe ?
+		pListenProbe->GetPosition() : pSourceProbe->GetPosition()));
+	const decVector gainPosition(pListenProbe ?
+		decVector(pListenPosition - pListenProbe->GetPosition()) : targetPosition);
 	deoalWorldOctree &octree = *pWorld->GetOctree();
 	#ifndef RTPTL_ONE_TASK_PER_RAY
 	const int lastRay = pFirstRay + pRayCount;
 	int i;
 	#endif
 	
-	const float baseBeamRadius = tanf( pListenProbe ?
-		pListenProbe->GetRayOpeningAngle() : pSourceProbe->GetRayOpeningAngle() );
+	const float baseBeamRadius = tanf(pListenProbe ?
+		pListenProbe->GetRayOpeningAngle() : pSourceProbe->GetRayOpeningAngle());
 // 	const float beamNormalize = 1.0f / baseBeamRadius;
 // 	const float beamNormalize = ( float )pEnvProbe->GetRayCount();
 	
@@ -342,10 +342,10 @@ void deoalRTPTListen::RunLinearBeam(){
 	*/
 	
 	#ifndef RTPTL_ONE_TASK_PER_RAY
-	for( i=pFirstRay; i<lastRay; i++ ){
-		const deoalSoundRay &soundRay = soundRayList.GetRayAt( i );
+	for(i=pFirstRay; i<lastRay; i++){
+		const deoalSoundRay &soundRay = soundRayList.GetRayAt(i);
 	#else
-		const deoalSoundRay &soundRay = soundRayList.GetRayAt( pFirstRay );
+		const deoalSoundRay &soundRay = soundRayList.GetRayAt(pFirstRay);
 	#endif
 		
 		float closestBeamDistance = 0.0f;
@@ -353,11 +353,11 @@ void deoalRTPTListen::RunLinearBeam(){
 		int closestSegment = -1;
 		int closestBounces = 0;
 		
-		ClosestToRay( closestBeamDistance, closestDistSquared, closestSegment, closestBounces,
-			soundRayList, soundRay, targetPosition, baseBeamRadius, octree, targetPositionWorld );
+		ClosestToRay(closestBeamDistance, closestDistSquared, closestSegment, closestBounces,
+			soundRayList, soundRay, targetPosition, baseBeamRadius, octree, targetPositionWorld);
 		
 		// if there is a closest segment apply the gain
-		if( closestSegment == -1 ){
+		if(closestSegment == -1){
 			#ifdef RTPTL_ONE_TASK_PER_RAY
 			return;
 			#else
@@ -367,13 +367,13 @@ void deoalRTPTListen::RunLinearBeam(){
 		
 		// calculate weight
 		float factor = /* beamNormalize * */
-			decMath::max( 1.0f - sqrtf( closestDistSquared )
-				/ ( baseBeamRadius * closestBeamDistance ), 0.0f );
+			decMath::max(1.0f - sqrtf(closestDistSquared)
+				/ (baseBeamRadius * closestBeamDistance), 0.0f);
 		
 		// precalc already applied distance attenuation so no need to do it here again unless
 		// listener probe is used. in this case no attenutation has been applied so far
-		if( pListenProbe ){
-			factor *= pSourceProbe->AttenuatedGain( closestBeamDistance );
+		if(pListenProbe){
+			factor *= pSourceProbe->AttenuatedGain(closestBeamDistance);
 		}
 		
 		// the calculation here is equal to an attenuation of 1/d. by multiplying by
@@ -381,24 +381,24 @@ void deoalRTPTListen::RunLinearBeam(){
 // 		const float factor = closestWeight * pSourceProbe->AttenuatedGain( closestListenerDistance )
 // 			* closestListenerDistance;
 		
-		const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt( closestSegment );
+		const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt(closestSegment);
 		const float gainLow = segment.GetGainLow() * factor;
 		const float gainMedium = segment.GetGainMedium() * factor;
 		const float gainHigh = segment.GetGainHigh() * factor;
 		
-		if( pListenProbe ){
+		if(pListenProbe){
 			// for listener centric we can not use the segment position to calculate the direction.
 			// this would calculate the direction from the source to the segment point. this is
 			// not what we need. to get the correct result we can use the first segment of the
 			// ray. the position of this segment lines up with the direction the ray has been
 			// initially cast into
-			ApplyIndirectGains( closestBounces, soundRayList.GetSegmentAt(
-				soundRay.GetFirstSegment() ).GetPosition() - gainPosition,
-				closestBeamDistance, gainLow, gainMedium, gainHigh );
+			ApplyIndirectGains(closestBounces, soundRayList.GetSegmentAt(
+				soundRay.GetFirstSegment()).GetPosition() - gainPosition,
+				closestBeamDistance, gainLow, gainMedium, gainHigh);
 			
 		}else{
-			ApplyIndirectGains( closestBounces, segment.GetPosition() - gainPosition,
-				closestBeamDistance, gainLow, gainMedium, gainHigh );
+			ApplyIndirectGains(closestBounces, segment.GetPosition() - gainPosition,
+				closestBeamDistance, gainLow, gainMedium, gainHigh);
 		}
 		
 	#ifndef RTPTL_ONE_TASK_PER_RAY
@@ -406,10 +406,10 @@ void deoalRTPTListen::RunLinearBeam(){
 	#endif
 }
 
-void deoalRTPTListen::ClosestToRay( float &closestBeamDistance, float &closestDistSquared,
+void deoalRTPTListen::ClosestToRay(float &closestBeamDistance, float &closestDistSquared,
 int &closestSegment, int &closestBounces, const deoalSoundRayList &soundRayList,
 const deoalSoundRay &soundRay, const decVector &targetPosition, float baseBeamRadius,
-deoalWorldOctree &octree, const decVector &targetPositionWorld ){
+deoalWorldOctree &octree, const decVector &targetPositionWorld){
 	const int soundRayCount = soundRayList.GetRayCount();
 	const int segmentCount = soundRay.GetSegmentCount();
 	const int firstSegment = soundRay.GetFirstSegment();
@@ -417,36 +417,36 @@ deoalWorldOctree &octree, const decVector &targetPositionWorld ){
 	
 	// firstSegment + segmentCount should be never larger than soundRayCount but for some
 	// strange reason it can happen once in a blue moon. avoid an exception this rare case
-	const int safeEndIndex = decMath::min( segmentCount, soundRayCount - firstSegment );
+	const int safeEndIndex = decMath::min(segmentCount, soundRayCount - firstSegment);
 	
-	for( i=0; i<safeEndIndex; i++ ){
-		const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt( firstSegment + i );
+	for(i=0; i<safeEndIndex; i++){
+		const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt(firstSegment + i);
 		
-		const decVector rayTargetDirection( targetPosition - segment.GetPosition() );
+		const decVector rayTargetDirection(targetPosition - segment.GetPosition());
 		const float lambda = segment.GetDirection() * rayTargetDirection;
-		if( lambda < 0.0 || lambda > segment.GetLength() ){
+		if(lambda < 0.0 || lambda > segment.GetLength()){
 			continue;
 		}
 		
-		const decVector closest( segment.GetPosition() + segment.GetDirection() * lambda );
-		const decVector targetClosestDirection( closest - targetPosition );
+		const decVector closest(segment.GetPosition() + segment.GetDirection() * lambda);
+		const decVector targetClosestDirection(closest - targetPosition);
 		
 		// if the ray is outside the contribution radius ignore it
 		const float beamDistance = segment.GetDistance() + lambda;
 		const float tarClosDistSquared = targetClosestDirection.LengthSquared();
 		
 		const float beamRadius = baseBeamRadius * beamDistance;
-		if( tarClosDistSquared > beamRadius * beamRadius ){
+		if(tarClosDistSquared > beamRadius * beamRadius){
 			continue;
 		}
 		
 		// if the segment is farther away ignore it
-		if( closestSegment != -1 && tarClosDistSquared >= closestDistSquared ){
+		if(closestSegment != -1 && tarClosDistSquared >= closestDistSquared){
 			continue;
 		}
 		
 		// if there is no direct path to the listener ignore it
-		if( IsRayBlocked( octree, targetPositionWorld, targetClosestDirection ) ){
+		if(IsRayBlocked(octree, targetPositionWorld, targetClosestDirection)){
 			continue;
 		}
 		
@@ -457,17 +457,17 @@ deoalWorldOctree &octree, const decVector &targetPositionWorld ){
 		closestBounces = segment.GetBounceCount();
 		
 		#if 0
-		if( IsRayBlocked( octree, pListenerPosition, listenerDirection ) ){
+		if(IsRayBlocked(octree, pListenerPosition, listenerDirection)){
 			continue; // no direct path to the listener
 		}
 		
-		const float attGain = factor * pSourceProbe->AttenuatedGain( listenerDistance );
+		const float attGain = factor * pSourceProbe->AttenuatedGain(listenerDistance);
 		const float gainLow = segment.GetGainLow() * attGain;
 		const float gainMedium = segment.GetGainMedium() * attGain;
 		const float gainHigh = segment.GetGainHigh() * attGain;
 		
-		ApplyIndirectGains( j + 1, -rayListenerDirection, listenerDistance,
-			gainLow, gainMedium, gainHigh );
+		ApplyIndirectGains(j + 1, -rayListenerDirection, listenerDistance,
+			gainLow, gainMedium, gainHigh);
 		
 		break; // ray has hit listener. stop processing the rest of the ray
 		#endif
@@ -476,10 +476,10 @@ deoalWorldOctree &octree, const decVector &targetPositionWorld ){
 	const int transmittedRayCount = soundRay.GetTransmittedRayCount();
 	const int firstTransmittedRay = soundRay.GetFirstTransmittedRay();
 	
-	for( i=0; i<transmittedRayCount; i++ ){
-		ClosestToRay( closestBeamDistance, closestDistSquared, closestSegment, closestBounces,
-			soundRayList, soundRayList.GetTransmittedRayAt( firstTransmittedRay + i ),
-			targetPosition, baseBeamRadius, octree, targetPositionWorld );
+	for(i=0; i<transmittedRayCount; i++){
+		ClosestToRay(closestBeamDistance, closestDistSquared, closestSegment, closestBounces,
+			soundRayList, soundRayList.GetTransmittedRayAt(firstTransmittedRay + i),
+			targetPosition, baseBeamRadius, octree, targetPositionWorld);
 	}
 }
 
@@ -489,19 +489,19 @@ deoalRTPTListen::sSphereReceiverParams::sSphereReceiverParams(
 	const deoalSoundRayList& psoundRayList, const decVector& ptargetPosition,
 	deoalWorldOctree& poctree, const decVector& ptargetPositionWorld,
 	const decVector& pgainPosition, float preceiverRadius,
-	float preceiverRadiusSquared, float pinvReceiverVolume ) :
-soundRayList( psoundRayList ),
-targetPosition( ptargetPosition ),
-octree( poctree ),
-targetPositionWorld( ptargetPositionWorld ),
-gainPosition( pgainPosition ),
-receiverRadius( preceiverRadius ),
-receiverRadiusSquared( preceiverRadiusSquared ),
-invReceiverVolume( pinvReceiverVolume ){
+	float preceiverRadiusSquared, float pinvReceiverVolume) :
+soundRayList(psoundRayList),
+targetPosition(ptargetPosition),
+octree(poctree),
+targetPositionWorld(ptargetPositionWorld),
+gainPosition(pgainPosition),
+receiverRadius(preceiverRadius),
+receiverRadiusSquared(preceiverRadiusSquared),
+invReceiverVolume(pinvReceiverVolume){
 }
 
 deoalRTPTListen::sSphereReceiverImpinge::sSphereReceiverImpinge() :
-time( 0.0f ), low( 0.0f ), medium( 0.0f ), high( 0.0f ){
+time(0.0f), low(0.0f), medium(0.0f), high(0.0f){
 }
 
 void deoalRTPTListen::RunSphereReceiver(){
@@ -509,10 +509,10 @@ void deoalRTPTListen::RunSphereReceiver(){
 		pListenProbe->GetSoundRayList() : pSourceProbe->GetSoundRayList();
 	const decVector &targetPositionWorld = pListenProbe ?
 		pSourceProbe->GetPosition() : pListenPosition;
-	const decVector targetPosition( targetPositionWorld - ( pListenProbe ?
-		pListenProbe->GetPosition() : pSourceProbe->GetPosition() ) );
-	const decVector gainPosition( pListenProbe ?
-		decVector( pListenPosition - pListenProbe->GetPosition() ) : targetPosition );
+	const decVector targetPosition(targetPositionWorld - (pListenProbe ?
+		pListenProbe->GetPosition() : pSourceProbe->GetPosition()));
+	const decVector gainPosition(pListenProbe ?
+		decVector(pListenPosition - pListenProbe->GetPosition()) : targetPosition);
 	deoalWorldOctree &octree = *pWorld->GetOctree();
 	#ifndef RTPTL_ONE_TASK_PER_RAY
 	const int lastRay = pFirstRay + pRayCount;
@@ -537,12 +537,12 @@ void deoalRTPTListen::RunSphereReceiver(){
 	const int rayCount = pListenProbe ? pListenProbe->GetRayCount() : pSourceProbe->GetRayCount();
 	const float meanFreePath = pListenProbe ?
 		pListenProbe->GetMeanFreePath() : pSourceProbe->GetMeanFreePath();
-	const float receiverRadius = meanFreePath * sqrtf( PI * 2.0f / ( float )rayCount ) * scaleRecRad;
+	const float receiverRadius = meanFreePath * sqrtf(PI * 2.0f / (float)rayCount) * scaleRecRad;
 // 	const float receiverRadius = powf( 15.0f * pSourceProbe->GetRoomVolume()
 // 		/ ( 2.0f * PI * rayCount ), 1.0f / 3.0f );
 	const float receiverRadiusSquared = receiverRadius * receiverRadius;
-	const float receiverVolume = decMath::max( 0.01f,
-		( 4.0f / 3.0f ) * PI * receiverRadiusSquared * receiverRadius );
+	const float receiverVolume = decMath::max(0.01f,
+		(4.0f / 3.0f) * PI * receiverRadiusSquared * receiverRadius);
 	const float invReceiverVolume = fixGainScaleRecRad/*1.0f*/ / receiverVolume;
 	
 	// TODO receiver radius can explode if speaker is located on an open plane. in this case
@@ -551,26 +551,26 @@ void deoalRTPTListen::RunSphereReceiver(){
 	//      to be using the distance between microphone and speaker to judge the size of the
 	//      receiver.
 	
-	const sSphereReceiverParams params( soundRayList, targetPosition, octree, targetPositionWorld,
-		gainPosition, receiverRadius, receiverRadiusSquared, invReceiverVolume );
+	const sSphereReceiverParams params(soundRayList, targetPosition, octree, targetPositionWorld,
+		gainPosition, receiverRadius, receiverRadiusSquared, invReceiverVolume);
 	
 	#ifndef RTPTL_ONE_TASK_PER_RAY
-	for( i=pFirstRay; i<lastRay; i++ ){
-		const deoalSoundRay &soundRay = soundRayList.GetRayAt( i );
+	for(i=pFirstRay; i<lastRay; i++){
+		const deoalSoundRay &soundRay = soundRayList.GetRayAt(i);
 	#else
-		const deoalSoundRay &soundRay = soundRayList.GetRayAt( pFirstRay );
+		const deoalSoundRay &soundRay = soundRayList.GetRayAt(pFirstRay);
 	#endif
 		
-		RunSphereReceiver( params, soundRay, NULL );
+		RunSphereReceiver(params, soundRay, NULL);
 	#ifndef RTPTL_ONE_TASK_PER_RAY
 	}
 	#endif
 }
 
-void deoalRTPTListen::RunSphereReceiver( const deoalRTPTListen::sSphereReceiverParams &params,
-const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
+void deoalRTPTListen::RunSphereReceiver(const deoalRTPTListen::sSphereReceiverParams &params,
+const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge){
 	const int segmentCount = soundRay.GetSegmentCount();
-	if( segmentCount == 0 ){
+	if(segmentCount == 0){
 		return;
 	}
 	
@@ -581,22 +581,22 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 	sSphereReceiverImpinge localFirstImpinge;
 	sSphereReceiverImpinge lastImpinge;
 	
-	const float initialDistance = params.soundRayList.GetSegmentAt( firstSegment ).GetDistance();
+	const float initialDistance = params.soundRayList.GetSegmentAt(firstSegment).GetDistance();
 	const int soundRayCount = params.soundRayList.GetRayCount();
 	
 	// firstSegment + segmentCount should be never larger than soundRayCount but for some
 	// strange reason it can happen once in a blue moon. avoid an exception this rare case
-	const int safeEndIndex = decMath::min( segmentCount, soundRayCount - firstSegment );
+	const int safeEndIndex = decMath::min(segmentCount, soundRayCount - firstSegment);
 	
-	for( i=0; i<safeEndIndex; i++ ){
-		const deoalSoundRaySegment &segment = params.soundRayList.GetSegmentAt( firstSegment + i );
+	for(i=0; i<safeEndIndex; i++){
+		const deoalSoundRaySegment &segment = params.soundRayList.GetSegmentAt(firstSegment + i);
 		
 		// we could ignore closest points if they are outside the ray segment. this would
 		// though reject some rays which contribute to the listener sphere. to account for
 		// this we move the dri calculation before the ray-block check. this way if the dri
 		// becomes negative neither the start nor the end point is inside the sphere. avoids
 		// a bunch of calculations
-		const decVector rayTargetDirection( params.targetPosition - segment.GetPosition() );
+		const decVector rayTargetDirection(params.targetPosition - segment.GetPosition());
 		
 		// NOTE performance measurements for the diffuse and specular versions (rays bounces):
 		// specular 48 20: 0.2 ms
@@ -623,20 +623,20 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		// ensure the receiver sphere is in front of the hit face. use a blending factor to
 		// avoid ripping off the gain when crossing the face
 		const float distToFace = segment.GetNormal() * rayTargetDirection;
-		if( distToFace <= 0.0f ){
+		if(distToFace <= 0.0f){
 			continue;
 		}
 		
-		float factor = decMath::min( distToFace / params.receiverRadius, 1.0f );
+		float factor = decMath::min(distToFace / params.receiverRadius, 1.0f);
 		
-		if( IsRayBlocked( params.octree, params.targetPositionWorld, -rayTargetDirection ) ){
+		if(IsRayBlocked(params.octree, params.targetPositionWorld, -rayTargetDirection)){
 			continue; // if there is no direct path to the listener ignore it
 		}
 		
 		const float segTarDistance = rayTargetDirection.Length();
 		
 		#if 0
-		if( segTarDistance > params.receiverRadius + 0.001f ){
+		if(segTarDistance > params.receiverRadius + 0.001f){
 			// the sphere has a surface area of 4*pi*r^2. the half sphere has thus a surface
 			// area of 2*pi*r^2. the cone has a surface on the the sphere of 2*pi*r*h with h
 			// the height of the cone cap. to calculate the required parameters we use a line
@@ -673,7 +673,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 			//         = h / r
 			//         = r * (1 - sqrt(1 - rsr*rsr / d*d)) / r
 			//   ratio = 1 - sqrt(1 - rsr*rsr / d*d)
-			factor *= 1.0f - sqrtf( 1.0f - params.receiverRadiusSquared / ( segTarDistance * segTarDistance ) );
+			factor *= 1.0f - sqrtf(1.0f - params.receiverRadiusSquared / (segTarDistance * segTarDistance));
 		}
 		
 		#else
@@ -683,20 +683,20 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		// the sound power is impinged on the receiver
 		
 		/*
-		factor *= 1.0f / ( 2.0f * PI );
-		if( pListenProbe ){
-			const float a = pSourceProbe->AttenuatedGain( segment.GetDistance() + segTarDistance );
+		factor *= 1.0f / (2.0f * PI);
+		if(pListenProbe){
+			const float a = pSourceProbe->AttenuatedGain(segment.GetDistance() + segTarDistance);
 			factor *= a;
 			//factor *= a * a;
 		}
 		*/
 		
 		
-		if( pListenProbe ){
+		if(pListenProbe){
 			// we work with intensities here so we need 1/(r*r) . to support artist chosen
 			// roll-off factor this has to be squared(1/(rollOff*r)).
 			const float attenuation = pSourceProbe->AttenuatedGain(
-				segment.GetDistance() + segTarDistance );
+				segment.GetDistance() + segTarDistance);
 			factor *= attenuation * attenuation;
 		}
 		
@@ -706,7 +706,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		// the receiver as single point is 1/(4*pi*r*r) .
 		const float fdist = segment.GetDistance() + segTarDistance;
 		
-		if( pListenProbe ){
+		if(pListenProbe){
 			// to support artist chosen roll-off the calculation is modified. basicall the
 			// attenuation gain using artist roll-off is
 			//   att = 1/(rollOff*distance)
@@ -716,8 +716,8 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 			// 
 			// now if rollOff=1 then att=1/r . thus the calculation can be written as:
 			//   factor = 1/(4*pi) * att * att
-			const float att = pSourceProbe->AttenuatedGain( fdist );
-			factor *= att * att / ( 4.0f * PI );
+			const float att = pSourceProbe->AttenuatedGain(fdist);
+			factor *= att * att / (4.0f * PI);
 			
 			// NOTE
 			// according to paper using receiver sphere the impinged intensity is:
@@ -736,7 +736,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 			factor *= 6.0f;
 			
 		}else{
-			factor *= 6.0f / ( 4.0f * PI * fdist * fdist );
+			factor *= 6.0f / (4.0f * PI * fdist * fdist);
 		}
 		*/
 		#endif
@@ -747,22 +747,22 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		const float lambda = segment.GetDirection() * rayTargetDirection;
 		
 		#if 0
-		const decVector closest( segment.GetPosition() + segment.GetDirection() * lambda );
-		const decVector targetClosestDirection( closest - params.targetPosition );
+		const decVector closest(segment.GetPosition() + segment.GetDirection() * lambda);
+		const decVector targetClosestDirection(closest - params.targetPosition);
 		
-		const float gaussWidthFactor = tanf( pListenProbe ?
-			pListenProbe->GetRayOpeningAngle() : pSourceProbe->GetRayOpeningAngle() );
+		const float gaussWidthFactor = tanf(pListenProbe ?
+			pListenProbe->GetRayOpeningAngle() : pSourceProbe->GetRayOpeningAngle());
 		
 		const float listenerDistance = segment.GetDistance() + lambda; // => receiveDistance
 		
 		const float tarClosDistSquared = targetClosestDirection.LengthSquared();
 		const float beamWidth = gaussWidthFactor * listenerDistance;
 		const float beamWidthSquared = beamWidth * beamWidth;
-		if( tarClosDistSquared > beamWidthSquared ){
+		if(tarClosDistSquared > beamWidthSquared){
 			continue;
 		}
 		
-		if( IsRayBlocked( params.octree, params.targetPositionWorld, targetClosestDirection ) ){
+		if(IsRayBlocked(params.octree, params.targetPositionWorld, targetClosestDirection)){
 			continue; // if there is no direct path to the listener ignore it
 		}
 		
@@ -771,22 +771,22 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		const float RAY_GAUSS_A = 0.398942f;
 		
 		const float invSigma = RAY_GAUSS_WIDTH_INV_SIGMA / beamWidth;
-		const float factor = RAY_GAUSS_A * invSigma * expf( RAY_GAUSS_B * invSigma * invSigma * tarClosDistSquared );
-		if( factor <= 0.0f ){
+		const float factor = RAY_GAUSS_A * invSigma * expf(RAY_GAUSS_B * invSigma * invSigma * tarClosDistSquared);
+		if(factor <= 0.0f){
 			continue;
 		}
 		
 		#else
-		if( lambda < -params.receiverRadius || lambda > segment.GetLength() + params.receiverRadius ){
+		if(lambda < -params.receiverRadius || lambda > segment.GetLength() + params.receiverRadius){
 			continue;
 		}
 		
 		// if the ray is outside the contribution radius ignore it
-		const decVector closest( segment.GetPosition() + segment.GetDirection() * lambda );
-		const decVector targetClosestDirection( closest - params.targetPosition );
+		const decVector closest(segment.GetPosition() + segment.GetDirection() * lambda);
+		const decVector targetClosestDirection(closest - params.targetPosition);
 		
 		const float tarClosDistSquared = targetClosestDirection.LengthSquared();
-		if( tarClosDistSquared > params.receiverRadiusSquared ){
+		if(tarClosDistSquared > params.receiverRadiusSquared){
 			continue;
 		}
 		
@@ -797,15 +797,15 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		// the interval [recD-dri/2 .. recD+dri/2] to [0 .. segmentLength]. the length of the
 		// interval is then the final dri to use
 		//const float dri = 2.0f * sqrtf( params.receiverRadiusSquared - tarClosDistSquared );
-		const float halfDri = sqrtf( params.receiverRadiusSquared - tarClosDistSquared );
-		const float dri = decMath::min( lambda + halfDri, segment.GetLength() )
-			- decMath::max( lambda - halfDri, 0.0f );
-		if( dri <= 0.0f ){
+		const float halfDri = sqrtf(params.receiverRadiusSquared - tarClosDistSquared);
+		const float dri = decMath::min(lambda + halfDri, segment.GetLength())
+			- decMath::max(lambda - halfDri, 0.0f);
+		if(dri <= 0.0f){
 			continue;
 		}
 		
 		// if there is no direct path to the listener ignore it
-		if( IsRayBlocked( params.octree, params.targetPositionWorld, targetClosestDirection ) ){
+		if(IsRayBlocked(params.octree, params.targetPositionWorld, targetClosestDirection)){
 			continue;
 		}
 		
@@ -820,7 +820,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		#endif
 		
 		const float receiveDistance = segment.GetDistance() + lambda;
-		if( pListenProbe ){
+		if(pListenProbe){
 // 			factor *= pSourceProbe->AttenuatedGain( receiveDistance ) * receiveDistance;
 		}
 		
@@ -828,7 +828,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		const float gainMedium = segment.GetGainMedium() * factor;
 		const float gainHigh = segment.GetGainHigh() * factor;
 		
-		if( pListenProbe ){
+		if(pListenProbe){
 			// for listener centric we can not use the segment position to calculate the direction.
 			// this would calculate the direction from the source to the segment point. this is
 			// not what we need. to get the correct result we can use the first segment of the
@@ -843,10 +843,10 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 // 					gainLow, gainMedium, gainHigh, sqrtf(tarClosDistSquared), lambda, halfDri, dri, factor );
 // 			}
 			
-			ApplyIndirectGains( segment.GetBounceCount(),
-				params.soundRayList.GetSegmentAt( soundRay.GetFirstSegment() )
+			ApplyIndirectGains(segment.GetBounceCount(),
+				params.soundRayList.GetSegmentAt(soundRay.GetFirstSegment())
 					.GetPosition() - params.gainPosition,
-				receiveDistance, gainLow, gainMedium, gainHigh );
+				receiveDistance, gainLow, gainMedium, gainHigh);
 			
 			// also update the absorption and mean free path sum. we use the segment distance
 			// but minus the length of the initially cast ray. also the length of the current
@@ -864,31 +864,31 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 			// entries along the ray not to be monotonic declining. by using only the segment
 			// gain values this can be enforced. this is an acceptable error
 			lastImpinge.time = receiveDistance * INV_SOUND_SPEED;
-			lastImpinge.low = decMath::max( /*segment.GetGainLow()*/ gainLow, FLOAT_SAFE_EPSILON );
-			lastImpinge.medium = decMath::max( /*segment.GetGainMedium()*/ gainMedium, FLOAT_SAFE_EPSILON );
-			lastImpinge.high = decMath::max( /*segment.GetGainHigh()*/ gainHigh, FLOAT_SAFE_EPSILON );
+			lastImpinge.low = decMath::max(/*segment.GetGainLow()*/ gainLow, FLOAT_SAFE_EPSILON);
+			lastImpinge.medium = decMath::max(/*segment.GetGainMedium()*/ gainMedium, FLOAT_SAFE_EPSILON);
+			lastImpinge.high = decMath::max(/*segment.GetGainHigh()*/ gainHigh, FLOAT_SAFE_EPSILON);
 			
-			if( ! firstImpinge ){
+			if(!firstImpinge){
 				localFirstImpinge = lastImpinge;
 				firstImpinge = &localFirstImpinge;
 			}
 			
 		}else{
-			ApplyIndirectGains( segment.GetBounceCount(),
+			ApplyIndirectGains(segment.GetBounceCount(),
 				segment.GetPosition() - params.gainPosition,
-				receiveDistance, gainLow, gainMedium, gainHigh );
+				receiveDistance, gainLow, gainMedium, gainHigh);
 		}
 	}
 	
-	if( indexLastSegment != -1 ){
-		const deoalSoundRaySegment &segment = params.soundRayList.GetSegmentAt( indexLastSegment );
+	if(indexLastSegment != -1){
+		const deoalSoundRaySegment &segment = params.soundRayList.GetSegmentAt(indexLastSegment);
 		
 		pAbsorptionSumLow += segment.GetAbsorptionSumLow();
 		pAbsorptionSumMedium += segment.GetAbsorptionSumMedium();
 		pAbsorptionSumHigh += segment.GetAbsorptionSumHigh();
 		pAbsorptionCount += segment.GetBounceCount();
 		
-		if( /* i == segmentCount - 1 && */ soundRay.GetOutside() ){
+		if(/* i == segmentCount - 1 && */ soundRay.GetOutside()){
 			const float mfpDist = segment.GetDistance() - initialDistance;
 			
 			pMeanFreePathSum += mfpDist;
@@ -909,21 +909,21 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 			float limitRevTimeMedium = 0.0f;
 			float limitRevTimeHigh = 0.0f;
 			
-			if( firstImpinge ){
+			if(firstImpinge){
 				const float diffTime = lastImpinge.time - firstImpinge->time;
-				if( diffTime > 1e-3f ){
-					const float diffPowerDbLow = -10.0f * log10f( lastImpinge.low / firstImpinge->low );
-					if( diffPowerDbLow > 1e-4f ){
+				if(diffTime > 1e-3f){
+					const float diffPowerDbLow = -10.0f * log10f(lastImpinge.low / firstImpinge->low);
+					if(diffPowerDbLow > 1e-4f){
 						limitRevTimeLow = diffTime * 60.0f / diffPowerDbLow;
 					}
 					
-					const float diffPowerDbMedium = -10.0f * log10f( lastImpinge.medium / firstImpinge->medium );
-					if( diffPowerDbMedium > 1e-4f ){
+					const float diffPowerDbMedium = -10.0f * log10f(lastImpinge.medium / firstImpinge->medium);
+					if(diffPowerDbMedium > 1e-4f){
 						limitRevTimeMedium = diffTime * 60.0f / diffPowerDbMedium;
 					}
 					
-					const float diffPowerDbHigh = -10.0f * log10f( lastImpinge.high / firstImpinge->high );
-					if( diffPowerDbHigh > 1e-4f ){
+					const float diffPowerDbHigh = -10.0f * log10f(lastImpinge.high / firstImpinge->high);
+					if(diffPowerDbHigh > 1e-4f){
 						limitRevTimeHigh = diffTime * 60.0f / diffPowerDbHigh;
 					}
 				}
@@ -951,23 +951,23 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		// hence it is enough to convert intensity to sound intensity level using:
 		//   SIL = 10 * log10(intensity).
 		#ifdef USE_DECAY_CURVE
-		if( firstImpinge ){
+		if(firstImpinge){
 			const float diffTime = lastImpinge.time - firstImpinge->time;
-			if( diffTime > 1e-3f ){
+			if(diffTime > 1e-3f){
 				// SIL = 10 * log10(impinge.gain)
 				// diffSIL = SILLast - SILFirst = 10 * log10(impingeLast / impingeFirst)
-				const float diffPowerDbLow = -10.0f * log10f( lastImpinge.low / firstImpinge->low );
-				if( diffPowerDbLow > 1e-4f ){
+				const float diffPowerDbLow = -10.0f * log10f(lastImpinge.low / firstImpinge->low);
+				if(diffPowerDbLow > 1e-4f){
 					pDecayTimeSumLow += diffTime * 60.0f / diffPowerDbLow;
 				}
 				
-				const float diffPowerDbMedium = -10.0f * log10f( lastImpinge.medium / firstImpinge->medium );
-				if( diffPowerDbMedium > 1e-4f ){
+				const float diffPowerDbMedium = -10.0f * log10f(lastImpinge.medium / firstImpinge->medium);
+				if(diffPowerDbMedium > 1e-4f){
 					pDecayTimeSumMedium += diffTime * 60.0f / diffPowerDbMedium;
 				}
 				
-				const float diffPowerDbHigh = -10.0f * log10f( lastImpinge.high / firstImpinge->high );
-				if( diffPowerDbHigh > 1e-4f ){
+				const float diffPowerDbHigh = -10.0f * log10f(lastImpinge.high / firstImpinge->high);
+				if(diffPowerDbHigh > 1e-4f){
 					pDecayTimeSumHigh += diffTime * 60.0f / diffPowerDbHigh;
 				}
 				
@@ -980,9 +980,9 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 	const int transmittedRayCount = soundRay.GetTransmittedRayCount();
 	const int firstTransmittedRay = soundRay.GetFirstTransmittedRay();
 	
-	for( i=0; i<transmittedRayCount; i++ ){
-		RunSphereReceiver( params, params.soundRayList
-			.GetTransmittedRayAt( firstTransmittedRay + i ), firstImpinge );
+	for(i=0; i<transmittedRayCount; i++){
+		RunSphereReceiver(params, params.soundRayList
+			.GetTransmittedRayAt(firstTransmittedRay + i), firstImpinge);
 	}
 }
 
@@ -998,7 +998,7 @@ void deoalRTPTListen::RunGaussBeam(){
 	#define RAY_GAUSS_B -0.5f
 	
 	// gauss beam width factor
-	#define RAY_GAUSS_WIDTH_SIGMA ( 1.0f / 2.35482f )
+	#define RAY_GAUSS_WIDTH_SIGMA (1.0f / 2.35482f)
 	#define RAY_GAUSS_WIDTH_INV_SIGMA 2.35482f
 	
 	// gaussBorder = exp(b * 2.35482 * 2.35482)
@@ -1011,14 +1011,14 @@ void deoalRTPTListen::RunGaussBeam(){
 	const deoalSoundRayList &soundRayList = pListenProbe ?
 		pListenProbe->GetSoundRayList() : pSourceProbe->GetSoundRayList();
 	const decDVector &probePosition = pSourceProbe->GetPosition();
-	const decVector listenerPosition( pListenerPosition - probePosition );
+	const decVector listenerPosition(pListenerPosition - probePosition);
 // 	const float directDistance = listenerPosition.Length();
 	deoalWorldOctree &octree = *pWorld->GetOctree();
 	const int lastRay = pFirstRay + pRayCount;
 	int i, j;
 	
-	const float gaussWidthFactor = tanf( pListenProbe ?
-		pListenProbe->GetRayOpeningAngle() : pSourceProbe->GetRayOpeningAngle() );
+	const float gaussWidthFactor = tanf(pListenProbe ?
+		pListenProbe->GetRayOpeningAngle() : pSourceProbe->GetRayOpeningAngle());
 	
 // 	const float gaussInvSigma = RAY_GAUSS_WIDTH_INV_SIGMA / gaussWidthFactor;
 // 	const float gaussInvSigmaSquared = gaussInvSigma * gaussInvSigma;
@@ -1088,8 +1088,8 @@ void deoalRTPTListen::RunGaussBeam(){
 	the paper uses beamWidth=23.5m
 	*/
 	
-	for( i=pFirstRay; i<lastRay; i++ ){
-		const deoalSoundRay &soundRay = soundRayList.GetRayAt( i );
+	for(i=pFirstRay; i<lastRay; i++){
+		const deoalSoundRay &soundRay = soundRayList.GetRayAt(i);
 		const int segmentCount = soundRay.GetSegmentCount();
 		const int firstSegment = soundRay.GetFirstSegment();
 		
@@ -1097,8 +1097,8 @@ void deoalRTPTListen::RunGaussBeam(){
 		float closestWeight = 0.0f;
 		int closestSegment = -1;
 		
-		for( j=0; j<segmentCount; j++ ){
-			const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt( firstSegment + j );
+		for(j=0; j<segmentCount; j++){
+			const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt(firstSegment + j);
 			
 			// check if the ray hits the listener along the way
 			// 
@@ -1205,14 +1205,14 @@ void deoalRTPTListen::RunGaussBeam(){
 			// adjust the size with the travelled distance. maybe this makes a difference.
 			// 
 			
-			const decVector rayListenerDirection( listenerPosition - segment.GetPosition() );
+			const decVector rayListenerDirection(listenerPosition - segment.GetPosition());
 			const float lambda = segment.GetDirection() * rayListenerDirection;
-			if( lambda < 0.0 || lambda > segment.GetLength() ){
+			if(lambda < 0.0 || lambda > segment.GetLength()){
 				continue;
 			}
 			
-			const decVector closest( segment.GetPosition() + segment.GetDirection() * lambda );
-			const decVector listenerDirection( closest - listenerPosition );
+			const decVector closest(segment.GetPosition() + segment.GetDirection() * lambda);
+			const decVector listenerDirection(closest - listenerPosition);
 			
 			
 			// if the ray is outside the contribution radius ignore it
@@ -1222,22 +1222,22 @@ void deoalRTPTListen::RunGaussBeam(){
 			
 			const float beamWidth = gaussWidthFactor * listenerDistance;
 			const float beamWidthSquared = beamWidth * beamWidth;
-			if( distSquared > beamWidthSquared * beamRadiusSquaredEnlarge ){
+			if(distSquared > beamWidthSquared * beamRadiusSquaredEnlarge){
 				continue;
 			}
 			
 			const float invSigma = RAY_GAUSS_WIDTH_INV_SIGMA / beamWidth;
-			const float factor = /* ( RAY_GAUSS_A * invSigma ) * */
-				expf( ( RAY_GAUSS_B * invSigma * invSigma ) * distSquared );
+			const float factor = /* (RAY_GAUSS_A * invSigma) * */
+				expf((RAY_GAUSS_B * invSigma * invSigma) * distSquared);
 				// * RAY_GAUSS_NORM_SCALE + RAY_GAUSS_NORM_OFFSET;
 			
 			// if the segment does not have a better weight ignore it
-			if( closestSegment != -1 && factor >= closestWeight ){
+			if(closestSegment != -1 && factor >= closestWeight){
 				continue;
 			}
 			
 			// this segment is better. if is also not blocked store it as best segment
-			if( IsRayBlocked( octree, pListenerPosition, listenerDirection ) ){
+			if(IsRayBlocked(octree, pListenerPosition, listenerDirection)){
 				continue; // no direct path to the listener
 			}
 			
@@ -1256,7 +1256,7 @@ void deoalRTPTListen::RunGaussBeam(){
 // 			}
 			
 			// check if the ray is blocked
-			if( IsRayBlocked( octree, pListenerPosition, listenerDirection ) ){
+			if(IsRayBlocked(octree, pListenerPosition, listenerDirection)){
 				continue; // no direct path to the listener
 			}
 			
@@ -1268,27 +1268,27 @@ void deoalRTPTListen::RunGaussBeam(){
 			const float gainMedium = segment.GetGainMedium(); // * attGain;
 			const float gainHigh = segment.GetGainHigh(); // * attGain;
 			
-			ApplyIndirectGains( j + 1, -rayListenerDirection, listenerDistance,
-				gainLow, gainMedium, gainHigh );
+			ApplyIndirectGains(j + 1, -rayListenerDirection, listenerDistance,
+				gainLow, gainMedium, gainHigh);
 			
 			break; // ray has hit listener. stop processing the rest of the ray
 #endif
 		}
 		
 		// if there is a closest segment apply the gain
-		if( closestSegment == -1 ){
+		if(closestSegment == -1){
 			continue;
 		}
 		
-		const float factor = closestWeight; // * pSourceProbe->AttenuatedGain( closestListenerDistance );
+		const float factor = closestWeight; // * pSourceProbe->AttenuatedGain(closestListenerDistance);
 		
-		const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt( firstSegment + closestSegment );
+		const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt(firstSegment + closestSegment);
 		const float gainLow = segment.GetGainLow() * factor;
 		const float gainMedium = segment.GetGainMedium() * factor;
 		const float gainHigh = segment.GetGainHigh() * factor;
 		
-		ApplyIndirectGains( closestSegment + 1, segment.GetPosition() - listenerPosition,
-			closestListenerDistance, gainLow, gainMedium, gainHigh );
+		ApplyIndirectGains(closestSegment + 1, segment.GetPosition() - listenerPosition,
+			closestListenerDistance, gainLow, gainMedium, gainHigh);
 	}
 	
 	
@@ -1310,16 +1310,16 @@ void deoalRTPTListen::RunListenerSphere(){
 	const deoalSoundRayList &soundRayList = pListenProbe ?
 		pListenProbe->GetSoundRayList() : pSourceProbe->GetSoundRayList();
 	const decDVector &probePosition = pSourceProbe->GetPosition();
-	const decVector listenerPosition( pListenerPosition - probePosition );
+	const decVector listenerPosition(pListenerPosition - probePosition);
 	deoalWorldOctree &octree = *pWorld->GetOctree();
 	const int lastRay = pFirstRay + pRayCount;
 	int i, j;
 	
 #if 0
-	const float lsRadius = /* powf( 15.0f * pEnvProbe->GetRoomVolume()
-		/ ( 2.0f * PI * ( float )pEnvProbe->GetRayCount() ), 1.0f / 3.0f ); //1.225f; */ 1.225;
+	const float lsRadius = /* powf(15.0f * pEnvProbe->GetRoomVolume()
+		/ (2.0f * PI * (float)pEnvProbe->GetRayCount()), 1.0f / 3.0f); //1.225f; */ 1.225;
 	const float lsFactor1 = lsRadius * lsRadius;
-	const float lsFactor2 = 3.0f / ( 2.0f * PI * lsRadius * lsRadius * lsRadius );
+	const float lsFactor2 = 3.0f / (2.0f * PI * lsRadius * lsRadius * lsRadius);
 #endif
 	
 	// base contrib radius is the ray opening angle. two ray base circles touch each other.
@@ -1327,16 +1327,16 @@ void deoalRTPTListen::RunListenerSphere(){
 	// circles. to reach out to the corner (and accept some overlap at the axis poles) the
 	// radius has to be enlarged by sqrt(2).
 	const float baseContribRadius = tanf(
-		( pListenProbe ? pListenProbe->GetRayOpeningAngle() : pSourceProbe->GetRayOpeningAngle() )
+		(pListenProbe ? pListenProbe->GetRayOpeningAngle() : pSourceProbe->GetRayOpeningAngle())
 			* 0.5f ) * sqrtf( 2.0f );
 	
-	for( i=pFirstRay; i<lastRay; i++ ){
-		const deoalSoundRay &soundRay = soundRayList.GetRayAt( i );
+	for(i=pFirstRay; i<lastRay; i++){
+		const deoalSoundRay &soundRay = soundRayList.GetRayAt(i);
 		const int segmentCount = soundRay.GetSegmentCount();
 		const int firstSegment = soundRay.GetFirstSegment();
 		
-		for( j=0; j<segmentCount; j++ ){
-			const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt( firstSegment + j );
+		for(j=0; j<segmentCount; j++){
+			const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt(firstSegment + j);
 			
 			// NOTE
 			// about distance calculation using sphere receiver. based on ray-tracing paper.
@@ -1419,14 +1419,14 @@ void deoalRTPTListen::RunListenerSphere(){
 // 				soundRay.GetDirection().x, soundRay.GetDirection().y, soundRay.GetDirection().z,
 // 				soundRay.GetDirection() * ( listenerPosition - soundRay.GetPosition() ), soundRay.GetLength() );
 			
-			const decVector rayListenerDirection( listenerPosition - segment.GetPosition() );
+			const decVector rayListenerDirection(listenerPosition - segment.GetPosition());
 			const float lambda = segment.GetDirection() * rayListenerDirection;
-			if( lambda < 0.0 || lambda > segment.GetLength() ){
+			if(lambda < 0.0 || lambda > segment.GetLength()){
 				continue;
 			}
 			
-			const decVector closest( segment.GetPosition() + segment.GetDirection() * lambda );
-			const decVector listenerDirection( closest - listenerPosition );
+			const decVector closest(segment.GetPosition() + segment.GetDirection() * lambda);
+			const decVector listenerDirection(closest - listenerPosition);
 			
 			
 			// if the ray is outside the contribution radius ignore it
@@ -1443,14 +1443,14 @@ void deoalRTPTListen::RunListenerSphere(){
 // 				closest.x, closest.y, closest.z, soundRay.GetDistance(), lambda,
 // 				listenerDistance, distSquared, baseContribRadius, contribRadius, contribRadiusSquared,
 // 				1.0f / decMath::max( 1.0f, listenerDistance ) );
-			if( distSquared > contribRadiusSquared ){
+			if(distSquared > contribRadiusSquared){
 				continue;
 			}
 			
 			
 			// check if the ray is blocked. the ray is considered blocked if the path between
 			// the closes ray point and the listener is blocked
-			if( IsRayBlocked( octree, pListenerPosition, listenerDirection ) ){
+			if(IsRayBlocked(octree, pListenerPosition, listenerDirection)){
 				continue; // no direct path to the listener
 			}
 			
@@ -1480,23 +1480,23 @@ void deoalRTPTListen::RunListenerSphere(){
 			// the only requirement to fix the problem is to apply listenerDistance-squared to
 			// AttenuatedGain() to compensate.
 			// 
-			const float attGain = pSourceProbe->AttenuatedGain( listenerDistance );
+			const float attGain = pSourceProbe->AttenuatedGain(listenerDistance);
 			
 			#ifdef HIT_COUNTS_ALL
 				const float impingeGain = attGain;
 				
 			#else
-				const float lsFactor2 = 3.0f / ( 2.0f * PI * contribRadiusSquared * contribRadius );
-				const float impingeFactor = lsFactor2 * sqrtf( contribRadiusSquared - distSquared );
-				const float impingeGain = impingeFactor * ( attGain * listenerDistance * listenerDistance );
+				const float lsFactor2 = 3.0f / (2.0f * PI * contribRadiusSquared * contribRadius);
+				const float impingeFactor = lsFactor2 * sqrtf(contribRadiusSquared - distSquared);
+				const float impingeGain = impingeFactor * (attGain * listenerDistance * listenerDistance);
 			#endif
 			
 			const float gainLow = segment.GetGainLow() * impingeGain;
 			const float gainMedium = segment.GetGainMedium() * impingeGain;
 			const float gainHigh = segment.GetGainHigh() * impingeGain;
 			
-			ApplyIndirectGains( j + 1, -rayListenerDirection, listenerDistance,
-				gainLow, gainMedium, gainHigh );
+			ApplyIndirectGains(j + 1, -rayListenerDirection, listenerDistance,
+				gainLow, gainMedium, gainHigh);
 			
 			break; // ray has hit listener. stop processing the rest of the ray
 		}
@@ -1511,38 +1511,38 @@ void deoalRTPTListen::RunHuygens(){
 	const deoalSoundRayList &soundRayList = pListenProbe ?
 		pListenProbe->GetSoundRayList() : pSourceProbe->GetSoundRayList();
 	const decDVector &probePosition = pSourceProbe->GetPosition();
-	const decVector listenerPosition( pListenerPosition - probePosition );
+	const decVector listenerPosition(pListenerPosition - probePosition);
 	deoalWorldOctree &octree = *pWorld->GetOctree();
 	const int lastRay = pFirstRay + pRayCount;
 	int i, j;
 	
-	for( i=pFirstRay; i<lastRay; i++ ){
-		const deoalSoundRay &soundRay = soundRayList.GetRayAt( i );
+	for(i=pFirstRay; i<lastRay; i++){
+		const deoalSoundRay &soundRay = soundRayList.GetRayAt(i);
 		const int segmentCount = soundRay.GetSegmentCount();
 		const int firstSegment = soundRay.GetFirstSegment();
 		
-		for( j=0; j<segmentCount; j++ ){
-			const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt( firstSegment + j );
+		for(j=0; j<segmentCount; j++){
+			const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt(firstSegment + j);
 			
-			const decVector listenerRayDirection( segment.GetPosition() - pListenerPosition );
+			const decVector listenerRayDirection(segment.GetPosition() - pListenerPosition);
 			const float listenerDirectionLength = listenerRayDirection.Length();
 			const float distance = segment.GetDistance() + listenerDirectionLength;
 			
-			const float attGain = pSourceProbe->AttenuatedGain( distance );
+			const float attGain = pSourceProbe->AttenuatedGain(distance);
 			const float gainLow = segment.GetGainLow() * attGain;
 			const float gainMedium = segment.GetGainMedium() * attGain;
 			const float gainHigh = segment.GetGainHigh() * attGain;
 			
-			if( listenerDirectionLength < 0.01f ){
-				ApplyIndirectGains( j + 1, listenerRayDirection, distance, gainLow, gainMedium, gainHigh );
+			if(listenerDirectionLength < 0.01f){
+				ApplyIndirectGains(j + 1, listenerRayDirection, distance, gainLow, gainMedium, gainHigh);
 				continue;
 			}
 			
-			if( IsRayBlocked( octree, pListenerPosition, listenerRayDirection ) ){
+			if(IsRayBlocked(octree, pListenerPosition, listenerRayDirection)){
 				continue;
 			}
 			
-			ApplyIndirectGains( j + 1, listenerRayDirection, distance, gainLow, gainMedium, gainHigh );
+			ApplyIndirectGains(j + 1, listenerRayDirection, distance, gainLow, gainMedium, gainHigh);
 			
 			break; // ray has hit listener. stop processing the rest of the ray
 		}
@@ -1553,40 +1553,40 @@ void deoalRTPTListen::RunHuygens(){
 
 
 
-bool deoalRTPTListen::IsRayBlocked( deoalWorldOctree& octree,
-const decDVector &position, const decDVector &direction ){
+bool deoalRTPTListen::IsRayBlocked(deoalWorldOctree& octree,
+const decDVector &position, const decDVector &direction){
 	#if 1
-	if( pRTWorldBVH ){
-		pRTWOVRayBlocked.SetRay( *pRTWorldBVH, position, direction );
-		pRTWOVRayBlocked.SetBlocked( false );
-		pRTWOVRayBlocked.VisitBVH( *pRTWorldBVH );
+	if(pRTWorldBVH){
+		pRTWOVRayBlocked.SetRay(*pRTWorldBVH, position, direction);
+		pRTWOVRayBlocked.SetBlocked(false);
+		pRTWOVRayBlocked.VisitBVH(*pRTWorldBVH);
 		return pRTWOVRayBlocked.GetBlocked();
 		
 	}else{
-		pWOVRayBlocked.SetRay( position, direction );
-		pWOVRayBlocked.SetBlocked( false );
-		pWOVRayBlocked.VisitNode( octree );
+		pWOVRayBlocked.SetRay(position, direction);
+		pWOVRayBlocked.SetBlocked(false);
+		pWOVRayBlocked.VisitNode(octree);
 		return pWOVRayBlocked.GetBlocked();
 	}
 	
 	#else
 	pRTResult.Clear();
 	
-	if( pRTWorldOctree ){
-		pRTWOVRayHitsElement.SetRay( *pRTWorldOctree, position, direction );
-		pRTWOVRayHitsElement.VisitOctree( *pRTWorldOctree );
+	if(pRTWorldOctree){
+		pRTWOVRayHitsElement.SetRay(*pRTWorldOctree, position, direction);
+		pRTWOVRayHitsElement.VisitOctree(*pRTWorldOctree);
 		
 	}else{
-		pWOVRayHitsElement.SetRay( position, direction );
-		pWOVRayHitsElement.VisitNode( octree );
+		pWOVRayHitsElement.SetRay(position, direction);
+		pWOVRayHitsElement.VisitNode(octree);
 	}
 	
 	const int hitCount = pRTResult.GetElementCount();
 	int i;
 	
-	for( i=0; i<hitCount; i++ ){
-		const deoalRayTraceHitElement &he = pRTResult.GetElementAt( i );
-		if( he.GetForwardFacing() ){
+	for(i=0; i<hitCount; i++){
+		const deoalRayTraceHitElement &he = pRTResult.GetElementAt(i);
+		if(he.GetForwardFacing()){
 			return true;
 		}
 	}
@@ -1595,14 +1595,14 @@ const decDVector &position, const decDVector &direction ){
 	return false;
 }
 
-void deoalRTPTListen::ApplyIndirectGains( int bounces, const decVector &direction,
-float distance, float gainLow, float gainMedium, float gainHigh ){
+void deoalRTPTListen::ApplyIndirectGains(int bounces, const decVector &direction,
+float distance, float gainLow, float gainMedium, float gainHigh){
 	// determine if this is a first reflection or a late reflection. counts as first reflection
 	// if either this is the first time the ray bounces or the distance is less than the
 	// transition separation distance
-	const float maxGain = decMath::max( gainLow, gainMedium, gainHigh );
+	const float maxGain = decMath::max(gainLow, gainMedium, gainHigh);
 	
-	if( bounces > 1 && distance > pSepDistFirstLateRefl ){
+	if(bounces > 1 && distance > pSepDistFirstLateRefl){
 	//if( bounces > 2 ){
 		// late reflections parameters.
 		pLRGainLow += gainLow;
@@ -1610,7 +1610,7 @@ float distance, float gainLow, float gainMedium, float gainHigh ){
 		pLRGainHigh += gainHigh;
 		
 		const float weight = maxGain;
-		if( ! direction.IsZero() ){
+		if(!direction.IsZero()){
 			pLRPanDirection += direction.Normalized() * weight;
 		}
 		pLRPanDirectionWeightSum += weight;
@@ -1619,10 +1619,10 @@ float distance, float gainLow, float gainMedium, float gainHigh ){
 		
 	}else{
 		// first-reflection parameters 
-		if( distance < pFRMinDistance ){
+		if(distance < pFRMinDistance){
 			pFRMinDistance = distance;
 		}
-		if( distance > pFRMaxDistance ){
+		if(distance > pFRMaxDistance){
 			pFRMaxDistance = distance;
 		}
 		pFRSumDistance += distance;
@@ -1632,7 +1632,7 @@ float distance, float gainLow, float gainMedium, float gainHigh ){
 		pFRGainHigh += gainHigh;
 		
 		const float weight = maxGain;
-		if( ! direction.IsZero() ){
+		if(!direction.IsZero()){
 			pFRPanDirection += direction.Normalized() * weight;
 		}
 		pFRPanDirectionWeightSum += weight;
@@ -1640,11 +1640,11 @@ float distance, float gainLow, float gainMedium, float gainHigh ){
 		pFRCount++;
 	}
 	
-	if( ! pHasHighestGain || maxGain > pHighestGainGain ){
+	if(!pHasHighestGain || maxGain > pHighestGainGain){
 		pHasHighestGain = true;
 		pHighestGainGain = maxGain;
 		pHighestGainDistance = distance;
 	}
 	
-	pImpulseResponse.Add( distance * INV_SOUND_SPEED, gainLow, gainMedium, gainHigh );
+	pImpulseResponse.Add(distance * INV_SOUND_SPEED, gainLow, gainMedium, gainHigh);
 }

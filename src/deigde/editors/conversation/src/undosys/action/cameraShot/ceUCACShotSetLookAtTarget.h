@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCACShotSetLookAtTarget( ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget );
+	ceUCACShotSetLookAtTarget(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCACShotSetLookAtTarget();

@@ -51,46 +51,46 @@ public:
 	 * @param center Center point of sphere
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	decDCollisionSphere( const decDVector &center, double radius );
+	decDCollisionSphere(const decDVector &center, double radius);
 	/** Cleans up the collision sphere. */
 	~decDCollisionSphere();
 	/*@}*/
 	
 	/** @name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume( decDCollisionVolume *volume );
-	virtual double VolumeMoveHitsVolume( decDCollisionVolume *volume, const decDVector &displacement, decDVector *normal );
+	virtual bool VolumeHitsVolume(decDCollisionVolume *volume);
+	virtual double VolumeMoveHitsVolume(decDCollisionVolume *volume, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume( decDCollisionSphere *sphere );
-	virtual bool CylinderHitsVolume( decDCollisionCylinder *cylinder );
-	virtual bool CapsuleHitsVolume( decDCollisionCapsule *capsule );
-	virtual bool BoxHitsVolume( decDCollisionBox *box );
-	virtual bool TriangleHitsVolume( decDCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( decDCollisionFrustum *frustum );
-	virtual double SphereMoveHitsVolume( decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal );
-	virtual double CylinderMoveHitsVolume( decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal );
-	virtual double CapsuleMoveHitsVolume( decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal );
-	virtual double BoxMoveHitsVolume( decDCollisionBox *box, const decDVector &displacement, decDVector *normal );
-	virtual double TriangleMoveHitsVolume( decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal );
-	virtual double FrustumMoveHitsVolume( decDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal );
-	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal );
+	virtual bool SphereHitsVolume(decDCollisionSphere *sphere);
+	virtual bool CylinderHitsVolume(decDCollisionCylinder *cylinder);
+	virtual bool CapsuleHitsVolume(decDCollisionCapsule *capsule);
+	virtual bool BoxHitsVolume(decDCollisionBox *box);
+	virtual bool TriangleHitsVolume(decDCollisionTriangle *triangle);
+	virtual bool FrustumHitsVolume(decDCollisionFrustum *frustum);
+	virtual double SphereMoveHitsVolume(decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal);
+	virtual double CylinderMoveHitsVolume(decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal);
+	virtual double CapsuleMoveHitsVolume(decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal);
+	virtual double BoxMoveHitsVolume(decDCollisionBox *box, const decDVector &displacement, decDVector *normal);
+	virtual double TriangleMoveHitsVolume(decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal);
+	virtual double FrustumMoveHitsVolume(decDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal);
+	virtual double PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** @name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( decDCollisionSphere *sphere );
-	virtual void GetEnclosingBox( decDCollisionBox *box );
+	virtual void GetEnclosingSphere(decDCollisionSphere *sphere);
+	virtual void GetEnclosingBox(decDCollisionBox *box);
 	/*@}*/
 	
 	/** @name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decDVector &point );
+	virtual bool IsPointInside(const decDVector &point);
 	/** Retrieves the closest point on the volume. */
-	virtual decDVector ClosestPointTo( const decDVector &point );
+	virtual decDVector ClosestPointTo(const decDVector &point);
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -100,7 +100,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decDVector NormalAtPoint( const decDVector &point );
+	virtual decDVector NormalAtPoint(const decDVector &point);
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -109,23 +109,23 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance );
+	virtual bool RayHitsVolume(const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance);
 	/*@}*/
 	
 	/** @name Visiting */
 	/*{*/
-	virtual void Visit( decDCollisionVolumeVisitor *visitor );
+	virtual void Visit(decDCollisionVolumeVisitor *visitor);
 	/*}*/
 	
 	/** @name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere collides with this sphere. */
-	bool SphereHitsSphere( decDCollisionSphere *sphere );
+	bool SphereHitsSphere(decDCollisionSphere *sphere);
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this sphere.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double SphereMoveHitsSphere( decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal );
+	double SphereMoveHitsSphere(decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** @name Parameters */
@@ -137,18 +137,18 @@ public:
 	/** Retrieves the sqaured radius of the sphere. */
 	inline double GetSquareRadius() const{ return pSquareRadius; }
 	/** Sets the center point of the sphere. */
-	void SetCenter( const decDVector &center );
+	void SetCenter(const decDVector &center);
 	/**
 	 * Sets the radius of the sphere.
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	void SetRadius( double radius );
+	void SetRadius(double radius);
 	/**
 	 * Sets all sphere parameters at once.
 	 * @param center Center point of sphere
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	void SetAll( const decDVector &center, double radius );
+	void SetAll(const decDVector &center, double radius);
 	/*@}*/
 };
 

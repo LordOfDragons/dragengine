@@ -1,6 +1,6 @@
 #include "deoglMath.h"
 
-unsigned int oglPotOf( unsigned int value ){
+unsigned int oglPotOf(unsigned int value){
 	// https://stackoverflow.com/a/1322548
 	value--;
 	

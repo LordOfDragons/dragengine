@@ -52,25 +52,25 @@ deParticleEmitterParameter::~deParticleEmitterParameter(){
 // Management
 ///////////////
 
-void deParticleEmitterParameter::SetValue( float value ){
+void deParticleEmitterParameter::SetValue(float value){
 	pValue = value;
 }
 
-void deParticleEmitterParameter::SetSpread( float spread ){
+void deParticleEmitterParameter::SetSpread(float spread){
 	pSpread = spread;
 }
 
-void deParticleEmitterParameter::SetControllerValue( int controller ){
-	if( controller < -1 ){
-		DETHROW( deeInvalidParam );
+void deParticleEmitterParameter::SetControllerValue(int controller){
+	if(controller < -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pControllerValue = controller;
 }
 
-void deParticleEmitterParameter::SetControllerSpread( int controller ){
-	if( controller < -1 ){
-		DETHROW( deeInvalidParam );
+void deParticleEmitterParameter::SetControllerSpread(int controller){
+	if(controller < -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pControllerSpread = controller;

@@ -27,10 +27,10 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-#if defined( HAS_LIB_DL )
+#if defined(HAS_LIB_DL)
 #include <dlfcn.h>
 
-#elif defined( OS_W32 )
+#elif defined(OS_W32)
 #include <dragengine/app/include_windows.h>
 #undef RemoveProp
 #undef CreateFile
@@ -105,9 +105,9 @@ private:
 	int pLibSize;
 	decString pLibHash;
 	decString pEntryPoint;
-#if defined( HAS_LIB_DL )
+#if defined(HAS_LIB_DL)
 	void *pLibHandle;
-#elif defined( OS_W32 )
+#elif defined(OS_W32)
 	HMODULE pLibHandle;
 #endif
 	
@@ -130,7 +130,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create editor module definition. */
-	igdeEditorModuleDefinition( igdeEditorModuleManager &moduleManager, const char *filePath );
+	igdeEditorModuleDefinition(igdeEditorModuleManager &moduleManager, const char *filePath);
 	
 protected:
 	/** \brief Clean up editor module definition. */
@@ -176,7 +176,7 @@ public:
 	inline const decString &GetDirectoryName() const{ return pDirectoryName; }
 	
 	/** \brief Set directory name for this module. */
-	void SetDirectoryName( const char *directoryName );
+	void SetDirectoryName(const char *directoryName);
 	
 	/** \brief Icon to represent editor with. */
 	inline const decString &GetIconSmall() const{ return pIconSmall; }
@@ -203,7 +203,7 @@ public:
 	 * it is available using the GetModule method. If the loading failed or starting the module
 	 * failed the module is set to null and an exception is thrown.
 	 */
-	bool LoadModule( igdeEnvironment *environment );
+	bool LoadModule(igdeEnvironment *environment);
 	
 	/** \brief Unload module. */
 	void UnloadModule();
@@ -213,10 +213,10 @@ public:
 	
 private:
 	void pLoadFile();
-	void pParseFile( decBaseFileReader &reader );
+	void pParseFile(decBaseFileReader &reader);
 	bool pLoadLibrary();
 	void pUnloadLibrary();
-	bool pCreateModule( igdeEnvironment *environment );
+	bool pCreateModule(igdeEnvironment *environment);
 	void pVerify();
 };
 

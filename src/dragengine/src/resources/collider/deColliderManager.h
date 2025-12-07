@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new world collider resource manager linked to the given engine. */
-	deColliderManager( deEngine *engine );
+	deColliderManager(deEngine *engine);
 	
 	/** \brief Clean up world collider resource manager and reports leaking resources. */
 	virtual ~deColliderManager();
@@ -96,7 +96,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

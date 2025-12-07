@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	igdeTaskSyncGameDefinition( igdeWindowMain &windowMain );
+	igdeTaskSyncGameDefinition(igdeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	virtual ~igdeTaskSyncGameDefinition();
@@ -90,7 +90,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Reload XML Element Classes only. */
-	void SetReloadXMLElementClasses( bool reloadXMLElementClasses );
+	void SetReloadXMLElementClasses(bool reloadXMLElementClasses);
 	
 	/**
 	 * \brief Run next step of task.
@@ -108,7 +108,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pUpdateProgress( bool force );
+	void pUpdateProgress(bool force);
 	void pLoadProjectGameDefinition();
 	void pCreateEditorTasks();
 };

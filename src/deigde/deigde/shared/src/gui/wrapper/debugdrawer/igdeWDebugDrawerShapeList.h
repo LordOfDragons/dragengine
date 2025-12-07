@@ -58,25 +58,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Wrapper by index. */
-	igdeWDebugDrawerShape *GetAt( int index ) const;
+	igdeWDebugDrawerShape *GetAt(int index) const;
 	
 	/** \brief Determines if an wrapper exists. */
-	bool Has( igdeWDebugDrawerShape *wrapper ) const;
+	bool Has(igdeWDebugDrawerShape *wrapper) const;
 	
 	/** \brief Adds a wrapper. */
-	void Add( igdeWDebugDrawerShape *wrapper );
+	void Add(igdeWDebugDrawerShape *wrapper);
 	
 	/** \brief Removes a wrapper. */
-	void Remove( igdeWDebugDrawerShape *wrapper );
+	void Remove(igdeWDebugDrawerShape *wrapper);
 	
 	/** \brief Removes all wrappers. */
 	void RemoveAll();
 	
 	/** \brief Set parent debug drawer or NULL for all wrappers. */
-	void SetParentDebugDrawerAll( deDebugDrawer *debugDrawer );
+	void SetParentDebugDrawerAll(deDebugDrawer *debugDrawer);
 	
 	/** \brief Set visible for all wrappers. */
-	void SetVisibleAll( bool visible );
+	void SetVisibleAll(bool visible);
 	/*@}*/
 };
 

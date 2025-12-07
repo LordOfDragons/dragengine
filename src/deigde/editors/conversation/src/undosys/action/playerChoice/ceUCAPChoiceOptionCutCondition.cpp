@@ -43,7 +43,7 @@
 
 ceUCAPChoiceOptionCutCondition::ceUCAPChoiceOptionCutCondition(
 ceConversationTopic *topic, ceCAPlayerChoice *ifElse, ceCAPlayerChoiceOption *ifcase,
-ceConversationCondition *newCondition ) :
-ceUCAPChoiceOptionSetCondition( topic, ifElse, ifcase, newCondition ){
-	SetShortInfo( "Player Choice Option cut case condition" );
+ceConversationCondition *newCondition) :
+ceUCAPChoiceOptionSetCondition(topic, ifElse, ifcase, newCondition){
+	SetShortInfo("Player Choice Option cut case condition");
 }

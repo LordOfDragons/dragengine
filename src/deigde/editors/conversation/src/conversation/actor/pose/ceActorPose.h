@@ -62,10 +62,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create actor pose. */
-	ceActorPose( igdeEnvironment &environment, const char *name );
+	ceActorPose(igdeEnvironment &environment, const char *name);
 	
 	/** Create copy of actor pose. */
-	ceActorPose( const ceActorPose &pose );
+	ceActorPose(const ceActorPose &pose);
 	
 protected:
 	/** Clean up actor pose. */
@@ -89,13 +89,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Animator path. */
 	inline const decString &GetPathAnimator() const{ return pPathAnimator; }
 	
 	/** Set animator path. */
-	void SetPathAnimator( const char *path );
+	void SetPathAnimator(const char *path);
 	
 	/** Controllers. */
 	inline ceActorControllerList &GetControllers(){ return pControllers; }

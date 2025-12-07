@@ -36,9 +36,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordsScale::ceUCAASpeakWordsScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak )
-: ceUCAASpeakStripsScale( topic, actorSpeak ){
-	SetShortInfo( "Scale words" );
+ceUCAASpeakWordsScale::ceUCAASpeakWordsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
+: ceUCAASpeakStripsScale(topic, actorSpeak){
+	SetShortInfo("Scale words");
 }
 
 ceUCAASpeakWordsScale::~ceUCAASpeakWordsScale(){

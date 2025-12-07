@@ -53,15 +53,15 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionPasteActions( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionPasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index );
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index);
 	
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionPasteActions( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionPasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index,
-		const char *text );
+		const char *text);
 	/*@}*/
 	
 	
@@ -81,7 +81,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
 	/*@}*/
 };
 

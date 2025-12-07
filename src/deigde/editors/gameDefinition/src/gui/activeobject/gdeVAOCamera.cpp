@@ -54,15 +54,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOCamera::gdeVAOCamera( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCCamera *occamera ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCCamera( occamera ),
-pDDSCenter( NULL ),
-pDDSCoordSystem( NULL )
+gdeVAOCamera::gdeVAOCamera(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCCamera *occamera) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCCamera(occamera),
+pDDSCenter(NULL),
+pDDSCoordSystem(NULL)
 {
-	if( ! occamera ){
-		DETHROW( deeInvalidParam );
+	if(!occamera){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOCCamera->AddReference();
@@ -72,7 +72,7 @@ pDDSCoordSystem( NULL )
 		pUpdateDDShapes();
 		pUpdateDDShapeColor();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -106,18 +106,18 @@ void gdeVAOCamera::SelectedObjectChanged(){
 void gdeVAOCamera::pCleanUp(){
 	pReleaseResources();
 	
-	if( pDDSCoordSystem ){
+	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if( pDDSCenter ){
+	if(pDDSCenter){
 		delete pDDSCenter;
 	}
-	if( pDebugDrawer ){
-		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pDebugDrawer){
+		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
 	}
 	
-	if( pOCCamera ){
+	if(pOCCamera){
 		pOCCamera->FreeReference();
 	}
 }
@@ -128,45 +128,45 @@ void gdeVAOCamera::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
-	pDebugDrawer->SetXRay( true );
-	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
+	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer->SetXRay(true);
+	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
 	pDDSCenter = new igdeWDebugDrawerShape;
-	pDDSCenter->AddSphereShape( 0.05f, decVector() );
-	pDDSCenter->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCenter->AddSphereShape(0.05f, decVector());
+	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create coordinate system shape
 	pDDSCoordSystem = new igdeWCoordSysArrows;
-	pDDSCoordSystem->SetArrowLength( 0.2f );
-	pDDSCoordSystem->SetArrowSize( 0.01f );
-	pDDSCoordSystem->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCoordSystem->SetArrowLength(0.2f);
+	pDDSCoordSystem->SetArrowSize(0.01f);
+	pDDSCoordSystem->SetParentDebugDrawer(pDebugDrawer);
 }
 
 void gdeVAOCamera::pUpdateDDShapes(){
 	const decVector &position = pOCCamera->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCCamera->GetRotation() * DEG2RAD ) );
+	const decQuaternion orientation(decQuaternion::CreateFromEuler(
+		pOCCamera->GetRotation() * DEG2RAD));
 	
-	pDDSCenter->SetPosition( position );
-	pDDSCenter->SetOrientation( orientation );
+	pDDSCenter->SetPosition(position);
+	pDDSCenter->SetOrientation(orientation);
 	
-	pDDSCoordSystem->SetPosition( position );
-	pDDSCoordSystem->SetOrientation( orientation );
+	pDDSCoordSystem->SetPosition(position);
+	pDDSCoordSystem->SetOrientation(orientation);
 }
 
 void gdeVAOCamera::pUpdateDDShapeColor(){
 	const gdeConfiguration &config = pView.GetWindowMain().GetConfiguration();
 	
-	if( pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera
-	&& pView.GetGameDefinition()->GetActiveOCCamera() == pOCCamera ){
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorCameraActive(), 1.0f ) );
-		pDDSCenter->SetFillColor( config.GetColorCameraActive() );
+	if(pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera
+	&& pView.GetGameDefinition()->GetActiveOCCamera() == pOCCamera){
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorCameraActive(), 1.0f));
+		pDDSCenter->SetFillColor(config.GetColorCameraActive());
 		
 	}else{
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorCamera(), 0.25f ) );
-		pDDSCenter->SetFillColor( config.GetColorCamera() );
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorCamera(), 0.25f));
+		pDDSCenter->SetFillColor(config.GetColorCamera());
 	}
 }
 

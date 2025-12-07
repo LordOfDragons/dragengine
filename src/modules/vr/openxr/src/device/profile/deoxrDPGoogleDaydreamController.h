@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPGoogleDaydreamController( deoxrInstance &instance );
+	deoxrDPGoogleDaydreamController(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
@@ -45,7 +45,7 @@ protected:
 	
 	
 protected:
-	virtual void pAddDevice( bool left );
+	virtual void pAddDevice(bool left);
 	virtual void pSuggestBindings();
 };
 

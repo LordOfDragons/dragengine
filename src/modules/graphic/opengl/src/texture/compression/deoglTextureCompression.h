@@ -58,25 +58,25 @@ public:
 	/** Retrieves the pixel buffer containing the decompressed data or NULL if not set. */
 	inline deoglPixelBuffer *GetDecompressedData() const{ return pDecompressedData; }
 	/** Sets the pixel buffer containing the decompressed data or NULL if not set. */
-	void SetDecompressedData( deoglPixelBuffer *pixelBuffer );
+	void SetDecompressedData(deoglPixelBuffer *pixelBuffer);
 	/** Retrieves the pixel buffer containing the compressed data or NULL if not set. */
 	inline deoglPixelBuffer *GetCompressedData() const{ return pCompressedData; }
 	/** Sets the pixel buffer containing the compressed data or NULL if not set. */
-	void SetCompressedData( deoglPixelBuffer *pixelBuffer );
+	void SetCompressedData(deoglPixelBuffer *pixelBuffer);
 	
 	/** Retrieves the pixel buffer mip map containing the decompressed data or NULL if not set. */
 	inline deoglPixelBufferMipMap *GetDecompressedDataMipMap() const{ return pDecompressedDataMipMap; }
 	/** Sets the pixel buffer mip map containing the decompressed data or NULL if not set. */
-	void SetDecompressedDataMipMap( deoglPixelBufferMipMap *pixelBufferMipMap );
+	void SetDecompressedDataMipMap(deoglPixelBufferMipMap *pixelBufferMipMap);
 	/** Retrieves the pixel buffer mip map containing the compressed data or NULL if not set. */
 	inline deoglPixelBufferMipMap *GetCompressedDataMipMap() const{ return pCompressedDataMipMap; }
 	/** Sets the pixel buffer mip map containing the compressed data or NULL if not set. */
-	void SetCompressedDataMipMap( deoglPixelBufferMipMap *pixelBufferMipMap );
+	void SetCompressedDataMipMap(deoglPixelBufferMipMap *pixelBufferMipMap);
 	
 	/** Determines if fast compression with lower quality is used. */
 	inline bool GetFastCompression() const{ return pFastCompression; }
 	/** Sets if fast compression with lower quality is used. */
-	void SetFastCompression( bool fastCompression );
+	void SetFastCompression(bool fastCompression);
 	
 	/** Compress texture from the decompressed pixel buffer into the compressed pixel buffer. */
 	void Compress();
@@ -95,7 +95,7 @@ public:
 	
 private:
 	int pGetQualitySquishFlags();
-	void pCompressSquish( const deoglPixelBuffer &pixelBufferFrom, deoglPixelBuffer &pixelBufferTo, int flags );
+	void pCompressSquish(const deoglPixelBuffer &pixelBufferFrom, deoglPixelBuffer &pixelBufferTo, int flags);
 };
 
 #endif

@@ -63,38 +63,38 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiSpace::dedaiSpace( deDEAIModule &deai ) :
-pDEAI( deai ),
-pParentWorld( NULL ),
+dedaiSpace::dedaiSpace(deDEAIModule &deai) :
+pDEAI(deai),
+pParentWorld(NULL),
 
-pOwnerNavSpace( NULL ),
-pOwnerHTNavSpace( NULL ),
+pOwnerNavSpace(NULL),
+pOwnerHTNavSpace(NULL),
 
-pType( deNavigationSpace::estGrid ),
-pLayerNumber( 0 ),
-pLayer( NULL ),
-pSnapDistance( 0.001f ),
-pSnapAngle( DEG2RAD * 180.0f ),
-pBlockingPriority( 0 ),
+pType(deNavigationSpace::estGrid),
+pLayerNumber(0),
+pLayer(NULL),
+pSnapDistance(0.001f),
+pSnapAngle(DEG2RAD * 180.0f),
+pBlockingPriority(0),
 
-pGrid( NULL ),
-pMesh( NULL ),
+pGrid(NULL),
+pMesh(NULL),
 
-pDirtyMatrix( true ),
-pDirtyExtends( true ),
-pDirtyLayout( true ),
-pDirtyLinks( true ),
+pDirtyMatrix(true),
+pDirtyExtends(true),
+pDirtyLayout(true),
+pDirtyLinks(true),
 
-pDirtyBlocking( true ),
+pDirtyBlocking(true),
 
-pDebugDrawer( NULL ),
-pDDSSpace( NULL ),
-pDDSCorners( NULL ),
-pDDSNormals( NULL ),
-pDDSMismatching( NULL ),
-pDDSHighlightCostType( NULL ),
+pDebugDrawer(NULL),
+pDDSSpace(NULL),
+pDDSCorners(NULL),
+pDDSNormals(NULL),
+pDDSMismatching(NULL),
+pDDSHighlightCostType(NULL),
 
-pDebugLastHighlightCostType( -1 ){
+pDebugLastHighlightCostType(-1){
 }
 
 dedaiSpace::~dedaiSpace(){
@@ -106,24 +106,24 @@ dedaiSpace::~dedaiSpace(){
 // Management
 ///////////////
 
-void dedaiSpace::SetParentWorld( dedaiWorld *world ){
-	if( world == pParentWorld ){
+void dedaiSpace::SetParentWorld(dedaiWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
 	ClearLinks();
 	pInvalidateLayerBlocking();
-	if( pParentWorld && pDebugDrawer ){
-		pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+	if(pParentWorld && pDebugDrawer){
+		pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 	}
 	
 	pParentWorld = world;
 	
-	if( world ){
-		if( pDebugDrawer ){
-			pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
+	if(world){
+		if(pDebugDrawer){
+			pParentWorld->GetWorld().AddDebugDrawer(pDebugDrawer);
 		}
-		pLayer = world->GetLayer( pLayerNumber );
+		pLayer = world->GetLayer(pLayerNumber);
 		
 	}else{
 		pLayer = NULL;
@@ -139,8 +139,8 @@ void dedaiSpace::SetParentWorld( dedaiWorld *world ){
 
 
 
-void dedaiSpace::SetOwnerNavSpace( dedaiNavSpace *navSpace ){
-	if( navSpace == pOwnerNavSpace ){
+void dedaiSpace::SetOwnerNavSpace(dedaiNavSpace *navSpace){
+	if(navSpace == pOwnerNavSpace){
 		return;
 	}
 	
@@ -159,9 +159,9 @@ void dedaiSpace::SetOwnerNavSpace( dedaiNavSpace *navSpace ){
 	pBlockingPriority = engNavSpace.GetBlockingPriority();
 	pBlockerShape = engNavSpace.GetBlockerShapeList();
 	
-	if( pDebugDrawer ){
-		pDebugDrawer->SetPosition( pPosition );
-		pDebugDrawer->SetOrientation( pOrientation );
+	if(pDebugDrawer){
+		pDebugDrawer->SetPosition(pPosition);
+		pDebugDrawer->SetOrientation(pOrientation);
 	}
 	
 	pLayer = NULL;
@@ -174,8 +174,8 @@ void dedaiSpace::SetOwnerNavSpace( dedaiNavSpace *navSpace ){
 	pUpdateBlockerConvexVolumeList();
 }
 
-void dedaiSpace::SetOwnerHTNavSpace( dedaiHeightTerrainNavSpace *htNavSpace ){
-	if( htNavSpace == pOwnerHTNavSpace ){
+void dedaiSpace::SetOwnerHTNavSpace(dedaiHeightTerrainNavSpace *htNavSpace){
+	if(htNavSpace == pOwnerHTNavSpace){
 		return;
 	}
 	
@@ -194,9 +194,9 @@ void dedaiSpace::SetOwnerHTNavSpace( dedaiHeightTerrainNavSpace *htNavSpace ){
 	pBlockingPriority = 0;
 	pBlockerShape.RemoveAll();
 	
-	if( pDebugDrawer ){
-		pDebugDrawer->SetPosition( pPosition );
-		pDebugDrawer->SetOrientation( pOrientation );
+	if(pDebugDrawer){
+		pDebugDrawer->SetPosition(pPosition);
+		pDebugDrawer->SetOrientation(pOrientation);
 	}
 	
 	pLayer = NULL;
@@ -211,12 +211,12 @@ void dedaiSpace::SetOwnerHTNavSpace( dedaiHeightTerrainNavSpace *htNavSpace ){
 
 
 
-void dedaiSpace::SetType( deNavigationSpace::eSpaceTypes type ){
+void dedaiSpace::SetType(deNavigationSpace::eSpaceTypes type){
 	pType = type;
 }
 
-void dedaiSpace::SetLayerNumber( int layerNumber ){
-	if( layerNumber == pLayerNumber ){
+void dedaiSpace::SetLayerNumber(int layerNumber){
+	if(layerNumber == pLayerNumber){
 		return;
 	}
 	
@@ -229,8 +229,8 @@ void dedaiSpace::SetLayerNumber( int layerNumber ){
 	pDirtyBlocking = true;
 	pDirtyLinks = true;
 	
-	if( pParentWorld ){
-		pLayer = pParentWorld->GetLayer( pLayerNumber );
+	if(pParentWorld){
+		pLayer = pParentWorld->GetLayer(pLayerNumber);
 		
 	}else{
 		pLayer = NULL;
@@ -238,7 +238,7 @@ void dedaiSpace::SetLayerNumber( int layerNumber ){
 	pInvalidateLayerBlocking();
 }
 
-void dedaiSpace::SetPosition( const decDVector &position ){
+void dedaiSpace::SetPosition(const decDVector &position){
 // 	if( position.IsEqualTo( pPosition ) ){
 // 		return;
 // 	}
@@ -252,12 +252,12 @@ void dedaiSpace::SetPosition( const decDVector &position ){
 	ClearLinks();
 	pInvalidateLayerBlocking();
 	
-	if( pDebugDrawer ){
-		pDebugDrawer->SetPosition( position );
+	if(pDebugDrawer){
+		pDebugDrawer->SetPosition(position);
 	}
 }
 
-void dedaiSpace::SetOrientation( const decQuaternion &orientation ){
+void dedaiSpace::SetOrientation(const decQuaternion &orientation){
 // 	if( orientation.IsEqualTo( pOrientation ) ){
 // 		return;
 // 	}
@@ -271,33 +271,33 @@ void dedaiSpace::SetOrientation( const decQuaternion &orientation ){
 	ClearLinks();
 	pInvalidateLayerBlocking();
 	
-	if( pDebugDrawer ){
-		pDebugDrawer->SetOrientation( pOrientation );
+	if(pDebugDrawer){
+		pDebugDrawer->SetOrientation(pOrientation);
 	}
 }
 
-void dedaiSpace::SetSnapDistance( float distance ){
-	pSnapDistance = decMath::max( distance, 0.0f );
+void dedaiSpace::SetSnapDistance(float distance){
+	pSnapDistance = decMath::max(distance, 0.0f);
 	
 	ClearLinks();
 	pInvalidateLayerLinks();
 }
 
-void dedaiSpace::SetSnapAngle( float angle ){
-	pSnapAngle = decMath::max( angle, 0.0f );
+void dedaiSpace::SetSnapAngle(float angle){
+	pSnapAngle = decMath::max(angle, 0.0f);
 	
 	ClearLinks();
 	pInvalidateLayerLinks();
 }
 
-void dedaiSpace::SetBlockingPriority( int priority ){
+void dedaiSpace::SetBlockingPriority(int priority){
 	pBlockingPriority = priority;
 	
 	ClearLinks();
 	pInvalidateLayerBlocking();
 }
 
-void dedaiSpace::SetBlockerShape( const decShapeList &shape ){
+void dedaiSpace::SetBlockerShape(const decShapeList &shape){
 	pBlockerShape = shape;
 	
 	pUpdateBlockerConvexVolumeList();
@@ -307,28 +307,28 @@ void dedaiSpace::SetBlockerShape( const decShapeList &shape ){
 
 
 const decDMatrix &dedaiSpace::GetMatrix(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		pUpdateMatrices();
 	}
 	return pMatrix;
 }
 
 const decDMatrix &dedaiSpace::GetInverseMatrix(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		pUpdateMatrices();
 	}
 	return pInvMatrix;
 }
 
 const decDVector &dedaiSpace::GetMinimumExtends(){
-	if( pDirtyExtends ){
+	if(pDirtyExtends){
 		pUpdateExtends();
 	}
 	return pMinExtends;
 }
 
 const decDVector &dedaiSpace::GetMaximumExtends(){
-	if( pDirtyExtends ){
+	if(pDirtyExtends){
 		pUpdateExtends();
 	}
 	return pMaxExtends;
@@ -336,53 +336,53 @@ const decDVector &dedaiSpace::GetMaximumExtends(){
 
 
 
-int dedaiSpace::AddTypeMapping( int typeNumber ){
-	if( ! pLayer ){
-		DETHROW( deeInvalidParam );
+int dedaiSpace::AddTypeMapping(int typeNumber){
+	if(!pLayer){
+		DETHROW(deeInvalidParam);
 	}	
-	return pLayer->GetCostTable().GetTypeWith( typeNumber );
+	return pLayer->GetCostTable().GetTypeWith(typeNumber);
 }
 
 
 
 void dedaiSpace::Prepare(){
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
 	
-	if( pDirtyLayout ){
+	if(pDirtyLayout){
 		pUpdateSpace();
 		pDirtyLayout = false;
 	}
 	
-	if( pDirtyBlocking ){
+	if(pDirtyBlocking){
 		pUpdateBlocking();
 		pDirtyBlocking = false;
 	}
 }
 
 void dedaiSpace::PrepareLinks(){
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
-	if( ! pDirtyLinks ){
+	if(!pDirtyLinks){
 		return;
 	}
 	
-	if( pMesh ){
+	if(pMesh){
 		pMesh->LinkToOtherMeshes();
 		
-	}else if( pGrid ){
+	}else if(pGrid){
 		pGrid->LinkToOtherGrids();
 	}
 	pDirtyLinks = false;
 }
 
 void dedaiSpace::ClearLinks(){
-	if( pMesh ){
+	if(pMesh){
 		pMesh->RemoveAllLinks();
 		
-	}else if( pGrid ){
+	}else if(pGrid){
 		pGrid->RemoveAllLinks();
 	}
 }
@@ -418,80 +418,80 @@ void dedaiSpace::UpdateDDSSpace(){
 	// check if the developer mode is enabled and navigation spaces have to be shown
 	const dedaiDeveloperMode &devmode = pDEAI.GetDeveloperMode();
 	
-	if( devmode.GetEnabled() && devmode.GetShowSpaces() ){
+	if(devmode.GetEnabled() && devmode.GetShowSpaces()){
 		// ensure the debug drawer exists
-		if( ! pDebugDrawer ){
+		if(!pDebugDrawer){
 			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
-			pDebugDrawer->SetXRay( true );
+			pDebugDrawer->SetXRay(true);
 			
-			if( pParentWorld ){
-				pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
+			if(pParentWorld){
+				pParentWorld->GetWorld().AddDebugDrawer(pDebugDrawer);
 			}
 		}
 		
 		// update the position and orientation of the debug drawer
-		pDebugDrawer->SetPosition( pPosition );
-		pDebugDrawer->SetOrientation( pOrientation );
+		pDebugDrawer->SetPosition(pPosition);
+		pDebugDrawer->SetOrientation(pOrientation);
 		
 		// ensure the debug drawer shapes exists
 		bool updateShapes = false;
 		
-		if( ! pDDSSpace ){
+		if(!pDDSSpace){
 			pDDSSpace = new deDebugDrawerShape;
-			pDDSSpace->SetFillColor( decColor( 0.0f, 0.5f, 1.0f, 0.1f ) );
-			pDDSSpace->SetEdgeColor( decColor( 0.0f, 0.5f, 1.0f, 0.8f ) );
-			pDebugDrawer->AddShape( pDDSSpace );
+			pDDSSpace->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 0.1f));
+			pDDSSpace->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 0.8f));
+			pDebugDrawer->AddShape(pDDSSpace);
 			updateShapes = true;
 		}
 		
-		if( ! pDDSCorners ){
+		if(!pDDSCorners){
 			pDDSCorners = new deDebugDrawerShape;
-			pDDSCorners->SetFillColor( decColor( 0.5f, 0.5f, 1.0f, 0.1f ) );
-			pDDSCorners->SetEdgeColor( decColor( 0.5f, 0.5f, 1.0f, 0.8f ) );
-			pDebugDrawer->AddShape( pDDSCorners );
+			pDDSCorners->SetFillColor(decColor(0.5f, 0.5f, 1.0f, 0.1f));
+			pDDSCorners->SetEdgeColor(decColor(0.5f, 0.5f, 1.0f, 0.8f));
+			pDebugDrawer->AddShape(pDDSCorners);
 			updateShapes = true;
 		}
 		
-		if( ! pDDSNormals ){
+		if(!pDDSNormals){
 			pDDSNormals = new deDebugDrawerShape;
-			pDDSNormals->SetFillColor( decColor( 0.0f, 0.5f, 1.0f, 1.0f ) );
-			pDDSNormals->SetEdgeColor( decColor( 0.0f, 0.5f, 1.0f, 1.0f ) );
-			pDebugDrawer->AddShape( pDDSNormals );
+			pDDSNormals->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 1.0f));
+			pDDSNormals->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 1.0f));
+			pDebugDrawer->AddShape(pDDSNormals);
 			updateShapes = true;
 		}
 		
-		if( ! pDDSMismatching ){
+		if(!pDDSMismatching){
 			pDDSMismatching = new deDebugDrawerShape;
-			pDDSMismatching->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
-			pDDSMismatching->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 0.8f ) );
-			pDebugDrawer->AddShape( pDDSMismatching );
+			pDDSMismatching->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
+			pDDSMismatching->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 0.8f));
+			pDebugDrawer->AddShape(pDDSMismatching);
 			updateShapes = true;
 		}
 		
-		if( ! pDDSHighlightCostType ){
+		if(!pDDSHighlightCostType){
 			pDDSHighlightCostType = new deDebugDrawerShape;
-			pDDSHighlightCostType->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
-			pDDSHighlightCostType->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 0.8f ) );
-			pDebugDrawer->AddShape( pDDSHighlightCostType );
+			pDDSHighlightCostType->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
+			pDDSHighlightCostType->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 0.8f));
+			pDebugDrawer->AddShape(pDDSHighlightCostType);
 			updateShapes = true;
 		}
 		
 		// update the shapes if required
-		if( devmode.GetSpaceHighlightCostType() != pDebugLastHighlightCostType ){
+		if(devmode.GetSpaceHighlightCostType() != pDebugLastHighlightCostType){
 			updateShapes = true;
 			pDebugLastHighlightCostType = devmode.GetSpaceHighlightCostType();
 		}
 		
-		if( updateShapes ){
+		if(updateShapes){
 			Prepare();
 			UpdateDDSSpaceShape();
 		}
 		
 	}else{
 		// if the debug drawer exists remove it
-		if( pDebugDrawer ){
-			if( pParentWorld ){
-				pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+		if(pDebugDrawer){
+			if(pParentWorld){
+				pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 			}
 			
 			pDDSSpace = NULL;
@@ -507,14 +507,14 @@ void dedaiSpace::UpdateDDSSpace(){
 }
 
 void dedaiSpace::UpdateDDSSpaceShape(){
-	if( ! pDebugDrawer ){
+	if(!pDebugDrawer){
 		return;
 	}
 	
-	if( pGrid ){
+	if(pGrid){
 		pGrid->UpdateDDSSpaceShape();
 	}
-	if( pMesh ){
+	if(pMesh){
 		pMesh->UpdateDDSSpaceShape();
 	}
 	
@@ -523,9 +523,9 @@ void dedaiSpace::UpdateDDSSpaceShape(){
 
 
 
-void dedaiSpace::AddBlockerSplitters( decConvexVolumeList &list ){
-	if( ! pParentWorld ){
-		DETHROW( deeInvalidParam );
+void dedaiSpace::AddBlockerSplitters(decConvexVolumeList &list){
+	if(!pParentWorld){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const decDVector &minExtend = GetMinimumExtends();
@@ -537,36 +537,36 @@ void dedaiSpace::AddBlockerSplitters( decConvexVolumeList &list ){
 	// add splitter volumes from all overlapping blockers of appropriate priority
 	try{
 		deNavigationBlocker *engNavBlocker = pParentWorld->GetWorld().GetRootNavigationBlocker();
-		while( engNavBlocker ){
-			if( ! engNavBlocker->GetEnabled() ){
+		while(engNavBlocker){
+			if(!engNavBlocker->GetEnabled()){
 				engNavBlocker = engNavBlocker->GetLLWorldNext();
 				continue;
 			}
 			
-			if( engNavBlocker->GetSpaceType() != pType ){
+			if(engNavBlocker->GetSpaceType() != pType){
 				engNavBlocker = engNavBlocker->GetLLWorldNext();
 				continue;
 			}
 			
 			// only blocked by blockers on the same layer
-			if( engNavBlocker->GetLayer() != pLayer->GetLayer() ){
+			if(engNavBlocker->GetLayer() != pLayer->GetLayer()){
 				engNavBlocker = engNavBlocker->GetLLWorldNext();
 				continue;
 			}
 			
 			// only blocked by blockers of equal or larger priority
-			if( engNavBlocker->GetBlockingPriority() < pBlockingPriority ){
+			if(engNavBlocker->GetBlockingPriority() < pBlockingPriority){
 				engNavBlocker = engNavBlocker->GetLLWorldNext();
 				continue;
 			}
 			
 			// only blocked by overlapping blockers. this is a performance optimization
-			dedaiNavBlocker &blocker = *( ( dedaiNavBlocker* )engNavBlocker->GetPeerAI() );
+			dedaiNavBlocker &blocker = *((dedaiNavBlocker*)engNavBlocker->GetPeerAI());
 			
 			const decDVector &blockerMinExtend = blocker.GetMinimumExtends();
 			const decDVector &blockerMaxExtend = blocker.GetMaximumExtends();
 			
-			if( blockerMaxExtend < minExtend || blockerMinExtend > maxExtend ){
+			if(blockerMaxExtend < minExtend || blockerMinExtend > maxExtend){
 				engNavBlocker = engNavBlocker->GetLLWorldNext();
 				continue;
 			}
@@ -575,45 +575,45 @@ void dedaiSpace::AddBlockerSplitters( decConvexVolumeList &list ){
 			const decConvexVolumeList &bcvlist = blocker.GetConvexVolumeList();
 			const int bcvcount = bcvlist.GetVolumeCount();
 			
-			if( bcvcount > 0 ){
-				const decMatrix matrix( blocker.GetMatrix() * GetInverseMatrix() );
+			if(bcvcount > 0){
+				const decMatrix matrix(blocker.GetMatrix() * GetInverseMatrix());
 				
-				for( i=0; i< bcvcount; i++ ){
-					const decConvexVolume &bcv = *bcvlist.GetVolumeAt( i );
+				for(i=0; i< bcvcount; i++){
+					const decConvexVolume &bcv = *bcvlist.GetVolumeAt(i);
 					const int vertexCount = bcv.GetVertexCount();
 					const int faceCount = bcv.GetFaceCount();
 					
 					volume = new decConvexVolume;
-					for( j=0; j<vertexCount; j++ ){
-						volume->AddVertex( matrix * bcv.GetVertexAt( j ) );
+					for(j=0; j<vertexCount; j++){
+						volume->AddVertex(matrix * bcv.GetVertexAt(j));
 					}
-					for( j=0; j<faceCount; j++ ){
-						const decConvexVolumeFace &bcvface = *bcv.GetFaceAt( j );
+					for(j=0; j<faceCount; j++){
+						const decConvexVolumeFace &bcvface = *bcv.GetFaceAt(j);
 						const int cornerCount = bcvface.GetVertexCount();
 						
-						if( cornerCount >= 3 ){
+						if(cornerCount >= 3){
 							volumeFace = new decConvexVolumeFace;
-							for( k=0; k<cornerCount; k++ ){
-								volumeFace->AddVertex( bcvface.GetVertexAt( k ) );
+							for(k=0; k<cornerCount; k++){
+								volumeFace->AddVertex(bcvface.GetVertexAt(k));
 							}
 							
-							const decVector &fv1 = volume->GetVertexAt( bcvface.GetVertexAt( 0 ) );
-							const decVector &fv2 = volume->GetVertexAt( bcvface.GetVertexAt( 1 ) );
-							const decVector &fv3 = volume->GetVertexAt( bcvface.GetVertexAt( 2 ) );
-							const decVector edgeVector( ( fv2 - fv1 ) % ( fv3 - fv2 ) );
-							if( ! edgeVector.IsZero() ){
-								volumeFace->SetNormal( edgeVector.Normalized() );
+							const decVector &fv1 = volume->GetVertexAt(bcvface.GetVertexAt(0));
+							const decVector &fv2 = volume->GetVertexAt(bcvface.GetVertexAt(1));
+							const decVector &fv3 = volume->GetVertexAt(bcvface.GetVertexAt(2));
+							const decVector edgeVector((fv2 - fv1) % (fv3 - fv2));
+							if(!edgeVector.IsZero()){
+								volumeFace->SetNormal(edgeVector.Normalized());
 								
 							}else{
-								volumeFace->SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+								volumeFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
 							}
 							
-							volume->AddFace( volumeFace );
+							volume->AddFace(volumeFace);
 							volumeFace = NULL;
 						}
 					}
 					
-					list.AddVolume( volume );
+					list.AddVolume(volume);
 					volume = NULL;
 				}
 			}
@@ -621,18 +621,18 @@ void dedaiSpace::AddBlockerSplitters( decConvexVolumeList &list ){
 			engNavBlocker = engNavBlocker->GetLLWorldNext();
 		}
 		
-	}catch( const deException & ){
-		if( volumeFace ){
+	}catch(const deException &){
+		if(volumeFace){
 			delete volumeFace;
 		}
-		if( volume ){
+		if(volume){
 			delete volume;
 		}
 		throw;
 	}
 }
 
-void dedaiSpace::AddSpaceBlockerSplitters( decConvexVolumeList &list ){
+void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 	const decDVector &minExtend = GetMinimumExtends();
 	const decDVector &maxExtend = GetMaximumExtends();
 	decConvexVolumeFace *volumeFace = NULL;
@@ -642,23 +642,23 @@ void dedaiSpace::AddSpaceBlockerSplitters( decConvexVolumeList &list ){
 	// add splitter volumes from all overlapping navigation space blockers except ourself
 	try{
 		deNavigationSpace *engNavSpace = pParentWorld->GetWorld().GetRootNavigationSpace();
-		while( engNavSpace ){
-			dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
+		while(engNavSpace){
+			dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 			
 			// only blocked by a different navigation space than our owner
-			if( navspace == pOwnerNavSpace ){
+			if(navspace == pOwnerNavSpace){
 				engNavSpace = engNavSpace->GetLLWorldNext();
 				continue;
 			}
 			
 			// only blocked by navigation space blockers on the same layer
-			if( engNavSpace->GetLayer() != pLayer->GetLayer() ){
+			if(engNavSpace->GetLayer() != pLayer->GetLayer()){
 				engNavSpace = engNavSpace->GetLLWorldNext();
 				continue;
 			}
 			
 			// only blocked by navigation space blockers of equal or larger priority
-			if( engNavSpace->GetBlockingPriority() < pBlockingPriority ){
+			if(engNavSpace->GetBlockingPriority() < pBlockingPriority){
 				engNavSpace = engNavSpace->GetLLWorldNext();
 				continue;
 			}
@@ -668,7 +668,7 @@ void dedaiSpace::AddSpaceBlockerSplitters( decConvexVolumeList &list ){
 			const decDVector &blockerMinExtend = space.GetMinimumExtends();
 			const decDVector &blockerMaxExtend = space.GetMaximumExtends();
 			
-			if( blockerMaxExtend < minExtend || blockerMinExtend > maxExtend ){
+			if(blockerMaxExtend < minExtend || blockerMinExtend > maxExtend){
 				engNavSpace = engNavSpace->GetLLWorldNext();
 				continue;
 			}
@@ -676,45 +676,45 @@ void dedaiSpace::AddSpaceBlockerSplitters( decConvexVolumeList &list ){
 			const decConvexVolumeList &bcvlist = space.GetBlockerConvexVolumeList();
 			const int bcvcount = bcvlist.GetVolumeCount();
 			
-			if( bcvcount > 0 ){
-				const decMatrix matrix( space.GetMatrix() * GetInverseMatrix() );
+			if(bcvcount > 0){
+				const decMatrix matrix(space.GetMatrix() * GetInverseMatrix());
 				
-				for( i=0; i< bcvcount; i++ ){
-					const decConvexVolume &bcv = *bcvlist.GetVolumeAt( i );
+				for(i=0; i< bcvcount; i++){
+					const decConvexVolume &bcv = *bcvlist.GetVolumeAt(i);
 					const int vertexCount = bcv.GetVertexCount();
 					const int faceCount = bcv.GetFaceCount();
 					
 					volume = new decConvexVolume;
-					for( j=0; j<vertexCount; j++ ){
-						volume->AddVertex( matrix * bcv.GetVertexAt( j ) );
+					for(j=0; j<vertexCount; j++){
+						volume->AddVertex(matrix * bcv.GetVertexAt(j));
 					}
-					for( j=0; j<faceCount; j++ ){
-						const decConvexVolumeFace &bcvface = *bcv.GetFaceAt( j );
+					for(j=0; j<faceCount; j++){
+						const decConvexVolumeFace &bcvface = *bcv.GetFaceAt(j);
 						const int cornerCount = bcvface.GetVertexCount();
 						
-						if( cornerCount >= 3 ){
+						if(cornerCount >= 3){
 							volumeFace = new decConvexVolumeFace;
-							for( k=0; k<cornerCount; k++ ){
-								volumeFace->AddVertex( bcvface.GetVertexAt( k ) );
+							for(k=0; k<cornerCount; k++){
+								volumeFace->AddVertex(bcvface.GetVertexAt(k));
 							}
 							
-							const decVector &fv1 = volume->GetVertexAt( bcvface.GetVertexAt( 0 ) );
-							const decVector &fv2 = volume->GetVertexAt( bcvface.GetVertexAt( 1 ) );
-							const decVector &fv3 = volume->GetVertexAt( bcvface.GetVertexAt( 2 ) );
-							const decVector edgeVector( ( fv2 - fv1 ) % ( fv3 - fv2 ) );
-							if( ! edgeVector.IsZero() ){
-								volumeFace->SetNormal( edgeVector.Normalized() );
+							const decVector &fv1 = volume->GetVertexAt(bcvface.GetVertexAt(0));
+							const decVector &fv2 = volume->GetVertexAt(bcvface.GetVertexAt(1));
+							const decVector &fv3 = volume->GetVertexAt(bcvface.GetVertexAt(2));
+							const decVector edgeVector((fv2 - fv1) % (fv3 - fv2));
+							if(!edgeVector.IsZero()){
+								volumeFace->SetNormal(edgeVector.Normalized());
 								
 							}else{
-								volumeFace->SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+								volumeFace->SetNormal(decVector(0.0f, 1.0f, 0.0f));
 							}
 							
-							volume->AddFace( volumeFace );
+							volume->AddFace(volumeFace);
 							volumeFace = NULL;
 						}
 					}
 					
-					list.AddVolume( volume );
+					list.AddVolume(volume);
 					volume = NULL;
 				}
 			}
@@ -722,11 +722,11 @@ void dedaiSpace::AddSpaceBlockerSplitters( decConvexVolumeList &list ){
 			engNavSpace = engNavSpace->GetLLWorldNext();
 		}
 		
-	}catch( const deException & ){
-		if( volumeFace ){
+	}catch(const deException &){
+		if(volumeFace){
 			delete volumeFace;
 		}
-		if( volume ){
+		if(volume){
 			delete volume;
 		}
 		throw;
@@ -739,20 +739,20 @@ void dedaiSpace::AddSpaceBlockerSplitters( decConvexVolumeList &list ){
 //////////////////////
 
 void dedaiSpace::pCleanUp(){
-	if( pMesh ){
+	if(pMesh){
 		delete pMesh;
 	}
-	if( pGrid ){
+	if(pGrid){
 		delete pGrid;
 	}
 	
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
 }
 
 void dedaiSpace::pUpdateMatrices(){
-	pMatrix.SetWorld( pPosition, pOrientation );
+	pMatrix.SetWorld(pPosition, pOrientation);
 	pInvMatrix = pMatrix.Invert();
 	pDirtyMatrix = false;
 }
@@ -760,10 +760,10 @@ void dedaiSpace::pUpdateMatrices(){
 
 
 void dedaiSpace::pUpdateExtends(){
-	if( pOwnerNavSpace ){
+	if(pOwnerNavSpace){
 		pUpdateExtendsNavSpace();
 		
-	}else if( pOwnerHTNavSpace ){
+	}else if(pOwnerHTNavSpace){
 		pUpdateExtendsHTNavSpace();
 	}
 }
@@ -772,7 +772,7 @@ void dedaiSpace::pUpdateExtendsNavSpace(){
 	const deNavigationSpace &engNavSpace = pOwnerNavSpace->GetNavigationSpace();
 	const int vertexCount = engNavSpace.GetVertexCount();
 	
-	if( vertexCount == 0 ){
+	if(vertexCount == 0){
 		pMaxExtends = pMinExtends = pPosition;
 		
 	}else{
@@ -780,36 +780,36 @@ void dedaiSpace::pUpdateExtendsNavSpace(){
 		const decDMatrix &matrix = GetMatrix();
 		int i;
 		
-		pMinExtends = matrix * decDVector( vertices[ 0 ] );
+		pMinExtends = matrix * decDVector(vertices[0]);
 		pMaxExtends = pMinExtends;
 		
-		for( i=1; i<vertexCount; i++ ){
-			const decDVector vertex = matrix * decDVector( vertices[ i ] );
-			pMinExtends.SetSmallest( vertex );
-			pMaxExtends.SetLargest( vertex );
+		for(i=1; i<vertexCount; i++){
+			const decDVector vertex = matrix * decDVector(vertices[i]);
+			pMinExtends.SetSmallest(vertex);
+			pMaxExtends.SetLargest(vertex);
 		}
 	}
 	
 	const int volumeCount = pBlockerConvexVolumeList.GetVolumeCount();
-	if( volumeCount == 0 ){
+	if(volumeCount == 0){
 		return;
 	}
 	
 	const decDMatrix &matrix = GetMatrix();
 	int i, j, k;
 	
-	for( i=0; i< volumeCount; i++ ){
-		const decConvexVolume &volume = *pBlockerConvexVolumeList.GetVolumeAt( i );
+	for(i=0; i< volumeCount; i++){
+		const decConvexVolume &volume = *pBlockerConvexVolumeList.GetVolumeAt(i);
 		const int faceCount = volume.GetFaceCount();
 		
-		for( j=0; j<faceCount; j++ ){
-			const decConvexVolumeFace &face = *volume.GetFaceAt( j );
+		for(j=0; j<faceCount; j++){
+			const decConvexVolumeFace &face = *volume.GetFaceAt(j);
 			const int faceVertexCount = face.GetVertexCount();
 			
-			for( k=0; k<faceVertexCount; k++ ){
-				const decDVector position = matrix * decDVector( volume.GetVertexAt( face.GetVertexAt( k ) ) );
-				pMinExtends.SetSmallest( position );
-				pMaxExtends.SetLargest( position );
+			for(k=0; k<faceVertexCount; k++){
+				const decDVector position = matrix * decDVector(volume.GetVertexAt(face.GetVertexAt(k)));
+				pMinExtends.SetSmallest(position);
+				pMaxExtends.SetLargest(position);
 			}
 		}
 	}
@@ -819,7 +819,7 @@ void dedaiSpace::pUpdateExtendsHTNavSpace(){
 	const deHeightTerrainNavSpace &engNavSpace = pOwnerHTNavSpace->GetNavigationSpace();
 	const int cornerCount = engNavSpace.GetCornerCount();
 	
-	if( cornerCount == 0 ){
+	if(cornerCount == 0){
 		pMaxExtends = pMinExtends = pPosition;
 		return;
 	}
@@ -829,59 +829,59 @@ void dedaiSpace::pUpdateExtendsHTNavSpace(){
 	const float * const heights = sector.GetHeights();
 	const unsigned int * const corners = engNavSpace.GetCorners();
 	const int imageDim = engHT.GetSectorResolution();
-	const float posScale = ( float )engHT.GetSectorSize() / ( float )( imageDim - 1 );
-	const float posOffset = ( float )engHT.GetSectorSize() * 0.5f;
+	const float posScale = (float)engHT.GetSectorSize() / (float)(imageDim - 1);
+	const float posOffset = (float)engHT.GetSectorSize() * 0.5f;
 	const decDMatrix &matrix = GetMatrix();
 	int i;
 	
-	const decPoint point1( corners[ 0 ] % imageDim, corners[ 0 ] / imageDim );
+	const decPoint point1(corners[0] % imageDim, corners[0] / imageDim);
 	pMaxExtends = pMinExtends = matrix.Transform(
-		posScale * ( double )point1.x - posOffset,
-		( double )heights[ corners[ 0 ] ],
-		posOffset - posScale * ( double )point1.y );
+		posScale * (double)point1.x - posOffset,
+		(double)heights[corners[0]],
+		posOffset - posScale * (double)point1.y);
 	
-	for( i=1; i< cornerCount; i++ ){
-		const decPoint point( corners[ i ] % imageDim, corners[ i ] / imageDim );
-		const decDVector position( matrix.Transform(
-			posScale * ( double )point.x - posOffset,
-			( double )heights[ corners[ i ] ],
-			posOffset - posScale * ( double )point.y ) );
-		pMinExtends.SetSmallest( position );
-		pMaxExtends.SetLargest( position );
+	for(i=1; i< cornerCount; i++){
+		const decPoint point(corners[i] % imageDim, corners[i] / imageDim);
+		const decDVector position(matrix.Transform(
+			posScale * (double)point.x - posOffset,
+			(double)heights[corners[i]],
+			posOffset - posScale * (double)point.y));
+		pMinExtends.SetSmallest(position);
+		pMaxExtends.SetLargest(position);
 	}
 }
 
 
 
 void dedaiSpace::pUpdateSpace(){
-	switch( pType ){
+	switch(pType){
 	case deNavigationSpace::estGrid:
-		if( pMesh ){
+		if(pMesh){
 			delete pMesh;
 			pMesh = NULL;
 		}
 		
-		if( pGrid ){
+		if(pGrid){
 			pGrid->Clear();
 			
 		}else{
-			pGrid = new dedaiSpaceGrid( *this );
+			pGrid = new dedaiSpaceGrid(*this);
 		}
 		
 		pGrid->InitFromSpace();
 		break;
 		
 	case deNavigationSpace::estMesh:
-		if( pGrid ){
+		if(pGrid){
 			delete pGrid;
 			pGrid = NULL;
 		}
 		
-		if( pMesh ){
+		if(pMesh){
 			pMesh->Clear();
 			
 		}else{
-			pMesh = new dedaiSpaceMesh( *this );
+			pMesh = new dedaiSpaceMesh(*this);
 		}
 		
 		pMesh->InitFromSpace();
@@ -891,60 +891,60 @@ void dedaiSpace::pUpdateSpace(){
 		break;
 	}
 	
-	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHighlightCostType ){
+	if(pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHighlightCostType){
 		UpdateDDSSpaceShape();
 	}
 }
 
 void dedaiSpace::pUpdateBlocking(){
-	if( pGrid ){
+	if(pGrid){
 		pGrid->UpdateBlocking();
 		
-	}else if( pMesh ){
+	}else if(pMesh){
 		pMesh->UpdateBlocking();
 		
 	}else{
 	}
 	
-	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHighlightCostType ){
+	if(pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHighlightCostType){
 		UpdateDDSSpaceShape();
 	}
 }
 
 void dedaiSpace::pUpdateBlockerConvexVolumeList(){
 	dedaiShapeToConvexVolume visitor;
-	visitor.SetList( &pBlockerConvexVolumeList );
+	visitor.SetList(&pBlockerConvexVolumeList);
 	
 	pBlockerConvexVolumeList.RemoveAllVolumes();
 	
 	const int shapeCount = pBlockerShape.GetCount();
 	int i;
 	
-	for( i=0; i<shapeCount; i++ ){
-		pBlockerShape.GetAt( i )->Visit( visitor );
+	for(i=0; i<shapeCount; i++){
+		pBlockerShape.GetAt(i)->Visit(visitor);
 	}
 }
 
 
 
 void dedaiSpace::pInvalidateLayerBlocking(){
-	if( ! pLayer ){
+	if(!pLayer){
 		return;
 	}
 	
-	if( pBlockerShape.GetCount() == 0 ){
+	if(pBlockerShape.GetCount() == 0){
 		pDirtyLayout = true; // a blocker could be located ontop of us
 		pDirtyBlocking = true; // a blocker could be located ontop of us
-		pLayer->InvalidateLinks( pType, GetMinimumExtends(), GetMaximumExtends() );
+		pLayer->InvalidateLinks(pType, GetMinimumExtends(), GetMaximumExtends());
 		
 	}else{
-		pLayer->InvalidateBlocking( pType, GetMinimumExtends(), GetMaximumExtends() );
+		pLayer->InvalidateBlocking(pType, GetMinimumExtends(), GetMaximumExtends());
 	}
 }
 
 void dedaiSpace::pInvalidateLayerLinks(){
-	if( ! pLayer ){
+	if(!pLayer){
 		return;
 	}
-	pLayer->InvalidateLinks( pType, GetMinimumExtends(), GetMaximumExtends() );
+	pLayer->InvalidateLinks(pType, GetMinimumExtends(), GetMaximumExtends());
 }

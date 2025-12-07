@@ -39,7 +39,7 @@ igdeNativeNullComboBox::igdeNativeNullComboBox(){
 igdeNativeNullComboBox::~igdeNativeNullComboBox(){
 }
 
-igdeNativeNullComboBox *igdeNativeNullComboBox::CreateNativeWidget( igdeComboBox& ){
+igdeNativeNullComboBox *igdeNativeNullComboBox::CreateNativeWidget(igdeComboBox&){
 	return new igdeNativeNullComboBox;
 }
 
@@ -58,10 +58,10 @@ void igdeNativeNullComboBox::DestroyNativeWidget(){
 void igdeNativeNullComboBox::BuildList(){
 }
 
-void igdeNativeNullComboBox::UpdateItem( int ){
+void igdeNativeNullComboBox::UpdateItem(int){
 }
 
-void igdeNativeNullComboBox::SyncSelection( bool ){
+void igdeNativeNullComboBox::SyncSelection(bool){
 }
 
 void igdeNativeNullComboBox::OnInvalidValueChanged(){
@@ -70,16 +70,16 @@ void igdeNativeNullComboBox::OnInvalidValueChanged(){
 void igdeNativeNullComboBox::UpdateText(){
 }
 
-void igdeNativeNullComboBox::InsertItem( int, const igdeListItem & ){
+void igdeNativeNullComboBox::InsertItem(int, const igdeListItem &){
 }
 
-void igdeNativeNullComboBox::RemoveItem( int ){
+void igdeNativeNullComboBox::RemoveItem(int){
 }
 
 void igdeNativeNullComboBox::RemoveAllItems(){
 }
 
-void igdeNativeNullComboBox::MoveItem( int, int ){
+void igdeNativeNullComboBox::MoveItem(int, int){
 }
 
 void igdeNativeNullComboBox::Focus(){

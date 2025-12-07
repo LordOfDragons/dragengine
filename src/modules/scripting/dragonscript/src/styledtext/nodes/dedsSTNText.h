@@ -47,7 +47,7 @@ public:
 	dedsSTNText();
 
 	/** Create text node with text. */
-	dedsSTNText( const char *text );
+	dedsSTNText(const char *text);
 	
 protected:
 	/** Cleans up the text node. */
@@ -63,7 +63,7 @@ public:
 	inline const decString &GetText() const{ return pText; }
 
 	/** Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	/*@}*/
 };
 

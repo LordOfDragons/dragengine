@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPControllerListener( seWPController &panel );
+	seWPControllerListener(seWPController &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPControllerListener();
@@ -54,19 +54,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Controller added or removed. */
-	virtual void ControllerStructureChanged ( seSky *sky );
+	virtual void ControllerStructureChanged (seSky *sky);
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( seSky *sky, seController *controller );
+	virtual void ControllerChanged(seSky *sky, seController *controller);
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( seSky *sky, seController *controller );
+	virtual void ControllerNameChanged(seSky *sky, seController *controller);
 	
 	/** \brief Controller changed value. */
-	virtual void ControllerValueChanged( seSky *sky, seController *controller );
+	virtual void ControllerValueChanged(seSky *sky, seController *controller);
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged( seSky *sky );
+	virtual void ActiveControllerChanged(seSky *sky);
 	/*@}*/
 };
 

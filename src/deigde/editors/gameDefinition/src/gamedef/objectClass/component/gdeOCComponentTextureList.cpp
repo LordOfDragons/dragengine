@@ -43,8 +43,8 @@
 gdeOCComponentTextureList::gdeOCComponentTextureList(){
 }
 
-gdeOCComponentTextureList::gdeOCComponentTextureList( const gdeOCComponentTextureList &list ) :
-pTextures( list.pTextures ){
+gdeOCComponentTextureList::gdeOCComponentTextureList(const gdeOCComponentTextureList &list) :
+pTextures(list.pTextures){
 }
 
 gdeOCComponentTextureList::~gdeOCComponentTextureList(){
@@ -59,18 +59,18 @@ int gdeOCComponentTextureList::GetCount() const{
 	return pTextures.GetCount();
 }
 
-gdeOCComponentTexture *gdeOCComponentTextureList::GetAt( int index ) const{
-	return ( gdeOCComponentTexture* )pTextures.GetAt( index );
+gdeOCComponentTexture *gdeOCComponentTextureList::GetAt(int index) const{
+	return (gdeOCComponentTexture*)pTextures.GetAt(index);
 }
 
-gdeOCComponentTexture *gdeOCComponentTextureList::GetNamed( const char *name ) const{
+gdeOCComponentTexture *gdeOCComponentTextureList::GetNamed(const char *name) const{
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeOCComponentTexture * const texture = ( gdeOCComponentTexture* )pTextures.GetAt( i );
+	for(i=0; i<count; i++){
+		gdeOCComponentTexture * const texture = (gdeOCComponentTexture*)pTextures.GetAt(i);
 		
-		if( texture->GetName() == name ){
+		if(texture->GetName() == name){
 			return texture;
 		}
 	}
@@ -78,16 +78,16 @@ gdeOCComponentTexture *gdeOCComponentTextureList::GetNamed( const char *name ) c
 	return NULL;
 }
 
-int gdeOCComponentTextureList::IndexOf( gdeOCComponentTexture *texture ) const{
-	return pTextures.IndexOf( texture );
+int gdeOCComponentTextureList::IndexOf(gdeOCComponentTexture *texture) const{
+	return pTextures.IndexOf(texture);
 }
 
-int gdeOCComponentTextureList::IndexOfNamed( const char *name ) const{
+int gdeOCComponentTextureList::IndexOfNamed(const char *name) const{
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeOCComponentTexture* )pTextures.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((gdeOCComponentTexture*)pTextures.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -95,16 +95,16 @@ int gdeOCComponentTextureList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool gdeOCComponentTextureList::Has( gdeOCComponentTexture *texture ) const{
-	return pTextures.Has( texture );
+bool gdeOCComponentTextureList::Has(gdeOCComponentTexture *texture) const{
+	return pTextures.Has(texture);
 }
 
-bool gdeOCComponentTextureList::HasNamed( const char *name ) const{
+bool gdeOCComponentTextureList::HasNamed(const char *name) const{
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeOCComponentTexture* )pTextures.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((gdeOCComponentTexture*)pTextures.GetAt(i))->GetName() == name){
 			return true;
 		}
 	}
@@ -112,16 +112,16 @@ bool gdeOCComponentTextureList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void gdeOCComponentTextureList::Add( gdeOCComponentTexture *texture ){
-	if( ! texture || HasNamed( texture->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCComponentTextureList::Add(gdeOCComponentTexture *texture){
+	if(!texture || HasNamed(texture->GetName())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTextures.Add( texture );
+	pTextures.Add(texture);
 }
 
-void gdeOCComponentTextureList::Remove( gdeOCComponentTexture *texture ){
-	pTextures.Remove( texture );
+void gdeOCComponentTextureList::Remove(gdeOCComponentTexture *texture){
+	pTextures.Remove(texture);
 }
 
 void gdeOCComponentTextureList::RemoveAll(){
@@ -130,7 +130,7 @@ void gdeOCComponentTextureList::RemoveAll(){
 
 
 
-gdeOCComponentTextureList &gdeOCComponentTextureList::operator=( const gdeOCComponentTextureList &list ){
+gdeOCComponentTextureList &gdeOCComponentTextureList::operator=(const gdeOCComponentTextureList &list){
 	pTextures = list.pTextures;
 	return *this;
 }

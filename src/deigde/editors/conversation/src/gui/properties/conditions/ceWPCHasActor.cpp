@@ -63,13 +63,13 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCHasActor &pPanel;
 	
 public:
-	cComboActor( ceWPCHasActor &panel ) : pPanel( panel ){ }
+	cComboActor(ceWPCHasActor &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionHasActor * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || comboBox->GetText() == condition->GetActor() ){
+		if(!topic || !action || !condition || comboBox->GetText() == condition->GetActor()){
 			return;
 		}
 		
@@ -82,14 +82,14 @@ class cActionNegate : public igdeAction {
 	ceWPCHasActor &pPanel;
 	
 public:
-	cActionNegate( ceWPCHasActor &panel ) : igdeAction( "Negate", NULL,
-		"True if the information is missing instead of existing" ), pPanel( panel ){ }
+	cActionNegate(ceWPCHasActor &panel) : igdeAction("Negate", NULL,
+		"True if the information is missing instead of existing"), pPanel(panel){ }
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionHasActor * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
@@ -108,13 +108,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCHasActor::ceWPCHasActor( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
+ceWPCHasActor::ceWPCHasActor(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.ComboBox( *this, "Actor ID:", true, "Actor ID to test", pCBActor, new cComboActor( *this ) );
+	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActor, new cComboActor(*this));
 	pCBActor->SetDefaultSorter();
 		
-	helper.CheckBox( *this, pChkNegate, new cActionNegate( *this ), true );
+	helper.CheckBox(*this, pChkNegate, new cActionNegate(*this), true);
 }
 
 ceWPCHasActor::~ceWPCHasActor(){
@@ -128,8 +128,8 @@ ceWPCHasActor::~ceWPCHasActor(){
 ceCConditionHasActor *ceWPCHasActor::GetCondition() const{
 	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
-	if( condition && condition->GetType() == ceConversationCondition::ectHasActor ){
-		return ( ceCConditionHasActor* )condition;
+	if(condition && condition->GetType() == ceConversationCondition::ectHasActor){
+		return (ceCConditionHasActor*)condition;
 		
 	}else{
 		return NULL;
@@ -139,16 +139,16 @@ ceCConditionHasActor *ceWPCHasActor::GetCondition() const{
 void ceWPCHasActor::UpdateCondition(){
 	const ceCConditionHasActor * const condition = GetCondition();
 	
-	if( condition ){
-		pCBActor->SetText( condition->GetActor() );
-		pChkNegate->SetChecked( condition->GetNegate() );
+	if(condition){
+		pCBActor->SetText(condition->GetActor());
+		pChkNegate->SetChecked(condition->GetNegate());
 		
 	}else{
 		pCBActor->ClearText();
-		pChkNegate->SetChecked( false );
+		pChkNegate->SetChecked(false);
 	}
 }
 
 void ceWPCHasActor::UpdateActorList(){
-	UpdateComboBoxWithActorIDList( pCBActor );
+	UpdateComboBoxWithActorIDList(pCBActor);
 }

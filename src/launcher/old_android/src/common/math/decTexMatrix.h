@@ -54,21 +54,21 @@ public:
 	/** Creates a new identity matrix. */
 	static decTexMatrix CreateIdentity();
 	/** Creates a new translation matrix. */
-	static decTexMatrix CreateTranslation( float u, float v );
+	static decTexMatrix CreateTranslation(float u, float v);
 	/** Creates a new translation matrix. */
-	static decTexMatrix CreateTranslation( const decVector2 &t );
+	static decTexMatrix CreateTranslation(const decVector2 &t);
 	/** Creates a new scaling matrix. */
-	static decTexMatrix CreateScale( float su, float sv );
+	static decTexMatrix CreateScale(float su, float sv);
 	/** Creates a new scaling matrix. */
-	static decTexMatrix CreateScale( const decVector2 &s );
+	static decTexMatrix CreateScale(const decVector2 &s);
 	/** Creates a new rotation matrix. */
-	static decTexMatrix CreateRotation( float arc );
+	static decTexMatrix CreateRotation(float arc);
 	
 	/** \brief Create shear matrix. */
-	static decTexMatrix CreateShear( float shearU, float shearV );
+	static decTexMatrix CreateShear(float shearU, float shearV);
 	
 	/** \brief Create shear matrix. */
-	static decTexMatrix CreateShear( const decVector2 &shear );
+	static decTexMatrix CreateShear(const decVector2 &shear);
 	/*@}*/
 	
 	/** @name Management */
@@ -78,7 +78,7 @@ public:
 	/**
 	 * Determines if this matrix is cell wise equal to anither one in respect to a threshold.
 	 */
-	bool IsEqualTo( const decTexMatrix &matrix, float threshold = TEXEL_THRESHOLD ) const;
+	bool IsEqualTo(const decTexMatrix &matrix, float threshold = TEXEL_THRESHOLD) const;
 	
 	/** \brief Determinant. */
 	float Determinant() const;
@@ -93,34 +93,34 @@ public:
 	/** @name Operators */
 	/*@{*/
 	/** Sets the cells of this matrix to the values of another one. */
-	decTexMatrix &operator=( const decTexMatrix &m );
+	decTexMatrix &operator=(const decTexMatrix &m);
 	/** Adds the cells of another matrix to this one. */
-	decTexMatrix &operator+=( const decTexMatrix &m );
+	decTexMatrix &operator+=(const decTexMatrix &m);
 	/** Subtracts the cells of another matrix from this vector. */
-	decTexMatrix &operator-=( const decTexMatrix &m );
+	decTexMatrix &operator-=(const decTexMatrix &m);
 	/** Multiplies the cells of this matrix with a value k. */
-	decTexMatrix &operator*=( float k );
+	decTexMatrix &operator*=(float k);
 	/**
 	 * Divides the cells of this matrix by a value k. If the value k
 	 * is 0 an exception is thrown.
 	 */
-	decTexMatrix &operator/=( float k );
+	decTexMatrix &operator/=(float k);
 	/** Multiplies this matrix with another one. */
-	decTexMatrix &operator*=( const decTexMatrix &m );
+	decTexMatrix &operator*=(const decTexMatrix &m);
 	/** Retrieves a new matrix with the sum of this matrix with another one. */
-	decTexMatrix operator+( const decTexMatrix &m ) const;
+	decTexMatrix operator+(const decTexMatrix &m) const;
 	/** Retrieves a new matrix with the difference of this matrix to another one. */
-	decTexMatrix operator-( const decTexMatrix &m ) const;
+	decTexMatrix operator-(const decTexMatrix &m) const;
 	/** Retrieves a new matrix with this matrix scaled by k. */
-	decTexMatrix operator*( float k ) const;
+	decTexMatrix operator*(float k) const;
 	/**
 	 * Retrieves a new matrix with this matrix divided by k. If k is 0 an
 	 * exception is thrown.
 	 */
-	decTexMatrix operator/( float k ) const;
+	decTexMatrix operator/(float k) const;
 	/** Retrieves a new matrix with this matrix multiplied with another one. */
-	decTexMatrix operator*( const decTexMatrix &m ) const;
+	decTexMatrix operator*(const decTexMatrix &m) const;
 	/** Transforms vector by this matrix. */
-	decVector2 operator*( const decVector2 &v ) const;
+	decVector2 operator*(const decVector2 &v) const;
 	/*@}*/
 };

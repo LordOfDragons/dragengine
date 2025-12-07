@@ -40,23 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnPLogLevel::debnPLogLevel( deNetworkBasic &network ) :
-debnParameter( network )
+debnPLogLevel::debnPLogLevel(deNetworkBasic &network) :
+debnParameter(network)
 {
-	SetName( "logLevel" );
-	SetDescription( "Log level." );
-	SetType( deModuleParameter::eptSelection );
-	SetCategory( ecAdvanced );
-	SetDisplayName( "Log Level" );
+	SetName("logLevel");
+	SetDescription("Log level.");
+	SetType(deModuleParameter::eptSelection);
+	SetCategory(ecAdvanced);
+	SetDisplayName("Log Level");
 	
-	const deModuleParameter::SelectionEntry entries[ 4 ] = {
-		{ "error", "Error", "Log only errors." },
-		{ "warning", "Warning", "Log errors and warnings." },
-		{ "info", "Info", "Log errors, warnings and information." },
-		{ "debug", "Debug", "Log everything" }
+	const deModuleParameter::SelectionEntry entries[4] = {
+		{"error", "Error", "Log only errors."},
+		{"warning", "Warning", "Log errors and warnings."},
+		{"info", "Info", "Log errors, warnings and information."},
+		{"debug", "Debug", "Log everything"}
 	};
-	AddSelectionEntries( entries, 4 );
-	SetDefaultValue( "warning" );
+	AddSelectionEntries(entries, 4);
+	SetDefaultValue("warning");
 }
 
 debnPLogLevel::~debnPLogLevel(){
@@ -68,7 +68,7 @@ debnPLogLevel::~debnPLogLevel(){
 ////////////////////
 
 decString debnPLogLevel::GetParameterValue(){
-	switch( pNetwork.GetConfiguration().GetLogLevel() ){
+	switch(pNetwork.GetConfiguration().GetLogLevel()){
 	case debnConfiguration::ellError:
 		return "error";
 		
@@ -86,21 +86,21 @@ decString debnPLogLevel::GetParameterValue(){
 	}
 }
 
-void debnPLogLevel::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
-	if( checkValue == "error" ){
-		pNetwork.GetConfiguration().SetLogLevel( debnConfiguration::ellError );
+void debnPLogLevel::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
+	if(checkValue == "error"){
+		pNetwork.GetConfiguration().SetLogLevel(debnConfiguration::ellError);
 		
-	}else if( checkValue == "warning" ){
-		pNetwork.GetConfiguration().SetLogLevel( debnConfiguration::ellWarning );
+	}else if(checkValue == "warning"){
+		pNetwork.GetConfiguration().SetLogLevel(debnConfiguration::ellWarning);
 		
-	}else if( checkValue == "info" ){
-		pNetwork.GetConfiguration().SetLogLevel( debnConfiguration::ellInfo );
+	}else if(checkValue == "info"){
+		pNetwork.GetConfiguration().SetLogLevel(debnConfiguration::ellInfo);
 		
-	}else if( checkValue == "debug" ){
-		pNetwork.GetConfiguration().SetLogLevel( debnConfiguration::ellDebug );
+	}else if(checkValue == "debug"){
+		pNetwork.GetConfiguration().SetLogLevel(debnConfiguration::ellDebug);
 		
 	}else{
-		pNetwork.GetConfiguration().SetLogLevel( debnConfiguration::ellWarning );
+		pNetwork.GetConfiguration().SetLogLevel(debnConfiguration::ellWarning);
 	}
 }

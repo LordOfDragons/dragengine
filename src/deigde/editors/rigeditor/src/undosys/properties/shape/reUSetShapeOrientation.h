@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeOrientation( reRigShape *shape, const decVector &newOrientation );
+	reUSetShapeOrientation(reRigShape *shape, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -47,7 +47,7 @@ public:
 	gdeParticleEmitterList();
 	
 	/** \brief Create copy of particle emitter list. */
-	gdeParticleEmitterList( const gdeParticleEmitterList &list );
+	gdeParticleEmitterList(const gdeParticleEmitterList &list);
 	
 	/** \brief Clean up particleEmitter list. */
 	~gdeParticleEmitterList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Particle emitter at position. */
-	gdeParticleEmitter *GetAt( int index ) const;
+	gdeParticleEmitter *GetAt(int index) const;
 	
 	/** \brief Particle emitter with path or \em NULL if absent. */
-	gdeParticleEmitter *GetWithPath( const char *path ) const;
+	gdeParticleEmitter *GetWithPath(const char *path) const;
 	
 	/** \brief Index of particle emitter or -1 if absent. */
-	int IndexOf( gdeParticleEmitter *particleEmitter ) const;
+	int IndexOf(gdeParticleEmitter *particleEmitter) const;
 	
 	/** \brief Index of  particle emitter with path or -1 if absent. */
-	int IndexOfWithPath( const char *path ) const;
+	int IndexOfWithPath(const char *path) const;
 	
 	/** \brief Particle emitter is present. */
-	bool Has( gdeParticleEmitter *particleEmitter ) const;
+	bool Has(gdeParticleEmitter *particleEmitter) const;
 	
 	/** \brief Particle emitter with path is present. */
-	bool HasWithPath( const char *path ) const;
+	bool HasWithPath(const char *path) const;
 	
 	/** \brief Add particle emitter. */
-	void Add( gdeParticleEmitter *particleEmitter );
+	void Add(gdeParticleEmitter *particleEmitter);
 	
 	/** \brief Remove particle emitter. */
-	void Remove( gdeParticleEmitter *particleEmitter );
+	void Remove(gdeParticleEmitter *particleEmitter);
 	
 	/** \brief Remove all particle emitters. */
 	void RemoveAll();
 	
 	/** \brief Set from another particleEmitter list. */
-	gdeParticleEmitterList &operator=( const gdeParticleEmitterList &list );
+	gdeParticleEmitterList &operator=(const gdeParticleEmitterList &list);
 	/*@}*/
 };
 

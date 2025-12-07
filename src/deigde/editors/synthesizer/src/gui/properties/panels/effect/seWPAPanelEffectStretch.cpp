@@ -59,65 +59,65 @@ protected:
 	seWPAPanelEffectStretch &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPAPanelEffectStretch &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPAPanelEffectStretch &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
-		seEffectStretch * const effect = ( seEffectStretch* )pPanel.GetEffect();
-		if( ! effect ){
+	virtual void OnTextChanged(igdeTextField *textField){
+		seEffectStretch * const effect = (seEffectStretch*)pPanel.GetEffect();
+		if(!effect){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, effect ) ));
-		if( undo ){
-			effect->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, effect)));
+		if(undo){
+			effect->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seEffectStretch *effect ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seEffectStretch *effect) = 0;
 };
 
 
 class cTextMinTime : public cBaseTextFieldListener {
 public:
-	cTextMinTime( seWPAPanelEffectStretch &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMinTime(seWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seEffectStretch *effect ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffectStretch *effect){
 		const float value = textField->GetFloat();
-		return fabsf( value - effect->GetMinTime() ) > FLOAT_SAFE_EPSILON
-			? new seUEffectStretchSetMinTime( effect, value ) : NULL;
+		return fabsf(value - effect->GetMinTime()) > FLOAT_SAFE_EPSILON
+			? new seUEffectStretchSetMinTime(effect, value) : NULL;
 	}
 };
 
 class cTextMaxTime : public cBaseTextFieldListener {
 public:
-	cTextMaxTime( seWPAPanelEffectStretch &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMaxTime(seWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seEffectStretch *effect ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffectStretch *effect){
 		const float value = textField->GetFloat();
-		return fabsf( value - effect->GetMaxTime() ) > FLOAT_SAFE_EPSILON
-			? new seUEffectStretchSetMaxTime( effect, value ) : NULL;
+		return fabsf(value - effect->GetMaxTime()) > FLOAT_SAFE_EPSILON
+			? new seUEffectStretchSetMaxTime(effect, value) : NULL;
 	}
 };
 
 class cTextMinPitch : public cBaseTextFieldListener {
 public:
-	cTextMinPitch( seWPAPanelEffectStretch &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMinPitch(seWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seEffectStretch *effect ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffectStretch *effect){
 		const float value = textField->GetFloat();
-		return fabsf( value - effect->GetMinPitch() ) > FLOAT_SAFE_EPSILON
-			? new seUEffectStretchSetMinPitch( effect, value ) : NULL;
+		return fabsf(value - effect->GetMinPitch()) > FLOAT_SAFE_EPSILON
+			? new seUEffectStretchSetMinPitch(effect, value) : NULL;
 	}
 };
 
 class cTextMaxPitch : public cBaseTextFieldListener {
 public:
-	cTextMaxPitch( seWPAPanelEffectStretch &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMaxPitch(seWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seEffectStretch *effect ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffectStretch *effect){
 		const float value = textField->GetFloat();
-		return fabsf( value - effect->GetMaxPitch() ) > FLOAT_SAFE_EPSILON
-			? new seUEffectStretchSetMaxPitch( effect, value ) : NULL;
+		return fabsf(value - effect->GetMaxPitch()) > FLOAT_SAFE_EPSILON
+			? new seUEffectStretchSetMaxPitch(effect, value) : NULL;
 	}
 };
 
@@ -131,23 +131,23 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPAPanelEffectStretch::seWPAPanelEffectStretch( seWPEffect &wpEffect ) :
-seWPAPanelEffect( wpEffect, deSynthesizerEffectVisitorIdentify::eetStretch )
+seWPAPanelEffectStretch::seWPAPanelEffectStretch(seWPEffect &wpEffect) :
+seWPAPanelEffect(wpEffect, deSynthesizerEffectVisitorIdentify::eetStretch)
 {
 	igdeEnvironment &env = wpEffect.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Stretch Time/Pitch:" );
-	helper.EditFloat( groupBox, "Time Minimum:", "Set minimum time stretch",
-		pEditMinTime, new cTextMinTime( *this ) );
-	helper.EditFloat( groupBox, "Time Maximum:", "Set maximum time stretch",
-		pEditMaxTime, new cTextMaxTime( *this ) );
-	helper.EditFloat( groupBox, "Pitch Minimum:", "Set minimum pitch stretch",
-		pEditMinPitch, new cTextMinPitch( *this ) );
-	helper.EditFloat( groupBox, "Pitch Maximum:", "Set maximum pitch stretch",
-		pEditMaxPitch, new cTextMaxPitch( *this ) );
+	helper.GroupBox(*this, groupBox, "Stretch Time/Pitch:");
+	helper.EditFloat(groupBox, "Time Minimum:", "Set minimum time stretch",
+		pEditMinTime, new cTextMinTime(*this));
+	helper.EditFloat(groupBox, "Time Maximum:", "Set maximum time stretch",
+		pEditMaxTime, new cTextMaxTime(*this));
+	helper.EditFloat(groupBox, "Pitch Minimum:", "Set minimum pitch stretch",
+		pEditMinPitch, new cTextMinPitch(*this));
+	helper.EditFloat(groupBox, "Pitch Maximum:", "Set maximum pitch stretch",
+		pEditMaxPitch, new cTextMaxPitch(*this));
 }
 
 seWPAPanelEffectStretch::~seWPAPanelEffectStretch(){
@@ -161,12 +161,12 @@ seWPAPanelEffectStretch::~seWPAPanelEffectStretch(){
 void seWPAPanelEffectStretch::UpdateEffect(){
 	seWPAPanelEffect::UpdateEffect();
 	
-	const seEffectStretch * const effect = ( seEffectStretch* )GetEffect();
-	if( effect ){
-		pEditMinTime->SetFloat( effect->GetMinTime() );
-		pEditMaxTime->SetFloat( effect->GetMaxTime() );
-		pEditMinPitch->SetFloat( effect->GetMinPitch() );
-		pEditMaxPitch->SetFloat( effect->GetMaxPitch() );
+	const seEffectStretch * const effect = (seEffectStretch*)GetEffect();
+	if(effect){
+		pEditMinTime->SetFloat(effect->GetMinTime());
+		pEditMaxTime->SetFloat(effect->GetMaxTime());
+		pEditMinPitch->SetFloat(effect->GetMinPitch());
+		pEditMaxPitch->SetFloat(effect->GetMaxPitch());
 		
 	}else{
 		pEditMinTime->ClearText();
@@ -176,18 +176,18 @@ void seWPAPanelEffectStretch::UpdateEffect(){
 	}
 	
 	const bool enabled = effect;
-	pEditMinTime->SetEnabled( enabled );
-	pEditMaxTime->SetEnabled( enabled );
-	pEditMinPitch->SetEnabled( enabled );
-	pEditMaxPitch->SetEnabled( enabled );
+	pEditMinTime->SetEnabled(enabled);
+	pEditMaxTime->SetEnabled(enabled);
+	pEditMinPitch->SetEnabled(enabled);
+	pEditMaxPitch->SetEnabled(enabled);
 }
 
 void seWPAPanelEffectStretch::UpdateTargetList(){
 	seWPAPanelEffect::UpdateTargetList();
 	
-	seEffectStretch * const effect = ( seEffectStretch* )GetEffect();
-	if( effect ){
-		AddTarget( "Time", &effect->GetTargetTime() );
-		AddTarget( "Pitch", &effect->GetTargetPitch() );
+	seEffectStretch * const effect = (seEffectStretch*)GetEffect();
+	if(effect){
+		AddTarget("Time", &effect->GetTargetTime());
+		AddTarget("Pitch", &effect->GetTargetPitch());
 	}
 }

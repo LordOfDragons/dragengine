@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
-	meUndoDataDecal( meDecal *decal );
+	meUndoDataDecal(meDecal *decal);
 	/** \brief Clean up data object. */
 	virtual ~meUndoDataDecal();
 	/*@}*/

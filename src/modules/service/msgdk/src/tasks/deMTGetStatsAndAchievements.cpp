@@ -124,7 +124,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 			achievementResult, &achievements, &achievementsCount),
 			"deMTGetStatsAndAchievements.pGetAchievements.XblAchievementsManagerResultGetAchievements");
 
-		const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
+		const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 		
 		for(i=0; i<achievementsCount; i++){
 			const char * const name = achievements[i].id;
@@ -162,7 +162,7 @@ void deMTGetStatsAndAchievements::pGetStats()
 	
 	int i;
 	pStatNames = new const char*[count];
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pStatNames[i] = pStats.GetAt(i).GetString();
 	}
 

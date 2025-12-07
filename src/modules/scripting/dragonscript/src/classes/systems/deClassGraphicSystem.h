@@ -75,7 +75,7 @@ private:
 		dsClass *clsQuaternion;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
@@ -83,23 +83,23 @@ private:
 	DEF_NATFUNC(nfGetWindowX);
 	DEF_NATFUNC(nfGetWindowY);
 	DEF_NATFUNC(nfGetWindowPosition);
-	DEF_NATFUNC( nfGetWindowWidth );
-	DEF_NATFUNC( nfGetWindowHeight );
-	DEF_NATFUNC( nfGetWindowSize );
-	DEF_NATFUNC( nfSetWindowGeometry );
+	DEF_NATFUNC(nfGetWindowWidth);
+	DEF_NATFUNC(nfGetWindowHeight);
+	DEF_NATFUNC(nfGetWindowSize);
+	DEF_NATFUNC(nfSetWindowGeometry);
 	DEF_NATFUNC(nfSetWindowGeometry2);
-	DEF_NATFUNC( nfSetWindowTitle );
+	DEF_NATFUNC(nfSetWindowTitle);
 	DEF_NATFUNC(nfGetWindowScaleFactor);
 	DEF_NATFUNC(nfGetWindowScaleFactorFloat);
-	DEF_NATFUNC( nfGetPrimaryCanvas );
+	DEF_NATFUNC(nfGetPrimaryCanvas);
 	DEF_NATFUNC(nfGetParameterCount);
 	DEF_NATFUNC(nfGetParameterInfo);
 	DEF_NATFUNC(nfGetParameterInfo2);
 	DEF_NATFUNC(nfGetParameterValue);
 	DEF_NATFUNC(nfSetParameterValue);
-	DEF_NATFUNC( nfSendCommand );
-	DEF_NATFUNC( nfGetFPSRate );
-	DEF_NATFUNC( nfSetVRDebugPanelPosition );
+	DEF_NATFUNC(nfSendCommand);
+	DEF_NATFUNC(nfGetFPSRate);
+	DEF_NATFUNC(nfSetVRDebugPanelPosition);
 #undef DEF_NATFUNC
 };
 

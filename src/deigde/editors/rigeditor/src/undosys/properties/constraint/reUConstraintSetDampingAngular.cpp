@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintSetDampingAngular::reUConstraintSetDampingAngular( reRigConstraint *constraint, float newDamping ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintSetDampingAngular::reUConstraintSetDampingAngular(reRigConstraint *constraint, float newDamping){
+	if(!constraint || !constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -50,13 +50,13 @@ reUConstraintSetDampingAngular::reUConstraintSetDampingAngular( reRigConstraint 
 	pOldDamping = constraint->GetAngularDamping();
 	pNewDamping = newDamping;
 	
-	SetShortInfo( "Constraint set angular damping" );
+	SetShortInfo("Constraint set angular damping");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintSetDampingAngular::~reUConstraintSetDampingAngular(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ reUConstraintSetDampingAngular::~reUConstraintSetDampingAngular(){
 ///////////////
 
 void reUConstraintSetDampingAngular::Undo(){
-	pConstraint->SetAngularDamping( pOldDamping );
+	pConstraint->SetAngularDamping(pOldDamping);
 }
 
 void reUConstraintSetDampingAngular::Redo(){
-	pConstraint->SetAngularDamping( pNewDamping );
+	pConstraint->SetAngularDamping(pNewDamping);
 }

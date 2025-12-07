@@ -54,50 +54,50 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderWindow::deoglRenderWindow( deGraphicOpenGl &ogl, deRenderWindow &renderWindow ) :
-pOgl( ogl ),
-pRenderWindow( renderWindow ),
+deoglRenderWindow::deoglRenderWindow(deGraphicOpenGl &ogl, deRenderWindow &renderWindow) :
+pOgl(ogl),
+pRenderWindow(renderWindow),
 
-pCanvasView( NULL ),
-pDirtyParams( false ),
+pCanvasView(NULL),
+pDirtyParams(false),
 pDirtyPosition(true),
-pDirtySize( true ),
-pDirtyWindowTitle( true ),
-pDirtyFullScreen( true ),
-pDirtyIcon( true ),
+pDirtySize(true),
+pDirtyWindowTitle(true),
+pDirtyFullScreen(true),
+pDirtyIcon(true),
 
-pRRenderWindow( NULL )
+pRRenderWindow(NULL)
 {
 	try{
-		pCanvasView = ( deoglCanvasView* )renderWindow.GetCanvasView()->GetPeerGraphic();
+		pCanvasView = (deoglCanvasView*)renderWindow.GetCanvasView()->GetPeerGraphic();
 		
-		pRRenderWindow = new deoglRRenderWindow( ogl.GetRenderThread() );
+		pRRenderWindow = new deoglRRenderWindow(ogl.GetRenderThread());
 		
-		pRRenderWindow->SetHostWindow( renderWindow.GetHostWindow() );
+		pRRenderWindow->SetHostWindow(renderWindow.GetHostWindow());
 		pRRenderWindow->SetPosition(renderWindow.GetX(), renderWindow.GetY());
-		pRRenderWindow->SetSize( renderWindow.GetWidth(), renderWindow.GetHeight() );
-		pRRenderWindow->SetTitle( renderWindow.GetTitle() );
-		pRRenderWindow->SetFullScreen( renderWindow.GetFullScreen() );
+		pRRenderWindow->SetSize(renderWindow.GetWidth(), renderWindow.GetHeight());
+		pRRenderWindow->SetTitle(renderWindow.GetTitle());
+		pRRenderWindow->SetFullScreen(renderWindow.GetFullScreen());
 		
-		ogl.GetRenderThread().CreateRenderWindow( pRRenderWindow );
+		ogl.GetRenderThread().CreateRenderWindow(pRRenderWindow);
 		
-		renderWindow.SetWindow( pRRenderWindow->GetWindow() );
+		renderWindow.SetWindow(pRRenderWindow->GetWindow());
 		renderWindow.SetScaleFactor(pRRenderWindow->GetAfterCreateScaleFactor());
 		
 		// set application as active. x-system does not tell the new window it obtained
 		// the focus so we do this instead. (is this a bug or feature of x-system?)
-		pOgl.GetOS()->SetAppActive( true );
+		pOgl.GetOS()->SetAppActive(true);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
-	ogl.GetRenderWindowList().Add( this );
+	ogl.GetRenderWindowList().Add(this);
 }
 
 deoglRenderWindow::~deoglRenderWindow(){
-	pOgl.GetRenderWindowList().Remove( this );
+	pOgl.GetRenderWindowList().Remove(this);
 	pCleanUp();
 }
 
@@ -112,7 +112,7 @@ deoglRenderWindow::~deoglRenderWindow(){
 //////////////////
 
 void deoglRenderWindow::HostWindowChanged(){
-	pRRenderWindow->SetHostWindow( pRenderWindow.GetHostWindow() );
+	pRRenderWindow->SetHostWindow(pRenderWindow.GetHostWindow());
 }
 
 void deoglRenderWindow::PositionChanged(){
@@ -146,8 +146,8 @@ void deoglRenderWindow::IconChanged(){
 
 void deoglRenderWindow::SyncToRender(){
 // 		decTimer timer;
-	if( pDirtyFullScreen ){
-		pRRenderWindow->SetFullScreen( pRenderWindow.GetFullScreen() );
+	if(pDirtyFullScreen){
+		pRRenderWindow->SetFullScreen(pRenderWindow.GetFullScreen());
 		pDirtyFullScreen = false;
 // 			pOgl.LogInfoFormat( "RWindow.Sync full screen: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
@@ -157,58 +157,58 @@ void deoglRenderWindow::SyncToRender(){
 		pDirtyPosition = false;
 	}
 	
-	if( pDirtySize ){
-		pRRenderWindow->SetSize( pRenderWindow.GetWidth(), pRenderWindow.GetHeight() );
+	if(pDirtySize){
+		pRRenderWindow->SetSize(pRenderWindow.GetWidth(), pRenderWindow.GetHeight());
 		pDirtySize = false;
 // 			pOgl.LogInfoFormat( "RWindow.Sync size: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	if( pDirtyWindowTitle ){
-		pRRenderWindow->SetTitle( pRenderWindow.GetTitle() );
+	if(pDirtyWindowTitle){
+		pRRenderWindow->SetTitle(pRenderWindow.GetTitle());
 		pDirtyWindowTitle = false;
 // 			pOgl.LogInfoFormat( "RWindow.Sync title: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	if( pDirtyIcon ){
-		if( pRenderWindow.GetIcon() ){
-			deoglImage &image = *( ( deoglImage* )pRenderWindow.GetIcon()->GetPeerGraphic() );
+	if(pDirtyIcon){
+		if(pRenderWindow.GetIcon()){
+			deoglImage &image = *((deoglImage*)pRenderWindow.GetIcon()->GetPeerGraphic());
 			
 			image.CreatePixelBuffer();
 			
 			try{
-				pRRenderWindow->SetIcon( deoglPixelBuffer::Ref::NewWith(image.GetPixelBuffer()) );
+				pRRenderWindow->SetIcon(deoglPixelBuffer::Ref::NewWith(image.GetPixelBuffer()));
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				image.ReleasePixelBuffer();
 				throw;
 			}
 			image.ReleasePixelBuffer();
 			
 		}else{
-			pRRenderWindow->SetIcon( NULL );
+			pRRenderWindow->SetIcon(NULL);
 		}
 		pDirtyIcon = false;
 // 			pOgl.LogInfoFormat( "RWindow.Sync icon: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// if parameters changed set them to the window. this has to be done always
-	if( pDirtyParams ){
+	if(pDirtyParams){
 		//pRRenderWindow->SetHostWindow( pRenderWindow.GetHostWindow() );
-		pRRenderWindow->SetPaint( pRenderWindow.GetPaint() );
+		pRRenderWindow->SetPaint(pRenderWindow.GetPaint());
 		pDirtyParams = false;
 // 			pOgl.LogInfoFormat( "RWindow.Sync set paint: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// sync canvas view only if painting is enabled. saves performance on invisible windows
-	if( pRenderWindow.GetPaint() ){
+	if(pRenderWindow.GetPaint()){
 		pCanvasView->SyncToRender();
-		pRRenderWindow->SetRCanvasView( pCanvasView->GetRCanvasView() );
+		pRRenderWindow->SetRCanvasView(pCanvasView->GetRCanvasView());
 // 			pOgl.LogInfoFormat( "RWindow.Sync set rcanvasview: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// window size changed due to OS events
-	if( pRRenderWindow->GetNotifySizeChanged() ){
-		pRenderWindow.SetSize( pRRenderWindow->GetWidth(), pRRenderWindow->GetHeight() );
+	if(pRRenderWindow->GetNotifySizeChanged()){
+		pRenderWindow.SetSize(pRRenderWindow->GetWidth(), pRRenderWindow->GetHeight());
 // 			pOgl.LogInfoFormat( "RWindow.Sync notify size changed: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 }
@@ -219,28 +219,28 @@ void deoglRenderWindow::SyncToRender(){
 //////////////////////
 
 void deoglRenderWindow::pCleanUp(){
-	if( pRRenderWindow ){
-		pRRenderWindow->SetFullScreen( false ); // make sure full screen is disabled if enabled
+	if(pRRenderWindow){
+		pRRenderWindow->SetFullScreen(false); // make sure full screen is disabled if enabled
 		pRRenderWindow->FreeReference();
 	}
 	
-	#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
-	pRenderWindow.SetWindow( 0 );
+	#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
+	pRenderWindow.SetWindow(0);
 	#endif
 	
 	#ifdef WITH_OPENGLES
-	pRenderWindow.SetWindow( NULL );
+	pRenderWindow.SetWindow(NULL);
 	#endif
 	
 	#ifdef OS_BEOS
-	pRenderWindow.SetWindow( NULL );
+	pRenderWindow.SetWindow(NULL);
 	#endif
 	
 	#ifdef OS_W32
-	pRenderWindow.SetWindow( NULL );
+	pRenderWindow.SetWindow(NULL);
 	#endif
 	
 	#ifdef OS_MACOS
-	pRenderWindow.SetWindow( NULL );
+	pRenderWindow.SetWindow(NULL);
 	#endif
 }

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin. */
-	deoglSkin( deGraphicOpenGl &ogl, const deSkin &skin );
+	deoglSkin(deGraphicOpenGl &ogl, const deSkin &skin);
 	
 	/** Clean up skin. */
 	virtual ~deoglSkin();

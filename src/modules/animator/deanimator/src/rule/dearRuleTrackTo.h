@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleTrackTo( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleTrackTo &rule );
+	dearRuleTrackTo(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleTrackTo &rule);
 	
 	/** Clean up rule. */
 	virtual ~dearRuleTrackTo();
@@ -70,7 +70,7 @@ public:
 	
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
 	
 	/** Rule changed. */
 	virtual void RuleChanged();

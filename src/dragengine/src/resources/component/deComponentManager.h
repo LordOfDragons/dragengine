@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new scene component resource manager linked to the given engine. */
-	deComponentManager( deEngine *engine );
+	deComponentManager(deEngine *engine);
 	
 	/** \brief Clean up scene component resource manager and reports leaking resources. */
 	virtual ~deComponentManager();
@@ -64,7 +64,7 @@ public:
 	deComponent *GetRootComponent() const;
 	
 	/** \brief Create component. */
-	deComponent *CreateComponent( deModel *model = NULL, deSkin *skin = NULL );
+	deComponent *CreateComponent(deModel *model = NULL, deSkin *skin = NULL);
 	
 	/** \brief Release leaking resources and report them. */
 	virtual void ReleaseLeakingResources();
@@ -96,7 +96,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

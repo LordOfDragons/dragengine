@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deFontModule( deLoadableModule &loadableModule );
+	deFontModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deFontModule();
@@ -59,20 +59,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load font. */
-	virtual void LoadFont( decBaseFileReader &reader, deFont &font );
+	virtual void LoadFont(decBaseFileReader &reader, deFont &font);
 	
 	/** \brief Save font. */
-	virtual void SaveFont( decBaseFileWriter &writer, const deFont &font );
+	virtual void SaveFont(decBaseFileWriter &writer, const deFont &font);
 	/*@}*/
 
 private:
-    const char *pGetAttributeString( decXmlElementTag *tag, const char *name );
-    bool pHasAttributeString( decXmlElementTag *tag, const char *name );
-    int pGetAttributeInt( decXmlElementTag *tag, const char *name );
-    float pGetAttributeFloat( decXmlElementTag *tag, const char *name );
-    void pParseFont( decXmlElementTag *root, deFont &font );
+    const char *pGetAttributeString(decXmlElementTag *tag, const char *name);
+    bool pHasAttributeString(decXmlElementTag *tag, const char *name);
+    int pGetAttributeInt(decXmlElementTag *tag, const char *name);
+    float pGetAttributeFloat(decXmlElementTag *tag, const char *name);
+    void pParseFont(decXmlElementTag *root, deFont &font);
 
-    void pWriteFont( decXmlWriter &writer, const deFont &font );
+    void pWriteFont(decXmlWriter &writer, const deFont &font);
 };
 
 // end of include only once

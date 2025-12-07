@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native label.
  */
 class igdeNativeFoxLabel : public FXLabel{
-	FXDECLARE( igdeNativeFoxLabel )
+	FXDECLARE(igdeNativeFoxLabel)
 	
 protected:
 	igdeNativeFoxLabel();
@@ -56,14 +56,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxLabel( igdeLabel &owner, FXComposite *parent, int layoutFlags,
-		const igdeGuiTheme &guitheme );
+	igdeNativeFoxLabel(igdeLabel &owner, FXComposite *parent, int layoutFlags,
+		const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxLabel();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxLabel* CreateNativeWidget( igdeLabel &owner );
+	static igdeNativeFoxLabel* CreateNativeWidget(igdeLabel &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -81,9 +81,9 @@ public:
 	virtual void UpdateDescription();
 	virtual void UpdateIcon();
 	
-	static FXIcon *LabelIcon( const igdeLabel &owner );
-	static int LabelFlags( const igdeLabel &owner );
-	static igdeFont *LabelFont( const igdeLabel &owner, const igdeGuiTheme &guitheme );
+	static FXIcon *LabelIcon(const igdeLabel &owner);
+	static int LabelFlags(const igdeLabel &owner);
+	static igdeFont *LabelFont(const igdeLabel &owner, const igdeGuiTheme &guitheme);
 	/*@}*/
 };
 

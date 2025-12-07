@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPathSound::gdeUOCSpeakerSetPathSound( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, const char *newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetPathSound::gdeUOCSpeakerSetPathSound(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, const char *newValue) :
+pObjectClass(NULL),
+pSpeaker(NULL)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set path sound" );
+	SetShortInfo("Speaker set path sound");
 	
 	pOldValue = speaker->GetPathSound();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pSpeaker( NULL )
 }
 
 gdeUOCSpeakerSetPathSound::~gdeUOCSpeakerSetPathSound(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCSpeakerSetPathSound::~gdeUOCSpeakerSetPathSound(){
 ///////////////
 
 void gdeUOCSpeakerSetPathSound::Undo(){
-	pSpeaker->SetPathSound( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPathSound(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetPathSound::Redo(){
-	pSpeaker->SetPathSound( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPathSound(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

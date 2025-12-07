@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvasCanvasView( deGraphicOpenGl &ogl, deCanvasCanvasView &canvas );
+	deoglCanvasCanvasView(deGraphicOpenGl &ogl, deCanvasCanvasView &canvas);
 	
 	/** Clean up peer. */
 	virtual ~deoglCanvasCanvasView();

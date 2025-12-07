@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load object. */
-	igdeLoadSynthesizer( igdeEnvironment &environment, deLogger *logger, const char *loggerSource );
+	igdeLoadSynthesizer(igdeEnvironment &environment, deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up load object. */
 	~igdeLoadSynthesizer();
@@ -71,68 +71,68 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name to display in a file dialog. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern to display in a file dialog. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern to display in a file dialog. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default file extension. */
 	inline const decString &GetDefaultExtension() const{ return pDefaultExtension; }
 	
 	/** \brief Set default file extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	
 	
 	
 	/** \brief Load synthesizer using a file reader. */
-	void Load( const decString &pathSynthesizer, deSynthesizer &synthesizer, decBaseFileReader &reader );
+	void Load(const decString &pathSynthesizer, deSynthesizer &synthesizer, decBaseFileReader &reader);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadSynthesizer( const decXmlElementTag &root, const char *basePath,
-		deSynthesizer &synthesizer );
+	void pReadSynthesizer(const decXmlElementTag &root, const char *basePath,
+		deSynthesizer &synthesizer);
 	
-	void pReadController( const decXmlElementTag &root, deSynthesizer &synthesizer );
+	void pReadController(const decXmlElementTag &root, deSynthesizer &synthesizer);
 	
-	void pReadLink( const decXmlElementTag &root, deSynthesizer &synthesizer );
+	void pReadLink(const decXmlElementTag &root, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSource( const decXmlElementTag &root,
-		const char *basePath, deSynthesizer &synthesizer );
+	deSynthesizerSource *pReadSource(const decXmlElementTag &root,
+		const char *basePath, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceSound( const decXmlElementTag &root,
-		const char *basePath, deSynthesizer &synthesizer );
+	deSynthesizerSource *pReadSourceSound(const decXmlElementTag &root,
+		const char *basePath, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceWave( const decXmlElementTag &root,
-		deSynthesizer &synthesizer );
+	deSynthesizerSource *pReadSourceWave(const decXmlElementTag &root,
+		deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceChain( const decXmlElementTag &root,
-		const char *basePath, deSynthesizer &synthesizer );
+	deSynthesizerSource *pReadSourceChain(const decXmlElementTag &root,
+		const char *basePath, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceGroup( const decXmlElementTag &root,
-		const char *basePath, deSynthesizer &synthesizer );
+	deSynthesizerSource *pReadSourceGroup(const decXmlElementTag &root,
+		const char *basePath, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceSynthesizer( const decXmlElementTag &root,
-		const char *basePath, deSynthesizer &synthesizer );
+	deSynthesizerSource *pReadSourceSynthesizer(const decXmlElementTag &root,
+		const char *basePath, deSynthesizer &synthesizer);
 	
-	bool pReadSourceCommon( const decXmlElementTag &root,
-		deSynthesizer &synthesizer, deSynthesizerSource &source );
+	bool pReadSourceCommon(const decXmlElementTag &root,
+		deSynthesizer &synthesizer, deSynthesizerSource &source);
 	
-	void pReadControllerTarget( const decXmlElementTag &root,
-		deSynthesizer &synthesizer, deSynthesizerControllerTarget &target );
+	void pReadControllerTarget(const decXmlElementTag &root,
+		deSynthesizer &synthesizer, deSynthesizerControllerTarget &target);
 	
-	deSynthesizerEffect *pReadEffect( const decXmlElementTag &root,
-		deSynthesizer &synthesizer );
+	deSynthesizerEffect *pReadEffect(const decXmlElementTag &root,
+		deSynthesizer &synthesizer);
 	
-	deSynthesizerEffect *pReadEffectStretch( const decXmlElementTag &root,
-		deSynthesizer &synthesizer );
+	deSynthesizerEffect *pReadEffectStretch(const decXmlElementTag &root,
+		deSynthesizer &synthesizer);
 	
-	bool pReadEffectCommon( const decXmlElementTag &root,
-		deSynthesizer &synthesizer, deSynthesizerEffect &effect );
+	bool pReadEffectCommon(const decXmlElementTag &root,
+		deSynthesizer &synthesizer, deSynthesizerEffect &effect);
 };
 
 #endif

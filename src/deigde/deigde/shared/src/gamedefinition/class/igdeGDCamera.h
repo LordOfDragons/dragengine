@@ -49,7 +49,7 @@ public:
 	igdeGDCamera();
 	
 	/** \brief Create game definition camera as a copy of another game definition camera. */
-	igdeGDCamera( const igdeGDCamera &camera );
+	igdeGDCamera(const igdeGDCamera &camera);
 	
 	/** \brief Clean up game definition camera. */
 	~igdeGDCamera();
@@ -63,37 +63,37 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Vertical field  of view in radians for the entire view. */
 	inline float GetFov() const{ return pFov; }
 	
 	/** \brief Set vertical field of view in radians of the entire view. */
-	void SetFov( float fov );
+	void SetFov(float fov);
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
 	inline float GetFovRatio() const{ return pFovRatio; }
 	
 	/** \brief Set aspect ratio of the horizonral field of view to the vertical field of view. */
-	void SetFovRatio( float ratio );
+	void SetFovRatio(float ratio);
 	
 	/** \brief Distance to the image plane. */
 	inline float GetImageDistance() const{ return pImageDistance; }
 	
 	/** \brief Set distance to the image plane. */
-	void SetImageDistance( float distance );
+	void SetImageDistance(float distance);
 	
 	/** \brief Viewing distance up to which scene geometry is rendered. */
 	inline float GetViewDistance() const{ return pViewDistance; }
 	
 	/** \brief Set view distance up to which scene geometry is rendered. */
-	void SetViewDistance( float distance );
+	void SetViewDistance(float distance);
 	
 	/** \brief Name of the name property. */
 	inline const decString &GetPropName() const{ return pPropName; }

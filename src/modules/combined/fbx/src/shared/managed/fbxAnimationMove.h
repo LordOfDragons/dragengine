@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create move. */
-	fbxAnimationMove( fbxAnimation &animation, fbxNode &nodeStack );
+	fbxAnimationMove(fbxAnimation &animation, fbxNode &nodeStack);
 	
 protected:
 	/** \brief Clean up move. */
@@ -99,7 +99,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set bone name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
@@ -107,25 +107,25 @@ public:
 	int GetCurvesCount() const;
 	
 	/** \brief Curves at index. */
-	fbxAnimationMoveCurves *GetCurvesAt( int index ) const;
+	fbxAnimationMoveCurves *GetCurvesAt(int index) const;
 	
 	/** \brief Match curves against rig. */
-	void MatchRig( const fbxRig &rig );
+	void MatchRig(const fbxRig &rig);
 	
 	/** \brief Frame rate. */
 	inline int GetFrameRate() const{ return pFrameRate; }
 	
 	/** \brief Set frame rate. */
-	void SetFrameRate( int frameRate );
+	void SetFrameRate(int frameRate);
 	
 	/** \brief Convert time to frame number. */
-	int TimeToFrame( float time ) const;
+	int TimeToFrame(float time) const;
 	
 	/** \brief Convert frame number to time. */
-	float FrameToTime( int frame ) const;
+	float FrameToTime(int frame) const;
 	
 	/** \brief Quantize time. */
-	float QuantizeTime( float time ) const;
+	float QuantizeTime(float time) const;
 	
 	
 	
@@ -133,7 +133,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

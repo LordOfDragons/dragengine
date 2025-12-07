@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTPaintVisibility( int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid, const decPoint &size, meBitArray *oldVis );
+	meUHTPaintVisibility(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid, const decPoint &size, meBitArray *oldVis);
 	/** \brief Clean up object. */
 	virtual ~meUHTPaintVisibility();
 	/*@}*/
@@ -75,7 +75,7 @@ public:
 private:
 	void pCleanUp();
 	void pSaveVisibility();
-	void pRestoreVisibility( meBitArray *vis );
+	void pRestoreVisibility(meBitArray *vis);
 };
 
 // end of include only once

@@ -61,31 +61,31 @@
 // Events
 ///////////
 
-FXDEFMAP( deglPanelGames ) deglPanelGamesMap[] = {
-	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesChanged ),
-	FXMAPFUNC( SEL_CHANGED, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesChanged ),
-	FXMAPFUNC( SEL_RIGHTBUTTONPRESS, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesRDown ),
-	FXMAPFUNC( SEL_RIGHTBUTTONRELEASE, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesRUp ),
-	FXMAPFUNC( SEL_DOUBLECLICKED, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesDblClick ),
-	FXMAPFUNC( deglPanelGames::ExtIconList::SEL_HEADER_CLICKED, deglPanelGames::ID_LIST_GAMES,
-		deglPanelGames::onListGamesHeaderClicked ),
+FXDEFMAP(deglPanelGames) deglPanelGamesMap[] = {
+	FXMAPFUNC(SEL_COMMAND, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesChanged),
+	FXMAPFUNC(SEL_CHANGED, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesChanged),
+	FXMAPFUNC(SEL_RIGHTBUTTONPRESS, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesRDown),
+	FXMAPFUNC(SEL_RIGHTBUTTONRELEASE, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesRUp),
+	FXMAPFUNC(SEL_DOUBLECLICKED, deglPanelGames::ID_LIST_GAMES, deglPanelGames::onListGamesDblClick),
+	FXMAPFUNC(deglPanelGames::ExtIconList::SEL_HEADER_CLICKED, deglPanelGames::ID_LIST_GAMES,
+		deglPanelGames::onListGamesHeaderClicked),
 	
-	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_PU_GAME_PROPS, deglPanelGames::onPUGameProps ),
-	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_PROPS, deglPanelGames::updatePUGameProps ),
-	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_PU_GAME_RUN, deglPanelGames::onPUGameRun ),
-	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_RUN, deglPanelGames::updatePUGameRun ),
-	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_PU_GAME_RUNWITH, deglPanelGames::onPUGameRunWith ),
-	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_RUNWITH, deglPanelGames::updatePUGameRun ),
-	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_PU_GAME_KILL, deglPanelGames::onPUGameKill ),
-	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_KILL, deglPanelGames::updatePUGameKill ),
-	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_PU_GAME_UNINSTALL, deglPanelGames::onPUGameUninstall ),
-	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_UNINSTALL, deglPanelGames::updatePUGameUninstall ),
-	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_PU_GAME_SHOWLOGS, deglPanelGames::onPUGameShowLogs ),
-	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_SHOWLOGS, deglPanelGames::updatePUGameShowLogs ),
+	FXMAPFUNC(SEL_COMMAND, deglPanelGames::ID_PU_GAME_PROPS, deglPanelGames::onPUGameProps),
+	FXMAPFUNC(SEL_UPDATE, deglPanelGames::ID_PU_GAME_PROPS, deglPanelGames::updatePUGameProps),
+	FXMAPFUNC(SEL_COMMAND, deglPanelGames::ID_PU_GAME_RUN, deglPanelGames::onPUGameRun),
+	FXMAPFUNC(SEL_UPDATE, deglPanelGames::ID_PU_GAME_RUN, deglPanelGames::updatePUGameRun),
+	FXMAPFUNC(SEL_COMMAND, deglPanelGames::ID_PU_GAME_RUNWITH, deglPanelGames::onPUGameRunWith),
+	FXMAPFUNC(SEL_UPDATE, deglPanelGames::ID_PU_GAME_RUNWITH, deglPanelGames::updatePUGameRun),
+	FXMAPFUNC(SEL_COMMAND, deglPanelGames::ID_PU_GAME_KILL, deglPanelGames::onPUGameKill),
+	FXMAPFUNC(SEL_UPDATE, deglPanelGames::ID_PU_GAME_KILL, deglPanelGames::updatePUGameKill),
+	FXMAPFUNC(SEL_COMMAND, deglPanelGames::ID_PU_GAME_UNINSTALL, deglPanelGames::onPUGameUninstall),
+	FXMAPFUNC(SEL_UPDATE, deglPanelGames::ID_PU_GAME_UNINSTALL, deglPanelGames::updatePUGameUninstall),
+	FXMAPFUNC(SEL_COMMAND, deglPanelGames::ID_PU_GAME_SHOWLOGS, deglPanelGames::onPUGameShowLogs),
+	FXMAPFUNC(SEL_UPDATE, deglPanelGames::ID_PU_GAME_SHOWLOGS, deglPanelGames::updatePUGameShowLogs),
 };
 
-FXDEFMAP( deglPanelGames::ExtIconList ) deglPanelGamesExtIconListMap[] = {
-	FXMAPFUNC( SEL_COMMAND, ICONLIST_HEADER_ID, deglPanelGames::ExtIconList::onHeaderClicked )
+FXDEFMAP(deglPanelGames::ExtIconList) deglPanelGamesExtIconListMap[] = {
+	FXMAPFUNC(SEL_COMMAND, ICONLIST_HEADER_ID, deglPanelGames::ExtIconList::onHeaderClicked)
 };
 
 
@@ -93,23 +93,23 @@ FXDEFMAP( deglPanelGames::ExtIconList ) deglPanelGamesExtIconListMap[] = {
 // Class deglPanelGames::ExtIconList
 //////////////////////////////////////
 
-FXIMPLEMENT( deglPanelGames::ExtIconList, FXIconList, deglPanelGamesExtIconListMap,
-	ARRAYNUMBER( deglPanelGamesExtIconListMap ) )
+FXIMPLEMENT(deglPanelGames::ExtIconList, FXIconList, deglPanelGamesExtIconListMap,
+	ARRAYNUMBER(deglPanelGamesExtIconListMap))
 
 deglPanelGames::ExtIconList::ExtIconList(){
 }
 
-deglPanelGames::ExtIconList::ExtIconList( FXComposite *p, FXObject *tgt, FXSelector sel,
-FXuint opts, FXint x, FXint y, FXint w, FXint h ) :
-FXIconList( p, tgt, sel, opts, x, y, w, h ){
+deglPanelGames::ExtIconList::ExtIconList(FXComposite *p, FXObject *tgt, FXSelector sel,
+FXuint opts, FXint x, FXint y, FXint w, FXint h) :
+FXIconList(p, tgt, sel, opts, x, y, w, h){
 }
 
 deglPanelGames::ExtIconList::~ExtIconList(){
 }
 
-long deglPanelGames::ExtIconList::onHeaderClicked( FXObject*, FXSelector, void* ){
-	if( target ){
-		return target->tryHandle( this, FXSEL( SEL_HEADER_CLICKED, message ), nullptr );
+long deglPanelGames::ExtIconList::onHeaderClicked(FXObject*, FXSelector, void*){
+	if(target){
+		return target->tryHandle(this, FXSEL(SEL_HEADER_CLICKED, message), nullptr);
 	}
 	return 0;
 }
@@ -119,15 +119,15 @@ long deglPanelGames::ExtIconList::onHeaderClicked( FXObject*, FXSelector, void* 
 // Class deglPanelGames
 /////////////////////////
 
-FXIMPLEMENT( deglPanelGames, FXVerticalFrame, deglPanelGamesMap, ARRAYNUMBER( deglPanelGamesMap ) )
+FXIMPLEMENT(deglPanelGames, FXVerticalFrame, deglPanelGamesMap, ARRAYNUMBER(deglPanelGamesMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-deglPanelGames::deglPanelGames(){ }
+deglPanelGames::deglPanelGames(){}
 
-deglPanelGames::deglPanelGames( deglWindowMain *windowMain, FXComposite *container ) :
-FXVerticalFrame( container, LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ){
+deglPanelGames::deglPanelGames(deglWindowMain *windowMain, FXComposite *container) :
+FXVerticalFrame(container, LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0){
 	//FXHorizontalFrame *frameLine;
 	//FXVerticalFrame *content;
 	//FXHeader *header;
@@ -135,14 +135,14 @@ FXVerticalFrame( container, LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT | FRAME_SUNKEN, 0, 
 	pWindowMain = windowMain;
 	
 	// create content
-	pListGames = new ExtIconList( this, this, ID_LIST_GAMES, FOLDINGLIST_BROWSESELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	if( ! pListGames ) DETHROW( deeOutOfMemory );
+	pListGames = new ExtIconList(this, this, ID_LIST_GAMES, FOLDINGLIST_BROWSESELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y);
+	if(!pListGames) DETHROW(deeOutOfMemory);
 	
-	pListGames->appendHeader( "Game", nullptr, 350 );
-	pListGames->appendHeader( "Status", nullptr, 150 );
-	pListGames->appendHeader( "Creator", nullptr, 200 );
+	pListGames->appendHeader("Game", nullptr, 350);
+	pListGames->appendHeader("Status", nullptr, 150);
+	pListGames->appendHeader("Creator", nullptr, 200);
 	
-	pListGames->setSortFunc( deglPanelGames::SortGamesByTitleAsc );
+	pListGames->setSortFunc(deglPanelGames::SortGamesByTitleAsc);
 	pSortListGames = elgsTitleAsc;
 }
 
@@ -157,29 +157,29 @@ deglPanelGames::~deglPanelGames(){
 delGame *deglPanelGames::GetSelectedGame() const{
 	const int selection = pListGames->getCurrentItem();
 	
-	if( selection != -1 ){
-		return ( ( deglPGListItemGame* )pListGames->getItem( selection ) )->GetGame();
+	if(selection != -1){
+		return ((deglPGListItemGame*)pListGames->getItem(selection))->GetGame();
 	}
 	
 	return nullptr;
 }
 
-void deglPanelGames::SetSelectedGame( delGame *game ){
+void deglPanelGames::SetSelectedGame(delGame *game){
 	const int count = pListGames->getNumItems();
 	int i, selection = -1;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deglPGListItemGame* )pListGames->getItem( i ) )->GetGame() == game ){
+	for(i=0; i<count; i++){
+		if(((deglPGListItemGame*)pListGames->getItem(i))->GetGame() == game){
 			selection = i;
 			break;
 		}
 	}
 	
-	if( selection == -1 && count > 0 ){
+	if(selection == -1 && count > 0){
 		selection = 0;
 	}
 	
-	pListGames->setCurrentItem( selection );
+	pListGames->setCurrentItem(selection);
 }
 
 
@@ -194,71 +194,71 @@ void deglPanelGames::UpdateGameList(){
 	
 	pListGames->clearItems();
 	
-	for( i=0; i<count; i++ ){
-		game = gameList.GetAt( i );
+	for(i=0; i<count; i++){
+		game = gameList.GetAt(i);
 		listItem = nullptr;
 		
 		try{
-			listItem = new deglPGListItemGame( this, game );
-			pListGames->appendItem( listItem );
+			listItem = new deglPGListItemGame(this, game);
+			pListGames->appendItem(listItem);
 			
-		}catch( const deException & ){
-			if( listItem ){
+		}catch(const deException &){
+			if(listItem){
 				delete listItem;
 			}
 			throw;
 		}
 	}
 	
-	if( count > 0 ){
+	if(count > 0){
 		pListGames->sortItems();
 	}
 	
-	SetSelectedGame( selectedGame );
+	SetSelectedGame(selectedGame);
 }
 
 
 
-FXint deglPanelGames::SortGamesByTitleAsc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const delGame &game1 = *( ( ( deglPGListItemGame* )item1 )->GetGame() );
-	const delGame &game2 = *( ( ( deglPGListItemGame* )item2 )->GetGame() );
+FXint deglPanelGames::SortGamesByTitleAsc(const FXIconItem *item1, const FXIconItem *item2){
+	const delGame &game1 = *(((deglPGListItemGame*)item1)->GetGame());
+	const delGame &game2 = *(((deglPGListItemGame*)item2)->GetGame());
 	
-	return game1.GetTitle().Compare( game2.GetTitle() );
+	return game1.GetTitle().Compare(game2.GetTitle());
 }
 
-FXint deglPanelGames::SortGamesByTitleDesc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const delGame &game1 = *( ( ( deglPGListItemGame* )item1 )->GetGame() );
-	const delGame &game2 = *( ( ( deglPGListItemGame* )item2 )->GetGame() );
+FXint deglPanelGames::SortGamesByTitleDesc(const FXIconItem *item1, const FXIconItem *item2){
+	const delGame &game1 = *(((deglPGListItemGame*)item1)->GetGame());
+	const delGame &game2 = *(((deglPGListItemGame*)item2)->GetGame());
 	
-	return game2.GetTitle().Compare( game1.GetTitle() );
+	return game2.GetTitle().Compare(game1.GetTitle());
 }
 
-FXint deglPanelGames::SortGamesByStatusAsc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const delGame &game1 = *( ( ( deglPGListItemGame* )item1 )->GetGame() );
-	const delGame &game2 = *( ( ( deglPGListItemGame* )item2 )->GetGame() );
+FXint deglPanelGames::SortGamesByStatusAsc(const FXIconItem *item1, const FXIconItem *item2){
+	const delGame &game1 = *(((deglPGListItemGame*)item1)->GetGame());
+	const delGame &game2 = *(((deglPGListItemGame*)item2)->GetGame());
 	
 	return game1.GetCanRun() < game2.GetCanRun();
 }
 
-FXint deglPanelGames::SortGamesByStatusDesc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const delGame &game1 = *( ( ( deglPGListItemGame* )item1 )->GetGame() );
-	const delGame &game2 = *( ( ( deglPGListItemGame* )item2 )->GetGame() );
+FXint deglPanelGames::SortGamesByStatusDesc(const FXIconItem *item1, const FXIconItem *item2){
+	const delGame &game1 = *(((deglPGListItemGame*)item1)->GetGame());
+	const delGame &game2 = *(((deglPGListItemGame*)item2)->GetGame());
 	
 	return game2.GetCanRun() < game1.GetCanRun();
 }
 
-FXint deglPanelGames::SortGamesByCreatorAsc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const delGame &game1 = *( ( ( deglPGListItemGame* )item1 )->GetGame() );
-	const delGame &game2 = *( ( ( deglPGListItemGame* )item2 )->GetGame() );
+FXint deglPanelGames::SortGamesByCreatorAsc(const FXIconItem *item1, const FXIconItem *item2){
+	const delGame &game1 = *(((deglPGListItemGame*)item1)->GetGame());
+	const delGame &game2 = *(((deglPGListItemGame*)item2)->GetGame());
 	
-	return game1.GetCreator().Compare( game2.GetCreator() );
+	return game1.GetCreator().Compare(game2.GetCreator());
 }
 
-FXint deglPanelGames::SortGamesByCreatorDesc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const delGame &game1 = *( ( ( deglPGListItemGame* )item1 )->GetGame() );
-	const delGame &game2 = *( ( ( deglPGListItemGame* )item2 )->GetGame() );
+FXint deglPanelGames::SortGamesByCreatorDesc(const FXIconItem *item1, const FXIconItem *item2){
+	const delGame &game1 = *(((deglPGListItemGame*)item1)->GetGame());
+	const delGame &game2 = *(((deglPGListItemGame*)item2)->GetGame());
 	
-	return game2.GetCreator().Compare( game1.GetCreator() );
+	return game2.GetCreator().Compare(game1.GetCreator());
 }
 
 
@@ -266,19 +266,19 @@ FXint deglPanelGames::SortGamesByCreatorDesc( const FXIconItem *item1, const FXI
 // Events
 ///////////
 
-long deglPanelGames::onListGamesChanged( FXObject*, FXSelector, void* ){
+long deglPanelGames::onListGamesChanged(FXObject*, FXSelector, void*){
 	return 1;
 }
 
-long deglPanelGames::onListGamesRDown( FXObject*, FXSelector, void *pdata ){
-	const FXEvent &event = *( ( const FXEvent * )pdata );
+long deglPanelGames::onListGamesRDown(FXObject*, FXSelector, void *pdata){
+	const FXEvent &event = *((const FXEvent *)pdata);
 	delGame *game = nullptr;
 	
-	pListGames->setCurrentItem( pListGames->getItemAt( event.win_x, event.win_y ) );
+	pListGames->setCurrentItem(pListGames->getItemAt(event.win_x, event.win_y));
 	
 	game = GetSelectedGame();
 	
-	if( game ){
+	if(game){
 		const int x = event.root_x;
 		const int y = event.root_y;
 		FXMenuCommand *menuCommand;
@@ -288,92 +288,92 @@ long deglPanelGames::onListGamesRDown( FXObject*, FXSelector, void *pdata ){
 		try{
 			running = game->IsRunning();
 			
-			popup = new FXMenuPane( this );
+			popup = new FXMenuPane(this);
 			
-			new FXMenuCommand( popup, "Properties...", nullptr, this, ID_PU_GAME_PROPS );
+			new FXMenuCommand(popup, "Properties...", nullptr, this, ID_PU_GAME_PROPS);
 			
-			new FXSeparator( popup );
-			menuCommand = new FXMenuCommand( popup, "Run Game", nullptr, this, ID_PU_GAME_RUN );
-			if( running ){
+			new FXSeparator(popup);
+			menuCommand = new FXMenuCommand(popup, "Run Game", nullptr, this, ID_PU_GAME_RUN);
+			if(running){
 				menuCommand->disable();
 			}
 			
-			menuCommand = new FXMenuCommand( popup, "Run Game With Profile...", nullptr, this, ID_PU_GAME_RUNWITH );
-			if( running ){
+			menuCommand = new FXMenuCommand(popup, "Run Game With Profile...", nullptr, this, ID_PU_GAME_RUNWITH);
+			if(running){
 				menuCommand->disable();
 			}
 			
-			menuCommand = new FXMenuCommand( popup, "Kill Game", nullptr, this, ID_PU_GAME_KILL );
+			menuCommand = new FXMenuCommand(popup, "Kill Game", nullptr, this, ID_PU_GAME_KILL);
 			
-			menuCommand = new FXMenuCommand( popup, "Show Logs", nullptr, this, ID_PU_GAME_SHOWLOGS );
+			menuCommand = new FXMenuCommand(popup, "Show Logs", nullptr, this, ID_PU_GAME_SHOWLOGS);
 			
 			/*
-			new FXSeparator( popup );
-			menuCommand = new FXMenuCommand( popup, "Uninstall Game", nullptr, this, ID_PU_GAME_UNINSTALL );
-			if( running ){
+			new FXSeparator(popup);
+			menuCommand = new FXMenuCommand(popup, "Uninstall Game", nullptr, this, ID_PU_GAME_UNINSTALL);
+			if(running){
 				menuCommand->disable();
 			}
 			*/
 			
 			popup->create();
 			
-			popup->popup( nullptr, x + 1, y + 1 ); // popup-bug. do not show straight under the cursor
-			pWindowMain->getApp()->runModalWhileShown( popup );
+			popup->popup(nullptr, x + 1, y + 1); // popup-bug. do not show straight under the cursor
+			pWindowMain->getApp()->runModalWhileShown(popup);
 			
 			delete popup;
 			
-		}catch( const deException &e ){
-			if( popup ) delete popup;
-			pWindowMain->DisplayException( e );
+		}catch(const deException &e){
+			if(popup) delete popup;
+			pWindowMain->DisplayException(e);
 		}
 	}
 	
 	return 1;
 }
 
-long deglPanelGames::onListGamesRUp( FXObject*, FXSelector, void* ){
+long deglPanelGames::onListGamesRUp(FXObject*, FXSelector, void*){
 	return 1;
 }
 
-long deglPanelGames::onListGamesDblClick( FXObject *sender, FXSelector selector, void *pdata ){
-	return onPUGameRun( sender, selector, pdata );
+long deglPanelGames::onListGamesDblClick(FXObject *sender, FXSelector selector, void *pdata){
+	return onPUGameRun(sender, selector, pdata);
 }
 
-long deglPanelGames::onListGamesHeaderClicked( FXObject*, FXSelector, void *pdata ){
-	const int colon = ( int )( intptr_t )pdata;
+long deglPanelGames::onListGamesHeaderClicked(FXObject*, FXSelector, void *pdata){
+	const int colon = (int)(intptr_t)pdata;
 	
-	if( colon == 0 ){
-		if( pSortListGames == elgsTitleAsc ){
+	if(colon == 0){
+		if(pSortListGames == elgsTitleAsc){
 			pSortListGames = elgsTitleDesc;
-			pListGames->setSortFunc( deglPanelGames::SortGamesByTitleDesc );
+			pListGames->setSortFunc(deglPanelGames::SortGamesByTitleDesc);
 			
 		}else{
 			pSortListGames = elgsTitleAsc;
-			pListGames->setSortFunc( deglPanelGames::SortGamesByTitleAsc );
+			pListGames->setSortFunc(deglPanelGames::SortGamesByTitleAsc);
 		}
 		
 		pListGames->sortItems();
 		
-	}else if( colon == 1 ){
-		if( pSortListGames == elgsStatusAsc ){
+	}else if(colon == 1){
+		if(pSortListGames == elgsStatusAsc){
 			pSortListGames = elgsStatusDesc;
-			pListGames->setSortFunc( deglPanelGames::SortGamesByStatusDesc );
+			pListGames->setSortFunc(deglPanelGames::SortGamesByStatusDesc);
 			
 		}else{
 			pSortListGames = elgsStatusAsc;
-			pListGames->setSortFunc( deglPanelGames::SortGamesByStatusAsc );
+			pListGames->setSortFunc(deglPanelGames::SortGamesByStatusAsc);
 		}
 		
 		pListGames->sortItems();
 		
-	}else if( colon == 2 ){
-		if( pSortListGames == elgsCreatorAsc ){
+	}else if(colon == 2){
+		if(pSortListGames == elgsCreatorAsc){
 			pSortListGames = elgsCreatorDesc;
-			pListGames->setSortFunc( deglPanelGames::SortGamesByCreatorDesc );
+			pListGames->setSortFunc(deglPanelGames::SortGamesByCreatorDesc);
 			
 		}else{
 			pSortListGames = elgsCreatorAsc;
-			pListGames->setSortFunc( deglPanelGames::SortGamesByCreatorAsc );
+			pListGames->setSortFunc(deglPanelGames::SortGamesByCreatorAsc);
 		}
 		
 		pListGames->sortItems();
@@ -384,14 +384,14 @@ long deglPanelGames::onListGamesHeaderClicked( FXObject*, FXSelector, void *pdat
 
 
 
-long deglPanelGames::onPUGameProps( FXObject*, FXSelector, void* ){
+long deglPanelGames::onPUGameProps(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if( ! game ){
+	if(!game){
 		return 1;
 	}
 	
-	deglDialogGameProperties dialog( pWindowMain, game, pWindowMain );
-	if( dialog.execute( PLACEMENT_OWNER ) ){
+	deglDialogGameProperties dialog(pWindowMain, game, pWindowMain);
+	if(dialog.execute(PLACEMENT_OWNER)){
 		game->SaveConfig();
 	}
 	
@@ -400,51 +400,51 @@ long deglPanelGames::onPUGameProps( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelGames::updatePUGameProps( FXObject *sender, FXSelector, void* ){
+long deglPanelGames::updatePUGameProps(FXObject *sender, FXSelector, void*){
 	bool enable = false;
 	const delGame * const game = GetSelectedGame();
-	if( game ){
-		enable = ! game->IsRunning();
+	if(game){
+		enable = !game->IsRunning();
 	}
-	sender->tryHandle( sender, FXSEL( SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE ), nullptr );
+	sender->tryHandle(sender, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), nullptr);
 	return 1;
 }
 
-long deglPanelGames::onPUGameRun( FXObject*, FXSelector, void* ){
+long deglPanelGames::onPUGameRun(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if( ! game ){
+	if(!game){
 		return 1;
 	}
 	
-	if( game->IsRunning() ){
-		FXMessageBox::information( this, MBOX_OK, "Start Game", "This game is already running." );
+	if(game->IsRunning()){
+		FXMessageBox::information(this, MBOX_OK, "Start Game", "This game is already running.");
 		return 1;
 	}
 	
-	while( true ){
+	while(true){
 		delGameProfile * const profile = game->GetProfileToUse();
 		
-		if( game->GetCanRun() && profile->GetValid() ){
+		if(game->GetCanRun() && profile->GetValid()){
 			delGameRunParams runParams;
 			
-			runParams.SetGameProfile( profile );
+			runParams.SetGameProfile(profile);
 			
 			decString error;
-			if( ! runParams.FindPatches( *game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error ) ){
-				FXMessageBox::error( this, MBOX_OK, "Can not run game", "%s", error.GetString() );
+			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+				FXMessageBox::error(this, MBOX_OK, "Can not run game", "%s", error.GetString());
 				return false;
 			}
 			
-			if( profile->GetReplaceRunArguments() ){
-				runParams.SetRunArguments( profile->GetRunArguments().GetString() );
+			if(profile->GetReplaceRunArguments()){
+				runParams.SetRunArguments(profile->GetRunArguments().GetString());
 				
 			}else{
-				runParams.SetRunArguments( ( game->GetRunArguments() + " " + profile->GetRunArguments().GetString() ).GetString() );
+				runParams.SetRunArguments((game->GetRunArguments() + " " + profile->GetRunArguments().GetString()).GetString());
 			}
 			
-			runParams.SetWidth( profile->GetWidth() );
-			runParams.SetHeight( profile->GetHeight() );
-			runParams.SetFullScreen( profile->GetFullScreen() );
+			runParams.SetWidth(profile->GetWidth());
+			runParams.SetHeight(profile->GetHeight());
+			runParams.SetFullScreen(profile->GetFullScreen());
 			
 			const decPoint windowSize(game->GetDisplayScaledWindowSize());
 			if(windowSize != decPoint()){
@@ -453,26 +453,26 @@ long deglPanelGames::onPUGameRun( FXObject*, FXSelector, void* ){
 				runParams.SetFullScreen(false);
 			}
 			
-			game->StartGame( runParams );
+			game->StartGame(runParams);
 			
 			break;
 			
-		}else if( ! profile->GetValid() ){
-			if( FXMessageBox::question( this, MBOX_YES_NO, "Can not run game",
-			"The Game Profile is not working. Open the Game Properties to fix the problem?" ) == MBOX_CLICKED_YES ){
-				deglDialogGameProperties dialog( pWindowMain, game, pWindowMain );
+		}else if(!profile->GetValid()){
+			if(FXMessageBox::question(this, MBOX_YES_NO, "Can not run game",
+			"The Game Profile is not working. Open the Game Properties to fix the problem?") == MBOX_CLICKED_YES){
+				deglDialogGameProperties dialog(pWindowMain, game, pWindowMain);
 				bool result;
 				
 				dialog.SwitchToProperties();
-				result = dialog.execute( PLACEMENT_OWNER );
-				if( result ){
+				result = dialog.execute(PLACEMENT_OWNER);
+				if(result){
 					game->SaveConfig();
 				}
 				
 				pWindowMain->GetLauncher()->GetGameManager().Verify();
 				UpdateGameList();
 				
-				if( ! result ){
+				if(!result){
 					break;
 				}
 				
@@ -480,12 +480,12 @@ long deglPanelGames::onPUGameRun( FXObject*, FXSelector, void* ){
 				break;
 			}
 			
-		}else if( ! game->GetAllFormatsSupported() ){
-			FXMessageBox::information( this, MBOX_OK, "Can not run game", "One or more File Formats required by the game are not working." );
+		}else if(!game->GetAllFormatsSupported()){
+			FXMessageBox::information(this, MBOX_OK, "Can not run game", "One or more File Formats required by the game are not working.");
 			break;
 			
 		}else{
-			FXMessageBox::information( this, MBOX_OK, "Can not run game", "Game related properties are incorrect." );
+			FXMessageBox::information(this, MBOX_OK, "Can not run game", "Game related properties are incorrect.");
 			break;
 		}
 	}
@@ -495,53 +495,53 @@ long deglPanelGames::onPUGameRun( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelGames::onPUGameRunWith( FXObject*, FXSelector, void* ){
+long deglPanelGames::onPUGameRunWith(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if( ! game ){
+	if(!game){
 		return 1;
 	}
 	
-	if( game->IsRunning() ){
-		FXMessageBox::information( this, MBOX_OK, "Start Game", "This game is already running." );
+	if(game->IsRunning()){
+		FXMessageBox::information(this, MBOX_OK, "Start Game", "This game is already running.");
 		return 1;
 	}
 	
-	while( true ){
-		if( game->GetCanRun() ){
-			deglDialogRunGameWith dialog( GetWindowMain(), game, this );
-			dialog.SetProfile( game->GetActiveProfile() );
+	while(true){
+		if(game->GetCanRun()){
+			deglDialogRunGameWith dialog(GetWindowMain(), game, this);
+			dialog.SetProfile(game->GetActiveProfile());
 			
 			const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 			delGameRunParams runParams;
-			while( true ){
-				if( ! dialog.execute( PLACEMENT_OWNER ) ){
+			while(true){
+				if(!dialog.execute(PLACEMENT_OWNER)){
 					break;
 				}
 				
-				runParams.SetGameProfile( dialog.GetProfile() );
-				if( ! runParams.GetGameProfile() ){
-					runParams.SetGameProfile( gameManager.GetActiveProfile() );
-					if( ! runParams.GetGameProfile() ){
-						runParams.SetGameProfile( gameManager.GetDefaultProfile() );
+				runParams.SetGameProfile(dialog.GetProfile());
+				if(!runParams.GetGameProfile()){
+					runParams.SetGameProfile(gameManager.GetActiveProfile());
+					if(!runParams.GetGameProfile()){
+						runParams.SetGameProfile(gameManager.GetDefaultProfile());
 					}
 				}
 				
 				decString error;
-				if( ! runParams.FindPatches( *game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error ) ){
-					FXMessageBox::error( this, MBOX_OK, "Can not run game", "%s", error.GetString() );
+				if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+					FXMessageBox::error(this, MBOX_OK, "Can not run game", "%s", error.GetString());
 					return false;
 				}
 				
-				if( runParams.GetGameProfile()->GetReplaceRunArguments() ){
-					runParams.SetRunArguments( runParams.GetGameProfile()->GetRunArguments().GetString() );
+				if(runParams.GetGameProfile()->GetReplaceRunArguments()){
+					runParams.SetRunArguments(runParams.GetGameProfile()->GetRunArguments().GetString());
 					
 				}else{
-					runParams.SetRunArguments( ( game->GetRunArguments() + " " + runParams.GetGameProfile()->GetRunArguments().GetString() ).GetString() );
+					runParams.SetRunArguments((game->GetRunArguments() + " " + runParams.GetGameProfile()->GetRunArguments().GetString()).GetString());
 				}
 				
-				runParams.SetWidth( runParams.GetGameProfile()->GetWidth() );
-				runParams.SetHeight( runParams.GetGameProfile()->GetHeight() );
-				runParams.SetFullScreen( runParams.GetGameProfile()->GetFullScreen() );
+				runParams.SetWidth(runParams.GetGameProfile()->GetWidth());
+				runParams.SetHeight(runParams.GetGameProfile()->GetHeight());
+				runParams.SetFullScreen(runParams.GetGameProfile()->GetFullScreen());
 				
 				const decPoint windowSize(game->GetDisplayScaledWindowSize());
 				if(windowSize != decPoint()){
@@ -550,24 +550,24 @@ long deglPanelGames::onPUGameRunWith( FXObject*, FXSelector, void* ){
 					runParams.SetFullScreen(false);
 				}
 				
-				if( runParams.GetGameProfile()->GetValid() ){
-					game->StartGame( runParams );
+				if(runParams.GetGameProfile()->GetValid()){
+					game->StartGame(runParams);
 					break;
 					
 				}else{
-					FXMessageBox::information( this, MBOX_OK, "Can not run game",
-						"The Game Profile is not working, select a different one or fix the problems" );
+					FXMessageBox::information(this, MBOX_OK, "Can not run game",
+						"The Game Profile is not working, select a different one or fix the problems");
 				}
 			}
 			
 			break;
 			
-		}else if( ! game->GetAllFormatsSupported() ){
-			FXMessageBox::information( this, MBOX_OK, "Can not run game", "One or more File Formats required by the game are not working." );
+		}else if(!game->GetAllFormatsSupported()){
+			FXMessageBox::information(this, MBOX_OK, "Can not run game", "One or more File Formats required by the game are not working.");
 			break;
 			
 		}else{
-			FXMessageBox::information( this, MBOX_OK, "Can not run game", "Game related properties are incorrect." );
+			FXMessageBox::information(this, MBOX_OK, "Can not run game", "Game related properties are incorrect.");
 			break;
 		}
 	}
@@ -577,29 +577,29 @@ long deglPanelGames::onPUGameRunWith( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelGames::updatePUGameRun( FXObject *sender, FXSelector, void* ){
+long deglPanelGames::updatePUGameRun(FXObject *sender, FXSelector, void*){
 	bool enable = false;
 	const delGame * const game = GetSelectedGame();
-	if( game ){
-		enable = ! game->IsRunning();
+	if(game){
+		enable = !game->IsRunning();
 	}
-	sender->tryHandle( sender, FXSEL( SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE ), nullptr );
+	sender->tryHandle(sender, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), nullptr);
 	return 1;
 }
 
-long deglPanelGames::onPUGameKill( FXObject*, FXSelector, void* ){
+long deglPanelGames::onPUGameKill(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
 	
-	if( game ){
-		if( ! game->IsRunning() ){
-			FXMessageBox::information( this, MBOX_OK, "Kill Game", "This game is not running. Nothing to kill there." );
+	if(game){
+		if(!game->IsRunning()){
+			FXMessageBox::information(this, MBOX_OK, "Kill Game", "This game is not running. Nothing to kill there.");
 			
 		}else{
 			try{
 				game->KillGame();
 				
-			}catch( const deException &e ){
-				pWindowMain->DisplayException( e );
+			}catch(const deException &e){
+				pWindowMain->DisplayException(e);
 			}
 		}
 	}
@@ -607,87 +607,87 @@ long deglPanelGames::onPUGameKill( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelGames::updatePUGameKill( FXObject *sender, FXSelector, void* ){
+long deglPanelGames::updatePUGameKill(FXObject *sender, FXSelector, void*){
 	bool enable = false;
 	const delGame * const game = GetSelectedGame();
-	if( game ){
+	if(game){
 		enable = game->IsRunning();
 	}
-	sender->tryHandle( sender, FXSEL( SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE ), nullptr );
+	sender->tryHandle(sender, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), nullptr);
 	return 1;
 }
 
-long deglPanelGames::onPUGameUninstall( FXObject*, FXSelector, void* ){
+long deglPanelGames::onPUGameUninstall(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if( ! game ){
+	if(!game){
 		return 1;
 	}
 	
-	if( game->IsRunning() ){
-		FXMessageBox::information( this, MBOX_OK, "Uninstall Game", "This game is running. Cannot uninstall." );
+	if(game->IsRunning()){
+		FXMessageBox::information(this, MBOX_OK, "Uninstall Game", "This game is running. Cannot uninstall.");
 		return 1;
 	}
 	
 	try{
-		if( deglUninstall( *pWindowMain ).UninstallGame( *game ) ){
+		if(deglUninstall(*pWindowMain).UninstallGame(*game)){
 			pWindowMain->ReloadGamesAndPatches();
 		}
 		
-	}catch( const deException &e ){
-		pWindowMain->DisplayException( e );
+	}catch(const deException &e){
+		pWindowMain->DisplayException(e);
 	}
 	
 	return 1;
 }
 
-long deglPanelGames::updatePUGameUninstall( FXObject *sender, FXSelector, void* ){
+long deglPanelGames::updatePUGameUninstall(FXObject *sender, FXSelector, void*){
 	bool enable = false;
 	const delGame * const game = GetSelectedGame();
-	if( game ){
-		enable = ! game->IsRunning();
+	if(game){
+		enable = !game->IsRunning();
 	}
-	sender->tryHandle( sender, FXSEL( SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE ), nullptr );
+	sender->tryHandle(sender, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), nullptr);
 	return 1;
 }
 
-long deglPanelGames::onPUGameShowLogs( FXObject*, FXSelector, void* ){
+long deglPanelGames::onPUGameShowLogs(FXObject*, FXSelector, void*){
 	delGame * const game = GetSelectedGame();
-	if( ! game ){
+	if(!game){
 		return 1;
 	}
 	
 	decPath path;
-	path.SetFromNative( pWindowMain->GetLauncher()->GetPathLogs() );
-	path.AddComponent( "games" );
-	path.AddComponent( game->GetIdentifier().ToHexString( false ) );
+	path.SetFromNative(pWindowMain->GetLauncher()->GetPathLogs());
+	path.AddComponent("games");
+	path.AddComponent(game->GetIdentifier().ToHexString(false));
 	
-	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::NewWith(path) );
-	if( ! container->ExistsFile( decPath::CreatePathUnix( "/logs" ) ) ){
-		FXMessageBox::information( this, MBOX_OK, "Show Logs",
-			"There are no logs for this game. Logs will be present after running the game" );
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(path));
+	if(!container->ExistsFile(decPath::CreatePathUnix("/logs"))){
+		FXMessageBox::information(this, MBOX_OK, "Show Logs",
+			"There are no logs for this game. Logs will be present after running the game");
 		return 1;
 	}
 	
-	path.AddComponent( "logs" );
+	path.AddComponent("logs");
 	
 	#ifdef OS_W32
-	wchar_t widePath[ MAX_PATH ];
-	deOSWindows::Utf8ToWide( path.GetPathNative(), widePath, MAX_PATH );
-	ShellExecute( nullptr, L"open", widePath, nullptr, nullptr, SW_SHOWDEFAULT );
+	wchar_t widePath[MAX_PATH];
+	deOSWindows::Utf8ToWide(path.GetPathNative(), widePath, MAX_PATH);
+	ShellExecute(nullptr, L"open", widePath, nullptr, nullptr, SW_SHOWDEFAULT);
 		
 	#else
 	const char * const appname = "xdg-open";
 	
-	if( fork() == 0 ){
+	if(fork() == 0){
 		// GetString() is required otherwise execlp fails to run correctly
-		execlp( appname, appname, path.GetPathNative().GetString(), nullptr );
-		printf( "Failed running '%s' (error %d)\n", appname, errno );
-		exit( 0 );
+		execlp(appname, appname, path.GetPathNative().GetString(), nullptr);
+		printf("Failed running '%s' (error %d)\n", appname, errno);
+		exit(0);
 	}
 	#endif
 	return 1;
 }
 
-long deglPanelGames::updatePUGameShowLogs( FXObject *sender, FXSelector, void* ){
-	return sender->tryHandle( sender, FXSEL( SEL_COMMAND, ID_ENABLE ), nullptr );
+long deglPanelGames::updatePUGameShowLogs(FXObject *sender, FXSelector, void*){
+	return sender->tryHandle(sender, FXSEL(SEL_COMMAND, ID_ENABLE), nullptr);
 }

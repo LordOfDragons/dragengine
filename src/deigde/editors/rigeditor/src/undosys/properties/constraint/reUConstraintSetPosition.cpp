@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintSetPosition::reUConstraintSetPosition( reRigConstraint *constraint, const decVector &newPosition ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintSetPosition::reUConstraintSetPosition(reRigConstraint *constraint, const decVector &newPosition){
+	if(!constraint || !constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -50,13 +50,13 @@ reUConstraintSetPosition::reUConstraintSetPosition( reRigConstraint *constraint,
 	pOldPosition = constraint->GetPosition();
 	pNewPosition = newPosition;
 	
-	SetShortInfo( "Constraint set position" );
+	SetShortInfo("Constraint set position");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintSetPosition::~reUConstraintSetPosition(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ reUConstraintSetPosition::~reUConstraintSetPosition(){
 ///////////////
 
 void reUConstraintSetPosition::Undo(){
-	pConstraint->SetPosition( pOldPosition );
+	pConstraint->SetPosition(pOldPosition);
 }
 
 void reUConstraintSetPosition::Redo(){
-	pConstraint->SetPosition( pNewPosition );
+	pConstraint->SetPosition(pNewPosition);
 }

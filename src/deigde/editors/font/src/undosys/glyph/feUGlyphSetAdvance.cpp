@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetAdvance::feUGlyphSetAdvance( feFontGlyph *glyph, int newAdvance ){
-	SetShortInfo( "Glyph set advance" );
+feUGlyphSetAdvance::feUGlyphSetAdvance(feFontGlyph *glyph, int newAdvance){
+	SetShortInfo("Glyph set advance");
 	
 	pOldAdvance = glyph->GetAdvance();
 	pNewAdvance = newAdvance;
@@ -50,7 +50,7 @@ feUGlyphSetAdvance::feUGlyphSetAdvance( feFontGlyph *glyph, int newAdvance ){
 }
 
 feUGlyphSetAdvance::~feUGlyphSetAdvance(){
-	if( pGlyph ) pGlyph->FreeReference();
+	if(pGlyph) pGlyph->FreeReference();
 }
 
 
@@ -59,9 +59,9 @@ feUGlyphSetAdvance::~feUGlyphSetAdvance(){
 ///////////////
 
 void feUGlyphSetAdvance::Undo(){
-	pGlyph->SetAdvance( pOldAdvance );
+	pGlyph->SetAdvance(pOldAdvance);
 }
 
 void feUGlyphSetAdvance::Redo(){
-	pGlyph->SetAdvance( pNewAdvance );
+	pGlyph->SetAdvance(pNewAdvance);
 }

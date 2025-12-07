@@ -58,16 +58,16 @@ int deLoggerChain::GetLoggerCount(){
 	return count;
 }
 
-deLogger *deLoggerChain::GetLoggerAt( int index ){
+deLogger *deLoggerChain::GetLoggerAt(int index){
 	deLogger *logger;
 	
 	pMutex.Lock();
 	
 	try{
-		logger = ( deLogger* )pLoggerList.GetAt( index );
+		logger = (deLogger*)pLoggerList.GetAt(index);
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -75,31 +75,31 @@ deLogger *deLoggerChain::GetLoggerAt( int index ){
 	return logger;
 }
 
-void deLoggerChain::AddLogger( deLogger *logger ){
-	if( ! logger ){
-		DETHROW( deeInvalidParam );
+void deLoggerChain::AddLogger(deLogger *logger){
+	if(!logger){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		pLoggerList.Add( logger );
+		pLoggerList.Add(logger);
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerChain::RemoveLogger( deLogger *logger ){
+void deLoggerChain::RemoveLogger(deLogger *logger){
 	pMutex.Lock();
 	
 	try{
-		pLoggerList.Remove( logger );
+		pLoggerList.Remove(logger);
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -112,7 +112,7 @@ void deLoggerChain::RemoveAllLoggers(){
 		pLoggerList.RemoveAll();
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -120,9 +120,9 @@ void deLoggerChain::RemoveAllLoggers(){
 
 
 
-void deLoggerChain::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerChain::LogInfo(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
@@ -130,20 +130,20 @@ void deLoggerChain::LogInfo( const char *source, const char *message ){
 	try{
 		const int count = pLoggerList.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			( ( deLogger* )pLoggerList.GetAt( i ) )->LogInfo( source, message );
+		for(i=0; i<count; i++){
+			((deLogger*)pLoggerList.GetAt(i))->LogInfo(source, message);
 		}
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerChain::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ) DETHROW( deeInvalidParam );
+void deLoggerChain::LogWarn(const char *source, const char *message){
+	if(!source || !message) DETHROW(deeInvalidParam);
 	
 	pMutex.Lock();
 	
@@ -151,20 +151,20 @@ void deLoggerChain::LogWarn( const char *source, const char *message ){
 		const int count = pLoggerList.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			( ( deLogger* )pLoggerList.GetAt( i ) )->LogWarn( source, message );
+		for(i=0; i<count; i++){
+			((deLogger*)pLoggerList.GetAt(i))->LogWarn(source, message);
 		}
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerChain::LogError( const char *source, const char *message ){
-	if( ! source || ! message ) DETHROW( deeInvalidParam );
+void deLoggerChain::LogError(const char *source, const char *message){
+	if(!source || !message) DETHROW(deeInvalidParam);
 	
 	pMutex.Lock();
 	
@@ -172,13 +172,13 @@ void deLoggerChain::LogError( const char *source, const char *message ){
 		const int count = pLoggerList.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			( ( deLogger* )pLoggerList.GetAt( i ) )->LogError( source, message );
+		for(i=0; i<count; i++){
+			((deLogger*)pLoggerList.GetAt(i))->LogError(source, message);
 		}
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}

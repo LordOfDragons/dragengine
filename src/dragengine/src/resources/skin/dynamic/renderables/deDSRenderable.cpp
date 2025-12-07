@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDSRenderable::deDSRenderable( const char *name ) :
-pName( name ){
+deDSRenderable::deDSRenderable(const char *name) :
+pName(name){
 }
 
 deDSRenderable::~deDSRenderable(){
@@ -51,6 +51,6 @@ deDSRenderable::~deDSRenderable(){
 // Visiting
 /////////////
 
-void deDSRenderable::Visit( deDSRenderableVisitor &visitor ){
-	visitor.VisitRenderable( *this );
+void deDSRenderable::Visit(deDSRenderableVisitor &visitor){
+	visitor.VisitRenderable(*this);
 }

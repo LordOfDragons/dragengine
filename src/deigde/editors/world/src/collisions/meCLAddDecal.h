@@ -59,13 +59,13 @@ private:
 	
 public:
 	// constructor, destructor
-	meCLAddDecal( meWindowMain *windowMain, meWorld *world );
+	meCLAddDecal(meWindowMain *windowMain, meWorld *world);
 	virtual ~meCLAddDecal();
 	
 	// management
-	void SetRay( const decDVector &rayOrigin, const decVector &rayDirection );
+	void SetRay(const decDVector &rayOrigin, const decVector &rayDirection);
 	/** Sets if the decal has to be aligned with the surface normal upon creation. */
-	void SetAlignWithNormal( bool alignWithNormal );
+	void SetAlignWithNormal(bool alignWithNormal);
 	
 	void Reset();
 	void RunAction();
@@ -73,12 +73,12 @@ public:
 	void Cancel();
 	
 	// notifications
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	virtual void ColliderChanged(deCollider *owner);
 	
 private:
-	decVector pGetRotationForNormal( const decVector &normal ) const;
+	decVector pGetRotationForNormal(const decVector &normal) const;
 };
 
 // end of include only once

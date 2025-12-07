@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create load/save conversation test actor. */
-	ceLoadSaveCTA( ceLoadSaveSystem &loadSaveSystem, deLogger *logger, const char *loggerSource );
+	ceLoadSaveCTA(ceLoadSaveSystem &loadSaveSystem, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	
@@ -71,28 +71,28 @@ public:
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** Load conversation test actor. */
-	void LoadCTA( ceConversationActor &actor, decBaseFileReader &reader );
+	void LoadCTA(ceConversationActor &actor, decBaseFileReader &reader);
 	
 	/** Save conversation test actor. */
-	void SaveCTA( const ceConversationActor &actor, decBaseFileWriter &writer );
+	void SaveCTA(const ceConversationActor &actor, decBaseFileWriter &writer);
 	
 	
 	
 	/** Write actor tag. */
-	void WriteActor( decXmlWriter &writer, const ceConversationActor &actor, const char *tagName );
+	void WriteActor(decXmlWriter &writer, const ceConversationActor &actor, const char *tagName);
 	
 	/** Read actor tag. */
-	void ReadActor( const decXmlElementTag &root, ceConversationActor &actor );
+	void ReadActor(const decXmlElementTag &root, ceConversationActor &actor);
 	/*@}*/
 	
 	
 	
 private:
-	void pWritePose( decXmlWriter &writer, const ceActorPose &pose );
-	void pWriteController( decXmlWriter &writer, const ceActorController &controller );
+	void pWritePose(decXmlWriter &writer, const ceActorPose &pose);
+	void pWriteController(decXmlWriter &writer, const ceActorController &controller);
 	
-	void pReadPose( const decXmlElementTag &root, ceConversationActor &actor );
-	void pReadController( const decXmlElementTag &root, ceActorController &controller );
+	void pReadPose(const decXmlElementTag &root, ceConversationActor &actor);
+	void pReadController(const decXmlElementTag &root, ceActorController &controller);
 };
 
 #endif

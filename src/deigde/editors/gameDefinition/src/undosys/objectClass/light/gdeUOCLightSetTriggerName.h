@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetTriggerName( gdeObjectClass *objectClass, gdeOCLight *light,
-		gdeOCLight::eTriggers trigger, const char *newValue );
+	gdeUOCLightSetTriggerName(gdeObjectClass *objectClass, gdeOCLight *light,
+		gdeOCLight::eTriggers trigger, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

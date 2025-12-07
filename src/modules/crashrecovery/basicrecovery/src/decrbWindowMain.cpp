@@ -40,10 +40,10 @@
 // Events
 ///////////
 
-FXDEFMAP( decrbWindowMain ) decrbWindowMainMap[] = {
-	FXMAPFUNC( SEL_CLOSE, decrbWindowMain::ID_CANVAS, decrbWindowMain::onClose ),
-	FXMAPFUNC( SEL_COMMAND, decrbWindowMain::ID_BTNCONTINUE, decrbWindowMain::onBtnContinue ),
-	FXMAPFUNC( SEL_COMMAND, decrbWindowMain::ID_BTNSHUTDOWN, decrbWindowMain::onBtnShutdown ),
+FXDEFMAP(decrbWindowMain) decrbWindowMainMap[] = {
+	FXMAPFUNC(SEL_CLOSE, decrbWindowMain::ID_CANVAS, decrbWindowMain::onClose),
+	FXMAPFUNC(SEL_COMMAND, decrbWindowMain::ID_BTNCONTINUE, decrbWindowMain::onBtnContinue),
+	FXMAPFUNC(SEL_COMMAND, decrbWindowMain::ID_BTNSHUTDOWN, decrbWindowMain::onBtnShutdown),
 };
 
 
@@ -51,16 +51,16 @@ FXDEFMAP( decrbWindowMain ) decrbWindowMainMap[] = {
 // Class decrbWindowMain
 //////////////////////////
 
-FXIMPLEMENT( decrbWindowMain, FXMainWindow, decrbWindowMainMap, ARRAYNUMBER( decrbWindowMainMap ) )
+FXIMPLEMENT(decrbWindowMain, FXMainWindow, decrbWindowMainMap, ARRAYNUMBER(decrbWindowMainMap))
 
-decrbWindowMain::decrbWindowMain(){ }
+decrbWindowMain::decrbWindowMain(){}
 
 void decrbWindowMain::create(){
 	// create the windows
 	FXMainWindow::create();
 	
 	// make the main window appear
-	show( PLACEMENT_SCREEN );
+	show(PLACEMENT_SCREEN);
 	
 	// tooltips
 	/*
@@ -75,38 +75,38 @@ void decrbWindowMain::create(){
 // Constructor, destructor
 ////////////////////////////
 
-decrbWindowMain::decrbWindowMain( FXApp* papp, deCRBasic *crBasic ) :
-FXMainWindow( papp, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 600, 500 ){
+decrbWindowMain::decrbWindowMain(FXApp* papp, deCRBasic *crBasic) :
+FXMainWindow(papp, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 600, 500){
 	// prepare
 	pCRBasic = crBasic;
 	pEngine = pCRBasic->GetGameEngine();
 	
 	// build gui	
-	FXVerticalFrame *content = new FXVerticalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y
-		| LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pTabPanels = new FXTabBook( content, NULL, ID_TABPANELS, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	FXVerticalFrame *content = new FXVerticalFrame(this, LAYOUT_FILL_X | LAYOUT_FILL_Y
+		| LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 0, 0, 0, 0);
+	pTabPanels = new FXTabBook(content, NULL, ID_TABPANELS, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
-	new FXTabItem( pTabPanels, "Status" );
-	pPanelStatus = new decrbPanelStatus( this, pTabPanels );
+	new FXTabItem(pTabPanels, "Status");
+	pPanelStatus = new decrbPanelStatus(this, pTabPanels);
 	
-	new FXTabItem( pTabPanels, "Error Trace" );
-	pPanelErrorTrace = new decrbPanelErrorTrace( this, pTabPanels );
+	new FXTabItem(pTabPanels, "Error Trace");
+	pPanelErrorTrace = new decrbPanelErrorTrace(this, pTabPanels);
 	
-	new FXTabItem( pTabPanels, "Module Parameters" );
-	pPanelParameters = new decrbPanelParameters( this, pTabPanels );
+	new FXTabItem(pTabPanels, "Module Parameters");
+	pPanelParameters = new decrbPanelParameters(this, pTabPanels);
 	
-	new FXTabItem( pTabPanels, "Module Status" );
-	pPanelModuleStatus = new decrbPanelModuleStatus( this, pTabPanels );
+	new FXTabItem(pTabPanels, "Module Status");
+	pPanelModuleStatus = new decrbPanelModuleStatus(this, pTabPanels);
 	
-	new FXTabItem( pTabPanels, "Console" );
-	pPanelConsole = new decrbPanelConsole( this, pTabPanels );
+	new FXTabItem(pTabPanels, "Console");
+	pPanelConsole = new decrbPanelConsole(this, pTabPanels);
 	
-	FXHorizontalFrame *frameButtons = new FXHorizontalFrame( content, LAYOUT_SIDE_TOP
-		| LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10 );
- 	new FXButton( frameButtons, "Continue", NULL, this, ID_BTNCONTINUE, BUTTON_NORMAL
-		| BUTTON_DEFAULT | BUTTON_INITIAL | LAYOUT_FILL_X );
- 	new FXButton( frameButtons, "Shutdown", NULL, this, ID_BTNSHUTDOWN, BUTTON_NORMAL
-		| LAYOUT_FILL_X );
+	FXHorizontalFrame *frameButtons = new FXHorizontalFrame(content, LAYOUT_SIDE_TOP
+		| LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10);
+ 	new FXButton(frameButtons, "Continue", NULL, this, ID_BTNCONTINUE, BUTTON_NORMAL
+		| BUTTON_DEFAULT | BUTTON_INITIAL | LAYOUT_FILL_X);
+ 	new FXButton(frameButtons, "Shutdown", NULL, this, ID_BTNSHUTDOWN, BUTTON_NORMAL
+		| LAYOUT_FILL_X);
 }
 
 decrbWindowMain::~decrbWindowMain(){
@@ -125,19 +125,19 @@ void decrbWindowMain::CleanUp(){
 // Errors
 ///////////
 
-const char *decrbWindowMain::GetTextForError( const char *error ){
+const char *decrbWindowMain::GetTextForError(const char *error){
 	// this is currently a hack. we will use an array of error<->text pairs
 	// later on which we can also load from file to avoid having to compile
 	// each time we add a new translation
-	if( strcmp( error, "NullPointer" ) == 0 ){
+	if(strcmp(error, "NullPointer") == 0){
 		return "Invalid operation on a NULL pointer";
-	}else if( strcmp( error, "AssertionException" ) == 0 ){
+	}else if(strcmp(error, "AssertionException") == 0){
 		return "Assertion exception has occurred";
-	}else if( strcmp( error, "DivisionByZero" ) == 0 ){
+	}else if(strcmp(error, "DivisionByZero") == 0){
 		return "Division By Zero";
-	}else if( strcmp( error, "IllegalInstruction" ) == 0 ){
+	}else if(strcmp(error, "IllegalInstruction") == 0){
 		return "An illegal instruction occurred";
-	}else if( strcmp( error, "SegmentationFault" ) == 0 ){
+	}else if(strcmp(error, "SegmentationFault") == 0){
 		return "An invalid read or write operation occurred on non-acquired memory";
 	}else{
 		return "Unknown error";
@@ -149,23 +149,23 @@ const char *decrbWindowMain::GetTextForError( const char *error ){
 // Callbacks
 //////////////
 
-long decrbWindowMain::onClose( FXObject*, FXSelector, void* ){
-	pCRBasic->LogInfo( "received onClose." );
-	pCRBasic->SetQuitEngine( true );
+long decrbWindowMain::onClose(FXObject*, FXSelector, void*){
+	pCRBasic->LogInfo("received onClose.");
+	pCRBasic->SetQuitEngine(true);
 	close();
 	
 	return 1;
 }
 
-long decrbWindowMain::onBtnContinue( FXObject*, FXSelector, void* ){
-	pCRBasic->SetQuitEngine( false );
+long decrbWindowMain::onBtnContinue(FXObject*, FXSelector, void*){
+	pCRBasic->SetQuitEngine(false);
 	close();
 	
 	return 1;
 }
 
-long decrbWindowMain::onBtnShutdown( FXObject*, FXSelector, void* ){
-	pCRBasic->SetQuitEngine( true );
+long decrbWindowMain::onBtnShutdown(FXObject*, FXSelector, void*){
+	pCRBasic->SetQuitEngine(true);
 	close();
 	
 	return 1;

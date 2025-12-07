@@ -41,22 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureTCRotation::meUObjectTextureTCRotation( meObjectTexture *texture, float newRotation ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
+meUObjectTextureTCRotation::meUObjectTextureTCRotation(meObjectTexture *texture, float newRotation){
+	if(!texture){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meObject * const object = texture->GetObject();
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Objext Texture Rotation" );
+	SetShortInfo("Objext Texture Rotation");
 	
 	pTexture = NULL;
 	
@@ -68,7 +68,7 @@ meUObjectTextureTCRotation::meUObjectTextureTCRotation( meObjectTexture *texture
 }
 
 meUObjectTextureTCRotation::~meUObjectTextureTCRotation(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
 }
@@ -79,9 +79,9 @@ meUObjectTextureTCRotation::~meUObjectTextureTCRotation(){
 ///////////////
 
 void meUObjectTextureTCRotation::Undo(){
-	pTexture->SetTexCoordRotation( pOldRotation );
+	pTexture->SetTexCoordRotation(pOldRotation);
 }
 
 void meUObjectTextureTCRotation::Redo(){
-	pTexture->SetTexCoordRotation( pNewRotation );
+	pTexture->SetTexCoordRotation(pNewRotation);
 }

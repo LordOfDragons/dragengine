@@ -79,7 +79,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Minimum value. */
 	inline float GetMinimumValue() const{ return pMinValue; }
@@ -88,34 +88,34 @@ public:
 	inline float GetMaximumValue() const{ return pMaxValue; }
 	
 	/** \brief Set value range. */
-	void SetValueRange( float minValue, float maxValue );
+	void SetValueRange(float minValue, float maxValue);
 	
 	/** \brief Current value. */
 	inline float GetCurrentValue() const{ return pCurValue; }
 	
 	/** \brief Set current value. */
-	void SetCurrentValue( float value );
+	void SetCurrentValue(float value);
 	
 	/** \brief Increment current value. */
-	void IncrementCurrentValue( float incrementBy );
+	void IncrementCurrentValue(float incrementBy);
 	
 	/** \brief Controller is frozen. */
 	inline bool GetFrozen() const{ return pFrozen; }
 	
 	/** \brief Set if controller is frozen. */
-	void SetFrozen( bool frozen );
+	void SetFrozen(bool frozen);
 	
 	/** \brief Values passing range are clamped instead of wrapped around. */
 	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if values passing range are clamped instead of wrapped around. */
-	void SetClamp( bool clamp );
+	void SetClamp(bool clamp);
 	
 	/** \brief Vector. */
 	inline const decVector &GetVector() const{ return pVector; }
 	
 	/** \brief Set vector. */
-	void SetVector( const decVector &vector );
+	void SetVector(const decVector &vector);
 	/*@}*/
 	
 	
@@ -123,7 +123,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy controller parameters. */
-	deAnimatorController &operator=( const deAnimatorController &controller );
+	deAnimatorController &operator=(const deAnimatorController &controller);
 	/*@}*/
 	
 	

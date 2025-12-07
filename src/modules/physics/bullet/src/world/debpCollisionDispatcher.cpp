@@ -41,9 +41,9 @@
 
 debpCollisionDispatcher::debpCollisionDispatcher(
 	debpSharedCollisionFiltering &collisionFiltering,
-	btCollisionConfiguration *collisionConfiguration ) :
-btCollisionDispatcher( collisionConfiguration ),
-pCollisionFiltering( collisionFiltering ){
+	btCollisionConfiguration *collisionConfiguration) :
+btCollisionDispatcher(collisionConfiguration),
+pCollisionFiltering(collisionFiltering){
 }
 
 debpCollisionDispatcher::~debpCollisionDispatcher(){
@@ -66,14 +66,14 @@ debpCollisionDispatcher::~debpCollisionDispatcher(){
 // result in strange problems where objects keep on colliding although the changed collision
 // parameters should prevent them from from colliding. colliders should best remove the rigid
 // bodies from the dynamic world and re-add them to trigger a broadphase update.
-bool debpCollisionDispatcher::needsCollision( const btCollisionObject *body0, const btCollisionObject *body1 ){
-	return btCollisionDispatcher::needsCollision( body0, body1 );
+bool debpCollisionDispatcher::needsCollision(const btCollisionObject *body0, const btCollisionObject *body1){
+	return btCollisionDispatcher::needsCollision(body0, body1);
 		//&& pCollisionFiltering.CanBodyHitBody( *body0, *body1 );
 }
 */
 
 /*
-bool debpCollisionDispatcher::needsResponse( const btCollisionObject *body0, const btCollisionObject *body1 ){
-	return btCollisionDispatcher::needsResponse( body0, body1 );
+bool debpCollisionDispatcher::needsResponse(const btCollisionObject *body0, const btCollisionObject *body1){
+	return btCollisionDispatcher::needsResponse(body0, body1);
 }
 */

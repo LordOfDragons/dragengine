@@ -31,10 +31,10 @@
 //////////////////////////
 
 deBaseSoundInfo::deBaseSoundInfo() :
-pBytesPerSample( 1 ),
-pSampleCount( 0 ),
-pSampleRate( 44100 ),
-pChannelCount( 1 ){
+pBytesPerSample(1),
+pSampleCount(0),
+pSampleRate(44100),
+pChannelCount(1){
 }
 
 deBaseSoundInfo::~deBaseSoundInfo(){
@@ -45,30 +45,30 @@ deBaseSoundInfo::~deBaseSoundInfo(){
 // Management
 ///////////////
 
-void deBaseSoundInfo::SetBytesPerSample( int bytesPerSample ){
-	if( bytesPerSample < 1 ){
-		DETHROW( deeInvalidParam );
+void deBaseSoundInfo::SetBytesPerSample(int bytesPerSample){
+	if(bytesPerSample < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pBytesPerSample = bytesPerSample;
 }
 
-void deBaseSoundInfo::SetSampleCount( int sampleCount ){
-	if( sampleCount < 0 ){
-		DETHROW( deeInvalidParam );
+void deBaseSoundInfo::SetSampleCount(int sampleCount){
+	if(sampleCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pSampleCount = sampleCount;
 }
 
-void deBaseSoundInfo::SetSampleRate( int sampleRate ){
-	if( sampleRate < 1 ){
-		DETHROW( deeInvalidParam );
+void deBaseSoundInfo::SetSampleRate(int sampleRate){
+	if(sampleRate < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pSampleRate = sampleRate;
 }
 
-void deBaseSoundInfo::SetChannelCount( int channelCount ){
-	if( channelCount < 1 ){
-		DETHROW( deeInvalidParam );
+void deBaseSoundInfo::SetChannelCount(int channelCount){
+	if(channelCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pChannelCount = channelCount;
 }

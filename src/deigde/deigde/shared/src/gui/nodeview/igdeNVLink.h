@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create link. */
-	igdeNVLink( igdeNVSlot *source, igdeNVSlot *target );
+	igdeNVLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	
 	
@@ -89,7 +89,7 @@ public:
 	 * \brief Set owner board or NULL.
 	 * \warning For use by \em igdeNVBoard only!
 	 */
-	void SetOwnerBoard( igdeNVBoard *board );
+	void SetOwnerBoard(igdeNVBoard *board);
 	/*@}*/
 };
 

@@ -48,7 +48,7 @@ deoglVisCollectOccMeshes::deoglVisCollectOccMeshes(){
 }
 
 deoglVisCollectOccMeshes::~deoglVisCollectOccMeshes(){
-	if( pTriangleSorter ){
+	if(pTriangleSorter){
 		delete pTriangleSorter;
 	}
 }
@@ -58,12 +58,12 @@ deoglVisCollectOccMeshes::~deoglVisCollectOccMeshes(){
 // Visiting
 /////////////
 
-void deoglVisCollectOccMeshes::SetVisitExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+void deoglVisCollectOccMeshes::SetVisitExtends(const decDVector &minExtend, const decDVector &maxExtend){
 	pVisitMinExtend = minExtend;
 	pVisitMaxExtend = maxExtend;
 }
 
-void deoglVisCollectOccMeshes::SetMatrixInvHull( const decDMatrix &matrixInvHull ){
+void deoglVisCollectOccMeshes::SetMatrixInvHull(const decDMatrix &matrixInvHull){
 	pMatrixInvHull = matrixInvHull;
 }
 
@@ -73,28 +73,28 @@ void deoglVisCollectOccMeshes::Reset(){
 
 
 
-void deoglVisCollectOccMeshes::VisitNode( deoglDOctree *node, int intersection ){
-	const deoglWorldOctree &soNode = *( ( deoglWorldOctree* )node );
+void deoglVisCollectOccMeshes::VisitNode(deoglDOctree *node, int intersection){
+	const deoglWorldOctree &soNode = *((deoglWorldOctree*)node);
 	const int componentCount = soNode.GetComponentCount();
 	int i;
 	
-	for( i=0; i<componentCount; i++ ){
-		deoglRComponent &component = *soNode.GetComponentAt( i );
+	for(i=0; i<componentCount; i++){
+		deoglRComponent &component = *soNode.GetComponentAt(i);
 		const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
 		
-		if( occlusionMesh ){
+		if(occlusionMesh){
 			const decDVector &minExtend = component.GetMinimumExtend();
 			const decDVector &maxExtend = component.GetMaximumExtend();
 			
-			if( deoglDCollisionDetection::AABoxHitsAABox( pVisitMinExtend, pVisitMaxExtend, minExtend, maxExtend ) ){
-				AddOcclusionMesh( component );
+			if(deoglDCollisionDetection::AABoxHitsAABox(pVisitMinExtend, pVisitMaxExtend, minExtend, maxExtend)){
+				AddOcclusionMesh(component);
 			}
 		}
 	}
 }
 
-void deoglVisCollectOccMeshes::AddOcclusionMesh( deoglRComponent &component ){
-	const decMatrix matrix = ( component.GetMatrix() * pMatrixInvHull ).ToMatrix();
+void deoglVisCollectOccMeshes::AddOcclusionMesh(deoglRComponent &component){
+	const decMatrix matrix = (component.GetMatrix() * pMatrixInvHull).ToMatrix();
 	const deoglROcclusionMesh &occlusionMesh = *component.GetOcclusionMesh();
 	const int singleSidedFaceCount = occlusionMesh.GetSingleSidedFaceCount();
 	const int doubleSidedFaceCount = occlusionMesh.GetDoubleSidedFaceCount();
@@ -105,23 +105,23 @@ void deoglVisCollectOccMeshes::AddOcclusionMesh( deoglRComponent &component ){
 	const decVector origin;
 	int i, pointIndex = 0;
 	
-	for( i=0; i<faceCount; i++ ){
-		const deoglROcclusionMesh::sVertex &v3 = vertices[ corners[ pointIndex++ ] ];
-		const deoglROcclusionMesh::sVertex &v2 = vertices[ corners[ pointIndex++ ] ];
-		const deoglROcclusionMesh::sVertex &v1 = vertices[ corners[ pointIndex++ ] ];
+	for(i=0; i<faceCount; i++){
+		const deoglROcclusionMesh::sVertex &v3 = vertices[corners[pointIndex++]];
+		const deoglROcclusionMesh::sVertex &v2 = vertices[corners[pointIndex++]];
+		const deoglROcclusionMesh::sVertex &v1 = vertices[corners[pointIndex++]];
 		
 		tv1 = matrix * v1.position;
 		tv2 = matrix * v2.position;
 		tv3 = matrix * v3.position;
 		
-		if( ( origin - tv1 ) * ( ( tv2 - tv1 ) % ( tv3 - tv2 ) ) > 0.0f ){ // front facing
-			pTriangleSorter->AddTriangle( tv1, tv2, tv3 );
+		if((origin - tv1) * ((tv2 - tv1) % (tv3 - tv2)) > 0.0f){ // front facing
+			pTriangleSorter->AddTriangle(tv1, tv2, tv3);
 			
 		}else{ // back facing
-			if( i < singleSidedFaceCount ){
+			if(i < singleSidedFaceCount){
 				continue;
 			}
-			pTriangleSorter->AddTriangle( tv3, tv2, tv1 );
+			pTriangleSorter->AddTriangle(tv3, tv2, tv1);
 		}
 	}
 }

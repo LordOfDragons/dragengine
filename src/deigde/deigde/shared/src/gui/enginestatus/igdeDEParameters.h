@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeDEParameters( igdeDialogEngine &dialogEngine );
+	igdeDEParameters(igdeDialogEngine &dialogEngine);
 	
 	
 	

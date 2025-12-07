@@ -92,14 +92,14 @@ enum eSPGenConeMap{
 // Constructor, destructor
 ////////////////////////////
 
-deoglDelayedOperations::deoglDelayedOperations( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pHasAsyncResInitOperations( false ),
-pHasInitOperations( false ),
-pOGLObjects( nullptr ),
-pOGLObjectCount( 0 ),
-pOGLObjectSize( 0 ),
-pHasSynchronizeOperations( false )
+deoglDelayedOperations::deoglDelayedOperations(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pHasAsyncResInitOperations(false),
+pHasInitOperations(false),
+pOGLObjects(nullptr),
+pOGLObjectCount(0),
+pOGLObjectSize(0),
+pHasSynchronizeOperations(false)
 {
 	// do not create any kind of resources here which access this object to clean up.
 	// this is going to segfault since the object instance has not been assigned yet
@@ -109,7 +109,7 @@ pHasSynchronizeOperations( false )
 deoglDelayedOperations::~deoglDelayedOperations(){
 	pCleanUp();
 	
-	if( pOGLObjects ){
+	if(pOGLObjects){
 		delete [] pOGLObjects;
 	}
 }
@@ -120,9 +120,9 @@ deoglDelayedOperations::~deoglDelayedOperations(){
 //////////////////////////////////////////////////////////////
 
 void deoglDelayedOperations::ProcessAsyncResInitOperations(){
-	const deMutexGuard guard( pMutexAsyncResInit );
+	const deMutexGuard guard(pMutexAsyncResInit);
 	
-	if( ! pHasAsyncResInitOperations ){
+	if(!pHasAsyncResInitOperations){
 		return;
 	}
 	
@@ -130,15 +130,15 @@ void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 	
 	// async res initialize skins
 	count = pAsyncResInitSkinList.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglRSkin* )pAsyncResInitSkinList.GetAt( i ) )->FinalizeAsyncResLoading();
+	for(i=0; i<count; i++){
+		((deoglRSkin*)pAsyncResInitSkinList.GetAt(i))->FinalizeAsyncResLoading();
 	}
 	pAsyncResInitSkinList.RemoveAll();
 	
 	// async res initialize fonts
 	count = pAsyncResInitFontList.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglRFont* )pAsyncResInitFontList.GetAt( i ) )->FinalizeAsyncResLoading();
+	for(i=0; i<count; i++){
+		((deoglRFont*)pAsyncResInitFontList.GetAt(i))->FinalizeAsyncResLoading();
 	}
 	pAsyncResInitFontList.RemoveAll();
 
@@ -154,34 +154,34 @@ void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 
 
 
-void deoglDelayedOperations::AddAsyncResInitSkin( deoglRSkin *skin ){
-	DEASSERT_NOTNULL( skin )
+void deoglDelayedOperations::AddAsyncResInitSkin(deoglRSkin *skin){
+	DEASSERT_NOTNULL(skin)
 	
-	const deMutexGuard guard( pMutexAsyncResInit );
-	pAsyncResInitSkinList.AddIfAbsent( skin );
+	const deMutexGuard guard(pMutexAsyncResInit);
+	pAsyncResInitSkinList.AddIfAbsent(skin);
 	pHasAsyncResInitOperations = true;
 }
 
-void deoglDelayedOperations::RemoveAsyncResInitSkin( deoglRSkin *skin ){
-	const deMutexGuard guard( pMutexAsyncResInit );
+void deoglDelayedOperations::RemoveAsyncResInitSkin(deoglRSkin *skin){
+	const deMutexGuard guard(pMutexAsyncResInit);
 	
-	pAsyncResInitSkinList.RemoveIfPresent( skin );
+	pAsyncResInitSkinList.RemoveIfPresent(skin);
 }
 
 
 
-void deoglDelayedOperations::AddAsyncResInitFont( deoglRFont *font ){
-	DEASSERT_NOTNULL( font )
+void deoglDelayedOperations::AddAsyncResInitFont(deoglRFont *font){
+	DEASSERT_NOTNULL(font)
 	
-	const deMutexGuard guard( pMutexAsyncResInit );
-	pAsyncResInitFontList.AddIfAbsent( font );
+	const deMutexGuard guard(pMutexAsyncResInit);
+	pAsyncResInitFontList.AddIfAbsent(font);
 	pHasAsyncResInitOperations = true;
 }
 
-void deoglDelayedOperations::RemoveAsyncResInitFont( deoglRFont *font ){
-	deMutexGuard guard( pMutexAsyncResInit );
+void deoglDelayedOperations::RemoveAsyncResInitFont(deoglRFont *font){
+	deMutexGuard guard(pMutexAsyncResInit);
 	
-	pAsyncResInitFontList.RemoveIfPresent( font );
+	pAsyncResInitFontList.RemoveIfPresent(font);
 }
 
 
@@ -231,9 +231,9 @@ void deoglDelayedOperations::ProcessRecreateResOperations(){
 /////////////////////////////////////////////////
 
 void deoglDelayedOperations::ProcessInitOperations(){
-	const deMutexGuard guard( pMutexInit );
+	const deMutexGuard guard(pMutexInit);
 	
-	if( ! pHasInitOperations ){
+	if(!pHasInitOperations){
 		return;
 	}
 	
@@ -241,8 +241,8 @@ void deoglDelayedOperations::ProcessInitOperations(){
 	
 	// initialize images
 	count = pInitImageList.GetCount();
-	for( i=0; i<count; i++ ){
-		pProcessImage( *( ( deoglRImage* )pInitImageList.GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		pProcessImage(*((deoglRImage*)pInitImageList.GetAt(i)));
 	}
 	pInitImageList.RemoveAll();
 	
@@ -255,8 +255,8 @@ void deoglDelayedOperations::ProcessInitOperations(){
 	
 	// initialize models
 	count = pInitModelList.GetCount();
-	for( i=0; i<count; i++ ){
-		pProcessModel( *( ( deoglRModel* )pInitModelList.GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		pProcessModel(*((deoglRModel*)pInitModelList.GetAt(i)));
 	}
 	pInitModelList.RemoveAll();
 	
@@ -266,49 +266,49 @@ void deoglDelayedOperations::ProcessInitOperations(){
 
 
 
-void deoglDelayedOperations::AddInitImage( deoglRImage *image ){
-	DEASSERT_NOTNULL( image )
+void deoglDelayedOperations::AddInitImage(deoglRImage *image){
+	DEASSERT_NOTNULL(image)
 	
-	const deMutexGuard guard( pMutexInit );
-	pInitImageList.AddIfAbsent( image );
+	const deMutexGuard guard(pMutexInit);
+	pInitImageList.AddIfAbsent(image);
 	pHasInitOperations = true;
 }
 
-void deoglDelayedOperations::RemoveInitImage( deoglRImage *image ){
-	const deMutexGuard guard( pMutexInit );
-	pInitImageList.RemoveIfPresent( image );
+void deoglDelayedOperations::RemoveInitImage(deoglRImage *image){
+	const deMutexGuard guard(pMutexInit);
+	pInitImageList.RemoveIfPresent(image);
 }
 
 
 
-void deoglDelayedOperations::AddInitSkin( deoglRSkin *skin ){
-	DEASSERT_NOTNULL( skin )
+void deoglDelayedOperations::AddInitSkin(deoglRSkin *skin){
+	DEASSERT_NOTNULL(skin)
 	
-	const deMutexGuard guard( pMutexInit );
-	pInitSkinList.AddIfAbsent( skin );
+	const deMutexGuard guard(pMutexInit);
+	pInitSkinList.AddIfAbsent(skin);
 	pHasInitOperations = true;
 }
 
-void deoglDelayedOperations::RemoveInitSkin( deoglRSkin *skin ){
-	const deMutexGuard guard( pMutexInit );
+void deoglDelayedOperations::RemoveInitSkin(deoglRSkin *skin){
+	const deMutexGuard guard(pMutexInit);
 	
-	pInitSkinList.RemoveIfPresent( skin );
+	pInitSkinList.RemoveIfPresent(skin);
 }
 
 
 
-void deoglDelayedOperations::AddInitModel( deoglRModel *model ){
-	DEASSERT_NOTNULL( model )
+void deoglDelayedOperations::AddInitModel(deoglRModel *model){
+	DEASSERT_NOTNULL(model)
 	
-	const deMutexGuard guard( pMutexInit );
-	pInitModelList.AddIfAbsent( model );
+	const deMutexGuard guard(pMutexInit);
+	pInitModelList.AddIfAbsent(model);
 	pHasInitOperations = true;
 }
 
-void deoglDelayedOperations::RemoveInitModel( deoglRModel *model ){
-	const deMutexGuard guard( pMutexInit );
+void deoglDelayedOperations::RemoveInitModel(deoglRModel *model){
+	const deMutexGuard guard(pMutexInit);
 	
-	pInitModelList.RemoveIfPresent( model );
+	pInitModelList.RemoveIfPresent(model);
 }
 
 
@@ -316,9 +316,9 @@ void deoglDelayedOperations::RemoveInitModel( deoglRModel *model ){
 // Delayed render thread OpengGL deletion
 ///////////////////////////////////////////
 
-void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
+void deoglDelayedOperations::ProcessFreeOperations(bool /*deleteAll*/){
 	{
-		const deMutexGuard guard( pMutexCameras );
+		const deMutexGuard guard(pMutexCameras);
 		// break reference loop: camera -> world -> component -> dynamic skin -> canvas or camera -> camera
 		// this has to be done before free operations are processed since breaking these links can produce
 		// free operations and adding free operations is not allowed while they are processed
@@ -327,8 +327,8 @@ void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
 		//      located in. with complex worlds this can be 35ms inaverage
 		/*
 		pMutexFree.Lock();
-		pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.ProcessFreeOperations:"
-			" camera=%d deletion=%d", pCleanUpCameraList.GetCount(), pDeletionCount );
+		pRenderThread.GetLogger().LogInfoFormat("deoglDelayedOperations.ProcessFreeOperations:"
+			" camera=%d deletion=%d", pCleanUpCameraList.GetCount(), pDeletionCount);
 		pMutexFree.Unlock();
 		*/
 	// 	decTimer timer;
@@ -336,25 +336,25 @@ void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
 		int count = pCleanUpCameraList.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			( ( deoglRCamera* )pCleanUpCameraList.GetAt( i ) )->SetParentWorld( NULL );
+		for(i=0; i<count; i++){
+			((deoglRCamera*)pCleanUpCameraList.GetAt(i))->SetParentWorld(NULL);
 		}
 		pCleanUpCameraList.RemoveAll();
 	// 	const float accumCamera = timer.GetElapsedTime();
 	}
 	
-	while( true ){
+	while(true){
 		decObjectList list;
 		{
-		const deMutexGuard guard( pMutexReleaseObjects );
+		const deMutexGuard guard(pMutexReleaseObjects);
 		const int count = pReleaseObjects.GetCount();
-		if( count == 0 ){
+		if(count == 0){
 			break;
 		}
 		
 		int i;
-		for( i=0; i<count; i++ ){
-			list.Add( pReleaseObjects.GetAt( i ) );
+		for(i=0; i<count; i++){
+			list.Add(pReleaseObjects.GetAt(i));
 		}
 		pReleaseObjects.RemoveAll();
 		}
@@ -362,7 +362,7 @@ void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
 	
 	// delete opengl objects
 	{
-		const deMutexGuard guard( pMutexOGLObjects );
+		const deMutexGuard guard(pMutexOGLObjects);
 		pDeleteOpenGLObjects();
 	}
 	
@@ -370,46 +370,46 @@ void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
 // 		(int)(accumCamera * 1e6f), (int)(timer.GetElapsedTime() * 1e6f) );
 }
 
-void deoglDelayedOperations::DeleteOpenGLObject( eOpenGLObjectType type, GLuint name ){
-	if( ! name ){
+void deoglDelayedOperations::DeleteOpenGLObject(eOpenGLObjectType type, GLuint name){
+	if(!name){
 		return;
 	}
 	
-	const deMutexGuard lock( pMutexOGLObjects );
+	const deMutexGuard lock(pMutexOGLObjects);
 	
-	if( pOGLObjectCount == pOGLObjectSize ){
+	if(pOGLObjectCount == pOGLObjectSize){
 		const int newSize = pOGLObjectSize * 3 / 2 + 1;
-		sOpenGLObject * const newArray = new sOpenGLObject[ newSize ];
-		if( pOGLObjects ){
-			memcpy( newArray, pOGLObjects, sizeof( sOpenGLObject ) * pOGLObjectSize );
+		sOpenGLObject * const newArray = new sOpenGLObject[newSize];
+		if(pOGLObjects){
+			memcpy(newArray, pOGLObjects, sizeof(sOpenGLObject) * pOGLObjectSize);
 			delete [] pOGLObjects;
 		}
 		pOGLObjects = newArray;
 		pOGLObjectSize = newSize;
 	}
 	
-	pOGLObjects[ pOGLObjectCount++ ].Set( type, name );
+	pOGLObjects[pOGLObjectCount++].Set(type, name);
 }
 
-void deoglDelayedOperations::DeleteOpenGLObject( deoglDelayedOperations::eOpenGLObjectType type, GLsync sync ){
-	if( ! sync ){
+void deoglDelayedOperations::DeleteOpenGLObject(deoglDelayedOperations::eOpenGLObjectType type, GLsync sync){
+	if(!sync){
 		return;
 	}
 	
-	const deMutexGuard lock( pMutexOGLObjects );
+	const deMutexGuard lock(pMutexOGLObjects);
 	
-	if( pOGLObjectCount == pOGLObjectSize ){
+	if(pOGLObjectCount == pOGLObjectSize){
 		const int newSize = pOGLObjectSize * 3 / 2 + 1;
-		sOpenGLObject * const newArray = new sOpenGLObject[ newSize ];
-		if( pOGLObjects ){
-			memcpy( newArray, pOGLObjects, sizeof( sOpenGLObject ) * pOGLObjectSize );
+		sOpenGLObject * const newArray = new sOpenGLObject[newSize];
+		if(pOGLObjects){
+			memcpy(newArray, pOGLObjects, sizeof(sOpenGLObject) * pOGLObjectSize);
 			delete [] pOGLObjects;
 		}
 		pOGLObjects = newArray;
 		pOGLObjectSize = newSize;
 	}
 	
-	pOGLObjects[ pOGLObjectCount++ ].Set( type, sync );
+	pOGLObjects[pOGLObjectCount++].Set(type, sync);
 }
 
 
@@ -419,28 +419,28 @@ void deoglDelayedOperations::DeleteOpenGLObject( deoglDelayedOperations::eOpenGL
 
 void deoglDelayedOperations::ProcessSynchronizeOperations(){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
-	const deMutexGuard guard( pMutexSynchronize );
+	const deMutexGuard guard(pMutexSynchronize);
 	
-	if( ! pHasSynchronizeOperations ){
+	if(!pHasSynchronizeOperations){
 		return;
 	}
 	
 	int count;
 	
 	count = pFileWriteList.GetCount();
-	while( count > 0 ){
-		deoglDelayedFileWrite * const fileWrite = ( deoglDelayedFileWrite* )pFileWriteList.GetAt( 0 );
-		fileWrite->SaveFile( ogl.GetVFS() );
-		pFileWriteList.RemoveFrom( 0 );
+	while(count > 0){
+		deoglDelayedFileWrite * const fileWrite = (deoglDelayedFileWrite*)pFileWriteList.GetAt(0);
+		fileWrite->SaveFile(ogl.GetVFS());
+		pFileWriteList.RemoveFrom(0);
 		delete fileWrite;
 		count--;
 	}
 	
 	count = pSaveImageList.GetCount();
-	while( count > 0 ){
-		deoglDelayedSaveImage * const saveImage = ( deoglDelayedSaveImage* )pSaveImageList.GetAt( 0 );
-		saveImage->SaveImage( ogl, ogl.GetVFS() );
-		pSaveImageList.RemoveFrom( 0 );
+	while(count > 0){
+		deoglDelayedSaveImage * const saveImage = (deoglDelayedSaveImage*)pSaveImageList.GetAt(0);
+		saveImage->SaveImage(ogl, ogl.GetVFS());
+		pSaveImageList.RemoveFrom(0);
 		delete saveImage;
 		count--;
 	}
@@ -450,33 +450,33 @@ void deoglDelayedOperations::ProcessSynchronizeOperations(){
 
 
 
-void deoglDelayedOperations::AddFileWrite( deoglDelayedFileWrite *fileWrite ){
-	DEASSERT_NOTNULL( fileWrite )
+void deoglDelayedOperations::AddFileWrite(deoglDelayedFileWrite *fileWrite){
+	DEASSERT_NOTNULL(fileWrite)
 	
-	const deMutexGuard guard( pMutexSynchronize );
-	pFileWriteList.Add( fileWrite );
+	const deMutexGuard guard(pMutexSynchronize);
+	pFileWriteList.Add(fileWrite);
 	pHasSynchronizeOperations = true;
 }
 
-void deoglDelayedOperations::AddSaveImage( deoglDelayedSaveImage *saveImage ){
-	DEASSERT_NOTNULL( saveImage )
+void deoglDelayedOperations::AddSaveImage(deoglDelayedSaveImage *saveImage){
+	DEASSERT_NOTNULL(saveImage)
 	
-	const deMutexGuard guard( pMutexSynchronize );
-	pSaveImageList.Add( saveImage );
+	const deMutexGuard guard(pMutexSynchronize);
+	pSaveImageList.Add(saveImage);
 	pHasSynchronizeOperations = true;
 }
 
-void deoglDelayedOperations::AddCleanUpCamera( deoglRCamera *camera ){
-	if( camera ){
-		const deMutexGuard guard( pMutexCameras );
-		pCleanUpCameraList.AddIfAbsent( camera );
+void deoglDelayedOperations::AddCleanUpCamera(deoglRCamera *camera){
+	if(camera){
+		const deMutexGuard guard(pMutexCameras);
+		pCleanUpCameraList.AddIfAbsent(camera);
 	}
 }
 
-void deoglDelayedOperations::AddReleaseObject( deObject *object ){
-	if( object ){
-		const deMutexGuard guard( pMutexReleaseObjects );
-		pReleaseObjects.Add( object );
+void deoglDelayedOperations::AddReleaseObject(deObject *object){
+	if(object){
+		const deMutexGuard guard(pMutexReleaseObjects);
+		pReleaseObjects.Add(object);
 	}
 }
 
@@ -492,7 +492,7 @@ void deoglDelayedOperations::Clear(){
 //////////////////////
 
 void deoglDelayedOperations::pCleanUp(){
-	ProcessFreeOperations( true );
+	ProcessFreeOperations(true);
 	
 	// drop shaders to avoid cleanup finding them as leaking
 	pShaderGenConeMap = nullptr;
@@ -516,29 +516,29 @@ void deoglDelayedOperations::pCleanUp(){
 
 
 
-void deoglDelayedOperations::pProcessImage( deoglRImage &image ){
+void deoglDelayedOperations::pProcessImage(deoglRImage &image){
 	image.PrepareForRender();
 }
 
-void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
+void deoglDelayedOperations::pProcessSkin(deoglRSkin &skin){
 	const int textureCount = skin.GetTextureCount();
 	int t, c;
 	
-	for( t=0; t<textureCount; t++ ){
-		const deoglSkinTexture &skinTexture = skin.GetTextureAt( t );
+	for(t=0; t<textureCount; t++){
+		const deoglSkinTexture &skinTexture = skin.GetTextureAt(t);
 		
-		for( c=0; c<deoglSkinChannel::CHANNEL_COUNT; c++ ){
-			deoglSkinChannel * const skinChannel = skinTexture.GetChannelAt( ( deoglSkinChannel::eChannelTypes )c );
-			if( ! skinChannel ){
+		for(c=0; c<deoglSkinChannel::CHANNEL_COUNT; c++){
+			deoglSkinChannel * const skinChannel = skinTexture.GetChannelAt((deoglSkinChannel::eChannelTypes)c);
+			if(!skinChannel){
 				continue;
 			}
 			
 			const deoglPixelBufferMipMap * const pixelBufferMipMap = skinChannel->GetPixelBufferMipMap();
-			if( ! pixelBufferMipMap ){
+			if(!pixelBufferMipMap){
 				continue;
 			}
 			
-			const deoglPixelBuffer &basePixelBuffer = pixelBufferMipMap->GetPixelBuffer( 0 );
+			const deoglPixelBuffer &basePixelBuffer = pixelBufferMipMap->GetPixelBuffer(0);
 			const int pixelBufferCount = pixelBufferMipMap->GetPixelBufferCount();
 			deoglArrayTexture * const arrayTexture = skinChannel->GetArrayTexture();
 			deoglCubeMap * const cubemap = skinChannel->GetCubeMap();
@@ -561,71 +561,71 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 			pRenderThread.GetLogger().LogInfoFormat(
 				"DelayedOperations SetPixels %s(%s)(%s)",
 				skin.GetFilename().GetString(), skinTexture.GetName().GetString(),
-				deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )c ) );
+				deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)c));
 			*/
 			#endif
 			
-			if( texture ){
+			if(texture){
 				bool useCombined = false;
 				
 				/*
-				if( c == deoglSkinChannel::ectColor ){
-					if( basePixelBuffer.GetFormat() == deoglPixelBuffer::epfByte4
-					|| basePixelBuffer.GetFormat() == deoglPixelBuffer::epfFloat4 ){
+				if(c == deoglSkinChannel::ectColor){
+					if(basePixelBuffer.GetFormat() == deoglPixelBuffer::epfByte4
+					|| basePixelBuffer.GetFormat() == deoglPixelBuffer::epfFloat4){
 						useCombined = true;
 					}
 					
-				}else if( c == deoglSkinChannel::ectReflectivityRoughness ){
-					if( basePixelBuffer.GetFormat() == deoglPixelBuffer::epfByte4
-					|| basePixelBuffer.GetFormat() == deoglPixelBuffer::epfFloat4 ){
+				}else if(c == deoglSkinChannel::ectReflectivityRoughness){
+					if(basePixelBuffer.GetFormat() == deoglPixelBuffer::epfByte4
+					|| basePixelBuffer.GetFormat() == deoglPixelBuffer::epfFloat4){
 						useCombined = true;
 					}
 				}
 				*/
 				
-				if( useCombined ){
+				if(useCombined){
 					const decColor &color = skinChannel->GetUniformColor();
 					deoglCombinedTexture *combinedTexture;
-					deoglRImage *images[ 4 ];
+					deoglRImage *images[4];
 					
-					images[ 0 ] = skinChannel->GetCombinedImage1();
-					images[ 1 ] = skinChannel->GetCombinedImage1();
-					images[ 2 ] = skinChannel->GetCombinedImage1();
-					images[ 3 ] = skinChannel->GetCombinedImage2();
+					images[0] = skinChannel->GetCombinedImage1();
+					images[1] = skinChannel->GetCombinedImage1();
+					images[2] = skinChannel->GetCombinedImage1();
+					images[3] = skinChannel->GetCombinedImage2();
 					
-					combinedTexture = pRenderThread.GetTexture().GetCombinedTexture().GetWith( color, images );
-					if( combinedTexture->GetUsageCount() == 1 ){
-						deoglTexture * const cttexture = new deoglTexture( pRenderThread );
+					combinedTexture = pRenderThread.GetTexture().GetCombinedTexture().GetWith(color, images);
+					if(combinedTexture->GetUsageCount() == 1){
+						deoglTexture * const cttexture = new deoglTexture(pRenderThread);
 						
-						cttexture->SetSize( texture->GetWidth(), texture->GetHeight() );
-						cttexture->SetFormat( texture->GetFormat() );
-						cttexture->SetMipMapped( texture->GetMipMapped() );
+						cttexture->SetSize(texture->GetWidth(), texture->GetHeight());
+						cttexture->SetFormat(texture->GetFormat());
+						cttexture->SetMipMapped(texture->GetMipMapped());
 						
-						if( compressedData ){
+						if(compressedData){
 							//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture combined compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
-							for( l=0; l<pixelBufferCount; l++ ){
-								cttexture->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+							for(l=0; l<pixelBufferCount; l++){
+								cttexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
 							}
 							
 						}else{
 							//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture combined uncompressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
-							for( l=0; l<pixelBufferCount; l++ ){
-								cttexture->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+							for(l=0; l<pixelBufferCount; l++){
+								cttexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
 							}
 						}
 						
-						combinedTexture->SetTexture( cttexture );
+						combinedTexture->SetTexture(cttexture);
 					}
 					
-					skinChannel->SetCombinedTexture( combinedTexture );
+					skinChannel->SetCombinedTexture(combinedTexture);
 					texture->DestroyTexture();
 					
 				}else{
-					if( compressedData ){
+					if(compressedData){
 						//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
 						try{
-							for( l=0; l<pixelBufferCount; l++ ){
-								texture->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+							for(l=0; l<pixelBufferCount; l++){
+								texture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
 							}
 
 						}catch(const deException &e){
@@ -646,77 +646,77 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 						
 					}else{
 						//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture uncompressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
-						for( l=0; l<pixelBufferCount; l++ ){
-							texture->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+						for(l=0; l<pixelBufferCount; l++){
+							texture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
 						}
 					}
 					
 					/*
-					if( c == deoglSkinChannel::ectHeight ){
-						for( l=0; l<pixelBufferCount; l++ ){
+					if(c == deoglSkinChannel::ectHeight){
+						for(l=0; l<pixelBufferCount; l++){
 							decString fname;
-							fname.Format( "%s_height_l%i", skinTexture.GetTexture()->GetName(), l );
-							pRenderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *texture, l, fname, deoglDebugSaveTexture::ecNoConversion );
+							fname.Format("%s_height_l%i", skinTexture.GetTexture()->GetName(), l);
+							pRenderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion(*texture, l, fname, deoglDebugSaveTexture::ecNoConversion);
 						}
 					}
 					*/
 					/*
-					if( c == deoglSkinChannel::ectEmissivity || c == deoglSkinChannel::ectSolidity ){
-						for( l=0; l<pixelBufferCount; l++ ){
+					if(c == deoglSkinChannel::ectEmissivity || c == deoglSkinChannel::ectSolidity){
+						for(l=0; l<pixelBufferCount; l++){
 							decString fname;
-							fname.Format( "%s_c%i_l%i", skinTexture.GetTexture()->GetName(), c, l );
-							pRenderThread.GetDebug().SaveTextureLevelConversion( *texture, l, fname, deoglDebugSaveTexture::ecNoConversion );
+							fname.Format("%s_c%i_l%i", skinTexture.GetTexture()->GetName(), c, l);
+							pRenderThread.GetDebug().SaveTextureLevelConversion(*texture, l, fname, deoglDebugSaveTexture::ecNoConversion);
 						}
 					}
 					*/
 				}
 				
-			}else if( cubemap ){
-				if( compressedData ){
+			}else if(cubemap){
+				if(compressedData){
 					//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations cubemap compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
-					for( l=0; l<pixelBufferCount; l++ ){
-						cubemap->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+					for(l=0; l<pixelBufferCount; l++){
+						cubemap->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
 					}
 					
 				}else{
 					//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations cubemap uncompressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
-					for( l=0; l<pixelBufferCount; l++ ){
-						cubemap->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+					for(l=0; l<pixelBufferCount; l++){
+						cubemap->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
 					}
 				}
 				
-			}else if( arrayTexture ){
-				if( compressedData ){
+			}else if(arrayTexture){
+				if(compressedData){
 					//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations array compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
-					for( l=0; l<pixelBufferCount; l++ ){
-						arrayTexture->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+					for(l=0; l<pixelBufferCount; l++){
+						arrayTexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
 					}
 					
 				}else{
 					//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations array uncompressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
-					for( l=0; l<pixelBufferCount; l++ ){
-						arrayTexture->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+					for(l=0; l<pixelBufferCount; l++){
+						arrayTexture->SetPixelsLevel(l, *pixelBufferMipMap->GetPixelBuffer(l));
 					}
 				}
 			}
 			
 			// if shared image is present set created texture if required and mark image in use
-			if( skinChannel->GetImage() ) {
+			if(skinChannel->GetImage()) {
 				#ifdef OS_ANDROID
 				/*
-				if( skinChannel->GetImage()->GetSkinUse() ){
+				if(skinChannel->GetImage()->GetSkinUse()){
 					pRenderThread.GetLogger().LogInfoFormat(
 						"DelayedOperations AlreadyShared %s(%s)(%s) %s",
 						skin.GetFilename().GetString(), skinTexture.GetName().GetString(),
-						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )c ),
-						skinChannel->GetImage()->GetFilename().GetString() );
+						deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)c),
+						skinChannel->GetImage()->GetFilename().GetString());
 					
 				}else{
 					pRenderThread.GetLogger().LogInfoFormat(
 						"DelayedOperations MoveTextureToSharedImage %s(%s)(%s) %s",
 						skin.GetFilename().GetString(), skinTexture.GetName().GetString(),
-						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )c ),
-						skinChannel->GetImage()->GetFilename().GetString() );
+						deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)c),
+						skinChannel->GetImage()->GetFilename().GetString());
 				}
 				*/
 				#endif
@@ -728,17 +728,17 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 			// forget this... it's fast for small textures but as soon as you step it up a bit
 			// the GPU just fries though and runs for ages. furthermore the results are lacking.
 			// it might help with the stepping but the result is bad.
-			if( c == deoglSkinChannel::ectHeight ){
-				pGenerateConeMap( skin, skinTexture );
+			if(c == deoglSkinChannel::ectHeight){
+				pGenerateConeMap(skin, skinTexture);
 			}
 			*/
 			
-			skinChannel->SetPixelBufferMipMap( nullptr );
+			skinChannel->SetPixelBufferMipMap(nullptr);
 		}
 	}
 	
-	for( t=0; t<textureCount; t++ ){
-		deoglSkinTexture &skinTexture = skin.GetTextureAt( t );
+	for(t=0; t<textureCount; t++){
+		deoglSkinTexture &skinTexture = skin.GetTextureAt(t);
 		
 		// assign render task shared index. has to be done here since during constructor
 		// time this would cause concurrent access to the global pool
@@ -753,24 +753,24 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 	skin.PrepareTexturePipelines();
 }
 
-void deoglDelayedOperations::pProcessModel( deoglRModel &model ){
+void deoglDelayedOperations::pProcessModel(deoglRModel &model){
 	const int lodCount = model.GetLODCount();
 	int i;
 	
 	//model.DebugVCOptimize();
 	
-	for( i=0; i<lodCount; i++ ){
-		model.GetLODAt( i ).GetVBOBlock();
+	for(i=0; i<lodCount; i++){
+		model.GetLODAt(i).GetVBOBlock();
 	}
 	
 	//model.PrintDebugInfo();
 }
 
 #if 0
-void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkinTexture &texture ){
+void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinTexture &texture){
 	decTimer timer;
 	
-	deoglSkinChannel &channel = *texture.GetChannelAt( deoglSkinChannel::ectHeight );
+	deoglSkinChannel &channel = *texture.GetChannelAt(deoglSkinChannel::ectHeight);
 	deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deoglFramebuffer * const oldFBO = pRenderThread.GetFramebuffer().GetActive();
@@ -782,138 +782,138 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 	
 	deoglArrayTexture * const channelArrayTexture = channel.GetArrayTexture();
 	deoglTexture * const channelTexture = channel.GetTexture();
-	if( ! channelTexture || ! channelArrayTexture ){
+	if(!channelTexture || !channelArrayTexture){
 		return; // should not happen
 	}
 	
-	const deoglPixelBuffer::Ref pbConeMap( deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer( deoglPixelBuffer::epfByte1, size.x, size.y, size.z ) ) );
-	pbConeMap->SetToIntColor( 255, 255, 255, 255 );
+	const deoglPixelBuffer::Ref pbConeMap(deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer(deoglPixelBuffer::epfByte1, size.x, size.y, size.z)));
+	pbConeMap->SetToIntColor(255, 255, 255, 255);
 	
 	stepCount = 128;
 	
-	OGL_CHECK( pRenderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK(pRenderThread, glDisable(GL_DEPTH_TEST));
+	OGL_CHECK(pRenderThread, glDisable(GL_CULL_FACE));
+	OGL_CHECK(pRenderThread, glDisable(GL_STENCIL_TEST));
+	OGL_CHECK(pRenderThread, glDisable(GL_SCISSOR_TEST));
 	
-	OGL_CHECK( pRenderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( pRenderThread, pglBlendEquation( GL_MIN ) );
-	OGL_CHECK( pRenderThread, glBlendFunc( GL_ONE, GL_ONE ) );
+	OGL_CHECK(pRenderThread, glEnable(GL_BLEND));
+	OGL_CHECK(pRenderThread, pglBlendEquation(GL_MIN));
+	OGL_CHECK(pRenderThread, glBlendFunc(GL_ONE, GL_ONE));
 	
-	OGL_CHECK( pRenderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK(pRenderThread, glDepthMask(GL_FALSE));
+	OGL_CHECK(pRenderThread, glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE));
 	
 	try{
 		// create cone map texture
-		if( channelTexture ){
-			coneMap = new deoglTexture( pRenderThread );
-			coneMap->SetMipMapped( false );
-			coneMap->SetSize( size.x, size.y );
-			coneMap->SetFBOFormat( 1, false );
-			coneMap->SetPixels( pbConeMap );
+		if(channelTexture){
+			coneMap = new deoglTexture(pRenderThread);
+			coneMap->SetMipMapped(false);
+			coneMap->SetSize(size.x, size.y);
+			coneMap->SetFBOFormat(1, false);
+			coneMap->SetPixels(pbConeMap);
 			
 		}else{
-			coneMapArr = new deoglArrayTexture( pRenderThread );
-			coneMapArr->SetMipMapped( false );
-			coneMapArr->SetSize( size.x, size.y, size.z );
-			coneMapArr->SetFBOFormat( 1, false );
-			coneMapArr->SetPixels( pbConeMap );
+			coneMapArr = new deoglArrayTexture(pRenderThread);
+			coneMapArr->SetMipMapped(false);
+			coneMapArr->SetSize(size.x, size.y, size.z);
+			coneMapArr->SetFBOFormat(1, false);
+			coneMapArr->SetPixels(pbConeMap);
 		}
 		
 		// obtain a temporary fbo and set it up
 		const deoglFramebufferManager::Usage fbo(
 			pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size.x, size.y));
 		
-		pRenderThread.GetFramebuffer().Activate( fbo );
+		pRenderThread.GetFramebuffer().Activate(fbo);
 		
 		fbo->DetachAllImages();
 		
-		if( channelTexture ){
-			fbo->AttachColorTexture( 0, coneMap );
+		if(channelTexture){
+			fbo->AttachColorTexture(0, coneMap);
 			
 		}else{
-			fbo->AttachColorArrayTextureLayer( 0, coneMapArr, 0 );
+			fbo->AttachColorArrayTextureLayer(0, coneMapArr, 0);
 		}
 		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+		OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+		OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 		
 		fbo->Verify();
 		
-		OGL_CHECK( pRenderThread, glViewport( 0, 0, size.x, size.y ) );
+		OGL_CHECK(pRenderThread, glViewport(0, 0, size.x, size.y));
 		
 		// set up shader
 		const deoglShaderProgram *program = nullptr;
 
-		if( channelTexture ){
-			if( ! pShaderGenConeMap ){
+		if(channelTexture){
+			if(!pShaderGenConeMap){
 				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
-				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
-				DEASSERT_NOTNULL( sources )
+				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed("DefRen Generate ConeMap");
+				DEASSERT_NOTNULL(sources)
 				deoglShaderDefines defines;
-				pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
+				pShaderGenConeMap = shaderManager.GetProgramWith(sources, defines);
 			}
 			program = pShaderGenConeMap;
 			
 		}else{
-			if( ! pShaderGenConeMapLayer ){
+			if(!pShaderGenConeMapLayer){
 				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
-				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
-				DEASSERT_NOTNULL( sources )
+				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed("DefRen Generate ConeMap");
+				DEASSERT_NOTNULL(sources)
 				deoglShaderDefines defines;
-				defines.SetDefines( "INPUT_ARRAY_TEXTURES" );
-				pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
+				defines.SetDefines("INPUT_ARRAY_TEXTURES");
+				pShaderGenConeMapLayer = shaderManager.GetProgramWith(sources, defines);
 			}
 			program = pShaderGenConeMapLayer;
 		}
 
-		pRenderThread.GetShader().ActivateShader( program );
+		pRenderThread.GetShader().ActivateShader(program);
 		shader = program->GetCompiled();
 		
-		shader->SetParameterInt( spgcmWidth, size.x );
-		shader->SetParameterFloat( spgcmSrcTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
+		shader->SetParameterInt(spgcmWidth, size.x);
+		shader->SetParameterFloat(spgcmSrcTCTransform, 0.5f, 0.5f, 0.5f, 0.5f);
 			//0.5f * ( float )( width - 1 ) / ( float )size.x,
 			//0.5f * ( float )( height - 1 ) / ( float )size.y,
 			//0.5f, 0.5f );
-		shader->SetParameterFloat( spgcmDestTCTransform,
-			1.0f / ( float )( size.x - 1 ), 1.0f / ( float )( size.y - 1 ), 0.0f, 0.0f );
+		shader->SetParameterFloat(spgcmDestTCTransform,
+			1.0f / (float)(size.x - 1), 1.0f / (float)(size.y - 1), 0.0f, 0.0f);
 			//1.0f / ( float )width, 1.0f / ( float )height,
 			//0.5f / ( float )width, 0.5f / ( float )height );
-		shader->SetParameterInt( spgcmStepCount, stepCount );
-		shader->SetParameterFloat( spgcmStepFactor, 1.0f / ( float )stepCount );
+		shader->SetParameterInt(spgcmStepCount, stepCount);
+		shader->SetParameterFloat(spgcmStepFactor, 1.0f / (float)stepCount);
 		
-		if( channelTexture ){
-			tsmgr.EnableTexture( 0, *channelTexture, *pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
-			OGL_CHECK( pRenderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-			OGL_CHECK( pRenderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, size.x * size.y ) );
-			OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+		if(channelTexture){
+			tsmgr.EnableTexture(0, *channelTexture, *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear));
+			OGL_CHECK(pRenderThread, pglBindVertexArray(defren.GetVAOFullScreenQuad()->GetVAO()));
+			OGL_CHECK(pRenderThread, pglDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, size.x * size.y));
+			OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 			
 		}else{
-			tsmgr.EnableArrayTexture( 0, *channelArrayTexture, *pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
-			OGL_CHECK( pRenderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+			tsmgr.EnableArrayTexture(0, *channelArrayTexture, *pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear));
+			OGL_CHECK(pRenderThread, pglBindVertexArray(defren.GetVAOFullScreenQuad()->GetVAO()));
 			
 			int i;
-			for( i=0; i<size.z; i++ ){
+			for(i=0; i<size.z; i++){
 				// NOTE according to specs gl_Layer exists only in the geometry shader. if layered-rendering
 				//      is used this requires a pass-through geometry shader setting gl_Layer which seems
 				//      like a waste of processing time. On the other hand this would avoid switching the
 				//      FBO target all time. check this problem out if it is really used and shows to be
 				//      a problem. Using layer-rebinding is the simpler solution
 				fbo->DetachAllImages();
-				fbo->AttachColorArrayTextureLayer( 0, coneMapArr, i );
-				shader->SetParameterFloat( spgcmLayer, ( float )i );
-				OGL_CHECK( pRenderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, size.x * size.y ) );
+				fbo->AttachColorArrayTextureLayer(0, coneMapArr, i);
+				shader->SetParameterFloat(spgcmLayer, (float)i);
+				OGL_CHECK(pRenderThread, pglDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, size.x * size.y));
 			}
 			
-			OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+			OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 		}
 		
 		// clean up
-		pRenderThread.GetFramebuffer().Activate( oldFBO );
+		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
-		if( coneMap ){
+		if(coneMap){
 			pRenderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion(
 				*coneMap, "generate_conemap", deoglDebugSaveTexture::ecNoConversion );
 			delete coneMap;
@@ -926,71 +926,71 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 			coneMapArr = NULL;
 		}
 		
-		OGL_CHECK( pRenderThread, pglBlendEquation( GL_FUNC_ADD ) ); // important, reset it!
+		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!
 		
-	}catch( const deException & ){
-		pRenderThread.GetFramebuffer().Activate( oldFBO );
+	}catch(const deException &){
+		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
-		if( coneMapArr ){
+		if(coneMapArr){
 			delete coneMapArr;
 		}
-		if( coneMap ){
+		if(coneMap){
 			delete coneMap;
 		}
-		OGL_CHECK( pRenderThread, pglBlendEquation( GL_FUNC_ADD ) ); // important, reset it!
+		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!
 		throw;
 	}
 	
-	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.pGenerateConeMap: Generated cone map in %ims",
-		( int )( timer.GetElapsedTime() * 1000.0f ) );
+	pRenderThread.GetLogger().LogInfoFormat("deoglDelayedOperations.pGenerateConeMap: Generated cone map in %ims",
+		(int)(timer.GetElapsedTime() * 1000.0f));
 }
 #endif
 
 void deoglDelayedOperations::pDeleteOpenGLObjects(){
 	int i;
-	for( i=0; i<pOGLObjectCount; i++ ){
-		const sOpenGLObject &entry = pOGLObjects[ i ];
+	for(i=0; i<pOGLObjectCount; i++){
+		const sOpenGLObject &entry = pOGLObjects[i];
 		
-		switch( entry.type ){
+		switch(entry.type){
 		case eoglotBuffer:
-			pglDeleteBuffers( 1, &entry.name );
+			pglDeleteBuffers(1, &entry.name);
 			break;
 			
 		case eoglotBuffererPersistUnmap:
-			pglUnmapNamedBuffer( entry.name );
-			pglDeleteBuffers( 1, &entry.name );
+			pglUnmapNamedBuffer(entry.name);
+			pglDeleteBuffers(1, &entry.name);
 			break;
 			
 		case eoglotTexture:
-			glDeleteTextures( 1, &entry.name );
+			glDeleteTextures(1, &entry.name);
 			break;
 			
 		case eoglotVertexArray:
-			pglDeleteVertexArrays( 1, &entry.name );
+			pglDeleteVertexArrays(1, &entry.name);
 			break;
 			
 		case eoglotFramebuffer:
-			pglDeleteFramebuffers( 1, &entry.name );
+			pglDeleteFramebuffers(1, &entry.name);
 			break;
 			
 		case eoglotQuery:
-			pglDeleteQueries( 1, &entry.name );
+			pglDeleteQueries(1, &entry.name);
 			break;
 			
 		case eoglotSampler:
-			pglDeleteSamplers( 1, &entry.name );
+			pglDeleteSamplers(1, &entry.name);
 			break;
 			
 		case eoglotProgram:
-			pglDeleteProgram( entry.name );
+			pglDeleteProgram(entry.name);
 			break;
 			
 		case eoglotShader:
-			pglDeleteShader( entry.name );
+			pglDeleteShader(entry.name);
 			break;
 			
 		case eoglotSync:
-			pglDeleteSync( entry.sync );
+			pglDeleteSync(entry.sync);
 			break;
 		}
 	}

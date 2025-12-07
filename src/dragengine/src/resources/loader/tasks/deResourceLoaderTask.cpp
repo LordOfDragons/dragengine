@@ -49,23 +49,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deResourceLoaderTask::deResourceLoaderTask( deEngine &engine,
+deResourceLoaderTask::deResourceLoaderTask(deEngine &engine,
 deResourceLoader &resourceLoader, deVirtualFileSystem *vfs,
-const char *path, deResourceLoader::eResourceType resourceType ) :
-deParallelTask( NULL ),
-pEngine( engine ),
-pResourceLoader( resourceLoader ),
-pVFS( vfs ),
-pPath( path ),
-pResourceType( resourceType ),
-pState( esPending ),
-pType( etRead )
+const char *path, deResourceLoader::eResourceType resourceType) :
+deParallelTask(NULL),
+pEngine(engine),
+pResourceLoader(resourceLoader),
+pVFS(vfs),
+pPath(path),
+pResourceType(resourceType),
+pState(esPending),
+pType(etRead)
 {
-	if( ! vfs ){
-		DETHROW( deeInvalidParam );
+	if(!vfs){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetMarkFinishedAfterRun( false );
+	SetMarkFinishedAfterRun(false);
 }
 
 deResourceLoaderTask::~deResourceLoaderTask(){
@@ -76,10 +76,10 @@ deResourceLoaderTask::~deResourceLoaderTask(){
 // Management
 ///////////////
 
-bool deResourceLoaderTask::Matches( deVirtualFileSystem *vfs, const char *path,
-deResourceLoader::eResourceType resourceType ) const{
-	if( ! vfs || ! path ){
-		DETHROW( deeInvalidParam );
+bool deResourceLoaderTask::Matches(deVirtualFileSystem *vfs, const char *path,
+deResourceLoader::eResourceType resourceType) const{
+	if(!vfs || !path){
+		DETHROW(deeInvalidParam);
 	}
 	return pVFS == vfs && pPath == path && resourceType == pResourceType;
 }
@@ -102,96 +102,96 @@ decString deResourceLoaderTask::GetDebugDetails() const{
 // Protected Functions
 ////////////////////////
 
-void deResourceLoaderTask::SetResource( deFileResource *resource ){
+void deResourceLoaderTask::SetResource(deFileResource *resource){
 	pResource = resource;
 }
 
-void deResourceLoaderTask::SetState( eStates state ){
+void deResourceLoaderTask::SetState(eStates state){
 	pState = state;
 }
 
-void deResourceLoaderTask::SetType( eTypes type ){
+void deResourceLoaderTask::SetType(eTypes type){
 	pType = type;
 }
 
 void deResourceLoaderTask::LogCreateEnter(){
-	if( ! pResourceLoader.GetOutputDebugMessages() ){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
-	const decString debugName( GetDebugName() );
-	pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Task(%s)[%s] Create Enter",
-		debugName.GetString(), pPath.GetString() );
+	const decString debugName(GetDebugName());
+	pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] Create Enter",
+		debugName.GetString(), pPath.GetString());
 	pDebugTimer.Reset();
 }
 
 void deResourceLoaderTask::LogCreateExit(){
-	if( ! pResourceLoader.GetOutputDebugMessages() ){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
-	const decString debugName( GetDebugName() );
-	const float debugElapsed( pDebugTimer.GetElapsedTime() );
-	pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Task(%s)[%s] Create Exit (%.2fs)",
-		debugName.GetString(), pPath.GetString(), debugElapsed );
+	const decString debugName(GetDebugName());
+	const float debugElapsed(pDebugTimer.GetElapsedTime());
+	pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] Create Exit (%.2fs)",
+		debugName.GetString(), pPath.GetString(), debugElapsed);
 }
 
 void deResourceLoaderTask::LogRunEnter(){
-	if( ! pResourceLoader.GetOutputDebugMessages() ){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
-	const decString debugName( GetDebugName() );
-	pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Task(%s)[%s] Run Enter",
-		debugName.GetString(), pPath.GetString() );
+	const decString debugName(GetDebugName());
+	pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] Run Enter",
+		debugName.GetString(), pPath.GetString());
 	pDebugTimer.Reset();
 }
 
 void deResourceLoaderTask::LogRunExit(){
-	if( ! pResourceLoader.GetOutputDebugMessages() ){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
-	const decString debugName( GetDebugName() );
-	const float debugElapsed( pDebugTimer.GetElapsedTime() );
-	pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Task(%s)[%s] Run Exit (%.2fs)",
-		debugName.GetString(), pPath.GetString(), debugElapsed );
+	const decString debugName(GetDebugName());
+	const float debugElapsed(pDebugTimer.GetElapsedTime());
+	pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] Run Exit (%.2fs)",
+		debugName.GetString(), pPath.GetString(), debugElapsed);
 }
 
 void deResourceLoaderTask::LogFinishedEnter(){
-	if( ! pResourceLoader.GetOutputDebugMessages() ){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		return;
 	}
 	
-	const decString debugName( GetDebugName() );
-	pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Task(%s)[%s] Finished Enter",
-		debugName.GetString(), pPath.GetString() );
+	const decString debugName(GetDebugName());
+	pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] Finished Enter",
+		debugName.GetString(), pPath.GetString());
 	pDebugTimer.Reset();
 }
 
 void deResourceLoaderTask::LogFinishedExit(){
-	if( ! pResourceLoader.GetOutputDebugMessages() ){
+	if(!pResourceLoader.GetOutputDebugMessages()){
 		LogFinished();
 		return;
 	}
 	
-	const decString debugName( GetDebugName() );
-	const float debugElapsed( pDebugTimer.GetElapsedTime() );
-	pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Task(%s)[%s] Finished Exit (%.2fs)",
-		debugName.GetString(), pPath.GetString(), debugElapsed );
+	const decString debugName(GetDebugName());
+	const float debugElapsed(pDebugTimer.GetElapsedTime());
+	pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] Finished Exit (%.2fs)",
+		debugName.GetString(), pPath.GetString(), debugElapsed);
 	
 	LogFinished();
 }
 
 void deResourceLoaderTask::LogFinished(){
-	if( ! pResourceLoader.GetOutputDebugMessages() && pState != esFailed && ! IsCancelled() ){
+	if(!pResourceLoader.GetOutputDebugMessages() && pState != esFailed && !IsCancelled()){
 		return;
 	}
 	
-	const decString debugName( GetDebugName() );
+	const decString debugName(GetDebugName());
 	
 	const char *stateName = "?";
-	switch( pState ){
+	switch(pState){
 	case esPending:
 		stateName = "Pending";
 		break;
@@ -205,6 +205,6 @@ void deResourceLoaderTask::LogFinished(){
 		break;
 	}
 	
-	pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Task(%s)[%s] Finished: res=%p state=%s",
-		debugName.GetString(), pPath.GetString(), ( deResource* )pResource, stateName );
+	pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] Finished: res=%p state=%s",
+		debugName.GetString(), pPath.GetString(), (deResource*)pResource, stateName);
 }

@@ -47,48 +47,48 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxAnimationMove::fbxAnimationMove( fbxAnimation &animation, fbxNode &nodeStack ) :
-pAnimation( animation ),
-pNodeStack( nodeStack ),
-pNodeStackID( nodeStack.GetID() ),
-pNodeLayer( NULL ),
-pNodeLayerID( 0 ),
-pName( nodeStack.GetPropertyAt( 1 )->CastString().GetValue() ),
-pFrameRate( 25 )
+fbxAnimationMove::fbxAnimationMove(fbxAnimation &animation, fbxNode &nodeStack) :
+pAnimation(animation),
+pNodeStack(nodeStack),
+pNodeStackID(nodeStack.GetID()),
+pNodeLayer(NULL),
+pNodeLayerID(0),
+pName(nodeStack.GetPropertyAt(1)->CastString().GetValue()),
+pFrameRate(25)
 {
 	// find layer
 	decPointerList connections;
-	animation.GetScene().FindConnections( pNodeStackID, connections );
+	animation.GetScene().FindConnections(pNodeStackID, connections);
 	int i, conCount = connections.GetCount();
 	
-	for( i=0; i<conCount; i++ ){
-		const fbxConnection &connection = *( ( fbxConnection* )connections.GetAt( i ) );
-		if( connection.GetTarget() != pNodeStackID ){
+	for(i=0; i<conCount; i++){
+		const fbxConnection &connection = *((fbxConnection*)connections.GetAt(i));
+		if(connection.GetTarget() != pNodeStackID){
 			continue;
 		}
 		
-		pNodeLayer = animation.GetScene().NodeWithID( connection.GetSource() );
+		pNodeLayer = animation.GetScene().NodeWithID(connection.GetSource());
 		pNodeLayerID = pNodeLayer->GetID();
 		break;
 	}
 	
-	if( ! pNodeLayer ){
-		DETHROW_INFO( deeInvalidParam, "AnimationLayer missing for AnimationStack" );
+	if(!pNodeLayer){
+		DETHROW_INFO(deeInvalidParam, "AnimationLayer missing for AnimationStack");
 	}
 	
 	// find curve nodes
 	connections.RemoveAll();
-	animation.GetScene().FindConnections( pNodeLayerID, connections );
+	animation.GetScene().FindConnections(pNodeLayerID, connections);
 	conCount = connections.GetCount();
 	
-	for( i=0; i<conCount; i++ ){
-		const fbxConnection &connection = *( ( fbxConnection* )connections.GetAt( i ) );
-		if( connection.GetTarget() != pNodeLayerID ){
+	for(i=0; i<conCount; i++){
+		const fbxConnection &connection = *((fbxConnection*)connections.GetAt(i));
+		if(connection.GetTarget() != pNodeLayerID){
 			continue;
 		}
 		
-		fbxNode &node = *animation.GetScene().NodeWithID( connection.GetSource() );
-		if( node.GetName() == "AnimationCurveNode" ){
+		fbxNode &node = *animation.GetScene().NodeWithID(connection.GetSource());
+		if(node.GetName() == "AnimationCurveNode"){
 			pCurveNodes.Add(fbxAnimationMoveCurves::Ref::NewWith(*this, node));
 		}
 	}
@@ -102,7 +102,7 @@ fbxAnimationMove::~fbxAnimationMove(){
 // Management
 ///////////////
 
-void fbxAnimationMove::SetName( const char *name ){
+void fbxAnimationMove::SetName(const char *name){
 	pName = name;
 }
 
@@ -110,33 +110,33 @@ int fbxAnimationMove::GetCurvesCount() const{
 	return pCurveNodes.GetCount();
 }
 
-fbxAnimationMoveCurves *fbxAnimationMove::GetCurvesAt( int index ) const{
-	return ( fbxAnimationMoveCurves* )pCurveNodes.GetAt( index );
+fbxAnimationMoveCurves *fbxAnimationMove::GetCurvesAt(int index) const{
+	return (fbxAnimationMoveCurves*)pCurveNodes.GetAt(index);
 }
 
-void fbxAnimationMove::MatchRig( const fbxRig &rig ){
+void fbxAnimationMove::MatchRig(const fbxRig &rig){
 	const int count = pCurveNodes.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		fbxAnimationMoveCurves &curves = *( ( fbxAnimationMoveCurves* )pCurveNodes.GetAt( i ) );
-		curves.SetRigBone( rig.GetBoneNamed( curves.GetBoneName() ) );
+	for(i=0; i<count; i++){
+		fbxAnimationMoveCurves &curves = *((fbxAnimationMoveCurves*)pCurveNodes.GetAt(i));
+		curves.SetRigBone(rig.GetBoneNamed(curves.GetBoneName()));
 	}
 }
 
-void fbxAnimationMove::SetFrameRate( int frameRate ){
+void fbxAnimationMove::SetFrameRate(int frameRate){
 	pFrameRate = frameRate;
 }
 
-int fbxAnimationMove::TimeToFrame( float time ) const{
-	return ( int )( ( time * pFrameRate ) + 0.5f );
+int fbxAnimationMove::TimeToFrame(float time) const{
+	return (int)((time * pFrameRate) + 0.5f);
 }
 
-float fbxAnimationMove::FrameToTime( int frame ) const{
-	return ( float )frame / ( float )pFrameRate;
+float fbxAnimationMove::FrameToTime(int frame) const{
+	return (float)frame / (float)pFrameRate;
 }
 
-float fbxAnimationMove::QuantizeTime( float time ) const{
-	return floorf( ( time * pFrameRate ) + 0.5f ) / ( float )pFrameRate;
+float fbxAnimationMove::QuantizeTime(float time) const{
+	return floorf((time * pFrameRate) + 0.5f) / (float)pFrameRate;
 }
 
 
@@ -145,24 +145,24 @@ void fbxAnimationMove::Prepare(){
 	const int count = pCurveNodes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		GetCurvesAt( i )->Prepare();
+	for(i=0; i<count; i++){
+		GetCurvesAt(i)->Prepare();
 	}
 }
 
 
 
-void fbxAnimationMove::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose) const{
-	module.LogInfoFormat( "%sMove '%s': %d curve nodes", prefix.GetString(), pName.GetString(), pCurveNodes.GetCount() );
+void fbxAnimationMove::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
+	module.LogInfoFormat("%sMove '%s': %d curve nodes", prefix.GetString(), pName.GetString(), pCurveNodes.GetCount());
 	
-	if( ! verbose ){
+	if(!verbose){
 		return;
 	}
 	
 	const int curvesCount = pCurveNodes.GetCount();
-	const decString childPrefix( prefix + "  " );
+	const decString childPrefix(prefix + "  ");
 	int i;
-	for( i=0; i<curvesCount; i++ ){
-		GetCurvesAt( i )->DebugPrintStructure( module, childPrefix, true );
+	for(i=0; i<curvesCount; i++){
+		GetCurvesAt(i)->DebugPrintStructure(module, childPrefix, true);
 	}
 }

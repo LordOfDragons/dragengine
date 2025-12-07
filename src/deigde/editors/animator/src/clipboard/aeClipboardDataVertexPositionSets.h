@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataVertexPositionSets( const decStringSet &sets );
+	aeClipboardDataVertexPositionSets(const decStringSet &sets);
 	
 protected:
 	/**

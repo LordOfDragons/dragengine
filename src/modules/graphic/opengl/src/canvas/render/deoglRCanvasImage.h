@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasImage( deoglRenderThread &renderThread );
+	deoglRCanvasImage(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
 	virtual ~deoglRCanvasImage();
@@ -57,33 +57,33 @@ public:
 	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image or nullptr if not set. */
-	void SetImage( deoglRImage *image );
+	void SetImage(deoglRImage *image);
 	
 	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
 	/** Set texture coordinate transformation matrix. */
-	void SetTCTransform( const decTexMatrix2 &transform );
+	void SetTCTransform(const decTexMatrix2 &transform);
 	
 	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
 	/** Set texture coordinates clamp minimum. */
-	void SetTCClampMinimum( const decVector2 &clamp );
+	void SetTCClampMinimum(const decVector2 &clamp);
 	
 	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
 	/** Set texture coordinates clamp maximum. */
-	void SetTCClampMaximum( const decVector2 &clamp );
+	void SetTCClampMaximum(const decVector2 &clamp);
 	
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	virtual void Render(const deoglRenderCanvasContext &context);
 	/*@}*/
 };
 

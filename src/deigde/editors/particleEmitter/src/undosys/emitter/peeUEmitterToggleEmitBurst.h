@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUEmitterToggleEmitBurst( peeEmitter *emitter );
+	peeUEmitterToggleEmitBurst(peeEmitter *emitter);
 	
 protected:
 	/** \brief Clean up the undo action. */

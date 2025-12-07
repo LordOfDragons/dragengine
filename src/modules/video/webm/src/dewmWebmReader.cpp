@@ -34,12 +34,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-dewmWebmReader::dewmWebmReader( decBaseFileReader &reader ) :
-pReader( reader ),
-pLength( reader.GetLength() ),
-pPosition( ( std::uint64_t )0 )
+dewmWebmReader::dewmWebmReader(decBaseFileReader &reader) :
+pReader(reader),
+pLength(reader.GetLength()),
+pPosition((std::uint64_t)0)
 {
-	reader.SetPosition( 0 );
+	reader.SetPosition(0);
 }
 
 dewmWebmReader::~dewmWebmReader(){
@@ -50,29 +50,29 @@ dewmWebmReader::~dewmWebmReader(){
 // Management
 ///////////////
 
-webm::Status dewmWebmReader::Read( std::size_t num_to_read, std::uint8_t *buffer, std::uint64_t *num_actually_read ){
-	if( pPosition + num_to_read <= pLength ){
-		pReader.Read( buffer, ( int )num_to_read );
+webm::Status dewmWebmReader::Read(std::size_t num_to_read, std::uint8_t *buffer, std::uint64_t *num_actually_read){
+	if(pPosition + num_to_read <= pLength){
+		pReader.Read(buffer, (int)num_to_read);
 		pPosition += num_to_read;
 		*num_actually_read = num_to_read;
-		return webm::Status( webm::Status::Code::kOkCompleted );
+		return webm::Status(webm::Status::Code::kOkCompleted);
 		
 	}else{
 		*num_actually_read = ( std::uint64_t )0;
-		return webm::Status( webm::Status::Code::kEndOfFile );
+		return webm::Status(webm::Status::Code::kEndOfFile);
 	}
 }
 
-webm::Status dewmWebmReader::Skip( std::uint64_t num_to_skip, std::uint64_t *num_actually_skipped ){
-	if( pPosition + num_to_skip <= pLength ){
-		pReader.MovePosition( ( int )num_to_skip );
+webm::Status dewmWebmReader::Skip(std::uint64_t num_to_skip, std::uint64_t *num_actually_skipped){
+	if(pPosition + num_to_skip <= pLength){
+		pReader.MovePosition((int)num_to_skip);
 		pPosition += num_to_skip;
 		*num_actually_skipped = num_to_skip;
-		return webm::Status( webm::Status::Code::kOkCompleted );
+		return webm::Status(webm::Status::Code::kOkCompleted);
 		
 	}else{
 		*num_actually_skipped = ( std::uint64_t )0;
-		return webm::Status( webm::Status::Code::kEndOfFile );
+		return webm::Status(webm::Status::Code::kEndOfFile);
 	}
 }
 
@@ -80,8 +80,8 @@ std::uint64_t dewmWebmReader::Position() const{
 	return pPosition;
 }
 
-void dewmWebmReader::SetPosition( std::uint64_t position ){
-	DEASSERT_TRUE( position < ( ( std::uint64_t )1 << 32 ) )
-	pReader.SetPosition( ( int )position );
+void dewmWebmReader::SetPosition(std::uint64_t position){
+	DEASSERT_TRUE(position < ((std::uint64_t)1 << 32))
+	pReader.SetPosition((int)position);
 	pPosition = position;
 }

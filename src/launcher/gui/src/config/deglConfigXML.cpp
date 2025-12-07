@@ -75,10 +75,10 @@ void deglConfigXML::ReadFromFile(decBaseFileReader &reader, deglConfiguration &c
 	pReadConfig(*root, config);
 }
 
-void deglConfigXML::WriteToFile( decBaseFileWriter &writer, const deglConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void deglConfigXML::WriteToFile(decBaseFileWriter &writer, const deglConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	xmlWriter.WriteXMLDeclaration();
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 

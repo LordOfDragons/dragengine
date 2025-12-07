@@ -40,11 +40,11 @@
 ////////////////////////////
 
 deoglSkinStateMapped::deoglSkinStateMapped() :
-pValue( 0.0f ),
-pMapped( nullptr ),
-pComponent( nullptr ),
-pBone( -1 ),
-pBoneInputValue( 0.0f ){
+pValue(0.0f),
+pMapped(nullptr),
+pComponent(nullptr),
+pBone(-1),
+pBoneInputValue(0.0f){
 }
 
 deoglSkinStateMapped::~deoglSkinStateMapped(){
@@ -55,39 +55,39 @@ deoglSkinStateMapped::~deoglSkinStateMapped(){
 // Management
 ///////////////
 
-void deoglSkinStateMapped::SetValue( float value ){
+void deoglSkinStateMapped::SetValue(float value){
 	pValue = value;
 }
 
-void deoglSkinStateMapped::SetMapped( const deoglSkinMapped *mapped ){
+void deoglSkinStateMapped::SetMapped(const deoglSkinMapped *mapped){
 	pMapped = mapped;
 }
 
-void deoglSkinStateMapped::SetComponent( const deoglRComponent *component ){
+void deoglSkinStateMapped::SetComponent(const deoglRComponent *component){
 	pComponent = component;
 }
 
-void deoglSkinStateMapped::MapBone( const deComponent &component ){
+void deoglSkinStateMapped::MapBone(const deComponent &component){
 	pBone = -1;
 	
-	if( pMapped && component.GetRig() ){
+	if(pMapped && component.GetRig()){
 		const deRig &rig = *component.GetRig();
 		const decString &name = pMapped->GetMapped().GetBone();
-		if( ! name.IsEmpty() ){
-			pBone = rig.IndexOfBoneNamed( name );
+		if(!name.IsEmpty()){
+			pBone = rig.IndexOfBoneNamed(name);
 		}
 	}
 }
 
-void deoglSkinStateMapped::UpdateBone( const deComponent &component ){
+void deoglSkinStateMapped::UpdateBone(const deComponent &component){
 	const int boneCount = component.GetBoneCount();
-	if( pBone < 0 || pBone >= boneCount ){
+	if(pBone < 0 || pBone >= boneCount){
 		return;
 	}
 	
-	const deComponentBone &cbone = component.GetBoneAt( pBone );
+	const deComponentBone &cbone = component.GetBoneAt(pBone);
 	
-	switch( pMapped->GetMapped().GetInputType() ){
+	switch(pMapped->GetMapped().GetInputType()){
 	case deSkinMapped::eitBonePositionX:
 		pBoneInputValue = cbone.GetPosition().x;
 		break;
@@ -129,9 +129,9 @@ void deoglSkinStateMapped::UpdateBone( const deComponent &component ){
 	}
 }
 
-void deoglSkinStateMapped::Update( deoglSkinState &skinState ){
-	if( pMapped ){
-		pValue = pMapped->Calculate( skinState, *this );
+void deoglSkinStateMapped::Update(deoglSkinState &skinState){
+	if(pMapped){
+		pValue = pMapped->Calculate(skinState, *this);
 		
 	}else{
 		pValue = 0.0f;

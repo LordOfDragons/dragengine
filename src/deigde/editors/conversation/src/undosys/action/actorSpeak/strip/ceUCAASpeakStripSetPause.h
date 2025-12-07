@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripSetPause( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newPause );
+	ceUCAASpeakStripSetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newPause);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakStripSetPause();
 	/*@}*/
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new pause. */
-	void SetNewPause( float pause );
+	void SetNewPause(float pause);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetParameter( ceCameraShot *cameraShot, int parameter );
+	ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetParameter();
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets the new curve. */
-	void SetNewCurve( const decCurveBezier &curve );
+	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** \brief Undo. */
 	virtual void Undo();

@@ -86,8 +86,8 @@
 	static decTimer timer;
 
 	#define DEBUG_RESET_TIMERS				timer.Reset(); timerTotal.Reset()
-	#define DEBUG_PRINT_TIMER(what)			pBullet->LogInfoFormat( "TouchSensor Timer: %s = %iys", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )
-	#define DEBUG_PRINT_TIMER_TOTAL()		pBullet->LogInfoFormat( "TouchSensor Timer-Total = %iys", ( int )( timerTotal.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER(what)			pBullet->LogInfoFormat("TouchSensor Timer: %s = %iys", what, (int)(timer.GetElapsedTime() * 1000000.0))
+	#define DEBUG_PRINT_TIMER_TOTAL()		pBullet->LogInfoFormat("TouchSensor Timer-Total = %iys", (int)(timerTotal.GetElapsedTime() * 1000000.0))
 	
 	#ifdef DO_TIMING2
 		int timerTSPositionChanged = 0;
@@ -119,26 +119,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpTouchSensor::debpTouchSensor( dePhysicsBullet &bullet, deTouchSensor &touchSensor ) :
-pBullet( bullet ),
-pTouchSensor( touchSensor ),
-pParentWorld( nullptr ),
-pDirtyMatrix( true ),
-pDirtyExtends( true ),
-pGhostObject( nullptr ),
-pDebugDrawer( nullptr ),
-pDDSShape( nullptr )
+debpTouchSensor::debpTouchSensor(dePhysicsBullet &bullet, deTouchSensor &touchSensor) :
+pBullet(bullet),
+pTouchSensor(touchSensor),
+pParentWorld(nullptr),
+pDirtyMatrix(true),
+pDirtyExtends(true),
+pGhostObject(nullptr),
+pDebugDrawer(nullptr),
+pDDSShape(nullptr)
 {
 	try{
 		pGhostObject = new debpGhostObject;
-		pGhostObject->SetOwnerTouchSensor( this );
-		pGhostObject->SetPosition( touchSensor.GetPosition() );
-		pGhostObject->SetOrientation( touchSensor.GetOrientation() );
-		pGhostObject->SetEnabled( touchSensor.GetEnabled() );
+		pGhostObject->SetOwnerTouchSensor(this);
+		pGhostObject->SetPosition(touchSensor.GetPosition());
+		pGhostObject->SetOrientation(touchSensor.GetOrientation());
+		pGhostObject->SetEnabled(touchSensor.GetEnabled());
 		
 		ShapeChanged();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -153,33 +153,33 @@ debpTouchSensor::~debpTouchSensor(){
 // Management
 ///////////////
 
-void debpTouchSensor::SetParentWorld( debpWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void debpTouchSensor::SetParentWorld(debpWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
 	pClearTracking();
 	
-	if( pParentWorld ){
-		if( pDebugDrawer ){
-			pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+	if(pParentWorld){
+		if(pDebugDrawer){
+			pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 		}
 	}
 	
 	pParentWorld = parentWorld;
 	
-	if( parentWorld ){
-		if( pDebugDrawer ){
-			parentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
+	if(parentWorld){
+		if(pDebugDrawer){
+			parentWorld->GetWorld().AddDebugDrawer(pDebugDrawer);
 		}
 	}
 	
 	// if tracking enter-leave all remaining changes have to be applied now
 	/*
-	if( pTouchSensor->GetTrackEnterLeave() ){
+	if(pTouchSensor->GetTrackEnterLeave()){
 		int i;
-		for( i=0; i<pShapeCount; i++ ){
-			pShapes[ i ]->ApplyChanges();
+		for(i=0; i<pShapeCount; i++){
+			pShapes[i]->ApplyChanges();
 		}
 	}
 	*/
@@ -187,17 +187,17 @@ void debpTouchSensor::SetParentWorld( debpWorld *parentWorld ){
 	// update dynamic world in ghost objects
 	debpCollisionWorld *bpdynworld = NULL;
 	
-	if( parentWorld ){
+	if(parentWorld){
 		bpdynworld = parentWorld->GetDynamicsWorld();
 	}
 	
-	pGhostObject->SetDynamicsWorld( bpdynworld );
+	pGhostObject->SetDynamicsWorld(bpdynworld);
 }
 
 
 
 const decDVector &debpTouchSensor::GetMinimumExtend(){
-	if( pDirtyExtends ){
+	if(pDirtyExtends){
 		pUpdateExtends();
 		pDirtyExtends = false;
 	}
@@ -206,7 +206,7 @@ const decDVector &debpTouchSensor::GetMinimumExtend(){
 }
 
 const decDVector &debpTouchSensor::GetMaximumExtend(){
-	if( pDirtyExtends ){
+	if(pDirtyExtends){
 		pUpdateExtends();
 		pDirtyExtends = false;
 	}
@@ -217,7 +217,7 @@ const decDVector &debpTouchSensor::GetMaximumExtend(){
 
 
 const decDMatrix &debpTouchSensor::GetMatrix(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		pUpdateMatrix();
 		pDirtyMatrix = false;
 	}
@@ -226,7 +226,7 @@ const decDMatrix &debpTouchSensor::GetMatrix(){
 }
 
 const decDMatrix &debpTouchSensor::GetInverseMatrix(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		pUpdateMatrix();
 		pDirtyMatrix = false;
 	}
@@ -237,12 +237,12 @@ const decDMatrix &debpTouchSensor::GetInverseMatrix(){
 
 
 void debpTouchSensor::ApplyChanges(){
-	if( ! pTouchSensor.GetTrackEnterLeave() ){
+	if(!pTouchSensor.GetTrackEnterLeave()){
 		const debpDeveloperMode &devmode = pBullet.GetDeveloperMode();
 		
-		if( devmode.GetEnabled()
+		if(devmode.GetEnabled()
 		&& devmode.GetShowCategory().IsNotEmpty()
-		&& devmode.GetShowCategory().Matches( pTouchSensor.GetCollisionFilter().GetCategory() ) ){
+		&& devmode.GetShowCategory().Matches(pTouchSensor.GetCollisionFilter().GetCategory())){
 			UpdateDebugDrawer();
 		}
 		
@@ -251,10 +251,10 @@ void debpTouchSensor::ApplyChanges(){
 	
 	// NOTE it is possible the user removes touch sensors during tracking changes. to avoid problems
 	//      touch sensors are keeping a fake reference while applying changes to not vanish underneath
-	const deTouchSensor::Ref guard( &pTouchSensor );
+	const deTouchSensor::Ref guard(&pTouchSensor);
 	
 	// this function is only called if tracking enter-leave is enabled
-	if( pGhostObject->GetGhostObject() ){
+	if(pGhostObject->GetGhostObject()){
 		// check all collision pairs in the ghost collider for touching the sensor
 		// 
 		// NOTE bullet ghost object uses only AABB for collecting overlapping object pairs.
@@ -264,15 +264,15 @@ void debpTouchSensor::ApplyChanges(){
 		const int count = ghostObject.getNumOverlappingObjects();
 		
 		int i, touchingCount = pTouchingColliders.GetCount();
-		for( i=0; i<touchingCount; i++ ){
-			( ( debpCollider* )pTouchingColliders.GetAt( i ) )->SetTouchSensorMarked( false );
+		for(i=0; i<touchingCount; i++){
+			((debpCollider*)pTouchingColliders.GetAt(i))->SetTouchSensorMarked(false);
 		}
 		
-		for( i=0; i<count; i++ ){
-			const btCollisionObject * const btColObj = ghostObject.getOverlappingObject( i );
-			const debpCollisionObject &colObj = *( ( debpCollisionObject* )btColObj->getUserPointer() );
+		for(i=0; i<count; i++){
+			const btCollisionObject * const btColObj = ghostObject.getOverlappingObject(i);
+			const debpCollisionObject &colObj = *((debpCollisionObject*)btColObj->getUserPointer());
 			
-			if( colObj.IsOwnerCollider() ){
+			if(colObj.IsOwnerCollider()){
 				debpCollider * const collider = colObj.GetOwnerCollider();
 				
 				// temporary hack. if the collider is dynamic UpdateShapes is not called and collision fails
@@ -280,32 +280,32 @@ void debpTouchSensor::ApplyChanges(){
 // 					collider->UpdateShapes();
 // 				}
 				
-				collider->SetTouchSensorMarked( true );
+				collider->SetTouchSensorMarked(true);
 				
-				if( TestCollider( collider ) ){
-					if( ! pTouchingColliders.Has( collider ) ){
-						if( pLeavingColliders.Has( collider ) ){
-							pLeavingColliders.Remove( collider );
-							pTouchingColliders.Add( collider );
+				if(TestCollider(collider)){
+					if(!pTouchingColliders.Has(collider)){
+						if(pLeavingColliders.Has(collider)){
+							pLeavingColliders.Remove(collider);
+							pTouchingColliders.Add(collider);
 							
 						}else{
-							pTouchingColliders.Add( collider );
-							collider->GetTrackingTouchSensors().Add( this );
+							pTouchingColliders.Add(collider);
+							collider->GetTrackingTouchSensors().Add(this);
 						}
 						
-						pTouchSensor.NotifyColliderEntered( &collider->GetCollider() );
+						pTouchSensor.NotifyColliderEntered(&collider->GetCollider());
 						// at this point we might have been removed from the parent world
 						// by the user. in this case pParentWorld is NULL and all further
 						// actions are invalid. we need to quit the loop
-						if( ! pParentWorld ){
+						if(!pParentWorld){
 							break;
 						}
 					}
 					
 				}else{
-					if( pTouchingColliders.Has( collider ) ){
-						pTouchingColliders.Remove( collider );
-						pLeavingColliders.Add( collider );
+					if(pTouchingColliders.Has(collider)){
+						pTouchingColliders.Remove(collider);
+						pLeavingColliders.Add(collider);
 					}
 				}
 				
@@ -315,37 +315,37 @@ void debpTouchSensor::ApplyChanges(){
 		}
 		
 		// add all non-marked colliders to leaving list
-		for( i=pTouchingColliders.GetCount()-1; i>=0; i-- ){
-			debpCollider * const collider = ( debpCollider* )pTouchingColliders.GetAt( i );
-			if( collider->GetTouchSensorMarked() ){
+		for(i=pTouchingColliders.GetCount()-1; i>=0; i--){
+			debpCollider * const collider = (debpCollider*)pTouchingColliders.GetAt(i);
+			if(collider->GetTouchSensorMarked()){
 				continue;
 			}
 			
-			pTouchingColliders.Remove( collider );
-			pLeavingColliders.Add( collider );
+			pTouchingColliders.Remove(collider);
+			pLeavingColliders.Add(collider);
 		}
 		
 		// send a notification for all leaving colliders. if we have been removed from the
 		// parent world in the mean time pLeavingColliders is empty so no need to check
 		// if pParentWorld is NULL
-		while( pLeavingColliders.GetCount() > 0 ){
+		while(pLeavingColliders.GetCount() > 0){
 			const int index = pLeavingColliders.GetCount() - 1;
-			debpCollider * const collider = ( debpCollider* )pLeavingColliders.GetAt( index );
-			pLeavingColliders.RemoveFrom( index );
-			collider->GetTrackingTouchSensors().Remove( this );
+			debpCollider * const collider = (debpCollider*)pLeavingColliders.GetAt(index);
+			pLeavingColliders.RemoveFrom(index);
+			collider->GetTrackingTouchSensors().Remove(this);
 			
-			pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+			pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
 		}
 		
 	}else{
 		// all colliders left the shape
-		while( pTouchingColliders.GetCount() > 0 ){
+		while(pTouchingColliders.GetCount() > 0){
 			const int index = pTouchingColliders.GetCount() - 1;
-			debpCollider * const collider = ( debpCollider* )pTouchingColliders.GetAt( index );
-			pTouchingColliders.RemoveFrom( index );
-			collider->GetTrackingTouchSensors().Remove( this );
+			debpCollider * const collider = (debpCollider*)pTouchingColliders.GetAt(index);
+			pTouchingColliders.RemoveFrom(index);
+			collider->GetTrackingTouchSensors().Remove(this);
 			
-			pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+			pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
 		}
 	}
 	
@@ -358,29 +358,29 @@ void debpTouchSensor::MarkGhostObjectDirty(){
 	/*
 	btGhostObject * const ghostObject = pGhostObject->GetGhostObject();
 	
-	if( ghostObject ){
+	if(ghostObject){
 		// force an update. basically this is m_updateRevision++; but the parameter is
 		// protected and out of reach. setting the collision shape updates the revision
 		// number while doing little work (assigning two pointers). it's the cheapest
 		// way to do the update
-		ghostObject->setCollisionShape( ghostObject->getCollisionShape() );
+		ghostObject->setCollisionShape(ghostObject->getCollisionShape());
 	}
 	*/
 }
 
-bool debpTouchSensor::Collides( const debpCollider &collider ) const{
+bool debpTouchSensor::Collides(const debpCollider &collider) const{
 	deCollider &engCollider = collider.GetCollider();
-	return pTouchSensor.GetCollisionFilter().Collides( engCollider.GetCollisionFilter() )
-		&& ! pTouchSensor.HasIgnoreCollider( &engCollider );
+	return pTouchSensor.GetCollisionFilter().Collides(engCollider.GetCollisionFilter())
+		&& !pTouchSensor.HasIgnoreCollider(&engCollider);
 }
 
-bool debpTouchSensor::CollidesNot( const debpCollider &collider ) const{
+bool debpTouchSensor::CollidesNot(const debpCollider &collider) const{
 	deCollider &engCollider = collider.GetCollider();
-	return pTouchSensor.GetCollisionFilter().CollidesNot( engCollider.GetCollisionFilter() )
-		|| pTouchSensor.HasIgnoreCollider( &engCollider );
+	return pTouchSensor.GetCollisionFilter().CollidesNot(engCollider.GetCollisionFilter())
+		|| pTouchSensor.HasIgnoreCollider(&engCollider);
 }
 
-bool debpTouchSensor::TestCollider( debpCollider *collider ){
+bool debpTouchSensor::TestCollider(debpCollider *collider){
 	const decDMatrix &transformation = GetMatrix();
 	debpDCollisionBox approxColliderBox;
 	
@@ -393,8 +393,8 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 	// approximated test here so we have to do this manually.
 	bool preciseTesting = true;
 	
-	if( collider->IsComponent() ){
-		switch( ( ( debpColliderComponent* )collider )->GetTestMode() ){
+	if(collider->IsComponent()){
+		switch(((debpColliderComponent*)collider)->GetTestMode()){
 		case debpColliderComponent::etmModelStatic:
 			// if the face count is small we can do a precise test. but right now better not
 			preciseTesting = false;
@@ -409,31 +409,31 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 			break;
 		}
 		
-		if( ! preciseTesting ){
+		if(!preciseTesting){
 			// Get{Min,Max}imumExtend is deprecated. use btCollisionShape AABB instead
-			approxColliderBox.SetFromExtends( collider->GetMinimumExtend(), collider->GetMaximumExtend() );
+			approxColliderBox.SetFromExtends(collider->GetMinimumExtend(), collider->GetMaximumExtend());
 		}
 	}
 	
-	if( preciseTesting ){
+	if(preciseTesting){
 		debpCollisionWorld &cw = *pGhostObject->GetDynamicsWorld();
 		btGhostObject * const go = pGhostObject->GetGhostObject();
 		
-		if( collider->IsVolume() ){
+		if(collider->IsVolume()){
 			const debpColliderVolume &volume = *collider->CastToVolume();
 			
 			return volume.GetPhysicsBody()
 				&& volume.GetPhysicsBody()->GetRigidBody()
-				&& cw.safeContactPairTest( go, volume.GetPhysicsBody()->GetRigidBody() );
+				&& cw.safeContactPairTest(go, volume.GetPhysicsBody()->GetRigidBody());
 			
-		}else if( collider->IsComponent() ){
+		}else if(collider->IsComponent()){
 			const debpColliderComponent &component = *collider->CastToComponent();
 			
-			if( component.GetSimplePhysicsBody() ){
+			if(component.GetSimplePhysicsBody()){
 					/*
 					if(component.GetCollider().GetPosition().IsEqualTo(decDVector(2.161,0.0,3.549), 0.1)){
 						const bool r = component.GetSimplePhysicsBody()->GetRigidBody()
-							&& cw.safeContactPairTest( go, component.GetSimplePhysicsBody()->GetRigidBody() );
+							&& cw.safeContactPairTest(go, component.GetSimplePhysicsBody()->GetRigidBody());
 						pBullet.LogInfoFormat("BulletBug.TouchSensor.TestCollider: %d", r);
 						
 						if(r){
@@ -441,11 +441,11 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 							const int count = sl.GetShapeCount();
 							debpShapeToLog visitor;
 							int i;
-							for( i=0; i<count; i++ ){
+							for(i=0; i<count; i++){
 								if(sl.GetShapeAt(i)->GetShape()){
 									visitor.Reset();
-									sl.GetShapeAt( i )->GetShape()->Visit( visitor );
-									pBullet.LogWarnFormat( "  %d: %s", i, visitor.GetLog().GetString() );
+									sl.GetShapeAt(i)->GetShape()->Visit(visitor);
+									pBullet.LogWarnFormat("  %d: %s", i, visitor.GetLog().GetString());
 								}
 							}
 						}
@@ -454,54 +454,54 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 					}
 					*/
 				return component.GetSimplePhysicsBody()->GetRigidBody()
-					&& cw.safeContactPairTest( go, component.GetSimplePhysicsBody()->GetRigidBody() );
+					&& cw.safeContactPairTest(go, component.GetSimplePhysicsBody()->GetRigidBody());
 				
-			}else if( component.GetBones() ){
+			}else if(component.GetBones()){
 				const debpColliderBones &bones = *component.GetBones();
 				const int boneCount = bones.GetBonePhysicsCount();
 				int i;
 				
-				for( i=0; i<boneCount; i++ ){
-					const debpPhysicsBody * const phyBody = bones.GetBonePhysicsAt( i ).GetPhysicsBody();
-					if( phyBody && phyBody->GetRigidBody() && cw.safeContactPairTest( go, phyBody->GetRigidBody() ) ){
+				for(i=0; i<boneCount; i++){
+					const debpPhysicsBody * const phyBody = bones.GetBonePhysicsAt(i).GetPhysicsBody();
+					if(phyBody && phyBody->GetRigidBody() && cw.safeContactPairTest(go, phyBody->GetRigidBody())){
 						return true;
 					}
 				}
 			}
 			
-		}else if( collider->IsRigged() ){
+		}else if(collider->IsRigged()){
 			const debpColliderRig &rig = *collider->CastToRigged();
 			
-			if( rig.GetSimplePhysicsBody() ){
+			if(rig.GetSimplePhysicsBody()){
 				return rig.GetSimplePhysicsBody()->GetRigidBody()
-					&& cw.safeContactPairTest( go, rig.GetSimplePhysicsBody()->GetRigidBody() );
+					&& cw.safeContactPairTest(go, rig.GetSimplePhysicsBody()->GetRigidBody());
 				
-			}else if( rig.GetBones() ){
+			}else if(rig.GetBones()){
 				debpColliderBones &bones = *rig.GetBones();
 				const int boneCount = bones.GetBonePhysicsCount();
 				int i;
 				
-				for( i=0; i<boneCount; i++ ){
-					const debpPhysicsBody * const phyBody = bones.GetBonePhysicsAt( i ).GetPhysicsBody();
-					if( phyBody && phyBody->GetRigidBody() && cw.safeContactPairTest( go, phyBody->GetRigidBody() ) ){
+				for(i=0; i<boneCount; i++){
+					const debpPhysicsBody * const phyBody = bones.GetBonePhysicsAt(i).GetPhysicsBody();
+					if(phyBody && phyBody->GetRigidBody() && cw.safeContactPairTest(go, phyBody->GetRigidBody())){
 						return true;
 					}
 				}
 			}
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		const decDVector scale( transformation.GetScale() );
+		const decDVector scale(transformation.GetScale());
 		const int count = pShape.GetShapeCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			debpShape &shape = *pShape.GetShapeAt( i );
-			shape.UpdateWithMatrix( transformation, scale );
-			if( shape.GetCollisionVolume()->BoxHitsVolume( &approxColliderBox ) ){
+		for(i=0; i<count; i++){
+			debpShape &shape = *pShape.GetShapeAt(i);
+			shape.UpdateWithMatrix(transformation, scale);
+			if(shape.GetCollisionVolume()->BoxHitsVolume(&approxColliderBox)){
 				return true;
 			}
 		}
@@ -510,24 +510,24 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 	return false;
 }
 
-void debpTouchSensor::RemoveColliderImmediately( debpCollider *collider ){
-	if( ! pTouchSensor.GetTrackEnterLeave() ){
+void debpTouchSensor::RemoveColliderImmediately(debpCollider *collider){
+	if(!pTouchSensor.GetTrackEnterLeave()){
 		return;
 	}
 	
-	const deTouchSensor::Ref guard( &pTouchSensor );
+	const deTouchSensor::Ref guard(&pTouchSensor);
 	
-	int index = pLeavingColliders.IndexOf( collider );
-	if( index != -1 ){
-		pLeavingColliders.RemoveFrom( index );
-		pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+	int index = pLeavingColliders.IndexOf(collider);
+	if(index != -1){
+		pLeavingColliders.RemoveFrom(index);
+		pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
 		return;
 	}
 	
-	index = pTouchingColliders.IndexOf( collider );
-	if( index != -1 ){
-		pTouchingColliders.RemoveFrom( index );
-		pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+	index = pTouchingColliders.IndexOf(collider);
+	if(index != -1){
+		pTouchingColliders.RemoveFrom(index);
+		pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
 	}
 }
 
@@ -544,12 +544,12 @@ void debpTouchSensor::PositionChanged(){
 	pDirtyExtends = true;
 	
 	const decDVector &position = pTouchSensor.GetPosition();
-	pGhostObject->SetPosition( position );
-	if( pDebugDrawer ){
-		pDebugDrawer->SetPosition( position );
+	pGhostObject->SetPosition(position);
+	if(pDebugDrawer){
+		pDebugDrawer->SetPosition(position);
 	}
 	#ifdef DO_TIMING2
-	timerTSPositionChanged += ( int )( timer.GetElapsedTime() * 1e6f );
+	timerTSPositionChanged += (int)(timer.GetElapsedTime() * 1e6f);
 	timerTSPositionChangedCount++;
 	#endif
 }
@@ -562,12 +562,12 @@ void debpTouchSensor::OrientationChanged(){
 	pDirtyExtends = true;
 	
 	const decQuaternion &orientation = pTouchSensor.GetOrientation();
-	pGhostObject->SetOrientation( orientation );
-	if( pDebugDrawer ){
-		pDebugDrawer->SetOrientation( orientation );
+	pGhostObject->SetOrientation(orientation);
+	if(pDebugDrawer){
+		pDebugDrawer->SetOrientation(orientation);
 	}
 	#ifdef DO_TIMING2
-	timerTSOrientationChanged += ( int )( timer.GetElapsedTime() * 1e6f );
+	timerTSOrientationChanged += (int)(timer.GetElapsedTime() * 1e6f);
 	timerTSOrientationChangedCount++;
 	#endif
 }
@@ -583,9 +583,9 @@ void debpTouchSensor::IgnoreCollidersChanged(){
 }
 
 void debpTouchSensor::EnabledChanged(){
-	pGhostObject->SetEnabled( pTouchSensor.GetEnabled() );
+	pGhostObject->SetEnabled(pTouchSensor.GetEnabled());
 	
-	if( ! pTouchSensor.GetEnabled() ){
+	if(!pTouchSensor.GetEnabled()){
 		pClearTracking();
 	}
 }
@@ -603,8 +603,8 @@ int debpTouchSensor::GetColliderCount(){
 	return pTouchingColliders.GetCount();
 }
 
-deCollider *debpTouchSensor::GetColliderAt( int collider ){
-	return &( ( debpCollider* )pTouchingColliders.GetAt( collider ) )->GetCollider();
+deCollider *debpTouchSensor::GetColliderAt(int collider){
+	return &((debpCollider*)pTouchingColliders.GetAt(collider))->GetCollider();
 }
 
 
@@ -614,27 +614,27 @@ void debpTouchSensor::ShapeChanged(){
 	const int count = shapeList.GetCount();
 	
 	pShape.RemoveAllShapes();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	debpCreateShape createShape;
 	int i;
-	for( i=0; i<count; i++ ){
-		shapeList.GetAt( i )->Visit( createShape );
-		if( ! createShape.GetCreatedShape() ){
-			DETHROW( deeInvalidParam );
+	for(i=0; i<count; i++){
+		shapeList.GetAt(i)->Visit(createShape);
+		if(!createShape.GetCreatedShape()){
+			DETHROW(deeInvalidParam);
 		}
-		pShape.AddShape( createShape.GetCreatedShape() );
+		pShape.AddShape(createShape.GetCreatedShape());
 	}
 	
 	// update ghost object shape
 	debpCreateBulletShape createBulletShape;
-	for( i=0; i<count; i++ ){
-		shapeList.GetAt( i )->Visit( createBulletShape );
+	for(i=0; i<count; i++){
+		shapeList.GetAt(i)->Visit(createBulletShape);
 	}
 	createBulletShape.Finish();
-	pGhostObject->SetShape( createBulletShape.GetBulletShape() );
+	pGhostObject->SetShape(createBulletShape.GetBulletShape());
 	
 	pCalculateBasicExtends();
 }
@@ -644,21 +644,21 @@ void debpTouchSensor::ShapeChanged(){
 // Collision Detection
 ////////////////////////
 
-bool debpTouchSensor::PointInside( const decDVector &point ){
+bool debpTouchSensor::PointInside(const decDVector &point){
 	return pBullet.GetCollisionDetection().GetBulletShapeCollision().IsPointInside(
 		*pGhostObject->GetGhostObject(), btVector3( ( btScalar )point.x,
-			( btScalar )point.y, ( btScalar )point.z ) );
+			(btScalar)point.y, (btScalar)point.z));
 }
 
-void debpTouchSensor::AllHits( deBaseScriptingCollider *listener ){
+void debpTouchSensor::AllHits(deBaseScriptingCollider *listener){
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pGhostObject->GetGhostObject() ){
+	if(!pGhostObject->GetGhostObject()){
 		return;
 	}
 	
@@ -675,53 +675,53 @@ timer.Reset();
 		const int colobjCount = colobjs.size();
 		int i;
 		
-		for( i=0; i<colobjCount; i++ ){
+		for(i=0; i<colobjCount; i++){
 			const debpCollisionObject &colObj =
 				*( ( debpCollisionObject* )colobjs.at( i )->getUserPointer() );
 			
-			if( colObj.IsOwnerCollider() ){
+			if(colObj.IsOwnerCollider()){
 				// huge problem. colliders composing of multiple rigid bodies (bones in general)
 				// results in the collider being visited multiple times which is not what the
 				// function is supposed to do
-				if( TestCollider( colObj.GetOwnerCollider() ) ){
-					colinfo->SetCollider( &colObj.GetOwnerCollider()->GetCollider(), -1, -1, -1 );
-					listener->CollisionResponse( NULL, colinfo );
+				if(TestCollider(colObj.GetOwnerCollider())){
+					colinfo->SetCollider(&colObj.GetOwnerCollider()->GetCollider(), -1, -1, -1);
+					listener->CollisionResponse(NULL, colinfo);
 				}
 				
-			}else if( colObj.IsOwnerHTSector() ){
+			}else if(colObj.IsOwnerHTSector()){
 				// how can we test if this really overlaps?
 				const debpHTSector &hts = *colObj.GetOwnerHTSector();
-				colinfo->SetHTSector( hts.GetHeightTerrain()->GetHeightTerrain(), hts.GetSector() );
-				listener->CollisionResponse( NULL, colinfo );
+				colinfo->SetHTSector(hts.GetHeightTerrain()->GetHeightTerrain(), hts.GetSector());
+				listener->CollisionResponse(NULL, colinfo);
 			}
 		}
 		
 		pGhostObject->GetDynamicsWorld()->GetDelayedOperation().Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pGhostObject->GetDynamicsWorld()->GetDelayedOperation().Unlock();
 		throw;
 	}
 #ifdef DO_TIMING2
-timerTSRayHits += ( int )( timer.GetElapsedTime() * 1e6f );
+timerTSRayHits += (int)(timer.GetElapsedTime() * 1e6f);
 timerTSRayHitsCount++;
 #endif
 }
 
-void debpTouchSensor::RayHits( const decDVector &rayOrigin, const decVector &rayDirection,
-deBaseScriptingCollider *listener ){
+void debpTouchSensor::RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+deBaseScriptingCollider *listener){
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
 	
 // 	printf( "touchSensor=%p shape=%p rayHits rayOrigin=(%f,%f,%f) rayDirection=(%f,%f,%f)\n", pTouchSensor, this,
 // 		rayOrigin.x, rayOrigin.y, rayOrigin.z, rayDirection.x, rayDirection.y, rayDirection.z );
 #define BULLET_RAY_CAST_UNSTABLE 1
 	
-	if( ! pGhostObject->GetGhostObject() ){
+	if(!pGhostObject->GetGhostObject()){
 		return;
 	}
 	
@@ -733,23 +733,23 @@ timer.Reset();
 		debpCollisionDetection &coldet = pBullet.GetCollisionDetection();
 		deCollisionInfo * const colinfo = coldet.GetCollisionInfo();
 		
-		const btVector3 btRayFrom( ( btScalar )rayOrigin.x,
-			( btScalar )rayOrigin.y, ( btScalar )rayOrigin.z );
-		const decDVector rayTo( rayOrigin + rayDirection );
-		const btVector3 btRayTo( ( btScalar )rayTo.x, ( btScalar )rayTo.y, ( btScalar )rayTo.z );
-		const btQuaternion btOrientation( BT_ZERO, BT_ZERO, BT_ZERO, BT_ONE );
+		const btVector3 btRayFrom((btScalar)rayOrigin.x,
+			(btScalar)rayOrigin.y, (btScalar)rayOrigin.z);
+		const decDVector rayTo(rayOrigin + rayDirection);
+		const btVector3 btRayTo((btScalar)rayTo.x, (btScalar)rayTo.y, (btScalar)rayTo.z);
+		const btQuaternion btOrientation(BT_ZERO, BT_ZERO, BT_ZERO, BT_ONE);
 		
-		const btTransform rayFromTrans( btOrientation, btRayFrom );
-		const btTransform rayToTrans( btOrientation, btRayTo );
+		const btTransform rayFromTrans(btOrientation, btRayFrom);
+		const btTransform rayToTrans(btOrientation, btRayTo);
 		
 		#ifdef BULLET_RAY_CAST_UNSTABLE
 			// bullet has a broken ray-box test implementation using Gjk which has a tendency
 			// to miss collisions half of the time. as a quick fix a sweep test is done with
 			// a tiny sphere which yields a comparable result but is not prone to the problem
-			debpTSConvexResultCallback result( colinfo, *this );
-			result.SetTestRay( NULL, listener );
-			colinfo->SetStopTesting( false );
-			coldet.GetRayHackShape().SweepTest( *pGhostObject, rayFromTrans, rayToTrans, result );
+			debpTSConvexResultCallback result(colinfo, *this);
+			result.SetTestRay(NULL, listener);
+			colinfo->SetStopTesting(false);
+			coldet.GetRayHackShape().SweepTest(*pGhostObject, rayFromTrans, rayToTrans, result);
 			
 		#else
 			const btAlignedObjectArray<btCollisionObject*> &colobjs =
@@ -759,35 +759,35 @@ timer.Reset();
 			
 			// update abbbs?
 			
-			debpTSRayResultCallback result( colinfo, *pTouchSensor );
-			result.SetTestRay( rayOrigin, rayDirection, NULL, 0, listener );
-			colinfo->SetStopTesting( false );
+			debpTSRayResultCallback result(colinfo, *pTouchSensor);
+			result.SetTestRay(rayOrigin, rayDirection, NULL, 0, listener);
+			colinfo->SetStopTesting(false);
 			
-			for( i=0; i<colobjCount; i++ ){
-				btCollisionObject * const colobj = colobjs.at( i );
+			for(i=0; i<colobjCount; i++){
+				btCollisionObject * const colobj = colobjs.at(i);
 				
-				if( result.needsCollision( colobj->getBroadphaseHandle() ) ){
-					debpCollisionWorld::rayTestSingle( rayFromTrans, rayToTrans, colobj,
-						colobj->getCollisionShape(), colobj->getWorldTransform(), result );
+				if(result.needsCollision(colobj->getBroadphaseHandle())){
+					debpCollisionWorld::rayTestSingle(rayFromTrans, rayToTrans, colobj,
+						colobj->getCollisionShape(), colobj->getWorldTransform(), result);
 				}
 			}
 		#endif
 		
 		pGhostObject->GetDynamicsWorld()->GetDelayedOperation().Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pGhostObject->GetDynamicsWorld()->GetDelayedOperation().Unlock();
 		throw;
 	}
 #ifdef DO_TIMING2
-timerTSRayHits += ( int )( timer.GetElapsedTime() * 1e6f );
+timerTSRayHits += (int)(timer.GetElapsedTime() * 1e6f);
 timerTSRayHitsCount++;
 #endif
 }
 
 static btManifoldPoint vDummyManifoldPoint; // Dummy manifold point to be used where bullet requires one but dragengine not
 
-void debpTouchSensor::ColliderHits( deCollider *collider, deBaseScriptingCollider *listener ){
+void debpTouchSensor::ColliderHits(deCollider *collider, deBaseScriptingCollider *listener){
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
@@ -809,178 +809,178 @@ timer.Reset();
 		pColliderHitsLocked(*collider, *listener);
 		pGhostObject->GetDynamicsWorld()->GetDelayedOperation().Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pGhostObject->GetDynamicsWorld()->GetDelayedOperation().Unlock();
 		throw;
 	}
 #ifdef DO_TIMING2
-timerTSColliderHits += ( int )( timer.GetElapsedTime() * 1e6f );
+timerTSColliderHits += (int)(timer.GetElapsedTime() * 1e6f);
 timerTSColliderHitsCount++;
 #endif
 }
 
-void debpTouchSensor::ColliderMoveHits( deCollider *collider, const decVector &displacement,
-deBaseScriptingCollider *listener ){
+void debpTouchSensor::ColliderMoveHits(deCollider *collider, const decVector &displacement,
+deBaseScriptingCollider *listener){
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if( ! collider || ! listener ){
-		DETHROW( deeInvalidParam );
+	if(!collider || !listener){
+		DETHROW(deeInvalidParam);
 	}
 	
 // 	printf( "touchSensor=%p shape=%p colliderMoveHits pos=(%f,%f,%f) disp(%f,%f,%f)\n", pTouchSensor, this,
 // 		   engCollider->GetPosition().x, engCollider->GetPosition().y, engCollider->GetPosition().z,
 // 		   displacement.x, displacement.y, displacement.z );
 	
-	if( ! pGhostObject->GetGhostObject() ){
+	if(!pGhostObject->GetGhostObject()){
 		return;
 	}
 	
 	debpCollisionDetection &coldet = pBullet.GetCollisionDetection();
 	deCollisionInfo * const colinfo = coldet.GetCollisionInfo();
-	debpCollider *bpCollider = ( debpCollider* )collider->GetPeerPhysics();
+	debpCollider *bpCollider = (debpCollider*)collider->GetPeerPhysics();
 	
-	debpTSConvexResultCallback result( colinfo, *this );
-	result.SetTestCollider( bpCollider, listener );
-	colinfo->SetStopTesting( false );
+	debpTSConvexResultCallback result(colinfo, *this);
+	result.SetTestCollider(bpCollider, listener);
+	colinfo->SetStopTesting(false);
 	
-	if( bpCollider->IsVolume() ){
+	if(bpCollider->IsVolume()){
 		debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if( sweepCollisionTest.GetShapeList().GetCount() == 0 ){
+		if(sweepCollisionTest.GetShapeList().GetCount() == 0){
 			return;
 		}
 		
 		const decDVector &from = colliderVolume.GetPosition();
-		const btVector3 btfrom( ( btScalar )from.x, ( btScalar )from.y, ( btScalar )from.z );
+		const btVector3 btfrom((btScalar)from.x, (btScalar)from.y, (btScalar)from.z);
 		
 		const decDVector to = from + displacement;
-		const btVector3 btto( ( btScalar )to.x, ( btScalar )to.y, ( btScalar )to.z );
+		const btVector3 btto((btScalar)to.x, (btScalar)to.y, (btScalar)to.z);
 		
 		const decQuaternion &orientation = colliderVolume.GetOrientation();
-		const btQuaternion btorientation( ( btScalar )orientation.x, ( btScalar )orientation.y,
-			( btScalar )orientation.z, ( btScalar )orientation.w );
+		const btQuaternion btorientation((btScalar)orientation.x, (btScalar)orientation.y,
+			(btScalar)orientation.z, (btScalar)orientation.w);
 		
-		const btTransform transformFrom( btorientation, btfrom );
-		const btTransform transformTo( btorientation, btto );
+		const btTransform transformFrom(btorientation, btfrom);
+		const btTransform transformTo(btorientation, btto);
 		
-		sweepCollisionTest.SweepTest( *pGhostObject, transformFrom, transformTo, result );
+		sweepCollisionTest.SweepTest(*pGhostObject, transformFrom, transformTo, result);
 	}
 #ifdef DO_TIMING2
-timerTSColliderMoveHits += ( int )( timer.GetElapsedTime() * 1e6f );
+timerTSColliderMoveHits += (int)(timer.GetElapsedTime() * 1e6f);
 timerTSColliderMoveHitsCount++;
 #endif
 }
 
-void debpTouchSensor::ColliderRotateHits( deCollider *collider, const decVector &rotation,
-deBaseScriptingCollider *listener ){
+void debpTouchSensor::ColliderRotateHits(deCollider *collider, const decVector &rotation,
+deBaseScriptingCollider *listener){
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if( ! collider || ! listener ){
-		DETHROW( deeInvalidParam );
+	if(!collider || !listener){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pGhostObject->GetGhostObject() ){
+	if(!pGhostObject->GetGhostObject()){
 		return;
 	}
 	
 	debpCollisionDetection &coldet = pBullet.GetCollisionDetection();
 	deCollisionInfo * const colinfo = coldet.GetCollisionInfo();
-	debpCollider *bpCollider = ( debpCollider* )collider->GetPeerPhysics();
+	debpCollider *bpCollider = (debpCollider*)collider->GetPeerPhysics();
 	
-	debpTSConvexResultCallback result( colinfo, *this );
-	result.SetTestCollider( bpCollider, listener );
-	colinfo->SetStopTesting( false );
+	debpTSConvexResultCallback result(colinfo, *this);
+	result.SetTestCollider(bpCollider, listener);
+	colinfo->SetStopTesting(false);
 	
-	if( bpCollider->IsVolume() ){
+	if(bpCollider->IsVolume()){
 		debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if( sweepCollisionTest.GetShapeList().GetCount() > 0 ){
+		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
 			const decDVector &position = colliderVolume.GetPosition();
-			const btVector3 btposition( ( btScalar )position.x,
-				( btScalar )position.y, ( btScalar )position.z );
+			const btVector3 btposition((btScalar)position.x,
+				(btScalar)position.y, (btScalar)position.z);
 			
 			const decQuaternion &orientationFrom = colliderVolume.GetOrientation();
-			const btQuaternion btRotFrom( ( btScalar )orientationFrom.x,
-				( btScalar )orientationFrom.y, ( btScalar )orientationFrom.z,
-				( btScalar )orientationFrom.w );
+			const btQuaternion btRotFrom((btScalar)orientationFrom.x,
+				(btScalar)orientationFrom.y, (btScalar)orientationFrom.z,
+				(btScalar)orientationFrom.w);
 			
-			const decQuaternion orientationTo( orientationFrom
+			const decQuaternion orientationTo(orientationFrom
 				* decQuaternion::CreateFromEuler( rotation ) );
-			const btQuaternion btRotTo( ( btScalar )orientationTo.x, ( btScalar )orientationTo.y,
-				( btScalar )orientationTo.z, ( btScalar )orientationTo.w );
+			const btQuaternion btRotTo((btScalar)orientationTo.x, (btScalar)orientationTo.y,
+				(btScalar)orientationTo.z, (btScalar)orientationTo.w);
 			
-			const btTransform transformFrom( btRotFrom, btposition );
-			const btTransform transformTo( btRotTo, btposition );
+			const btTransform transformFrom(btRotFrom, btposition);
+			const btTransform transformTo(btRotTo, btposition);
 			
-			sweepCollisionTest.SweepTest( *pGhostObject, transformFrom, transformTo, result );
+			sweepCollisionTest.SweepTest(*pGhostObject, transformFrom, transformTo, result);
 		}
 	}
 #ifdef DO_TIMING2
-timerTSColliderRotateHits += ( int )( timer.GetElapsedTime() * 1e6f );
+timerTSColliderRotateHits += (int)(timer.GetElapsedTime() * 1e6f);
 timerTSColliderRotateHitsCount++;
 #endif
 }
 
-void debpTouchSensor::ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-const decVector &rotation, deBaseScriptingCollider *listener ){
+void debpTouchSensor::ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+const decVector &rotation, deBaseScriptingCollider *listener){
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if( ! collider || ! listener ){
-		DETHROW( deeInvalidParam );
+	if(!collider || !listener){
+		DETHROW(deeInvalidParam);
 	}
 	
 // 	printf( "touchSensor=%p shape=%p colliderMoveRotateHits pos=(%f,%f,%f) disp(%f,%f,%f) rot(%f,%f,%f)\n", pTouchSensor, this,
 // 		   engCollider->GetPosition().x, engCollider->GetPosition().y, engCollider->GetPosition().z,
-// 		   displacement.x, displacement.y, displacement.z, rotation.x / DEG2RAD, rotation.y / DEG2RAD, rotation.z / DEG2RAD );
+// 		   displacement.x, displacement.y, displacement.z, rotation.x * RAD2DEG, rotation.y * RAD2DEG, rotation.z * RAD2DEG );
 	
-	if( ! pGhostObject->GetGhostObject() ){
+	if(!pGhostObject->GetGhostObject()){
 		return;
 	}
 	
 	debpCollisionDetection &coldet = pBullet.GetCollisionDetection();
 	deCollisionInfo * const colinfo = coldet.GetCollisionInfo();
-	debpCollider *bpCollider = ( debpCollider* )collider->GetPeerPhysics();
+	debpCollider *bpCollider = (debpCollider*)collider->GetPeerPhysics();
 	
-	debpTSConvexResultCallback result( colinfo, *this );
-	result.SetTestCollider( bpCollider, listener );
-	colinfo->SetStopTesting( false );
+	debpTSConvexResultCallback result(colinfo, *this);
+	result.SetTestCollider(bpCollider, listener);
+	colinfo->SetStopTesting(false);
 	
-	if( bpCollider->IsVolume() ){
+	if(bpCollider->IsVolume()){
 		debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
 		debpSweepCollisionTest &sweepCollisionTest = *colliderVolume.GetSweepCollisionTest();
 		
-		if( sweepCollisionTest.GetShapeList().GetCount() > 0 ){
+		if(sweepCollisionTest.GetShapeList().GetCount() > 0){
 			const decDVector &positionFrom = colliderVolume.GetPosition();
-			const btVector3 btPosFrom( ( btScalar )positionFrom.x,
-				( btScalar )positionFrom.y, ( btScalar )positionFrom.z );
+			const btVector3 btPosFrom((btScalar)positionFrom.x,
+				(btScalar)positionFrom.y, (btScalar)positionFrom.z);
 			
-			const decDVector positionTo( positionFrom + decDVector( displacement ) );
-			const btVector3 btPosTo( ( btScalar )positionTo.x,
-				( btScalar )positionTo.y, ( btScalar )positionTo.z );
+			const decDVector positionTo(positionFrom + decDVector(displacement));
+			const btVector3 btPosTo((btScalar)positionTo.x,
+				(btScalar)positionTo.y, (btScalar)positionTo.z);
 			
 			const decQuaternion &orientationFrom = colliderVolume.GetOrientation();
-			const btQuaternion btRotFrom( ( btScalar )orientationFrom.x,
-				( btScalar )orientationFrom.y, ( btScalar )orientationFrom.z,
-				( btScalar )orientationFrom.w );
+			const btQuaternion btRotFrom((btScalar)orientationFrom.x,
+				(btScalar)orientationFrom.y, (btScalar)orientationFrom.z,
+				(btScalar)orientationFrom.w);
 			
-			const decQuaternion orientationTo( orientationFrom
+			const decQuaternion orientationTo(orientationFrom
 				* decQuaternion::CreateFromEuler( rotation ) );
-			const btQuaternion btRotTo( ( btScalar )orientationTo.x, ( btScalar )orientationTo.y,
-				( btScalar )orientationTo.z, ( btScalar )orientationTo.w );
+			const btQuaternion btRotTo((btScalar)orientationTo.x, (btScalar)orientationTo.y,
+				(btScalar)orientationTo.z, (btScalar)orientationTo.w);
 			
-			const btTransform transformFrom( btRotFrom, btPosFrom );
-			const btTransform transformTo( btRotTo, btPosTo );
+			const btTransform transformFrom(btRotFrom, btPosFrom);
+			const btTransform transformTo(btRotTo, btPosTo);
 			
-			sweepCollisionTest.SweepTest( *pGhostObject, transformFrom, transformTo, result );
+			sweepCollisionTest.SweepTest(*pGhostObject, transformFrom, transformTo, result);
 		}
 	}
 #ifdef DO_TIMING2
-timerTSColliderMoveRotateHits += ( int )( timer.GetElapsedTime() * 1e6f );
+timerTSColliderMoveRotateHits += (int)(timer.GetElapsedTime() * 1e6f);
 timerTSColliderMoveRotateHitsCount++;
 #endif
 }
@@ -993,35 +993,35 @@ timerTSColliderMoveRotateHitsCount++;
 void debpTouchSensor::UpdateDebugDrawer(){
 	const debpDeveloperMode &devmode = pBullet.GetDeveloperMode();
 	
-	if( devmode.GetEnabled()
+	if(devmode.GetEnabled()
 	&& devmode.GetShowCategory().IsNotEmpty()
-	&& devmode.GetShowCategory().Matches( pTouchSensor.GetCollisionFilter().GetCategory() ) ){
+	&& devmode.GetShowCategory().Matches(pTouchSensor.GetCollisionFilter().GetCategory())){
 		// ensure the debug drawer exists
-		if( ! pDebugDrawer ){
+		if(!pDebugDrawer){
 			pDebugDrawer = pBullet.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
-			pDebugDrawer->SetXRay( true );
-			pDebugDrawer->SetPosition( pTouchSensor.GetPosition() );
-			pDebugDrawer->SetOrientation( pTouchSensor.GetOrientation() );
+			pDebugDrawer->SetXRay(true);
+			pDebugDrawer->SetPosition(pTouchSensor.GetPosition());
+			pDebugDrawer->SetOrientation(pTouchSensor.GetOrientation());
 			
-			if( pParentWorld ){
-				pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
+			if(pParentWorld){
+				pParentWorld->GetWorld().AddDebugDrawer(pDebugDrawer);
 			}
 		}
 		
 		// show shapes if layer mask matches
-		if( ! pDDSShape ){
+		if(!pDDSShape){
 			pDDSShape = new deDebugDrawerShape;
-			pDDSShape->SetFillColor( debpDebugDrawerColors::touchSensorFill );
-			pDDSShape->SetEdgeColor( debpDebugDrawerColors::touchSensorEdge );
-			pDebugDrawer->AddShape( pDDSShape );
+			pDDSShape->SetFillColor(debpDebugDrawerColors::touchSensorFill);
+			pDDSShape->SetEdgeColor(debpDebugDrawerColors::touchSensorEdge);
+			pDebugDrawer->AddShape(pDDSShape);
 			UpdateDDSShape();
 		}
 		
 	}else{
 		// if the debug drawer exists remove it
-		if( pDebugDrawer ){
-			if( pParentWorld ){
-				pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+		if(pDebugDrawer){
+			if(pParentWorld){
+				pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 			}
 			
 			pDDSShape = NULL;
@@ -1033,7 +1033,7 @@ void debpTouchSensor::UpdateDebugDrawer(){
 }
 
 void debpTouchSensor::UpdateDDSShape(){
-	if( ! pDDSShape ){
+	if(!pDDSShape){
 		return;
 	}
 	
@@ -1049,16 +1049,16 @@ void debpTouchSensor::UpdateDDSShape(){
 void debpTouchSensor::pCleanUp(){
 	pClearTracking();
 	
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
-	if( pGhostObject ){
+	if(pGhostObject){
 		delete pGhostObject;
 	}
 }
 
 void debpTouchSensor::pUpdateMatrix(){
-	pMatrix.SetWorld( pTouchSensor.GetPosition(), pTouchSensor.GetOrientation() );
+	pMatrix.SetWorld(pTouchSensor.GetPosition(), pTouchSensor.GetOrientation());
 	pInvMatrix = pMatrix.Invert();
 }
 
@@ -1067,11 +1067,11 @@ void debpTouchSensor::pUpdateExtends(){
 	const decDVector &position = pTouchSensor.GetPosition();
 	debpDCollisionBox box, extendsBox;
 	
-	box.SetFromExtends( decDVector( pBasicMinExtend ), decDVector( pBasicMaxExtend ) );
-	box.SetCenter( position + decDMatrix::CreateFromQuaternion( orientation ).TransformNormal( box.GetCenter() ) );
-	box.SetOrientation( orientation );
+	box.SetFromExtends(decDVector(pBasicMinExtend), decDVector(pBasicMaxExtend));
+	box.SetCenter(position + decDMatrix::CreateFromQuaternion(orientation).TransformNormal(box.GetCenter()));
+	box.SetOrientation(orientation);
 	
-	box.GetEnclosingBox( &extendsBox );
+	box.GetEnclosingBox(&extendsBox);
 	
 	pMinExtend = extendsBox.GetCenter() - extendsBox.GetHalfSize();
 	pMaxExtend = extendsBox.GetCenter() + extendsBox.GetHalfSize();
@@ -1089,8 +1089,8 @@ void debpTouchSensor::pCalculateBasicExtends(){
 	int i;
 	
 	// determine the extend of the shapes
-	for( i=0; i<count; i++ ){
-		list.GetAt( i )->Visit( shapeGroupExtends );
+	for(i=0; i<count; i++){
+		list.GetAt(i)->Visit(shapeGroupExtends);
 	}
 	
 	// store the found extends
@@ -1107,23 +1107,23 @@ void debpTouchSensor::pCalculateBasicExtends(){
 
 void debpTouchSensor::pClearTracking(){
 	// remove touching colliders
-	while( pTouchingColliders.GetCount() > 0 ){
+	while(pTouchingColliders.GetCount() > 0){
 		const int index = pTouchingColliders.GetCount() - 1;
-		debpCollider * const collider = ( debpCollider* )pTouchingColliders.GetAt( index );
-		pTouchingColliders.RemoveFrom( index );
-		collider->GetTrackingTouchSensors().Remove( this );
+		debpCollider * const collider = (debpCollider*)pTouchingColliders.GetAt(index);
+		pTouchingColliders.RemoveFrom(index);
+		collider->GetTrackingTouchSensors().Remove(this);
 		
-		pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+		pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
 	}
 	
 	// remove leaving colliders
-	while( pLeavingColliders.GetCount() > 0 ){
+	while(pLeavingColliders.GetCount() > 0){
 		const int index = pLeavingColliders.GetCount() - 1;
-		debpCollider * const collider = ( debpCollider* )pLeavingColliders.GetAt( index );
-		pLeavingColliders.RemoveFrom( index );
-		collider->GetTrackingTouchSensors().Remove( this );
+		debpCollider * const collider = (debpCollider*)pLeavingColliders.GetAt(index);
+		pLeavingColliders.RemoveFrom(index);
+		collider->GetTrackingTouchSensors().Remove(this);
 		
-		pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+		pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
 	}
 	
 	// in the above both can not happen at the same time so GetTrackingTouchSensors() can not
@@ -1190,39 +1190,39 @@ void debpTouchSensor::pColliderHitsLocked(deCollider &collider, deBaseScriptingC
 		debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
 		btGhostObject * const go = colliderVolume.GetStaticCollisionTestPrepare();
 		if(go){
-			const btCollisionObjectWrapper obj0Wrap( NULL, go->getCollisionShape(),
-				go, go->getWorldTransform(), -1, -1 );
+			const btCollisionObjectWrapper obj0Wrap(NULL, go->getCollisionShape(),
+				go, go->getWorldTransform(), -1, -1);
 			
-			result.SetTestCollider( go, bpCollider, listener );
-			colinfo->SetStopTesting( false );
+			result.SetTestCollider(go, bpCollider, listener);
+			colinfo->SetStopTesting(false);
 			
 			bpCollider->UpdateShapes();
 			
-			for( i=0; i<colobjCount; i++ ){
-				btCollisionObject * const bpcolobj = colobjs.at( i );
+			for(i=0; i<colobjCount; i++){
+				btCollisionObject * const bpcolobj = colobjs.at(i);
 				
 				btVector3 aabbMin, aabbMax;
-				bpcolobj->getCollisionShape()->getAabb( bpcolobj->getWorldTransform(), aabbMin, aabbMax );
+				bpcolobj->getCollisionShape()->getAabb(bpcolobj->getWorldTransform(), aabbMin, aabbMax);
 				
-				if( result.needsCollision( bpcolobj->getBroadphaseHandle() ) ){
-					const debpCollisionObject &colobj = *( ( debpCollisionObject* )bpcolobj->getUserPointer() );
+				if(result.needsCollision(bpcolobj->getBroadphaseHandle())){
+					const debpCollisionObject &colobj = *((debpCollisionObject*)bpcolobj->getUserPointer());
 					debpCollisionResult coldetResult;
 					
 					// test against collider
-					if( colobj.IsOwnerCollider() ){
-						if( coldet.ColliderHitsCollider( bpCollider, colobj.GetOwnerCollider(), coldetResult ) ){
-							const btCollisionObjectWrapper obj1Wrap( NULL, bpcolobj->getCollisionShape(), bpcolobj, bpcolobj->getWorldTransform(), -1, -1 );
-							result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face );
+					if(colobj.IsOwnerCollider()){
+						if(coldet.ColliderHitsCollider(bpCollider, colobj.GetOwnerCollider(), coldetResult)){
+							const btCollisionObjectWrapper obj1Wrap(NULL, bpcolobj->getCollisionShape(), bpcolobj, bpcolobj->getWorldTransform(), -1, -1);
+							result.addSingleResult(vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face);
 							//if( result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face ) < ( btScalar )0.5 ){
 							//	break;
 							//}
 						}
 						
 					// test against height terrain
-					}else if( colobj.IsOwnerHTSector() ){
-						if( coldet.ColliderHitsHeightTerrain( bpCollider, colobj.GetOwnerHTSector(), coldetResult ) ){
-							const btCollisionObjectWrapper obj1Wrap( NULL, bpcolobj->getCollisionShape(), bpcolobj, bpcolobj->getWorldTransform(), -1, -1 );
-							result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face );
+					}else if(colobj.IsOwnerHTSector()){
+						if(coldet.ColliderHitsHeightTerrain(bpCollider, colobj.GetOwnerHTSector(), coldetResult)){
+							const btCollisionObjectWrapper obj1Wrap(NULL, bpcolobj->getCollisionShape(), bpcolobj, bpcolobj->getWorldTransform(), -1, -1);
+							result.addSingleResult(vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face);
 							//if( result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face ) < ( btScalar )0.5 ){
 							//	break;
 							//}

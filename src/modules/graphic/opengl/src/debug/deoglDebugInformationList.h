@@ -58,16 +58,16 @@ public:
 	int GetCount() const;
 	
 	/** Child at index. */
-	deoglDebugInformation *GetAt( int index ) const;
+	deoglDebugInformation *GetAt(int index) const;
 	
 	/** Add child. */
-	void Add( deoglDebugInformation *child );
+	void Add(deoglDebugInformation *child);
 	
 	/** Remove child. */
-	void Remove( deoglDebugInformation *child );
+	void Remove(deoglDebugInformation *child);
 	
 	/** Remove child if present. */
-	void RemoveIfPresent( deoglDebugInformation *child );
+	void RemoveIfPresent(deoglDebugInformation *child);
 	
 	/** Remove all children. */
 	void RemoveAll();

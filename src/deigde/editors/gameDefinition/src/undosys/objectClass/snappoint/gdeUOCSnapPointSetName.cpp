@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSnapPointSetName::gdeUOCSnapPointSetName( gdeObjectClass *objectClass,
-gdeOCSnapPoint *snapPoint, const char *newValue ) :
-pObjectClass( NULL ),
-pSnapPoint( NULL )
+gdeUOCSnapPointSetName::gdeUOCSnapPointSetName(gdeObjectClass *objectClass,
+gdeOCSnapPoint *snapPoint, const char *newValue) :
+pObjectClass(NULL),
+pSnapPoint(NULL)
 {
-	if( ! objectClass || ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Snap point set name" );
+	SetShortInfo("Snap point set name");
 	
 	pOldValue = snapPoint->GetName();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pSnapPoint( NULL )
 }
 
 gdeUOCSnapPointSetName::~gdeUOCSnapPointSetName(){
-	if( pSnapPoint ){
+	if(pSnapPoint){
 		pSnapPoint->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCSnapPointSetName::~gdeUOCSnapPointSetName(){
 ///////////////
 
 void gdeUOCSnapPointSetName::Undo(){
-	pSnapPoint->SetName( pOldValue );
-	pObjectClass->NotifySnapPointNameChanged( pSnapPoint );
+	pSnapPoint->SetName(pOldValue);
+	pObjectClass->NotifySnapPointNameChanged(pSnapPoint);
 }
 
 void gdeUOCSnapPointSetName::Redo(){
-	pSnapPoint->SetName( pNewValue );
-	pObjectClass->NotifySnapPointNameChanged( pSnapPoint );
+	pSnapPoint->SetName(pNewValue);
+	pObjectClass->NotifySnapPointNameChanged(pSnapPoint);
 }

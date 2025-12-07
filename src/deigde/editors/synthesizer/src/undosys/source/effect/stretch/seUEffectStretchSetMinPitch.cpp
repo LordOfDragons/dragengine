@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUEffectStretchSetMinPitch::seUEffectStretchSetMinPitch( seEffectStretch *effect, float newPitch ) :
-pSource( NULL )
+seUEffectStretchSetMinPitch::seUEffectStretchSetMinPitch(seEffectStretch *effect, float newPitch) :
+pSource(NULL)
 {
-	if( ! effect ){
-		DETHROW( deeInvalidParam );
+	if(!effect){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Effect stretch set minimum pitch" );
+	SetShortInfo("Effect stretch set minimum pitch");
 	
 	pOldPitch = effect->GetMinPitch();
 	pNewPitch = newPitch;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUEffectStretchSetMinPitch::~seUEffectStretchSetMinPitch(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUEffectStretchSetMinPitch::~seUEffectStretchSetMinPitch(){
 ///////////////
 
 void seUEffectStretchSetMinPitch::Undo(){
-	pSource->SetMinPitch( pOldPitch );
+	pSource->SetMinPitch(pOldPitch);
 }
 
 void seUEffectStretchSetMinPitch::Redo(){
-	pSource->SetMinPitch( pNewPitch );
+	pSource->SetMinPitch(pNewPitch);
 }

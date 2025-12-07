@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaRotation( aeRuleForeignState *rule, float newScale );
+	aeUSetRuleFStaRotation(aeRuleForeignState *rule, float newScale);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaRotation();

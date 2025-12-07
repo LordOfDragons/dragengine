@@ -85,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render model. */
-	deoglRModel( deoglRenderThread &renderThread, const deModel &model );
+	deoglRModel(deoglRenderThread &renderThread, const deModel &model);
 	
 	/** Clean up render model. */
 	virtual ~deoglRModel();
@@ -131,7 +131,7 @@ public:
 	inline int GetLODCount() const{ return pLODCount; }
 	
 	/** Lod at index. */
-	deoglModelLOD &GetLODAt( int index ) const;
+	deoglModelLOD &GetLODAt(int index) const;
 	
 	/** Model has double sided textures. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
@@ -159,13 +159,13 @@ public:
 	
 private:
 	void pCleanUp();
-	void pInitTextureNames( const deModel &engModel );
-	void pInitBoneNames( const deModel &engModel );
-	void pInitVPSNames( const deModel &engModel );
-	void pInitLODs( const deModel &engModel );
-	void pInitExtends( const deModel &engModel, const deoglModelLOD &baseLod );
+	void pInitTextureNames(const deModel &engModel);
+	void pInitBoneNames(const deModel &engModel);
+	void pInitVPSNames(const deModel &engModel);
+	void pInitLODs(const deModel &engModel);
+	void pInitExtends(const deModel &engModel, const deoglModelLOD &baseLod);
 	
-	void pLoadCached( int lodCount, int boneCount );
+	void pLoadCached(int lodCount, int boneCount);
 	void pSaveCached();
 	
 	void pCreateImposterBillboard();

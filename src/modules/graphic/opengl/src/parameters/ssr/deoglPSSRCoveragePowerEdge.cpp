@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSRCoveragePowerEdge::deoglPSSRCoveragePowerEdge( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPSSRCoveragePowerEdge::deoglPSSRCoveragePowerEdge(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "ssrCoveragePowerEdge" );
-	SetDescription( "Sets the power for edge coverage calculation in screen space reflection."
+	SetName("ssrCoveragePowerEdge");
+	SetDescription("Sets the power for edge coverage calculation in screen space reflection."
 		" Many reflections can not be calculated properly in screen space."
 		" Especially near the edge the calculation fails with higher probability."
 		" Using edge coverage the found results near the screen edge are gradually faded out"
@@ -54,10 +54,10 @@ deoglParameterFloat( ogl )
 		" A value of 1 results in a linear fading from no coverage to full coverage."
 		" Values larger than 2 result in fading function using x-raisedto-N keeping the coverage longer"
 		" near full coverage before falling down to no coverage."
-		" This can be used to adjust the fading function to your personal liking." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSR Coverage Edge Power" );
-	SetDefaultValue( "1" );
+		" This can be used to adjust the fading function to your personal liking.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSR Coverage Edge Power");
+	SetDefaultValue("1");
 }
 
 deoglPSSRCoveragePowerEdge::~deoglPSSRCoveragePowerEdge(){
@@ -72,6 +72,6 @@ float deoglPSSRCoveragePowerEdge::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSRCoveragePowerEdge();
 }
 
-void deoglPSSRCoveragePowerEdge::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSRCoveragePowerEdge( value );
+void deoglPSSRCoveragePowerEdge::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSRCoveragePowerEdge(value);
 }

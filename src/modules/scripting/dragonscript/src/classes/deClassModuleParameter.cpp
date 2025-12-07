@@ -47,18 +47,18 @@ struct sMPNatDat{
 /////////////////////
 
 // public destructor Destructor()
-deClassModuleParameter::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsMP, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassModuleParameter::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsMP, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassModuleParameter::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassModuleParameter::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sMPNatDat *nd = (sMPNatDat*)p_GetNativeData( myself );
+	sMPNatDat *nd = (sMPNatDat*)p_GetNativeData(myself);
 	
-	if( nd->param ){
+	if(nd->param){
 		delete nd->param;
 		nd->param = NULL;
 	}
@@ -67,141 +67,141 @@ void deClassModuleParameter::nfDestructor::RunFunction( dsRunTime*, dsValue *mys
 
 
 // public func String getName()
-deClassModuleParameter::nfGetName::nfGetName( const sInitData &init ) :
-dsFunction( init.clsMP, "getName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassModuleParameter::nfGetName::nfGetName(const sInitData &init) :
+dsFunction(init.clsMP, "getName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassModuleParameter::nfGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushString( param.GetName() );
+void deClassModuleParameter::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushString(param.GetName());
 }
 
 // public func String getDescription()
-deClassModuleParameter::nfGetDescription::nfGetDescription( const sInitData &init ) :
-dsFunction( init.clsMP, "getDescription", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassModuleParameter::nfGetDescription::nfGetDescription(const sInitData &init) :
+dsFunction(init.clsMP, "getDescription", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassModuleParameter::nfGetDescription::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushString( param.GetDescription() );
+void deClassModuleParameter::nfGetDescription::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushString(param.GetDescription());
 }
 
 // public func ModuleParameterType getType()
-deClassModuleParameter::nfGetType::nfGetType( const sInitData &init ) :
-dsFunction( init.clsMP, "getType", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsModuleParameterType ){
+deClassModuleParameter::nfGetType::nfGetType(const sInitData &init) :
+dsFunction(init.clsMP, "getType", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsModuleParameterType){
 }
-void deClassModuleParameter::nfGetType::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushValue( ( ( deClassModuleParameter* )GetOwnerClass() )->GetClassModuleParameterType()
-		->GetVariable( param.GetType() )->GetStaticValue() );
+void deClassModuleParameter::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushValue(((deClassModuleParameter*)GetOwnerClass())->GetClassModuleParameterType()
+		->GetVariable(param.GetType())->GetStaticValue());
 }
 
 // public func float getMinimumValue()
-deClassModuleParameter::nfGetMinimumValue::nfGetMinimumValue( const sInitData &init ) :
-dsFunction( init.clsMP, "getMinimumValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassModuleParameter::nfGetMinimumValue::nfGetMinimumValue(const sInitData &init) :
+dsFunction(init.clsMP, "getMinimumValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassModuleParameter::nfGetMinimumValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushFloat( param.GetMinimumValue() );
+void deClassModuleParameter::nfGetMinimumValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushFloat(param.GetMinimumValue());
 }
 
 // public func float getMaximumValue()
-deClassModuleParameter::nfGetMaximumValue::nfGetMaximumValue( const sInitData &init ) :
-dsFunction( init.clsMP, "getMaximumValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassModuleParameter::nfGetMaximumValue::nfGetMaximumValue(const sInitData &init) :
+dsFunction(init.clsMP, "getMaximumValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassModuleParameter::nfGetMaximumValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushFloat( param.GetMaximumValue() );
+void deClassModuleParameter::nfGetMaximumValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushFloat(param.GetMaximumValue());
 }
 
 // public func float getValueStepSize()
-deClassModuleParameter::nfGetValueStepSize::nfGetValueStepSize( const sInitData &init ) :
-dsFunction( init.clsMP, "getValueStepSize", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassModuleParameter::nfGetValueStepSize::nfGetValueStepSize(const sInitData &init) :
+dsFunction(init.clsMP, "getValueStepSize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassModuleParameter::nfGetValueStepSize::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushFloat( param.GetValueStepSize() );
+void deClassModuleParameter::nfGetValueStepSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushFloat(param.GetValueStepSize());
 }
 
 // public func int getSelectionEntryCount()
-deClassModuleParameter::nfGetSelectionEntryCount::nfGetSelectionEntryCount( const sInitData &init ) :
-dsFunction( init.clsMP, "getSelectionEntryCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassModuleParameter::nfGetSelectionEntryCount::nfGetSelectionEntryCount(const sInitData &init) :
+dsFunction(init.clsMP, "getSelectionEntryCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassModuleParameter::nfGetSelectionEntryCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushInt( param.GetSelectionEntryCount() );
+void deClassModuleParameter::nfGetSelectionEntryCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushInt(param.GetSelectionEntryCount());
 }
 
 // public func String getSelectionEntryValueAt( int index )
-deClassModuleParameter::nfGetSelectionEntryValueAt::nfGetSelectionEntryValueAt( const sInitData &init ) :
-dsFunction( init.clsMP, "getSelectionEntryValueAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassModuleParameter::nfGetSelectionEntryValueAt::nfGetSelectionEntryValueAt(const sInitData &init) :
+dsFunction(init.clsMP, "getSelectionEntryValueAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // index
 }
-void deClassModuleParameter::nfGetSelectionEntryValueAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
+void deClassModuleParameter::nfGetSelectionEntryValueAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
 	int index = rt->GetValue(0)->GetInt();
-	rt->PushString( param.GetSelectionEntryAt( index ).value );
+	rt->PushString(param.GetSelectionEntryAt(index).value);
 }
 
 // public func String getSelectionEntryDisplayNameAt( int index )
-deClassModuleParameter::nfGetSelectionEntryDisplayNameAt::nfGetSelectionEntryDisplayNameAt( const sInitData &init ) :
-dsFunction( init.clsMP, "getSelectionEntryDisplayNameAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassModuleParameter::nfGetSelectionEntryDisplayNameAt::nfGetSelectionEntryDisplayNameAt(const sInitData &init) :
+dsFunction(init.clsMP, "getSelectionEntryDisplayNameAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // index
 }
-void deClassModuleParameter::nfGetSelectionEntryDisplayNameAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
+void deClassModuleParameter::nfGetSelectionEntryDisplayNameAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
 	int index = rt->GetValue(0)->GetInt();
-	rt->PushString( param.GetSelectionEntryAt( index ).displayName );
+	rt->PushString(param.GetSelectionEntryAt(index).displayName);
 }
 
 // public func String getSelectionEntryDescriptionAt( int index )
-deClassModuleParameter::nfGetSelectionEntryDescriptionAt::nfGetSelectionEntryDescriptionAt( const sInitData &init ) :
-dsFunction( init.clsMP, "getSelectionEntryDescriptionAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassModuleParameter::nfGetSelectionEntryDescriptionAt::nfGetSelectionEntryDescriptionAt(const sInitData &init) :
+dsFunction(init.clsMP, "getSelectionEntryDescriptionAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // index
 }
-void deClassModuleParameter::nfGetSelectionEntryDescriptionAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
+void deClassModuleParameter::nfGetSelectionEntryDescriptionAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
 	int index = rt->GetValue(0)->GetInt();
-	rt->PushString( param.GetSelectionEntryAt( index ).description );
+	rt->PushString(param.GetSelectionEntryAt(index).description);
 }
 
 // public func ModuleParameterCategory getCategory()
-deClassModuleParameter::nfGetCategory::nfGetCategory( const sInitData &init ) :
-dsFunction( init.clsMP, "getCategory", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsModuleParameterCategory ){
+deClassModuleParameter::nfGetCategory::nfGetCategory(const sInitData &init) :
+dsFunction(init.clsMP, "getCategory", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsModuleParameterCategory){
 }
-void deClassModuleParameter::nfGetCategory::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushValue( ( ( deClassModuleParameter* )GetOwnerClass() )->GetClassModuleParameterCategory()
-		->GetVariable( param.GetCategory() )->GetStaticValue() );
+void deClassModuleParameter::nfGetCategory::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushValue(((deClassModuleParameter*)GetOwnerClass())->GetClassModuleParameterCategory()
+		->GetVariable(param.GetCategory())->GetStaticValue());
 }
 
 // public func String getDisplayName()
-deClassModuleParameter::nfGetDisplayName::nfGetDisplayName( const sInitData &init ) :
-dsFunction( init.clsMP, "getDisplayName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassModuleParameter::nfGetDisplayName::nfGetDisplayName(const sInitData &init) :
+dsFunction(init.clsMP, "getDisplayName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassModuleParameter::nfGetDisplayName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushString( param.GetDisplayName() );
+void deClassModuleParameter::nfGetDisplayName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushString(param.GetDisplayName());
 }
 
 // public func String getDefaultValue()
-deClassModuleParameter::nfGetDefaultValue::nfGetDefaultValue( const sInitData &init ) :
-dsFunction( init.clsMP, "getDefaultValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassModuleParameter::nfGetDefaultValue::nfGetDefaultValue(const sInitData &init) :
+dsFunction(init.clsMP, "getDefaultValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassModuleParameter::nfGetDefaultValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
-	rt->PushString( param.GetDefaultValue() );
+void deClassModuleParameter::nfGetDefaultValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModuleParameter &param = *(((sMPNatDat*)p_GetNativeData(myself))->param);
+	rt->PushString(param.GetDefaultValue());
 }
 
 
@@ -212,10 +212,10 @@ void deClassModuleParameter::nfGetDefaultValue::RunFunction( dsRunTime *rt, dsVa
 // Constructor, Destructor
 ////////////////////////////
 
-deClassModuleParameter::deClassModuleParameter( deEngine *GameEngine, deScriptingDragonScript *ScrMgr ) :
-dsClass( "ModuleParameter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
-	if( ! GameEngine || ! ScrMgr ){
-		DSTHROW( dueInvalidParam );
+deClassModuleParameter::deClassModuleParameter(deEngine *GameEngine, deScriptingDragonScript *ScrMgr) :
+dsClass("ModuleParameter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
+	if(!GameEngine || !ScrMgr){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	p_gameEngine = GameEngine;
@@ -235,10 +235,10 @@ deClassModuleParameter::~deClassModuleParameter(){
 // Management
 ///////////////
 
-void deClassModuleParameter::CreateClassMembers( dsEngine *engine ){
+void deClassModuleParameter::CreateClassMembers(dsEngine *engine){
 	// store classes
-	pClsModuleParameterType = engine->GetClass( "Dragengine.ModuleParameterType" );
-	pClsModuleParameterCategory = engine->GetClass( "Dragengine.ModuleParameterCategory" );
+	pClsModuleParameterType = engine->GetClass("Dragengine.ModuleParameterType");
+	pClsModuleParameterCategory = engine->GetClass("Dragengine.ModuleParameterCategory");
 	
 	sInitData init;
 	init.clsMP = this;
@@ -250,40 +250,40 @@ void deClassModuleParameter::CreateClassMembers( dsEngine *engine ){
 	init.clsModuleParameterCategory = pClsModuleParameterCategory;
 	
 	// add functions
-	AddFunction( new nfDestructor( init ) );
-	AddFunction( new nfGetName( init ) );
-	AddFunction( new nfGetDescription( init ) );
-	AddFunction( new nfGetType( init ) );
-	AddFunction( new nfGetMinimumValue( init ) );
-	AddFunction( new nfGetMaximumValue( init ) );
-	AddFunction( new nfGetValueStepSize( init ) );
-	AddFunction( new nfGetSelectionEntryCount( init ) );
-	AddFunction( new nfGetSelectionEntryValueAt( init ) );
-	AddFunction( new nfGetSelectionEntryDisplayNameAt( init ) );
-	AddFunction( new nfGetSelectionEntryDescriptionAt( init ) );
-	AddFunction( new nfGetCategory( init ) );
-	AddFunction( new nfGetDisplayName( init ) );
-	AddFunction( new nfGetDefaultValue( init ) );
+	AddFunction(new nfDestructor(init));
+	AddFunction(new nfGetName(init));
+	AddFunction(new nfGetDescription(init));
+	AddFunction(new nfGetType(init));
+	AddFunction(new nfGetMinimumValue(init));
+	AddFunction(new nfGetMaximumValue(init));
+	AddFunction(new nfGetValueStepSize(init));
+	AddFunction(new nfGetSelectionEntryCount(init));
+	AddFunction(new nfGetSelectionEntryValueAt(init));
+	AddFunction(new nfGetSelectionEntryDisplayNameAt(init));
+	AddFunction(new nfGetSelectionEntryDescriptionAt(init));
+	AddFunction(new nfGetCategory(init));
+	AddFunction(new nfGetDisplayName(init));
+	AddFunction(new nfGetDefaultValue(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-void deClassModuleParameter::PushParameter( dsRunTime *rt, deBaseModule *module, int index ){
-	if( ! rt || ! module ){
-		DSTHROW( dueInvalidParam );
+void deClassModuleParameter::PushParameter(dsRunTime *rt, deBaseModule *module, int index){
+	if(!rt || !module){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sMPNatDat &nd = *( ( sMPNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sMPNatDat &nd = *((sMPNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.param = NULL;
 	
 	try{
 		nd.param = new deModuleParameter;
-		module->GetParameterInfo( index, *nd.param );
+		module->GetParameterInfo(index, *nd.param);
 		
-	}catch( const duException & ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(const duException &){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

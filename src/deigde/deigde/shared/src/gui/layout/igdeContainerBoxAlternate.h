@@ -51,8 +51,8 @@ public:
 	 * If \em stretchOdd is \em true widgets with odd indices are stretched.
 	 * Otherwise widgets with even indices are stretched.
 	 */
-	igdeContainerBoxAlternate( igdeEnvironment &environment, eAxis axis,
-		bool stretchOdd, int spacing = 0 );
+	igdeContainerBoxAlternate(igdeEnvironment &environment, eAxis axis,
+		bool stretchOdd, int spacing = 0);
 	
 	
 	

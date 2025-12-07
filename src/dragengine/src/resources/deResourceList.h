@@ -76,16 +76,16 @@ public:
 	inline deResource *GetTail() const{ return pTail; }
 	
 	/** \brief Resource is present. */
-	bool Has( deResource *resource ) const;
+	bool Has(deResource *resource) const;
 	
 	/** \brief Add resource. */
-	void Add( deResource *resource );
+	void Add(deResource *resource);
 	
 	/** \brief Remove resource. */
-	void Remove( deResource *resource );
+	void Remove(deResource *resource);
 	
 	/** \brief Remove resource if present. */
-	void RemoveIfPresent( deResource *resource );
+	void RemoveIfPresent(deResource *resource);
 	
 	/** \brief Remove all resources. */
 	void RemoveAll();
@@ -94,7 +94,7 @@ public:
 	
 	
 private:
-	void pBareRemove( deResource *resource );
+	void pBareRemove(deResource *resource);
 };
 
 #endif

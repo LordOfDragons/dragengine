@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAActorAdd( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAActorAdd *action );
+	ceWPTTIMAActorAdd(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAActorAdd *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAActorAdd *GetActionActorAdd() const{ return ( ceCAActorAdd* )GetAction(); }
+	inline ceCAActorAdd *GetActionActorAdd() const{ return (ceCAActorAdd*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

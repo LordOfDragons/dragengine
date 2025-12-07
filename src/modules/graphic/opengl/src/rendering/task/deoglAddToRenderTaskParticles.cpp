@@ -75,11 +75,11 @@
 ////////////////////////////
 
 deoglAddToRenderTaskParticles::deoglAddToRenderTaskParticles(
-deoglRenderThread &renderThread, deoglRenderTaskParticles *renderTask ) :
-pRenderThread( renderThread ),
-pRenderTask( renderTask ),
-pSkinPipelineType( deoglSkinTexturePipelines::etGeometry ),
-pSkinPipelineModifier( 0 ){
+deoglRenderThread &renderThread, deoglRenderTaskParticles *renderTask) :
+pRenderThread(renderThread),
+pRenderTask(renderTask),
+pSkinPipelineType(deoglSkinTexturePipelines::etGeometry),
+pSkinPipelineModifier(0){
 }
 
 deoglAddToRenderTaskParticles::~deoglAddToRenderTaskParticles(){
@@ -90,60 +90,60 @@ deoglAddToRenderTaskParticles::~deoglAddToRenderTaskParticles(){
 // Management
 ///////////////
 
-void deoglAddToRenderTaskParticles::SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type ){
+void deoglAddToRenderTaskParticles::SetSkinPipelineType(deoglSkinTexturePipelines::eTypes type){
 	pSkinPipelineType = type;
 }
 
-void deoglAddToRenderTaskParticles::SetSkinPipelineModifier( int modifier ){
+void deoglAddToRenderTaskParticles::SetSkinPipelineModifier(int modifier){
 	pSkinPipelineModifier = modifier;
 }
 
 
 
-void deoglAddToRenderTaskParticles::AddParticles( const deoglParticleEmitterInstanceList &list ){
+void deoglAddToRenderTaskParticles::AddParticles(const deoglParticleEmitterInstanceList &list){
 	const int count = list.GetCount();
 	int e, p;
 	
-	for( e=0; e<count; e++ ){
-		deoglRParticleEmitterInstance &instance = *list.GetAt( e );
+	for(e=0; e<count; e++){
+		deoglRParticleEmitterInstance &instance = *list.GetAt(e);
 		const deoglRParticleEmitterInstance::sParticle * const particles = instance.GetParticles();
 		const int particleCount = instance.GetParticleCount();
 		
-		for( p=0; p<particleCount; p++ ){
-			AddParticle( instance, particles + p );
+		for(p=0; p<particleCount; p++){
+			AddParticle(instance, particles + p);
 		}
 	}
 }
 
-void deoglAddToRenderTaskParticles::AddParticle( deoglRParticleEmitterInstance &emitterInstance,
-const deoglRParticleEmitterInstance::sParticle *particle ){
+void deoglAddToRenderTaskParticles::AddParticle(deoglRParticleEmitterInstance &emitterInstance,
+const deoglRParticleEmitterInstance::sParticle *particle){
 	// fetch parameters
-	deoglRParticleEmitterInstanceType &itype = emitterInstance.GetTypeAt( particle->type );
-	const deoglRParticleEmitterType &etype = emitterInstance.GetEmitter()->GetTypeAt( particle->type );
-	const bool simulationRibbon = ( etype.GetSimulationType() == deParticleEmitterType::estRibbon );
-	const bool simulationBeam = ( etype.GetSimulationType() == deParticleEmitterType::estBeam );
+	deoglRParticleEmitterInstanceType &itype = emitterInstance.GetTypeAt(particle->type);
+	const deoglRParticleEmitterType &etype = emitterInstance.GetEmitter()->GetTypeAt(particle->type);
+	const bool simulationRibbon = (etype.GetSimulationType() == deParticleEmitterType::estRibbon);
+	const bool simulationBeam = (etype.GetSimulationType() == deParticleEmitterType::estBeam);
 	
 	const deoglRSkin * const skin = itype.GetUseSkin();
 	const deoglRDynamicSkin * const dynamicSkin = itype.GetDynamicSkin();
 	const deoglSkinTexture * const skinTexture = itype.GetUseSkinTexture();
 	
 	// if there is no texture we can skip the geometry attached to it
-	if( ! skinTexture ){
+	if(!skinTexture){
 		return;
 	}
 	
 	// if the emitter is ribbon or beam type and the particle is the first skip it
-	if( ( simulationRibbon || simulationBeam ) && particle->ribbonLine[ 0 ] == 0
-	&& particle->ribbonLine[ 1 ] == 0 ){
+	if((simulationRibbon || simulationBeam) && particle->ribbonLine[0] == 0
+	&& particle->ribbonLine[1] == 0){
 		return;
 	}
 	
 	// retrieve the shader and texture units configuration to use
 	const deoglSkinTexturePipeline &pipeline = itype.GetUseSkinPipelines().
-		GetWithRef( pSkinPipelineType, pSkinPipelineModifier );
+		GetWithRef(pSkinPipelineType, pSkinPipelineModifier);
 	
-	const deoglTexUnitsConfig *tuc = itype.GetTUCForPipelineType ( pSkinPipelineType );
-	if( ! tuc ){
+	const deoglTexUnitsConfig *tuc = itype.GetTUCForPipelineType (pSkinPipelineType);
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
@@ -151,53 +151,53 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 	const deoglVAO * const vao = emitterInstance.GetVAO();
 	deoglRenderTaskParticlesStep *rtps = nullptr;
 	
-	if( pRenderTask->GetStepCount() > 0 ){
-		rtps = pRenderTask->GetStepAt( pRenderTask->GetStepCount() - 1 );
+	if(pRenderTask->GetStepCount() > 0){
+		rtps = pRenderTask->GetStepAt(pRenderTask->GetStepCount() - 1);
 		
-		if( rtps->GetVAO() != vao
+		if(rtps->GetVAO() != vao
 		|| rtps->GetPipeline() != pipeline.GetPipeline()
 		|| rtps->GetSkin() != skin
-		|| rtps->GetDynamicSkin() != dynamicSkin ){
+		|| rtps->GetDynamicSkin() != dynamicSkin){
 			rtps = nullptr;
 		}
 	}
 	
 	// if there exists no matching step create a new one
-	if( ! rtps ){
+	if(!rtps){
 		rtps = pRenderTask->AddStep();
-		rtps->SetPipeline( pipeline.GetPipeline() );
-		rtps->SetTUC( tuc );
-		rtps->SetVAO( vao );
-		rtps->SetSkin( skin );
-		rtps->SetDynamicSkin( dynamicSkin );
+		rtps->SetPipeline(pipeline.GetPipeline());
+		rtps->SetTUC(tuc);
+		rtps->SetVAO(vao);
+		rtps->SetSkin(skin);
+		rtps->SetDynamicSkin(dynamicSkin);
 		
-		rtps->SetFirstIndex( emitterInstance.GetIBOUsedIndexCount() );
+		rtps->SetFirstIndex(emitterInstance.GetIBOUsedIndexCount());
 		
-		if( simulationRibbon || simulationBeam ){
-			rtps->SetPrimitiveType( GL_LINES_ADJACENCY );
+		if(simulationRibbon || simulationBeam){
+			rtps->SetPrimitiveType(GL_LINES_ADJACENCY);
 			
 		}else{
-			rtps->SetPrimitiveType( GL_POINTS );
+			rtps->SetPrimitiveType(GL_POINTS);
 		}
 		
-		rtps->SetParameterBlockTexture( skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
-		rtps->SetParameterBlockInstance( itype.GetParamBlock() );
+		rtps->SetParameterBlockTexture(skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
+		rtps->SetParameterBlockInstance(itype.GetParamBlock());
 	}
 	
 	// add an instance
 	rtps->AddInstance().particle = particle;
 	
 	// update IBO
-	if( simulationRibbon || simulationBeam ){
+	if(simulationRibbon || simulationBeam){
 		emitterInstance.AddIBOEntries(
-			particle->particle + particle->ribbonLine[ 0 ],
-			particle->particle + particle->ribbonLine[ 1 ],
+			particle->particle + particle->ribbonLine[0],
+			particle->particle + particle->ribbonLine[1],
 			particle->particle,
-			particle->particle + particle->ribbonLine[ 2 ] );
-		rtps->IncrementIndexCount( 4 );
+			particle->particle + particle->ribbonLine[2]);
+		rtps->IncrementIndexCount(4);
 		
 	}else{
-		emitterInstance.AddIBOEntry( particle->particle );
-		rtps->IncrementIndexCount( 1 );
+		emitterInstance.AddIBOEntry(particle->particle);
+		rtps->IncrementIndexCount(1);
 	}
 }

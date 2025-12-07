@@ -40,7 +40,7 @@ igdeNativeNullRenderView::igdeNativeNullRenderView(){
 igdeNativeNullRenderView::~igdeNativeNullRenderView(){
 }
 
-igdeNativeNullRenderView *igdeNativeNullRenderView::CreateNativeWidget( igdeViewRenderWindow& ){
+igdeNativeNullRenderView *igdeNativeNullRenderView::CreateNativeWidget(igdeViewRenderWindow&){
 	return new igdeNativeNullRenderView;
 }
 
@@ -65,7 +65,7 @@ bool igdeNativeNullRenderView::IsShown() const{
 }
 
 decPoint igdeNativeNullRenderView::GetSize() const{
-	return decPoint( 256, 256 );
+	return decPoint(256, 256);
 }
 
 void igdeNativeNullRenderView::OnFrameUpdate(){

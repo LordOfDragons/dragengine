@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCPSetClass::meUHTVRuleCPSetClass( meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, const char *nclass ){
-	if( ! vlayer || ! rule || ! nclass ) DETHROW( deeInvalidParam );
+meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, const char *nclass){
+	if(!vlayer || !rule || !nclass) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;
 	
-	SetShortInfo( "Vegetation Layer Rule Closest Prop Set Class" );
-	SetMemoryConsumption( sizeof( meUHTVRuleCPSetClass ) );
+	SetShortInfo("Vegetation Layer Rule Closest Prop Set Class");
+	SetMemoryConsumption(sizeof(meUHTVRuleCPSetClass));
 	
 	pOldPropClass = rule->GetPropClass();
 	pNewPropClass = nclass;
@@ -59,8 +59,8 @@ meUHTVRuleCPSetClass::meUHTVRuleCPSetClass( meHTVegetationLayer *vlayer, meHTVRu
 }
 
 meUHTVRuleCPSetClass::~meUHTVRuleCPSetClass(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +69,11 @@ meUHTVRuleCPSetClass::~meUHTVRuleCPSetClass(){
 ///////////////
 
 void meUHTVRuleCPSetClass::Undo(){
-	pRule->SetPropClass( pOldPropClass.GetString() );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetPropClass(pOldPropClass.GetString());
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleCPSetClass::Redo(){
-	pRule->SetPropClass( pNewPropClass.GetString() );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetPropClass(pNewPropClass.GetString());
+	pVLayer->NotifyRuleChanged(pRule);
 }

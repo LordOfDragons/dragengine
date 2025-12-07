@@ -83,9 +83,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpColliderRig::debpColliderRig( dePhysicsBullet *bullet, deColliderRig &collider ) :
-debpCollider( bullet, collider, ectRig ),
-pColliderRig( collider )
+debpColliderRig::debpColliderRig(dePhysicsBullet *bullet, deColliderRig &collider) :
+debpCollider(bullet, collider, ectRig),
+pColliderRig(collider)
 {
 	pHasGravity = false;
 	pHasLinVelo = false;
@@ -138,39 +138,39 @@ void debpColliderRig::DirtyAttachments(){
 
 
 
-void debpColliderRig::SetParentWorld( debpWorld *parentWorld ){
-	if( parentWorld == GetParentWorld() ){
+void debpColliderRig::SetParentWorld(debpWorld *parentWorld){
+	if(parentWorld == GetParentWorld()){
 		return;
 	}
 	
-	if( pBones ){
+	if(pBones){
 		pBones->DestroyDebugDrawers();
 	}
 	
-	debpCollider::SetParentWorld( parentWorld );
+	debpCollider::SetParentWorld(parentWorld);
 	
-	if( pBones && GetDebugDrawer() ){
+	if(pBones && GetDebugDrawer()){
 		pBones->CreateDebugDrawers();
 	}
 }
 
 void debpColliderRig::CreateBody(){
 	debpCollisionWorld * const dynWorld = GetDynamicsWorld();
-	if( ! dynWorld ){
+	if(!dynWorld){
 		return;
 	}
 	
 	int c, constraintCount = GetConstraintCount();
 	
-	for( c=0; c<constraintCount; c++ ){
-		GetConstraintAt( c )->SetDynamicsWorld( dynWorld );
+	for(c=0; c<constraintCount; c++){
+		GetConstraintAt(c)->SetDynamicsWorld(dynWorld);
 	}
 	
-	if( pSimplePhyBody ){
-		pSimplePhyBody->SetDynamicsWorld( dynWorld );
+	if(pSimplePhyBody){
+		pSimplePhyBody->SetDynamicsWorld(dynWorld);
 		
-	}else if( pBones ){
-		pBones->SetDynamicWorld( dynWorld );
+	}else if(pBones){
+		pBones->SetDynamicWorld(dynWorld);
 	}
 	
 	GravityChanged();
@@ -179,42 +179,42 @@ void debpColliderRig::CreateBody(){
 void debpColliderRig::DestroyBody(){
 	int c, constraintCount = GetConstraintCount();
 	
-	for( c=0; c<constraintCount; c++ ){
-		GetConstraintAt( c )->SetDynamicsWorld( NULL );
+	for(c=0; c<constraintCount; c++){
+		GetConstraintAt(c)->SetDynamicsWorld(NULL);
 	}
 	
-	if( pSimplePhyBody ){
-		pSimplePhyBody->SetDynamicsWorld( NULL );
+	if(pSimplePhyBody){
+		pSimplePhyBody->SetDynamicsWorld(NULL);
 		
-	}else if( pBones ){
-		pBones->SetDynamicWorld( NULL );
+	}else if(pBones){
+		pBones->SetDynamicWorld(NULL);
 	}
 }
 
 void debpColliderRig::UpdateFromBody(){
 	// if a simple body just set the collider from the physics body
-	if( pSimplePhyBody ){
-		if( pSimplePhyBody->UpdateFromBody() ){
+	if(pSimplePhyBody){
+		if(pSimplePhyBody->UpdateFromBody()){
 			// prevent all updates during this time
 			pPreventUpdate = true;
 			
 			// update
-			pColliderRig.SetPosition( pSimplePhyBody->GetPosition() );
-			pColliderRig.SetOrientation( pSimplePhyBody->GetOrientation() );
-			pColliderRig.SetLinearVelocity( pSimplePhyBody->GetLinearVelocity() );
-			pColliderRig.SetAngularVelocity( pSimplePhyBody->GetAngularVelocity() );
+			pColliderRig.SetPosition(pSimplePhyBody->GetPosition());
+			pColliderRig.SetOrientation(pSimplePhyBody->GetOrientation());
+			pColliderRig.SetLinearVelocity(pSimplePhyBody->GetLinearVelocity());
+			pColliderRig.SetAngularVelocity(pSimplePhyBody->GetAngularVelocity());
 			
 			// update attachments if required
-			pUpdateAttachments( false );
+			pUpdateAttachments(false);
 			
 			// finished so we can allow updates again.
 			pPreventUpdate = false;
 		}
 		
 	// otherwise update bonewise
-	}else if( pBones ){
+	}else if(pBones){
 		pPreventUpdate = true;
-		if( pBones->UpdateFromBody() ){
+		if(pBones->UpdateFromBody()){
 			RequiresUpdate();
 		}
 		//pUpdateAttachments( false ); // not done in component
@@ -225,9 +225,9 @@ void debpColliderRig::UpdateFromBody(){
 void debpColliderRig::UpdateExtends(){
 	decDVector minExtend, maxExtend;
 	
-	if( pRig ){
+	if(pRig){
 		int b, s, shapeCount = pRigShapes.GetShapeCount();
-		decDVector distance( pPredictDisp * 0.5 );
+		decDVector distance(pPredictDisp * 0.5);
 		decDVector minExtendShape, maxExtendShape;
 		debpDCollisionBox colBox;
 		bool first = true;
@@ -236,10 +236,10 @@ void debpColliderRig::UpdateExtends(){
 		UpdateShapes();
 		
 		// determine the bounding box of all collision volumes
-		for( s=0; s<shapeCount; s++ ){
-			pRigShapes.GetShapeAt( s )->GetCollisionVolume()->GetEnclosingBox( &colBox );
+		for(s=0; s<shapeCount; s++){
+			pRigShapes.GetShapeAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
-			if( first ){
+			if(first){
 				minExtend = colBox.GetCenter() - colBox.GetHalfSize();
 				maxExtend = colBox.GetCenter() + colBox.GetHalfSize();
 				first = false;
@@ -248,28 +248,28 @@ void debpColliderRig::UpdateExtends(){
 				minExtendShape = colBox.GetCenter() - colBox.GetHalfSize();
 				maxExtendShape = colBox.GetCenter() + colBox.GetHalfSize();
 				
-				if( minExtendShape.x < minExtend.x ) minExtend.x = minExtendShape.x;
-				if( minExtendShape.y < minExtend.y ) minExtend.y = minExtendShape.y;
-				if( minExtendShape.z < minExtend.z ) minExtend.z = minExtendShape.z;
+				if(minExtendShape.x < minExtend.x) minExtend.x = minExtendShape.x;
+				if(minExtendShape.y < minExtend.y) minExtend.y = minExtendShape.y;
+				if(minExtendShape.z < minExtend.z) minExtend.z = minExtendShape.z;
 				
-				if( maxExtendShape.x > maxExtend.x ) maxExtend.x = maxExtendShape.x;
-				if( maxExtendShape.y > maxExtend.y ) maxExtend.y = maxExtendShape.y;
-				if( maxExtendShape.z > maxExtend.z ) maxExtend.z = maxExtendShape.z;
+				if(maxExtendShape.x > maxExtend.x) maxExtend.x = maxExtendShape.x;
+				if(maxExtendShape.y > maxExtend.y) maxExtend.y = maxExtendShape.y;
+				if(maxExtendShape.z > maxExtend.z) maxExtend.z = maxExtendShape.z;
 			}
 		}
 		
-		if( pBones ){
+		if(pBones){
 			const int bpcount = pBones->GetBonePhysicsCount();
 			
-			for( b=0; b<bpcount; b++ ){
-				const debpShapeList &shapeList = pBones->GetBonePhysicsAt( b ).GetShapes();
+			for(b=0; b<bpcount; b++){
+				const debpShapeList &shapeList = pBones->GetBonePhysicsAt(b).GetShapes();
 				
 				shapeCount = shapeList.GetShapeCount();
 				
-				for( s=0; s<shapeCount; s++ ){
-					shapeList.GetShapeAt( s )->GetCollisionVolume()->GetEnclosingBox( &colBox );
+				for(s=0; s<shapeCount; s++){
+					shapeList.GetShapeAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 					
-					if( first ){
+					if(first){
 						minExtend = colBox.GetCenter() - colBox.GetHalfSize();
 						maxExtend = colBox.GetCenter() + colBox.GetHalfSize();
 						first = false;
@@ -278,34 +278,34 @@ void debpColliderRig::UpdateExtends(){
 						minExtendShape = colBox.GetCenter() - colBox.GetHalfSize();
 						maxExtendShape = colBox.GetCenter() + colBox.GetHalfSize();
 						
-						if( minExtendShape.x < minExtend.x ) minExtend.x = minExtendShape.x;
-						if( minExtendShape.y < minExtend.y ) minExtend.y = minExtendShape.y;
-						if( minExtendShape.z < minExtend.z ) minExtend.z = minExtendShape.z;
+						if(minExtendShape.x < minExtend.x) minExtend.x = minExtendShape.x;
+						if(minExtendShape.y < minExtend.y) minExtend.y = minExtendShape.y;
+						if(minExtendShape.z < minExtend.z) minExtend.z = minExtendShape.z;
 						
-						if( maxExtendShape.x > maxExtend.x ) maxExtend.x = maxExtendShape.x;
-						if( maxExtendShape.y > maxExtend.y ) maxExtend.y = maxExtendShape.y;
-						if( maxExtendShape.z > maxExtend.z ) maxExtend.z = maxExtendShape.z;
+						if(maxExtendShape.x > maxExtend.x) maxExtend.x = maxExtendShape.x;
+						if(maxExtendShape.y > maxExtend.y) maxExtend.y = maxExtendShape.y;
+						if(maxExtendShape.z > maxExtend.z) maxExtend.z = maxExtendShape.z;
 					}
 				}
 			}
 		}
 		
 		// enlarge the bounding box at the correct sides by the predicted displacement
-		if( distance.x < 0.0 ){
+		if(distance.x < 0.0){
 			minExtend.x += distance.x;
 			
 		}else{
 			maxExtend.x += distance.x;
 		}
 		
-		if( distance.y < 0.0 ){
+		if(distance.y < 0.0){
 			minExtend.y += distance.y;
 			
 		}else{
 			maxExtend.y += distance.y;
 		}
 		
-		if( distance.z < 0.0 ){
+		if(distance.z < 0.0){
 			minExtend.z += distance.z;
 			
 		}else{
@@ -313,7 +313,7 @@ void debpColliderRig::UpdateExtends(){
 		}
 	}
 	
-	SetExtends( minExtend, maxExtend );
+	SetExtends(minExtend, maxExtend);
 }
 
 void debpColliderRig::PrepareForStep(){
@@ -323,26 +323,26 @@ void debpColliderRig::PrepareForStep(){
 	RegisterColDetFinish(); // to disable pPreventAttNotify
 	
 	// this is dirty but i've got no better idea right now
-	if( GetConstraintCount() > 0 ){
+	if(GetConstraintCount() > 0){
 		pBones->SetAllBonesDirty();
 	}
 	
-	if( pBones ){
+	if(pBones){
 		pBones->ActivateDirtyPhysicsBodies();
 		pDirtyBones = false;
 	}
 	
-	pUpdateAttachments( false );
+	pUpdateAttachments(false);
 	PrepareRigConstraintsForStep();
 }
 
 
 
-void debpColliderRig::PrepareDetection( float elapsed ){
-	debpCollider::PrepareDetection( elapsed );
+void debpColliderRig::PrepareDetection(float elapsed){
+	debpCollider::PrepareDetection(elapsed);
 	
 	// update the kinematic bones if using bone test mode
-	if( pBones && pDirtyBones ){
+	if(pBones && pDirtyBones){
 		// bullet uses interpolation of the previous transformation and velocities with the current
 		// values to calculate CCD in particular. if the user sets the collider bone parameter himself
 		// it is assumed the object teleported or has been reset. in this case the interpolation has
@@ -350,13 +350,13 @@ void debpColliderRig::PrepareDetection( float elapsed ){
 		// used to determine if Bone*Changed calls do reset the interpolation or not. during this
 		// preparation code Bone*Changed is not allowed to reset the interpolation or the CCD breaks
 // 		pResetKinematicInterpolation = false;
-		pBones->PrepareForDetection( elapsed );
+		pBones->PrepareForDetection(elapsed);
 // 		pResetKinematicInterpolation = true;
 	}
 }
 
 void debpColliderRig::FinishDetection(){
-	if( GetIsPrepared() ){
+	if(GetIsPrepared()){
 		CheckRigConstraintsBroke();
 	}
 	
@@ -366,11 +366,11 @@ void debpColliderRig::FinishDetection(){
 }
 
 bool debpColliderRig::CalcAutoColDetPrepare(){
-	if( debpCollider::CalcAutoColDetPrepare() ){
+	if(debpCollider::CalcAutoColDetPrepare()){
 		return true;
 	}
 	
-	if( pBones && pBones->GetBonePhysicsCount() > 0 ){
+	if(pBones && pBones->GetBonePhysicsCount() > 0){
 		return pColliderRig.GetResponseType() == deCollider::ertDynamic || pBones->HasConstraints();
 	}
 	
@@ -378,11 +378,11 @@ bool debpColliderRig::CalcAutoColDetPrepare(){
 }
 
 bool debpColliderRig::CalcAutoColDetFinish(){
-	if( debpCollider::CalcAutoColDetPrepare() ){
+	if(debpCollider::CalcAutoColDetPrepare()){
 		return true;
 	}
 	
-	if( pBones && pBones->GetBonePhysicsCount() > 0 ){
+	if(pBones && pBones->GetBonePhysicsCount() > 0){
 		return pColliderRig.GetResponseType() == deCollider::ertDynamic || pBones->HasConstraints();
 	}
 	
@@ -392,13 +392,13 @@ bool debpColliderRig::CalcAutoColDetFinish(){
 
 
 void debpColliderRig::PrepareRigConstraintsForStep(){
-	if( pBones ){
+	if(pBones){
 		pBones->PrepareConstraintsForStep();
 	}
 }
 
 void debpColliderRig::CheckRigConstraintsBroke(){
-	if( pBones ){
+	if(pBones){
 		pBones->CheckConstraintsBroke();
 	}
 }
@@ -406,10 +406,10 @@ void debpColliderRig::CheckRigConstraintsBroke(){
 
 
 void debpColliderRig::UpdateCollisionObjectAABBs(){
-	if( pSimplePhyBody ){
+	if(pSimplePhyBody){
 		pSimplePhyBody->UpdateAABB();
 		
-	}else if( pBones ){
+	}else if(pBones){
 		pBones->UpdatePhyBodyAABBs();
 	}
 }
@@ -417,14 +417,14 @@ void debpColliderRig::UpdateCollisionObjectAABBs(){
 
 
 void debpColliderRig::UpdateShapes(){
-	if( ! pDirtyShapes ){
+	if(!pDirtyShapes){
 		return;
 	}
 	
 	const decDMatrix &matrix = GetMatrix();
 	
-	pRigShapes.UpdateWithMatrix( matrix );
-	if( pBones ){
+	pRigShapes.UpdateWithMatrix(matrix);
+	if(pBones){
 		pBones->UpdateShapes();
 	}
 	
@@ -433,10 +433,10 @@ void debpColliderRig::UpdateShapes(){
 	pDirtyShapes = false;
 }
 
-void debpColliderRig::UpdateShapesWithMatrix( const decDMatrix &transformation ){
-	pRigShapes.UpdateWithMatrix( transformation );
-	if( pBones ){
-		pBones->UpdateShapes( transformation );
+void debpColliderRig::UpdateShapesWithMatrix(const decDMatrix &transformation){
+	pRigShapes.UpdateWithMatrix(transformation);
+	if(pBones){
+		pBones->UpdateShapes(transformation);
 	}
 	
 	pUpdateShapeExtends();
@@ -445,17 +445,17 @@ void debpColliderRig::UpdateShapesWithMatrix( const decDMatrix &transformation )
 void debpColliderRig::pUpdateShapeExtends(){
 	decDVector minExtend, maxExtend;
 	
-	if( pRig ){
+	if(pRig){
 		int b, s, shapeCount = pRigShapes.GetShapeCount();
-		decDVector distance( pPredictDisp * 0.5 );
+		decDVector distance(pPredictDisp * 0.5);
 		decDVector minExtendShape, maxExtendShape;
 		debpDCollisionBox colBox;
 		bool first = true;
 		
-		for( s=0; s<shapeCount; s++ ){
-			pRigShapes.GetShapeAt( s )->GetCollisionVolume()->GetEnclosingBox( &colBox );
+		for(s=0; s<shapeCount; s++){
+			pRigShapes.GetShapeAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
-			if( first ){
+			if(first){
 				minExtend = colBox.GetCenter() - colBox.GetHalfSize();
 				maxExtend = colBox.GetCenter() + colBox.GetHalfSize();
 				first = false;
@@ -464,28 +464,28 @@ void debpColliderRig::pUpdateShapeExtends(){
 				minExtendShape = colBox.GetCenter() - colBox.GetHalfSize();
 				maxExtendShape = colBox.GetCenter() + colBox.GetHalfSize();
 				
-				if( minExtendShape.x < minExtend.x ) minExtend.x = minExtendShape.x;
-				if( minExtendShape.y < minExtend.y ) minExtend.y = minExtendShape.y;
-				if( minExtendShape.z < minExtend.z ) minExtend.z = minExtendShape.z;
+				if(minExtendShape.x < minExtend.x) minExtend.x = minExtendShape.x;
+				if(minExtendShape.y < minExtend.y) minExtend.y = minExtendShape.y;
+				if(minExtendShape.z < minExtend.z) minExtend.z = minExtendShape.z;
 				
-				if( maxExtendShape.x > maxExtend.x ) maxExtend.x = maxExtendShape.x;
-				if( maxExtendShape.y > maxExtend.y ) maxExtend.y = maxExtendShape.y;
-				if( maxExtendShape.z > maxExtend.z ) maxExtend.z = maxExtendShape.z;
+				if(maxExtendShape.x > maxExtend.x) maxExtend.x = maxExtendShape.x;
+				if(maxExtendShape.y > maxExtend.y) maxExtend.y = maxExtendShape.y;
+				if(maxExtendShape.z > maxExtend.z) maxExtend.z = maxExtendShape.z;
 			}
 		}
 		
-		if( pBones ){
+		if(pBones){
 			const int bpcount = pBones->GetBonePhysicsCount();
 			
-			for( b=0; b<bpcount; b++ ){
-				const debpShapeList &shapeList = pBones->GetBonePhysicsAt( b ).GetShapes();
+			for(b=0; b<bpcount; b++){
+				const debpShapeList &shapeList = pBones->GetBonePhysicsAt(b).GetShapes();
 				
 				shapeCount = shapeList.GetShapeCount();
 				
-				for( s=0; s<shapeCount; s++ ){
-					shapeList.GetShapeAt( s )->GetCollisionVolume()->GetEnclosingBox( &colBox );
+				for(s=0; s<shapeCount; s++){
+					shapeList.GetShapeAt(s)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 					
-					if( first ){
+					if(first){
 						minExtend = colBox.GetCenter() - colBox.GetHalfSize();
 						maxExtend = colBox.GetCenter() + colBox.GetHalfSize();
 						first = false;
@@ -494,20 +494,20 @@ void debpColliderRig::pUpdateShapeExtends(){
 						minExtendShape = colBox.GetCenter() - colBox.GetHalfSize();
 						maxExtendShape = colBox.GetCenter() + colBox.GetHalfSize();
 						
-						if( minExtendShape.x < minExtend.x ) minExtend.x = minExtendShape.x;
-						if( minExtendShape.y < minExtend.y ) minExtend.y = minExtendShape.y;
-						if( minExtendShape.z < minExtend.z ) minExtend.z = minExtendShape.z;
+						if(minExtendShape.x < minExtend.x) minExtend.x = minExtendShape.x;
+						if(minExtendShape.y < minExtend.y) minExtend.y = minExtendShape.y;
+						if(minExtendShape.z < minExtend.z) minExtend.z = minExtendShape.z;
 						
-						if( maxExtendShape.x > maxExtend.x ) maxExtend.x = maxExtendShape.x;
-						if( maxExtendShape.y > maxExtend.y ) maxExtend.y = maxExtendShape.y;
-						if( maxExtendShape.z > maxExtend.z ) maxExtend.z = maxExtendShape.z;
+						if(maxExtendShape.x > maxExtend.x) maxExtend.x = maxExtendShape.x;
+						if(maxExtendShape.y > maxExtend.y) maxExtend.y = maxExtendShape.y;
+						if(maxExtendShape.z > maxExtend.z) maxExtend.z = maxExtendShape.z;
 					}
 				}
 			}
 		}
 	}
 	
-	SetExtends( minExtend, maxExtend );
+	SetExtends(minExtend, maxExtend);
 }
 
 
@@ -528,8 +528,8 @@ bool debpColliderRig::PrepareStaticCollisionTest(){
 void debpColliderRig::UpdateDebugDrawer(){
 	debpCollider::UpdateDebugDrawer();
 	
-	if( pBones ){
-		if( GetDebugDrawer() ){
+	if(pBones){
+		if(GetDebugDrawer()){
 			pBones->CreateDebugDrawers();
 			pBones->UpdateDebugDrawers();
 			
@@ -541,13 +541,13 @@ void debpColliderRig::UpdateDebugDrawer(){
 
 void debpColliderRig::UpdateDDSShape(){
 	deDebugDrawerShape * const ddshape = GetDDSShape();
-	if( ! ddshape ){
+	if(!ddshape){
 		return;
 	}
 	
-	switch( pTestMode ){
+	switch(pTestMode){
 	case etmBoneShape:
-		if( pBones ){
+		if(pBones){
 			pBones->UpdateDebugDrawersShape();
 		}
 		break;
@@ -569,12 +569,12 @@ void debpColliderRig::UpdateDDSShape(){
 // Actions
 ////////////
 
-void debpColliderRig::EnableBoneConstraint( int bone, int constraint, bool enable ){
-	GetBullet()->LogWarn( "EnableBoneConstraint not implemented in debpColliderRig" );
+void debpColliderRig::EnableBoneConstraint(int bone, int constraint, bool enable){
+	GetBullet()->LogWarn("EnableBoneConstraint not implemented in debpColliderRig");
 }
 
-void debpColliderRig::ReplaceBoneConstraint( int bone, int constraint, const deRigConstraint &replacement ){
-	GetBullet()->LogWarn( "ReplaceBoneConstraint not implemented in debpColliderRig" );
+void debpColliderRig::ReplaceBoneConstraint(int bone, int constraint, const deRigConstraint &replacement){
+	GetBullet()->LogWarn("ReplaceBoneConstraint not implemented in debpColliderRig");
 }
 
 
@@ -582,53 +582,53 @@ void debpColliderRig::ReplaceBoneConstraint( int bone, int constraint, const deR
 // forces
 ///////////
 
-void debpColliderRig::ApplyForce( const decVector &force ){
-	if( pSimplePhyBody ){
-		pSimplePhyBody->ApplyForce( force );
+void debpColliderRig::ApplyForce(const decVector &force){
+	if(pSimplePhyBody){
+		pSimplePhyBody->ApplyForce(force);
 		
-	}else if( pBones ){
-		pBones->ApplyForce( force );
+	}else if(pBones){
+		pBones->ApplyForce(force);
 	}
 }
 
-void debpColliderRig::ApplyForceAt( const decVector &force, const decVector &point ){
-	if( pSimplePhyBody ){
-		pSimplePhyBody->ApplyForceAt( force, point );
+void debpColliderRig::ApplyForceAt(const decVector &force, const decVector &point){
+	if(pSimplePhyBody){
+		pSimplePhyBody->ApplyForceAt(force, point);
 		
-	}else if( pBones ){
-		pBones->ApplyForceAt( force, point );
+	}else if(pBones){
+		pBones->ApplyForceAt(force, point);
 	}
 }
 
-void debpColliderRig::ApplyTorque( const decVector &torque ){
-	if( pSimplePhyBody ){
-		pSimplePhyBody->ApplyTorque( torque );
+void debpColliderRig::ApplyTorque(const decVector &torque){
+	if(pSimplePhyBody){
+		pSimplePhyBody->ApplyTorque(torque);
 		
-	}else if( pBones ){
-		pBones->ApplyTorque( torque );
+	}else if(pBones){
+		pBones->ApplyTorque(torque);
 	}
 }
 
 
 
-void debpColliderRig::ApplyBoneForce( int bone, const decVector &force ){
-	debpColliderBone * const cbone = pBones ? pBones->GetBoneAt( bone ) : NULL;
-	if( cbone ){
-		cbone->GetPhysicsBody()->ApplyForce( force );
+void debpColliderRig::ApplyBoneForce(int bone, const decVector &force){
+	debpColliderBone * const cbone = pBones ? pBones->GetBoneAt(bone) : NULL;
+	if(cbone){
+		cbone->GetPhysicsBody()->ApplyForce(force);
 	}
 }
 
-void debpColliderRig::ApplyBoneForceAt( int bone, const decVector &force, const decVector &point ){
-	debpColliderBone * const cbone = pBones ? pBones->GetBoneAt( bone ) : NULL;
-	if( cbone ){
-		cbone->GetPhysicsBody()->ApplyForceAt( force, point );
+void debpColliderRig::ApplyBoneForceAt(int bone, const decVector &force, const decVector &point){
+	debpColliderBone * const cbone = pBones ? pBones->GetBoneAt(bone) : NULL;
+	if(cbone){
+		cbone->GetPhysicsBody()->ApplyForceAt(force, point);
 	}
 }
 
-void debpColliderRig::ApplyBoneTorque( int bone, const decVector &torque ){
-	debpColliderBone * const cbone = pBones ? pBones->GetBoneAt( bone ) : NULL;
-	if( cbone ){
-		cbone->GetPhysicsBody()->ApplyTorque( torque );
+void debpColliderRig::ApplyBoneTorque(int bone, const decVector &torque){
+	debpColliderBone * const cbone = pBones ? pBones->GetBoneAt(bone) : NULL;
+	if(cbone){
+		cbone->GetPhysicsBody()->ApplyTorque(torque);
 	}
 }
 
@@ -639,7 +639,7 @@ void debpColliderRig::ApplyBoneTorque( int bone, const decVector &torque ){
 
 void debpColliderRig::PositionChanged(){
 	const decDVector &position = pColliderRig.GetPosition();
-	if( pPosition.IsEqualTo( position ) ){
+	if(pPosition.IsEqualTo(position)){
 		return;
 	}
 	
@@ -650,13 +650,13 @@ void debpColliderRig::PositionChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if( ! pPreventUpdate ){
-		if( pSimplePhyBody ){
-			pSimplePhyBody->SetPosition( position );
+	if(!pPreventUpdate){
+		if(pSimplePhyBody){
+			pSimplePhyBody->SetPosition(position);
 			
 		}else{
-			if( pBones ){
-				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			if(pBones){
+				pBones->UpdateFromKinematic(false /*pResetKinematicInterpolation*/);
 			}
 			DirtyBones();
 		}
@@ -666,14 +666,14 @@ void debpColliderRig::PositionChanged(){
 	
 	RequiresUpdate();
 	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
+	if(pColliderRig.GetAttachmentCount() > 0){
+		pUpdateAttachments(true);
 	}
 }
 
 void debpColliderRig::OrientationChanged(){
 	const decQuaternion &orientation = pColliderRig.GetOrientation();
-	if( pOrientation.IsEqualTo( orientation ) ){
+	if(pOrientation.IsEqualTo(orientation)){
 		return;
 	}
 	
@@ -684,13 +684,13 @@ void debpColliderRig::OrientationChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if( ! pPreventUpdate ){
-		if( pSimplePhyBody ){
-			pSimplePhyBody->SetOrientation( orientation );
+	if(!pPreventUpdate){
+		if(pSimplePhyBody){
+			pSimplePhyBody->SetOrientation(orientation);
 			
 		}else{
-			if( pBones ){
-				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			if(pBones){
+				pBones->UpdateFromKinematic(false /*pResetKinematicInterpolation*/);
 			}
 			DirtyBones();
 		}
@@ -700,15 +700,15 @@ void debpColliderRig::OrientationChanged(){
 	
 	RequiresUpdate();
 	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
+	if(pColliderRig.GetAttachmentCount() > 0){
+		pUpdateAttachments(true);
 	}
 }
 
 void debpColliderRig::ScaleChanged(){
 	const decVector &scale = pColliderRig.GetScale();
 	
-	if( pScale.IsEqualTo( scale ) ){
+	if(pScale.IsEqualTo(scale)){
 		return;
 	}
 	
@@ -717,7 +717,7 @@ void debpColliderRig::ScaleChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if( ! pPreventUpdate && ! pSimplePhyBody ){
+	if(!pPreventUpdate && !pSimplePhyBody){
 		DirtyBones();
 	}
 	
@@ -726,15 +726,15 @@ void debpColliderRig::ScaleChanged(){
 	
 	RequiresUpdate();
 	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
+	if(pColliderRig.GetAttachmentCount() > 0){
+		pUpdateAttachments(true);
 	}
 }
 
 void debpColliderRig::GeometryChanged(){
 	const decDVector &position = pColliderRig.GetPosition();
 	const decQuaternion &orientation = pColliderRig.GetOrientation();
-	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) ){
+	if(pPosition.IsEqualTo(position) && pOrientation.IsEqualTo(orientation)){
 		return;
 	}
 	
@@ -746,14 +746,14 @@ void debpColliderRig::GeometryChanged(){
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
-	if( ! pPreventUpdate ){
-		if( pSimplePhyBody ){
-			pSimplePhyBody->SetPosition( position );
-			pSimplePhyBody->SetOrientation( orientation );
+	if(!pPreventUpdate){
+		if(pSimplePhyBody){
+			pSimplePhyBody->SetPosition(position);
+			pSimplePhyBody->SetOrientation(orientation);
 			
 		}else{
-			if( pBones ){
-				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			if(pBones){
+				pBones->UpdateFromKinematic(false /*pResetKinematicInterpolation*/);
 			}
 			DirtyBones();
 		}
@@ -763,23 +763,23 @@ void debpColliderRig::GeometryChanged(){
 	
 	RequiresUpdate();
 	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
+	if(pColliderRig.GetAttachmentCount() > 0){
+		pUpdateAttachments(true);
 	}
 }
 
 void debpColliderRig::LinearVelocityChanged(){
 	const decVector &linVelo = pColliderRig.GetLinearVelocity();
-	if( pLinVelo.IsEqualTo( linVelo ) ){
+	if(pLinVelo.IsEqualTo(linVelo)){
 		return;
 	}
 	
-	if( ! pPreventUpdate ){
-		if( pSimplePhyBody ){
-			pSimplePhyBody->SetLinearVelocity( linVelo );
+	if(!pPreventUpdate){
+		if(pSimplePhyBody){
+			pSimplePhyBody->SetLinearVelocity(linVelo);
 			
-		}else if( pBones ){
-			pBones->LinearVelocityChanged( linVelo );
+		}else if(pBones){
+			pBones->LinearVelocityChanged(linVelo);
 		}
 	}
 	
@@ -794,16 +794,16 @@ void debpColliderRig::LinearVelocityChanged(){
 
 void debpColliderRig::AngularVelocityChanged(){
 	const decVector &angVelo = pColliderRig.GetAngularVelocity();
-	if( pAngVelo.IsEqualTo( angVelo ) ){
+	if(pAngVelo.IsEqualTo(angVelo)){
 		return;
 	}
 	
-	if( ! pPreventUpdate ){
-		if( pSimplePhyBody ){
-			pSimplePhyBody->SetAngularVelocity( angVelo );
+	if(!pPreventUpdate){
+		if(pSimplePhyBody){
+			pSimplePhyBody->SetAngularVelocity(angVelo);
 			
-		}else if( pBones ){
-			pBones->AngularVelocityChanged( angVelo );
+		}else if(pBones){
+			pBones->AngularVelocityChanged(angVelo);
 		}
 	}
 	
@@ -815,14 +815,14 @@ void debpColliderRig::AngularVelocityChanged(){
 }
 
 void debpColliderRig::GravityChanged(){
-	if( pColliderRig.GetUseLocalGravity() ){
+	if(pColliderRig.GetUseLocalGravity()){
 		pGravity = pColliderRig.GetGravity();
 		pHasGravity = pGravity * pGravity > 1e-6f; //1e-4f;
 		
 	}else{
 		debpWorld *bpWorld = GetParentWorld();
 		
-		if( bpWorld ){
+		if(bpWorld){
 			pGravity = bpWorld->GetWorld().GetGravity();
 			pHasGravity = pGravity * pGravity > 1e-6f; //1e-4f;
 			
@@ -834,11 +834,11 @@ void debpColliderRig::GravityChanged(){
 	
 	pUpdateIsMoving();
 	
-	if( pSimplePhyBody ){
-		pSimplePhyBody->SetGravity( pGravity );
+	if(pSimplePhyBody){
+		pSimplePhyBody->SetGravity(pGravity);
 		
-	}else if( pBones ){
-		pBones->SetGravity( pGravity );
+	}else if(pBones){
+		pBones->SetGravity(pGravity);
 	}
 }
 
@@ -846,21 +846,21 @@ void debpColliderRig::EnabledChanged(){
 	const bool enabled = pColliderRig.GetEnabled();
 	int c, constraintCount = GetConstraintCount();
 	
-	for( c=0; c<constraintCount; c++ ){ // is going to change
-		GetConstraintAt( c )->SetEnabled( enabled );
+	for(c=0; c<constraintCount; c++){ // is going to change
+		GetConstraintAt(c)->SetEnabled(enabled);
 	}
 	
-	if( pSimplePhyBody ){
-		pSimplePhyBody->SetEnabled( enabled );
+	if(pSimplePhyBody){
+		pSimplePhyBody->SetEnabled(enabled);
 		
-	}else if( pBones ){
-		pBones->EnablePhysicsBodies( enabled );
+	}else if(pBones){
+		pBones->EnablePhysicsBodies(enabled);
 	}
 }
 
 void debpColliderRig::PropertiesChanged(){
-	if( pSimplePhyBody ){
-		pSimplePhyBody->SetMass( pColliderRig.GetMass() );
+	if(pSimplePhyBody){
+		pSimplePhyBody->SetMass(pColliderRig.GetMass());
 	}
 	
 	GravityChanged();
@@ -869,34 +869,34 @@ void debpColliderRig::PropertiesChanged(){
 void debpColliderRig::ResponseTypeChanged(){
 	const deCollider::eResponseType responseType = pColliderRig.GetResponseType();
 	
-	if( pSimplePhyBody ){
-		if( responseType == deCollider::ertStatic ){
-			pSimplePhyBody->SetResponseType( debpPhysicsBody::ertStatic );
-			SetUseKinematicSimulation( false );
+	if(pSimplePhyBody){
+		if(responseType == deCollider::ertStatic){
+			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic);
+			SetUseKinematicSimulation(false);
 			
-		}else if( responseType == deCollider::ertKinematic ){
-			pSimplePhyBody->SetResponseType( debpPhysicsBody::ertKinematic );
-			SetUseKinematicSimulation( true );
+		}else if(responseType == deCollider::ertKinematic){
+			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertKinematic);
+			SetUseKinematicSimulation(true);
 			
 		}else{
-			pSimplePhyBody->SetResponseType( debpPhysicsBody::ertDynamic );
-			SetUseKinematicSimulation( false );
+			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertDynamic);
+			SetUseKinematicSimulation(false);
 		}
 		
-	}else if( pBones ){
-		pBones->UpdatePhysicsType( responseType );
-		SetUseKinematicSimulation( false );
+	}else if(pBones){
+		pBones->UpdatePhysicsType(responseType);
+		SetUseKinematicSimulation(false);
 	}
 	
-	SetAutoColDetPrepare( CalcAutoColDetPrepare() );
-	SetAutoColDetFinish( CalcAutoColDetFinish() );
+	SetAutoColDetPrepare(CalcAutoColDetPrepare());
+	SetAutoColDetFinish(CalcAutoColDetFinish());
 }
 
 void debpColliderRig::CollisionFilterChanged(){
-	if( pSimplePhyBody ){
+	if(pSimplePhyBody){
 		pSimplePhyBody->CollisionFilteringChanged();
 		
-	}else if( pBones ){
+	}else if(pBones){
 		pBones->CollisionFilteringChanged();
 	}
 }
@@ -908,8 +908,8 @@ void debpColliderRig::IgnoreCollidersChanged(){
 void debpColliderRig::RigChanged(){
 	deRig *engRig = pColliderRig.GetRig();
 	
-	if( engRig ){
-		pRig = ( debpRig* )engRig->GetPeerPhysics();
+	if(engRig){
+		pRig = (debpRig*)engRig->GetPeerPhysics();
 		
 	}else{
 		pRig = NULL;
@@ -918,23 +918,23 @@ void debpColliderRig::RigChanged(){
 	pUpdateBones();
 	MarkDirtyOctree();
 	
-	SetAddToOctree( pRig != NULL );
+	SetAddToOctree(pRig != NULL);
 }
 
 
 
-void debpColliderRig::AttachmentAdded( int index, deColliderAttachment *attachment ){
-	debpCollider::AttachmentAdded( index, attachment );
+void debpColliderRig::AttachmentAdded(int index, deColliderAttachment *attachment){
+	debpCollider::AttachmentAdded(index, attachment);
 	DirtyAttachments();
 }
 
-void debpColliderRig::AttachmentChanged( int index, deColliderAttachment *attachment ){
-	debpCollider::AttachmentChanged( index, attachment );
+void debpColliderRig::AttachmentChanged(int index, deColliderAttachment *attachment){
+	debpCollider::AttachmentChanged(index, attachment);
 	DirtyAttachments();
 }
 
-void debpColliderRig::AttachmentRemoved( int index, deColliderAttachment *attachment ){
-	debpCollider::AttachmentRemoved( index, attachment );
+void debpColliderRig::AttachmentRemoved(int index, deColliderAttachment *attachment){
+	debpCollider::AttachmentRemoved(index, attachment);
 	DirtyAttachments();
 }
 
@@ -945,48 +945,48 @@ void debpColliderRig::AllAttachmentsRemoved(){
 
 void debpColliderRig::AttachmentsForceUpdate(){
 	// prepare bones?
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
+	if(pColliderRig.GetAttachmentCount() > 0){
+		pUpdateAttachments(true);
 	}
 }
 
 
 
-void debpColliderRig::ConstraintAdded( int index, deColliderConstraint *constraint ){
-	debpCollider::ConstraintAdded( index, constraint );
+void debpColliderRig::ConstraintAdded(int index, deColliderConstraint *constraint){
+	debpCollider::ConstraintAdded(index, constraint);
 	
-	debpColliderConstraint &bpConstraint = *GetConstraintAt( index );
-	bpConstraint.SetDynamicsWorld( GetDynamicsWorld() );
-	bpConstraint.SetEnabled( pColliderRig.GetEnabled() );
+	debpColliderConstraint &bpConstraint = *GetConstraintAt(index);
+	bpConstraint.SetDynamicsWorld(GetDynamicsWorld());
+	bpConstraint.SetEnabled(pColliderRig.GetEnabled());
 	
-	ConstraintChanged( index, constraint );
+	ConstraintChanged(index, constraint);
 }
 
-void debpColliderRig::ConstraintChanged( int index, deColliderConstraint *constraint ){
-	debpCollider::ConstraintChanged( index, constraint );
+void debpColliderRig::ConstraintChanged(int index, deColliderConstraint *constraint){
+	debpCollider::ConstraintChanged(index, constraint);
 	
-	debpColliderConstraint &bpconstr = *GetConstraintAt( index );
+	debpColliderConstraint &bpconstr = *GetConstraintAt(index);
 	
 	debpPhysicsBody *oldbody = bpconstr.GetFirstBody();
 	int boneIndex = constraint->GetBone();
 	debpPhysicsBody *newbody = NULL;
 	decDVector offset;
 	
-	if( pSimplePhyBody ){
+	if(pSimplePhyBody){
 		newbody = pSimplePhyBody;
 		
-	}else if( pBones ){
+	}else if(pBones){
 		debpColliderBone *cbone = boneIndex >= 0 && boneIndex < pBones->GetBoneCount()
-			? pBones->GetBoneAt( boneIndex ) : pBones->GetRootBone();
-		if( cbone ){
+			? pBones->GetBoneAt(boneIndex) : pBones->GetRootBone();
+		if(cbone){
 			newbody = cbone->GetPhysicsBody();
 			offset = cbone->GetOffset();
 		}
 	}
 	
-	if( newbody != oldbody ){
-		bpconstr.SetFirstBody( newbody );
-		bpconstr.SetFirstOffset( offset.ToVector() );
+	if(newbody != oldbody){
+		bpconstr.SetFirstBody(newbody);
+		bpconstr.SetFirstOffset(offset.ToVector());
 	}
 	
 	bpconstr.ConstraintChanged();
@@ -994,21 +994,21 @@ void debpColliderRig::ConstraintChanged( int index, deColliderConstraint *constr
 
 
 
-void debpColliderRig::BonePositionChanged( int index ){
-	if( ! pBones ){
+void debpColliderRig::BonePositionChanged(int index){
+	if(!pBones){
 		return;
 	}
 	
-	debpColliderBone * const cbone = pBones->GetBoneAt( index );
-	if( ! cbone ){
+	debpColliderBone * const cbone = pBones->GetBoneAt(index);
+	if(!cbone){
 		return;
 	}
 	
-	if( ! pPreventUpdate ){
-		cbone->GetPhysicsBody()->SetPosition( pColliderRig.GetBoneAt( index ).GetPosition() );
+	if(!pPreventUpdate){
+		cbone->GetPhysicsBody()->SetPosition(pColliderRig.GetBoneAt(index).GetPosition());
 	}
 	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
+	if(pColliderRig.GetAttachmentCount() > 0){
 		DirtyAttachments();
 	}
 	
@@ -1016,21 +1016,21 @@ void debpColliderRig::BonePositionChanged( int index ){
 	MarkDirtyOctree();
 }
 
-void debpColliderRig::BoneOrientationChanged( int index ){
-	if( ! pBones ){
+void debpColliderRig::BoneOrientationChanged(int index){
+	if(!pBones){
 		return;
 	}
 	
-	debpColliderBone * const cbone = pBones->GetBoneAt( index );
-	if( ! cbone ){
+	debpColliderBone * const cbone = pBones->GetBoneAt(index);
+	if(!cbone){
 		return;
 	}
 	
-	if( ! pPreventUpdate ){
-		cbone->GetPhysicsBody()->SetOrientation( pColliderRig.GetBoneAt( index ).GetOrientation() );
+	if(!pPreventUpdate){
+		cbone->GetPhysicsBody()->SetOrientation(pColliderRig.GetBoneAt(index).GetOrientation());
 	}
 	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
+	if(pColliderRig.GetAttachmentCount() > 0){
 		DirtyAttachments();
 	}
 	
@@ -1038,52 +1038,52 @@ void debpColliderRig::BoneOrientationChanged( int index ){
 	MarkDirtyOctree();
 }
 
-void debpColliderRig::BoneLinearVelocityChanged( int index ){
-	if( pPreventUpdate ){
+void debpColliderRig::BoneLinearVelocityChanged(int index){
+	if(pPreventUpdate){
 		return;
 	}
-	if( ! pBones ){
-		return;
-	}
-	
-	debpColliderBone * const cbone = pBones->GetBoneAt( index );
-	if( ! cbone ){
+	if(!pBones){
 		return;
 	}
 	
-	cbone->GetPhysicsBody()->SetLinearVelocity( pColliderRig.GetBoneAt( index ).GetLinearVelocity() );
+	debpColliderBone * const cbone = pBones->GetBoneAt(index);
+	if(!cbone){
+		return;
+	}
+	
+	cbone->GetPhysicsBody()->SetLinearVelocity(pColliderRig.GetBoneAt(index).GetLinearVelocity());
 }
 
-void debpColliderRig::BoneAngularVelocityChanged( int index ){
-	if( pPreventUpdate ){
+void debpColliderRig::BoneAngularVelocityChanged(int index){
+	if(pPreventUpdate){
 		return;
 	}
-	if( ! pBones ){
-		return;
-	}
-	
-	debpColliderBone * const cbone = pBones->GetBoneAt( index );
-	if( ! cbone ){
+	if(!pBones){
 		return;
 	}
 	
-	cbone->GetPhysicsBody()->SetAngularVelocity( pColliderRig.GetBoneAt( index ).GetAngularVelocity() );
+	debpColliderBone * const cbone = pBones->GetBoneAt(index);
+	if(!cbone){
+		return;
+	}
+	
+	cbone->GetPhysicsBody()->SetAngularVelocity(pColliderRig.GetBoneAt(index).GetAngularVelocity());
 }
 
-void debpColliderRig::BonePropertiesChanged( int index ){
-	if( ! pBones ){
+void debpColliderRig::BonePropertiesChanged(int index){
+	if(!pBones){
 		return;
 	}
 	
-	debpColliderBone * const cbone = pBones->GetBoneAt( index );
-	if( cbone ){
-		cbone->GetPhysicsBody()->SetMass( pColliderRig.GetBoneAt( index ).GetMass() );
+	debpColliderBone * const cbone = pBones->GetBoneAt(index);
+	if(cbone){
+		cbone->GetPhysicsBody()->SetMass(pColliderRig.GetBoneAt(index).GetMass());
 	}
 }
 
-void debpColliderRig::BoneDynamicChanged( int index ){
-	if( pBones ){
-		pBones->UpdatePhysicsType( pColliderRig.GetResponseType(), index );
+void debpColliderRig::BoneDynamicChanged(int index){
+	if(pBones){
+		pBones->UpdatePhysicsType(pColliderRig.GetResponseType(), index);
 	}
 }
 
@@ -1093,10 +1093,10 @@ void debpColliderRig::BoneDynamicChanged( int index ){
 //////////////////////
 
 void debpColliderRig::pCleanUp(){
-	if( pBones ){
+	if(pBones){
 		delete pBones;
 	}
-	if( pSimplePhyBody ){
+	if(pSimplePhyBody){
 		delete pSimplePhyBody;
 	}
 }
@@ -1116,24 +1116,24 @@ void debpColliderRig::pUpdateBones(){
 	decMatrix bcMatrix, bcRotMatrix;
 	
 	// invalidate constraints
-	for( c=0; c<constraintCount; c++ ){
-		GetConstraintAt( c )->SetFirstBody( NULL );
+	for(c=0; c<constraintCount; c++){
+		GetConstraintAt(c)->SetFirstBody(NULL);
 	}
 	
 	// free bones if existing
-	if( pBones ){
+	if(pBones){
 		delete pBones;
 		pBones = NULL;
 	}
 	
 	// free simple physics body if existing
-	if( pSimplePhyBody ){
+	if(pSimplePhyBody){
 		delete pSimplePhyBody;
 		pSimplePhyBody = NULL;
 	}
 	
 	// check if there is a rig
-	if( pRig ){
+	if(pRig){
 		engRig = &pRig->GetRig();
 		boneCount = engRig->GetBoneCount();
 		shapeCount = engRig->GetShapes().GetCount();
@@ -1142,72 +1142,72 @@ void debpColliderRig::pUpdateBones(){
 	pTestMode = etmNone;
 	
 	// create bones
-	if( shapeCount == 0 && boneCount > 0 ){
-		pBones = new debpColliderBones( *this, &pColliderRig );
+	if(shapeCount == 0 && boneCount > 0){
+		pBones = new debpColliderBones(*this, &pColliderRig);
 		
 		// update constraints. (what's this doing here? that makes no sense)
 		/*if( pRootBone != -1 ){
 			constraintCount = GetConstraintCount();
 			
-			for( c=0; c<constraintCount; c++ ){
-				bpConstraint = GetConstraintAt( c );
+			for(c=0; c<constraintCount; c++){
+				bpConstraint = GetConstraintAt(c);
 				
-				bpConstraint->SetFirstBody( pBones[ pRootBone ]->GetPhysicsBody() );
-				bpConstraint->SetFirstOffset( pBones[ pRootBone ]->GetOffset().ToVector() );
+				bpConstraint->SetFirstBody(pBones[pRootBone]->GetPhysicsBody());
+				bpConstraint->SetFirstOffset(pBones[pRootBone]->GetOffset().ToVector());
 			}
 		}*/
 		
 	// if there are no bones but we have a rig then this is a simple one
-	}else if( shapeCount > 0 ){
+	}else if(shapeCount > 0){
 		// create the physics body which is the same no matter what shape we have
 		pSimplePhyBody = new debpPhysicsBody;
 		
-		pSimplePhyBody->SetOwnerCollider( this, -1 );
-		pSimplePhyBody->SetDynamicsWorld( dynWorld );
+		pSimplePhyBody->SetOwnerCollider(this, -1);
+		pSimplePhyBody->SetDynamicsWorld(dynWorld);
 		
-		pSimplePhyBody->SetLinearVelocity( pLinVelo );
-		pSimplePhyBody->SetAngularVelocity( pAngVelo );
-		pSimplePhyBody->SetGravity( pGravity );
+		pSimplePhyBody->SetLinearVelocity(pLinVelo);
+		pSimplePhyBody->SetAngularVelocity(pAngVelo);
+		pSimplePhyBody->SetGravity(pGravity);
 		
-		pSimplePhyBody->SetEnabled( enabled );
-		pSimplePhyBody->SetMass( pColliderRig.GetMass() );
+		pSimplePhyBody->SetEnabled(enabled);
+		pSimplePhyBody->SetMass(pColliderRig.GetMass());
 		
-		if( responseType == deCollider::ertStatic ){
-			pSimplePhyBody->SetResponseType( debpPhysicsBody::ertStatic );
+		if(responseType == deCollider::ertStatic){
+			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic);
 			
-		}else if( responseType == deCollider::ertKinematic ){
-			if( shapeCount > 0 ){
-				pSimplePhyBody->SetResponseType( debpPhysicsBody::ertKinematic );
+		}else if(responseType == deCollider::ertKinematic){
+			if(shapeCount > 0){
+				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertKinematic);
 				
 			}else{
-				pSimplePhyBody->SetResponseType( debpPhysicsBody::ertStatic ); // tri mesh supports no kinematic!
+				pSimplePhyBody->SetResponseType(debpPhysicsBody::ertStatic); // tri mesh supports no kinematic!
 			}
 			
 		}else{
-			pSimplePhyBody->SetResponseType( debpPhysicsBody::ertDynamic );
+			pSimplePhyBody->SetResponseType(debpPhysicsBody::ertDynamic);
 		}
 		
-		pSimplePhyBody->SetPosition( pPosition );
-		pSimplePhyBody->SetOrientation( pOrientation );
+		pSimplePhyBody->SetPosition(pPosition);
+		pSimplePhyBody->SetOrientation(pOrientation);
 		
 		// use rig shapes as shape for the physics body
 		debpCreateBulletShape createBulletShape;
 		
 		const decVector &scale = pColliderRig.GetScale();
-		createBulletShape.SetScale( scale );
+		createBulletShape.SetScale(scale);
 		
-		decVector cmp( -engRig->GetCentralMassPoint() );
+		decVector cmp(-engRig->GetCentralMassPoint());
 		cmp.x *= scale.x;
 		cmp.y *= scale.y;
 		cmp.z *= scale.z;
-		createBulletShape.SetOffset( cmp );
+		createBulletShape.SetOffset(cmp);
 		
-		for( s=0; s<shapeCount; s++ ){
-			createBulletShape.SetShapeIndex( s );
-			engRig->GetShapes().GetAt( s )->Visit( createBulletShape );
+		for(s=0; s<shapeCount; s++){
+			createBulletShape.SetShapeIndex(s);
+			engRig->GetShapes().GetAt(s)->Visit(createBulletShape);
 		}
 		createBulletShape.Finish();
-		pSimplePhyBody->SetShape( createBulletShape.GetBulletShape() );
+		pSimplePhyBody->SetShape(createBulletShape.GetBulletShape());
 		
 		//pSimplePhyBody->SetCcdParameters( createBulletShape.GetCcdThreshold(), createBulletShape.GetCcdRadius() );
 		
@@ -1215,22 +1215,22 @@ void debpColliderRig::pUpdateBones(){
 		
 		// create the collision shapes
 		createShape.Reset();
-		for( s=0; s<shapeCount; s++ ){
-			engRig->GetShapes().GetAt( s )->Visit( createShape );
+		for(s=0; s<shapeCount; s++){
+			engRig->GetShapes().GetAt(s)->Visit(createShape);
 			
-			if( createShape.GetCreatedShape() ){
-				pRigShapes.AddShape( createShape.GetCreatedShape() );
-				createShape.SetCreatedShape( NULL );
+			if(createShape.GetCreatedShape()){
+				pRigShapes.AddShape(createShape.GetCreatedShape());
+				createShape.SetCreatedShape(NULL);
 			}
 		}
 		
 		// update constraints
 		constraintCount = GetConstraintCount();
-		for( c=0; c<constraintCount; c++ ){
-			bpConstraint = GetConstraintAt( c );
+		for(c=0; c<constraintCount; c++){
+			bpConstraint = GetConstraintAt(c);
 			
-			bpConstraint->SetFirstBody( pSimplePhyBody );
-			bpConstraint->SetFirstOffset( decVector() );
+			bpConstraint->SetFirstBody(pSimplePhyBody);
+			bpConstraint->SetFirstOffset(decVector());
 		}
 	}
 	
@@ -1240,12 +1240,12 @@ void debpColliderRig::pUpdateBones(){
 	UpdateDDSShape(); // debug if enabled
 	
 	// update auto re-register
-	SetAutoColDetPrepare( CalcAutoColDetPrepare() );
-	SetAutoColDetFinish( CalcAutoColDetFinish() );
+	SetAutoColDetPrepare(CalcAutoColDetPrepare());
+	SetAutoColDetFinish(CalcAutoColDetFinish());
 }
 
-void debpColliderRig::pUpdateAttachments( bool force ){
-	if( ! pDirtyAttachments && ! force ){
+void debpColliderRig::pUpdateAttachments(bool force){
+	if(!pDirtyAttachments && !force){
 		return;
 	}
 	
@@ -1257,29 +1257,29 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 	float weightFactor;
 	int boneIndex;
 	
-	if( pRig ){
+	if(pRig){
 		engRig = &pRig->GetRig();
 	}
 	
-	for( i=0; i<count; i++ ){
-		debpColliderAttachment &bpAttachment = *GetAttachmentAt( i );
+	for(i=0; i<count; i++){
+		debpColliderAttachment &bpAttachment = *GetAttachmentAt(i);
 		const deColliderAttachment &attachment = *bpAttachment.GetAttachment();
 		deResource * const attachedResource = attachment.GetResource();
 		deCollider *attachedCollider = nullptr;
 		
-		if( attachedResource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider ){
-			attachedCollider = ( deCollider* )attachedResource;
-			attachedCollider->Visit( visitor );
+		if(attachedResource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
+			attachedCollider = (deCollider*)attachedResource;
+			attachedCollider->Visit(visitor);
 		}
 		const int attachType = attachment.GetAttachType();
 		
 		changed = false;
 		
-		if( attachType == deColliderAttachment::eatStatic ){
-			bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
+		if(attachType == deColliderAttachment::eatStatic){
+			bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify);
 			
-		}else if( attachType == deColliderAttachment::eatRig ){
-			if( ! engRig ){
+		}else if(attachType == deColliderAttachment::eatRig){
+			if(!engRig){
 				continue;
 			}
 			
@@ -1288,39 +1288,39 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 			// deal with the rest. not important right now as for the first test attaching
 			// colliders is not a requirement
 			/*
-			if( visitor.IsComponent() ){
+			if(visitor.IsComponent()){
 				const deColliderComponent &attachedColComp = visitor.CastToComponent();
 				deComponent * const attachedComponent = attachedColComp.GetComponent();
 				
-				if( attachedComponent ){
+				if(attachedComponent){
 					deRig * const attachedRig = attachedComponent->GetRig();
 					
-					if( attachedRig ){
+					if(attachedRig){
 						boneCount = attachedComponent->GetBoneCount();
 						
-						if( boneCount > 0 ){
-							if( bpAttachment.GetDirtyMappings() ){
-								bpAttachment.SetBoneMappingCount( boneCount );
+						if(boneCount > 0){
+							if(bpAttachment.GetDirtyMappings()){
+								bpAttachment.SetBoneMappingCount(boneCount);
 								
-								for( j=0; j<boneCount; j++ ){
-									bpAttachment.SetBoneMappingAt( j, engRig->IndexOfBoneNamed( attachedRig->GetBoneAt( j )->GetName() ) );
+								for(j=0; j<boneCount; j++){
+									bpAttachment.SetBoneMappingAt(j, engRig->IndexOfBoneNamed(attachedRig->GetBoneAt(j)->GetName()));
 								}
 								
-								bpAttachment->SetDirtyMappings( false );
+								bpAttachment->SetDirtyMappings(false);
 							}
 							
-							attachedCollider->SetPosition( pColliderRig.GetPosition() );
-							attachedCollider->SetOrientation( pColliderRig.GetOrientation() );
+							attachedCollider->SetPosition(pColliderRig.GetPosition());
+							attachedCollider->SetOrientation(pColliderRig.GetOrientation());
 							
-							for( j=0; j<boneCount; j++ ){
-								boneIndex = bpAttachment.GetBoneMappingAt( j );
+							for(j=0; j<boneCount; j++){
+								boneIndex = bpAttachment.GetBoneMappingAt(j);
 								
-								if( boneIndex != -1 ){
-									const deComponentBone &compBone = *component->GetBone( boneIndex );
-									deComponentBone &attachedCompBone = attachedComponent->GetBone( j );
+								if(boneIndex != -1){
+									const deComponentBone &compBone = *component->GetBone(boneIndex);
+									deComponentBone &attachedCompBone = attachedComponent->GetBone(j);
 									
-									attachedCompBone->SetPosition( compBone->GetPosition() );
-									attachedCompBone->SetRotation( compBone->GetRotation() );
+									attachedCompBone->SetPosition(compBone->GetPosition());
+									attachedCompBone->SetRotation(compBone->GetRotation());
 								}
 							}
 							
@@ -1332,74 +1332,74 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 			}
 			*/
 			
-		}else if( attachType == deColliderAttachment::eatBone ){
-			if( engRig ){
-				if( bpAttachment.GetDirtyMappings() ){
-					bpAttachment.SetTrackBone( engRig->IndexOfBoneNamed( attachment.GetTrackBone() ) );
-					bpAttachment.SetDirtyMappings( false );
+		}else if(attachType == deColliderAttachment::eatBone){
+			if(engRig){
+				if(bpAttachment.GetDirtyMappings()){
+					bpAttachment.SetTrackBone(engRig->IndexOfBoneNamed(attachment.GetTrackBone()));
+					bpAttachment.SetDirtyMappings(false);
 				}
 				
 				boneIndex = bpAttachment.GetTrackBone();
 				
-				if( boneIndex == -1 ){
-					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
+				if(boneIndex == -1){
+					bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify);
 					
 				}else{
-					const deColliderBone &colBone = pColliderRig.GetBoneAt( boneIndex );
-					bpAttachment.Reposition( colBone.GetMatrix(), colBone.GetLinearVelocity(),
-						! pPreventAttNotify );
+					const deColliderBone &colBone = pColliderRig.GetBoneAt(boneIndex);
+					bpAttachment.Reposition(colBone.GetMatrix(), colBone.GetLinearVelocity(),
+						!pPreventAttNotify);
 				}
 			}
 			
-		}else if( attachType == deColliderAttachment::eatWeight ){
-			if( engRig ){
+		}else if(attachType == deColliderAttachment::eatWeight){
+			if(engRig){
 				const deColliderAttachment::sWeight * const weights = attachment.GetWeights();
 				const int weightCount = attachment.GetWeightCount();
 				
-				if( bpAttachment.GetDirtyMappings() ){
-					bpAttachment.SetBoneMappingCount( weightCount );
+				if(bpAttachment.GetDirtyMappings()){
+					bpAttachment.SetBoneMappingCount(weightCount);
 					
-					for( j=0; j<weightCount; j++ ){
-						bpAttachment.SetBoneMappingAt( j, engRig->IndexOfBoneNamed( weights[ j ].bone ) );
+					for(j=0; j<weightCount; j++){
+						bpAttachment.SetBoneMappingAt(j, engRig->IndexOfBoneNamed(weights[j].bone));
 					}
 					
-					bpAttachment.SetDirtyMappings( false );
+					bpAttachment.SetDirtyMappings(false);
 				}
 				
-				if( weightCount > 0 ){
+				if(weightCount > 0){
 					decDMatrix transform;
 					decVector velocity;
 					
-					for( j=0; j<weightCount; j++ ){
-						boneIndex = bpAttachment.GetBoneMappingAt( j );
-						weightFactor = weights[ j ].weight;
+					for(j=0; j<weightCount; j++){
+						boneIndex = bpAttachment.GetBoneMappingAt(j);
+						weightFactor = weights[j].weight;
 						
-						if( boneIndex != -1 ){
-							const deColliderBone &cbone = pColliderRig.GetBoneAt( boneIndex );
-							transform.QuickAddTo( cbone.GetMatrix().QuickMultiply( weightFactor ) );
+						if(boneIndex != -1){
+							const deColliderBone &cbone = pColliderRig.GetBoneAt(boneIndex);
+							transform.QuickAddTo(cbone.GetMatrix().QuickMultiply(weightFactor));
 							velocity += cbone.GetLinearVelocity() * weightFactor;
 						}
 					}
 					
-					bpAttachment.Reposition( transform, velocity, ! pPreventAttNotify );
+					bpAttachment.Reposition(transform, velocity, !pPreventAttNotify);
 				}
 			}
 			
-		}else if( attachType == deColliderAttachment::eatRelativeMovement ){
+		}else if(attachType == deColliderAttachment::eatRelativeMovement){
 			// TODO
 		}
 		
 		// notify attachments if not prevented
-		if( changed && attachedCollider ){
-			debpCollider &bpCollider = *( ( debpCollider* )attachedCollider->GetPeerPhysics() );
+		if(changed && attachedCollider){
+			debpCollider &bpCollider = *((debpCollider*)attachedCollider->GetPeerPhysics());
 			
-			if( pPreventAttNotify ){
+			if(pPreventAttNotify){
 				// notification is prevented. register collider for finish detection.
 				// at this time the notification can be resolved
 				bpCollider.RegisterColDetFinish();
 				
 			}else{
-				attachedCollider->GetPeerScripting()->ColliderChanged( attachedCollider );
+				attachedCollider->GetPeerScripting()->ColliderChanged(attachedCollider);
 				bpCollider.ClearRequiresUpdate();
 			}
 		}
@@ -1411,6 +1411,6 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 }
 
 void debpColliderRig::pUpdateIsMoving(){
-	SetIsMoving( pColliderRig.GetResponseType() != deCollider::ertStatic
-		&& ( pHasAngVelo || pHasLinVelo || pHasGravity ) );
+	SetIsMoving(pColliderRig.GetResponseType() != deCollider::ertStatic
+		&& (pHasAngVelo || pHasLinVelo || pHasGravity));
 }

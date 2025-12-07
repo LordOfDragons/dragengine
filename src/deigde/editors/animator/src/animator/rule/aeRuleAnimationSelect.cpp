@@ -43,24 +43,24 @@
 ////////////////////////////
 
 aeRuleAnimationSelect::aeRuleAnimationSelect() :
-aeRule( deAnimatorRuleVisitorIdentify::ertAnimationSelect ),
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pEnableVertexPositionSet( true )
+aeRule(deAnimatorRuleVisitorIdentify::ertAnimationSelect),
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(false),
+pEnableVertexPositionSet(true)
 {
-	SetName( "Animation Select" );
+	SetName("Animation Select");
 }
 
-aeRuleAnimationSelect::aeRuleAnimationSelect( const aeRuleAnimationSelect &copy ) :
-aeRule( copy ),
-pMoves( copy.pMoves ),
-pEnablePosition( copy.pEnablePosition ),
-pEnableOrientation( copy.pEnableOrientation ),
-pEnableSize( copy.pEnableSize ),
-pEnableVertexPositionSet( copy.pEnableVertexPositionSet ),
-pTargetMoveTime( copy.pTargetMoveTime ),
-pTargetSelect( copy.pTargetSelect ){
+aeRuleAnimationSelect::aeRuleAnimationSelect(const aeRuleAnimationSelect &copy) :
+aeRule(copy),
+pMoves(copy.pMoves),
+pEnablePosition(copy.pEnablePosition),
+pEnableOrientation(copy.pEnableOrientation),
+pEnableSize(copy.pEnableSize),
+pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
+pTargetMoveTime(copy.pTargetMoveTime),
+pTargetSelect(copy.pTargetSelect){
 }
 
 aeRuleAnimationSelect::~aeRuleAnimationSelect(){
@@ -71,58 +71,58 @@ aeRuleAnimationSelect::~aeRuleAnimationSelect(){
 // Management
 ///////////////
 
-void aeRuleAnimationSelect::SetMoves( const decStringList &moves ){
-	if( pMoves == moves ){
+void aeRuleAnimationSelect::SetMoves(const decStringList &moves){
+	if(pMoves == moves){
 		return;
 	}
 	
 	pMoves = moves;
 	
-	if( GetEngineRule() ){
-		( ( deAnimatorRuleAnimationSelect* )GetEngineRule() )->GetMoves() = moves;
+	if(GetEngineRule()){
+		((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetMoves() = moves;
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleAnimationSelect::SetEnablePosition( bool enabled ){
-	if( enabled != pEnablePosition ){
+void aeRuleAnimationSelect::SetEnablePosition(bool enabled){
+	if(enabled != pEnablePosition){
 		pEnablePosition = enabled;
 		
-		if( GetEngineRule() ){
-			( ( deAnimatorRuleAnimationSelect* )GetEngineRule() )->SetEnablePosition( enabled );
+		if(GetEngineRule()){
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnablePosition(enabled);
 			NotifyRuleChanged();
 		}
 	}
 }
 
-void aeRuleAnimationSelect::SetEnableOrientation( bool enabled ){
-	if( enabled != pEnableOrientation ){
+void aeRuleAnimationSelect::SetEnableOrientation(bool enabled){
+	if(enabled != pEnableOrientation){
 		pEnableOrientation = enabled;
 		
-		if( GetEngineRule() ){
-			( ( deAnimatorRuleAnimationSelect* )GetEngineRule() )->SetEnableOrientation( enabled );
+		if(GetEngineRule()){
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableOrientation(enabled);
 			NotifyRuleChanged();
 		}
 	}
 }
 
-void aeRuleAnimationSelect::SetEnableSize( bool enabled ){
-	if( enabled != pEnableSize ){
+void aeRuleAnimationSelect::SetEnableSize(bool enabled){
+	if(enabled != pEnableSize){
 		pEnableSize = enabled;
 		
-		if( GetEngineRule() ){
-			( ( deAnimatorRuleAnimationSelect* )GetEngineRule() )->SetEnableSize( enabled );
+		if(GetEngineRule()){
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableSize(enabled);
 			NotifyRuleChanged();
 		}
 	}
 }
 
-void aeRuleAnimationSelect::SetEnableVertexPositionSet( bool enabled ){
-	if( enabled != pEnableVertexPositionSet ){
+void aeRuleAnimationSelect::SetEnableVertexPositionSet(bool enabled){
+	if(enabled != pEnableVertexPositionSet){
 		pEnableVertexPositionSet = enabled;
 		
-		if( GetEngineRule() ){
-			( ( deAnimatorRuleAnimationSelect* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
+		if(GetEngineRule()){
+			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableVertexPositionSet(enabled);
 			NotifyRuleChanged();
 		}
 	}
@@ -131,38 +131,38 @@ void aeRuleAnimationSelect::SetEnableVertexPositionSet( bool enabled ){
 
 
 void aeRuleAnimationSelect::UpdateTargets(){
-	deAnimatorRuleAnimationSelect *rule = ( deAnimatorRuleAnimationSelect* )GetEngineRule();
+	deAnimatorRuleAnimationSelect *rule = (deAnimatorRuleAnimationSelect*)GetEngineRule();
 	
 	aeRule::UpdateTargets();
 	
-	if( rule ){
-		pTargetMoveTime.UpdateEngineTarget( GetAnimator(), rule->GetTargetMoveTime() );
-		pTargetSelect.UpdateEngineTarget( GetAnimator(), rule->GetTargetSelect() );
+	if(rule){
+		pTargetMoveTime.UpdateEngineTarget(GetAnimator(), rule->GetTargetMoveTime());
+		pTargetSelect.UpdateEngineTarget(GetAnimator(), rule->GetTargetSelect());
 	}
 }
 
-int aeRuleAnimationSelect::CountLinkUsage( aeLink *link ) const{
-	int usageCount = aeRule::CountLinkUsage( link );
+int aeRuleAnimationSelect::CountLinkUsage(aeLink *link) const{
+	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if( pTargetMoveTime.HasLink( link ) ){
+	if(pTargetMoveTime.HasLink(link)){
 		usageCount++;
 	}
-	if( pTargetSelect.HasLink( link ) ){
+	if(pTargetSelect.HasLink(link)){
 		usageCount++;
 	}
 	
 	return usageCount;
 }
 
-void aeRuleAnimationSelect::RemoveLinkFromTargets( aeLink *link ){
-	aeRule::RemoveLinkFromTargets( link );
+void aeRuleAnimationSelect::RemoveLinkFromTargets(aeLink *link){
+	aeRule::RemoveLinkFromTargets(link);
 	
-	if( pTargetMoveTime.HasLink( link ) ){
-		pTargetMoveTime.RemoveLink( link );
+	if(pTargetMoveTime.HasLink(link)){
+		pTargetMoveTime.RemoveLink(link);
 	}
 	
-	if( pTargetSelect.HasLink( link ) ){
-		pTargetSelect.RemoveLink( link );
+	if(pTargetSelect.HasLink(link)){
+		pTargetSelect.RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -185,19 +185,19 @@ deAnimatorRule *aeRuleAnimationSelect::CreateEngineRule(){
 	try{
 		engRule = new deAnimatorRuleAnimationSelect;
 		
-		InitEngineRule( engRule );
+		InitEngineRule(engRule);
 		
 		engRule->GetMoves() = pMoves;
-		engRule->SetEnablePosition( pEnablePosition );
-		engRule->SetEnableOrientation( pEnableOrientation );
-		engRule->SetEnableSize( pEnableSize );
-		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
+		engRule->SetEnablePosition(pEnablePosition);
+		engRule->SetEnableOrientation(pEnableOrientation);
+		engRule->SetEnableSize(pEnableSize);
+		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
 		
-		pTargetMoveTime.UpdateEngineTarget( GetAnimator(), engRule->GetTargetMoveTime() );
-		pTargetSelect.UpdateEngineTarget( GetAnimator(), engRule->GetTargetSelect() );
+		pTargetMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
+		pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
 		
-	}catch( const deException & ){
-		if( engRule ){
+	}catch(const deException &){
+		if(engRule){
 			engRule->FreeReference();
 		}
 		throw;
@@ -209,13 +209,13 @@ deAnimatorRule *aeRuleAnimationSelect::CreateEngineRule(){
 
 
 aeRule *aeRuleAnimationSelect::CreateCopy() const{
-	return new aeRuleAnimationSelect( *this );
+	return new aeRuleAnimationSelect(*this);
 }
 
-void aeRuleAnimationSelect::ListLinks( aeLinkList &list ){
-	aeRule::ListLinks( list );
-	pTargetMoveTime.AddLinksToList( list );
-	pTargetSelect.AddLinksToList( list );
+void aeRuleAnimationSelect::ListLinks(aeLinkList &list){
+	aeRule::ListLinks(list);
+	pTargetMoveTime.AddLinksToList(list);
+	pTargetSelect.AddLinksToList(list);
 }
 
 
@@ -223,14 +223,14 @@ void aeRuleAnimationSelect::ListLinks( aeLinkList &list ){
 // Operators
 //////////////
 
-aeRuleAnimationSelect &aeRuleAnimationSelect::operator=( const aeRuleAnimationSelect &copy ){
-	SetMoves( copy.pMoves );
-	SetEnablePosition( copy.pEnablePosition );
-	SetEnableOrientation( copy.pEnableOrientation );
-	SetEnableSize( copy.pEnableSize );
-	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
+aeRuleAnimationSelect &aeRuleAnimationSelect::operator=(const aeRuleAnimationSelect &copy){
+	SetMoves(copy.pMoves);
+	SetEnablePosition(copy.pEnablePosition);
+	SetEnableOrientation(copy.pEnableOrientation);
+	SetEnableSize(copy.pEnableSize);
+	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
 	pTargetMoveTime = copy.pTargetMoveTime;
 	pTargetSelect = copy.pTargetSelect;
-	aeRule::operator=( copy );
+	aeRule::operator=(copy);
 	return *this;
 }

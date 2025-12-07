@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetSize::seUBodySetSize( seBody *body, const decVector2 &newSize ) :
-pBody( NULL ),
-pNewSize( newSize )
+seUBodySetSize::seUBodySetSize(seBody *body, const decVector2 &newSize) :
+pBody(NULL),
+pNewSize(newSize)
 {
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Body Size" );
+	SetShortInfo("Set Body Size");
 	
 	pOldSize = body->GetSize();
 	
@@ -56,7 +56,7 @@ pNewSize( newSize )
 }
 
 seUBodySetSize::~seUBodySetSize(){
-	if( pBody ){
+	if(pBody){
 		pBody->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUBodySetSize::~seUBodySetSize(){
 ///////////////
 
 void seUBodySetSize::Undo(){
-	pBody->SetSize( pOldSize );
+	pBody->SetSize(pOldSize);
 }
 
 void seUBodySetSize::Redo(){
-	pBody->SetSize( pNewSize );
+	pBody->SetSize(pNewSize);
 }

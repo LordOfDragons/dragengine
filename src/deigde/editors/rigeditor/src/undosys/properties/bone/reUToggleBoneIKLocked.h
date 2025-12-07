@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUToggleBoneIKLocked( reRigBone *bone, int axis );
+	reUToggleBoneIKLocked(reRigBone *bone, int axis);
 	
 protected:
 	/** \brief Clean up undo. */

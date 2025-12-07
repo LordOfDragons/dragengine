@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSnapPointSetRotation::gdeUOCSnapPointSetRotation( gdeObjectClass *objectClass,
-gdeOCSnapPoint *snapPoint, const decVector &newValue ) :
-pObjectClass( NULL ),
-pSnapPoint( NULL )
+gdeUOCSnapPointSetRotation::gdeUOCSnapPointSetRotation(gdeObjectClass *objectClass,
+gdeOCSnapPoint *snapPoint, const decVector &newValue) :
+pObjectClass(NULL),
+pSnapPoint(NULL)
 {
-	if( ! objectClass || ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Snap point set rotation" );
+	SetShortInfo("Snap point set rotation");
 	
 	pOldValue = snapPoint->GetRotation();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pSnapPoint( NULL )
 }
 
 gdeUOCSnapPointSetRotation::~gdeUOCSnapPointSetRotation(){
-	if( pSnapPoint ){
+	if(pSnapPoint){
 		pSnapPoint->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCSnapPointSetRotation::~gdeUOCSnapPointSetRotation(){
 ///////////////
 
 void gdeUOCSnapPointSetRotation::Undo(){
-	pSnapPoint->SetRotation( pOldValue );
-	pObjectClass->NotifySnapPointChanged( pSnapPoint );
+	pSnapPoint->SetRotation(pOldValue);
+	pObjectClass->NotifySnapPointChanged(pSnapPoint);
 }
 
 void gdeUOCSnapPointSetRotation::Redo(){
-	pSnapPoint->SetRotation( pNewValue );
-	pObjectClass->NotifySnapPointChanged( pSnapPoint );
+	pSnapPoint->SetRotation(pNewValue);
+	pObjectClass->NotifySnapPointChanged(pSnapPoint);
 }

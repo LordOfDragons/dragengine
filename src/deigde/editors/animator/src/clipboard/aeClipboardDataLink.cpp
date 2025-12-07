@@ -42,20 +42,20 @@ const char * const aeClipboardDataLink::TYPE_NAME = "link";
 // Constructor, destructor
 ////////////////////////////
 
-aeClipboardDataLink::aeClipboardDataLink( aeLink *link ) :
-igdeClipboardData( TYPE_NAME )
+aeClipboardDataLink::aeClipboardDataLink(aeLink *link) :
+igdeClipboardData(TYPE_NAME)
 {
-	pLinks.Add( aeLink::Ref::NewWith(*link) );
+	pLinks.Add(aeLink::Ref::NewWith(*link));
 }
 
-aeClipboardDataLink::aeClipboardDataLink( const aeLinkList &links ) :
-igdeClipboardData( TYPE_NAME )
+aeClipboardDataLink::aeClipboardDataLink(const aeLinkList &links) :
+igdeClipboardData(TYPE_NAME)
 {
 	const int count = links.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pLinks.Add( aeLink::Ref::NewWith(*links.GetAt( i )) );
+	for(i=0; i<count; i++){
+		pLinks.Add(aeLink::Ref::NewWith(*links.GetAt(i)));
 	}
 }
 

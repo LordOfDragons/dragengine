@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
-	deoglShapeCapsule( deoglRenderThread &renderThread );
+	deoglShapeCapsule(deoglRenderThread &renderThread);
 	/** Cleans up the shape. */
 	virtual ~deoglShapeCapsule();
 	/*@}*/
@@ -47,13 +47,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Calculate matrices for capsule parameters. */
-	void CalcMatrices( decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
-	const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius );
+	void CalcMatrices(decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
+	const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius);
 	
 	/** Add lines data. */
-	virtual void AddVBOLines( sVBOData *data );
+	virtual void AddVBOLines(sVBOData *data);
 	/** Add faces data. */
-	virtual void AddVBOFaces( sVBOData *data );
+	virtual void AddVBOFaces(sVBOData *data);
 	/*@}*/
 };
 

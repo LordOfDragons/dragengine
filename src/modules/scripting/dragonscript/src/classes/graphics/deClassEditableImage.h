@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassEditableImage( deScriptingDragonScript &ds );
+	deClassEditableImage(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassEditableImage();
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
@@ -77,30 +77,30 @@ private:
 		dsClass *clsArray;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetImage );
-	DEF_NATFUNC( nfGetWidth );
-	DEF_NATFUNC( nfGetHeight );
-	DEF_NATFUNC( nfGetDepth );
+	DEF_NATFUNC(nfGetImage);
+	DEF_NATFUNC(nfGetWidth);
+	DEF_NATFUNC(nfGetHeight);
+	DEF_NATFUNC(nfGetDepth);
 	
-	DEF_NATFUNC( nfGetAt );
-	DEF_NATFUNC( nfGetAt2 );
-	DEF_NATFUNC( nfGetRange );
-	DEF_NATFUNC( nfGetRange2 );
+	DEF_NATFUNC(nfGetAt);
+	DEF_NATFUNC(nfGetAt2);
+	DEF_NATFUNC(nfGetRange);
+	DEF_NATFUNC(nfGetRange2);
 	
-	DEF_NATFUNC( nfClear );
-	DEF_NATFUNC( nfSetAt );
-	DEF_NATFUNC( nfSetAt2 );
-	DEF_NATFUNC( nfSetRange );
-	DEF_NATFUNC( nfSetRange2 );
-	DEF_NATFUNC( nfContentChanged );
+	DEF_NATFUNC(nfClear);
+	DEF_NATFUNC(nfSetAt);
+	DEF_NATFUNC(nfSetAt2);
+	DEF_NATFUNC(nfSetRange);
+	DEF_NATFUNC(nfSetRange2);
+	DEF_NATFUNC(nfContentChanged);
 #undef DEF_NATFUNC
 };
 

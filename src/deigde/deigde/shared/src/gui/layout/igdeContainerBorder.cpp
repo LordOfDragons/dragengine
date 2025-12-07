@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeContainerBorder::igdeContainerBorder( igdeEnvironment &environment, int spacing ) :
-igdeContainer( environment ),
-pSpacing ( spacing ),
-pWidgetTop( NULL ),
-pWidgetBottom( NULL ),
-pWidgetLeft( NULL ),
-pWidgetRight( NULL ),
-pWidgetCenter( NULL )
+igdeContainerBorder::igdeContainerBorder(igdeEnvironment &environment, int spacing) :
+igdeContainer(environment),
+pSpacing (spacing),
+pWidgetTop(NULL),
+pWidgetBottom(NULL),
+pWidgetLeft(NULL),
+pWidgetRight(NULL),
+pWidgetCenter(NULL)
 {
-	if( spacing < 0 ){
-		DETHROW( deeInvalidParam );
+	if(spacing < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -62,117 +62,117 @@ igdeContainerBorder::~igdeContainerBorder(){
 // Management
 ///////////////
 
-void igdeContainerBorder::AddChild( igdeWidget *child, eArea area ){
-	if( ! child || child->GetParent() ){
-		DETHROW( deeInvalidParam );
+void igdeContainerBorder::AddChild(igdeWidget *child, eArea area){
+	if(!child || child->GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( child == pWidgetTop || child == pWidgetBottom || child == pWidgetLeft
-	|| child == pWidgetRight || child == pWidgetCenter ){
-		DETHROW( deeInvalidParam );
+	if(child == pWidgetTop || child == pWidgetBottom || child == pWidgetLeft
+	|| child == pWidgetRight || child == pWidgetCenter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	switch( area ){
+	switch(area){
 	case eaTop:
-		if( pWidgetTop ){
-			DETHROW( deeInvalidParam );
+		if(pWidgetTop){
+			DETHROW(deeInvalidParam);
 		}
 		pWidgetTop = child;
 		
 		try{
-			igdeContainer::AddChild( child );
+			igdeContainer::AddChild(child);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pWidgetTop = NULL;
 			throw;
 		}
 		break;
 		
 	case eaBottom:
-		if( pWidgetBottom ){
-			DETHROW( deeInvalidParam );
+		if(pWidgetBottom){
+			DETHROW(deeInvalidParam);
 		}
 		pWidgetBottom = child;
 		
 		try{
-			igdeContainer::AddChild( child );
+			igdeContainer::AddChild(child);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pWidgetBottom = NULL;
 			throw;
 		}
 		break;
 		
 	case eaLeft:
-		if( pWidgetLeft ){
-			DETHROW( deeInvalidParam );
+		if(pWidgetLeft){
+			DETHROW(deeInvalidParam);
 		}
 		pWidgetLeft = child;
 		
 		try{
-			igdeContainer::AddChild( child );
+			igdeContainer::AddChild(child);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pWidgetLeft = NULL;
 			throw;
 		}
 		break;
 		
 	case eaRight:
-		if( pWidgetRight ){
-			DETHROW( deeInvalidParam );
+		if(pWidgetRight){
+			DETHROW(deeInvalidParam);
 		}
 		pWidgetRight = child;
 		
 		try{
-			igdeContainer::AddChild( child );
+			igdeContainer::AddChild(child);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pWidgetRight = NULL;
 			throw;
 		}
 		break;
 		
 	case eaCenter:
-		if( pWidgetCenter ){
-			DETHROW( deeInvalidParam );
+		if(pWidgetCenter){
+			DETHROW(deeInvalidParam);
 		}
 		pWidgetCenter = child;
 		
 		try{
-			igdeContainer::AddChild( child );
+			igdeContainer::AddChild(child);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pWidgetCenter = NULL;
 			throw;
 		}
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void igdeContainerBorder::AddChild( igdeWidget *child ){
-	DETHROW( deeInvalidParam );
+void igdeContainerBorder::AddChild(igdeWidget *child){
+	DETHROW(deeInvalidParam);
 }
 
-void igdeContainerBorder::RemoveChild( igdeWidget *child ){
-	igdeContainer::RemoveChild( child );
+void igdeContainerBorder::RemoveChild(igdeWidget *child){
+	igdeContainer::RemoveChild(child);
 	
-	if( child == pWidgetTop ){
+	if(child == pWidgetTop){
 		pWidgetTop = NULL;
 		
-	}else if( child == pWidgetBottom ){
+	}else if(child == pWidgetBottom){
 		pWidgetBottom = NULL;
 		
-	}else if( child == pWidgetLeft ){
+	}else if(child == pWidgetLeft){
 		pWidgetLeft = NULL;
 		
-	}else if( child == pWidgetRight ){
+	}else if(child == pWidgetRight){
 		pWidgetRight = NULL;
 		
-	}else if( child == pWidgetCenter ){
+	}else if(child == pWidgetCenter){
 		pWidgetCenter = NULL;
 	}
 }
@@ -187,8 +187,8 @@ void igdeContainerBorder::RemoveAllChildren(){
 	pWidgetCenter = NULL;
 }
 
-igdeWidget *igdeContainerBorder::GetWidgetIn( eArea area ) const{
-	switch( area ){
+igdeWidget *igdeContainerBorder::GetWidgetIn(eArea area) const{
+	switch(area){
 	case eaTop:
 		return pWidgetTop;
 		
@@ -205,30 +205,30 @@ igdeWidget *igdeContainerBorder::GetWidgetIn( eArea area ) const{
 		return pWidgetCenter;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 
 
 void igdeContainerBorder::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerBorder * const native = igdeNativeContainerBorder::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeContainerBorder * const native = igdeNativeContainerBorder::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeContainerBorder::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerBorder * const native = ( igdeNativeContainerBorder* )GetNativeWidget();
+	igdeNativeContainerBorder * const native = (igdeNativeContainerBorder*)GetNativeWidget();
 	DropNativeWidget();
 	native->DestroyNativeWidget();
 }

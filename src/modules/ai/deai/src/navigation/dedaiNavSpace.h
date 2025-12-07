@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedaiNavSpace( deDEAIModule &deai, const deNavigationSpace &navigationSpace );
+	dedaiNavSpace(deDEAIModule &deai, const deNavigationSpace &navigationSpace);
 	
 	/** \brief Clean up peer. */
 	virtual ~dedaiNavSpace();
@@ -75,7 +75,7 @@ public:
 	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL. */
-	void SetParentWorld( dedaiWorld *world );
+	void SetParentWorld(dedaiWorld *world);
 	
 	
 	

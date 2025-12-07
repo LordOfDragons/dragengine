@@ -56,13 +56,13 @@ struct csGraSysClass : public csClassObject{
 // Constructor, destructor
 ////////////////////////////
 
-stClassGraphicSystem::stClassGraphicSystem( ScriptingSmalltalk &st ) :
-pST( st ){
-	gst_define_cfunc( "DEGraphicSystem.getWindowWidth", ( void* )ccGetWindowWidth );
-	gst_define_cfunc( "DEGraphicSystem.getWindowHeight", ( void* )ccGetWindowHeight );
-	gst_define_cfunc( "DEGraphicSystem.setWindowSize", ( void* )ccSetWindowSize );
-	gst_define_cfunc( "DEGraphicSystem.setWindowTitle", ( void* )ccSetWindowTitle );
-	gst_define_cfunc( "DEGraphicSystem.getPrimaryCanvas", ( void* )ccGetPrimaryCanvas );
+stClassGraphicSystem::stClassGraphicSystem(ScriptingSmalltalk &st) :
+pST(st){
+	gst_define_cfunc("DEGraphicSystem.getWindowWidth", (void*)ccGetWindowWidth);
+	gst_define_cfunc("DEGraphicSystem.getWindowHeight", (void*)ccGetWindowHeight);
+	gst_define_cfunc("DEGraphicSystem.setWindowSize", (void*)ccSetWindowSize);
+	gst_define_cfunc("DEGraphicSystem.setWindowTitle", (void*)ccSetWindowTitle);
+	gst_define_cfunc("DEGraphicSystem.getPrimaryCanvas", (void*)ccGetPrimaryCanvas);
 }
 
 stClassGraphicSystem::~stClassGraphicSystem(){
@@ -76,12 +76,12 @@ stClassGraphicSystem::~stClassGraphicSystem(){
 void stClassGraphicSystem::SetUpLinks(){
 	OOP oopClass = NULL;
 	
-	oopClass = gst_class_name_to_oop( "DEGraphicSystem" );
-	if( ! oopClass ){
-		DETHROW( deeInvalidParam ); // GraphicSystem.st missing
+	oopClass = gst_class_name_to_oop("DEGraphicSystem");
+	if(!oopClass){
+		DETHROW(deeInvalidParam); // GraphicSystem.st missing
 	}
 	
-	csGraSysClass &csclass = *( ( csGraSysClass* )OOP_TO_OBJ( oopClass ) );
+	csGraSysClass &csclass = *((csGraSysClass*)OOP_TO_OBJ(oopClass));
 	csclass.scripting = pST.GetClassScripting()->GetSingleton();
 }
 
@@ -90,47 +90,47 @@ void stClassGraphicSystem::SetUpLinks(){
 // cCall Methods
 //////////////////
 
-int stClassGraphicSystem::ccGetWindowWidth( OOP self ){
-	const csGraSysClass &csclass = *( ( csGraSysClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+int stClassGraphicSystem::ccGetWindowWidth(OOP self){
+	const csGraSysClass &csclass = *((csGraSysClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	const deGraphicSystem &grasys = *st.GetGameEngine()->GetGraphicSystem();
 	
 	return grasys.GetRenderWindow()->GetWidth();
 }
 
-int stClassGraphicSystem::ccGetWindowHeight( OOP self ){
-	const csGraSysClass &csclass = *( ( csGraSysClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+int stClassGraphicSystem::ccGetWindowHeight(OOP self){
+	const csGraSysClass &csclass = *((csGraSysClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	const deGraphicSystem &grasys = *st.GetGameEngine()->GetGraphicSystem();
 	
 	return grasys.GetRenderWindow()->GetHeight();
 }
 
-void stClassGraphicSystem::ccSetWindowSize( OOP self, int width, int height ){
-	const csGraSysClass &csclass = *( ( csGraSysClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+void stClassGraphicSystem::ccSetWindowSize(OOP self, int width, int height){
+	const csGraSysClass &csclass = *((csGraSysClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	const deGraphicSystem &grasys = *st.GetGameEngine()->GetGraphicSystem();
 	
-	grasys.GetRenderWindow()->SetSize( width, height );
+	grasys.GetRenderWindow()->SetSize(width, height);
 }
 
-void stClassGraphicSystem::ccSetWindowTitle( OOP self, const char *title ){
-	const csGraSysClass &csclass = *( ( csGraSysClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+void stClassGraphicSystem::ccSetWindowTitle(OOP self, const char *title){
+	const csGraSysClass &csclass = *((csGraSysClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	const deGraphicSystem &grasys = *st.GetGameEngine()->GetGraphicSystem();
 	
-	grasys.GetRenderWindow()->SetTitle( title );
+	grasys.GetRenderWindow()->SetTitle(title);
 }
 
-OOP stClassGraphicSystem::ccGetPrimaryCanvas( OOP self ){
-	const csGraSysClass &csclass = *( ( csGraSysClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+OOP stClassGraphicSystem::ccGetPrimaryCanvas(OOP self){
+	const csGraSysClass &csclass = *((csGraSysClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	const deGraphicSystem &grasys = *st.GetGameEngine()->GetGraphicSystem();
 	
 	try{
-		return st.GetClassCanvas()->CanvasToOOP( grasys.GetRenderWindow()->GetCanvasView() );
+		return st.GetClassCanvas()->CanvasToOOP(grasys.GetRenderWindow()->GetCanvasView());
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return st.GetNil();
 	}

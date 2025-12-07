@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load texture map. */
-	deovrTextureMap( deVROpenVR &ovr, vr::TextureID_t id );
+	deovrTextureMap(deVROpenVR &ovr, vr::TextureID_t id);
 	
 protected:
 	/** Clean up texture map. */

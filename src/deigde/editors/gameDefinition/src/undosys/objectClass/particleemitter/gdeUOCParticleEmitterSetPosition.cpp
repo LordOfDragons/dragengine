@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPosition::gdeUOCParticleEmitterSetPosition( gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const decVector &newValue ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+gdeUOCParticleEmitterSetPosition::gdeUOCParticleEmitterSetPosition(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const decVector &newValue) :
+pObjectClass(NULL),
+pParticleEmitter(NULL)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set position" );
+	SetShortInfo("Particle emitter set position");
 	
 	pOldValue = particleEmitter->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pParticleEmitter( NULL )
 }
 
 gdeUOCParticleEmitterSetPosition::~gdeUOCParticleEmitterSetPosition(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCParticleEmitterSetPosition::~gdeUOCParticleEmitterSetPosition(){
 ///////////////
 
 void gdeUOCParticleEmitterSetPosition::Undo(){
-	pParticleEmitter->SetPosition( pOldValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPosition(pOldValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterSetPosition::Redo(){
-	pParticleEmitter->SetPosition( pNewValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPosition(pNewValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }

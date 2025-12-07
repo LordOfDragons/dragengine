@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullTextField();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullTextField* CreateNativeWidget( igdeTextField &owner );
+	static igdeNativeNullTextField* CreateNativeWidget(igdeTextField &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -62,7 +62,7 @@ public:
 	virtual void UpdateDescription();
 	virtual void UpdateEditable();
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition( int position );
+	virtual void SetCursorPosition(int position);
 	/*@}*/
 };
 

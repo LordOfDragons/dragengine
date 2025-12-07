@@ -41,14 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleTargetAddLink::aeURuleTargetAddLink( aeRule *rule, aeControllerTarget *target, aeLink *link ){
-	if( ! rule || ! target || ! link ) DETHROW( deeInvalidParam );
+aeURuleTargetAddLink::aeURuleTargetAddLink(aeRule *rule, aeControllerTarget *target, aeLink *link){
+	if(!rule || !target || !link) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	pTarget = NULL;
 	pLink = NULL;
 	
-	SetShortInfo( "Rule Target Add Link" );
+	SetShortInfo("Rule Target Add Link");
 	
 	pRule = rule;
 	pRule->AddReference();
@@ -60,8 +60,8 @@ aeURuleTargetAddLink::aeURuleTargetAddLink( aeRule *rule, aeControllerTarget *ta
 }
 
 aeURuleTargetAddLink::~aeURuleTargetAddLink(){
-	if( pLink ) pLink->FreeReference();
-	if( pRule ) pRule->FreeReference();
+	if(pLink) pLink->FreeReference();
+	if(pRule) pRule->FreeReference();
 }
 
 
@@ -70,11 +70,11 @@ aeURuleTargetAddLink::~aeURuleTargetAddLink(){
 ///////////////
 
 void aeURuleTargetAddLink::Undo(){
-	pTarget->RemoveLink( pLink );
+	pTarget->RemoveLink(pLink);
 	pRule->NotifyRuleChanged();
 }
 
 void aeURuleTargetAddLink::Redo(){
-	pTarget->AddLink( pLink );
+	pTarget->AddLink(pLink);
 	pRule->NotifyRuleChanged();
 }

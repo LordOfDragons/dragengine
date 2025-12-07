@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meHeightTerrainPFLayer( deEngine *engine );
+	meHeightTerrainPFLayer(deEngine *engine);
 	
 	/** \brief Clean up object. */
 	virtual ~meHeightTerrainPFLayer();
@@ -83,7 +83,7 @@ public:
 	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
 	/** \brief Set parent height terrain sector or \em NULL. */
-	void SetHTSector( meHeightTerrainSector *htsector );
+	void SetHTSector(meHeightTerrainSector *htsector);
 	
 	
 	
@@ -99,19 +99,19 @@ public:
 	inline const decString &GetPathMask() const{ return pPathMask; }
 	
 	/** \brief Set mask image path. */
-	void SetPathMask( const char *path );
+	void SetPathMask(const char *path);
 	
 	/** \brief Mask image has changed. */
 	inline bool GetMaskChanged() const{ return pMaskChanged; }
 	
 	/** \brief Set if mask image has changed. */
-	void SetMaskChanged( bool changed );
+	void SetMaskChanged(bool changed);
 	
 	/** \brief Mask image has been saved. */
 	inline bool GetMaskSaved() const{ return pMaskSaved; }
 	
 	/** \brief Set if mask image has been saved. */
-	void SetMaskSaved( bool saved );
+	void SetMaskSaved(bool saved);
 	
 	
 	
@@ -136,19 +136,19 @@ public:
 	inline int GetTypeCount() const{ return pTypeCount; }
 	
 	/** \brief Type at index. */
-	meHeightTerrainPFType *GetTypeAt( int index ) const;
+	meHeightTerrainPFType *GetTypeAt(int index) const;
 	
 	/** \brief Index of type or -1 if absent. */
-	int IndexOfType( meHeightTerrainPFType *type ) const;
+	int IndexOfType(meHeightTerrainPFType *type) const;
 	
 	/** \brief Type exists. */
-	bool HasType( meHeightTerrainPFType *type ) const;
+	bool HasType(meHeightTerrainPFType *type) const;
 	
 	/** \brief Add type. */
-	void AddType( meHeightTerrainPFType *type );
+	void AddType(meHeightTerrainPFType *type);
 	
 	/** \brief Remove type. */
-	void RemoveType( meHeightTerrainPFType *type );
+	void RemoveType(meHeightTerrainPFType *type);
 	
 	/** \brief Remove all types. */
 	void RemoveAllTypes();

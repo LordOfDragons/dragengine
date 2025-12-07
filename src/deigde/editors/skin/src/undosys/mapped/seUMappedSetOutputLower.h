@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetOutputLower( seMapped *mapped, float newOutputLower );
+	seUMappedSetOutputLower(seMapped *mapped, float newOutputLower);
 	
 protected:
 	/** Clean up undo. */

@@ -66,7 +66,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree model. */
-	gdeWPSTreeModel( igdeTreeList &treeList, gdeWindowMain &windowMain, gdeGameDefinition *gameDefinition );
+	gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMain, gdeGameDefinition *gameDefinition);
 	
 	/** \brief Clean up tree model. */
 	~gdeWPSTreeModel();
@@ -112,10 +112,10 @@ public:
 	
 	
 	/** \brief User requests context menu for selected item. */
-	void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Select object mest matching name. */
-	void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string);
 	
 	
 	
@@ -123,13 +123,13 @@ public:
 	inline bool GetIgnoreSelectionChange() const{ return pIgnoreSelectionChange; }
 	
 	/** \brief Set ignore selection change in tree list. */
-	void SetIgnoreSelectionChange( bool ignore );
+	void SetIgnoreSelectionChange(bool ignore);
 	
 	/** \brief Helper for ignore selection. */
 	class HelperIgnoreSelection{
 		gdeWPSTreeModel &pTree;
 	public:
-		HelperIgnoreSelection( gdeWPSTreeModel &tree );
+		HelperIgnoreSelection(gdeWPSTreeModel &tree);
 		~HelperIgnoreSelection();
 	};
 	/*@}*/

@@ -42,13 +42,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsSpeaker::dedsSpeaker( deScriptingDragonScript &ds, deSpeaker *speaker ) :
-pDS( ds ),
-pSpeaker( speaker ),
-pValueOwner( NULL )
+dedsSpeaker::dedsSpeaker(deScriptingDragonScript &ds, deSpeaker *speaker) :
+pDS(ds),
+pSpeaker(speaker),
+pValueOwner(NULL)
 {
-	if( ! speaker ){
-		DSTHROW( dueInvalidParam );
+	if(!speaker){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	dsRunTime &rt = *ds.GetScriptEngine()->GetMainRunTime();
@@ -57,7 +57,7 @@ pValueOwner( NULL )
 }
 
 dedsSpeaker::~dedsSpeaker(){
-	if( ! pValueOwner ){
+	if(!pValueOwner){
 		return;
 	}
 	
@@ -65,11 +65,11 @@ dedsSpeaker::~dedsSpeaker(){
 	// the case we can end up re-entering this destructor due to the speaker resource
 	// being deleted due to links breaking while freeing the value. if this is the
 	// case delay the deletion until a safe time
-	if( pSpeaker && pSpeaker->GetRefCount() > 0 ){
-		pDS.AddValueDeleteLater( pValueOwner );
+	if(pSpeaker && pSpeaker->GetRefCount() > 0){
+		pDS.AddValueDeleteLater(pValueOwner);
 		
 	}else{
-		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValueOwner );
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValueOwner);
 	}
 	
 	pValueOwner = NULL;
@@ -84,17 +84,17 @@ dsRealObject *dedsSpeaker::GetOwner() const{
 	return pValueOwner->GetRealObject();
 }
 
-void dedsSpeaker::SetOwner( dsRealObject *object ){
-	if( ! pValueOwner ){
+void dedsSpeaker::SetOwner(dsRealObject *object){
+	if(!pValueOwner){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValueOwner, object );
+	if(object){
+		rt.SetObject(pValueOwner, object);
 		
 	}else{
-		rt.ClearValue( pValueOwner );
+		rt.ClearValue(pValueOwner);
 	}
 }

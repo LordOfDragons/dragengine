@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUSAnimSetNeutralVertexPositionSets( saeSAnimation *sanimation, const decStringSet &sets );
+	saeUSAnimSetNeutralVertexPositionSets(saeSAnimation *sanimation, const decStringSet &sets);
 	
 protected:
 	/** Clean up undo. */

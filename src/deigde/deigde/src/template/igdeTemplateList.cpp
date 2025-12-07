@@ -42,8 +42,8 @@
 igdeTemplateList::igdeTemplateList(){
 }
 
-igdeTemplateList::igdeTemplateList( const igdeTemplateList &list ) :
-pTemplates( list.pTemplates ){
+igdeTemplateList::igdeTemplateList(const igdeTemplateList &list) :
+pTemplates(list.pTemplates){
 }
 
 igdeTemplateList::~igdeTemplateList(){
@@ -58,27 +58,27 @@ int igdeTemplateList::GetCount() const{
 	return pTemplates.GetCount();
 }
 
-igdeTemplate *igdeTemplateList::GetAt( int index ) const{
-	return ( igdeTemplate* )pTemplates.GetAt( index );
+igdeTemplate *igdeTemplateList::GetAt(int index) const{
+	return (igdeTemplate*)pTemplates.GetAt(index);
 }
 
-int igdeTemplateList::IndexOf( igdeTemplate *atemplate ) const{
-	return pTemplates.IndexOf( atemplate );
+int igdeTemplateList::IndexOf(igdeTemplate *atemplate) const{
+	return pTemplates.IndexOf(atemplate);
 }
 
-bool igdeTemplateList::Has( igdeTemplate *atemplate ) const{
-	return pTemplates.Has( atemplate );
+bool igdeTemplateList::Has(igdeTemplate *atemplate) const{
+	return pTemplates.Has(atemplate);
 }
 
-void igdeTemplateList::Add( igdeTemplate *atemplate ){
-	if( ! atemplate ){
-		DETHROW( deeInvalidParam );
+void igdeTemplateList::Add(igdeTemplate *atemplate){
+	if(!atemplate){
+		DETHROW(deeInvalidParam);
 	}
-	pTemplates.Add( atemplate );
+	pTemplates.Add(atemplate);
 }
 
-void igdeTemplateList::Remove( igdeTemplate *atemplate ){
-	pTemplates.Remove( atemplate );
+void igdeTemplateList::Remove(igdeTemplate *atemplate){
+	pTemplates.Remove(atemplate);
 }
 
 void igdeTemplateList::RemoveAll(){
@@ -90,7 +90,7 @@ void igdeTemplateList::RemoveAll(){
 // Operators
 //////////////
 
-igdeTemplateList &igdeTemplateList::operator=( const igdeTemplateList &list ){
+igdeTemplateList &igdeTemplateList::operator=(const igdeTemplateList &list){
 	pTemplates = list.pTemplates;
 	return *this;
 }

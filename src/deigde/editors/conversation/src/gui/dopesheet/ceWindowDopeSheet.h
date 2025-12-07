@@ -80,7 +80,7 @@ public:
 		ceWindowDopeSheet &pWindow;
 		
 	public:
-		cDopeSheet( ceWindowDopeSheet &window );
+		cDopeSheet(ceWindowDopeSheet &window);
 		
 	protected:
 		virtual ~cDopeSheet();
@@ -137,7 +137,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	ceWindowDopeSheet( ceWindowMain &windowMain );
+	ceWindowDopeSheet(ceWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -158,7 +158,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Active file. */
 	ceConversationFile *GetFile() const;
@@ -188,24 +188,24 @@ public:
 	inline float GetZoomTime() const{ return pZoomTime; }
 	
 	/** \brief Set time zoom factor. */
-	void SetZoomTime( float zoom );
+	void SetZoomTime(float zoom);
 	
 	/** \brief Maximum time of all lines. */
 	float GetMaximumLinesTime() const;
 	
 	/** \brief Time in seconds for a given x position. */
-	float GetTimeForX( int x ) const;
+	float GetTimeForX(int x) const;
 	
 	/** \brief X position for time in seconds. */
-	int GetXForTime( float time ) const;
+	int GetXForTime(float time) const;
 	
 	
 	
 	/** \brief Lane. */
-	ceWDSLane &GetLane( eLanes lane ) const;
+	ceWDSLane &GetLane(eLanes lane) const;
 	
 	/** \brief Lane at position. */
-	ceWDSLane *GetLaneAtPosition( const decPoint &position ) const;
+	ceWDSLane *GetLaneAtPosition(const decPoint &position) const;
 	
 	/** \brief Voice audio preview. */
 	inline ceWDSVAPreview &GetVAPreview() const{ return *pVAPreview; }
@@ -222,7 +222,7 @@ public:
 	int GetLaneHeight() const;
 	
 	/** \brief Dope sheet panel. */
-	inline cDopeSheet &GetDopeSheet() const{ return ( cDopeSheet& )( igdeWidget& )pDopeSheet; }
+	inline cDopeSheet &GetDopeSheet() const{ return (cDopeSheet&)(igdeWidget&)pDopeSheet; }
 	
 	/** \brief Text font. */
 	inline igdeFont *GetFontText() const{ return pFontText; }
@@ -236,7 +236,7 @@ public:
 	void OnPlaybackChanged();
 	
 	/** \brief Create and add lane canvas. */
-	void CreateDopeSheetCanvas( igdeViewRenderWindow &view );
+	void CreateDopeSheetCanvas(igdeViewRenderWindow &view);
 	
 	/** \brief Resize dope sheet canvas and lanes. */
 	void ResizeDopeSheetCanvas();
@@ -253,10 +253,10 @@ public:
 	void OnBeforeEngineStop();
 	
 	/** \brief Game like frame update. */
-	void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed);
 	
 	/** \brief Set if rendering is enabled. */
-	void SetEnableRendering( bool enable );
+	void SetEnableRendering(bool enable);
 	/*@}*/
 	
 	

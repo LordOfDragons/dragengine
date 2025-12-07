@@ -54,7 +54,7 @@ private:
 	
 public:
 	// constructor, destructor
-	dePhysicsBullet( deLoadableModule &loadableModule );
+	dePhysicsBullet(deLoadableModule &loadableModule);
 	~dePhysicsBullet();
 	// management
 	bool Init();
@@ -72,16 +72,16 @@ public:
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
 	
 	/** \brief Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed( const char *name ) const;
+	virtual int IndexOfParameterNamed(const char *name) const;
 	
 	/** \brief Value of named parameter. */
-	virtual decString GetParameterValue( const char *name ) const;
+	virtual decString GetParameterValue(const char *name) const;
 	
 	/** \brief Set value of named parameter. */
-	virtual void SetParameterValue( const char *name, const char *value );
+	virtual void SetParameterValue(const char *name, const char *value);
 	/*@}*/
 	
 	
@@ -95,7 +95,7 @@ public:
 	 * parameter and the answer has to be written into 'answer'. The default
 	 * implementation simply answers only to help with itself.
 	 */
-	virtual void SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 	
 	/** @name Management */
@@ -107,33 +107,33 @@ public:
 	inline debpCollisionDetection &GetCollisionDetection() const{ return *pCollisionDetection; }
 	
 	/** Creates a peer for the given component object. */
-	virtual deBasePhysicsComponent *CreateComponent( deComponent *comp );
+	virtual deBasePhysicsComponent *CreateComponent(deComponent *comp);
 	/** Creates a peer for the given model object. */
-	virtual deBasePhysicsModel *CreateModel( deModel *model );
+	virtual deBasePhysicsModel *CreateModel(deModel *model);
 	/** Creates a peer for the given skin object. */
-	virtual deBasePhysicsSkin *CreateSkin( deSkin *skin );
+	virtual deBasePhysicsSkin *CreateSkin(deSkin *skin);
 	/** Creates a peer for the given rig object. */
-	virtual deBasePhysicsRig *CreateRig( deRig *rig );
+	virtual deBasePhysicsRig *CreateRig(deRig *rig);
 	/** Creates a peer for the given world object. */
-	virtual deBasePhysicsWorld *CreateWorld( deWorld *world );
+	virtual deBasePhysicsWorld *CreateWorld(deWorld *world);
 	/** Creates a peer for the given collider. */
-	virtual deBasePhysicsCollider *CreateCollider( deCollider *collider );
+	virtual deBasePhysicsCollider *CreateCollider(deCollider *collider);
 	/** Creates a peer for the given decal. */
-	virtual deBasePhysicsDecal *CreateDecal( deDecal *decal );
+	virtual deBasePhysicsDecal *CreateDecal(deDecal *decal);
 	/** Creates a peer for the given touch sensor. */
-	virtual deBasePhysicsTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor );
+	virtual deBasePhysicsTouchSensor *CreateTouchSensor(deTouchSensor *touchSensor);
 	/** Creates a peer for the given height terrain. */
-	virtual deBasePhysicsHeightTerrain *CreateHeightTerrain( deHeightTerrain *heightTerrain );
+	virtual deBasePhysicsHeightTerrain *CreateHeightTerrain(deHeightTerrain *heightTerrain);
 	/** Creates a peer for the given prop field. */
-	virtual deBasePhysicsPropField *CreatePropField( dePropField *propField );
+	virtual deBasePhysicsPropField *CreatePropField(dePropField *propField);
 	/** Creates a peer for the given force field. */
-	virtual deBasePhysicsForceField *CreateForceField( deForceField *forceField );
+	virtual deBasePhysicsForceField *CreateForceField(deForceField *forceField);
 	/** Creates a peer for the given particle emitter. */
-	virtual deBasePhysicsParticleEmitter *CreateParticleEmitter( deParticleEmitter *emitter );
+	virtual deBasePhysicsParticleEmitter *CreateParticleEmitter(deParticleEmitter *emitter);
 	/** Creates a peer for the given particle emitter instance. */
-	virtual deBasePhysicsParticleEmitterInstance *CreateParticleEmitterInstance( deParticleEmitterInstance *instance );
+	virtual deBasePhysicsParticleEmitterInstance *CreateParticleEmitterInstance(deParticleEmitterInstance *instance);
 	/** Creates a peer for the given smoke emitter. */
-	virtual deBasePhysicsSmokeEmitter *CreateSmokeEmitter( deSmokeEmitter *smokeEmitter );
+	virtual deBasePhysicsSmokeEmitter *CreateSmokeEmitter(deSmokeEmitter *smokeEmitter);
 	/*@}*/
 	
 	/** Retrieves the configuration. */

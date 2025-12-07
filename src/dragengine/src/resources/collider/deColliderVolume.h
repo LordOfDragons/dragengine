@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create volume collider. */
-	deColliderVolume( deColliderManager *manager );
+	deColliderVolume(deColliderManager *manager);
 	
 protected:
 	/**
@@ -77,7 +77,7 @@ public:
 	inline const decShapeList &GetShapes() const{ return pShapes; }
 	
 	/** \brief Set shapes. */
-	void SetShapes( const decShapeList &shapes );
+	void SetShapes(const decShapeList &shapes);
 	/*@}*/
 	
 	
@@ -85,7 +85,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit( deColliderVisitor &visitor );
+	virtual void Visit(deColliderVisitor &visitor);
 	/*@}*/
 };
 

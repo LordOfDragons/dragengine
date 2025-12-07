@@ -41,14 +41,14 @@
 dealGPDisableModuleVersion::dealGPDisableModuleVersion(){
 }
 
-dealGPDisableModuleVersion::dealGPDisableModuleVersion( const char *name, const char *version ) :
-pName( name ),
-pVersion( version ){
+dealGPDisableModuleVersion::dealGPDisableModuleVersion(const char *name, const char *version) :
+pName(name),
+pVersion(version){
 }
 
-dealGPDisableModuleVersion::dealGPDisableModuleVersion( const dealGPDisableModuleVersion &copy ) :
-pName( copy.pName ),
-pVersion( copy.pVersion ){
+dealGPDisableModuleVersion::dealGPDisableModuleVersion(const dealGPDisableModuleVersion &copy) :
+pName(copy.pName),
+pVersion(copy.pVersion){
 }
 
 dealGPDisableModuleVersion::~dealGPDisableModuleVersion(){
@@ -59,11 +59,11 @@ dealGPDisableModuleVersion::~dealGPDisableModuleVersion(){
 // Management
 ///////////////
 
-void dealGPDisableModuleVersion::SetName( const char *name ){
+void dealGPDisableModuleVersion::SetName(const char *name){
 	pName = name;
 }
 
-void dealGPDisableModuleVersion::SetVersion( const char *version ){
+void dealGPDisableModuleVersion::SetVersion(const char *version){
 	pVersion = version;
 }
 
@@ -72,15 +72,15 @@ void dealGPDisableModuleVersion::SetVersion( const char *version ){
 // Operators
 //////////////
 
-bool dealGPDisableModuleVersion::operator==( const dealGPDisableModuleVersion &other ) const{
+bool dealGPDisableModuleVersion::operator==(const dealGPDisableModuleVersion &other) const{
 	return pName == other.pName && pVersion == other.pVersion;
 }
 
-bool dealGPDisableModuleVersion::operator!=( const dealGPDisableModuleVersion &other ) const{
+bool dealGPDisableModuleVersion::operator!=(const dealGPDisableModuleVersion &other) const{
 	return pName != other.pName || pVersion != other.pVersion;
 }
 
-dealGPDisableModuleVersion &dealGPDisableModuleVersion::operator=( const dealGPDisableModuleVersion &other ){
+dealGPDisableModuleVersion &dealGPDisableModuleVersion::operator=(const dealGPDisableModuleVersion &other){
 	pName = other.pName;
 	pVersion = other.pVersion;
 	return *this;

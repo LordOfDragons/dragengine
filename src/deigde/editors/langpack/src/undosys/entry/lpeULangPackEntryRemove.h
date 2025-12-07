@@ -50,8 +50,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackEntryRemove( lpeLangPack *langpack, const lpeLangPackEntryList &list,
-		lpeLangPack *refLangpack );
+	lpeULangPackEntryRemove(lpeLangPack *langpack, const lpeLangPackEntryList &list,
+		lpeLangPack *refLangpack);
 	
 protected:
 	/** \brief Clean up undo action. */

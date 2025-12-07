@@ -44,9 +44,9 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxScrollBar ) igdeNativeFoxScrollBarMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxScrollBar::ID_SELF, igdeNativeFoxScrollBar::onCommand ),
-	FXMAPFUNC( SEL_CHANGED, igdeNativeFoxScrollBar::ID_SELF, igdeNativeFoxScrollBar::onCommand )
+FXDEFMAP(igdeNativeFoxScrollBar) igdeNativeFoxScrollBarMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxScrollBar::ID_SELF, igdeNativeFoxScrollBar::onCommand),
+	FXMAPFUNC(SEL_CHANGED, igdeNativeFoxScrollBar::ID_SELF, igdeNativeFoxScrollBar::onCommand)
 };
 
 
@@ -54,20 +54,20 @@ FXDEFMAP( igdeNativeFoxScrollBar ) igdeNativeFoxScrollBarMap[] = {
 // Class igdeNativeFoxScrollBar
 /////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxScrollBar, FXScrollBar, igdeNativeFoxScrollBarMap, ARRAYNUMBER( igdeNativeFoxScrollBarMap ) )
+FXIMPLEMENT(igdeNativeFoxScrollBar, FXScrollBar, igdeNativeFoxScrollBarMap, ARRAYNUMBER(igdeNativeFoxScrollBarMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxScrollBar::igdeNativeFoxScrollBar(){ }
+igdeNativeFoxScrollBar::igdeNativeFoxScrollBar(){}
 
-igdeNativeFoxScrollBar::igdeNativeFoxScrollBar( igdeScrollBar &powner, FXComposite *pparent, int layoutFlags ) :
-FXScrollBar( pparent, this, ID_SELF, layoutFlags | ScrollBarFlags( powner ) ),
-pOwner( &powner )
+igdeNativeFoxScrollBar::igdeNativeFoxScrollBar(igdeScrollBar &powner, FXComposite *pparent, int layoutFlags) :
+FXScrollBar(pparent, this, ID_SELF, layoutFlags | ScrollBarFlags(powner)),
+pOwner(&powner)
 {
 	UpdateRange();
 	UpdateValue();
-	if( ! powner.GetEnabled() ){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 }
@@ -75,22 +75,22 @@ pOwner( &powner )
 igdeNativeFoxScrollBar::~igdeNativeFoxScrollBar(){
 }
 
-igdeNativeFoxScrollBar *igdeNativeFoxScrollBar::CreateNativeWidget( igdeScrollBar &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxScrollBar *igdeNativeFoxScrollBar::CreateNativeWidget(igdeScrollBar &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxScrollBar( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxScrollBar(powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxScrollBar::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -110,20 +110,20 @@ FXbool igdeNativeFoxScrollBar::canFocus() const{
 }
 
 void igdeNativeFoxScrollBar::UpdateRange(){
-	setRange( decMath::max( pOwner->GetUpper() - pOwner->GetLower(), 0 ) );
-	setPage( pOwner->GetPageSize() );
+	setRange(decMath::max(pOwner->GetUpper() - pOwner->GetLower(), 0));
+	setPage(pOwner->GetPageSize());
 	UpdateValue();
 }
 
 void igdeNativeFoxScrollBar::UpdateValue(){
-	const int position = decMath::clamp( pOwner->GetValue() - pOwner->GetLower(), 0, getRange() );
-	if( position != getPosition() ){
-		setPosition( position, true );
+	const int position = decMath::clamp(pOwner->GetValue() - pOwner->GetLower(), 0, getRange());
+	if(position != getPosition()){
+		setPosition(position, true);
 	}
 }
 
 void igdeNativeFoxScrollBar::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -133,8 +133,8 @@ void igdeNativeFoxScrollBar::UpdateEnabled(){
 
 
 
-int igdeNativeFoxScrollBar::ScrollBarFlags( const igdeScrollBar &powner ){
-	switch( powner.GetOrientation() ){
+int igdeNativeFoxScrollBar::ScrollBarFlags(const igdeScrollBar &powner){
+	switch(powner.GetOrientation()){
 	case igdeScrollBar::eoHorizontal:
 		return SCROLLBAR_HORIZONTAL | SCROLLBAR_WHEELJUMP;
 		
@@ -151,18 +151,18 @@ int igdeNativeFoxScrollBar::ScrollBarFlags( const igdeScrollBar &powner ){
 // Events
 ///////////
 
-long igdeNativeFoxScrollBar::onCommand( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxScrollBar::onCommand(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
 	try{
-		pOwner->SetValue( pOwner->GetLower() + getPosition() );
+		pOwner->SetValue(pOwner->GetLower() + getPosition());
 		pOwner->NotifyValueChanged();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	

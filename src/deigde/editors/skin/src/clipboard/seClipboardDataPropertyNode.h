@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data from selected nodes. */
-	seClipboardDataPropertyNode( const sePropertyNodeList &nodes );
+	seClipboardDataPropertyNode(const sePropertyNodeList &nodes);
 	
 protected:
 	/**
@@ -77,7 +77,7 @@ public:
 	int GetCount() const;
 	
 	/** \brief Node at index. */
-	const sePropertyNode &GetAt( int index ) const;
+	const sePropertyNode &GetAt(int index) const;
 	/*@}*/
 };
 

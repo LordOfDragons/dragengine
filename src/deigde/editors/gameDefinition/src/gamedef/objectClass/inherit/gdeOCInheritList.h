@@ -47,7 +47,7 @@ public:
 	gdeOCInheritList();
 	
 	/** \brief Create copy of inherit object class list. */
-	gdeOCInheritList( const gdeOCInheritList &list );
+	gdeOCInheritList(const gdeOCInheritList &list);
 	
 	/** \brief Clean up inherit object class list. */
 	~gdeOCInheritList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class at position. */
-	gdeOCInherit *GetAt( int index ) const;
+	gdeOCInherit *GetAt(int index) const;
 	
 	/** \brief Index of named inherit object class or -1 if absent. */
-	int IndexOf( gdeOCInherit *inherit ) const;
+	int IndexOf(gdeOCInherit *inherit) const;
 	
 	/** \brief Object class is present. */
-	bool Has( gdeOCInherit *inherit ) const;
+	bool Has(gdeOCInherit *inherit) const;
 	
 	/** \brief Add inherit object class. */
-	void Add( gdeOCInherit *inherit );
+	void Add(gdeOCInherit *inherit);
 	
 	/** \brief Remove inherit object class. */
-	void Remove( gdeOCInherit *inherit );
+	void Remove(gdeOCInherit *inherit);
 	
 	/** \brief Remove all inherit object classes. */
 	void RemoveAll();
 	
 	/** \brief Set from another inherit object class list. */
-	gdeOCInheritList &operator=( const gdeOCInheritList &list );
+	gdeOCInheritList &operator=(const gdeOCInheritList &list);
 	/*@}*/
 };
 

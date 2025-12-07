@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load render model. */
-	deovrRenderModel( deVROpenVR &ovr, const char *name );
+	deovrRenderModel(deVROpenVR &ovr, const char *name);
 	
 protected:
 	/** Clean up render model. */

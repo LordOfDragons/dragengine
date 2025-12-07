@@ -53,12 +53,12 @@ public:
 	/** Retrieves the cache size. */
 	inline int GetCacheSize() const{ return pCacheSize; }
 	/** Sets the cache size to simulate. */
-	void SetCacheSize( int cacheSize );
+	void SetCacheSize(int cacheSize);
 	
 	/** Resets the simulator. */
 	void Reset();
 	/** Process a face composed of three vertex indices. */
-	void ProcessFace( int vertex1, int vertex2, int vertex3 );
+	void ProcessFace(int vertex1, int vertex2, int vertex3);
 	
 	/** Retrieves the number of cache hits. */
 	inline int GetCacheHitCount() const{ return pCacheHitCount; }
@@ -76,7 +76,7 @@ public:
 	 * in the cache the cache hit count is incremented by one. Otherwise the cache miss
 	 * count is incremented by one.
 	 */
-	void TestVertexAgainstCache( int vertex );
+	void TestVertexAgainstCache(int vertex);
 	/*@}*/
 };
 

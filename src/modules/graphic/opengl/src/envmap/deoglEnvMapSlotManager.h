@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new environment map slot manager. */
-	deoglEnvMapSlotManager( deoglRenderThread &renderThread );
+	deoglEnvMapSlotManager(deoglRenderThread &renderThread);
 	/** Cleans up the environment map slot manager. */
 	~deoglEnvMapSlotManager();
 	/*@}*/
@@ -82,9 +82,9 @@ public:
 	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Retrieves the slot at the given index. */
-	deoglEnvMapSlot &GetSlotAt( int index ) const;
+	deoglEnvMapSlot &GetSlotAt(int index) const;
 	/** Retrieves the index of the slot with the given environment map or -1 if not found. */
-	int IndexOfSlotWith( deoglEnvironmentMap *envmap ) const;
+	int IndexOfSlotWith(deoglEnvironmentMap *envmap) const;
 	/** Retrieves the index of the oldest empty slot or -1 if all are used. */
 	int IndexOfOldestUnusedSlot() const;
 	
@@ -95,17 +95,17 @@ public:
 	 * environment map and the texture data copied to the appropriate layer in the array texture. In all
 	 * cases the last used is reset to 0.
 	 */
-	void AddEnvironmentMap( deoglEnvironmentMap *envmap );
+	void AddEnvironmentMap(deoglEnvironmentMap *envmap);
 	/** Increase the last used counters of all environment slots by one. */
 	void IncreaseSlotLastUsedCounters();
 	
 	/** Notification by an environment map that the texture changed and needs to be copied to the corrensponding array texture level. */
-	void NotifyEnvMapChanged( int slotIndex );
+	void NotifyEnvMapChanged(int slotIndex);
 	
 	/** Retrieves the number of used slots. */
 	inline int GetUsedSlotCount() const{ return pUsedSlotsCount; }
 	/** Retrieves the index of the used slot by index. */
-	int GetUsedSlotIndexAt( int index ) const;
+	int GetUsedSlotIndexAt(int index) const;
 	/** Update the used slots list from the current slot assignment. */
 	void UpdateUsedSlots();
 	/*@}*/

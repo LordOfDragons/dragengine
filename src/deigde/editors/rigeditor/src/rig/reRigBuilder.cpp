@@ -46,9 +46,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigBuilder::reRigBuilder( reRig *rig ){
-	if( ! rig ){
-		DETHROW( deeInvalidParam );
+reRigBuilder::reRigBuilder(reRig *rig){
+	if(!rig){
+		DETHROW(deeInvalidParam);
 	}
 	pRig = rig;
 }
@@ -61,8 +61,8 @@ reRigBuilder::~reRigBuilder(){
 // Management
 ///////////////
 
-void reRigBuilder::BuildRig( deRig *engRig ){
-	if( ! engRig ) DETHROW( deeInvalidParam );
+void reRigBuilder::BuildRig(deRig *engRig){
+	if(!engRig) DETHROW(deeInvalidParam);
 	int s, shapeCount = pRig->GetShapeCount();
 	int b, boneCount = pRig->GetBoneCount();
 	decShape *shape = NULL;
@@ -76,49 +76,49 @@ void reRigBuilder::BuildRig( deRig *engRig ){
 	// in pose mode cranks up the build rig. One solution would be to put
 	// all bones in rest mode for building the rig and then placing them
 	// back in pose mode afterwards.
-	for( b=0; b<boneCount; b++ ){
-		pRig->GetBoneAt( b )->SetPoseFromRest();
+	for(b=0; b<boneCount; b++){
+		pRig->GetBoneAt(b)->SetPoseFromRest();
 	}
 	
 	try{
 		// parameters
-		engRig->SetCentralMassPoint( pRig->GetCentralMassPoint() );
-		engRig->SetModelCollision( pRig->GetModelCollision() );
+		engRig->SetCentralMassPoint(pRig->GetCentralMassPoint());
+		engRig->SetModelCollision(pRig->GetModelCollision());
 		
 		// add bones. we have to respect the order of the bones to create
 		// a valid engine rig.
-		for( b=0; b<boneCount; b++ ){
-			BuildRigBone( engRig, pRig->GetBoneWithOrder( b ) );
+		for(b=0; b<boneCount; b++){
+			BuildRigBone(engRig, pRig->GetBoneWithOrder(b));
 		}
 		
 		// add shapes
-		for( s=0; s<shapeCount; s++ ){
-			shape = pRig->GetShapeAt( s )->CreateShape();
+		for(s=0; s<shapeCount; s++){
+			shape = pRig->GetShapeAt(s)->CreateShape();
 			
-			shapes.Add( shape );
+			shapes.Add(shape);
 			shape = NULL;
 			
-			shapeProperties.Add( pRig->GetShapeAt( s )->GetProperty() );
+			shapeProperties.Add(pRig->GetShapeAt(s)->GetProperty());
 		}
 		
 		// root bone
-		if( pRig->GetRootBone() ){
-			engRig->SetRootBone( pRig->GetRootBone()->GetOrder() );
+		if(pRig->GetRootBone()){
+			engRig->SetRootBone(pRig->GetRootBone()->GetOrder());
 			
 		}else{
-			engRig->SetRootBone( -1 );
+			engRig->SetRootBone(-1);
 		}
 		
-	}catch( const deException & ){
-		if( shape ) delete shape;
+	}catch(const deException &){
+		if(shape) delete shape;
 	}
 	
-	engRig->SetShapes( shapes );
-	engRig->SetShapeProperties( shapeProperties );
+	engRig->SetShapes(shapes);
+	engRig->SetShapeProperties(shapeProperties);
 }
 
-void reRigBuilder::BuildRigBone( deRig *engRig, reRigBone *rigBone ){
-	if( ! engRig || ! rigBone ) DETHROW( deeInvalidParam );
+void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
+	if(!engRig || !rigBone) DETHROW(deeInvalidParam);
 	
 	int c, constraintCount = rigBone->GetConstraintCount();
 	int s, shapeCount = rigBone->GetShapeCount();
@@ -131,60 +131,60 @@ void reRigBuilder::BuildRigBone( deRig *engRig, reRigBone *rigBone ){
 	
 	try{
 		// create engine bone
-		engBone = new deRigBone( rigBone->GetName().GetString() );
-		if( ! engBone ) DETHROW( deeOutOfMemory );
+		engBone = new deRigBone(rigBone->GetName().GetString());
+		if(!engBone) DETHROW(deeOutOfMemory);
 		
 		// set options
 		parentBone = rigBone->GetParentBone();
-		if( parentBone ){
-			engBone->SetParent( parentBone->GetOrder() );
+		if(parentBone){
+			engBone->SetParent(parentBone->GetOrder());
 			
 		}else{
-			engBone->SetParent( -1 );
+			engBone->SetParent(-1);
 		}
 		
-		engBone->SetPosition( rigBone->GetPosition() );
-		engBone->SetRotation( rigBone->GetOrientation() * DEG2RAD );
-		engBone->SetCentralMassPoint( rigBone->GetCentralMassPoint() );
-		engBone->SetMatrices( rigBone->GetMatrix() );
-		engBone->SetDynamic( rigBone->GetDynamic() );
-		engBone->SetMass( rigBone->GetMass() );
+		engBone->SetPosition(rigBone->GetPosition());
+		engBone->SetRotation(rigBone->GetOrientation() * DEG2RAD);
+		engBone->SetCentralMassPoint(rigBone->GetCentralMassPoint());
+		engBone->SetMatrices(rigBone->GetMatrix());
+		engBone->SetDynamic(rigBone->GetDynamic());
+		engBone->SetMass(rigBone->GetMass());
 		
 		// ik limits
-		engBone->SetIKLimits( rigBone->GetIKLimitsLower() * DEG2RAD, rigBone->GetIKLimitsUpper() * DEG2RAD );
-		engBone->SetIKResistance( rigBone->GetIKResistance() );
-		engBone->SetIKLockedX( rigBone->GetIKLockedX() );
-		engBone->SetIKLockedY( rigBone->GetIKLockedY() );
-		engBone->SetIKLockedZ( rigBone->GetIKLockedZ() );
+		engBone->SetIKLimits(rigBone->GetIKLimitsLower() * DEG2RAD, rigBone->GetIKLimitsUpper() * DEG2RAD);
+		engBone->SetIKResistance(rigBone->GetIKResistance());
+		engBone->SetIKLockedX(rigBone->GetIKLockedX());
+		engBone->SetIKLockedY(rigBone->GetIKLockedY());
+		engBone->SetIKLockedZ(rigBone->GetIKLockedZ());
 		
 		// add shapes
-		for( s=0; s<shapeCount; s++ ){
-			shape = rigBone->GetShapeAt( s )->CreateShape();
+		for(s=0; s<shapeCount; s++){
+			shape = rigBone->GetShapeAt(s)->CreateShape();
 			
-			shapes.Add( shape );
+			shapes.Add(shape);
 			shape = NULL;
 			
-			shapeProperties.Add( rigBone->GetShapeAt( s )->GetProperty() );
+			shapeProperties.Add(rigBone->GetShapeAt(s)->GetProperty());
 		}
 		
 		// add constraints
-		for( c=0; c<constraintCount; c++ ){
-			engConstraint = rigBone->GetConstraintAt( c )->BuildEngineRigConstraint();
-			if( ! engConstraint ) DETHROW( deeOutOfMemory );
+		for(c=0; c<constraintCount; c++){
+			engConstraint = rigBone->GetConstraintAt(c)->BuildEngineRigConstraint();
+			if(!engConstraint) DETHROW(deeOutOfMemory);
 			
-			engBone->AddConstraint( engConstraint );
+			engBone->AddConstraint(engConstraint);
 			engConstraint = NULL;
 		}
 		
 		// add to the rig
-		engRig->AddBone( engBone );
+		engRig->AddBone(engBone);
 		
-	}catch( const deException & ){
-		if( engConstraint ) delete engConstraint;
-		if( shape ) delete shape;
-		if( engBone ) delete engBone;
+	}catch(const deException &){
+		if(engConstraint) delete engConstraint;
+		if(shape) delete shape;
+		if(engBone) delete engBone;
 	}
 	
-	engBone->SetShapes( shapes );
-	engBone->SetShapeProperties( shapeProperties );
+	engBone->SetShapes(shapes);
+	engBone->SetShapeProperties(shapeProperties);
 }

@@ -45,51 +45,51 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTDefaultTextures::deoglRTDefaultTextures( deoglRenderThread &renderThread ) :
-pColor( NULL ),
-pTransparency( NULL ),
-pNormal( NULL ),
-pHeight( NULL ),
-pReflectivity( NULL ),
-pRoughness( NULL ),
-pEmissivity( NULL ),
-pAO( NULL ),
-pSolidity( NULL ),
-pEnvRoomMask( NULL ),
-pNonPbrMetalness( nullptr ),
-pShadowMap( NULL ),
-pShadowMapInverseDepth( NULL ),
-pShadowMapColor( NULL ),
-pShadowCube( NULL ),
-pShadowCubeInverseDepth( nullptr ),
-pShadowCubeColor( NULL ),
+deoglRTDefaultTextures::deoglRTDefaultTextures(deoglRenderThread &renderThread) :
+pColor(NULL),
+pTransparency(NULL),
+pNormal(NULL),
+pHeight(NULL),
+pReflectivity(NULL),
+pRoughness(NULL),
+pEmissivity(NULL),
+pAO(NULL),
+pSolidity(NULL),
+pEnvRoomMask(NULL),
+pNonPbrMetalness(nullptr),
+pShadowMap(NULL),
+pShadowMapInverseDepth(NULL),
+pShadowMapColor(NULL),
+pShadowCube(NULL),
+pShadowCubeInverseDepth(nullptr),
+pShadowCubeColor(NULL),
 
-pWeights( NULL ),
-pMaskOpaque( NULL ),
-pNoise2D( NULL ),
-pEnvMap( NULL ),
+pWeights(NULL),
+pMaskOpaque(NULL),
+pNoise2D(NULL),
+pEnvMap(NULL),
 
-pColorArray( NULL ),
-pTransparencyArray( NULL ),
-pNormalArray( NULL ),
-pHeightArray( NULL ),
-pReflectivityArray( NULL ),
-pRoughnessArray( NULL ),
-pEmissivityArray( NULL ),
-pAOArray( NULL ),
-pSolidityArray( NULL ),
-pEnvRoomMaskArray( NULL ),
-pNonPbrMetalnessArray( nullptr )
+pColorArray(NULL),
+pTransparencyArray(NULL),
+pNormalArray(NULL),
+pHeightArray(NULL),
+pReflectivityArray(NULL),
+pRoughnessArray(NULL),
+pEmissivityArray(NULL),
+pAOArray(NULL),
+pSolidityArray(NULL),
+pEnvRoomMaskArray(NULL),
+pNonPbrMetalnessArray(nullptr)
 {
 	try{
-		pCreateDefaultTextures( renderThread );
-		pCreateDefaultTexturesArray( renderThread );
-		pCreateTextureMaskOpaque( renderThread );
-		pCreateTextureNoise2D( renderThread );
+		pCreateDefaultTextures(renderThread);
+		pCreateDefaultTexturesArray(renderThread);
+		pCreateTextureMaskOpaque(renderThread);
+		pCreateTextureNoise2D(renderThread);
 		//pCreateWeightsTexture( renderThread );
-		pCreateShadowTextures( renderThread );
+		pCreateShadowTextures(renderThread);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -110,102 +110,102 @@ deoglRTDefaultTextures::~deoglRTDefaultTextures(){
 //////////////////////
 
 void deoglRTDefaultTextures::pCleanUp(){
-	if( pNonPbrMetalnessArray ){
+	if(pNonPbrMetalnessArray){
 		delete pNonPbrMetalnessArray;
 	}
-	if( pEnvRoomMaskArray ){
+	if(pEnvRoomMaskArray){
 		delete pEnvRoomMaskArray;
 	}
-	if( pSolidityArray ){
+	if(pSolidityArray){
 		delete pSolidityArray;
 	}
-	if( pAOArray ){
+	if(pAOArray){
 		delete pAOArray;
 	}
-	if( pEmissivityArray ){
+	if(pEmissivityArray){
 		delete pEmissivityArray;
 	}
-	if( pRoughnessArray ){
+	if(pRoughnessArray){
 		delete pRoughnessArray;
 	}
-	if( pReflectivityArray ){
+	if(pReflectivityArray){
 		delete pReflectivityArray;
 	}
-	if( pHeightArray ){
+	if(pHeightArray){
 		delete pHeightArray;
 	}
-	if( pNormalArray ){
+	if(pNormalArray){
 		delete pNormalArray;
 	}
-	if( pTransparencyArray ){
+	if(pTransparencyArray){
 		delete pTransparencyArray;
 	}
-	if( pColorArray ){
+	if(pColorArray){
 		delete pColorArray;
 	}
 	
-	if( pEnvMap ){
+	if(pEnvMap){
 		delete pEnvMap;
 	}
-	if( pNoise2D ){
+	if(pNoise2D){
 		delete pNoise2D;
 	}
-	if( pMaskOpaque ){
+	if(pMaskOpaque){
 		delete pMaskOpaque;
 	}
-	if( pWeights ){
+	if(pWeights){
 		delete pWeights;
 	}
 	
-	if( pShadowCubeColor ){
+	if(pShadowCubeColor){
 		delete pShadowCubeColor;
 	}
-	if( pShadowCube ){
+	if(pShadowCube){
 		delete pShadowCube;
 	}
-	if( pShadowCubeInverseDepth ){
+	if(pShadowCubeInverseDepth){
 		delete pShadowCubeInverseDepth;
 	}
-	if( pShadowMapColor ){
+	if(pShadowMapColor){
 		delete pShadowMapColor;
 	}
-	if( pShadowMap ){
+	if(pShadowMap){
 		delete pShadowMap;
 	}
-	if( pShadowMapInverseDepth ){
+	if(pShadowMapInverseDepth){
 		delete pShadowMapInverseDepth;
 	}
-	if( pNonPbrMetalness ){
+	if(pNonPbrMetalness){
 		delete pNonPbrMetalness;
 	}
-	if( pEnvRoomMask ){
+	if(pEnvRoomMask){
 		delete pEnvRoomMask;
 	}
-	if( pSolidity ){
+	if(pSolidity){
 		delete pSolidity;
 	}
-	if( pAO ){
+	if(pAO){
 		delete pAO;
 	}
-	if( pEmissivity ){
+	if(pEmissivity){
 		delete pEmissivity;
 	}
-	if( pRoughness ){
+	if(pRoughness){
 		delete pRoughness;
 	}
-	if( pReflectivity ){
+	if(pReflectivity){
 		delete pReflectivity;
 	}
-	if( pHeight ){
+	if(pHeight){
 		delete pHeight;
 	}
-	if( pNormal ){
+	if(pNormal){
 		delete pNormal;
 	}
-	if( pTransparency ){
+	if(pTransparency){
 		delete pTransparency;
 	}
-	if( pColor ){
+	if(pColor){
 		delete pColor;
 	}
 }
@@ -385,10 +385,10 @@ void deoglRTDefaultTextures::pCreateDefaultTexturesArray(deoglRenderThread &rend
 	pNonPbrMetalnessArray->SetPixels(pbByte4);
 }
 
-void deoglRTDefaultTextures::pCreateWeightsTexture( deoglRenderThread &renderThread ){
-	pWeights = new deoglTexture( renderThread );
-	pWeights->SetSize( 128, 128 );
-	pWeights->SetMapingFormat( 4, true, false );
+void deoglRTDefaultTextures::pCreateWeightsTexture(deoglRenderThread &renderThread){
+	pWeights = new deoglTexture(renderThread);
+	pWeights->SetSize(128, 128);
+	pWeights->SetMapingFormat(4, true, false);
 	pWeights->CreateTexture();
 }
 
@@ -407,7 +407,7 @@ void deoglRTDefaultTextures::pCreateTextureMaskOpaque(deoglRenderThread &renderT
 #ifdef OS_UNIX
 __attribute__((no_sanitize("signed-integer-overflow", "shift")))
 #endif
-static void deoglRTDefaultTextures_CreateNoiseData( deoglPixelBuffer &pixelBuffer, int size ){
+static void deoglRTDefaultTextures_CreateNoiseData(deoglPixelBuffer &pixelBuffer, int size){
 	// the noise code is moved into an own function so it can be qualified with a no_sanitize.
 	// the problem is that this code uses integer overflow to create random noise data. the gcc
 	// sanitizer does not like this overflow behavior hence it is move to silence the warning
@@ -415,17 +415,17 @@ static void deoglRTDefaultTextures_CreateNoiseData( deoglPixelBuffer &pixelBuffe
 	const int seed = 17342954;
 	int p, x, y;
 	
-	for( p=0, y=0; y<size; y++ ){
-		for( x=0; x<size; x++, p++ ){
+	for(p=0, y=0; y<size; y++){
+		for(x=0; x<size; x++, p++){
 			int n = x + y * 57 + seed;
-			n = ( n << 13 ) ^ n;
-			const double rot = ( ( double )( ( n * ( n * n * 15731 + 789221 )
-				+ 1376312589 ) & 0x7fffffff ) / 1073741824.0 );
+			n = (n << 13) ^ n;
+			const double rot = ((double)((n * (n * n * 15731 + 789221)
+				+ 1376312589) & 0x7fffffff) / 1073741824.0);
 			
-			destInt32[ p ].r = ( unsigned char )( sin( rot * PI ) * 127.5 + 127.5 );
-			destInt32[ p ].g = ( unsigned char )( cos( rot * PI ) * 127.5 + 127.5 );
-			destInt32[ p ].b = 0;
-			destInt32[ p ].a = 0;
+			destInt32[p].r = (unsigned char)(sin(rot * PI) * 127.5 + 127.5);
+			destInt32[p].g = (unsigned char)(cos(rot * PI) * 127.5 + 127.5);
+			destInt32[p].b = 0;
+			destInt32[p].a = 0;
 		}
 	}
 }
@@ -446,33 +446,33 @@ void deoglRTDefaultTextures::pCreateTextureNoise2D(deoglRenderThread &renderThre
 	int u, x, seedu = 17342954;
 	int v, y, seedv = 28017626;
 	int p, size = 32;
-	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfByte4, size, size );
+	deoglPixelBuffer pixelBuffer(deoglPixelBuffer::epfByte4, size, size);
 	
 	deoglPixelBuffer::sByte4 *destInt32 = pixelBuffer.GetPointerInt32();
-	for( p=0, y=0; y<size; y++ ){
-		for( x=0; x<size; x++, p++ ){
+	for(p=0, y=0; y<size; y++){
+		for(x=0; x<size; x++, p++){
 			u = x + y * 57 + seedu;
-			u = ( u << 13 ) ^ u;
-			destInt32[ p ].r = ( u * ( u * u * 15731 + 789221 ) + 1376312589 ) >> 24;
+			u = (u << 13) ^ u;
+			destInt32[p].r = (u * (u * u * 15731 + 789221) + 1376312589) >> 24;
 			
 			v = x + y * 57 + seedv;
-			v = ( v << 13 ) ^ v;
-			destInt32[ p ].g = ( v * ( v * v * 15731 + 789221 ) + 1376312589 ) >> 24;
+			v = (v << 13) ^ v;
+			destInt32[p].g = (v * (v * v * 15731 + 789221) + 1376312589) >> 24;
 			
-			destInt32[ p ].b = 0;
-			destInt32[ p ].a = 0;
+			destInt32[p].b = 0;
+			destInt32[p].a = 0;
 		}
 	}
 	
-	pNoise2D = new deoglTexture( this );
-	if( ! pNoise2D ) DETHROW( deeOutOfMemory );
+	pNoise2D = new deoglTexture(this);
+	if(!pNoise2D) DETHROW(deeOutOfMemory);
 	
-	pNoise2D->SetMipMapped( false );
-	pNoise2D->SetCompressed( false );
-	pNoise2D->SetMapingFormat( 8, 4, false );
-	pNoise2D->SetSize( size, size );
+	pNoise2D->SetMipMapped(false);
+	pNoise2D->SetCompressed(false);
+	pNoise2D->SetMapingFormat(8, 4, false);
+	pNoise2D->SetSize(size, size);
 	pNoise2D->CreateTexture();
-	pNoise2D->SetPixels( pixelBuffer );
+	pNoise2D->SetPixels(pixelBuffer);
 	*/
 }
 

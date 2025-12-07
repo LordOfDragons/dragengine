@@ -65,34 +65,34 @@ igdeGDCamera::~igdeGDCamera(){
 // Management
 ///////////////
 
-void igdeGDCamera::SetPosition( const decVector &position ){
+void igdeGDCamera::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void igdeGDCamera::SetOrientation( const decQuaternion &orientation ){
+void igdeGDCamera::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void igdeGDCamera::SetFov( float fov ){
-	if( fov <= 0.0f || fov >= 180.0f ) DETHROW( deeInvalidParam );
+void igdeGDCamera::SetFov(float fov){
+	if(fov <= 0.0f || fov >= 180.0f) DETHROW(deeInvalidParam);
 	
 	pFov = fov;
 }
 
-void igdeGDCamera::SetFovRatio( float ratio ){
-	if( ratio <= 0.0 ) DETHROW( deeInvalidParam );
+void igdeGDCamera::SetFovRatio(float ratio){
+	if(ratio <= 0.0) DETHROW(deeInvalidParam);
 	
 	pFovRatio = ratio;
 }
 
-void igdeGDCamera::SetImageDistance( float distance ){
-	if( distance <= 0.0f ) DETHROW( deeInvalidParam );
+void igdeGDCamera::SetImageDistance(float distance){
+	if(distance <= 0.0f) DETHROW(deeInvalidParam);
 	
 	pImageDistance = distance;
 }
 
-void igdeGDCamera::SetViewDistance( float distance ){
-	if( distance <= 0.0f ) DETHROW( deeInvalidParam );
+void igdeGDCamera::SetViewDistance(float distance){
+	if(distance <= 0.0f) DETHROW(deeInvalidParam);
 	
 	pViewDistance = distance;
 }

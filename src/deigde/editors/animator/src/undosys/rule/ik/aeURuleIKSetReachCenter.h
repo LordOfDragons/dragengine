@@ -53,7 +53,7 @@ public:
 	 * Create new undo action.
 	 * \throws deeInvalidParam \em rule is \em NULL.
 	 */
-	aeURuleIKSetReachCenter( aeRuleInverseKinematic *rule, const decVector &newValue );
+	aeURuleIKSetReachCenter(aeRuleInverseKinematic *rule, const decVector &newValue);
 	
 protected:
 	/** Clean up undo. */

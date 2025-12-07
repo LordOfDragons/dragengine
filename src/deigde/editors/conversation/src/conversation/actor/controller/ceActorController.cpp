@@ -39,15 +39,15 @@
 ////////////////////////////
 
 ceActorController::ceActorController() :
-pUpdateType( eutConstant ),
-pValue( 0.0f ){
+pUpdateType(eutConstant),
+pValue(0.0f){
 }
 
-ceActorController::ceActorController( const ceActorController &controller ) :
-pName( controller.pName ),
-pUpdateType( controller.pUpdateType ),
-pValue( controller.pValue ),
-pVector( controller.pVector ){
+ceActorController::ceActorController(const ceActorController &controller) :
+pName(controller.pName),
+pUpdateType(controller.pUpdateType),
+pValue(controller.pValue),
+pVector(controller.pVector){
 }
 
 ceActorController::~ceActorController(){
@@ -58,18 +58,18 @@ ceActorController::~ceActorController(){
 // Management
 ///////////////
 
-void ceActorController::SetName( const char *name ){
+void ceActorController::SetName(const char *name){
 	pName = name;
 }
 
-void ceActorController::SetUpdateType( eUpdateTypes type ){
+void ceActorController::SetUpdateType(eUpdateTypes type){
 	pUpdateType = type;
 }
 
-void ceActorController::SetValue( float value ){
+void ceActorController::SetValue(float value){
 	pValue = value;
 }
 
-void ceActorController::SetVector( const decVector &vector ){
+void ceActorController::SetVector(const decVector &vector){
 	pVector = vector;
 }

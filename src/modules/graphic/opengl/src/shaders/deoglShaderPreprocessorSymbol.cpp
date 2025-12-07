@@ -39,9 +39,9 @@
 deoglShaderPreprocessorSymbol::deoglShaderPreprocessorSymbol(){
 }
 
-deoglShaderPreprocessorSymbol::deoglShaderPreprocessorSymbol( const char *name, const char *value ) :
-pName( name ),
-pValue( value ){
+deoglShaderPreprocessorSymbol::deoglShaderPreprocessorSymbol(const char *name, const char *value) :
+pName(name),
+pValue(value){
 }
 
 deoglShaderPreprocessorSymbol::~deoglShaderPreprocessorSymbol(){

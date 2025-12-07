@@ -75,7 +75,7 @@ protected:
 	gdeWPSOCWorld &pPanel;
 	
 public:
-	cBaseTextFieldListener(gdeWPSOCWorld &panel) : pPanel(panel){ }
+	cBaseTextFieldListener(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
 		gdeOCWorld * const world = pPanel.GetWorld();
@@ -98,7 +98,7 @@ protected:
 	gdeWPSOCWorld &pPanel;
 	
 public:
-	cBaseEditVectorListener(gdeWPSOCWorld &panel) : pPanel(panel){ }
+	cBaseEditVectorListener(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
 		gdeOCWorld * const world = pPanel.GetWorld();
@@ -122,7 +122,7 @@ protected:
 	gdeWPSOCWorld &pPanel;
 	
 public:
-	cBaseComboBoxListener(gdeWPSOCWorld &panel) : pPanel(panel){ }
+	cBaseComboBoxListener(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
 		gdeOCWorld * const world = pPanel.GetWorld();
@@ -145,7 +145,7 @@ class cEditPath : public igdeEditPathListener{
 	gdeWPSOCWorld &pPanel;
 	
 public:
-	cEditPath(gdeWPSOCWorld &panel) : pPanel(panel){ }
+	cEditPath(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
 		gdeOCWorld * const world = pPanel.GetWorld();
@@ -160,7 +160,7 @@ public:
 
 class cEditPosition : public cBaseEditVectorListener {
 public:
-	cEditPosition(gdeWPSOCWorld &panel) : cBaseEditVectorListener(panel){ }
+	cEditPosition(gdeWPSOCWorld &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass, gdeOCWorld *world) override{
 		if(world->GetPosition().IsEqualTo(vector)){
@@ -172,7 +172,7 @@ public:
 
 class cEditRotation : public cBaseEditVectorListener {
 public:
-	cEditRotation(gdeWPSOCWorld &panel) : cBaseEditVectorListener(panel){ }
+	cEditRotation(gdeWPSOCWorld &panel) : cBaseEditVectorListener(panel){}
 	
 	igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass, gdeOCWorld *world) override{
 		if(world->GetRotation().IsEqualTo(vector)){
@@ -186,7 +186,7 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCWorld &pPanel;
 	
 public:
-	cComboPropertyNames(gdeWPSOCWorld &panel) : pPanel(panel){ }
+	cComboPropertyNames(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox*) override{
 		if(pPanel.GetWorld()){
@@ -199,7 +199,7 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCWorld &pPanel;
 	
 public:
-	cComboPropertyNameTarget(gdeWPSOCWorld &panel) : pPanel(panel){ }
+	cComboPropertyNameTarget(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(!pPanel.GetWorld()){

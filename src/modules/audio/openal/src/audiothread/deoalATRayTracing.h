@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread ray tracing. */
-	deoalATRayTracing( deoalAudioThread &audioThread );
+	deoalATRayTracing(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread renderers. */
 	~deoalATRayTracing();

@@ -75,7 +75,7 @@ public:
 		 * \brief Create list entry.
 		 * \warning Use only on stack! Never use it with new allocator!
 		 */
-		cListEntry( void *owner );
+		cListEntry(void *owner);
 		
 		/**
 		 * \brief Clean up list entry.
@@ -110,9 +110,9 @@ public:
 		/**
 		 * \warning For internal use only! Never call on your own!
 		 */
-		void SetPrevious( cListEntry *previous );
-		void SetNext( cListEntry *next );
-		void SetList( decPointerLinkedList *list );
+		void SetPrevious(cListEntry *previous);
+		void SetNext(cListEntry *next);
+		void SetList(decPointerLinkedList *list);
 		void Clear();
 	};
 	
@@ -154,18 +154,18 @@ public:
 		/**
 		 * \brief Iterator over entire list.
 		 */
-		cIterator( decPointerLinkedList &list );
+		cIterator(decPointerLinkedList &list);
 		
 		/**
 		 * \brief Iterator from entry to end of list.
 		 */
-		cIterator( cListEntry *firstEntry );
+		cIterator(cListEntry *firstEntry);
 		
 		/**
 		 * \brief Iterator from entry to another entry.
 		 * \warning If last entry is not located after first entry result can be undefined.
 		 */
-		cIterator( cListEntry *firstEntry, cListEntry *lastEntry );
+		cIterator(cListEntry *firstEntry, cListEntry *lastEntry);
 		/*@}*/
 		
 		
@@ -230,7 +230,7 @@ public:
 		 * 
 		 * Same as calling Advance() multiple times in a row.
 		 */
-		bool operator+=( int distance );
+		bool operator+=(int distance);
 		
 		/**
 		 * \brief Iteration finished.
@@ -283,31 +283,31 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	cListEntry *GetAt( int index ) const;
+	cListEntry *GetAt(int index) const;
 	
 	/** \brief Index of pointer or -1 if not found. */
-	int IndexOf( cListEntry *entry ) const;
+	int IndexOf(cListEntry *entry) const;
 	
 	/** \brief Determine if pointer exists in the list. */
-	bool Has( cListEntry *entry ) const;
+	bool Has(cListEntry *entry) const;
 	
 	/** \brief Add pointer. */
-	void Add( cListEntry *entry );
+	void Add(cListEntry *entry);
 	
 	/**
 	 * \brief Insert pointer before entry.
 	 * \throws deeInvalidParam \em beforeEntry is invalid.
 	 */
-	void InsertBefore( cListEntry *entry, cListEntry *before );
+	void InsertBefore(cListEntry *entry, cListEntry *before);
 	
 	/**
 	 * \brief Insert pointer after entry.
 	 * \throws deeInvalidParam \em beforeEntry is invalid.
 	 */
-	void InsertAfter( cListEntry *entry, cListEntry *after );
+	void InsertAfter(cListEntry *entry, cListEntry *after);
 	
 	/** \brief Remove pointer. */
-	void Remove( cListEntry *entry );
+	void Remove(cListEntry *entry);
 	
 	/** \brief Remove all pointers. */
 	void RemoveAll();
@@ -321,7 +321,7 @@ public:
 	 * \brief Pointer at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	cListEntry *operator[]( int position ) const;
+	cListEntry *operator[](int position) const;
 	/*@}*/
 };
 

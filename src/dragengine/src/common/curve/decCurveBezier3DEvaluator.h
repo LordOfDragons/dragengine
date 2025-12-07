@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new bezier curve evaluator. */
-	decCurveBezier3DEvaluator( const decCurveBezier3D &curve );
+	decCurveBezier3DEvaluator(const decCurveBezier3D &curve);
 	
 	/** \brief Clean up the bezier curve evaluator. */
 	~decCurveBezier3DEvaluator();
@@ -55,7 +55,7 @@ public:
 	inline const decCurveBezier3D &GetCurve() const{ return pCurve; }
 	
 	/** \brief Evaluate curve at the given position in the range from 0 to 1 relative to the curve length. */
-	decVector EvaluateAt( int segment, float blend ) const;
+	decVector EvaluateAt(int segment, float blend) const;
 	/*@}*/
 };
 

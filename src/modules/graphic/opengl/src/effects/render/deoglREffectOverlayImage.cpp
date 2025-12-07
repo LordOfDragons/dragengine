@@ -67,14 +67,14 @@ enum eSPEffect{
 // Constructor, destructor
 ////////////////////////////
 
-deoglREffectOverlayImage::deoglREffectOverlayImage( deoglRenderThread &renderThread ) :
-deoglREffect( renderThread )
+deoglREffectOverlayImage::deoglREffectOverlayImage(deoglRenderThread &renderThread) :
+deoglREffect(renderThread)
 {
-	LEAK_CHECK_CREATE( renderThread, EffectOverlayImage );
+	LEAK_CHECK_CREATE(renderThread, EffectOverlayImage);
 }
 
 deoglREffectOverlayImage::~deoglREffectOverlayImage(){
-	LEAK_CHECK_FREE( GetRenderThread(), EffectOverlayImage );
+	LEAK_CHECK_FREE(GetRenderThread(), EffectOverlayImage);
 }
 
 
@@ -82,83 +82,83 @@ deoglREffectOverlayImage::~deoglREffectOverlayImage(){
 // Management
 ///////////////
 
-void deoglREffectOverlayImage::SetTransparency( float transparency ){
-	pTransparency = decMath::clamp( transparency, 0.0f, 1.0f );
+void deoglREffectOverlayImage::SetTransparency(float transparency){
+	pTransparency = decMath::clamp(transparency, 0.0f, 1.0f);
 }
 
-void deoglREffectOverlayImage::SetImage( deoglRImage *image ){
+void deoglREffectOverlayImage::SetImage(deoglRImage *image){
 	pImage = image;
 }
 
 
 
 const deoglPipeline *deoglREffectOverlayImage::GetPipeline(){
-	if( ! pPipeline ){
+	if(!pPipeline){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
-		GetRenderThread().GetShader().SetCommonDefines( defines );
+		GetRenderThread().GetShader().SetCommonDefines(defines);
 		
-		pipconf.SetDepthMask( false );
-		pipconf.SetEnableScissorTest( true );
+		pipconf.SetDepthMask(false);
+		pipconf.SetEnableScissorTest(true);
 		pipconf.EnableBlendBlend();
 		
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
-		pipconf.SetShader( GetRenderThread(), "Effect Overlay", defines );
-		pPipeline = pipelineManager.GetWith( pipconf );
+		defines.SetDefines("NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y");
+		pipconf.SetShader(GetRenderThread(), "Effect Overlay", defines);
+		pPipeline = pipelineManager.GetWith(pipconf);
 	}
 	
 	return pPipeline;
 }
 
 const deoglPipeline *deoglREffectOverlayImage::GetPipelineStereo(){
-	if( ! pPipelineStereo ){
+	if(!pPipelineStereo){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
-		GetRenderThread().GetShader().SetCommonDefines( defines );
+		GetRenderThread().GetShader().SetCommonDefines(defines);
 		
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
+		defines.SetDefines("NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y");
 		
-		pipconf.SetDepthMask( false );
-		pipconf.SetEnableScissorTest( true );
+		pipconf.SetDepthMask(false);
+		pipconf.SetEnableScissorTest(true);
 		pipconf.EnableBlendBlend();
 		
 		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
-		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_LAYER" );
-			pipconf.SetShader( GetRenderThread(), "Effect Overlay", defines );
+		if(GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer()){
+			defines.SetDefines("VS_RENDER_LAYER");
+			pipconf.SetShader(GetRenderThread(), "Effect Overlay", defines);
 			
 		}else{
-			pipconf.SetShader( GetRenderThread(), "Effect Overlay Stereo", defines );
+			pipconf.SetShader(GetRenderThread(), "Effect Overlay Stereo", defines);
 		}
 		
-		pPipelineStereo = pipelineManager.GetWith( pipconf );
+		pPipelineStereo = pipelineManager.GetWith(pipconf);
 	}
 	
 	return pPipelineStereo;
 }
 
 void deoglREffectOverlayImage::PrepareForRender(){
-	if( pImage ){
+	if(pImage){
 		pImage->PrepareForRender();
 	}
 }
 
-void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
-	if( ! pImage ){
+void deoglREffectOverlayImage::Render(deoglRenderPlan &plan){
+	if(!pImage){
 		return;
 	}
 	
 	deoglTexture * const texture = pImage->GetTexture();
-	if( ! texture ){
+	if(!texture){
 		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "EffectOverlayImage.Render" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "EffectOverlayImage.Render");
 	const deoglRenderWorld &renderWorld = renderThread.GetRenderers().GetWorld();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -167,18 +167,18 @@ void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
 	pipeline.Activate();
 	
-	renderWorld.SetViewport( plan );
+	renderWorld.SetViewport(plan);
 	
-	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *texture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	defren.ActivatePostProcessFBO(false);
+	tsmgr.EnableTexture(0, *texture, *rtshader.GetTexSamplerConfig(deoglRTShader::etscClampLinear));
 	
 	renderWorld.GetRenderPB()->Activate();
 	
 	// [-1,1] * su/2 + su/2 = [0,su]
 	// [-1,1] * sv/2 + sv/2 = [0,sv]
 	deoglShaderCompiled &shader = pipeline.GetShader();
-	shader.SetParameterFloat( speGamma, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, 1.0 );
-	shader.SetParameterFloat( speColor, 1.0f, 1.0f, 1.0f, pTransparency );
+	shader.SetParameterFloat(speGamma, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, 1.0);
+	shader.SetParameterFloat(speColor, 1.0f, 1.0f, 1.0f, pTransparency);
 	
-	renderWorld.RenderFullScreenQuadVAO( plan );
+	renderWorld.RenderFullScreenQuadVAO(plan);
 }

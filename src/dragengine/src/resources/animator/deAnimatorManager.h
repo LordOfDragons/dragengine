@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new animator resource manager linked to the given engine. */
-	deAnimatorManager( deEngine *engine );
+	deAnimatorManager(deEngine *engine);
 	
 	/** \brief Clean up animator resource manager and reports leaking resources. */
 	~deAnimatorManager();
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

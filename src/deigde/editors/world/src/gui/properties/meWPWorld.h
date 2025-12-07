@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	meWPWorld( meWindowProperties &windowProperties );
+	meWPWorld(meWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up . */
@@ -113,7 +113,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Update world. */
 	void UpdateWorld();
@@ -156,7 +156,7 @@ public:
 	void UpdateIdentifierLists();
 	
 	/** Select PFType. */
-	void SelectPFType( mePathFindTestType *type );
+	void SelectPFType(mePathFindTestType *type);
 	
 	
 	

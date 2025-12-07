@@ -51,52 +51,52 @@ dedaiPathFinderFunnel::~dedaiPathFinderFunnel(){
 // Management
 ///////////////
 
-void dedaiPathFinderFunnel::SetMesh( dedaiSpaceMesh *mesh ){
+void dedaiPathFinderFunnel::SetMesh(dedaiSpaceMesh *mesh){
 	pMesh = mesh;
 }
 
-void dedaiPathFinderFunnel::SetOrigin( const decVector &origin ){
+void dedaiPathFinderFunnel::SetOrigin(const decVector &origin){
 	pOrigin = origin;
 	//pLeftDist = origin * pLeftNormal;
 	//pRightDist = origin * pRightNormal;
 }
 
-void dedaiPathFinderFunnel::SetGoal( const decVector &goal ){
+void dedaiPathFinderFunnel::SetGoal(const decVector &goal){
 	pGoal = goal;
 }
 
-void dedaiPathFinderFunnel::SetLeftCorner( const decVector &corner ){
+void dedaiPathFinderFunnel::SetLeftCorner(const decVector &corner){
 	pLeftCorner = corner;
 }
 
-void dedaiPathFinderFunnel::SetLeftNormal( const decVector &normal ){
+void dedaiPathFinderFunnel::SetLeftNormal(const decVector &normal){
 	pLeftNormal = normal;
 	pLeftDist = pOrigin * normal;
 }
 
-void dedaiPathFinderFunnel::SetRightCorner( const decVector &corner ){
+void dedaiPathFinderFunnel::SetRightCorner(const decVector &corner){
 	pRightCorner = corner;
 }
 
-void dedaiPathFinderFunnel::SetRightNormal( const decVector &normal ){
+void dedaiPathFinderFunnel::SetRightNormal(const decVector &normal){
 	pRightNormal = normal;
 	pRightDist = pOrigin * normal;
 }
 
 
 
-void dedaiPathFinderFunnel::UpdateLeftPlane( const decVector &faceNormal ){
+void dedaiPathFinderFunnel::UpdateLeftPlane(const decVector &faceNormal){
 	float len;
 	
-	pLeftNormal = faceNormal % ( pLeftCorner - pOrigin );
+	pLeftNormal = faceNormal % (pLeftCorner - pOrigin);
 	len = pLeftNormal.Length();
-	if( len > FLOAT_SAFE_EPSILON ){
+	if(len > FLOAT_SAFE_EPSILON){
 		pLeftNormal /= len;
 		
 	}else{
-		pLeftNormal = faceNormal % ( pLeftCorner - pRightCorner );
+		pLeftNormal = faceNormal % (pLeftCorner - pRightCorner);
 		len = pLeftNormal.Length();
-		if( len > FLOAT_SAFE_EPSILON ){
+		if(len > FLOAT_SAFE_EPSILON){
 			pLeftNormal /= len;
 			
 		}else{
@@ -106,18 +106,18 @@ void dedaiPathFinderFunnel::UpdateLeftPlane( const decVector &faceNormal ){
 	pLeftDist = pOrigin * pLeftNormal;
 }
 
-void dedaiPathFinderFunnel::UpdateRightPlane( const decVector &faceNormal ){
+void dedaiPathFinderFunnel::UpdateRightPlane(const decVector &faceNormal){
 	float len;
 	
-	pRightNormal = faceNormal % ( pOrigin - pRightCorner );
+	pRightNormal = faceNormal % (pOrigin - pRightCorner);
 	len = pRightNormal.Length();
-	if( len > FLOAT_SAFE_EPSILON ){
+	if(len > FLOAT_SAFE_EPSILON){
 		pRightNormal /= len;
 		
 	}else{
-		pRightNormal = faceNormal % ( pRightCorner - pLeftCorner );
+		pRightNormal = faceNormal % (pRightCorner - pLeftCorner);
 		len = pRightNormal.Length();
-		if( len > FLOAT_SAFE_EPSILON ){
+		if(len > FLOAT_SAFE_EPSILON){
 			pRightNormal /= len;
 			
 		}else{
@@ -127,14 +127,14 @@ void dedaiPathFinderFunnel::UpdateRightPlane( const decVector &faceNormal ){
 	pRightDist = pOrigin * pRightNormal;
 }
 
-void dedaiPathFinderFunnel::Transform( const decMatrix &matrix ){
+void dedaiPathFinderFunnel::Transform(const decMatrix &matrix){
 	pOrigin = matrix * pOrigin;
 	
 	pLeftCorner = matrix * pLeftCorner;
-	pLeftNormal = matrix.TransformNormal( pLeftNormal );
+	pLeftNormal = matrix.TransformNormal(pLeftNormal);
 	pLeftDist = pOrigin * pLeftNormal;
 	
 	pRightCorner = matrix * pRightCorner;
-	pRightNormal = matrix.TransformNormal( pRightNormal );
+	pRightNormal = matrix.TransformNormal(pRightNormal);
 	pRightDist = pOrigin * pRightNormal;
 }

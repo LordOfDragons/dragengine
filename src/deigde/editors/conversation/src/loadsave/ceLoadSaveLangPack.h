@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create load/save object. */
-	ceLoadSaveLangPack( deBaseLanguagePackModule &module );
+	ceLoadSaveLangPack(deBaseLanguagePackModule &module);
 	
 protected:
 	/** Clean up load/save object. */
@@ -73,10 +73,10 @@ public:
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** Load langpack. */
-	void LoadLangPack( ceLangPack &langpack, decBaseFileReader &file );
+	void LoadLangPack(ceLangPack &langpack, decBaseFileReader &file);
 	
 	/** Save langpack. */
-	void SaveLangPack( const ceLangPack &langpack, decBaseFileWriter &file );
+	void SaveLangPack(const ceLangPack &langpack, decBaseFileWriter &file);
 	/*@}*/
 };
 

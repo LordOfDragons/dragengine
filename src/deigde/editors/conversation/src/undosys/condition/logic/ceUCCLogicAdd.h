@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicAdd( ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition );
+	ceUCCLogicAdd(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCLogicAdd();

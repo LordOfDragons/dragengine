@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCACameraShotSetName( ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newName );
+	ceUCACameraShotSetName(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCACameraShotSetName();

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWPUndoHistoryListener( aeWPUndoHistory &panel );
+	aeWPUndoHistoryListener(aeWPUndoHistory &panel);
 	
 	/** Clean up listener. */
 	virtual ~aeWPUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Undos changed. */
-	virtual void UndoChanged( aeAnimator *animator );
+	virtual void UndoChanged(aeAnimator *animator);
 	/*@}*/
 };
 

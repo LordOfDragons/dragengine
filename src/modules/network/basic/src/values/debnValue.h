@@ -59,19 +59,19 @@ public:
 	inline eValueTypes GetDataType() const{ return pDataType; }
 	
 	/** \brief Set data type. */
-	void SetDataType( eValueTypes dataType );
+	void SetDataType(eValueTypes dataType);
 	
 	/**
 	 * \brief Update value.
 	 * \returns true if value needs to by synchronized otherwise false if not changed enough.
 	 */
-	virtual bool UpdateValue( bool force ) = 0;
+	virtual bool UpdateValue(bool force) = 0;
 	
 	/** \brief Read value from message. */
-	virtual void ReadValue( decBaseFileReader &reader ) = 0;
+	virtual void ReadValue(decBaseFileReader &reader) = 0;
 	
 	/** \brief Write value to message. */
-	virtual void WriteValue( decBaseFileWriter &writer ) = 0;
+	virtual void WriteValue(decBaseFileWriter &writer) = 0;
 	/*@}*/
 };
 

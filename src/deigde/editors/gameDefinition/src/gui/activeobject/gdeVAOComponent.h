@@ -61,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAOComponent( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCComponent *occomponent );
+	gdeVAOComponent(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCComponent *occomponent);
 	
 protected:
 	/**
@@ -89,19 +89,19 @@ public:
 	inline deCollider *GetCollider() const{ return pCollider; }
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Rebuild resources. */
 	virtual void RebuildResources();
 	
 	/** \brief Update texture. */
-	void UpdateTexture( gdeOCComponentTexture *texture );
+	void UpdateTexture(gdeOCComponentTexture *texture);
 	
 	/** \brief Selected object changed. */
 	virtual void SelectedObjectChanged();
 	
 	/** \brief Extends. */
-	virtual void GetExtends( decVector &minExtend, decVector &maxExtend ) const;
+	virtual void GetExtends(decVector &minExtend, decVector &maxExtend) const;
 	/*@}*/
 	
 	
@@ -111,8 +111,8 @@ private:
 	
 	void pCreateComponent();
 	void pCreateComponentTextures();
-	void pUpdateComponentTexture( const gdeOCComponentTexture *texture,
-		deComponentTexture &engTexture, int engTextureIndex );
+	void pUpdateComponentTexture(const gdeOCComponentTexture *texture,
+		deComponentTexture &engTexture, int engTextureIndex);
 	void pCreateCollider();
 	void pCreateAnimator();
 	void pAttachComponent();

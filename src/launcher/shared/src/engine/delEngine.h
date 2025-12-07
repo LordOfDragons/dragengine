@@ -78,7 +78,7 @@ public:
 	 * 
 	 * Log file is named "{logFileTitle}.log" and is located inside the launcher logging directory.
 	 */
-	delEngine( delLauncher &launcher, const char *logFileTitle = "launcher-engine" );
+	delEngine(delLauncher &launcher, const char *logFileTitle = "launcher-engine");
 	
 	/** \brief Clean up engine. */
 	~delEngine();
@@ -95,31 +95,31 @@ public:
 	inline const decString &GetPathConfig() const{ return pPathConfig; }
 	
 	/** \brief Set config path. */
-	void SetPathConfig( const char *path );
+	void SetPathConfig(const char *path);
 	
 	/** \brief Share path. */
 	inline const decString &GetPathShare() const{ return pPathShare; }
 	
 	/** \brief Set share path. */
-	void SetPathShare( const char *path );
+	void SetPathShare(const char *path);
 	
 	/** \brief Lib path. */
 	inline const decString &GetPathLib() const{ return pPathLib; }
 	
 	/** \brief Set lib path. */
-	void SetPathLib( const char *path );
+	void SetPathLib(const char *path);
 	
 	/** \brief Cache path. */
 	inline const decString &GetPathCache() const{ return pPathCache; }
 	
 	/** \brief Set cache path. */
-	void SetPathCache( const char *path );
+	void SetPathCache(const char *path);
 	
 	/** \brief Engine log filename. */
 	inline const decString &GetLogFile() const{ return pLogFile; }
 	
 	/** \brief Set engine log filename. */
-	void SetLogFile( const char *path );
+	void SetLogFile(const char *path);
 	
 	/** \brief Modules. */
 	inline delEngineModuleList &GetModules(){ return pModules; }
@@ -129,24 +129,24 @@ public:
 	void ReloadModules(delEngineInstance &instance);
 	
 	/** \brief Run quick test to check if modules are working. */
-	void CheckModules( delEngineInstance &instance );
+	void CheckModules(delEngineInstance &instance);
 	
 	/** \brief Add modules found in directory. */
-	void AddModulesFrom( const char *directory, deModuleSystem::eModuleTypes type );
+	void AddModulesFrom(const char *directory, deModuleSystem::eModuleTypes type);
 	
 	/** \brief Best module for type. */
-	delEngineModule *GetBestModuleForType( deModuleSystem::eModuleTypes moduleType ) const;
+	delEngineModule *GetBestModuleForType(deModuleSystem::eModuleTypes moduleType) const;
 	
 	/** \brief Get engine path and add virtual file system containers for them. */
-	void PutEngineIntoVFS( delEngineInstance &instance );
+	void PutEngineIntoVFS(delEngineInstance &instance);
 	
 	/** \brief Text for module type. */
-	const char *GetModuleTypeText( deModuleSystem::eModuleTypes moduleType ) const;
+	const char *GetModuleTypeText(deModuleSystem::eModuleTypes moduleType) const;
 	
 	
 	
 	/** \brief Get resolution list from engine. */
-	void UpdateResolutions( delEngineInstance &instance );
+	void UpdateResolutions(delEngineInstance &instance);
 	
 	/** \brief Current display resolution. */
 	inline const decPoint &GetCurrentResolution() const{ return pCurrentResolution; }
@@ -155,10 +155,10 @@ public:
 	inline int GetResolutionCount() const{ return pResolutionCount; }
 	
 	/** \brief Resolution by index. */
-	const decPoint &GetResolutionAt( int index ) const;
+	const decPoint &GetResolutionAt(int index) const;
 	
 	/** \brief Index of resolution closest but not larger than size or -1 if there are no resolutions. */
-	int IndexOfClosestResolutionTo( int width, int height ) const;
+	int IndexOfClosestResolutionTo(int width, int height) const;
 	
 	
 	
@@ -171,10 +171,10 @@ public:
 	
 	
 	/** \brief Read game definitions from DELGA file. */
-	void ReadDelgaGameDefs( delEngineInstance &instance, const char *filename, delGameList &list );
+	void ReadDelgaGameDefs(delEngineInstance &instance, const char *filename, delGameList &list);
 	
 	/** \brief Read game patch definitions from DELGA file. */
-	void ReadDelgaPatchDefs( delEngineInstance &instance, const char *filename, delPatchList &list );
+	void ReadDelgaPatchDefs(delEngineInstance &instance, const char *filename, delPatchList &list);
 	
 #ifdef OS_ANDROID
 	/** \brief Read game definitions from DELGA file using VFS container. */

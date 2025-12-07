@@ -42,40 +42,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalSource::deoalSource( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
+deoalSource::deoalSource(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
 
-pState( epsStopped ),
-pSource( 0 ),
-pBuffers( NULL ),
-pBufferCount( 0 ),
+pState(epsStopped),
+pSource(0),
+pBuffers(NULL),
+pBufferCount(0),
 
-pOwner( NULL ),
-pImportance( 1000.0f ),
+pOwner(NULL),
+pImportance(1000.0f),
 
-pFilter( 0 ),
-pEffectSlot( nullptr ),
-pEffectSlotFilter( 0 )
+pFilter(0),
+pEffectSlot(nullptr),
+pEffectSlotFilter(0)
 {
 	try{
 		// create sound source and set some default parameters. throws an exception
 		// to let the sound manager figure out too many sources are used
 		alGetError();
-		alGenSources( 1, &pSource );
-		if( alGetError() != AL_NO_ERROR ){
-			DETHROW( deeOutOfMemory );
+		alGenSources(1, &pSource);
+		if(alGetError() != AL_NO_ERROR){
+			DETHROW(deeOutOfMemory);
 		}
 		//OAL_CHECK( audioThread, alGenSources( 1, &pSource ) );
 		
-		OAL_CHECK( audioThread, alSourcef( pSource, AL_PITCH, 1.0f ) );
-		const ALfloat parameters[ 3 ] = { 0.0f, 0.0f, 0.0f };
-		OAL_CHECK( audioThread, alSourcefv( pSource, AL_DIRECTION, &parameters[ 0 ] ) );
+		OAL_CHECK(audioThread, alSourcef(pSource, AL_PITCH, 1.0f));
+		const ALfloat parameters[3] = {0.0f, 0.0f, 0.0f};
+		OAL_CHECK(audioThread, alSourcefv(pSource, AL_DIRECTION, &parameters[0]));
 		
 		// prevent reverb effects apply distance based statistics model
-		OAL_CHECK( audioThread, alSourcei( pSource, AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, AL_FALSE ) );
-		OAL_CHECK( audioThread, alSourcei( pSource, AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, AL_FALSE ) );
+		OAL_CHECK(audioThread, alSourcei(pSource, AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, AL_FALSE));
+		OAL_CHECK(audioThread, alSourcei(pSource, AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, AL_FALSE));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -90,53 +90,53 @@ deoalSource::~deoalSource(){
 // Management
 ///////////////
 
-void deoalSource::SetBufferCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deoalSource::SetBufferCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pBufferCount ){
+	if(count == pBufferCount){
 		return;
 	}
 	
 	Stop(); // ensure no buffers are held in any way
 	
-	if( pBuffers ){
-		OAL_CHECK( pAudioThread, alDeleteBuffers( pBufferCount, pBuffers ) );
+	if(pBuffers){
+		OAL_CHECK(pAudioThread, alDeleteBuffers(pBufferCount, pBuffers));
 		delete [] pBuffers;
 		pBuffers = NULL;
 		pBufferCount = 0;
 	}
 	
-	if( count > 0 ){
-		pBuffers = new ALuint[ count ];
-		OAL_CHECK( pAudioThread, alGenBuffers( count, pBuffers ) );
+	if(count > 0){
+		pBuffers = new ALuint[count];
+		OAL_CHECK(pAudioThread, alGenBuffers(count, pBuffers));
 		pBufferCount = count;
 	}
 }
 
-ALuint deoalSource::GetBufferAt( int position ) const{
-	if( position < 0 || position >= pBufferCount ){
-		DETHROW( deeInvalidParam );
+ALuint deoalSource::GetBufferAt(int position) const{
+	if(position < 0 || position >= pBufferCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pBuffers[ position ];
+	return pBuffers[position];
 }
 
 
 
-void deoalSource::SetOwner( void *owner ){
+void deoalSource::SetOwner(void *owner){
 	pOwner = owner;
 }
 
-void deoalSource::SetImportance( float importance ){
-	if( fabsf( importance - pImportance ) < FLOAT_SAFE_EPSILON ){
+void deoalSource::SetImportance(float importance){
+	if(fabsf(importance - pImportance) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pImportance = importance;
 	
-	if( pEffectSlot && pEffectSlot->GetOwner() == this ){
-		pEffectSlot->SetImportance( importance );
+	if(pEffectSlot && pEffectSlot->GetOwner() == this){
+		pEffectSlot->SetImportance(importance);
 	}
 }
 
@@ -157,7 +157,7 @@ void deoalSource::Play(){
 // 		return;
 // 	}
 	
-	OAL_CHECK( pAudioThread, alSourcePlay( pSource ) );
+	OAL_CHECK(pAudioThread, alSourcePlay(pSource));
 	pState = epsPlaying;
 }
 
@@ -166,7 +166,7 @@ void deoalSource::Pause(){
 // 		return;
 // 	}
 	
-	OAL_CHECK( pAudioThread, alSourcePause( pSource ) );
+	OAL_CHECK(pAudioThread, alSourcePause(pSource));
 	pState = epsPaused;
 }
 
@@ -183,48 +183,48 @@ void deoalSource::Stop(){
 	//      This is sort of a magic action also clearing the buffers if present and removing
 	//      any sources to play. This is though only allowed while the source is stopped or
 	//      in the initial state. Thus the proper order is 'stop' then AL_BUFFER(AL_NONE).
-	OAL_CHECK( pAudioThread, alSourceStop( pSource ) );
-	OAL_CHECK( pAudioThread, alSourcei( pSource, AL_BUFFER, AL_NONE ) );
+	OAL_CHECK(pAudioThread, alSourceStop(pSource));
+	OAL_CHECK(pAudioThread, alSourcei(pSource, AL_BUFFER, AL_NONE));
 	pState = epsStopped;
 }
 
 
 
 ALuint deoalSource::GetFilter(){
-	if( ! pFilter ){
-		OAL_CHECK( pAudioThread, palGenFilters( 1, &pFilter ) );
+	if(!pFilter){
+		OAL_CHECK(pAudioThread, palGenFilters(1, &pFilter));
 	}
 	return pFilter;
 }
 
 void deoalSource::AssignFilter(){
-	if( pFilter ){
-		OAL_CHECK( pAudioThread, alSourcei( pSource, AL_DIRECT_FILTER, pFilter ) );
+	if(pFilter){
+		OAL_CHECK(pAudioThread, alSourcei(pSource, AL_DIRECT_FILTER, pFilter));
 		
 	}else{
-		OAL_CHECK( pAudioThread, alSourcei( pSource, AL_DIRECT_FILTER, AL_FILTER_NULL ) );
+		OAL_CHECK(pAudioThread, alSourcei(pSource, AL_DIRECT_FILTER, AL_FILTER_NULL));
 	}
 }
 
 void deoalSource::ClearFilter(){
-	OAL_CHECK( pAudioThread, alSourcei( pSource, AL_DIRECT_FILTER, AL_FILTER_NULL ) );
+	OAL_CHECK(pAudioThread, alSourcei(pSource, AL_DIRECT_FILTER, AL_FILTER_NULL));
 }
 
 
 
 deoalEffectSlot *deoalSource::GetEffectSlot(){
 	// check if we lost the effect slot to somebody else
-	if( pEffectSlot && pEffectSlot->GetOwner() != this ){
+	if(pEffectSlot && pEffectSlot->GetOwner() != this){
 		DropEffectSlot();
 	}
 	
 	// try to obtain effect slot if we have none so far
-	if( ! pEffectSlot ){
-		pEffectSlot = pAudioThread.GetEffectSlotManager().Bind( this, pImportance );
+	if(!pEffectSlot){
+		pEffectSlot = pAudioThread.GetEffectSlotManager().Bind(this, pImportance);
 		
-		if( pEffectSlot ){
-			OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
-				pEffectSlot->GetSlot(), 0, AL_FILTER_NULL ) );
+		if(pEffectSlot){
+			OAL_CHECK(pAudioThread, alSource3i(pSource, AL_AUXILIARY_SEND_FILTER,
+				pEffectSlot->GetSlot(), 0, AL_FILTER_NULL));
 		}
 	}
 	
@@ -232,23 +232,23 @@ deoalEffectSlot *deoalSource::GetEffectSlot(){
 }
 
 void deoalSource::DropEffectSlot(){
-	if( ! pEffectSlot ){
+	if(!pEffectSlot){
 		return;
 	}
 	
-	OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
-		AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+	OAL_CHECK(pAudioThread, alSource3i(pSource, AL_AUXILIARY_SEND_FILTER,
+		AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL));
 	
-	if( pEffectSlot->GetOwner() == this ){
-		pAudioThread.GetEffectSlotManager().Unbind( pEffectSlot );
+	if(pEffectSlot->GetOwner() == this){
+		pAudioThread.GetEffectSlotManager().Unbind(pEffectSlot);
 	}
 	
 	pEffectSlot = nullptr;
 }
 
 ALuint deoalSource::GetEffectSlotFilter(){
-	if( ! pEffectSlotFilter ){
-		OAL_CHECK( pAudioThread, palGenFilters( 1, &pEffectSlotFilter ) );
+	if(!pEffectSlotFilter){
+		OAL_CHECK(pAudioThread, palGenFilters(1, &pEffectSlotFilter));
 	}
 	return pEffectSlotFilter;
 }
@@ -256,14 +256,14 @@ ALuint deoalSource::GetEffectSlotFilter(){
 
 
 void deoalSource::Reset(){
-	SetOwner( nullptr );
+	SetOwner(nullptr);
 	Stop();
 	ClearFilter();
 	DropEffectSlot();
 	
-	if( pSource ){
-		OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
-			AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+	if(pSource){
+		OAL_CHECK(pAudioThread, alSource3i(pSource, AL_AUXILIARY_SEND_FILTER,
+			AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL));
 	}
 }
 
@@ -276,21 +276,21 @@ void deoalSource::pCleanUp(){
 	DropEffectSlot();
 	
 	ClearFilter();
-	if( pFilter ){
-		palDeleteFilters( 1, &pFilter );
+	if(pFilter){
+		palDeleteFilters(1, &pFilter);
 		pFilter = 0;
 	}
-	if( pEffectSlotFilter ){
-		palDeleteFilters( 1, &pEffectSlotFilter );
+	if(pEffectSlotFilter){
+		palDeleteFilters(1, &pEffectSlotFilter);
 		pEffectSlotFilter = 0;
 	}
 	
-	if( pBuffers ){
-		alDeleteBuffers( pBufferCount, pBuffers );
+	if(pBuffers){
+		alDeleteBuffers(pBufferCount, pBuffers);
 		delete [] pBuffers;
 	}
 	
-	if( pSource ){
-		alDeleteSources( 1, &pSource );
+	if(pSource){
+		alDeleteSources(1, &pSource);
 	}
 }

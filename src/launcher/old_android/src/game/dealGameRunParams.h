@@ -66,31 +66,31 @@ public:
 	inline dealGameProfile *GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile. */
-	void SetGameProfile( dealGameProfile *profile );
+	void SetGameProfile(dealGameProfile *profile);
 	
 	/** \brief Run arguments. */
 	inline const decString &GetRunArguments() const{ return pRunArguments; }
 	
 	/** \brief Set run arguments. */
-	void SetRunArguments( const char *arguments );
+	void SetRunArguments(const char *arguments);
 	
 	/** \brief Window width. */
 	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Set window width. */
-	void SetWidth( int width );
+	void SetWidth(int width);
 	
 	/** \brief Window height. */
 	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Set window height. */
-	void SetHeight( int height );
+	void SetHeight(int height);
 	
 	/** \brief Window is full screen. */
 	inline bool GetFullScreen() const{ return pFullScreen; }
 	
 	/** \brief Set if window is full screen. */
-	void SetFullScreen( bool fullScreen );
+	void SetFullScreen(bool fullScreen);
 	/*@}*/
 };
 

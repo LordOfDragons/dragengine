@@ -42,13 +42,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalMove::meUDecalMove( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meUDecalMove::meUDecalMove(meWorld *world){
+	if(!world) DETHROW(deeInvalidParam);
 	
 	const meDecalList &selection = world->GetSelectionDecal().GetSelected();
 	int count = selection.GetCount();
 	
-	SetShortInfo( "Move Decals" );
+	SetShortInfo("Move Decals");
 	
 	pWorld = NULL;
 	
@@ -56,18 +56,18 @@ meUDecalMove::meUDecalMove( meWorld *world ){
 	pDecalCount = 0;
 	
 	try{
-		if( count > 0 ){
-			pDecals = new meUndoDataDecal*[ count ];
-			if( ! pDecals ) DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pDecals = new meUndoDataDecal*[count];
+			if(!pDecals) DETHROW(deeOutOfMemory);
 			
-			while( pDecalCount < count ){
-				pDecals[ pDecalCount ] = new meUndoDataDecal( selection.GetAt( pDecalCount ) );
-				if( ! pDecals[ pDecalCount ] ) DETHROW( deeOutOfMemory );
+			while(pDecalCount < count){
+				pDecals[pDecalCount] = new meUndoDataDecal(selection.GetAt(pDecalCount));
+				if(!pDecals[pDecalCount]) DETHROW(deeOutOfMemory);
 				pDecalCount++;
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -88,10 +88,10 @@ meUDecalMove::~meUDecalMove(){
 void meUDecalMove::Undo(){
 	int d;
 	
-	for( d=0; d<pDecalCount; d++ ){
-		meDecal * const decal = pDecals[ d ]->GetDecal();
-		decal->SetPosition( pDecals[ d ]->GetOldPosition() );
-		pWorld->NotifyDecalGeometryChanged( decal );
+	for(d=0; d<pDecalCount; d++){
+		meDecal * const decal = pDecals[d]->GetDecal();
+		decal->SetPosition(pDecals[d]->GetOldPosition());
+		pWorld->NotifyDecalGeometryChanged(decal);
 	}
 }
 
@@ -99,10 +99,10 @@ void meUDecalMove::Redo(){
 	const decDVector &distance = GetDistance();
 	int d;
 	
-	for( d=0; d<pDecalCount; d++ ){
-		meDecal * const decal = pDecals[ d ]->GetDecal();
-		decal->SetPosition( pDecals[ d ]->GetOldPosition() + distance );
-		pWorld->NotifyDecalGeometryChanged( decal );
+	for(d=0; d<pDecalCount; d++){
+		meDecal * const decal = pDecals[d]->GetDecal();
+		decal->SetPosition(pDecals[d]->GetOldPosition() + distance);
+		pWorld->NotifyDecalGeometryChanged(decal);
 	}
 }
 
@@ -116,14 +116,14 @@ void meUDecalMove::ProgressiveRedo(){
 //////////////////////
 
 void meUDecalMove::pCleanUp(){
-	if( pDecals ){
-		while( pDecalCount > 0 ){
+	if(pDecals){
+		while(pDecalCount > 0){
 			pDecalCount--;
-			delete pDecals[ pDecalCount ];
+			delete pDecals[pDecalCount];
 		}
 		
 		delete [] pDecals;
 	}
 	
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }

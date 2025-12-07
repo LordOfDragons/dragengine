@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination ray tracing. */
-	deoglGIRayCache( deoglRenderThread &renderThread, int raysPerProbe, int probeCount, int layerCount );
+	deoglGIRayCache(deoglRenderThread &renderThread, int raysPerProbe, int probeCount, int layerCount);
 	
 	/** Clean up global illumination ray tracing. */
 	~deoglGIRayCache();
@@ -72,7 +72,7 @@ public:
 	inline int GetRaysPerProbe() const{ return pRaysPerProbe; }
 	
 	/** Set rays per probe. */
-	void SetRaysPerProbe( int raysPerProbe );
+	void SetRaysPerProbe(int raysPerProbe);
 	
 	/** Probes per line in result textures. */
 	inline int GetProbesPerLine() const{ return pProbesPerLine; }
@@ -81,13 +81,13 @@ public:
 	inline int GetProbeCount() const{ return pProbeCount; }
 	
 	/** Set probe count. FBO and textures are valid only after this call. */
-	void SetProbeCount( int count );
+	void SetProbeCount(int count);
 	
 	/** Layer count. */
 	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Set layer count. FBO and textures are valid only after this call. */
-	void SetLayerCount( int count );
+	void SetLayerCount(int count);
 	
 	/** Ray map scale. */
 	inline const decVector2 &GetRayMapScale() const{ return pRayMapScale; }

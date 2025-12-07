@@ -34,7 +34,7 @@ class igdeMenuCommand;
  * FOX native widget.
  */
 class igdeNativeFoxMenuCommand : public FXMenuCommand{
-	FXDECLARE( igdeNativeFoxMenuCommand )
+	FXDECLARE(igdeNativeFoxMenuCommand)
 	
 protected:
 	igdeNativeFoxMenuCommand();
@@ -51,13 +51,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxMenuCommand( igdeMenuCommand &owner, FXComposite *parent );
+	igdeNativeFoxMenuCommand(igdeMenuCommand &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxMenuCommand();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMenuCommand* CreateNativeWidget( igdeMenuCommand &owner );
+	static igdeNativeFoxMenuCommand* CreateNativeWidget(igdeMenuCommand &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -76,15 +76,15 @@ public:
 	virtual void UpdateIcon();
 	virtual void UpdateEnabled();
 	
-	static FXString BuildConstrText( igdeMenuCommand &owner );
+	static FXString BuildConstrText(igdeMenuCommand &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onUpdate( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

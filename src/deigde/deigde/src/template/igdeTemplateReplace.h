@@ -111,7 +111,7 @@ public:
 	igdeTemplateReplace();
 	
 	/** \brief Create template. */
-	igdeTemplateReplace( const igdeTemplateReplace &file );
+	igdeTemplateReplace(const igdeTemplateReplace &file);
 	
 protected:
 	/** \brief Clean up template. */
@@ -127,19 +127,19 @@ public:
 	inline const decString &GetToken() const{ return pToken; }
 	
 	/** \brief Set token string to replace. */
-	void SetToken( const char *token );
+	void SetToken(const char *token);
 	
 	/** \brief Value to replace token with. */
 	inline eValues GetValue() const{ return pValue; }
 	
 	/** \brief Set value to replace token with. */
-	void SetValue( eValues value );
+	void SetValue(eValues value);
 	
 	/** \brief Format of replacement value. */
 	inline eFormats GetFormat() const{ return pFormat; }
 	
 	/** \brief Set format of replacement value. */
-	void SetFormat( eFormats format );
+	void SetFormat(eFormats format);
 	/*@}*/
 };
 

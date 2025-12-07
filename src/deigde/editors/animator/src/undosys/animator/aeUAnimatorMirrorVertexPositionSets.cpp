@@ -35,30 +35,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAnimatorMirrorVertexPositionSets::aeUAnimatorMirrorVertexPositionSets( aeAnimator *animator ) :
-pAnimator( animator )
+aeUAnimatorMirrorVertexPositionSets::aeUAnimatorMirrorVertexPositionSets(aeAnimator *animator) :
+pAnimator(animator)
 {
-	DEASSERT_NOTNULL( animator )
+	DEASSERT_NOTNULL(animator)
 	
-	pPatterns.Add( ".l" );
-	pPatterns.Add( ".r" );
+	pPatterns.Add(".l");
+	pPatterns.Add(".r");
 	
-	pPatterns.Add( ".L" );
-	pPatterns.Add( ".R" );
+	pPatterns.Add(".L");
+	pPatterns.Add(".R");
 	
-	pPatterns.Add( " l" );
-	pPatterns.Add( " r" );
+	pPatterns.Add(" l");
+	pPatterns.Add(" r");
 	
-	pPatterns.Add( " L" );
-	pPatterns.Add( " R" );
+	pPatterns.Add(" L");
+	pPatterns.Add(" R");
 	
-	pPatterns.Add( ".left" );
-	pPatterns.Add( ".right" );
+	pPatterns.Add(".left");
+	pPatterns.Add(".right");
 	
-	pPatterns.Add( " left" );
-	pPatterns.Add( " right" );
+	pPatterns.Add(" left");
+	pPatterns.Add(" right");
 	
-	SetShortInfo( "Animator mirror vertex position sets" );
+	SetShortInfo("Animator mirror vertex position sets");
 }
 
 aeUAnimatorMirrorVertexPositionSets::~aeUAnimatorMirrorVertexPositionSets(){
@@ -75,13 +75,13 @@ bool aeUAnimatorMirrorVertexPositionSets::HasAnyEffect() const{
 	const int setCount = sets.GetCount();
 	int i, j;
 	
-	for( i=0; i<setCount; i++ ){
-		const decString &set = sets.GetAt( i );
+	for(i=0; i<setCount; i++){
+		const decString &set = sets.GetAt(i);
 		
-		for( j=0; j<patternCount; j++ ){
-			const decString &pattern = pPatterns.GetAt( j );
+		for(j=0; j<patternCount; j++){
+			const decString &pattern = pPatterns.GetAt(j);
 			
-			if( set.GetRight( pattern.GetLength() ) == pattern ){
+			if(set.GetRight(pattern.GetLength()) == pattern){
 				return true;
 			}
 		}
@@ -103,23 +103,23 @@ void aeUAnimatorMirrorVertexPositionSets::Redo(){
 	decStringSet mirroredSets;
 	int i, j;
 	
-	for( i=0; i<setCount; i++ ){
-		const decString &set = sets.GetAt( i );
+	for(i=0; i<setCount; i++){
+		const decString &set = sets.GetAt(i);
 		
-		for( j=0; j<patternCount; j++ ){
-			const decString &pattern = pPatterns.GetAt( j );
+		for(j=0; j<patternCount; j++){
+			const decString &pattern = pPatterns.GetAt(j);
 			
-			if( set.GetRight( pattern.GetLength() ) == pattern ){
-				const decString &replace = pPatterns.GetAt( ( ( j % 2 ) == 0 ) ? j + 1 : j - 1 );
-				mirroredSets.Add( set.GetLeft( set.GetLength() - pattern.GetLength() ) + replace );
+			if(set.GetRight(pattern.GetLength()) == pattern){
+				const decString &replace = pPatterns.GetAt(((j % 2) == 0) ? j + 1 : j - 1);
+				mirroredSets.Add(set.GetLeft(set.GetLength() - pattern.GetLength()) + replace);
 				break;
 			}
 		}
 		
-		if( j == patternCount ){
-			mirroredSets.Add( set );
+		if(j == patternCount){
+			mirroredSets.Add(set);
 		}
 	}
 	
-	pAnimator->SetListVertexPositionSets( mirroredSets );
+	pAnimator->SetListVertexPositionSets(mirroredSets);
 }

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	ceTaskSyncGameDefinition( ceWindowMain &windowMain );
+	ceTaskSyncGameDefinition(ceWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	virtual ~ceTaskSyncGameDefinition();

@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneIKResistance::reUSetBoneIKResistance( reRigBone *bone, const decVector &ikResistance ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBoneIKResistance::reUSetBoneIKResistance(reRigBone *bone, const decVector &ikResistance){
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();
@@ -45,9 +45,9 @@ reUSetBoneIKResistance::reUSetBoneIKResistance( reRigBone *bone, const decVector
 	pNewIKResistance = ikResistance;
 	
 	try{
-		SetShortInfo( "Set Bone IK Resistance" );
+		SetShortInfo("Set Bone IK Resistance");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,11 +63,11 @@ reUSetBoneIKResistance::~reUSetBoneIKResistance(){
 ///////////////
 
 void reUSetBoneIKResistance::Undo(){
-	pBone->SetIKResistance( pOldIKResistance );
+	pBone->SetIKResistance(pOldIKResistance);
 }
 
 void reUSetBoneIKResistance::Redo(){
-	pBone->SetIKResistance( pNewIKResistance );
+	pBone->SetIKResistance(pNewIKResistance);
 }
 
 
@@ -76,5 +76,5 @@ void reUSetBoneIKResistance::Redo(){
 //////////////////////
 
 void reUSetBoneIKResistance::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
+	if(pBone) pBone->FreeReference();
 }

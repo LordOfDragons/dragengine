@@ -48,7 +48,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeCapsule::reRigShapeCapsule( deEngine *engine ) : reRigShape( engine, estCapsule ){
+reRigShapeCapsule::reRigShapeCapsule(deEngine *engine) : reRigShape(engine, estCapsule){
 	pTopRadius = 0.5f;
 	pBottomRadius = 0.5f;
 	pHalfHeight = 0.5f;
@@ -62,22 +62,22 @@ reRigShapeCapsule::~reRigShapeCapsule(){
 // Management
 ///////////////
 
-void reRigShapeCapsule::SetHalfHeight( float halfHeight ){
-	if( fabs( halfHeight - pHalfHeight ) > 1e-5f ){
+void reRigShapeCapsule::SetHalfHeight(float halfHeight){
+	if(fabs(halfHeight - pHalfHeight) > 1e-5f){
 		pHalfHeight = halfHeight;
 		NotifyShapeChanged();
 	}
 }
 
-void reRigShapeCapsule::SetTopRadius( float topRadius ){
-	if( fabs( topRadius - pTopRadius ) > 1e-5f ){
+void reRigShapeCapsule::SetTopRadius(float topRadius){
+	if(fabs(topRadius - pTopRadius) > 1e-5f){
 		pTopRadius = topRadius;
 		NotifyShapeChanged();
 	}
 }
 
-void reRigShapeCapsule::SetBottomRadius( float bottomRadius ){
-	if( fabs( bottomRadius - pBottomRadius ) > 1e-5f ){
+void reRigShapeCapsule::SetBottomRadius(float bottomRadius){
+	if(fabs(bottomRadius - pBottomRadius) > 1e-5f){
 		pBottomRadius = bottomRadius;
 		NotifyShapeChanged();
 	}
@@ -87,31 +87,31 @@ reRigShape *reRigShapeCapsule::Duplicate() const{
 	reRigShapeCapsule *shape = NULL;
 	
 	try{
-		shape = new reRigShapeCapsule( GetEngine() );
-		if( ! shape ) DETHROW( deeOutOfMemory );
+		shape = new reRigShapeCapsule(GetEngine());
+		if(!shape) DETHROW(deeOutOfMemory);
 		
-		shape->SetPosition( GetPosition() );
-		shape->SetOrientation( GetOrientation() );
-		shape->SetHalfHeight( GetHalfHeight() );
-		shape->SetTopRadius( GetTopRadius() );
-		shape->SetBottomRadius( GetBottomRadius() );
+		shape->SetPosition(GetPosition());
+		shape->SetOrientation(GetOrientation());
+		shape->SetHalfHeight(GetHalfHeight());
+		shape->SetTopRadius(GetTopRadius());
+		shape->SetBottomRadius(GetBottomRadius());
 		
-	}catch( const deException & ){
-		if( shape ) shape->FreeReference();
+	}catch(const deException &){
+		if(shape) shape->FreeReference();
 		throw;
 	}
 	
 	return shape;
 }
 
-void reRigShapeCapsule::Scale( float scale ){
-	SetPosition( GetPosition() * scale );
+void reRigShapeCapsule::Scale(float scale){
+	SetPosition(GetPosition() * scale);
 	pHalfHeight *= scale;
 	pTopRadius *= scale;
 	pBottomRadius *= scale;
 }
 
 decShape *reRigShapeCapsule::CreateShape(){
-	return new decShapeCapsule( pHalfHeight, pTopRadius, pBottomRadius,
-		GetPosition(), decQuaternion::CreateFromEuler( GetOrientation() * DEG2RAD ) );
+	return new decShapeCapsule(pHalfHeight, pTopRadius, pBottomRadius,
+		GetPosition(), decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

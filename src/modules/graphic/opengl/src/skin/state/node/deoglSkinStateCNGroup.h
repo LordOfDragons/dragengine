@@ -49,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state constructed node. */
-	deoglSkinStateCNGroup( deSkinPropertyNodeGroup &node );
+	deoglSkinStateCNGroup(deSkinPropertyNodeGroup &node);
 	
 	/** Create skin state constructed node. */
-	deoglSkinStateCNGroup( const deoglSkinStateCNGroup &node );
+	deoglSkinStateCNGroup(const deoglSkinStateCNGroup &node);
 	
 protected:
 	/** Clean up skin state mapped. */
@@ -68,7 +68,7 @@ public:
 	int GetNodeCount() const;
 	
 	/** Child node at index. */
-	deoglSkinStateConstructedNode *GetNodeAt( int index ) const;
+	deoglSkinStateConstructedNode *GetNodeAt(int index) const;
 	
 	
 	
@@ -76,13 +76,13 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update( deoglSkinState &state ) override;
+	virtual void Update(deoglSkinState &state) override;
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( deoglSkinState &state ) override;
+	virtual void PrepareForRender(deoglSkinState &state) override;
 	
 	/** Render. */
-	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
+	virtual void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
 	
 	/** Create copy. */
 	virtual deoglSkinStateConstructedNode::Ref Copy() const override;

@@ -61,98 +61,98 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( seSky *sky );
+	virtual void StateChanged(seSky *sky);
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( seSky *sky );
+	virtual void UndoChanged(seSky *sky);
 	
 	/** \brief Sky parameters changed. */
-	virtual void SkyChanged( seSky *sky );
+	virtual void SkyChanged(seSky *sky);
 	
 	/** \brief The environment object changed. */
-	virtual void EnvObjectChanged( seSky *sky );
+	virtual void EnvObjectChanged(seSky *sky);
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged( seSky *sky );
+	virtual void ViewChanged(seSky *sky);
 	
 	/** \brief The camera changed. */
-	virtual void CameraChanged( seSky *sky );
+	virtual void CameraChanged(seSky *sky);
 	
 	
 	
 	/** \brief Controller added or removed. */
-	virtual void ControllerStructureChanged ( seSky *sky );
+	virtual void ControllerStructureChanged (seSky *sky);
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( seSky *sky, seController *controller );
+	virtual void ControllerChanged(seSky *sky, seController *controller);
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( seSky *sky, seController *controller );
+	virtual void ControllerNameChanged(seSky *sky, seController *controller);
 	
 	/** \brief Controller changed value. */
-	virtual void ControllerValueChanged( seSky *sky, seController *controller );
+	virtual void ControllerValueChanged(seSky *sky, seController *controller);
 	
 	/** \brief Controller selection changed. */
-	virtual void ControllerSelectionChanged( seSky *sky );
+	virtual void ControllerSelectionChanged(seSky *sky);
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged( seSky *sky );
+	virtual void ActiveControllerChanged(seSky *sky);
 	
 	
 	
 	/** \brief Link added or removed. */
-	virtual void LinkStructureChanged ( seSky *sky );
+	virtual void LinkStructureChanged (seSky *sky);
 	
 	/** \brief Link changed. */
-	virtual void LinkChanged( seSky *sky, seLink *link );
+	virtual void LinkChanged(seSky *sky, seLink *link);
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged( seSky *sky, seLink *link );
+	virtual void LinkNameChanged(seSky *sky, seLink *link);
 	
 	/** \brief Link selection changed. */
-	virtual void LinkSelectionChanged( seSky *sky );
+	virtual void LinkSelectionChanged(seSky *sky);
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveLinkChanged( seSky *sky );
+	virtual void ActiveLinkChanged(seSky *sky);
 	
 	
 	
 	/** \brief Layer added or removed. */
-	virtual void LayerStructureChanged ( seSky *sky );
+	virtual void LayerStructureChanged (seSky *sky);
 	
 	/** \brief Layer changed. */
-	virtual void LayerChanged( seSky *sky, seLayer *layer );
+	virtual void LayerChanged(seSky *sky, seLayer *layer);
 	
 	/** \brief Layer name changed. */
-	virtual void LayerNameChanged( seSky *sky, seLayer *layer );
+	virtual void LayerNameChanged(seSky *sky, seLayer *layer);
 	
 	/** \brief Layer selection changed. */
-	virtual void LayerSelectionChanged( seSky *sky );
+	virtual void LayerSelectionChanged(seSky *sky);
 	
 	/** \brief Active layer changed. */
-	virtual void ActiveLayerChanged( seSky *sky );
+	virtual void ActiveLayerChanged(seSky *sky);
 	
 	
 	
 	/** \brief Body added or removed. */
-	virtual void BodyStructureChanged ( seSky *sky, seLayer *layer );
+	virtual void BodyStructureChanged (seSky *sky, seLayer *layer);
 	
 	/** \brief Body changed. */
-	virtual void BodyChanged( seSky *sky, seLayer *layer, seBody *body );
+	virtual void BodyChanged(seSky *sky, seLayer *layer, seBody *body);
 	
 	/** \brief Body selection changed. */
-	virtual void BodySelectionChanged( seSky *sky, seLayer *layer );
+	virtual void BodySelectionChanged(seSky *sky, seLayer *layer);
 	
 	/** \brief Active body changed. */
-	virtual void ActiveBodyChanged( seSky *sky, seLayer *layer );
+	virtual void ActiveBodyChanged(seSky *sky, seLayer *layer);
 	
 	
 	
 	/** \brief Target changed. */
-    virtual void TargetChanged( seSky *sky, seLayer *layer, deSkyLayer::eTargets target );
+    virtual void TargetChanged(seSky *sky, seLayer *layer, deSkyLayer::eTargets target);
 	
 	/** \brief Active target changed. */
-	virtual void ActiveTargetChanged( seSky *sky, seLayer *layer );
+	virtual void ActiveTargetChanged(seSky *sky, seLayer *layer);
 	/*@}*/
 };
 

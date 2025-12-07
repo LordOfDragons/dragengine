@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerToggleLinkToTime( peeController *controller );
+	peeUControllerToggleLinkToTime(peeController *controller);
 	
 protected:
 	/** \brief Clean up the undo action. */

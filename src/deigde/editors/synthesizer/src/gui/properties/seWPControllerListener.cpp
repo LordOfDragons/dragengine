@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPControllerListener::seWPControllerListener( seWPController &panel ) :
-pPanel( panel ){
+seWPControllerListener::seWPControllerListener(seWPController &panel) :
+pPanel(panel){
 }
 
 seWPControllerListener::~seWPControllerListener(){
@@ -51,8 +51,8 @@ seWPControllerListener::~seWPControllerListener(){
 // Notifications
 //////////////////
 
-void seWPControllerListener::SynthesizerChanged( seSynthesizer *synthesizer ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPControllerListener::SynthesizerChanged(seSynthesizer *synthesizer){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
@@ -61,48 +61,48 @@ void seWPControllerListener::SynthesizerChanged( seSynthesizer *synthesizer ){
 
 
 
-void seWPControllerListener::ActiveControllerChanged( seSynthesizer *synthesizer, seController* ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPControllerListener::ActiveControllerChanged(seSynthesizer *synthesizer, seController*){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
 	pPanel.SelectActiveController();
 }
 
-void seWPControllerListener::ControllerChanged( seSynthesizer *synthesizer, seController *controller ){
-	if( controller != synthesizer->GetActiveController() ){
+void seWPControllerListener::ControllerChanged(seSynthesizer *synthesizer, seController *controller){
+	if(controller != synthesizer->GetActiveController()){
 		return;
 	}
 	
 	pPanel.UpdateController();
 }
 
-void seWPControllerListener::ControllerNameChanged( seSynthesizer *synthesizer, seController *controller ) {
-	if( controller != synthesizer->GetActiveController() ){
+void seWPControllerListener::ControllerNameChanged(seSynthesizer *synthesizer, seController *controller) {
+	if(controller != synthesizer->GetActiveController()){
 		return;
 	}
 	
 	pPanel.UpdateControllerList();
 }
 
-void seWPControllerListener::ControllerRangeChanged( seSynthesizer *synthesizer, seController *controller ){
-	if( controller != synthesizer->GetActiveController() ){
+void seWPControllerListener::ControllerRangeChanged(seSynthesizer *synthesizer, seController *controller){
+	if(controller != synthesizer->GetActiveController()){
 		return;
 	}
 	
 	pPanel.UpdateControllerRange();
 }
 
-void seWPControllerListener::ControllerCurveChanged( seSynthesizer *synthesizer, seController *controller ){
-	if( controller != synthesizer->GetActiveController() ){
+void seWPControllerListener::ControllerCurveChanged(seSynthesizer *synthesizer, seController *controller){
+	if(controller != synthesizer->GetActiveController()){
 		return;
 	}
 	
 	pPanel.UpdateControllerCurve();
 }
 
-void seWPControllerListener::ControllerStructureChanged( seSynthesizer *synthesizer ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPControllerListener::ControllerStructureChanged(seSynthesizer *synthesizer){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	

@@ -86,7 +86,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model peer. */
-	debpModel( dePhysicsBullet &bullet, deModel &model );
+	debpModel(dePhysicsBullet &bullet, deModel &model);
 	
 	/** \brief Clean up model peer. */
 	virtual ~debpModel();
@@ -147,7 +147,7 @@ public:
 	inline const float *GetFaceProbabilities() const{ return pFaceProbabilities; }
 	
 	/** \brief Index of face containing probability or -1 if not found or not prepared yet. */
-	int IndexOfFaceWithProbability( float probability ) const;
+	int IndexOfFaceWithProbability(float probability) const;
 	
 	/** \brief Prepare face probabilities if not prepared. */
 	void PrepareFaceProbabilities();

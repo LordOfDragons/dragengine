@@ -43,8 +43,8 @@
 gdeOCLightList::gdeOCLightList(){
 }
 
-gdeOCLightList::gdeOCLightList( const gdeOCLightList &list ) :
-pLights( list.pLights ){
+gdeOCLightList::gdeOCLightList(const gdeOCLightList &list) :
+pLights(list.pLights){
 }
 
 gdeOCLightList::~gdeOCLightList(){
@@ -59,27 +59,27 @@ int gdeOCLightList::GetCount() const{
 	return pLights.GetCount();
 }
 
-gdeOCLight *gdeOCLightList::GetAt( int index ) const{
-	return ( gdeOCLight* )pLights.GetAt( index );
+gdeOCLight *gdeOCLightList::GetAt(int index) const{
+	return (gdeOCLight*)pLights.GetAt(index);
 }
 
-int gdeOCLightList::IndexOf( gdeOCLight *light ) const{
-	return pLights.IndexOf( light );
+int gdeOCLightList::IndexOf(gdeOCLight *light) const{
+	return pLights.IndexOf(light);
 }
 
-bool gdeOCLightList::Has( gdeOCLight *light ) const{
-	return pLights.Has( light );
+bool gdeOCLightList::Has(gdeOCLight *light) const{
+	return pLights.Has(light);
 }
 
-void gdeOCLightList::Add( gdeOCLight *light ){
-	if( ! light || Has( light ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCLightList::Add(gdeOCLight *light){
+	if(!light || Has(light)){
+		DETHROW(deeInvalidParam);
 	}
-	pLights.Add( light );
+	pLights.Add(light);
 }
 
-void gdeOCLightList::Remove( gdeOCLight *light ){
-	pLights.Remove( light );
+void gdeOCLightList::Remove(gdeOCLight *light){
+	pLights.Remove(light);
 }
 
 void gdeOCLightList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCLightList::RemoveAll(){
 
 
 
-gdeOCLightList &gdeOCLightList::operator=( const gdeOCLightList &list ){
+gdeOCLightList &gdeOCLightList::operator=(const gdeOCLightList &list){
 	pLights = list.pLights;
 	return *this;
 }

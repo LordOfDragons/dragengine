@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalClonePropertiesToSelected( const meDecalList &list, const decStringDictionary &propertyList );
+	meUDecalClonePropertiesToSelected(const meDecalList &list, const decStringDictionary &propertyList);
 	
 protected:
 	/** \brief Clean up undo decal. */

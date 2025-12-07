@@ -47,13 +47,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadSkinPropertyNode::deRLTaskReadSkinPropertyNode( deResourceLoader &resourceLoader,
-deRLTaskReadSkinInternal &task, deEngine &engine, deVirtualFileSystem *vfs, const char *basePath ) :
-pResourceLoader( resourceLoader ),
-pTask( task ),
-pEngine( engine ),
-pVirtualFileSystem( vfs ),
-pBasePath( basePath )
+deRLTaskReadSkinPropertyNode::deRLTaskReadSkinPropertyNode(deResourceLoader &resourceLoader,
+deRLTaskReadSkinInternal &task, deEngine &engine, deVirtualFileSystem *vfs, const char *basePath) :
+pResourceLoader(resourceLoader),
+pTask(task),
+pEngine(engine),
+pVirtualFileSystem(vfs),
+pBasePath(basePath)
 {
 	(void)pEngine; // silence compiler moaning
 }
@@ -66,88 +66,88 @@ deRLTaskReadSkinPropertyNode::~deRLTaskReadSkinPropertyNode(){
 // Visiting
 /////////////
 
-void deRLTaskReadSkinPropertyNode::VisitNode( deSkinPropertyNode &node ){
-	if( node.GetMask() ){
-		node.GetMask()->Visit( *this );
+void deRLTaskReadSkinPropertyNode::VisitNode(deSkinPropertyNode &node){
+	if(node.GetMask()){
+		node.GetMask()->Visit(*this);
 	}
 }
 
-void deRLTaskReadSkinPropertyNode::VisitGroup( deSkinPropertyNodeGroup &node ){
-	deSkinPropertyNodeVisitor::VisitGroup( node );
+void deRLTaskReadSkinPropertyNode::VisitGroup(deSkinPropertyNodeGroup &node){
+	deSkinPropertyNodeVisitor::VisitGroup(node);
 	
 	const int count = node.GetNodeCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		node.GetNodeAt( i )->Visit( *this );
+	for(i=0; i<count; i++){
+		node.GetNodeAt(i)->Visit(*this);
 	}
 }
 
-void deRLTaskReadSkinPropertyNode::VisitImage( deSkinPropertyNodeImage &node ){
-	deSkinPropertyNodeVisitor::VisitImage( node );
+void deRLTaskReadSkinPropertyNode::VisitImage(deSkinPropertyNodeImage &node){
+	deSkinPropertyNodeVisitor::VisitImage(node);
 	
-	if( node.GetImage() ){
+	if(node.GetImage()){
 		return;
 	}
 	
-	decString path( node.GetPath() );
-	if( path.IsEmpty() ){
+	decString path(node.GetPath());
+	if(path.IsEmpty()){
 		return;
 	}
 	
-	if( ! decPath::IsUnixPathAbsolute( path ) ){
+	if(!decPath::IsUnixPathAbsolute(path)){
 		decPath resourcePath;
-		resourcePath.SetFromUnix( pBasePath );
-		resourcePath.AddUnixPath( path );
+		resourcePath.SetFromUnix(pBasePath);
+		resourcePath.AddUnixPath(path);
 		path = resourcePath.GetPathUnix();
 	}
 	
 	deResourceLoaderTask * const task = pResourceLoader.AddLoadRequest(
-		pVirtualFileSystem, path, deResourceLoader::ertImage );
+		pVirtualFileSystem, path, deResourceLoader::ertImage);
 	deRLTaskReadSkinInternal::cInternalTask *internalTask = NULL;
 	
 	try{
-		internalTask = new deRLTaskReadSkinInternal::cInternalTask( &node, task );
-		pTask.AddInternalTask( internalTask );
+		internalTask = new deRLTaskReadSkinInternal::cInternalTask(&node, task);
+		pTask.AddInternalTask(internalTask);
 		internalTask->FreeReference();
 		
-	}catch( const deException & ){
-		if( internalTask ){
+	}catch(const deException &){
+		if(internalTask){
 			internalTask->FreeReference();
 		}
 		throw;
 	}
 }
 
-void deRLTaskReadSkinPropertyNode::VisitText( deSkinPropertyNodeText &node ){
-	deSkinPropertyNodeVisitor::VisitText( node );
+void deRLTaskReadSkinPropertyNode::VisitText(deSkinPropertyNodeText &node){
+	deSkinPropertyNodeVisitor::VisitText(node);
 	
-	if( node.GetFont() ){
+	if(node.GetFont()){
 		return;
 	}
 	
-	decString path( node.GetPath() );
-	if( path.IsEmpty() ){
+	decString path(node.GetPath());
+	if(path.IsEmpty()){
 		return;
 	}
 	
-	if( ! decPath::IsUnixPathAbsolute( path ) ){
-		decPath resourcePath( decPath::CreatePathUnix( pBasePath ) );
-		resourcePath.AddUnixPath( path );
+	if(!decPath::IsUnixPathAbsolute(path)){
+		decPath resourcePath(decPath::CreatePathUnix(pBasePath));
+		resourcePath.AddUnixPath(path);
 		path = resourcePath.GetPathUnix();
 	}
 	
 	deResourceLoaderTask * const task = pResourceLoader.AddLoadRequest(
-		pVirtualFileSystem, path, deResourceLoader::ertFont );
+		pVirtualFileSystem, path, deResourceLoader::ertFont);
 	deRLTaskReadSkinInternal::cInternalTask *internalTask = NULL;
 	
 	try{
-		internalTask = new deRLTaskReadSkinInternal::cInternalTask( &node, task );
-		pTask.AddInternalTask( internalTask );
+		internalTask = new deRLTaskReadSkinInternal::cInternalTask(&node, task);
+		pTask.AddInternalTask(internalTask);
 		internalTask->FreeReference();
 		
-	}catch( const deException & ){
-		if( internalTask ){
+	}catch(const deException &){
+		if(internalTask){
 			internalTask->FreeReference();
 		}
 		throw;

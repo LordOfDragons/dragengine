@@ -39,17 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCasePasteSnippet::ceWPTMAIfElseCasePasteSnippet( ceWindowMain &windowMain,
+ceWPTMAIfElseCasePasteSnippet::ceWPTMAIfElseCasePasteSnippet(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index ) :
-ceWPTMAPasteSnippet( windowMain, conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase ),
-pIndex( index )
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index) :
+ceWPTMAPasteSnippet(windowMain, conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase),
+pIndex(index)
 {
-	if( index < 0 || index > ifCase.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > ifCase.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -58,8 +58,8 @@ pIndex( index )
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAIfElseCasePasteSnippet::CreateUndo( const ceConversationActionList &actions ){
-	ceUCActionPaste * const undo = new ceUCAIfElsePaste( pTopic, pIfElse, pIfCase, actions, pIndex );
-	undo->SetShortInfo( "Paste Conversation Snippet" );
+ceUCActionPaste *ceWPTMAIfElseCasePasteSnippet::CreateUndo(const ceConversationActionList &actions){
+	ceUCActionPaste * const undo = new ceUCAIfElsePaste(pTopic, pIfElse, pIfCase, actions, pIndex);
+	undo->SetShortInfo("Paste Conversation Snippet");
 	return undo;
 }

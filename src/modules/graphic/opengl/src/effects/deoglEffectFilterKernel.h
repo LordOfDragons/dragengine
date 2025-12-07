@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectFilterKernel( deGraphicOpenGl &ogl, const deEffectFilterKernel &effect );
+	deoglEffectFilterKernel(deGraphicOpenGl &ogl, const deEffectFilterKernel &effect);
 	
 	/** Clean up effect. */
 	virtual ~deoglEffectFilterKernel();

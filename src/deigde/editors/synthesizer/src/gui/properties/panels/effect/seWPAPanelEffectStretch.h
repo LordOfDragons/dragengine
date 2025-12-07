@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creat panel. */
-	seWPAPanelEffectStretch( seWPEffect &wpEffect );
+	seWPAPanelEffectStretch(seWPEffect &wpEffect);
 	
 protected:
 	/** \brief Clean up panel. */

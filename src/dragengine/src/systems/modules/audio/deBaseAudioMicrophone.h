@@ -77,10 +77,10 @@ public:
 	virtual void EnableAuralizationChanged();
 	
 	/** \brief Speaker has been added. */
-	virtual void SpeakerAdded( deSpeaker *speaker );
+	virtual void SpeakerAdded(deSpeaker *speaker);
 	
 	/** \brief Speaker has been removed. */
-	virtual void SpeakerRemoved( deSpeaker *speaker );
+	virtual void SpeakerRemoved(deSpeaker *speaker);
 	
 	/** \brief All speakers have been removed. */
 	virtual void AllSpeakersRemoved();

@@ -34,15 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeCylinderHalfHeight::reUSetShapeCylinderHalfHeight( reRigShapeCylinder *shape, float halfHeight ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeCylinderHalfHeight::reUSetShapeCylinderHalfHeight(reRigShapeCylinder *shape, float halfHeight){
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	
 	pOldHalfHeight = shape->GetHalfHeight();
 	pNewHalfHeight = halfHeight;
 	
-	SetShortInfo( "Set Cylinder Shape Half Height" );
+	SetShortInfo("Set Cylinder Shape Half Height");
 	
 	pShape->AddReference();
 }
@@ -57,9 +57,9 @@ reUSetShapeCylinderHalfHeight::~reUSetShapeCylinderHalfHeight(){
 ///////////////
 
 void reUSetShapeCylinderHalfHeight::Undo(){
-	pShape->SetHalfHeight( pOldHalfHeight );
+	pShape->SetHalfHeight(pOldHalfHeight);
 }
 
 void reUSetShapeCylinderHalfHeight::Redo(){
-	pShape->SetHalfHeight( pNewHalfHeight );
+	pShape->SetHalfHeight(pNewHalfHeight);
 }

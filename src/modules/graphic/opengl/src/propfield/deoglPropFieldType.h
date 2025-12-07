@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create prop field type. */
-	deoglPropFieldType( deoglPropField &propField, const dePropFieldType &type );
+	deoglPropFieldType(deoglPropField &propField, const dePropFieldType &type);
 	
 	/** Clean up prop field type. */
 	~deoglPropFieldType();

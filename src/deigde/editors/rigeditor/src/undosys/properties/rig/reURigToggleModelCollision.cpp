@@ -38,21 +38,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURigToggleModelCollision::reURigToggleModelCollision( reRig *rig ) :
-pRig( NULL )
+reURigToggleModelCollision::reURigToggleModelCollision(reRig *rig) :
+pRig(NULL)
 {
-	if( ! rig ){
-		DETHROW( deeInvalidParam );
+	if(!rig){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Rig toggle model collision" );
+	SetShortInfo("Rig toggle model collision");
 	
 	pRig = rig;
 	pRig->AddReference();
 }
 
 reURigToggleModelCollision::~reURigToggleModelCollision(){
-	if( pRig ){
+	if(pRig){
 		pRig->FreeReference();
 	}
 }
@@ -63,7 +63,7 @@ reURigToggleModelCollision::~reURigToggleModelCollision(){
 ///////////////
 
 void reURigToggleModelCollision::Undo(){
-	pRig->SetModelCollision( ! pRig->GetModelCollision() );
+	pRig->SetModelCollision(!pRig->GetModelCollision());
 }
 
 void reURigToggleModelCollision::Redo(){

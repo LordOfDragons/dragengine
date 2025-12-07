@@ -59,7 +59,7 @@ public:
 	igdeTemplate();
 	
 	/** \brief Create template. */
-	igdeTemplate( const igdeTemplate &atemplate );
+	igdeTemplate(const igdeTemplate &atemplate);
 	
 protected:
 	/** \brief Clean up template. */
@@ -75,25 +75,25 @@ public:
 	inline const decString &GetBasePath() const{ return pBasePath; }
 	
 	/** \brief Set base path to directory containing template. */
-	void SetBasePath( const char *path );
+	void SetBasePath(const char *path);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Script module required for this template. */
 	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	
 	/** \brief Set script module required for this template. */
-	void SetScriptModule( const char *scriptModule );
+	void SetScriptModule(const char *scriptModule);
 	
 	/** \brief Base game definition list. */
 	inline decStringList &GetBaseGameDefinitions(){ return pBaseGameDefinitions; }

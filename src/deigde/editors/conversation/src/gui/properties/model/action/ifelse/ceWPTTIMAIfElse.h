@@ -45,8 +45,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElse( ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAIfElse *action );
+	ceWPTTIMAIfElse(ceWindowMain &windowMain,
+		ceConversation &conversation, ceCAIfElse *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -59,10 +59,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAIfElse *GetActionIfElse() const{ return ( ceCAIfElse* )GetAction(); }
+	inline ceCAIfElse *GetActionIfElse() const{ return (ceCAIfElse*)GetAction(); }
 	
 	/** \brief Model with if-case or \em NULL. */
-	ceWPTTIMAIfElseIfCase *GetIfCaseChild( ceCAIfElseCase *ifCase ) const;
+	ceWPTTIMAIfElseIfCase *GetIfCaseChild(ceCAIfElseCase *ifCase) const;
 	
 	/** \brief Model with else-case or \em NULL. */
 	inline ceWPTTIMAIfElseElse *GetElseChild() const{ return pElse; }
@@ -77,7 +77,7 @@ public:
 	virtual void OnExpandedChanged();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 	
 	

@@ -268,7 +268,7 @@ public:
 		int patch;
 		
 		sModuleVersion();
-		void SetVersion( const char *version );
+		void SetVersion(const char *version);
 	};
 	
 	enum class LogLevel{
@@ -504,7 +504,7 @@ private:
 	
 public:
 	// constructor, destructor
-	deScriptingDragonScript( deLoadableModule &loadableModule );
+	deScriptingDragonScript(deLoadableModule &loadableModule);
 	~deScriptingDragonScript();
 	
 	// runtime
@@ -520,7 +520,7 @@ public:
 	 */
 	const char *GetVFSSharedDataDir() const override;
 	
-	bool Init( const char *scriptDirectory, const char *gameObject ) override;
+	bool Init(const char *scriptDirectory, const char *gameObject) override;
 	
 	void ShutDown() override;
 
@@ -530,31 +530,31 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Creates a peer for the given collider object. */
-	deBaseScriptingCollider *CreateCollider( deCollider *collider ) override;
+	deBaseScriptingCollider *CreateCollider(deCollider *collider) override;
 	/** Creates a peer for the given server object. */
-	deBaseScriptingServer *CreateServer( deServer *server ) override;
+	deBaseScriptingServer *CreateServer(deServer *server) override;
 	/** Creates a peer for the given connection object. */
-	deBaseScriptingConnection *CreateConnection( deConnection *connection ) override;
+	deBaseScriptingConnection *CreateConnection(deConnection *connection) override;
 	/** Creates a peer for the given network state object. */
-	deBaseScriptingNetworkState *CreateNetworkState( deNetworkState *state ) override;
+	deBaseScriptingNetworkState *CreateNetworkState(deNetworkState *state) override;
 	/** Creates a peer for the given touch sensor object. */
-	deBaseScriptingTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor ) override;
+	deBaseScriptingTouchSensor *CreateTouchSensor(deTouchSensor *touchSensor) override;
 	/** Creates a peer for the given prop field object. */
-	deBaseScriptingPropField *CreatePropField( dePropField *propField ) override;
+	deBaseScriptingPropField *CreatePropField(dePropField *propField) override;
 	/** Creates a peer for the given particle emitter instance object or NULL if not used. */
-	deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance( deParticleEmitterInstance *instance ) override;
+	deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance(deParticleEmitterInstance *instance) override;
 	
 	/** Create deSoundLevelMeter peer. */
-	deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter ) override;
+	deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter) override;
 	
 	/** Create deSpeaker peer. */
-	deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker ) override;
+	deBaseScriptingSpeaker *CreateSpeaker(deSpeaker *speaker) override;
 	
 	/**
 	 * Create deService peer.
 	 * \version 1.23
 	 */
-	deBaseScriptingService *CreateService( deService *service ) override;
+	deBaseScriptingService *CreateService(deService *service) override;
 	
 	/**
 	 * Initializes the game scripts. This usually involves creating the
@@ -582,7 +582,7 @@ public:
 	 * Send the given event to game scripts.
 	 * @return true if the call has been successfull or false otherwise
 	 */
-	bool SendEvent( deInputEvent *event ) override;
+	bool SendEvent(deInputEvent *event) override;
 	
 	/**
 	 * User requested window to be closed.
@@ -655,11 +655,11 @@ public:
 	
 	/** Log level. */
 	inline LogLevel GetLogLevel() const{ return pLogLevel; }
-	inline void SetLogLevel(LogLevel level){ pLogLevel = level; }
+	inline void SetLogLevel(LogLevel level){pLogLevel = level;}
 	
 	/** Force dpi aware. */
 	inline bool GetForceDpiAware() const{ return pForceDpiAware; }
-	inline void SetForceDpiAware(bool forceDpiAware){ pForceDpiAware = forceDpiAware; }
+	inline void SetForceDpiAware(bool forceDpiAware){pForceDpiAware = forceDpiAware;}
 	
 	// classes
 	inline deClassAISystem *GetClassAISystem() const{ return pClsAISys; }
@@ -856,54 +856,54 @@ public:
 	
 	// helper functions
 	inline dsValue *GetGameObject() const{ return pGameObj; }
-	const decVector &GetVector( dsRealObject *myself ) const;
-	void PushVector( dsRunTime *rt, const decVector &v );
-	const decQuaternion &GetQuaternion( dsRealObject *myself ) const;
-	void PushQuaternion( dsRunTime *rt, const decQuaternion &q );
+	const decVector &GetVector(dsRealObject *myself) const;
+	void PushVector(dsRunTime *rt, const decVector &v);
+	const decQuaternion &GetQuaternion(dsRealObject *myself) const;
+	void PushQuaternion(dsRunTime *rt, const decQuaternion &q);
 	const decMatrix &GetMatrix(dsRealObject *myself) const;
-	void PushMatrix( dsRunTime *rt, const decMatrix &m );
+	void PushMatrix(dsRunTime *rt, const decMatrix &m);
 	const decColor &GetColor(dsRealObject *myself) const;
-	void PushColor( dsRunTime *rt, const decColor &c );
+	void PushColor(dsRunTime *rt, const decColor &c);
 	const decPoint &GetPoint(dsRealObject *myself) const;
-	void PushPoint( dsRunTime *rt, const decPoint &p );
-	const decPoint3 &GetPoint3( dsRealObject *myself ) const;
-	void PushPoint3( dsRunTime *rt, const decPoint3 &pt );
+	void PushPoint(dsRunTime *rt, const decPoint &p);
+	const decPoint3 &GetPoint3(dsRealObject *myself) const;
+	void PushPoint3(dsRunTime *rt, const decPoint3 &pt);
 	
 	inline const decString &GetRestartInfo() const{ return pRestartInfo; }
-	void RequestRestart( const char *info );
+	void RequestRestart(const char *info);
 	
 	/** Adds a value to delete later. */
-	void AddValueDeleteLater( dsValue *value );
+	void AddValueDeleteLater(dsValue *value);
 	/** Delete all values registered to be deleted later. */
 	void DeleteValuesDeleteLater();
 	
 	/** Add dragonscript exception to the module trace. */
-	void SetErrorTraceDS( const duException &exception );
+	void SetErrorTraceDS(const duException &exception);
 	
 	/** Log dragonscript exception. */
-	void LogExceptionDS( const duException &exception );
+	void LogExceptionDS(const duException &exception);
 	/*@}*/
 	
 private:
 	void pCreateParameters();
 	void pLoadBasicPackage();
-	void pLoadGamePackage( const char *directory, const char *gameClass );
-	void pAddScripts( dsPackage *package, deVirtualFileSystem &vfs, const char *pathDir );
+	void pLoadGamePackage(const char *directory, const char *gameClass);
+	void pAddScripts(dsPackage *package, deVirtualFileSystem &vfs, const char *pathDir);
 	bool pIsFileType(const char *Filename, const char *Extension);
 	int pGetConstantValue(dsClass *Class, const char *name) const;
 	bool pCallFunction(const char *name);
-	decString BuildFullName( const dsClass *theClass ) const;
+	decString BuildFullName(const dsClass *theClass) const;
 	void pAddVFSContainerHideScriptDirectory();
 	void pRemoveVFSContainerHideScriptDirectory();
 	void pPreprocessEventDpiAware(deInputEvent &event);
 	void pPreprocessMouseMoveDpiAware(deInputEvent &event);
 	
 public:
-	void pAddExceptionTrace( deErrorTracePoint *tracePoint );
+	void pAddExceptionTrace(deErrorTracePoint *tracePoint);
 	void LogExceptionDSTrace();
-	void pAddSendEventTrace( deErrorTracePoint &tracePoint, const deInputEvent &event );
-	void pAddVectorTrace( deErrorTraceValue *traceValue, const decVector &vector, const char *name );
-	void pAddColliderTrace( deErrorTracePoint *tracePoint, deCollider *collider, const char *name );
+	void pAddSendEventTrace(deErrorTracePoint &tracePoint, const deInputEvent &event);
+	void pAddVectorTrace(deErrorTraceValue *traceValue, const decVector &vector, const char *name);
+	void pAddColliderTrace(deErrorTracePoint *tracePoint, deCollider *collider, const char *name);
 };
 
 #endif

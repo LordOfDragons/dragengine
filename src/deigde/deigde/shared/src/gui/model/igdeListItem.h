@@ -60,21 +60,21 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create list item. */
-	igdeListItem( const char *text );
+	igdeListItem(const char *text);
 	
-	igdeListItem( const char *text, igdeIcon *icon );
+	igdeListItem(const char *text, igdeIcon *icon);
 	
-	igdeListItem( const char *text, igdeIcon *icon, const char *description );
+	igdeListItem(const char *text, igdeIcon *icon, const char *description);
 	
 	/** \brief Create list item. */
-	igdeListItem( const char *text, void *data );
+	igdeListItem(const char *text, void *data);
 	
-	igdeListItem( const char *text, igdeIcon *icon, void *data );
+	igdeListItem(const char *text, igdeIcon *icon, void *data);
 	
-	igdeListItem( const char *text, igdeIcon *icon, const char *description, void *data );
+	igdeListItem(const char *text, igdeIcon *icon, const char *description, void *data);
 	
 	/** \brief Create copy of list item. */
-	igdeListItem( const igdeListItem &listItem );
+	igdeListItem(const igdeListItem &listItem);
 	
 	
 	
@@ -97,25 +97,25 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
 	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief User data pointer. */
 	inline void *GetData() const{ return pData; }
 	
 	/** \brief Set user data pointer. */
-	void SetData( void *data );
+	void SetData(void *data);
 	
 	/**
 	 * \brief Details used for igdeListBox only in detail mode.
@@ -125,19 +125,19 @@ public:
 	 * the column count are ignored. If less details are present than the column count
 	 * requires the missing details are considered empty strings.
 	 */
-	decStringList &GetDetails(){ return pDetails; }
+	decStringList &GetDetails(){return pDetails;}
 	inline const decStringList &GetDetails() const{ return pDetails; }
 	
 	/** \brief Item is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if item is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	
 	/** \brief Set from another item. */
-	igdeListItem &operator=( const igdeListItem &listItem );
+	igdeListItem &operator=(const igdeListItem &listItem);
 	/*@}*/
 };
 

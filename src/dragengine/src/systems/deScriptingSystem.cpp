@@ -65,11 +65,11 @@ extern const int *vResourcePeerCreationOrder;
 // Constructor, destructor
 ////////////////////////////
 
-deScriptingSystem::deScriptingSystem( deEngine *engine ) :
-deBaseSystem( engine, "Script", deModuleSystem::emtScript ),
-pActiveModule( NULL ),
-pEditMode( false ),
-pGameRunning( false )
+deScriptingSystem::deScriptingSystem(deEngine *engine) :
+deBaseSystem(engine, "Script", deModuleSystem::emtScript),
+pActiveModule(NULL),
+pEditMode(false),
+pGameRunning(false)
 {
 }
 
@@ -81,30 +81,30 @@ deScriptingSystem::~deScriptingSystem(){
 // Management
 ///////////////
 
-void deScriptingSystem::SetScriptDirectory( const char *scriptDirectory ){
+void deScriptingSystem::SetScriptDirectory(const char *scriptDirectory){
 	pScriptDirectory = scriptDirectory;
 }
 
-void deScriptingSystem::SetScriptVersion( const char *scriptVersion ){
+void deScriptingSystem::SetScriptVersion(const char *scriptVersion){
 	pScriptVersion = scriptVersion;
 }
 
-void deScriptingSystem::SetGameObject( const char *gameObject ){
+void deScriptingSystem::SetGameObject(const char *gameObject){
 	pGameObject = gameObject;
 }
 
-void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
-	if( ! pActiveModule ){
+void deScriptingSystem::AddVFSSharedDataDir(deVirtualFileSystem &vfs) const{
+	if(!pActiveModule){
 		return;
 	}
 	
 	const char * const dataDir = pActiveModule->GetSharedDataDir();
-	if( ! dataDir ){
+	if(!dataDir){
 		return;
 	}
 	
 	const char * const vfsPath = pActiveModule->GetVFSSharedDataDir();
-	if( ! vfsPath ){
+	if(!vfsPath){
 		return;
 	}
 	
@@ -119,28 +119,28 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 	const decPath pathRoot(decPath::CreatePathUnix(vfsPath));
 	decPath pathRedirect;
 	
-	if( osFileSystem ){
-		pathRedirect.SetFromUnix( "/share/modules" );
+	if(osFileSystem){
+		pathRedirect.SetFromUnix("/share/modules");
 		pathRedirect.AddUnixPath(typeName);
 		pathRedirect.AddUnixPath(directoryName);
 		pathRedirect.AddComponent(version);
-		pathRedirect.AddUnixPath( dataDir );
+		pathRedirect.AddUnixPath(dataDir);
 		
 		vfs.AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, osFileSystem, true));
 		
 	}else{
 		// build disk path
 		decPath pathDisk;
-		pathDisk.SetFromNative( engine.GetOS()->GetPathShare() );
-		pathDisk.AddUnixPath( "modules" );
+		pathDisk.SetFromNative(engine.GetOS()->GetPathShare());
+		pathDisk.AddUnixPath("modules");
 		pathDisk.AddUnixPath(typeName);
 		pathDisk.AddUnixPath(directoryName);
 		pathDisk.AddComponent(version);
-		pathDisk.AddUnixPath( dataDir );
+		pathDisk.AddUnixPath(dataDir);
 		
 		// add container
-		engine.GetLogger()->LogInfoFormat( LOGSOURCE, "Adding disk container '%s' => '%s'(ro)",
-			pathDisk.GetPathNative().GetString(), vfsPath );
+		engine.GetLogger()->LogInfoFormat(LOGSOURCE, "Adding disk container '%s' => '%s'(ro)",
+			pathDisk.GetPathNative().GetString(), vfsPath);
 		
 		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true));
 	}
@@ -158,21 +158,21 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 	}
 }
 
-void deScriptingSystem::AddVFSContainers( deVirtualFileSystem &vfs, const char *stage ){
-	if( pActiveModule ){
-		pActiveModule->AddVFSContainers( vfs, stage );
+void deScriptingSystem::AddVFSContainers(deVirtualFileSystem &vfs, const char *stage){
+	if(pActiveModule){
+		pActiveModule->AddVFSContainers(vfs, stage);
 	}
 }
 
 void deScriptingSystem::SetEditMode(bool editMode)
 {
-	if( GetIsRunning() ) DETHROW( deeInvalidParam );
+	if(GetIsRunning()) DETHROW(deeInvalidParam);
 	pEditMode = editMode;
 }
 
-void deScriptingSystem::SetActiveModule( deLoadableModule *module ){
-	deBaseSystem::SetActiveModule( module );
-	pActiveModule = ( deBaseScriptingModule* )module->GetModule();
+void deScriptingSystem::SetActiveModule(deLoadableModule *module){
+	deBaseSystem::SetActiveModule(module);
+	pActiveModule = (deBaseScriptingModule*)module->GetModule();
 }
 
 void deScriptingSystem::ClearPermanents(){
@@ -181,19 +181,19 @@ void deScriptingSystem::ClearPermanents(){
 }
 
 void deScriptingSystem::PostStart(){
-	if( pScriptDirectory.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pScriptDirectory.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deEngine &engine = *GetEngine();
 	int i;
 	
-	if( ! pActiveModule->Init( pScriptDirectory, pGameObject ) ){
-		DETHROW( deeInvalidAction );
+	if(!pActiveModule->Init(pScriptDirectory, pGameObject)){
+		DETHROW(deeInvalidAction);
 	}
 	
-	for( i=0; i<engine.GetResourceManagerCount(); i++ ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemScriptingLoad();
+	for(i=0; i<engine.GetResourceManagerCount(); i++){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemScriptingLoad();
 	}
 }
 
@@ -204,10 +204,10 @@ void deScriptingSystem::PreStop(){
 	ExitGame();
 	
 	// remove all parallel tasks if present
-	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
+	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);
 	
-	for( i=engine.GetResourceManagerCount()-1; i>=0; i-- ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemScriptingUnload();
+	for(i=engine.GetResourceManagerCount()-1; i>=0; i--){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemScriptingUnload();
 	}
 	
 	pActiveModule->ShutDown();
@@ -216,29 +216,29 @@ void deScriptingSystem::PreStop(){
 
 
 void deScriptingSystem::InitGame(){
-	if( ! GetIsRunning() || pGameRunning ){
+	if(!GetIsRunning() || pGameRunning){
 		return;
 	}
 	
-	if( ! pActiveModule->InitGame() ){
+	if(!pActiveModule->InitGame()){
 		GetEngine()->SignalScriptFailed();
 	}
 	pGameRunning = true;
 }
 
 void deScriptingSystem::ExitGame(){
-	if( ! GetIsRunning() || ! pGameRunning ){
+	if(!GetIsRunning() || !pGameRunning){
 		return;
 	}
 	
-	if( ! pActiveModule->ExitGame() ){
+	if(!pActiveModule->ExitGame()){
 		GetEngine()->SignalScriptFailed();
 	}
 	pGameRunning = false;
 }
 
 void deScriptingSystem::UserRequestQuit(){
-	if( ! GetIsRunning() && ! pGameRunning ){
+	if(!GetIsRunning() && !pGameRunning){
 		return;
 	}
 	pActiveModule->UserRequestQuit();
@@ -246,108 +246,108 @@ void deScriptingSystem::UserRequestQuit(){
 
 
 
-void deScriptingSystem::LoadCollider( deCollider *collider ){
-	if( ! GetIsRunning() ) return;
-	if( collider->GetPeerScripting() ) DETHROW( deeInvalidParam );
+void deScriptingSystem::LoadCollider(deCollider *collider){
+	if(!GetIsRunning()) return;
+	if(collider->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
-	collider->SetPeerScripting( pActiveModule->CreateCollider( collider ) );
-	if( ! collider->GetPeerScripting() ) DETHROW( deeOutOfMemory );
+	collider->SetPeerScripting(pActiveModule->CreateCollider(collider));
+	if(!collider->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
-void deScriptingSystem::LoadServer( deServer *server ){
-	if( ! GetIsRunning() ) return;
-	if( server->GetPeerScripting() ) DETHROW( deeInvalidParam );
+void deScriptingSystem::LoadServer(deServer *server){
+	if(!GetIsRunning()) return;
+	if(server->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
-	server->SetPeerScripting( pActiveModule->CreateServer( server ) );
-	if( ! server->GetPeerScripting() ) DETHROW( deeOutOfMemory );
+	server->SetPeerScripting(pActiveModule->CreateServer(server));
+	if(!server->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
-void deScriptingSystem::LoadConnection( deConnection *connection ){
-	if( ! GetIsRunning() ) return;
-	if( connection->GetPeerScripting() ) DETHROW( deeInvalidParam );
+void deScriptingSystem::LoadConnection(deConnection *connection){
+	if(!GetIsRunning()) return;
+	if(connection->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
-	connection->SetPeerScripting( pActiveModule->CreateConnection( connection ) );
-	if( ! connection->GetPeerScripting() ) DETHROW( deeOutOfMemory );
+	connection->SetPeerScripting(pActiveModule->CreateConnection(connection));
+	if(!connection->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
-void deScriptingSystem::LoadNetworkState( deNetworkState *state ){
-	if( ! GetIsRunning() ) return;
-	if( state->GetPeerScripting() ) DETHROW( deeInvalidParam );
+void deScriptingSystem::LoadNetworkState(deNetworkState *state){
+	if(!GetIsRunning()) return;
+	if(state->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
-	state->SetPeerScripting( pActiveModule->CreateNetworkState( state ) );
-	if( ! state->GetPeerScripting() ) DETHROW( deeOutOfMemory );
+	state->SetPeerScripting(pActiveModule->CreateNetworkState(state));
+	if(!state->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
-void deScriptingSystem::LoadTouchSensor( deTouchSensor *touchSensor ){
-	if( ! GetIsRunning() ) return;
+void deScriptingSystem::LoadTouchSensor(deTouchSensor *touchSensor){
+	if(!GetIsRunning()) return;
 	
-	if( touchSensor->GetPeerScripting() ) DETHROW( deeInvalidParam );
+	if(touchSensor->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
-	touchSensor->SetPeerScripting( pActiveModule->CreateTouchSensor( touchSensor ) );
-	if( ! touchSensor->GetPeerScripting() ) DETHROW( deeOutOfMemory );
+	touchSensor->SetPeerScripting(pActiveModule->CreateTouchSensor(touchSensor));
+	if(!touchSensor->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
-void deScriptingSystem::LoadPropField( dePropField *propField ){
-	if( ! GetIsRunning() ) return;
+void deScriptingSystem::LoadPropField(dePropField *propField){
+	if(!GetIsRunning()) return;
 	
-	if( propField->GetPeerScripting() ) DETHROW( deeInvalidParam );
+	if(propField->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
-	propField->SetPeerScripting( pActiveModule->CreatePropField( propField ) );
-	if( ! propField->GetPeerScripting() ) DETHROW( deeOutOfMemory );
+	propField->SetPeerScripting(pActiveModule->CreatePropField(propField));
+	if(!propField->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
-void deScriptingSystem::LoadParticleEmitterInstance( deParticleEmitterInstance *instance ){
-	if( GetIsRunning() && ! instance->GetPeerScripting() ){
-		instance->SetPeerScripting( pActiveModule->CreateParticleEmitterInstance( instance ) );
+void deScriptingSystem::LoadParticleEmitterInstance(deParticleEmitterInstance *instance){
+	if(GetIsRunning() && !instance->GetPeerScripting()){
+		instance->SetPeerScripting(pActiveModule->CreateParticleEmitterInstance(instance));
 	}
 }
 
-void deScriptingSystem::LoadSoundLevelMeter( deSoundLevelMeter *meter ){
-	if( GetIsRunning() && ! meter->GetPeerScripting() ){
-		meter->SetPeerScripting( pActiveModule->CreateSoundLevelMeter( meter ) );
+void deScriptingSystem::LoadSoundLevelMeter(deSoundLevelMeter *meter){
+	if(GetIsRunning() && !meter->GetPeerScripting()){
+		meter->SetPeerScripting(pActiveModule->CreateSoundLevelMeter(meter));
 	}
 }
 
-void deScriptingSystem::LoadSpeaker( deSpeaker *speaker ){
-	if( GetIsRunning() && ! speaker->GetPeerScripting() ){
-		speaker->SetPeerScripting( pActiveModule->CreateSpeaker( speaker ) );
+void deScriptingSystem::LoadSpeaker(deSpeaker *speaker){
+	if(GetIsRunning() && !speaker->GetPeerScripting()){
+		speaker->SetPeerScripting(pActiveModule->CreateSpeaker(speaker));
 	}
 }
 
-void deScriptingSystem::CreateService( deService *service ){
-	if( ! GetIsRunning() || service->GetPeerScripting() ){
+void deScriptingSystem::CreateService(deService *service){
+	if(!GetIsRunning() || service->GetPeerScripting()){
 		return;
 	}
 	
-	service->SetPeerScripting( pActiveModule->CreateService( service ) );
+	service->SetPeerScripting(pActiveModule->CreateService(service));
 }
 
 
 
 void deScriptingSystem::OnFrameUpdate(){
-	if( ! pActiveModule->OnFrameUpdate() ){
+	if(!pActiveModule->OnFrameUpdate()){
 		GetEngine()->SignalScriptFailed();
 	}
 }
 
 void deScriptingSystem::OnResizeRenderWindow(){
-	if( GetIsRunning() ){
-		if( ! pActiveModule->OnResizeRenderWindow() ){
+	if(GetIsRunning()){
+		if(!pActiveModule->OnResizeRenderWindow()){
 			GetEngine()->SignalScriptFailed();
 		}
 	}
 }
 
 void deScriptingSystem::OnAppActivate(){
-	if( GetIsRunning() ){
-		if( ! pActiveModule->OnAppActivate() ){
+	if(GetIsRunning()){
+		if(!pActiveModule->OnAppActivate()){
 			GetEngine()->SignalScriptFailed();
 		}
 	}
 }
 
-void deScriptingSystem::SendEvent( deInputEvent *event){
-	if( ! pActiveModule->SendEvent( event ) ){
+void deScriptingSystem::SendEvent(deInputEvent *event){
+	if(!pActiveModule->SendEvent(event)){
 		GetEngine()->SignalScriptFailed();
 	}
 }

@@ -91,7 +91,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new load save system. */
-	igdeLoadSaveSystem( igdeWindowMain *windowMain );
+	igdeLoadSaveSystem(igdeWindowMain *windowMain);
 	/** \brief Cleans up the load save system. */
 	~igdeLoadSaveSystem();
 	/*@}*/
@@ -104,29 +104,29 @@ public:
 	inline igdeLSGameProject *GetLSGameProject() const{ return pLSGameProject; }
 	
 	/** \brief Loads a game project. */
-	igdeGameProject *LoadGameProject( const char *filename );
+	igdeGameProject *LoadGameProject(const char *filename);
 	/** \brief Saves a game project. */
-	void SaveGameProject( igdeGameProject *project, const char *filename );
+	void SaveGameProject(igdeGameProject *project, const char *filename);
 	
 	/** \brief Update pattern lists. */
 	void UpdatePatternLists();
 	
 	/** \brief Retrieves a open file pattern list. */
-	const igdeFilePatternList &GetOpenFilePatternList( eFilePatternLists list ) const;
+	const igdeFilePatternList &GetOpenFilePatternList(eFilePatternLists list) const;
 	/** \brief Retrieves a save file pattern list. */
-	const igdeFilePatternList &GetSaveFilePatternList( eFilePatternLists list ) const;
+	const igdeFilePatternList &GetSaveFilePatternList(eFilePatternLists list) const;
 	
 	/** \brief Retrieves a FOX open file pattern list. */
-	const decString &GetFOXOpenFilePatternList( eFOXFilePatternLists list ) const;
+	const decString &GetFOXOpenFilePatternList(eFOXFilePatternLists list) const;
 	/** \brief Retrieves a FOX save file pattern list. */
-	const decString &GetFOXSaveFilePatternList( eFOXFilePatternLists list ) const;
+	const decString &GetFOXSaveFilePatternList(eFOXFilePatternLists list) const;
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	void pAddPattern( igdeFilePatternList &fpl, const deLoadableModule &module );
-	void pAddPattern( igdeFilePatternList &fpl, const char *name, const char *pattern, const char *defaultExtension );
-	void pConvertToFOX( const igdeFilePatternList &fpl, decString &foxfpl );
+	void pAddPattern(igdeFilePatternList &fpl, const deLoadableModule &module);
+	void pAddPattern(igdeFilePatternList &fpl, const char *name, const char *pattern, const char *defaultExtension);
+	void pConvertToFOX(const igdeFilePatternList &fpl, decString &foxfpl);
 };
 
 #endif

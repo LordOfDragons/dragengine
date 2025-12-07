@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCActorParameter::ceWPTTIMCActorParameter( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionActorParameter *condition ) :
-ceWPTTIMCondition( windowMain, etConditionActorParameter, conversation, action, condition )
+ceWPTTIMCActorParameter::ceWPTTIMCActorParameter(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionActorParameter *condition) :
+ceWPTTIMCondition(windowMain, etConditionActorParameter, conversation, action, condition)
 {
-	SetIcon( windowMain.GetIconConditionVariable() );
+	SetIcon(windowMain.GetIconConditionVariable());
 	Update();
 }
 
@@ -58,8 +58,8 @@ ceWPTTIMCActorParameter::~ceWPTTIMCActorParameter(){
 ///////////////
 
 const char *ceWPTTIMCActorParameter::GetOperatorText(
-ceCConditionActorParameter::eOperators anOperator ){
-	switch( anOperator ){
+ceCConditionActorParameter::eOperators anOperator){
+	switch(anOperator){
 	case ceCConditionActorParameter::eopEqual:
 		return "=";
 		
@@ -79,7 +79,7 @@ ceCConditionActorParameter::eOperators anOperator ){
 		return ">=";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -87,15 +87,15 @@ void ceWPTTIMCActorParameter::Update(){
 	const ceCConditionActorParameter &condition = *GetConditionActorParameter();
 	decString text;
 	
-	text.Format( "Actor Parameter: '%s': '%s' %s ", condition.GetActor().GetString(),
-		condition.GetParameter().GetString(), GetOperatorText( condition.GetOperator() ) );
+	text.Format("Actor Parameter: '%s': '%s' %s ", condition.GetActor().GetString(),
+		condition.GetParameter().GetString(), GetOperatorText(condition.GetOperator()));
 	
-	if( ! condition.GetTestVariable().IsEmpty() ){
-		text.AppendFormat( "'%s'", condition.GetTestVariable().GetString() );
+	if(!condition.GetTestVariable().IsEmpty()){
+		text.AppendFormat("'%s'", condition.GetTestVariable().GetString());
 		
 	}else{
-		text.AppendFormat( "%d", condition.GetTestValue() );
+		text.AppendFormat("%d", condition.GetTestValue());
 	}
 	
-	SetText( text );
+	SetText(text);
 }

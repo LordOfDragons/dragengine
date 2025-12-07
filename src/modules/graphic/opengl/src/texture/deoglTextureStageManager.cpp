@@ -48,7 +48,7 @@
 
 
 
-static GLenum vCubeMapFaceTarget[ 6 ] = {
+static GLenum vCubeMapFaceTarget[6] = {
 	GL_TEXTURE_CUBE_MAP_POSITIVE_X,
 	GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
 	GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
@@ -63,9 +63,9 @@ static GLenum vCubeMapFaceTarget[ 6 ] = {
 ////////////////////////////////////////////
 
 deoglTextureStageManager::sStage::sStage() :
-texture( 0 ),
-type( 0 ),
-samplerConfig( 0 ){
+texture(0),
+type(0),
+samplerConfig(0){
 }
 
 
@@ -76,8 +76,8 @@ samplerConfig( 0 ){
 // Constructor, destructor
 ////////////////////////////
 
-deoglTextureStageManager::deoglTextureStageManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+deoglTextureStageManager::deoglTextureStageManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 }
 
 deoglTextureStageManager::~deoglTextureStageManager(){
@@ -91,8 +91,8 @@ deoglTextureStageManager::~deoglTextureStageManager(){
 int deoglTextureStageManager::GetEnabledStageCount() const{
 	int i;
 	
-	for( i=0; i<OGL_MAX_TEXTURE_STAGES; i++ ){
-		if( pStages[ i ].type == 0 ){
+	for(i=0; i<OGL_MAX_TEXTURE_STAGES; i++){
+		if(pStages[i].type == 0){
 			return i;
 		}
 	}
@@ -100,130 +100,130 @@ int deoglTextureStageManager::GetEnabledStageCount() const{
 	return OGL_MAX_TEXTURE_STAGES;
 }
 
-GLenum deoglTextureStageManager::GetStageType( int stage ) const{
-	if( stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES ){
-		DETHROW( deeInvalidParam );
+GLenum deoglTextureStageManager::GetStageType(int stage) const{
+	if(stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pStages[ stage ].type;
+	return pStages[stage].type;
 }
 
 
 
-void deoglTextureStageManager::EnableBareArrayTexture( int stage, const deoglArrayTexture &texture ){
-	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY );
+void deoglTextureStageManager::EnableBareArrayTexture(int stage, const deoglArrayTexture &texture){
+	BindTexture(stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY);
 }
 
-void deoglTextureStageManager::EnableBareTexture( int stage, const deoglTexture &texture ){
-	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D );
+void deoglTextureStageManager::EnableBareTexture(int stage, const deoglTexture &texture){
+	BindTexture(stage, texture.GetTexture(), GL_TEXTURE_2D);
 }
 
-void deoglTextureStageManager::EnableBareCubeMap( int stage, const deoglCubeMap &cubemap ){
-	BindTexture( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP );
+void deoglTextureStageManager::EnableBareCubeMap(int stage, const deoglCubeMap &cubemap){
+	BindTexture(stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP);
 }
 
-void deoglTextureStageManager::EnableBareTBO( int stage, GLuint tbo ){
-	BindTexture( stage, tbo, GL_TEXTURE_BUFFER );
+void deoglTextureStageManager::EnableBareTBO(int stage, GLuint tbo){
+	BindTexture(stage, tbo, GL_TEXTURE_BUFFER);
 }
 
-void deoglTextureStageManager::EnableTexture( int stage, const deoglTexture& texture,
-deoglTexSamplerConfig &samplerConfig ){
-	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D, samplerConfig.GetSamplerObject() );
+void deoglTextureStageManager::EnableTexture(int stage, const deoglTexture& texture,
+deoglTexSamplerConfig &samplerConfig){
+	BindTexture(stage, texture.GetTexture(), GL_TEXTURE_2D, samplerConfig.GetSamplerObject());
 }
 
-void deoglTextureStageManager::EnableCubeMap( int stage, const deoglCubeMap &cubemap,
-deoglTexSamplerConfig &samplerConfig ){
-	BindTexture( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, samplerConfig.GetSamplerObject() );
+void deoglTextureStageManager::EnableCubeMap(int stage, const deoglCubeMap &cubemap,
+deoglTexSamplerConfig &samplerConfig){
+	BindTexture(stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, samplerConfig.GetSamplerObject());
 }
 
-void deoglTextureStageManager::EnableCubeMapFace( int stage, const deoglCubeMap &cubemap,
-deoglCubeMap::eFaces face, deoglTexSamplerConfig &samplerConfig ){
-	BindTexture( stage, cubemap.GetTexture(), vCubeMapFaceTarget[ face ], samplerConfig.GetSamplerObject() );
+void deoglTextureStageManager::EnableCubeMapFace(int stage, const deoglCubeMap &cubemap,
+deoglCubeMap::eFaces face, deoglTexSamplerConfig &samplerConfig){
+	BindTexture(stage, cubemap.GetTexture(), vCubeMapFaceTarget[face], samplerConfig.GetSamplerObject());
 }
 
-void deoglTextureStageManager::EnableArrayTexture( int stage, const deoglArrayTexture &texture,
-deoglTexSamplerConfig &samplerConfig ){
-	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, samplerConfig.GetSamplerObject() );
+void deoglTextureStageManager::EnableArrayTexture(int stage, const deoglArrayTexture &texture,
+deoglTexSamplerConfig &samplerConfig){
+	BindTexture(stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, samplerConfig.GetSamplerObject());
 }
 
-void deoglTextureStageManager::EnableTBO( int stage, GLuint tbo, deoglTexSamplerConfig &samplerConfig ){
-	BindTexture( stage, tbo, GL_TEXTURE_BUFFER, samplerConfig.GetSamplerObject() );
+void deoglTextureStageManager::EnableTBO(int stage, GLuint tbo, deoglTexSamplerConfig &samplerConfig){
+	BindTexture(stage, tbo, GL_TEXTURE_BUFFER, samplerConfig.GetSamplerObject());
 }
 
-void deoglTextureStageManager::EnableSkin( int stage, const deoglRSkin &skin, int texture,
-deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, deoglTexSamplerConfig &samplerConfig ){
-	if( stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES || ! defaultTexture ){
-		DETHROW( deeInvalidParam );
+void deoglTextureStageManager::EnableSkin(int stage, const deoglRSkin &skin, int texture,
+deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, deoglTexSamplerConfig &samplerConfig){
+	if(stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES || !defaultTexture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deoglSkinChannel * const textureChannel = skin.GetTextureAt( texture ).GetChannelAt( channel );
+	deoglSkinChannel * const textureChannel = skin.GetTextureAt(texture).GetChannelAt(channel);
 	deoglTexture *useTexture = defaultTexture;
 	
-	if( textureChannel ){
+	if(textureChannel){
 		deoglTexture *channelTexture = textureChannel->GetTexture();
 		
-		if( textureChannel->GetImage() ){
+		if(textureChannel->GetImage()){
 			channelTexture = textureChannel->GetImage()->GetTexture();
 			
-		}else if( textureChannel->GetCombinedTexture() ){
+		}else if(textureChannel->GetCombinedTexture()){
 			channelTexture = textureChannel->GetCombinedTexture()->GetTexture();
 		}
 		
-		if( channelTexture ){
+		if(channelTexture){
 			useTexture = channelTexture;
 		}
 	}
 	
-	EnableTexture( stage, *useTexture, samplerConfig );
+	EnableTexture(stage, *useTexture, samplerConfig);
 }
 
 
 
-void deoglTextureStageManager::DisableStage( int stage ){
-	if( stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES ){
-		DETHROW( deeInvalidParam );
+void deoglTextureStageManager::DisableStage(int stage){
+	if(stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const GLenum type = pStages[ stage ].type;
+	const GLenum type = pStages[stage].type;
 	
 	if(pStages[stage].samplerConfig != 0){
 		OGL_CHECK(pRenderThread, pglBindSampler(stage, 0));
 		pStages[stage].samplerConfig = 0;
 	}
 	
-	if( type != 0 ){
-		if( pStages[ stage ].texture != 0 ){
-			OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + stage ) );
-			OGL_CHECK( pRenderThread, glBindTexture( type, 0 ) );
-			pStages[ stage ].texture = 0;
+	if(type != 0){
+		if(pStages[stage].texture != 0){
+			OGL_CHECK(pRenderThread, pglActiveTexture(GL_TEXTURE0 + stage));
+			OGL_CHECK(pRenderThread, glBindTexture(type, 0));
+			pStages[stage].texture = 0;
 		}
 		
 		//OGL_CHECK( pRenderThread, glDisable( type ) );
-		pStages[ stage ].type = 0;
+		pStages[stage].type = 0;
 	}
 }
 
-void deoglTextureStageManager::DisableStagesAbove( int stage ){
+void deoglTextureStageManager::DisableStagesAbove(int stage){
 	GLenum type;
 	int s;
 	
-	for( s=stage+1; s<OGL_MAX_TEXTURE_STAGES; s++ ){
-		type = pStages[ s ].type;
+	for(s=stage+1; s<OGL_MAX_TEXTURE_STAGES; s++){
+		type = pStages[s].type;
 		
 		if(pStages[s].samplerConfig != 0){
 			OGL_CHECK(pRenderThread, pglBindSampler(s, 0));
 			pStages[s].samplerConfig = 0;
 		}
 		
-		if( type != 0 ){
-			if( pStages[ s ].texture != 0 ){
-				OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + s ) );
-				OGL_CHECK( pRenderThread, glBindTexture( type, 0 ) );
-				pStages[ s ].texture = 0;
+		if(type != 0){
+			if(pStages[s].texture != 0){
+				OGL_CHECK(pRenderThread, pglActiveTexture(GL_TEXTURE0 + s));
+				OGL_CHECK(pRenderThread, glBindTexture(type, 0));
+				pStages[s].texture = 0;
 			}
 			
 			//OGL_CHECK( pRenderThread, glDisable( type ) );
-			pStages[ s ].type = 0;
+			pStages[s].type = 0;
 		}
 	}
 }
@@ -232,76 +232,76 @@ void deoglTextureStageManager::DisableAllStages(){
 	GLenum type;
 	int s;
 	
-	for( s=0; s<OGL_MAX_TEXTURE_STAGES; s++ ){
-		type = pStages[ s ].type;
+	for(s=0; s<OGL_MAX_TEXTURE_STAGES; s++){
+		type = pStages[s].type;
 		
 		if(pStages[s].samplerConfig != 0){
 			OGL_CHECK(pRenderThread, pglBindSampler(s, 0));
 			pStages[s].samplerConfig = 0;
 		}
 		
-		if( type != 0 ){
-			if( pStages[ s ].texture != 0 ){
-				OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + s ) );
-				OGL_CHECK( pRenderThread, glBindTexture( type, 0 ) );
-				pStages[ s ].texture = 0;
+		if(type != 0){
+			if(pStages[s].texture != 0){
+				OGL_CHECK(pRenderThread, pglActiveTexture(GL_TEXTURE0 + s));
+				OGL_CHECK(pRenderThread, glBindTexture(type, 0));
+				pStages[s].texture = 0;
 			}
 			
 			//OGL_CHECK( pRenderThread, glDisable( type ) );
-			pStages[ s ].type = 0;
+			pStages[s].type = 0;
 		}
 	}
 }
 
 
 
-void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum type ){
-	DEASSERT_TRUE( stage >= 0 )
-	DEASSERT_TRUE( stage < OGL_MAX_TEXTURE_STAGES )
+void deoglTextureStageManager::BindTexture(int stage, GLuint texture, GLenum type){
+	DEASSERT_TRUE(stage >= 0)
+	DEASSERT_TRUE(stage < OGL_MAX_TEXTURE_STAGES)
 	
-	OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + stage ) );
+	OGL_CHECK(pRenderThread, pglActiveTexture(GL_TEXTURE0 + stage));
 	
-	if( texture != pStages[ stage ].texture ){
+	if(texture != pStages[stage].texture){
 		if(pStages[stage].samplerConfig != 0){
 			OGL_CHECK(pRenderThread, pglBindSampler(stage, 0));
 			pStages[stage].samplerConfig = 0;
 		}
 		
-		if( type != pStages[ stage ].type ){
+		if(type != pStages[stage].type){
 			if(pStages[stage].texture != 0){
 				OGL_CHECK(pRenderThread, glBindTexture(pStages[stage].type, 0));
 			}
 			
 			/* if( pStages[ stage ].texture != 0 ){
-				OGL_CHECK( pRenderThread, glBindTexture( pStages[ stage ].type, 0 ) );
+				OGL_CHECK(pRenderThread, glBindTexture(pStages[stage].type, 0));
 			} */
 			//if( pStages[ stage ].type != 0 ){
 			//	OGL_CHECK( pRenderThread, glDisable( pStages[ stage ].type ) );
 			//}
 			//OGL_CHECK( pRenderThread, glEnable( type ) );
-			pStages[ stage ].type = type;
+			pStages[stage].type = type;
 		}
 		
 		#ifdef WITH_OPENGLES
 		oglClearError();
-		glBindTexture( type, texture );
+		glBindTexture(type, texture);
 		if(glGetError() == GL_INVALID_ENUM){
 			pRenderThread.GetLogger().LogInfoFormat(
-				"deoglTextureStageManager::BindTexture Failed: stage=%d texture=0x%x type=0x%x", stage, texture, type );
+				"deoglTextureStageManager::BindTexture Failed: stage=%d texture=0x%x type=0x%x", stage, texture, type);
 		}
 		#else
-		OGL_CHECK( pRenderThread, glBindTexture( type, texture ) );
+		OGL_CHECK(pRenderThread, glBindTexture(type, texture));
 		#endif
-		pStages[ stage ].texture = texture;
+		pStages[stage].texture = texture;
 	}
 }
 
-void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum type, GLuint samplerConfig ){
-	BindTexture( stage, texture, type );
+void deoglTextureStageManager::BindTexture(int stage, GLuint texture, GLenum type, GLuint samplerConfig){
+	BindTexture(stage, texture, type);
 	
-	if( samplerConfig != pStages[ stage ].samplerConfig ){
-		OGL_CHECK( pRenderThread, pglBindSampler( stage, samplerConfig ) );
-		pStages[ stage ].samplerConfig = samplerConfig;
+	if(samplerConfig != pStages[stage].samplerConfig){
+		OGL_CHECK(pRenderThread, pglBindSampler(stage, samplerConfig));
+		pStages[stage].samplerConfig = samplerConfig;
 	}
 }
 
@@ -310,8 +310,8 @@ void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum ty
 void deoglTextureStageManager::LogCurrentState() const{
 	int i;
 	
-	for( i=0; i<OGL_MAX_TEXTURE_STAGES; i++ ){
-		pRenderThread.GetLogger().LogInfoFormat( "Texture Stage %2i: type=0x%.4x texture=0x%.4x sampler=0x%.4x",
-			i, pStages[ i ].type, pStages[ i ].texture, pStages[ i ].samplerConfig );
+	for(i=0; i<OGL_MAX_TEXTURE_STAGES; i++){
+		pRenderThread.GetLogger().LogInfoFormat("Texture Stage %2i: type=0x%.4x texture=0x%.4x sampler=0x%.4x",
+			i, pStages[i].type, pStages[i].texture, pStages[i].samplerConfig);
 	}
 }

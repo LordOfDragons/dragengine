@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug snapshot. */
-	deoglDebugSnapshot( deoglRenderThread &renderThread );
+	deoglDebugSnapshot(deoglRenderThread &renderThread);
 	
 	/** Clean up debug snapshot. */
 	~deoglDebugSnapshot();
@@ -85,7 +85,7 @@ public:
 	 * Set snapshot name.
 	 * \details Can contain '/' to create directories.
 	 */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
@@ -93,114 +93,114 @@ public:
 	inline bool GetEnableStates() const{ return pEnableStates; }
 	
 	/** Set enable save snapshot of opengl states. */
-	void SetEnableStates( bool enable );
+	void SetEnableStates(bool enable);
 	
 	/** Enable save snapshot of deferred rendering depth buffer. */
 	inline bool GetEnableDepth() const{ return pEnableDepth; }
 	
 	/** Set enable save snapshot of deferred rendering depth buffer. */
-	void SetEnableDepth( bool enable );
+	void SetEnableDepth(bool enable);
 	
 	/** Enable save snapshot of deferred rendering second depth buffer. */
 	inline bool GetEnableDepth2() const{ return pEnableDepth2; }
 	
 	/** Set enable save snapshot of deferred rendering second depth buffer. */
-	void SetEnableDepth2( bool enable );
+	void SetEnableDepth2(bool enable);
 	
 	/** Enable save snapshot of deferred rendering third depth buffer. */
 	inline bool GetEnableDepth3() const{ return pEnableDepth3; }
 	
 	/** Set enable save snapshot of deferred rendering third depth buffer. */
-	void SetEnableDepth3( bool enable );
+	void SetEnableDepth3(bool enable);
 	
 	/** Enable save snapshot of deferred rendering stencil buffer. */
 	inline bool GetEnableStencil() const{ return pEnableStencil; }
 	
 	/** Set enable save snapshot of deferred rendering stencil buffer. */
-	void SetEnableStencil( bool enable );
+	void SetEnableStencil(bool enable);
 	
 	/** Enable save snapshot of deferred rendering second stencil buffer. */
 	inline bool GetEnableStencil2() const{ return pEnableStencil2; }
 	
 	/** Set enable save snapshot of second deferred rendering stencil buffer. */
-	void SetEnableStencil2( bool enable );
+	void SetEnableStencil2(bool enable);
 	
 	/** Enable save snapshot of deferred rendering color buffer. */
 	inline bool GetEnableColor() const{ return pEnableColor; }
 	
 	/** Set enable save snapshot of deferred rendering color buffer. */
-	void SetEnableColor( bool enable );
+	void SetEnableColor(bool enable);
 	
 	/** Enable save snapshot of deferred rendering diffuse buffer. */
 	inline bool GetEnableDiffuse() const{ return pEnableDiffuse; }
 	
 	/** Set enable save snapshot of deferred rendering diffuse buffer. */
-	void SetEnableDiffuse( bool enable );
+	void SetEnableDiffuse(bool enable);
 	
 	/** Enable save snapshot of deferred rendering normal buffer. */
 	inline bool GetEnableNormal() const{ return pEnableNormal; }
 	
 	/** Set enable save snapshot of deferred rendering normal buffer. */
-	void SetEnableNormal( bool enable );
+	void SetEnableNormal(bool enable);
 	
 	/** Enable save snapshot of deferred rendering reflectivity buffer. */
 	inline bool GetEnableReflectivity() const{ return pEnableReflectivity; }
 	
 	/** Set enable save snapshot of deferred rendering reflectivity buffer. */
-	void SetEnableReflectivity( bool enable );
+	void SetEnableReflectivity(bool enable);
 	
 	/** Enable save snapshot of deferred rendering roughness buffer. */
 	inline bool GetEnableRoughness() const{ return pEnableRoughness; }
 	
 	/** Set enable save snapshot of deferred rendering roughness buffer. */
-	void SetEnableRoughness( bool enable );
+	void SetEnableRoughness(bool enable);
 	
 	/** Enable save snapshot of deferred rendering ao solidity buffer. */
 	inline bool GetEnableAOSolidity() const{ return pEnableAOSolidity; }
 	
 	/** Set enable save snapshot of deferred rendering ao solidity buffer. */
-	void SetEnableAOSolidity( bool enable );
+	void SetEnableAOSolidity(bool enable);
 	
 	/** Enable save snapshot of post processing buffer. */
 	inline bool GetEnablePostProcess() const{ return pEnablePostProcess; }
 	
 	/** Set enable save snapshot of post processing buffer. */
-	void SetEnablePostProcess( bool enable );
+	void SetEnablePostProcess(bool enable);
 	
 	/** Enable save snapshot of deferred rendering temporary 1 buffer. */
 	inline bool GetEnableTemportary1() const{ return pEnableTemporary1; }
 	
 	/** Set enable save snapshot of deferred rendering temporary 1 buffer. */
-	void SetEnableTemporary1( bool enable );
+	void SetEnableTemporary1(bool enable);
 	
 	/** Enable save snapshot of deferred rendering temporary 2 buffer. */
 	inline bool GetEnableTemportary2() const{ return pEnableTemporary2; }
 	
 	/** Set enable save snapshot of deferred rendering temporary 2 buffer. */
-	void SetEnableTemporary2( bool enable );
+	void SetEnableTemporary2(bool enable);
 	
 	/** Enable save snapshot of deferred rendering temporary 3 buffer. */
 	inline bool GetEnableTemportary3() const{ return pEnableTemporary3; }
 	
 	/** Set enable save snapshot of deferred rendering temporary 3 buffer. */
-	void SetEnableTemporary3( bool enable );
+	void SetEnableTemporary3(bool enable);
 	
 	
 	
 	/** Enable snapshot of deferred rendering depth and stencil buffers. */
-	void SetEnableDepthStencil( bool enable );
+	void SetEnableDepthStencil(bool enable);
 	
 	/** Enable snapshot of second deferred rendering depth and stencil buffers. */
-	void SetEnableDepthStencil2( bool enable );
+	void SetEnableDepthStencil2(bool enable);
 	
 	/**
 	 * Enable snapshot of deferred rendering material buffers.
 	 * \details This includes diffuse, normal, reflectivity, roughness, ao and solidity buffers.
 	 */
-	void SetEnableMaterialBuffers( bool enable );
+	void SetEnableMaterialBuffers(bool enable);
 	
 	/** Enable snapshot of all deferred rendering buffers. */
-	void SetEnableAllBuffers( bool enable );
+	void SetEnableAllBuffers(bool enable);
 	
 	
 	
@@ -210,10 +210,10 @@ public:
 	
 private:
 	void pTakeSnapshotStates() const;
-	void pWriteLine( decBaseFileWriter &writer, const char *text ) const;
-	void pWriteState( decBaseFileWriter &writer, const char *key, const char *value ) const;
-	decString pGLConstantName( int value ) const;
-	decString pBitString( int value, int maxBits ) const;
+	void pWriteLine(decBaseFileWriter &writer, const char *text) const;
+	void pWriteState(decBaseFileWriter &writer, const char *key, const char *value) const;
+	decString pGLConstantName(int value) const;
+	decString pBitString(int value, int maxBits) const;
 };
 
 #endif

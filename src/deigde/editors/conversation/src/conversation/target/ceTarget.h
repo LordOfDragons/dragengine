@@ -65,9 +65,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new target. */
-	ceTarget( const char *name = "Target" );
+	ceTarget(const char *name = "Target");
 	/** Creates a new target. */
-	ceTarget( const ceTarget &target );
+	ceTarget(const ceTarget &target);
 	/** Cleans up the target. */
 	virtual ~ceTarget();
 	/*@}*/
@@ -77,37 +77,37 @@ public:
 	/** Retrieves the conversation or NULL if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	/** Sets the conversation or NULL if not set. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Retrieves the actor ID or an empty string if not set. */
 	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor ID or an empty string if not set. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	/** Retrieves the coordinate system ID or an empty string if not set. */
 	inline const decString &GetCoordSystem() const{ return pCoordSystem; }
 	/** Sets the coordinate system ID or an empty string if not set. */
-	void SetCoordSystem( const char *id );
+	void SetCoordSystem(const char *id);
 	
 	/** Retrieves the bone name to use as coordinate frame or an empty string to use the origin. */
 	inline const decString &GetBone() const{ return pBone; }
 	/** Sets the bone name to use as coordinate frame or an empty string to use the origin. */
-	void SetBone( const char *bone );
+	void SetBone(const char *bone);
 	/** Retrieves the position relative to the target object. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	/** Sets the start position relative to the target object. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** Retrieves the orientation in degrees relative to the target object. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	/** Sets the orientation in degrees relative to the target object. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** Retrieves the coordinate system for this target. */
-	void GetCoordinateSystem( cePlayback &playback, decMatrix &coordinateSystem );
+	void GetCoordinateSystem(cePlayback &playback, decMatrix &coordinateSystem);
 	/*@}*/
 };
 

@@ -57,13 +57,13 @@ public:
 	inline float GetTime() const{ return pTime; }
 	
 	/** \brief Set time in seconds. */
-	void SetTime( float time );
+	void SetTime(float time);
 	
 	/** \brief Weight. */
 	inline float GetWeight() const{ return pWeight; }
 	
 	/** \brief Set weight. */
-	void SetWeight( float weight );
+	void SetWeight(float weight);
 	/*@}*/
 };
 

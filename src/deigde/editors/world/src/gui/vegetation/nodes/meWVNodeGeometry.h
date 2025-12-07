@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeGeometry( meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule );
+	meWVNodeGeometry(meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule);
 	
 protected:
 	/** \brief Clean up object. */

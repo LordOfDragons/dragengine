@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWindowMainListener::seWindowMainListener( seWindowMain &window ) :
-pWindow( window ){
+seWindowMainListener::seWindowMainListener(seWindowMain &window) :
+pWindow(window){
 }
 
 seWindowMainListener::~seWindowMainListener(){
@@ -53,20 +53,20 @@ seWindowMainListener::~seWindowMainListener(){
 // Management
 ///////////////
 
-void seWindowMainListener::StateChanged( seSkin* ){
+void seWindowMainListener::StateChanged(seSkin*){
 	pWindow.UpdateAllActions();
 }
 
-void seWindowMainListener::UndoChanged( seSkin* ){
+void seWindowMainListener::UndoChanged(seSkin*){
 	pWindow.UpdateAllActions();
 }
 
-void seWindowMainListener::TextureStructureChanged( seSkin* ){
+void seWindowMainListener::TextureStructureChanged(seSkin*){
 	pWindow.UpdateAllActions();
 }
 
-void seWindowMainListener::PropertyStructureChanged( seSkin*, seTexture *texture ){
-	if( texture->GetActive() ){
+void seWindowMainListener::PropertyStructureChanged(seSkin*, seTexture *texture){
+	if(texture->GetActive()){
 		pWindow.UpdateAllActions();
 	}
 }

@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAddProperty::meUObjectAddProperty( meObject *object, const char *key, const char *value ){
-	if( ! object || ! key || strlen( key ) == 0 || ! value ){
-		DETHROW( deeInvalidParam );
+meUObjectAddProperty::meUObjectAddProperty(meObject *object, const char *key, const char *value){
+	if(!object || !key || strlen(key) == 0 || !value){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add object property" );
+	SetShortInfo("Add object property");
 	
 	pObject = NULL;
 	
@@ -70,18 +70,18 @@ meUObjectAddProperty::~meUObjectAddProperty(){
 // Management
 ///////////////
 
-void meUObjectAddProperty::SetValue( const char *value ){
+void meUObjectAddProperty::SetValue(const char *value){
 	pValue = value;
 }
 
 
 
 void meUObjectAddProperty::Undo(){
-	pObject->RemoveProperty( pKey.GetString() );
+	pObject->RemoveProperty(pKey.GetString());
 }
 
 void meUObjectAddProperty::Redo(){
-	pObject->SetProperty( pKey.GetString(), pValue.GetString() );
+	pObject->SetProperty(pKey.GetString(), pValue.GetString());
 }
 
 void meUObjectAddProperty::ProgressiveRedo(){
@@ -94,7 +94,7 @@ void meUObjectAddProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUObjectAddProperty::pCleanUp(){
-	if( pObject ){
+	if(pObject){
 		pObject->FreeReference();
 	}
 }

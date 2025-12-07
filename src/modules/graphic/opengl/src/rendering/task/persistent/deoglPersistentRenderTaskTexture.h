@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render task pipeline. */
-	deoglPersistentRenderTaskTexture( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTaskTexture(deoglPersistentRenderTaskPool &pool);
 	
 	/** Cleans up the render task pipeline. */
 	~deoglPersistentRenderTaskTexture();
@@ -77,19 +77,19 @@ public:
 	inline deoglPersistentRenderTaskPipeline *GetParentPipeline() const{ return pParentPipeline; }
 	
 	/** Set parent pipeline. */
-	void SetParentPipeline( deoglPersistentRenderTaskPipeline *pipeline );
+	void SetParentPipeline(deoglPersistentRenderTaskPipeline *pipeline);
 	
 	/** Texture units configuration. */
 	inline const deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	
 	/** Set texture units configuration. */
-	void SetTUC( const deoglTexUnitsConfig *tuc );
+	void SetTUC(const deoglTexUnitsConfig *tuc);
 	
 	/** Shader parameter block or NULL if not used. */
 	inline const deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or NULL if not used. */
-	void SetParameterBlock( const deoglShaderParameterBlock *block );
+	void SetParameterBlock(const deoglShaderParameterBlock *block);
 	
 	
 	
@@ -100,13 +100,13 @@ public:
 	decPointerLinkedList::cListEntry *GetRootVAO() const;
 	
 	/** Texture with TUC or NULL. */
-	deoglPersistentRenderTaskVAO *GetVAOWith( const deoglVAO *vao ) const;
+	deoglPersistentRenderTaskVAO *GetVAOWith(const deoglVAO *vao) const;
 	
 	/** Add texture. */
-	deoglPersistentRenderTaskVAO *AddVAO( const deoglVAO *vao );
+	deoglPersistentRenderTaskVAO *AddVAO(const deoglVAO *vao);
 	
 	/** Remove vao. */
-	void RemoveVAO( deoglPersistentRenderTaskVAO *vao );
+	void RemoveVAO(deoglPersistentRenderTaskVAO *vao);
 	
 	/** Remove all VAOs. */
 	void RemoveAllVAOs();

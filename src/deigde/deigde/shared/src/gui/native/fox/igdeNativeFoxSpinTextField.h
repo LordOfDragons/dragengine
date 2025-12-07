@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native spinTextField.
  */
 class igdeNativeFoxSpinTextField : public FXSpinner{
-	FXDECLARE( igdeNativeFoxSpinTextField )
+	FXDECLARE(igdeNativeFoxSpinTextField)
 	
 protected:
 	igdeNativeFoxSpinTextField();
@@ -56,14 +56,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxSpinTextField( igdeSpinTextField &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxSpinTextField(igdeSpinTextField &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxSpinTextField();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxSpinTextField* CreateNativeWidget( igdeSpinTextField &owner );
+	static igdeNativeFoxSpinTextField* CreateNativeWidget(igdeSpinTextField &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -82,19 +82,19 @@ public:
 	virtual void UpdateValue();
 	virtual void UpdateDescription();
 	
-	static int SpinTextFieldFlags( const igdeSpinTextField &owner );
-	static igdeFont *SpinTextFieldFont( const igdeSpinTextField &owner, const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadLeft( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadRight( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadTop( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadBottom( const igdeGuiTheme &guitheme );
+	static int SpinTextFieldFlags(const igdeSpinTextField &owner);
+	static igdeFont *SpinTextFieldFont(const igdeSpinTextField &owner, const igdeGuiTheme &guitheme);
+	static int SpinTextFieldPadLeft(const igdeGuiTheme &guitheme);
+	static int SpinTextFieldPadRight(const igdeGuiTheme &guitheme);
+	static int SpinTextFieldPadTop(const igdeGuiTheme &guitheme);
+	static int SpinTextFieldPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

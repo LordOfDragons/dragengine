@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render image. */
-	deoglRImage( deoglRenderThread &renderThread, const deImage &image );
+	deoglRImage(deoglRenderThread &renderThread, const deImage &image);
 	
 protected:
 	/** Clean up render image. */
@@ -134,7 +134,7 @@ public:
 	 * 
 	 * \warning Has to be called from render thread only.
 	 */
-	void SetTexture( deoglTexture *texture );
+	void SetTexture(deoglTexture *texture);
 	
 	/**
 	 * Set cubemap or nullptr.
@@ -146,7 +146,7 @@ public:
 	 * 
 	 * \warning Has to be called from render thread only.
 	 */
-	void SetCubeMap( deoglCubeMap *cubemap );
+	void SetCubeMap(deoglCubeMap *cubemap);
 	
 	/**
 	 * Array texture or nullptr if not created yet.
@@ -158,7 +158,7 @@ public:
 	 * 
 	 * \warning Has to be called from render thread only.
 	 */
-	void SetArrayTexture( deoglArrayTexture *arrayTexture );
+	void SetArrayTexture(deoglArrayTexture *arrayTexture);
 	
 	/** Texture is used by skin. */
 	inline bool GetSkinUseTexture() const{ return pSkinUseTexture; }

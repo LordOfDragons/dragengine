@@ -111,7 +111,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPPropertyList( igdeEnvironment &environment );
+	gdeWPPropertyList(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -127,13 +127,13 @@ public:
 	inline const gdePropertyList *GetPropertyList() const{ return pPropertyList; }
 	
 	/** \brief Set property list to edit. */
-	void SetPropertyList( const gdePropertyList *propPropertyList );
+	void SetPropertyList(const gdePropertyList *propPropertyList);
 	
 	/** \brief Game definition or NULL. */
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or NULL. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Undo system or NULL. */
 	igdeUndoSystem *GetUndoSystem() const;
@@ -142,7 +142,7 @@ public:
 	inline igdeClipboard *GetClipboard() const{ return pClipboard; }
 	
 	/** \brief Set clipboard or NULL. */
-	void SetClipboard( igdeClipboard *clipboard );
+	void SetClipboard(igdeClipboard *clipboard);
 	
 	
 	
@@ -179,10 +179,10 @@ public:
 	void UpdateEnabled();
 	
 	/** \brief Select property. */
-	void SelectProperty( gdeProperty *property );
+	void SelectProperty(gdeProperty *property);
 	
 	/** \brief Select custom file pattern. */
-	void SelectCustomPattern( gdeFilePattern *filePattern );
+	void SelectCustomPattern(gdeFilePattern *filePattern);
 	
 	/** \brief Set default value from type specific default value. */
 	void SetDefaultValueFromType();
@@ -210,27 +210,27 @@ public:
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoAdd( gdeProperty *property ) = 0;
-	virtual igdeUndo *UndoRemove( gdeProperty *property ) = 0;
-	virtual igdeUndo *UndoPaste( gdeProperty *property ) = 0;
-	virtual igdeUndo *UndoName( gdeProperty *property, const decString &name ) = 0;
-	virtual igdeUndo *UndoDescription( gdeProperty *property, const decString &description ) = 0;
-	virtual igdeUndo *UndoType( gdeProperty *property, gdeProperty::ePropertyTypes type ) = 0;
-	virtual igdeUndo *UndoMinimumValue( gdeProperty *property, float value ) = 0;
-	virtual igdeUndo *UndoMaximumValue( gdeProperty *property, float value ) = 0;
-	virtual igdeUndo *UndoDefaultValue( gdeProperty *property, const decString &newValue, const decString &oldValue ) = 0;
-	virtual igdeUndo *UndoOptions( gdeProperty *property, const decStringList &options ) = 0;
-	virtual igdeUndo *UndoPathPatternType( gdeProperty *property, gdeProperty::ePathPatternTypes type ) = 0;
-	virtual igdeUndo *UndoIdentifierGroup( gdeProperty *property, const decString &identifier ) = 0;
-	virtual igdeUndo *UndoIdentifierUsage( gdeProperty *property ) = 0;
-	virtual igdeUndo *UndoCustomFilePatternAdd( gdeProperty *property, gdeFilePattern *filePattern ) = 0;
-	virtual igdeUndo *UndoCustomFilePatternRemove( gdeProperty *property, gdeFilePattern *filePattern ) = 0;
-	virtual igdeUndo *UndoCustomFilePatternName( gdeProperty *property,
-		gdeFilePattern *filePattern, const decString &name ) = 0;
-	virtual igdeUndo *UndoCustomFilePatternPattern( gdeProperty *property,
-		gdeFilePattern *filePattern, const decString &pattern ) = 0;
-	virtual igdeUndo *UndoCustomFilePatternExtension( gdeProperty *property,
-		gdeFilePattern *filePattern, const decString &extension ) = 0;
+	virtual igdeUndo *UndoAdd(gdeProperty *property) = 0;
+	virtual igdeUndo *UndoRemove(gdeProperty *property) = 0;
+	virtual igdeUndo *UndoPaste(gdeProperty *property) = 0;
+	virtual igdeUndo *UndoName(gdeProperty *property, const decString &name) = 0;
+	virtual igdeUndo *UndoDescription(gdeProperty *property, const decString &description) = 0;
+	virtual igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type) = 0;
+	virtual igdeUndo *UndoMinimumValue(gdeProperty *property, float value) = 0;
+	virtual igdeUndo *UndoMaximumValue(gdeProperty *property, float value) = 0;
+	virtual igdeUndo *UndoDefaultValue(gdeProperty *property, const decString &newValue, const decString &oldValue) = 0;
+	virtual igdeUndo *UndoOptions(gdeProperty *property, const decStringList &options) = 0;
+	virtual igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type) = 0;
+	virtual igdeUndo *UndoIdentifierGroup(gdeProperty *property, const decString &identifier) = 0;
+	virtual igdeUndo *UndoIdentifierUsage(gdeProperty *property) = 0;
+	virtual igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern) = 0;
+	virtual igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern) = 0;
+	virtual igdeUndo *UndoCustomFilePatternName(gdeProperty *property,
+		gdeFilePattern *filePattern, const decString &name) = 0;
+	virtual igdeUndo *UndoCustomFilePatternPattern(gdeProperty *property,
+		gdeFilePattern *filePattern, const decString &pattern) = 0;
+	virtual igdeUndo *UndoCustomFilePatternExtension(gdeProperty *property,
+		gdeFilePattern *filePattern, const decString &extension) = 0;
 	/*@}*/
 };
 

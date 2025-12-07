@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feFontBuilder::feFontBuilder( feFont *font ){
-	if( ! font ) DETHROW( deeInvalidParam );
+feFontBuilder::feFontBuilder(feFont *font){
+	if(!font) DETHROW(deeInvalidParam);
 	
 	pFont = font;
 }
@@ -58,40 +58,40 @@ feFontBuilder::~feFontBuilder(){
 // Management
 ///////////////
 
-void feFontBuilder::BuildFont( deFont *engFont ){
-	if( ! engFont ){
-		DETHROW( deeInvalidParam );
+void feFontBuilder::BuildFont(deFont *engFont){
+	if(!engFont){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int glyphCount = pFont->GetGlyphCount();
 	
 	// set font properties
-	engFont->SetIsColorFont( pFont->GetColorFont() );
-	engFont->SetLineHeight( pFont->GetLineHeight() );
+	engFont->SetIsColorFont(pFont->GetColorFont());
+	engFont->SetLineHeight(pFont->GetLineHeight());
 	
 	// set font image
 	const feFontImage &fontImage = *pFont->GetFontImage();
 	
-	engFont->SetImage( fontImage.GetEngineImage() );
-	engFont->SetImagePath( fontImage.GetFilename() );
+	engFont->SetImage(fontImage.GetEngineImage());
+	engFont->SetImagePath(fontImage.GetFilename());
 	
 	// set glyphs
-	engFont->SetGlyphCount( glyphCount );
+	engFont->SetGlyphCount(glyphCount);
 	
 	int i;
-	for( i=0; i<glyphCount; i++ ){
-		const feFontGlyph &glyph = *pFont->GetGlyphAt( i );
+	for(i=0; i<glyphCount; i++){
+		const feFontGlyph &glyph = *pFont->GetGlyphAt(i);
 		
-		deFontGlyph &engGlyph = engFont->GetGlyphAt( i );
+		deFontGlyph &engGlyph = engFont->GetGlyphAt(i);
 		
-		engGlyph.SetUnicode( glyph.GetCode() );
-		engGlyph.SetX( glyph.GetU() );
-		engGlyph.SetY( glyph.GetV() );
-		engGlyph.SetZ( 0 );
-		engGlyph.SetWidth( glyph.GetWidth() );
+		engGlyph.SetUnicode(glyph.GetCode());
+		engGlyph.SetX(glyph.GetU());
+		engGlyph.SetY(glyph.GetV());
+		engGlyph.SetZ(0);
+		engGlyph.SetWidth(glyph.GetWidth());
 		engGlyph.SetHeight(pFont->GetLineHeight());
-		engGlyph.SetBearing( glyph.GetBearing() );
-		engGlyph.SetAdvance( glyph.GetAdvance() );
+		engGlyph.SetBearing(glyph.GetBearing());
+		engGlyph.SetAdvance(glyph.GetAdvance());
 		
 	}
 }

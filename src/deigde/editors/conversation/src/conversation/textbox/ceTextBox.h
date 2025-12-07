@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text box. */
-	ceTextBox( deEngine &engine, deLogger &logger );
+	ceTextBox(deEngine &engine, deLogger &logger);
 	
 	/** \brief Clean up text box. */
 	~ceTextBox();
@@ -92,37 +92,37 @@ public:
 	inline const decString &GetPathFont() const{ return pPathFont; }
 	
 	/** \brief Set font path. */
-	void SetPathFont( const char *path );
+	void SetPathFont(const char *path);
 	
 	/** \brief Background color. */
 	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
 	
 	/** \brief Set background color. */
-	void SetBackgroundColor( const decColor &color );
+	void SetBackgroundColor(const decColor &color);
 	
 	/** \brief Text color. */
 	inline const decColor &GetTextColor() const{ return pTextColor; }
 	
 	/** \brief Set text color. */
-	void SetTextColor( const decColor &color );
+	void SetTextColor(const decColor &color);
 	
 	/** \brief Text size. */
 	inline int GetTextSize() const{ return pTextSize; }
 	
 	/** \brief Set text size. */
-	void SetTextSize( int size );
+	void SetTextSize(int size);
 	
 	/** \brief Text padding. */
 	inline int GetPadding() const{ return pPadding; }
 	
 	/** \brief Set text padding. */
-	void SetPadding( int padding );
+	void SetPadding(int padding);
 	
 	/** \brief Offset of the text. */
 	inline int GetTextOffset() const{ return pTextOffset; }
 	
 	/** \brief Set offset of the text. */
-	void SetTextOffset( int offset );
+	void SetTextOffset(int offset);
 	
 	/** \brief List of texts. */
 	inline ceTextBoxTextList &GetTextList(){ return pTexts; }

@@ -57,10 +57,10 @@ protected:
 	meWVNodeComponents &pNode;
 	
 public:
-	cEditVector( meWVNodeComponents &node ) : pNode( node ){ }
+	cEditVector(meWVNodeComponents &node) : pNode(node){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
-		if( editVector->GetVector().IsEqualTo( pNode.GetRuleComponents()->GetVector() ) ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
+		if(editVector->GetVector().IsEqualTo(pNode.GetRuleComponents()->GetVector())){
 			return;
 		}
 		
@@ -80,15 +80,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeComponents::meWVNodeComponents( meWindowVegetation &windowVegetation, meHTVRuleComponents *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleComponents( rule )
+meWVNodeComponents::meWVNodeComponents(meWindowVegetation &windowVegetation, meHTVRuleComponents *rule) :
+meWVNode(windowVegetation, rule),
+pRuleComponents(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Components" );
+	SetTitle("Components");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -106,12 +106,12 @@ pRuleComponents( rule )
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
 		"Vector", "Vector to decompose",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector));
-	helper.EditVector( slot, "Input vector.", pEditVector, new cEditVector( *this ) );
-	AddSlot( slot );
+	helper.EditVector(slot, "Input vector.", pEditVector, new cEditVector(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 }
 
 meWVNodeComponents::~meWVNodeComponents(){
@@ -125,5 +125,5 @@ meWVNodeComponents::~meWVNodeComponents(){
 void meWVNodeComponents::Update(){
 	meWVNode::Update();
 	
-	pEditVector->SetVector( pRuleComponents->GetVector() );
+	pEditVector->SetVector(pRuleComponents->GetVector());
 }

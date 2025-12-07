@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPropertyAdd::gdeUGDDPropertyAdd( gdeGameDefinition *gamedef, gdeProperty *property ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDDPropertyAdd::gdeUGDDPropertyAdd(gdeGameDefinition *gamedef, gdeProperty *property) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition add property" );
+	SetShortInfo("Game definition add property");
 	
 	pGameDefinition = gamedef;
 	gamedef->AddReference();
@@ -58,10 +58,10 @@ pProperty( NULL )
 }
 
 gdeUGDDPropertyAdd::~gdeUGDDPropertyAdd(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -72,11 +72,11 @@ gdeUGDDPropertyAdd::~gdeUGDDPropertyAdd(){
 ///////////////
 
 void gdeUGDDPropertyAdd::Undo(){
-	pGameDefinition->GetDecalProperties().Remove( pProperty );
+	pGameDefinition->GetDecalProperties().Remove(pProperty);
 	pGameDefinition->NotifyDecalPropertiesChanged();
 }
 
 void gdeUGDDPropertyAdd::Redo(){
-	pGameDefinition->GetDecalProperties().Add( pProperty );
+	pGameDefinition->GetDecalProperties().Add(pProperty);
 	pGameDefinition->NotifyDecalPropertiesChanged();
 }

@@ -43,8 +43,8 @@
 gdeOCEnvMapProbeList::gdeOCEnvMapProbeList(){
 }
 
-gdeOCEnvMapProbeList::gdeOCEnvMapProbeList( const gdeOCEnvMapProbeList &list ) :
-pProbes( list.pProbes ){
+gdeOCEnvMapProbeList::gdeOCEnvMapProbeList(const gdeOCEnvMapProbeList &list) :
+pProbes(list.pProbes){
 }
 
 gdeOCEnvMapProbeList::~gdeOCEnvMapProbeList(){
@@ -59,27 +59,27 @@ int gdeOCEnvMapProbeList::GetCount() const{
 	return pProbes.GetCount();
 }
 
-gdeOCEnvMapProbe *gdeOCEnvMapProbeList::GetAt( int index ) const{
-	return ( gdeOCEnvMapProbe* )pProbes.GetAt( index );
+gdeOCEnvMapProbe *gdeOCEnvMapProbeList::GetAt(int index) const{
+	return (gdeOCEnvMapProbe*)pProbes.GetAt(index);
 }
 
-int gdeOCEnvMapProbeList::IndexOf( gdeOCEnvMapProbe *probe ) const{
-	return pProbes.IndexOf( probe );
+int gdeOCEnvMapProbeList::IndexOf(gdeOCEnvMapProbe *probe) const{
+	return pProbes.IndexOf(probe);
 }
 
-bool gdeOCEnvMapProbeList::Has( gdeOCEnvMapProbe *probe ) const{
-	return pProbes.Has( probe );
+bool gdeOCEnvMapProbeList::Has(gdeOCEnvMapProbe *probe) const{
+	return pProbes.Has(probe);
 }
 
-void gdeOCEnvMapProbeList::Add( gdeOCEnvMapProbe *probe ){
-	if( ! probe || Has( probe ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCEnvMapProbeList::Add(gdeOCEnvMapProbe *probe){
+	if(!probe || Has(probe)){
+		DETHROW(deeInvalidParam);
 	}
-	pProbes.Add( probe );
+	pProbes.Add(probe);
 }
 
-void gdeOCEnvMapProbeList::Remove( gdeOCEnvMapProbe *probe ){
-	pProbes.Remove( probe );
+void gdeOCEnvMapProbeList::Remove(gdeOCEnvMapProbe *probe){
+	pProbes.Remove(probe);
 }
 
 void gdeOCEnvMapProbeList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCEnvMapProbeList::RemoveAll(){
 
 
 
-gdeOCEnvMapProbeList &gdeOCEnvMapProbeList::operator=( const gdeOCEnvMapProbeList &list ){
+gdeOCEnvMapProbeList &gdeOCEnvMapProbeList::operator=(const gdeOCEnvMapProbeList &list){
 	pProbes = list.pProbes;
 	return *this;
 }

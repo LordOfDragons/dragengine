@@ -58,31 +58,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Controller at index. */
-	seController *GetAt( int index ) const;
+	seController *GetAt(int index) const;
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOf( seController *controller ) const;
+	int IndexOf(seController *controller) const;
 	
 	/** \brief Controller is present. */
-	bool Has( seController *controller ) const;
+	bool Has(seController *controller) const;
 	
 	/** \brief Add controller. */
-	void Add( seController *controller );
+	void Add(seController *controller);
 	
 	/** \brief Insert controller. */
-	void InsertAt( seController *controller, int index );
+	void InsertAt(seController *controller, int index);
 	
 	/** \brief Move controller. */
-	void MoveTo( seController *controller, int index );
+	void MoveTo(seController *controller, int index);
 	
 	/** \brief Remove controller. */
-	void Remove( seController *controller );
+	void Remove(seController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAll();
 	
 	/** \brief Set list from another list. */
-	seControllerList &operator=( const seControllerList &list );
+	seControllerList &operator=(const seControllerList &list);
 	/*@}*/
 };
 

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feWPUndoHistoryListener::feWPUndoHistoryListener( feWPUndoHistory &panel ) :
-pPanel( panel ){
+feWPUndoHistoryListener::feWPUndoHistoryListener(feWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 feWPUndoHistoryListener::~feWPUndoHistoryListener(){
@@ -51,6 +51,6 @@ feWPUndoHistoryListener::~feWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void feWPUndoHistoryListener::UndoChanged( feFont *font ){
+void feWPUndoHistoryListener::UndoChanged(feFont *font){
     pPanel.UpdateUndo();
 }

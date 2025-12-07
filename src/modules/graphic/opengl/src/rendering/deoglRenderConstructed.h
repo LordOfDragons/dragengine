@@ -47,10 +47,10 @@ private:
 	GLuint pVAOShapes;
 	GLuint pActiveVAO;
 	
-	const deoglPipeline *pPipelineCanvasColor[ 2 ];
-	const deoglPipeline *pPipelineCanvasColorMask[ 2 ];
-	const deoglPipeline *pPipelineCanvasImage[ 2 ];
-	const deoglPipeline *pPipelineCanvasImageMask[ 2 ];
+	const deoglPipeline *pPipelineCanvasColor[2];
+	const deoglPipeline *pPipelineCanvasColorMask[2];
+	const deoglPipeline *pPipelineCanvasImage[2];
+	const deoglPipeline *pPipelineCanvasImageMask[2];
 	const deoglPipeline *pPipelineCanvasImageArray[2];
 	const deoglPipeline *pPipelineCanvasImageMaskArray[2];
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create canvas renderer. */
-	deoglRenderConstructed( deoglRenderThread &renderThread );
+	deoglRenderConstructed(deoglRenderThread &renderThread);
 	
 	/** Clean up canvas renderer. */
 	virtual ~deoglRenderConstructed() override;
@@ -71,16 +71,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set opengl states required for constructed rendering. */
-	void Prepare( const deoglRenderCanvasContext &context );
+	void Prepare(const deoglRenderCanvasContext &context);
 	
 	/** Draw shape node. */
-	void DrawNodeShape( const deoglRenderCanvasContext &context, const deoglSkinStateCNShape &node );
+	void DrawNodeShape(const deoglRenderCanvasContext &context, const deoglSkinStateCNShape &node);
 	
 	/** Draw image node. */
-	void DrawNodeImage( const deoglRenderCanvasContext &context, const deoglSkinStateCNImage &node );
+	void DrawNodeImage(const deoglRenderCanvasContext &context, const deoglSkinStateCNImage &node);
 	
 	/** Draw text node. */
-	void DrawNodeText( const deoglRenderCanvasContext &context, const deoglSkinStateCNText &node );
+	void DrawNodeText(const deoglRenderCanvasContext &context, const deoglSkinStateCNText &node);
 	/*@}*/
 	
 	

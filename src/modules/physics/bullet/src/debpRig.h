@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create bullet rig peer. */
-	debpRig( dePhysicsBullet &bullet, const deRig &rig );
+	debpRig(dePhysicsBullet &bullet, const deRig &rig);
 	
 	/** \brief Clean up rig peer. */
 	virtual ~debpRig();

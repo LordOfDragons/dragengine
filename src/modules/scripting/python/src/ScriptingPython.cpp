@@ -61,7 +61,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *SPCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *SPCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -71,13 +71,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *SPCreateModule( deLoadableModule *loadableMod
 // Entry Function
 ///////////////////
 
-deBaseModule *SPCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *SPCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new ScriptingPython( *loadableModule );
+		module = new ScriptingPython(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -100,10 +100,10 @@ deBaseModule *SPCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-ScriptingPython::ScriptingPython( deLoadableModule &loadableModule ) :
-deBaseScriptingModule( loadableModule ){
-	if( pSingleton ){
-		DETHROW( deeInvalidParam );
+ScriptingPython::ScriptingPython(deLoadableModule &loadableModule) :
+deBaseScriptingModule(loadableModule){
+	if(pSingleton){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pModuleGame = NULL;
@@ -143,44 +143,44 @@ const char *ScriptingPython::GetVFSSharedDataDir() const{
 	return "/shareddata";
 }
 
-bool ScriptingPython::Init( const char *scriptDirectory, const char *gameObject ){
+bool ScriptingPython::Init(const char *scriptDirectory, const char *gameObject){
 	PyObject *funcConstructor = NULL;
 	
 	pScriptPath = scriptDirectory;
 	
-	pScriptFileList = new spScriptFileList( this );
+	pScriptFileList = new spScriptFileList(this);
 	
 	Py_Initialize();
-	if( PyErr_Occurred() ){
+	if(PyErr_Occurred()){
 		PyErr_Print();
 		return false;
 	}
 	
 	try{
 		pCreateModules();
-		pLoadGameScript( scriptDirectory, gameObject );
+		pLoadGameScript(scriptDirectory, gameObject);
 		
 		// create game object
-		funcConstructor = PyObject_GetAttrString( pModuleGame, SP_GAME_CLASS_SCRIPT );
-		if( ! funcConstructor || ! PyCallable_Check( funcConstructor ) ){
-			LogErrorFormat( "Failed to run function '%s'.\n", SP_GAME_CLASS_SCRIPT );
-			DETHROW( deeInvalidAction );
+		funcConstructor = PyObject_GetAttrString(pModuleGame, SP_GAME_CLASS_SCRIPT);
+		if(!funcConstructor || !PyCallable_Check(funcConstructor)){
+			LogErrorFormat("Failed to run function '%s'.\n", SP_GAME_CLASS_SCRIPT);
+			DETHROW(deeInvalidAction);
 		}
 		
-		pObjectGame = PyObject_CallObject( funcConstructor, NULL );
-		if( ! pObjectGame ){
-			LogErrorFormat( "Failed to construct instance of class '%s'.\n", SP_GAME_CLASS_SCRIPT );
-			DETHROW( deeInvalidAction );
+		pObjectGame = PyObject_CallObject(funcConstructor, NULL);
+		if(!pObjectGame){
+			LogErrorFormat("Failed to construct instance of class '%s'.\n", SP_GAME_CLASS_SCRIPT);
+			DETHROW(deeInvalidAction);
 		}
-		Py_DECREF( funcConstructor );
+		Py_DECREF(funcConstructor);
 		
-	}catch( const deException &e ){
-		LogException( e );
-		if( PyErr_Occurred() ){
+	}catch(const deException &e){
+		LogException(e);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 		}
-		if( funcConstructor ){
-			Py_DECREF( funcConstructor );
+		if(funcConstructor){
+			Py_DECREF(funcConstructor);
 		}
 		Py_Finalize();
 		return false;
@@ -190,89 +190,89 @@ bool ScriptingPython::Init( const char *scriptDirectory, const char *gameObject 
 }
 
 void ScriptingPython::ShutDown(){
-	if( Py_IsInitialized() ){
+	if(Py_IsInitialized()){
 		PythonCleanUp();
 		
 		// delete script file modules
 		pScriptFileList->RemoveAll();
 		
 		// delete modules
-		if( pModuleEngine ){
+		if(pModuleEngine){
 			delete pModuleEngine;
 			pModuleEngine = NULL;
 		}
-		if( pTypeCanvas ){
+		if(pTypeCanvas){
 			delete pTypeCanvas;
 			pTypeCanvas = NULL;
 		}
-		if( pModuleGraphicSystem ){
+		if(pModuleGraphicSystem){
 			delete pModuleGraphicSystem;
 			pModuleGraphicSystem = NULL;
 		}
-		if( pTypeWorld ){
+		if(pTypeWorld){
 			delete pTypeWorld;
 			pTypeWorld = NULL;
 		}
-		if( pTypeModuleLoader ){
+		if(pTypeModuleLoader){
 			delete pTypeModuleLoader;
 			pTypeModuleLoader = NULL;
 		}
 		
 		// delete namespaces
-		if( pNamespaceGui ){
+		if(pNamespaceGui){
 			delete pNamespaceGui;
 			pNamespaceGui = NULL;
 		}
-		if( pNamespaceScenery ){
+		if(pNamespaceScenery){
 			delete pNamespaceScenery;
 			pNamespaceScenery = NULL;
 		}
-		if( pNamespaceDragengine ){
+		if(pNamespaceDragengine){
 			delete pNamespaceDragengine;
 			pNamespaceDragengine = NULL;
 		}
 	}
 	
-	if( pScriptFileList ){
+	if(pScriptFileList){
 		delete pScriptFileList;
 		pScriptFileList = NULL;
 	}
 }
 
-deBaseScriptingCollider *ScriptingPython::CreateCollider( deCollider *collider ){
+deBaseScriptingCollider *ScriptingPython::CreateCollider(deCollider *collider){
 	return new deBaseScriptingCollider;
 }
 
-deBaseScriptingServer *ScriptingPython::CreateServer( deServer *server ){
+deBaseScriptingServer *ScriptingPython::CreateServer(deServer *server){
 	return new deBaseScriptingServer;
 }
 
-deBaseScriptingConnection *ScriptingPython::CreateConnection( deConnection *connection ){
+deBaseScriptingConnection *ScriptingPython::CreateConnection(deConnection *connection){
 	return new deBaseScriptingConnection;
 }
 
-deBaseScriptingNetworkState *ScriptingPython::CreateNetworkState( deNetworkState *state ){
+deBaseScriptingNetworkState *ScriptingPython::CreateNetworkState(deNetworkState *state){
 	return new deBaseScriptingNetworkState;
 }
 
-deBaseScriptingTouchSensor *ScriptingPython::CreateTouchSensor( deTouchSensor *touchSensor ){
+deBaseScriptingTouchSensor *ScriptingPython::CreateTouchSensor(deTouchSensor *touchSensor){
 	return new deBaseScriptingTouchSensor;
 }
 
-deBaseScriptingPropField *ScriptingPython::CreatePropField( dePropField *propField ){
+deBaseScriptingPropField *ScriptingPython::CreatePropField(dePropField *propField){
 	return new deBaseScriptingPropField;
 }
 
 deBaseScriptingParticleEmitterInstance *ScriptingPython::CreateParticleEmitterInstance(
-deParticleEmitterInstance *instance ){
+deParticleEmitterInstance *instance){
 	return NULL;
 }
 
-deBaseScriptingSoundLevelMeter *ScriptingPython::CreateSoundLevelMeter( deSoundLevelMeter *meter ){
+deBaseScriptingSoundLevelMeter *ScriptingPython::CreateSoundLevelMeter(deSoundLevelMeter *meter){
 	return NULL;
 }
 
-deBaseScriptingSpeaker *ScriptingPython::CreateSpeaker( deSpeaker *speaker ){
+deBaseScriptingSpeaker *ScriptingPython::CreateSpeaker(deSpeaker *speaker){
 	return NULL;
 }
 
@@ -287,11 +287,11 @@ ScriptingPython *ScriptingPython::GetSP(){
 
 
 bool ScriptingPython::InitGame(){
-	return CallFunction( "initGame" );
+	return CallFunction("initGame");
 }
 
 bool ScriptingPython::ExitGame(){
-	return CallFunction( "cleanUp" );
+	return CallFunction("cleanUp");
 }
 
 bool ScriptingPython::OnFrameUpdate(){
@@ -300,50 +300,50 @@ bool ScriptingPython::OnFrameUpdate(){
 	PyObject *retval = NULL;
 	PyObject *args = NULL;
 	
-	args = Py_BuildValue( "(f)", GetGameEngine()->GetElapsedTime() );
-	if( ! args ){
-		LogErrorFormat( "Failed to run function '%s'.\n", functionName );
-		if( PyErr_Occurred() ){
+	args = Py_BuildValue("(f)", GetGameEngine()->GetElapsedTime());
+	if(!args){
+		LogErrorFormat("Failed to run function '%s'.\n", functionName);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 		}
 		return false;
 	}
 	
-	function = PyObject_GetAttrString( pObjectGame, functionName );
-	if( ! function || ! PyCallable_Check( function ) ){
-		LogErrorFormat( "Failed to run function '%s'.\n", functionName );
-		if( PyErr_Occurred() ){
+	function = PyObject_GetAttrString(pObjectGame, functionName);
+	if(!function || !PyCallable_Check(function)){
+		LogErrorFormat("Failed to run function '%s'.\n", functionName);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 		}
-		if( function ){
-			Py_DECREF( function );
+		if(function){
+			Py_DECREF(function);
 		}
-		Py_DECREF( args );
+		Py_DECREF(args);
 		return false;
 	}
 	
-	retval = PyObject_CallObject( function, args );
-	if( ! retval ){
-		LogErrorFormat( "Failed to run function '%s'.\n", functionName );
-		if( PyErr_Occurred() ){
+	retval = PyObject_CallObject(function, args);
+	if(!retval){
+		LogErrorFormat("Failed to run function '%s'.\n", functionName);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 		}
-		Py_DECREF( function );
-		Py_DECREF( args );
+		Py_DECREF(function);
+		Py_DECREF(args);
 		return false;
 	}
-	Py_DECREF( retval );
-	Py_DECREF( function );
-	Py_DECREF( args );
+	Py_DECREF(retval);
+	Py_DECREF(function);
+	Py_DECREF(args);
 	
 	return true;
 }
 
 bool ScriptingPython::OnResizeRenderWindow(){
-	return CallFunction( "onResizeRenderWindow" );
+	return CallFunction("onResizeRenderWindow");
 }
 
-bool ScriptingPython::SendEvent( deInputEvent *event ){
+bool ScriptingPython::SendEvent(deInputEvent *event){
 	const char *functionName = "";
 	int type = event->GetType();
 	PyObject *function = NULL;
@@ -351,71 +351,71 @@ bool ScriptingPython::SendEvent( deInputEvent *event ){
 	PyObject *args = NULL;
 	
 	// eventKeyPress( keycode, modifiers, keychar )
-	if( type == deInputEvent::eeKeyPress ){
+	if(type == deInputEvent::eeKeyPress){
 		functionName = "eventKeyPress";
-		args = Py_BuildValue( "(iii)", event->GetCode(), event->GetState(), event->GetKeyChar() );
+		args = Py_BuildValue("(iii)", event->GetCode(), event->GetState(), event->GetKeyChar());
 		
 	// eventKeyRelease( keycode, modifiers, keychar )
-	}else if( type == deInputEvent::eeKeyRelease ){
+	}else if(type == deInputEvent::eeKeyRelease){
 		functionName = "eventKeyRelease";
-		args = Py_BuildValue( "(iii)", event->GetCode(), event->GetState(), event->GetKeyChar() );
+		args = Py_BuildValue("(iii)", event->GetCode(), event->GetState(), event->GetKeyChar());
 		
 	// eventMousePress( button, modifiers )
-	}else if( type == deInputEvent::eeMousePress ){
+	}else if(type == deInputEvent::eeMousePress){
 		functionName = "eventMousePress";
-		args = Py_BuildValue( "(ii)", event->GetCode(), event->GetState() );
+		args = Py_BuildValue("(ii)", event->GetCode(), event->GetState());
 		
 	// eventMouseRelease( button, modifiers )
-	}else if( type == deInputEvent::eeMouseRelease ){
+	}else if(type == deInputEvent::eeMouseRelease){
 		functionName = "eventMouseRelease";
-		args = Py_BuildValue( "(ii)", event->GetCode(), event->GetState() );
+		args = Py_BuildValue("(ii)", event->GetCode(), event->GetState());
 		
 	// eventMouseMove( dx, dy, button, modifiers )
-	}else if( type == deInputEvent::eeMouseMove ){
+	}else if(type == deInputEvent::eeMouseMove){
 		functionName = "eventMouseMove";
-		args = Py_BuildValue( "(iiii)", event->GetX(), event->GetY(), event->GetCode(), event->GetState() );
+		args = Py_BuildValue("(iiii)", event->GetX(), event->GetY(), event->GetCode(), event->GetState());
 		
 	// this should never happen
 	}else{
-		LogErrorFormat( "What the... an unknown event code?! (%i)\n", type );
+		LogErrorFormat("What the... an unknown event code?!(%i)\n", type);
 		return false;
 	}
 	
-	if( ! args ){
-		LogErrorFormat( "Failed to run function '%s'.\n", functionName );
-		if( PyErr_Occurred() ){
+	if(!args){
+		LogErrorFormat("Failed to run function '%s'.\n", functionName);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 		}
 		return false;
 	}
 	
 	// call the function if possible
-	function = PyObject_GetAttrString( pObjectGame, functionName );
-	if( ! function || ! PyCallable_Check( function ) ){
-		LogErrorFormat( "Failed to run function '%s'.\n", functionName );
-		if( PyErr_Occurred() ){
+	function = PyObject_GetAttrString(pObjectGame, functionName);
+	if(!function || !PyCallable_Check(function)){
+		LogErrorFormat("Failed to run function '%s'.\n", functionName);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 		}
-		if( function ){
-			Py_DECREF( function );
+		if(function){
+			Py_DECREF(function);
 		}
-		Py_DECREF( args );
+		Py_DECREF(args);
 		return false;
 	}
 	
-	retval = PyObject_CallObject( function, args );
-	if( ! retval ){
-		LogErrorFormat( "Failed to run function '%s'.\n", functionName );
-		if( PyErr_Occurred() ){
+	retval = PyObject_CallObject(function, args);
+	if(!retval){
+		LogErrorFormat("Failed to run function '%s'.\n", functionName);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 		}
-		Py_DECREF( function );
-		Py_DECREF( args );
+		Py_DECREF(function);
+		Py_DECREF(args);
 		return false;
 	}
-	Py_DECREF( retval );
-	Py_DECREF( function );
-	Py_DECREF( args );
+	Py_DECREF(retval);
+	Py_DECREF(function);
+	Py_DECREF(args);
 	
 	return true;
 }
@@ -424,12 +424,12 @@ bool ScriptingPython::SendEvent( deInputEvent *event ){
 
 void ScriptingPython::PythonCleanUp(){
 	// clean up game object
-	if( pObjectGame ){
-		Py_DECREF( pObjectGame );
+	if(pObjectGame){
+		Py_DECREF(pObjectGame);
 		pObjectGame = NULL;
 	}
-	if( pModuleGame ){
-		Py_DECREF( pModuleGame );
+	if(pModuleGame){
+		Py_DECREF(pModuleGame);
 		pModuleGame = NULL;
 	}
 	
@@ -437,30 +437,30 @@ void ScriptingPython::PythonCleanUp(){
 	pScriptFileList->PythonCleanUpAll();
 	
 	// cleanup modules
-	if( pTypeWorld ){
+	if(pTypeWorld){
 		pTypeWorld->PythonCleanUp();
 	}
-	if( pModuleGraphicSystem ){
+	if(pModuleGraphicSystem){
 		pModuleGraphicSystem->PythonCleanUp();
 	}
-	if( pTypeCanvas ){
+	if(pTypeCanvas){
 		pTypeCanvas->PythonCleanUp();
 	}
-	if( pModuleEngine ){
+	if(pModuleEngine){
 		pModuleEngine->PythonCleanUp();
 	}
-	if( pTypeModuleLoader ){
+	if(pTypeModuleLoader){
 		pTypeModuleLoader->PythonCleanUp();
 	}
 	
 	// clean up namespaces
-	if( pNamespaceGui ){
+	if(pNamespaceGui){
 		pNamespaceGui->PythonCleanUp();
 	}
-	if( pNamespaceScenery ){
+	if(pNamespaceScenery){
 		pNamespaceScenery->PythonCleanUp();
 	}
-	if( pNamespaceDragengine ){
+	if(pNamespaceDragengine){
 		pNamespaceDragengine->PythonCleanUp();
 	}
 	
@@ -470,32 +470,32 @@ void ScriptingPython::PythonCleanUp(){
 
 
 
-bool ScriptingPython::CallFunction( const char *functionName ){
-	PyObject * const function = PyObject_GetAttrString( pObjectGame, functionName );
-	if( ! function || ! PyCallable_Check( function ) ){
-		LogErrorFormat( "Failed to run function '%s'.\n", functionName );
-		if( PyErr_Occurred() ){
+bool ScriptingPython::CallFunction(const char *functionName){
+	PyObject * const function = PyObject_GetAttrString(pObjectGame, functionName);
+	if(!function || !PyCallable_Check(function)){
+		LogErrorFormat("Failed to run function '%s'.\n", functionName);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 			PyErr_Clear();
 		}
-		if( function ){
-			Py_DECREF( function );
+		if(function){
+			Py_DECREF(function);
 		}
 		return false;
 	}
 	
-	PyObject * const retval = PyObject_CallObject( function, NULL );
-	if( ! retval ){
-		LogErrorFormat( "Failed to run function '%s'.\n", functionName );
-		if( PyErr_Occurred() ){
+	PyObject * const retval = PyObject_CallObject(function, NULL);
+	if(!retval){
+		LogErrorFormat("Failed to run function '%s'.\n", functionName);
+		if(PyErr_Occurred()){
 			PyErr_Print();
 			PyErr_Clear();
 		}
-		Py_DECREF( function );
+		Py_DECREF(function);
 		return false;
 	}
-	Py_DECREF( retval );
-	Py_DECREF( function );
+	Py_DECREF(retval);
+	Py_DECREF(function);
 	
 	return true;
 }
@@ -515,51 +515,51 @@ void ScriptingPython::LogExceptionPython(){
 
 void ScriptingPython::pCreateModules(){
 	// create namespaces
-	pNamespaceDragengine = new spBaseModule( *this, "Dragengine" );
-	pNamespaceDragengine->SetDocumentation( "Namespace Dragengine" );
+	pNamespaceDragengine = new spBaseModule(*this, "Dragengine");
+	pNamespaceDragengine->SetDocumentation("Namespace Dragengine");
 	pNamespaceDragengine->PythonCreate();
 	
-	PyRun_SimpleString( "print( globals() )\n" );
-	PyRun_SimpleString( "import sys\nprint( sys.modules.keys() )\n" );
-	PyRun_SimpleString( "import Dragengine\nprint( 'Dragengine:', [(x,Dragengine.__dict__[x]) for x in dir(Dragengine)] )\n" );
+	PyRun_SimpleString("print(globals())\n");
+	PyRun_SimpleString("import sys\nprint(sys.modules.keys())\n");
+	PyRun_SimpleString("import Dragengine\nprint('Dragengine:', [(x,Dragengine.__dict__[x]) for x in dir(Dragengine)])\n");
 	
-	pNamespaceScenery = new spBaseModule( *this, "Scenery" );
-	pNamespaceScenery->SetDocumentation( "Namespace Dragengine.Scenery" );
-	pNamespaceScenery->SetParent( pNamespaceDragengine );
+	pNamespaceScenery = new spBaseModule(*this, "Scenery");
+	pNamespaceScenery->SetDocumentation("Namespace Dragengine.Scenery");
+	pNamespaceScenery->SetParent(pNamespaceDragengine);
 	pNamespaceScenery->PythonCreate();
 	
-	pNamespaceGui = new spBaseModule( *this, "Gui" );
-	pNamespaceGui->SetDocumentation( "Namespace Dragengine.Gui" );
-	pNamespaceGui->SetParent( pNamespaceDragengine );
+	pNamespaceGui = new spBaseModule(*this, "Gui");
+	pNamespaceGui->SetDocumentation("Namespace Dragengine.Gui");
+	pNamespaceGui->SetParent(pNamespaceDragengine);
 	pNamespaceGui->PythonCreate();
 	
-	PyRun_SimpleString( "print( globals() )\n" );
+	PyRun_SimpleString("print(globals())\n");
 	
 	// create modules
-	pTypeModuleLoader = new spTypeModuleLoader( *this );
+	pTypeModuleLoader = new spTypeModuleLoader(*this);
 	pTypeModuleLoader->PythonCreate();
 	
-	pModuleEngine = new spModuleEngine( *this );
+	pModuleEngine = new spModuleEngine(*this);
 	pModuleEngine->PythonCreate();
 	
-	pTypeWorld = new spTypeWorld( *this );
+	pTypeWorld = new spTypeWorld(*this);
 	pTypeWorld->PythonCreate();
 	
-	pTypeCanvas = new spTypeCanvas( *this );
+	pTypeCanvas = new spTypeCanvas(*this);
 	pTypeCanvas->PythonCreate();
 	
-	pModuleGraphicSystem = new spModuleGraphicSystem( *this );
+	pModuleGraphicSystem = new spModuleGraphicSystem(*this);
 	pModuleGraphicSystem->PythonCreate();
 }
 
-void ScriptingPython::pLoadGameScript( const char *directory, const char *gameObject ){
-	PyRun_SimpleString( "print('test')\n"
+void ScriptingPython::pLoadGameScript(const char *directory, const char *gameObject){
+	PyRun_SimpleString("print('test')\n"
 		"import Game\n"
 		"print(globals())\n"
-		"print(Game)\n" );
+		"print(Game)\n");
 	
-	pModuleGame = PyImport_ImportModule( gameObject );
-	if( ! pModuleGame ){
-		DETHROW( deeInvalidAction );
+	pModuleGame = PyImport_ImportModule(gameObject);
+	if(!pModuleGame){
+		DETHROW(deeInvalidAction);
 	}
 }

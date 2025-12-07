@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleRemoveAllBones::aeUSetRuleRemoveAllBones( aeRule* rule ) :
-aeUSetRuleBones( rule, decStringSet() )
+aeUSetRuleRemoveAllBones::aeUSetRuleRemoveAllBones(aeRule* rule) :
+aeUSetRuleBones(rule, decStringSet())
 {
-	SetShortInfo( "Remove all bones from rule" );
+	SetShortInfo("Remove all bones from rule");
 }
 
 aeUSetRuleRemoveAllBones::~aeUSetRuleRemoveAllBones(){

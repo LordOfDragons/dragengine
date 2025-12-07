@@ -41,23 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetShapeReflection::gdeUOCEnvMapProbeSetShapeReflection( gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decShape *newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL ),
-pOldValue( NULL ),
-pNewValue( NULL )
+gdeUOCEnvMapProbeSetShapeReflection::gdeUOCEnvMapProbeSetShapeReflection(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decShape *newValue) :
+pObjectClass(NULL),
+pEnvMapProbe(NULL),
+pOldValue(NULL),
+pNewValue(NULL)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set shape reflection" );
+	SetShortInfo("Env-map probe set shape reflection");
 	
-	if( envMapProbe->GetShapeReflection() ){
+	if(envMapProbe->GetShapeReflection()){
 		pOldValue = envMapProbe->GetShapeReflection()->Copy();
 	}
-	if( newValue ){
+	if(newValue){
 		pNewValue = newValue->Copy();
 	}
 	
@@ -69,16 +69,16 @@ pNewValue( NULL )
 }
 
 gdeUOCEnvMapProbeSetShapeReflection::~gdeUOCEnvMapProbeSetShapeReflection(){
-	if( pEnvMapProbe ){
+	if(pEnvMapProbe){
 		pEnvMapProbe->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
-	if( pNewValue ){
+	if(pNewValue){
 		delete pNewValue;
 	}
-	if( pOldValue ){
+	if(pOldValue){
 		delete pOldValue;
 	}
 }
@@ -89,23 +89,23 @@ gdeUOCEnvMapProbeSetShapeReflection::~gdeUOCEnvMapProbeSetShapeReflection(){
 ///////////////
 
 void gdeUOCEnvMapProbeSetShapeReflection::Undo(){
-	if( pOldValue ){
-		pEnvMapProbe->SetShapeReflection( pOldValue->Copy() );
+	if(pOldValue){
+		pEnvMapProbe->SetShapeReflection(pOldValue->Copy());
 		
 	}else{
-		pEnvMapProbe->SetShapeReflection( NULL );
+		pEnvMapProbe->SetShapeReflection(NULL);
 	}
 	
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetShapeReflection::Redo(){
-	if( pNewValue ){
-		pEnvMapProbe->SetShapeReflection( pNewValue->Copy() );
+	if(pNewValue){
+		pEnvMapProbe->SetShapeReflection(pNewValue->Copy());
 		
 	}else{
-		pEnvMapProbe->SetShapeReflection( NULL );
+		pEnvMapProbe->SetShapeReflection(NULL);
 	}
 	
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

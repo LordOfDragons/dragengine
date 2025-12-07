@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCTrigger::ceWPTTIMCTrigger( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionTrigger *condition ) :
-ceWPTTIMCondition( windowMain, etConditionTrigger, conversation, action, condition )
+ceWPTTIMCTrigger::ceWPTTIMCTrigger(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionTrigger *condition) :
+ceWPTTIMCondition(windowMain, etConditionTrigger, conversation, action, condition)
 {
-	SetIcon( windowMain.GetIconConditionVariable() );
+	SetIcon(windowMain.GetIconConditionVariable());
 	Update();
 }
 
@@ -57,8 +57,8 @@ ceWPTTIMCTrigger::~ceWPTTIMCTrigger(){
 // Management
 ///////////////
 
-const char *ceWPTTIMCTrigger::GetTestModeText( ceCConditionTrigger::eTestModes testMode ){
-	switch( testMode ){
+const char *ceWPTTIMCTrigger::GetTestModeText(ceCConditionTrigger::eTestModes testMode){
+	switch(testMode){
 	case ceCConditionTrigger::etmFired:
 		return "fired";
 		
@@ -72,7 +72,7 @@ const char *ceWPTTIMCTrigger::GetTestModeText( ceCConditionTrigger::eTestModes t
 		return "never fired";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -80,8 +80,8 @@ void ceWPTTIMCTrigger::Update(){
 	const ceCConditionTrigger &condition = *GetConditionTrigger();
 	decString text;
 	
-	text.Format( "Trigger '%s' %s", condition.GetTrigger().GetString(),
-		GetTestModeText( condition.GetTestMode() ) );
+	text.Format("Trigger '%s' %s", condition.GetTrigger().GetString(),
+		GetTestModeText(condition.GetTestMode()));
 	
-	SetText( text );
+	SetText(text);
 }

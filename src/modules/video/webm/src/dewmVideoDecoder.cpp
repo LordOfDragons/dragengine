@@ -42,22 +42,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-dewmVideoDecoder::dewmVideoDecoder( deVideoWebm &module, decBaseFileReader *file ) :
-deBaseVideoDecoder( file ),
-pModule( module ),
-pCallback( nullptr ),
-pReader( nullptr ),
-pParser( nullptr ),
-pCurFrame( 0 )
+dewmVideoDecoder::dewmVideoDecoder(deVideoWebm &module, decBaseFileReader *file) :
+deBaseVideoDecoder(file),
+pModule(module),
+pCallback(nullptr),
+pReader(nullptr),
+pParser(nullptr),
+pCurFrame(0)
 {
 	try{
-		pCallback = new dewmVPXTrackCallback( module );
-		pReader = new dewmWebmReader( *file );
+		pCallback = new dewmVPXTrackCallback(module);
+		pReader = new dewmWebmReader(*file);
 		pParser = new webm::WebmParser;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pCleanUp();
-		pModule.LogException( e );
+		pModule.LogException(e);
 		throw;
 	}
 }
@@ -75,29 +75,29 @@ int dewmVideoDecoder::GetPosition(){
 	return pCurFrame;
 }
 
-void dewmVideoDecoder::SetPosition( int position ){
-	if( position == pCurFrame ){
+void dewmVideoDecoder::SetPosition(int position){
+	if(position == pCurFrame){
 		return;
 	}
 	
-	pCallback->SetResBuffer( nullptr ); // process frames but do not output frame data
+	pCallback->SetResBuffer(nullptr); // process frames but do not output frame data
 	
-	if( position < pCurFrame ){
-		pReader->SetPosition( 0 );
+	if(position < pCurFrame){
+		pReader->SetPosition(0);
 		pCallback->Rewind();
 		pParser->DidSeek();
 		pCurFrame = 0;
 	}
 	
-	while( pCurFrame < position ){
-		DEASSERT_TRUE( pParser->Feed( pCallback, pReader ).ok() )
+	while(pCurFrame < position){
+		DEASSERT_TRUE(pParser->Feed(pCallback, pReader).ok())
 		pCurFrame++;
 	}
 }
 
-bool dewmVideoDecoder::DecodeFrame( void *buffer, int ){
-	pCallback->SetResBuffer( buffer );
-	if( ! pParser->Feed( pCallback, pReader ).ok() ){
+bool dewmVideoDecoder::DecodeFrame(void *buffer, int){
+	pCallback->SetResBuffer(buffer);
+	if(!pParser->Feed(pCallback, pReader).ok()){
 		return false;
 	}
 	
@@ -111,13 +111,13 @@ bool dewmVideoDecoder::DecodeFrame( void *buffer, int ){
 //////////////////////
 
 void dewmVideoDecoder::pCleanUp(){
-	if( pParser ){
+	if(pParser){
 		delete pParser;
 	}
-	if( pReader ){
+	if(pReader){
 		delete pReader;
 	}
-	if( pCallback ){
+	if(pCallback){
 		delete pCallback;
 	}
 }

@@ -49,10 +49,10 @@ public:
 	dealGPDisableModuleVersion();
 	
 	/** \brief Create disabled module version. */
-	dealGPDisableModuleVersion( const char *name, const char *version );
+	dealGPDisableModuleVersion(const char *name, const char *version);
 	
 	/** \brief Create copy of disabled module version. */
-	dealGPDisableModuleVersion( const dealGPDisableModuleVersion &copy );
+	dealGPDisableModuleVersion(const dealGPDisableModuleVersion &copy);
 	
 	/** \brief Clean up disabled module version. */
 	virtual ~dealGPDisableModuleVersion();
@@ -66,13 +66,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set module name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Module version. */
 	inline const decString &GetVersion() const{ return pVersion; }
 	
 	/** \brief Set module version. */
-	void SetVersion( const char *version );
+	void SetVersion(const char *version);
 	/*@}*/
 	
 	
@@ -82,15 +82,15 @@ public:
 	/**
 	 * \brief Disable module versions share the same name and version.
 	 */
-	bool operator==( const dealGPDisableModuleVersion &other ) const;
+	bool operator==(const dealGPDisableModuleVersion &other) const;
 	
 	/**
 	 * \brief Two disable module versions do not share the same name and version.
 	 */
-	bool operator!=( const dealGPDisableModuleVersion &other ) const;
+	bool operator!=(const dealGPDisableModuleVersion &other) const;
 	
 	/** \brief Set disable module version to another one. */
-	dealGPDisableModuleVersion &operator=( const dealGPDisableModuleVersion &other );
+	dealGPDisableModuleVersion &operator=(const dealGPDisableModuleVersion &other);
 	/*@}*/
 };
 

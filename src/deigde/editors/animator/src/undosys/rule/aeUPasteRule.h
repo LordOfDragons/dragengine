@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */
-	aeUPasteRule( aeAnimator *animator, const aeRuleList &ruleList, int index );
+	aeUPasteRule(aeAnimator *animator, const aeRuleList &ruleList, int index);
 	
 protected:
 	/** Clean up undo. */

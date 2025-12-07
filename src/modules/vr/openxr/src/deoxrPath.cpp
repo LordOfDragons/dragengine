@@ -34,37 +34,37 @@
 ////////////////////
 
 deoxrPath::deoxrPath() :
-pPath( XR_NULL_PATH ){
+pPath(XR_NULL_PATH){
 }
 
-deoxrPath::deoxrPath( const deoxrInstance &instance, XrPath path ) :
-pPath( path )
+deoxrPath::deoxrPath(const deoxrInstance &instance, XrPath path) :
+pPath(path)
 {
-	if( path == XR_NULL_PATH ){
+	if(path == XR_NULL_PATH){
 		return;
 	}
 	
 	uint32_t bufferCountOutput;
 	
-	OXR_CHECK( instance.xrPathToString( instance.GetInstance(),
-		path, 0, &bufferCountOutput, nullptr ) );
+	OXR_CHECK(instance.xrPathToString(instance.GetInstance(),
+		path, 0, &bufferCountOutput, nullptr));
 	
-	pName.Set( ' ', bufferCountOutput );
+	pName.Set(' ', bufferCountOutput);
 	
-	OXR_CHECK( instance.xrPathToString( instance.GetInstance(),
-		path, bufferCountOutput, &bufferCountOutput, ( char* )pName.GetString() ) );
+	OXR_CHECK(instance.xrPathToString(instance.GetInstance(),
+		path, bufferCountOutput, &bufferCountOutput, (char*)pName.GetString()));
 }
 
-deoxrPath::deoxrPath( const deoxrInstance &instance, const char *name ) :
-pPath( XR_NULL_PATH ),
-pName( name )
+deoxrPath::deoxrPath(const deoxrInstance &instance, const char *name) :
+pPath(XR_NULL_PATH),
+pName(name)
 {
-	OXR_CHECK( instance.xrStringToPath( instance.GetInstance(), name, &pPath ) );
+	OXR_CHECK(instance.xrStringToPath(instance.GetInstance(), name, &pPath));
 }
 
-deoxrPath::deoxrPath( const deoxrPath &path ) :
-pPath( path.pPath ),
-pName( path.pName ){
+deoxrPath::deoxrPath(const deoxrPath &path) :
+pPath(path.pPath),
+pName(path.pName){
 }
 
 deoxrPath::~deoxrPath(){
@@ -85,7 +85,7 @@ void deoxrPath::Empty(){
 // Operators
 //////////////
 
-deoxrPath &deoxrPath::operator=( const deoxrPath &path ){
+deoxrPath &deoxrPath::operator=(const deoxrPath &path){
 	pPath = path.pPath;
 	pName = path.pName;
 	return *this;

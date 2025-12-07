@@ -49,7 +49,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *SsdkCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *SsdkCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -62,33 +62,33 @@ MOD_ENTRY_POINT_ATTR deBaseModule *SsdkCreateModule( deLoadableModule *loadableM
 // returns NULL on error.
 /////////////////////////////////////////////////////////
 
-deBaseModule *SsdkCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *SsdkCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new deSteamSdk( *loadableModule );
-	}catch( ... ){
+		return new deSteamSdk(*loadableModule);
+	}catch(...){
 		return nullptr;
 	}
 }
 
 
 // SteamSDK requires the logger function to be extern. who had that strange idead?
-extern "C" void __cdecl fSteamSdkDebugCallback( int severity, const char *debugText ) {
+extern "C" void __cdecl fSteamSdkDebugCallback(int severity, const char *debugText) {
 	deSteamSdk * const module = deSteamSdk::globalModule;
-	if( ! module ){
+	if(!module){
 		return;
 	}
 	
-	switch( severity ){
+	switch(severity){
 	case 0:
-		module->LogInfoFormat( "SteamSdkDebug: %s", debugText );
+		module->LogInfoFormat("SteamSdkDebug: %s", debugText);
 		break;
 		
 	case 1:
-		module->LogWarnFormat( "SteamSdkDebug: %s", debugText );
+		module->LogWarnFormat("SteamSdkDebug: %s", debugText);
 		break;
 		
 	default:
-		module->LogErrorFormat( "SteamSdkDebug: %s", debugText );
+		module->LogErrorFormat("SteamSdkDebug: %s", debugText);
 		break;
 	}
 }
@@ -103,16 +103,16 @@ deSteamSdk *deSteamSdk::globalModule = nullptr;
 // Constructor, destructor
 ////////////////////////////
 
-deSteamSdk::deSteamSdk( deLoadableModule& loadableModule ) :
-deBaseServiceModule( loadableModule ),
-pSdkInited( false ){
+deSteamSdk::deSteamSdk(deLoadableModule& loadableModule) :
+deBaseServiceModule(loadableModule),
+pSdkInited(false){
 	globalModule = this;
 }
 
 deSteamSdk::~deSteamSdk(){
-	if( pSdkInited ){
-		SteamUtils()->SetWarningMessageHook( nullptr );
-		LogInfo( "Shut down Steam SDK" );
+	if(pSdkInited){
+		SteamUtils()->SetWarningMessageHook(nullptr);
+		LogInfo("Shut down Steam SDK");
 		SteamAPI_Shutdown();
 	}
 	
@@ -125,129 +125,129 @@ deSteamSdk::~deSteamSdk(){
 
 decStringSet deSteamSdk::GetSupportedServices(){
 	decStringSet names;
-	names.Add( deSsdkServiceSteam::serviceName );
+	names.Add(deSsdkServiceSteam::serviceName);
 	return names;
 }
 
-void deSteamSdk::InitSdk( const deServiceObject::Ref &data ){
-	if( pSdkInited ){
+void deSteamSdk::InitSdk(const deServiceObject::Ref &data){
+	if(pSdkInited){
 		return;
 	}
 	
-	if( ! SteamAPI_IsSteamRunning() ){
-		LogError( "Steam is not running." );
-		DETHROW_INFO( deeInvalidAction, "Steam is not running" );
+	if(!SteamAPI_IsSteamRunning()){
+		LogError("Steam is not running.");
+		DETHROW_INFO(deeInvalidAction, "Steam is not running");
 	}
 	
-	LogInfo( "Initialize Steam SDK" );
+	LogInfo("Initialize Steam SDK");
 	SteamErrMsg errorMsg;
-	memset( errorMsg, 0, sizeof( errorMsg ) );
+	memset(errorMsg, 0, sizeof(errorMsg));
 	
-	ESteamAPIInitResult result = SteamAPI_InitEx( &errorMsg );
-	if( result == k_ESteamAPIInitResult_OK ){
-		LogInfo( "Steam SDK initialized successfully" );
+	ESteamAPIInitResult result = SteamAPI_InitEx(&errorMsg);
+	if(result == k_ESteamAPIInitResult_OK){
+		LogInfo("Steam SDK initialized successfully");
 		pSdkInited = true;
-		SteamUtils()->SetWarningMessageHook( fSteamSdkDebugCallback );
+		SteamUtils()->SetWarningMessageHook(fSteamSdkDebugCallback);
 		return;
 	}
 	
-	LogInfoFormat( "Failed initialize Steam SDK (%d): %s", result, errorMsg );
+	LogInfoFormat("Failed initialize Steam SDK (%d): %s", result, errorMsg);
 	
-	const deServiceObject::Ref objAppId( data->GetChildAt( "appId" ) );
-	if( objAppId ){
+	const deServiceObject::Ref objAppId(data->GetChildAt("appId"));
+	if(objAppId){
 		const decString &appId = objAppId->GetString();
 		
-		LogInfoFormat( "Try initialize Steam SDK using AppID" );
+		LogInfoFormat("Try initialize Steam SDK using AppID");
 		result = k_ESteamAPIInitResult_FailedGeneric;
-		memset( errorMsg, 0, sizeof( errorMsg ) );
+		memset(errorMsg, 0, sizeof(errorMsg));
 		
 		deVirtualFileSystem &vfs = GetVFS();
-		const decPath pathAppId( decPath::CreatePathUnix( "/cache/global/steam_appid.txt" ) );
-		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathAppId ) )->WriteString( appId );
+		const decPath pathAppId(decPath::CreatePathUnix("/cache/global/steam_appid.txt"));
+		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathAppId))->WriteString(appId);
 		
 		try{
 			deEngine &engine = *GetGameEngine();
-			decPath pathCache( decPath::CreatePathNative( engine.GetOS()->GetPathUserCache() ) );
-			pathCache.AddComponent( "global" );
-			pathCache.AddComponent( "modules" );
-			pathCache.AddComponent( engine.GetModuleSystem()->GetTypeDirectory( deModuleSystem::emtService ) );
-			pathCache.AddComponent( GetLoadableModule().GetDirectoryName() );
+			decPath pathCache(decPath::CreatePathNative(engine.GetOS()->GetPathUserCache()));
+			pathCache.AddComponent("global");
+			pathCache.AddComponent("modules");
+			pathCache.AddComponent(engine.GetModuleSystem()->GetTypeDirectory(deModuleSystem::emtService));
+			pathCache.AddComponent(GetLoadableModule().GetDirectoryName());
 			
 			#ifdef OS_UNIX
-			char workDir[ PATH_MAX ];
-			if( ! getcwd( workDir, sizeof( workDir ) ) ){
-				DETHROW_INFO( deeInvalidAction, "Failed getting working directory" );
+			char workDir[PATH_MAX];
+			if(!getcwd(workDir, sizeof(workDir))){
+				DETHROW_INFO(deeInvalidAction, "Failed getting working directory");
 			}
-			if( chdir( pathCache.GetPathNative() ) ){
-				DETHROW_INFO( deeInvalidAction, "Failed changing working directory" );
+			if(chdir(pathCache.GetPathNative())){
+				DETHROW_INFO(deeInvalidAction, "Failed changing working directory");
 			}
 			
-			result = SteamAPI_InitEx( &errorMsg );
-			if( chdir( workDir ) ){ /* ignore */ }
+			result = SteamAPI_InitEx(&errorMsg);
+			if(chdir(workDir)){ /* ignore */ }
 			
 			#elif defined OS_W32
-			TCHAR workDir[ MAX_PATH ];
-			if( ! GetCurrentDirectory( MAX_PATH, workDir ) ){
-				DETHROW_INFO( deeInvalidAction, "Failed getting working directory" );
+			TCHAR workDir[MAX_PATH];
+			if(!GetCurrentDirectory(MAX_PATH, workDir)){
+				DETHROW_INFO(deeInvalidAction, "Failed getting working directory");
 			}
 
-			TCHAR targetDir[ MAX_PATH ];
-			deOSWindows::Utf8ToWide( pathCache.GetPathNative(), targetDir, MAX_PATH );
-			if( ! SetCurrentDirectory( targetDir ) ){
-				DETHROW_INFO( deeInvalidAction, "Failed changing working directory" );
+			TCHAR targetDir[MAX_PATH];
+			deOSWindows::Utf8ToWide(pathCache.GetPathNative(), targetDir, MAX_PATH);
+			if(!SetCurrentDirectory(targetDir)){
+				DETHROW_INFO(deeInvalidAction, "Failed changing working directory");
 			}
 			
-			result = SteamAPI_InitEx( &errorMsg );
-			SetCurrentDirectory( workDir );
+			result = SteamAPI_InitEx(&errorMsg);
+			SetCurrentDirectory(workDir);
 			
 			#else
-			DETHROW_INFO( deeInvalidAction, "Function unsupported on this OS" );
+			DETHROW_INFO(deeInvalidAction, "Function unsupported on this OS");
 			#endif
 			
-		}catch( const deException &e ){
-			LogException( e );
-			if( vfs.CanDeleteFile( pathAppId ) ){
-				vfs.DeleteFile( pathAppId );
+		}catch(const deException &e){
+			LogException(e);
+			if(vfs.CanDeleteFile(pathAppId)){
+				vfs.DeleteFile(pathAppId);
 			}
 			throw;
 		}
 		
-		if( vfs.CanDeleteFile( pathAppId ) ){
-			vfs.DeleteFile( pathAppId );
+		if(vfs.CanDeleteFile(pathAppId)){
+			vfs.DeleteFile(pathAppId);
 		}
 		
-		if( result == k_ESteamAPIInitResult_OK ){
-			LogInfo( "Steam SDK initialized successfully" );
+		if(result == k_ESteamAPIInitResult_OK){
+			LogInfo("Steam SDK initialized successfully");
 			pSdkInited = true;
-			SteamUtils()->SetWarningMessageHook( fSteamSdkDebugCallback );
+			SteamUtils()->SetWarningMessageHook(fSteamSdkDebugCallback);
 			return;
 		}
 		
-		LogInfoFormat( "Failed initialize Steam SDK (%d): %s", result, errorMsg );
+		LogInfoFormat("Failed initialize Steam SDK (%d): %s", result, errorMsg);
 	}
 	
-	DETHROW_INFO( deeInvalidAction, errorMsg );
+	DETHROW_INFO(deeInvalidAction, errorMsg);
 }
 
-deBaseServiceService* deSteamSdk::CreateService( deService *service,
-const char *name, const deServiceObject::Ref &data ){
-	DEASSERT_NOTNULL( service )
+deBaseServiceService* deSteamSdk::CreateService(deService *service,
+const char *name, const deServiceObject::Ref &data){
+	DEASSERT_NOTNULL(service)
 	
-	if( strcmp( name, deSsdkServiceSteam::serviceName ) == 0 ){
-		return new deSsdkServiceSteam( *this, service, data );
+	if(strcmp(name, deSsdkServiceSteam::serviceName) == 0){
+		return new deSsdkServiceSteam(*this, service, data);
 	}
 	
 	return nullptr;
 }
 
-void deSteamSdk::FrameUpdate( float ){
-	if( pSdkInited ){
+void deSteamSdk::FrameUpdate(float){
+	if(pSdkInited){
 		SteamAPI_RunCallbacks();
 	}
 }
 
-const char *deSteamSdk::GetResultMessage( EResult result ) const{
-	switch( result ){
+const char *deSteamSdk::GetResultMessage(EResult result) const{
+	switch(result){
 	case k_EResultOK: return "Success";
 	case k_EResultFail: return "Generic failure";
 	case k_EResultNoConnection: return "No/failed network connection";
@@ -308,7 +308,7 @@ const char *deSteamSdk::GetResultMessage( EResult result ) const{
 	case k_EResultExternalAccountAlreadyLinked: return "External account (PSN, Facebook...) is already linked to some other account, must explicitly request to replace/delete the link first";
 	case k_EResultRemoteFileConflict: return "The sync cannot resume due to a conflict between the local and remote files";
 	case k_EResultIllegalPassword: return "The requested new password is not legal";
-	case k_EResultSameAsPreviousValue: return "New value is the same as the old one ( secret question and answer )";
+	case k_EResultSameAsPreviousValue: return "New value is the same as the old one (secret question and answer)";
 	case k_EResultAccountLogonDenied: return "Account login denied due to 2nd factor authentication failure";
 	case k_EResultCannotUseOldPassword: return "The requested new password is not legal";
 	case k_EResultInvalidLoginAuthCode: return "Account login denied due to auth code invalid";
@@ -378,7 +378,7 @@ const char *deSteamSdk::GetResultMessage( EResult result ) const{
 	case k_EResultFamilySizeLimitExceeded: return "Reached the maximum size of the family";
 	default:{
 		decString message;
-		message.Format( "Unknown error: %d", ( int )result );
+		message.Format("Unknown error: %d", (int)result);
 		return message;
 		}
 	}

@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUSkinSetName::gdeUSkinSetName(
-gdeSkin *skin, const char *newValue ) :
-pSkin( NULL )
+gdeSkin *skin, const char *newValue) :
+pSkin(NULL)
 {
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
+	if(!skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Skin set name" );
+	SetShortInfo("Skin set name");
 	
 	pOldValue = skin->GetName();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pSkin( NULL )
 }
 
 gdeUSkinSetName::~gdeUSkinSetName(){
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUSkinSetName::~gdeUSkinSetName(){
 ///////////////
 
 void gdeUSkinSetName::Undo(){
-	pSkin->SetName( pOldValue );
+	pSkin->SetName(pOldValue);
 }
 
 void gdeUSkinSetName::Redo(){
-	pSkin->SetName( pNewValue );
+	pSkin->SetName(pNewValue);
 }

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	reURigSetCentralMassPoint( reRig *rig, const decVector &newCMP );
+	reURigSetCentralMassPoint(reRig *rig, const decVector &newCMP);
 	
 protected:
 	/** \brief Clean up undo action. */

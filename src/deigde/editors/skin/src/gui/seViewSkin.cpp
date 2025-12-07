@@ -46,11 +46,11 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	seViewSkin &pView;
 	
 public:
-	cCameraInteraction( seViewSkin &view ) : pView( view ){ }
+	cCameraInteraction(seViewSkin &view) : pView(view){}
 	
 public:
 	virtual void OnCameraChanged(){
-		if( pView.GetSkin() ){
+		if(pView.GetSkin()){
 			pView.GetSkin()->NotifyCameraChanged();
 		}
 	}
@@ -66,18 +66,18 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seViewSkin::seViewSkin( seWindowMain &windowMain ) :
-igdeViewRenderWindow( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pSkin( NULL )
+seViewSkin::seViewSkin(seWindowMain &windowMain) :
+igdeViewRenderWindow(windowMain.GetEnvironment()),
+pWindowMain(windowMain),
+pSkin(NULL)
 {
-	pCameraInteraction.TakeOver( new cCameraInteraction( *this ) );
+	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
 	
-	AddListener( pCameraInteraction );
+	AddListener(pCameraInteraction);
 }
 
 seViewSkin::~seViewSkin(){
-	SetSkin( NULL );
+	SetSkin(NULL);
 }
 
 
@@ -88,42 +88,42 @@ seViewSkin::~seViewSkin(){
 void seViewSkin::ResetView(){
 }
 
-void seViewSkin::SetSkin( seSkin *skin ){
-	if( skin == pSkin ){
+void seViewSkin::SetSkin(seSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera( NULL );
+	pCameraInteraction->SetCamera(NULL);
 	
-	SetRenderWorld( NULL );
+	SetRenderWorld(NULL);
 	
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
-	if( skin ){
+	if(skin){
 		skin->AddReference();
-		SetRenderWorld( skin->GetCamera()->GetEngineCamera() );
-		pCameraInteraction->SetCamera( skin->GetCamera() );
+		SetRenderWorld(skin->GetCamera()->GetEngineCamera());
+		pCameraInteraction->SetCamera(skin->GetCamera());
 	}
 }
 
 
 
-void seViewSkin::OnFrameUpdate( float elapsed ){
-	igdeViewRenderWindow::OnFrameUpdate( elapsed );
+void seViewSkin::OnFrameUpdate(float elapsed){
+	igdeViewRenderWindow::OnFrameUpdate(elapsed);
 	
-	if( pSkin ){
-		pSkin->Update( elapsed );
+	if(pSkin){
+		pSkin->Update(elapsed);
 	}
 }
 
 void seViewSkin::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if( pSkin ){
-		SetRenderWorld( pSkin->GetCamera()->GetEngineCamera() );
+	if(pSkin){
+		SetRenderWorld(pSkin->GetCamera()->GetEngineCamera());
 	}
 }

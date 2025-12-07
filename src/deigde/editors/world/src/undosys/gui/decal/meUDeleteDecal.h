@@ -50,7 +50,7 @@ public:
 	typedef deTObjectReference<meUDeleteDecal> Ref;
 	
 	// constructor, destructor
-	meUDeleteDecal( meWorld *world );
+	meUDeleteDecal(meWorld *world);
 	~meUDeleteDecal();
 	
 	// Management

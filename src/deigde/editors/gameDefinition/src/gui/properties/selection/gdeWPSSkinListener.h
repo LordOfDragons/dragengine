@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSSkinListener( gdeWPSSkin &panel );
+	gdeWPSSkinListener(gdeWPSSkin &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPSSkinListener();
@@ -55,15 +55,15 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object class categories changed. */
-	virtual void SkinCategoriesChanged( gdeGameDefinition *gameDefinition );
+	virtual void SkinCategoriesChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** \brief Object class changed. */
-	virtual void SkinChanged( gdeGameDefinition *gameDefinition, gdeSkin *skin );
+	virtual void SkinChanged(gdeGameDefinition *gameDefinition, gdeSkin *skin);
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveSkinChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveSkinChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

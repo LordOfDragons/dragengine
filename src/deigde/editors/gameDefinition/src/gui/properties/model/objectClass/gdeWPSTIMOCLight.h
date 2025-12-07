@@ -42,7 +42,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCLight( gdeWPSTreeModel &tree, gdeObjectClass *objectClass, gdeOCLight *light, int index );
+	gdeWPSTIMOCLight(gdeWPSTreeModel &tree, gdeObjectClass *objectClass, gdeOCLight *light, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -72,7 +72,7 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

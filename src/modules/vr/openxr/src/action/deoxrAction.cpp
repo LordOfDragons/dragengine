@@ -37,31 +37,31 @@
 // class deoxrAction
 /////////////////////////
 
-deoxrAction::deoxrAction( deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName ) :
-pActionSet( nullptr ),
-pType( type ),
-pName( name ),
-pLocalizedName( localizedName ),
-pAction( XR_NULL_HANDLE )
+deoxrAction::deoxrAction(deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName) :
+pActionSet(nullptr),
+pType(type),
+pName(name),
+pLocalizedName(localizedName),
+pAction(XR_NULL_HANDLE)
 {
 	deoxrInstance &instance = actionSet.GetInstance();
 	
 	try{
 		XrActionCreateInfo createInfo;
-		memset( &createInfo, 0, sizeof( createInfo ) );
+		memset(&createInfo, 0, sizeof(createInfo));
 		createInfo.type = XR_TYPE_ACTION_CREATE_INFO;
 		#ifdef OS_W32_VS
-		strncpy_s( createInfo.actionName, sizeof( createInfo.actionName ),
-			name, sizeof( createInfo.actionName ) - 1 );
-		strncpy_s( createInfo.localizedActionName, sizeof( createInfo.localizedActionName ),
-			localizedName, sizeof( createInfo.localizedActionName ) - 1 );
+		strncpy_s(createInfo.actionName, sizeof(createInfo.actionName),
+			name, sizeof(createInfo.actionName) - 1);
+		strncpy_s(createInfo.localizedActionName, sizeof(createInfo.localizedActionName),
+			localizedName, sizeof(createInfo.localizedActionName) - 1);
 		#else
-		strncpy( createInfo.actionName, name, sizeof( createInfo.actionName ) - 1 );
-		strncpy( createInfo.localizedActionName, localizedName,
-			sizeof( createInfo.localizedActionName ) - 1 );
+		strncpy(createInfo.actionName, name, sizeof(createInfo.actionName) - 1);
+		strncpy(createInfo.localizedActionName, localizedName,
+			sizeof(createInfo.localizedActionName) - 1);
 		#endif
 		
-		switch( type ){
+		switch(type){
 		case etInputBool:
 			createInfo.actionType = XR_ACTION_TYPE_BOOLEAN_INPUT;
 			break;
@@ -83,48 +83,48 @@ pAction( XR_NULL_HANDLE )
 			break;
 			
 		default:
-			DETHROW( deeInvalidAction );
+			DETHROW(deeInvalidAction);
 		}
 		
-		const XrPath subactionPaths[ 2 ] = { instance.GetPathHandLeft(), instance.GetPathHandRight() };
+		const XrPath subactionPaths[2] = {instance.GetPathHandLeft(), instance.GetPathHandRight()};
 		createInfo.subactionPaths = subactionPaths;
 		createInfo.countSubactionPaths = 2;
 		
-		OXR_CHECK( instance.xrCreateAction( actionSet.GetActionSet(), &createInfo, &pAction ) );
+		OXR_CHECK(instance.xrCreateAction(actionSet.GetActionSet(), &createInfo, &pAction));
 		
 		pActionSet = &actionSet;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-deoxrAction::deoxrAction( deoxrActionSet &actionSet, eType type, const char *name,
-	const char *localizedName, const XrPath *subactionPath, int subactionPathCount ) :
-pActionSet( nullptr ),
-pType( type ),
-pName( name ),
-pLocalizedName( localizedName ),
-pAction( XR_NULL_HANDLE )
+deoxrAction::deoxrAction(deoxrActionSet &actionSet, eType type, const char *name,
+	const char *localizedName, const XrPath *subactionPath, int subactionPathCount) :
+pActionSet(nullptr),
+pType(type),
+pName(name),
+pLocalizedName(localizedName),
+pAction(XR_NULL_HANDLE)
 {
 	deoxrInstance &instance = actionSet.GetInstance();
 	
 	try{
 		XrActionCreateInfo createInfo;
-		memset( &createInfo, 0, sizeof( createInfo ) );
+		memset(&createInfo, 0, sizeof(createInfo));
 		createInfo.type = XR_TYPE_ACTION_CREATE_INFO;
 		#ifdef OS_W32_VS
-		strncpy_s( createInfo.actionName, name, sizeof( createInfo.actionName ) - 1 );
-		strncpy_s( createInfo.localizedActionName, localizedName,
-			sizeof( createInfo.localizedActionName ) - 1 );
+		strncpy_s(createInfo.actionName, name, sizeof(createInfo.actionName) - 1);
+		strncpy_s(createInfo.localizedActionName, localizedName,
+			sizeof(createInfo.localizedActionName) - 1);
 		#else
-		strncpy( createInfo.actionName, name, sizeof( createInfo.actionName ) - 1 );
-		strncpy( createInfo.localizedActionName, localizedName,
-			sizeof( createInfo.localizedActionName ) - 1 );
+		strncpy(createInfo.actionName, name, sizeof(createInfo.actionName) - 1);
+		strncpy(createInfo.localizedActionName, localizedName,
+			sizeof(createInfo.localizedActionName) - 1);
 		#endif
 		
-		switch( type ){
+		switch(type){
 		case etInputBool:
 			createInfo.actionType = XR_ACTION_TYPE_BOOLEAN_INPUT;
 			break;
@@ -146,17 +146,17 @@ pAction( XR_NULL_HANDLE )
 			break;
 			
 		default:
-			DETHROW( deeInvalidAction );
+			DETHROW(deeInvalidAction);
 		}
 		
 		createInfo.subactionPaths = subactionPath;
 		createInfo.countSubactionPaths = subactionPathCount;
 		
-		OXR_CHECK( instance.xrCreateAction( actionSet.GetActionSet(), &createInfo, &pAction ) );
+		OXR_CHECK(instance.xrCreateAction(actionSet.GetActionSet(), &createInfo, &pAction));
 		
 		pActionSet = &actionSet;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -173,7 +173,7 @@ deoxrAction::~deoxrAction(){
 
 void deoxrAction::DropActionSet(){
 	pActionSet = nullptr;
-	pAction = ( XrAction )nullptr;
+	pAction = (XrAction)nullptr;
 }
 
 
@@ -182,11 +182,11 @@ void deoxrAction::DropActionSet(){
 //////////////////////
 
 void deoxrAction::pCleanUp(){
-	if( pAction ){
-		if( pActionSet ){
-			pActionSet->GetInstance().xrDestroyAction( pAction );
+	if(pAction){
+		if(pActionSet){
+			pActionSet->GetInstance().xrDestroyAction(pAction);
 			pActionSet = nullptr;
 		}
-		pAction = ( XrAction )nullptr;
+		pAction = (XrAction)nullptr;
 	}
 }

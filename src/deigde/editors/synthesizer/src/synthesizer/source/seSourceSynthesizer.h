@@ -57,10 +57,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create source. */
-	seSourceSynthesizer( deEngine *engine );
+	seSourceSynthesizer(deEngine *engine);
 	
 	/** \brief Create copy of source. */
-	seSourceSynthesizer( const seSourceSynthesizer &copy );
+	seSourceSynthesizer(const seSourceSynthesizer &copy);
 	
 	/** \brief Clean up source. */
 	virtual ~seSourceSynthesizer();
@@ -74,7 +74,7 @@ public:
 	inline const decString &GetPathSynthesizer() const{ return pPathSynthesizer; }
 	
 	/** \brief Set path to child synthesizer. */
-	void SetPathSynthesizer( const char *path );
+	void SetPathSynthesizer(const char *path);
 	
 	/** \brief Child synthesizer or \em NULL if absent. */
 	inline deSynthesizer *GetChildSynthesizer() const{ return pChildSynthesizer; }
@@ -88,7 +88,7 @@ public:
 	inline int GetControllerNameCount() const{ return pControllerNameCount; }
 	
 	/** \brief Controller name at position. */
-	const decString &GetControllerNameAt( int position ) const;
+	const decString &GetControllerNameAt(int position) const;
 	
 	
 	
@@ -96,13 +96,13 @@ public:
 	inline int GetConnectionCount() const{ return pConnectionCount; }
 	
 	/** \brief Set number of connections. */
-	void SetConnectionCount( int count );
+	void SetConnectionCount(int count);
 	
 	/** \brief Controller for child controller or \em NULL if not set. */
-	seController *GetControllerAt( int position ) const;
+	seController *GetControllerAt(int position) const;
 	
 	/** \brief Set controller for child controller or \em NULL if not set. */
-	void SetControllerAt( int position, seController *controller );
+	void SetControllerAt(int position, seController *controller);
 	
 	
 	
@@ -113,7 +113,7 @@ public:
 	virtual seSource *CreateCopy() const;
 	
 	/** \brief List all links of all source targets. */
-	virtual void ListLinks( seLinkList& list );
+	virtual void ListLinks(seLinkList& list);
 	
 	/** \brief Parent synthesizer changed. */
 	virtual void SynthesizerChanged();
@@ -127,13 +127,13 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another sub synthesizer source to this sub synthesizer source. */
-	virtual seSourceSynthesizer &operator=( const seSourceSynthesizer &copy );
+	virtual seSourceSynthesizer &operator=(const seSourceSynthesizer &copy);
 	/*@}*/
 	
 	
 	
 private:
-	void pUpdateConnections( deSynthesizerSourceSynthesizer &source ) const;
+	void pUpdateConnections(deSynthesizerSourceSynthesizer &source) const;
 };
 
 #endif

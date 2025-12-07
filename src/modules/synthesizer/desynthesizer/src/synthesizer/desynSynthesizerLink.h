@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerLink( const deSynthesizerLink &link );
+	desynSynthesizerLink(const deSynthesizerLink &link);
 	
 	/** \brief Create synthesizer source. */
-	desynSynthesizerLink( const deSynthesizerLink &link, const decIntList &controllerMapping );
+	desynSynthesizerLink(const deSynthesizerLink &link, const decIntList &controllerMapping);
 	
 	/** \brief Clean up synthesizer source. */
 	virtual ~desynSynthesizerLink();
@@ -74,7 +74,7 @@ public:
 	inline const desynSynthesizerCurve &GetCurve() const{ return pCurve; }
 	
 	/** \brief Value of link. */
-	float GetValue( const desynSynthesizerInstance &instance, int sample, float defaultValue ) const;
+	float GetValue(const desynSynthesizerInstance &instance, int sample, float defaultValue) const;
 	/*@}*/
 };
 

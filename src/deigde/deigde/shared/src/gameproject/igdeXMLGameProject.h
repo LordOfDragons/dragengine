@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game project xml object. */
-	igdeXMLGameProject( deLogger *logger );
+	igdeXMLGameProject(deLogger *logger);
 	
 	/** \brief Clean up game project xml object. */
 	virtual ~igdeXMLGameProject();
@@ -57,18 +57,18 @@ public:
 	/** \name Loading and Saving */
 	/*@{*/
 	/** \brief Load a game project from. */
-	void Load( decBaseFileReader &reader, igdeGameProject &project );
+	void Load(decBaseFileReader &reader, igdeGameProject &project);
 	
 	/** \brief Saves the given game definition. */
-	void Save( decBaseFileWriter &writer, const igdeGameProject &project );
+	void Save(decBaseFileWriter &writer, const igdeGameProject &project);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadProject( const decXmlElementTag &root, igdeGameProject &project );
+	void pReadProject(const decXmlElementTag &root, igdeGameProject &project);
 	
-	void pWriteProject( decXmlWriter &writer, const igdeGameProject &project );
+	void pWriteProject(decXmlWriter &writer, const igdeGameProject &project);
 };
 
 #endif

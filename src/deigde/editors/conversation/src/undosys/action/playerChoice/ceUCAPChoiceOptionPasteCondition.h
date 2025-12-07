@@ -37,8 +37,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAPChoiceOptionPasteCondition( ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
-		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition );
+	ceUCAPChoiceOptionPasteCondition(ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
+		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition);
 	/*@}*/
 };
 

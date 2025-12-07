@@ -35,19 +35,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyConstructed::deSkinPropertyConstructed( const char *type ) :
-deSkinProperty( type ),
-pContent( NULL ),
-pTileX( false ),
-pTileY( false ),
-pBitCount( 8 )
+deSkinPropertyConstructed::deSkinPropertyConstructed(const char *type) :
+deSkinProperty(type),
+pContent(NULL),
+pTileX(false),
+pTileY(false),
+pBitCount(8)
 {
 	pContent = new deSkinPropertyNodeGroup;
-	pContent->SetSize( decVector( 256.0f, 256.0f, 1.0f ) );
+	pContent->SetSize(decVector(256.0f, 256.0f, 1.0f));
 }
 
 deSkinPropertyConstructed::~deSkinPropertyConstructed(){
-	if( pContent ){
+	if(pContent){
 		delete pContent;
 	}
 }
@@ -57,20 +57,20 @@ deSkinPropertyConstructed::~deSkinPropertyConstructed(){
 // Management
 ///////////////
 
-void deSkinPropertyConstructed::SetColor( const decColor &color ){
+void deSkinPropertyConstructed::SetColor(const decColor &color){
 	pColor = color;
 }
 
-void deSkinPropertyConstructed::SetTileX( bool tileX ){
+void deSkinPropertyConstructed::SetTileX(bool tileX){
 	pTileX = tileX;
 }
 
-void deSkinPropertyConstructed::SetTileY( bool tileY ){
+void deSkinPropertyConstructed::SetTileY(bool tileY){
 	pTileY = tileY;
 }
 
-void deSkinPropertyConstructed::SetBitCount( int bitCount ){
-	switch( bitCount ){
+void deSkinPropertyConstructed::SetBitCount(int bitCount){
+	switch(bitCount){
 	case 8:
 	case 16:
 	case 32:
@@ -78,7 +78,7 @@ void deSkinPropertyConstructed::SetBitCount( int bitCount ){
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -87,6 +87,6 @@ void deSkinPropertyConstructed::SetBitCount( int bitCount ){
 // Visiting
 /////////////
 
-void deSkinPropertyConstructed::Visit( deSkinPropertyVisitor &visitor ){
-	visitor.VisitConstructed( *this );
+void deSkinPropertyConstructed::Visit(deSkinPropertyVisitor &visitor){
+	visitor.VisitConstructed(*this);
 }

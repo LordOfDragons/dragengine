@@ -73,8 +73,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dynamic occlusion mesh object. */
-	deoglDynamicOcclusionMesh( deoglRenderThread &renderThread,
-		deoglROcclusionMesh *occlusionMesh, deoglRComponent *component );
+	deoglDynamicOcclusionMesh(deoglRenderThread &renderThread,
+		deoglROcclusionMesh *occlusionMesh, deoglRComponent *component);
 	
 	/** Cleans up the peer. */
 	~deoglDynamicOcclusionMesh();
@@ -100,7 +100,7 @@ public:
 	void ComponentStateChanged();
 	
 	/** Update bone mappings. */
-	void UpdateBoneMappings( const deComponent &component );
+	void UpdateBoneMappings(const deComponent &component);
 	
 	/** Prepare for rendering. */
 	void PrepareForRender();

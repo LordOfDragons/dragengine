@@ -66,12 +66,12 @@ class cTextComment : public igdeTextAreaListener {
 	ceWPAComment &pPanel;
 	
 public:
-	cTextComment( ceWPAComment &panel ) : pPanel( panel ){ }
+	cTextComment(ceWPAComment &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextArea *textArea ){
+	virtual void OnTextChanged(igdeTextArea *textArea){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAComment * const action = pPanel.GetAction();
-		if( ! topic || ! action || textArea->GetText() == action->GetComment() ){
+		if(!topic || !action || textArea->GetText() == action->GetComment()){
 			return;
 		}
 		
@@ -90,10 +90,10 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAComment::ceWPAComment( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAComment::ceWPAComment(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.EditString( *this, "Comment:", "Comment", pEditComment, 8, new cTextComment( *this ) );
+	helper.EditString(*this, "Comment:", "Comment", pEditComment, 8, new cTextComment(*this));
 }
 
 ceWPAComment::~ceWPAComment(){
@@ -107,8 +107,8 @@ ceWPAComment::~ceWPAComment(){
 ceCAComment *ceWPAComment::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatComment ){
-		return ( ceCAComment* )action;
+	if(action && action->GetType() == ceConversationAction::eatComment){
+		return (ceCAComment*)action;
 		
 	}else{
 		return NULL;
@@ -118,8 +118,8 @@ ceCAComment *ceWPAComment::GetAction() const{
 void ceWPAComment::UpdateAction(){
 	const ceCAComment * const action = GetAction();
 	
-	if( action ){
-		pEditComment->SetText( action->GetComment() );
+	if(action){
+		pEditComment->SetText(action->GetComment());
 		
 	}else{
 		pEditComment->ClearText();

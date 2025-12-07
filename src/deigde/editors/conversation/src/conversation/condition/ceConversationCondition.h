@@ -78,10 +78,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation condition. */
-	ceConversationCondition( eConditionTypes type );
+	ceConversationCondition(eConditionTypes type);
 	
 	/** \brief Create copy of conversation condition. */
-	ceConversationCondition( const ceConversationCondition &condition );
+	ceConversationCondition(const ceConversationCondition &condition);
 	
 	/** \brief Clean up conversation action. */
 	virtual ~ceConversationCondition();

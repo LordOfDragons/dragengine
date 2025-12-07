@@ -52,7 +52,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new information object. */
-	deJpegEncoder( deJpegModule *module );
+	deJpegEncoder(deJpegModule *module);
 	/** Cleans up the information object. */
 	~deJpegEncoder();
 	/*@}*/
@@ -81,7 +81,7 @@ public:
 	inline JOCTET *GetDataBuffer() const{ return pDataBuffer; }
 	
 	/** Init writing into data buffer. */
-	void InitWrite( decBaseFileWriter *writer );
+	void InitWrite(decBaseFileWriter *writer);
 	/** Reset write buffer. */
 	void ResetBuffer();
 	/** Write entire data buffer into the file. */

@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPNoControllerHands( deoxrInstance &instance );
+	deoxrDPNoControllerHands(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
@@ -63,13 +63,13 @@ public:
 	virtual void ClearActions();
 	
 	/** Remove device if matching type. */
-	virtual void RemoveDevice( deInputDevice::eDeviceTypes type );
+	virtual void RemoveDevice(deInputDevice::eDeviceTypes type);
 	/*@}*/
 	
 	
 private:
-	void pAddDevice( bool left );
-	void pRemoveDevice( bool left );
+	void pAddDevice(bool left);
+	void pRemoveDevice(bool left);
 };
 
 #endif

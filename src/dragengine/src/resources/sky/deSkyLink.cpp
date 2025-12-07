@@ -38,14 +38,14 @@
 /////////////////////////////////
 
 deSkyLink::deSkyLink() :
-pController( -1 ),
-pRepeat( 1 ){
+pController(-1),
+pRepeat(1){
 }
 
-deSkyLink::deSkyLink( const deSkyLink &copy ) :
-pController( copy.pController ),
-pCurve( copy.pCurve ),
-pRepeat( copy.pRepeat ){
+deSkyLink::deSkyLink(const deSkyLink &copy) :
+pController(copy.pController),
+pCurve(copy.pCurve),
+pRepeat(copy.pRepeat){
 }
 
 deSkyLink::~deSkyLink(){
@@ -56,16 +56,16 @@ deSkyLink::~deSkyLink(){
 // Management
 ///////////////
 
-void deSkyLink::SetController( int controller ){
-	if( controller < -1 ){
-		DETHROW( deeInvalidParam );
+void deSkyLink::SetController(int controller){
+	if(controller < -1){
+		DETHROW(deeInvalidParam);
 	}
 	pController = controller;
 }
 
-void deSkyLink::SetRepeat( int repeat ){
-	if( repeat < 1 ){
-		DETHROW( deeInvalidParam );
+void deSkyLink::SetRepeat(int repeat){
+	if(repeat < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pRepeat = repeat;
 }
@@ -75,7 +75,7 @@ void deSkyLink::SetRepeat( int repeat ){
 // Operators
 //////////////
 
-deSkyLink &deSkyLink::operator=( const deSkyLink &copy ){
+deSkyLink &deSkyLink::operator=(const deSkyLink &copy){
 	pController = copy.pController;
 	pCurve = copy.pCurve;
 	pRepeat = copy.pRepeat;

@@ -43,5 +43,5 @@ igdeEditDirectoryListener::~igdeEditDirectoryListener(){
 // Events
 ///////////
 
-void igdeEditDirectoryListener::OnEditDirectoryChanged( igdeEditDirectory* ){
+void igdeEditDirectoryListener::OnEditDirectoryChanged(igdeEditDirectory*){
 }

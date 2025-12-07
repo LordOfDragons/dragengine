@@ -39,15 +39,15 @@
 ////////////////////////////
 
 ceCConditionTrigger::ceCConditionTrigger() :
-ceConversationCondition( ectTrigger ),
-pTrigger( "Trigger" ),
-pTestMode( etmFired ){
+ceConversationCondition(ectTrigger),
+pTrigger("Trigger"),
+pTestMode(etmFired){
 }
 
-ceCConditionTrigger::ceCConditionTrigger( const ceCConditionTrigger &condition )
-: ceConversationCondition( condition ),
-pTrigger( condition.pTrigger ),
-pTestMode( condition.pTestMode ){
+ceCConditionTrigger::ceCConditionTrigger(const ceCConditionTrigger &condition)
+: ceConversationCondition(condition),
+pTrigger(condition.pTrigger),
+pTestMode(condition.pTestMode){
 }
 
 ceCConditionTrigger::~ceCConditionTrigger(){
@@ -58,20 +58,20 @@ ceCConditionTrigger::~ceCConditionTrigger(){
 // Management
 ///////////////
 
-void ceCConditionTrigger::SetTrigger( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void ceCConditionTrigger::SetTrigger(const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	pTrigger = name;
 }
 
-void ceCConditionTrigger::SetTestMode( eTestModes testMode ){
-	if( testMode < etmFired || testMode > etmNeverFired ){
-		DETHROW( deeInvalidParam );
+void ceCConditionTrigger::SetTestMode(eTestModes testMode){
+	if(testMode < etmFired || testMode > etmNeverFired){
+		DETHROW(deeInvalidParam);
 	}
 	pTestMode = testMode;
 }
 
 ceConversationCondition *ceCConditionTrigger::CreateCopy() const{
-	return new ceCConditionTrigger( *this );
+	return new ceCConditionTrigger(*this);
 }

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new microphone resource manager linked to the given engine. */
-	deMicrophoneManager( deEngine *engine );
+	deMicrophoneManager(deEngine *engine);
 	
 	/** \brief Clean up microphone resource manager and reports leaking resources. */
 	~deMicrophoneManager();
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

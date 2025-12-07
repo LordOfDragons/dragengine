@@ -43,17 +43,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deServer::deServer( deServerManager *manager ) :
-deResource( manager ),
-pPeerNetwork( NULL ),
-pPeerScripting( NULL ){
+deServer::deServer(deServerManager *manager) :
+deResource(manager),
+pPeerNetwork(NULL),
+pPeerScripting(NULL){
 }
 
 deServer::~deServer(){
-	if( pPeerNetwork ){
+	if(pPeerNetwork){
 		delete pPeerNetwork;
 	}
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 }
@@ -63,24 +63,24 @@ deServer::~deServer(){
 // Management
 ///////////////
 
-void deServer::SetAddress( const char *address ){
+void deServer::SetAddress(const char *address){
 	pAddress = address;
 }
 
-bool deServer::ListenOn( const char *address ){
-	if( ! address ){
-		DETHROW( deeInvalidParam );
+bool deServer::ListenOn(const char *address){
+	if(!address){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerNetwork ){
-		return pPeerNetwork->ListenOn( address );
+	if(pPeerNetwork){
+		return pPeerNetwork->ListenOn(address);
 	}
 	
 	return false;
 }
 
 void deServer::StopListening(){
-	if( pPeerNetwork ){
+	if(pPeerNetwork){
 		pPeerNetwork->StopListening();
 	}
 }
@@ -90,23 +90,23 @@ void deServer::StopListening(){
 // System Peers
 /////////////////
 
-void deServer::SetPeerNetwork( deBaseNetworkServer *peer ){
-	if( peer == pPeerNetwork ){
+void deServer::SetPeerNetwork(deBaseNetworkServer *peer){
+	if(peer == pPeerNetwork){
 		return;
 	}
 	
-	if( pPeerNetwork ){
+	if(pPeerNetwork){
 		delete pPeerNetwork;
 	}
 	pPeerNetwork = peer;
 }
 
-void deServer::SetPeerScripting( deBaseScriptingServer *peer ){
-	if( peer == pPeerScripting ){
+void deServer::SetPeerScripting(deBaseScriptingServer *peer){
+	if(peer == pPeerScripting){
 		return;
 	}
 	
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 	pPeerScripting = peer;

@@ -58,31 +58,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Body at index. */
-	seBody *GetAt( int index ) const;
+	seBody *GetAt(int index) const;
 	
 	/** \brief Index of given body or -1 if absent. */
-	int IndexOf( seBody *body ) const;
+	int IndexOf(seBody *body) const;
 	
 	/** \brief Body is present. */
-	bool Has( seBody *body ) const;
+	bool Has(seBody *body) const;
 	
 	/** \brief Add body. */
-	void Add( seBody *body );
+	void Add(seBody *body);
 	
 	/** \brief Insert body. */
-	void InsertAt( seBody *body, int index );
+	void InsertAt(seBody *body, int index);
 	
 	/** \brief Move body. */
-	void MoveTo( seBody *body, int index );
+	void MoveTo(seBody *body, int index);
 	
 	/** \brief Remove body. */
-	void Remove( seBody *body );
+	void Remove(seBody *body);
 	
 	/** \brief Remove all bodies. */
 	void RemoveAll();
 	
 	/** \brief Set list from another list. */
-	seBodyList &operator=( const seBodyList &list );
+	seBodyList &operator=(const seBodyList &list);
 	/*@}*/
 };
 

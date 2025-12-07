@@ -99,7 +99,7 @@ deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
 
 void deMsgdkServiceMsgdk::StartRequest(const decUniqueID& id, const deServiceObject& request)
 {
-	const decString &function = request.GetChildAt( "function" )->GetString();
+	const decString &function = request.GetChildAt("function")->GetString();
 	
 	if(function == "loadUserResource")
 	{
@@ -143,7 +143,7 @@ void deMsgdkServiceMsgdk::CancelRequest(const decUniqueID& id)
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, id, so);
 }
 
-deServiceObject::Ref deMsgdkServiceMsgdk::RunAction( const deServiceObject &action )
+deServiceObject::Ref deMsgdkServiceMsgdk::RunAction(const deServiceObject &action)
 {
 	const decString &function = action.GetChildAt("function")->GetString();
 	
@@ -500,7 +500,7 @@ void deMsgdkServiceMsgdk::FrameUpdateTasks(float elapsed)
 
 decString deMsgdkServiceMsgdk::UriEncode(const char *url) const
 {
-	decUnicodeString wurl( decUnicodeString::NewFromUTF8( url ) );
+	decUnicodeString wurl(decUnicodeString::NewFromUTF8(url));
 	wchar_t * const wwurl = new wchar_t[wurl.GetLength()];
 	deOSWindows::UnicodeToWide(wurl, wwurl, wurl.GetLength() + 1);
 

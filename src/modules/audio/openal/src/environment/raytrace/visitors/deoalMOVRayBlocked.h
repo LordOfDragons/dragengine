@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	deoalMOVRayBlocked( deoalAComponent &component );
+	deoalMOVRayBlocked(deoalAComponent &component);
 	
 	/** \brief Clean up visitor. */
 	virtual ~deoalMOVRayBlocked();
@@ -92,7 +92,7 @@ public:
 	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
-	void SetRay( const decVector &origin, const decVector &direction );
+	void SetRay(const decVector &origin, const decVector &direction);
 	
 	
 	
@@ -100,7 +100,7 @@ public:
 	inline bool GetBlocked() const{ return pBlocked; }
 	
 	/** \brief Set if ray is blocked. */
-	void SetBlocked( bool blocked );
+	void SetBlocked(bool blocked);
 	
 	
 	
@@ -114,24 +114,24 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalModelOctree &node );
+	virtual void VisitNode(deoalModelOctree &node);
 	
 	/** \brief Visit octree node. */
-	virtual void VisitNode( deoalOctree *node, int intersection );
+	virtual void VisitNode(deoalOctree *node, int intersection);
 	
 	/** \brief Visit optimized ray-trace octree node. */
-	void VisitOctree( const deoalModelRTOctree &octree );
+	void VisitOctree(const deoalModelRTOctree &octree);
 	
 	/** \brief Visit optimized ray-trace BVH node. */
-	void VisitBVH( const deoalModelRTBVH &bvh );
+	void VisitBVH(const deoalModelRTBVH &bvh);
 	/*@}*/
 	
 	
 	
 protected:
-	void pVisitNode( const deoalModelRTOctree &octree, const deoalModelRTOctree::sNode &node );
-	void pVisitNode( const deoalModelRTBVH &bvh, const deoalModelRTBVH::sNode &node );
-	bool pRayHitsBox( const decVector &center, const decVector &halfExtends );
+	void pVisitNode(const deoalModelRTOctree &octree, const deoalModelRTOctree::sNode &node);
+	void pVisitNode(const deoalModelRTBVH &bvh, const deoalModelRTBVH::sNode &node);
+	bool pRayHitsBox(const decVector &center, const decVector &halfExtends);
 };
 
 #endif

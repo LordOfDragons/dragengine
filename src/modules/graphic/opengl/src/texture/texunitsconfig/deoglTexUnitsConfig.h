@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create texture units configuration. */
-	deoglTexUnitsConfig( deoglRenderThread &renderThread );
+	deoglTexUnitsConfig(deoglRenderThread &renderThread);
 	
 	/** Clean up texture units configuration. */
 	~deoglTexUnitsConfig();
@@ -86,22 +86,22 @@ public:
 	inline int GetUnitCount() const{ return pUnitCount; }
 	
 	/** Set count of units. Disabled all units. */
-	void SetUnitCount( int count );
+	void SetUnitCount(int count);
 	
 	/** Texture units pointer for fast access without index checking. */
 	inline deoglTexUnitConfig *GetUnits() const{ return pUnits; }
 	
 	/** Texture unit. */
-	deoglTexUnitConfig &GetUnitAt( int index ) const;
+	deoglTexUnitConfig &GetUnitAt(int index) const;
 	
 	/** Set units. */
-	void SetUnits( const deoglTexUnitConfig *units, int unitCount );
+	void SetUnits(const deoglTexUnitConfig *units, int unitCount);
 	
 	/** Shader parameter block or NULL. */
 	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or NULL. */
-	void SetParameterBlock( deoglShaderParameterBlock *paramBlock );
+	void SetParameterBlock(deoglShaderParameterBlock *paramBlock);
 	
 	
 	
@@ -114,7 +114,7 @@ public:
 	inline int GetMaterialIndex() const{ return pMaterialIndex; }
 	
 	/** Set material index or -1. */
-	void SetMaterialIndex( int index );
+	void SetMaterialIndex(int index);
 	
 	/** Material usage count. */
 	inline int GetMaterialUsageCount() const{ return pMaterialUsageCount; }
@@ -128,11 +128,11 @@ public:
 	
 	
 	/** Texture units configuration matches another one. */
-	bool Equals( const deoglTexUnitsConfig &tuc ) const;
+	bool Equals(const deoglTexUnitsConfig &tuc) const;
 	
 	/** Texture units configuration matches another one. */
-	bool Equals( const deoglTexUnitConfig *units, int unitCount,
-		deoglShaderParameterBlock *paramBlock ) const;
+	bool Equals(const deoglTexUnitConfig *units, int unitCount,
+		deoglShaderParameterBlock *paramBlock) const;
 	
 	/** Usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }
@@ -155,7 +155,7 @@ public:
 	void CalcUnitsHashCode();
 	
 	/** Calculate hash code for set of unit configurations. */
-	static unsigned int CalcUnitsHashCodeForUnits( const deoglTexUnitConfig *units, int unitCount );
+	static unsigned int CalcUnitsHashCodeForUnits(const deoglTexUnitConfig *units, int unitCount);
 	
 	
 	
@@ -176,13 +176,13 @@ public:
 	inline deoglTexUnitsConfig *GetLLPrev() const{ return pLLPrev; }
 	
 	/** Set previous entry in the linked list. */
-	void SetLLPrev( deoglTexUnitsConfig *entry );
+	void SetLLPrev(deoglTexUnitsConfig *entry);
 	
 	/** Next entry in the linked list. */
 	inline deoglTexUnitsConfig *GetLLNext() const{ return pLLNext; }
 	
 	/** Set next entry in the linked list. */
-	void SetLLNext( deoglTexUnitsConfig *entry );
+	void SetLLNext(deoglTexUnitsConfig *entry);
 	/*@}*/
 };
 

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared render task shader. */
-	deoglRenderTaskSharedTexture( deoglRenderTaskSharedPool &pool, int index );
+	deoglRenderTaskSharedTexture(deoglRenderTaskSharedPool &pool, int index);
 	
 protected:
 	/** Clean up shared render task shader. */
@@ -75,7 +75,7 @@ public:
 	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	
 	/** Set texture units configuration. */
-	void SetTUC( deoglTexUnitsConfig *tuc );
+	void SetTUC(deoglTexUnitsConfig *tuc);
 	
 	
 	

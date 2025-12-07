@@ -39,13 +39,13 @@
 ////////////////////////////
 
 deoglRenderPlanEnvMap::deoglRenderPlanEnvMap() :
-pEnvMap( NULL ),
-pDistance( 0.0f ),
-pFadeTime( 0.0f ){
+pEnvMap(NULL),
+pDistance(0.0f),
+pFadeTime(0.0f){
 }
 
 deoglRenderPlanEnvMap::~deoglRenderPlanEnvMap(){
-	if( pEnvMap ){
+	if(pEnvMap){
 		pEnvMap->FreeReference();
 	}
 }
@@ -55,23 +55,23 @@ deoglRenderPlanEnvMap::~deoglRenderPlanEnvMap(){
 // Management
 ///////////////
 
-void deoglRenderPlanEnvMap::SetEnvMap( deoglEnvironmentMap *envmap ){
-	if( envmap == pEnvMap ){
+void deoglRenderPlanEnvMap::SetEnvMap(deoglEnvironmentMap *envmap){
+	if(envmap == pEnvMap){
 		return;
 	}
 	
-	if( pEnvMap ){
+	if(pEnvMap){
 		pEnvMap->FreeReference();
 	}
 	
 	pEnvMap = envmap;
 	
-	if( envmap ){
+	if(envmap){
 		envmap->AddReference();
 	}
 }
 
-void deoglRenderPlanEnvMap::SetDistance( float distance ){
+void deoglRenderPlanEnvMap::SetDistance(float distance){
 	pDistance = distance;
 }
 
@@ -79,6 +79,6 @@ void deoglRenderPlanEnvMap::ResetFadeTime(){
 	pFadeTime = 0.0f;
 }
 
-void deoglRenderPlanEnvMap::IncFadeTime( float timestep ){
+void deoglRenderPlanEnvMap::IncFadeTime(float timestep){
 	pFadeTime += timestep;
 }

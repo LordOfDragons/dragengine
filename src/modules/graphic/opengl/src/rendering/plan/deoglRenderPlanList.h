@@ -54,27 +54,27 @@ public:
 	/** Retrieves the number of render plans. */
 	inline int GetCount() const{ return pPlanCount; }
 	/** Retrieves the index of the render plan or -1 if not in the list. */
-	int IndexOf( deoglRenderPlan *plan ) const;
+	int IndexOf(deoglRenderPlan *plan) const;
 	/** Determines if the render plan exists. */
-	bool Has( deoglRenderPlan *plan ) const;
+	bool Has(deoglRenderPlan *plan) const;
 	/** Retrieves the render plan at the given index. */
-	deoglRenderPlan *GetAt( int index ) const;
+	deoglRenderPlan *GetAt(int index) const;
 	/** Adds a render plan. */
-	void Add( deoglRenderPlan *plan );
+	void Add(deoglRenderPlan *plan);
 	/** Adds a render plan if missing in the list. Returns true if added. */
-	bool AddIfMissing( deoglRenderPlan *plan );
+	bool AddIfMissing(deoglRenderPlan *plan);
 	/** Removes render plan. */
-	void Remove( deoglRenderPlan *plan );
+	void Remove(deoglRenderPlan *plan);
 	/** Removes render plan if existing in the list. Returns true if removed. */
-	bool RemoveIfExisting( deoglRenderPlan *plan );
+	bool RemoveIfExisting(deoglRenderPlan *plan);
 	/** Removes occlusion mesh from the given index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	/** Removes all render plans. */
 	void RemoveAll();
 	/*@}*/
 	
 private:
-	void pAdd( deoglRenderPlan *plan );
+	void pAdd(deoglRenderPlan *plan);
 };
 
 #endif

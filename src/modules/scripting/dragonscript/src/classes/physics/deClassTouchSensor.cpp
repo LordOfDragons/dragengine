@@ -70,12 +70,12 @@ struct sTSNatDat{
 /////////////////////
 
 // public func new( int type )
-deClassTouchSensor::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsTS,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassTouchSensor::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsTS,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassTouchSensor::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sTSNatDat *nd = ( sTSNatDat* )p_GetNativeData( myself );
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sTSNatDat *nd = (sTSNatDat*)p_GetNativeData(myself);
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	deTouchSensorManager *tsMgr = clsTS->GetGameEngine()->GetTouchSensorManager();
 	
 	// clear ( important )
@@ -83,21 +83,21 @@ void deClassTouchSensor::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	
 	// create touchSensor
 	nd->touchSensor = tsMgr->CreateTouchSensor();
-	if( ! nd->touchSensor ) DSTHROW( dueOutOfMemory );
+	if(!nd->touchSensor) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
-deClassTouchSensor::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsTS,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassTouchSensor::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsTS,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassTouchSensor::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassTouchSensor::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sTSNatDat *nd = ( sTSNatDat* )p_GetNativeData( myself );
+	sTSNatDat *nd = (sTSNatDat*)p_GetNativeData(myself);
 	
-	if( nd->touchSensor ){
+	if(nd->touchSensor){
 		nd->touchSensor->FreeReference();
 		nd->touchSensor = NULL;
 	}
@@ -109,175 +109,175 @@ void deClassTouchSensor::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myse
 ///////////////
 
 // public func DVector getPosition()
-deClassTouchSensor::nfGetPosition::nfGetPosition( const sInitData &init ) : dsFunction( init.clsTS,
-"getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+deClassTouchSensor::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunction(init.clsTS,
+"getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
-void deClassTouchSensor::nfGetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	
-	clsTS->GetClassDVector()->PushDVector( rt, touchSensor->GetPosition() );
+	clsTS->GetClassDVector()->PushDVector(rt, touchSensor->GetPosition());
 }
 
 // public func setPosition( DVector position )
-deClassTouchSensor::nfSetPosition::nfSetPosition( const sInitData &init ) : dsFunction( init.clsTS,
-"setPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsDVec ); // position
+deClassTouchSensor::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunction(init.clsTS,
+"setPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsDVec); // position
 }
-void deClassTouchSensor::nfSetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	
-	dsRealObject *obj = rt->GetValue( 0 )->GetRealObject();
-	if( ! obj ) DSTHROW( dueNullPointer );
+	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
+	if(!obj) DSTHROW(dueNullPointer);
 	
-	touchSensor->SetPosition( clsTS->GetClassDVector()->GetDVector( obj ) );
+	touchSensor->SetPosition(clsTS->GetClassDVector()->GetDVector(obj));
 }
 
 // public func Quaternion getOrientation()
-deClassTouchSensor::nfGetOrientation::nfGetOrientation( const sInitData &init ) : dsFunction( init.clsTS,
-"getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
+deClassTouchSensor::nfGetOrientation::nfGetOrientation(const sInitData &init) : dsFunction(init.clsTS,
+"getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
-void deClassTouchSensor::nfGetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	
-	clsTS->GetDS()->PushQuaternion( rt, touchSensor->GetOrientation() );
+	clsTS->GetDS()->PushQuaternion(rt, touchSensor->GetOrientation());
 }
 
 // public func setOrientation( Quaternion orientation )
-deClassTouchSensor::nfSetOrientation::nfSetOrientation( const sInitData &init ) : dsFunction( init.clsTS,
-"setOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsQuat ); // orientation
+deClassTouchSensor::nfSetOrientation::nfSetOrientation(const sInitData &init) : dsFunction(init.clsTS,
+"setOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsQuat); // orientation
 }
-void deClassTouchSensor::nfSetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	
-	dsRealObject *obj = rt->GetValue( 0 )->GetRealObject();
-	if( ! obj ) DSTHROW( dueNullPointer );
+	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
+	if(!obj) DSTHROW(dueNullPointer);
 	
-	touchSensor->SetOrientation( clsTS->GetClassQuaternion()->GetQuaternion( obj ) );
+	touchSensor->SetOrientation(clsTS->GetClassQuaternion()->GetQuaternion(obj));
 }
 
 // public func CollisionFilter getCollisionFilter()
-deClassTouchSensor::nfGetCollisionFilter::nfGetCollisionFilter( const sInitData &init ) : dsFunction( init.clsTS,
-"getCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCF ){
+deClassTouchSensor::nfGetCollisionFilter::nfGetCollisionFilter(const sInitData &init) : dsFunction(init.clsTS,
+"getCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCF){
 }
-void deClassTouchSensor::nfGetCollisionFilter::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfGetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	ds.GetClassCollisionFilter()->PushCollisionFilter( rt, touchSensor.GetCollisionFilter() );
+	ds.GetClassCollisionFilter()->PushCollisionFilter(rt, touchSensor.GetCollisionFilter());
 }
 
 // public func void setCollisionFilter( CollisionFilter collisionFilter )
-deClassTouchSensor::nfSetCollisionFilter::nfSetCollisionFilter( const sInitData &init ) : dsFunction( init.clsTS,
-"setCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCF ); // collisionFilter
+deClassTouchSensor::nfSetCollisionFilter::nfSetCollisionFilter(const sInitData &init) : dsFunction(init.clsTS,
+"setCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCF); // collisionFilter
 }
-void deClassTouchSensor::nfSetCollisionFilter::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
 	const decCollisionFilter &collisionFilter = ds.GetClassCollisionFilter()->
-		GetCollisionFilter( rt->GetValue( 0 )->GetRealObject() );
+		GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	
-	touchSensor.SetCollisionFilter( collisionFilter );
+	touchSensor.SetCollisionFilter(collisionFilter);
 }
 
 // public func bool getTrackEnterLeave()
-deClassTouchSensor::nfGetTrackEnterLeave::nfGetTrackEnterLeave( const sInitData &init ) : dsFunction( init.clsTS,
-"getTrackEnterLeave", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassTouchSensor::nfGetTrackEnterLeave::nfGetTrackEnterLeave(const sInitData &init) : dsFunction(init.clsTS,
+"getTrackEnterLeave", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassTouchSensor::nfGetTrackEnterLeave::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	rt->PushBool( touchSensor.GetTrackEnterLeave() );
+void deClassTouchSensor::nfGetTrackEnterLeave::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	rt->PushBool(touchSensor.GetTrackEnterLeave());
 }
 
 // public func void setTrackEnterLeave( bool trackEnterLeave )
-deClassTouchSensor::nfSetTrackEnterLeave::nfSetTrackEnterLeave( const sInitData &init ) : dsFunction( init.clsTS,
-"setTrackEnterLeave", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // trackEnterLeave
+deClassTouchSensor::nfSetTrackEnterLeave::nfSetTrackEnterLeave(const sInitData &init) : dsFunction(init.clsTS,
+"setTrackEnterLeave", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // trackEnterLeave
 }
-void deClassTouchSensor::nfSetTrackEnterLeave::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	touchSensor.SetTrackEnterLeave( rt->GetValue( 0 )->GetBool() );
+void deClassTouchSensor::nfSetTrackEnterLeave::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	touchSensor.SetTrackEnterLeave(rt->GetValue(0)->GetBool());
 }
 
 // public func bool getEnabled()
-deClassTouchSensor::nfGetEnabled::nfGetEnabled( const sInitData &init ) : dsFunction( init.clsTS,
-"getEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassTouchSensor::nfGetEnabled::nfGetEnabled(const sInitData &init) : dsFunction(init.clsTS,
+"getEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassTouchSensor::nfGetEnabled::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	rt->PushBool( touchSensor.GetEnabled() );
+void deClassTouchSensor::nfGetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	rt->PushBool(touchSensor.GetEnabled());
 }
 
 // public func void setEnabled( bool enabled )
-deClassTouchSensor::nfSetEnabled::nfSetEnabled( const sInitData &init ) : dsFunction( init.clsTS,
-"setEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassTouchSensor::nfSetEnabled::nfSetEnabled(const sInitData &init) : dsFunction(init.clsTS,
+"setEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassTouchSensor::nfSetEnabled::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	touchSensor.SetEnabled( rt->GetValue( 0 )->GetBool() );
+void deClassTouchSensor::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	touchSensor.SetEnabled(rt->GetValue(0)->GetBool());
 }
 
 // public func ShapeList getShape()
-deClassTouchSensor::nfGetShape::nfGetShape( const sInitData &init ) : dsFunction( init.clsTS,
-"getShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList ){
+deClassTouchSensor::nfGetShape::nfGetShape(const sInitData &init) : dsFunction(init.clsTS,
+"getShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList){
 }
-void deClassTouchSensor::nfGetShape::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfGetShape::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	ds.GetClassShapeList()->PushShapeList( rt, touchSensor.GetShape() );
+	ds.GetClassShapeList()->PushShapeList(rt, touchSensor.GetShape());
 }
 
 // public func void setShape( ShapeList shape )
-deClassTouchSensor::nfSetShape::nfSetShape( const sInitData &init ) : dsFunction( init.clsTS,
-"setShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsShapeList ); // shape
+deClassTouchSensor::nfSetShape::nfSetShape(const sInitData &init) : dsFunction(init.clsTS,
+"setShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsShapeList); // shape
 }
-void deClassTouchSensor::nfSetShape::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfSetShape::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	touchSensor.SetShape( ds.GetClassShapeList()->GetShapeList(
-		rt->GetValue( 0 )->GetRealObject() ) );
+	touchSensor.SetShape(ds.GetClassShapeList()->GetShapeList(
+		rt->GetValue(0)->GetRealObject()));
 }
 
 
 
 // public func bool isEmpty()
-deClassTouchSensor::nfIsEmpty::nfIsEmpty( const sInitData &init ) : dsFunction( init.clsTS,
-"isEmpty", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassTouchSensor::nfIsEmpty::nfIsEmpty(const sInitData &init) : dsFunction(init.clsTS,
+"isEmpty", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassTouchSensor::nfIsEmpty::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	rt->PushBool( touchSensor->IsEmpty() );
+void deClassTouchSensor::nfIsEmpty::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	rt->PushBool(touchSensor->IsEmpty());
 }
 
 // public func int getColliderCount()
-deClassTouchSensor::nfGetColliderCount::nfGetColliderCount( const sInitData &init ) : dsFunction( init.clsTS,
-"getColliderCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassTouchSensor::nfGetColliderCount::nfGetColliderCount(const sInitData &init) : dsFunction(init.clsTS,
+"getColliderCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassTouchSensor::nfGetColliderCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	rt->PushInt( touchSensor->GetColliderCount() );
+void deClassTouchSensor::nfGetColliderCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	rt->PushInt(touchSensor->GetColliderCount());
 }
 
 // public func Collider getColliderAt( int index )
-deClassTouchSensor::nfGetColliderAt::nfGetColliderAt( const sInitData &init ) : dsFunction( init.clsTS,
-"getColliderAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol ){
-	p_AddParameter( init.clsInt ); // collider
+deClassTouchSensor::nfGetColliderAt::nfGetColliderAt(const sInitData &init) : dsFunction(init.clsTS,
+"getColliderAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
+	p_AddParameter(init.clsInt); // collider
 }
-void deClassTouchSensor::nfGetColliderAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
-	clsTS->GetClassCollider()->PushCollider( rt, touchSensor->GetColliderAt(
-		rt->GetValue( 0 )->GetInt() ) );
+void deClassTouchSensor::nfGetColliderAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
+	clsTS->GetClassCollider()->PushCollider(rt, touchSensor->GetColliderAt(
+		rt->GetValue(0)->GetInt()));
 }
 
 
@@ -286,73 +286,73 @@ void deClassTouchSensor::nfGetColliderAt::RunFunction( dsRunTime *rt, dsValue *m
 /////////////////////
 
 // public func int getIgnoreColliderCount()
-deClassTouchSensor::nfGetIgnoreColliderCount::nfGetIgnoreColliderCount( const sInitData &init ) : dsFunction( init.clsTS,
-"getIgnoreColliderCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassTouchSensor::nfGetIgnoreColliderCount::nfGetIgnoreColliderCount(const sInitData &init) : dsFunction(init.clsTS,
+"getIgnoreColliderCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassTouchSensor::nfGetIgnoreColliderCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
+void deClassTouchSensor::nfGetIgnoreColliderCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
 	
-	rt->PushInt( touchSensor.GetIgnoreColliderCount() );
+	rt->PushInt(touchSensor.GetIgnoreColliderCount());
 }
 
 // public func Collider getIgnoreColliderAt( int index )
-deClassTouchSensor::nfGetIgnoreColliderAt::nfGetIgnoreColliderAt( const sInitData &init ) : dsFunction( init.clsTS,
-"getIgnoreColliderAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol ){
-	p_AddParameter( init.clsInt ); // index
+deClassTouchSensor::nfGetIgnoreColliderAt::nfGetIgnoreColliderAt(const sInitData &init) : dsFunction(init.clsTS,
+"getIgnoreColliderAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
+	p_AddParameter(init.clsInt); // index
 }
-void deClassTouchSensor::nfGetIgnoreColliderAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfGetIgnoreColliderAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	const int index = rt->GetValue( 0 )->GetInt();
-	ds.GetClassCollider()->PushCollider( rt, touchSensor.GetIgnoreColliderAt( index ) );
+	const int index = rt->GetValue(0)->GetInt();
+	ds.GetClassCollider()->PushCollider(rt, touchSensor.GetIgnoreColliderAt(index));
 }
 
 // public func bool hasIgnoreCollider( Collider collider )
-deClassTouchSensor::nfHasIgnoreCollider::nfHasIgnoreCollider( const sInitData &init ) : dsFunction( init.clsTS,
-"hasIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsCol ); // collider
+deClassTouchSensor::nfHasIgnoreCollider::nfHasIgnoreCollider(const sInitData &init) : dsFunction(init.clsTS,
+"hasIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsCol); // collider
 }
-void deClassTouchSensor::nfHasIgnoreCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfHasIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	deCollider * const collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	rt->PushBool( touchSensor.HasIgnoreCollider( collider ) );
+	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
+	rt->PushBool(touchSensor.HasIgnoreCollider(collider));
 }
 
 // public func void addIgnoreCollider( Collider collider )
-deClassTouchSensor::nfAddIgnoreCollider::nfAddIgnoreCollider( const sInitData &init ) : dsFunction( init.clsTS,
-"addIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
+deClassTouchSensor::nfAddIgnoreCollider::nfAddIgnoreCollider(const sInitData &init) : dsFunction(init.clsTS,
+"addIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
 }
-void deClassTouchSensor::nfAddIgnoreCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfAddIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	deCollider * const collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	touchSensor.AddIgnoreCollider( collider );
+	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
+	touchSensor.AddIgnoreCollider(collider);
 }
 
 // public func void removeIgnoreCollider( Collider collider )
-deClassTouchSensor::nfRemoveIgnoreCollider::nfRemoveIgnoreCollider( const sInitData &init ) : dsFunction( init.clsTS,
-"removeIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
+deClassTouchSensor::nfRemoveIgnoreCollider::nfRemoveIgnoreCollider(const sInitData &init) : dsFunction(init.clsTS,
+"removeIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
 }
-void deClassTouchSensor::nfRemoveIgnoreCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfRemoveIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	deCollider * const collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	touchSensor.RemoveIgnoreCollider( collider );
+	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
+	touchSensor.RemoveIgnoreCollider(collider);
 }
 
 // public func void removeAllIgnoreColliders()
-deClassTouchSensor::nfRemoveAllIgnoreColliders::nfRemoveAllIgnoreColliders( const sInitData &init ) : dsFunction( init.clsTS,
-"removeAllIgnoreColliders", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassTouchSensor::nfRemoveAllIgnoreColliders::nfRemoveAllIgnoreColliders(const sInitData &init) : dsFunction(init.clsTS,
+"removeAllIgnoreColliders", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassTouchSensor::nfRemoveAllIgnoreColliders::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
+void deClassTouchSensor::nfRemoveAllIgnoreColliders::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
 	
 	touchSensor.RemoveAllIgnoreColliders();
 }
@@ -363,316 +363,316 @@ void deClassTouchSensor::nfRemoveAllIgnoreColliders::RunFunction( dsRunTime *rt,
 ////////////////////////
 
 // public func bool pointInside( DVector point )
-deClassTouchSensor::nfPointInside::nfPointInside( const sInitData &init ) : dsFunction( init.clsTS,
-"pointInside", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsDVec ); // point
+deClassTouchSensor::nfPointInside::nfPointInside(const sInitData &init) : dsFunction(init.clsTS,
+"pointInside", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsDVec); // point
 }
-void deClassTouchSensor::nfPointInside::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	deClassTouchSensor * const clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfPointInside::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	deClassTouchSensor * const clsTS = (deClassTouchSensor*)GetOwnerClass();
 	deScriptingDragonScript &ds = *clsTS->GetDS();
 	
-	const decDVector &point = ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() );
+	const decDVector &point = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	
-	rt->PushBool( touchSensor.PointInside( point ) );
+	rt->PushBool(touchSensor.PointInside(point));
 }
 
 // public func void allHits( ColliderListener listener )
-deClassTouchSensor::nfAllHits::nfAllHits( const sInitData &init ) : dsFunction( init.clsTS,
-"allHits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfAllHits::nfAllHits(const sInitData &init) : dsFunction(init.clsTS,
+"allHits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfAllHits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	deClassTouchSensor * const clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfAllHits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	deClassTouchSensor * const clsTS = (deClassTouchSensor*)GetOwnerClass();
 	deScriptingDragonScript &ds = *clsTS->GetDS();
 	
-	dsRealObject * const objListener = rt->GetValue( 0 )->GetRealObject();
-	if( ! objListener ){
-		DSTHROW( dueNullPointer );
+	dsRealObject * const objListener = rt->GetValue(0)->GetRealObject();
+	if(!objListener){
+		DSTHROW(dueNullPointer);
 	}
 	
 	dedsColliderListenerAdaptor &adaptor = ds.GetColliderListenerAdaptor();
-	adaptor.SetListener( objListener );
+	adaptor.SetListener(objListener);
 	adaptor.Reset();
 	
-	touchSensor.AllHits( &adaptor );
+	touchSensor.AllHits(&adaptor);
 	
-	adaptor.SetListener( NULL );
+	adaptor.SetListener(NULL);
 	adaptor.Reset();
 }
 
 // public func void rayHits( DVector rayOrigin, Vector rayDirection, ColliderListener listener )
-deClassTouchSensor::nfRayHits::nfRayHits( const sInitData &init ) : dsFunction( init.clsTS,
-"rayHits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsDVec ); // rayOrigin
-	p_AddParameter( init.clsVec ); // rayDirection
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfRayHits::nfRayHits(const sInitData &init) : dsFunction(init.clsTS,
+"rayHits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsDVec); // rayOrigin
+	p_AddParameter(init.clsVec); // rayDirection
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfRayHits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	deClassTouchSensor * const clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfRayHits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	deClassTouchSensor * const clsTS = (deClassTouchSensor*)GetOwnerClass();
 	deScriptingDragonScript &ds = *clsTS->GetDS();
 	
-	const decDVector &rayOrigin = ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() );
-	const decVector &rayDirection = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
-	dsRealObject * const objListener = rt->GetValue( 2 )->GetRealObject();
+	const decDVector &rayOrigin = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
+	const decVector &rayDirection = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
+	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
 	
 	dedsColliderListenerAdaptor &adaptor = ds.GetColliderListenerAdaptor();
-	adaptor.SetListener( objListener );
+	adaptor.SetListener(objListener);
 	adaptor.Reset();
 	
-	touchSensor.RayHits( rayOrigin, rayDirection, &adaptor );
+	touchSensor.RayHits(rayOrigin, rayDirection, &adaptor);
 	
-	adaptor.SetListener( NULL );
+	adaptor.SetListener(NULL);
 	adaptor.Reset();
 }
 
 // public func void rayHitsClosest( DVector rayOrigin, Vector rayDirection, ColliderListener listener )
-deClassTouchSensor::nfRayHitsClosest::nfRayHitsClosest( const sInitData &init ) : dsFunction( init.clsTS,
-"rayHitsClosest", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsDVec ); // rayOrigin
-	p_AddParameter( init.clsVec ); // rayDirection
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfRayHitsClosest::nfRayHitsClosest(const sInitData &init) : dsFunction(init.clsTS,
+"rayHitsClosest", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsDVec); // rayOrigin
+	p_AddParameter(init.clsVec); // rayDirection
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfRayHitsClosest::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	deClassTouchSensor * const clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfRayHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	deClassTouchSensor * const clsTS = (deClassTouchSensor*)GetOwnerClass();
 	deScriptingDragonScript &ds = *clsTS->GetDS();
 	
-	const decDVector &rayOrigin = ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() );
-	const decVector &rayDirection = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
-	dsRealObject * const objListener = rt->GetValue( 2 )->GetRealObject();
+	const decDVector &rayOrigin = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
+	const decVector &rayDirection = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
+	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
 	
 	dedsColliderListenerClosest &hitsClosest = ds.GetColliderListenerClosest();
-	hitsClosest.SetListener( objListener );
+	hitsClosest.SetListener(objListener);
 	hitsClosest.Reset();
 	
-	touchSensor.RayHits( rayOrigin, rayDirection, &hitsClosest );
+	touchSensor.RayHits(rayOrigin, rayDirection, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener( NULL );
+	hitsClosest.SetListener(NULL);
 	hitsClosest.Reset();
 }
 
 // public func void colliderHits( Collider collider, ColliderListener listener )
-deClassTouchSensor::nfColliderHits::nfColliderHits( const sInitData &init ) :
-dsFunction( init.clsTS, "colliderHits", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfColliderHits::nfColliderHits(const sInitData &init) :
+dsFunction(init.clsTS, "colliderHits", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfColliderHits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	deScriptingDragonScript &ds = *clsTS->GetDS();
 	
-	dsRealObject *objCollider = rt->GetValue( 0 )->GetRealObject();
-	dsRealObject * const objListener = rt->GetValue( 1 )->GetRealObject();
-	if( ! objCollider || ! objListener ){
-		DSTHROW( dueNullPointer );
+	dsRealObject *objCollider = rt->GetValue(0)->GetRealObject();
+	dsRealObject * const objListener = rt->GetValue(1)->GetRealObject();
+	if(!objCollider || !objListener){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deCollider * const collider = clsTS->GetClassCollider()->GetCollider( objCollider );
+	deCollider * const collider = clsTS->GetClassCollider()->GetCollider(objCollider);
 	
 	dedsColliderListenerAdaptor &adaptor = ds.GetColliderListenerAdaptor();
-	adaptor.SetListener( objListener );
+	adaptor.SetListener(objListener);
 	adaptor.Reset();
 	
-	touchSensor->ColliderHits( collider, &adaptor );
+	touchSensor->ColliderHits(collider, &adaptor);
 	
-	adaptor.SetListener( NULL );
+	adaptor.SetListener(NULL);
 	adaptor.Reset();
 }
 
 // public func void colliderMoveHits( Collider collider, Vector displacement, ColliderListener listener )
-deClassTouchSensor::nfColliderMoveHits::nfColliderMoveHits( const sInitData &init ) :
-dsFunction( init.clsTS, "colliderMoveHits", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
-	p_AddParameter( init.clsVec ); // displacement
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfColliderMoveHits::nfColliderMoveHits(const sInitData &init) :
+dsFunction(init.clsTS, "colliderMoveHits", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
+	p_AddParameter(init.clsVec); // displacement
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfColliderMoveHits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	
-	dsRealObject * const objCollider = rt->GetValue( 0 )->GetRealObject();
-	dsRealObject * const objDisplacement = rt->GetValue( 1 )->GetRealObject();
-	dsRealObject * const objListener = rt->GetValue( 2 )->GetRealObject();
-	if( ! objCollider || ! objDisplacement || ! objListener ){
-		DSTHROW( dueNullPointer );
+	dsRealObject * const objCollider = rt->GetValue(0)->GetRealObject();
+	dsRealObject * const objDisplacement = rt->GetValue(1)->GetRealObject();
+	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
+	if(!objCollider || !objDisplacement || !objListener){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deCollider *collider = clsTS->GetClassCollider()->GetCollider( objCollider );
-	decVector displacement = clsTS->GetDS()->GetVector( objDisplacement );
+	deCollider *collider = clsTS->GetClassCollider()->GetCollider(objCollider);
+	decVector displacement = clsTS->GetDS()->GetVector(objDisplacement);
 	
 	dedsColliderListenerAdaptor &adaptor = clsTS->GetDS()->GetColliderListenerAdaptor();
-	adaptor.SetListener( objListener );
+	adaptor.SetListener(objListener);
 	adaptor.Reset();
 	
-	touchSensor->ColliderMoveHits( collider, displacement, &adaptor );
+	touchSensor->ColliderMoveHits(collider, displacement, &adaptor);
 	
-	adaptor.SetListener( NULL );
+	adaptor.SetListener(NULL);
 	adaptor.Reset();
 }
 
 // public func void colliderMoveHitsClosest( Collider collider, Vector displacement, ColliderListener listener )
-deClassTouchSensor::nfColliderMoveHitsClosest::nfColliderMoveHitsClosest( const sInitData &init ) :
-dsFunction( init.clsTS, "colliderMoveHitsClosest", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
-	p_AddParameter( init.clsVec ); // displacement
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfColliderMoveHitsClosest::nfColliderMoveHitsClosest(const sInitData &init) :
+dsFunction(init.clsTS, "colliderMoveHitsClosest", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
+	p_AddParameter(init.clsVec); // displacement
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfColliderMoveHitsClosest::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
+void deClassTouchSensor::nfColliderMoveHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
 	
-	dsRealObject * const objCollider = rt->GetValue( 0 )->GetRealObject();
-	dsRealObject * const objDisplacement = rt->GetValue( 1 )->GetRealObject();
-	dsRealObject * const objListener = rt->GetValue( 2 )->GetRealObject();
-	if( ! objCollider || ! objDisplacement || ! objListener ){
-		DSTHROW( dueNullPointer );
+	dsRealObject * const objCollider = rt->GetValue(0)->GetRealObject();
+	dsRealObject * const objDisplacement = rt->GetValue(1)->GetRealObject();
+	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
+	if(!objCollider || !objDisplacement || !objListener){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deCollider *collider = clsTS->GetClassCollider()->GetCollider( objCollider );
-	decVector displacement = clsTS->GetDS()->GetVector( objDisplacement );
+	deCollider *collider = clsTS->GetClassCollider()->GetCollider(objCollider);
+	decVector displacement = clsTS->GetDS()->GetVector(objDisplacement);
 	
 	dedsColliderListenerClosest &hitsClosest = clsTS->GetDS()->GetColliderListenerClosest();
-	hitsClosest.SetListener( objListener );
+	hitsClosest.SetListener(objListener);
 	hitsClosest.Reset();
 	
-	touchSensor->ColliderMoveHits( collider, displacement, &hitsClosest );
+	touchSensor->ColliderMoveHits(collider, displacement, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener( NULL );
+	hitsClosest.SetListener(NULL);
 	hitsClosest.Reset();
 }
 
 // public func void colliderRotateHits( Collider collider, ColliderListener listener )
-deClassTouchSensor::nfColliderRotateHits::nfColliderRotateHits( const sInitData &init ) :
-dsFunction( init.clsTS, "colliderRotateHits", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
-	p_AddParameter( init.clsVec ); // rotation
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfColliderRotateHits::nfColliderRotateHits(const sInitData &init) :
+dsFunction(init.clsTS, "colliderRotateHits", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
+	p_AddParameter(init.clsVec); // rotation
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfColliderRotateHits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfColliderRotateHits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	deCollider *collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	const decVector rotation( ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() ) * DEG2RAD );
-	dsRealObject * const objListener = rt->GetValue( 2 )->GetRealObject();
+	deCollider *collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
+	const decVector rotation(ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject()) * DEG2RAD);
+	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
 	
-	if( ! collider || ! collider->GetPeerScripting() || ! objListener ){
-		DSTHROW( dueNullPointer );
+	if(!collider || !collider->GetPeerScripting() || !objListener){
+		DSTHROW(dueNullPointer);
 	}
 	
 	dedsColliderListenerAdaptor &adaptor = ds.GetColliderListenerAdaptor();
-	adaptor.SetListener( ( ( dedsCollider* )collider->GetPeerScripting() )->GetCallback() );
+	adaptor.SetListener(((dedsCollider*)collider->GetPeerScripting())->GetCallback());
 	adaptor.Reset();
 	
-	touchSensor.ColliderRotateHits( collider, rotation, &adaptor );
+	touchSensor.ColliderRotateHits(collider, rotation, &adaptor);
 	
-	adaptor.SetListener( NULL );
+	adaptor.SetListener(NULL);
 	adaptor.Reset();
 }
 
 // public func void colliderRotateHitsClosest( Collider collider, Vector rotation, ColliderListener listener )
-deClassTouchSensor::nfColliderRotateHitsClosest::nfColliderRotateHitsClosest( const sInitData &init ) :
-dsFunction( init.clsTS, "colliderRotateHitsClosest", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
-	p_AddParameter( init.clsVec ); // rotation
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfColliderRotateHitsClosest::nfColliderRotateHitsClosest(const sInitData &init) :
+dsFunction(init.clsTS, "colliderRotateHitsClosest", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
+	p_AddParameter(init.clsVec); // rotation
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfColliderRotateHitsClosest::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfColliderRotateHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	deCollider *collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	const decVector rotation( ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() ) * DEG2RAD );
-	dsRealObject * const objListener = rt->GetValue( 2 )->GetRealObject();
+	deCollider *collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
+	const decVector rotation(ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject()) * DEG2RAD);
+	dsRealObject * const objListener = rt->GetValue(2)->GetRealObject();
 	
-	if( ! collider || ! objListener ){
-		DSTHROW( dueNullPointer );
+	if(!collider || !objListener){
+		DSTHROW(dueNullPointer);
 	}
 	
 	dedsColliderListenerClosest &hitsClosest = ds.GetColliderListenerClosest();
-	hitsClosest.SetListener( objListener );
+	hitsClosest.SetListener(objListener);
 	hitsClosest.Reset();
 	
-	touchSensor.ColliderRotateHits( collider, rotation, &hitsClosest );
+	touchSensor.ColliderRotateHits(collider, rotation, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener( NULL );
+	hitsClosest.SetListener(NULL);
 	hitsClosest.Reset();
 }
 
 // public func void colliderMoveRotateHits( Collider collider, Vector displacement, Vector rotation, ColliderListener listener )
-deClassTouchSensor::nfColliderMoveRotateHits::nfColliderMoveRotateHits( const sInitData &init ) :
-dsFunction( init.clsTS, "colliderMoveRotateHits", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
-	p_AddParameter( init.clsVec ); // displacement
-	p_AddParameter( init.clsVec ); // rotation
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfColliderMoveRotateHits::nfColliderMoveRotateHits(const sInitData &init) :
+dsFunction(init.clsTS, "colliderMoveRotateHits", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
+	p_AddParameter(init.clsVec); // displacement
+	p_AddParameter(init.clsVec); // rotation
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfColliderMoveRotateHits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfColliderMoveRotateHits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	deCollider *collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	const decVector &displacement = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
-	const decVector rotation( ds.GetClassVector()->GetVector( rt->GetValue( 2 )->GetRealObject() ) * DEG2RAD );
-	dsRealObject * const objListener = rt->GetValue( 3 )->GetRealObject();
+	deCollider *collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
+	const decVector &displacement = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
+	const decVector rotation(ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject()) * DEG2RAD);
+	dsRealObject * const objListener = rt->GetValue(3)->GetRealObject();
 	
-	if( ! collider || ! objListener ){
-		DSTHROW( dueNullPointer );
+	if(!collider || !objListener){
+		DSTHROW(dueNullPointer);
 	}
 	
 	dedsColliderListenerAdaptor &adaptor = ds.GetColliderListenerAdaptor();
-	adaptor.SetListener( objListener );
+	adaptor.SetListener(objListener);
 	adaptor.Reset();
 	
-	touchSensor.ColliderMoveRotateHits( collider, displacement, rotation, &adaptor );
+	touchSensor.ColliderMoveRotateHits(collider, displacement, rotation, &adaptor);
 	
-	adaptor.SetListener( NULL );
+	adaptor.SetListener(NULL);
 	adaptor.Reset();
 }
 
 // public func void colliderMoveRotateHitsClosest( Collider collider, Vector displacement, Vector rotation, ColliderListener listener )
-deClassTouchSensor::nfColliderMoveRotateHitsClosest::nfColliderMoveRotateHitsClosest( const sInitData &init ) :
-dsFunction( init.clsTS, "colliderMoveRotateHitsClosest", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
-	p_AddParameter( init.clsVec ); // displacement
-	p_AddParameter( init.clsVec ); // rotation
-	p_AddParameter( init.clsColLis ); // listener
+deClassTouchSensor::nfColliderMoveRotateHitsClosest::nfColliderMoveRotateHitsClosest(const sInitData &init) :
+dsFunction(init.clsTS, "colliderMoveRotateHitsClosest", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
+	p_AddParameter(init.clsVec); // displacement
+	p_AddParameter(init.clsVec); // rotation
+	p_AddParameter(init.clsColLis); // listener
 }
-void deClassTouchSensor::nfColliderMoveRotateHitsClosest::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor &touchSensor = *( ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor );
-	const deScriptingDragonScript &ds = *( ( ( deClassTouchSensor* )GetOwnerClass() )->GetDS() );
+void deClassTouchSensor::nfColliderMoveRotateHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor &touchSensor = *(((sTSNatDat*)p_GetNativeData(myself))->touchSensor);
+	const deScriptingDragonScript &ds = *(((deClassTouchSensor*)GetOwnerClass())->GetDS());
 	
-	deCollider *collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	const decVector &displacement = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
-	const decVector rotation( ds.GetClassVector()->GetVector( rt->GetValue( 2 )->GetRealObject() ) * DEG2RAD );
-	dsRealObject * const objListener = rt->GetValue( 3 )->GetRealObject();
+	deCollider *collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
+	const decVector &displacement = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
+	const decVector rotation(ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject()) * DEG2RAD);
+	dsRealObject * const objListener = rt->GetValue(3)->GetRealObject();
 	
-	if( ! collider || ! objListener ){
-		DSTHROW( dueNullPointer );
+	if(!collider || !objListener){
+		DSTHROW(dueNullPointer);
 	}
 	
 	dedsColliderListenerClosest &hitsClosest = ds.GetColliderListenerClosest();
-	hitsClosest.SetListener( objListener );
+	hitsClosest.SetListener(objListener);
 	hitsClosest.Reset();
 	
-	touchSensor.ColliderMoveRotateHits( collider, displacement, rotation, &hitsClosest );
+	touchSensor.ColliderMoveRotateHits(collider, displacement, rotation, &hitsClosest);
 	
 	hitsClosest.NotifyListener();
-	hitsClosest.SetListener( NULL );
+	hitsClosest.SetListener(NULL);
 	hitsClosest.Reset();
 }
 
@@ -682,62 +682,62 @@ void deClassTouchSensor::nfColliderMoveRotateHitsClosest::RunFunction( dsRunTime
 //////////////////
 
 // public func TouchSensorListener getListener()
-deClassTouchSensor::nfGetListener::nfGetListener( const sInitData &init ) : dsFunction( init.clsTS,
-"getListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTSL ){
+deClassTouchSensor::nfGetListener::nfGetListener(const sInitData &init) : dsFunction(init.clsTS,
+"getListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTSL){
 }
-void deClassTouchSensor::nfGetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
-	dedsTouchSensor *scrTS = ( dedsTouchSensor* )touchSensor->GetPeerScripting();
+void deClassTouchSensor::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
+	dedsTouchSensor *scrTS = (dedsTouchSensor*)touchSensor->GetPeerScripting();
 	
-	if( scrTS ){
-		rt->PushObject( scrTS->GetCallback(), clsTS->GetClassTouchSensorListener() );
+	if(scrTS){
+		rt->PushObject(scrTS->GetCallback(), clsTS->GetClassTouchSensorListener());
 		
 	}else{
-		rt->PushObject( NULL, clsTS->GetClassTouchSensorListener() );
+		rt->PushObject(NULL, clsTS->GetClassTouchSensorListener());
 	}
 }
 
 // public func void setListener( TouchSensorListener listener )
-deClassTouchSensor::nfSetListener::nfSetListener( const sInitData &init ) : dsFunction( init.clsTS,
-"setListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsTSL ); // listener
+deClassTouchSensor::nfSetListener::nfSetListener(const sInitData &init) : dsFunction(init.clsTS,
+"setListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsTSL); // listener
 }
-void deClassTouchSensor::nfSetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	dedsTouchSensor *scrTS = ( dedsTouchSensor* )touchSensor->GetPeerScripting();
-	if( scrTS ){
-		scrTS->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+void deClassTouchSensor::nfSetListener::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	dedsTouchSensor *scrTS = (dedsTouchSensor*)touchSensor->GetPeerScripting();
+	if(scrTS){
+		scrTS->SetCallback(rt->GetValue(0)->GetRealObject());
 	}
 }
 
 
 
 // public func int hashCode()
-deClassTouchSensor::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsTS, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassTouchSensor::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsTS, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
-void deClassTouchSensor::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
+void deClassTouchSensor::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
 	// hash code = memory location
-	rt->PushInt( ( int )( intptr_t )touchSensor );
+	rt->PushInt((int)(intptr_t)touchSensor);
 }
 
 // public func bool equals( Object obj )
-deClassTouchSensor::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsTS, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // obj
+deClassTouchSensor::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsTS, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // obj
 }
-void deClassTouchSensor::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
-	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
-	dsValue *obj = rt->GetValue( 0 );
-	if( ! p_IsObjOfType( obj, clsTS ) ){
-		rt->PushBool( false );
+void deClassTouchSensor::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deTouchSensor *touchSensor = ((sTSNatDat*)p_GetNativeData(myself))->touchSensor;
+	deClassTouchSensor *clsTS = (deClassTouchSensor*)GetOwnerClass();
+	dsValue *obj = rt->GetValue(0);
+	if(!p_IsObjOfType(obj, clsTS)){
+		rt->PushBool(false);
 	}else{
-		deTouchSensor *otherCol = ( ( sTSNatDat* )p_GetNativeData( obj ) )->touchSensor;
-		rt->PushBool( touchSensor == otherCol );
+		deTouchSensor *otherCol = ((sTSNatDat*)p_GetNativeData(obj))->touchSensor;
+		rt->PushBool(touchSensor == otherCol);
 	}
 }
 
@@ -747,23 +747,23 @@ void deClassTouchSensor::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself )
 ///////////////////////////
 
 // constructor
-deClassTouchSensor::deClassTouchSensor( deEngine *gameEngine, deScriptingDragonScript *scrMgr ) :
-dsClass( "TouchSensor", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
-	if( ! gameEngine || ! scrMgr ) DSTHROW( dueInvalidParam );
+deClassTouchSensor::deClassTouchSensor(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
+dsClass("TouchSensor", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pDS = scrMgr;
 	// store information into parser info
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	// do the rest
-	p_SetNativeDataSize( sizeof( sTSNatDat ) );
+	p_SetNativeDataSize(sizeof(sTSNatDat));
 }
 deClassTouchSensor::~deClassTouchSensor(){
 }
 
 // management
-void deClassTouchSensor::CreateClassMembers( dsEngine *engine ){
+void deClassTouchSensor::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -790,76 +790,76 @@ void deClassTouchSensor::CreateClassMembers( dsEngine *engine ){
 	init.clsShapeList = pDS->GetClassShapeList();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetPosition( init ) );
-	AddFunction( new nfSetPosition( init ) );
-	AddFunction( new nfGetOrientation( init ) );
-	AddFunction( new nfSetOrientation( init ) );
+	AddFunction(new nfGetPosition(init));
+	AddFunction(new nfSetPosition(init));
+	AddFunction(new nfGetOrientation(init));
+	AddFunction(new nfSetOrientation(init));
 	
-	AddFunction( new nfGetCollisionFilter( init ) );
-	AddFunction( new nfSetCollisionFilter( init ) );
-	AddFunction( new nfGetTrackEnterLeave( init ) );
-	AddFunction( new nfSetTrackEnterLeave( init ) );
-	AddFunction( new nfGetEnabled( init ) );
-	AddFunction( new nfSetEnabled( init ) );
-	AddFunction( new nfGetShape( init ) );
-	AddFunction( new nfSetShape( init ) );
+	AddFunction(new nfGetCollisionFilter(init));
+	AddFunction(new nfSetCollisionFilter(init));
+	AddFunction(new nfGetTrackEnterLeave(init));
+	AddFunction(new nfSetTrackEnterLeave(init));
+	AddFunction(new nfGetEnabled(init));
+	AddFunction(new nfSetEnabled(init));
+	AddFunction(new nfGetShape(init));
+	AddFunction(new nfSetShape(init));
 	
-	AddFunction( new nfIsEmpty( init ) );
-	AddFunction( new nfGetColliderCount( init ) );
-	AddFunction( new nfGetColliderAt( init ) );
+	AddFunction(new nfIsEmpty(init));
+	AddFunction(new nfGetColliderCount(init));
+	AddFunction(new nfGetColliderAt(init));
 	
-	AddFunction( new nfGetIgnoreColliderCount( init ) );
-	AddFunction( new nfGetIgnoreColliderAt( init ) );
-	AddFunction( new nfHasIgnoreCollider( init ) );
-	AddFunction( new nfAddIgnoreCollider( init ) );
-	AddFunction( new nfRemoveIgnoreCollider( init ) );
-	AddFunction( new nfRemoveAllIgnoreColliders( init ) );
+	AddFunction(new nfGetIgnoreColliderCount(init));
+	AddFunction(new nfGetIgnoreColliderAt(init));
+	AddFunction(new nfHasIgnoreCollider(init));
+	AddFunction(new nfAddIgnoreCollider(init));
+	AddFunction(new nfRemoveIgnoreCollider(init));
+	AddFunction(new nfRemoveAllIgnoreColliders(init));
 	
-	AddFunction( new nfPointInside( init ) );
-	AddFunction( new nfAllHits( init ) );
-	AddFunction( new nfRayHits( init ) );
-	AddFunction( new nfRayHitsClosest( init ) );
-	AddFunction( new nfColliderHits( init ) );
-	AddFunction( new nfColliderMoveHits( init ) );
-	AddFunction( new nfColliderMoveHitsClosest( init ) );
-	AddFunction( new nfColliderRotateHits( init ) );
-	AddFunction( new nfColliderRotateHitsClosest( init ) );
-	AddFunction( new nfColliderMoveRotateHits( init ) );
-	AddFunction( new nfColliderMoveRotateHitsClosest( init ) );
+	AddFunction(new nfPointInside(init));
+	AddFunction(new nfAllHits(init));
+	AddFunction(new nfRayHits(init));
+	AddFunction(new nfRayHitsClosest(init));
+	AddFunction(new nfColliderHits(init));
+	AddFunction(new nfColliderMoveHits(init));
+	AddFunction(new nfColliderMoveHitsClosest(init));
+	AddFunction(new nfColliderRotateHits(init));
+	AddFunction(new nfColliderRotateHitsClosest(init));
+	AddFunction(new nfColliderMoveRotateHits(init));
+	AddFunction(new nfColliderMoveRotateHitsClosest(init));
 	
-	AddFunction( new nfGetListener( init ) );
-	AddFunction( new nfSetListener( init ) );
+	AddFunction(new nfGetListener(init));
+	AddFunction(new nfSetListener(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deTouchSensor *deClassTouchSensor::GetTouchSensor( dsRealObject *myself ) const{
-	if( ! myself ){
+deTouchSensor *deClassTouchSensor::GetTouchSensor(dsRealObject *myself) const{
+	if(!myself){
 		return NULL;
 	}
 	
-	return ( ( sTSNatDat* )p_GetNativeData( myself->GetBuffer() ) )->touchSensor;
+	return ((sTSNatDat*)p_GetNativeData(myself->GetBuffer()))->touchSensor;
 }
 
-void deClassTouchSensor::PushTouchSensor( dsRunTime *rt, deTouchSensor *touchSensor ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassTouchSensor::PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSensor){
+	if(!rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! touchSensor ){
-		rt->PushObject( NULL, this );
+	if(!touchSensor){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
 	// create new value
-	rt->CreateObjectNakedOnStack( this );
-	( ( sTSNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->touchSensor = touchSensor;
+	rt->CreateObjectNakedOnStack(this);
+	((sTSNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->touchSensor = touchSensor;
 	touchSensor->AddReference();
 }

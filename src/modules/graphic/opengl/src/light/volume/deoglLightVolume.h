@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new light volume. */
-	deoglLightVolume( deoglRenderThread &renderThread );
+	deoglLightVolume(deoglRenderThread &renderThread);
 	/** Cleans up the light volume. */
 	~deoglLightVolume();
 	/*@}*/
@@ -74,16 +74,16 @@ public:
 	/** Retrieves the maximum extend. */
 	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	/** Sets the extends. */
-	void SetExtends( const decVector &minExtend, const decVector &maxExtend );
+	void SetExtends(const decVector &minExtend, const decVector &maxExtend);
 	/** Calculate axis aligned bounding box for a specific transformation. */
-	void CalcBoundingBox( decDVector &boxMinExtend, decDVector &boxMaxExtend, const decDMatrix &matrix ) const;
+	void CalcBoundingBox(decDVector &boxMinExtend, decDVector &boxMaxExtend, const decDMatrix &matrix) const;
 	
 	/** Retrieves the points. */
 	inline oglVector3 *GetPoints() const{ return pPoints; }
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	/** Sets the number of points. */
-	void SetPointCount( int count );
+	void SetPointCount(int count);
 	
 	/** Retrieves the VAO. */
 	inline GLuint GetVAO() const{ return pVAO; }
@@ -91,7 +91,7 @@ public:
 	void UpdateVBO();
 	
 	/** Creates the light volume using a convex volume list. Creates the VBO and calculates the extends. */
-	void CreateFrom( const decConvexVolumeList &list );
+	void CreateFrom(const decConvexVolumeList &list);
 	/*@}*/
 };
 

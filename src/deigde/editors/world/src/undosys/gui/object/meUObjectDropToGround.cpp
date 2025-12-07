@@ -56,7 +56,7 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectDropToGround::meUObjectDropToGround( meWorld *world, const meObjectList &objects ) :
+meUObjectDropToGround::meUObjectDropToGround(meWorld *world, const meObjectList &objects) :
 pWorld(nullptr),
 pObjects(nullptr),
 pObjectCount(0),
@@ -112,11 +112,11 @@ meUObjectDropToGround::~meUObjectDropToGround(){
 // Management
 ///////////////
 
-void meUObjectDropToGround::SetDropOnObjects( bool dropOnObjects ){
+void meUObjectDropToGround::SetDropOnObjects(bool dropOnObjects){
 	pDropOnObjects = dropOnObjects;
 }
 
-void meUObjectDropToGround::SetAlign( bool align ){
+void meUObjectDropToGround::SetAlign(bool align){
 	pAlign = align;
 }
 
@@ -126,18 +126,18 @@ void meUObjectDropToGround::Undo(){
 	meObject *object;
 	int o;
 	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ].object;
-		object->SetPosition( pObjects[ o ].oldpos );
-		object->SetRotation( pObjects[ o ].oldrot );
-		pWorld->NotifyObjectGeometryChanged( object );
+	for(o=0; o<pObjectCount; o++){
+		object = pObjects[o].object;
+		object->SetPosition(pObjects[o].oldpos);
+		object->SetRotation(pObjects[o].oldrot);
+		pWorld->NotifyObjectGeometryChanged(object);
 	}
 }
 
 void meUObjectDropToGround::Redo(){
 	deBasePhysicsWorld *phyWorld = pWorld->GetEngineWorld()->GetPeerPhysics();
-	decVector dropDisplacement( 0.0f, -10.0f, 0.0f );
-	meCLClosestElement closestElement( *pWorld );
+	decVector dropDisplacement(0.0f, -10.0f, 0.0f);
+	meCLClosestElement closestElement(*pWorld);
 	decDVector oldPosition, newPosition;
 	decVector oldRotation, newRotation;
 	meFilterObjectsByClass filter;
@@ -147,54 +147,54 @@ void meUObjectDropToGround::Redo(){
 	float distance;
 	int o;
 	
-	if( ! phyWorld ) return;
+	if(!phyWorld) return;
 	
-	closestElement.SetTestHeightTerrain( true );
-	closestElement.SetTestObjects( pDropOnObjects );
-	closestElement.SetTestDecals( false );
-	closestElement.SetFilterObjects( &filter );
+	closestElement.SetTestHeightTerrain(true);
+	closestElement.SetTestObjects(pDropOnObjects);
+	closestElement.SetTestDecals(false);
+	closestElement.SetFilterObjects(&filter);
 	
-	filter.SetRejectGhosts( true );
+	filter.SetRejectGhosts(true);
 	//filter.SetClassNamesFrom( guiparams.GetAddFilterObjectList() );
 	//filter.SetMatchInclusive( guiparams.GetAddFilterObjectInclusive() );
 	
 	decLayerMask collisionCategory;
-	collisionCategory.SetBit( meWorld::eclmEditing );
+	collisionCategory.SetBit(meWorld::eclmEditing);
 	
 	decLayerMask collisionFilter;
-	collisionFilter.SetBit( meWorld::eclmObjects );
-	collisionFilter.SetBit( meWorld::eclmHeightTerrains );
+	collisionFilter.SetBit(meWorld::eclmObjects);
+	collisionFilter.SetBit(meWorld::eclmHeightTerrains);
 	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ].object;
+	for(o=0; o<pObjectCount; o++){
+		object = pObjects[o].object;
 		
 		collider = object->GetColDetCollider();
-		if( ! collider ){
+		if(!collider){
 			continue;
 		}
 		
-		collider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+		collider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 		
-		oldPosition = pObjects[ o ].oldpos;
-		oldRotation = pObjects[ o ].oldrot;
+		oldPosition = pObjects[o].oldpos;
+		oldRotation = pObjects[o].oldrot;
 		
-		filter.SetRejectObject( object );
+		filter.SetRejectObject(object);
 		
-		while( testCounter < 50 ){
+		while(testCounter < 50){
 			closestElement.Reset();
 			
-			collider->SetPosition( oldPosition );
-			collider->SetOrientation( decMatrix::CreateRotation( oldRotation * DEG2RAD ).ToQuaternion() );
+			collider->SetPosition(oldPosition);
+			collider->SetOrientation(decMatrix::CreateRotation(oldRotation * DEG2RAD).ToQuaternion());
 			
-			phyWorld->ColliderMoveHits( collider, dropDisplacement, &closestElement );
+			phyWorld->ColliderMoveHits(collider, dropDisplacement, &closestElement);
 			
-			if( closestElement.GetHasHit() ){
+			if(closestElement.GetHasHit()){
 				distance = closestElement.GetHitDistance();
 				
-				if( distance > 0.001f ){
-					newPosition = oldPosition + decDVector( dropDisplacement * distance );
+				if(distance > 0.001f){
+					newPosition = oldPosition + decDVector(dropDisplacement * distance);
 					
-					if( pAlign ){
+					if(pAlign){
 						// TODO this alignment code is rather simple and not of good quality. one idea would
 						// be to use physics simulation to drop the object onto the ground. another solution
 						// would be to use multiple collision tests and slightly turning the object similar
@@ -202,31 +202,31 @@ void meUObjectDropToGround::Redo(){
 						
 						const decVector &normal = closestElement.GetHitNormal();
 						
-						newRotation.Set( acosf( normal.y ) / DEG2RAD, atan2f( normal.x, -normal.z ) / DEG2RAD, oldRotation.z );
+						newRotation.Set(acosf(normal.y) * RAD2DEG, atan2f(normal.x, -normal.z) * RAD2DEG, oldRotation.z);
 						
 						closestElement.Reset();
 						
-						collider->SetPosition( newPosition );
-						collider->SetOrientation( decMatrix::CreateRotation( newRotation * DEG2RAD ).ToQuaternion() );
+						collider->SetPosition(newPosition);
+						collider->SetOrientation(decMatrix::CreateRotation(newRotation * DEG2RAD).ToQuaternion());
 						
-						phyWorld->ColliderMoveHits( collider, dropDisplacement, &closestElement );
+						phyWorld->ColliderMoveHits(collider, dropDisplacement, &closestElement);
 						
-						if( closestElement.GetHasHit() ){
+						if(closestElement.GetHasHit()){
 							distance = closestElement.GetHitDistance();
 							
-							if( distance > 0.001f ){
-								newPosition += decDVector( dropDisplacement * distance );
+							if(distance > 0.001f){
+								newPosition += decDVector(dropDisplacement * distance);
 							}
 						}
 					}
 					
-					object->SetPosition( newPosition );
-					if( pAlign ){
-						object->SetRotation( newRotation );
+					object->SetPosition(newPosition);
+					if(pAlign){
+						object->SetRotation(newRotation);
 					}
 					//pObjects[ o ]->SetNewSector( wsNew->GetCoordinates() );
 					
-					pWorld->NotifyObjectGeometryChanged( object );
+					pWorld->NotifyObjectGeometryChanged(object);
 					
 					break;
 				}
@@ -244,14 +244,14 @@ void meUObjectDropToGround::Redo(){
 //////////////////////
 
 void meUObjectDropToGround::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
+	if(pObjects){
+		while(pObjectCount > 0){
 			pObjectCount--;
-			pObjects[ pObjectCount ].object->FreeReference();
+			pObjects[pObjectCount].object->FreeReference();
 		}
 		
 		delete [] pObjects;
 	}
 	
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }

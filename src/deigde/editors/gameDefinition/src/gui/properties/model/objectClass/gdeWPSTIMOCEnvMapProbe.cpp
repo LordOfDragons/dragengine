@@ -46,27 +46,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCEnvMapProbe::gdeWPSTIMOCEnvMapProbe( gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassEnvMapProbe, objectClass, index ),
-pEnvMapProbe( NULL )
+gdeWPSTIMOCEnvMapProbe::gdeWPSTIMOCEnvMapProbe(gdeWPSTreeModel &tree,
+	gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassEnvMapProbe, objectClass, index),
+pEnvMapProbe(NULL)
 {
-	if( ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "EnvMap Probe #%d", index + 1 );
-	SetText( text );
+	text.Format("EnvMap Probe #%d", index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pEnvMapProbe = envMapProbe;
 	envMapProbe->AddReference();
 }
 
 gdeWPSTIMOCEnvMapProbe::~gdeWPSTIMOCEnvMapProbe(){
-	if( pEnvMapProbe ){
+	if(pEnvMapProbe){
 		pEnvMapProbe->FreeReference();
 	}
 }
@@ -77,8 +77,8 @@ gdeWPSTIMOCEnvMapProbe::~gdeWPSTIMOCEnvMapProbe(){
 ///////////////
 
 void gdeWPSTIMOCEnvMapProbe::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
@@ -93,20 +93,20 @@ void gdeWPSTIMOCEnvMapProbe::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCEnvMapProbe::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCEnvMapProbe( pEnvMapProbe );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCEnvMapProbe );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCEnvMapProbe(pEnvMapProbe);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCEnvMapProbe);
 }
 
-void gdeWPSTIMOCEnvMapProbe::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCEnvMapProbe::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCEnvMapProbeAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCEnvMapProbeRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCEnvMapProbeAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCEnvMapProbeRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCEnvMapProbeCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCEnvMapProbeCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCEnvMapProbePaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCEnvMapProbeCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCEnvMapProbeCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCEnvMapProbePaste());
 }

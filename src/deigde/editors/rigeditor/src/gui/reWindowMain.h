@@ -153,7 +153,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	reWindowMain( reIGDEModule &module );
+	reWindowMain(reIGDEModule &module);
 	
 protected:
 	/** \brief Clean up window. */
@@ -189,13 +189,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Create new rig. */
 	void CreateNewRig();
 	
 	/** \brief Save rig under the given file. */
-	void SaveRig( const char *filename );
+	void SaveRig(const char *filename);
 	
 	
 	
@@ -235,7 +235,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -246,12 +246,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -261,7 +261,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -301,12 +301,12 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuRig( igdeMenuCascade &menu );
-	void pCreateMenuBone( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
-	void pCreateMenuSimulation( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuRig(igdeMenuCascade &menu);
+	void pCreateMenuBone(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
+	void pCreateMenuSimulation(igdeMenuCascade &menu);
 };
 
 #endif

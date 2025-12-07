@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render task instance. */
-	deoglPersistentRenderTaskInstance( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTaskInstance(deoglPersistentRenderTaskPool &pool);
 	
 	/** Clean up render task instance. */
 	~deoglPersistentRenderTaskInstance();
@@ -84,19 +84,19 @@ public:
 	inline deoglPersistentRenderTaskVAO *GetParentVAO() const{ return pParentVAO; }
 	
 	/** Set parent VAO. */
-	void SetParentVAO( deoglPersistentRenderTaskVAO *vao );
+	void SetParentVAO(deoglPersistentRenderTaskVAO *vao);
 	
 	/** Shader parameter block or \em NULL. */
 	inline const deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or \em NULL. */
-	void SetParameterBlock( const deoglShaderParameterBlock *block );
+	void SetParameterBlock(const deoglShaderParameterBlock *block);
 	
 	/** Special shader parameter block or \em NULL. */
 	inline const deoglShaderParameterBlock *GetParameterBlockSpecial() const{ return pParamBlockSpecial; }
 	
 	/** Set special shader parameter block or \em NULL. */
-	void SetParameterBlockSpecial( const deoglShaderParameterBlock *block );
+	void SetParameterBlockSpecial(const deoglShaderParameterBlock *block);
 	
 	
 	
@@ -104,37 +104,37 @@ public:
 	inline int GetFirstPoint() const{ return pFirstPoint; }
 	
 	/** Set index of first point in VAO. */
-	void SetFirstPoint( int firstPoint );
+	void SetFirstPoint(int firstPoint);
 	
 	/** Number of points to render. */
 	inline int GetPointCount() const{ return pPointCount; }
 	
 	/** Set number of points to render. */
-	void SetPointCount( int pointCount );
+	void SetPointCount(int pointCount);
 	
 	/** First index in VAO index buffer. */
 	inline int GetFirstIndex() const{ return pFirstIndex; }
 	
 	/** Set first index in VAO index buffer. */
-	void SetFirstIndex( int firstIndex );
+	void SetFirstIndex(int firstIndex);
 	
 	/** Number of indices in VAO index buffer. */
 	inline int GetIndexCount() const{ return pIndexCount; }
 	
 	/** Set number of indices in VAO index buffer. */
-	void SetIndexCount( int indexCount );
+	void SetIndexCount(int indexCount);
 	
 	/** Primitive type. */
 	inline GLenum GetPrimitiveType() const{ return pPrimitiveType; }
 	
 	/** Set primitive type. */
-	void SetPrimitiveType( GLenum primitiveType );
+	void SetPrimitiveType(GLenum primitiveType);
 	
 	/** Patch verted count. */
 	inline int GetTessPatchVertexCount() const{ return pTessPatchVertexCount; }
 	
 	/** Set patch verted count. */
-	void SetTessPatchVertexCount( int count );
+	void SetTessPatchVertexCount(int count);
 	
 	
 	
@@ -145,10 +145,10 @@ public:
 	decPointerLinkedList::cListEntry *GetRootSubInstance() const;
 	
 	/** Add sub instance. */
-	deoglPersistentRenderTaskSubInstance *AddSubInstance( int indexInstance, int flags );
+	deoglPersistentRenderTaskSubInstance *AddSubInstance(int indexInstance, int flags);
 	
 	/** Remove sub instance. */
-	void RemoveSubInstance( deoglPersistentRenderTaskSubInstance *subInstance );
+	void RemoveSubInstance(deoglPersistentRenderTaskSubInstance *subInstance);
 	
 	/** Remove all sub instances. */
 	void RemoveAllSubInstances();
@@ -160,7 +160,7 @@ public:
 	inline const deoglSharedSPBRTIGroup *GetSubInstanceSPBGroup() const{ return pSubInstanceSPBGroup; }
 	
 	/** Set Sub instances SPB and group. */
-	void SetSubInstanceSPB( deoglSharedSPB *spb, const deoglSharedSPBRTIGroup *group );
+	void SetSubInstanceSPB(deoglSharedSPB *spb, const deoglSharedSPBRTIGroup *group);
 	
 	/** Sub instance index SPB. */
 	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{ return pSIIndexInstanceSPB; }
@@ -169,13 +169,13 @@ public:
 	inline int GetSIIndexInstanceFirst() const{ return pSIIndexInstanceFirst; }
 	
 	/** Set sub instance SPB information for later update. */
-	void SetSIIndexInstanceParam( deoglShaderParameterBlock *paramBlock, int firstIndex );
+	void SetSIIndexInstanceParam(deoglShaderParameterBlock *paramBlock, int firstIndex);
 	
 	/** Write sub instance indices for instance shared SPB. */
-	void WriteSIIndexInstanceInt( bool useFlags );
+	void WriteSIIndexInstanceInt(bool useFlags);
 	
 	/** Write sub instance indices for instance shared SPB. */
-	void WriteSIIndexInstanceShort( bool useFlags );
+	void WriteSIIndexInstanceShort(bool useFlags);
 	
 	
 	

@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripsScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakStripsScale();
 	/*@}*/
@@ -66,9 +66,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets the list of strips capturing the current state. */
-	void SetStrips( const ceStripList &strips );
+	void SetStrips(const ceStripList &strips);
 	/** \brief Set new scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

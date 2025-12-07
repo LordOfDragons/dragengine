@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWindowMainListener( meWindowMain &windowMain );
+	meWindowMainListener(meWindowMain &windowMain);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWindowMainListener();
@@ -55,34 +55,34 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged( meWorld *world );
+	virtual void ModeChanged(meWorld *world);
 	
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( meWorld *world );
+	virtual void StateChanged(meWorld *world);
 	
 	/** \brief Height terrain state changed. */
-	virtual void HTStateChanged( meWorld *world );
+	virtual void HTStateChanged(meWorld *world);
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged( meWorld *world );
+	virtual void UndoChanged(meWorld *world);
 	
 	/** \brief Lighting parameters changed. */
-	virtual void LightingChanged( meWorld *world );
+	virtual void LightingChanged(meWorld *world);
 	
 	/** \brief Editing parameters changed. */
-	virtual void EditingChanged( meWorld *world );
+	virtual void EditingChanged(meWorld *world);
 	
 	/** \brief Object selection changed. */
-	virtual void ObjectSelectionChanged( meWorld *world );
+	virtual void ObjectSelectionChanged(meWorld *world);
 	
 	/** \brief Object changed. */
-	virtual void ObjectChanged( meWorld *world, meObject *object );
+	virtual void ObjectChanged(meWorld *world, meObject *object);
 	
 	/** \brief Decal selection changed. */
-	virtual void DecalSelectionChanged( meWorld *world );
+	virtual void DecalSelectionChanged(meWorld *world);
 	
 	/** \brief Decal changed. */
-	virtual void DecalChanged( meWorld *world, meDecal *decal );
+	virtual void DecalChanged(meWorld *world, meDecal *decal);
 	/*@}*/
 };
 

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable texture manager. */
-	deoglRenderableColorArrayTextureManager( deoglRenderThread &renderThread );
+	deoglRenderableColorArrayTextureManager(deoglRenderThread &renderThread);
 	
 	/** Clean up renderable texture manager. */
 	~deoglRenderableColorArrayTextureManager();
@@ -65,11 +65,11 @@ public:
 	inline int GetCount() const{ return pArrayTextureCount; }
 	
 	/** Renderable texture at index for reading purpose only. */
-	const deoglRenderableColorArrayTexture *GetAt( int index ) const;
+	const deoglRenderableColorArrayTexture *GetAt(int index) const;
 	
 	/** Renderable texture matching format. */
-	deoglRenderableColorArrayTexture *GetWith( int width, int height, int layerCount,
-		int componentCount, bool isFloat );
+	deoglRenderableColorArrayTexture *GetWith(int width, int height, int layerCount,
+		int componentCount, bool isFloat);
 	/*@}*/
 };
 

@@ -33,11 +33,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModelVertexPositionSet::deModelVertexPositionSet( const char *name ) :
-pName( name ),
-pBaseSet( -1 )
+deModelVertexPositionSet::deModelVertexPositionSet(const char *name) :
+pName(name),
+pBaseSet(-1)
 {
-	DEASSERT_NOTNULL( name )
+	DEASSERT_NOTNULL(name)
 }
 
 deModelVertexPositionSet::~deModelVertexPositionSet(){
@@ -48,8 +48,8 @@ deModelVertexPositionSet::~deModelVertexPositionSet(){
 // Management
 ///////////////
 
-void deModelVertexPositionSet::SetBaseSet( int baseSet ){
-	DEASSERT_TRUE( baseSet >= -1 )
+void deModelVertexPositionSet::SetBaseSet(int baseSet){
+	DEASSERT_TRUE(baseSet >= -1)
 	
 	pBaseSet = baseSet;
 }

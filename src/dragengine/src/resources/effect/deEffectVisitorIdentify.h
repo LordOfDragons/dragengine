@@ -108,19 +108,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void VisitEffect( deEffect &effect );
+	virtual void VisitEffect(deEffect &effect);
 	
 	/** \brief Visit effect filter kernel. */
-	virtual void VisitFilterKernel( deEffectFilterKernel &effect );
+	virtual void VisitFilterKernel(deEffectFilterKernel &effect);
 	
 	/** \brief Visit overlay image effect. */
-	virtual void VisitOverlayImage( deEffectOverlayImage &effect );
+	virtual void VisitOverlayImage(deEffectOverlayImage &effect);
 	
 	/** \brief Visit color matrix effect. */
-	virtual void VisitColorMatrix( deEffectColorMatrix &effect );
+	virtual void VisitColorMatrix(deEffectColorMatrix &effect);
 	
 	/** \brief Visit pixel matrix effect. */
-	virtual void VisitDistortImage( deEffectDistortImage &effect );
+	virtual void VisitDistortImage(deEffectDistortImage &effect);
 	/*@}*/
 };
 

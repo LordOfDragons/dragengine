@@ -48,17 +48,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseClearCondition::ceWPTMAIfElseCaseClearCondition( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseClearCondition::ceWPTMAIfElseCaseClearCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase ) :
-ceWPTMenuAction( windowMain, "Clear Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase )
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase) :
+ceWPTMenuAction(windowMain, "Clear Condition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase)
 {
-	SetEnabled( ifCase.GetCondition() != nullptr );
+	SetEnabled(ifCase.GetCondition() != nullptr);
 }
 
 

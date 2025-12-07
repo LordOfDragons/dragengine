@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meView3DListener( meView3D &view3D );
+	meView3DListener(meView3D &view3D);
 	
 	/** \brief Clean up listener. */
 	virtual ~meView3DListener();
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged( meWorld *world );
+	virtual void ModeChanged(meWorld *world);
 	
 	/** \brief Active camera changed. */
-	virtual void ActiveCameraChanged( meWorld *world );
+	virtual void ActiveCameraChanged(meWorld *world);
 	/*@}*/
 };
 

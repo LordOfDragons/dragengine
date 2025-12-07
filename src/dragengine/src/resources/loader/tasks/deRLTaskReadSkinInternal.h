@@ -61,9 +61,9 @@ public:
 		deResourceLoaderTask *pTask;
 		
 	public:
-		cInternalTask( deSkinPropertyImage *propertyImage, deResourceLoaderTask *task );
-		cInternalTask( deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task );
-		cInternalTask( deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task );
+		cInternalTask(deSkinPropertyImage *propertyImage, deResourceLoaderTask *task);
+		cInternalTask(deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task);
+		cInternalTask(deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task);
 		virtual ~cInternalTask();
 		
 		inline deSkinPropertyImage *GetPropertyImage() const{ return pPropertyImage; }
@@ -84,8 +84,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadSkinInternal( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path );
+	deRLTaskReadSkinInternal(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskReadSkinInternal();
@@ -109,7 +109,7 @@ public:
 	
 	/** \name Internal use only */
 	/*@{*/
-	void AddInternalTask( cInternalTask *task );
+	void AddInternalTask(cInternalTask *task);
 	/*@}*/
 	
 	

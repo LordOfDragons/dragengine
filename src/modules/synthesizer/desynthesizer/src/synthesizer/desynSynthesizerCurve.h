@@ -76,10 +76,10 @@ public:
 	desynSynthesizerCurve();
 	
 	/** \brief Create curve. */
-	desynSynthesizerCurve( const decCurveBezier &curve );
+	desynSynthesizerCurve(const decCurveBezier &curve);
 	
 	/** \brief Create curve. */
-	desynSynthesizerCurve( const decCurveBezier &curve, float ymin, float ymax );
+	desynSynthesizerCurve(const decCurveBezier &curve, float ymin, float ymax);
 	
 	/** \brief Clean up curve. */
 	virtual ~desynSynthesizerCurve();
@@ -93,16 +93,16 @@ public:
 	 * \brief Set from curve.
 	 * \details Determines automatically best evaluation type to use.
 	 */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/**
 	 * \brief Set from curve.
 	 * \details Determines automatically best evaluation type to use.
 	 */
-	void SetCurve( const decCurveBezier &curve, float ymin, float ymax );
+	void SetCurve(const decCurveBezier &curve, float ymin, float ymax);
 	
 	/** \brief Evluate curve. */
-	float Evaluate( float position ) const;
+	float Evaluate(float position) const;
 	/*@}*/
 	/*@}*/
 	
@@ -111,13 +111,13 @@ public:
 private:
 	void pClear();
 	
-	void pSetCurveConstant( const decCurveBezier &curve, float yoffset, float yscale );
-	void pSetCurveLinear( const decCurveBezier &curve, float yoffset, float yscale );
-	void pSetCurveSampled( const decCurveBezier &curve, float yoffset, float yscale );
+	void pSetCurveConstant(const decCurveBezier &curve, float yoffset, float yscale);
+	void pSetCurveLinear(const decCurveBezier &curve, float yoffset, float yscale);
+	void pSetCurveSampled(const decCurveBezier &curve, float yoffset, float yscale);
 	
-	float pEvaluateConstant( float position ) const;
-	float pEvaluateLinear( float position ) const;
-	float pEvaluateSampled( float position ) const;
+	float pEvaluateConstant(float position) const;
+	float pEvaluateLinear(float position) const;
+	float pEvaluateSampled(float position) const;
 };
 
 #endif

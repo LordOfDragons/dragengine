@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view font image renderer. */
-	feViewFIImage( feWindowMain &windowMain );
+	feViewFIImage(feWindowMain &windowMain);
 	
 	/** \brief Clean up view font image renderer. */
 	virtual ~feViewFIImage();
@@ -77,7 +77,7 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	
 	
 	
@@ -85,13 +85,13 @@ public:
 	inline int GetZoom() const{ return pZoom; }
 	
 	/** \brief Set zoom factor in percentage. */
-	void SetZoom( int zoom );
+	void SetZoom(int zoom);
 	
 	/** \brief Offset in pixels. */
 	inline const decPoint &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset in pixels. */
-	void SetOffset( const decPoint &offset );
+	void SetOffset(const decPoint &offset);
 	
 	
 	
@@ -104,7 +104,7 @@ public:
 	virtual void CreateCanvas();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Widget size changed. */
 	virtual void OnResize();

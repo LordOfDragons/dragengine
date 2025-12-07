@@ -40,23 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deainpOverlay::deainpOverlay( deAndroidInput &androidInput ) :
-pAndroidInput( androidInput ),
+deainpOverlay::deainpOverlay(deAndroidInput &androidInput) :
+pAndroidInput(androidInput),
 
-pCanvas( NULL ),
-pPointer( -1 ),
+pCanvas(NULL),
+pPointer(-1),
 
-pLayoutHorizontal( decPoint(), decPoint( 256, 256 ) ),
-pLayoutVertical( decPoint(), decPoint( 256, 256 ) )
+pLayoutHorizontal(decPoint(), decPoint(256, 256)),
+pLayoutVertical(decPoint(), decPoint(256, 256))
 {
 	deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
 	pCanvas = canvasManager.CreateCanvasView();
-	pCanvas->SetSize( decPoint( 256, 256 ) );
-	pCanvas->SetTransparency( 0.35f ); // 35% coverage
+	pCanvas->SetSize(decPoint(256, 256));
+	pCanvas->SetTransparency(0.35f); // 35% coverage
 }
 
 deainpOverlay::~deainpOverlay(){
-	if( pCanvas ){
+	if(pCanvas){
 		pCanvas->FreeReference();
 	}
 }
@@ -74,28 +74,28 @@ void deainpOverlay::ClearPointer(){
 	pPointer = -1;
 }
 
-void deainpOverlay::SetPointer( int pointer, const decPoint &position ){
+void deainpOverlay::SetPointer(int pointer, const decPoint &position){
 	pPointer = pointer;
 	pPointerPosition = position;
 }
 
-decPoint deainpOverlay::PointerMove( const decPoint &position ){
-	const decPoint move( position - pPointerPosition );
+decPoint deainpOverlay::PointerMove(const decPoint &position){
+	const decPoint move(position - pPointerPosition);
 	pPointerPosition = position;
 	return move;
 }
 
 
 
-void deainpOverlay::SetLayoutHorizontal( const deainpLayout &layout ){
-	if( layout == pLayoutHorizontal ){
+void deainpOverlay::SetLayoutHorizontal(const deainpLayout &layout){
+	if(layout == pLayoutHorizontal){
 		return;
 	}
 	pLayoutHorizontal = layout;
 }
 
-void deainpOverlay::SetLayoutVertical( const deainpLayout &layout ){
-	if( layout == pLayoutVertical ){
+void deainpOverlay::SetLayoutVertical(const deainpLayout &layout){
+	if(layout == pLayoutVertical){
 		return;
 	}
 	pLayoutVertical = layout;
@@ -104,16 +104,16 @@ void deainpOverlay::SetLayoutVertical( const deainpLayout &layout ){
 
 
 void deainpOverlay::UpdateFromHorizontalLayout(){
-	UpdateFromLayout( pLayoutHorizontal );
+	UpdateFromLayout(pLayoutHorizontal);
 }
 
 void deainpOverlay::UpdateFromVerticalLayout(){
-	UpdateFromLayout( pLayoutVertical );
+	UpdateFromLayout(pLayoutVertical);
 }
 
-void deainpOverlay::UpdateFromLayout( const deainpLayout &layout ){
-	pCanvas->SetPosition( layout.GetPosition() );
-	pCanvas->SetSize( layout.GetSize() );
+void deainpOverlay::UpdateFromLayout(const deainpLayout &layout){
+	pCanvas->SetPosition(layout.GetPosition());
+	pCanvas->SetSize(layout.GetSize());
 }
 
 
@@ -124,11 +124,11 @@ void deainpOverlay::UpdateBindingIndices(){
 void deainpOverlay::UpdateContent(){
 }
 
-bool deainpOverlay::OnTouch( int pointerId, const decPoint &position ){
+bool deainpOverlay::OnTouch(int pointerId, const decPoint &position){
 	return false;
 }
 
-void deainpOverlay::OnMove( const decPoint &position ){
+void deainpOverlay::OnMove(const decPoint &position){
 }
 
 void deainpOverlay::OnRelease(){

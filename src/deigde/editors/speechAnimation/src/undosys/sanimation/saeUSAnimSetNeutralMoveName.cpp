@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName( saeSAnimation *sanimation, const char *newName ){
-	if( ! sanimation || ! newName ) DETHROW( deeInvalidParam );
+saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName(saeSAnimation *sanimation, const char *newName){
+	if(!sanimation || !newName) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
 	
-	SetShortInfo( "Set Neutral Move Name" );
+	SetShortInfo("Set Neutral Move Name");
 	
 	pOldName = sanimation->GetNeutralMoveName();
 	pNewName = newName;
@@ -54,7 +54,7 @@ saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName( saeSAnimation *sanimat
 }
 
 saeUSAnimSetNeutralMoveName::~saeUSAnimSetNeutralMoveName(){
-	if( pSAnimation ){
+	if(pSAnimation){
 		pSAnimation->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ saeUSAnimSetNeutralMoveName::~saeUSAnimSetNeutralMoveName(){
 ///////////////
 
 void saeUSAnimSetNeutralMoveName::Undo(){
-	pSAnimation->SetNeutralMoveName( pOldName.GetString() );
+	pSAnimation->SetNeutralMoveName(pOldName.GetString());
 }
 
 void saeUSAnimSetNeutralMoveName::Redo(){
-	pSAnimation->SetNeutralMoveName( pNewName.GetString() );
+	pSAnimation->SetNeutralMoveName(pNewName.GetString());
 }

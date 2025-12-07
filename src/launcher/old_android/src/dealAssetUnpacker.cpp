@@ -47,43 +47,43 @@
 // Callbacks
 //////////////
 
-voidpf ZCALLBACK minizip_open_file_func( voidpf opaque, const char *filename, int mode ){
+voidpf ZCALLBACK minizip_open_file_func(voidpf opaque, const char *filename, int mode){
 	return opaque;
 }
 
-uLong ZCALLBACK minizip_read_file_func( voidpf opaque, voidpf stream, void *buf, uLong size ){
-	return ( uLong )AAsset_read( ( AAsset* )opaque, buf, ( size_t )size );
+uLong ZCALLBACK minizip_read_file_func(voidpf opaque, voidpf stream, void *buf, uLong size){
+	return (uLong)AAsset_read((AAsset*)opaque, buf, (size_t)size);
 }
 
-uLong ZCALLBACK minizip_write_file_func( voidpf opaque, voidpf stream, const void *buf, uLong size ){
+uLong ZCALLBACK minizip_write_file_func(voidpf opaque, voidpf stream, const void *buf, uLong size){
 	// not implemented
 	return 0;
 }
 
-long ZCALLBACK minizip_tell_file_func( voidpf opaque, voidpf stream ){
-	return ( long )AAsset_seek( ( AAsset* )opaque, 0, SEEK_CUR );
+long ZCALLBACK minizip_tell_file_func(voidpf opaque, voidpf stream){
+	return (long)AAsset_seek((AAsset*)opaque, 0, SEEK_CUR);
 }
 
-long ZCALLBACK minizip_seek_file_func( voidpf opaque, voidpf stream, uLong offset, int origin ){
-	if( origin == ZLIB_FILEFUNC_SEEK_CUR ){
-		return AAsset_seek( ( AAsset* )opaque, ( off_t )offset, SEEK_CUR ) == ( off_t )-1 ? -1 : 0;
+long ZCALLBACK minizip_seek_file_func(voidpf opaque, voidpf stream, uLong offset, int origin){
+	if(origin == ZLIB_FILEFUNC_SEEK_CUR){
+		return AAsset_seek((AAsset*)opaque, (off_t)offset, SEEK_CUR) == (off_t)-1 ? -1 : 0;
 		
-	}else if( origin == ZLIB_FILEFUNC_SEEK_END ){
-		return AAsset_seek( ( AAsset* )opaque, ( off_t )offset, SEEK_END ) == ( off_t )-1 ? -1 : 0;
+	}else if(origin == ZLIB_FILEFUNC_SEEK_END){
+		return AAsset_seek((AAsset*)opaque, (off_t)offset, SEEK_END) == (off_t)-1 ? -1 : 0;
 		
-	}else if( origin == ZLIB_FILEFUNC_SEEK_SET ){
-		return AAsset_seek( ( AAsset* )opaque, ( off_t )offset, SEEK_SET ) == ( off_t )-1 ? -1 : 0;
+	}else if(origin == ZLIB_FILEFUNC_SEEK_SET){
+		return AAsset_seek((AAsset*)opaque, (off_t)offset, SEEK_SET) == (off_t)-1 ? -1 : 0;
 		
 	}else{
 		return -1;
 	}
 }
 
-int ZCALLBACK minizip_close_file_func( voidpf opaque, voidpf stream ){
+int ZCALLBACK minizip_close_file_func(voidpf opaque, voidpf stream){
 	return 0;
 }
 
-int ZCALLBACK minizip_error_file_func( voidpf opaque,voidpf stream ){
+int ZCALLBACK minizip_error_file_func(voidpf opaque,voidpf stream){
 	// not implemented
 	return -1;
 }
@@ -96,22 +96,22 @@ int ZCALLBACK minizip_error_file_func( voidpf opaque,voidpf stream ){
 // Constructor, destructor
 ////////////////////////////
 
-dealAssetUnpacker::dealAssetUnpacker( deLogger *logger ) :
-pLogger( NULL ),
-pAsset( NULL ),
-pUnpacking( false ),
-pStopUnpacking( false ),
-pUnpackProgress( 0.0f ),
-pUnpackFailed( false ),
-pEnableLogging( false ),
-pThreadUnpack( 0 )
+dealAssetUnpacker::dealAssetUnpacker(deLogger *logger) :
+pLogger(NULL),
+pAsset(NULL),
+pUnpacking(false),
+pStopUnpacking(false),
+pUnpackProgress(0.0f),
+pUnpackFailed(false),
+pEnableLogging(false),
+pThreadUnpack(0)
 {
-	if( ! logger ){
-		DETHROW( deeInvalidParam );
+	if(!logger){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pthread_mutex_init( &pMutex, NULL ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_mutex_init(&pMutex, NULL) != 0){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pLogger = logger;
@@ -122,12 +122,12 @@ dealAssetUnpacker::~dealAssetUnpacker(){
 	try{
 		StopUnpacking();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 	}
 	
-	pthread_mutex_destroy( &pMutex );
+	pthread_mutex_destroy(&pMutex);
 	
-	if( pLogger ){
+	if(pLogger){
 		pLogger->FreeReference();
 	}
 }
@@ -137,13 +137,13 @@ dealAssetUnpacker::~dealAssetUnpacker(){
 // Management
 ///////////////
 
-void dealAssetUnpacker::StartUnpacking( AAssetManager *assetManager,
-const char *assetFilename, const char *targetDirectory, const decStringList &filter ){
-	if( ! assetManager || ! assetFilename || ! targetDirectory ){
-		DETHROW( deeInvalidParam );
+void dealAssetUnpacker::StartUnpacking(AAssetManager *assetManager,
+const char *assetFilename, const char *targetDirectory, const decStringList &filter){
+	if(!assetManager || !assetFilename || !targetDirectory){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pUnpacking ){
+	if(pUnpacking){
 		return;
 	}
 	
@@ -154,12 +154,12 @@ const char *assetFilename, const char *targetDirectory, const decStringList &fil
 	pFilter = filter;
 	
 	// open asset for reading
-	if( pEnableLogging ){
-		pLogger->LogInfoFormat( LOGSOURCE, "Unpacking asset file '%s'", assetFilename );
+	if(pEnableLogging){
+		pLogger->LogInfoFormat(LOGSOURCE, "Unpacking asset file '%s'", assetFilename);
 	}
-	pAsset = AAssetManager_open( assetManager, assetFilename, AASSET_MODE_RANDOM );
-	if( ! pAsset ){
-		DETHROW( deeOpenFile );
+	pAsset = AAssetManager_open(assetManager, assetFilename, AASSET_MODE_RANDOM);
+	if(!pAsset){
+		DETHROW(deeOpenFile);
 	}
 	
 	// start unpack thread
@@ -168,53 +168,53 @@ const char *assetFilename, const char *targetDirectory, const decStringList &fil
 	pUnpackFailed = false,
 	pStopUnpacking = false;
 	
-	if( pthread_create( &pThreadUnpack, NULL, dealAssetUnpacker::pThreadRunnerUnpack, this ) != 0 ){
+	if(pthread_create(&pThreadUnpack, NULL, dealAssetUnpacker::pThreadRunnerUnpack, this) != 0){
 		pThreadUnpack = 0;
 		pUnpacking = false;
 		pUnpackFailed = true;
 		
-		AAsset_close( pAsset );
+		AAsset_close(pAsset);
 		pAsset = NULL;
 		
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 }
 
-void dealAssetUnpacker::UnpackProgress( bool &unpacking, float &progress ){
+void dealAssetUnpacker::UnpackProgress(bool &unpacking, float &progress){
 	bool unpackFailed = false;
 	
-	if( pthread_mutex_lock( &pMutex ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_mutex_lock(&pMutex) != 0){
+		DETHROW(deeInvalidAction);
 	}
 	
 	unpacking = pUnpacking;
 	progress = pUnpackProgress;
 	unpackFailed = pUnpackFailed;
 	
-	if( pthread_mutex_unlock( &pMutex ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_mutex_unlock(&pMutex) != 0){
+		DETHROW(deeInvalidAction);
 	}
 	
-	if( unpackFailed ){
-		DETHROW( deeReadFile );
+	if(unpackFailed){
+		DETHROW(deeReadFile);
 	}
 }
 
 void dealAssetUnpacker::StopUnpacking(){
-	if( ! pUnpacking ){
+	if(!pUnpacking){
 		return;
 	}
 	
 	// stop thread if not running
 	pStopUnpacking = true;
-	if( pthread_join( pThreadUnpack, NULL ) != 0 ){
+	if(pthread_join(pThreadUnpack, NULL) != 0){
 		pThreadUnpack = 0;
 		pUnpacking = false;
 		
-		AAsset_close( pAsset );
+		AAsset_close(pAsset);
 		pAsset = NULL;
 		
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 	
 	pThreadUnpack = 0;
@@ -222,7 +222,7 @@ void dealAssetUnpacker::StopUnpacking(){
 	pUnpackProgress = 1.0f;
 	
 	// close asset
-	AAsset_close( pAsset );
+	AAsset_close(pAsset);
 	pAsset = NULL;
 }
 
@@ -231,24 +231,24 @@ void dealAssetUnpacker::StopUnpacking(){
 // Private Functions
 //////////////////////
 
-void *dealAssetUnpacker::pThreadRunnerUnpack( void *parameter ){
-	dealAssetUnpacker &thread = *( ( dealAssetUnpacker* )parameter );
+void *dealAssetUnpacker::pThreadRunnerUnpack(void *parameter){
+	dealAssetUnpacker &thread = *((dealAssetUnpacker*)parameter);
 	
 	try{
 		thread.pUnpack();
 		
-	}catch( const deException &e ){
-		thread.pLogger->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		thread.pLogger->LogException(LOGSOURCE, e);
 	}
 	
-	if( pthread_mutex_lock( &thread.pMutex ) != 0 ){
+	if(pthread_mutex_lock(&thread.pMutex) != 0){
 		return NULL;
 	}
 	
 	thread.pUnpacking = false;
 	thread.pUnpackProgress = 1.0f;
 	
-	if( pthread_mutex_unlock( &thread.pMutex ) != 0 ){
+	if(pthread_mutex_unlock(&thread.pMutex) != 0){
 		return NULL;
 	}
 	
@@ -267,7 +267,7 @@ void dealAssetUnpacker::pUnpack(){
 	
 	unzFile zipfile = NULL;
 	int entryCount = 0;
-	char filename[ 256 ];
+	char filename[256];
 	decString realFilename;
 	int curEntry = 0;
 	bool nextFile = true;
@@ -284,58 +284,58 @@ void dealAssetUnpacker::pUnpack(){
 		ffunc.zerror_file = minizip_error_file_func;
 		ffunc.opaque = pAsset;
 		
-		if( pEnableLogging ){
-			pLogger->LogInfo( LOGSOURCE, "Open archive" );
+		if(pEnableLogging){
+			pLogger->LogInfo(LOGSOURCE, "Open archive");
 		}
-		zipfile = unzOpen2( "dealAssetUnpacker", &ffunc );
-		if( ! zipfile ){
-			DETHROW( deeReadFile );
+		zipfile = unzOpen2("dealAssetUnpacker", &ffunc);
+		if(!zipfile){
+			DETHROW(deeReadFile);
 		}
 		
-		if( unzGetGlobalInfo( zipfile, &gi ) != UNZ_OK ){
-			DETHROW( deeReadFile );
+		if(unzGetGlobalInfo(zipfile, &gi) != UNZ_OK){
+			DETHROW(deeReadFile);
 		}
-		entryCount = ( int )gi.number_entry;
-		if( pEnableLogging ){
-			pLogger->LogInfoFormat( LOGSOURCE, "Archive contains %d entries", entryCount );
+		entryCount = (int)gi.number_entry;
+		if(pEnableLogging){
+			pLogger->LogInfoFormat(LOGSOURCE, "Archive contains %d entries", entryCount);
 		}
 		
 		// unpack all entries
-		buffer = new char[ bufferSize ];
+		buffer = new char[bufferSize];
 		
-		while( true ){
+		while(true){
 			// check for stop condition
-			if( pthread_mutex_lock( &pMutex ) != 0 ){
+			if(pthread_mutex_lock(&pMutex) != 0){
 				throw escMutex;
 			}
-			if( pStopUnpacking ){
+			if(pStopUnpacking){
 				break;
 			}
-			if( nextFile ){
-				pUnpackProgress = ( float )curEntry / ( float )entryCount;
+			if(nextFile){
+				pUnpackProgress = (float)curEntry / (float)entryCount;
 			}
-			if( pthread_mutex_unlock( &pMutex ) != 0 ){
+			if(pthread_mutex_unlock(&pMutex) != 0){
 				throw escMutex;
 			}
 			
 			// continue unpacking
-			if( nextFile ){
+			if(nextFile){
 				nextFile = false;
 				
-				if( unzGetCurrentFileInfo( zipfile, &fi, NULL, 0, NULL, 0, NULL, 0 ) != UNZ_OK ){
-					DETHROW( deeReadFile );
+				if(unzGetCurrentFileInfo(zipfile, &fi, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK){
+					DETHROW(deeReadFile);
 				}
-				if( unzGetCurrentFileInfo( zipfile, &fi, filename, fi.size_filename, NULL, 0, NULL, 0 ) != UNZ_OK ){
-					DETHROW( deeReadFile );
+				if(unzGetCurrentFileInfo(zipfile, &fi, filename, fi.size_filename, NULL, 0, NULL, 0) != UNZ_OK){
+					DETHROW(deeReadFile);
 				}
-				filename[ fi.size_filename ] = '\0';
+				filename[fi.size_filename] = '\0';
 				
 				bool matchesFilter = false;
 				const int filterCount = pFilter.GetCount();
-				if( filterCount > 0 ){
+				if(filterCount > 0){
 					int i;
-					for( i=0; i<filterCount; i++ ){
-						if( decString::StringMatchesPattern( filename, pFilter.GetAt( i ) ) ){
+					for(i=0; i<filterCount; i++){
+						if(decString::StringMatchesPattern(filename, pFilter.GetAt(i))){
 							matchesFilter = true;
 							break;
 						}
@@ -345,52 +345,52 @@ void dealAssetUnpacker::pUnpack(){
 					matchesFilter = true;
 				}
 				
-				if( fi.uncompressed_size > 0 ){
-					if( pEnableLogging && matchesFilter ){
-						pLogger->LogInfoFormat( LOGSOURCE, "Entry %i: file '%s' size %li",
-							curEntry, filename, fi.uncompressed_size );
+				if(fi.uncompressed_size > 0){
+					if(pEnableLogging && matchesFilter){
+						pLogger->LogInfoFormat(LOGSOURCE, "Entry %i: file '%s' size %li",
+							curEntry, filename, fi.uncompressed_size);
 					}
 					
-					if( matchesFilter ){
-						if( unzOpenCurrentFile( zipfile ) != UNZ_OK ){
+					if(matchesFilter){
+						if(unzOpenCurrentFile(zipfile) != UNZ_OK){
 							throw escReadAsset;
 						}
 						realFilename = pTargetDirectory + "/" + filename;
-						writeFile = pWriteFile( realFilename );
+						writeFile = pWriteFile(realFilename);
 						
 					}else{
 						nextFile = true;
 					}
 					
 				}else{
-					if( pEnableLogging ){
-						pLogger->LogInfoFormat( LOGSOURCE, "Entry %i: directory '%s'", curEntry, filename );
+					if(pEnableLogging){
+						pLogger->LogInfoFormat(LOGSOURCE, "Entry %i: directory '%s'", curEntry, filename);
 					}
 					realFilename = pTargetDirectory + "/" + filename;
-					if( realFilename[ realFilename.GetLength() - 1 ] == '/' ){
-						realFilename = realFilename.GetMiddle( 0, -1 );
+					if(realFilename[realFilename.GetLength() - 1] == '/'){
+						realFilename = realFilename.GetMiddle(0, -1);
 					}
 					//pCreateDirectory( realFilename );
 					nextFile = true;
 				}
 			}
 			
-			if( ! nextFile ){
-				if( ! writeFile ){
-					DETHROW( deeReadFile );
+			if(!nextFile){
+				if(!writeFile){
+					DETHROW(deeReadFile);
 				}
 				
-				for( rrbc=0; rrbc<recheckBlockCount; rrbc++ ){
-					const int readBytes = unzReadCurrentFile( zipfile, buffer, bufferSize );
+				for(rrbc=0; rrbc<recheckBlockCount; rrbc++){
+					const int readBytes = unzReadCurrentFile(zipfile, buffer, bufferSize);
 					
-					if( readBytes > 0 ){
-						writeFile->Write( buffer, readBytes );
+					if(readBytes > 0){
+						writeFile->Write(buffer, readBytes);
 						
-					}else if( readBytes < 0 ){
-						DETHROW( deeReadFile );
+					}else if(readBytes < 0){
+						DETHROW(deeReadFile);
 						
 					}else{ // 0 = EOF
-						if( writeFile ){
+						if(writeFile){
 							writeFile->FreeReference();
 							writeFile = NULL;
 						}
@@ -398,114 +398,114 @@ void dealAssetUnpacker::pUnpack(){
 					}
 				}
 				
-				if( ! writeFile ){
+				if(!writeFile){
 					// file finished
-					if( unzCloseCurrentFile( zipfile ) != UNZ_OK ){
-						DETHROW( deeReadFile );
+					if(unzCloseCurrentFile(zipfile) != UNZ_OK){
+						DETHROW(deeReadFile);
 					}
-					if( pEnableLogging ){
-						pLogger->LogInfoFormat( LOGSOURCE, "Finished %i", curEntry );
+					if(pEnableLogging){
+						pLogger->LogInfoFormat(LOGSOURCE, "Finished %i", curEntry);
 					}
 					nextFile = true;
 				}
 			}
 			
-			if( nextFile ){
+			if(nextFile){
 				curEntry++;
-				if( curEntry < entryCount ){
-					if( unzGoToNextFile( zipfile ) != UNZ_OK ){
-						DETHROW( deeReadFile );
+				if(curEntry < entryCount){
+					if(unzGoToNextFile(zipfile) != UNZ_OK){
+						DETHROW(deeReadFile);
 					}
 					nextFile = true;
 					
 				}else{
-					if( pEnableLogging ){
-						pLogger->LogInfo( LOGSOURCE, "Finished extracting" );
+					if(pEnableLogging){
+						pLogger->LogInfo(LOGSOURCE, "Finished extracting");
 					}
 					break;
 				}
 			}
 		}
 		
-		if( pthread_mutex_unlock( &pMutex ) != 0 ){
-			DETHROW( deeInvalidAction );
+		if(pthread_mutex_unlock(&pMutex) != 0){
+			DETHROW(deeInvalidAction);
 		}
 		
 		delete [] buffer;
 	
-	}catch( const deException & ){
-		if( buffer ){
+	}catch(const deException &){
+		if(buffer){
 			delete [] buffer;
 		}
-		if( writeFile ){
+		if(writeFile){
 			writeFile->FreeReference();
 		}
 		pUnpackFailed = true;
 	}
 	
 	// close zip file
-	if( zipfile ){
-		unzClose( zipfile );
+	if(zipfile){
+		unzClose(zipfile);
 	}
 }
 
-void dealAssetUnpacker::pCreateDirectory( const decString &filename ){
+void dealAssetUnpacker::pCreateDirectory(const decString &filename){
 	// ensure the parent directories exist
-	int deli = filename.Find( '/', 1 );
+	int deli = filename.Find('/', 1);
 	struct stat st;
 	
-	while( deli != -1 ){
+	while(deli != -1){
 		// create directory if not existing
-		const decString dirname( filename.GetLeft( deli ) );
-		if( stat( dirname, &st ) != 0 && errno == ENOENT ){
-			if( mkdir( dirname, 0755 ) != 0 ){
-				DETHROW( deeInvalidAction );
+		const decString dirname(filename.GetLeft(deli));
+		if(stat(dirname, &st) != 0 && errno == ENOENT){
+			if(mkdir(dirname, 0755) != 0){
+				DETHROW(deeInvalidAction);
 			}
-			if( chmod( dirname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH ) != 0 ){
-				DETHROW( deeInvalidAction );
+			if(chmod(dirname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) != 0){
+				DETHROW(deeInvalidAction);
 			}
 		}
 		
 		// next path element
-		deli = filename.Find( '/', deli + 1 );
+		deli = filename.Find('/', deli + 1);
 	}
 	
 	// create directory if not existing
-	if( stat( filename, &st ) != 0 && errno == ENOENT ){
-		if( mkdir( filename, 0755 ) != 0 ){
-			DETHROW( deeInvalidAction );
+	if(stat(filename, &st) != 0 && errno == ENOENT){
+		if(mkdir(filename, 0755) != 0){
+			DETHROW(deeInvalidAction);
 		}
-		if( chmod( filename, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH ) != 0 ){
-			DETHROW( deeInvalidAction );
+		if(chmod(filename, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) != 0){
+			DETHROW(deeInvalidAction);
 		}
 	}
 }
 
-decBaseFileWriter *dealAssetUnpacker::pWriteFile( const decString &filename ){
+decBaseFileWriter *dealAssetUnpacker::pWriteFile(const decString &filename){
 	// ensure the parent directories exist
-	int deli = filename.Find( '/', 1 );
+	int deli = filename.Find('/', 1);
 	struct stat st;
 	
-	while( deli != -1 ){
+	while(deli != -1){
 		// create directory if not existing
-		const decString dirname( filename.GetLeft( deli ) );
-		if( stat( dirname, &st ) != 0 && errno == ENOENT ){
-			if( mkdir( dirname, 0755 ) != 0 ){
-				DETHROW( deeInvalidAction );
+		const decString dirname(filename.GetLeft(deli));
+		if(stat(dirname, &st) != 0 && errno == ENOENT){
+			if(mkdir(dirname, 0755) != 0){
+				DETHROW(deeInvalidAction);
 			}
-			if( chmod( dirname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH ) != 0 ){
-				DETHROW( deeInvalidAction );
+			if(chmod(dirname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) != 0){
+				DETHROW(deeInvalidAction);
 			}
 		}
 		
 		// next path element
-		deli = filename.Find( '/', deli + 1 );
+		deli = filename.Find('/', deli + 1);
 	}
 	
 	// create file
-	decDiskFileWriter * const file = new decDiskFileWriter( filename, false );
-	if( chmod( filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH ) != 0 ){
-		DETHROW( deeInvalidAction );
+	decDiskFileWriter * const file = new decDiskFileWriter(filename, false);
+	if(chmod(filename, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) != 0){
+		DETHROW(deeInvalidAction);
 	}
 	
 	return file;

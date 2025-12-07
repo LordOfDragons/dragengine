@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMASetActorParameter::ceWPTTIMASetActorParameter( ceWindowMain &windowMain,
-ceConversation &conversation, ceCASetActorParameter *action ) :
-ceWPTTIMAction( windowMain, etActionSetActorParameter, conversation, action )
+ceWPTTIMASetActorParameter::ceWPTTIMASetActorParameter(ceWindowMain &windowMain,
+ceConversation &conversation, ceCASetActorParameter *action) :
+ceWPTTIMAction(windowMain, etActionSetActorParameter, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionVariable() );
+	SetIcon(windowMain.GetIconActionVariable());
 	Update();
 }
 
@@ -58,8 +58,8 @@ ceWPTTIMASetActorParameter::~ceWPTTIMASetActorParameter(){
 ///////////////
 
 const char *ceWPTTIMASetActorParameter::GetOperatorText(
-ceCASetActorParameter::eOperators anOperator ){
-	switch( anOperator ){
+ceCASetActorParameter::eOperators anOperator){
+	switch(anOperator){
 	case ceCASetActorParameter::eopSet:
 		return "=";
 		
@@ -73,7 +73,7 @@ ceCASetActorParameter::eOperators anOperator ){
 		return "random";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -81,17 +81,17 @@ void ceWPTTIMASetActorParameter::Update(){
 	const ceCASetActorParameter &action = *GetActionSetActorParameter();
 	decString text;
 	
-	const char * const textOperator = GetOperatorText( action.GetOperator() );
+	const char * const textOperator = GetOperatorText(action.GetOperator());
 	
-	text.Format( "Set Actor Parameter (%s): '%s' %s", action.GetActor().GetString(),
-		action.GetName().GetString(), textOperator );
+	text.Format("Set Actor Parameter (%s): '%s' %s", action.GetActor().GetString(),
+		action.GetName().GetString(), textOperator);
 	
-	if( ! action.GetValueVariable().IsEmpty() ){
-		text.AppendFormat( "'%s'", action.GetValueVariable().GetString() );
+	if(!action.GetValueVariable().IsEmpty()){
+		text.AppendFormat("'%s'", action.GetValueVariable().GetString());
 		
 	}else{
-		text.AppendFormat( "%d", action.GetValue() );
+		text.AppendFormat("%d", action.GetValue());
 	}
 	
-	SetText( text );
+	SetText(text);
 }

@@ -48,7 +48,7 @@ dearControllerStates::dearControllerStates(){
 }
 
 dearControllerStates::~dearControllerStates(){
-	if( pStates ){
+	if(pStates){
 		delete [] pStates;
 	}
 }
@@ -58,17 +58,17 @@ dearControllerStates::~dearControllerStates(){
 // Management
 ///////////////
 
-void dearControllerStates::SetStateCount( int count ){
-	if( count != pStateCount ){
-		if( pStates ){
+void dearControllerStates::SetStateCount(int count){
+	if(count != pStateCount){
+		if(pStates){
 			delete [] pStates;
 			pStates = NULL;
 		}
 		pStateCount = 0;
 		
-		if( count > 0 ){
-			pStates = new sState[ count ];
-			if( ! pStates ) DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pStates = new sState[count];
+			if(!pStates) DETHROW(deeOutOfMemory);
 		}
 		pStateCount = count;
 	}
@@ -76,52 +76,52 @@ void dearControllerStates::SetStateCount( int count ){
 
 
 
-float dearControllerStates::GetValueAt( int state ) const{
-	if( state < 0 || state >= pStateCount ) DETHROW( deeInvalidParam );
+float dearControllerStates::GetValueAt(int state) const{
+	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
 	
-	return pStates[ state ].value;
+	return pStates[state].value;
 }
 
-const decVector &dearControllerStates::GetVectorAt( int state ) const{
-	if( state < 0 || state >= pStateCount ) DETHROW( deeInvalidParam );
+const decVector &dearControllerStates::GetVectorAt(int state) const{
+	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
 	
-	return pStates[ state ].vector;
+	return pStates[state].vector;
 }
 
-void dearControllerStates::SetValueAt( int state, float value ){
-	if( state < 0 || state >= pStateCount ) DETHROW( deeInvalidParam );
+void dearControllerStates::SetValueAt(int state, float value){
+	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
 	
-	pStates[ state ].value = value;
+	pStates[state].value = value;
 }
 
-void dearControllerStates::SetVectorAt( int state, const decVector &vector ){
-	if( state < 0 || state >= pStateCount ) DETHROW( deeInvalidParam );
+void dearControllerStates::SetVectorAt(int state, const decVector &vector){
+	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
 	
-	pStates[ state ].vector = vector;
+	pStates[state].vector = vector;
 }
 
-void dearControllerStates::SetStateAt( int state, float value, const decVector &vector ){
-	if( state < 0 || state >= pStateCount ) DETHROW( deeInvalidParam );
+void dearControllerStates::SetStateAt(int state, float value, const decVector &vector){
+	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
 	
-	pStates[ state ].value = value;
-	pStates[ state ].vector = vector;
+	pStates[state].value = value;
+	pStates[state].vector = vector;
 }
 
-void dearControllerStates::ResetStateAt( int state ){
-	if( state < 0 || state >= pStateCount ) DETHROW( deeInvalidParam );
+void dearControllerStates::ResetStateAt(int state){
+	if(state < 0 || state >= pStateCount) DETHROW(deeInvalidParam);
 	
-	pStates[ state ].value = 0.0f;
-	pStates[ state ].vector.SetZero();
+	pStates[state].value = 0.0f;
+	pStates[state].vector.SetZero();
 }
 
-void dearControllerStates::SetStateFrom( int destState, const dearControllerStates &sourceStates, int sourceState ){
-	if( sourceState < 0 || sourceState >= sourceStates.pStateCount ){
-		DETHROW( deeInvalidParam );
+void dearControllerStates::SetStateFrom(int destState, const dearControllerStates &sourceStates, int sourceState){
+	if(sourceState < 0 || sourceState >= sourceStates.pStateCount){
+		DETHROW(deeInvalidParam);
 	}
-	if( destState < 0 || destState >= pStateCount ){
-		DETHROW( deeInvalidParam );
+	if(destState < 0 || destState >= pStateCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pStates[ destState ].value = sourceStates.pStates[ sourceState ].value;
-	pStates[ destState ].vector = sourceStates.pStates[ sourceState ].vector;
+	pStates[destState].value = sourceStates.pStates[sourceState].value;
+	pStates[destState].vector = sourceStates.pStates[sourceState].vector;
 }

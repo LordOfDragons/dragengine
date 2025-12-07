@@ -47,7 +47,7 @@ public:
 	gdeOCCameraList();
 	
 	/** \brief Create copy of object class camera list. */
-	gdeOCCameraList( const gdeOCCameraList &list );
+	gdeOCCameraList(const gdeOCCameraList &list);
 	
 	/** \brief Clean up object class camera list. */
 	~gdeOCCameraList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class camera at position. */
-	gdeOCCamera *GetAt( int index ) const;
+	gdeOCCamera *GetAt(int index) const;
 	
 	/** \brief Index of named object class camera or -1 if absent. */
-	int IndexOf( gdeOCCamera *camera ) const;
+	int IndexOf(gdeOCCamera *camera) const;
 	
 	/** \brief Object class is present. */
-	bool Has( gdeOCCamera *camera ) const;
+	bool Has(gdeOCCamera *camera) const;
 	
 	/** \brief Add object class camera. */
-	void Add( gdeOCCamera *camera );
+	void Add(gdeOCCamera *camera);
 	
 	/** \brief Remove object class camera. */
-	void Remove( gdeOCCamera *camera );
+	void Remove(gdeOCCamera *camera);
 	
 	/** \brief Remove all object class cameras. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class camera list. */
-	gdeOCCameraList &operator=( const gdeOCCameraList &list );
+	gdeOCCameraList &operator=(const gdeOCCameraList &list);
 	/*@}*/
 };
 

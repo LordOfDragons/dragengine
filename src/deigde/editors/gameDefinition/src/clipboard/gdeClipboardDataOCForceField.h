@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCForceField( gdeOCForceField *particleEmitter );
+	gdeClipboardDataOCForceField(gdeOCForceField *particleEmitter);
 	
 protected:
 	/**

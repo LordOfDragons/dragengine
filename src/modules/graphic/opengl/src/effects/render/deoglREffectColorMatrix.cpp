@@ -65,14 +65,14 @@ enum eSPEffect{
 // Constructor, destructor
 ////////////////////////////
 
-deoglREffectColorMatrix::deoglREffectColorMatrix( deoglRenderThread &renderThread ) :
-deoglREffect( renderThread )
+deoglREffectColorMatrix::deoglREffectColorMatrix(deoglRenderThread &renderThread) :
+deoglREffect(renderThread)
 {
-	LEAK_CHECK_CREATE( renderThread, EffectColorMatrix );
+	LEAK_CHECK_CREATE(renderThread, EffectColorMatrix);
 }
 
 deoglREffectColorMatrix::~deoglREffectColorMatrix(){
-	LEAK_CHECK_FREE( GetRenderThread(), EffectColorMatrix );
+	LEAK_CHECK_FREE(GetRenderThread(), EffectColorMatrix);
 }
 
 
@@ -80,62 +80,62 @@ deoglREffectColorMatrix::~deoglREffectColorMatrix(){
 // Management
 ///////////////
 
-void deoglREffectColorMatrix::SetColorMatrix( const decColorMatrix &colorMatrix ){
+void deoglREffectColorMatrix::SetColorMatrix(const decColorMatrix &colorMatrix){
 	pColorMatrix = colorMatrix;
 }
 
 
 
 const deoglPipeline *deoglREffectColorMatrix::GetPipeline(){
-	if( ! pPipeline ){
+	if(!pPipeline){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
-		GetRenderThread().GetShader().SetCommonDefines( defines );
+		GetRenderThread().GetShader().SetCommonDefines(defines);
 		
-		pipconf.SetDepthMask( false );
-		pipconf.SetEnableScissorTest( true );
+		pipconf.SetDepthMask(false);
+		pipconf.SetEnableScissorTest(true);
 		
-		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
-		pipconf.SetShader( GetRenderThread(), "Effect Color Matrix", defines );
-		pPipeline = pipelineManager.GetWith( pipconf );
+		defines.SetDefines("NO_POSTRANSFORM", "NO_TEXCOORD");
+		pipconf.SetShader(GetRenderThread(), "Effect Color Matrix", defines);
+		pPipeline = pipelineManager.GetWith(pipconf);
 	}
 	
 	return pPipeline;
 }
 
 const deoglPipeline *deoglREffectColorMatrix::GetPipelineStereo(){
-	if( ! pPipelineStereo ){
+	if(!pPipelineStereo){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
-		GetRenderThread().GetShader().SetCommonDefines( defines );
+		GetRenderThread().GetShader().SetCommonDefines(defines);
 		
-		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+		defines.SetDefines("NO_POSTRANSFORM", "NO_TEXCOORD");
 		
-		pipconf.SetDepthMask( false );
-		pipconf.SetEnableScissorTest( true );
+		pipconf.SetDepthMask(false);
+		pipconf.SetEnableScissorTest(true);
 		
 		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
-		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_LAYER" );
-			pipconf.SetShader( GetRenderThread(), "Effect Color Matrix", defines );
+		if(GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer()){
+			defines.SetDefines("VS_RENDER_LAYER");
+			pipconf.SetShader(GetRenderThread(), "Effect Color Matrix", defines);
 			
 		}else{
-			pipconf.SetShader( GetRenderThread(), "Effect Color Matrix Stereo", defines );
+			pipconf.SetShader(GetRenderThread(), "Effect Color Matrix Stereo", defines);
 		}
 		
-		pPipelineStereo = pipelineManager.GetWith( pipconf );
+		pPipelineStereo = pipelineManager.GetWith(pipconf);
 	}
 	
 	return pPipelineStereo;
 }
 
-void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
+void deoglREffectColorMatrix::Render(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "EffectColorMatrix.Render" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "EffectColorMatrix.Render");
 	const deoglRenderWorld &renderWorld = renderThread.GetRenderers().GetWorld();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -152,24 +152,24 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	// we assume the matrix is a value only matrix. a better solution has
 	// to be found.
 	
-	paramMatrix.a11 = powf( colorMatrix.a11, OGL_RENDER_GAMMA );
-	paramMatrix.a12 = powf( colorMatrix.a12, OGL_RENDER_GAMMA );
-	paramMatrix.a13 = powf( colorMatrix.a13, OGL_RENDER_GAMMA );
-	paramOffset.x = powf( colorMatrix.a15, OGL_RENDER_GAMMA );
+	paramMatrix.a11 = powf(colorMatrix.a11, OGL_RENDER_GAMMA);
+	paramMatrix.a12 = powf(colorMatrix.a12, OGL_RENDER_GAMMA);
+	paramMatrix.a13 = powf(colorMatrix.a13, OGL_RENDER_GAMMA);
+	paramOffset.x = powf(colorMatrix.a15, OGL_RENDER_GAMMA);
 	
-	paramMatrix.a21 = powf( colorMatrix.a21, OGL_RENDER_GAMMA );
-	paramMatrix.a22 = powf( colorMatrix.a22, OGL_RENDER_GAMMA );
-	paramMatrix.a23 = powf( colorMatrix.a23, OGL_RENDER_GAMMA );
-	paramOffset.y = powf( colorMatrix.a25, OGL_RENDER_GAMMA );
+	paramMatrix.a21 = powf(colorMatrix.a21, OGL_RENDER_GAMMA);
+	paramMatrix.a22 = powf(colorMatrix.a22, OGL_RENDER_GAMMA);
+	paramMatrix.a23 = powf(colorMatrix.a23, OGL_RENDER_GAMMA);
+	paramOffset.y = powf(colorMatrix.a25, OGL_RENDER_GAMMA);
 	
-	paramMatrix.a31 = powf( colorMatrix.a31, OGL_RENDER_GAMMA );
-	paramMatrix.a32 = powf( colorMatrix.a32, OGL_RENDER_GAMMA );
-	paramMatrix.a33 = powf( colorMatrix.a33, OGL_RENDER_GAMMA );
-	paramOffset.z = powf( colorMatrix.a35, OGL_RENDER_GAMMA );
+	paramMatrix.a31 = powf(colorMatrix.a31, OGL_RENDER_GAMMA);
+	paramMatrix.a32 = powf(colorMatrix.a32, OGL_RENDER_GAMMA);
+	paramMatrix.a33 = powf(colorMatrix.a33, OGL_RENDER_GAMMA);
+	paramOffset.z = powf(colorMatrix.a35, OGL_RENDER_GAMMA);
 	
-	paramMatrix.a41 = powf( colorMatrix.a41, OGL_RENDER_GAMMA );
-	paramMatrix.a42 = powf( colorMatrix.a42, OGL_RENDER_GAMMA );
-	paramMatrix.a43 = powf( colorMatrix.a43, OGL_RENDER_GAMMA );
+	paramMatrix.a41 = powf(colorMatrix.a41, OGL_RENDER_GAMMA);
+	paramMatrix.a42 = powf(colorMatrix.a42, OGL_RENDER_GAMMA);
+	paramMatrix.a43 = powf(colorMatrix.a43, OGL_RENDER_GAMMA);
 	*/
 	
 	colorMatrix = pColorMatrix;
@@ -177,18 +177,18 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
 	pipeline.Activate();
 	
-	renderWorld.SetViewport( plan );
+	renderWorld.SetViewport(plan);
 	
 	defren.SwapPostProcessTarget();
-	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(),
+	defren.ActivatePostProcessFBO(false);
+	tsmgr.EnableArrayTexture(0, *defren.GetPostProcessTexture(),
 		*rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	deoglShaderCompiled &shader = pipeline.GetShader();
-	shader.SetParameterColorMatrix5x4( speColorMatrix, speColorOffset, colorMatrix );
+	shader.SetParameterColorMatrix5x4(speColorMatrix, speColorOffset, colorMatrix);
 	
-	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
-		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
+	renderWorld.RenderFullScreenQuadVAO(plan.GetRenderStereo()
+		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer());
 }

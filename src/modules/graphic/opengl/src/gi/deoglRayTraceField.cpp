@@ -52,33 +52,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRayTraceField::deoglRayTraceField( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pSpacing( 1.0f, 1.0f, 1.0f ),
-pInverseSpacing( 1.0f, 1.0f, 1.0f ),
-pProbeSize( 8 ), // equals 64 rays
-pProbesPerLine( 128 ), // equals image width of 1024
-pTexRays( renderThread )
+deoglRayTraceField::deoglRayTraceField(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pSpacing(1.0f, 1.0f, 1.0f),
+pInverseSpacing(1.0f, 1.0f, 1.0f),
+pProbeSize(8), // equals 64 rays
+pProbesPerLine(128), // equals image width of 1024
+pTexRays(renderThread)
 {
 	try{
-		pUBO.TakeOver( new deoglSPBlockUBO( renderThread ) );
+		pUBO.TakeOver(new deoglSPBlockUBO(renderThread));
 		deoglSPBlockUBO &ubo = pUBO;
 		
-		ubo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		ubo.SetParameterCount( eupSize + 1 );
-		ubo.GetParameterAt( eupProbeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		ubo.GetParameterAt( eupProbesPerLine ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		ubo.GetParameterAt( eupProbeSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		ubo.GetParameterAt( eupProbeStride ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		ubo.GetParameterAt( eupResolution ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
-		ubo.GetParameterAt( eupClamp ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
-		ubo.GetParameterAt( eupSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		ubo.GetParameterAt( eupOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		ubo.GetParameterAt( eupSize ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		ubo.SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
+		ubo.SetParameterCount(eupSize + 1);
+		ubo.GetParameterAt(eupProbeCount).SetAll(deoglSPBParameter::evtInt, 1, 1, 1); // int
+		ubo.GetParameterAt(eupProbesPerLine).SetAll(deoglSPBParameter::evtInt, 1, 1, 1); // int
+		ubo.GetParameterAt(eupProbeSize).SetAll(deoglSPBParameter::evtInt, 1, 1, 1); // int
+		ubo.GetParameterAt(eupProbeStride).SetAll(deoglSPBParameter::evtInt, 1, 1, 1); // int
+		ubo.GetParameterAt(eupResolution).SetAll(deoglSPBParameter::evtInt, 3, 1, 1); // ivec3
+		ubo.GetParameterAt(eupClamp).SetAll(deoglSPBParameter::evtInt, 3, 1, 1); // ivec3
+		ubo.GetParameterAt(eupSpacing).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3
+		ubo.GetParameterAt(eupOrigin).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3
+		ubo.GetParameterAt(eupSize).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3
 		ubo.MapToStd140();
-		ubo.SetBindingPoint( 0 );
+		ubo.SetBindingPoint(0);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -93,7 +93,7 @@ deoglRayTraceField::~deoglRayTraceField(){
 // Management
 ///////////////
 
-void deoglRayTraceField::Init( const decVector &minExtend, const decVector &maxExtend ){
+void deoglRayTraceField::Init(const decVector &minExtend, const decVector &maxExtend){
 	pOrigin = minExtend;
 	pSize = maxExtend - minExtend;
 	
@@ -128,20 +128,20 @@ void deoglRayTraceField::Init( const decVector &minExtend, const decVector &maxE
 	//      coverage and quality. for this to work requires an additional R16UI
 	//      texture which stores for an even grid the index of the probe to use. 
 	const float desiresSpacing = 1.0f;
-	const decPoint3 maxCellCount( decPoint3( 32, 16, 32 ) - decPoint3( 3, 3, 3 ) );
-	const decPoint3 cellCount( decPoint3( 1, 1, 1 ).Largest( ( pSize / desiresSpacing ).Round() ).Smallest( maxCellCount ) );
+	const decPoint3 maxCellCount(decPoint3(32, 16, 32) - decPoint3(3, 3, 3));
+	const decPoint3 cellCount(decPoint3(1, 1, 1).Largest((pSize / desiresSpacing).Round()).Smallest(maxCellCount));
 	
-	pSpacing.x = pSize.x / ( float )cellCount.x;
-	pSpacing.y = pSize.y / ( float )cellCount.y;
-	pSpacing.z = pSize.z / ( float )cellCount.z;
+	pSpacing.x = pSize.x / (float)cellCount.x;
+	pSpacing.y = pSize.y / (float)cellCount.y;
+	pSpacing.z = pSize.z / (float)cellCount.z;
 	pInverseSpacing.x = 1.0f / pSpacing.x;
 	pInverseSpacing.y = 1.0f / pSpacing.y;
 	pInverseSpacing.z = 1.0f / pSpacing.z;
 	
 	// to tightly fit the extends the resolution is 1 larger than the cell count.
 	// add border around the object of cell size. this increases the resolution by 2
-	pResolution = cellCount + decPoint3( 3, 3, 3 );
-	pCoordClamp = pResolution - decPoint3( 1, 1, 1 );
+	pResolution = cellCount + decPoint3(3, 3, 3);
+	pCoordClamp = pResolution - decPoint3(1, 1, 1);
 	pProbeCount = pResolution.x * pResolution.y * pResolution.z;
 	
 	pOrigin -= pSpacing;
@@ -150,18 +150,18 @@ void deoglRayTraceField::Init( const decVector &minExtend, const decVector &maxE
 
 
 
-decPoint3 deoglRayTraceField::Position2Coord( const decVector &position ) const{
-	return ( position - pOrigin ).Multiply( pInverseSpacing )
-		.Round().Clamped( decPoint3( 0, 0, 0 ), pCoordClamp );
+decPoint3 deoglRayTraceField::Position2Coord(const decVector &position) const{
+	return (position - pOrigin).Multiply(pInverseSpacing)
+		.Round().Clamped(decPoint3(0, 0, 0), pCoordClamp);
 }
 
-decVector deoglRayTraceField::Coord2Position( const decPoint3 &coord ) const{
-	return pOrigin + decVector( coord ).Multiply( pSpacing );
+decVector deoglRayTraceField::Coord2Position(const decPoint3 &coord) const{
+	return pOrigin + decVector(coord).Multiply(pSpacing);
 }
 
 
 
-void deoglRayTraceField::RenderField( deoglROcclusionMesh &occlusionMesh ){
+void deoglRayTraceField::RenderField(deoglROcclusionMesh &occlusionMesh){
 // // 	pRenderThread.GetGI().PrepareRayTracing( occlusionMesh );
 // 	pPrepareRayTexFBO();
 // 	pPrepareUBOState();
@@ -183,22 +183,22 @@ void deoglRayTraceField::pCleanUp(){
 
 void deoglRayTraceField::pPrepareUBOState(){
 	deoglSPBlockUBO &ubo = GetUBO();
-	const deoglSPBMapBuffer mapped( ubo );
+	const deoglSPBMapBuffer mapped(ubo);
 	
-	ubo.SetParameterDataInt( eupProbeCount, pProbeCount );
-	ubo.SetParameterDataInt( eupProbesPerLine, pProbesPerLine );
-	ubo.SetParameterDataInt( eupProbeSize, pProbeSize );
-	ubo.SetParameterDataInt( eupProbeStride, pResolution.x * pResolution.z );
-	ubo.SetParameterDataIVec3( eupResolution, pResolution );
-	ubo.SetParameterDataIVec3( eupClamp, pResolution - decPoint3( 1, 1, 1 ) );
-	ubo.SetParameterDataVec3( eupSpacing, pSpacing );
-	ubo.SetParameterDataVec3( eupOrigin, pOrigin );
-	ubo.SetParameterDataVec3( eupSize, pSize );
+	ubo.SetParameterDataInt(eupProbeCount, pProbeCount);
+	ubo.SetParameterDataInt(eupProbesPerLine, pProbesPerLine);
+	ubo.SetParameterDataInt(eupProbeSize, pProbeSize);
+	ubo.SetParameterDataInt(eupProbeStride, pResolution.x * pResolution.z);
+	ubo.SetParameterDataIVec3(eupResolution, pResolution);
+	ubo.SetParameterDataIVec3(eupClamp, pResolution - decPoint3(1, 1, 1));
+	ubo.SetParameterDataVec3(eupSpacing, pSpacing);
+	ubo.SetParameterDataVec3(eupOrigin, pOrigin);
+	ubo.SetParameterDataVec3(eupSize, pSize);
 }
 
 void deoglRayTraceField::pPrepareRayTexFBO(){
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	const deoglRestoreFramebuffer restoreFbo(pRenderThread);
+	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
 	bool setupFbo = false;
 	
 	if(!pFBORays){
@@ -206,29 +206,29 @@ void deoglRayTraceField::pPrepareRayTexFBO(){
 		setupFbo = true;
 	}
 	
-	if( ! pTexRays.GetTexture() ){
+	if(!pTexRays.GetTexture()){
 		const int width = pProbesPerLine * pProbeSize;
-		const int height = pProbeSize * ( ( ( pProbeCount - 1 ) / pProbesPerLine ) + 1 );
+		const int height = pProbeSize * (((pProbeCount - 1) / pProbesPerLine) + 1);
 		
-		pTexRays.SetFBOFormat( 1, true );
-		pTexRays.SetSize( width, height );
+		pTexRays.SetFBOFormat(1, true);
+		pTexRays.SetSize(width, height);
 		pTexRays.CreateTexture();
 		
 		setupFbo = true;
 	}
 	
-	pRenderThread.GetFramebuffer().Activate( pFBORays );
+	pRenderThread.GetFramebuffer().Activate(pFBORays);
 	
-	if( setupFbo ){
+	if(setupFbo){
 		pFBORays->DetachAllImages();
-		pFBORays->AttachColorTexture( 0, &pTexRays );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		pFBORays->AttachColorTexture(0, &pTexRays);
+		OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+		OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 		pFBORays->Verify();
 	}
 	
 	pRenderThread.GetRenderers().GetLight().GetRenderGI().GetPipelineClearBuffers()->Activate();
 	
-	const GLfloat clear[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 1.0f };
-	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clear[ 0 ] ) );
+	const GLfloat clear[4] = {10000.0f, 10000.0f, 10000.0f, 1.0f};
+	OGL_CHECK(pRenderThread, pglClearBufferfv(GL_COLOR, 0, &clear[0]));
 }

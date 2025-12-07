@@ -49,10 +49,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief State has been added. */
-	virtual void NetworkStateAdded( deNetworkState *state );
+	virtual void NetworkStateAdded(deNetworkState *state);
 	
 	/** \brief State has been removed. */
-	virtual void NetworkStateRemoved( deNetworkState *state );
+	virtual void NetworkStateRemoved(deNetworkState *state);
 	
 	/** \brief All states have been removed. */
 	virtual void AllNetworkStatesRemoved();

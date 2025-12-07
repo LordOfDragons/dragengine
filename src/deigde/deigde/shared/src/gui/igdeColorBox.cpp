@@ -46,24 +46,24 @@
 // Actions
 ////////////
 
-igdeColorBox::cActionCopy::cActionCopy( igdeColorBox &colorBox ) :
-igdeAction( "Copy", colorBox.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy color to clipboard" ),
-pColorBox( colorBox ){
+igdeColorBox::cActionCopy::cActionCopy(igdeColorBox &colorBox) :
+igdeAction("Copy", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy color to clipboard"),
+pColorBox(colorBox){
 }
 
 void igdeColorBox::cActionCopy::OnAction(){
-	if( ! pColorBox.GetNativeWidget() ){
-		DETHROW( deeInvalidParam );
+	if(!pColorBox.GetNativeWidget()){
+		DETHROW(deeInvalidParam);
 	}
-	( ( igdeNativeColorBox* )pColorBox.GetNativeWidget() )->ClipboardPutColor( pColorBox.GetColor() );
+	((igdeNativeColorBox*)pColorBox.GetNativeWidget())->ClipboardPutColor(pColorBox.GetColor());
 }
 
 
-igdeColorBox::cActionCopyHex::cActionCopyHex( igdeColorBox &colorBox ) :
-igdeAction( "Copy As Hex", colorBox.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy color to clipboard as hex value" ),
-pColorBox( colorBox ){
+igdeColorBox::cActionCopyHex::cActionCopyHex(igdeColorBox &colorBox) :
+igdeAction("Copy As Hex", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy color to clipboard as hex value"),
+pColorBox(colorBox){
 }
 
 void igdeColorBox::cActionCopyHex::OnAction(){
@@ -71,120 +71,120 @@ void igdeColorBox::cActionCopyHex::OnAction(){
 }
 
 
-igdeColorBox::cActionPaste::cActionPaste( igdeColorBox &colorBox ) :
-igdeAction( "Paste", colorBox.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste color from clipboard" ),
-pColorBox( colorBox ){
+igdeColorBox::cActionPaste::cActionPaste(igdeColorBox &colorBox) :
+igdeAction("Paste", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste color from clipboard"),
+pColorBox(colorBox){
 }
 
 void igdeColorBox::cActionPaste::OnAction(){
-	const decColor color( ( ( igdeNativeColorBox* )pColorBox.GetNativeWidget() )->ClipboardGetColor() );
-	if( color.IsEqualTo( pColorBox.GetColor() ) ){
+	const decColor color(((igdeNativeColorBox*)pColorBox.GetNativeWidget())->ClipboardGetColor());
+	if(color.IsEqualTo(pColorBox.GetColor())){
 		return;
 	}
 	
-	if( ! pColorBox.GetNativeWidget() ){
-		DETHROW( deeInvalidParam );
+	if(!pColorBox.GetNativeWidget()){
+		DETHROW(deeInvalidParam);
 	}
-	pColorBox.SetColor( color );
+	pColorBox.SetColor(color);
 	pColorBox.NotifyColorChanged();
 }
 
 
-igdeColorBox::cActionPasteHex::cActionPasteHex( igdeColorBox &colorBox ) :
-igdeAction( "Paste From Hex", colorBox.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste color from clipboard as hex value" ),
-pColorBox( colorBox ){
+igdeColorBox::cActionPasteHex::cActionPasteHex(igdeColorBox &colorBox) :
+igdeAction("Paste From Hex", colorBox.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste color from clipboard as hex value"),
+pColorBox(colorBox){
 }
 
 void igdeColorBox::cActionPasteHex::OnAction(){
 	// TODO... access system clipboard
 	
 	/*
-	const decColor color( ( ( igdeNativeColorBox* )pColorBox.GetNativeWidget() )->ClipboardGetColor() );
-	if( color.IsEqualTo( pColorBox.GetColor() ) ){
+	const decColor color(((igdeNativeColorBox*)pColorBox.GetNativeWidget())->ClipboardGetColor());
+	if(color.IsEqualTo(pColorBox.GetColor())){
 		return;
 	}
 	
-	pColorBox.SetColor( color );
+	pColorBox.SetColor(color);
 	pColorBox.NotifyColorChanged();
 	*/
 }
 
 
-igdeColorBox::cActionEditValues::cActionEditValues( igdeColorBox &colorBox ) :
-igdeAction( "Edit Values", NULL, "Edit values directly" ),
-pColorBox( colorBox ){
+igdeColorBox::cActionEditValues::cActionEditValues(igdeColorBox &colorBox) :
+igdeAction("Edit Values", NULL, "Edit values directly"),
+pColorBox(colorBox){
 }
 
 void igdeColorBox::cActionEditValues::OnAction(){
 	igdeCodecPropertyString codec;
 	decString value;
 	
-	codec.EncodeColor4( pColorBox.GetColor(), value );
+	codec.EncodeColor4(pColorBox.GetColor(), value);
 	
-	if( ! igdeCommonDialogs::GetString( &pColorBox, GetText(), "Color:", value ) ){
+	if(!igdeCommonDialogs::GetString(&pColorBox, GetText(), "Color:", value)){
 		return;
 	}
 	
-	float components[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	codec.DecodeFixedFloatList( value, components, 4 );
+	float components[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+	codec.DecodeFixedFloatList(value, components, 4);
 	
-	const decColor color( components[ 0 ], components[ 1 ], components[ 2 ], components[ 3 ] );
-	if( color.IsEqualTo( pColorBox.GetColor() ) ){
+	const decColor color(components[0], components[1], components[2], components[3]);
+	if(color.IsEqualTo(pColorBox.GetColor())){
 		return;
 	}
 	
-	pColorBox.SetColor( color );
+	pColorBox.SetColor(color);
 	pColorBox.NotifyColorChanged();
 }
 
 
-igdeColorBox::cActionEditHex::cActionEditHex( igdeColorBox &colorBox ) :
-igdeAction( "Edit Hex", NULL, "Edit hex directly" ),
-pColorBox( colorBox ){
+igdeColorBox::cActionEditHex::cActionEditHex(igdeColorBox &colorBox) :
+igdeAction("Edit Hex", NULL, "Edit hex directly"),
+pColorBox(colorBox){
 }
 
 void igdeColorBox::cActionEditHex::OnAction(){
-	decColor color( pColorBox.GetColor() );
+	decColor color(pColorBox.GetColor());
 	decString value;
 	
-	value.Format( "%02X%02X%02X%02X",
-		decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 ),
-		decMath::clamp( ( int )( color.g * 255.0f ), 0, 255 ),
-		decMath::clamp( ( int )( color.b * 255.0f ), 0, 255 ),
-		decMath::clamp( ( int )( color.a * 255.0f ), 0, 255 ) );
+	value.Format("%02X%02X%02X%02X",
+		decMath::clamp((int)(color.r * 255.0f), 0, 255),
+		decMath::clamp((int)(color.g * 255.0f), 0, 255),
+		decMath::clamp((int)(color.b * 255.0f), 0, 255),
+		decMath::clamp((int)(color.a * 255.0f), 0, 255));
 	
-	if( ! igdeCommonDialogs::GetString( &pColorBox, GetText(), "Color:", value ) ){
+	if(!igdeCommonDialogs::GetString(&pColorBox, GetText(), "Color:", value)){
 		return;
 	}
 	
 	value.ToLower();
 	
-	if( value.BeginsWith( "0x" ) ){
-		value = value.GetMiddle( 2 );
+	if(value.BeginsWith("0x")){
+		value = value.GetMiddle(2);
 	}
 	
 	const int length = value.GetLength();
 	color.SetZero();
-	if( length >= 2 ){
-		color.r = ( float )strtol( value.GetMiddle( 0, 2 ), NULL, 16 ) / 255.0f;
+	if(length >= 2){
+		color.r = (float)strtol(value.GetMiddle(0, 2), NULL, 16) / 255.0f;
 	}
-	if( length >= 4 ){
-		color.g = ( float )strtol( value.GetMiddle( 2, 2 ), NULL, 16 ) / 255.0f;
+	if(length >= 4){
+		color.g = (float)strtol(value.GetMiddle(2, 2), NULL, 16) / 255.0f;
 	}
-	if( length >= 6 ){
-		color.b = ( float )strtol( value.GetMiddle( 4, 6 ), NULL, 16 ) / 255.0f;
+	if(length >= 6){
+		color.b = (float)strtol(value.GetMiddle(4, 6), NULL, 16) / 255.0f;
 	}
-	if( length >= 8 ){
-		color.a = ( float )strtol( value.GetMiddle( 6, 8 ), NULL, 16 ) / 255.0f;
+	if(length >= 8){
+		color.a = (float)strtol(value.GetMiddle(6, 8), NULL, 16) / 255.0f;
 	}
 	
-	if( color.IsEqualTo( pColorBox.GetColor() ) ){
+	if(color.IsEqualTo(pColorBox.GetColor())){
 		return;
 	}
 	
-	pColorBox.SetColor( color );
+	pColorBox.SetColor(color);
 	pColorBox.NotifyColorChanged();
 }
 
@@ -196,15 +196,15 @@ void igdeColorBox::cActionEditHex::OnAction(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeColorBox::igdeColorBox( igdeEnvironment &environment ) :
-igdeWidget( environment ),
-pEnabled( true ){
+igdeColorBox::igdeColorBox(igdeEnvironment &environment) :
+igdeWidget(environment),
+pEnabled(true){
 }
 
-igdeColorBox::igdeColorBox( igdeEnvironment &environment, const char *description ) :
-igdeWidget( environment ),
-pDescription( description ),
-pEnabled( true ){
+igdeColorBox::igdeColorBox(igdeEnvironment &environment, const char *description) :
+igdeWidget(environment),
+pDescription(description),
+pEnabled(true){
 }
 
 igdeColorBox::~igdeColorBox(){
@@ -216,8 +216,8 @@ igdeColorBox::~igdeColorBox(){
 // Management
 ///////////////
 
-void igdeColorBox::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeColorBox::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -225,8 +225,8 @@ void igdeColorBox::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeColorBox::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeColorBox::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -236,8 +236,8 @@ void igdeColorBox::SetDescription( const char *description ){
 
 
 
-void igdeColorBox::SetColor( const decColor &color ){
-	if( pColor.IsEqualTo( color ) ){
+void igdeColorBox::SetColor(const decColor &color){
+	if(pColor.IsEqualTo(color)){
 		return;
 	}
 	
@@ -250,80 +250,80 @@ void igdeColorBox::Focus(){
 
 
 
-void igdeColorBox::AddListener( igdeColorBoxListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeColorBox::AddListener(igdeColorBoxListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeColorBox::RemoveListener( igdeColorBoxListener *listener ){
-	pListeners.Remove( listener );
+void igdeColorBox::RemoveListener(igdeColorBoxListener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeColorBox::NotifyColorChanged(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeColorBoxListener* )listeners.GetAt( i ) )->OnColorChanged( this );
+	for(i=0; i<count; i++){
+		((igdeColorBoxListener*)listeners.GetAt(i))->OnColorChanged(this);
 	}
 }
 
-void igdeColorBox::ShowContextMenu( const decPoint &position ){
-	if( ! GetNativeWidget() ){
+void igdeColorBox::ShowContextMenu(const decPoint &position){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
 	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(GetEnvironment()));
 	
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
-	helper.MenuCommand( menu, new cActionCopy( *this ), true );
-	helper.MenuCommand( menu, new cActionPaste( *this ), true );
+	helper.MenuCommand(menu, new cActionCopy(*this), true);
+	helper.MenuCommand(menu, new cActionPaste(*this), true);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, new cActionEditValues( *this ), true );
-	helper.MenuCommand( menu, new cActionEditHex( *this ), true );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, new cActionEditValues(*this), true);
+	helper.MenuCommand(menu, new cActionEditHex(*this), true);
 	
-	menu->Popup( *this, position );
+	menu->Popup(*this, position);
 }
 
 
 
 void igdeColorBox::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeColorBox * const native = igdeNativeColorBox::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeColorBox * const native = igdeNativeColorBox::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeColorBox::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeColorBox* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeColorBox*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeColorBox::OnColorChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeColorBox* )GetNativeWidget() )->UpdateColor();
+	if(GetNativeWidget()){
+		((igdeNativeColorBox*)GetNativeWidget())->UpdateColor();
 	}
 }
 
 void igdeColorBox::OnEnabledChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeColorBox* )GetNativeWidget() )->UpdateEnabled();
+	if(GetNativeWidget()){
+		((igdeNativeColorBox*)GetNativeWidget())->UpdateEnabled();
 	}
 }
 
 void igdeColorBox::OnDescriptionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeColorBox* )GetNativeWidget() )->UpdateDescription();
+	if(GetNativeWidget()){
+		((igdeNativeColorBox*)GetNativeWidget())->UpdateDescription();
 	}
 }

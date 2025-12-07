@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create move. */
-	fbxAnimationCurve( fbxNode &nodeCurve );
+	fbxAnimationCurve(fbxNode &nodeCurve);
 	
 protected:
 	/** \brief Clean up move. */

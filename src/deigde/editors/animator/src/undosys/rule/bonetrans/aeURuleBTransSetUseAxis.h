@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	aeURuleBTransSetUseAxis( aeRuleBoneTransformator *rule );
+	aeURuleBTransSetUseAxis(aeRuleBoneTransformator *rule);
 	
 protected:
 	/** Clean up undo. */

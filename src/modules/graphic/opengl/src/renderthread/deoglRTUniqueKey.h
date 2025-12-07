@@ -58,7 +58,7 @@ public:
 	unsigned int Get();
 	
 	/** Return key making it availabel as free. */
-	void Return( unsigned int key );
+	void Return(unsigned int key);
 	/*@}*/
 };
 

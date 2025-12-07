@@ -42,19 +42,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionSetCondition::ceUCAPChoiceOptionSetCondition( ceConversationTopic *topic,
-ceCAPlayerChoice *ifElse, ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition ) :
-pTopic( NULL ),
-pPlayerChoice( NULL ),
-pOption( NULL ),
-pOldCondition( NULL ),
-pNewCondition( NULL )
+ceUCAPChoiceOptionSetCondition::ceUCAPChoiceOptionSetCondition(ceConversationTopic *topic,
+ceCAPlayerChoice *ifElse, ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition) :
+pTopic(NULL),
+pPlayerChoice(NULL),
+pOption(NULL),
+pOldCondition(NULL),
+pNewCondition(NULL)
 {
-	if( ! topic || ! ifElse || ! ifcase ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !ifElse || !ifcase){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Player Choice Option set case condition" );
+	SetShortInfo("Player Choice Option set case condition");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -66,30 +66,30 @@ pNewCondition( NULL )
 	ifcase->AddReference();
 	
 	pOldCondition = ifcase->GetCondition();
-	if( pOldCondition ){
+	if(pOldCondition){
 		pOldCondition->AddReference();
 	}
 	
 	pNewCondition = newCondition;
-	if( newCondition ){
+	if(newCondition){
 		newCondition->AddReference();
 	}
 }
 
 ceUCAPChoiceOptionSetCondition::~ceUCAPChoiceOptionSetCondition(){
-	if( pNewCondition ){
+	if(pNewCondition){
 		pNewCondition->FreeReference();
 	}
-	if( pOldCondition ){
+	if(pOldCondition){
 		pOldCondition->FreeReference();
 	}
-	if( pOption ){
+	if(pOption){
 		pOption->FreeReference();
 	}
-	if( pPlayerChoice ){
+	if(pPlayerChoice){
 		pPlayerChoice->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -100,15 +100,15 @@ ceUCAPChoiceOptionSetCondition::~ceUCAPChoiceOptionSetCondition(){
 ///////////////
 
 void ceUCAPChoiceOptionSetCondition::Undo(){
-	pOption->SetCondition( pOldCondition );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pOption->SetCondition(pOldCondition);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 	
-	pTopic->SetActive( pPlayerChoice, pOldCondition );
+	pTopic->SetActive(pPlayerChoice, pOldCondition);
 }
 
 void ceUCAPChoiceOptionSetCondition::Redo(){
-	pOption->SetCondition( pNewCondition );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pOption->SetCondition(pNewCondition);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 	
-	pTopic->SetActive( pPlayerChoice, pNewCondition );
+	pTopic->SetActive(pPlayerChoice, pNewCondition);
 }

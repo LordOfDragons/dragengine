@@ -119,7 +119,7 @@ public:
 		writer->WriteString("      .fragment = R\"(");
 		writer->WriteString(sourceFragment ? sourceFragment : "");
 		writer->WriteString(")\"\n");
-		writer->WriteString("   }");
+		writer->WriteString("}");
 		count++;
 		sourceVertex.Empty();
 		sourceGeometry.Empty();
@@ -146,11 +146,11 @@ static const char * const vPsfDefines[] = {
 	NULL
 };
 
-static bool psfMatchesDefines( const deoglShaderProgram &program ){
+static bool psfMatchesDefines(const deoglShaderProgram &program){
 	#ifndef PRINT_ALL_SHADERS
-	const char **nextDefine = ( const char** )&vPsfDefines;
-	while( *nextDefine ){
-		if( ! program.GetDefines().HasDefineNamed( *nextDefine ) ){
+	const char **nextDefine = (const char**)&vPsfDefines;
+	while(*nextDefine){
+		if(!program.GetDefines().HasDefineNamed(*nextDefine)){
 			return false;
 		}
 		nextDefine++;
@@ -158,18 +158,18 @@ static bool psfMatchesDefines( const deoglShaderProgram &program ){
 	
 	const int count = program.GetDefines().GetDefineCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		const char * const defineName = program.GetDefines().GetDefineNameAt( i );
+	for(i=0; i<count; i++){
+		const char * const defineName = program.GetDefines().GetDefineNameAt(i);
 		
-		nextDefine = ( const char** )&vPsfDefines;
-		while( *nextDefine ){
-			if( strcmp( *nextDefine, defineName ) == 0 ){
+		nextDefine = (const char**)&vPsfDefines;
+		while(*nextDefine){
+			if(strcmp(*nextDefine, defineName) == 0){
 				break;
 			}
 			nextDefine++;
 		}
 		
-		if( ! *nextDefine ){
+		if(!*nextDefine){
 			return false;
 		}
 	}
@@ -177,36 +177,36 @@ static bool psfMatchesDefines( const deoglShaderProgram &program ){
 	return true;
 }
 
-static bool psfMatchesFragment( const deoglShaderProgram &program ){
-	if( ! program.GetFragmentSourceCode() ){
+static bool psfMatchesFragment(const deoglShaderProgram &program){
+	if(!program.GetFragmentSourceCode()){
 		return false;
 	}
 	#ifndef PRINT_ALL_SHADERS
-	if( strcmp( program.GetFragmentSourceCode()->GetFilePath(), vPsfFragment ) != 0 ){
+	if(strcmp(program.GetFragmentSourceCode()->GetFilePath(), vPsfFragment) != 0){
 		return false;
 	}
 	#endif
-	return psfMatchesDefines( program );
+	return psfMatchesDefines(program);
 }
 
-static bool psfMatchesVertex( const deoglShaderProgram &program ){
-	if( ! program.GetVertexSourceCode() ){
+static bool psfMatchesVertex(const deoglShaderProgram &program){
+	if(!program.GetVertexSourceCode()){
 		return false;
 	}
 	#ifndef PRINT_ALL_SHADERS
-	if( strcmp( program.GetVertexSourceCode()->GetFilePath(), vPsfVertex ) != 0 ){
+	if(strcmp(program.GetVertexSourceCode()->GetFilePath(), vPsfVertex) != 0){
 		return false;
 	}
 	#endif
-	return psfMatchesDefines( program );
+	return psfMatchesDefines(program);
 }
 
-static bool psfMatchesLink( const deoglShaderProgram &program ){
+static bool psfMatchesLink(const deoglShaderProgram &program){
 	#ifndef PRINT_ALL_SHADERS
-	if( strlen( vPsfFragment ) > 0 && ! psfMatchesFragment( program ) ){
+	if(strlen(vPsfFragment) > 0 && !psfMatchesFragment(program)){
 		return false;
 	}
-	if( strlen( vPsfVertex ) > 0 && ! psfMatchesVertex( program ) ){
+	if(strlen(vPsfVertex) > 0 && !psfMatchesVertex(program)){
 		return false;
 	}
 	#endif
@@ -723,20 +723,20 @@ void deoglShaderCompiler::pAfterLinkShader(const deoglShaderProgram& program){
 	// we can not touch the shader tracker here since we do not know if this call has
 	// been done from inside the render thread or not
 	GLuint restoreShader;
-	SC_OGL_CHECK( renderThread, glGetIntegerv( GL_CURRENT_PROGRAM, ( GLint* )&restoreShader ) );
+	SC_OGL_CHECK(renderThread, glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&restoreShader));
 	
 	try{
 		// renderThread.GetShader().ActivateShader( nullptr ); // nope, see above comment
 		// compiled.Activate();
-		SC_OGL_CHECK( renderThread, pglUseProgram( compiled.GetHandleShader() ) );
+		SC_OGL_CHECK(renderThread, pglUseProgram(compiled.GetHandleShader()));
 		
 		// bind textures
 		const deoglShaderBindingList &textureList = sources.GetTextureList();
 		count = textureList.GetCount();
-		for( i=0; i<count; i++ ){
-			location = pglGetUniformLocation( handleShader, textureList.GetNameAt( i ) );
-			if( location != -1 ){
-				SC_OGL_CHECK( renderThread, pglUniform1i( location, textureList.GetTargetAt( i ) ) );
+		for(i=0; i<count; i++){
+			location = pglGetUniformLocation(handleShader, textureList.GetNameAt(i));
+			if(location != -1){
+				SC_OGL_CHECK(renderThread, pglUniform1i(location, textureList.GetTargetAt(i)));
 			}
 		}
 		
@@ -759,10 +759,10 @@ void deoglShaderCompiler::pAfterLinkShader(const deoglShaderProgram& program){
 			}
 		#endif
 		
-		SC_OGL_CHECK( renderThread, pglUseProgram( restoreShader ) );
+		SC_OGL_CHECK(renderThread, pglUseProgram(restoreShader));
 		
-	}catch( const deException & ){
-		SC_OGL_CHECK( renderThread, pglUseProgram( restoreShader ) );
+	}catch(const deException &){
+		SC_OGL_CHECK(renderThread, pglUseProgram(restoreShader));
 		throw;
 	}
 }
@@ -1116,15 +1116,15 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	
 	// add version
 	decString line;
-	line.Format( "#version %s\n", pLanguage.GetGLSLVersion().GetString() );
-	pPreprocessor.SourcesAppend( line, false );
+	line.Format("#version %s\n", pLanguage.GetGLSLVersion().GetString());
+	pPreprocessor.SourcesAppend(line, false);
 	
 	// add required extensions
 	const int extCount = pLanguage.GetGLSLExtensions().GetCount();
 	int i;
 	
 	for(i=0; i<extCount; i++){
-		line.Format("#extension %s : require\n", pLanguage.GetGLSLExtensions().GetAt( i ).GetString());
+		line.Format("#extension %s : require\n", pLanguage.GetGLSLExtensions().GetAt(i).GetString());
 		pPreprocessor.SourcesAppend(line, false);
 	}
 	
@@ -1146,7 +1146,7 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 		break;
 		
 	case GL_GEOMETRY_SHADER:
-		#if ! defined OS_ANDROID && ! defined WITH_OPENGLES
+		#if !defined OS_ANDROID && !defined WITH_OPENGLES
 		if(ext.SupportsGSInstancing()){
 			pPreprocessor.SourcesAppend("#extension GL_ARB_gpu_shader5 : require\n", false);
 		}
@@ -1155,15 +1155,15 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	}
 	
 	// add version selection defines
-	if( pLanguage.GetGLSLVersionNumber() >= 450 ){
-		pPreprocessor.SetSymbol( "GLSL_450", "1" );
+	if(pLanguage.GetGLSLVersionNumber() >= 450){
+		pPreprocessor.SetSymbol("GLSL_450", "1");
 	}
 	
 	// add symbols
-	pPreprocessor.SetSymbolsFromDefines( defines );
+	pPreprocessor.SetSymbolsFromDefines(defines);
 	
-	if( ! defines.HasDefineNamed( "HIGHP" ) ){
-		pPreprocessor.SetSymbol( "HIGHP", "highp" );
+	if(!defines.HasDefineNamed("HIGHP")){
+		pPreprocessor.SetSymbol("HIGHP", "highp");
 	}
 	
 	if(renderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
@@ -1315,7 +1315,7 @@ void deoglShaderCompiler::pLogFailedShaderSources(const deoglShaderProgramUnit &
 	
 	for(i=0; i<count; i++){
 		const deoglShaderSourceLocation * const location =
-			pPreprocessor.ResolveSourceLocation(unit.GetProcessedSourceLocations(), i + 1 );
+			pPreprocessor.ResolveSourceLocation(unit.GetProcessedSourceLocations(), i + 1);
 		int mapLine = -1;
 		
 		if(location){

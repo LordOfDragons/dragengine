@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTargetRemoveAllLinks( aeRule *rule, aeControllerTarget *target, const aeLinkList &links );
+	aeURuleTargetRemoveAllLinks(aeRule *rule, aeControllerTarget *target, const aeLinkList &links);
 	
 protected:
 	/** Clean up undo. */

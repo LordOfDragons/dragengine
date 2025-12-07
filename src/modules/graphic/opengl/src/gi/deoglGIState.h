@@ -119,7 +119,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination state. */
-	deoglGIState( deoglRenderThread &renderThread, const decVector &size );
+	deoglGIState(deoglRenderThread &renderThread, const decVector &size);
 	
 	/** Clean up global illumination state. */
 	~deoglGIState();
@@ -139,13 +139,13 @@ public:
 	inline deoglRWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld( deoglRWorld *world );
+	void SetWorld(deoglRWorld *world);
 	
 	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. Invalidates all if changed. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** GI importance. */
 	inline int GetGIImportance() const{ return pGIImportance; }
@@ -171,7 +171,7 @@ public:
 	inline int GetCascadeCount() const{ return pCascadeCount; }
 	
 	/** Cascade at index. */
-	deoglGICascade &GetCascadeAt( int index ) const;
+	deoglGICascade &GetCascadeAt(int index) const;
 	
 	/** Activate cascade. */
 	deoglGICascade &GetActiveCascade() const;
@@ -254,7 +254,7 @@ public:
 	void ActivateNextCascade();
 	
 	/** Update. */
-	void Update( const decDVector &cameraPosition, const deoglDCollisionFrustum &frustum );
+	void Update(const decDVector &cameraPosition, const deoglDCollisionFrustum &frustum);
 	
 	/** Prepare UBO state. */
 	void PrepareUBOState() const;
@@ -269,25 +269,25 @@ public:
 	void ProbesMoved();
 	
 	/** Invalidate area. */
-	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend, bool hard );
+	void InvalidateArea(const decDVector &minExtend, const decDVector &maxExtend, bool hard);
 	
 	/** Dynamic area changed. */
-	void TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend );
+	void TouchDynamicArea(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** Validate ray caches marked for update. */
 	void ValidatedRayCaches();
 	
 	/** Notification component entered world. */
-	void ComponentEnteredWorld( deoglRComponent *component );
+	void ComponentEnteredWorld(deoglRComponent *component);
 	
 	/** Notification component changed layer mask. */
-	void ComponentChangedLayerMask( deoglRComponent *component );
+	void ComponentChangedLayerMask(deoglRComponent *component);
 	
 	/** Notification component became visible. */
-	void ComponentBecameVisible( deoglRComponent *component );
+	void ComponentBecameVisible(deoglRComponent *component);
 	
 	/** Notification component changed gi importance. */
-	void ComponentChangedGIImportance( deoglRComponent *component );
+	void ComponentChangedGIImportance(deoglRComponent *component);
 	
 	/** Start read back information for the next frame update. */
 	void StartReadBack();
@@ -319,13 +319,13 @@ private:
 	void pInitCascadeUpdateCycle();
 	void pInitUBOClearProbes();
 	void pInvalidateAllRayCaches();
-	void pFindContent( const decDVector &position );
+	void pFindContent(const decDVector &position);
 	void pTrackInstanceChanges();
-	void pUpdateProbeOffsetFromShader( deoglGICascade &cascade );
-	void pUpdateProbeExtendsFromShader( deoglGICascade &cascade );
-	void pPrepareTraceProbes( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum );
-	void pFindProbesToUpdate( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum );
-	void pPrepareRayCacheProbes( deoglGICascade &cascade );
+	void pUpdateProbeOffsetFromShader(deoglGICascade &cascade);
+	void pUpdateProbeExtendsFromShader(deoglGICascade &cascade);
+	void pPrepareTraceProbes(deoglGICascade &cascade, const deoglDCollisionFrustum &frustum);
+	void pFindProbesToUpdate(deoglGICascade &cascade, const deoglDCollisionFrustum &frustum);
+	void pPrepareRayCacheProbes(deoglGICascade &cascade);
 	void pPrepareProbeTexturesAndFBO();
 	void pPrepareProbeVBO();
 	void pPrepareUBORayDirections() const;

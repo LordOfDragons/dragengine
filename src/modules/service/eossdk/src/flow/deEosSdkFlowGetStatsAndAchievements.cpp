@@ -34,14 +34,14 @@
 // Class deEosSdkFlowGetStatsAndAchievements
 //////////////////////////////////////////////
 
-static void fQueryStatsCallback( const EOS_Stats_OnQueryStatsCompleteCallbackInfo *data ){
-	( ( deEosSdkFlowGetStatsAndAchievements* )data->ClientData )->OnQueryStatsCompleted( *data );
+static void fQueryStatsCallback(const EOS_Stats_OnQueryStatsCompleteCallbackInfo *data){
+	((deEosSdkFlowGetStatsAndAchievements*)data->ClientData)->OnQueryStatsCompleted(*data);
 }
 
 static void fQueryPlayerAchievementsCallback(
-const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo *data ){
-	( ( deEosSdkFlowGetStatsAndAchievements* )data->ClientData )->
-		OnQueryPlayerAchievementsCompleted( *data );
+const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo *data){
+	((deEosSdkFlowGetStatsAndAchievements*)data->ClientData)->
+		OnQueryPlayerAchievementsCompleted(*data);
 }
 
 
@@ -49,37 +49,37 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo *data ){
 // Constructor, destructor
 ////////////////////////////
 
-deEosSdkFlowGetStatsAndAchievements::deEosSdkFlowGetStatsAndAchievements( deEosSdkServiceEos &service,
-	const decUniqueID &id, const deServiceObject &request ) :
-deEosSdkFlow( service, id ),
-pStatNames( nullptr ),
-pAchievementNames( nullptr ),
-pStatsReceived( false ),
-pAchievementsReceived( false ),
-pResultData( deServiceObject::Ref::NewWith() )
+deEosSdkFlowGetStatsAndAchievements::deEosSdkFlowGetStatsAndAchievements(deEosSdkServiceEos &service,
+	const decUniqueID &id, const deServiceObject &request) :
+deEosSdkFlow(service, id),
+pStatNames(nullptr),
+pAchievementNames(nullptr),
+pStatsReceived(false),
+pAchievementsReceived(false),
+pResultData(deServiceObject::Ref::NewWith())
 {
 	deServiceObject::Ref so;
 	
-	so = request.GetChildAt( "stats" );
-	if( so ){
-		pStats = deECCommon::StringList( so );
+	so = request.GetChildAt("stats");
+	if(so){
+		pStats = deECCommon::StringList(so);
 	}
 	
-	so = request.GetChildAt( "achievements" );
-	if( so ){
-		pAchievements = deECCommon::StringList( so );
+	so = request.GetChildAt("achievements");
+	if(so){
+		pAchievements = deECCommon::StringList(so);
 	}
 	
-	service.NewPendingRequest( id, "getStatsAndAchievements", pResultData );
+	service.NewPendingRequest(id, "getStatsAndAchievements", pResultData);
 	
 	try{
-		if( ! service.productUserId ){
-			DETHROW_INFO( deeInvalidAction, "No user logged in" );
+		if(!service.productUserId){
+			DETHROW_INFO(deeInvalidAction, "No user logged in");
 		}
 		QueryStats();
 		
-	}catch( const deException &e ){
-		Fail( e );
+	}catch(const deException &e){
+		Fail(e);
 		Finish();
 		return;
 	}
@@ -87,17 +87,17 @@ pResultData( deServiceObject::Ref::NewWith() )
 	try{
 		QueryPlayerAchievements();
 		
-	}catch( const deException &e ){
-		Fail( e );
+	}catch(const deException &e){
+		Fail(e);
 	}
 	CheckFinished();
 }
 
 deEosSdkFlowGetStatsAndAchievements::~deEosSdkFlowGetStatsAndAchievements(){
-	if( pAchievementNames ){
+	if(pAchievementNames){
 		delete [] pAchievementNames;
 	}
-	if( pStatNames ){
+	if(pStatNames){
 		delete [] pStatNames;
 	}
 }
@@ -109,16 +109,16 @@ deEosSdkFlowGetStatsAndAchievements::~deEosSdkFlowGetStatsAndAchievements(){
 
 void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 	const int count = pStats.GetCount();
-	if( count == 0 ){
-		pResultData->SetChildAt( "stats", deServiceObject::Ref::NewWith() );
+	if(count == 0){
+		pResultData->SetChildAt("stats", deServiceObject::Ref::NewWith());
 		pStatsReceived = true;
 		return;
 	}
 	
 	int i;
 	pStatNames = new const char*[count];
-	for( i=0; i<count; i++ ){
-		pStatNames[ i ] = pStats.GetAt( i ).GetString();
+	for(i=0; i<count; i++){
+		pStatNames[i] = pStats.GetAt(i).GetString();
 	}
 	
 	EOS_Stats_QueryStatsOptions options = {};
@@ -130,22 +130,22 @@ void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 	options.StatNames = pStatNames;
 	options.StatNamesCount = count;
 	
-	GetModule().LogInfo( "deEosSdkFlowGetStatsAndAchievements.QueryStats" );
-	EOS_Stats_QueryStats( pService.GetHandleStats(), &options, this, fQueryStatsCallback );
+	GetModule().LogInfo("deEosSdkFlowGetStatsAndAchievements.QueryStats");
+	EOS_Stats_QueryStats(pService.GetHandleStats(), &options, this, fQueryStatsCallback);
 }
 
 void deEosSdkFlowGetStatsAndAchievements::QueryPlayerAchievements(){
 	const int count = pAchievements.GetCount();
-	if( count == 0 ){
-		pResultData->SetChildAt( "achievements", deServiceObject::Ref::NewWith() );
+	if(count == 0){
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::NewWith());
 		pAchievementsReceived = true;
 		return;
 	}
 	
 	int i;
 	pAchievementNames = new const char*[count];
-	for( i=0; i<count; i++ ){
-		pAchievementNames[ i ] = pAchievements.GetAt( i ).GetString();
+	for(i=0; i<count; i++){
+		pAchievementNames[i] = pAchievements.GetAt(i).GetString();
 	}
 	
 	EOS_Achievements_QueryPlayerAchievementsOptions options = {};
@@ -153,22 +153,22 @@ void deEosSdkFlowGetStatsAndAchievements::QueryPlayerAchievements(){
 	options.LocalUserId = pService.productUserId;
 	options.TargetUserId = pService.productUserId;
 	
-	GetModule().LogInfo( "deEosSdkFlowGetStatsAndAchievements.QueryPlayerAchievements" );
-	EOS_Achievements_QueryPlayerAchievements( pService.GetHandleAchievements(), &options,
-		this, fQueryPlayerAchievementsCallback );
+	GetModule().LogInfo("deEosSdkFlowGetStatsAndAchievements.QueryPlayerAchievements");
+	EOS_Achievements_QueryPlayerAchievements(pService.GetHandleAchievements(), &options,
+		this, fQueryPlayerAchievementsCallback);
 }
 
 
 
 void deEosSdkFlowGetStatsAndAchievements::OnQueryStatsCompleted(
-const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
+const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowGetStatsAndAchievements.OnQueryStatsCompleted: res=%d",
-		( int )data.ResultCode );
+		(int)data.ResultCode);
 	pStatsReceived = true;
 	
-	if( data.ResultCode != EOS_EResult::EOS_Success ){
-		Fail( data.ResultCode );
+	if(data.ResultCode != EOS_EResult::EOS_Success){
+		Fail(data.ResultCode);
 		CheckFinished();
 		return;
 	}
@@ -176,7 +176,7 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
 	EOS_Stats_Stat *stat = nullptr;
 	
 	try{
-		DEASSERT_NOTNULL( pService.productUserId )
+		DEASSERT_NOTNULL(pService.productUserId)
 		
 		EOS_Stats_CopyStatByNameOptions options = {};
 		options.ApiVersion = EOS_STATS_COPYSTATBYNAME_API_LATEST;
@@ -186,54 +186,54 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
 		EOS_EResult result;
 		int i;
 		
-		const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
+		const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 		
-		for( i=0; i<count; i++ ){
-			const char * const name = pStatNames[ i ];
+		for(i=0; i<count; i++){
+			const char * const name = pStatNames[i];
 			options.Name = name;
-			result = EOS_Stats_CopyStatByName( pService.GetHandleStats(), &options, &stat );
+			result = EOS_Stats_CopyStatByName(pService.GetHandleStats(), &options, &stat);
 			
-			switch( result ){
+			switch(result){
 			case EOS_EResult::EOS_Success:
-				so->SetIntChildAt( name, ( int )stat->Value );
-				EOS_Stats_Stat_Release( stat );
+				so->SetIntChildAt(name, (int)stat->Value);
+				EOS_Stats_Stat_Release(stat);
 				stat = nullptr;
 				break;
 				
 			case EOS_EResult::EOS_NotFound:
 				// either the stat really does not exist or it has not been set yet.
 				// we assume the stat has not been set yet so we set it to nullptr.
-				so->SetChildAt( name, nullptr );
+				so->SetChildAt(name, nullptr);
 				break;
 				
 			default:
-				Fail( result );
+				Fail(result);
 				CheckFinished();
 				return;
 			}
 		}
 		
-		pResultData->SetChildAt( "stats", so );
+		pResultData->SetChildAt("stats", so);
 		CheckFinished();
 		
-	}catch( const deException &e ){
-		if( stat ){
-			EOS_Stats_Stat_Release( stat );
+	}catch(const deException &e){
+		if(stat){
+			EOS_Stats_Stat_Release(stat);
 		}
-		Fail( e );
+		Fail(e);
 		CheckFinished();
 	}
 }
 
 void deEosSdkFlowGetStatsAndAchievements::OnQueryPlayerAchievementsCompleted(
-const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
+const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowGetStatsAndAchievements.OnQueryPlayerAchievementsCompleted: res=%d",
-		( int )data.ResultCode );
+		(int)data.ResultCode);
 	pAchievementsReceived = true;
 	
-	if( data.ResultCode != EOS_EResult::EOS_Success ){
-		Fail( data.ResultCode );
+	if(data.ResultCode != EOS_EResult::EOS_Success){
+		Fail(data.ResultCode);
 		CheckFinished();
 		return;
 	}
@@ -241,7 +241,7 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 	EOS_Achievements_PlayerAchievement *achievement = nullptr;
 	
 	try{
-		DEASSERT_NOTNULL( pService.productUserId )
+		DEASSERT_NOTNULL(pService.productUserId)
 		
 		EOS_Achievements_CopyPlayerAchievementByAchievementIdOptions options = {};
 		options.ApiVersion = EOS_ACHIEVEMENTS_COPYPLAYERACHIEVEMENTBYACHIEVEMENTID_API_LATEST;
@@ -252,44 +252,44 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 		EOS_EResult result;
 		int i;
 		
-		const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
+		const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 		
-		for( i=0; i<count; i++ ){
-			const char * const name = pAchievementNames[ i ];
+		for(i=0; i<count; i++){
+			const char * const name = pAchievementNames[i];
 			options.AchievementId = name;
 			result = EOS_Achievements_CopyPlayerAchievementByAchievementId(
-				pService.GetHandleAchievements(), &options, &achievement );
+				pService.GetHandleAchievements(), &options, &achievement);
 			
-			switch( result ){
+			switch(result){
 			case EOS_EResult::EOS_Success:
-				so->SetBoolChildAt( name, ( int )achievement->UnlockTime
-					!= EOS_ACHIEVEMENTS_ACHIEVEMENT_UNLOCKTIME_UNDEFINED );
+				so->SetBoolChildAt(name, (int)achievement->UnlockTime
+					!= EOS_ACHIEVEMENTS_ACHIEVEMENT_UNLOCKTIME_UNDEFINED);
 				
-				EOS_Achievements_PlayerAchievement_Release( achievement );
+				EOS_Achievements_PlayerAchievement_Release(achievement);
 				achievement = nullptr;
 				break;
 				
 			case EOS_EResult::EOS_NotFound:
 				// either the achievement really does not exist or it has not been set yet.
 				// we assume the achievement has not been set yet so we use the value false
-				so->SetBoolChildAt( name, false );
+				so->SetBoolChildAt(name, false);
 				break;
 				
 			default:
-				Fail( result );
+				Fail(result);
 				CheckFinished();
 				return;
 			}
 		}
 		
-		pResultData->SetChildAt( "achievements", so );
+		pResultData->SetChildAt("achievements", so);
 		CheckFinished();
 		
-	}catch( const deException &e ){
-		if( achievement ){
-			EOS_Achievements_PlayerAchievement_Release( achievement );
+	}catch(const deException &e){
+		if(achievement){
+			EOS_Achievements_PlayerAchievement_Release(achievement);
 		}
-		Fail( e );
+		Fail(e);
 		CheckFinished();
 	}
 }
@@ -297,7 +297,7 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 
 
 void deEosSdkFlowGetStatsAndAchievements::CheckFinished(){
-	if( pStatsReceived && pAchievementsReceived ){
+	if(pStatsReceived && pAchievementsReceived){
 		Finish();
 	}
 }

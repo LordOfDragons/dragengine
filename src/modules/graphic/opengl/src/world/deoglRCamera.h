@@ -94,7 +94,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render camera. */
-	deoglRCamera( deoglRenderThread &renderThread );
+	deoglRCamera(deoglRenderThread &renderThread);
 	
 	/** Clean up render camera. */
 	virtual ~deoglRCamera();
@@ -111,7 +111,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL if not set. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	
 	
@@ -119,7 +119,7 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** Camera matrix. */
 	inline const decDMatrix &GetCameraMatrix() const{ return pCameraMatrix; }
@@ -128,7 +128,7 @@ public:
 	inline const decDMatrix &GetInverseCameraMatrix() const{ return pInverseCameraMatrix; }
 	
 	/** Set camera matrix and calculate calvulate inverse camera matrix. */
-	void SetCameraMatrices( const decDMatrix &matrix );
+	void SetCameraMatrices(const decDMatrix &matrix);
 	
 	
 	
@@ -141,19 +141,19 @@ public:
 	inline deoglTexture *GetToneMapParamsTexture() const{ return pTextureToneMapParams; }
 	
 	/** Set tone mapping parameters texture. */
-	void SetToneMapParamsTexture( deoglTexture *texture );
+	void SetToneMapParamsTexture(deoglTexture *texture);
 	
 	/** Elapsed time since the last adaption of the tone mapping parameters. */
 	inline float GetElapsedToneMapAdaption() const{ return pElapsedToneMapAdaption; }
 	
 	/** Set elapsed time since the last adaption of the tone mapping parameters. */
-	void SetElapsedToneMapAdaption( float elapsed );
+	void SetElapsedToneMapAdaption(float elapsed);
 	
 	/** Force full tone mapping adaption for the next rendering. */
 	inline bool GetForceToneMapAdaption() const{ return pForceToneMapAdaption; }
 	
 	/** Set if a full tone mapping adaption is forced for the next rendering. */
-	void SetForceToneMapAdaption( bool forceAdaption );
+	void SetForceToneMapAdaption(bool forceAdaption);
 	
 	/** Reset elapsed tone mapping adaption time. */
 	void ResetElapsedToneMapAdaption();
@@ -170,31 +170,31 @@ public:
 	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
 	
 	/** Set enable HDRR. */
-	void SetEnableHDRR( bool enable );
+	void SetEnableHDRR(bool enable);
 	
 	/** Exposure. */
 	inline float GetExposure() const{ return pExposure; }
 	
 	/** Set exposure. */
-	void SetExposure( float exposure );
+	void SetExposure(float exposure);
 	
 	/** Lowest intensity the eye can adapt to. */
 	inline float GetLowestIntensity() const{ return pLowestIntensity; }
 	
 	/** Set lowest intensity the eye can adapt to. */
-	void SetLowestIntensity( float lowestIntensity );
+	void SetLowestIntensity(float lowestIntensity);
 	
 	/** Highest intensity the eye can adapt to. */
 	inline float GetHighestIntensity() const{ return pHighestIntensity; }
 	
 	/** Set highest intensity the eye can adapt to. */
-	void SetHighestIntensity( float highestIntensity );
+	void SetHighestIntensity(float highestIntensity);
 	
 	/** Adaption time of the eye in seconds. */
 	inline float GetAdaptionTime() const{ return pAdaptionTime; }
 	
 	/** Set adaption time of the eye in seconds. */
-	void SetAdaptionTime( float adaptionTime );
+	void SetAdaptionTime(float adaptionTime);
 	
 	
 	
@@ -202,7 +202,7 @@ public:
 	inline bool GetEnableGI() const{ return pEnableGI; }
 	
 	/** Set enable GI. */
-	void SetEnableGI( bool enable );
+	void SetEnableGI(bool enable);
 	
 	
 	
@@ -210,33 +210,33 @@ public:
 	inline deoglVR *GetVR() const{ return pVR; }
 	
 	/** Enable/Disable VR. */
-	void EnableVR( bool enable );
+	void EnableVR(bool enable);
 	
 	
 	
 	/** White intensity multiplier. */
 	inline float GetWhiteIntensity() const{ return pWhiteIntensity; }
-	void SetWhiteIntensity( float intensity );
+	void SetWhiteIntensity(float intensity);
 	
 	/** Bloom intensity multiplier. */
 	inline float GetBloomIntensity() const{ return pBloomIntensity; }
-	void SetBloomIntensity( float intensity );
+	void SetBloomIntensity(float intensity);
 	
 	/** Bloom strength.*/
 	inline float GetBloomStrength() const{ return pBloomStrength; }
-	void SetBloomStrength( float strength );
+	void SetBloomStrength(float strength);
 	
 	/** Bloom blend.*/
 	inline float GetBloomBlend() const{ return pBloomBlend; }
-	void SetBloomBlend( float blend );
+	void SetBloomBlend(float blend);
 	
 	/** Bloom size as percentage of screen width. */
 	inline float GetBloomSize() const{ return pBloomSize; }
-	void SetBloomSize( float size );
+	void SetBloomSize(float size);
 	
 	/** Custom tone mapping curve or empty curve to disable. */
 	inline const decCurveBezier &GetToneMapCurve() const{ return pToneMapCurve; }
-	void SetToneMapCurve( const decCurveBezier &curve );
+	void SetToneMapCurve(const decCurveBezier &curve);
 	
 	
 	
@@ -265,10 +265,10 @@ public:
 	int GetEffectCount() const;
 	
 	/** Effect at index. */
-	deoglREffect &GetEffectAt( int index ) const;
+	deoglREffect &GetEffectAt(int index) const;
 	
 	/** Add effect. */
-	void AddEffect( deoglREffect *effect );
+	void AddEffect(deoglREffect *effect);
 	
 	/** Remove all effects. */
 	void RemoveAllEffects();
@@ -276,7 +276,7 @@ public:
 	
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Prepare for rendering. */
 	void PrepareForRender();

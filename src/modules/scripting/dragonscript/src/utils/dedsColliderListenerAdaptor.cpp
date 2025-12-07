@@ -43,20 +43,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsColliderListenerAdaptor::dedsColliderListenerAdaptor( deScriptingDragonScript &ds ) :
-pDS( ds ),
-pListener( NULL ),
-pHasListener( false )
+dedsColliderListenerAdaptor::dedsColliderListenerAdaptor(deScriptingDragonScript &ds) :
+pDS(ds),
+pListener(NULL),
+pHasListener(false)
 {
-	pListener = ds.GetScriptEngine()->GetMainRunTime()->CreateValue( ds.GetClassColliderListener() );
+	pListener = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassColliderListener());
 }
 
 dedsColliderListenerAdaptor::~dedsColliderListenerAdaptor(){
-	if( ! pListener ){
+	if(!pListener){
 		return;
 	}
 	
-	pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pListener );
+	pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pListener);
 	pListener = NULL;
 }
 
@@ -65,16 +65,16 @@ dedsColliderListenerAdaptor::~dedsColliderListenerAdaptor(){
 // Management
 ///////////////
 
-void dedsColliderListenerAdaptor::SetListener( dsRealObject *object ){
+void dedsColliderListenerAdaptor::SetListener(dsRealObject *object){
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pListener, object );
-		rt.CastValueTo( pListener, pListener, pDS.GetClassColliderListener() );
+	if(object){
+		rt.SetObject(pListener, object);
+		rt.CastValueTo(pListener, pListener, pDS.GetClassColliderListener());
 		pHasListener = true;
 		
 	}else{
-		rt.SetNull( pListener, pDS.GetClassColliderListener() );
+		rt.SetNull(pListener, pDS.GetClassColliderListener());
 		pHasListener = false;
 	}
 }
@@ -88,8 +88,8 @@ void dedsColliderListenerAdaptor::Reset(){
 // Notifications
 //////////////////
 
-void dedsColliderListenerAdaptor::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( ! pHasListener ){
+void dedsColliderListenerAdaptor::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(!pHasListener){
 		return;
 	}
 	
@@ -99,18 +99,18 @@ void dedsColliderListenerAdaptor::CollisionResponse( deCollider *owner, deCollis
 	deClassCollider &clsCol = *pDS.GetClassCollider();
 	
 	try{
-		clsCI.PushInfo( rt, info ); // info
-		clsCol.PushCollider( rt, owner ); // owner
-		rt->RunFunctionFast( pListener, funcIndex );
+		clsCI.PushInfo(rt, info); // info
+		clsCol.PushCollider(rt, owner); // owner
+		rt->RunFunctionFast(pListener, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 }
 
-bool dedsColliderListenerAdaptor::CanHitCollider( deCollider *owner, deCollider *collider ){
-	if( ! pHasListener ){
+bool dedsColliderListenerAdaptor::CanHitCollider(deCollider *owner, deCollider *collider){
+	if(!pHasListener){
 		return false;
 	}
 	
@@ -120,13 +120,13 @@ bool dedsColliderListenerAdaptor::CanHitCollider( deCollider *owner, deCollider 
 	bool canHitCollider = false;
 	
 	try{
-		clsCol.PushCollider( rt, collider ); // collider
-		clsCol.PushCollider( rt, NULL ); // owner
-		rt->RunFunctionFast( pListener, funcIndex );
+		clsCol.PushCollider(rt, collider); // collider
+		clsCol.PushCollider(rt, NULL); // owner
+		rt->RunFunctionFast(pListener, funcIndex);
 		
 		canHitCollider = rt->GetReturnBool();
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}

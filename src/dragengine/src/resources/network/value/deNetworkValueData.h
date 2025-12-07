@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueData( int length );
+	deNetworkValueData(int length);
 	
 	/** \brief Clean up network value object. */
 	virtual ~deNetworkValueData();
@@ -75,7 +75,7 @@ public:
 	 * 
 	 * After changing the size the data is undefined. Only values greater than 0 are allowed.
 	 */
-	void SetLength( int length );
+	void SetLength(int length);
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

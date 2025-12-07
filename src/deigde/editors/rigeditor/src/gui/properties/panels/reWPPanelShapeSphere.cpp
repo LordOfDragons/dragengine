@@ -56,23 +56,23 @@ namespace {
 class cTextRadius : public igdeTextFieldListener{
 	reWPPanelShapeSphere &pPanel;
 public:
-	cTextRadius( reWPPanelShapeSphere &panel ) : pPanel( panel ){ }
+	cTextRadius(reWPPanelShapeSphere &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeSphere * const sphere = ( reRigShapeSphere* )pPanel.GetShape();
-		if( ! rig || ! sphere ){
+		reRigShapeSphere * const sphere = (reRigShapeSphere*)pPanel.GetShape();
+		if(!rig || !sphere){
 			return;
 		}
 		
 		const float value = textField->GetFloat();
-		if( fabsf( value - sphere->GetRadius() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - sphere->GetRadius()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		reUSetShapeSphereRadius::Ref undo(reUSetShapeSphereRadius::Ref::NewWith(sphere, value));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -87,8 +87,8 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reWPPanelShapeSphere::reWPPanelShapeSphere( reWPShape &wpShapes ) :
-reWPPanelShape( wpShapes, reRigShape::estSphere )
+reWPPanelShapeSphere::reWPPanelShapeSphere(reWPShape &wpShapes) :
+reWPPanelShape(wpShapes, reRigShape::estSphere)
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
 	igdeContainer::Ref groupBox;
@@ -96,13 +96,13 @@ reWPPanelShape( wpShapes, reRigShape::estSphere )
 	
 	
 	
-	helper.GroupBox( *this, groupBox, "Sphere Parameters:" );
+	helper.GroupBox(*this, groupBox, "Sphere Parameters:");
 	
-	helper.EditVector( groupBox, "Position:", "Position of the sphere relative to the parent bone.",
-		pEditPosition, new cEditPosition( *this ) );
+	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
+		pEditPosition, new cEditPosition(*this));
 	
-	helper.EditString( groupBox, "Radius:", "Radius of the sphere in meters.",
-		pEditRadius, new cTextRadius( *this ) );
+	helper.EditString(groupBox, "Radius:", "Radius of the sphere in meters.",
+		pEditRadius, new cTextRadius(*this));
 }
 
 reWPPanelShapeSphere::~reWPPanelShapeSphere(){
@@ -116,18 +116,18 @@ reWPPanelShapeSphere::~reWPPanelShapeSphere(){
 void reWPPanelShapeSphere::UpdateShape(){
 	reWPPanelShape::UpdateShape();
 	
-	reRigShapeSphere * const sphere = ( reRigShapeSphere* )GetShape();
+	reRigShapeSphere * const sphere = (reRigShapeSphere*)GetShape();
 	
-	if( sphere ){
-		pEditPosition->SetVector( sphere->GetPosition() );
-		pEditRadius->SetFloat( sphere->GetRadius() );
+	if(sphere){
+		pEditPosition->SetVector(sphere->GetPosition());
+		pEditRadius->SetFloat(sphere->GetRadius());
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
 		pEditRadius->ClearText();
 	}
 	
 	const bool enabled = sphere != NULL;
-	pEditPosition->SetEnabled( enabled );
-	pEditRadius->SetEnabled( enabled );
+	pEditPosition->SetEnabled(enabled);
+	pEditRadius->SetEnabled(enabled);
 }

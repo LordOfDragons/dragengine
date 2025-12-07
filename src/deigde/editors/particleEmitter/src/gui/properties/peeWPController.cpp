@@ -81,22 +81,22 @@ protected:
 	peeWPController &pPanel;
 	
 public:
-	cBaseTextFieldListener( peeWPController &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(peeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeController * const controller = pPanel.GetController();
-		if( ! emitter || ! controller ){
+		if(!emitter || !controller){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, emitter, controller ) ));
-		if( undo ){
-			emitter->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, emitter, controller)));
+		if(undo){
+			emitter->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, peeEmitter *emitter, peeController *controller ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter *emitter, peeController *controller) = 0;
 };
 
 class cBaseEditSliderTextListener : public igdeEditSliderTextListener{
@@ -104,23 +104,23 @@ protected:
 	peeWPController &pPanel;
 	
 public:
-	cBaseEditSliderTextListener( peeWPController &panel ) : pPanel( panel ){ }
+	cBaseEditSliderTextListener(peeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditSliderText *editSlider ){
+	virtual void OnVectorChanged(igdeEditSliderText *editSlider){
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		peeController * const controller = pPanel.GetController();
-		if( ! emitter || ! controller ){
+		if(!emitter || !controller){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( editSlider->GetValue(), emitter, controller ) ));
-		if( undo ){
-			emitter->GetUndoSystem()->Add( undo );
+			 OnChanged(editSlider->GetValue(), emitter, controller)));
+		if(undo){
+			emitter->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( float value, peeEmitter *emitter, peeController *controller ) = 0;
+	virtual igdeUndo *OnChanged(float value, peeEmitter *emitter, peeController *controller) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -128,55 +128,55 @@ protected:
 	peeWPController &pPanel;
 	
 public:
-	cBaseAction( peeWPController &panel, const char *text, const char *description ) :
-	igdeAction( text, description ),
-	pPanel( panel ){ }
+	cBaseAction(peeWPController &panel, const char *text, const char *description) :
+	igdeAction(text, description),
+	pPanel(panel){}
 	
-	cBaseAction( peeWPController &panel, igdeIcon *icon, const char *description ) :
-	igdeAction( "", icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(peeWPController &panel, igdeIcon *icon, const char *description) :
+	igdeAction("", icon, description),
+	pPanel(panel){}
 	
-	cBaseAction( peeWPController &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(peeWPController &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if( ! emitter ){
+		if(!emitter){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( emitter ) ));
-		if( undo ){
-			emitter->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(emitter)));
+		if(undo){
+			emitter->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( peeEmitter *emitter ) = 0;
+	virtual igdeUndo *OnAction(peeEmitter *emitter) = 0;
 };
 
 class cBaseActionController : public cBaseAction{
 public:
-	cBaseActionController( peeWPController &panel, const char *text, const char *description ) :
-	cBaseAction( panel, text, description ){ }
+	cBaseActionController(peeWPController &panel, const char *text, const char *description) :
+	cBaseAction(panel, text, description){}
 	
-	cBaseActionController( peeWPController &panel, igdeIcon *icon, const char *description ) :
-	cBaseAction( panel, icon, description ){ }
+	cBaseActionController(peeWPController &panel, igdeIcon *icon, const char *description) :
+	cBaseAction(panel, icon, description){}
 	
-	cBaseActionController( peeWPController &panel, const char *text, igdeIcon *icon, const char *description ) :
-	cBaseAction( panel, text, icon, description ){ }
+	cBaseActionController(peeWPController &panel, const char *text, igdeIcon *icon, const char *description) :
+	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction( peeEmitter *emitter ){
+	virtual igdeUndo *OnAction(peeEmitter *emitter){
 		peeController * const controller = pPanel.GetController();
-		if( controller ){
-			return OnActionController( emitter, controller );
+		if(controller){
+			return OnActionController(emitter, controller);
 			
 		}else{
 			return NULL;
 		}
 	}
 	
-	virtual igdeUndo *OnActionController( peeEmitter *emitter, peeController *controller ) = 0;
+	virtual igdeUndo *OnActionController(peeEmitter *emitter, peeController *controller) = 0;
 };
 
 
@@ -184,91 +184,91 @@ public:
 class cListControllers : public igdeListBoxListener{
 	peeWPController &pPanel;
 public:
-	cListControllers( peeWPController &panel ) : pPanel( panel ){ }
+	cListControllers(peeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	virtual void OnSelectionChanged(igdeListBox *listBox){
 		peeEmitter * const emitter = pPanel.GetEmitter();
-		if( ! emitter ){
+		if(!emitter){
 			return;
 		}
 		
 		const igdeListItem * const selection = listBox->GetSelectedItem();
 		
-		if( selection ){
-			emitter->SetActiveController( ( peeController* )selection->GetData() );
+		if(selection){
+			emitter->SetActiveController((peeController*)selection->GetData());
 			
 		}else{
-			emitter->SetActiveController( NULL );
+			emitter->SetActiveController(NULL);
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		helper.MenuCommand( menu, pPanel.GetActionControllerAdd() );
-		helper.MenuCommand( menu, pPanel.GetActionControllerRemove() );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, pPanel.GetActionControllerUp() );
-		helper.MenuCommand( menu, pPanel.GetActionControllerDown() );
+		helper.MenuCommand(menu, pPanel.GetActionControllerAdd());
+		helper.MenuCommand(menu, pPanel.GetActionControllerRemove());
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, pPanel.GetActionControllerUp());
+		helper.MenuCommand(menu, pPanel.GetActionControllerDown());
 	}
 };
 
 class cActionControllerAdd : public cBaseAction{
 public:
-	cActionControllerAdd( peeWPController &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add a controller to the end of the list." ){ }
+	cActionControllerAdd(peeWPController &panel) : cBaseAction(panel, "Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"Add a controller to the end of the list."){}
 	
-	virtual igdeUndo *OnAction( peeEmitter *emitter ){
+	virtual igdeUndo *OnAction(peeEmitter *emitter){
 		return new peeUControllerAdd(emitter, peeController::Ref::NewWith());
 	}
 };
 
 class cActionControllerRemove : public cBaseActionController{
 public:
-	cActionControllerRemove( peeWPController &panel ) : cBaseActionController( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove the selected controller." ){ }
+	cActionControllerRemove(peeWPController &panel) : cBaseActionController(panel, "Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Remove the selected controller."){}
 	
-	virtual igdeUndo *OnActionController( peeEmitter*, peeController *controller ){
-		return new peeUControllerRemove( controller );
+	virtual igdeUndo *OnActionController(peeEmitter*, peeController *controller){
+		return new peeUControllerRemove(controller);
 	}
 	
 	virtual void Update(){
-		SetEnabled( pPanel.GetController() != NULL );
+		SetEnabled(pPanel.GetController() != NULL);
 	}
 };
 
 class cActionControllerUp : public cBaseActionController{
 	igdeListBox &pListBox;
 public:
-	cActionControllerUp( peeWPController &panel, igdeListBox &listBox ) : cBaseActionController(
-		panel, "Move Up", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ),
-		"Move controller up in the list." ),
-	pListBox( listBox ){ }
+	cActionControllerUp(peeWPController &panel, igdeListBox &listBox) : cBaseActionController(
+		panel, "Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"Move controller up in the list."),
+	pListBox(listBox){}
 	
-	virtual igdeUndo *OnActionController( peeEmitter*, peeController *controller ){
-		return new peeUControllerMoveUp( controller );
+	virtual igdeUndo *OnActionController(peeEmitter*, peeController *controller){
+		return new peeUControllerMoveUp(controller);
 	}
 	
 	virtual void Update(){
-		SetEnabled( pListBox.GetSelection() > 0 );
+		SetEnabled(pListBox.GetSelection() > 0);
 	}
 };
 
 class cActionControllerDown : public cBaseActionController{
 	igdeListBox &pListBox;
 public:
-	cActionControllerDown( peeWPController &panel, igdeListBox &listBox ) : cBaseActionController(
-		panel, "Move Down", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiDown ),
-		"Move controller down in the list." ),
-	pListBox( listBox ){ }
+	cActionControllerDown(peeWPController &panel, igdeListBox &listBox) : cBaseActionController(
+		panel, "Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"Move controller down in the list."),
+	pListBox(listBox){}
 	
-	virtual igdeUndo *OnActionController( peeEmitter*, peeController *controller ){
-		return new peeUControllerMoveDown( controller );
+	virtual igdeUndo *OnActionController(peeEmitter*, peeController *controller){
+		return new peeUControllerMoveDown(controller);
 	}
 	
 	virtual void Update(){
-		SetEnabled( pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItemCount() - 1 );
+		SetEnabled(pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItemCount() - 1);
 	}
 };
 
@@ -276,77 +276,77 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	cTextName( peeWPController &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextName(peeWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, peeEmitter*, peeController *controller ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeController *controller){
 		const decString &name = textField->GetText();
-		if( name == controller->GetName() ){
+		if(name == controller->GetName()){
 			return NULL;
 		}
-		return new peeUControllerSetName( controller, name );
+		return new peeUControllerSetName(controller, name);
 	}
 };
 
 class cTextMinimumValue : public cBaseTextFieldListener{
 public:
-	cTextMinimumValue( peeWPController &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMinimumValue(peeWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, peeEmitter*, peeController *controller ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeController *controller){
 		const float value = textField->GetFloat();
-		if( fabsf( value - controller->GetLower() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - controller->GetLower()) <= FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new peeUControllerSetLower( controller, value );
+		return new peeUControllerSetLower(controller, value);
 	}
 };
 
 class cTextMaximumValue : public cBaseTextFieldListener{
 public:
-	cTextMaximumValue( peeWPController &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMaximumValue(peeWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, peeEmitter*, peeController *controller ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeController *controller){
 		const float value = textField->GetFloat();
-		if( fabsf( value - controller->GetUpper() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - controller->GetUpper()) <= FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new peeUControllerSetUpper( controller, value );
+		return new peeUControllerSetUpper(controller, value);
 	}
 };
 
 class cSliderValue : public igdeEditSliderTextListener{
 	peeWPController &pPanel;
 public:
-	cSliderValue( peeWPController &panel ) : pPanel( panel ){ }
+	cSliderValue(peeWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText ){
-		OnSliderTextValueChanged( sliderText );
+	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
+		OnSliderTextValueChanged(sliderText);
 	}
 	
-	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText ){
+	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
 		peeController * const controller = pPanel.GetController();
-		if( controller ){
-			controller->SetValue( sliderText->GetValue() );
+		if(controller){
+			controller->SetValue(sliderText->GetValue());
 		}
 	}
 };
 
 class cActionClamp : public cBaseActionController{
 public:
-	cActionClamp( peeWPController &panel ) : cBaseActionController( panel, "Clamp value to range",
-		"Determines if the value of the controller is clamped to the given range." ){ }
+	cActionClamp(peeWPController &panel) : cBaseActionController(panel, "Clamp value to range",
+		"Determines if the value of the controller is clamped to the given range."){ }
 	
-	virtual igdeUndo *OnActionController( peeEmitter*, peeController *controller ){
-		return new peeUControllerToggleClamp( controller );
+	virtual igdeUndo *OnActionController(peeEmitter*, peeController *controller){
+		return new peeUControllerToggleClamp(controller);
 	}
 };
 
 class cActionFrozen : public cBaseActionController{
 public:
-	cActionFrozen( peeWPController &panel ) : cBaseActionController( panel,
-		"Freeze Controller value", "Prevents the controller from changing the current value." ){ }
+	cActionFrozen(peeWPController &panel) : cBaseActionController(panel,
+		"Freeze Controller value", "Prevents the controller from changing the current value."){}
 	
-	virtual igdeUndo *OnActionController( peeEmitter*, peeController *controller ){
-		return new peeUControllerToggleFrozen( controller );
+	virtual igdeUndo *OnActionController(peeEmitter*, peeController *controller){
+		return new peeUControllerToggleFrozen(controller);
 	}
 };
 
@@ -359,57 +359,57 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-peeWPController::peeWPController( peeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
+peeWPController::peeWPController(peeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
 
-pEmitter( NULL )
+pEmitter(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new peeWPControllerListener( *this );
+	pListener = new peeWPControllerListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	// controller list
-	helper.GroupBoxFlow( content, groupBox, "Controllers:" );
+	helper.GroupBoxFlow(content, groupBox, "Controllers:");
 	
-	helper.ListBox( groupBox, 8, "Controllers", pListController, new cListControllers( *this ) );
+	helper.ListBox(groupBox, 8, "Controllers", pListController, new cListControllers(*this));
 	
-	pActionControllerAdd.TakeOver( new cActionControllerAdd( *this ) );
-	pActionControllerRemove.TakeOver( new cActionControllerRemove( *this ) );
-	pActionControllerUp.TakeOver( new cActionControllerUp( *this, pListController ) );
-	pActionControllerDown.TakeOver( new cActionControllerDown( *this, pListController ) );
+	pActionControllerAdd.TakeOver(new cActionControllerAdd(*this));
+	pActionControllerRemove.TakeOver(new cActionControllerRemove(*this));
+	pActionControllerUp.TakeOver(new cActionControllerUp(*this, pListController));
+	pActionControllerDown.TakeOver(new cActionControllerDown(*this, pListController));
 	
 	// controller settings
-	helper.GroupBox( content, groupBox, "Controller Settings:" );
-	helper.EditString( groupBox, "Name:", "Name of the controller", pEditName, new cTextName( *this ) );
+	helper.GroupBox(content, groupBox, "Controller Settings:");
+	helper.EditString(groupBox, "Name:", "Name of the controller", pEditName, new cTextName(*this));
 	
-	helper.FormLine( groupBox, "Range:", "Range of the controller value if limited", frameLine );
-	helper.EditFloat( frameLine, "Minimum value the controller can take",
-		pEditMin, new cTextMinimumValue( *this ) );
-	helper.EditFloat( frameLine, "Maximum value the controller can take",
-		pEditMax, new cTextMaximumValue( *this ) );
+	helper.FormLine(groupBox, "Range:", "Range of the controller value if limited", frameLine);
+	helper.EditFloat(frameLine, "Minimum value the controller can take",
+		pEditMin, new cTextMinimumValue(*this));
+	helper.EditFloat(frameLine, "Maximum value the controller can take",
+		pEditMax, new cTextMaximumValue(*this));
 	
-	helper.EditSliderText( groupBox, "Value:", "Current value of the controller",
-		0.0f, 0.0f, 4, 3, 0.1f, pSldValue, new cSliderValue( *this ) );
+	helper.EditSliderText(groupBox, "Value:", "Current value of the controller",
+		0.0f, 0.0f, 4, 3, 0.1f, pSldValue, new cSliderValue(*this));
 	
-	helper.CheckBox( groupBox, pChkClamp, new cActionClamp( *this ), true );
-	helper.CheckBox( groupBox, pChkFrozen, new cActionFrozen( *this ), true );
+	helper.CheckBox(groupBox, pChkClamp, new cActionClamp(*this), true);
+	helper.CheckBox(groupBox, pChkFrozen, new cActionFrozen(*this), true);
 }
 
 peeWPController::~peeWPController(){
-	if( pEmitter ){
-		pEmitter->RemoveListener( pListener );
+	if(pEmitter){
+		pEmitter->RemoveListener(pListener);
 		pEmitter->FreeReference();
 		pEmitter = NULL;
 	}
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -419,20 +419,20 @@ peeWPController::~peeWPController(){
 // Management
 ///////////////
 
-void peeWPController::SetEmitter( peeEmitter *emitter ){
-	if( emitter == pEmitter ){
+void peeWPController::SetEmitter(peeEmitter *emitter){
+	if(emitter == pEmitter){
 		return;
 	}
 	
-	if( pEmitter ){
-		pEmitter->RemoveListener( pListener );
+	if(pEmitter){
+		pEmitter->RemoveListener(pListener);
 		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
-	if( emitter ){
-		emitter->AddListener( pListener );
+	if(emitter){
+		emitter->AddListener(pListener);
 		emitter->AddReference();
 	}
 	
@@ -448,16 +448,16 @@ peeController *peeWPController::GetController() const{
 void peeWPController::UpdateControllerList(){
 	pListController->RemoveAllItems();
 	
-	if( pEmitter ){
+	if(pEmitter){
 		const peeControllerList &controllers = pEmitter->GetControllers();
 		const int controllerCount = controllers.GetCount();
 		decString text;
 		int i;
 		
-		for( i=0; i<controllerCount; i++ ){
-			peeController * const controller = controllers.GetAt( i );
-			text.Format( "%i: %s", i, controller->GetName().GetString() );
-			pListController->AddItem( text, NULL, controller );
+		for(i=0; i<controllerCount; i++){
+			peeController * const controller = controllers.GetAt(i);
+			text.Format("%i: %s", i, controller->GetName().GetString());
+			pListController->AddItem(text, NULL, controller);
 		}
 	}
 	
@@ -465,7 +465,7 @@ void peeWPController::UpdateControllerList(){
 }
 
 void peeWPController::SelectActiveController(){
-	pListController->SetSelectionWithData( GetController() );
+	pListController->SetSelectionWithData(GetController());
 	pListController->MakeSelectionVisible();
 	UpdateController();
 }
@@ -473,39 +473,39 @@ void peeWPController::SelectActiveController(){
 void peeWPController::UpdateController(){
 	const peeController * const controller = GetController();
 	
-	if( controller ){
-		pEditName->SetText( controller->GetName() );
-		pEditMin->SetFloat( controller->GetLower() );
-		pEditMax->SetFloat( controller->GetUpper() );
+	if(controller){
+		pEditName->SetText(controller->GetName());
+		pEditMin->SetFloat(controller->GetLower());
+		pEditMax->SetFloat(controller->GetUpper());
 		
-		pSldValue->SetRange( controller->GetLower(), controller->GetUpper() );
-		pSldValue->SetTickSpacing( ( controller->GetUpper() - controller->GetLower() ) * 0.1f );
-		pSldValue->SetValue( controller->GetValue() );
+		pSldValue->SetRange(controller->GetLower(), controller->GetUpper());
+		pSldValue->SetTickSpacing((controller->GetUpper() - controller->GetLower()) * 0.1f);
+		pSldValue->SetValue(controller->GetValue());
 		
-		pChkClamp->SetChecked( controller->GetClamp() );
-		pChkFrozen->SetChecked( controller->GetFrozen() );
+		pChkClamp->SetChecked(controller->GetClamp());
+		pChkFrozen->SetChecked(controller->GetFrozen());
 		
 	}else{
 		pEditName->ClearText();
 		pEditMin->ClearText();
 		pEditMax->ClearText();
-		pSldValue->SetRange( 0, 0 );
-		pChkClamp->SetChecked( false );
-		pChkFrozen->SetChecked( false );
+		pSldValue->SetRange(0, 0);
+		pChkClamp->SetChecked(false);
+		pChkFrozen->SetChecked(false);
 	}
 	
 	const bool enable = controller != NULL;
-	pEditName->SetEnabled( enable );
-	pEditMin->SetEnabled( enable );
-	pEditMax->SetEnabled( enable );
-	pSldValue->SetEnabled( enable );
-	pChkClamp->SetEnabled( enable );
-	pChkFrozen->SetEnabled( enable );
+	pEditName->SetEnabled(enable);
+	pEditMin->SetEnabled(enable);
+	pEditMax->SetEnabled(enable);
+	pSldValue->SetEnabled(enable);
+	pChkClamp->SetEnabled(enable);
+	pChkFrozen->SetEnabled(enable);
 }
 
 void peeWPController::UpdateControllerValue(){
 	peeController * const controller = GetController();
-	if( controller ){
-		pSldValue->SetValue( controller->GetValue() );
+	if(controller){
+		pSldValue->SetValue(controller->GetValue());
 	}
 }

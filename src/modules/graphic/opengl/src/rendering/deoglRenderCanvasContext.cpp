@@ -43,160 +43,160 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRenderCanvasContext &copy ) :
-pFBO( copy.pFBO ),
-pViewportOffset( copy.pViewportOffset ),
-pViewportSize( copy.pViewportSize ),
-pRenderPlanMask( copy.pRenderPlanMask ),
+deoglRenderCanvasContext::deoglRenderCanvasContext(const deoglRenderCanvasContext &copy) :
+pFBO(copy.pFBO),
+pViewportOffset(copy.pViewportOffset),
+pViewportSize(copy.pViewportSize),
+pRenderPlanMask(copy.pRenderPlanMask),
 
-pClipFactor( copy.pClipFactor ),
-pClipMin( copy.pClipMin ),
-pClipMax( copy.pClipMax ),
+pClipFactor(copy.pClipFactor),
+pClipMin(copy.pClipMin),
+pClipMax(copy.pClipMax),
 
-pTransform( copy.pTransform ),
-pTCClampMin( 0.0f, 0.0f ),
-pTCClampMax( 1.0f, 1.0f ),
-pColorTransform( copy.pColorTransform ),
-pTransparency( copy.pTransparency ),
-pMask( copy.pMask ),
-pTCTransformMask( copy.pTCTransformMask ){
+pTransform(copy.pTransform),
+pTCClampMin(0.0f, 0.0f),
+pTCClampMax(1.0f, 1.0f),
+pColorTransform(copy.pColorTransform),
+pTransparency(copy.pTransparency),
+pMask(copy.pMask),
+pTCTransformMask(copy.pTCTransformMask){
 }
 
-deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRCanvas &canvas,
+deoglRenderCanvasContext::deoglRenderCanvasContext(const deoglRCanvas &canvas,
 deoglFramebuffer *fbo, const decPoint &viewportOffset, const decPoint &viewportSize,
-bool upsideDown, const deoglRenderPlanMasked *renderPlanMask ) :
-pFBO( fbo ),
-pViewportOffset( viewportOffset ),
-pViewportSize( viewportSize ),
-pRenderPlanMask( renderPlanMask ),
+bool upsideDown, const deoglRenderPlanMasked *renderPlanMask) :
+pFBO(fbo),
+pViewportOffset(viewportOffset),
+pViewportSize(viewportSize),
+pRenderPlanMask(renderPlanMask),
 
-pClipMin( -1.0f, -1.0f ),
-pClipMax( 1.0f, 1.0f ),
+pClipMin(-1.0f, -1.0f),
+pClipMax(1.0f, 1.0f),
 
 //pTransform( canvas.GetTransform() ), // initial render to fbo context needs identity transform
-pTCClampMin( 0.0f, 0.0f ),
-pTCClampMax( 1.0f, 1.0f ),
+pTCClampMin(0.0f, 0.0f),
+pTCClampMax(1.0f, 1.0f),
 // pColorTransform( canvas.GetColorTransform() ), // no, this applies color transform twice
-pTransparency( canvas.GetTransparency() ),
-pMask( NULL )
+pTransparency(canvas.GetTransparency()),
+pMask(NULL)
 {
 	// set clip factor to obtain correct clipping coordinates for the shaders
-	pClipFactor.x = ( float )viewportSize.x * 0.5f;
-	pClipFactor.y = ( float )viewportSize.y * 0.5f;
+	pClipFactor.x = (float)viewportSize.x * 0.5f;
+	pClipFactor.y = (float)viewportSize.y * 0.5f;
 	
 	// account for upside down and shifting to pixel center to not hit pixel edges
-	const float biasScaleU = 2.0f / ( float )viewportSize.x;
-	const float biasScaleV = 2.0f / ( float )viewportSize.y;
+	const float biasScaleU = 2.0f / (float)viewportSize.x;
+	const float biasScaleV = 2.0f / (float)viewportSize.y;
 	const float biasOffsetU = -1.0f;
 	const float biasOffsetV = -1.0f;
 	
-	if( upsideDown ){
-		pTransform.SetST( biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV );
+	if(upsideDown){
+		pTransform.SetST(biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV);
 		
 	}else{
-		pTransform.SetST( biasScaleU, biasScaleV, biasOffsetU, biasOffsetV );
+		pTransform.SetST(biasScaleU, biasScaleV, biasOffsetU, biasOffsetV);
 	}
 	
 	// mask
-	if( canvas.GetMaskRenderTarget() ){
+	if(canvas.GetMaskRenderTarget()){
 		pMask = canvas.GetMaskRenderTarget()->GetTexture();
 		// UpdateTransformMask();
 	}
 }
 
-deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext,
-const deoglRCanvas &childCanvas ) :
-pFBO( parentContext.pFBO ),
-pViewportOffset( parentContext.pViewportOffset ),
-pViewportSize( parentContext.pViewportSize ),
-pRenderPlanMask( parentContext.pRenderPlanMask ),
+deoglRenderCanvasContext::deoglRenderCanvasContext(const deoglRenderCanvasContext &parentContext,
+const deoglRCanvas &childCanvas) :
+pFBO(parentContext.pFBO),
+pViewportOffset(parentContext.pViewportOffset),
+pViewportSize(parentContext.pViewportSize),
+pRenderPlanMask(parentContext.pRenderPlanMask),
 
-pClipFactor( parentContext.pClipFactor ),
+pClipFactor(parentContext.pClipFactor),
 
-pTransform( childCanvas.GetTransform() * parentContext.pTransform ),
-pTCClampMin( 0.0f, 0.0f ),
-pTCClampMax( 1.0f, 1.0f ),
-pColorTransform( childCanvas.GetColorTransform() * parentContext.pColorTransform ),
-pTransparency( childCanvas.GetTransparency() * parentContext.pTransparency ),
-pMask( parentContext.pMask ),
-pTCTransformMask( parentContext.pTCTransformMask )
+pTransform(childCanvas.GetTransform() * parentContext.pTransform),
+pTCClampMin(0.0f, 0.0f),
+pTCClampMax(1.0f, 1.0f),
+pColorTransform(childCanvas.GetColorTransform() * parentContext.pColorTransform),
+pTransparency(childCanvas.GetTransparency() * parentContext.pTransparency),
+pMask(parentContext.pMask),
+pTCTransformMask(parentContext.pTCTransformMask)
 {
-	pCalculateClipping( childCanvas.GetSize() );
-	pClipMin.SetLargest( parentContext.pClipMin );
-	pClipMax.SetSmallest( parentContext.pClipMax );
+	pCalculateClipping(childCanvas.GetSize());
+	pClipMin.SetLargest(parentContext.pClipMin);
+	pClipMax.SetSmallest(parentContext.pClipMax);
 	
 	// mask. child mask replaces parent mask. this is not correct but right now the only solution
-	if( childCanvas.GetMaskRenderTarget() ){
+	if(childCanvas.GetMaskRenderTarget()){
 		pMask = childCanvas.GetMaskRenderTarget()->GetTexture();
 		// UpdateTransformMask();
 	}
 }
 
-deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglSkinStateConstructedNode &node,
+deoglRenderCanvasContext::deoglRenderCanvasContext(const deoglSkinStateConstructedNode &node,
 deoglFramebuffer *fbo, const decPoint &viewportOffset, const decPoint &viewportSize,
-bool upsideDown, const deoglRenderPlanMasked *renderPlanMask ) :
-pFBO( fbo ),
-pViewportOffset( viewportOffset ),
-pViewportSize( viewportSize ),
-pRenderPlanMask( renderPlanMask ),
+bool upsideDown, const deoglRenderPlanMasked *renderPlanMask) :
+pFBO(fbo),
+pViewportOffset(viewportOffset),
+pViewportSize(viewportSize),
+pRenderPlanMask(renderPlanMask),
 
-pClipMin( -1.0f, -1.0f ),
-pClipMax( 1.0f, 1.0f ),
+pClipMin(-1.0f, -1.0f),
+pClipMax(1.0f, 1.0f),
 
 //pTransform( canvas.GetTransform() ), // initial render to fbo context needs identity transform
-pTCClampMin( 0.0f, 0.0f ),
-pTCClampMax( 1.0f, 1.0f ),
+pTCClampMin(0.0f, 0.0f),
+pTCClampMax(1.0f, 1.0f),
 // pColorTransform( node.GetColorTransform() ), // no, this applies color transform twice
-pTransparency( node.GetTransparency() ),
-pMask( nullptr )
+pTransparency(node.GetTransparency()),
+pMask(nullptr)
 {
 	// set clip factor to obtain correct clipping coordinates for the shaders
-	pClipFactor.x = ( float )viewportSize.x * 0.5f;
-	pClipFactor.y = ( float )viewportSize.y * 0.5f;
+	pClipFactor.x = (float)viewportSize.x * 0.5f;
+	pClipFactor.y = (float)viewportSize.y * 0.5f;
 	
 	// account for upside down and shifting to pixel center to not hit pixel edges
-	const float biasScaleU = 2.0f / ( float )viewportSize.x;
-	const float biasScaleV = 2.0f / ( float )viewportSize.y;
+	const float biasScaleU = 2.0f / (float)viewportSize.x;
+	const float biasScaleV = 2.0f / (float)viewportSize.y;
 	const float biasOffsetU = -1.0f;
 	const float biasOffsetV = -1.0f;
 	
-	if( upsideDown ){
-		pTransform = decTexMatrix2::CreateST( biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV );
+	if(upsideDown){
+		pTransform = decTexMatrix2::CreateST(biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV);
 		
 	}else{
-		pTransform = decTexMatrix2::CreateST( biasScaleU, biasScaleV, biasOffsetU, biasOffsetV );
+		pTransform = decTexMatrix2::CreateST(biasScaleU, biasScaleV, biasOffsetU, biasOffsetV);
 	}
 	
 	// mask
-	if( node.GetMaskRenderTarget() ){
+	if(node.GetMaskRenderTarget()){
 		pMask = node.GetMaskRenderTarget()->GetTexture();
 		// UpdateTransformMask();
 	}
 }
 
-deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext,
-const deoglSkinStateConstructedNode &childNode ) :
-pFBO( parentContext.pFBO ),
-pViewportOffset( parentContext.pViewportOffset ),
-pViewportSize( parentContext.pViewportSize ),
-pRenderPlanMask( parentContext.pRenderPlanMask ),
+deoglRenderCanvasContext::deoglRenderCanvasContext(const deoglRenderCanvasContext &parentContext,
+const deoglSkinStateConstructedNode &childNode) :
+pFBO(parentContext.pFBO),
+pViewportOffset(parentContext.pViewportOffset),
+pViewportSize(parentContext.pViewportSize),
+pRenderPlanMask(parentContext.pRenderPlanMask),
 
-pClipFactor( parentContext.pClipFactor ),
+pClipFactor(parentContext.pClipFactor),
 
-pTransform( childNode.GetTransform() * parentContext.pTransform ),
-pTCClampMin( 0.0f, 0.0f ),
-pTCClampMax( 1.0f, 1.0f ),
-pColorTransform( childNode.GetColorTransform() * parentContext.pColorTransform ),
-pTransparency( childNode.GetTransparency() * parentContext.pTransparency ),
-pMask( parentContext.pMask ),
-pTCTransformMask( parentContext.pTCTransformMask )
+pTransform(childNode.GetTransform() * parentContext.pTransform),
+pTCClampMin(0.0f, 0.0f),
+pTCClampMax(1.0f, 1.0f),
+pColorTransform(childNode.GetColorTransform() * parentContext.pColorTransform),
+pTransparency(childNode.GetTransparency() * parentContext.pTransparency),
+pMask(parentContext.pMask),
+pTCTransformMask(parentContext.pTCTransformMask)
 {
-	pCalculateClipping( decPoint( childNode.GetSize().x, childNode.GetSize().y ) );
-	pClipMin.SetLargest( parentContext.pClipMin );
-	pClipMax.SetSmallest( parentContext.pClipMax );
+	pCalculateClipping(decPoint(childNode.GetSize().x, childNode.GetSize().y));
+	pClipMin.SetLargest(parentContext.pClipMin);
+	pClipMax.SetSmallest(parentContext.pClipMax);
 	
 	// mask. child mask replaces parent mask. this is not correct but right now the only solution
-	if( childNode.GetMaskRenderTarget() ){
+	if(childNode.GetMaskRenderTarget()){
 		pMask = childNode.GetMaskRenderTarget()->GetTexture();
 		// UpdateTransformMask();
 	}
@@ -210,11 +210,11 @@ deoglRenderCanvasContext::~deoglRenderCanvasContext(){
 // Management
 ///////////////
 
-void deoglRenderCanvasContext::SetClipMin( const decVector2 &clipMin ){
+void deoglRenderCanvasContext::SetClipMin(const decVector2 &clipMin){
 	pClipMin = clipMin;
 }
 
-void deoglRenderCanvasContext::SetClipMax( const decVector2 &clipMax ){
+void deoglRenderCanvasContext::SetClipMax(const decVector2 &clipMax){
 	pClipMax = clipMax;
 }
 
@@ -224,7 +224,7 @@ bool deoglRenderCanvasContext::IsZeroClip() const{
 
 
 
-void deoglRenderCanvasContext::SetTransform( const decTexMatrix2 &transform ){
+void deoglRenderCanvasContext::SetTransform(const decTexMatrix2 &transform){
 	pTransform = transform;
 }
 
@@ -242,40 +242,40 @@ void deoglRenderCanvasContext::SetTransformScaled(const decPoint &size, bool ups
 	}
 }
 
-void deoglRenderCanvasContext::SetTCClampMinimum( const decVector2 &clamp ){
+void deoglRenderCanvasContext::SetTCClampMinimum(const decVector2 &clamp){
 	pTCClampMin = clamp;
 }
 
-void deoglRenderCanvasContext::SetTCClampMaximum( const decVector2 &clamp ){
+void deoglRenderCanvasContext::SetTCClampMaximum(const decVector2 &clamp){
 	pTCClampMax = clamp;
 }
 
-void deoglRenderCanvasContext::SetColorTransform( const decColorMatrix &transform ){
+void deoglRenderCanvasContext::SetColorTransform(const decColorMatrix &transform){
 	pColorTransform = transform;
 }
 
-void deoglRenderCanvasContext::SetTransparency( float transparency ){
+void deoglRenderCanvasContext::SetTransparency(float transparency){
 	pTransparency = transparency;
 }
 
-void deoglRenderCanvasContext::SetMask( deoglTexture *mask ){
+void deoglRenderCanvasContext::SetMask(deoglTexture *mask){
 	pMask = mask;
 }
 
-void deoglRenderCanvasContext::SetTCTransformMask( const decTexMatrix2 &transform ){
+void deoglRenderCanvasContext::SetTCTransformMask(const decTexMatrix2 &transform){
 	pTCTransformMask = transform;
 }
 
-void deoglRenderCanvasContext::SetTCTransformMask( const deoglRenderTarget &renderTarget ){
+void deoglRenderCanvasContext::SetTCTransformMask(const deoglRenderTarget &renderTarget){
 	const deoglTexture &texture = *renderTarget.GetTexture();
 	pTCTransformMask.SetScale(
-		(float)renderTarget.GetSize().x / (float)decMath::max( texture.GetWidth(), 1 ),
-		(float)renderTarget.GetSize().y / (float)decMath::max( texture.GetHeight(), 1 ) );
+		(float)renderTarget.GetSize().x / (float)decMath::max(texture.GetWidth(), 1),
+		(float)renderTarget.GetSize().y / (float)decMath::max(texture.GetHeight(), 1));
 }
 
 void deoglRenderCanvasContext::UpdateTransformMask(){
-	pTCTransformMask = ( decTexMatrix2::CreateST(
-		( float )pViewportSize.x, ( float )pViewportSize.y, 0.5f, 0.5f )
+	pTCTransformMask = (decTexMatrix2::CreateST(
+		(float)pViewportSize.x, (float)pViewportSize.y, 0.5f, 0.5f)
 			* pTransform ).Invert().ToTexMatrix2();
 }
 
@@ -284,21 +284,21 @@ void deoglRenderCanvasContext::UpdateTransformMask(){
 // Private Functions
 //////////////////////
 
-void deoglRenderCanvasContext::pCalculateClipping( const decVector2 &canvasSize ){
+void deoglRenderCanvasContext::pCalculateClipping(const decVector2 &canvasSize){
 	// transform each corner to determine the extends
 	decVector2 corner = pTransform * decVector2();
 	pClipMin = corner;
 	pClipMax = corner;
 	
-	corner = pTransform * decVector2( canvasSize.x, 0.0f );
-	pClipMin.SetSmallest( corner );
-	pClipMax.SetLargest( corner );
+	corner = pTransform * decVector2(canvasSize.x, 0.0f);
+	pClipMin.SetSmallest(corner);
+	pClipMax.SetLargest(corner);
 	
 	corner = pTransform * canvasSize;
-	pClipMin.SetSmallest( corner );
-	pClipMax.SetLargest( corner );
+	pClipMin.SetSmallest(corner);
+	pClipMax.SetLargest(corner);
 	
-	corner = pTransform * decVector2( 0.0f, canvasSize.y );
-	pClipMin.SetSmallest( corner );
-	pClipMax.SetLargest( corner );
+	corner = pTransform * decVector2(0.0f, canvasSize.y);
+	pClipMin.SetSmallest(corner);
+	pClipMax.SetLargest(corner);
 }

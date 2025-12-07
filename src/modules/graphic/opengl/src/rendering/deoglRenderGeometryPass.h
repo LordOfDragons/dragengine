@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderGeometryPass( deoglRenderThread &renderThread );
+	deoglRenderGeometryPass(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderGeometryPass();
@@ -67,7 +67,7 @@ public:
 	 * - Light.RenderAO (if not No-Reflections)
 	 * Invalidates no attachments.
 	 */
-	void RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderSolidGeometryPass(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray);
 	
 	/**
 	 * Render luminance only pass.
@@ -82,10 +82,10 @@ public:
 	 * Using FBO Def-Ren Material buffers set by RenderSolidGeometryPass. No clearing.
 	 * Invalidating no buffers.
 	 */
-	void RenderDecals( deoglRenderPlan &plan, bool xray );
+	void RenderDecals(deoglRenderPlan &plan, bool xray);
 	
 	/** Render volumetric pass. */
-	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );
+	void RenderVolumetricPass(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween);
 	/*@}*/
 };
 

@@ -60,9 +60,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-declActionDelgaHelper::declActionDelgaHelper( declLauncher &launcher, const decString &filename ) :
-pLauncher( launcher ),
-pFilename( filename ){
+declActionDelgaHelper::declActionDelgaHelper(declLauncher &launcher, const decString &filename) :
+pLauncher(launcher),
+pFilename(filename){
 }
 
 declActionDelgaHelper::~declActionDelgaHelper(){
@@ -76,17 +76,17 @@ declActionDelgaHelper::~declActionDelgaHelper(){
 void declActionDelgaHelper::Load(){
 	Unload();
 	
-	const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+	const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
 		pLauncher.GetEngineInstanceFactory().CreateEngineInstance(
-			pLauncher, pLauncher.GetEngine().GetLogFile() ) ) );
+			pLauncher, pLauncher.GetEngine().GetLogFile())));
 	instance->StartEngine();
 	instance->LoadModules();
 	
-	pLauncher.GetEngine().PutEngineIntoVFS( instance );
+	pLauncher.GetEngine().PutEngineIntoVFS(instance);
 	pLauncher.GetGameManager().CreateDefaultProfile();
 	
-	pLauncher.GetGameManager().LoadGameFromDisk( instance, pFilename, pGames );
-	pLauncher.GetPatchManager().LoadPatchFromDisk( instance, pFilename, pPatches );
+	pLauncher.GetGameManager().LoadGameFromDisk(instance, pFilename, pGames);
+	pLauncher.GetPatchManager().LoadPatchFromDisk(instance, pFilename, pPatches);
 }
 
 void declActionDelgaHelper::Unload(){
@@ -99,70 +99,70 @@ bool declActionDelgaHelper::HasContent() const{
 }
 
 void declActionDelgaHelper::Install(){
-	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
-		new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
+		new deVFSDiskDirectory(decPath::CreatePathNative(pLauncher.GetPathGames()))));
 	
-	const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New( new decDiskFileReader( pFilename ) ) );
+	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(new decDiskFileReader(pFilename)));
 	
-	decPath target( decPath::CreatePathUnix( "/" ) );
-	target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
-	const decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New( container->OpenFileForWriting( target ) ) );
+	decPath target(decPath::CreatePathUnix("/"));
+	target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
+	const decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(container->OpenFileForWriting(target)));
 	
-	printf( "Installing" );
+	printf("Installing");
 	
 	const int totalSize = reader->GetLength();
-	const double percentageFactor = 100.0 / ( double )totalSize;
-	char * const buffer = new char[ 8192 ];
+	const double percentageFactor = 100.0 / (double)totalSize;
+	char * const buffer = new char[8192];
 	int progressPercentage = 0;
 	int bytesCopied = 0;
 	
 	try{
-		while( bytesCopied < totalSize ){
-			const int percentage = ( int )( percentageFactor * bytesCopied );
-			if( percentage != progressPercentage ){
-				while( percentage > progressPercentage ){
+		while(bytesCopied < totalSize){
+			const int percentage = (int)(percentageFactor * bytesCopied);
+			if(percentage != progressPercentage){
+				while(percentage > progressPercentage){
 					progressPercentage++;
-					printf( "." );
-					if( progressPercentage % 10 == 0 ){
-						printf( "%d%%", progressPercentage );
+					printf(".");
+					if(progressPercentage % 10 == 0){
+						printf("%d%%", progressPercentage);
 					}
 				}
-				fflush( stdout );
+				fflush(stdout);
 			}
 			
-			const int copyBytesCount = decMath::min( 8192, totalSize - bytesCopied );
-			reader->Read( buffer, copyBytesCount );
-			writer->Write( buffer, copyBytesCount );
+			const int copyBytesCount = decMath::min(8192, totalSize - bytesCopied);
+			reader->Read(buffer, copyBytesCount);
+			writer->Write(buffer, copyBytesCount);
 			
 			bytesCopied += copyBytesCount;
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		delete [] buffer;
-		pLauncher.GetLogger()->LogException( LOGSOURCE, e );
+		pLauncher.GetLogger()->LogException(LOGSOURCE, e);
 		try{
-			if( container->ExistsFile( target ) ){
-				container->DeleteFile( target );
+			if(container->ExistsFile(target)){
+				container->DeleteFile(target);
 			}
-		}catch( const deException &e2 ){
+		}catch(const deException &e2){
 			e2.PrintError();
 		}
 		throw;
 	}
 	
-	printf( "100%%\nFinshed successfully\n" );
+	printf("100%%\nFinshed successfully\n");
 }
 
 void declActionDelgaHelper::Uninstall(){
-	printf( "Uninstalling...\n" );
+	printf("Uninstalling...\n");
 	
-	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
-		new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
-			decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
+		new deVFSDiskDirectory(decPath::CreatePathUnix("/"),
+			decPath::CreatePathNative(pLauncher.GetPathGames()))));
 	
-	decPath target( decPath::CreatePathUnix( "/" ) );
-	target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
-	container->DeleteFile( target );
+	decPath target(decPath::CreatePathUnix("/"));
+	target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
+	container->DeleteFile(target);
 	
-	printf( "Finshed successfully\n" );
+	printf("Finshed successfully\n");
 }

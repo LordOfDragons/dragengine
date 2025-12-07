@@ -42,39 +42,39 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAnimatorAddBone::aeUAnimatorAddBone( aeAnimator *animator, const char *pattern ) :
-pAnimator( animator )
+aeUAnimatorAddBone::aeUAnimatorAddBone(aeAnimator *animator, const char *pattern) :
+pAnimator(animator)
 {
-	if( ! pattern ){
-		DETHROW( deeInvalidParam );
+	if(!pattern){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const decStringSet &ruleBoneList = animator->GetListBones();
 	const deRig * const engRig = animator->GetEngineRig();
 	
-	if( engRig ){
+	if(engRig){
 		const int boneCount = engRig->GetBoneCount();
 		int i;
 		
-		for( i=0; i<boneCount; i++ ){
-			const decString bone( engRig->GetBoneAt( i ).GetName() );
+		for(i=0; i<boneCount; i++){
+			const decString bone(engRig->GetBoneAt(i).GetName());
 			
-			if( bone.MatchesPattern( pattern ) && ! ruleBoneList.Has( bone ) ){
-				pBones.Add( bone );
+			if(bone.MatchesPattern(pattern) && !ruleBoneList.Has(bone)){
+				pBones.Add(bone);
 			}
 		}
 		
 	}else{
-		if( ! ruleBoneList.Has( pattern ) ){
-			pBones.Add( pattern );
+		if(!ruleBoneList.Has(pattern)){
+			pBones.Add(pattern);
 		}
 	}
 	
-	if( pBones.GetCount() == 1 ){
-		SetShortInfo( "Animator add bone" );
+	if(pBones.GetCount() == 1){
+		SetShortInfo("Animator add bone");
 		
 	}else{
-		SetShortInfo( "Animator add bones" );
+		SetShortInfo("Animator add bones");
 	}
 }
 
@@ -90,8 +90,8 @@ void aeUAnimatorAddBone::Undo(){
 	const int count = pBones.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pAnimator->RemoveBone( pBones.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pAnimator->RemoveBone(pBones.GetAt(i));
 	}
 }
 
@@ -99,7 +99,7 @@ void aeUAnimatorAddBone::Redo(){
 	const int count = pBones.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pAnimator->AddBone( pBones.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pAnimator->AddBone(pBones.GetAt(i));
 	}
 }

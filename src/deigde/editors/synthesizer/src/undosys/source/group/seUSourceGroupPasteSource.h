@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceGroupPasteSource( seSourceGroup *group, const seSourceList &sourceList, int index );
+	seUSourceGroupPasteSource(seSourceGroup *group, const seSourceList &sourceList, int index);
 	
 protected:
 	/** \brief Clean up undo action. */

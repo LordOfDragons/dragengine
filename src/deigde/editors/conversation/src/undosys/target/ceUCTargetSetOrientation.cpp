@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetOrientation::ceUCTargetSetOrientation( ceTarget *target, const decVector &newOrientation ){
-	if( ! target ) DETHROW( deeInvalidParam );
+ceUCTargetSetOrientation::ceUCTargetSetOrientation(ceTarget *target, const decVector &newOrientation){
+	if(!target) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;
 	
-	SetShortInfo( "Target Set Orientation" );
+	SetShortInfo("Target Set Orientation");
 	
 	pOldOrientation = target->GetOrientation();
 	pNewOrientation = newOrientation;
@@ -54,7 +54,7 @@ ceUCTargetSetOrientation::ceUCTargetSetOrientation( ceTarget *target, const decV
 }
 
 ceUCTargetSetOrientation::~ceUCTargetSetOrientation(){
-	if( pTarget ){
+	if(pTarget){
 		pTarget->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ ceUCTargetSetOrientation::~ceUCTargetSetOrientation(){
 ///////////////
 
 void ceUCTargetSetOrientation::Undo(){
-	pTarget->SetOrientation( pOldOrientation );
+	pTarget->SetOrientation(pOldOrientation);
 }
 
 void ceUCTargetSetOrientation::Redo(){
-	pTarget->SetOrientation( pNewOrientation );
+	pTarget->SetOrientation(pNewOrientation);
 }

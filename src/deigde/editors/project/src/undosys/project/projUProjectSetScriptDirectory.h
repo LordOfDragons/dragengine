@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProjectSetScriptDirectory( projProject *project, const char *newValue );
+	projUProjectSetScriptDirectory(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProjectSetScriptDirectory();

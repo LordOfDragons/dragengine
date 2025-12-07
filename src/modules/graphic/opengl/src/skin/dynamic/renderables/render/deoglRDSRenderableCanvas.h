@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin canvas renderable. */
-	deoglRDSRenderableCanvas( deoglRDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable );
+	deoglRDSRenderableCanvas(deoglRDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable);
 	
 	/** Clean up render dynamic skin canvas  renderable. */
 	virtual ~deoglRDSRenderableCanvas();
@@ -60,19 +60,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set canvas. */
-	void SetCanvas( deoglRCanvasView *canvas );
+	void SetCanvas(deoglRCanvasView *canvas);
 	
 	/** Set component count. */
-	void SetComponentCount( int componentCount );
+	void SetComponentCount(int componentCount);
 	
 	/** Set bit count. */
-	void SetBitCount( int bitCount );
+	void SetBitCount(int bitCount);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/** Render. */
-	virtual void Render( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void Render(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.

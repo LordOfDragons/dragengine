@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassSkyLayer( deScriptingDragonScript &ds );
+	deClassSkyLayer(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassSkyLayer();
@@ -61,10 +61,10 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push layer. */
-	void PushLayer( dsRunTime *rt, deSky *sky, int index );
+	void PushLayer(dsRunTime *rt, deSky *sky, int index);
 	
 	inline dsClass *GetClassSkyLayerTargetType() const{ return pClsSkyLayerTargetType; }
 	/*@}*/
@@ -92,51 +92,51 @@ private:
 		dsClass *clsSkyLayerTargetType;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetSky );
-	DEF_NATFUNC( nfGetLayerIndex );
+	DEF_NATFUNC(nfGetSky);
+	DEF_NATFUNC(nfGetLayerIndex);
 	
-	DEF_NATFUNC( nfGetOffset );
-	DEF_NATFUNC( nfSetOffset );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetColor );
-	DEF_NATFUNC( nfSetColor );
-	DEF_NATFUNC( nfGetIntensity );
-	DEF_NATFUNC( nfSetIntensity );
-	DEF_NATFUNC( nfGetTransparency );
-	DEF_NATFUNC( nfSetTransparency );
-	DEF_NATFUNC( nfGetSkin );
-	DEF_NATFUNC( nfSetSkin );
+	DEF_NATFUNC(nfGetOffset);
+	DEF_NATFUNC(nfSetOffset);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetColor);
+	DEF_NATFUNC(nfSetColor);
+	DEF_NATFUNC(nfGetIntensity);
+	DEF_NATFUNC(nfSetIntensity);
+	DEF_NATFUNC(nfGetTransparency);
+	DEF_NATFUNC(nfSetTransparency);
+	DEF_NATFUNC(nfGetSkin);
+	DEF_NATFUNC(nfSetSkin);
 	
-	DEF_NATFUNC( nfGetLightOrientation );
-	DEF_NATFUNC( nfSetLightOrientation );
-	DEF_NATFUNC( nfGetLightColor );
-	DEF_NATFUNC( nfSetLightColor );
-	DEF_NATFUNC( nfGetLightIntensity );
-	DEF_NATFUNC( nfSetLightIntensity );
-	DEF_NATFUNC( nfGetAmbientIntensity );
-	DEF_NATFUNC( nfSetAmbientIntensity );
+	DEF_NATFUNC(nfGetLightOrientation);
+	DEF_NATFUNC(nfSetLightOrientation);
+	DEF_NATFUNC(nfGetLightColor);
+	DEF_NATFUNC(nfSetLightColor);
+	DEF_NATFUNC(nfGetLightIntensity);
+	DEF_NATFUNC(nfSetLightIntensity);
+	DEF_NATFUNC(nfGetAmbientIntensity);
+	DEF_NATFUNC(nfSetAmbientIntensity);
 	
-	DEF_NATFUNC( nfGetBodyCount );
-	DEF_NATFUNC( nfSetBodyCount );
-	DEF_NATFUNC( nfGetBodyAt );
+	DEF_NATFUNC(nfGetBodyCount);
+	DEF_NATFUNC(nfSetBodyCount);
+	DEF_NATFUNC(nfGetBodyAt);
 	
-	DEF_NATFUNC( nfGetMultiplyBySkyLight );
-	DEF_NATFUNC( nfSetMultiplyBySkyLight );
-	DEF_NATFUNC( nfGetMultiplyBySkyColor );
-	DEF_NATFUNC( nfSetMultiplyBySkyColor );
+	DEF_NATFUNC(nfGetMultiplyBySkyLight);
+	DEF_NATFUNC(nfSetMultiplyBySkyLight);
+	DEF_NATFUNC(nfGetMultiplyBySkyColor);
+	DEF_NATFUNC(nfSetMultiplyBySkyColor);
 	
-	DEF_NATFUNC( nfGetTarget );
+	DEF_NATFUNC(nfGetTarget);
 	
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

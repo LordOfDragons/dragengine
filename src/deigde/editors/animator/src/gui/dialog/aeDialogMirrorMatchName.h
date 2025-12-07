@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	aeDialogMirrorMatchName( igdeEnvironment &environment, const char *windowTitle );
+	aeDialogMirrorMatchName(igdeEnvironment &environment, const char *windowTitle);
 	
 protected:
 	/** Clean up dialog. */
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set from match name. */
-	void Set( const aeRuleMirror::cMatchName &matchName );
+	void Set(const aeRuleMirror::cMatchName &matchName);
 	
 	/** Create match name. */
 	aeRuleMirror::cMatchName::Ref CreateMatchName() const;

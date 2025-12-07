@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data. */
-	meUndoDataObjTexProperty( meObjectTexture *texture );
+	meUndoDataObjTexProperty(meObjectTexture *texture);
 	
 protected:
 	/** \brief Clean up undo data. */
@@ -71,13 +71,13 @@ public:
 	inline const decString &GetOldValue() const{ return pOldValue; }
 	
 	/** \brief Set old property value. */
-	void SetOldValue( const char *value );
+	void SetOldValue(const char *value);
 	
 	/** \brief Property exists before redo operation. */
 	inline bool GetPropertyExists() const{ return pPropertyExists; }
 	
 	/** \brief Set if property exists before redo operation. */
-	void SetPropertyExists( bool exists );
+	void SetPropertyExists(bool exists);
 	
 	/** \brief Old properties. */
 	inline decStringDictionary &GetOldProperties(){ return pOldProperties; }

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMathSetValueA::meUHTVRuleMathSetValueA( meHTVegetationLayer *vlayer, meHTVRuleMath *rule, float nvalue ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleMathSetValueA::meUHTVRuleMathSetValueA(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, float nvalue){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;
 	
-	SetShortInfo( "Vegetation Layer Rule Math Set Value A" );
-	SetMemoryConsumption( sizeof( meUHTVRuleMathSetValueA ) );
+	SetShortInfo("Vegetation Layer Rule Math Set Value A");
+	SetMemoryConsumption(sizeof(meUHTVRuleMathSetValueA));
 	
 	pOldValueA = rule->GetValueA();
 	pNewValueA = nvalue;
@@ -59,8 +59,8 @@ meUHTVRuleMathSetValueA::meUHTVRuleMathSetValueA( meHTVegetationLayer *vlayer, m
 }
 
 meUHTVRuleMathSetValueA::~meUHTVRuleMathSetValueA(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +69,11 @@ meUHTVRuleMathSetValueA::~meUHTVRuleMathSetValueA(){
 ///////////////
 
 void meUHTVRuleMathSetValueA::Undo(){
-	pRule->SetValueA( pOldValueA );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetValueA(pOldValueA);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleMathSetValueA::Redo(){
-	pRule->SetValueA( pNewValueA );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetValueA(pNewValueA);
+	pVLayer->NotifyRuleChanged(pRule);
 }

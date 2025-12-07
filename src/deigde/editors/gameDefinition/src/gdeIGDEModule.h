@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create editor module. */
-	gdeIGDEModule( igdeEnvironment &environment );
+	gdeIGDEModule(igdeEnvironment &environment);
 	
 	/** \brief Clean up editor module. */
 	virtual ~gdeIGDEModule();

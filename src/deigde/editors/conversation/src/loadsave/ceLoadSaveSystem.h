@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load/save system. */
-	ceLoadSaveSystem( ceWindowMain &windowMain );
+	ceLoadSaveSystem(ceWindowMain &windowMain);
 	
 	/** \brief Clean up load/save system. */
 	~ceLoadSaveSystem();
@@ -86,10 +86,10 @@ public:
 	inline ceLoadSaveConversation *GetLSConversation(){ return pLSConversation; }
 	
 	/** \brief Load conversation from file. */
-	ceConversation *LoadConversation( const char *filename );
+	ceConversation *LoadConversation(const char *filename);
 	
 	/** \brief Save conversation to file. */
-	void SaveConversation( ceConversation *conversation, const char *filename );
+	void SaveConversation(ceConversation *conversation, const char *filename);
 	
 	/** \brief File pattern list. */
 	inline const igdeFilePatternList *GetConversationFilePatterns() const{ return &pFPConversation; }
@@ -100,10 +100,10 @@ public:
 	inline ceLoadSaveCTS *GetLSCTS(){ return pLSCTS; }
 	
 	/** \brief Load conversation test setup from file. */
-	void LoadCTS( const char *filename, ceConversation &conversation );
+	void LoadCTS(const char *filename, ceConversation &conversation);
 	
 	/** \brief Save conversation test setup to file. */
-	void SaveCTS( const char *filename, ceConversation &conversation );
+	void SaveCTS(const char *filename, ceConversation &conversation);
 	
 	/** \brief Conversation test setup file pattern list. */
 	inline const igdeFilePatternList *GetCTSFilePatterns() const{ return &pFPCTS; }
@@ -114,10 +114,10 @@ public:
 	inline ceLoadSaveCTA *GetLSCTA(){ return pLSCTA; }
 	
 	/** \brief Load conversation test actor from file. */
-	void LoadCTA( const char *filename, ceConversationActor &actor );
+	void LoadCTA(const char *filename, ceConversationActor &actor);
 	
 	/** \brief Save conversation test actor to file. */
-	void SaveCTA( const char *filename, ceConversationActor &actor );
+	void SaveCTA(const char *filename, ceConversationActor &actor);
 	
 	/** \brief Conversation test actor file pattern list. */
 	inline const igdeFilePatternList *GetCTAFilePatterns() const{ return &pFPCTA; }
@@ -128,10 +128,10 @@ public:
 	inline ceLoadSaveCTGS *GetLSCTGS(){ return pLSCTGS; }
 	
 	/** \brief Load conversation test game state from file. */
-	void LoadCTGS( const char *filename, ceConversation &conversation );
+	void LoadCTGS(const char *filename, ceConversation &conversation);
 	
 	/** \brief Save conversation test game state to file. */
-	void SaveCTGS( const char *filename, const ceConversation &conversation );
+	void SaveCTGS(const char *filename, const ceConversation &conversation);
 	
 	/** \brief Conversation test game state file pattern list. */
 	inline const igdeFilePatternList *GetCTGSFilePatterns() const{ return &pFPCTGS; }
@@ -143,22 +143,22 @@ public:
 	int GetLSLangPackCount() const;
 	
 	/** Load save langpack at the given index. */
-	ceLoadSaveLangPack *GetLSLangPackAt( int index ) const;
+	ceLoadSaveLangPack *GetLSLangPackAt(int index) const;
 	
 	/** Index of the load save langpack. */
-	int IndexOfLSLangPack( ceLoadSaveLangPack *lsLangPack ) const;
+	int IndexOfLSLangPack(ceLoadSaveLangPack *lsLangPack) const;
 	
 	/** Save langpack exists. */
-	bool HasLSLangPack( ceLoadSaveLangPack *lsLangPack ) const;
+	bool HasLSLangPack(ceLoadSaveLangPack *lsLangPack) const;
 	
 	/** Index of the load save langpack matching the given filename. */
-	int IndexOfLSLangPackMatching( const char *filename );
+	int IndexOfLSLangPackMatching(const char *filename);
 	
 	/** Add load save langpack. */
-	void AddLSLangPack( ceLoadSaveLangPack *lsLangPack );
+	void AddLSLangPack(ceLoadSaveLangPack *lsLangPack);
 	
 	/** Remove load save langpack. */
-	void RemoveLSLangPack( ceLoadSaveLangPack *lsLangPack );
+	void RemoveLSLangPack(ceLoadSaveLangPack *lsLangPack);
 	
 	/** Remove all load save langpacks. */
 	void RemoveAllLSLangPacks();
@@ -167,10 +167,10 @@ public:
 	void UpdateLSLangPacks();
 	
 	/** Load langpack from file if possible. */
-	ceLangPack::Ref LoadLangPack( const char *filename );
+	ceLangPack::Ref LoadLangPack(const char *filename);
 	
 	/** Save langpack to file if possible. */
-	void SaveLangPack( ceLangPack &langpack );
+	void SaveLangPack(ceLangPack &langpack);
 	
 	/** File pattern list. */
 	inline const igdeFilePatternList &GetLangPackFPList() const{ return pFPListLangPack; }

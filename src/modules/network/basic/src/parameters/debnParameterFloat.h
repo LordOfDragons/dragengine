@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	debnParameterFloat( deNetworkBasic &network );
+	debnParameterFloat(deNetworkBasic &network);
 	/*@}*/
 	
 	
@@ -48,13 +48,13 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	
 	/** Current value. */
 	virtual float GetParameterFloat() = 0;
 	
 	/** Set current value. */
-	virtual void SetParameterFloat( float value ) = 0;
+	virtual void SetParameterFloat(float value) = 0;
 	/*@}*/
 };
 

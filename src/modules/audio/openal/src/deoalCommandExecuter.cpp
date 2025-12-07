@@ -46,8 +46,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalCommandExecuter::deoalCommandExecuter( deAudioOpenAL &oal ) :
-pOal( oal ){
+deoalCommandExecuter::deoalCommandExecuter(deAudioOpenAL &oal) :
+pOal(oal){
 }
 
 deoalCommandExecuter::~deoalCommandExecuter(){
@@ -58,32 +58,32 @@ deoalCommandExecuter::~deoalCommandExecuter(){
 // Management
 ///////////////
 
-void deoalCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 0 ){
-		answer.SetFromUTF8( "No command provided." );
+void deoalCommandExecuter::ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.GetArgumentCount() == 0){
+		answer.SetFromUTF8("No command provided.");
 		return;
 	}
 	
-	if( command.MatchesArgumentAt( 0, "help" ) ){
-		CmdHelp( command, answer );
+	if(command.MatchesArgumentAt(0, "help")){
+		CmdHelp(command, answer);
 		
-	}else if( command.MatchesArgumentAt( 0, "extensions" ) ){
-		CmdExtensions( command, answer );
+	}else if(command.MatchesArgumentAt(0, "extensions")){
+		CmdExtensions(command, answer);
 		
-	}else if( ! pOal.GetDevMode() || ! pOal.GetDevMode()->ExecuteCommand( command, answer ) ){
-		answer.SetFromUTF8( "Unknown command '" );
-		answer += *command.GetArgumentAt( 0 );
-		answer.AppendFromUTF8( "'." );
+	}else if(!pOal.GetDevMode() || !pOal.GetDevMode()->ExecuteCommand(command, answer)){
+		answer.SetFromUTF8("Unknown command '");
+		answer += *command.GetArgumentAt(0);
+		answer.AppendFromUTF8("'.");
 	}
 }
 
 
 
-void deoalCommandExecuter::CmdHelp( const decUnicodeArgumentList&, decUnicodeString &answer ){
-	answer.SetFromUTF8( "help => Displays this help screen.\n" );
-	answer.AppendFromUTF8( "extensions => Lists status of extensions.\n" );
+void deoalCommandExecuter::CmdHelp(const decUnicodeArgumentList&, decUnicodeString &answer){
+	answer.SetFromUTF8("help => Displays this help screen.\n");
+	answer.AppendFromUTF8("extensions => Lists status of extensions.\n");
 }
 
-void deoalCommandExecuter::CmdExtensions( const decUnicodeArgumentList&, decUnicodeString &answer ){
-	answer.SetFromUTF8( "List of extensions." );
+void deoalCommandExecuter::CmdExtensions(const decUnicodeArgumentList&, decUnicodeString &answer){
+	answer.SetFromUTF8("List of extensions.");
 }

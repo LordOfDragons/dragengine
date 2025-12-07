@@ -54,9 +54,9 @@ void deObject::AddReference(){
 
 void deObject::FreeReference(){
 	pRefCount--;
-	if( pRefCount < 1 ){
-		if( pRefCount < 0 ){
-			DETHROW( deeInvalidParam );
+	if(pRefCount < 1){
+		if(pRefCount < 0){
+			DETHROW(deeInvalidParam);
 		}
 		delete this;
 	}

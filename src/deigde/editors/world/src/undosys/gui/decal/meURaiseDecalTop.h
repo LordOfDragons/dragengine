@@ -51,7 +51,7 @@ public:
 	typedef deTObjectReference<meURaiseDecalTop> Ref;
 	
 	// constructor, destructor
-	meURaiseDecalTop( meWorld *world, meDecal *decal );
+	meURaiseDecalTop(meWorld *world, meDecal *decal);
 	virtual ~meURaiseDecalTop();
 	
 	// undo and redo operations

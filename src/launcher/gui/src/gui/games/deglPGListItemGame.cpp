@@ -38,55 +38,55 @@
 // Class deglPGListItemGame
 /////////////////////////////
 
-FXIMPLEMENT( deglPGListItemGame, FXIconItem, nullptr, 0 )
+FXIMPLEMENT(deglPGListItemGame, FXIconItem, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-deglPGListItemGame::deglPGListItemGame(){ }
+deglPGListItemGame::deglPGListItemGame(){}
 
-deglPGListItemGame::deglPGListItemGame( deglPanelGames *panelGames, delGame *game ) :
-FXIconItem( "", nullptr, nullptr, nullptr ),
-pPanelGames( panelGames ),
-pGame( game )
+deglPGListItemGame::deglPGListItemGame(deglPanelGames *panelGames, delGame *game) :
+FXIconItem("", nullptr, nullptr, nullptr),
+pPanelGames(panelGames),
+pGame(game)
 {
-	if( ! panelGames || ! game ){
-		DETHROW( deeInvalidParam );
+	if(!panelGames || !game){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString gameStatus;
 	FXString text;
 	
-	const decString gameTitle( game->GetTitle().ToUTF8() );
-	const decString gameCreator( game->GetCreator().ToUTF8() );
+	const decString gameTitle(game->GetTitle().ToUTF8());
+	const decString gameCreator(game->GetCreator().ToUTF8());
 	delGameProfile * const profile = game->GetProfileToUse();
 	
-	if( game->GetCanRun() && profile->GetValid() ){
+	if(game->GetCanRun() && profile->GetValid()){
 		gameStatus = "Ready";
 		
-	}else if( ! profile->GetValid() ){
+	}else if(!profile->GetValid()){
 		gameStatus = "Profile Broken";
 		
-	}else if( ! game->GetAllFormatsSupported() ){
+	}else if(!game->GetAllFormatsSupported()){
 		gameStatus = "Missing Modules";
 		
 	}else{
 		gameStatus = "Installation Broken";
 	}
 	
-	text.format( "%s\t%s\t%s", gameTitle.GetString(), gameStatus.GetString(), gameCreator.GetString() );
-	setText( text );
+	text.format("%s\t%s\t%s", gameTitle.GetString(), gameStatus.GetString(), gameCreator.GetString());
+	setText(text);
 	
-	const deglGameIcon *icon = ( deglGameIcon* )game->GetIcons().GetSmallest( 48 );
-	if( icon && icon->GetFoxIcon() ){
-		pIconBig = icon->GetScaledFoxIcon( 48 );
-		setBigIcon( pIconBig->GetIcon() );
+	const deglGameIcon *icon = (deglGameIcon*)game->GetIcons().GetSmallest(48);
+	if(icon && icon->GetFoxIcon()){
+		pIconBig = icon->GetScaledFoxIcon(48);
+		setBigIcon(pIconBig->GetIcon());
 	}
 	
-	icon = ( deglGameIcon* )game->GetIcons().GetSmallest( 32 );
-	if( icon && icon->GetFoxIcon() ){
-		pIconMini = icon->GetScaledFoxIcon( 32 );
-		setMiniIcon( pIconMini->GetIcon() );
+	icon = (deglGameIcon*)game->GetIcons().GetSmallest(32);
+	if(icon && icon->GetFoxIcon()){
+		pIconMini = icon->GetScaledFoxIcon(32);
+		setMiniIcon(pIconMini->GetIcon());
 	}
 }
 

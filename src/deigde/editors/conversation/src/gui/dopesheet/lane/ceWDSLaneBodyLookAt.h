@@ -40,8 +40,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dope sheet lane. */
-	ceWDSLaneBodyLookAt( ceWindowDopeSheet &dopeSheet, int index,
-		const char *label, const char *description );
+	ceWDSLaneBodyLookAt(ceWindowDopeSheet &dopeSheet, int index,
+		const char *label, const char *description);
 	
 protected:
 	/** \brief Clean up dope sheet lane. */
@@ -57,28 +57,28 @@ public:
 	virtual const ceStripList &GetStripList() const;
 	
 	/** \brief Fill ID list. */
-	virtual void FillIDList( decStringList &list );
+	virtual void FillIDList(decStringList &list);
 	
 	/** \brief Create add strip undo action. */
-	virtual igdeUndo *UndoStripAdd( ceStrip *strip, int index );
+	virtual igdeUndo *UndoStripAdd(ceStrip *strip, int index);
 	
 	/** \brief Create remove strip undo action. */
-	virtual igdeUndo *UndoStripRemove( ceStrip *strip );
+	virtual igdeUndo *UndoStripRemove(ceStrip *strip);
 	
 	/** \brief Create remove all strip undo action. */
 	virtual igdeUndo *UndoStripRemoveAll();
 	
 	/** \brief Create replace strip undo action. */
-	virtual igdeUndo *UndoStripReplace( ceStrip *strip, ceStrip *withStrip );
+	virtual igdeUndo *UndoStripReplace(ceStrip *strip, ceStrip *withStrip);
 	
 	/** \brief Create move strip undo action. */
-	virtual igdeUndo *UndoStripMove( ceStrip *strip, int toIndex );
+	virtual igdeUndo *UndoStripMove(ceStrip *strip, int toIndex);
 	
 	/** \brief Create strip set pause undo action. */
-	virtual ceUCAASpeakStripSetPause *UndoStripSetPause( ceStrip *strip, float pause );
+	virtual ceUCAASpeakStripSetPause *UndoStripSetPause(ceStrip *strip, float pause);
 	
 	/** \brief Create strip set duration undo action. */
-	virtual ceUCAASpeakStripSetDuration *UndoStripSetDuration( ceStrip *strip, float duration );
+	virtual ceUCAASpeakStripSetDuration *UndoStripSetDuration(ceStrip *strip, float duration);
 	
 	/** \brief Create scale strips undo action. */
 	virtual ceUCAASpeakStripsScale *UndoScaleStrips();

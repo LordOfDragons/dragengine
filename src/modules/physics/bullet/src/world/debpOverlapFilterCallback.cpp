@@ -38,8 +38,8 @@
 // Constructor, Destructor
 ////////////////////////////
 
-debpOverlapFilterCallback::debpOverlapFilterCallback( debpSharedCollisionFiltering &collisionFiltering ) :
-pCollisionFiltering( collisionFiltering ){
+debpOverlapFilterCallback::debpOverlapFilterCallback(debpSharedCollisionFiltering &collisionFiltering) :
+pCollisionFiltering(collisionFiltering){
 }
 
 debpOverlapFilterCallback::~debpOverlapFilterCallback(){
@@ -50,10 +50,10 @@ debpOverlapFilterCallback::~debpOverlapFilterCallback(){
 // Management
 ///////////////
 
-bool debpOverlapFilterCallback::needBroadphaseCollision( btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1 ) const{
+bool debpOverlapFilterCallback::needBroadphaseCollision(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1) const{
 	// bullet broadphase test
-	if( ( proxy0->m_collisionFilterGroup & proxy1->m_collisionFilterMask ) == 0
-	||  ( proxy1->m_collisionFilterGroup & proxy0->m_collisionFilterMask ) == 0 ){
+	if((proxy0->m_collisionFilterGroup & proxy1->m_collisionFilterMask) == 0
+	||  (proxy1->m_collisionFilterGroup & proxy0->m_collisionFilterMask) == 0){
 		return false;
 	}
 	

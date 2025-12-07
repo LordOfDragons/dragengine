@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meHeightTerrainPropField( deEngine *engine );
+	meHeightTerrainPropField(deEngine *engine);
 	
 	/** \brief Clean up object. */
 	virtual ~meHeightTerrainPropField();
@@ -83,7 +83,7 @@ public:
 	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
 	/** \brief Set parent height terrain sector or \em NULL. */
-	void SetHTSector( meHeightTerrainSector *htsector );
+	void SetHTSector(meHeightTerrainSector *htsector);
 	
 	
 	
@@ -94,7 +94,7 @@ public:
 	inline const decVector2 &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** \brief Set extends. */
-	void SetExtend( const decVector2 &minimum, const decVector2 &maximum );
+	void SetExtend(const decVector2 &minimum, const decVector2 &maximum);
 	
 	
 	
@@ -104,7 +104,7 @@ public:
 	
 	
 	/** \brief Init delegates. */
-	void InitDelegates( igdeEnvironment *environment );
+	void InitDelegates(igdeEnvironment *environment);
 	
 	/** \brief Invalidate prop field. */
 	void Invalidate();
@@ -134,7 +134,7 @@ public:
 	inline int GetVInstanceCount() const{ return pVInstanceCount; }
 	
 	/** \brief Vegetation instance at index. */
-	meHTVInstance &GetVInstanceAt( int index ) const;
+	meHTVInstance &GetVInstanceAt(int index) const;
 	
 	/** \brief Add vegetation instance. */
 	meHTVInstance &AddVInstance();

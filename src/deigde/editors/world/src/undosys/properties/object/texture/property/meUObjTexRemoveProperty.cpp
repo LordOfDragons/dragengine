@@ -41,25 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjTexRemoveProperty::meUObjTexRemoveProperty( meObjectTexture *texture, const char *key, const char *value ) :
-pTexture( NULL ),
-pKey( key ),
-pValue( value )
+meUObjTexRemoveProperty::meUObjTexRemoveProperty(meObjectTexture *texture, const char *key, const char *value) :
+pTexture(NULL),
+pKey(key),
+pValue(value)
 {
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!texture){
+		DETHROW(deeInvalidParam);
 	}
 	meObject * const object = texture->GetObject();
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object texture remove property" );
+	SetShortInfo("Object texture remove property");
 	
 	pTexture = texture;
 	texture->AddReference();
@@ -75,11 +75,11 @@ meUObjTexRemoveProperty::~meUObjTexRemoveProperty(){
 ///////////////
 
 void meUObjTexRemoveProperty::Undo(){
-	pTexture->SetProperty( pKey, pValue );
+	pTexture->SetProperty(pKey, pValue);
 }
 
 void meUObjTexRemoveProperty::Redo(){
-	pTexture->RemoveProperty( pKey );
+	pTexture->RemoveProperty(pKey);
 }
 
 
@@ -88,7 +88,7 @@ void meUObjTexRemoveProperty::Redo(){
 //////////////////////
 
 void meUObjTexRemoveProperty::pCleanUp(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
 }

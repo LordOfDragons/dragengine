@@ -151,7 +151,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new camera object with the given resource manager. */
-	deCamera( deCameraManager *manager );
+	deCamera(deCameraManager *manager);
 	
 protected:
 	/**
@@ -172,37 +172,37 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Vertical field  of view in radians for the entire view. */
 	inline float GetFov() const{ return pFov; }
 	
 	/** \brief Set vertical field of view in radians of the entire view. */
-	void SetFov( float fov );
+	void SetFov(float fov);
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
 	inline float GetFovRatio() const{ return pFovRatio; }
 	
 	/** \brief Set aspect ratio of the horizonral field of view to the vertical field of view. */
-	void SetFovRatio( float ratio );
+	void SetFovRatio(float ratio);
 	
 	/** \brief Distance to the image plane. */
 	inline float GetImageDistance() const{ return pImageDistance; }
 	
 	/** \brief Set distance to the image plane. */
-	void SetImageDistance( float distance );
+	void SetImageDistance(float distance);
 	
 	/** \brief Viewing distance up to which world geometry is rendered. */
 	inline float GetViewDistance() const{ return pViewDistance; }
 	
 	/** \brief Set view distance up to which world geometry is rendered. */
-	void SetViewDistance( float distance );
+	void SetViewDistance(float distance);
 	
 	
 	
@@ -210,31 +210,31 @@ public:
 	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
 	
 	/** \brief Set to enable high definition range rendering (HDRR) if supported. */
-	void SetEnableHDRR( bool enable );
+	void SetEnableHDRR(bool enable);
 	
 	/** \brief Exposure. */
 	inline float GetExposure() const{ return pExposure; }
 	
 	/** \brief Set exposure. */
-	void SetExposure( float exposure );
+	void SetExposure(float exposure);
 	
 	/** \brief Lowest intensity the eye can adapt to. */
 	inline float GetLowestIntensity() const{ return pLowestIntensity; }
 	
 	/** \brief Set lowest intensity the eye can adapt to. */
-	void SetLowestIntensity( float lowestIntensity );
+	void SetLowestIntensity(float lowestIntensity);
 	
 	/** \brief Highest intensity the eye can adapt to. */
 	inline float GetHighestIntensity() const{ return pHighestIntensity; }
 	
 	/** \brief Set highest intensity the eye can adapt to. */
-	void SetHighestIntensity( float highestIntensity );
+	void SetHighestIntensity(float highestIntensity);
 	
 	/** \brief Adaption time of the eye in seconds. */
 	inline float GetAdaptionTime() const{ return pAdaptionTime; }
 	
 	/** \brief Set adaption time of the eye in seconds. */
-	void SetAdaptionTime( float adaptionTime );
+	void SetAdaptionTime(float adaptionTime);
 	
 	
 	
@@ -242,12 +242,12 @@ public:
 	inline bool GetEnableGI() const{ return pEnableGI; }
 	
 	/** \brief Set to enable global illumination (GI) if supported. */
-	void SetEnableGI( bool enable );
+	void SetEnableGI(bool enable);
 	
 	
 	
 	/** \brief Layer mask. Call NotifyLayerMaskChanged afterwards. */
-	decLayerMask &GetLayerMask(){ return pLayerMask; }
+	decLayerMask &GetLayerMask(){return pLayerMask;}
 	const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Notifies the peers that the layer mask changed. */
@@ -268,7 +268,7 @@ public:
 	 * \brief Set white intensity multiplier.
 	 * \version 1.21
 	 */
-	void SetWhiteIntensity( float intensity );
+	void SetWhiteIntensity(float intensity);
 	
 	/**
 	 * \brief Bloom intensity multiplier.
@@ -280,7 +280,7 @@ public:
 	 * \brief Set bloom intensity multiplier.
 	 * \version 1.21
 	 */
-	void SetBloomIntensity( float intensity );
+	void SetBloomIntensity(float intensity);
 	
 	/**
 	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
@@ -292,7 +292,7 @@ public:
 	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	void SetBloomStrength( float strength );
+	void SetBloomStrength(float strength);
 	
 	/**
 	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
@@ -304,7 +304,7 @@ public:
 	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	void SetBloomBlend( float blend );
+	void SetBloomBlend(float blend);
 	
 	/**
 	 * \brief Bloom size as percentage of screen width.
@@ -316,7 +316,7 @@ public:
 	 * \brief Bloom size as percentage of screen width.
 	 * \version 1.21
 	 */
-	void SetBloomSize( float size );
+	void SetBloomSize(float size);
 	
 	
 	
@@ -331,7 +331,7 @@ public:
 	 * \version 1.21
 	 * \note If enabled make sure to match the curve range to the white intensity.
 	 */
-	void SetToneMapCurve( const decCurveBezier &curve );
+	void SetToneMapCurve(const decCurveBezier &curve);
 	/*@}*/
 	
 	
@@ -342,13 +342,13 @@ public:
 	int GetEffectCount() const;
 	
 	/** \brief Effect at the given index. */
-	deEffect *GetEffectAt( int index ) const;
+	deEffect *GetEffectAt(int index) const;
 	
 	/** \brief Adds an effect. */
-	void AddEffect( deEffect *effect );
+	void AddEffect(deEffect *effect);
 	
 	/** \brief Removes an effect. */
-	void RemoveEffect( deEffect *effect );
+	void RemoveEffect(deEffect *effect);
 	
 	/** \brief Removes all effects. */
 	void RemoveAllEffects();
@@ -362,7 +362,7 @@ public:
 	inline deBaseGraphicCamera *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system camera peer. */
-	void SetPeerGraphic( deBaseGraphicCamera *peer );
+	void SetPeerGraphic(deBaseGraphicCamera *peer);
 	/*@}*/
 	
 	
@@ -373,19 +373,19 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous camera in the parent world linked list. */
 	inline deCamera *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next camera in the parent world linked list. */
-	void SetLLWorldPrev( deCamera *camera );
+	void SetLLWorldPrev(deCamera *camera);
 	
 	/** \brief Next camera in the parent world linked list. */
 	inline deCamera *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next camera in the parent world linked list. */
-	void SetLLWorldNext( deCamera *camera );
+	void SetLLWorldNext(deCamera *camera);
 	/*@}*/
 	
 	

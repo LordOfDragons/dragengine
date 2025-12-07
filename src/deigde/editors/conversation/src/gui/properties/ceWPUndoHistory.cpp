@@ -41,18 +41,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPUndoHistory::ceWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pListener( NULL ),
-pConversation( NULL )
+ceWPUndoHistory::ceWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(NULL),
+pConversation(NULL)
 {
-	pListener = new ceWPUndoHistoryListener( *this );
+	pListener = new ceWPUndoHistoryListener(*this);
 }
 
 ceWPUndoHistory::~ceWPUndoHistory(){
-	SetConversation( NULL );
+	SetConversation(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -62,24 +62,24 @@ ceWPUndoHistory::~ceWPUndoHistory(){
 // Management
 ///////////////
 
-void ceWPUndoHistory::SetConversation( ceConversation *conversation ){
-	if( conversation == pConversation ){
+void ceWPUndoHistory::SetConversation(ceConversation *conversation){
+	if(conversation == pConversation){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(NULL);
 	
-	if( pConversation ){
-		pConversation->RemoveListener( pListener );
+	if(pConversation){
+		pConversation->RemoveListener(pListener);
 		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
-	if( conversation ){
-		conversation->AddListener( pListener );
+	if(conversation){
+		conversation->AddListener(pListener);
 		conversation->AddReference();
 		
-		SetUndoSystem( conversation->GetUndoSystem() );
+		SetUndoSystem(conversation->GetUndoSystem());
 	}
 }

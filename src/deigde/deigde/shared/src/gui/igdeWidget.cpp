@@ -43,11 +43,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWidget::igdeWidget( igdeEnvironment &environment ) :
-pEnvironment( environment ),
-pNativeWidget( NULL ),
-pParent( NULL ),
-pVisible( true ){
+igdeWidget::igdeWidget(igdeEnvironment &environment) :
+pEnvironment(environment),
+pNativeWidget(NULL),
+pParent(NULL),
+pVisible(true){
 }
 
 igdeWidget::~igdeWidget(){
@@ -58,8 +58,8 @@ igdeWidget::~igdeWidget(){
 // Management
 ///////////////
 
-void igdeWidget::SetVisible( bool visible ){
-	if( pVisible == visible ){
+void igdeWidget::SetVisible(bool visible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -89,8 +89,8 @@ deLogger *igdeWidget::GetLogger() const{
 
 
 
-void igdeWidget::SetWidgetGuiTheme( igdeGuiTheme *guitheme ){
-	if( pGuiTheme == guitheme ){
+void igdeWidget::SetWidgetGuiTheme(igdeGuiTheme *guitheme){
+	if(pGuiTheme == guitheme){
 		return;
 	}
 	
@@ -98,8 +98,8 @@ void igdeWidget::SetWidgetGuiTheme( igdeGuiTheme *guitheme ){
 	OnGuiThemeChanged();
 }
 
-void igdeWidget::SetWidgetGuiThemeName( const char *guitheme ){
-	if( pGuiThemeName == guitheme ){
+void igdeWidget::SetWidgetGuiThemeName(const char *guitheme){
+	if(pGuiThemeName == guitheme){
 		return;
 	}
 	
@@ -108,13 +108,13 @@ void igdeWidget::SetWidgetGuiThemeName( const char *guitheme ){
 }
 
 igdeGuiTheme *igdeWidget::GetGuiTheme() const{
-	if( pGuiTheme ){
+	if(pGuiTheme){
 		return pGuiTheme;
 		
-	}else if( ! pGuiThemeName.IsEmpty() ){
-		return pEnvironment.GetGuiThemeNamed( pGuiThemeName );
+	}else if(!pGuiThemeName.IsEmpty()){
+		return pEnvironment.GetGuiThemeNamed(pGuiThemeName);
 		
-	}else if( pParent ){
+	}else if(pParent){
 		return pParent->GetGuiTheme();
 		
 	}else{
@@ -124,7 +124,7 @@ igdeGuiTheme *igdeWidget::GetGuiTheme() const{
 
 
 
-void igdeWidget::SetParent( igdeContainer *parent ){
+void igdeWidget::SetParent(igdeContainer *parent){
 	pParent = parent;
 }
 
@@ -133,12 +133,12 @@ void igdeWidget::OnResize(){
 
 
 
-decPoint igdeWidget::WidgetToScreen( const decPoint &position ) const{
-	return igdeNativeWidget::WidgetToScreen( *this, position );
+decPoint igdeWidget::WidgetToScreen(const decPoint &position) const{
+	return igdeNativeWidget::WidgetToScreen(*this, position);
 }
 
 igdeWindow *igdeWidget::GetParentWindow(){
-	if( pParent ){
+	if(pParent){
 		return pParent->GetParentWindow();
 		
 	}else{
@@ -149,13 +149,13 @@ igdeWindow *igdeWidget::GetParentWindow(){
 
 
 void igdeWidget::OnVisibleChanged(){
-	igdeNativeWidget::UpdateVisible( *this );
+	igdeNativeWidget::UpdateVisible(*this);
 }
 
 void igdeWidget::OnGuiThemeChanged(){
 }
 
-void igdeWidget::SetNativeWidget( void *nativeWidget ){
+void igdeWidget::SetNativeWidget(void *nativeWidget){
 	pNativeWidget = nativeWidget;
 }
 

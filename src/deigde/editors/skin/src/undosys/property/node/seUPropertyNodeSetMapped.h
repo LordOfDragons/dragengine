@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUPropertyNodeSetMapped( sePropertyNode *node, int type, seMapped *newValue );
+	seUPropertyNodeSetMapped(sePropertyNode *node, int type, seMapped *newValue);
 	
 protected:
 	/** Clean up undo. */

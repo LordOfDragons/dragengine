@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSSSound( deScriptingDragonScript &ds );
+	deClassSSSound(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSSSound();
@@ -80,16 +80,16 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Source or \em NULL if deleted or myself is \em NULL. */
-	deSynthesizerSourceSound *GetSource( dsRealObject *myself ) const;
+	deSynthesizerSourceSound *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer( dsRealObject *myself, deSynthesizer *synthesizer );
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource( dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSound *source );
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSound *source);
 	
 	inline dsClass *GetClassSSSoundTarget() const{ return pClsSSSoundTarget; }
 	/*@}*/
@@ -110,21 +110,21 @@ private:
 		dsClass *clsSSSoundTarget;
 	};
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetSound );
-	DEF_NATFUNC( nfSetMinSpeed );
-	DEF_NATFUNC( nfSetMaxSpeed );
-	DEF_NATFUNC( nfSetLooping );
+	DEF_NATFUNC(nfSetSound);
+	DEF_NATFUNC(nfSetMinSpeed);
+	DEF_NATFUNC(nfSetMaxSpeed);
+	DEF_NATFUNC(nfSetLooping);
 #undef DEF_NATFUNC
 };
 

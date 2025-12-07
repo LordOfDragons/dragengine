@@ -91,33 +91,33 @@ public:
 	/** Retrieves the world. */
 	inline meWorld *GetWorld() const{ return pWorld; }
 	/** Sets the world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Retrieves the instance position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** Sets the instance position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	/** Retrieves the instance normal. */
 	inline const decVector &GetNormal() const{ return pNormal; }
 	/** Sets the instance normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	/** Sets the instance parameters. */
-	void SetParameters( const decDVector &position, const decVector &normal );
+	void SetParameters(const decDVector &position, const decVector &normal);
 	
 	/** Retrieves the height terrain sector. */
 	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	/** Sets the height terrain sector. */
-	void SetHTSector( meHeightTerrainSector *htsector );
+	void SetHTSector(meHeightTerrainSector *htsector);
 	/** Retrieves the dominant texture or NULL if none exists. */
 	inline meHeightTerrainTexture *GetHTDominantTexture() const{ return pHTDominantTexture; }
 	/** Sets the dominant texture or NULL if none exists. */
-	void SetHTDominantTexture( meHeightTerrainTexture *texture );
+	void SetHTDominantTexture(meHeightTerrainTexture *texture);
 	/** Retrieves the height terrain coordinates. */
 	inline const decVector2 &GetHTCoordinates() const{ return pHTCoordinates; }
 	/** Sets the height terrain coordinates. */
-	void SetHTCoordinates( const decVector2 &coordinates );
+	void SetHTCoordinates(const decVector2 &coordinates);
 	/** Sets the height terrain coordinates. */
-	void SetHTCoordinates( float x, float y );
+	void SetHTCoordinates(float x, float y);
 	/** Retrieves the integer part of the height terrain coordinates. */
 	inline const decPoint &GetHTCoordInt() const{ return pHTCoordInt; }
 	/** Retrieves the fractional part of the height terrain coordinates. */
@@ -126,24 +126,24 @@ public:
 	/** Retrieves the vegetation layer. */
 	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
 	/** Sets the vegetation layer. */
-	void SetVLayer( meHTVegetationLayer *vlayer );
+	void SetVLayer(meHTVegetationLayer *vlayer);
 	/** Retrieves the prop field. */
 	inline meHeightTerrainPropField *GetPropField() const{ return pPropField; }
 	/** Sets the prop field. */
-	void SetPropField( meHeightTerrainPropField *propField );
+	void SetPropField(meHeightTerrainPropField *propField);
 	/** Retrieves the occupation bit array. */
 	inline meBitArray *GetOccupation() const{ return pOccupation; }
 	/** Sets the occupation bit array. */
-	void SetOccupation( meBitArray *occupation );
+	void SetOccupation(meBitArray *occupation);
 	
 	/** Retrieves the probability of the evaluation. */
 	inline float GetProbability() const{ return pProbability; }
 	/** Sets the probability of the evaluation. */
-	void SetProbability( float probability );
+	void SetProbability(float probability);
 	/** Retrieves the variation of the evaluation. */
 	inline int GetVariation() const{ return pVariation; }
 	/** Sets the variation of the evaluation. */
-	void SetVariation( int variation );
+	void SetVariation(int variation);
 	
 	/**
 	 * Prepares for evaluation. This populates the environment with objects
@@ -159,9 +159,9 @@ public:
 	/** Retrieves the number of objects. */
 	inline int GetObjectCount() const{ return pObjectCount; }
 	/** Retrieves the object at the given position. */
-	meObject *GetObjectAt( int index ) const;
+	meObject *GetObjectAt(int index) const;
 	/** Adds an object. */
-	void AddObject( meObject *object );
+	void AddObject(meObject *object);
 	/** Removes all objects. */
 	void RemoveAllObjects();
 	

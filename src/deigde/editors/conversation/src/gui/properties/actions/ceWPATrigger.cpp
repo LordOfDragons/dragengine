@@ -68,12 +68,12 @@ class cTextName : public igdeTextFieldListener {
 	ceWPATrigger &pPanel;
 	
 public:
-	cTextName( ceWPATrigger &panel ) : pPanel( panel ){ }
+	cTextName(ceWPATrigger &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCATrigger * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetName() ){
+		if(!topic || !action || textField->GetText() == action->GetName()){
 			return;
 		}
 		
@@ -86,18 +86,18 @@ class cComboAction : public igdeComboBoxListener {
 	ceWPATrigger &pPanel;
 	
 public:
-	cComboAction( ceWPATrigger &panel ) : pPanel( panel ){ }
+	cComboAction(ceWPATrigger &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCATrigger * const action = pPanel.GetAction();
-		if( ! topic || ! action || ! comboBox->GetSelectedItem() ){
+		if(!topic || !action || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
-		const ceCATrigger::eActions triggerAction = ( ceCATrigger::eActions )( intptr_t )
+		const ceCATrigger::eActions triggerAction = (ceCATrigger::eActions)(intptr_t)
 			comboBox->GetSelectedItem()->GetData();
-		if( triggerAction == action->GetAction() ){
+		if(triggerAction == action->GetAction()){
 			return;
 		}
 		
@@ -116,20 +116,20 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPATrigger::ceWPATrigger( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPATrigger::ceWPATrigger(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.EditString( *this, "Name:", "Name of the trigger to operate or empty to have no effect",
-		pEditName, new cTextName( *this ) );
+	helper.EditString(*this, "Name:", "Name of the trigger to operate or empty to have no effect",
+		pEditName, new cTextName(*this));
 	
-	helper.ComboBox( *this, "Action:", "The action to apply on the trigger",
-		pCBAction, new cComboAction( *this ) );
-	pCBAction->AddItem( "Fire", NULL, ( void* )( intptr_t )ceCATrigger::eaFire );
-	pCBAction->AddItem( "Reset", NULL, ( void* )( intptr_t )ceCATrigger::eaReset );
-	pCBAction->AddItem( "Pulse", NULL, ( void* )( intptr_t )ceCATrigger::eaPulse );
-	pCBAction->AddItem( "Full Reset", NULL, ( void* )( intptr_t )ceCATrigger::eaFullReset );
+	helper.ComboBox(*this, "Action:", "The action to apply on the trigger",
+		pCBAction, new cComboAction(*this));
+	pCBAction->AddItem("Fire", NULL, (void*)(intptr_t)ceCATrigger::eaFire);
+	pCBAction->AddItem("Reset", NULL, (void*)(intptr_t)ceCATrigger::eaReset);
+	pCBAction->AddItem("Pulse", NULL, (void*)(intptr_t)ceCATrigger::eaPulse);
+	pCBAction->AddItem("Full Reset", NULL, (void*)(intptr_t)ceCATrigger::eaFullReset);
 }
 
 ceWPATrigger::~ceWPATrigger(){
@@ -143,8 +143,8 @@ ceWPATrigger::~ceWPATrigger(){
 ceCATrigger *ceWPATrigger::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatTrigger ){
-		return ( ceCATrigger* )action;
+	if(action && action->GetType() == ceConversationAction::eatTrigger){
+		return (ceCATrigger*)action;
 		
 	}else{
 		return NULL;
@@ -156,12 +156,12 @@ void ceWPATrigger::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pEditName->SetText( action->GetName() );
-		pCBAction->SetSelectionWithData( ( void* )( intptr_t )action->GetAction() );
+	if(action){
+		pEditName->SetText(action->GetName());
+		pCBAction->SetSelectionWithData((void*)(intptr_t)action->GetAction());
 		
 	}else{
 		pEditName->ClearText();
-		pCBAction->SetSelectionWithData( ( void* )( intptr_t )ceCATrigger::eaFire );
+		pCBAction->SetSelectionWithData((void*)(intptr_t)ceCATrigger::eaFire);
 	}
 }

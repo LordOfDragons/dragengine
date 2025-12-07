@@ -49,7 +49,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpConfiguration::debpConfiguration( dePhysicsBullet *bullet ){
+debpConfiguration::debpConfiguration(dePhysicsBullet *bullet){
 	pBullet = bullet;
 	
 	pEnableConstraintPoint2Point = true;
@@ -68,25 +68,25 @@ debpConfiguration::~debpConfiguration(){
 // Management
 ///////////////
 
-void debpConfiguration::SetEnableConstraintPoint2Point( bool enable ){
+void debpConfiguration::SetEnableConstraintPoint2Point(bool enable){
 	pEnableConstraintPoint2Point = enable;
 }
 
-void debpConfiguration::SetEnableConstraintHinge( bool enable ){
+void debpConfiguration::SetEnableConstraintHinge(bool enable){
 	pEnableConstraintHinge = enable;
 }
 
-void debpConfiguration::SetEnableConstraintConeTwist( bool enable ){
+void debpConfiguration::SetEnableConstraintConeTwist(bool enable){
 	pEnableConstraintConeTwist = enable;
 }
 
-void debpConfiguration::SetEnableConstraintSlider( bool enable ){
+void debpConfiguration::SetEnableConstraintSlider(bool enable){
 	pEnableConstraintSlider = enable;
 }
 
 
 
-void debpConfiguration::SetSimulatePropFields( bool simulatePropFields ){
+void debpConfiguration::SetSimulatePropFields(bool simulatePropFields){
 	pSimulatePropFields = simulatePropFields;
 }
 
@@ -103,24 +103,24 @@ void debpConfiguration::LoadConfig(){
 	
 	// read the configuration file if it exists
 	decPath path;
-	path.SetFromUnix( "/config/bullet.xml" );
+	path.SetFromUnix("/config/bullet.xml");
 	
-	if( ! vfs.ExistsFile( path ) ){
+	if(!vfs.ExistsFile(path)){
 		return;
 	}
 	
 	try{
-		reader = vfs.OpenFileForReading( path );
-		if( ! reader ){
-			DETHROW( deeInvalidParam );
+		reader = vfs.OpenFileForReading(path);
+		if(!reader){
+			DETHROW(deeInvalidParam);
 		}
 		
-		decXmlParser( pBullet->GetGameEngine()->GetLogger() ).ParseXml( reader, xmlDoc );
+		decXmlParser(pBullet->GetGameEngine()->GetLogger()).ParseXml(reader, xmlDoc);
 		
 		reader->FreeReference();
 		
-	}catch( const deException & ){
-		if( reader ){
+	}catch(const deException &){
+		if(reader){
 			reader->FreeReference();
 		}
 		throw;
@@ -132,11 +132,11 @@ void debpConfiguration::LoadConfig(){
 	
 	// interpretate xml
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "config" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "config") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pParseConfig( root );
+	pParseConfig(root);
 }
 
 void debpConfiguration::SaveConfig(){
@@ -148,24 +148,24 @@ void debpConfiguration::SaveConfig(){
 // Private Functions
 //////////////////////
 
-decXmlElementTag *debpConfiguration::pGetTagAt( decXmlElementTag *tag, int index ){
-	decXmlElement *element = tag->GetElementAt( index );
-	if( element->CanCastToElementTag() ){
+decXmlElementTag *debpConfiguration::pGetTagAt(decXmlElementTag *tag, int index){
+	decXmlElement *element = tag->GetElementAt(index);
+	if(element->CanCastToElementTag()){
 		return element->CastToElementTag();
 	}else{
 		return NULL;
 	}
 }
 
-decXmlAttValue *debpConfiguration::pFindAttribute( decXmlElementTag *tag, const char *name ){
+decXmlAttValue *debpConfiguration::pFindAttribute(decXmlElementTag *tag, const char *name){
 	decXmlAttValue *value;
 	decXmlElement *element;
 	int i;
-	for( i=0; i<tag->GetElementCount(); i++ ){
-		element = tag->GetElementAt( i );
-		if( element->CanCastToAttValue() ){
+	for(i=0; i<tag->GetElementCount(); i++){
+		element = tag->GetElementAt(i);
+		if(element->CanCastToAttValue()){
 			value = element->CastToAttValue();
-			if( strcmp( value->GetName(), name ) == 0 ){
+			if(strcmp(value->GetName(), name) == 0){
 				return value;
 			}
 		}
@@ -173,42 +173,42 @@ decXmlAttValue *debpConfiguration::pFindAttribute( decXmlElementTag *tag, const 
 	return NULL;
 }
 
-void debpConfiguration::pParseConfig( decXmlElementTag *root ){
+void debpConfiguration::pParseConfig(decXmlElementTag *root){
 	decXmlElementTag *tag;
 	int i;
 	
-	for( i=0; i<root->GetElementCount(); i++ ){
-		tag = pGetTagAt( root, i );
-		if( tag ){
-			if( strcmp( tag->GetName(), "property" ) == 0 ){
-				pParseProperty( tag );
+	for(i=0; i<root->GetElementCount(); i++){
+		tag = pGetTagAt(root, i);
+		if(tag){
+			if(strcmp(tag->GetName(), "property") == 0){
+				pParseProperty(tag);
 				
 			}else{
-				pBullet->LogWarnFormat( "bullet.xml(%i:%i): Unknown Tag %s, ignoring",
-					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
+				pBullet->LogWarnFormat("bullet.xml(%i:%i): Unknown Tag %s, ignoring",
+					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString());
 			}
 		}
 	}
 }
 
-void debpConfiguration::pParseProperty( decXmlElementTag *root ){
+void debpConfiguration::pParseProperty(decXmlElementTag *root){
 	decXmlCharacterData *cdata;
 	decXmlAttValue *xmlValue;
 	const char *value = NULL;
 	const char *name = NULL;
 	
 	// check attributes
-	xmlValue = pFindAttribute( root, "name" );
-	if( ! xmlValue ){
-		pBullet->LogErrorFormat( "bullet.xml(%i:%i): Missing Attribute 'name' in tag '%s'",
-			root->GetLineNumber(), root->GetPositionNumber(), root->GetName().GetString() );
-		DETHROW( deeInvalidParam );
+	xmlValue = pFindAttribute(root, "name");
+	if(!xmlValue){
+		pBullet->LogErrorFormat("bullet.xml(%i:%i): Missing Attribute 'name' in tag '%s'",
+			root->GetLineNumber(), root->GetPositionNumber(), root->GetName().GetString());
+		DETHROW(deeInvalidParam);
 	}
 	name = xmlValue->GetValue();
 	
 	// check cdata
 	cdata = root->GetFirstData();
-	if( cdata ){
+	if(cdata){
 		value = cdata->GetData();
 		
 	}else{
@@ -216,23 +216,23 @@ void debpConfiguration::pParseProperty( decXmlElementTag *root ){
 	}
 	
 	// set property if name is matching anything valid
-	if( strcmp( name, "enableConstraintPoint2Point" ) == 0 ){
-		SetEnableConstraintPoint2Point( ( int )strtol( value, NULL, 10 ) != 0 );
+	if(strcmp(name, "enableConstraintPoint2Point") == 0){
+		SetEnableConstraintPoint2Point((int)strtol(value, NULL, 10) != 0);
 		
-	}else if( strcmp( name, "enableConstraintHinge" ) == 0 ){
-		SetEnableConstraintHinge( ( int )strtol( value, NULL, 10 ) != 0 );
+	}else if(strcmp(name, "enableConstraintHinge") == 0){
+		SetEnableConstraintHinge((int)strtol(value, NULL, 10) != 0);
 		
-	}else if( strcmp( name, "enableConstraintConeTwist" ) == 0 ){
-		SetEnableConstraintConeTwist( ( int )strtol( value, NULL, 10 ) != 0 );
+	}else if(strcmp(name, "enableConstraintConeTwist") == 0){
+		SetEnableConstraintConeTwist((int)strtol(value, NULL, 10) != 0);
 		
-	}else if( strcmp( name, "enableConstraintSlider" ) == 0 ){
-		SetEnableConstraintSlider( ( int )strtol( value, NULL, 10 ) != 0 );
+	}else if(strcmp(name, "enableConstraintSlider") == 0){
+		SetEnableConstraintSlider((int)strtol(value, NULL, 10) != 0);
 		
-	}else if( strcmp( name, "simulatePropFields" ) == 0 ){
-		SetSimulatePropFields( ( int )strtol( value, NULL, 10 ) != 0 );
+	}else if(strcmp(name, "simulatePropFields") == 0){
+		SetSimulatePropFields((int)strtol(value, NULL, 10) != 0);
 		
 	}else{
-		pBullet->LogWarnFormat( "bullet.xml(%i:%i): Invalid property name %s, ignoring",
-			root->GetLineNumber(), root->GetPositionNumber(), name );
+		pBullet->LogWarnFormat("bullet.xml(%i:%i): Invalid property name %s, ignoring",
+			root->GetLineNumber(), root->GetPositionNumber(), name);
 	}
 }

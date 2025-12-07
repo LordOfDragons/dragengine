@@ -82,40 +82,40 @@ protected:
 	aeWPAPanelRuleInverseKinematic &pPanel;
 	
 public:
-	cBaseAction( aeWPAPanelRuleInverseKinematic &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(aeWPAPanelRuleInverseKinematic &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleInverseKinematic * const rule = ( aeRuleInverseKinematic* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRuleInverseKinematic *rule ) = 0;
+	virtual igdeUndo *OnAction(aeAnimator *animator, aeRuleInverseKinematic *rule) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleInverseKinematic * const rule = ( aeRuleInverseKinematic* )pPanel.GetRule();
-		if( animator && rule ){
-			Update( *animator, *rule );
+		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
+		if(animator && rule){
+			Update(*animator, *rule);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleInverseKinematic & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &, const aeRuleInverseKinematic &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -124,22 +124,22 @@ protected:
 	aeWPAPanelRuleInverseKinematic &pPanel;
 	
 public:
-	cBaseComboBoxListener( aeWPAPanelRuleInverseKinematic &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleInverseKinematic * const rule = ( aeRuleInverseKinematic* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, animator, rule ) ));
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, animator, rule)));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator *animator, aeRuleInverseKinematic *rule ) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleInverseKinematic *rule) = 0;
 };
 
 class cBaseTextFieldListener : public igdeTextFieldListener{
@@ -147,22 +147,22 @@ protected:
 	aeWPAPanelRuleInverseKinematic &pPanel;
 	
 public:
-	cBaseTextFieldListener( aeWPAPanelRuleInverseKinematic &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleInverseKinematic * const rule = ( aeRuleInverseKinematic* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, animator, rule ) ));
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, animator, rule)));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeRuleInverseKinematic *rule ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleInverseKinematic *rule) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -170,134 +170,134 @@ protected:
 	aeWPAPanelRuleInverseKinematic &pPanel;
 	
 public:
-	cBaseEditVectorListener( aeWPAPanelRuleInverseKinematic &panel ) : pPanel( panel ){ }
+	cBaseEditVectorListener(aeWPAPanelRuleInverseKinematic &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleInverseKinematic * const rule = ( aeRuleInverseKinematic* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector, animator, rule ) ));
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editVector, animator, rule)));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator *animator, aeRuleInverseKinematic *rule ) = 0;
+	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator *animator, aeRuleInverseKinematic *rule) = 0;
 };
 
 
 class cEditGoalPosition : public cBaseEditVectorListener{
 public:
-	cEditGoalPosition( aeWPAPanelRuleInverseKinematic &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditGoalPosition(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetGoalPosition() )
-			? new aeURuleIKSetGoalPosition( rule, editVector->GetVector() ) : NULL;
+	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
+		return !editVector->GetVector().IsEqualTo(rule->GetGoalPosition())
+			? new aeURuleIKSetGoalPosition(rule, editVector->GetVector()) : NULL;
 	}
 };
 
 class cEditGoalRotation : public cBaseEditVectorListener{
 public:
-	cEditGoalRotation( aeWPAPanelRuleInverseKinematic &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditGoalRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetGoalOrientation() )
-			? new aeURuleIKSetGoalRotation( rule, editVector->GetVector() ) : NULL;
+	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
+		return !editVector->GetVector().IsEqualTo(rule->GetGoalOrientation())
+			? new aeURuleIKSetGoalRotation(rule, editVector->GetVector()) : NULL;
 	}
 };
 
 class cEditLocalPosition : public cBaseEditVectorListener{
 public:
-	cEditLocalPosition( aeWPAPanelRuleInverseKinematic &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditLocalPosition(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetLocalPosition() )
-			? new aeURuleIKSetLocalPosition( rule, editVector->GetVector() ) : NULL;
+	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
+		return !editVector->GetVector().IsEqualTo(rule->GetLocalPosition())
+			? new aeURuleIKSetLocalPosition(rule, editVector->GetVector()) : NULL;
 	}
 };
 
 class cEditLocalRotation : public cBaseEditVectorListener{
 public:
-	cEditLocalRotation( aeWPAPanelRuleInverseKinematic &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditLocalRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetLocalOrientation() )
-			? new aeURuleIKSetLocalRotation( rule, editVector->GetVector() ) : NULL;
+	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
+		return !editVector->GetVector().IsEqualTo(rule->GetLocalOrientation())
+			? new aeURuleIKSetLocalRotation(rule, editVector->GetVector()) : NULL;
 	}
 };
 
 class cActionAdjustRotation : public cBaseAction{
 public:
-	cActionAdjustRotation( aeWPAPanelRuleInverseKinematic &panel ) : cBaseAction( panel,
-		"Adjust Orientation", NULL, "Determines if the bone orientation is adjusted" ){ }
+	cActionAdjustRotation(aeWPAPanelRuleInverseKinematic &panel) : cBaseAction(panel,
+		"Adjust Orientation", NULL, "Determines if the bone orientation is adjusted"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleInverseKinematic *rule ){
-		return new aeURuleIKSetAdjustOrientation( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleInverseKinematic *rule){
+		return new aeURuleIKSetAdjustOrientation(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleInverseKinematic &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetAdjustOrientation() );
+	virtual void Update(const aeAnimator & , const aeRuleInverseKinematic &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetAdjustOrientation());
 	}
 };
 
 class cComboSolverBone : public cBaseComboBoxListener{
 public:
-	cComboSolverBone( aeWPAPanelRuleInverseKinematic &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboSolverBone(aeWPAPanelRuleInverseKinematic &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleInverseKinematic *rule ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleInverseKinematic *rule){
 		return comboBox->GetText() != rule->GetSolverBone()
-			? new aeURuleIKSetSolverBone( rule, comboBox->GetText() ) : NULL;
+			? new aeURuleIKSetSolverBone(rule, comboBox->GetText()) : NULL;
 	}
 };
 
 class cActionUseSolverBone : public cBaseAction{
 public:
-	cActionUseSolverBone( aeWPAPanelRuleInverseKinematic &panel ) : cBaseAction( panel,
+	cActionUseSolverBone(aeWPAPanelRuleInverseKinematic &panel) : cBaseAction(panel,
 		"Use solver bone", NULL, "Determines if the solver bone is used as reference "
-		"coordinate system or the component itself" ){ }
+		"coordinate system or the component itself"){}
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleInverseKinematic *rule ){
-		return new aeURuleIKSetUseSolverBone( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleInverseKinematic *rule){
+		return new aeURuleIKSetUseSolverBone(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleInverseKinematic &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetUseSolverBone() );
+	virtual void Update(const aeAnimator & , const aeRuleInverseKinematic &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetUseSolverBone());
 	}
 };
 
 class cTextReachRange : public cBaseTextFieldListener{
 public:
-	cTextReachRange( aeWPAPanelRuleInverseKinematic &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextReachRange(aeWPAPanelRuleInverseKinematic &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleInverseKinematic *rule ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleInverseKinematic *rule){
 		const float value = textField->GetFloat();
-		return fabsf( rule->GetReachRange() - value ) > FLOAT_SAFE_EPSILON
-			? new aeURuleIKSetReachRange( rule, value ) : NULL;
+		return fabsf(rule->GetReachRange() - value) > FLOAT_SAFE_EPSILON
+			? new aeURuleIKSetReachRange(rule, value) : NULL;
 	}
 };
 
 class cComboReachBone : public cBaseComboBoxListener{
 public:
-	cComboReachBone( aeWPAPanelRuleInverseKinematic &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboReachBone(aeWPAPanelRuleInverseKinematic &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleInverseKinematic *rule ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleInverseKinematic *rule){
 		return comboBox->GetText() != rule->GetReachBone()
-			? new aeURuleIKSetReachBone( rule, comboBox->GetText() ) : NULL;
+			? new aeURuleIKSetReachBone(rule, comboBox->GetText()) : NULL;
 	}
 };
 
 class cEditReachCenter : public cBaseEditVectorListener{
 public:
-	cEditReachCenter( aeWPAPanelRuleInverseKinematic &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditReachCenter(aeWPAPanelRuleInverseKinematic &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule ){
-		return ! editVector->GetVector().IsEqualTo( rule->GetReachCenter() )
-			? new aeURuleIKSetReachCenter( rule, editVector->GetVector() ) : NULL;
+	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule){
+		return !editVector->GetVector().IsEqualTo(rule->GetReachCenter())
+			? new aeURuleIKSetReachCenter(rule, editVector->GetVector()) : NULL;
 	}
 };
 
@@ -311,50 +311,50 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAPanelRuleInverseKinematic::aeWPAPanelRuleInverseKinematic( aeWPRule &wpRule ) :
-aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertInverseKinematic )
+aeWPAPanelRuleInverseKinematic::aeWPAPanelRuleInverseKinematic(aeWPRule &wpRule) :
+aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertInverseKinematic)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Inverse Kinematic:" );
+	helper.GroupBox(*this, groupBox, "Inverse Kinematic:");
 	
-	helper.EditVector( groupBox, "Goal Position:", "Sets the position to reach",
-		pEditGoalPos, new cEditGoalPosition( *this ) );
-	helper.EditVector( groupBox, "Goal Orientation:", "Sets the orientation to reach",
-		pEditGoalRot, new cEditGoalRotation( *this ) );
-	helper.CheckBox( groupBox, pChkAdjustRotation, new cActionAdjustRotation( *this ), true );
+	helper.EditVector(groupBox, "Goal Position:", "Sets the position to reach",
+		pEditGoalPos, new cEditGoalPosition(*this));
+	helper.EditVector(groupBox, "Goal Orientation:", "Sets the orientation to reach",
+		pEditGoalRot, new cEditGoalRotation(*this));
+	helper.CheckBox(groupBox, pChkAdjustRotation, new cActionAdjustRotation(*this), true);
 	
-	helper.EditVector( groupBox, "Local Position:",
+	helper.EditVector(groupBox, "Local Position:",
 		"Sets the goal position relative to the bone local coordinate system",
-		pEditLocalPos, new cEditLocalPosition( *this ) );
-	helper.EditVector( groupBox, "Local Orientation:",
+		pEditLocalPos, new cEditLocalPosition(*this));
+	helper.EditVector(groupBox, "Local Orientation:",
 		"Sets the goal orientation relative to the bone local coordinate system",
-		pEditLocalRot, new cEditLocalRotation( *this ) );
+		pEditLocalRot, new cEditLocalRotation(*this));
 	
-	helper.ComboBoxFilter( groupBox, "Solver Bone:", true,
+	helper.ComboBoxFilter(groupBox, "Solver Bone:", true,
 		"Sets the solver bone to use as reference coordinate system",
-		pCBSolverBone, new cComboSolverBone( *this ) );
+		pCBSolverBone, new cComboSolverBone(*this));
 	pCBSolverBone->SetDefaultSorter();
-	helper.CheckBox( groupBox, pChkUseSolverBone, new cActionUseSolverBone( *this ), true );
+	helper.CheckBox(groupBox, pChkUseSolverBone, new cActionUseSolverBone(*this), true);
 	
 	
 	// reach
-	helper.GroupBox( *this, groupBox, "Reach:", true );
+	helper.GroupBox(*this, groupBox, "Reach:", true);
 	
-	helper.EditFloat( groupBox, "Range:",
+	helper.EditFloat(groupBox, "Range:",
 		"Maximum allowed range for IK target to be located from the reach center",
-		pEditReachRange, new cTextReachRange( *this ) );
+		pEditReachRange, new cTextReachRange(*this));
 	
-	helper.ComboBoxFilter( groupBox, "Bone:", true,
+	helper.ComboBoxFilter(groupBox, "Bone:", true,
 		"Bone to use as center for reach calculation or empty string to use constant center",
-		pCBReachBone, new cComboReachBone( *this ) );
+		pCBReachBone, new cComboReachBone(*this));
 	pCBReachBone->SetDefaultSorter();
 	
-	helper.EditVector( groupBox, "Center:", "Center to use for reach calculation if bone is not set",
-		pEditReachCenter, new cEditReachCenter( *this ) );
+	helper.EditVector(groupBox, "Center:", "Center to use for reach calculation if bone is not set",
+		pEditReachCenter, new cEditReachCenter(*this));
 }
 
 aeWPAPanelRuleInverseKinematic::~aeWPAPanelRuleInverseKinematic(){
@@ -368,20 +368,20 @@ aeWPAPanelRuleInverseKinematic::~aeWPAPanelRuleInverseKinematic(){
 void aeWPAPanelRuleInverseKinematic::UpdateRigBoneList(){
 	aeWPAPanelRule::UpdateRigBoneList();
 	
-	const decString selectionSolver( pCBSolverBone->GetText() );
-	const decString selectionReach( pCBReachBone->GetText() );
+	const decString selectionSolver(pCBSolverBone->GetText());
+	const decString selectionReach(pCBReachBone->GetText());
 	
 	pCBSolverBone->RemoveAllItems();
 	pCBReachBone->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deRig * const rig = GetAnimator()->GetEngineRig();
-		if( rig ){
+		if(rig){
 			const int count = rig->GetBoneCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBSolverBone->AddItem( rig->GetBoneAt( i ).GetName() );
-				pCBReachBone->AddItem( rig->GetBoneAt( i ).GetName() );
+			for(i=0; i<count; i++){
+				pCBSolverBone->AddItem(rig->GetBoneAt(i).GetName());
+				pCBReachBone->AddItem(rig->GetBoneAt(i).GetName());
 			}
 		}
 		pCBSolverBone->SortItems();
@@ -389,47 +389,47 @@ void aeWPAPanelRuleInverseKinematic::UpdateRigBoneList(){
 	}
 	
 	pCBSolverBone->StoreFilterItems();
-	pCBSolverBone->SetText( selectionSolver );
+	pCBSolverBone->SetText(selectionSolver);
 	
 	pCBReachBone->StoreFilterItems();
-	pCBReachBone->SetText( selectionReach );
+	pCBReachBone->SetText(selectionReach);
 }
 
 void aeWPAPanelRuleInverseKinematic::UpdateRule(){
 	aeWPAPanelRule::UpdateRule();
 	
-	aeRuleInverseKinematic * const rule = ( aeRuleInverseKinematic* )GetRule();
+	aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)GetRule();
 	
-	if( rule ){
-		pEditGoalPos->SetVector( rule->GetGoalPosition() );
-		pEditGoalRot->SetVector( rule->GetGoalOrientation() );
-		pEditLocalPos->SetVector( rule->GetLocalPosition() );
-		pEditLocalRot->SetVector( rule->GetLocalOrientation() );
-		pCBSolverBone->SetText( rule->GetSolverBone() );
-		pEditReachRange->SetFloat( rule->GetReachRange() );
-		pEditReachCenter->SetVector( rule->GetReachCenter() );
-		pCBReachBone->SetText( rule->GetReachBone() );
+	if(rule){
+		pEditGoalPos->SetVector(rule->GetGoalPosition());
+		pEditGoalRot->SetVector(rule->GetGoalOrientation());
+		pEditLocalPos->SetVector(rule->GetLocalPosition());
+		pEditLocalRot->SetVector(rule->GetLocalOrientation());
+		pCBSolverBone->SetText(rule->GetSolverBone());
+		pEditReachRange->SetFloat(rule->GetReachRange());
+		pEditReachCenter->SetVector(rule->GetReachCenter());
+		pCBReachBone->SetText(rule->GetReachBone());
 		
 	}else{
-		pEditGoalPos->SetVector( decVector() );
-		pEditGoalRot->SetVector( decVector() );
-		pEditLocalPos->SetVector( decVector() );
-		pEditLocalRot->SetVector( decVector() );
+		pEditGoalPos->SetVector(decVector());
+		pEditGoalRot->SetVector(decVector());
+		pEditLocalPos->SetVector(decVector());
+		pEditLocalRot->SetVector(decVector());
 		pCBSolverBone->ClearText();
 		pEditReachRange->ClearText();
-		pEditReachCenter->SetVector( decVector() );
+		pEditReachCenter->SetVector(decVector());
 		pCBReachBone->ClearText();
 	}
 	
 	const bool enabled = rule;
-	pEditGoalPos->SetEnabled( enabled );
-	pEditGoalRot->SetEnabled( enabled );
-	pEditLocalPos->SetEnabled( enabled );
-	pEditLocalRot->SetEnabled( enabled );
-	pCBSolverBone->SetEnabled( enabled );
-	pEditReachRange->SetEnabled( enabled );
-	pEditReachCenter->SetEnabled( enabled );
-	pCBReachBone->SetEnabled( enabled );
+	pEditGoalPos->SetEnabled(enabled);
+	pEditGoalRot->SetEnabled(enabled);
+	pEditLocalPos->SetEnabled(enabled);
+	pEditLocalRot->SetEnabled(enabled);
+	pCBSolverBone->SetEnabled(enabled);
+	pEditReachRange->SetEnabled(enabled);
+	pEditReachCenter->SetEnabled(enabled);
+	pCBReachBone->SetEnabled(enabled);
 	
 	pChkAdjustRotation->GetAction()->Update();
 	pChkUseSolverBone->GetAction()->Update();
@@ -438,13 +438,13 @@ void aeWPAPanelRuleInverseKinematic::UpdateRule(){
 void aeWPAPanelRuleInverseKinematic::UpdateTargetList(){
 	aeWPAPanelRule::UpdateTargetList();
 	
-	aeRuleInverseKinematic * const rule = ( aeRuleInverseKinematic* )GetRule();
-	if( rule ){
-		AddTarget( "Goal Position", &rule->GetTargetGoalPosition() );
-		AddTarget( "Goal Orientation", &rule->GetTargetGoalOrientation() );
-		AddTarget( "Local Position", &rule->GetTargetLocalPosition() );
-		AddTarget( "Local Orientation", &rule->GetTargetLocalOrientation() );
-		AddTarget( "Reach Range", &rule->GetTargetReachRange() );
-		AddTarget( "Reach Center", &rule->GetTargetReachCenter() );
+	aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)GetRule();
+	if(rule){
+		AddTarget("Goal Position", &rule->GetTargetGoalPosition());
+		AddTarget("Goal Orientation", &rule->GetTargetGoalOrientation());
+		AddTarget("Local Position", &rule->GetTargetLocalPosition());
+		AddTarget("Local Orientation", &rule->GetTargetLocalOrientation());
+		AddTarget("Reach Range", &rule->GetTargetReachRange());
+		AddTarget("Reach Center", &rule->GetTargetReachCenter());
 	}
 }

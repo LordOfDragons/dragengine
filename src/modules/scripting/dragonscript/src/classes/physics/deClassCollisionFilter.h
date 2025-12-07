@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new class. */
-	deClassCollisionFilter( deScriptingDragonScript *ds );
+	deClassCollisionFilter(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
 	virtual ~deClassCollisionFilter();
 	/*@}*/
@@ -54,12 +54,12 @@ public:
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** \brief Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Retrieves the collision filter in the given real object. */
-	const decCollisionFilter &GetCollisionFilter( dsRealObject *myself ) const;
+	const decCollisionFilter &GetCollisionFilter(dsRealObject *myself) const;
 	/** \brief Pushes the collision filter onto the stack. */
-	void PushCollisionFilter( dsRunTime *rt, const decCollisionFilter &collisionFilter );
+	void PushCollisionFilter(dsRunTime *rt, const decCollisionFilter &collisionFilter);
 	/*@}*/
 	
 private:
@@ -69,29 +69,29 @@ private:
 		dsClass *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfNewMask );
-	DEF_NATFUNC( nfNewCategoryFilter );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfNewMask);
+	DEF_NATFUNC(nfNewCategoryFilter);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetCategory );
-	DEF_NATFUNC( nfGetFilter );
+	DEF_NATFUNC(nfGetCategory);
+	DEF_NATFUNC(nfGetFilter);
 	
-	DEF_NATFUNC( nfCollides );
-	DEF_NATFUNC( nfCollidesNot );
+	DEF_NATFUNC(nfCollides);
+	DEF_NATFUNC(nfCollidesNot);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfToString);
 #undef DEF_NATFUNC
 };
 

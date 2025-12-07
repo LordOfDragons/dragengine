@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetPropertyValues::gdeUOCSetPropertyValues( gdeObjectClass *objectClass,
-const decStringDictionary &newValues ) :
-pObjectClass( NULL )
+gdeUOCSetPropertyValues::gdeUOCSetPropertyValues(gdeObjectClass *objectClass,
+const decStringDictionary &newValues) :
+pObjectClass(NULL)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set property values" );
+	SetShortInfo("Object class set property values");
 	
 	pOldValues = objectClass->GetPropertyValues();
 	pNewValues = newValues;
@@ -57,7 +57,7 @@ pObjectClass( NULL )
 }
 
 gdeUOCSetPropertyValues::~gdeUOCSetPropertyValues(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }

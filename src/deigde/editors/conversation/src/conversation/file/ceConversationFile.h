@@ -56,10 +56,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation file. */
-	ceConversationFile( const char *id = "Group" );
+	ceConversationFile(const char *id = "Group");
 	
 	/** \brief Create copy of conversation file. */
-	ceConversationFile( const ceConversationFile &file );
+	ceConversationFile(const ceConversationFile &file);
 	
 	/** \brief Clean up conversation file. */
 	virtual ~ceConversationFile();
@@ -73,13 +73,13 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set parent conversation or \em NULL if not set. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	/*@}*/
 	
 	
@@ -90,10 +90,10 @@ public:
 	inline const ceConversationTopicList &GetTopicList() const{ return pTopics; }
 	
 	/** \brief Add topic. */
-	void AddTopic( ceConversationTopic *topic );
+	void AddTopic(ceConversationTopic *topic);
 	
 	/** \brief Remove topic. */
-	void RemoveTopic( ceConversationTopic *topic );
+	void RemoveTopic(ceConversationTopic *topic);
 	
 	/** \brief Remove all topics. */
 	void RemoveAllTopics();
@@ -102,7 +102,7 @@ public:
 	inline ceConversationTopic *GetActiveTopic() const{ return pActiveTopic; }
 	
 	/** \brief Set active topic or \em NULL if none is active. */
-	void SetActiveTopic( ceConversationTopic *topic );
+	void SetActiveTopic(ceConversationTopic *topic);
 	/*@}*/
 };
 

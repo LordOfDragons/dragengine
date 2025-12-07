@@ -41,25 +41,25 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiNavSpace::dedaiNavSpace( deDEAIModule &deai, const deNavigationSpace &navigationSpace ) :
-pDEAI( deai ),
-pNavigationSpace( navigationSpace ),
-pParentWorld( NULL ),
-pSpace( NULL )
+dedaiNavSpace::dedaiNavSpace(deDEAIModule &deai, const deNavigationSpace &navigationSpace) :
+pDEAI(deai),
+pNavigationSpace(navigationSpace),
+pParentWorld(NULL),
+pSpace(NULL)
 {
 	try{
-		pSpace = new dedaiSpace( deai );
-		pSpace->SetOwnerNavSpace( this );
-		pSpace->SetPosition( navigationSpace.GetPosition() );
-		pSpace->SetOrientation( navigationSpace.GetOrientation() );
-		pSpace->SetLayerNumber( navigationSpace.GetLayer() );
-		pSpace->SetType( navigationSpace.GetType() );
-		pSpace->SetSnapDistance( navigationSpace.GetSnapDistance() );
-		pSpace->SetSnapAngle( navigationSpace.GetSnapAngle() );
-		pSpace->SetBlockerShape( navigationSpace.GetBlockerShapeList() );
-		pSpace->SetBlockingPriority( navigationSpace.GetBlockingPriority() );
+		pSpace = new dedaiSpace(deai);
+		pSpace->SetOwnerNavSpace(this);
+		pSpace->SetPosition(navigationSpace.GetPosition());
+		pSpace->SetOrientation(navigationSpace.GetOrientation());
+		pSpace->SetLayerNumber(navigationSpace.GetLayer());
+		pSpace->SetType(navigationSpace.GetType());
+		pSpace->SetSnapDistance(navigationSpace.GetSnapDistance());
+		pSpace->SetSnapAngle(navigationSpace.GetSnapAngle());
+		pSpace->SetBlockerShape(navigationSpace.GetBlockerShapeList());
+		pSpace->SetBlockingPriority(navigationSpace.GetBlockingPriority());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -74,9 +74,9 @@ dedaiNavSpace::~dedaiNavSpace(){
 // Management
 ///////////////
 
-void dedaiNavSpace::SetParentWorld( dedaiWorld *world ){
+void dedaiNavSpace::SetParentWorld(dedaiWorld *world){
 	pParentWorld = world;
-	pSpace->SetParentWorld( world );
+	pSpace->SetParentWorld(world);
 }
 
 
@@ -85,32 +85,32 @@ void dedaiNavSpace::SetParentWorld( dedaiWorld *world ){
 //////////////////
 
 void dedaiNavSpace::PositionChanged(){
-	pSpace->SetPosition( pNavigationSpace.GetPosition() );
+	pSpace->SetPosition(pNavigationSpace.GetPosition());
 }
 
 void dedaiNavSpace::OrientationChanged(){
-	pSpace->SetOrientation( pNavigationSpace.GetOrientation() );
+	pSpace->SetOrientation(pNavigationSpace.GetOrientation());
 }
 
 void dedaiNavSpace::LayerChanged(){
-	pSpace->SetLayerNumber( pNavigationSpace.GetLayer() );
+	pSpace->SetLayerNumber(pNavigationSpace.GetLayer());
 }
 
 void dedaiNavSpace::TypeChanged(){
-	pSpace->SetType( pNavigationSpace.GetType() );
+	pSpace->SetType(pNavigationSpace.GetType());
 }
 
 void dedaiNavSpace::SnappingChanged(){
-	pSpace->SetSnapDistance( pNavigationSpace.GetSnapDistance() );
-	pSpace->SetSnapAngle( pNavigationSpace.GetSnapAngle() );
+	pSpace->SetSnapDistance(pNavigationSpace.GetSnapDistance());
+	pSpace->SetSnapAngle(pNavigationSpace.GetSnapAngle());
 }
 
 void dedaiNavSpace::BlockerShapeChanged(){
-	pSpace->SetBlockerShape( pNavigationSpace.GetBlockerShapeList() );
+	pSpace->SetBlockerShape(pNavigationSpace.GetBlockerShapeList());
 }
 
 void dedaiNavSpace::BlockingPriorityChanged(){
-	pSpace->SetBlockingPriority( pNavigationSpace.GetBlockingPriority() );
+	pSpace->SetBlockingPriority(pNavigationSpace.GetBlockingPriority());
 }
 
 void dedaiNavSpace::LayoutChanged(){
@@ -123,9 +123,9 @@ void dedaiNavSpace::LayoutChanged(){
 //////////////////////
 
 void dedaiNavSpace::pCleanUp(){
-	SetParentWorld( NULL );
+	SetParentWorld(NULL);
 	
-	if( pSpace ){
+	if(pSpace){
 		delete pSpace;
 	}
 }

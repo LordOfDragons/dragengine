@@ -47,20 +47,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAIfElse::ceWPTTIMAIfElse( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAIfElse *action ) :
-ceWPTTIMAction( windowMain, etActionIfElse, conversation, action ),
-pElse( NULL )
+ceWPTTIMAIfElse::ceWPTTIMAIfElse(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAIfElse *action) :
+ceWPTTIMAction(windowMain, etActionIfElse, conversation, action),
+pElse(NULL)
 {
-	SetIcon( windowMain.GetIconActionIfElse() );
-	SetText( "If-Else" );
+	SetIcon(windowMain.GetIconActionIfElse());
+	SetText("If-Else");
 	
 	try{
-		pElse = new ceWPTTIMAIfElseElse( windowMain, conversation, action->GetElseActions() );
-		AddChild( pElse );
+		pElse = new ceWPTTIMAIfElseElse(windowMain, conversation, action->GetElseActions());
+		AddChild(pElse);
 		
-	}catch( const deException & ){
-		if( pElse ){
+	}catch(const deException &){
+		if(pElse){
 			pElse->FreeReference();
 		}
 		throw;
@@ -77,18 +77,18 @@ ceWPTTIMAIfElse::~ceWPTTIMAIfElse(){
 // Management
 ///////////////
 
-ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElse::GetIfCaseChild( ceCAIfElseCase *ifCase ) const{
+ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElse::GetIfCaseChild(ceCAIfElseCase *ifCase) const{
 	const int count = GetChildCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		ceWPTTreeItemModel * const child = GetChildAt( i );
-		if( child->GetType() != etActionIfElseCase ){
+	for(i=0; i<count; i++){
+		ceWPTTreeItemModel * const child = GetChildAt(i);
+		if(child->GetType() != etActionIfElseCase){
 			continue;
 		}
 		
-		ceWPTTIMAIfElseIfCase * const childIfCase = ( ceWPTTIMAIfElseIfCase* )child;
-		if( childIfCase->GetIfCase() == ifCase ){
+		ceWPTTIMAIfElseIfCase * const childIfCase = (ceWPTTIMAIfElseIfCase*)child;
+		if(childIfCase->GetIfCase() == ifCase){
 			return childIfCase;
 		}
 	}
@@ -98,19 +98,19 @@ ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElse::GetIfCaseChild( ceCAIfElseCase *ifCase )
 
 void ceWPTTIMAIfElse::Update(){
 	const ceCAIfElse &ifElse = *GetActionIfElse();
-	SetExpanded( ifElse.GetTIMExpanded() );
+	SetExpanded(ifElse.GetTIMExpanded());
 	
 	pUpdateIfCases();
 	
 	const int countIfCases = ifElse.GetCases().GetCount();
-	if( GetChildAt( countIfCases ) != pElse ){
-		MoveChild( pElse, countIfCases );
+	if(GetChildAt(countIfCases) != pElse){
+		MoveChild(pElse, countIfCases);
 	}
 	pElse->Update();
 	
 	const int count = countIfCases + 1;
-	while( GetChildCount() > count ){
-		RemoveChild( GetChildAt( GetChildCount() - 1 ) );
+	while(GetChildCount() > count){
+		RemoveChild(GetChildAt(GetChildCount() - 1));
 	}
 }
 
@@ -118,16 +118,16 @@ void ceWPTTIMAIfElse::UpdateActionLists(){
 	const int count = GetChildCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		ceWPTTreeItemModel * const child = GetChildAt( i );
+	for(i=0; i<count; i++){
+		ceWPTTreeItemModel * const child = GetChildAt(i);
 		
-		switch( child->GetType() ){
+		switch(child->GetType()){
 		case etActionIfElseCase:
-			( ( ceWPTTIMAIfElseIfCase* )child )->UpdateActionLists();
+			((ceWPTTIMAIfElseIfCase*)child)->UpdateActionLists();
 			break;
 			
 		case etActionIfElseElse:
-			( ( ceWPTTIMAIfElseElse* )child )->UpdateActions();
+			((ceWPTTIMAIfElseElse*)child)->UpdateActions();
 			break;
 			
 		default:
@@ -137,11 +137,11 @@ void ceWPTTIMAIfElse::UpdateActionLists(){
 }
 
 void ceWPTTIMAIfElse::OnExpandedChanged(){
-	GetActionIfElse()->SetTIMExpanded( GetExpanded() );
+	GetActionIfElse()->SetTIMExpanded(GetExpanded());
 }
 
-void ceWPTTIMAIfElse::OnContextMenu( igdeMenuCascade &contextMenu ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMAIfElse::OnContextMenu(igdeMenuCascade &contextMenu){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -150,17 +150,17 @@ void ceWPTTIMAIfElse::OnContextMenu( igdeMenuCascade &contextMenu ){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+	if(!topic){
 		return;
 	}
 	
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCaseAdd(
-		windowMain, conversation, *topic, ifElse ), true );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseAdd(
+		windowMain, conversation, *topic, ifElse), true);
+	helper.MenuSeparator(contextMenu);
 	
-	ceWPTTIMAction::OnContextMenu( contextMenu );
+	ceWPTTIMAction::OnContextMenu(contextMenu);
 }
 
 
@@ -178,20 +178,20 @@ void ceWPTTIMAIfElse::pUpdateIfCases(){
 	const int ifCaseCount = ifCases.GetCount();
 	int i, j;
 	
-	for( i=0; i<ifCaseCount; i++ ){
-		ceCAIfElseCase * const ifCase = ifCases.GetAt( i );
+	for(i=0; i<ifCaseCount; i++){
+		ceCAIfElseCase * const ifCase = ifCases.GetAt(i);
 		
 		// find item matching ifCase if present
 		ceWPTTIMAIfElseIfCase *model = NULL;
 		const int childCount = GetChildCount();
-		for( j=i; j<childCount; j++ ){
-			ceWPTTreeItemModel * const child = GetChildAt( j );
-			if( child->GetType() != etActionIfElseCase ){
+		for(j=i; j<childCount; j++){
+			ceWPTTreeItemModel * const child = GetChildAt(j);
+			if(child->GetType() != etActionIfElseCase){
 				continue;
 			}
 			
-			ceWPTTIMAIfElseIfCase * const childIfCase = ( ceWPTTIMAIfElseIfCase* )child;
-			if( childIfCase->GetIfCase() == ifCase ){
+			ceWPTTIMAIfElseIfCase * const childIfCase = (ceWPTTIMAIfElseIfCase*)child;
+			if(childIfCase->GetIfCase() == ifCase){
 				model = childIfCase;
 				break;
 			}
@@ -199,22 +199,22 @@ void ceWPTTIMAIfElse::pUpdateIfCases(){
 		
 		// if model exists move it to the right location if required and update it.
 		// if model does not exist create it and add it at the current location.
-		if( model ){
-			if( j != i ){
-				MoveChild( j, i );
+		if(model){
+			if(j != i){
+				MoveChild(j, i);
 			}
 			
-			model->SetIndex( i );
+			model->SetIndex(i);
 			model->Update();
 			
 		}else{
-			model = new ceWPTTIMAIfElseIfCase( windowMain, conversation, ifElse, ifCase, i );
+			model = new ceWPTTIMAIfElseIfCase(windowMain, conversation, ifElse, ifCase, i);
 			
 			try{
-				InsertChild( model, i );
+				InsertChild(model, i);
 				model->Update();
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				model->FreeReference();
 				throw;
 			}

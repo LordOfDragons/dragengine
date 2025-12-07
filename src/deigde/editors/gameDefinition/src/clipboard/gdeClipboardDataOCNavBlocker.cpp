@@ -38,12 +38,12 @@ const char * const gdeClipboardDataOCNavBlocker::TYPE_NAME = "OCNavBlocker";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCNavBlocker::gdeClipboardDataOCNavBlocker( gdeOCNavigationBlocker *navBlocker ) :
-igdeClipboardData( TYPE_NAME ),
-pNavBlocker( NULL )
+gdeClipboardDataOCNavBlocker::gdeClipboardDataOCNavBlocker(gdeOCNavigationBlocker *navBlocker) :
+igdeClipboardData(TYPE_NAME),
+pNavBlocker(NULL)
 {
-	if( ! navBlocker ){
-		DETHROW( deeInvalidParam );
+	if(!navBlocker){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNavBlocker = navBlocker;
@@ -51,7 +51,7 @@ pNavBlocker( NULL )
 }
 
 gdeClipboardDataOCNavBlocker::~gdeClipboardDataOCNavBlocker(){
-	if( pNavBlocker ){
+	if(pNavBlocker){
 		pNavBlocker->FreeReference();
 	}
 }

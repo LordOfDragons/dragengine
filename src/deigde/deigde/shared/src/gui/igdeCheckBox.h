@@ -47,15 +47,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create checkbox. */
-	igdeCheckBox( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		eButtonStyle = ebsNormal );
+	igdeCheckBox(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		eButtonStyle = ebsNormal);
 	
 	/** \brief Create checkbox. */
-	igdeCheckBox( igdeEnvironment &environment, const char *text, const char *description,
-		igdeIcon *icon, eButtonStyle = ebsNormal );
+	igdeCheckBox(igdeEnvironment &environment, const char *text, const char *description,
+		igdeIcon *icon, eButtonStyle = ebsNormal);
 	
 	/** \brief Create checkbox. */
-	igdeCheckBox( igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal );
+	igdeCheckBox(igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal);
 	
 	
 	
@@ -78,12 +78,12 @@ public:
 	inline bool GetChecked() const{ return pChecked; }
 	
 	/** \brief Set if menu entry is checked. */
-	void SetChecked( bool checked );
+	void SetChecked(bool checked);
 	
 	
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	/*@}*/
 	
 	

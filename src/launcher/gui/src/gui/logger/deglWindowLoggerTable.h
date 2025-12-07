@@ -35,7 +35,7 @@
  * forground color.
  */
 class deglWindowLoggerTable : public FXTable{
-	FXDECLARE( deglWindowLoggerTable )
+	FXDECLARE(deglWindowLoggerTable)
 	
 protected:
 	deglWindowLoggerTable();
@@ -46,9 +46,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new table. */
-	deglWindowLoggerTable( FXComposite *p, FXObject *tgt = nullptr, FXSelector sel = 0, FXuint opts = 0, FXint x = 0,
+	deglWindowLoggerTable(FXComposite *p, FXObject *tgt = nullptr, FXSelector sel = 0, FXuint opts = 0, FXint x = 0,
 	FXint y = 0, FXint w = 0, FXint h = 0, FXint pl = DEFAULT_MARGIN, FXint pr = DEFAULT_MARGIN,
-	FXint pt = DEFAULT_MARGIN, FXint pb = DEFAULT_MARGIN );
+	FXint pt = DEFAULT_MARGIN, FXint pb = DEFAULT_MARGIN);
 	/** Cleans up the table. */
 	virtual ~deglWindowLoggerTable();
 	/*@}*/
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set cell text color and font. */
-	void SetCellTextProps( int row, int col, FXColor color, FXFont *font );
+	void SetCellTextProps(int row, int col, FXColor color, FXFont *font);
 	
 	/** Create item. */
-	virtual FXTableItem *createItem( const FXString &text, FXIcon *icon, void *ptr );
+	virtual FXTableItem *createItem(const FXString &text, FXIcon *icon, void *ptr);
 	/*@}*/
 };
 

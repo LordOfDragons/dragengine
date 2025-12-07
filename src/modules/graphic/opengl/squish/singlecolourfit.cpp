@@ -45,35 +45,35 @@ struct SingleColourLookup
 
 #include "singlecolourlookup.inl"
 
-static int FloatToInt( float a, int limit )
+static int FloatToInt(float a, int limit)
 {
 	// use ANSI round-to-zero behaviour to get round-to-nearest
-	int i = ( int )( a + 0.5f );
+	int i = (int)(a + 0.5f);
 
 	// clamp to the limit
-	if( i < 0 )
+	if(i < 0)
 		i = 0;
-	else if( i > limit )
+	else if(i > limit)
 		i = limit; 
 
 	// done
 	return i;
 }
 
-SingleColourFit::SingleColourFit( ColourSet const* colours, int flags )
-  : ColourFit( colours, flags )
+SingleColourFit::SingleColourFit(ColourSet const* colours, int flags)
+  : ColourFit(colours, flags)
 {
 	// grab the single colour
 	Vec3 const* values = m_colours->GetPoints();
-	m_colour[0] = ( u8 )FloatToInt( 255.0f*values->X(), 255 );
-	m_colour[1] = ( u8 )FloatToInt( 255.0f*values->Y(), 255 );
-	m_colour[2] = ( u8 )FloatToInt( 255.0f*values->Z(), 255 );
+	m_colour[0] = (u8)FloatToInt(255.0f*values->X(), 255);
+	m_colour[1] = (u8)FloatToInt(255.0f*values->Y(), 255);
+	m_colour[2] = (u8)FloatToInt(255.0f*values->Z(), 255);
 		
 	// initialise the best error
 	m_besterror = INT_MAX;
 }
 
-void SingleColourFit::Compress3( void* block )
+void SingleColourFit::Compress3(void* block)
 {
 	// build the table of lookups
 	SingleColourLookup const* const lookups[] = 
@@ -84,24 +84,24 @@ void SingleColourFit::Compress3( void* block )
 	};
 	
 	// find the best end-points and index
-	ComputeEndPoints( lookups );
+	ComputeEndPoints(lookups);
 	
 	// build the block if we win
-	if( m_error < m_besterror )
+	if(m_error < m_besterror)
 	{
 		// remap the indices
 		u8 indices[16];
-		m_colours->RemapIndices( &m_index, indices );
+		m_colours->RemapIndices(&m_index, indices);
 		
 		// save the block
-		WriteColourBlock3( m_start, m_end, indices, block );
+		WriteColourBlock3(m_start, m_end, indices, block);
 
 		// save the error
 		m_besterror = m_error;
 	}
 }
 
-void SingleColourFit::Compress4( void* block )
+void SingleColourFit::Compress4(void* block)
 {
 	// build the table of lookups
 	SingleColourLookup const* const lookups[] = 
@@ -112,33 +112,33 @@ void SingleColourFit::Compress4( void* block )
 	};
 	
 	// find the best end-points and index
-	ComputeEndPoints( lookups );
+	ComputeEndPoints(lookups);
 	
 	// build the block if we win
-	if( m_error < m_besterror )
+	if(m_error < m_besterror)
 	{
 		// remap the indices
 		u8 indices[16];
-		m_colours->RemapIndices( &m_index, indices );
+		m_colours->RemapIndices(&m_index, indices);
 		
 		// save the block
-		WriteColourBlock4( m_start, m_end, indices, block );
+		WriteColourBlock4(m_start, m_end, indices, block);
 
 		// save the error
 		m_besterror = m_error;
 	}
 }
 
-void SingleColourFit::ComputeEndPoints( SingleColourLookup const* const* lookups )
+void SingleColourFit::ComputeEndPoints(SingleColourLookup const* const* lookups)
 {
 	// check each index combination (endpoint or intermediate)
 	m_error = INT_MAX;
-	for( int index = 0; index < 2; ++index )
+	for(int index = 0; index < 2; ++index)
 	{
 		// check the error for this codebook index
 		SourceBlock const* sources[3];
 		int error = 0;
-		for( int channel = 0; channel < 3; ++channel )
+		for(int channel = 0; channel < 3; ++channel)
 		{
 			// grab the lookup table and index for this channel
 			SingleColourLookup const* lookup = lookups[channel];
@@ -153,19 +153,19 @@ void SingleColourFit::ComputeEndPoints( SingleColourLookup const* const* lookups
 		}
 		
 		// keep it if the error is lower
-		if( error < m_error )
+		if(error < m_error)
 		{
 			m_start = Vec3(
-				( float )sources[0]->start/31.0f, 
-				( float )sources[1]->start/63.0f, 
-				( float )sources[2]->start/31.0f
-			);
+				(float)sources[0]->start/31.0f, 
+				(float)sources[1]->start/63.0f, 
+				(float)sources[2]->start/31.0f
+);
 			m_end = Vec3(
-				( float )sources[0]->end/31.0f, 
-				( float )sources[1]->end/63.0f, 
-				( float )sources[2]->end/31.0f
-			);
-			m_index = ( u8 )( 2*index );
+				(float)sources[0]->end/31.0f, 
+				(float)sources[1]->end/63.0f, 
+				(float)sources[2]->end/31.0f
+);
+			m_index = (u8)(2*index);
 			m_error = error;
 		}
 	}

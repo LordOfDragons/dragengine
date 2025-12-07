@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWindowChangelogListener( meWindowChangelog &panel );
+	meWindowChangelogListener(meWindowChangelog &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWindowChangelogListener();
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( meWorld *world );
+	virtual void StateChanged(meWorld *world);
 	
 	/** \brief Height terrain sector state ( changed, saved, filename ) changed. */
-	virtual void HTStateChanged( meWorld *world );
+	virtual void HTStateChanged(meWorld *world);
 	/*@}*/
 };
 

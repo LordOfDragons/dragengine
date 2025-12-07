@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvasView( deGraphicOpenGl &ogl, deCanvasView &canvas );
+	deoglCanvasView(deGraphicOpenGl &ogl, deCanvasView &canvas);
 	
 	/** Clean up peer. */
 	virtual ~deoglCanvasView();
@@ -94,10 +94,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglCanvasViewListener *listener );
+	void AddListener(deoglCanvasViewListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglCanvasViewListener *listener );
+	void RemoveListener(deoglCanvasViewListener *listener);
 	
 	/** Notify all canvas view has been destroyed. */
 	void NotifyDestroyed();

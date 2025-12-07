@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create caches. */
-	deoalCaches( deoalAudioThread &audioThread );
+	deoalCaches(deoalAudioThread &audioThread);
 	
 	/** \brief Cleans up caches. */
 	~deoalCaches();

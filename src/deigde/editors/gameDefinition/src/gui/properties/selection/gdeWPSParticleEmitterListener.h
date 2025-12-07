@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSParticleEmitterListener( gdeWPSParticleEmitter &panel );
+	gdeWPSParticleEmitterListener(gdeWPSParticleEmitter &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPSParticleEmitterListener();
@@ -55,16 +55,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Particle emitter categories changed. */
-	virtual void ParticleEmitterCategoriesChanged( gdeGameDefinition *gameDefinition );
+	virtual void ParticleEmitterCategoriesChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** \brief Particle emitter changed. */
-	virtual void ParticleEmitterChanged( gdeGameDefinition *gameDefinition,
-		gdeParticleEmitter *particleEmitter );
+	virtual void ParticleEmitterChanged(gdeGameDefinition *gameDefinition,
+		gdeParticleEmitter *particleEmitter);
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveParticleEmitterChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveParticleEmitterChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

@@ -65,8 +65,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create textfield. */
-	igdeProgressBar( igdeEnvironment &environment, int lower, int upper,
-		eOrientation orientation, const char *description = "" );
+	igdeProgressBar(igdeEnvironment &environment, int lower, int upper,
+		eOrientation orientation, const char *description = "");
 	
 	
 	
@@ -92,7 +92,7 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	
 	
@@ -100,7 +100,7 @@ public:
 	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief Range lower value. */
 	inline int GetLower() const{ return pLower; }
@@ -109,7 +109,7 @@ public:
 	inline int GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range. */
-	void SetRange( int lower, int upper );
+	void SetRange(int lower, int upper);
 	/*@}*/
 	
 	

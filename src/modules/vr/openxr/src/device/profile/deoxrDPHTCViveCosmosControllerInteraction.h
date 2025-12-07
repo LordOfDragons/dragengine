@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHTCViveCosmosControllerInteraction( deoxrInstance &instance );
+	deoxrDPHTCViveCosmosControllerInteraction(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
@@ -47,7 +47,7 @@ protected:
 protected:
 	virtual bool pProfileEnabled() const;
 	virtual void pSuggestBindings();
-	virtual void pAddDevice( bool left );
+	virtual void pAddDevice(bool left);
 };
 
 #endif

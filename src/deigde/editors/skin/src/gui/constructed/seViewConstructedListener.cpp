@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seViewConstructedListener::seViewConstructedListener( seViewConstructed &view ) :
-pView( view ){
+seViewConstructedListener::seViewConstructedListener(seViewConstructed &view) :
+pView(view){
 }
 
 seViewConstructedListener::~seViewConstructedListener(){
@@ -53,8 +53,8 @@ seViewConstructedListener::~seViewConstructedListener(){
 // Management
 ///////////////
 
-void seViewConstructedListener::ActiveTextureChanged( seSkin *skin ){
-	if( pView.GetSkin() != skin ){
+void seViewConstructedListener::ActiveTextureChanged(seSkin *skin){
+	if(pView.GetSkin() != skin){
 		return;
 	}
 	
@@ -62,8 +62,8 @@ void seViewConstructedListener::ActiveTextureChanged( seSkin *skin ){
 	pView.UpdateScrollbarRanges();
 }
 
-void seViewConstructedListener::PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive() ){
+void seViewConstructedListener::PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	
@@ -71,8 +71,8 @@ void seViewConstructedListener::PropertyChanged( seSkin *skin, seTexture *textur
 	pView.UpdateScrollbarRanges();
 }
 
-void seViewConstructedListener::ActivePropertyChanged( seSkin *skin, seTexture *texture ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() ){
+void seViewConstructedListener::ActivePropertyChanged(seSkin *skin, seTexture *texture){
+	if(pView.GetSkin() != skin || !texture->GetActive()){
 		return;
 	}
 	
@@ -80,10 +80,10 @@ void seViewConstructedListener::ActivePropertyChanged( seSkin *skin, seTexture *
 	pView.UpdateScrollbarRanges();
 }
 
-void seViewConstructedListener::PropertyNodeChanged( seSkin *skin, seTexture *texture,
-seProperty *property, sePropertyNode *node ){
-	if( pView.GetSkin() != skin || ! texture->GetActive()
-	|| ! property->GetActive() || node != property->GetNodeGroup() ){
+void seViewConstructedListener::PropertyNodeChanged(seSkin *skin, seTexture *texture,
+seProperty *property, sePropertyNode *node){
+	if(pView.GetSkin() != skin || !texture->GetActive()
+	|| !property->GetActive() || node != property->GetNodeGroup()){
 		return;
 	}
 	
@@ -91,9 +91,9 @@ seProperty *property, sePropertyNode *node ){
 	pView.UpdateScrollbarRanges();
 }
 
-void seViewConstructedListener::PropertyActiveNodeLayerChanged( seSkin *skin, seTexture *texture,
-seProperty *property ){
-	if( pView.GetSkin() != skin || ! texture->GetActive() || ! property->GetActive() ){
+void seViewConstructedListener::PropertyActiveNodeLayerChanged(seSkin *skin, seTexture *texture,
+seProperty *property){
+	if(pView.GetSkin() != skin || !texture->GetActive() || !property->GetActive()){
 		return;
 	}
 	

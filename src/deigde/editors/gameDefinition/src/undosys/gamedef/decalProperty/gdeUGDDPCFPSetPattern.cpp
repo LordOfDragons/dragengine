@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPCFPSetPattern::gdeUGDDPCFPSetPattern( gdeGameDefinition *gamedef,
-gdeProperty *property, gdeFilePattern *filePattern, const char *newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL ),
-pFilePattern( NULL )
+gdeUGDDPCFPSetPattern::gdeUGDDPCFPSetPattern(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
+pGameDefinition(NULL),
+pProperty(NULL),
+pFilePattern(NULL)
 {
-	if( ! gamedef || ! property || ! filePattern ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property || !filePattern){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property custom file pattern set pattern" );
+	SetShortInfo("Game definition property custom file pattern set pattern");
 	
 	pOldValue = filePattern->GetPattern();
 	pNewValue = newValue;
@@ -67,13 +67,13 @@ pFilePattern( NULL )
 }
 
 gdeUGDDPCFPSetPattern::~gdeUGDDPCFPSetPattern(){
-	if( pFilePattern ){
+	if(pFilePattern){
 		pFilePattern->FreeReference();
 	}
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -84,11 +84,11 @@ gdeUGDDPCFPSetPattern::~gdeUGDDPCFPSetPattern(){
 ///////////////
 
 void gdeUGDDPCFPSetPattern::Undo(){
-	pFilePattern->SetPattern( pOldValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pFilePattern->SetPattern(pOldValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPCFPSetPattern::Redo(){
-	pFilePattern->SetPattern( pNewValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pFilePattern->SetPattern(pNewValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

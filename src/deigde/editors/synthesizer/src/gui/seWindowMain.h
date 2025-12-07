@@ -133,7 +133,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	seWindowMain( seIGDEModule &module );
+	seWindowMain(seIGDEModule &module);
 	
 protected:
 	/** \brief Clean up window. */
@@ -171,7 +171,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	
 	
@@ -179,27 +179,27 @@ public:
 	void CreateSynthesizer();
 	
 	/** \brief Save synthesizer. */
-	void SaveSynthesizer( const char *filename );
+	void SaveSynthesizer(const char *filename);
 	
 	
 	
 	/** \brief Create a new source of a given type using the matching undo action. */
-	void CreateSource( const decString &name, deSynthesizerSourceVisitorIdentify::eSourceTypes type,
-		bool insert, bool group );
+	void CreateSource(const decString &name, deSynthesizerSourceVisitorIdentify::eSourceTypes type,
+		bool insert, bool group);
 	
 	/** \brief Create a new effect of a given type using the matching undo action. */
-	void CreateEffect( deSynthesizerEffectVisitorIdentify::eEffectTypes type, bool insert );
+	void CreateEffect(deSynthesizerEffectVisitorIdentify::eEffectTypes type, bool insert);
 	
 	
 	
 	/** \brief Set visibility of the progress bar in the status bar. */
-	void SetProgressVisible( bool visible );
+	void SetProgressVisible(bool visible);
 	
 	/** \brief Set progress bar progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	
 	/** \brief Set progress text. */
-	void SetProgressText( const char *text );
+	void SetProgressText(const char *text);
 	
 	
 	
@@ -209,10 +209,10 @@ public:
 	inline igdeIcon *GetIconSourceChain() const{ return pIconSourceChain; }
 	inline igdeIcon *GetIconSourceGroup() const{ return pIconSourceGroup; }
 	inline igdeIcon *GetIconSourceSynthesizer() const{ return pIconSourceSynthesizer; }
-	igdeIcon *GetSourceIcon( deSynthesizerSourceVisitorIdentify::eSourceTypes type ) const;
+	igdeIcon *GetSourceIcon(deSynthesizerSourceVisitorIdentify::eSourceTypes type) const;
 	
 	inline igdeIcon *GetIconEffectStretch() const{ return pIconEffectStretch; }
-	igdeIcon *GetEffectIcon( deSynthesizerEffectVisitorIdentify::eEffectTypes type ) const;
+	igdeIcon *GetEffectIcon(deSynthesizerEffectVisitorIdentify::eEffectTypes type) const;
 	
 	inline igdeIcon *GetIconPlay() const{ return pIconPlay; }
 	inline igdeIcon *GetIconPause() const{ return pIconPause; }
@@ -239,7 +239,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -250,12 +250,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -265,7 +265,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -329,11 +329,11 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuSynthesizer( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuController( igdeMenuCascade &menu );
-	void pCreateMenuSource( igdeMenuCascade &menu );
-	void pCreateMenuEffect( igdeMenuCascade &menu );
+	void pCreateMenuSynthesizer(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuController(igdeMenuCascade &menu);
+	void pCreateMenuSource(igdeMenuCascade &menu);
+	void pCreateMenuEffect(igdeMenuCascade &menu);
 };
 
 #endif

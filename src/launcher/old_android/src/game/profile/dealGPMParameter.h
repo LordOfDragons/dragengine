@@ -52,7 +52,7 @@ public:
 	dealGPMParameter();
 	
 	/** \brief Create game profile module parameter. */
-	dealGPMParameter( const dealGPMParameter &parameter );
+	dealGPMParameter(const dealGPMParameter &parameter);
 	
 	/** \brief Clean up game profile. */
 	virtual ~dealGPMParameter();
@@ -66,16 +66,16 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set parameter name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \breif Parameter value. */
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set parameter value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Copy from another parameter. */
-	void CopyFrom( const dealGPMParameter &parameter );
+	void CopyFrom(const dealGPMParameter &parameter);
 	/*@}*/
 };
 

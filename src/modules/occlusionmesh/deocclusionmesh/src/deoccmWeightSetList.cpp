@@ -56,35 +56,35 @@ int deoccmWeightSetList::GetCount() const{
 	return pList.GetCount();
 }
 
-deoccmWeightSet *deoccmWeightSetList::GetAt( int index ) const{
-	return ( deoccmWeightSet* )pList.GetAt( index );
+deoccmWeightSet *deoccmWeightSetList::GetAt(int index) const{
+	return (deoccmWeightSet*)pList.GetAt(index);
 }
 
-void deoccmWeightSetList::Add( deoccmWeightSet *weightSet ){
-	if( ! weightSet ){
-		DETHROW( deeInvalidParam );
+void deoccmWeightSetList::Add(deoccmWeightSet *weightSet){
+	if(!weightSet){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pList.Add( weightSet );
+	pList.Add(weightSet);
 }
 
 void deoccmWeightSetList::RemoveAll(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoccmWeightSet* )pList.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoccmWeightSet*)pList.GetAt(i);
 	}
 	
 	pList.RemoveAll();
 }
 
-int deoccmWeightSetList::IndexOfEqual( const deoccmWeightSet &weightSet ) const{
+int deoccmWeightSetList::IndexOfEqual(const deoccmWeightSet &weightSet) const{
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deoccmWeightSet* )pList.GetAt( i ) )->Equals( weightSet ) ){
+	for(i=0; i<count; i++){
+		if(((deoccmWeightSet*)pList.GetAt(i))->Equals(weightSet)){
 			return i;
 		}
 	}
@@ -97,10 +97,10 @@ int deoccmWeightSetList::GetLargestWeightCount() const{
 	int weightCount = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deoccmWeightSet &weightSet = *( ( deoccmWeightSet* )pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const deoccmWeightSet &weightSet = *((deoccmWeightSet*)pList.GetAt(i));
 		
-		if( weightSet.GetCount() > weightCount ){
+		if(weightSet.GetCount() > weightCount){
 			weightCount = weightSet.GetCount();
 		}
 	}

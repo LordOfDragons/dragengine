@@ -47,29 +47,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDecal::deDecal( deDecalManager *manager ) :
-deResource( manager ),
+deDecal::deDecal(deDecalManager *manager) :
+deResource(manager),
 
-pSize( 0.5f, 0.5f, 1.0f ),
+pSize(0.5f, 0.5f, 1.0f),
 
-pTexture( 0 ),
+pTexture(0),
 
-pVisible( true ),
+pVisible(true),
 
-pBoneStates( NULL ),
-pBoneStateCount( 0 ),
+pBoneStates(NULL),
+pBoneStateCount(0),
 
-pParentComponent( NULL ),
-pLLComponentPrev( NULL ),
-pLLComponentNext( NULL ),
+pParentComponent(NULL),
+pLLComponentPrev(NULL),
+pLLComponentNext(NULL),
 
-pParentHeightTerrainSector( NULL ),
-pLLHeightTerrainSectorPrev( NULL ),
-pLLHeightTerrainSectorNext( NULL ),
+pParentHeightTerrainSector(NULL),
+pLLHeightTerrainSectorPrev(NULL),
+pLLHeightTerrainSectorNext(NULL),
 
-pPeerGraphic( NULL ),
-pPeerPhysics( NULL ),
-pPeerAudio( NULL ){
+pPeerGraphic(NULL),
+pPeerPhysics(NULL),
+pPeerAudio(NULL){
 }
 
 deDecal::~deDecal(){
@@ -81,154 +81,154 @@ deDecal::~deDecal(){
 // Management
 ///////////////
 
-void deDecal::SetPosition( const decVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void deDecal::SetPosition(const decVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->GeometryChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->GeometryChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->GeometryChanged();
 	}
 }
 
-void deDecal::SetOrientation( const decQuaternion &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void deDecal::SetOrientation(const decQuaternion &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->GeometryChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->GeometryChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->GeometryChanged();
 	}
 }
 
-void deDecal::SetSize( const decVector &size ){
-	if( size.IsEqualTo( pSize ) ){
+void deDecal::SetSize(const decVector &size){
+	if(size.IsEqualTo(pSize)){
 		return;
 	}
 	
 	pSize = size;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->GeometryChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->GeometryChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->GeometryChanged();
 	}
 }
 
-void deDecal::SetTransform( const decTexMatrix2 &matrix ){
-	if( matrix.IsEqualTo( pTransform ) ){
+void deDecal::SetTransform(const decTexMatrix2 &matrix){
+	if(matrix.IsEqualTo(pTransform)){
 		return;
 	}
 	
 	pTransform = matrix;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->TransformChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->TransformChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->TransformChanged();
 	}
 }
 
 
 
-void deDecal::SetSkin( deSkin *skin ){
-	if( skin == pSkin ){
+void deDecal::SetSkin(deSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
 	pSkin = skin;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->SkinChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->SkinChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->SkinChanged();
 	}
 }
 
-void deDecal::SetTexture( int texture ){
-	if( texture < 0 ){
-		DETHROW( deeInvalidParam );
+void deDecal::SetTexture(int texture){
+	if(texture < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( texture == pTexture ){
+	if(texture == pTexture){
 		return;
 	}
 	
 	pTexture = texture;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->SkinChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->SkinChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->SkinChanged();
 	}
 }
 
-void deDecal::SetDynamicSkin( deDynamicSkin *dynamicSkin ){
-	if( dynamicSkin == pDynamicSkin ){
+void deDecal::SetDynamicSkin(deDynamicSkin *dynamicSkin){
+	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
 	
 	pDynamicSkin = dynamicSkin;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->DynamicSkinChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->DynamicSkinChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->DynamicSkinChanged();
 	}
 }
 
 
 
-void deDecal::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void deDecal::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
 	pVisible = visible;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->VisibleChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->VisibleChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->VisibleChanged();
 	}
 }
@@ -238,9 +238,9 @@ void deDecal::SetVisible( bool visible ){
 // Bone States
 ////////////////
 
-deDecalBoneState &deDecal::GetBoneStateAt( int index ){
-	if( index < 0 || index >= pBoneStateCount ){
-		DETHROW( deeInvalidParam );
+deDecalBoneState &deDecal::GetBoneStateAt(int index){
+	if(index < 0 || index >= pBoneStateCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// if caching is used this has to be checked first
@@ -248,23 +248,23 @@ deDecalBoneState &deDecal::GetBoneStateAt( int index ){
 	//	pRestoreBoneStates();
 	//}
 	
-	return pBoneStates[ index ];
+	return pBoneStates[index];
 }
 
-void deDecal::SetBoneStateCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deDecal::SetBoneStateCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( count == pBoneStateCount ){
+	if(count == pBoneStateCount){
 		return;
 	}
 	
 	deDecalBoneState *boneStates = NULL;
-	if( count > 0 ){
-		boneStates = new deDecalBoneState[ count ];
+	if(count > 0){
+		boneStates = new deDecalBoneState[count];
 	}
 	
-	if( pBoneStates ){
+	if(pBoneStates){
 		delete [] pBoneStates;
 	}
 	pBoneStates = boneStates;
@@ -272,21 +272,21 @@ void deDecal::SetBoneStateCount( int count ){
 	pBoneStateCount = count;
 }
 
-void deDecal::SnapshotBoneStatesFrom( deComponent *component ){
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+void deDecal::SnapshotBoneStatesFrom(deComponent *component){
+	if(!component){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int boneCount = component->GetBoneCount();
 	int i;
 	
-	SetBoneStateCount( boneCount );
+	SetBoneStateCount(boneCount);
 	
-	for( i=0; i<boneCount; i++ ){
-		const deComponentBone &bone = component->GetBoneAt( i );
-		pBoneStates[ i ].SetPosition( bone.GetPosition() );
-		pBoneStates[ i ].SetRotation( bone.GetRotation() );
-		pBoneStates[ i ].SetSize( bone.GetScale() );
+	for(i=0; i<boneCount; i++){
+		const deComponentBone &bone = component->GetBoneAt(i);
+		pBoneStates[i].SetPosition(bone.GetPosition());
+		pBoneStates[i].SetRotation(bone.GetRotation());
+		pBoneStates[i].SetSize(bone.GetScale());
 	}
 }
 
@@ -295,29 +295,29 @@ void deDecal::SnapshotBoneStatesFrom( deComponent *component ){
 // Linked lists
 /////////////////
 
-void deDecal::SetParentComponent( deComponent *component ){
+void deDecal::SetParentComponent(deComponent *component){
 	pParentComponent = component;
 }
 
-void deDecal::SetLLComponentNext( deDecal *decal ){
+void deDecal::SetLLComponentNext(deDecal *decal){
 	pLLComponentNext = decal;
 }
 
-void deDecal::SetLLComponentPrev( deDecal *decal ){
+void deDecal::SetLLComponentPrev(deDecal *decal){
 	pLLComponentPrev = decal;
 }
 
 
 
-void deDecal::SetParentHeightTerrainSector( deHeightTerrainSector *sector ){
+void deDecal::SetParentHeightTerrainSector(deHeightTerrainSector *sector){
 	pParentHeightTerrainSector = sector;
 }
 
-void deDecal::SetLLHeightTerrainSectorNext( deDecal *decal ){
+void deDecal::SetLLHeightTerrainSectorNext(deDecal *decal){
 	pLLHeightTerrainSectorNext = decal;
 }
 
-void deDecal::SetLLHeightTerrainSectorPrev( deDecal *decal ){
+void deDecal::SetLLHeightTerrainSectorPrev(deDecal *decal){
 	pLLHeightTerrainSectorPrev = decal;
 }
 
@@ -326,34 +326,34 @@ void deDecal::SetLLHeightTerrainSectorPrev( deDecal *decal ){
 // System Peers
 /////////////////
 
-void deDecal::SetPeerGraphic( deBaseGraphicDecal *peer ){
-	if( peer == pPeerGraphic ){
+void deDecal::SetPeerGraphic(deBaseGraphicDecal *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;
 }
 
-void deDecal::SetPeerPhysics( deBasePhysicsDecal *peer ){
-	if( peer == pPeerPhysics ){
+void deDecal::SetPeerPhysics(deBasePhysicsDecal *peer){
+	if(peer == pPeerPhysics){
 		return;
 	}
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 	}
 	pPeerPhysics = peer;
 }
 
-void deDecal::SetPeerAudio( deBaseAudioDecal *peer ){
-	if( peer == pPeerAudio ){
+void deDecal::SetPeerAudio(deBaseAudioDecal *peer){
+	if(peer == pPeerAudio){
 		return;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 	pPeerAudio = peer;
@@ -365,20 +365,20 @@ void deDecal::SetPeerAudio( deBaseAudioDecal *peer ){
 //////////////////////
 
 void deDecal::pCleanUp(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 		pPeerPhysics = NULL;
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 		pPeerAudio = NULL;
 	}
 	
-	if( pBoneStates ){
+	if(pBoneStates){
 		delete [] pBoneStates;
 	}
 }

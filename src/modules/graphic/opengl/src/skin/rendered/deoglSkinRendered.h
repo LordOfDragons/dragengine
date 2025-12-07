@@ -61,9 +61,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin rendered. */
-	deoglSkinRendered( deoglRenderThread &renderThread, deoglRComponent &component );
-	deoglSkinRendered( deoglRenderThread &renderThread, deoglRBillboard &billboard );
-	deoglSkinRendered( deoglRenderThread &renderThread, deoglRDecal &decal );
+	deoglSkinRendered(deoglRenderThread &renderThread, deoglRComponent &component);
+	deoglSkinRendered(deoglRenderThread &renderThread, deoglRBillboard &billboard);
+	deoglSkinRendered(deoglRenderThread &renderThread, deoglRDecal &decal);
 	
 	/** Clean up skin rendered. */
 	~deoglSkinRendered();
@@ -96,10 +96,10 @@ public:
 	int GetTexturedCount() const;
 	
 	/** Texture at index. */
-	deoglSkinRenderedTexture *GetTextureAt( int index ) const;
+	deoglSkinRenderedTexture *GetTextureAt(int index) const;
 	
 	/** Add texture. */
-	deoglSkinRenderedTexture *AddTexture( deoglRSkin &skin, int texture, int modelTexture );
+	deoglSkinRenderedTexture *AddTexture(deoglRSkin &skin, int texture, int modelTexture);
 	
 	/** Remove all textures. */
 	void RemoveAllTextures();
@@ -113,7 +113,7 @@ public:
 	void Prepare();
 	
 	/** Add render plans. */
-	void AddRenderPlans( deoglRenderPlan &plan );
+	void AddRenderPlans(deoglRenderPlan &plan);
 	
 	
 	
@@ -124,7 +124,7 @@ public:
 	
 	
 private:
-	void pAddTextureIfRequired( deoglRSkin &skin, int texture, int modelTexture );
+	void pAddTextureIfRequired(deoglRSkin &skin, int texture, int modelTexture);
 };
 
 #endif

@@ -41,13 +41,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deEffect::deEffect( deEffectManager *manager ) : deResource( manager ){
+deEffect::deEffect(deEffectManager *manager) : deResource(manager){
 	pEnabled = true;
 	pPeerGraphic = NULL;
 }
 
 deEffect::~deEffect(){
-	if( pPeerGraphic ) delete pPeerGraphic;
+	if(pPeerGraphic) delete pPeerGraphic;
 }
 
 
@@ -55,8 +55,8 @@ deEffect::~deEffect(){
 // Management
 ///////////////
 
-void deEffect::SetEnabled( bool enabled ){
-	if( pEnabled != enabled ){
+void deEffect::SetEnabled(bool enabled){
+	if(pEnabled != enabled){
 		pEnabled = enabled;
 		pNotifyEnabledChanged();
 	}
@@ -67,12 +67,12 @@ void deEffect::SetEnabled( bool enabled ){
 // peers
 //////////
 
-void deEffect::SetPeerGraphic( deBaseGraphicEffect *peer ){
-	if( peer == pPeerGraphic ){
+void deEffect::SetPeerGraphic(deBaseGraphicEffect *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;
@@ -83,8 +83,8 @@ void deEffect::SetPeerGraphic( deBaseGraphicEffect *peer ){
 // visiting
 /////////////
 
-void deEffect::Visit( deEffectVisitor &visitor ){
-	visitor.VisitEffect( *this );
+void deEffect::Visit(deEffectVisitor &visitor){
+	visitor.VisitEffect(*this);
 }
 
 
@@ -93,5 +93,5 @@ void deEffect::Visit( deEffectVisitor &visitor ){
 //////////////////////
 
 void deEffect::pNotifyEnabledChanged(){
-	if( pPeerGraphic ) pPeerGraphic->EnabledChanged();
+	if(pPeerGraphic) pPeerGraphic->EnabledChanged();
 }

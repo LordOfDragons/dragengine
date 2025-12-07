@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky. */
-	deoglSky( deGraphicOpenGl &ogl, const deSky &sky );
+	deoglSky(deGraphicOpenGl &ogl, const deSky &sky);
 	
 	/** Clean up sky. */
 	virtual ~deoglSky();

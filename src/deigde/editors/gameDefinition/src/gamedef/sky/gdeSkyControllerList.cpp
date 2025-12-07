@@ -43,8 +43,8 @@
 gdeSkyControllerList::gdeSkyControllerList(){
 }
 
-gdeSkyControllerList::gdeSkyControllerList( const gdeSkyControllerList &list ) :
-pControllers( list.pControllers ){
+gdeSkyControllerList::gdeSkyControllerList(const gdeSkyControllerList &list) :
+pControllers(list.pControllers){
 }
 
 gdeSkyControllerList::~gdeSkyControllerList(){
@@ -59,17 +59,17 @@ int gdeSkyControllerList::GetCount() const{
 	return pControllers.GetCount();
 }
 
-gdeSkyController *gdeSkyControllerList::GetAt( int index ) const{
-	return ( gdeSkyController* )pControllers.GetAt( index );
+gdeSkyController *gdeSkyControllerList::GetAt(int index) const{
+	return (gdeSkyController*)pControllers.GetAt(index);
 }
 
-gdeSkyController *gdeSkyControllerList::GetNamed( const char *name ) const{
+gdeSkyController *gdeSkyControllerList::GetNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeSkyController * const controller = ( gdeSkyController* )pControllers.GetAt( i );
-		if( controller->GetName() == name ){
+	for(i=0; i<count; i++){
+		gdeSkyController * const controller = (gdeSkyController*)pControllers.GetAt(i);
+		if(controller->GetName() == name){
 			return controller;
 		}
 	}
@@ -77,27 +77,27 @@ gdeSkyController *gdeSkyControllerList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int gdeSkyControllerList::IndexOf( gdeSkyController *controller ) const{
-	return pControllers.IndexOf( controller );
+int gdeSkyControllerList::IndexOf(gdeSkyController *controller) const{
+	return pControllers.IndexOf(controller);
 }
 
-bool gdeSkyControllerList::Has( gdeSkyController *controller ) const{
-	return pControllers.Has( controller );
+bool gdeSkyControllerList::Has(gdeSkyController *controller) const{
+	return pControllers.Has(controller);
 }
 
-bool gdeSkyControllerList::HasNamed( const char *name ) const{
-	return GetNamed( name ) != NULL;
+bool gdeSkyControllerList::HasNamed(const char *name) const{
+	return GetNamed(name) != NULL;
 }
 
-void gdeSkyControllerList::Add( gdeSkyController *controller ){
-	if( ! controller || HasNamed( controller->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void gdeSkyControllerList::Add(gdeSkyController *controller){
+	if(!controller || HasNamed(controller->GetName())){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 }
 
-void gdeSkyControllerList::Remove( gdeSkyController *controller ){
-	pControllers.Remove( controller );
+void gdeSkyControllerList::Remove(gdeSkyController *controller){
+	pControllers.Remove(controller);
 }
 
 void gdeSkyControllerList::RemoveAll(){
@@ -106,7 +106,7 @@ void gdeSkyControllerList::RemoveAll(){
 
 
 
-gdeSkyControllerList &gdeSkyControllerList::operator=( const gdeSkyControllerList &list ){
+gdeSkyControllerList &gdeSkyControllerList::operator=(const gdeSkyControllerList &list){
 	pControllers = list.pControllers;
 	return *this;
 }

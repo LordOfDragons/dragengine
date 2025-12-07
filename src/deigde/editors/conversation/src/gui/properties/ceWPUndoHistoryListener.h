@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	ceWPUndoHistoryListener( ceWPUndoHistory &panel );
+	ceWPUndoHistoryListener(ceWPUndoHistory &panel);
 	
 protected:
 	/** \brief Clean up listener. */
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( ceConversation *conversation );
+	virtual void UndoChanged(ceConversation *conversation);
 	/*@}*/
 };
 

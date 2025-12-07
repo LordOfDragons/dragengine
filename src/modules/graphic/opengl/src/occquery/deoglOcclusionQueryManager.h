@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new occlusion queries. */
-	deoglOcclusionQueryManager( deoglRenderThread &renderThread );
+	deoglOcclusionQueryManager(deoglRenderThread &renderThread);
 	/** Cleans up the occlusion queries. */
 	~deoglOcclusionQueryManager();
 	/*@}*/
@@ -72,18 +72,18 @@ public:
 	/** Claim a new query. */
 	deoglOcclusionQuery *ClaimQuery();
 	/** Release a claimed query. */
-	void ReleaseQuery( deoglOcclusionQuery *query );
+	void ReleaseQuery(deoglOcclusionQuery *query);
 	
 	/** Retrieves the active query. */
 	inline deoglOcclusionQuery *GetActiveQuery() const{ return pActiveQuery; }
 	/** Sets the active query. */
-	void SetActiveQuery( deoglOcclusionQuery *query );
+	void SetActiveQuery(deoglOcclusionQuery *query);
 	/** Ends the active query if there is one. */
 	void EndActiveQuery();
 	/*@}*/
 	
 private:
-	int IndexOfQuery( deoglOcclusionQuery *query, int from, int to ) const;
+	int IndexOfQuery(deoglOcclusionQuery *query, int from, int to) const;
 };
 
 // end of include only once

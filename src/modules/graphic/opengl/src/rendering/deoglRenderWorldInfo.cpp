@@ -44,122 +44,122 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderWorldInfo::deoglRenderWorldInfo( deoglRenderThread &renderThread ) :
-deoglRenderBase( renderThread )
+deoglRenderWorldInfo::deoglRenderWorldInfo(deoglRenderThread &renderThread) :
+deoglRenderBase(renderThread)
 {
-	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
-	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
+	const decColor colorText(1.0f, 1.0f, 1.0f, 1.0f);
+	const decColor colorBg(0.0f, 0.0f, 0.25f, 0.75f);
+	const decColor colorBgSub(0.05f, 0.05f, 0.05f, 0.75f);
 	//const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
-	const decColor colorBgSpecial( 0.05f, 0.025f, 0.05f, 0.75f );
+	const decColor colorBgSpecial(0.05f, 0.025f, 0.05f, 0.75f);
 	
 	try{
-		infoWorld.TakeOver( new deoglDebugInformation( "World", colorText, colorBg ) );
+		infoWorld.TakeOver(new deoglDebugInformation("World", colorText, colorBg));
 		
-		infoPassMasked.TakeOver( new deoglDebugInformation( "Masked", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoPassMasked );
+		infoPassMasked.TakeOver(new deoglDebugInformation("Masked", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoPassMasked);
 		
-		infoGITraceRays.TakeOver( new deoglDebugInformation( "GI Trace Rays", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoGITraceRays );
+		infoGITraceRays.TakeOver(new deoglDebugInformation("GI Trace Rays", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoGITraceRays);
 		
-		infoSolidGeometry.TakeOver( new deoglDebugInformation( "Solid Geometry", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoSolidGeometry );
+		infoSolidGeometry.TakeOver(new deoglDebugInformation("Solid Geometry", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoSolidGeometry);
 		
-		infoReflection.TakeOver( new deoglDebugInformation( "Reflection", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoReflection );
+		infoReflection.TakeOver(new deoglDebugInformation("Reflection", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoReflection);
 		
-		infoSSR.TakeOver( new deoglDebugInformation( "SSR", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoSSR );
+		infoSSR.TakeOver(new deoglDebugInformation("SSR", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoSSR);
 		
-		infoLuminancePrepare.TakeOver( new deoglDebugInformation( "Lum Prepare", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoLuminancePrepare );
+		infoLuminancePrepare.TakeOver(new deoglDebugInformation("Lum Prepare", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoLuminancePrepare);
 		
-		infoSolidGeometryLights.TakeOver( new deoglDebugInformation( "Solid Lights", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoSolidGeometryLights );
+		infoSolidGeometryLights.TakeOver(new deoglDebugInformation("Solid Lights", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoSolidGeometryLights);
 		
-		infoTransparent.TakeOver( new deoglDebugInformation( "Transparent", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoTransparent );
+		infoTransparent.TakeOver(new deoglDebugInformation("Transparent", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoTransparent);
 		
-		infoToneMapping.TakeOver( new deoglDebugInformation( "Tone Mapping", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoToneMapping );
+		infoToneMapping.TakeOver(new deoglDebugInformation("Tone Mapping", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoToneMapping);
 		
-		infoDebugDrawers.TakeOver( new deoglDebugInformation( "Debug Drawers", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoDebugDrawers );
+		infoDebugDrawers.TakeOver(new deoglDebugInformation("Debug Drawers", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoDebugDrawers);
 		
-		infoPostProcessing.TakeOver( new deoglDebugInformation( "Post Processing", colorText, colorBgSub ) );
-		infoWorld->GetChildren().Add( infoPostProcessing );
+		infoPostProcessing.TakeOver(new deoglDebugInformation("Post Processing", colorText, colorBgSub));
+		infoWorld->GetChildren().Add(infoPostProcessing);
 		
-		infoDeveloperMode.TakeOver( new deoglDebugInformation( "Developer Mode", colorText, colorBgSpecial ) );
-		infoWorld->GetChildren().Add( infoDeveloperMode );
+		infoDeveloperMode.TakeOver(new deoglDebugInformation("Developer Mode", colorText, colorBgSpecial));
+		infoWorld->GetChildren().Add(infoDeveloperMode);
 		
-		infoDeveloperModeTemp.TakeOver( new deoglDebugInformation( "", colorText, colorBgSpecial ) );
-		
-		
-		
-		infoSolidGeometryDetails.TakeOver( new deoglDebugInformation( "Solid Geometry", colorText, colorBg ) );
-		
-		infoSolidGeometryDepthTask.TakeOver( new deoglDebugInformation( "Depth Task", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryDepthTask );
-		
-		infoSolidGeometryDepthRender.TakeOver( new deoglDebugInformation( "Depth Render", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryDepthRender );
-		
-		infoSolidGeometryOcclusion.TakeOver( new deoglDebugInformation( "Occlusion", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryOcclusion );
-		
-		infoSolidGeometryTranspCounter.TakeOver( new deoglDebugInformation( "Transp Counter", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryTranspCounter );
-		
-		infoSolidGeometrySky.TakeOver( new deoglDebugInformation( "Sky", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometrySky );
-		
-		infoSolidGeometryTask.TakeOver( new deoglDebugInformation( "Task", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryTask );
-		
-		infoSolidGeometryRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryRender );
-		
-		infoSolidGeometryDecals.TakeOver( new deoglDebugInformation( "Decals", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryDecals );
-		
-		infoSolidGeometryDownsampleDepth.TakeOver( new deoglDebugInformation( "Downsample Depth", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryDownsampleDepth );
-		
-		infoSolidGeometrySSAO.TakeOver( new deoglDebugInformation( "SSAO", colorText, colorBgSub ) );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometrySSAO );
+		infoDeveloperModeTemp.TakeOver(new deoglDebugInformation("", colorText, colorBgSpecial));
 		
 		
 		
-		infoTransparentDetails.TakeOver( new deoglDebugInformation( "Transparency", colorText, colorBg ) );
+		infoSolidGeometryDetails.TakeOver(new deoglDebugInformation("Solid Geometry", colorText, colorBg));
 		
-		infoTransparentClear.TakeOver( new deoglDebugInformation( "Clear", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentClear );
+		infoSolidGeometryDepthTask.TakeOver(new deoglDebugInformation("Depth Task", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometryDepthTask);
 		
-		infoTransparentDepthTask.TakeOver( new deoglDebugInformation( "Depth Task", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentDepthTask );
+		infoSolidGeometryDepthRender.TakeOver(new deoglDebugInformation("Depth Render", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometryDepthRender);
 		
-		infoTransparentDepthRender.TakeOver( new deoglDebugInformation( "Depth Render", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentDepthRender );
+		infoSolidGeometryOcclusion.TakeOver(new deoglDebugInformation("Occlusion", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometryOcclusion);
 		
-		infoTransparentCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentCopyDepth );
+		infoSolidGeometryTranspCounter.TakeOver(new deoglDebugInformation("Transp Counter", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometryTranspCounter);
 		
-		infoTransparentTask.TakeOver( new deoglDebugInformation( "Task", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentTask );
+		infoSolidGeometrySky.TakeOver(new deoglDebugInformation("Sky", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometrySky);
 		
-		infoTransparentRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentRender );
+		infoSolidGeometryTask.TakeOver(new deoglDebugInformation("Task", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometryTask);
 		
-		infoTransparentSSR.TakeOver( new deoglDebugInformation( "SSR", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentSSR );
+		infoSolidGeometryRender.TakeOver(new deoglDebugInformation("Render", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometryRender);
 		
-		infoTransparentLights.TakeOver( new deoglDebugInformation( "Lights", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentLights );
+		infoSolidGeometryDecals.TakeOver(new deoglDebugInformation("Decals", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometryDecals);
 		
-		infoTransparentVolumetric.TakeOver( new deoglDebugInformation( "Volumetric", colorText, colorBgSub ) );
-		infoTransparentDetails->GetChildren().Add( infoTransparentVolumetric );
+		infoSolidGeometryDownsampleDepth.TakeOver(new deoglDebugInformation("Downsample Depth", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometryDownsampleDepth);
 		
-	}catch( const deException & ){
+		infoSolidGeometrySSAO.TakeOver(new deoglDebugInformation("SSAO", colorText, colorBgSub));
+		infoSolidGeometryDetails->GetChildren().Add(infoSolidGeometrySSAO);
+		
+		
+		
+		infoTransparentDetails.TakeOver(new deoglDebugInformation("Transparency", colorText, colorBg));
+		
+		infoTransparentClear.TakeOver(new deoglDebugInformation("Clear", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentClear);
+		
+		infoTransparentDepthTask.TakeOver(new deoglDebugInformation("Depth Task", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentDepthTask);
+		
+		infoTransparentDepthRender.TakeOver(new deoglDebugInformation("Depth Render", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentDepthRender);
+		
+		infoTransparentCopyDepth.TakeOver(new deoglDebugInformation("Copy Depth", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentCopyDepth);
+		
+		infoTransparentTask.TakeOver(new deoglDebugInformation("Task", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentTask);
+		
+		infoTransparentRender.TakeOver(new deoglDebugInformation("Render", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentRender);
+		
+		infoTransparentSSR.TakeOver(new deoglDebugInformation("SSR", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentSSR);
+		
+		infoTransparentLights.TakeOver(new deoglDebugInformation("Lights", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentLights);
+		
+		infoTransparentVolumetric.TakeOver(new deoglDebugInformation("Volumetric", colorText, colorBgSub));
+		infoTransparentDetails->GetChildren().Add(infoTransparentVolumetric);
+		
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -214,21 +214,21 @@ void deoglRenderWorldInfo::ClearAll(){
 
 void deoglRenderWorldInfo::AddTopLevelDebugInfo(){
 	deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
-	list.Add( infoWorld );
-	list.Add( infoSolidGeometryDetails );
-	list.Add( infoTransparentDetails );
+	list.Add(infoWorld);
+	list.Add(infoSolidGeometryDetails);
+	list.Add(infoTransparentDetails);
 }
 
 void deoglRenderWorldInfo::DevModeDebugInfoChanged(){
 	const int details = GetRenderThread().GetDebug().GetDeveloperMode().GetDebugInfoDetails();
 	
-	infoWorld->SetVisible( ( details & deoglDeveloperMode::edimWorld ) == deoglDeveloperMode::edimWorld );
+	infoWorld->SetVisible((details & deoglDeveloperMode::edimWorld) == deoglDeveloperMode::edimWorld);
 	infoSolidGeometryDetails->SetVisible(
-		( details & ( deoglDeveloperMode::edimWorld | deoglDeveloperMode::edimSolidGeometry ) )
-		== ( deoglDeveloperMode::edimWorld | deoglDeveloperMode::edimSolidGeometry ) );
+		(details & (deoglDeveloperMode::edimWorld | deoglDeveloperMode::edimSolidGeometry))
+		== (deoglDeveloperMode::edimWorld | deoglDeveloperMode::edimSolidGeometry));
 	infoTransparentDetails->SetVisible(
-		( details & ( deoglDeveloperMode::edimWorld | deoglDeveloperMode::edimSolidGeometry ) )
-		== ( deoglDeveloperMode::edimWorld | deoglDeveloperMode::edimSolidGeometry ) );
+		(details & (deoglDeveloperMode::edimWorld | deoglDeveloperMode::edimSolidGeometry))
+		== (deoglDeveloperMode::edimWorld | deoglDeveloperMode::edimSolidGeometry));
 	
 	//infoSolidGeometryTask->SetVisible( false );
 }
@@ -240,7 +240,7 @@ void deoglRenderWorldInfo::DevModeDebugInfoChanged(){
 
 void deoglRenderWorldInfo::pCleanUp(){
 	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
-	dilist.RemoveIfPresent( infoWorld );
-	dilist.RemoveIfPresent( infoSolidGeometryDetails );
-	dilist.RemoveIfPresent( infoTransparentDetails );
+	dilist.RemoveIfPresent(infoWorld);
+	dilist.RemoveIfPresent(infoSolidGeometryDetails);
+	dilist.RemoveIfPresent(infoTransparentDetails);
 }

@@ -58,13 +58,13 @@ public:
 	decCollisionFilter();
 	
 	/** \brief Create new collision filter with category and filter set to the same mask. */
-	decCollisionFilter( const decLayerMask &mask );
+	decCollisionFilter(const decLayerMask &mask);
 	
 	/** \brief Create new collision filter from a set of layer masks. */
-	decCollisionFilter( const decLayerMask &category, const decLayerMask &filter );
+	decCollisionFilter(const decLayerMask &category, const decLayerMask &filter);
 	
 	/** \brief Create copy of a collision filter. */
-	decCollisionFilter( const decCollisionFilter &other );
+	decCollisionFilter(const decCollisionFilter &other);
 	
 	/** \brief Clean up collision filter. */
 	~decCollisionFilter();
@@ -89,7 +89,7 @@ public:
 	 * Hence the result is this.filter.Matches(other.category) and
 	 * other.filter.Matches(this.category).
 	 */
-	bool Collides( const decCollisionFilter &other ) const;
+	bool Collides(const decCollisionFilter &other) const;
 	
 	/**
 	 * \brief Determines if two collision filters can not collide.
@@ -98,7 +98,7 @@ public:
 	 * Hence the result is this.filter.MatchesNot(other.category) or
 	 * other.filter.MatchesNot(this.category).
 	 */
-	bool CollidesNot( const decCollisionFilter &other ) const;
+	bool CollidesNot(const decCollisionFilter &other) const;
 	
 	/**
 	 * \brief Collision filters can collide with another collision filter.
@@ -122,13 +122,13 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determines if collision filters are equal. */
-	bool operator==( const decCollisionFilter &other ) const;
+	bool operator==(const decCollisionFilter &other) const;
 	
 	/** \brief Determines if collision filters are not equal. */
-	bool operator!=( const decCollisionFilter &other ) const;
+	bool operator!=(const decCollisionFilter &other) const;
 	
 	/** \brief Sets this collision filter from another one. */
-	decCollisionFilter &operator=( const decCollisionFilter &other );
+	decCollisionFilter &operator=(const decCollisionFilter &other);
 	/*@}*/
 };
 

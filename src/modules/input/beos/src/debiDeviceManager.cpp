@@ -54,15 +54,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-debiDeviceManager::debiDeviceManager( deBeOSInput &module ) :
-pModule( module ),
-pMouse( NULL ),
-pKeyboard( NULL )
+debiDeviceManager::debiDeviceManager(deBeOSInput &module) :
+pModule(module),
+pMouse(NULL),
+pKeyboard(NULL)
 {
 	try{
 		pCreateDevices();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -86,17 +86,17 @@ int debiDeviceManager::GetCount() const{
 	return pDevices.GetCount();
 }
 
-debiDevice *debiDeviceManager::GetAt( int index ) const{
-	return ( debiDevice* )pDevices.GetAt( index );
+debiDevice *debiDeviceManager::GetAt(int index) const{
+	return (debiDevice*)pDevices.GetAt(index);
 }
 
-debiDevice *debiDeviceManager::GetWithID( const char *id ){
+debiDevice *debiDeviceManager::GetWithID(const char *id){
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		debiDevice * const device = ( debiDevice* )pDevices.GetAt( i );
-		if( device->GetID() == id ){
+	for(i=0; i<count; i++){
+		debiDevice * const device = (debiDevice*)pDevices.GetAt(i);
+		if(device->GetID() == id){
 			return device;
 		}
 	}
@@ -104,13 +104,13 @@ debiDevice *debiDeviceManager::GetWithID( const char *id ){
 	return NULL;
 }
 
-int debiDeviceManager::IndexOfWithID( const char *id ){
+int debiDeviceManager::IndexOfWithID(const char *id){
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		debiDevice * const device = ( debiDevice* )pDevices.GetAt( i );
-		if( device->GetID() == id ){
+	for(i=0; i<count; i++){
+		debiDevice * const device = (debiDevice*)pDevices.GetAt(i);
+		if(device->GetID() == id){
 			return i;
 		}
 	}
@@ -124,32 +124,32 @@ void debiDeviceManager::LogDevices(){
 	const int count = pDevices.GetCount();
 	int i, j;
 	
-	pModule.LogInfo( "Input Devices:" );
+	pModule.LogInfo("Input Devices:");
 	
-	for( i=0; i<count; i++ ){
-		const debiDevice &device = *( ( debiDevice* )pDevices.GetAt( i ) );
-		pModule.LogInfoFormat( "- %s (%s) [%d]", device.GetName().GetString(),
-			device.GetID().GetString(), device.GetType() );
+	for(i=0; i<count; i++){
+		const debiDevice &device = *((debiDevice*)pDevices.GetAt(i));
+		pModule.LogInfoFormat("- %s (%s) [%d]", device.GetName().GetString(),
+			device.GetID().GetString(), device.GetType());
 		
 		const int axisCount = device.GetAxisCount();
-		if( axisCount > 0 ){
-			pModule.LogInfo( "  Axes:" );
-			for( j=0; j<axisCount; j++ ){
-				const debiDeviceAxis &axis = *device.GetAxisAt( j );
-				pModule.LogInfoFormat( "    - '%s' (%s) %d .. %d [%d %d]",
+		if(axisCount > 0){
+			pModule.LogInfo("  Axes:");
+			for(j=0; j<axisCount; j++){
+				const debiDeviceAxis &axis = *device.GetAxisAt(j);
+				pModule.LogInfoFormat("    - '%s' (%s) %d .. %d [%d %d]",
 					axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
-					axis.GetMaximum(), 0, 0 );
+					axis.GetMaximum(), 0, 0);
 			}
 		}
 		
 		const int buttonCount = device.GetButtonCount();
-		if( buttonCount > 0 ){
-			pModule.LogInfo( "  Buttons:" );
-			for( j=0; j<buttonCount; j++ ){
-				const debiDeviceButton &button = *device.GetButtonAt( j );
-				pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
+		if(buttonCount > 0){
+			pModule.LogInfo("  Buttons:");
+			for(j=0; j<buttonCount; j++){
+				const debiDeviceButton &button = *device.GetButtonAt(j);
+				pModule.LogInfoFormat("    - '%s' (%s) %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
-					button.GetBICode(), j );
+					button.GetBICode(), j);
 			}
 		}
 	}
@@ -157,29 +157,29 @@ void debiDeviceManager::LogDevices(){
 
 
 
-decString debiDeviceManager::NormalizeID( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+decString debiDeviceManager::NormalizeID(const char *id){
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len = strlen( id );
-	if( len == 0 ){
+	const int len = strlen(id);
+	if(len == 0){
 		return decString();
 	}
 	
 	decString nid;
-	nid.Set( ' ', len );
+	nid.Set(' ', len);
 	
 	int i;
-	for( i=0; i<len; i++ ){
-		if( ( id[ i ]  >= 'A' && id[ i ] <= 'Z' )
-		|| ( id[ i ] >= 'a' && id[ i ] <= 'z' )
-		|| ( id[ i ] >= '0' && id[ i ] <= '9' )
-		|| id[ i ] == '_' ){
-			nid[ i ] = id[ i ];
+	for(i=0; i<len; i++){
+		if((id[i]  >= 'A' && id[i] <= 'Z')
+		|| (id[i] >= 'a' && id[i] <= 'z')
+		|| (id[i] >= '0' && id[i] <= '9')
+		|| id[i] == '_'){
+			nid[i] = id[i];
 			
 		}else{
-			nid[ i ] = '_';
+			nid[i] = '_';
 		}
 	}
 	
@@ -193,10 +193,10 @@ decString debiDeviceManager::NormalizeID( const char *id ){
 
 void debiDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
-	if( pKeyboard ){
+	if(pKeyboard){
 		pKeyboard->FreeReference();
 	}
-	if( pMouse ){
+	if(pMouse){
 		pMouse->FreeReference();
 	}
 }
@@ -204,13 +204,13 @@ void debiDeviceManager::pCleanUp(){
 
 
 void debiDeviceManager::pCreateDevices(){
-	pMouse = new debiDeviceMouse( pModule );
-	pMouse->SetIndex( pDevices.GetCount() );
-	pDevices.Add( pMouse );
+	pMouse = new debiDeviceMouse(pModule);
+	pMouse->SetIndex(pDevices.GetCount());
+	pDevices.Add(pMouse);
 	
-	pKeyboard = new debiDeviceKeyboard( pModule );
-	pKeyboard->SetIndex( pDevices.GetCount() );
-	pDevices.Add( pKeyboard );
+	pKeyboard = new debiDeviceKeyboard(pModule);
+	pKeyboard->SetIndex(pDevices.GetCount());
+	pDevices.Add(pKeyboard);
 	
 	pCreateJoystickDevices();
 }
@@ -221,21 +221,21 @@ void debiDeviceManager::pCreateJoystickDevices(){
 	const int count = joysticks.CountDevices();
 	int i;
 	
-	char name[ B_OS_NAME_LENGTH ];
-	for( i=0; i<count; i++ ){
-		if( joysticks.GetDeviceName( i, name, sizeof( name ) ) != B_OK ){
-			DETHROW( deeInvalidParam );
+	char name[B_OS_NAME_LENGTH];
+	for(i=0; i<count; i++){
+		if(joysticks.GetDeviceName(i, name, sizeof(name)) != B_OK){
+			DETHROW(deeInvalidParam);
 		}
 		
 		debiDeviceJoystick *joystick = NULL;
 		try{
-			joystick = new debiDeviceJoystick( pModule, name );
-			joystick->SetIndex( pDevices.GetCount() );
-			pDevices.Add( joystick );
+			joystick = new debiDeviceJoystick(pModule, name);
+			joystick->SetIndex(pDevices.GetCount());
+			pDevices.Add(joystick);
 			joystick->FreeReference();
 			
-		}catch( const deException & ){
-			if( joystick ){
+		}catch(const deException &){
+			if(joystick){
 				joystick->FreeReference();
 			}
 			throw;

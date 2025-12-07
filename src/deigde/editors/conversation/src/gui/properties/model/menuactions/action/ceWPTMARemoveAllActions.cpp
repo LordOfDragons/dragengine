@@ -45,11 +45,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMARemoveAllActions::ceWPTMARemoveAllActions( ceWindowMain &windowMain,
-ceConversation &conversation ) :
-ceWPTMenuAction( windowMain, "Remove All Actions",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ){
+ceWPTMARemoveAllActions::ceWPTMARemoveAllActions(ceWindowMain &windowMain,
+ceConversation &conversation) :
+ceWPTMenuAction(windowMain, "Remove All Actions",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation){
 }
 
 
@@ -64,5 +64,5 @@ void ceWPTMARemoveAllActions::OnAction(){
 igdeUndo *ceWPTMARemoveAllActions::CreateUndo(){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

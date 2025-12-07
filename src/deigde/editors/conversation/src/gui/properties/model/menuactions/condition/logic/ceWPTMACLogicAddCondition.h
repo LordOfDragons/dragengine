@@ -51,10 +51,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicAddCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicAddCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceConversationAction &action, ceCConditionLogic &logic,
-		ceConversationCondition::eConditionTypes actionType );
+		ceConversationCondition::eConditionTypes actionType);
 	/*@}*/
 	
 	
@@ -71,7 +71,7 @@ public:
 	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *action );
+	virtual igdeUndo *CreateUndo(ceConversationCondition *action);
 	/*@}*/
 };
 

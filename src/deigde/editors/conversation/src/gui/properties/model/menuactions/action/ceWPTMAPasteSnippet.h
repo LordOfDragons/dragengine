@@ -50,8 +50,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPasteSnippet( ceWindowMain &windowMain,
-		ceConversation &conversation );
+	ceWPTMAPasteSnippet(ceWindowMain &windowMain,
+		ceConversation &conversation);
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions ) = 0;
+	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions) = 0;
 	/*@}*/
 };
 

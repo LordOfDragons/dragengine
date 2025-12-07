@@ -49,7 +49,7 @@ public:
 	 * \param xpmData Pointer to the xpm data. Usually the pointer to the compiled in xpm data.
 	 * \param flip Determines if the image has to be flippep upside down.
 	 */
-	decXpmImage( const char *xpmData[], bool flip );
+	decXpmImage(const char *xpmData[], bool flip);
 	
 	/** \brief Clean up xpm image object. */
 	~decXpmImage();
@@ -72,8 +72,8 @@ public:
 	
 	
 private:
-	int pReadInt( const char **pdata );
-	int pReadColor( const char **pdata );
+	int pReadInt(const char **pdata);
+	int pReadColor(const char **pdata);
 };
 
 #endif

@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaDestCFrame::aeUSetRuleFStaDestCFrame( aeRuleForeignState *rule, deAnimatorRuleForeignState::eCoordinateFrames newCFrame ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeUSetRuleFStaDestCFrame::aeUSetRuleFStaDestCFrame(aeRuleForeignState *rule, deAnimatorRuleForeignState::eCoordinateFrames newCFrame){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -53,9 +53,9 @@ aeUSetRuleFStaDestCFrame::aeUSetRuleFStaDestCFrame( aeRuleForeignState *rule, de
 		pOldCFrame = rule->GetDestCoordinateFrame();
 		pNewCFrame = newCFrame;
 		
-		SetShortInfo( "Set foreign state rule dest cframe" );
+		SetShortInfo("Set foreign state rule dest cframe");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ aeUSetRuleFStaDestCFrame::~aeUSetRuleFStaDestCFrame(){
 ///////////////
 
 void aeUSetRuleFStaDestCFrame::Undo(){
-	pRule->SetDestCoordinateFrame( pOldCFrame );
+	pRule->SetDestCoordinateFrame(pOldCFrame);
 }
 
 void aeUSetRuleFStaDestCFrame::Redo(){
-	pRule->SetDestCoordinateFrame( pNewCFrame );
+	pRule->SetDestCoordinateFrame(pNewCFrame);
 }
 
 
@@ -84,7 +84,7 @@ void aeUSetRuleFStaDestCFrame::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaDestCFrame::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

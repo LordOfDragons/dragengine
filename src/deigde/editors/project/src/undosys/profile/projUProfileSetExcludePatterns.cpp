@@ -40,15 +40,15 @@
 ////////////////////////////
 
 projUProfileSetExcludePatterns::projUProfileSetExcludePatterns(
-projProfile *profile, const decStringSet &newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const decStringSet &newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set exclude patterns" );
+	SetShortInfo("Profile set exclude patterns");
 	
 	pOldValue = profile->GetExcludePatterns();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetExcludePatterns::~projUProfileSetExcludePatterns(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ projUProfileSetExcludePatterns::~projUProfileSetExcludePatterns(){
 ///////////////
 
 void projUProfileSetExcludePatterns::Undo(){
-	pProfile->SetExcludePatterns( pOldValue );
+	pProfile->SetExcludePatterns(pOldValue);
 }
 
 void projUProfileSetExcludePatterns::Redo(){
-	pProfile->SetExcludePatterns( pNewValue );
+	pProfile->SetExcludePatterns(pNewValue);
 }

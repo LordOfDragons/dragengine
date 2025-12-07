@@ -51,7 +51,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-lpeConfigurationXML::lpeConfigurationXML( deLogger *logger, const char *loggerSource ) : igdeBaseXML( logger, loggerSource ){
+lpeConfigurationXML::lpeConfigurationXML(deLogger *logger, const char *loggerSource) : igdeBaseXML(logger, loggerSource){
 }
 
 lpeConfigurationXML::~lpeConfigurationXML(){
@@ -62,28 +62,28 @@ lpeConfigurationXML::~lpeConfigurationXML(){
 // Management
 ///////////////
 
-void lpeConfigurationXML::ReadFromFile( decBaseFileReader &reader, lpeConfiguration &config ){
+void lpeConfigurationXML::ReadFromFile(decBaseFileReader &reader, lpeConfiguration &config){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "langpackEditor" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "langpackEditor") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void lpeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const lpeConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void lpeConfigurationXML::WriteToFile(decBaseFileWriter &writer, const lpeConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -91,31 +91,31 @@ void lpeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const lpeConfi
 // Private Functions
 //////////////////////
 
-void lpeConfigurationXML::pWriteConfig( decXmlWriter &writer, const lpeConfiguration &config ){
-	writer.WriteOpeningTag( "langpackEditor", false, true );
+void lpeConfigurationXML::pWriteConfig(decXmlWriter &writer, const lpeConfiguration &config){
+	writer.WriteOpeningTag("langpackEditor", false, true);
 	
-	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
+	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
 	
-	writer.WriteClosingTag( "langpackEditor", true );
+	writer.WriteClosingTag("langpackEditor", true);
 }
 
 
 
-void lpeConfigurationXML::pReadConfig( const decXmlElementTag &root, lpeConfiguration &config ){
+void lpeConfigurationXML::pReadConfig(const decXmlElementTag &root, lpeConfiguration &config){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "recentFiles" ){
-			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+		if(tag->GetName() == "recentFiles"){
+			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

@@ -52,24 +52,24 @@ public:
 	/** Retrieves the number of actions. */
 	int GetCount() const;
 	/** Retrieves the action at the given position. */
-	ceConversationAction *GetAt( int index ) const;
+	ceConversationAction *GetAt(int index) const;
 	/** Retrieves the index of the given action or -1 if not found. */
-	int IndexOf( ceConversationAction *action ) const;
+	int IndexOf(ceConversationAction *action) const;
 	/** Determines if a action exists. */
-	bool Has( ceConversationAction *action ) const;
+	bool Has(ceConversationAction *action) const;
 	/** Adds a action. */
-	void Add( ceConversationAction *action );
+	void Add(ceConversationAction *action);
 	/** Inserts a new action. */
-	void InsertAt( ceConversationAction *action, int index );
+	void InsertAt(ceConversationAction *action, int index);
 	/** Moves a action to a new position. */
-	void MoveTo( ceConversationAction *action, int index );
+	void MoveTo(ceConversationAction *action, int index);
 	/** Removes a action. */
-	void Remove( ceConversationAction *action );
+	void Remove(ceConversationAction *action);
 	/** Removes all actions. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceConversationActionList &operator=( const ceConversationActionList &list );
+	ceConversationActionList &operator=(const ceConversationActionList &list);
 	/*@}*/
 };
 

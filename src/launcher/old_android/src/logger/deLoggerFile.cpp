@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLoggerFile::deLoggerFile( decBaseFileWriter *writer ) :
-pWriter( NULL )
+deLoggerFile::deLoggerFile(decBaseFileWriter *writer) :
+pWriter(NULL)
 {
-	if( ! writer ){
-		DETHROW( deeInvalidParam );
+	if(!writer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWriter = writer;
@@ -52,7 +52,7 @@ pWriter( NULL )
 }
 
 deLoggerFile::~deLoggerFile(){
-	if( pWriter ){
+	if(pWriter){
 		pWriter->FreeReference();
 	}
 }
@@ -62,88 +62,88 @@ deLoggerFile::~deLoggerFile(){
 // Management
 ///////////////
 
-void deLoggerFile::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerFile::LogInfo(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len = strlen( message );
+	const int len = strlen(message);
 	decString string;
 	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "II [%s] %s\n", source, message );
+	if(len == 0 || message[len - 1] != '\n'){
+		string.Format("II [%s] %s\n", source, message);
 		
 	}else{
-		string.Format( "II [%s] %s", source, message );
+		string.Format("II [%s] %s", source, message);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
+		pWriter->Write(string.GetString(), string.GetLength());
+		fflush(NULL);
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerFile::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerFile::LogWarn(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len = strlen( message );
+	const int len = strlen(message);
 	decString string;
 	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "WW [%s] %s\n", source, message );
+	if(len == 0 || message[len - 1] != '\n'){
+		string.Format("WW [%s] %s\n", source, message);
 		
 	}else{
-		string.Format( "WW [%s] %s", source, message );
+		string.Format("WW [%s] %s", source, message);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
+		pWriter->Write(string.GetString(), string.GetLength());
+		fflush(NULL);
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerFile::LogError( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerFile::LogError(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len = strlen( message );
+	const int len = strlen(message);
 	decString string;
 	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "EE [%s] %s\n", source, message );
+	if(len == 0 || message[len - 1] != '\n'){
+		string.Format("EE [%s] %s\n", source, message);
 		
 	}else{
-		string.Format( "EE [%s] %s", source, message );
+		string.Format("EE [%s] %s", source, message);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
+		pWriter->Write(string.GetString(), string.GetLength());
+		fflush(NULL);
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}

@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates xml document. */
-	dedsXmlDocument( const char *filename );
+	dedsXmlDocument(const char *filename);
 	
 protected:
 	/** \brief Cleans up xml document. */
@@ -78,19 +78,19 @@ public:
 	inline const decString GetFilename() const{ return pFilename; }
 	
 	/** \brief Set filename. */
-	void SetFilename( const char *filename );
+	void SetFilename(const char *filename);
 	
 	/** \brief Parse failed. */
 	inline bool GetParseFailed() const{ return pParseFailed; }
 	
 	/** \brief Set parse failed. */
-	void SetParseFailed( bool parseFailed );
+	void SetParseFailed(bool parseFailed);
 	
 	/** \brief Parse log. */
 	inline const decString &GetParseLog() const{ return pParseLog; }
 	
 	/** \brief Set parse log. */
-	void SetParseLog( const char *text );
+	void SetParseLog(const char *text);
 };
 
 #endif

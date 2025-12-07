@@ -61,7 +61,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkPipeline( devkDevice &device, const devkPipelineConfiguration &configuration );
+	devkPipeline(devkDevice &device, const devkPipelineConfiguration &configuration);
 	
 	/** Clean up pipeline. */
 	virtual ~devkPipeline();
@@ -91,9 +91,9 @@ public:
 	
 	
 protected:
-	void pInitShaderStage( VkPipelineShaderStageCreateInfo &info,
+	void pInitShaderStage(VkPipelineShaderStageCreateInfo &info,
 		VkShaderStageFlagBits stage, devkShaderModule &module,
-		const VkSpecializationInfo *specialization = nullptr );
+		const VkSpecializationInfo *specialization = nullptr);
 	
 	
 	

@@ -233,7 +233,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread. */
-	deoglRenderThread( deGraphicOpenGl &ogl );
+	deoglRenderThread(deGraphicOpenGl &ogl);
 	
 	/** Clean up render thread. */
 	virtual ~deoglRenderThread();
@@ -260,13 +260,13 @@ public:
 	inline deoglRCamera *GetVRCamera() const{ return pVRCamera; }
 	
 	/** Set VR camera or nullptr. */
-	void SetVRCamera( deoglRCamera *camera );
+	void SetVRCamera(deoglRCamera *camera);
 	
 	/** VR debug panel matrix. */
 	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
 	
 	/** Set VR debug panel matrix. */
-	void SetVRDebugPanelMatrix( const decDMatrix &matrix );
+	void SetVRDebugPanelMatrix(const decDMatrix &matrix);
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
@@ -281,19 +281,19 @@ public:
 	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
 	/** Set input overlay canvas view or nullptr. */
-	void SetCanvasInputOverlay( deoglRCanvasView *canvas );
+	void SetCanvasInputOverlay(deoglRCanvasView *canvas);
 	
 	/** Debug overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
 	/** Set debug overlay canvas view or nullptr. */
-	void SetCanvasDebugOverlay( deoglRCanvasView *canvas );
+	void SetCanvasDebugOverlay(deoglRCanvasView *canvas);
 	
 	/** Overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasOverlay() const{ return pCanvasOverlay; }
 	
 	/** Set overlay canvas view or nullptr. */
-	void SetCanvasOverlay( deoglRCanvasView *canvas );
+	void SetCanvasOverlay(deoglRCanvasView *canvas);
 	
 	
 	
@@ -369,7 +369,7 @@ public:
 	inline deoglGI &GetGI() const{ return *pGI; }
 	
 	/** Light boundary box having at least the given size. */
-	deoglLightBoundaryMap &GetLightBoundaryMap( int size );
+	deoglLightBoundaryMap &GetLightBoundaryMap(int size);
 	
 	/** Triangle sorter. */
 	deoglTriangleSorter &GetTriangleSorter() const{ return *pTriangleSorter; }
@@ -414,7 +414,7 @@ public:
 	
 	
 	/** Initialize. */
-	void Init( deRenderWindow *renderWindow );
+	void Init(deRenderWindow *renderWindow);
 	
 	/** Clean up. */
 	void CleanUp();
@@ -476,7 +476,7 @@ public:
 	void Unfreeze();
 	
 	/** Create a render window thread safe. */
-	void CreateRenderWindow( deoglRRenderWindow *window );
+	void CreateRenderWindow(deoglRRenderWindow *window);
 	
 	/** FPS Rate. */
 	inline int GetFPSRate() const{ return pFPSRate; }
@@ -502,8 +502,8 @@ public:
 	
 	#ifdef WITH_OPENGLES
 	bool DoesDebugMemoryUsage() const;
-	void DebugMemoryUsage( const char *prefix );
-	void DebugMemoryUsageSmall( const char *prefix );
+	void DebugMemoryUsage(const char *prefix);
+	void DebugMemoryUsageSmall(const char *prefix);
 	#endif
 	/*@}*/
 	
@@ -540,7 +540,7 @@ private:
 	void pVREndFrame();
 	void pCaptureCanvas();
 	void pEndFrame();
-	void pLimitFrameRate( float elapsed );
+	void pLimitFrameRate(float elapsed);
 	
 	void pUpdateConfigFrameLimiter();
 	void pCleanUpThread();

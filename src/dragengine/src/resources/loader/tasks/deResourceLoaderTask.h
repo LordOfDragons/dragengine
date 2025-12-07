@@ -89,9 +89,9 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deResourceLoaderTask( deEngine &engine, deResourceLoader &resourceLoader,
+	deResourceLoaderTask(deEngine &engine, deResourceLoader &resourceLoader,
 		deVirtualFileSystem *vfs, const char *path,
-		deResourceLoader::eResourceType resourceType );
+		deResourceLoader::eResourceType resourceType);
 	
 	/** \brief Clean up task. */
 	virtual ~deResourceLoaderTask();
@@ -113,13 +113,13 @@ public:
 	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
 	
 	/** \brief Task matches the given path/resourceType. */
-	bool Matches( deVirtualFileSystem *vfs, const char *path,
-		deResourceLoader::eResourceType resourceType ) const;
+	bool Matches(deVirtualFileSystem *vfs, const char *path,
+		deResourceLoader::eResourceType resourceType) const;
 	
 	
 	
 	/** \brief Resource or NULL. */
-	inline deFileResource *GetResource() const{ return ( deFileResource* )( deResource* )pResource; }
+	inline deFileResource *GetResource() const{ return (deFileResource*)(deResource*)pResource; }
 	
 	/** \brief State. */
 	inline eStates GetState() const{ return pState; }
@@ -145,9 +145,9 @@ public:
 protected:
 	inline deEngine &GetEngine(){ return pEngine; }
 	inline deResourceLoader &GetResourceLoader(){ return pResourceLoader; }
-	void SetResource( deFileResource *resource );
-	void SetState( eStates state );
-	void SetType( eTypes type );
+	void SetResource(deFileResource *resource);
+	void SetState(eStates state);
+	void SetType(eTypes type);
 	void LogCreateEnter();
 	void LogCreateExit();
 	void LogRunEnter();

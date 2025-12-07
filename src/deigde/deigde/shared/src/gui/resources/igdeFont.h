@@ -54,10 +54,10 @@ public:
 		bool strikeThrough; //< Strike through font
 		
 		sConfiguration();
-		sConfiguration( const sConfiguration &config );
+		sConfiguration(const sConfiguration &config);
 		
-		sConfiguration &operator=( const sConfiguration &config );
-		bool operator==( const sConfiguration &config ) const;
+		sConfiguration &operator=(const sConfiguration &config);
+		bool operator==(const sConfiguration &config) const;
 	};
 	
 	
@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font. */
-	igdeFont( igdeEnvironment &environment, const sConfiguration &config );
+	igdeFont(igdeEnvironment &environment, const sConfiguration &config);
 	
 	
 	
@@ -116,12 +116,12 @@ public:
 	inline bool GetStrikeThrough() const{ return pStrikeThrough; }
 	
 	/** \brief Font configuration. */
-	void GetConfig( sConfiguration &config ) const;
+	void GetConfig(sConfiguration &config) const;
 	
 	
 	
 	/** \brief Text size. */
-	decPoint TextSize( const char *text ) const;
+	decPoint TextSize(const char *text) const;
 	
 	
 	

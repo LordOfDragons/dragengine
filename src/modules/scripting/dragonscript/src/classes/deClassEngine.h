@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create script class. */
-	deClassEngine( deScriptingDragonScript &ds );
+	deClassEngine(deScriptingDragonScript &ds);
 	
 	/** Clean up script class. */
 	virtual ~deClassEngine();
@@ -61,7 +61,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Debug timer. */
 	inline decTimer &GetDebugTimer(){ return pDebugTimer; }
@@ -70,13 +70,13 @@ public:
 	inline bool GetDefaultEnableGI() const{ return pDefaultEnableGI; }
 	
 	/** Set default enable GI. */
-	void SetDefaultEnableGI( bool enable );
+	void SetDefaultEnableGI(bool enable);
 	
 	/** Default enable auralization. */
 	inline bool GetDefaultEnableAuralization() const{ return pDefaultEnableAuralization; }
 	
 	/** Set default enable auralization. */
-	void SetDefaultEnableAuralization( bool enable );
+	void SetDefaultEnableAuralization(bool enable);
 	
 	/**
 	 * \brief Scripts are DPI aware.
@@ -118,50 +118,50 @@ private:
 		dsClass *clsGame;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	// engine
-	DEF_NATFUNC( nfGetElapsedTime );
-	DEF_NATFUNC( nfResetTimers );
-	DEF_NATFUNC( nfGetGame );
-	DEF_NATFUNC( nfGetFPSRate );
-	DEF_NATFUNC( nfQuit );
-	DEF_NATFUNC( nfRestart );
-	DEF_NATFUNC( nfGetEditMode );
-	DEF_NATFUNC( nfLoadingResourceCount );
-	DEF_NATFUNC( nfLog );
-	DEF_NATFUNC( nfGetScriptModuleStats );
-	DEF_NATFUNC( nfGetAppActive );
-	DEF_NATFUNC( nfUpdateResourceLoading );
+	DEF_NATFUNC(nfGetElapsedTime);
+	DEF_NATFUNC(nfResetTimers);
+	DEF_NATFUNC(nfGetGame);
+	DEF_NATFUNC(nfGetFPSRate);
+	DEF_NATFUNC(nfQuit);
+	DEF_NATFUNC(nfRestart);
+	DEF_NATFUNC(nfGetEditMode);
+	DEF_NATFUNC(nfLoadingResourceCount);
+	DEF_NATFUNC(nfLog);
+	DEF_NATFUNC(nfGetScriptModuleStats);
+	DEF_NATFUNC(nfGetAppActive);
+	DEF_NATFUNC(nfUpdateResourceLoading);
 	
-	DEF_NATFUNC( nfGetCompatibleVersion );
-	DEF_NATFUNC( nfGetCompatibleVersionMajor );
-	DEF_NATFUNC( nfGetCompatibleVersionMinor );
-	DEF_NATFUNC( nfGetCompatibleVersionPatch );
-	DEF_NATFUNC( nfIsCompatibleVersionOlder );
-	DEF_NATFUNC( nfIsCompatibleVersionNewer );
+	DEF_NATFUNC(nfGetCompatibleVersion);
+	DEF_NATFUNC(nfGetCompatibleVersionMajor);
+	DEF_NATFUNC(nfGetCompatibleVersionMinor);
+	DEF_NATFUNC(nfGetCompatibleVersionPatch);
+	DEF_NATFUNC(nfIsCompatibleVersionOlder);
+	DEF_NATFUNC(nfIsCompatibleVersionNewer);
 	
-	DEF_NATFUNC( nfGetModuleVersion );
-	DEF_NATFUNC( nfGetModuleVersionMajor );
-	DEF_NATFUNC( nfGetModuleVersionMinor );
-	DEF_NATFUNC( nfGetModuleVersionPatch );
-	DEF_NATFUNC( nfIsModuleVersionOlder );
-	DEF_NATFUNC( nfIsModuleVersionNewer );
+	DEF_NATFUNC(nfGetModuleVersion);
+	DEF_NATFUNC(nfGetModuleVersionMajor);
+	DEF_NATFUNC(nfGetModuleVersionMinor);
+	DEF_NATFUNC(nfGetModuleVersionPatch);
+	DEF_NATFUNC(nfIsModuleVersionOlder);
+	DEF_NATFUNC(nfIsModuleVersionNewer);
 	
-	DEF_NATFUNC( nfGetDefaultEnableGI );
-	DEF_NATFUNC( nfSetDefaultEnableGI );
-	DEF_NATFUNC( nfGetDefaultEnableAuralization );
-	DEF_NATFUNC( nfSetDefaultEnableAuralization );
+	DEF_NATFUNC(nfGetDefaultEnableGI);
+	DEF_NATFUNC(nfSetDefaultEnableGI);
+	DEF_NATFUNC(nfGetDefaultEnableAuralization);
+	DEF_NATFUNC(nfSetDefaultEnableAuralization);
 	DEF_NATFUNC(nfGetDpiAware);
 	DEF_NATFUNC(nfSetDpiAware);
 	
-	DEF_NATFUNC( nfGetUserLocaleLanguage );
-	DEF_NATFUNC( nfGetUserLocaleTerritory );
+	DEF_NATFUNC(nfGetUserLocaleLanguage);
+	DEF_NATFUNC(nfGetUserLocaleTerritory);
 	
-	DEF_NATFUNC( nfGetSupportedServices );
+	DEF_NATFUNC(nfGetSupportedServices);
 #undef DEF_NATFUNC
 };
 

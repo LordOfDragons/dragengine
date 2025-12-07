@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resource loader. */
-	igdeResourceLoader( igdeEnvironment &environment );
+	igdeResourceLoader(igdeEnvironment &environment);
 	
 	/** \brief Clean up resource loader. */
 	~igdeResourceLoader();
@@ -81,15 +81,15 @@ public:
 	 * expects a resource of the given type since the resource is handed over to the
 	 * listener as a deFileResource object which has to be cast to the correct type.
 	 */
-	void RequestResource( const char *filename, deResourceLoader::eResourceType resourceType,
-		igdeResourceLoaderListener *listener );
+	void RequestResource(const char *filename, deResourceLoader::eResourceType resourceType,
+		igdeResourceLoaderListener *listener);
 	/*@}*/
 	
 	
 	
 private:
-	int pIndexOfTaskWith( const char *filename, deResourceLoader::eResourceType resourceType );
-	void pAddTask( const char *filename, deResourceLoader::eResourceType resourceType );
+	int pIndexOfTaskWith(const char *filename, deResourceLoader::eResourceType resourceType);
+	void pAddTask(const char *filename, deResourceLoader::eResourceType resourceType);
 };
 
 #endif

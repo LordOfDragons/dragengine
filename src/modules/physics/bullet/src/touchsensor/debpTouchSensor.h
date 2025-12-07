@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	debpTouchSensor( dePhysicsBullet &bullet, deTouchSensor &touchSensor );
+	debpTouchSensor(dePhysicsBullet &bullet, deTouchSensor &touchSensor);
 	
 	/** Clean up peer. */
 	virtual ~debpTouchSensor();
@@ -113,7 +113,7 @@ public:
 	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL. */
-	void SetParentWorld( debpWorld *parentWorld );
+	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Minimum extend. */
 	const decDVector &GetMinimumExtend();
@@ -134,16 +134,16 @@ public:
 	void MarkGhostObjectDirty();
 	
 	/** Touch sensor and collider collide. */
-	bool Collides( const debpCollider &collider ) const;
+	bool Collides(const debpCollider &collider) const;
 	
 	/** Touch sensor and collider do not collide. */
-	bool CollidesNot( const debpCollider &collider ) const;
+	bool CollidesNot(const debpCollider &collider) const;
 	
 	/** Determines if a collider touches the shape. */
-	bool TestCollider( debpCollider *collider );
+	bool TestCollider(debpCollider *collider);
 	
 	/** Remove collider immediately. For use by debpCollider only during cleaning up. */
-	void RemoveColliderImmediately( debpCollider *collider );
+	void RemoveColliderImmediately(debpCollider *collider);
 	/*@}*/
 	
 	
@@ -178,7 +178,7 @@ public:
 	 * Collider at index in touch sensor.
 	 * \param collider Index of the collider retrieve.
 	 */
-	virtual deCollider *GetColliderAt( int collider );
+	virtual deCollider *GetColliderAt(int collider);
 	
 	/** Shape changed. */
 	virtual void ShapeChanged();
@@ -189,14 +189,14 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** Test if a point is located inside the collider. */
-	virtual bool PointInside( const decDVector &point );
+	virtual bool PointInside(const decDVector &point);
 	
 	/**
 	 * Visit all touching elements with listener.
 	 * 
 	 * To stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void AllHits( deBaseScriptingCollider *listener );
+	virtual void AllHits(deBaseScriptingCollider *listener);
 	
 	/**
 	 * Test ray for collision with the element in the given shape.
@@ -206,8 +206,8 @@ public:
 	 * The distance parameter in the collision response represents the actual distance to the
 	 * ray origin along the ray direction.
 	 */
-	virtual void RayHits( const decDVector &rayOrigin, const decVector &rayDirection,
-	deBaseScriptingCollider *listener );
+	virtual void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+	deBaseScriptingCollider *listener);
 	
 	/**
 	 * Test collider for collision with scene elements.
@@ -216,7 +216,7 @@ public:
 	 * collider is called. To stop testing set StopTesting in the provided collision
 	 * information object to true.
 	 */
-	virtual void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
+	virtual void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
 	
 	/**
 	 * Test moving collider for collision with scene elements.
@@ -225,8 +225,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderMoveHits( deCollider *collider, const decVector &displacement,
-	deBaseScriptingCollider *listener );
+	virtual void ColliderMoveHits(deCollider *collider, const decVector &displacement,
+	deBaseScriptingCollider *listener);
 	
 	/**
 	 * Test rotating collider for collision with scene elements.
@@ -235,8 +235,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderRotateHits( deCollider *collider, const decVector &rotation,
-	deBaseScriptingCollider *listener );
+	virtual void ColliderRotateHits(deCollider *collider, const decVector &rotation,
+	deBaseScriptingCollider *listener);
 	
 	/**
 	 * Test moving and rotating collider for collision with scene elements.
@@ -245,8 +245,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-	const decVector &rotation, deBaseScriptingCollider *listener );
+	virtual void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+	const decVector &rotation, deBaseScriptingCollider *listener);
 	/*@}*/
 	
 	

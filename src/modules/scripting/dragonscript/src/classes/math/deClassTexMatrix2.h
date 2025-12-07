@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new class. */
-	deClassTexMatrix2( deScriptingDragonScript &ds );
+	deClassTexMatrix2(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassTexMatrix2();
@@ -59,16 +59,16 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Texture matrix from an object.
 	 * \throws dueNullPointer \em myself is \em NULL.
 	 */
-	const decTexMatrix2 &GetTexMatrix( dsRealObject *myself ) const;
+	const decTexMatrix2 &GetTexMatrix(dsRealObject *myself) const;
 	
 	/** \brief Pushe texture matrix. */
-	void PushTexMatrix( dsRunTime *rt, const decTexMatrix2 &matrix );
+	void PushTexMatrix(dsRunTime *rt, const decTexMatrix2 &matrix);
 	/*@}*/
 	
 private:
@@ -77,54 +77,54 @@ private:
 		dsClass *clsVec2, *clsFileReader, *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNew2 );
-	DEF_NATFUNC( nfNewTranslation );
-	DEF_NATFUNC( nfNewTranslation2 );
-	DEF_NATFUNC( nfNewScaling );
-	DEF_NATFUNC( nfNewScaling2 );
-	DEF_NATFUNC( nfNewRotation );
-	DEF_NATFUNC( nfNewShear );
-	DEF_NATFUNC( nfNewShear2 );
-	DEF_NATFUNC( nfNewST );
-	DEF_NATFUNC( nfNewST2 );
-	DEF_NATFUNC( nfNewSRT );
-	DEF_NATFUNC( nfNewSRT2 );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNew2);
+	DEF_NATFUNC(nfNewTranslation);
+	DEF_NATFUNC(nfNewTranslation2);
+	DEF_NATFUNC(nfNewScaling);
+	DEF_NATFUNC(nfNewScaling2);
+	DEF_NATFUNC(nfNewRotation);
+	DEF_NATFUNC(nfNewShear);
+	DEF_NATFUNC(nfNewShear2);
+	DEF_NATFUNC(nfNewST);
+	DEF_NATFUNC(nfNewST2);
+	DEF_NATFUNC(nfNewSRT);
+	DEF_NATFUNC(nfNewSRT2);
 	DEF_NATFUNC(nfNewRT);
 	DEF_NATFUNC(nfNewRT2);
-	DEF_NATFUNC( nfNewCenterSRT );
-	DEF_NATFUNC( nfNewCenterSRT2 );
-	DEF_NATFUNC( nfNewCenterRotation );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNewCenterSRT);
+	DEF_NATFUNC(nfNewCenterSRT2);
+	DEF_NATFUNC(nfNewCenterRotation);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetAt );
-	DEF_NATFUNC( nfGet11 );
-	DEF_NATFUNC( nfGet12 );
-	DEF_NATFUNC( nfGet13 );
-	DEF_NATFUNC( nfGet21 );
-	DEF_NATFUNC( nfGet22 );
-	DEF_NATFUNC( nfGet23 );
+	DEF_NATFUNC(nfGetAt);
+	DEF_NATFUNC(nfGet11);
+	DEF_NATFUNC(nfGet12);
+	DEF_NATFUNC(nfGet13);
+	DEF_NATFUNC(nfGet21);
+	DEF_NATFUNC(nfGet22);
+	DEF_NATFUNC(nfGet23);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfOpAdd );
-	DEF_NATFUNC( nfOpSubtract );
-	DEF_NATFUNC( nfOpScale );
-	DEF_NATFUNC( nfOpDivide );
-	DEF_NATFUNC( nfOpMultiply );
-	DEF_NATFUNC( nfOpMultiply2 );
-	DEF_NATFUNC( nfOpMultiply3 );
+	DEF_NATFUNC(nfOpAdd);
+	DEF_NATFUNC(nfOpSubtract);
+	DEF_NATFUNC(nfOpScale);
+	DEF_NATFUNC(nfOpDivide);
+	DEF_NATFUNC(nfOpMultiply);
+	DEF_NATFUNC(nfOpMultiply2);
+	DEF_NATFUNC(nfOpMultiply3);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfToString );
-	DEF_NATFUNC( nfToStringPrecision );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfToString);
+	DEF_NATFUNC(nfToStringPrecision);
 #undef DEF_NATFUNC
 };
 

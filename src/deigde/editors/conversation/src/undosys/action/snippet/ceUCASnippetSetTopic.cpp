@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASnippetSetTopic::ceUCASnippetSetTopic( ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic ){
-	if( ! topic || ! newTopic ) DETHROW( deeInvalidParam );
+ceUCASnippetSetTopic::ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic){
+	if(!topic || !newTopic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pSnippet = NULL;
 	pOldTopic = snippet->GetTopic();
 	pNewTopic = newTopic;
 	
-	SetShortInfo( "Snippet Set Topic" );
+	SetShortInfo("Snippet Set Topic");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCASnippetSetTopic::ceUCASnippetSetTopic( ceConversationTopic *topic, ceCASnip
 }
 
 ceUCASnippetSetTopic::~ceUCASnippetSetTopic(){
-	if( pSnippet ){
+	if(pSnippet){
 		pSnippet->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCASnippetSetTopic::~ceUCASnippetSetTopic(){
 ///////////////
 
 void ceUCASnippetSetTopic::Undo(){
-	pSnippet->SetTopic( pOldTopic.GetString() );
-	pTopic->NotifyActionChanged( pSnippet );
+	pSnippet->SetTopic(pOldTopic.GetString());
+	pTopic->NotifyActionChanged(pSnippet);
 }
 
 void ceUCASnippetSetTopic::Redo(){
-	pSnippet->SetTopic( pNewTopic.GetString() );
-	pTopic->NotifyActionChanged( pSnippet );
+	pSnippet->SetTopic(pNewTopic.GetString());
+	pTopic->NotifyActionChanged(pSnippet);
 }

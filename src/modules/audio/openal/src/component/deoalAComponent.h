@@ -117,7 +117,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component peer. */
-	deoalAComponent( deoalAudioThread &audioThread );
+	deoalAComponent(deoalAudioThread &audioThread);
 	
 protected:
 	/** \brief Clean up component peer. */
@@ -136,7 +136,7 @@ public:
 	inline deoalAWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deoalAWorld *world );
+	void SetParentWorld(deoalAWorld *world);
 	
 	
 	
@@ -144,7 +144,7 @@ public:
 	inline deoalWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/** \brief Set world octree node or NULL. */
-	void SetOctreeNode( deoalWorldOctree *node );
+	void SetOctreeNode(deoalWorldOctree *node);
 	
 	/** \brief Update octree node. */
 	void UpdateOctreeNode();
@@ -158,13 +158,13 @@ public:
 	inline deoalAModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model. */
-	void SetModel( deoalAModel *model, const decStringList *textureNames );
+	void SetModel(deoalAModel *model, const decStringList *textureNames);
 	
 	/** \brief Skin. */
 	inline deoalASkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( deoalASkin *skin );
+	void SetSkin(deoalASkin *skin);
 	
 	/** \brief Texture names. */
 	inline const decStringList *GetTextureNames() const{ return pTextureNames; }
@@ -184,17 +184,17 @@ public:
 	int GetTextureCount() const;
 	
 	/** \brief Texture at index. */
-	deoalAComponentTexture &GetTextureAt( int index ) const;
+	deoalAComponentTexture &GetTextureAt(int index) const;
 	
 	/**
 	 * \brief Texture at index mapped from model.
 	 * 
 	 * Short version for calling GetTextureAt(GetModelTextureMappings().GetAt(index)).
 	 */
-	deoalAComponentTexture &GetModelTextureAt( int index ) const;
+	deoalAComponentTexture &GetModelTextureAt(int index) const;
 	
 	/** \brief Add texture. */
-	void AddTexture( deoalAComponentTexture *texture );
+	void AddTexture(deoalAComponentTexture *texture);
 	
 	/** \brief Remove all textures. */
 	void RemoveAllTextures();
@@ -211,8 +211,8 @@ public:
 	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set geometry. */
-	void SetGeometry( const decDVector &position, const decQuaternion &orientation,
-		const decVector &scaling );
+	void SetGeometry(const decDVector &position, const decQuaternion &orientation,
+		const decVector &scaling);
 	
 	
 	
@@ -220,7 +220,7 @@ public:
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
@@ -262,10 +262,10 @@ public:
 	
 	
 	/** \brief Initialize bones. */
-	void InitBones( const deComponent &component );
+	void InitBones(const deComponent &component);
 	
 	/** \brief Update bone geometry. */
-	void UpdateBoneGeometry( const deComponent &component );
+	void UpdateBoneGeometry(const deComponent &component);
 	
 	/** \brief Dynamic octree or \em NULL to use static model octree. */
 // 	inline deoalModelOctree *GetOctree() const{ return pOctree; }
@@ -284,7 +284,7 @@ public:
 	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Face at index. */
-	const deoalModelFace &GetFaceAt( int index ) const;
+	const deoalModelFace &GetFaceAt(int index) const;
 	/*@}*/
 	
 	
@@ -301,19 +301,19 @@ public:
 	 * \brief Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 		
 	/** \brief Linked list world previous. */
 	inline deoalAComponent *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set linked list world previous. */
-	void SetLLWorldPrev( deoalAComponent *component );
+	void SetLLWorldPrev(deoalAComponent *component);
 	
 	/** \brief Linked list world next. */
 	inline deoalAComponent *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set linked list world next. */
-	void SetLLWorldNext( deoalAComponent *component );
+	void SetLLWorldNext(deoalAComponent *component);
 	/*@}*/
 	
 	
@@ -341,7 +341,7 @@ private:
 	void pBuildOctree();
 	void pDropOctree();
 	
-	bool pIgnoreBySize( const decVector &size ) const;
+	bool pIgnoreBySize(const decVector &size) const;
 };
 
 #endif

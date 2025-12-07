@@ -76,7 +76,7 @@ public:
 	 * is thrown. In case of exception CleanUp() is called properly.
 	 */
 #ifdef OS_UNIX
-	void Run( int argCount, char **args );
+	void Run(int argCount, char **args);
 #elif defined OS_W32
 	void Run();
 #else
@@ -84,16 +84,16 @@ public:
 #endif
 	
 	/** \brief System color. */
-	decColor GetSystemColor( igdeEnvironment::eSystemColors color ) const;
+	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;
 	
 	/** \brief Get main app font config. */
-	void GetAppFontConfig( igdeFont::sConfiguration &config );
+	void GetAppFontConfig(igdeFont::sConfiguration &config);
 	
 	/** \brief Application instance. */
 	static igdeApplication &app();
 	
 	/** \brief Show window modal while keeping engine properly updating. */
-	void RunModalWhileShown( igdeWindow &window );
+	void RunModalWhileShown(igdeWindow &window);
 	
 	/** \brief For internal use only. */
 	inline void *GetNativeApplication() const{ return pNativeApplication; }
@@ -129,10 +129,10 @@ protected:
 	 * \brief Initialize application.
 	 * \returns true to run application or false to abord.
 	 */
-	virtual bool Initialize( const decUnicodeStringList &arguments ) = 0;
+	virtual bool Initialize(const decUnicodeStringList &arguments) = 0;
 	
 	/** \brief Set main window. */
-	void SetMainWindow( igdeMainWindow *mainWindow, bool takeOver );
+	void SetMainWindow(igdeMainWindow *mainWindow, bool takeOver);
 	
 	/** \brief Clean up application. */
 	virtual void CleanUp();
@@ -140,7 +140,7 @@ protected:
 	
 	
 private:
-	void pSharedRun( decUnicodeStringList &arguments );
+	void pSharedRun(decUnicodeStringList &arguments);
 	
 	void *pNativeApplication;
 	igdeWidget::Ref pMainWindow;

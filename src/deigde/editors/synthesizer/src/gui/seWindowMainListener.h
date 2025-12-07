@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWindowMainListener( seWindowMain &windowMain );
+	seWindowMainListener(seWindowMain &windowMain);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWindowMainListener();
@@ -55,35 +55,35 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( seSynthesizer *synthesizer );
+	virtual void StateChanged(seSynthesizer *synthesizer);
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged( seSynthesizer *synthesizer );
+	virtual void UndoChanged(seSynthesizer *synthesizer);
 	
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged( seSynthesizer *synthesizer );
+	virtual void SynthesizerChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged( seSynthesizer *synthesizer );
+	virtual void ControllerStructureChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Active source changed. */
-	virtual void ActiveSourceChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void ActiveSourceChanged(seSynthesizer *synthesizer, seSource *source);
 	
 	/** \brief Source changed. */
-	virtual void SourceChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void SourceChanged(seSynthesizer *synthesizer, seSource *source);
 	
 	/** \brief Source name changed. */
-	virtual void SourceNameChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void SourceNameChanged(seSynthesizer *synthesizer, seSource *source);
 	
 	/** \brief Source count or order changed. */
-	virtual void SourceStructureChanged( seSynthesizer *synthesizer );
+	virtual void SourceStructureChanged(seSynthesizer *synthesizer);
 	/*@}*/
 };
 

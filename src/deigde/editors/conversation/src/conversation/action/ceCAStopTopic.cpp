@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAStopTopic::ceCAStopTopic() : ceConversationAction( eatStopTopic ){
+ceCAStopTopic::ceCAStopTopic() : ceConversationAction(eatStopTopic){
 }
 
-ceCAStopTopic::ceCAStopTopic( const ceCAStopTopic &action ) : ceConversationAction( action ){
+ceCAStopTopic::ceCAStopTopic(const ceCAStopTopic &action) : ceConversationAction(action){
 }
 
 ceCAStopTopic::~ceCAStopTopic(){
@@ -53,5 +53,5 @@ ceCAStopTopic::~ceCAStopTopic(){
 ///////////////
 
 ceConversationAction *ceCAStopTopic::CreateCopy() const{
-	return new ceCAStopTopic( *this );
+	return new ceCAStopTopic(*this);
 }

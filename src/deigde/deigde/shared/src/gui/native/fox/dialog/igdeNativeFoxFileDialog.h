@@ -48,7 +48,7 @@ class igdeWidget;
  * calling application. This way a list can be build and reused.
  */
 class igdeNativeFoxFileDialog : public FXDialogBox{
-	FXDECLARE( igdeNativeFoxFileDialog )
+	FXDECLARE(igdeNativeFoxFileDialog)
 	
 protected:
 	igdeNativeFoxFileDialog();
@@ -98,12 +98,12 @@ public:
 	 * \details If you need the IGDE virtual file system use the constructor call
 	 *          where you can specify the virtual file system on your own.
 	 */
-	igdeNativeFoxFileDialog( igdeWidget &owner, FXComposite *parent, const FXString& name,
-		FXuint opts=0, FXint x=0, FXint y=0, FXint w=500, FXint h=300 );
+	igdeNativeFoxFileDialog(igdeWidget &owner, FXComposite *parent, const FXString& name,
+		FXuint opts=0, FXint x=0, FXint y=0, FXint w=500, FXint h=300);
 	
 	/** \brief Create file dialog with specific virtual file system. */
-	igdeNativeFoxFileDialog( igdeWidget &owner, deVirtualFileSystem *vfs, FXComposite *parent,
-		const FXString& name, FXuint opts=0, FXint x=0, FXint y=0, FXint w=500, FXint h=300 );
+	igdeNativeFoxFileDialog(igdeWidget &owner, deVirtualFileSystem *vfs, FXComposite *parent,
+		const FXString& name, FXuint opts=0, FXint x=0, FXint y=0, FXint w=500, FXint h=300);
 	
 	/** Cleans up the file fialog. */
 	virtual ~igdeNativeFoxFileDialog();
@@ -121,7 +121,7 @@ public:
 	 * \brief Set filename.
 	 * \note Filename has to be an absolute path.
 	 */
-	void SetFilename( const char *filename );
+	void SetFilename(const char *filename);
 	
 	/**
 	 * \brief Set filename with base path.
@@ -130,12 +130,12 @@ public:
 	 * the base path to form an absolute path. Helper method for editors using relative
 	 * file path since virtual file systems do not have a current working directory.
 	 */
-	void SetFilename( const char *filename, const char *basePath );
+	void SetFilename(const char *filename, const char *basePath);
 	
 	/** Retrieves the assigned file pattern list.*/
 	inline const igdeFilePatternList *GetFilePatternList() const{ return pFilePatternList; }
 	/** Sets the assigned file pattern list. */
-	void SetFilePatternList( const igdeFilePatternList *filePatternList );
+	void SetFilePatternList(const igdeFilePatternList *filePatternList);
 	
 	/** Updates the file type combo box. */
 	void UpdateFileTypeBox();
@@ -146,34 +146,34 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onCmdAccept( FXObject*, FXSelector, void* );
+	long onCmdAccept(FXObject*, FXSelector, void*);
 	
-	long onBtnUpDir( FXObject*, FXSelector, void* );
-	long onBtnGoRoot( FXObject*, FXSelector, void* );
-	long onBtnMkDir( FXObject*, FXSelector, void* );
-	long onBtnListMode( FXObject*, FXSelector, void* );
-	long onBtnIconMode( FXObject*, FXSelector, void* );
-	long onBtnDetailMode( FXObject*, FXSelector, void* );
-	long updateBtnUpDir( FXObject*, FXSelector, void* );
-	long updateBtnGoRoot( FXObject*, FXSelector, void* );
-	long updateBtnMkDir( FXObject*, FXSelector, void* );
-	long updateBtnListMode( FXObject*, FXSelector, void* );
-	long updateBtnIconMode( FXObject*, FXSelector, void* );
-	long updateBtnDetailMode( FXObject*, FXSelector, void* );
+	long onBtnUpDir(FXObject*, FXSelector, void*);
+	long onBtnGoRoot(FXObject*, FXSelector, void*);
+	long onBtnMkDir(FXObject*, FXSelector, void*);
+	long onBtnListMode(FXObject*, FXSelector, void*);
+	long onBtnIconMode(FXObject*, FXSelector, void*);
+	long onBtnDetailMode(FXObject*, FXSelector, void*);
+	long updateBtnUpDir(FXObject*, FXSelector, void*);
+	long updateBtnGoRoot(FXObject*, FXSelector, void*);
+	long updateBtnMkDir(FXObject*, FXSelector, void*);
+	long updateBtnListMode(FXObject*, FXSelector, void*);
+	long updateBtnIconMode(FXObject*, FXSelector, void*);
+	long updateBtnDetailMode(FXObject*, FXSelector, void*);
 	
-	long onCBDirectoryChanged( FXObject*, FXSelector, void* );
-	long onCBFilterChanged( FXObject*, FXSelector, void* );
+	long onCBDirectoryChanged(FXObject*, FXSelector, void*);
+	long onCBFilterChanged(FXObject*, FXSelector, void*);
 	
-	long onFLItemDoubleClicked( FXObject*, FXSelector, void* );
-	long onFLRightMouseUp( FXObject*, FXSelector, void* );
-	long onFLItemSelected( FXObject*, FXSelector, void* );
-	long onFLItemDeselected( FXObject*, FXSelector, void* );
+	long onFLItemDoubleClicked(FXObject*, FXSelector, void*);
+	long onFLRightMouseUp(FXObject*, FXSelector, void*);
+	long onFLItemSelected(FXObject*, FXSelector, void*);
+	long onFLItemDeselected(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 private:
 	void pCreateDialog();
-	void pFindExistingDirectory( decPath &path, decPath &directory );
-	void pSetFilenameAndAppendExtension( const char *filename );
+	void pFindExistingDirectory(decPath &path, decPath &directory);
+	void pSetFilenameAndAppendExtension(const char *filename);
 };
 
 #endif

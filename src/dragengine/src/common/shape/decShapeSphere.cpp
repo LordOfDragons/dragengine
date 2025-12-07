@@ -36,24 +36,24 @@
 // Constructors, destructors
 //////////////////////////////
 
-decShapeSphere::decShapeSphere( float radius ){
-	SetRadius( radius );
-	pAxisScaling.Set( 1.0f, 1.0f );
+decShapeSphere::decShapeSphere(float radius){
+	SetRadius(radius);
+	pAxisScaling.Set(1.0f, 1.0f);
 }
 
-decShapeSphere::decShapeSphere( float radius, const decVector &position ) : decShape( position ){
-	SetRadius( radius );
-	pAxisScaling.Set( 1.0f, 1.0f );
+decShapeSphere::decShapeSphere(float radius, const decVector &position) : decShape(position){
+	SetRadius(radius);
+	pAxisScaling.Set(1.0f, 1.0f);
 }
 
-decShapeSphere::decShapeSphere( float radius, const decVector2 &axisScaling ){
-	SetRadius( radius );
-	SetAxisScaling( axisScaling );
+decShapeSphere::decShapeSphere(float radius, const decVector2 &axisScaling){
+	SetRadius(radius);
+	SetAxisScaling(axisScaling);
 }
 
-decShapeSphere::decShapeSphere( float radius, const decVector2 &axisScaling, const decVector &position ) : decShape( position ){
-	SetRadius( radius );
-	SetAxisScaling( axisScaling );
+decShapeSphere::decShapeSphere(float radius, const decVector2 &axisScaling, const decVector &position) : decShape(position){
+	SetRadius(radius);
+	SetAxisScaling(axisScaling);
 }
 
 decShapeSphere::~decShapeSphere(){
@@ -64,18 +64,18 @@ decShapeSphere::~decShapeSphere(){
 // Management
 ///////////////
 
-void decShapeSphere::SetRadius( float radius ){
-	pRadius = decMath::max( radius, 0.0f );
+void decShapeSphere::SetRadius(float radius){
+	pRadius = decMath::max(radius, 0.0f);
 }
 
-void decShapeSphere::SetAxisScaling( const decVector2 &axisScaling ){
-	pAxisScaling = axisScaling.Largest( decVector2( 0.0f, 0.0f ) );
+void decShapeSphere::SetAxisScaling(const decVector2 &axisScaling){
+	pAxisScaling = axisScaling.Largest(decVector2(0.0f, 0.0f));
 }
 
 
 
 decShape *decShapeSphere::Copy() const{
-	return new decShapeSphere( pRadius, pAxisScaling, GetPosition() );
+	return new decShapeSphere(pRadius, pAxisScaling, GetPosition());
 }
 
 
@@ -83,6 +83,6 @@ decShape *decShapeSphere::Copy() const{
 // Visiting
 /////////////
 
-void decShapeSphere::Visit( decShapeVisitor &visitor ){
-	visitor.VisitShapeSphere( *this );
+void decShapeSphere::Visit(decShapeVisitor &visitor){
+	visitor.VisitShapeSphere(*this);
 }

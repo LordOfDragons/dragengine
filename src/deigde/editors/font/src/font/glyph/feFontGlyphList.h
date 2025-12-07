@@ -56,28 +56,28 @@ public:
 	/** Retrieves the number of glyphs. */
 	int GetGlyphCount() const;
 	/** Retrieves the glyph at the given position. */
-	feFontGlyph *GetGlyphAt( int index ) const;
+	feFontGlyph *GetGlyphAt(int index) const;
 	/** Retrieves the glyph with the given code or NULL if not found. */
-	feFontGlyph *GetGlyphWithCode( int code ) const;
+	feFontGlyph *GetGlyphWithCode(int code) const;
 	/** Retrieves the index of the given glyph or -1 if not found. */
-	int IndexOfGlyph( feFontGlyph *glyph ) const;
+	int IndexOfGlyph(feFontGlyph *glyph) const;
 	/** Retrieves the index of the glyph with the given code or -1 if not found. */
-	int IndexOfGlyphWithCode( int code ) const;
+	int IndexOfGlyphWithCode(int code) const;
 	/** Determines if a glyph exists. */
-	bool HasGlyph( feFontGlyph *glyph ) const;
+	bool HasGlyph(feFontGlyph *glyph) const;
 	/** Determines if a glyph with the given code exists. */
-	bool HasGlyphWithCode( int code ) const;
+	bool HasGlyphWithCode(int code) const;
 	/** Adds a glyph. */
-	void AddGlyph( feFontGlyph *glyph );
+	void AddGlyph(feFontGlyph *glyph);
 	/** Removes a glyph. */
-	void RemoveGlyph( feFontGlyph *glyph );
+	void RemoveGlyph(feFontGlyph *glyph);
 	/** Removes the glyph with the given code if existing. */
-	void RemoveGlyphWithCode( int code );
+	void RemoveGlyphWithCode(int code);
 	/** Removes all glyphs. */
 	void RemoveAllGlyphs();
 	
 	/** Sets the list from another list. */
-	feFontGlyphList &operator=( const feFontGlyphList &list );
+	feFontGlyphList &operator=(const feFontGlyphList &list);
 	/*@}*/
 };
 

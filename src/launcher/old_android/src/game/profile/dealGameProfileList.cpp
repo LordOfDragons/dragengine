@@ -55,21 +55,21 @@ int dealGameProfileList::GetCount() const{
 	return pProfiles.GetCount();
 }
 
-dealGameProfile *dealGameProfileList::GetAt( int index ) const{
-	return ( dealGameProfile* )pProfiles.GetAt( index );
+dealGameProfile *dealGameProfileList::GetAt(int index) const{
+	return (dealGameProfile*)pProfiles.GetAt(index);
 }
 
-dealGameProfile *dealGameProfileList::GetNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+dealGameProfile *dealGameProfileList::GetNamed(const char *name) const{
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i, count = pProfiles.GetCount();
 	dealGameProfile *profile;
 	
-	for( i=0; i<count; i++ ){
-		profile = ( dealGameProfile* )pProfiles.GetAt( i );
-		if( profile->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		profile = (dealGameProfile*)pProfiles.GetAt(i);
+		if(profile->GetName().Equals(name)){
 			return profile;
 		}
 	}
@@ -77,27 +77,27 @@ dealGameProfile *dealGameProfileList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-bool dealGameProfileList::Has( dealGameProfile *profile ) const{
-	return pProfiles.Has( profile );
+bool dealGameProfileList::Has(dealGameProfile *profile) const{
+	return pProfiles.Has(profile);
 }
 
-bool dealGameProfileList::HasNamed( const char *name ) const{
-	return GetNamed( name ) != NULL;
+bool dealGameProfileList::HasNamed(const char *name) const{
+	return GetNamed(name) != NULL;
 }
 
-int dealGameProfileList::IndexOf( dealGameProfile *profile ) const{
-	return pProfiles.IndexOf( profile );
+int dealGameProfileList::IndexOf(dealGameProfile *profile) const{
+	return pProfiles.IndexOf(profile);
 }
 
-int dealGameProfileList::IndexOfNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+int dealGameProfileList::IndexOfNamed(const char *name) const{
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i, count = pProfiles.GetCount();
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( dealGameProfile* )pProfiles.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((dealGameProfile*)pProfiles.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -105,32 +105,32 @@ int dealGameProfileList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-void dealGameProfileList::Add( dealGameProfile *profile ){
-	if( ! profile || HasNamed( profile->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void dealGameProfileList::Add(dealGameProfile *profile){
+	if(!profile || HasNamed(profile->GetName())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProfiles.Add( profile );
+	pProfiles.Add(profile);
 }
 
-void dealGameProfileList::Remove( dealGameProfile *profile ){
-	int index = IndexOf( profile );
+void dealGameProfileList::Remove(dealGameProfile *profile){
+	int index = IndexOf(profile);
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProfiles.RemoveFrom( index );
+	pProfiles.RemoveFrom(index);
 }
 
 void dealGameProfileList::RemoveAll(){
 	pProfiles.RemoveAll();
 }
 
-void dealGameProfileList::ValidateProfiles( dealLauncher &launcher ){
+void dealGameProfileList::ValidateProfiles(dealLauncher &launcher){
 	int i, count = pProfiles.GetCount();
 	
-	for( i=0; i<count; i++ ){
-		( ( dealGameProfile* )pProfiles.GetAt( i ) )->Verify( launcher );
+	for(i=0; i<count; i++){
+		((dealGameProfile*)pProfiles.GetAt(i))->Verify(launcher);
 	}
 }

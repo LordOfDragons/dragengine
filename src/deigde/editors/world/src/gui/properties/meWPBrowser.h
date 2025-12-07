@@ -121,7 +121,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPBrowser( meWindowProperties &windowProperties );
+	meWPBrowser(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -140,16 +140,16 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Update category list. */
 	void UpdateCategoryList();
 	
 	/** \brief Update category list starting at category. */
-	void UpdateCategoryListWith( igdeGDCategory *category );
+	void UpdateCategoryListWith(igdeGDCategory *category);
 	
 	/** \brief Update category list starting at category and tree item. */
-	void AddCategoryToList( igdeGDCategory *category, igdeTreeItem *parent );
+	void AddCategoryToList(igdeGDCategory *category, igdeTreeItem *parent);
 	
 	/** \brief Update item list. */
 	void UpdateItemList();
@@ -170,19 +170,19 @@ public:
 	ePreviewItemType GetPreviewItemType() const;
 	
 	/** \brief Set preview item type. */
-	void SetPreviewItemType( ePreviewItemType type );
+	void SetPreviewItemType(ePreviewItemType type);
 	
 	/** \brief Selected category. */
 	igdeGDCategory *GetSelectedCategory() const;
 	
 	/** \brief Select category. */
-	void SelectCategory( igdeGDCategory *category );
+	void SelectCategory(igdeGDCategory *category);
 	
 	/** \brief Selection mode. */
 	inline eSelectionMode GetSelectionMode() const{ return pSelectionMode; }
 	
 	/** \brief Set selection mode. */
-	void SetSelectionMode( eSelectionMode mode );
+	void SetSelectionMode(eSelectionMode mode);
 	
 	/** \brief Selected list item. */
 	igdeListItem *GetSelectedListItem() const;
@@ -200,13 +200,13 @@ public:
 	inline ePreviewSize GetPreviewSize() const{ return pPreviewSize; }
 	
 	/** \brief Set preview size. */
-	void SetPreviewSize( ePreviewSize size );
+	void SetPreviewSize(ePreviewSize size);
 	
 	/** \brief View mode. */
 	inline eViewModes GetViewMode() const{ return pViewMode; }
 	
 	/** \brief Set view mode. */
-	void SetViewMode( eViewModes viewMode );
+	void SetViewMode(eViewModes viewMode);
 	
 	/** \brief Preview icon size. */
 	int GetPreviewIconSize() const;
@@ -214,13 +214,13 @@ public:
 	
 	
 	/** \brief Select object class. */
-	void SelectObjectClass( igdeGDClass *gdclass );
+	void SelectObjectClass(igdeGDClass *gdclass);
 	
 	/** \brief Select skin. */
-	void SelectSkin( igdeGDSkin *gdskin );
+	void SelectSkin(igdeGDSkin *gdskin);
 	
 	/** \brief Select sky. */
-	void SelectSky( igdeGDSky *gdsky );
+	void SelectSky(igdeGDSky *gdsky);
 	
 	
 	inline igdeAction *GetActionSetClass() const{ return pActionSetClass; }

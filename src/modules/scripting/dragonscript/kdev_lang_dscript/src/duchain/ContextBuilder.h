@@ -51,13 +51,13 @@ public:
 	ContextBuilder() = default;
 	
 	EditorIntegrator *editor() const{ return pEditor; }
-	void setEditor( EditorIntegrator *editor );
+	void setEditor(EditorIntegrator *editor);
 	
 	/** \brief Entry function called by KDevPlatform API. */
-	ReferencedTopDUContext build( const IndexedString &url, AstNode *node,
-		ReferencedTopDUContext updateContext = ReferencedTopDUContext() ) override;
+	ReferencedTopDUContext build(const IndexedString &url, AstNode *node,
+		ReferencedTopDUContext updateContext = ReferencedTopDUContext()) override;
 	
-	void startVisiting( AstNode *node ) override;
+	void startVisiting(AstNode *node) override;
 	
 	/**
 	 * \brief Requires reparsing.
@@ -74,32 +74,32 @@ public:
 	 * \brief Set \p context as the context of \p node.
 	 * The context is stored inside the AST itself.
 	 */
-	void setContextOnNode( AstNode *node, DUContext *context ) override;
+	void setContextOnNode(AstNode *node, DUContext *context) override;
 	
 	/**
 	 * \brief Get the context set on \p node as previously set by \ref setContextOnNode.
 	 */
-	DUContext *contextFromNode( AstNode *node ) override;
+	DUContext *contextFromNode(AstNode *node) override;
 	
-	RangeInRevision editorFindRange( AstNode *fromNode, AstNode *toNode ) override;
-	RangeInRevision editorFindRangeNode( AstNode *node );
+	RangeInRevision editorFindRange(AstNode *fromNode, AstNode *toNode) override;
+	RangeInRevision editorFindRangeNode(AstNode *node);
 	
-	QualifiedIdentifier identifierForNode( IdentifierAst *node ) override;
-	QualifiedIdentifier identifierForToken( qint64 token );
+	QualifiedIdentifier identifierForNode(IdentifierAst *node) override;
+	QualifiedIdentifier identifierForToken(qint64 token);
 	
-	TopDUContext *newTopContext( const RangeInRevision &range, ParsingEnvironmentFile *file ) override;
+	TopDUContext *newTopContext(const RangeInRevision &range, ParsingEnvironmentFile *file) override;
 	
 	
-	void openContextClass( ClassAst *node );
-	void openContextInterface( InterfaceAst *node );
-	void openContextEnumeration( EnumerationAst *node );
-	void openContextClassFunction( ClassFunctionDeclareAst *node );
+	void openContextClass(ClassAst *node);
+	void openContextInterface(InterfaceAst *node);
+	void openContextEnumeration(EnumerationAst *node);
+	void openContextClassFunction(ClassFunctionDeclareAst *node);
 	
 	/*
-	void visitNamespace( NamespaceAst *node ) override;
-	void visitClass( ClassAst *node ) override;
-	void visitInterface( InterfaceAst *node ) override;
-	void visitEnumeration( EnumerationAst *node ) override;
+	void visitNamespace(NamespaceAst *node) override;
+	void visitClass(ClassAst *node) override;
+	void visitInterface(InterfaceAst *node) override;
+	void visitEnumeration(EnumerationAst *node) override;
 	*/
 };
 

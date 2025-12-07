@@ -60,8 +60,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object envMapProbe. */
-	gdeVAOEnvMapProbe( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe );
+	gdeVAOEnvMapProbe(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe);
 	
 protected:
 	/**

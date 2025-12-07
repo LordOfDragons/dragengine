@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglBillboard( deGraphicOpenGl &ogl, const deBillboard &billboard );
+	deoglBillboard(deGraphicOpenGl &ogl, const deBillboard &billboard);
 	
 	/** Clean up peer. */
 	virtual ~deoglBillboard();
@@ -111,7 +111,7 @@ public:
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
@@ -119,7 +119,7 @@ public:
 	void SyncToRender();
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -138,8 +138,8 @@ public:
 	/*@{*/
 	virtual void DynamicSkinDestroyed();
 	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
+	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 	
 	

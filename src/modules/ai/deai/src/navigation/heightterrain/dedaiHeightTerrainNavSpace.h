@@ -77,8 +77,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedaiHeightTerrainNavSpace( dedaiHeightTerrainSector &sector,
-		const deHeightTerrainNavSpace &navigationSpace );
+	dedaiHeightTerrainNavSpace(dedaiHeightTerrainSector &sector,
+		const deHeightTerrainNavSpace &navigationSpace);
 	
 protected:
 	/** \brief Clean up peer. */
@@ -133,7 +133,7 @@ public:
 	void ParentWorldChanged();
 	
 	/** \brief Sector heights changed. */
-	void HeightChanged( const decPoint &from, const decPoint &to );
+	void HeightChanged(const decPoint &from, const decPoint &to);
 	
 	/** \brief Layer changed. */
 	void LayerChanged();

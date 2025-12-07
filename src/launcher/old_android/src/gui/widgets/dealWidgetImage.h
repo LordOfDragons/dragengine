@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetImage( dealDisplay &display, dealImage *image = NULL );
+	dealWidgetImage(dealDisplay &display, dealImage *image = NULL);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetImage();
@@ -57,19 +57,19 @@ public:
 	inline dealImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image or \em NULL if not set. */
-	void SetImage( dealImage *image );
+	void SetImage(dealImage *image);
 	
 	/** \brief Colorize color. */
 	inline const decColor &GetColorize() const{ return pColorize; }
 	
 	/** \brief Set colorize color. */
-	void SetColorize( const decColor &colorize );
+	void SetColorize(const decColor &colorize);
 	
 	/** \brief Scaling. */
 	inline float GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	
 	
@@ -78,7 +78,7 @@ public:
 	
 	
 	/** \brief Render content. */
-	virtual void RenderContent( const sRenderContext &context );
+	virtual void RenderContent(const sRenderContext &context);
 	/*@}*/
 };
 

@@ -51,9 +51,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicPasteCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicPasteCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceConversationAction &action, ceCConditionLogic &logic );
+		ceConversationAction &action, ceCConditionLogic &logic);
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo( const ceConversationConditionList &conditions );
+	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);
 	/*@}*/
 };
 

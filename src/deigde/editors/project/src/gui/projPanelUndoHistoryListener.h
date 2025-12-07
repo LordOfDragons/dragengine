@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	projPanelUndoHistoryListener( projPanelUndoHistory &panel );
+	projPanelUndoHistoryListener(projPanelUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~projPanelUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged( projProject *project );
+	virtual void UndoChanged(projProject *project);
 	/*@}*/
 };
 

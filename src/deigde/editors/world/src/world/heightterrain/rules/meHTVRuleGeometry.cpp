@@ -42,14 +42,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleGeometry::meHTVRuleGeometry() : meHTVRule( ertGeometry, 3 ){
-	GetSlotAt( eosHeight ).SetIsInput( false );
-	GetSlotAt( eosNormal ).SetIsInput( false );
-	GetSlotAt( eosTerrainType ).SetIsInput( false );
+meHTVRuleGeometry::meHTVRuleGeometry() : meHTVRule(ertGeometry, 3){
+	GetSlotAt(eosHeight).SetIsInput(false);
+	GetSlotAt(eosNormal).SetIsInput(false);
+	GetSlotAt(eosTerrainType).SetIsInput(false);
 }
 
-meHTVRuleGeometry::meHTVRuleGeometry( const meHTVRuleGeometry &rule ) :
-meHTVRule( rule ){
+meHTVRuleGeometry::meHTVRuleGeometry(const meHTVRuleGeometry &rule) :
+meHTVRule(rule){
 }
 
 meHTVRuleGeometry::~meHTVRuleGeometry(){
@@ -60,41 +60,41 @@ meHTVRuleGeometry::~meHTVRuleGeometry(){
 // Management
 ///////////////
 
-float meHTVRuleGeometry::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot < 0 || slot > 2 ) DETHROW( deeInvalidParam );
+float meHTVRuleGeometry::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot < 0 || slot > 2) DETHROW(deeInvalidParam);
 	
-	if( slot == eosHeight ){
-		return ( float )evalEnv.GetPosition().y;
+	if(slot == eosHeight){
+		return (float)evalEnv.GetPosition().y;
 		
-	}else if( slot == eosTerrainType ){
+	}else if(slot == eosTerrainType){
 		meHeightTerrainTexture *texture = evalEnv.GetHTDominantTexture();
 		
-		if( texture ){
-			return ( float )texture->GetTypeNumber();
+		if(texture){
+			return (float)texture->GetTypeNumber();
 		}
 	}
 	
 	return 0.0f;
 }
 
-decVector meHTVRuleGeometry::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot < 0 || slot > 2 ) DETHROW( deeInvalidParam );
+decVector meHTVRuleGeometry::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot < 0 || slot > 2) DETHROW(deeInvalidParam);
 	
-	if( slot == eosHeight ){
-		float height = ( float )evalEnv.GetPosition().y;
+	if(slot == eosHeight){
+		float height = (float)evalEnv.GetPosition().y;
 		
-		return decVector( height, height, height );
+		return decVector(height, height, height);
 		
-	}else if( slot == eosNormal ){
+	}else if(slot == eosNormal){
 		return evalEnv.GetNormal();
 		
-	}else if( slot == eosTerrainType ){
+	}else if(slot == eosTerrainType){
 		meHeightTerrainTexture *texture = evalEnv.GetHTDominantTexture();
 		
-		if( texture ){
-			float typeNumber = ( float )texture->GetTypeNumber();
+		if(texture){
+			float typeNumber = (float)texture->GetTypeNumber();
 			
-			return decVector( typeNumber, typeNumber, typeNumber );
+			return decVector(typeNumber, typeNumber, typeNumber);
 		}
 	}
 	
@@ -102,5 +102,5 @@ decVector meHTVRuleGeometry::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnv
 }
 
 meHTVRule *meHTVRuleGeometry::Copy() const{
-	return new meHTVRuleGeometry( *this );
+	return new meHTVRuleGeometry(*this);
 }

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddBillboard( gdeObjectClass *objectClass, gdeOCBillboard *billboard );
+	gdeUOCAddBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
 	
 protected:
 	/** \brief Clean up undo action. */

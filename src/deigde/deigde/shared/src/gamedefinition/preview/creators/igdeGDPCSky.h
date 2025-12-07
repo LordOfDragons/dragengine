@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */
-	igdeGDPCSky( igdeEnvironment &environment, igdeGDSky *gdsky, const decPoint &size );
+	igdeGDPCSky(igdeEnvironment &environment, igdeGDSky *gdsky, const decPoint &size);
 	
 	
 	
@@ -94,7 +94,7 @@ protected:
 	virtual bool IsCanvasReadyForRender();
 	
 	/** \brief Update canvas to render animations. */
-	virtual void UpdateCanvasForRender( float elapsed );
+	virtual void UpdateCanvasForRender(float elapsed);
 	/*@}*/
 };
 

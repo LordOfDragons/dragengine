@@ -77,8 +77,8 @@ private:
 	float pDistanceOffset;
 	float pPlaySpeed;
 	
-	decString pPropertyNames[ EP_COUNT ];
-	decString pTriggerNames[ ET_COUNT ];
+	decString pPropertyNames[EP_COUNT];
+	decString pTriggerNames[ET_COUNT];
 	
 	
 	
@@ -89,7 +89,7 @@ public:
 	gdeOCSpeaker();
 	
 	/** \brief Create copy of speaker. */
-	gdeOCSpeaker( const gdeOCSpeaker &speaker );
+	gdeOCSpeaker(const gdeOCSpeaker &speaker);
 	
 	/** \brief Clean up speaker. */
 	virtual ~gdeOCSpeaker();
@@ -103,92 +103,92 @@ public:
 	inline const decString &GetPathSound() const{ return pPathSound; }
 	
 	/** \brief Set path of sound to use. */
-	void SetPathSound( const char *path );
+	void SetPathSound(const char *path);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation. */
-	void SetRotation( const decVector &orientation );
+	void SetRotation(const decVector &orientation);
 	
 	/** \brief Name of the bone to attach to or empty string. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of the bone to attach to or empty string. */
-	void SetBoneName( const char *boneName );
+	void SetBoneName(const char *boneName);
 	
 	/** \brief Speaker is looping. */
 	inline bool GetLooping() const{ return pLooping; }
 	
 	/** \brief Set if speaker is looping. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	/** \brief Speaker is playing back. */
 	inline bool GetPlaying() const{ return pPlaying; }
 	
 	/** \brief Set if speaker is playing back. */
-	void SetPlaying( bool playing );
+	void SetPlaying(bool playing);
 	
 	/** \brief Volume. */
 	inline float GetVolume() const{ return pVolume; }
 	
 	/** \brief Set volume. */
-	void SetVolume( float volume );
+	void SetVolume(float volume);
 	
 	/** \brief Range beyond which the sound is inaudible. */
 	inline float GetRange() const{ return pRange; }
 	
 	/** \brief Set range beyond which the sound is inaudible. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Roll off factor. */
 	inline float GetRollOff() const{ return pRollOff; }
 	
 	/** \brief Set roll off factor. */
-	void SetRollOff( float rollOff );
+	void SetRollOff(float rollOff);
 	
 	/** \brief Distance offset. */
 	inline float GetDistanceOffset() const{ return pDistanceOffset; }
 	
 	/** \brief Set distance offset. */
-	void SetDistanceOffset( float distanceOffset );
+	void SetDistanceOffset(float distanceOffset);
 	
 	/** \brief Play speed. */
 	inline float GetPlaySpeed() const{ return pPlaySpeed; }
 	
 	/** \brief Set play speed. */
-	void SetPlaySpeed( float playSpeed );
+	void SetPlaySpeed(float playSpeed);
 	
 	
 	
 	/** \brief Property name is set. */
-	bool IsPropertySet( eProperties property ) const;
+	bool IsPropertySet(eProperties property) const;
 	
 	/** \brief Name of property. */
-	const decString &GetPropertyName( eProperties property ) const;
+	const decString &GetPropertyName(eProperties property) const;
 	
 	/** \brief Set name of property. */
-	void SetPropertyName( eProperties property, const char *name );
+	void SetPropertyName(eProperties property, const char *name);
 	
 	/** \brief One or more properties use a name. */
-	bool HasPropertyWithName( const char *name ) const;
+	bool HasPropertyWithName(const char *name) const;
 	
 	
 	
 	/** \brief Trigger name is set. */
-	bool IsTriggerSet( eTriggers trigger ) const;
+	bool IsTriggerSet(eTriggers trigger) const;
 	
 	/** \brief Name of trigger. */
-	const decString &GetTriggerName( eTriggers trigger ) const;
+	const decString &GetTriggerName(eTriggers trigger) const;
 	
 	/** \brief Set name of trigger. */
-	void SetTriggerName( eTriggers trigger, const char *name );
+	void SetTriggerName(eTriggers trigger, const char *name);
 	/*@}*/
 };
 

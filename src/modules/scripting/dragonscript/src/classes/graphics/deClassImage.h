@@ -52,7 +52,7 @@ public:
 	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	deImage *GetImage(dsRealObject *This) const;
-	void PushImage( dsRunTime *rt, deImage *image );
+	void PushImage(dsRunTime *rt, deImage *image);
 	
 	inline deClassResourceListener *GetClassResourceListener() const{ return pClsRN; }
 
@@ -62,20 +62,20 @@ private:
 		dsClass *clsPt;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC(nfNew);
-	DEF_NATFUNC( nfLoadAsynchron );
+	DEF_NATFUNC(nfLoadAsynchron);
 	DEF_NATFUNC(nfDestructor);
 	DEF_NATFUNC(nfGetFilename);
 	DEF_NATFUNC(nfGetWidth);
 	DEF_NATFUNC(nfGetHeight);
-	DEF_NATFUNC( nfGetDepth );
-	DEF_NATFUNC( nfGetComponentCount );
-	DEF_NATFUNC( nfGetBitCount );
+	DEF_NATFUNC(nfGetDepth);
+	DEF_NATFUNC(nfGetComponentCount);
+	DEF_NATFUNC(nfGetBitCount);
 	DEF_NATFUNC(nfGetSize);
 	DEF_NATFUNC(nfSaveToFile);
 	DEF_NATFUNC(nfEquals);

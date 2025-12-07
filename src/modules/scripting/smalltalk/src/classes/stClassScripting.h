@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	stClassScripting( ScriptingSmalltalk *st );
+	stClassScripting(ScriptingSmalltalk *st);
 	
 	/** \brief Cleans up class. */
 	virtual ~stClassScripting();
@@ -61,7 +61,7 @@ public:
 	 * \brief Script module instance.
 	 * \details Static call as it is used to obtain the entry point into c++ land from smalltalk.
 	 */
-	static ScriptingSmalltalk &GetSTFromOOP( OOP object );
+	static ScriptingSmalltalk &GetSTFromOOP(OOP object);
 	
 	/** \brief Singleton smalltalk object. */
 	inline OOP GetSingleton() const{ return pSingleton; }

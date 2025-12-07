@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeShapeSetType( sePropertyNodeShape *node,
-		deSkinPropertyNodeShape::eShapeTypes newValue );
+	seUPropertyNodeShapeSetType(sePropertyNodeShape *node,
+		deSkinPropertyNodeShape::eShapeTypes newValue);
 	
 protected:
 	/** \brief Clean up undo. */

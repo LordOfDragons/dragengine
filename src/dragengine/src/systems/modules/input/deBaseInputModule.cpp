@@ -30,8 +30,8 @@
 // Class deBaseInputModule
 ////////////////////////////
 
-deBaseInputModule::deBaseInputModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseInputModule::deBaseInputModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseInputModule::~deBaseInputModule(){
@@ -42,7 +42,7 @@ deBaseInputModule::~deBaseInputModule(){
 // Notifications
 //////////////////
 
-bool deBaseInputModule::GetButtonTouched( int, int ){
+bool deBaseInputModule::GetButtonTouched(int, int){
 	return false;
 }
 
@@ -50,29 +50,29 @@ bool deBaseInputModule::GetButtonNear(int, int){
 	return false;
 }
 
-int deBaseInputModule::IndexOfComponentWithID( int, const char* ){
+int deBaseInputModule::IndexOfComponentWithID(int, const char*){
 	return -1;
 }
 
-void deBaseInputModule::GetDevicePose( int, deInputDevicePose &pose ){
+void deBaseInputModule::GetDevicePose(int, deInputDevicePose &pose){
 	pose = deInputDevicePose();
 }
 
-void deBaseInputModule::GetDeviceBonePose( int, int, bool, deInputDevicePose &pose ){
+void deBaseInputModule::GetDeviceBonePose(int, int, bool, deInputDevicePose &pose){
 	pose = deInputDevicePose();
 }
 
-float deBaseInputModule::GetDeviceFaceExpression( int device, int expression ){
+float deBaseInputModule::GetDeviceFaceExpression(int device, int expression){
 	return 0.0f;
 }
 
-int deBaseInputModule::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
-deInputEvent::eKeyLocation ){
-	return ButtonMatchingKeyCode( device, keyCode );
+int deBaseInputModule::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode,
+deInputEvent::eKeyLocation){
+	return ButtonMatchingKeyCode(device, keyCode);
 }
 
-int deBaseInputModule::ButtonMatchingKeyChar( int device, int character, deInputEvent::eKeyLocation ){
-	return ButtonMatchingKeyChar( device, character );
+int deBaseInputModule::ButtonMatchingKeyChar(int device, int character, deInputEvent::eKeyLocation){
+	return ButtonMatchingKeyChar(device, character);
 }
 
 void deBaseInputModule::ProcessEvents(){
@@ -103,14 +103,14 @@ void deBaseInputModule::EventLoop(const BMessage&){
 }
 
 #elif defined OS_MACOS
-void deBaseInputModule::EventLoop( const NSEvent& ){
+void deBaseInputModule::EventLoop(const NSEvent&){
 }
 
 #elif defined OS_UNIX_X11
-void deBaseInputModule::EventLoop( XEvent& ){
+void deBaseInputModule::EventLoop(XEvent&){
 }
 
 #elif defined OS_W32
-void deBaseInputModule::EventLoop( const MSG& ){
+void deBaseInputModule::EventLoop(const MSG&){
 }
 #endif

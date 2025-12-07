@@ -51,7 +51,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassFileSystem( deScriptingDragonScript *ds );
+	deClassFileSystem(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	~deClassFileSystem();
 	/*@}*/
@@ -61,7 +61,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	inline dsClass *GetClassFileType() const{ return pClsFileType; }
 	inline dsClass *GetClassFileExtension() const{ return pClsFileExtension; }
@@ -73,8 +73,8 @@ public:
 	inline dsValue *GetTypeDirectory() const{ return pTypeDirectory; }
 	inline dsValue *GetTypeSpecial() const{ return pTypeSpecial; }
 	
-	void BrowseNativeDirectory( const decPath &path ) const;
-	void OpenUrl( const char *url ) const;
+	void BrowseNativeDirectory(const decPath &path) const;
+	void OpenUrl(const char *url) const;
 	/*@}*/
 	
 private:
@@ -92,29 +92,29 @@ private:
 		dsClass *clsArray;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfGetSeparator );
-	DEF_NATFUNC( nfGetPathSeparator );
-	DEF_NATFUNC( nfGetCurrentPrefix );
-	DEF_NATFUNC( nfGetGamePath );
+	DEF_NATFUNC(nfGetSeparator);
+	DEF_NATFUNC(nfGetPathSeparator);
+	DEF_NATFUNC(nfGetCurrentPrefix);
+	DEF_NATFUNC(nfGetGamePath);
 	
-	DEF_NATFUNC( nfExistsFile );
-	DEF_NATFUNC( nfCanReadFile );
-	DEF_NATFUNC( nfCanWriteFile );
-	DEF_NATFUNC( nfCanDeleteFile );
-	DEF_NATFUNC( nfDeleteFile );
-	DEF_NATFUNC( nfSearchFiles );
-	DEF_NATFUNC( nfGetFileType );
-	DEF_NATFUNC( nfPathMatchesPattern );
-	DEF_NATFUNC( nfBrowseOverlay );
-	DEF_NATFUNC( nfBrowseCapture );
-	DEF_NATFUNC( nfBrowseConfig );
-	DEF_NATFUNC( nfGetFileExtensions );
-	DEF_NATFUNC( nfOpenUrl );
+	DEF_NATFUNC(nfExistsFile);
+	DEF_NATFUNC(nfCanReadFile);
+	DEF_NATFUNC(nfCanWriteFile);
+	DEF_NATFUNC(nfCanDeleteFile);
+	DEF_NATFUNC(nfDeleteFile);
+	DEF_NATFUNC(nfSearchFiles);
+	DEF_NATFUNC(nfGetFileType);
+	DEF_NATFUNC(nfPathMatchesPattern);
+	DEF_NATFUNC(nfBrowseOverlay);
+	DEF_NATFUNC(nfBrowseCapture);
+	DEF_NATFUNC(nfBrowseConfig);
+	DEF_NATFUNC(nfGetFileExtensions);
+	DEF_NATFUNC(nfOpenUrl);
 #undef DEF_NATFUNC
 };
 

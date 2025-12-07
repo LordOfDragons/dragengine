@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPSensors( meWindowProperties &windowProperties );
+	meWPSensors(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */

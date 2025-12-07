@@ -58,9 +58,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seConfiguration::seConfiguration( seWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pPreventSaving( false )
+seConfiguration::seConfiguration(seWindowMain &windowMain) :
+pWindowMain(windowMain),
+pPreventSaving(false)
 {
 	pReset();
 }
@@ -74,7 +74,7 @@ seConfiguration::~seConfiguration(){
 // Management
 ///////////////
 
-void seConfiguration::SetPreventSaving( bool preventSaving ){
+void seConfiguration::SetPreventSaving(bool preventSaving){
 	pPreventSaving = preventSaving;
 }
 
@@ -86,8 +86,8 @@ void seConfiguration::LoadConfiguration(){
 		pReset();
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
-		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/synthesizerEditor.xml" ) );
-		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		const decPath pathFile(decPath::CreatePathUnix("/igde/local/synthesizerEditor.xml"));
+		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
@@ -96,31 +96,31 @@ void seConfiguration::LoadConfiguration(){
 			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pPreventSaving = false;
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
 void seConfiguration::SaveConfiguration(){
-	if( pPreventSaving ){
+	if(pPreventSaving){
 		return;
 	}
 	
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/synthesizerEditor.xml" ) );
-	if( ! vfs.CanWriteFile( pathFile ) ){
+	const decPath pathFile(decPath::CreatePathUnix("/igde/local/synthesizerEditor.xml"));
+	if(!vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	
 	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
-		seConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
+		seConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
 		
-	}catch( const deException &e ){
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 

@@ -42,21 +42,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVideoPlayer::deoglSharedVideoPlayer( deGraphicOpenGl &ogl,
-deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer ) :
-pOgl( ogl ),
-pList( list ),
-pVideoPlayer( videoPlayer ),
-pUsageCount( 1 )
+deoglSharedVideoPlayer::deoglSharedVideoPlayer(deGraphicOpenGl &ogl,
+deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer) :
+pOgl(ogl),
+pList(list),
+pVideoPlayer(videoPlayer),
+pUsageCount(1)
 {
-	if( ! pVideoPlayer ){
-		DETHROW( deeInvalidParam );
+	if(!pVideoPlayer){
+		DETHROW(deeInvalidParam);
 	}
 	pVideoPlayer->AddReference();
 }
 
 deoglSharedVideoPlayer::~deoglSharedVideoPlayer(){
-	if( pVideoPlayer ){
+	if(pVideoPlayer){
 		pVideoPlayer->FreeReference();
 	}
 }
@@ -73,21 +73,21 @@ void deoglSharedVideoPlayer::AddUsage(){
 void deoglSharedVideoPlayer::FreeUsage(){
 	pUsageCount--;
 	
-	if( pUsageCount == 0 ){
-		pList.RemoveSharedVideoPlayer( this );
+	if(pUsageCount == 0){
+		pList.RemoveSharedVideoPlayer(this);
 		delete this;
 		
-	}else if( pUsageCount < 0 ){
-		DETHROW( deeInvalidParam );
+	}else if(pUsageCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 
 
-void deoglSharedVideoPlayer::Update( float elapsed ){
-	pVideoPlayer->Update( elapsed );
+void deoglSharedVideoPlayer::Update(float elapsed){
+	pVideoPlayer->Update(elapsed);
 }
 
 void deoglSharedVideoPlayer::SyncToRender(){
-	( ( deoglVideoPlayer* )pVideoPlayer->GetPeerGraphic() )->SyncToRender();
+	((deoglVideoPlayer*)pVideoPlayer->GetPeerGraphic())->SyncToRender();
 }

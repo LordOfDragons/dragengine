@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new actor parameter. */
-	ceActorParameter( const char *name, int value );
+	ceActorParameter(const char *name, int value);
 	/** Cleans up the actor parameter. */
 	virtual ~ceActorParameter();
 	/*@}*/
@@ -58,7 +58,7 @@ public:
 	/** Retrieves the value. */
 	inline int GetValue() const{ return pValue; }
 	/** Sets the value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	/*@}*/
 };
 

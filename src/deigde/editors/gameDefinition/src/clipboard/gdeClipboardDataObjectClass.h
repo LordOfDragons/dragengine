@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataObjectClass( gdeObjectClass *objectClass );
+	gdeClipboardDataObjectClass(gdeObjectClass *objectClass);
 	
 protected:
 	/**

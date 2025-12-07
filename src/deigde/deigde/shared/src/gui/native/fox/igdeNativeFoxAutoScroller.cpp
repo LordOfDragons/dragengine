@@ -38,7 +38,7 @@
 // Event map
 //////////////
 
-FXIMPLEMENT( igdeNativeFoxAutoScroller, FXComposite, nullptr, 0 )
+FXIMPLEMENT(igdeNativeFoxAutoScroller, FXComposite, nullptr, 0)
 
 
 
@@ -52,9 +52,9 @@ igdeNativeFoxAutoScroller::igdeNativeFoxAutoScroller(){
 	flags |= FLAG_SHOWN;
 }
 
-igdeNativeFoxAutoScroller::igdeNativeFoxAutoScroller( FXComposite *pparent, int opts ) :
-FXComposite( pparent, opts, 0, 0, 0, 0 ),
-pScrollPosition( 0 )
+igdeNativeFoxAutoScroller::igdeNativeFoxAutoScroller(FXComposite *pparent, int opts) :
+FXComposite(pparent, opts, 0, 0, 0, 0),
+pScrollPosition(0)
 {
 	flags |= FLAG_SHOWN;
 }
@@ -68,27 +68,27 @@ igdeNativeFoxAutoScroller::~igdeNativeFoxAutoScroller(){
 ///////////////
 
 FXWindow *igdeNativeFoxAutoScroller::GetContentWindow() const{
-	return numChildren() > 0 ? childAtIndex( 0 ) : NULL;
+	return numChildren() > 0 ? childAtIndex(0) : NULL;
 }
 
 decPoint igdeNativeFoxAutoScroller::GetContentSize() const{
 	FXWindow * const window = GetContentWindow();
-	if( ! window ){
-		return decPoint( 1, 1 );
+	if(!window){
+		return decPoint(1, 1);
 	}
 	
 	const int hints = window->getLayoutHints();
-	return decPoint( 1, 1 ).Largest( decPoint(
+	return decPoint(1, 1).Largest(decPoint(
 		hints & LAYOUT_FIX_WIDTH ? window->getWidth() : window->getDefaultWidth(),
-		hints & LAYOUT_FIX_HEIGHT ? window->getHeight() : window->getDefaultHeight() ) );
+		hints & LAYOUT_FIX_HEIGHT ? window->getHeight() : window->getDefaultHeight()));
 }
 
-void igdeNativeFoxAutoScroller::SetScrollPosition( int position ){
+void igdeNativeFoxAutoScroller::SetScrollPosition(int position){
 	pScrollPosition = position;
 	
 	FXWindow * const window = GetContentWindow();
-	if( window ){
-		window->move( -pScrollPosition, window->getY() );
+	if(window){
+		window->move(-pScrollPosition, window->getY());
 	}
 }
 
@@ -106,24 +106,24 @@ void igdeNativeFoxAutoScroller::layout(){
 	FXComposite::layout();
 	
 	FXWindow * const window = GetContentWindow();
-	if( ! window ){
+	if(!window){
 		return;
 	}
 	
 	const int hints = window->getLayoutHints();
-	const decPoint viewSize( getWidth(), getHeight() );
-	decPoint size( GetContentSize() );
-	decPoint position( -pScrollPosition, 0 );
+	const decPoint viewSize(getWidth(), getHeight());
+	decPoint size(GetContentSize());
+	decPoint position(-pScrollPosition, 0);
 	
-	if( size.x < viewSize.x ){
-		if( hints & LAYOUT_FILL_X ){
+	if(size.x < viewSize.x){
+		if(hints & LAYOUT_FILL_X){
 			size.x = viewSize.x;
 		}
 		
-		if( hints & LAYOUT_CENTER_X ){
-			position.x = ( viewSize.x - size.x ) / 2;
+		if(hints & LAYOUT_CENTER_X){
+			position.x = (viewSize.x - size.x) / 2;
 			
-		}else if( hints & LAYOUT_RIGHT ){
+		}else if(hints & LAYOUT_RIGHT){
 			position.x = viewSize.x - size.x;
 			
 		}else{
@@ -131,15 +131,15 @@ void igdeNativeFoxAutoScroller::layout(){
 		}
 	}
 	
-	if( size.y < viewSize.y ){
-		if( hints & LAYOUT_FILL_Y ){
+	if(size.y < viewSize.y){
+		if(hints & LAYOUT_FILL_Y){
 			size.y = viewSize.y;
 		}
 		
-		if( hints & LAYOUT_CENTER_Y ){
-			position.y = ( viewSize.y - size.y ) / 2;
+		if(hints & LAYOUT_CENTER_Y){
+			position.y = (viewSize.y - size.y) / 2;
 			
-		}else if( hints & LAYOUT_BOTTOM ){
+		}else if(hints & LAYOUT_BOTTOM){
 			position.y = viewSize.y - size.y;
 			
 		}else{
@@ -147,35 +147,35 @@ void igdeNativeFoxAutoScroller::layout(){
 		}
 	}
 	
-	window->position( position.x, position.y, size.x, size.y );
+	window->position(position.x, position.y, size.x, size.y);
 	recalc();
 }
 
-void igdeNativeFoxAutoScroller::MoveContent( int x ){
-	if( x == pScrollPosition ){
+void igdeNativeFoxAutoScroller::MoveContent(int x){
+	if(x == pScrollPosition){
 		return;
 	}
 	
 	FXWindow * const window = GetContentWindow();
-	if( ! window ){
+	if(!window){
 		pScrollPosition = x;
 		return;
 	}
 	
 	const int hints = window->getLayoutHints();
-	const decPoint viewSize( getWidth(), getHeight() );
-	decPoint size( GetContentSize() );
-	decPoint position( -pScrollPosition, 0 );
+	const decPoint viewSize(getWidth(), getHeight());
+	decPoint size(GetContentSize());
+	decPoint position(-pScrollPosition, 0);
 	
-	if( size.x < viewSize.x ){
-		if( hints & LAYOUT_FILL_X ){
+	if(size.x < viewSize.x){
+		if(hints & LAYOUT_FILL_X){
 			size.x = viewSize.x;
 		}
 		
-		if( hints & LAYOUT_CENTER_X ){
-			position.x = ( viewSize.x - size.x ) / 2;
+		if(hints & LAYOUT_CENTER_X){
+			position.x = (viewSize.x - size.x) / 2;
 			
-		}else if( hints & LAYOUT_RIGHT ){
+		}else if(hints & LAYOUT_RIGHT){
 			position.x = viewSize.x - size.x;
 			
 		}else{
@@ -183,15 +183,15 @@ void igdeNativeFoxAutoScroller::MoveContent( int x ){
 		}
 	}
 	
-	if( size.y < viewSize.y ){
-		if( hints & LAYOUT_FILL_Y ){
+	if(size.y < viewSize.y){
+		if(hints & LAYOUT_FILL_Y){
 			size.y = viewSize.y;
 		}
 		
-		if( hints & LAYOUT_CENTER_Y ){
-			position.y = ( viewSize.y - size.y ) / 2;
+		if(hints & LAYOUT_CENTER_Y){
+			position.y = (viewSize.y - size.y) / 2;
 			
-		}else if( hints & LAYOUT_BOTTOM ){
+		}else if(hints & LAYOUT_BOTTOM){
 			position.y = viewSize.y - size.y;
 			
 		}else{
@@ -199,7 +199,7 @@ void igdeNativeFoxAutoScroller::MoveContent( int x ){
 		}
 	}
 	
-	window->move( position.x, position.y );
+	window->move(position.x, position.y);
 	
 	pScrollPosition = x;
 }
@@ -209,19 +209,19 @@ void igdeNativeFoxAutoScroller::MoveContent( int x ){
 // Events
 ///////////
 
-long igdeNativeFoxAutoScroller::onChildMouseMoved( FXObject *sender, FXSelector, void *pdata ){
+long igdeNativeFoxAutoScroller::onChildMouseMoved(FXObject *sender, FXSelector, void *pdata){
 	const int viewWidth = getWidth();
 	const int childWidth = GetContentSize().x;
-	if( viewWidth < 1 || childWidth <= viewWidth ){
-		SetScrollPosition( 0 );
+	if(viewWidth < 1 || childWidth <= viewWidth){
+		SetScrollPosition(0);
 		return 0; // return 0 to let original implementation run. 1 would stop
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )pdata );
+	const FXEvent &event = *((FXEvent*)pdata);
 	FXint x, y;
-	translateCoordinatesFrom( x, y, ( FXWindow* )sender, event.win_x, event.win_y );
+	translateCoordinatesFrom(x, y, (FXWindow*)sender, event.win_x, event.win_y);
 	
-	SetScrollPosition( ( childWidth - viewWidth ) * x / viewWidth );
+	SetScrollPosition((childWidth - viewWidth) * x / viewWidth);
 	return 0; // return 0 to let original implementation run. 1 would stop
 }
 

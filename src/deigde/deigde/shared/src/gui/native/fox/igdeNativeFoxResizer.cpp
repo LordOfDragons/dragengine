@@ -40,17 +40,17 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxResizer ) igdeNativeResizerMap[] = {
-	FXMAPFUNC( SEL_PAINT, 0, igdeNativeFoxResizer::onPaint ),
-	FXMAPFUNC( SEL_ENTER, 0, igdeNativeFoxResizer::onEnter ),
-	FXMAPFUNC( SEL_LEAVE, 0, igdeNativeFoxResizer::onLeave ),
-	FXMAPFUNC( SEL_LEFTBUTTONPRESS, 0, igdeNativeFoxResizer::onLeftMouseDown ),
-	FXMAPFUNC( SEL_LEFTBUTTONRELEASE, 0, igdeNativeFoxResizer::onLeftMouseUp ),
-	FXMAPFUNC( SEL_MOTION, 0, igdeNativeFoxResizer::onMouseMoved ),
+FXDEFMAP(igdeNativeFoxResizer) igdeNativeResizerMap[] = {
+	FXMAPFUNC(SEL_PAINT, 0, igdeNativeFoxResizer::onPaint),
+	FXMAPFUNC(SEL_ENTER, 0, igdeNativeFoxResizer::onEnter),
+	FXMAPFUNC(SEL_LEAVE, 0, igdeNativeFoxResizer::onLeave),
+	FXMAPFUNC(SEL_LEFTBUTTONPRESS, 0, igdeNativeFoxResizer::onLeftMouseDown),
+	FXMAPFUNC(SEL_LEFTBUTTONRELEASE, 0, igdeNativeFoxResizer::onLeftMouseUp),
+	FXMAPFUNC(SEL_MOTION, 0, igdeNativeFoxResizer::onMouseMoved),
 };
 
 
-FXIMPLEMENT( igdeNativeFoxResizer, FXWindow, igdeNativeResizerMap, ARRAYNUMBER( igdeNativeResizerMap ) )
+FXIMPLEMENT(igdeNativeFoxResizer, FXWindow, igdeNativeResizerMap, ARRAYNUMBER(igdeNativeResizerMap))
 
 
 
@@ -63,13 +63,13 @@ FXIMPLEMENT( igdeNativeFoxResizer, FXWindow, igdeNativeResizerMap, ARRAYNUMBER( 
 igdeNativeFoxResizer::igdeNativeFoxResizer(){
 }
 
-igdeNativeFoxResizer::igdeNativeFoxResizer( FXComposite *pparent, FXObject *ttarget, FXSelector selector ) :
-FXWindow( pparent, LAYOUT_FILL_X ),
-pIsDragging( false ),
-pCursor( NULL ),
-pGripSize( 6 ),
-pGripWidth( 50 ),
-pActiveColor( FXRGB( 0, 0, 255 ) )
+igdeNativeFoxResizer::igdeNativeFoxResizer(FXComposite *pparent, FXObject *ttarget, FXSelector selector) :
+FXWindow(pparent, LAYOUT_FILL_X),
+pIsDragging(false),
+pCursor(NULL),
+pGripSize(6),
+pGripWidth(50),
+pActiveColor(FXRGB(0, 0, 255))
 {
 	// NOTE FOX has an annoying bug here. CURSOR_UPDOWN is supposed to produce an up-down
 	//      moving cursor. In the source code the enumeration is hard coded to an array of
@@ -79,26 +79,26 @@ pActiveColor( FXRGB( 0, 0, 255 ) )
 	//      correct cursor on linux
 	/*
 	#ifdef OS_UNIX
-	pCursor = new FXCursor( getApp(), CURSOR_LEFTRIGHT );
+	pCursor = new FXCursor(getApp(), CURSOR_LEFTRIGHT);
 	#else
-	pCursor = new FXCursor( getApp(), CURSOR_UPDOWN );
+	pCursor = new FXCursor(getApp(), CURSOR_UPDOWN);
 	#endif
-	setDefaultCursor( pCursor );
-	setDragCursor( pCursor );
+	setDefaultCursor(pCursor);
+	setDragCursor(pCursor);
 	*/
 	
 	// there are default cursors around. they seem to not suffer from these problems
-	setDefaultCursor( getApp()->getDefaultCursor( DEF_VSPLIT_CURSOR ) );
-	setDragCursor( getDefaultCursor() );
+	setDefaultCursor(getApp()->getDefaultCursor(DEF_VSPLIT_CURSOR));
+	setDragCursor(getDefaultCursor());
 	
-	setTarget( ttarget );
-	setSelector( selector );
+	setTarget(ttarget);
+	setSelector(selector);
 	enable();
 	show();
 }
 
 igdeNativeFoxResizer::~igdeNativeFoxResizer(){
-	if( pCursor ){
+	if(pCursor){
 		delete pCursor;
 	}
 }
@@ -112,8 +112,8 @@ FXint igdeNativeFoxResizer::getDefaultHeight(){
 	return pGripSize;
 }
 
-int igdeNativeFoxResizer::SelCommandDraggedDistance( void *pdata ){
-	return ( int )( intptr_t )pdata;
+int igdeNativeFoxResizer::SelCommandDraggedDistance(void *pdata){
+	return (int)(intptr_t)pdata;
 }
 
 
@@ -121,47 +121,47 @@ int igdeNativeFoxResizer::SelCommandDraggedDistance( void *pdata ){
 // Events
 ///////////
 
-long igdeNativeFoxResizer::onPaint( FXObject*, FXSelector, void *pdata ){
+long igdeNativeFoxResizer::onPaint(FXObject*, FXSelector, void *pdata){
 	// nicked from FXToolBarGrip::onPaint
-	FXDCWindow dc( this, ( FXEvent* )pdata );
+	FXDCWindow dc(this, (FXEvent*)pdata);
 	const int hheight = getHeight();
 	const int wwidth = getWidth();
-	const int gripWidth = decMath::min( pGripWidth, decMath::max( wwidth - 2, 0 ) );
-	const int gripHeight = decMath::max( hheight - 2, 0 );
-	const int left = ( wwidth - gripWidth ) / 2;
+	const int gripWidth = decMath::min(pGripWidth, decMath::max(wwidth - 2, 0));
+	const int gripHeight = decMath::max(hheight - 2, 0);
+	const int left = (wwidth - gripWidth) / 2;
 	const int right = left + gripWidth;
 	
-	dc.setForeground( getBackColor() );
-	dc.fillRectangle( 0, 0, wwidth, hheight );
+	dc.setForeground(getBackColor());
+	dc.fillRectangle(0, 0, wwidth, hheight);
 	
-	dc.setForeground( getApp()->getHiliteColor() );
-	dc.fillRectangle( left, 1, 1, gripHeight - 1 );
-	dc.fillRectangle( left, 1, gripWidth, 1 );
+	dc.setForeground(getApp()->getHiliteColor());
+	dc.fillRectangle(left, 1, 1, gripHeight - 1);
+	dc.fillRectangle(left, 1, gripWidth, 1);
 	
-	dc.setForeground( getApp()->getShadowColor() );
-	dc.fillRectangle( right - 1, 1, 1, gripHeight );
-	dc.fillRectangle( left, gripHeight, gripWidth, 1 );
+	dc.setForeground(getApp()->getShadowColor());
+	dc.fillRectangle(right - 1, 1, 1, gripHeight);
+	dc.fillRectangle(left, gripHeight, gripWidth, 1);
 	
-	if( pIsDragging || underCursor() ){
-		dc.setForeground( pActiveColor );
-		dc.fillRectangle( left + 1, 2, gripWidth - 2, gripHeight - 2 );
+	if(pIsDragging || underCursor()){
+		dc.setForeground(pActiveColor);
+		dc.fillRectangle(left + 1, 2, gripWidth - 2, gripHeight - 2);
 	}
 	
 	return 1;
 }
 
-long igdeNativeFoxResizer::onEnter( FXObject*, FXSelector, void* ){
+long igdeNativeFoxResizer::onEnter(FXObject*, FXSelector, void*){
 	update();
 	return 0;
 }
 
-long igdeNativeFoxResizer::onLeave( FXObject*, FXSelector, void* ){
+long igdeNativeFoxResizer::onLeave(FXObject*, FXSelector, void*){
 	update();
 	return 0;
 }
 
-long igdeNativeFoxResizer::onLeftMouseDown( FXObject*, FXSelector, void* ){
-	if( pIsDragging || ! isEnabled() ){
+long igdeNativeFoxResizer::onLeftMouseDown(FXObject*, FXSelector, void*){
+	if(pIsDragging || !isEnabled()){
 		return 0 ;
 	}
 	
@@ -171,8 +171,8 @@ long igdeNativeFoxResizer::onLeftMouseDown( FXObject*, FXSelector, void* ){
 	return 0;
 }
 
-long igdeNativeFoxResizer::onLeftMouseUp( FXObject*, FXSelector, void* ){
-	if( ! pIsDragging ){
+long igdeNativeFoxResizer::onLeftMouseUp(FXObject*, FXSelector, void*){
+	if(!pIsDragging){
 		return 0;
 	}
 	
@@ -182,18 +182,18 @@ long igdeNativeFoxResizer::onLeftMouseUp( FXObject*, FXSelector, void* ){
 	return 0;
 }
 
-long igdeNativeFoxResizer::onMouseMoved( FXObject*, FXSelector, void *pdata ){
-	if( ! pIsDragging ){
+long igdeNativeFoxResizer::onMouseMoved(FXObject*, FXSelector, void *pdata){
+	if(!pIsDragging){
 		return 0;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )pdata );
+	const FXEvent &event = *((FXEvent*)pdata);
 	const int center = getHeight() / 2;
 	const int distance = event.win_y - center;
 	
-	if( getTarget() ){
-		return getTarget()->tryHandle( this, FXSEL( SEL_COMMAND, getSelector() ),
-			( void* )( intptr_t )distance );
+	if(getTarget()){
+		return getTarget()->tryHandle(this, FXSEL(SEL_COMMAND, getSelector()),
+			(void*)(intptr_t)distance);
 	}
 	
 	update();

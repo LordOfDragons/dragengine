@@ -43,31 +43,31 @@
 ////////////////////////////
 
 seLink::seLink() :
-pSynthesizer( NULL ),
-pEngLink( NULL ),
-pName( "Link" ),
-pController( NULL ),
-pRepeat( 1 ){
+pSynthesizer(NULL),
+pEngLink(NULL),
+pName("Link"),
+pController(NULL),
+pRepeat(1){
 }
 
-seLink::seLink( const seLink &copy ) :
-pSynthesizer( NULL ),
-pEngLink( NULL ),
-pName( copy.pName ),
-pController( NULL ),
-pRepeat( copy.pRepeat ),
-pCurve( copy.pCurve )
+seLink::seLink(const seLink &copy) :
+pSynthesizer(NULL),
+pEngLink(NULL),
+pName(copy.pName),
+pController(NULL),
+pRepeat(copy.pRepeat),
+pCurve(copy.pCurve)
 {
 	pController = copy.pController;
-	if( pController ){
+	if(pController){
 		pController->AddReference();
 	}
 }
 
 seLink::~seLink(){
-	SetSynthesizer( NULL );
+	SetSynthesizer(NULL);
 	
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -77,28 +77,28 @@ seLink::~seLink(){
 // Management
 ///////////////
 
-void seLink::SetSynthesizer( seSynthesizer *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void seLink::SetSynthesizer(seSynthesizer *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
-	if( pSynthesizer && pEngLink ){
-		pSynthesizer->GetEngineSynthesizer()->RemoveLink( pEngLink );
+	if(pSynthesizer && pEngLink){
+		pSynthesizer->GetEngineSynthesizer()->RemoveLink(pEngLink);
 		pEngLink = NULL;
 	}
 	
 	pSynthesizer = synthesizer;
 	
-	if( synthesizer ){
+	if(synthesizer){
 		deSynthesizerLink *link = NULL;
 		
 		try{
 			link = new deSynthesizerLink;
-			synthesizer->GetEngineSynthesizer()->AddLink( link );
+			synthesizer->GetEngineSynthesizer()->AddLink(link);
 			pEngLink = link;
 			
-		}catch( const deException & ){
-			if( link ){
+		}catch(const deException &){
+			if(link){
 				link->FreeReference();
 			}
 			throw;
@@ -106,72 +106,72 @@ void seLink::SetSynthesizer( seSynthesizer *synthesizer ){
 		
 		UpdateController();
 		
-		pEngLink->SetRepeat( pRepeat );
+		pEngLink->SetRepeat(pRepeat);
 		NotifyLinkChanged();
 		
 		UpdateCurve();
 	}
 }
 
-void seLink::SetName( const char *name ){
-	if( pName.Equals( name ) ){
+void seLink::SetName(const char *name){
+	if(pName.Equals(name)){
 		return;
 	}
 	
 	pName = name;
 	
-	if( pSynthesizer ){
-		pSynthesizer->NotifyLinkNameChanged( this );
+	if(pSynthesizer){
+		pSynthesizer->NotifyLinkNameChanged(this);
 	}
 }
 
-void seLink::SetController( seController *controller ){
-	if( controller == pController ){
+void seLink::SetController(seController *controller){
+	if(controller == pController){
 		return;
 	}
 	
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 	
 	pController = controller;
 	
-	if( controller ){
+	if(controller){
 		controller->AddReference();
 	}
 	
 	UpdateController();
 	
-	if( pSynthesizer ){
-		pSynthesizer->NotifyLinkChanged( this );
+	if(pSynthesizer){
+		pSynthesizer->NotifyLinkChanged(this);
 	}
 }
 
-void seLink::SetRepeat( int repeat ){
-	if( repeat < 1 ){
-		DETHROW( deeInvalidParam );
+void seLink::SetRepeat(int repeat){
+	if(repeat < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( repeat == pRepeat ){
+	if(repeat == pRepeat){
 		return;
 	}
 	
 	pRepeat = repeat;
 	
-	if( pEngLink ){
-		pEngLink->SetRepeat( pRepeat );
+	if(pEngLink){
+		pEngLink->SetRepeat(pRepeat);
 		NotifyLinkChanged();
 	}
 	
-	if( pSynthesizer ){
-		pSynthesizer->NotifyLinkChanged( this );
+	if(pSynthesizer){
+		pSynthesizer->NotifyLinkChanged(this);
 	}
 }
 
 
 
 void seLink::NotifyLinkChanged(){
-	if( pEngLink && pSynthesizer ){
+	if(pEngLink && pSynthesizer){
 		pSynthesizer->GetEngineSynthesizer()->NotifyLinksChanged();
 	}
 }
@@ -179,24 +179,24 @@ void seLink::NotifyLinkChanged(){
 
 
 void seLink::UpdateController(){
-	if( ! pEngLink ){
+	if(!pEngLink){
 		return;
 	}
 	
 	deSynthesizer *engSynthesizer = pSynthesizer->GetEngineSynthesizer();
 	int indexController = -1;
 	
-	if( pController && engSynthesizer ){
+	if(pController && engSynthesizer){
 		indexController = pController->GetEngineControllerIndex();
 	}
 	
-	pEngLink->SetController( indexController );
+	pEngLink->SetController(indexController);
 	
 	NotifyLinkChanged();
 }
 
 void seLink::UpdateCurve(){
-	if( ! pEngLink ){
+	if(!pEngLink){
 		return;
 	}
 	
@@ -209,10 +209,10 @@ void seLink::UpdateCurve(){
 // Operators
 //////////////
 
-seLink &seLink::operator=( const seLink &copy ){
-	SetName( copy.pName );
-	SetController( copy.pController );
-	SetRepeat( copy.pRepeat );
+seLink &seLink::operator=(const seLink &copy){
+	SetName(copy.pName);
+	SetController(copy.pController);
+	SetRepeat(copy.pRepeat);
 	pCurve = copy.pCurve;
 	return *this;
 }

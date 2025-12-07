@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCBillboardTogglePartialHide::gdeUOCBillboardTogglePartialHide(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+pObjectClass(NULL),
+pBillboard(NULL)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard toggle partial hide" );
+	SetShortInfo("Billboard toggle partial hide");
 	
 	pBillboard = billboard;
 	billboard->AddReference();
@@ -59,10 +59,10 @@ pBillboard( NULL )
 }
 
 gdeUOCBillboardTogglePartialHide::~gdeUOCBillboardTogglePartialHide(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCBillboardTogglePartialHide::~gdeUOCBillboardTogglePartialHide(){
 ///////////////
 
 void gdeUOCBillboardTogglePartialHide::Undo(){
-	pBillboard->SetPartialHide( ! pBillboard->GetPartialHide() );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetPartialHide(!pBillboard->GetPartialHide());
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardTogglePartialHide::Redo(){

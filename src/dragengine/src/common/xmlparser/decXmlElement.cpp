@@ -48,9 +48,9 @@
 ////////////////////////////
 
 decXmlElement::decXmlElement() :
-pLineNumber( 1 ),
-pPositionNumber( 0 ),
-pParent( NULL )
+pLineNumber(1),
+pPositionNumber(0),
+pParent(NULL)
 {
 }
 
@@ -62,21 +62,21 @@ decXmlElement::~decXmlElement(){
 // Management
 ///////////////
 
-void decXmlElement::SetLineNumber( int lineNumber ){
-	if( lineNumber < 1 ){
-		DETHROW( deeInvalidParam );
+void decXmlElement::SetLineNumber(int lineNumber){
+	if(lineNumber < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pLineNumber = lineNumber;
 }
 
-void decXmlElement::SetPositionNumber( int positionNumber ){
-	if( positionNumber < 1 ){
-		DETHROW( deeInvalidParam );
+void decXmlElement::SetPositionNumber(int positionNumber){
+	if(positionNumber < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pPositionNumber = positionNumber;
 }
 
-void decXmlElement::SetParent( decXmlElement *parent ){
+void decXmlElement::SetParent(decXmlElement *parent){
 	pParent = parent;
 }
 
@@ -85,8 +85,8 @@ void decXmlElement::SetParent( decXmlElement *parent ){
 // Visiting
 /////////////
 
-void decXmlElement::Visit( decXmlVisitor &visitor ){
-	visitor.VisitElement( *this );
+void decXmlElement::Visit(decXmlVisitor &visitor){
+	visitor.VisitElement(*this);
 }
 
 
@@ -139,45 +139,45 @@ bool decXmlElement::CanCastToNamespace() const{
 }
 
 decXmlContainer *decXmlElement::CastToContainer(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlDocument *decXmlElement::CastToDocument(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlComment *decXmlElement::CastToComment(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlPI *decXmlElement::CastToPI(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlElementTag *decXmlElement::CastToElementTag(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlCharacterData *decXmlElement::CastToCharacterData(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlEntityReference *decXmlElement::CastToEntityReference(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlCharReference *decXmlElement::CastToCharReference(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlCDSect *decXmlElement::CastToCDSect(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlAttValue *decXmlElement::CastToAttValue(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 decXmlNamespace *decXmlElement::CastToNamespace(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

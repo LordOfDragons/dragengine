@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPSynthesizerListener::seWPSynthesizerListener( seWPSynthesizer &panel ) :
-pPanel( panel ){
+seWPSynthesizerListener::seWPSynthesizerListener(seWPSynthesizer &panel) :
+pPanel(panel){
 }
 
 seWPSynthesizerListener::~seWPSynthesizerListener(){
@@ -51,16 +51,16 @@ seWPSynthesizerListener::~seWPSynthesizerListener(){
 // Notifications
 //////////////////
 
-void seWPSynthesizerListener::SynthesizerChanged( seSynthesizer *synthesizer ){
-	if( pPanel.GetSynthesizer() != synthesizer ){
+void seWPSynthesizerListener::SynthesizerChanged(seSynthesizer *synthesizer){
+	if(pPanel.GetSynthesizer() != synthesizer){
 		return;
 	}
 	
 	pPanel.UpdateSynthesizer();
 }
 
-void seWPSynthesizerListener::PlaybackChanged( seSynthesizer *synthesizer ){
-	if( pPanel.GetSynthesizer() != synthesizer ){
+void seWPSynthesizerListener::PlaybackChanged(seSynthesizer *synthesizer){
+	if(pPanel.GetSynthesizer() != synthesizer){
 		return;
 	}
 	

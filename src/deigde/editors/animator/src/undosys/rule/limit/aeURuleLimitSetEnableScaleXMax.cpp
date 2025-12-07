@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableScaleXMax::aeURuleLimitSetEnableScaleXMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableScaleXMax::aeURuleLimitSetEnableScaleXMax(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	
-	SetShortInfo( "Limit toggle enable maximum x scaling" );
+	SetShortInfo("Limit toggle enable maximum x scaling");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleXMax::~aeURuleLimitSetEnableScaleXMax(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnableScaleXMax::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleXMax::Redo(){
-	pRule->SetEnableScalingXMax( ! pRule->GetEnableScalingXMax() );
+	pRule->SetEnableScalingXMax(!pRule->GetEnableScalingXMax());
 }

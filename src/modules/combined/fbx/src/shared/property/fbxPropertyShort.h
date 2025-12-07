@@ -45,7 +45,7 @@ public:
 	fbxPropertyShort();
 	
 	/** \brief Load property. */
-	fbxPropertyShort( decBaseFileReader &reader );
+	fbxPropertyShort(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
@@ -61,7 +61,7 @@ public:
 	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief Casting throwing exception if wrong type. */
 	virtual fbxPropertyShort &CastShort();
@@ -76,10 +76,10 @@ public:
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	virtual void Save(decBaseFileWriter &writer);
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;
 	/*@}*/
 };
 

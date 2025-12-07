@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeMultiMath( meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule );
+	meWVNodeMultiMath(meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule);
 	
 protected:
 	/** \brief Clean up object. */

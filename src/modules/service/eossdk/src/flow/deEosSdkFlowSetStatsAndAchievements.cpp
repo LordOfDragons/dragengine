@@ -34,14 +34,14 @@
 // Class deEosSdkFlowSetStatsAndAchievements
 //////////////////////////////////////////////
 
-static void fIngestStatCallback( const EOS_Stats_IngestStatCompleteCallbackInfo *data ){
-	( ( deEosSdkFlowSetStatsAndAchievements* )data->ClientData )->OnIngestStatCompleted( *data );
+static void fIngestStatCallback(const EOS_Stats_IngestStatCompleteCallbackInfo *data){
+	((deEosSdkFlowSetStatsAndAchievements*)data->ClientData)->OnIngestStatCompleted(*data);
 }
 
 static void fUnlockAchievementsCallback(
-const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo *data ){
-	( ( deEosSdkFlowSetStatsAndAchievements* )data->ClientData )->
-		OnUnlockAchievementsCompleted( *data );
+const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo *data){
+	((deEosSdkFlowSetStatsAndAchievements*)data->ClientData)->
+		OnUnlockAchievementsCompleted(*data);
 }
 
 
@@ -49,32 +49,32 @@ const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo *data ){
 // Constructor, destructor
 ////////////////////////////
 
-deEosSdkFlowSetStatsAndAchievements::deEosSdkFlowSetStatsAndAchievements( deEosSdkServiceEos &service,
-	const decUniqueID &id, const deServiceObject &request ) :
-deEosSdkFlow( service, id ),
-pStatsCompleted( false ),
-pAchievementsCompleted( false ),
-pResultData( deServiceObject::Ref::NewWith() )
+deEosSdkFlowSetStatsAndAchievements::deEosSdkFlowSetStatsAndAchievements(deEosSdkServiceEos &service,
+	const decUniqueID &id, const deServiceObject &request) :
+deEosSdkFlow(service, id),
+pStatsCompleted(false),
+pAchievementsCompleted(false),
+pResultData(deServiceObject::Ref::NewWith())
 {
-	service.NewPendingRequest( id, "setStatsAndAchievements", pResultData );
+	service.NewPendingRequest(id, "setStatsAndAchievements", pResultData);
 	
 	try{
-		if( ! service.productUserId ){
-			DETHROW_INFO( deeInvalidAction, "No user logged in" );
+		if(!service.productUserId){
+			DETHROW_INFO(deeInvalidAction, "No user logged in");
 		}
-		IngestStat( request );
+		IngestStat(request);
 		
-	}catch( const deException &e ){
-		Fail( e );
+	}catch(const deException &e){
+		Fail(e);
 		Finish();
 		return;
 	}
 	
 	try{
-		UnlockAchievements( request );
+		UnlockAchievements(request);
 		
-	}catch( const deException &e ){
-		Fail( e );
+	}catch(const deException &e){
+		Fail(e);
 	}
 	
 	CheckFinished();
@@ -85,19 +85,19 @@ pResultData( deServiceObject::Ref::NewWith() )
 // Management
 ///////////////
 
-void deEosSdkFlowSetStatsAndAchievements::IngestStat( const deServiceObject &request ){
-	const deServiceObject::Ref soResp( deServiceObject::Ref::NewWith() );
-	pResultData->SetChildAt( "stats", soResp );
+void deEosSdkFlowSetStatsAndAchievements::IngestStat(const deServiceObject &request){
+	const deServiceObject::Ref soResp(deServiceObject::Ref::NewWith());
+	pResultData->SetChildAt("stats", soResp);
 	
-	const deServiceObject::Ref soIn( request.GetChildAt( "stats" ) );
-	if( ! soIn ){
+	const deServiceObject::Ref soIn(request.GetChildAt("stats"));
+	if(!soIn){
 		pStatsCompleted = true;
 		return;
 	}
 	
-	const decStringList keys( soIn->GetChildrenKeys() );
+	const decStringList keys(soIn->GetChildrenKeys());
 	const int count = keys.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		pStatsCompleted = true;
 		return;
 	}
@@ -106,23 +106,23 @@ void deEosSdkFlowSetStatsAndAchievements::IngestStat( const deServiceObject &req
 	int i;
 	
 	try{
-		ingestData = new EOS_Stats_IngestData[ count ];
+		ingestData = new EOS_Stats_IngestData[count];
 		
-		for( i=0; i<count; i++ ){
-			const decString &apiName = keys.GetAt( i );
-			const deServiceObject::Ref soValue( soIn->GetChildAt( apiName ) );
+		for(i=0; i<count; i++){
+			const decString &apiName = keys.GetAt(i);
+			const deServiceObject::Ref soValue(soIn->GetChildAt(apiName));
 			
-			if( soValue->IsInteger() ){
+			if(soValue->IsInteger()){
 				const int value = soValue->GetInteger();
-				soResp->SetIntChildAt( apiName, value );
+				soResp->SetIntChildAt(apiName, value);
 				
-				ingestData[ i ] = {};
-				ingestData[ i ].ApiVersion = EOS_STATS_INGESTDATA_API_LATEST;
-				ingestData[ i ].StatName = apiName.GetString();
-				ingestData[ i ].IngestAmount = ( int32_t )value;
+				ingestData[i] = {};
+				ingestData[i].ApiVersion = EOS_STATS_INGESTDATA_API_LATEST;
+				ingestData[i].StatName = apiName.GetString();
+				ingestData[i].IngestAmount = (int32_t)value;
 				
 			}else{
-				DETHROW_INFO( deeInvalidParam, apiName );
+				DETHROW_INFO(deeInvalidParam, apiName);
 			}
 		}
 		
@@ -133,30 +133,30 @@ void deEosSdkFlowSetStatsAndAchievements::IngestStat( const deServiceObject &req
 		options.Stats = ingestData;
 		options.StatsCount = count;
 		
-		GetModule().LogInfo( "deEosSdkFlowSetStatsAndAchievements.IngestStat" );
-		EOS_Stats_IngestStat( pService.GetHandleStats(), &options, this, fIngestStatCallback );
+		GetModule().LogInfo("deEosSdkFlowSetStatsAndAchievements.IngestStat");
+		EOS_Stats_IngestStat(pService.GetHandleStats(), &options, this, fIngestStatCallback);
 		
-	}catch( const deException & ){
-		if( ingestData ){
+	}catch(const deException &){
+		if(ingestData){
 			delete [] ingestData;
 		}
 		throw;
 	}
 }
 
-void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements( const deServiceObject &request ){
-	const deServiceObject::Ref soResp( deServiceObject::Ref::NewWith() );
-	pResultData->SetChildAt( "achievements", soResp );
+void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements(const deServiceObject &request){
+	const deServiceObject::Ref soResp(deServiceObject::Ref::NewWith());
+	pResultData->SetChildAt("achievements", soResp);
 	
-	const deServiceObject::Ref soIn( request.GetChildAt( "achievements" ) );
-	if( ! soIn ){
+	const deServiceObject::Ref soIn(request.GetChildAt("achievements"));
+	if(!soIn){
 		pAchievementsCompleted = true;
 		return;
 	}
 	
-	const decStringList keys( soIn->GetChildrenKeys() );
+	const decStringList keys(soIn->GetChildrenKeys());
 	const int count = keys.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		pAchievementsCompleted = true;
 		return;
 	}
@@ -165,18 +165,18 @@ void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements( const deServiceObj
 	int i;
 	
 	try{
-		ids = new const char*[ count ];
+		ids = new const char*[count];
 		
-		for( i=0; i<count; i++ ){
-			const decString &name = keys.GetAt( i );
-			const bool achieved = soIn->GetChildAt( name )->GetBoolean();
+		for(i=0; i<count; i++){
+			const decString &name = keys.GetAt(i);
+			const bool achieved = soIn->GetChildAt(name)->GetBoolean();
 			
-			if( achieved ){
-				soResp->SetBoolChildAt( name, true );
-				ids[ i ] = name.GetString();
+			if(achieved){
+				soResp->SetBoolChildAt(name, true);
+				ids[i] = name.GetString();
 				
 			}else{
-				DETHROW_INFO( deeInvalidParam, "Reverting unlocking achievements is not supported" );
+				DETHROW_INFO(deeInvalidParam, "Reverting unlocking achievements is not supported");
 			}
 		}
 		
@@ -186,12 +186,12 @@ void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements( const deServiceObj
 		options.AchievementIds = ids;
 		options.AchievementsCount = count;
 		
-		GetModule().LogInfo( "deEosSdkFlowSetStatsAndAchievements.UnlockAchievements" );
-		EOS_Achievements_UnlockAchievements( pService.GetHandleAchievements(), &options,
-			this, fUnlockAchievementsCallback );
+		GetModule().LogInfo("deEosSdkFlowSetStatsAndAchievements.UnlockAchievements");
+		EOS_Achievements_UnlockAchievements(pService.GetHandleAchievements(), &options,
+			this, fUnlockAchievementsCallback);
 		
-	}catch( const deException & ){
-		if( ids ){
+	}catch(const deException &){
+		if(ids){
 			delete [] ids;
 		}
 		throw;
@@ -201,28 +201,28 @@ void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements( const deServiceObj
 
 
 void deEosSdkFlowSetStatsAndAchievements::OnIngestStatCompleted(
-const EOS_Stats_IngestStatCompleteCallbackInfo &data ){
+const EOS_Stats_IngestStatCompleteCallbackInfo &data){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowSetStatsAndAchievements.OnIngestStatCompleted: res=%d",
-		( int )data.ResultCode );
+		(int)data.ResultCode);
 	pStatsCompleted = true;
 	
-	if( data.ResultCode != EOS_EResult::EOS_Success ){
-		Fail( data.ResultCode );
+	if(data.ResultCode != EOS_EResult::EOS_Success){
+		Fail(data.ResultCode);
 	}
 	
 	CheckFinished();
 }
 
 void deEosSdkFlowSetStatsAndAchievements::OnUnlockAchievementsCompleted(
-const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo &data ){
+const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo &data){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowSetStatsAndAchievements.OnUnlockAchievementsCompleted: res=%d",
-		( int )data.ResultCode );
+		(int)data.ResultCode);
 	pAchievementsCompleted = true;
 	
-	if( data.ResultCode != EOS_EResult::EOS_Success ){
-		Fail( data.ResultCode );
+	if(data.ResultCode != EOS_EResult::EOS_Success){
+		Fail(data.ResultCode);
 	}
 	
 	CheckFinished();
@@ -231,7 +231,7 @@ const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo &data ){
 
 
 void deEosSdkFlowSetStatsAndAchievements::CheckFinished(){
-	if( pStatsCompleted && pAchievementsCompleted ){
+	if(pStatsCompleted && pAchievementsCompleted){
 		Finish();
 	}
 }

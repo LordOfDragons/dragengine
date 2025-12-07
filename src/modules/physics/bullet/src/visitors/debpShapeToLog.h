@@ -67,19 +67,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere ) override;
+	virtual void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box ) override;
+	virtual void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder ) override;
+	virtual void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule ) override;
+	virtual void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull ) override;
+	virtual void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 };
 

@@ -42,12 +42,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordAdd::ceUCAASpeakWordAdd( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, int index ){
-	if( ! topic || ! actorSpeak || ! word ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakWordAdd::ceUCAASpeakWordAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, int index){
+	if(!topic || !actorSpeak || !word){
+		DETHROW(deeInvalidParam);
 	}
-	if( index < 0 || index > actorSpeak->GetWordList().GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index > actorSpeak->GetWordList().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -55,7 +55,7 @@ ceUCAASpeakWordAdd::ceUCAASpeakWordAdd( ceConversationTopic *topic, ceCAActorSpe
 	pWord = NULL;
 	pIndex = index;
 	
-	SetShortInfo( "Actor Speak Add Word" );
+	SetShortInfo("Actor Speak Add Word");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -68,13 +68,13 @@ ceUCAASpeakWordAdd::ceUCAASpeakWordAdd( ceConversationTopic *topic, ceCAActorSpe
 }
 
 ceUCAASpeakWordAdd::~ceUCAASpeakWordAdd(){
-	if( pWord ){
+	if(pWord){
 		pWord->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -85,11 +85,11 @@ ceUCAASpeakWordAdd::~ceUCAASpeakWordAdd(){
 ///////////////
 
 void ceUCAASpeakWordAdd::Undo(){
-	pActorSpeak->GetWordList().Remove( pWord );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetWordList().Remove(pWord);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakWordAdd::Redo(){
-	pActorSpeak->GetWordList().InsertAt( pWord, pIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetWordList().InsertAt(pWord, pIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

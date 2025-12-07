@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPAddListener( meWPAdd &panel );
+	meWPAddListener(meWPAdd &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWPAddListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Editing parameters changed. */
-	virtual void EditingChanged( meWorld *world );
+	virtual void EditingChanged(meWorld *world);
 	/*@}*/
 };
 

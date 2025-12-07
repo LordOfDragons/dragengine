@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetDefaultValue::gdeUOCTPSetDefaultValue( gdeObjectClass *objectClass,
-	gdeProperty *property, const char *newValue, const char *oldValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTPSetDefaultValue::gdeUOCTPSetDefaultValue(gdeObjectClass *objectClass,
+	gdeProperty *property, const char *newValue, const char *oldValue) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property set default value" );
+	SetShortInfo("Object class texture property set default value");
 	
 	pOldValue = oldValue;
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pProperty( NULL )
 }
 
 gdeUOCTPSetDefaultValue::~gdeUOCTPSetDefaultValue(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCTPSetDefaultValue::~gdeUOCTPSetDefaultValue(){
 ///////////////
 
 void gdeUOCTPSetDefaultValue::Undo(){
-	pProperty->SetDefaultValue( pOldValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetDefaultValue(pOldValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPSetDefaultValue::Redo(){
-	pProperty->SetDefaultValue( pNewValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetDefaultValue(pNewValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

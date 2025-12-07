@@ -60,7 +60,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new unstuck collider object. */
-	debpUnstuckCollider( debpWorld &world );
+	debpUnstuckCollider(debpWorld &world);
 	/** Cleans up the unstuck collider object. */
 	~debpUnstuckCollider();
 	/*@}*/
@@ -70,11 +70,11 @@ public:
 	/** Retrieves the stuck collider. */
 	inline debpCollider *GetStuckCollider() const{ return pStuckCollider; }
 	/** Sets the stuck collider. */
-	void SetStuckCollider( debpCollider *collider );
+	void SetStuckCollider(debpCollider *collider);
 	/** Retrieves the displacement. */
 	inline const decDVector &GetDisplacement() const{ return pDisplacement; }
 	/** Sets the displacement. */
-	void SetDisplacement( const decDVector &displacement );
+	void SetDisplacement(const decDVector &displacement);
 	/** Remove all colliders and blocker normals. */
 	void Reset();
 	/** Determine nearby colliders in the parent world. */
@@ -91,18 +91,18 @@ public:
 	/** Retrieves the number of nearby colliders. */
 	inline int GetNearbyColliderCount() const{ return pNearbyColliderCount; }
 	/** Retrieves a nearby collider. */
-	debpCollider *GetNearbyColliderAt( int index ) const;
+	debpCollider *GetNearbyColliderAt(int index) const;
 	/** Adds a nearby collider. */
-	void AddNearbyCollider( debpCollider *collider );
+	void AddNearbyCollider(debpCollider *collider);
 	/** Removes all nearby colliders. */
 	void RemoveAllNearbyColliders();
 	
 	/** Retrieves the number of blocker normals. */
 	inline int GetBlockerNormalCount() const{ return pBlockerNormalCount; }
 	/** Retrieves a blocker normal. */
-	const decDVector &GetBlockerNormalAt( int index ) const;
+	const decDVector &GetBlockerNormalAt(int index) const;
 	/** Adds a blocker normal. */
-	void AddBlockerNormal( const decDVector &normal );
+	void AddBlockerNormal(const decDVector &normal);
 	/** Removes all blocker normals. */
 	void RemoveAllBlockerNormals();
 	/*@}*/

@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSAOSelfOcclusionAngle::deoglPSSAOSelfOcclusionAngle( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPSSAOSelfOcclusionAngle::deoglPSSAOSelfOcclusionAngle(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "ssaoSelfOcclusionAngle" );
-	SetDescription( "Sets the self occlusion angle for screen space ambient occlusion."
+	SetName("ssaoSelfOcclusionAngle");
+	SetDescription("Sets the self occlusion angle for screen space ambient occlusion."
 		" Due to limited accuracy of the rendered depth image self occlusion can happen"
 		" on flat or nearly flat geometry. To avoid this effect geometry is not taken"
 		" into account for nearby occlusion if the angle is less than an threshold."
@@ -56,10 +56,10 @@ deoglParameterFloat( ogl )
 		" missing geometry at shallow angles."
 		" Shallow angles can happen near corners and affect mostly small cravices."
 		" The default value is 10."
-		" Increase if self occlusion becomes a problem." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSAO Self Occlusion Angle" );
-	SetDefaultValue( "10" );
+		" Increase if self occlusion becomes a problem.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSAO Self Occlusion Angle");
+	SetDefaultValue("10");
 }
 
 deoglPSSAOSelfOcclusionAngle::~deoglPSSAOSelfOcclusionAngle(){
@@ -74,6 +74,6 @@ float deoglPSSAOSelfOcclusionAngle::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSAOSelfOcclusionAngle();
 }
 
-void deoglPSSAOSelfOcclusionAngle::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSAOSelfOcclusionAngle( value );
+void deoglPSSAOSelfOcclusionAngle::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSAOSelfOcclusionAngle(value);
 }

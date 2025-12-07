@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create delayed operation object. */
-	debpDelayedOperation( debpCollisionWorld &world );
+	debpDelayedOperation(debpCollisionWorld &world);
 	
 	/** \brief Clean up delayed operation object. */
 	~debpDelayedOperation();
@@ -106,7 +106,7 @@ public:
 	 * 
 	 * The pointer to the rigid body is not held by the delayed operation object.
 	 */
-	void AddRigidBody( btRigidBody *rigidBody );
+	void AddRigidBody(btRigidBody *rigidBody);
 	
 	/**
 	 * \brief Remove rigid body from the world.
@@ -118,14 +118,14 @@ public:
 	 * the collision shape is replaced with a temporary one to avoid problems. If the
 	 * shape is not shared deleted it before handing it over.
 	 */
-	void RemoveRigidBody( btRigidBody *rigidBody );
+	void RemoveRigidBody(btRigidBody *rigidBody);
 	
 	/**
 	 * \brief Add collision object to be added to the world.
 	 * 
 	 * The pointer to the collision object is not held by the delayed operation object.
 	 */
-	void AddCollisionObject( btCollisionObject *collisionObject );
+	void AddCollisionObject(btCollisionObject *collisionObject);
 	
 	/**
 	 * \brief Remove collision object from the world.
@@ -137,14 +137,14 @@ public:
 	 * the collision shape is replaced with a temporary one to avoid problems. If the
 	 * shape is not shared deleted it before handing it over.
 	 */
-	void RemoveCollisionObject( btCollisionObject *collisionObject );
+	void RemoveCollisionObject(btCollisionObject *collisionObject);
 	
 	/**
 	 * \brief Clear collision object from broadphase.
 	 * 
 	 * The pointer to the collision object is not held by the delayed operation object.
 	 */
-	void AddClearFromBroadphase( btCollisionObject *collisionObject );
+	void AddClearFromBroadphase(btCollisionObject *collisionObject);
 	/*@}*/
 	
 	

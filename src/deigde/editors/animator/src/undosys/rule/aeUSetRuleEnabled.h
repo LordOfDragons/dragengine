@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleEnabled( aeRule *rule );
+	aeUSetRuleEnabled(aeRule *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleEnabled();

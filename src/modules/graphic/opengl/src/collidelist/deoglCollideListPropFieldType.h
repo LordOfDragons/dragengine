@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create prop field type. */
-	deoglCollideListPropFieldType( deoglCollideListPropField &propField );
+	deoglCollideListPropFieldType(deoglCollideListPropField &propField);
 	
 	/** Clean up prop field type. */
 	~deoglCollideListPropFieldType();
@@ -67,7 +67,7 @@ public:
 	void Clear();
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decVector &offset );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decVector &offset);
 	
 	
 	
@@ -75,16 +75,16 @@ public:
 	inline deoglRPropFieldType *GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( deoglRPropFieldType *type );
+	void SetType(deoglRPropFieldType *type);
 	
 	/** Count of clusters. */
 	inline int GetClusterCount() const{ return pClusterCount; }
 	
 	/** Cluster at index. */
-	deoglCollideListPropFieldCluster &GetClusterAt( int index ) const;
+	deoglCollideListPropFieldCluster &GetClusterAt(int index) const;
 	
 	/** Add cluster. */
-	deoglCollideListPropFieldCluster *AddCluster( deoglPropFieldCluster *cluster );
+	deoglCollideListPropFieldCluster *AddCluster(deoglPropFieldCluster *cluster);
 	
 	/** Remove all clusters. */
 	void RemoveAllClusters();

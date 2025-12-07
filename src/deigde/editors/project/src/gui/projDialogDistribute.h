@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	projDialogDistribute( projWindowMain &windowMain, projProfile *profile );
+	projDialogDistribute(projWindowMain &windowMain, projProfile *profile);
 	
 	/** Clean up dialog. */
 	virtual ~projDialogDistribute();
@@ -94,7 +94,7 @@ public:
 	inline projProfile &GetProfile() const{ return *pProfile; }
 	
 	/** Add log message. */
-	void LogMessage( const char *message );
+	void LogMessage(const char *message);
 	
 	/**
 	 * Game like frame update while running modal.
@@ -104,10 +104,10 @@ public:
 	virtual void OnFrameUpdate();
 	
 	/** Close dialog once finished. */
-	void SetCloseDialogOnFinished( bool closeDialogOnFinished );
+	void SetCloseDialogOnFinished(bool closeDialogOnFinished);
 	
 	/** Print to console in addition to loggers. */
-	void SetPrintToConsole( bool printToConsole );
+	void SetPrintToConsole(bool printToConsole);
 	
 	/** Success. */
 	inline bool GetSuccess() const{ return pSuccess; }

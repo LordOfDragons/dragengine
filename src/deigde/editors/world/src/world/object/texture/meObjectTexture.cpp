@@ -53,53 +53,53 @@
 // Constructor, destructor
 ////////////////////////////
 
-meObjectTexture::meObjectTexture( igdeEnvironment *environment, const char *name ) :
-pEnvironment( environment ),
+meObjectTexture::meObjectTexture(igdeEnvironment *environment, const char *name) :
+pEnvironment(environment),
 
-pObject( NULL ),
+pObject(NULL),
 
-pName( name ),
-pEngSkin( NULL ),
-pTexCoordScaling( 1.0f, 1.0f ),
-pTexCoordRotation( 0.0f ),
+pName(name),
+pEngSkin(NULL),
+pTexCoordScaling(1.0f, 1.0f),
+pTexCoordRotation(0.0f),
 
-pColorTint( 1.0f, 1.0f, 1.0f ),
+pColorTint(1.0f, 1.0f, 1.0f),
 
-pDynamicSkin( NULL )
+pDynamicSkin(NULL)
 {
-	if( ! environment ){
-		DETHROW( deeInvalidParam );
+	if(!environment){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-meObjectTexture::meObjectTexture( const meObjectTexture &texture ) :
-pEnvironment( texture.pEnvironment ),
+meObjectTexture::meObjectTexture(const meObjectTexture &texture) :
+pEnvironment(texture.pEnvironment),
 
-pObject( NULL ),
+pObject(NULL),
 
-pName( texture.pName ),
-pSkinPath( texture.pSkinPath ),
-pEngSkin( NULL ),
-pTexCoordOffset( texture.pTexCoordOffset ),
-pTexCoordScaling( texture.pTexCoordScaling ),
-pTexCoordRotation( texture.pTexCoordRotation ),
+pName(texture.pName),
+pSkinPath(texture.pSkinPath),
+pEngSkin(NULL),
+pTexCoordOffset(texture.pTexCoordOffset),
+pTexCoordScaling(texture.pTexCoordScaling),
+pTexCoordRotation(texture.pTexCoordRotation),
 
-pColorTint( texture.pColorTint ),
+pColorTint(texture.pColorTint),
 
-pProperties( texture.pProperties ),
-pActiveProperty( texture.pActiveProperty ),
+pProperties(texture.pProperties),
+pActiveProperty(texture.pActiveProperty),
 
-pDynamicSkin( NULL )
+pDynamicSkin(NULL)
 {
 	try{
 		pEngSkin = texture.GetEngineSkin();
-		if( pEngSkin ){
+		if(pEngSkin){
 			pEngSkin->AddReference();
 		}
 		
 		UpdateDynamicSkin();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -114,14 +114,14 @@ meObjectTexture::~meObjectTexture(){
 // Management
 ///////////////
 
-void meObjectTexture::SetObject( meObject *object ){
+void meObjectTexture::SetObject(meObject *object){
 	pObject = object;
 }
 
 
 
-void meObjectTexture::SetSkinPath( const char *skinPath ){
-	if( pSkinPath == skinPath ){
+void meObjectTexture::SetSkinPath(const char *skinPath){
+	if(pSkinPath == skinPath){
 		return;
 	}
 	
@@ -133,65 +133,65 @@ void meObjectTexture::SetSkinPath( const char *skinPath ){
 void meObjectTexture::LoadSkin(){
 	deSkin *engSkin = NULL;
 	
-	if( ! pSkinPath.IsEmpty() ){
+	if(!pSkinPath.IsEmpty()){
 		try{
 			engSkin = pEnvironment->GetEngineController()->GetEngine()->
-				GetSkinManager()->LoadSkin( pSkinPath.GetString(), "/" );
+				GetSkinManager()->LoadSkin(pSkinPath.GetString(), "/");
 			
-		}catch( const deException & ){
-			engSkin = pEnvironment->GetStockSkin( igdeEnvironment::essError );
+		}catch(const deException &){
+			engSkin = pEnvironment->GetStockSkin(igdeEnvironment::essError);
 			engSkin->AddReference();
 		}
 	}
 	
-	if( pEngSkin ){
+	if(pEngSkin){
 		pEngSkin->FreeReference();
 	}
 	pEngSkin = engSkin;
 	
 	UpdateDynamicSkin();
 	
-	if( pObject ){
+	if(pObject){
 		pObject->UpdateComponentTextures();
 	}
 }
 
 
 
-void meObjectTexture::SetTexCoordOffset( const decVector2 &offset ){
-	if( offset.IsEqualTo( pTexCoordOffset ) ){
+void meObjectTexture::SetTexCoordOffset(const decVector2 &offset){
+	if(offset.IsEqualTo(pTexCoordOffset)){
 		return;
 	}
 	
 	pTexCoordOffset = offset;
 	
-	if( pObject ){
+	if(pObject){
 		pObject->UpdateComponentTextures();
 	}
 	NotifyChanged();
 }
 
-void meObjectTexture::SetTexCoordScaling( const decVector2 &scaling ){
-	if( scaling.IsEqualTo( pTexCoordScaling ) ){
+void meObjectTexture::SetTexCoordScaling(const decVector2 &scaling){
+	if(scaling.IsEqualTo(pTexCoordScaling)){
 		return;
 	}
 	
 	pTexCoordScaling = scaling;
 	
-	if( pObject ){
+	if(pObject){
 		pObject->UpdateComponentTextures();
 	}
 	NotifyChanged();
 }
 
-void meObjectTexture::SetTexCoordRotation( float rotation ){
-	if( fabsf( rotation - pTexCoordRotation ) <= FLOAT_SAFE_EPSILON ){
+void meObjectTexture::SetTexCoordRotation(float rotation){
+	if(fabsf(rotation - pTexCoordRotation) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pTexCoordRotation = rotation;
 	
-	if( pObject ){
+	if(pObject){
 		pObject->UpdateComponentTextures();
 	}
 	NotifyChanged();
@@ -199,8 +199,8 @@ void meObjectTexture::SetTexCoordRotation( float rotation ){
 
 
 
-void meObjectTexture::SetColorTint( const decColor &color ){
-	if( color.IsEqualTo( pColorTint ) ){
+void meObjectTexture::SetColorTint(const decColor &color){
+	if(color.IsEqualTo(pColorTint)){
 		return;
 	}
 	
@@ -208,7 +208,7 @@ void meObjectTexture::SetColorTint( const decColor &color ){
 	
 	UpdateDynamicSkin();
 	
-	if( pObject ){
+	if(pObject){
 		pObject->UpdateComponentTextures();
 	}
 	NotifyChanged();
@@ -217,30 +217,30 @@ void meObjectTexture::SetColorTint( const decColor &color ){
 
 
 void meObjectTexture::UpdateDynamicSkin(){
-	const bool hasTint = ! decColor( 1.0f, 1.0f, 1.0f ).IsEqualTo( pColorTint );
+	const bool hasTint = !decColor(1.0f, 1.0f, 1.0f).IsEqualTo(pColorTint);
 	bool requiresDynamicSkin = false;
 	
-	if( hasTint ){
+	if(hasTint){
 		requiresDynamicSkin = true;
 	}
 	
-	if( requiresDynamicSkin ){
-		if( ! pDynamicSkin ){
+	if(requiresDynamicSkin){
+		if(!pDynamicSkin){
 			pDynamicSkin = pEnvironment->GetEngineController()->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
 		}
 		
 		pDynamicSkin->RemoveAllRenderables();
 		
-		if( ! hasTint ){
+		if(!hasTint){
 			return;
 		}
 		
-		deDSRenderableColor * const renderable = new deDSRenderableColor( "tint" );
-		renderable->SetColor( pColorTint );
-		pDynamicSkin->AddRenderable( renderable );
+		deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
+		renderable->SetColor(pColorTint);
+		pDynamicSkin->AddRenderable(renderable);
 		
 	}else{
-		if( pDynamicSkin ){
+		if(pDynamicSkin){
 			pDynamicSkin->FreeReference();
 			pDynamicSkin = NULL;
 		}
@@ -250,45 +250,45 @@ void meObjectTexture::UpdateDynamicSkin(){
 
 
 void meObjectTexture::NotifyChanged(){
-	if( ! pObject ){
+	if(!pObject){
 		return;
 	}
 	
 	meWorld * const world = pObject->GetWorld();
-	if( ! world ){
+	if(!world){
 		return;
 	}
 	
-	world->SetChanged( true );
-	world->NotifyObjectTextureChanged( pObject, this );
+	world->SetChanged(true);
+	world->NotifyObjectTextureChanged(pObject, this);
 }
 
 void meObjectTexture::NotifyPropertiesChanged(){
-	if( ! pObject ){
+	if(!pObject){
 		return;
 	}
 	
 	meWorld * const world = pObject->GetWorld();
-	if( ! world ){
+	if(!world){
 		return;
 	}
 	
-	world->SetChanged( true );
-	world->NotifyObjectTexturePropertiesChanged( pObject, this );
+	world->SetChanged(true);
+	world->NotifyObjectTexturePropertiesChanged(pObject, this);
 }
 
 void meObjectTexture::NotifyActivePropertyChanged(){
-	if( ! pObject ){
+	if(!pObject){
 		return;
 	}
 	
 	meWorld * const world = pObject->GetWorld();
-	if( ! world ){
+	if(!world){
 		return;
 	}
 	
-	world->SetChanged( true );
-	world->NotifyObjectTextureActivePropertyChanged( pObject, this );
+	world->SetChanged(true);
+	world->NotifyObjectTextureActivePropertyChanged(pObject, this);
 }
 
 
@@ -296,12 +296,12 @@ void meObjectTexture::NotifyActivePropertyChanged(){
 // Properties
 ///////////////
 
-void meObjectTexture::SetProperty( const char *key, const char *value ){
+void meObjectTexture::SetProperty(const char *key, const char *value){
 	bool activeChanged = false;
 	
-	pProperties.SetAt( key, value );
+	pProperties.SetAt(key, value);
 	
-	if( pActiveProperty.IsEmpty() ){
+	if(pActiveProperty.IsEmpty()){
 		pActiveProperty = key;
 		activeChanged = true;
 	}
@@ -309,19 +309,19 @@ void meObjectTexture::SetProperty( const char *key, const char *value ){
 	//UpdateProperties();
 	
 	NotifyPropertiesChanged();
-	if( activeChanged ){
+	if(activeChanged){
 		NotifyActivePropertyChanged();
 	}
 }
 
-void meObjectTexture::SetProperties( const decStringDictionary &properties ){
+void meObjectTexture::SetProperties(const decStringDictionary &properties){
 	pProperties = properties;
 	
-	if( pProperties.GetCount() == 0 ){
+	if(pProperties.GetCount() == 0){
 		pActiveProperty = "";
 		
 	}else{
-		pActiveProperty = pProperties.GetAt( pProperties.GetKeys().GetAt( 0 ) );
+		pActiveProperty = pProperties.GetAt(pProperties.GetKeys().GetAt(0));
 	}
 	
 	//UpdateProperties();
@@ -330,21 +330,21 @@ void meObjectTexture::SetProperties( const decStringDictionary &properties ){
 	NotifyActivePropertyChanged();
 }
 
-void meObjectTexture::RemoveProperty( const char *key ){
-	if( ! pProperties.Has( key ) ){
+void meObjectTexture::RemoveProperty(const char *key){
+	if(!pProperties.Has(key)){
 		return;
 	}
 	
 	bool activeChanged = false;
 	
-	pProperties.Remove( key );
+	pProperties.Remove(key);
 	
-	if( pActiveProperty == key ){
-		if( pProperties.GetCount() == 0 ){
+	if(pActiveProperty == key){
+		if(pProperties.GetCount() == 0){
 			pActiveProperty = "";
 			
 		}else{
-			pActiveProperty = pProperties.GetAt( pProperties.GetKeys().GetAt( 0 ) );
+			pActiveProperty = pProperties.GetAt(pProperties.GetKeys().GetAt(0));
 		}
 		activeChanged = true;
 	}
@@ -352,13 +352,13 @@ void meObjectTexture::RemoveProperty( const char *key ){
 	//UpdateProperties();
 	
 	NotifyPropertiesChanged();
-	if( activeChanged ){
+	if(activeChanged){
 		NotifyActivePropertyChanged();
 	}
 }
 
 void meObjectTexture::RemoveAllProperties(){
-	if( pProperties.GetCount() == 0 ){
+	if(pProperties.GetCount() == 0){
 		return;
 	}
 	
@@ -371,8 +371,8 @@ void meObjectTexture::RemoveAllProperties(){
 	NotifyActivePropertyChanged();
 }
 
-void meObjectTexture::SetActiveProperty( const char *property ){
-	if( pActiveProperty == property ){
+void meObjectTexture::SetActiveProperty(const char *property){
+	if(pActiveProperty == property){
 		return;
 	}
 	
@@ -387,10 +387,10 @@ void meObjectTexture::SetActiveProperty( const char *property ){
 //////////////////////
 
 void meObjectTexture::pCleanUp(){
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
-	if( pEngSkin ){
+	if(pEngSkin){
 		pEngSkin->FreeReference();
 	}
 }

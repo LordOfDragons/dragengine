@@ -100,25 +100,25 @@ public:
 	inline const decVector &GetGoalPosition() const{ return pGoalPosition; }
 	
 	/** \brief Set goal position. */
-	void SetGoalPosition( const decVector &position );
+	void SetGoalPosition(const decVector &position);
 	
 	/** \brief Goal orientation. */
 	inline const decQuaternion &GetGoalOrientation() const{ return pGoalOrientation; }
 	
 	/** \brief Set goal orientation. */
-	void SetGoalOrientation( const decQuaternion &orientation );
+	void SetGoalOrientation(const decQuaternion &orientation);
 	
 	/** \brief Local position. */
 	inline const decVector &GetLocalPosition() const{ return pLocalPosition; }
 	
 	/** \brief Set local position. */
-	void SetLocalPosition( const decVector &position );
+	void SetLocalPosition(const decVector &position);
 	
 	/** \brief Local orientation. */
 	inline const decQuaternion &GetLocalOrientation() const{ return pLocalOrientation; }
 	
 	/** \brief Set local orientation. */
-	void SetLocalOrientation( const decQuaternion &orientation );
+	void SetLocalOrientation(const decQuaternion &orientation);
 	
 	/**
 	 * \brief Adjust position.
@@ -130,13 +130,13 @@ public:
 	 * \brief Set if the position is adjusted.
 	 * \version 1.6
 	 */
-	void SetAdjustPosition( bool adjust );
+	void SetAdjustPosition(bool adjust);
 	
 	/** \brief Adjust orientation. */
 	inline bool GetAdjustOrientation() const{ return pAdjustOrientation; }
 	
 	/** \brief Set if the orientation is adjusted. */
-	void SetAdjustOrientation( bool adjust );
+	void SetAdjustOrientation(bool adjust);
 	
 	
 	
@@ -144,13 +144,13 @@ public:
 	inline bool GetUseSolverBone() const{ return pUseSolverBone; }
 	
 	/** \brief Set if the solver bone is used to obtain target position and orientation. */
-	void SetUseSolverBone( bool useSolverBone );
+	void SetUseSolverBone(bool useSolverBone);
 	
 	/** \brief Name of the solver bone or empty string if not used. */
 	inline const decString &GetSolverBone() const{ return pSolverBone; }
 	
 	/** \brief Set name of the solver bone or empty string if not used. */
-	void SetSolverBone( const char *boneName );
+	void SetSolverBone(const char *boneName);
 	
 	
 	
@@ -158,7 +158,7 @@ public:
 	inline float GetReachRange() const{ return pReachRange; }
 	
 	/** \brief Set limit reach in meters. 0 disables reach limit. */
-	void SetReachRange( float range );
+	void SetReachRange(float range);
 	
 	/** \brief Bone to use as reach origin or an empty string to use a constant position. */
 	inline const decString &GetReachBone() const{ return pReachBone; }
@@ -167,13 +167,13 @@ public:
 	 * \brief Set bone to use as reach origin or an empty string to use a constant position.
 	 * \throws deeInvalidParam \em bone is NULL.
 	 */
-	void SetReachBone( const char *bone );
+	void SetReachBone(const char *bone);
 	
 	/** \brief Reach center if no bone is used. */
 	inline const decVector &GetReachCenter() const{ return pReachCenter; }
 	
 	/** \brief Set reach center if no bone is used. */
-	void SetReachCenter( const decVector &center );
+	void SetReachCenter(const decVector &center);
 	
 	
 	
@@ -207,7 +207,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	virtual void Visit(deAnimatorRuleVisitor &visitor);
 	/*@}*/
 };
 

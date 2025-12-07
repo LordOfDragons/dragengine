@@ -52,7 +52,7 @@ public:
 	deoalRayTraceHitElement();
 	
 	/** \brief Create copy of ray trace hit element. */
-	deoalRayTraceHitElement( const deoalRayTraceHitElement &element );
+	deoalRayTraceHitElement(const deoalRayTraceHitElement &element);
 	/*@}*/
 	
 	
@@ -85,13 +85,13 @@ public:
 	void SetEmpty();
 	
 	/** \brief Set element to hit component face. */
-	void SetComponentFace( float distance, const decDVector &point, const decDVector &normal,
-		deoalAComponent *component, int face, bool frontFacing );
+	void SetComponentFace(float distance, const decDVector &point, const decDVector &normal,
+		deoalAComponent *component, int face, bool frontFacing);
 	
 	
 	
 	/** \brief Assign element. */
-	deoalRayTraceHitElement &operator=( const deoalRayTraceHitElement &element );
+	deoalRayTraceHitElement &operator=(const deoalRayTraceHitElement &element);
 	/*@}*/
 };
 

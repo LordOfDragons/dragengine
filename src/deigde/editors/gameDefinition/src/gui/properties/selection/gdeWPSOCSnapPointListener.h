@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSOCSnapPointListener( gdeWPSOCSnapPoint &panel );
+	gdeWPSOCSnapPointListener(gdeWPSOCSnapPoint &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPSOCSnapPointListener();
@@ -55,14 +55,14 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object class snap points changed. */
-	virtual void OCSnapPointsChanged( gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass );
+	virtual void OCSnapPointsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
 	
 	/** \brief Object class snap point changed. */
-	virtual void OCSnapPointChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint );
+	virtual void OCSnapPointChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint);
 	
 	/** \brief Active object class snap point changed. */
-	virtual void ActiveOCSnapPointChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCSnapPointChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

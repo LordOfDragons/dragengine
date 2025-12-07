@@ -46,7 +46,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAWait( ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action );
+	ceWPTTIMAWait(ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -59,7 +59,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAWait *GetActionWait() const{ return ( ceCAWait* )GetAction(); }
+	inline ceCAWait *GetActionWait() const{ return (ceCAWait*)GetAction(); }
 	
 	/** \brief Model with condition. */
 	inline ceWPTTIMAWaitCondition *GetChildCondition() const{ return pCondition; }

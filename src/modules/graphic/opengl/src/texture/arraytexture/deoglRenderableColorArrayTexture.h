@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable texture. */
-	deoglRenderableColorArrayTexture( deoglRenderThread &renderThread, int width,
-		int height, int layerCount, int componentCount, bool isFloat );
+	deoglRenderableColorArrayTexture(deoglRenderThread &renderThread, int width,
+		int height, int layerCount, int componentCount, bool isFloat);
 	
 	/** Clean up renderable texture. */
 	~deoglRenderableColorArrayTexture();
@@ -82,13 +82,13 @@ public:
 	inline bool GetIsFloat() const{ return pIsFloat; }
 	
 	/** Format matches. */
-	bool Matches( int width, int height, int layers, int componentCount, bool isFloat ) const;
+	bool Matches(int width, int height, int layers, int componentCount, bool isFloat) const;
 	
 	/** Texture is in use. */
 	inline bool GetInUse() const{ return pInUse; }
 	
 	/** Set if texture is in use. */
-	void SetInUse( bool inUse );
+	void SetInUse(bool inUse);
 	
 	/** Texture. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }

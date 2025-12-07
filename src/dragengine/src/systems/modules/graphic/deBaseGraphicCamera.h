@@ -65,10 +65,10 @@ public:
 	virtual void LayerMaskChanged();
 	
 	/** \brief Effect has been added. */
-	virtual void EffectAdded( int index, deEffect *effect );
+	virtual void EffectAdded(int index, deEffect *effect);
 	
 	/** \brief Effect has been removed. */
-	virtual void EffectRemoved( int index, deEffect *effect );
+	virtual void EffectRemoved(int index, deEffect *effect);
 	
 	/** \brief All effects have been removed. */
 	virtual void AllEffectsRemoved();

@@ -58,22 +58,22 @@ public:
 	int GetCount() const;
 	
 	/** Speaker at index. */
-	deoalASpeaker *GetAt( int index ) const;
+	deoalASpeaker *GetAt(int index) const;
 	
 	/** Speaker is present. */
-	bool Has( deoalASpeaker *speaker ) const;
+	bool Has(deoalASpeaker *speaker) const;
 	
 	/** Index of speaker or -1 if absent. */
-	int IndexOf( deoalASpeaker *speaker ) const;
+	int IndexOf(deoalASpeaker *speaker) const;
 	
 	/** Add speaker. */
-	void Add( deoalASpeaker *speaker );
+	void Add(deoalASpeaker *speaker);
 	
 	/** Remove speaker. */
-	void Remove( deoalASpeaker *speaker );
+	void Remove(deoalASpeaker *speaker);
 	
 	/** Remove speaker if present. */
-	void RemoveIfExisting( deoalASpeaker *speaker );
+	void RemoveIfExisting(deoalASpeaker *speaker);
 	
 	/** Remove all speakers. */
 	void RemoveAll();
@@ -81,13 +81,13 @@ public:
 	
 	
 	/** Flag all speakers. */
-	void FlagAll( bool flag );
+	void FlagAll(bool flag);
 	
 	/**
 	 * Set enabled state for all speakers.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void EnableAll( bool enabled );
+	void EnableAll(bool enabled);
 	
 	/**
 	 * Set enabled state of all speakers to match their flag state.
@@ -107,19 +107,19 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Assign list. */
-	deoalSpeakerList &operator=( const deoalSpeakerList &list );
+	deoalSpeakerList &operator=(const deoalSpeakerList &list);
 	
 	/** Append list. */
-	deoalSpeakerList &operator+=( const deoalSpeakerList &list );
+	deoalSpeakerList &operator+=(const deoalSpeakerList &list);
 	
 	/** Combined list. */
-	deoalSpeakerList operator+( const deoalSpeakerList &list ) const;
+	deoalSpeakerList operator+(const deoalSpeakerList &list) const;
 	
 	/** Lists are equal. */
-	bool operator==( const deoalSpeakerList &list ) const;
+	bool operator==(const deoalSpeakerList &list) const;
 	
 	/** Lists are not equal. */
-	bool operator!=( const deoalSpeakerList &list ) const;
+	bool operator!=(const deoalSpeakerList &list) const;
 	/*@}*/
 };
 

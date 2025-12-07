@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesHeightMap1::deoglSTPipelinesHeightMap1( const deoglSkinTexture &texture ) :
-deoglSkinTexturePipelines( texture ){
+deoglSTPipelinesHeightMap1::deoglSTPipelinesHeightMap1(const deoglSkinTexture &texture) :
+deoglSkinTexturePipelines(texture){
 }
 
 deoglSTPipelinesHeightMap1::~deoglSTPipelinesHeightMap1(){
@@ -60,29 +60,29 @@ const char *deoglSTPipelinesHeightMap1::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesHeightMap1::pPreparePipelines( const ChannelInfo &cinfo,
-deoglBatchedShaderLoading &batched ){
+void deoglSTPipelinesHeightMap1::pPreparePipelines(const ChannelInfo &cinfo,
+deoglBatchedShaderLoading &batched){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmHeightMap );
+	baseShaderConfig.SetGeometryMode(deoglSkinShaderConfig::egmHeightMap);
 	
-	pPrepareGeometry( baseShaderConfig, cinfo, batched);
+	pPrepareGeometry(baseShaderConfig, cinfo, batched);
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
-	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
-	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth(baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter(baseShaderConfig, cinfo, batched);
 	// pPrepareMask( baseShaderConfig, cinfo, batched);
-	pPrepareAllShadow( baseShaderConfig, cinfo, batched);
+	pPrepareAllShadow(baseShaderConfig, cinfo, batched);
 	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);
 	// pPrepareLuminance( baseShaderConfig, cinfo, batched);
 	// pPrepareGIMaterial( baseShaderConfig, cinfo, batched);
 }
 
-void deoglSTPipelinesHeightMap1::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
-	deoglSkinTexturePipelines::pPipelineConfigGeometry( config );
+void deoglSTPipelinesHeightMap1::pPipelineConfigGeometry(deoglPipelineConfiguration &config){
+	deoglSkinTexturePipelines::pPipelineConfigGeometry(config);
 	
-	config.SetEnableBlend( false );
+	config.SetEnableBlend(false);
 }
 
-void deoglSTPipelinesHeightMap1::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &,
-deoglSkinShaderConfig &, const ChannelInfo &, deoglBatchedShaderLoading & ){
+void deoglSTPipelinesHeightMap1::pPrepareShadowOrthogonalCascaded(deoglPipelineConfiguration &,
+deoglSkinShaderConfig &, const ChannelInfo &, deoglBatchedShaderLoading &){
 	// not supported
 }

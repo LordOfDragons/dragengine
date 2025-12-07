@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize( peeType *type, float newSize ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType *type, float newSize){
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = NULL;
 	
-	SetShortInfo( "Set Type Physics Size" );
+	SetShortInfo("Set Type Physics Size");
 	
 	pOldSize = type->GetPhysicsSize();
 	pNewSize = newSize;
@@ -56,7 +56,7 @@ peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize( peeType *type, float newSize ){
 }
 
 peeUTypeSetPhysicsSize::~peeUTypeSetPhysicsSize(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ peeUTypeSetPhysicsSize::~peeUTypeSetPhysicsSize(){
 ///////////////
 
 void peeUTypeSetPhysicsSize::Undo(){
-	pType->SetPhysicsSize( pOldSize );
+	pType->SetPhysicsSize(pOldSize);
 }
 
 void peeUTypeSetPhysicsSize::Redo(){
-	pType->SetPhysicsSize( pNewSize );
+	pType->SetPhysicsSize(pNewSize);
 }

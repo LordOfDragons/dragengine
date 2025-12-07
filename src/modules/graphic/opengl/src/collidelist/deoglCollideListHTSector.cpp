@@ -43,15 +43,15 @@
 ////////////////////////////
 
 deoglCollideListHTSector::deoglCollideListHTSector() :
-pSector( NULL ),
-pClusterCount( 0 ){
+pSector(NULL),
+pClusterCount(0){
 }
 
 deoglCollideListHTSector::~deoglCollideListHTSector(){
 	const int count = pClusters.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		delete ( deoglCollideListHTSCluster* )pClusters.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoglCollideListHTSCluster*)pClusters.GetAt(i);
 	}
 }
 
@@ -65,63 +65,63 @@ void deoglCollideListHTSector::Clear(){
 	pSector = NULL;
 }
 
-void deoglCollideListHTSector::SetSector( deoglHTViewSector *sector ){
+void deoglCollideListHTSector::SetSector(deoglHTViewSector *sector){
 	pSector = sector;
 	RemoveAllClusters();
 }
 
-void deoglCollideListHTSector::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
-const decDVector &referencePosition ){
-	const decVector offset( pSector->GetSector().CalcWorldPosition( referencePosition ) );
+void deoglCollideListHTSector::StartOcclusionTest(deoglOcclusionTest &occlusionTest,
+const decDVector &referencePosition){
+	const decVector offset(pSector->GetSector().CalcWorldPosition(referencePosition));
 	int i;
 	
-	for( i=0; i<pClusterCount; i++ ){
-		( ( deoglCollideListHTSCluster* )pClusters.GetAt( i ) )->
-			StartOcclusionTest( occlusionTest, offset );
+	for(i=0; i<pClusterCount; i++){
+		((deoglCollideListHTSCluster*)pClusters.GetAt(i))->
+			StartOcclusionTest(occlusionTest, offset);
 	}
 }
 
 
 
-deoglCollideListHTSCluster &deoglCollideListHTSector::GetClusterAt( int index ) const{
-	return *( ( deoglCollideListHTSCluster* )pClusters.GetAt( index ) );
+deoglCollideListHTSCluster &deoglCollideListHTSector::GetClusterAt(int index) const{
+	return *((deoglCollideListHTSCluster*)pClusters.GetAt(index));
 }
 
-deoglCollideListHTSCluster *deoglCollideListHTSector::AddCluster( const decPoint &coordinates ){
+deoglCollideListHTSCluster *deoglCollideListHTSector::AddCluster(const decPoint &coordinates){
 	deoglCollideListHTSCluster *cluster = NULL;
 	
-	if( pClusterCount < pClusters.GetCount() ){
-		cluster = ( deoglCollideListHTSCluster* )pClusters.GetAt( pClusterCount );
+	if(pClusterCount < pClusters.GetCount()){
+		cluster = (deoglCollideListHTSCluster*)pClusters.GetAt(pClusterCount);
 		
 	}else{
 		cluster = new deoglCollideListHTSCluster;
-		pClusters.Add( cluster );
+		pClusters.Add(cluster);
 	}
 	
-	cluster->SetCluster( &pSector->GetClusterAt( coordinates ) );
+	cluster->SetCluster(&pSector->GetClusterAt(coordinates));
 	pClusterCount++;
 	return cluster;
 }
 
 void deoglCollideListHTSector::RemoveAllClusters(){
-	while( pClusterCount > 0 ){
-		( ( deoglCollideListHTSCluster* )pClusters.GetAt( --pClusterCount ) )->Clear();
+	while(pClusterCount > 0){
+		((deoglCollideListHTSCluster*)pClusters.GetAt(--pClusterCount))->Clear();
 	}
 }
 
 void deoglCollideListHTSector::RemoveCulledClusters(){
 	int i, last = 0;
-	for( i=0; i<pClusterCount; i++ ){
-		deoglCollideListHTSCluster &cluster = *( ( deoglCollideListHTSCluster* )pClusters.GetAt( i ) );
-		if( cluster.GetCulled() ){
+	for(i=0; i<pClusterCount; i++){
+		deoglCollideListHTSCluster &cluster = *((deoglCollideListHTSCluster*)pClusters.GetAt(i));
+		if(cluster.GetCulled()){
 			cluster.Clear();
 			continue;
 		}
 		
-		if( i != last ){
-			void * const exchange = pClusters.GetAt( last );
-			pClusters.SetAt( last, pClusters.GetAt( i ) );
-			pClusters.SetAt( i, exchange );
+		if(i != last){
+			void * const exchange = pClusters.GetAt(last);
+			pClusters.SetAt(last, pClusters.GetAt(i));
+			pClusters.SetAt(i, exchange);
 		}
 		last++;
 	}

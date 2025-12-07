@@ -44,15 +44,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-spModuleGraphicSystem::spModuleGraphicSystem( ScriptingPython &sp ) : spBaseModule( sp, "GraphicSystem" ){
-	SetDocumentation( "Drag[en]gine Graphic System" );
-	SetParent( sp.GetNamespaceDragengine() );
+spModuleGraphicSystem::spModuleGraphicSystem(ScriptingPython &sp) : spBaseModule(sp, "GraphicSystem"){
+	SetDocumentation("Drag[en]gine Graphic System");
+	SetParent(sp.GetNamespaceDragengine());
 	
-	AddMethod( "getWindowWidth", ( PyCFunction )cfGetWindowWidth, METH_NOARGS, "returns width in pixel of the render window." );
-	AddMethod( "getWindowHeight", ( PyCFunction )cfGetWindowHeight, METH_NOARGS, "returns height in pixel of the render window." );
-	AddMethod( "setWindowGeometry", ( PyCFunction )cfSetWindowGeometry, METH_VARARGS, "sets the window geometry." );
-	AddMethod( "setWindowTitle", ( PyCFunction )cfSetWindowTitle, METH_VARARGS, "sets the window title." );
-	AddMethod( "getPrimaryCanvas", ( PyCFunction )cfGetPrimaryCanvas, METH_NOARGS, "Primary canvas view." );
+	AddMethod("getWindowWidth", (PyCFunction)cfGetWindowWidth, METH_NOARGS, "returns width in pixel of the render window.");
+	AddMethod("getWindowHeight", (PyCFunction)cfGetWindowHeight, METH_NOARGS, "returns height in pixel of the render window.");
+	AddMethod("setWindowGeometry", (PyCFunction)cfSetWindowGeometry, METH_VARARGS, "sets the window geometry.");
+	AddMethod("setWindowTitle", (PyCFunction)cfSetWindowTitle, METH_VARARGS, "sets the window title.");
+	AddMethod("getPrimaryCanvas", (PyCFunction)cfGetPrimaryCanvas, METH_NOARGS, "Primary canvas view.");
 }
 
 spModuleGraphicSystem::~spModuleGraphicSystem(){
@@ -70,60 +70,60 @@ spModuleGraphicSystem::~spModuleGraphicSystem(){
 //////////////
 
 // int getWindowWidth()
-PyObject *spModuleGraphicSystem::cfGetWindowWidth( PyObject *myself ){
-	spModuleGraphicSystem &clsModule = *( ( spModuleGraphicSystem* )GetOwnerClass( myself ) );
+PyObject *spModuleGraphicSystem::cfGetWindowWidth(PyObject *myself){
+	spModuleGraphicSystem &clsModule = *((spModuleGraphicSystem*)GetOwnerClass(myself));
 	deGraphicSystem &grasys = *clsModule.GetSP().GetGameEngine()->GetGraphicSystem();
 	
-	return Py_BuildValue( "i", grasys.GetRenderWindow()->GetWidth() );
+	return Py_BuildValue("i", grasys.GetRenderWindow()->GetWidth());
 }
 
 // int getWindowHeight()
-PyObject *spModuleGraphicSystem::cfGetWindowHeight( PyObject *myself ){
-	spModuleGraphicSystem &clsModule = *( ( spModuleGraphicSystem* )GetOwnerClass( myself ) );
+PyObject *spModuleGraphicSystem::cfGetWindowHeight(PyObject *myself){
+	spModuleGraphicSystem &clsModule = *((spModuleGraphicSystem*)GetOwnerClass(myself));
 	deGraphicSystem &grasys = *clsModule.GetSP().GetGameEngine()->GetGraphicSystem();
 	
-	return Py_BuildValue( "i", grasys.GetRenderWindow()->GetHeight() );
+	return Py_BuildValue("i", grasys.GetRenderWindow()->GetHeight());
 }
 
 // void setWindowGeometry( int width, int height, bool fullScreen )
-PyObject *spModuleGraphicSystem::cfSetWindowGeometry( PyObject *myself, PyObject *args ){
-	spModuleGraphicSystem &clsModule = *( ( spModuleGraphicSystem* )GetOwnerClass( myself ) );
+PyObject *spModuleGraphicSystem::cfSetWindowGeometry(PyObject *myself, PyObject *args){
+	spModuleGraphicSystem &clsModule = *((spModuleGraphicSystem*)GetOwnerClass(myself));
 	deGraphicSystem &grasys = *clsModule.GetSP().GetGameEngine()->GetGraphicSystem();
 	int width, height;
 	bool fullScreen;
 	
-	if( ! PyArg_ParseTuple( args, "iib", &width, &height, &fullScreen ) ){
+	if(!PyArg_ParseTuple(args, "iib", &width, &height, &fullScreen)){
 		return NULL;
 	}
 	
-	grasys.GetRenderWindow()->SetSize( width, height );
-	grasys.GetRenderWindow()->SetFullScreen( fullScreen );
+	grasys.GetRenderWindow()->SetSize(width, height);
+	grasys.GetRenderWindow()->SetFullScreen(fullScreen);
 	
-	Py_INCREF( Py_None );
+	Py_INCREF(Py_None);
 	return Py_None;
 }
 
 // void setWindowTitle( String title )
-PyObject *spModuleGraphicSystem::cfSetWindowTitle( PyObject *myself, PyObject *args ){
-	spModuleGraphicSystem &clsModule = *( ( spModuleGraphicSystem* )GetOwnerClass( myself ) );
+PyObject *spModuleGraphicSystem::cfSetWindowTitle(PyObject *myself, PyObject *args){
+	spModuleGraphicSystem &clsModule = *((spModuleGraphicSystem*)GetOwnerClass(myself));
 	deGraphicSystem &grasys = *clsModule.GetSP().GetGameEngine()->GetGraphicSystem();
 	char *title;
 	
-	if( ! PyArg_ParseTuple( args, "s", &title ) ){
+	if(!PyArg_ParseTuple(args, "s", &title)){
 		return NULL;
 	}
 	
-	grasys.GetRenderWindow()->SetTitle( title );
+	grasys.GetRenderWindow()->SetTitle(title);
 	
-	Py_INCREF( Py_None );
+	Py_INCREF(Py_None);
 	return Py_None;
 }
 
 // Canvas getPrimaryCanvas()
-PyObject *spModuleGraphicSystem::cfGetPrimaryCanvas( PyObject *myself ){
-	spModuleGraphicSystem &clsModule = *( ( spModuleGraphicSystem* )GetOwnerClass( myself ) );
+PyObject *spModuleGraphicSystem::cfGetPrimaryCanvas(PyObject *myself){
+	spModuleGraphicSystem &clsModule = *((spModuleGraphicSystem*)GetOwnerClass(myself));
 	deGraphicSystem &grasys = *clsModule.GetSP().GetGameEngine()->GetGraphicSystem();
 	ScriptingPython &sp = clsModule.GetSP();
 	
-	return sp.GetTypeCanvas()->ObjectFromCanvas( grasys.GetRenderWindow()->GetCanvasView() );
+	return sp.GetTypeCanvas()->ObjectFromCanvas(grasys.GetRenderWindow()->GetCanvasView());
 }

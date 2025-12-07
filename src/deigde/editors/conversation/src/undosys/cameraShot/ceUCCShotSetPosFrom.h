@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo action. */
-	ceUCCShotSetPosFrom( ceCameraShot *cameraShot, const decVector &newPos );
+	ceUCCShotSetPosFrom(ceCameraShot *cameraShot, const decVector &newPos);
 	/** \brief Cleans up the undo action. */
 	virtual ~ceUCCShotSetPosFrom();
 	/*@}*/

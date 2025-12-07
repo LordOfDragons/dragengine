@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */
-	igdeGDPreviewCreator( igdeEnvironment &environment, const decPoint &size );
+	igdeGDPreviewCreator(igdeEnvironment &environment, const decPoint &size);
 	
 protected:
 	/**
@@ -102,17 +102,17 @@ public:
 	inline deImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image or NULL if not created. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeGDPreviewListener *listener );
+	void AddListener(igdeGDPreviewListener *listener);
 	
 	
 	
 	/** \brief Update preview with elapsed time to create a new frame. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/**
 	 * \brief Begin creating preview.
@@ -132,7 +132,7 @@ public:
 	
 protected:
 	/** \brief Notify listeners image has been created. */
-	void NotifyImageCreated( deImage *image );
+	void NotifyImageCreated(deImage *image);
 	
 	/** \brief Debug prefix. */
 	virtual decString DebugPrefix() = 0;
@@ -144,10 +144,10 @@ protected:
 	virtual bool IsCanvasReadyForRender() = 0;
 	
 	/** \brief Update canvas to render animations. */
-	virtual void UpdateCanvasForRender( float elapsed ) = 0;
+	virtual void UpdateCanvasForRender(float elapsed) = 0;
 	
 	/** \brief Debug log if enabled. */
-	void DebugLog( const char *message );
+	void DebugLog(const char *message);
 	/*@}*/
 	
 	

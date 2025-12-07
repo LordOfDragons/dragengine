@@ -79,7 +79,7 @@ public:
 	projProfile();
 	
 	/** \brief Create copy og profile. */
-	projProfile( const projProfile &profile );
+	projProfile(const projProfile &profile);
 	
 protected:
 	/** \brief Clean up profile. */
@@ -95,7 +95,7 @@ public:
 	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set project. */
-	void SetProject( projProject *project );
+	void SetProject(projProject *project);
 	
 	
 	
@@ -103,13 +103,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	
 	
@@ -117,25 +117,25 @@ public:
 	inline const decString &GetScriptDirectory() const{ return pScriptDirectory; }
 	
 	/** \brief Set script directory. */
-	void SetScriptDirectory( const char *directory );
+	void SetScriptDirectory(const char *directory);
 	
 	/** \brief Game object. */
 	inline const decString &GetGameObject() const{ return pGameObject; }
 	
 	/** \brief Set game object. */
-	void SetGameObject( const char *gameObject );
+	void SetGameObject(const char *gameObject);
 	
 	/** \brief Config path. */
 	inline const decString &GetPathConfig() const{ return pPathConfig; }
 	
 	/** \brief Set config path. */
-	void SetPathConfig( const char *path );
+	void SetPathConfig(const char *path);
 	
 	/** \brief Capture path. */
 	inline const decString &GetPathCapture() const{ return pPathCapture; }
 	
 	/** \brief Set capture path. */
-	void SetPathCapture( const char *path );
+	void SetPathCapture(const char *path);
 	
 	
 	
@@ -143,49 +143,49 @@ public:
 	inline const decUuid &GetIdentifier() const{ return pIdentifier; }
 	
 	/** \brief Set game identifier. */
-	void SetIdentifier( const decUuid &identifier );
+	void SetIdentifier(const decUuid &identifier);
 	
 	/** \brief Game alias identifier. */
 	inline const decString &GetAliasIdentifier() const{ return pAliasIdentifier; }
 	
 	/** \brief Set game alias identifier. */
-	void SetAliasIdentifier( const char *identifier );
+	void SetAliasIdentifier(const char *identifier);
 	
 	/** \brief Game title. */
 	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set game title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
 	/** \brief Game description. */
 	inline const decString &GetGameDescription() const{ return pGameDescription; }
 	
 	/** \brief Set Game description. */
-	void SetGameDescription( const char *description );
+	void SetGameDescription(const char *description);
 	
 	/** \brief Creator. */
 	inline const decString &GetCreator() const{ return pCreator; }
 	
 	/** \brief Set creator. */
-	void SetCreator( const char *creator );
+	void SetCreator(const char *creator);
 	
 	/** \brief Website. */
 	inline const decString &GetWebsite() const{ return pWebsite; }
 	
 	/** \brief Set website. */
-	void SetWebsite( const char *website );
+	void SetWebsite(const char *website);
 	
 	/** \brief Window size or 0 for fullscreen. */
 	inline const decPoint &GetWindowSize() const{ return pWindowSize; }
 	
 	/** \brief Set window size or 0 for fullscreen. */
-	void SetWindowSize( const decPoint &size );
+	void SetWindowSize(const decPoint &size);
 	
 	/** \brief Icons. */
 	inline const decStringSet &GetIcons() const{ return pIcons; }
 	
 	/** \brief Set icons. */
-	void SetIcons( const decStringSet &icons );
+	void SetIcons(const decStringSet &icons);
 	
 	
 	
@@ -193,13 +193,13 @@ public:
 	inline const decStringSet &GetExcludePatterns() const{ return pExcludePatterns; }
 	
 	/** \brief Set set of file patterns to exclude from processing. */
-	void SetExcludePatterns( const decStringSet &patterns );
+	void SetExcludePatterns(const decStringSet &patterns);
 	
 	/** \brief Set of required resource file extensions. */
 	inline const decStringSet &GetRequiredExtensions() const{ return pRequiredExtensions; }
 	
 	/** \brief Set set of required resource file extensions. */
-	void SetRequiredExtensions( const decStringSet &extensions );
+	void SetRequiredExtensions(const decStringSet &extensions);
 	
 	
 	
@@ -207,7 +207,7 @@ public:
 	inline const decString &GetDelgaPath() const{ return pDelgaPath; }
 	
 	/** \brief Set path to delga file to build. */
-	void SetDelgaPath( const char *path );
+	void SetDelgaPath(const char *path);
 	
 	
 	
@@ -215,7 +215,7 @@ public:
 	inline const decString &GetRunArguments() const{ return pRunArguments; }
 	
 	/** \brief Set arguments to use while test running. */
-	void SetRunArguments( const char *arguments );
+	void SetRunArguments(const char *arguments);
 	
 	
 	

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetName( seMapped *mapped, const char *newName );
+	seUMappedSetName(seMapped *mapped, const char *newName);
 	
 protected:
 	/** Clean up undo. */

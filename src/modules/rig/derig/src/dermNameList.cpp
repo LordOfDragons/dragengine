@@ -43,7 +43,7 @@ dermNameList::dermNameList(){
 }
 
 dermNameList::~dermNameList(){
-	if( pNames ){
+	if(pNames){
 		delete [] pNames;
 	}
 }
@@ -53,30 +53,30 @@ dermNameList::~dermNameList(){
 // Management
 ///////////////
 
-const decString &dermNameList::GetNameAt( int index ) const{
-	if( index < 0 || index >= pNameCount ) DETHROW( deeInvalidParam );
+const decString &dermNameList::GetNameAt(int index) const{
+	if(index < 0 || index >= pNameCount) DETHROW(deeInvalidParam);
 	
-	return pNames[ index ].name;
+	return pNames[index].name;
 }
 
-int dermNameList::GetNameNumberAt( int index ) const{
-	if( index < 0 || index >= pNameCount ) DETHROW( deeInvalidParam );
+int dermNameList::GetNameNumberAt(int index) const{
+	if(index < 0 || index >= pNameCount) DETHROW(deeInvalidParam);
 	
-	return pNames[ index ].number;
+	return pNames[index].number;
 }
 
-void dermNameList::SetNameNumberAt( int index, int number ){
-	if( index < 0 || index >= pNameCount ) DETHROW( deeInvalidParam );
+void dermNameList::SetNameNumberAt(int index, int number){
+	if(index < 0 || index >= pNameCount) DETHROW(deeInvalidParam);
 	
-	pNames[ index ].number = number;
+	pNames[index].number = number;
 }
 
-int dermNameList::IndexOfName( const char *name ) const{
-	DEASSERT_NOTNULL( name )
+int dermNameList::IndexOfName(const char *name) const{
+	DEASSERT_NOTNULL(name)
 	int n;
 	
-	for( n=0; n<pNameCount; n++ ){
-		if( pNames[ n ].name == name ){
+	for(n=0; n<pNameCount; n++){
+		if(pNames[n].name == name){
 			return n;
 		}
 	}
@@ -84,12 +84,12 @@ int dermNameList::IndexOfName( const char *name ) const{
 	return -1;
 }
 
-bool dermNameList::HasName( const char *name ) const{
-	DEASSERT_NOTNULL( name )
+bool dermNameList::HasName(const char *name) const{
+	DEASSERT_NOTNULL(name)
 	int n;
 	
-	for( n=0; n<pNameCount; n++ ){
-		if( pNames[ n ].name == name ){
+	for(n=0; n<pNameCount; n++){
+		if(pNames[n].name == name){
 			return true;
 		}
 	}
@@ -97,18 +97,18 @@ bool dermNameList::HasName( const char *name ) const{
 	return false;
 }
 
-int dermNameList::AddName( const char *name ){
-	int index = IndexOfName( name );
-	if( index != -1 ){
+int dermNameList::AddName(const char *name){
+	int index = IndexOfName(name);
+	if(index != -1){
 		return index;
 	}
 	
-	if( pNameCount == pNameSize ){
+	if(pNameCount == pNameSize){
 		int i, newSize = pNameSize * 3 / 2 + 1;
-		sName * const newArray = new sName[ newSize ];
-		if( pNames ){
-			for( i=0; i<pNameSize; i++ ){
-				newArray[ i ] = pNames[ i ];
+		sName * const newArray = new sName[newSize];
+		if(pNames){
+			for(i=0; i<pNameSize; i++){
+				newArray[i] = pNames[i];
 			}
 			delete [] pNames;
 		}
@@ -116,8 +116,8 @@ int dermNameList::AddName( const char *name ){
 		pNameSize = newSize;
 	}
 	
-	pNames[ pNameCount ].name = name;
-	pNames[ pNameCount ].number = -1;
+	pNames[pNameCount].name = name;
+	pNames[pNameCount].number = -1;
 	pNameCount++;
 	
 	return pNameCount - 1;

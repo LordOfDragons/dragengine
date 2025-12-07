@@ -44,7 +44,7 @@ public:
 	/** Creates a new stop conversation conversation action. */
 	ceCAStopConversation();
 	/** Creates a new stop conversation conversation action. */
-	ceCAStopConversation( const ceCAStopConversation &action );
+	ceCAStopConversation(const ceCAStopConversation &action);
 	/** Cleans up the stop conversation conversation action. */
 	virtual ~ceCAStopConversation();
 	/*@}*/

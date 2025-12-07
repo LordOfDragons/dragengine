@@ -53,7 +53,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
-	debpShapeSphere( decShapeSphere *shape );
+	debpShapeSphere(decShapeSphere *shape);
 	/** Cleans up the shape. */
 	virtual ~debpShapeSphere();
 	/*@}*/
@@ -66,9 +66,9 @@ public:
 	inline const debpDCollisionSphere &GetCollisionSphere() const{ return pCSphere; }
 	
 	/** Updates the collision volume using a transformation matrix. */
-	virtual void UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale );
+	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);
 	/** Prints out on the console some debugging information about the shape. */
-	virtual void PrintDebug( dePhysicsBullet &module );
+	virtual void PrintDebug(dePhysicsBullet &module);
 	/*@}*/
 };
 

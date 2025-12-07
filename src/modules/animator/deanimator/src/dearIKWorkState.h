@@ -94,22 +94,22 @@ public:
 	inline int GetBoneStateIndex() const{ return pBoneStateIndex; }
 	
 	/** Set bone state index. */
-	void SetBoneStateIndex( int index );
+	void SetBoneStateIndex(int index);
 	
 	/** Global matrix. */
 	inline const decMatrix &GetGlobalMatrix() const{ return pGlobalMatrix; }
 	
 	/** Set global matrix. */
-	void SetGlobalMatrix( const decMatrix &matrix );
+	void SetGlobalMatrix(const decMatrix &matrix);
 	
 	/** Inverse global matrix. */
 	inline const decMatrix &GetInverseGlobalMatrix() const{ return pInvGlobalMatrix; }
 	
 	/** Set inverse global matrix. */
-	void SetInverseGlobalMatrix( const decMatrix &matrix );
+	void SetInverseGlobalMatrix(const decMatrix &matrix);
 	
 	/** Transform global matrix and optionally update inverse. */
-	void TransformGlobalMatrix( const decMatrix &matrix, bool updateInverse );
+	void TransformGlobalMatrix(const decMatrix &matrix, bool updateInverse);
 	
 	
 	
@@ -117,31 +117,31 @@ public:
 	inline eAxisTypes GetAxisTypeX() const{ return pAxisTypeX; }
 	
 	/** Set X axis type. */
-	void SetAxisTypeX( eAxisTypes type );
+	void SetAxisTypeX(eAxisTypes type);
 	
 	/** Y axis type. */
 	inline eAxisTypes GetAxisTypeY() const{ return pAxisTypeY; }
 	
 	/** Set Y axis type. */
-	void SetAxisTypeY( eAxisTypes type );
+	void SetAxisTypeY(eAxisTypes type);
 	
 	/** Z axis type. */
 	inline eAxisTypes GetAxisTypeZ() const{ return pAxisTypeZ; }
 	
 	/** Set Z axis type. */
-	void SetAxisTypeZ( eAxisTypes type );
+	void SetAxisTypeZ(eAxisTypes type);
 	
 	/** Any limits in effect. */
 	inline bool GetHasLimits() const{ return pHasLimits; }
 	
 	/** Set if any limits are in effect. */
-	void SetHasLimits( bool hasLimits );
+	void SetHasLimits(bool hasLimits);
 	
 	/** Dampening. */
 	inline const decVector &GetDampening() const{ return pDampening; }
 	
 	/** Set dampening. */
-	void SetDampening( const decVector &resistance );
+	void SetDampening(const decVector &resistance);
 	
 	/** Has dampening. */
 	inline bool GetHasDampening() const{ return pHasDampening; }
@@ -159,31 +159,31 @@ public:
 	inline const decQuaternion &GetLimitZeroQuatInv() const{ return pLimitZeroQuatInv; }
 	
 	/** Update limits from rig bone. */
-	void UpdateLimits( const deRigBone &bone );
+	void UpdateLimits(const deRigBone &bone);
 	
 	/** Locked rotation. */
 	inline const decVector &GetLockedRotation() const{ return pLockedRotation; }
 	
 	/** Set locked rotation. */
-	void SetLockedRotation( const decVector &rotation );
+	void SetLockedRotation(const decVector &rotation);
 	
 	/** Weight. */
 	inline float GetWeight() const{ return pWeight; }
 	
 	/** Set weight. */
-	void SetWeight( float weight );
+	void SetWeight(float weight);
 	
 	/** Length. */
 	inline float GetLength() const{ return pLength; }
 	
 	/** Set length. */
-	void SetLength( float length );
+	void SetLength(float length);
 	
 	/** End position. */
 	const decVector &GetEndPosition() const{ return pEndPosition; }
 	
 	/** Set end position. */
-	void SetEndPosition( const decVector &position );
+	void SetEndPosition(const decVector &position);
 	
 	/** End position in component space. */
 	decVector GetGlobalEnd() const;
@@ -195,7 +195,7 @@ public:
 	inline const decQuaternion &GetInverseRigLocalRotation() const{ return pInvRigLocalRot; }
 	
 	/** Set rig local rotation. */
-	void SetRigLocalRotation( const decQuaternion &rotation );
+	void SetRigLocalRotation(const decQuaternion &rotation);
 	
 	/** Last global orientation. */
 	inline const decQuaternion &GetLastGlobalOrientation() const{ return pLastGlobalOrientation; }
@@ -204,7 +204,7 @@ public:
 	inline const decQuaternion &GetInvLastGlobalOrientation() const{ return pInvLastGlobalOrientation; }
 	
 	/** Set last global orientation. */
-	void SetLastGlobalOrientation( const decQuaternion &orientation );
+	void SetLastGlobalOrientation(const decQuaternion &orientation);
 	/*@}*/
 };
 

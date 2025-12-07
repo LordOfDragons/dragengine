@@ -42,19 +42,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitRemove::ceUCAWaitRemove( ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action ){
-	if( ! topic || ! wait || ! action ) DETHROW( deeInvalidParam );
+ceUCAWaitRemove::ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action){
+	if(!topic || !wait || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pWait = NULL;
 	pAction = NULL;
 	pIndex = -1;
 	
-	pIndex = wait->GetActions().IndexOf( action );
+	pIndex = wait->GetActions().IndexOf(action);
 	
-	if( pIndex == -1 ) DETHROW( deeInvalidParam );
+	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Action Wait Remove Action" );
+	SetShortInfo("Action Wait Remove Action");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -67,13 +67,13 @@ ceUCAWaitRemove::ceUCAWaitRemove( ceConversationTopic *topic, ceCAWait *wait, ce
 }
 
 ceUCAWaitRemove::~ceUCAWaitRemove(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pWait ){
+	if(pWait){
 		pWait->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -84,18 +84,18 @@ ceUCAWaitRemove::~ceUCAWaitRemove(){
 ///////////////
 
 void ceUCAWaitRemove::Undo(){
-	pWait->GetActions().InsertAt( pAction, pIndex );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->GetActions().InsertAt(pAction, pIndex);
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( pAction, NULL );
+	pTopic->SetActive(pAction, NULL);
 }
 
 void ceUCAWaitRemove::Redo(){
 	ceConversationAction * const activateAction =
-		ceUActionHelpers::ActivateActionAfterRemove( pWait->GetActions(), pAction );
+		ceUActionHelpers::ActivateActionAfterRemove(pWait->GetActions(), pAction);
 	
-	pWait->GetActions().Remove( pAction );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->GetActions().Remove(pAction);
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( activateAction ? activateAction : pWait, NULL );
+	pTopic->SetActive(activateAction ? activateAction : pWait, NULL);
 }

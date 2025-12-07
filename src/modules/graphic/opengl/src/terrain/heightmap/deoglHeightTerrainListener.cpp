@@ -43,8 +43,8 @@ deoglHeightTerrainListener::~deoglHeightTerrainListener(){
 // Notifications
 //////////////////
 
-void deoglHeightTerrainListener::HeightTerrainDestroyed( deoglRHeightTerrain& ){
+void deoglHeightTerrainListener::HeightTerrainDestroyed(deoglRHeightTerrain&){
 }
 
-void deoglHeightTerrainListener::SectorsChanged( deoglRHeightTerrain& ){
+void deoglHeightTerrainListener::SectorsChanged(deoglRHeightTerrain&){
 }

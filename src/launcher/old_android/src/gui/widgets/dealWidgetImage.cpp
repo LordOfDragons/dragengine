@@ -42,16 +42,16 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetImage::dealWidgetImage( dealDisplay &display, dealImage *image ) :
-dealWidget( display ),
-pImage( NULL ),
-pColorize( 1.0f, 1.0f, 1.0f ),
-pScaling( 1.0f ){
-	SetImage( image );
+dealWidgetImage::dealWidgetImage(dealDisplay &display, dealImage *image) :
+dealWidget(display),
+pImage(NULL),
+pColorize(1.0f, 1.0f, 1.0f),
+pScaling(1.0f){
+	SetImage(image);
 }
 
 dealWidgetImage::~dealWidgetImage(){
-	if( pImage ){
+	if(pImage){
 		pImage->FreeReference();
 	}
 }
@@ -61,31 +61,31 @@ dealWidgetImage::~dealWidgetImage(){
 // Management
 ///////////////
 
-void dealWidgetImage::SetImage( dealImage *image ){
-	if( image == pImage ){
+void dealWidgetImage::SetImage(dealImage *image){
+	if(image == pImage){
 		return;
 	}
 	
-	if( pImage ){
+	if(pImage){
 		pImage->FreeReference();
 	}
 	
 	pImage = image;
 	
-	if( image ){
+	if(image){
 		image->AddReference();
 	}
 	
 	DirtyParentLayout();
 }
 
-void dealWidgetImage::SetColorize( const decColor &colorize ){
+void dealWidgetImage::SetColorize(const decColor &colorize){
 	pColorize = colorize;
 }
 
-void dealWidgetImage::SetScaling( float scaling ){
-	scaling = decMath::max( scaling, 1.0f );
-	if( fabsf( scaling - pScaling ) < FLOAT_SAFE_EPSILON ){
+void dealWidgetImage::SetScaling(float scaling){
+	scaling = decMath::max(scaling, 1.0f);
+	if(fabsf(scaling - pScaling) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -97,22 +97,22 @@ void dealWidgetImage::SetScaling( float scaling ){
 
 
 decPoint dealWidgetImage::GetMinimumSize(){
-	if( GetHasExplicitMinimumSize() ){
+	if(GetHasExplicitMinimumSize()){
 		return GetExplicitMinimumSize();
 	}
 	
-	if( ! pImage ){
+	if(!pImage){
 		return decPoint();
 	}
 	
-	return decPoint( ( int )( ( float )pImage->GetWidth() * pScaling ),
-		( int )( ( float )pImage->GetHeight() * pScaling ) );
+	return decPoint((int)((float)pImage->GetWidth() * pScaling),
+		(int)((float)pImage->GetHeight() * pScaling));
 }
 
 
 
-void dealWidgetImage::RenderContent( const sRenderContext &context ){
-	if( ! pImage ){
+void dealWidgetImage::RenderContent(const sRenderContext &context){
+	if(!pImage){
 		return;
 	}
 	
@@ -121,23 +121,23 @@ void dealWidgetImage::RenderContent( const sRenderContext &context ){
 	
 	shader.Activate();
 	
-	ShaderSetTransform( context, shader, 0, 0, size.x - 1, size.y - 1 );
-	ShaderSetTCTransform( shader );
+	ShaderSetTransform(context, shader, 0, 0, size.x - 1, size.y - 1);
+	ShaderSetTCTransform(shader);
 	
-	if( GetEnabled() ){
-		ShaderSetColorMatrix( shader, pColorize );
+	if(GetEnabled()){
+		ShaderSetColorMatrix(shader, pColorize);
 		
 	}else{
-		ShaderSetColorMatrixDisabled( shader, pColorize );
+		ShaderSetColorMatrixDisabled(shader, pColorize);
 	}
 	
-	ShaderSetGamma( shader, 1.0f );
-	ShaderSetClipRect( context, shader );
-	ShaderSetTCClamp( shader );
+	ShaderSetGamma(shader, 1.0f);
+	ShaderSetClipRect(context, shader);
+	ShaderSetTCClamp(shader);
 	
-	BindTexture( 0, *pImage, true, false );
+	BindTexture(0, *pImage, true, false);
 	
 	DrawRectangle();
 	
-	OGL_CHECK( GetDisplay().GetLauncher(), glBindTexture( GL_TEXTURE_2D, 0 ) );
+	OGL_CHECK(GetDisplay().GetLauncher(), glBindTexture(GL_TEXTURE_2D, 0));
 }

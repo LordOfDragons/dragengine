@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new animation move keyframe list. */
-	dearAnimationKeyframeList( const deAnimationKeyframeList &list );
+	dearAnimationKeyframeList(const deAnimationKeyframeList &list);
 	/** Cleans up the animation move keyframe list. */
 	~dearAnimationKeyframeList();
 	/*@}*/
@@ -54,18 +54,18 @@ public:
 	/** Retrieves the number of keyframes. */
 	inline int GetCount() const{ return pKeyframeCount; }
 	/** Retrieves a keyframe by index. */
-	dearAnimationKeyframe &GetAt( int index ) const;
+	dearAnimationKeyframe &GetAt(int index) const;
 	/**
 	 * Retrieves the keyframe with the range containing the provided
 	 *        time in seconds or NULL if there are no keyframes.
 	 */
-	dearAnimationKeyframe *GetWithTime( float time ) const;
+	dearAnimationKeyframe *GetWithTime(float time) const;
 	/*@}*/
 	
 private:
 	void pCleanUp();
 	
-	void pCreateKeyframes( const deAnimationKeyframeList &list );
+	void pCreateKeyframes(const deAnimationKeyframeList &list);
 };
 
 #endif

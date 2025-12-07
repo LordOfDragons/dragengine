@@ -23,13 +23,13 @@ private:
 	int pPosition;
 	
 public:
-	Lexer( Iterator iter );
+	Lexer(Iterator iter);
 	~Lexer();
 	DragonScript::Token& read();
 	
 	// for flex use only
-	int nextChar( char &character );
-	void advancePosition( int amount );
+	int nextChar(char &character);
+	void advancePosition(int amount);
 };
 
 }

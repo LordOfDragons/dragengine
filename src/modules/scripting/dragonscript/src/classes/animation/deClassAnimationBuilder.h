@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassAnimationBuilder( deScriptingDragonScript &ds );
+	deClassAnimationBuilder(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassAnimationBuilder();
@@ -58,7 +58,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/*@}*/
 	
 	
@@ -76,24 +76,24 @@ private:
 		dsClass *clsVector;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfBuild );
-	DEF_NATFUNC( nfBuildAnimation );
-	DEF_NATFUNC( nfAddBone );
-	DEF_NATFUNC( nfAddVertexPositionSet );
-	DEF_NATFUNC( nfAddMove );
-	DEF_NATFUNC( nfAddMove2 );
-	DEF_NATFUNC( nfSetKeyframeListCount );
-	DEF_NATFUNC( nfAddKeyframe );
-	DEF_NATFUNC( nfSetVertexPositionSetKeyframeListCount );
-	DEF_NATFUNC( nfAddVertexPositionSetKeyframe );
+	DEF_NATFUNC(nfBuild);
+	DEF_NATFUNC(nfBuildAnimation);
+	DEF_NATFUNC(nfAddBone);
+	DEF_NATFUNC(nfAddVertexPositionSet);
+	DEF_NATFUNC(nfAddMove);
+	DEF_NATFUNC(nfAddMove2);
+	DEF_NATFUNC(nfSetKeyframeListCount);
+	DEF_NATFUNC(nfAddKeyframe);
+	DEF_NATFUNC(nfSetVertexPositionSetKeyframeListCount);
+	DEF_NATFUNC(nfAddVertexPositionSetKeyframe);
 #undef DEF_NATFUNC
 };
 

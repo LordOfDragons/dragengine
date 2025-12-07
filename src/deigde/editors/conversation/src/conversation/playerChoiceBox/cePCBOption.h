@@ -70,7 +70,7 @@ public:
 	inline const decUnicodeString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const decUnicodeString &text );
+	void SetText(const decUnicodeString &text);
 	
 	/** \brief Action. */
 	inline ceCAPlayerChoice *GetAction() const{ return pAction; }
@@ -79,13 +79,13 @@ public:
 	inline ceCAPlayerChoiceOption *GetActionOption() const{ return pActionOption; }
 	
 	/** \brief Set action option. */
-	void SetActionOption( ceCAPlayerChoice *action, ceCAPlayerChoiceOption *actionOption );
+	void SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *actionOption);
 	
 	/** \brief Canvas view. */
 	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Layout text. Create canvas if not existing. */
-	void Layout( const cePlayerChoiceBox &pcbox, bool selected );
+	void Layout(const cePlayerChoiceBox &pcbox, bool selected);
 	/*@}*/
 };
 

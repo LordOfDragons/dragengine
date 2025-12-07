@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deVFSNull::deVFSNull( const decPath &rootPath ) :
-deVFSContainer( rootPath ){
+deVFSNull::deVFSNull(const decPath &rootPath) :
+deVFSContainer(rootPath){
 }
 
 deVFSNull::~deVFSNull(){
@@ -51,47 +51,47 @@ deVFSNull::~deVFSNull(){
 // Management
 ///////////////
 
-bool deVFSNull::ExistsFile( const decPath & ){
+bool deVFSNull::ExistsFile(const decPath &){
 	return false;
 }
 
-bool deVFSNull::CanReadFile( const decPath & ){
+bool deVFSNull::CanReadFile(const decPath &){
 	return false;
 }
 
-bool deVFSNull::CanWriteFile( const decPath & ){
+bool deVFSNull::CanWriteFile(const decPath &){
 	return true;
 }
 
-bool deVFSNull::CanDeleteFile( const decPath & ){
+bool deVFSNull::CanDeleteFile(const decPath &){
 	return true;
 }
 
-decBaseFileReader *deVFSNull::OpenFileForReading( const decPath &path ){
-	DETHROW( deeInvalidAction );
+decBaseFileReader *deVFSNull::OpenFileForReading(const decPath &path){
+	DETHROW(deeInvalidAction);
 }
 
-decBaseFileWriter *deVFSNull::OpenFileForWriting( const decPath &path ){
-	return new decNullFileWriter( path.GetPathUnix() );
+decBaseFileWriter *deVFSNull::OpenFileForWriting(const decPath &path){
+	return new decNullFileWriter(path.GetPathUnix());
 }
 
-void deVFSNull::DeleteFile( const decPath & ){
+void deVFSNull::DeleteFile(const decPath &){
 }
 
-void deVFSNull::TouchFile( const decPath & ){
+void deVFSNull::TouchFile(const decPath &){
 }
 
-void deVFSNull::SearchFiles( const decPath &, deContainerFileSearch& ){
+void deVFSNull::SearchFiles(const decPath &, deContainerFileSearch&){
 }
 
-deVFSContainer::eFileTypes deVFSNull::GetFileType( const decPath & ){
-	DETHROW( deeInvalidAction );
+deVFSContainer::eFileTypes deVFSNull::GetFileType(const decPath &){
+	DETHROW(deeInvalidAction);
 }
 
-uint64_t deVFSNull::GetFileSize( const decPath & ){
-	DETHROW( deeInvalidAction );
+uint64_t deVFSNull::GetFileSize(const decPath &){
+	DETHROW(deeInvalidAction);
 }
 
-TIME_SYSTEM deVFSNull::GetFileModificationTime( const decPath & ){
-	DETHROW( deeInvalidAction );
+TIME_SYSTEM deVFSNull::GetFileModificationTime(const decPath &){
+	DETHROW(deeInvalidAction);
 }

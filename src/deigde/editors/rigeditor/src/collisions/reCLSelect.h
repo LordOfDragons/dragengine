@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new collision listener. */
-	reCLSelect( reRig *rig );
+	reCLSelect(reRig *rig);
 	/** \brief Cleans up the collision listener. */
 	virtual ~reCLSelect();
 	/*@}*/
@@ -68,15 +68,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets if selection is toggled instead of switched. */
-	void SetToggleSelection( bool toggle );
+	void SetToggleSelection(bool toggle);
 	/** \brief Sets if rig bones can be (un)selected. */
-	void SetCanSelectBones( bool canSelect );
+	void SetCanSelectBones(bool canSelect);
 	/** \brief Sets if rig shapes can be (un)selected. */
-	void SetCanSelectShapes( bool canSelect );
+	void SetCanSelectShapes(bool canSelect);
 	/** \brief Sets if rig constraints can be (un)selected. */
-	void SetCanSelectConstraints( bool canSelect );
+	void SetCanSelectConstraints(bool canSelect);
 	/** \brief Sets if rig pushes can be (un)selected. */
-	void SetCanSelectPushes( bool canSelect );
+	void SetCanSelectPushes(bool canSelect);
 	
 	/** \brief Resets the visitor. */
 	void Reset();
@@ -92,7 +92,7 @@ public:
 	 *          with the response to the collision. In all other cases you do
 	 *          must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	/**
 	 * \brief Determines if a collider can be hit.
 	 * \details If this peer is used with a collider then the script is asked to
@@ -103,21 +103,21 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	/**
 	 * \brief Notifies the scripts that the properties of this collider have changed
 	 *        and that the attached element has to update.
 	 * \details This is usually called after the collision detection but can also be
 	 *          called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 	/*@}*/
 	
 private:
-	reRigBone *pGetBoneFromCollider( deColliderVolume *collider ) const;
-	reRigShape *pGetShapeFromCollider( deColliderVolume *collider ) const;
-	reRigConstraint *pGetConstraintFromCollider( deColliderVolume *collider ) const;
-	reRigPush *pGetPushFromCollider( deColliderVolume *collider ) const;
+	reRigBone *pGetBoneFromCollider(deColliderVolume *collider) const;
+	reRigShape *pGetShapeFromCollider(deColliderVolume *collider) const;
+	reRigConstraint *pGetConstraintFromCollider(deColliderVolume *collider) const;
+	reRigPush *pGetPushFromCollider(deColliderVolume *collider) const;
 };
 
 #endif

@@ -37,11 +37,11 @@
 ////////////////////////////
 
 decPRNG::decPRNG(){
-	pSeed = ( unsigned int )clock();
+	pSeed = (unsigned int)clock();
 	pNext = pSeed;
 }
 
-decPRNG::decPRNG( unsigned int seed ){
+decPRNG::decPRNG(unsigned int seed){
 	pSeed = seed;
 	pNext = seed;
 }
@@ -58,7 +58,7 @@ void decPRNG::Reset(){
 	pNext = pSeed;
 }
 
-void decPRNG::Reset( unsigned int seed ){
+void decPRNG::Reset(unsigned int seed){
 	pSeed = seed;
 	pNext = seed;
 }
@@ -66,12 +66,12 @@ void decPRNG::Reset( unsigned int seed ){
 
 
 int decPRNG::RandomInt(){
-	return ( int )pNextRandomValue();
+	return (int)pNextRandomValue();
 }
 
-int decPRNG::RandomInt( int lower, int upper ){
-	if( upper > lower ){
-		return lower + ( int )( ( ( double )pNextRandomValue() / ( double )DE_RANDOM_INT_UPPER ) * ( double )( upper - lower ) );
+int decPRNG::RandomInt(int lower, int upper){
+	if(upper > lower){
+		return lower + (int)(((double)pNextRandomValue() / (double)DE_RANDOM_INT_UPPER) * (double)(upper - lower));
 		
 	}else{
 		pNextRandomValue(); // we have to advance the generator even if the result is defined
@@ -80,12 +80,12 @@ int decPRNG::RandomInt( int lower, int upper ){
 }
 
 float decPRNG::RandomFloat(){
-	return RandomFloat( 0.0f, 1.0f );
+	return RandomFloat(0.0f, 1.0f);
 }
 
-float decPRNG::RandomFloat( float lower, float upper ){
-	if( upper > lower ){
-		return lower + ( ( float )pNextRandomValue() / ( float )DE_RANDOM_INT_UPPER ) * ( upper - lower );
+float decPRNG::RandomFloat(float lower, float upper){
+	if(upper > lower){
+		return lower + ((float)pNextRandomValue() / (float)DE_RANDOM_INT_UPPER) * (upper - lower);
 		
 	}else{
 		pNextRandomValue(); // we have to advance the generator even if the result is defined
@@ -94,12 +94,12 @@ float decPRNG::RandomFloat( float lower, float upper ){
 }
 
 double decPRNG::RandomDouble(){
-	return RandomDouble( 0.0, 1.0 );
+	return RandomDouble(0.0, 1.0);
 }
 
-double decPRNG::RandomDouble( double lower, double upper ){
-	if( upper > lower ){
-		return lower + ( ( double )pNextRandomValue() / ( double )DE_RANDOM_INT_UPPER ) * ( upper - lower );
+double decPRNG::RandomDouble(double lower, double upper){
+	if(upper > lower){
+		return lower + ((double)pNextRandomValue() / (double)DE_RANDOM_INT_UPPER) * (upper - lower);
 		
 	}else{
 		pNextRandomValue(); // we have to advance the generator even if the result is defined
@@ -121,17 +121,17 @@ unsigned int decPRNG::pNextRandomValue(){
 	
 	pNext *= 1103515245;
 	pNext += 12345;
-	result = ( pNext >> 16 ) % 2048;
+	result = (pNext >> 16) % 2048;
 	
 	pNext *= 1103515245;
 	pNext += 12345;
 	result <<= 10;
-	result ^= ( pNext >> 16 ) % 1024;
+	result ^= (pNext >> 16) % 1024;
 	
 	pNext *= 1103515245;
 	pNext += 12345;
 	result <<= 10;
-	result ^= ( pNext >> 16 ) % 1024;
+	result ^= (pNext >> 16) % 1024;
 	
 	return result;
 }

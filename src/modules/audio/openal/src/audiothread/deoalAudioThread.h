@@ -150,7 +150,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create audio thread. */
-	deoalAudioThread( deAudioOpenAL &oal );
+	deoalAudioThread(deAudioOpenAL &oal);
 	
 	/** Clean up audio thread. */
 	virtual ~deoalAudioThread();
@@ -169,7 +169,7 @@ public:
 	inline bool GetAsyncAudio() const{ return pAsyncAudio; }
 	
 	/** Set async audio. */
-	void SetAsyncAudio( bool asyncAudio );
+	void SetAsyncAudio(bool asyncAudio);
 	
 	
 	
@@ -177,7 +177,7 @@ public:
 	inline deoalAMicrophone *GetActiveMicrophone() const{ return pActiveMicrophone; }
 	
 	/** Set active microphone. */
-	void SetActiveMicrophone( deoalAMicrophone *microphone );
+	void SetActiveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Active world if a microphone is active and has a parent world. */
 	inline deoalAWorld *GetActiveWorld() const{ return pActiveWorld; }
@@ -343,7 +343,7 @@ private:
 	
 	void pInitThreadPhase1();
 	void pCleanUpThread();
-	void pLimitFrameRate( float elapsed );
+	void pLimitFrameRate(float elapsed);
 	
 	void pSyncConfiguration();
 	void pPrepareConfiguration();

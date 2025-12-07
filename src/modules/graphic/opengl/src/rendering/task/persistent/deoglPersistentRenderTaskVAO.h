@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create persistent render task vao. */
-	deoglPersistentRenderTaskVAO( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTaskVAO(deoglPersistentRenderTaskPool &pool);
 	
 	/** Clean up persistent render task vao. */
 	~deoglPersistentRenderTaskVAO();
@@ -73,13 +73,13 @@ public:
 	inline deoglPersistentRenderTaskTexture *GetParentTexture() const{ return pParentTexture; }
 	
 	/** Set parent texture. */
-	void SetParentTexture( deoglPersistentRenderTaskTexture *texture );
+	void SetParentTexture(deoglPersistentRenderTaskTexture *texture);
 	
 	/** VAO. */
 	inline const deoglVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
-	void SetVAO( const deoglVAO *vao );
+	void SetVAO(const deoglVAO *vao);
 	
 	
 	
@@ -98,14 +98,14 @@ public:
 	decPointerLinkedList::cListEntry *GetRootInstance() const;
 	
 	/** Instance with shared sub instance spb. */
-	deoglPersistentRenderTaskInstance *GetInstanceWith( const deoglSharedSPBRTIGroup *group ) const;
+	deoglPersistentRenderTaskInstance *GetInstanceWith(const deoglSharedSPBRTIGroup *group) const;
 	
 	/** Add instance. */
-	deoglPersistentRenderTaskInstance *AddInstance( deoglSharedSPB *spb = NULL,
-		const deoglSharedSPBRTIGroup *group = NULL );
+	deoglPersistentRenderTaskInstance *AddInstance(deoglSharedSPB *spb = NULL,
+		const deoglSharedSPBRTIGroup *group = NULL);
 	
 	/** Remove instance. */
-	void RemoveInstance( deoglPersistentRenderTaskInstance *instance );
+	void RemoveInstance(deoglPersistentRenderTaskInstance *instance);
 	
 	/** Remove all instances. */
 	void RemoveAllInstances();

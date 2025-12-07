@@ -66,7 +66,7 @@ public:
 	/** \text Events */
 	/*@{*/
 	/** \brief SpinTextField value changed. */
-	virtual void OnValueChanged( igdeSpinTextField *textField );
+	virtual void OnValueChanged(igdeSpinTextField *textField);
 	/*@}*/
 };
 

@@ -49,13 +49,13 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deglConfiguration::deglConfiguration( deglLauncher &launcher ) :
-pLauncher( launcher ),
-pCanSave( false ),
-pClrValidBack( FXRGB( 87, 217, 87 ) ),
-pClrValidText( FXRGB( 0, 0, 0 ) ),
-pClrProblemBack( FXRGB( 255, 128, 128 ) ),
-pClrProblemText( FXRGB( 0, 0, 0 ) ){
+deglConfiguration::deglConfiguration(deglLauncher &launcher) :
+pLauncher(launcher),
+pCanSave(false),
+pClrValidBack(FXRGB(87, 217, 87)),
+pClrValidText(FXRGB(0, 0, 0)),
+pClrProblemBack(FXRGB(255, 128, 128)),
+pClrProblemText(FXRGB(0, 0, 0)){
 }
 
 deglConfiguration::~deglConfiguration(){
@@ -68,50 +68,50 @@ deglConfiguration::~deglConfiguration(){
 
 void deglConfiguration::LoadConfiguration(){
 	const decString &logSource = pLauncher.GetLogSource();
-	deglConfigXML configXML( pLauncher.GetLogger(), logSource );
+	deglConfigXML configXML(pLauncher.GetLogger(), logSource);
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	decPath pathFile;
 	
 	// read system configuration
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_SYSTEM );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_SYSTEM);
 	
-	if( vfs.ExistsFile( pathFile ) ){
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfo( logSource, "Reading system configuration file" );
-			configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), *this );
+	if(vfs.ExistsFile(pathFile)){
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			logger.LogInfo(logSource, "Reading system configuration file");
+			configXML.ReadFromFile(decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 			
 		}else{
-			logger.LogError( logSource, "System configuration file is not a regular file" );
-			DETHROW_INFO( deeInvalidParam, "System configuration file is not a regular file" );
+			logger.LogError(logSource, "System configuration file is not a regular file");
+			DETHROW_INFO(deeInvalidParam, "System configuration file is not a regular file");
 		}
 		
 	}else{
-		logger.LogInfo( logSource, "System configuration file not found, skipped" );
+		logger.LogInfo(logSource, "System configuration file not found, skipped");
 	}
 	
 	// read user configuration
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_USER );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_USER);
 	
-	if( vfs.ExistsFile( pathFile ) ){
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfo( logSource, "Reading user configuration file" );
-			configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), *this );
+	if(vfs.ExistsFile(pathFile)){
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			logger.LogInfo(logSource, "Reading user configuration file");
+			configXML.ReadFromFile(decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 			
 		}else{
-			logger.LogError( logSource, "User configuration file is not a regular file" );
-			DETHROW_INFO( deeInvalidParam, "User configuration file is not a regular file" );
+			logger.LogError(logSource, "User configuration file is not a regular file");
+			DETHROW_INFO(deeInvalidParam, "User configuration file is not a regular file");
 		}
 		
 	}else{
-		logger.LogInfo( logSource, "User configuration file not found, will be created upon exiting" );
+		logger.LogInfo(logSource, "User configuration file not found, will be created upon exiting");
 	}
 	
 	pCanSave = true;
 }
 
 void deglConfiguration::SaveConfiguration(){
-	if( ! pCanSave ){
+	if(!pCanSave){
 		// this can happen due to loading error or due to an early quite requested.
 		// for this reason no warning is logged
 		return;
@@ -120,20 +120,20 @@ void deglConfiguration::SaveConfiguration(){
 	const decString &logSource = pLauncher.GetLogSource();
 	deLogger &logger = *pLauncher.GetLogger();
 	
-	deglConfigXML configXML( pLauncher.GetLogger(), logSource );
+	deglConfigXML configXML(pLauncher.GetLogger(), logSource);
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	decPath pathFile;
 	
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_USER );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_USER);
 	
-	if( vfs.CanWriteFile( pathFile ) ){
-		logger.LogInfo( logSource, "Writing user configuration file" );
+	if(vfs.CanWriteFile(pathFile)){
+		logger.LogInfo(logSource, "Writing user configuration file");
 		
 		try{
-			configXML.WriteToFile( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathFile ) ), *this );
+			configXML.WriteToFile(decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathFile)), *this);
 			
-		}catch( const deException & ){
-			logger.LogError( logSource, "Failed to write user configuration file (file permission problem)" );
+		}catch(const deException &){
+			logger.LogError(logSource, "Failed to write user configuration file (file permission problem)");
 			// DIALOG BOX
 			// "User configuration can not be written!\n"
 			// "Make sure you have write permission for the file and parent directory.\n"
@@ -141,7 +141,7 @@ void deglConfiguration::SaveConfiguration(){
 		}
 		
 	}else{
-		logger.LogError( logSource, "Failed to write user configuration file (file writing problem)" );
+		logger.LogError(logSource, "Failed to write user configuration file (file writing problem)");
 		// DIALOG BOX
 		// "User configuration can not be written!\n"
 		// "Make sure you have write permission for the file and parent directory.\n"

@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceSAWord::ceSAWord( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+ceSAWord::ceSAWord(const char *name){
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }
@@ -52,6 +52,6 @@ ceSAWord::~ceSAWord(){
 // Management
 ///////////////
 
-void ceSAWord::SetPhonetics( const decUnicodeString &phonetics ){
+void ceSAWord::SetPhonetics(const decUnicodeString &phonetics){
 	pPhonetics = phonetics;
 }

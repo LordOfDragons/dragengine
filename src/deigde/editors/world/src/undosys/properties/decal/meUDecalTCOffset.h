@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalTCOffset( meDecal *decal, const decVector2 &newOffset );
+	meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset);
 	
 protected:
 	/** \brief Clean up undo object. */

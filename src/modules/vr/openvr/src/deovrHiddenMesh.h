@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load hidden mesh. */
-	deovrHiddenMesh( deVROpenVR &ovr, vr::Hmd_Eye eye );
+	deovrHiddenMesh(deVROpenVR &ovr, vr::Hmd_Eye eye);
 	
 protected:
 	/** Clean up hidden mesh. */

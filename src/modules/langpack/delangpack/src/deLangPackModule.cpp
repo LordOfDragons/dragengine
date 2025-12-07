@@ -47,7 +47,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DELangPackCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DELangPackCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -57,13 +57,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DELangPackCreateModule( deLoadableModule *loa
 // Entry function
 ///////////////////
 
-deBaseModule *DELangPackCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *DELangPackCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deLangPackModule( *loadableModule );
+		module = new deLangPackModule(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -78,8 +78,8 @@ deBaseModule *DELangPackCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deLangPackModule::deLangPackModule( deLoadableModule &loadableModule ) :
-deBaseLanguagePackModule( loadableModule ){
+deLangPackModule::deLangPackModule(deLoadableModule &loadableModule) :
+deBaseLanguagePackModule(loadableModule){
 }
 
 deLangPackModule::~deLangPackModule(){
@@ -90,26 +90,26 @@ deLangPackModule::~deLangPackModule(){
 // Management
 ///////////////
 
-void deLangPackModule::LoadLanguagePack( decBaseFileReader &file, deLanguagePack &languagePack ){
+void deLangPackModule::LoadLanguagePack(decBaseFileReader &file, deLanguagePack &languagePack){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetGameEngine()->GetLogger() ).ParseXml( &file, xmlDoc );
+	decXmlParser(GetGameEngine()->GetLogger()).ParseXml(&file, xmlDoc);
 	
 	xmlDoc->StripComments();
 // 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "languagePack" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "languagePack") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pParseLangPack( *root, languagePack );
+	pParseLangPack(*root, languagePack);
 }
 
-void deLangPackModule::SaveLanguagePack( decBaseFileWriter &file, const deLanguagePack &languagePack ){
-	decXmlWriter xmlWriter( &file );
+void deLangPackModule::SaveLanguagePack(decBaseFileWriter &file, const deLanguagePack &languagePack){
+	decXmlWriter xmlWriter(&file);
 	xmlWriter.WriteXMLDeclaration();
-	pWriteLangPack( xmlWriter, languagePack );
+	pWriteLangPack(xmlWriter, languagePack);
 }
 
 
@@ -117,17 +117,17 @@ void deLangPackModule::SaveLanguagePack( decBaseFileWriter &file, const deLangua
 // Private functions
 //////////////////////
 
-const decXmlAttValue *deLangPackModule::pFindAttribute( const decXmlElementTag &tag, const char *name ){
+const decXmlAttValue *deLangPackModule::pFindAttribute(const decXmlElementTag &tag, const char *name){
 	const int elementCount = tag.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		decXmlElement &element = *tag.GetElementAt( i );
+	for(i=0; i<elementCount; i++){
+		decXmlElement &element = *tag.GetElementAt(i);
 		
-		if( element.CanCastToAttValue() ){
+		if(element.CanCastToAttValue()){
 			const decXmlAttValue * const value = element.CastToAttValue();
 			
-			if( strcmp( value->GetName(), name ) == 0 ){
+			if(strcmp(value->GetName(), name) == 0){
 				return value;
 			}
 		}
@@ -136,112 +136,112 @@ const decXmlAttValue *deLangPackModule::pFindAttribute( const decXmlElementTag &
 	return NULL;
 }
 
-const char *deLangPackModule::pGetAttributeString( const decXmlElementTag &tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
+const char *deLangPackModule::pGetAttributeString(const decXmlElementTag &tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
-	if( value ){
+	if(value){
 		return value->GetValue();
 		
 	}else{
-		LogErrorFormat( "Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString() );
-		DETHROW( deeInvalidParam );
+		LogErrorFormat("Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString());
+		DETHROW(deeInvalidParam);
 	}
 }
 
 
 
-void deLangPackModule::pParseLangPack( const decXmlElementTag &root, deLanguagePack &languagePack ){
+void deLangPackModule::pParseLangPack(const decXmlElementTag &root, deLanguagePack &languagePack){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
 	int entryCount = 0;
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( tag && strcmp( tag->GetName(), "translation" ) == 0 ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(tag && strcmp(tag->GetName(), "translation") == 0){
 			entryCount++;
 		}
 	}
 	
-	languagePack.SetEntryCount( entryCount );
+	languagePack.SetEntryCount(entryCount);
 	int entryIndex = 0;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
 		
-		if( tag ){
-			if( tag->GetName() == "identifier" ){
+		if(tag){
+			if(tag->GetName() == "identifier"){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
-				if( cdata ){
-					languagePack.SetIdentifier( cdata->GetData() );
+				if(cdata){
+					languagePack.SetIdentifier(cdata->GetData());
 				}
 				
-			}else if( strcmp( tag->GetName(), "name" ) == 0 ){
+			}else if(strcmp(tag->GetName(), "name") == 0){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
-				if( cdata ){
-					languagePack.SetName( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				if(cdata){
+					languagePack.SetName(decUnicodeString::NewFromUTF8(cdata->GetData()));
 				}
 				
-			}else if( strcmp( tag->GetName(), "description" ) == 0 ){
+			}else if(strcmp(tag->GetName(), "description") == 0){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
-				if( cdata ){
-					languagePack.SetDescription( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				if(cdata){
+					languagePack.SetDescription(decUnicodeString::NewFromUTF8(cdata->GetData()));
 				}
 				
-			}else if( strcmp( tag->GetName(), "missingText" ) == 0 ){
+			}else if(strcmp(tag->GetName(), "missingText") == 0){
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
-				if( cdata ){
-					languagePack.SetMissingText( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				if(cdata){
+					languagePack.SetMissingText(decUnicodeString::NewFromUTF8(cdata->GetData()));
 				}
 				
-			}else if( strcmp( tag->GetName(), "translation" ) == 0 ){
-				deLanguagePackEntry &entry = languagePack.GetEntryAt( entryIndex++ );
-				entry.SetName( pGetAttributeString( *tag, "name" ) );
+			}else if(strcmp(tag->GetName(), "translation") == 0){
+				deLanguagePackEntry &entry = languagePack.GetEntryAt(entryIndex++);
+				entry.SetName(pGetAttributeString(*tag, "name"));
 				const decXmlCharacterData * const cdata = tag->GetFirstData();
-				if( cdata ){
-					entry.SetText( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				if(cdata){
+					entry.SetText(decUnicodeString::NewFromUTF8(cdata->GetData()));
 				}
 				
 			}else{
-				LogWarnFormat( "languagePack(%i:%i): Unknown Tag %s, ignoring",
-					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
+				LogWarnFormat("languagePack(%i:%i): Unknown Tag %s, ignoring",
+					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString());
 			}
 		}
 	}
 	
 	// backwards compatibility
-	if( languagePack.GetIdentifier().IsEmpty() ){
-		languagePack.SetIdentifier( languagePack.GetName().ToUTF8() );
+	if(languagePack.GetIdentifier().IsEmpty()){
+		languagePack.SetIdentifier(languagePack.GetName().ToUTF8());
 	}
 }
 
 
 
-void deLangPackModule::pWriteLangPack( decXmlWriter &writer, const deLanguagePack &languagePack ){
-	writer.WriteOpeningTag( "languagePack", false, true );
+void deLangPackModule::pWriteLangPack(decXmlWriter &writer, const deLanguagePack &languagePack){
+	writer.WriteOpeningTag("languagePack", false, true);
 	
-	writer.WriteDataTagString( "identifier", languagePack.GetIdentifier() );
-	writer.WriteDataTagString( "name", languagePack.GetName().ToUTF8() );
-	writer.WriteDataTagString( "description", languagePack.GetDescription().ToUTF8() );
-	writer.WriteDataTagString( "missingText", languagePack.GetMissingText().ToUTF8() );
+	writer.WriteDataTagString("identifier", languagePack.GetIdentifier());
+	writer.WriteDataTagString("name", languagePack.GetName().ToUTF8());
+	writer.WriteDataTagString("description", languagePack.GetDescription().ToUTF8());
+	writer.WriteDataTagString("missingText", languagePack.GetMissingText().ToUTF8());
 	
 	const int entryCount = languagePack.GetEntryCount();
 	int i;
 	
-	for( i=0; i<entryCount; i++ ){
-		pWriteLangPackEntry( writer, languagePack.GetEntryAt( i ) );
+	for(i=0; i<entryCount; i++){
+		pWriteLangPackEntry(writer, languagePack.GetEntryAt(i));
 	}
 	
-	writer.WriteClosingTag( "languagePack", true );
+	writer.WriteClosingTag("languagePack", true);
 }
 
-void deLangPackModule::pWriteLangPackEntry( decXmlWriter &writer, const deLanguagePackEntry &entry ){
-	writer.WriteOpeningTagStart( "translation" );
-	writer.WriteAttributeString( "name", entry.GetName() );
-	writer.WriteOpeningTagEnd( false, false );
+void deLangPackModule::pWriteLangPackEntry(decXmlWriter &writer, const deLanguagePackEntry &entry){
+	writer.WriteOpeningTagStart("translation");
+	writer.WriteAttributeString("name", entry.GetName());
+	writer.WriteOpeningTagEnd(false, false);
 	
-	writer.WriteTextString( entry.GetText() );
+	writer.WriteTextString(entry.GetText());
 	
-	writer.WriteClosingTag( "translation", false );
+	writer.WriteClosingTag("translation", false);
 }
 
 #ifdef WITH_INTERNAL_MODULE

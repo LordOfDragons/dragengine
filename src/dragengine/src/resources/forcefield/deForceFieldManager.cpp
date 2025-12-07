@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deForceFieldManager::deForceFieldManager( deEngine *engine ) : deResourceManager( engine, ertForceField ){
-	SetLoggingName( "force field" );
+deForceFieldManager::deForceFieldManager(deEngine *engine) : deResourceManager(engine, ertForceField){
+	SetLoggingName("force field");
 }
 
 deForceFieldManager::~deForceFieldManager(){
@@ -61,22 +61,22 @@ int deForceFieldManager::GetForceFieldCount() const{
 }
 
 deForceField *deForceFieldManager::GetRootForceField() const{
-	return ( deForceField* )pFields.GetRoot();
+	return (deForceField*)pFields.GetRoot();
 }
 
 deForceField *deForceFieldManager::CreateForceField(){
 	deForceField *field = NULL;
 	
 	try{
-		field = new deForceField( this );
-		if( ! field ) DETHROW( deeOutOfMemory );
+		field = new deForceField(this);
+		if(!field) DETHROW(deeOutOfMemory);
 		
-		GetPhysicsSystem()->LoadForceField( field );
+		GetPhysicsSystem()->LoadForceField(field);
 		
-		pFields.Add( field );
+		pFields.Add(field);
 		
-	}catch( const deException & ){
-		if( field ){
+	}catch(const deException &){
+		if(field){
 			field->FreeReference();
 		}
 		throw;
@@ -88,8 +88,8 @@ deForceField *deForceFieldManager::CreateForceField(){
 
 
 void deForceFieldManager::ReleaseLeakingResources(){
-	if( GetForceFieldCount() > 0 ){
-		LogWarnFormat( "%i leaking force fields", GetForceFieldCount() );
+	if(GetForceFieldCount() > 0){
+		LogWarnFormat("%i leaking force fields", GetForceFieldCount());
 		pFields.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -100,28 +100,28 @@ void deForceFieldManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deForceFieldManager::SystemPhysicsLoad(){
-	deForceField *field = ( deForceField* )pFields.GetRoot();
+	deForceField *field = (deForceField*)pFields.GetRoot();
 	
-	while( field ){
-		if( ! field->GetPeerPhysics() ){
-			GetPhysicsSystem()->LoadForceField( field );
+	while(field){
+		if(!field->GetPeerPhysics()){
+			GetPhysicsSystem()->LoadForceField(field);
 		}
 		
-		field = ( deForceField* )field->GetLLManagerNext();
+		field = (deForceField*)field->GetLLManagerNext();
 	}
 }
 
 void deForceFieldManager::SystemPhysicsUnload(){
-	deForceField *field = ( deForceField* )pFields.GetRoot();
+	deForceField *field = (deForceField*)pFields.GetRoot();
 	
-	while( field ){
-		field->SetPeerPhysics( NULL );
-		field = ( deForceField* )field->GetLLManagerNext();
+	while(field){
+		field->SetPeerPhysics(NULL);
+		field = (deForceField*)field->GetLLManagerNext();
 	}
 }
 
 
 
-void deForceFieldManager::RemoveResource( deResource *resource ){
-	pFields.RemoveIfPresent( resource );
+void deForceFieldManager::RemoveResource(deResource *resource){
+	pFields.RemoveIfPresent(resource);
 }

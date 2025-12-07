@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	gdeWindowProperties( gdeWindowMain &windowMain );
+	gdeWindowProperties(gdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -69,7 +69,7 @@ public:
 	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set game definition to monitor. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Selection panel. */
 	gdeWPSelection &GetPanelSelection() const;

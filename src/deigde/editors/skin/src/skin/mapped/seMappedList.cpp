@@ -51,17 +51,17 @@ int seMappedList::GetCount() const{
 	return pMapped.GetCount();
 }
 
-seMapped *seMappedList::GetAt( int index ) const{
-	return ( seMapped* )pMapped.GetAt( index );
+seMapped *seMappedList::GetAt(int index) const{
+	return (seMapped*)pMapped.GetAt(index);
 }
 
-seMapped *seMappedList::GetNamed( const char *name ) const{
+seMapped *seMappedList::GetNamed(const char *name) const{
 	const int count = pMapped.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		seMapped * const mapped = ( seMapped* )pMapped.GetAt( i );
-		if( mapped->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		seMapped * const mapped = (seMapped*)pMapped.GetAt(i);
+		if(mapped->GetName().Equals(name)){
 			return mapped;
 		}
 	}
@@ -69,16 +69,16 @@ seMapped *seMappedList::GetNamed( const char *name ) const{
 	return nullptr;
 }
 
-int seMappedList::IndexOf( seMapped *mapped ) const{
-	return pMapped.IndexOf( mapped );
+int seMappedList::IndexOf(seMapped *mapped) const{
+	return pMapped.IndexOf(mapped);
 }
 
-int seMappedList::IndexOfNamed( const char *name ) const{
+int seMappedList::IndexOfNamed(const char *name) const{
 	const int count = pMapped.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( seMapped* )pMapped.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((seMapped*)pMapped.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -86,16 +86,16 @@ int seMappedList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool seMappedList::Has( seMapped *mapped ) const{
-	return pMapped.Has( mapped );
+bool seMappedList::Has(seMapped *mapped) const{
+	return pMapped.Has(mapped);
 }
 
-bool seMappedList::HasNamed( const char *name ) const{
+bool seMappedList::HasNamed(const char *name) const{
 	const int count = pMapped.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( seMapped* )pMapped.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((seMapped*)pMapped.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -103,15 +103,15 @@ bool seMappedList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void seMappedList::Add( seMapped *mapped ){
-	DEASSERT_NOTNULL( mapped )
-	DEASSERT_FALSE( HasNamed( mapped->GetName() ) )
+void seMappedList::Add(seMapped *mapped){
+	DEASSERT_NOTNULL(mapped)
+	DEASSERT_FALSE(HasNamed(mapped->GetName()))
 	
-	pMapped.Add( mapped );
+	pMapped.Add(mapped);
 }
 
-void seMappedList::Remove( seMapped *mapped ){
-	pMapped.Remove( mapped );
+void seMappedList::Remove(seMapped *mapped){
+	pMapped.Remove(mapped);
 }
 
 void seMappedList::RemoveAll(){
@@ -120,7 +120,7 @@ void seMappedList::RemoveAll(){
 
 
 
-seMappedList &seMappedList::operator=( const seMappedList &list ){
+seMappedList &seMappedList::operator=(const seMappedList &list){
 	pMapped = list.pMapped;
 	return *this;
 }

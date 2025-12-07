@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectOverlayImage( deGraphicOpenGl &ogl, const deEffectOverlayImage &effect );
+	deoglEffectOverlayImage(deGraphicOpenGl &ogl, const deEffectOverlayImage &effect);
 	
 	/** Clean up effect. */
 	virtual ~deoglEffectOverlayImage();

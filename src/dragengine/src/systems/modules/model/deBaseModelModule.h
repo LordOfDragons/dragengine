@@ -40,7 +40,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseModelModule( deLoadableModule &loadableModule );
+	deBaseModelModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseModelModule();
@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load model. */
-	virtual void LoadModel( decBaseFileReader &reader, deModel &model ) = 0;
+	virtual void LoadModel(decBaseFileReader &reader, deModel &model) = 0;
 	
 	/** \brief Save model. */
-	virtual void SaveModel( decBaseFileWriter &writer, const deModel &model ) = 0;
+	virtual void SaveModel(decBaseFileWriter &writer, const deModel &model) = 0;
 	/*@}*/
 };
 

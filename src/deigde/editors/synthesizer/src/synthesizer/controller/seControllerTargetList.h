@@ -47,7 +47,7 @@ public:
 	seControllerTargetList();
 	
 	/** \brief Create copy of controller target list. */
-	seControllerTargetList( const seControllerTargetList &copy );
+	seControllerTargetList(const seControllerTargetList &copy);
 	
 	/** \brief Clean up controller target list. */
 	~seControllerTargetList();
@@ -64,32 +64,32 @@ public:
 	 * \brief Controller target at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	seControllerTarget *GetAt( int index ) const;
+	seControllerTarget *GetAt(int index) const;
 	
 	/**
 	 * \brief Index of controller target or -1 if not present in the list.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
-	int IndexOf( seControllerTarget *target ) const;
+	int IndexOf(seControllerTarget *target) const;
 	
 	/**
 	 * \brief Determine if a controller target is present in the list.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
-	bool Has( seControllerTarget *target ) const;
+	bool Has(seControllerTarget *target) const;
 	
 	/**
 	 * \brief Add controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
-	void Add( seControllerTarget *target );
+	void Add(seControllerTarget *target);
 	
 	/**
 	 * \brief Insert controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	void Insert( seControllerTarget *target, int index );
+	void Insert(seControllerTarget *target, int index);
 	
 	/**
 	 * \brief Move controller target.
@@ -97,14 +97,14 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
-	void Move( seControllerTarget *target, int index );
+	void Move(seControllerTarget *target, int index);
 	
 	/**
 	 * \brief Remove controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em target is not present in the list.
 	 */
-	void Remove( seControllerTarget *target );
+	void Remove(seControllerTarget *target);
 	
 	/** \brief Remove all controller targets. */
 	void RemoveAll();
@@ -115,7 +115,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy controller target list to this controller target list. */
-	seControllerTargetList &operator=( const seControllerTargetList &list );
+	seControllerTargetList &operator=(const seControllerTargetList &list);
 	/*@}*/
 };
 

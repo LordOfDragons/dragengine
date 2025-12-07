@@ -62,17 +62,17 @@ struct sIDButtonNatDat{
 /////////////////////
 
 // public func destructor()
-deClassInputDeviceButton::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsIDButton, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassInputDeviceButton::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsIDButton, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassInputDeviceButton::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassInputDeviceButton::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sIDButtonNatDat &nd = *( ( sIDButtonNatDat* )p_GetNativeData( myself ) );
-	if( nd.device ){
+	sIDButtonNatDat &nd = *((sIDButtonNatDat*)p_GetNativeData(myself));
+	if(nd.device){
 		nd.device->FreeReference();
 		nd.device = NULL;
 	}
@@ -85,192 +85,192 @@ void deClassInputDeviceButton::nfDestructor::RunFunction( dsRunTime*, dsValue *m
 ///////////////
 
 // public func InputDevice getInputDevice()
-deClassInputDeviceButton::nfGetInputDevice::nfGetInputDevice( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getInputDevice", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDevice ){
+deClassInputDeviceButton::nfGetInputDevice::nfGetInputDevice(const sInitData &init) :
+dsFunction(init.clsIDButton, "getInputDevice", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDevice){
 }
-void deClassInputDeviceButton::nfGetInputDevice::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceButton::nfGetInputDevice::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassInputDeviceButton*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device );
+	ds.GetClassInputDevice()->PushInputDevice(rt, nd.device);
 }
 
 // public func int getButtonIndex()
-deClassInputDeviceButton::nfGetButtonIndex::nfGetButtonIndex( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getButtonIndex", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassInputDeviceButton::nfGetButtonIndex::nfGetButtonIndex(const sInitData &init) :
+dsFunction(init.clsIDButton, "getButtonIndex", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassInputDeviceButton::nfGetButtonIndex::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
+void deClassInputDeviceButton::nfGetButtonIndex::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
 	
-	rt->PushInt( nd.buttonIndex );
+	rt->PushInt(nd.buttonIndex);
 }
 
 
 
 // public func String getID()
-deClassInputDeviceButton::nfGetID::nfGetID( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getID", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceButton::nfGetID::nfGetID(const sInitData &init) :
+dsFunction(init.clsIDButton, "getID", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceButton::nfGetID::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+void deClassInputDeviceButton::nfGetID::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
 	
-	rt->PushString( button.GetID() );
+	rt->PushString(button.GetID());
 }
 
 // public func String getName()
-deClassInputDeviceButton::nfGetName::nfGetName( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceButton::nfGetName::nfGetName(const sInitData &init) :
+dsFunction(init.clsIDButton, "getName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceButton::nfGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+void deClassInputDeviceButton::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
 	
-	rt->PushString( button.GetName() );
+	rt->PushString(button.GetName());
 }
 
 // public func InputDeviceButtonType getType()
-deClassInputDeviceButton::nfGetType::nfGetType( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getType", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceButtonType ){
+deClassInputDeviceButton::nfGetType::nfGetType(const sInitData &init) :
+dsFunction(init.clsIDButton, "getType", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceButtonType){
 }
-void deClassInputDeviceButton::nfGetType::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+void deClassInputDeviceButton::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
 	
-	rt->PushValue( ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetClassInputDeviceButtonType()
-		->GetVariable( button.GetType() )->GetStaticValue() );
+	rt->PushValue(((deClassInputDeviceButton*)GetOwnerClass())->GetClassInputDeviceButtonType()
+		->GetVariable(button.GetType())->GetStaticValue());
 }
 
 // public func String getComponent()
-deClassInputDeviceButton::nfGetComponent::nfGetComponent( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getComponent", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceButton::nfGetComponent::nfGetComponent(const sInitData &init) :
+dsFunction(init.clsIDButton, "getComponent", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceButton::nfGetComponent::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+void deClassInputDeviceButton::nfGetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
 	
-	rt->PushString( button.GetComponent() );
+	rt->PushString(button.GetComponent());
 }
 
 // public func Image getDisplayImage()
-deClassInputDeviceButton::nfGetDisplayImage::nfGetDisplayImage( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getDisplayIconAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
+deClassInputDeviceButton::nfGetDisplayImage::nfGetDisplayImage(const sInitData &init) :
+dsFunction(init.clsIDButton, "getDisplayIconAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
-void deClassInputDeviceButton::nfGetDisplayImage::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceButton::nfGetDisplayImage::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
+	deScriptingDragonScript &ds = ((deClassInputDeviceButton*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassImage()->PushImage( rt, button.GetDisplayImage() );
+	ds.GetClassImage()->PushImage(rt, button.GetDisplayImage());
 }
 
 // public func int getDisplayIconCount()
-deClassInputDeviceButton::nfGetDisplayIconCount::nfGetDisplayIconCount( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getDisplayIconCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassInputDeviceButton::nfGetDisplayIconCount::nfGetDisplayIconCount(const sInitData &init) :
+dsFunction(init.clsIDButton, "getDisplayIconCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassInputDeviceButton::nfGetDisplayIconCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
-	rt->PushInt( button.GetDisplayIconCount() );
+void deClassInputDeviceButton::nfGetDisplayIconCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
+	rt->PushInt(button.GetDisplayIconCount());
 }
 
 // public func Image getDisplayIconAt( int index )
-deClassInputDeviceButton::nfGetDisplayIconAt::nfGetDisplayIconAt( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getDisplayIconAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // index
+deClassInputDeviceButton::nfGetDisplayIconAt::nfGetDisplayIconAt(const sInitData &init) :
+dsFunction(init.clsIDButton, "getDisplayIconAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // index
 }
-void deClassInputDeviceButton::nfGetDisplayIconAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceButton::nfGetDisplayIconAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
+	deScriptingDragonScript &ds = ((deClassInputDeviceButton*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassImage()->PushImage( rt, button.GetDisplayIconAt( rt->GetValue( 0 )->GetInt() ) );
+	ds.GetClassImage()->PushImage(rt, button.GetDisplayIconAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func Image getLargestDisplayIconX( int maxWidth )
-deClassInputDeviceButton::nfGetLargestDisplayIconX::nfGetLargestDisplayIconX( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getLargestDisplayIconX", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // maxWidth
+deClassInputDeviceButton::nfGetLargestDisplayIconX::nfGetLargestDisplayIconX(const sInitData &init) :
+dsFunction(init.clsIDButton, "getLargestDisplayIconX", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // maxWidth
 }
-void deClassInputDeviceButton::nfGetLargestDisplayIconX::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceButton::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
+	deScriptingDragonScript &ds = ((deClassInputDeviceButton*)GetOwnerClass())->GetDS();
 	const int count = button.GetDisplayIconCount();
-	const int maxWidth = rt->GetValue( 0 )->GetInt();
+	const int maxWidth = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = NULL;
 	int bestWidth = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deImage * const icon = button.GetDisplayIconAt( i );
-		if( icon->GetWidth() <= maxWidth && ( ! bestIcon || icon->GetWidth() >= bestWidth ) ){
+	for(i=0; i<count; i++){
+		deImage * const icon = button.GetDisplayIconAt(i);
+		if(icon->GetWidth() <= maxWidth && (!bestIcon || icon->GetWidth() >= bestWidth)){
 			bestIcon = icon;
 			bestWidth = icon->GetWidth();
 		}
 	}
 	
-	ds.GetClassImage()->PushImage( rt, bestIcon );
+	ds.GetClassImage()->PushImage(rt, bestIcon);
 }
 
 // public func Image getLargestDisplayIconY( int maxHeight )
-deClassInputDeviceButton::nfGetLargestDisplayIconY::nfGetLargestDisplayIconY( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getLargestDisplayIconY", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // maxHeight
+deClassInputDeviceButton::nfGetLargestDisplayIconY::nfGetLargestDisplayIconY(const sInitData &init) :
+dsFunction(init.clsIDButton, "getLargestDisplayIconY", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // maxHeight
 }
-void deClassInputDeviceButton::nfGetLargestDisplayIconY::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceButton::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
+	deScriptingDragonScript &ds = ((deClassInputDeviceButton*)GetOwnerClass())->GetDS();
 	const int count = button.GetDisplayIconCount();
-	const int maxHeight = rt->GetValue( 0 )->GetInt();
+	const int maxHeight = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = NULL;
 	int bestHeight = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deImage * const icon = button.GetDisplayIconAt( i );
-		if( icon->GetHeight() <= maxHeight && ( ! bestIcon || icon->GetHeight() >= bestHeight ) ){
+	for(i=0; i<count; i++){
+		deImage * const icon = button.GetDisplayIconAt(i);
+		if(icon->GetHeight() <= maxHeight && (!bestIcon || icon->GetHeight() >= bestHeight)){
 			bestIcon = icon;
 			bestHeight = icon->GetHeight();
 		}
 	}
 	
-	ds.GetClassImage()->PushImage( rt, bestIcon );
+	ds.GetClassImage()->PushImage(rt, bestIcon);
 }
 
 // public func String getDisplayText()
-deClassInputDeviceButton::nfGetDisplayText::nfGetDisplayText( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getDisplayText", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceButton::nfGetDisplayText::nfGetDisplayText(const sInitData &init) :
+dsFunction(init.clsIDButton, "getDisplayText", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceButton::nfGetDisplayText::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+void deClassInputDeviceButton::nfGetDisplayText::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
 	
-	rt->PushString( button.GetDisplayText() );
+	rt->PushString(button.GetDisplayText());
 }
 
 // public func bool getTouchable()
-deClassInputDeviceButton::nfGetTouchable::nfGetTouchable( const sInitData &init ) :
-dsFunction( init.clsIDButton, "getTouchable", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassInputDeviceButton::nfGetTouchable::nfGetTouchable(const sInitData &init) :
+dsFunction(init.clsIDButton, "getTouchable", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassInputDeviceButton::nfGetTouchable::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+void deClassInputDeviceButton::nfGetTouchable::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
 	
-	rt->PushBool( button.GetTouchable() );
+	rt->PushBool(button.GetTouchable());
 }
 
 // func bool getApproachable()
@@ -288,56 +288,56 @@ void deClassInputDeviceButton::nfGetApproachable::RunFunction(dsRunTime *rt, dsV
 
 
 // public func bool isPressed()
-deClassInputDeviceButton::nfIsPressed::nfIsPressed( const sInitData &init ) :
-dsFunction( init.clsIDButton, "isPressed", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassInputDeviceButton::nfIsPressed::nfIsPressed(const sInitData &init) :
+dsFunction(init.clsIDButton, "isPressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassInputDeviceButton::nfIsPressed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceButton::nfIsPressed::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassInputDeviceButton*)GetOwnerClass())->GetDS();
 	
-	switch( nd.device->GetDeviceSource() ){
+	switch(nd.device->GetDeviceSource()){
 	case deInputEvent::esInput:{
 		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
-		rt->PushBool( deviceIndex != -1 && module.GetButtonPressed( deviceIndex, nd.buttonIndex ) );
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		rt->PushBool(deviceIndex != -1 && module.GetButtonPressed(deviceIndex, nd.buttonIndex));
 		}break;
 		
 	case deInputEvent::esVR:{
 		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
-		rt->PushBool( deviceIndex != -1 && module.GetButtonPressed( deviceIndex, nd.buttonIndex ) );
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		rt->PushBool(deviceIndex != -1 && module.GetButtonPressed(deviceIndex, nd.buttonIndex));
 		}break;
 		
 	default:
-		DETHROW_INFO( deeInvalidParam, "input source" );
+		DETHROW_INFO(deeInvalidParam, "input source");
 	}
 }
 
 // public func bool isTouched()
-deClassInputDeviceButton::nfIsTouched::nfIsTouched( const sInitData &init ) :
-dsFunction( init.clsIDButton, "isTouched", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassInputDeviceButton::nfIsTouched::nfIsTouched(const sInitData &init) :
+dsFunction(init.clsIDButton, "isTouched", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassInputDeviceButton::nfIsTouched::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceButton::nfIsTouched::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassInputDeviceButton*)GetOwnerClass())->GetDS();
 	
-	switch( nd.device->GetDeviceSource() ){
+	switch(nd.device->GetDeviceSource()){
 	case deInputEvent::esInput:{
 		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
-		rt->PushBool( deviceIndex != -1 && module.GetButtonTouched( deviceIndex, nd.buttonIndex ) );
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		rt->PushBool(deviceIndex != -1 && module.GetButtonTouched(deviceIndex, nd.buttonIndex));
 		}break;
 		
 	case deInputEvent::esVR:{
 		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
-		rt->PushBool( deviceIndex != -1 && module.GetButtonTouched( deviceIndex, nd.buttonIndex ) );
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		rt->PushBool(deviceIndex != -1 && module.GetButtonTouched(deviceIndex, nd.buttonIndex));
 		}break;
 		
 	default:
-		DETHROW_INFO( deeInvalidParam, "input source" );
+		DETHROW_INFO(deeInvalidParam, "input source");
 	}
 }
 
@@ -370,21 +370,21 @@ void deClassInputDeviceButton::nfIsNear::RunFunction(dsRunTime *rt, dsValue *mys
 
 
 // public func bool equals( Object obj )
-deClassInputDeviceButton::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsIDButton, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObject ); // obj
+deClassInputDeviceButton::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsIDButton, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObject); // obj
 }
-void deClassInputDeviceButton::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassInputDeviceButton * const clsIDButton = ( deClassInputDeviceButton* )GetOwnerClass();
-	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassInputDeviceButton::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassInputDeviceButton * const clsIDButton = (deClassInputDeviceButton*)GetOwnerClass();
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsIDButton ) ){
-		rt->PushBool( false );
+	if(!p_IsObjOfType(obj, clsIDButton)){
+		rt->PushBool(false);
 		
 	}else{
-		const sIDButtonNatDat &other = *( ( const sIDButtonNatDat* )p_GetNativeData( obj ) );
-		rt->PushBool( nd.device == other.device && nd.buttonIndex == other.buttonIndex );
+		const sIDButtonNatDat &other = *((const sIDButtonNatDat*)p_GetNativeData(obj));
+		rt->PushBool(nd.device == other.device && nd.buttonIndex == other.buttonIndex);
 	}
 }
 
@@ -396,14 +396,14 @@ void deClassInputDeviceButton::nfEquals::RunFunction( dsRunTime *rt, dsValue *my
 // Constructor, destructor
 ////////////////////////////
 
-deClassInputDeviceButton::deClassInputDeviceButton( deScriptingDragonScript &ds ) :
-dsClass( "InputDeviceButton", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassInputDeviceButton::deClassInputDeviceButton(deScriptingDragonScript &ds) :
+dsClass("InputDeviceButton", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sIDButtonNatDat ) );
+	p_SetNativeDataSize(sizeof(sIDButtonNatDat));
 }
 
 deClassInputDeviceButton::~deClassInputDeviceButton(){
@@ -414,8 +414,8 @@ deClassInputDeviceButton::~deClassInputDeviceButton(){
 // Management
 ///////////////
 
-void deClassInputDeviceButton::CreateClassMembers( dsEngine *engine ){
-	pClsInputDeviceButtonType = engine->GetClass( "Dragengine.InputDeviceButtonType" );
+void deClassInputDeviceButton::CreateClassMembers(dsEngine *engine){
+	pClsInputDeviceButtonType = engine->GetClass("Dragengine.InputDeviceButtonType");
 	
 	sInitData init;
 	
@@ -431,41 +431,41 @@ void deClassInputDeviceButton::CreateClassMembers( dsEngine *engine ){
 	init.clsInputDeviceButtonType = pClsInputDeviceButtonType;
 	init.clsImage = pDS.GetClassImage();
 	
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetInputDevice( init ) );
-	AddFunction( new nfGetButtonIndex( init ) );
+	AddFunction(new nfGetInputDevice(init));
+	AddFunction(new nfGetButtonIndex(init));
 	
-	AddFunction( new nfGetID( init ) );
-	AddFunction( new nfGetName( init ) );
-	AddFunction( new nfGetType( init ) );
-	AddFunction( new nfGetComponent( init ) );
-	AddFunction( new nfGetDisplayImage( init ) );
-	AddFunction( new nfGetDisplayIconCount( init ) );
-	AddFunction( new nfGetDisplayIconAt( init ) );
-	AddFunction( new nfGetLargestDisplayIconX( init ) );
-	AddFunction( new nfGetLargestDisplayIconY( init ) );
-	AddFunction( new nfGetDisplayText( init ) );
-	AddFunction( new nfGetTouchable( init ) );
+	AddFunction(new nfGetID(init));
+	AddFunction(new nfGetName(init));
+	AddFunction(new nfGetType(init));
+	AddFunction(new nfGetComponent(init));
+	AddFunction(new nfGetDisplayImage(init));
+	AddFunction(new nfGetDisplayIconCount(init));
+	AddFunction(new nfGetDisplayIconAt(init));
+	AddFunction(new nfGetLargestDisplayIconX(init));
+	AddFunction(new nfGetLargestDisplayIconY(init));
+	AddFunction(new nfGetDisplayText(init));
+	AddFunction(new nfGetTouchable(init));
 	AddFunction(new nfGetApproachable(init));
 	
-	AddFunction( new nfIsPressed( init ) );
-	AddFunction( new nfIsTouched( init ) );
+	AddFunction(new nfIsPressed(init));
+	AddFunction(new nfIsTouched(init));
 	AddFunction(new nfIsNear(init));
 	
-	AddFunction( new nfEquals( init ) );
+	AddFunction(new nfEquals(init));
 	
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceButton::PushButton( dsRunTime *rt, dedsInputDevice *device, int index ){
-	if( ! rt || ! device || index < 0 || index >= device->GetDevice()->GetButtonCount() ){
-		DSTHROW( dueInvalidParam );
+void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice *device, int index){
+	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetButtonCount()){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sIDButtonNatDat &nd = *( ( sIDButtonNatDat* )p_GetNativeData(
-		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sIDButtonNatDat &nd = *((sIDButtonNatDat*)p_GetNativeData(
+		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
 	device->AddReference();
 	nd.buttonIndex = index;

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	meWVNodeClosestVegetation( meWindowVegetation &windowVegetation, meHTVRuleClosestVegetation *rule );
+	meWVNodeClosestVegetation(meWindowVegetation &windowVegetation, meHTVRuleClosestVegetation *rule);
 	
 protected:
 	/** \brief Clean up object. */

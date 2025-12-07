@@ -42,7 +42,7 @@ class igdeViewRenderWindow;
  */
 
 class igdeNativeFoxRenderView : public FXFrame{
-	FXDECLARE( igdeNativeFoxRenderView )
+	FXDECLARE(igdeNativeFoxRenderView)
 	
 public:
 	enum eFoxIDs{
@@ -71,13 +71,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeNativeFoxRenderView( igdeViewRenderWindow &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxRenderView(igdeViewRenderWindow &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up widget. */
 	virtual ~igdeNativeFoxRenderView();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxRenderView* CreateNativeWidget( igdeViewRenderWindow &owner );
+	static igdeNativeFoxRenderView* CreateNativeWidget(igdeViewRenderWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -119,9 +119,9 @@ public:
 	 */
 	virtual void DetachRenderWindow();
 	
-	void DrawEngineUnavailable( FXDCWindow &dc );
-	void DrawErrorRenderWindow( FXDCWindow &dc );
-	void DrawErrorRendering( FXDCWindow &dc );
+	void DrawEngineUnavailable(FXDCWindow &dc);
+	void DrawErrorRenderWindow(FXDCWindow &dc);
+	void DrawErrorRendering(FXDCWindow &dc);
 	
 	virtual void GrabInput();
 	virtual void ReleaseInput();
@@ -131,26 +131,26 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onMap( FXObject*, FXSelector, void* );
-	long onUnmap( FXObject*, FXSelector, void* );
-	long onPaint( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onMap(FXObject*, FXSelector, void*);
+	long onUnmap(FXObject*, FXSelector, void*);
+	long onPaint(FXObject*, FXSelector, void*);
 	
-	long onKeyPress( FXObject*, FXSelector, void* );
-	long onKeyRelease( FXObject*, FXSelector, void* );
-	long onLeftMouseDown( FXObject*, FXSelector, void* );
-	long onLeftMouseUp( FXObject*, FXSelector, void* );
-	long onRightMouseDown( FXObject*, FXSelector, void* );
-	long onRightMouseUp( FXObject*, FXSelector, void* );
-	long onMiddleMouseDown( FXObject*, FXSelector, void* );
-	long onMiddleMouseUp( FXObject*, FXSelector, void* );
-	long onMouseMove( FXObject*, FXSelector, void* );
-	long onMouseWheel( FXObject*, FXSelector, void* );
-	long onDoubleClicked( FXObject*, FXSelector, void* );
-	long onMouseEnter( FXObject*, FXSelector, void* );
-	long onMouseLeave( FXObject*, FXSelector, void* );
+	long onKeyPress(FXObject*, FXSelector, void*);
+	long onKeyRelease(FXObject*, FXSelector, void*);
+	long onLeftMouseDown(FXObject*, FXSelector, void*);
+	long onLeftMouseUp(FXObject*, FXSelector, void*);
+	long onRightMouseDown(FXObject*, FXSelector, void*);
+	long onRightMouseUp(FXObject*, FXSelector, void*);
+	long onMiddleMouseDown(FXObject*, FXSelector, void*);
+	long onMiddleMouseUp(FXObject*, FXSelector, void*);
+	long onMouseMove(FXObject*, FXSelector, void*);
+	long onMouseWheel(FXObject*, FXSelector, void*);
+	long onDoubleClicked(FXObject*, FXSelector, void*);
+	long onMouseEnter(FXObject*, FXSelector, void*);
+	long onMouseLeave(FXObject*, FXSelector, void*);
 	
-	long onTimeoutRetryMap( FXObject*, FXSelector, void* );
+	long onTimeoutRetryMap(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 	

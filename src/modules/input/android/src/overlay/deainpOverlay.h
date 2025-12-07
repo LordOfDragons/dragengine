@@ -61,7 +61,7 @@ public:
 	 * \brief Create overlay.
 	 * \details Initial size is 256x256 with 35% transparency.
 	 */
-	deainpOverlay( deAndroidInput &androidInput );
+	deainpOverlay(deAndroidInput &androidInput);
 	
 	/** \brief Clean up overlay. */
 	virtual ~deainpOverlay();
@@ -89,10 +89,10 @@ public:
 	void ClearPointer();
 	
 	/** \brief Set tracked android pointer or -1 if not tracking a pointer. */
-	void SetPointer( int pointer, const decPoint &position );
+	void SetPointer(int pointer, const decPoint &position);
 	
 	/** \brief Difference to last pointer position. */
-	decPoint PointerMove( const decPoint &position );
+	decPoint PointerMove(const decPoint &position);
 	
 	/** \brief Pointer position. */
 	inline const decPoint &GetPointerPosition() const{ return pPointerPosition; }
@@ -103,13 +103,13 @@ public:
 	inline const deainpLayout &GetLayoutHorizontal() const{ return pLayoutHorizontal; }
 	
 	/** \brief Set horizontal layout. */
-	void SetLayoutHorizontal( const deainpLayout &layout );
+	void SetLayoutHorizontal(const deainpLayout &layout);
 	
 	/** \brief Vertical layout. */
 	inline const deainpLayout &GetLayoutVertical() const{ return pLayoutVertical; }
 	
 	/** \brief Set vertical layout. */
-	void SetLayoutVertical( const deainpLayout &layout );
+	void SetLayoutVertical(const deainpLayout &layout);
 	
 	
 	
@@ -120,7 +120,7 @@ public:
 	void UpdateFromVerticalLayout();
 	
 	/** \brief Update from layout. */
-	virtual void UpdateFromLayout( const deainpLayout &layout );
+	virtual void UpdateFromLayout(const deainpLayout &layout);
 	
 	
 	
@@ -137,13 +137,13 @@ public:
 	 * \param[in] position Touch position.
 	 * \returns \em true if event has been handled or \em false otherwise.
 	 */
-	virtual bool OnTouch( int pointerId, const decPoint &position );
+	virtual bool OnTouch(int pointerId, const decPoint &position);
 	
 	/**
 	 * \brief Move event.
 	 * \param[in] position Move distance since last move event.
 	 */
-	virtual void OnMove( const decPoint &position );
+	virtual void OnMove(const decPoint &position);
 	
 	/** \brief Release. */
 	virtual void OnRelease();

@@ -33,15 +33,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeCapsuleTopRadius::reUSetShapeCapsuleTopRadius( reRigShapeCapsule *shape, float topRadius ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeCapsuleTopRadius::reUSetShapeCapsuleTopRadius(reRigShapeCapsule *shape, float topRadius){
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	
 	pOldTopRadius = shape->GetTopRadius();
 	pNewTopRadius = topRadius;
 	
-	SetShortInfo( "Set Capsule Shape Half Height" );
+	SetShortInfo("Set Capsule Shape Half Height");
 	
 	pShape->AddReference();
 }
@@ -56,9 +56,9 @@ reUSetShapeCapsuleTopRadius::~reUSetShapeCapsuleTopRadius(){
 ///////////////
 
 void reUSetShapeCapsuleTopRadius::Undo(){
-	pShape->SetTopRadius( pOldTopRadius );
+	pShape->SetTopRadius(pOldTopRadius);
 }
 
 void reUSetShapeCapsuleTopRadius::Redo(){
-	pShape->SetTopRadius( pNewTopRadius );
+	pShape->SetTopRadius(pNewTopRadius);
 }

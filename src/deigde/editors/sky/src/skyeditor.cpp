@@ -34,7 +34,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule( igdeEnvironment *environment );
+MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
 #ifdef  __cplusplus
 }
 #endif
@@ -44,11 +44,11 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule( igdeEnvironment *e
 // entry point
 ////////////////
 
-igdeEditorModule *SkyEditorCreateModule( igdeEnvironment *environment ){
+igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
 	try{
-		return new seIGDEModule( *environment );
+		return new seIGDEModule(*environment);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 }

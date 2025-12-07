@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetEnablePos( aeRuleBoneTransformator *rule );
+	aeURuleBTransSetEnablePos(aeRuleBoneTransformator *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleBTransSetEnablePos();

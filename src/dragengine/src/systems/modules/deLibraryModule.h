@@ -108,7 +108,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new library module. */
-	deLibraryModule( deModuleSystem *system, const char *xmlDefFilename );
+	deLibraryModule(deModuleSystem *system, const char *xmlDefFilename);
 	
 	/** \brief Clean up loadable module. */
 	virtual ~deLibraryModule();
@@ -163,17 +163,17 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit module. */
-	virtual void Visit( deLoadableModuleVisitor &visitor );
+	virtual void Visit(deLoadableModuleVisitor &visitor);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	bool pLoadLibrary( const char *filename );
-	bool pVerifyLibrary( const char *filename );
-	void pLoadXML( const char *filename );
-	void pParseXML( const char *filename, decBaseFileReader &reader );
+	bool pLoadLibrary(const char *filename);
+	bool pVerifyLibrary(const char *filename);
+	void pLoadXML(const char *filename);
+	void pParseXML(const char *filename, decBaseFileReader &reader);
 	void pVerifyModule();
 	void pPreloadLibraries();
 	void pUnloadPreloadedLibraries();

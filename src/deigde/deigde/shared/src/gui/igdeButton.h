@@ -66,15 +66,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create button. */
-	igdeButton( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		eButtonStyle = ebsNormal );
+	igdeButton(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		eButtonStyle = ebsNormal);
 	
 	/** \brief Create button. */
-	igdeButton( igdeEnvironment &environment, const char *text, const char *description,
-		igdeIcon *icon, eButtonStyle = ebsNormal );
+	igdeButton(igdeEnvironment &environment, const char *text, const char *description,
+		igdeIcon *icon, eButtonStyle = ebsNormal);
 	
 	/** \brief Create button. */
-	igdeButton( igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal );
+	igdeButton(igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal);
 	
 	
 protected:
@@ -95,43 +95,43 @@ public:
 	inline eButtonStyle GetStyle() const{ return pStyle; }
 	
 	/** \brief Set button style. */
-	void SetStyle( eButtonStyle style );
+	void SetStyle(eButtonStyle style);
 	
 	/** \brief Text. */
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
 	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Button is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Widget is the default widget if used in dialogs. */
 	inline bool GetDefault() const{ return pDefault; }
 	
 	/** \brief Set if if widget is the default widget if used in dialogs. */
-	void SetDefault( bool isdefault );
+	void SetDefault(bool isdefault);
 	
 	/** \brief Action or NULL. */
 	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	void SetAction(igdeAction *action);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -146,10 +146,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	void OnParameterChanged( igdeAction *action ) override;
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	void OnDestroyed( igdeAction *action ) override;
+	void OnDestroyed(igdeAction *action) override;
 	/*@}*/
 	
 	

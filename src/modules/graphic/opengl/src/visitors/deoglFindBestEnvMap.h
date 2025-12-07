@@ -62,7 +62,7 @@ public:
 		return pPosition;
 	}
 	/** Sets the target position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** Retrieves the found environment map or NULL if no environment map could be found. */
 	inline deoglEnvironmentMap *GetEnvMap() const{
@@ -80,10 +80,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	virtual void VisitNode(deoglDOctree *node, int intersection);
 	
 	/** Test all environment maps in a list of environment maps. */
-	void VisitList( const deoglEnvironmentMapList &list );
+	void VisitList(const deoglEnvironmentMapList &list);
 	/*@}*/
 };
 

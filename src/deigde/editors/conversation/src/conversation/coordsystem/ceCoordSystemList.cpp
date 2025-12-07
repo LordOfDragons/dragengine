@@ -55,23 +55,23 @@ int ceCoordSystemList::GetCount() const{
 	return pCoordSystems.GetCount();
 }
 
-ceCoordSystem *ceCoordSystemList::GetAt( int index ) const{
-	return ( ceCoordSystem* )pCoordSystems.GetAt( index );
+ceCoordSystem *ceCoordSystemList::GetAt(int index) const{
+	return (ceCoordSystem*)pCoordSystems.GetAt(index);
 }
 
-ceCoordSystem *ceCoordSystemList::GetWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+ceCoordSystem *ceCoordSystemList::GetWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	ceCoordSystem *coordSystem;
 	const int count = pCoordSystems.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		coordSystem = ( ceCoordSystem* )pCoordSystems.GetAt( i );
+	for(i=0; i<count; i++){
+		coordSystem = (ceCoordSystem*)pCoordSystems.GetAt(i);
 		
-		if( coordSystem->GetID().Equals( id ) ){
+		if(coordSystem->GetID().Equals(id)){
 			return coordSystem;
 		}
 	}
@@ -79,19 +79,19 @@ ceCoordSystem *ceCoordSystemList::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-ceCoordSystem *ceCoordSystemList::GetWithAliasID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+ceCoordSystem *ceCoordSystemList::GetWithAliasID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	ceCoordSystem *coordSystem;
 	const int count = pCoordSystems.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		coordSystem = ( ceCoordSystem* )pCoordSystems.GetAt( i );
+	for(i=0; i<count; i++){
+		coordSystem = (ceCoordSystem*)pCoordSystems.GetAt(i);
 		
-		if( ! coordSystem->GetAliasID().IsEmpty() && coordSystem->GetAliasID().Equals( id ) ){
+		if(!coordSystem->GetAliasID().IsEmpty() && coordSystem->GetAliasID().Equals(id)){
 			return coordSystem;
 		}
 	}
@@ -99,32 +99,32 @@ ceCoordSystem *ceCoordSystemList::GetWithAliasID( const char *id ) const{
 	return NULL;
 }
 
-ceCoordSystem *ceCoordSystemList::GetWithIDOrAliasID( const char *id ) const{
-	ceCoordSystem *coordSystem = GetWithAliasID( id );
+ceCoordSystem *ceCoordSystemList::GetWithIDOrAliasID(const char *id) const{
+	ceCoordSystem *coordSystem = GetWithAliasID(id);
 	
-	if( ! coordSystem ){
-		coordSystem = GetWithID( id );
+	if(!coordSystem){
+		coordSystem = GetWithID(id);
 	}
 	
 	return coordSystem;
 }
 
-int ceCoordSystemList::IndexOf( ceCoordSystem *coordSystem ) const{
-	return pCoordSystems.IndexOf( coordSystem );
+int ceCoordSystemList::IndexOf(ceCoordSystem *coordSystem) const{
+	return pCoordSystems.IndexOf(coordSystem);
 }
 
-int ceCoordSystemList::IndexWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+int ceCoordSystemList::IndexWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pCoordSystems.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceCoordSystem &coordSystem = *( ( ceCoordSystem* )pCoordSystems.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceCoordSystem &coordSystem = *((ceCoordSystem*)pCoordSystems.GetAt(i));
 		
-		if( coordSystem.GetID().Equals( id ) ){
+		if(coordSystem.GetID().Equals(id)){
 			return i;
 		}
 	}
@@ -132,18 +132,18 @@ int ceCoordSystemList::IndexWithID( const char *id ) const{
 	return -1;
 }
 
-int ceCoordSystemList::IndexWithAliasID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+int ceCoordSystemList::IndexWithAliasID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pCoordSystems.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceCoordSystem &coordSystem = *( ( ceCoordSystem* )pCoordSystems.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceCoordSystem &coordSystem = *((ceCoordSystem*)pCoordSystems.GetAt(i));
 		
-		if( ! coordSystem.GetAliasID().IsEmpty() && coordSystem.GetAliasID().Equals( id ) ){
+		if(!coordSystem.GetAliasID().IsEmpty() && coordSystem.GetAliasID().Equals(id)){
 			return i;
 		}
 	}
@@ -151,32 +151,32 @@ int ceCoordSystemList::IndexWithAliasID( const char *id ) const{
 	return -1;
 }
 
-int ceCoordSystemList::IndexWithIDOrAliasID( const char *id ) const{
-	int index = IndexWithAliasID( id );
+int ceCoordSystemList::IndexWithIDOrAliasID(const char *id) const{
+	int index = IndexWithAliasID(id);
 	
-	if( index == -1 ){
-		index = IndexWithID( id );
+	if(index == -1){
+		index = IndexWithID(id);
 	}
 	
 	return index;
 }
 
-bool ceCoordSystemList::Has( ceCoordSystem *coordSystem ) const{
-	return pCoordSystems.Has( coordSystem );
+bool ceCoordSystemList::Has(ceCoordSystem *coordSystem) const{
+	return pCoordSystems.Has(coordSystem);
 }
 
-bool ceCoordSystemList::HasWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+bool ceCoordSystemList::HasWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pCoordSystems.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceCoordSystem &coordSystem = *( ( ceCoordSystem* )pCoordSystems.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceCoordSystem &coordSystem = *((ceCoordSystem*)pCoordSystems.GetAt(i));
 		
-		if( coordSystem.GetID().Equals( id ) ){
+		if(coordSystem.GetID().Equals(id)){
 			return true;
 		}
 	}
@@ -184,18 +184,18 @@ bool ceCoordSystemList::HasWithID( const char *id ) const{
 	return false;
 }
 
-bool ceCoordSystemList::HasWithAliasID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+bool ceCoordSystemList::HasWithAliasID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pCoordSystems.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceCoordSystem &coordSystem = *( ( ceCoordSystem* )pCoordSystems.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceCoordSystem &coordSystem = *((ceCoordSystem*)pCoordSystems.GetAt(i));
 		
-		if( ! coordSystem.GetAliasID().IsEmpty() && coordSystem.GetAliasID().Equals( id ) ){
+		if(!coordSystem.GetAliasID().IsEmpty() && coordSystem.GetAliasID().Equals(id)){
 			return true;
 		}
 	}
@@ -203,28 +203,28 @@ bool ceCoordSystemList::HasWithAliasID( const char *id ) const{
 	return false;
 }
 
-bool ceCoordSystemList::HasWithIDOrAliasID( const char *id ) const{
-	return HasWithAliasID( id ) || HasWithID( id );
+bool ceCoordSystemList::HasWithIDOrAliasID(const char *id) const{
+	return HasWithAliasID(id) || HasWithID(id);
 }
 
-void ceCoordSystemList::Add( ceCoordSystem *coordSystem ){
-	if( ! coordSystem ) DETHROW( deeInvalidParam );
+void ceCoordSystemList::Add(ceCoordSystem *coordSystem){
+	if(!coordSystem) DETHROW(deeInvalidParam);
 	
-	pCoordSystems.Add( coordSystem );
+	pCoordSystems.Add(coordSystem);
 }
 
-void ceCoordSystemList::InsertAt( ceCoordSystem *coordSystem, int index ){
-	if( ! coordSystem ) DETHROW( deeInvalidParam );
+void ceCoordSystemList::InsertAt(ceCoordSystem *coordSystem, int index){
+	if(!coordSystem) DETHROW(deeInvalidParam);
 	
-	pCoordSystems.Insert( coordSystem, index );
+	pCoordSystems.Insert(coordSystem, index);
 }
 
-void ceCoordSystemList::MoveTo( ceCoordSystem *coordSystem, int index ){
-	pCoordSystems.Move( coordSystem, index );
+void ceCoordSystemList::MoveTo(ceCoordSystem *coordSystem, int index){
+	pCoordSystems.Move(coordSystem, index);
 }
 
-void ceCoordSystemList::Remove( ceCoordSystem *coordSystem ){
-	pCoordSystems.Remove( coordSystem );
+void ceCoordSystemList::Remove(ceCoordSystem *coordSystem){
+	pCoordSystems.Remove(coordSystem);
 }
 
 void ceCoordSystemList::RemoveAll(){
@@ -233,7 +233,7 @@ void ceCoordSystemList::RemoveAll(){
 
 
 
-ceCoordSystemList &ceCoordSystemList::operator=( const ceCoordSystemList &list ){
+ceCoordSystemList &ceCoordSystemList::operator=(const ceCoordSystemList &list){
 	pCoordSystems = list.pCoordSystems;
 	return *this;
 }

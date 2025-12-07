@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	debpForceField( dePhysicsBullet &bullet, const deForceField &forceField );
+	debpForceField(dePhysicsBullet &bullet, const deForceField &forceField);
 	
 	/** \brief Clean up peer. */
 	virtual ~debpForceField();
@@ -86,7 +86,7 @@ public:
 	
 	
 	/** \brief Update force field. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -104,7 +104,7 @@ public:
 	inline int GetVortexCount() const{ return pVortexCount; }
 	
 	/** \brief Vortex at the given index. */
-	debpFFVortex *GetVortexAt( int index ) const;
+	debpFFVortex *GetVortexAt(int index) const;
 	/*@}*/
 	
 	

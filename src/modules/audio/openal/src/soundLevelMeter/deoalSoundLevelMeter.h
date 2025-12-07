@@ -71,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound level meter. */
-	deoalSoundLevelMeter( deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter );
+	deoalSoundLevelMeter(deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter);
 	
 	/** \brief Clean up sound level meter. */
 	virtual ~deoalSoundLevelMeter();
@@ -96,7 +96,7 @@ public:
 	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deoalWorld *world );
+	void SetParentWorld(deoalWorld *world);
 	
 	
 	
@@ -104,10 +104,10 @@ public:
 	inline int GetSpeakerCount() const{ return pSpeakerCount; }
 	
 	/** \brief Speaker at index. */
-	const deSoundLevelMeter::cAudibleSpeaker &GetSpeakerAt( int index ) const;
+	const deSoundLevelMeter::cAudibleSpeaker &GetSpeakerAt(int index) const;
 	
 	/** \brief Add speaker. */
-	void AddSpeaker( deSpeaker *speaker, float volume );
+	void AddSpeaker(deSpeaker *speaker, float volume);
 	
 	/** \brief Remove all speakers. */
 	void RemoveAllSpeakers();
@@ -150,7 +150,7 @@ public:
 	virtual int GetAudibleSpeakerCount();
 	
 	/** \brief Audible speaker at index. */
-	virtual const deSoundLevelMeter::cAudibleSpeaker &GetAudibleSpeakerAt( int index );
+	virtual const deSoundLevelMeter::cAudibleSpeaker &GetAudibleSpeakerAt(int index);
 	/*@}*/
 	
 	
@@ -167,7 +167,7 @@ public:
 private:
 	void pRequiresSync();
 	void pUpdateAudibleSpeakers();
-	int pIndexOfSpeaker( deSpeaker *speaker ) const;
+	int pIndexOfSpeaker(deSpeaker *speaker) const;
 };
 
 #endif

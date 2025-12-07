@@ -47,16 +47,16 @@ namespace wrsp = winrt::Windows::System::Power;
 // Constructor, destructor
 ////////////////////////////
 
-dewiDeviceButton::dewiDeviceButton( deWindowsInput &module ) :
-pModule( module ),
-pPressed( false ),
-pWICode( 0 ),
-pWIChar( -1 ),
-pKeyCode( deInputEvent::ekcUndefined ),
-pMatchPriority( 10 ),
-pKeyLocation( deInputEvent::eklNone ),
-pWinRTReadingIndex( -1 ),
-pIsBatteryCharging( false )
+dewiDeviceButton::dewiDeviceButton(deWindowsInput &module) :
+pModule(module),
+pPressed(false),
+pWICode(0),
+pWIChar(-1),
+pKeyCode(deInputEvent::ekcUndefined),
+pMatchPriority(10),
+pKeyLocation(deInputEvent::eklNone),
+pWinRTReadingIndex(-1),
+pIsBatteryCharging(false)
 {
 }
 
@@ -68,29 +68,29 @@ dewiDeviceButton::~dewiDeviceButton(){
 // Management
 ///////////////
 
-void dewiDeviceButton::SetID( const char *id ){
+void dewiDeviceButton::SetID(const char *id){
 	pID = id;
 }
 
-void dewiDeviceButton::SetName( const char *name ){
+void dewiDeviceButton::SetName(const char *name){
 	pName = name;
 }
  
-void dewiDeviceButton::SetPressed( bool pressed ){
+void dewiDeviceButton::SetPressed(bool pressed){
 	pPressed = pressed;
 }
 
-void dewiDeviceButton::SetType( deInputDeviceButton::eButtonTypes type ){
+void dewiDeviceButton::SetType(deInputDeviceButton::eButtonTypes type){
 	pType = type;
 }
 
 
 
-void dewiDeviceButton::SetDisplayImages( const char *name ){
+void dewiDeviceButton::SetDisplayImages(const char *name){
 	pDisplayImage = NULL;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(!name){
 		return;
 	}
 	
@@ -99,79 +99,79 @@ void dewiDeviceButton::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/button";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
+	const int sizes[4] = {128, 64, 32, 16};
 	deImage::Ref icon;
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
-		pDisplayIcons.Add( ( deImage* )icon );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		icon.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+		pDisplayIcons.Add((deImage*)icon);
 	}
 }
 
-void dewiDeviceButton::SetDisplayImages( const dewiDeviceButton &button ){
+void dewiDeviceButton::SetDisplayImages(const dewiDeviceButton &button){
 	pDisplayImage = button.pDisplayImage;
 	pDisplayIcons = button.pDisplayIcons;
 }
 
-void dewiDeviceButton::SetDisplayText( const char *text ){
+void dewiDeviceButton::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
 
 
-void dewiDeviceButton::SetWICode( int code ){
+void dewiDeviceButton::SetWICode(int code){
 	pWICode = code;
 }
 
-void dewiDeviceButton::SetWIChar( int character ){
+void dewiDeviceButton::SetWIChar(int character){
 	pWIChar = character;
 }
 
-void dewiDeviceButton::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
+void dewiDeviceButton::SetKeyCode(deInputEvent::eKeyCodes keyCode){
 	pKeyCode = keyCode;
 }
 
-void dewiDeviceButton::SetMatchPriority( int priority ){
+void dewiDeviceButton::SetMatchPriority(int priority){
 	pMatchPriority = priority;
 }
 
-void dewiDeviceButton::SetKeyLocation( deInputEvent::eKeyLocation location ){
+void dewiDeviceButton::SetKeyLocation(deInputEvent::eKeyLocation location){
 	pKeyLocation = location;
 }
 
-void dewiDeviceButton::SetWinRTReadingIndex( int index ){
+void dewiDeviceButton::SetWinRTReadingIndex(int index){
 	pWinRTReadingIndex = index;
 }
 
-void dewiDeviceButton::SetIsBatteryCharging( bool isBatteryCharging ){
+void dewiDeviceButton::SetIsBatteryCharging(bool isBatteryCharging){
 	pIsBatteryCharging = isBatteryCharging;
 }
 
 
-void dewiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
+void dewiDeviceButton::GetInfo(deInputDeviceButton &info) const{
 	int i;
 	
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
 	
-	info.SetDisplayImage( pDisplayImage );
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	info.SetDisplayImage(pDisplayImage);
+	for(i=0; i<pDisplayIcons.GetCount(); i++){
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayText(pDisplayText);
 }
 
-void dewiDeviceButton::WinRTReading( dewiDeviceWinRTController &device ){
+void dewiDeviceButton::WinRTReading(dewiDeviceWinRTController &device){
 	bool pressed = false;
 
-	if( pWinRTReadingIndex != -1 ){
-		pressed = device.GetReadingButton( pWinRTReadingIndex );
+	if(pWinRTReadingIndex != -1){
+		pressed = device.GetReadingButton(pWinRTReadingIndex);
 
 	}else if(pIsBatteryCharging){
 		if(device.GetBatteryReport()){
@@ -179,16 +179,16 @@ void dewiDeviceButton::WinRTReading( dewiDeviceWinRTController &device ){
 		}
 	}
 
-	if( pressed ){
-		if( ! pPressed ){
+	if(pressed){
+		if(!pPressed){
 			pPressed = true;
-			pModule.AddButtonPressed( device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime() );
+			pModule.AddButtonPressed(device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime());
 		}
 
 	}else{
-		if( pPressed ){
+		if(pPressed){
 			pPressed = false;
-			pModule.AddButtonReleased( device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime() );
+			pModule.AddButtonReleased(device.GetIndex(), pWinRTReadingIndex, device.GetReadingTime());
 		}
 	}
 }

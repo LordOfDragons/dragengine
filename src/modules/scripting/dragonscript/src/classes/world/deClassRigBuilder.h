@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassRigBuilder( deScriptingDragonScript &ds );
+	deClassRigBuilder(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassRigBuilder();
@@ -59,7 +59,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	inline dsClass *GetClassColliderConstraintDof() const{ return pClsColliderConstraintDof; }
 	/*@}*/
@@ -83,25 +83,25 @@ private:
 		dsClass *clsArray;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfBuild );
-	DEF_NATFUNC( nfBuildRig );
-	DEF_NATFUNC( nfSetCentralMassPoint );
-	DEF_NATFUNC( nfSetModelCollision );
-	DEF_NATFUNC( nfAddBone );
-	DEF_NATFUNC( nfSetBoneShapeProperties );
-	DEF_NATFUNC( nfAddBoneConstraint );
-	DEF_NATFUNC( nfSetBoneConstraintDof );
-	DEF_NATFUNC( nfSetRootBone );
-	DEF_NATFUNC( nfSetShapes );
-	DEF_NATFUNC( nfSetShapeProperties );
+	DEF_NATFUNC(nfBuild);
+	DEF_NATFUNC(nfBuildRig);
+	DEF_NATFUNC(nfSetCentralMassPoint);
+	DEF_NATFUNC(nfSetModelCollision);
+	DEF_NATFUNC(nfAddBone);
+	DEF_NATFUNC(nfSetBoneShapeProperties);
+	DEF_NATFUNC(nfAddBoneConstraint);
+	DEF_NATFUNC(nfSetBoneConstraintDof);
+	DEF_NATFUNC(nfSetRootBone);
+	DEF_NATFUNC(nfSetShapes);
+	DEF_NATFUNC(nfSetShapeProperties);
 #undef DEF_NATFUNC
 };
 

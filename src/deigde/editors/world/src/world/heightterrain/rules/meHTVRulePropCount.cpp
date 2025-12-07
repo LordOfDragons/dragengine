@@ -43,20 +43,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRulePropCount::meHTVRulePropCount() : meHTVRule( ertPropCount, 1 ){
+meHTVRulePropCount::meHTVRulePropCount() : meHTVRule(ertPropCount, 1){
 	pSearchRadius = 1.0f;
 	
-	GetSlotAt( eosCount ).SetIsInput( false );
+	GetSlotAt(eosCount).SetIsInput(false);
 	
 	Reset();
 }
 
-meHTVRulePropCount::meHTVRulePropCount( const meHTVRulePropCount &rule ) :
-meHTVRule( rule ),
-pPropClass( rule.pPropClass ),
-pSearchRadius( rule.pSearchRadius ),
-pCount( rule.pCount ),
-pDirty( false ){
+meHTVRulePropCount::meHTVRulePropCount(const meHTVRulePropCount &rule) :
+meHTVRule(rule),
+pPropClass(rule.pPropClass),
+pSearchRadius(rule.pSearchRadius),
+pCount(rule.pCount),
+pDirty(false){
 }
 
 meHTVRulePropCount::~meHTVRulePropCount(){
@@ -67,38 +67,38 @@ meHTVRulePropCount::~meHTVRulePropCount(){
 // Management
 ///////////////
 
-void meHTVRulePropCount::SetPropClass( const char *propClass ){
-	if( ! propClass ) DETHROW( deeInvalidParam );
+void meHTVRulePropCount::SetPropClass(const char *propClass){
+	if(!propClass) DETHROW(deeInvalidParam);
 	
 	pPropClass = propClass;
 	
 	Reset();
 }
 
-void meHTVRulePropCount::SetSearchRadius( float searchRadius ){
+void meHTVRulePropCount::SetSearchRadius(float searchRadius){
 	pSearchRadius = searchRadius;
 	
 	Reset();
 }
 
-void meHTVRulePropCount::UpdateResult( meHTVEvaluationEnvironment &evalEnv ){
-	if( pDirty ){
+void meHTVRulePropCount::UpdateResult(meHTVEvaluationEnvironment &evalEnv){
+	if(pDirty){
 		const decDVector &ipos = evalEnv.GetPosition();
 		int o, objectCount = evalEnv.GetObjectCount();
 		meObject *object;
 		int count = 0;
 		
-		for( o=0; o<objectCount; o++ ){
-			object = evalEnv.GetObjectAt( o );
+		for(o=0; o<objectCount; o++){
+			object = evalEnv.GetObjectAt(o);
 			
-			if( pPropClass.Equals( object->GetClassName() ) ){
-				if( ( float )( object->GetPosition() - ipos ).Length() <= pSearchRadius ){
+			if(pPropClass.Equals(object->GetClassName())){
+				if((float)(object->GetPosition() - ipos).Length() <= pSearchRadius){
 					count++;
 				}
 			}
 		}
 		
-		pCount = ( float )count;
+		pCount = (float)count;
 		
 		// no more dirty
 		pDirty = false;
@@ -112,22 +112,22 @@ void meHTVRulePropCount::Reset(){
 	pDirty = true;
 }
 
-float meHTVRulePropCount::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != 0 ) DETHROW( deeInvalidParam );
+float meHTVRulePropCount::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != 0) DETHROW(deeInvalidParam);
 	
-	UpdateResult( evalEnv );
+	UpdateResult(evalEnv);
 	
 	return pCount;
 }
 
-decVector meHTVRulePropCount::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != 0 ) DETHROW( deeInvalidParam );
+decVector meHTVRulePropCount::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != 0) DETHROW(deeInvalidParam);
 	
-	UpdateResult( evalEnv );
+	UpdateResult(evalEnv);
 	
-	return decVector( pCount, pCount, pCount );
+	return decVector(pCount, pCount, pCount);
 }
 
 meHTVRule *meHTVRulePropCount::Copy() const{
-	return new meHTVRulePropCount( *this );
+	return new meHTVRulePropCount(*this);
 }

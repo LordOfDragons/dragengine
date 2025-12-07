@@ -39,18 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataObjTexProperty::meUndoDataObjTexProperty( meObjectTexture *texture ) :
-pTexture( texture ),
-pPropertyExists( false )
+meUndoDataObjTexProperty::meUndoDataObjTexProperty(meObjectTexture *texture) :
+pTexture(texture),
+pPropertyExists(false)
 {
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!texture){
+		DETHROW(deeInvalidParam);
 	}
 	texture->AddReference();
 }
 
 meUndoDataObjTexProperty::~meUndoDataObjTexProperty(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
 }
@@ -60,10 +60,10 @@ meUndoDataObjTexProperty::~meUndoDataObjTexProperty(){
 // Management
 ///////////////
 
-void meUndoDataObjTexProperty::SetOldValue( const char *value ){
+void meUndoDataObjTexProperty::SetOldValue(const char *value){
 	pOldValue = value;
 }
 
-void meUndoDataObjTexProperty::SetPropertyExists( bool exists ){
+void meUndoDataObjTexProperty::SetPropertyExists(bool exists){
 	pPropertyExists = exists;
 }

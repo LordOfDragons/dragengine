@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create debug support. */
-	debpDebug( dePhysicsBullet &bullet );
+	debpDebug(dePhysicsBullet &bullet);
 	
 	/** \brief Clean up debug support. */
 	~debpDebug();
@@ -77,7 +77,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Debug information. */
 	inline debpDebugInformation *GetDIColliderPrepareDetection() const{ return pDIColliderPrepareDetection; }
@@ -94,17 +94,17 @@ public:
 	
 	
 	/** \brief Begin process physics. */
-	void BeginProcessPhysics( debpWorld *world );
+	void BeginProcessPhysics(debpWorld *world);
 	
 	/** \brief End process physics. */
-	void EndProcessPhysics( debpWorld *world );
+	void EndProcessPhysics(debpWorld *world);
 	/*@}*/
 	
 	
 	
 private:
 	void pUpdateDebugInformation();
-	void pUpdateDebugInformation( debpDebugInformation &debugInfo );
+	void pUpdateDebugInformation(debpDebugInformation &debugInfo);
 	void pLogDebugInformation();
 };
 

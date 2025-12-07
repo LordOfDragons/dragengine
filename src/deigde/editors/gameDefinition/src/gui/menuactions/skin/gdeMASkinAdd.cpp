@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMASkinAdd::gdeMASkinAdd( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Add Skin...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add skin" )
+gdeMASkinAdd::gdeMASkinAdd(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "Add Skin...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add skin")
 {
 }
 
@@ -59,28 +59,28 @@ gdeBaseAction( windowMain, "Add Skin...",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkinAdd::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo *gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	decString filename;
 	//dialog.SetFilename( ... last skin? what directory? );
 	
-	if( ! igdeCommonDialogs::GetFileOpen( &pWindowMain,
+	if(!igdeCommonDialogs::GetFileOpen(&pWindowMain,
 	"Select skin material", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 		return NULL;
 	}
 	
-	if( gameDefinition.GetSkins().HasWithPath( filename ) ){
-		igdeCommonDialogs::Information( &pWindowMain, "Add Skin", "Skin with path exists already." );
+	if(gameDefinition.GetSkins().HasWithPath(filename)){
+		igdeCommonDialogs::Information(&pWindowMain, "Add Skin", "Skin with path exists already.");
 		return NULL;
 	}
 	
-	decString filetitle( decPath::CreatePathUnix( filename ).GetLastComponent() );
-	const int delimiter = filetitle.FindReverse( '.' );
-	if( delimiter != -1 ){
-		filetitle = filetitle.GetLeft( delimiter );
+	decString filetitle(decPath::CreatePathUnix(filename).GetLastComponent());
+	const int delimiter = filetitle.FindReverse('.');
+	if(delimiter != -1){
+		filetitle = filetitle.GetLeft(delimiter);
 	}
 	
 	const gdeSkin::Ref skin(gdeSkin::Ref::NewWith(filename, filetitle));
-	return new gdeUAddSkin( &gameDefinition, skin );
+	return new gdeUAddSkin(&gameDefinition, skin);
 }

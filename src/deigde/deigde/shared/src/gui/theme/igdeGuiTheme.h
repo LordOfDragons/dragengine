@@ -57,10 +57,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gui theme. */
-	igdeGuiTheme( const char *name );
+	igdeGuiTheme(const char *name);
 	
 	/** \brief Create copy of gui theme. */
-	igdeGuiTheme( const char *name, const igdeGuiTheme &guitheme );
+	igdeGuiTheme(const char *name, const igdeGuiTheme &guitheme);
 	
 	
 	
@@ -88,19 +88,19 @@ public:
 	int GetPropertyCount() const;
 	
 	/** \brief Property or NULL if absent. */
-	igdeGuiThemeProperty *GetProperty( const char *name ) const;
+	igdeGuiThemeProperty *GetProperty(const char *name) const;
 	
 	/** \brief Property is present. */
-	bool HasProperty( const char *name ) const;
+	bool HasProperty(const char *name) const;
 	
 	/** \brief Set property. */
-	void SetProperty( igdeGuiThemeProperty *property );
+	void SetProperty(igdeGuiThemeProperty *property);
 	
 	/** \brief Remove property. */
-	void RemoveProperty( const char *name );
+	void RemoveProperty(const char *name);
 	
 	/** \brief Remove property if present. */
-	void RemovePropertyIfPresent( const char *name );
+	void RemovePropertyIfPresent(const char *name);
 	
 	/** \brief Remove all properties. */
 	void RemoveAllProperties();
@@ -114,53 +114,53 @@ public:
 	 * \brief Named integer property or default value if not found.
 	 * \throws EInvalidParam Type is not etInteger.
 	 */
-	int GetIntProperty( const char *name, int defaultValue ) const;
+	int GetIntProperty(const char *name, int defaultValue) const;
 	
 	/**
 	 * \brief Named floating point value or default value if not found.
 	 * \throws EInvalidParam Type is not etFloat.
 	 */
-	float GetFloatProperty( const char *name, float defaultValue ) const;
+	float GetFloatProperty(const char *name, float defaultValue) const;
 	
 	/**
 	 * \brief Named point value or default value if not found.
 	 * \throws EInvalidParam Type is not etPoint.
 	 */
-	const decPoint &GetPointProperty( const char *name, const decPoint &defaultValue ) const;
+	const decPoint &GetPointProperty(const char *name, const decPoint &defaultValue) const;
 	
 	/**
 	 * \brief Named color value or default value if not found.
 	 * \throws EInvalidParam Type is not etColor.
 	 */
-	const decColor &GetColorProperty( const char *name, const decColor &defaultValue ) const;
+	const decColor &GetColorProperty(const char *name, const decColor &defaultValue) const;
 	
 	/**
 	 * \brief Named string value or default value if not found.
 	 * \throws EInvalidParam Type is not etString.
 	 */
-	const decString &GetStringProperty( const char *name, const decString &defaultValue ) const;
+	const decString &GetStringProperty(const char *name, const decString &defaultValue) const;
 	
 	
 	
 	/** \brief Set integer property. */
-	void SetIntProperty( const char *name, int value );
+	void SetIntProperty(const char *name, int value);
 	
 	/** \brief Set nfloating point property. */
-	void SetFloatProperty( const char *name, float value );
+	void SetFloatProperty(const char *name, float value);
 	
 	/** \brief Set point property. */
-	void SetPointProperty( const char *name, const decPoint &value );
+	void SetPointProperty(const char *name, const decPoint &value);
 	
 	/** \brief Set color property. */
-	void SetColorProperty( const char *name, const decColor &value );
+	void SetColorProperty(const char *name, const decColor &value);
 	
 	/** \brief Set string property. */
-	void SetStringProperty( const char *name, const decString &value );
+	void SetStringProperty(const char *name, const decString &value);
 	
 	
 	
 	/** \brief Assign gui theme properties. */
-	igdeGuiTheme &operator=( const igdeGuiTheme &guitheme );
+	igdeGuiTheme &operator=(const igdeGuiTheme &guitheme);
 	/*@}*/
 };
 

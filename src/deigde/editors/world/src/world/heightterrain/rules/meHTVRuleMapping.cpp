@@ -41,25 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleMapping::meHTVRuleMapping() : meHTVRule( ertMapping, 4 ){
+meHTVRuleMapping::meHTVRuleMapping() : meHTVRule(ertMapping, 4){
 	pValue = 0.5f;
 	pLower = 0.0f;
 	pUpper = 1.0f;
 	pInversed = false;
 	
-	GetSlotAt( eisLower ).SetIsInput( true );
-	GetSlotAt( eisUpper ).SetIsInput( true );
-	GetSlotAt( eisValue ).SetIsInput( true );
+	GetSlotAt(eisLower).SetIsInput(true);
+	GetSlotAt(eisUpper).SetIsInput(true);
+	GetSlotAt(eisValue).SetIsInput(true);
 	
-	GetSlotAt( eosValue ).SetIsInput( false );
+	GetSlotAt(eosValue).SetIsInput(false);
 }
 
-meHTVRuleMapping::meHTVRuleMapping( const meHTVRuleMapping &rule ) :
-meHTVRule( rule ),
-pValue( rule.pValue ),
-pLower( rule.pLower ),
-pUpper( rule.pUpper ),
-pInversed( rule.pInversed ){
+meHTVRuleMapping::meHTVRuleMapping(const meHTVRuleMapping &rule) :
+meHTVRule(rule),
+pValue(rule.pValue),
+pLower(rule.pLower),
+pUpper(rule.pUpper),
+pInversed(rule.pInversed){
 }
 
 meHTVRuleMapping::~meHTVRuleMapping(){
@@ -70,90 +70,90 @@ meHTVRuleMapping::~meHTVRuleMapping(){
 // Management
 ///////////////
 
-void meHTVRuleMapping::SetValue( float value ){
+void meHTVRuleMapping::SetValue(float value){
 	pValue = value;
 }
 
-void meHTVRuleMapping::SetLower( float lower ){
+void meHTVRuleMapping::SetLower(float lower){
 	pLower = lower;
 }
 
-void meHTVRuleMapping::SetUpper( float upper ){
+void meHTVRuleMapping::SetUpper(float upper){
 	pUpper = upper;
 }
 
-void meHTVRuleMapping::SetInversed( bool inversed ){
+void meHTVRuleMapping::SetInversed(bool inversed){
 	pInversed = inversed;
 }
 
 
 
-float meHTVRuleMapping::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != eosValue ) DETHROW( deeInvalidParam );
+float meHTVRuleMapping::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != eosValue) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &inputValue = GetSlotAt( eisValue );
-	meHTVRSlot &inputLower = GetSlotAt( eisLower );
-	meHTVRSlot &inputUpper = GetSlotAt( eisUpper );
+	meHTVRSlot &inputValue = GetSlotAt(eisValue);
+	meHTVRSlot &inputLower = GetSlotAt(eisLower);
+	meHTVRSlot &inputUpper = GetSlotAt(eisUpper);
 	
 	float value = pValue;
 	float lower = pLower;
 	float upper = pUpper;
 	
-	if( inputValue.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputValue.GetLinkAt( 0 );
+	if(inputValue.GetLinkCount() > 0){
+		meHTVRLink &link = *inputValue.GetLinkAt(0);
 		
-		value = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		value = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if( inputLower.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputLower.GetLinkAt( 0 );
+	if(inputLower.GetLinkCount() > 0){
+		meHTVRLink &link = *inputLower.GetLinkAt(0);
 		
-		lower = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		lower = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if( inputUpper.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputUpper.GetLinkAt( 0 );
+	if(inputUpper.GetLinkCount() > 0){
+		meHTVRLink &link = *inputUpper.GetLinkAt(0);
 		
-		upper = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		upper = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
 	float diff = upper - lower;
 	
-	if( diff < 1e-5f ){
+	if(diff < 1e-5f){
 		return 0.0f;
 		
 	}else{
-		if( pInversed ){
-			if( value <= lower ){
+		if(pInversed){
+			if(value <= lower){
 				return 1.0f;
 				
-			}else if( value >= upper ){
+			}else if(value >= upper){
 				return 0.0f;
 				
 			}else{
-				return ( upper - value ) / diff;
+				return (upper - value) / diff;
 			}
 			
 		}else{
-			if( value <= lower ){
+			if(value <= lower){
 				return 0.0f;
 				
-			}else if( value >= upper ){
+			}else if(value >= upper){
 				return 1.0f;
 				
 			}else{
-				return ( value - lower ) / diff;
+				return (value - lower) / diff;
 			}
 		}
 	}
 }
 
-decVector meHTVRuleMapping::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	float value = GetOutputSlotValueAt( slot, evalEnv );
+decVector meHTVRuleMapping::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	float value = GetOutputSlotValueAt(slot, evalEnv);
 	
-	return decVector( value, value, value );
+	return decVector(value, value, value);
 }
 
 meHTVRule *meHTVRuleMapping::Copy() const{
-	return new meHTVRuleMapping( *this );
+	return new meHTVRuleMapping(*this);
 }

@@ -58,156 +58,156 @@ deoglTextureCompression::~deoglTextureCompression(){
 // Management
 ///////////////
 
-void deoglTextureCompression::SetDecompressedData( deoglPixelBuffer *pixelBuffer ){
+void deoglTextureCompression::SetDecompressedData(deoglPixelBuffer *pixelBuffer){
 	pDecompressedData = pixelBuffer;
 }
 
-void deoglTextureCompression::SetCompressedData( deoglPixelBuffer *pixelBuffer ){
+void deoglTextureCompression::SetCompressedData(deoglPixelBuffer *pixelBuffer){
 	pCompressedData = pixelBuffer;
 }
 
 
 
-void deoglTextureCompression::SetDecompressedDataMipMap( deoglPixelBufferMipMap *pixelBufferMipMap ){
+void deoglTextureCompression::SetDecompressedDataMipMap(deoglPixelBufferMipMap *pixelBufferMipMap){
 	pDecompressedDataMipMap = pixelBufferMipMap;
 }
 
-void deoglTextureCompression::SetCompressedDataMipMap( deoglPixelBufferMipMap *pixelBufferMipMap ){
+void deoglTextureCompression::SetCompressedDataMipMap(deoglPixelBufferMipMap *pixelBufferMipMap){
 	pCompressedDataMipMap = pixelBufferMipMap;
 }
 
 
 
-void deoglTextureCompression::SetFastCompression( bool fastCompression ){
+void deoglTextureCompression::SetFastCompression(bool fastCompression){
 	pFastCompression = fastCompression;
 }
 
 
 
 void deoglTextureCompression::Compress(){
-	if( ! pCompressedData ){
-		DETHROW( deeInvalidParam );
+	if(!pCompressedData){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pCompressedData->GetFormat() == deoglPixelBuffer::epfDXT1 ){
+	if(pCompressedData->GetFormat() == deoglPixelBuffer::epfDXT1){
 		CompressDXT1();
 		
-	}else if( pCompressedData->GetFormat() == deoglPixelBuffer::epfDXT3 ){
+	}else if(pCompressedData->GetFormat() == deoglPixelBuffer::epfDXT3){
 		CompressDXT3();
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 void deoglTextureCompression::CompressDXT1(){
-	if( ! pDecompressedData || ! pCompressedData ){
-		DETHROW( deeInvalidParam );
+	if(!pDecompressedData || !pCompressedData){
+		DETHROW(deeInvalidParam);
 	}
-	if( pDecompressedData->GetWidth() != pCompressedData->GetWidth()
+	if(pDecompressedData->GetWidth() != pCompressedData->GetWidth()
 	 || pDecompressedData->GetHeight() != pCompressedData->GetHeight()
-	 || pDecompressedData->GetDepth() != pCompressedData->GetDepth() ){
-		DETHROW( deeInvalidParam );
+	 || pDecompressedData->GetDepth() != pCompressedData->GetDepth()){
+		DETHROW(deeInvalidParam);
 	}
-	if( pCompressedData->GetFormat() != deoglPixelBuffer::epfDXT1 ){
-		DETHROW( deeInvalidParam );
+	if(pCompressedData->GetFormat() != deoglPixelBuffer::epfDXT1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCompressSquish( *pDecompressedData, *pCompressedData, pGetQualitySquishFlags() | squish::kDxt1 );
+	pCompressSquish(*pDecompressedData, *pCompressedData, pGetQualitySquishFlags() | squish::kDxt1);
 }
 
 void deoglTextureCompression::CompressDXT3(){
-	if( ! pDecompressedData || ! pCompressedData ){
-		DETHROW( deeInvalidParam );
+	if(!pDecompressedData || !pCompressedData){
+		DETHROW(deeInvalidParam);
 	}
-	if( pDecompressedData->GetWidth() != pCompressedData->GetWidth()
+	if(pDecompressedData->GetWidth() != pCompressedData->GetWidth()
 	 || pDecompressedData->GetHeight() != pCompressedData->GetHeight()
-	 || pDecompressedData->GetDepth() != pCompressedData->GetDepth() ){
-		DETHROW( deeInvalidParam );
+	 || pDecompressedData->GetDepth() != pCompressedData->GetDepth()){
+		DETHROW(deeInvalidParam);
 	}
-	if( pCompressedData->GetFormat() != deoglPixelBuffer::epfDXT3 ){
-		DETHROW( deeInvalidParam );
+	if(pCompressedData->GetFormat() != deoglPixelBuffer::epfDXT3){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCompressSquish( *pDecompressedData, *pCompressedData, pGetQualitySquishFlags() | squish::kDxt3 );
+	pCompressSquish(*pDecompressedData, *pCompressedData, pGetQualitySquishFlags() | squish::kDxt3);
 }
 
 
 
 void deoglTextureCompression::CompressMipMap(){
-	if( ! pCompressedDataMipMap ){
-		DETHROW( deeInvalidParam );
+	if(!pCompressedDataMipMap){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deoglPixelBuffer &pixelBuffer = *pCompressedDataMipMap->GetPixelBuffer( 0 );
+	const deoglPixelBuffer &pixelBuffer = *pCompressedDataMipMap->GetPixelBuffer(0);
 	
-	if( pixelBuffer.GetFormat() == deoglPixelBuffer::epfDXT1 ){
+	if(pixelBuffer.GetFormat() == deoglPixelBuffer::epfDXT1){
 		CompressMipMapDXT1();
 		
-	}else if( pixelBuffer.GetFormat() == deoglPixelBuffer::epfDXT3 ){
+	}else if(pixelBuffer.GetFormat() == deoglPixelBuffer::epfDXT3){
 		CompressMipMapDXT3();
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 void deoglTextureCompression::CompressMipMapDXT1(){
-	if( ! pDecompressedDataMipMap || ! pCompressedDataMipMap ){
-		DETHROW( deeInvalidParam );
+	if(!pDecompressedDataMipMap || !pCompressedDataMipMap){
+		DETHROW(deeInvalidParam);
 	}
-	if( pDecompressedDataMipMap->GetPixelBufferCount() != pCompressedDataMipMap->GetPixelBufferCount() ){
-		DETHROW( deeInvalidParam );
+	if(pDecompressedDataMipMap->GetPixelBufferCount() != pCompressedDataMipMap->GetPixelBufferCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deoglPixelBuffer &pixelBufferDecompressed = *pDecompressedDataMipMap->GetPixelBuffer( 0 );
-	const deoglPixelBuffer &pixelBufferCompressed = *pCompressedDataMipMap->GetPixelBuffer( 0 );
+	const deoglPixelBuffer &pixelBufferDecompressed = *pDecompressedDataMipMap->GetPixelBuffer(0);
+	const deoglPixelBuffer &pixelBufferCompressed = *pCompressedDataMipMap->GetPixelBuffer(0);
 	
-	if( pixelBufferDecompressed.GetWidth() != pixelBufferCompressed.GetWidth()
+	if(pixelBufferDecompressed.GetWidth() != pixelBufferCompressed.GetWidth()
 	 || pixelBufferDecompressed.GetHeight() != pixelBufferCompressed.GetHeight()
-	 || pixelBufferDecompressed.GetDepth() != pixelBufferCompressed.GetDepth() ){
-		DETHROW( deeInvalidParam );
+	 || pixelBufferDecompressed.GetDepth() != pixelBufferCompressed.GetDepth()){
+		DETHROW(deeInvalidParam);
 	}
-	if( pixelBufferCompressed.GetFormat() != deoglPixelBuffer::epfDXT1 ){
-		DETHROW( deeInvalidParam );
+	if(pixelBufferCompressed.GetFormat() != deoglPixelBuffer::epfDXT1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pDecompressedDataMipMap->GetPixelBufferCount();
 	const int flags = pGetQualitySquishFlags() | squish::kDxt1;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pCompressSquish( *pDecompressedDataMipMap->GetPixelBuffer( i ),
+	for(i=0; i<count; i++){
+		pCompressSquish(*pDecompressedDataMipMap->GetPixelBuffer(i),
 			*pCompressedDataMipMap->GetPixelBuffer( i ), flags );
 	}
 }
 
 void deoglTextureCompression::CompressMipMapDXT3(){
-	if( ! pDecompressedDataMipMap || ! pCompressedDataMipMap ){
-		DETHROW( deeInvalidParam );
+	if(!pDecompressedDataMipMap || !pCompressedDataMipMap){
+		DETHROW(deeInvalidParam);
 	}
-	if( pDecompressedDataMipMap->GetPixelBufferCount() != pCompressedDataMipMap->GetPixelBufferCount() ){
-		DETHROW( deeInvalidParam );
+	if(pDecompressedDataMipMap->GetPixelBufferCount() != pCompressedDataMipMap->GetPixelBufferCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deoglPixelBuffer &pixelBufferDecompressed = *pDecompressedDataMipMap->GetPixelBuffer( 0 );
-	const deoglPixelBuffer &pixelBufferCompressed = *pCompressedDataMipMap->GetPixelBuffer( 0 );
+	const deoglPixelBuffer &pixelBufferDecompressed = *pDecompressedDataMipMap->GetPixelBuffer(0);
+	const deoglPixelBuffer &pixelBufferCompressed = *pCompressedDataMipMap->GetPixelBuffer(0);
 	
-	if( pixelBufferDecompressed.GetWidth() != pixelBufferCompressed.GetWidth()
+	if(pixelBufferDecompressed.GetWidth() != pixelBufferCompressed.GetWidth()
 	 || pixelBufferDecompressed.GetHeight() != pixelBufferCompressed.GetHeight()
-	 || pixelBufferDecompressed.GetDepth() != pixelBufferCompressed.GetDepth() ){
-		DETHROW( deeInvalidParam );
+	 || pixelBufferDecompressed.GetDepth() != pixelBufferCompressed.GetDepth()){
+		DETHROW(deeInvalidParam);
 	}
-	if( pixelBufferCompressed.GetFormat() != deoglPixelBuffer::epfDXT3 ){
-		DETHROW( deeInvalidParam );
+	if(pixelBufferCompressed.GetFormat() != deoglPixelBuffer::epfDXT3){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pDecompressedDataMipMap->GetPixelBufferCount();
 	const int flags = pGetQualitySquishFlags() | squish::kDxt3;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pCompressSquish( *pDecompressedDataMipMap->GetPixelBuffer( i ),
+	for(i=0; i<count; i++){
+		pCompressSquish(*pDecompressedDataMipMap->GetPixelBuffer(i),
 			*pCompressedDataMipMap->GetPixelBuffer( i ), flags );
 	}
 }
@@ -220,7 +220,7 @@ void deoglTextureCompression::CompressMipMapDXT3(){
 int deoglTextureCompression::pGetQualitySquishFlags(){
 	int flags = 0;
 	
-	if( pFastCompression ){
+	if(pFastCompression){
 		flags |= squish::kColourRangeFit;
 		
 	}else{
@@ -233,8 +233,8 @@ int deoglTextureCompression::pGetQualitySquishFlags(){
 	return flags;
 }
 
-void deoglTextureCompression::pCompressSquish( const deoglPixelBuffer &pixelBufferFrom, deoglPixelBuffer &pixelBufferTo, int flags ){
-	squish::u8 *ptrCompressed = ( squish::u8* )pixelBufferTo.GetPointer();
+void deoglTextureCompression::pCompressSquish(const deoglPixelBuffer &pixelBufferFrom, deoglPixelBuffer &pixelBufferTo, int flags){
+	squish::u8 *ptrCompressed = (squish::u8*)pixelBufferTo.GetPointer();
 	const int width = pixelBufferFrom.GetWidth();
 	const int height = pixelBufferFrom.GetHeight();
 	const int depth = pixelBufferFrom.GetDepth();
@@ -245,38 +245,38 @@ void deoglTextureCompression::pCompressSquish( const deoglPixelBuffer &pixelBuff
 	const deoglPixelBuffer::sByte3 *ptrByte3 = NULL;
 	const deoglPixelBuffer::sByte4 *ptrByte4 = NULL;
 	int x, y, z, x2, y2, bx, by, bi, bm;
-	squish::u8 blockData[ 64 ];
+	squish::u8 blockData[64];
 	int dataOffset;
 	int blockMask;
 	
-	for( bi=0, x=0; x<16; x++ ){
-		blockData[ bi++ ] = 0;
-		blockData[ bi++ ] = 0;
-		blockData[ bi++ ] = 0;
-		blockData[ bi++ ] = 255; // for kDxt1 alpha has to be 255 or else hell breaks loose
+	for(bi=0, x=0; x<16; x++){
+		blockData[bi++] = 0;
+		blockData[bi++] = 0;
+		blockData[bi++] = 0;
+		blockData[bi++] = 255; // for kDxt1 alpha has to be 255 or else hell breaks loose
 	}
 	
-	if( pixelBufferFrom.GetFormat() == deoglPixelBuffer::epfByte1 ){
+	if(pixelBufferFrom.GetFormat() == deoglPixelBuffer::epfByte1){
 		ptrByte1 = pixelBufferFrom.GetPointerByte1();
 		
-	}else if( pixelBufferFrom.GetFormat() == deoglPixelBuffer::epfByte2 ){
+	}else if(pixelBufferFrom.GetFormat() == deoglPixelBuffer::epfByte2){
 		ptrByte2 = pixelBufferFrom.GetPointerByte2();
 		
-	}else if( pixelBufferFrom.GetFormat() == deoglPixelBuffer::epfByte3 ){
+	}else if(pixelBufferFrom.GetFormat() == deoglPixelBuffer::epfByte3){
 		ptrByte3 = pixelBufferFrom.GetPointerByte3();
 		
-	}else if( pixelBufferFrom.GetFormat() == deoglPixelBuffer::epfByte4 ){
+	}else if(pixelBufferFrom.GetFormat() == deoglPixelBuffer::epfByte4){
 		ptrByte4 = pixelBufferFrom.GetPointerByte4();
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( z=0; z<depth; z++ ){
-		for( y=0; y<height; y+=4 ){
+	for(z=0; z<depth; z++){
+		for(y=0; y<height; y+=4){
 			y2 = y + 4;
 			
-			for( x=0; x<width; x+=4 ){
+			for(x=0; x<width; x+=4){
 				x2 = x + 4;
 				
 				// fill block data. padding pixels have undefined value and their mask cleared
@@ -284,34 +284,34 @@ void deoglTextureCompression::pCompressSquish( const deoglPixelBuffer &pixelBuff
 				bi = 0;
 				bm = 1; // bm is the mask bit to set shifted with each pixel
 				
-				for( by=y; by<y2; by++ ){
-					if( by < height ){
+				for(by=y; by<y2; by++){
+					if(by < height){
 						dataOffset = strideLayer * z + width * by + x;
 						
-						for( bx=x; bx<x2; bx++ ){
-							if( bx < width ){
+						for(bx=x; bx<x2; bx++){
+							if(bx < width){
 								blockMask |= bm;
 								
-								if( ptrByte1 ){
-									blockData[ bi++ ] = ( squish::u8 )ptrByte1[ dataOffset ].r;
+								if(ptrByte1){
+									blockData[bi++] = (squish::u8)ptrByte1[dataOffset].r;
 									bi += 3;
 									
-								}else if( ptrByte2 ){
-									blockData[ bi++ ] = ( squish::u8 )ptrByte2[ dataOffset ].r;
-									blockData[ bi++ ] = ( squish::u8 )ptrByte2[ dataOffset ].g;
+								}else if(ptrByte2){
+									blockData[bi++] = (squish::u8)ptrByte2[dataOffset].r;
+									blockData[bi++] = (squish::u8)ptrByte2[dataOffset].g;
 									bi += 2;
 									
-								}else if( ptrByte3 ){
-									blockData[ bi++ ] = ( squish::u8 )ptrByte3[ dataOffset ].r;
-									blockData[ bi++ ] = ( squish::u8 )ptrByte3[ dataOffset ].g;
-									blockData[ bi++ ] = ( squish::u8 )ptrByte3[ dataOffset ].b;
+								}else if(ptrByte3){
+									blockData[bi++] = (squish::u8)ptrByte3[dataOffset].r;
+									blockData[bi++] = (squish::u8)ptrByte3[dataOffset].g;
+									blockData[bi++] = (squish::u8)ptrByte3[dataOffset].b;
 									bi++;
 									
-								}else if( ptrByte4 ){
-									blockData[ bi++ ] = ( squish::u8 )ptrByte4[ dataOffset ].r;
-									blockData[ bi++ ] = ( squish::u8 )ptrByte4[ dataOffset ].g;
-									blockData[ bi++ ] = ( squish::u8 )ptrByte4[ dataOffset ].b;
-									blockData[ bi++ ] = ( squish::u8 )ptrByte4[ dataOffset ].a;
+								}else if(ptrByte4){
+									blockData[bi++] = (squish::u8)ptrByte4[dataOffset].r;
+									blockData[bi++] = (squish::u8)ptrByte4[dataOffset].g;
+									blockData[bi++] = (squish::u8)ptrByte4[dataOffset].b;
+									blockData[bi++] = (squish::u8)ptrByte4[dataOffset].a;
 								}
 								
 							}else{
@@ -328,7 +328,7 @@ void deoglTextureCompression::pCompressSquish( const deoglPixelBuffer &pixelBuff
 				}
 				
 				// compress using squish and write next block to the compressed data pixel buffer
-				squish::CompressMasked( &blockData[ 0 ], blockMask, ptrCompressed, flags );
+				squish::CompressMasked(&blockData[0], blockMask, ptrCompressed, flags);
 				ptrCompressed += blockSize;
 			}
 		}

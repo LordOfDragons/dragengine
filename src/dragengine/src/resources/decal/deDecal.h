@@ -91,7 +91,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create decal. */
-	deDecal( deDecalManager *manager );
+	deDecal(deDecalManager *manager);
 	
 protected:
 	/**
@@ -112,49 +112,49 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Size. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
-	void SetSize( const decVector &size );
+	void SetSize(const decVector &size);
 	
 	/** \brief Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** \brief Set texture coordinate transformation matrix. */
-	void SetTransform( const decTexMatrix2 &matrix );
+	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** \brief Skin. */
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Texture number in the skin. */
 	inline int GetTexture() const{ return pTexture; }
 	
 	/** \brief Set texture number in the skin. */
-	void SetTexture( int texture );
+	void SetTexture(int texture);
 	
 	/** \brief Dynamic skin or NULL if not used. */
 	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or NULL if not used. */
-	void SetDynamicSkin( deDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Decal is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if decal is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	/*@}*/
 	
 	
@@ -165,13 +165,13 @@ public:
 	inline int GetBoneStateCount() const{ return pBoneStateCount; }
 	
 	/** \brief Set number of bone states. */
-	void SetBoneStateCount( int count );
+	void SetBoneStateCount(int count);
 	
 	/** \brief Bone state at the given index. */
-	deDecalBoneState &GetBoneStateAt( int index );
+	deDecalBoneState &GetBoneStateAt(int index);
 	
 	/** \brief Copy current bone state from the provided component. */
-	void SnapshotBoneStatesFrom( deComponent *component );
+	void SnapshotBoneStatesFrom(deComponent *component);
 	/*@}*/
 	
 	
@@ -182,7 +182,7 @@ public:
 	inline deComponent *GetParentComponent() const{ return pParentComponent; }
 	
 	/** \brief Set parent component or NULL. */
-	void SetParentComponent( deComponent *component );
+	void SetParentComponent(deComponent *component);
 	
 	/** \brief Previous decal in component linked list. */
 	inline deDecal *GetLLComponentPrev() const{ return pLLComponentPrev; }
@@ -191,7 +191,7 @@ public:
 	 * \brief Set next decal in the component linked list.
 	 * \warning For use by deComponent only.
 	 */
-	void SetLLComponentPrev( deDecal *decal );
+	void SetLLComponentPrev(deDecal *decal);
 	
 	/** \brief Next decal in the component linked list. */
 	inline deDecal *GetLLComponentNext() const{ return pLLComponentNext; }
@@ -200,7 +200,7 @@ public:
 	 * \brief Set next decal in the component linked list.
 	 * \warning For use by deComponent only.
 	 */
-	void SetLLComponentNext( deDecal *decal );
+	void SetLLComponentNext(deDecal *decal);
 	/*@}*/
 	
 	
@@ -211,7 +211,7 @@ public:
 	inline deHeightTerrainSector *GetParentHeightTerrainSector() const{ return pParentHeightTerrainSector; }
 	
 	/** \brief Set parent height terrain sector or NULL. */
-	void SetParentHeightTerrainSector( deHeightTerrainSector *sector );
+	void SetParentHeightTerrainSector(deHeightTerrainSector *sector);
 	
 	/** \brief Previous decal in height terrain sector linked list. */
 	inline deDecal *GetLLHeightTerrainSectorPrev() const{ return pLLHeightTerrainSectorPrev; }
@@ -220,7 +220,7 @@ public:
 	 * \brief Set next decal in the height terrain sector linked list.
 	 * \warning For use by deHeightTerrainSector only.
 	 */
-	void SetLLHeightTerrainSectorPrev( deDecal *decal );
+	void SetLLHeightTerrainSectorPrev(deDecal *decal);
 	
 	/** \brief Next decal in the height terrain sector linked list. */
 	inline deDecal *GetLLHeightTerrainSectorNext() const{ return pLLHeightTerrainSectorNext; }
@@ -229,7 +229,7 @@ public:
 	 * \brief Set next decal in the height terrain sector linked list.
 	 * \warning For use by deHeightTerrainSector only.
 	 */
-	void SetLLHeightTerrainSectorNext( deDecal *decal );
+	void SetLLHeightTerrainSectorNext(deDecal *decal);
 	/*@}*/
 	
 	
@@ -240,19 +240,19 @@ public:
 	inline deBaseGraphicDecal *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicDecal *peer );
+	void SetPeerGraphic(deBaseGraphicDecal *peer);
 	
 	/** \brief Physics system peer. */
 	inline deBasePhysicsDecal *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
-	void SetPeerPhysics( deBasePhysicsDecal *peer );
+	void SetPeerPhysics(deBasePhysicsDecal *peer);
 	
 	/** \brief Audio system peer. */
 	inline deBaseAudioDecal *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer. */
-	void SetPeerAudio( deBaseAudioDecal *peer );
+	void SetPeerAudio(deBaseAudioDecal *peer);
 	/*@}*/
 	
 	

@@ -37,7 +37,7 @@
  */
 class debpDecalFace{
 public:
-	decVector pPoints[ 3 ];
+	decVector pPoints[3];
 	decVector pNormal;
 	
 public:
@@ -54,20 +54,20 @@ public:
 	/** Retrieves the face normal. */
 	inline const decVector &GetNormal() const{ return pNormal; }
 	/** Sets the face normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	/** Retrieves the first point. */
-	inline const decVector &GetPoint1() const{ return pPoints[ 0 ]; }
+	inline const decVector &GetPoint1() const{ return pPoints[0]; }
 	/** Sets the first point. */
-	void SetPoint1( const decVector &point );
+	void SetPoint1(const decVector &point);
 	/** Retrieves the second point. */
-	inline const decVector &GetPoint2() const{ return pPoints[ 1 ]; }
+	inline const decVector &GetPoint2() const{ return pPoints[1]; }
 	/** Sets the second point. */
-	void SetPoint2( const decVector &point );
+	void SetPoint2(const decVector &point);
 	/** Retrieves the third point. */
-	inline const decVector &GetPoint3() const{ return pPoints[ 2 ]; }
+	inline const decVector &GetPoint3() const{ return pPoints[2]; }
 	/** Sets the third point. */
-	void SetPoint3( const decVector &point );
+	void SetPoint3(const decVector &point);
 	/*@}*/
 };
 

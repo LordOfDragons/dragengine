@@ -60,13 +60,13 @@ public:
 	int GetCount() const;
 	
 	/** \brief Widget at index. */
-	dealWidgetOptionBox *GetAt( int index ) const;
+	dealWidgetOptionBox *GetAt(int index) const;
 	
 	/** \brief Add widget. */
-	void Add( dealWidgetOptionBox *widget );
+	void Add(dealWidgetOptionBox *widget);
 	
 	/** \brief Remove widget. */
-	void Remove( dealWidgetOptionBox *widget );
+	void Remove(dealWidgetOptionBox *widget);
 	
 	/** \brief Remove all widgets. */
 	void RemoveAll();
@@ -75,7 +75,7 @@ public:
 	dealWidgetOptionBox *GetSelected() const;
 	
 	/** \brief Select option and deselect all others or \em NULL to deselect all. */
-	void Select( dealWidgetOptionBox *option );
+	void Select(dealWidgetOptionBox *option);
 	/*@}*/
 };
 

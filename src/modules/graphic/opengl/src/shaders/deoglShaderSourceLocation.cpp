@@ -37,13 +37,13 @@
 ////////////////////////////
 
 deoglShaderSourceLocation::deoglShaderSourceLocation(
-const char *inputFile, int inputLine, int outputLine ) :
-pInputFile( inputFile ),
-pInputLine( inputLine ),
-pOutputLine( outputLine )
+const char *inputFile, int inputLine, int outputLine) :
+pInputFile(inputFile),
+pInputLine(inputLine),
+pOutputLine(outputLine)
 {
-	if( inputLine < 1 || outputLine < 1 ){
-		DETHROW( deeInvalidParam );
+	if(inputLine < 1 || outputLine < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 

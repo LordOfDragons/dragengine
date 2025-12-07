@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new blocker. */
-	deNavigationBlocker( deNavigationBlockerManager *manager );
+	deNavigationBlocker(deNavigationBlockerManager *manager);
 	
 protected:
 	/**
@@ -98,31 +98,31 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
 	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( const decVector &scaling );
+	void SetScaling(const decVector &scaling);
 	
 	/** \brief Layer number. */
 	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	
 	/** \brief Space type to navigate. */
 	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{ return pSpaceType; }
 	
 	/** \brief Set space type to navigate. */
-	void SetSpaceType( deNavigationSpace::eSpaceTypes spaceType );
+	void SetSpaceType(deNavigationSpace::eSpaceTypes spaceType);
 	
 	/**
 	 * \brief Blocking priority.
@@ -136,13 +136,13 @@ public:
 	 * 
 	 * Blocks navigation meshes with a smaller or equal blocking priority.
 	 */
-	void SetBlockingPriority( int priority );
+	void SetBlockingPriority(int priority);
 	
 	/** \brief Blocker is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if blocker is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Shape list. */
 	inline decShapeList &GetShapeList(){ return pShapeList; }
@@ -160,7 +160,7 @@ public:
 	inline deBaseAINavigationBlocker *GetPeerAI() const{ return pPeerAI; }
 	
 	/** \brief Set AI system peer. */
-	void SetPeerAI( deBaseAINavigationBlocker *peer );
+	void SetPeerAI(deBaseAINavigationBlocker *peer);
 	/*@}*/
 	
 	
@@ -171,19 +171,19 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous blocker in the parent world linked list. */
 	inline deNavigationBlocker *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next blocker in the parent world linked list. */
-	void SetLLWorldPrev( deNavigationBlocker *blocker );
+	void SetLLWorldPrev(deNavigationBlocker *blocker);
 	
 	/** \brief Next blocker in the parent world linked list. */
 	inline deNavigationBlocker *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next blocker in the parent world linked list. */
-	void SetLLWorldNext( deNavigationBlocker *blocker );
+	void SetLLWorldNext(deNavigationBlocker *blocker);
 	/*@}*/
 };
 

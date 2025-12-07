@@ -52,24 +52,24 @@ public:
 	/** Retrieves the number of decals. */
 	int GetCount() const;
 	/** Retrieves the decal at the given position. */
-	meDecal *GetAt( int position ) const;
+	meDecal *GetAt(int position) const;
 	/** Retrieves the index of the given decal or -1 if not found. */
-	int IndexOf( meDecal *decal ) const;
+	int IndexOf(meDecal *decal) const;
 	/** Determines if the given decal exists. */
-	bool Has( meDecal *decal ) const;
+	bool Has(meDecal *decal) const;
 	/** Adds an decal throwing an exception if already existing. */
-	void Add( meDecal *decal );
+	void Add(meDecal *decal);
 	/** Adds an decal if not existing already. */
-	void AddIfAbsent( meDecal *decal );
+	void AddIfAbsent(meDecal *decal);
 	/** Removes an decal throwing an exception if not existing. */
-	void Remove( meDecal *decal );
+	void Remove(meDecal *decal);
 	/** Removes an decal if existing. */
-	void RemoveIfPresent( meDecal *decal );
+	void RemoveIfPresent(meDecal *decal);
 	/** Removes all decals. */
 	void RemoveAll();
 	
 	/** Sets the list to the contain the same decals as another list. */
-	meDecalList &operator=( const meDecalList &list );
+	meDecalList &operator=(const meDecalList &list);
 	/*@}*/
 };
 

@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render environment map probe. */
-	deoglREnvMapProbe( deoglRenderThread &renderThread );
+	deoglREnvMapProbe(deoglRenderThread &renderThread);
 	
 	/** Clean up render environment map probe. */
 	virtual ~deoglREnvMapProbe();
@@ -82,13 +82,13 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL if not set. */
-	void SetParentWorld( deoglRWorld *world );
+	void SetParentWorld(deoglRWorld *world);
 	
 	/** Octree node or \em NULL if there is none. */
 	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/** Set octree node or \em NULL if there is none. */
-	void SetOctreeNode( deoglWorldOctree *node );
+	void SetOctreeNode(deoglWorldOctree *node);
 	
 	
 	
@@ -96,7 +96,7 @@ public:
 	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }
 	
 	/** Set influence border size. */
-	void SetInfluenceBorderSize( float borderSize );
+	void SetInfluenceBorderSize(float borderSize);
 	
 	
 	
@@ -104,7 +104,7 @@ public:
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Set matrix. */
-	void SetMatrix( const decDMatrix &matrix );
+	void SetMatrix(const decDMatrix &matrix);
 	
 	
 	
@@ -114,10 +114,10 @@ public:
 	
 	
 	/** Update influence shape. */
-	void UpdateInfluenceShape( const decShapeList &shapeList );
+	void UpdateInfluenceShape(const decShapeList &shapeList);
 	
 	/** Update reflection shape. */
-	void UpdateReflectionShape( const decShapeList &maskShapeList, decShape *shape );
+	void UpdateReflectionShape(const decShapeList &maskShapeList, decShape *shape);
 	
 	
 	
@@ -139,7 +139,7 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 	
 private:

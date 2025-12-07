@@ -38,13 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetInheritSubObjects::gdeUOCSetInheritSubObjects( gdeObjectClass *objectClass, int newValue ) :
-pObjectClass( nullptr ),
-pNewValue( newValue )
+gdeUOCSetInheritSubObjects::gdeUOCSetInheritSubObjects(gdeObjectClass *objectClass, int newValue) :
+pObjectClass(nullptr),
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( objectClass )
+	DEASSERT_NOTNULL(objectClass)
 	
-	SetShortInfo( "Object class set inherit sub objects" );
+	SetShortInfo("Object class set inherit sub objects");
 	
 	pOldValue = objectClass->GetInheritSubObjects();
 	pNewValue = newValue;
@@ -54,7 +54,7 @@ pNewValue( newValue )
 }
 
 gdeUOCSetInheritSubObjects::~gdeUOCSetInheritSubObjects(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ gdeUOCSetInheritSubObjects::~gdeUOCSetInheritSubObjects(){
 ///////////////
 
 void gdeUOCSetInheritSubObjects::Undo(){
-	pObjectClass->SetInheritSubObjects( pOldValue );
+	pObjectClass->SetInheritSubObjects(pOldValue);
 }
 
 void gdeUOCSetInheritSubObjects::Redo(){
-	pObjectClass->SetInheritSubObjects( pNewValue );
+	pObjectClass->SetInheritSubObjects(pNewValue);
 }

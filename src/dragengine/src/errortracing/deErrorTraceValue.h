@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new error trace value object with the given name and value. */
-	deErrorTraceValue( const char *name, const char *value );
+	deErrorTraceValue(const char *name, const char *value);
 	
 	/** \brief Clean up error trace object. */
 	~deErrorTraceValue();
@@ -64,10 +64,10 @@ public:
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Set value from a numeric value. */
-	void SetValueFrom( float value );
+	void SetValueFrom(float value);
 	/*@}*/
 
 	/** \name Trace SubValue Management */
@@ -79,13 +79,13 @@ public:
 	inline int GetSubValueCount() const{ return pSubValueCount; }
 	
 	/** \brief Indexed trace value. */
-	deErrorTraceValue *GetSubValue( int index ) const;
+	deErrorTraceValue *GetSubValue(int index) const;
 	
 	/** \brief Named trace value or NULL if not found. */
-	deErrorTraceValue *FindSubValue( const char *name ) const;
+	deErrorTraceValue *FindSubValue(const char *name) const;
 	
 	/** \brief Adds a new trace value. */
-	void AddSubValue( deErrorTraceValue *value );
+	void AddSubValue(deErrorTraceValue *value);
 	
 	/** \brief Removes all trace values. */
 	void RemoveAllSubValues();
@@ -96,16 +96,16 @@ public:
 	/** \name Convenience Functions */
 	/*@{*/
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddSubValue( const char *name, const char *value );
+	deErrorTraceValue *AddSubValue(const char *name, const char *value);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddSubValueInt( const char *name, int value );
+	deErrorTraceValue *AddSubValueInt(const char *name, int value);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddSubValueFloat( const char *name, float );
+	deErrorTraceValue *AddSubValueFloat(const char *name, float);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddSubValueBool( const char *name, bool value );
+	deErrorTraceValue *AddSubValueBool(const char *name, bool value);
 	/*@}*/
 };
 

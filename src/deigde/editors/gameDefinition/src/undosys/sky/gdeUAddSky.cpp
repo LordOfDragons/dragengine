@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddSky::gdeUAddSky( gdeGameDefinition *gameDefinition, gdeSky *sky ) :
-pGameDefinition( NULL ),
-pSky( NULL )
+gdeUAddSky::gdeUAddSky(gdeGameDefinition *gameDefinition, gdeSky *sky) :
+pGameDefinition(NULL),
+pSky(NULL)
 {
-	if( ! gameDefinition || ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition || !sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add sky" );
+	SetShortInfo("Add sky");
 	
 	pSky = sky;
 	sky->AddReference();
@@ -58,10 +58,10 @@ pSky( NULL )
 }
 
 gdeUAddSky::~gdeUAddSky(){
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -72,9 +72,9 @@ gdeUAddSky::~gdeUAddSky(){
 ///////////////
 
 void gdeUAddSky::Undo(){
-	pGameDefinition->RemoveSky( pSky );
+	pGameDefinition->RemoveSky(pSky);
 }
 
 void gdeUAddSky::Redo(){
-	pGameDefinition->AddSky( pSky );
+	pGameDefinition->AddSky(pSky);
 }

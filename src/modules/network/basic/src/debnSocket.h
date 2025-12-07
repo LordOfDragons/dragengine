@@ -71,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create socket. */
-	debnSocket( deNetworkBasic &netBasic );
+	debnSocket(deNetworkBasic &netBasic);
 	
 	/** Clean up socket object. */
 	virtual ~debnSocket();
@@ -92,18 +92,18 @@ public:
 	 * Receive datagram from socket.
 	 * \returns true if a message has been receives or false otherwise.
 	 */
-	bool ReceiveDatagram( deNetworkMessage &stream, debnAddress &address );
+	bool ReceiveDatagram(deNetworkMessage &stream, debnAddress &address);
 	
 	/**
 	 * Send datagram.
 	 */
-	void SendDatagram( const deNetworkMessage &stream, const debnAddress &address );
+	void SendDatagram(const deNetworkMessage &stream, const debnAddress &address);
 	
 	/** Throw socket error. */
-	static void ThrowSocketError( const char *message );
+	static void ThrowSocketError(const char *message);
 	
 	/** Find public addresses. */
-	static void FindAddresses( decStringList &list, bool onlyPublic );
+	static void FindAddresses(decStringList &list, bool onlyPublic);
 	/*@}*/
 	
 	
@@ -114,26 +114,26 @@ public:
 	inline debnSocket *GetPreviousSocket() const{ return pPreviousSocket; }
 	
 	/** Set previous socket. */
-	void SetPreviousSocket( debnSocket *bnSocket );
+	void SetPreviousSocket(debnSocket *bnSocket);
 	
 	/** Next socket. */
 	inline debnSocket *GetNextSocket() const{ return pNextSocket; }
 	
 	/** \breif Set next socket. */
-	void SetNextSocket( debnSocket *bnSocket );
+	void SetNextSocket(debnSocket *bnSocket);
 	
 	/** Connection is registered. */
 	inline bool GetIsRegistered() const{ return pIsRegistered; }
 	
 	/** Set if connection is registered. */
-	void SetIsRegistered( bool isRegistered );
+	void SetIsRegistered(bool isRegistered);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	static uint32_t pScopeIdFor( const sockaddr_in6 &address );
+	static uint32_t pScopeIdFor(const sockaddr_in6 &address);
 };
 
 #endif

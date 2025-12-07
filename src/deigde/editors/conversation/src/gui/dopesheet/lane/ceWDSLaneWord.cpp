@@ -64,18 +64,18 @@ protected:
 	ceWDSLaneWord &pLane;
 	
 public:
-	cActionWordsFromText( ceWDSLaneWord &lane ) : igdeAction( "Words From Text",
-		nullptr, "Set words from Actor Speak Action text using speech animation information" ),
-	pLane( lane ){ }
+	cActionWordsFromText(ceWDSLaneWord &lane) : igdeAction("Words From Text",
+		nullptr, "Set words from Actor Speak Action text using speech animation information"),
+	pLane(lane){}
 
 	virtual void OnAction(){
 		ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
-		if( ! action ){
+		if(!action){
 			return;
 		}
 		
 		ceConversation * const conversation = pLane.GetWindow().GetConversation();
-		if( ! conversation ){
+		if(!conversation){
 			return;
 		}
 		
@@ -86,7 +86,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pLane.GetWindow().GetActionASpeak() );
+		SetEnabled(pLane.GetWindow().GetActionASpeak());
 	}
 };
 
@@ -100,9 +100,9 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWDSLaneWord::ceWDSLaneWord( ceWindowDopeSheet &dopeSheet, int index,
-	const char *label, const char *description ) :
-ceWDSLane( dopeSheet, index, label, description ){
+ceWDSLaneWord::ceWDSLaneWord(ceWindowDopeSheet &dopeSheet, int index,
+	const char *label, const char *description) :
+ceWDSLane(dopeSheet, index, label, description){
 }
 
 ceWDSLaneWord::~ceWDSLaneWord(){
@@ -113,11 +113,11 @@ ceWDSLaneWord::~ceWDSLaneWord(){
 // Management
 ///////////////
 
-void ceWDSLaneWord::OnContextMenu( igdeMenuCascade &menu, const decPoint &position ){
-	ceWDSLane::OnContextMenu( menu, position );
+void ceWDSLaneWord::OnContextMenu(igdeMenuCascade &menu, const decPoint &position){
+	ceWDSLane::OnContextMenu(menu, position);
 	
 	igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-	helper.MenuCommand( menu, new cActionWordsFromText( *this ), true );
+	helper.MenuCommand(menu, new cActionWordsFromText(*this), true);
 }
 
 
@@ -127,67 +127,67 @@ const ceStripList &ceWDSLaneWord::GetStripList() const{
 	return action ? action->GetWordList() : GetEmptyList();
 }
 
-void ceWDSLaneWord::FillIDList( decStringList &list ){
+void ceWDSLaneWord::FillIDList(decStringList &list){
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	if( ! action ){
+	if(!action){
 		return;
 	}
 	
 	const ceConversationActorList &actorList = GetWindow().GetConversation()->GetActorList();
 	ceSpeechAnimation *speechAnimation = NULL;
 	
-	ceConversationActor *actor = actorList.GetWithIDOrAliasID( action->GetActor() );
-	if( actor ){
+	ceConversationActor *actor = actorList.GetWithIDOrAliasID(action->GetActor());
+	if(actor){
 		speechAnimation = actor->GetSpeechAnimation();
 	}
-	if( ! speechAnimation ){
+	if(!speechAnimation){
 		return;
 	}
 	
 	const ceSAWordList &saWordList = speechAnimation->GetWordList();
 	const int saWordCount = saWordList.GetCount();
 	int i;
-	for( i=0; i<saWordCount; i++ ){
-		list.Add( saWordList.GetAt( i )->GetName() );
+	for(i=0; i<saWordCount; i++){
+		list.Add(saWordList.GetAt(i)->GetName());
 	}
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripAdd( ceStrip *strip, int index ){
+igdeUndo *ceWDSLaneWord::UndoStripAdd(ceStrip *strip, int index){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordAdd( GetWindow().GetTopic(), action, strip, index ) : NULL;
+	return action ? new ceUCAASpeakWordAdd(GetWindow().GetTopic(), action, strip, index) : NULL;
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripRemove( ceStrip *strip ){
+igdeUndo *ceWDSLaneWord::UndoStripRemove(ceStrip *strip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordRemove( GetWindow().GetTopic(), action, strip ) : NULL;
+	return action ? new ceUCAASpeakWordRemove(GetWindow().GetTopic(), action, strip) : NULL;
 }
 
 igdeUndo *ceWDSLaneWord::UndoStripRemoveAll(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordClear( GetWindow().GetTopic(), action ) : NULL;
+	return action ? new ceUCAASpeakWordClear(GetWindow().GetTopic(), action) : NULL;
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripReplace( ceStrip *strip, ceStrip *withStrip ){
+igdeUndo *ceWDSLaneWord::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordSet( GetWindow().GetTopic(), action, strip, withStrip ) : NULL;
+	return action ? new ceUCAASpeakWordSet(GetWindow().GetTopic(), action, strip, withStrip) : NULL;
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripMove( ceStrip *strip, int toIndex ){
+igdeUndo *ceWDSLaneWord::UndoStripMove(ceStrip *strip, int toIndex){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordMove( GetWindow().GetTopic(), action, strip, toIndex ) : NULL;
+	return action ? new ceUCAASpeakWordMove(GetWindow().GetTopic(), action, strip, toIndex) : NULL;
 }
 
-ceUCAASpeakStripSetPause *ceWDSLaneWord::UndoStripSetPause( ceStrip *strip, float pause ){
+ceUCAASpeakStripSetPause *ceWDSLaneWord::UndoStripSetPause(ceStrip *strip, float pause){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordSetPause( GetWindow().GetTopic(), action, strip, pause ) : NULL;
+	return action ? new ceUCAASpeakWordSetPause(GetWindow().GetTopic(), action, strip, pause) : NULL;
 }
 
-ceUCAASpeakStripSetDuration *ceWDSLaneWord::UndoStripSetDuration( ceStrip *strip, float duration ){
+ceUCAASpeakStripSetDuration *ceWDSLaneWord::UndoStripSetDuration(ceStrip *strip, float duration){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordSetDuration( GetWindow().GetTopic(), action, strip, duration ) : NULL;
+	return action ? new ceUCAASpeakWordSetDuration(GetWindow().GetTopic(), action, strip, duration) : NULL;
 }
 
 ceUCAASpeakStripsScale *ceWDSLaneWord::UndoScaleStrips(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordsScale( GetWindow().GetTopic(), action ) : NULL;
+	return action ? new ceUCAASpeakWordsScale(GetWindow().GetTopic(), action) : NULL;
 }

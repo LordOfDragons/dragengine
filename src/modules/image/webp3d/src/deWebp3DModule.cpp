@@ -44,7 +44,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *WEBP3DCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *WEBP3DCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -54,11 +54,11 @@ MOD_ENTRY_POINT_ATTR deBaseModule *WEBP3DCreateModule( deLoadableModule *loadabl
 // Entry Point
 ////////////////
 
-deBaseModule *WEBP3DCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *WEBP3DCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new deWebp3DModule( *loadableModule );
+		return new deWebp3DModule(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return nullptr;
 	}
 }
@@ -71,8 +71,8 @@ deBaseModule *WEBP3DCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deWebp3DModule::deWebp3DModule( deLoadableModule &loadableModule ) :
-deBaseImageModule( loadableModule ){
+deWebp3DModule::deWebp3DModule(deLoadableModule &loadableModule) :
+deBaseImageModule(loadableModule){
 }
 
 deWebp3DModule::~deWebp3DModule(){
@@ -83,15 +83,15 @@ deWebp3DModule::~deWebp3DModule(){
 // Loading, Saving
 ////////////////////
 
-deBaseImageInfo *deWebp3DModule::InitLoadImage( decBaseFileReader &file ){
+deBaseImageInfo *deWebp3DModule::InitLoadImage(decBaseFileReader &file){
 	deWebp3DImageInfo *info = nullptr;
 	
 	try{
-		info = new deWebp3DImageInfo( file.GetFilename() );
-		deWebp3DTarball( *this ).Get3DImageInfos( *info, file );
+		info = new deWebp3DImageInfo(file.GetFilename());
+		deWebp3DTarball(*this).Get3DImageInfos(*info, file);
 		
-	}catch( const deException & ){
-		if( info ){
+	}catch(const deException &){
+		if(info){
 			delete info;
 		}
 		throw;
@@ -100,13 +100,13 @@ deBaseImageInfo *deWebp3DModule::InitLoadImage( decBaseFileReader &file ){
 	return info;
 }
 
-void deWebp3DModule::LoadImage( decBaseFileReader &file, deImage &image, deBaseImageInfo &infos ){
-	file.SetPosition( 0 );
-	deWebp3DTarball( *this ).Load3DImage( ( deWebp3DImageInfo& )infos, file, image );
+void deWebp3DModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImageInfo &infos){
+	file.SetPosition(0);
+	deWebp3DTarball(*this).Load3DImage((deWebp3DImageInfo&)infos, file, image);
 }
 
-void deWebp3DModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
-	deWebp3DTarball( *this ).Save3DImage( file, image );
+void deWebp3DModule::SaveImage(decBaseFileWriter &file, const deImage &image){
+	deWebp3DTarball(*this).Save3DImage(file, image);
 }
 
 #ifdef WITH_INTERNAL_MODULE

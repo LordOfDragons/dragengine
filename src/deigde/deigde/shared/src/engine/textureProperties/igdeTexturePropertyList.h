@@ -58,28 +58,28 @@ public:
 	int GetCount() const;
 	
 	/** \brief Texture property at the given position. */
-	const igdeTextureProperty *GetAt( int index ) const;
+	const igdeTextureProperty *GetAt(int index) const;
 	
 	/** \brief Texture property with the given name or NULL if not found. */
-	const igdeTextureProperty *GetNamed( const char *name ) const;
+	const igdeTextureProperty *GetNamed(const char *name) const;
 	
 	/** \brief Index of the given texture property or -1 if not found. */
-	int IndexOf( const igdeTextureProperty *texture ) const;
+	int IndexOf(const igdeTextureProperty *texture) const;
 	
 	/** \brief Index of the texture property with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Determines if a texture property exists. */
-	bool Has( const igdeTextureProperty *texture ) const;
+	bool Has(const igdeTextureProperty *texture) const;
 	
 	/** \brief Determines if a texture property with the given name exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Adds a texture property. */
-	void Add( igdeTextureProperty *texture );
+	void Add(igdeTextureProperty *texture);
 	
 	/** \brief Removes a texture property. */
-	void Remove( const igdeTextureProperty *texture );
+	void Remove(const igdeTextureProperty *texture);
 	
 	/** \brief Removes all texture properties. */
 	void RemoveAll();

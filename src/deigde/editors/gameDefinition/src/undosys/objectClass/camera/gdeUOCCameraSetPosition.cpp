@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetPosition::gdeUOCCameraSetPosition( gdeObjectClass *objectClass,
-gdeOCCamera *camera, const decVector &newValue ) :
-pObjectClass( NULL ),
-pCamera( NULL )
+gdeUOCCameraSetPosition::gdeUOCCameraSetPosition(gdeObjectClass *objectClass,
+gdeOCCamera *camera, const decVector &newValue) :
+pObjectClass(NULL),
+pCamera(NULL)
 {
-	if( ! objectClass || ! camera ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !camera){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Camera set position" );
+	SetShortInfo("Camera set position");
 	
 	pOldValue = camera->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pCamera( NULL )
 }
 
 gdeUOCCameraSetPosition::~gdeUOCCameraSetPosition(){
-	if( pCamera ){
+	if(pCamera){
 		pCamera->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCCameraSetPosition::~gdeUOCCameraSetPosition(){
 ///////////////
 
 void gdeUOCCameraSetPosition::Undo(){
-	pCamera->SetPosition( pOldValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetPosition(pOldValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }
 
 void gdeUOCCameraSetPosition::Redo(){
-	pCamera->SetPosition( pNewValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetPosition(pNewValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }

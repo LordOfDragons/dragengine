@@ -46,7 +46,7 @@ deBaseSynthesizerSynthesizerInstance::~deBaseSynthesizerSynthesizerInstance(){
 void deBaseSynthesizerSynthesizerInstance::SynthesizerChanged(){
 }
 
-void deBaseSynthesizerSynthesizerInstance::ControllerChanged( int index ){
+void deBaseSynthesizerSynthesizerInstance::ControllerChanged(int index){
 }
 
 void deBaseSynthesizerSynthesizerInstance::PlayTimeChanged(){

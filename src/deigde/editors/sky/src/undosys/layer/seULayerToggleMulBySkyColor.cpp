@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerToggleMulBySkyColor::seULayerToggleMulBySkyColor( seLayer *layer ) :
-pLayer( NULL )
+seULayerToggleMulBySkyColor::seULayerToggleMulBySkyColor(seLayer *layer) :
+pLayer(NULL)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Toggle Layer Multiply By Sky Color" );
+	SetShortInfo("Toggle Layer Multiply By Sky Color");
 	
 	pLayer = layer;
 	layer->AddReference();
 }
 
 seULayerToggleMulBySkyColor::~seULayerToggleMulBySkyColor(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -64,9 +64,9 @@ seULayerToggleMulBySkyColor::~seULayerToggleMulBySkyColor(){
 ///////////////
 
 void seULayerToggleMulBySkyColor::Undo(){
-	pLayer->SetMultiplyBySkyColor( ! pLayer->GetMuliplyBySkyColor() );
+	pLayer->SetMultiplyBySkyColor(!pLayer->GetMuliplyBySkyColor());
 }
 
 void seULayerToggleMulBySkyColor::Redo(){
-	pLayer->SetMultiplyBySkyColor( ! pLayer->GetMuliplyBySkyColor() );
+	pLayer->SetMultiplyBySkyColor(!pLayer->GetMuliplyBySkyColor());
 }

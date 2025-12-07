@@ -55,31 +55,31 @@ public:
 	inline int GetUnicode() const{ return pUnicode; }
 	
 	/** \brief Set unicode. */
-	void SetUnicode( int unicode );
+	void SetUnicode(int unicode);
 	
 	/** \brief Left side of glyph in pixels on image map. */
 	inline int GetX() const{ return pX; }
 	
 	/** \brief Left side of glyph in pixels on image map. */
-	void SetX( int x );
+	void SetX(int x);
 	
 	/** \brief Top side of glyph in pixels on image map. */
 	inline int GetY() const{ return pY; }
 	
 	/** \brief Top side of glyph in pixels on image map. */
-	void SetY( int y );
+	void SetY(int y);
 	
 	/** \brief Layer of image map the glyph is located on. */
 	inline int GetZ() const{ return pZ; }
 	
 	/** \brief Layer of image map the glyph is located on. */
-	void SetZ( int z );
+	void SetZ(int z);
 	
 	/** \brief Width of glyph in pixels on image map. */
 	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Width of glyph in pixels on image map. */
-	void SetWidth( int width );
+	void SetWidth(int width);
 	
 	/** \brief Height of glyph in pixels on image map. */
 	inline int GetHeight() const{ return pHeight; }
@@ -91,7 +91,7 @@ public:
 	inline int GetBearing() const{ return pBearing; }
 	
 	/** \brief Horizontal bearing in pixels. */
-	void SetBearing( int bearing );
+	void SetBearing(int bearing);
 	
 	/** \brief Vertical bearing in pixels. */
 	inline int GetBearingY() const{ return pBearingY; }
@@ -103,7 +103,7 @@ public:
 	inline int GetAdvance() const{ return pAdvance; }
 	
 	/** \brief Horizontal advance in pixels. */
-	void SetAdvance( int advance );
+	void SetAdvance(int advance);
 };
 
 #endif

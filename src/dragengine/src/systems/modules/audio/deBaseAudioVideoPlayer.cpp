@@ -52,7 +52,7 @@ void deBaseAudioVideoPlayer::PlayRangeChanged(){
 void deBaseAudioVideoPlayer::PlaySpeedChanged(){
 }
 
-void deBaseAudioVideoPlayer::PlayPositionChanged( bool ){
+void deBaseAudioVideoPlayer::PlayPositionChanged(bool){
 }
 
 void deBaseAudioVideoPlayer::PlayStateChanged(){

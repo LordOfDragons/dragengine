@@ -45,14 +45,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVideoPlayerList::deoglSharedVideoPlayerList( deGraphicOpenGl &ogl ) :
-pOgl( ogl ){
+deoglSharedVideoPlayerList::deoglSharedVideoPlayerList(deGraphicOpenGl &ogl) :
+pOgl(ogl){
 }
 
 deoglSharedVideoPlayerList::~deoglSharedVideoPlayerList(){
-	while( pList.GetCount() > 0 ){
-		delete ( deoglSharedVideoPlayer* )pList.GetAt( pList.GetCount() - 1 );
-		pList.RemoveFrom( pList.GetCount() - 1 );
+	while(pList.GetCount() > 0){
+		delete (deoglSharedVideoPlayer*)pList.GetAt(pList.GetCount() - 1);
+		pList.RemoveFrom(pList.GetCount() - 1);
 	}
 }
 
@@ -66,9 +66,9 @@ int deoglSharedVideoPlayerList::GetCount() const{
 }
 
 deoglSharedVideoPlayer *deoglSharedVideoPlayerList::GetVideoPlayerFor(
-deVideo *video, int currentFrame, float playbackSpeed ){
-	if( ! video ){
-		DETHROW( deeInvalidParam );
+deVideo *video, int currentFrame, float playbackSpeed){
+	if(!video){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// find matching video
@@ -76,26 +76,26 @@ deVideo *video, int currentFrame, float playbackSpeed ){
 	int i;
 	
 	/*
-	pOgl.LogInfoFormat( "Get shared video player: video=%s frame=%i speed=%g",
-		video->GetFilename(), currentFrame, playbackSpeed );
-	for( i=0; i<count; i++ ){
-		deoglSharedVideoPlayer * const sharedVideoPlayer = ( deoglSharedVideoPlayer* )pList.GetAt( i );
+	pOgl.LogInfoFormat("Get shared video player: video=%s frame=%i speed=%g",
+		video->GetFilename(), currentFrame, playbackSpeed);
+	for(i=0; i<count; i++){
+		deoglSharedVideoPlayer * const sharedVideoPlayer = (deoglSharedVideoPlayer*)pList.GetAt(i);
 		const deVideoPlayer &engPlayer = *sharedVideoPlayer->GetVideoPlayer();
-		const deoglVideoPlayer &player = *( ( deoglVideoPlayer* )engPlayer.GetPeerGraphic() );
-		pOgl.LogInfoFormat( "- video=%s frame=%i speed=%g usage=%i",
+		const deoglVideoPlayer &player = *((deoglVideoPlayer*)engPlayer.GetPeerGraphic());
+		pOgl.LogInfoFormat("- video=%s frame=%i speed=%g usage=%i",
 			engPlayer.GetVideo()->GetFilename(), player.GetCurrentFrame(), engPlayer.GetPlaySpeed(),
-			sharedVideoPlayer->GetUsageCount() );
+			sharedVideoPlayer->GetUsageCount());
 	}
 	*/
 	
-	for( i=0; i<count; i++ ){
-		deoglSharedVideoPlayer * const sharedVideoPlayer = ( deoglSharedVideoPlayer* )pList.GetAt( i );
+	for(i=0; i<count; i++){
+		deoglSharedVideoPlayer * const sharedVideoPlayer = (deoglSharedVideoPlayer*)pList.GetAt(i);
 		const deVideoPlayer &engPlayer = *sharedVideoPlayer->GetVideoPlayer();
-		const deoglVideoPlayer &player = *( ( deoglVideoPlayer* )engPlayer.GetPeerGraphic() );
+		const deoglVideoPlayer &player = *((deoglVideoPlayer*)engPlayer.GetPeerGraphic());
 		
-		if( engPlayer.GetVideo() == video
+		if(engPlayer.GetVideo() == video
 		&& player.GetCurrentFrame() == currentFrame
-		&& fabsf( engPlayer.GetPlaySpeed() - playbackSpeed ) <= 0.001f ){
+		&& fabsf(engPlayer.GetPlaySpeed() - playbackSpeed) <= 0.001f){
 			sharedVideoPlayer->AddUsage();
 			//pOgl.LogInfoFormat( "Use shared video player: video=%s frame=%i speed=%g usage=%i",
 			//	video->GetFilename(), currentFrame, playbackSpeed, sharedVideoPlayer->GetUsageCount() );
@@ -109,22 +109,22 @@ deVideo *video, int currentFrame, float playbackSpeed ){
 	
 	try{
 		videoPlayer = pOgl.GetGameEngine()->GetVideoPlayerManager()->CreateVideoPlayer();
-		videoPlayer->SetVideo( video );
-		videoPlayer->SetLooping( true );
-		videoPlayer->SetPlaySpeed( playbackSpeed );
-		videoPlayer->SetPlayPosition( ( float )currentFrame / ( float )video->GetFrameRate() );
+		videoPlayer->SetVideo(video);
+		videoPlayer->SetLooping(true);
+		videoPlayer->SetPlaySpeed(playbackSpeed);
+		videoPlayer->SetPlayPosition((float)currentFrame / (float)video->GetFrameRate());
 		
-		sharedVideoPlayer = new deoglSharedVideoPlayer( pOgl, *this, videoPlayer );
-		pList.Add( sharedVideoPlayer );
+		sharedVideoPlayer = new deoglSharedVideoPlayer(pOgl, *this, videoPlayer);
+		pList.Add(sharedVideoPlayer);
 		
 		videoPlayer->Play();
 		videoPlayer->FreeReference();
 		
-	}catch( const deException & ){
-		if( sharedVideoPlayer ){
+	}catch(const deException &){
+		if(sharedVideoPlayer){
 			delete sharedVideoPlayer;
 		}
-		if( videoPlayer ){
+		if(videoPlayer){
 			videoPlayer->FreeReference();
 		}
 		throw;
@@ -137,12 +137,12 @@ deVideo *video, int currentFrame, float playbackSpeed ){
 
 
 
-void deoglSharedVideoPlayerList::UpdateAll( float elapsed ){
+void deoglSharedVideoPlayerList::UpdateAll(float elapsed){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglSharedVideoPlayer* )pList.GetAt( i ) )->Update( elapsed );
+	for(i=0; i<count; i++){
+		((deoglSharedVideoPlayer*)pList.GetAt(i))->Update(elapsed);
 	}
 }
 
@@ -150,13 +150,13 @@ void deoglSharedVideoPlayerList::SyncAllToRender(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglSharedVideoPlayer* )pList.GetAt( i ) )->SyncToRender();
+	for(i=0; i<count; i++){
+		((deoglSharedVideoPlayer*)pList.GetAt(i))->SyncToRender();
 	}
 }
 
 
 
-void deoglSharedVideoPlayerList::RemoveSharedVideoPlayer( deoglSharedVideoPlayer *sharedVideoPlayer ){
-	pList.RemoveFrom( pList.IndexOf( sharedVideoPlayer ) );
+void deoglSharedVideoPlayerList::RemoveSharedVideoPlayer(deoglSharedVideoPlayer *sharedVideoPlayer){
+	pList.RemoveFrom(pList.IndexOf(sharedVideoPlayer));
 }

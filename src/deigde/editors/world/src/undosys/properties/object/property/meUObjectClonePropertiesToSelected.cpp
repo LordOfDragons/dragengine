@@ -41,36 +41,36 @@
 ////////////////////////////
 
 meUObjectClonePropertiesToSelected::meUObjectClonePropertiesToSelected(
-const meObjectList &list, const decStringDictionary &properties ){
+const meObjectList &list, const decStringDictionary &properties){
 	meUndoDataObjectProperty *undoData = NULL;
 	const int count = list.GetCount();
 	meObject *object;
 	int i;
 	
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		SetShortInfo( "Clone object properties to selected" );
+		SetShortInfo("Clone object properties to selected");
 		pProperties = properties;
 		
-		for( i=0; i<count; i++ ){
-			object = list.GetAt( i );
-			if( ! object->GetWorld() ){
-				DETHROW( deeInvalidParam );
+		for(i=0; i<count; i++){
+			object = list.GetAt(i);
+			if(!object->GetWorld()){
+				DETHROW(deeInvalidParam);
 			}
 			
-			undoData = new meUndoDataObjectProperty( object );
+			undoData = new meUndoDataObjectProperty(object);
 			undoData->GetOldProperties() = object->GetProperties();
 			
-			pList.Add( undoData );
+			pList.Add(undoData);
 			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( undoData ){
+	}catch(const deException &){
+		if(undoData){
 			undoData->FreeReference();
 		}
 		pCleanUp();
@@ -91,10 +91,10 @@ void meUObjectClonePropertiesToSelected::Undo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObjectProperty &undoData = *( ( meUndoDataObjectProperty* )pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObjectProperty &undoData = *((meUndoDataObjectProperty*)pList.GetAt(i));
 		
-		undoData.GetObject()->SetProperties( undoData.GetOldProperties() );
+		undoData.GetObject()->SetProperties(undoData.GetOldProperties());
 	}
 }
 
@@ -102,10 +102,10 @@ void meUObjectClonePropertiesToSelected::Redo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObjectProperty &undoData = *( ( meUndoDataObjectProperty* )pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObjectProperty &undoData = *((meUndoDataObjectProperty*)pList.GetAt(i));
 		
-		undoData.GetObject()->SetProperties( pProperties );
+		undoData.GetObject()->SetProperties(pProperties);
 	}
 }
 

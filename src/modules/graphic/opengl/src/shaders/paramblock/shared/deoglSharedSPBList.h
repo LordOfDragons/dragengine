@@ -51,7 +51,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block list. */
-	deoglSharedSPBList( deoglRenderThread &renderThread, deoglShaderParameterBlock *layout );
+	deoglSharedSPBList(deoglRenderThread &renderThread, deoglShaderParameterBlock *layout);
 	
 public:
 	/** Clean up shared shader parameter block list. */
@@ -75,7 +75,7 @@ public:
 	int GetCount() const;
 	
 	/** Block at index. */
-	deoglSharedSPB *GetAt( int index ) const;
+	deoglSharedSPB *GetAt(int index) const;
 	
 	/**
 	 * Add element.

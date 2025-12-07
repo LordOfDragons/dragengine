@@ -34,9 +34,9 @@
 ////////////////////////////
 
 deoglModelLODVertPosSet::deoglModelLODVertPosSet() :
-pVBOOffset( 0 ),
-pPositions( nullptr ),
-pPositionCount( 0 ){
+pVBOOffset(0),
+pPositions(nullptr),
+pPositionCount(0){
 }
 
 deoglModelLODVertPosSet::~deoglModelLODVertPosSet(){
@@ -48,19 +48,19 @@ deoglModelLODVertPosSet::~deoglModelLODVertPosSet(){
 // Management
 ///////////////
 
-void deoglModelLODVertPosSet::SetVBOOffset( int offset ){
+void deoglModelLODVertPosSet::SetVBOOffset(int offset){
 	pVBOOffset = offset;
 }
 
-void deoglModelLODVertPosSet::SetPositionCount( int count ){
-	DEASSERT_TRUE( count >= 0 )
+void deoglModelLODVertPosSet::SetPositionCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
 	sPosition *positions = nullptr;
-	if( count > 0 ){
-		positions = new sPosition[ count ];
+	if(count > 0){
+		positions = new sPosition[count];
 	}
 	
-	if( pPositions ){
+	if(pPositions){
 		delete [] pPositions;
 	}
 	
@@ -74,7 +74,7 @@ void deoglModelLODVertPosSet::SetPositionCount( int count ){
 //////////////////////
 
 void deoglModelLODVertPosSet::pCleanUp(){
-	if( pPositions ){
+	if(pPositions){
 		delete [] pPositions;
 	}
 }

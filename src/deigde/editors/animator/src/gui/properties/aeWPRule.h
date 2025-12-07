@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPRule( aeWindowProperties &windowProperties );
+	aeWPRule(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -103,7 +103,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Active rule. */
 	aeRule *GetRule() const;
@@ -118,7 +118,7 @@ public:
 	void UpdateRuleTree();
 	
 	/** Update item in the rule tree. */
-	void UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule );
+	void UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule);
 	
 	/** Select active rule. */
 	void SelectActiveRule();

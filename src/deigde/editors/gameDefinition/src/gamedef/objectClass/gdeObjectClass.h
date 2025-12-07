@@ -115,10 +115,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create object class. */
-	gdeObjectClass( const char *name = "NewClass" );
+	gdeObjectClass(const char *name = "NewClass");
 	
 	/** Create copy of object class. */
-	gdeObjectClass( const gdeObjectClass &objectClass );
+	gdeObjectClass(const gdeObjectClass &objectClass);
 	
 	/** Clean up object class. */
 	virtual ~gdeObjectClass();
@@ -132,7 +132,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** Set parent game definition. */
-	void SetGameDefinition( gdeGameDefinition *gamedef );
+	void SetGameDefinition(gdeGameDefinition *gamedef);
 	
 	
 	
@@ -140,13 +140,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set class name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	
 	
@@ -154,7 +154,7 @@ public:
 	inline eScaleModes GetScaleMode() const{ return pScaleMode; }
 	
 	/** Set scale mode. */
-	void SetScaleMode( eScaleModes mode );
+	void SetScaleMode(eScaleModes mode);
 	
 	
 	
@@ -162,19 +162,19 @@ public:
 	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** Set cathegory. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
 	/** Hide tags. */
 	inline const decStringSet &GetHideTags() const{ return pHideTags; }
 	
 	/** Set hide tags. */
-	void SetHideTags( const decStringSet &tags );
+	void SetHideTags(const decStringSet &tags);
 	
 	/** Partial hide tags. */
 	inline const decStringSet &GetPartialHideTags() const{ return pPartialHideTags; }
 	
 	/** Set partial hide tags. */
-	void SetPartialHideTags( const decStringSet &tags );
+	void SetPartialHideTags(const decStringSet &tags);
 	
 	
 	
@@ -187,10 +187,10 @@ public:
 	inline const decStringDictionary &GetPropertyValues() const{ return pPropertyValues; }
 	
 	/** Notify listeners property changed. */
-	void NotifyPropertyChanged( gdeProperty *property );
+	void NotifyPropertyChanged(gdeProperty *property);
 	
 	/** Notify listeners property name changed. */
-	void NotifyPropertyNameChanged( gdeProperty *property );
+	void NotifyPropertyNameChanged(gdeProperty *property);
 	
 	/** Notify listeners properties changed. */
 	void NotifyPropertiesChanged();
@@ -205,10 +205,10 @@ public:
 	inline const gdePropertyList &GetTextureProperties() const{ return pTextureProperties; }
 	
 	/** Notify listeners texture property changed. */
-	void NotifyTexturePropertyChanged( gdeProperty *property );
+	void NotifyTexturePropertyChanged(gdeProperty *property);
 	
 	/** Notify listeners texture property name changed. */
-	void NotifyTexturePropertyNameChanged( gdeProperty *property );
+	void NotifyTexturePropertyNameChanged(gdeProperty *property);
 	
 	/** Notify listeners texture properties changed. */
 	void NotifyTexturePropertiesChanged();
@@ -220,7 +220,7 @@ public:
 	inline const gdeOCInheritList &GetInherits() const{ return pInherits; }
 	
 	/** Notify listeners inherit changed. */
-	void NotifyInheritChanged( gdeOCInherit *inherit );
+	void NotifyInheritChanged(gdeOCInherit *inherit);
 	
 	/** Notify listeners inherit structure changed. */
 	void NotifyInheritsChanged();
@@ -229,14 +229,14 @@ public:
 	inline const decString &GetDefaultInheritPropertyPrefix() const{ return pDefaultInheritPropertyPrefix; }
 	
 	/** Set default property name to propose if this object class is inherited. */
-	void SetDefaultInheritPropertyPrefix( const char *propertyName );
+	void SetDefaultInheritPropertyPrefix(const char *propertyName);
 	
 	/** Object class inherits (in-)directly object class. */
-	bool InheritsFrom( const gdeObjectClass *objectClass ) const;
+	bool InheritsFrom(const gdeObjectClass *objectClass) const;
 	
 	/** Object class is or inherits (in-)directly object class. */
-	bool IsOrInheritsFrom( const gdeObjectClass *objectClass ) const;
-	bool IsOrInheritsFrom( const char *name ) const;
+	bool IsOrInheritsFrom(const gdeObjectClass *objectClass) const;
+	bool IsOrInheritsFrom(const char *name) const;
 	
 	
 	
@@ -248,7 +248,7 @@ public:
 	void NotifyBillboardsChanged();
 	
 	/** Notify listeners billboard changed. */
-	void NotifyBillboardChanged( gdeOCBillboard *billboard );
+	void NotifyBillboardChanged(gdeOCBillboard *billboard);
 	
 	
 	
@@ -260,7 +260,7 @@ public:
 	void NotifyCamerasChanged();
 	
 	/** Notify listeners camera changed. */
-	void NotifyCameraChanged( gdeOCCamera *camera );
+	void NotifyCameraChanged(gdeOCCamera *camera);
 	
 	
 	
@@ -272,19 +272,19 @@ public:
 	void NotifyComponentsChanged();
 	
 	/** Notify listeners component changed. */
-	void NotifyComponentChanged( gdeOCComponent *component );
+	void NotifyComponentChanged(gdeOCComponent *component);
 	
 	/** Notify listeners component texture changed. */
-	void NotifyComponentTextureChanged( gdeOCComponent *component,
-		gdeOCComponentTexture *texture );
+	void NotifyComponentTextureChanged(gdeOCComponent *component,
+		gdeOCComponentTexture *texture);
 	
 	/** Notify listeners component texture name changed. */
-	void NotifyComponentTextureNameChanged( gdeOCComponent *component,
-		gdeOCComponentTexture *texture );
+	void NotifyComponentTextureNameChanged(gdeOCComponent *component,
+		gdeOCComponentTexture *texture);
 	
 	/** Notify listeners component texture properties changed. */
-	void NotifyComponentTexturePropertiesChanged( gdeOCComponent *component,
-		gdeOCComponentTexture *texture );
+	void NotifyComponentTexturePropertiesChanged(gdeOCComponent *component,
+		gdeOCComponentTexture *texture);
 	
 	
 	
@@ -296,7 +296,7 @@ public:
 	void NotifyLightsChanged();
 	
 	/** Notify listeners light changed. */
-	void NotifyLightChanged( gdeOCLight *light );
+	void NotifyLightChanged(gdeOCLight *light);
 	
 	
 	
@@ -308,7 +308,7 @@ public:
 	void NotifyEnvMapProbesChanged();
 	
 	/** Notify listeners environment map probe changed. */
-	void NotifyEnvMapProbeChanged( gdeOCEnvMapProbe *envMapProbe );
+	void NotifyEnvMapProbeChanged(gdeOCEnvMapProbe *envMapProbe);
 	
 	
 	
@@ -320,7 +320,7 @@ public:
 	void NotifyNavigationBlockersChanged();
 	
 	/** Notify listeners navigation blocker changed. */
-	void NotifyNavigationBlockerChanged( gdeOCNavigationBlocker *navblocker );
+	void NotifyNavigationBlockerChanged(gdeOCNavigationBlocker *navblocker);
 	
 	
 	
@@ -332,7 +332,7 @@ public:
 	void NotifyNavigationSpacesChanged();
 	
 	/** Notify listeners navigation space changed. */
-	void NotifyNavigationSpaceChanged( gdeOCNavigationSpace *navspace );
+	void NotifyNavigationSpaceChanged(gdeOCNavigationSpace *navspace);
 	
 	
 	
@@ -344,7 +344,7 @@ public:
 	void NotifyParticleEmittersChanged();
 	
 	/** Notify listeners particle emitter changed. */
-	void NotifyParticleEmitterChanged( gdeOCParticleEmitter *emitter );
+	void NotifyParticleEmitterChanged(gdeOCParticleEmitter *emitter);
 	
 	
 	
@@ -356,7 +356,7 @@ public:
 	void NotifyForceFieldsChanged();
 	
 	/** Notify listeners force fields changed. */
-	void NotifyForceFieldChanged( gdeOCForceField *field );
+	void NotifyForceFieldChanged(gdeOCForceField *field);
 	
 	
 	
@@ -368,10 +368,10 @@ public:
 	void NotifySnapPointsChanged();
 	
 	/** Notify listeners snap point changed. */
-	void NotifySnapPointChanged( gdeOCSnapPoint *snapoint );
+	void NotifySnapPointChanged(gdeOCSnapPoint *snapoint);
 	
 	/** Notify listeners snap point name changed. */
-	void NotifySnapPointNameChanged( gdeOCSnapPoint *snapoint );
+	void NotifySnapPointNameChanged(gdeOCSnapPoint *snapoint);
 	
 	
 	
@@ -383,7 +383,7 @@ public:
 	void NotifySpeakersChanged();
 	
 	/** Notify listeners speaker changed. */
-	void NotifySpeakerChanged( gdeOCSpeaker *speaker );
+	void NotifySpeakerChanged(gdeOCSpeaker *speaker);
 	
 	
 	
@@ -407,13 +407,13 @@ public:
 	inline const gdeOCComponentTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
 	
 	/** Set active texture or \em NULL if none. */
-	void SetActiveTexture( gdeOCComponentTexture *texture );
+	void SetActiveTexture(gdeOCComponentTexture *texture);
 	
 	/** Notify listeners textures changed. */
 	void NotifyTexturesChanged();
 	
 	/** Notify listeners texture changed. */
-	void NotifyTextureChanged( gdeOCComponentTexture *texture );
+	void NotifyTextureChanged(gdeOCComponentTexture *texture);
 	
 	
 	
@@ -421,19 +421,19 @@ public:
 	inline bool GetIsGhost() const{ return pIsGhost; }
 	
 	/** Set if object is a ghost not blocking other objects. */
-	void SetIsGhost( bool isGhost );
+	void SetIsGhost(bool isGhost);
 	
 	/** Object can be instantiated. */
 	inline bool GetCanInstantiate() const{ return pCanInstantiate; }
 	
 	/** Set if object can be instantiated. */
-	void SetCanInstantiate( bool canInstantiate );
+	void SetCanInstantiate(bool canInstantiate);
 	
 	/** Inherit sub objects. */
 	inline int GetInheritSubObjects() const{ return pInheritSubObjects; }
 	
 	/** Set inherit sub objects. */
-	void SetInheritSubObjects( int filter );
+	void SetInheritSubObjects(int filter);
 	
 	/** Object class is an attachable behavior. */
 	inline bool GetIsAttachableBehavior() const{ return pIsAttachableBehavior; }
@@ -443,41 +443,41 @@ public:
 	
 	
 	/** Named property searching inheritance. */
-	bool DeepGetNamedProperty( const char *name, const gdeObjectClass* &objectClass,
-		const gdeProperty* &property ) const;
+	bool DeepGetNamedProperty(const char *name, const gdeObjectClass* &objectClass,
+		const gdeProperty* &property) const;
 	
 	/** Named property default value searching inheritance. */
-	bool NamedPropertyDefaultValue( const char *name, decString &value ) const;
+	bool NamedPropertyDefaultValue(const char *name, decString &value) const;
 	
 	/**
 	 * Add property names in this class and optionally inherited classes.
 	 * \param[out] set Set to add property names to.
 	 * \param[in] inherited Include inherited parameters.
 	 */
-	void AddPropertyNamesTo( decStringSet &set, bool inherited = false ) const;
+	void AddPropertyNamesTo(decStringSet &set, bool inherited = false) const;
 	
 	/**
 	 * Add property names in this class and optionally inherited classes.
 	 * \param[out] set Set to add property names to.
 	 * \param[in] inherited Include inherited parameters.
 	 */
-	void AddTexturePropertyNamesTo( decStringSet &set, bool inherited = false ) const;
+	void AddTexturePropertyNamesTo(decStringSet &set, bool inherited = false) const;
 	
 	/** Add all properties with inheritance if required. */
-	void AddPropertiesTo( decStringDictionary &properties, bool inherited = false,
-		bool includeValues = true ) const;
+	void AddPropertiesTo(decStringDictionary &properties, bool inherited = false,
+		bool includeValues = true) const;
 	
 	/** Find identifiers. */
-	void GetDefinedUsedIDs( decStringSet &definedIDs, decStringSet &usedIDs ) const;
+	void GetDefinedUsedIDs(decStringSet &definedIDs, decStringSet &usedIDs) const;
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pAddPropertyNames( decStringSet &set, const decString &prefix ) const;
-	void pAddTexturePropertyNames( decStringSet &set, const decString &prefix ) const;
-	void pAddPropertiesTo( decStringDictionary &properties, const decString &prefix ) const;
+	void pAddPropertyNames(decStringSet &set, const decString &prefix) const;
+	void pAddTexturePropertyNames(decStringSet &set, const decString &prefix) const;
+	void pAddPropertiesTo(decStringDictionary &properties, const decString &prefix) const;
 };
 
 #endif

@@ -55,9 +55,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetTriggerName( gdeObjectClass *objectClass,
+	gdeUOCForceFieldSetTriggerName(gdeObjectClass *objectClass,
 		gdeOCForceField *forceField, gdeOCForceField::eTriggers trigger,
-		const char *newValue );
+		const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedsCollider( deScriptingDragonScript &ds, deCollider *collider );
+	dedsCollider(deScriptingDragonScript &ds, deCollider *collider);
 	
 	/** \brief Clean up peer. */
 	virtual ~dedsCollider();
@@ -72,43 +72,43 @@ public:
 	dsRealObject *GetOwner() const;
 	
 	/** \brief Set owner object or \em NULL. */
-	void SetOwner( dsRealObject *object );
+	void SetOwner(dsRealObject *object);
 	
 	/** \brief Set if can hit collider callback is enabled. */
-	void SetEnableCanHitCallback( bool enable );
+	void SetEnableCanHitCallback(bool enable);
 	
 	/** \brief Callback object or \em NULL. */
 	dsRealObject *GetCallback() const;
 	
 	/** \brief Set callback object or \em NULL. */
-	void SetCallback( dsRealObject *object );
+	void SetCallback(dsRealObject *object);
 	
 	/** \brief Breaking callback object or \em NULL. */
 	dsRealObject *GetCallbackBreaking() const;
 	
 	/** \brief Set breaking callback object or \em NULL. */
-	void SetCallbackBreaking( dsRealObject *object );
+	void SetCallbackBreaking(dsRealObject *object);
 	
 	
 	
 	/** \brief Collision response. */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	
 	/** \brief Can hit collider query. */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	
 	/** \brief Collider changed. */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 	
 	
 	
 	/** \brief Collider constraint has broken. */
-	virtual void ColliderConstraintBroke( deCollider *owner,
-		int index, deColliderConstraint *constraint );
+	virtual void ColliderConstraintBroke(deCollider *owner,
+		int index, deColliderConstraint *constraint);
 	
 	/** \brief Collider rig constraint has broken. */
-	virtual void RigConstraintBroke( deCollider *owner,
-		int bone, int index, deRigConstraint *constraint );
+	virtual void RigConstraintBroke(deCollider *owner,
+		int bone, int index, deRigConstraint *constraint);
 	/*@}*/
 };
 

@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseVRModule( deLoadableModule &loadableModule );
+	deBaseVRModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseVRModule();
@@ -123,7 +123,7 @@ public:
 	 * If the VR module does not support eye gaze tracking and sFeatureSupport::efslRequired
 	 * is specified an exception is thrown.
 	 */
-	virtual void RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level );
+	virtual void RequestFeatureEyeGazeTracking(deBaseVRModule::eFeatureSupportLevel level);
 	
 	/**
 	 * \brief Set feature request level for facial tracking.
@@ -143,7 +143,7 @@ public:
 	 * If the VR module does not support facial tracking and sFeatureSupport::efslRequired
 	 * is specified an exception is thrown.
 	 */
-	virtual void RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level );
+	virtual void RequestFeatureFacialTracking(deBaseVRModule::eFeatureSupportLevel level);
 	
 	/**
 	 * \brief Start VR.
@@ -176,7 +176,7 @@ public:
 	 * 
 	 * If set to nullptr fades back to safe scene as defined by VR Runtime.
 	 */
-	virtual void SetCamera( deCamera *camera ) = 0;
+	virtual void SetCamera(deCamera *camera) = 0;
 	
 	/**
 	 * \brief VR Runtime supports presenting user environment inside the rendered world.
@@ -190,7 +190,7 @@ public:
 	 * 
 	 * Has no effect if SupportsPassthrough() returns false.
 	 */
-	virtual void SetEnablePassthrough( bool enable );
+	virtual void SetEnablePassthrough(bool enable);
 	
 	/**
 	 * \brief Set transparency of user environment presented inside the rendered world.
@@ -199,7 +199,7 @@ public:
 	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
 	 * environment. A value of 1 shows the environment. Values in between blend over.
 	 */
-	virtual void SetPassthroughTransparency( float transparency );
+	virtual void SetPassthroughTransparency(float transparency);
 	
 	/**
 	 * \brief Center playspace with forward direction matching looking direction.
@@ -220,28 +220,28 @@ public:
 	virtual int GetDeviceCount() = 0;
 	
 	/** \brief Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index ) = 0;
+	virtual deInputDevice *GetDeviceAt(int index) = 0;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id ) = 0;
+	virtual int IndexOfDeviceWithID(const char *id) = 0;
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id ) = 0;
+	virtual int IndexOfButtonWithID(int device, const char *id) = 0;
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id ) = 0;
+	virtual int IndexOfAxisWithID(int device, const char *id) = 0;
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id ) = 0;
+	virtual int IndexOfFeedbackWithID(int device, const char *id) = 0;
 	
 	/** \brief Index of component with identifier on device at index or -1 if absent. */
-	virtual int IndexOfComponentWithID( int device, const char *id ) = 0;
+	virtual int IndexOfComponentWithID(int device, const char *id) = 0;
 	
 	/** \brief Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed( int device, int button ) = 0;
+	virtual bool GetButtonPressed(int device, int button) = 0;
 	
 	/** \brief Button at index on device at index is touched. */
-	virtual bool GetButtonTouched( int device, int button ) = 0;
+	virtual bool GetButtonTouched(int device, int button) = 0;
 	
 	/**
 	 * \brief User finger is near button at index on device.
@@ -250,26 +250,26 @@ public:
 	virtual bool GetButtonNear(int device, int button);
 	
 	/** \brief Value of axis at index on device at index. */
-	virtual float GetAxisValue( int device, int axis ) = 0;
+	virtual float GetAxisValue(int device, int axis) = 0;
 	
 	/** \brief Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue( int device, int feedback ) = 0;
+	virtual float GetFeedbackValue(int device, int feedback) = 0;
 	
 	/** \brief Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue( int device, int feedback, float value ) = 0;
+	virtual void SetFeedbackValue(int device, int feedback, float value) = 0;
 	
 	/** \brief Device pose or identity if not supported. */
-	virtual void GetDevicePose( int device, deInputDevicePose &pose ) = 0;
+	virtual void GetDevicePose(int device, deInputDevicePose &pose) = 0;
 	
 	/** \brief Device bone pose or identity if not supported. */
-	virtual void GetDeviceBonePose( int device, int bone,
-		bool withController, deInputDevicePose &pose ) = 0;
+	virtual void GetDeviceBonePose(int device, int bone,
+		bool withController, deInputDevicePose &pose) = 0;
 	
 	/**
 	 * \brief Device face expression or 0 if not supported.
 	 * \version 1.12
 	 */
-	virtual float GetDeviceFaceExpression( int device, int expression );
+	virtual float GetDeviceFaceExpression(int device, int expression);
 	/*@}*/
 	
 	
@@ -336,14 +336,14 @@ public:
 	 * Values are to be used directly in the projection matrix. The values also represent
 	 * the half tan angles from center.
 	 */
-	virtual void GetProjectionParameters( eEye eye, float &left,
-		float &right, float &top, float &bottom ) = 0;
+	virtual void GetProjectionParameters(eEye eye, float &left,
+		float &right, float &top, float &bottom) = 0;
 	
 	/**
 	 * \brief VR render matrix transforming from camera space to eye space.
 	 * \warning For Graphic Module use only.
 	 */
-	virtual decMatrix GetMatrixViewEye( eEye eye ) = 0;
+	virtual decMatrix GetMatrixViewEye(eEye eye) = 0;
 	
 	/**
 	 * \brief VR render hidden area model or nullptr if not supported.
@@ -353,7 +353,7 @@ public:
 	 * one single double sided texture. Texture coordinates (x,y) are in the range from
 	 * (0,0) to (1,1). Dummy texture coordinates are present since models require them.
 	 */
-	virtual deModel *GetHiddenArea( eEye eye ) = 0;
+	virtual deModel *GetHiddenArea(eEye eye) = 0;
 	
 	/**
 	 * \brief VR render distortion image or nullptr if not supported.
@@ -362,7 +362,7 @@ public:
 	 * Distortion image can be of any size with depth of 2. Z=0 is the U texture coordinate
 	 * for the respective color and Z=1 the V texture coordinate.
 	 */
-	virtual deImage *GetDistortionMap( eEye eye ) = 0;
+	virtual deImage *GetDistortionMap(eEye eye) = 0;
 	
 	/**
 	 * \brief Get eye view images to use for rendering.
@@ -380,7 +380,7 @@ public:
 	 * \param[out] views Array of eye view images. Pointer has to be cast to graphic api
 	 *                  specific object instance pointer. Can be nullptr if \em count is 0.
 	 */
-	virtual int GetEyeViewImages( eEye eye, int count, void *views );
+	virtual int GetEyeViewImages(eEye eye, int count, void *views);
 	
 	/**
 	 * \brief Get eye view render texture coordinates.
@@ -390,7 +390,7 @@ public:
 	 * \param[out] tcFrom Bottom left texture coordinates (range 0 to 1).
 	 * \param[out] tcTo Top right texture coordinates (range 0 to 1).
 	 */
-	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
+	virtual void GetEyeViewRenderTexCoords(eEye eye, decVector2 &tcFrom, decVector2 &tcTo);
 	
 	/**
 	 * \brief Start begin frame.
@@ -432,14 +432,14 @@ public:
 	 * Only one image can be acquired for each eye view at the same time. The list of
 	 * available eye view images is send by notification to the graphic module earlier.
 	 */
-	virtual int AcquireEyeViewImage( eEye eye );
+	virtual int AcquireEyeViewImage(eEye eye);
 	
 	/**
 	 * \brief Release eye view image after render into.
 	 * \warning For Graphic Module use only.
 	 * \version 1.10
 	 */
-	virtual void ReleaseEyeViewImage( eEye eye );
+	virtual void ReleaseEyeViewImage(eEye eye);
 	
 	/**
 	 * \brief Submit OpenGL rendered image to the HMD.
@@ -450,8 +450,8 @@ public:
 	 * \param[in] tcTo Top right texture coordinates (range 0 to 1).
 	 * \param[in] distortionApplied Distortion has been already applied.
 	 */
-	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
-		const decVector2 &tcTo, bool distortionApplied ) = 0;
+	virtual void SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,
+		const decVector2 &tcTo, bool distortionApplied) = 0;
 	
 	/**
 	 * \brief End frame.

@@ -51,12 +51,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRPTSkyLightGIUpdateRT::deoglRPTSkyLightGIUpdateRT( deoglRenderPlanSkyLight &plan ) :
-deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
-pPlan( plan ),
-pElapsedTime( 0.0f )
+deoglRPTSkyLightGIUpdateRT::deoglRPTSkyLightGIUpdateRT(deoglRenderPlanSkyLight &plan) :
+deParallelTask(&plan.GetPlan().GetRenderThread().GetOgl()),
+pPlan(plan),
+pElapsedTime(0.0f)
 {
-	SetMarkFinishedAfterRun( true );
+	SetMarkFinishedAfterRun(true);
 }
 
 deoglRPTSkyLightGIUpdateRT::~deoglRPTSkyLightGIUpdateRT(){
@@ -78,7 +78,7 @@ deoglRPTSkyLightGIUpdateRT::~deoglRPTSkyLightGIUpdateRT(){
 #endif
 
 void deoglRPTSkyLightGIUpdateRT::Run(){
-	if( IsCancelled() ){
+	if(IsCancelled()){
 		return;
 	}
 	
@@ -96,7 +96,7 @@ void deoglRPTSkyLightGIUpdateRT::Run(){
 		// ^== done inside update RT calls
 		
 		// update required render tasks
-		if( pPlan.GetGIShadowUpdateStatic() ){
+		if(pPlan.GetGIShadowUpdateStatic()){
 			pUpdateStaticRT();
 		}
 		
@@ -105,8 +105,8 @@ void deoglRPTSkyLightGIUpdateRT::Run(){
 		pElapsedTime = timer.GetElapsedTime();
 		SPECIAL_TIMER_PRINT("UpdateRenderTask")
 		
-	}catch( const deException &e ){
-		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
+	}catch(const deException &e){
+		pPlan.GetPlan().GetRenderThread().GetLogger().LogException(e);
 		pSemaphore.Signal();
 		throw;
 	}
@@ -134,23 +134,23 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateStaticRT(){
 	
 	pPlan.GetGIRenderTaskStatic().Clear();
 	
-	addToRenderTask.SetSolid( true );
-	addToRenderTask.SetNoShadowNone( true );
-	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowOrthogonal );
+	addToRenderTask.SetSolid(true);
+	addToRenderTask.SetNoShadowNone(true);
+	addToRenderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etShadowOrthogonal);
 	
 	// components
 	const int componentCount = collideList.GetComponentCount();
-	for( i=0; i<componentCount; i++ ){
-		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
-		if( pIsComponentStatic( *component.GetComponent() ) ){
+	for(i=0; i<componentCount; i++){
+		deoglCollideListComponent &component = *collideList.GetComponentAt(i);
+		if(pIsComponentStatic(*component.GetComponent())){
 			component.SetLODLevelMax();
-			addToRenderTask.AddComponent( component );
+			addToRenderTask.AddComponent(component);
 		}
 	}
 	
 	// height terrain
-	addToRenderTask.AddHeightTerrains( collideList, true );
-	addToRenderTask.AddHeightTerrainSectorClusters( collideList, true );
+	addToRenderTask.AddHeightTerrains(collideList, true);
+	addToRenderTask.AddHeightTerrainSectorClusters(collideList, true);
 }
 
 void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
@@ -160,26 +160,26 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
 	
 	pPlan.GetGIRenderTaskDynamic().Clear();
 	
-	addToRenderTask.SetSolid( true );
-	addToRenderTask.SetNoShadowNone( true );
-	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowOrthogonal );
+	addToRenderTask.SetSolid(true);
+	addToRenderTask.SetNoShadowNone(true);
+	addToRenderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etShadowOrthogonal);
 	
 	// components
 	const int componentCount = collideList.GetComponentCount();
-	for( i=0; i<componentCount; i++ ){
-		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
-		if( ! pIsComponentStatic( *component.GetComponent() ) ){
+	for(i=0; i<componentCount; i++){
+		deoglCollideListComponent &component = *collideList.GetComponentAt(i);
+		if(!pIsComponentStatic(*component.GetComponent())){
 			component.SetLODLevelMax();
-			addToRenderTask.AddComponent( component );
+			addToRenderTask.AddComponent(component);
 		}
 	}
 	
 	// prop fields
-	addToRenderTask.AddPropFields( collideList, false );
-	addToRenderTask.AddPropFieldClusters( collideList, false );
+	addToRenderTask.AddPropFields(collideList, false);
+	addToRenderTask.AddPropFieldClusters(collideList, false);
 }
 
-bool deoglRPTSkyLightGIUpdateRT::pIsComponentStatic( const deoglRComponent& component ) const{
+bool deoglRPTSkyLightGIUpdateRT::pIsComponentStatic(const deoglRComponent& component) const{
 	// GetRenderStatic() is not working well since this can change frequently also for
 	// dynmic objects when resting for a couple of seconds. we want though to avoid
 	// updating static sky shadow maps as little as possible. for this reason we use

@@ -50,46 +50,46 @@ public:
 	 * @param center Center point of sphere
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	deoglCollisionSphere( const decVector &center, float radius );
+	deoglCollisionSphere(const decVector &center, float radius);
 	/** Cleans up the collision sphere. */
 	~deoglCollisionSphere();
 	/*@}*/
 	
 	/** \name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume );
-	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
+	virtual bool VolumeHitsVolume(deoglCollisionVolume *volume);
+	virtual float VolumeMoveHitsVolume(deoglCollisionVolume *volume, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere );
-	virtual bool CylinderHitsVolume( deoglCollisionCylinder *cylinder );
-	virtual bool CapsuleHitsVolume( deoglCollisionCapsule *capsule );
-	virtual bool BoxHitsVolume( deoglCollisionBox *box );
-	virtual bool TriangleHitsVolume( deoglCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( deoglCollisionFrustum *frustum );
-	virtual float SphereMoveHitsVolume( deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal );
-	virtual float CylinderMoveHitsVolume( deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
-	virtual float CapsuleMoveHitsVolume( deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
-	virtual float BoxMoveHitsVolume( deoglCollisionBox *box, const decVector &displacement, decVector *normal );
-	virtual float TriangleMoveHitsVolume( deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
-	virtual float FrustumMoveHitsVolume( deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
-	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
+	virtual bool SphereHitsVolume(deoglCollisionSphere *sphere);
+	virtual bool CylinderHitsVolume(deoglCollisionCylinder *cylinder);
+	virtual bool CapsuleHitsVolume(deoglCollisionCapsule *capsule);
+	virtual bool BoxHitsVolume(deoglCollisionBox *box);
+	virtual bool TriangleHitsVolume(deoglCollisionTriangle *triangle);
+	virtual bool FrustumHitsVolume(deoglCollisionFrustum *frustum);
+	virtual float SphereMoveHitsVolume(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal);
+	virtual float CylinderMoveHitsVolume(deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
+	virtual float CapsuleMoveHitsVolume(deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
+	virtual float BoxMoveHitsVolume(deoglCollisionBox *box, const decVector &displacement, decVector *normal);
+	virtual float TriangleMoveHitsVolume(deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal);
+	virtual float FrustumMoveHitsVolume(deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal);
+	virtual float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
-	virtual void GetEnclosingBox( deoglCollisionBox *box );
+	virtual void GetEnclosingSphere(deoglCollisionSphere *sphere);
+	virtual void GetEnclosingBox(deoglCollisionBox *box);
 	/*@}*/
 	
 	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decVector &point );
+	virtual bool IsPointInside(const decVector &point);
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo( const decVector &point );
+	virtual decVector ClosestPointTo(const decVector &point);
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -99,7 +99,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decVector NormalAtPoint( const decVector &point );
+	virtual decVector NormalAtPoint(const decVector &point);
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -108,23 +108,23 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
+	virtual bool RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance);
 	/*@}*/
 	
 	/** \name Visiting */
 	/*{*/
-	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
+	virtual void Visit(deoglCollisionVolumeVisitor *visitor);
 	/*}*/
 	
 	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere collides with this sphere. */
-	bool SphereHitsSphere( deoglCollisionSphere *sphere );
+	bool SphereHitsSphere(deoglCollisionSphere *sphere);
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this sphere.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float SphereMoveHitsSphere( deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal );
+	float SphereMoveHitsSphere(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Parameters */
@@ -136,18 +136,18 @@ public:
 	/** Retrieves the sqaured radius of the sphere. */
 	inline float GetSquareRadius() const{ return pSquareRadius; }
 	/** Sets the center point of the sphere. */
-	void SetCenter( const decVector &center );
+	void SetCenter(const decVector &center);
 	/**
 	 * Sets the radius of the sphere.
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	/**
 	 * Sets all sphere parameters at once.
 	 * @param center Center point of sphere
 	 * @param radius Radius of sphere beeing at least 0
 	 */
-	void SetAll( const decVector &center, float radius );
+	void SetAll(const decVector &center, float radius);
 	/*@}*/
 };
 

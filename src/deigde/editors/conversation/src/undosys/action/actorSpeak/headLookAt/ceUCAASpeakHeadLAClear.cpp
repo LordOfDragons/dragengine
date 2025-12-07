@@ -43,15 +43,15 @@
 ////////////////////////////
 
 ceUCAASpeakHeadLAClear::ceUCAASpeakHeadLAClear(
-ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ) :
-pTopic( NULL ),
-pActorSpeak( NULL )
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
+pTopic(NULL),
+pActorSpeak(NULL)
 {
-	if( ! topic || ! actorSpeak ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !actorSpeak){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Actor speak clear head look-at" );
+	SetShortInfo("Actor speak clear head look-at");
 	
 	pOldStrips = actorSpeak->GetHeadLookAtList();
 	
@@ -63,10 +63,10 @@ pActorSpeak( NULL )
 }
 
 ceUCAASpeakHeadLAClear::~ceUCAASpeakHeadLAClear(){
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -78,10 +78,10 @@ ceUCAASpeakHeadLAClear::~ceUCAASpeakHeadLAClear(){
 
 void ceUCAASpeakHeadLAClear::Undo(){
 	pActorSpeak->GetHeadLookAtList() = pOldStrips;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakHeadLAClear::Redo(){
 	pActorSpeak->GetHeadLookAtList().RemoveAll();
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

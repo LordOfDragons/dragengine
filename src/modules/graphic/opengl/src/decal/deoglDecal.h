@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglDecal( deGraphicOpenGl &ogl, const deDecal &decal );
+	deoglDecal(deGraphicOpenGl &ogl, const deDecal &decal);
 	
 	/** Clean up peer. */
 	virtual ~deoglDecal();
@@ -103,7 +103,7 @@ public:
 	inline deoglComponent *GetParentComponent() const{ return pParentComponent; }
 	
 	/** Set parent component or \em NULL. */
-	void SetParentComponent( deoglComponent *component );
+	void SetParentComponent(deoglComponent *component);
 	/*@}*/
 	
 	
@@ -112,8 +112,8 @@ public:
 	/*@{*/
 	virtual void DynamicSkinDestroyed();
 	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
+	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 	
 	

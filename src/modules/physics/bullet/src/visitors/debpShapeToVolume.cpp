@@ -59,7 +59,7 @@ debpShapeToVolume::debpShapeToVolume(){
 		pCylinder = new debpDCollisionCylinder;
 		pCapsule = new debpDCollisionCapsule;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -74,7 +74,7 @@ debpShapeToVolume::~debpShapeToVolume(){
 // Management
 ///////////////
 
-void debpShapeToVolume::SetMatrix( const decDMatrix &matrix ){
+void debpShapeToVolume::SetMatrix(const decDMatrix &matrix){
 	pMatrix = matrix;
 }
 
@@ -83,12 +83,12 @@ void debpShapeToVolume::SetMatrix( const decDMatrix &matrix ){
 // Convenience Function
 /////////////////////////
 
-debpDCollisionVolume *debpShapeToVolume::GetVolumeFor( decShape *shape ){
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
+debpDCollisionVolume *debpShapeToVolume::GetVolumeFor(decShape *shape){
+	if(!shape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	shape->Visit( *this );
+	shape->Visit(*this);
 	
 	return pVolume;
 }
@@ -98,50 +98,50 @@ debpDCollisionVolume *debpShapeToVolume::GetVolumeFor( decShape *shape ){
 // Visiting
 /////////////
 
-void debpShapeToVolume::VisitShape( decShape &shape ){
-	pSphere->SetCenter( pMatrix.GetPosition() );
-	pSphere->SetRadius( 0.1 );
+void debpShapeToVolume::VisitShape(decShape &shape){
+	pSphere->SetCenter(pMatrix.GetPosition());
+	pSphere->SetRadius(0.1);
 	
 	pVolume = pSphere;
 }
 
-void debpShapeToVolume::VisitShapeSphere( decShapeSphere &sphere ){
-	pSphere->SetCenter( pMatrix * sphere.GetPosition() );
-	pSphere->SetRadius( sphere.GetRadius() );
+void debpShapeToVolume::VisitShapeSphere(decShapeSphere &sphere){
+	pSphere->SetCenter(pMatrix * sphere.GetPosition());
+	pSphere->SetRadius(sphere.GetRadius());
 	
 	pVolume = pSphere;
 }
 
-void debpShapeToVolume::VisitShapeBox( decShapeBox &box ){
-	pBox->SetCenter( pMatrix * box.GetPosition() );
-	pBox->SetHalfSize( box.GetHalfExtends() );
-	pBox->SetOrientation( ( decDMatrix::CreateFromQuaternion( box.GetOrientation() ) * pMatrix ).ToQuaternion() );
+void debpShapeToVolume::VisitShapeBox(decShapeBox &box){
+	pBox->SetCenter(pMatrix * box.GetPosition());
+	pBox->SetHalfSize(box.GetHalfExtends());
+	pBox->SetOrientation((decDMatrix::CreateFromQuaternion(box.GetOrientation()) * pMatrix).ToQuaternion());
 	
 	pVolume = pBox;
 }
 
-void debpShapeToVolume::VisitShapeCylinder( decShapeCylinder &cylinder ){
-	pCylinder->SetPosition( pMatrix * cylinder.GetPosition() );
-	pCylinder->SetOrientation( ( decDMatrix::CreateFromQuaternion( cylinder.GetOrientation() ) * pMatrix ).ToQuaternion() );
-	pCylinder->SetHalfHeight( cylinder.GetHalfHeight() );
-	pCylinder->SetTopRadius( cylinder.GetTopRadius() );
-	pCylinder->SetBottomRadius( cylinder.GetBottomRadius() );
+void debpShapeToVolume::VisitShapeCylinder(decShapeCylinder &cylinder){
+	pCylinder->SetPosition(pMatrix * cylinder.GetPosition());
+	pCylinder->SetOrientation((decDMatrix::CreateFromQuaternion(cylinder.GetOrientation()) * pMatrix).ToQuaternion());
+	pCylinder->SetHalfHeight(cylinder.GetHalfHeight());
+	pCylinder->SetTopRadius(cylinder.GetTopRadius());
+	pCylinder->SetBottomRadius(cylinder.GetBottomRadius());
 	
 	pVolume = pCylinder;
 }
 
-void debpShapeToVolume::VisitShapeCapsule( decShapeCapsule &capsule ){
-	pCapsule->SetPosition( pMatrix * capsule.GetPosition() );
-	pCapsule->SetOrientation( ( decDMatrix::CreateFromQuaternion( capsule.GetOrientation() ) * pMatrix ).ToQuaternion() );
-	pCapsule->SetHalfHeight( capsule.GetHalfHeight() );
-	pCapsule->SetTopRadius( capsule.GetTopRadius() );
-	pCapsule->SetBottomRadius( capsule.GetBottomRadius() );
+void debpShapeToVolume::VisitShapeCapsule(decShapeCapsule &capsule){
+	pCapsule->SetPosition(pMatrix * capsule.GetPosition());
+	pCapsule->SetOrientation((decDMatrix::CreateFromQuaternion(capsule.GetOrientation()) * pMatrix).ToQuaternion());
+	pCapsule->SetHalfHeight(capsule.GetHalfHeight());
+	pCapsule->SetTopRadius(capsule.GetTopRadius());
+	pCapsule->SetBottomRadius(capsule.GetBottomRadius());
 	
 	pVolume = pCapsule;
 }
 
-void debpShapeToVolume::VisitShapeHull( decShapeHull &hull ) {
-	VisitShape( hull );
+void debpShapeToVolume::VisitShapeHull(decShapeHull &hull) {
+	VisitShape(hull);
 }
 
 
@@ -150,16 +150,16 @@ void debpShapeToVolume::VisitShapeHull( decShapeHull &hull ) {
 //////////////////////
 
 void debpShapeToVolume::pCleanUp(){
-	if( pCapsule ){
+	if(pCapsule){
 		delete pCapsule;
 	}
-	if( pCylinder ){
+	if(pCylinder){
 		delete pCylinder;
 	}
-	if( pBox ){
+	if(pBox){
 		delete pBox;
 	}
-	if( pSphere ){
+	if(pSphere){
 		delete pSphere;
 	}
 }

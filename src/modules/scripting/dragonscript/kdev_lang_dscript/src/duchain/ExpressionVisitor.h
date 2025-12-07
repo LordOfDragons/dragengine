@@ -65,10 +65,10 @@ private:
 	
 	
 public:
-	ExpressionVisitor( const EditorIntegrator &editorIntegrator, const DUContext *ctx );
+	ExpressionVisitor(const EditorIntegrator &editorIntegrator, const DUContext *ctx);
 	
-	void visitExpressionConstant( ExpressionConstantAst *node ) override;
-	void visitFullyQualifiedClassname( FullyQualifiedClassnameAst *node ) override;
+	void visitExpressionConstant(ExpressionConstantAst *node) override;
+	void visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node) override;
 	
 	inline bool isAlias() const { return m_isAlias; }
 	
@@ -76,7 +76,7 @@ public:
 	inline bool getAllowVoid() const{ return pAllowVoid; }
 	
 	/** \brief Set if void type is allowed. */
-	void setAllowVoid( bool allowVoid );
+	void setAllowVoid(bool allowVoid);
 	
 	void enableGlobalSearching(){
 		m_forceGlobalSearching = true;
@@ -86,7 +86,7 @@ public:
 		m_reportUnknownNames = true;
 	}
 
-	void scanUntil( const CursorInRevision &end ){
+	void scanUntil(const CursorInRevision &end){
 		m_scanUntilCursor = end;
 	}
 
@@ -98,12 +98,12 @@ public:
 	
 protected:
 	/** \brief Report semantic hint if reporting is enabled. */
-	void reportSemanticHint( const RangeInRevision &range, const QString &hint );
+	void reportSemanticHint(const RangeInRevision &range, const QString &hint);
 	
 	
 	
 private:
-	void addUnknownName( const QString &name );
+	void addUnknownName(const QString &name);
 	
 	void setLastIsAlias(bool alias) {
 		m_isAlias = alias;

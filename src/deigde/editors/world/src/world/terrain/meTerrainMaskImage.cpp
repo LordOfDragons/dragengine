@@ -35,7 +35,7 @@
 // Definitions
 ////////////////
 
-#define INV_FLOAT_255		( 1.0f / 255.0f )
+#define INV_FLOAT_255		(1.0f / 255.0f)
 
 
 
@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meTerrainMaskImage::meTerrainMaskImage( deImage *image ){
-	if( ! image ) DETHROW( deeInvalidParam );
+meTerrainMaskImage::meTerrainMaskImage(deImage *image){
+	if(!image) DETHROW(deeInvalidParam);
 	
 	pWidth = image->GetWidth();
 	pHeight = image->GetHeight();
@@ -55,10 +55,10 @@ meTerrainMaskImage::meTerrainMaskImage( deImage *image ){
 	pData16 = NULL;
 	pData32 = NULL;
 	
-	if( image->GetBitCount() == 8 ){
+	if(image->GetBitCount() == 8){
 		pData8 = image->GetDataGrayscale8();
 		
-	}else if( image->GetBitCount() == 16 ){
+	}else if(image->GetBitCount() == 16){
 		pData16 = image->GetDataGrayscale16();
 		
 	}else{
@@ -74,50 +74,50 @@ meTerrainMaskImage::~meTerrainMaskImage(){
 // Management
 ///////////////
 
-unsigned char meTerrainMaskImage::GetMaskValueAt( int x, int y ) const{
-	if( pData8 ){
-		return pData8[ pWidth * y + x ].value;
+unsigned char meTerrainMaskImage::GetMaskValueAt(int x, int y) const{
+	if(pData8){
+		return pData8[pWidth * y + x].value;
 		
-	}else if( pData16 ){
-		return ( unsigned char )( pData16[ pWidth * y + x ].value >> 8 );
+	}else if(pData16){
+		return (unsigned char)(pData16[pWidth * y + x].value >> 8);
 		
 	}else{
-		return ( unsigned char )( pData32[ pWidth * y + x ].value * 255.0f );
+		return (unsigned char)(pData32[pWidth * y + x].value * 255.0f);
 	}
 }
 
-unsigned char meTerrainMaskImage::GetMaskValueAt( int index ) const{
-	if( pData8 ){
-		return pData8[ index ].value;
+unsigned char meTerrainMaskImage::GetMaskValueAt(int index) const{
+	if(pData8){
+		return pData8[index].value;
 		
-	}else if( pData16 ){
-		return ( unsigned char )( pData16[ index ].value >> 8 );
+	}else if(pData16){
+		return (unsigned char)(pData16[index].value >> 8);
 		
 	}else{
-		return ( unsigned char )( pData32[ index ].value * 255.5f );
+		return (unsigned char)(pData32[index].value * 255.5f);
 	}
 }
 
-void meTerrainMaskImage::SetMaskValueAt( int x, int y, unsigned char value ){
-	if( pData8 ){
-		pData8[ pWidth * y + x ].value = value;
+void meTerrainMaskImage::SetMaskValueAt(int x, int y, unsigned char value){
+	if(pData8){
+		pData8[pWidth * y + x].value = value;
 		
-	}else if( pData16 ){
-		pData16[ pWidth * y + x ].value = ( unsigned short )value << 8;
+	}else if(pData16){
+		pData16[pWidth * y + x].value = (unsigned short)value << 8;
 		
 	}else{
-		pData32[ pWidth * y + x ].value = ( float )value * INV_FLOAT_255;
+		pData32[pWidth * y + x].value = (float)value * INV_FLOAT_255;
 	}
 }
 
-void meTerrainMaskImage::SetMaskValueAt( int index, unsigned char value ){
-	if( pData8 ){
-		pData8[ index ].value = value;
+void meTerrainMaskImage::SetMaskValueAt(int index, unsigned char value){
+	if(pData8){
+		pData8[index].value = value;
 		
-	}else if( pData16 ){
-		pData16[ index ].value = ( unsigned short )value << 8;
+	}else if(pData16){
+		pData16[index].value = (unsigned short)value << 8;
 		
 	}else{
-		pData32[ index ].value = ( float )value * INV_FLOAT_255;
+		pData32[index].value = (float)value * INV_FLOAT_255;
 	}
 }

@@ -47,7 +47,7 @@ public:
 	 * \param type Type of the skin property obtained from adding a property
 	 * name to the texture property map object held by the engine.
 	 */
-	deSkinPropertyValue( const char *type );
+	deSkinPropertyValue(const char *type);
 	
 	/** \brief Clean up skin property. */
 	virtual ~deSkinPropertyValue();
@@ -61,7 +61,7 @@ public:
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/*@}*/
 	
 	
@@ -69,7 +69,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	virtual void Visit(deSkinPropertyVisitor &visitor);
 	/*@}*/
 };
 

@@ -36,8 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWindowMainListener::peeWindowMainListener( peeWindowMain &window ) :
-pWindow( window ){
+peeWindowMainListener::peeWindowMainListener(peeWindowMain &window) :
+pWindow(window){
 }
 
 peeWindowMainListener::~peeWindowMainListener(){
@@ -48,42 +48,42 @@ peeWindowMainListener::~peeWindowMainListener(){
 // Management
 ///////////////
 
-void peeWindowMainListener::StateChanged( peeEmitter* ){
+void peeWindowMainListener::StateChanged(peeEmitter*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::UndoChanged( peeEmitter* ){
+void peeWindowMainListener::UndoChanged(peeEmitter*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::EmitterChanged( peeEmitter* ){
+void peeWindowMainListener::EmitterChanged(peeEmitter*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::ControllerStructureChanged( peeEmitter* ){
+void peeWindowMainListener::ControllerStructureChanged(peeEmitter*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::ActiveControllerChanged( peeEmitter* ){
+void peeWindowMainListener::ActiveControllerChanged(peeEmitter*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::TypeStructureChanged( peeEmitter* ){
+void peeWindowMainListener::TypeStructureChanged(peeEmitter*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::TypeActiveTrailControllerChanged( peeEmitter*, peeType* ){
+void peeWindowMainListener::TypeActiveTrailControllerChanged(peeEmitter*, peeType*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::TypeActiveEmitControllerChanged( peeEmitter*, peeType* ){
+void peeWindowMainListener::TypeActiveEmitControllerChanged(peeEmitter*, peeType*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::ActiveTypeParameterChanged( peeEmitter*, peeType* ){
+void peeWindowMainListener::ActiveTypeParameterChanged(peeEmitter*, peeType*){
 	pWindow.UpdateAllActions();
 }
 
-void peeWindowMainListener::ActiveTypeChanged( peeEmitter* ){
+void peeWindowMainListener::ActiveTypeChanged(peeEmitter*){
 	pWindow.UpdateAllActions();
 }

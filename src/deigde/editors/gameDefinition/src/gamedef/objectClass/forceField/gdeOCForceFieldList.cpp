@@ -43,8 +43,8 @@
 gdeOCForceFieldList::gdeOCForceFieldList(){
 }
 
-gdeOCForceFieldList::gdeOCForceFieldList( const gdeOCForceFieldList &list ) :
-pForceFields( list.pForceFields ){
+gdeOCForceFieldList::gdeOCForceFieldList(const gdeOCForceFieldList &list) :
+pForceFields(list.pForceFields){
 }
 
 gdeOCForceFieldList::~gdeOCForceFieldList(){
@@ -59,27 +59,27 @@ int gdeOCForceFieldList::GetCount() const{
 	return pForceFields.GetCount();
 }
 
-gdeOCForceField *gdeOCForceFieldList::GetAt( int index ) const{
-	return ( gdeOCForceField* )pForceFields.GetAt( index );
+gdeOCForceField *gdeOCForceFieldList::GetAt(int index) const{
+	return (gdeOCForceField*)pForceFields.GetAt(index);
 }
 
-int gdeOCForceFieldList::IndexOf( gdeOCForceField *field ) const{
-	return pForceFields.IndexOf( field );
+int gdeOCForceFieldList::IndexOf(gdeOCForceField *field) const{
+	return pForceFields.IndexOf(field);
 }
 
-bool gdeOCForceFieldList::Has( gdeOCForceField *field ) const{
-	return pForceFields.Has( field );
+bool gdeOCForceFieldList::Has(gdeOCForceField *field) const{
+	return pForceFields.Has(field);
 }
 
-void gdeOCForceFieldList::Add( gdeOCForceField *field ){
-	if( ! field || Has( field ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCForceFieldList::Add(gdeOCForceField *field){
+	if(!field || Has(field)){
+		DETHROW(deeInvalidParam);
 	}
-	pForceFields.Add( field );
+	pForceFields.Add(field);
 }
 
-void gdeOCForceFieldList::Remove( gdeOCForceField *field ){
-	pForceFields.Remove( field );
+void gdeOCForceFieldList::Remove(gdeOCForceField *field){
+	pForceFields.Remove(field);
 }
 
 void gdeOCForceFieldList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCForceFieldList::RemoveAll(){
 
 
 
-gdeOCForceFieldList &gdeOCForceFieldList::operator=( const gdeOCForceFieldList &list ){
+gdeOCForceFieldList &gdeOCForceFieldList::operator=(const gdeOCForceFieldList &list){
 	pForceFields = list.pForceFields;
 	return *this;
 }

@@ -58,34 +58,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Profile at index. */
-	delGameProfile *GetAt( int index ) const;
+	delGameProfile *GetAt(int index) const;
 	
 	/** \brief Named profile or nullptr if absent. */
-	delGameProfile *GetNamed( const char *name ) const;
+	delGameProfile *GetNamed(const char *name) const;
 	
 	/** \brief Profile is present. */
-	bool Has( delGameProfile *profile ) const;
+	bool Has(delGameProfile *profile) const;
 	
 	/** \brief Named profile is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Index of profile or -1 if absent. */
-	int IndexOf( delGameProfile *profile ) const;
+	int IndexOf(delGameProfile *profile) const;
 	
 	/** \brief Index of named profile or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Add profile. */
-	void Add( delGameProfile *profile );
+	void Add(delGameProfile *profile);
 	
 	/** \brief Remove profile. */
-	void Remove( delGameProfile *profile );
+	void Remove(delGameProfile *profile);
 	
 	/** \brief Remove all profiles. */
 	void RemoveAll();
 	
 	/** \brief Validate profiles. */
-	void ValidateAll( delLauncher &launcher );
+	void ValidateAll(delLauncher &launcher);
 	/*@}*/
 };
 

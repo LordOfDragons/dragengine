@@ -39,7 +39,7 @@ igdeNativeNullContainerBorder::igdeNativeNullContainerBorder(){
 igdeNativeNullContainerBorder::~igdeNativeNullContainerBorder(){
 }
 
-igdeNativeNullContainerBorder *igdeNativeNullContainerBorder::CreateNativeWidget( igdeContainerBorder& ){
+igdeNativeNullContainerBorder *igdeNativeNullContainerBorder::CreateNativeWidget(igdeContainerBorder&){
 	return new igdeNativeNullContainerBorder;
 }
 

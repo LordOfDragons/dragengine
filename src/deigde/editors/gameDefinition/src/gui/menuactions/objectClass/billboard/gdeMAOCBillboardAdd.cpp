@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCBillboardAdd::gdeMAOCBillboardAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Billboard...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class billboard" )
+gdeMAOCBillboardAdd::gdeMAOCBillboardAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Billboard...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class billboard")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Billboard...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCBillboardAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddBillboard(&objectClass, gdeOCBillboard::Ref::NewWith());
 }
 
 void gdeMAOCBillboardAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

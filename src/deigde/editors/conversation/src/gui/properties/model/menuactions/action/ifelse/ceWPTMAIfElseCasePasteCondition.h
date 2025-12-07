@@ -51,9 +51,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCasePasteCondition( ceWindowMain &windowMain,
+	ceWPTMAIfElseCasePasteCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, ceCAIfElseCase &option );
+		ceCAIfElse &ifElse, ceCAIfElseCase &option);
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	inline ceCAIfElseCase *GetOption() const{ return pIfCase; }
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo( const ceConversationConditionList &conditions );
+	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);
 	/*@}*/
 };
 

@@ -45,11 +45,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMCategoriesParticleEmitter::gdeWPSTIMCategoriesParticleEmitter( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etCategoriesParticleEmitter )
+gdeWPSTIMCategoriesParticleEmitter::gdeWPSTIMCategoriesParticleEmitter(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etCategoriesParticleEmitter)
 {
-	SetText( "Particle Emitters" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText("Particle Emitters");
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMCategoriesParticleEmitter::~gdeWPSTIMCategoriesParticleEmitter(){
@@ -61,22 +61,22 @@ gdeWPSTIMCategoriesParticleEmitter::~gdeWPSTIMCategoriesParticleEmitter(){
 ///////////////
 
 gdeWPSTIMCategoryParticleEmitter *gdeWPSTIMCategoriesParticleEmitter::GetChildWith(
-gdeCategory* category, bool deep ) const{
-	gdeWPSTIMCategoryParticleEmitter *child = ( gdeWPSTIMCategoryParticleEmitter* )GetFirstChild();
+gdeCategory* category, bool deep) const{
+	gdeWPSTIMCategoryParticleEmitter *child = (gdeWPSTIMCategoryParticleEmitter*)GetFirstChild();
 	
-	while( child ){
-		if( child->GetCategory() == category ){
+	while(child){
+		if(child->GetCategory() == category){
 			return child;
 		}
 		
-		if( deep ){
-			gdeWPSTIMCategoryParticleEmitter * const deepChild = child->GetChildWith( category, true );
-			if( deepChild ){
+		if(deep){
+			gdeWPSTIMCategoryParticleEmitter * const deepChild = child->GetChildWith(category, true);
+			if(deepChild){
 				return deepChild;
 			}
 		}
 		
-		child = ( gdeWPSTIMCategoryParticleEmitter* )child->GetNext();
+		child = (gdeWPSTIMCategoryParticleEmitter*)child->GetNext();
 	}
 	
 	return NULL;
@@ -91,27 +91,27 @@ void gdeWPSTIMCategoriesParticleEmitter::CategoriesChanged(){
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeCategory * const category = list.GetAt( i );
-		gdeWPSTIMCategoryParticleEmitter * const modelCategory = GetChildWith( category, false );
+	for(i=0; i<count; i++){
+		gdeCategory * const category = list.GetAt(i);
+		gdeWPSTIMCategoryParticleEmitter * const modelCategory = GetChildWith(category, false);
 		
-		if( modelCategory ){
+		if(modelCategory){
 			modelCategory->CategoriesChanged();
 			
 		}else{
-			item.TakeOver( new gdeWPSTIMCategoryParticleEmitter( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+			item.TakeOver(new gdeWPSTIMCategoryParticleEmitter(GetTree(), list.GetAt(i)));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMCategoryParticleEmitter * const modelCategory = ( gdeWPSTIMCategoryParticleEmitter* )child;
+	while(child){
+		gdeWPSTIMCategoryParticleEmitter * const modelCategory = (gdeWPSTIMCategoryParticleEmitter*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelCategory->GetCategory() ) ){
-			RemoveModel( modelCategory );
+		if(!list.Has(modelCategory->GetCategory())){
+			RemoveModel(modelCategory);
 		}
 	}
 	
@@ -127,40 +127,40 @@ void gdeWPSTIMCategoriesParticleEmitter::OnAddedToTree(){
 	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMCategoryParticleEmitter( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item.TakeOver(new gdeWPSTIMCategoryParticleEmitter(GetTree(), list.GetAt(i)));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
-void gdeWPSTIMCategoriesParticleEmitter::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMCategoriesParticleEmitter::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategoryParticleEmitterAdd() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategoryParticleEmitterAdd());
 }
 
-void gdeWPSTIMCategoriesParticleEmitter::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMCategoriesParticleEmitter::SelectBestMatching(const char *string){
+	if(!string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	gdeGameDefinition &gameDefinition = GetGameDefinition();
 	igdeTreeItem *child = GetFirstChild();
 	
-	while( child ){
-		gdeCategory * const category = ( ( gdeWPSTIMCategoryParticleEmitter* )child )->GetCategory();
+	while(child){
+		gdeCategory * const category = ((gdeWPSTIMCategoryParticleEmitter*)child)->GetCategory();
 		child = child->GetNext();
 		
-		if( category->GetName().GetLower().FindString( searchString ) == -1 ){
+		if(category->GetName().GetLower().FindString(searchString) == -1){
 			continue;
 		}
 		
-		gameDefinition.SetActiveCategory( category );
-		gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotCategoryParticleEmitter );
+		gameDefinition.SetActiveCategory(category);
+		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategoryParticleEmitter);
 		return;
 	}
 }

@@ -43,10 +43,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPHUAWEIControllerInteraction::deoxrDPHUAWEIControllerInteraction( deoxrInstance &instance ) :
-deoxrDPBaseTwoHandController( instance,
-	deoxrPath( instance, "/interaction_profiles/huawei/controller" ),
-	"HUAWEI Controller" )
+deoxrDPHUAWEIControllerInteraction::deoxrDPHUAWEIControllerInteraction(deoxrInstance &instance) :
+deoxrDPBaseTwoHandController(instance,
+	deoxrPath(instance, "/interaction_profiles/huawei/controller"),
+	"HUAWEI Controller")
 {
 }
 
@@ -79,65 +79,65 @@ void deoxrDPHUAWEIControllerInteraction::pSuggestBindings(){
 	// - /output/haptic
 	
 	const int bindingCount = 12 * 2;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
+	const decString basePathList[2] = {"/user/hand/left", "/user/hand/right"};
 	int i;
 	
 	// both hands
-	for( i=0; i<2; i++ ){
-		const decString &basePath = basePathList[ i ];
+	for(i=0; i<2; i++){
+		const decString &basePath = basePathList[i];
 		
-		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
-		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd(b, pPoseAction(i == 0), basePath + "/input/grip/pose");
+		pAdd(b, pPoseAction2(i == 0), basePath + "/input/aim/pose");
 		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/home/click" );
-		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/back/click" );
-		pAdd( b, deVROpenXR::eiaButtonAuxiliary1Press, basePath + "/input/volume_up/click" );
-		pAdd( b, deVROpenXR::eiaButtonAuxiliary2Press, basePath + "/input/volume_down/click" );
+		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/home/click");
+		pAdd(b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/back/click");
+		pAdd(b, deVROpenXR::eiaButtonAuxiliary1Press, basePath + "/input/volume_up/click");
+		pAdd(b, deVROpenXR::eiaButtonAuxiliary2Press, basePath + "/input/volume_down/click");
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
+		pAdd(b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click");
+		pAdd(b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value");
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
-		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
-		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+		pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
+		pAdd(b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click");
+		pAdd(b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch");
 		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
 	}
 	
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 }
 
 bool deoxrDPHUAWEIControllerInteraction::pProfileEnabled() const{
-	return GetInstance().SupportsExtension( deoxrInstance::extHUAWEIControllerInteraction );
+	return GetInstance().SupportsExtension(deoxrInstance::extHUAWEIControllerInteraction);
 }
 
-void deoxrDPHUAWEIControllerInteraction::pAddDevice( bool left ){
+void deoxrDPHUAWEIControllerInteraction::pAddDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if( device ){
+	if(device){
 		return;
 	}
 	
-	pCreateDevice( device, left, "hci_", true );
+	pCreateDevice(device, left, "hci_", true);
 	
-	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
-	pAddAxisTrigger( device, trigger );
-	pAddButtonTrigger( device, trigger, false ); // has to be button 0
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
+	pAddAxisTrigger(device, trigger);
+	pAddButtonTrigger(device, trigger, false); // has to be button 0
 	
-	pAddButton( device, ebaPrimary, eblHome, false ); // has to be button 1
-	pAddButton( device, ebaSecondary, eblBack, false ); // has to be button 2
-	pAddButton( device, ebaAuxiliary1, eblVolumeUp, false ); // has to be button 3
-	pAddButton( device, ebaAuxiliary2, eblVolumeDown, false ); // has to be button 4
+	pAddButton(device, ebaPrimary, eblHome, false); // has to be button 1
+	pAddButton(device, ebaSecondary, eblBack, false); // has to be button 2
+	pAddButton(device, ebaAuxiliary1, eblVolumeUp, false); // has to be button 3
+	pAddButton(device, ebaAuxiliary2, eblVolumeDown, false); // has to be button 4
 	
-	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad( device );
-	pAddAxesTrackpad( device, trackpad );
-	pAddButtonTrackpad( device, trackpad, true, true );
+	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad(device);
+	pAddAxesTrackpad(device, trackpad);
+	pAddButtonTrackpad(device, trackpad, true, true);
 	
 	pAddHandTracker(device, left, true);
 	
-	GetInstance().GetOxr().GetDevices().Add( device );
+	GetInstance().GetOxr().GetDevices().Add(device);
 }

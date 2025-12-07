@@ -60,7 +60,7 @@ public:
 	inline bool GetBlocked() const{ return pBlocked; }
 	
 	/** \brief Set if ray is blocked. */
-	void SetBlocked( bool blocked );
+	void SetBlocked(bool blocked);
 	
 	
 	/**
@@ -73,13 +73,13 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalWorldOctree &node );
+	virtual void VisitNode(deoalWorldOctree &node);
 	
 	/** \brief Visit octree node. */
-	virtual void VisitNode( deoalDOctree *node, int intersection );
+	virtual void VisitNode(deoalDOctree *node, int intersection);
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( deoalAComponent *component );
+	virtual void VisitComponent(deoalAComponent *component);
 	/*@}*/
 };
 

@@ -22,7 +22,7 @@ public:
 	bool testCondition;
 	deMutex *mutex1;
 	deSemaphore *semaphore1;
-	deThread *threads[ DETT_THREAD_COUNT ];
+	deThread *threads[DETT_THREAD_COUNT];
 	
 public:
 	detThreading();
@@ -34,7 +34,7 @@ public:
 	
 private:
 	void TestThread();
-	void Sleep( float seconds );
+	void Sleep(float seconds);
 };
 
 // end of include only once

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionSetCondition::ceWPTMAPChoiceOptionSetCondition( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionSetCondition::ceWPTMAPChoiceOptionSetCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option,
-ceConversationCondition::eConditionTypes conditionType ) :
-ceWPTMACreateCondition( windowMain, conversation, conditionType ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option ){
+ceConversationCondition::eConditionTypes conditionType) :
+ceWPTMACreateCondition(windowMain, conversation, conditionType),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option){
 }
 
 
@@ -55,6 +55,6 @@ pOption( &option ){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAPChoiceOptionSetCondition::CreateUndo( ceConversationCondition *condition ){
-	return new ceUCAPChoiceOptionSetCondition( pTopic, pPlayerChoice, pOption, condition );
+igdeUndo *ceWPTMAPChoiceOptionSetCondition::CreateUndo(ceConversationCondition *condition){
+	return new ceUCAPChoiceOptionSetCondition(pTopic, pPlayerChoice, pOption, condition);
 }

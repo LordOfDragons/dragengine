@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleAnimToggleEnableVertexPositionSet( aeRuleAnimation *rule );
+	aeURuleAnimToggleEnableVertexPositionSet(aeRuleAnimation *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleAnimToggleEnableVertexPositionSet();

@@ -40,7 +40,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new null audio module. */
-	deAudioNull( deLoadableModule &loadableModule );
+	deAudioNull(deLoadableModule &loadableModule);
 	/** Cleans up the null audio module. */
 	virtual ~deAudioNull();
 	/*@}*/
@@ -52,7 +52,7 @@ public:
 	 * To access the os of the engine use the GetOS function. The active microphone
 	 * is passed as parameter and can be NULL if no microphone is active yet.
 	 */
-	virtual bool Init( deMicrophone *activeMic );
+	virtual bool Init(deMicrophone *activeMic);
 	/**
 	 * Called to cleanup the module. All resources have to be freed and running threads
 	 * stopped or killed if needed.
@@ -63,23 +63,23 @@ public:
 	/**
 	 * Sets the active microphone. Can be NULL to unset the active microphone.
 	 */
-	virtual void SetActiveMicrophone( deMicrophone *microphone );
+	virtual void SetActiveMicrophone(deMicrophone *microphone);
 	/*@}*/
 	
 	/** @name Audio Management */
 	/*@{*/
-	virtual deBaseAudioWorld *CreateWorld( deWorld *world );
-	virtual deBaseAudioSound *CreateSound( deSound *sound );
-	virtual deBaseAudioSpeaker *CreateSpeaker( deSpeaker *speaker );
-	virtual deBaseAudioMicrophone *CreateMicrophone( deMicrophone *microphone );
-	virtual deBaseAudioComponent *CreateComponent( deComponent *component );
-	virtual deBaseAudioModel *CreateModel( deModel *model );
-	virtual deBaseAudioSkin *CreateSkin( deSkin *skin );
-	virtual deBaseAudioDecal *CreateDecal( deDecal *decal );
-	virtual deBaseAudioSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
-	virtual deBaseAudioVideoPlayer *CreateVideoPlayer( deVideoPlayer *videoPlayer );
-	virtual deBaseAudioSynthesizerInstance *CreateSynthesizerInstance( deSynthesizerInstance *instance );
-	virtual deBaseAudioHeightTerrain *CreateHeightTerrain( deHeightTerrain &heightTerrain );
+	virtual deBaseAudioWorld *CreateWorld(deWorld *world);
+	virtual deBaseAudioSound *CreateSound(deSound *sound);
+	virtual deBaseAudioSpeaker *CreateSpeaker(deSpeaker *speaker);
+	virtual deBaseAudioMicrophone *CreateMicrophone(deMicrophone *microphone);
+	virtual deBaseAudioComponent *CreateComponent(deComponent *component);
+	virtual deBaseAudioModel *CreateModel(deModel *model);
+	virtual deBaseAudioSkin *CreateSkin(deSkin *skin);
+	virtual deBaseAudioDecal *CreateDecal(deDecal *decal);
+	virtual deBaseAudioSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter);
+	virtual deBaseAudioVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer);
+	virtual deBaseAudioSynthesizerInstance *CreateSynthesizerInstance(deSynthesizerInstance *instance);
+	virtual deBaseAudioHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain);
 	/*@}*/
 };
 

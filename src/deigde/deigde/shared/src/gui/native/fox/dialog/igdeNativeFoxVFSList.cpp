@@ -44,8 +44,8 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxVFSList ) igdeNativeFoxVFSListMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxVFSList::ID_HEADER, igdeNativeFoxVFSList::onHeaderClicked ),
+FXDEFMAP(igdeNativeFoxVFSList) igdeNativeFoxVFSListMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxVFSList::ID_HEADER, igdeNativeFoxVFSList::onHeaderClicked),
 };
 
 
@@ -53,20 +53,20 @@ FXDEFMAP( igdeNativeFoxVFSList ) igdeNativeFoxVFSListMap[] = {
 // Class igdeNativeFoxVFSList
 ////////////////////
 
-FXIMPLEMENT( igdeNativeFoxVFSList, FXIconList, igdeNativeFoxVFSListMap, ARRAYNUMBER( igdeNativeFoxVFSListMap ) )
+FXIMPLEMENT(igdeNativeFoxVFSList, FXIconList, igdeNativeFoxVFSListMap, ARRAYNUMBER(igdeNativeFoxVFSListMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxVFSList::igdeNativeFoxVFSList(){ }
+igdeNativeFoxVFSList::igdeNativeFoxVFSList(){}
 
-igdeNativeFoxVFSList::igdeNativeFoxVFSList( igdeEnvironment &environment, deVirtualFileSystem *vfs,
-FXComposite *p, FXObject* tgt, FXSelector sel, FXuint opts, FXint x, FXint y, FXint w, FXint h ) :
-FXIconList( p, tgt, sel, opts, x, y, w, h ),
-pEnvironment( &environment )
+igdeNativeFoxVFSList::igdeNativeFoxVFSList(igdeEnvironment &environment, deVirtualFileSystem *vfs,
+FXComposite *p, FXObject* tgt, FXSelector sel, FXuint opts, FXint x, FXint y, FXint w, FXint h) :
+FXIconList(p, tgt, sel, opts, x, y, w, h),
+pEnvironment(&environment)
 {
-	if( ! vfs ){
-		DETHROW( deeInvalidParam );
+	if(!vfs){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// prepare
@@ -75,36 +75,36 @@ pEnvironment( &environment )
 	pSorting = igdeNativeFoxVFSList::esNameAsc;
 	
 	// load icons
-	pIconFolderBig = new FXGIFIcon( getApp(), FoxIcons::bigfolder );
-	pIconFolderSmall = new FXGIFIcon( getApp(), FoxIcons::minifolder );
-	pIconFileBig = new FXGIFIcon( getApp(), FoxIcons::bigdoc );
-	pIconFileSmall = new FXGIFIcon( getApp(), FoxIcons::minidoc );
+	pIconFolderBig = new FXGIFIcon(getApp(), FoxIcons::bigfolder);
+	pIconFolderSmall = new FXGIFIcon(getApp(), FoxIcons::minifolder);
+	pIconFileBig = new FXGIFIcon(getApp(), FoxIcons::bigdoc);
+	pIconFileSmall = new FXGIFIcon(getApp(), FoxIcons::minidoc);
 	
-	pIconSortAsc = ( FXIcon* )environment.GetStockIcon( igdeEnvironment::esiSmallDown )->GetNativeIcon();
-	pIconSortDesc = ( FXIcon* )environment.GetStockIcon( igdeEnvironment::esiSmallUp )->GetNativeIcon();
+	pIconSortAsc = (FXIcon*)environment.GetStockIcon(igdeEnvironment::esiSmallDown)->GetNativeIcon();
+	pIconSortDesc = (FXIcon*)environment.GetStockIcon(igdeEnvironment::esiSmallUp)->GetNativeIcon();
 	
 	// init
-	appendHeader( "Name", pIconSortAsc, 300 );
-	appendHeader( "Size", NULL, 100 );
-	appendHeader( "Time", NULL, 120 );
-	getHeader()->setTarget( this );
-	getHeader()->setSelector( ID_HEADER );
+	appendHeader("Name", pIconSortAsc, 300);
+	appendHeader("Size", NULL, 100);
+	appendHeader("Time", NULL, 120);
+	getHeader()->setTarget(this);
+	getHeader()->setSelector(ID_HEADER);
 	
 	// sort function
-	setSortFunc( igdeNativeFoxVFSListItem::fSortNameAsc );
+	setSortFunc(igdeNativeFoxVFSListItem::fSortNameAsc);
 }
 
 igdeNativeFoxVFSList::~igdeNativeFoxVFSList(){
-	if( pIconFolderBig ){
+	if(pIconFolderBig){
 		delete pIconFolderBig;
 	}
-	if( pIconFolderSmall ){
+	if(pIconFolderSmall){
 		delete pIconFolderSmall;
 	}
-	if( pIconFileBig ){
+	if(pIconFileBig){
 		delete pIconFileBig;
 	}
-	if( pIconFileSmall ){
+	if(pIconFileSmall){
 		delete pIconFileSmall;
 	}
 }
@@ -120,66 +120,66 @@ private:
 	const char * const pColumnPattern;
 	
 public:
-	igdeNativeFoxVFSListFind( igdeNativeFoxVFSList &powner, const char * const columnPattern ) :
-	pOwner( powner ), pColumnPattern( columnPattern ){
+	igdeNativeFoxVFSListFind(igdeNativeFoxVFSList &powner, const char * const columnPattern) :
+	pOwner(powner), pColumnPattern(columnPattern){
 	}
 	
-	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
-		if( ! path.GetPathUnix().MatchesPattern( pOwner.GetPattern() ) ){
+	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
+		if(!path.GetPathUnix().MatchesPattern(pOwner.GetPattern())){
 			return true;
 		}
 		
 		try{
-			const uint64_t fileSize = vfs.GetFileSize( path );
-			const TIME_SYSTEM fileMTime = vfs.GetFileModificationTime( path );
+			const uint64_t fileSize = vfs.GetFileSize(path);
+			const TIME_SYSTEM fileMTime = vfs.GetFileModificationTime(path);
 			igdeNativeFoxVFSListItem * const item = new igdeNativeFoxVFSListItem(
-				path, "", pOwner.GetIconFileBig(), pOwner.GetIconFileSmall() );
-			item->SetFileName( path.GetLastComponent() );
-			item->SetFileType( deVFSContainer::eftRegularFile );
-			item->SetFileSize( ( int )fileSize );
-			item->SetFileModificationTime( fileMTime );
-			item->UpdateText( pColumnPattern );
-			pOwner.appendItem( item );
+				path, "", pOwner.GetIconFileBig(), pOwner.GetIconFileSmall());
+			item->SetFileName(path.GetLastComponent());
+			item->SetFileType(deVFSContainer::eftRegularFile);
+			item->SetFileSize((int)fileSize);
+			item->SetFileModificationTime(fileMTime);
+			item->UpdateText(pColumnPattern);
+			pOwner.appendItem(item);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 		
 		return true;
 	}
 	
-	virtual bool VisitDirectory( const deVirtualFileSystem &, const decPath &path ){
+	virtual bool VisitDirectory(const deVirtualFileSystem &, const decPath &path){
 		try{
 			igdeNativeFoxVFSListItem * const item = new igdeNativeFoxVFSListItem(
-				path, "", pOwner.GetIconFolderBig(), pOwner.GetIconFolderSmall() );
-			item->SetFileName( path.GetLastComponent() );
-			item->SetFileType( deVFSContainer::eftDirectory );
-			item->UpdateText( pColumnPattern );
-			pOwner.appendItem( item );
+				path, "", pOwner.GetIconFolderBig(), pOwner.GetIconFolderSmall());
+			item->SetFileName(path.GetLastComponent());
+			item->SetFileType(deVFSContainer::eftDirectory);
+			item->UpdateText(pColumnPattern);
+			pOwner.appendItem(item);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 		
 		return true;
 	}
 	
-	virtual bool VisitSpecial( const deVirtualFileSystem &vfs, const decPath &path ){
-		if( ! path.GetPathUnix().MatchesPattern( pOwner.GetPattern() ) ){
+	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path){
+		if(!path.GetPathUnix().MatchesPattern(pOwner.GetPattern())){
 			return true;
 		}
 		
 		try{
-			const uint64_t fileSize = vfs.GetFileSize( path );
-			const TIME_SYSTEM fileMTime = vfs.GetFileModificationTime( path );
+			const uint64_t fileSize = vfs.GetFileSize(path);
+			const TIME_SYSTEM fileMTime = vfs.GetFileModificationTime(path);
 			igdeNativeFoxVFSListItem * const item = new igdeNativeFoxVFSListItem(
-				path, "", pOwner.GetIconFileBig(), pOwner.GetIconFileSmall() );
-			item->SetFileName( path.GetLastComponent() );
-			item->SetFileType( deVFSContainer::eftSpecial );
-			item->SetFileSize( ( int )fileSize );
-			item->SetFileModificationTime( fileMTime );
-			item->UpdateText( pColumnPattern );
-			pOwner.appendItem( item );
+				path, "", pOwner.GetIconFileBig(), pOwner.GetIconFileSmall());
+			item->SetFileName(path.GetLastComponent());
+			item->SetFileType(deVFSContainer::eftSpecial);
+			item->SetFileSize((int)fileSize);
+			item->SetFileModificationTime(fileMTime);
+			item->UpdateText(pColumnPattern);
+			pOwner.appendItem(item);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 		
 		return true;
@@ -194,80 +194,80 @@ void igdeNativeFoxVFSList::UpdateListing(){
 	clearItems();
 	
 	// add the default entries
-	item = new igdeNativeFoxVFSListItem( pCurPath, "", pIconFolderBig, pIconFolderSmall );
-	item->SetFileName( "." );
-	item->SetFileType( deVFSContainer::eftDirectory );
-	item->UpdateText( columnPattern );
-	appendItem( item );
+	item = new igdeNativeFoxVFSListItem(pCurPath, "", pIconFolderBig, pIconFolderSmall);
+	item->SetFileName(".");
+	item->SetFileType(deVFSContainer::eftDirectory);
+	item->UpdateText(columnPattern);
+	appendItem(item);
 	
-	if( pCurPath.GetComponentCount() > 0 ){
+	if(pCurPath.GetComponentCount() > 0){
 		decPath path;
-		path.SetFrom( pCurPath );
+		path.SetFrom(pCurPath);
 		path.RemoveLastComponent();
-		item = new igdeNativeFoxVFSListItem( path, "", pIconFolderBig, pIconFolderSmall );
-		item->SetFileName( ".." );
-		item->SetFileType( deVFSContainer::eftDirectory );
-		item->UpdateText( columnPattern );
-		appendItem( item );
+		item = new igdeNativeFoxVFSListItem(path, "", pIconFolderBig, pIconFolderSmall);
+		item->SetFileName("..");
+		item->SetFileType(deVFSContainer::eftDirectory);
+		item->UpdateText(columnPattern);
+		appendItem(item);
 	}
 	
 	// add directories and files
-	igdeNativeFoxVFSListFind visitor( *this, columnPattern );
-	pVFS->SearchFiles( pCurPath, visitor );
+	igdeNativeFoxVFSListFind visitor(*this, columnPattern);
+	pVFS->SearchFiles(pCurPath, visitor);
 	
 	// sort
 	sortItems();
 }
 
-void igdeNativeFoxVFSList::SetPath( const decPath &path ){
-	if( path != pCurPath ){
-		pCurPath.SetFrom( path );
+void igdeNativeFoxVFSList::SetPath(const decPath &path){
+	if(path != pCurPath){
+		pCurPath.SetFrom(path);
 		UpdateListing();
 	}
 }
 
-void igdeNativeFoxVFSList::SetPattern( const char *pattern ){
-	if( ! pattern ){
-		DETHROW( deeInvalidParam );
+void igdeNativeFoxVFSList::SetPattern(const char *pattern){
+	if(!pattern){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPattern != pattern ){
+	if(pPattern != pattern){
 		pPattern = pattern;
 		UpdateListing();
 	}
 }
 
-void igdeNativeFoxVFSList::SetSorting( igdeNativeFoxVFSList::eSorting sorting ){
-	if( sorting != pSorting ){
+void igdeNativeFoxVFSList::SetSorting(igdeNativeFoxVFSList::eSorting sorting){
+	if(sorting != pSorting){
 		pSorting = sorting;
 		
-		setHeaderIcon( 0, NULL ); // name
-		setHeaderIcon( 1, NULL ); // size
-		setHeaderIcon( 2, NULL ); // modification time
+		setHeaderIcon(0, NULL); // name
+		setHeaderIcon(1, NULL); // size
+		setHeaderIcon(2, NULL); // modification time
 		
-		if( pSorting == igdeNativeFoxVFSList::esNameAsc ){
-			setSortFunc( igdeNativeFoxVFSListItem::fSortNameAsc );
-			setHeaderIcon( 0, pIconSortAsc );
+		if(pSorting == igdeNativeFoxVFSList::esNameAsc){
+			setSortFunc(igdeNativeFoxVFSListItem::fSortNameAsc);
+			setHeaderIcon(0, pIconSortAsc);
 			
-		}else if( pSorting == igdeNativeFoxVFSList::esNameDesc ){
-			setSortFunc( igdeNativeFoxVFSListItem::fSortNameDesc );
-			setHeaderIcon( 0, pIconSortDesc );
+		}else if(pSorting == igdeNativeFoxVFSList::esNameDesc){
+			setSortFunc(igdeNativeFoxVFSListItem::fSortNameDesc);
+			setHeaderIcon(0, pIconSortDesc);
 			
-		}else if( pSorting == igdeNativeFoxVFSList::esSizeAsc ){
-			setSortFunc( igdeNativeFoxVFSListItem::fSortSizeAsc );
-			setHeaderIcon( 1, pIconSortAsc );
+		}else if(pSorting == igdeNativeFoxVFSList::esSizeAsc){
+			setSortFunc(igdeNativeFoxVFSListItem::fSortSizeAsc);
+			setHeaderIcon(1, pIconSortAsc);
 			
-		}else if( pSorting == igdeNativeFoxVFSList::esSizeDesc ){
-			setSortFunc( igdeNativeFoxVFSListItem::fSortSizeDesc );
-			setHeaderIcon( 1, pIconSortDesc );
+		}else if(pSorting == igdeNativeFoxVFSList::esSizeDesc){
+			setSortFunc(igdeNativeFoxVFSListItem::fSortSizeDesc);
+			setHeaderIcon(1, pIconSortDesc);
 			
-		}else if( pSorting == igdeNativeFoxVFSList::esModifyTimeAsc ){
-			setSortFunc( igdeNativeFoxVFSListItem::fSortModTimeAsc );
-			setHeaderIcon( 2, pIconSortAsc );
+		}else if(pSorting == igdeNativeFoxVFSList::esModifyTimeAsc){
+			setSortFunc(igdeNativeFoxVFSListItem::fSortModTimeAsc);
+			setHeaderIcon(2, pIconSortAsc);
 			
-		}else if( pSorting == igdeNativeFoxVFSList::esModifyTimeDesc ){
-			setSortFunc( igdeNativeFoxVFSListItem::fSortModTimeDesc );
-			setHeaderIcon( 2, pIconSortDesc );
+		}else if(pSorting == igdeNativeFoxVFSList::esModifyTimeDesc){
+			setSortFunc(igdeNativeFoxVFSListItem::fSortModTimeDesc);
+			setHeaderIcon(2, pIconSortDesc);
 		}
 		
 		sortItems();
@@ -277,11 +277,11 @@ void igdeNativeFoxVFSList::SetSorting( igdeNativeFoxVFSList::eSorting sorting ){
 igdeNativeFoxVFSListItem *igdeNativeFoxVFSList::GetSelectedItem() const{
 	const int index = getCurrentItem();
 	
-	if( index < 0 ){
+	if(index < 0){
 		return NULL;
 		
 	}else{
-		return ( igdeNativeFoxVFSListItem* )getItem( index );
+		return (igdeNativeFoxVFSListItem*)getItem(index);
 	}
 }
 
@@ -321,31 +321,31 @@ void igdeNativeFoxVFSList::destroy(){
 // Events
 ///////////
 
-long igdeNativeFoxVFSList::onHeaderClicked( FXObject*, FXSelector, void *pdata ){
-	const int column = ( int )( intptr_t )pdata;
+long igdeNativeFoxVFSList::onHeaderClicked(FXObject*, FXSelector, void *pdata){
+	const int column = (int)(intptr_t)pdata;
 	
-	if( column == 0 ){ // sort by name
-		if( pSorting == esNameAsc ){
-			SetSorting( esNameDesc );
+	if(column == 0){ // sort by name
+		if(pSorting == esNameAsc){
+			SetSorting(esNameDesc);
 			
 		}else{
-			SetSorting( esNameAsc );
+			SetSorting(esNameAsc);
 		}
 		
-	}else if( column == 1 ){ // sort by size
-		if( pSorting == esSizeAsc){
-			SetSorting( esSizeDesc );
+	}else if(column == 1){ // sort by size
+		if(pSorting == esSizeAsc){
+			SetSorting(esSizeDesc);
 			
 		}else{
-			SetSorting( esSizeAsc );
+			SetSorting(esSizeAsc);
 		}
 		
-	}else if( column == 2 ){ // sort by modification time
-		if( pSorting == esModifyTimeAsc ){
-			SetSorting( esModifyTimeDesc );
+	}else if(column == 2){ // sort by modification time
+		if(pSorting == esModifyTimeAsc){
+			SetSorting(esModifyTimeDesc);
 			
 		}else{
-			SetSorting( esModifyTimeAsc );
+			SetSorting(esModifyTimeAsc);
 		}
 	}
 	

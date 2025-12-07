@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardToggleDoNotScale( gdeObjectClass *objectClass, gdeOCBillboard *billboard );
+	gdeUOCBillboardToggleDoNotScale(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
 	
 protected:
 	/** \brief Clean up undo action. */

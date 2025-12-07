@@ -43,23 +43,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDSRenderableVideoFrame::deoglDSRenderableVideoFrame( deoglDynamicSkin &dynamicSkin,
-	const deDSRenderableVideoFrame &renderable ) :
-deoglDSRenderable( dynamicSkin, renderable ),
-pRenderableVideoFrame( renderable ),
-pRRenderableVideoFrame( NULL ),
-pVideoPlayer( NULL ),
-pDirty( true )
+deoglDSRenderableVideoFrame::deoglDSRenderableVideoFrame(deoglDynamicSkin &dynamicSkin,
+	const deDSRenderableVideoFrame &renderable) :
+deoglDSRenderable(dynamicSkin, renderable),
+pRenderableVideoFrame(renderable),
+pRRenderableVideoFrame(NULL),
+pVideoPlayer(NULL),
+pDirty(true)
 {
 	try{
-		pRRenderableVideoFrame = new deoglRDSRenderableVideoFrame( *dynamicSkin.GetRDynamicSkin() );
+		pRRenderableVideoFrame = new deoglRDSRenderableVideoFrame(*dynamicSkin.GetRDynamicSkin());
 		
-		if( renderable.GetVideoPlayer() ){
-			pVideoPlayer = ( deoglVideoPlayer* )renderable.GetVideoPlayer()->GetPeerGraphic();
-			pVideoPlayer->GetNotifyRenderables().Add( this );
+		if(renderable.GetVideoPlayer()){
+			pVideoPlayer = (deoglVideoPlayer*)renderable.GetVideoPlayer()->GetPeerGraphic();
+			pVideoPlayer->GetNotifyRenderables().Add(this);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -80,42 +80,42 @@ deoglRDSRenderable *deoglDSRenderableVideoFrame::GetRRenderable() const{
 
 void deoglDSRenderableVideoFrame::RenderableChanged(){
 	deoglVideoPlayer * const videoPlayer = pRenderableVideoFrame.GetVideoPlayer()
-		? ( deoglVideoPlayer* )pRenderableVideoFrame.GetVideoPlayer()->GetPeerGraphic() : NULL;
+		? (deoglVideoPlayer*)pRenderableVideoFrame.GetVideoPlayer()->GetPeerGraphic() : NULL;
 	
-	if( videoPlayer != pVideoPlayer ){
-		if( pVideoPlayer ){
-			pVideoPlayer->GetNotifyRenderables().Remove( this );
+	if(videoPlayer != pVideoPlayer){
+		if(pVideoPlayer){
+			pVideoPlayer->GetNotifyRenderables().Remove(this);
 		}
 		
 		pVideoPlayer = videoPlayer;
 		
-		if( videoPlayer ){
-			videoPlayer->GetNotifyRenderables().Add( this );
+		if(videoPlayer){
+			videoPlayer->GetNotifyRenderables().Add(this);
 		}
 		
 		pDirty = true;
 		
-		pDynamicSkin.NotifyRenderableChanged( *this );
+		pDynamicSkin.NotifyRenderableChanged(*this);
 	}
 	
-	if( pRenderableVideoFrame.GetName() != pRRenderableVideoFrame->GetName() ){
+	if(pRenderableVideoFrame.GetName() != pRRenderableVideoFrame->GetName()){
 		pDynamicSkin.NotifyRenderablesChanged();
 	}
 }
 
 void deoglDSRenderableVideoFrame::SyncToRender(){
-	if( pVideoPlayer ){
+	if(pVideoPlayer){
 		pVideoPlayer->SyncToRender();
 	}
 	
-	if( pDirty ){
-		pRRenderableVideoFrame->SetName( pRenderableVideoFrame.GetName() );
+	if(pDirty){
+		pRRenderableVideoFrame->SetName(pRenderableVideoFrame.GetName());
 		
-		if( pVideoPlayer ){
-			pRRenderableVideoFrame->SetVideoPlayer( pVideoPlayer->GetRVideoPlayer() );
+		if(pVideoPlayer){
+			pRRenderableVideoFrame->SetVideoPlayer(pVideoPlayer->GetRVideoPlayer());
 			
 		}else{
-			pRRenderableVideoFrame->SetVideoPlayer( NULL );
+			pRRenderableVideoFrame->SetVideoPlayer(NULL);
 		}
 		
 		pDirty = false;
@@ -123,7 +123,7 @@ void deoglDSRenderableVideoFrame::SyncToRender(){
 }
 
 void deoglDSRenderableVideoFrame::VideoPlayerRequiresSync(){
-	pDynamicSkin.NotifyRenderableRequiresSync( *this );
+	pDynamicSkin.NotifyRenderableRequiresSync(*this);
 }
 
 void deoglDSRenderableVideoFrame::DropVideoPlayer(){
@@ -136,11 +136,11 @@ void deoglDSRenderableVideoFrame::DropVideoPlayer(){
 //////////////////////
 
 void deoglDSRenderableVideoFrame::pCleanUp(){
-	if( pRRenderableVideoFrame ){
+	if(pRRenderableVideoFrame){
 		pRRenderableVideoFrame->FreeReference();
 	}
 	
-	if( pVideoPlayer ){
-		pVideoPlayer->GetNotifyRenderables().Remove( this );
+	if(pVideoPlayer){
+		pVideoPlayer->GetNotifyRenderables().Remove(this);
 	}
 }

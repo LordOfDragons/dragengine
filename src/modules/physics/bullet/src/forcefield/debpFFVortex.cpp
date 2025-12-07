@@ -35,7 +35,7 @@
 // Definitions
 ////////////////
 
-#define BP_FFV_TWOPI	( PI * 2.0f )
+#define BP_FFV_TWOPI	(PI * 2.0f)
 
 
 
@@ -46,7 +46,7 @@
 ////////////////////////////
 
 debpFFVortex::debpFFVortex(){
-	pView.Set( 0.0f, 0.0f, 1.0f );
+	pView.Set(0.0f, 0.0f, 1.0f);
 	pSize = 1.0f;
 	
 	pFullVelocity = 5.0f;
@@ -64,40 +64,40 @@ debpFFVortex::~debpFFVortex(){
 // Management
 ///////////////
 
-void debpFFVortex::SetPosition( const decVector &position ){
+void debpFFVortex::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void debpFFVortex::SetView( const decVector &view ){
+void debpFFVortex::SetView(const decVector &view){
 	pView = view;
 }
 
-void debpFFVortex::SetSize( float size ){
-	if( size < 0.001f ) DETHROW( deeInvalidParam );
+void debpFFVortex::SetSize(float size){
+	if(size < 0.001f) DETHROW(deeInvalidParam);
 	
 	pSize = size;
 }
 
 
 
-void debpFFVortex::SetFullVelocity( float velocity ){
+void debpFFVortex::SetFullVelocity(float velocity){
 	pFullVelocity = velocity;
 }
 
-void debpFFVortex::SetCurrentVelocity( float velocity ){
+void debpFFVortex::SetCurrentVelocity(float velocity){
 	pCurrentVelocity = velocity;
 }
 
 
 
-void debpFFVortex::SetTimeToLive( float time ){
-	if( time < 0.01f ) DETHROW( deeInvalidParam );
+void debpFFVortex::SetTimeToLive(float time){
+	if(time < 0.01f) DETHROW(deeInvalidParam);
 	
 	pTimeToLive = time;
 }
 
-void debpFFVortex::SetLivedTime( float time ){
-	if( time < 0.0f ){
+void debpFFVortex::SetLivedTime(float time){
+	if(time < 0.0f){
 		pLivedTime = 0.0f;
 		
 	}else{
@@ -105,10 +105,10 @@ void debpFFVortex::SetLivedTime( float time ){
 	}
 }
 
-void debpFFVortex::IncreaseLivedTime( float time ){
+void debpFFVortex::IncreaseLivedTime(float time){
 	pLivedTime += time;
 	/*
-	if( pLivedTime < 0.0f ){
+	if(pLivedTime < 0.0f){
 		pLivedTime = 0.0f;
 	}
 	*/
@@ -117,5 +117,5 @@ void debpFFVortex::IncreaseLivedTime( float time ){
 
 
 void debpFFVortex::Update(){
-	pCurrentVelocity = pFullVelocity * ( 1.0f - cosf( BP_FFV_TWOPI * pLivedTime / pTimeToLive ) * 0.5f );
+	pCurrentVelocity = pFullVelocity * (1.0f - cosf(BP_FFV_TWOPI * pLivedTime / pTimeToLive) * 0.5f);
 }

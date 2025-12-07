@@ -49,7 +49,7 @@ public:
 	typedef deTObjectReference<meUAddObjectDecal> Ref;
 	
 	// constructor, destructor
-	meUAddObjectDecal( meWorld *world, meObject *parentObject );
+	meUAddObjectDecal(meWorld *world, meObject *parentObject);
 	~meUAddObjectDecal();
 	
 	// Management

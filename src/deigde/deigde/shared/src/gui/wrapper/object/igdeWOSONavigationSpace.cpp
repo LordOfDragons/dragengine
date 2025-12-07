@@ -60,14 +60,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSONavigationSpace::igdeWOSONavigationSpace( igdeWObject &wrapper,
-	const igdeGDCNavigationSpace &gdNavigationSpace, const decString &prefix ) :
-igdeWOSubObject( wrapper, prefix ),
-pGDNavigationSpace( gdNavigationSpace ),
-pAddedToWorld( false ),
-pAttachment( NULL )
+igdeWOSONavigationSpace::igdeWOSONavigationSpace(igdeWObject &wrapper,
+	const igdeGDCNavigationSpace &gdNavigationSpace, const decString &prefix) :
+igdeWOSubObject(wrapper, prefix),
+pGDNavigationSpace(gdNavigationSpace),
+pAddedToWorld(false),
+pAttachment(NULL)
 {
-	wrapper.SubObjectFinishedLoading( *this, true );
+	wrapper.SubObjectFinishedLoading(*this, true);
 }
 
 igdeWOSONavigationSpace::~igdeWOSONavigationSpace(){
@@ -80,15 +80,15 @@ igdeWOSONavigationSpace::~igdeWOSONavigationSpace(){
 ///////////////
 
 void igdeWOSONavigationSpace::UpdateParameters(){
-	GetWrapper().SubObjectFinishedLoading( *this, true );
+	GetWrapper().SubObjectFinishedLoading(*this, true);
 }
 
 void igdeWOSONavigationSpace::OnAllSubObjectsFinishedLoading(){
 	pUpdateNavigationSpace();
 }
 
-void igdeWOSONavigationSpace::Visit( igdeWOSOVisitor &visitor ){
-	visitor.VisitNavigationSpace( *this );
+void igdeWOSONavigationSpace::Visit(igdeWOSOVisitor &visitor){
+	visitor.VisitNavigationSpace(*this);
 }
 
 
@@ -97,44 +97,44 @@ void igdeWOSONavigationSpace::Visit( igdeWOSOVisitor &visitor ){
 //////////////////////
 
 void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
-	if( ! pNavigationSpace ){
-		pNavigationSpace.TakeOver( GetEngine().GetNavigationSpaceManager()->CreateNavigationSpace() );
-		pNavigationSpace->SetType( pGDNavigationSpace.GetType() );
+	if(!pNavigationSpace){
+		pNavigationSpace.TakeOver(GetEngine().GetNavigationSpaceManager()->CreateNavigationSpace());
+		pNavigationSpace->SetType(pGDNavigationSpace.GetType());
 	}
 	
-	decString pathNavSpace( GetStringProperty(
-		pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epPath ),
-		pGDNavigationSpace.GetPath() ) );
+	decString pathNavSpace(GetStringProperty(
+		pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epPath),
+		pGDNavigationSpace.GetPath()));
 		
-	if( pathNavSpace != pPathNavigationSpace ){
-		pNavigationSpace->SetRoomCount( 0 );
-		pNavigationSpace->SetWallCount( 0 );
-		pNavigationSpace->SetFaceCount( 0 );
-		pNavigationSpace->SetCornerCount( 0 );
-		pNavigationSpace->SetEdgeCount( 0 );
-		pNavigationSpace->SetVertexCount( 0 );
-		pNavigationSpace->SetType( pGDNavigationSpace.GetType() );
+	if(pathNavSpace != pPathNavigationSpace){
+		pNavigationSpace->SetRoomCount(0);
+		pNavigationSpace->SetWallCount(0);
+		pNavigationSpace->SetFaceCount(0);
+		pNavigationSpace->SetCornerCount(0);
+		pNavigationSpace->SetEdgeCount(0);
+		pNavigationSpace->SetVertexCount(0);
+		pNavigationSpace->SetType(pGDNavigationSpace.GetType());
 		
-		if( ! pathNavSpace.IsEmpty() ){
-			igdeLoadSaveNavSpace loadNavSpace( &GetEnvironment(), "DEIGDE" );
-			const decPath vfsPath( decPath::CreatePathUnix( pathNavSpace ) );
+		if(!pathNavSpace.IsEmpty()){
+			igdeLoadSaveNavSpace loadNavSpace(&GetEnvironment(), "DEIGDE");
+			const decPath vfsPath(decPath::CreatePathUnix(pathNavSpace));
 			deEngine &engine = GetEngine();
 			
-			if( engine.GetVirtualFileSystem()->ExistsFile( vfsPath ) ){
+			if(engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 				try{
 					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-						 engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) ));
-					loadNavSpace.Load( pNavigationSpace, reader );
+						 engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath)));
+					loadNavSpace.Load(pNavigationSpace, reader);
 					
-				}catch( const deException &e ){
-					pNavigationSpace->SetRoomCount( 0 );
-					pNavigationSpace->SetWallCount( 0 );
-					pNavigationSpace->SetFaceCount( 0 );
-					pNavigationSpace->SetCornerCount( 0 );
-					pNavigationSpace->SetEdgeCount( 0 );
-					pNavigationSpace->SetVertexCount( 0 );
-					pNavigationSpace->SetType( pGDNavigationSpace.GetType() );
-					GetLogger().LogException( "DEIGDE", e );
+				}catch(const deException &e){
+					pNavigationSpace->SetRoomCount(0);
+					pNavigationSpace->SetWallCount(0);
+					pNavigationSpace->SetFaceCount(0);
+					pNavigationSpace->SetCornerCount(0);
+					pNavigationSpace->SetEdgeCount(0);
+					pNavigationSpace->SetVertexCount(0);
+					pNavigationSpace->SetType(pGDNavigationSpace.GetType());
+					GetLogger().LogException("DEIGDE", e);
 				}
 			}
 		}
@@ -147,46 +147,46 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 	decShapeList shapeList;
 	decString value;
 	
-	pNavigationSpace->SetLayer( GetIntProperty(
-		pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epLayer ),
-		pGDNavigationSpace.GetLayer() ) );
-	pNavigationSpace->SetBlockingPriority( GetIntProperty(
-		pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epBlockingPriority ),
-		pGDNavigationSpace.GetBlockingPriority() ) );
-	pNavigationSpace->SetSnapDistance( GetFloatProperty(
-		pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epSnapDistance ),
-		pGDNavigationSpace.GetSnapDistance() ) );
-	pNavigationSpace->SetSnapAngle( GetFloatProperty(
-		pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epSnapAngle ),
-		pGDNavigationSpace.GetSnapAngle() ) * DEG2RAD );
+	pNavigationSpace->SetLayer(GetIntProperty(
+		pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epLayer),
+		pGDNavigationSpace.GetLayer()));
+	pNavigationSpace->SetBlockingPriority(GetIntProperty(
+		pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epBlockingPriority),
+		pGDNavigationSpace.GetBlockingPriority()));
+	pNavigationSpace->SetSnapDistance(GetFloatProperty(
+		pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epSnapDistance),
+		pGDNavigationSpace.GetSnapDistance()));
+	pNavigationSpace->SetSnapAngle(GetFloatProperty(
+		pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epSnapAngle),
+		pGDNavigationSpace.GetSnapAngle()) * DEG2RAD);
 	
 	// shape property
-	if( GetPropertyValue( pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epBlockerShape ), value ) ){
-		codec.DecodeShapeList( value, pNavigationSpace->GetBlockerShapeList() );
+	if(GetPropertyValue(pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epBlockerShape), value)){
+		codec.DecodeShapeList(value, pNavigationSpace->GetBlockerShapeList());
 		
 	}else{
 		pNavigationSpace->GetBlockerShapeList() = pGDNavigationSpace.GetBlockerShapeList();
 	}
 	pNavigationSpace->NotifyBlockerShapeListChanged();
 	
-	if( ! pAddedToWorld ){
-		GetWrapper().GetWorld()->AddNavigationSpace( pNavigationSpace );
+	if(!pAddedToWorld){
+		GetWrapper().GetWorld()->AddNavigationSpace(pNavigationSpace);
 		pAddedToWorld = true;
 	}
-	if( pAddedToWorld && ! pAttachedToCollider ){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 }
 
 void igdeWOSONavigationSpace::pDestroyNavigationSpace(){
-	if( ! pNavigationSpace ){
+	if(!pNavigationSpace){
 		return;
 	}
 	
 	DetachFromCollider();
 	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveNavigationSpace( pNavigationSpace );
+	if(pAddedToWorld){
+		GetWrapper().GetWorld()->RemoveNavigationSpace(pNavigationSpace);
 	}
 	
 	pNavigationSpace = NULL;
@@ -197,7 +197,7 @@ void igdeWOSONavigationSpace::pDestroyNavigationSpace(){
 void igdeWOSONavigationSpace::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pNavigationSpace ){
+	if(!pNavigationSpace){
 		return;
 	}
 	
@@ -206,32 +206,32 @@ void igdeWOSONavigationSpace::AttachToCollider(){
 	deColliderAttachment *attachment = NULL;
 	
 	try{
-		attachment = new deColliderAttachment( pNavigationSpace );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( GetVectorProperty(
-			pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epAttachPosition ),
-			pGDNavigationSpace.GetPosition() ) );
-		attachment->SetOrientation( GetRotationProperty(
-			pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epAttachRotation ),
-			pGDNavigationSpace.GetOrientation() ) );
+		attachment = new deColliderAttachment(pNavigationSpace);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
+		attachment->SetPosition(GetVectorProperty(
+			pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epAttachPosition),
+			pGDNavigationSpace.GetPosition()));
+		attachment->SetOrientation(GetRotationProperty(
+			pGDNavigationSpace.GetPropertyName(igdeGDCNavigationSpace::epAttachRotation),
+			pGDNavigationSpace.GetOrientation()));
 		
-		if( colliderComponent ){
-			if( ! pGDNavigationSpace.GetBoneName().IsEmpty() ){
-				attachment->SetAttachType( deColliderAttachment::eatBone );
-				attachment->SetTrackBone( pGDNavigationSpace.GetBoneName() );
+		if(colliderComponent){
+			if(!pGDNavigationSpace.GetBoneName().IsEmpty()){
+				attachment->SetAttachType(deColliderAttachment::eatBone);
+				attachment->SetTrackBone(pGDNavigationSpace.GetBoneName());
 			}
-			colliderComponent->AddAttachment( attachment );
+			colliderComponent->AddAttachment(attachment);
 			pAttachedToCollider = colliderComponent;
 			
 		}else{
-			colliderFallback->AddAttachment( attachment );
+			colliderFallback->AddAttachment(attachment);
 			pAttachedToCollider = colliderFallback;
 		}
 		
 		pAttachment = attachment;
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			delete attachment;
 		}
 		throw;
@@ -239,11 +239,11 @@ void igdeWOSONavigationSpace::AttachToCollider(){
 }
 
 void igdeWOSONavigationSpace::DetachFromCollider(){
-	if( ! pAttachedToCollider ){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
-	pAttachedToCollider->RemoveAttachment( pAttachment );
+	pAttachedToCollider->RemoveAttachment(pAttachment);
 	pAttachment = NULL;
 	pAttachedToCollider = NULL;
 }

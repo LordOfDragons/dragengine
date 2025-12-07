@@ -99,7 +99,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light peer. */
-	deoglLight( deGraphicOpenGl &ogl, const deLight &light );
+	deoglLight(deGraphicOpenGl &ogl, const deLight &light);
 	
 	/** Clean up light peer. */
 	virtual ~deoglLight();
@@ -124,7 +124,7 @@ public:
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
@@ -146,8 +146,8 @@ public:
 	/*@{*/
 	virtual void DynamicSkinDestroyed();
 	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
+	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 	
 	

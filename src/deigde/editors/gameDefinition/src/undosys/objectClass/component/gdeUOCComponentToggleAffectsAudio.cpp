@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCComponentToggleAffectsAudio::gdeUOCComponentToggleAffectsAudio(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle affects audiomap" );
+	SetShortInfo("Component toggle affects audiomap");
 	
 	pComponent = component;
 	component->AddReference();
@@ -59,10 +59,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentToggleAffectsAudio::~gdeUOCComponentToggleAffectsAudio(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCComponentToggleAffectsAudio::~gdeUOCComponentToggleAffectsAudio(){
 ///////////////
 
 void gdeUOCComponentToggleAffectsAudio::Undo(){
-	pComponent->SetAffectsAudio( ! pComponent->GetAffectsAudio() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAffectsAudio(!pComponent->GetAffectsAudio());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentToggleAffectsAudio::Redo(){

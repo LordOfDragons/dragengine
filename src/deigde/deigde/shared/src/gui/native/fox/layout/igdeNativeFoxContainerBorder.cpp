@@ -34,9 +34,9 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxContainerBorder ) igdeNativeFoxContainerBorderMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, igdeNativeFoxContainerBorder::onResize ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerBorder::onChildLayoutFlags )
+FXDEFMAP(igdeNativeFoxContainerBorder) igdeNativeFoxContainerBorderMap[] = {
+	FXMAPFUNC(SEL_CONFIGURE, 0, igdeNativeFoxContainerBorder::onResize),
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerBorder::onChildLayoutFlags)
 };
 
 
@@ -44,40 +44,40 @@ FXDEFMAP( igdeNativeFoxContainerBorder ) igdeNativeFoxContainerBorderMap[] = {
 // Class igdeNativeFoxContainerBorder
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxContainerBorder, FXPacker,
-	igdeNativeFoxContainerBorderMap, ARRAYNUMBER( igdeNativeFoxContainerBorderMap ) )
+FXIMPLEMENT(igdeNativeFoxContainerBorder, FXPacker,
+	igdeNativeFoxContainerBorderMap, ARRAYNUMBER(igdeNativeFoxContainerBorderMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxContainerBorder::igdeNativeFoxContainerBorder(){ }
+igdeNativeFoxContainerBorder::igdeNativeFoxContainerBorder(){}
 
 igdeNativeFoxContainerBorder::igdeNativeFoxContainerBorder(
-igdeContainerBorder &powner, FXComposite *pparent, int layoutFlags ) :
-FXPacker( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing() ),
-pOwner( &powner ){
+igdeContainerBorder &powner, FXComposite *pparent, int layoutFlags) :
+FXPacker(pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing()),
+pOwner(&powner){
 }
 
 igdeNativeFoxContainerBorder::~igdeNativeFoxContainerBorder(){
 }
 
-igdeNativeFoxContainerBorder *igdeNativeFoxContainerBorder::CreateNativeWidget( igdeContainerBorder &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxContainerBorder *igdeNativeFoxContainerBorder::CreateNativeWidget(igdeContainerBorder &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxContainerBorder( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxContainerBorder(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxContainerBorder::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -107,14 +107,14 @@ void igdeNativeFoxContainerBorder::layout(){
 	// 
 	// as a goody this allows to re-implement the layout if it shows the existing packer
 	// code is not fully suitable. so far it is.
-	enum eSides{ esTop, esBottom, esLeft, esRight, esCenter };
+	enum eSides{esTop, esBottom, esLeft, esRight, esCenter};
 	
-	igdeWidget * const children[ 5 ] = {
-		pOwner->GetWidgetIn( igdeContainerBorder::eaTop ),
-		pOwner->GetWidgetIn( igdeContainerBorder::eaBottom ),
-		pOwner->GetWidgetIn( igdeContainerBorder::eaLeft ),
-		pOwner->GetWidgetIn( igdeContainerBorder::eaRight ),
-		pOwner->GetWidgetIn( igdeContainerBorder::eaCenter )
+	igdeWidget * const children[5] = {
+		pOwner->GetWidgetIn(igdeContainerBorder::eaTop),
+		pOwner->GetWidgetIn(igdeContainerBorder::eaBottom),
+		pOwner->GetWidgetIn(igdeContainerBorder::eaLeft),
+		pOwner->GetWidgetIn(igdeContainerBorder::eaRight),
+		pOwner->GetWidgetIn(igdeContainerBorder::eaCenter)
 	};
 	
 	int left = border + padleft;
@@ -123,17 +123,17 @@ void igdeNativeFoxContainerBorder::layout(){
 	int bottom = height - border - padbottom;
 	int i;
 	
-	for( i=0; i<5; i++ ){
-		if( ! children[ i ] ){
+	for(i=0; i<5; i++){
+		if(!children[i]){
 			continue;
 		}
 		
-		FXWindow * const child = ( FXWindow* )children[ i ]->GetNativeWidget();
-		if( ! child ){
+		FXWindow * const child = (FXWindow*)children[i]->GetNativeWidget();
+		if(!child){
 			continue;
 		}
 		
-		if( ! child->shown() ){
+		if(!child->shown()){
 			continue;
 		}
 		
@@ -143,20 +143,20 @@ void igdeNativeFoxContainerBorder::layout(){
 		int w, h;
 		
 		// height and width
-		if( hints & LAYOUT_FIX_HEIGHT ){
+		if(hints & LAYOUT_FIX_HEIGHT){
 			h = child->getHeight();
 			
-		}else if( hints & LAYOUT_FILL_Y ){
+		}else if(hints & LAYOUT_FILL_Y){
 			h = bottom - top;
 			
 		}else{
 			h = child->getDefaultHeight();
 		}
 		
-		if( hints & LAYOUT_FIX_WIDTH ){
+		if(hints & LAYOUT_FIX_WIDTH){
 			w = child->getWidth();
 			
-		}else if( hints & LAYOUT_FILL_X ){
+		}else if(hints & LAYOUT_FILL_X){
 			w = right - left;
 			
 		}else{
@@ -167,7 +167,7 @@ void igdeNativeFoxContainerBorder::layout(){
 		// like LAYOUT_SIDE_RIGHT is actually an or combination of LAYOUT_SIDE_LEFT and
 		// LAYOUT_SIDE_BOTTOM which messes up the if conditions. changed to use the actual
 		// widget area since we can do this in this situation here
-		switch( i ){
+		switch(i){
 		case esTop:
 			x = left;
 			y = top;
@@ -198,7 +198,7 @@ void igdeNativeFoxContainerBorder::layout(){
 			break;
 		}
 		
-		child->position( x, y, w, h );
+		child->position(x, y, w, h);
 	}
 	
 	flags &= ~FLAG_DIRTY;
@@ -209,31 +209,31 @@ void igdeNativeFoxContainerBorder::layout(){
 // Events
 ///////////
 
-long igdeNativeFoxContainerBorder::onResize( FXObject*, FXSelector, void* ){
+long igdeNativeFoxContainerBorder::onResize(FXObject*, FXSelector, void*){
 	pOwner->OnResize();
 	return 1;
 }
 
-long igdeNativeFoxContainerBorder::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxContainerBorder::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	
-	if( pOwner->GetWidgetIn( igdeContainerBorder::eaTop ) == clflags.widget ){
+	if(pOwner->GetWidgetIn(igdeContainerBorder::eaTop) == clflags.widget){
 		clflags.flags = LAYOUT_SIDE_TOP | LAYOUT_FILL_X;
 		clflags.canResizeVertical = true;
 		
-	}else if( pOwner->GetWidgetIn( igdeContainerBorder::eaBottom ) == clflags.widget ){
+	}else if(pOwner->GetWidgetIn(igdeContainerBorder::eaBottom) == clflags.widget){
 		clflags.flags = LAYOUT_SIDE_BOTTOM | LAYOUT_FILL_X;
 		clflags.canResizeVertical = true;
 		
-	}else if( pOwner->GetWidgetIn( igdeContainerBorder::eaLeft ) == clflags.widget ){
+	}else if(pOwner->GetWidgetIn(igdeContainerBorder::eaLeft) == clflags.widget){
 		clflags.flags = LAYOUT_SIDE_LEFT | LAYOUT_FILL_Y;
 		clflags.canResizeHorizontal = true;
 		
-	}else if( pOwner->GetWidgetIn( igdeContainerBorder::eaRight ) == clflags.widget ){
+	}else if(pOwner->GetWidgetIn(igdeContainerBorder::eaRight) == clflags.widget){
 		clflags.flags = LAYOUT_SIDE_RIGHT | LAYOUT_FILL_Y;
 		clflags.canResizeHorizontal = true;
 		
-	}else if( pOwner->GetWidgetIn( igdeContainerBorder::eaCenter ) == clflags.widget ){
+	}else if(pOwner->GetWidgetIn(igdeContainerBorder::eaCenter) == clflags.widget){
 		clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 		
 	}else{

@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deMicrophoneManager::deMicrophoneManager( deEngine *engine ) : deResourceManager( engine, ertMicrophone ){
-	SetLoggingName( "microphone" );
+deMicrophoneManager::deMicrophoneManager(deEngine *engine) : deResourceManager(engine, ertMicrophone){
+	SetLoggingName("microphone");
 }
 
 deMicrophoneManager::~deMicrophoneManager(){
@@ -63,22 +63,22 @@ int deMicrophoneManager::GetMicrophoneCount() const{
 }
 
 deMicrophone *deMicrophoneManager::GetRootMicrophone() const{
-	return ( deMicrophone* )pMicrophones.GetRoot();
+	return (deMicrophone*)pMicrophones.GetRoot();
 }
 
 deMicrophone *deMicrophoneManager::CreateMicrophone(){
 	deMicrophone *microphone = NULL;
 	
 	try{
-		microphone = new deMicrophone( this );
-		if( ! microphone ) DETHROW( deeOutOfMemory );
+		microphone = new deMicrophone(this);
+		if(!microphone) DETHROW(deeOutOfMemory);
 		
-		GetAudioSystem()->LoadMicrophone( microphone );
+		GetAudioSystem()->LoadMicrophone(microphone);
 		
-		pMicrophones.Add( microphone );
+		pMicrophones.Add(microphone);
 		
-	}catch( const deException & ){
-		if( microphone ){
+	}catch(const deException &){
+		if(microphone){
 			microphone->FreeReference();
 		}
 		throw;
@@ -92,8 +92,8 @@ deMicrophone *deMicrophoneManager::CreateMicrophone(){
 void deMicrophoneManager::ReleaseLeakingResources(){
 	int count = GetMicrophoneCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking microphones", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking microphones", count);
 		pMicrophones.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -104,27 +104,27 @@ void deMicrophoneManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deMicrophoneManager::SystemAudioLoad(){
-	deMicrophone *microphone = ( deMicrophone* )pMicrophones.GetRoot();
+	deMicrophone *microphone = (deMicrophone*)pMicrophones.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
-	while( microphone ){
-		if( ! microphone->GetPeerAudio() ){
-			audSys.LoadMicrophone( microphone );
+	while(microphone){
+		if(!microphone->GetPeerAudio()){
+			audSys.LoadMicrophone(microphone);
 		}
 		
-		microphone = ( deMicrophone* )microphone->GetLLManagerNext();
+		microphone = (deMicrophone*)microphone->GetLLManagerNext();
 	}
 }
 
 void deMicrophoneManager::SystemAudioUnload(){
-	deMicrophone *microphone = ( deMicrophone* )pMicrophones.GetRoot();
+	deMicrophone *microphone = (deMicrophone*)pMicrophones.GetRoot();
 	
-	while( microphone ){
-		microphone->SetPeerAudio( NULL );
-		microphone = ( deMicrophone* )microphone->GetLLManagerNext();
+	while(microphone){
+		microphone->SetPeerAudio(NULL);
+		microphone = (deMicrophone*)microphone->GetLLManagerNext();
 	}
 }
 
-void deMicrophoneManager::RemoveResource( deResource *resource ){
-	pMicrophones.RemoveIfPresent( resource );
+void deMicrophoneManager::RemoveResource(deResource *resource){
+	pMicrophones.RemoveIfPresent(resource);
 }

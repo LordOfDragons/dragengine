@@ -45,10 +45,10 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxComboBoxFilter ) igdeNativeFoxComboBoxFilterMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxComboBoxFilter::ID_SELF, igdeNativeFoxComboBoxFilter::onCommand ),
-	FXMAPFUNC( SEL_CHANGED, igdeNativeFoxComboBoxFilter::ID_SELF, igdeNativeFoxComboBoxFilter::onChanged ),
-	FXMAPFUNC( SEL_CHANGED, igdeNativeFoxComboBoxFilter::ID_EDIT_FILTER, igdeNativeFoxComboBoxFilter::onEditFilterChanged )
+FXDEFMAP(igdeNativeFoxComboBoxFilter) igdeNativeFoxComboBoxFilterMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxComboBoxFilter::ID_SELF, igdeNativeFoxComboBoxFilter::onCommand),
+	FXMAPFUNC(SEL_CHANGED, igdeNativeFoxComboBoxFilter::ID_SELF, igdeNativeFoxComboBoxFilter::onChanged),
+	FXMAPFUNC(SEL_CHANGED, igdeNativeFoxComboBoxFilter::ID_EDIT_FILTER, igdeNativeFoxComboBoxFilter::onEditFilterChanged)
 };
 
 
@@ -56,45 +56,45 @@ FXDEFMAP( igdeNativeFoxComboBoxFilter ) igdeNativeFoxComboBoxFilterMap[] = {
 // Class igdeNativeFoxComboBoxFilter
 //////////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxComboBoxFilter, FXComboBox, igdeNativeFoxComboBoxFilterMap, ARRAYNUMBER( igdeNativeFoxComboBoxFilterMap ) )
+FXIMPLEMENT(igdeNativeFoxComboBoxFilter, FXComboBox, igdeNativeFoxComboBoxFilterMap, ARRAYNUMBER(igdeNativeFoxComboBoxFilterMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxComboBoxFilter::igdeNativeFoxComboBoxFilter(){ }
+igdeNativeFoxComboBoxFilter::igdeNativeFoxComboBoxFilter(){}
 
-igdeNativeFoxComboBoxFilter::igdeNativeFoxComboBoxFilter( igdeComboBoxFilter &powner, FXComposite *pparent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXComboBox( pparent, powner.GetColumns(), this, ID_SELF, layoutFlags | ComboBoxFlags( powner ),
+igdeNativeFoxComboBoxFilter::igdeNativeFoxComboBoxFilter(igdeComboBoxFilter &powner, FXComposite *pparent,
+int layoutFlags, const igdeGuiTheme &guitheme) :
+FXComboBox(pparent, powner.GetColumns(), this, ID_SELF, layoutFlags | ComboBoxFlags(powner),
 	0, 0, 0, 0,
-	ComboBoxPadLeft( guitheme ), ComboBoxPadRight( guitheme ),
-	ComboBoxPadTop( guitheme ), ComboBoxPadBottom( guitheme ) ),
-pOwner( &powner ),
-pFont( ComboBoxFont( powner, guitheme ) ),
-pLabelFilter( NULL ),
-pEditFilter( NULL ),
-pOrgBackColor( field->getBackColor() ),
-pInvalidBackColor( igdeUIFoxHelper::BlendColor( pOrgBackColor, FXRGB( 255, 0, 0 ), 0.25f ) )
+	ComboBoxPadLeft(guitheme), ComboBoxPadRight(guitheme),
+	ComboBoxPadTop(guitheme), ComboBoxPadBottom(guitheme)),
+pOwner(&powner),
+pFont(ComboBoxFont(powner, guitheme)),
+pLabelFilter(NULL),
+pEditFilter(NULL),
+pOrgBackColor(field->getBackColor()),
+pInvalidBackColor(igdeUIFoxHelper::BlendColor(pOrgBackColor, FXRGB(255, 0, 0), 0.25f))
 {
 	FXHorizontalFrame * const lineFilter = new FXHorizontalFrame(
-		pane, LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pLabelFilter = new FXLabel( lineFilter, "Filter:", NULL, LABEL_NORMAL, 0, 0, 0, 0, 0, 2 );
-	pLabelFilter->setJustify( JUSTIFY_LEFT | JUSTIFY_CENTER_Y );
-	pEditFilter = new FXTextField( lineFilter, 5, this, ID_EDIT_FILTER, FRAME_SUNKEN | LAYOUT_FILL_X );
+		pane, LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0);
+	pLabelFilter = new FXLabel(lineFilter, "Filter:", NULL, LABEL_NORMAL, 0, 0, 0, 0, 0, 2);
+	pLabelFilter->setJustify(JUSTIFY_LEFT | JUSTIFY_CENTER_Y);
+	pEditFilter = new FXTextField(lineFilter, 5, this, ID_EDIT_FILTER, FRAME_SUNKEN | LAYOUT_FILL_X);
 	
-	setFont( (FXFont*)pFont->GetNativeFont() );
+	setFont((FXFont*)pFont->GetNativeFont());
 	
-	setEditable( powner.GetEditable() );
-	if( ! powner.GetEnabled() ){
+	setEditable(powner.GetEditable());
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	
-	setTipText( powner.GetDescription().GetString() );
-	setHelpText( powner.GetDescription().GetString() );
+	setTipText(powner.GetDescription().GetString());
+	setHelpText(powner.GetDescription().GetString());
 	
 	BuildList();
-	setCurrentItem( powner.GetSelection() );
-	setText( powner.GetText().GetString() );
+	setCurrentItem(powner.GetSelection());
+	setText(powner.GetText().GetString());
 	
 	UpdateRowCount();
 }
@@ -102,23 +102,23 @@ pInvalidBackColor( igdeUIFoxHelper::BlendColor( pOrgBackColor, FXRGB( 255, 0, 0 
 igdeNativeFoxComboBoxFilter::~igdeNativeFoxComboBoxFilter(){
 }
 
-igdeNativeFoxComboBoxFilter *igdeNativeFoxComboBoxFilter::CreateNativeWidget( igdeComboBoxFilter &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxComboBoxFilter *igdeNativeFoxComboBoxFilter::CreateNativeWidget(igdeComboBoxFilter &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxComboBoxFilter( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
+	return new igdeNativeFoxComboBoxFilter(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner), *powner.GetGuiTheme());
 }
 
 void igdeNativeFoxComboBoxFilter::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -138,41 +138,41 @@ void igdeNativeFoxComboBoxFilter::BuildList(){
 	
 	clearItems();
 	
-	for( i=0; i<count; i++ ){
-		const igdeListItem &item = *pOwner->GetItemAt( i );
+	for(i=0; i<count; i++){
+		const igdeListItem &item = *pOwner->GetItemAt(i);
 		
-		appendItem( item.GetText().GetString() );
+		appendItem(item.GetText().GetString());
 		
-		if( item.GetIcon() ){
-			list->setItemIcon( i, ( FXIcon* )item.GetIcon()->GetNativeIcon() );
+		if(item.GetIcon()){
+			list->setItemIcon(i, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		}
 	}
 }
 
-void igdeNativeFoxComboBoxFilter::UpdateItem( int index ){
-	const igdeListItem &item = *pOwner->GetItemAt( index );
+void igdeNativeFoxComboBoxFilter::UpdateItem(int index){
+	const igdeListItem &item = *pOwner->GetItemAt(index);
 	
-	list->setItemText( index, item.GetText().GetString() );
+	list->setItemText(index, item.GetText().GetString());
 	
-	if( item.GetIcon() ){
-		list->setItemIcon( index, ( FXIcon* )item.GetIcon()->GetNativeIcon() );
+	if(item.GetIcon()){
+		list->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		
 	}else{
-		list->setItemIcon( index, NULL );
+		list->setItemIcon(index, NULL);
 	}
 }
 
-void igdeNativeFoxComboBoxFilter::SyncSelection( bool changing ){
+void igdeNativeFoxComboBoxFilter::SyncSelection(bool changing){
 	// keep in mind FXComboBox list selection can go out of synch with text. we need to
 	// set the text, then update the selection index to match the text and eventually to
 	// update the combo box list selection. since setting the combo box list selection
 	// trashes the set text we can not use the simple solution. using SetText() is more
 	// complex than required but it does work
-	pOwner->SetText( getText().text(), changing );
+	pOwner->SetText(getText().text(), changing);
 }
 
 void igdeNativeFoxComboBoxFilter::OnInvalidValueChanged(){
-	field->setBackColor( pOwner->GetInvalidValue() ? pInvalidBackColor : pOrgBackColor );
+	field->setBackColor(pOwner->GetInvalidValue() ? pInvalidBackColor : pOrgBackColor);
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateText(){
@@ -185,31 +185,31 @@ void igdeNativeFoxComboBoxFilter::UpdateText(){
 	// unfortunately setCurrentItem() also changes the text although it is not stated in
 	// the documentation that this side-effects is present. we thus have to do this in the
 	// right order to avoid a total mess to break loose.
-	setCurrentItem( pOwner->GetSelection() );
-	setText( pOwner->GetText().GetString() );
+	setCurrentItem(pOwner->GetSelection());
+	setText(pOwner->GetText().GetString());
 }
 
-void igdeNativeFoxComboBoxFilter::InsertItem( int index, const igdeListItem &item ){
-	list->insertItem( index, item.GetText().GetString() );
+void igdeNativeFoxComboBoxFilter::InsertItem(int index, const igdeListItem &item){
+	list->insertItem(index, item.GetText().GetString());
 	
-	if( item.GetIcon() ){
-		list->setItemIcon( index, ( FXIcon* )item.GetIcon()->GetNativeIcon() );
+	if(item.GetIcon()){
+		list->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		
 	}else{
-		list->setItemIcon( index, NULL );
+		list->setItemIcon(index, NULL);
 	}
 }
 
-void igdeNativeFoxComboBoxFilter::RemoveItem( int index ){
-	removeItem( index );
+void igdeNativeFoxComboBoxFilter::RemoveItem(int index){
+	removeItem(index);
 }
 
 void igdeNativeFoxComboBoxFilter::RemoveAllItems(){
 	clearItems();
 }
 
-void igdeNativeFoxComboBoxFilter::MoveItem( int fromIndex, int toIndex ){
-	moveItem( toIndex, fromIndex );
+void igdeNativeFoxComboBoxFilter::MoveItem(int fromIndex, int toIndex){
+	moveItem(toIndex, fromIndex);
 }
 
 void igdeNativeFoxComboBoxFilter::Focus(){
@@ -217,24 +217,24 @@ void igdeNativeFoxComboBoxFilter::Focus(){
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateRowCount(){
-	const int count = decMath::max( decMath::min( pOwner->GetRows(),
-		decMath::max( pOwner->GetItemCount(), pOwner->GetFilterItemCount() ) ), 1 );
-	if( count == getNumVisible() ){
+	const int count = decMath::max(decMath::min(pOwner->GetRows(),
+		decMath::max(pOwner->GetItemCount(), pOwner->GetFilterItemCount())), 1);
+	if(count == getNumVisible()){
 		return;
 	}
 	
-	setNumVisible( count );
+	setNumVisible(count);
 	
 	// FOX needs this otherwise the drop-down list can stay at a wrong size
 	layout();
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateFilterString(){
-	pEditFilter->setText( pOwner->GetFilterString().GetString() );
+	pEditFilter->setText(pOwner->GetFilterString().GetString());
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -243,59 +243,59 @@ void igdeNativeFoxComboBoxFilter::UpdateEnabled(){
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateEditable(){
-	setEditable( pOwner->GetEditable() );
+	setEditable(pOwner->GetEditable());
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateDescription(){
 	const char * const description = pOwner->GetDescription();
-	setTipText( description );
-	setHelpText( description );
+	setTipText(description);
+	setHelpText(description);
 }
 
 
 
-int igdeNativeFoxComboBoxFilter::ComboBoxFlags( const igdeComboBoxFilter & ){
+int igdeNativeFoxComboBoxFilter::ComboBoxFlags(const igdeComboBoxFilter &){
 	return FRAME_SUNKEN | COMBOBOX_NORMAL;
 }
 
-igdeFont *igdeNativeFoxComboBoxFilter::ComboBoxFont( const igdeComboBoxFilter &powner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxComboBoxFilter::ComboBoxFont(const igdeComboBoxFilter &powner, const igdeGuiTheme &guitheme){
 	igdeFont::sConfiguration configuration;
-	powner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute, 0 );
+	if(guitheme.HasProperty(igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::comboBoxFontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::comboBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::comboBoxFontSize, 1.0f );
+			igdeGuiThemePropertyNames::comboBoxFontSize, 1.0f);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
+			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
 	
-	return powner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont(configuration);
 }
 
-int igdeNativeFoxComboBoxFilter::ComboBoxPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::comboBoxPaddingLeft, DEFAULT_PAD );
+int igdeNativeFoxComboBoxFilter::ComboBoxPadLeft(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::comboBoxPaddingLeft, DEFAULT_PAD);
 }
 
-int igdeNativeFoxComboBoxFilter::ComboBoxPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::comboBoxPaddingRight, DEFAULT_PAD );
+int igdeNativeFoxComboBoxFilter::ComboBoxPadRight(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::comboBoxPaddingRight, DEFAULT_PAD);
 }
 
-int igdeNativeFoxComboBoxFilter::ComboBoxPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::comboBoxPaddingTop, DEFAULT_PAD );
+int igdeNativeFoxComboBoxFilter::ComboBoxPadTop(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::comboBoxPaddingTop, DEFAULT_PAD);
 }
 
-int igdeNativeFoxComboBoxFilter::ComboBoxPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::comboBoxPaddingBottom, DEFAULT_PAD );
+int igdeNativeFoxComboBoxFilter::ComboBoxPadBottom(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::comboBoxPaddingBottom, DEFAULT_PAD);
 }
 
 
@@ -303,18 +303,18 @@ int igdeNativeFoxComboBoxFilter::ComboBoxPadBottom( const igdeGuiTheme &guitheme
 // Events
 ///////////
 
-long igdeNativeFoxComboBoxFilter::onCommand( FXObject*, FXSelector, void* ){
+long igdeNativeFoxComboBoxFilter::onCommand(FXObject*, FXSelector, void*){
 	// SEL_COMMAND will be send by FXComboBox if either the user clicked on a list box
 	// item or if he finished entering text into the text field. Since we do not know
 	// which event caused SEL_COMMAND to be fired we need to deal with the same problem
 	// we are facing in UpdateText(). in particular we need to fix the list box selection
 	// to not go out of sync with the text
-	if( ! pOwner->GetEnabled() ){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
 	try{
-		SyncSelection( false );
+		SyncSelection(false);
 		
 		// SyncSelection calls SetText which does call NotifyTextChanged but only if the
 		// text has not changed. Because onChanged is send right before onCommand the
@@ -323,43 +323,43 @@ long igdeNativeFoxComboBoxFilter::onCommand( FXObject*, FXSelector, void* ){
 		// send if user interaction changed the value.
 		pOwner->NotifyTextChanged();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	
 	return 1;
 }
 
-long igdeNativeFoxComboBoxFilter::onChanged( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxComboBoxFilter::onChanged(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
 	try{
-		SyncSelection( true );
+		SyncSelection(true);
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	
 	return 1;
 }
 
-long igdeNativeFoxComboBoxFilter::onEditFilterChanged( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxComboBoxFilter::onEditFilterChanged(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
 	try{
-		pOwner->SetFilterString( pEditFilter->getText().text() );
+		pOwner->SetFilterString(pEditFilter->getText().text());
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	

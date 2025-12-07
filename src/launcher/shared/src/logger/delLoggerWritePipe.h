@@ -58,9 +58,9 @@ public:
 	/*@{*/
 	/** \brief Create logger. */
 #ifdef OS_W32
-	delLoggerWritePipe( HANDLE pipe );
+	delLoggerWritePipe(HANDLE pipe);
 #else
-	delLoggerWritePipe( int pipe );
+	delLoggerWritePipe(int pipe);
 #endif
 	
 protected:
@@ -74,20 +74,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Log an information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** \brief Log a warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** \brief Log an error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	/*@}*/
 	
 	
 	
 protected:
-	void LogToPipe( const char *source, const char *message, int type );
-	void WriteToPipe( const void *data, int length );
+	void LogToPipe(const char *source, const char *message, int type);
+	void WriteToPipe(const void *data, int length);
 };
 
 #endif

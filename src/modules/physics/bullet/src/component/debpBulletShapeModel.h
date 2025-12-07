@@ -56,8 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
-	debpBulletShapeModel( btTriangleMeshShape *meshShape, btTriangleIndexVertexArray *indexVertexArray,
-	btScalar *vertices, int *faces, int vertexCount, int faceCount );
+	debpBulletShapeModel(btTriangleMeshShape *meshShape, btTriangleIndexVertexArray *indexVertexArray,
+	btScalar *vertices, int *faces, int vertexCount, int faceCount);
 	
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
 	virtual ~debpBulletShapeModel();

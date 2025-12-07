@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullContainerScroll();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullContainerScroll* CreateNativeWidget( igdeContainerScroll &owner );
+	static igdeNativeNullContainerScroll* CreateNativeWidget(igdeContainerScroll &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

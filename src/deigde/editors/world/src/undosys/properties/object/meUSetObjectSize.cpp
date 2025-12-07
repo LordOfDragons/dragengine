@@ -36,23 +36,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectSize::meUSetObjectSize( meObject *object, const decVector &newSize ){
-	if( ! object ) DETHROW( deeInvalidParam );
+meUSetObjectSize::meUSetObjectSize(meObject *object, const decVector &newSize){
+	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if( ! world ) DETHROW( deeInvalidParam );
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pOldSize = object->GetSize();
 	pNewSize = newSize;
 	
-	SetShortInfo( "Set Object size" );
+	SetShortInfo("Set Object size");
 	
 	pObject = object;
 	object->AddReference();
 }
 
 meUSetObjectSize::~meUSetObjectSize(){
-	if( pObject ) pObject->FreeReference();
+	if(pObject) pObject->FreeReference();
 }
 
 
@@ -63,15 +63,15 @@ meUSetObjectSize::~meUSetObjectSize(){
 void meUSetObjectSize::Undo(){
 	meWorld *world = pObject->GetWorld();
 	
-	pObject->SetSize( pOldSize );
+	pObject->SetSize(pOldSize);
 	
-	world->NotifyObjectGeometryChanged( pObject );
+	world->NotifyObjectGeometryChanged(pObject);
 }
 
 void meUSetObjectSize::Redo(){
 	meWorld *world = pObject->GetWorld();
 	
-	pObject->SetSize( pNewSize );
+	pObject->SetSize(pNewSize);
 	
-	world->NotifyObjectGeometryChanged( pObject );
+	world->NotifyObjectGeometryChanged(pObject);
 }

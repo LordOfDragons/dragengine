@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device list. */
-	debiDeviceManager( deBeOSInput &module );
+	debiDeviceManager(deBeOSInput &module);
 	
 	/** \brief Clean up device list. */
 	~debiDeviceManager();
@@ -71,13 +71,13 @@ public:
 	int GetCount() const;
 	
 	/** \brief Device at index. */
-	debiDevice *GetAt( int index ) const;
+	debiDevice *GetAt(int index) const;
 	
 	/** \brief Device with identifier or \em NULL if absent. */
-	debiDevice *GetWithID( const char *id );
+	debiDevice *GetWithID(const char *id);
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id );
+	int IndexOfWithID(const char *id);
 	
 	
 	
@@ -95,7 +95,7 @@ public:
 	
 	
 	/** \brief Normalize identifier. */
-	static decString NormalizeID( const char *id );
+	static decString NormalizeID(const char *id);
 	/*@}*/
 	
 	

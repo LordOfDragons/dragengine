@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new terrain mask image wrapper. */
-	meTerrainMaskImage( deImage *image );
+	meTerrainMaskImage(deImage *image);
 	/** Cleans up the terrain mask image wrapper. */
 	~meTerrainMaskImage();
 	/*@}*/
@@ -66,22 +66,22 @@ public:
 	 * Retrieves the mask value at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.
 	 */
-	unsigned char GetMaskValueAt( int x, int y ) const;
+	unsigned char GetMaskValueAt(int x, int y) const;
 	/**
 	 * Retrieves the mask value at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.
 	 */
-	unsigned char GetMaskValueAt( int index ) const;
+	unsigned char GetMaskValueAt(int index) const;
 	/**
 	 * Sets the mask value at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.
 	 */
-	void SetMaskValueAt( int x, int y, unsigned char value );
+	void SetMaskValueAt(int x, int y, unsigned char value);
 	/**
 	 * Sets the mask value at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.
 	 */
-	void SetMaskValueAt( int index, unsigned char value );
+	void SetMaskValueAt(int index, unsigned char value);
 	/*@}*/
 };
 

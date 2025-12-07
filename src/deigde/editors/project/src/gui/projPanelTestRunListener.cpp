@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projPanelTestRunListener::projPanelTestRunListener( projPanelTestRun &panel ) :
-pPanel( panel ){
+projPanelTestRunListener::projPanelTestRunListener(projPanelTestRun &panel) :
+pPanel(panel){
 }
 
 projPanelTestRunListener::~projPanelTestRunListener(){
@@ -53,13 +53,13 @@ projPanelTestRunListener::~projPanelTestRunListener(){
 // Notifications
 //////////////////
 
-void projPanelTestRunListener::ProjectChanged( projProject *project ){
+void projPanelTestRunListener::ProjectChanged(projProject *project){
 }
 
 
 
-void projPanelTestRunListener::ProfileStructureChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
+void projPanelTestRunListener::ProfileStructureChanged(projProject *project){
+	if(pPanel.GetProject() != project){
 		return;
 	}
 	
@@ -67,8 +67,8 @@ void projPanelTestRunListener::ProfileStructureChanged( projProject *project ){
 }
 
 void projPanelTestRunListener::ProfileNameChanged(
-projProject *project, projProfile *profile ){
-	if( pPanel.GetProject() != project ){
+projProject *project, projProfile *profile){
+	if(pPanel.GetProject() != project){
 		return;
 	}
 	
@@ -77,8 +77,8 @@ projProject *project, projProfile *profile ){
 
 
 
-void projPanelTestRunListener::ActiveLaunchProfileChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
+void projPanelTestRunListener::ActiveLaunchProfileChanged(projProject *project){
+	if(pPanel.GetProject() != project){
 		return;
 	}
 	
@@ -87,7 +87,7 @@ void projPanelTestRunListener::ActiveLaunchProfileChanged( projProject *project 
 
 void projPanelTestRunListener::RemoteClientConnected(projProject *project,
 const projRemoteClient::Ref &client){
-	if( pPanel.GetProject() != project ){
+	if(pPanel.GetProject() != project){
 		return;
 	}
 	

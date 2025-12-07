@@ -58,29 +58,29 @@ public:
 	virtual void ParametersChanged();
 	
 	/** \brief Sector heights changed. */
-	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates );
+	virtual void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates);
 	
 	/** \brief Sector has been added. */
-	virtual void SectorAdded( deHeightTerrainSector *sector );
+	virtual void SectorAdded(deHeightTerrainSector *sector);
 	
 	/** \brief Sector has been removed. */
-	virtual void SectorRemoved( int index );
+	virtual void SectorRemoved(int index);
 	
 	/** \brief All sectors have been removed. */
 	virtual void AllSectorsRemoved();
 	
 	/** \brief Sector changed. */
-	virtual void SectorChanged( int index );
+	virtual void SectorChanged(int index);
 	
 	/** \brief Decal has been added. */
-	virtual void DecalAdded( int sector, deDecal *decal );
+	virtual void DecalAdded(int sector, deDecal *decal);
 	
 	/** \brief Decal has been removed. */
-	virtual void DecalRemoved( int sector, deDecal *decal );
+	virtual void DecalRemoved(int sector, deDecal *decal);
 	
 	/** \brief All decals have been removed. */
-	virtual void AllDecalsRemoved( int sector );
+	virtual void AllDecalsRemoved(int sector);
 	/*@}*/
 };
 

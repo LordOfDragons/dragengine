@@ -100,7 +100,7 @@ public:
 	/** \brief Visit objects. */
 	void Visit(Visitor &visitor, int from, int to = -1, int step = 1) const;
 	
-	inline void Visit(Visitor &visitor) const{ Visit(visitor, 0, pEntries.GetCount()); }
+	inline void Visit(Visitor &visitor) const{Visit(visitor, 0, pEntries.GetCount());}
 	
 	/** \brief Find object. */
 	bool Find(Evaluator &evaluator, deObject *&found, int from, int to = -1, int step = 1) const;

@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new class. */
-	deClassColliderBreakingListener( deScriptingDragonScript *ds );
+	deClassColliderBreakingListener(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
 	virtual ~deClassColliderBreakingListener();
 	/*@}*/
@@ -53,7 +53,7 @@ public:
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** \brief Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index colliderConstraintBroke(). */
 	inline int GetFuncIndexColliderConstraintBroke() const{ return pFuncIndexColliderConstraintBroke; }
@@ -70,13 +70,13 @@ private:
 		dsClass *clsCBL, *clsVoid, *clsBool, *clsFlt, *clsInt, *clsCol;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfColliderConstraintBroke );
-	DEF_NATFUNC( nfRigConstraintBroke );
+	DEF_NATFUNC(nfColliderConstraintBroke);
+	DEF_NATFUNC(nfRigConstraintBroke);
 #undef DEF_NATFUNC
 };
 

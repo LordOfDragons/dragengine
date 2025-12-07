@@ -49,15 +49,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deainpOverlaySystem::deainpOverlaySystem( deAndroidInput &androidInput ) :
-pAndroidInput( androidInput ),
+deainpOverlaySystem::deainpOverlaySystem(deAndroidInput &androidInput) :
+pAndroidInput(androidInput),
 
-pCanvas( NULL ),
-pInHorizontalMode( false )
+pCanvas(NULL),
+pInHorizontalMode(false)
 {
-	decPoint screenSize( androidInput.GetScreenSize() );
+	decPoint screenSize(androidInput.GetScreenSize());
 	pInHorizontalMode = screenSize.x > screenSize.y;
-	if( pInHorizontalMode ){
+	if(pInHorizontalMode){
 		const int temporary = screenSize.x;
 		screenSize.x = screenSize.y;
 		screenSize.y = temporary;
@@ -65,7 +65,7 @@ pInHorizontalMode( false )
 	
 	try{
 		pCanvas = androidInput.GetGameEngine()->GetCanvasManager()->CreateCanvasView();
-		pCanvas->SetSize( screenSize );
+		pCanvas->SetSize(screenSize);
 		
 #if 0
 		const deainpDeviceMouse &mouse = *androidInput.GetDevices().GetMouse();
@@ -101,7 +101,7 @@ pInHorizontalMode( false )
 				screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().x,
 				screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().y),
 			circlePad->GetLayoutHorizontal().GetSize()));
-		circlePad->SetLayoutVertical( deainpLayout(decPoint(
+		circlePad->SetLayoutVertical(deainpLayout(decPoint(
 				screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().x,
 				screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().y),
 			circlePad->GetLayoutHorizontal().GetSize()));
@@ -198,21 +198,21 @@ deainpOverlaySystem::~deainpOverlaySystem(){
 ///////////////
 
 void deainpOverlaySystem::UpdateContent(){
-	const decPoint screenSize( pAndroidInput.GetScreenSize() );
-	SetInHorizontalMode( screenSize.x > screenSize.y );
+	const decPoint screenSize(pAndroidInput.GetScreenSize());
+	SetInHorizontalMode(screenSize.x > screenSize.y);
 	
 	const int count = pOverlays.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pOverlays.GetAt( i )->UpdateContent();
+	for(i=0; i<count; i++){
+		pOverlays.GetAt(i)->UpdateContent();
 	}
 }
 
 void deainpOverlaySystem::ScreenSizeChanged(){
 }
 
-void deainpOverlaySystem::SetInHorizontalMode( bool inHorizontalMode ){
-	if( inHorizontalMode == pInHorizontalMode ){
+void deainpOverlaySystem::SetInHorizontalMode(bool inHorizontalMode){
+	if(inHorizontalMode == pInHorizontalMode){
 		return;
 	}
 	
@@ -224,38 +224,38 @@ void deainpOverlaySystem::UpdateBindingIndices(){
 	const int count = pOverlays.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pOverlays.GetAt( i )->UpdateBindingIndices();
+	for(i=0; i<count; i++){
+		pOverlays.GetAt(i)->UpdateBindingIndices();
 	}
 }
 
 void deainpOverlaySystem::UpdateFromLayout(){
-	pCanvas->SetSize( pAndroidInput.GetScreenSize() );
+	pCanvas->SetSize(pAndroidInput.GetScreenSize());
 	
 	const int count = pOverlays.GetCount();
 	int i;
 	
-	if( pInHorizontalMode ){
-		for( i=0; i<count; i++ ){
-			pOverlays.GetAt( i )->UpdateFromHorizontalLayout();
+	if(pInHorizontalMode){
+		for(i=0; i<count; i++){
+			pOverlays.GetAt(i)->UpdateFromHorizontalLayout();
 		}
 		
 	}else{
-		for( i=0; i<count; i++ ){
-			pOverlays.GetAt( i )->UpdateFromVerticalLayout();
+		for(i=0; i<count; i++){
+			pOverlays.GetAt(i)->UpdateFromVerticalLayout();
 		}
 	}
 }
 
 
 
-bool deainpOverlaySystem::OnTouch( int pointerId, const decPoint &position ){
+bool deainpOverlaySystem::OnTouch(int pointerId, const decPoint &position){
 	const int count = pOverlays.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deainpOverlay &overlay = *pOverlays.GetAt( i );
-		if( overlay.OnTouch( pointerId, position - overlay.GetCanvas()->GetPosition() ) ){
+	for(i=0; i<count; i++){
+		deainpOverlay &overlay = *pOverlays.GetAt(i);
+		if(overlay.OnTouch(pointerId, position - overlay.GetCanvas()->GetPosition())){
 			return true;
 		}
 	}
@@ -263,13 +263,13 @@ bool deainpOverlaySystem::OnTouch( int pointerId, const decPoint &position ){
 	return false;
 }
 
-bool deainpOverlaySystem::OnMove( int pointerId, const decPoint &position ){
+bool deainpOverlaySystem::OnMove(int pointerId, const decPoint &position){
 	const int count = pOverlays.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		deainpOverlay &overlay = *pOverlays.GetAt( i );
-		if( overlay.GetPointer() == pointerId ){
-			overlay.OnMove( position - overlay.GetCanvas()->GetPosition() );
+	for(i=0; i<count; i++){
+		deainpOverlay &overlay = *pOverlays.GetAt(i);
+		if(overlay.GetPointer() == pointerId){
+			overlay.OnMove(position - overlay.GetCanvas()->GetPosition());
 			return true;
 		}
 	}
@@ -277,12 +277,12 @@ bool deainpOverlaySystem::OnMove( int pointerId, const decPoint &position ){
 	return false;
 }
 
-bool deainpOverlaySystem::OnRelease( int pointerId ){
+bool deainpOverlaySystem::OnRelease(int pointerId){
 	const int count = pOverlays.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		deainpOverlay &overlay = *pOverlays.GetAt( i );
-		if( overlay.GetPointer() == pointerId ){
+	for(i=0; i<count; i++){
+		deainpOverlay &overlay = *pOverlays.GetAt(i);
+		if(overlay.GetPointer() == pointerId){
 			overlay.OnRelease();
 			return true;
 		}
@@ -299,7 +299,7 @@ bool deainpOverlaySystem::OnRelease( int pointerId ){
 void deainpOverlaySystem::pCleanUp(){
 	pOverlays.RemoveAll();
 	
-	if( pCanvas ){
+	if(pCanvas){
 		pCanvas->RemoveAllCanvas();
 		pCanvas->FreeReference();
 	}

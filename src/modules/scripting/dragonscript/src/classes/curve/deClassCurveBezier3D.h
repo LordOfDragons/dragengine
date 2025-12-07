@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassCurveBezier3D( deScriptingDragonScript &ds );
+	deClassCurveBezier3D(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassCurveBezier3D();
@@ -59,16 +59,16 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Curve. */
-	decCurveBezier3D &GetCurve( dsRealObject *myself ) const;
+	decCurveBezier3D &GetCurve(dsRealObject *myself) const;
 	
 	/** \brief Curve evaluator. */
-	decCurveBezier3DEvaluator &GetEvaluator( dsRealObject *myself ) const;
+	decCurveBezier3DEvaluator &GetEvaluator(dsRealObject *myself) const;
 	
 	/** \brief Push curve. */
-	void PushCurve( dsRunTime *rt, const decCurveBezier3D &curve );
+	void PushCurve(dsRunTime *rt, const decCurveBezier3D &curve);
 	
 	inline dsClass *GetClassCurveBezierInterpolation() const{ return pClsCurveBezierInterpolation; }
 	/*@}*/
@@ -90,40 +90,40 @@ private:
 		dsClass *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPointCount );
-	DEF_NATFUNC( nfGetPointAt );
-	DEF_NATFUNC( nfGetHandle1At );
-	DEF_NATFUNC( nfGetHandle2At );
-	DEF_NATFUNC( nfSetPointAt );
-	DEF_NATFUNC( nfSetPointAt2 );
-	DEF_NATFUNC( nfAddPoint );
-	DEF_NATFUNC( nfAddPoint2 );
-	DEF_NATFUNC( nfInsertPoint );
-	DEF_NATFUNC( nfInsertPoint2 );
-	DEF_NATFUNC( nfRemovePointFrom );
-	DEF_NATFUNC( nfRemoveAllPoints );
+	DEF_NATFUNC(nfGetPointCount);
+	DEF_NATFUNC(nfGetPointAt);
+	DEF_NATFUNC(nfGetHandle1At);
+	DEF_NATFUNC(nfGetHandle2At);
+	DEF_NATFUNC(nfSetPointAt);
+	DEF_NATFUNC(nfSetPointAt2);
+	DEF_NATFUNC(nfAddPoint);
+	DEF_NATFUNC(nfAddPoint2);
+	DEF_NATFUNC(nfInsertPoint);
+	DEF_NATFUNC(nfInsertPoint2);
+	DEF_NATFUNC(nfRemovePointFrom);
+	DEF_NATFUNC(nfRemoveAllPoints);
 	
 	DEF_NATFUNC(nfGetInterpolationMode);
 	DEF_NATFUNC(nfSetInterpolationMode);
 	
-	DEF_NATFUNC( nfEvaluateAt );
-	DEF_NATFUNC( nfEvaluateAt2 );
+	DEF_NATFUNC(nfEvaluateAt);
+	DEF_NATFUNC(nfEvaluateAt2);
 	
 	DEF_NATFUNC(nfReadFromFile);
 	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

@@ -45,7 +45,7 @@ reCLHitList::reCLHitList(){
 
 reCLHitList::~reCLHitList(){
 	RemoveAllEntries();
-	if( pEntries ) delete [] pEntries;
+	if(pEntries) delete [] pEntries;
 }
 
 
@@ -53,59 +53,59 @@ reCLHitList::~reCLHitList(){
 // Management
 ///////////////
 
-reCLHitListEntry *reCLHitList::GetEntryAt( int index ) const{
-	if( index < 0 || index >= pEntryCount ) DETHROW( deeInvalidParam );
+reCLHitListEntry *reCLHitList::GetEntryAt(int index) const{
+	if(index < 0 || index >= pEntryCount) DETHROW(deeInvalidParam);
 	
-	return pEntries[ index ];
+	return pEntries[index];
 }
 
-int reCLHitList::IndexOfEntry( reCLHitListEntry *entry ) const{
-	if( ! entry ) DETHROW( deeInvalidParam );
+int reCLHitList::IndexOfEntry(reCLHitListEntry *entry) const{
+	if(!entry) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pEntryCount; i++ ){
-		if( entry == pEntries[ i ] ) return i;
+	for(i=0; i<pEntryCount; i++){
+		if(entry == pEntries[i]) return i;
 	}
 	
 	return -1;
 }
 
-bool reCLHitList::HasEntry( reCLHitListEntry *entry ) const{
-	if( ! entry ) DETHROW( deeInvalidParam );
+bool reCLHitList::HasEntry(reCLHitListEntry *entry) const{
+	if(!entry) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pEntryCount; i++ ){
-		if( entry == pEntries[ i ] ) return true;
+	for(i=0; i<pEntryCount; i++){
+		if(entry == pEntries[i]) return true;
 	}
 	
 	return false;
 }
 
-void reCLHitList::AddEntry( reCLHitListEntry *entry ){
-	if( HasEntry( entry ) ) DETHROW( deeInvalidParam );
+void reCLHitList::AddEntry(reCLHitListEntry *entry){
+	if(HasEntry(entry)) DETHROW(deeInvalidParam);
 	
-	if( pEntryCount == pEntrySize ){
+	if(pEntryCount == pEntrySize){
 		int newSize = pEntryCount * 3 / 2 + 1;
-		reCLHitListEntry **newArray = new reCLHitListEntry*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pEntries ){
-			memcpy( newArray, pEntries, sizeof( reCLHitListEntry* ) * pEntrySize );
+		reCLHitListEntry **newArray = new reCLHitListEntry*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pEntries){
+			memcpy(newArray, pEntries, sizeof(reCLHitListEntry*) * pEntrySize);
 			delete [] pEntries;
 		}
 		pEntries = newArray;
 		pEntrySize = newSize;
 	}
 	
-	pEntries[ pEntryCount ] = entry;
+	pEntries[pEntryCount] = entry;
 	pEntryCount++;
 }
 
-void reCLHitList::RemoveEntry( reCLHitListEntry *entry ){
-	int i, index = IndexOfEntry( entry );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void reCLHitList::RemoveEntry(reCLHitListEntry *entry){
+	int i, index = IndexOfEntry(entry);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pEntryCount; i++ ){
-		pEntries[ i - 1 ] = pEntries[ i ];
+	for(i=index+1; i<pEntryCount; i++){
+		pEntries[i - 1] = pEntries[i];
 	}
 	pEntryCount--;
 	
@@ -113,9 +113,9 @@ void reCLHitList::RemoveEntry( reCLHitListEntry *entry ){
 }
 
 void reCLHitList::RemoveAllEntries(){
-	while( pEntryCount > 0 ){
+	while(pEntryCount > 0){
 		pEntryCount--;
-		delete pEntries[ pEntryCount ];
+		delete pEntries[pEntryCount];
 	}
 }
 
@@ -125,13 +125,13 @@ void reCLHitList::SortByDistance(){
 	reCLHitListEntry *exchange;
 	int index = 1;
 	
-	while( index < pEntryCount ){
-		if( pEntries[ index - 1 ]->CompareTo( *pEntries[ index ] ) > 0 ){
-			exchange = pEntries[ index - 1 ];
-			pEntries[ index - 1 ] = pEntries[ index ];
-			pEntries[ index ] = exchange;
+	while(index < pEntryCount){
+		if(pEntries[index - 1]->CompareTo(*pEntries[index]) > 0){
+			exchange = pEntries[index - 1];
+			pEntries[index - 1] = pEntries[index];
+			pEntries[index] = exchange;
 			
-			if( index > 1 ){
+			if(index > 1){
 				index--;
 				
 			}else{

@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new script class. */
-	deClassAnimator( deScriptingDragonScript *ds );
+	deClassAnimator(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
 	~deClassAnimator();
 	/*@}*/
@@ -62,14 +62,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the scripting module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** Retrieves the animator or NULL if object is NULL. */
-	deAnimator *GetAnimator( dsRealObject *object ) const;
+	deAnimator *GetAnimator(dsRealObject *object) const;
 	/** Pushes an animator on the stack (pushes nil if instance is NULL). */
-	void PushAnimator( dsRunTime *rt, deAnimator *animator );
+	void PushAnimator(dsRunTime *rt, deAnimator *animator);
 	
 	inline dsClass *GetClassAnimatorLinkBoneParameter() const{ return pClsAnimatorLinkBoneParameter; }
 	/*@}*/
@@ -82,54 +82,54 @@ private:
 		dsClass *clsAnimatorLinkBoneParameter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetRig );
-	DEF_NATFUNC( nfSetRig );
-	DEF_NATFUNC( nfGetAnimation );
-	DEF_NATFUNC( nfSetAnimation );
+	DEF_NATFUNC(nfGetRig);
+	DEF_NATFUNC(nfSetRig);
+	DEF_NATFUNC(nfGetAnimation);
+	DEF_NATFUNC(nfSetAnimation);
 	
-	DEF_NATFUNC( nfGetControllerCount );
-	DEF_NATFUNC( nfSetControllerCount );
-	DEF_NATFUNC( nfGetControllerAt );
-	DEF_NATFUNC( nfGetControllerNamed );
-	DEF_NATFUNC( nfIndexOfControllerNamed );
+	DEF_NATFUNC(nfGetControllerCount);
+	DEF_NATFUNC(nfSetControllerCount);
+	DEF_NATFUNC(nfGetControllerAt);
+	DEF_NATFUNC(nfGetControllerNamed);
+	DEF_NATFUNC(nfIndexOfControllerNamed);
 	
-	DEF_NATFUNC( nfGetLinkCount );
-	DEF_NATFUNC( nfAddLink );
-	DEF_NATFUNC( nfRemoveAllLinks );
-	DEF_NATFUNC( nfSetLinkController );
-	DEF_NATFUNC( nfSetLinkCurve );
-	DEF_NATFUNC( nfSetLinkRepeat );
-	DEF_NATFUNC( nfSetLinkBone );
-	DEF_NATFUNC( nfSetLinkBoneParameter );
-	DEF_NATFUNC( nfSetLinkBoneValueRange );
-	DEF_NATFUNC( nfSetLinkBoneValueRangeRotation );
-	DEF_NATFUNC( nfSetLinkVertexPositionSet );
-	DEF_NATFUNC( nfSetLinkVertexPositionSetValueRange );
-	DEF_NATFUNC( nfSetLinkWrapY );
+	DEF_NATFUNC(nfGetLinkCount);
+	DEF_NATFUNC(nfAddLink);
+	DEF_NATFUNC(nfRemoveAllLinks);
+	DEF_NATFUNC(nfSetLinkController);
+	DEF_NATFUNC(nfSetLinkCurve);
+	DEF_NATFUNC(nfSetLinkRepeat);
+	DEF_NATFUNC(nfSetLinkBone);
+	DEF_NATFUNC(nfSetLinkBoneParameter);
+	DEF_NATFUNC(nfSetLinkBoneValueRange);
+	DEF_NATFUNC(nfSetLinkBoneValueRangeRotation);
+	DEF_NATFUNC(nfSetLinkVertexPositionSet);
+	DEF_NATFUNC(nfSetLinkVertexPositionSetValueRange);
+	DEF_NATFUNC(nfSetLinkWrapY);
 	
-	DEF_NATFUNC( nfGetRuleCount );
-	DEF_NATFUNC( nfAddRule );
-	DEF_NATFUNC( nfGetRuleAt );
-	DEF_NATFUNC( nfRemoveRuleAt );
-	DEF_NATFUNC( nfRemoveAllRules );
+	DEF_NATFUNC(nfGetRuleCount);
+	DEF_NATFUNC(nfAddRule);
+	DEF_NATFUNC(nfGetRuleAt);
+	DEF_NATFUNC(nfRemoveRuleAt);
+	DEF_NATFUNC(nfRemoveAllRules);
 	
-	DEF_NATFUNC( nfAddBone );
-	DEF_NATFUNC( nfRemoveAllBones );
+	DEF_NATFUNC(nfAddBone);
+	DEF_NATFUNC(nfRemoveAllBones);
 	
-	DEF_NATFUNC( nfAddVertexPositionSet );
-	DEF_NATFUNC( nfRemoveAllVertexPositionSets );
+	DEF_NATFUNC(nfAddVertexPositionSet);
+	DEF_NATFUNC(nfRemoveAllVertexPositionSets);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfEquals2 );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfEquals2);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

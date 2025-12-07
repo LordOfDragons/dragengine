@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetLayer::gdeUOCNavSpaceSetLayer( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, int newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetLayer::gdeUOCNavSpaceSetLayer(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, int newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set layer" );
+	SetShortInfo("Nav-space set layer");
 	
 	pOldValue = navspace->GetLayer();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCNavSpaceSetLayer::~gdeUOCNavSpaceSetLayer(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavSpaceSetLayer::~gdeUOCNavSpaceSetLayer(){
 ///////////////
 
 void gdeUOCNavSpaceSetLayer::Undo(){
-	pNavSpace->SetLayer( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetLayer(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetLayer::Redo(){
-	pNavSpace->SetLayer( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetLayer(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

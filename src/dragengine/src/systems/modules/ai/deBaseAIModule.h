@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new AI module. */
-	deBaseAIModule( deLoadableModule &loadableModule );
+	deBaseAIModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up AI module. */
 	virtual ~deBaseAIModule();
@@ -71,19 +71,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create peer for a world object. */
-	virtual deBaseAIWorld *CreateWorld( deWorld *world ) = 0;
+	virtual deBaseAIWorld *CreateWorld(deWorld *world) = 0;
 	
 	/** \brief Create peer for a navigation space object. */
-	virtual deBaseAINavigationSpace *CreateNavigationSpace( deNavigationSpace *navspace ) = 0;
+	virtual deBaseAINavigationSpace *CreateNavigationSpace(deNavigationSpace *navspace) = 0;
 	
 	/** \brief Create peer for a navigation blocker object. */
-	virtual deBaseAINavigationBlocker *CreateNavigationBlocker( deNavigationBlocker *blocker ) = 0;
+	virtual deBaseAINavigationBlocker *CreateNavigationBlocker(deNavigationBlocker *blocker) = 0;
 	
 	/** \brief Create peer for a navigator object. */
-	virtual deBaseAINavigator *CreateNavigator( deNavigator *navigator ) = 0;
+	virtual deBaseAINavigator *CreateNavigator(deNavigator *navigator) = 0;
 	
 	/** \brief Create peer for height terrain. */
-	virtual deBaseAIHeightTerrain *CreateHeightTerrain( deHeightTerrain &heightTerrain ) = 0;
+	virtual deBaseAIHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain) = 0;
 	/*@}*/
 };
 

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUMoveControllerUp::aeUMoveControllerUp( aeAnimator *animator, aeController *controller ){
-	if( ! animator || ! controller ) DETHROW( deeInvalidParam );
+aeUMoveControllerUp::aeUMoveControllerUp(aeAnimator *animator, aeController *controller){
+	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;
 	pController = NULL;
 	
-	pIndex = animator->GetControllers().IndexOf( controller );
-	if( pIndex < 1 ) DETHROW( deeInvalidParam );
+	pIndex = animator->GetControllers().IndexOf(controller);
+	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
 	animator->AddReference();
@@ -66,11 +66,11 @@ aeUMoveControllerUp::~aeUMoveControllerUp(){
 ///////////////
 
 void aeUMoveControllerUp::Undo(){
-	pAnimator->MoveControllerTo( pController, pIndex );
+	pAnimator->MoveControllerTo(pController, pIndex);
 }
 
 void aeUMoveControllerUp::Redo(){
-	pAnimator->MoveControllerTo( pController, pIndex - 1 );
+	pAnimator->MoveControllerTo(pController, pIndex - 1);
 }
 
 
@@ -79,6 +79,6 @@ void aeUMoveControllerUp::Redo(){
 //////////////////////
 
 void aeUMoveControllerUp::pCleanUp(){
-	if( pController ) pController->FreeReference();
-	if( pAnimator ) pAnimator->FreeReference();
+	if(pController) pController->FreeReference();
+	if(pAnimator) pAnimator->FreeReference();
 }

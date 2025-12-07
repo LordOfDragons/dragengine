@@ -35,22 +35,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModioUserConfig::deModioUserConfig( deModio &module, const decString &id ) :
-pModule( module ),
-pId( id ){
+deModioUserConfig::deModioUserConfig(deModio &module, const decString &id) :
+pModule(module),
+pId(id){
 }
 
-deModioUserConfig::deModioUserConfig( deModio &module, decBaseFileReader &reader ) :
-pModule( module )
+deModioUserConfig::deModioUserConfig(deModio &module, decBaseFileReader &reader) :
+pModule(module)
 {
 	const int version = reader.ReadByte();
-	switch( version ){
+	switch(version){
 	case 0:
-		pReadFromFileV0( reader );
+		pReadFromFileV0(reader);
 		break;
 		
 	default:
-		DETHROW_INFO( deeInvalidParam, "Unsupported version" );
+		DETHROW_INFO(deeInvalidParam, "Unsupported version");
 	}
 }
 
@@ -62,53 +62,53 @@ deModioUserConfig::~deModioUserConfig(){
 // Management
 ///////////////
 
-void deModioUserConfig::SetDisabledMods( const decStringSet &mods ){
-	if( mods == pDisabledMods ){
+void deModioUserConfig::SetDisabledMods(const decStringSet &mods){
+	if(mods == pDisabledMods){
 		return;
 	}
 	
 	pDisabledMods = mods;
 	pModule.UserConfigChanged();
 	
-	if( pModule.GetCurUserId() == pId ){
-		pModule.ActivateMods( pId );
+	if(pModule.GetCurUserId() == pId){
+		pModule.ActivateMods(pId);
 	}
 }
 
-bool deModioUserConfig::GetModDisabled( const decString &id ) const{
-	return pDisabledMods.Has( id );
+bool deModioUserConfig::GetModDisabled(const decString &id) const{
+	return pDisabledMods.Has(id);
 }
 
-void deModioUserConfig::SetModDisabled( const decString &id, bool disabled ){
-	if( disabled ){
-		if( pDisabledMods.Has( id ) ){
+void deModioUserConfig::SetModDisabled(const decString &id, bool disabled){
+	if(disabled){
+		if(pDisabledMods.Has(id)){
 			return;
 		}
-		pDisabledMods.Add( id );
+		pDisabledMods.Add(id);
 		
 	}else{
-		if( ! pDisabledMods.Has( id ) ){
+		if(!pDisabledMods.Has(id)){
 			return;
 		}
-		pDisabledMods.Remove( id );
+		pDisabledMods.Remove(id);
 	}
 	
 	pModule.UserConfigChanged();
 	
-	if( disabled && pModule.GetCurUserId() == pId ){
-		pModule.ActivateMods( pId );
+	if(disabled && pModule.GetCurUserId() == pId){
+		pModule.ActivateMods(pId);
 	}
 }
 
 
 
-Modio::Rating deModioUserConfig::GetUserRating( const decString &id ) const{
+Modio::Rating deModioUserConfig::GetUserRating(const decString &id) const{
 	int rating = 0;
-	if( ! pUserRatings.GetAt( id, &rating ) ){
+	if(!pUserRatings.GetAt(id, &rating)){
 		return Modio::Rating::Neutral;
 	}
 	
-	switch( rating ){
+	switch(rating){
 	case 0:
 		return Modio::Rating::Negative;
 		
@@ -120,23 +120,23 @@ Modio::Rating deModioUserConfig::GetUserRating( const decString &id ) const{
 	}
 }
 
-void deModioUserConfig::SetUserRating( const decString &id, Modio::Rating rating ){
-	if( GetUserRating( id ) == rating ){
+void deModioUserConfig::SetUserRating(const decString &id, Modio::Rating rating){
+	if(GetUserRating(id) == rating){
 		return;
 	}
 	
-	switch( rating ){
+	switch(rating){
 	case Modio::Rating::Negative:
-		pUserRatings.SetAt( id, 0 );
+		pUserRatings.SetAt(id, 0);
 		break;
 		
 	case Modio::Rating::Positive:
-		pUserRatings.SetAt( id, 1 );
+		pUserRatings.SetAt(id, 1);
 		break;
 		
 	case Modio::Rating::Neutral:
 	default:
-		pUserRatings.RemoveIfPresent( id );
+		pUserRatings.RemoveIfPresent(id);
 		break;
 	}
 	
@@ -145,23 +145,23 @@ void deModioUserConfig::SetUserRating( const decString &id, Modio::Rating rating
 
 
 
-void deModioUserConfig::WriteToFile( decBaseFileWriter &writer ){
-	writer.WriteByte( 0 );
-	writer.WriteString8( pId );
+void deModioUserConfig::WriteToFile(decBaseFileWriter &writer){
+	writer.WriteByte(0);
+	writer.WriteString8(pId);
 	
 	int i, count = pDisabledMods.GetCount();
-	writer.WriteInt( count );
-	for( i=0; i<count; i++ ){
-		writer.WriteString8( pDisabledMods.GetAt( i ) );
+	writer.WriteInt(count);
+	for(i=0; i<count; i++){
+		writer.WriteString8(pDisabledMods.GetAt(i));
 	}
 	
-	decStringList keys( pUserRatings.GetKeys() );
+	decStringList keys(pUserRatings.GetKeys());
 	count = keys.GetCount();
-	writer.WriteInt( count );
-	for( i=0; i<count; i++ ){
-		const decString &key = keys.GetAt( i );
-		writer.WriteString8( key );
-		writer.WriteByte( ( uint8_t )pUserRatings.GetAt( key ) );
+	writer.WriteInt(count);
+	for(i=0; i<count; i++){
+		const decString &key = keys.GetAt(i);
+		writer.WriteString8(key);
+		writer.WriteByte((uint8_t)pUserRatings.GetAt(key));
 	}
 }
 
@@ -170,21 +170,21 @@ void deModioUserConfig::WriteToFile( decBaseFileWriter &writer ){
 // Private Functions
 //////////////////////
 
-void deModioUserConfig::pReadFromFileV0( decBaseFileReader &reader ){
+void deModioUserConfig::pReadFromFileV0(decBaseFileReader &reader){
 	int i, count, intValue;
 	decString key;
 	
 	pId = reader.ReadString8();
 	
 	count = reader.ReadInt();
-	for( i=0; i<count; i++ ){
-		pDisabledMods.Add( reader.ReadString8() );
+	for(i=0; i<count; i++){
+		pDisabledMods.Add(reader.ReadString8());
 	}
 	
 	count = reader.ReadInt();
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		key = reader.ReadString8();
 		intValue = reader.ReadByte();
-		pUserRatings.SetAt( key, intValue );
+		pUserRatings.SetAt(key, intValue);
 	}
 }

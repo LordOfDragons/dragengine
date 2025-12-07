@@ -119,7 +119,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create environment tracker. */
-	deoalEnvironment( deoalAudioThread &audioThread );
+	deoalEnvironment(deoalAudioThread &audioThread);
 	
 	/** Clean up environment. */
 	~deoalEnvironment();
@@ -136,13 +136,13 @@ public:
 	inline deoalAWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world or NULL. */
-	void SetWorld( deoalAWorld *world );
+	void SetWorld(deoalAWorld *world);
 	
 	/** Position of speaker. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position of speaker. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** Range of speaker. */
 	inline float GetRange() const{ return pRange; }
@@ -151,7 +151,7 @@ public:
 	inline float GetRangeSquared() const{ return pRangeSquared; }
 	
 	/** Set range of speaker. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** Attenuation reference distance. */
 	inline float GetAttenuationRefDist() const{ return pAttenuationRefDist; }
@@ -163,13 +163,13 @@ public:
 	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
 	
 	/** Set attenuation parameters. */
-	void SetAttenuation( float refDist, float rolloff, float distanceOffset );
+	void SetAttenuation(float refDist, float rolloff, float distanceOffset);
 	
 	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Environment data are valid. */
 	inline bool GetValid() const{ return pValid; }
@@ -248,7 +248,7 @@ public:
 	
 	
 	/** Distance between this environment and another one. */
-	float Distance( const deoalEnvironment &env, bool withPan ) const;
+	float Distance(const deoalEnvironment &env, bool withPan) const;
 	
 	
 	
@@ -264,22 +264,22 @@ public:
 	 * Update debug information.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void DebugUpdateInfo( deDebugBlockInfo &debugInfo );
-	void DebugUpdateDirect( deDebugDrawer &debugDrawer, const deoalAMicrophone &microphone );
-	void DebugSoundRays( deDebugDrawer &debugDrawer );
+	void DebugUpdateInfo(deDebugBlockInfo &debugInfo);
+	void DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoalAMicrophone &microphone);
+	void DebugSoundRays(deDebugDrawer &debugDrawer);
 	/*@}*/
 	
 	
 	
 private:
-	void pDirectPath( const deoalAMicrophone &microphone, const decDVector &micPos );
-	void pEnvReflection( deoalAMicrophone &microphone, const decDVector &micPos,
-		const decQuaternion &micOrient );
+	void pDirectPath(const deoalAMicrophone &microphone, const decDVector &micPos);
+	void pEnvReflection(deoalAMicrophone &microphone, const decDVector &micPos,
+		const decQuaternion &micOrient);
 	void pSetSilent();
 	void pCalcEffectParameters();
 	void pCalcEffectKeepAliveTimeout();
 	void pCalcCompareParameters();
-	decVector pCalcComparePan( const decVector &pan ) const;
+	decVector pCalcComparePan(const decVector &pan) const;
 };
 
 #endif

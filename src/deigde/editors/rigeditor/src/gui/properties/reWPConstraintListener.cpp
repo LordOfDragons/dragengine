@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPConstraintListener::reWPConstraintListener( reWPConstraint &panel ) :
-pPanel( panel ){
+reWPConstraintListener::reWPConstraintListener(reWPConstraint &panel) :
+pPanel(panel){
 }
 
 reWPConstraintListener::~reWPConstraintListener(){
@@ -50,34 +50,34 @@ reWPConstraintListener::~reWPConstraintListener(){
 // Notifications
 //////////////////
 
-void reWPConstraintListener::BoneCountChanged( reRig *rig ){
+void reWPConstraintListener::BoneCountChanged(reRig *rig){
 	pPanel.UpdateBoneLists();
 	pPanel.UpdateConstraint();
 }
 
-void reWPConstraintListener::BoneChanged( reRig *rig, reRigBone *bone ){
+void reWPConstraintListener::BoneChanged(reRig *rig, reRigBone *bone){
 	pPanel.UpdateBoneLists();
 	pPanel.UpdateConstraint();
 }
 
 
 
-void reWPConstraintListener::ConstraintChanged( reRig *rig, reRigConstraint *constraint ){
-	if( constraint == pPanel.GetConstraint() ){
+void reWPConstraintListener::ConstraintChanged(reRig *rig, reRigConstraint *constraint){
+	if(constraint == pPanel.GetConstraint()){
 		pPanel.UpdateBoneLists(); // because constraint bone could have changed
 		pPanel.UpdateConstraint();
 	}
 }
 
-void reWPConstraintListener::ConstraintDofChanged( reRig *rig, reRigConstraint *constraint,
-deColliderConstraint::eDegreesOfFreedom dof ){
-	if( constraint == pPanel.GetConstraint() ){
+void reWPConstraintListener::ConstraintDofChanged(reRig *rig, reRigConstraint *constraint,
+deColliderConstraint::eDegreesOfFreedom dof){
+	if(constraint == pPanel.GetConstraint()){
 		pPanel.UpdateConstraint();
 	}
 }
 
-void reWPConstraintListener::ActiveConstraintChanged( reRig *rig ){
-	if( rig == pPanel.GetRig() ){
-		pPanel.SetConstraint( rig->GetSelectionConstraints()->GetActiveConstraint() );
+void reWPConstraintListener::ActiveConstraintChanged(reRig *rig){
+	if(rig == pPanel.GetRig()){
+		pPanel.SetConstraint(rig->GetSelectionConstraints()->GetActiveConstraint());
 	}
 }

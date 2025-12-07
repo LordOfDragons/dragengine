@@ -38,23 +38,23 @@
 ////////////////////////////////////////////
 
 decPointerDictionary::sDictEntry::sDictEntry() :
-hash( 0 ),
-value( NULL ),
-next( NULL ){
+hash(0),
+value(NULL),
+next(NULL){
 }
 
-decPointerDictionary::sDictEntry::sDictEntry( const decPointerDictionary::sDictEntry &entry ) :
-hash( entry.hash ),
-key( entry.key ),
-value( entry.value ),
-next( NULL ){
+decPointerDictionary::sDictEntry::sDictEntry(const decPointerDictionary::sDictEntry &entry) :
+hash(entry.hash),
+key(entry.key),
+value(entry.value),
+next(NULL){
 }
 
-decPointerDictionary::sDictEntry::sDictEntry( unsigned int nhash, const char *nkey, void *nvalue ) :
-hash( nhash ),
-key( nkey ),
-value( nvalue ),
-next( NULL ){
+decPointerDictionary::sDictEntry::sDictEntry(unsigned int nhash, const char *nkey, void *nvalue) :
+hash(nhash),
+key(nkey),
+value(nvalue),
+next(NULL){
 }
 
 decPointerDictionary::sDictEntry::~sDictEntry(){
@@ -75,55 +75,55 @@ decPointerDictionary::decPointerDictionary(){
 	pBucketCount = 8;
 	pEntryCount = 0;
 	
-	pBuckets = new sDictEntry*[ pBucketCount ];
+	pBuckets = new sDictEntry*[pBucketCount];
 	
 	int i;
-	for( i=0; i<pBucketCount; i++ ){
-		pBuckets[ i ] = NULL;
+	for(i=0; i<pBucketCount; i++){
+		pBuckets[i] = NULL;
 	}
 }
 
-decPointerDictionary::decPointerDictionary( int bucketCount ){
-	if( bucketCount < 1 ){
-		DETHROW( deeInvalidParam );
+decPointerDictionary::decPointerDictionary(int bucketCount){
+	if(bucketCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBuckets = NULL;
 	pBucketCount = bucketCount;
 	pEntryCount = 0;
 	
-	pBuckets = new sDictEntry*[ bucketCount ];
+	pBuckets = new sDictEntry*[bucketCount];
 	
 	int i;
-	for( i=0; i<bucketCount; i++ ){
-		pBuckets[ i ] = NULL;
+	for(i=0; i<bucketCount; i++){
+		pBuckets[i] = NULL;
 	}
 }
 
-decPointerDictionary::decPointerDictionary( const decPointerDictionary &dict ){
+decPointerDictionary::decPointerDictionary(const decPointerDictionary &dict){
 	pBuckets = nullptr;
 	pBucketCount = dict.pBucketCount;
 	pEntryCount = dict.pEntryCount;
 	
-	pBuckets = new sDictEntry*[ pBucketCount ];
+	pBuckets = new sDictEntry*[pBucketCount];
 	
 	int i;
-	for( i=0; i<pBucketCount; i++ ){
-		pBuckets[ i ] = nullptr;
+	for(i=0; i<pBucketCount; i++){
+		pBuckets[i] = nullptr;
 	}
 	
-	for( i=0; i<pBucketCount; i++ ){
-		sDictEntry *iterEntry = dict.pBuckets[ i ];
+	for(i=0; i<pBucketCount; i++){
+		sDictEntry *iterEntry = dict.pBuckets[i];
 		sDictEntry *lastEntry = nullptr;
 		
-		while( iterEntry ){
-			sDictEntry * const newEntry = new sDictEntry( *iterEntry );
+		while(iterEntry){
+			sDictEntry * const newEntry = new sDictEntry(*iterEntry);
 			
-			if( lastEntry ){
+			if(lastEntry){
 				lastEntry->next = newEntry;
 				
 			}else{
-				pBuckets[ i ] = newEntry;
+				pBuckets[i] = newEntry;
 			}
 			lastEntry = newEntry;
 			
@@ -135,7 +135,7 @@ decPointerDictionary::decPointerDictionary( const decPointerDictionary &dict ){
 decPointerDictionary::~decPointerDictionary(){
 	RemoveAll();
 	
-	if( pBuckets ){
+	if(pBuckets){
 		delete [] pBuckets;
 		pBuckets = NULL;
 	}
@@ -148,15 +148,15 @@ decPointerDictionary::~decPointerDictionary(){
 // Management
 ///////////////
 
-bool decPointerDictionary::Has( const char *key ) const{
-	if( ! key ){
-		DETHROW( deeNullPointer );
+bool decPointerDictionary::Has(const char *key) const{
+	if(!key){
+		DETHROW(deeNullPointer);
 	}
 	
-	sDictEntry *iterEntry = pBuckets[ decString::Hash( key ) % pBucketCount ];
+	sDictEntry *iterEntry = pBuckets[decString::Hash(key) % pBucketCount];
 	
-	while( iterEntry ){
-		if( iterEntry->key == key ){
+	while(iterEntry){
+		if(iterEntry->key == key){
 			return true;
 		}
 		iterEntry = iterEntry->next;
@@ -165,25 +165,25 @@ bool decPointerDictionary::Has( const char *key ) const{
 	return false;
 }
 
-void *decPointerDictionary::GetAt( const char *key ) const{
+void *decPointerDictionary::GetAt(const char *key) const{
 	void *object;
 	
-	if( ! GetAt( key, &object ) ){
-		DETHROW( deeInvalidParam );
+	if(!GetAt(key, &object)){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return object;
 }
 
-bool decPointerDictionary::GetAt( const char *key, void **object ) const{
-	if( ! key || ! object ){
-		DETHROW( deeNullPointer );
+bool decPointerDictionary::GetAt(const char *key, void **object) const{
+	if(!key || !object){
+		DETHROW(deeNullPointer);
 	}
 	
-	sDictEntry *iterEntry = pBuckets[ decString::Hash( key ) % pBucketCount ];
+	sDictEntry *iterEntry = pBuckets[decString::Hash(key) % pBucketCount];
 	
-	while( iterEntry ){
-		if( iterEntry->key == key ){
+	while(iterEntry){
+		if(iterEntry->key == key){
 			*object = iterEntry->value;
 			return true;
 		}
@@ -193,19 +193,19 @@ bool decPointerDictionary::GetAt( const char *key, void **object ) const{
 	return false;
 }
 
-void decPointerDictionary::SetAt( const char *key, void *value ){
-	if( ! key ){
-		DETHROW( deeNullPointer );
+void decPointerDictionary::SetAt(const char *key, void *value){
+	if(!key){
+		DETHROW(deeNullPointer);
 	}
 	
-	const unsigned int hash = decString::Hash( key );
+	const unsigned int hash = decString::Hash(key);
 	const int bucketIndex = hash % pBucketCount;
 	
-	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
+	sDictEntry *iterEntry = pBuckets[bucketIndex];
 	sDictEntry *lastEntry = NULL;
 	
-	while( iterEntry ){
-		if( iterEntry->key == key ){
+	while(iterEntry){
+		if(iterEntry->key == key){
 			iterEntry->value = value;
 			pEntryCount++;
 			CheckLoad();
@@ -217,17 +217,17 @@ void decPointerDictionary::SetAt( const char *key, void *value ){
 	
 	sDictEntry *newEntry = NULL;
 	try{
-		newEntry = new sDictEntry( hash, key, value );
+		newEntry = new sDictEntry(hash, key, value);
 		
-		if( lastEntry ){
+		if(lastEntry){
 			lastEntry->next = newEntry;
 			
 		}else{
-			pBuckets[ bucketIndex ] = newEntry;
+			pBuckets[bucketIndex] = newEntry;
 		}
 		
-	}catch( const deException & ){
-		if( newEntry ){
+	}catch(const deException &){
+		if(newEntry){
 			delete newEntry;
 		}
 		throw;
@@ -237,23 +237,23 @@ void decPointerDictionary::SetAt( const char *key, void *value ){
 	CheckLoad();
 }
 
-void decPointerDictionary::Remove( const char *key ){
-	if( ! key ){
-		DETHROW( deeNullPointer );
+void decPointerDictionary::Remove(const char *key){
+	if(!key){
+		DETHROW(deeNullPointer);
 	}
 	
-	const int bucketIndex = decString::Hash( key ) % pBucketCount;
+	const int bucketIndex = decString::Hash(key) % pBucketCount;
 	
-	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
+	sDictEntry *iterEntry = pBuckets[bucketIndex];
 	sDictEntry *lastEntry = NULL;
 	
-	while( iterEntry ){
-		if( iterEntry->key == key ){
-			if( lastEntry ){
+	while(iterEntry){
+		if(iterEntry->key == key){
+			if(lastEntry){
 				lastEntry->next = iterEntry->next;
 				
 			}else{
-				pBuckets[ bucketIndex ] = iterEntry->next;
+				pBuckets[bucketIndex] = iterEntry->next;
 			}
 			
 			pEntryCount--;
@@ -266,26 +266,26 @@ void decPointerDictionary::Remove( const char *key ){
 		iterEntry = iterEntry->next;
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void decPointerDictionary::RemoveIfPresent( const char *key ){
-	if( ! key ){
-		DETHROW( deeNullPointer );
+void decPointerDictionary::RemoveIfPresent(const char *key){
+	if(!key){
+		DETHROW(deeNullPointer);
 	}
 	
-	const int bucketIndex = decString::Hash( key ) % pBucketCount;
+	const int bucketIndex = decString::Hash(key) % pBucketCount;
 	
-	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
+	sDictEntry *iterEntry = pBuckets[bucketIndex];
 	sDictEntry *lastEntry = NULL;
 	
-	while( iterEntry ){
-		if( iterEntry->key == key ){
-			if( lastEntry ){
+	while(iterEntry){
+		if(iterEntry->key == key){
+			if(lastEntry){
 				lastEntry->next = iterEntry->next;
 				
 			}else{
-				pBuckets[ bucketIndex ] = iterEntry->next;
+				pBuckets[bucketIndex] = iterEntry->next;
 			}
 			
 			pEntryCount--;
@@ -300,15 +300,15 @@ void decPointerDictionary::RemoveIfPresent( const char *key ){
 }
 
 void decPointerDictionary::RemoveAll(){
-	if( pBuckets ){
+	if(pBuckets){
 		int i;
 		
-		for( i=0; i<pBucketCount; i++ ){
-			if( pBuckets[ i ] ){
-				sDictEntry *iterEntry = pBuckets[ i ];
-				pBuckets[ i ] = NULL;
+		for(i=0; i<pBucketCount; i++){
+			if(pBuckets[i]){
+				sDictEntry *iterEntry = pBuckets[i];
+				pBuckets[i] = NULL;
 				
-				while( iterEntry ){
+				while(iterEntry){
 					sDictEntry * const delbucket = iterEntry;
 					iterEntry = iterEntry->next;
 					delete delbucket;
@@ -326,11 +326,11 @@ decStringList decPointerDictionary::GetKeys() const{
 	decStringList keys;
 	int i;
 	
-	for( i=0; i<pBucketCount; i++ ){
-		sDictEntry *iterEntry = pBuckets[ i ];
+	for(i=0; i<pBucketCount; i++){
+		sDictEntry *iterEntry = pBuckets[i];
 		
-		while( iterEntry ){
-			keys.Add( iterEntry->key );
+		while(iterEntry){
+			keys.Add(iterEntry->key);
 			iterEntry = iterEntry->next;
 		}
 	}
@@ -342,11 +342,11 @@ decPointerList decPointerDictionary::GetValues() const{
 	decPointerList values;
 	int i;
 	
-	for( i=0; i<pBucketCount; i++ ){
-		sDictEntry *iterEntry = pBuckets[ i ];
+	for(i=0; i<pBucketCount; i++){
+		sDictEntry *iterEntry = pBuckets[i];
 		
-		while( iterEntry ){
-			values.Add( iterEntry->value );
+		while(iterEntry){
+			values.Add(iterEntry->value);
 			iterEntry = iterEntry->next;
 		}
 	}
@@ -356,19 +356,19 @@ decPointerList decPointerDictionary::GetValues() const{
 
 
 
-bool decPointerDictionary::Equals( const decPointerDictionary &dict ) const{
+bool decPointerDictionary::Equals(const decPointerDictionary &dict) const{
 	void *object;
 	int i;
 	
-	if( dict.pEntryCount != pEntryCount ){
+	if(dict.pEntryCount != pEntryCount){
 		return false;
 	}
 	
-	for( i=0; i<pBucketCount; i++ ){
-		sDictEntry *iterEntry = pBuckets[ i ];
+	for(i=0; i<pBucketCount; i++){
+		sDictEntry *iterEntry = pBuckets[i];
 		
-		while( iterEntry ){
-			if( ! dict.GetAt( iterEntry->key, &object ) || object != iterEntry->value ){
+		while(iterEntry){
+			if(!dict.GetAt(iterEntry->key, &object) || object != iterEntry->value){
 				return false;
 			}
 			iterEntry = iterEntry->next;
@@ -381,36 +381,36 @@ bool decPointerDictionary::Equals( const decPointerDictionary &dict ) const{
 
 
 void decPointerDictionary::CheckLoad(){
-	if( ( float )pEntryCount / ( float )pBucketCount > 0.7 ){
-		const int newBucketCount = pBucketCount + ( pBucketCount >> 1 ); // +50%
-		sDictEntry ** const newBuckets = new sDictEntry*[ newBucketCount ];
+	if((float)pEntryCount / (float)pBucketCount > 0.7){
+		const int newBucketCount = pBucketCount + (pBucketCount >> 1); // +50%
+		sDictEntry ** const newBuckets = new sDictEntry*[newBucketCount];
 		int i;
 		
-		if( ! newBuckets ){
-			DETHROW( deeInvalidParam );
+		if(!newBuckets){
+			DETHROW(deeInvalidParam);
 		}
-		for( i=0; i<newBucketCount; i++ ){
-			newBuckets[ i ] = NULL;
+		for(i=0; i<newBucketCount; i++){
+			newBuckets[i] = NULL;
 		}
 		
-		for( i=0; i<pBucketCount; i++ ){
-			sDictEntry *iterEntry = pBuckets[ i ];
+		for(i=0; i<pBucketCount; i++){
+			sDictEntry *iterEntry = pBuckets[i];
 			
-			while( iterEntry ){
+			while(iterEntry){
 				sDictEntry * const moveEntry = iterEntry;
 				iterEntry = iterEntry->next;
 				
 				const int bucketIndex = moveEntry->hash % newBucketCount;
-				sDictEntry *iterEntry2 = newBuckets[ bucketIndex ];
+				sDictEntry *iterEntry2 = newBuckets[bucketIndex];
 				
-				if( iterEntry2 ){
-					while( iterEntry2->next ){
+				if(iterEntry2){
+					while(iterEntry2->next){
 						iterEntry2 = iterEntry2->next;
 					}
 					iterEntry2->next = moveEntry;
 					
 				}else{
-					newBuckets[ bucketIndex ] = moveEntry;
+					newBuckets[bucketIndex] = moveEntry;
 				}
 				
 				moveEntry->next = NULL;
@@ -429,19 +429,19 @@ void decPointerDictionary::CheckLoad(){
 // Operators
 //////////////
 
-bool decPointerDictionary::operator==( const decPointerDictionary &dict ) const{
-	return Equals( dict );
+bool decPointerDictionary::operator==(const decPointerDictionary &dict) const{
+	return Equals(dict);
 }
 
-decPointerDictionary decPointerDictionary::operator+( const decPointerDictionary &dict ) const{
-	decPointerDictionary ndict( *this );
+decPointerDictionary decPointerDictionary::operator+(const decPointerDictionary &dict) const{
+	decPointerDictionary ndict(*this);
 	int i;
 	
-	for( i=0; i<dict.pBucketCount; i++ ){
-		sDictEntry *iterEntry = dict.pBuckets[ i ];
+	for(i=0; i<dict.pBucketCount; i++){
+		sDictEntry *iterEntry = dict.pBuckets[i];
 		
-		while( iterEntry ){
-			ndict.SetAt( iterEntry->key, iterEntry->value );
+		while(iterEntry){
+			ndict.SetAt(iterEntry->key, iterEntry->value);
 			iterEntry = iterEntry->next;
 		}
 	}
@@ -449,25 +449,25 @@ decPointerDictionary decPointerDictionary::operator+( const decPointerDictionary
 	return ndict;
 }
 
-void *decPointerDictionary::operator[]( const char *key ) const{
-	return GetAt( key );
+void *decPointerDictionary::operator[](const char *key) const{
+	return GetAt(key);
 }
 
 
 
-decPointerDictionary &decPointerDictionary::operator=( const decPointerDictionary &dict ){
+decPointerDictionary &decPointerDictionary::operator=(const decPointerDictionary &dict){
 	RemoveAll();
 	return *this += dict;
 }
 
-decPointerDictionary &decPointerDictionary::operator+=( const decPointerDictionary &dict ){
+decPointerDictionary &decPointerDictionary::operator+=(const decPointerDictionary &dict){
 	int i;
 	
-	for( i=0; i<dict.pBucketCount; i++ ){
-		sDictEntry *iterEntry = dict.pBuckets[ i ];
+	for(i=0; i<dict.pBucketCount; i++){
+		sDictEntry *iterEntry = dict.pBuckets[i];
 		
-		while( iterEntry ){
-			SetAt( iterEntry->key, iterEntry->value );
+		while(iterEntry){
+			SetAt(iterEntry->key, iterEntry->value);
 			iterEntry = iterEntry->next;
 		}
 	}

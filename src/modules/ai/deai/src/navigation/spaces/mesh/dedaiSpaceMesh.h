@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create space mesh. */
-	dedaiSpaceMesh( dedaiSpace &space );
+	dedaiSpaceMesh(dedaiSpace &space);
 	
 	/** \brief Clean up space mesh. */
 	~dedaiSpaceMesh();
@@ -101,16 +101,16 @@ public:
 	inline decVector *GetVertices() const{ return pVertices; }
 	
 	/** \brief Vertex by index. */
-	const decVector &GetVertexAt( int index ) const;
+	const decVector &GetVertexAt(int index) const;
 	
 	/** \brief Number of static vertices. */
 	inline int GetStaticVertexCount() const{ return pStaticVertexCount; }
 	
 	/** \brief Add vertex. */
-	void AddVertex( const decVector &position );
+	void AddVertex(const decVector &position);
 	
 	/** \brief Index of the matching vertex or -1 if not found. */
-	int IndexOfVertex( const decVector &vertex ) const;
+	int IndexOfVertex(const decVector &vertex) const;
 	
 	
 	
@@ -124,13 +124,13 @@ public:
 	inline dedaiSpaceMeshEdge *GetEdges() const{ return pEdges; }
 	
 	/** \brief Edge by index. */
-	dedaiSpaceMeshEdge &GetEdgeAt( int index ) const;
+	dedaiSpaceMeshEdge &GetEdgeAt(int index) const;
 	
 	/** \brief Index of the edge matching the given set of vertices or -1 if not found. */
-	int IndexOfEdgeMatching( unsigned short vertex1, unsigned short vertex2 ) const;
+	int IndexOfEdgeMatching(unsigned short vertex1, unsigned short vertex2) const;
 	
 	/** \brief Add edge returning the edge index. */
-	void AddEdge( unsigned short vertex1, unsigned short vertex2 );
+	void AddEdge(unsigned short vertex1, unsigned short vertex2);
 	
 	
 	
@@ -141,13 +141,13 @@ public:
 	inline dedaiSpaceMeshCorner *GetCorners() const{ return pCorners; }
 	
 	/** \brief Corner by index. */
-	dedaiSpaceMeshCorner &GetCornerAt( int index ) const;
+	dedaiSpaceMeshCorner &GetCornerAt(int index) const;
 	
 	/** \brief Number of static corners. */
 	inline int GetStaticCornerCount() const{ return pStaticCornerCount; }
 	
 	/** \brief Add corner. */
-	void AddCorner( unsigned short vertex, unsigned short edge, unsigned short type );
+	void AddCorner(unsigned short vertex, unsigned short edge, unsigned short type);
 	
 	
 	
@@ -158,13 +158,13 @@ public:
 	inline dedaiSpaceMeshFace *GetFaces() const{ return pFaces; }
 	
 	/** \brief Face by index. */
-	dedaiSpaceMeshFace &GetFaceAt( int index ) const;
+	dedaiSpaceMeshFace &GetFaceAt(int index) const;
 	
 	/** \brief Number of static faces. */
 	inline int GetStaticFaceCount() const{ return pStaticFaceCount; }
 	
 	/** \brief Face closest to a position or -1 if not found. */
-	dedaiSpaceMeshFace *GetFaceClosestTo( const decVector &position, float &distance ) const;
+	dedaiSpaceMeshFace *GetFaceClosestTo(const decVector &position, float &distance) const;
 	
 	/** \brief Add face. */
 	void AddFace();
@@ -175,8 +175,8 @@ public:
 	 * \brief Nearest position inside radius.
 	 * \details Sets nearest position and returns face if found otherwise returns \em NULL.
 	 */
-	dedaiSpaceMeshFace *NearestPoint( const decVector &point, float radius,
-	decVector &nearestPosition, float &nearestDistSquared ) const;
+	dedaiSpaceMeshFace *NearestPoint(const decVector &point, float radius,
+	decVector &nearestPosition, float &nearestDistSquared) const;
 	
 	
 	
@@ -187,22 +187,22 @@ public:
 	inline dedaiSpaceMeshLink *GetLinks() const{ return pLinks; }
 	
 	/** \brief Link by index. */
-	dedaiSpaceMeshLink &GetLinkAt( int index ) const;
+	dedaiSpaceMeshLink &GetLinkAt(int index) const;
 	
 	/** \brief Link matching foreign link parameters or \em NULL if absent. */
-	dedaiSpaceMeshLink &GetLinkWith( const dedaiSpaceMeshLink &foreignLink ) const;
+	dedaiSpaceMeshLink &GetLinkWith(const dedaiSpaceMeshLink &foreignLink) const;
 	
 	/** \brief Add link calculating the transform matrix. */
-	void AddLink( dedaiSpaceMesh *mesh, unsigned short face, unsigned short corner );
+	void AddLink(dedaiSpaceMesh *mesh, unsigned short face, unsigned short corner);
 	
 	/** \brief Add link with the provided transform matrix. */
-	void AddLink( dedaiSpaceMesh *mesh, unsigned short face, unsigned short corner, const decMatrix &transform );
+	void AddLink(dedaiSpaceMesh *mesh, unsigned short face, unsigned short corner, const decMatrix &transform);
 	
 	/** \brief Link with parameters is present. */
-	bool HasLinkWith( dedaiSpaceMesh *mesh, unsigned short face, unsigned short corner ) const;
+	bool HasLinkWith(dedaiSpaceMesh *mesh, unsigned short face, unsigned short corner) const;
 	
 	/** \brief Remove link for corner. */
-	void RemoveLinkWith( const dedaiSpaceMeshLink &foreignLink );
+	void RemoveLinkWith(const dedaiSpaceMeshLink &foreignLink);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
@@ -233,13 +233,13 @@ private:
 	void pInitFromNavSpace();
 	void pInitFromHTNavSpace();
 	
-	void pInitConvexFaceListFromFace( dedaiConvexFaceList &list, const dedaiSpaceMeshFace &face ) const;
-	bool pMatchesConvexFaceListMeshFace( dedaiConvexFaceList &list, const dedaiSpaceMeshFace &face ) const;
-	void pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initialVertexCount ) const;
-	void pDisableFace( int faceIndex );
-	void pAddConvexFaces( const dedaiConvexFaceList &list, const dedaiSpaceMeshFace &sourceFace );
-	void pLinkToMesh( dedaiSpaceMesh *mesh, float snapDistance, float snapAngle );
-	void pSplitEdge( int edgeIndex, const decVector &splitVertex );
+	void pInitConvexFaceListFromFace(dedaiConvexFaceList &list, const dedaiSpaceMeshFace &face) const;
+	bool pMatchesConvexFaceListMeshFace(dedaiConvexFaceList &list, const dedaiSpaceMeshFace &face) const;
+	void pOptimizeBlockedFaces(dedaiConvexFaceList &list, int initialVertexCount) const;
+	void pDisableFace(int faceIndex);
+	void pAddConvexFaces(const dedaiConvexFaceList &list, const dedaiSpaceMeshFace &sourceFace);
+	void pLinkToMesh(dedaiSpaceMesh *mesh, float snapDistance, float snapAngle);
+	void pSplitEdge(int edgeIndex, const decVector &splitVertex);
 	
 	void pVerifyInvariants() const;
 	void pDebugPrint() const;

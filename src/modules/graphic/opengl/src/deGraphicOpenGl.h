@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create graphic module. */
-	deGraphicOpenGl( deLoadableModule &loadableModule );
+	deGraphicOpenGl(deLoadableModule &loadableModule);
 	
 	/** Clean up graphic module. */
 	virtual ~deGraphicOpenGl();
@@ -86,7 +86,7 @@ public:
 	 * Called to init the module and prepare it for rendering. Returns true on success.
 	 * To access the os of the engine use the GetOS function.
 	 */
-	virtual bool Init( deRenderWindow *renderWindow );
+	virtual bool Init(deRenderWindow *renderWindow);
 	
 	/**
 	 * Called to cleanup the module. All resources have to be freed and running threads
@@ -134,97 +134,97 @@ public:
 	virtual int GetFPSRate();
 	
 	/** Set position and orientation of VR debug panel if graphic module shows one. */
-	virtual void SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation );
+	virtual void SetVRDebugPanelPosition(const decDVector &position, const decQuaternion &orientation);
 	/*@}*/
 	
 	
 	
 	/** Create a peer for the given billboard. */
-	virtual deBaseGraphicBillboard *CreateBillboard( deBillboard *billboard );
+	virtual deBaseGraphicBillboard *CreateBillboard(deBillboard *billboard);
 	
 	/** Create a peer for the given canvas. */
-	virtual deBaseGraphicCanvas *CreateCanvas( deCanvas *canvas );
+	virtual deBaseGraphicCanvas *CreateCanvas(deCanvas *canvas);
 	
 	/** Create peer for capture canvas. */
-	virtual deBaseGraphicCaptureCanvas *CreateCaptureCanvas( deCaptureCanvas *captureCanvas );
+	virtual deBaseGraphicCaptureCanvas *CreateCaptureCanvas(deCaptureCanvas *captureCanvas);
 	
 	/** Create a peer for the given camera. */
-	virtual deBaseGraphicCamera *CreateCamera( deCamera *camera );
+	virtual deBaseGraphicCamera *CreateCamera(deCamera *camera);
 	
 	/** Create a peer for the given component. */
-	virtual deBaseGraphicComponent *CreateComponent( deComponent *comp );
+	virtual deBaseGraphicComponent *CreateComponent(deComponent *comp);
 	
 	/** Create a peer for the given debug drawer. */
-	virtual deBaseGraphicDebugDrawer *CreateDebugDrawer( deDebugDrawer *debugDrawer );
+	virtual deBaseGraphicDebugDrawer *CreateDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** Create a peer for the given decal. */
-	virtual deBaseGraphicDecal *CreateDecal( deDecal *decal );
+	virtual deBaseGraphicDecal *CreateDecal(deDecal *decal);
 	
 	/** Create a peer for the given dynamic skin. */
-	virtual deBaseGraphicDynamicSkin *CreateDynamicSkin( deDynamicSkin *dynamicSkin );
+	virtual deBaseGraphicDynamicSkin *CreateDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** Create a peer for the given effect. */
-	virtual deBaseGraphicEffect *CreateEffect( deEffect *effect );
+	virtual deBaseGraphicEffect *CreateEffect(deEffect *effect);
 	
 	/** Create a peer for the given environment map probe. */
-	virtual deBaseGraphicEnvMapProbe *CreateEnvMapProbe( deEnvMapProbe *envMapProbe );
+	virtual deBaseGraphicEnvMapProbe *CreateEnvMapProbe(deEnvMapProbe *envMapProbe);
 	
 	/** Create a peer for the given font. */
-	virtual deBaseGraphicFont *CreateFont( deFont *font );
+	virtual deBaseGraphicFont *CreateFont(deFont *font);
 	
 	/** Create a peer for the given height terrain. */
-	virtual deBaseGraphicHeightTerrain *CreateHeightTerrain( deHeightTerrain *heightTerrain );
+	virtual deBaseGraphicHeightTerrain *CreateHeightTerrain(deHeightTerrain *heightTerrain);
 	
 	/** Create a peer for the given image. */
-	virtual deBaseGraphicImage *CreateImage( deImage *image );
+	virtual deBaseGraphicImage *CreateImage(deImage *image);
 	
 	/** Create a peer for the given light. */
-	virtual deBaseGraphicLight *CreateLight( deLight *light );
+	virtual deBaseGraphicLight *CreateLight(deLight *light);
 	
 	/** Create a peer for the given lumimeter. */
-	virtual deBaseGraphicLumimeter *CreateLumimeter( deLumimeter *lumimeter );
+	virtual deBaseGraphicLumimeter *CreateLumimeter(deLumimeter *lumimeter);
 	
 	/** Ccreat a peer for the given model. */
-	virtual deBaseGraphicModel *CreateModel( deModel *model );
+	virtual deBaseGraphicModel *CreateModel(deModel *model);
 	
 	/** Create a peer for the given occlusion mesh. */
-	virtual deBaseGraphicOcclusionMesh *CreateOcclusionMesh( deOcclusionMesh *occmesh );
+	virtual deBaseGraphicOcclusionMesh *CreateOcclusionMesh(deOcclusionMesh *occmesh);
 	
 	/** Create a peer for the given particle emitter. */
-	virtual deBaseGraphicParticleEmitter *CreateParticleEmitter( deParticleEmitter *emitter );
+	virtual deBaseGraphicParticleEmitter *CreateParticleEmitter(deParticleEmitter *emitter);
 	
 	/** Create a peer for the given particle emitter instance. */
-	virtual deBaseGraphicParticleEmitterInstance *CreateParticleEmitterInstance( deParticleEmitterInstance *instance );
+	virtual deBaseGraphicParticleEmitterInstance *CreateParticleEmitterInstance(deParticleEmitterInstance *instance);
 	
 	/** Create a peer for the given prop field. */
-	virtual deBaseGraphicPropField *CreatePropField( dePropField *propField );
+	virtual deBaseGraphicPropField *CreatePropField(dePropField *propField);
 	
 	/** Create a peer for the given render window. */
-	virtual deBaseGraphicRenderWindow *CreateRenderWindow( deRenderWindow *renderWindow );
+	virtual deBaseGraphicRenderWindow *CreateRenderWindow(deRenderWindow *renderWindow);
 	
 	/** Create a peer for the given skin. */
-	virtual deBaseGraphicSkin *CreateSkin( deSkin *skin );
+	virtual deBaseGraphicSkin *CreateSkin(deSkin *skin);
 	
 	/** Create peer sky. */
-	virtual deBaseGraphicSky *CreateSky( deSky *sky );
+	virtual deBaseGraphicSky *CreateSky(deSky *sky);
 	
 	/** Create peer sky instance. */
-	virtual deBaseGraphicSkyInstance *CreateSkyInstance( deSkyInstance *instance );
+	virtual deBaseGraphicSkyInstance *CreateSkyInstance(deSkyInstance *instance);
 	
 	/** Create a peer for the given smoke emitter. */
-	virtual deBaseGraphicSmokeEmitter *CreateSmokeEmitter( deSmokeEmitter *smokeEmitter );
+	virtual deBaseGraphicSmokeEmitter *CreateSmokeEmitter(deSmokeEmitter *smokeEmitter);
 	
 	/** Create a peer for the given video. */
-	virtual deBaseGraphicVideo *CreateVideo( deVideo *video );
+	virtual deBaseGraphicVideo *CreateVideo(deVideo *video);
 	
 	/** Create a peer for the given video player. */
-	virtual deBaseGraphicVideoPlayer *CreateVideoPlayer( deVideoPlayer *videoPlayer );
+	virtual deBaseGraphicVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer);
 	
 	/** Create a peer for the given world. */
-	virtual deBaseGraphicWorld *CreateWorld( deWorld *world );
+	virtual deBaseGraphicWorld *CreateWorld(deWorld *world);
 	
 	/** Get graphic api connection parameters. */
-	virtual void GetGraphicApiConnection( sGraphicApiConnection &connection );
+	virtual void GetGraphicApiConnection(sGraphicApiConnection &connection);
 	/*@}*/
 	
 	
@@ -239,16 +239,16 @@ public:
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
 	
 	/** Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed( const char *name ) const;
+	virtual int IndexOfParameterNamed(const char *name) const;
 	
 	/** Value of named parameter. */
-	virtual decString GetParameterValue( const char *name ) const;
+	virtual decString GetParameterValue(const char *name) const;
 	
 	/** Set value of named parameter. */
-	virtual void SetParameterValue( const char *name, const char *value );
+	virtual void SetParameterValue(const char *name, const char *value);
 	/*@}*/
 	
 	
@@ -278,7 +278,7 @@ public:
 	 * parameter and the answer has to be written into 'answer'. The default
 	 * implementation simply answers only to help with itself.
 	 */
-	virtual void SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 	
 	
@@ -320,7 +320,7 @@ public:
 	inline deoglCamera *GetVRCamera() const{ return pVRCamera; }
 	
 	/** Set VR camera or null. */
-	void SetVRCamera( deoglCamera *camera );
+	void SetVRCamera(deoglCamera *camera);
 	
 	/** VR debug panel matrix. */
 	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }

@@ -69,8 +69,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAIfElse::ceWPAIfElse( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
-	CreateGUICommon( *this );
+ceWPAIfElse::ceWPAIfElse(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
+	CreateGUICommon(*this);
 }
 
 ceWPAIfElse::~ceWPAIfElse(){
@@ -83,38 +83,38 @@ ceWPAIfElse::~ceWPAIfElse(){
 
 ceCAIfElse *ceWPAIfElse::GetAction() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if( ! selected ){
+	if(!selected){
 		return NULL;
 	}
 	
 	ceWPTTIMAIfElse *modelIfElse = NULL;
 	
-	switch( selected->GetType() ){
+	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionIfElse:
-		modelIfElse = ( ceWPTTIMAIfElse* )selected;
+		modelIfElse = (ceWPTTIMAIfElse*)selected;
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCase:
-		modelIfElse = ( ( ceWPTTIMAIfElseIfCase* )selected )->GetModelIfElse();
+		modelIfElse = ((ceWPTTIMAIfElseIfCase*)selected)->GetModelIfElse();
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCaseCondition:
-		modelIfElse = ( ( ceWPTTIMAIfElseIfCaseCondition* )selected )->GetModelIfElse();
+		modelIfElse = ((ceWPTTIMAIfElseIfCaseCondition*)selected)->GetModelIfElse();
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCaseActions:
-		modelIfElse = ( ( ceWPTTIMAIfElseIfCaseActions* )selected )->GetModelIfElse();
+		modelIfElse = ((ceWPTTIMAIfElseIfCaseActions*)selected)->GetModelIfElse();
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseElse:
-		modelIfElse = ( ( ceWPTTIMAIfElseElse* )selected )->GetModelIfElse();
+		modelIfElse = ((ceWPTTIMAIfElseElse*)selected)->GetModelIfElse();
 		break;
 		
 	default:
 		break;
 	}
 	
-	if( modelIfElse ){
+	if(modelIfElse){
 		return modelIfElse->GetActionIfElse();
 		
 	}else{
@@ -124,30 +124,30 @@ ceCAIfElse *ceWPAIfElse::GetAction() const{
 
 ceCAIfElseCase *ceWPAIfElse::GetActiveCase() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if( ! selected ){
+	if(!selected){
 		return NULL;
 	}
 	
 	ceWPTTIMAIfElseIfCase *modelIfCase = NULL;
 	
-	switch( selected->GetType() ){
+	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionIfElseCase:
-		modelIfCase = ( ceWPTTIMAIfElseIfCase* )selected;
+		modelIfCase = (ceWPTTIMAIfElseIfCase*)selected;
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCaseCondition:
-		modelIfCase = ( ( ceWPTTIMAIfElseIfCaseCondition* )selected )->GetModelIfCase();
+		modelIfCase = ((ceWPTTIMAIfElseIfCaseCondition*)selected)->GetModelIfCase();
 		break;
 		
 	case ceWPTTreeItemModel::etActionIfElseCaseActions:
-		modelIfCase = ( ( ceWPTTIMAIfElseIfCaseActions* )selected )->GetModelIfCase();
+		modelIfCase = ((ceWPTTIMAIfElseIfCaseActions*)selected)->GetModelIfCase();
 		break;
 		
 	default:
 		break;
 	}
 	
-	if( modelIfCase ){
+	if(modelIfCase){
 		return modelIfCase->GetIfCase();
 		
 	}else{

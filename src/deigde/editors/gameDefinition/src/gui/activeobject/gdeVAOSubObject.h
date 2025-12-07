@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create active object component. */
-	gdeVAOSubObject( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix );
+	gdeVAOSubObject(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix);
 	
 protected:
 	/**
@@ -78,24 +78,24 @@ public:
 	virtual void SelectedObjectChanged();
 	
 	/** Extends. */
-	virtual void GetExtends( decVector &minExtend, decVector &maxExtend ) const;
+	virtual void GetExtends(decVector &minExtend, decVector &maxExtend) const;
 	
 	/** Property value. */
-	decString PropertyString( const decString &name, const decString &defaultValue ) const;
-	int PropertyInt( const decString &name, int defaultValue ) const;
-	float PropertyFloat( const decString &name, float defaultValue ) const;
-	bool PropertyBool( const decString &name, bool defaultValue ) const;
-	decColor PropertyColor( const decString &name, const decColor &defaultValue ) const;
-	decVector PropertyVector( const decString &name, const decVector &defaultValue ) const;
-	decVector2 PropertyVector2( const decString &name, const decVector2 &defaultValue ) const;
-	decQuaternion PropertyQuaternion( const decString &name, const decVector &defaultValue ) const;
-	void PropertyShapeList( const decString &name, decShapeList &list, const decShapeList &defaultValue ) const;
+	decString PropertyString(const decString &name, const decString &defaultValue) const;
+	int PropertyInt(const decString &name, int defaultValue) const;
+	float PropertyFloat(const decString &name, float defaultValue) const;
+	bool PropertyBool(const decString &name, bool defaultValue) const;
+	decColor PropertyColor(const decString &name, const decColor &defaultValue) const;
+	decVector PropertyVector(const decString &name, const decVector &defaultValue) const;
+	decVector2 PropertyVector2(const decString &name, const decVector2 &defaultValue) const;
+	decQuaternion PropertyQuaternion(const decString &name, const decVector &defaultValue) const;
+	void PropertyShapeList(const decString &name, decShapeList &list, const decShapeList &defaultValue) const;
 	/*@}*/
 	
 	
 	
 protected:
-	const char *pPropertyValue( const decString &name ) const;
+	const char *pPropertyValue(const decString &name) const;
 };
 
 #endif

@@ -40,8 +40,8 @@
 deCmdLineArgs::deCmdLineArgs(){
 }
 
-deCmdLineArgs::deCmdLineArgs( const deCmdLineArgs &copy ) :
-pArguments( copy.pArguments ){
+deCmdLineArgs::deCmdLineArgs(const deCmdLineArgs &copy) :
+pArguments(copy.pArguments){
 }
 
 deCmdLineArgs::~deCmdLineArgs(){
@@ -56,24 +56,24 @@ int deCmdLineArgs::GetCount() const{
 	return pArguments.GetCount();
 }
 
-const decString &deCmdLineArgs::GetArgument( int index ) const{
-	return pArguments.GetAt( index );
+const decString &deCmdLineArgs::GetArgument(int index) const{
+	return pArguments.GetAt(index);
 }
 
-int deCmdLineArgs::IndexOfArgument( const char *argument ) const{
-	return pArguments.IndexOf( argument );
+int deCmdLineArgs::IndexOfArgument(const char *argument) const{
+	return pArguments.IndexOf(argument);
 }
 
-bool deCmdLineArgs::HasArgument( const char *argument ) const{
-	return pArguments.Has( argument );
+bool deCmdLineArgs::HasArgument(const char *argument) const{
+	return pArguments.Has(argument);
 }
 
-void deCmdLineArgs::AddArgument( const char *argument ){
-	pArguments.Add( argument );
+void deCmdLineArgs::AddArgument(const char *argument){
+	pArguments.Add(argument);
 }
 
-void deCmdLineArgs::RemoveArgument( int index ){
-	pArguments.RemoveFrom( index );
+void deCmdLineArgs::RemoveArgument(int index){
+	pArguments.RemoveFrom(index);
 }
 
 void deCmdLineArgs::RemoveAllArguments(){
@@ -82,29 +82,29 @@ void deCmdLineArgs::RemoveAllArguments(){
 
 
 
-void deCmdLineArgs::AddArgsSplit( const char *commandLine ){
-	const decString scmdline( commandLine );
+void deCmdLineArgs::AddArgsSplit(const char *commandLine){
+	const decString scmdline(commandLine);
 	const int len = scmdline.GetLength();
 	int cur = 0;
 	int start = 0;
 	int next;
 	
-	while( start < len ){
+	while(start < len){
 		// skip spaces
-		while( start < len && isspace( scmdline.GetAt( start ) ) ){
+		while(start < len && isspace(scmdline.GetAt(start))){
 			start++;
 		}
 		
 		// if we are at the end the rest of the argument line is just space
-		if( start == len ){
+		if(start == len){
 			break;
 		}
 		
 		// parse string
-		if( scmdline.GetAt( start ) == '"' ){
+		if(scmdline.GetAt(start) == '"'){
 			start++;
 			cur = start;
-			while( cur < len && scmdline.GetAt( cur ) != '"' ){
+			while(cur < len && scmdline.GetAt(cur) != '"'){
 				cur++;
 			}
 			next = cur + 1;
@@ -112,15 +112,15 @@ void deCmdLineArgs::AddArgsSplit( const char *commandLine ){
 		// parse non-string
 		}else{
 			cur = start;
-			while( cur < len && ! isspace( scmdline.GetAt( cur ) ) ){
+			while(cur < len && !isspace(scmdline.GetAt(cur))){
 				cur++;
 			}
 			next = cur;
 		}
 		
 		// add argument if not empty
-		if( cur - start > 0 ){
-			pArguments.Add( scmdline.GetMiddle( start, cur ) );
+		if(cur - start > 0){
+			pArguments.Add(scmdline.GetMiddle(start, cur));
 		}
 		
 		// next round

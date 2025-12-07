@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create capture canvas resource manager. */
-	deCaptureCanvasManager( deEngine *engine );
+	deCaptureCanvasManager(deEngine *engine);
 	
 	/** \brief Clean up capture canvas resource manager and reports leaking resources. */
 	virtual ~deCaptureCanvasManager();
@@ -88,7 +88,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

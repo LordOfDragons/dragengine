@@ -56,9 +56,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWDSLaneBodyLookAt::ceWDSLaneBodyLookAt( ceWindowDopeSheet &dopeSheet, int index,
-	const char *label, const char *description ) :
-ceWDSLane( dopeSheet, index, label, description ){
+ceWDSLaneBodyLookAt::ceWDSLaneBodyLookAt(ceWindowDopeSheet &dopeSheet, int index,
+	const char *label, const char *description) :
+ceWDSLane(dopeSheet, index, label, description){
 }
 
 ceWDSLaneBodyLookAt::~ceWDSLaneBodyLookAt(){
@@ -74,46 +74,46 @@ const ceStripList &ceWDSLaneBodyLookAt::GetStripList() const{
 	return action ? action->GetBodyLookAtList() : GetEmptyList();
 }
 
-void ceWDSLaneBodyLookAt::FillIDList( decStringList &list ){
-	FillIDListLookAt( list );
+void ceWDSLaneBodyLookAt::FillIDList(decStringList &list){
+	FillIDListLookAt(list);
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripAdd( ceStrip *strip, int index ){
+igdeUndo *ceWDSLaneBodyLookAt::UndoStripAdd(ceStrip *strip, int index){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLAAdd( GetWindow().GetTopic(), action, strip, index ) : NULL;
+	return action ? new ceUCAASpeakBodyLAAdd(GetWindow().GetTopic(), action, strip, index) : NULL;
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripRemove( ceStrip *strip ){
+igdeUndo *ceWDSLaneBodyLookAt::UndoStripRemove(ceStrip *strip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLARemove( GetWindow().GetTopic(), action, strip ) : NULL;
+	return action ? new ceUCAASpeakBodyLARemove(GetWindow().GetTopic(), action, strip) : NULL;
 }
 
 igdeUndo *ceWDSLaneBodyLookAt::UndoStripRemoveAll(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLAClear( GetWindow().GetTopic(), action ) : NULL;
+	return action ? new ceUCAASpeakBodyLAClear(GetWindow().GetTopic(), action) : NULL;
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripReplace( ceStrip *strip, ceStrip *withStrip ){
+igdeUndo *ceWDSLaneBodyLookAt::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLASet( GetWindow().GetTopic(), action, strip, withStrip ) : NULL;
+	return action ? new ceUCAASpeakBodyLASet(GetWindow().GetTopic(), action, strip, withStrip) : NULL;
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripMove( ceStrip *strip, int toIndex ){
+igdeUndo *ceWDSLaneBodyLookAt::UndoStripMove(ceStrip *strip, int toIndex){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLAMove( GetWindow().GetTopic(), action, strip, toIndex ) : NULL;
+	return action ? new ceUCAASpeakBodyLAMove(GetWindow().GetTopic(), action, strip, toIndex) : NULL;
 }
 
-ceUCAASpeakStripSetPause *ceWDSLaneBodyLookAt::UndoStripSetPause( ceStrip *strip, float pause ){
+ceUCAASpeakStripSetPause *ceWDSLaneBodyLookAt::UndoStripSetPause(ceStrip *strip, float pause){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLASetPause( GetWindow().GetTopic(), action, strip, pause ) : NULL;
+	return action ? new ceUCAASpeakBodyLASetPause(GetWindow().GetTopic(), action, strip, pause) : NULL;
 }
 
-ceUCAASpeakStripSetDuration *ceWDSLaneBodyLookAt::UndoStripSetDuration( ceStrip *strip, float duration ){
+ceUCAASpeakStripSetDuration *ceWDSLaneBodyLookAt::UndoStripSetDuration(ceStrip *strip, float duration){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLASetDuration( GetWindow().GetTopic(), action, strip, duration ) : NULL;
+	return action ? new ceUCAASpeakBodyLASetDuration(GetWindow().GetTopic(), action, strip, duration) : NULL;
 }
 
 ceUCAASpeakStripsScale *ceWDSLaneBodyLookAt::UndoScaleStrips(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLAScale( GetWindow().GetTopic(), action ) : NULL;
+	return action ? new ceUCAASpeakBodyLAScale(GetWindow().GetTopic(), action) : NULL;
 }

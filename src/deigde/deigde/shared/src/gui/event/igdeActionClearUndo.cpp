@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeActionClearUndo::igdeActionClearUndo( igdeEnvironment &environment, igdeUndoSystem *undoSystem ) :
+igdeActionClearUndo::igdeActionClearUndo(igdeEnvironment &environment, igdeUndoSystem *undoSystem) :
 igdeAction(
 	"Clear Undo Actions",
-	environment.GetStockIcon( igdeEnvironment::esiDelete ),
-	"Clear all undo actions" ),
-pEnvironment( environment ),
-pUndoSystem( undoSystem ){
+	environment.GetStockIcon(igdeEnvironment::esiDelete),
+	"Clear all undo actions"),
+pEnvironment(environment),
+pUndoSystem(undoSystem){
 }
 
 igdeActionClearUndo::~igdeActionClearUndo(){
@@ -57,8 +57,8 @@ igdeActionClearUndo::~igdeActionClearUndo(){
 // Management
 ///////////////
 
-void igdeActionClearUndo::SetUndoSystem( igdeUndoSystem *undoSystem ){
-	if( undoSystem == pUndoSystem ){
+void igdeActionClearUndo::SetUndoSystem(igdeUndoSystem *undoSystem){
+	if(undoSystem == pUndoSystem){
 		return;
 	}
 	
@@ -69,11 +69,11 @@ void igdeActionClearUndo::SetUndoSystem( igdeUndoSystem *undoSystem ){
 
 
 void igdeActionClearUndo::OnAction(){
-	if( pUndoSystem && pUndoSystem->GetCount() > 0 ){
+	if(pUndoSystem && pUndoSystem->GetCount() > 0){
 		pUndoSystem->RemoveAll();
 	}
 }
 
 void igdeActionClearUndo::Update(){
-	SetEnabled( pUndoSystem && pUndoSystem->GetCount() > 0 );
+	SetEnabled(pUndoSystem && pUndoSystem->GetCount() > 0);
 }

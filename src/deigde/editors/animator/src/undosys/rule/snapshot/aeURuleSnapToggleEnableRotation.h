@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSnapToggleEnableRotation( aeRuleStateSnapshot *rule );
+	aeURuleSnapToggleEnableRotation(aeRuleStateSnapshot *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleSnapToggleEnableRotation();

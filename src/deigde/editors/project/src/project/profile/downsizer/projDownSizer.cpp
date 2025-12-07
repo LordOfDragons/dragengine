@@ -42,17 +42,17 @@
 ////////////////////////////
 
 projDownSizer::projDownSizer() :
-pProfile( NULL ),
-pQuality( 100 ),
-pScale( 0 ){
+pProfile(NULL),
+pQuality(100),
+pScale(0){
 }
 
-projDownSizer::projDownSizer( const projDownSizer &downsizer ) :
-pProfile( NULL ),
-pDescription( downsizer.pDescription ),
-pPatterns( downsizer.pPatterns ),
-pQuality( downsizer.pQuality ),
-pScale( downsizer.pScale ){
+projDownSizer::projDownSizer(const projDownSizer &downsizer) :
+pProfile(NULL),
+pDescription(downsizer.pDescription),
+pPatterns(downsizer.pPatterns),
+pQuality(downsizer.pQuality),
+pScale(downsizer.pScale){
 }
 
 projDownSizer::~projDownSizer(){
@@ -64,12 +64,12 @@ projDownSizer::~projDownSizer(){
 // Management
 ///////////////
 
-void projDownSizer::SetProfile( projProfile *profile ){
+void projDownSizer::SetProfile(projProfile *profile){
 	pProfile = profile;
 }
 
-void projDownSizer::SetDescription( const char *description ){
-	if( pDescription == description ){
+void projDownSizer::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -77,8 +77,8 @@ void projDownSizer::SetDescription( const char *description ){
 	NotifyChanged();
 }
 
-void projDownSizer::SetPatterns( const decStringSet &patterns ){
-	if( patterns == pPatterns ){
+void projDownSizer::SetPatterns(const decStringSet &patterns){
+	if(patterns == pPatterns){
 		return;
 	}
 	
@@ -86,9 +86,9 @@ void projDownSizer::SetPatterns( const decStringSet &patterns ){
 	NotifyChanged();
 }
 
-void projDownSizer::SetQuality( int quality ){
-	quality = decMath::clamp( quality, 0, 100 );
-	if( quality == pQuality ){
+void projDownSizer::SetQuality(int quality){
+	quality = decMath::clamp(quality, 0, 100);
+	if(quality == pQuality){
 		return;
 	}
 	
@@ -96,12 +96,12 @@ void projDownSizer::SetQuality( int quality ){
 	NotifyChanged();
 }
 
-void projDownSizer::SetScale( int scale ){
-	if( scale < 0 ){
-		DETHROW( deeInvalidParam );
+void projDownSizer::SetScale(int scale){
+	if(scale < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( scale == pScale ){
+	if(scale == pScale){
 		return;
 	}
 	
@@ -112,7 +112,7 @@ void projDownSizer::SetScale( int scale ){
 
 
 void projDownSizer::NotifyChanged(){
-	if( pProfile && pProfile->GetProject() ){
+	if(pProfile && pProfile->GetProject()){
 		//pProfile->GetProject()->NotifyDownSizerChanged( pProfile, this );
 	}
 }

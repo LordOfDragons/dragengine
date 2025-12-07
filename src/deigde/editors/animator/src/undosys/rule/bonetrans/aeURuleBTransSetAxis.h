@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetAxis( aeRuleBoneTransformator *rule, const decVector &newValue );
+	aeURuleBTransSetAxis(aeRuleBoneTransformator *rule, const decVector &newValue);
 	
 protected:
 	/** Clean up undo. */

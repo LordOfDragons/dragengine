@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionSetDelay::ceUCActionSetDelay( ceConversationTopic *topic, ceConversationAction *action, float newDelay ){
-	if( ! topic ) DETHROW( deeInvalidParam );
+ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversationAction *action, float newDelay){
+	if(!topic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
 	pOldDelay = action->GetDelay();
 	pNewDelay = newDelay;
 	
-	SetShortInfo( "Action Set Delay" );
+	SetShortInfo("Action Set Delay");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCActionSetDelay::ceUCActionSetDelay( ceConversationTopic *topic, ceConversati
 }
 
 ceUCActionSetDelay::~ceUCActionSetDelay(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCActionSetDelay::~ceUCActionSetDelay(){
 ///////////////
 
 void ceUCActionSetDelay::Undo(){
-	pAction->SetDelay( pOldDelay );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetDelay(pOldDelay);
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCActionSetDelay::Redo(){
-	pAction->SetDelay( pNewDelay );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetDelay(pNewDelay);
+	pTopic->NotifyActionChanged(pAction);
 }

@@ -37,8 +37,8 @@
 /////////////////////////////
 
 // constructor, destructor
-deLightManager::deLightManager( deEngine *engine ) : deResourceManager( engine, ertLight ){
-	SetLoggingName( "light" );
+deLightManager::deLightManager(deEngine *engine) : deResourceManager(engine, ertLight){
+	SetLoggingName("light");
 }
 deLightManager::~deLightManager(){
 	ReleaseLeakingResources();
@@ -50,19 +50,19 @@ int deLightManager::GetLightCount() const{
 }
 
 deLight *deLightManager::GetRootLight() const{
-	return ( deLight* )pLights.GetRoot();
+	return (deLight*)pLights.GetRoot();
 }
 
 deLight *deLightManager::CreateLight(){
 	deLight *light = NULL;
 	// create and add light
 	try{
-		light = new deLight( this );
-		if( ! light ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadLight( light );
-		pLights.Add( light );
-	}catch( const deException & ){
-		if( light ){
+		light = new deLight(this);
+		if(!light) DETHROW(deeOutOfMemory);
+		GetGraphicSystem()->LoadLight(light);
+		pLights.Add(light);
+	}catch(const deException &){
+		if(light){
 			light->FreeReference();
 		}
 		throw;
@@ -74,8 +74,8 @@ deLight *deLightManager::CreateLight(){
 
 
 void deLightManager::ReleaseLeakingResources(){
-	if( GetLightCount() > 0 ){
-		LogWarnFormat( "%i leaking lights", GetLightCount() );
+	if(GetLightCount() > 0){
+		LogWarnFormat("%i leaking lights", GetLightCount());
 		pLights.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -86,26 +86,26 @@ void deLightManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deLightManager::SystemGraphicLoad(){
-	deLight *light = ( deLight* )pLights.GetRoot();
+	deLight *light = (deLight*)pLights.GetRoot();
 	
-	while( light ){
-		if( ! light->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadLight( light );
+	while(light){
+		if(!light->GetPeerGraphic()){
+			GetGraphicSystem()->LoadLight(light);
 		}
 		
-		light = ( deLight* )light->GetLLManagerNext();
+		light = (deLight*)light->GetLLManagerNext();
 	}
 }
 
 void deLightManager::SystemGraphicUnload(){
-	deLight *light = ( deLight* )pLights.GetRoot();
+	deLight *light = (deLight*)pLights.GetRoot();
 	
-	while( light ){
-		light->SetPeerGraphic( NULL );
-		light = ( deLight* )light->GetLLManagerNext();
+	while(light){
+		light->SetPeerGraphic(NULL);
+		light = (deLight*)light->GetLLManagerNext();
 	}
 }
 
-void deLightManager::RemoveResource( deResource *resource ){
-	pLights.RemoveIfPresent( resource );
+void deLightManager::RemoveResource(deResource *resource){
+	pLights.RemoveIfPresent(resource);
 }

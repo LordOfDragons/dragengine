@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeSwitcher( igdeEnvironment &environment );
+	igdeSwitcher(igdeEnvironment &environment);
 	
 	
 	
@@ -70,15 +70,15 @@ public:
 	inline int GetCurrent() const{ return pCurrent; }
 	
 	/** \brief Set current widget index. */
-	void SetCurrent( int current );
+	void SetCurrent(int current);
 	
 	
 	
 	/** \brief Add child . */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	
 	/** \brief Remove all children. */
 	virtual void RemoveAllChildren();

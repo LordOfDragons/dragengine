@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPHMD::deoxrDPHMD( deoxrInstance &instance ) :
-deoxrDeviceProfile( instance, deoxrPath( instance, "/interaction_profiles/dragengine/hmd" ), "HMD" ){
+deoxrDPHMD::deoxrDPHMD(deoxrInstance &instance) :
+deoxrDeviceProfile(instance, deoxrPath(instance, "/interaction_profiles/dragengine/hmd"), "HMD"){
 }
 
 deoxrDPHMD::~deoxrDPHMD(){
@@ -56,7 +56,7 @@ deoxrDPHMD::~deoxrDPHMD(){
 void deoxrDPHMD::CheckAttached(){
 	deoxrSession * const session = GetInstance().GetOxr().GetSession();
 	
-	if( session ){
+	if(session){
 		pAddDevice();
 		
 	}else{
@@ -77,36 +77,36 @@ void deoxrDPHMD::ClearActions(){
 //////////////
 
 void deoxrDPHMD::pAddDevice(){
-	if( pDevice ){
+	if(pDevice){
 		return;
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	pDevice.TakeOver( new deoxrDevice( oxr, *this ) );
-	pDevice->SetType( deInputDevice::edtVRHMD );
-	pDevice->SetName( "HMD" );
+	pDevice.TakeOver(new deoxrDevice(oxr, *this));
+	pDevice->SetType(deInputDevice::edtVRHMD);
+	pDevice->SetName("HMD");
 	
 	decString id;
-	id.Format( "%shmd", OXR_DEVID_PREFIX );
-	pDevice->SetID( id );
+	id.Format("%shmd", OXR_DEVID_PREFIX);
+	pDevice->SetID(id);
 	
-	if( GetInstance().SupportsExtension( deoxrInstance::extHTCFacialTracking ) ){
+	if(GetInstance().SupportsExtension(deoxrInstance::extHTCFacialTracking)){
 		deoxrSession &session = oxr.GetSession();
-		if( session.GetSystem().GetSupportsFaceEyeTracking()
-		|| session.GetSystem().GetSupportsFaceLipTracking() ){
-			pDevice->SetFaceTracker( deoxrFaceTracker::Ref::NewWith(session) );
+		if(session.GetSystem().GetSupportsFaceEyeTracking()
+		|| session.GetSystem().GetSupportsFaceLipTracking()){
+			pDevice->SetFaceTracker(deoxrFaceTracker::Ref::NewWith(session));
 		}
 	}
 	
-	oxr.GetDevices().Add( pDevice );
+	oxr.GetDevices().Add(pDevice);
 }
 
 void deoxrDPHMD::pRemoveDevice(){
-	if( ! pDevice ){
+	if(!pDevice){
 		return;
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	oxr.GetDevices().Remove( pDevice );
+	oxr.GetDevices().Remove(pDevice);
 	pDevice = nullptr;
 }

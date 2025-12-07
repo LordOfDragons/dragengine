@@ -46,7 +46,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic octree object. */
-	decDefaultOctree( const decVector &center, const decVector &halfSize );
+	decDefaultOctree(const decVector &center, const decVector &halfSize);
 	/** Cleans up the generic octree object. */
 	virtual ~decDefaultOctree();
 	/*@}*/
@@ -58,7 +58,7 @@ public:
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual decOctree *CreateOctree( int octant ) const;
+	virtual decOctree *CreateOctree(int octant) const;
 	/** Clears the content of this node. */
 	virtual void ClearNodeContent();
 	/**
@@ -66,7 +66,7 @@ public:
 	 * which hosts the specified box. Returns the node where the element
 	 * has been placed into.
 	 */
-	decDefaultOctree *InsertIntoTree( void *element, const decVector &boxCenter, const decVector &boxHalfSize, int maxDepth = DECDO_MAX_DEPTH );
+	decDefaultOctree *InsertIntoTree(void *element, const decVector &boxCenter, const decVector &boxHalfSize, int maxDepth = DECDO_MAX_DEPTH);
 	/*@}*/
 	
 	/** @name Elements */
@@ -74,13 +74,13 @@ public:
 	/** Retrieves the number of elements. */
 	inline int GetElementCount() const{ return pElementCount; }
 	/** Retrieves the element at the given index. */
-	void *GetElementAt( int index ) const;
+	void *GetElementAt(int index) const;
 	/** Retrieves the index of the given element or -1 if not found. */
-	int IndexOfElement( void *element ) const;
+	int IndexOfElement(void *element) const;
 	/** Adds a element. */
-	void AddElement( void *element );
+	void AddElement(void *element);
 	/** Removes a element. */
-	void RemoveElement( void *element );
+	void RemoveElement(void *element);
 	/** Removes all elements. */
 	void RemoveAllElements();
 	/*@}*/

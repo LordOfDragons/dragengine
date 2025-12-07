@@ -101,7 +101,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new module. */
-	deBaseGraphicModule( deLoadableModule &loadableModule );
+	deBaseGraphicModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseGraphicModule();
@@ -116,7 +116,7 @@ public:
 	 * 
 	 * Returns true on success. To access the os of the engine use the GetOS function.
 	 */
-	virtual bool Init( deRenderWindow *renderWindow ) = 0;
+	virtual bool Init(deRenderWindow *renderWindow) = 0;
 	
 	/**
 	 * \brief Called to cleanup the module.
@@ -174,7 +174,7 @@ public:
 	 * - matrix up vector along panel down direction
 	 * - matrix forward vector pointing towards the user
 	 */
-	virtual void SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation );
+	virtual void SetVRDebugPanelPosition(const decDVector &position, const decQuaternion &orientation);
 	/*@}*/
 	
 	
@@ -182,88 +182,88 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Create peer for billboard. */
-	virtual deBaseGraphicBillboard *CreateBillboard( deBillboard *billboard ) = 0;
+	virtual deBaseGraphicBillboard *CreateBillboard(deBillboard *billboard) = 0;
 	
 	/** \brief Create peer for canvas. */
-	virtual deBaseGraphicCanvas *CreateCanvas( deCanvas *canvas ) = 0;
+	virtual deBaseGraphicCanvas *CreateCanvas(deCanvas *canvas) = 0;
 	
 	/** \brief Create peer for capture canvas. */
-	virtual deBaseGraphicCaptureCanvas *CreateCaptureCanvas( deCaptureCanvas *captureCanvas ) = 0;
+	virtual deBaseGraphicCaptureCanvas *CreateCaptureCanvas(deCaptureCanvas *captureCanvas) = 0;
 	
 	/** \brief Create peer for camera. */
-	virtual deBaseGraphicCamera *CreateCamera( deCamera *camera ) = 0;
+	virtual deBaseGraphicCamera *CreateCamera(deCamera *camera) = 0;
 	
 	/** \brief Create peer for component. */
-	virtual deBaseGraphicComponent *CreateComponent( deComponent *comp ) = 0;
+	virtual deBaseGraphicComponent *CreateComponent(deComponent *comp) = 0;
 	
 	/** \brief Create peer for debug drawer. */
-	virtual deBaseGraphicDebugDrawer *CreateDebugDrawer( deDebugDrawer *debugDrawer ) = 0;
+	virtual deBaseGraphicDebugDrawer *CreateDebugDrawer(deDebugDrawer *debugDrawer) = 0;
 	
 	/** \brief Create peer for decal. */
-	virtual deBaseGraphicDecal *CreateDecal( deDecal *decal ) = 0;
+	virtual deBaseGraphicDecal *CreateDecal(deDecal *decal) = 0;
 	
 	/** \brief Create peer for dynamic skin. */
-	virtual deBaseGraphicDynamicSkin *CreateDynamicSkin( deDynamicSkin *dynamicSkin ) = 0;
+	virtual deBaseGraphicDynamicSkin *CreateDynamicSkin(deDynamicSkin *dynamicSkin) = 0;
 	
 	/** \brief Create peer for effect. */
-	virtual deBaseGraphicEffect *CreateEffect( deEffect *effect ) = 0;
+	virtual deBaseGraphicEffect *CreateEffect(deEffect *effect) = 0;
 	
 	/** \brief Create peer for environment map probe. */
-	virtual deBaseGraphicEnvMapProbe *CreateEnvMapProbe( deEnvMapProbe *envMapProbe ) = 0;
+	virtual deBaseGraphicEnvMapProbe *CreateEnvMapProbe(deEnvMapProbe *envMapProbe) = 0;
 	
 	/** \brief Create peer for font. */
-	virtual deBaseGraphicFont *CreateFont( deFont *font ) = 0;
+	virtual deBaseGraphicFont *CreateFont(deFont *font) = 0;
 	
 	/** \brief Create peer for height terrain. */
-	virtual deBaseGraphicHeightTerrain *CreateHeightTerrain( deHeightTerrain *heightTerrain ) = 0;
+	virtual deBaseGraphicHeightTerrain *CreateHeightTerrain(deHeightTerrain *heightTerrain) = 0;
 	
 	/** \brief Create peer for image. */
-	virtual deBaseGraphicImage *CreateImage( deImage *image ) = 0;
+	virtual deBaseGraphicImage *CreateImage(deImage *image) = 0;
 	
 	/** \brief Create peer for light. */
-	virtual deBaseGraphicLight *CreateLight( deLight *light ) = 0;
+	virtual deBaseGraphicLight *CreateLight(deLight *light) = 0;
 	
 	/** \brief Create peer for lumimeter. */
-	virtual deBaseGraphicLumimeter *CreateLumimeter( deLumimeter *lumimeter ) = 0;
+	virtual deBaseGraphicLumimeter *CreateLumimeter(deLumimeter *lumimeter) = 0;
 	
 	/** \brief Ccreat a peer for the given model. */
-	virtual deBaseGraphicModel *CreateModel( deModel *model ) = 0;
+	virtual deBaseGraphicModel *CreateModel(deModel *model) = 0;
 	
 	/** \brief Create peer for occlusion mesh. */
-	virtual deBaseGraphicOcclusionMesh *CreateOcclusionMesh( deOcclusionMesh *occmesh ) = 0;
+	virtual deBaseGraphicOcclusionMesh *CreateOcclusionMesh(deOcclusionMesh *occmesh) = 0;
 	
 	/** \brief Create peer for particle emitter. */
-	virtual deBaseGraphicParticleEmitter *CreateParticleEmitter( deParticleEmitter *emitter ) = 0;
+	virtual deBaseGraphicParticleEmitter *CreateParticleEmitter(deParticleEmitter *emitter) = 0;
 	
 	/** \brief Create peer for particle emitter instance. */
-	virtual deBaseGraphicParticleEmitterInstance *CreateParticleEmitterInstance( deParticleEmitterInstance *instance ) = 0;
+	virtual deBaseGraphicParticleEmitterInstance *CreateParticleEmitterInstance(deParticleEmitterInstance *instance) = 0;
 	
 	/** \brief Create peer for prop field. */
-	virtual deBaseGraphicPropField *CreatePropField( dePropField *propField ) = 0;
+	virtual deBaseGraphicPropField *CreatePropField(dePropField *propField) = 0;
 	
 	/** \brief Create peer for render window. */
-	virtual deBaseGraphicRenderWindow *CreateRenderWindow( deRenderWindow *renderWindow ) = 0;
+	virtual deBaseGraphicRenderWindow *CreateRenderWindow(deRenderWindow *renderWindow) = 0;
 	
 	/** \brief Create peer for skin. */
-	virtual deBaseGraphicSkin *CreateSkin( deSkin *skin ) = 0;
+	virtual deBaseGraphicSkin *CreateSkin(deSkin *skin) = 0;
 	
 	/** \brief Create peer for sky. */
-	virtual deBaseGraphicSky *CreateSky( deSky *sky ) = 0;
+	virtual deBaseGraphicSky *CreateSky(deSky *sky) = 0;
 	
 	/** \brief Create peer for sky instance. */
-	virtual deBaseGraphicSkyInstance *CreateSkyInstance( deSkyInstance *sky ) = 0;
+	virtual deBaseGraphicSkyInstance *CreateSkyInstance(deSkyInstance *sky) = 0;
 	
 	/** \brief Create peer for smoke emitter. */
-	virtual deBaseGraphicSmokeEmitter *CreateSmokeEmitter( deSmokeEmitter *smokeEmitter ) = 0;
+	virtual deBaseGraphicSmokeEmitter *CreateSmokeEmitter(deSmokeEmitter *smokeEmitter) = 0;
 	
 	/** \brief Create peer for video. */
-	virtual deBaseGraphicVideo *CreateVideo( deVideo *video ) = 0;
+	virtual deBaseGraphicVideo *CreateVideo(deVideo *video) = 0;
 	
 	/** \brief Create peer for video player. */
-	virtual deBaseGraphicVideoPlayer *CreateVideoPlayer( deVideoPlayer *videoPlayer ) = 0;
+	virtual deBaseGraphicVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer) = 0;
 	
 	/** \brief Create peer for world. */
-	virtual deBaseGraphicWorld *CreateWorld( deWorld *world ) = 0;
+	virtual deBaseGraphicWorld *CreateWorld(deWorld *world) = 0;
 	/*@}*/
 	
 	
@@ -281,39 +281,39 @@ public:
 		// OpenGL
 		struct sGraphicApiConnectionOpenGl{
 			#ifdef OS_BEOS
-			void *dummy; //<! avoid empty struct
+			void *dummy; //!< avoid empty struct
 			
 			#elif defined OS_ANDROID
-			void *display; //<! Android: EGLDisplay
-			void *config; //<! Android: EGLConfig
-			void *context; //<! Android: EGLContext
+			void *display; //!< Android: EGLDisplay
+			void *config; //!< Android: EGLConfig
+			void *context; //!< Android: EGLContext
 			
 			#elif defined OS_WEBWASM
-			void *dummy; //<! avoid empty struct
+			void *dummy; //!< avoid empty struct
 			
 			#elif defined OS_UNIX_X11
-			void *display; //<! X11: Display*
-			uint32_t visualid; //<! X11: uint32_t
-			void *glxFBConfig; //<! GLXFBConfig
-			unsigned long glxDrawable; //<! GLXDrawable
-			void *glxContext; //<! GLXContext
+			void *display; //!< X11: Display*
+			uint32_t visualid; //!< X11: uint32_t
+			void *glxFBConfig; //!< GLXFBConfig
+			unsigned long glxDrawable; //!< GLXDrawable
+			void *glxContext; //!< GLXContext
 			
 			#elif defined OS_W32
 			void *hDC; // Windows: HDC
 			void *hGLRC; // Windows: HGLRC
 			
 			#else
-			void *dummy; //<! avoid empty struct
+			void *dummy; //!< avoid empty struct
 			#endif
 		} opengl;
 		
 		// Vulkan
 		struct sGraphicApiConnectionVulkan{
-			void *instance; //<! Vulkan: VkInstance
-			void *physicalDevice; //<! Vulkan: VkPhysicalDevice
-			void *device; //<! Vulkan: VkDevice
-			uint32_t queueFamilyIndex; //<! Vulkan: uint32_t
-			uint32_t queueIndex; //<! Vulkan: uint32_t
+			void *instance; //!< Vulkan: VkInstance
+			void *physicalDevice; //!< Vulkan: VkPhysicalDevice
+			void *device; //!< Vulkan: VkDevice
+			uint32_t queueFamilyIndex; //!< Vulkan: uint32_t
+			uint32_t queueIndex; //!< Vulkan: uint32_t
 		} vulkan;
 	};
 	
@@ -323,7 +323,7 @@ public:
 	 * 
 	 * Default implementation sets all parameters to invalid.
 	 */
-	virtual void GetGraphicApiConnection( sGraphicApiConnection &connection );
+	virtual void GetGraphicApiConnection(sGraphicApiConnection &connection);
 	/*@}*/
 };
 

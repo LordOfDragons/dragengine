@@ -54,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create actor gesture. */
-	ceActorGesture( igdeEnvironment &environment, const char *name );
+	ceActorGesture(igdeEnvironment &environment, const char *name);
 	
 	/** \brief Create copy of actor gesture. */
-	ceActorGesture( const ceActorGesture &gesture );
+	ceActorGesture(const ceActorGesture &gesture);
 	
 protected:
 	/** \brief Clean up actor gesture. */
@@ -81,13 +81,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Animator path. */
 	inline const decString &GetPathAnimator() const{ return pPathAnimator; }
 	
 	/** \brief Set animator path. */
-	void SetPathAnimator( const char *path );
+	void SetPathAnimator(const char *path);
 	/*@}*/
 	
 	

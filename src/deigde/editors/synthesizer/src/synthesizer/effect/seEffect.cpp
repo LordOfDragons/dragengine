@@ -53,27 +53,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-seEffect::seEffect( deSynthesizerEffectVisitorIdentify::eEffectTypes type ) :
-pSynthesizer( NULL ),
-pParentSource( NULL ),
-pEngEffect( NULL ),
-pType( type ),
-pEnabled( true ),
-pStrength( 1.0f )
+seEffect::seEffect(deSynthesizerEffectVisitorIdentify::eEffectTypes type) :
+pSynthesizer(NULL),
+pParentSource(NULL),
+pEngEffect(NULL),
+pType(type),
+pEnabled(true),
+pStrength(1.0f)
 {
-	if( type < deSynthesizerEffectVisitorIdentify::eetStretch || type > deSynthesizerEffectVisitorIdentify::eetStretch ){
-		DETHROW( deeInvalidParam );
+	if(type < deSynthesizerEffectVisitorIdentify::eetStretch || type > deSynthesizerEffectVisitorIdentify::eetStretch){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-seEffect::seEffect( const seEffect &copy ) :
-pSynthesizer( NULL ),
-pParentSource( NULL ),
-pEngEffect( NULL ),
-pType( copy.pType ),
-pEnabled( copy.pEnabled ),
-pStrength( copy.pStrength ),
-pTargetStrength( copy.pTargetStrength ){
+seEffect::seEffect(const seEffect &copy) :
+pSynthesizer(NULL),
+pParentSource(NULL),
+pEngEffect(NULL),
+pType(copy.pType),
+pEnabled(copy.pEnabled),
+pStrength(copy.pStrength),
+pTargetStrength(copy.pTargetStrength){
 }
 
 seEffect::~seEffect(){
@@ -85,7 +85,7 @@ seEffect::~seEffect(){
 ///////////////
 
 seSynthesizer *seEffect::GetSynthesizer() const{
-	if( ! pParentSource ){
+	if(!pParentSource){
 		return NULL;
 	}
 	
@@ -94,54 +94,54 @@ seSynthesizer *seEffect::GetSynthesizer() const{
 
 
 
-void seEffect::SetEngineEffect( deSynthesizerEffect *engEffect ){
+void seEffect::SetEngineEffect(deSynthesizerEffect *engEffect){
 	pEngEffect = engEffect;
 }
 
-void seEffect::InitEngineEffect( deSynthesizerEffect *engEffect ) const{
-	if( ! engEffect ){
-		DETHROW( deeInvalidParam );
+void seEffect::InitEngineEffect(deSynthesizerEffect *engEffect) const{
+	if(!engEffect){
+		DETHROW(deeInvalidParam);
 	}
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	
-	engEffect->SetEnabled( pEnabled );
-	engEffect->SetStrength( pStrength );
+	engEffect->SetEnabled(pEnabled);
+	engEffect->SetStrength(pStrength);
 	
-	pTargetStrength.UpdateEngineTarget( synthesizer, engEffect->GetTargetStrength() );
+	pTargetStrength.UpdateEngineTarget(synthesizer, engEffect->GetTargetStrength());
 }
 
 
 
-void seEffect::SetParentSource( seSource *source ){
+void seEffect::SetParentSource(seSource *source){
 	pParentSource = source;
 }
 
 
 
-void seEffect::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void seEffect::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
 	pEnabled = enabled;
 	
-	if( pEngEffect ){
-		pEngEffect->SetEnabled( enabled );
+	if(pEngEffect){
+		pEngEffect->SetEnabled(enabled);
 	}
 	
 	NotifyEffectChanged();
 }
 
-void seEffect::SetStrength( float strength ){
-	if( fabsf( strength - pStrength ) <= FLOAT_SAFE_EPSILON ){
+void seEffect::SetStrength(float strength){
+	if(fabsf(strength - pStrength) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pStrength = strength;
 	
-	if( pEngEffect ){
-		pEngEffect->SetStrength( strength );
+	if(pEngEffect){
+		pEngEffect->SetStrength(strength);
 	}
 	
 	NotifyEffectChanged();
@@ -152,24 +152,24 @@ void seEffect::SetStrength( float strength ){
 void seEffect::UpdateTargets(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	
-	if( pEngEffect && synthesizer ){
-		pTargetStrength.UpdateEngineTarget( synthesizer, pEngEffect->GetTargetStrength() );
+	if(pEngEffect && synthesizer){
+		pTargetStrength.UpdateEngineTarget(synthesizer, pEngEffect->GetTargetStrength());
 	}
 }
 
-int seEffect::CountLinkUsage( seLink *link ) const{
+int seEffect::CountLinkUsage(seLink *link) const{
 	int usageCount = 0;
 	
-	if( pTargetStrength.HasLink( link ) ){
+	if(pTargetStrength.HasLink(link)){
 		usageCount++;
 	}
 	
 	return usageCount;
 }
 
-void seEffect::RemoveLinkFromTargets( seLink *link ){
-	if( pTargetStrength.HasLink( link ) ){
-		pTargetStrength.RemoveLink( link );
+void seEffect::RemoveLinkFromTargets(seLink *link){
+	if(pTargetStrength.HasLink(link)){
+		pTargetStrength.RemoveLink(link);
 	}
 }
 
@@ -179,30 +179,30 @@ void seEffect::RemoveLinksFromAllTargets(){
 
 
 
-void seEffect::ListLinks( seLinkList &list ){
-	pTargetStrength.AddLinksToList( list );
+void seEffect::ListLinks(seLinkList &list){
+	pTargetStrength.AddLinksToList(list);
 }
 
 
 
 void seEffect::NotifyEffectChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( ! synthesizer ){
+	if(!synthesizer){
 		return;
 	}
 	
 	UpdateTargets();
 	
-	if( pEngEffect ){
+	if(pEngEffect){
 		synthesizer->GetEngineSynthesizer()->NotifySourcesChanged();
 	}
 	
-	synthesizer->NotifyEffectChanged( pParentSource, this );
+	synthesizer->NotifyEffectChanged(pParentSource, this);
 }
 
 void seEffect::NotifyEngineOnlyEffectChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( ! synthesizer || ! pEngEffect ){
+	if(!synthesizer || !pEngEffect){
 		return;
 	}
 	
@@ -220,9 +220,9 @@ void seEffect::SynthesizerDirectoryChanged(){
 // Operators
 //////////////
 
-seEffect &seEffect::operator=( const seEffect &copy ){
-	SetStrength( copy.pStrength );
-	SetEnabled( copy.pEnabled );
+seEffect &seEffect::operator=(const seEffect &copy){
+	SetStrength(copy.pStrength);
+	SetEnabled(copy.pEnabled);
 	pTargetStrength = copy.pTargetStrength;
 	NotifyEffectChanged();
 	return *this;
@@ -233,12 +233,12 @@ seEffect &seEffect::operator=( const seEffect &copy ){
 // Helper
 ///////////
 
-seEffect *seEffect::CreateEffectFromType( deEngine *engine, deSynthesizerEffectVisitorIdentify::eEffectTypes type ){
-	switch( type ){
+seEffect *seEffect::CreateEffectFromType(deEngine *engine, deSynthesizerEffectVisitorIdentify::eEffectTypes type){
+	switch(type){
 	case deSynthesizerEffectVisitorIdentify::eetStretch:
 		return new seEffectStretch;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }

@@ -43,33 +43,33 @@
 ////////////////////////////
 
 aeRuleAnimationDifference::aeRuleAnimationDifference() :
-aeRule( deAnimatorRuleVisitorIdentify::ertAnimationDifference ),
-pMove1Name( "idle" ),
-pMove1Time( 0.0f ),
-pMove2Name( "idle" ),
-pMove2Time( 0.0f ),
-pUseSameMove( false ),
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pEnableVertexPositionSet( true )
+aeRule(deAnimatorRuleVisitorIdentify::ertAnimationDifference),
+pMove1Name("idle"),
+pMove1Time(0.0f),
+pMove2Name("idle"),
+pMove2Time(0.0f),
+pUseSameMove(false),
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(false),
+pEnableVertexPositionSet(true)
 {
-	SetName( "Animation Difference" );
+	SetName("Animation Difference");
 }
 
-aeRuleAnimationDifference::aeRuleAnimationDifference( const aeRuleAnimationDifference &copy ) :
-aeRule( copy ),
-pMove1Name( copy.pMove1Name ),
-pMove1Time( copy.pMove1Time ),
-pMove2Name( copy.pMove2Name ),
-pMove2Time( copy.pMove2Time ),
-pUseSameMove( copy.pUseSameMove ),
-pEnablePosition( copy.pEnablePosition ),
-pEnableOrientation( copy.pEnableOrientation ),
-pEnableSize( copy.pEnableSize ),
-pEnableVertexPositionSet( copy.pEnableVertexPositionSet ),
-pTargetLeadMoveTime( copy.pTargetLeadMoveTime ),
-pTargetRefMoveTime( copy.pTargetRefMoveTime ){
+aeRuleAnimationDifference::aeRuleAnimationDifference(const aeRuleAnimationDifference &copy) :
+aeRule(copy),
+pMove1Name(copy.pMove1Name),
+pMove1Time(copy.pMove1Time),
+pMove2Name(copy.pMove2Name),
+pMove2Time(copy.pMove2Time),
+pUseSameMove(copy.pUseSameMove),
+pEnablePosition(copy.pEnablePosition),
+pEnableOrientation(copy.pEnableOrientation),
+pEnableSize(copy.pEnableSize),
+pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
+pTargetLeadMoveTime(copy.pTargetLeadMoveTime),
+pTargetRefMoveTime(copy.pTargetRefMoveTime){
 }
 
 aeRuleAnimationDifference::~aeRuleAnimationDifference(){
@@ -80,90 +80,90 @@ aeRuleAnimationDifference::~aeRuleAnimationDifference(){
 // Management
 ///////////////
 
-void aeRuleAnimationDifference::SetLeadingMoveName( const char *moveName ){
+void aeRuleAnimationDifference::SetLeadingMoveName(const char *moveName){
 	pMove1Name = moveName;
 	
-	if( GetEngineRule() ){
-		( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetLeadingMoveName( moveName );
+	if(GetEngineRule()){
+		((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetLeadingMoveName(moveName);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleAnimationDifference::SetLeadingMoveTime( float moveTime ){
+void aeRuleAnimationDifference::SetLeadingMoveTime(float moveTime){
 	pMove1Time = moveTime;
 	
-	if( GetEngineRule() ){
-		( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetLeadingMoveTime( moveTime );
+	if(GetEngineRule()){
+		((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetLeadingMoveTime(moveTime);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleAnimationDifference::SetReferenceMoveName( const char *moveName ){
+void aeRuleAnimationDifference::SetReferenceMoveName(const char *moveName){
 	pMove2Name = moveName;
 	
-	if( GetEngineRule() ){
-		( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetReferenceMoveName( moveName );
+	if(GetEngineRule()){
+		((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetReferenceMoveName(moveName);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleAnimationDifference::SetReferenceMoveTime( float moveTime ){
+void aeRuleAnimationDifference::SetReferenceMoveTime(float moveTime){
 	pMove2Time = moveTime;
 	
-	if( GetEngineRule() ){
-		( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetReferenceMoveTime( moveTime );
+	if(GetEngineRule()){
+		((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetReferenceMoveTime(moveTime);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleAnimationDifference::SetUseSameMove( bool useSameMove ){
+void aeRuleAnimationDifference::SetUseSameMove(bool useSameMove){
 	pUseSameMove = useSameMove;
 	
-	if( GetEngineRule() ){
-		( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetUseSameMove( useSameMove );
+	if(GetEngineRule()){
+		((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetUseSameMove(useSameMove);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleAnimationDifference::SetEnablePosition( bool enabled ){
-	if( enabled != pEnablePosition ){
+void aeRuleAnimationDifference::SetEnablePosition(bool enabled){
+	if(enabled != pEnablePosition){
 		pEnablePosition = enabled;
 		
-		if( GetEngineRule() ){
-			( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetEnablePosition( enabled );
+		if(GetEngineRule()){
+			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetEnablePosition(enabled);
 			NotifyRuleChanged();
 		}
 	}
 }
 
-void aeRuleAnimationDifference::SetEnableOrientation( bool enabled ){
-	if( enabled != pEnableOrientation ){
+void aeRuleAnimationDifference::SetEnableOrientation(bool enabled){
+	if(enabled != pEnableOrientation){
 		pEnableOrientation = enabled;
 		
-		if( GetEngineRule() ){
-			( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetEnableOrientation( enabled );
+		if(GetEngineRule()){
+			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetEnableOrientation(enabled);
 			NotifyRuleChanged();
 		}
 	}
 }
 
-void aeRuleAnimationDifference::SetEnableSize( bool enabled ){
-	if( enabled != pEnableSize ){
+void aeRuleAnimationDifference::SetEnableSize(bool enabled){
+	if(enabled != pEnableSize){
 		pEnableSize = enabled;
 		
-		if( GetEngineRule() ){
-			( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetEnableSize( enabled );
+		if(GetEngineRule()){
+			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetEnableSize(enabled);
 			NotifyRuleChanged();
 		}
 	}
 }
 
-void aeRuleAnimationDifference::SetEnableVertexPositionSet( bool enabled ){
-	if( enabled != pEnableVertexPositionSet ){
+void aeRuleAnimationDifference::SetEnableVertexPositionSet(bool enabled){
+	if(enabled != pEnableVertexPositionSet){
 		pEnableVertexPositionSet = enabled;
 		
-		if( GetEngineRule() ){
-			( ( deAnimatorRuleAnimationDifference* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
+		if(GetEngineRule()){
+			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetEnableVertexPositionSet(enabled);
 			NotifyRuleChanged();
 		}
 	}
@@ -172,34 +172,34 @@ void aeRuleAnimationDifference::SetEnableVertexPositionSet( bool enabled ){
 
 
 void aeRuleAnimationDifference::UpdateTargets(){
-	deAnimatorRuleAnimationDifference *rule = ( deAnimatorRuleAnimationDifference* )GetEngineRule();
+	deAnimatorRuleAnimationDifference *rule = (deAnimatorRuleAnimationDifference*)GetEngineRule();
 	
 	aeRule::UpdateTargets();
 	
-	if( rule ){
-		pTargetLeadMoveTime.UpdateEngineTarget( GetAnimator(), rule->GetTargetLeadingMoveTime() );
-		pTargetRefMoveTime.UpdateEngineTarget( GetAnimator(), rule->GetTargetReferenceMoveTime() );
+	if(rule){
+		pTargetLeadMoveTime.UpdateEngineTarget(GetAnimator(), rule->GetTargetLeadingMoveTime());
+		pTargetRefMoveTime.UpdateEngineTarget(GetAnimator(), rule->GetTargetReferenceMoveTime());
 	}
 }
 
-int aeRuleAnimationDifference::CountLinkUsage( aeLink *link ) const{
-	int usageCount = aeRule::CountLinkUsage( link );
+int aeRuleAnimationDifference::CountLinkUsage(aeLink *link) const{
+	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if( pTargetLeadMoveTime.HasLink( link ) ) usageCount++;
-	if( pTargetRefMoveTime.HasLink( link ) ) usageCount++;
+	if(pTargetLeadMoveTime.HasLink(link)) usageCount++;
+	if(pTargetRefMoveTime.HasLink(link)) usageCount++;
 	
 	return usageCount;
 }
 
-void aeRuleAnimationDifference::RemoveLinkFromTargets( aeLink *link ){
-	aeRule::RemoveLinkFromTargets( link );
+void aeRuleAnimationDifference::RemoveLinkFromTargets(aeLink *link){
+	aeRule::RemoveLinkFromTargets(link);
 	
-	if( pTargetLeadMoveTime.HasLink( link ) ){
-		pTargetLeadMoveTime.RemoveLink( link );
+	if(pTargetLeadMoveTime.HasLink(link)){
+		pTargetLeadMoveTime.RemoveLink(link);
 	}
 	
-	if( pTargetRefMoveTime.HasLink( link ) ){
-		pTargetRefMoveTime.RemoveLink( link );
+	if(pTargetRefMoveTime.HasLink(link)){
+		pTargetRefMoveTime.RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -222,26 +222,26 @@ deAnimatorRule *aeRuleAnimationDifference::CreateEngineRule(){
 	try{
 		// create rule
 		engRule = new deAnimatorRuleAnimationDifference;
-		if( ! engRule ) DETHROW( deeOutOfMemory );
+		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
-		InitEngineRule( engRule );
+		InitEngineRule(engRule);
 		
-		engRule->SetLeadingMoveName( pMove1Name.GetString() );
-		engRule->SetLeadingMoveTime( pMove1Time );
-		engRule->SetReferenceMoveName( pMove2Name.GetString() );
-		engRule->SetReferenceMoveTime( pMove2Time );
-		engRule->SetUseSameMove( pUseSameMove );
-		engRule->SetEnablePosition( pEnablePosition );
-		engRule->SetEnableOrientation( pEnableOrientation );
-		engRule->SetEnableSize( pEnableSize );
-		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
+		engRule->SetLeadingMoveName(pMove1Name.GetString());
+		engRule->SetLeadingMoveTime(pMove1Time);
+		engRule->SetReferenceMoveName(pMove2Name.GetString());
+		engRule->SetReferenceMoveTime(pMove2Time);
+		engRule->SetUseSameMove(pUseSameMove);
+		engRule->SetEnablePosition(pEnablePosition);
+		engRule->SetEnableOrientation(pEnableOrientation);
+		engRule->SetEnableSize(pEnableSize);
+		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
 		
-		pTargetLeadMoveTime.UpdateEngineTarget( GetAnimator(), engRule->GetTargetLeadingMoveTime() );
-		pTargetRefMoveTime.UpdateEngineTarget( GetAnimator(), engRule->GetTargetReferenceMoveTime() );
+		pTargetLeadMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetLeadingMoveTime());
+		pTargetRefMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetReferenceMoveTime());
 		
-	}catch( const deException & ){
-		if( engRule ){
+	}catch(const deException &){
+		if(engRule){
 			engRule->FreeReference();
 		}
 		throw;
@@ -254,13 +254,13 @@ deAnimatorRule *aeRuleAnimationDifference::CreateEngineRule(){
 
 
 aeRule *aeRuleAnimationDifference::CreateCopy() const{
-	return new aeRuleAnimationDifference( *this );
+	return new aeRuleAnimationDifference(*this);
 }
 
-void aeRuleAnimationDifference::ListLinks( aeLinkList &list ){
-	aeRule::ListLinks( list );
-	pTargetLeadMoveTime.AddLinksToList( list );
-	pTargetRefMoveTime.AddLinksToList( list );
+void aeRuleAnimationDifference::ListLinks(aeLinkList &list){
+	aeRule::ListLinks(list);
+	pTargetLeadMoveTime.AddLinksToList(list);
+	pTargetRefMoveTime.AddLinksToList(list);
 }
 
 
@@ -268,18 +268,18 @@ void aeRuleAnimationDifference::ListLinks( aeLinkList &list ){
 // Operators
 //////////////
 
-aeRuleAnimationDifference &aeRuleAnimationDifference::operator=( const aeRuleAnimationDifference &copy ){
-	SetLeadingMoveName( copy.pMove1Name );
-	SetLeadingMoveTime( copy.pMove1Time );
-	SetReferenceMoveName( copy.pMove2Name );
-	SetReferenceMoveTime( copy.pMove2Time );
-	SetUseSameMove( copy.pUseSameMove );
-	SetEnablePosition( copy.pEnablePosition );
-	SetEnableOrientation( copy.pEnableOrientation );
-	SetEnableSize( copy.pEnableSize );
-	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
+aeRuleAnimationDifference &aeRuleAnimationDifference::operator=(const aeRuleAnimationDifference &copy){
+	SetLeadingMoveName(copy.pMove1Name);
+	SetLeadingMoveTime(copy.pMove1Time);
+	SetReferenceMoveName(copy.pMove2Name);
+	SetReferenceMoveTime(copy.pMove2Time);
+	SetUseSameMove(copy.pUseSameMove);
+	SetEnablePosition(copy.pEnablePosition);
+	SetEnableOrientation(copy.pEnableOrientation);
+	SetEnableSize(copy.pEnableSize);
+	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
 	pTargetLeadMoveTime = copy.pTargetLeadMoveTime;
 	pTargetRefMoveTime = copy.pTargetRefMoveTime;
-	aeRule::operator=( copy );
+	aeRule::operator=(copy);
 	return *this;
 }

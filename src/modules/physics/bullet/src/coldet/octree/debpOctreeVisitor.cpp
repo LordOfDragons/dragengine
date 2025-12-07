@@ -48,5 +48,5 @@ debpOctreeVisitor::~debpOctreeVisitor(){
 // Visiting
 /////////////
 
-void debpOctreeVisitor::VisitNode( debpOctree *node, int intersection ){
+void debpOctreeVisitor::VisitNode(debpOctree *node, int intersection){
 }

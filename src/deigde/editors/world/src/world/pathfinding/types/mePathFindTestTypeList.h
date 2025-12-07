@@ -52,25 +52,25 @@ public:
 	/** Retrieves the number of types. */
 	int GetCount() const;
 	/** Retrieves the type at the given position. */
-	mePathFindTestType *GetAt( int position ) const;
+	mePathFindTestType *GetAt(int position) const;
 	/** Retrieves the type with the given type value or NULL if not found. */
-	mePathFindTestType *GetWith( int typeNumber ) const;
+	mePathFindTestType *GetWith(int typeNumber) const;
 	/** Retrieves the index of the given type or -1 if not found. */
-	int IndexOf( mePathFindTestType *type ) const;
+	int IndexOf(mePathFindTestType *type) const;
 	/** Retrieves the index of the type with the given type number or -1 if not found. */
-	int IndexWith( int typeNumber ) const;
+	int IndexWith(int typeNumber) const;
 	/** Determines if the given type exists. */
-	bool Has( mePathFindTestType *type ) const;
+	bool Has(mePathFindTestType *type) const;
 	/** Determines if a type with the given type number exists. */
-	bool HasWith( int typeNumber ) const;
+	bool HasWith(int typeNumber) const;
 	/** Adds an type throwing an exception if already existing. */
-	void Add( mePathFindTestType *type );
+	void Add(mePathFindTestType *type);
 	/** Adds an type if not existing already. */
-	void AddIfAbsent( mePathFindTestType *type );
+	void AddIfAbsent(mePathFindTestType *type);
 	/** Removes an type throwing an exception if not existing. */
-	void Remove( mePathFindTestType *type );
+	void Remove(mePathFindTestType *type);
 	/** Removes an type if existing. */
-	void RemoveIfPresent( mePathFindTestType *type );
+	void RemoveIfPresent(mePathFindTestType *type);
 	/** Removes all types. */
 	void RemoveAll();
 	/*@}*/

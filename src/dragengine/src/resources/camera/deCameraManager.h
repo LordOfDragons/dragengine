@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new scene camera resource manager linked to the given engine. */
-	deCameraManager( deEngine *engine );
+	deCameraManager(deEngine *engine);
 	
 	/** \brief Clean up scene camera resource manager and reports leaking resources. */
 	~deCameraManager();
@@ -84,7 +84,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

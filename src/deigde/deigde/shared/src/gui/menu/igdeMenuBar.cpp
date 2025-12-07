@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMenuBar::igdeMenuBar( igdeEnvironment &environment ) :
-igdeContainer( environment ){
+igdeMenuBar::igdeMenuBar(igdeEnvironment &environment) :
+igdeContainer(environment){
 }
 
 igdeMenuBar::~igdeMenuBar(){
@@ -53,22 +53,22 @@ igdeMenuBar::~igdeMenuBar(){
 ///////////////
 
 void igdeMenuBar::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMenuBar * const native = igdeNativeMenuBar::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeMenuBar * const native = igdeNativeMenuBar::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeMenuBar::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeMenuBar* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeMenuBar*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }

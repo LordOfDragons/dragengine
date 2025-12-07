@@ -47,7 +47,7 @@ dealGameRunParams::dealGameRunParams(){
 }
 
 dealGameRunParams::~dealGameRunParams(){
-	SetGameProfile( NULL );
+	SetGameProfile(NULL);
 }
 
 
@@ -55,31 +55,31 @@ dealGameRunParams::~dealGameRunParams(){
 // Management
 ///////////////
 
-void dealGameRunParams::SetGameProfile( dealGameProfile *profile ){
-	if( profile != pGameProfile ){
-		if( pGameProfile ) pGameProfile->FreeReference();
+void dealGameRunParams::SetGameProfile(dealGameProfile *profile){
+	if(profile != pGameProfile){
+		if(pGameProfile) pGameProfile->FreeReference();
 		pGameProfile = profile;
-		if( profile ) profile->AddReference();
+		if(profile) profile->AddReference();
 	}
 }
 
-void dealGameRunParams::SetRunArguments( const char *arguments ){
-	if( ! arguments ) DETHROW( deeInvalidParam );
+void dealGameRunParams::SetRunArguments(const char *arguments){
+	if(!arguments) DETHROW(deeInvalidParam);
 	pRunArguments = arguments;
 }
 
-void dealGameRunParams::SetWidth( int width ){
-	if( width < 1 ) DETHROW( deeInvalidParam );
+void dealGameRunParams::SetWidth(int width){
+	if(width < 1) DETHROW(deeInvalidParam);
 	
 	pWidth = width;
 }
 
-void dealGameRunParams::SetHeight( int height ){
-	if( height < 1 ) DETHROW( deeInvalidParam );
+void dealGameRunParams::SetHeight(int height){
+	if(height < 1) DETHROW(deeInvalidParam);
 	
 	pHeight = height;
 }
 
-void dealGameRunParams::SetFullScreen( bool fullScreen ){
+void dealGameRunParams::SetFullScreen(bool fullScreen){
 	pFullScreen = fullScreen;
 }

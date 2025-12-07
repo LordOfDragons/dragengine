@@ -52,22 +52,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRPropField::deoglRPropField( deoglRenderThread &renderThread) :
-pRenderThread( renderThread ),
+deoglRPropField::deoglRPropField(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pParentWorld( NULL ),
+pParentWorld(NULL),
 
-pTypesRequirePrepareForRender( true ),
+pTypesRequirePrepareForRender(true),
 
-pWorldMarkedRemove( false ),
-pLLPrepareForRenderWorld( this )
+pWorldMarkedRemove(false),
+pLLPrepareForRenderWorld(this)
 {
-	LEAK_CHECK_CREATE( renderThread, PropField );
+	LEAK_CHECK_CREATE(renderThread, PropField);
 }
 
 deoglRPropField::~deoglRPropField(){
-	LEAK_CHECK_FREE( pRenderThread, PropField );
-	SetParentWorld( nullptr );
+	LEAK_CHECK_FREE(pRenderThread, PropField);
+	SetParentWorld(nullptr);
 }
 
 
@@ -75,49 +75,49 @@ deoglRPropField::~deoglRPropField(){
 // Management
 ///////////////
 
-void deoglRPropField::SetParentWorld( deoglRWorld *world ){
-	if( world == pParentWorld ){
+void deoglRPropField::SetParentWorld(deoglRWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
 	const int count = pTypes.GetCount();
 	int i;
 	
-	if( pParentWorld ){
-		for( i=0; i<count; i++ ){
-			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->RemoveFromWorldCompute();
+	if(pParentWorld){
+		for(i=0; i<count; i++){
+			((deoglRPropFieldType*)pTypes.GetAt(i))->RemoveFromWorldCompute();
 		}
 	}
 	
 	pParentWorld = world;
 	
-	if( world ){
+	if(world){
 		deoglWorldCompute &worldCompute = world->GetCompute();
-		for( i=0; i<count; i++ ){
-			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->AddToWorldCompute( worldCompute );
+		for(i=0; i<count; i++){
+			((deoglRPropFieldType*)pTypes.GetAt(i))->AddToWorldCompute(worldCompute);
 		}
 	}
 }
 
 
 
-void deoglRPropField::SetPosition( const decDVector &position ){
+void deoglRPropField::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
 
 
-void deoglRPropField::UpdateExtends( const dePropField &propField ){
+void deoglRPropField::UpdateExtends(const dePropField &propField){
 	const int typeCount = pTypes.GetCount();
 	decVector minExtend;
 	decVector maxExtend;
 	int t, i;
 	
-	for( t=0; t<typeCount; t++ ){
-		const dePropFieldType &engType = *propField.GetTypeAt( t );
-		const deoglRPropFieldType &type = GetTypeAt( t );
+	for(t=0; t<typeCount; t++){
+		const dePropFieldType &engType = *propField.GetTypeAt(t);
+		const deoglRPropFieldType &type = GetTypeAt(t);
 		
-		if( ! type.GetModel() || ! engType.GetSkin() ){
+		if(!type.GetModel() || !engType.GetSkin()){
 			continue;
 		}
 		
@@ -125,41 +125,41 @@ void deoglRPropField::UpdateExtends( const dePropField &propField ){
 		
 		float modelRadius = modelExtends.minimum.Length();
 		float mr2 = modelExtends.maximum.Length();
-		if( mr2 > modelRadius ){
+		if(mr2 > modelRadius){
 			modelRadius = mr2;
 		}
 		
 		const int instanceCount = engType.GetInstanceCount();
 		dePropFieldInstance * const engInstances = engType.GetInstances();
 		
-		for( i=0; i<instanceCount; i++ ){
-			const decVector &instancePosition = engInstances[ i ].GetPosition();
-			const float instanceRadius = modelRadius * engInstances[ i ].GetScaling();
-			if( instanceRadius < 1e-5f ){
+		for(i=0; i<instanceCount; i++){
+			const decVector &instancePosition = engInstances[i].GetPosition();
+			const float instanceRadius = modelRadius * engInstances[i].GetScaling();
+			if(instanceRadius < 1e-5f){
 				continue;
 			}
 			
-			minExtend.x = decMath::min( minExtend.x, instancePosition.x - instanceRadius );
-			minExtend.y = decMath::min( minExtend.y, instancePosition.y - instanceRadius );
-			minExtend.z = decMath::min( minExtend.z, instancePosition.z - instanceRadius );
+			minExtend.x = decMath::min(minExtend.x, instancePosition.x - instanceRadius);
+			minExtend.y = decMath::min(minExtend.y, instancePosition.y - instanceRadius);
+			minExtend.z = decMath::min(minExtend.z, instancePosition.z - instanceRadius);
 			
-			maxExtend.x = decMath::max( maxExtend.x, instancePosition.x + instanceRadius );
-			maxExtend.y = decMath::max( maxExtend.y, instancePosition.y + instanceRadius );
-			maxExtend.z = decMath::max( maxExtend.z, instancePosition.z + instanceRadius );
+			maxExtend.x = decMath::max(maxExtend.x, instancePosition.x + instanceRadius);
+			maxExtend.y = decMath::max(maxExtend.y, instancePosition.y + instanceRadius);
+			maxExtend.z = decMath::max(maxExtend.z, instancePosition.z + instanceRadius);
 		}
 	}
 	
-	pMinExtend.x = pPosition.x + ( double )minExtend.x - 0.01;
-	pMinExtend.y = pPosition.y + ( double )minExtend.y - 0.01;
-	pMinExtend.z = pPosition.z + ( double )minExtend.z - 0.01;
+	pMinExtend.x = pPosition.x + (double)minExtend.x - 0.01;
+	pMinExtend.y = pPosition.y + (double)minExtend.y - 0.01;
+	pMinExtend.z = pPosition.z + (double)minExtend.z - 0.01;
 	
-	pMaxExtend.x = pPosition.x + ( double )maxExtend.x + 0.01;
-	pMaxExtend.y = pPosition.y + ( double )maxExtend.y + 0.01;
-	pMaxExtend.z = pPosition.z + ( double )maxExtend.z + 0.01;
+	pMaxExtend.x = pPosition.x + (double)maxExtend.x + 0.01;
+	pMaxExtend.y = pPosition.y + (double)maxExtend.y + 0.01;
+	pMaxExtend.z = pPosition.z + (double)maxExtend.z + 0.01;
 	
-	if( pParentWorld ){
-		for( i=0; i<typeCount; i++ ){
-			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->UpdateWorldCompute();
+	if(pParentWorld){
+		for(i=0; i<typeCount; i++){
+			((deoglRPropFieldType*)pTypes.GetAt(i))->UpdateWorldCompute();
 		}
 	}
 	
@@ -171,14 +171,14 @@ void deoglRPropField::UpdateExtends( const dePropField &propField ){
 
 
 void deoglRPropField::PrepareForRender(){
-	if( pTypesRequirePrepareForRender ){
+	if(pTypesRequirePrepareForRender){
 		pTypesRequirePrepareForRender = false;
 		
 		const int count = pTypes.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->PrepareForRender();
+		for(i=0; i<count; i++){
+			((deoglRPropFieldType*)pTypes.GetAt(i))->PrepareForRender();
 		}
 	}
 }
@@ -186,7 +186,7 @@ void deoglRPropField::PrepareForRender(){
 void deoglRPropField::PrepareForRenderRender(){
 }
 
-void deoglRPropField::PrepareInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix ){
+void deoglRPropField::PrepareInstances(const decDVector &cameraPosition, const decDMatrix &cameraMatrix){
 	// NOTE this could be optimized since the instances and their bend state are different
 	// data objects. if the instances change their base matrix can be calculated and stored
 	// aside. then the bending state can be applied in the shader later on. currently though
@@ -200,13 +200,13 @@ void deoglRPropField::PrepareInstances( const decDVector &cameraPosition, const 
 //pOgl->LogInfoFormat( "tc=%i is=%i", pTypeCount, pInstanceSize );
 	
 /*	if( pLODLevel > 0 ){
-		for( t=0; t<pTypeCount; t++ ){
-			pTypes[ t ]->UpdateInstances( cameraPosition, cameraMatrix );
+		for(t=0; t<pTypeCount; t++){
+			pTypes[t]->UpdateInstances(cameraPosition, cameraMatrix);
 		}
 		
 	}else{
-		for( t=0; t<pTypeCount; t++ ){
-			pTypes[ t ]->RemoveAllClusters();
+		for(t=0; t<pTypeCount; t++){
+			pTypes[t]->RemoveAllClusters();
 		}
 	}*/
 }
@@ -217,19 +217,19 @@ int deoglRPropField::GetTypeCount() const{
 	return pTypes.GetCount();
 }
 
-deoglRPropFieldType &deoglRPropField::GetTypeAt( int index ) const{
-	return *( ( deoglRPropFieldType* )pTypes.GetAt( index ) );
+deoglRPropFieldType &deoglRPropField::GetTypeAt(int index) const{
+	return *((deoglRPropFieldType*)pTypes.GetAt(index));
 }
 
 void deoglRPropField::RemoveAllTypes(){
 	pTypes.RemoveAll();
 }
 
-void deoglRPropField::AddType( deoglRPropFieldType *type ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+void deoglRPropField::AddType(deoglRPropFieldType *type){
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
-	pTypes.Add( type );
+	pTypes.Add(type);
 	TypeRequiresPrepareForRender();
 }
 
@@ -244,12 +244,12 @@ void deoglRPropField::WorldReferencePointChanged(){
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->WorldReferencePointChanged();
+	for(i=0; i<count; i++){
+		((deoglRPropFieldType*)pTypes.GetAt(i))->WorldReferencePointChanged();
 	}
 }
 
-void deoglRPropField::SetWorldMarkedRemove( bool marked ){
+void deoglRPropField::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
@@ -259,7 +259,7 @@ void deoglRPropField::SetWorldMarkedRemove( bool marked ){
 //////////////////////
 
 void deoglRPropField::pRequiresPrepareForRender(){
-	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
-		pParentWorld->AddPrepareForRenderPropField( this );
+	if(!pLLPrepareForRenderWorld.GetList() && pParentWorld){
+		pParentWorld->AddPrepareForRenderPropField(this);
 	}
 }

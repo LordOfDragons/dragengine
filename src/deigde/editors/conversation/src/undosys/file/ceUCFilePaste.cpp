@@ -40,43 +40,43 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFilePaste::ceUCFilePaste( ceConversation *conversation, const ceConversationFileList &files ) :
-pConversation( NULL ){
-	if( ! conversation || files.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+ceUCFilePaste::ceUCFilePaste(ceConversation *conversation, const ceConversationFileList &files) :
+pConversation(NULL){
+	if(!conversation || files.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = files.GetCount();
 	ceConversationFile *newFile = NULL;
 	int i;
 	
-	if( count == 1 ){
-		SetShortInfo( "Paste file" );
+	if(count == 1){
+		SetShortInfo("Paste file");
 		
 	}else{
-		SetShortInfo( "Paste files" );
+		SetShortInfo("Paste files");
 	}
 	
 	try{
-		for( i=0; i<count; i++ ){
-			newFile = new ceConversationFile( *files.GetAt( i ) );
-			decString fileID( newFile->GetID() );
+		for(i=0; i<count; i++){
+			newFile = new ceConversationFile(*files.GetAt(i));
+			decString fileID(newFile->GetID());
 			int newNameIndex = 1;
 			
-			while( conversation->GetFileList().HasWithID( fileID ) ){
+			while(conversation->GetFileList().HasWithID(fileID)){
 				newNameIndex++;
-				fileID.Format( "%s_%i", newFile->GetID().GetString(), newNameIndex );
+				fileID.Format("%s_%i", newFile->GetID().GetString(), newNameIndex);
 			}
 			
-			newFile->SetID( fileID );
+			newFile->SetID(fileID);
 			
-			pFiles.Add( newFile );
+			pFiles.Add(newFile);
 			newFile->FreeReference();
 			newFile = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( newFile ){
+	}catch(const deException &){
+		if(newFile){
 			newFile->FreeReference();
 		}
 		throw;
@@ -88,7 +88,7 @@ pConversation( NULL ){
 
 ceUCFilePaste::~ceUCFilePaste(){
 	pFiles.RemoveAll();
-	if( pConversation ){
+	if(pConversation){
 		pConversation->FreeReference();
 	}
 }
@@ -102,20 +102,20 @@ void ceUCFilePaste::Undo(){
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pConversation->RemoveFile( pFiles.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pConversation->RemoveFile(pFiles.GetAt(i));
 	}
 }
 
 void ceUCFilePaste::Redo(){
 	const int count = pFiles.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		pConversation->AddFile( pFiles.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pConversation->AddFile(pFiles.GetAt(i));
 	}
-	pConversation->SetActiveFile( pFiles.GetAt( count - 1 ) );
+	pConversation->SetActiveFile(pFiles.GetAt(count - 1));
 }

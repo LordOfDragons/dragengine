@@ -44,7 +44,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *OGGCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *OGGCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -54,13 +54,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *OGGCreateModule( deLoadableModule *loadableMo
 // Entry Function
 ///////////////////
 
-deBaseModule *OGGCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *OGGCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deSoundOGG( *loadableModule );
+		module = new deSoundOGG(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -72,41 +72,41 @@ deBaseModule *OGGCreateModule( deLoadableModule *loadableModule ){
 // Callbacks
 //////////////
 
-static size_t fOggRead( void *ptr, size_t size, size_t nmemb, void *datasource ){
-	decBaseFileReader *reader = ( decBaseFileReader* )datasource;
+static size_t fOggRead(void *ptr, size_t size, size_t nmemb, void *datasource){
+	decBaseFileReader *reader = (decBaseFileReader*)datasource;
 	int position = reader->GetPosition();
-	int readSize = ( int )( size * nmemb );
+	int readSize = (int)(size * nmemb);
 	int remaining = reader->GetLength() - position;
 	
-	if( readSize > remaining ) readSize = remaining;
+	if(readSize > remaining) readSize = remaining;
 	
-	reader->Read( ptr, readSize );
+	reader->Read(ptr, readSize);
 	
 	return readSize;
 }
 
-static int fOggSeek( void *datasource, ogg_int64_t offset, int whence ){
-	decBaseFileReader *reader = ( decBaseFileReader* )datasource;
+static int fOggSeek(void *datasource, ogg_int64_t offset, int whence){
+	decBaseFileReader *reader = (decBaseFileReader*)datasource;
 	
-	if( whence == SEEK_SET ){
-		reader->SetPosition( ( int )offset );
+	if(whence == SEEK_SET){
+		reader->SetPosition((int)offset);
 		
-	}else if( whence == SEEK_CUR ){
-		reader->MovePosition( ( int )offset );
+	}else if(whence == SEEK_CUR){
+		reader->MovePosition((int)offset);
 		
-	}else if( whence == SEEK_END ){
-		reader->SetPositionEnd( ( int )offset );
+	}else if(whence == SEEK_END){
+		reader->SetPositionEnd((int)offset);
 	}
 	
 	return 0;
 }
 
-static int fOggClose( void *datasource ){
+static int fOggClose(void *datasource){
 	return 0;
 }
 
-static long fOggTell( void *datasource ){
-	decBaseFileReader *reader = ( decBaseFileReader* )datasource;
+static long fOggTell(void *datasource){
+	decBaseFileReader *reader = (decBaseFileReader*)datasource;
 	
 	return reader->GetPosition();
 }
@@ -119,8 +119,8 @@ static long fOggTell( void *datasource ){
 // Constructor, destructor
 ////////////////////////////
 
-deSoundOGG::deSoundOGG( deLoadableModule &loadableModule ) :
-deBaseSoundModule( loadableModule ){
+deSoundOGG::deSoundOGG(deLoadableModule &loadableModule) :
+deBaseSoundModule(loadableModule){
 }
 
 deSoundOGG::~deSoundOGG(){
@@ -131,7 +131,7 @@ deSoundOGG::~deSoundOGG(){
 // Management
 ///////////////
 
-void deSoundOGG::InitLoadSound( decBaseFileReader &file, deBaseSoundInfo &info ){
+void deSoundOGG::InitLoadSound(decBaseFileReader &file, deBaseSoundInfo &info){
 	bool needsCloseFile = false;
 	OggVorbis_File oggFile;
 	ov_callbacks callbacks;
@@ -146,53 +146,53 @@ void deSoundOGG::InitLoadSound( decBaseFileReader &file, deBaseSoundInfo &info )
 		callbacks.tell_func = fOggTell;
 		
 		// open the file
-		if( ov_open_callbacks( &file, &oggFile, NULL, 0, callbacks ) < 0 ){
-			LogError( "Invalid OGG file." );
-			DETHROW( deeInvalidParam );
+		if(ov_open_callbacks(&file, &oggFile, NULL, 0, callbacks) < 0){
+			LogError("Invalid OGG file.");
+			DETHROW(deeInvalidParam);
 		}
 		needsCloseFile = true;
 		
 		// fetch the file properties
-		fileInfos = ov_info( &oggFile, -1 );
-		if( ! fileInfos ){
-			LogError( "Could not get infos from OGG file." );
-			DETHROW( deeInvalidParam );
+		fileInfos = ov_info(&oggFile, -1);
+		if(!fileInfos){
+			LogError("Could not get infos from OGG file.");
+			DETHROW(deeInvalidParam);
 		}
 		
-		if( fileInfos->channels < 1 ){
-			LogErrorFormat( "Invalid channel count %i.", fileInfos->channels );
-			DETHROW( deeInvalidParam );
+		if(fileInfos->channels < 1){
+			LogErrorFormat("Invalid channel count %i.", fileInfos->channels);
+			DETHROW(deeInvalidParam);
 		}
 		
-		sampleCount = ( int )ov_pcm_total( &oggFile, -1 );
-		if( sampleCount == OV_EINVAL ){
-			LogError( "Could not determine the number of samples in the sound file." );
-			DETHROW( deeInvalidParam );
+		sampleCount = (int)ov_pcm_total(&oggFile, -1);
+		if(sampleCount == OV_EINVAL){
+			LogError("Could not determine the number of samples in the sound file.");
+			DETHROW(deeInvalidParam);
 		}
 		
 		// store information
-		info.SetBytesPerSample( 2 );
-		info.SetSampleRate( fileInfos->rate );
-		info.SetSampleCount( sampleCount );
-		info.SetChannelCount( fileInfos->channels );
+		info.SetBytesPerSample(2);
+		info.SetSampleRate(fileInfos->rate);
+		info.SetSampleCount(sampleCount);
+		info.SetChannelCount(fileInfos->channels);
 		
 		// close the file
-		ov_clear( &oggFile );
+		ov_clear(&oggFile);
 		
-	}catch( const deException & ){
-		if( needsCloseFile ){
-			ov_clear( &oggFile );
+	}catch(const deException &){
+		if(needsCloseFile){
+			ov_clear(&oggFile);
 		}
 		throw;
 	}
 }
 
-void deSoundOGG::SaveSound( decBaseFileWriter &file, const deSound &sound ){
+void deSoundOGG::SaveSound(decBaseFileWriter &file, const deSound &sound){
 	// not supported yet
 }
 
-deBaseSoundDecoder *deSoundOGG::CreateDecoder( decBaseFileReader *reader ){
-	return new deoggSoundDecoder( this, reader );
+deBaseSoundDecoder *deSoundOGG::CreateDecoder(decBaseFileReader *reader){
+	return new deoggSoundDecoder(this, reader);
 }
 
 #ifdef WITH_INTERNAL_MODULE

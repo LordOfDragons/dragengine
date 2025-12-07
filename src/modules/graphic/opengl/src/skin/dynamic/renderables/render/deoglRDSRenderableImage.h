@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin image renderable. */
-	deoglRDSRenderableImage( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableImage(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin image renderable. */
 	virtual ~deoglRDSRenderableImage();
@@ -56,10 +56,10 @@ public:
 	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image. */
-	void SetImage( deoglRImage *image );
+	void SetImage(deoglRImage *image);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	feWPUndoHistory( igdeEnvironment &environment );
+	feWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -62,7 +62,7 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	/*@}*/
 };
 

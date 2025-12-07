@@ -87,13 +87,13 @@ public:
 	inline dedaiSpaceGrid *GetGrid() const{ return pGrid; }
 	
 	/** \brief Set parent grid. */
-	void SetGrid( dedaiSpaceGrid *grid );
+	void SetGrid(dedaiSpaceGrid *grid);
 	
 	/** \brief Vertex index. */
 	inline unsigned short GetIndex() const{ return pIndex; }
 	
 	/** \brief Set vertex index. */
-	void SetIndex( unsigned short index );
+	void SetIndex(unsigned short index);
 	
 	
 	
@@ -101,31 +101,31 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Index of the first edge. */
 	inline unsigned short GetFirstEdge() const{ return pFirstEdge; }
 	
 	/** \brief Set index of the first edge. */
-	void SetFirstEdge( unsigned short first );
+	void SetFirstEdge(unsigned short first);
 	
 	/** \brief Number of edges. */
 	inline unsigned short GetEdgeCount() const{ return pEdgeCount; }
 	
 	/** \brief Set number of edges. */
-	void SetEdgeCount( unsigned short count );
+	void SetEdgeCount(unsigned short count);
 	
 	/** \brief Index of the first link. */
 	inline unsigned short GetFirstLink() const{ return pFirstLink; }
 	
 	/** \brief Set index of the first link. */
-	void SetFirstLink( unsigned short first );
+	void SetFirstLink(unsigned short first);
 	
 	/** \brief Number of links. */
 	inline unsigned short GetLinkCount() const{ return pLinkCount; }
 	
 	/** \brief Set number of links. */
-	void SetLinkCount( unsigned short count );
+	void SetLinkCount(unsigned short count);
 	
 	
 	
@@ -133,7 +133,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if vertex is enabled for path finding. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -141,31 +141,31 @@ public:
 	inline dedaiSpaceGridVertex *GetPathParent() const{ return pPathParent; }
 	
 	/** \brief Set path parent vertex or \em NULL. */
-	void SetPathParent( dedaiSpaceGridVertex *face );
+	void SetPathParent(dedaiSpaceGridVertex *face);
 	
 	/** \brief F path cost. */
 	inline float GetPathCostF() const{ return pPathCostF; }
 	
 	/** \brief Set F path cost. */
-	void SetPathCostF( float cost );
+	void SetPathCostF(float cost);
 	
 	/** \brief G path cost. */
 	inline float GetPathCostG() const{ return pPathCostG; }
 	
 	/** \brief Set G path cost. */
-	void SetPathCostG( float cost );
+	void SetPathCostG(float cost);
 	
 	/** \brief H path cost. */
 	inline float GetPathCostH() const{ return pPathCostH; }
 	
 	/** \brief Set H path cost. */
-	void SetPathCostH( float cost );
+	void SetPathCostH(float cost);
 	
 	/** \brief Path type. */
 	inline int GetPathType() const{ return pPathType; }
 	
 	/** \brief Set path type. */
-	void SetPathType( ePathFindingTypes type );
+	void SetPathType(ePathFindingTypes type);
 	
 	/** \brief Clear path information. */
 	void ClearPath();

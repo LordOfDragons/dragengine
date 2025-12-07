@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create view editor. */
-	meViewEditorSelect( meView3D &view );
+	meViewEditorSelect(meView3D &view);
 	
 	/** Clean up view editor. */
 	~meViewEditorSelect() override;
@@ -77,31 +77,31 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** \brief A key on the keyboard has been pressed. Return true if handled. */
-	bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control ) override;
+	bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control) override;
 	
 	/** \brief A key on the keyboard has been released. Return true if handled. */
-	bool OnKeyRelease( deInputEvent::eKeyCodes key, bool shift, bool control ) override;
+	bool OnKeyRelease(deInputEvent::eKeyCodes key, bool shift, bool control) override;
 	
 	/** View size changed. */
 	void OnResize() override;
 	
 	/** The left mouse button has been pressed. Return true if handled. */
-	void OnLeftMouseButtonPress( int x, int y, bool shift, bool control ) override;
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	
 	/** The left mouse button has been released. Return true if handled. */
-	void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ) override;
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	
 	/** The right mouse button has been pressed. Return true if handled. */
-	void OnRightMouseButtonPress( int x, int y, bool shift, bool control ) override;
+	void OnRightMouseButtonPress(int x, int y, bool shift, bool control) override;
 	
 	/** The right mouse button has been released. Return true if handled. */
-	void OnRightMouseButtonRelease( int x, int y, bool shift, bool control ) override;
+	void OnRightMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	
 	/** The mouse has been moved. Return true if handled. */
-	void OnMouseMove( int x, int y, bool shift, bool control ) override;
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	
 	/** The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
-	void OnMouseWheel( int steps, bool shift, bool control ) override;
+	void OnMouseWheel(int steps, bool shift, bool control) override;
 	
 	/** The mouse left view. */
 	void OnMousLeave() override;

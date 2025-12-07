@@ -229,7 +229,7 @@ void delLauncher::pLocatePath(){
 	decPath path;
 
 #ifdef OS_W32
-	TCHAR value[ 256 ];
+	TCHAR value[256];
 #else
 	const char *value;
 #endif
@@ -246,7 +246,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_SYS_CONFIG", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_SYS_CONFIG", &value[0], sizeof(value))){
 		pPathConfigSystem = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -306,7 +306,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_USER_CONFIG", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_USER_CONFIG", &value[0], sizeof(value))){
 		pPathConfigUser = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -331,7 +331,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_SHARES", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_SHARES", &value[0], sizeof(value))){
 		pPathShares = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -354,7 +354,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_GAMES", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_GAMES", &value[0], sizeof(value))){
 		pPathGames = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -378,7 +378,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_LOGS", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_LOGS", &value[0], sizeof(value))){
 		pPathLogs = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -403,12 +403,12 @@ void delLauncher::pInitVFS(){
 	// add the configuration containers. the containers are added in separate locations
 	// as we want to read the config files one by one and mapping both containers to
 	// the same path would shadow the system config files.
-	if(! pPathConfigSystem.IsEmpty()){
+	if(!pPathConfigSystem.IsEmpty()){
 		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/config/system"),
 			decPath::CreatePathNative(pPathConfigSystem), true));
 	}
 	
-	if(! pPathConfigUser.IsEmpty()){
+	if(!pPathConfigUser.IsEmpty()){
 		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/config/user"),
 			decPath::CreatePathNative(pPathConfigUser), false));
 	}
@@ -417,13 +417,13 @@ void delLauncher::pInitVFS(){
 	// directory. a user one could be layered on top of it though if required later on.
 	// the shares container is set to read-write as the launcher has to potentiall install
 	// new games or uninstall them
-	if(! pPathShares.IsEmpty()){
+	if(!pPathShares.IsEmpty()){
 		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/data"),
 			decPath::CreatePathNative(pPathShares), false));
 	}
 	
 	// add the logs directory. this is read-write
-	if(! pPathLogs.IsEmpty()){
+	if(!pPathLogs.IsEmpty()){
 		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/logs"),
 			decPath::CreatePathNative(pPathLogs), false));
 	}

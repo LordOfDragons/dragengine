@@ -45,7 +45,7 @@ debpPointSieveBucket::debpPointSieveBucket(){
 }
 
 debpPointSieveBucket::~debpPointSieveBucket(){
-	if( pIndices ) delete [] pIndices;
+	if(pIndices) delete [] pIndices;
 }
 
 
@@ -53,26 +53,26 @@ debpPointSieveBucket::~debpPointSieveBucket(){
 // Management
 ///////////////
 
-int debpPointSieveBucket::GetIndexAt( int position ) const{
-	if( position < 0 || position >= pIndexCount ) DETHROW( deeInvalidParam );
+int debpPointSieveBucket::GetIndexAt(int position) const{
+	if(position < 0 || position >= pIndexCount) DETHROW(deeInvalidParam);
 	
-	return pIndices[ position ];
+	return pIndices[position];
 }
 
-void debpPointSieveBucket::AddIndex( int index ){
-	if( pIndexCount == pIndexSize ){
+void debpPointSieveBucket::AddIndex(int index){
+	if(pIndexCount == pIndexSize){
 		int newSize = pIndexSize * 3 / 2 + 1;
-		int *newArray = new int[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pIndices ){
-			memcpy( newArray, pIndices, sizeof( int ) * pIndexSize );
+		int *newArray = new int[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pIndices){
+			memcpy(newArray, pIndices, sizeof(int) * pIndexSize);
 			delete [] pIndices;
 		}
 		pIndices = newArray;
 		pIndexSize = newSize;
 	}
 	
-	pIndices[ pIndexCount++ ] = index;
+	pIndices[pIndexCount++] = index;
 }
 
 void debpPointSieveBucket::RemoveAllIndices(){

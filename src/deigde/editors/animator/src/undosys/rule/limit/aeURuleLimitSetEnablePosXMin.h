@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetEnablePosXMin( aeRuleLimit *rule );
+	aeURuleLimitSetEnablePosXMin(aeRuleLimit *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleLimitSetEnablePosXMin();

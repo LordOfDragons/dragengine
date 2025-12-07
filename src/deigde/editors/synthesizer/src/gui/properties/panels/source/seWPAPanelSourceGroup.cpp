@@ -57,18 +57,18 @@ protected:
 	seWPAPanelSourceGroup &pPanel;
 	
 public:
-	cComboApplicationType( seWPAPanelSourceGroup &panel ) : pPanel( panel ){ }
+	cComboApplicationType(seWPAPanelSourceGroup &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		seSourceGroup * const source = ( seSourceGroup* )pPanel.GetSource();
-		if( ! source || ! comboBox->GetSelectedItem() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		seSourceGroup * const source = (seSourceGroup*)pPanel.GetSource();
+		if(!source || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
 		const deSynthesizerSourceGroup::eApplicationTypes type =
-			( deSynthesizerSourceGroup::eApplicationTypes )( intptr_t )
+			(deSynthesizerSourceGroup::eApplicationTypes)(intptr_t)
 			comboBox->GetSelectedItem()->GetData();
-		if( source->GetApplicationType() == type ){
+		if(source->GetApplicationType() == type){
 			return;
 		}
 		
@@ -87,21 +87,21 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPAPanelSourceGroup::seWPAPanelSourceGroup( seWPSource &wpSource ) :
-seWPAPanelSource( wpSource, deSynthesizerSourceVisitorIdentify::estGroup )
+seWPAPanelSourceGroup::seWPAPanelSourceGroup(seWPSource &wpSource) :
+seWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estGroup)
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Group:" );
-	helper.ComboBox( groupBox, "Group:", "Sets how child sources are process in the the group.\n"
+	helper.GroupBox(*this, groupBox, "Group:");
+	helper.ComboBox(groupBox, "Group:", "Sets how child sources are process in the the group.\n"
 		"Apply all sources (all) or blend between two selected sources using the select target (select).",
-		pCBApplicationType, new cComboApplicationType( *this ) );
-	pCBApplicationType->AddItem( "All", NULL, ( void* )( intptr_t )deSynthesizerSourceGroup::eatAll );
-	pCBApplicationType->AddItem( "Select", NULL, ( void* )( intptr_t )deSynthesizerSourceGroup::eatSelect );
-	pCBApplicationType->AddItem( "Solo", NULL, ( void* )( intptr_t )deSynthesizerSourceGroup::eatSolo );
+		pCBApplicationType, new cComboApplicationType(*this));
+	pCBApplicationType->AddItem("All", NULL, (void*)(intptr_t)deSynthesizerSourceGroup::eatAll);
+	pCBApplicationType->AddItem("Select", NULL, (void*)(intptr_t)deSynthesizerSourceGroup::eatSelect);
+	pCBApplicationType->AddItem("Solo", NULL, (void*)(intptr_t)deSynthesizerSourceGroup::eatSolo);
 }
 
 seWPAPanelSourceGroup::~seWPAPanelSourceGroup(){
@@ -115,23 +115,23 @@ seWPAPanelSourceGroup::~seWPAPanelSourceGroup(){
 void seWPAPanelSourceGroup::UpdateSource(){
 	seWPAPanelSource::UpdateSource();
 	
-	const seSourceGroup * const source = ( seSourceGroup* )GetSource();
-	if( source ){
-		pCBApplicationType->SetSelectionWithData( ( void* )( intptr_t )source->GetApplicationType() );
+	const seSourceGroup * const source = (seSourceGroup*)GetSource();
+	if(source){
+		pCBApplicationType->SetSelectionWithData((void*)(intptr_t)source->GetApplicationType());
 		
 	}else{
-		pCBApplicationType->SetSelectionWithData( ( void* )( intptr_t )deSynthesizerSourceGroup::eatAll );
+		pCBApplicationType->SetSelectionWithData((void*)(intptr_t)deSynthesizerSourceGroup::eatAll);
 	}
 	
-	pCBApplicationType->SetEnabled( source );
+	pCBApplicationType->SetEnabled(source);
 }
 
 void seWPAPanelSourceGroup::UpdateTargetList(){
-	seSourceGroup * const source = ( seSourceGroup* )GetSource();
+	seSourceGroup * const source = (seSourceGroup*)GetSource();
 	
 	seWPAPanelSource::UpdateTargetList();
 	
-	if( source ){
-		AddTarget( "Select", &source->GetTargetSelect() );
+	if(source){
+		AddTarget("Select", &source->GetTargetSelect());
 	}
 }

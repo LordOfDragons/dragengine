@@ -83,21 +83,21 @@ protected:
 	seWPAPanelSource &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPAPanelSource &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPAPanelSource &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seSource * const source = pPanel.GetSource();
-		if( ! source ){
+		if(!source){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, source ) ));
-		if( undo ){
-			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, source)));
+		if(undo){
+			source->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSource *source ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSource *source) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -105,21 +105,21 @@ protected:
 	seWPAPanelSource &pPanel;
 	
 public:
-	cBaseComboBoxListener( seWPAPanelSource &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(seWPAPanelSource &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSource * const source = pPanel.GetSource();
-		if( ! source ){
+		if(!source){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, source ) ));
-		if( undo ){
-			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, source)));
+		if(undo){
+			source->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, seSource *source ) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSource *source) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -127,123 +127,123 @@ protected:
 	seWPAPanelSource &pPanel;
 	
 public:
-	cBaseAction( seWPAPanelSource &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPAPanelSource &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		seSource * const source = pPanel.GetSource();
-		if( ! source ){
+		if(!source){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( source ) ));
-		if( undo ){
-			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(source)));
+		if(undo){
+			source->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( seSource *source ) = 0;
+	virtual igdeUndo *OnAction(seSource *source) = 0;
 };
 
 
 class cTextName : public cBaseTextFieldListener {
 public:
-	cTextName( seWPAPanelSource &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextName(seWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSource *source ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSource *source){
 		return textField->GetText() != source->GetName()
-			? new seUSetSourceName( source, textField->GetText() ) : NULL;
+			? new seUSetSourceName(source, textField->GetText()) : NULL;
 	}
 };
 
 class cComboMixMode : public cBaseComboBoxListener {
 public:
-	cComboMixMode( seWPAPanelSource &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboMixMode(seWPAPanelSource &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeComboBox *comboBox, seSource *source ){
+	virtual igdeUndo * OnChanged(igdeComboBox *comboBox, seSource *source){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if( ! selection ){
+		if(!selection){
 			return NULL;
 		}
 		
 		const deSynthesizerSource::eMixModes mixMode =
-			( deSynthesizerSource::eMixModes )( intptr_t )selection->GetData();
-		return mixMode != source->GetMixMode() ? new seUSetSourceMixMode( source, mixMode ) : NULL;
+			(deSynthesizerSource::eMixModes)(intptr_t)selection->GetData();
+		return mixMode != source->GetMixMode() ? new seUSetSourceMixMode(source, mixMode) : NULL;
 	}
 };
 
 class cTextBlendFactor : public cBaseTextFieldListener {
 public:
-	cTextBlendFactor( seWPAPanelSource &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextBlendFactor(seWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSource *source ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSource *source){
 		const float value = textField->GetFloat();
-		return fabsf( value - source->GetBlendFactor() ) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceBlendFactor( source, value ) : NULL;
+		return fabsf(value - source->GetBlendFactor()) > FLOAT_SAFE_EPSILON
+			? new seUSetSourceBlendFactor(source, value) : NULL;
 	}
 };
 
 class cTextMinVolume : public cBaseTextFieldListener {
 public:
-	cTextMinVolume( seWPAPanelSource &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMinVolume(seWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSource *source ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSource *source){
 		const float value = textField->GetFloat();
-		return fabsf( value - source->GetMinVolume() ) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceMinVolume( source, value ) : NULL;
+		return fabsf(value - source->GetMinVolume()) > FLOAT_SAFE_EPSILON
+			? new seUSetSourceMinVolume(source, value) : NULL;
 	}
 };
 
 class cTextMaxVolume : public cBaseTextFieldListener {
 public:
-	cTextMaxVolume( seWPAPanelSource &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMaxVolume(seWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSource *source ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSource *source){
 		const float value = textField->GetFloat();
-		return fabsf( value - source->GetMaxVolume() ) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceMaxVolume( source, value ) : NULL;
+		return fabsf(value - source->GetMaxVolume()) > FLOAT_SAFE_EPSILON
+			? new seUSetSourceMaxVolume(source, value) : NULL;
 	}
 };
 
 class cTextMinPanning : public cBaseTextFieldListener {
 public:
-	cTextMinPanning( seWPAPanelSource &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMinPanning(seWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSource *source ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSource *source){
 		const float value = textField->GetFloat();
-		return fabsf( value - source->GetMinPanning() ) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceMinPanning( source, value ) : NULL;
+		return fabsf(value - source->GetMinPanning()) > FLOAT_SAFE_EPSILON
+			? new seUSetSourceMinPanning(source, value) : NULL;
 	}
 };
 
 class cTextMaxPanning : public cBaseTextFieldListener {
 public:
-	cTextMaxPanning( seWPAPanelSource &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMaxPanning(seWPAPanelSource &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSource *source ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSource *source){
 		const float value = textField->GetFloat();
-		return fabsf( value - source->GetMaxPanning() ) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceMaxPanning( source, value ) : NULL;
+		return fabsf(value - source->GetMaxPanning()) > FLOAT_SAFE_EPSILON
+			? new seUSetSourceMaxPanning(source, value) : NULL;
 	}
 };
 
 class cActionEnable : public cBaseAction {
 public:
-	cActionEnable( seWPAPanelSource &panel ) : cBaseAction( panel, "Enable source",
-		NULL, "Determines if the source is affecting the model" ){ }
+	cActionEnable(seWPAPanelSource &panel) : cBaseAction(panel, "Enable source",
+		NULL, "Determines if the source is affecting the model"){ }
 	
-	virtual igdeUndo *OnAction( seSource *source ){
-		return new seUSourceToggleEnabled( source );
+	virtual igdeUndo *OnAction(seSource *source){
+		return new seUSourceToggleEnabled(source);
 	}
 };
 
 
 class cComboTarget : public cBaseComboBoxListener {
 public:
-	cComboTarget( seWPAPanelSource &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboTarget(seWPAPanelSource &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeComboBox*, seSource* ){
+	virtual igdeUndo * OnChanged(igdeComboBox*, seSource*){
 		pPanel.UpdateTarget();
 		return NULL;
 	}
@@ -253,50 +253,50 @@ class cListLinks : public igdeListBoxListener{
 	seWPAPanelSource &pPanel;
 	
 public:
-	cListLinks( seWPAPanelSource &panel ) : pPanel( panel ){ }
+	cListLinks(seWPAPanelSource &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( menu, pPanel.GetActionLinkAdd() );
-		helper.MenuCommand( menu, pPanel.GetActionLinkRemove() );
+		helper.MenuCommand(menu, pPanel.GetActionLinkAdd());
+		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());
 	}
 };
 
 class cActionLinkAdd : public cBaseAction {
 public:
-	cActionLinkAdd( seWPAPanelSource &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add link" ){ }
+	cActionLinkAdd(seWPAPanelSource &panel) : cBaseAction(panel, "Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"){}
 	
-	virtual igdeUndo *OnAction( seSource *source ){
+	virtual igdeUndo *OnAction(seSource *source){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetCBLink();
-		return target && link && ! target->HasLink( link )
-			? new seUSourceTargetAddLink( source, target, link ) : NULL;
+		return target && link && !target->HasLink(link)
+			? new seUSourceTargetAddLink(source, target, link) : NULL;
 	}
 	
 	virtual void Update(){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetCBLink();
-		SetSelected( target && link && ! target->HasLink( link ) );
+		SetSelected(target && link && !target->HasLink(link));
 	}
 };
 
 class cActionLinkRemove : public cBaseAction {
 public:
-	cActionLinkRemove( seWPAPanelSource &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove link" ){ }
+	cActionLinkRemove(seWPAPanelSource &panel) : cBaseAction(panel, "Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
 	
-	virtual igdeUndo *OnAction( seSource *source ){
+	virtual igdeUndo *OnAction(seSource *source){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetListLink();
-		return target && link && target->HasLink( link )
-			? new seUSourceTargetRemoveLink( source, target, link ) : NULL;
+		return target && link && target->HasLink(link)
+			? new seUSourceTargetRemoveLink(source, target, link) : NULL;
 	}
 	
 	virtual void Update(){
 		seControllerTarget * const target = pPanel.GetTarget();
 		seLink * const link = pPanel.GetListLink();
-		SetSelected( target && link && target->HasLink( link ) );
+		SetSelected(target && link && target->HasLink(link));
 	}
 };
 
@@ -310,59 +310,59 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPAPanelSource::seWPAPanelSource( seWPSource &wpSource,
-	deSynthesizerSourceVisitorIdentify::eSourceTypes requiredType ) :
-igdeContainerFlow( wpSource.GetEnvironment(), igdeContainerFlow::eaY ),
-pWPSource( wpSource ),
-pRequiredType( requiredType ),
-pWPEffect( NULL )
+seWPAPanelSource::seWPAPanelSource(seWPSource &wpSource,
+	deSynthesizerSourceVisitorIdentify::eSourceTypes requiredType) :
+igdeContainerFlow(wpSource.GetEnvironment(), igdeContainerFlow::eaY),
+pWPSource(wpSource),
+pRequiredType(requiredType),
+pWPEffect(NULL)
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox, form, formLine;
 	
 	
-	pActionLinkAdd.TakeOver( new cActionLinkAdd( *this ) );
-	pActionLinkRemove.TakeOver( new cActionLinkRemove( *this ) );
+	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));
+	pActionLinkRemove.TakeOver(new cActionLinkRemove(*this));
 	
 	
 	// general settings
-	helper.GroupBox( *this, groupBox, "General Settings:" );
-	helper.EditString( groupBox, "Name:", "Name of the source", pEditName, new cTextName( *this ) );
+	helper.GroupBox(*this, groupBox, "General Settings:");
+	helper.EditString(groupBox, "Name:", "Name of the source", pEditName, new cTextName(*this));
 	
-	helper.ComboBox( groupBox, "Mix Mode:", "Set mix mode", pCBMixMode, new cComboMixMode( *this ) );
-	pCBMixMode->AddItem( "Blend", NULL, ( void* )( intptr_t )deSynthesizerSource::emmBlend );
-	pCBMixMode->AddItem( "Add", NULL, ( void* )( intptr_t )deSynthesizerSource::emmAdd );
+	helper.ComboBox(groupBox, "Mix Mode:", "Set mix mode", pCBMixMode, new cComboMixMode(*this));
+	pCBMixMode->AddItem("Blend", NULL, (void*)(intptr_t)deSynthesizerSource::emmBlend);
+	pCBMixMode->AddItem("Add", NULL, (void*)(intptr_t)deSynthesizerSource::emmAdd);
 	
-	helper.EditFloat( groupBox, "Blend Factor:", "Set blend factor", pEditBlendFactor, new cTextBlendFactor( *this ) );
-	helper.EditFloat( groupBox, "Minimum Volume:", "Minimum volume", pEditMinVolume, new cTextMinVolume( *this ) );
-	helper.EditFloat( groupBox, "Maximum Volume:", "Maximum volume", pEditMaxVolume, new cTextMaxVolume( *this ) );
-	helper.EditFloat( groupBox, "Minimum Panning:", "Minimum panning", pEditMinPanning, new cTextMinPanning( *this ) );
-	helper.EditFloat( groupBox, "Maximum Panning:", "Maximum panning", pEditMaxPanning, new cTextMaxPanning( *this ) );
-	helper.CheckBox( groupBox, pChkEnabled, new cActionEnable( *this ), true );
+	helper.EditFloat(groupBox, "Blend Factor:", "Set blend factor", pEditBlendFactor, new cTextBlendFactor(*this));
+	helper.EditFloat(groupBox, "Minimum Volume:", "Minimum volume", pEditMinVolume, new cTextMinVolume(*this));
+	helper.EditFloat(groupBox, "Maximum Volume:", "Maximum volume", pEditMaxVolume, new cTextMaxVolume(*this));
+	helper.EditFloat(groupBox, "Minimum Panning:", "Minimum panning", pEditMinPanning, new cTextMinPanning(*this));
+	helper.EditFloat(groupBox, "Maximum Panning:", "Maximum panning", pEditMaxPanning, new cTextMaxPanning(*this));
+	helper.CheckBox(groupBox, pChkEnabled, new cActionEnable(*this), true);
 	
 	
 	// targets and links
-	helper.GroupBoxFlow( *this, groupBox, "Targets and Links:" );
+	helper.GroupBoxFlow(*this, groupBox, "Targets and Links:");
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( form );
-	helper.ComboBox( form, "Target:", "Displays all links of for a given target",
-		pCBTarget, new cComboTarget( *this ) );
+	form.TakeOver(new igdeContainerForm(env));
+	groupBox->AddChild(form);
+	helper.ComboBox(form, "Target:", "Displays all links of for a given target",
+		pCBTarget, new cComboTarget(*this));
 	
-	helper.FormLineStretchFirst( form, "Link:", "Link to add to target", formLine );
-	helper.ComboBox( formLine, "Link to add to target", pCBLinks, new cComboTarget( *this ) );
-	helper.Button( formLine, pBtnLinkAdd, pActionLinkAdd );
+	helper.FormLineStretchFirst(form, "Link:", "Link to add to target", formLine);
+	helper.ComboBox(formLine, "Link to add to target", pCBLinks, new cComboTarget(*this));
+	helper.Button(formLine, pBtnLinkAdd, pActionLinkAdd);
 	
-	helper.ListBox( groupBox, 4, "Links used by target", pListLinks, new cListLinks( *this ) );
+	helper.ListBox(groupBox, 4, "Links used by target", pListLinks, new cListLinks(*this));
 	pListLinks->SetDefaultSorter();
 	
 	
 	
 	// effects
-	helper.GroupBoxFlow( *this, groupBox, "Effects:", false, true );
-	pWPEffect = new seWPEffect( wpSource.GetViewSynthesizer() );
-	groupBox->AddChild( pWPEffect );
+	helper.GroupBoxFlow(*this, groupBox, "Effects:", false, true);
+	pWPEffect = new seWPEffect(wpSource.GetViewSynthesizer());
+	groupBox->AddChild(pWPEffect);
 }
 
 seWPAPanelSource::~seWPAPanelSource(){
@@ -388,24 +388,24 @@ seSource *seWPAPanelSource::GetSource() const{
 
 seControllerTarget *seWPAPanelSource::GetTarget() const{
 	const igdeListItem * const selection = pCBTarget->GetSelectedItem();
-	return selection ? ( seControllerTarget* )selection->GetData() : NULL;
+	return selection ? (seControllerTarget*)selection->GetData() : NULL;
 }
 
 seLink *seWPAPanelSource::GetCBLink() const{
 	const igdeListItem * const selection = pCBLinks->GetSelectedItem();
-	return selection ? ( seLink* )selection->GetData() : NULL;
+	return selection ? (seLink*)selection->GetData() : NULL;
 }
 
 seLink *seWPAPanelSource::GetListLink() const{
 	const igdeListItem * const selection = pListLinks->GetSelectedItem();
-	return selection ? ( seLink* )selection->GetData() : NULL;
+	return selection ? (seLink*)selection->GetData() : NULL;
 }
 
 
 
-void seWPAPanelSource::SetSynthesizer( seSynthesizer *synthesizer ){
+void seWPAPanelSource::SetSynthesizer(seSynthesizer *synthesizer){
 	RemoveAllTargets();
-	pWPEffect->SetSynthesizer( synthesizer );
+	pWPEffect->SetSynthesizer(synthesizer);
 }
 
 void seWPAPanelSource::OnSynthesizerPathChanged(){
@@ -418,8 +418,8 @@ void seWPAPanelSource::OnActivated(){
 	
 	UpdateSource();
 	
-	if( ! pCBTarget->GetSelectedItem() && pCBTarget->GetItemCount() > 0 ){
-		pCBTarget->SetSelection( 0 );
+	if(!pCBTarget->GetSelectedItem() && pCBTarget->GetItemCount() > 0){
+		pCBTarget->SetSelection(0);
 	}
 }
 
@@ -431,14 +431,14 @@ void seWPAPanelSource::RemoveAllTargets(){
 	pCBTarget->RemoveAllItems();
 }
 
-void seWPAPanelSource::AddTarget( const char *name, seControllerTarget *target ){
-	pCBTarget->AddItem( name, NULL, target );
+void seWPAPanelSource::AddTarget(const char *name, seControllerTarget *target){
+	pCBTarget->AddItem(name, NULL, target);
 }
 
 
 
 void seWPAPanelSource::UpdateSynthesizer(){
-	pWPEffect->SetSynthesizer( GetSynthesizer() );
+	pWPEffect->SetSynthesizer(GetSynthesizer());
 }
 
 void seWPAPanelSource::UpdateControllerList(){
@@ -446,25 +446,25 @@ void seWPAPanelSource::UpdateControllerList(){
 }
 
 void seWPAPanelSource::UpdateLinkList(){
-	seLink * const selection = pCBLinks->GetSelectedItem() ? ( seLink* )pCBLinks->GetSelectedItem()->GetData() : NULL;
+	seLink * const selection = pCBLinks->GetSelectedItem() ? (seLink*)pCBLinks->GetSelectedItem()->GetData() : NULL;
 	
 	pCBLinks->RemoveAllItems();
 	
 	const seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		const seLinkList &list = synthesizer->GetLinks();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			seLink * const link = list.GetAt( i );
-			pCBLinks->AddItem( link->GetName(), NULL, link );
+		for(i=0; i<count; i++){
+			seLink * const link = list.GetAt(i);
+			pCBLinks->AddItem(link->GetName(), NULL, link);
 		}
 	}
 	
 	pCBLinks->SortItems();
 	
-	pCBLinks->SetSelectionWithData( selection );
+	pCBLinks->SetSelectionWithData(selection);
 	
 	pWPEffect->UpdateLinkList();
 }
@@ -472,36 +472,36 @@ void seWPAPanelSource::UpdateLinkList(){
 void seWPAPanelSource::UpdateSource(){
 	const seSource * const source = GetSource();
 	
-	if( source ){
-		pEditName->SetText( source->GetName() );
-		pCBMixMode->SetSelectionWithData( ( void* )( intptr_t )source->GetMixMode() );
-		pEditBlendFactor->SetFloat( source->GetBlendFactor() );
-		pEditMinVolume->SetFloat( source->GetMinVolume() );
-		pEditMaxVolume->SetFloat( source->GetMaxVolume() );
-		pEditMinPanning->SetFloat( source->GetMinPanning() );
-		pEditMaxPanning->SetFloat( source->GetMaxPanning() );
-		pChkEnabled->SetChecked( source->GetEnabled() );
+	if(source){
+		pEditName->SetText(source->GetName());
+		pCBMixMode->SetSelectionWithData((void*)(intptr_t)source->GetMixMode());
+		pEditBlendFactor->SetFloat(source->GetBlendFactor());
+		pEditMinVolume->SetFloat(source->GetMinVolume());
+		pEditMaxVolume->SetFloat(source->GetMaxVolume());
+		pEditMinPanning->SetFloat(source->GetMinPanning());
+		pEditMaxPanning->SetFloat(source->GetMaxPanning());
+		pChkEnabled->SetChecked(source->GetEnabled());
 		
 	}else{
 		pEditName->ClearText();
-		pCBMixMode->SetSelectionWithData( ( void* )( intptr_t )deSynthesizerSource::emmBlend );
+		pCBMixMode->SetSelectionWithData((void*)(intptr_t)deSynthesizerSource::emmBlend);
 		pEditBlendFactor->ClearText();
 		pEditMinVolume->ClearText();
 		pEditMaxVolume->ClearText();
 		pEditMinPanning->ClearText();
 		pEditMaxPanning->ClearText();
-		pChkEnabled->SetChecked( false );
+		pChkEnabled->SetChecked(false);
 	}
 	
 	const bool enabled = source;
-	pEditName->SetEnabled( enabled );
-	pCBMixMode->SetEnabled( enabled );
-	pEditBlendFactor->SetEnabled( enabled );
-	pEditMinVolume->SetEnabled( enabled );
-	pEditMaxVolume->SetEnabled( enabled );
-	pEditMinPanning->SetEnabled( enabled );
-	pEditMaxPanning->SetEnabled( enabled );
-	pChkEnabled->SetEnabled( enabled );
+	pEditName->SetEnabled(enabled);
+	pCBMixMode->SetEnabled(enabled);
+	pEditBlendFactor->SetEnabled(enabled);
+	pEditMinVolume->SetEnabled(enabled);
+	pEditMaxVolume->SetEnabled(enabled);
+	pEditMinPanning->SetEnabled(enabled);
+	pEditMaxPanning->SetEnabled(enabled);
+	pChkEnabled->SetEnabled(enabled);
 	
 	UpdateTarget();
 }
@@ -510,25 +510,25 @@ void seWPAPanelSource::UpdateTargetList(){
 	pCBTarget->RemoveAllItems();
 	
 	seSource * const source = GetSource();
-	if( source ){
-		AddTarget( "Blend Factor", &source->GetTargetBlendFactor() );
-		AddTarget( "Volume", &source->GetTargetVolume() );
-		AddTarget( "Panning", &source->GetTargetPanning() );
+	if(source){
+		AddTarget("Blend Factor", &source->GetTargetBlendFactor());
+		AddTarget("Volume", &source->GetTargetVolume());
+		AddTarget("Panning", &source->GetTargetPanning());
 	}
 }
 
 void seWPAPanelSource::UpdateTarget(){
 	seControllerTarget * const target = GetTarget();
 	
-	if( target ){
+	if(target){
 		const int count = target->GetLinkCount();
 		int i;
 		
 		pListLinks->RemoveAllItems();
 		
-		for( i=0; i<count; i++ ){
-			seLink * const link = target->GetLinkAt( i );
-			pListLinks->AddItem( link->GetName(), NULL, link );
+		for(i=0; i<count; i++){
+			seLink * const link = target->GetLinkAt(i);
+			pListLinks->AddItem(link->GetName(), NULL, link);
 		}
 		
 		pListLinks->SortItems();
@@ -537,6 +537,6 @@ void seWPAPanelSource::UpdateTarget(){
 		pListLinks->RemoveAllItems();
 	}
 	
-	pListLinks->SetEnabled( target );
+	pListLinks->SetEnabled(target);
 	pBtnLinkAdd->GetAction()->Update();
 }

@@ -39,28 +39,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPVSyncMode::deoglPVSyncMode( deGraphicOpenGl &ogl ) : deoglParameter( ogl ){
-	SetName( "vsyncMode" );
-	SetDescription( "Sets V-Sync mode. This can be overriden by GPU drivers." );
-	SetType( deModuleParameter::eptSelection );
-	SetCategory( ecAdvanced );
-	SetDisplayName( "V-Sync Mode" );
+deoglPVSyncMode::deoglPVSyncMode(deGraphicOpenGl &ogl) : deoglParameter(ogl){
+	SetName("vsyncMode");
+	SetDescription("Sets V-Sync mode. This can be overriden by GPU drivers.");
+	SetType(deModuleParameter::eptSelection);
+	SetCategory(ecAdvanced);
+	SetDisplayName("V-Sync Mode");
 	
-	const deModuleParameter::SelectionEntry entries[ 3 ] = {
-		{ "adaptive", "Adaptive",
+	const deModuleParameter::SelectionEntry entries[3] = {
+		{"adaptive", "Adaptive",
 			"Enables V-Sync if frame rate is higher than monitor frame rate. "
 			"Disables V-Sync if frame rate is lower than monitor frame rate. "
 			"This can prevent stuttering due to frame rate dips. "
-			"If system does not support V-Sync control behaves the same as 'On'." },
+			"If system does not support V-Sync control behaves the same as 'On'."},
 		
-		{ "on", "On", "Enables V-Sync." },
+		{"on", "On", "Enables V-Sync."},
 		
-		{ "off", "Off",
+		{"off", "Off",
 			"Disables V-Sync. "
-			"If system does not support V-Sync control behaves the same as 'On'." }
+			"If system does not support V-Sync control behaves the same as 'On'."}
 	};
-	AddSelectionEntries( entries, 3 );
-	SetDefaultValue( "adaptive" );
+	AddSelectionEntries(entries, 3);
+	SetDefaultValue("adaptive");
 }
 
 deoglPVSyncMode::~deoglPVSyncMode(){
@@ -72,7 +72,7 @@ deoglPVSyncMode::~deoglPVSyncMode(){
 ////////////////////
 
 decString deoglPVSyncMode::GetParameterValue(){
-	switch( pOgl.GetConfiguration().GetVSyncMode() ){
+	switch(pOgl.GetConfiguration().GetVSyncMode()){
 	case deoglConfiguration::evsmAdaptive:
 		return "adaptive";
 		
@@ -87,19 +87,19 @@ decString deoglPVSyncMode::GetParameterValue(){
 	}
 }
 
-void deoglPVSyncMode::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
+void deoglPVSyncMode::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
 	
-	if( checkValue == "adaptive" ){
-		pOgl.GetConfiguration().SetVSyncMode( deoglConfiguration::evsmAdaptive );
+	if(checkValue == "adaptive"){
+		pOgl.GetConfiguration().SetVSyncMode(deoglConfiguration::evsmAdaptive);
 		
-	}else if( checkValue == "on" ){
-		pOgl.GetConfiguration().SetVSyncMode( deoglConfiguration::evsmOn );
+	}else if(checkValue == "on"){
+		pOgl.GetConfiguration().SetVSyncMode(deoglConfiguration::evsmOn);
 		
-	}else if( checkValue == "off" ){
-		pOgl.GetConfiguration().SetVSyncMode( deoglConfiguration::evsmOff );
+	}else if(checkValue == "off"){
+		pOgl.GetConfiguration().SetVSyncMode(deoglConfiguration::evsmOff);
 		
 	}else{
-		pOgl.GetConfiguration().SetVSyncMode( deoglConfiguration::evsmAdaptive );
+		pOgl.GetConfiguration().SetVSyncMode(deoglConfiguration::evsmAdaptive);
 	}
 }

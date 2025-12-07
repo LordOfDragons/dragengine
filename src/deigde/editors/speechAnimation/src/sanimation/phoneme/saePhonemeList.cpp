@@ -55,19 +55,19 @@ int saePhonemeList::GetCount() const{
 	return pPhonemes.GetCount();
 }
 
-saePhoneme *saePhonemeList::GetAt( int index ) const{
-	return ( saePhoneme* )pPhonemes.GetAt( index );
+saePhoneme *saePhonemeList::GetAt(int index) const{
+	return (saePhoneme*)pPhonemes.GetAt(index);
 }
 
-saePhoneme *saePhonemeList::GetIPA( int ipa ) const{
+saePhoneme *saePhonemeList::GetIPA(int ipa) const{
 	const int count = pPhonemes.GetCount();
 	saePhoneme *phoneme;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		phoneme = ( saePhoneme* )pPhonemes.GetAt( p );
+	for(p=0; p<count; p++){
+		phoneme = (saePhoneme*)pPhonemes.GetAt(p);
 		
-		if( phoneme->GetIPA() == ipa ){
+		if(phoneme->GetIPA() == ipa){
 			return phoneme;
 		}
 	}
@@ -75,16 +75,16 @@ saePhoneme *saePhonemeList::GetIPA( int ipa ) const{
 	return NULL;
 }
 
-int saePhonemeList::IndexOf( saePhoneme *phoneme ) const{
-	return pPhonemes.IndexOf( phoneme );
+int saePhonemeList::IndexOf(saePhoneme *phoneme) const{
+	return pPhonemes.IndexOf(phoneme);
 }
 
-int saePhonemeList::IndexOfIPA( int ipa ) const{
+int saePhonemeList::IndexOfIPA(int ipa) const{
 	const int count = pPhonemes.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( saePhoneme* )pPhonemes.GetAt( p ) )->GetIPA() == ipa ){
+	for(p=0; p<count; p++){
+		if(((saePhoneme*)pPhonemes.GetAt(p))->GetIPA() == ipa){
 			return p;
 		}
 	}
@@ -92,16 +92,16 @@ int saePhonemeList::IndexOfIPA( int ipa ) const{
 	return -1;
 }
 
-bool saePhonemeList::Has( saePhoneme *phoneme ) const{
-	return pPhonemes.Has( phoneme );
+bool saePhonemeList::Has(saePhoneme *phoneme) const{
+	return pPhonemes.Has(phoneme);
 }
 
-bool saePhonemeList::HasIPA( int ipa ) const{
+bool saePhonemeList::HasIPA(int ipa) const{
 	const int count = pPhonemes.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( saePhoneme* )pPhonemes.GetAt( p ) )->GetIPA() == ipa ){
+	for(p=0; p<count; p++){
+		if(((saePhoneme*)pPhonemes.GetAt(p))->GetIPA() == ipa){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool saePhonemeList::HasIPA( int ipa ) const{
 	return false;
 }
 
-void saePhonemeList::Add( saePhoneme *phoneme ){
-	if( ! phoneme || HasIPA( phoneme->GetIPA() ) ) DETHROW( deeInvalidParam );
+void saePhonemeList::Add(saePhoneme *phoneme){
+	if(!phoneme || HasIPA(phoneme->GetIPA())) DETHROW(deeInvalidParam);
 	
-	pPhonemes.Add( phoneme );
+	pPhonemes.Add(phoneme);
 }
 
-void saePhonemeList::Remove( saePhoneme *phoneme ){
-	pPhonemes.Remove( phoneme );
+void saePhonemeList::Remove(saePhoneme *phoneme){
+	pPhonemes.Remove(phoneme);
 }
 
 void saePhonemeList::RemoveAll(){
@@ -125,7 +125,7 @@ void saePhonemeList::RemoveAll(){
 
 
 
-saePhonemeList &saePhonemeList::operator=( const saePhonemeList &list ){
+saePhonemeList &saePhonemeList::operator=(const saePhonemeList &list){
 	pPhonemes = list.pPhonemes;
 	return *this;
 }

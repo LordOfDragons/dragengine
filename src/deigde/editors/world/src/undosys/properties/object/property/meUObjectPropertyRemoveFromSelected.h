@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectPropertyRemoveFromSelected( const meObjectList &list, const char *key );
+	meUObjectPropertyRemoveFromSelected(const meObjectList &list, const char *key);
 	
 protected:
 	/** \brief Clean up undo object. */

@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread texture related object. */
-	deoglRTTexture( deoglRenderThread &renderThread );
+	deoglRTTexture(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread texture related object. */
 	virtual ~deoglRTTexture();

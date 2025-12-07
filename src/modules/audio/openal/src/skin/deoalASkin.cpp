@@ -42,26 +42,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalASkin::deoalASkin( deoalAudioThread &audioThread, const deSkin &skin ) :
-pAudioThread( audioThread ),
-pFilename( skin.GetFilename() ),
-pTextures( NULL ),
-pTextureCount( 0 ),
-pAffectsSound( false )
+deoalASkin::deoalASkin(deoalAudioThread &audioThread, const deSkin &skin) :
+pAudioThread(audioThread),
+pFilename(skin.GetFilename()),
+pTextures(NULL),
+pTextureCount(0),
+pAffectsSound(false)
 {
 	try{
-		pCreateTextures( skin );
+		pCreateTextures(skin);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
-	LEAK_CHECK_CREATE( audioThread, Skin );
+	LEAK_CHECK_CREATE(audioThread, Skin);
 }
 
 deoalASkin::~deoalASkin(){
-	LEAK_CHECK_FREE( pAudioThread, Skin );
+	LEAK_CHECK_FREE(pAudioThread, Skin);
 	
 	pCleanUp();
 }
@@ -71,11 +71,11 @@ deoalASkin::~deoalASkin(){
 // Management
 ///////////////
 
-const deoalSkinTexture &deoalASkin::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ){
-		DETHROW( deeInvalidParam );
+const deoalSkinTexture &deoalASkin::GetTextureAt(int index) const{
+	if(index < 0 || index >= pTextureCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pTextures[ index ];
+	return pTextures[index];
 }
 
 
@@ -84,20 +84,20 @@ const deoalSkinTexture &deoalASkin::GetTextureAt( int index ) const{
 //////////////////////
 
 void deoalASkin::pCleanUp(){
-	if( pTextures ){
+	if(pTextures){
 		delete [] pTextures;
 	}
 }
 
-void deoalASkin::pCreateTextures( const deSkin &skin ){
+void deoalASkin::pCreateTextures(const deSkin &skin){
 	const int count = skin.GetTextureCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pTextures = new deoalSkinTexture[ count ];
-	for( pTextureCount=0; pTextureCount<count; pTextureCount++ ){
-		pTextures[ pTextureCount ].ProcessProperties( *skin.GetTextureAt( pTextureCount ) );
-		pAffectsSound |= pTextures[ pTextureCount ].GetAffectsSound();
+	pTextures = new deoalSkinTexture[count];
+	for(pTextureCount=0; pTextureCount<count; pTextureCount++){
+		pTextures[pTextureCount].ProcessProperties(*skin.GetTextureAt(pTextureCount));
+		pAffectsSound |= pTextures[pTextureCount].GetAffectsSound();
 	}
 }

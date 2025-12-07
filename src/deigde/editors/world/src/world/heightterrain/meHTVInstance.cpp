@@ -49,26 +49,26 @@ meHTVInstance::~meHTVInstance(){
 // Management
 ///////////////
 
-void meHTVInstance::SetVLayer( int vlayer, int variation ){
-	pVLayer = ( short )vlayer;
-	pVariation = ( short )variation;
+void meHTVInstance::SetVLayer(int vlayer, int variation){
+	pVLayer = (short)vlayer;
+	pVariation = (short)variation;
 }
 
-void meHTVInstance::SetPosition( const decVector &position ){
+void meHTVInstance::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void meHTVInstance::SetRotation( const decVector &rotation ){
+void meHTVInstance::SetRotation(const decVector &rotation){
 	pRotation = rotation;
 }
 
-void meHTVInstance::SetScaling( float scaling ){
+void meHTVInstance::SetScaling(float scaling){
 	pScaling = scaling;
 }
 
-void meHTVInstance::SetParameters( int vlayer, int variation, const decVector &position, const decVector &rotation, float scaling ){
-	pVLayer = ( short )vlayer;
-	pVariation = ( short )variation;
+void meHTVInstance::SetParameters(int vlayer, int variation, const decVector &position, const decVector &rotation, float scaling){
+	pVLayer = (short)vlayer;
+	pVariation = (short)variation;
 	pPosition = position;
 	pRotation = rotation;
 	pScaling = scaling;

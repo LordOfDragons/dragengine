@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionPaste::ceUCActionPaste( ceConversationTopic *topic, const ceConversationActionList &actions, int index ){
-	if( ! topic || actions.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index){
+	if(!topic || actions.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = actions.GetCount();
@@ -52,26 +52,26 @@ ceUCActionPaste::ceUCActionPaste( ceConversationTopic *topic, const ceConversati
 	pTopic = NULL;
 	pIndex = index;
 	
-	if( count == 1 ){
-		SetShortInfo( "Paste Action" );
+	if(count == 1){
+		SetShortInfo("Paste Action");
 		
 	}else{
-		SetShortInfo( "Paste Actions" );
+		SetShortInfo("Paste Actions");
 	}
 	
 	pTopic = topic;
 	topic->AddReference();
 	
 	try{
-		for( i=0; i<count; i++ ){
-			newAction = actions.GetAt( i )->CreateCopy();
-			pActions.Add( newAction );
+		for(i=0; i<count; i++){
+			newAction = actions.GetAt(i)->CreateCopy();
+			pActions.Add(newAction);
 			newAction->FreeReference();
 			newAction = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( newAction ){
+	}catch(const deException &){
+		if(newAction){
 			newAction->FreeReference();
 		}
 		throw;
@@ -80,7 +80,7 @@ ceUCActionPaste::ceUCActionPaste( ceConversationTopic *topic, const ceConversati
 
 ceUCActionPaste::~ceUCActionPaste(){
 	pActions.RemoveAll();
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -91,19 +91,19 @@ ceUCActionPaste::~ceUCActionPaste(){
 ///////////////
 
 void ceUCActionPaste::Undo(){
-	ceConversationAction * const activateAction = ActivateActionAfterRemove( pTopic->GetActionList() );
+	ceConversationAction * const activateAction = ActivateActionAfterRemove(pTopic->GetActionList());
 	
-	pRemoveActions( pTopic->GetActionList() );
-	pTopic->NotifyActionStructureChanged( NULL );
+	pRemoveActions(pTopic->GetActionList());
+	pTopic->NotifyActionStructureChanged(NULL);
 	
-	if( activateAction ){
-		pTopic->SetActive( activateAction, NULL );
+	if(activateAction){
+		pTopic->SetActive(activateAction, NULL);
 	}
 }
 
 void ceUCActionPaste::Redo(){
-	pInsertActions( pTopic->GetActionList() );
-	pTopic->NotifyActionStructureChanged( NULL );
+	pInsertActions(pTopic->GetActionList());
+	pTopic->NotifyActionStructureChanged(NULL);
 	
 	pSelectInserted();
 }
@@ -113,51 +113,51 @@ void ceUCActionPaste::Redo(){
 // Protected Functions
 ////////////////////////
 
-void ceUCActionPaste::pInsertActions( ceConversationActionList &list ){
+void ceUCActionPaste::pInsertActions(ceConversationActionList &list){
 	const int count = pActions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		list.InsertAt( pActions.GetAt( i ), pIndex + i );
+	for(i=0; i<count; i++){
+		list.InsertAt(pActions.GetAt(i), pIndex + i);
 	}
 }
 
-void ceUCActionPaste::pRemoveActions( ceConversationActionList &list ){
+void ceUCActionPaste::pRemoveActions(ceConversationActionList &list){
 	const int count = pActions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		list.Remove( pActions.GetAt( i ) );
+	for(i=0; i<count; i++){
+		list.Remove(pActions.GetAt(i));
 	}
 }
 
 void ceUCActionPaste::pSelectInserted(){
-	if( pActions.GetCount() > 0 ){
-		pTopic->SetActive( pActions.GetAt( 0 ), NULL );
+	if(pActions.GetCount() > 0){
+		pTopic->SetActive(pActions.GetAt(0), NULL);
 	}
 }
 
 ceConversationAction *ceUCActionPaste::ActivateActionAfterRemove(
-const ceConversationActionList &list ) const{
-	if( pActions.GetCount() == 0 ){
+const ceConversationActionList &list) const{
+	if(pActions.GetCount() == 0){
 		return NULL;
 	}
 	
-	int index = list.IndexOf( pActions.GetAt( pActions.GetCount() - 1 ) );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	int index = list.IndexOf(pActions.GetAt(pActions.GetCount() - 1));
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
-	if( index < list.GetCount() - 1 ){
-		return list.GetAt( index + 1 );
-	}
-	
-	index = list.IndexOf( pActions.GetAt( 0 ) );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index < list.GetCount() - 1){
+		return list.GetAt(index + 1);
 	}
 	
-	if( index > 0 ){
-		return list.GetAt( index - 1 );
+	index = list.IndexOf(pActions.GetAt(0));
+	if(index == -1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	if(index > 0){
+		return list.GetAt(index - 1);
 		
 	}else{
 		return NULL;

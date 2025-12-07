@@ -208,11 +208,11 @@ public:
 	/*@{*/
 	/** \brief Create engine instance process. */
 	#ifdef OS_W32
-	delEngineProcess( HANDLE pipeIn, HANDLE pipeOut, const char *logfile,
-		const char *logSource = "Engine Process" );
+	delEngineProcess(HANDLE pipeIn, HANDLE pipeOut, const char *logfile,
+		const char *logSource = "Engine Process");
 	#else
-	delEngineProcess( int pipeIn, int pipeOut, const char *logfile,
-		const char *logSource = "Engine Process" );
+	delEngineProcess(int pipeIn, int pipeOut, const char *logfile,
+		const char *logSource = "Engine Process");
 	#endif
 	
 	/** \brief Clean up engine instance process. */
@@ -247,7 +247,7 @@ public:
 	inline bool GetUseConsole() const{ return pUseConsole; }
 	
 	/** \brief Set use console. */
-	void SetUseConsole( bool useConsole );
+	void SetUseConsole(bool useConsole);
 	
 	/** \brief Set stop game to true. */
 	void SetStopGame();
@@ -266,22 +266,22 @@ public:
 	void ReadCommandsFromInPipe();
 	
 	/** \brief Write unsigned char to pipe. */
-	void WriteUCharToPipe( int value );
+	void WriteUCharToPipe(int value);
 	
 	/** \brief Write uint16_t to pipe. */
-	void WriteUShortToPipe( int value );
+	void WriteUShortToPipe(int value);
 	
 	/** \brief Write int32_t to pipe. */
-	void WriteIntToPipe( int value );
+	void WriteIntToPipe(int value);
 	
 	/** \brief Write float to pipe. */
-	void WriteFloatToPipe( float value );
+	void WriteFloatToPipe(float value);
 	
 	/** \brief Write string to pipe using uint16_t as length. */
-	void WriteString16ToPipe( const char *string );
+	void WriteString16ToPipe(const char *string);
 	
 	/** \brief Write data to pipe. */
-	void WriteToPipe( const void *data, int length );
+	void WriteToPipe(const void *data, int length);
 	
 	/** \brief Read unsigned char from pipe. */
 	int ReadUCharFromPipe();
@@ -293,10 +293,10 @@ public:
 	float ReadFloatFromPipe();
 	
 	/** \brief Read string from pipe using uint16_t as length. */
-	void ReadString16FromPipe( decString &string );
+	void ReadString16FromPipe(decString &string);
 	
 	/** \brief Read data from pipe. */
-	void ReadFromPipe( void *data, int length );
+	void ReadFromPipe(void *data, int length);
 	
 	
 	
@@ -394,7 +394,7 @@ public:
 	
 	
 private:
-	void pCreateLogger( const char *logfile );
+	void pCreateLogger(const char *logfile);
 };
 
 #endif

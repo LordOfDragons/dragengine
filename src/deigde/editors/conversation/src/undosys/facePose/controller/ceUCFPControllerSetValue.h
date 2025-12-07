@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFPControllerSetValue( ceFacePose *facePose, ceControllerValue *controller, float newValue );
+	ceUCFPControllerSetValue(ceFacePose *facePose, ceControllerValue *controller, float newValue);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCFPControllerSetValue();

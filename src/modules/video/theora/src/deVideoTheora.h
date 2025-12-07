@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deVideoTheora( deLoadableModule &loadableModule );
+	deVideoTheora(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deVideoTheora();
@@ -48,24 +48,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load video information from file. */
-	virtual void InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &info );
+	virtual void InitLoadVideo(decBaseFileReader &reader, deBaseVideoInfo &info);
 	
 	/**
 	 * \brief Save video.
 	 *
 	 * You can be sure that the file provided has been rewinded prior to this function call.
 	 */
-	virtual void SaveVideo( decBaseFileWriter &writer, const deVideo &video );
+	virtual void SaveVideo(decBaseFileWriter &writer, const deVideo &video);
 	
 	/** \brief Create video decoder peer. */
-	virtual deBaseVideoDecoder *CreateDecoder( decBaseFileReader *reader );
+	virtual deBaseVideoDecoder *CreateDecoder(decBaseFileReader *reader);
 	
 	/**
 	 * \brief Create video audio decoder peer.
 	 * 
 	 * If no video audio is present or module does not support audio null is returned..
 	 */
-	virtual deBaseVideoAudioDecoder *CreateAudioDecoder( decBaseFileReader *reader );
+	virtual deBaseVideoAudioDecoder *CreateAudioDecoder(decBaseFileReader *reader);
 	/*@}*/
 };
 

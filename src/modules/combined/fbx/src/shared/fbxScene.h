@@ -114,7 +114,7 @@ public:
 	fbxScene();
 	
 	/** Load scene. */
-	fbxScene( decBaseFileReader &reader );
+	fbxScene(decBaseFileReader &reader);
 	
 	/** Clean up scene. */
 	~fbxScene();
@@ -128,7 +128,7 @@ public:
 	inline int GetVersion() const{ return pVersion; }
 	
 	/** Set version in the form 7300 = 7.3 . */
-	void SetVersion( int version );
+	void SetVersion(int version);
 	
 	
 	
@@ -145,69 +145,69 @@ public:
 	inline const decMatrix &GetAxisTransformation() const{ return pAxisTransformation; }
 	
 	/** Transform matrix. */
-	decMatrix TransformMatrix( const decMatrix &matrix ) const;
+	decMatrix TransformMatrix(const decMatrix &matrix) const;
 	
 	
 	
 	/** First node matching name or NULL if absent. */
-	fbxNode *FirstNodeNamed( const char *name ) const;
+	fbxNode *FirstNodeNamed(const char *name) const;
 	
 	/** First node matching name or NULL if absent. */
-	fbxNode *FirstNodeNamedOrNull( const char *name ) const;
+	fbxNode *FirstNodeNamedOrNull(const char *name) const;
 	
 	/** Find all nodes matching name. */
-	void FindNodesNamed( decPointerList &list, const char *name ) const;
+	void FindNodesNamed(decPointerList &list, const char *name) const;
 	
 	
 	
 	/** All connections containing ID either as source or target. */
-	void FindConnections( int64_t id, decPointerList &list ) const;
+	void FindConnections(int64_t id, decPointerList &list) const;
 	
 	/** Object with ID. */
-	fbxNode *NodeWithID( int64_t id ) const;
+	fbxNode *NodeWithID(int64_t id) const;
 	
 	/** Object with ID or NULL if absent. */
-	fbxNode *NodeWithIDOrNull( int64_t id ) const;
+	fbxNode *NodeWithIDOrNull(int64_t id) const;
 	
 	
 	
 	/** Convert UV. */
-	static decVector2 ConvUVFbxToDe( const decVector2 &uv );
+	static decVector2 ConvUVFbxToDe(const decVector2 &uv);
 	
 	/** Convert mapping information type. */
-	static eMappingInformationType ConvMappingInformationType( const fbxNode &node );
+	static eMappingInformationType ConvMappingInformationType(const fbxNode &node);
 	
 	/** Convert refernece information type. */
-	static eReferenceInformationType ConvReferenceInformationType( const fbxNode &node );
+	static eReferenceInformationType ConvReferenceInformationType(const fbxNode &node);
 	
 	/** Convert rotation order. */
-	static eRotationOrder ConvRotationOrder( int value );
+	static eRotationOrder ConvRotationOrder(int value);
 	
 	/** Convert weight mode. */
-	static eWeightMode ConvWeightMode( const fbxNode &node );
+	static eWeightMode ConvWeightMode(const fbxNode &node);
 	
 	/** Create rotation matrix. */
-	static decMatrix CreateRotationMatrix( const decVector &rotation, eRotationOrder rotationOrder );
+	static decMatrix CreateRotationMatrix(const decVector &rotation, eRotationOrder rotationOrder);
 	
 	/** Convert rotation. */
-	static decVector ConvRotation( const decVector &rotation );
+	static decVector ConvRotation(const decVector &rotation);
 	
 	
 	
 	/** Prepare after reading. */
-	void Prepare( deBaseModule &module );
+	void Prepare(deBaseModule &module);
 	
 	/** Save to file. */
-	void Save( decBaseFileWriter &writer );
+	void Save(decBaseFileWriter &writer);
 	
 	/** Debug print scene structure. */
-	void DebugPrintStructure( deBaseModule &logger, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &logger, bool verbose = false) const;
 	/*@}*/
 	
 	
 	
 private:
-	eAxis pGetAxis( int axisType, int axisSign ) const;
+	eAxis pGetAxis(int axisType, int axisSign) const;
 };
 
 #endif

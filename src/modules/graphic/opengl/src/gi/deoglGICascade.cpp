@@ -47,56 +47,56 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGICascade::deoglGICascade( deoglGIState &giState, int index,
-	const decVector &probeSpacing, const decVector &offset ) :
-pGIState( giState ),
-pIndex( index ),
+deoglGICascade::deoglGICascade(deoglGIState &giState, int index,
+	const decVector &probeSpacing, const decVector &offset) :
+pGIState(giState),
+pIndex(index),
 
-pOffset( offset ),
-pProbeSpacing( probeSpacing ),
-pProbeSpacingInv( 1.0f / probeSpacing.x, 1.0f / probeSpacing.y, 1.0f / probeSpacing.z ),
-pFieldSize( probeSpacing.Multiply( decVector( giState.GetGridCoordClamp() ) ) ),
-pFieldOrigin( pFieldSize * -0.5f ),
-pPositionClamp( pFieldSize ),
-pDynamicHalfEnlarge( probeSpacing * 1.9f * 0.5f ), // enlarge = spacing * (1 + 0.45 * 2)
-pStaticHalfEnlarge( 0.05f, 0.05f, 0.05f ),
-pFillUpUpdatesWithExpensiveProbes( false ),
-pSkyShadowCascade( index ),
+pOffset(offset),
+pProbeSpacing(probeSpacing),
+pProbeSpacingInv(1.0f / probeSpacing.x, 1.0f / probeSpacing.y, 1.0f / probeSpacing.z),
+pFieldSize(probeSpacing.Multiply(decVector(giState.GetGridCoordClamp()))),
+pFieldOrigin(pFieldSize * -0.5f),
+pPositionClamp(pFieldSize),
+pDynamicHalfEnlarge(probeSpacing * 1.9f * 0.5f), // enlarge = spacing * (1 + 0.45 * 2)
+pStaticHalfEnlarge(0.05f, 0.05f, 0.05f),
+pFillUpUpdatesWithExpensiveProbes(false),
+pSkyShadowCascade(index),
 
-pMaxDetectionRange( 50.0f ),
-pDetectionBox( pFieldSize * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange ) ),
+pMaxDetectionRange(50.0f),
+pDetectionBox(pFieldSize * 0.5f + decVector(pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange)),
 
 // according to comment in source code this should be slightly larger than
 // the length of the diagonal across cells
-pMaxProbeDistance( probeSpacing.Length() * 1.5f ),
+pMaxProbeDistance(probeSpacing.Length() * 1.5f),
 
-pPosition( offset ),
-pLastRefPosition( offset ),
+pPosition(offset),
+pLastRefPosition(offset),
 
-pProbes( NULL ),
-pAgedProbes( NULL ),
-pHasInvalidProbesInsideView( true ),
-pRequiresFullUpdateInsideView( true ),
+pProbes(NULL),
+pAgedProbes(NULL),
+pHasInvalidProbesInsideView(true),
+pRequiresFullUpdateInsideView(true),
 
-pClearProbes( NULL ),
-pClearProbeCount( giState.GetRealProbeCount() / 32 ),
-pHasClearProbes( false ),
+pClearProbes(NULL),
+pClearProbeCount(giState.GetRealProbeCount() / 32),
+pHasClearProbes(false),
 
-pUpdateProbes( NULL ),
-pUpdateProbeCount( 0 ),
+pUpdateProbes(NULL),
+pUpdateProbeCount(0),
 
-pRayCacheProbes( NULL ),
-pRayCacheProbeCount( 0 )
+pRayCacheProbes(NULL),
+pRayCacheProbeCount(0)
 {
 	try{
 		pInitProbes();
-		pClearProbes = new uint32_t[ pClearProbeCount ];
-		pUpdateProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
+		pClearProbes = new uint32_t[pClearProbeCount];
+		pUpdateProbes = new uint16_t[GI_MAX_PROBE_COUNT];
 		#ifdef GI_USE_RAY_CACHE
-		pRayCacheProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
+		pRayCacheProbes = new uint16_t[GI_MAX_PROBE_COUNT];
 		#endif
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -111,15 +111,15 @@ deoglGICascade::~deoglGICascade(){
 // Management
 ///////////////
 
-void deoglGICascade::SetFillUpUpdatesWithExpensiveProbes( bool fillUp ){
+void deoglGICascade::SetFillUpUpdatesWithExpensiveProbes(bool fillUp){
 	pFillUpUpdatesWithExpensiveProbes = fillUp;
 }
 
-void deoglGICascade::SetSkyShadowCascade( int cascade ){
+void deoglGICascade::SetSkyShadowCascade(int cascade){
 	pSkyShadowCascade = cascade;
 }
 
-decPoint3 deoglGICascade::ProbeIndex2GridCoord( int index ) const{
+decPoint3 deoglGICascade::ProbeIndex2GridCoord(int index) const{
 	decPoint3 coord;
 	coord.y = index / pGIState.GetStrideProbeCount();
 	index -= pGIState.GetStrideProbeCount() * coord.y;
@@ -128,52 +128,52 @@ decPoint3 deoglGICascade::ProbeIndex2GridCoord( int index ) const{
 	return coord;
 }
 
-int deoglGICascade::GridCoord2ProbeIndex( const decPoint3 &coord ) const{
+int deoglGICascade::GridCoord2ProbeIndex(const decPoint3 &coord) const{
 	return pGIState.GetStrideProbeCount() * coord.y + pGIState.GetProbeCount().x * coord.z + coord.x;
 }
 
-decVector deoglGICascade::Grid2Local( const decPoint3 &coord ) const{
-	return pProbeSpacing.Multiply( decVector( coord ) ) + pFieldOrigin;
+decVector deoglGICascade::Grid2Local(const decPoint3 &coord) const{
+	return pProbeSpacing.Multiply(decVector(coord)) + pFieldOrigin;
 }
 
-decPoint3 deoglGICascade::World2Grid( const decDVector &position ) const{
-	return ( position - pPosition - decDVector( pFieldOrigin ) ).Multiply( pProbeSpacingInv ).Round();
+decPoint3 deoglGICascade::World2Grid(const decDVector &position) const{
+	return (position - pPosition - decDVector(pFieldOrigin)).Multiply(pProbeSpacingInv).Round();
 }
 
-decDVector deoglGICascade::Grid2World( const decPoint3 &grid ) const{
-	return pPosition + decDVector( pFieldOrigin ) + decDVector( grid ).Multiply( pProbeSpacing );
+decDVector deoglGICascade::Grid2World(const decPoint3 &grid) const{
+	return pPosition + decDVector(pFieldOrigin) + decDVector(grid).Multiply(pProbeSpacing);
 }
 
-decDVector deoglGICascade::WorldClosestGrid( const decDVector &position ) const{
-	const decDVector pos( position - pOffset );
-	decDVector result( ( double )pProbeSpacing.x * floor( pos.x * ( double )pProbeSpacingInv.x ),
-		( double )pProbeSpacing.y * floor( pos.y * ( double )pProbeSpacingInv.y ),
-		( double )pProbeSpacing.z * floor( pos.z * ( double )pProbeSpacingInv.z ) );
+decDVector deoglGICascade::WorldClosestGrid(const decDVector &position) const{
+	const decDVector pos(position - pOffset);
+	decDVector result((double)pProbeSpacing.x * floor(pos.x * (double)pProbeSpacingInv.x),
+		(double)pProbeSpacing.y * floor(pos.y * (double)pProbeSpacingInv.y),
+		(double)pProbeSpacing.z * floor(pos.z * (double)pProbeSpacingInv.z));
 	
-	const decDVector halfGrid( decDVector( pProbeSpacing ) * 0.5 );
-	if( pos.x - result.x >= halfGrid.x ){
-		result.x += ( double )pProbeSpacing.x;
+	const decDVector halfGrid(decDVector(pProbeSpacing) * 0.5);
+	if(pos.x - result.x >= halfGrid.x){
+		result.x += (double)pProbeSpacing.x;
 	}
-	if( pos.y - result.y >= halfGrid.y ){
-		result.y += ( double )pProbeSpacing.y;
+	if(pos.y - result.y >= halfGrid.y){
+		result.y += (double)pProbeSpacing.y;
 	}
-	if( pos.z - result.z >= halfGrid.z ){
-		result.z += ( double )pProbeSpacing.z;
+	if(pos.z - result.z >= halfGrid.z){
+		result.z += (double)pProbeSpacing.z;
 	}
 	
 	return result + pOffset;
 }
 
-decPoint3 deoglGICascade::LocalGrid2ShiftedGrid( const decPoint3 &coord ) const{
-	decPoint3 shifted( coord + pGridCoordShift );
+decPoint3 deoglGICascade::LocalGrid2ShiftedGrid(const decPoint3 &coord) const{
+	decPoint3 shifted(coord + pGridCoordShift);
 	shifted.x %= pGIState.GetProbeCount().x;
 	shifted.y %= pGIState.GetProbeCount().y;
 	shifted.z %= pGIState.GetProbeCount().z;
 	return shifted;
 }
 
-decPoint3 deoglGICascade::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
-	decPoint3 local( coord - pGridCoordShift + pGIState.GetProbeCount() );
+decPoint3 deoglGICascade::ShiftedGrid2LocalGrid(const decPoint3 &coord) const{
+	decPoint3 local(coord - pGridCoordShift + pGIState.GetProbeCount());
 	local.x %= pGIState.GetProbeCount().x;
 	local.y %= pGIState.GetProbeCount().y;
 	local.z %= pGIState.GetProbeCount().z;
@@ -182,38 +182,38 @@ decPoint3 deoglGICascade::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 
 
 
-decVector deoglGICascade::ProbePosition( int index ) const{
-	return pProbes[ index ].position + pProbes[ index ].offset;
+decVector deoglGICascade::ProbePosition(int index) const{
+	return pProbes[index].position + pProbes[index].offset;
 }
 
 
 
-void deoglGICascade::SetRequiresFullUpdateInsideView( bool requiresUpdate ){
+void deoglGICascade::SetRequiresFullUpdateInsideView(bool requiresUpdate){
 	pRequiresFullUpdateInsideView = requiresUpdate;
 }
 
 
 
 void deoglGICascade::ClearClearProbes(){
-	memset( pClearProbes, 0, pClearProbeCount * sizeof( uint32_t ) );
+	memset(pClearProbes, 0, pClearProbeCount * sizeof(uint32_t));
 	pHasClearProbes = false;
 }
 
-void deoglGICascade::PrepareUBOClearProbes( deoglSPBlockUBO &ubo ) const{
-	const deoglSPBMapBuffer mapped( ubo );
+void deoglGICascade::PrepareUBOClearProbes(deoglSPBlockUBO &ubo) const{
+	const deoglSPBMapBuffer mapped(ubo);
 	const int count = pClearProbeCount / 4;
 	int i, j;
 	
-	for( i=0, j=0; i<count; i++, j+=4 ){
-		ubo.SetParameterDataArrayUVec4( 0, i, pClearProbes[ j ],
-			pClearProbes[ j + 1 ], pClearProbes[ j + 2 ], pClearProbes[ j + 3 ] );
+	for(i=0, j=0; i<count; i++, j+=4){
+		ubo.SetParameterDataArrayUVec4(0, i, pClearProbes[j],
+			pClearProbes[j + 1], pClearProbes[j + 2], pClearProbes[j + 3]);
 	}
 }
 
-int deoglGICascade::IndexOfUpdateProbe( int probeIndex ) const{
+int deoglGICascade::IndexOfUpdateProbe(int probeIndex) const{
 	int i;
-	for( i=0; i<pUpdateProbeCount; i++ ){
-		if( probeIndex == pUpdateProbes[ i ] ){
+	for(i=0; i<pUpdateProbeCount; i++){
+		if(probeIndex == pUpdateProbes[i]){
 			return i;
 		}
 	}
@@ -226,8 +226,8 @@ void deoglGICascade::Invalidate(){
 	const int count = pGIState.GetRealProbeCount();
 	uint16_t i;
 	
-	for( i=0; i<count; i++ ){
-		sProbe &probe = pProbes[ i ];
+	for(i=0; i<count; i++){
+		sProbe &probe = pProbes[i];
 		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
@@ -240,10 +240,10 @@ void deoglGICascade::Invalidate(){
 	ClearClearProbes();
 }
 
-void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend, bool hard ){
-	const decVector lminExtend( minExtend - pPosition - pStaticHalfEnlarge );
-	const decVector lmaxExtend( maxExtend - pPosition + pStaticHalfEnlarge );
-	if( ! ( lmaxExtend > -pDetectionBox && lminExtend < pDetectionBox ) ){
+void deoglGICascade::InvalidateArea(const decDVector &minExtend, const decDVector &maxExtend, bool hard){
+	const decVector lminExtend(minExtend - pPosition - pStaticHalfEnlarge);
+	const decVector lmaxExtend(maxExtend - pPosition + pStaticHalfEnlarge);
+	if(!(lmaxExtend > -pDetectionBox && lminExtend < pDetectionBox)){
 		return;
 	}
 	
@@ -253,15 +253,15 @@ void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVect
 	int i;
 // 		decString debugText( "InvalidateArea: (%g,%g,%g) (%g,%g,%g);" );
 	
-	for( i=0; i<count; i++ ){
-		sProbe &probe = pProbes[ i ];
-		if( ( probe.flags & flagMask ) == flagFilter
-		&& probe.maxExtend > lminExtend && probe.minExtend < lmaxExtend ){
+	for(i=0; i<count; i++){
+		sProbe &probe = pProbes[i];
+		if((probe.flags & flagMask) == flagFilter
+		&& probe.maxExtend > lminExtend && probe.minExtend < lmaxExtend){
 // 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("Cascade(%d) InvalidateArea Probe(%d,%d,%d) (%g,%g,%g) (%g,%g,%g)",
 // 					pIndex, probe.shiftedCoord.x, probe.shiftedCoord.y, probe.shiftedCoord.z,
 // 					probe.minExtend.x, probe.minExtend.y, probe.minExtend.z,
 // 					probe.maxExtend.x, probe.maxExtend.y, probe.maxExtend.z);
-			probe.flags &= ~( epfDisabled | epfNearGeometry | epfRayCacheValid | epfDynamicDisable );
+			probe.flags &= ~(epfDisabled | epfNearGeometry | epfRayCacheValid | epfDynamicDisable);
 			probe.offset.SetZero();
 			probe.countOffsetMoved = 0;
 // 				debugText.AppendFormat( " %d,", i );
@@ -271,24 +271,24 @@ void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVect
 // 		pRenderThread.GetLogger().LogInfoFormat( debugText, lminExtend.x, lminExtend.y, lminExtend.z, lmaxExtend.x, lmaxExtend.y, lmaxExtend.z );
 }
 
-void deoglGICascade::TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend ){
-	const decVector lminExtend( ( minExtend - pPosition ).ToVector() - pDynamicHalfEnlarge );
-	const decVector lmaxExtend( ( maxExtend - pPosition ).ToVector() + pDynamicHalfEnlarge );
-	if( ! ( lmaxExtend > pFieldOrigin && lminExtend < -pFieldOrigin ) ){
+void deoglGICascade::TouchDynamicArea(const decDVector &minExtend, const decDVector &maxExtend){
+	const decVector lminExtend((minExtend - pPosition).ToVector() - pDynamicHalfEnlarge);
+	const decVector lmaxExtend((maxExtend - pPosition).ToVector() + pDynamicHalfEnlarge);
+	if(!(lmaxExtend > pFieldOrigin && lminExtend < -pFieldOrigin)){
 		return;
 	}
 	
-	const decPoint3 from( ( ( lminExtend - pFieldOrigin ).Multiply( pProbeSpacingInv ) ).
-		Clamped( decPoint3(), pGIState.GetGridCoordClamp() ) );
-	const decPoint3 to( ( ( lmaxExtend - pFieldOrigin ).Multiply( pProbeSpacingInv ) ).
-		Clamped( decPoint3(), pGIState.GetGridCoordClamp() ) );
+	const decPoint3 from(((lminExtend - pFieldOrigin).Multiply(pProbeSpacingInv)).
+		Clamped(decPoint3(), pGIState.GetGridCoordClamp()));
+	const decPoint3 to(((lmaxExtend - pFieldOrigin).Multiply(pProbeSpacingInv)).
+		Clamped(decPoint3(), pGIState.GetGridCoordClamp()));
 	
 	decPoint3 i;
-	for( i.y=from.y; i.y<=to.y; i.y++ ){
-		for( i.z=from.z; i.z<=to.z; i.z++ ){
-			for( i.x=from.x; i.x<=to.x; i.x++ ){
-				sProbe &probe = pProbes[ GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( i ) ) ];
-				if( probe.position > lminExtend && probe.position < lmaxExtend ){
+	for(i.y=from.y; i.y<=to.y; i.y++){
+		for(i.z=from.z; i.z<=to.z; i.z++){
+			for(i.x=from.x; i.x<=to.x; i.x++){
+				sProbe &probe = pProbes[GridCoord2ProbeIndex(ShiftedGrid2LocalGrid(i))];
+				if(probe.position > lminExtend && probe.position < lmaxExtend){
 					probe.flags &= ~epfDynamicDisable;
 				}
 			}
@@ -298,16 +298,16 @@ void deoglGICascade::TouchDynamicArea( const decDVector &minExtend, const decDVe
 
 void deoglGICascade::ValidatedRayCaches(){
 	int i;
-	for( i=0; i<pRayCacheProbeCount; i++ ){
-		pProbes[ pRayCacheProbes[ i ] ].flags |= epfRayCacheValid;
+	for(i=0; i<pRayCacheProbeCount; i++){
+		pProbes[pRayCacheProbes[i]].flags |= epfRayCacheValid;
 	}
 }
 
 void deoglGICascade::InvalidateAllRayCaches(){
 	const int count = pGIState.GetRealProbeCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pProbes[ i ].flags &= ~( epfRayCacheValid | epfDisabled | epfDynamicDisable );
+	for(i=0; i<count; i++){
+		pProbes[i].flags &= ~(epfRayCacheValid | epfDisabled | epfDynamicDisable);
 	}
 }
 
@@ -323,50 +323,50 @@ void deoglGICascade::InvalidateAllRayCaches(){
 #define SPECIAL_TIMER_PRINT(w)
 #endif
 
-void deoglGICascade::UpdatePosition( const decDVector &position ){
+void deoglGICascade::UpdatePosition(const decDVector &position){
 	// find world position closest to the next grid position. if the position is
 	// the same no updating is required
-	decDVector closestPosition( WorldClosestGrid( position ) );
-	if( closestPosition.IsEqualTo( pPosition ) ){
+	decDVector closestPosition(WorldClosestGrid(position));
+	if(closestPosition.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	// skip update if position is too close to the last reference position. this avoids
 	// excessive updates if the position oscillates around grid boundaries. this can
 	// happen with player cameras affected by view bobbing
-	const decDVector refPosDiff( ( position - pLastRefPosition ).Absolute() );
-	const bool refPosKeepX = refPosDiff.x < ( double )pProbeSpacing.x * 0.8;
-	const bool refPosKeepY = refPosDiff.y < ( double )pProbeSpacing.y * 0.8;
-	const bool refPosKeepZ = refPosDiff.z < ( double )pProbeSpacing.z * 0.8;
+	const decDVector refPosDiff((position - pLastRefPosition).Absolute());
+	const bool refPosKeepX = refPosDiff.x < (double)pProbeSpacing.x * 0.8;
+	const bool refPosKeepY = refPosDiff.y < (double)pProbeSpacing.y * 0.8;
+	const bool refPosKeepZ = refPosDiff.z < (double)pProbeSpacing.z * 0.8;
 	
-	if( refPosKeepX && refPosKeepY && refPosKeepZ ){
+	if(refPosKeepX && refPosKeepY && refPosKeepZ){
 		return;
 	}
 	
 	// modify the closest position to change along each axis only if really necessary
-	if( refPosKeepX ){
+	if(refPosKeepX){
 		closestPosition.x = pPosition.x;
 	}
-	if( refPosKeepY ){
+	if(refPosKeepY){
 		closestPosition.y = pPosition.y;
 	}
-	if( refPosKeepZ ){
+	if(refPosKeepZ){
 		closestPosition.z = pPosition.z;
 	}
 	
 	// invalidate probes shifted out
 	// NOTE extends offset moves in the opposite direction
-	const decVector extendsOffset( closestPosition - pPosition );
-	const decPoint3 gridOffset( extendsOffset.Multiply( pProbeSpacingInv ).Round() );
+	const decVector extendsOffset(closestPosition - pPosition);
+	const decPoint3 gridOffset(extendsOffset.Multiply(pProbeSpacingInv).Round());
 	const int realProbeCount = pGIState.GetRealProbeCount();
 	const decPoint3 &probeCount = pGIState.GetProbeCount();
 	int i;
 	
-	for( i=0; i<realProbeCount; i++ ){
-		sProbe &probe = pProbes[ i ];
+	for(i=0; i<realProbeCount; i++){
+		sProbe &probe = pProbes[i];
 		
-		const decPoint3 coord( probe.shiftedCoord - gridOffset );
-		if( coord >= decPoint3() && coord < probeCount ){
+		const decPoint3 coord(probe.shiftedCoord - gridOffset);
+		if(coord >= decPoint3() && coord < probeCount){
 			// probe is still valid
 			probe.minExtend -= extendsOffset;
 			probe.maxExtend -= extendsOffset;
@@ -382,20 +382,20 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 		
 		pHasInvalidProbesInsideView = true;
 		
-		pClearProbes[ i / 32 ] |= ( uint32_t )1 << ( i % 32 );
+		pClearProbes[i / 32] |= (uint32_t)1 << (i % 32);
 		pHasClearProbes = true;
 	}
 	
 	// set the new tracing position
 	pPosition = closestPosition;
 	
-	if( ! refPosKeepX ){
+	if(!refPosKeepX){
 		pLastRefPosition.x = position.x;
 	}
-	if( ! refPosKeepY ){
+	if(!refPosKeepY){
 		pLastRefPosition.y = position.y;
 	}
-	if( ! refPosKeepZ ){
+	if(!refPosKeepZ){
 		pLastRefPosition.z = position.z;
 	}
 	
@@ -410,14 +410,14 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 	pGridCoordShift.z %= probeCount.z;
 	
 	// update probe cordinates. has to come after adjusting the parameters
-	for( i=0; i<realProbeCount; i++ ){
-		sProbe &probe = pProbes[ i ];
-		probe.shiftedCoord = LocalGrid2ShiftedGrid( probe.coord );
-		probe.position = Grid2Local( probe.shiftedCoord );
+	for(i=0; i<realProbeCount; i++){
+		sProbe &probe = pProbes[i];
+		probe.shiftedCoord = LocalGrid2ShiftedGrid(probe.coord);
+		probe.position = Grid2Local(probe.shiftedCoord);
 	}
 }
 
-void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
+void deoglGICascade::FindProbesToUpdate(const deoglDCollisionFrustum &frustum){
 	// classify probes into inside view and outside view. for this we test the probe position
 	// against the frustum planes. this classifies though probes at the broder of the frustum
 	// as outside if their position is outside but their extends protrude into the frustum.
@@ -437,36 +437,36 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 	// 
 	// at the same time determine if probes that are neither disabled nor near static geometry
 	// are near dynamic geometry
-	const decVector frustumNormalLeft( frustum.GetLeftNormal() );
-	const decVector frustumNormalTop( frustum.GetTopNormal() );
-	const decVector frustumNormalRight( frustum.GetRightNormal() );
-	const decVector frustumNormalBottom( frustum.GetBottomNormal() );
-	const decVector frustumNormalNear( frustum.GetNearNormal() );
+	const decVector frustumNormalLeft(frustum.GetLeftNormal());
+	const decVector frustumNormalTop(frustum.GetTopNormal());
+	const decVector frustumNormalRight(frustum.GetRightNormal());
+	const decVector frustumNormalBottom(frustum.GetBottomNormal());
+	const decVector frustumNormalNear(frustum.GetNearNormal());
 	
 	const float frustumPlaneShift = pProbeSpacing.Length() * 0.5f;
 	
-	const float frustumDistanceLeft = ( float )( frustum.GetLeftDistance()
-		- frustum.GetLeftNormal() * pPosition ) - frustumPlaneShift;
-	const float frustumDistanceTop = ( float )( frustum.GetTopDistance()
-		- frustum.GetTopNormal() * pPosition ) - frustumPlaneShift;
-	const float frustumDistanceRight = ( float )( frustum.GetRightDistance()
-		- frustum.GetRightNormal() * pPosition ) - frustumPlaneShift;
-	const float frustumDistanceBottom = ( float )( frustum.GetBottomDistance()
-		- frustum.GetBottomNormal() * pPosition ) - frustumPlaneShift;
-	const float frustumDistanceNear = ( float )( frustum.GetNearDistance()
-		- frustum.GetNearNormal() * pPosition ) - frustumPlaneShift;
+	const float frustumDistanceLeft = (float)(frustum.GetLeftDistance()
+		- frustum.GetLeftNormal() * pPosition) - frustumPlaneShift;
+	const float frustumDistanceTop = (float)(frustum.GetTopDistance()
+		- frustum.GetTopNormal() * pPosition) - frustumPlaneShift;
+	const float frustumDistanceRight = (float)(frustum.GetRightDistance()
+		- frustum.GetRightNormal() * pPosition) - frustumPlaneShift;
+	const float frustumDistanceBottom = (float)(frustum.GetBottomDistance()
+		- frustum.GetBottomNormal() * pPosition) - frustumPlaneShift;
+	const float frustumDistanceNear = (float)(frustum.GetNearDistance()
+		- frustum.GetNearNormal() * pPosition) - frustumPlaneShift;
 	
 	const int realProbeCount = pGIState.GetRealProbeCount();
 	int i;
-	for( i=0; i<realProbeCount; i++ ){
-		sProbe &probe = pProbes[ i ];
+	for(i=0; i<realProbeCount; i++){
+		sProbe &probe = pProbes[i];
 		
 		// inside view
-		if( ( frustumNormalNear * probe.position >= frustumDistanceNear )
-		&& ( frustumNormalLeft * probe.position >= frustumDistanceLeft )
-		&& ( frustumNormalRight * probe.position >= frustumDistanceRight )
-		&& ( frustumNormalTop * probe.position >= frustumDistanceTop )
-		&& ( frustumNormalBottom * probe.position >= frustumDistanceBottom ) ){
+		if((frustumNormalNear * probe.position >= frustumDistanceNear)
+		&& (frustumNormalLeft * probe.position >= frustumDistanceLeft)
+		&& (frustumNormalRight * probe.position >= frustumDistanceRight)
+		&& (frustumNormalTop * probe.position >= frustumDistanceTop)
+		&& (frustumNormalBottom * probe.position >= frustumDistanceBottom)){
 			probe.flags |= epfInsideView;
 			
 		}else{
@@ -476,7 +476,7 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 	
 	pUpdateProbeCount = 0;
 	
-	if( pRequiresFullUpdateInsideView ){
+	if(pRequiresFullUpdateInsideView){
 		pFindProbesToUpdateFullUpdateInsideView();
 		pRequiresFullUpdateInsideView = false;
 		
@@ -486,13 +486,13 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 	
 	// update states of probes to update. has to be done after adding the probes to avoid
 	// changing flags to affect the filtering
-	for( i=0; i<pUpdateProbeCount; i++ ){
-		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
+	for(i=0; i<pUpdateProbeCount; i++){
+		sProbe &probe = pProbes[pUpdateProbes[i]];
 		
-		if( ( probe.flags & epfValid ) == epfValid ){
+		if((probe.flags & epfValid) == epfValid){
 			probe.flags |= epfSmoothUpdate;
 			
-			if( probe.countOffsetMoved == 1 ){
+			if(probe.countOffsetMoved == 1){
 				// probe moved for the first time. this is usually a large jump from an invalid
 				// or unfortunate position to the first potentially good position. for this
 				// reason an update has to be forced for this first move but not following ones
@@ -506,7 +506,7 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 			probe.flags |= epfValid;
 		}
 		
-		probe.flags &= ~( epfDisabled | epfDynamicDisable );
+		probe.flags &= ~(epfDisabled | epfDynamicDisable);
 	}
 	
 		/*{
@@ -527,16 +527,16 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 #if 0
 // 	const decPoint3 spread( 16, 4, 32 ); // 2048 probes
 // 	const decPoint3 spread( 16, 4, 16 ); // 1024 probes
-	const decPoint3 spread( 8, 4, 8 ); // 256 probes
-	const decPoint3 gis( ( pProbeCount - spread ) / 2 );
-	const decPoint3 gie( gis + spread );
+	const decPoint3 spread(8, 4, 8); // 256 probes
+	const decPoint3 gis((pProbeCount - spread) / 2);
+	const decPoint3 gie(gis + spread);
 	pUpdateProbeCount = 0;
 	
 	decPoint3 gi;
-	for( gi.y=gis.y; gi.y<gie.y; gi.y++ ){
-		for( gi.z=gis.z; gi.z<gie.z; gi.z++ ){
-			for( gi.x=gis.x; gi.x<gie.x; gi.x++ ){
-				pAddUpdateProbe( pProbes[ GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( gi ) ) ] );
+	for(gi.y=gis.y; gi.y<gie.y; gi.y++){
+		for(gi.z=gis.z; gi.z<gie.z; gi.z++){
+			for(gi.x=gis.x; gi.x<gie.x; gi.x++){
+				pAddUpdateProbe(pProbes[GridCoord2ProbeIndex(ShiftedGrid2LocalGrid(gi))]);
 			}
 		}
 	}
@@ -547,10 +547,10 @@ void deoglGICascade::PrepareRayCacheProbes(){
 	pRayCacheProbeCount = 0;
 	
 	int i;
-	for( i=0; i<pUpdateProbeCount; i++ ){
-		const sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
-		if( ( probe.flags & epfRayCacheValid ) != epfRayCacheValid ){
-			pRayCacheProbes[ pRayCacheProbeCount++ ] = pUpdateProbes[ i ];
+	for(i=0; i<pUpdateProbeCount; i++){
+		const sProbe &probe = pProbes[pUpdateProbes[i]];
+		if((probe.flags & epfRayCacheValid) != epfRayCacheValid){
+			pRayCacheProbes[pRayCacheProbeCount++] = pUpdateProbes[i];
 		}
 	}
 }
@@ -558,98 +558,98 @@ void deoglGICascade::PrepareRayCacheProbes(){
 
 
 float deoglGICascade::CalcUBOSelfShadowBias() const{
-	return pGIState.GetSelfShadowBias() * decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z );
+	return pGIState.GetSelfShadowBias() * decMath::min(pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z);
 }
 
-void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount, const deoglGIBVH &bvh ) const{
+void deoglGICascade::UpdateUBOParameters(deoglSPBlockUBO &ubo, int probeCount, const deoglGIBVH &bvh) const{
 	const deoglGI &gi = pGIState.GetRenderThread().GetGI();
 	const deoglGITraceRays &traceRays = gi.GetTraceRays();
 	const int raysPerProbe = traceRays.GetRaysPerProbe();
-	const deoglSPBMapBuffer mapped( ubo );
+	const deoglSPBMapBuffer mapped(ubo);
 	
-	ubo.SetParameterDataVec2( deoglGI::eupSampleImageScale,
-		1.0f / ( float )pGIState.GetSampleImageSize().x,
-		1.0f / ( float )pGIState.GetSampleImageSize().y );
-	ubo.SetParameterDataInt( deoglGI::eupProbeCount, probeCount );
-	ubo.SetParameterDataInt( deoglGI::eupRaysPerProbe, raysPerProbe );
-	ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, traceRays.GetProbesPerLine() );
-	ubo.SetParameterDataInt( deoglGI::eupIrradianceMapSize, pGIState.GetIrradianceMapSize() );
-	ubo.SetParameterDataInt( deoglGI::eupDistanceMapSize, pGIState.GetDistanceMapSize() );
-	ubo.SetParameterDataVec2( deoglGI::eupIrradianceMapScale, pGIState.GetIrradianceMapScale() );
-	ubo.SetParameterDataVec2( deoglGI::eupDistanceMapScale, pGIState.GetDistanceMapScale() );
-	ubo.SetParameterDataFloat( deoglGI::eupMaxProbeDistance, pMaxProbeDistance );
-	ubo.SetParameterDataFloat( deoglGI::eupDepthSharpness, pGIState.GetDepthSharpness() );
-	ubo.SetParameterDataVec3( deoglGI::eupGridOrigin, pFieldOrigin );
-	ubo.SetParameterDataIVec3( deoglGI::eupGridCoordUnshift, pGridCoordShift );
-	ubo.SetParameterDataVec3( deoglGI::eupFieldSize, pFieldSize );
-	ubo.SetParameterDataFloat( deoglGI::eupBlendUpdateProbe, 1.0f - pGIState.GetHysteresis() );
-	ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, bvh.GetIndexRootNode() );
-	ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pGIState.GetProbeCount() );
-	ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
-	ubo.SetParameterDataFloat( deoglGI::eupIrradianceGamma, pGIState.GetIrradianceGamma() );
-	ubo.SetParameterDataFloat( deoglGI::eupInvIrradianceGamma, 1.0f / pGIState.GetIrradianceGamma() );
-	ubo.SetParameterDataFloat( deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias() );
-	ubo.SetParameterDataInt( deoglGI::eupCascade, pIndex );
-	ubo.SetParameterDataVec3( deoglGI::eupDetectionBox, pDetectionBox );
-	ubo.SetParameterDataInt( deoglGI::euppRayCacheProbeCount, pRayCacheProbeCount );
-	ubo.SetParameterDataVec3( deoglGI::eupBVHOffset, ( pPosition - bvh.GetPosition() ).ToVector() );
+	ubo.SetParameterDataVec2(deoglGI::eupSampleImageScale,
+		1.0f / (float)pGIState.GetSampleImageSize().x,
+		1.0f / (float)pGIState.GetSampleImageSize().y);
+	ubo.SetParameterDataInt(deoglGI::eupProbeCount, probeCount);
+	ubo.SetParameterDataInt(deoglGI::eupRaysPerProbe, raysPerProbe);
+	ubo.SetParameterDataInt(deoglGI::eupProbesPerLine, traceRays.GetProbesPerLine());
+	ubo.SetParameterDataInt(deoglGI::eupIrradianceMapSize, pGIState.GetIrradianceMapSize());
+	ubo.SetParameterDataInt(deoglGI::eupDistanceMapSize, pGIState.GetDistanceMapSize());
+	ubo.SetParameterDataVec2(deoglGI::eupIrradianceMapScale, pGIState.GetIrradianceMapScale());
+	ubo.SetParameterDataVec2(deoglGI::eupDistanceMapScale, pGIState.GetDistanceMapScale());
+	ubo.SetParameterDataFloat(deoglGI::eupMaxProbeDistance, pMaxProbeDistance);
+	ubo.SetParameterDataFloat(deoglGI::eupDepthSharpness, pGIState.GetDepthSharpness());
+	ubo.SetParameterDataVec3(deoglGI::eupGridOrigin, pFieldOrigin);
+	ubo.SetParameterDataIVec3(deoglGI::eupGridCoordUnshift, pGridCoordShift);
+	ubo.SetParameterDataVec3(deoglGI::eupFieldSize, pFieldSize);
+	ubo.SetParameterDataFloat(deoglGI::eupBlendUpdateProbe, 1.0f - pGIState.GetHysteresis());
+	ubo.SetParameterDataInt(deoglGI::eupBVHInstanceRootNode, bvh.GetIndexRootNode());
+	ubo.SetParameterDataIVec3(deoglGI::eupGridProbeCount, pGIState.GetProbeCount());
+	ubo.SetParameterDataVec3(deoglGI::eupGridProbeSpacing, pProbeSpacing);
+	ubo.SetParameterDataFloat(deoglGI::eupIrradianceGamma, pGIState.GetIrradianceGamma());
+	ubo.SetParameterDataFloat(deoglGI::eupInvIrradianceGamma, 1.0f / pGIState.GetIrradianceGamma());
+	ubo.SetParameterDataFloat(deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias());
+	ubo.SetParameterDataInt(deoglGI::eupCascade, pIndex);
+	ubo.SetParameterDataVec3(deoglGI::eupDetectionBox, pDetectionBox);
+	ubo.SetParameterDataInt(deoglGI::euppRayCacheProbeCount, pRayCacheProbeCount);
+	ubo.SetParameterDataVec3(deoglGI::eupBVHOffset, (pPosition - bvh.GetPosition()).ToVector());
 	
 	// material
 	/*
 	const int materialMapSize = gi.GetMaterials().GetMaterialMapSize();
 	const int materialTexWidth = gi.GetMaterials().GetTextureDiffuseTintMask().GetWidth();
 	const int materialTexHeight = gi.GetMaterials().GetTextureDiffuseTintMask().GetHeight();
-	const float materialScaleU = ( float )materialMapSize / ( float )materialTexWidth;
-	const float materialScaleV = ( float )materialMapSize / ( float )materialTexHeight;
+	const float materialScaleU = (float)materialMapSize / (float)materialTexWidth;
+	const float materialScaleV = (float)materialMapSize / (float)materialTexHeight;
 	//const float materialClamp = ( 1.0f / ( float )materialMapSize ) * 0.5f;
-	ubo.SetParameterDataVec2( deoglGI::eupMaterialMapTCScale, materialScaleU, materialScaleV );
+	ubo.SetParameterDataVec2(deoglGI::eupMaterialMapTCScale, materialScaleU, materialScaleV);
 	*/
-	ubo.SetParameterDataInt( deoglGI::eupMaterialMapsPerRow, gi.GetMaterials().GetMaterialsPerRow() );
-	ubo.SetParameterDataInt( deoglGI::eupMaterialMapSize, gi.GetMaterials().GetMaterialMapSize() );
+	ubo.SetParameterDataInt(deoglGI::eupMaterialMapsPerRow, gi.GetMaterials().GetMaterialsPerRow());
+	ubo.SetParameterDataInt(deoglGI::eupMaterialMapSize, gi.GetMaterials().GetMaterialMapSize());
 	
 	// move probes. probe can move at most 50% inside the grid acording to the paper.
 	// to be on the safe side use 45%. the minimum distance to the surface is set to
 	// 25% of the smallest spacing. this is rather random value with the aim to
 	// increase the visible surface captured by probes but without approaching the
 	// maximum offset too much.
-	ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f /*0.45f*/ );
-	ubo.SetParameterDataFloat( deoglGI::eupMoveMinDistToSurface,
-		decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.25f );
+	ubo.SetParameterDataVec3(deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f /*0.45f*/);
+	ubo.SetParameterDataFloat(deoglGI::eupMoveMinDistToSurface,
+		decMath::min(pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z) * 0.25f);
 	
 	// rays
-	ubo.SetParameterDataVec2( deoglGI::eupRayMapScale, pGIState.GetRayCache().GetRayMapScale() );
+	ubo.SetParameterDataVec2(deoglGI::eupRayMapScale, pGIState.GetRayCache().GetRayMapScale());
 }
 
-void deoglGICascade::UpdateUBOProbePosition( deoglSPBlockUBO &ubo ) const{
-	pUpdateUBOProbePosition( ubo, pUpdateProbes, pUpdateProbeCount );
+void deoglGICascade::UpdateUBOProbePosition(deoglSPBlockUBO &ubo) const{
+	pUpdateUBOProbePosition(ubo, pUpdateProbes, pUpdateProbeCount);
 }
 
-void deoglGICascade::UpdateUBOProbeIndices( deoglSPBlockUBO &ubo ) const{
-	pUpdateUBOProbeIndices( ubo, pUpdateProbes, pUpdateProbeCount );
+void deoglGICascade::UpdateUBOProbeIndices(deoglSPBlockUBO &ubo) const{
+	pUpdateUBOProbeIndices(ubo, pUpdateProbes, pUpdateProbeCount);
 }
 
-void deoglGICascade::UpdateUBOProbeIndicesRayCache( deoglSPBlockUBO &ubo ) const{
-	pUpdateUBOProbeIndices( ubo, pRayCacheProbes, pRayCacheProbeCount );
+void deoglGICascade::UpdateUBOProbeIndicesRayCache(deoglSPBlockUBO &ubo) const{
+	pUpdateUBOProbeIndices(ubo, pRayCacheProbes, pRayCacheProbeCount);
 }
 
-void deoglGICascade::UpdateUBOProbePositionRayCache( deoglSPBlockUBO &ubo ) const{
-	pUpdateUBOProbePosition( ubo, pRayCacheProbes, pRayCacheProbeCount );
+void deoglGICascade::UpdateUBOProbePositionRayCache(deoglSPBlockUBO &ubo) const{
+	pUpdateUBOProbePosition(ubo, pRayCacheProbes, pRayCacheProbeCount);
 }
 
-void deoglGICascade::UpdateProbeOffsetFromShader( const char *data ){
+void deoglGICascade::UpdateProbeOffsetFromShader(const char *data){
 	struct sProbeOffset{
 		decVector offset;
 		uint32_t flags;
 	};
 	
 	INIT_SPECIAL_TIMING
-	const sProbeOffset * const offsets = ( const sProbeOffset * )data;
+	const sProbeOffset * const offsets = (const sProbeOffset *)data;
 	int i;
 	
-	for( i=0; i<pUpdateProbeCount; i++ ){
-		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
+	for(i=0; i<pUpdateProbeCount; i++){
+		sProbe &probe = pProbes[pUpdateProbes[i]];
 		
-		probe.flags = ( uint8_t )offsets[ i ].flags;
+		probe.flags = (uint8_t)offsets[i].flags;
 		
 		// PROBLEM some probes flicker between two positions and can not make up their mind.
 		//         this causes GI flickering and endless ray cache invalidating.
@@ -659,18 +659,18 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const char *data ){
 		//         offset anymore. invalidating a probe resets the counter
 		//         
 		//         the root cause is unknown. would be better to find and fix it
-		if( probe.countOffsetMoved < 5 ){
-			if( ( probe.flags & epfDisabled ) != epfDisabled ){
+		if(probe.countOffsetMoved < 5){
+			if((probe.flags & epfDisabled) != epfDisabled){
 				probe.countOffsetMoved++;
 				
 			}else{
 				probe.countOffsetMoved = 5;
 			}
 			
-			if( ! offsets[ i ].offset.IsEqualTo( probe.offset, 0.05f ) ){
+			if(!offsets[i].offset.IsEqualTo(probe.offset, 0.05f)){
 				// update offset only if it moved far enough to justify an expensive update
-				probe.offset = offsets[ i ].offset;
-				probe.flags &= ~( epfRayCacheValid | epfDynamicDisable );
+				probe.offset = offsets[i].offset;
+				probe.flags &= ~(epfRayCacheValid | epfDynamicDisable);
 			}
 		}
 // 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
@@ -684,28 +684,28 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const char *data ){
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > > Flags")
 }
 
-void deoglGICascade::UpdateProbeExtendsFromShader( const char *data ){
+void deoglGICascade::UpdateProbeExtendsFromShader(const char *data){
 	struct sProbeExtend{
 		decVector minExtend; float padding1;
 		decVector maxExtend; float padding2;
 	};
 	
 	INIT_SPECIAL_TIMING
-	const sProbeExtend * const extends = ( const sProbeExtend * )data;
+	const sProbeExtend * const extends = (const sProbeExtend *)data;
 	int i;
 	
-	for( i=0; i<pRayCacheProbeCount; i++ ){
-		sProbe &probe = pProbes[ pRayCacheProbes[ i ] ];
-		probe.minExtend = extends[ i ].minExtend;
-		probe.maxExtend = extends[ i ].maxExtend;
+	for(i=0; i<pRayCacheProbeCount; i++){
+		sProbe &probe = pProbes[pRayCacheProbes[i]];
+		probe.minExtend = extends[i].minExtend;
+		probe.maxExtend = extends[i].maxExtend;
 	}
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > > Extends")
 	
 	/*
 	deoglRTLogger &l = pGIState.GetRenderThread().GetLogger();
 	l.LogInfo("UpdateProbeExtendsFromShader:");
-	for( i=0; i<pRayCacheProbeCount; i++ ){
-		sProbe &probe = pProbes[ pRayCacheProbes[ i ] ];
+	for(i=0; i<pRayCacheProbeCount; i++){
+		sProbe &probe = pProbes[pRayCacheProbes[i]];
 		l.LogInfoFormat("- %d(%d,%d,%d) (%g,%g,%g) (%g,%g,%g)(%g,%g,%g)", probe.index,
 			probe.shiftedCoord.x, probe.shiftedCoord.y, probe.shiftedCoord.z,
 			probe.position.x, probe.position.y, probe.position.z,
@@ -721,19 +721,19 @@ void deoglGICascade::UpdateProbeExtendsFromShader( const char *data ){
 //////////////////////
 
 void deoglGICascade::pCleanUp(){
-	if( pProbes ){
+	if(pProbes){
 		delete [] pProbes;
 	}
-	if( pAgedProbes ){
+	if(pAgedProbes){
 		delete [] pAgedProbes;
 	}
-	if( pClearProbes ){
+	if(pClearProbes){
 		delete [] pClearProbes;
 	}
-	if( pRayCacheProbes ){
+	if(pRayCacheProbes){
 		delete [] pRayCacheProbes;
 	}
-	if( pUpdateProbes ){
+	if(pUpdateProbes){
 		delete [] pUpdateProbes;
 	}
 }
@@ -742,22 +742,22 @@ void deoglGICascade::pInitProbes(){
 	const int count = pGIState.GetRealProbeCount();
 	uint16_t i;
 	
-	pProbes = new sProbe[ count ];
-	pAgedProbes = new uint16_t[ count ];
+	pProbes = new sProbe[count];
+	pAgedProbes = new uint16_t[count];
 	
-	for( i=0; i<count; i++ ){
-		sProbe &probe = pProbes[ i ];
+	for(i=0; i<count; i++){
+		sProbe &probe = pProbes[i];
 		probe.index = i;
 		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
 		probe.minExtend = -pDetectionBox;
 		probe.maxExtend = pDetectionBox;
-		probe.coord = ProbeIndex2GridCoord( i );
-		probe.shiftedCoord = LocalGrid2ShiftedGrid( probe.coord );
-		probe.position = Grid2Local( probe.shiftedCoord );
+		probe.coord = ProbeIndex2GridCoord(i);
+		probe.shiftedCoord = LocalGrid2ShiftedGrid(probe.coord);
+		probe.position = Grid2Local(probe.shiftedCoord);
 		
-		pAgedProbes[ i ] = i;
+		pAgedProbes[i] = i;
 	}
 	
 	pHasInvalidProbesInsideView = true;
@@ -770,12 +770,12 @@ void deoglGICascade::pFindProbesToUpdateFullUpdateInsideView(){
 	int last = realProbeCount;
 	
 	int fillUpCount = maxUpdateCount;
-	pAddUpdateProbes( epfInsideView, epfInsideView, last, fillUpCount, maxUpdateCount );
+	pAddUpdateProbes(epfInsideView, epfInsideView, last, fillUpCount, maxUpdateCount);
 	
 	// finish the aged probe list to make it valid again
 	int i;
-	for( i=0; i<pUpdateProbeCount; i++ ){
-		pAgedProbes[ last++ ] = pUpdateProbes[ i ];
+	for(i=0; i<pUpdateProbeCount; i++){
+		pAgedProbes[last++] = pUpdateProbes[i];
 	}
 }
 
@@ -843,33 +843,33 @@ void deoglGICascade::pFindProbesToUpdateRegular(){
 	// invalid probes inside view. expensive updates but cause incomplete lighting.
 	// add all such probes ignoring config settings up to the maximum supported count
 	int maxUpdateCountExpensiveInside = GI_MAX_PROBE_COUNT;
-	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, GI_MAX_PROBE_COUNT );
+	pAddUpdateProbes(mask, epfInsideView, last, maxUpdateCountExpensiveInside, GI_MAX_PROBE_COUNT);
 	
 	// - invalid probes inside view. expensive updates. at most 50% count
 	// - valid requiring cache update probes inside view. expensive updates. at most 50% count
-	const int maxUpdateCountExpensive = ( int )( ( float )maxUpdateCount * 0.5f ); // 50%
-	int maxUpdateCountExpensiveOutside = ( int )( ( float )maxUpdateCountExpensive * 0.2f ); // 20%
+	const int maxUpdateCountExpensive = (int)((float)maxUpdateCount * 0.5f); // 50%
+	int maxUpdateCountExpensiveOutside = (int)((float)maxUpdateCountExpensive * 0.2f); // 20%
 	maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside // 80%
 		- pUpdateProbeCount; // minus already used count
 	
 // 	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
-	pAddUpdateProbes( mask, epfValid | epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
+	pAddUpdateProbes(mask, epfValid | epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount);
 	
 	// - invalid probes outside view. expensive updates. at most 50% count
 	// - valid requiring cache update probes outside view. expensive updates. at most 50% count
-	pAddUpdateProbes( mask, 0, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
-	pAddUpdateProbes( mask, epfValid, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
+	pAddUpdateProbes(mask, 0, last, maxUpdateCountExpensiveOutside, maxUpdateCount);
+	pAddUpdateProbes(mask, epfValid, last, maxUpdateCountExpensiveOutside, maxUpdateCount);
 	
 	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
 	const int maxUpdateCountCheap = maxUpdateCount - pUpdateProbeCount;
-	int maxUpdateCountCheapOutside = ( int )( ( float )maxUpdateCountCheap * 0.2f ); // 20%
+	int maxUpdateCountCheapOutside = (int)((float)maxUpdateCountCheap * 0.2f); // 20%
 	int maxUpdateCountCheapInside = maxUpdateCountCheap - maxUpdateCountCheapOutside; // 80%
 	
-	pAddUpdateProbes( mask, epfValid | epfInsideView | epfRayCacheValid, last, maxUpdateCountCheapInside, maxUpdateCount );
+	pAddUpdateProbes(mask, epfValid | epfInsideView | epfRayCacheValid, last, maxUpdateCountCheapInside, maxUpdateCount);
 	
 	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
 	int fillUpCount = maxUpdateCount - pUpdateProbeCount;
-	pAddUpdateProbes( mask, epfValid | epfRayCacheValid, last, fillUpCount, maxUpdateCount );
+	pAddUpdateProbes(mask, epfValid | epfRayCacheValid, last, fillUpCount, maxUpdateCount);
 	
 	// if not all update slots are used fill up with expensive updates if important enough.
 	// this situation happens usually only if the cascade teleported to a new location where
@@ -880,11 +880,11 @@ void deoglGICascade::pFindProbesToUpdateRegular(){
 	// enabling this can be adjusted on a per cascade basis. for large cascades doing this
 	// helps to ensure smaller cascades can fall back to some kind of lighting. for small
 	// cascades this can be disabled to speed up by using large cascade results
-	if( pFillUpUpdatesWithExpensiveProbes ){
+	if(pFillUpUpdatesWithExpensiveProbes){
 		// - invalid probes. expensive updates but important since it avoids lighting gaps
 		const int maskGrouped = epfValid | epfDisabled | epfDynamicDisable | epfRayCacheValid;
 		
-		pAddUpdateProbes( maskGrouped, 0, last, fillUpCount, maxUpdateCount );
+		pAddUpdateProbes(maskGrouped, 0, last, fillUpCount, maxUpdateCount);
 		
 		// - valid requiring cache update probes. expensive updates but not important enough
 // 		pAddUpdateProbes( maskGrouped, epfValid, last, fillUpCount, maxUpdateCount );
@@ -892,25 +892,25 @@ void deoglGICascade::pFindProbesToUpdateRegular(){
 	
 	// finish the aged probe list to make it valid again
 	int i;
-	for( i=0; i<pUpdateProbeCount; i++ ){
-		pAgedProbes[ last++ ] = pUpdateProbes[ i ];
+	for(i=0; i<pUpdateProbeCount; i++){
+		pAgedProbes[last++] = pUpdateProbes[i];
 	}
 }
 
-void deoglGICascade::pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
-int &remainingMatchCount, int maxUpdateCount ){
-	if( remainingMatchCount <= 0 || pUpdateProbeCount >= maxUpdateCount ){
+void deoglGICascade::pAddUpdateProbes(uint8_t mask, uint8_t flags, int &lastIndex,
+int &remainingMatchCount, int maxUpdateCount){
+	if(remainingMatchCount <= 0 || pUpdateProbeCount >= maxUpdateCount){
 		return;
 	}
 	
 	const int endIndex = lastIndex;
 	int i;
 	
-	for( i=0, lastIndex=0; i<endIndex; i++ ){
-		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
+	for(i=0, lastIndex=0; i<endIndex; i++){
+		sProbe &probe = pProbes[pAgedProbes[i]];
 		
-		if( ( probe.flags & mask ) != flags ){
-			pAgedProbes[ lastIndex++ ] = pAgedProbes[ i ];
+		if((probe.flags & mask) != flags){
+			pAgedProbes[lastIndex++] = pAgedProbes[i];
 			continue;
 		}
 		
@@ -918,39 +918,39 @@ int &remainingMatchCount, int maxUpdateCount ){
 		// all not added probes are packaged at the beginning. then the added probes are
 		// appended to the end of the list to obtain a full list again
 		remainingMatchCount--;
-		pUpdateProbes[ pUpdateProbeCount++ ] = probe.index;
+		pUpdateProbes[pUpdateProbeCount++] = probe.index;
 		
-		if( pUpdateProbeCount == maxUpdateCount || remainingMatchCount == 0 ){
+		if(pUpdateProbeCount == maxUpdateCount || remainingMatchCount == 0){
 			i++;
 			break;
 		}
 	}
 	
-	while( i < endIndex ){
-		pAgedProbes[ lastIndex++ ] = pAgedProbes[ i++ ];
+	while(i < endIndex){
+		pAgedProbes[lastIndex++] = pAgedProbes[i++];
 	}
 }
 
-void deoglGICascade::pUpdateUBOProbePosition( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const{
-	const deoglSPBMapBuffer mapped( ubo );
+void deoglGICascade::pUpdateUBOProbePosition(deoglSPBlockUBO &ubo, const uint16_t *indices, int count) const{
+	const deoglSPBMapBuffer mapped(ubo);
 	int i;
-	for( i=0; i<count; i++ ){
-		const sProbe &p = pProbes[ indices[ i ] ];
-		ubo.SetParameterDataArrayVec4( 0, i, p.position + p.offset, ( float )p.flags );
+	for(i=0; i<count; i++){
+		const sProbe &p = pProbes[indices[i]];
+		ubo.SetParameterDataArrayVec4(0, i, p.position + p.offset, (float)p.flags);
 	}
 }
 
-void deoglGICascade::pUpdateUBOProbeIndices( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const{
-	const deoglSPBMapBuffer mapped( ubo );
-	const int realCount = ( count - 1 ) / 4 + 1;
+void deoglGICascade::pUpdateUBOProbeIndices(deoglSPBlockUBO &ubo, const uint16_t *indices, int count) const{
+	const deoglSPBMapBuffer mapped(ubo);
+	const int realCount = (count - 1) / 4 + 1;
 	int i, j;
 	
-	for( i=0, j=0; i<realCount; i++, j+=4 ){
-		ubo.SetParameterDataArrayIVec4( 0, i,
-			j < count ? indices[ j ] : 0,
-			j + 1 < count ? indices[ j + 1 ] : 0,
-			j + 2 < count ? indices[ j + 2 ] : 0,
-			j + 3 < count ? indices[ j + 3 ] : 0 );
+	for(i=0, j=0; i<realCount; i++, j+=4){
+		ubo.SetParameterDataArrayIVec4(0, i,
+			j < count ? indices[j] : 0,
+			j + 1 < count ? indices[j + 1] : 0,
+			j + 2 < count ? indices[j + 2] : 0,
+			j + 3 < count ? indices[j + 3] : 0);
 	}
 }
 
@@ -960,8 +960,8 @@ void deoglGICascade::pUpdateHasProbeFlags(){
 	
 	pHasInvalidProbesInsideView = false;
 	
-	for( i=0; i<count; i++ ){
-		if( ( pProbes[ i ].flags & ( epfValid | epfInsideView ) ) == epfInsideView ){
+	for(i=0; i<count; i++){
+		if((pProbes[i].flags & (epfValid | epfInsideView)) == epfInsideView){
 			pHasInvalidProbesInsideView = true;
 			break;
 		}

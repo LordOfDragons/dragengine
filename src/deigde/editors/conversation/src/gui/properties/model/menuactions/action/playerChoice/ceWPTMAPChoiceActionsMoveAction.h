@@ -55,10 +55,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */
-	ceWPTMAPChoiceActionsMoveAction( ceWindowMain &windowMain,
+	ceWPTMAPChoiceActionsMoveAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceCAPlayerChoice &playerChoice, ceConversationAction *action, int index,
-		const char *text, igdeIcon *icon );
+		const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	

@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render component world compute element. */
-	deoglRComponentWCElement( deoglRComponent &component );
+	deoglRComponentWCElement(deoglRComponent &component);
 	
 protected:
 	/** Clean up render component. */
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update element data. */
-	virtual void UpdateData( sDataElement &data ) const;
+	virtual void UpdateData(sDataElement &data) const;
 	
 	/** Update geometries data. */
-	virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
 };
 
 #endif

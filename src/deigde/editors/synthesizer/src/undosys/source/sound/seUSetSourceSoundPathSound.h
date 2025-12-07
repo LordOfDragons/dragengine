@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSetSourceSoundPathSound( seSourceSound *source, const char *newPath );
+	seUSetSourceSoundPathSound(seSourceSound *source, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo action. */

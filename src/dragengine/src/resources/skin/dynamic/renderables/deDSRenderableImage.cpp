@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDSRenderableImage::deDSRenderableImage( const char *name ) : deDSRenderable( name ){
+deDSRenderableImage::deDSRenderableImage(const char *name) : deDSRenderable(name){
 }
 
 deDSRenderableImage::~deDSRenderableImage(){
@@ -51,7 +51,7 @@ deDSRenderableImage::~deDSRenderableImage(){
 // Management
 ///////////////
 
-void deDSRenderableImage::SetImage( deImage *image ){
+void deDSRenderableImage::SetImage(deImage *image){
 	pImage = image;
 }
 
@@ -60,6 +60,6 @@ void deDSRenderableImage::SetImage( deImage *image ){
 // Visiting
 /////////////
 
-void deDSRenderableImage::Visit( deDSRenderableVisitor &visitor ){
-	visitor.VisitImage( *this );
+void deDSRenderableImage::Visit(deDSRenderableVisitor &visitor){
+	visitor.VisitImage(*this);
 }

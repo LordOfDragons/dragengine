@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create thread. */
-	deParallelThread( deParallelProcessing &parallelProcessing, int number, bool takeLowPriorityTasks );
+	deParallelThread(deParallelProcessing &parallelProcessing, int number, bool takeLowPriorityTasks);
 	
 	/** \brief Clean up thread. */
 	virtual ~deParallelThread();

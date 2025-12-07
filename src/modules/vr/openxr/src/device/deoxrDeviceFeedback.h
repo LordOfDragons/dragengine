@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device feedback. */
-	deoxrDeviceFeedback( deVROpenXR &oxr );
+	deoxrDeviceFeedback(deVROpenXR &oxr);
 	
 protected:
 	/** Clean up device feedback. */
@@ -87,31 +87,31 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Type. */
 	inline deInputDeviceFeedback::eFeedbackTypes GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( deInputDeviceFeedback::eFeedbackTypes type );
+	void SetType(deInputDeviceFeedback::eFeedbackTypes type);
 	
 	/** Input device component. */
 	inline deoxrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
 	
 	/** Set input device component. */
-	void SetInputDeviceComponent( deoxrDeviceComponent *component );
+	void SetInputDeviceComponent(deoxrDeviceComponent *component);
 	
 	
 	
@@ -122,13 +122,13 @@ public:
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
@@ -136,7 +136,7 @@ public:
 	inline int GetMaximum() const{ return pMaximum; }
 	
 	/** Set maximum value. */
-	void SetMaximum( int maximum );
+	void SetMaximum(int maximum);
 	
 	
 	
@@ -144,12 +144,12 @@ public:
 	inline float GetValue() const{ return pValue; }
 	
 	/** Set current value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	
 	
 	/** Update engine input device information feedback. */
-	void GetInfo( deInputDeviceFeedback &info ) const;
+	void GetInfo(deInputDeviceFeedback &info) const;
 	/*@}*/
 };
 

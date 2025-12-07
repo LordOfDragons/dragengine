@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native slider.
  */
 class igdeNativeFoxSlider : public FXSlider{
-	FXDECLARE( igdeNativeFoxSlider )
+	FXDECLARE(igdeNativeFoxSlider)
 	
 protected:
 	igdeNativeFoxSlider();
@@ -57,13 +57,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxSlider( igdeSlider &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxSlider(igdeSlider &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxSlider();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxSlider* CreateNativeWidget( igdeSlider &owner );
+	static igdeNativeFoxSlider* CreateNativeWidget(igdeSlider &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -83,15 +83,15 @@ public:
 	virtual void UpdateEnabled();
 	virtual void UpdateDescription();
 	
-	static int SliderFlags( const igdeSlider &owner );
+	static int SliderFlags(const igdeSlider &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onChanged( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onChanged(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

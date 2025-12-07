@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetTiltFrom( ceCameraShot *cameraShot, float newTilt );
+	ceUCCShotSetTiltFrom(ceCameraShot *cameraShot, float newTilt);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetTiltFrom();

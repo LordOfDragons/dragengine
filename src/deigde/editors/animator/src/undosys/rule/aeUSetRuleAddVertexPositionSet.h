@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleAddVertexPositionSet( aeRule *rule, const char *pattern );
+	aeUSetRuleAddVertexPositionSet(aeRule *rule, const char *pattern);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleAddVertexPositionSet();

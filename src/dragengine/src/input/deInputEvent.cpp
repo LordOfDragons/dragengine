@@ -40,34 +40,34 @@
 /////////////////////////////////
 
 deInputEvent::deInputEvent() :
-pType( eeKeyPress ),
-pDevice( 0 ),
-pCode( 0 ),
-pState( 0 ),
-pKeyCode( ekcUndefined ),
-pKeyChar( 0 ),
-pX( 0 ),
-pY( 0 ),
-pValue( 0.0f ),
-pSource( esInput ),
-pKeyLocation( eklNone )
+pType(eeKeyPress),
+pDevice(0),
+pCode(0),
+pState(0),
+pKeyCode(ekcUndefined),
+pKeyChar(0),
+pX(0),
+pY(0),
+pValue(0.0f),
+pSource(esInput),
+pKeyLocation(eklNone)
 {
-	memset( &pTime, '\0', sizeof( pTime ) );
+	memset(&pTime, '\0', sizeof(pTime));
 }
 
-deInputEvent::deInputEvent( const deInputEvent &event ) :
-pType( event.pType ),
-pDevice( event.pDevice ),
-pCode( event.pCode ),
-pState( event.pState ),
-pKeyCode( event.pKeyCode ),
-pKeyChar( event.pKeyChar ),
-pX( event.pX ),
-pY( event.pY ),
-pValue( event.pValue ),
-pTime( event.pTime ),
-pSource( event.pSource ),
-pKeyLocation( event.pKeyLocation )
+deInputEvent::deInputEvent(const deInputEvent &event) :
+pType(event.pType),
+pDevice(event.pDevice),
+pCode(event.pCode),
+pState(event.pState),
+pKeyCode(event.pKeyCode),
+pKeyChar(event.pKeyChar),
+pX(event.pX),
+pY(event.pY),
+pValue(event.pValue),
+pTime(event.pTime),
+pSource(event.pSource),
+pKeyLocation(event.pKeyLocation)
 {
 }
 
@@ -79,60 +79,60 @@ deInputEvent::~deInputEvent(){
 // Management
 ///////////////
 
-void deInputEvent::SetType( eEvents type ){
+void deInputEvent::SetType(eEvents type){
 	pType = type;
 }
 
-void deInputEvent::SetDevice( int device ){
-	if( device < 0 ){
-		DETHROW( deeInvalidParam );
+void deInputEvent::SetDevice(int device){
+	if(device < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pDevice = device;
 }
 
-void deInputEvent::SetCode( int code ){
+void deInputEvent::SetCode(int code){
 	pCode = code;
 }
 
-void deInputEvent::SetState( int state ){
+void deInputEvent::SetState(int state){
 	pState = state;
 }
 
-void deInputEvent::SetKeyCode( eKeyCodes keyCode ){
+void deInputEvent::SetKeyCode(eKeyCodes keyCode){
 	pKeyCode = keyCode;
 }
 
-void deInputEvent::SetKeyChar( int keyChar ){
+void deInputEvent::SetKeyChar(int keyChar){
 	pKeyChar = keyChar;
 }
 
-void deInputEvent::SetX( int x ){
+void deInputEvent::SetX(int x){
 	pX = x;
 }
 
-void deInputEvent::SetY( int y ){
+void deInputEvent::SetY(int y){
 	pY = y;
 }
 
-void deInputEvent::SetValue( float value ){
+void deInputEvent::SetValue(float value){
 	pValue = value;
 }
 
-void deInputEvent::SetTime( const timeval &eventTime ){
-	memcpy( &pTime, &eventTime, sizeof( timeval ) );
+void deInputEvent::SetTime(const timeval &eventTime){
+	memcpy(&pTime, &eventTime, sizeof(timeval));
 }
 
-void deInputEvent::SetSource( eSources source ){
+void deInputEvent::SetSource(eSources source){
 	pSource = source;
 }
 
-void deInputEvent::SetKeyLocation( eKeyLocation location ){
+void deInputEvent::SetKeyLocation(eKeyLocation location){
 	pKeyLocation = location;
 }
 
 
 
-void deInputEvent::SetFrom( const deInputEvent &event ){
+void deInputEvent::SetFrom(const deInputEvent &event){
 	pType = event.pType;
 	pDevice = event.pDevice;
 	pCode = event.pCode;
@@ -142,7 +142,7 @@ void deInputEvent::SetFrom( const deInputEvent &event ){
 	pX = event.pX;
 	pY = event.pY;
 	pValue = event.pValue;
-	memcpy( &pTime, &event.pTime, sizeof( timeval ) );
+	memcpy(&pTime, &event.pTime, sizeof(timeval));
 	pSource = event.pSource;
 	pKeyLocation = event.pKeyLocation;
 }
@@ -152,7 +152,7 @@ void deInputEvent::SetFrom( const deInputEvent &event ){
 // Operators
 //////////////
 
-bool deInputEvent::operator==( const deInputEvent &event ) const{
+bool deInputEvent::operator==(const deInputEvent &event) const{
 	return pType == event.pType
 		&& pDevice == event.pDevice
 		&& pCode == event.pCode
@@ -161,13 +161,13 @@ bool deInputEvent::operator==( const deInputEvent &event ) const{
 		&& pKeyChar == event.pKeyChar
 		&& pX == event.pX
 		&& pY == event.pY
-		&& fabsf( pValue - event.pValue ) < FLOAT_SAFE_EPSILON
-		&& memcmp( &pTime, &event.pTime, sizeof( timeval ) ) == 0
+		&& fabsf(pValue - event.pValue) < FLOAT_SAFE_EPSILON
+		&& memcmp(&pTime, &event.pTime, sizeof(timeval)) == 0
 		&& pSource == event.pSource
 		&& pKeyLocation == event.pKeyLocation;
 }
 
-deInputEvent &deInputEvent::operator=( const deInputEvent &event ){
+deInputEvent &deInputEvent::operator=(const deInputEvent &event){
 	pType = event.pType;
 	pDevice = event.pDevice;
 	pCode = event.pCode;
@@ -177,7 +177,7 @@ deInputEvent &deInputEvent::operator=( const deInputEvent &event ){
 	pX = event.pX;
 	pY = event.pY;
 	pValue = event.pValue;
-	memcpy( &pTime, &event.pTime, sizeof( timeval ) );
+	memcpy(&pTime, &event.pTime, sizeof(timeval));
 	pSource = event.pSource;
 	pKeyLocation = event.pKeyLocation;
 	return *this;

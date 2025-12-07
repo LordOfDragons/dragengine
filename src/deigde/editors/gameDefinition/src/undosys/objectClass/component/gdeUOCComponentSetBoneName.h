@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetBoneName( gdeObjectClass *objectClass, gdeOCComponent *component, const char *newValue );
+	gdeUOCComponentSetBoneName(gdeObjectClass *objectClass, gdeOCComponent *component, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loading screen. */
-	dedsLoadingScreen( deScriptingDragonScript &ds );
+	dedsLoadingScreen(deScriptingDragonScript &ds);
 	
 protected:
 	/** Clean up loading screen. */

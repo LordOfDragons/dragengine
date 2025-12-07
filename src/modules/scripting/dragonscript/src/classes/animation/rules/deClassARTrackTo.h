@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassARTrackTo( deScriptingDragonScript &ds );
+	deClassARTrackTo(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassARTrackTo();
@@ -77,16 +77,16 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
-	deAnimatorRuleTrackTo *GetRule( dsRealObject *myself ) const;
+	deAnimatorRuleTrackTo *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator( dsRealObject *myself, deAnimator *animator );
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleTrackTo *rule );
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleTrackTo *rule);
 	
 	inline dsClass *GetClassARTrackToTarget() const{ return pClsARTrackToTarget; }
 	inline dsClass *GetClassARTrackToAxis() const{ return pClsARTrackToAxis; }
@@ -104,22 +104,22 @@ private:
 		dsClass *clsARTrackToLocked;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetTrackBone );
-	DEF_NATFUNC( nfSetTrackAxis );
-	DEF_NATFUNC( nfSetUpAxis );
-	DEF_NATFUNC( nfSetUpTarget );
-	DEF_NATFUNC( nfSetLockedAxis );
+	DEF_NATFUNC(nfSetTrackBone);
+	DEF_NATFUNC(nfSetTrackAxis);
+	DEF_NATFUNC(nfSetUpAxis);
+	DEF_NATFUNC(nfSetUpTarget);
+	DEF_NATFUNC(nfSetLockedAxis);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 #undef DEF_NATFUNC
 };
 

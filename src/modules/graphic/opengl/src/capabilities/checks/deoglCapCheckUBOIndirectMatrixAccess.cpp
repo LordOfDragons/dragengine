@@ -53,9 +53,9 @@
 ////////////////////////////
 
 deoglCapCheckUBOIndirectMatrixAccess::deoglCapCheckUBOIndirectMatrixAccess(
-deoglCapabilities &capabilities ) :
-pCapabilities( capabilities ),
-pWorking( true ){
+deoglCapabilities &capabilities) :
+pCapabilities(capabilities),
+pWorking(true){
 }
 
 
@@ -63,7 +63,7 @@ pWorking( true ){
 // Management
 ///////////////
 
-void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
+void deoglCapCheckUBOIndirectMatrixAccess::Check(GLuint fbo){
 	// Summary:
 	//    The UBO Indirect Matrix Access Bug if a nasty bug present in the shader compiler of broken
 	//    graphic drivers. The first contact with this bug has been on the ATI graphic driver for
@@ -130,7 +130,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 	//    in the X coordinate. The bug is detected if the result of the test returns a value
 	//    of 255 in the red color component (X coordinate) instead of the blue one (Z coordinate).
 	
-	if( ! pglUniformBlockBinding ){
+	if(!pglUniformBlockBinding){
 		return;
 	}
 	
@@ -144,10 +144,10 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		// 
 		// there is no way to check for this compiler bug. only remedy is to make this check
 		// fail. most probably a bug with row_major/coumn_major handling
-		if( renderThread.GetExtensions().GetGLESVersion() == deoglExtensions::evgles3p0 ){
+		if(renderThread.GetExtensions().GetGLESVersion() == deoglExtensions::evgles3p0){
 			pWorking = false;
-			renderThread.GetLogger().LogWarn( "Capabilities: UBO Indirect Matrix Access: "
-				"Driver Bug (Android, ES 3.0 detected)!" );
+			renderThread.GetLogger().LogWarn("Capabilities: UBO Indirect Matrix Access: "
+				"Driver Bug (Android, ES 3.0 detected)!");
 			return;
 		}
 		
@@ -162,29 +162,29 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 	#endif
 	
 	const deoglCapsTextureFormat &texformat = *pCapabilities.GetFormats()
-		.GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfRGBA8 );
+		.GetUseFBOTex2DFormatFor(deoglCapsFmtSupport::eutfRGBA8);
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	decMatrix matrix1, matrix2;
-	GLubyte result[ 3 ];
+	GLubyte result[3];
 	GLuint texture = 0;
 	
 	try{
 		// load shader
-		sources = shaderManager.GetSourcesNamed( "Test UBO Indirect Matrix Access Bug" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
+		sources = shaderManager.GetSourcesNamed("Test UBO Indirect Matrix Access Bug");
+		if(!sources){
+			DETHROW(deeInvalidParam);
 		}
-		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith(sources, defines);
 		
 		// generate shader parameter block
-		const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::NewWith(renderThread) );
-		spb->SetParameterCount( 2 );
-		spb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-		spb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+		const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::NewWith(renderThread));
+		spb->SetParameterCount(2);
+		spb->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 3, 1); // mat4x3
+		spb->GetParameterAt(1).SetAll(deoglSPBParameter::evtFloat, 3, 3, 1); // mat3
 		spb->MapToStd140();
-		spb->SetBindingPoint( 0 );
+		spb->SetBindingPoint(0);
 		
 		matrix1.a11 = 0.0f; matrix1.a12 = 0.0f; matrix1.a13 = 0.0f; matrix1.a14 = 0.0f;
 		matrix1.a21 = 0.0f; matrix1.a22 = 0.0f; matrix1.a23 = 0.0f; matrix1.a24 = 0.0f;
@@ -197,81 +197,81 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		matrix2.a41 = 0.0f; matrix2.a42 = 0.0f; matrix2.a43 = 0.0f; matrix2.a44 = 0.0f;
 		
 		{
-			const deoglSPBMapBuffer mapped( spb );
-			spb->SetParameterDataMat4x3( 0, matrix1 );
-			spb->SetParameterDataMat3x3( 1, matrix2 );
+			const deoglSPBMapBuffer mapped(spb);
+			spb->SetParameterDataMat4x3(0, matrix1);
+			spb->SetParameterDataMat3x3(1, matrix2);
 		}
 		
 		// generate test texture
-		OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-		DEASSERT_NOTNULL( texture )
+		OGL_CHECK(renderThread, glGenTextures(1, &texture));
+		DEASSERT_NOTNULL(texture)
 		
-		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, texture ) );
-		OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
-		OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) );
-		OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ) );
-		OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE ) );
+		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, texture));
+		OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+		OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+		OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 		
-		OGL_CHECK( renderThread, glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ) );
-		OGL_CHECK( renderThread, glTexImage2D( GL_TEXTURE_2D, 0, texformat.GetFormat(),
-			1, 1, 0, texformat.GetPixelFormat(), texformat.GetPixelType(), NULL ) );
-		OGL_CHECK( renderThread, glPixelStorei( GL_UNPACK_ALIGNMENT, 4 ) );
+		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+		OGL_CHECK(renderThread, glTexImage2D(GL_TEXTURE_2D, 0, texformat.GetFormat(),
+			1, 1, 0, texformat.GetPixelFormat(), texformat.GetPixelType(), NULL));
+		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
 		
 		// bind test texture to fbo and set render parameters
-		OGL_CHECK( renderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-			GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0 ) );
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		OGL_CHECK(renderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0));
+		const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+		OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+		OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 		
-		OGL_CHECK( renderThread, glViewport( 0, 0, 1, 1 ) );
-		OGL_CHECK( renderThread, glScissor( 0, 0, 1, 1 ) );
-		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+		OGL_CHECK(renderThread, glViewport(0, 0, 1, 1));
+		OGL_CHECK(renderThread, glScissor(0, 0, 1, 1));
+		OGL_CHECK(renderThread, glEnable(GL_SCISSOR_TEST));
 		
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+		OGL_CHECK(renderThread, glDisable(GL_DEPTH_TEST));
+		OGL_CHECK(renderThread, glDisable(GL_BLEND));
+		OGL_CHECK(renderThread, glDisable(GL_CULL_FACE));
+		OGL_CHECK(renderThread, glDisable(GL_STENCIL_TEST));
+		OGL_CHECK(renderThread, glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE));
+		OGL_CHECK(renderThread, glDepthMask(GL_FALSE));
 		
 		// set shader and parameters
-		renderThread.GetShader().ActivateShader( shader );
+		renderThread.GetShader().ActivateShader(shader);
 		spb->Activate();
 		
 		// render and unbind from fbo
-		OGL_CHECK( renderThread, pglBindVertexArray( pCapabilities.GetFSQuadVAO()  ) );
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+		OGL_CHECK(renderThread, pglBindVertexArray(pCapabilities.GetFSQuadVAO()));
+		OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
+		OGL_CHECK(renderThread, pglBindVertexArray(0));
 		
 		#ifdef WITH_OPENGLES
-			OGL_CHECK( renderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
-			OGL_CHECK( renderThread, glReadPixels( 0, 0, 1, 1, texformat.GetPixelFormat(),
-				texformat.GetPixelType(), ( GLvoid* )&result[ 0 ] ) );
-			OGL_CHECK( renderThread, glPixelStorei( GL_PACK_ALIGNMENT, 4 ) );
+			OGL_CHECK(renderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
+			OGL_CHECK(renderThread, glReadPixels(0, 0, 1, 1, texformat.GetPixelFormat(),
+				texformat.GetPixelType(), (GLvoid*)&result[0]));
+			OGL_CHECK(renderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 			
-			OGL_CHECK( renderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0 ) );
+			OGL_CHECK(renderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0));
 			
 		#else
-			OGL_CHECK( renderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0 ) );
+			OGL_CHECK(renderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0));
 			
 			// retrieve the results and clean up
-			OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, texture ) );
-			OGL_CHECK( renderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
-			OGL_CHECK( renderThread, glGetTexImage( GL_TEXTURE_2D, 0, GL_RGB,
-				GL_UNSIGNED_BYTE, ( GLvoid* )&result[ 0 ] ) );
-			OGL_CHECK( renderThread, glPixelStorei( GL_PACK_ALIGNMENT, 4 ) );
-			OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, 0 ) );
+			OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, texture));
+			OGL_CHECK(renderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
+			OGL_CHECK(renderThread, glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB,
+				GL_UNSIGNED_BYTE, (GLvoid*)&result[0]));
+			OGL_CHECK(renderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
+			OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, 0));
 		#endif
 		
-		OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+		OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 		texture = 0;
 		
-	}catch( const deException & ){
-		if( texture ){
-			glDeleteTextures( 1, &texture );
+	}catch(const deException &){
+		if(texture){
+			glDeleteTextures(1, &texture);
 		}
 		throw;
 	}
@@ -280,18 +280,18 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 	// ATI returns 128 for a value of 0.5 but nVidia returns 127. the tesult is tested with
 	// a little error margin to catch this.
 	pWorking = 
-		   result[ 0 ] >= 127 && result[ 0 ] <= 128
-		&& result[ 1 ] >= 127 && result[ 1 ] <= 128
-		&& result[ 2 ] >= 254;
+		   result[0] >= 127 && result[0] <= 128
+		&& result[1] >= 127 && result[1] <= 128
+		&& result[2] >= 254;
 // 	renderThread.GetLogger().LogInfoFormat( "%i %i %i => %i",
 // 		result[ 0 ], result[ 1 ], result[ 2 ], pWorking );
 	
-	if( pWorking ){
+	if(pWorking){
 		renderThread.GetLogger().LogInfo(
-			"Capabilities: UBO Indirect Matrix Access: Working" );
+			"Capabilities: UBO Indirect Matrix Access: Working");
 		
 	}else{
 		renderThread.GetLogger().LogWarn(
-			"Capabilities: UBO Indirect Matrix Access: Driver Bug!" );
+			"Capabilities: UBO Indirect Matrix Access: Driver Bug!");
 	}
 }

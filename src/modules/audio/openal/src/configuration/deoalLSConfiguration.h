@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates configuration. */
-	deoalLSConfiguration( deAudioOpenAL &oal, deoalConfiguration &config );
+	deoalLSConfiguration(deAudioOpenAL &oal, deoalConfiguration &config);
 	
 	/** \brief Clean up openal configuration. */
 	~deoalLSConfiguration();
@@ -65,16 +65,16 @@ public:
 	
 	
 private:
-	void pLoadConfig( decBaseFileReader *file );
-	decXmlElementTag *pGetTagAt( const decXmlElementTag &tag, int index );
-	decXmlAttValue *pFindAttribute( const decXmlElementTag &tag, const char *name );
-	const char *pGetAttributeString( const decXmlElementTag &tag, const char *name );
-	int pGetAttributeInt( const decXmlElementTag &tag, const char *name );
-	float pGetAttributeFloat( const decXmlElementTag &tag, const char *name );
-	const char *pGetCData( const decXmlElementTag &tag, const char *defaultValue );
-	bool pGetCDataBool( const decXmlElementTag &tag, bool defaultValue );
-	int pGetCDataInt( const decXmlElementTag &tag, int defaultValue );
-	float pGetCDataFloat( const decXmlElementTag &tag, float defaultValue );
+	void pLoadConfig(decBaseFileReader *file);
+	decXmlElementTag *pGetTagAt(const decXmlElementTag &tag, int index);
+	decXmlAttValue *pFindAttribute(const decXmlElementTag &tag, const char *name);
+	const char *pGetAttributeString(const decXmlElementTag &tag, const char *name);
+	int pGetAttributeInt(const decXmlElementTag &tag, const char *name);
+	float pGetAttributeFloat(const decXmlElementTag &tag, const char *name);
+	const char *pGetCData(const decXmlElementTag &tag, const char *defaultValue);
+	bool pGetCDataBool(const decXmlElementTag &tag, bool defaultValue);
+	int pGetCDataInt(const decXmlElementTag &tag, int defaultValue);
+	float pGetCDataFloat(const decXmlElementTag &tag, float defaultValue);
 };
 
 #endif

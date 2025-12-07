@@ -45,9 +45,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deServerManager::deServerManager( deEngine *engine ) :
-deResourceManager( engine, ertServer ){
-	SetLoggingName( "server" );
+deServerManager::deServerManager(deEngine *engine) :
+deResourceManager(engine, ertServer){
+	SetLoggingName("server");
 }
 
 deServerManager::~deServerManager(){
@@ -64,22 +64,22 @@ int deServerManager::GetServerCount() const{
 }
 
 deServer *deServerManager::GetRootServer() const{
-	return ( deServer* )pServers.GetRoot();
+	return (deServer*)pServers.GetRoot();
 }
 
 deServer *deServerManager::CreateServer(){
 	deServer *server = NULL;
 	
 	try{
-		server = new deServer( this );
+		server = new deServer(this);
 		
-		GetNetworkSystem()->LoadServer( server );
-		GetScriptingSystem()->LoadServer( server );
+		GetNetworkSystem()->LoadServer(server);
+		GetScriptingSystem()->LoadServer(server);
 		
-		pServers.Add( server );
+		pServers.Add(server);
 		
-	}catch( const deException & ){
-		if( server ){
+	}catch(const deException &){
+		if(server){
 			server->FreeReference();
 		}
 		throw;
@@ -92,8 +92,8 @@ deServer *deServerManager::CreateServer(){
 
 void deServerManager::ReleaseLeakingResources(){
 	const int count = GetServerCount();
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking servers", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking servers", count);
 		pServers.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -104,49 +104,49 @@ void deServerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deServerManager::SystemNetworkLoad(){
-	deServer *server = ( deServer* )pServers.GetRoot();
+	deServer *server = (deServer*)pServers.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	
-	while( server ){
-		if( ! server->GetPeerNetwork() ){
-			netSys.LoadServer( server );
+	while(server){
+		if(!server->GetPeerNetwork()){
+			netSys.LoadServer(server);
 		}
 		
-		server = ( deServer* )server->GetLLManagerNext();
+		server = (deServer*)server->GetLLManagerNext();
 	}
 }
 
 void deServerManager::SystemNetworkUnload(){
-	deServer *server = ( deServer* )pServers.GetRoot();
+	deServer *server = (deServer*)pServers.GetRoot();
 	
-	while( server ){
-		server->SetPeerNetwork( NULL );
-		server = ( deServer* )server->GetLLManagerNext();
+	while(server){
+		server->SetPeerNetwork(NULL);
+		server = (deServer*)server->GetLLManagerNext();
 	}
 }
 
 void deServerManager::SystemScriptingLoad(){
-	deServer *server = ( deServer* )pServers.GetRoot();
+	deServer *server = (deServer*)pServers.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
-	while( server ){
-		if( ! server->GetPeerScripting() ){
-			scrSys.LoadServer( server );
+	while(server){
+		if(!server->GetPeerScripting()){
+			scrSys.LoadServer(server);
 		}
 		
-		server = ( deServer* )server->GetLLManagerNext();
+		server = (deServer*)server->GetLLManagerNext();
 	}
 }
 
 void deServerManager::SystemScriptingUnload(){
-	deServer *server = ( deServer* )pServers.GetRoot();
+	deServer *server = (deServer*)pServers.GetRoot();
 	
-	while( server ){
-		server->SetPeerScripting( NULL );
-		server = ( deServer* )server->GetLLManagerNext();
+	while(server){
+		server->SetPeerScripting(NULL);
+		server = (deServer*)server->GetLLManagerNext();
 	}
 }
 
-void deServerManager::RemoveResource( deResource *resource ){
-	pServers.RemoveIfPresent( resource );
+void deServerManager::RemoveResource(deResource *resource){
+	pServers.RemoveIfPresent(resource);
 }

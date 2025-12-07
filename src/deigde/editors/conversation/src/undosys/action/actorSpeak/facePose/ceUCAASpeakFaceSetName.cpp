@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceSetName::ceUCAASpeakFaceSetName( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *facePose, const char *newName )
-: ceUCAASpeakStripSetID( topic, actorSpeak, facePose, newName ){
-	SetShortInfo( "Face Pose Set Name" );
+ceUCAASpeakFaceSetName::ceUCAASpeakFaceSetName(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *facePose, const char *newName)
+: ceUCAASpeakStripSetID(topic, actorSpeak, facePose, newName){
+	SetShortInfo("Face Pose Set Name");
 }
 
 ceUCAASpeakFaceSetName::~ceUCAASpeakFaceSetName(){

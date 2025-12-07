@@ -43,18 +43,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSky::deoglSky( deGraphicOpenGl &ogl, const deSky &sky ) :
-pOgl( ogl ),
-pSky( sky ),
-pRSky( NULL ),
-pDirtyParameters( true ),
-pUpdateTracker( 0 )
+deoglSky::deoglSky(deGraphicOpenGl &ogl, const deSky &sky) :
+pOgl(ogl),
+pSky(sky),
+pRSky(NULL),
+pDirtyParameters(true),
+pUpdateTracker(0)
 {
-	pRSky = new deoglRSky( pOgl.GetRenderThread() );
+	pRSky = new deoglRSky(pOgl.GetRenderThread());
 }
 
 deoglSky::~deoglSky(){
-	if( pRSky ){
+	if(pRSky){
 		pRSky->FreeReference();
 		pRSky = NULL;
 	}
@@ -66,12 +66,12 @@ deoglSky::~deoglSky(){
 ///////////////
 
 void deoglSky::SyncToRender(){
-	if( pDirtyParameters ){
+	if(pDirtyParameters){
 		pDirtyParameters = false;
 		
-		pRSky->SetBgColor( pSky.GetBgColor() );
-		pRSky->RebuildLinks( pSky );
-		pRSky->RebuildLayers( pSky );
+		pRSky->SetBgColor(pSky.GetBgColor());
+		pRSky->RebuildLinks(pSky);
+		pRSky->RebuildLayers(pSky);
 	}
 }
 
@@ -81,7 +81,7 @@ void deoglSky::SyncToRender(){
 //////////////////
 
 void deoglSky::ParametersChanged(){
-	if( pDirtyParameters ){
+	if(pDirtyParameters){
 		return;
 	}
 	

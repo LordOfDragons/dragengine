@@ -44,46 +44,46 @@
 // Class igdeNativeFoxLabel
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxLabel, FXLabel, nullptr, 0 )
+FXIMPLEMENT(igdeNativeFoxLabel, FXLabel, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxLabel::igdeNativeFoxLabel(){ }
+igdeNativeFoxLabel::igdeNativeFoxLabel(){}
 
-igdeNativeFoxLabel::igdeNativeFoxLabel( igdeLabel &powner, FXComposite *pparent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXLabel( pparent, powner.GetText().GetString(), LabelIcon( powner ),
-	layoutFlags | LabelFlags( powner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &powner ),
-pFont( LabelFont( powner, guitheme ) )
+igdeNativeFoxLabel::igdeNativeFoxLabel(igdeLabel &powner, FXComposite *pparent,
+int layoutFlags, const igdeGuiTheme &guitheme) :
+FXLabel(pparent, powner.GetText().GetString(), LabelIcon(powner),
+	layoutFlags | LabelFlags(powner), 0, 0, 0, 0, 0, 0, 0, 0),
+pOwner(&powner),
+pFont(LabelFont(powner, guitheme))
 {
-	setFont( (FXFont*)pFont->GetNativeFont() );
+	setFont((FXFont*)pFont->GetNativeFont());
 	
-	setTipText( powner.GetDescription().GetString() );
-	setHelpText( powner.GetDescription().GetString() );
+	setTipText(powner.GetDescription().GetString());
+	setHelpText(powner.GetDescription().GetString());
 }
 
 igdeNativeFoxLabel::~igdeNativeFoxLabel(){
 }
 
-igdeNativeFoxLabel *igdeNativeFoxLabel::CreateNativeWidget( igdeLabel &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxLabel *igdeNativeFoxLabel::CreateNativeWidget(igdeLabel &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxLabel( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
+	return new igdeNativeFoxLabel(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner), *powner.GetGuiTheme());
 }
 
 void igdeNativeFoxLabel::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -98,52 +98,52 @@ void igdeNativeFoxLabel::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxLabel::UpdateText(){
-	setText( pOwner->GetText().GetString() );
+	setText(pOwner->GetText().GetString());
 }
 
 void igdeNativeFoxLabel::UpdateAlignment(){
-	setFrameStyle( igdeNativeFoxLabel::LabelFlags( *pOwner ) );
+	setFrameStyle(igdeNativeFoxLabel::LabelFlags(*pOwner));
 }
 
 void igdeNativeFoxLabel::UpdateDescription(){
 	const char * const description = pOwner->GetDescription();
-	setTipText( description );
-	setHelpText( description );
+	setTipText(description);
+	setHelpText(description);
 }
 
 void igdeNativeFoxLabel::UpdateIcon(){
-	setIcon( igdeNativeFoxLabel::LabelIcon( *pOwner ) );
+	setIcon(igdeNativeFoxLabel::LabelIcon(*pOwner));
 }
 
 
 
-FXIcon *igdeNativeFoxLabel::LabelIcon( const igdeLabel &powner ){
-	if( powner.GetIcon() ){
-		return ( FXIcon* ) powner.GetIcon()->GetNativeIcon();
+FXIcon *igdeNativeFoxLabel::LabelIcon(const igdeLabel &powner){
+	if(powner.GetIcon()){
+		return (FXIcon*) powner.GetIcon()->GetNativeIcon();
 		
 	}else{
 		return NULL;
 	}
 }
 
-int igdeNativeFoxLabel::LabelFlags( const igdeLabel &powner ){
+int igdeNativeFoxLabel::LabelFlags(const igdeLabel &powner){
 	const int alignment = powner.GetAlignment();
 	int fflags = ICON_BEFORE_TEXT;
 	
-	if( ( alignment & igdeLabel::eaLeft ) == igdeLabel::eaLeft ){
+	if((alignment & igdeLabel::eaLeft) == igdeLabel::eaLeft){
 		fflags |= JUSTIFY_LEFT;
 		
-	}else if( ( alignment & igdeLabel::eaRight ) == igdeLabel::eaRight ){
+	}else if((alignment & igdeLabel::eaRight) == igdeLabel::eaRight){
 		fflags |= JUSTIFY_RIGHT;
 		
 	}else{
 		fflags |=  JUSTIFY_CENTER_X;
 	}
 	
-	if( ( alignment & igdeLabel::eaTop ) == igdeLabel::eaTop ){
+	if((alignment & igdeLabel::eaTop) == igdeLabel::eaTop){
 		fflags |= JUSTIFY_TOP;
 		
-	}else if( ( alignment & igdeLabel::eaBottom ) == igdeLabel::eaBottom ){
+	}else if((alignment & igdeLabel::eaBottom) == igdeLabel::eaBottom){
 		fflags |= JUSTIFY_BOTTOM;
 		
 	}else{
@@ -153,28 +153,28 @@ int igdeNativeFoxLabel::LabelFlags( const igdeLabel &powner ){
 	return fflags;
 }
 
-igdeFont *igdeNativeFoxLabel::LabelFont( const igdeLabel &powner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxLabel::LabelFont(const igdeLabel &powner, const igdeGuiTheme &guitheme){
 	igdeFont::sConfiguration configuration;
-	powner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::labelFontSizeAbsolute, 0 );
+	if(guitheme.HasProperty(igdeGuiThemePropertyNames::labelFontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::labelFontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::labelFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::labelFontSize, 1.0f );
+			igdeGuiThemePropertyNames::labelFontSize, 1.0f);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
+			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
 	
-	return powner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont(configuration);
 }
 
 #endif

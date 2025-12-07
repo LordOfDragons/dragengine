@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network state object. */
-	deNetworkState( deNetworkStateManager *manager, bool readOnly );
+	deNetworkState(deNetworkStateManager *manager, bool readOnly);
 	
 protected:
 	/**
@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Resource is a valid parent. */
-	bool IsValidParent( deResource *parent ) const;
+	bool IsValidParent(deResource *parent) const;
 	
 	/** \brief Network state is read only. */
 	inline bool GetReadOnly() const{ return pReadOnly; }
@@ -99,19 +99,19 @@ public:
 	int GetValueCount() const;
 	
 	/** \brief Index of value. */
-	int IndexOfValue( deNetworkValue *value ) const;
+	int IndexOfValue(deNetworkValue *value) const;
 	
 	/** \brief Value at index. */
-	deNetworkValue *GetValueAt( int index ) const;
+	deNetworkValue *GetValueAt(int index) const;
 	
 	/** \brief Add value. */
-	void AddValue( deNetworkValue *value );
+	void AddValue(deNetworkValue *value);
 	
 	/** \brief Notify network peer value changed. */
-	void NotifyValueChanged( int index ) const;
+	void NotifyValueChanged(int index) const;
 	
 	/** \brief Notify network peer precision changed. */
-	void NotifyPrecisionChanged( int index ) const;
+	void NotifyPrecisionChanged(int index) const;
 	/*@}*/
 	
 	
@@ -122,13 +122,13 @@ public:
 	inline deBaseNetworkState *GetPeerNetwork() const{ return pPeerNetwork; }
 	
 	/** \brief Set network system peer object. */
-	void SetPeerNetwork ( deBaseNetworkState *peer );
+	void SetPeerNetwork (deBaseNetworkState *peer);
 	
 	/** \brief Scripting system peer object. */
 	inline deBaseScriptingNetworkState *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
-	void SetPeerScripting( deBaseScriptingNetworkState *peer );
+	void SetPeerScripting(deBaseScriptingNetworkState *peer);
 	/*@}*/
 	
 	
@@ -139,19 +139,19 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous networkState in the parent world linked list. */
 	inline deNetworkState *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next networkState in the parent world linked list. */
-	void SetLLWorldPrev( deNetworkState *networkState );
+	void SetLLWorldPrev(deNetworkState *networkState);
 	
 	/** \brief Next networkState in the parent world linked list. */
 	inline deNetworkState *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next networkState in the parent world linked list. */
-	void SetLLWorldNext( deNetworkState *networkState );
+	void SetLLWorldNext(deNetworkState *networkState);
 	/*@}*/
 };
 

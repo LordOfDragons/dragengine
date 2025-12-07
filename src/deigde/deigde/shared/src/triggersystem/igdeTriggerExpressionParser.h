@@ -69,7 +69,7 @@ public:
 	inline bool GetExceptionOnErrors() const{ return pExceptionOnErrors; }
 	
 	/** \brief Set to throws exception on error otherwise returns partially parsed tree. */
-	void SetExceptionOnErrors( bool exceptionsOnErrors );
+	void SetExceptionOnErrors(bool exceptionsOnErrors);
 	
 	/** \brief Create trigger expression from a string. */
 	igdeTriggerExpression::Ref StringToExpression(const char *string) const;
@@ -79,16 +79,16 @@ public:
 		igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, bool initNegate) const;
 	
 	/** \brief Parse trigger name. */
-	void ParseTargetName( decString &name, igdeTriggerExpressionParserState &state, bool quoted ) const;
+	void ParseTargetName(decString &name, igdeTriggerExpressionParserState &state, bool quoted) const;
 	
 	/** \brief Create string from a trigger expression. */
-	void ExpressionToString( decString &string, const igdeTriggerExpression &expression ) const;
+	void ExpressionToString(decString &string, const igdeTriggerExpression &expression) const;
 	
 	/** \brief Create string from a trigger expression component. */
-	void ExpressionComponentToString( decString &string, const igdeTriggerExpressionComponent &component, bool grouping ) const;
+	void ExpressionComponentToString(decString &string, const igdeTriggerExpressionComponent &component, bool grouping) const;
 	
 	/** \brief Retrieves a properly quoted version of a trigger name. */
-	void QuoteTriggerName( decString &string, const decString &name ) const;
+	void QuoteTriggerName(decString &string, const decString &name) const;
 	/*@}*/
 };
 

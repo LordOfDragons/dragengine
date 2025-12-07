@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCATriggerSetName( ceConversationTopic *topic, ceCATrigger *action, const char *newName );
+	ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCATriggerSetName();
 	/*@}*/

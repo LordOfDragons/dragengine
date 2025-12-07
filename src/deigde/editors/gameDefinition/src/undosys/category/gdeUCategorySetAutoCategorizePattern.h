@@ -47,8 +47,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategorySetAutoCategorizePattern( gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type, const decStringSet &newValue );
+	gdeUCategorySetAutoCategorizePattern(gdeGameDefinition *gameDefintiion,
+		gdeCategory *category, eCategoryType type, const decStringSet &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

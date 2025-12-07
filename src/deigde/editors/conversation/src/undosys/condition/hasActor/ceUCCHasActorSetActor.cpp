@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCHasActorSetActor::ceUCCHasActorSetActor( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionHasActor *hasActor, const char *newID ){
-	if( ! topic || ! action || ! hasActor || ! newID ) DETHROW( deeInvalidParam );
+ceUCCHasActorSetActor::ceUCCHasActorSetActor(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionHasActor *hasActor, const char *newID){
+	if(!topic || !action || !hasActor || !newID) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
@@ -52,7 +52,7 @@ ceCConditionHasActor *hasActor, const char *newID ){
 	pOldID = hasActor->GetActor();
 	pNewID = newID;
 	
-	SetShortInfo( "Has Actor Set Actor ID" );
+	SetShortInfo("Has Actor Set Actor ID");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -65,13 +65,13 @@ ceCConditionHasActor *hasActor, const char *newID ){
 }
 
 ceUCCHasActorSetActor::~ceUCCHasActorSetActor(){
-	if( pHasActor ){
+	if(pHasActor){
 		pHasActor->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -82,11 +82,11 @@ ceUCCHasActorSetActor::~ceUCCHasActorSetActor(){
 ///////////////
 
 void ceUCCHasActorSetActor::Undo(){
-	pHasActor->SetActor( pOldID.GetString() );
-	pTopic->NotifyConditionChanged( pAction, pHasActor );
+	pHasActor->SetActor(pOldID.GetString());
+	pTopic->NotifyConditionChanged(pAction, pHasActor);
 }
 
 void ceUCCHasActorSetActor::Redo(){
-	pHasActor->SetActor( pNewID.GetString() );
-	pTopic->NotifyConditionChanged( pAction, pHasActor );
+	pHasActor->SetActor(pNewID.GetString());
+	pTopic->NotifyConditionChanged(pAction, pHasActor);
 }

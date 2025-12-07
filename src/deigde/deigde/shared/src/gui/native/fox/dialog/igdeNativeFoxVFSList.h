@@ -39,7 +39,7 @@ class igdeNativeFoxVFSListItem;
  * \brief List the content of a virtual file system directory.
  */
 class igdeNativeFoxVFSList : public FXIconList{
-	FXDECLARE( igdeNativeFoxVFSList )
+	FXDECLARE(igdeNativeFoxVFSList)
 	
 protected:
 	igdeNativeFoxVFSList();
@@ -86,9 +86,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new virtual file system list. */
-	igdeNativeFoxVFSList( igdeEnvironment &environment, deVirtualFileSystem *vfs,
+	igdeNativeFoxVFSList(igdeEnvironment &environment, deVirtualFileSystem *vfs,
 		FXComposite *p, FXObject* tgt=NULL, FXSelector sel=0, FXuint opts=0,
-		FXint x=0, FXint y=0, FXint w=0, FXint h=0 );
+		FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 	
 	/** \brief Cleans up the virtual file system list. */
 	virtual ~igdeNativeFoxVFSList();
@@ -105,17 +105,17 @@ public:
 	/** \brief Retrieves the current directory. */
 	inline const decPath &GetPath(){ return pCurPath; }
 	/** \brief Sets the current directory. */
-	void SetPath( const decPath &path );
+	void SetPath(const decPath &path);
 	
 	/** \brief Retrieves the pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	/** \brief Sets the pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Retrieves the sorting. */
 	inline eSorting GetSorting() const{ return pSorting; }
 	/** \brief Sets the sorting. */
-	void SetSorting( eSorting sorting );
+	void SetSorting(eSorting sorting);
 	
 	/** \brief Retrieves the selected item or NULL. */
 	igdeNativeFoxVFSListItem *GetSelectedItem() const;
@@ -138,7 +138,7 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onHeaderClicked( FXObject*, FXSelector, void* );
+	long onHeaderClicked(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create decal mesh builder. */
-	deoglDecalMeshBuilder( deoglRenderThread &renderThread );
+	deoglDecalMeshBuilder(deoglRenderThread &renderThread);
 	
 	/** Clean up decal mesh builder. */
 	~deoglDecalMeshBuilder();
@@ -84,14 +84,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Initializes the builder. */
-	void Init( const deoglRDecal &decals, float distance );
+	void Init(const deoglRDecal &decals, float distance);
 	
 	/** Cut using the given face. */
-	void CutTriangle( const decVector &v1, const decVector &v2, const decVector &v3 );
+	void CutTriangle(const decVector &v1, const decVector &v2, const decVector &v3);
 	
 	/** Build mesh for component. */
-	void BuildMeshForComponent( const deoglRComponent &oglComponent );
-	void BuildMeshForComponent( const deoglRComponentLOD &lod );
+	void BuildMeshForComponent(const deoglRComponent &oglComponent);
+	void BuildMeshForComponent(const deoglRComponentLOD &lod);
 	
 	/** Debug. */
 	void Debug();
@@ -102,14 +102,14 @@ public:
 	inline int GetPointCount() const{ return pPointCount; }
 	
 	/** Point at index. */
-	const decVector &GetPointAt( int index ) const;
+	const decVector &GetPointAt(int index) const;
 	
 	/**
 	 * Add point and return index.
 	 * 
 	 * If the point already exists only the index is returned.
 	 */
-	int AddPoint( const decVector &point );
+	int AddPoint(const decVector &point);
 	
 	/** Remove all points. */
 	void RemoveAllPoints();
@@ -120,7 +120,7 @@ public:
 	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** Face at index. */
-	deoglDecalMeshBuilderFace *GetFaceAt( int index ) const;
+	deoglDecalMeshBuilderFace *GetFaceAt(int index) const;
 	
 	/** Add face. */
 	deoglDecalMeshBuilderFace *AddFace();
@@ -132,11 +132,11 @@ public:
 	
 	
 private:
-	void pVolumeAddFace( decConvexVolume *volume, int p1, int p2, int p3,
-		const decVector &normal, bool decalFace );
-	void pVolumeAddFace( decConvexVolume *volume, int p1, int p2, int p3, int p4,
-		const decVector &normal, bool decalFace );
-	int pIndexOfPoint( const decVector &point ) const;
+	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3,
+		const decVector &normal, bool decalFace);
+	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4,
+		const decVector &normal, bool decalFace);
+	int pIndexOfPoint(const decVector &point) const;
 };
 
 #endif

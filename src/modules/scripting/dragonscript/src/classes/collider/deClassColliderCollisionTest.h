@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new class. */
-	deClassColliderCollisionTest( deScriptingDragonScript &ds );
+	deClassColliderCollisionTest(deScriptingDragonScript &ds);
 	
 	/** \brief Cleans up class. */
 	virtual ~deClassColliderCollisionTest();
@@ -56,21 +56,21 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	
 	
 	/** \brief Collider collision test from real object or \em NULL if real object is \em NULL. */
-	deColliderCollisionTest *GetCollisionTest( dsRealObject *myself ) const;
+	deColliderCollisionTest *GetCollisionTest(dsRealObject *myself) const;
 	
 	/** \brief Push collider collision tester or \em NULL onto the stack. */
-	void PushCollisionTest( dsRunTime *rt, deColliderCollisionTest *collisionTest, deCollider *parentCollider );
+	void PushCollisionTest(dsRunTime *rt, deColliderCollisionTest *collisionTest, deCollider *parentCollider);
 	
 	/** \brief Collider collision test parent from real object. */
-	deCollider *GetParentCollider( dsRealObject *myself ) const;
+	deCollider *GetParentCollider(dsRealObject *myself) const;
 	
 	/** \brief Set collider collision test parent or \em NULL. */
-	void SetParentCollider( dsRealObject *myself, deCollider *collider ) const;
+	void SetParentCollider(dsRealObject *myself, deCollider *collider) const;
 	/*@}*/
 	
 private:
@@ -80,58 +80,58 @@ private:
 		dsClass *clsQuaternion;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfNewWorld );
-	DEF_NATFUNC( nfNewWorldBone );
-	DEF_NATFUNC( nfNewTouchSensor );
-	DEF_NATFUNC( nfNewTouchSensorBone );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfNewWorld);
+	DEF_NATFUNC(nfNewWorldBone);
+	DEF_NATFUNC(nfNewTouchSensor);
+	DEF_NATFUNC(nfNewTouchSensorBone);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetTouchSensor );
-	DEF_NATFUNC( nfSetTouchSensor );
+	DEF_NATFUNC(nfGetTouchSensor);
+	DEF_NATFUNC(nfSetTouchSensor);
 	
-	DEF_NATFUNC( nfGetCollider );
-	DEF_NATFUNC( nfSetCollider );
-	DEF_NATFUNC( nfGetCollisionFilter );
-	DEF_NATFUNC( nfSetCollisionFilter );
+	DEF_NATFUNC(nfGetCollider);
+	DEF_NATFUNC(nfSetCollider);
+	DEF_NATFUNC(nfGetCollisionFilter);
+	DEF_NATFUNC(nfSetCollisionFilter);
 	
-	DEF_NATFUNC( nfGetComponent );
-	DEF_NATFUNC( nfSetComponent );
-	DEF_NATFUNC( nfGetBone );
-	DEF_NATFUNC( nfSetBone );
-	DEF_NATFUNC( nfGetOrigin );
-	DEF_NATFUNC( nfSetOrigin );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetDirection );
-	DEF_NATFUNC( nfSetDirection );
-	DEF_NATFUNC( nfGetLocalDirection );
-	DEF_NATFUNC( nfSetLocalDirection );
-	DEF_NATFUNC( nfGetEnabled );
-	DEF_NATFUNC( nfSetEnabled );
+	DEF_NATFUNC(nfGetComponent);
+	DEF_NATFUNC(nfSetComponent);
+	DEF_NATFUNC(nfGetBone);
+	DEF_NATFUNC(nfSetBone);
+	DEF_NATFUNC(nfGetOrigin);
+	DEF_NATFUNC(nfSetOrigin);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetDirection);
+	DEF_NATFUNC(nfSetDirection);
+	DEF_NATFUNC(nfGetLocalDirection);
+	DEF_NATFUNC(nfSetLocalDirection);
+	DEF_NATFUNC(nfGetEnabled);
+	DEF_NATFUNC(nfSetEnabled);
 	
-	DEF_NATFUNC( nfGetTestOrigin );
-	DEF_NATFUNC( nfGetTestOrientation );
-	DEF_NATFUNC( nfGetTestDirection );
+	DEF_NATFUNC(nfGetTestOrigin);
+	DEF_NATFUNC(nfGetTestOrientation);
+	DEF_NATFUNC(nfGetTestDirection);
 	
-	DEF_NATFUNC( nfGetHasCollision );
-	DEF_NATFUNC( nfGetCollisionCount );
-	DEF_NATFUNC( nfGetCollisionAt );
-	DEF_NATFUNC( nfReset );
+	DEF_NATFUNC(nfGetHasCollision);
+	DEF_NATFUNC(nfGetCollisionCount);
+	DEF_NATFUNC(nfGetCollisionAt);
+	DEF_NATFUNC(nfReset);
 	
-	DEF_NATFUNC( nfHitDistance );
-	DEF_NATFUNC( nfHitPointCollider );
-	DEF_NATFUNC( nfHitPointWorld );
-	DEF_NATFUNC( nfHitNormalCollider );
-	DEF_NATFUNC( nfHitNormalWorld );
-	DEF_NATFUNC( nfHitCollider );
-	DEF_NATFUNC( nfHitBone );
+	DEF_NATFUNC(nfHitDistance);
+	DEF_NATFUNC(nfHitPointCollider);
+	DEF_NATFUNC(nfHitPointWorld);
+	DEF_NATFUNC(nfHitNormalCollider);
+	DEF_NATFUNC(nfHitNormalWorld);
+	DEF_NATFUNC(nfHitCollider);
+	DEF_NATFUNC(nfHitBone);
 #undef DEF_NATFUNC
 };
 

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCGestureAdd( ceConversation *conversation, ceGesture *gesture );
+	ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCGestureAdd();

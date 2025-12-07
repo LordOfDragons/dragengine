@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native toggleButton.
  */
 class igdeNativeFoxToggleButton : public FXToggleButton{
-	FXDECLARE( igdeNativeFoxToggleButton )
+	FXDECLARE(igdeNativeFoxToggleButton)
 	
 protected:
 	igdeNativeFoxToggleButton();
@@ -57,14 +57,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxToggleButton( igdeToggleButton &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxToggleButton(igdeToggleButton &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxToggleButton();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxToggleButton* CreateNativeWidget( igdeToggleButton &owner );
+	static igdeNativeFoxToggleButton* CreateNativeWidget(igdeToggleButton &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -85,23 +85,23 @@ public:
 	virtual void UpdateEnabled();
 	virtual void UpdateToggled();
 	
-	static const char *ButtonText( const igdeToggleButton &owner );
-	static FXIcon *ButtonIconOn( const igdeToggleButton &owner );
-	static FXIcon *ButtonIconOff( const igdeToggleButton &owner );
-	static int ButtonFlags( const igdeToggleButton &owner );
-	static igdeFont *ButtonFont( const igdeToggleButton &owner, const igdeGuiTheme &guitheme );
-	static int ButtonPadLeft( const igdeGuiTheme &guitheme );
-	static int ButtonPadRight( const igdeGuiTheme &guitheme );
-	static int ButtonPadTop( const igdeGuiTheme &guitheme );
-	static int ButtonPadBottom( const igdeGuiTheme &guitheme );
+	static const char *ButtonText(const igdeToggleButton &owner);
+	static FXIcon *ButtonIconOn(const igdeToggleButton &owner);
+	static FXIcon *ButtonIconOff(const igdeToggleButton &owner);
+	static int ButtonFlags(const igdeToggleButton &owner);
+	static igdeFont *ButtonFont(const igdeToggleButton &owner, const igdeGuiTheme &guitheme);
+	static int ButtonPadLeft(const igdeGuiTheme &guitheme);
+	static int ButtonPadRight(const igdeGuiTheme &guitheme);
+	static int ButtonPadTop(const igdeGuiTheme &guitheme);
+	static int ButtonPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onUpdate( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

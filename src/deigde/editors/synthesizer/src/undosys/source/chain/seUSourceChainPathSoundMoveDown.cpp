@@ -39,23 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceChainPathSoundMoveDown::seUSourceChainPathSoundMoveDown( seSourceChain *source, int index ) :
-pSource( NULL )
+seUSourceChainPathSoundMoveDown::seUSourceChainPathSoundMoveDown(seSourceChain *source, int index) :
+pSource(NULL)
 {
-	if( ! source || index < 0 || index >= source->GetPathSounds().GetCount() - 1 ){
-		DETHROW( deeInvalidParam );
+	if(!source || index < 0 || index >= source->GetPathSounds().GetCount() - 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pIndex = index;
 	
-	SetShortInfo( "Chain source move path sound down" );
+	SetShortInfo("Chain source move path sound down");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSourceChainPathSoundMoveDown::~seUSourceChainPathSoundMoveDown(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ seUSourceChainPathSoundMoveDown::~seUSourceChainPathSoundMoveDown(){
 ///////////////
 
 void seUSourceChainPathSoundMoveDown::Undo(){
-	pSource->MovePathSound( pIndex + 1, pIndex );
+	pSource->MovePathSound(pIndex + 1, pIndex);
 }
 
 void seUSourceChainPathSoundMoveDown::Redo(){
-	pSource->MovePathSound( pIndex, pIndex + 1 );
+	pSource->MovePathSound(pIndex, pIndex + 1);
 }

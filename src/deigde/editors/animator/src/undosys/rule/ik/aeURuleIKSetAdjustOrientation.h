@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleIKSetAdjustOrientation( aeRuleInverseKinematic *rule );
+	aeURuleIKSetAdjustOrientation(aeRuleInverseKinematic *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleIKSetAdjustOrientation();

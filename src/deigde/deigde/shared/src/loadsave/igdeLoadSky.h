@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load object. */
-	igdeLoadSky( igdeEnvironment &environment, deLogger *logger, const char *loggerSource );
+	igdeLoadSky(igdeEnvironment &environment, deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up load object. */
 	~igdeLoadSky();
@@ -70,42 +70,42 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name to display in a file dialog. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern to display in a file dialog. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern to display in a file dialog. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default file extension. */
 	inline const decString &GetDefaultExtension() const{ return pDefaultExtension; }
 	
 	/** \brief Set default file extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	
 	
 	
 	/** \brief Load sky using a file reader. */
-	void Load( const decString &pathSky, deSky &sky, decBaseFileReader &reader );
+	void Load(const decString &pathSky, deSky &sky, decBaseFileReader &reader);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadSky( const decXmlElementTag &root, const char *basePath, deSky &sky );
+	void pReadSky(const decXmlElementTag &root, const char *basePath, deSky &sky);
 	
-	void pReadController( const decXmlElementTag &root, deSkyController &controller );
+	void pReadController(const decXmlElementTag &root, deSkyController &controller);
 	
-	void pReadLink( const decXmlElementTag &root, deSkyLink &link );
+	void pReadLink(const decXmlElementTag &root, deSkyLink &link);
 	
-	void pReadLayer( const decXmlElementTag &root, deSky &sky,
-		deSkyLayer &layer, const char *basePath );
+	void pReadLayer(const decXmlElementTag &root, deSky &sky,
+		deSkyLayer &layer, const char *basePath);
 	
-	void pReadTarget( const decXmlElementTag &root, deSkyLayer &layer );
+	void pReadTarget(const decXmlElementTag &root, deSkyLayer &layer);
 	
-	void pReadBody( const decXmlElementTag &root, deSky &sky,
-		deSkyLayerBody &body, const char *basePath );
+	void pReadBody(const decXmlElementTag &root, deSky &sky,
+		deSkyLayerBody &body, const char *basePath);
 };
 
 #endif

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetForce::gdeUOCForceFieldSetForce( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, float newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetForce::gdeUOCForceFieldSetForce(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, float newValue) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set force" );
+	SetShortInfo("Force field set force");
 	
 	pOldValue = forceField->GetForce();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pForceField( NULL )
 }
 
 gdeUOCForceFieldSetForce::~gdeUOCForceFieldSetForce(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCForceFieldSetForce::~gdeUOCForceFieldSetForce(){
 ///////////////
 
 void gdeUOCForceFieldSetForce::Undo(){
-	pForceField->SetForce( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetForce(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetForce::Redo(){
-	pForceField->SetForce( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetForce(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

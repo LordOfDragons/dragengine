@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeRandom( meWindowVegetation &windowVegetation, meHTVRuleRandom *rule );
+	meWVNodeRandom(meWindowVegetation &windowVegetation, meHTVRuleRandom *rule);
 	
 protected:
 	/** \brief Clean up object. */

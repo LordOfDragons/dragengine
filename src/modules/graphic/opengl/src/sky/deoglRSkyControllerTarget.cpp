@@ -41,23 +41,23 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglRSkyControllerTarget::deoglRSkyControllerTarget( const deSkyControllerTarget &target ) :
-pLinks( NULL ),
-pLinkCount( 0 )
+deoglRSkyControllerTarget::deoglRSkyControllerTarget(const deSkyControllerTarget &target) :
+pLinks(NULL),
+pLinkCount(0)
 {
 	const int linkCount = target.GetLinkCount();
-	if( linkCount == 0 ){
+	if(linkCount == 0){
 		return;
 	}
 	
-	pLinks = new int[ linkCount ];
-	for( pLinkCount=0; pLinkCount<linkCount; pLinkCount++ ){
-		pLinks[ pLinkCount ] = target.GetLinkAt( pLinkCount );
+	pLinks = new int[linkCount];
+	for(pLinkCount=0; pLinkCount<linkCount; pLinkCount++){
+		pLinks[pLinkCount] = target.GetLinkAt(pLinkCount);
 	}
 }
 
 deoglRSkyControllerTarget::~deoglRSkyControllerTarget(){
-	if( pLinks ){
+	if(pLinks){
 		delete [] pLinks;
 	}
 }
@@ -67,15 +67,15 @@ deoglRSkyControllerTarget::~deoglRSkyControllerTarget(){
 // Management
 ///////////////
 
-int deoglRSkyControllerTarget::GetLinkAt( int index ) const{
-	if( index < 0 || index >= pLinkCount ){
-		DETHROW( deeInvalidParam );
+int deoglRSkyControllerTarget::GetLinkAt(int index) const{
+	if(index < 0 || index >= pLinkCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pLinks[ index ];
+	return pLinks[index];
 }
 
-float deoglRSkyControllerTarget::GetValue( const deoglRSkyInstance &instance, float defaultValue ) const{
-	if( ! instance.GetRSky() ){
+float deoglRSkyControllerTarget::GetValue(const deoglRSkyInstance &instance, float defaultValue) const{
+	if(!instance.GetRSky()){
 		return defaultValue;
 	}
 	
@@ -84,22 +84,22 @@ float deoglRSkyControllerTarget::GetValue( const deoglRSkyInstance &instance, fl
 	bool firstValue = true;
 	int i;
 	
-	for( i=0; i<pLinkCount; i++ ){
-		if( pLinks[ i ] == -1 ){
+	for(i=0; i<pLinkCount; i++){
+		if(pLinks[i] == -1){
 			continue;
 		}
 		
-		const deoglRSkyLink &link = sky.GetLinkAt( pLinks[ i ] );
-		if( link.IsDisabled() ){
+		const deoglRSkyLink &link = sky.GetLinkAt(pLinks[i]);
+		if(link.IsDisabled()){
 			continue;
 		}
 		
-		if( firstValue ){
-			value = link.GetValue( instance );
+		if(firstValue){
+			value = link.GetValue(instance);
 			firstValue = false;
 			
 		}else{
-			value *= link.GetValue( instance );
+			value *= link.GetValue(instance);
 		}
 	}
 	

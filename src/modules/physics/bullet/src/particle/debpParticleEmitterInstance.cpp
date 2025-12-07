@@ -70,9 +70,9 @@ static decTimer timer;
 // Constructor, destructor
 ////////////////////////////
 
-debpParticleEmitterInstance::debpParticleEmitterInstance( dePhysicsBullet *bullet, deParticleEmitterInstance *instance ){
-	if( ! bullet || ! instance ){
-		DETHROW( deeInvalidParam );
+debpParticleEmitterInstance::debpParticleEmitterInstance(dePhysicsBullet *bullet, deParticleEmitterInstance *instance){
+	if(!bullet || !instance){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBullet = bullet;
@@ -106,15 +106,15 @@ debpParticleEmitterInstance::~debpParticleEmitterInstance(){
 // Management
 ///////////////
 
-void debpParticleEmitterInstance::SetParentWorld( debpWorld *parentWorld ){
+void debpParticleEmitterInstance::SetParentWorld(debpWorld *parentWorld){
 	pParentWorld = parentWorld;
 }
 
 
 
 debpParticleEmitter *debpParticleEmitterInstance::GetParticleEmitter() const{
-	if( pInstance->GetEmitter() ){
-		return ( debpParticleEmitter* )pInstance->GetEmitter()->GetPeerPhysics();
+	if(pInstance->GetEmitter()){
+		return (debpParticleEmitter*)pInstance->GetEmitter()->GetPeerPhysics();
 		
 	}else{
 		return NULL;
@@ -122,96 +122,96 @@ debpParticleEmitter *debpParticleEmitterInstance::GetParticleEmitter() const{
 }
 
 const decDMatrix &debpParticleEmitterInstance::GetEmitterMatrix(){
-	if( pDirtyEmitterMatrix ){
-		pEmitterMatrix.SetWorld( pInstance->GetPosition(), pInstance->GetOrientation() );
+	if(pDirtyEmitterMatrix){
+		pEmitterMatrix.SetWorld(pInstance->GetPosition(), pInstance->GetOrientation());
 		pDirtyEmitterMatrix = false;
 	}
 	
 	return pEmitterMatrix;
 }
 
-decDMatrix debpParticleEmitterInstance::GetEmitterMatrixByDistance( float distance ) const{
-	return decDMatrix::CreateWorld( pLastPosition * ( 1.0f - distance ) + pInstance->GetPosition() * distance, pInstance->GetOrientation() );
+decDMatrix debpParticleEmitterInstance::GetEmitterMatrixByDistance(float distance) const{
+	return decDMatrix::CreateWorld(pLastPosition * (1.0f - distance) + pInstance->GetPosition() * distance, pInstance->GetOrientation());
 }
 
-debpParticleEmitterInstanceType &debpParticleEmitterInstance::GetTypeAt( int index ){
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+debpParticleEmitterInstanceType &debpParticleEmitterInstance::GetTypeAt(int index){
+	if(index < 0 || index >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTypes[ index ];
+	return pTypes[index];
 }
 
-const debpParticleEmitterInstanceType &debpParticleEmitterInstance::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+const debpParticleEmitterInstanceType &debpParticleEmitterInstance::GetTypeAt(int index) const{
+	if(index < 0 || index >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTypes[ index ];
+	return pTypes[index];
 }
 
 
 
-void debpParticleEmitterInstance::PrepareParticles( float elapsed ){
+void debpParticleEmitterInstance::PrepareParticles(float elapsed){
 	debpParticleEmitter * const emitter = GetParticleEmitter();
-	const float travelledDistance = ( float )( pInstance->GetPosition() - pLastPosition ).Length();
+	const float travelledDistance = (float)(pInstance->GetPosition() - pLastPosition).Length();
 	
 	const bool casting = pInstance->GetEnableCasting() || pEnsureCastOnce;
 	pEnsureCastOnce = false;
 	
-	if( emitter ){
+	if(emitter){
 		int i;
 		
 		emitter->UpdateParameters();
 		
-		pForceFieldSimulation.Update( elapsed );
+		pForceFieldSimulation.Update(elapsed);
 		
 		// update the particles
 		pBurstTimer += elapsed;
 		
-		for( i=0; i<pTypeCount; i++ ){
+		for(i=0; i<pTypeCount; i++){
 //timer.Reset();
-			pTypes[ i ].PrepareParticles( casting, elapsed, travelledDistance );
+			pTypes[i].PrepareParticles(casting, elapsed, travelledDistance);
 //pBullet->LogInfoFormat( "PrepareParticle (%i) = %iys", pTypes[ i ].GetParticlesCount(), ( int )( timer.GetElapsedTime() * 1000000.0f ) );
 		}
 		
-		if( pInstance->GetEmitter()->GetEmitBurst() ){
-			if( pInstance->GetEmitter()->GetBurstLifetime() > FLOAT_SAFE_EPSILON ){
-				pInstance->SetBurstTime( pBurstTimer / pInstance->GetEmitter()->GetBurstLifetime() );
+		if(pInstance->GetEmitter()->GetEmitBurst()){
+			if(pInstance->GetEmitter()->GetBurstLifetime() > FLOAT_SAFE_EPSILON){
+				pInstance->SetBurstTime(pBurstTimer / pInstance->GetEmitter()->GetBurstLifetime());
 				
 			}else{
-				pInstance->SetBurstTime( 0.0f );
+				pInstance->SetBurstTime(0.0f);
 			}
 			
-			if( casting && pBurstTimer >= pInstance->GetEmitter()->GetBurstLifetime() ){
-				pInstance->SetEnableCasting( false );
+			if(casting && pBurstTimer >= pInstance->GetEmitter()->GetBurstLifetime()){
+				pInstance->SetEnableCasting(false);
 				RequestCheckForLastParticle();
 			}
 			
 		}else{
-			pInstance->SetBurstTime( 0.0f );
+			pInstance->SetBurstTime(0.0f);
 		}
 		
 		/*{
 		int t, T=0;
-		for( t=0; t<pTypeCount; t++ ) T += pTypes[ t ].GetParticlesCount();
-		pBullet->LogInfoFormat( "PrepareParticles %p: ec=%i eb=%i bt=%f blt=%f cflp=%i pc=%i ralpd=%i", this,
+		for(t=0; t<pTypeCount; t++) T += pTypes[t].GetParticlesCount();
+		pBullet->LogInfoFormat("PrepareParticles %p: ec=%i eb=%i bt=%f blt=%f cflp=%i pc=%i ralpd=%i", this,
 			pInstance->GetEnableCasting()?1:0, pInstance->GetEmitter()->GetEmitBurst()?1:0,
 			pBurstTimer, pInstance->GetEmitter()->GetBurstLifetime(), pCheckForLastParticle?1:0, T,
-			pInstance->GetRemoveAfterLastParticleDied()?1:0 );
+			pInstance->GetRemoveAfterLastParticleDied()?1:0);
 		}*/
 	}
 	
 	pLastPosition = pInstance->GetPosition();
 	
-	ApplyForceFields( elapsed );
+	ApplyForceFields(elapsed);
 	
 	//CheckForLastParticle(); // too early. StepParticles can also trigger a check which we would cancel the next time PrepareParticle is called
 }
 
-void debpParticleEmitterInstance::ApplyForceFields( float elapsed ){
+void debpParticleEmitterInstance::ApplyForceFields(float elapsed){
 	// TODO track force fields to update only if they are nearby
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -219,26 +219,26 @@ void debpParticleEmitterInstance::ApplyForceFields( float elapsed ){
 	deForceField *forceField = world.GetRootForceField();
 	int i;
 	
-	while( forceField ){
-		if( forceField->GetCollisionFilter().Collides( pInstance->GetCollisionFilter() ) ){
-			const debpForceField &bpForceField = *( ( debpForceField* )forceField->GetPeerPhysics() );
+	while(forceField){
+		if(forceField->GetCollisionFilter().Collides(pInstance->GetCollisionFilter())){
+			const debpForceField &bpForceField = *((debpForceField*)forceField->GetPeerPhysics());
 			
 			// TODO check if the force field overlaps the component
 			
-			for( i=0; i<pTypeCount; i++ ){
-				pTypes[ i ].ApplyForceField( bpForceField, elapsed );
+			for(i=0; i<pTypeCount; i++){
+				pTypes[i].ApplyForceField(bpForceField, elapsed);
 			}
 		}
 		forceField = forceField->GetLLWorldNext();
 	}
 }
 
-void debpParticleEmitterInstance::StepParticles( float elapsed ){
+void debpParticleEmitterInstance::StepParticles(float elapsed){
 	int i;
 	
-	for( i=0; i<pTypeCount; i++ ){
+	for(i=0; i<pTypeCount; i++){
 //timer.Reset();
-		pTypes[ i ].StepParticles( elapsed );
+		pTypes[i].StepParticles(elapsed);
 //pBullet->LogInfoFormat( "StepParticle (%i) = %iys", pTypes[ t ].GetParticlesCount(), ( int )( timer.GetElapsedTime() * 1000000.0f ) );
 	}
 	
@@ -248,10 +248,10 @@ void debpParticleEmitterInstance::StepParticles( float elapsed ){
 void debpParticleEmitterInstance::FinishStepping(){
 	int i;
 	
-	pInstance->SetReferencePosition( pInstance->GetPosition() ); // particles will be relative to this positon for rendering
+	pInstance->SetReferencePosition(pInstance->GetPosition()); // particles will be relative to this positon for rendering
 	
-	for( i=0; i<pTypeCount; i++ ){
-		pTypes[ i ].FinishStepping();
+	for(i=0; i<pTypeCount; i++){
+		pTypes[i].FinishStepping();
 	}
 }
 
@@ -260,26 +260,26 @@ void debpParticleEmitterInstance::RequestCheckForLastParticle(){
 }
 
 void debpParticleEmitterInstance::CheckForLastParticle(){
-	if( ! pCheckForLastParticle || pInstance->GetEnableCasting() ){
+	if(!pCheckForLastParticle || pInstance->GetEnableCasting()){
 		return;
 	}
-	if( pInstance->GetEmitter()->GetEmitBurst() && pBurstTimer < pInstance->GetEmitter()->GetBurstLifetime() ){
+	if(pInstance->GetEmitter()->GetEmitBurst() && pBurstTimer < pInstance->GetEmitter()->GetBurstLifetime()){
 		return;
 	}
 	
 	int t;
-	for( t=0; t<pTypeCount; t++ ){
-		if( pTypes[ t ].GetParticlesCount() > 0 ){
+	for(t=0; t<pTypeCount; t++){
+		if(pTypes[t].GetParticlesCount() > 0){
 			return;
 		}
 	}
 	
 	pCheckForLastParticle = false;
 	
-	deParticleEmitterInstance::Ref guard( pInstance );
+	deParticleEmitterInstance::Ref guard(pInstance);
 	pInstance->NotifyLastParticleDied();
-	if( pInstance->GetRemoveAfterLastParticleDied() ){
-		pInstance->GetParentWorld()->RemoveParticleEmitter( pInstance );
+	if(pInstance->GetRemoveAfterLastParticleDied()){
+		pInstance->GetParentWorld()->RemoveParticleEmitter(pInstance);
 	}
 }
 
@@ -305,8 +305,8 @@ void debpParticleEmitterInstance::OrientationChanged(){
 void debpParticleEmitterInstance::EnableCastingChanged(){
 	pLastPosition = pInstance->GetPosition();
 	
-	if( pInstance->GetEnableCasting() ){
-		if( pInstance->GetWarmUpTime() > FLOAT_SAFE_EPSILON ){
+	if(pInstance->GetEnableCasting()){
+		if(pInstance->GetWarmUpTime() > FLOAT_SAFE_EPSILON){
 			pSimulateWarpUp();
 		}
 		pCheckForLastParticle = false;
@@ -321,24 +321,24 @@ void debpParticleEmitterInstance::CollisionFilterChanged(){
 	pCanCollide = pInstance->GetCollisionFilter().CanCollide();
 }
 
-void debpParticleEmitterInstance::ControllerChanged( int controller ){
+void debpParticleEmitterInstance::ControllerChanged(int controller){
 	const deParticleEmitter * const emitter = pInstance->GetEmitter();
 	
-	if( emitter ){
+	if(emitter){
 		int t;
 		
-		for( t=0; t<pTypeCount; t++ ){
-			const deParticleEmitterParameter &parameter = emitter->GetTypeAt( pTypes[ t ].GetType() ).GetParameter( deParticleEmitterType::epInterval );
+		for(t=0; t<pTypeCount; t++){
+			const deParticleEmitterParameter &parameter = emitter->GetTypeAt(pTypes[t].GetType()).GetParameter(deParticleEmitterType::epInterval);
 			
-			if( parameter.GetControllerValue() > -1 || parameter.GetControllerSpread() > -1 ){
-				pTypes[ t ].UpdateCastIntervals();
+			if(parameter.GetControllerValue() > -1 || parameter.GetControllerSpread() > -1){
+				pTypes[t].UpdateCastIntervals();
 			}
 		}
 	}
 }
 
-void debpParticleEmitterInstance::TypeChanged( int type ){
-	pTypes[ type ].OnTypeChanged();
+void debpParticleEmitterInstance::TypeChanged(int type){
+	pTypes[type].OnTypeChanged();
 }
 
 
@@ -348,16 +348,16 @@ void debpParticleEmitterInstance::ResetBurst(){
 	
 	pBurstTimer = 0.0f;
 	
-	for( i=0; i<pTypeCount; i++ ){
-		pTypes[ i ].ResetBurst();
+	for(i=0; i<pTypeCount; i++){
+		pTypes[i].ResetBurst();
 	}
 }
 
 void debpParticleEmitterInstance::KillAllParticles(){
 	int i;
 	
-	for( i=0; i<pTypeCount; i++ ){
-		pTypes[ i ].KillAllParticles();
+	for(i=0; i<pTypeCount; i++){
+		pTypes[i].KillAllParticles();
 	}
 }
 
@@ -367,29 +367,29 @@ void debpParticleEmitterInstance::KillAllParticles(){
 //////////////////////
 
 void debpParticleEmitterInstance::pCleanUp(){
-	if( pTypes ){
+	if(pTypes){
 		delete [] pTypes;
 	}
 }
 
 void debpParticleEmitterInstance::pUpdateTypes(){
-	if( pTypes ){
+	if(pTypes){
 		delete [] pTypes;
 		pTypes = NULL;
 	}
 	pTypeCount = 0;
 	
 	const int typeCount = pInstance->GetTypeCount();
-	if( typeCount == 0 ){
+	if(typeCount == 0){
 		return;
 	}
 	
-	pTypes = new debpParticleEmitterInstanceType[ typeCount ];
+	pTypes = new debpParticleEmitterInstanceType[typeCount];
 	
-	for( pTypeCount=0; pTypeCount<typeCount; pTypeCount++ ){
-		pTypes[ pTypeCount ].SetInstance( this );
-		pTypes[ pTypeCount ].SetType( pTypeCount );
-		pTypes[ pTypeCount ].OnTypeChanged();
+	for(pTypeCount=0; pTypeCount<typeCount; pTypeCount++){
+		pTypes[pTypeCount].SetInstance(this);
+		pTypes[pTypeCount].SetType(pTypeCount);
+		pTypes[pTypeCount].OnTypeChanged();
 	}
 }
 
@@ -398,16 +398,16 @@ void debpParticleEmitterInstance::pSimulateWarpUp(){
 	const float timeStep = 1.0f / 30.0f;
 	float simulationStep;
 	
-	while( remainingTime > 0.0f ){
-		if( remainingTime < timeStep ){
+	while(remainingTime > 0.0f){
+		if(remainingTime < timeStep){
 			simulationStep = remainingTime;
 			
 		}else{
 			simulationStep = timeStep;
 		}
 		
-		PrepareParticles( simulationStep );
-		StepParticles( simulationStep );
+		PrepareParticles(simulationStep);
+		StepParticles(simulationStep);
 		
 		remainingTime -= timeStep;
 	}

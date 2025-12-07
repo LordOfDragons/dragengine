@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	dearComponent( deDEAnimator &module, deComponent &component );
+	dearComponent(deDEAnimator &module, deComponent &component);
 	
 	/** Clean up peer. */
 	virtual ~dearComponent();
@@ -84,7 +84,7 @@ public:
 	inline int GetBoneStateCount() const{ return pBoneStateCount; }
 	
 	/** Bone state at index. */
-	dearComponentBoneState &GetBoneStateAt( int index ) const;
+	dearComponentBoneState &GetBoneStateAt(int index) const;
 	
 	
 	
@@ -95,7 +95,7 @@ public:
 	inline int GetVPSStateCount() const{ return pVPSStateCount; }
 	
 	/** Vertex position set state at index. */
-	dearComponentVPSState &GetVPSStateAt( int index ) const;
+	dearComponentVPSState &GetVPSStateAt(int index) const;
 	
 	
 	

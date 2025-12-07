@@ -51,14 +51,14 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseElsePasteActions( ceWindowMain &windowMain,
+	ceWPTMAIfElseElsePasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, int index );
+		ceCAIfElse &ifElse, int index);
 	
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseElsePasteActions( ceWindowMain &windowMain,
+	ceWPTMAIfElseElsePasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, int index, const char *text );
+		ceCAIfElse &ifElse, int index, const char *text);
 	/*@}*/
 	
 	
@@ -75,7 +75,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
 	/*@}*/
 };
 

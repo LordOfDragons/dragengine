@@ -42,16 +42,16 @@
 ////////////////////////////
 
 deSynthesizerSourceSynthesizer::deSynthesizerSourceSynthesizer() :
-pSynthesizer( NULL ),
-pConnections( NULL ),
-pConnectionCount( 0 ){
+pSynthesizer(NULL),
+pConnections(NULL),
+pConnectionCount(0){
 }
 
 deSynthesizerSourceSynthesizer::~deSynthesizerSourceSynthesizer(){
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
-	if( pConnections ){
+	if(pConnections){
 		delete [] pConnections;
 	}
 }
@@ -61,18 +61,18 @@ deSynthesizerSourceSynthesizer::~deSynthesizerSourceSynthesizer(){
 // Management
 ///////////////
 
-void deSynthesizerSourceSynthesizer::SetSynthesizer( deSynthesizer *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void deSynthesizerSourceSynthesizer::SetSynthesizer(deSynthesizer *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->AddReference();
 	}
 	
@@ -82,44 +82,44 @@ void deSynthesizerSourceSynthesizer::SetSynthesizer( deSynthesizer *synthesizer 
 
 
 void deSynthesizerSourceSynthesizer::UpdateConnectionCount(){
-	if( pConnections ){
+	if(pConnections){
 		delete [] pConnections;
 		pConnections = NULL;
 		pConnectionCount = 0;
 	}
 	
-	if( ! pSynthesizer ){
+	if(!pSynthesizer){
 		return;
 	}
 	
 	const int controllerCount = pSynthesizer->GetControllerCount();
-	if( controllerCount == 0 ){
+	if(controllerCount == 0){
 		return;
 	}
 	
-	pConnections = new int[ controllerCount ];
-	for( pConnectionCount=0; pConnectionCount<controllerCount; pConnectionCount++ ){
-		pConnections[ pConnectionCount ] = -1;
+	pConnections = new int[controllerCount];
+	for(pConnectionCount=0; pConnectionCount<controllerCount; pConnectionCount++){
+		pConnections[pConnectionCount] = -1;
 	}
 }
 
-int deSynthesizerSourceSynthesizer::GetConnectionAt( int childController ) const{
-	if( childController < 0 || childController >= pConnectionCount ){
-		DETHROW( deeInvalidParam );
+int deSynthesizerSourceSynthesizer::GetConnectionAt(int childController) const{
+	if(childController < 0 || childController >= pConnectionCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pConnections[ childController ];
+	return pConnections[childController];
 }
 
-void deSynthesizerSourceSynthesizer::SetConnectionAt( int childController, int localController ){
-	if( childController < 0 || childController >= pConnectionCount ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerSourceSynthesizer::SetConnectionAt(int childController, int localController){
+	if(childController < 0 || childController >= pConnectionCount){
+		DETHROW(deeInvalidParam);
 	}
-	if( localController < -1 ){
-		DETHROW( deeInvalidParam );
+	if(localController < -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pConnections[ childController ] = localController;
+	pConnections[childController] = localController;
 }
 
 
@@ -127,6 +127,6 @@ void deSynthesizerSourceSynthesizer::SetConnectionAt( int childController, int l
 // Visiting
 /////////////
 
-void deSynthesizerSourceSynthesizer::Visit( deSynthesizerSourceVisitor &visitor ){
-	visitor.VisitSynthesizer( *this );
+void deSynthesizerSourceSynthesizer::Visit(deSynthesizerSourceVisitor &visitor){
+	visitor.VisitSynthesizer(*this);
 }

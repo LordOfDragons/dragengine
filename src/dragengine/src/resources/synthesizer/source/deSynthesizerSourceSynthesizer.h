@@ -70,7 +70,7 @@ public:
 	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL if silent. */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	
 	
@@ -90,10 +90,10 @@ public:
 	inline int GetConnectionCount() const{ return pConnectionCount; }
 	
 	/** \brief Index of local controller for child controller. */
-	int GetConnectionAt( int childController ) const;
+	int GetConnectionAt(int childController) const;
 	
 	/** \brief Set index of local controller for child controller. */
-	void SetConnectionAt( int childController, int localController );
+	void SetConnectionAt(int childController, int localController);
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	virtual void Visit(deSynthesizerSourceVisitor &visitor);
 	/*@}*/
 };
 

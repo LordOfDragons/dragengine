@@ -42,42 +42,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURemoveShape::reURemoveShape( reRigShapeList &list ){
+reURemoveShape::reURemoveShape(reRigShapeList &list){
 	int shapeCount = list.GetShapeCount();
 	reRigShape *shape;
 	reRigBone *bone;
 	
-	if( shapeCount == 0 ) DETHROW( deeInvalidParam );
+	if(shapeCount == 0) DETHROW(deeInvalidParam);
 	
-	pRig = list.GetShapeAt( 0 )->GetRig();
-	if( ! pRig ) DETHROW( deeInvalidParam );
+	pRig = list.GetShapeAt(0)->GetRig();
+	if(!pRig) DETHROW(deeInvalidParam);
 	pRig->AddReference();
 	
 	pEntries = NULL;
 	pEntryCount = 0;
 	
 	try{
-		pEntries = new sEntry[ shapeCount ];
-		if( ! pEntries ) DETHROW( deeOutOfMemory );
+		pEntries = new sEntry[shapeCount];
+		if(!pEntries) DETHROW(deeOutOfMemory);
 		
-		while( pEntryCount < shapeCount ){
-			shape = list.GetShapeAt( pEntryCount );
+		while(pEntryCount < shapeCount){
+			shape = list.GetShapeAt(pEntryCount);
 			bone = shape->GetRigBone();
 			
-			if( shape->GetRig() != pRig ) DETHROW( deeInvalidParam );
+			if(shape->GetRig() != pRig) DETHROW(deeInvalidParam);
 			
-			pEntries[ pEntryCount ].shape = shape;
+			pEntries[pEntryCount].shape = shape;
 			shape->AddReference();
 			
-			pEntries[ pEntryCount ].bone = bone;
-			if( bone ) bone->AddReference();
+			pEntries[pEntryCount].bone = bone;
+			if(bone) bone->AddReference();
 			
 			pEntryCount++;
 		}
 		
-		SetShortInfo( "Remove Shapes" );
+		SetShortInfo("Remove Shapes");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -98,15 +98,15 @@ void reURemoveShape::Undo(){
 	
 	selection->RemoveAllShapes();
 	
-	for( e=0; e<pEntryCount; e++ ){
-		if( pEntries[ e ].bone ){
-			pEntries[ e ].bone->AddShape( pEntries[ e ].shape );
+	for(e=0; e<pEntryCount; e++){
+		if(pEntries[e].bone){
+			pEntries[e].bone->AddShape(pEntries[e].shape);
 			
 		}else{
-			pRig->AddShape( pEntries[ e ].shape );
+			pRig->AddShape(pEntries[e].shape);
 		}
 		
-		selection->AddShape( pEntries[ e ].shape );
+		selection->AddShape(pEntries[e].shape);
 	}
 	
 }
@@ -115,16 +115,16 @@ void reURemoveShape::Redo(){
 	reSelectionShapes *selection = pRig->GetSelectionShapes();
 	int e;
 	
-	for( e=0; e<pEntryCount; e++ ){
-		if( pEntries[ e ].shape->GetSelected() ){
-			selection->RemoveShape( pEntries[ e ].shape );
+	for(e=0; e<pEntryCount; e++){
+		if(pEntries[e].shape->GetSelected()){
+			selection->RemoveShape(pEntries[e].shape);
 		}
 		
-		if( pEntries[ e ].bone ){
-			pEntries[ e ].bone->RemoveShape( pEntries[ e ].shape );
+		if(pEntries[e].bone){
+			pEntries[e].bone->RemoveShape(pEntries[e].shape);
 			
 		}else{
-			pRig->RemoveShape( pEntries[ e ].shape );
+			pRig->RemoveShape(pEntries[e].shape);
 		}
 	}
 }
@@ -137,20 +137,20 @@ void reURemoveShape::Redo(){
 void reURemoveShape::pCleanUp(){
 	reRigBone *bone;
 	
-	if( pEntries ){
-		while( pEntryCount > 0 ){
+	if(pEntries){
+		while(pEntryCount > 0){
 			pEntryCount--;
 			
-			bone = pEntries[ pEntryCount ].bone;
+			bone = pEntries[pEntryCount].bone;
 			
-			if( bone ) bone->FreeReference();
-			pEntries[ pEntryCount ].shape->FreeReference();
+			if(bone) bone->FreeReference();
+			pEntries[pEntryCount].shape->FreeReference();
 		}
 		
 		delete [] pEntries;
 	}
 	
-	if( pRig ){
+	if(pRig){
 		pRig->FreeReference();
 	}
 }

@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model texture. */
-	deModelTexture( const char *name, int width, int height );
+	deModelTexture(const char *name, int width, int height);
 	
 	/** \brief Clean up model texture. */
 	~deModelTexture();
@@ -83,19 +83,19 @@ public:
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
 	/** \brief Set if faces of this texture are double sided. */
-	void SetDoubleSided( bool doubleSided );
+	void SetDoubleSided(bool doubleSided);
 	
 	/** \brief Faces of this texture are rendered as decals. */
 	inline bool GetDecal() const{ return pDecal; }
 	
 	/** \brief Set if faces of this texture are rendered as decals. */
-	void SetDecal( bool decal );
+	void SetDecal(bool decal);
 	
 	/** \brief Decal offset. */
 	inline int GetDecalOffset() const{ return pDecalOffset; }
 	
 	/** \brief Set decal offset. */
-	void SetDecalOffset( int offset );
+	void SetDecalOffset(int offset);
 	/*@}*/
 };
 

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglEnvMapProbe( deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe );
+	deoglEnvMapProbe(deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe);
 	
 	/** Clean up peer. */
 	virtual ~deoglEnvMapProbe();

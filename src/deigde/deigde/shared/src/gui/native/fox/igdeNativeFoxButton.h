@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native button.
  */
 class igdeNativeFoxButton : public FXButton{
-	FXDECLARE( igdeNativeFoxButton )
+	FXDECLARE(igdeNativeFoxButton)
 	
 protected:
 	igdeNativeFoxButton();
@@ -56,14 +56,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxButton( igdeButton &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxButton(igdeButton &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxButton();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxButton* CreateNativeWidget( igdeButton &owner );
+	static igdeNativeFoxButton* CreateNativeWidget(igdeButton &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -85,22 +85,22 @@ public:
 	virtual void UpdateIcon();
 	virtual void UpdateEnabled();
 	
-	static const char *ButtonText( const igdeButton &owner );
-	static FXIcon *ButtonIcon( const igdeButton &owner );
-	static int ButtonFlags( const igdeButton &owner );
-	static igdeFont *ButtonFont( const igdeButton &owner, const igdeGuiTheme &guitheme );
-	static int ButtonPadLeft( const igdeGuiTheme &guitheme );
-	static int ButtonPadRight( const igdeGuiTheme &guitheme );
-	static int ButtonPadTop( const igdeGuiTheme &guitheme );
-	static int ButtonPadBottom( const igdeGuiTheme &guitheme );
+	static const char *ButtonText(const igdeButton &owner);
+	static FXIcon *ButtonIcon(const igdeButton &owner);
+	static int ButtonFlags(const igdeButton &owner);
+	static igdeFont *ButtonFont(const igdeButton &owner, const igdeGuiTheme &guitheme);
+	static int ButtonPadLeft(const igdeGuiTheme &guitheme);
+	static int ButtonPadRight(const igdeGuiTheme &guitheme);
+	static int ButtonPadTop(const igdeGuiTheme &guitheme);
+	static int ButtonPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onUpdate( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

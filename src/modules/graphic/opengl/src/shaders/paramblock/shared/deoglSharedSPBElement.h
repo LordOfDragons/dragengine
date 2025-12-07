@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block element. */
-	deoglSharedSPBElement( deoglSharedSPB &spb, int index );
+	deoglSharedSPBElement(deoglSharedSPB &spb, int index);
 	
 	/** Clean up shared shader parameter block element. */
 	virtual ~deoglSharedSPBElement();

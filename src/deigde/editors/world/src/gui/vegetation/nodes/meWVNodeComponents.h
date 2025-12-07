@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeComponents( meWindowVegetation &windowVegetation, meHTVRuleComponents *rule );
+	meWVNodeComponents(meWindowVegetation &windowVegetation, meHTVRuleComponents *rule);
 	
 protected:
 	/** \brief Clean up object. */

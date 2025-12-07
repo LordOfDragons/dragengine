@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeIGDEModule::peeIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+peeIGDEModule::peeIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 peeIGDEModule::~peeIGDEModule(){
@@ -48,7 +48,7 @@ peeIGDEModule::~peeIGDEModule(){
 ///////////////
 
 void peeIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new peeWindowMain( *this ) );
+	if(!GetEditorWindow()){
+		SetEditorWindow(new peeWindowMain(*this));
 	}
 }

@@ -37,29 +37,29 @@
 ////////////////////////////
 
 
-deoglSPBMapBufferRead::deoglSPBMapBufferRead( deoglSPBlockSSBO &block ) :
-pBlock( block ),
-pElement( 0 ),
-pCount( block.GetElementCount() ),
-pMapped( false )
+deoglSPBMapBufferRead::deoglSPBMapBufferRead(deoglSPBlockSSBO &block) :
+pBlock(block),
+pElement(0),
+pCount(block.GetElementCount()),
+pMapped(false)
 {
 	Map();
 }
 
-deoglSPBMapBufferRead::deoglSPBMapBufferRead( deoglSPBlockSSBO &block, int element ) :
-pBlock( block ),
-pElement( element ),
-pCount( 1 ),
-pMapped( false )
+deoglSPBMapBufferRead::deoglSPBMapBufferRead(deoglSPBlockSSBO &block, int element) :
+pBlock(block),
+pElement(element),
+pCount(1),
+pMapped(false)
 {
 	Map();
 }
 
-deoglSPBMapBufferRead::deoglSPBMapBufferRead( deoglSPBlockSSBO &block, int element, int count ) :
-pBlock( block ),
-pElement( element ),
-pCount( count ),
-pMapped( false )
+deoglSPBMapBufferRead::deoglSPBMapBufferRead(deoglSPBlockSSBO &block, int element, int count) :
+pBlock(block),
+pElement(element),
+pCount(count),
+pMapped(false)
 {
 	Map();
 }
@@ -74,16 +74,16 @@ deoglSPBMapBufferRead::~deoglSPBMapBufferRead(){
 ///////////////
 
 void deoglSPBMapBufferRead::Map(){
-	if( pMapped ){
+	if(pMapped){
 		return;
 	}
 	
-	pBlock.MapBufferRead( pElement, pCount );
+	pBlock.MapBufferRead(pElement, pCount);
 	pMapped = true;
 }
 
 void deoglSPBMapBufferRead::Unmap(){
-	if( ! pMapped ){
+	if(!pMapped){
 		return;
 	}
 	

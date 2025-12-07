@@ -49,7 +49,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassPropFieldListener( deScriptingDragonScript *ds );
+	deClassPropFieldListener(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassPropFieldListener();
 	/*@}*/
@@ -59,7 +59,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index createInstances(). */
 	inline int GetFuncIndexCreateInstances() const{ return pFuncIndexCreateInstances; }
@@ -72,12 +72,12 @@ private:
 		dsClass *clsPFL, *clsVoid, *clsFlt, *clsPF;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfCreateInstances );
+	DEF_NATFUNC(nfCreateInstances);
 #undef DEF_NATFUNC
 };
 

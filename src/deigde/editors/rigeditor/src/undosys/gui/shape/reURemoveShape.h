@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURemoveShape( reRigShapeList &list );
+	reURemoveShape(reRigShapeList &list);
 	
 protected:
 	/** \brief Clean up undo. */

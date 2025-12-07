@@ -60,21 +60,21 @@ debpCollisionObject::~debpCollisionObject(){
 // Management
 ///////////////
 
-void debpCollisionObject::SetOwnerCollider( debpCollider *collider, int bone ){
+void debpCollisionObject::SetOwnerCollider(debpCollider *collider, int bone){
 	pOwnerCollider = collider;
 	pOwnerBone = bone;
 	pOwnerHTSector = NULL;
 	pOwnerTouchSensor = NULL;
 }
 
-void debpCollisionObject::SetOwnerHTSector( debpHTSector *htsector ){
+void debpCollisionObject::SetOwnerHTSector(debpHTSector *htsector){
 	pOwnerCollider = NULL;
 	pOwnerBone = -1;
 	pOwnerHTSector = htsector;
 	pOwnerTouchSensor = NULL;
 }
 
-void debpCollisionObject::SetOwnerTouchSensor( debpTouchSensor *touchSensor ){
+void debpCollisionObject::SetOwnerTouchSensor(debpTouchSensor *touchSensor){
 	pOwnerCollider = NULL;
 	pOwnerBone = -1;
 	pOwnerHTSector = NULL;
@@ -97,29 +97,29 @@ bool debpCollisionObject::IsOwnerTouchSensor() const{
 
 
 
-void debpCollisionObject::SetDirtyAABB( bool dirty ){
+void debpCollisionObject::SetDirtyAABB(bool dirty){
 	pDirtyAABB = dirty;
 }
 
 
 
-bool debpCollisionObject::CallbackAddContact( btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap,
-int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1 ){
+bool debpCollisionObject::CallbackAddContact(btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap,
+int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1){
 	const btCollisionObject &colObj0 = *colObj0Wrap->getCollisionObject();
 	const btCollisionObject &colObj1 = *colObj1Wrap->getCollisionObject();
 	
-	CallbackAddContactFixParameters( cp, *colObj0Wrap, *colObj1Wrap );
+	CallbackAddContactFixParameters(cp, *colObj0Wrap, *colObj1Wrap);
 	
 	// for the time being average the two frictions. a proper table will be implementated later on
 	const btScalar friction0 = colObj0.getFriction();
 	const btScalar friction1 = colObj1.getFriction();
-	const btScalar friction = ( friction0 + friction1 ) * 0.5f;
-	const btScalar maxFriction = btScalar( 10.0f );
+	const btScalar friction = (friction0 + friction1) * 0.5f;
+	const btScalar maxFriction = btScalar(10.0f);
 	
-	if( friction < 0.0f ){
-		cp.m_combinedFriction = ( btScalar )0.0f;
+	if(friction < 0.0f){
+		cp.m_combinedFriction = (btScalar)0.0f;
 		
-	}else if( friction > maxFriction ){
+	}else if(friction > maxFriction){
 		cp.m_combinedFriction = maxFriction;
 		
 	}else{
@@ -129,13 +129,13 @@ int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId
 	// same for rolling friction
 	const btScalar rollingFriction0 = colObj0.getRollingFriction();
 	const btScalar rollingFriction1 = colObj1.getRollingFriction();
-	const btScalar rollingFriction = ( rollingFriction0 + rollingFriction1 ) * 0.5f;
-	const btScalar maxRollingFriction = btScalar( 10.0f );
+	const btScalar rollingFriction = (rollingFriction0 + rollingFriction1) * 0.5f;
+	const btScalar maxRollingFriction = btScalar(10.0f);
 	
-	if( rollingFriction < 0.0f ){
-		cp.m_combinedRollingFriction = ( btScalar )0.0f;
+	if(rollingFriction < 0.0f){
+		cp.m_combinedRollingFriction = (btScalar)0.0f;
 		
-	}else if( rollingFriction > maxRollingFriction ){
+	}else if(rollingFriction > maxRollingFriction){
 		cp.m_combinedRollingFriction = maxRollingFriction;
 		
 	}else{
@@ -146,12 +146,12 @@ int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId
 	const btScalar restitution0 = colObj0.getRestitution();
 	const btScalar restitution1 = colObj1.getRestitution();
 	const btScalar restitution = restitution0 + restitution1;
-	const btScalar maxRestitution = btScalar( 1.0f );
+	const btScalar maxRestitution = btScalar(1.0f);
 	
-	if( restitution < 0.0f ){
-		cp.m_combinedRestitution = ( btScalar )0.0f;
+	if(restitution < 0.0f){
+		cp.m_combinedRestitution = (btScalar)0.0f;
 		
-	}else if( restitution > maxRestitution ){
+	}else if(restitution > maxRestitution){
 		cp.m_combinedRestitution = maxRestitution;
 		
 	}else{
@@ -162,8 +162,8 @@ int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId
 	return true;
 }
 
-void debpCollisionObject::CallbackAddContactFixParameters( btManifoldPoint &cp,
-const btCollisionObjectWrapper &colObj0Wrap, const btCollisionObjectWrapper &colObj1Wrap ){
+void debpCollisionObject::CallbackAddContactFixParameters(btManifoldPoint &cp,
+const btCollisionObjectWrapper &colObj0Wrap, const btCollisionObjectWrapper &colObj1Wrap){
 	// the default value for partId and index is -1 if no additional information is available.
 	// this case is kept since there we can not provide any useful information
 	// 
@@ -179,8 +179,8 @@ const btCollisionObjectWrapper &colObj0Wrap, const btCollisionObjectWrapper &col
 	// using these values the correct parameters can be calculated and the point updated
 	
 	// set shape index from user pointer
-	cp.m_index0 = ( int )( intptr_t )colObj0Wrap.getCollisionShape()->getUserPointer() - 1;
-	cp.m_index1 = ( int )( intptr_t )colObj1Wrap.getCollisionShape()->getUserPointer() - 1;
+	cp.m_index0 = (int)(intptr_t)colObj0Wrap.getCollisionShape()->getUserPointer() - 1;
+	cp.m_index1 = (int)(intptr_t)colObj1Wrap.getCollisionShape()->getUserPointer() - 1;
 	
 	// adjust triangle index from. there's no solution for this yet
 }

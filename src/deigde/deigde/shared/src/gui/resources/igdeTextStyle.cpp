@@ -38,28 +38,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTextStyle::igdeTextStyle( const char *name ) :
-pName( name ),
-pColor( 0.0f, 0.0f, 0.0f ),
-pBgColor( 1.0f, 1.0f, 1.0f ),
-pHasColor( false ),
-pHasBgColor( false ),
-pBold( false ),
-pItalic( false ),
-pUnderline( false ),
-pStrikeThrough( false ){
+igdeTextStyle::igdeTextStyle(const char *name) :
+pName(name),
+pColor(0.0f, 0.0f, 0.0f),
+pBgColor(1.0f, 1.0f, 1.0f),
+pHasColor(false),
+pHasBgColor(false),
+pBold(false),
+pItalic(false),
+pUnderline(false),
+pStrikeThrough(false){
 }
 
-igdeTextStyle::igdeTextStyle( const char *name, const igdeTextStyle &textStyle ) :
-pName( name ),
-pColor( textStyle.pColor ),
-pBgColor( textStyle.pBgColor ),
-pHasColor( textStyle.pHasColor ),
-pHasBgColor( textStyle.pHasBgColor ),
-pBold( textStyle.pBold ),
-pItalic( textStyle.pItalic ),
-pUnderline( textStyle.pUnderline ),
-pStrikeThrough( textStyle.pStrikeThrough ){
+igdeTextStyle::igdeTextStyle(const char *name, const igdeTextStyle &textStyle) :
+pName(name),
+pColor(textStyle.pColor),
+pBgColor(textStyle.pBgColor),
+pHasColor(textStyle.pHasColor),
+pHasBgColor(textStyle.pHasBgColor),
+pBold(textStyle.pBold),
+pItalic(textStyle.pItalic),
+pUnderline(textStyle.pUnderline),
+pStrikeThrough(textStyle.pStrikeThrough){
 }
 
 igdeTextStyle::~igdeTextStyle(){
@@ -70,7 +70,7 @@ igdeTextStyle::~igdeTextStyle(){
 // Management
 ///////////////
 
-void igdeTextStyle::SetColor( const decColor &color ){
+void igdeTextStyle::SetColor(const decColor &color){
 	pColor = color;
 	pHasColor = true;
 }
@@ -79,7 +79,7 @@ void igdeTextStyle::ClearColor(){
 	pHasColor = false;
 }
 
-void igdeTextStyle::SetBgColor( const decColor &color ){
+void igdeTextStyle::SetBgColor(const decColor &color){
 	pBgColor = color;
 	pHasBgColor = true;
 }
@@ -88,19 +88,19 @@ void igdeTextStyle::ClearBgColor(){
 	pHasBgColor = false;
 }
 
-void igdeTextStyle::SetBold( bool bold ){
+void igdeTextStyle::SetBold(bool bold){
 	pBold = bold;
 }
 
-void igdeTextStyle::SetItalic( bool italic ){
+void igdeTextStyle::SetItalic(bool italic){
 	pItalic = italic;
 }
 
-void igdeTextStyle::SetUnderline( bool underline ){
+void igdeTextStyle::SetUnderline(bool underline){
 	pUnderline = underline;
 }
 
-void igdeTextStyle::SetStrikeThrough( bool strikeThrough ){
+void igdeTextStyle::SetStrikeThrough(bool strikeThrough){
 	pStrikeThrough = strikeThrough;
 }
 
@@ -109,7 +109,7 @@ void igdeTextStyle::SetStrikeThrough( bool strikeThrough ){
 // Operators
 //////////////
 
-igdeTextStyle &igdeTextStyle::operator=( const igdeTextStyle &textStyle ){
+igdeTextStyle &igdeTextStyle::operator=(const igdeTextStyle &textStyle){
 	pColor = textStyle.pColor;
 	pBgColor = textStyle.pBgColor;
 	pHasColor = textStyle.pHasColor;

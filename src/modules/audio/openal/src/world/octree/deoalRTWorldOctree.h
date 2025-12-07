@@ -56,7 +56,7 @@ public:
 	struct sBuildNode{
 		decVector center;
 		decVector halfSize;
-		int child[ 8 ];
+		int child[8];
 		int childCount;
 		int firstComponent;
 		int lastComponent;
@@ -149,17 +149,17 @@ public:
 	 * 
 	 * Clears visit and build nodes. Sets position and half extends.
 	 */
-	void Build( const decDVector &position, const decVector &halfExtends );
+	void Build(const decDVector &position, const decVector &halfExtends);
 	
 	/**
 	 * \brief Begin building octree.
 	 * 
 	 * Clears visit and build nodes. Sets position and half extends.
 	 */
-	void Build( const decDVector &position, double radius );
+	void Build(const decDVector &position, double radius);
 	
 	/** \brief Add component during build phase. */
-	void AddComponent( deoalAComponent *component );
+	void AddComponent(deoalAComponent *component);
 	
 	/**
 	 * \brief Finish building octree.
@@ -189,13 +189,13 @@ public:
 	
 	
 private:
-	int pGetBuildNodeFor( const decVector &center, const decVector &halfSize );
-	int pGetBuildNodeFor( int nodeIndex, const decVector &center, const decVector &halfSize );
-	int pGetBuildOctantFor( sBuildNode &node, const decVector &center, const decVector &halfSize ) const;
+	int pGetBuildNodeFor(const decVector &center, const decVector &halfSize);
+	int pGetBuildNodeFor(int nodeIndex, const decVector &center, const decVector &halfSize);
+	int pGetBuildOctantFor(sBuildNode &node, const decVector &center, const decVector &halfSize) const;
 	int pAddBuildNode();
 	int pAddBuildComponent();
-	void pGatherCounts( const sBuildNode &node );
-	void pBuildVisitNode( const sBuildNode &buildNode, sVisitNode &node );
+	void pGatherCounts(const sBuildNode &node);
+	void pBuildVisitNode(const sBuildNode &buildNode, sVisitNode &node);
 };
 
 #endif

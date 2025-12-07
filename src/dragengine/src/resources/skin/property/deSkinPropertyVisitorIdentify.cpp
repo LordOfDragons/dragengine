@@ -55,51 +55,51 @@ deSkinPropertyVisitorIdentify::~deSkinPropertyVisitorIdentify(){
 ///////////////
 
 deSkinPropertyValue &deSkinPropertyVisitorIdentify::CastToValue() const{
-	if( pType != eptValue ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptValue){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deSkinPropertyValue* )pProperty );
+	return *((deSkinPropertyValue*)pProperty);
 }
 
 deSkinPropertyColor &deSkinPropertyVisitorIdentify::CastToColor() const{
-	if( pType != eptColor ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptColor){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deSkinPropertyColor* )pProperty );
+	return *((deSkinPropertyColor*)pProperty);
 }
 
 deSkinPropertyImage &deSkinPropertyVisitorIdentify::CastToImage() const{
-	if( pType != eptImage ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptImage){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deSkinPropertyImage* )pProperty );
+	return *((deSkinPropertyImage*)pProperty);
 }
 
 deSkinPropertyVideo &deSkinPropertyVisitorIdentify::CastToVideo() const{
-	if( pType != eptVideo ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptVideo){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deSkinPropertyVideo* )pProperty );
+	return *((deSkinPropertyVideo*)pProperty);
 }
 
 deSkinPropertyConstructed &deSkinPropertyVisitorIdentify::CastToConstructed() const{
-	if( pType != eptConstructed ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptConstructed){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deSkinPropertyConstructed* )pProperty );
+	return *((deSkinPropertyConstructed*)pProperty);
 }
 
 deSkinPropertyMapped &deSkinPropertyVisitorIdentify::CastToMapped() const{
-	if( pType != eptMapped ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptMapped){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deSkinPropertyMapped* )pProperty );
+	return *((deSkinPropertyMapped*)pProperty);
 }
 
 void deSkinPropertyVisitorIdentify::Reset(){
@@ -112,37 +112,37 @@ void deSkinPropertyVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deSkinPropertyVisitorIdentify::VisitProperty( deSkinProperty &property ){
+void deSkinPropertyVisitorIdentify::VisitProperty(deSkinProperty &property){
 	pProperty = &property;
 	pType = eptUnknown;
 }
 
-void deSkinPropertyVisitorIdentify::VisitValue( deSkinPropertyValue &property ){
+void deSkinPropertyVisitorIdentify::VisitValue(deSkinPropertyValue &property){
 	pProperty = &property;
 	pType = eptValue;
 }
 
-void deSkinPropertyVisitorIdentify::VisitColor( deSkinPropertyColor &property ){
+void deSkinPropertyVisitorIdentify::VisitColor(deSkinPropertyColor &property){
 	pProperty = &property;
 	pType = eptColor;
 }
 
-void deSkinPropertyVisitorIdentify::VisitImage( deSkinPropertyImage &property ){
+void deSkinPropertyVisitorIdentify::VisitImage(deSkinPropertyImage &property){
 	pProperty = &property;
 	pType = eptImage;
 }
 
-void deSkinPropertyVisitorIdentify::VisitVideo( deSkinPropertyVideo &property ){
+void deSkinPropertyVisitorIdentify::VisitVideo(deSkinPropertyVideo &property){
 	pProperty = &property;
 	pType = eptVideo;
 }
 
-void deSkinPropertyVisitorIdentify::VisitConstructed( deSkinPropertyConstructed &property ){
+void deSkinPropertyVisitorIdentify::VisitConstructed(deSkinPropertyConstructed &property){
 	pProperty = &property;
 	pType = eptConstructed;
 }
 
-void deSkinPropertyVisitorIdentify::VisitMapped( deSkinPropertyMapped &property ){
+void deSkinPropertyVisitorIdentify::VisitMapped(deSkinPropertyMapped &property){
 	pProperty = &property;
 	pType = eptMapped;
 }

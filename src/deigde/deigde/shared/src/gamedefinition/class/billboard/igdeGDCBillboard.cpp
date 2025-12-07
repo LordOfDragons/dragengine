@@ -40,35 +40,35 @@
 ////////////////////////////
 
 igdeGDCBillboard::igdeGDCBillboard() :
-pAxis( 0.0f, 1.0f, 0.0f ),
-pSize( 1.0f, 1.0f ),
-pLocked( true ),
-pSpherical( true ),
-pSizeFixedToScreen( false ),
+pAxis(0.0f, 1.0f, 0.0f),
+pSize(1.0f, 1.0f),
+pLocked(true),
+pSpherical(true),
+pSizeFixedToScreen(false),
 
-pDoNotScale( false ),
-pPartialHide( false ),
-pRenderEnvMap( true ){
+pDoNotScale(false),
+pPartialHide(false),
+pRenderEnvMap(true){
 }
 
-igdeGDCBillboard::igdeGDCBillboard( const igdeGDCBillboard &billboard ) :
-pSkinPath( billboard.pSkinPath ),
-pAxis( billboard.pAxis ),
-pSize( billboard.pSize ),
-pOffset( billboard.pOffset ),
-pLocked( billboard.pLocked ),
-pSpherical( billboard.pSpherical ),
-pSizeFixedToScreen( billboard.pSizeFixedToScreen ),
+igdeGDCBillboard::igdeGDCBillboard(const igdeGDCBillboard &billboard) :
+pSkinPath(billboard.pSkinPath),
+pAxis(billboard.pAxis),
+pSize(billboard.pSize),
+pOffset(billboard.pOffset),
+pLocked(billboard.pLocked),
+pSpherical(billboard.pSpherical),
+pSizeFixedToScreen(billboard.pSizeFixedToScreen),
 
-pDoNotScale( billboard.pDoNotScale ),
-pPartialHide( billboard.pPartialHide ),
-pRenderEnvMap( billboard.pRenderEnvMap ),
-pPosition( billboard.pPosition ),
-pBoneName( billboard.pBoneName )
+pDoNotScale(billboard.pDoNotScale),
+pPartialHide(billboard.pPartialHide),
+pRenderEnvMap(billboard.pRenderEnvMap),
+pPosition(billboard.pPosition),
+pBoneName(billboard.pBoneName)
 {
 	int i;
-	for( i=0; i<=epAttachPosition; i++ ){
-		pPropertyNames[ i ] = billboard.pPropertyNames[ i ];
+	for(i=0; i<=epAttachPosition; i++){
+		pPropertyNames[i] = billboard.pPropertyNames[i];
 	}
 }
 
@@ -80,74 +80,74 @@ igdeGDCBillboard::~igdeGDCBillboard(){
 // Management
 ///////////////
 
-void igdeGDCBillboard::SetSkinPath( const char *path ){
+void igdeGDCBillboard::SetSkinPath(const char *path){
 	pSkinPath = path;
 }
 
-void igdeGDCBillboard::SetAxis( const decVector &axis ){
+void igdeGDCBillboard::SetAxis(const decVector &axis){
 	pAxis = axis;
 }
 
-void igdeGDCBillboard::SetSize( const decVector2 &size ){
-	pSize = decVector2( FLOAT_SAFE_EPSILON, FLOAT_SAFE_EPSILON ).Largest( size );
+void igdeGDCBillboard::SetSize(const decVector2 &size){
+	pSize = decVector2(FLOAT_SAFE_EPSILON, FLOAT_SAFE_EPSILON).Largest(size);
 }
 
-void igdeGDCBillboard::SetOffset( const decVector2 &offset ){
+void igdeGDCBillboard::SetOffset(const decVector2 &offset){
 	pOffset = offset;
 }
 
-void igdeGDCBillboard::SetLocked( bool locked ){
+void igdeGDCBillboard::SetLocked(bool locked){
 	pLocked = locked;
 }
 
-void igdeGDCBillboard::SetSpherical( bool spherical ){
+void igdeGDCBillboard::SetSpherical(bool spherical){
 	pSpherical = spherical;
 }
 
-void igdeGDCBillboard::SetSizeFixedToScreen( bool sizeFixedToScreen ){
+void igdeGDCBillboard::SetSizeFixedToScreen(bool sizeFixedToScreen){
 	pSizeFixedToScreen = sizeFixedToScreen;
 }
 
 
 
-void igdeGDCBillboard::SetDoNotScale( bool doNotScale ){
+void igdeGDCBillboard::SetDoNotScale(bool doNotScale){
 	pDoNotScale = doNotScale;
 }
 
-void igdeGDCBillboard::SetPartialHide( bool partiallyHidden ){
+void igdeGDCBillboard::SetPartialHide(bool partiallyHidden){
 	pPartialHide = partiallyHidden;
 }
 
-void igdeGDCBillboard::SetRenderEnvMap( bool renderEnvMap ){
+void igdeGDCBillboard::SetRenderEnvMap(bool renderEnvMap){
 	pRenderEnvMap = renderEnvMap;
 }
 
-void igdeGDCBillboard::SetPosition( const decDVector &position ){
+void igdeGDCBillboard::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void igdeGDCBillboard::SetBoneName( const char *boneName ){
+void igdeGDCBillboard::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
 
 
-bool igdeGDCBillboard::IsPropertySet( eProperties property ) const{
-	return ! pPropertyNames[ property ].IsEmpty();
+bool igdeGDCBillboard::IsPropertySet(eProperties property) const{
+	return !pPropertyNames[property].IsEmpty();
 }
 
-const decString &igdeGDCBillboard::GetPropertyName( eProperties property ) const{
-	return pPropertyNames[ property ];
+const decString &igdeGDCBillboard::GetPropertyName(eProperties property) const{
+	return pPropertyNames[property];
 }
 
-void igdeGDCBillboard::SetPropertyName( eProperties property, const char *name ){
-	pPropertyNames[ property ] = name;
+void igdeGDCBillboard::SetPropertyName(eProperties property, const char *name){
+	pPropertyNames[property] = name;
 }
 
-bool igdeGDCBillboard::HasPropertyWithName( const char *name ) const{
+bool igdeGDCBillboard::HasPropertyWithName(const char *name) const{
 	int i;
-	for( i=0; i<=epAttachPosition; i++ ){
-		if( pPropertyNames[ i ] == name ){
+	for(i=0; i<=epAttachPosition; i++){
+		if(pPropertyNames[i] == name){
 			return true;
 		}
 	}

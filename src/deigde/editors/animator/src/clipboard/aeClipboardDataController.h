@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataController( aeController *controller );
+	aeClipboardDataController(aeController *controller);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataController( const aeControllerList &controllers );
+	aeClipboardDataController(const aeControllerList &controllers);
 	
 protected:
 	/**

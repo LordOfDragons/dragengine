@@ -48,75 +48,75 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCapabilities::deoglCapabilities( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pFormats( *this ),
+deoglCapabilities::deoglCapabilities(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pFormats(*this),
 
-pMaxTextureSize( 1024 ),
-pMax3DTextureSize( 1024 ),
-pMaxDrawBuffers( 4 ),
-pUBOMaxSize( 0 ),
-pTBOMaxSize( 0 ),
-pSSBOMaxSize( 0 ),
-pSSBOMaxBlocksVertex( 0 ),
-pSSBOMaxBlocksFragment( 0 ),
-pSSBOMaxBlocksGeometry( 0 ),
-pSSBOMaxBlocksCompute( 0 ),
-pUBOOffsetAlignment( 4 ),
-pGeometryShaderMaxVertices( 0 ),
-pGeometryShaderMaxComponents( 0 ),
-pNumProgramBinaryFormats( 0 ),
+pMaxTextureSize(1024),
+pMax3DTextureSize(1024),
+pMaxDrawBuffers(4),
+pUBOMaxSize(0),
+pTBOMaxSize(0),
+pSSBOMaxSize(0),
+pSSBOMaxBlocksVertex(0),
+pSSBOMaxBlocksFragment(0),
+pSSBOMaxBlocksGeometry(0),
+pSSBOMaxBlocksCompute(0),
+pUBOOffsetAlignment(4),
+pGeometryShaderMaxVertices(0),
+pGeometryShaderMaxComponents(0),
+pNumProgramBinaryFormats(0),
 pMaxComputeWorkGroupInvocations(0),
 pMaxTextureImageUnits(32),
 
-pATLUnbind( *this ),
-pUBOIndirectMatrixAccess( *this ),
-pClearEntireArrayTexture( *this ),
-pUBODirectLinkDeadloop( *this ),
-pFramebufferTextureSingle( *this ),
-pStd430( *this ),
+pATLUnbind(*this),
+pUBOIndirectMatrixAccess(*this),
+pClearEntireArrayTexture(*this),
+pUBODirectLinkDeadloop(*this),
+pFramebufferTextureSingle(*this),
+pStd430(*this),
 pRestrictedImageBufferFormats(false)
 {
-	const GLfloat fsquad[ 12 ] = {
+	const GLfloat fsquad[12] = {
 		0.0f, 1.0f,
 		1.0f, 1.0f,
 		1.0f, 0.0f,
 		0.0f, 0.0f,
 		0.0f, 1.0f,
-		1.0f, 0.0f };
+		1.0f, 0.0f};
 	
 	pFSQuadVBO = 0;
 	pFSQuadVAO = 0;
 	
 	// full screen quad VBO and VAO
-	OGL_CHECK( renderThread, pglGenVertexArrays( 1, &pFSQuadVAO ) );
-	if( ! pFSQuadVAO ){
-		DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pFSQuadVAO));
+	if(!pFSQuadVAO){
+		DETHROW(deeOutOfMemory);
 	}
-	OGL_CHECK( renderThread, pglBindVertexArray( pFSQuadVAO ) );
+	OGL_CHECK(renderThread, pglBindVertexArray(pFSQuadVAO));
 	
-	OGL_CHECK( renderThread, pglGenBuffers( 1, &pFSQuadVBO ) );
-	if( ! pFSQuadVBO ){
-		DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, pglGenBuffers(1, &pFSQuadVBO));
+	if(!pFSQuadVBO){
+		DETHROW(deeOutOfMemory);
 	}
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pFSQuadVBO ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, sizeof( fsquad ),
-		( const GLvoid * )&fsquad, GL_STATIC_DRAW ) );
+	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pFSQuadVBO));
+	OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(fsquad),
+		(const GLvoid *)&fsquad, GL_STATIC_DRAW));
 	
-	OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) );
-	OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT,
-		GL_FALSE, 0, ( const GLvoid * )0 ) );
+	OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
+	OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT,
+		GL_FALSE, 0, (const GLvoid *)0));
 	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
+	OGL_CHECK(renderThread, pglBindVertexArray(0));
 }
 
 deoglCapabilities::~deoglCapabilities(){
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-	if( pFSQuadVAO ){
-		pglDeleteVertexArrays( 1, &pFSQuadVAO );
+	if(pFSQuadVAO){
+		pglDeleteVertexArrays(1, &pFSQuadVAO);
 	}
-	dops.DeleteOpenGLBuffer( pFSQuadVBO );
+	dops.DeleteOpenGLBuffer(pFSQuadVBO);
 }
 
 
@@ -139,75 +139,75 @@ void deoglCapabilities::DetectCapabilities(){
 	GLuint fbo = 0;
 	int i;
 	
-	OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 ) );
+	OGL_CHECK(pRenderThread, pglActiveTexture(GL_TEXTURE0));
 	
-	pRenderThread.GetDebug().SetEnableHwDebugOutput( false ); // otherwise we get bogus reports
+	pRenderThread.GetDebug().SetEnableHwDebugOutput(false); // otherwise we get bogus reports
 	
 	try{
-		OGL_CHECK( pRenderThread, pglGenFramebuffers( 1, &fbo ) );
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_FRAMEBUFFER, fbo ) );
+		OGL_CHECK(pRenderThread, pglGenFramebuffers(1, &fbo));
+		OGL_CHECK(pRenderThread, pglBindFramebuffer(GL_FRAMEBUFFER, fbo));
 		
-		pATLUnbind.Check( fbo );
+		pATLUnbind.Check(fbo);
 		
-		pFormats.DetectFormats( fbo );
+		pFormats.DetectFormats(fbo);
 		
 		// test important hardware limits
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
-		pMaxTextureSize = ( int )resultsInt[ 0 ];
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_TEXTURE_SIZE, &resultsInt[0]));
+		pMaxTextureSize = (int)resultsInt[0];
 		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
-		pMax3DTextureSize = ( int )resultsInt[ 0 ];
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &resultsInt[0]));
+		pMax3DTextureSize = (int)resultsInt[0];
 		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_DRAW_BUFFERS, &resultsInt[ 0 ] ) );
-		pMaxDrawBuffers = ( int )resultsInt[ 0 ];
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_DRAW_BUFFERS, &resultsInt[0]));
+		pMaxDrawBuffers = (int)resultsInt[0];
 		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_UNIFORM_BUFFER_BINDINGS, &resultsInt[ 0 ] ) );
-		const int maxUBOBindings = resultsInt[ 0 ]; // at least 84 required by spec
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &resultsInt[0]));
+		const int maxUBOBindings = resultsInt[0]; // at least 84 required by spec
 		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &resultsInt[ 0 ] ) );
-		pUBOOffsetAlignment = ( int )resultsInt[ 0 ];
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &resultsInt[0]));
+		pUBOOffsetAlignment = (int)resultsInt[0];
 		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_UNIFORM_BLOCK_SIZE, &resultsInt[ 0 ] ) );
-		pUBOMaxSize = ( int )resultsInt[ 0 ];
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &resultsInt[0]));
+		pUBOMaxSize = (int)resultsInt[0];
 		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_BUFFER_SIZE, &resultsInt[ 0 ] ) );
-		pTBOMaxSize = ( int )resultsInt[ 0 ];
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &resultsInt[0]));
+		pTBOMaxSize = (int)resultsInt[0];
 		
 		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &resultsInt[0]));
 		pMaxTextureImageUnits = (int)resultsInt[0];
 		
 		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object)
 		|| ext.GetGLESVersion() >= deoglExtensions::evgles3p1){
-			if( pglGetInteger64v ){
-				OGL_CHECK( pRenderThread, pglGetInteger64v( GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt64[ 0 ] ) );
-				if( resultsInt64[ 0 ] > 0x7fffffff ){
-					resultsInt64[ 0 ] = 0x7fffffff; // max 2GB is enough and does not overflow int32
+			if(pglGetInteger64v){
+				OGL_CHECK(pRenderThread, pglGetInteger64v(GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt64[0]));
+				if(resultsInt64[0] > 0x7fffffff){
+					resultsInt64[0] = 0x7fffffff; // max 2GB is enough and does not overflow int32
 				}
-				pSSBOMaxSize = ( int )resultsInt64[ 0 ];
+				pSSBOMaxSize = (int)resultsInt64[0];
 				
 			}else{
-				OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt[ 0 ] ) );
-				pSSBOMaxSize = ( int )resultsInt[ 0 ];
+				OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt[0]));
+				pSSBOMaxSize = (int)resultsInt[0];
 			}
 			
-			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
-			pSSBOMaxBlocksVertex = ( int )resultsInt[ 0 ];
+			OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS, &resultsInt[0]));
+			pSSBOMaxBlocksVertex = (int)resultsInt[0];
 			
-			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
-			pSSBOMaxBlocksFragment = ( int )resultsInt[ 0 ];
+			OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS, &resultsInt[0]));
+			pSSBOMaxBlocksFragment = (int)resultsInt[0];
 			
-			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
-			pSSBOMaxBlocksGeometry = ( int )resultsInt[ 0 ];
+			OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS, &resultsInt[0]));
+			pSSBOMaxBlocksGeometry = (int)resultsInt[0];
 			
-			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
-			pSSBOMaxBlocksCompute = ( int )resultsInt[ 0 ];
+			OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS, &resultsInt[0]));
+			pSSBOMaxBlocksCompute = (int)resultsInt[0];
 		}
 		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_OUTPUT_VERTICES, &resultsInt[ 0 ] ) );
-		pGeometryShaderMaxVertices = ( int )resultsInt[ 0 ];
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &resultsInt[0]));
+		pGeometryShaderMaxVertices = (int)resultsInt[0];
 		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &resultsInt[ 0 ] ) );
-		pGeometryShaderMaxComponents = ( int )resultsInt[ 0 ];
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &resultsInt[0]));
+		pGeometryShaderMaxComponents = (int)resultsInt[0];
 		
 		if(ext.GetHasExtension(deoglExtensions::ext_ARB_get_program_binary)){
 			OGL_CHECK(pRenderThread, glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &resultsInt[0]));
@@ -225,49 +225,49 @@ void deoglCapabilities::DetectCapabilities(){
 		pMaxComputeWorkGroupInvocations = (int)resultsInt[0];
 		
 		// report capabilities
-		logger.LogInfo( "Capabilities:" );
-		logger.LogInfoFormat( "- Maximum texture size = %d", pMaxTextureSize );
-		logger.LogInfoFormat( "- Maximum 3D texture size = %d", pMax3DTextureSize );
-		logger.LogInfoFormat( "- Maximum draw buffers = %d", pMaxDrawBuffers );
-		logger.LogInfoFormat( "- UBO Maximum Bindings = %d", maxUBOBindings );
-		logger.LogInfoFormat( "- UBO Maximum Block Size = %d", pUBOMaxSize );
-		logger.LogInfoFormat( "- UBO Buffer Offset Alignment = %d", pUBOOffsetAlignment );
-		logger.LogInfoFormat( "- TBO Maximum Size = %d", pTBOMaxSize );
-		logger.LogInfoFormat( "- SSBO Maximum Size = %d", pSSBOMaxSize );
-		logger.LogInfoFormat( "- Count program binary formats = %d", pNumProgramBinaryFormats );
+		logger.LogInfo("Capabilities:");
+		logger.LogInfoFormat("- Maximum texture size = %d", pMaxTextureSize);
+		logger.LogInfoFormat("- Maximum 3D texture size = %d", pMax3DTextureSize);
+		logger.LogInfoFormat("- Maximum draw buffers = %d", pMaxDrawBuffers);
+		logger.LogInfoFormat("- UBO Maximum Bindings = %d", maxUBOBindings);
+		logger.LogInfoFormat("- UBO Maximum Block Size = %d", pUBOMaxSize);
+		logger.LogInfoFormat("- UBO Buffer Offset Alignment = %d", pUBOOffsetAlignment);
+		logger.LogInfoFormat("- TBO Maximum Size = %d", pTBOMaxSize);
+		logger.LogInfoFormat("- SSBO Maximum Size = %d", pSSBOMaxSize);
+		logger.LogInfoFormat("- Count program binary formats = %d", pNumProgramBinaryFormats);
 		logger.LogInfoFormat("- Maximum texture image units = %d", pMaxTextureImageUnits);
-		logger.LogInfo( "- SSBO Maximum Blocks Shader:" );
-		logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
-		logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );
-		logger.LogInfoFormat( "  - Fragment = %d", pSSBOMaxBlocksFragment );
-		logger.LogInfoFormat( "  - Compute = %d", pSSBOMaxBlocksCompute );
-		logger.LogInfo( "- Geometry Shader:" );
-		logger.LogInfoFormat( "  - Max Vertices = %d", pGeometryShaderMaxVertices );
-		logger.LogInfoFormat( "  - Max Components = %d", pGeometryShaderMaxComponents );
-		logger.LogInfo( "- Compute Shader:" );
+		logger.LogInfo("- SSBO Maximum Blocks Shader:");
+		logger.LogInfoFormat("  - Vertex = %d", pSSBOMaxBlocksVertex);
+		logger.LogInfoFormat("  - Geometry = %d", pSSBOMaxBlocksGeometry);
+		logger.LogInfoFormat("  - Fragment = %d", pSSBOMaxBlocksFragment);
+		logger.LogInfoFormat("  - Compute = %d", pSSBOMaxBlocksCompute);
+		logger.LogInfo("- Geometry Shader:");
+		logger.LogInfoFormat("  - Max Vertices = %d", pGeometryShaderMaxVertices);
+		logger.LogInfoFormat("  - Max Components = %d", pGeometryShaderMaxComponents);
+		logger.LogInfo("- Compute Shader:");
 		logger.LogInfoFormat("  - Max Work Group Size = x=%d y=%d z=%d",
 			pMaxComputeWorkGroupSize.x, pMaxComputeWorkGroupSize.y, pMaxComputeWorkGroupSize.z);
 		logger.LogInfoFormat("  - Max Work Group Invocations = %d", pMaxComputeWorkGroupInvocations);
 		
 		// hard fail if certain bugs are present we can not fix
-		if( ( pUBOOffsetAlignment % 4 ) != 0 ){
-			logger.LogError( "Capabilities: UBO Buffer Offset Alignment is not a multiple of 4!" );
-			DETHROW( deeInvalidParam );
+		if((pUBOOffsetAlignment % 4) != 0){
+			logger.LogError("Capabilities: UBO Buffer Offset Alignment is not a multiple of 4!");
+			DETHROW(deeInvalidParam);
 		}
 		
 		// disable extensions with troubles
 		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object)
 		&& pSSBOMaxBlocksCompute < 4){
-			logger.LogWarn( "Capabilities: SSBO does not support at least 4 compute SSBO blocks. Disable SSBO Support." );
-			ext.DisableExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object );
+			logger.LogWarn("Capabilities: SSBO does not support at least 4 compute SSBO blocks. Disable SSBO Support.");
+			ext.DisableExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object);
 		}
 		
 		// verify driver is working correctly
-		pFramebufferTextureSingle.Check( fbo );
+		pFramebufferTextureSingle.Check(fbo);
 		
-		pUBOIndirectMatrixAccess.Check( fbo );
-		pClearEntireArrayTexture.Check( fbo );
-		pUBODirectLinkDeadloop.Check( fbo );
+		pUBOIndirectMatrixAccess.Check(fbo);
+		pClearEntireArrayTexture.Check(fbo);
+		pUBODirectLinkDeadloop.Check(fbo);
 		
 		pStd430.Check();
 		
@@ -284,50 +284,50 @@ void deoglCapabilities::DetectCapabilities(){
 		// #endif
 		
 		// ensure the color/depth/stencil attachments are unbound
-		OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-			GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0 ) );
-		OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-			GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 ) );
-		OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-			GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0 ) );
-		OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-			GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 ) );
-		OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-			GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0 ) );
-		OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-			GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 ) );
+		OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0));
+		OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0));
+		OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0));
+		OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0));
+		OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0));
+		OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0));
 		
 		// switch back to the primary fbo
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_FRAMEBUFFER, 0 ) );
+		OGL_CHECK(pRenderThread, pglBindFramebuffer(GL_FRAMEBUFFER, 0));
 		
 		// release the fbo name
-		OGL_CHECK( pRenderThread, pglDeleteFramebuffers( 1, &fbo ) );
+		OGL_CHECK(pRenderThread, pglDeleteFramebuffers(1, &fbo));
 		
-		pRenderThread.GetDebug().SetEnableHwDebugOutput( true ); // revert back to normal operation
+		pRenderThread.GetDebug().SetEnableHwDebugOutput(true); // revert back to normal operation
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		
-		if( fbo ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0 ) );
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 ) );
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0 ) );
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 ) );
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0 ) );
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 ) );
+		if(fbo){
+			OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0));
+			OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0));
+			OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0));
+			OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0));
+			OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0));
+			OGL_CHECK(pRenderThread, pglFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0));
 			
-			OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_FRAMEBUFFER, 0 ) );
+			OGL_CHECK(pRenderThread, pglBindFramebuffer(GL_FRAMEBUFFER, 0));
 			
-			OGL_CHECK( pRenderThread, pglDeleteFramebuffers( 1, &fbo ) );
+			OGL_CHECK(pRenderThread, pglDeleteFramebuffers(1, &fbo));
 		}
 		
-		pRenderThread.GetDebug().SetEnableHwDebugOutput( true ); // revert back to normal operation
+		pRenderThread.GetDebug().SetEnableHwDebugOutput(true); // revert back to normal operation
 		
 		// #ifdef OS_ANDROID
 		// pRenderThread.GetFramebuffer().Activate( NULL );
@@ -341,8 +341,8 @@ void deoglCapabilities::DetectCapabilities(){
 }
 
 bool deoglCapabilities::Verify() const{
-	if( pStd430.Broken() ){
-		pRenderThread.GetLogger().LogError( "Std430 Layout Not Supported" );
+	if(pStd430.Broken()){
+		pRenderThread.GetLogger().LogError("Std430 Layout Not Supported");
 		return false;
 	}
 	
@@ -370,7 +370,7 @@ bool deoglCapabilities::Verify() const{
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
-void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
+void deoglCapabilities::pAndroidTest(deoglFramebuffer *framebuffer){
 	// testing packing stuff.
 	// 
 	// in opengl fp16 has these parameters:
@@ -436,8 +436,8 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 	// 
 	
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
-	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
+	const deoglPixelBuffer::Ref pixelBuffer(deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, 1, 1, 1)));
 	deoglPixelBuffer::sFloat4 * const pixels = pixelBuffer->GetPointerFloat4();
 	deoglTexture *texture = NULL;
 	const deoglShaderSources *sources;
@@ -445,66 +445,66 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 	
 	try{
 		// load shader
-		sources = shaderManager.GetSourcesNamed( "Test Integer Packing" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
+		sources = shaderManager.GetSourcesNamed("Test Integer Packing");
+		if(!sources){
+			DETHROW(deeInvalidParam);
 		}
-		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith(sources, defines);
 		
 		// create test texture
-		texture = new deoglTexture( pRenderThread );
-		texture->SetSize( 1, 1 );
-		texture->SetFBOFormat( 4, true );
+		texture = new deoglTexture(pRenderThread);
+		texture->SetSize(1, 1);
+		texture->SetFBOFormat(4, true);
 		
 		pixels->r = 0.2f;
 		pixels->g = 0.0f;
 		pixels->b = 0.0f;
 		pixels->a = 1.0f;
-		texture->SetPixels( pixelBuffer );
+		texture->SetPixels(pixelBuffer);
 		
 		// set states
-		OGL_CHECK( pRenderThread, glViewport( 0, 0, 1, 1 ) );
-		OGL_CHECK( pRenderThread, glScissor( 0, 0, 1, 1 ) );
-		OGL_CHECK( pRenderThread, glEnable( GL_SCISSOR_TEST ) );
+		OGL_CHECK(pRenderThread, glViewport(0, 0, 1, 1));
+		OGL_CHECK(pRenderThread, glScissor(0, 0, 1, 1));
+		OGL_CHECK(pRenderThread, glEnable(GL_SCISSOR_TEST));
 		
-		OGL_CHECK( pRenderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( pRenderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( pRenderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( pRenderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-		OGL_CHECK( pRenderThread, glDepthMask( GL_FALSE ) );
+		OGL_CHECK(pRenderThread, glDisable(GL_DEPTH_TEST));
+		OGL_CHECK(pRenderThread, glDisable(GL_BLEND));
+		OGL_CHECK(pRenderThread, glDisable(GL_CULL_FACE));
+		OGL_CHECK(pRenderThread, glDisable(GL_STENCIL_TEST));
+		OGL_CHECK(pRenderThread, glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE));
+		OGL_CHECK(pRenderThread, glDepthMask(GL_FALSE));
 		
 		// prepare framebuffer with texture
-		pRenderThread.GetFramebuffer().Activate( framebuffer );
+		pRenderThread.GetFramebuffer().Activate(framebuffer);
 		framebuffer->DetachAllImages();
-		framebuffer->AttachColorTexture( 0, texture );
+		framebuffer->AttachColorTexture(0, texture);
 		framebuffer->UpdateReadWriteBuffers();
 		framebuffer->Verify();
 		
 		// render
-		pRenderThread.GetShader().ActivateShader( shader );
+		pRenderThread.GetShader().ActivateShader(shader);
 		
-		OGL_CHECK( pRenderThread, pglBindVertexArray( pFSQuadVAO ) );
-		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+		OGL_CHECK(pRenderThread, pglBindVertexArray(pFSQuadVAO));
+		OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLE_FAN, 0, 4));
+		OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 		
 		// retrieve the results and clean up
 		framebuffer->DetachAllImages();
-		texture->GetPixels( pixelBuffer );
+		texture->GetPixels(pixelBuffer);
 		
 		delete texture;
 		texture = NULL;
 		
-	}catch( const deException &e ){
-		if( texture ){
+	}catch(const deException &e){
+		if(texture){
 			delete texture;
 		}
-		pRenderThread.GetLogger().LogException( e );
+		pRenderThread.GetLogger().LogException(e);
 		return;
 	}
 	
 	// evaluate the results
-	pRenderThread.GetLogger().LogInfoFormat( "IntPacking: %g %g %g %g",
-		pixels[0].r, pixels[0].g, pixels[0].b, pixels[0].a );
+	pRenderThread.GetLogger().LogInfoFormat("IntPacking: %g %g %g %g",
+		pixels[0].r, pixels[0].g, pixels[0].b, pixels[0].a);
 }
 #endif

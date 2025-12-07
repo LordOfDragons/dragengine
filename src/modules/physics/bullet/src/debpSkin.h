@@ -50,7 +50,7 @@ private:
 	
 public:
 	// constructor, destructor
-	debpSkin( deSkin *skin );
+	debpSkin(deSkin *skin);
 	~debpSkin();
 	// management
 	inline deSkin *GetSkin() const{ return pSkin; }

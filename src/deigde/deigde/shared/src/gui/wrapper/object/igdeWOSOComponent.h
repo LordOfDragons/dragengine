@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOComponent( igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix );
+	igdeWOSOComponent(igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	~igdeWOSOComponent() override;
@@ -130,7 +130,7 @@ public:
 	void UpdateColliderResponseType() override;
 	
 	/** \brief Frame update. */
-	void Update( float elapsed ) override;
+	void Update(float elapsed) override;
 	
 	/** \brief Reset physics. */
 	void ResetPhysics() override;
@@ -145,10 +145,10 @@ public:
 	void OutlineSkinChanged() override;
 	
 	/** \brief Visit. */
-	void Visit( igdeWOSOVisitor &visitor ) override;
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	
 	/**
 	 * \brief Sub object is visible.

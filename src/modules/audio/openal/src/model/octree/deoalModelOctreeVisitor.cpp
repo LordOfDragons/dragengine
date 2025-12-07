@@ -52,19 +52,19 @@ deoalModelOctreeVisitor::~deoalModelOctreeVisitor(){
 // Visiting
 /////////////
 
-void deoalModelOctreeVisitor::VisitNode( deoalModelOctree &node ){
-	VisitNode( &node, deoalCollisionDetection::eirPartial );
+void deoalModelOctreeVisitor::VisitNode(deoalModelOctree &node){
+	VisitNode(&node, deoalCollisionDetection::eirPartial);
 }
 
-void deoalModelOctreeVisitor::VisitNode( deoalOctree *node, int /*intersection*/ ){
-	const deoalModelOctree &oalNode = *( ( deoalModelOctree* )node );
+void deoalModelOctreeVisitor::VisitNode(deoalOctree *node, int /*intersection*/){
+	const deoalModelOctree &oalNode = *((deoalModelOctree*)node);
 	const int count = oalNode.GetFaceCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		VisitFace( oalNode.GetFaceAt( i ) );
+	for(i=0; i<count; i++){
+		VisitFace(oalNode.GetFaceAt(i));
 	}
 }
 
-void deoalModelOctreeVisitor::VisitFace( deoalModelFace* ){
+void deoalModelOctreeVisitor::VisitFace(deoalModelFace*){
 }

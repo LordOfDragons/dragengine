@@ -61,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create depth min-max. */
-	deoglDRDepthMinMax( deoglRenderThread &renderThread,
-		int width, int height, int layerCount, int maxLevelCount );
+	deoglDRDepthMinMax(deoglRenderThread &renderThread,
+		int width, int height, int layerCount, int maxLevelCount);
 	
 	/** Clean up depth min-max. */
 	~deoglDRDepthMinMax();
@@ -88,16 +88,16 @@ public:
 	/** Retrieves the texture. */
 	inline deoglArrayTexture *GetTexture() const{ return pTexture; }
 	/** Retrieves the fbo for a level. */
-	deoglFramebuffer *GetFBOAt( int level );
+	deoglFramebuffer *GetFBOAt(int level);
 	
 	/** Retrieves the min texture. */
 	inline deoglArrayTexture *GetTextureMin() const{ return pTextureMin; }
 	/** Retrieves the fbo for a level of the min texture. */
-	deoglFramebuffer *GetFBOMinAt( int level );
+	deoglFramebuffer *GetFBOMinAt(int level);
 	/** Retrieves the max texture. */
 	inline deoglArrayTexture *GetTextureMax() const{ return pTextureMax; }
 	/** Retrieves the fbo for a level of the max texture. */
-	deoglFramebuffer *GetFBOMaxAt( int level );
+	deoglFramebuffer *GetFBOMaxAt(int level);
 	/*@}*/
 	
 private:

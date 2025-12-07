@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeActionUndo::igdeActionUndo( igdeEnvironment &environment, igdeUndoSystem *undoSystem ) :
+igdeActionUndo::igdeActionUndo(igdeEnvironment &environment, igdeUndoSystem *undoSystem) :
 igdeAction(
 	"Undo",
-	environment.GetStockIcon( igdeEnvironment::esiUndo ),
+	environment.GetStockIcon(igdeEnvironment::esiUndo),
 	"Undo last action",
 	deInputEvent::ekcU,
-	igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcZ ) ),
-pEnvironment( environment ),
-pUndoSystem( undoSystem ){
+	igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcZ)),
+pEnvironment(environment),
+pUndoSystem(undoSystem){
 }
 
 igdeActionUndo::~igdeActionUndo(){
@@ -59,8 +59,8 @@ igdeActionUndo::~igdeActionUndo(){
 // Management
 ///////////////
 
-void igdeActionUndo::SetUndoSystem( igdeUndoSystem *undoSystem ){
-	if( undoSystem == pUndoSystem ){
+void igdeActionUndo::SetUndoSystem(igdeUndoSystem *undoSystem){
+	if(undoSystem == pUndoSystem){
 		return;
 	}
 	
@@ -71,11 +71,11 @@ void igdeActionUndo::SetUndoSystem( igdeUndoSystem *undoSystem ){
 
 
 void igdeActionUndo::OnAction(){
-	if( pUndoSystem && pUndoSystem->GetUndoableCount() > 0 ){
+	if(pUndoSystem && pUndoSystem->GetUndoableCount() > 0){
 		pUndoSystem->Undo();
 	}
 }
 
 void igdeActionUndo::Update(){
-	SetEnabled( pUndoSystem && pUndoSystem->GetUndoableCount() > 0 );
+	SetEnabled(pUndoSystem && pUndoSystem->GetUndoableCount() > 0);
 }

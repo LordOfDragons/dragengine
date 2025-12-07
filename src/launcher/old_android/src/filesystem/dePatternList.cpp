@@ -43,7 +43,7 @@ dePatternList::dePatternList(){
 
 dePatternList::~dePatternList(){
 	RemoveAllPatterns();
-	if( pPatterns ) delete [] pPatterns;
+	if(pPatterns) delete [] pPatterns;
 }
 
 
@@ -52,18 +52,18 @@ dePatternList::~dePatternList(){
 // Management
 ///////////////
 
-const char *dePatternList::GetPatternAt( int index ) const{
-	if( index < 0 || index >= pPatternCount ) DETHROW( deeOutOfBoundary );
+const char *dePatternList::GetPatternAt(int index) const{
+	if(index < 0 || index >= pPatternCount) DETHROW(deeOutOfBoundary);
 	
-	return ( const char * )pPatterns[ index ];
+	return (const char *)pPatterns[index];
 }
 
-int dePatternList::IndexOfPattern( const char *pattern ) const{
-	if( ! pattern ) DETHROW( deeInvalidParam );
+int dePatternList::IndexOfPattern(const char *pattern) const{
+	if(!pattern) DETHROW(deeInvalidParam);
 	int p;
 	
-	for( p=0; p<pPatternCount; p++ ){
-		if( strcmp( pattern, pPatterns[ p ] ) == 0 ){
+	for(p=0; p<pPatternCount; p++){
+		if(strcmp(pattern, pPatterns[p]) == 0){
 			return p;
 		}
 	}
@@ -71,12 +71,12 @@ int dePatternList::IndexOfPattern( const char *pattern ) const{
 	return -1;
 }
 
-bool dePatternList::HasPattern( const char *pattern ) const{
-	if( ! pattern ) DETHROW( deeInvalidParam );
+bool dePatternList::HasPattern(const char *pattern) const{
+	if(!pattern) DETHROW(deeInvalidParam);
 	int p;
 	
-	for( p=0; p<pPatternCount; p++ ){
-		if( strcmp( pattern, pPatterns[ p ] ) == 0 ){
+	for(p=0; p<pPatternCount; p++){
+		if(strcmp(pattern, pPatterns[p]) == 0){
 			return true;
 		}
 	}
@@ -84,44 +84,44 @@ bool dePatternList::HasPattern( const char *pattern ) const{
 	return false;
 }
 
-void dePatternList::AddPattern( const char *pattern ){
-	if( HasPattern( pattern ) ) DETHROW( deeInvalidParam );
+void dePatternList::AddPattern(const char *pattern){
+	if(HasPattern(pattern)) DETHROW(deeInvalidParam);
 	
-	if( pPatternCount == pPatternSize ){
+	if(pPatternCount == pPatternSize){
 		int newSize = pPatternSize * 3 / 2 + 1;
-		char **newArray = new char*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pPatterns ){
-			memcpy( newArray, pPatterns, sizeof( char* ) * pPatternSize );
+		char **newArray = new char*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pPatterns){
+			memcpy(newArray, pPatterns, sizeof(char*) * pPatternSize);
 			delete [] pPatterns;
 		}
 		pPatterns = newArray;
 		pPatternSize = newSize;
 	}
 	
-	pPatterns[ pPatternCount ] = new char[ strlen( pattern ) + 1 ];
-	if( ! pPatterns[ pPatternCount ] ) DETHROW( deeOutOfMemory );
-	strcpy( pPatterns[ pPatternCount ], pattern );
+	pPatterns[pPatternCount] = new char[strlen(pattern) + 1];
+	if(!pPatterns[pPatternCount]) DETHROW(deeOutOfMemory);
+	strcpy(pPatterns[pPatternCount], pattern);
 	
 	pPatternCount++;
 }
 
-void dePatternList::RemovePattern( const char *pattern ){
-	int i, index = IndexOfPattern( pattern );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void dePatternList::RemovePattern(const char *pattern){
+	int i, index = IndexOfPattern(pattern);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	delete [] pPatterns[ index ];
+	delete [] pPatterns[index];
 	
-	for( i=index+1; i<pPatternCount; i++ ){
-		pPatterns[ i - 1 ] = pPatterns[ i ];
+	for(i=index+1; i<pPatternCount; i++){
+		pPatterns[i - 1] = pPatterns[i];
 	}
 	pPatternCount--;
 }
 
 void dePatternList::RemoveAllPatterns(){
-	while( pPatternCount > 0 ){
+	while(pPatternCount > 0){
 		pPatternCount--;
-		delete [] pPatterns[ pPatternCount ];
+		delete [] pPatterns[pPatternCount];
 	}
 }
 
@@ -131,16 +131,16 @@ void dePatternList::SortPatternByLength(){
 	int p = 1, length1, length2;
 	char *exchange;
 	
-	while( p < pPatternCount ){
-		length1 = strlen( pPatterns[ p - 1 ] );
-		length2 = strlen( pPatterns[ p ] );
+	while(p < pPatternCount){
+		length1 = strlen(pPatterns[p - 1]);
+		length2 = strlen(pPatterns[p]);
 		
-		if( length2 > length1 ){
-			exchange = pPatterns[ p - 1 ];
-			pPatterns[ p - 1 ] = pPatterns[ p ];
-			pPatterns[ p ] = exchange;
+		if(length2 > length1){
+			exchange = pPatterns[p - 1];
+			pPatterns[p - 1] = pPatterns[p];
+			pPatterns[p] = exchange;
 			
-			if( p > 1 ){
+			if(p > 1){
 				p--;
 				continue;
 			}
@@ -150,16 +150,16 @@ void dePatternList::SortPatternByLength(){
 	}
 }
 
-bool dePatternList::PathMatches( const char *path ) const{
-	if( ! path ) DETHROW( deeInvalidParam );
-	int pathLength = strlen( path );
+bool dePatternList::PathMatches(const char *path) const{
+	if(!path) DETHROW(deeInvalidParam);
+	int pathLength = strlen(path);
 	int p, patternLength;
 	
-	for( p=0; p<pPatternCount; p++ ){
-		patternLength = strlen( pPatterns[ p ] );
+	for(p=0; p<pPatternCount; p++){
+		patternLength = strlen(pPatterns[p]);
 		
-		if( patternLength < pathLength ){
-			if( strcmp( path + ( pathLength - patternLength ), pPatterns[ p ] ) == 0 ){
+		if(patternLength < pathLength){
+			if(strcmp(path + (pathLength - patternLength), pPatterns[p]) == 0){
 				return true;
 			}
 		}
@@ -168,16 +168,16 @@ bool dePatternList::PathMatches( const char *path ) const{
 	return false;
 }
 
-int dePatternList::IndexOfPatternMatchingPath( const char *path ) const{
-	if( ! path ) DETHROW( deeInvalidParam );
-	int pathLength = strlen( path );
+int dePatternList::IndexOfPatternMatchingPath(const char *path) const{
+	if(!path) DETHROW(deeInvalidParam);
+	int pathLength = strlen(path);
 	int p, patternLength;
 	
-	for( p=0; p<pPatternCount; p++ ){
-		patternLength = strlen( pPatterns[ p ] );
+	for(p=0; p<pPatternCount; p++){
+		patternLength = strlen(pPatterns[p]);
 		
-		if( patternLength < pathLength ){
-			if( strcmp( path + ( pathLength - patternLength ), pPatterns[ p ] ) == 0 ){
+		if(patternLength < pathLength){
+			if(strcmp(path + (pathLength - patternLength), pPatterns[p]) == 0){
 				return p;
 			}
 		}

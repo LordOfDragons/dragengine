@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTImportHeightImage( meWorld *world, meHeightTerrainSector *sector, deImage *image );
+	meUHTImportHeightImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
 	/** \brief Clean up object. */
 	virtual ~meUHTImportHeightImage();
 	/*@}*/
@@ -76,7 +76,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pDoIt( float *heights );
+	void pDoIt(float *heights);
 };
 
 // end of include only once

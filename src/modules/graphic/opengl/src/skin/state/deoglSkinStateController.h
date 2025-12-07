@@ -70,19 +70,19 @@ public:
 	inline int GetVideoPlayerCount() const{ return pSharedVideoPlayerCount; }
 	
 	/** Set number of video players. */
-	void SetVideoPlayerCount( int count );
+	void SetVideoPlayerCount(int count);
 	
 	/** Video player by index or \em NULL if not existing. */
-	deVideoPlayer *GetVideoPlayerAt( int index ) const;
+	deVideoPlayer *GetVideoPlayerAt(int index) const;
 	
 	/** Shared video player by index or \em NULL if not existing. */
-	deoglSharedVideoPlayer *GetSharedVideoPlayerAt( int index ) const;
+	deoglSharedVideoPlayer *GetSharedVideoPlayerAt(int index) const;
 	
 	/** Set video player at index or \em NULL if not existing. */
-	void SetVideoPlayerAt( int index, deVideoPlayer *videoPlayer );
+	void SetVideoPlayerAt(int index, deVideoPlayer *videoPlayer);
 	
 	/** Set shared video player at index or \em NULL if not existing. */
-	void SetSharedVideoPlayerAt( int index, deoglSharedVideoPlayer *videoPlayer );
+	void SetSharedVideoPlayerAt(int index, deoglSharedVideoPlayer *videoPlayer);
 	
 	
 	
@@ -90,7 +90,7 @@ public:
 	inline bool GetHasCalculatedProperties() const{ return pHasCalculatedProperties; }
 	
 	/** Set if has calculated properties. */
-	void SetHasCalculatedProperties( bool hasCalculatedProperties );
+	void SetHasCalculatedProperties(bool hasCalculatedProperties);
 	
 	
 	
@@ -98,7 +98,7 @@ public:
 	inline bool GetHasConstructedProperties() const{ return pHasConstructedProperties; }
 	
 	/** Set if has constructed properties. */
-	void SetHasConstructedProperties( bool hasConstructedProperties );
+	void SetHasConstructedProperties(bool hasConstructedProperties);
 	
 	
 	
@@ -109,10 +109,10 @@ public:
 	bool RequiresPrepareRenderables() const;
 	
 	/** Init skin state. */
-	void Init( deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world );
+	void Init(deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world);
 	
 	/** Init skin state. */
-	void Init( deoglSkinState &skinState, deoglRSkin *skin, int textureIndex, deoglWorld *world );
+	void Init(deoglSkinState &skinState, deoglRSkin *skin, int textureIndex, deoglWorld *world);
 	
 	
 	
@@ -120,7 +120,7 @@ public:
 	void ResetTime();
 	
 	/** Update time. */
-	void AdvanceTime( float timeStep );
+	void AdvanceTime(float timeStep);
 	
 	/** Synchronize to render. */
 	void SyncToRender();
@@ -132,7 +132,7 @@ public:
 	
 	
 private:
-	void pUpdateSkinVideoPlayers( deoglSkinState &skinState, deoglSkinTexture &texture, deoglWorld &world );
+	void pUpdateSkinVideoPlayers(deoglSkinState &skinState, deoglSkinTexture &texture, deoglWorld &world);
 };
 
 #endif

@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create connection. */
-	fbxTexture( fbxScene &scene, fbxNode &nodeTexture );
+	fbxTexture(fbxScene &scene, fbxNode &nodeTexture);
 	
 protected:
 	/** Clean up connection. */
@@ -93,7 +93,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** UV Set. */
 	inline const decString &GetUVSet() const{ return pUVSet; }
@@ -110,7 +110,7 @@ public:
 	
 	
 	/** Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

@@ -42,13 +42,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditorModule::igdeEditorModule( igdeEnvironment &environment ) :
-pEnvironment( environment ),
-pEditorWindow( NULL ){
+igdeEditorModule::igdeEditorModule(igdeEnvironment &environment) :
+pEnvironment(environment),
+pEditorWindow(NULL){
 }
 
 igdeEditorModule::~igdeEditorModule(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->FreeReference();
 	}
 }
@@ -58,37 +58,37 @@ igdeEditorModule::~igdeEditorModule(){
 // Management
 ///////////////
 
-void igdeEditorModule::SetEditorDirectory( const char *directory ){
+void igdeEditorModule::SetEditorDirectory(const char *directory){
 	pEditorDirectory = directory;
 }
 
-void igdeEditorModule::SetEditorPathLib( const char *path ){
+void igdeEditorModule::SetEditorPathLib(const char *path){
 	pEditorPathLib = path;
 }
 
-void igdeEditorModule::SetEditorWindow( igdeEditorWindow *editorWindow ){
-	if( editorWindow && editorWindow->GetParent() ){
-		DETHROW( deeInvalidParam );
+void igdeEditorModule::SetEditorWindow(igdeEditorWindow *editorWindow){
+	if(editorWindow && editorWindow->GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( editorWindow == pEditorWindow ){
+	if(editorWindow == pEditorWindow){
 		return;
 	}
 	
 	igdeContainer * const uiContainer = pEnvironment.GetUIContainer();
 	
-	if( pEditorWindow ){
-		if( pEditorWindow->GetParent() == uiContainer ){
-			uiContainer->RemoveChild( pEditorWindow );
+	if(pEditorWindow){
+		if(pEditorWindow->GetParent() == uiContainer){
+			uiContainer->RemoveChild(pEditorWindow);
 		}
 		pEditorWindow->FreeReference();
 	}
 	
 	pEditorWindow = editorWindow;
 	
-	if( editorWindow ){
+	if(editorWindow){
 		// not adding a reference since we take over the reference!
-		uiContainer->AddChild( pEditorWindow );
+		uiContainer->AddChild(pEditorWindow);
 	}
 }
 
@@ -98,80 +98,80 @@ void igdeEditorModule::Start(){
 }
 
 void igdeEditorModule::Stop(){
-	SetEditorWindow( NULL );
+	SetEditorWindow(NULL);
 }
 
 void igdeEditorModule::OnBeforeEngineStart(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->OnBeforeEngineStart();
 	}
 }
 
 void igdeEditorModule::OnAfterEngineStart(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->OnAfterEngineStart();
 	}
 }
 
 void igdeEditorModule::OnBeforeEngineStop(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->OnBeforeEngineStop();
 	}
 }
 
 void igdeEditorModule::OnAfterEngineStop(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->OnAfterEngineStop();
 	}
 }
 
 void igdeEditorModule::OnActivate(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->OnActivate();
 	}
 }
 
 void igdeEditorModule::OnDeactivate(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->OnDeactivate();
 	}
 }
 
-void igdeEditorModule::OnFrameUpdate( float elapsed ){
-	if( pEditorWindow ){
-		pEditorWindow->OnFrameUpdate( elapsed );
+void igdeEditorModule::OnFrameUpdate(float elapsed){
+	if(pEditorWindow){
+		pEditorWindow->OnFrameUpdate(elapsed);
 	}
 }
 
-void igdeEditorModule::GetChangedDocuments( decStringList &list ){
-	if( pEditorWindow ){
-		pEditorWindow->GetChangedDocuments( list );
+void igdeEditorModule::GetChangedDocuments(decStringList &list){
+	if(pEditorWindow){
+		pEditorWindow->GetChangedDocuments(list);
 	}
 }
 
-bool igdeEditorModule::SaveDocument( const char *filename ){
-	if( pEditorWindow ){
-		return pEditorWindow->SaveDocument( filename );
+bool igdeEditorModule::SaveDocument(const char *filename){
+	if(pEditorWindow){
+		return pEditorWindow->SaveDocument(filename);
 		
 	}else{
 		return false;
 	}
 }
 
-void igdeEditorModule::LoadDocument( const char *filename ){
-	if( pEditorWindow ){
-		pEditorWindow->LoadDocument( filename );
+void igdeEditorModule::LoadDocument(const char *filename){
+	if(pEditorWindow){
+		pEditorWindow->LoadDocument(filename);
 	}
 }
 
 void igdeEditorModule::OnGameProjectChanged(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->OnGameProjectChanged();
 	}
 }
 
 igdeStepableTask *igdeEditorModule::OnGameDefinitionChanged(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		return pEditorWindow->OnGameDefinitionChanged();
 		
 	}else{
@@ -179,7 +179,7 @@ igdeStepableTask *igdeEditorModule::OnGameDefinitionChanged(){
 	}
 }
 
-bool igdeEditorModule::ProcessCommandLine( decUnicodeStringList& ){
+bool igdeEditorModule::ProcessCommandLine(decUnicodeStringList&){
 	return true;
 }
 
@@ -200,57 +200,57 @@ const decString &igdeEditorModule::GetLoggingName() const{
 	return pLoggingName;
 }
 
-void igdeEditorModule::SetLoggingName( const char *name ){
+void igdeEditorModule::SetLoggingName(const char *name){
 	pLoggingName = name;
 }
 
 
 
-void igdeEditorModule::LogInfo( const char *message ) const{
-	GetLogger()->LogInfo( pLoggingName.GetString(), message );
+void igdeEditorModule::LogInfo(const char *message) const{
+	GetLogger()->LogInfo(pLoggingName.GetString(), message);
 }
 
-void igdeEditorModule::LogInfoFormat( const char *message, ... ) const{
+void igdeEditorModule::LogInfoFormat(const char *message, ...) const{
 	va_list list;
-	va_start( list, message );
-	GetLogger()->LogInfoFormatUsing( pLoggingName.GetString(), message, list );
-	va_end( list );
+	va_start(list, message);
+	GetLogger()->LogInfoFormatUsing(pLoggingName.GetString(), message, list);
+	va_end(list);
 }
 
-void igdeEditorModule::LogInfoFormatUsing( const char *message, va_list args ) const{
-	GetLogger()->LogInfoFormatUsing( pLoggingName.GetString(), message, args );
+void igdeEditorModule::LogInfoFormatUsing(const char *message, va_list args) const{
+	GetLogger()->LogInfoFormatUsing(pLoggingName.GetString(), message, args);
 }
 
-void igdeEditorModule::LogWarn( const char *message ) const{
-	GetLogger()->LogWarn( pLoggingName.GetString(), message );
+void igdeEditorModule::LogWarn(const char *message) const{
+	GetLogger()->LogWarn(pLoggingName.GetString(), message);
 }
 
-void igdeEditorModule::LogWarnFormat( const char *message, ... ) const{
+void igdeEditorModule::LogWarnFormat(const char *message, ...) const{
 	va_list list;
-	va_start( list, message );
-	GetLogger()->LogWarnFormatUsing( pLoggingName.GetString(), message, list );
-	va_end( list );
+	va_start(list, message);
+	GetLogger()->LogWarnFormatUsing(pLoggingName.GetString(), message, list);
+	va_end(list);
 }
 
-void igdeEditorModule::LogWarnFormatUsing( const char *message, va_list args ) const{
-	GetLogger()->LogWarnFormatUsing( pLoggingName.GetString(), message, args );
+void igdeEditorModule::LogWarnFormatUsing(const char *message, va_list args) const{
+	GetLogger()->LogWarnFormatUsing(pLoggingName.GetString(), message, args);
 }
 
-void igdeEditorModule::LogError( const char *message ) const{
-	GetLogger()->LogError( pLoggingName.GetString(), message );
+void igdeEditorModule::LogError(const char *message) const{
+	GetLogger()->LogError(pLoggingName.GetString(), message);
 }
 
-void igdeEditorModule::LogErrorFormat( const char *message, ... ) const{
+void igdeEditorModule::LogErrorFormat(const char *message, ...) const{
 	va_list list;
-	va_start( list, message );
-	GetLogger()->LogErrorFormatUsing( pLoggingName.GetString(), message, list );
-	va_end( list );
+	va_start(list, message);
+	GetLogger()->LogErrorFormatUsing(pLoggingName.GetString(), message, list);
+	va_end(list);
 }
 
-void igdeEditorModule::LogErrorFormatUsing( const char *message, va_list args ) const{
-	GetLogger()->LogErrorFormatUsing( pLoggingName.GetString(), message, args );
+void igdeEditorModule::LogErrorFormatUsing(const char *message, va_list args) const{
+	GetLogger()->LogErrorFormatUsing(pLoggingName.GetString(), message, args);
 }
 
-void igdeEditorModule::LogException( const deException &exception ) const{
-	GetLogger()->LogException( pLoggingName.GetString(), exception );
+void igdeEditorModule::LogException(const deException &exception) const{
+	GetLogger()->LogException(pLoggingName.GetString(), exception);
 }

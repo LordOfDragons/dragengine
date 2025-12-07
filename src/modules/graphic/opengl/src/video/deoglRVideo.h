@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render video. */
-	deoglRVideo( deoglRenderThread &renderThread, int width, int height, int componentCount, int frameCount );
+	deoglRVideo(deoglRenderThread &renderThread, int width, int height, int componentCount, int frameCount);
 	
 	/** Clean up render video. */
 	virtual ~deoglRVideo();
@@ -87,7 +87,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Frame texture or \em NULL if not ready. */
-	deoglTexture *GetTexture( int frame ) const;
+	deoglTexture *GetTexture(int frame) const;
 	
 	/** Number of frames. */
 	inline int GetFrameCount() const{ return pFrameCount; }
@@ -100,7 +100,7 @@ public:
 	 * Set pixel buffer to update frame texture with.
 	 * \returns Previously set pixel buffer or nullptr.
 	 */
-	deoglPixelBuffer::Ref SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref SetPixelBuffer(int frame, deoglPixelBuffer *pixelBuffer);
 	
 	/** Frame to update or -1 if not set to update a frame. */
 	inline int GetUpdateFrame() const{ return pUpdateFrame; }

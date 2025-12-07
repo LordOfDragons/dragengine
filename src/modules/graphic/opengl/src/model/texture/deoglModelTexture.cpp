@@ -37,13 +37,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglModelTexture::deoglModelTexture( deoglRenderThread &renderThread ) :
-pFirstFace( 0 ),
-pFaceCount( 0 ),
-pDoubleSided( false ),
-pDecal( false ),
-pDecalOffset( 0 ),
-pRTIGroups( deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread) ){
+deoglModelTexture::deoglModelTexture(deoglRenderThread &renderThread) :
+pFirstFace(0),
+pFaceCount(0),
+pDoubleSided(false),
+pDecal(false),
+pDecalOffset(0),
+pRTIGroups(deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread)){
 }
 
 deoglModelTexture::~deoglModelTexture(){
@@ -54,22 +54,22 @@ deoglModelTexture::~deoglModelTexture(){
 // Management
 ///////////////
 
-void deoglModelTexture::SetFirstFace( int faceIndex ){
+void deoglModelTexture::SetFirstFace(int faceIndex){
 	pFirstFace = faceIndex;
 }
 
-void deoglModelTexture::SetFaceCount( int faceCount ){
+void deoglModelTexture::SetFaceCount(int faceCount){
 	pFaceCount = faceCount;
 }
 
-void deoglModelTexture::SetDoubleSided( bool doubleSided ){
+void deoglModelTexture::SetDoubleSided(bool doubleSided){
 	pDoubleSided = doubleSided;
 }
 
-void deoglModelTexture::SetDecal( bool decal ){
+void deoglModelTexture::SetDecal(bool decal){
 	pDecal = decal;
 }
 
-void deoglModelTexture::SetDecalOffset( int offset ){
+void deoglModelTexture::SetDecalOffset(int offset){
 	pDecalOffset = offset;
 }

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureRemove::ceUCGestureRemove( ceGesture *gesture ){
-	if( ! gesture ) DETHROW( deeInvalidParam );
+ceUCGestureRemove::ceUCGestureRemove(ceGesture *gesture){
+	if(!gesture) DETHROW(deeInvalidParam);
 	
 	ceConversation *conversation = gesture->GetConversation();
-	if( ! conversation ) DETHROW( deeInvalidParam );
+	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pGesture = NULL;
 	
-	SetShortInfo( "Remove Gesture" );
+	SetShortInfo("Remove Gesture");
 	
 	pConversation = conversation;
 	conversation->AddReference();
@@ -67,9 +67,9 @@ ceUCGestureRemove::~ceUCGestureRemove(){
 ///////////////
 
 void ceUCGestureRemove::Undo(){
-	pConversation->AddGesture( pGesture );
+	pConversation->AddGesture(pGesture);
 }
 
 void ceUCGestureRemove::Redo(){
-	pConversation->RemoveGesture( pGesture );
+	pConversation->RemoveGesture(pGesture);
 }

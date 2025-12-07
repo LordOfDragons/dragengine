@@ -46,7 +46,7 @@ public:
 	fbxPropertyArrayBool();
 	
 	/** \brief Load property. */
-	fbxPropertyArrayBool( decBaseFileReader &reader );
+	fbxPropertyArrayBool(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
@@ -62,29 +62,29 @@ public:
 	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Value at index. */
-	bool GetValueAt( int index ) const;
+	bool GetValueAt(int index) const;
 	
 	/** \brief Add value. */
-	void AddValue( bool value );
+	void AddValue(bool value);
 	
 	/** \brief Casting throwing exception if wrong type. */
 	virtual fbxPropertyArrayBool &CastArrayBool();
 	
 	/** \brief Get values as specific type if possible. */
 	virtual int GetValueCount() const;
-	virtual bool GetValueAtAsBool( int index ) const;
-	virtual int GetValueAtAsInt( int index ) const;
-	virtual int64_t GetValueAtAsLong( int index ) const;
-	virtual float GetValueAtAsFloat( int index ) const;
-	virtual double GetValueAtAsDouble( int index ) const;
+	virtual bool GetValueAtAsBool(int index) const;
+	virtual int GetValueAtAsInt(int index) const;
+	virtual int64_t GetValueAtAsLong(int index) const;
+	virtual float GetValueAtAsFloat(int index) const;
+	virtual double GetValueAtAsDouble(int index) const;
 	
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	virtual void Save(decBaseFileWriter &writer);
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;
 	/*@}*/
 };
 

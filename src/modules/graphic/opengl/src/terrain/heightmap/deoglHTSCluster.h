@@ -45,8 +45,8 @@ struct deoglHTSClusterLOD{
 	int firstBasePoint;
 	int basePointCount;
 	
-	int firstBorderPoint[ 8 ];
-	int borderPointCount[ 8 ];
+	int firstBorderPoint[8];
+	int borderPointCount[8];
 };
 
 
@@ -66,9 +66,9 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglHTSCluster &pCluster;
 	public:
-		WorldComputeElement( deoglHTSCluster &cluster );
-		virtual void UpdateData( sDataElement &data ) const;
-		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+		WorldComputeElement(deoglHTSCluster &cluster);
+		virtual void UpdateData(sDataElement &data) const;
+		virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
 	};
 	
 	
@@ -87,7 +87,7 @@ private:
 	decVector pCenter;
 	decVector pHalfExtends;
 	
-	deoglHTSClusterLOD pLOD[ HTSC_MAX_LOD + 1 ];
+	deoglHTSClusterLOD pLOD[HTSC_MAX_LOD + 1];
 	bool pNoLOD;
 	
 	GLushort *pFacePoints;
@@ -125,19 +125,19 @@ public:
 	inline deoglRHTSector *GetHTSector() const{ return pHTSector; }
 	
 	/** Set height terrain sector. */
-	void SetHTSector( deoglRHTSector *htsector );
+	void SetHTSector(deoglRHTSector *htsector);
 	
 	/** Coordinates. */
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
 	/** Set coordinates. */
-	void SetCoordinates( const decPoint &coordinates );
+	void SetCoordinates(const decPoint &coordinates);
 	
 	/** Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	
 	
@@ -154,7 +154,7 @@ public:
 	inline int GetPointCountZ() const{ return pPointCountZ; }
 	
 	/** Set size. */
-	void SetSize( int firstPointX, int firstPointZ, int pointCountX, int pointCountZ );
+	void SetSize(int firstPointX, int firstPointZ, int pointCountX, int pointCountZ);
 	
 	
 	
@@ -167,7 +167,7 @@ public:
 	
 	
 	/** Initializes the cluster from the given height image during main thread. */
-	void InitFromHeightImage( const deHeightTerrainSector &sector );
+	void InitFromHeightImage(const deHeightTerrainSector &sector);
 	
 	
 	
@@ -175,13 +175,13 @@ public:
 	inline bool GetNoLOD() const{ return pNoLOD; }
 	
 	/** LOD level. */
-	deoglHTSClusterLOD &GetLODAt( int level );
-	const deoglHTSClusterLOD &GetLODAt( int level ) const;
+	deoglHTSClusterLOD &GetLODAt(int level);
+	const deoglHTSClusterLOD &GetLODAt(int level) const;
 	
 	
 	
 	/** Update height extends. */
-	void UpdateHeightExtends( float minHeight, float maxHeight );
+	void UpdateHeightExtends(float minHeight, float maxHeight);
 	
 	/** Print out some debuging information. */
 	void DebugPrint();
@@ -192,7 +192,7 @@ public:
 	inline int GetOffsetVBODataPoints() const{ return pOffsetVBODataPoints; }
 	
 	/** Set offset data vbo. */
-	void SetOffsetVBODataPoints( int offset );
+	void SetOffsetVBODataPoints(int offset);
 	
 	/** Count of data vbo points. */
 	inline int GetCountVBODataPoints() const{ return pDataPointCount; }
@@ -201,7 +201,7 @@ public:
 	inline GLuint GetVBODataPoints1() const{ return pVBODataPoints1; }
 	
 	/** Set position data vbo. */
-	void SetVBODataPoints1( GLuint vbo );
+	void SetVBODataPoints1(GLuint vbo);
 	
 	/** Update position vbo. */
 	void UpdateVBOData1();
@@ -210,7 +210,7 @@ public:
 	inline GLuint GetVBODataPoints2() const{ return pVBODataPoints2; }
 	
 	/** Set height data vbo. */
-	void SetVBODataPoints2( GLuint vbo );
+	void SetVBODataPoints2(GLuint vbo);
 	
 	/** Update height vbo. */
 	void UpdateVBOData2();
@@ -229,7 +229,7 @@ public:
 	inline int GetOffsetVBODataFaces() const{ return pOffsetVBODataFaces; }
 	
 	/** Set offset data faces vbo. */
-	void SetOffsetVBODataFaces( int offset );
+	void SetOffsetVBODataFaces(int offset);
 	
 	/** Count of data vbo faces. */
 	inline int GetCountVBODataFaces() const{ return pFacePointCount; }
@@ -238,7 +238,7 @@ public:
 	inline GLuint GetVBODataFaces() const{ return pVBODataFaces; }
 	
 	/** Set faces data vbo. */
-	void SetVBODataFaces( GLuint vbo );
+	void SetVBODataFaces(GLuint vbo);
 	
 	/** Update data faces vbo. */
 	void UpdateVBODataFaces();
@@ -246,7 +246,7 @@ public:
 	
 	
 	/** Add to world compute. */
-	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	void AddToWorldCompute(deoglWorldCompute &worldCompute);
 	
 	/** Update world compute. */
 	void UpdateWorldCompute();
@@ -269,17 +269,17 @@ public:
 	inline int GetFacePointCount() const{ return pFacePointCount; }
 	
 	/** Add face point. */
-	void AddFacePoints( int p1, int p2, int p3 );
+	void AddFacePoints(int p1, int p2, int p3);
 	
 	/** Set face point count. Has to be less or equal the current point count. */
-	void SetFacePointCount( int count );
+	void SetFacePointCount(int count);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateBaseLOD( const deHeightTerrainSector &sector, int width );
-	void pCreateCheapLOD( int lodLevel );
+	void pCreateBaseLOD(const deHeightTerrainSector &sector, int width);
+	void pCreateCheapLOD(int lodLevel);
 };
 
 #endif

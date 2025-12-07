@@ -119,7 +119,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create hand tracker. */
-	deoxrHandTracker( deoxrSession &session, deoxrDevice &device, XrHandEXT hand );
+	deoxrHandTracker(deoxrSession &session, deoxrDevice &device, XrHandEXT hand);
 	
 protected:
 	/** Clean up space. */
@@ -147,20 +147,20 @@ public:
 	inline int GetPoseBoneCount() const{ return pPoseBoneCount; }
 	
 	/** Pose bone at index. */
-	deInputDevicePose &GetPoseBoneAt( int index );
-	const deInputDevicePose &GetPoseBoneAt( int index ) const;
+	deInputDevicePose &GetPoseBoneAt(int index);
+	const deInputDevicePose &GetPoseBoneAt(int index) const;
 	
 	/** Bending value for finger. */
-	float GetBendFingerAt( int index ) const;
+	float GetBendFingerAt(int index) const;
 	
 	/** Spread finger value for finger. */
-	float GetSpreadFingerAt( int index ) const;
+	float GetSpreadFingerAt(int index) const;
 	
 	/** Finger input value. */
 	float GetFingerInputAt(int index) const;
 	
 	/** Log bone poses. */
-	void LogPoseBones( const char *prefix ) const;
+	void LogPoseBones(const char *prefix) const;
 	
 	/** Reference pose changed. */
 	void ReferencePoseChanged();
@@ -170,7 +170,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pSetBoneMapping( int index, deInputDevice::eHandBones to, XrHandJointEXT from );
+	void pSetBoneMapping(int index, deInputDevice::eHandBones to, XrHandJointEXT from);
 	void pFixBrokenBoneRotations();
 	void pCalcFingerBending();
 	void pCalcFingerSpreading();

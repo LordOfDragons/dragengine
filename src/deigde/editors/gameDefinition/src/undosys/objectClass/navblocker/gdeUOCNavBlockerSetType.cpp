@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetType::gdeUOCNavBlockerSetType( gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, deNavigationSpace::eSpaceTypes newValue ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCNavBlockerSetType::gdeUOCNavBlockerSetType(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, deNavigationSpace::eSpaceTypes newValue) :
+pObjectClass(NULL),
+pNavBlocker(NULL)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-blocker set type" );
+	SetShortInfo("Nav-blocker set type");
 	
 	pOldValue = navblocker->GetType();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavBlocker( NULL )
 }
 
 gdeUOCNavBlockerSetType::~gdeUOCNavBlockerSetType(){
-	if( pNavBlocker ){
+	if(pNavBlocker){
 		pNavBlocker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavBlockerSetType::~gdeUOCNavBlockerSetType(){
 ///////////////
 
 void gdeUOCNavBlockerSetType::Undo(){
-	pNavBlocker->SetType( pOldValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetType(pOldValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerSetType::Redo(){
-	pNavBlocker->SetType( pNewValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetType(pNewValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }

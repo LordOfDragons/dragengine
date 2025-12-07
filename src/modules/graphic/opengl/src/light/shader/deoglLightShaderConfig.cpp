@@ -43,7 +43,7 @@ deoglLightShaderConfig::deoglLightShaderConfig(){
 	Reset();
 }
 
-deoglLightShaderConfig::deoglLightShaderConfig( const deoglLightShaderConfig &config ){
+deoglLightShaderConfig::deoglLightShaderConfig(const deoglLightShaderConfig &config){
 	Reset();
 	*this = config;
 }
@@ -95,168 +95,168 @@ void deoglLightShaderConfig::Reset(){
 
 
 
-void deoglLightShaderConfig::SetLightMode( eLightModes lightMode ){
+void deoglLightShaderConfig::SetLightMode(eLightModes lightMode){
 	pLightMode = lightMode;
 }
 
-void deoglLightShaderConfig::SetShadowTapMode( eShadowTapModes shadowTapMode ){
+void deoglLightShaderConfig::SetShadowTapMode(eShadowTapModes shadowTapMode){
 	pShadowTapMode = shadowTapMode;
 }
 
-void deoglLightShaderConfig::SetShadowMappingAlgorithm1( eShadowMappingAlgorithms shadowMappingAlgorithm ){
+void deoglLightShaderConfig::SetShadowMappingAlgorithm1(eShadowMappingAlgorithms shadowMappingAlgorithm){
 	pShadowMappingAlgorithm1 = shadowMappingAlgorithm;
 }
 
-void deoglLightShaderConfig::SetShadowMappingAlgorithm2( eShadowMappingAlgorithms shadowMappingAlgorithm ){
+void deoglLightShaderConfig::SetShadowMappingAlgorithm2(eShadowMappingAlgorithms shadowMappingAlgorithm){
 	pShadowMappingAlgorithm2 = shadowMappingAlgorithm;
 }
 
-void deoglLightShaderConfig::SetMaterialNormalModeDec( eMaterialNormalModes materialNormalMode ){
+void deoglLightShaderConfig::SetMaterialNormalModeDec(eMaterialNormalModes materialNormalMode){
 	pMaterialNormalModeDec = materialNormalMode;
 }
 
-void deoglLightShaderConfig::SetMaterialNormalModeEnc( eMaterialNormalModes materialNormalMode ){
+void deoglLightShaderConfig::SetMaterialNormalModeEnc(eMaterialNormalModes materialNormalMode){
 	pMaterialNormalModeEnc = materialNormalMode;
 }
 
-void deoglLightShaderConfig::SetParticleMode( eParticleModes mode ){
+void deoglLightShaderConfig::SetParticleMode(eParticleModes mode){
 	pParticleMode = mode;
 }
 
 
 
-void deoglLightShaderConfig::SetDecodeInDepth( bool decodeInDepth ){
+void deoglLightShaderConfig::SetDecodeInDepth(bool decodeInDepth){
 	pDecodeInDepth = decodeInDepth;
 }
 
-void deoglLightShaderConfig::SetDecodeInShadow( bool decodeInShadow ){
+void deoglLightShaderConfig::SetDecodeInShadow(bool decodeInShadow){
 	pDecodeInShadow = decodeInShadow;
 }
 
-void deoglLightShaderConfig::SetEncodeOutDepth( bool encodeOutDepth ){
+void deoglLightShaderConfig::SetEncodeOutDepth(bool encodeOutDepth){
 	pEncodeOutDepth = encodeOutDepth;
 }
 
-void deoglLightShaderConfig::SetHWDepthCompare( bool hwDepthCompare ){
+void deoglLightShaderConfig::SetHWDepthCompare(bool hwDepthCompare){
 	pHWDepthCompare = hwDepthCompare;
 }
 
-void deoglLightShaderConfig::SetShadowMatrix2EqualsMatrix1( bool shadowMatrix2EqualsMatrix1 ){
+void deoglLightShaderConfig::SetShadowMatrix2EqualsMatrix1(bool shadowMatrix2EqualsMatrix1){
 	pShadowMatrix2EqualsMatrix1 = shadowMatrix2EqualsMatrix1;
 }
 
-void deoglLightShaderConfig::SetAmbientLighting( bool ambientLighting ){
+void deoglLightShaderConfig::SetAmbientLighting(bool ambientLighting){
 	pAmbientLighting = ambientLighting;
 }
 
-void deoglLightShaderConfig::SetShadowInverseDepth( bool shadowInverseDepth ){
+void deoglLightShaderConfig::SetShadowInverseDepth(bool shadowInverseDepth){
 	pShadowInverseDepth = shadowInverseDepth;
 }
 
-void deoglLightShaderConfig::SetFullScreenQuad( bool fullScreenQuad ){
+void deoglLightShaderConfig::SetFullScreenQuad(bool fullScreenQuad){
 	pFullScreenQuad = fullScreenQuad;
 }
 
-void deoglLightShaderConfig::SetSubSurface( bool subSurface ){
+void deoglLightShaderConfig::SetSubSurface(bool subSurface){
 	pSubSurface = subSurface;
 }
 
-void deoglLightShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
+void deoglLightShaderConfig::SetLuminanceOnly(bool luminanceOnly){
 	pLuminanceOnly = luminanceOnly;
 }
 
-void deoglLightShaderConfig::SetGIRay( bool giRay ){
+void deoglLightShaderConfig::SetGIRay(bool giRay){
 	pGIRay = giRay;
 }
 
-void deoglLightShaderConfig::SetGSRenderStereo( bool gsRenderStereo ){
+void deoglLightShaderConfig::SetGSRenderStereo(bool gsRenderStereo){
 	pGSRenderStereo = gsRenderStereo;
 }
 
-void deoglLightShaderConfig::SetVSRenderStereo( bool vsRenderStereo ){
+void deoglLightShaderConfig::SetVSRenderStereo(bool vsRenderStereo){
 	pVSRenderStereo = vsRenderStereo;
 }
 
 
 
-void deoglLightShaderConfig::SetTextureNoise( bool isUsed ){
+void deoglLightShaderConfig::SetTextureNoise(bool isUsed){
 	pTextureNoise = isUsed;
 }
 
-void deoglLightShaderConfig::SetTextureColor( bool useTexture ){
+void deoglLightShaderConfig::SetTextureColor(bool useTexture){
 	pTextureColor = useTexture;
 }
 
-void deoglLightShaderConfig::SetTextureColorOmnidirCube( bool useTexture ){
+void deoglLightShaderConfig::SetTextureColorOmnidirCube(bool useTexture){
 	pTextureColorOmniCube = useTexture;
 }
 
-void deoglLightShaderConfig::SetTextureColorOmnidirEquirect( bool useTexture ){
+void deoglLightShaderConfig::SetTextureColorOmnidirEquirect(bool useTexture){
 	pTextureColorOmniEquirect = useTexture;
 }
 
-void deoglLightShaderConfig::SetTextureShadow1Solid( bool isUsed ){
+void deoglLightShaderConfig::SetTextureShadow1Solid(bool isUsed){
 	pTextureShadow1Solid = isUsed;
 }
 
-void deoglLightShaderConfig::SetTextureShadow1Transparent( bool isUsed ){
+void deoglLightShaderConfig::SetTextureShadow1Transparent(bool isUsed){
 	pTextureShadow1Transparent = isUsed;
 }
 
-void deoglLightShaderConfig::SetTextureShadow2Solid( bool isUsed ){
+void deoglLightShaderConfig::SetTextureShadow2Solid(bool isUsed){
 	pTextureShadow2Solid = isUsed;
 }
 
-void deoglLightShaderConfig::SetTextureShadow2Transparent( bool isUsed ){
+void deoglLightShaderConfig::SetTextureShadow2Transparent(bool isUsed){
 	pTextureShadow2Transparent = isUsed;
 }
 
-void deoglLightShaderConfig::SetTextureShadow1Ambient( bool isUsed ){
+void deoglLightShaderConfig::SetTextureShadow1Ambient(bool isUsed){
 	pTextureShadow1Ambient = isUsed;
 }
 
-void deoglLightShaderConfig::SetTextureShadow2Ambient( bool isUsed ){
+void deoglLightShaderConfig::SetTextureShadow2Ambient(bool isUsed){
 	pTextureShadow2Ambient = isUsed;
 }
 
 
 
 void deoglLightShaderConfig::UpdateKey(){
-	pKey1 = ( uint32_t )0;
-	pKey1 |= ( ( uint32_t )pLightMode ) << 0; // 5 values, 3 bits
-	pKey1 |= ( ( uint32_t )pShadowTapMode ) << 3; // 4 values, 2 bits
-	pKey1 |= ( ( uint32_t )pShadowMappingAlgorithm1 ) << 5; // 4 values, 2 bits
-	pKey1 |= ( ( uint32_t )pShadowMappingAlgorithm2 ) << 7; // 4 values, 2 bits
-	pKey1 |= ( ( uint32_t )pMaterialNormalModeDec ) << 9; // 4 values, 2 bits
-	pKey1 |= ( ( uint32_t )pMaterialNormalModeEnc ) << 11; // 4 values, 2 bits
-	pKey1 |= ( ( uint32_t )pParticleMode ) << 13; // 3 values, 2 bits
+	pKey1 = (uint32_t)0;
+	pKey1 |= ((uint32_t)pLightMode) << 0; // 5 values, 3 bits
+	pKey1 |= ((uint32_t)pShadowTapMode) << 3; // 4 values, 2 bits
+	pKey1 |= ((uint32_t)pShadowMappingAlgorithm1) << 5; // 4 values, 2 bits
+	pKey1 |= ((uint32_t)pShadowMappingAlgorithm2) << 7; // 4 values, 2 bits
+	pKey1 |= ((uint32_t)pMaterialNormalModeDec) << 9; // 4 values, 2 bits
+	pKey1 |= ((uint32_t)pMaterialNormalModeEnc) << 11; // 4 values, 2 bits
+	pKey1 |= ((uint32_t)pParticleMode) << 13; // 3 values, 2 bits
 	
-	pKey2 = ( uint32_t )0;
-	if( pDecodeInDepth ) pKey2 |= ( uint32_t )1 << 0;
-	if( pDecodeInShadow ) pKey2 |= ( uint32_t )1 << 1;
-	if( pEncodeOutDepth ) pKey2 |= ( uint32_t )1 << 2;
-	if( pHWDepthCompare ) pKey2 |= ( uint32_t )1 << 3;
-	if( pShadowMatrix2EqualsMatrix1 ) pKey2 |= ( uint32_t )1 << 4;
-	if( pShadowInverseDepth ) pKey2 |= ( uint32_t )1 << 5;
-	if( pAmbientLighting ) pKey2 |= ( uint32_t )1 << 6;
-	if( pFullScreenQuad ) pKey2 |= ( uint32_t )1 << 7;
-	if( pSubSurface ) pKey2 |= ( uint32_t )1 << 8;
-	if( pLuminanceOnly ) pKey2 |= ( uint32_t )1 << 9;
-	if( pGIRay ) pKey2 |= ( uint32_t )1 << 10;
-	if( pGSRenderStereo ) pKey2 |= ( uint32_t )1 << 11;
-	if( pVSRenderStereo ) pKey2 |= ( uint32_t )1 << 12;
+	pKey2 = (uint32_t)0;
+	if(pDecodeInDepth) pKey2 |= (uint32_t)1 << 0;
+	if(pDecodeInShadow) pKey2 |= (uint32_t)1 << 1;
+	if(pEncodeOutDepth) pKey2 |= (uint32_t)1 << 2;
+	if(pHWDepthCompare) pKey2 |= (uint32_t)1 << 3;
+	if(pShadowMatrix2EqualsMatrix1) pKey2 |= (uint32_t)1 << 4;
+	if(pShadowInverseDepth) pKey2 |= (uint32_t)1 << 5;
+	if(pAmbientLighting) pKey2 |= (uint32_t)1 << 6;
+	if(pFullScreenQuad) pKey2 |= (uint32_t)1 << 7;
+	if(pSubSurface) pKey2 |= (uint32_t)1 << 8;
+	if(pLuminanceOnly) pKey2 |= (uint32_t)1 << 9;
+	if(pGIRay) pKey2 |= (uint32_t)1 << 10;
+	if(pGSRenderStereo) pKey2 |= (uint32_t)1 << 11;
+	if(pVSRenderStereo) pKey2 |= (uint32_t)1 << 12;
 	
-	pKey3 = ( uint32_t )0;
-	if( pTextureNoise ) pKey3 |= ( uint32_t )1 << 0;
-	if( pTextureColor ) pKey3 |= ( uint32_t )1 << 1;
-	if( pTextureColorOmniCube ) pKey3 |= ( uint32_t )1 << 2;
-	if( pTextureColorOmniEquirect ) pKey3 |= ( uint32_t )1 << 3;
-	if( pTextureShadow1Solid ) pKey3 |= ( uint32_t )1 << 4;
-	if( pTextureShadow1Transparent ) pKey3 |= ( uint32_t )1 << 5;
-	if( pTextureShadow2Solid ) pKey3 |= ( uint32_t )1 << 6;
-	if( pTextureShadow2Transparent ) pKey3 |= ( uint32_t )1 << 7;
-	if( pTextureShadow1Ambient ) pKey3 |= ( uint32_t )1 << 8;
-	if( pTextureShadow2Ambient ) pKey3 |= ( uint32_t )1 << 9;
+	pKey3 = (uint32_t)0;
+	if(pTextureNoise) pKey3 |= (uint32_t)1 << 0;
+	if(pTextureColor) pKey3 |= (uint32_t)1 << 1;
+	if(pTextureColorOmniCube) pKey3 |= (uint32_t)1 << 2;
+	if(pTextureColorOmniEquirect) pKey3 |= (uint32_t)1 << 3;
+	if(pTextureShadow1Solid) pKey3 |= (uint32_t)1 << 4;
+	if(pTextureShadow1Transparent) pKey3 |= (uint32_t)1 << 5;
+	if(pTextureShadow2Solid) pKey3 |= (uint32_t)1 << 6;
+	if(pTextureShadow2Transparent) pKey3 |= (uint32_t)1 << 7;
+	if(pTextureShadow1Ambient) pKey3 |= (uint32_t)1 << 8;
+	if(pTextureShadow2Ambient) pKey3 |= (uint32_t)1 << 9;
 }
 
 
@@ -264,96 +264,96 @@ void deoglLightShaderConfig::UpdateKey(){
 // Debug
 //////////
 
-void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
-	const char * const lightModeStrings[] = { "point", "spot", "projector", "sky", "particle" };
-	const char * const shadowTapModeStrings[] = { "single", "pcf4", "pcf9", "pcfvar" };
-	const char * const shadowMappingAlgorithmStrings[] = { "2D", "cube", "dualpara", "pyramid" };
-	const char * const materialNormalModeStrings[] = { "matnorFloat", "matnorIntBasic", "matnorSpheremap" };
-	const char * const particleModeStrings[] = { "particle", "ribbon", "beam" };
+void deoglLightShaderConfig::DebugGetConfigString(decString &string) const{
+	const char * const lightModeStrings[] = {"point", "spot", "projector", "sky", "particle"};
+	const char * const shadowTapModeStrings[] = {"single", "pcf4", "pcf9", "pcfvar"};
+	const char * const shadowMappingAlgorithmStrings[] = {"2D", "cube", "dualpara", "pyramid"};
+	const char * const materialNormalModeStrings[] = {"matnorFloat", "matnorIntBasic", "matnorSpheremap"};
+	const char * const particleModeStrings[] = {"particle", "ribbon", "beam"};
 	
-	string.Format( "(%s %s %s/%s %s sma1=%s sma2=%s",
-		lightModeStrings[ pLightMode ],
-		shadowTapModeStrings[ pShadowTapMode ],
-		materialNormalModeStrings[ pMaterialNormalModeDec ],
-		materialNormalModeStrings[ pMaterialNormalModeEnc ],
-		particleModeStrings[ pParticleMode ],
-		shadowMappingAlgorithmStrings[ pShadowMappingAlgorithm1 ],
-		shadowMappingAlgorithmStrings[ pShadowMappingAlgorithm2 ] );
+	string.Format("(%s %s %s/%s %s sma1=%s sma2=%s",
+		lightModeStrings[pLightMode],
+		shadowTapModeStrings[pShadowTapMode],
+		materialNormalModeStrings[pMaterialNormalModeDec],
+		materialNormalModeStrings[pMaterialNormalModeEnc],
+		particleModeStrings[pParticleMode],
+		shadowMappingAlgorithmStrings[pShadowMappingAlgorithm1],
+		shadowMappingAlgorithmStrings[pShadowMappingAlgorithm2]);
 	
-	if( pTextureNoise ){
-		string.Append( " noise" );
-	}
-	
-	if( pTextureColor ){
-		string.Append( " texColor" );
-	}
-	if( pTextureColorOmniCube ){
-		string.Append( " texColorCube" );
-	}
-	if( pTextureColorOmniEquirect ){
-		string.Append( " texColorEqui" );
+	if(pTextureNoise){
+		string.Append(" noise");
 	}
 	
-	if( pDecodeInDepth ){
-		string.Append( " decodeInDepth" );
+	if(pTextureColor){
+		string.Append(" texColor");
 	}
-	if( pDecodeInShadow ){
-		string.Append( " decodeInShadow" );
+	if(pTextureColorOmniCube){
+		string.Append(" texColorCube");
 	}
-	if( pEncodeOutDepth ){
-		string.Append( " encodeOutDepth" );
-	}
-	if( pEncodeOutDepth ){
-		string.Append( " hwDepthCompare" );
-	}
-	if( pShadowMatrix2EqualsMatrix1 ){
-		string.Append( " sm2eqm1" );
-	}
-	if( pAmbientLighting ){
-		string.Append( " ambientLighting" );
-	}
-	if( pShadowInverseDepth ){
-		string.Append( " shadowInverseDepth" );
-	}
-	if( pFullScreenQuad ){
-		string.Append( " fullScreenQuad" );
-	}
-	if( pSubSurface ){
-		string.Append( " subSurface" );
-	}
-	if( pLuminanceOnly ){
-		string.Append( " luminanceOnly" );
-	}
-	if( pGIRay ){
-		string.Append( " giRay" );
-	}
-	if( pGSRenderStereo ){
-		string.Append( " gsRenderStereo" );
-	}
-	if( pVSRenderStereo ){
-		string.Append( " vsRenderStereo" );
+	if(pTextureColorOmniEquirect){
+		string.Append(" texColorEqui");
 	}
 	
-	if( pTextureShadow1Solid ){
-		string.Append( " shadow1Solid" );
+	if(pDecodeInDepth){
+		string.Append(" decodeInDepth");
 	}
-	if( pTextureShadow1Transparent ){
-		string.Append( " shadow1Transp" );
+	if(pDecodeInShadow){
+		string.Append(" decodeInShadow");
 	}
-	if( pTextureShadow2Solid ){
-		string.Append( " shadow2Solid" );
+	if(pEncodeOutDepth){
+		string.Append(" encodeOutDepth");
 	}
-	if( pTextureShadow2Transparent ){
-		string.Append( " shadow2Transp" );
+	if(pEncodeOutDepth){
+		string.Append(" hwDepthCompare");
 	}
-	if( pTextureShadow1Ambient ){
-		string.Append( " shadow1Ambient" );
+	if(pShadowMatrix2EqualsMatrix1){
+		string.Append(" sm2eqm1");
 	}
-	if( pTextureShadow2Ambient ){
-		string.Append( " shadow2Ambient" );
+	if(pAmbientLighting){
+		string.Append(" ambientLighting");
+	}
+	if(pShadowInverseDepth){
+		string.Append(" shadowInverseDepth");
+	}
+	if(pFullScreenQuad){
+		string.Append(" fullScreenQuad");
+	}
+	if(pSubSurface){
+		string.Append(" subSurface");
+	}
+	if(pLuminanceOnly){
+		string.Append(" luminanceOnly");
+	}
+	if(pGIRay){
+		string.Append(" giRay");
+	}
+	if(pGSRenderStereo){
+		string.Append(" gsRenderStereo");
+	}
+	if(pVSRenderStereo){
+		string.Append(" vsRenderStereo");
 	}
 	
-	string.Append( ")" );
+	if(pTextureShadow1Solid){
+		string.Append(" shadow1Solid");
+	}
+	if(pTextureShadow1Transparent){
+		string.Append(" shadow1Transp");
+	}
+	if(pTextureShadow2Solid){
+		string.Append(" shadow2Solid");
+	}
+	if(pTextureShadow2Transparent){
+		string.Append(" shadow2Transp");
+	}
+	if(pTextureShadow1Ambient){
+		string.Append(" shadow1Ambient");
+	}
+	if(pTextureShadow2Ambient){
+		string.Append(" shadow2Ambient");
+	}
+	
+	string.Append(")");
 }
 
 
@@ -361,7 +361,7 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 // Operators
 //////////////
 
-deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShaderConfig &config ){
+deoglLightShaderConfig &deoglLightShaderConfig::operator=(const deoglLightShaderConfig &config){
 	pLightMode = config.pLightMode;
 	pShadowTapMode = config.pShadowTapMode;
 	pShadowMappingAlgorithm1 = config.pShadowMappingAlgorithm1;
@@ -402,7 +402,7 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	return *this;
 }
 
-bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) const{
+bool deoglLightShaderConfig::operator==(const deoglLightShaderConfig &config) const{
 	return pKey1 == config.pKey1
 		&& pKey2 == config.pKey2
 		&& pKey3 == config.pKey3;

@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSpeakerRemove::gdeMAOCSpeakerRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Speaker",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class speaker" )
+gdeMAOCSpeakerRemove::gdeMAOCSpeakerRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Speaker",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class speaker")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Speaker",
 ///////////////
 
 igdeUndo *gdeMAOCSpeakerRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSpeaker ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSpeaker){
 		return NULL;
 	}
 	
 	gdeOCSpeaker * const speaker = gameDefinition.GetActiveOCSpeaker();
-	if( ! speaker ){
+	if(!speaker){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveSpeaker( &objectClass, speaker );
+	return new gdeUOCRemoveSpeaker(&objectClass, speaker);
 }
 
 void gdeMAOCSpeakerRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker
-		&& gameDefinition->GetActiveOCSpeaker() != NULL );
+		&& gameDefinition->GetActiveOCSpeaker() != NULL);
 }

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVariationRemove( meHTVegetationLayer *vlayer, meHTVVariation *variation );
+	meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVVariation *variation);
 	
 protected:
 	/** \brief Clean up undo object. */

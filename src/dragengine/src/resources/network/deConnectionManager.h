@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection resource manager linked to the given engine. */
-	deConnectionManager( deEngine *engine );
+	deConnectionManager(deEngine *engine);
 	
 	/** \brief Clean up connection resource manager and reports leaking resources. */
 	~deConnectionManager();
@@ -93,7 +93,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Removes the given resource from the manager without freeing it. */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

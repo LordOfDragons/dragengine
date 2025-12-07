@@ -53,24 +53,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCLClosestElement::meCLClosestElement( meWorld &world ) :
-pWorld( world ),
+meCLClosestElement::meCLClosestElement(meWorld &world) :
+pWorld(world),
 
-pTestHeightTerrain( false ),
-pTestObjects( false ),
-pTestDecals( false ),
-pTestSnapPoints( false ),
+pTestHeightTerrain(false),
+pTestObjects(false),
+pTestDecals(false),
+pTestSnapPoints(false),
 
-pHitDistance( 0.0f ),
-pHitHTSector( nullptr ),
-pHitObject( nullptr ),
-pHitDecal( nullptr ),
-pHitSnapPoint( nullptr ),
-pHasHit( false ),
+pHitDistance(0.0f),
+pHitHTSector(nullptr),
+pHitObject(nullptr),
+pHitDecal(nullptr),
+pHitSnapPoint(nullptr),
+pHasHit(false),
 
-pFilterObjects( nullptr ),
+pFilterObjects(nullptr),
 
-pIgnoreDecal( nullptr ){
+pIgnoreDecal(nullptr){
 }
 
 meCLClosestElement::~meCLClosestElement(){
@@ -81,31 +81,31 @@ meCLClosestElement::~meCLClosestElement(){
 // Management
 ///////////////
 
-void meCLClosestElement::SetTestHeightTerrain( bool test ){
+void meCLClosestElement::SetTestHeightTerrain(bool test){
 	pTestHeightTerrain = test;
 }
 
-void meCLClosestElement::SetTestObjects( bool test ){
+void meCLClosestElement::SetTestObjects(bool test){
 	pTestObjects = test;
 }
 
-void meCLClosestElement::SetTestDecals( bool test ){
+void meCLClosestElement::SetTestDecals(bool test){
 	pTestDecals = test;
 }
 
-void meCLClosestElement::SetTestSnapPoints( bool test ){
+void meCLClosestElement::SetTestSnapPoints(bool test){
 	pTestSnapPoints = test;
 }
 
 
 
-void meCLClosestElement::SetFilterObjects( const meFilterObjects *filter ){
+void meCLClosestElement::SetFilterObjects(const meFilterObjects *filter){
 	pFilterObjects = filter;
 }
 
 
 
-void meCLClosestElement::SetIgnoreDecal( meDecal *decal ){
+void meCLClosestElement::SetIgnoreDecal(meDecal *decal){
 	pIgnoreDecal = decal;
 }
 
@@ -128,20 +128,20 @@ void meCLClosestElement::Reset(){
 // Notifications
 //////////////////
 
-void meCLClosestElement::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( info->IsHTSector() ){
-		if( ! pTestHeightTerrain ){
+void meCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(info->IsHTSector()){
+		if(!pTestHeightTerrain){
 			return;
 		}
 		
 		meHeightTerrainSector * const htsector = pWorld.GetHeightTerrain()->
-			GetSectorWith( info->GetHTSector()->GetSector() );
+			GetSectorWith(info->GetHTSector()->GetSector());
 		
-		if( htsector->GetTextureCount() == 0 ){
+		if(htsector->GetTextureCount() == 0){
 			return;
 		}
 		
-		if( pHasHit && info->GetDistance() >= pHitDistance ){
+		if(pHasHit && info->GetDistance() >= pHitDistance){
 			return;
 		}
 		
@@ -151,24 +151,24 @@ void meCLClosestElement::CollisionResponse( deCollider *owner, deCollisionInfo *
 		pHitNormal = info->GetNormal();
 		pHasHit = true;
 		
-	}else if( info->IsCollider() ){
+	}else if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
 			*pWorld.GetEnvironment(), info->GetCollider() );
-		if( ! colliderOwner ){
+		if(!colliderOwner){
 			return;
 		}
 		
-		if( colliderOwner->GetObject() ){
-			if( ! pTestObjects ){
+		if(colliderOwner->GetObject()){
+			if(!pTestObjects){
 				return;
 			}
-			if( pIgnoreObjects.Has( colliderOwner->GetObject() ) ){
+			if(pIgnoreObjects.Has(colliderOwner->GetObject())){
 				return;
 			}
-			if( pFilterObjects && ! pFilterObjects->AcceptObject( colliderOwner->GetObject() ) ){
+			if(pFilterObjects && !pFilterObjects->AcceptObject(colliderOwner->GetObject())){
 				return;
 			}
-			if( pHasHit && info->GetDistance() >= pHitDistance ){
+			if(pHasHit && info->GetDistance() >= pHitDistance){
 				return;
 			}
 			
@@ -178,14 +178,14 @@ void meCLClosestElement::CollisionResponse( deCollider *owner, deCollisionInfo *
 			pHitNormal = info->GetNormal();
 			pHasHit = true;
 			
-		}else if( colliderOwner->GetDecal() ){
-			if( ! pTestDecals ){
+		}else if(colliderOwner->GetDecal()){
+			if(!pTestDecals){
 				return;
 			}
-			if( colliderOwner->GetDecal() == pIgnoreDecal ){
+			if(colliderOwner->GetDecal() == pIgnoreDecal){
 				return;
 			}
-			if( pHasHit && info->GetDistance() >= pHitDistance ){
+			if(pHasHit && info->GetDistance() >= pHitDistance){
 				return;
 			}
 			
@@ -195,11 +195,11 @@ void meCLClosestElement::CollisionResponse( deCollider *owner, deCollisionInfo *
 			pHitNormal = info->GetNormal();
 			pHasHit = true;
 			
-		}else if( colliderOwner->GetSnapPoint() ){
-			if( ! pTestSnapPoints ){
+		}else if(colliderOwner->GetSnapPoint()){
+			if(!pTestSnapPoints){
 				return;
 			}
-			if( pHasHit && info->GetDistance() >= pHitDistance ){
+			if(pHasHit && info->GetDistance() >= pHitDistance){
 				return;
 			}
 			
@@ -212,9 +212,9 @@ void meCLClosestElement::CollisionResponse( deCollider *owner, deCollisionInfo *
 	}
 }
 
-bool meCLClosestElement::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool meCLClosestElement::CanHitCollider(deCollider *owner, deCollider *collider){
 	return true;
 }
 
-void meCLClosestElement::ColliderChanged( deCollider *owner ){
+void meCLClosestElement::ColliderChanged(deCollider *owner){
 }

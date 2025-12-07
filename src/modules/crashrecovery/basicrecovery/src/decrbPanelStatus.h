@@ -44,7 +44,7 @@ class deLoadableModule;
  * the engine.
  */
 class decrbPanelStatus : public FXVerticalFrame{
-	FXDECLARE( decrbPanelStatus )
+	FXDECLARE(decrbPanelStatus)
 	
 protected:
 	decrbPanelStatus();
@@ -66,19 +66,19 @@ private:
 	
 public:
 	// constructor, destructor
-	decrbPanelStatus( decrbWindowMain *windowMain, FXComposite *container );
+	decrbPanelStatus(decrbWindowMain *windowMain, FXComposite *container);
 	virtual ~decrbPanelStatus();
 	
 	// management
 	void UpdateStatus();
 	
 	// events
-	long onBtnContinue( FXObject *sender, FXSelector selector, void *data );
-	long onBtnShutdown( FXObject *sender, FXSelector selector, void *data );
+	long onBtnContinue(FXObject *sender, FXSelector selector, void *data);
+	long onBtnShutdown(FXObject *sender, FXSelector selector, void *data);
 	
 private:
-	void pAddSystem( deBaseSystem *system );
-	void pAddModule( deLoadableModule *module );
+	void pAddSystem(deBaseSystem *system);
+	void pAddModule(deLoadableModule *module);
 };
 
 // end of include only once

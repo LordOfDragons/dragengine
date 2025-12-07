@@ -71,11 +71,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetLayoutFlow( dealDisplay &display );
+	dealWidgetLayoutFlow(dealDisplay &display);
 	
 	/** \brief Create widget. */
-	dealWidgetLayoutFlow( dealDisplay &display, bool horizontal, int gap,
-		eLayoutTypes layoutX, eLayoutTypes layoutY );
+	dealWidgetLayoutFlow(dealDisplay &display, bool horizontal, int gap,
+		eLayoutTypes layoutX, eLayoutTypes layoutY);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetLayoutFlow();
@@ -89,25 +89,25 @@ public:
 	inline bool GetHorizontal() const{ return pHorizontal; }
 	
 	/** \brief Set if widgets are laid out horizontal instead of vertical. */
-	void SetHorizontal( bool horizontal );
+	void SetHorizontal(bool horizontal);
 	
 	/** \brief Gap in pixels between widgets. */
 	inline int GetGap() const{ return pGap; }
 	
 	/** \brief Set gap in pxiels between widgets. */
-	void SetGap( int gap );
+	void SetGap(int gap);
 	
 	/** \brief Layout type in X direction. */
 	inline eLayoutTypes GetLayoutX() const{ return pLayoutX; }
 	
 	/** \brief Set layout type in X direction. */
-	void SetLayoutX( eLayoutTypes type );
+	void SetLayoutX(eLayoutTypes type);
 	
 	/** \brief Layout type in Y direction. */
 	inline eLayoutTypes GetLayoutY() const{ return pLayoutY; }
 	
 	/** \brief Set layout type in Y direction. */
-	void SetLayoutY( eLayoutTypes type );
+	void SetLayoutY(eLayoutTypes type);
 	
 	
 	

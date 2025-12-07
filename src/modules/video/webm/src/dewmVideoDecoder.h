@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create decoder. */
-	dewmVideoDecoder( deVideoWebm &module, decBaseFileReader *file );
+	dewmVideoDecoder(deVideoWebm &module, decBaseFileReader *file);
 	
 	/** Clean up decoder. */
 	virtual ~dewmVideoDecoder();
@@ -67,7 +67,7 @@ public:
 	virtual int GetPosition();
 	
 	/** Set file position in frames from the beginning. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/**
 	 * \brief Decode next frame into buffer and advances file position.
@@ -80,7 +80,7 @@ public:
 	 * has been decoded successfully. Otherwise \em fals is returned and an error
 	 * is signaled using the engine error signaling.
 	 */
-	virtual bool DecodeFrame( void *buffer, int size );
+	virtual bool DecodeFrame(void *buffer, int size);
 	/*@}*/
 	
 	

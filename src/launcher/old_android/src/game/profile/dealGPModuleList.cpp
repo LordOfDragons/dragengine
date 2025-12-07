@@ -55,21 +55,21 @@ int dealGPModuleList::GetModuleCount() const{
 	return pModules.GetCount();
 }
 
-dealGPModule *dealGPModuleList::GetModuleAt( int index ) const{
-	return ( dealGPModule* )pModules.GetAt( index );
+dealGPModule *dealGPModuleList::GetModuleAt(int index) const{
+	return (dealGPModule*)pModules.GetAt(index);
 }
 
-dealGPModule *dealGPModuleList::GetModuleNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+dealGPModule *dealGPModuleList::GetModuleNamed(const char *name) const{
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i, count = pModules.GetCount();
 	dealGPModule *module;
 	
-	for( i=0; i<count; i++ ){
-		module = ( dealGPModule* )pModules.GetAt( i );
-		if( module->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		module = (dealGPModule*)pModules.GetAt(i);
+		if(module->GetName().Equals(name)){
 			return module;
 		}
 	}
@@ -77,27 +77,27 @@ dealGPModule *dealGPModuleList::GetModuleNamed( const char *name ) const{
 	return NULL;
 }
 
-bool dealGPModuleList::HasModule( dealGPModule *module ) const{
-	return pModules.Has( module );
+bool dealGPModuleList::HasModule(dealGPModule *module) const{
+	return pModules.Has(module);
 }
 
-bool dealGPModuleList::HasModuleNamed( const char *name ) const{
-	return GetModuleNamed( name ) != NULL;
+bool dealGPModuleList::HasModuleNamed(const char *name) const{
+	return GetModuleNamed(name) != NULL;
 }
 
-int dealGPModuleList::IndexOfModule( dealGPModule *module ) const{
-	return pModules.IndexOf( module );
+int dealGPModuleList::IndexOfModule(dealGPModule *module) const{
+	return pModules.IndexOf(module);
 }
 
-int dealGPModuleList::IndexOfModuleNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+int dealGPModuleList::IndexOfModuleNamed(const char *name) const{
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i, count = pModules.GetCount();
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( dealGPModule* )pModules.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((dealGPModule*)pModules.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -105,20 +105,20 @@ int dealGPModuleList::IndexOfModuleNamed( const char *name ) const{
 	return -1;
 }
 
-void dealGPModuleList::AddModule( dealGPModule *module ){
-	if( ! module || HasModuleNamed( module->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void dealGPModuleList::AddModule(dealGPModule *module){
+	if(!module || HasModuleNamed(module->GetName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
-	pModules.Add( module );
+	pModules.Add(module);
 }
 
-void dealGPModuleList::RemoveModule( dealGPModule *module ){
-	const int index = IndexOfModule( module );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void dealGPModuleList::RemoveModule(dealGPModule *module){
+	const int index = IndexOfModule(module);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pModules.RemoveFrom( index );
+	pModules.RemoveFrom(index);
 }
 
 void dealGPModuleList::RemoveAllModules(){

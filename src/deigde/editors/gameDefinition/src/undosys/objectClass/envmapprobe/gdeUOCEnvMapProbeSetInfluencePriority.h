@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetInfluencePriority( gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *component, int newValue );
+	gdeUOCEnvMapProbeSetInfluencePriority(gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *component, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

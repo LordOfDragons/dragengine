@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object with reference count of 1. */
-	deObjectDebug( const char *logname, int logTraceIndex );
+	deObjectDebug(const char *logname, int logTraceIndex);
 	
 protected:
 	/**

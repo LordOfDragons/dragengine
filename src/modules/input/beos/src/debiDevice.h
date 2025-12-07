@@ -82,13 +82,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	debiDevice( deBeOSInput &module );
+	debiDevice(deBeOSInput &module);
 	
 	/** \brief Creat mouse device. */
-	static debiDevice *CreateMouse( deBeOSInput &module );
+	static debiDevice *CreateMouse(deBeOSInput &module);
 	
 	/** \brief Creat keyboard device. */
-	static debiDevice *CreateKeyboard( deBeOSInput &module );
+	static debiDevice *CreateKeyboard(deBeOSInput &module);
 	
 	
 	
@@ -109,7 +109,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Source. */
 	inline eSources GetSource() const{ return pSource; }
@@ -120,19 +120,19 @@ public:
 	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
 	
 	/** \brief Set device type. */
-	void SetType( deInputDevice::eDeviceTypes type );
+	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** \brief Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Display image. */
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
@@ -141,13 +141,13 @@ public:
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** \brief Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** \brief Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
@@ -155,19 +155,19 @@ public:
 	int GetButtonCount() const;
 	
 	/** \brief Button at index. */
-	debiDeviceButton *GetButtonAt( int index ) const;
+	debiDeviceButton *GetButtonAt(int index) const;
 	
 	/** \brief Button with identifier or \em NULL if absent. */
-	debiDeviceButton *GetButtonWithID( const char *id ) const;
+	debiDeviceButton *GetButtonWithID(const char *id) const;
 	
 	/** \brief Index of button with identifier or -1 if absent. */
-	int IndexOfButtonWithID( const char *id ) const;
+	int IndexOfButtonWithID(const char *id) const;
 	
 	/** \brief Index of button with beos input code or -1 if absent. */
-	int IndexOfButtonWithBICode( int code ) const;
+	int IndexOfButtonWithBICode(int code) const;
 	
 	/** \brief Add button. */
-	void AddButton( debiDeviceButton *button );
+	void AddButton(debiDeviceButton *button);
 	
 	
 	
@@ -175,19 +175,19 @@ public:
 	int GetAxisCount() const;
 	
 	/** \brief Axis at index. */
-	debiDeviceAxis *GetAxisAt( int index ) const;
+	debiDeviceAxis *GetAxisAt(int index) const;
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
-	debiDeviceAxis *GetAxisWithID( const char *id ) const;
+	debiDeviceAxis *GetAxisWithID(const char *id) const;
 	
 	/** \brief Index of axis with identifier or -1 if absent. */
-	int IndexOfAxisWithID( const char *id ) const;
+	int IndexOfAxisWithID(const char *id) const;
 	
 	/** \brief Index of axis with beos input code or -1 if absent. */
-	int IndexOfAxisWithBICode( int code ) const;
+	int IndexOfAxisWithBICode(int code) const;
 	
 	/** \brief Add axis. */
-	void AddAxis( debiDeviceAxis *axis );
+	void AddAxis(debiDeviceAxis *axis);
 	
 	
 	
@@ -195,12 +195,12 @@ public:
 	inline bool GetDirtyAxesValues() const{ return pDirtyAxesValues; }
 	
 	/** \brief Set if one or more axes values are dirty. */
-	void SetDirtyAxesValues( bool dirty );
+	void SetDirtyAxesValues(bool dirty);
 	
 	
 	
 	/** \brief Update engine input device information. */
-	void GetInfo( deInputDevice &info ) const;
+	void GetInfo(deInputDevice &info) const;
 	
 	/** \brief Update device state. */
 	virtual void Update();

@@ -42,10 +42,10 @@
 // Class igdeTabBook::cHeader
 ///////////////////////////////
 
-igdeTabBook::cHeader::cHeader( const char *ptext, igdeIcon *picon, const char *pdescription ) :
-text( ptext ),
-description( pdescription ),
-icon( picon ){
+igdeTabBook::cHeader::cHeader(const char *ptext, igdeIcon *picon, const char *pdescription) :
+text(ptext),
+description(pdescription),
+icon(picon){
 }
 
 igdeTabBook::cHeader::~cHeader(){
@@ -59,9 +59,9 @@ igdeTabBook::cHeader::~cHeader(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeTabBook::igdeTabBook( igdeEnvironment &environment ) :
-igdeContainer( environment ),
-pActivePanel( -1 ){
+igdeTabBook::igdeTabBook(igdeEnvironment &environment) :
+igdeContainer(environment),
+pActivePanel(-1){
 }
 
 igdeTabBook::~igdeTabBook(){
@@ -73,89 +73,89 @@ igdeTabBook::~igdeTabBook(){
 // Management
 ///////////////
 
-void igdeTabBook::SetActivePanel( int index ){
-	if( index == pActivePanel ){
+void igdeTabBook::SetActivePanel(int index){
+	if(index == pActivePanel){
 		return;
 	}
 	
-	if( index == -1 ){
-		if( GetChildCount() > 0 ){
-			DETHROW( deeInvalidParam );
+	if(index == -1){
+		if(GetChildCount() > 0){
+			DETHROW(deeInvalidParam);
 		}
 		
-	}else if( index < 0 || index >= GetChildCount() ){
-		DETHROW( deeInvalidParam );
+	}else if(index < 0 || index >= GetChildCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pActivePanel = index;
 	
-	if( GetNativeWidget() ){
-		( ( igdeNativeTabBook* )GetNativeWidget() )->ChangePanel( index );
+	if(GetNativeWidget()){
+		((igdeNativeTabBook*)GetNativeWidget())->ChangePanel(index);
 	}
 }
 
 
 
-void igdeTabBook::AddChild( igdeWidget *child, const char *text ){
-	AddChild( child, text, NULL, "" );
+void igdeTabBook::AddChild(igdeWidget *child, const char *text){
+	AddChild(child, text, NULL, "");
 }
 
-void igdeTabBook::AddChild( igdeWidget *child, const char *text, igdeIcon *icon ){
-	AddChild( child, text, icon, "" );
+void igdeTabBook::AddChild(igdeWidget *child, const char *text, igdeIcon *icon){
+	AddChild(child, text, icon, "");
 }
 
-void igdeTabBook::AddChild( igdeWidget *child, const char *text, igdeIcon *icon,
-const char *description ){
-	if( ! child || child->GetParent() ){
-		DETHROW( deeInvalidParam );
+void igdeTabBook::AddChild(igdeWidget *child, const char *text, igdeIcon *icon,
+const char *description){
+	if(!child || child->GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeContainer::AddChild( child );
+	igdeContainer::AddChild(child);
 	
-	const cHeader::Ref header(cHeader::Ref::NewWith( text, icon, description ));
+	const cHeader::Ref header(cHeader::Ref::NewWith(text, icon, description));
 	try{
-		pHeaders.Add( header );
+		pHeaders.Add(header);
 		
-	}catch( const deException & ){
-		igdeContainer::RemoveChild( child );
+	}catch(const deException &){
+		igdeContainer::RemoveChild(child);
 		throw;
 	}
 	
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
 	try{
 		((igdeNativeTabBook*)GetNativeWidget())->AddHeader((const cHeader &)*header);
 		
-	}catch( const deException & ){
-		pHeaders.RemoveFrom( pHeaders.GetCount() - 1 );
-		igdeContainer::RemoveChild( child );
+	}catch(const deException &){
+		pHeaders.RemoveFrom(pHeaders.GetCount() - 1);
+		igdeContainer::RemoveChild(child);
 		throw;
 	}
 }
 
-void igdeTabBook::AddChild( igdeWidget *child ){
-	DETHROW( deeInvalidParam );
+void igdeTabBook::AddChild(igdeWidget *child){
+	DETHROW(deeInvalidParam);
 }
 
-void igdeTabBook::RemoveChild( igdeWidget *child ){
-	const int index = IndexOfChild( child );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void igdeTabBook::RemoveChild(igdeWidget *child){
+	const int index = IndexOfChild(child);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( GetNativeWidget() ){
-		( ( igdeNativeTabBook* )GetNativeWidget() )->RemoveHeader( index );
+	if(GetNativeWidget()){
+		((igdeNativeTabBook*)GetNativeWidget())->RemoveHeader(index);
 	}
-	pHeaders.RemoveFrom( index );
+	pHeaders.RemoveFrom(index);
 	
-	igdeContainer::RemoveChild( child );
+	igdeContainer::RemoveChild(child);
 }
 
 void igdeTabBook::RemoveAllChildren(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeTabBook* )GetNativeWidget() )->RemoveAllHeaders();
+	if(GetNativeWidget()){
+		((igdeNativeTabBook*)GetNativeWidget())->RemoveAllHeaders();
 	}
 	pHeaders.RemoveAll();
 	
@@ -165,41 +165,41 @@ void igdeTabBook::RemoveAllChildren(){
 
 
 void igdeTabBook::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeTabBook * const native = igdeNativeTabBook::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeTabBook * const native = igdeNativeTabBook::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 	
-	native->ChangePanel( pActivePanel );
+	native->ChangePanel(pActivePanel);
 }
 
 void igdeTabBook::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeTabBook* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeTabBook*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void *igdeTabBook::GetNativeContainer() const{
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return NULL;
 	}
-	return ( ( igdeNativeTabBook* )GetNativeWidget() )->GetNativeContainer();
+	return ((igdeNativeTabBook*)GetNativeWidget())->GetNativeContainer();
 }
 
 
 
 void igdeTabBook::CreateChildWidgetNativeWidgets(){
-	igdeNativeTabBook * const native = ( igdeNativeTabBook* )GetNativeWidget();
-	if( ! native ){
-		DETHROW( deeInvalidParam );
+	igdeNativeTabBook * const native = (igdeNativeTabBook*)GetNativeWidget();
+	if(!native){
+		DETHROW(deeInvalidParam);
 	}
 	
 	igdeContainer::CreateChildWidgetNativeWidgets();
@@ -207,7 +207,7 @@ void igdeTabBook::CreateChildWidgetNativeWidgets(){
 	const int count = pHeaders.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		native->AddHeader( *( ( cHeader* )pHeaders.GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		native->AddHeader(*((cHeader*)pHeaders.GetAt(i)));
 	}
 }

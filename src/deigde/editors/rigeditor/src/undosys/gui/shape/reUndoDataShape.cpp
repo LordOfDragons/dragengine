@@ -37,8 +37,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUndoDataShape::reUndoDataShape( reRigShape *shape ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUndoDataShape::reUndoDataShape(reRigShape *shape){
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	shape->AddReference();

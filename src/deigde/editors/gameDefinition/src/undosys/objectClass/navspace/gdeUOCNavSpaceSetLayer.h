@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetLayer( gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, int newValue );
+	gdeUOCNavSpaceSetLayer(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

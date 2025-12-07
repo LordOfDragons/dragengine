@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new audio system  linked to the given engine. */
-	deAudioSystem( deEngine *engine );
+	deAudioSystem(deEngine *engine);
 	
 	/** \brief Clean up audio system. */
 	virtual ~deAudioSystem();
@@ -77,7 +77,7 @@ public:
 	inline deMicrophone *GetActiveMicrophone() const{ return pActiveMic; }
 	
 	/** \brief Set active microphone or NULL to unset it. */
-	void SetActiveMicrophone( deMicrophone *microphone );
+	void SetActiveMicrophone(deMicrophone *microphone);
 	/*@}*/
 	
 	
@@ -92,40 +92,40 @@ public:
 	void ProcessAudio();
 	
 	/** \brief Create peer object for the given world using the active module and assigns it. */
-	void LoadWorld( deWorld *world );
+	void LoadWorld(deWorld *world);
 	
 	/** \brief Create peer object for the given sound using the active module and assigns it. */
-	void LoadSound( deSound *sound );
+	void LoadSound(deSound *sound);
 	
 	/** \brief Create peer object for the given speaker using the active module and assigns it. */
-	void LoadSpeaker( deSpeaker *speaker );
+	void LoadSpeaker(deSpeaker *speaker);
 	
 	/** \brief Create peer object for the given microphone using the active module and assigns it. */
-	void LoadMicrophone( deMicrophone *microphone );
+	void LoadMicrophone(deMicrophone *microphone);
 	
 	/** \brief Create peer object for the given component using the active module and assigns it. */
-	void LoadComponent( deComponent *component );
+	void LoadComponent(deComponent *component);
 	
 	/** \brief Create peer object for the given model using the active module and assigns it. */
-	void LoadModel( deModel *model );
+	void LoadModel(deModel *model);
 	
 	/** \brief Create peer object for the given skin using the active module and assigns it. */
-	void LoadSkin( deSkin *skin );
+	void LoadSkin(deSkin *skin);
 	
 	/** \brief Create peer object for the given decal using the active module and assigns it. */
-	void LoadDecal( deDecal *decal );
+	void LoadDecal(deDecal *decal);
 	
 	/** \brief Create deSoundLevelMeter peer using active module and assigns it. */
-	void LoadSoundLevelMeter( deSoundLevelMeter *meter );
+	void LoadSoundLevelMeter(deSoundLevelMeter *meter);
 	
 	/** \brief Create peer for the video player using the active module and assigns it. */
-	void LoadVideoPlayer( deVideoPlayer *videoPlayer );
+	void LoadVideoPlayer(deVideoPlayer *videoPlayer);
 	
 	/** \brief Create peer for the synthesizer instance using the active module and assigns it. */
-	void LoadSynthesizerInstance( deSynthesizerInstance *instance );
+	void LoadSynthesizerInstance(deSynthesizerInstance *instance);
 	
 	/** \brief Create peer for the height terrain using the active module and assigns it. */
-	void LoadHeightTerrain( deHeightTerrain &heightTerrain );
+	void LoadHeightTerrain(deHeightTerrain &heightTerrain);
 	/*@}*/
 	
 	
@@ -137,7 +137,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

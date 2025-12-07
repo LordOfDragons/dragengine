@@ -42,16 +42,16 @@
 // Constructor, Destructor
 ////////////////////////////
 
-desynCaches::desynCaches( deDESynthesizer &dsyn ) :
-pDSyn( dsyn ),
-pSound( NULL )
+desynCaches::desynCaches(deDESynthesizer &dsyn) :
+pDSyn(dsyn),
+pSound(NULL)
 {
 	(void)pDSyn;
 	try{
-		pSound = new deCacheHelper( &dsyn.GetVFS(),
-			decPath::CreatePathUnix( "/cache/local/sound" ) );
+		pSound = new deCacheHelper(&dsyn.GetVFS(),
+			decPath::CreatePathUnix("/cache/local/sound"));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -80,7 +80,7 @@ void desynCaches::Unlock(){
 //////////////////////
 
 void desynCaches::pCleanUp(){
-	if( pSound ){
+	if(pSound){
 		delete pSound;
 	}
 }

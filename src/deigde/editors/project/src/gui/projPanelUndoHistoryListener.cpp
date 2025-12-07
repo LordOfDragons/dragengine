@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projPanelUndoHistoryListener::projPanelUndoHistoryListener( projPanelUndoHistory &panel ) :
-pPanel( panel ){
+projPanelUndoHistoryListener::projPanelUndoHistoryListener(projPanelUndoHistory &panel) :
+pPanel(panel){
 }
 
 projPanelUndoHistoryListener::~projPanelUndoHistoryListener(){
@@ -53,8 +53,8 @@ projPanelUndoHistoryListener::~projPanelUndoHistoryListener(){
 // Notifications
 //////////////////
 
-void projPanelUndoHistoryListener::UndoChanged( projProject *project ){
-	if( project != pPanel.GetProject() ){
+void projPanelUndoHistoryListener::UndoChanged(projProject *project){
+	if(project != pPanel.GetProject()){
 		return;
 	}
 	

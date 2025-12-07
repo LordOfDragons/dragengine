@@ -119,13 +119,13 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	gdeViewActiveObject &pView;
 	
 public:
-	cCameraInteraction( gdeViewActiveObject &view ) : pView( view ){
-		SetEnabledAll( true );
+	cCameraInteraction(gdeViewActiveObject &view) : pView(view){
+		SetEnabledAll(true);
 	}
 	
 public:
 	virtual void OnCameraChanged(){
-		if( pView.GetGameDefinition() ){
+		if(pView.GetGameDefinition()){
 			pView.GetGameDefinition()->NotifyCameraChanged();
 		}
 	}
@@ -141,32 +141,32 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeViewActiveObject::gdeViewActiveObject( gdeWindowMain &windowMain ) :
-igdeViewRenderWindow( windowMain.GetEnvironment() ),
+gdeViewActiveObject::gdeViewActiveObject(gdeWindowMain &windowMain) :
+igdeViewRenderWindow(windowMain.GetEnvironment()),
 
-pWindowMain( windowMain ),
-pListener( NULL ),
+pWindowMain(windowMain),
+pListener(NULL),
 
-pGameDefinition( NULL ),
+pGameDefinition(NULL),
 
-pObjectClass( NULL ),
+pObjectClass(NULL),
 
-pShowEnvMapProbes( false ),
-pShowNavBlockers( false )
+pShowEnvMapProbes(false),
+pShowNavBlockers(false)
 {
-	pListener = new gdeViewActiveObjectListener( *this );
+	pListener = new gdeViewActiveObjectListener(*this);
 	
 	const deEngine &engine = *GetEngineController().GetEngine();
-	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
-	pDebugDrawer->SetXRay( true );
+	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer->SetXRay(true);
 	
-	pCameraInteraction.TakeOver( new cCameraInteraction( *this ) );
+	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
 	
-	AddListener( pCameraInteraction );
+	AddListener(pCameraInteraction);
 }
 
 gdeViewActiveObject::~gdeViewActiveObject(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 }
 
 
@@ -177,23 +177,23 @@ gdeViewActiveObject::~gdeViewActiveObject(){
 void gdeViewActiveObject::ResetView(){
 }
 
-void gdeViewActiveObject::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera( NULL );
-	SetRenderWorld( NULL );
+	pCameraInteraction->SetCamera(NULL);
+	SetRenderWorld(NULL);
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 		
 		ClearResources();
 		
 		pPreviewModelBox = NULL;
 		
-		if( pDebugDrawer ){
-			pGameDefinition->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
+		if(pDebugDrawer){
+			pGameDefinition->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		}
 		
 		pGameDefinition->FreeReference();
@@ -201,20 +201,20 @@ void gdeViewActiveObject::SetGameDefinition( gdeGameDefinition *gameDefinition )
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
+	if(gameDefinition){
 		gameDefinition->AddReference();
-		SetRenderWorld( gameDefinition->GetCamera()->GetEngineCamera() );
-		pCameraInteraction->SetCamera( gameDefinition->GetCamera() );
+		SetRenderWorld(gameDefinition->GetCamera()->GetEngineCamera());
+		pCameraInteraction->SetCamera(gameDefinition->GetCamera());
 		
 		deVirtualFileSystem * const vfs = gameDefinition->GetEnvironment()->GetFileSystemIGDE();
 		deEngine &engine = *gameDefinition->GetEngine();
 		deModelManager &modelManager = *engine.GetModelManager();
 		
-		pPreviewModelBox.TakeOver( modelManager.LoadModel( vfs, "/data/data/models/materialTest/box.demodel", "/" ) );
+		pPreviewModelBox.TakeOver(modelManager.LoadModel(vfs, "/data/data/models/materialTest/box.demodel", "/"));
 		
-		gameDefinition->GetWorld()->AddDebugDrawer( pDebugDrawer );
+		gameDefinition->GetWorld()->AddDebugDrawer(pDebugDrawer);
 		
-		gameDefinition->AddListener( pListener );
+		gameDefinition->AddListener(pListener);
 	}
 	
 	pUpdateCameraFovRatio();
@@ -222,22 +222,22 @@ void gdeViewActiveObject::SetGameDefinition( gdeGameDefinition *gameDefinition )
 
 
 
-void gdeViewActiveObject::OnFrameUpdate( float elapsed ){
-	igdeViewRenderWindow::OnFrameUpdate( elapsed );
+void gdeViewActiveObject::OnFrameUpdate(float elapsed){
+	igdeViewRenderWindow::OnFrameUpdate(elapsed);
 	
-	if( pGameDefinition ){
-		pGameDefinition->Update( elapsed );
+	if(pGameDefinition){
+		pGameDefinition->Update(elapsed);
 	}
 	
 	int i;
 	const int componentCount = pOCComponents.GetCount();
-	for( i=0; i<componentCount; i++ ){
-		( ( gdeVAOComponent* )pOCComponents.GetAt( i ) )->Update( elapsed );
+	for(i=0; i<componentCount; i++){
+		((gdeVAOComponent*)pOCComponents.GetAt(i))->Update(elapsed);
 	}
 	
 	const int lightCount = pOCLights.GetCount();
-	for( i=0; i<lightCount; i++ ){
-		( ( gdeVAOLight* )pOCLights.GetAt( i ) )->Update( elapsed );
+	for(i=0; i<lightCount; i++){
+		((gdeVAOLight*)pOCLights.GetAt(i))->Update(elapsed);
 	}
 }
 
@@ -249,8 +249,8 @@ void gdeViewActiveObject::OnResize(){
 void gdeViewActiveObject::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if( pGameDefinition ){
-		SetRenderWorld( pGameDefinition->GetCamera()->GetEngineCamera() );
+	if(pGameDefinition){
+		SetRenderWorld(pGameDefinition->GetCamera()->GetEngineCamera());
 	}
 }
 
@@ -259,7 +259,7 @@ void gdeViewActiveObject::CreateCanvas(){
 void gdeViewActiveObject::ResetCameraPosition(){
 	igdeCamera &camera = *pGameDefinition->GetCamera();
 	
-	switch( pGameDefinition->GetSelectedObjectType() ){
+	switch(pGameDefinition->GetSelectedObjectType()){
 	case gdeGameDefinition::eotNoSelection:
 	case gdeGameDefinition::eotCategoryObjectClass:
 	case gdeGameDefinition::eotCategorySkin:
@@ -281,19 +281,19 @@ void gdeViewActiveObject::ResetCameraPosition(){
 	case gdeGameDefinition::eotOCSnapPoint:
 	case gdeGameDefinition::eotOCSpeaker:
 	case gdeGameDefinition::eotOCWorld:
-		pCenterOnObjectClass( camera );
+		pCenterOnObjectClass(camera);
 		break;
 		
 	case gdeGameDefinition::eotSkin:
-		pCenterOnSkin( camera );
+		pCenterOnSkin(camera);
 		break;
 		
 	case gdeGameDefinition::eotSky:
-		pCenterOnSky( camera );
+		pCenterOnSky(camera);
 		break;
 		
 	case gdeGameDefinition::eotParticleEmitter:
-		pCenterOnParticleEmitter( camera );
+		pCenterOnParticleEmitter(camera);
 		break;
 	}
 }
@@ -315,30 +315,30 @@ void gdeViewActiveObject::ClearResources(){
 	
 	pOCComponents.RemoveAll();
 	
-	if( pPreviewParticleEmitter ){
-		if( pPreviewParticleEmitter->GetParentWorld() ){
-			world.RemoveParticleEmitter( pPreviewParticleEmitter );
+	if(pPreviewParticleEmitter){
+		if(pPreviewParticleEmitter->GetParentWorld()){
+			world.RemoveParticleEmitter(pPreviewParticleEmitter);
 		}
 		pPreviewParticleEmitter = NULL;
 	}
 	
-	if( pPreviewSky ){
-		if( pPreviewSky->GetParentWorld() ){
-			world.RemoveSky( pPreviewSky );
+	if(pPreviewSky){
+		if(pPreviewSky->GetParentWorld()){
+			world.RemoveSky(pPreviewSky);
 		}
 		pPreviewSky = NULL;
 	}
 	
 	pPreviewSkin = NULL;
 	
-	if( pPreviewComponent ){
-		if( pPreviewComponent->GetParentWorld() ){
-			world.RemoveComponent( pPreviewComponent );
+	if(pPreviewComponent){
+		if(pPreviewComponent->GetParentWorld()){
+			world.RemoveComponent(pPreviewComponent);
 		}
 		pPreviewComponent = NULL;
 	}
 	
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 		pObjectClass = NULL;
 	}
@@ -346,7 +346,7 @@ void gdeViewActiveObject::ClearResources(){
 
 void gdeViewActiveObject::InitSelectedObject(){
 	try{
-		switch( pGameDefinition->GetSelectedObjectType() ){
+		switch(pGameDefinition->GetSelectedObjectType()){
 		case gdeGameDefinition::eotNoSelection:
 		case gdeGameDefinition::eotCategoryObjectClass:
 		case gdeGameDefinition::eotCategorySkin:
@@ -384,7 +384,7 @@ void gdeViewActiveObject::InitSelectedObject(){
 			break;
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		ClearResources();
 		e.PrintError();
 		// TODO mark the error in the panels using warnings for example
@@ -393,58 +393,58 @@ void gdeViewActiveObject::InitSelectedObject(){
 
 void gdeViewActiveObject::SelectedSubObjectChanged(){
 	int i, count = pOCBillboards.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOBillboard* )pOCBillboards.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOBillboard*)pOCBillboards.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCCameras.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOCamera* )pOCCameras.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOCamera*)pOCCameras.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCComponents.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOComponent* )pOCComponents.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOComponent*)pOCComponents.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCEnvMapProbes.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOEnvMapProbe* )pOCEnvMapProbes.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOEnvMapProbe*)pOCEnvMapProbes.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCLights.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOLight* )pOCLights.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOLight*)pOCLights.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCNavBlockers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAONavBlocker* )pOCNavBlockers.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAONavBlocker*)pOCNavBlockers.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCNavSpaces.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAONavSpace* )pOCNavSpaces.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAONavSpace*)pOCNavSpaces.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCParticleEmitters.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOParticleEmitter* )pOCParticleEmitters.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOParticleEmitter*)pOCParticleEmitters.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCForceFields.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOForceField* )pOCForceFields.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOForceField*)pOCForceFields.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCSnapPoints.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOSnapPoint* )pOCSnapPoints.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOSnapPoint*)pOCSnapPoints.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOSpeaker* )pOCSpeakers.GetAt( i ) )->SelectedObjectChanged();
+	for(i=0; i<count; i++){
+		((gdeVAOSpeaker*)pOCSpeakers.GetAt(i))->SelectedObjectChanged();
 	}
 	
 	count = pOCWorlds.GetCount();
@@ -456,29 +456,29 @@ void gdeViewActiveObject::SelectedSubObjectChanged(){
 
 
 deCollider *gdeViewActiveObject::GetAttachComponentCollider() const{
-	if( pOCComponents.GetCount() == 0 ){
+	if(pOCComponents.GetCount() == 0){
 		return NULL;
 	}
 	
-	return ( ( gdeVAOComponent* )pOCComponents.GetAt( 0 ) )->GetCollider();
+	return ((gdeVAOComponent*)pOCComponents.GetAt(0))->GetCollider();
 }
 
 void gdeViewActiveObject::RebuildOCComponents(){
-	const decObjectList oldComponents( pOCComponents );
+	const decObjectList oldComponents(pOCComponents);
 	pOCComponents.RemoveAll();
-	if( pObjectClass ){
-		pRebuildOCComponents( *pObjectClass, "" );
+	if(pObjectClass){
+		pRebuildOCComponents(*pObjectClass, "");
 	}
 	pOCReattachAllObjects();
 }
 
-void gdeViewActiveObject::RebuildOCComponent( gdeOCComponent *occomponent ){
+void gdeViewActiveObject::RebuildOCComponent(gdeOCComponent *occomponent){
 	const int count = pOCComponents.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOComponent * const vao = ( gdeVAOComponent* )pOCComponents.GetAt( i );
-		if( vao->GetOCComponent() != occomponent ){
+	for(i=0; i<count; i++){
+		gdeVAOComponent * const vao = (gdeVAOComponent*)pOCComponents.GetAt(i);
+		if(vao->GetOCComponent() != occomponent){
 			continue;
 		}
 		
@@ -488,38 +488,38 @@ void gdeViewActiveObject::RebuildOCComponent( gdeOCComponent *occomponent ){
 	}
 }
 
-void gdeViewActiveObject::UpdateOCComponentTexture( gdeOCComponent *occomponent,
-gdeOCComponentTexture *texture ){
+void gdeViewActiveObject::UpdateOCComponentTexture(gdeOCComponent *occomponent,
+gdeOCComponentTexture *texture){
 	const int count = pOCComponents.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOComponent * const vao = ( gdeVAOComponent* )pOCComponents.GetAt( i );
-		if( occomponent && vao->GetOCComponent() != occomponent ){
+	for(i=0; i<count; i++){
+		gdeVAOComponent * const vao = (gdeVAOComponent*)pOCComponents.GetAt(i);
+		if(occomponent && vao->GetOCComponent() != occomponent){
 			continue;
 		}
 		
-		vao->UpdateTexture( texture );
+		vao->UpdateTexture(texture);
 		break;
 	}
 }
 
 void gdeViewActiveObject::RebuildOCBillboards(){
-	const decObjectList oldBillboards( pOCBillboards );
+	const decObjectList oldBillboards(pOCBillboards);
 	pOCBillboards.RemoveAll();
-	if( pObjectClass ){
-		pInitOCBillboards( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCBillboards(*pObjectClass, "");
 	}
 	pOCReattachAllObjects();
 }
 
-void gdeViewActiveObject::RebuildOCBillboard( gdeOCBillboard *ocbillboard ){
+void gdeViewActiveObject::RebuildOCBillboard(gdeOCBillboard *ocbillboard){
 	const int count = pOCBillboards.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOBillboard * const vao = ( gdeVAOBillboard* )pOCBillboards.GetAt( i );
-		if( vao->GetOCBillboard() != ocbillboard ){
+	for(i=0; i<count; i++){
+		gdeVAOBillboard * const vao = (gdeVAOBillboard*)pOCBillboards.GetAt(i);
+		if(vao->GetOCBillboard() != ocbillboard){
 			continue;
 		}
 		
@@ -530,20 +530,20 @@ void gdeViewActiveObject::RebuildOCBillboard( gdeOCBillboard *ocbillboard ){
 }
 
 void gdeViewActiveObject::RebuildOCCameras(){
-	const decObjectList oldCameras( pOCCameras );
+	const decObjectList oldCameras(pOCCameras);
 	pOCCameras.RemoveAll();
-	if( pObjectClass ){
-		pInitOCCameras( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCCameras(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCCamera( gdeOCCamera *occamera ){
+void gdeViewActiveObject::RebuildOCCamera(gdeOCCamera *occamera){
 	const int count = pOCCameras.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOCamera * const vao = ( gdeVAOCamera* )pOCCameras.GetAt( i );
-		if( vao->GetOCCamera() != occamera ){
+	for(i=0; i<count; i++){
+		gdeVAOCamera * const vao = (gdeVAOCamera*)pOCCameras.GetAt(i);
+		if(vao->GetOCCamera() != occamera){
 			continue;
 		}
 		
@@ -553,20 +553,20 @@ void gdeViewActiveObject::RebuildOCCamera( gdeOCCamera *occamera ){
 }
 
 void gdeViewActiveObject::RebuildOCLights(){
-	const decObjectList oldLights( pOCLights );
+	const decObjectList oldLights(pOCLights);
 	pOCLights.RemoveAll();
-	if( pObjectClass ){
-		pInitOCLights( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCLights(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCLight( gdeOCLight *oclight ){
+void gdeViewActiveObject::RebuildOCLight(gdeOCLight *oclight){
 	const int count = pOCLights.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOLight * const vao = ( gdeVAOLight* )pOCLights.GetAt( i );
-		if( vao->GetOCLight() != oclight ){
+	for(i=0; i<count; i++){
+		gdeVAOLight * const vao = (gdeVAOLight*)pOCLights.GetAt(i);
+		if(vao->GetOCLight() != oclight){
 			continue;
 		}
 		
@@ -576,20 +576,20 @@ void gdeViewActiveObject::RebuildOCLight( gdeOCLight *oclight ){
 }
 
 void gdeViewActiveObject::RebuildOCEnvMapProbes(){
-	const decObjectList oldEnvMapProbes( pOCEnvMapProbes );
+	const decObjectList oldEnvMapProbes(pOCEnvMapProbes);
 	pOCEnvMapProbes.RemoveAll();
-	if( pObjectClass ){
-		pInitOCEnvMapProbes( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCEnvMapProbes(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCEnvMapProbe( gdeOCEnvMapProbe *ocenvMapProbe ){
+void gdeViewActiveObject::RebuildOCEnvMapProbe(gdeOCEnvMapProbe *ocenvMapProbe){
 	const int count = pOCEnvMapProbes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOEnvMapProbe * const vao = ( gdeVAOEnvMapProbe* )pOCEnvMapProbes.GetAt( i );
-		if( vao->GetOCEnvMapProbe() != ocenvMapProbe ){
+	for(i=0; i<count; i++){
+		gdeVAOEnvMapProbe * const vao = (gdeVAOEnvMapProbe*)pOCEnvMapProbes.GetAt(i);
+		if(vao->GetOCEnvMapProbe() != ocenvMapProbe){
 			continue;
 		}
 		
@@ -599,20 +599,20 @@ void gdeViewActiveObject::RebuildOCEnvMapProbe( gdeOCEnvMapProbe *ocenvMapProbe 
 }
 
 void gdeViewActiveObject::RebuildOCNavSpaces(){
-	const decObjectList oldNavSpaces( pOCNavSpaces );
+	const decObjectList oldNavSpaces(pOCNavSpaces);
 	pOCNavSpaces.RemoveAll();
-	if( pObjectClass ){
-		pInitOCNavigationSpaces( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCNavigationSpaces(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCNavSpace( gdeOCNavigationSpace *ocnavspace ){
+void gdeViewActiveObject::RebuildOCNavSpace(gdeOCNavigationSpace *ocnavspace){
 	const int count = pOCNavSpaces.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAONavSpace * const vao = ( gdeVAONavSpace* )pOCNavSpaces.GetAt( i );
-		if( vao->GetOCNavSpace() != ocnavspace ){
+	for(i=0; i<count; i++){
+		gdeVAONavSpace * const vao = (gdeVAONavSpace*)pOCNavSpaces.GetAt(i);
+		if(vao->GetOCNavSpace() != ocnavspace){
 			continue;
 		}
 		
@@ -622,20 +622,20 @@ void gdeViewActiveObject::RebuildOCNavSpace( gdeOCNavigationSpace *ocnavspace ){
 }
 
 void gdeViewActiveObject::RebuildOCNavBlockers(){
-	const decObjectList oldNavBlockers( pOCNavBlockers );
+	const decObjectList oldNavBlockers(pOCNavBlockers);
 	pOCNavBlockers.RemoveAll();
-	if( pObjectClass ){
-		pInitOCNavigationBlockers( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCNavigationBlockers(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCNavBlocker( gdeOCNavigationBlocker *ocnavblocker ){
+void gdeViewActiveObject::RebuildOCNavBlocker(gdeOCNavigationBlocker *ocnavblocker){
 	const int count = pOCNavBlockers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAONavBlocker * const vao = ( gdeVAONavBlocker* )pOCNavBlockers.GetAt( i );
-		if( vao->GetOCNavBlocker() != ocnavblocker ){
+	for(i=0; i<count; i++){
+		gdeVAONavBlocker * const vao = (gdeVAONavBlocker*)pOCNavBlockers.GetAt(i);
+		if(vao->GetOCNavBlocker() != ocnavblocker){
 			continue;
 		}
 		
@@ -645,20 +645,20 @@ void gdeViewActiveObject::RebuildOCNavBlocker( gdeOCNavigationBlocker *ocnavbloc
 }
 
 void gdeViewActiveObject::RebuildOCParticleEmitters(){
-	const decObjectList oldEmitters( pOCParticleEmitters );
+	const decObjectList oldEmitters(pOCParticleEmitters);
 	pOCParticleEmitters.RemoveAll();
-	if( pObjectClass ){
-		pInitOCParticleEmitters( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCParticleEmitters(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCParticleEmitter( gdeOCParticleEmitter *ocemitter ){
+void gdeViewActiveObject::RebuildOCParticleEmitter(gdeOCParticleEmitter *ocemitter){
 	const int count = pOCParticleEmitters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOParticleEmitter * const vao = ( gdeVAOParticleEmitter* )pOCParticleEmitters.GetAt( i );
-		if( vao->GetOCParticleEmitter() != ocemitter ){
+	for(i=0; i<count; i++){
+		gdeVAOParticleEmitter * const vao = (gdeVAOParticleEmitter*)pOCParticleEmitters.GetAt(i);
+		if(vao->GetOCParticleEmitter() != ocemitter){
 			continue;
 		}
 		
@@ -668,20 +668,20 @@ void gdeViewActiveObject::RebuildOCParticleEmitter( gdeOCParticleEmitter *ocemit
 }
 
 void gdeViewActiveObject::RebuildOCForceFields(){
-	const decObjectList oldEmitters( pOCForceFields );
+	const decObjectList oldEmitters(pOCForceFields);
 	pOCForceFields.RemoveAll();
-	if( pObjectClass ){
-		pInitOCForceFields( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCForceFields(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCForceField( gdeOCForceField *ocfield ){
+void gdeViewActiveObject::RebuildOCForceField(gdeOCForceField *ocfield){
 	const int count = pOCForceFields.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOForceField * const vao = ( gdeVAOForceField* )pOCForceFields.GetAt( i );
-		if( vao->GetOCForceField() != ocfield ){
+	for(i=0; i<count; i++){
+		gdeVAOForceField * const vao = (gdeVAOForceField*)pOCForceFields.GetAt(i);
+		if(vao->GetOCForceField() != ocfield){
 			continue;
 		}
 		
@@ -691,20 +691,20 @@ void gdeViewActiveObject::RebuildOCForceField( gdeOCForceField *ocfield ){
 }
 
 void gdeViewActiveObject::RebuildOCSnapPoints(){
-	const decObjectList oldSnapPoints( pOCSnapPoints );
+	const decObjectList oldSnapPoints(pOCSnapPoints);
 	pOCSnapPoints.RemoveAll();
-	if( pObjectClass ){
-		pInitOCSnapPoints( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCSnapPoints(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCSnapPoint( gdeOCSnapPoint *ocsnapPoint ){
+void gdeViewActiveObject::RebuildOCSnapPoint(gdeOCSnapPoint *ocsnapPoint){
 	const int count = pOCSnapPoints.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOSnapPoint * const vao = ( gdeVAOSnapPoint* )pOCSnapPoints.GetAt( i );
-		if( vao->GetOCSnapPoint() != ocsnapPoint ){
+	for(i=0; i<count; i++){
+		gdeVAOSnapPoint * const vao = (gdeVAOSnapPoint*)pOCSnapPoints.GetAt(i);
+		if(vao->GetOCSnapPoint() != ocsnapPoint){
 			continue;
 		}
 		
@@ -714,20 +714,20 @@ void gdeViewActiveObject::RebuildOCSnapPoint( gdeOCSnapPoint *ocsnapPoint ){
 }
 
 void gdeViewActiveObject::RebuildOCSpeakers(){
-	const decObjectList oldSpeakers( pOCSpeakers );
+	const decObjectList oldSpeakers(pOCSpeakers);
 	pOCSpeakers.RemoveAll();
-	if( pObjectClass ){
-		pInitOCSpeakers( *pObjectClass, "" );
+	if(pObjectClass){
+		pInitOCSpeakers(*pObjectClass, "");
 	}
 }
 
-void gdeViewActiveObject::RebuildOCSpeaker( gdeOCSpeaker *ocspeaker ){
+void gdeViewActiveObject::RebuildOCSpeaker(gdeOCSpeaker *ocspeaker){
 	const int count = pOCSpeakers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeVAOSpeaker * const vao = ( gdeVAOSpeaker* )pOCSpeakers.GetAt( i );
-		if( vao->GetOCSpeaker() != ocspeaker ){
+	for(i=0; i<count; i++){
+		gdeVAOSpeaker * const vao = (gdeVAOSpeaker*)pOCSpeakers.GetAt(i);
+		if(vao->GetOCSpeaker() != ocspeaker){
 			continue;
 		}
 		
@@ -761,8 +761,8 @@ void gdeViewActiveObject::RebuildOCWorld(gdeOCWorld *ocworld){
 
 
 
-void gdeViewActiveObject::SetShowEnvMapProbes( bool show ){
-	if( show == pShowEnvMapProbes ){
+void gdeViewActiveObject::SetShowEnvMapProbes(bool show){
+	if(show == pShowEnvMapProbes){
 		return;
 	}
 	
@@ -771,26 +771,26 @@ void gdeViewActiveObject::SetShowEnvMapProbes( bool show ){
 	const int count = pOCEnvMapProbes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOEnvMapProbe* )pOCEnvMapProbes.GetAt( i ) )->UpdateDDVisibility();
+	for(i=0; i<count; i++){
+		((gdeVAOEnvMapProbe*)pOCEnvMapProbes.GetAt(i))->UpdateDDVisibility();
 	}
 }
 
-void gdeViewActiveObject::SetShowNavBlockers( bool show ){
-	if( show == pShowNavBlockers ){
+void gdeViewActiveObject::SetShowNavBlockers(bool show){
+	if(show == pShowNavBlockers){
 		return;
 	}
 	
 	pShowNavBlockers = show;
 	
 	int i, count = pOCNavSpaces.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAONavSpace* )pOCNavSpaces.GetAt( i ) )->UpdateDDVisibility();
+	for(i=0; i<count; i++){
+		((gdeVAONavSpace*)pOCNavSpaces.GetAt(i))->UpdateDDVisibility();
 	}
 	
 	count = pOCNavBlockers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAONavBlocker* )pOCNavBlockers.GetAt( i ) )->UpdateDDVisibility();
+	for(i=0; i<count; i++){
+		((gdeVAONavBlocker*)pOCNavBlockers.GetAt(i))->UpdateDDVisibility();
 	}
 }
 
@@ -800,54 +800,54 @@ void gdeViewActiveObject::SetShowNavBlockers( bool show ){
 //////////////////////
 
 void gdeViewActiveObject::pCleanUp(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 }
 
 
 
 void gdeViewActiveObject::pUpdateCameraFovRatio(){
-	if( ! pGameDefinition ){
+	if(!pGameDefinition){
 		return;
 	}
 	
-	const decPoint size( GetRenderAreaSize() );
-	pGameDefinition->SetViewRatio( ( float )decMath::max( size.x, 1 )
-		/ ( float )decMath::max( size.y, 1 ) );
+	const decPoint size(GetRenderAreaSize());
+	pGameDefinition->SetViewRatio((float)decMath::max(size.x, 1)
+		/ (float)decMath::max(size.y, 1));
 }
 
 
 
 void gdeViewActiveObject::pInitObjectClass(){
 	pObjectClass = pGameDefinition->GetActiveObjectClass();
-	if( ! pObjectClass ){
+	if(!pObjectClass){
 		return;
 	}
 	pObjectClass->AddReference();
-	pInitObjectClassOCs( *pObjectClass, "", igdeGDClass::FilterSubObjectsAll );
+	pInitObjectClassOCs(*pObjectClass, "", igdeGDClass::FilterSubObjectsAll);
 	pAddComponentShadowIgnore();
 }
 
 void gdeViewActiveObject::pInitSkin(){
 	const gdeSkin * const skin = pGameDefinition->GetActiveSkin();
-	if( ! skin ){
+	if(!skin){
 		return;
 	}
 	
 	deVirtualFileSystem * const vfs = pGameDefinition->GetPreviewVFS();
 	deEngine &engine = *pGameDefinition->GetEngine();
-	pPreviewSkin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, skin->GetPath(), "/" ) );
+	pPreviewSkin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, skin->GetPath(), "/"));
 	
-	pPreviewComponent.TakeOver( engine.GetComponentManager()->CreateComponent( pPreviewModelBox, pPreviewSkin ) );
-	pGameDefinition->GetWorld()->AddComponent( pPreviewComponent );
+	pPreviewComponent.TakeOver(engine.GetComponentManager()->CreateComponent(pPreviewModelBox, pPreviewSkin));
+	pGameDefinition->GetWorld()->AddComponent(pPreviewComponent);
 	
-	if( pPreviewComponent->GetTextureCount() == 0 ){
+	if(pPreviewComponent->GetTextureCount() == 0){
 		// assign skin also to texture directly. skins are supposed to have one texture but
 		// the name is not defined. by using a generic model and allowing the user to
 		// change the preview model it can be cumbersome to match the texture. by assigning
 		// the skin to the texture this problem is solved
-		pPreviewComponent->GetTextureAt( 0 ).SetSkin( pPreviewSkin );
-		pPreviewComponent->GetTextureAt( 0 ).SetTexture( 0 );
-		pPreviewComponent->NotifyTextureChanged( 0 );
+		pPreviewComponent->GetTextureAt(0).SetSkin(pPreviewSkin);
+		pPreviewComponent->GetTextureAt(0).SetTexture(0);
+		pPreviewComponent->NotifyTextureChanged(0);
 	}
 }
 
@@ -857,7 +857,7 @@ void gdeViewActiveObject::pInitSky(){
 
 void gdeViewActiveObject::pInitParticleEmitter(){
 	const gdeParticleEmitter * const particleEmitter = pGameDefinition->GetActiveParticleEmitter();
-	if( ! particleEmitter ){
+	if(!particleEmitter){
 		return;
 	}
 	
@@ -866,208 +866,208 @@ void gdeViewActiveObject::pInitParticleEmitter(){
 	deParticleEmitter::Ref engEmitter;
 	decBaseFileReader::Ref reader;
 	
-	igdeLoadParticleEmitter loader( *pGameDefinition->GetEnvironment(),
-		pGameDefinition->GetEnvironment()->GetLogger(), "gdeGDEditActiveObject" );
+	igdeLoadParticleEmitter loader(*pGameDefinition->GetEnvironment(),
+		pGameDefinition->GetEnvironment()->GetLogger(), "gdeGDEditActiveObject");
 	
 	decPath path;
-	path.SetFromUnix( particleEmitter->GetPath() );
+	path.SetFromUnix(particleEmitter->GetPath());
 	
-	engEmitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );
-	reader.TakeOver( vfs->OpenFileForReading( path ) );
-	loader.Load( particleEmitter->GetPath(), engEmitter, reader );
+	engEmitter.TakeOver(engine.GetParticleEmitterManager()->CreateParticleEmitter());
+	reader.TakeOver(vfs->OpenFileForReading(path));
+	loader.Load(particleEmitter->GetPath(), engEmitter, reader);
 	
-	pPreviewParticleEmitter.TakeOver( engine.GetParticleEmitterInstanceManager()->CreateInstance() );
-	pPreviewParticleEmitter->SetEmitter( engEmitter );
-	pPreviewParticleEmitter->SetEnableCasting( true );
+	pPreviewParticleEmitter.TakeOver(engine.GetParticleEmitterInstanceManager()->CreateInstance());
+	pPreviewParticleEmitter->SetEmitter(engEmitter);
+	pPreviewParticleEmitter->SetEnableCasting(true);
 	
-	pGameDefinition->GetWorld()->AddParticleEmitter( pPreviewParticleEmitter );
+	pGameDefinition->GetWorld()->AddParticleEmitter(pPreviewParticleEmitter);
 }
 
 
 
-void gdeViewActiveObject::pInitObjectClassOCs( const gdeObjectClass &objectClass,
-const decString &propertyPrefix, int filter ){
-	if( pOCComponents.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoComponents ) == igdeGDClass::efsoComponents ){
-		pInitOCComponents( objectClass, propertyPrefix );
+void gdeViewActiveObject::pInitObjectClassOCs(const gdeObjectClass &objectClass,
+const decString &propertyPrefix, int filter){
+	if(pOCComponents.GetCount() == 0
+	&& (filter & igdeGDClass::efsoComponents) == igdeGDClass::efsoComponents){
+		pInitOCComponents(objectClass, propertyPrefix);
 	}
 	
-	if( pOCBillboards.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoBillboards ) == igdeGDClass::efsoBillboards ){
-		pInitOCBillboards( objectClass, propertyPrefix );
+	if(pOCBillboards.GetCount() == 0
+	&& (filter & igdeGDClass::efsoBillboards) == igdeGDClass::efsoBillboards){
+		pInitOCBillboards(objectClass, propertyPrefix);
 	}
-	if( pOCCameras.GetCount() == 0 ){
-		pInitOCCameras( objectClass, propertyPrefix );
+	if(pOCCameras.GetCount() == 0){
+		pInitOCCameras(objectClass, propertyPrefix);
 	}
-	if( pOCEnvMapProbes.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoEnvMapProbes ) == igdeGDClass::efsoEnvMapProbes ){
-		pInitOCEnvMapProbes( objectClass, propertyPrefix );
+	if(pOCEnvMapProbes.GetCount() == 0
+	&& (filter & igdeGDClass::efsoEnvMapProbes) == igdeGDClass::efsoEnvMapProbes){
+		pInitOCEnvMapProbes(objectClass, propertyPrefix);
 	}
-	if( pOCLights.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoLights ) == igdeGDClass::efsoLights ){
-		pInitOCLights( objectClass, propertyPrefix );
+	if(pOCLights.GetCount() == 0
+	&& (filter & igdeGDClass::efsoLights) == igdeGDClass::efsoLights){
+		pInitOCLights(objectClass, propertyPrefix);
 	}
-	if( pOCNavSpaces.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoNavigationSpaces ) == igdeGDClass::efsoNavigationSpaces ){
-		pInitOCNavigationSpaces( objectClass, propertyPrefix );
+	if(pOCNavSpaces.GetCount() == 0
+	&& (filter & igdeGDClass::efsoNavigationSpaces) == igdeGDClass::efsoNavigationSpaces){
+		pInitOCNavigationSpaces(objectClass, propertyPrefix);
 	}
-	if( pOCNavBlockers.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoNavigationBlockers ) == igdeGDClass::efsoNavigationBlockers ){
-		pInitOCNavigationBlockers( objectClass, propertyPrefix );
+	if(pOCNavBlockers.GetCount() == 0
+	&& (filter & igdeGDClass::efsoNavigationBlockers) == igdeGDClass::efsoNavigationBlockers){
+		pInitOCNavigationBlockers(objectClass, propertyPrefix);
 	}
-	if( pOCParticleEmitters.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoParticleEmitters ) == igdeGDClass::efsoParticleEmitters ){
-		pInitOCParticleEmitters( objectClass, propertyPrefix );
+	if(pOCParticleEmitters.GetCount() == 0
+	&& (filter & igdeGDClass::efsoParticleEmitters) == igdeGDClass::efsoParticleEmitters){
+		pInitOCParticleEmitters(objectClass, propertyPrefix);
 	}
-	if( pOCForceFields.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoForceFields ) == igdeGDClass::efsoForceFields ){
-		pInitOCForceFields( objectClass, propertyPrefix );
+	if(pOCForceFields.GetCount() == 0
+	&& (filter & igdeGDClass::efsoForceFields) == igdeGDClass::efsoForceFields){
+		pInitOCForceFields(objectClass, propertyPrefix);
 	}
-	if( pOCSnapPoints.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoSnapPoints ) == igdeGDClass::efsoSnapPoints ){
-		pInitOCSnapPoints( objectClass, propertyPrefix );
+	if(pOCSnapPoints.GetCount() == 0
+	&& (filter & igdeGDClass::efsoSnapPoints) == igdeGDClass::efsoSnapPoints){
+		pInitOCSnapPoints(objectClass, propertyPrefix);
 	}
-	if( pOCSpeakers.GetCount() == 0
-	&& ( filter & igdeGDClass::efsoSpeakers ) == igdeGDClass::efsoSpeakers ){
-		pInitOCSpeakers( objectClass, propertyPrefix );
+	if(pOCSpeakers.GetCount() == 0
+	&& (filter & igdeGDClass::efsoSpeakers) == igdeGDClass::efsoSpeakers){
+		pInitOCSpeakers(objectClass, propertyPrefix);
 	}
-	if( pOCWorlds.GetCount() == 0
+	if(pOCWorlds.GetCount() == 0
 	&& (filter & igdeGDClass::efsoWorlds) == igdeGDClass::efsoWorlds){
 		pInitOCWorlds(objectClass, propertyPrefix);
 	}
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
 		
 		filter &= objectClass.GetInheritSubObjects();
 		
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pInitObjectClassOCs( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix(), filter );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pInitObjectClassOCs(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix(), filter);
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pInitOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCComponents(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCComponentList &list = objectClass.GetComponents();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCComponents.Add(gdeVAOComponent::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCBillboards(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCBillboardList &list = objectClass.GetBillboards();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCBillboards.Add(gdeVAOBillboard::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCCameras(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCCameraList &list = objectClass.GetCameras();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCCameras.Add(gdeVAOCamera::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCLights( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCLights(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCLightList &list = objectClass.GetLights();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCLights.Add(gdeVAOLight::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCParticleEmitters( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCParticleEmitters(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCParticleEmitterList &list = objectClass.GetParticleEmitters();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCParticleEmitters.Add(gdeVAOParticleEmitter::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCForceFields( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCForceFields(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCForceFieldList &list = objectClass.GetForceFields();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCForceFields.Add(gdeVAOForceField::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCEnvMapProbes( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCEnvMapProbes(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCEnvMapProbeList &list = objectClass.GetEnvMapProbes();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCEnvMapProbes.Add(gdeVAOEnvMapProbe::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCNavigationSpaces( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCNavigationSpaces(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCNavigationSpaceList &list = objectClass.GetNavigationSpaces();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCNavSpaces.Add(gdeVAONavSpace::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCNavigationBlockers(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCNavigationBlockerList &list = objectClass.GetNavigationBlockers();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCNavBlockers.Add(gdeVAONavBlocker::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCSnapPoints(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCSnapPointList &list = objectClass.GetSnapPoints();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCSnapPoints.Add(gdeVAOSnapPoint::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
-void gdeViewActiveObject::pInitOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+void gdeViewActiveObject::pInitOCSpeakers(const gdeObjectClass &objectClass, const decString &propertyPrefix){
 	const gdeOCSpeakerList &list = objectClass.GetSpeakers();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pOCSpeakers.Add(gdeVAOSpeaker::Ref::NewWith(
 			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
@@ -1088,189 +1088,189 @@ void gdeViewActiveObject::pAddComponentShadowIgnore(){
 	const int lightCount = pOCLights.GetCount();
 	int i, j;
 	
-	for( i=0; i<componentCount; i++ ){
-		const gdeVAOComponent &occomp = *( ( gdeVAOComponent* )pOCComponents.GetAt( i ) );
-		if( ! occomp.GetOCComponent()->GetLightShadowIgnore() ){
+	for(i=0; i<componentCount; i++){
+		const gdeVAOComponent &occomp = *((gdeVAOComponent*)pOCComponents.GetAt(i));
+		if(!occomp.GetOCComponent()->GetLightShadowIgnore()){
 			continue;
 		}
 		
-		for( j=0; j<lightCount; j++ ){
-			( ( gdeVAOLight* )pOCLights.GetAt( j ) )->ShadowIgnoreComponent( occomp.GetComponent() );
+		for(j=0; j<lightCount; j++){
+			((gdeVAOLight*)pOCLights.GetAt(j))->ShadowIgnoreComponent(occomp.GetComponent());
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCComponents( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCComponents(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCComponents(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCComponents( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCComponents(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCBillboards( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCBillboards(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCBillboards(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCBillboards( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCBillboards(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCCameras( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCCameras(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCCameras(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCCameras( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCCameras(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCLights( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCLights( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCLights(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCLights(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCLights( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCLights(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCEnvMapProbes( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCEnvMapProbes( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCEnvMapProbes(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCEnvMapProbes(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCEnvMapProbes( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCEnvMapProbes(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCNavigationSpaces( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCNavigationSpaces( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCNavigationSpaces(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCNavigationSpaces(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCNavigationSpaces( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCNavigationSpaces(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCNavigationBlockers( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCNavigationBlockers(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCNavigationBlockers(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCNavigationBlockers( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCNavigationBlockers(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCParticleEmitters( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCParticleEmitters( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCParticleEmitters(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCParticleEmitters(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCParticleEmitters( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCParticleEmitters(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCForceFields( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCForceFields( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCForceFields(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCForceFields(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCForceFields( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCForceFields(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCSnapPoints( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCSnapPoints(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCSnapPoints(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCSnapPoints( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCSnapPoints(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
 }
 
-void gdeViewActiveObject::pRebuildOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
-	pInitOCSpeakers( objectClass, propertyPrefix );
+void gdeViewActiveObject::pRebuildOCSpeakers(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCSpeakers(objectClass, propertyPrefix);
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
 		const int inheritCount = inherits.GetCount();
 		int i;
-		for( i=0; i<inheritCount; i++ ){
-			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
-			if( ioc ){
-				pRebuildOCSpeakers( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCSpeakers(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}
@@ -1297,128 +1297,128 @@ void gdeViewActiveObject::pRebuildOCWorlds(const gdeObjectClass &objectClass, co
 void gdeViewActiveObject::pOCReattachAllObjects(){
 	// remove all attachments
 	int i, count = pOCComponents.GetCount();
-	for( i=0; i<count; i++ ){
-		deCollider * const collider = ( ( gdeVAOComponent* )pOCComponents.GetAt( i ) )->GetCollider();
-		if( collider ){
+	for(i=0; i<count; i++){
+		deCollider * const collider = ((gdeVAOComponent*)pOCComponents.GetAt(i))->GetCollider();
+		if(collider){
 			collider->RemoveAllAttachments();
 		}
 	}
 	
 	// attach all objects
 	count = pOCLights.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOLight* )pOCLights.GetAt( i ) )->AttachResources();
+	for(i=0; i<count; i++){
+		((gdeVAOLight*)pOCLights.GetAt(i))->AttachResources();
 	}
 	
 	count = pOCParticleEmitters.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOParticleEmitter* )pOCParticleEmitters.GetAt( i ) )->AttachResources();
+	for(i=0; i<count; i++){
+		((gdeVAOParticleEmitter*)pOCParticleEmitters.GetAt(i))->AttachResources();
 	}
 	
 	count = pOCForceFields.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOForceField* )pOCForceFields.GetAt( i ) )->AttachResources();
+	for(i=0; i<count; i++){
+		((gdeVAOForceField*)pOCForceFields.GetAt(i))->AttachResources();
 	}
 }
 
 
 
-void gdeViewActiveObject::pCenterOnObjectClass( igdeCamera &camera ){
+void gdeViewActiveObject::pCenterOnObjectClass(igdeCamera &camera){
 	decVector resMinExtend, resMaxExtend;
 	decVector boxMinExtend, boxMaxExtend;
 	bool first = true;
 	int i;
 	
 	const int componentCount = pOCComponents.GetCount();
-	for( i=0; i<componentCount; i++ ){
-		( ( gdeVAOComponent* )pOCComponents.GetAt( i ) )->GetExtends( resMinExtend, resMaxExtend );
+	for(i=0; i<componentCount; i++){
+		((gdeVAOComponent*)pOCComponents.GetAt(i))->GetExtends(resMinExtend, resMaxExtend);
 		
-		if( first ){
+		if(first){
 			boxMinExtend = resMinExtend;
 			boxMaxExtend = resMaxExtend;
 			first = false;
 			
 		}else{
-			boxMinExtend.SetSmallest( resMinExtend );
-			boxMaxExtend.SetLargest( resMaxExtend );
+			boxMinExtend.SetSmallest(resMinExtend);
+			boxMaxExtend.SetLargest(resMaxExtend);
 		}
 	}
 	
 	const int billboardCount = pOCBillboards.GetCount();
-	for( i=0; i<billboardCount; i++ ){
-		( ( gdeVAOBillboard* )pOCBillboards.GetAt( i ) )->GetExtends( resMinExtend, resMaxExtend );
+	for(i=0; i<billboardCount; i++){
+		((gdeVAOBillboard*)pOCBillboards.GetAt(i))->GetExtends(resMinExtend, resMaxExtend);
 		
-		if( first ){
+		if(first){
 			boxMinExtend = resMinExtend;
 			boxMaxExtend = resMaxExtend;
 			first = false;
 			
 		}else{
-			boxMinExtend.SetSmallest( resMinExtend );
-			boxMaxExtend.SetLargest( resMaxExtend );
+			boxMinExtend.SetSmallest(resMinExtend);
+			boxMaxExtend.SetLargest(resMaxExtend);
 		}
 	}
 	
-	pCenterOnBox( camera, boxMinExtend, boxMaxExtend );
+	pCenterOnBox(camera, boxMinExtend, boxMaxExtend);
 }
 
-void gdeViewActiveObject::pCenterOnSkin( igdeCamera &camera ){
+void gdeViewActiveObject::pCenterOnSkin(igdeCamera &camera){
 	const gdeSkin * const skin = pGameDefinition->GetActiveSkin();
-	if( ! skin ){
+	if(!skin){
 		return;
 	}
 	
-	const decVector extends( 1.0f, 1.0f, 1.0f );
-	pCenterOnBox( camera, -extends, extends );
+	const decVector extends(1.0f, 1.0f, 1.0f);
+	pCenterOnBox(camera, -extends, extends);
 }
 
-void gdeViewActiveObject::pCenterOnSky( igdeCamera &camera ){
-	camera.SetPosition( decDVector() );
-	camera.SetOrientation( decVector() );
-	camera.SetDistance( 0.0f );
+void gdeViewActiveObject::pCenterOnSky(igdeCamera &camera){
+	camera.SetPosition(decDVector());
+	camera.SetOrientation(decVector());
+	camera.SetDistance(0.0f);
 }
 
-void gdeViewActiveObject::pCenterOnParticleEmitter( igdeCamera &camera ){
-	const decVector extends( 1.0f, 1.0f, 1.0f );
-	pCenterOnBox( camera, -extends, extends );
+void gdeViewActiveObject::pCenterOnParticleEmitter(igdeCamera &camera){
+	const decVector extends(1.0f, 1.0f, 1.0f);
+	pCenterOnBox(camera, -extends, extends);
 }
 
-void gdeViewActiveObject::pCenterOnBox( igdeCamera &camera,
-const decVector &minExtend, const decVector &maxExtend ){
-	const decVector viewRotation( -10.0f, 10.0f, 0.0f );
-	const decMatrix matrixRotation( decMatrix::CreateRotation( viewRotation * DEG2RAD ) );
+void gdeViewActiveObject::pCenterOnBox(igdeCamera &camera,
+const decVector &minExtend, const decVector &maxExtend){
+	const decVector viewRotation(-10.0f, 10.0f, 0.0f);
+	const decMatrix matrixRotation(decMatrix::CreateRotation(viewRotation * DEG2RAD));
 	
-	const decVector halfSize( ( maxExtend - minExtend ) * 0.5f );
-	const decVector corners[ 8 ] = {
-		decVector( halfSize.x, halfSize.y, halfSize.z ),
-		decVector( -halfSize.x, halfSize.y, halfSize.z ),
-		decVector( halfSize.x, halfSize.y, -halfSize.z ),
-		decVector( -halfSize.x, halfSize.y, -halfSize.z ),
-		decVector( halfSize.x, -halfSize.y, halfSize.z ),
-		decVector( -halfSize.x, -halfSize.y, halfSize.z ),
-		decVector( halfSize.x, -halfSize.y, -halfSize.z ),
-		decVector( -halfSize.x, -halfSize.y, -halfSize.z ) };
+	const decVector halfSize((maxExtend - minExtend) * 0.5f);
+	const decVector corners[8] = {
+		decVector(halfSize.x, halfSize.y, halfSize.z),
+		decVector(-halfSize.x, halfSize.y, halfSize.z),
+		decVector(halfSize.x, halfSize.y, -halfSize.z),
+		decVector(-halfSize.x, halfSize.y, -halfSize.z),
+		decVector(halfSize.x, -halfSize.y, halfSize.z),
+		decVector(-halfSize.x, -halfSize.y, halfSize.z),
+		decVector(halfSize.x, -halfSize.y, -halfSize.z),
+		decVector(-halfSize.x, -halfSize.y, -halfSize.z)};
 	
-	const float halfFovX = tanf( camera.GetFov() * 0.5f * DEG2RAD );
-	const float halfFovY = tanf( ( camera.GetFov()
-		/ pGameDefinition->GetViewRatio() ) * 0.5f * DEG2RAD );
+	const float halfFovX = tanf(camera.GetFov() * 0.5f * DEG2RAD);
+	const float halfFovY = tanf((camera.GetFov()
+		/ pGameDefinition->GetViewRatio()) * 0.5f * DEG2RAD);
 	
 	const float borderScale = 1.1f; // leave 10% space between object and border
 	
 	float viewDistance = 0.0f;
 	int i;
-	for( i=0; i<8; i++ ){
-		const decVector corner( matrixRotation * corners[ i ] );
-		if( corner.z < 0.0f ){
+	for(i=0; i<8; i++){
+		const decVector corner(matrixRotation * corners[i]);
+		if(corner.z < 0.0f){
 			continue; // back side vertex are always smaller
 		}
 		
-		viewDistance = decMath::max( viewDistance, corner.z + decMath::max(
-			( corner.x * borderScale ) / halfFovX,
-			( corner.y * borderScale ) / halfFovY ) );
+		viewDistance = decMath::max(viewDistance, corner.z + decMath::max(
+			(corner.x * borderScale) / halfFovX,
+			(corner.y * borderScale) / halfFovY));
 	}
 	
-	camera.SetPosition( decDVector( ( minExtend + maxExtend ) * 0.5f ) );
-	camera.SetOrientation( viewRotation + decVector( 0.0f, 180.0f, 0.0f ) );
-	camera.SetDistance( viewDistance );
+	camera.SetPosition(decDVector((minExtend + maxExtend) * 0.5f));
+	camera.SetOrientation(viewRotation + decVector(0.0f, 180.0f, 0.0f));
+	camera.SetDistance(viewDistance);
 }

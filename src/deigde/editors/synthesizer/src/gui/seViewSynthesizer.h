@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	seViewSynthesizer( seWindowMain &windowMain );
+	seViewSynthesizer(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up view. */
@@ -78,13 +78,13 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	/** \brief Synthesizer path changed. */
 	void OnSynthesizerPathChanged();
 	
 	/** \brief Game like frame update. */
-	void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed);
 	/*@}*/
 };
 

@@ -37,31 +37,31 @@
 // class deoxrActionSet
 /////////////////////////
 
-deoxrActionSet::deoxrActionSet( deoxrInstance &instance, const char *name, const char *localizedName ) :
-pInstance( instance ),
-pName( name ),
-pLocalizedName( localizedName ),
-pActionSet( XR_NULL_HANDLE )
+deoxrActionSet::deoxrActionSet(deoxrInstance &instance, const char *name, const char *localizedName) :
+pInstance(instance),
+pName(name),
+pLocalizedName(localizedName),
+pActionSet(XR_NULL_HANDLE)
 {
 	try{
 		XrActionSetCreateInfo createInfo;
-		memset( &createInfo, 0, sizeof( createInfo ) );
+		memset(&createInfo, 0, sizeof(createInfo));
 		createInfo.type = XR_TYPE_ACTION_SET_CREATE_INFO;
 		#ifdef OS_W32_VS
-			strncpy_s( createInfo.actionSetName, sizeof( createInfo.actionSetName ),
-				name, sizeof( createInfo.actionSetName ) - 1 );
-			strncpy_s( createInfo.localizedActionSetName, sizeof( createInfo.localizedActionSetName ),
-				localizedName, sizeof( createInfo.localizedActionSetName ) - 1 );
+			strncpy_s(createInfo.actionSetName, sizeof(createInfo.actionSetName),
+				name, sizeof(createInfo.actionSetName) - 1);
+			strncpy_s(createInfo.localizedActionSetName, sizeof(createInfo.localizedActionSetName),
+				localizedName, sizeof(createInfo.localizedActionSetName) - 1);
 		#else
-			strncpy( createInfo.actionSetName, name, sizeof( createInfo.actionSetName ) - 1 );
-			strncpy( createInfo.localizedActionSetName, localizedName,
-				sizeof( createInfo.localizedActionSetName ) - 1 );
+			strncpy(createInfo.actionSetName, name, sizeof(createInfo.actionSetName) - 1);
+			strncpy(createInfo.localizedActionSetName, localizedName,
+				sizeof(createInfo.localizedActionSetName) - 1);
 		#endif
 		createInfo.priority = 0;
 		
-		OXR_CHECK( instance.xrCreateActionSet( instance.GetInstance(), &createInfo, &pActionSet ) );
+		OXR_CHECK(instance.xrCreateActionSet(instance.GetInstance(), &createInfo, &pActionSet));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -80,17 +80,17 @@ int deoxrActionSet::GetActionCount() const{
 	return pActions.GetCount();
 }
 
-deoxrAction *deoxrActionSet::GetActionAt( int index ) const{
-	return ( deoxrAction* )pActions.GetAt( index );
+deoxrAction *deoxrActionSet::GetActionAt(int index) const{
+	return (deoxrAction*)pActions.GetAt(index);
 }
 
-deoxrAction *deoxrActionSet::GetActionNamed( const char *name ) const{
+deoxrAction *deoxrActionSet::GetActionNamed(const char *name) const{
 	const int count = pActions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoxrAction * const action = ( deoxrAction* )pActions.GetAt( i );
-		if( action->GetName() == name ){
+	for(i=0; i<count; i++){
+		deoxrAction * const action = (deoxrAction*)pActions.GetAt(i);
+		if(action->GetName() == name){
 			return action;
 		}
 	}
@@ -98,46 +98,46 @@ deoxrAction *deoxrActionSet::GetActionNamed( const char *name ) const{
 	return nullptr;
 }
 
-deoxrAction *deoxrActionSet::AddAction( deoxrAction::eType type,
-const char *name, const char *localizedName ){
-	if( GetActionNamed( name ) ){
-		DETHROW_INFO( deeInvalidParam, decString( "duplicate action: " ) + name );
+deoxrAction *deoxrActionSet::AddAction(deoxrAction::eType type,
+const char *name, const char *localizedName){
+	if(GetActionNamed(name)){
+		DETHROW_INFO(deeInvalidParam, decString("duplicate action: ") + name);
 	}
 	
-	const deoxrAction::Ref action( deoxrAction::Ref::NewWith(*this, type, name, localizedName) );
-	pActions.Add( action );
+	const deoxrAction::Ref action(deoxrAction::Ref::NewWith(*this, type, name, localizedName));
+	pActions.Add(action);
 	return action;
 }
 
-deoxrAction *deoxrActionSet::AddAction( deoxrAction::eType type, const char *name,
-const char *localizedName, const XrPath *subactionPath, int subactionPathCount ){
-	if( GetActionNamed( name ) ){
-		DETHROW_INFO( deeInvalidParam, decString( "duplicate action: " ) + name );
+deoxrAction *deoxrActionSet::AddAction(deoxrAction::eType type, const char *name,
+const char *localizedName, const XrPath *subactionPath, int subactionPathCount){
+	if(GetActionNamed(name)){
+		DETHROW_INFO(deeInvalidParam, decString("duplicate action: ") + name);
 	}
 	
-	const deoxrAction::Ref action( deoxrAction::Ref::NewWith(*this, type, name, localizedName, subactionPath, subactionPathCount) );
-	pActions.Add( action );
+	const deoxrAction::Ref action(deoxrAction::Ref::NewWith(*this, type, name, localizedName, subactionPath, subactionPathCount));
+	pActions.Add(action);
 	return action;
 }
 
-deoxrAction *deoxrActionSet::AddBoolAction( const char *name, const char *localizedName ){
-	return AddAction( deoxrAction::etInputBool, name, localizedName );
+deoxrAction *deoxrActionSet::AddBoolAction(const char *name, const char *localizedName){
+	return AddAction(deoxrAction::etInputBool, name, localizedName);
 }
 
-deoxrAction *deoxrActionSet::AddFloatAction( const char *name, const char *localizedName ){
-	return AddAction( deoxrAction::etInputFloat, name, localizedName );
+deoxrAction *deoxrActionSet::AddFloatAction(const char *name, const char *localizedName){
+	return AddAction(deoxrAction::etInputFloat, name, localizedName);
 }
 
-deoxrAction *deoxrActionSet::AddVector2Action( const char *name, const char *localizedName ){
-	return AddAction( deoxrAction::etInputVector2, name, localizedName );
+deoxrAction *deoxrActionSet::AddVector2Action(const char *name, const char *localizedName){
+	return AddAction(deoxrAction::etInputVector2, name, localizedName);
 }
 
-deoxrAction *deoxrActionSet::AddPoseAction( const char *name, const char *localizedName ){
-	return AddAction( deoxrAction::etInputPose, name, localizedName );
+deoxrAction *deoxrActionSet::AddPoseAction(const char *name, const char *localizedName){
+	return AddAction(deoxrAction::etInputPose, name, localizedName);
 }
 
-deoxrAction *deoxrActionSet::AddVibrationAction( const char *name, const char *localizedName ){
-	return AddAction( deoxrAction::etOutputVibration, name, localizedName );
+deoxrAction *deoxrActionSet::AddVibrationAction(const char *name, const char *localizedName){
+	return AddAction(deoxrAction::etOutputVibration, name, localizedName);
 }
 
 
@@ -148,8 +148,8 @@ deoxrAction *deoxrActionSet::AddVibrationAction( const char *name, const char *l
 void deoxrActionSet::pCleanUp(){
 	pActions.RemoveAll();
 	
-	if( pActionSet ){
-		pInstance.xrDestroyActionSet( pActionSet );
+	if(pActionSet){
+		pInstance.xrDestroyActionSet(pActionSet);
 		pActionSet = XR_NULL_HANDLE;
 	}
 }

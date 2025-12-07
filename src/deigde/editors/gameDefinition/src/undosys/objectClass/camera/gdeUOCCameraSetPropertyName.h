@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCameraSetPropertyName( gdeObjectClass *objectClass, gdeOCCamera *camera, const char *newValue );
+	gdeUOCCameraSetPropertyName(gdeObjectClass *objectClass, gdeOCCamera *camera, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

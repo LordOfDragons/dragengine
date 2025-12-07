@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPLinkListener::seWPLinkListener( seWPLink &panel ) :
-pPanel( panel ){
+seWPLinkListener::seWPLinkListener(seWPLink &panel) :
+pPanel(panel){
 }
 
 seWPLinkListener::~seWPLinkListener(){
@@ -52,30 +52,30 @@ seWPLinkListener::~seWPLinkListener(){
 // Management
 ///////////////
 
-void seWPLinkListener::ControllerStructureChanged( seSky *sky ){
+void seWPLinkListener::ControllerStructureChanged(seSky *sky){
 	pPanel.UpdateControllerList();
 }
 
-void seWPLinkListener::ControllerNameChanged( seSky *sky, seController *controller ){
+void seWPLinkListener::ControllerNameChanged(seSky *sky, seController *controller){
 	pPanel.UpdateControllerList();
 }
 
 
 
-void seWPLinkListener::LinkStructureChanged( seSky *sky ){
+void seWPLinkListener::LinkStructureChanged(seSky *sky){
 	pPanel.UpdateLinkList();
 }
 
-void seWPLinkListener::LinkChanged( seSky *sky, seLink *link ){
-	if( link->GetActive() ){
+void seWPLinkListener::LinkChanged(seSky *sky, seLink *link){
+	if(link->GetActive()){
 		pPanel.UpdateLink();
 	}
 }
 
-void seWPLinkListener::LinkNameChanged( seSky* sky, seLink* link ){
+void seWPLinkListener::LinkNameChanged(seSky* sky, seLink* link){
 	pPanel.UpdateLinkList();
 }
 
-void seWPLinkListener::ActiveLinkChanged( seSky *sky ){
+void seWPLinkListener::ActiveLinkChanged(seSky *sky){
 	pPanel.SelectActiveLink();
 }

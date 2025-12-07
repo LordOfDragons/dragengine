@@ -55,19 +55,19 @@ public:
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	/** Retrieves a point by index. */
-	const decVector2 &GetPointAt( int index ) const;
+	const decVector2 &GetPointAt(int index) const;
 	/** Adds a point. */
-	void AddPoint( const decVector2 &point );
-	void AddPoint( float x, float y );
+	void AddPoint(const decVector2 &point);
+	void AddPoint(float x, float y);
 	/** Removes all points. */
 	void RemoveAllPoints();
 	
 	/** Retrieves the number of hull points. */
 	inline int GetHullPointCount() const{ return pHullPointCount; }
 	/** Retrieves a hull point by index. */
-	int GetHullPointAt( int index ) const;
+	int GetHullPointAt(int index) const;
 	/** Retrieves the point using a hull point by index. */
-	const decVector2 &GetHullPointVectorAt( int index ) const;
+	const decVector2 &GetHullPointVectorAt(int index) const;
 	
 	/** Calculate convex hull. */
 	void CalculateHull();

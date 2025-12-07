@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassFontBuilder( deScriptingDragonScript &ds );
+	deClassFontBuilder(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassFontBuilder();
@@ -58,7 +58,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/*@}*/
 	
 	
@@ -75,23 +75,23 @@ private:
 		dsClass *clsFont;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfBuild );
-	DEF_NATFUNC( nfBuildFont );
-	DEF_NATFUNC( nfSetLineHeight );
-	DEF_NATFUNC( nfSetBaseLine );
-	DEF_NATFUNC( nfSetIsColorFont );
-	DEF_NATFUNC( nfSetUndefinedGlyph );
-	DEF_NATFUNC( nfSetGlyphCount );
-	DEF_NATFUNC( nfSetGlyphAt );
-	DEF_NATFUNC( nfSetGlyphAt2 );
+	DEF_NATFUNC(nfBuild);
+	DEF_NATFUNC(nfBuildFont);
+	DEF_NATFUNC(nfSetLineHeight);
+	DEF_NATFUNC(nfSetBaseLine);
+	DEF_NATFUNC(nfSetIsColorFont);
+	DEF_NATFUNC(nfSetUndefinedGlyph);
+	DEF_NATFUNC(nfSetGlyphCount);
+	DEF_NATFUNC(nfSetGlyphAt);
+	DEF_NATFUNC(nfSetGlyphAt2);
 #undef DEF_NATFUNC
 };
 

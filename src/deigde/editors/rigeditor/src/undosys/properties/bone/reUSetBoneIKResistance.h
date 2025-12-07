@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetBoneIKResistance( reRigBone *bone, const decVector &ikLimitsLower );
+	reUSetBoneIKResistance(reRigBone *bone, const decVector &ikLimitsLower);
 	
 protected:
 	/** \brief Clean up undo. */

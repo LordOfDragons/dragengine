@@ -40,18 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCapsTextureFormat::deoglCapsTextureFormat( GLint format, GLenum pixelFormat,
+deoglCapsTextureFormat::deoglCapsTextureFormat(GLint format, GLenum pixelFormat,
 	GLenum pixelType, int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil,
-	bool isCompressed, const char *name ) :
-pFormat( format ),
-pPixelFormat( pixelFormat ),
-pPixelType( pixelType ),
-pBitsPerPixel( bitsPerPixel ),
-pIsDepth( isDepth ),
-pIsDepthFloat( isDepthFloat ),
-pIsStencil( isStencil ),
-pIsCompressed( isCompressed ),
-pName( name ){
+	bool isCompressed, const char *name) :
+pFormat(format),
+pPixelFormat(pixelFormat),
+pPixelType(pixelType),
+pBitsPerPixel(bitsPerPixel),
+pIsDepth(isDepth),
+pIsDepthFloat(isDepthFloat),
+pIsStencil(isStencil),
+pIsCompressed(isCompressed),
+pName(name){
 }
 
 deoglCapsTextureFormat::~deoglCapsTextureFormat(){
@@ -62,7 +62,7 @@ deoglCapsTextureFormat::~deoglCapsTextureFormat(){
 // Management
 ///////////////
 
-void deoglCapsTextureFormat::WriteToString( decUnicodeString &buffer ) const{
-	buffer.AppendFromUTF8( pName.GetString() );
-	buffer.AppendFromUTF8( ",\n" );
+void deoglCapsTextureFormat::WriteToString(decUnicodeString &buffer) const{
+	buffer.AppendFromUTF8(pName.GetString());
+	buffer.AppendFromUTF8(",\n");
 }

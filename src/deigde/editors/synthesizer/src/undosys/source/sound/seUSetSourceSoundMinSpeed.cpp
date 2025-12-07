@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceSoundMinSpeed::seUSetSourceSoundMinSpeed( seSourceSound *source, float newSpeed ) :
-pSource( NULL )
+seUSetSourceSoundMinSpeed::seUSetSourceSoundMinSpeed(seSourceSound *source, float newSpeed) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set sound source minimum speed" );
+	SetShortInfo("Set sound source minimum speed");
 	
 	pOldSpeed = source->GetMinSpeed();
 	pNewSpeed = newSpeed;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUSetSourceSoundMinSpeed::~seUSetSourceSoundMinSpeed(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSetSourceSoundMinSpeed::~seUSetSourceSoundMinSpeed(){
 ///////////////
 
 void seUSetSourceSoundMinSpeed::Undo(){
-	pSource->SetMinSpeed( pOldSpeed );
+	pSource->SetMinSpeed(pOldSpeed);
 }
 
 void seUSetSourceSoundMinSpeed::Redo(){
-	pSource->SetMinSpeed( pNewSpeed );
+	pSource->SetMinSpeed(pNewSpeed);
 }

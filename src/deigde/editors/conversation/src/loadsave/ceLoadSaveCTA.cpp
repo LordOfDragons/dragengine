@@ -56,12 +56,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceLoadSaveCTA::ceLoadSaveCTA( ceLoadSaveSystem &loadSaveSystem,
-deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ),
-pLoadSaveSystem( loadSaveSystem ),
-pName( "Conversation Test Actor" ),
-pPattern( ".decta" ){
+ceLoadSaveCTA::ceLoadSaveCTA(ceLoadSaveSystem &loadSaveSystem,
+deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource),
+pLoadSaveSystem(loadSaveSystem),
+pName("Conversation Test Actor"),
+pPattern(".decta"){
 }
 
 
@@ -69,167 +69,167 @@ pPattern( ".decta" ){
 // Loading and saving
 ///////////////////////
 
-void ceLoadSaveCTA::LoadCTA( ceConversationActor &actor, decBaseFileReader &reader ){
+void ceLoadSaveCTA::LoadCTA(ceConversationActor &actor, decBaseFileReader &reader){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "conversationTestActor" ){
-		DETHROW( deeInvalidParam );
+	if(!root || root->GetName() != "conversationTestActor"){
+		DETHROW(deeInvalidParam);
 	}
 	
-	ReadActor( *root, actor );
+	ReadActor(*root, actor);
 }
 
-void ceLoadSaveCTA::SaveCTA( const ceConversationActor &actor, decBaseFileWriter &writer ){
-	decXmlWriter xmlWriter( &writer );
+void ceLoadSaveCTA::SaveCTA(const ceConversationActor &actor, decBaseFileWriter &writer){
+	decXmlWriter xmlWriter(&writer);
 	xmlWriter.WriteXMLDeclaration();
-	WriteActor( xmlWriter, actor, "conversationTestActor" );
+	WriteActor(xmlWriter, actor, "conversationTestActor");
 }
 
 
 
-void ceLoadSaveCTA::WriteActor( decXmlWriter &writer, const ceConversationActor &actor,
-const char *tagName ){
-	writer.WriteOpeningTag( tagName, false, true );
+void ceLoadSaveCTA::WriteActor(decXmlWriter &writer, const ceConversationActor &actor,
+const char *tagName){
+	writer.WriteOpeningTag(tagName, false, true);
 	
-	writer.WriteDataTagString( "id", actor.GetID() );
-	writer.WriteDataTagString( "aliasID", actor.GetAliasID() );
-	WriteVector( writer, "position", actor.GetPosition() );
-	WriteVector( writer, "orientation", actor.GetOrientation() );
-	writer.WriteDataTagString( "model", actor.GetPathModel() );
-	writer.WriteDataTagString( "skin", actor.GetPathSkin() );
-	writer.WriteDataTagString( "rig", actor.GetPathRig() );
-	writer.WriteDataTagString( "speechAnimation", actor.GetPathSpeechAnimation() );
-	writer.WriteDataTagString( "eyesAnimator", actor.GetPathEyesAnimator() );
-	writer.WriteDataTagString( "facePoseAnimator", actor.GetPathFacePoseAnimator() );
-	writer.WriteDataTagString( "boneHeadRotator", actor.GetBoneHeadRotator() );
+	writer.WriteDataTagString("id", actor.GetID());
+	writer.WriteDataTagString("aliasID", actor.GetAliasID());
+	WriteVector(writer, "position", actor.GetPosition());
+	WriteVector(writer, "orientation", actor.GetOrientation());
+	writer.WriteDataTagString("model", actor.GetPathModel());
+	writer.WriteDataTagString("skin", actor.GetPathSkin());
+	writer.WriteDataTagString("rig", actor.GetPathRig());
+	writer.WriteDataTagString("speechAnimation", actor.GetPathSpeechAnimation());
+	writer.WriteDataTagString("eyesAnimator", actor.GetPathEyesAnimator());
+	writer.WriteDataTagString("facePoseAnimator", actor.GetPathFacePoseAnimator());
+	writer.WriteDataTagString("boneHeadRotator", actor.GetBoneHeadRotator());
 	
 	// poses
 	const ceActorPoseList &poses = actor.GetPoses();
 	const int poseCount = poses.GetCount();
 	int i;
 	
-	for( i=0; i<poseCount; i++ ){
-		pWritePose( writer, *poses.GetAt( i ) );
+	for(i=0; i<poseCount; i++){
+		pWritePose(writer, *poses.GetAt(i));
 	}
 	
 	// actor command simulation
 	const cePlaybackCommandList &commands = actor.GetCommands();
 	const int commandCount = commands.GetCount();
 	
-	for( i=0; i<commandCount; i++ ){
-		const cePlaybackCommand &command = *commands.GetAt( i );
+	for(i=0; i<commandCount; i++){
+		const cePlaybackCommand &command = *commands.GetAt(i);
 		
-		writer.WriteOpeningTagStart( "command" );
-		writer.WriteAttributeBool( "value", command.GetValue() );
-		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextString( command.GetCommand() );
-		writer.WriteClosingTag( "command", false );
+		writer.WriteOpeningTagStart("command");
+		writer.WriteAttributeBool("value", command.GetValue());
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextString(command.GetCommand());
+		writer.WriteClosingTag("command", false);
 	}
 	
 	// actor parameters
 	const ceActorParameterList &parameters = actor.GetParameter();
 	const int parameterCount = parameters.GetCount();
 	
-	for( i=0; i<parameterCount; i++ ){
-		const ceActorParameter &parameter = *parameters.GetAt( i );
+	for(i=0; i<parameterCount; i++){
+		const ceActorParameter &parameter = *parameters.GetAt(i);
 		
-		writer.WriteOpeningTagStart( "parameter" );
-		writer.WriteAttributeString( "name", parameter.GetName() );
-		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextInt( parameter.GetValue() );
-		writer.WriteClosingTag( "parameter", false );
+		writer.WriteOpeningTagStart("parameter");
+		writer.WriteAttributeString("name", parameter.GetName());
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextInt(parameter.GetValue());
+		writer.WriteClosingTag("parameter", false);
 	}
 	
 	// active pose can be stored only now
-	if( actor.GetActivePose() ){
-		writer.WriteDataTagString( "activePose", actor.GetActivePose()->GetName() );
+	if(actor.GetActivePose()){
+		writer.WriteDataTagString("activePose", actor.GetActivePose()->GetName());
 	}
 	
-	writer.WriteClosingTag( tagName );
+	writer.WriteClosingTag(tagName);
 }
 
-void ceLoadSaveCTA::ReadActor( const decXmlElementTag &root, ceConversationActor &actor ){
+void ceLoadSaveCTA::ReadActor(const decXmlElementTag &root, ceConversationActor &actor){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
 		
-		if( tagName == "id" ){
-			actor.SetID( GetCDataString( *tag ) );
+		if(tagName == "id"){
+			actor.SetID(GetCDataString(*tag));
 			
-		}else if( tagName == "aliasID" ){
-			actor.SetAliasID( GetCDataString( *tag ) );
+		}else if(tagName == "aliasID"){
+			actor.SetAliasID(GetCDataString(*tag));
 			
-		}else if( tagName == "position" ){
+		}else if(tagName == "position"){
 			decVector position;
-			ReadVector( *tag, position );
-			actor.SetPosition( position );
+			ReadVector(*tag, position);
+			actor.SetPosition(position);
 			
-		}else if( tagName == "orientation" ){
+		}else if(tagName == "orientation"){
 			decVector orientation;
-			ReadVector( *tag, orientation );
-			actor.SetOrientation( orientation );
+			ReadVector(*tag, orientation);
+			actor.SetOrientation(orientation);
 			
-		}else if( tagName == "boneHeadRotator" ){
-			actor.SetBoneHeadRotator( GetCDataString( *tag ) );
+		}else if(tagName == "boneHeadRotator"){
+			actor.SetBoneHeadRotator(GetCDataString(*tag));
 			
-		}else if( tagName == "model" ){
-			actor.SetPathModel( GetCDataString( *tag ) );
+		}else if(tagName == "model"){
+			actor.SetPathModel(GetCDataString(*tag));
 			
-		}else if( tagName == "skin" ){
-			actor.SetPathSkin( GetCDataString( *tag ) );
+		}else if(tagName == "skin"){
+			actor.SetPathSkin(GetCDataString(*tag));
 			
-		}else if( tagName == "rig" ){
-			actor.SetPathRig( GetCDataString( *tag ) );
+		}else if(tagName == "rig"){
+			actor.SetPathRig(GetCDataString(*tag));
 			
-		}else if( tagName == "speechAnimation" ){
-			actor.SetPathSpeechAnimation( GetCDataString( *tag ) );
+		}else if(tagName == "speechAnimation"){
+			actor.SetPathSpeechAnimation(GetCDataString(*tag));
 			
-		}else if( tagName == "eyesAnimator" ){
-			actor.SetPathEyesAnimator( GetCDataString( *tag ) );
+		}else if(tagName == "eyesAnimator"){
+			actor.SetPathEyesAnimator(GetCDataString(*tag));
 			
-		}else if( tagName == "facePoseAnimator" ){
-			actor.SetPathFacePoseAnimator( GetCDataString( *tag ) );
+		}else if(tagName == "facePoseAnimator"){
+			actor.SetPathFacePoseAnimator(GetCDataString(*tag));
 			
-		}else if( tagName == "pose" ){
-			pReadPose( *tag, actor );
+		}else if(tagName == "pose"){
+			pReadPose(*tag, actor);
 			
-		}else if( tagName == "command" ){
+		}else if(tagName == "command"){
 			cePlaybackCommand *command = NULL;
 			
 			try{
-				command = new cePlaybackCommand( GetCDataString( *tag ),
-					GetAttributeBool( *tag, "value" ) );
-				actor.GetCommands().Add( command );
+				command = new cePlaybackCommand(GetCDataString(*tag),
+					GetAttributeBool(*tag, "value"));
+				actor.GetCommands().Add(command);
 				command->FreeReference();
 				
-			}catch( const deException & ){
-				if( command ){
+			}catch(const deException &){
+				if(command){
 					command->FreeReference();
 				}
 				throw;
 			}
 			
-		}else if( tagName == "parameter" ){
-			actor.GetParameters().Set( GetAttributeString( *tag, "name" ), GetCDataInt( *tag ) );
+		}else if(tagName == "parameter"){
+			actor.GetParameters().Set(GetAttributeString(*tag, "name"), GetCDataInt(*tag));
 			
-		}else if( tagName == "activePose" ){
-			actor.SetActivePose( actor.GetPoses().GetNamed( GetCDataString( *tag ) ) );
+		}else if(tagName == "activePose"){
+			actor.SetActivePose(actor.GetPoses().GetNamed(GetCDataString(*tag)));
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
@@ -239,208 +239,208 @@ void ceLoadSaveCTA::ReadActor( const decXmlElementTag &root, ceConversationActor
 // Private Functions
 //////////////////////
 
-void ceLoadSaveCTA::pWritePose( decXmlWriter &writer, const ceActorPose &pose ){
-	writer.WriteOpeningTagStart( "pose" );
-	writer.WriteAttributeString( "name", pose.GetName() );
+void ceLoadSaveCTA::pWritePose(decXmlWriter &writer, const ceActorPose &pose){
+	writer.WriteOpeningTagStart("pose");
+	writer.WriteAttributeString("name", pose.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	writer.WriteDataTagString( "animator", pose.GetPathAnimator() );
+	writer.WriteDataTagString("animator", pose.GetPathAnimator());
 	
 	// controllers
 	const ceActorControllerList &controllers = pose.GetControllers();
 	const int controllerCount = controllers.GetCount();
 	int i;
 	
-	for( i=0; i<controllerCount; i++ ){
-		pWriteController( writer, *controllers.GetAt( i ) );
+	for(i=0; i<controllerCount; i++){
+		pWriteController(writer, *controllers.GetAt(i));
 	}
 	
 	// gestures
 	const ceActorGestureList &gestures = pose.GetGestures();
 	const int gestureCount = gestures.GetCount();
 	
-	for( i=0; i<gestureCount; i++ ){
-		const ceActorGesture &gesture = *gestures.GetAt( i );
+	for(i=0; i<gestureCount; i++){
+		const ceActorGesture &gesture = *gestures.GetAt(i);
 		
-		writer.WriteOpeningTagStart( "gesture" );
-		writer.WriteAttributeString( "name", gesture.GetName() );
-		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextString( gesture.GetPathAnimator() );
-		writer.WriteClosingTag( "gesture", false );
+		writer.WriteOpeningTagStart("gesture");
+		writer.WriteAttributeString("name", gesture.GetName());
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextString(gesture.GetPathAnimator());
+		writer.WriteClosingTag("gesture", false);
 	}
 	
-	writer.WriteClosingTag( "pose" );
+	writer.WriteClosingTag("pose");
 }
 
-void ceLoadSaveCTA::pWriteController( decXmlWriter &writer, const ceActorController &controller ){
-	writer.WriteOpeningTagStart( "controller" );
-	writer.WriteAttributeString( "name", controller.GetName() );
+void ceLoadSaveCTA::pWriteController(decXmlWriter &writer, const ceActorController &controller){
+	writer.WriteOpeningTagStart("controller");
+	writer.WriteAttributeString("name", controller.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	switch( controller.GetUpdateType() ){
+	switch(controller.GetUpdateType()){
 	case ceActorController::eutConstant:
-		writer.WriteDataTagString( "update", "constant" );
+		writer.WriteDataTagString("update", "constant");
 		break;
 		
 	case ceActorController::eutElapsedTime:
-		writer.WriteDataTagString( "update", "elapsedTime" );
+		writer.WriteDataTagString("update", "elapsedTime");
 		break;
 		
 	case ceActorController::eutHeadLeftRight:
-		writer.WriteDataTagString( "update", "headLeftRight" );
+		writer.WriteDataTagString("update", "headLeftRight");
 		break;
 		
 	case ceActorController::eutHeadUpDown:
-		writer.WriteDataTagString( "update", "headUpDown" );
+		writer.WriteDataTagString("update", "headUpDown");
 		break;
 		
 	case ceActorController::eutEyesLeftRight:
-		writer.WriteDataTagString( "update", "eyesLeftRight" );
+		writer.WriteDataTagString("update", "eyesLeftRight");
 		break;
 		
 	case ceActorController::eutEyesUpDown:
-		writer.WriteDataTagString( "update", "eyesUpDown" );
+		writer.WriteDataTagString("update", "eyesUpDown");
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
-	writer.WriteDataTagFloat( "value", controller.GetValue() );
-	WriteVector( writer, "vector", controller.GetVector() );
+	writer.WriteDataTagFloat("value", controller.GetValue());
+	WriteVector(writer, "vector", controller.GetVector());
 	
-	writer.WriteClosingTag( "controller" );
+	writer.WriteClosingTag("controller");
 }
 
 
 
-void ceLoadSaveCTA::pReadPose( const decXmlElementTag &root, ceConversationActor &actor ){
-	const decString poseName( GetAttributeString( root, "name" ) );
-	if( actor.GetPoses().GetNamed( poseName ) ){
+void ceLoadSaveCTA::pReadPose(const decXmlElementTag &root, ceConversationActor &actor){
+	const decString poseName(GetAttributeString(root, "name"));
+	if(actor.GetPoses().GetNamed(poseName)){
 		decString text;
-		text.Format( "Pose with name '%s' exists already", poseName.GetString() );
-		LogWarnGenericProblem( root, text );
+		text.Format("Pose with name '%s' exists already", poseName.GetString());
+		LogWarnGenericProblem(root, text);
 		return;
 	}
 	
-	ceActorPose * const pose = new ceActorPose( actor.GetEnvironment(), poseName );
+	ceActorPose * const pose = new ceActorPose(actor.GetEnvironment(), poseName);
 	const int elementCount = root.GetElementCount();
 	int i;
 	
 	try{
-		for( i=0; i<elementCount; i++ ){
-			const decXmlElementTag * const tag = root.GetElementIfTag( i );
-			if( ! tag ){
+		for(i=0; i<elementCount; i++){
+			const decXmlElementTag * const tag = root.GetElementIfTag(i);
+			if(!tag){
 				continue;
 			}
 			
 			const decString &tagName = tag->GetName();
 			
-			if( tagName == "animator" ){
-				pose->SetPathAnimator( GetCDataString( *tag ) );
+			if(tagName == "animator"){
+				pose->SetPathAnimator(GetCDataString(*tag));
 				
-			}else if( tagName == "controller" ){
-				const ceActorController::Ref controller( ceActorController::Ref::NewWith() );
+			}else if(tagName == "controller"){
+				const ceActorController::Ref controller(ceActorController::Ref::NewWith());
 				
-				if( HasAttribute( *tag, "index" ) ){ // deprecated
-					controller->SetName( GetAttributeString( *tag, "index" ) );
+				if(HasAttribute(*tag, "index")){ // deprecated
+					controller->SetName(GetAttributeString(*tag, "index"));
 					
 				}else{
-					controller->SetName( GetAttributeString( *tag, "name" ) );
+					controller->SetName(GetAttributeString(*tag, "name"));
 				}
 				
-				pReadController( *tag, controller );
-				pose->GetControllers().Add( controller );
+				pReadController(*tag, controller);
+				pose->GetControllers().Add(controller);
 				
-			}else if( tagName == "gesture" ){
+			}else if(tagName == "gesture"){
 				ceActorGesture *gesture = NULL;
 				
-				const decString gestureName( GetAttributeString( *tag, "name" ) );
+				const decString gestureName(GetAttributeString(*tag, "name"));
 				
-				if( pose->GetGestures().HasNamed( gestureName ) ){
+				if(pose->GetGestures().HasNamed(gestureName)){
 					decString text;
-					text.Format( "Gesture with name '%s' exists already in pose '%s'",
-						gestureName.GetString(), poseName.GetString() );
-					LogWarnGenericProblem( *tag, text );
+					text.Format("Gesture with name '%s' exists already in pose '%s'",
+						gestureName.GetString(), poseName.GetString());
+					LogWarnGenericProblem(*tag, text);
 					continue;
 				}
 				
 				try{
-					gesture = new ceActorGesture( actor.GetEnvironment(), gestureName );
-					gesture->SetPathAnimator( GetCDataString( *tag ) );
-					pose->GetGestures().Add( gesture );
+					gesture = new ceActorGesture(actor.GetEnvironment(), gestureName);
+					gesture->SetPathAnimator(GetCDataString(*tag));
+					pose->GetGestures().Add(gesture);
 					gesture->FreeReference();
 					
-				}catch( const deException & ){
-					if( gesture ){
+				}catch(const deException &){
+					if(gesture){
 						gesture->FreeReference();
 					}
 					throw;
 				}
 				
 			}else{
-				LogWarnUnknownTag( root, *tag );
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
 		
-		actor.GetPoses().Add( pose );
+		actor.GetPoses().Add(pose);
 		pose->FreeReference();
 		
-	}catch( const deException & ){
-		if( pose ){
+	}catch(const deException &){
+		if(pose){
 			pose->FreeReference();
 		}
 		throw;
 	}
 }
 
-void ceLoadSaveCTA::pReadController( const decXmlElementTag &root, ceActorController &controller ){
+void ceLoadSaveCTA::pReadController(const decXmlElementTag &root, ceActorController &controller){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i =0; i <elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i =0; i <elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
 		
-		if( tagName == "update" ){
-			const char * const typeName = GetCDataString( *tag );
+		if(tagName == "update"){
+			const char * const typeName = GetCDataString(*tag);
 			
-			if( strcmp( typeName, "constant" ) == 0 ){
-				controller.SetUpdateType( ceActorController::eutConstant );
+			if(strcmp(typeName, "constant") == 0){
+				controller.SetUpdateType(ceActorController::eutConstant);
 				
-			}else if( strcmp( typeName, "elapsedTime" ) == 0 ){
-				controller.SetUpdateType( ceActorController::eutElapsedTime );
+			}else if(strcmp(typeName, "elapsedTime") == 0){
+				controller.SetUpdateType(ceActorController::eutElapsedTime);
 				
-			}else if( strcmp( typeName, "headLeftRight" ) == 0 ){
-				controller.SetUpdateType( ceActorController::eutHeadLeftRight );
+			}else if(strcmp(typeName, "headLeftRight") == 0){
+				controller.SetUpdateType(ceActorController::eutHeadLeftRight);
 				
-			}else if( strcmp( typeName, "headUpDown" ) == 0 ){
-				controller.SetUpdateType( ceActorController::eutHeadUpDown );
+			}else if(strcmp(typeName, "headUpDown") == 0){
+				controller.SetUpdateType(ceActorController::eutHeadUpDown);
 				
-			}else if( strcmp( typeName, "eyesLeftRight" ) == 0 ){
-				controller.SetUpdateType( ceActorController::eutEyesLeftRight );
+			}else if(strcmp(typeName, "eyesLeftRight") == 0){
+				controller.SetUpdateType(ceActorController::eutEyesLeftRight);
 				
-			}else if( strcmp( typeName, "eyesUpDown" ) == 0 ){
-				controller.SetUpdateType( ceActorController::eutEyesUpDown );
+			}else if(strcmp(typeName, "eyesUpDown") == 0){
+				controller.SetUpdateType(ceActorController::eutEyesUpDown);
 				
 			}else{
-				LogErrorUnknownValue( *tag, typeName );
+				LogErrorUnknownValue(*tag, typeName);
 			}
 			
-		}else if( tagName == "value" ){
-			controller.SetValue( GetCDataFloat( *tag ) );
+		}else if(tagName == "value"){
+			controller.SetValue(GetCDataFloat(*tag));
 			
-		}else if( tagName == "vector" ){
+		}else if(tagName == "vector"){
 			decVector vector;
-			ReadVector( *tag, vector );
-			controller.SetVector( vector );
+			ReadVector(*tag, vector);
+			controller.SetVector(vector);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

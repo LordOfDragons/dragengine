@@ -62,25 +62,25 @@ public:
 	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Set bytes per sample. */
-	void SetBytesPerSample( int bytesPerSample );
+	void SetBytesPerSample(int bytesPerSample);
 	
 	/** \brief Number of samples. */
 	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples. */
-	void SetSampleCount( int sampleCount );
+	void SetSampleCount(int sampleCount);
 	
 	/** \brief Number of channels. */
 	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Set number of channels. */
-	void SetChannelCount( int channelCount );
+	void SetChannelCount(int channelCount);
 	
 	/** \brief Sample rate. */
 	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Set sample rate. */
-	void SetSampleRate( int sampleRate );
+	void SetSampleRate(int sampleRate);
 	/*@}*/
 };
 

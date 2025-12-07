@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalParameter::deoalParameter( deAudioOpenAL &oal ) : pOal( oal ){
+deoalParameter::deoalParameter(deAudioOpenAL &oal) : pOal(oal){
 }
 
 deoalParameter::~deoalParameter(){

@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetSimulationType::peeUTypeSetSimulationType( peeType *type,
-deParticleEmitterType::eSimulationTypes newSimType ) :
-pType( NULL ),
-pNewSimType( newSimType )
+peeUTypeSetSimulationType::peeUTypeSetSimulationType(peeType *type,
+deParticleEmitterType::eSimulationTypes newSimType) :
+pType(NULL),
+pNewSimType(newSimType)
 {
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Type Simulation Type" );
+	SetShortInfo("Set Type Simulation Type");
 	
 	pOldSimType = type->GetSimulationType();
 	
@@ -57,7 +57,7 @@ pNewSimType( newSimType )
 }
 
 peeUTypeSetSimulationType::~peeUTypeSetSimulationType(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ peeUTypeSetSimulationType::~peeUTypeSetSimulationType(){
 ///////////////
 
 void peeUTypeSetSimulationType::Undo(){
-	pType->SetSimulationType( pOldSimType );
+	pType->SetSimulationType(pOldSimType);
 }
 
 void peeUTypeSetSimulationType::Redo(){
-	pType->SetSimulationType( pNewSimType );
+	pType->SetSimulationType(pNewSimType);
 }

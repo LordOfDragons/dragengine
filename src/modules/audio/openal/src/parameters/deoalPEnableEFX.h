@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	deoalPEnableEFX( deAudioOpenAL &oal );
+	deoalPEnableEFX(deAudioOpenAL &oal);
 	
 	/** \brief Clean up parameter. */
 	virtual ~deoalPEnableEFX();
@@ -50,7 +50,7 @@ public:
 	virtual bool GetParameterBool();
 	
 	/** \brief Set current value. */
-	virtual void SetParameterBool( bool value );
+	virtual void SetParameterBool(bool value);
 	/*@}*/
 };
 

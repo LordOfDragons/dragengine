@@ -48,24 +48,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadOcclusionMesh::deRLTaskReadOcclusionMesh( deEngine &engine,
+deRLTaskReadOcclusionMesh::deRLTaskReadOcclusionMesh(deEngine &engine,
 	deResourceLoader &resourceLoader, deVirtualFileSystem *vfs, const char *path,
-	deOcclusionMesh *occlusionMesh ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertOcclusionMesh ),
-pSucceeded( false )
+	deOcclusionMesh *occlusionMesh) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertOcclusionMesh),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	// if already loaded set finished
-	if( occlusionMesh ){
+	if(occlusionMesh){
 		pOcclusionMesh = occlusionMesh;
-		SetResource( occlusionMesh );
-		SetState( esSucceeded );
+		SetResource(occlusionMesh);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
 	}
 	
-	pOcclusionMesh.TakeOver( new deOcclusionMesh( engine.GetOcclusionMeshManager(), vfs, path, 0 ) );
+	pOcclusionMesh.TakeOver(new deOcclusionMesh(engine.GetOcclusionMeshManager(), vfs, path, 0));
 	LogCreateExit();
 }
 
@@ -79,25 +79,25 @@ deRLTaskReadOcclusionMesh::~deRLTaskReadOcclusionMesh(){
 
 void deRLTaskReadOcclusionMesh::Run(){
 	LogRunEnter();
-	deBaseOcclusionMeshModule * const module = ( deBaseOcclusionMeshModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtOcclusionMesh, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseOcclusionMeshModule * const module = (deBaseOcclusionMeshModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtOcclusionMesh, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
-	pOcclusionMesh->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-	pOcclusionMesh->SetAsynchron( true );
+	pOcclusionMesh->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+	pOcclusionMesh->SetAsynchron(true);
 	module->LoadOcclusionMesh(decBaseFileReader::Ref::New(
 		GetVFS()->OpenFileForReading(vfsPath)), pOcclusionMesh);
 	
-	if( ! pOcclusionMesh->Verify() ){
-		DETHROW( deeInvalidParam );
+	if(!pOcclusionMesh->Verify()){
+		DETHROW(deeInvalidParam);
 	}
 	pOcclusionMesh->Prepare();
 	
-	GetEngine().GetGraphicSystem()->LoadOcclusionMesh( pOcclusionMesh );
+	GetEngine().GetGraphicSystem()->LoadOcclusionMesh(pOcclusionMesh);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -105,29 +105,29 @@ void deRLTaskReadOcclusionMesh::Run(){
 
 void deRLTaskReadOcclusionMesh::Finished(){
 	LogFinishedEnter();
-	if( ! pSucceeded ){
-		SetState( esFailed );
+	if(!pSucceeded){
+		SetState(esFailed);
 		pOcclusionMesh = NULL;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deOcclusionMeshManager &occlusionMeshManager = *GetEngine().GetOcclusionMeshManager();
-	deOcclusionMesh * const checkOcclusionMesh = occlusionMeshManager.GetOcclusionMeshWith( GetPath() );
+	deOcclusionMesh * const checkOcclusionMesh = occlusionMeshManager.GetOcclusionMeshWith(GetPath());
 	
-	if( checkOcclusionMesh ){
-		SetResource( checkOcclusionMesh );
+	if(checkOcclusionMesh){
+		SetResource(checkOcclusionMesh);
 		
 	}else{
-		pOcclusionMesh->SetAsynchron( false );
-		occlusionMeshManager.AddLoadedOcclusionMesh( pOcclusionMesh );
-		SetResource( pOcclusionMesh );
+		pOcclusionMesh->SetAsynchron(false);
+		occlusionMeshManager.AddLoadedOcclusionMesh(pOcclusionMesh);
+		SetResource(pOcclusionMesh);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

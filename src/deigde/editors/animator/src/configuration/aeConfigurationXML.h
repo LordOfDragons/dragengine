@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new configuration xml read/save. */
-	aeConfigurationXML( deLogger *logger, const char *loggerSource );
+	aeConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the configuration xml read/save. */
 	virtual ~aeConfigurationXML();
 	/*@}*/
@@ -54,17 +54,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, aeConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, aeConfiguration &config);
 	/** Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const aeConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const aeConfiguration &config);
 	/*@}*/
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const aeConfiguration &config );
-	void pWriteKey( decXmlWriter &writer, const char *name, deInputEvent::eKeyCodes key );
+	void pWriteConfig(decXmlWriter &writer, const aeConfiguration &config);
+	void pWriteKey(decXmlWriter &writer, const char *name, deInputEvent::eKeyCodes key);
 	
-	void pReadConfig( const decXmlElementTag &root, aeConfiguration &config );
-	deInputEvent::eKeyCodes pReadKey( const decXmlElementTag &root, deInputEvent::eKeyCodes defaultKey );
+	void pReadConfig(const decXmlElementTag &root, aeConfiguration &config);
+	deInputEvent::eKeyCodes pReadKey(const decXmlElementTag &root, deInputEvent::eKeyCodes defaultKey);
 };
 
 #endif

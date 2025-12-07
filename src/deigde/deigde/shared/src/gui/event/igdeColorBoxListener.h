@@ -70,7 +70,7 @@ public:
 	 * 
 	 * User changed color by interaction.
 	 */
-	virtual void OnColorChanged( igdeColorBox *colorBox );
+	virtual void OnColorChanged(igdeColorBox *colorBox);
 	/*@}*/
 };
 

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new panel. */
-	ceWPCGameCommand( ceWPTopic &parentPanel );
+	ceWPCGameCommand(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */

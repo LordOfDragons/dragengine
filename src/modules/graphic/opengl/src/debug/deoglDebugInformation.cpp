@@ -39,18 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDebugInformation::deoglDebugInformation( const char *name, const decColor &colorText, const decColor &colorBackground ) :
-pName( name ),
-pColorText( colorText ),
-pColorBackground( colorBackground ),
-pElapsedTime( 0.0f ),
-pElapsedTimeAccum( 0.0f ),
-pCounter( 0 ),
-pHasElapsedTime( false ),
-pHasCounter( false ),
-pVisible( true ),
-pLastElapsedTime( 0.0f ),
-pSlidingElapsedTimeFactor( 0.05f ){
+deoglDebugInformation::deoglDebugInformation(const char *name, const decColor &colorText, const decColor &colorBackground) :
+pName(name),
+pColorText(colorText),
+pColorBackground(colorBackground),
+pElapsedTime(0.0f),
+pElapsedTimeAccum(0.0f),
+pCounter(0),
+pHasElapsedTime(false),
+pHasCounter(false),
+pVisible(true),
+pLastElapsedTime(0.0f),
+pSlidingElapsedTimeFactor(0.05f){
 }
 
 deoglDebugInformation::~deoglDebugInformation(){
@@ -61,15 +61,15 @@ deoglDebugInformation::~deoglDebugInformation(){
 // Management
 ///////////////
 
-void deoglDebugInformation::SetName( const char *name ){
+void deoglDebugInformation::SetName(const char *name){
 	pName = name;
 }
 
-void deoglDebugInformation::SetColorText( const decColor &color ){
+void deoglDebugInformation::SetColorText(const decColor &color){
 	pColorText = color;
 }
 
-void deoglDebugInformation::SetColorBackground( const decColor &color ){
+void deoglDebugInformation::SetColorBackground(const decColor &color){
 	pColorBackground = color;
 }
 
@@ -78,26 +78,26 @@ void deoglDebugInformation::Clear(){
 	ClearCounter();
 }
 
-void deoglDebugInformation::SetVisible( bool visible ){
+void deoglDebugInformation::SetVisible(bool visible){
 	pVisible = visible;
 }
 
 
 
-void deoglDebugInformation::SetElapsedTime( float time ){
+void deoglDebugInformation::SetElapsedTime(float time){
 	pElapsedTimeAccum = time;
-	pElapsedTime = decMath::mix( pLastElapsedTime, time, pSlidingElapsedTimeFactor );
+	pElapsedTime = decMath::mix(pLastElapsedTime, time, pSlidingElapsedTimeFactor);
 	pHasElapsedTime = true;
 }
 
-void deoglDebugInformation::IncrementElapsedTime( float time ){
+void deoglDebugInformation::IncrementElapsedTime(float time){
 	pElapsedTimeAccum += time;
-	pElapsedTime = decMath::mix( pLastElapsedTime, pElapsedTimeAccum, pSlidingElapsedTimeFactor );
+	pElapsedTime = decMath::mix(pLastElapsedTime, pElapsedTimeAccum, pSlidingElapsedTimeFactor);
 	pHasElapsedTime = true;
 }
 
 void deoglDebugInformation::ClearElapsedTime(){
-	if( ! pHasElapsedTime ){
+	if(!pHasElapsedTime){
 		return;
 	}
 	
@@ -107,13 +107,13 @@ void deoglDebugInformation::ClearElapsedTime(){
 	pHasElapsedTime = false;
 }
 
-void deoglDebugInformation::SetSlidingElapsedTimeFactor( float factor ){
-	pSlidingElapsedTimeFactor = decMath::clamp( factor, 0.0f, 1.0f );
+void deoglDebugInformation::SetSlidingElapsedTimeFactor(float factor){
+	pSlidingElapsedTimeFactor = decMath::clamp(factor, 0.0f, 1.0f);
 }
 
 
 
-void deoglDebugInformation::SetCounter( int counter ){
+void deoglDebugInformation::SetCounter(int counter){
 	pCounter = counter;
 	pHasCounter = true;
 }
@@ -123,7 +123,7 @@ void deoglDebugInformation::IncrementCounter(){
 	pHasCounter = true;
 }
 
-void deoglDebugInformation::IncrementCounter( int count ){
+void deoglDebugInformation::IncrementCounter(int count){
 	pCounter += count;
 	pHasCounter = true;
 }
@@ -133,7 +133,7 @@ void deoglDebugInformation::ClearCounter(){
 	pHasCounter = false;
 }
 
-void deoglDebugInformation::CopyResults( const deoglDebugInformation &info ){
+void deoglDebugInformation::CopyResults(const deoglDebugInformation &info){
 	pElapsedTime = info.pElapsedTime;
 	pElapsedTimeAccum = info.pElapsedTimeAccum;
 	pCounter = info.pCounter;
@@ -148,14 +148,14 @@ void deoglDebugInformation::CopyResults( const deoglDebugInformation &info ){
 // Rendering
 //////////////
 
-void deoglDebugInformation::SetRenderText( const char* text ){
+void deoglDebugInformation::SetRenderText(const char* text){
 	pRenderText = text;
 }
 
-void deoglDebugInformation::SetRenderSize( const decPoint& size ){
+void deoglDebugInformation::SetRenderSize(const decPoint& size){
 	pRenderSize = size;
 }
 
-void deoglDebugInformation::SetRenderPosition( const decPoint& position ){
+void deoglDebugInformation::SetRenderPosition(const decPoint& position){
 	pRenderPosition = position;
 }

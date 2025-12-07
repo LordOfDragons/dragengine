@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetHeightScaling::meUHTSetHeightScaling( meWorld *world, meHeightTerrain *heightTerrain, float newHeightScaling ){
-	if( ! world || ! heightTerrain ){
-		DETHROW( deeInvalidParam );
+meUHTSetHeightScaling::meUHTSetHeightScaling(meWorld *world, meHeightTerrain *heightTerrain, float newHeightScaling){
+	if(!world || !heightTerrain){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWorld = world;
@@ -51,13 +51,13 @@ meUHTSetHeightScaling::meUHTSetHeightScaling( meWorld *world, meHeightTerrain *h
 	pOldHeightScaling = heightTerrain->GetHeightScaling();
 	pNewHeightScaling = newHeightScaling;
 	
-	SetShortInfo( "Set Height Terrain Height Scaling" );
+	SetShortInfo("Set Height Terrain Height Scaling");
 	
 	world->AddReference();
 }
 
 meUHTSetHeightScaling::~meUHTSetHeightScaling(){
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -67,9 +67,9 @@ meUHTSetHeightScaling::~meUHTSetHeightScaling(){
 
 
 void meUHTSetHeightScaling::Undo(){
-	pHeightTerrain->SetHeightScaling( pOldHeightScaling );
+	pHeightTerrain->SetHeightScaling(pOldHeightScaling);
 }
 
 void meUHTSetHeightScaling::Redo(){
-	pHeightTerrain->SetHeightScaling( pNewHeightScaling );
+	pHeightTerrain->SetHeightScaling(pNewHeightScaling);
 }

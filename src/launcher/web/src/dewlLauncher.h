@@ -122,11 +122,11 @@ public:
 	
 	/** Delga path. */
 	std::string GetDelgaPath() const{ return pDelgaPath.GetString(); }
-	void SetDelgaPath(const std::string &path){ pDelgaPath = path.c_str(); }
+	void SetDelgaPath(const std::string &path){pDelgaPath = path.c_str();}
 	
 	/** Profile name. */
 	std::string GetProfileName() const{ return pProfileName.GetString(); }
-	void SetProfileName(const std::string &name){ pProfileName = name.c_str(); }
+	void SetProfileName(const std::string &name){pProfileName = name.c_str();}
 	
 	/** Canvas id. */
 	std::string GetCanvasId() const{ return pCanvasId.GetString(); }

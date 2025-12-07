@@ -41,22 +41,22 @@ private:
 	
 public:
 	/** Convert uint32_t. */
-	static uint32_t UInt32( const deServiceObject &so );
-	static deServiceObject::Ref UInt32( uint32_t value );
+	static uint32_t UInt32(const deServiceObject &so);
+	static deServiceObject::Ref UInt32(uint32_t value);
 	
-	static uint32_t UInt32( const decString &string );
-	static decString UInt32ToString( uint32_t value );
+	static uint32_t UInt32(const decString &string);
+	static decString UInt32ToString(uint32_t value);
 	
 	/** Convert AccountID. */
-	static EOS_EpicAccountId AccountID( const deServiceObject &so );
-	static deServiceObject::Ref AccountID( const EOS_EpicAccountId &id );
+	static EOS_EpicAccountId AccountID(const deServiceObject &so);
+	static deServiceObject::Ref AccountID(const EOS_EpicAccountId &id);
 	
-	static EOS_EpicAccountId AccountID( const decString &string );
-	static decString AccountIDToString( const EOS_EpicAccountId &id );
+	static EOS_EpicAccountId AccountID(const decString &string);
+	static decString AccountIDToString(const EOS_EpicAccountId &id);
 	
 	/** Convert string list. */
-	static decStringList StringList( const deServiceObject &so );
-	static deServiceObject::Ref StringList( const decStringList &list );
+	static decStringList StringList(const deServiceObject &so);
+	static deServiceObject::Ref StringList(const decStringList &list);
 };
 
 #endif

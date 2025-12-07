@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPSNavSpaceListener( meWPSNavSpace &panel );
+	meWPSNavSpaceListener(meWPSNavSpace &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWPSNavSpaceListener();
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space selection changed. */
-	virtual void NavSpaceSelectionChanged( meWorld *world );
+	virtual void NavSpaceSelectionChanged(meWorld *world);
 	
 	/** \brief Navigation space changed. */
-	virtual void NavSpaceChanged( meWorld *world, meNavigationSpace *navspace );
+	virtual void NavSpaceChanged(meWorld *world, meNavigationSpace *navspace);
 	
 	/** \brief Navigation space geometry changed. */
-	virtual void NavSpaceGeometryChanged( meWorld *world, meNavigationSpace *navspace );
+	virtual void NavSpaceGeometryChanged(meWorld *world, meNavigationSpace *navspace);
 	
 	/** \brief Navigation space used cost types changed. */
-	virtual void NavSpaceUsedCostTypesChanged( meWorld *world, meNavigationSpace *navspace );
+	virtual void NavSpaceUsedCostTypesChanged(meWorld *world, meNavigationSpace *navspace);
 	/*@}*/
 };
 

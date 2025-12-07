@@ -76,13 +76,13 @@ public:
 	
 	
 	/** \brief Sampled controller values. */
-	float GetValue( int sample ) const;
+	float GetValue(int sample) const;
 	
 	/**
 	 * \brief Update controller value for input time.
 	 * \details \em range is \em samples divided by sample rate.
 	 */
-	void UpdateValues( int samples, float time, float range );
+	void UpdateValues(int samples, float time, float range);
 	
 	
 	
@@ -90,10 +90,10 @@ public:
 	inline bool GetDirty() const{ return pDirty; }
 	
 	/** \brief Set dirty. */
-	void SetDirty( bool dirty );
+	void SetDirty(bool dirty);
 	
 	/** \brief Update from engine controller. */
-	void Update( const deSynthesizerController &controller );
+	void Update(const deSynthesizerController &controller);
 	/*@}*/
 };
 

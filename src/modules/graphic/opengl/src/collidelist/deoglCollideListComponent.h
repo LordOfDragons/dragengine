@@ -74,13 +74,13 @@ public:
 	 * Set component.
 	 * \note For use by deoglCollideList only.
 	 */
-	void SetComponent( deoglRComponent *component );
+	void SetComponent(deoglRComponent *component);
 	
 	/** LOD level to use. */
 	inline int GetLODLevel() const{ return pLODLevel; }
 	
 	/** Set LOD level to use. */
-	void SetLODLevel( int lodLevel );
+	void SetLODLevel(int lodLevel);
 	
 	/** Set LOD level to use to maximum LOD level. */
 	void SetLODLevelMax();
@@ -94,34 +94,34 @@ public:
 	inline bool GetCulled() const{ return pCulled; }
 	
 	/** Set component is culled. */
-	void SetCulled( bool culled );
+	void SetCulled(bool culled);
 	
 	/** Cascade mask. */
 	inline int GetCascadeMask() const{ return pCascadeMask; }
 	
 	/** Set cascade mask. */
-	void SetCascadeMask( int mask );
+	void SetCascadeMask(int mask);
 	
 	/**
 	 * Calculate for each cube map face if component is potentially visible. Optimizes rendering
 	 * cube maps by not rendering components on cube map faces where they are not visible
 	 */
-	void UpdateCubeFaceMask( const decDVector &cubePosition );
+	void UpdateCubeFaceMask(const decDVector &cubePosition);
 	
 	/** Component cube face mask. */
 	inline int GetCubeFaceMask() const{ return pCubeFaceMask; }
 	
 	/** Component is visible on cube map face. Valid after calling UpdateCubeFaceVisibility() */
-	bool GetCubeFaceMaskAt( int face ) const;
+	bool GetCubeFaceMaskAt(int face) const;
 	
 	/** Special flags. */
 	inline int GetSpecialFlags() const{ return pSpecialFlags; }
 	
 	/** Set special flags. */
-	void SetSpecialFlags( int flags );
+	void SetSpecialFlags(int flags);
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &referencePosition);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();

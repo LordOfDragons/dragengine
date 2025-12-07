@@ -56,7 +56,7 @@ public:
 	 * Create descriptor pool slot.
 	 * \warning For use by devkDescriptorPoolPool only.
 	 */
-	devkDescriptorPoolSlot( devkDescriptorPoolPool &pool, VkDescriptorSet set );
+	devkDescriptorPoolSlot(devkDescriptorPoolPool &pool, VkDescriptorSet set);
 	
 protected:
 	/** Clean up descriptor pool slot. */

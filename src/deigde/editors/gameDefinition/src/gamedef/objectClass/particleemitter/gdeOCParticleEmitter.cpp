@@ -39,24 +39,24 @@
 ////////////////////////////
 
 gdeOCParticleEmitter::gdeOCParticleEmitter() :
-pCasting( true ){
+pCasting(true){
 }
 
-gdeOCParticleEmitter::gdeOCParticleEmitter( const gdeOCParticleEmitter &emitter ) :
-pPath( emitter.pPath ),
-pPosition( emitter.pPosition ),
-pRotation( emitter.pRotation ),
-pBoneName( emitter.pBoneName ),
-pCasting( emitter.pCasting )
+gdeOCParticleEmitter::gdeOCParticleEmitter(const gdeOCParticleEmitter &emitter) :
+pPath(emitter.pPath),
+pPosition(emitter.pPosition),
+pRotation(emitter.pRotation),
+pBoneName(emitter.pBoneName),
+pCasting(emitter.pCasting)
 {
 	int i;
 	
-	for( i=0; i<=epAttachRotation; i++ ){
-		pPropertyNames[ i ] = emitter.pPropertyNames[ i ];
+	for(i=0; i<=epAttachRotation; i++){
+		pPropertyNames[i] = emitter.pPropertyNames[i];
 	}
 	
-	for( i=etCasting; i<=etCasting; i++ ){
-		pTriggerNames[ i ] = emitter.pTriggerNames[ i ];
+	for(i=etCasting; i<=etCasting; i++){
+		pTriggerNames[i] = emitter.pTriggerNames[i];
 	}
 }
 
@@ -68,44 +68,44 @@ gdeOCParticleEmitter::~gdeOCParticleEmitter(){
 // Management
 ///////////////
 
-void gdeOCParticleEmitter::SetPath( const char *path ){
+void gdeOCParticleEmitter::SetPath(const char *path){
 	pPath = path;
 }
 
-void gdeOCParticleEmitter::SetPosition( const decVector &position ){
+void gdeOCParticleEmitter::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void gdeOCParticleEmitter::SetRotation( const decVector &orientation ){
+void gdeOCParticleEmitter::SetRotation(const decVector &orientation){
 	pRotation = orientation;
 }
 
-void gdeOCParticleEmitter::SetBoneName( const char *boneName ){
+void gdeOCParticleEmitter::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
-void gdeOCParticleEmitter::SetCasting( bool casting ){
+void gdeOCParticleEmitter::SetCasting(bool casting){
 	pCasting = casting;
 }
 
 
 
-bool gdeOCParticleEmitter::IsPropertySet( eProperties property ) const{
-	return ! pPropertyNames[ property ].IsEmpty();
+bool gdeOCParticleEmitter::IsPropertySet(eProperties property) const{
+	return !pPropertyNames[property].IsEmpty();
 }
 
-const decString &gdeOCParticleEmitter::GetPropertyName( eProperties property ) const{
-	return pPropertyNames[ property ];
+const decString &gdeOCParticleEmitter::GetPropertyName(eProperties property) const{
+	return pPropertyNames[property];
 }
 
-void gdeOCParticleEmitter::SetPropertyName( eProperties property, const char *name ){
-	pPropertyNames[ property ] = name;
+void gdeOCParticleEmitter::SetPropertyName(eProperties property, const char *name){
+	pPropertyNames[property] = name;
 }
 
-bool gdeOCParticleEmitter::HasPropertyWithName( const char *name ) const{
+bool gdeOCParticleEmitter::HasPropertyWithName(const char *name) const{
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
-		if( pPropertyNames[ i ] == name ){
+	for(i=0; i<=epAttachRotation; i++){
+		if(pPropertyNames[i] == name){
 			return true;
 		}
 	}
@@ -115,14 +115,14 @@ bool gdeOCParticleEmitter::HasPropertyWithName( const char *name ) const{
 
 
 
-bool gdeOCParticleEmitter::IsTriggerSet( eTriggers trigger ) const{
-	return ! pTriggerNames[ trigger ].IsEmpty();
+bool gdeOCParticleEmitter::IsTriggerSet(eTriggers trigger) const{
+	return !pTriggerNames[trigger].IsEmpty();
 }
 
-const decString &gdeOCParticleEmitter::GetTriggerName( eTriggers trigger ) const{
-	return pTriggerNames[ trigger ];
+const decString &gdeOCParticleEmitter::GetTriggerName(eTriggers trigger) const{
+	return pTriggerNames[trigger];
 }
 
-void gdeOCParticleEmitter::SetTriggerName( eTriggers trigger, const char *name ){
-	pTriggerNames[ trigger ] = name;
+void gdeOCParticleEmitter::SetTriggerName(eTriggers trigger, const char *name){
+	pTriggerNames[trigger] = name;
 }

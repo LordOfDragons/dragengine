@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief A message has been added to the history. */
-	virtual void MessageAdded( igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry );
+	virtual void MessageAdded(igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry);
 	
 	/** \brief History has been cleared. */
-	virtual void HistoryCleared( igdeLoggerHistory *history );
+	virtual void HistoryCleared(igdeLoggerHistory *history);
 	/*@}*/
 };
 

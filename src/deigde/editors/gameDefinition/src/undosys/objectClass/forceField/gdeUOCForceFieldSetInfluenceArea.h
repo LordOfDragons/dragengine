@@ -54,8 +54,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetInfluenceArea( gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, const decShapeList &newValue );
+	gdeUOCForceFieldSetInfluenceArea(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, const decShapeList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

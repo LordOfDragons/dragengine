@@ -68,11 +68,11 @@ public:
 		float maxExtendX, maxExtendY, maxExtendZ;
 		uint32_t updateIndex; // for use by updating only
 		
-		uint32_t layerMask[ 2 ]; // 0=upper 32 bits, 1=lower 32 bits
+		uint32_t layerMask[2]; // 0=upper 32 bits, 1=lower 32 bits
 		uint32_t firstGeometry;
 		uint32_t geometryCount;
 		
-		float lodFactors[ 4 ];
+		float lodFactors[4];
 		uint32_t highestLod;
 		
 		uint32_t cullResult;
@@ -80,8 +80,8 @@ public:
 		
 		uint32_t padding;
 		
-		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
-		void SetLayerMask( const decLayerMask &layerMask );
+		void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
+		void SetLayerMask(const decLayerMask &layerMask);
 		void SetEmptyLayerMask();
 	};
 	
@@ -95,7 +95,7 @@ public:
 		uint32_t vao;
 		uint32_t instance;
 		uint32_t spbInstance;
-		uint32_t tucs[ 4 ];
+		uint32_t tucs[4];
 	};
 	
 	/** TUC information. */
@@ -130,7 +130,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world compute element. */
-	deoglWorldComputeElement( eElementTypes type, const void *owner );
+	deoglWorldComputeElement(eElementTypes type, const void *owner);
 	
 protected:
 	/** Clean up world compute element. */
@@ -177,25 +177,25 @@ public:
 	
 	
 	/** Update data element. */
-	virtual void UpdateData( sDataElement &data ) const = 0;
+	virtual void UpdateData(sDataElement &data) const = 0;
 	
 	/** Update data element geometries. */
-	virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
 	
 	
 	
 	/** Set data element geometry using skin texture. */
-	void SetDataGeometry( sDataElementGeometry &data, int lod, int renderFilter,
+	void SetDataGeometry(sDataElementGeometry &data, int lod, int renderFilter,
 		deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
 		int pipelineModifier, const deoglSkinTexture *skinTexture,
-		const deoglVAO *vao, const deoglRenderTaskSharedInstance *instance, int spbInstance ) const;
+		const deoglVAO *vao, const deoglRenderTaskSharedInstance *instance, int spbInstance) const;
 	
 	/** Set data element geometry TUCs. */
-	void SetDataGeometryTUCs( sDataElementGeometry &data, const sInfoTUC &info ) const;
+	void SetDataGeometryTUCs(sDataElementGeometry &data, const sInfoTUC &info) const;
 	
 	/** Set data element geometry using no texture. */
-	void SetDataGeometry( sDataElementGeometry &data, int renderFilter, const deoglVAO *vao,
-		const deoglRenderTaskSharedInstance *instance, int spbInstance ) const;
+	void SetDataGeometry(sDataElementGeometry &data, int renderFilter, const deoglVAO *vao,
+		const deoglRenderTaskSharedInstance *instance, int spbInstance) const;
 	/*@}*/
 	
 	
@@ -203,22 +203,22 @@ public:
 	/** \name deoglWorldCompute */
 	/*@{*/
 	/** Set world compute. For use by deoglWorldCompute only. */
-	void SetWorldCompute( deoglWorldCompute *worldCompute );
+	void SetWorldCompute(deoglWorldCompute *worldCompute);
 	
 	/** Set index. For use by deoglWorldCompute only. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** Update required. For use by deoglWorldCompute only. */
 	inline bool GetUpdateRequired() const{ return pUpdateRequired; }
 	
 	/** Set if update is required. For use by deoglWorldCompute only. */
-	void SetUpdateRequired( bool updateRequired );
+	void SetUpdateRequired(bool updateRequired);
 	
 	/** Update geometries required. For use by deoglWorldCompute only. */
 	inline bool GetUpdateGeometriesRequired() const{ return pUpdateGeometriesRequired; }
 	
 	/** Set if update geometries is required. For use by deoglWorldCompute only. */
-	void SetUpdateGeometriesRequired( bool updateRequired );
+	void SetUpdateGeometriesRequired(bool updateRequired);
 	
 	/** Shader parameter block for geometries. For use by deoglWorldCompute only. */
 	inline deoglSharedBlockSPBElement::Ref &GetSPBGeometries(){ return pSPBGeometries; }

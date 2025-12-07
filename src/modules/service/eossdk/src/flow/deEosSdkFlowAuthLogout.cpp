@@ -33,36 +33,36 @@
 // Class deEosSdkFlowAuthLogout
 /////////////////////////////////
 
-static void fConnectLogoutCallback( const EOS_Connect_LogoutCallbackInfo *data ){
-	( ( deEosSdkFlowAuthLogout* )data->ClientData )->OnConnectLogoutCallback( *data );
+static void fConnectLogoutCallback(const EOS_Connect_LogoutCallbackInfo *data){
+	((deEosSdkFlowAuthLogout*)data->ClientData)->OnConnectLogoutCallback(*data);
 }
 
-static void fAuthLogoutCallback( const EOS_Auth_LogoutCallbackInfo *data ){
-	( ( deEosSdkFlowAuthLogout* )data->ClientData )->OnAuthLogoutCallback( *data );
+static void fAuthLogoutCallback(const EOS_Auth_LogoutCallbackInfo *data){
+	((deEosSdkFlowAuthLogout*)data->ClientData)->OnAuthLogoutCallback(*data);
 }
 
-static void fDeletePersistentAuthCallback( const EOS_Auth_DeletePersistentAuthCallbackInfo *data ){
-	( ( deEosSdkFlowAuthLogout* )data->ClientData )->OnDeletePersistentAuthCallback( *data );
+static void fDeletePersistentAuthCallback(const EOS_Auth_DeletePersistentAuthCallbackInfo *data){
+	((deEosSdkFlowAuthLogout*)data->ClientData)->OnDeletePersistentAuthCallback(*data);
 }
 
 // Constructor, destructor
 ////////////////////////////
 
 deEosSdkFlowAuthLogout::deEosSdkFlowAuthLogout(
-	deEosSdkServiceEos &service, const decUniqueID &id ) :
-deEosSdkFlow( service, id )
+	deEosSdkServiceEos &service, const decUniqueID &id) :
+deEosSdkFlow(service, id)
 {
-	service.NewPendingRequest( id, "authLogout" );
+	service.NewPendingRequest(id, "authLogout");
 	
 	try{
-		if( ! service.localUserId ){
-			DETHROW_INFO( deeInvalidAction, "No user logged in" );
+		if(!service.localUserId){
+			DETHROW_INFO(deeInvalidAction, "No user logged in");
 		}
 		
 		ConnectLogout();
 		
-	}catch( const deException &e ){
-		Fail( e );
+	}catch(const deException &e){
+		Fail(e);
 		Finish();
 	}
 }
@@ -73,7 +73,7 @@ deEosSdkFlow( service, id )
 ///////////////
 
 void deEosSdkFlowAuthLogout::ConnectLogout(){
-	if( ! pService.productUserId ){
+	if(!pService.productUserId){
 		AuthLogout();
 		return;
 	}
@@ -82,83 +82,83 @@ void deEosSdkFlowAuthLogout::ConnectLogout(){
 	options.ApiVersion = EOS_CONNECT_LOGOUT_API_LATEST;
 	options.LocalUserId = pService.productUserId;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogout.ConnectLogout: Connect logout user" );
-	EOS_Connect_Logout( pService.GetHandleConnect(), &options, this, fConnectLogoutCallback );
+	GetModule().LogInfo("deEosSdkFlowAuthLogout.ConnectLogout: Connect logout user");
+	EOS_Connect_Logout(pService.GetHandleConnect(), &options, this, fConnectLogoutCallback);
 }
 
 void deEosSdkFlowAuthLogout::AuthLogout(){
-	DEASSERT_NOTNULL( pService.localUserId )
+	DEASSERT_NOTNULL(pService.localUserId)
 	
 	EOS_Auth_LogoutOptions options{};
 	options.ApiVersion = EOS_AUTH_LOGOUT_API_LATEST;
 	options.LocalUserId = pService.localUserId;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogout.AuthLogout: Logging out user" );
-	EOS_Auth_Logout( pService.GetHandleAuth(), &options, this, fAuthLogoutCallback );
+	GetModule().LogInfo("deEosSdkFlowAuthLogout.AuthLogout: Logging out user");
+	EOS_Auth_Logout(pService.GetHandleAuth(), &options, this, fAuthLogoutCallback);
 }
 
 void deEosSdkFlowAuthLogout::DeletePersistentAuth(){
 	EOS_Auth_DeletePersistentAuthOptions options{};
 	options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogout.DeletePersistentAuth: Delete persistent auth token" );
-	EOS_Auth_DeletePersistentAuth( pService.GetHandleAuth(), &options, this, fDeletePersistentAuthCallback );
+	GetModule().LogInfo("deEosSdkFlowAuthLogout.DeletePersistentAuth: Delete persistent auth token");
+	EOS_Auth_DeletePersistentAuth(pService.GetHandleAuth(), &options, this, fDeletePersistentAuthCallback);
 }
 
-void deEosSdkFlowAuthLogout::OnConnectLogoutCallback( const EOS_Connect_LogoutCallbackInfo &data ){
-	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogout.OnConnectLogoutCallback: res=%d",
-		( int )data.ResultCode );
+void deEosSdkFlowAuthLogout::OnConnectLogoutCallback(const EOS_Connect_LogoutCallbackInfo &data){
+	GetModule().LogInfoFormat("deEosSdkFlowAuthLogout.OnConnectLogoutCallback: res=%d",
+		(int)data.ResultCode);
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogout.OnConnectLogoutCallback: Game service logged out." );
+	if(data.ResultCode == EOS_EResult::EOS_Success){
+		GetModule().LogInfo("deEosSdkFlowAuthLogout.OnConnectLogoutCallback: Game service logged out.");
 		pService.productUserId = nullptr;
 		
 		try{
 			AuthLogout();
 			
-		}catch( const deException &e ){
-			Fail( e );
+		}catch(const deException &e){
+			Fail(e);
 			Finish();
 		}
 		
 	}else{
-		Fail( data.ResultCode );
+		Fail(data.ResultCode);
 		Finish();
 	}
 }
 
-void deEosSdkFlowAuthLogout::OnAuthLogoutCallback( const EOS_Auth_LogoutCallbackInfo &data ){
-	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogout.OnAuthLogoutCallback: res=%d",
-		( int )data.ResultCode );
+void deEosSdkFlowAuthLogout::OnAuthLogoutCallback(const EOS_Auth_LogoutCallbackInfo &data){
+	GetModule().LogInfoFormat("deEosSdkFlowAuthLogout.OnAuthLogoutCallback: res=%d",
+		(int)data.ResultCode);
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogout.OnAuthLogoutCallback: User logged out." );
+	if(data.ResultCode == EOS_EResult::EOS_Success){
+		GetModule().LogInfo("deEosSdkFlowAuthLogout.OnAuthLogoutCallback: User logged out.");
 		pService.localUserId = nullptr;
 		
 		try{
 			DeletePersistentAuth();
 			
-		}catch( const deException &e ){
-			GetModule().LogException( e );
+		}catch(const deException &e){
+			GetModule().LogException(e);
 			Finish();
 		}
 		
 	}else{
-		Fail( data.ResultCode );
+		Fail(data.ResultCode);
 		Finish();
 	}
 }
 
 void deEosSdkFlowAuthLogout::OnDeletePersistentAuthCallback(
-const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
-	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogout.OnDeletePersistentAuthCallback: res=%d",
-		( int )data.ResultCode );
+const EOS_Auth_DeletePersistentAuthCallbackInfo &data){
+	GetModule().LogInfoFormat("deEosSdkFlowAuthLogout.OnDeletePersistentAuthCallback: res=%d",
+		(int)data.ResultCode);
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogout.OnDeletePersistentAuthCallback: Persistent auth token deleted." );
+	if(data.ResultCode == EOS_EResult::EOS_Success){
+		GetModule().LogInfo("deEosSdkFlowAuthLogout.OnDeletePersistentAuthCallback: Persistent auth token deleted.");
 		
 	}else{
-		GetModule().LogErrorFormat( "deEosSdkFlow: %s", EOS_EResult_ToString( data.ResultCode ) );
+		GetModule().LogErrorFormat("deEosSdkFlow: %s", EOS_EResult_ToString(data.ResultCode));
 	}
 	
 	Finish();

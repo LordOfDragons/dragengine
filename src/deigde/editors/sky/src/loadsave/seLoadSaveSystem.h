@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load/save system. */
-	seLoadSaveSystem( seWindowMain &windowMain );
+	seLoadSaveSystem(seWindowMain &windowMain);
 	
 	/** \brief Clean up load/save system. */
 	~seLoadSaveSystem();
@@ -69,10 +69,10 @@ public:
 	inline seLoadSaveSky &GetLSSky(){ return *pLSSky; }
 	
 	/** \brief Load sky from file. */
-	seSky *LoadSky( const char *filename );
+	seSky *LoadSky(const char *filename);
 	
 	/** \brief Save sky to file. */
-	void SaveSky( seSky *sky, const char *filename );
+	void SaveSky(seSky *sky, const char *filename);
 	
 	/** \brief File pattern list. */
 	inline const igdeFilePatternList *GetSkyFilePatterns() const{ return &pFPSky; }

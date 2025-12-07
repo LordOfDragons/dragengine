@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetMinimum::seUControllerSetMinimum( seController *controller, float newMinimum ) :
-pController( NULL ),
-pNewMinimum( newMinimum )
+seUControllerSetMinimum::seUControllerSetMinimum(seController *controller, float newMinimum) :
+pController(NULL),
+pNewMinimum(newMinimum)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Controller Minimum" );
+	SetShortInfo("Set Controller Minimum");
 	
 	pOldMinimum = controller->GetMinimumValue();
 	pOldMaximum = controller->GetMaximumValue();
@@ -57,7 +57,7 @@ pNewMinimum( newMinimum )
 }
 
 seUControllerSetMinimum::~seUControllerSetMinimum(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -68,10 +68,10 @@ seUControllerSetMinimum::~seUControllerSetMinimum(){
 ///////////////
 
 void seUControllerSetMinimum::Undo(){
-	pController->SetMinimumValue( pOldMinimum );
-	pController->SetMaximumValue( pOldMaximum );
+	pController->SetMinimumValue(pOldMinimum);
+	pController->SetMaximumValue(pOldMaximum);
 }
 
 void seUControllerSetMinimum::Redo(){
-	pController->SetMinimumValue( pNewMinimum );
+	pController->SetMinimumValue(pNewMinimum);
 }

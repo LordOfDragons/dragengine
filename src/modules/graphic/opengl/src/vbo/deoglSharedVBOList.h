@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared vbo list. */
-	deoglSharedVBOList( deoglRenderThread &renderThread, const deoglVBOLayout &layout,
-		GLenum drawType, int maxSize, int maxIndexSize );
+	deoglSharedVBOList(deoglRenderThread &renderThread, const deoglVBOLayout &layout,
+		GLenum drawType, int maxSize, int maxIndexSize);
 	
 	/** Clean up shared vbo list. */
 	~deoglSharedVBOList();
@@ -90,16 +90,16 @@ public:
 	inline int GetMaxIndexCount() const{ return pMaxIndexCount; }
 	
 	/** VBO list matches the layout and draw type. */
-	bool Matches( const deoglVBOLayout &layout, GLenum drawType ) const;
+	bool Matches(const deoglVBOLayout &layout, GLenum drawType) const;
 	
 	/** Count of VBOs. */
 	int GetCount() const;
 	
 	/** VBO at index. */
-	deoglSharedVBO *GetAt( int index ) const;
+	deoglSharedVBO *GetAt(int index) const;
 	
 	/** Add block of data to a matching VBO returning the resulting block. */
-	deoglSharedVBOBlock *AddData( int size, int indexCount = 0 );
+	deoglSharedVBOBlock *AddData(int size, int indexCount = 0);
 	
 	/** Prepare all VBOs not yet prepared. */
 	void PrepareVBOs();

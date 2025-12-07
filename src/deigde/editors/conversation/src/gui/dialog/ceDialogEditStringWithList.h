@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	ceDialogEditStringWithList( igdeEnvironment &environment, const char *windowTitle,
-		const char *textLabel, const char *value, const decStringList &choices );
+	ceDialogEditStringWithList(igdeEnvironment &environment, const char *windowTitle,
+		const char *textLabel, const char *value, const decStringList &choices);
 	
 protected:
 	/** \brief Clean up dialog. */

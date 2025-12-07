@@ -47,27 +47,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCBillboard::gdeWPSTIMOCBillboard( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCBillboard *billboard, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassBillboard, objectClass, index ),
-pBillboard( NULL )
+gdeWPSTIMOCBillboard::gdeWPSTIMOCBillboard(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+	gdeOCBillboard *billboard, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassBillboard, objectClass, index),
+pBillboard(NULL)
 {
-	if( ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Billboard #%d", index + 1 );
-	SetText( text );
+	text.Format("Billboard #%d", index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pBillboard = billboard;
 	billboard->AddReference();
 }
 
 gdeWPSTIMOCBillboard::~gdeWPSTIMOCBillboard(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
 }
@@ -78,16 +78,16 @@ gdeWPSTIMOCBillboard::~gdeWPSTIMOCBillboard(){
 ///////////////
 
 void gdeWPSTIMOCBillboard::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
 bool gdeWPSTIMOCBillboard::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if( ! pBillboard->GetSkinPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pBillboard->GetSkinPath() ) ) ){
+	if(!pBillboard->GetSkinPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pBillboard->GetSkinPath()))){
 		return false;
 	}
 	
@@ -101,20 +101,20 @@ void gdeWPSTIMOCBillboard::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCBillboard::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCBillboard( pBillboard );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCBillboard );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCBillboard(pBillboard);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCBillboard);
 }
 
-void gdeWPSTIMOCBillboard::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCBillboard::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCBillboardAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCBillboardRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCBillboardAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCBillboardRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCBillboardCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCBillboardCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCBillboardPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCBillboardCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCBillboardCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCBillboardPaste());
 }

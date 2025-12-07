@@ -175,7 +175,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create main window. */
-	aeWindowMain( aeIGDEModule &module );
+	aeWindowMain(aeIGDEModule &module);
 	
 protected:
 	/** Clean up main window. */
@@ -210,25 +210,25 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Create animator. */
 	void CreateNewAnimator();
 	
 	/** Save animator. */
-	void SaveAnimator( const char *filename );
+	void SaveAnimator(const char *filename);
 	
 	/** Create a new rule of a given type using the matching undo action. */
-	void CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, bool insert, bool intoGroup );
+	void CreateRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, bool insert, bool intoGroup);
 	
 	/** Sets the visibility of the progress bar in the status bar. */
-	void SetProgressVisible( bool visible );
+	void SetProgressVisible(bool visible);
 	
 	/** Sets the progress bar progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	
 	/** Sets the progress text. */
-	void SetProgressText( const char *text );
+	void SetProgressText(const char *text);
 	
 	
 	
@@ -246,7 +246,7 @@ public:
 	inline igdeIcon *GetIconRuleSubAnimator() const{ return pIconRuleSubAnimator; }
 	inline igdeIcon *GetIconRuleTrackTo() const{ return pIconRuleTrackTo; }
 	inline igdeIcon *GetIconRuleMirror() const{ return pIconRuleMirror; }
-	igdeIcon *GetRuleIcon( deAnimatorRuleVisitorIdentify::eRuleTypes type ) const;
+	igdeIcon *GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const;
 	
 	
 	
@@ -329,7 +329,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -340,12 +340,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * Requests a document to be saved.
@@ -355,7 +355,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * Recent files changed.
@@ -395,11 +395,11 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuController( igdeMenuCascade &menu );
-	void pCreateMenuLink( igdeMenuCascade &menu );
-	void pCreateMenuRule( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuController(igdeMenuCascade &menu);
+	void pCreateMenuLink(igdeMenuCascade &menu);
+	void pCreateMenuRule(igdeMenuCascade &menu);
 };
 
 #endif

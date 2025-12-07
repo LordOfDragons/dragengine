@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create lumimeter peer. */
-	deoglLumimeter( deGraphicOpenGl &ogl, const deLumimeter &lumimeter );
+	deoglLumimeter(deGraphicOpenGl &ogl, const deLumimeter &lumimeter);
 	
 	/** Clean up lumimeter peer. */
 	virtual ~deoglLumimeter();

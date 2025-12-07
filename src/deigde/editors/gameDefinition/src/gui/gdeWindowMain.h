@@ -206,7 +206,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window. */
-	gdeWindowMain( igdeEditorModule &module );
+	gdeWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** \brief Clean up main window. */
@@ -365,16 +365,16 @@ public:
 	inline gdeGameDefinition *GetActiveGameDefinition() const{ return pActiveGameDefinition; }
 	
 	/** \brief Set active game definition. */
-	void SetActiveGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetActiveGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Create new game definition. */
 	void CreateNewGameDefinition();
 	
 	/** \brief Load game definition project. */
-	void LoadGameProject( bool silentErrors );
+	void LoadGameProject(bool silentErrors);
 	
 	/** \brief Save game definition to file. */
-	void SaveGameDefinition( const char *filename );
+	void SaveGameDefinition(const char *filename);
 	
 	
 	
@@ -382,7 +382,7 @@ public:
 	inline const decString &GetLastPathGameDef() const{ return pLastPathGameDef; }
 	
 	/** \brief Set last path game definition. */
-	void SetLastPathGameDef( const char *path );
+	void SetLastPathGameDef(const char *path);
 	
 	
 	
@@ -405,7 +405,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -416,7 +416,7 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -426,7 +426,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -466,9 +466,9 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuGameDef( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
+	void pCreateMenuGameDef(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
 };
 
 #endif

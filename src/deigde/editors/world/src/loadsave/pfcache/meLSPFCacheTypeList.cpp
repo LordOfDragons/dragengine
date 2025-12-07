@@ -45,7 +45,7 @@ meLSPFCacheTypeList::meLSPFCacheTypeList(){
 }
 
 meLSPFCacheTypeList::~meLSPFCacheTypeList(){
-	if( pTypes ) delete [] pTypes;
+	if(pTypes) delete [] pTypes;
 }
 
 
@@ -53,17 +53,17 @@ meLSPFCacheTypeList::~meLSPFCacheTypeList(){
 // Management
 ///////////////
 
-meLSPFCacheTypeList::sType &meLSPFCacheTypeList::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ) DETHROW( deeInvalidParam );
+meLSPFCacheTypeList::sType &meLSPFCacheTypeList::GetTypeAt(int index) const{
+	if(index < 0 || index >= pTypeCount) DETHROW(deeInvalidParam);
 	
-	return pTypes[ index ];
+	return pTypes[index];
 }
 
-int meLSPFCacheTypeList::IndexOfTypeWith( int vlayer, int variation ) const{
+int meLSPFCacheTypeList::IndexOfTypeWith(int vlayer, int variation) const{
 	int t;
 	
-	for( t=0; t<pTypeCount; t++ ){
-		if( pTypes[ t ].vlayer == vlayer && pTypes[ t ].variation == variation ){
+	for(t=0; t<pTypeCount; t++){
+		if(pTypes[t].vlayer == vlayer && pTypes[t].variation == variation){
 			return t;
 		}
 	}
@@ -71,22 +71,22 @@ int meLSPFCacheTypeList::IndexOfTypeWith( int vlayer, int variation ) const{
 	return -1;
 }
 
-void meLSPFCacheTypeList::AddType( int vlayer, int variation ){
-	if( IndexOfTypeWith( vlayer, variation ) == -1 ){
-		if( pTypeCount == pTypeSize ){
+void meLSPFCacheTypeList::AddType(int vlayer, int variation){
+	if(IndexOfTypeWith(vlayer, variation) == -1){
+		if(pTypeCount == pTypeSize){
 			int newSize = pTypeSize * 3 / 2 + 1;
-			sType *newArray = new sType[ newSize ];
-			if( ! newArray ) DETHROW( deeOutOfMemory );
-			if( pTypes ){
-				memcpy( newArray, pTypes, sizeof( sType ) * pTypeSize );
+			sType *newArray = new sType[newSize];
+			if(!newArray) DETHROW(deeOutOfMemory);
+			if(pTypes){
+				memcpy(newArray, pTypes, sizeof(sType) * pTypeSize);
 				delete [] pTypes;
 			}
 			pTypes = newArray;
 			pTypeSize = newSize;
 		}
 		
-		pTypes[ pTypeCount ].vlayer = vlayer;
-		pTypes[ pTypeCount ].variation = variation;
+		pTypes[pTypeCount].vlayer = vlayer;
+		pTypes[pTypeCount].variation = variation;
 		pTypeCount++;
 	}
 }

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakEyesLAMove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, int newIndex );
+	ceUCAASpeakEyesLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, int newIndex);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakEyesLAMove();

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create trigger expression parser state. */
-	igdeTriggerExpressionParserState( const char *string );
+	igdeTriggerExpressionParserState(const char *string);
 	
 	/** \brief Clean up trigger expression parser state. */
 	~igdeTriggerExpressionParserState();
@@ -64,7 +64,7 @@ public:
 	char GetNextCharacter();
 	
 	/** \brief Adjusts the position. */
-	void AdjustPosition( int amount );
+	void AdjustPosition(int amount);
 	/*@}*/
 };
 

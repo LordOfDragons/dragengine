@@ -74,96 +74,96 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRComponentTexture::deoglRComponentTexture( deoglRComponent &component, int index ) :
-pComponent( component ),
-pIndex( index ),
+deoglRComponentTexture::deoglRComponentTexture(deoglRComponent &component, int index) :
+pComponent(component),
+pIndex(index),
 
-pSkin( NULL ),
-pDynamicSkin( NULL ),
-pSkinState( NULL ),
+pSkin(NULL),
+pDynamicSkin(NULL),
+pSkinState(NULL),
 
-pUseSkin( NULL ),
-pUseTextureNumber( 0 ),
-pUseSkinTexture( NULL ),
-pUseSkinState( NULL ),
-pUseDynamicSkin( NULL ),
-pUseDoubleSided( false ),
-pUseDecal( false ),
-pIsRendered( false ),
-pRenderTaskFilters( 0 ),
+pUseSkin(NULL),
+pUseTextureNumber(0),
+pUseSkinTexture(NULL),
+pUseSkinState(NULL),
+pUseDynamicSkin(NULL),
+pUseDoubleSided(false),
+pUseDecal(false),
+pIsRendered(false),
+pRenderTaskFilters(0),
 
-pSharedSPBElement( NULL ),
+pSharedSPBElement(NULL),
 
-pTUCDepth( NULL ),
-pTUCGeometry( NULL ),
-pTUCCounter( NULL ),
-pTUCShadow( NULL ),
-pTUCShadowCube( NULL ),
-pTUCEnvMap( NULL ),
-pTUCOutlineDepth( NULL ),
-pTUCOutlineGeometry( NULL ),
-pTUCOutlineCounter( NULL ),
-pTUCLuminance( NULL ),
-pTUCGIMaterial( NULL ),
+pTUCDepth(NULL),
+pTUCGeometry(NULL),
+pTUCCounter(NULL),
+pTUCShadow(NULL),
+pTUCShadowCube(NULL),
+pTUCEnvMap(NULL),
+pTUCOutlineDepth(NULL),
+pTUCOutlineGeometry(NULL),
+pTUCOutlineCounter(NULL),
+pTUCLuminance(NULL),
+pTUCGIMaterial(NULL),
 
-pValidParamBlocks( false ),
-pDirtyParamBlocks( true ),
-pDirtyTUCs( true ),
-pDirtyTUCsAll( true ),
-pDirtyTUCsEnvMapUse( true )
+pValidParamBlocks(false),
+pDirtyParamBlocks(true),
+pDirtyTUCs(true),
+pDirtyTUCsAll(true),
+pDirtyTUCsEnvMapUse(true)
 {
-	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentTexture );
+	LEAK_CHECK_CREATE(component.GetRenderThread(), ComponentTexture);
 }
 
 deoglRComponentTexture::~deoglRComponentTexture(){
-	LEAK_CHECK_FREE( pComponent.GetRenderThread(), ComponentTexture );
-	if( pDynamicSkin ){
+	LEAK_CHECK_FREE(pComponent.GetRenderThread(), ComponentTexture);
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 	
 	pSharedSPBRTIGroup.RemoveAll();
 	pSharedSPBRTIGroupShadow.RemoveAll();
-	if( pSharedSPBElement ){
+	if(pSharedSPBElement){
 		pSharedSPBElement->FreeReference();
 	}
 	
-	if( pTUCDepth ){
+	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}
-	if( pTUCGeometry ){
+	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
 	}
-	if( pTUCCounter ){
+	if(pTUCCounter){
 		pTUCCounter->RemoveUsage();
 	}
-	if( pTUCShadow ){
+	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
 	}
-	if( pTUCShadowCube ){
+	if(pTUCShadowCube){
 		pTUCShadowCube->RemoveUsage();
 	}
-	if( pTUCEnvMap ){
+	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
 	}
-	if( pTUCOutlineGeometry ){
+	if(pTUCOutlineGeometry){
 		pTUCOutlineGeometry->RemoveUsage();
 	}
-	if( pTUCOutlineDepth ){
+	if(pTUCOutlineDepth){
 		pTUCOutlineDepth->RemoveUsage();
 	}
-	if( pTUCOutlineCounter ){
+	if(pTUCOutlineCounter){
 		pTUCOutlineCounter->RemoveUsage();
 	}
-	if( pTUCLuminance ){
+	if(pTUCLuminance){
 		pTUCLuminance->RemoveUsage();
 	}
-	if( pTUCGIMaterial ){
+	if(pTUCGIMaterial){
 		pTUCGIMaterial->RemoveUsage();
 	}
-	if( pSkinState ){
+	if(pSkinState){
 		delete pSkinState;
 	}
 }
@@ -173,8 +173,8 @@ deoglRComponentTexture::~deoglRComponentTexture(){
 // Notifications
 //////////////////
 
-void deoglRComponentTexture::SetTransform( const decTexMatrix2 &matrix ){
-	if( matrix.IsEqualTo( pTransform ) ){
+void deoglRComponentTexture::SetTransform(const decTexMatrix2 &matrix){
+	if(matrix.IsEqualTo(pTransform)){
 		return;
 	}
 	
@@ -184,16 +184,16 @@ void deoglRComponentTexture::SetTransform( const decTexMatrix2 &matrix ){
 
 
 
-void deoglRComponentTexture::SetSkin( deoglRSkin *skin ){
-	if( skin == pSkin ){
+void deoglRComponentTexture::SetSkin(deoglRSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 	pSkin = skin;
-	if( skin ){
+	if(skin){
 		skin->AddReference();
 	}
 	
@@ -204,16 +204,16 @@ void deoglRComponentTexture::SetSkin( deoglRSkin *skin ){
 	pUpdateRenderTaskFilters();
 }
 
-void deoglRComponentTexture::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
-	if( dynamicSkin == pDynamicSkin ){
+void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
+	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
 	
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
 	pDynamicSkin = dynamicSkin;
-	if( dynamicSkin ){
+	if(dynamicSkin){
 		dynamicSkin->AddReference();
 	}
 	
@@ -224,12 +224,12 @@ void deoglRComponentTexture::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
 	pUpdateRenderTaskFilters();
 }
 
-void deoglRComponentTexture::SetSkinState( deoglSkinState *skinState ){
-	if( skinState == pSkinState ){
+void deoglRComponentTexture::SetSkinState(deoglSkinState *skinState){
+	if(skinState == pSkinState){
 		return;
 	}
 	
-	if( pSkinState ){
+	if(pSkinState){
 		delete pSkinState;
 	}
 	
@@ -242,7 +242,7 @@ void deoglRComponentTexture::SetSkinState( deoglSkinState *skinState ){
 	pUpdateRenderTaskFilters();
 }
 
-void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
+void deoglRComponentTexture::UpdateSkinState(deoglComponent &component){
 	// NOTE this is called from the main thread during synchronization
 	
 	// if the component has a dynamic skin but not the texture it is still required to have
@@ -290,18 +290,18 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	pComponent.DirtyTextureParamBlocks();
 	
 	const deoglRModel * const model = pComponent.GetModel();
-	if( ! model ){
+	if(!model){
 		pIsRendered = false;
 		InvalidateParamBlocks();
 		pUpdateRenderTaskFilters();
 		return;
 	}
 	
-	const deoglModelTexture &modelTexture = model->GetLODAt( 0 ).GetTextureAt( pIndex );
+	const deoglModelTexture &modelTexture = model->GetLODAt(0).GetTextureAt(pIndex);
 	pUseDoubleSided = modelTexture.GetDoubleSided();
 	pUseDecal = modelTexture.GetDecal();
 	
-	if( pSkinState ){
+	if(pSkinState){
 		pUseSkinState = pSkinState;
 		pUseDynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
@@ -310,22 +310,22 @@ void deoglRComponentTexture::UpdateUseSkin(){
 		pUseDynamicSkin = pComponent.GetDynamicSkin();
 	}
 	
-	if( pSkin ){
+	if(pSkin){
 		pUseSkin = pSkin;
 		pUseTextureNumber = pUseSkin->GetTextureCount() == 0 ? -1 : 0;
 	}
 	
-	if( ! pUseSkin ){
-		const int mappedTexture = pComponent.GetModelSkinMappings().GetAt( pIndex );
+	if(!pUseSkin){
+		const int mappedTexture = pComponent.GetModelSkinMappings().GetAt(pIndex);
 		
-		if( mappedTexture > -1 ){
+		if(mappedTexture > -1){
 			pUseTextureNumber = mappedTexture;
 			pUseSkin = pComponent.GetSkin();
 		}
 	}
 	
-	if( pUseSkin && pUseTextureNumber != -1 ){
-		pUseSkinTexture = &pUseSkin->GetTextureAt( pUseTextureNumber );
+	if(pUseSkin && pUseTextureNumber != -1){
+		pUseSkinTexture = &pUseSkin->GetTextureAt(pUseTextureNumber);
 	}
 	
 	InvalidateParamBlocks();
@@ -337,7 +337,7 @@ decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
 	deoglRDynamicSkin *useDynamicSkin = NULL;
 	deoglSkinState *useSkinState = NULL;
 	
-	if( pSkinState ){
+	if(pSkinState){
 		useSkinState = pSkinState;
 		useDynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
@@ -347,31 +347,31 @@ decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
 		useDynamicSkin = pComponent.GetDynamicSkin();
 	}
 	
-	decTexMatrix2 matrix( pTransform );
+	decTexMatrix2 matrix(pTransform);
 	
 	const deoglSkinTextureProperty &propertyOffset =
-		pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordOffset );
+		pUseSkinTexture->GetMaterialPropertyAt(deoglSkinTexture::empTexCoordOffset);
 	const deoglSkinTextureProperty &propertyScale =
-		pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordScale );
+		pUseSkinTexture->GetMaterialPropertyAt(deoglSkinTexture::empTexCoordScale);
 	const deoglSkinTextureProperty &propertyRotate =
-		pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordRotate );
+		pUseSkinTexture->GetMaterialPropertyAt(deoglSkinTexture::empTexCoordRotate);
 	
-	const decVector2 offset( propertyOffset.ResolveVector2(
-		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordOffset() ) );
-	const decVector2 scale( propertyScale.ResolveVector2(
-		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordScale() ) );
+	const decVector2 offset(propertyOffset.ResolveVector2(
+		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordOffset()));
+	const decVector2 scale(propertyScale.ResolveVector2(
+		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordScale()));
 	const float rotate = propertyRotate.ResolveAsFloat(
-		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordRotate() );
+		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordRotate());
 	
-	const bool hasOffset = ! decVector2().IsEqualTo( offset );
-	const bool hasScale = ! decVector2( 1.0f, 1.0f ).IsEqualTo( scale );
-	const bool hasRotate = fabsf( rotate ) > FLOAT_SAFE_EPSILON;
+	const bool hasOffset = !decVector2().IsEqualTo(offset);
+	const bool hasScale = !decVector2(1.0f, 1.0f).IsEqualTo(scale);
+	const bool hasRotate = fabsf(rotate) > FLOAT_SAFE_EPSILON;
 	
-	if( hasScale || hasRotate ){
-		matrix = decTexMatrix2::CreateCenterSRT( scale, rotate * TWO_PI, offset ) * matrix;
+	if(hasScale || hasRotate){
+		matrix = decTexMatrix2::CreateCenterSRT(scale, rotate * TWO_PI, offset) * matrix;
 		
-	}else if( hasOffset ){
-		matrix = decTexMatrix2::CreateTranslation( offset ) * matrix;
+	}else if(hasOffset){
+		matrix = decTexMatrix2::CreateTranslation(offset) * matrix;
 	}
 	
 	return matrix;
@@ -380,25 +380,25 @@ decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
 
 
 void deoglRComponentTexture::PrepareParamBlocks(){
-	if( ! pValidParamBlocks ){
+	if(!pValidParamBlocks){
 		// shared spb
-		if( pSharedSPBElement ){
+		if(pSharedSPBElement){
 			pSharedSPBElement->FreeReference();
 			pSharedSPBElement = NULL;
 		}
 		
-		if( pComponent.GetRenderThread().GetChoices().GetSharedSPBUseSSBO() ){
+		if(pComponent.GetRenderThread().GetChoices().GetSharedSPBUseSSBO()){
 			pSharedSPBElement = pComponent.GetRenderThread().GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblSkinInstanceSSBO ).AddElement();
+				.GetSharedSPBList(deoglRTBufferObject::esspblSkinInstanceSSBO).AddElement();
 			
 		}else{
-			if( pComponent.GetRenderThread().GetChoices().GetGlobalSharedSPBLists() ){
+			if(pComponent.GetRenderThread().GetChoices().GetGlobalSharedSPBLists()){
 				pSharedSPBElement = pComponent.GetRenderThread().GetBufferObject()
-					.GetSharedSPBList( deoglRTBufferObject::esspblSkinInstanceUBO ).AddElement();
+					.GetSharedSPBList(deoglRTBufferObject::esspblSkinInstanceUBO).AddElement();
 				
 			}else{
 				// depends if using model or world backed shared SPB
-				if( pComponent.GetModel() ){
+				if(pComponent.GetModel()){
 					pSharedSPBElement = pComponent.GetModel()->GetSharedSPBListUBO().AddElement();
 				}
 			}
@@ -411,62 +411,62 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 		pSharedSPBRTIGroup.RemoveAll();
 		pSharedSPBRTIGroupShadow.RemoveAll();
 		
-		if( pSharedSPBElement ){
+		if(pSharedSPBElement){
 			const deoglRModel &model = pComponent.GetModel();
 			deoglSharedSPB &spb = pSharedSPBElement->GetSPB();
 			deoglSharedSPBRTIGroup::Ref group;
 			
-			for( i=0; i<count; i++ ){
-				deoglModelLOD &modelLod = model.GetLODAt( i );
-				deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt( pIndex );
-				group.TakeOver( list.GetWith( spb ) );
+			for(i=0; i<count; i++){
+				deoglModelLOD &modelLod = model.GetLODAt(i);
+				deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt(pIndex);
+				group.TakeOver(list.GetWith(spb));
 				
-				if( ! group ){
-					group.TakeOver( list.AddWith( spb ) );
-					group->GetRTSInstance()->SetSubInstanceSPB( &spb );
+				if(!group){
+					group.TakeOver(list.AddWith(spb));
+					group->GetRTSInstance()->SetSubInstanceSPB(&spb);
 				}
 				
-				pSharedSPBRTIGroup.Add( group );
+				pSharedSPBRTIGroup.Add(group);
 			}
 			
-			if( ( pRenderTaskFilters & ( ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles ) ) == ( ertfRender | ertfSolid ) ){
+			if((pRenderTaskFilters & (ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles)) == (ertfRender | ertfSolid)){
 				// combine shadow textures if possible
-				for( i=0; i<count; i++ ){
-					deoglModelLOD &modelLod = model.GetLODAt( i );
-					if( modelLod.GetTextureAt( pIndex ).GetFaceCount() == 0 ){
-						pSharedSPBRTIGroupShadow.Add( nullptr );
+				for(i=0; i<count; i++){
+					deoglModelLOD &modelLod = model.GetLODAt(i);
+					if(modelLod.GetTextureAt(pIndex).GetFaceCount() == 0){
+						pSharedSPBRTIGroupShadow.Add(nullptr);
 						continue;
 					}
 					
-					const int combineCount = pShadowCombineCount( i );
-					if( combineCount < 2 ){
-						pSharedSPBRTIGroupShadow.Add( nullptr );
+					const int combineCount = pShadowCombineCount(i);
+					if(combineCount < 2){
+						pSharedSPBRTIGroupShadow.Add(nullptr);
 						continue;
 					}
 					
-					deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt( pIndex );
-					group.TakeOver( list.GetWith( spb, combineCount ) );
+					deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt(pIndex);
+					group.TakeOver(list.GetWith(spb, combineCount));
 					
-					if( ! group ){
-						group.TakeOver( list.AddWith( spb, combineCount ) );
-						group->GetRTSInstance()->SetSubInstanceSPB( &spb );
+					if(!group){
+						group.TakeOver(list.AddWith(spb, combineCount));
+						group->GetRTSInstance()->SetSubInstanceSPB(&spb);
 					}
 					
-					pSharedSPBRTIGroupShadow.Add( group );
+					pSharedSPBRTIGroupShadow.Add(group);
 				}
 				
 			}else{
-				for( i=0; i<count; i++ ){
-					pSharedSPBRTIGroupShadow.Add( nullptr );
+				for(i=0; i<count; i++){
+					pSharedSPBRTIGroupShadow.Add(nullptr);
 				}
 			}
 			
 			UpdateRTSInstances();
 			
 		}else{
-			for( i=0; i<count; i++ ){
-				pSharedSPBRTIGroup.Add( nullptr );
-				pSharedSPBRTIGroupShadow.Add( nullptr );
+			for(i=0; i<count; i++){
+				pSharedSPBRTIGroup.Add(nullptr);
+				pSharedSPBRTIGroupShadow.Add(nullptr);
 			}
 		}
 		
@@ -475,18 +475,18 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 		pValidParamBlocks = true;
 	}
 	
-	if( pDirtyParamBlocks ){
+	if(pDirtyParamBlocks){
 		// shared spb
-		if( pSharedSPBElement && pUseSkinTexture ){
+		if(pSharedSPBElement && pUseSkinTexture){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
 			const deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
-				GetAt( deoglSkinTexturePipelinesList::eptComponent ).
-				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
+				GetAt(deoglSkinTexturePipelinesList::eptComponent).
+				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader();
 			
 			// update parameter block area belonging to this element
-			UpdateInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ),
-				pSharedSPBElement->GetIndex(), skinShader );
+			UpdateInstanceParamBlock(deoglSharedSPBElementMapBuffer(*pSharedSPBElement),
+				pSharedSPBElement->GetIndex(), skinShader);
 		}
 		
 		// done
@@ -499,55 +499,55 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 	const int count = pSharedSPBRTIGroup.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglSharedSPBRTIGroup * const group = ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt( i );
-		if( ! group ){
+	for(i=0; i<count; i++){
+		deoglSharedSPBRTIGroup * const group = (deoglSharedSPBRTIGroup*)pSharedSPBRTIGroup.GetAt(i);
+		if(!group){
 			continue;
 		}
 		
-		const deoglModelTexture &modelTexture = model.GetLODAt( i ).GetTextureAt( pIndex );
+		const deoglModelTexture &modelTexture = model.GetLODAt(i).GetTextureAt(pIndex);
 		deoglRenderTaskSharedInstance &rtsi = *group->GetRTSInstance();
-		rtsi.SetFirstPoint( pComponent.GetPointOffset( i ) );
-		rtsi.SetFirstIndex( pComponent.GetIndexOffset( i ) + modelTexture.GetFirstFace() * 3 );
-		rtsi.SetIndexCount( modelTexture.GetFaceCount() * 3 );
+		rtsi.SetFirstPoint(pComponent.GetPointOffset(i));
+		rtsi.SetFirstIndex(pComponent.GetIndexOffset(i) + modelTexture.GetFirstFace() * 3);
+		rtsi.SetIndexCount(modelTexture.GetFaceCount() * 3);
 	}
 	
 	// shadow combine groups
-	for( i=0; i<count; i++ ){
-		deoglSharedSPBRTIGroup * const group = ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroupShadow.GetAt( i );
-		if( ! group ){
+	for(i=0; i<count; i++){
+		deoglSharedSPBRTIGroup * const group = (deoglSharedSPBRTIGroup*)pSharedSPBRTIGroupShadow.GetAt(i);
+		if(!group){
 			continue;
 		}
 		
-		const deoglModelLOD &modelLod = model.GetLODAt( i );
+		const deoglModelLOD &modelLod = model.GetLODAt(i);
 		deoglRenderTaskSharedInstance &rtsi = *group->GetRTSInstance();
-		rtsi.SetFirstPoint( pComponent.GetPointOffset( i ) );
-		rtsi.SetFirstIndex( pComponent.GetIndexOffset( i ) + modelLod.GetTextureAt( pIndex ).GetFirstFace() * 3 );
+		rtsi.SetFirstPoint(pComponent.GetPointOffset(i));
+		rtsi.SetFirstIndex(pComponent.GetIndexOffset(i) + modelLod.GetTextureAt(pIndex).GetFirstFace() * 3);
 		
 		int j, faceCount = 0;
-		for( j=0; j<group->GetTextureCount(); j++ ){
-			faceCount += modelLod.GetTextureAt( pIndex + j ).GetFaceCount();
+		for(j=0; j<group->GetTextureCount(); j++){
+			faceCount += modelLod.GetTextureAt(pIndex + j).GetFaceCount();
 		}
-		rtsi.SetIndexCount( faceCount * 3 );
+		rtsi.SetIndexCount(faceCount * 3);
 	}
 }
 
-deoglSharedSPBRTIGroup &deoglRComponentTexture::GetSharedSPBRTIGroup( int lodLevel ) const{
-	deoglSharedSPBRTIGroup * const group = ( ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt(
-		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount() ) );
-	DEASSERT_NOTNULL( group )
+deoglSharedSPBRTIGroup &deoglRComponentTexture::GetSharedSPBRTIGroup(int lodLevel) const{
+	deoglSharedSPBRTIGroup * const group = ((deoglSharedSPBRTIGroup*)pSharedSPBRTIGroup.GetAt(
+		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount()));
+	DEASSERT_NOTNULL(group)
 	return *group;
 }
 
-deoglSharedSPBRTIGroup *deoglRComponentTexture::GetSharedSPBRTIGroupShadow( int lodLevel ) const{
-	return ( ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroupShadow.GetAt(
-		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount() ) );
+deoglSharedSPBRTIGroup *deoglRComponentTexture::GetSharedSPBRTIGroupShadow(int lodLevel) const{
+	return ((deoglSharedSPBRTIGroup*)pSharedSPBRTIGroupShadow.GetAt(
+		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount()));
 }
 
 
 
-deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
-	switch( type ){
+deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const{
+	switch(type){
 	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
@@ -582,13 +582,13 @@ deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForPipelineType( deoglSkinTex
 		return GetTUCGIMaterial();
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForOutlinePipelineType(
-deoglSkinTexturePipelines::eTypes type ) const{
-	switch( type ){
+deoglSkinTexturePipelines::eTypes type) const{
+	switch(type){
 	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCOutlineGeometry();
 		
@@ -603,57 +603,57 @@ deoglSkinTexturePipelines::eTypes type ) const{
 		return GetTUCOutlineCounter();
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 void deoglRComponentTexture::PrepareTUCs(){
-	if( ! pDirtyTUCs ){
+	if(!pDirtyTUCs){
 		return;
 	}
 	
-	if( pDirtyTUCsAll ){
+	if(pDirtyTUCsAll){
 		// depth
-		if( pTUCDepth ){
+		if(pTUCDepth){
 			pTUCDepth->RemoveUsage();
 			pTUCDepth = NULL;
 		}
-		pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
+		pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
 		
 		// counter
-		if( pTUCCounter ){
+		if(pTUCCounter){
 			pTUCCounter->RemoveUsage();
 			pTUCCounter = NULL;
 		}
-		pTUCCounter = BareGetTUCFor( deoglSkinTexturePipelines::etCounter );
+		pTUCCounter = BareGetTUCFor(deoglSkinTexturePipelines::etCounter);
 		
 		// shadow
-		if( pTUCShadow ){
+		if(pTUCShadow){
 			pTUCShadow->RemoveUsage();
 			pTUCShadow = NULL;
 		}
-		pTUCShadow = BareGetTUCFor( deoglSkinTexturePipelines::etShadowProjection );
+		pTUCShadow = BareGetTUCFor(deoglSkinTexturePipelines::etShadowProjection);
 		
 		// shadow cube
-		if( pTUCShadowCube ){
+		if(pTUCShadowCube){
 			pTUCShadowCube->RemoveUsage();
 			pTUCShadowCube = NULL;
 		}
-		pTUCShadowCube = BareGetTUCFor( deoglSkinTexturePipelines::etShadowDistanceCube );
+		pTUCShadowCube = BareGetTUCFor(deoglSkinTexturePipelines::etShadowDistanceCube);
 		
 		// environment map
-		if( pTUCEnvMap ){
+		if(pTUCEnvMap){
 			pTUCEnvMap->RemoveUsage();
 			pTUCEnvMap = NULL;
 		}
 		
-		if( pUseSkinTexture ){
+		if(pUseSkinTexture){
 			deoglRenderThread &renderThread = pComponent.GetRenderThread();
 			deoglRDynamicSkin *dynamicSkin = NULL;
 			deoglSkinState *skinState = NULL;
-			deoglTexUnitConfig unit[ 8 ];
+			deoglTexUnitConfig unit[8];
 			
-			if( pSkinState ){
+			if(pSkinState){
 				skinState = pSkinState;
 				dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 				
@@ -663,69 +663,69 @@ void deoglRComponentTexture::PrepareTUCs(){
 				dynamicSkin = pComponent.GetDynamicSkin();
 			}
 			
-			if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-				unit[ 0 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+			if(pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV()){
+				unit[0].EnableArrayTextureFromChannel(renderThread, *pUseSkinTexture,
 					deoglSkinChannel::ectColor, skinState, dynamicSkin,
-					renderThread.GetDefaultTextures().GetColorArray() );
+					renderThread.GetDefaultTextures().GetColorArray());
 				
-				unit[ 1 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+				unit[1].EnableArrayTextureFromChannel(renderThread, *pUseSkinTexture,
 					deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
-					renderThread.GetDefaultTextures().GetEmissivityArray() );
+					renderThread.GetDefaultTextures().GetEmissivityArray());
 				
 			}else{
-				unit[ 0 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+				unit[0].EnableTextureFromChannel(renderThread, *pUseSkinTexture,
 					deoglSkinChannel::ectColor, skinState, dynamicSkin,
-					renderThread.GetDefaultTextures().GetColor() );
+					renderThread.GetDefaultTextures().GetColor());
 				
-				unit[ 1 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+				unit[1].EnableTextureFromChannel(renderThread, *pUseSkinTexture,
 					deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
-					renderThread.GetDefaultTextures().GetEmissivity() );
+					renderThread.GetDefaultTextures().GetEmissivity());
 			}
 			
-			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
-				pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith(&unit[0], 2,
+				pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
 		// outline depth
-		if( pTUCOutlineDepth ){
+		if(pTUCOutlineDepth){
 			pTUCOutlineDepth->RemoveUsage();
 			pTUCOutlineDepth = NULL;
 		}
-		pTUCOutlineDepth = BareGetOutlineTUCFor( deoglSkinTexturePipelines::etDepth );
+		pTUCOutlineDepth = BareGetOutlineTUCFor(deoglSkinTexturePipelines::etDepth);
 		
 		// outline geometry
-		if( pTUCOutlineGeometry ){
+		if(pTUCOutlineGeometry){
 			pTUCOutlineGeometry->RemoveUsage();
 			pTUCOutlineGeometry = NULL;
 		}
-		pTUCOutlineGeometry = BareGetOutlineTUCFor( deoglSkinTexturePipelines::etGeometry );
+		pTUCOutlineGeometry = BareGetOutlineTUCFor(deoglSkinTexturePipelines::etGeometry);
 		
 		// outline counter
-		if( pTUCOutlineCounter ){
+		if(pTUCOutlineCounter){
 			pTUCOutlineCounter->RemoveUsage();
 			pTUCOutlineCounter = NULL;
 		}
-		pTUCOutlineCounter = BareGetOutlineTUCFor( deoglSkinTexturePipelines::etCounter );
+		pTUCOutlineCounter = BareGetOutlineTUCFor(deoglSkinTexturePipelines::etCounter);
 		
 		// global illumination material
-		if( pTUCGIMaterial ){
+		if(pTUCGIMaterial){
 			pTUCGIMaterial->RemoveUsage();
 			pTUCGIMaterial = NULL;
 		}
-		pTUCGIMaterial = BareGetTUCFor( deoglSkinTexturePipelines::etGIMaterial );
+		pTUCGIMaterial = BareGetTUCFor(deoglSkinTexturePipelines::etGIMaterial);
 	}
 	
-	if( pDirtyTUCsAll || pDirtyTUCsEnvMapUse ){
+	if(pDirtyTUCsAll || pDirtyTUCsEnvMapUse){
 		// geometry
-		if( pTUCGeometry ){
+		if(pTUCGeometry){
 			pTUCGeometry->RemoveUsage();
 			pTUCGeometry = NULL;
 		}
-		pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
+		pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 		
 		// luminance
-		if( pTUCLuminance ){
+		if(pTUCLuminance){
 			pTUCLuminance->RemoveUsage();
 			pTUCLuminance = NULL;
 		}
@@ -738,18 +738,18 @@ void deoglRComponentTexture::PrepareTUCs(){
 	pDirtyTUCsEnvMapUse = false;
 }
 
-deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
-	if( ! pUseSkinTexture ){
+deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
+	if(!pUseSkinTexture){
 		return NULL;
 	}
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
-	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin *dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	
-	if( pSkinState ){
+	if(pSkinState){
 		skinState = pSkinState;
 		dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
@@ -760,21 +760,21 @@ deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor( deoglSkinTexturePipe
 	}
 	
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
-		GetAt( deoglSkinTexturePipelinesList::eptComponent ).GetWithRef( type ).GetShader();
+		GetAt(deoglSkinTexturePipelinesList::eptComponent).GetWithRef(type).GetShader();
 	
 	if(skinShader.GetTextureUnitCount() > 0){
-		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
-		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
+		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, skinState, dynamicSkin);
+		skinShader.SetTUCPerObjectEnvMap(&units[0],
 			pComponent.GetParentWorld()->GetSkyEnvironmentMap(),
-			pComponent.GetRenderEnvMap(), pComponent.GetRenderEnvMapFade() );
+			pComponent.GetRenderEnvMap(), pComponent.GetRenderEnvMapFade());
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetTextureUnitCount(),
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+			&units[0], skinShader.GetTextureUnitCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if( ! tuc ){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	if(!tuc){
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
 	
@@ -782,18 +782,18 @@ deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor( deoglSkinTexturePipe
 }
 
 deoglTexUnitsConfig *deoglRComponentTexture::BareGetOutlineTUCFor(
-deoglSkinTexturePipelines::eTypes type ) const{
-	if( ! pUseSkinTexture ){
+deoglSkinTexturePipelines::eTypes type) const{
+	if(!pUseSkinTexture){
 		return NULL;
 	}
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
-	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin *dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	
-	if( pSkinState ){
+	if(pSkinState){
 		skinState = pSkinState;
 		dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
@@ -804,21 +804,21 @@ deoglSkinTexturePipelines::eTypes type ) const{
 	}
 	
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
-		GetAt( deoglSkinTexturePipelinesList::eptOutline ).GetWithRef( type ).GetShader();
+		GetAt(deoglSkinTexturePipelinesList::eptOutline).GetWithRef(type).GetShader();
 	
 	if(skinShader.GetTextureUnitCount() > 0){
-		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
-		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
+		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, skinState, dynamicSkin);
+		skinShader.SetTUCPerObjectEnvMap(&units[0],
 			pComponent.GetParentWorld()->GetSkyEnvironmentMap(),
-			pComponent.GetRenderEnvMap(), pComponent.GetRenderEnvMapFade() );
+			pComponent.GetRenderEnvMap(), pComponent.GetRenderEnvMapFade());
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetTextureUnitCount(),
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+			&units[0], skinShader.GetTextureUnitCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if( ! tuc ){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	if(!tuc){
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
 	
@@ -853,16 +853,16 @@ void deoglRComponentTexture::MarkTUCsDirtyEnvMapUse(){
 
 
 
-void deoglRComponentTexture::UpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
-int element, const deoglSkinShader &skinShader ){
-	if( ! pUseSkinTexture ){
+void deoglRComponentTexture::UpdateInstanceParamBlock(deoglShaderParameterBlock &paramBlock,
+int element, const deoglSkinShader &skinShader){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
 	deoglRDynamicSkin *useDynamicSkin = nullptr;
 	deoglSkinState *useSkinState = nullptr;
 	
-	if( pSkinState ){
+	if(pSkinState){
 		useSkinState = pSkinState;
 		useDynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
@@ -875,73 +875,73 @@ int element, const deoglSkinShader &skinShader ){
 	// update shader parameter block
 	int target;
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
-	if( target != -1 ){
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixModel);
+	if(target != -1){
 		const decDVector &referencePosition = pComponent.GetParentWorld()->GetReferencePosition();
-		decDMatrix matrix( pComponent.GetMatrix() );
+		decDMatrix matrix(pComponent.GetMatrix());
 		
 		matrix.a14 -= referencePosition.x;
 		matrix.a24 -= referencePosition.y;
 		matrix.a34 -= referencePosition.z;
 		
-		paramBlock.SetParameterDataMat4x3( target, element, matrix );
+		paramBlock.SetParameterDataMat4x3(target, element, matrix);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
-	if( target != -1 ){
-		paramBlock.SetParameterDataMat3x3( target, element,
-			pComponent.GetMatrix().GetRotationMatrix().Invert() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixNormal);
+	if(target != -1){
+		paramBlock.SetParameterDataMat3x3(target, element,
+			pComponent.GetMatrix().GetRotationMatrix().Invert());
 		//paramBlock.SetParameterDataMat3x3( target, element,
 		//	pComponent.GetInverseMatrix().GetRotationMatrix() );
 	}
 	
 	// per texture properties
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
-	if( target != -1 ){
-		paramBlock.SetParameterDataMat3x2( target, element, CalcTexCoordMatrix() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixTexCoord);
+	if(target != -1){
+		paramBlock.SetParameterDataMat3x2(target, element, CalcTexCoordMatrix());
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
-	if( target != -1 ){
-		paramBlock.SetParameterDataBool( target, element,
-			pComponent.GetModel()->GetLODAt( 0 ).GetTextureAt( pIndex ).GetDoubleSided() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutDoubleSided);
+	if(target != -1){
+		paramBlock.SetParameterDataBool(target, element,
+			pComponent.GetModel()->GetLODAt(0).GetTextureAt(pIndex).GetDoubleSided());
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
-	if( target != -1 ){
-		paramBlock.SetParameterDataFloat( target, element, pComponent.GetRenderEnvMapFadeFactor() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutEnvMapFade);
+	if(target != -1){
+		paramBlock.SetParameterDataFloat(target, element, pComponent.GetRenderEnvMapFadeFactor());
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
-	if( target != -1 ){
-		if( useSkinState ){
-			paramBlock.SetParameterDataVec2( target, element, useSkinState->GetVariationSeed() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutVariationSeed);
+	if(target != -1){
+		if(useSkinState){
+			paramBlock.SetParameterDataVec2(target, element, useSkinState->GetVariationSeed());
 			
 		}else{
-			paramBlock.SetParameterDataVec2( target, element, 0.0f, 0.0f );
+			paramBlock.SetParameterDataVec2(target, element, 0.0f, 0.0f);
 		}
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
-	if( target != -1 ){
-		const decMatrix matrix( pUseSkinTexture->GetMaterialPropertyAt(
-			deoglSkinTexture::empSkinClipPlane ).ResolveMatrix( useSkinState, decMatrix() ) );
-		const decVector view( matrix.TransformView().Normalized() );
-		const decVector position( matrix.GetPosition() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutInstSkinClipPlaneNormal);
+	if(target != -1){
+		const decMatrix matrix(pUseSkinTexture->GetMaterialPropertyAt(
+			deoglSkinTexture::empSkinClipPlane).ResolveMatrix(useSkinState, decMatrix()));
+		const decVector view(matrix.TransformView().Normalized());
+		const decVector position(matrix.GetPosition());
 		
-		paramBlock.SetParameterDataVec4( target, element, view, view * position );
+		paramBlock.SetParameterDataVec4(target, element, view, view * position);
 	}
 	
-	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );
+	skinShader.SetTexParamsInInstParamSPB(paramBlock, element, *pUseSkinTexture);
 	
 	// per texture dynamic texture properties
-	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, element,
+	skinShader.SetDynTexParamsInInstParamSPB(paramBlock, element,
 		*pUseSkinTexture, useSkinState, useDynamicSkin );
 }
 
 
 
-void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+void deoglRComponentTexture::PrepareSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask){
 	if(!pSkinState){
 		return;
 	}
@@ -952,7 +952,7 @@ void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanM
 	pUpdateIsRendered();
 }
 
-void deoglRComponentTexture::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+void deoglRComponentTexture::RenderSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask){
 	if(!pSkinState){
 		return;
 	}
@@ -962,7 +962,7 @@ void deoglRComponentTexture::RenderSkinStateRenderables( const deoglRenderPlanMa
 }
 
 void deoglRComponentTexture::PrepareSkinStateConstructed(){
-	if( pSkinState ){
+	if(pSkinState){
 		pSkinState->PrepareConstructedProperties();
 	}
 	
@@ -970,7 +970,7 @@ void deoglRComponentTexture::PrepareSkinStateConstructed(){
 }
 
 void deoglRComponentTexture::UpdateRenderableMapping(){
-	if( ! pSkinState ){
+	if(!pSkinState){
 		return;
 	}
 	
@@ -993,61 +993,61 @@ void deoglRComponentTexture::UpdateRenderableMapping(){
 void deoglRComponentTexture::pUpdateIsRendered(){
 	pIsRendered = false;
 	
-	if( ! pUseSkinTexture ){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
-	if( pUseSkinTexture->GetRendered() ){
+	if(pUseSkinTexture->GetRendered()){
 		pIsRendered = true;
 		return;
 	}
 	
-	if( ! pUseSkinState || ! pUseDynamicSkin ){
+	if(!pUseSkinState || !pUseDynamicSkin){
 		return;
 	}
 	
-	const deoglSkinChannel * const skinChannel = pUseSkinTexture->GetChannelAt( deoglSkinChannel::ectColor );
-	if( ! skinChannel ){
+	const deoglSkinChannel * const skinChannel = pUseSkinTexture->GetChannelAt(deoglSkinChannel::ectColor);
+	if(!skinChannel){
 		return;
 	}
 	
 	const int skinRenderable = skinChannel->GetRenderable();
-	if( skinRenderable < 0 || skinRenderable >= pUseSkinState->GetRenderableCount() ){
+	if(skinRenderable < 0 || skinRenderable >= pUseSkinState->GetRenderableCount()){
 		return;
 	}
 	
-	const deoglSkinStateRenderable &skinStateRenderable = *pUseSkinState->GetRenderableAt( skinRenderable );
-	if( skinStateRenderable.GetHostRenderable() == -1 ){
+	const deoglSkinStateRenderable &skinStateRenderable = *pUseSkinState->GetRenderableAt(skinRenderable);
+	if(skinStateRenderable.GetHostRenderable() == -1){
 		return;
 	}
 	
-	pIsRendered = pUseDynamicSkin->GetRenderableAt( skinStateRenderable.GetHostRenderable() )->GetRenderPlan() != NULL;
+	pIsRendered = pUseDynamicSkin->GetRenderableAt(skinStateRenderable.GetHostRenderable())->GetRenderPlan() != NULL;
 }
 
 void deoglRComponentTexture::pUpdateRenderTaskFilters(){
 	pRenderTaskFilters = 0;
-	if( ! pComponent.GetModel() ){
+	if(!pComponent.GetModel()){
 		return;
 	}
 	
-	if( pUseSkinTexture ){
+	if(pUseSkinTexture){
 		pRenderTaskFilters |= pUseSkinTexture->GetRenderTaskFilters() & ~ertfRendered;
 	}
-	if( pIsRendered ){
+	if(pIsRendered){
 		pRenderTaskFilters |= ertfRendered;
 	}
-	if( pUseDecal ){
+	if(pUseDecal){
 		pRenderTaskFilters |= ertfDecal;
 	}
-	if( pUseDoubleSided ){
+	if(pUseDoubleSided){
 		pRenderTaskFilters |= ertfDoubleSided;
 	}
 }
 
-int deoglRComponentTexture::pShadowCombineCount( int lodLevel ) const{
-	const bool solid = ( pRenderTaskFilters & ertfSolid ) == ertfSolid;
-	const bool hasHoles = solid && ( pRenderTaskFilters & ertfHoles ) == ertfHoles;
-	if( ! solid || hasHoles || ! pUseSkinTexture ){
+int deoglRComponentTexture::pShadowCombineCount(int lodLevel) const{
+	const bool solid = (pRenderTaskFilters & ertfSolid) == ertfSolid;
+	const bool hasHoles = solid && (pRenderTaskFilters & ertfHoles) == ertfHoles;
+	if(!solid || hasHoles || !pUseSkinTexture){
 		// this check is only used to allow combined shadows to be added to world element
 		// geometries by components. the reason is that TUCs can not be obtained at the
 		// time element data is written. maybe later on this can be re-added
@@ -1061,28 +1061,28 @@ int deoglRComponentTexture::pShadowCombineCount( int lodLevel ) const{
 	// }
 	
 	int i;
-	for( i=0; i<pIndex; i++ ){
-		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
-		const deoglSharedSPBRTIGroup * const group = texture.GetSharedSPBRTIGroupShadow( lodLevel );
-		if( group && group->GetTextureCount() > pIndex - i ){
+	for(i=0; i<pIndex; i++){
+		const deoglRComponentTexture &texture = pComponent.GetTextureAt(i);
+		const deoglSharedSPBRTIGroup * const group = texture.GetSharedSPBRTIGroupShadow(lodLevel);
+		if(group && group->GetTextureCount() > pIndex - i){
 			return 1; // covered by a previous combined group
 		}
 	}
 	
-	const deoglModelLOD &modelLod = pComponent.GetModel()->GetLODAt( lodLevel );
+	const deoglModelLOD &modelLod = pComponent.GetModel()->GetLODAt(lodLevel);
 	const int mask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDoubleSided;
 	const int filter = pRenderTaskFilters & mask;
 	const int count = pComponent.GetTextureCount();
 	int emptyCount = 0;
 	
-	for( i=pIndex+1; i<count; i++ ){
-		if( modelLod.GetTextureAt( i ).GetFaceCount() == 0 ){
+	for(i=pIndex+1; i<count; i++){
+		if(modelLod.GetTextureAt(i).GetFaceCount() == 0){
 			emptyCount++; // always combineable but we do not count it as one
 			continue;
 		}
 		
-		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
-		if( ( texture.pRenderTaskFilters & mask ) != filter ){
+		const deoglRComponentTexture &texture = pComponent.GetTextureAt(i);
+		if((texture.pRenderTaskFilters & mask) != filter){
 			break; // can not be combined because filters differ
 		}
 		

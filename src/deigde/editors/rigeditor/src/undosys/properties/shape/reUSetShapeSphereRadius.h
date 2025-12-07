@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeSphereRadius( reRigShapeSphere *shape, float radius );
+	reUSetShapeSphereRadius(reRigShapeSphere *shape, float radius);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -55,23 +55,23 @@ int dealGameList::GetCount() const{
 	return pGames.GetCount();
 }
 
-dealGame *dealGameList::GetAt( int index ) const{
-	return ( dealGame* )pGames.GetAt( index );
+dealGame *dealGameList::GetAt(int index) const{
+	return (dealGame*)pGames.GetAt(index);
 }
 
-dealGame *dealGameList::GetWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+dealGame *dealGameList::GetWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pGames.GetCount();
 	dealGame *game;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		game = ( dealGame* )pGames.GetAt( i );
+	for(i=0; i<count; i++){
+		game = (dealGame*)pGames.GetAt(i);
 		
-		if( game->GetIdentifier().Equals( id ) ){
+		if(game->GetIdentifier().Equals(id)){
 			return game;
 		}
 	}
@@ -79,23 +79,23 @@ dealGame *dealGameList::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-bool dealGameList::Has( dealGame *game ) const{
-	return pGames.Has( game );
+bool dealGameList::Has(dealGame *game) const{
+	return pGames.Has(game);
 }
 
-bool dealGameList::HasWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+bool dealGameList::HasWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pGames.GetCount();
 	dealGame *game;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		game = ( dealGame* )pGames.GetAt( i );
+	for(i=0; i<count; i++){
+		game = (dealGame*)pGames.GetAt(i);
 		
-		if( game->GetIdentifier().Equals( id ) ){
+		if(game->GetIdentifier().Equals(id)){
 			return true;
 		}
 	}
@@ -103,23 +103,23 @@ bool dealGameList::HasWithID( const char *id ) const{
 	return false;
 }
 
-int dealGameList::IndexOf( dealGame *game ) const{
-	return pGames.IndexOf( game );
+int dealGameList::IndexOf(dealGame *game) const{
+	return pGames.IndexOf(game);
 }
 
-int dealGameList::IndexOfWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+int dealGameList::IndexOfWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pGames.GetCount();
 	dealGame *game;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		game = ( dealGame* )pGames.GetAt( i );
+	for(i=0; i<count; i++){
+		game = (dealGame*)pGames.GetAt(i);
 		
-		if( game->GetIdentifier().Equals( id ) ){
+		if(game->GetIdentifier().Equals(id)){
 			return i;
 		}
 	}
@@ -127,22 +127,22 @@ int dealGameList::IndexOfWithID( const char *id ) const{
 	return -1;
 }
 
-void dealGameList::Add( dealGame *game ){
-	if( ! game || HasWithID( game->GetIdentifier().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void dealGameList::Add(dealGame *game){
+	if(!game || HasWithID(game->GetIdentifier().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pGames.Add( game );
+	pGames.Add(game);
 }
 
-void dealGameList::Remove( dealGame *game ){
-	const int index = IndexOf( game );
+void dealGameList::Remove(dealGame *game){
+	const int index = IndexOf(game);
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pGames.RemoveFrom( index );
+	pGames.RemoveFrom(index);
 }
 
 void dealGameList::RemoveAll(){

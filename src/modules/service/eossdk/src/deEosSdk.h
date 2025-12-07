@@ -45,7 +45,7 @@ public:
 	public:
 		cFrameUpdater();
 		virtual ~cFrameUpdater();
-		virtual void FrameUpdate( float elapsed ) = 0;
+		virtual void FrameUpdate(float elapsed) = 0;
 	};
 	
 	static deEosSdk *globalModule;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deEosSdk( deLoadableModule &loadableModule );
+	deEosSdk(deLoadableModule &loadableModule);
 	
 	/** Delete module. */
 	~deEosSdk() override;
@@ -68,24 +68,24 @@ public:
 	decStringSet GetSupportedServices() override;
 	
 	/** Initialize Steam SDK if not initialized yet. */
-	void InitSdk( const deServiceObject::Ref &data );
+	void InitSdk(const deServiceObject::Ref &data);
 	
 	/**
 	 * Create service peer.
 	 * 
 	 * If service name is not supported nullptr is returned.
 	 */
-	deBaseServiceService *CreateService( deService *service,
-		const char *name, const deServiceObject::Ref &data ) override;
+	deBaseServiceService *CreateService(deService *service,
+		const char *name, const deServiceObject::Ref &data) override;
 	
 	/** Frame update. */
-	void FrameUpdate( float elapsed ) override;
+	void FrameUpdate(float elapsed) override;
 	
 	/** Add frame updater. */
-	void AddFrameUpdater( cFrameUpdater *updater );
+	void AddFrameUpdater(cFrameUpdater *updater);
 	
 	/** Remove frame updater. */
-	void RemoveFrameUpdater( cFrameUpdater *updater );
+	void RemoveFrameUpdater(cFrameUpdater *updater);
 	/*@}*/
 };
 

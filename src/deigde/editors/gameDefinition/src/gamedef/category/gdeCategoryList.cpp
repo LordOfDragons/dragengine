@@ -43,8 +43,8 @@
 gdeCategoryList::gdeCategoryList(){
 }
 
-gdeCategoryList::gdeCategoryList( const gdeCategoryList &list ) :
-pCategories( list.pCategories ){
+gdeCategoryList::gdeCategoryList(const gdeCategoryList &list) :
+pCategories(list.pCategories){
 }
 
 gdeCategoryList::~gdeCategoryList(){
@@ -59,18 +59,18 @@ int gdeCategoryList::GetCount() const{
 	return pCategories.GetCount();
 }
 
-gdeCategory *gdeCategoryList::GetAt( int index ) const{
-	return ( gdeCategory* )pCategories.GetAt( index );
+gdeCategory *gdeCategoryList::GetAt(int index) const{
+	return (gdeCategory*)pCategories.GetAt(index);
 }
 
-gdeCategory *gdeCategoryList::GetNamed( const char *name ) const{
+gdeCategory *gdeCategoryList::GetNamed(const char *name) const{
 	const int count = pCategories.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeCategory * const category = ( gdeCategory* )pCategories.GetAt( i );
+	for(i=0; i<count; i++){
+		gdeCategory * const category = (gdeCategory*)pCategories.GetAt(i);
 		
-		if( category->GetName() == name ){
+		if(category->GetName() == name){
 			return category;
 		}
 	}
@@ -78,22 +78,22 @@ gdeCategory *gdeCategoryList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-gdeCategory *gdeCategoryList::GetWithPath( const char *path ) const{
-	const decStringList components( decString( path ).Split( '/' ) );
+gdeCategory *gdeCategoryList::GetWithPath(const char *path) const{
+	const decStringList components(decString(path).Split('/'));
 	const int count = components.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return NULL;
 	}
 	
-	gdeCategory *category = GetNamed( components.GetAt( 0 ) );
-	if( ! category ){
+	gdeCategory *category = GetNamed(components.GetAt(0));
+	if(!category){
 		return NULL;
 	}
 	
 	int i;
-	for( i=1; i<count; i++ ){
-		category = category->GetCategories().GetNamed( components.GetAt( i ) );
-		if( ! category ){
+	for(i=1; i<count; i++){
+		category = category->GetCategories().GetNamed(components.GetAt(i));
+		if(!category){
 			return NULL;
 		}
 	}
@@ -101,16 +101,16 @@ gdeCategory *gdeCategoryList::GetWithPath( const char *path ) const{
 	return category;
 }
 
-int gdeCategoryList::IndexOf( gdeCategory *category ) const{
-	return pCategories.IndexOf( category );
+int gdeCategoryList::IndexOf(gdeCategory *category) const{
+	return pCategories.IndexOf(category);
 }
 
-int gdeCategoryList::IndexOfNamed( const char *name ) const{
+int gdeCategoryList::IndexOfNamed(const char *name) const{
 	const int count = pCategories.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeCategory* )pCategories.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((gdeCategory*)pCategories.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -118,16 +118,16 @@ int gdeCategoryList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool gdeCategoryList::Has( gdeCategory *category ) const{
-	return pCategories.Has( category );
+bool gdeCategoryList::Has(gdeCategory *category) const{
+	return pCategories.Has(category);
 }
 
-bool gdeCategoryList::HasNamed( const char *name ) const{
+bool gdeCategoryList::HasNamed(const char *name) const{
 	const int count = pCategories.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeCategory* )pCategories.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((gdeCategory*)pCategories.GetAt(i))->GetName() == name){
 			return true;
 		}
 	}
@@ -135,16 +135,16 @@ bool gdeCategoryList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void gdeCategoryList::Add( gdeCategory *category ){
-	if( ! category || HasNamed( category->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void gdeCategoryList::Add(gdeCategory *category){
+	if(!category || HasNamed(category->GetName())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCategories.Add( category );
+	pCategories.Add(category);
 }
 
-void gdeCategoryList::Remove( gdeCategory *category ){
-	pCategories.Remove( category );
+void gdeCategoryList::Remove(gdeCategory *category){
+	pCategories.Remove(category);
 }
 
 void gdeCategoryList::RemoveAll(){
@@ -153,7 +153,7 @@ void gdeCategoryList::RemoveAll(){
 
 
 
-gdeCategoryList &gdeCategoryList::operator=( const gdeCategoryList &list ){
+gdeCategoryList &gdeCategoryList::operator=(const gdeCategoryList &list){
 	pCategories = list.pCategories;
 	return *this;
 }

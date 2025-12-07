@@ -50,8 +50,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-mePropFieldType::mePropFieldType( deEngine *engine ){
-	if( ! engine ) DETHROW( deeInvalidParam );
+mePropFieldType::mePropFieldType(deEngine *engine){
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pPropField = NULL;
 	
@@ -68,10 +68,10 @@ mePropFieldType::mePropFieldType( deEngine *engine ){
 }
 
 mePropFieldType::~mePropFieldType(){
-	if( pInstances ) delete [] pInstances;
+	if(pInstances) delete [] pInstances;
 	
-	if( pSkin ) pSkin->FreeReference();
-	if( pModel ) pModel->FreeReference();
+	if(pSkin) pSkin->FreeReference();
+	if(pModel) pModel->FreeReference();
 }
 
 
@@ -79,13 +79,13 @@ mePropFieldType::~mePropFieldType(){
 // Management
 ///////////////
 
-void mePropFieldType::SetPropField( mePropField *propField ){
+void mePropFieldType::SetPropField(mePropField *propField){
 	pPropField = propField;
 	pEngPFType = NULL;
 }
 
-void mePropFieldType::SetEnginePFType( dePropFieldType *engPFType ){
-	if( engPFType && ! pPropField ) DETHROW( deeInvalidParam );
+void mePropFieldType::SetEnginePFType(dePropFieldType *engPFType){
+	if(engPFType && !pPropField) DETHROW(deeInvalidParam);
 	
 	pEngPFType = engPFType;
 }
@@ -93,42 +93,42 @@ void mePropFieldType::SetEnginePFType( dePropFieldType *engPFType ){
 
 
 dePropFieldType *mePropFieldType::CreateEnginePFType(){
-	if( ! pPropField ) DETHROW( deeInvalidParam );
+	if(!pPropField) DETHROW(deeInvalidParam);
 	
 	dePropFieldInstance *engPFTInstances = NULL;
 	dePropFieldType *engPFType = NULL;
 	int i;
 	
-	if( pInstanceCount > 0 ){
+	if(pInstanceCount > 0){
 		try{
 			engPFType = new dePropFieldType();
 			
-			engPFType->SetModel( pModel );
-			engPFType->SetSkin( pSkin );
+			engPFType->SetModel(pModel);
+			engPFType->SetSkin(pSkin);
 			
 			decLayerMask collisionCategory;
-			collisionCategory.SetBit( meWorld::eclmPropFields );
+			collisionCategory.SetBit(meWorld::eclmPropFields);
 			
 			decLayerMask collisionFilter;
-			collisionFilter.SetBit( meWorld::eclmEditing );
-			collisionFilter.SetBit( meWorld::eclmForceField );
-			collisionFilter.SetBit( meWorld::eclmParticles );
+			collisionFilter.SetBit(meWorld::eclmEditing);
+			collisionFilter.SetBit(meWorld::eclmForceField);
+			collisionFilter.SetBit(meWorld::eclmParticles);
 			
-			engPFType->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+			engPFType->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 			
-			engPFType->SetRotationPerForce( pRotPerForceX * DEG2RAD );
+			engPFType->SetRotationPerForce(pRotPerForceX * DEG2RAD);
 			
-			engPFType->SetInstanceCount( pInstanceCount );
+			engPFType->SetInstanceCount(pInstanceCount);
 			engPFTInstances = engPFType->GetInstances();
-			for( i=0; i<pInstanceCount; i++ ){
-				engPFTInstances[ i ].SetPosition( pInstances[ i ].GetPosition() );
-				engPFTInstances[ i ].SetRotation( pInstances[ i ].GetRotation() );
-				engPFTInstances[ i ].SetScaling( pInstances[ i ].GetScaling() );
+			for(i=0; i<pInstanceCount; i++){
+				engPFTInstances[i].SetPosition(pInstances[i].GetPosition());
+				engPFTInstances[i].SetRotation(pInstances[i].GetRotation());
+				engPFTInstances[i].SetScaling(pInstances[i].GetScaling());
 				// others
 			}
 			
-		}catch( const deException & ){
-			if( engPFTInstances ) delete engPFTInstances;
+		}catch(const deException &){
+			if(engPFTInstances) delete engPFTInstances;
 			throw;
 		}
 	}
@@ -140,23 +140,23 @@ void mePropFieldType::UpdateEnginePFType(){
 	dePropField *engPropField = NULL;
 	int engPFTInstanceCount = 0;
 	
-	if( pPropField ){
+	if(pPropField){
 		engPropField = pPropField->GetEnginePropField();
 	}
 	
-	if( pEngPFType ){
+	if(pEngPFType){
 		engPFTInstanceCount = pEngPFType->GetInstanceCount();
 	}
 	
-	if( engPFTInstanceCount == pInstanceCount ){
-		if( pEngPFType ){
+	if(engPFTInstanceCount == pInstanceCount){
+		if(pEngPFType){
 			dePropFieldInstance *engPFTInstances = pEngPFType->GetInstances();
 			int i;
 			
-			for( i=0; i<pInstanceCount; i++ ){
-				engPFTInstances[ i ].SetPosition( pInstances[ i ].GetPosition() );
-				engPFTInstances[ i ].SetRotation( pInstances[ i ].GetRotation() );
-				engPFTInstances[ i ].SetScaling( pInstances[ i ].GetScaling() );
+			for(i=0; i<pInstanceCount; i++){
+				engPFTInstances[i].SetPosition(pInstances[i].GetPosition());
+				engPFTInstances[i].SetRotation(pInstances[i].GetRotation());
+				engPFTInstances[i].SetScaling(pInstances[i].GetScaling());
 				// and others
 			}
 		}
@@ -167,18 +167,18 @@ void mePropFieldType::UpdateEnginePFType(){
 		try{
 			engPFType = CreateEnginePFType();
 			
-			if( pEngPFType && engPropField ){
-				engPropField->RemoveType( pEngPFType );
+			if(pEngPFType && engPropField){
+				engPropField->RemoveType(pEngPFType);
 				pEngPFType = NULL;
 			}
 			
-			if( engPFType ){
-				engPropField->AddType( engPFType );
+			if(engPFType){
+				engPropField->AddType(engPFType);
 				pEngPFType = engPFType;
 			}
 			
-		}catch( const deException & ){
-			if( engPFType ) delete engPFType;
+		}catch(const deException &){
+			if(engPFType) delete engPFType;
 			throw;
 		}
 	}
@@ -187,90 +187,90 @@ void mePropFieldType::UpdateEnginePFType(){
 }
 
 void mePropFieldType::NotifyTypeChanged(){
-	if( pPropField ){
+	if(pPropField){
 		pPropField->SetWorldChanged();
 	}
 }
 
 
 
-void mePropFieldType::SetPathModel( const char *path ){
-	if( pPathModel.Equals( path ) ){
+void mePropFieldType::SetPathModel(const char *path){
+	if(pPathModel.Equals(path)){
 		return;
 	}
 	
 	pPathModel = path;
 	
-	if( pModel ){
+	if(pModel){
 		pModel->FreeReference();
 		pModel = NULL;
 	}
 	
-	if( ! pPathModel.IsEmpty() ){
-		pModel = pEngine->GetModelManager()->LoadModel( pPathModel.GetString(), "/" );
+	if(!pPathModel.IsEmpty()){
+		pModel = pEngine->GetModelManager()->LoadModel(pPathModel.GetString(), "/");
 	}
 	
 	UpdateEnginePFType();
-	if( pPropField && pPropField->GetWorld() ){
-		pPropField->GetWorld()->NotifyPFTypeChanged( pPropField, this );
+	if(pPropField && pPropField->GetWorld()){
+		pPropField->GetWorld()->NotifyPFTypeChanged(pPropField, this);
 	}
 }
 
-void mePropFieldType::SetPathSkin( const char *path ){
-	if( pPathSkin.Equals( path ) ){
+void mePropFieldType::SetPathSkin(const char *path){
+	if(pPathSkin.Equals(path)){
 		return;
 	}
 	
 	pPathSkin = path;
 	
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 		pSkin = NULL;
 	}
 	
-	if( ! pPathSkin.IsEmpty() ){
+	if(!pPathSkin.IsEmpty()){
 		try{
-			pSkin = pEngine->GetSkinManager()->LoadSkin( pPathSkin.GetString(), "/" );
+			pSkin = pEngine->GetSkinManager()->LoadSkin(pPathSkin.GetString(), "/");
 			
-		}catch( const deException & ){
-			if( pPropField && pPropField->GetWorld() ){
-				pSkin = pPropField->GetWorld()->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
+		}catch(const deException &){
+			if(pPropField && pPropField->GetWorld()){
+				pSkin = pPropField->GetWorld()->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
 				pSkin->AddReference();
 			}
 		}
 	}
 	
 	UpdateEnginePFType();
-	if( pPropField && pPropField->GetWorld() ){
-		pPropField->GetWorld()->NotifyPFTypeChanged( pPropField, this );
+	if(pPropField && pPropField->GetWorld()){
+		pPropField->GetWorld()->NotifyPFTypeChanged(pPropField, this);
 	}
 }
 
-void mePropFieldType::SetRotationPerForceX( float rotPerForce ){
-	rotPerForce = decMath::max( rotPerForce, 0.0f );
-	if( fabsf( rotPerForce - pRotPerForceX ) < FLOAT_SAFE_EPSILON ){
+void mePropFieldType::SetRotationPerForceX(float rotPerForce){
+	rotPerForce = decMath::max(rotPerForce, 0.0f);
+	if(fabsf(rotPerForce - pRotPerForceX) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pRotPerForceX = rotPerForce;
 	
 	UpdateEnginePFType();
-	if( pPropField && pPropField->GetWorld() ){
-		pPropField->GetWorld()->NotifyPFTypeChanged( pPropField, this );
+	if(pPropField && pPropField->GetWorld()){
+		pPropField->GetWorld()->NotifyPFTypeChanged(pPropField, this);
 	}
 }
 
-void mePropFieldType::SetRotationPerForceZ( float rotPerForce ){
-	rotPerForce = decMath::max( rotPerForce, 0.0f );
-	if( fabsf( rotPerForce - pRotPerForceZ ) < FLOAT_SAFE_EPSILON ){
+void mePropFieldType::SetRotationPerForceZ(float rotPerForce){
+	rotPerForce = decMath::max(rotPerForce, 0.0f);
+	if(fabsf(rotPerForce - pRotPerForceZ) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pRotPerForceZ = rotPerForce;
 	
 	UpdateEnginePFType();
-	if( pPropField && pPropField->GetWorld() ){
-		pPropField->GetWorld()->NotifyPFTypeChanged( pPropField, this );
+	if(pPropField && pPropField->GetWorld()){
+		pPropField->GetWorld()->NotifyPFTypeChanged(pPropField, this);
 	}
 }
 

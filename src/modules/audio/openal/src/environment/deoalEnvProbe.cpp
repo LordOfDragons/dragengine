@@ -56,35 +56,35 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalEnvProbe::deoalEnvProbe( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pRange( 0.0f ),
-pAttenuationRefDist( 1.0f ),
-pAttenuationRolloff( 0.0f ),
-pAttenuationDistanceOffset( 0.0f ),
-pRTConfig( NULL ),
-pRayCount( 0 ),
-pRayOpeningAngle( 0.0f ),
-pReverberationTimeMedium( 0.0f ),
-pReverberationTimeLow( 0.0f ),
-pReverberationTimeHigh( 0.0f ),
-pEchoDelay( 0.0f ),
-pRoomVolume( 0.0f ),
-pRoomSurface( 0.0f ),
-pRoomSabineLow( 0.0f ),
-pRoomSabineMedium( 0.0f ),
-pRoomSabineHigh( 0.0f ),
-pMeanFreePath( 0.0f ),
-pSepTimeFirstLateRefl( 0.03f ),
-pAvgAbsorptionLow( 0.0f ),
-pAvgAbsorptionMedium( 0.0f ),
-pAvgAbsorptionHigh( 0.0f ),
-pListenerRange( 1.0f ),
+deoalEnvProbe::deoalEnvProbe(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pRange(0.0f),
+pAttenuationRefDist(1.0f),
+pAttenuationRolloff(0.0f),
+pAttenuationDistanceOffset(0.0f),
+pRTConfig(NULL),
+pRayCount(0),
+pRayOpeningAngle(0.0f),
+pReverberationTimeMedium(0.0f),
+pReverberationTimeLow(0.0f),
+pReverberationTimeHigh(0.0f),
+pEchoDelay(0.0f),
+pRoomVolume(0.0f),
+pRoomSurface(0.0f),
+pRoomSabineLow(0.0f),
+pRoomSabineMedium(0.0f),
+pRoomSabineHigh(0.0f),
+pMeanFreePath(0.0f),
+pSepTimeFirstLateRefl(0.03f),
+pAvgAbsorptionLow(0.0f),
+pAvgAbsorptionMedium(0.0f),
+pAvgAbsorptionHigh(0.0f),
+pListenerRange(1.0f),
 // pListenerRange( 0.05f ),
-pListenerTracking( 1 ),
-pEstimated( true ),
-pLastUsed( 0 ),
-pOctreeNode( NULL ){
+pListenerTracking(1),
+pEstimated(true),
+pLastUsed(0),
+pOctreeNode(NULL){
 }
 
 deoalEnvProbe::~deoalEnvProbe(){
@@ -97,62 +97,62 @@ deoalEnvProbe::~deoalEnvProbe(){
 // Manegement
 ///////////////
 
-void deoalEnvProbe::SetPosition( const decDVector &position ){
+void deoalEnvProbe::SetPosition(const decDVector &position){
 	pPosition = position;
 	Invalidate();
 }
 
-void deoalEnvProbe::SetRange( float range ){
+void deoalEnvProbe::SetRange(float range){
 	pRange = range;
 	Invalidate();
 }
 
-void deoalEnvProbe::SetAttenuation( float refDist, float rolloff, float distanceOffset ){
+void deoalEnvProbe::SetAttenuation(float refDist, float rolloff, float distanceOffset){
 	pAttenuationRefDist = refDist;
 	pAttenuationRolloff = rolloff;
 	pAttenuationDistanceOffset = distanceOffset;
 	Invalidate();
 }
 
-void deoalEnvProbe::SetLayerMask( const decLayerMask &layerMask ){
+void deoalEnvProbe::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 	Invalidate();
 }
 
-void deoalEnvProbe::SetRTConfig( const deoalATRayTracing::sConfigSoundTracing *config ){
+void deoalEnvProbe::SetRTConfig(const deoalATRayTracing::sConfigSoundTracing *config){
 	pRTConfig = config;
 	Invalidate();
 }
 
-void deoalEnvProbe::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+void deoalEnvProbe::SetExtends(const decDVector &minExtend, const decDVector &maxExtend){
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 }
 
-void deoalEnvProbe::SetRayCount( int rayCount ){
+void deoalEnvProbe::SetRayCount(int rayCount){
 	pRayCount = rayCount;
 }
 
-void deoalEnvProbe::SetRayOpeningAngle( float angle ){
+void deoalEnvProbe::SetRayOpeningAngle(float angle){
 	pRayOpeningAngle = angle;
 }
 
-void deoalEnvProbe::SetReverberationTime( float timeLow, float timeMedium, float timeHigh ){
+void deoalEnvProbe::SetReverberationTime(float timeLow, float timeMedium, float timeHigh){
 	pReverberationTimeLow = timeLow;
 	pReverberationTimeMedium = timeMedium;
 	pReverberationTimeHigh = timeHigh;
 }
 
-void deoalEnvProbe::SetEcho( float delay ){
+void deoalEnvProbe::SetEcho(float delay){
 	pEchoDelay = delay;
 }
 
-void deoalEnvProbe::SetRoomCenter( const decDVector &center ){
+void deoalEnvProbe::SetRoomCenter(const decDVector &center){
 	pRoomCenter = center;
 }
 
 void deoalEnvProbe::SetRoom(float volume, float surface, float sabineLow,
-float sabineMedium, float sabineHigh ){
+float sabineMedium, float sabineHigh){
 	pRoomVolume = volume;
 	pRoomSurface = surface;
 	pRoomSabineLow = sabineLow;
@@ -160,15 +160,15 @@ float sabineMedium, float sabineHigh ){
 	pRoomSabineHigh = sabineHigh;
 }
 
-void deoalEnvProbe::SetMeanFreePath( float meanFreePath ){
+void deoalEnvProbe::SetMeanFreePath(float meanFreePath){
 	pMeanFreePath = meanFreePath;
 }
 
-void deoalEnvProbe::SetSepTimeFirstLateRefl( float time ){
+void deoalEnvProbe::SetSepTimeFirstLateRefl(float time){
 	pSepTimeFirstLateRefl = time;
 }
 
-void deoalEnvProbe::SetAvgAbsorption( float low, float medium, float high ){
+void deoalEnvProbe::SetAvgAbsorption(float low, float medium, float high){
 	pAvgAbsorptionLow = low;
 	pAvgAbsorptionMedium = medium;
 	pAvgAbsorptionHigh = high;
@@ -176,13 +176,13 @@ void deoalEnvProbe::SetAvgAbsorption( float low, float medium, float high ){
 
 
 
-float deoalEnvProbe::AttenuatedGain( float distance ) const{
+float deoalEnvProbe::AttenuatedGain(float distance) const{
 	// OpenAL Inverse Distance Clamped Attenuation Model:
 	// distance = max( distance, AL_REFERENCE_DISTANCE );
 	// distance = min( distance, AL_MAX_DISTANCE );
 	// gain = AL_REFERENCE_DISTANCE / (AL_REFERENCE_DISTANCE
 	//        + AL_ROLLOFF_FACTOR * ( distance - AL_REFERENCE_DISTANCE ) );
-	return pAttenuationRefDist / ( pAttenuationRefDist + pAttenuationRolloff
+	return pAttenuationRefDist / (pAttenuationRefDist + pAttenuationRolloff
 		* decMath::max( distance + pAttenuationDistanceOffset - pAttenuationRefDist, 0.0f ) );
 }
 
@@ -196,8 +196,8 @@ void deoalEnvProbe::Invalidate(){
 
 
 
-void deoalEnvProbe::EstimateRoomParameters( deoalAWorld &world,
-const deoalRayTraceConfig &probeConfig ){
+void deoalEnvProbe::EstimateRoomParameters(deoalAWorld &world,
+const deoalRayTraceConfig &probeConfig){
 	/*
 	Parallel-RoomEstimate:
 		pos=(0.000,1.600,-4.000) range=60.000 rays=162
@@ -208,12 +208,12 @@ const deoalRayTraceConfig &probeConfig ){
 	*/
 	deoalRTParallelEnvProbe::sRoomParameters roomParameters;
 	
-	pAudioThread.GetRTParallelEnvProbe().EstimateRoomParameters( roomParameters,
-		pPosition, pRange, world, pLayerMask, probeConfig );
+	pAudioThread.GetRTParallelEnvProbe().EstimateRoomParameters(roomParameters,
+		pPosition, pRange, world, pLayerMask, probeConfig);
 	
 	pMinExtend = roomParameters.minExtend;
 	pMaxExtend = roomParameters.maxExtend;
-	pRoomCenter = ( pMinExtend + pMaxExtend ) * 0.5;
+	pRoomCenter = (pMinExtend + pMaxExtend) * 0.5;
 	pReverberationTimeLow = roomParameters.reverberationTimeLow;
 	pReverberationTimeMedium = roomParameters.reverberationTimeMedium;
 	pReverberationTimeHigh = roomParameters.reverberationTimeHigh;
@@ -235,10 +235,10 @@ const deoalRayTraceConfig &probeConfig ){
 	pEstimated = true;
 }
 
-void deoalEnvProbe::TraceSoundRays( deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
-const deoalRayTraceConfig &probeConfig ){
-	if( ! pRTConfig ){
-		DETHROW( deeInvalidParam );
+void deoalEnvProbe::TraceSoundRays(deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
+const deoalRayTraceConfig &probeConfig){
+	if(!pRTConfig){
+		DETHROW(deeInvalidParam);
 	}
 	
 	/*
@@ -252,13 +252,13 @@ const deoalRayTraceConfig &probeConfig ){
 	*/
 	deoalRTParallelEnvProbe::sRoomParameters roomParameters;
 	
-	pAudioThread.GetRTParallelEnvProbe().TraceSoundRays( roomParameters,
+	pAudioThread.GetRTParallelEnvProbe().TraceSoundRays(roomParameters,
 		pSoundRayList, pPosition, pRange, pAttenuationRefDist, pAttenuationRolloff,
-		pAttenuationDistanceOffset, world, rtWorldBVH, pLayerMask, *pRTConfig );
+		pAttenuationDistanceOffset, world, rtWorldBVH, pLayerMask, *pRTConfig);
 	
 	pMinExtend = roomParameters.minExtend;
 	pMaxExtend = roomParameters.maxExtend;
-	pRoomCenter = ( pMinExtend + pMaxExtend ) * 0.5;
+	pRoomCenter = (pMinExtend + pMaxExtend) * 0.5;
 	pReverberationTimeLow = roomParameters.reverberationTimeLow;
 	pReverberationTimeMedium = roomParameters.reverberationTimeMedium;
 	pReverberationTimeHigh = roomParameters.reverberationTimeHigh;
@@ -280,23 +280,23 @@ const deoalRayTraceConfig &probeConfig ){
 	pEstimated = false;
 }
 
-void deoalEnvProbe::CalcListener( deoalEnvProbeListener &listener, deoalAWorld &world,
-const decDVector &position, deoalAMicrophone *microphone ){
-	pCalcListener( listener, world, position, microphone, NULL );
+void deoalEnvProbe::CalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
+const decDVector &position, deoalAMicrophone *microphone){
+	pCalcListener(listener, world, position, microphone, NULL);
 }
 
-void deoalEnvProbe::CalcListener( deoalEnvProbeListener &listener, deoalAWorld &world,
-const decDVector &position, deoalASoundLevelMeter *soundLevelMeter ){
-	pCalcListener( listener, world, position, NULL, soundLevelMeter );
+void deoalEnvProbe::CalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
+const decDVector &position, deoalASoundLevelMeter *soundLevelMeter){
+	pCalcListener(listener, world, position, NULL, soundLevelMeter);
 }
 
-void deoalEnvProbe::SetLastUsed( unsigned int lastUsed ){
+void deoalEnvProbe::SetLastUsed(unsigned int lastUsed){
 	pLastUsed = lastUsed;
 }
 
 
 
-void deoalEnvProbe::SetOctreeNode( deoalWorldOctree *node ){
+void deoalEnvProbe::SetOctreeNode(deoalWorldOctree *node){
 	pOctreeNode = node;
 }
 
@@ -309,8 +309,8 @@ void deoalEnvProbe::pRemoveAllLevels(){
 	const int count = pLevels.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoalEnvProbeLevel* )pLevels.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoalEnvProbeLevel*)pLevels.GetAt(i);
 	}
 	pLevels.RemoveAll();
 }
@@ -319,22 +319,22 @@ void deoalEnvProbe::pRemoveAllListeners(){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoalEnvProbeListenerCached* )pListeners.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoalEnvProbeListenerCached*)pListeners.GetAt(i);
 	}
 	pListeners.RemoveAll();
 }
 
-void deoalEnvProbe::pCalcListener( deoalEnvProbeListener &listener, deoalAWorld &world,
-const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter *soundLevelMeter ){
-	if( ! microphone && ! soundLevelMeter && pEstimated ){
-		DETHROW( deeInvalidParam );
+void deoalEnvProbe::pCalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
+const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter *soundLevelMeter){
+	if(!microphone && !soundLevelMeter && pEstimated){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const bool debugLogCalcInfo = pAudioThread.GetDebug().GetLogCalcEnvProbe();
 	const float invBlendRange = 0.5f / pListenerRange;
 	const float blendRange = pListenerRange * 2.0f;
-	const decVector localPosition( position );
+	const decVector localPosition(position);
 	const int count = pListeners.GetCount();
 	bool createProbe = true;
 	float listenSum = 0.0f;
@@ -343,7 +343,7 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 	pListenerTracking++;
 	
 	listener.Clear();
-	if( debugLogCalcInfo ){
+	if(debugLogCalcInfo){
 // 		pAudioThread.GetLogger().LogInfoFormat( "CalcListener: pos=(%.3f,%.3f,%.3f) %d",
 // 			position.x, position.y, position.z, count );
 	}
@@ -360,25 +360,25 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 	// weight range has to be large enough so pBlendNewListen=1 happens before listener with
 	// pBlendNewListen reaches 1. this ensures no jumping in the blending
 	
-	for( i=0; i<count; i++ ){
-		deoalEnvProbeListenerCached &cached = *( ( deoalEnvProbeListenerCached * )pListeners.GetAt( i ) );
+	for(i=0; i<count; i++){
+		deoalEnvProbeListenerCached &cached = *((deoalEnvProbeListenerCached *)pListeners.GetAt(i));
 		
-		const float distance = ( cached.GetPosition() - localPosition ).Length();
-		if( distance > blendRange ){
+		const float distance = (cached.GetPosition() - localPosition).Length();
+		if(distance > blendRange){
 			continue;
 		}
 		
 		const float scaleFactor = 1.0f - distance * invBlendRange;
-		listener.AddScaled( cached, scaleFactor );
+		listener.AddScaled(cached, scaleFactor);
 		listenSum += scaleFactor;
 		
-		cached.SetLastUsed( pListenerTracking );
+		cached.SetLastUsed(pListenerTracking);
 		
-		if( distance <= pListenerRange ){
+		if(distance <= pListenerRange){
 			createProbe = false;
 		}
 		
-		if( debugLogCalcInfo ){
+		if(debugLogCalcInfo){
 // 			pAudioThread.GetLogger().LogInfoFormat(
 // 				"- AddScaled: cached %d (%.3f,%.3f,%.3f) d=%.3f lsum=%.3f "
 // 				"frGain=(%.3f,%.3f,%.3f) lrGain=(%.3f,%.3f,%.3f)",
@@ -389,27 +389,27 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 		}
 	}
 	
-	if( true ){
+	if(true){
 		float closestDistance = 0.0f;
 		int closestIndex = -1;
-		for( i=0; i<count; i++ ){
-			deoalEnvProbeListenerCached &cached = *( ( deoalEnvProbeListenerCached* )
-				pListeners.GetAt( i ) );
-			const float distance = ( cached.GetPosition() - localPosition ).Length();
-			if( closestIndex == -1 || distance < closestDistance ){
+		for(i=0; i<count; i++){
+			deoalEnvProbeListenerCached &cached = *((deoalEnvProbeListenerCached*)
+				pListeners.GetAt(i));
+			const float distance = (cached.GetPosition() - localPosition).Length();
+			if(closestIndex == -1 || distance < closestDistance){
 				closestIndex = i;
 				closestDistance = distance;
 			}
 		}
-		if( closestIndex != -1 ){
-			deoalEnvProbeListenerCached &cached = *( ( deoalEnvProbeListenerCached* )
-				pListeners.GetAt( closestIndex ) );
+		if(closestIndex != -1){
+			deoalEnvProbeListenerCached &cached = *((deoalEnvProbeListenerCached*)
+				pListeners.GetAt(closestIndex));
 			listener.GetImpulseResponse() = cached.GetImpulseResponse();
 		}
 	}
 	
 	// create probe if required
-	if( createProbe ){
+	if(createProbe){
 		// GetEnvProbe can cause ray-tracing to be done
 		
 		// GetEnvProbe can cause Invalidate() to be called which in turn causes
@@ -421,48 +421,48 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 		// now it is safe to access pListeners
 		deoalEnvProbeListenerCached *replaceCached = nullptr;
 		
-		if( count == 100 ){
-			replaceCached = ( deoalEnvProbeListenerCached* )pListeners.GetAt( 0 );
+		if(count == 100){
+			replaceCached = (deoalEnvProbeListenerCached*)pListeners.GetAt(0);
 			int replaceCachedAge = pListenerTracking - replaceCached->GetLastUsed();
 			
-			for( i=1; i<count; i++ ){
+			for(i=1; i<count; i++){
 				deoalEnvProbeListenerCached * const cached =
-					( deoalEnvProbeListenerCached * )pListeners.GetAt( i );
+					(deoalEnvProbeListenerCached *)pListeners.GetAt(i);
 				const int cachedAge = pListenerTracking - cached->GetLastUsed();
-				if( cachedAge > replaceCachedAge ){
+				if(cachedAge > replaceCachedAge){
 					replaceCached = cached;
 					replaceCachedAge = cachedAge;
 				}
 			}
 			
-			if( debugLogCalcInfo ){
-				pAudioThread.GetLogger().LogInfoFormat( "> Replace cached (%.3f,%.3f,%.3f)",
+			if(debugLogCalcInfo){
+				pAudioThread.GetLogger().LogInfoFormat("> Replace cached (%.3f,%.3f,%.3f)",
 					replaceCached->GetPosition().x, replaceCached->GetPosition().y,
-					replaceCached->GetPosition().z );
+					replaceCached->GetPosition().z);
 			}
 		}
 		
-		if( ! replaceCached ){
+		if(!replaceCached){
 			replaceCached = new deoalEnvProbeListenerCached;
-			pListeners.Add( replaceCached );
-			if( debugLogCalcInfo ){
-				pAudioThread.GetLogger().LogInfoFormat( "> New cached (%.3f,%.3f,%.3f)",
+			pListeners.Add(replaceCached);
+			if(debugLogCalcInfo){
+				pAudioThread.GetLogger().LogInfoFormat("> New cached (%.3f,%.3f,%.3f)",
 					replaceCached->GetPosition().x, replaceCached->GetPosition().y,
-					replaceCached->GetPosition().z );
+					replaceCached->GetPosition().z);
 			}
 		}
 		
-		replaceCached->SetPosition( localPosition );
-		replaceCached->SetLastUsed( pListenerTracking );
+		replaceCached->SetPosition(localPosition);
+		replaceCached->SetLastUsed(pListenerTracking);
 		
-		if( listenProbe ){
-			if( microphone ){
-				pAudioThread.GetRTParallelEnvProbe().Listen( *this, listenProbe, *replaceCached,
-					world, &microphone->GetRTWorldBVH(), microphone->GetLayerMask(), position );
+		if(listenProbe){
+			if(microphone){
+				pAudioThread.GetRTParallelEnvProbe().Listen(*this, listenProbe, *replaceCached,
+					world, &microphone->GetRTWorldBVH(), microphone->GetLayerMask(), position);
 				
 			}else{
-				pAudioThread.GetRTParallelEnvProbe().Listen( *this, listenProbe, *replaceCached,
-					world, nullptr, soundLevelMeter->GetLayerMask(), position );
+				pAudioThread.GetRTParallelEnvProbe().Listen(*this, listenProbe, *replaceCached,
+					world, nullptr, soundLevelMeter->GetLayerMask(), position);
 			}
 			
 			// copy the extends from the listener. this is required since these extends are
@@ -476,16 +476,16 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 		
 		// add new propbe to result
 		listener += *replaceCached;
-		if( true ){
+		if(true){
 			listener.GetImpulseResponse() = replaceCached->GetImpulseResponse();
 		}
 		listenSum += 1.0f;
 	}
 	
 	// return result
-	if( listenSum > FLOAT_SAFE_EPSILON ){
-		listener.Normalize( 1.0f / listenSum );
-		if( debugLogCalcInfo ){
+	if(listenSum > FLOAT_SAFE_EPSILON){
+		listener.Normalize(1.0f / listenSum);
+		if(debugLogCalcInfo){
 // 			pAudioThread.GetLogger().LogInfoFormat( "> Result: pos=(%.3f,%.3f,%.3f) %d lsum=%.3f",
 // 				position.x, position.y, position.z, count, listenSum );
 		}

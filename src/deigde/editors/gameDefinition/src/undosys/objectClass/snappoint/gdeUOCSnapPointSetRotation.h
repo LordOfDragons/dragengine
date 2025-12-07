@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSnapPointSetRotation( gdeObjectClass *objectClass,
-		gdeOCSnapPoint *snapPoint, const decVector &newValue );
+	gdeUOCSnapPointSetRotation(gdeObjectClass *objectClass,
+		gdeOCSnapPoint *snapPoint, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

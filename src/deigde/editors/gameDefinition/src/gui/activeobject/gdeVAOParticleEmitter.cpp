@@ -64,16 +64,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOParticleEmitter::gdeVAOParticleEmitter( gdeViewActiveObject &view,
+gdeVAOParticleEmitter::gdeVAOParticleEmitter(gdeViewActiveObject &view,
 	const gdeObjectClass &objectClass, const decString &propertyPrefix,
-	gdeOCParticleEmitter *ocemitter ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCParticleEmitter( ocemitter ),
-pDDSCenter( NULL ),
-pDDSCoordSystem( NULL )
+	gdeOCParticleEmitter *ocemitter) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCParticleEmitter(ocemitter),
+pDDSCenter(NULL),
+pDDSCoordSystem(NULL)
 {
-	if( ! ocemitter ){
-		DETHROW( deeInvalidParam );
+	if(!ocemitter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOCParticleEmitter->AddReference();
@@ -86,7 +86,7 @@ pDDSCoordSystem( NULL )
 		
 		AttachResources();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -113,42 +113,42 @@ void gdeVAOParticleEmitter::RebuildResources(){
 }
 
 void gdeVAOParticleEmitter::AttachResources(){
-	if( ! pInstance ){
+	if(!pInstance){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if( ! attachCollider ){
+	if(!attachCollider){
 		return;
 	}
 	
-	const decVector position( PropertyVector( pOCParticleEmitter->GetPropertyName(
-		gdeOCParticleEmitter::epAttachPosition ), pOCParticleEmitter->GetPosition() ) );
-	const decQuaternion orientation( PropertyQuaternion( pOCParticleEmitter->GetPropertyName(
-		gdeOCParticleEmitter::epAttachRotation ), pOCParticleEmitter->GetRotation() ) );
+	const decVector position(PropertyVector(pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epAttachPosition), pOCParticleEmitter->GetPosition()));
+	const decQuaternion orientation(PropertyQuaternion(pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epAttachRotation), pOCParticleEmitter->GetRotation()));
 	
 	deColliderAttachment *attachment = NULL;
 	try{
 		// attach particleEmitter
-		attachment = new deColliderAttachment( pInstance );
-		attachment->SetPosition( position );
-		attachment->SetOrientation( orientation );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
+		attachment = new deColliderAttachment(pInstance);
+		attachment->SetPosition(position);
+		attachment->SetOrientation(orientation);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
-		attachCollider->AddAttachment( attachment );
+		attachCollider->AddAttachment(attachment);
 		attachment = NULL;
 		
 		// attach debug drawer
-		attachment = new deColliderAttachment( pDebugDrawer );
-		attachment->SetPosition( position );
-		attachment->SetOrientation( orientation );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
+		attachment = new deColliderAttachment(pDebugDrawer);
+		attachment->SetPosition(position);
+		attachment->SetOrientation(orientation);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
-		attachCollider->AddAttachment( attachment );
+		attachCollider->AddAttachment(attachment);
 		attachment = NULL;
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			delete attachment;
 		}
 		throw;
@@ -156,24 +156,24 @@ void gdeVAOParticleEmitter::AttachResources(){
 }
 
 void gdeVAOParticleEmitter::DetachResources(){
-	if( ! pInstance ){
+	if(!pInstance){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if( ! attachCollider ){
+	if(!attachCollider){
 		return;
 	}
 	
 	deColliderAttachment *attachment = NULL;
-	attachment = attachCollider->GetAttachmentWith( pInstance );
-	if( attachment ){
-		attachCollider->RemoveAttachment( attachment );
+	attachment = attachCollider->GetAttachmentWith(pInstance);
+	if(attachment){
+		attachCollider->RemoveAttachment(attachment);
 	}
 	
-	attachment = attachCollider->GetAttachmentWith( pDebugDrawer );
-	if( attachment ){
-		attachCollider->RemoveAttachment( attachment );
+	attachment = attachCollider->GetAttachmentWith(pDebugDrawer);
+	if(attachment){
+		attachCollider->RemoveAttachment(attachment);
 	}
 }
 
@@ -190,18 +190,18 @@ void gdeVAOParticleEmitter::pCleanUp(){
 	DetachResources();
 	pReleaseResources();
 	
-	if( pDDSCoordSystem ){
+	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if( pDDSCenter ){
+	if(pDDSCenter){
 		delete pDDSCenter;
 	}
-	if( pDebugDrawer ){
-		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pDebugDrawer){
+		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
 	}
 	
-	if( pOCParticleEmitter ){
+	if(pOCParticleEmitter){
 		pOCParticleEmitter->FreeReference();
 	}
 }
@@ -212,58 +212,58 @@ void gdeVAOParticleEmitter::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
-	pDebugDrawer->SetXRay( true );
-	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
+	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer->SetXRay(true);
+	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
 	pDDSCenter = new igdeWDebugDrawerShape;
-	pDDSCenter->AddSphereShape( 0.05f, decVector() );
-	pDDSCenter->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCenter->AddSphereShape(0.05f, decVector());
+	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create coordinate system shape
 	pDDSCoordSystem = new igdeWCoordSysArrows;
-	pDDSCoordSystem->SetArrowLength( 0.2f );
-	pDDSCoordSystem->SetArrowSize( 0.01f );
-	pDDSCoordSystem->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCoordSystem->SetArrowLength(0.2f);
+	pDDSCoordSystem->SetArrowSize(0.01f);
+	pDDSCoordSystem->SetParentDebugDrawer(pDebugDrawer);
 }
 
 void gdeVAOParticleEmitter::pCreateParticleEmitter(){
-	decString path( PropertyString( pOCParticleEmitter->GetPropertyName(
-		gdeOCParticleEmitter::epPath ), pOCParticleEmitter->GetPath() ) );
-	if( path.IsEmpty() ){
+	decString path(PropertyString(pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epPath), pOCParticleEmitter->GetPath()));
+	if(path.IsEmpty()){
 		return;
 	}
 	
 	// load particle emitter
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
-	igdeLoadParticleEmitter loader( environment, environment.GetLogger(), "gdeVAOParticleEmitter" );
+	igdeLoadParticleEmitter loader(environment, environment.GetLogger(), "gdeVAOParticleEmitter");
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	decBaseFileReader::Ref reader;
 	
 	try{
-		pEmitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );
-		reader.TakeOver( vfs->OpenFileForReading( decPath::CreatePathUnix( path ) ) );
-		loader.Load( path, pEmitter, reader );
+		pEmitter.TakeOver(engine.GetParticleEmitterManager()->CreateParticleEmitter());
+		reader.TakeOver(vfs->OpenFileForReading(decPath::CreatePathUnix(path)));
+		loader.Load(path, pEmitter, reader);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pEmitter = NULL;
-		environment.GetLogger()->LogException( LOGSOURCE, e );
+		environment.GetLogger()->LogException(LOGSOURCE, e);
 		return;
 	}
 	
 	// create particle emitter instance
-	pInstance.TakeOver( engine.GetParticleEmitterInstanceManager()->CreateInstance() );
-	pInstance->SetEmitter( pEmitter );
+	pInstance.TakeOver(engine.GetParticleEmitterInstanceManager()->CreateInstance());
+	pInstance->SetEmitter(pEmitter);
 	
 	decLayerMask collisionMask;
-	collisionMask.SetBit( 0 );
-	const decCollisionFilter collisionFilter( collisionMask );
-	pInstance->SetCollisionFilter( collisionFilter );
+	collisionMask.SetBit(0);
+	const decCollisionFilter collisionFilter(collisionMask);
+	pInstance->SetCollisionFilter(collisionFilter);
 	
-	pInstance->SetEnableCasting( true );
-	pView.GetGameDefinition()->GetWorld()->AddParticleEmitter( pInstance );
+	pInstance->SetEnableCasting(true);
+	pView.GetGameDefinition()->GetWorld()->AddParticleEmitter(pInstance);
 }
 
 void gdeVAOParticleEmitter::pUpdateDDShapes(){
@@ -272,14 +272,14 @@ void gdeVAOParticleEmitter::pUpdateDDShapes(){
 void gdeVAOParticleEmitter::pUpdateDDShapeColor(){
 	const gdeConfiguration &config = pView.GetWindowMain().GetConfiguration();
 	
-	if( pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter
-	&& pView.GetGameDefinition()->GetActiveOCParticleEmitter() == pOCParticleEmitter ){
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorParticleEmitterActive(), 1.0f ) );
-		pDDSCenter->SetFillColor( config.GetColorParticleEmitterActive() );
+	if(pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter
+	&& pView.GetGameDefinition()->GetActiveOCParticleEmitter() == pOCParticleEmitter){
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorParticleEmitterActive(), 1.0f));
+		pDDSCenter->SetFillColor(config.GetColorParticleEmitterActive());
 		
 	}else{
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorParticleEmitter(), 0.25f ) );
-		pDDSCenter->SetFillColor( config.GetColorParticleEmitter() );
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorParticleEmitter(), 0.25f));
+		pDDSCenter->SetFillColor(config.GetColorParticleEmitter());
 	}
 }
 
@@ -288,8 +288,8 @@ void gdeVAOParticleEmitter::pUpdateDDShapeColor(){
 void gdeVAOParticleEmitter::pReleaseResources(){
 	deWorld &world = *pView.GetGameDefinition()->GetWorld();
 	
-	if( pInstance ){
-		world.RemoveParticleEmitter( pInstance );
+	if(pInstance){
+		world.RemoveParticleEmitter(pInstance);
 		pInstance = NULL;
 	}
 	pEmitter = NULL;

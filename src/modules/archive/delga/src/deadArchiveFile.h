@@ -60,8 +60,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file entry. */
-	deadArchiveFile( deArchiveDelga &module, const char *filename,
-		const unz_file_info &info, const unz_file_pos &archivePosition );
+	deadArchiveFile(deArchiveDelga &module, const char *filename,
+		const unz_file_info &info, const unz_file_pos &archivePosition);
 	
 	/** \brief Clean up file entry. */
 	virtual ~deadArchiveFile();

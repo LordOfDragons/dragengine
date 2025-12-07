@@ -55,19 +55,19 @@ int ceActorParameterList::GetCount() const{
 	return pParameters.GetCount();
 }
 
-ceActorParameter *ceActorParameterList::GetAt( int index ) const{
-	return ( ceActorParameter* )pParameters.GetAt( index );
+ceActorParameter *ceActorParameterList::GetAt(int index) const{
+	return (ceActorParameter*)pParameters.GetAt(index);
 }
 
-ceActorParameter *ceActorParameterList::GetNamed( const char *name ) const{
+ceActorParameter *ceActorParameterList::GetNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	ceActorParameter *parameter;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		parameter = ( ceActorParameter* )pParameters.GetAt( i );
+	for(i=0; i<count; i++){
+		parameter = (ceActorParameter*)pParameters.GetAt(i);
 		
-		if( parameter->GetName().Equals( name ) ){
+		if(parameter->GetName().Equals(name)){
 			return parameter;
 		}
 	}
@@ -75,16 +75,16 @@ ceActorParameter *ceActorParameterList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int ceActorParameterList::IndexOf( ceActorParameter *parameter ) const{
-	return pParameters.IndexOf( parameter );
+int ceActorParameterList::IndexOf(ceActorParameter *parameter) const{
+	return pParameters.IndexOf(parameter);
 }
 
-int ceActorParameterList::IndexOfNamed( const char *name ) const{
+int ceActorParameterList::IndexOfNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceActorParameter* )pParameters.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceActorParameter*)pParameters.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int ceActorParameterList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool ceActorParameterList::Has( ceActorParameter *parameter ) const{
-	return pParameters.Has( parameter );
+bool ceActorParameterList::Has(ceActorParameter *parameter) const{
+	return pParameters.Has(parameter);
 }
 
-bool ceActorParameterList::HasNamed( const char *name ) const{
+bool ceActorParameterList::HasNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceActorParameter* )pParameters.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceActorParameter*)pParameters.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,22 +109,22 @@ bool ceActorParameterList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void ceActorParameterList::Set( const char *name, int value ){
-	ceActorParameter *parameter = GetNamed( name );
+void ceActorParameterList::Set(const char *name, int value){
+	ceActorParameter *parameter = GetNamed(name);
 	
-	if( parameter ){
-		parameter->SetValue( value );
+	if(parameter){
+		parameter->SetValue(value);
 		
 	}else{
-		parameter = new ceActorParameter( name, value );
+		parameter = new ceActorParameter(name, value);
 		
-		pParameters.Add( parameter );
+		pParameters.Add(parameter);
 		parameter->FreeReference();
 	}
 }
 
-void ceActorParameterList::Remove( ceActorParameter *parameter ){
-	pParameters.Remove( parameter );
+void ceActorParameterList::Remove(ceActorParameter *parameter){
+	pParameters.Remove(parameter);
 }
 
 void ceActorParameterList::RemoveAll(){
@@ -133,7 +133,7 @@ void ceActorParameterList::RemoveAll(){
 
 
 
-ceActorParameterList &ceActorParameterList::operator=( const ceActorParameterList &list ){
+ceActorParameterList &ceActorParameterList::operator=(const ceActorParameterList &list){
 	pParameters = list.pParameters;
 	return *this;
 }

@@ -39,7 +39,7 @@ igdeNativeNullMenuCommand::igdeNativeNullMenuCommand(){
 igdeNativeNullMenuCommand::~igdeNativeNullMenuCommand(){
 }
 
-igdeNativeNullMenuCommand *igdeNativeNullMenuCommand::CreateNativeWidget( igdeMenuCommand& ){
+igdeNativeNullMenuCommand *igdeNativeNullMenuCommand::CreateNativeWidget(igdeMenuCommand&){
 	return new igdeNativeNullMenuCommand;
 }
 

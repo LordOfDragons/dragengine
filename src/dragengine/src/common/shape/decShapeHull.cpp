@@ -37,24 +37,24 @@
 //////////////////////////////
 
 decShapeHull::decShapeHull() :
-pPoints( NULL ),
-pPointCount( 0 ){
+pPoints(NULL),
+pPointCount(0){
 }
 
-decShapeHull::decShapeHull( const decVector &position ) :
-decShape( position ),
-pPoints( NULL ),
-pPointCount( 0 ){
+decShapeHull::decShapeHull(const decVector &position) :
+decShape(position),
+pPoints(NULL),
+pPointCount(0){
 }
 
-decShapeHull::decShapeHull( const decVector &position, const decQuaternion &orientation ) :
-decShape( position, orientation ),
-pPoints( NULL ),
-pPointCount( 0 ){
+decShapeHull::decShapeHull(const decVector &position, const decQuaternion &orientation) :
+decShape(position, orientation),
+pPoints(NULL),
+pPointCount(0){
 }
 
 decShapeHull::~decShapeHull(){
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 }
@@ -64,57 +64,57 @@ decShapeHull::~decShapeHull(){
 // Management
 ///////////////
 
-void decShapeHull::SetPointCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void decShapeHull::SetPointCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pPointCount ){
+	if(count == pPointCount){
 		return;
 	}
 	
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 		pPoints = NULL;
 		pPointCount = 0;
 	}
 	
-	if( count > 0 ){
-		pPoints = new decVector[ count ];
+	if(count > 0){
+		pPoints = new decVector[count];
 		pPointCount = count;
 	}
 }
 
-const decVector &decShapeHull::GetPointAt( int index ) const{
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeOutOfBoundary );
+const decVector &decShapeHull::GetPointAt(int index) const{
+	if(index < 0 || index >= pPointCount){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	return pPoints[ index ];
+	return pPoints[index];
 }
 
-void decShapeHull::SetPointAt( int index, const decVector &point ){
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeOutOfBoundary );
+void decShapeHull::SetPointAt(int index, const decVector &point){
+	if(index < 0 || index >= pPointCount){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	pPoints[ index ] = point;
+	pPoints[index] = point;
 }
 
 
 
 decShape *decShapeHull::Copy() const{
-	decShapeHull * const shape = new decShapeHull( GetPosition(), GetOrientation() );
+	decShapeHull * const shape = new decShapeHull(GetPosition(), GetOrientation());
 	int i;
 	
 	try{
-		shape->SetPointCount( pPointCount );
-		for( i=0; i<pPointCount; i++ ){
-			shape->SetPointAt( i, pPoints[ i ] );
+		shape->SetPointCount(pPointCount);
+		for(i=0; i<pPointCount; i++){
+			shape->SetPointAt(i, pPoints[i]);
 		}
 		
-	}catch( const deException & ){
-		if( shape ){
+	}catch(const deException &){
+		if(shape){
 			delete shape;
 		}
 		throw;
@@ -128,6 +128,6 @@ decShape *decShapeHull::Copy() const{
 // Visiting
 /////////////
 
-void decShapeHull::Visit( decShapeVisitor &visitor ){
-	visitor.VisitShapeHull( *this );
+void decShapeHull::Visit(decShapeVisitor &visitor){
+	visitor.VisitShapeHull(*this);
 }

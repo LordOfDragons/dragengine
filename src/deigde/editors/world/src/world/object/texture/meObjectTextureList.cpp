@@ -54,40 +54,40 @@ int meObjectTextureList::GetTextureCount() const{
 	return pTextures.GetCount();
 }
 
-meObjectTexture *meObjectTextureList::GetTextureAt( int position ) const{
-	return ( meObjectTexture* )pTextures.GetAt( position );
+meObjectTexture *meObjectTextureList::GetTextureAt(int position) const{
+	return (meObjectTexture*)pTextures.GetAt(position);
 }
 
-int meObjectTextureList::IndexOfTexture( meObjectTexture *texture ) const{
-	return pTextures.IndexOf( texture );
+int meObjectTextureList::IndexOfTexture(meObjectTexture *texture) const{
+	return pTextures.IndexOf(texture);
 }
 
-bool meObjectTextureList::HasTexture( meObjectTexture *texture ){
-	return pTextures.Has( texture );
+bool meObjectTextureList::HasTexture(meObjectTexture *texture){
+	return pTextures.Has(texture);
 }
 
-void meObjectTextureList::AddTexture( meObjectTexture *texture ){
-	if( ! texture ) DETHROW( deeInvalidParam );
+void meObjectTextureList::AddTexture(meObjectTexture *texture){
+	if(!texture) DETHROW(deeInvalidParam);
 	
-	pTextures.Add( texture );
+	pTextures.Add(texture);
 }
 
-void meObjectTextureList::AddTextureIfAbsent( meObjectTexture *texture ){
-	if( ! texture ) DETHROW( deeInvalidParam );
+void meObjectTextureList::AddTextureIfAbsent(meObjectTexture *texture){
+	if(!texture) DETHROW(deeInvalidParam);
 	
-	pTextures.AddIfAbsent( texture );
+	pTextures.AddIfAbsent(texture);
 }
 
-void meObjectTextureList::RemoveTexture( meObjectTexture *texture ){
-	if( ! texture ) DETHROW( deeInvalidParam );
+void meObjectTextureList::RemoveTexture(meObjectTexture *texture){
+	if(!texture) DETHROW(deeInvalidParam);
 	
-	pTextures.Remove( texture );
+	pTextures.Remove(texture);
 }
 
-void meObjectTextureList::RemoveTextureIfPresent( meObjectTexture *texture ){
-	if( ! texture ) DETHROW( deeInvalidParam );
+void meObjectTextureList::RemoveTextureIfPresent(meObjectTexture *texture){
+	if(!texture) DETHROW(deeInvalidParam);
 	
-	pTextures.RemoveIfPresent( texture );
+	pTextures.RemoveIfPresent(texture);
 }
 
 void meObjectTextureList::RemoveAllTextures(){

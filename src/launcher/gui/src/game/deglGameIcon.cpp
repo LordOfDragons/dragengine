@@ -37,8 +37,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deglGameIcon::deglGameIcon( int size, const char *path ) :
-delGameIcon( size, path ){
+deglGameIcon::deglGameIcon(int size, const char *path) :
+delGameIcon(size, path){
 }
 
 deglGameIcon::~deglGameIcon(){
@@ -49,12 +49,12 @@ deglGameIcon::~deglGameIcon(){
 // Management
 ///////////////
 
-deglSharedIcon::Ref deglGameIcon::GetScaledFoxIcon( int size ) const{
-	if( ! pFoxIcon ){
+deglSharedIcon::Ref deglGameIcon::GetScaledFoxIcon(int size) const{
+	if(!pFoxIcon){
 		return nullptr;
 	}
 	
-	if( GetSize() == size ){
+	if(GetSize() == size){
 		return pFoxIcon;
 	}
 	
@@ -63,15 +63,15 @@ deglSharedIcon::Ref deglGameIcon::GetScaledFoxIcon( int size ) const{
 		// quality 1: slower box filtered scale
 		// quality 2: slow gamma corrected scale
 	
-	deglSharedIcon::Ref icon( deglSharedIcon::Ref::New(
-		new deglSharedIcon( new FXPNGIcon( FXApp::instance() ) ) ) );
+	deglSharedIcon::Ref icon(deglSharedIcon::Ref::New(
+		new deglSharedIcon(new FXPNGIcon(FXApp::instance()))));
 	
-	FXMemoryStream stream( FXStreamLoad, ( FXuchar* )GetContent()->GetPointer(), GetContent()->GetLength() );
-	stream.position( 0 );
+	FXMemoryStream stream(FXStreamLoad, (FXuchar*)GetContent()->GetPointer(), GetContent()->GetLength());
+	stream.position(0);
 	
 	FXIcon &iconScaled = *icon->GetIcon();
-	iconScaled.loadPixels( stream );
-	iconScaled.scale( size, size, quality );
+	iconScaled.loadPixels(stream);
+	iconScaled.scale(size, size, quality);
 	iconScaled.create();
 	
 	return icon;
@@ -94,11 +94,11 @@ void deglGameIcon::OnContentChanged(){
 void deglGameIcon::pCreateFoxIcon(){
 	pFoxIcon = nullptr;
 	
-	if( ! GetContent() ){
+	if(!GetContent()){
 		return;
 	}
 	
-	if( GetPath().EndsWith( ".png" ) ){
+	if(GetPath().EndsWith(".png")){
 		pCreatePNGFoxIcon();
 		
 	}else{
@@ -108,14 +108,14 @@ void deglGameIcon::pCreateFoxIcon(){
 
 void deglGameIcon::pCreatePNGFoxIcon(){
 	try{
-		FXMemoryStream stream( FXStreamLoad, ( FXuchar* )GetContent()->GetPointer(), GetContent()->GetLength() );
-		stream.position( 0 );
-		pFoxIcon.TakeOver( new deglSharedIcon( new FXPNGIcon( FXApp::instance() ) ) );
+		FXMemoryStream stream(FXStreamLoad, (FXuchar*)GetContent()->GetPointer(), GetContent()->GetLength());
+		stream.position(0);
+		pFoxIcon.TakeOver(new deglSharedIcon(new FXPNGIcon(FXApp::instance())));
 		FXIcon &icon = *pFoxIcon->GetIcon();
-		icon.loadPixels( stream );
+		icon.loadPixels(stream);
 		icon.create();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pFoxIcon = nullptr;
 	}
 }

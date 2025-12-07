@@ -65,9 +65,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalComponentDebug::deoalComponentDebug( deoalComponent &component ) :
-pComponent( component ),
-pDirtyFaces( true ){
+deoalComponentDebug::deoalComponentDebug(deoalComponent &component) :
+pComponent(component),
+pDirtyFaces(true){
 }
 
 deoalComponentDebug::~deoalComponentDebug(){
@@ -84,15 +84,15 @@ void deoalComponentDebug::DirtyFaces(){
 }
 
 void deoalComponentDebug::Update(){
-	if( pDirtyFaces ){
+	if(pDirtyFaces){
 		pDirtyFaces = false;
 		pUpdateDDFaces();
 	}
 	
-	if( pDDFaces ){
-		pDDFaces->SetPosition( pComponent.GetComponent().GetPosition() );
-		pDDFaces->SetOrientation( pComponent.GetComponent().GetOrientation() );
-		pDDFaces->SetScale( pComponent.GetComponent().GetScaling() );
+	if(pDDFaces){
+		pDDFaces->SetPosition(pComponent.GetComponent().GetPosition());
+		pDDFaces->SetOrientation(pComponent.GetComponent().GetOrientation());
+		pDDFaces->SetScale(pComponent.GetComponent().GetScaling());
 	}
 }
 
@@ -102,9 +102,9 @@ void deoalComponentDebug::Update(){
 //////////////////////
 
 void deoalComponentDebug::pCleanUp(){
-	if( pDDFaces ){
-		if( pDDFaces->GetParentWorld() ){
-			pDDFaces->GetParentWorld()->RemoveDebugDrawer( pDDFaces );
+	if(pDDFaces){
+		if(pDDFaces->GetParentWorld()){
+			pDDFaces->GetParentWorld()->RemoveDebugDrawer(pDDFaces);
 		}
 	}
 }
@@ -117,37 +117,37 @@ void deoalComponentDebug::pUpdateDDFaces(){
 	const bool enabled = pComponent.GetOal().GetDevMode()->GetShowAudioModels()
 		&& acomponent.GetAffectsSound()
 		&& world && microphone && microphone->GetParentWorld() == world
-		&& layerMask.Matches( microphone->GetMicrophone().GetLayerMask() );
+		&& layerMask.Matches(microphone->GetMicrophone().GetLayerMask());
 	
-	if( ! enabled ){
-		if( pDDFaces ){
-			if( pDDFaces->GetParentWorld() ){
-				pDDFaces->GetParentWorld()->RemoveDebugDrawer( pDDFaces );
+	if(!enabled){
+		if(pDDFaces){
+			if(pDDFaces->GetParentWorld()){
+				pDDFaces->GetParentWorld()->RemoveDebugDrawer(pDDFaces);
 			}
 			pDDFaces = NULL;
 		}
 		return;
 	}
 	
-	if( ! pDDFaces ){
-		pDDFaces.TakeOver( pComponent.GetOal().GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer() );
-		pDDFaces->SetXRay( true );
-		pDDFaces->SetVisible( true );
-		pComponent.GetParentWorld()->GetWorld().AddDebugDrawer( pDDFaces );
+	if(!pDDFaces){
+		pDDFaces.TakeOver(pComponent.GetOal().GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer());
+		pDDFaces->SetXRay(true);
+		pDDFaces->SetVisible(true);
+		pComponent.GetParentWorld()->GetWorld().AddDebugDrawer(pDDFaces);
 	}
 	
 	pDDFaces->RemoveAllShapes();
 	
-	if( ! pComponent.GetAudioModel() ){
+	if(!pComponent.GetAudioModel()){
 		return;
 	}
 	
-	const decColor color( 1.0f, 0.5f, 0.0f );
+	const decColor color(1.0f, 0.5f, 0.0f);
 	const float alphaFill = 0.1f;
 	const float alphaEdge = 0.3f;
 	
-	const decColor colorFill( color, alphaFill );
-	const decColor colorEdge( color, alphaEdge );
+	const decColor colorFill(color, alphaFill);
+	const decColor colorEdge(color, alphaEdge);
 	
 	const deoalAModel &model = *pComponent.GetAudioModel()->GetAModel();
 	const decIntList &mappingTexture = acomponent.GetModelTextureMappings();
@@ -155,14 +155,14 @@ void deoalComponentDebug::pUpdateDDFaces(){
 	const int faceCount = model.GetFaceCount();
 	int i, j;
 	
-	for( i=0; i<textureCount; i++ ){
-		const int index = mappingTexture.GetAt( i );
-		if( index == -1 ){
+	for(i=0; i<textureCount; i++){
+		const int index = mappingTexture.GetAt(i);
+		if(index == -1){
 			continue;
 		}
 		
-		const deoalComponentTexture &componentTexture = pComponent.GetTextureAt( index );
-		if( ! componentTexture.GetATexture()->GetAffectsSound() ){
+		const deoalComponentTexture &componentTexture = pComponent.GetTextureAt(index);
+		if(!componentTexture.GetATexture()->GetAffectsSound()){
 			continue;
 		}
 		
@@ -170,54 +170,54 @@ void deoalComponentDebug::pUpdateDDFaces(){
 		deDebugDrawerShapeFace *shapeFace = NULL;
 		try{
 			shape = new deDebugDrawerShape();
-			shape->SetFillColor( colorFill );
-			shape->SetEdgeColor( colorEdge );
+			shape->SetFillColor(colorFill);
+			shape->SetEdgeColor(colorEdge);
 			
-			if( acomponent.GetFaceCount() == 0 ){
-				for( j=0; j<faceCount; j++ ){
-					const deoalModelFace &face = model.GetFaceAt( j );
-					if( face.GetTexture() != i ){
+			if(acomponent.GetFaceCount() == 0){
+				for(j=0; j<faceCount; j++){
+					const deoalModelFace &face = model.GetFaceAt(j);
+					if(face.GetTexture() != i){
 						continue;
 					}
 					
 					shapeFace = new deDebugDrawerShapeFace;
-					shapeFace->AddVertex( face.GetVertex1() );
-					shapeFace->AddVertex( face.GetVertex2() );
-					shapeFace->AddVertex( face.GetVertex3() );
-					shapeFace->SetNormal( face.GetNormal() );
-					shape->AddFace( shapeFace );
+					shapeFace->AddVertex(face.GetVertex1());
+					shapeFace->AddVertex(face.GetVertex2());
+					shapeFace->AddVertex(face.GetVertex3());
+					shapeFace->SetNormal(face.GetNormal());
+					shape->AddFace(shapeFace);
 					shapeFace = NULL;
 				}
 				
 			}else{
-				for( j=0; j<faceCount; j++ ){
-					const deoalModelFace &face = acomponent.GetFaceAt( j );
-					if( face.GetTexture() != i ){
+				for(j=0; j<faceCount; j++){
+					const deoalModelFace &face = acomponent.GetFaceAt(j);
+					if(face.GetTexture() != i){
 						continue;
 					}
 					
 					shapeFace = new deDebugDrawerShapeFace;
-					shapeFace->AddVertex( face.GetVertex1() );
-					shapeFace->AddVertex( face.GetVertex2() );
-					shapeFace->AddVertex( face.GetVertex3() );
-					shapeFace->SetNormal( face.GetNormal() );
-					shape->AddFace( shapeFace );
+					shapeFace->AddVertex(face.GetVertex1());
+					shapeFace->AddVertex(face.GetVertex2());
+					shapeFace->AddVertex(face.GetVertex3());
+					shapeFace->SetNormal(face.GetNormal());
+					shape->AddFace(shapeFace);
 					shapeFace = NULL;
 				}
 			}
 			
-			if( shape->GetFaceCount() > 0 ){
-				pDDFaces->AddShape( shape );
+			if(shape->GetFaceCount() > 0){
+				pDDFaces->AddShape(shape);
 				
 			}else{
 				delete shape;
 			}
 			
-		}catch( const deException & ){
-			if( shapeFace ){
+		}catch(const deException &){
+			if(shapeFace){
 				delete shapeFace;
 			}
-			if( shape ){
+			if(shape){
 				delete shape;
 			}
 			throw;

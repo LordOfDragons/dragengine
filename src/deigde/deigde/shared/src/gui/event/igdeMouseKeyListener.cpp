@@ -43,29 +43,29 @@ igdeMouseKeyListener::~igdeMouseKeyListener(){
 // Events
 ///////////
 
-void igdeMouseKeyListener::OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes, int ){
+void igdeMouseKeyListener::OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes, int){
 }
 
-void igdeMouseKeyListener::OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes, int ){
+void igdeMouseKeyListener::OnKeyRelease(igdeWidget*, deInputEvent::eKeyCodes, int){
 }
 
-void igdeMouseKeyListener::OnButtonPress( igdeWidget*, int, const decPoint &, int ){
+void igdeMouseKeyListener::OnButtonPress(igdeWidget*, int, const decPoint &, int){
 }
 
-void igdeMouseKeyListener::OnButtonRelease( igdeWidget*, int, const decPoint &, int ){
+void igdeMouseKeyListener::OnButtonRelease(igdeWidget*, int, const decPoint &, int){
 }
 
-void igdeMouseKeyListener::OnDoubleClicked( igdeWidget*, int, const decPoint &, int ){
+void igdeMouseKeyListener::OnDoubleClicked(igdeWidget*, int, const decPoint &, int){
 }
 
-void igdeMouseKeyListener::OnMouseMoved( igdeWidget*, const decPoint &, int ){
+void igdeMouseKeyListener::OnMouseMoved(igdeWidget*, const decPoint &, int){
 }
 
-void igdeMouseKeyListener::OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &, int ){
+void igdeMouseKeyListener::OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &, int){
 }
 
-void igdeMouseKeyListener::OnMouseEnter( igdeWidget* ){
+void igdeMouseKeyListener::OnMouseEnter(igdeWidget*){
 }
 
-void igdeMouseKeyListener::OnMouseLeave( igdeWidget* ){
+void igdeMouseKeyListener::OnMouseLeave(igdeWidget*){
 }

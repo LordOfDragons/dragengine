@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseCopyActions::ceWPTMAIfElseCaseCopyActions( ceWindowMain &windowMain,
-const ceCAIfElseCase &ifCase ) :
-ceWPTMACopyActions( windowMain, ifCase.GetActions() ){
+ceWPTMAIfElseCaseCopyActions::ceWPTMAIfElseCaseCopyActions(ceWindowMain &windowMain,
+const ceCAIfElseCase &ifCase) :
+ceWPTMACopyActions(windowMain, ifCase.GetActions()){
 }

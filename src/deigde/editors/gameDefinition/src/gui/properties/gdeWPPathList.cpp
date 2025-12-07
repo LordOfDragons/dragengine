@@ -57,23 +57,23 @@ class cActionAppend : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionAppend( gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox ) : 
-	igdeAction( "Append", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Append path" ),
-	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
+	cActionAppend(gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
+	igdeAction("Append", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Append path"),
+	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetPathList() || ! pPanel.GetUndoSystem() ){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem()){
 			return;
 		}
-		if( pPanel.GetPathList()->Has( pEditPath->GetPath() ) ){
-			pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
+		if(pPanel.GetPathList()->Has(pEditPath->GetPath())){
+			pListBox->SetSelection(pListBox->IndexOfItem(pEditPath->GetPath()));
 			return;
 		}
 		
 		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
-			 pPanel.UndoSet( *pPanel.GetPathList() + pEditPath->GetPath() ) ));
+			 pPanel.UndoSet(*pPanel.GetPathList() + pEditPath->GetPath())));
 		
-		pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
+		pListBox->SetSelection(pListBox->IndexOfItem(pEditPath->GetPath()));
 	}
 };
 
@@ -83,35 +83,35 @@ class cActionInsert : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionInsert( gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox ) : 
-	igdeAction( "Insert", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Insert path" ),
-	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
+	cActionInsert(gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
+	igdeAction("Insert", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Insert path"),
+	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetPathList() || ! pPanel.GetUndoSystem() ){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem()){
 			return;
 		}
-		if( pPanel.GetPathList()->Has( pEditPath->GetPath() ) ){
-			pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
+		if(pPanel.GetPathList()->Has(pEditPath->GetPath())){
+			pListBox->SetSelection(pListBox->IndexOfItem(pEditPath->GetPath()));
 			return;
 		}
 		
 		const int position = pListBox->GetSelection();
-		if( position == -1 ){
+		if(position == -1){
 			return;
 		}
 		
 		igdeUndo::Ref undo;
-		decStringList list( *pPanel.GetPathList() );
-		list.InsertAt( pEditPath->GetPath(), position );
-		undo.TakeOver( pPanel.UndoSet( list ) );
-		pPanel.GetUndoSystem()->Add( undo );
+		decStringList list(*pPanel.GetPathList());
+		list.InsertAt(pEditPath->GetPath(), position);
+		undo.TakeOver(pPanel.UndoSet(list));
+		pPanel.GetUndoSystem()->Add(undo);
 		
-		pListBox->SetSelection( position );
+		pListBox->SetSelection(position);
 	}
 	
 	virtual void Update(){
-		SetEnabled( pListBox->GetSelection() != -1 );
+		SetEnabled(pListBox->GetSelection() != -1);
 	}
 };
 
@@ -120,25 +120,25 @@ class cActionRemove : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionRemove( gdeWPPathList &panel, igdeListBox::Ref &listBox ) :
-	igdeAction( "Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove path" ), pPanel( panel ), pListBox( listBox ){ }
+	cActionRemove(gdeWPPathList &panel, igdeListBox::Ref &listBox) :
+	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Remove path"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetPathList() || ! pPanel.GetUndoSystem() ){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
-		decStringList paths( *pPanel.GetPathList() );
-		const int index = paths.IndexOf( pListBox->GetSelectedItem()->GetText() );
-		if( index != -1 ){
-			paths.RemoveFrom( index );
+		decStringList paths(*pPanel.GetPathList());
+		const int index = paths.IndexOf(pListBox->GetSelectedItem()->GetText());
+		if(index != -1){
+			paths.RemoveFrom(index);
 		}
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( paths ) ));
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(paths)));
 		
-		if( pListBox->GetItemCount() > 0 ){
-			pListBox->SetSelection( 0 );
+		if(pListBox->GetItemCount() > 0){
+			pListBox->SetSelection(0);
 		}
 	}
 };
@@ -148,15 +148,15 @@ class cActionClear : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClear( gdeWPPathList &panel, igdeListBox::Ref &listBox ) :
-	igdeAction( "Clear", NULL, "Clear path" ), pPanel( panel ), pListBox( listBox ){ }
+	cActionClear(gdeWPPathList &panel, igdeListBox::Ref &listBox) :
+	igdeAction("Clear", NULL, "Clear path"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetPathList() || ! pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0 ){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
 			return;
 		}
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( decStringList() ) ));
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(decStringList())));
 	}
 };
 
@@ -164,17 +164,17 @@ class cListPaths : public igdeListBoxListener {
 	gdeWPPathList &pListBox;
 	
 public:
-	cListPaths( gdeWPPathList &listBox ) : pListBox( listBox ){ }
+	cListPaths(gdeWPPathList &listBox) : pListBox(listBox){}
 	
-	virtual void OnSelectionChanged( igdeListBox* ){
+	virtual void OnSelectionChanged(igdeListBox*){
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = pListBox.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( menu, pListBox.GetActionAppend() );
-		helper.MenuCommand( menu, pListBox.GetActionInsert() );
-		helper.MenuCommand( menu, pListBox.GetActionRemove() );
-		helper.MenuCommand( menu, pListBox.GetActionClear() );
+		helper.MenuCommand(menu, pListBox.GetActionAppend());
+		helper.MenuCommand(menu, pListBox.GetActionInsert());
+		helper.MenuCommand(menu, pListBox.GetActionRemove());
+		helper.MenuCommand(menu, pListBox.GetActionClear());
 	}
 };
 
@@ -188,20 +188,20 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPPathList::gdeWPPathList( igdeUIHelper &helper, int rows, const char *description ) :
-igdeContainerFlow( helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esNone ),
-pPathList( NULL ),
-pUndoSystem( NULL )
+gdeWPPathList::gdeWPPathList(igdeUIHelper &helper, int rows, const char *description) :
+igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esNone),
+pPathList(NULL),
+pUndoSystem(NULL)
 {
-	pActionAppend.TakeOver( new cActionAppend( *this, pEditPath, pListBox ) );
-	pActionInsert.TakeOver( new cActionInsert( *this, pEditPath, pListBox ) );
-	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
-	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
+	pActionAppend.TakeOver(new cActionAppend(*this, pEditPath, pListBox));
+	pActionInsert.TakeOver(new cActionInsert(*this, pEditPath, pListBox));
+	pActionRemove.TakeOver(new cActionRemove(*this, pListBox));
+	pActionClear.TakeOver(new cActionClear(*this, pListBox));
 	
-	helper.EditPath( *this, description, igdeEnvironment::efpltAll, pEditPath, NULL );
-	pEditPath->SetAutoValidatePath( false );
+	helper.EditPath(*this, description, igdeEnvironment::efpltAll, pEditPath, NULL);
+	pEditPath->SetAutoValidatePath(false);
 	
-	helper.ListBox( *this, rows, description, pListBox, new cListPaths( *this ) );
+	helper.ListBox(*this, rows, description, pListBox, new cListPaths(*this));
 }
 
 gdeWPPathList::~gdeWPPathList(){
@@ -212,8 +212,8 @@ gdeWPPathList::~gdeWPPathList(){
 // Management
 ///////////////
 
-void gdeWPPathList::SetPathList( const decStringList *tagList ){
-	if( tagList == pPathList ){
+void gdeWPPathList::SetPathList(const decStringList *tagList){
+	if(tagList == pPathList){
 		return;
 	}
 	
@@ -222,14 +222,14 @@ void gdeWPPathList::SetPathList( const decStringList *tagList ){
 	UpdateList();
 }
 
-void gdeWPPathList::SetUndoSystem( igdeUndoSystem *undoSystem ){
+void gdeWPPathList::SetUndoSystem(igdeUndoSystem *undoSystem){
 	pUndoSystem = undoSystem;
 }
 
 
 
 const decString &gdeWPPathList::GetSelectedPath() const{
-	if( pListBox->GetSelectedItem() != NULL ){
+	if(pListBox->GetSelectedItem() != NULL){
 		return pListBox->GetSelectedItem()->GetText();
 		
 	}else{
@@ -239,24 +239,24 @@ const decString &gdeWPPathList::GetSelectedPath() const{
 }
 
 void gdeWPPathList::UpdateList(){
-	const decString selection( GetSelectedPath() );
+	const decString selection(GetSelectedPath());
 	
 	pListBox->RemoveAllItems();
 	
-	if( pPathList ){
+	if(pPathList){
 		const int count = pPathList->GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pListBox->AddItem( pPathList->GetAt( i ) );
+		for(i=0; i<count; i++){
+			pListBox->AddItem(pPathList->GetAt(i));
 		}
 	}
 	
-	SelectPath( selection );
+	SelectPath(selection);
 }
 
-void gdeWPPathList::SelectPath( const decString &tag ){
-	if( pPathList ){
-		pListBox->SetSelection( pListBox->IndexOfItem( tag ) );
+void gdeWPPathList::SelectPath(const decString &tag){
+	if(pPathList){
+		pListBox->SetSelection(pListBox->IndexOfItem(tag));
 	}
 }

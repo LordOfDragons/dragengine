@@ -40,15 +40,15 @@
 ////////////////////////////
 
 projUProfileSetScriptDirectory::projUProfileSetScriptDirectory(
-projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const char *newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set script directory" );
+	SetShortInfo("Profile set script directory");
 	
 	pOldValue = profile->GetScriptDirectory();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetScriptDirectory::~projUProfileSetScriptDirectory(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ projUProfileSetScriptDirectory::~projUProfileSetScriptDirectory(){
 ///////////////
 
 void projUProfileSetScriptDirectory::Undo(){
-	pProfile->SetScriptDirectory( pOldValue );
+	pProfile->SetScriptDirectory(pOldValue);
 }
 
 void projUProfileSetScriptDirectory::Redo(){
-	pProfile->SetScriptDirectory( pNewValue );
+	pProfile->SetScriptDirectory(pNewValue);
 }

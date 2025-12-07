@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseCaseCutCondition::ceUCAIfElseCaseCutCondition( ceConversationTopic *topic, ceCAIfElse *ifElse,
-ceCAIfElseCase *ifcase, ceConversationCondition *newCondition ) :
-ceUCAIfElseCaseSetCondition( topic, ifElse, ifcase, newCondition ){
-	SetShortInfo( "If-else cut case condition" );
+ceUCAIfElseCaseCutCondition::ceUCAIfElseCaseCutCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, ceConversationCondition *newCondition) :
+ceUCAIfElseCaseSetCondition(topic, ifElse, ifcase, newCondition){
+	SetShortInfo("If-else cut case condition");
 }

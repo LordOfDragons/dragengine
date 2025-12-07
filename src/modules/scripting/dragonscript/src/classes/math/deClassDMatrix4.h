@@ -43,7 +43,7 @@ private:
 	
 public:
 	/** Creates a new class. */
-	deClassDMatrix4( deScriptingDragonScript *ds );
+	deClassDMatrix4(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassDMatrix4();
 	/*@}*/
@@ -53,13 +53,13 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Retrieves the matrix from an object. */
-	const decDMatrix &GetDMatrix4( dsRealObject *myself ) const;
+	const decDMatrix &GetDMatrix4(dsRealObject *myself) const;
 	
 	/** Pushes a matrix. */
-	void PushDMatrix4( dsRunTime *rt, const decDMatrix &matrix );
+	void PushDMatrix4(dsRunTime *rt, const decDMatrix &matrix);
 	/*@}*/
 	
 private:
@@ -82,73 +82,73 @@ private:
 		dsClass *clsQuat;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewValues );
-	DEF_NATFUNC( nfNewTranslation );
-	DEF_NATFUNC( nfNewTranslation2 );
-	DEF_NATFUNC( nfNewScaling );
-	DEF_NATFUNC( nfNewScaling2 );
-	DEF_NATFUNC( nfNewRotationX );
-	DEF_NATFUNC( nfNewRotationY );
-	DEF_NATFUNC( nfNewRotationZ );
-	DEF_NATFUNC( nfNewRotation );
-	DEF_NATFUNC( nfNewRotation2 );
-	DEF_NATFUNC( nfNewRotationAxis );
-	DEF_NATFUNC( nfNewSRT );
-	DEF_NATFUNC( nfNewRT );
-	DEF_NATFUNC( nfNewSVUT );
-	DEF_NATFUNC( nfNewVU );
-	DEF_NATFUNC( nfNewCamera );
-	DEF_NATFUNC( nfNewWorld );
-	DEF_NATFUNC( nfNewWorld2 );
-	DEF_NATFUNC( nfNewFromQuaternion );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewValues);
+	DEF_NATFUNC(nfNewTranslation);
+	DEF_NATFUNC(nfNewTranslation2);
+	DEF_NATFUNC(nfNewScaling);
+	DEF_NATFUNC(nfNewScaling2);
+	DEF_NATFUNC(nfNewRotationX);
+	DEF_NATFUNC(nfNewRotationY);
+	DEF_NATFUNC(nfNewRotationZ);
+	DEF_NATFUNC(nfNewRotation);
+	DEF_NATFUNC(nfNewRotation2);
+	DEF_NATFUNC(nfNewRotationAxis);
+	DEF_NATFUNC(nfNewSRT);
+	DEF_NATFUNC(nfNewRT);
+	DEF_NATFUNC(nfNewSVUT);
+	DEF_NATFUNC(nfNewVU);
+	DEF_NATFUNC(nfNewCamera);
+	DEF_NATFUNC(nfNewWorld);
+	DEF_NATFUNC(nfNewWorld2);
+	DEF_NATFUNC(nfNewFromQuaternion);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetAt );
-	DEF_NATFUNC( nfGet11 );
-	DEF_NATFUNC( nfGet12 );
-	DEF_NATFUNC( nfGet13 );
-	DEF_NATFUNC( nfGet14 );
-	DEF_NATFUNC( nfGet21 );
-	DEF_NATFUNC( nfGet22 );
-	DEF_NATFUNC( nfGet23 );
-	DEF_NATFUNC( nfGet24 );
-	DEF_NATFUNC( nfGet31 );
-	DEF_NATFUNC( nfGet32 );
-	DEF_NATFUNC( nfGet33 );
-	DEF_NATFUNC( nfGet34 );
-	DEF_NATFUNC( nfGetViewVector );
-	DEF_NATFUNC( nfGetUpVector );
-	DEF_NATFUNC( nfGetRightVector );
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfTransformNormal );
-	DEF_NATFUNC( nfGetEulerAngles );
-	DEF_NATFUNC( nfGetInverse );
-	DEF_NATFUNC( nfNormalize );
-	DEF_NATFUNC( nfToQuaternion );
-	DEF_NATFUNC( nfToDMatrix );
-	DEF_NATFUNC( nfToMatrix4 );
-	DEF_NATFUNC( nfToMatrix );
+	DEF_NATFUNC(nfGetAt);
+	DEF_NATFUNC(nfGet11);
+	DEF_NATFUNC(nfGet12);
+	DEF_NATFUNC(nfGet13);
+	DEF_NATFUNC(nfGet14);
+	DEF_NATFUNC(nfGet21);
+	DEF_NATFUNC(nfGet22);
+	DEF_NATFUNC(nfGet23);
+	DEF_NATFUNC(nfGet24);
+	DEF_NATFUNC(nfGet31);
+	DEF_NATFUNC(nfGet32);
+	DEF_NATFUNC(nfGet33);
+	DEF_NATFUNC(nfGet34);
+	DEF_NATFUNC(nfGetViewVector);
+	DEF_NATFUNC(nfGetUpVector);
+	DEF_NATFUNC(nfGetRightVector);
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfTransformNormal);
+	DEF_NATFUNC(nfGetEulerAngles);
+	DEF_NATFUNC(nfGetInverse);
+	DEF_NATFUNC(nfNormalize);
+	DEF_NATFUNC(nfToQuaternion);
+	DEF_NATFUNC(nfToDMatrix);
+	DEF_NATFUNC(nfToMatrix4);
+	DEF_NATFUNC(nfToMatrix);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfOpAdd );
-	DEF_NATFUNC( nfOpSubtract );
-	DEF_NATFUNC( nfOpScale );
-	DEF_NATFUNC( nfOpDivide );
-	DEF_NATFUNC( nfOpMultiply );
-	DEF_NATFUNC( nfOpMultiply2 );
+	DEF_NATFUNC(nfOpAdd);
+	DEF_NATFUNC(nfOpSubtract);
+	DEF_NATFUNC(nfOpScale);
+	DEF_NATFUNC(nfOpDivide);
+	DEF_NATFUNC(nfOpMultiply);
+	DEF_NATFUNC(nfOpMultiply2);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfToString );
-	DEF_NATFUNC( nfToStringPrecision );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfToString);
+	DEF_NATFUNC(nfToStringPrecision);
 #undef DEF_NATFUNC
 };
 

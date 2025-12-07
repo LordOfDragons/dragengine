@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasPaint( deoglRenderThread &renderThread );
+	deoglRCanvasPaint(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
 	virtual ~deoglRCanvasPaint();
@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set size. */
-	virtual void SetSize( const decVector2 &size );
+	virtual void SetSize(const decVector2 &size);
 	
 	/** Shape type. */
 	inline deCanvasPaint::eShapeTypes GetShapeType() const{ return pShapeType; }
@@ -88,19 +88,19 @@ public:
 	 * Set shape type.
 	 * \throws deeInvalidParam \em shapeType is not a member of deCanvasPaint::eShapeTypes.
 	 */
-	void SetShapeType( deCanvasPaint::eShapeTypes shapeType );
+	void SetShapeType(deCanvasPaint::eShapeTypes shapeType);
 	
 	/** Line color. */
 	inline const decColor &GetLineColor() const{ return pLineColor; }
 	
 	/** Set line color. */
-	void SetLineColor( const decColor &color );
+	void SetLineColor(const decColor &color);
 	
 	/** Fill color. */
 	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	/** Line thickness in units. */
 	inline float GetThickness() const{ return pThickness; }
@@ -109,7 +109,7 @@ public:
 	 * Line thickness in units.
 	 * \details \em thickness is clamped to 0 or larger.
 	 */
-	void SetThickness( float thickness );
+	void SetThickness(float thickness);
 	
 	/** Requires thick rendering. */
 	inline bool IsThick() const{ return pIsThick; }
@@ -128,7 +128,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	void SetRoundCornerX( float roundCorner );
+	void SetRoundCornerX(float roundCorner);
 	
 	/**
 	 * Round corner in Y direction as percentage.
@@ -144,7 +144,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	void SetRoundCornerY( float roundCorner );
+	void SetRoundCornerY(float roundCorner);
 	
 	/**
 	 * Start angle in degrees from 0 to 360.
@@ -158,7 +158,7 @@ public:
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	void SetStartAngle( float angle );
+	void SetStartAngle(float angle);
 	
 	/**
 	 * End angle in degrees from 0 to 360.
@@ -172,7 +172,7 @@ public:
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	void SetEndAngle( float angle );
+	void SetEndAngle(float angle);
 	
 	
 	
@@ -185,7 +185,7 @@ public:
 	 * Set number of points.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void SetPointCount( int count );
+	void SetPointCount(int count);
 	
 	/** Points. */
 	inline decVector2 *GetPoints() const{ return pPoints; }
@@ -221,10 +221,10 @@ public:
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	virtual void Render(const deoglRenderCanvasContext &context);
 	/*@}*/
 	
 	
@@ -234,8 +234,8 @@ private:
 	int pRequiredPointCount();
 	void pPrepareVBOBlock();
 	void pWriteVBOData();
-	void pCalcArc( decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
-		float startAngle, float stopAngle, int stepCount );
+	void pCalcArc(decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
+		float startAngle, float stopAngle, int stepCount);
 };
 
 #endif

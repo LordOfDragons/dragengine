@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new scene resource manager linked to the given engine. */
-	deWorldManager( deEngine *engine );
+	deWorldManager(deEngine *engine);
 	
 	/** \brief Clean up scene resource manager and reports leaking resources. */
 	~deWorldManager();
@@ -112,7 +112,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

@@ -67,7 +67,7 @@ aeALTouchSensorListener::~aeALTouchSensorListener(){
 // Management
 ///////////////
 
-void aeALTouchSensorListener::SetAnimatorLocomotion( aeAnimatorLocomotion *locomotion ){
+void aeALTouchSensorListener::SetAnimatorLocomotion(aeAnimatorLocomotion *locomotion){
 	pLocomotion = locomotion;
 }
 
@@ -76,12 +76,12 @@ void aeALTouchSensorListener::SetAnimatorLocomotion( aeAnimatorLocomotion *locom
 // Notifications
 //////////////////
 
-void aeALTouchSensorListener::ColliderEntered( deCollider *collider ){
+void aeALTouchSensorListener::ColliderEntered(deCollider *collider){
 // 	pLocomotion->GetLogger()->LogInfoFormat( LOGSOURCE, "Touch Sensor Listener: Collider %p entered shape %i", collider, shape );
 	pLocomotion->UpdateTSColors();
 }
 
-void aeALTouchSensorListener::ColliderLeft( deCollider *collider ){
+void aeALTouchSensorListener::ColliderLeft(deCollider *collider){
 // 	pLocomotion->GetLogger()->LogInfoFormat( LOGSOURCE, "Touch Sensor Listener: Collider %p left shape %i", collider, shape );
 	pLocomotion->UpdateTSColors();
 }

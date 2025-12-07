@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetEnableRotXMax( aeRuleLimit *rule );
+	aeURuleLimitSetEnableRotXMax(aeRuleLimit *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleLimitSetEnableRotXMax();

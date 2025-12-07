@@ -55,36 +55,36 @@ int cePCBOptionList::GetCount() const{
 	return pOptions.GetCount();
 }
 
-cePCBOption *cePCBOptionList::GetAt( int index ) const{
-	return ( cePCBOption* )pOptions.GetAt( index );
+cePCBOption *cePCBOptionList::GetAt(int index) const{
+	return (cePCBOption*)pOptions.GetAt(index);
 }
 
-int cePCBOptionList::IndexOf( cePCBOption *option ) const{
-	return pOptions.IndexOf( option );
+int cePCBOptionList::IndexOf(cePCBOption *option) const{
+	return pOptions.IndexOf(option);
 }
 
-bool cePCBOptionList::Has( cePCBOption *option ) const{
-	return pOptions.Has( option );
+bool cePCBOptionList::Has(cePCBOption *option) const{
+	return pOptions.Has(option);
 }
 
-void cePCBOptionList::Add( cePCBOption *option ){
-	if( ! option ) DETHROW( deeInvalidParam );
+void cePCBOptionList::Add(cePCBOption *option){
+	if(!option) DETHROW(deeInvalidParam);
 	
-	pOptions.Add( option );
+	pOptions.Add(option);
 }
 
-void cePCBOptionList::InsertAt( cePCBOption *option, int index ){
-	if( ! option ) DETHROW( deeInvalidParam );
+void cePCBOptionList::InsertAt(cePCBOption *option, int index){
+	if(!option) DETHROW(deeInvalidParam);
 	
-	pOptions.Insert( option, index );
+	pOptions.Insert(option, index);
 }
 
-void cePCBOptionList::MoveTo( cePCBOption *option, int index ){
-	pOptions.Move( option, index );
+void cePCBOptionList::MoveTo(cePCBOption *option, int index){
+	pOptions.Move(option, index);
 }
 
-void cePCBOptionList::Remove( cePCBOption *option ){
-	pOptions.Remove( option );
+void cePCBOptionList::Remove(cePCBOption *option){
+	pOptions.Remove(option);
 }
 
 void cePCBOptionList::RemoveAll(){
@@ -93,7 +93,7 @@ void cePCBOptionList::RemoveAll(){
 
 
 
-cePCBOptionList &cePCBOptionList::operator=( const cePCBOptionList &list ){
+cePCBOptionList &cePCBOptionList::operator=(const cePCBOptionList &list){
 	pOptions = list.pOptions;
 	return *this;
 }

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rig. */
-	gdeWPUndoHistory( igdeEnvironment &environment );
+	gdeWPUndoHistory(igdeEnvironment &environment);
 	
 	/** \brief Clean up rig. */
 	virtual ~gdeWPUndoHistory();
@@ -60,7 +60,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

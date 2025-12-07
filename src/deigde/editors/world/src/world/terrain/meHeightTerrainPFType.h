@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meHeightTerrainPFType( deEngine *engine );
+	meHeightTerrainPFType(deEngine *engine);
 	
 	/** \brief Clean up object. */
 	virtual ~meHeightTerrainPFType();
@@ -84,7 +84,7 @@ public:
 	inline meHeightTerrainPFLayer *GetPFLayer() const{ return pPFLayer; }
 	
 	/** \brief Set parent prop field or \em NULL. */
-	void SetPFLayer( meHeightTerrainPFLayer *propField );
+	void SetPFLayer(meHeightTerrainPFLayer *propField);
 	
 	
 	
@@ -92,7 +92,7 @@ public:
 	inline const decString &GetPathModel() const{ return pPathModel; }
 	
 	/** \brief Set model path. */
-	void SetPathModel( const char *path );
+	void SetPathModel(const char *path);
 	
 	/** \brief Engine model or \em NULL if not valid. */
 	inline deModel *GetModel() const{ return pModel; }
@@ -101,7 +101,7 @@ public:
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	
 	/** \brief Set skin path. */
-	void SetPathSkin( const char *path );
+	void SetPathSkin(const char *path);
 	
 	/** \brief Engine skin or \em NULL if not valid. */
 	inline deSkin *GetSkin() const{ return pSkin; }
@@ -110,13 +110,13 @@ public:
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	
 	/** \brief Set rotation per force. */
-	void SetRotationPerForce( float rotationPerForce );
+	void SetRotationPerForce(float rotationPerForce);
 	
 	/** \brief Restitution. */
 	inline float GetRestitution() const{ return pRestitution; }
 	
 	/** \brief Set restitution. */
-	void SetRestitution( float resitution );
+	void SetRestitution(float resitution);
 	
 	
 	
@@ -124,31 +124,31 @@ public:
 	inline int GetCoverageDensity() const{ return pCoverageDensity; }
 	
 	/** \brief Set coverage density. */
-	void SetCoverageDensity( int density );
+	void SetCoverageDensity(int density);
 	
 	/** \brief Minimum random scaling. */
 	inline float GetMinimumRandomScaling() const{ return pRandomScaleMin; }
 	
 	/** \brief Set minimum random scaling. */
-	void SetMinimumRandomScaling( float scaling );
+	void SetMinimumRandomScaling(float scaling);
 	
 	/** \brief Maximum random scaling. */
 	inline float GetMaximumRandomScaling() const{ return pRandomScaleMax; }
 	
 	/** \brief Set maximum random scaling. */
-	void SetMaximumRandomScaling( float scaling );
+	void SetMaximumRandomScaling(float scaling);
 	
 	/** \brief Minimum random rotation. */
 	inline const decVector &GetMinimumRandomRotation() const{ return pRandomRotationMin; }
 	
 	/** \brief Set minimum random rotation. */
-	void SetMinimumRandomRotation( const decVector &rotation );
+	void SetMinimumRandomRotation(const decVector &rotation);
 	
 	/** \brief Maximum random rotation. */
 	inline const decVector &GetMaximumRandomRotation() const{ return pRandomRotationMax; }
 	
 	/** \brief Set maximum random rotation. */
-	void SetMaximumRandomRotation( const decVector &rotation );
+	void SetMaximumRandomRotation(const decVector &rotation);
 	
 	
 	

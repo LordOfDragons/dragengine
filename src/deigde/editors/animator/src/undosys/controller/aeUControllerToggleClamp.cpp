@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerToggleClamp::aeUControllerToggleClamp( aeController *controller ) :
-pController( controller )
+aeUControllerToggleClamp::aeUControllerToggleClamp(aeController *controller) :
+pController(controller)
 {
-	if( ! controller || ! controller->GetAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(!controller || !controller->GetAnimator()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set controller toggle clamp" );
+	SetShortInfo("Set controller toggle clamp");
 }
 
 aeUControllerToggleClamp::~aeUControllerToggleClamp(){
@@ -59,8 +59,8 @@ aeUControllerToggleClamp::~aeUControllerToggleClamp(){
 ///////////////
 
 void aeUControllerToggleClamp::Undo(){
-	aeController &controller = ( aeController& )( deObject& )pController;
-	controller.SetClamp( ! controller.GetClamp() );
+	aeController &controller = (aeController&)(deObject&)pController;
+	controller.SetClamp(!controller.GetClamp());
 }
 
 void aeUControllerToggleClamp::Redo(){

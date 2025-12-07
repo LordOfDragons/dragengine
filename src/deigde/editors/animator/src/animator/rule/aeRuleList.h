@@ -44,7 +44,7 @@ public:
 	/** Create a new rules list. */
 	aeRuleList();
 	/** Create a copy of a rule list. */
-	aeRuleList( const aeRuleList &copy );
+	aeRuleList(const aeRuleList &copy);
 	/** Clean up the rule list. */
 	~aeRuleList();
 	/*@}*/
@@ -54,24 +54,24 @@ public:
 	/** Retrieve the number of rules. */
 	int GetCount() const;
 	/** Retrieve the rule at the given position. */
-	aeRule *GetAt( int index ) const;
+	aeRule *GetAt(int index) const;
 	/** Retrieve the index of the given rule or -1 if not found. */
-	int IndexOf( aeRule *rule ) const;
+	int IndexOf(aeRule *rule) const;
 	/** Determine if a rule exists. */
-	bool Has( aeRule *rule ) const;
+	bool Has(aeRule *rule) const;
 	/** Add a rule. */
-	void Add( aeRule *rule );
+	void Add(aeRule *rule);
 	/** Insert a new rule. */
-	void Insert( aeRule *rule, int index );
+	void Insert(aeRule *rule, int index);
 	/** Move a rule to a new position. */
-	void Move( aeRule *rule, int index );
+	void Move(aeRule *rule, int index);
 	/** Remove a rule. */
-	void Remove( aeRule *rule );
+	void Remove(aeRule *rule);
 	/** Remove all rules. */
 	void RemoveAll();
 	
 	/** Set the list from another list. */
-	aeRuleList &operator=( const aeRuleList &list );
+	aeRuleList &operator=(const aeRuleList &list);
 	/*@}*/
 };
 

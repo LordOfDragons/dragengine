@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPRigListener( reWPRig &panel );
+	reWPRigListener(reWPRig &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~reWPRigListener();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig parameters changed. */
-	virtual void RigChanged( reRig *rig );
+	virtual void RigChanged(reRig *rig);
 	
 	/** \brief Bone count changed. */
-	virtual void BoneCountChanged( reRig *rig );
+	virtual void BoneCountChanged(reRig *rig);
 	
 	/** \brief A bone changed. */
-	virtual void BoneChanged( reRig *rig, reRigBone *bone );
+	virtual void BoneChanged(reRig *rig, reRigBone *bone);
 	/*@}*/
 };
 

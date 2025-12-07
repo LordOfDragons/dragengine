@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCompSetVector( meHTVegetationLayer *vlayer, meHTVRuleComponents *rule, const decVector &nvector );
+	meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, meHTVRuleComponents *rule, const decVector &nvector);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleCompSetVector();
 	/*@}*/

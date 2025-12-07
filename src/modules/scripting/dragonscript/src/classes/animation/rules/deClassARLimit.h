@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassARLimit( deScriptingDragonScript &ds );
+	deClassARLimit(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassARLimit();
@@ -73,16 +73,16 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
-	deAnimatorRuleLimit *GetRule( dsRealObject *myself ) const;
+	deAnimatorRuleLimit *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator( dsRealObject *myself, deAnimator *animator );
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleLimit *rule );
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleLimit *rule);
 	
 	inline dsClass *GetClassARLimitTarget() const{ return pClsARLimitTarget; }
 	inline dsClass *GetClassARLimitCFrame() const{ return pClsARLimitCFrame; }
@@ -96,36 +96,36 @@ private:
 		dsClass *clsARLimitCFrame;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetEnablePosMin );
-	DEF_NATFUNC( nfSetEnablePosMax );
-	DEF_NATFUNC( nfSetEnableRotMin );
-	DEF_NATFUNC( nfSetEnableRotMax );
-	DEF_NATFUNC( nfSetEnableScaleMin );
-	DEF_NATFUNC( nfSetEnableScaleMax );
-	DEF_NATFUNC( nfSetEnableVertexPositionSetMin );
-	DEF_NATFUNC( nfSetEnableVertexPositionSetMax );
+	DEF_NATFUNC(nfSetEnablePosMin);
+	DEF_NATFUNC(nfSetEnablePosMax);
+	DEF_NATFUNC(nfSetEnableRotMin);
+	DEF_NATFUNC(nfSetEnableRotMax);
+	DEF_NATFUNC(nfSetEnableScaleMin);
+	DEF_NATFUNC(nfSetEnableScaleMax);
+	DEF_NATFUNC(nfSetEnableVertexPositionSetMin);
+	DEF_NATFUNC(nfSetEnableVertexPositionSetMax);
 	
-	DEF_NATFUNC( nfSetMinimumPosition );
-	DEF_NATFUNC( nfSetMaximumPosition );
-	DEF_NATFUNC( nfSetMinimumRotation );
-	DEF_NATFUNC( nfSetMaximumRotation );
-	DEF_NATFUNC( nfSetMinimumScaling );
-	DEF_NATFUNC( nfSetMaximumScaling );
-	DEF_NATFUNC( nfSetMinimumVertexPositionSet );
-	DEF_NATFUNC( nfSetMaximumVertexPositionSet );
-	DEF_NATFUNC( nfSetCoordinateFrame );
-	DEF_NATFUNC( nfSetTargetBone );
+	DEF_NATFUNC(nfSetMinimumPosition);
+	DEF_NATFUNC(nfSetMaximumPosition);
+	DEF_NATFUNC(nfSetMinimumRotation);
+	DEF_NATFUNC(nfSetMaximumRotation);
+	DEF_NATFUNC(nfSetMinimumScaling);
+	DEF_NATFUNC(nfSetMaximumScaling);
+	DEF_NATFUNC(nfSetMinimumVertexPositionSet);
+	DEF_NATFUNC(nfSetMaximumVertexPositionSet);
+	DEF_NATFUNC(nfSetCoordinateFrame);
+	DEF_NATFUNC(nfSetTargetBone);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 #undef DEF_NATFUNC
 };
 

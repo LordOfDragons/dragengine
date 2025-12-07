@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	igdeClipboardData( const char *typeName );
+	igdeClipboardData(const char *typeName);
 	
 protected:
 	/**

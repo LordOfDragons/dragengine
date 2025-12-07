@@ -36,7 +36,7 @@
 ////////////////////////////
 
 deSkinPropertyNodeImage::deSkinPropertyNodeImage() :
-pRepeat( 1, 1 ){
+pRepeat(1, 1){
 }
 
 deSkinPropertyNodeImage::~deSkinPropertyNodeImage(){
@@ -47,16 +47,16 @@ deSkinPropertyNodeImage::~deSkinPropertyNodeImage(){
 // Management
 ///////////////
 
-void deSkinPropertyNodeImage::SetPath( const char *path ){
+void deSkinPropertyNodeImage::SetPath(const char *path){
 	pPath = path;
 }
 
-void deSkinPropertyNodeImage::SetImage( deImage *image ){
+void deSkinPropertyNodeImage::SetImage(deImage *image){
 	pImage = image;
 }
 
-void deSkinPropertyNodeImage::SetRepeat( const decPoint &count ){
-	DEASSERT_TRUE( count >= decPoint( 1, 1 ) )
+void deSkinPropertyNodeImage::SetRepeat(const decPoint &count){
+	DEASSERT_TRUE(count >= decPoint(1, 1))
 	pRepeat = count;
 }
 
@@ -65,6 +65,6 @@ void deSkinPropertyNodeImage::SetRepeat( const decPoint &count ){
 // Visiting
 /////////////
 
-void deSkinPropertyNodeImage::Visit( deSkinPropertyNodeVisitor &visitor ){
-	visitor.VisitImage( *this );
+void deSkinPropertyNodeImage::Visit(deSkinPropertyNodeVisitor &visitor){
+	visitor.VisitImage(*this);
 }

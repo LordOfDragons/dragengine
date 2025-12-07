@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddComponent::gdeUOCAddComponent( gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCAddComponent::gdeUOCAddComponent(gdeObjectClass *objectClass, gdeOCComponent *component) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add component" );
+	SetShortInfo("Add component");
 	
 	pComponent = component;
 	component->AddReference();
@@ -59,10 +59,10 @@ pComponent( NULL )
 }
 
 gdeUOCAddComponent::~gdeUOCAddComponent(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddComponent::~gdeUOCAddComponent(){
 
 void gdeUOCAddComponent::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCComponent() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCComponent()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCComponent( NULL );
+		gameDefinition->SetActiveOCComponent(NULL);
 	}
 	
-	pObjectClass->GetComponents().Remove( pComponent );
+	pObjectClass->GetComponents().Remove(pComponent);
 	pObjectClass->NotifyComponentsChanged();
 }
 
 void gdeUOCAddComponent::Redo(){
-	pObjectClass->GetComponents().Add( pComponent );
+	pObjectClass->GetComponents().Add(pComponent);
 	pObjectClass->NotifyComponentsChanged();
 }

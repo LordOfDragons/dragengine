@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deFileResourceManager::deFileResourceManager( deEngine *engine, eResourceType type ) :
-deResourceManager( engine, type ){
+deFileResourceManager::deFileResourceManager(deEngine *engine, eResourceType type) :
+deResourceManager(engine, type){
 }
 
 deFileResourceManager::~deFileResourceManager(){
@@ -56,22 +56,22 @@ deFileResourceManager::~deFileResourceManager(){
 // Management
 ///////////////
 
-bool deFileResourceManager::FindFileForReading( decPath &path, const deVirtualFileSystem &vfs,
-const char *filename, const char *basePath ) const{
-	if( ! decPath::IsUnixPathAbsolute( basePath ) ){
-		DETHROW( deeInvalidParam );
+bool deFileResourceManager::FindFileForReading(decPath &path, const deVirtualFileSystem &vfs,
+const char *filename, const char *basePath) const{
+	if(!decPath::IsUnixPathAbsolute(basePath)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( decPath::IsUnixPathAbsolute( filename ) ){
-		path.SetFromUnix( filename );
-		if( vfs.ExistsFile( path ) ){
+	if(decPath::IsUnixPathAbsolute(filename)){
+		path.SetFromUnix(filename);
+		if(vfs.ExistsFile(path)){
 			return true;
 		}
 		
 	}else{
-		path.SetFromUnix( basePath );
-		path.AddUnixPath( filename );
-		if( vfs.ExistsFile( path ) ){
+		path.SetFromUnix(basePath);
+		path.AddUnixPath(filename);
+		if(vfs.ExistsFile(path)){
 			return true;
 		}
 	}
@@ -80,15 +80,15 @@ const char *filename, const char *basePath ) const{
 }
 
 decBaseFileReader *deFileResourceManager::OpenFileForReading(
-const deVirtualFileSystem &vfs, const char *filename ) const{
+const deVirtualFileSystem &vfs, const char *filename) const{
 	decPath path;
-	path.SetFromUnix( filename );
-	return vfs.OpenFileForReading( path );
+	path.SetFromUnix(filename);
+	return vfs.OpenFileForReading(path);
 }
 
 decBaseFileWriter *deFileResourceManager::OpenFileForWriting(
-const deVirtualFileSystem &vfs, const char *filename ) const{
+const deVirtualFileSystem &vfs, const char *filename) const{
 	decPath path;
-	path.SetFromUnix( filename );
-	return vfs.OpenFileForWriting( path );
+	path.SetFromUnix(filename);
+	return vfs.OpenFileForWriting(path);
 }

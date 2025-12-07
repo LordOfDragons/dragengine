@@ -58,21 +58,21 @@ public:
 	/** Retrieves the number of faces. */
 	inline int GetCount() const{ return pFaceCount; }
 	/** Retrieves the index of the face or -1 if not in the list. */
-	int IndexOfFace( deoglModelFace *face ) const;
+	int IndexOfFace(deoglModelFace *face) const;
 	/** Determines if the face exists. */
-	bool Has( deoglModelFace *face ) const;
+	bool Has(deoglModelFace *face) const;
 	/** Retrieves the face at the given index. */
-	deoglModelFace *GetAt( int index ) const;
+	deoglModelFace *GetAt(int index) const;
 	/** Adds a face. */
-	void Add( deoglModelFace *face );
+	void Add(deoglModelFace *face);
 	/** Adds a face if missing in the list. Returns true if added. */
-	bool AddIfMissing( deoglModelFace *face );
+	bool AddIfMissing(deoglModelFace *face);
 	/** Removes face. */
-	void Remove( deoglModelFace *face );
+	void Remove(deoglModelFace *face);
 	/** Removes face if existing in the list. Returns true if removed. */
-	bool RemoveIfExisting( deoglModelFace *face );
+	bool RemoveIfExisting(deoglModelFace *face);
 	/** Removes face from the given index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	/** Removes all faces. */
 	void RemoveAll();
 	/** Sorts the faces by their index. */
@@ -80,7 +80,7 @@ public:
 	/*@}*/
 	
 private:
-	void pAddFace( deoglModelFace *face );
+	void pAddFace(deoglModelFace *face);
 };
 
 // end of include only once

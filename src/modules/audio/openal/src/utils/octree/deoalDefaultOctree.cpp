@@ -37,7 +37,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalDefaultOctree::deoalDefaultOctree( const decVector &center, const decVector &halfSize ) : deoalOctree( center, halfSize ){
+deoalDefaultOctree::deoalDefaultOctree(const decVector &center, const decVector &halfSize) : deoalOctree(center, halfSize){
 	pElements = NULL;
 	pElementCount = 0;
 	pElementSize = 0;
@@ -45,7 +45,7 @@ deoalDefaultOctree::deoalDefaultOctree( const decVector &center, const decVector
 
 deoalDefaultOctree::~deoalDefaultOctree(){
 	RemoveAllElements();
-	if( pElements ) delete [] pElements;
+	if(pElements) delete [] pElements;
 }
 
 
@@ -53,32 +53,32 @@ deoalDefaultOctree::~deoalDefaultOctree(){
 // Management
 ///////////////
 
-deoalOctree *deoalDefaultOctree::CreateOctree( int octant ) const{
+deoalOctree *deoalDefaultOctree::CreateOctree(int octant) const{
 	decVector halfSize = GetHalfSize() * 0.5f;
 	const decVector &center = GetCenter();
-	deoalOctree *node = ( deoalDefaultOctree* )NULL;
+	deoalOctree *node = (deoalDefaultOctree*)NULL;
 	decVector nc;
 	
 	// determine the smallest and largest coordinates
-	if( ( octant & 4 ) == 4 ){
+	if((octant & 4) == 4){
 		nc.x = center.x + halfSize.x;
 	}else{
 		nc.x = center.x - halfSize.x;
 	}
-	if( ( octant & 2 ) == 2 ){
+	if((octant & 2) == 2){
 		nc.y = center.y + halfSize.y;
 	}else{
 		nc.y = center.y - halfSize.y;
 	}
-	if( ( octant & 1 ) == 1 ){
+	if((octant & 1) == 1){
 		nc.z = center.z + halfSize.z;
 	}else{
 		nc.z = center.z - halfSize.z;
 	}
 	
 	// create child node
-	node = ( deoalDefaultOctree* )new deoalDefaultOctree( nc, halfSize );
-	if( ! node ) DETHROW( deeOutOfMemory );
+	node = (deoalDefaultOctree*)new deoalDefaultOctree(nc, halfSize);
+	if(!node) DETHROW(deeOutOfMemory);
 	return node;
 }
 
@@ -86,19 +86,19 @@ void deoalDefaultOctree::ClearNodeContent(){
 	RemoveAllElements();
 }
 
-deoalDefaultOctree *deoalDefaultOctree::InsertIntoTree( void *element, const decVector &boxCenter, const decVector &boxHalfSize, int maxDepth ){
+deoalDefaultOctree *deoalDefaultOctree::InsertIntoTree(void *element, const decVector &boxCenter, const decVector &boxHalfSize, int maxDepth){
 	deoalOctree *curNode = this;
 	deoalOctree *nextNode;
 	int d;
 	
-	for( d=0; d<maxDepth; d++ ){
-		nextNode = curNode->GetNodeAtBox( boxCenter, boxHalfSize );
-		if( ! nextNode ) break;
+	for(d=0; d<maxDepth; d++){
+		nextNode = curNode->GetNodeAtBox(boxCenter, boxHalfSize);
+		if(!nextNode) break;
 		curNode = nextNode;
 	}
 	
-	( ( deoalDefaultOctree* )curNode )->AddElement( element );
-	return ( deoalDefaultOctree* )curNode;
+	((deoalDefaultOctree*)curNode)->AddElement(element);
+	return (deoalDefaultOctree*)curNode;
 }
 
 
@@ -106,44 +106,44 @@ deoalDefaultOctree *deoalDefaultOctree::InsertIntoTree( void *element, const dec
 // Elements
 /////////////
 
-void *deoalDefaultOctree::GetElementAt( int index ) const{
-	if( index < 0 || index >= pElementCount ) DETHROW( deeInvalidParam );
-	return pElements[ index ];
+void *deoalDefaultOctree::GetElementAt(int index) const{
+	if(index < 0 || index >= pElementCount) DETHROW(deeInvalidParam);
+	return pElements[index];
 }
 
-int deoalDefaultOctree::IndexOfElement( void *element ) const{
+int deoalDefaultOctree::IndexOfElement(void *element) const{
 	int i;
-	for( i=0; i<pElementCount; i++ ){
-		if( pElements[ i ] == element ) return i;
+	for(i=0; i<pElementCount; i++){
+		if(pElements[i] == element) return i;
 	}
 	return -1;
 }
 
-void deoalDefaultOctree::AddElement( void *element ){
-	if( ! element ) DETHROW( deeInvalidParam );
+void deoalDefaultOctree::AddElement(void *element){
+	if(!element) DETHROW(deeInvalidParam);
 	
-	if( pElementCount == pElementSize ){
+	if(pElementCount == pElementSize){
 		int i, newSize = pElementSize * 3 / 2 + 1;
-		void **newArray = new void*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pElements ){
-			for( i=0; i<pElementSize; i++ ) newArray[ i ] = pElements[ i ];
+		void **newArray = new void*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pElements){
+			for(i=0; i<pElementSize; i++) newArray[i] = pElements[i];
 			delete [] pElements;
 		}
 		pElements = newArray;
 		pElementSize = newSize;
 	}
 	
-	pElements[ pElementCount ] = element;
+	pElements[pElementCount] = element;
 	pElementCount++;
 }
 
-void deoalDefaultOctree::RemoveElement( void *element ){
-	int i, index = IndexOfElement( element );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void deoalDefaultOctree::RemoveElement(void *element){
+	int i, index = IndexOfElement(element);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pElementCount; i++ ) pElements[ i - 1 ] = pElements[ i ];
-	pElements[ pElementCount - 1 ] = NULL;
+	for(i=index+1; i<pElementCount; i++) pElements[i - 1] = pElements[i];
+	pElements[pElementCount - 1] = NULL;
 	pElementCount--;
 }
 

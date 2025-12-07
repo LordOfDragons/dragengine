@@ -55,7 +55,7 @@ public:
 	/** Creates a new player choice conversation action. */
 	ceCAPlayerChoice();
 	/** Creates a new player choice conversation action. */
-	ceCAPlayerChoice( const ceCAPlayerChoice &action );
+	ceCAPlayerChoice(const ceCAPlayerChoice &action);
 	/** Cleans up the player choice conversation action. */
 	virtual ~ceCAPlayerChoice();
 	/*@}*/
@@ -73,7 +73,7 @@ public:
 	/** Retrieves the variable name. */
 	inline const decString &GetVariableName() const{ return pVariableName; }
 	/** Sets the variable name. */
-	void SetVariableName( const char *name );
+	void SetVariableName(const char *name);
 	/*@}*/
 	
 	
@@ -84,13 +84,13 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Actions tree list item expanded state. */
 	inline bool GetTIMActionsExpanded() const{ return pTIMActionsExpanded; }
 	
 	/** \brief Set actions tree list item expanded state. */
-	void SetTIMActionsExpanded( bool expanded );
+	void SetTIMActionsExpanded(bool expanded);
 	/*@}*/
 };
 

@@ -43,14 +43,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTImportHeightImage::meUHTImportHeightImage( meWorld *world, meHeightTerrainSector *sector, deImage *image ){
-	if( ! world || ! sector || ! image ) DETHROW( deeInvalidParam );
+meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSector *sector, deImage *image){
+	if(!world || !sector || !image) DETHROW(deeInvalidParam);
 	
-	if( image->GetComponentCount() != 1 ) DETHROW( deeInvalidParam );
+	if(image->GetComponentCount() != 1) DETHROW(deeInvalidParam);
 	
-	int resolution = ( int )( sector->GetHeightTerrain()->GetSectorSize() + 0.1f );
+	int resolution = (int)(sector->GetHeightTerrain()->GetSectorSize() + 0.1f);
 	
-	if( image->GetWidth() != resolution || image->GetHeight() != resolution ) DETHROW( deeInvalidParam );
+	if(image->GetWidth() != resolution || image->GetHeight() != resolution) DETHROW(deeInvalidParam);
 	
 	int p, pixelCount = resolution * resolution;
 	
@@ -60,37 +60,37 @@ meUHTImportHeightImage::meUHTImportHeightImage( meWorld *world, meHeightTerrainS
 	pOldHeights = NULL;
 	pNewHeights = NULL;
 	
-	SetShortInfo( "Import Height Image" );
-	SetMemoryConsumption( sizeof( meUHTImportHeightImage ) + 2 * sizeof( float ) * pixelCount );
+	SetShortInfo("Import Height Image");
+	SetMemoryConsumption(sizeof(meUHTImportHeightImage) + 2 * sizeof(float) * pixelCount);
 	
 	try{
 		// create arrays
-		pOldHeights = new float[ pixelCount ];
-		pNewHeights = new float[ pixelCount ];
+		pOldHeights = new float[pixelCount];
+		pNewHeights = new float[pixelCount];
 		
 		// snapshot old heights
-		memcpy( pOldHeights, sector->GetHeightImage()->GetDataGrayscale32(), sizeof( float ) * pixelCount );
+		memcpy(pOldHeights, sector->GetHeightImage()->GetDataGrayscale32(), sizeof(float) * pixelCount);
 		
 		// store new heights
-		if( image->GetBitCount() == 8 ){
+		if(image->GetBitCount() == 8){
 			sGrayscale8 *data = image->GetDataGrayscale8();
 			
-			for( p=0; p<pixelCount; p++ ){
-				pNewHeights[ p ] = ( float )( data[ p ].value - HT_8BIT_BASE ) * HT_8BIT_PTOH;
+			for(p=0; p<pixelCount; p++){
+				pNewHeights[p] = (float)(data[p].value - HT_8BIT_BASE) * HT_8BIT_PTOH;
 			}
 			
-		}else if( image->GetBitCount() == 16 ){
+		}else if(image->GetBitCount() == 16){
 			sGrayscale16 *data = image->GetDataGrayscale16();
 			
-			for( p=0; p<pixelCount; p++ ){
-				pNewHeights[ p ] = ( float )( data[ p ].value - HT_16BIT_BASE ) * HT_16BIT_PTOH;
+			for(p=0; p<pixelCount; p++){
+				pNewHeights[p] = (float)(data[p].value - HT_16BIT_BASE) * HT_16BIT_PTOH;
 			}
 			
 		}else{ // image->GetBitCount() == 32
-			memcpy( pNewHeights, image->GetDataGrayscale32(), sizeof( float ) * pixelCount );
+			memcpy(pNewHeights, image->GetDataGrayscale32(), sizeof(float) * pixelCount);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -109,11 +109,11 @@ meUHTImportHeightImage::~meUHTImportHeightImage(){
 ///////////////
 
 void meUHTImportHeightImage::Undo(){
-	pDoIt( pOldHeights );
+	pDoIt(pOldHeights);
 }
 
 void meUHTImportHeightImage::Redo(){
-	pDoIt( pNewHeights );
+	pDoIt(pNewHeights);
 }
 
 
@@ -122,20 +122,20 @@ void meUHTImportHeightImage::Redo(){
 //////////////////////
 
 void meUHTImportHeightImage::pCleanUp(){
-	if( pNewHeights ) delete [] pNewHeights;
-	if( pOldHeights ) delete [] pOldHeights;
+	if(pNewHeights) delete [] pNewHeights;
+	if(pOldHeights) delete [] pOldHeights;
 	
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
-void meUHTImportHeightImage::pDoIt( float *heights ){
+void meUHTImportHeightImage::pDoIt(float *heights){
 	const decPoint &scoord = pSector->GetCoordinates();
 	int resolution = pSector->GetHeightTerrain()->GetSectorResolution();
 	int pixelCount = resolution * resolution;
 	decBoundary areaSector, areaGrid;
 	
-	memcpy( pSector->GetHeightImage()->GetDataGrayscale32(), heights, sizeof( float ) * pixelCount );
-	pSector->SetHeightImageChanged( true );
+	memcpy(pSector->GetHeightImage()->GetDataGrayscale32(), heights, sizeof(float) * pixelCount);
+	pSector->SetHeightImageChanged(true);
 	
 	areaSector.x1 = scoord.x;
 	areaSector.x2 = scoord.x;
@@ -145,7 +145,7 @@ void meUHTImportHeightImage::pDoIt( float *heights ){
 	areaGrid.x2 = resolution - 1;
 	areaGrid.y1 = 0;
 	areaGrid.y2 = resolution - 1;
-	pWorld->GetHeightTerrain()->NotifyHeightsChanged( areaSector, areaGrid );
+	pWorld->GetHeightTerrain()->NotifyHeightsChanged(areaSector, areaGrid);
 	
-	pWorld->NotifyHTSHeightChanged( pSector );
+	pWorld->NotifyHTSHeightChanged(pSector);
 }

@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerBox( igdeEnvironment &environment, eAxis axis, int spacing = 0 );
+	igdeContainerBox(igdeEnvironment &environment, eAxis axis, int spacing = 0);
 	
 	
 	

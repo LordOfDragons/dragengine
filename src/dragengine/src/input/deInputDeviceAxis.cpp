@@ -35,16 +35,16 @@
 ////////////////////////////
 
 deInputDeviceAxis::deInputDeviceAxis() :
-pType( eatGeneric ){
+pType(eatGeneric){
 }
 
-deInputDeviceAxis::deInputDeviceAxis( const deInputDeviceAxis &axis ) :
-pID( axis.pID ),
-pName( axis.pName ),
-pType( axis.pType ),
-pDisplayImage( axis.pDisplayImage ),
-pDisplayIcons( axis.pDisplayIcons ),
-pDisplayText( axis.pDisplayText ){
+deInputDeviceAxis::deInputDeviceAxis(const deInputDeviceAxis &axis) :
+pID(axis.pID),
+pName(axis.pName),
+pType(axis.pType),
+pDisplayImage(axis.pDisplayImage),
+pDisplayIcons(axis.pDisplayIcons),
+pDisplayText(axis.pDisplayText){
 }
 
 deInputDeviceAxis::~deInputDeviceAxis(){
@@ -55,23 +55,23 @@ deInputDeviceAxis::~deInputDeviceAxis(){
 // Device information
 ///////////////////////
 
-void deInputDeviceAxis::SetID( const char *id ){
+void deInputDeviceAxis::SetID(const char *id){
 	pID = id;
 }
 
-void deInputDeviceAxis::SetName( const char *name ){
+void deInputDeviceAxis::SetName(const char *name){
 	pName = name;
 }
 
-void deInputDeviceAxis::SetType( eAxisTypes type ){
+void deInputDeviceAxis::SetType(eAxisTypes type){
 	pType = type;
 }
 
-void deInputDeviceAxis::SetComponent( const char *component ){
+void deInputDeviceAxis::SetComponent(const char *component){
 	pComponent = component;
 }
 
-void deInputDeviceAxis::SetDisplayImage( deImage *image ){
+void deInputDeviceAxis::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
@@ -79,18 +79,18 @@ int deInputDeviceAxis::GetDisplayIconCount() const{
 	return pDisplayIcons.GetCount();
 }
 
-deImage *deInputDeviceAxis::GetDisplayIconAt( int index ) const{
-	return ( deImage* )pDisplayIcons.GetAt( index );
+deImage *deInputDeviceAxis::GetDisplayIconAt(int index) const{
+	return (deImage*)pDisplayIcons.GetAt(index);
 }
 
-void deInputDeviceAxis::AddDisplayIcon( deImage *image ){
-	if( ! image ){
-		DETHROW( deeNullPointer );
+void deInputDeviceAxis::AddDisplayIcon(deImage *image){
+	if(!image){
+		DETHROW(deeNullPointer);
 	}
-	pDisplayIcons.Add( image );
+	pDisplayIcons.Add(image);
 }
 
-void deInputDeviceAxis::SetDisplayText( const char *text ){
+void deInputDeviceAxis::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
@@ -99,7 +99,7 @@ void deInputDeviceAxis::SetDisplayText( const char *text ){
 // Operators
 //////////////
 
-deInputDeviceAxis &deInputDeviceAxis::operator=( const deInputDeviceAxis &axis ){
+deInputDeviceAxis &deInputDeviceAxis::operator=(const deInputDeviceAxis &axis){
 	pID = axis.pID;
 	pName = axis.pName;
 	pType = axis.pType;

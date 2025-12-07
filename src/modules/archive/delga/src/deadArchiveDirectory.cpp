@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deadArchiveDirectory::deadArchiveDirectory( deArchiveDelga &module, const char *filename ) :
-pModule( module ),
-pFilename( filename ){
+deadArchiveDirectory::deadArchiveDirectory(deArchiveDelga &module, const char *filename) :
+pModule(module),
+pFilename(filename){
 }
 
 deadArchiveDirectory::~deadArchiveDirectory(){
@@ -55,17 +55,17 @@ int deadArchiveDirectory::GetDirectoryCount() const{
 	return pDirectories.GetCount();
 }
 
-deadArchiveDirectory *deadArchiveDirectory::GetDirectoryAt( int index ) const{
-	return ( deadArchiveDirectory* )pDirectories.GetAt( index );
+deadArchiveDirectory *deadArchiveDirectory::GetDirectoryAt(int index) const{
+	return (deadArchiveDirectory*)pDirectories.GetAt(index);
 }
 
-bool deadArchiveDirectory::HasDirectoryNamed( const char *filename ) const{
+bool deadArchiveDirectory::HasDirectoryNamed(const char *filename) const{
 	const int count = pDirectories.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deadArchiveDirectory * const directory = ( deadArchiveDirectory* )pDirectories.GetAt( i );
-		if( directory->GetFilename() == filename ){
+	for(i=0; i<count; i++){
+		deadArchiveDirectory * const directory = (deadArchiveDirectory*)pDirectories.GetAt(i);
+		if(directory->GetFilename() == filename){
 			return true;
 		}
 	}
@@ -73,13 +73,13 @@ bool deadArchiveDirectory::HasDirectoryNamed( const char *filename ) const{
 	return false;
 }
 
-deadArchiveDirectory *deadArchiveDirectory::GetDirectoryNamed( const char *filename ) const{
+deadArchiveDirectory *deadArchiveDirectory::GetDirectoryNamed(const char *filename) const{
 	const int count = pDirectories.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deadArchiveDirectory * const directory = ( deadArchiveDirectory* )pDirectories.GetAt( i );
-		if( directory->GetFilename() == filename ){
+	for(i=0; i<count; i++){
+		deadArchiveDirectory * const directory = (deadArchiveDirectory*)pDirectories.GetAt(i);
+		if(directory->GetFilename() == filename){
 			return directory;
 		}
 	}
@@ -87,19 +87,19 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryNamed( const char *filen
 	return NULL;
 }
 
-deadArchiveDirectory *deadArchiveDirectory::GetOrAddDirectoryNamed( const char *filename ){
-	deadArchiveDirectory * directory = GetDirectoryNamed( filename );
-	if( directory ){
+deadArchiveDirectory *deadArchiveDirectory::GetOrAddDirectoryNamed(const char *filename){
+	deadArchiveDirectory * directory = GetDirectoryNamed(filename);
+	if(directory){
 		return directory;
 	}
 	
 	try{
-		directory = new deadArchiveDirectory( pModule, filename );
-		pDirectories.Add( directory );
+		directory = new deadArchiveDirectory(pModule, filename);
+		pDirectories.Add(directory);
 		directory->FreeReference();
 		
-	}catch( const deException & ){
-		if( directory ){
+	}catch(const deException &){
+		if(directory){
 			directory->FreeReference();
 		}
 		throw;
@@ -107,21 +107,21 @@ deadArchiveDirectory *deadArchiveDirectory::GetOrAddDirectoryNamed( const char *
 	return directory;
 }
 
-deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath( const decPath &path ){
+deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &path){
 	const int count = path.GetComponentCount();
-	if( count == 0 ){
+	if(count == 0){
 		return NULL;
 		
-	}else if( count == 1 ){
-		return GetDirectoryNamed( path.GetComponentAt( 0 ) );
+	}else if(count == 1){
+		return GetDirectoryNamed(path.GetComponentAt(0));
 	}
 	
 	deadArchiveDirectory *directory = this;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		directory = directory->GetDirectoryNamed( path.GetComponentAt( i ) );
-		if( ! directory ){
+	for(i=0; i<count; i++){
+		directory = directory->GetDirectoryNamed(path.GetComponentAt(i));
+		if(!directory){
 			return NULL;
 		}
 	}
@@ -129,18 +129,18 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath( const decPath &p
 	return directory;
 }
 
-void deadArchiveDirectory::AddDirectory( deadArchiveDirectory *directory ){
-	if( ! directory ){
-		DETHROW( deeInvalidParam );
+void deadArchiveDirectory::AddDirectory(deadArchiveDirectory *directory){
+	if(!directory){
+		DETHROW(deeInvalidParam);
 	}
-	if( HasDirectoryNamed( directory->GetFilename() ) ){
-		DETHROW( deeInvalidParam );
+	if(HasDirectoryNamed(directory->GetFilename())){
+		DETHROW(deeInvalidParam);
 	}
-	if( HasFileNamed( directory->GetFilename() ) ){
-		DETHROW( deeInvalidParam );
+	if(HasFileNamed(directory->GetFilename())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pDirectories.Add( directory );
+	pDirectories.Add(directory);
 }
 
 
@@ -152,17 +152,17 @@ int deadArchiveDirectory::GetFileCount() const{
 	return pFiles.GetCount();
 }
 
-deadArchiveFile *deadArchiveDirectory::GetFileAt( int index ) const{
-	return ( deadArchiveFile* )pFiles.GetAt( index );
+deadArchiveFile *deadArchiveDirectory::GetFileAt(int index) const{
+	return (deadArchiveFile*)pFiles.GetAt(index);
 }
 
-bool deadArchiveDirectory::HasFileNamed( const char *filename ) const{
+bool deadArchiveDirectory::HasFileNamed(const char *filename) const{
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deadArchiveFile * const file = ( deadArchiveFile* )pFiles.GetAt( i );
-		if( file->GetFilename() == filename ){
+	for(i=0; i<count; i++){
+		deadArchiveFile * const file = (deadArchiveFile*)pFiles.GetAt(i);
+		if(file->GetFilename() == filename){
 			return true;
 		}
 	}
@@ -170,13 +170,13 @@ bool deadArchiveDirectory::HasFileNamed( const char *filename ) const{
 	return false;
 }
 
-deadArchiveFile *deadArchiveDirectory::GetFileNamed( const char *filename ) const{
+deadArchiveFile *deadArchiveDirectory::GetFileNamed(const char *filename) const{
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deadArchiveFile * const file = ( deadArchiveFile* )pFiles.GetAt( i );
-		if( file->GetFilename() == filename ){
+	for(i=0; i<count; i++){
+		deadArchiveFile * const file = (deadArchiveFile*)pFiles.GetAt(i);
+		if(file->GetFilename() == filename){
 			return file;
 		}
 	}
@@ -184,38 +184,38 @@ deadArchiveFile *deadArchiveDirectory::GetFileNamed( const char *filename ) cons
 	return NULL;
 }
 
-deadArchiveFile *deadArchiveDirectory::GetFileByPath( const decPath &path ) const{
+deadArchiveFile *deadArchiveDirectory::GetFileByPath(const decPath &path) const{
 	const int count = path.GetComponentCount();
-	if( count == 0 ){
+	if(count == 0){
 		return NULL;
 		
-	}else if( count == 1 ){
-		return GetFileNamed( path.GetComponentAt( 0 ) );
+	}else if(count == 1){
+		return GetFileNamed(path.GetComponentAt(0));
 	}
 	
 	const deadArchiveDirectory *directory = this;
 	int i;
 	
-	for( i=0; i<count-1; i++ ){
-		directory = directory->GetDirectoryNamed( path.GetComponentAt( i ) );
-		if( ! directory ){
+	for(i=0; i<count-1; i++){
+		directory = directory->GetDirectoryNamed(path.GetComponentAt(i));
+		if(!directory){
 			return NULL;
 		}
 	}
 	
-	return directory->GetFileNamed( path.GetComponentAt( count - 1 ) );
+	return directory->GetFileNamed(path.GetComponentAt(count - 1));
 }
 
-void deadArchiveDirectory::AddFile( deadArchiveFile *file ){
-	if( ! file ){
-		DETHROW( deeInvalidParam );
+void deadArchiveDirectory::AddFile(deadArchiveFile *file){
+	if(!file){
+		DETHROW(deeInvalidParam);
 	}
-	if( HasDirectoryNamed( file->GetFilename() ) ){
-		DETHROW( deeInvalidParam );
+	if(HasDirectoryNamed(file->GetFilename())){
+		DETHROW(deeInvalidParam);
 	}
-	if( HasFileNamed( file->GetFilename() ) ){
-		DETHROW( deeInvalidParam );
+	if(HasFileNamed(file->GetFilename())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pFiles.Add( file );
+	pFiles.Add(file);
 }

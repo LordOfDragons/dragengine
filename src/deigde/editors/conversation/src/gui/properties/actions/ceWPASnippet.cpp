@@ -65,12 +65,12 @@ class cComboFile : public igdeComboBoxListener {
 	ceWPASnippet &pPanel;
 	
 public:
-	cComboFile( ceWPASnippet &panel ) : pPanel( panel ){ }
+	cComboFile(ceWPASnippet &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASnippet * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetFile() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetFile()){
 			return;
 		}
 		
@@ -83,12 +83,12 @@ class cComboTopic : public igdeComboBoxListener {
 	ceWPASnippet &pPanel;
 	
 public:
-	cComboTopic( ceWPASnippet &panel ) : pPanel( panel ){ }
+	cComboTopic(ceWPASnippet &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASnippet * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetTopic() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetTopic()){
 			return;
 		}
 		
@@ -120,30 +120,30 @@ class cActionJumpToTopic : public igdeAction {
 	ceWPASnippet &pPanel;
 	
 public:
-	cActionJumpToTopic( ceWPASnippet &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallRight ),
-		"Jump To Topic" ), pPanel( panel ){ }
+	cActionJumpToTopic(ceWPASnippet &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallRight),
+		"Jump To Topic"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASnippet * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
 		ceConversationFile * const jumpFile = pPanel.GetParentPanel().GetConversation()
-			->GetFileList().GetWithID( action->GetFile() );
-		if( ! jumpFile ){
+			->GetFileList().GetWithID(action->GetFile());
+		if(!jumpFile){
 			return;
 		}
 		
-		ceConversationTopic * const jumpTopic = jumpFile->GetTopicList().GetWithID( action->GetTopic() );
-		if( ! jumpTopic ){
+		ceConversationTopic * const jumpTopic = jumpFile->GetTopicList().GetWithID(action->GetTopic());
+		if(!jumpTopic){
 			return;
 		}
 		
-		jumpFile->SetActiveTopic( jumpTopic );
-		pPanel.GetParentPanel().GetConversation()->SetActiveFile( jumpFile );
+		jumpFile->SetActiveTopic(jumpTopic);
+		pPanel.GetParentPanel().GetConversation()->SetActiveFile(jumpFile);
 	}
 };
 
@@ -157,19 +157,19 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPASnippet::ceWPASnippet( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPASnippet::ceWPASnippet(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBoxFilter( *this, "File:", true, "File to run topic from", pCBFile, new cComboFile( *this ) );
+	helper.ComboBoxFilter(*this, "File:", true, "File to run topic from", pCBFile, new cComboFile(*this));
 	pCBFile->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst( *this, "Topic:", "Topic to run", formLine );
-	helper.ComboBoxFilter( formLine, true, "Topic to run", pCBTopic, new cComboTopic( *this ) );
+	helper.FormLineStretchFirst(*this, "Topic:", "Topic to run", formLine);
+	helper.ComboBoxFilter(formLine, true, "Topic to run", pCBTopic, new cComboTopic(*this));
 	pCBTopic->SetDefaultSorter();
-	helper.Button( formLine, pBtnJumpToTopic, new cActionJumpToTopic( *this ), true );
+	helper.Button(formLine, pBtnJumpToTopic, new cActionJumpToTopic(*this), true);
 	
 	helper.CheckBox(*this, pChkCreateSideLane, new cActionCreateSideLane(*this), true);
 }
@@ -185,8 +185,8 @@ ceWPASnippet::~ceWPASnippet(){
 ceCASnippet *ceWPASnippet::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatSnippet ){
-		return ( ceCASnippet* )action;
+	if(action && action->GetType() == ceConversationAction::eatSnippet){
+		return (ceCASnippet*)action;
 		
 	}else{
 		return NULL;
@@ -198,11 +198,11 @@ void ceWPASnippet::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBFile->SetText( action->GetFile() );
+	if(action){
+		pCBFile->SetText(action->GetFile());
 		
 		UpdateTopicList();
-		pCBTopic->SetText( action->GetTopic() );
+		pCBTopic->SetText(action->GetTopic());
 		
 		pChkCreateSideLane->SetChecked(action->GetCreateSideLane());
 		
@@ -218,44 +218,44 @@ void ceWPASnippet::UpdateAction(){
 
 void ceWPASnippet::UpdateFileList(){
 	ceConversation * const conversation = GetParentPanel().GetConversation();
-	const decString selection( pCBFile->GetText() );
+	const decString selection(pCBFile->GetText());
 	
 	pCBFile->RemoveAllItems();
 	
-	if( conversation ){
-		const ceConversationFileList list( conversation->AllFiles() );
+	if(conversation){
+		const ceConversationFileList list(conversation->AllFiles());
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pCBFile->AddItem( list.GetAt( i )->GetID() );
+		for(i=0; i<count; i++){
+			pCBFile->AddItem(list.GetAt(i)->GetID());
 		}
 		
 		pCBFile->SortItems();
 		pCBFile->StoreFilterItems();
 	}
 	
-	pCBFile->SetText( selection );
+	pCBFile->SetText(selection);
 }
 
 void ceWPASnippet::UpdateTopicList(){
 	ceConversation * const conversation = GetParentPanel().GetConversation();
-	const decString selection( pCBTopic->GetText() );
+	const decString selection(pCBTopic->GetText());
 	
 	pCBTopic->RemoveAllItems();
 	
-	if( conversation ){
-		const ceConversationTopicList list( conversation->AllTopics( pCBFile->GetText() ) );
+	if(conversation){
+		const ceConversationTopicList list(conversation->AllTopics(pCBFile->GetText()));
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pCBTopic->AddItem( list.GetAt( i )->GetID() );
+		for(i=0; i<count; i++){
+			pCBTopic->AddItem(list.GetAt(i)->GetID());
 		}
 		
 		pCBTopic->SortItems();
 		pCBTopic->StoreFilterItems();
 	}
 	
-	pCBTopic->SetText( selection );
+	pCBTopic->SetText(selection);
 }

@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new environment map probe resource manager. */
-	deEnvMapProbeManager( deEngine *engine );
+	deEnvMapProbeManager(deEngine *engine);
 	
 	/** \brief Clean up environment map probe resource manager. */
 	virtual ~deEnvMapProbeManager();
@@ -87,7 +87,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

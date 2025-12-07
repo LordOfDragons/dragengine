@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object clip data. */
-	meCDOObject( const meObject &object );
+	meCDOObject(const meObject &object);
 	
 	/** \brief Clean up object data object. */
 	~meCDOObject();
@@ -91,16 +91,16 @@ public:
 	inline int GetAttachToIndex() const{ return pAttachToIndex; }
 	
 	/** \brief Set attach to index or -1 if not attached to an object. */
-	void SetAttachToIndex( int index );
+	void SetAttachToIndex(int index);
 	
 	/** \brief Attach to ID in hex string format or empty string  if not attached. */
 	inline const decString &GetAttachToID() const{ return pAttachToID; }
 	
 	/** \brief Set attach to ID in hex string format or empty string  if not attached. */
-	void SetAttachToID( const char *id );
+	void SetAttachToID(const char *id);
 	
 	/** \brief Update object with stored data. */
-	void UpdateObject( meObject &object ) const;
+	void UpdateObject(meObject &object) const;
 	/*@}*/
 };
 

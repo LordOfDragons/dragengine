@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image information. */
-	deWebp3DImageInfo( const decString &filename );
+	deWebp3DImageInfo(const decString &filename);
 	
 	/** Clean up image information. */
 	virtual ~deWebp3DImageInfo();

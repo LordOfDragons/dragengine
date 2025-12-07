@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates panel. */
-	seWPAPanelSourceGroup( seWPSource &wpSource );
+	seWPAPanelSourceGroup(seWPSource &wpSource);
 	
 protected:
 	/** \brief Clean up panel. */

@@ -51,7 +51,7 @@ igdeLoggerHistory::igdeLoggerHistory(){
 }
 
 igdeLoggerHistory::~igdeLoggerHistory(){
-	if( pEntries ){
+	if(pEntries){
 		delete [] pEntries;
 	}
 	pListeners.RemoveAll();
@@ -62,9 +62,9 @@ igdeLoggerHistory::~igdeLoggerHistory(){
 // Management
 ///////////////
 
-void igdeLoggerHistory::SetHistorySize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeLoggerHistory::SetHistorySize(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
@@ -72,11 +72,11 @@ void igdeLoggerHistory::SetHistorySize( int size ){
 	igdeLoggerHistoryEntry *newArray = NULL;
 	
 	try{
-		if( size > 0 ){
-			newArray = new igdeLoggerHistoryEntry[ size ];
+		if(size > 0){
+			newArray = new igdeLoggerHistoryEntry[size];
 		}
 		
-		if( pEntries ){
+		if(pEntries){
 			delete [] pEntries;
 		}
 		
@@ -86,7 +86,7 @@ void igdeLoggerHistory::SetHistorySize( int size ){
 		pEntryPointer = 0;
 		pEntryCount = 0;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -94,37 +94,37 @@ void igdeLoggerHistory::SetHistorySize( int size ){
 	pMutex.Unlock();
 }
 
-igdeLoggerHistoryEntry &igdeLoggerHistory::GetEntryAt( int index ){
-	if( index < 0 || index >= pEntryCount ){
-		DETHROW( deeInvalidParam );
+igdeLoggerHistoryEntry &igdeLoggerHistory::GetEntryAt(int index){
+	if(index < 0 || index >= pEntryCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pEntries[ ( pEntryPointer + index ) % pHistorySize ];
+	return pEntries[(pEntryPointer + index) % pHistorySize];
 }
 
-const igdeLoggerHistoryEntry &igdeLoggerHistory::GetEntryAt( int index ) const{
-	if( index < 0 || index >= pEntryCount ){
-		DETHROW( deeInvalidParam );
+const igdeLoggerHistoryEntry &igdeLoggerHistory::GetEntryAt(int index) const{
+	if(index < 0 || index >= pEntryCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pEntries[ ( pEntryPointer + index ) % pHistorySize ];
+	return pEntries[(pEntryPointer + index) % pHistorySize];
 }
 
 igdeLoggerHistoryEntry &igdeLoggerHistory::AddEntry(){
-	if( pHistorySize == 0 ){
-		DETHROW( deeInvalidParam );
+	if(pHistorySize == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int position = ( pEntryPointer + pEntryCount ) % pHistorySize;
+	const int position = (pEntryPointer + pEntryCount) % pHistorySize;
 	
-	if( pEntryCount == pHistorySize ){
-		pEntryPointer = ( pEntryPointer + 1 ) % pHistorySize;
+	if(pEntryCount == pHistorySize){
+		pEntryPointer = (pEntryPointer + 1) % pHistorySize;
 		
 	}else{
 		pEntryCount++;
 	}
 	
-	return pEntries[ position ];
+	return pEntries[position];
 }
 
 void igdeLoggerHistory::Clear(){
@@ -137,11 +137,11 @@ void igdeLoggerHistory::Clear(){
 	pEntryCount = 0;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			( ( igdeLoggerHistoryListener* )pListeners.GetAt( i ) )->HistoryCleared( this );
+		for(i=0; i<count; i++){
+			((igdeLoggerHistoryListener*)pListeners.GetAt(i))->HistoryCleared(this);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -151,18 +151,18 @@ void igdeLoggerHistory::Clear(){
 
 
 
-bool igdeLoggerHistory::CanAddMessage( int type, const char *source ){
-	if( pHistorySize == 0 ){
+bool igdeLoggerHistory::CanAddMessage(int type, const char *source){
+	if(pHistorySize == 0){
 		return false;
 	}
 	
-	if( type == igdeLoggerHistoryEntry::emtInfo && ! pLogInfo ){
+	if(type == igdeLoggerHistoryEntry::emtInfo && !pLogInfo){
 		return false;
 	}
-	if( type == igdeLoggerHistoryEntry::emtWarn && ! pLogWarn ){
+	if(type == igdeLoggerHistoryEntry::emtWarn && !pLogWarn){
 		return false;
 	}
-	if( type == igdeLoggerHistoryEntry::emtError && ! pLogError ){
+	if(type == igdeLoggerHistoryEntry::emtError && !pLogError){
 		return false;
 	}
 	
@@ -171,52 +171,52 @@ bool igdeLoggerHistory::CanAddMessage( int type, const char *source ){
 
 
 
-void igdeLoggerHistory::AddListener( igdeLoggerHistoryListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeLoggerHistory::AddListener(igdeLoggerHistoryListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeLoggerHistory::RemoveListener( igdeLoggerHistoryListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeLoggerHistory::RemoveListener(igdeLoggerHistoryListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pListeners.RemoveIfPresent( listener );
+	pListeners.RemoveIfPresent(listener);
 }
 
-void igdeLoggerHistory::NotifyMessageAdded( igdeLoggerHistoryEntry &entry ){
+void igdeLoggerHistory::NotifyMessageAdded(igdeLoggerHistoryEntry &entry){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeLoggerHistoryListener* )pListeners.GetAt( i ) )->MessageAdded( this, entry );
+	for(i=0; i<count; i++){
+		((igdeLoggerHistoryListener*)pListeners.GetAt(i))->MessageAdded(this, entry);
 	}
 }
 
 
 
-void igdeLoggerHistory::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void igdeLoggerHistory::LogInfo(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		if( CanAddMessage( igdeLoggerHistoryEntry::emtInfo, source ) ){
+		if(CanAddMessage(igdeLoggerHistoryEntry::emtInfo, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
-			entry.SetType( igdeLoggerHistoryEntry::emtInfo );
-			entry.GetSource().Set( source );
-			entry.GetMessage().Set( message );
+			entry.SetType(igdeLoggerHistoryEntry::emtInfo);
+			entry.GetSource().Set(source);
+			entry.GetMessage().Set(message);
 			entry.CleanUpMessage();
 			
-			NotifyMessageAdded( entry );
+			NotifyMessageAdded(entry);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -224,25 +224,25 @@ void igdeLoggerHistory::LogInfo( const char *source, const char *message ){
 	pMutex.Unlock();
 }
 
-void igdeLoggerHistory::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void igdeLoggerHistory::LogWarn(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		if( CanAddMessage( igdeLoggerHistoryEntry::emtWarn, source ) ){
+		if(CanAddMessage(igdeLoggerHistoryEntry::emtWarn, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
-			entry.SetType( igdeLoggerHistoryEntry::emtWarn );
-			entry.GetSource().Set( source );
-			entry.GetMessage().Set( message );
+			entry.SetType(igdeLoggerHistoryEntry::emtWarn);
+			entry.GetSource().Set(source);
+			entry.GetMessage().Set(message);
 			entry.CleanUpMessage();
 			
-			NotifyMessageAdded( entry );
+			NotifyMessageAdded(entry);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -250,25 +250,25 @@ void igdeLoggerHistory::LogWarn( const char *source, const char *message ){
 	pMutex.Unlock();
 }
 
-void igdeLoggerHistory::LogError( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void igdeLoggerHistory::LogError(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		if( CanAddMessage( igdeLoggerHistoryEntry::emtError, source ) ){
+		if(CanAddMessage(igdeLoggerHistoryEntry::emtError, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
-			entry.SetType( igdeLoggerHistoryEntry::emtError );
-			entry.GetSource().Set( source );
-			entry.GetMessage().Set( message );
+			entry.SetType(igdeLoggerHistoryEntry::emtError);
+			entry.GetSource().Set(source);
+			entry.GetMessage().Set(message);
 			entry.CleanUpMessage();
 			
-			NotifyMessageAdded( entry );
+			NotifyMessageAdded(entry);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}

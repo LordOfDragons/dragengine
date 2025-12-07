@@ -125,7 +125,7 @@ const devkFormat *devkDevice::GetUseFboFormat(eFormats format) const{
 uint32_t devkDevice::IndexOfMemoryType(VkMemoryPropertyFlags property, uint32_t bits) const{
 	uint32_t i;
 	for(i=0; i<pMemoryProperties.memoryTypeCount; i++){
-		if((bits & 1) == 1 && (pMemoryProperties.memoryTypes[ i ].propertyFlags & property) == property) {
+		if((bits & 1) == 1 && (pMemoryProperties.memoryTypes[i].propertyFlags & property) == property) {
 			return i;
 		}
 		bits >>= 1;
@@ -149,7 +149,7 @@ devkQueue &devkDevice::GetGraphicQueueAt(int index) const{
 	if(index < 0 || index >= pConfig.graphicQueueCount){
 		DETHROW(deeInvalidParam);
 	}
-	return pQueues[ index ];
+	return pQueues[index];
 }
 
 int devkDevice::GetComputeQueueCount() const{
@@ -160,7 +160,7 @@ devkQueue &devkDevice::GetComputeQueueAt(int index) const{
 	if(index < 0 || index >= pConfig.computeQueueCount){
 		DETHROW(deeInvalidParam);
 	}
-	return pQueues[ pConfig.graphicQueueCount + index ];
+	return pQueues[pConfig.graphicQueueCount + index];
 }
 
 int devkDevice::GetTransferQueueCount() const{
@@ -171,7 +171,7 @@ devkQueue &devkDevice::GetTransferQueueAt(int index) const{
 	if(index < 0 || index >= pConfig.transferQueueCount){
 		DETHROW(deeInvalidParam);
 	}
-	return pQueues[ pConfig.graphicQueueCount + pConfig.computeQueueCount + index ];
+	return pQueues[pConfig.graphicQueueCount + pConfig.computeQueueCount + index];
 }
 
 
@@ -185,7 +185,7 @@ void devkDevice::pCleanUp(){
 		const int queueCount = pConfig.graphicQueueCount + pConfig.computeQueueCount + pConfig.transferQueueCount;
 		int i;
 		for(i=0; i<queueCount; i++){
-			pQueues[ i ]->WaitIdle();
+			pQueues[i]->WaitIdle();
 		}
 	}
 	
@@ -231,7 +231,7 @@ void devkDevice::pCreateDevice(){
 		DETHROW_INFO(deeInvalidAction, "no queues found");
 	}
 	
-	queueFamilyProperties = new VkQueueFamilyProperties[ queueFamilyCount ];
+	queueFamilyProperties = new VkQueueFamilyProperties[queueFamilyCount];
 	memset(queueFamilyProperties, 0, sizeof(VkQueueFamilyProperties) * queueFamilyCount);
 	
 	uint32_t writtenQueueFamilyCount = queueFamilyCount;
@@ -239,7 +239,7 @@ void devkDevice::pCreateDevice(){
 	DEASSERT_TRUE(writtenQueueFamilyCount <= queueFamilyCount)
 	int i;
 	
-	VkDeviceQueueCreateInfo queueCreateInfo[ 3 ]{};
+	VkDeviceQueueCreateInfo queueCreateInfo[3]{};
 	int requiredQueueCount = 0;
 	int queueGraphic = -1;
 	int queueCompute = -1;
@@ -279,7 +279,7 @@ void devkDevice::pCreateDevice(){
 	
 	module.LogInfo("Queue Families");
 	for(i=0; i<(int)writtenQueueFamilyCount; i++){
-		const VkQueueFlags flags = queueFamilyProperties[ i ].queueFlags;
+		const VkQueueFlags flags = queueFamilyProperties[i].queueFlags;
 		
 		decString text("-");
 		if(flags & VK_QUEUE_GRAPHICS_BIT){
@@ -303,33 +303,33 @@ void devkDevice::pCreateDevice(){
 		if(flags & 0x00000040){
 			text.Append(" video-encode");
 		}
-		text.AppendFormat(": %d", queueFamilyProperties[ i ].queueCount);
+		text.AppendFormat(": %d", queueFamilyProperties[i].queueCount);
 		module.LogInfo(text);
 		
 		if((flags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT
 		&& pFamilyIndexGraphic == 0 && queueGraphic != -1){
-			queueCreateInfo[ queueGraphic ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			queueCreateInfo[ queueGraphic ].queueFamilyIndex = i;
-			queueCreateInfo[ queueGraphic ].queueCount = allowGraphicQueueCount;
-			queueCreateInfo[ queueGraphic ].pQueuePriorities = &defaultQueuePriority;
+			queueCreateInfo[queueGraphic].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfo[queueGraphic].queueFamilyIndex = i;
+			queueCreateInfo[queueGraphic].queueCount = allowGraphicQueueCount;
+			queueCreateInfo[queueGraphic].pQueuePriorities = &defaultQueuePriority;
 			pFamilyIndexGraphic = i;
 		}
 		
 		if((flags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == VK_QUEUE_COMPUTE_BIT
 		&& pFamilyIndexCompute == 0 && queueCompute != -1){
-			queueCreateInfo[ queueCompute ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			queueCreateInfo[ queueCompute ].queueFamilyIndex = i;
-			queueCreateInfo[ queueCompute ].queueCount = allowComputeQueueCount;
-			queueCreateInfo[ queueCompute ].pQueuePriorities = &defaultQueuePriority;
+			queueCreateInfo[queueCompute].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfo[queueCompute].queueFamilyIndex = i;
+			queueCreateInfo[queueCompute].queueCount = allowComputeQueueCount;
+			queueCreateInfo[queueCompute].pQueuePriorities = &defaultQueuePriority;
 			pFamilyIndexCompute = i;
 		}
 		
 		if((flags & (VK_QUEUE_TRANSFER_BIT | VK_QUEUE_GRAPHICS_BIT)) == VK_QUEUE_TRANSFER_BIT
 		&& pFamilyIndexTransfer == 0 && queueTransfer != -1){
-			queueCreateInfo[ queueTransfer ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			queueCreateInfo[ queueTransfer ].queueFamilyIndex = i;
-			queueCreateInfo[ queueTransfer ].queueCount = allowTransferQueueCount;
-			queueCreateInfo[ queueTransfer ].pQueuePriorities = &defaultQueuePriority;
+			queueCreateInfo[queueTransfer].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfo[queueTransfer].queueFamilyIndex = i;
+			queueCreateInfo[queueTransfer].queueCount = allowTransferQueueCount;
+			queueCreateInfo[queueTransfer].pQueuePriorities = &defaultQueuePriority;
 			pFamilyIndexTransfer = i;
 		}
 	}
@@ -339,22 +339,22 @@ void devkDevice::pCreateDevice(){
 	}
 	
 	if(queueGraphic != -1
-	&& queueCreateInfo[ queueGraphic ].queueCount != (uint32_t)allowGraphicQueueCount){
-		DETHROW_INFO(deeInvalidAction, "graphic queue count mismatch" );
+	&& queueCreateInfo[queueGraphic].queueCount != (uint32_t)allowGraphicQueueCount){
+		DETHROW_INFO(deeInvalidAction, "graphic queue count mismatch");
 	}
 	if(queueCompute != -1
-	&& queueCreateInfo[ queueCompute ].queueCount != (uint32_t)allowComputeQueueCount){
-		DETHROW_INFO(deeInvalidAction, "compute queue count mismatch" );
+	&& queueCreateInfo[queueCompute].queueCount != (uint32_t)allowComputeQueueCount){
+		DETHROW_INFO(deeInvalidAction, "compute queue count mismatch");
 	}
 	if(queueTransfer != -1
-	&& queueCreateInfo[ queueTransfer ].queueCount != (uint32_t)allowTransferQueueCount){
-		DETHROW_INFO(deeInvalidAction, "transfer queue count mismatch" );
+	&& queueCreateInfo[queueTransfer].queueCount != (uint32_t)allowTransferQueueCount){
+		DETHROW_INFO(deeInvalidAction, "transfer queue count mismatch");
 	}
 	
 	// create logical device
 	VkDeviceCreateInfo deviceCreateInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 	deviceCreateInfo.queueCreateInfoCount = requiredQueueCount;
-	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo[ 0 ];
+	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo[0];
 	VK_CHECK(pInstance.GetVulkan(), pInstance.vkCreateDevice(pPhysicalDevice,
 		&deviceCreateInfo, VK_NULL_HANDLE, &pDevice));
 	
@@ -363,8 +363,8 @@ void devkDevice::pCreateDevice(){
 	
 	// create queue instances
 	if(pConfig.graphicQueueCount + pConfig.computeQueueCount + pConfig.transferQueueCount > 0){
-		pQueues = new devkQueue::Ref[ pConfig.graphicQueueCount
-			+ pConfig.computeQueueCount + pConfig.transferQueueCount ];
+		pQueues = new devkQueue::Ref[pConfig.graphicQueueCount
+			+ pConfig.computeQueueCount + pConfig.transferQueueCount];
 		
 		int nextQueue = 0;
 		
@@ -372,38 +372,38 @@ void devkDevice::pCreateDevice(){
 		for(i=0; i<pConfig.graphicQueueCount; i++){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue(pDevice, pFamilyIndexGraphic, i, &queue);
-			if(! queue){
+			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get graphic device queue failed");
 			}
-			pQueues[ nextQueue++ ].TakeOver(new devkQueue(*this, pFamilyIndexGraphic, i, queue));
+			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexGraphic, i, queue));
 		}
 		
 		// compute queues
 		for(i=0; i<decMath::min(pConfig.graphicQueueCount, pConfig.computeQueueCount); i++){
-			pQueues[ nextQueue++ ] = pQueues[ i ]; // shared
+			pQueues[nextQueue++] = pQueues[i]; // shared
 		}
 		
 		for(i=0; i<allowComputeQueueCount; i++){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue(pDevice, pFamilyIndexCompute, i, &queue);
-			if(! queue){
+			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get compute device queue failed");
 			}
-			pQueues[ nextQueue++ ].TakeOver(new devkQueue(*this, pFamilyIndexCompute, i, queue));
+			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexCompute, i, queue));
 		}
 		
 		// transfer queues
 		for(i=0; i<decMath::min(pConfig.graphicQueueCount, pConfig.transferQueueCount); i++){
-			pQueues[ nextQueue++ ] = pQueues[ i ]; // shared
+			pQueues[nextQueue++] = pQueues[i]; // shared
 		}
 		
 		for(i=0; i<allowTransferQueueCount; i++){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue(pDevice, pFamilyIndexTransfer, i, &queue);
-			if(! queue){
+			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get transfer device queue failed");
 			}
-			pQueues[ nextQueue++ ].TakeOver(new devkQueue(*this, pFamilyIndexTransfer, i, queue));
+			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexTransfer, i, queue));
 		}
 	}
 }
@@ -437,7 +437,7 @@ void devkDevice::pDetectExtensions(){
 		return;
 	}
 	
-	VkExtensionProperties * const extensions = new VkExtensionProperties[ count ];
+	VkExtensionProperties * const extensions = new VkExtensionProperties[count];
 	try{
 		uint32_t writtenCount = count;
 		VK_CHECK(vulkan, pInstance.vkEnumerateDeviceExtensionProperties(
@@ -450,15 +450,15 @@ void devkDevice::pDetectExtensions(){
 		
 		baseModule.LogInfo("Device Extensions:");
 		for(i=0; i<writtenCount; i++){
-			baseModule.LogInfoFormat("- %s: %d", extensions[ i ].extensionName, extensions[ i ].specVersion);
+			baseModule.LogInfoFormat("- %s: %d", extensions[i].extensionName, extensions[i].specVersion);
 		}
 		
 		// store supported extensions
 		int j;
 		for(i=0; i<writtenCount; i++){
 			for(j=0; j<ExtensionCount; j++){
-				if(strcmp(pSupportsExtension[ j ].name, extensions[ i ].extensionName) == 0){
-					pSupportsExtension[ j ].version = extensions[ i ].specVersion;
+				if(strcmp(pSupportsExtension[j].name, extensions[i].extensionName) == 0){
+					pSupportsExtension[j].version = extensions[i].specVersion;
 					break;
 				}
 			}
@@ -467,16 +467,16 @@ void devkDevice::pDetectExtensions(){
 		// report support extensions
 		baseModule.LogInfo("Supported Extensions:");
 		for(i=0; i<ExtensionCount; i++){
-			if(pSupportsExtension[ i ].version){
-				baseModule.LogInfoFormat("- %s: %d", pSupportsExtension[ i ].name,
-					pSupportsExtension[ i ].version);
+			if(pSupportsExtension[i].version){
+				baseModule.LogInfoFormat("- %s: %d", pSupportsExtension[i].name,
+					pSupportsExtension[i].version);
 			}
 		}
 		
 		baseModule.LogInfo("Not Supported Extensions:");
 		for(i=0; i<ExtensionCount; i++){
-			if(! pSupportsExtension[ i ].version){
-				baseModule.LogInfoFormat("- %s", pSupportsExtension[ i ].name);
+			if(!pSupportsExtension[i].version){
+				baseModule.LogInfoFormat("- %s", pSupportsExtension[i].name);
 			}
 		}
 		
@@ -571,7 +571,7 @@ void devkDevice::pDetectCapabilities(){
 void devkDevice::pLoadFunctions(){
 	#define DEVICE_LEVEL_VULKAN_FUNCTION(name) \
 		name = (PFN_##name)pvkGetDeviceProcAddr(pDevice, #name); \
-		if(! name){ \
+		if(!name){ \
 			DETHROW_INFO(deeInvalidAction, "Device function " #name " not found"); \
 		}
 	

@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create height terrain sector texture. */
-	deoglHTSTexture( deoglRHTSector &sector, int index );
+	deoglHTSTexture(deoglRHTSector &sector, int index);
 	
 	/** Clean up height terrain sector texture. */
 	~deoglHTSTexture();
@@ -88,13 +88,13 @@ public:
 	inline const decTexMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Set texture matrix. */
-	void SetMatrix( const decTexMatrix &matrix );
+	void SetMatrix(const decTexMatrix &matrix);
 	
 	/** Skin or NULL. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL. */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Skin texture to use or NULL. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
@@ -112,7 +112,7 @@ public:
 	void MarkTUCsDirty();
 	
 	/** Texture units configuration for shader type. */
-	deoglTexUnitsConfig *GetTUCForPipelineType ( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType (deoglSkinTexturePipelines::eTypes type) const;
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -156,10 +156,10 @@ public:
 	inline deoglTexUnitsConfig *GetTUCLuminance() const{ return pTUCLuminance; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const;
 	
 	/** Update instance parameter shader parameter block. */
-	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
+	void UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader);
 	
 	/** Prepare for render. */
 	void PrepareForRender();

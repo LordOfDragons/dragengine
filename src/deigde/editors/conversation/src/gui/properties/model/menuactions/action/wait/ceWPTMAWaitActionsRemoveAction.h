@@ -54,9 +54,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsRemoveAction( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsRemoveAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAWait &wait, ceConversationAction *action );
+		ceCAWait &wait, ceConversationAction *action);
 	/*@}*/
 	
 	

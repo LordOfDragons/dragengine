@@ -77,9 +77,9 @@ enum {
 decPath::decPath(){
 }
 
-decPath::decPath( const decPath &path ) :
-pComponents( path.pComponents ),
-pPrefix( path.pPrefix ){
+decPath::decPath(const decPath &path) :
+pComponents(path.pComponents),
+pPrefix(path.pPrefix){
 }
 
 decPath::~decPath(){
@@ -90,15 +90,15 @@ decPath::~decPath(){
 // Management
 ///////////////
 
-decPath decPath::CreatePathUnix( const char *path ){
+decPath decPath::CreatePathUnix(const char *path){
 	decPath p;
-	p.SetFromUnix( path );
+	p.SetFromUnix(path);
 	return p;
 }
 
-decPath decPath::CreatePathNative( const char *path ){
+decPath decPath::CreatePathNative(const char *path){
 	decPath p;
-	p.SetFromNative( path );
+	p.SetFromNative(path);
 	return p;
 }
 
@@ -108,91 +108,91 @@ decPath decPath::CreateWorkingDirectory(){
 	return path;
 }
 
-decPath decPath::AbsolutePathUnix( const char *path, const char *baseDirectory ){
-	if( IsUnixPathAbsolute( path ) ){
-		return CreatePathUnix( path );
+decPath decPath::AbsolutePathUnix(const char *path, const char *baseDirectory){
+	if(IsUnixPathAbsolute(path)){
+		return CreatePathUnix(path);
 	}
 	
 	decPath absolute;
-	absolute.SetFromUnix( baseDirectory );
-	absolute.AddUnixPath( path );
+	absolute.SetFromUnix(baseDirectory);
+	absolute.AddUnixPath(path);
 	return absolute;
 }
 
-decPath decPath::AbsolutePathNative( const char *path, const char *baseDirectory ){
-	if( IsNativePathAbsolute( path ) ){
-		return CreatePathNative( path );
+decPath decPath::AbsolutePathNative(const char *path, const char *baseDirectory){
+	if(IsNativePathAbsolute(path)){
+		return CreatePathNative(path);
 	}
 	
 	decPath absolute;
-	absolute.SetFromNative( baseDirectory );
-	absolute.AddNativePath( path );
+	absolute.SetFromNative(baseDirectory);
+	absolute.AddNativePath(path);
 	return absolute;
 }
 
-decPath decPath::RelativePathUnix( const char *path, const char *baseDirectory, bool onlyBelow ){
-	return decPath::CreatePathUnix( path ).RelativePath( decPath::CreatePathUnix( baseDirectory ), onlyBelow );
+decPath decPath::RelativePathUnix(const char *path, const char *baseDirectory, bool onlyBelow){
+	return decPath::CreatePathUnix(path).RelativePath(decPath::CreatePathUnix(baseDirectory), onlyBelow);
 }
 
-decPath decPath::RelativePathNative( const char *path, const char *baseDirectory, bool onlyBelow ){
-	return decPath::CreatePathNative( path ).RelativePath( decPath::CreatePathNative( baseDirectory ), onlyBelow );
+decPath decPath::RelativePathNative(const char *path, const char *baseDirectory, bool onlyBelow){
+	return decPath::CreatePathNative(path).RelativePath(decPath::CreatePathNative(baseDirectory), onlyBelow);
 }
 
-void decPath::SetPrefix( const char *prefix ){
+void decPath::SetPrefix(const char *prefix){
 	pPrefix = prefix;
 }
 
-void decPath::SetFromUnix( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+void decPath::SetFromUnix(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( path[ 0 ] == '/' ){
+	if(path[0] == '/'){
 		pPrefix = "/";
 		pComponents.RemoveAll();
-		pParseRelativePath( path + 1, '/' );
+		pParseRelativePath(path + 1, '/');
 		
 	}else{
 		pPrefix.Empty();
 		pComponents.RemoveAll();
-		pParseRelativePath( path, '/' );
+		pParseRelativePath(path, '/');
 	}
 }
 
-void decPath::SetFromNative( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+void decPath::SetFromNative(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int prefixLen = pGetPrefixLength( path );
-	pPrefix = decString( path ).GetLeft( prefixLen );
+	const int prefixLen = pGetPrefixLength(path);
+	pPrefix = decString(path).GetLeft(prefixLen);
 	pComponents.RemoveAll();
-	pParseRelativePath( path + prefixLen, PATH_SEPARATOR_CHAR );
+	pParseRelativePath(path + prefixLen, PATH_SEPARATOR_CHAR);
 }
 
 void decPath::SetWorkingDirectory(){
 	#ifdef OS_UNIX
-	char buffer[ FILENAME_MAX ];
-	if( ! getcwd( buffer, FILENAME_MAX ) ){
-		DETHROW( deeInvalidAction );
+	char buffer[FILENAME_MAX];
+	if(!getcwd(buffer, FILENAME_MAX)){
+		DETHROW(deeInvalidAction);
 	}
-	SetFromNative( buffer );
+	SetFromNative(buffer);
 	
 	#elif defined OS_W32
-	wchar_t buffer[ FILENAME_MAX ];
-	if( ! _wgetcwd( buffer, FILENAME_MAX ) ){
-		DETHROW( deeInvalidAction );
+	wchar_t buffer[FILENAME_MAX];
+	if(!_wgetcwd(buffer, FILENAME_MAX)){
+		DETHROW(deeInvalidAction);
 	}
 	
-	const int count = ( int )wcslen( buffer );
+	const int count = (int)wcslen(buffer);
 	decUnicodeString unicode;
 	int i;
-	unicode.Set( 0, count );
-	for( i=0; i<count; i++ ){
-		unicode.SetAt( i, buffer[ i ] );
+	unicode.Set(0, count);
+	for(i=0; i<count; i++){
+		unicode.SetAt(i, buffer[i]);
 	}
 	
-	SetFromNative( unicode.ToUTF8() );
+	SetFromNative(unicode.ToUTF8());
 	
 	#else
 	#error "Missing implementation for decPath::SetWorkingDirectory for platform"
@@ -205,11 +205,11 @@ void decPath::SetEmpty(){
 }
 
 decString decPath::GetPathUnix() const{
-	return pPrefix + pComponents.Join( "/" );
+	return pPrefix + pComponents.Join("/");
 }
 
 decString decPath::GetPathNative() const{
-	return pPrefix + pComponents.Join( PATH_SEPARATOR_STRING );
+	return pPrefix + pComponents.Join(PATH_SEPARATOR_STRING);
 }
 
 bool decPath::IsEmpty() const{
@@ -217,62 +217,62 @@ bool decPath::IsEmpty() const{
 }
 
 bool decPath::IsAbsolute() const{
-	return ! pPrefix.IsEmpty();
+	return !pPrefix.IsEmpty();
 }
 
 bool decPath::IsRelative() const{
 	return pPrefix.IsEmpty();
 }
 
-void decPath::SetFrom( const decPath &path ){
+void decPath::SetFrom(const decPath &path){
 	pPrefix = path.pPrefix;
 	pComponents = path.pComponents;
 }
 
-void decPath::Add( const decPath &path ){
+void decPath::Add(const decPath &path){
 	pComponents += path.pComponents;
 }
 
-void decPath::AddUnixPath( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+void decPath::AddUnixPath(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( path[ 0 ] == '/' ){
-		pParseRelativePath( path + 1, '/' );
+	if(path[0] == '/'){
+		pParseRelativePath(path + 1, '/');
 		
 	}else{
-		pParseRelativePath( path, '/' );
+		pParseRelativePath(path, '/');
 	}
 }
 
-void decPath::AddNativePath( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+void decPath::AddNativePath(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int prefixLen = pGetPrefixLength( path );
-	if( prefixLen > 0 ){
-		pParseRelativePath( path + prefixLen, PATH_SEPARATOR_CHAR );
+	const int prefixLen = pGetPrefixLength(path);
+	if(prefixLen > 0){
+		pParseRelativePath(path + prefixLen, PATH_SEPARATOR_CHAR);
 		
 	}else{
-		pParseRelativePath( path, PATH_SEPARATOR_CHAR );
+		pParseRelativePath(path, PATH_SEPARATOR_CHAR);
 	}
 }
 
 
 
-bool decPath::MatchesPattern( const decPath &filePattern ) const{
-	if( filePattern.IsAbsolute() ){
+bool decPath::MatchesPattern(const decPath &filePattern) const{
+	if(filePattern.IsAbsolute()){
 		const int count = pComponents.GetCount();
-		if( filePattern.pComponents.GetCount() != count || filePattern.pPrefix != pPrefix ){
+		if(filePattern.pComponents.GetCount() != count || filePattern.pPrefix != pPrefix){
 			return false;
 		}
 		
 		int i;
-		for( i=0; i<count; i++ ){
-			if( ! decPath::fxfilematch( filePattern.pComponents.GetAt( i ),
-				pComponents.GetAt( i ), FILEMATCH_PERIOD ) ){
+		for(i=0; i<count; i++){
+			if(!decPath::fxfilematch(filePattern.pComponents.GetAt(i),
+				pComponents.GetAt(i), FILEMATCH_PERIOD)){
 					return false;
 			}
 		}
@@ -280,15 +280,15 @@ bool decPath::MatchesPattern( const decPath &filePattern ) const{
 	}else{
 		const int count = pComponents.GetCount();
 		const int patternCount = filePattern.pComponents.GetCount();
-		if( patternCount > count ){
+		if(patternCount > count){
 			return false;
 		}
 		
 		const int offset = count - patternCount;
 		int i;
-		for( i=0; i<patternCount; i++ ){
-			if( ! decPath::fxfilematch( filePattern.pComponents.GetAt( i ),
-				pComponents.GetAt( offset + i ), FILEMATCH_PERIOD ) ){
+		for(i=0; i<patternCount; i++){
+			if(!decPath::fxfilematch(filePattern.pComponents.GetAt(i),
+				pComponents.GetAt(offset + i), FILEMATCH_PERIOD)){
 					return false;
 			}
 		}
@@ -297,18 +297,18 @@ bool decPath::MatchesPattern( const decPath &filePattern ) const{
 	return true;
 }
 
-decPath decPath::AbsolutePath( const decPath &baseDirectory ) const{
-	if( IsAbsolute() ){
-		return decPath( *this );
+decPath decPath::AbsolutePath(const decPath &baseDirectory) const{
+	if(IsAbsolute()){
+		return decPath(*this);
 		
 	}else{
 		return baseDirectory + *this;
 	}
 }
 
-decPath decPath::RelativePath( const decPath &baseDirectory, bool onlyBelow ) const{
-	if( ! IsAbsolute() || ! baseDirectory.IsAbsolute() || pPrefix != baseDirectory.pPrefix ){
-		return decPath( *this );
+decPath decPath::RelativePath(const decPath &baseDirectory, bool onlyBelow) const{
+	if(!IsAbsolute() || !baseDirectory.IsAbsolute() || pPrefix != baseDirectory.pPrefix){
+		return decPath(*this);
 	}
 	
 	// source /a/b/c/d/e
@@ -319,41 +319,41 @@ decPath decPath::RelativePath( const decPath &baseDirectory, bool onlyBelow ) co
 	const int count = pComponents.GetCount();
 	int i;
 	
-	for( i=0; i<baseDirCount; i++ ){
-		if( i >= count || baseDirectory.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+	for(i=0; i<baseDirCount; i++){
+		if(i >= count || baseDirectory.pComponents.GetAt(i) != pComponents.GetAt(i)){
 			break;
 		}
 	}
 	
-	if( onlyBelow && i < baseDirCount ){
-		return decPath( *this );
+	if(onlyBelow && i < baseDirCount){
+		return decPath(*this);
 	}
 	
 	const int index = i;
 	decPath newPath;
-	for( i=index; i<baseDirCount; i++ ){
-		newPath.pComponents.Add( ".." );
+	for(i=index; i<baseDirCount; i++){
+		newPath.pComponents.Add("..");
 	}
-	for( i=index; i<count; i++ ){
-		newPath.pComponents.Add( pComponents.GetAt( i ) );
+	for(i=index; i<count; i++){
+		newPath.pComponents.Add(pComponents.GetAt(i));
 	}
 	return newPath;
 }
 
-bool decPath::IsParentOf( const decPath &path ) const{
-	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+bool decPath::IsParentOf(const decPath &path) const{
+	if(!IsAbsolute() || !path.IsAbsolute() || pPrefix != path.pPrefix){
 		return false;
 	}
 	
 	const int pathDirCount = path.pComponents.GetCount();
 	const int count = pComponents.GetCount();
-	if( pathDirCount <= count ){
+	if(pathDirCount <= count){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+	for(i=0; i<count; i++){
+		if(path.pComponents.GetAt(i) != pComponents.GetAt(i)){
 			return false;
 		}
 	}
@@ -361,20 +361,20 @@ bool decPath::IsParentOf( const decPath &path ) const{
 	return true;
 }
 
-bool decPath::IsEqualOrParentOf( const decPath &path ) const{
-	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+bool decPath::IsEqualOrParentOf(const decPath &path) const{
+	if(!IsAbsolute() || !path.IsAbsolute() || pPrefix != path.pPrefix){
 		return false;
 	}
 	
 	const int pathDirCount = path.pComponents.GetCount();
 	const int count = pComponents.GetCount();
-	if( pathDirCount < count ){
+	if(pathDirCount < count){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+	for(i=0; i<count; i++){
+		if(path.pComponents.GetAt(i) != pComponents.GetAt(i)){
 			return false;
 		}
 	}
@@ -382,20 +382,20 @@ bool decPath::IsEqualOrParentOf( const decPath &path ) const{
 	return true;
 }
 
-bool decPath::IsDirectParentOf( const decPath &path ) const{
-	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+bool decPath::IsDirectParentOf(const decPath &path) const{
+	if(!IsAbsolute() || !path.IsAbsolute() || pPrefix != path.pPrefix){
 		return false;
 	}
 	
 	const int pathDirCount = path.pComponents.GetCount();
 	const int count = pComponents.GetCount();
-	if( pathDirCount != count + 1 ){
+	if(pathDirCount != count + 1){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+	for(i=0; i<count; i++){
+		if(path.pComponents.GetAt(i) != pComponents.GetAt(i)){
 			return false;
 		}
 	}
@@ -403,20 +403,20 @@ bool decPath::IsDirectParentOf( const decPath &path ) const{
 	return true;
 }
 
-bool decPath::IsEqualOrDirectParentOf( const decPath &path ) const{
-	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+bool decPath::IsEqualOrDirectParentOf(const decPath &path) const{
+	if(!IsAbsolute() || !path.IsAbsolute() || pPrefix != path.pPrefix){
 		return false;
 	}
 	
 	const int pathDirCount = path.pComponents.GetCount();
 	const int count = pComponents.GetCount();
-	if( pathDirCount < count || pathDirCount > count + 1 ){
+	if(pathDirCount < count || pathDirCount > count + 1){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+	for(i=0; i<count; i++){
+		if(path.pComponents.GetAt(i) != pComponents.GetAt(i)){
 			return false;
 		}
 	}
@@ -425,11 +425,11 @@ bool decPath::IsEqualOrDirectParentOf( const decPath &path ) const{
 }
 
 decPath decPath::GetParent() const{
-	DEASSERT_TRUE( pComponents.GetCount() > 0 )
+	DEASSERT_TRUE(pComponents.GetCount() > 0)
 	
 	decPath path;
 	path.pPrefix = pPrefix;
-	path.pComponents = pComponents.Splice( 0, -1 );
+	path.pComponents = pComponents.Splice(0, -1);
 	return path;
 }
 
@@ -442,32 +442,32 @@ int decPath::GetComponentCount() const{
 	return pComponents.GetCount();
 }
 
-const decString &decPath::GetComponentAt( int index ) const{
-	return pComponents.GetAt( index );
+const decString &decPath::GetComponentAt(int index) const{
+	return pComponents.GetAt(index);
 }
 
-void decPath::SetComponentAt( int index, const char *component ){
-	pComponents.SetAt( index, component );
+void decPath::SetComponentAt(int index, const char *component){
+	pComponents.SetAt(index, component);
 }
 
 const decString &decPath::GetLastComponent() const{
-	return pComponents.GetAt( pComponents.GetCount() - 1 );
+	return pComponents.GetAt(pComponents.GetCount() - 1);
 }
 
-void decPath::SetLastComponent( const char *component ){
-	pComponents.SetAt( pComponents.GetCount() - 1, component );
+void decPath::SetLastComponent(const char *component){
+	pComponents.SetAt(pComponents.GetCount() - 1, component);
 }
 
-void decPath::AddComponent( const char *component ){
-	pComponents.Add( component );
+void decPath::AddComponent(const char *component){
+	pComponents.Add(component);
 }
 
-void decPath::RemoveComponentFrom( int index ){
-	pComponents.RemoveFrom( index );
+void decPath::RemoveComponentFrom(int index){
+	pComponents.RemoveFrom(index);
 }
 
 void decPath::RemoveLastComponent(){
-	pComponents.RemoveFrom( pComponents.GetCount() - 1 );
+	pComponents.RemoveFrom(pComponents.GetCount() - 1);
 }
 
 void decPath::RemoveAllComponents(){
@@ -483,36 +483,36 @@ bool decPath::HasComponents() const{
 // String Path Testing
 ////////////////////////
 
-bool decPath::IsUnixPathAbsolute( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+bool decPath::IsUnixPathAbsolute(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
-	return path[ 0 ] == '/';
+	return path[0] == '/';
 }
 
-bool decPath::IsNativePathAbsolute( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+bool decPath::IsNativePathAbsolute(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
 	#ifdef OS_UNIX
-	return path[ 0 ] == '/';
+	return path[0] == '/';
 	#endif
 	
 	#ifdef OS_W32
-	if( strlen( path ) < 3 ){
+	if(strlen(path) < 3){
 		return false;
 	}
-	if( path[ 2 ] != '\\' ){
+	if(path[2] != '\\'){
 		return false;
 	}
-	if( path[ 1 ] != ':' ){
+	if(path[1] != ':'){
 		return false;
 	}
-	if( path[ 0 ] >= 'A' && path[ 0 ] <= 'Z' ){
+	if(path[0] >= 'A' && path[0] <= 'Z'){
 		return true;
 	}
-	if( path[ 0 ] >= 'a' && path[ 0 ] <= 'z' ){
+	if(path[0] >= 'a' && path[0] <= 'z'){
 		return true;
 	}
 	
@@ -538,30 +538,30 @@ const char *decPath::PathSeparatorString(){
 // Operators
 //////////////
 
-bool decPath::operator==( const decPath &path ) const{
+bool decPath::operator==(const decPath &path) const{
 	return pPrefix == path.pPrefix && pComponents == path.pComponents;
 }
 
-bool decPath::operator!=( const decPath &path ) const{
+bool decPath::operator!=(const decPath &path) const{
 	return pPrefix != path.pPrefix || pComponents != path.pComponents;
 }
 
 
 
-decPath &decPath::operator=( const decPath &path ){
+decPath &decPath::operator=(const decPath &path){
 	pPrefix = path.pPrefix;
 	pComponents = path.pComponents;
 	return *this;
 }
 
-decPath &decPath::operator+=( const decPath &path ){
-	Add( path );
+decPath &decPath::operator+=(const decPath &path){
+	Add(path);
 	return *this;
 }
 
-decPath decPath::operator+( const decPath &path ) const{
-	decPath p( *this );
-	p.Add( path );
+decPath decPath::operator+(const decPath &path) const{
+	decPath p(*this);
+	p.Add(path);
 	return p;
 }
 
@@ -570,59 +570,59 @@ decPath decPath::operator+( const decPath &path ) const{
 // private functions
 //////////////////////
 
-void decPath::pParseRelativePath( const char *filename, int separator ){
-	const decString sfilename( filename );
+void decPath::pParseRelativePath(const char *filename, int separator){
+	const decString sfilename(filename);
 	int offset = 0, deliIndex, len = sfilename.GetLength();
 	
 	// parse filename
-	while( offset < len ){
+	while(offset < len){
 		// find path separator
-		deliIndex = sfilename.Find( separator, offset );
-		if( deliIndex == -1 ){
+		deliIndex = sfilename.Find(separator, offset);
+		if(deliIndex == -1){
 			deliIndex = len;
 		}
 		
 		// if delimiter is the first skip it
-		if( deliIndex == 0 ){
-			DETHROW( deeInvalidParam ); // nah, that's more an error than anything else
+		if(deliIndex == 0){
+			DETHROW(deeInvalidParam); // nah, that's more an error than anything else
 		}
 		
 		// extract component
-		decString tempComp( sfilename.GetMiddle( offset, deliIndex ) );
+		decString tempComp(sfilename.GetMiddle(offset, deliIndex));
 		offset = deliIndex + 1;
 		
 		// merge component with current components
-		if( tempComp == PATH_PARENTDIR ){
-			if( pComponents.GetCount() == 0 ){
-				DETHROW_INFO( deeInvalidParam, "Can not move into parent directory" );
+		if(tempComp == PATH_PARENTDIR){
+			if(pComponents.GetCount() == 0){
+				DETHROW_INFO(deeInvalidParam, "Can not move into parent directory");
 			}
 			RemoveLastComponent();
 			
-		}else if( tempComp != PATH_CURDIR ){
-			AddComponent( tempComp );
+		}else if(tempComp != PATH_CURDIR){
+			AddComponent(tempComp);
 		}
 	}
 }
 
-int decPath::pGetPrefixLength( const char *path ) const{
+int decPath::pGetPrefixLength(const char *path) const{
 	#ifdef OS_UNIX
-	return path[ 0 ] == '/' ? 1 : 0;
+	return path[0] == '/' ? 1 : 0;
 	#endif
 	
 	#ifdef OS_W32
-	if( strlen( path ) < 3 ){
+	if(strlen(path) < 3){
 		return 0;
 	}
-	if( path[ 2 ] != '\\' ){
+	if(path[2] != '\\'){
 		return 0;
 	}
-	if( path[ 1 ] != ':' ){
+	if(path[1] != ':'){
 		return 0;
 	}
-	if( path[ 0 ] >= 'A' && path[ 0 ] <= 'Z' ){
+	if(path[0] >= 'A' && path[0] <= 'Z'){
 		return 3;
 	}
-	if( path[ 0 ] >= 'a' && path[ 0 ] <= 'z' ){
+	if(path[0] >= 'a' && path[0] <= 'z'){
 		return 3;
 	}
 	
@@ -687,79 +687,79 @@ int decPath::pGetPrefixLength( const char *path ) const{
 
 // If folding case, make lower case
 //#define FOLD(c)          ( ( flags & FILEMATCH_CASEFOLD ) ? Ascii::toLower( c ) : ( c ) )
-#define FOLD(c)			( c )
+#define FOLD(c)			(c)
 
-bool decPath::domatch( const char *pattern, const char *string, int flags ){
+bool decPath::domatch(const char *pattern, const char *string, int flags){
 	char c, cs, ce, cc, neg;
 	const char *p = pattern;
 	const char *q = string;
 	//const char *s;
 	int level;
 	
-	while( ( c = *p++ ) != '\0' ){
-		switch( c ){
+	while((c = *p++) != '\0'){
+		switch(c){
 			case '?':
-				if( *q == '\0' ) return false;
-				if( ( flags & FILEMATCH_PERIOD ) && ( *q == '.' ) && ( q == string ) ) return false;
+				if(*q == '\0') return false;
+				if((flags & FILEMATCH_PERIOD) && (*q == '.') && (q == string)) return false;
 				q++;
 				break;
 			
 			case '*':
 				c = *p;
-				while( c == '*' ){
+				while(c == '*'){
 					c = *++p;
 				}
-				if( ( flags & FILEMATCH_PERIOD ) && ( *q == '.' ) && ( q == string ) ) return false;
-				if( c == '\0'){    // Optimize for case of trailing '*'
+				if((flags & FILEMATCH_PERIOD) && (*q == '.') && (q == string)) return false;
+				if(c == '\0'){    // Optimize for case of trailing '*'
 					return true;
 				}
-				while( ! domatch( p, q, flags & ~FILEMATCH_PERIOD ) ){
-					if( *q++ == '\0' ) return false;
+				while(!domatch(p, q, flags & ~FILEMATCH_PERIOD)){
+					if(*q++ == '\0') return false;
 				}
 				return true;
 			
 			case '[':
-				if( *q == '\0' ) return false;
-				if( ( flags & FILEMATCH_PERIOD ) && ( *q == '.' ) && ( q == string ) ) return false;
-				cc = FOLD( *q );
-				neg = ( ( *p == '!' ) || ( *p == '^' ) );
-				if( neg ) p++;
+				if(*q == '\0') return false;
+				if((flags & FILEMATCH_PERIOD) && (*q == '.') && (q == string)) return false;
+				cc = FOLD(*q);
+				neg = ((*p == '!') || (*p == '^'));
+				if(neg) p++;
 				c = *p++;
 				do{
-					if( c == '\\' ) c = *p++;
-					cs = ce = FOLD( c );
-					if( c == '\0' ) return false;
+					if(c == '\\') c = *p++;
+					cs = ce = FOLD(c);
+					if(c == '\0') return false;
 					c = *p++;
-					c = FOLD( c );
-					if( c == '-' && *p != ']' ){
+					c = FOLD(c);
+					if(c == '-' && *p != ']'){
 						c = *p++;
-						if( c == '\\' ) c = *p++;
-						if( c == '\0' ) return false;
-						ce = FOLD( c );
+						if(c == '\\') c = *p++;
+						if(c == '\0') return false;
+						ce = FOLD(c);
 						c = *p++;
 					}
-					if( ( cs <= cc ) && ( cc <= ce ) ) goto match;
+					if((cs <= cc) && (cc <= ce)) goto match;
 				}
-				while( c != ']' );
-				if( ! neg ) return false;
+				while(c != ']');
+				if(!neg) return false;
 				q++;
 				break;
 				
-match:			while( c != ']' ){
-					if( c == '\0' ) return false;
+match:			while(c != ']'){
+					if(c == '\0') return false;
 					c = *p++;
-					if( c == '\\' ) p++;
+					if(c == '\\') p++;
 				}
-				if( neg ) return false;
+				if(neg) return false;
 				q++;
 				break;
 			
 			case '(':
-nxt:			if( domatch( p, q, flags ) ) return true;
-				for( level = 0; *p && 0 <= level; ){
-					switch( *p++ ){
+nxt:			if(domatch(p, q, flags)) return true;
+				for(level = 0; *p && 0 <= level;){
+					switch(*p++){
 					case '\\':
-						if( *p ) p++;
+						if(*p) p++;
 						break;
 					
 					case '(':
@@ -772,7 +772,7 @@ nxt:			if( domatch( p, q, flags ) ) return true;
 					
 					case '|':
 					case ',':
-						if( level == 0 ) goto nxt;
+						if(level == 0) goto nxt;
 					}
 				}
 				return false;
@@ -782,10 +782,10 @@ nxt:			if( domatch( p, q, flags ) ) return true;
 			
 			case '|':
 			case ',':
-				for( level = 0; *p && 0 <= level; ){
-					switch( *p++ ){
+				for(level = 0; *p && 0 <= level;){
+					switch(*p++){
 					case '\\':
-						if( *p ) p++;
+						if(*p) p++;
 						break;
 					
 					case '(':
@@ -800,29 +800,29 @@ nxt:			if( domatch( p, q, flags ) ) return true;
 				break;
 			
 			case '\\':
-				if( *p ) c = *p++;   // Trailing escape represents itself
+				if(*p) c = *p++;   // Trailing escape represents itself
 			
 			default:
-				if( FOLD( c ) != FOLD( *q ) ) return false;
+				if(FOLD(c) != FOLD(*q)) return false;
 				q++;
 				break;
 		}
 	}
-	return ( *q == '\0' );
+	return (*q == '\0');
 }
 
 // Public API to matcher
-bool decPath::fxfilematch( const char *pattern, const char *string, int flags ){
+bool decPath::fxfilematch(const char *pattern, const char *string, int flags){
 	const char *p = pattern;
 	const char *q = string;
 	int level;
 	
-	if( p && q ){
-nxt:	if( decPath::domatch( p, q, flags ) ) return true;
-		for( level = 0; *p && 0 <= level; ){
-			switch( *p++ ){
+	if(p && q){
+nxt:	if(decPath::domatch(p, q, flags)) return true;
+		for(level = 0; *p && 0 <= level;){
+			switch(*p++){
 			case '\\':
-				if( *p ) p++;
+				if(*p) p++;
 				break;
 			
 			case '(':
@@ -835,7 +835,7 @@ nxt:	if( decPath::domatch( p, q, flags ) ) return true;
 			
 			case '|':
 			case ',':
-				if( level == 0 ) goto nxt;
+				if(level == 0) goto nxt;
 			}
 		}
 	}

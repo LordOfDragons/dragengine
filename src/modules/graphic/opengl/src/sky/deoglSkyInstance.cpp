@@ -45,23 +45,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkyInstance::deoglSkyInstance( deGraphicOpenGl &ogl, const deSkyInstance &instance ) :
-pOgl( ogl ),
-pInstance( instance ),
-pRInstance( NULL ),
-pParentWorld( NULL ),
-pOglSky( NULL ),
-pEnvMapTimer( 0.0f ),
-pDirtySky( true ),
-pDirtyControllers( true ),
-pDirtyLayerMask( true ),
-pSkyUpdateState( 0 )
+deoglSkyInstance::deoglSkyInstance(deGraphicOpenGl &ogl, const deSkyInstance &instance) :
+pOgl(ogl),
+pInstance(instance),
+pRInstance(NULL),
+pParentWorld(NULL),
+pOglSky(NULL),
+pEnvMapTimer(0.0f),
+pDirtySky(true),
+pDirtyControllers(true),
+pDirtyLayerMask(true),
+pSkyUpdateState(0)
 {
-	pRInstance = new deoglRSkyInstance( pOgl.GetRenderThread() );
+	pRInstance = new deoglRSkyInstance(pOgl.GetRenderThread());
 }
 
 deoglSkyInstance::~deoglSkyInstance(){
-	if( pRInstance ){
+	if(pRInstance){
 		pRInstance->FreeReference();
 	}
 }
@@ -72,29 +72,29 @@ deoglSkyInstance::~deoglSkyInstance(){
 ///////////////
 
 void deoglSkyInstance::SyncToRender(){
-	if( pDirtySky ){
+	if(pDirtySky){
 		pOglSky = NULL;
-		if( pInstance.GetSky() ){
-			pOglSky = ( deoglSky* )pInstance.GetSky()->GetPeerGraphic();
+		if(pInstance.GetSky()){
+			pOglSky = (deoglSky*)pInstance.GetSky()->GetPeerGraphic();
 		}
 		
-		if( pOglSky ){
+		if(pOglSky){
 			pOglSky->SyncToRender();
 			pSkyUpdateState = pOglSky->GetUpdateTracker();
 			
-			pRInstance->SetRSky( pOglSky->GetRSky() );
+			pRInstance->SetRSky(pOglSky->GetRSky());
 			
 		}else{
-			pRInstance->SetRSky( NULL );
+			pRInstance->SetRSky(NULL);
 		}
 		
-		pRInstance->SetOrder( pInstance.GetOrder() );
+		pRInstance->SetOrder(pInstance.GetOrder());
 		
 		pDirtySky = false;
 		pDirtyControllers = true;
 	}
 	
-	if( pOglSky && pOglSky->GetUpdateTracker() != pSkyUpdateState ){
+	if(pOglSky && pOglSky->GetUpdateTracker() != pSkyUpdateState){
 		pSkyUpdateState = pOglSky->GetUpdateTracker();
 		
 		pOglSky->SyncToRender();
@@ -103,15 +103,15 @@ void deoglSkyInstance::SyncToRender(){
 		pDirtyControllers = true;
 	}
 	
-	pRInstance->SetEnvironmentMapTimer( pEnvMapTimer );
+	pRInstance->SetEnvironmentMapTimer(pEnvMapTimer);
 	
-	if( pDirtyControllers ){
-		pRInstance->UpdateControllerStates( pInstance );
+	if(pDirtyControllers){
+		pRInstance->UpdateControllerStates(pInstance);
 		pRInstance->UpdateLayers();
 	}
 	
-	if( pDirtyLayerMask ){
-		pRInstance->SetLayerMask( pInstance.GetLayerMask() );
+	if(pDirtyLayerMask){
+		pRInstance->SetLayerMask(pInstance.GetLayerMask());
 		pDirtyLayerMask = false;
 	}
 	
@@ -123,15 +123,15 @@ void deoglSkyInstance::SyncToRender(){
 // Notifications
 //////////////////
 
-void deoglSkyInstance::Update( float elapsed ){
+void deoglSkyInstance::Update(float elapsed){
 	pEnvMapTimer += elapsed;
 	// Update dynamic skins: TODO
 }
 
 
 
-void deoglSkyInstance::SetParentWorld( deoglWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void deoglSkyInstance::SetParentWorld(deoglWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
@@ -148,7 +148,7 @@ void deoglSkyInstance::OrderChanged(){
 	pDirtySky = true;
 }
 
-void deoglSkyInstance::ControllerChanged( int ){
+void deoglSkyInstance::ControllerChanged(int){
 	pDirtyControllers = true;
 }
 

@@ -52,30 +52,30 @@ public:
 	/** Retrieves the number of renderables. */
 	int GetCount() const;
 	/** Retrieves the renderable at the given position. */
-	seDynamicSkinRenderable *GetAt( int index ) const;
+	seDynamicSkinRenderable *GetAt(int index) const;
 	/** Retrieves the renderable with the given name or NULL if not found. */
-	seDynamicSkinRenderable *GetNamed( const char *name ) const;
+	seDynamicSkinRenderable *GetNamed(const char *name) const;
 	/** Retrieves the index of the given renderable or -1 if not found. */
-	int IndexOf( seDynamicSkinRenderable *renderable ) const;
+	int IndexOf(seDynamicSkinRenderable *renderable) const;
 	/** Retrieves the index of the renderable with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a renderable exists. */
-	bool Has( seDynamicSkinRenderable *renderable ) const;
+	bool Has(seDynamicSkinRenderable *renderable) const;
 	/** Determines if a renderable with the given name exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a renderable. */
-	void Add( seDynamicSkinRenderable *renderable );
+	void Add(seDynamicSkinRenderable *renderable);
 	/** Inserts a new renderable. */
-	void InsertAt( seDynamicSkinRenderable *renderable, int index );
+	void InsertAt(seDynamicSkinRenderable *renderable, int index);
 	/** Moves a renderable to a new position. */
-	void MoveTo( seDynamicSkinRenderable *renderable, int index );
+	void MoveTo(seDynamicSkinRenderable *renderable, int index);
 	/** Removes a renderable. */
-	void Remove( seDynamicSkinRenderable *renderable );
+	void Remove(seDynamicSkinRenderable *renderable);
 	/** Removes all renderables. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	seDynamicSkinRenderableList &operator=( const seDynamicSkinRenderableList &list );
+	seDynamicSkinRenderableList &operator=(const seDynamicSkinRenderableList &list);
 	/*@}*/
 };
 

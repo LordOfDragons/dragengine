@@ -56,14 +56,14 @@
 // Constructors, destructors
 //////////////////////////////
 
-deBaseModule::deBaseModule( deLoadableModule &loadableModule ) :
-pLoadableModule( loadableModule ),
-pVFS( NULL )
+deBaseModule::deBaseModule(deLoadableModule &loadableModule) :
+pLoadableModule(loadableModule),
+pVFS(NULL)
 {
 	try{
 		pCreateVFS();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -82,48 +82,48 @@ int deBaseModule::GetParameterCount() const{
 	return 0;
 }
 
-void deBaseModule::GetParameterInfo( int index, deModuleParameter &parameter ) const{
-	DETHROW( deeInvalidParam );
+void deBaseModule::GetParameterInfo(int index, deModuleParameter &parameter) const{
+	DETHROW(deeInvalidParam);
 }
 
-int deBaseModule::IndexOfParameterNamed( const char *name ) const{
+int deBaseModule::IndexOfParameterNamed(const char *name) const{
 	return -1;
 }
 
-decString deBaseModule::GetParameterValue( const char *name ) const{
-	DETHROW( deeInvalidParam );
+decString deBaseModule::GetParameterValue(const char *name) const{
+	DETHROW(deeInvalidParam);
 }
 
-int deBaseModule::GetParameterInt( const char *name ) const{
-	return GetParameterValue( name ).ToInt();
+int deBaseModule::GetParameterInt(const char *name) const{
+	return GetParameterValue(name).ToInt();
 }
 
-float deBaseModule::GetParameterFloat( const char *name ) const{
-	return GetParameterValue( name ).ToFloat();
+float deBaseModule::GetParameterFloat(const char *name) const{
+	return GetParameterValue(name).ToFloat();
 }
 
-bool deBaseModule::GetParameterBool( const char *name ) const{
-	return GetParameterValue( name ) == "1";
+bool deBaseModule::GetParameterBool(const char *name) const{
+	return GetParameterValue(name) == "1";
 }
 
-void deBaseModule::SetParameterValue( const char *name, const char *value ){
-	DETHROW( deeInvalidParam );
+void deBaseModule::SetParameterValue(const char *name, const char *value){
+	DETHROW(deeInvalidParam);
 }
 
-void deBaseModule::SetParameterFloat( const char *name, float value ){
+void deBaseModule::SetParameterFloat(const char *name, float value){
 	decString stringValue;
-	stringValue.Format( "%f", value );
-	SetParameterValue( name, stringValue );
+	stringValue.Format("%f", value);
+	SetParameterValue(name, stringValue);
 }
 
-void deBaseModule::SetParameterInt( const char *name, int value ){
+void deBaseModule::SetParameterInt(const char *name, int value){
 	decString stringValue;
-	stringValue.Format( "%d", value );
-	SetParameterValue( name, stringValue );
+	stringValue.Format("%d", value);
+	SetParameterValue(name, stringValue);
 }
 
-void deBaseModule::SetParameterBool( const char *name, bool value ){
-	SetParameterValue( name, value ? "1" : "0" );
+void deBaseModule::SetParameterBool(const char *name, bool value){
+	SetParameterValue(name, value ? "1" : "0");
 }
 
 
@@ -139,17 +139,17 @@ void deBaseModule::PauseParallelProcessingUpdate(){
 // Debugging
 //////////////
 
-void deBaseModule::SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 0 ){
-		answer.SetFromUTF8( "No command provided." );
+void deBaseModule::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.GetArgumentCount() == 0){
+		answer.SetFromUTF8("No command provided.");
 		
-	}else if( command.MatchesArgumentAt( 0, "help" ) ){
-		answer.SetFromUTF8( "help => Displays this help screen." );
+	}else if(command.MatchesArgumentAt(0, "help")){
+		answer.SetFromUTF8("help => Displays this help screen.");
 		
 	}else{
-		answer.SetFromUTF8( "Unknown command '" );
-		answer += *command.GetArgumentAt( 0 );
-		answer.AppendFromUTF8( "'." );
+		answer.SetFromUTF8("Unknown command '");
+		answer += *command.GetArgumentAt(0);
+		answer.AppendFromUTF8("'.");
 	}
 }
 
@@ -174,11 +174,11 @@ decString deBaseModule::GetNativePathShare() const{
 	const deModuleSystem &moduleSystem = *pLoadableModule.GetSystem();
 	decPath path;
 	
-	path.SetFromNative( moduleSystem.GetEngine()->GetOS()->GetPathShare() );
-	path.AddUnixPath( "modules" );
-	path.AddUnixPath( moduleSystem.GetTypeDirectory( pLoadableModule.GetType() ) );
-	path.AddUnixPath( pLoadableModule.GetDirectoryName() );
-	path.AddComponent( pLoadableModule.GetVersion() );
+	path.SetFromNative(moduleSystem.GetEngine()->GetOS()->GetPathShare());
+	path.AddUnixPath("modules");
+	path.AddUnixPath(moduleSystem.GetTypeDirectory(pLoadableModule.GetType()));
+	path.AddUnixPath(pLoadableModule.GetDirectoryName());
+	path.AddComponent(pLoadableModule.GetVersion());
 	
 	return path.GetPathNative();
 }
@@ -188,53 +188,53 @@ decString deBaseModule::GetNativePathShare() const{
 // Debugging
 //////////////
 
-void deBaseModule::LogInfo( const char *message ){
-	GetGameEngine()->GetLogger()->LogInfo( pLoadableModule.GetLoggingName(), message );
+void deBaseModule::LogInfo(const char *message){
+	GetGameEngine()->GetLogger()->LogInfo(pLoadableModule.GetLoggingName(), message);
 }
 
-void deBaseModule::LogInfoFormat( const char *message, ... ){
+void deBaseModule::LogInfoFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	GetGameEngine()->GetLogger()->LogInfoFormatUsing( pLoadableModule.GetLoggingName(), message, list );
-	va_end( list );
+	va_start(list, message);
+	GetGameEngine()->GetLogger()->LogInfoFormatUsing(pLoadableModule.GetLoggingName(), message, list);
+	va_end(list);
 }
 
-void deBaseModule::LogInfoFormatUsing( const char *message, va_list args ){
-	GetGameEngine()->GetLogger()->LogInfoFormatUsing( pLoadableModule.GetLoggingName(), message, args );
+void deBaseModule::LogInfoFormatUsing(const char *message, va_list args){
+	GetGameEngine()->GetLogger()->LogInfoFormatUsing(pLoadableModule.GetLoggingName(), message, args);
 }
 
-void deBaseModule::LogWarn( const char *message ){
-	GetGameEngine()->GetLogger()->LogWarn( pLoadableModule.GetLoggingName(), message );
+void deBaseModule::LogWarn(const char *message){
+	GetGameEngine()->GetLogger()->LogWarn(pLoadableModule.GetLoggingName(), message);
 }
 
-void deBaseModule::LogWarnFormat( const char *message, ... ){
+void deBaseModule::LogWarnFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	GetGameEngine()->GetLogger()->LogWarnFormatUsing( pLoadableModule.GetLoggingName(), message, list );
-	va_end( list );
+	va_start(list, message);
+	GetGameEngine()->GetLogger()->LogWarnFormatUsing(pLoadableModule.GetLoggingName(), message, list);
+	va_end(list);
 }
 
-void deBaseModule::LogWarnFormatUsing( const char *message, va_list args ){
-	GetGameEngine()->GetLogger()->LogWarnFormatUsing( pLoadableModule.GetLoggingName(), message, args );
+void deBaseModule::LogWarnFormatUsing(const char *message, va_list args){
+	GetGameEngine()->GetLogger()->LogWarnFormatUsing(pLoadableModule.GetLoggingName(), message, args);
 }
 
-void deBaseModule::LogError( const char *message ){
-	GetGameEngine()->GetLogger()->LogError( pLoadableModule.GetLoggingName(), message );
+void deBaseModule::LogError(const char *message){
+	GetGameEngine()->GetLogger()->LogError(pLoadableModule.GetLoggingName(), message);
 }
 
-void deBaseModule::LogErrorFormat( const char *message, ... ){
+void deBaseModule::LogErrorFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	GetGameEngine()->GetLogger()->LogErrorFormatUsing( pLoadableModule.GetLoggingName(), message, list );
-	va_end( list );
+	va_start(list, message);
+	GetGameEngine()->GetLogger()->LogErrorFormatUsing(pLoadableModule.GetLoggingName(), message, list);
+	va_end(list);
 }
 
-void deBaseModule::LogErrorFormatUsing( const char *message, va_list args ){
-	GetGameEngine()->GetLogger()->LogErrorFormatUsing( pLoadableModule.GetLoggingName(), message, args );
+void deBaseModule::LogErrorFormatUsing(const char *message, va_list args){
+	GetGameEngine()->GetLogger()->LogErrorFormatUsing(pLoadableModule.GetLoggingName(), message, args);
 }
 
-void deBaseModule::LogException( const deException &exception ){
-	GetGameEngine()->GetLogger()->LogException( pLoadableModule.GetLoggingName(), exception );
+void deBaseModule::LogException(const deException &exception){
+	GetGameEngine()->GetLogger()->LogException(pLoadableModule.GetLoggingName(), exception);
 }
 
 
@@ -242,39 +242,39 @@ void deBaseModule::LogException( const deException &exception ){
 // Error Tracing
 //////////////////
 
-deErrorTracePoint *deBaseModule::SetErrorTrace( const char *error, const char *sourceFunc, int sourceLine ){
-	return GetGameEngine()->GetErrorTrace()->AddAndSetIfEmpty( error, &pLoadableModule, sourceFunc, sourceLine );
+deErrorTracePoint *deBaseModule::SetErrorTrace(const char *error, const char *sourceFunc, int sourceLine){
+	return GetGameEngine()->GetErrorTrace()->AddAndSetIfEmpty(error, &pLoadableModule, sourceFunc, sourceLine);
 }
 
-deErrorTracePoint *deBaseModule::SetErrorTrace( const deException &exception ){
+deErrorTracePoint *deBaseModule::SetErrorTrace(const deException &exception){
 	decString text;
-	text.Format( "Exception %s: %s", exception.GetName().GetString(), exception.GetDescription().GetString() );
+	text.Format("Exception %s: %s", exception.GetName().GetString(), exception.GetDescription().GetString());
 	deErrorTracePoint * const tracepoint = GetGameEngine()->GetErrorTrace()->AddAndSetIfEmpty(
-		text, &pLoadableModule, exception.GetFile(), exception.GetLine() );
-	if( ! tracepoint ){
+		text, &pLoadableModule, exception.GetFile(), exception.GetLine());
+	if(!tracepoint){
 		return NULL;
 	}
 	
-	tracepoint->AddValue( "Source File", exception.GetFile() );
-	tracepoint->AddValueInt( "Source Line", exception.GetLine() );
+	tracepoint->AddValue("Source File", exception.GetFile());
+	tracepoint->AddValueInt("Source Line", exception.GetLine());
 	
 	const decStringList &backtrace = exception.GetBacktrace();
 	const int btcount = backtrace.GetCount();
 	int i;
 	
-	text.Format( "%i trace points", btcount );
-	deErrorTraceValue * const tpbacktrace = tracepoint->AddValue( "Backtrace", text );
+	text.Format("%i trace points", btcount);
+	deErrorTraceValue * const tpbacktrace = tracepoint->AddValue("Backtrace", text);
 	
-	for( i=0; i<btcount; i++ ){
-		text.Format( "Trace point %i", i + 1 );
-		tpbacktrace->AddSubValue( text, backtrace.GetAt( i ) );
+	for(i=0; i<btcount; i++){
+		text.Format("Trace point %i", i + 1);
+		tpbacktrace->AddSubValue(text, backtrace.GetAt(i));
 	}
 	
 	return tracepoint;
 }
 
-deErrorTracePoint *deBaseModule::AddErrorTracePoint( const char *sourceFunc, int sourceLine ){
-	return GetGameEngine()->GetErrorTrace()->AddPoint( &pLoadableModule, sourceFunc, sourceLine );
+deErrorTracePoint *deBaseModule::AddErrorTracePoint(const char *sourceFunc, int sourceLine){
+	return GetGameEngine()->GetErrorTrace()->AddPoint(&pLoadableModule, sourceFunc, sourceLine);
 }
 
 
@@ -283,14 +283,14 @@ deErrorTracePoint *deBaseModule::AddErrorTracePoint( const char *sourceFunc, int
 //////////////////////
 
 void deBaseModule::pCleanUp(){
-	if( pVFS ){
+	if(pVFS){
 		pVFS->FreeReference();
 	}
 }
 
 void deBaseModule::pCreateVFS(){
 	const deModuleSystem &moduleSystem = *pLoadableModule.GetSystem();
-	const char * const typeDirectory = moduleSystem.GetTypeDirectory( pLoadableModule.GetType() );
+	const char * const typeDirectory = moduleSystem.GetTypeDirectory(pLoadableModule.GetType());
 	const char * const directoryName = pLoadableModule.GetDirectoryName();
 	const deEngine &engine = *moduleSystem.GetEngine();
 	const deVirtualFileSystem::Ref &osFileSystem = engine.GetOSFileSystem();
@@ -303,57 +303,57 @@ void deBaseModule::pCreateVFS(){
 	
 	pVFS = new deVirtualFileSystem;
 	
-	if( osFileSystem ){
+	if(osFileSystem){
 		// config directory (read-write, per module version)
-		pathRedirect.SetFromUnix( "/config/modules" );
-		pathRedirect.AddUnixPath( typeDirectory );
-		pathRedirect.AddUnixPath( directoryName );
+		pathRedirect.SetFromUnix("/config/modules");
+		pathRedirect.AddUnixPath(typeDirectory);
+		pathRedirect.AddUnixPath(directoryName);
 		
-		pathRoot.SetFromUnix( "/config" );
+		pathRoot.SetFromUnix("/config");
 		
 		pVFS->AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, osFileSystem, true));
 		
 		// share directory (read-only, per module version)
-		pathRedirect.SetFromUnix( "/share/modules" );
-		pathRedirect.AddUnixPath( typeDirectory );
-		pathRedirect.AddUnixPath( directoryName );
-		pathRedirect.AddComponent( pLoadableModule.GetVersion() );
+		pathRedirect.SetFromUnix("/share/modules");
+		pathRedirect.AddUnixPath(typeDirectory);
+		pathRedirect.AddUnixPath(directoryName);
+		pathRedirect.AddComponent(pLoadableModule.GetVersion());
 		
-		pathRoot.SetFromUnix( "/share" );
+		pathRoot.SetFromUnix("/share");
 		
 		pVFS->AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, osFileSystem, true));
 		
 	}else{
 		// system config directory (read-only, per module version)
-		pathDisk.SetFromNative( os.GetPathSystemConfig() );
-		pathDisk.AddUnixPath( "modules" );
-		pathDisk.AddUnixPath( typeDirectory );
-		pathDisk.AddUnixPath( directoryName );
+		pathDisk.SetFromNative(os.GetPathSystemConfig());
+		pathDisk.AddUnixPath("modules");
+		pathDisk.AddUnixPath(typeDirectory);
+		pathDisk.AddUnixPath(directoryName);
 		
-		pathRoot.SetFromUnix( "/config" );
+		pathRoot.SetFromUnix("/config");
 		
 		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true));
 		
 		
 		// user config directory (writeable, shared between module versions)
-		pathDisk.SetFromNative( os.GetPathUserConfig() );
-		pathDisk.AddUnixPath( "modules" );
-		pathDisk.AddUnixPath( typeDirectory );
-		pathDisk.AddUnixPath( directoryName );
+		pathDisk.SetFromNative(os.GetPathUserConfig());
+		pathDisk.AddUnixPath("modules");
+		pathDisk.AddUnixPath(typeDirectory);
+		pathDisk.AddUnixPath(directoryName);
 		
-		pathRoot.SetFromUnix( "/config" );
+		pathRoot.SetFromUnix("/config");
 		
 		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
 		
 		
 		// share directory (read-only, per module version)
-		pathDisk.SetFromNative( os.GetPathShare() );
-		pathDisk.AddUnixPath( "modules" );
-		pathDisk.AddUnixPath( typeDirectory );
-		pathDisk.AddUnixPath( directoryName );
-		pathDisk.AddComponent( pLoadableModule.GetVersion() );
+		pathDisk.SetFromNative(os.GetPathShare());
+		pathDisk.AddUnixPath("modules");
+		pathDisk.AddUnixPath(typeDirectory);
+		pathDisk.AddUnixPath(directoryName);
+		pathDisk.AddComponent(pLoadableModule.GetVersion());
 		
-		pathRoot.SetFromUnix( "/share" );
+		pathRoot.SetFromUnix("/share");
 		
 		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true));
 	}
@@ -371,24 +371,24 @@ void deBaseModule::pCreateVFS(){
 	}
 	
 	// capture directory (writeable, shared between module versions)
-	pathDisk.SetFromNative( os.GetPathUserCapture() );
-	pathDisk.AddUnixPath( "modules" );
-	pathDisk.AddUnixPath( typeDirectory );
-	pathDisk.AddUnixPath( directoryName );
+	pathDisk.SetFromNative(os.GetPathUserCapture());
+	pathDisk.AddUnixPath("modules");
+	pathDisk.AddUnixPath(typeDirectory);
+	pathDisk.AddUnixPath(directoryName);
 	
-	pathRoot.SetFromUnix( "/capture" );
+	pathRoot.SetFromUnix("/capture");
 	
 	pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
 	
 	
 	// global cache directory (writeable, shared between module versions)
-	pathDisk.SetFromNative( os.GetPathUserCache() );
-	pathDisk.AddUnixPath( "global" );
-	pathDisk.AddUnixPath( "modules" );
-	pathDisk.AddUnixPath( typeDirectory );
-	pathDisk.AddUnixPath( directoryName );
+	pathDisk.SetFromNative(os.GetPathUserCache());
+	pathDisk.AddUnixPath("global");
+	pathDisk.AddUnixPath("modules");
+	pathDisk.AddUnixPath(typeDirectory);
+	pathDisk.AddUnixPath(directoryName);
 	
-	pathRoot.SetFromUnix( "/cache/global" );
+	pathRoot.SetFromUnix("/cache/global");
 	
 	deVFSCacheDiskDirectory::Ref cachedContainer(deVFSCacheDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
 	cachedContainer->SetMaxCacheSize(1000000); // 1000MB
@@ -396,18 +396,18 @@ void deBaseModule::pCreateVFS(){
 	
 	
 	// local cache directory (writeable, shared between module versions)
-	pathRoot.SetFromUnix( "/cache/local" );
+	pathRoot.SetFromUnix("/cache/local");
 	
-	if( engine.GetCacheAppID().IsEmpty() ){
+	if(engine.GetCacheAppID().IsEmpty()){
 		pVFS->AddContainer(deVFSNull::Ref::NewWith(pathRoot));
 		
 	}else{
-		pathDisk.SetFromNative( os.GetPathUserCache() );
-		pathDisk.AddUnixPath( "local" );
-		pathDisk.AddUnixPath( engine.GetCacheAppID() );
-		pathDisk.AddUnixPath( "modules" );
-		pathDisk.AddUnixPath( typeDirectory );
-		pathDisk.AddUnixPath( directoryName );
+		pathDisk.SetFromNative(os.GetPathUserCache());
+		pathDisk.AddUnixPath("local");
+		pathDisk.AddUnixPath(engine.GetCacheAppID());
+		pathDisk.AddUnixPath("modules");
+		pathDisk.AddUnixPath(typeDirectory);
+		pathDisk.AddUnixPath(directoryName);
 		
 		cachedContainer.TakeOver(new deVFSCacheDiskDirectory(pathRoot, pathDisk));
 		cachedContainer->SetMaxCacheSize(1000000); // 1000MB

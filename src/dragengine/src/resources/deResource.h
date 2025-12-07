@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resource. */
-	deResource( deResourceManager *resourceManager );
+	deResource(deResourceManager *resourceManager);
 	
 protected:
 	/**
@@ -98,7 +98,7 @@ public:
 	 * \brief Set next resource in the resource manager linked list.
 	 * \warning For use by resource managers only.
 	 */
-	void SetLLManagerPrev( deResource *resource );
+	void SetLLManagerPrev(deResource *resource);
 	
 	/** \brief Next resource in the resource manager linked list. */
 	inline deResource *GetLLManagerNext() const{ return pLLManagerNext; }
@@ -107,7 +107,7 @@ public:
 	 * \brief Set next resource in the resource manager linked list.
 	 * \warning For use by resource managers only.
 	 */
-	void SetLLManagerNext( deResource *resource );
+	void SetLLManagerNext(deResource *resource);
 	
 	/**
 	 * \brief Marks the resource leaking.

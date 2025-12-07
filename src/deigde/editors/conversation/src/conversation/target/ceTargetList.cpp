@@ -55,19 +55,19 @@ int ceTargetList::GetCount() const{
 	return pTargets.GetCount();
 }
 
-ceTarget *ceTargetList::GetAt( int index ) const{
-	return ( ceTarget* )pTargets.GetAt( index );
+ceTarget *ceTargetList::GetAt(int index) const{
+	return (ceTarget*)pTargets.GetAt(index);
 }
 
-ceTarget *ceTargetList::GetNamed( const char *name ) const{
+ceTarget *ceTargetList::GetNamed(const char *name) const{
 	const int count = pTargets.GetCount();
 	ceTarget *target;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		target = ( ceTarget* )pTargets.GetAt( i );
+	for(i=0; i<count; i++){
+		target = (ceTarget*)pTargets.GetAt(i);
 		
-		if( target->GetName().Equals( name ) ){
+		if(target->GetName().Equals(name)){
 			return target;
 		}
 	}
@@ -75,16 +75,16 @@ ceTarget *ceTargetList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int ceTargetList::IndexOf( ceTarget *target ) const{
-	return pTargets.IndexOf( target );
+int ceTargetList::IndexOf(ceTarget *target) const{
+	return pTargets.IndexOf(target);
 }
 
-int ceTargetList::IndexOfNamed( const char *name ) const{
+int ceTargetList::IndexOfNamed(const char *name) const{
 	const int count = pTargets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceTarget* )pTargets.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceTarget*)pTargets.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int ceTargetList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool ceTargetList::Has( ceTarget *target ) const{
-	return pTargets.Has( target );
+bool ceTargetList::Has(ceTarget *target) const{
+	return pTargets.Has(target);
 }
 
-bool ceTargetList::HasNamed( const char *name ) const{
+bool ceTargetList::HasNamed(const char *name) const{
 	const int count = pTargets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceTarget* )pTargets.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceTarget*)pTargets.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool ceTargetList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void ceTargetList::Add( ceTarget *target ){
-	if( ! target || HasNamed( target->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void ceTargetList::Add(ceTarget *target){
+	if(!target || HasNamed(target->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pTargets.Add( target );
+	pTargets.Add(target);
 }
 
-void ceTargetList::Remove( ceTarget *target ){
-	pTargets.Remove( target );
+void ceTargetList::Remove(ceTarget *target){
+	pTargets.Remove(target);
 }
 
 void ceTargetList::RemoveAll(){
@@ -125,12 +125,12 @@ void ceTargetList::RemoveAll(){
 
 
 
-ceTargetList &ceTargetList::operator=( const ceTargetList &list ){
+ceTargetList &ceTargetList::operator=(const ceTargetList &list){
 	pTargets = list.pTargets;
 	return *this;
 }
 
-ceTargetList &ceTargetList::operator+=( const ceTargetList &list ){
+ceTargetList &ceTargetList::operator+=(const ceTargetList &list){
 	pTargets += list.pTargets;
 	return *this;
 }

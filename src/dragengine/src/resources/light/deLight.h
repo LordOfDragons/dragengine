@@ -236,7 +236,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create light source. */
-	deLight( deLightManager *manager );
+	deLight(deLightManager *manager);
 	
 protected:
 	/**
@@ -257,79 +257,79 @@ public:
 	inline eLightTypes GetType() const{ return pType; }
 	
 	/** \brief Set light type. */
-	void SetType( eLightTypes type );
+	void SetType(eLightTypes type);
 	
 	/** \brief Light color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set light color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Intensity. */
 	inline float GetIntensity() const{ return pIntensity; }
 	
 	/** \brief Set intensity. */
-	void SetIntensity( float intensity );
+	void SetIntensity(float intensity);
 	
 	/** \brief Range in meters. */
 	inline float GetRange() const{ return pRange; }
 	
 	/** \brief Set light range in meters. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Distance in meters at which the intensity is halved. */
 	inline float GetHalfIntensityDistance() const{ return pHalfIntensityDistance; }
 	
 	/** \brief Set distance in meters at which the intensity is halved. */
-	void SetHalfIntensityDistance( float distance );
+	void SetHalfIntensityDistance(float distance);
 	
 	/** \brief Ratio of ambient light in relation to intensity. */
 	inline float GetAmbientRatio() const{ return pAmbientRatio; }
 	
 	/** \brief Set ratio of ambient light in relation to intensity. */
-	void SetAmbientRatio( float ratio );
+	void SetAmbientRatio(float ratio);
 	
 	/** \brief Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Outer spot Angle. */
 	inline float GetSpotAngle() const{ return pSpotAngle; }
 	
 	/** \brief Set outer spot angle. */
-	void SetSpotAngle( float angle );
+	void SetSpotAngle(float angle);
 	
 	/** \brief Spot ratio as height divided by width. */
 	inline float GetSpotRatio() const{ return pSpotRatio; }
 	
 	/** \brief Set spot ratio as height divided by width. */
-	void SetSpotRatio( float ratio );
+	void SetSpotRatio(float ratio);
 	
 	/** \brief Spot smoothness. */
 	inline float GetSpotSmoothness() const{ return pSpotSmoothness; }
 	
 	/** \brief Set spot smoothness. */
-	void SetSpotSmoothness( float smoothness );
+	void SetSpotSmoothness(float smoothness);
 	
 	/** \brief Spot exponent. */
 	inline float GetSpotExponent() const{ return pSpotExponent; }
 	
 	/** \brief Set spot exponent. */
-	void SetSpotExponent( float exponent );
+	void SetSpotExponent(float exponent);
 	
 	/** \brief Light shape. */
 	inline const decShapeList &GetShape() const{ return pShape; }
 	
 	/** \brief Set light shape. */
-	void SetShape( const decShapeList &shape );
+	void SetShape(const decShapeList &shape);
 	
 	
 	
@@ -337,57 +337,57 @@ public:
 	inline deSkin *GetLightSkin() const{ return pLightSkin; }
 	
 	/** \brief Set light skin or NULL if not used. */
-	void SetLightSkin( deSkin *skin );
+	void SetLightSkin(deSkin *skin);
 	
 	/** \brief Light canvas view or NULL if not used. */
 	inline deCanvasView *GetLightCanvas() const{ return pLightCanvas; }
 	
 	/** \brief Set light canvas view or NULL if not used. */
-	void SetLightCanvas( deCanvasView *canvas );
+	void SetLightCanvas(deCanvasView *canvas);
 	
 	/** \brief Light dynamic skin or NULL if not used. */
 	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set light dynamic skin or NULL if not used. */
-	void SetDynamicSkin( deDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Light texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** \brief Set light texture coordinate transformation matrix. */
-	void SetTransform( const decTexMatrix2 &matrix );
+	void SetTransform(const decTexMatrix2 &matrix);
 	
 	
 	
 	/** \brief Hint light importance. */
-	inline int GetHintLightImportance() const{ return ( int )pHintLightImportance; }
+	inline int GetHintLightImportance() const{ return (int)pHintLightImportance; }
 	
 	/** \brief Set hint light importance. */
-	void SetHintLightImportance( int importance );
+	void SetHintLightImportance(int importance);
 	
 	/** \brief Hint shadow importance. */
-	inline int GetHintShadowImportance() const{ return ( int )pHintShadowImportance; }
+	inline int GetHintShadowImportance() const{ return (int)pHintShadowImportance; }
 	
 	/** \brief Set hint shadow importance. */
-	void SetHintShadowImportance( int importance );
+	void SetHintShadowImportance(int importance);
 	
 	/** \brief Movement hint. */
 	inline eMovementHints GetHintMovement() const{ return pHintMovement; }
 	
 	/** \brief Set movement hint. */
-	void SetHintMovement( eMovementHints hint );
+	void SetHintMovement(eMovementHints hint);
 	
 	/** \brief Parameter hint. */
 	inline eParameterHints GetHintParameter() const{ return pHintParameter; }
 	
 	/** \brief Set parameter hint. */
-	void SetHintParameter( eParameterHints hint );
+	void SetHintParameter(eParameterHints hint);
 	
 	/** \brief Light cage. */
 	inline const decShapeList &GetCage() const{ return pCage; }
 	
 	/** \brief Set light cage. */
-	void SetCage( const decShapeList &cage );
+	void SetCage(const decShapeList &cage);
 	
 	
 	
@@ -395,13 +395,13 @@ public:
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask affecting lighting. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Layer mask affecting shadow casting. */
 	inline const decLayerMask &GetLayerMaskShadow() const{ return pLayerMaskShadow; }
 	
 	/** \brief Set layer mask affecting shadow casting. */
-	void SetLayerMaskShadow( const decLayerMask &layerMask );
+	void SetLayerMaskShadow(const decLayerMask &layerMask);
 	
 	
 	
@@ -409,13 +409,13 @@ public:
 	inline bool GetActivated() const{ return pActivated; }
 	
 	/** \brief Set if light is activated. */
-	void SetActivated( bool activated );
+	void SetActivated(bool activated);
 	
 	/** \brief Light casts shadows. */
 	inline bool GetCastShadows() const{ return pCastShadows; }
 	
 	/** \brief Set if light casts shadows. */
-	void SetCastShadows( bool castShadows );
+	void SetCastShadows(bool castShadows);
 	/*@}*/
 	
 	
@@ -430,22 +430,22 @@ public:
 	 * \throws deeInvalidParam \em index is less than 0.
 	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreComponentCount()-1.
 	 */
-	deComponent *GetShadowIgnoreComponentAt( int index ) const;
+	deComponent *GetShadowIgnoreComponentAt(int index) const;
 	
 	/** \brief Component to ignore for shadow casting is present. */
-	bool HasShadowIgnoreComponent( deComponent *component ) const;
+	bool HasShadowIgnoreComponent(deComponent *component) const;
 	
 	/**
 	 * \brief Add component to ignore for shadow casting.
 	 * \throws deeInvalidParam \em component is present.
 	 */
-	void AddShadowIgnoreComponent( deComponent *component );
+	void AddShadowIgnoreComponent(deComponent *component);
 	
 	/**
 	 * \brief Remove component to ignore for shadow casting.
 	 * \throws deeInvalidParam \em component is absent.
 	 */
-	void RemoveShadowIgnoreComponent( deComponent *component );
+	void RemoveShadowIgnoreComponent(deComponent *component);
 	
 	/** \brief Remove all components to ignore for shadow casting. */
 	void RemoveAllShadowIgnoreComponents();
@@ -459,7 +459,7 @@ public:
 	inline deBaseGraphicLight *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicLight *peer );
+	void SetPeerGraphic(deBaseGraphicLight *peer);
 	/*@}*/
 	
 	
@@ -470,19 +470,19 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous light in the parent world linked list. */
 	inline deLight *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next light in the parent world linked list. */
-	void SetLLWorldPrev( deLight *light );
+	void SetLLWorldPrev(deLight *light);
 	
 	/** \brief Next light in the parent world linked list. */
 	inline deLight *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next light in the parent world linked list. */
-	void SetLLWorldNext( deLight *light );
+	void SetLLWorldNext(deLight *light);
 	/*@}*/
 };
 

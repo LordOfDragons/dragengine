@@ -46,27 +46,27 @@ deBaseGraphicHeightTerrain::~deBaseGraphicHeightTerrain(){
 void deBaseGraphicHeightTerrain::ParametersChanged(){
 }
 
-void deBaseGraphicHeightTerrain::HeightChanged( const decPoint &, const decPoint &,
-const decPoint &, const decPoint & ){
+void deBaseGraphicHeightTerrain::HeightChanged(const decPoint &, const decPoint &,
+const decPoint &, const decPoint &){
 }
 
-void deBaseGraphicHeightTerrain::SectorAdded( deHeightTerrainSector* ){
+void deBaseGraphicHeightTerrain::SectorAdded(deHeightTerrainSector*){
 }
 
-void deBaseGraphicHeightTerrain::SectorRemoved( int ){
+void deBaseGraphicHeightTerrain::SectorRemoved(int){
 }
 
 void deBaseGraphicHeightTerrain::AllSectorsRemoved(){
 }
 
-void deBaseGraphicHeightTerrain::SectorChanged( int ){
+void deBaseGraphicHeightTerrain::SectorChanged(int){
 }
 
-void deBaseGraphicHeightTerrain::DecalAdded( int, deDecal* ){
+void deBaseGraphicHeightTerrain::DecalAdded(int, deDecal*){
 }
 
-void deBaseGraphicHeightTerrain::DecalRemoved( int, deDecal* ){
+void deBaseGraphicHeightTerrain::DecalRemoved(int, deDecal*){
 }
 
-void deBaseGraphicHeightTerrain::AllDecalsRemoved( int ){
+void deBaseGraphicHeightTerrain::AllDecalsRemoved(int){
 }

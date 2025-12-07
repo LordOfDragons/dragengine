@@ -54,7 +54,7 @@ public:
 	ceCAIfElseCase();
 	
 	/** \brief Create if else case. */
-	ceCAIfElseCase( const ceCAIfElseCase &ifcase );
+	ceCAIfElseCase(const ceCAIfElseCase &ifcase);
 	
 	/** \brief Clean up the if else case. */
 	virtual ~ceCAIfElseCase();
@@ -68,7 +68,7 @@ public:
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Set condition or \em NULL if there is none. */
-	void SetCondition( ceConversationCondition *condition );
+	void SetCondition(ceConversationCondition *condition);
 	
 	/** \brief List of actions. */
 	inline ceConversationActionList &GetActions(){ return pActions; }
@@ -83,19 +83,19 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Condition tree list item expanded state. */
 	inline bool GetTIMConditionExpanded() const{ return pTIMConditionExpanded; }
 	
 	/** \brief Set condition tree list item expanded state. */
-	void SetTIMConditionExpanded( bool expanded );
+	void SetTIMConditionExpanded(bool expanded);
 	
 	/** \brief Actions tree list item expanded state. */
 	inline bool GetTIMActionsExpanded() const{ return pTIMActionsExpanded; }
 	
 	/** \brief Set actions tree list item expanded state. */
-	void SetTIMActionsExpanded( bool expanded );
+	void SetTIMActionsExpanded(bool expanded);
 	/*@}*/
 };
 

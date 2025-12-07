@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorInstanceManager::deAnimatorInstanceManager( deEngine *engine ) :
-deResourceManager( engine, ertAnimatorInstance ){
-	SetLoggingName( "animator instance" );
+deAnimatorInstanceManager::deAnimatorInstanceManager(deEngine *engine) :
+deResourceManager(engine, ertAnimatorInstance){
+	SetLoggingName("animator instance");
 }
 
 deAnimatorInstanceManager::~deAnimatorInstanceManager(){
@@ -61,22 +61,22 @@ int deAnimatorInstanceManager::GetAnimatorInstanceCount() const{
 }
 
 deAnimatorInstance *deAnimatorInstanceManager::GetRootAnimatorInstance() const{
-	return ( deAnimatorInstance* )pInstances.GetRoot();
+	return (deAnimatorInstance*)pInstances.GetRoot();
 }
 
 deAnimatorInstance *deAnimatorInstanceManager::CreateAnimatorInstance(){
 	deAnimatorInstance *instance = NULL;
 	
 	try{
-		instance = new deAnimatorInstance( this );
-		if( ! instance ) DETHROW( deeOutOfMemory );
+		instance = new deAnimatorInstance(this);
+		if(!instance) DETHROW(deeOutOfMemory);
 		
-		GetAnimatorSystem()->LoadAnimatorInstance( instance );
+		GetAnimatorSystem()->LoadAnimatorInstance(instance);
 		
-		pInstances.Add( instance );
+		pInstances.Add(instance);
 		
-	}catch( const deException & ){
-		if( instance ){
+	}catch(const deException &){
+		if(instance){
 			instance->FreeReference();
 		}
 		
@@ -91,8 +91,8 @@ deAnimatorInstance *deAnimatorInstanceManager::CreateAnimatorInstance(){
 void deAnimatorInstanceManager::ReleaseLeakingResources(){
 	const int count = GetAnimatorInstanceCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking animator instances", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking animator instances", count);
 		pInstances.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -103,29 +103,29 @@ void deAnimatorInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deAnimatorInstanceManager::SystemAnimatorLoad(){
-	deAnimatorInstance *instance = ( deAnimatorInstance* )pInstances.GetRoot();
+	deAnimatorInstance *instance = (deAnimatorInstance*)pInstances.GetRoot();
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
 	
-	while( instance ){
-		if( ! instance->GetPeerAnimator() ){
-			aniSys.LoadAnimatorInstance( instance );
+	while(instance){
+		if(!instance->GetPeerAnimator()){
+			aniSys.LoadAnimatorInstance(instance);
 		}
 		
-		instance = ( deAnimatorInstance* )instance->GetLLManagerNext();
+		instance = (deAnimatorInstance*)instance->GetLLManagerNext();
 	}
 }
 
 void deAnimatorInstanceManager::SystemAnimatorUnload(){
-	deAnimatorInstance *instance = ( deAnimatorInstance* )pInstances.GetRoot();
+	deAnimatorInstance *instance = (deAnimatorInstance*)pInstances.GetRoot();
 	
-	while( instance ){
-		instance->SetPeerAnimator( NULL );
-		instance = ( deAnimatorInstance* )instance->GetLLManagerNext();
+	while(instance){
+		instance->SetPeerAnimator(NULL);
+		instance = (deAnimatorInstance*)instance->GetLLManagerNext();
 	}
 }
 
 
 
-void deAnimatorInstanceManager::RemoveResource( deResource *resource ){
-	pInstances.RemoveIfPresent( resource );
+void deAnimatorInstanceManager::RemoveResource(deResource *resource){
+	pInstances.RemoveIfPresent(resource);
 }

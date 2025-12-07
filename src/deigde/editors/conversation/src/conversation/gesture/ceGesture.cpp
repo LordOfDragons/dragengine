@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceGesture::ceGesture( const char *name ) :
-pConversation( NULL ),
-pName( name ),
-pHold( false ),
-pDuration ( 2.0f ){
+ceGesture::ceGesture(const char *name) :
+pConversation(NULL),
+pName(name),
+pHold(false),
+pDuration (2.0f){
 }
 
 ceGesture::~ceGesture(){
@@ -54,58 +54,58 @@ ceGesture::~ceGesture(){
 // Management
 ///////////////
 
-void ceGesture::SetConversation( ceConversation *conversation ){
+void ceGesture::SetConversation(ceConversation *conversation){
 	pConversation = conversation;
 }
 
-void ceGesture::SetName( const char *name ){
-	if( pName.Equals( name ) ){
+void ceGesture::SetName(const char *name){
+	if(pName.Equals(name)){
 		return;
 	}
 	
-	if( pConversation && pConversation->GetGestureList().HasNamed( name ) ){
-		DETHROW( deeInvalidParam );
+	if(pConversation && pConversation->GetGestureList().HasNamed(name)){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
 	
-	if( pConversation ){
-		pConversation->NotifyGestureChanged( this );
+	if(pConversation){
+		pConversation->NotifyGestureChanged(this);
 	}
 }
 
-void ceGesture::SetAnimator( const char *animator ){
-	if( pAnimator.Equals( animator ) ){
+void ceGesture::SetAnimator(const char *animator){
+	if(pAnimator.Equals(animator)){
 		return;
 	}
 	
 	pAnimator = animator;
 	
-	if( pConversation ){
-		pConversation->NotifyGestureChanged( this );
+	if(pConversation){
+		pConversation->NotifyGestureChanged(this);
 	}
 }
 
-void ceGesture::SetHold( bool hold ){
-	if( hold == pHold ){
+void ceGesture::SetHold(bool hold){
+	if(hold == pHold){
 		return;
 	}
 	
 	pHold = hold;
 	
-	if( pConversation ){
-		pConversation->NotifyGestureChanged( this );
+	if(pConversation){
+		pConversation->NotifyGestureChanged(this);
 	}
 }
 
-void ceGesture::SetDuration( float duration ){
-	if( fabsf( duration - pDuration ) < FLOAT_SAFE_EPSILON ){
+void ceGesture::SetDuration(float duration){
+	if(fabsf(duration - pDuration) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pDuration = duration;
 	
-	if( pConversation ){
-		pConversation->NotifyGestureChanged( this );
+	if(pConversation){
+		pConversation->NotifyGestureChanged(this);
 	}
 }

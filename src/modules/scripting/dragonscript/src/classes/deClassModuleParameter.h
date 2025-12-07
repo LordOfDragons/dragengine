@@ -62,25 +62,25 @@ private:
 		dsClass *clsModuleParameterCategory;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfDestructor );
-	DEF_NATFUNC( nfGetName );
-	DEF_NATFUNC( nfGetDescription );
-	DEF_NATFUNC( nfGetType );
-	DEF_NATFUNC( nfGetMinimumValue );
-	DEF_NATFUNC( nfGetMaximumValue );
-	DEF_NATFUNC( nfGetValueStepSize );
-	DEF_NATFUNC( nfGetSelectionEntryCount );
-	DEF_NATFUNC( nfGetSelectionEntryValueAt );
-	DEF_NATFUNC( nfGetSelectionEntryDisplayNameAt );
-	DEF_NATFUNC( nfGetSelectionEntryDescriptionAt );
-	DEF_NATFUNC( nfGetCategory );
-	DEF_NATFUNC( nfGetDisplayName );
-	DEF_NATFUNC( nfGetDefaultValue );
+	DEF_NATFUNC(nfDestructor);
+	DEF_NATFUNC(nfGetName);
+	DEF_NATFUNC(nfGetDescription);
+	DEF_NATFUNC(nfGetType);
+	DEF_NATFUNC(nfGetMinimumValue);
+	DEF_NATFUNC(nfGetMaximumValue);
+	DEF_NATFUNC(nfGetValueStepSize);
+	DEF_NATFUNC(nfGetSelectionEntryCount);
+	DEF_NATFUNC(nfGetSelectionEntryValueAt);
+	DEF_NATFUNC(nfGetSelectionEntryDisplayNameAt);
+	DEF_NATFUNC(nfGetSelectionEntryDescriptionAt);
+	DEF_NATFUNC(nfGetCategory);
+	DEF_NATFUNC(nfGetDisplayName);
+	DEF_NATFUNC(nfGetDefaultValue);
 #undef DEF_NATFUNC
 };
 

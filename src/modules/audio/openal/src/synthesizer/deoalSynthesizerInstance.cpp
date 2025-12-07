@@ -44,18 +44,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalSynthesizerInstance::deoalSynthesizerInstance( deAudioOpenAL &oal, deSynthesizerInstance &instance ) :
-pOal( oal ),
-pInstance( instance ),
-pAInstance( NULL ),
-pUpdateTracker( 1 ),
-pDirtyParameters( false )
+deoalSynthesizerInstance::deoalSynthesizerInstance(deAudioOpenAL &oal, deSynthesizerInstance &instance) :
+pOal(oal),
+pInstance(instance),
+pAInstance(NULL),
+pUpdateTracker(1),
+pDirtyParameters(false)
 {
-	pAInstance = new deoalASynthesizerInstance( oal.GetAudioThread(), instance );
+	pAInstance = new deoalASynthesizerInstance(oal.GetAudioThread(), instance);
 }
 
 deoalSynthesizerInstance::~deoalSynthesizerInstance(){
-	if( pAInstance ){
+	if(pAInstance){
 		pAInstance->DropInstance();
 		pAInstance->FreeReference();
 	}
@@ -71,15 +71,15 @@ void deoalSynthesizerInstance::Synchronize(){
 	
 	bool advanceUpdateTracker = false;
 	
-	if( pDirtyParameters ){
+	if(pDirtyParameters){
 		pAInstance->UpdateParameters();
 		pDirtyParameters = false;
 		advanceUpdateTracker = true;
 	}
 	
-	if( advanceUpdateTracker ){
+	if(advanceUpdateTracker){
 		pUpdateTracker++;
-		if( pUpdateTracker == 0 ){
+		if(pUpdateTracker == 0){
 			pUpdateTracker = 1;
 		}
 	}

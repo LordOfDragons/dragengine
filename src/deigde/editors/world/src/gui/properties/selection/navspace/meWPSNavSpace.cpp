@@ -69,26 +69,26 @@ class cSpinNavSpace : public igdeSpinTextFieldListener{
 	meWPSNavSpace &pPanel;
 	
 public:
-	cSpinNavSpace( meWPSNavSpace &panel ) : pPanel( panel ){ }
+	cSpinNavSpace(meWPSNavSpace &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged( igdeSpinTextField *textField ){
+	virtual void OnValueChanged(igdeSpinTextField *textField){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(!world){
 			return;
 		}
 		
 		meNavigationSpaceSelection &selection = world->GetSelectionNavigationSpace();
 		const int active = textField->GetValue();
-		if( active < 0 || active >= selection.GetSelected().GetCount() ){
+		if(active < 0 || active >= selection.GetSelected().GetCount()){
 			return;
 		}
 		
-		meNavigationSpace * const navspace = selection.GetSelected().GetAt( active );
-		if( navspace == selection.GetActive() ){
+		meNavigationSpace * const navspace = selection.GetSelected().GetAt(active);
+		if(navspace == selection.GetActive()){
 			return;
 		}
 		
-		selection.SetActive( navspace );
+		selection.SetActive(navspace);
 		world->NotifyNavSpaceSelectionChanged();
 	}
 };
@@ -97,15 +97,15 @@ class cPathNavSpace : public igdeEditPathListener{
 	meWPSNavSpace &pPanel;
 	
 public:
-	cPathNavSpace( meWPSNavSpace &panel ) : pPanel( panel ){ }
+	cPathNavSpace(meWPSNavSpace &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if( ! navspace ){
+		if(!navspace){
 			return;
 		}
 		
-		if( editPath->GetPath() == navspace->GetFilename() ){
+		if(editPath->GetPath() == navspace->GetFilename()){
 			return;
 		}
 		
@@ -118,15 +118,15 @@ class cEditPosition : public igdeEditDVectorListener{
 	meWPSNavSpace &pPanel;
 	
 public:
-	cEditPosition( meWPSNavSpace &panel ) : pPanel( panel ){ }
+	cEditPosition(meWPSNavSpace &panel) : pPanel(panel){}
 	
-	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if( ! navspace ){
+		if(!navspace){
 			return;
 		}
 		
-		if( editDVector->GetDVector().IsEqualTo( navspace->GetPosition() ) ){
+		if(editDVector->GetDVector().IsEqualTo(navspace->GetPosition())){
 			return;
 		}
 		
@@ -139,15 +139,15 @@ class cEditOrientation : public igdeEditVectorListener{
 	meWPSNavSpace &pPanel;
 	
 public:
-	cEditOrientation( meWPSNavSpace &panel ) : pPanel( panel ){ }
+	cEditOrientation(meWPSNavSpace &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
-		if( ! navspace ){
+		if(!navspace){
 			return;
 		}
 		
-		if( editVector->GetVector().IsEqualTo( navspace->GetOrientation() ) ){
+		if(editVector->GetVector().IsEqualTo(navspace->GetOrientation())){
 			return;
 		}
 		
@@ -166,52 +166,52 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWPSNavSpace::meWPSNavSpace( meWPSelection &wpselection ) :
-igdeContainerScroll( wpselection.GetEnvironment(), false, true ),
-pWPSelection( wpselection ),
-pListener( NULL ),
-pWorld( NULL )
+meWPSNavSpace::meWPSNavSpace(meWPSelection &wpselection) :
+igdeContainerScroll(wpselection.GetEnvironment(), false, true),
+pWPSelection(wpselection),
+pListener(NULL),
+pWorld(NULL)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener = new meWPSNavSpaceListener( *this );
+	pListener = new meWPSNavSpaceListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	
 	// selection
-	groupBox.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10 ) );
-	content->AddChild( groupBox );
-	helper.Label( groupBox, "Selection:" );
-	helper.EditInteger( groupBox, "Count of selected navigation spaces", 3, pEditSelCount, NULL );
-	pEditSelCount->SetEditable( false );
-	helper.Label( groupBox, "Active:" );
-	helper.EditSpinInteger( groupBox, "Selected navigation space", 0, 0, pSpinActive, new cSpinNavSpace( *this ) );
+	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10));
+	content->AddChild(groupBox);
+	helper.Label(groupBox, "Selection:");
+	helper.EditInteger(groupBox, "Count of selected navigation spaces", 3, pEditSelCount, NULL);
+	pEditSelCount->SetEditable(false);
+	helper.Label(groupBox, "Active:");
+	helper.EditSpinInteger(groupBox, "Selected navigation space", 0, 0, pSpinActive, new cSpinNavSpace(*this));
 	
 	
 	// navigation space
-	helper.GroupBox( content, groupBox, "Navigation Space:" );
-	helper.EditPath( groupBox, "Path:", "Path to the navigation space",
-		igdeEnvironment::efpltNavigationSpace, pEditPath, new cPathNavSpace( *this ) );
-	helper.EditDVector( groupBox, "Position:", "Position of the navigation space.",
-		pEditPositon, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Orientation:", "Orientation of the navigation space.",
-		pEditOrientation, new cEditOrientation( *this ) );
+	helper.GroupBox(content, groupBox, "Navigation Space:");
+	helper.EditPath(groupBox, "Path:", "Path to the navigation space",
+		igdeEnvironment::efpltNavigationSpace, pEditPath, new cPathNavSpace(*this));
+	helper.EditDVector(groupBox, "Position:", "Position of the navigation space.",
+		pEditPositon, new cEditPosition(*this));
+	helper.EditVector(groupBox, "Orientation:", "Orientation of the navigation space.",
+		pEditOrientation, new cEditOrientation(*this));
 	
 	
 	// cost information
-	helper.GroupBoxFlow( content, groupBox, "Used Cost Types:" );
-	helper.ListBox( groupBox, 5, "Used cost types", pListUsedCostTypes, NULL );
+	helper.GroupBoxFlow(content, groupBox, "Used Cost Types:");
+	helper.ListBox(groupBox, 5, "Used cost types", pListUsedCostTypes, NULL);
 	pListUsedCostTypes->SetDefaultSorter();
 }
 
 meWPSNavSpace::~meWPSNavSpace(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -221,20 +221,20 @@ meWPSNavSpace::~meWPSNavSpace(){
 // Management
 ///////////////
 
-void meWPSNavSpace::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWPSNavSpace::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pWorld ){
-		pWorld->RemoveNotifier( pListener );
+	if(pWorld){
+		pWorld->RemoveNotifier(pListener);
 		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
+	if(world){
+		world->AddNotifier(pListener);
 		world->AddReference();
 	}
 	
@@ -255,33 +255,33 @@ void meWPSNavSpace::UpdateSelection(){
 	int active = 0;
 	int count = 0;
 	
-	if( pWorld ){
+	if(pWorld){
 		const meNavigationSpaceSelection &selection = pWorld->GetSelectionNavigationSpace();
 		count = selection.GetSelected().GetCount();
-		if( selection.HasActive() ){
-			active = selection.GetSelected().IndexOf( selection.GetActive() );
+		if(selection.HasActive()){
+			active = selection.GetSelected().IndexOf(selection.GetActive());
 		}
 	}
 	
-	pEditSelCount->SetInteger( count );
-	pSpinActive->SetRange( 0, count - 1 );
-	pSpinActive->SetValue( active );
-	pSpinActive->SetEnabled( count > 0 );
+	pEditSelCount->SetInteger(count);
+	pSpinActive->SetRange(0, count - 1);
+	pSpinActive->SetValue(active);
+	pSpinActive->SetEnabled(count > 0);
 }
 
 void meWPSNavSpace::UpdateEnabled(){
 	const bool enabled = GetNavigationSpace();
-	pEditPath->SetEnabled( enabled );
-	pEditPositon->SetEnabled( enabled );
-	pEditOrientation->SetEnabled( enabled );
-	pSpinActive->SetEnabled( enabled );
+	pEditPath->SetEnabled(enabled);
+	pEditPositon->SetEnabled(enabled);
+	pEditOrientation->SetEnabled(enabled);
+	pSpinActive->SetEnabled(enabled);
 }
 
 void meWPSNavSpace::UpdateNavSpace(){
 	const meNavigationSpace * const navspace = GetNavigationSpace();
 	
-	if( navspace ){
-		pEditPath->SetPath( navspace->GetFilename() );
+	if(navspace){
+		pEditPath->SetPath(navspace->GetFilename());
 		
 	}else{
 		pEditPath->ClearPath();
@@ -291,13 +291,13 @@ void meWPSNavSpace::UpdateNavSpace(){
 void meWPSNavSpace::UpdateGeometry(){
 	const meNavigationSpace * const navspace = GetNavigationSpace();
 	
-	if( navspace ){
-		pEditPositon->SetDVector( navspace->GetPosition() );
-		pEditOrientation->SetVector( navspace->GetOrientation() );
+	if(navspace){
+		pEditPositon->SetDVector(navspace->GetPosition());
+		pEditOrientation->SetVector(navspace->GetOrientation());
 		
 	}else{
-		pEditPositon->SetDVector( decDVector() );
-		pEditOrientation->SetVector( decVector() );
+		pEditPositon->SetDVector(decDVector());
+		pEditOrientation->SetVector(decVector());
 	}
 }
 
@@ -306,15 +306,15 @@ void meWPSNavSpace::UpdateUsedCostTypes(){
 	
 	pListUsedCostTypes->RemoveAllItems();
 	
-	if( navspace ){
+	if(navspace){
 		const decIntList &list = navspace->GetUsedCostTypes();
 		const int count = list.GetCount();
 		decString text;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			text.Format( "Type #%i", list.GetAt( i ) );
-			pListUsedCostTypes->AddItem( text );
+		for(i=0; i<count; i++){
+			text.Format("Type #%i", list.GetAt(i));
+			pListUsedCostTypes->AddItem(text);
 		}
 	}
 	

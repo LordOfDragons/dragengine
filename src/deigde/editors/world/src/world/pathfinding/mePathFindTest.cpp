@@ -60,9 +60,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-mePathFindTest::mePathFindTest( deEngine *engine ){
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+mePathFindTest::mePathFindTest(deEngine *engine){
+	if(!engine){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEngine = engine;
@@ -79,21 +79,21 @@ mePathFindTest::mePathFindTest( deEngine *engine ){
 	
 	try{
 		pEngNavigator = engine->GetNavigatorManager()->CreateNavigator();
-		pEngNavigator->SetSpaceType( pSpaceType );
-		pEngNavigator->SetMaxOutsideDistance( 0.5f );
-		pEngNavigator->SetBlockingCost( pBlockingCost );
+		pEngNavigator->SetSpaceType(pSpaceType);
+		pEngNavigator->SetMaxOutsideDistance(0.5f);
+		pEngNavigator->SetBlockingCost(pBlockingCost);
 		
 		// create debug drawer and shapes
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
-		pDebugDrawer->SetVisible( pShowPath );
+		pDebugDrawer->SetXRay(true);
+		pDebugDrawer->SetVisible(pShowPath);
 		
 		pDDSPath = new igdeWDebugDrawerShape;
-		pDDSPath->SetEdgeColor( decColor( 1.0f, 0.0f, 0.5f, 1.0f ) );
-		pDDSPath->SetFillColor( decColor( 1.0f, 0.0f, 0.5f, 0.25f ) );
-		pDDSPath->SetParentDebugDrawer( pDebugDrawer );
+		pDDSPath->SetEdgeColor(decColor(1.0f, 0.0f, 0.5f, 1.0f));
+		pDDSPath->SetFillColor(decColor(1.0f, 0.0f, 0.5f, 0.25f));
+		pDDSPath->SetParentDebugDrawer(pDebugDrawer);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -108,21 +108,21 @@ mePathFindTest::~mePathFindTest(){
 // Management
 ///////////////
 
-void mePathFindTest::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void mePathFindTest::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pWorld ){
-		pWorld->GetEngineWorld()->RemoveNavigator( pEngNavigator );
-		pWorld->GetEngineWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pWorld){
+		pWorld->GetEngineWorld()->RemoveNavigator(pEngNavigator);
+		pWorld->GetEngineWorld()->RemoveDebugDrawer(pDebugDrawer);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->GetEngineWorld()->AddDebugDrawer( pDebugDrawer );
-		world->GetEngineWorld()->AddNavigator( pEngNavigator );
+	if(world){
+		world->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
+		world->GetEngineWorld()->AddNavigator(pEngNavigator);
 	}
 	
 	Invalidate();
@@ -130,38 +130,38 @@ void mePathFindTest::SetWorld( meWorld *world ){
 
 
 
-void mePathFindTest::SetStartPosition( const decDVector &position ){
-	if( pStartPosition.IsEqualTo( position ) ){
+void mePathFindTest::SetStartPosition(const decDVector &position){
+	if(pStartPosition.IsEqualTo(position)){
 		return;
 	}
 	
 	pStartPosition = position;
 	
-	pDDSPath->SetPosition( position );
+	pDDSPath->SetPosition(position);
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->NotifyPathFindTestChanged();
 	}
 	
 	Invalidate();
 }
 
-void mePathFindTest::SetGoalPosition( const decDVector &position ){
-	if( pGoalPosition.IsEqualTo( position ) ){
+void mePathFindTest::SetGoalPosition(const decDVector &position){
+	if(pGoalPosition.IsEqualTo(position)){
 		return;
 	}
 	
 	pGoalPosition = position;
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->NotifyPathFindTestChanged();
 	}
 	
 	Invalidate();
 }
 
-void mePathFindTest::SetStartOrientation( const decVector &orientation ){
-	if( orientation.IsEqualTo( pStartOrientation ) ){
+void mePathFindTest::SetStartOrientation(const decVector &orientation){
+	if(orientation.IsEqualTo(pStartOrientation)){
 		return;
 	}
 	
@@ -170,15 +170,15 @@ void mePathFindTest::SetStartOrientation( const decVector &orientation ){
 	//const decQuaternion realor = decQuaternion::CreateFromEuler( orientation * DEG2RAD );
 	//pEngNavigator->SetOrientation( realor );
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->NotifyPathFindTestChanged();
 	}
 	
 	Invalidate();
 }
 
-void mePathFindTest::SetGoalOrientation( const decVector &orientation ){
-	if( orientation.IsEqualTo( pGoalOrientation ) ){
+void mePathFindTest::SetGoalOrientation(const decVector &orientation){
+	if(orientation.IsEqualTo(pGoalOrientation)){
 		return;
 	}
 	
@@ -187,74 +187,74 @@ void mePathFindTest::SetGoalOrientation( const decVector &orientation ){
 	//const decQuaternion realor = decQuaternion::CreateFromEuler( orientation * DEG2RAD );
 	//pEngNavigator->SetOrientation( realor );
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->NotifyPathFindTestChanged();
 	}
 	
 	Invalidate();
 }
 
-void mePathFindTest::SetLayer( int layer ){
-	if( layer == pLayer ){
+void mePathFindTest::SetLayer(int layer){
+	if(layer == pLayer){
 		return;
 	}
 	
 	pLayer = layer;
 	
-	pEngNavigator->SetLayer( layer );
+	pEngNavigator->SetLayer(layer);
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->NotifyPathFindTestChanged();
 	}
 	
 	Invalidate();
 }
 
-void mePathFindTest::SetSpaceType( deNavigationSpace::eSpaceTypes spaceType ){
-	if( spaceType == pSpaceType ){
+void mePathFindTest::SetSpaceType(deNavigationSpace::eSpaceTypes spaceType){
+	if(spaceType == pSpaceType){
 		return;
 	}
 	
 	pSpaceType = spaceType;
 	
-	pEngNavigator->SetSpaceType( spaceType );
+	pEngNavigator->SetSpaceType(spaceType);
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->NotifyPathFindTestChanged();
 	}
 	
 	Invalidate();
 }
 
-void mePathFindTest::SetPath( const deNavigatorPath &path ){
+void mePathFindTest::SetPath(const deNavigatorPath &path){
 	pPath = path;
 }
 
-void mePathFindTest::SetBlockingCost( float cost ){
-	if( fabsf( cost - pBlockingCost ) < FLOAT_SAFE_EPSILON ){
+void mePathFindTest::SetBlockingCost(float cost){
+	if(fabsf(cost - pBlockingCost) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pBlockingCost = cost;
 	
-	pEngNavigator->SetBlockingCost( cost );
+	pEngNavigator->SetBlockingCost(cost);
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->NotifyPathFindTestChanged();
 	}
 	
 	Invalidate();
 }
 
-void mePathFindTest::SetShowPath( bool showPath ){
-	if( showPath == pShowPath ){
+void mePathFindTest::SetShowPath(bool showPath){
+	if(showPath == pShowPath){
 		return;
 	}
 	
 	pShowPath = showPath;
-	pDebugDrawer->SetVisible( showPath );
+	pDebugDrawer->SetVisible(showPath);
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->NotifyPathFindTestChanged();
 	}
 }
@@ -276,11 +276,11 @@ void mePathFindTest::Invalidate(){
 
 
 void mePathFindTest::Update(){
-	if( ! pDirtyPath || ! pShowPath ){
+	if(!pDirtyPath || !pShowPath){
 		return;
 	}
 	
-	pEngNavigator->FindPath( pPath, pStartPosition, pGoalPosition );
+	pEngNavigator->FindPath(pPath, pStartPosition, pGoalPosition);
 	pUpdateDDPath();
 	pDirtyPath = false;
 }
@@ -291,16 +291,16 @@ void mePathFindTest::Update(){
 //////////////////////
 
 void mePathFindTest::pCleanUp(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
-	if( pEngNavigator ){
+	if(pEngNavigator){
 		pEngNavigator->FreeReference();
 	}
 	
-	if( pDDSPath ){
+	if(pDDSPath){
 		delete pDDSPath;
 	}
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
 }
@@ -308,24 +308,24 @@ void mePathFindTest::pCleanUp(){
 
 
 void mePathFindTest::pUpdateDDPath(){
-	if( ! pDDSPath ){
+	if(!pDDSPath){
 		return;
 	}
 	
 	pDDSPath->RemoveAllFaces();
 	
 	const int count = pPath.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	const int circlePointCount = 8;
 	const float radius = 0.02f;
-	const float circleStep = DEG2RAD * ( 360.0f / ( float )circlePointCount );
-	const decVector up( 0.0f, 1.0f, 0.0f );
+	const float circleStep = DEG2RAD * (360.0f / (float)circlePointCount);
+	const decVector up(0.0f, 1.0f, 0.0f);
 	
 	deDebugDrawerShapeFace *ddsFace = NULL;
-	decVector lastPoints[ circlePointCount ], points[ circlePointCount ];
+	decVector lastPoints[circlePointCount], points[circlePointCount];
 	decVector prevPos, pos, nextPos;
 	decMatrix matrix;
 	decVector view;
@@ -333,67 +333,67 @@ void mePathFindTest::pUpdateDDPath(){
 	int i, j;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			pos = ( pPath.GetAt( i ) - pStartPosition ).ToVector();
+		for(i=0; i<count; i++){
+			pos = (pPath.GetAt(i) - pStartPosition).ToVector();
 			
-			if( i > 0 ){
-				prevPos = ( pPath.GetAt( i - 1 ) - pStartPosition ).ToVector();
+			if(i > 0){
+				prevPos = (pPath.GetAt(i - 1) - pStartPosition).ToVector();
 			}
 			
-			if( i < count - 1 ){
-				nextPos = ( pPath.GetAt( i + 1 ) - pStartPosition ).ToVector();
+			if(i < count - 1){
+				nextPos = (pPath.GetAt(i + 1) - pStartPosition).ToVector();
 				
 			}else{
 				nextPos = pos;
 			}
 			
-			if( i == 0 ){
+			if(i == 0){
 				view = pos - prevPos;
 				len = view.Length();
-				if( len < 0.001f ){
-					view.Set( 0.0f, 0.0f, 1.0f );
+				if(len < 0.001f){
+					view.Set(0.0f, 0.0f, 1.0f);
 					
 				}else{
 					view /= len;
 				}
 				
-				matrix.SetWorld( decVector(), view, up );
-				for( j=0; j<circlePointCount; j++ ){
-					lastPoints[ j ] = matrix.Transform( radius * sinf( circleStep * ( float )j ), radius * cosf( circleStep * ( float )j ), 0.0f );
+				matrix.SetWorld(decVector(), view, up);
+				for(j=0; j<circlePointCount; j++){
+					lastPoints[j] = matrix.Transform(radius * sinf(circleStep * (float)j), radius * cosf(circleStep * (float)j), 0.0f);
 				}
 			}
 			
 			view = nextPos - prevPos;
 			len = view.Length();
-			if( len < 0.001f ){
-				view.Set( 0.0f, 0.0f, 1.0f );
+			if(len < 0.001f){
+				view.Set(0.0f, 0.0f, 1.0f);
 				
 			}else{
 				view /= len;
 			}
 			
-			matrix.SetWorld( pos, view, up );
-			for( j=0; j<circlePointCount; j++ ){
-				points[ j ] = matrix.Transform( radius * sinf( circleStep * ( float )j ), radius * cosf( circleStep * ( float )j ), 0.0f );
+			matrix.SetWorld(pos, view, up);
+			for(j=0; j<circlePointCount; j++){
+				points[j] = matrix.Transform(radius * sinf(circleStep * (float)j), radius * cosf(circleStep * (float)j), 0.0f);
 			}
 			
-			for( j=0; j<circlePointCount; j++ ){
+			for(j=0; j<circlePointCount; j++){
 				ddsFace = new deDebugDrawerShapeFace;
-				ddsFace->AddVertex( lastPoints[ j ] );
-				ddsFace->AddVertex( points[ j ] );
-				ddsFace->AddVertex( points[ ( j + 1 ) % circlePointCount ] );
-				ddsFace->AddVertex( lastPoints[ ( j + 1 ) % circlePointCount ] );
-				pDDSPath->AddFace( ddsFace );
+				ddsFace->AddVertex(lastPoints[j]);
+				ddsFace->AddVertex(points[j]);
+				ddsFace->AddVertex(points[(j + 1) % circlePointCount]);
+				ddsFace->AddVertex(lastPoints[(j + 1) % circlePointCount]);
+				pDDSPath->AddFace(ddsFace);
 				ddsFace = NULL;
 			}
 			
-			for( j=0; j<circlePointCount; j++ ){
-				lastPoints[ j ] = points[ j ];
+			for(j=0; j<circlePointCount; j++){
+				lastPoints[j] = points[j];
 			}
 		}
 		
-	}catch( const deException & ){
-		if( ddsFace ){
+	}catch(const deException &){
+		if(ddsFace){
 			delete ddsFace;
 		}
 		throw;
@@ -406,12 +406,12 @@ void mePathFindTest::pUpdateTypes(){
 	
 	pEngNavigator->RemoveAllTypes();
 	
-	for( i=0; i<count; i++ ){
-		const mePathFindTestType &type = *pTypeList.GetAt( i );
-		deNavigatorType &engType = *pEngNavigator->AddType( type.GetTypeNumber() );
+	for(i=0; i<count; i++){
+		const mePathFindTestType &type = *pTypeList.GetAt(i);
+		deNavigatorType &engType = *pEngNavigator->AddType(type.GetTypeNumber());
 		
-		engType.SetFixCost( type.GetFixCost() );
-		engType.SetCostPerMeter( type.GetCostPerMeter() );
+		engType.SetFixCost(type.GetFixCost());
+		engType.SetCostPerMeter(type.GetCostPerMeter());
 	}
 	
 	pEngNavigator->NotifyTypesChanged();

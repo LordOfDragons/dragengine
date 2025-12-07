@@ -120,7 +120,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete new tree item model. */
-	ceWPTTreeItemModel( ceWindowMain &windowMain, ceConversation &conversation, eTypes type );
+	ceWPTTreeItemModel(ceWindowMain &windowMain, ceConversation &conversation, eTypes type);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -151,7 +151,7 @@ public:
 	 * 
 	 * If tree item is assigned updates tree item text.
 	 */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Tree item description. */
 	inline const decString &GetDescription() const{ return pDescription; }
@@ -161,7 +161,7 @@ public:
 	 * 
 	 * If tree item is assigned updates tree item description.
 	 */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Tree item icon. */
 	inline igdeIcon *GetIcon() const{ return pIcon; }
@@ -171,13 +171,13 @@ public:
 	 * 
 	 * If tree item is assigned updates tree item icons.
 	 */
-	void SetIcon( igdeIcon *icon );
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Expanded. */
 	inline bool GetExpanded() const{ return pExpanded; }
 	
 	/** \brief Set expanded. */
-	void SetExpanded( bool expanded );
+	void SetExpanded(bool expanded);
 	
 	
 	
@@ -185,16 +185,16 @@ public:
 	int GetChildCount() const;
 	
 	/** \brief Child at index. */
-	ceWPTTreeItemModel *GetChildAt( int index ) const;
+	ceWPTTreeItemModel *GetChildAt(int index) const;
 	
 	/** \brief Add child. */
-	void AddChild( ceWPTTreeItemModel *child );
+	void AddChild(ceWPTTreeItemModel *child);
 	
 	/** \brief Insert child at position. */
-	void InsertChild( ceWPTTreeItemModel *child, int position );
+	void InsertChild(ceWPTTreeItemModel *child, int position);
 	
 	/** \brief Remove child. */
-	void RemoveChild( ceWPTTreeItemModel *child );
+	void RemoveChild(ceWPTTreeItemModel *child);
 	
 	/** \brief Remove all children. */
 	void RemoveAllChildren();
@@ -202,12 +202,12 @@ public:
 	/**
 	 * \brief Move child before or after another child.
 	 */
-	void MoveChild( ceWPTTreeItemModel *child, int to );
+	void MoveChild(ceWPTTreeItemModel *child, int to);
 	
 	/**
 	 * \brief Move child before or after another child.
 	 */
-	void MoveChild( int from, int to );
+	void MoveChild(int from, int to);
 	
 	
 	
@@ -215,7 +215,7 @@ public:
 	inline ceWPTTreeModel *GetTree() const{ return pTree; }
 	
 	/** \brief Set tree or \em NULL if not top level. */
-	void SetTree( ceWPTTreeModel *tree );
+	void SetTree(ceWPTTreeModel *tree);
 	
 	/** \brief First non-NULL tree found while traveling up parents or \em NULL if not found. */
 	ceWPTTreeModel *GetFirstTree() const;
@@ -224,7 +224,7 @@ public:
 	inline ceWPTTreeItemModel *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent or \em NULL. */
-	void SetParent( ceWPTTreeItemModel *parent );
+	void SetParent(ceWPTTreeItemModel *parent);
 	
 	/** \brief Assigned tree item or \em NULL. */
 	inline ceWPTTreeItem *GetTreeItem() const{ return pTreeItem; }
@@ -234,7 +234,7 @@ public:
 	 * 
 	 * If tree item is not \em NULL fully updates tree item with stored data.
 	 */
-	void SetTreeItem( ceWPTTreeItem *treeItem );
+	void SetTreeItem(ceWPTTreeItem *treeItem);
 	
 	/** \brief Sort children. */
 	void SortChildren();
@@ -251,19 +251,19 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief User requests context menu for selected child action. */
-	virtual void ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action );
+	virtual void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action);
 	
 	/** \brief User requests context menu for selected child condition. */
-	virtual void ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition );
+	virtual void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition);
 	
 	/** \brief Deep find action. */
-	virtual ceWPTTIMAction *DeepFindAction( ceConversationAction *action );
+	virtual ceWPTTIMAction *DeepFindAction(ceConversationAction *action);
 	
 	/** \brief Deep find condition. */
-	virtual ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition );
+	virtual ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition);
 	
 	/** \brief Expanded state changed. */
 	virtual void OnExpandedChanged();

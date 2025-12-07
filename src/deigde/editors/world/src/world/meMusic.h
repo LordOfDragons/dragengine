@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates music. */
-	meMusic( meWorld &world );
+	meMusic(meWorld &world);
 	
 	/** Clean up music. */
 	virtual ~meMusic() override;
@@ -67,13 +67,13 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** Set music path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** Volume. */
 	float GetVolume() const;
 	
 	/** Set volume. */
-	void SetVolume( float volume );
+	void SetVolume(float volume);
 	
 	/** Play. */
 	void Play();

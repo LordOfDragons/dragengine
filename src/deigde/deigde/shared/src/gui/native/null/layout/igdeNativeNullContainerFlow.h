@@ -39,19 +39,19 @@ public:
 	virtual ~igdeNativeNullContainerFlow();
 	
 	/** \brief Create native widget. */
-	static void* CreateNativeWidget( igdeContainerFlow &owner );
+	static void* CreateNativeWidget(igdeContainerFlow &owner);
 	
 	/** \brief Post create native widget. */
-	static void PostCreateNativeWidget( igdeContainerFlow &owner, void *native );
+	static void PostCreateNativeWidget(igdeContainerFlow &owner, void *native);
 	
 	/** \brief Destroy native widget. */
-	static void DestroyNativeWidget( igdeContainerFlow &owner, void *native );
+	static void DestroyNativeWidget(igdeContainerFlow &owner, void *native);
 	
 	/** \brief Child removed. */
-	static void ChildRemoved( igdeContainerFlow &owner, void *native );
+	static void ChildRemoved(igdeContainerFlow &owner, void *native);
 	
 	/** \brief Native container. */
-	static void *GetNativeContainer( const igdeContainerFlow &owner, void *native );
+	static void *GetNativeContainer(const igdeContainerFlow &owner, void *native);
 	/*@}*/
 };
 

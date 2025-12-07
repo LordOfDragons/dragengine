@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader module. */
-	devkShaderModule( devkDevice &device, const char *path, decBaseFileReader &reader );
+	devkShaderModule(devkDevice &device, const char *path, decBaseFileReader &reader);
 	
 protected:
 	/** Clean up shader module. */

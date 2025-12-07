@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data object. */
-	meUndoDataDecalProperty( meDecal *decal );
+	meUndoDataDecalProperty(meDecal *decal);
 	
 protected:
 	/** \brief Clean up undo data object. */
@@ -72,13 +72,13 @@ public:
 	inline const decString &GetOldValue() const{ return pOldValue; }
 	
 	/** \brief Set old property value. */
-	void SetOldValue( const char *value );
+	void SetOldValue(const char *value);
 	
 	/** \brief Property has been present before the redo operation. */
 	inline bool GetPropertyExists() const{ return pPropertyExists; }
 	
 	/** \brief Set if property has been present before the redo operation. */
-	void SetPropertyExists( bool exists );
+	void SetPropertyExists(bool exists);
 	
 	/** \brief Old property list. */
 	inline decStringDictionary &GetOldProperties(){ return pOldProperties; }

@@ -76,10 +76,10 @@ public:
 	/** \name Constructors, destructors */
 	/*@{*/
 	/** Create bones list. */
-	debpColliderBones( debpCollider &collider, deColliderComponent *engColliderComponent );
+	debpColliderBones(debpCollider &collider, deColliderComponent *engColliderComponent);
 	
 	/** Create bones list. */
-	debpColliderBones( debpCollider &collider, deColliderRig *engColliderRig );
+	debpColliderBones(debpCollider &collider, deColliderRig *engColliderRig);
 	
 	/** Clean up bones list. */
 	~debpColliderBones();
@@ -93,10 +93,10 @@ public:
 	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** Bone at index which can be NULL. */
-	debpColliderBone *GetBoneAt( int index ) const;
+	debpColliderBone *GetBoneAt(int index) const;
 	
 	/** Bone at index is not NULL. */
-	bool HasBoneAt( int index ) const;
+	bool HasBoneAt(int index) const;
 	
 	/** Root bone index or -1 if there is none. */
 	inline int GetRootBoneIndex() const{ return pRootBone; }
@@ -108,7 +108,7 @@ public:
 	inline int GetBonePhysicsCount() const{ return pBonePhysicsCount; }
 	
 	/** hysics Physics bone at index. */
-	debpColliderBone &GetBonePhysicsAt( int index ) const;
+	debpColliderBone &GetBonePhysicsAt(int index) const;
 	
 	/** One or more bones have constraints. */
 	bool HasConstraints() const;
@@ -130,10 +130,10 @@ public:
 	 * Two bones can collider if they are not the same, they both have physics bodies and
 	 * are not direct parent and child except not having any active constraints between them.
 	 */
-	bool CanBonesCollide( int bone1, int bone2 ) const;
+	bool CanBonesCollide(int bone1, int bone2) const;
 	
 	/** Set dynamic world for all bones and constraints attached to them. */
-	void SetDynamicWorld( debpCollisionWorld *dynWorld );
+	void SetDynamicWorld(debpCollisionWorld *dynWorld);
 	
 	/**
 	 * Update collider state from physics body state.
@@ -148,16 +148,16 @@ public:
 	void ActivateDirtyPhysicsBodies();
 	
 	/** Set gravity for all physics bodies. */
-	void SetGravity( const decVector &gravity );
+	void SetGravity(const decVector &gravity);
 	
 	/** Apply force field. */
-	void ApplyForceField( const debpForceField &forceField, float fluctStrength, float fluctDirection );
+	void ApplyForceField(const debpForceField &forceField, float fluctStrength, float fluctDirection);
 	
 	/** Update position and rotation. */
-	void UpdateFromKinematic( bool resetInterpolation );
+	void UpdateFromKinematic(bool resetInterpolation);
 	
 	/** Prepare bones for collision detection. */
-	void PrepareForDetection( float elapsed );
+	void PrepareForDetection(float elapsed);
 	
 	/** Prepare bone constraints for collision simulation step. */
 	void PrepareConstraintsForStep();
@@ -172,7 +172,7 @@ public:
 	void UpdateShapes();
 	
 	/** Update bone shapes. */
-	void UpdateShapes( const decDMatrix &transformation );
+	void UpdateShapes(const decDMatrix &transformation);
 	
 	
 	
@@ -191,37 +191,37 @@ public:
 	
 	
 	/** Enable bone constraint. */
-	void EnableConstraint( int bone, int constraint, bool enable );
+	void EnableConstraint(int bone, int constraint, bool enable);
 	
 	/** Apply impulse to all bones. */
-	void ApplyImpuls( const decVector &impuls );
+	void ApplyImpuls(const decVector &impuls);
 	
-	void ApplyImpulsAt( const decVector &impuls, const decVector &position );
+	void ApplyImpulsAt(const decVector &impuls, const decVector &position);
 	
-	void ApplyTorqueImpuls( const decVector &torqueImpuls );
+	void ApplyTorqueImpuls(const decVector &torqueImpuls);
 	
-	void ApplyForce( const decVector &force );
+	void ApplyForce(const decVector &force);
 	
-	void ApplyForceAt( const decVector &force, const decVector &point );
+	void ApplyForceAt(const decVector &force, const decVector &point);
 	
-	void ApplyTorque( const decVector &torque );
+	void ApplyTorque(const decVector &torque);
 	
 	
 	
 	/** Set linear velocity of all bones. */
-	void LinearVelocityChanged( const decVector &velocity );
+	void LinearVelocityChanged(const decVector &velocity);
 	
 	/** Set angular velocity of all bones. */
-	void AngularVelocityChanged( const decVector &velocity );
+	void AngularVelocityChanged(const decVector &velocity);
 	
 	/** Enable all physics bodies. */
-	void EnablePhysicsBodies( bool enabled );
+	void EnablePhysicsBodies(bool enabled);
 	
 	/** Update physics type of physics bodies. */
-	void UpdatePhysicsType( deCollider::eResponseType responseType );
+	void UpdatePhysicsType(deCollider::eResponseType responseType);
 	
 	/** Update physics type of bone physics body if present. */
-	void UpdatePhysicsType( deCollider::eResponseType responseType, int bone );
+	void UpdatePhysicsType(deCollider::eResponseType responseType, int bone);
 	
 	/** Collision filter or ignore colliders changed. */
 	void CollisionFilteringChanged();
@@ -233,14 +233,14 @@ public:
 	 * 
 	 * Call UpdateShapes before using PointInside.
 	 */
-	bool PointInside( const decDVector &point );
+	bool PointInside(const decDVector &point);
 	
 	/**
 	 * Calculate shape extends.
 	 * 
 	 * Call UpdateShapes before using PointInside.
 	 */
-	void CalcShapeExtends( decDVector &minExtend, decDVector &maxExtend );
+	void CalcShapeExtends(decDVector &minExtend, decDVector &maxExtend);
 	
 	
 	
@@ -254,8 +254,8 @@ public:
 private:
 	void pCleanUp();
 	void pCreateBones();
-	void pSetBoneShape( int index, deRigBone &bone, decVector &scale );
-	void pCreateConstraints( const deRig &rig );
+	void pSetBoneShape(int index, deRigBone &bone, decVector &scale);
+	void pCreateConstraints(const deRig &rig);
 	void pPreparePhyBones();
 };
 

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderLightBase( deoglRenderThread &renderThread );
+	deoglRenderLightBase(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderLightBase();
@@ -62,13 +62,13 @@ public:
 	inline const deoglCollideList &GetCollideList() const{ return pColList; }
 	
 	/** Populate collider list with components from a component list. */
-	void AddComponentsToColliderList( const deoglComponentSet &list );
+	void AddComponentsToColliderList(const deoglComponentSet &list);
 	
 	/** Transform color by matrix. */
-	decColor TransformColor( const decMatrix &matrix, const decColor &color ) const;
+	decColor TransformColor(const decMatrix &matrix, const decColor &color) const;
 	
 	/** Restore frame buffer configuration. */
-	void RestoreFBO( deoglRenderPlan &plan );
+	void RestoreFBO(deoglRenderPlan &plan);
 	
 	/** Restore texture bindings from the deferred rendering pass using linear interpolation. */
 	void RestoreDRTexturesSmooth();
@@ -77,7 +77,7 @@ public:
 	void RestoreDRTextureDepthSmooth();
 	
 	/** Restore GI Rays frame buffer configuration. */
-	void RestoreFBOGITraceRays( deoglGIState &giState );
+	void RestoreFBOGITraceRays(deoglGIState &giState);
 	
 	
 	
@@ -91,7 +91,7 @@ public:
 	
 	
 protected:
-	int pPipelineModifiers( const deoglRenderPlanLight &planLight, bool solid, bool hasAmbient ) const;
+	int pPipelineModifiers(const deoglRenderPlanLight &planLight, bool solid, bool hasAmbient) const;
 };
 
 #endif

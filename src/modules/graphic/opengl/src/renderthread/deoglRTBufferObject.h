@@ -121,9 +121,9 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	deoglShapeManager *pShapeManager;
-	deoglSharedVBOList *pSharedVBOListByType[ esvbolCanvasPaint + 1 ];
+	deoglSharedVBOList *pSharedVBOListByType[esvbolCanvasPaint + 1];
 	deoglSharedVBOListList *pSharedVBOListList;
-	deoglSharedSPBList *pSharedSPBList[ esspblSkinTextureSSBO + 1 ];
+	deoglSharedSPBList *pSharedSPBList[esspblSkinTextureSSBO + 1];
 	
 	int pInstanceArraySizeUBO;
 	int pInstanceArraySizeSSBO;
@@ -147,7 +147,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread buffer object related. */
-	deoglRTBufferObject( deoglRenderThread &renderThread );
+	deoglRTBufferObject(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread buffer object related. */
 	~deoglRTBufferObject();
@@ -166,10 +166,10 @@ public:
 	inline deoglSharedVBOListList &GetSharedVBOListList() const{ return *pSharedVBOListList; }
 	
 	/** Shared vbo list by type. */
-	deoglSharedVBOList &GetSharedVBOListForType( eSharedVBOLists type ) const;
+	deoglSharedVBOList &GetSharedVBOListForType(eSharedVBOLists type) const;
 	
 	/** Shared spb list by type. */
-	deoglSharedSPBList &GetSharedSPBList( eSharedSPBLists type ) const;
+	deoglSharedSPBList &GetSharedSPBList(eSharedSPBLists type) const;
 	
 	/** Maximum size of SPB Instance array or 0 unlimited. */
 	inline int GetInstanceArraySizeUBO() const{ return pInstanceArraySizeUBO; }
@@ -205,7 +205,7 @@ public:
 	inline deoglShapeManager &GetShapeManager() const{ return *pShapeManager; }
 	
 	/** Temporary vbo data large enough to contain the requested amount of bytes. */
-	char *GetTemporaryVBOData( int size );
+	char *GetTemporaryVBOData(int size);
 	/*@}*/
 	
 private:

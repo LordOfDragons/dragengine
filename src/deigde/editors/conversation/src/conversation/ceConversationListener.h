@@ -63,140 +63,140 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( ceConversation *conversation );
+	virtual void StateChanged(ceConversation *conversation);
 	/** Undo system changed. */
-	virtual void UndoChanged( ceConversation *conversation );
+	virtual void UndoChanged(ceConversation *conversation);
 	/** View properties changed. */
-	virtual void ViewChanged( ceConversation *conversation );
+	virtual void ViewChanged(ceConversation *conversation);
 	/** Conversation changed. */
-	virtual void ConversationChanged( ceConversation *conversation );
+	virtual void ConversationChanged(ceConversation *conversation);
 	/** The sky changed. */
-	virtual void SkyChanged( ceConversation *conversation );
+	virtual void SkyChanged(ceConversation *conversation);
 	/** The environment object changed. */
-	virtual void EnvObjectChanged( ceConversation *conversation );
+	virtual void EnvObjectChanged(ceConversation *conversation);
 	/** Camera changed. */
-	virtual void CameraChanged( ceConversation *conversation );
+	virtual void CameraChanged(ceConversation *conversation);
 	
 	/** Target count or order changed. */
-	virtual void TargetStructureChanged( ceConversation *conversation );
+	virtual void TargetStructureChanged(ceConversation *conversation);
 	/** Target changed. */
-	virtual void TargetChanged( ceConversation *conversation, ceTarget *target );
+	virtual void TargetChanged(ceConversation *conversation, ceTarget *target);
 	/** Active target changed. */
-	virtual void ActiveTargetChanged( ceConversation *conversation );
+	virtual void ActiveTargetChanged(ceConversation *conversation);
 	
 	/** Camera shot count or order changed. */
-	virtual void CameraShotStructureChanged( ceConversation *conversation );
+	virtual void CameraShotStructureChanged(ceConversation *conversation);
 	/** Camera shot changed. */
-	virtual void CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot );
+	virtual void CameraShotChanged(ceConversation *conversation, ceCameraShot *cameraShot);
 	/** Active camera shot changed. */
-	virtual void ActiveCameraShotChanged( ceConversation *conversation );
+	virtual void ActiveCameraShotChanged(ceConversation *conversation);
 	
 	/** Gesture count or order changed. */
-	virtual void GestureStructureChanged( ceConversation *conversation );
+	virtual void GestureStructureChanged(ceConversation *conversation);
 	/** Gesture changed. */
-	virtual void GestureChanged( ceConversation *conversation, ceGesture *gesture );
+	virtual void GestureChanged(ceConversation *conversation, ceGesture *gesture);
 	/** Active gesture changed. */
-	virtual void ActiveGestureChanged( ceConversation *conversation );
+	virtual void ActiveGestureChanged(ceConversation *conversation);
 	
 	/** Face pose controller names changed. */
-	virtual void FacePoseControllerNamesChanged( ceConversation *conversation );
+	virtual void FacePoseControllerNamesChanged(ceConversation *conversation);
 	/** Face pose count or order changed. */
-	virtual void FacePoseStructureChanged( ceConversation *conversation );
+	virtual void FacePoseStructureChanged(ceConversation *conversation);
 	/** Face pose changed. */
-	virtual void FacePoseChanged( ceConversation *conversation, ceFacePose *facePose );
+	virtual void FacePoseChanged(ceConversation *conversation, ceFacePose *facePose);
 	/** Active face pose changed. */
-	virtual void ActiveFacePoseChanged( ceConversation *conversation );
+	virtual void ActiveFacePoseChanged(ceConversation *conversation);
 	
 	/** File count or order changed. */
-	virtual void FileStructureChanged( ceConversation *conversation );
+	virtual void FileStructureChanged(ceConversation *conversation);
 	/** File changed. */
-	virtual void FileChanged( ceConversation *conversation, ceConversationFile *file );
+	virtual void FileChanged(ceConversation *conversation, ceConversationFile *file);
 	/** Active file changed. */
-	virtual void ActiveFileChanged( ceConversation *conversation );
+	virtual void ActiveFileChanged(ceConversation *conversation);
 	
 	/** Topic count or order changed. */
-	virtual void TopicStructureChanged( ceConversation *conversation, ceConversationFile *file );
+	virtual void TopicStructureChanged(ceConversation *conversation, ceConversationFile *file);
 	/** Topic changed. */
-	virtual void TopicChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic );
+	virtual void TopicChanged(ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic);
 	/** Active topic changed. */
-	virtual void ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file );
+	virtual void ActiveTopicChanged(ceConversation *conversation, ceConversationFile *file);
 	
 	/** Action count or order changed. */
-	virtual void ActionStructureChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
+	virtual void ActionStructureChanged(ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action);
 	/** Action changed. */
-	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
+	virtual void ActionChanged(ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action);
 	
 	/** Condition count or order changed. */
-	virtual void ConditionStructureChanged( ceConversation *conversation,
-		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
+	virtual void ConditionStructureChanged(ceConversation *conversation,
+		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action);
 	
 	/** Condition changed. */
-	virtual void ConditionChanged( ceConversation *conversation, ceConversationFile *file,
-		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition );
+	virtual void ConditionChanged(ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition);
 	
 	/** Active element changed. */
-	virtual void ActiveChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic );
+	virtual void ActiveChanged(ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic);
 	
 	
 	
 	/** Actor count or order changed. */
-	virtual void ActorStructureChanged( ceConversation *conversation );
+	virtual void ActorStructureChanged(ceConversation *conversation);
 	
 	/** Actor changed. */
-	virtual void ActorChanged( ceConversation *conversation, ceConversationActor *actor );
+	virtual void ActorChanged(ceConversation *conversation, ceConversationActor *actor);
 	
 	/** Actor active pose changed. */
-	virtual void ActorActivePoseChanged( ceConversation *conversation, ceConversationActor *actor );
+	virtual void ActorActivePoseChanged(ceConversation *conversation, ceConversationActor *actor);
 	
 	/** Actor poses changed. */
-	virtual void ActorPosesChanged( ceConversation *conversation, ceConversationActor *actor );
+	virtual void ActorPosesChanged(ceConversation *conversation, ceConversationActor *actor);
 	
 	/** Actor active pose gestures changed. */
-	virtual void ActorPoseGesturesChanged( ceConversation *conversation,
-		ceConversationActor *actor, ceActorPose *pose );
+	virtual void ActorPoseGesturesChanged(ceConversation *conversation,
+		ceConversationActor *actor, ceActorPose *pose);
 	
 	/** Actor commands changed. */
-	virtual void ActorCommandsChanged( ceConversation *conversation, ceConversationActor *actor );
+	virtual void ActorCommandsChanged(ceConversation *conversation, ceConversationActor *actor);
 	
 	/** Actor parameters changed. */
-	virtual void ActorParametersChanged( ceConversation *conversation, ceConversationActor *actor );
+	virtual void ActorParametersChanged(ceConversation *conversation, ceConversationActor *actor);
 	
 	/** Active actor changed. */
-	virtual void ActiveActorChanged( ceConversation *conversation );
+	virtual void ActiveActorChanged(ceConversation *conversation);
 	
 	
 	
 	/** Coordinate system count or order changed. */
-	virtual void CoordSystemStructureChanged( ceConversation *conversation );
+	virtual void CoordSystemStructureChanged(ceConversation *conversation);
 	/** Coordinate system changed. */
-	virtual void CoordSystemChanged( ceConversation *conversation, ceCoordSystem *coordSystem );
+	virtual void CoordSystemChanged(ceConversation *conversation, ceCoordSystem *coordSystem);
 	/** Active coordinate system changed. */
-	virtual void ActiveCoordSystemChanged( ceConversation *conversation );
+	virtual void ActiveCoordSystemChanged(ceConversation *conversation);
 	
 	/** Prop count or order changed. */
-	virtual void PropStructureChanged( ceConversation *conversation );
+	virtual void PropStructureChanged(ceConversation *conversation);
 	/** Prop changed. */
-	virtual void PropChanged( ceConversation *conversation, ceProp *prop );
+	virtual void PropChanged(ceConversation *conversation, ceProp *prop);
 	/** Active prop changed. */
-	virtual void ActivePropChanged( ceConversation *conversation );
+	virtual void ActivePropChanged(ceConversation *conversation);
 	
 	/** Playback parameters changed. */
-	virtual void PlaybackChanged( ceConversation *conversation );
+	virtual void PlaybackChanged(ceConversation *conversation);
 	/** Playback action stack changed. */
-	virtual void PlaybackActionStackChanged( ceConversation *conversation );
+	virtual void PlaybackActionStackChanged(ceConversation *conversation);
 	/** Playback info command changed. */
-	virtual void PlaybackCommandListChanged( ceConversation *conversation );
+	virtual void PlaybackCommandListChanged(ceConversation *conversation);
 	/** Playback variable list changed. */
-	virtual void PlaybackVarListChanged( ceConversation *conversation );
+	virtual void PlaybackVarListChanged(ceConversation *conversation);
 	/** Playback trigger table changed. */
-	virtual void PlaybackTriggerTableChanged( ceConversation *conversation );
+	virtual void PlaybackTriggerTableChanged(ceConversation *conversation);
 	/** Playback missing words changed. */
-	virtual void PlaybackMissingWordsChanged( ceConversation *conversation );
+	virtual void PlaybackMissingWordsChanged(ceConversation *conversation);
 	
 	
 	
 	/** Language pack changed. */
-	virtual void LanguagePackChanged( ceConversation *conversation );
+	virtual void LanguagePackChanged(ceConversation *conversation);
 	/*@}*/
 };
 

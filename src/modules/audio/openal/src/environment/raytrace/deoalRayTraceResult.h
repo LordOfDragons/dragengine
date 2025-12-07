@@ -64,14 +64,14 @@ public:
 	inline int GetElementCount() const{ return pElementCount; }
 	
 	/** \brief Element at index. */
-	const deoalRayTraceHitElement &GetElementAt( int index ) const;
+	const deoalRayTraceHitElement &GetElementAt(int index) const;
 	
 	/** \brief Add element sorted by distance. */
-	void AddElement( float distance, const decDVector &point, const decDVector &normal,
-		deoalAComponent *component, int face, bool frontFacing );
+	void AddElement(float distance, const decDVector &point, const decDVector &normal,
+		deoalAComponent *component, int face, bool frontFacing);
 	
 	/** \brief Add element sorted by distance. */
-	void AddElement( const deoalRayTraceHitElement &element );
+	void AddElement(const deoalRayTraceHitElement &element);
 	
 	/** \brief Remove all elements. */
 	void RemoveAllElements();
@@ -80,13 +80,13 @@ public:
 	void Clear();
 	
 	/** \brief Debug print. */
-	void DebugPrint( deoalAudioThread &audioThread, const char *prefix );
+	void DebugPrint(deoalAudioThread &audioThread, const char *prefix);
 	/*@}*/
 	
 	
 	
 protected:
-	deoalRayTraceHitElement *pInsert( float distance );
+	deoalRayTraceHitElement *pInsert(float distance);
 };
 
 #endif

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create view. */
-	deoglHTViewSector( deoglHTView &view, deoglRHTSector &sector );
+	deoglHTViewSector(deoglHTView &view, deoglRHTSector &sector);
 	
 	/** Clean up view. */
 	~deoglHTViewSector();
@@ -71,10 +71,10 @@ public:
 	const int GetClusterCount() const{ return pClusterCount; }
 	
 	/** Cluster at index. */
-	deoglHTViewSectorCluster &GetClusterAt( int index ) const;
+	deoglHTViewSectorCluster &GetClusterAt(int index) const;
 	
 	/** Cluster at coordinate. */
-	deoglHTViewSectorCluster &GetClusterAt( const decPoint &coordinates ) const;
+	deoglHTViewSectorCluster &GetClusterAt(const decPoint &coordinates) const;
 	
 	/** Reset lod levels to 0 for all clusters and unsets all borders. */
 	void ResetClusters();
@@ -84,7 +84,7 @@ public:
 	 * terrain. LOD level neighbor rules are taken into account. Also updates the borders to
 	 * render the terrain correctly.
 	 */
-	void UpdateLODLevels( const decVector &camera );
+	void UpdateLODLevels(const decVector &camera);
 	
 	/**
 	 * Height map view is visible. A height map view is visible if at least one contained
@@ -99,7 +99,7 @@ public:
 	
 	
 private:
-	void pLimitNeighborLODLevels( int x, int z );
+	void pLimitNeighborLODLevels(int x, int z);
 };
 
 #endif

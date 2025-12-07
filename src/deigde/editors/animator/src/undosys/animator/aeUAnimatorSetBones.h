@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeUAnimatorSetBones( aeAnimator *animator, const decStringSet &newValue );
+	aeUAnimatorSetBones(aeAnimator *animator, const decStringSet &newValue);
 	
 protected:
 	/** Clean up undo. */

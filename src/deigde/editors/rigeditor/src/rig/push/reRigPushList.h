@@ -55,15 +55,15 @@ public:
 	/** Retrieves the number of pushs. */
 	inline int GetPushCount() const{ return pPushCount; }
 	/** Retrieves the push at the given index. */
-	reRigPush *GetPushAt( int index ) const;
+	reRigPush *GetPushAt(int index) const;
 	/** Retrieves the index of the push or -1 if not found. */
-	int IndexOfPush( reRigPush *push ) const;
+	int IndexOfPush(reRigPush *push) const;
 	/** Determines if the push exists. */
-	bool HasPush( reRigPush *push ) const;
+	bool HasPush(reRigPush *push) const;
 	/** Adds a new push. */
-	void AddPush( reRigPush *push );
+	void AddPush(reRigPush *push);
 	/** Removes the given push. */
-	void RemovePush( reRigPush *push );
+	void RemovePush(reRigPush *push);
 	/** Removes all pushs. */
 	void RemoveAllPushes();
 	/*@}*/

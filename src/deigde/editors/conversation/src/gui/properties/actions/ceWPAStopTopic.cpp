@@ -62,8 +62,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAStopTopic::ceWPAStopTopic( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
-	CreateGUICommon( *this );
+ceWPAStopTopic::ceWPAStopTopic(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
+	CreateGUICommon(*this);
 }
 
 ceWPAStopTopic::~ceWPAStopTopic(){
@@ -77,8 +77,8 @@ ceWPAStopTopic::~ceWPAStopTopic(){
 ceCAStopTopic *ceWPAStopTopic::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatStopTopic ){
-		return ( ceCAStopTopic* )action;
+	if(action && action->GetType() == ceConversationAction::eatStopTopic){
+		return (ceCAStopTopic*)action;
 		
 	}else{
 		return NULL;

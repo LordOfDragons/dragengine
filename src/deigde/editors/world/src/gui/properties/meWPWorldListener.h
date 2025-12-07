@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	meWPWorldListener( meWPWorld &panel );
+	meWPWorldListener(meWPWorld &panel);
 	
 	/** Clean up listener. */
 	virtual ~meWPWorldListener() override;
@@ -55,29 +55,29 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** World parameters changed. */
-	virtual void WorldParametersChanged( meWorld *world ) override;
+	virtual void WorldParametersChanged(meWorld *world) override;
 	
 	/** Lighting parameters changed. */
-	virtual void LightingChanged( meWorld *world ) override;
+	virtual void LightingChanged(meWorld *world) override;
 	
 	/** Path find test changed. */
-	virtual void PathFindTestChanged( meWorld *world ) override;
+	virtual void PathFindTestChanged(meWorld *world) override;
 	
 	/** Music changed. */
-	virtual void MusicChanged( meWorld *world ) override;
+	virtual void MusicChanged(meWorld *world) override;
 	
 	/** World properties changed. */
-	virtual void PropertiesChanged( meWorld *world ) override;
+	virtual void PropertiesChanged(meWorld *world) override;
 	
 	/** World active property changed. */
-	virtual void ActivePropertyChanged( meWorld *world ) override;
+	virtual void ActivePropertyChanged(meWorld *world) override;
 	
 	/** Object properties changed. */
-	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object ) override;
+	virtual void ObjectPropertiesChanged(meWorld *world, meObject *object) override;
 	
 	/** Object texture properties changed. */
-	virtual void ObjectTexturePropertiesChanged( meWorld *world, meObject *object,
-		meObjectTexture *texture ) override;
+	virtual void ObjectTexturePropertiesChanged(meWorld *world, meObject *object,
+		meObjectTexture *texture) override;
 	/*@}*/
 };
 

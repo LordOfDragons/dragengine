@@ -37,7 +37,7 @@ private:
 	ceConversationAction::Ref pAction;
 	
 public:
-	static const ceConversationAction::eActionTypes ListAddMenuActions[ 19 ];
+	static const ceConversationAction::eActionTypes ListAddMenuActions[19];
 	static const int ListAddMenuActionsCount;
 	
 	
@@ -46,8 +46,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAction( ceWindowMain &windowMain, eTypes type,
-		ceConversation &conversation, ceConversationAction *action );
+	ceWPTTIMAction(ceWindowMain &windowMain, eTypes type,
+		ceConversation &conversation, ceConversationAction *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -63,10 +63,10 @@ public:
 	inline ceConversationAction *GetAction() const{ return pAction; }
 	
 	/** \brief Deep find action. */
-	virtual ceWPTTIMAction *DeepFindAction( ceConversationAction *action );
+	virtual ceWPTTIMAction *DeepFindAction(ceConversationAction *action);
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Update action. */
 	virtual void Update();

@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	dewiDeviceWinRTController( deWindowsInput &module, wrgi::RawGameController const &controller );
+	dewiDeviceWinRTController(deWindowsInput &module, wrgi::RawGameController const &controller);
 	
 protected:
 	/** Clean up device. */
@@ -87,13 +87,13 @@ public:
 	virtual void Update();
 
 	/** Axis reading. */
-	double GetReadingAxis( int index ) const;
+	double GetReadingAxis(int index) const;
 
 	/** Switch position reading. */
-	wrgi::GameControllerSwitchPosition GetReadingSwitch( int index ) const;
+	wrgi::GameControllerSwitchPosition GetReadingSwitch(int index) const;
 
 	/** Button reading. */
-	bool GetReadingButton( int index ) const;
+	bool GetReadingButton(int index) const;
 
 	/** Reading time. */
 	inline DWORD GetReadingTime() const{ return pReadingTime; }

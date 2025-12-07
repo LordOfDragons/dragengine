@@ -90,67 +90,67 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Graphic module. */
 	inline const decString &GetModuleGraphic() const{ return pModuleGraphic; }
 	
 	/** \brief Set graphic module. */
-	void SetModuleGraphic( const char *moduleName );
+	void SetModuleGraphic(const char *moduleName);
 	
 	/** \brief Input module. */
 	inline const decString &GetModuleInput() const{ return pModuleInput; }
 	
 	/** \brief Set input module. */
-	void SetModuleInput( const char *moduleName );
+	void SetModuleInput(const char *moduleName);
 	
 	/** \brief Physics module. */
 	inline const decString &GetModulePhysics() const{ return pModulePhysics; }
 	
 	/** \brief Set physics module. */
-	void SetModulePhysics( const char *moduleName );
+	void SetModulePhysics(const char *moduleName);
 	
 	/** \brief Animator module. */
 	inline const decString &GetModuleAnimator() const{ return pModuleAnimator; }
 	
 	/** \brief Set animator module. */
-	void SetModuleAnimator( const char *moduleName );
+	void SetModuleAnimator(const char *moduleName);
 	
 	/** \brief AI module. */
 	inline const decString &GetModuleAI() const{ return pModuleAI; }
 	
 	/** \brief Set AI module. */
-	void SetModuleAI( const char *moduleName );
+	void SetModuleAI(const char *moduleName);
 	
 	/** \brief Crash recovery module. */
 	inline const decString &GetModuleCrashRecovery() const{ return pModuleCrashRecovery; }
 	
 	/** \brief Set crash recovery module. */
-	void SetModuleCrashRecovery( const char *moduleName );
+	void SetModuleCrashRecovery(const char *moduleName);
 	
 	/** \brief Audio module. */
 	inline const decString &GetModuleAudio() const{ return pModuleAudio; }
 	
 	/** \brief Set audio module. */
-	void SetModuleAudio( const char *moduleName );
+	void SetModuleAudio(const char *moduleName);
 	
 	/** \brief Synthesizer module. */
 	inline const decString &GetModuleSynthesizer() const{ return pModuleSynthesizer; }
 	
 	/** \brief Set synthesizer module. */
-	void SetModuleSynthesizer( const char *moduleName );
+	void SetModuleSynthesizer(const char *moduleName);
 	
 	/** \brief Network module. */
 	inline const decString &GetModuleNetwork() const{ return pModuleNetwork; }
 	
 	/** \brief Set network module. */
-	void SetModuleNetwork( const char *moduleName );
+	void SetModuleNetwork(const char *moduleName);
 	
 	/** \brief VR module. */
 	inline const decString &GetModuleVR() const{ return pModuleVR; }
 	
 	/** \brief Set VR module. */
-	void SetModuleVR( const char *moduleName );
+	void SetModuleVR(const char *moduleName);
 	
 	/** \brief Parameters. */
 	inline projTRPParameterList &GetParameters(){ return pParameters; }
@@ -164,41 +164,41 @@ public:
 	inline const decString &GetRunArguments() const{ return pRunArgs; }
 	
 	/** \brief Set run arguments. */
-	void SetRunArguments( const char *arguments );
+	void SetRunArguments(const char *arguments);
 	
 	/** \brief Run arguments replace game specific run arguments or add to them. */
 	inline bool GetReplaceRunArguments() const{ return pReplaceRunArgs; }
 	
 	/** \brief Set if run arguments replace game specific run arguments or add to them. */
-	void SetReplaceRunArguments( bool replaceRunArguments );
+	void SetReplaceRunArguments(bool replaceRunArguments);
 	
 	/** \brief Window width. */
 	inline int GetWidth() const{ return pWidth; }
 	
 	/** \brief Set window width. */
-	void SetWidth( int width );
+	void SetWidth(int width);
 	
 	/** \brief Window height. */
 	inline int GetHeight() const{ return pHeight; }
 	
 	/** \brief Set window height. */
-	void SetHeight( int height );
+	void SetHeight(int height);
 	
 	/** \brief Window is full screen. */
 	inline bool GetFullScreen() const{ return pFullScreen; }
 	
 	/** \brief Set if window is full screen. */
-	void SetFullScreen( bool fullScreen );
+	void SetFullScreen(bool fullScreen);
 	
 	/** \brief Profile is valid. */
 	inline bool GetValid() const{ return pValid; }
 	
 	/** \brief Verify profile. */
-	void Verify( deEngine &engine );
+	void Verify(deEngine &engine);
 	
 	/** \brief Verify module. */
-	bool VerifyModule( deEngine &engine, const char *moduleName,
-		deModuleSystem::eModuleTypes requiredType ) const;
+	bool VerifyModule(deEngine &engine, const char *moduleName,
+		deModuleSystem::eModuleTypes requiredType) const;
 	/*@}*/
 };
 

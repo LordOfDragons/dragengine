@@ -47,52 +47,52 @@
 // Struct sVBOData
 ////////////////////
 
-void deoglShape::sVBOData::Set( float nx, float ny, float nz, bool nselector ){
-	x = ( GLfloat )nx;
-	y = ( GLfloat )ny;
-	z = ( GLfloat )nz;
+void deoglShape::sVBOData::Set(float nx, float ny, float nz, bool nselector){
+	x = (GLfloat)nx;
+	y = (GLfloat)ny;
+	z = (GLfloat)nz;
 	
-	if( nselector ){
-		selector = ( GLfloat )1.0f;
+	if(nselector){
+		selector = (GLfloat)1.0f;
 		
 	}else{
-		selector = ( GLfloat )0.0f;
+		selector = (GLfloat)0.0f;
 	}
 }
 
-void deoglShape::sVBOData::SetSelTrue( float nx, float ny, float nz ){
-	x = ( GLfloat )nx;
-	y = ( GLfloat )ny;
-	z = ( GLfloat )nz;
-	selector = ( GLfloat )1.0f;
+void deoglShape::sVBOData::SetSelTrue(float nx, float ny, float nz){
+	x = (GLfloat)nx;
+	y = (GLfloat)ny;
+	z = (GLfloat)nz;
+	selector = (GLfloat)1.0f;
 }
 
-void deoglShape::sVBOData::SetSelFalse( float nx, float ny, float nz ){
-	x = ( GLfloat )nx;
-	y = ( GLfloat )ny;
-	z = ( GLfloat )nz;
-	selector = ( GLfloat )0.0f;
+void deoglShape::sVBOData::SetSelFalse(float nx, float ny, float nz){
+	x = (GLfloat)nx;
+	y = (GLfloat)ny;
+	z = (GLfloat)nz;
+	selector = (GLfloat)0.0f;
 }
 
-void deoglShape::sVBOData::SetFrom( const sVBOData &data ){
+void deoglShape::sVBOData::SetFrom(const sVBOData &data){
 	x = data.x;
 	y = data.y;
 	z = data.z;
 	selector = data.selector;
 }
 
-void deoglShape::sVBOData::SetFromSelTrue( const sVBOData &data ){
+void deoglShape::sVBOData::SetFromSelTrue(const sVBOData &data){
 	x = data.x;
 	y = data.y;
 	z = data.z;
-	selector = ( GLfloat )1.0f;
+	selector = (GLfloat)1.0f;
 }
 
-void deoglShape::sVBOData::SetFromSelFalse( const sVBOData &data ){
+void deoglShape::sVBOData::SetFromSelFalse(const sVBOData &data){
 	x = data.x;
 	y = data.y;
 	z = data.z;
-	selector = ( GLfloat )0.0f;
+	selector = (GLfloat)0.0f;
 }
 
 
@@ -100,18 +100,18 @@ void deoglShape::sVBOData::SetFromSelFalse( const sVBOData &data ){
 // Constructor, destructor
 ////////////////////////////
 
-deoglShape::deoglShape( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pVBOBlock( NULL ),
-pPointOffsetFaces( 0 ),
-pPointCountFaces( 0 ),
-pPointOffsetLines( 0 ),
-pPointCountLines( 0 ){
+deoglShape::deoglShape(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pVBOBlock(NULL),
+pPointOffsetFaces(0),
+pPointCountFaces(0),
+pPointOffsetLines(0),
+pPointCountLines(0){
 }
 
 deoglShape::~deoglShape(){
-	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+	if(pVBOBlock){
+		pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
 		pVBOBlock->FreeReference();
 	}
 }
@@ -122,19 +122,19 @@ deoglShape::~deoglShape(){
 ///////////////
 
 deoglSharedVBOBlock *deoglShape::GetVBOBlock(){
-	if( ! pVBOBlock ){
+	if(!pVBOBlock){
 		const int pointCount = pPointCountFaces + pPointCountLines;
 		//printf( "pointCount %i\n", pointCount );
 		try{
 			pVBOBlock = pRenderThread.GetBufferObject().GetSharedVBOListForType(
-				deoglRTBufferObject::esvbolMathShapes ).AddData( sizeof( sVBOData ) * pointCount );
+				deoglRTBufferObject::esvbolMathShapes).AddData(sizeof(sVBOData) * pointCount);
 			
-			AddVBOLines( ( sVBOData* )( pVBOBlock->GetData() ) + pPointOffsetLines );
-			AddVBOFaces( ( sVBOData* )( pVBOBlock->GetData() ) + pPointOffsetFaces );
+			AddVBOLines((sVBOData*)(pVBOBlock->GetData()) + pPointOffsetLines);
+			AddVBOFaces((sVBOData*)(pVBOBlock->GetData()) + pPointOffsetFaces);
 			
-		}catch( const deException & ){
-			if( pVBOBlock ){
-				pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		}catch(const deException &){
+			if(pVBOBlock){
+				pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
 				pVBOBlock->FreeReference();
 				pVBOBlock = NULL;
 			}
@@ -145,30 +145,30 @@ deoglSharedVBOBlock *deoglShape::GetVBOBlock(){
 	return pVBOBlock;
 }
 
-void deoglShape::SetPointOffsetFaces( int pointOffset ){
-	if( pointOffset < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglShape::SetPointOffsetFaces(int pointOffset){
+	if(pointOffset < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pPointOffsetFaces = pointOffset;
 }
 
-void deoglShape::SetPointCountFaces( int pointCount ){
-	if( pointCount < 0 || ( pointCount % 4 ) > 0 ){
-		DETHROW( deeInvalidParam );
+void deoglShape::SetPointCountFaces(int pointCount){
+	if(pointCount < 0 || (pointCount % 4) > 0){
+		DETHROW(deeInvalidParam);
 	}
 	pPointCountFaces = pointCount;
 }
 
-void deoglShape::SetPointOffsetLines( int pointLines ){
-	if( pointLines < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglShape::SetPointOffsetLines(int pointLines){
+	if(pointLines < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pPointOffsetLines = pointLines;
 }
 
-void deoglShape::SetPointCountLines( int pointCount ){
-	if( pointCount < 0 || ( pointCount % 2 ) > 0 ){
-		DETHROW( deeInvalidParam );
+void deoglShape::SetPointCountLines(int pointCount){
+	if(pointCount < 0 || (pointCount % 2) > 0){
+		DETHROW(deeInvalidParam);
 	}
 	pPointCountLines = pointCount;
 }
@@ -180,43 +180,43 @@ deoglVAO *deoglShape::GetVAO(){
 }
 
 void deoglShape::ActivateVAO(){
-	pglBindVertexArray( GetVAO()->GetVAO() );
+	pglBindVertexArray(GetVAO()->GetVAO());
 }
 
 void deoglShape::RenderLines(){
-	OGL_CHECK( pRenderThread, glDrawArrays( GL_LINES, GetVBOBlock()->GetOffset() + pPointOffsetLines, pPointCountLines ) );
+	OGL_CHECK(pRenderThread, glDrawArrays(GL_LINES, GetVBOBlock()->GetOffset() + pPointOffsetLines, pPointCountLines));
 }
 
-void deoglShape::RenderLines( const deoglRenderPlan &plan ){
-	if( plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
-		const GLint first[ 2 ] = {
+void deoglShape::RenderLines(const deoglRenderPlan &plan){
+	if(plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer()){
+		const GLint first[2] = {
 			GetVBOBlock()->GetOffset() + pPointOffsetLines,
-			GetVBOBlock()->GetOffset() + pPointOffsetLines };
+			GetVBOBlock()->GetOffset() + pPointOffsetLines};
 		
-		const GLsizei count[ 2 ] = { pPointCountLines, pPointCountLines };
+		const GLsizei count[2] = {pPointCountLines, pPointCountLines};
 		
-		OGL_CHECK( pRenderThread, pglMultiDrawArrays( GL_LINES, first, count, 2 ) );
+		OGL_CHECK(pRenderThread, pglMultiDrawArrays(GL_LINES, first, count, 2));
 		
 	}else{
-		OGL_CHECK( pRenderThread, glDrawArrays( GL_LINES, GetVBOBlock()->GetOffset() + pPointOffsetLines, pPointCountLines ) );
+		OGL_CHECK(pRenderThread, glDrawArrays(GL_LINES, GetVBOBlock()->GetOffset() + pPointOffsetLines, pPointCountLines));
 	}
 }
 
 void deoglShape::RenderFaces(){
-	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, GetVBOBlock()->GetOffset() + pPointOffsetFaces, pPointCountFaces ) );
+	OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLES, GetVBOBlock()->GetOffset() + pPointOffsetFaces, pPointCountFaces));
 }
 
-void deoglShape::RenderFaces( const deoglRenderPlan &plan ){
-	if( plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
-		const GLint first[ 2 ] = {
+void deoglShape::RenderFaces(const deoglRenderPlan &plan){
+	if(plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer()){
+		const GLint first[2] = {
 			GetVBOBlock()->GetOffset() + pPointOffsetFaces,
-			GetVBOBlock()->GetOffset() + pPointOffsetFaces };
+			GetVBOBlock()->GetOffset() + pPointOffsetFaces};
 		
-		const GLsizei count[ 2 ] = { pPointCountFaces, pPointCountFaces };
+		const GLsizei count[2] = {pPointCountFaces, pPointCountFaces};
 		
-		OGL_CHECK( pRenderThread, pglMultiDrawArrays( GL_TRIANGLES, first, count, 2 ) );
+		OGL_CHECK(pRenderThread, pglMultiDrawArrays(GL_TRIANGLES, first, count, 2));
 		
 	}else{
-		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, GetVBOBlock()->GetOffset() + pPointOffsetFaces, pPointCountFaces ) );
+		OGL_CHECK(pRenderThread, glDrawArrays(GL_TRIANGLES, GetVBOBlock()->GetOffset() + pPointOffsetFaces, pPointCountFaces));
 	}
 }

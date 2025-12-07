@@ -39,23 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleTrackToSetUpAxis::aeURuleTrackToSetUpAxis( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eTrackAxis newAxis ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleTrackToSetUpAxis::aeURuleTrackToSetUpAxis(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eTrackAxis newAxis){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	pOldAxis = rule->GetUpAxis();
 	pNewAxis = newAxis;
 	
-	SetShortInfo( "TrackTo Set Up Axis" );
+	SetShortInfo("TrackTo Set Up Axis");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleTrackToSetUpAxis::~aeURuleTrackToSetUpAxis(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ aeURuleTrackToSetUpAxis::~aeURuleTrackToSetUpAxis(){
 ///////////////
 
 void aeURuleTrackToSetUpAxis::Undo(){
-	pRule->SetUpAxis( pOldAxis );
+	pRule->SetUpAxis(pOldAxis);
 }
 
 void aeURuleTrackToSetUpAxis::Redo(){
-	pRule->SetUpAxis( pNewAxis );
+	pRule->SetUpAxis(pNewAxis);
 }

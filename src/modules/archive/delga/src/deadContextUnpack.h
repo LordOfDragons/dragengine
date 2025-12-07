@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create unpacking context. */
-	deadContextUnpack( deArchiveDelga &module, deadContainer *container );
+	deadContextUnpack(deArchiveDelga &module, deadContainer *container);
 	
 	/** Clean up unpacking context. */
 	~deadContextUnpack();
@@ -92,7 +92,7 @@ public:
 	 * 
 	 * \note This method is called while the container holds the lock.
 	 */
-	deadArchiveFileReader::Ref OpenFileForReading( const deadArchiveFile &file );
+	deadArchiveFileReader::Ref OpenFileForReading(const deadArchiveFile &file);
 	
 	/**
 	 * Open file for writing.
@@ -105,7 +105,7 @@ public:
 	 * 
 	 * \note This method is called while the container holds the lock.
 	 */
-	decWeakFileWriter *OpenFileForWriting( const deadArchiveFile &file );
+	decWeakFileWriter *OpenFileForWriting(const deadArchiveFile &file);
 	
 	/** Close file. */
 	void CloseFile();
@@ -113,22 +113,22 @@ public:
 	
 	
 	/** Read zip file data. */
-	void ReadZipFileData( void *buffer, long size );
+	void ReadZipFileData(void *buffer, long size);
 	
 	/** Seek in open zip file. */
-	void SeekMoveZipFile( int position );
-	void SeekSetZipFile( int position );
+	void SeekMoveZipFile(int position);
+	void SeekSetZipFile(int position);
 	
 	
 	
 	/** Read data. */
-	void ReadData( void *buffer, long size );
+	void ReadData(void *buffer, long size);
 	
 	/** Get current file position. */
 	long GetFilePosition() const;
 	
 	/** Set file position. */
-	void SeekFile( int origin, long offset );
+	void SeekFile(int origin, long offset);
 	
 	/** Read file table. */
 	deadArchiveDirectory::Ref ReadFileTable();

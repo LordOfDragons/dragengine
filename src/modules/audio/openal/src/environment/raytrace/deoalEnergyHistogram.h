@@ -57,10 +57,10 @@ public:
 	deoalEnergyHistogram();
 	
 	/** \brief Create histogram. */
-	deoalEnergyHistogram( int slotCount, int bandCount, float time );
+	deoalEnergyHistogram(int slotCount, int bandCount, float time);
 	
 	/** \brief Create copy of histogram. */
-	deoalEnergyHistogram( const deoalEnergyHistogram &histogram );
+	deoalEnergyHistogram(const deoalEnergyHistogram &histogram);
 	/*@}*/
 	
 	
@@ -79,7 +79,7 @@ public:
 	 * If the parameters are the same as the parameters currently set in the histogram the
 	 * histogram stays unchanged.
 	 */
-	void SetParameters( int slotCount, int bandCount, float time );
+	void SetParameters(int slotCount, int bandCount, float time);
 	
 	/** \brief Set histogram time. */
 	/** \brief Histogram time. */
@@ -98,19 +98,19 @@ public:
 	 *                 entries are ignored and the histogram stays unchanged.
 	 * \param[in] energies Array of GetBandCount() energy values to insert.
 	 */
-	void Add( float time, const float *energies );
+	void Add(float time, const float *energies);
 	
 	/**
 	 * \brief Add entries from other histogram.
 	 * \throws deeInvalidParam Slot or band count is not the same.
 	 */
-	void Add( const deoalEnergyHistogram &histogram );
+	void Add(const deoalEnergyHistogram &histogram);
 	
 	/**
 	 * \brief Add entries from impulse response.
 	 * \throws deeInvalidParam Band count is not 3.
 	 */
-	void Add( const deoalImpulseResponse &impulseResponse );
+	void Add(const deoalImpulseResponse &impulseResponse);
 	
 	/**
 	 * \brief Add energy.
@@ -119,25 +119,25 @@ public:
 	 *                 entries are ignored and the histogram stays unchanged.
 	 * \param[in] energies Array of GetBandCount() energy values to insert.
 	 */
-	void AddMax( float time, const float *energies );
+	void AddMax(float time, const float *energies);
 	
 	/**
 	 * \brief Add entries from other histogram.
 	 * \throws deeInvalidParam Slot or band count is not the same.
 	 */
-	void AddMax( const deoalEnergyHistogram &histogram );
+	void AddMax(const deoalEnergyHistogram &histogram);
 	
 	/**
 	 * \brief Add entries from other histogram scaled by factor.
 	 * \throws deeInvalidParam Slot or band count is not the same.
 	 */
-	void BlendAdd( const deoalEnergyHistogram &histogram );
+	void BlendAdd(const deoalEnergyHistogram &histogram);
 	
 	/**
 	 * \brief Add entries from other histogram scaled by factor.
 	 * \throws deeInvalidParam Slot or band count is not the same.
 	 */
-	void BlendAddScaled( const deoalEnergyHistogram &histogram, float factor );
+	void BlendAddScaled(const deoalEnergyHistogram &histogram, float factor);
 	
 	/**
 	 * \brief Histogram values.
@@ -150,17 +150,17 @@ public:
 	 * \brief Integrate band energies.
 	 * \param[out] integrations Array of GetBandCount() floats updated with the integrations.
 	 */
-	void Integrate( float *integrations ) const;
+	void Integrate(float *integrations) const;
 	
 	
 	/**
 	 * \brief Set from other histogram.
 	 * \note Calls SetParameters() with histogram parameters before copying entries.
 	 */
-	deoalEnergyHistogram &operator=( const deoalEnergyHistogram &histogram );
+	deoalEnergyHistogram &operator=(const deoalEnergyHistogram &histogram);
 	
 	/** \brief Scale entries by factor. */
-	deoalEnergyHistogram &operator*=( float factor );
+	deoalEnergyHistogram &operator*=(float factor);
 	/*@}*/
 };
 

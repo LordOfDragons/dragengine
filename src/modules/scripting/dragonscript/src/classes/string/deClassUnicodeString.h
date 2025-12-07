@@ -42,13 +42,13 @@ public:
 	deClassUnicodeString();
 	~deClassUnicodeString();
 	// internal functions
-	void CreateClassMembers( dsEngine *engine );
-	const decUnicodeString &GetUnicodeString( dsRealObject *myself ) const;
-	const decString GetUTF8( dsRealObject *myself ) const;
-	void PushUnicodeString( dsRunTime *rt, const decUnicodeString &string );
-	void PushUTF8( dsRunTime *rt, const char *utf8 );
+	void CreateClassMembers(dsEngine *engine);
+	const decUnicodeString &GetUnicodeString(dsRealObject *myself) const;
+	const decString GetUTF8(dsRealObject *myself) const;
+	void PushUnicodeString(dsRunTime *rt, const decUnicodeString &string);
+	void PushUTF8(dsRunTime *rt, const char *utf8);
 	// for functions only
-	void PushUnicodeAsUTF8( dsRunTime *rt, dsValue *myself );
+	void PushUnicodeAsUTF8(dsRunTime *rt, dsValue *myself);
 	
 private:
 	struct sInitData{
@@ -56,51 +56,51 @@ private:
 		dsClass *clsObj, *clsBool, *clsByte;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewFrom );
-	DEF_NATFUNC( nfNewFromCharacter );
-	DEF_NATFUNC( nfNewFromUTF8 );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewFrom);
+	DEF_NATFUNC(nfNewFromCharacter);
+	DEF_NATFUNC(nfNewFromUTF8);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetLength );
-	DEF_NATFUNC( nfGetCharacterAt );
-	DEF_NATFUNC( nfGetLeft );
-	DEF_NATFUNC( nfGetRight );
-	DEF_NATFUNC( nfGetSubString );
-	DEF_NATFUNC( nfReverse );
+	DEF_NATFUNC(nfGetLength);
+	DEF_NATFUNC(nfGetCharacterAt);
+	DEF_NATFUNC(nfGetLeft);
+	DEF_NATFUNC(nfGetRight);
+	DEF_NATFUNC(nfGetSubString);
+	DEF_NATFUNC(nfReverse);
 	
-	DEF_NATFUNC( nfTrimLeft );
-	DEF_NATFUNC( nfTrimRight );
-	DEF_NATFUNC( nfTrimBoth );
+	DEF_NATFUNC(nfTrimLeft);
+	DEF_NATFUNC(nfTrimRight);
+	DEF_NATFUNC(nfTrimBoth);
 	
-	DEF_NATFUNC( nfFindChar );
-	DEF_NATFUNC( nfFindCharReverse );
+	DEF_NATFUNC(nfFindChar);
+	DEF_NATFUNC(nfFindCharReverse);
 	
-	DEF_NATFUNC( nfCompareTo );
-	DEF_NATFUNC( nfCompareToNoCase );
+	DEF_NATFUNC(nfCompareTo);
+	DEF_NATFUNC(nfCompareToNoCase);
 	
-	DEF_NATFUNC( nfToLower );
-	DEF_NATFUNC( nfToUpper );
-	DEF_NATFUNC( nfToInt );
-	DEF_NATFUNC( nfToFloat );
-	DEF_NATFUNC( nfToString );
-	DEF_NATFUNC( nfToUTF8 );
+	DEF_NATFUNC(nfToLower);
+	DEF_NATFUNC(nfToUpper);
+	DEF_NATFUNC(nfToInt);
+	DEF_NATFUNC(nfToFloat);
+	DEF_NATFUNC(nfToString);
+	DEF_NATFUNC(nfToUTF8);
 	
-	DEF_NATFUNC( nfOpAdd );
-	DEF_NATFUNC( nfOpAddByte );
-	DEF_NATFUNC( nfOpAddBool );
-	DEF_NATFUNC( nfOpAddInt );
-	DEF_NATFUNC( nfOpAddFloat );
-	DEF_NATFUNC( nfOpAddObject );
+	DEF_NATFUNC(nfOpAdd);
+	DEF_NATFUNC(nfOpAddByte);
+	DEF_NATFUNC(nfOpAddBool);
+	DEF_NATFUNC(nfOpAddInt);
+	DEF_NATFUNC(nfOpAddFloat);
+	DEF_NATFUNC(nfOpAddObject);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfCompare );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfCompare);
 #undef DEF_NATFUNC
 };
 

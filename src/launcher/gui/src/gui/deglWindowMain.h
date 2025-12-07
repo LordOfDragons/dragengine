@@ -41,7 +41,7 @@ class deglWindowLogger;
  * Main Window.
  */
 class deglWindowMain : public FXMainWindow{
-	FXDECLARE( deglWindowMain )
+	FXDECLARE(deglWindowMain)
 	
 protected:
 	deglWindowMain();
@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create main window. */
-	deglWindowMain( FXApp* app, int argc, char **argv );
+	deglWindowMain(FXApp* app, int argc, char **argv);
 	
 	/** Clean up main window. */
 	virtual ~deglWindowMain();
@@ -110,7 +110,7 @@ public:
 	bool RunCommandLineActions();
 	
 	/** Display exception error. */
-	void DisplayException( const deException &exception );
+	void DisplayException(const deException &exception);
 	
 	/** Menu bar. */
 	inline FXMenuBar *GetMenuBar() const{ return pMenuBar; }
@@ -128,13 +128,13 @@ public:
 	void ShowWindowLogger();
 	
 	/** Set visibility of the progress bar in the status bar. */
-	void SetProgressVisible( bool visible );
+	void SetProgressVisible(bool visible);
 	
 	/** Set progress bar progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	
 	/** Set progress text. */
-	void SetProgressText( const decUnicodeString &text );
+	void SetProgressText(const decUnicodeString &text);
 	
 	/** Ask user to quit application. */
 	bool QuitRequest();
@@ -156,18 +156,18 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject *sender, FXSelector selector, void *data );
+	long onResize(FXObject *sender, FXSelector selector, void *data);
 	
-	long onFileQuit( FXObject *sender, FXSelector selector, void *data );
-	long onFileInstall( FXObject *sender, FXSelector selector, void *data );
+	long onFileQuit(FXObject *sender, FXSelector selector, void *data);
+	long onFileInstall(FXObject *sender, FXSelector selector, void *data);
 	
-	long onViewGames( FXObject *sender, FXSelector selector, void *data );
-	long onViewEngine( FXObject *sender, FXSelector selector, void *data );
-	long onViewLogging( FXObject *sender, FXSelector selector, void *data );
+	long onViewGames(FXObject *sender, FXSelector selector, void *data);
+	long onViewEngine(FXObject *sender, FXSelector selector, void *data);
+	long onViewLogging(FXObject *sender, FXSelector selector, void *data);
 	
-	long onSettingsEngine( FXObject *sender, FXSelector selector, void *data );
+	long onSettingsEngine(FXObject *sender, FXSelector selector, void *data);
 	
-	long onTimerPulse( FXObject *sender, FXSelector selector, void *data );
+	long onTimerPulse(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 };
 

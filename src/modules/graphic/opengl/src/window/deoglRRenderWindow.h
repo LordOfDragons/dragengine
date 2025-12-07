@@ -76,12 +76,12 @@ private:
 	typedef deTObjectReference<deoglRRenderWindow> Ref;
 
 
-		cGLView( cGLWindow &widow, const BRect &frame );
-		virtual void KeyDown( const char *bytes, int32 numBytes );
-		virtual void KeyUp( const char *bytes, int32 numBytes );
-		virtual void MouseDown( BPoint point );
-		virtual void MouseMoved( BPoint point, uint32 transit, const BMessage *message );
-		virtual void MouseUp( BPoint point );
+		cGLView(cGLWindow &widow, const BRect &frame);
+		virtual void KeyDown(const char *bytes, int32 numBytes);
+		virtual void KeyUp(const char *bytes, int32 numBytes);
+		virtual void MouseDown(BPoint point);
+		virtual void MouseMoved(BPoint point, uint32 transit, const BMessage *message);
+		virtual void MouseUp(BPoint point);
 	};
 	
 	class cGLWindow : public BDirectWindow{
@@ -91,17 +91,17 @@ private:
 		BCursor *pCursor;
 		bool pBlockQuitRequested;
 	public:
-		cGLWindow( deoglRRenderWindow &window );
+		cGLWindow(deoglRRenderWindow &window);
 		virtual ~cGLWindow();
 		inline deoglRRenderWindow &GetWindow() const{ return pWindow; }
 		inline cGLView *GetGLView() const{ return pGLView; }
 		void SendCurMessageToEngine();
-		virtual void DirectConnected( direct_buffer_info *info );
-		virtual void WindowActivated( bool active );
-		virtual void MessageReceived( BMessage *message );
-		virtual	void FrameResized( float newWidth, float newHeight );
+		virtual void DirectConnected(direct_buffer_info *info);
+		virtual void WindowActivated(bool active);
+		virtual void MessageReceived(BMessage *message);
+		virtual	void FrameResized(float newWidth, float newHeight);
 		virtual	bool QuitRequested();
-		void SetBlockQuitRequested( bool blockQuitRequested );
+		void SetBlockQuitRequested(bool blockQuitRequested);
 	};
 	
 	BWindow *pHostWindow;
@@ -155,7 +155,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render render target. */
-	deoglRRenderWindow( deoglRenderThread &renderThread );
+	deoglRRenderWindow(deoglRenderThread &renderThread);
 	
 	/** Clean up render render target. */
 	virtual ~deoglRRenderWindow();
@@ -172,31 +172,31 @@ public:
 #if defined  OS_ANDROID || defined OS_WEBWASM
 	inline void *GetHostWindow() const{ return 0; }
 	inline void *GetWindow() const{ return 0; }
-	void SetHostWindow( void *window );
+	void SetHostWindow(void *window);
 	
 #elif defined OS_BEOS
 	inline BWindow *GetHostWindow() const{ return pHostWindow; }
 	inline cGLWindow *GetWindow() const{ return pWindow; }
-	void SetHostWindow( BWindow *window );
+	void SetHostWindow(BWindow *window);
 	BGLView *GetGLView() const;
 	
 #elif defined OS_W32
 	inline HWND GetHostWindow() const{ return pHostWindow; }
 	inline HWND GetWindow() const{ return pWindow; }
 	inline HDC GetWindowDC() const{ return pWindowDC; }
-	void SetHostWindow( HWND window );
+	void SetHostWindow(HWND window);
 	decPoint GetInnerSize() const;
 	
 #elif defined OS_MACOS
 	inline NSWindow *GetHostWindow() const{ return pHostWindow; }
 	inline NSWindow *GetWindow() const{ return pWindow; }
-	void SetHostWindow( NSWindow *window );
+	void SetHostWindow(NSWindow *window);
 	inline NSView *GetView() const{ return pView; }
 	
 #elif defined OS_UNIX_X11
 	inline Window GetHostWindow() const{ return pHostWindow; }
 	inline Window GetWindow() const{ return pWindow; }
-	void SetHostWindow( Window window );
+	void SetHostWindow(Window window);
 #endif
 	
 	
@@ -216,31 +216,31 @@ public:
 	inline int GetHeight() const{ return pHeight; }
 	
 	/** Set window size. */
-	void SetSize( int width, int height );
+	void SetSize(int width, int height);
 	
 	/** Window title. */
 	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** Set window title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
 	/** Full screen mode enabled. */
 	inline bool GetFullScreen() const{ return pFullScreen; }
 	
 	/** Set if full screen mode is enabled. */
-	void SetFullScreen( bool fullScreen );
+	void SetFullScreen(bool fullScreen);
 	
 	/** Painting enabled. */
 	inline bool GetPaint() const{ return pPaint; }
 	
 	/** Set painting enabled. */
-	void SetPaint( bool paint );
+	void SetPaint(bool paint);
 	
 	/** Icon. */
 	inline const deoglPixelBuffer::Ref &GetIcon() const{ return pIcon; }
 	
 	/** Set icon. */
-	void SetIcon( deoglPixelBuffer *icon );
+	void SetIcon(deoglPixelBuffer *icon);
 	
 	/** Scale factor stored during CreateWindow. */
 	inline int GetAfterCreateScaleFactor() const{ return pAfterCreateScaleFactor; }
@@ -251,7 +251,7 @@ public:
 	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
 	
 	/** Set render canvas view or \em NULL if not set. */
-	void SetRCanvasView( deoglRCanvasView *rcanvasView );
+	void SetRCanvasView(deoglRCanvasView *rcanvasView);
 	
 	/** Drop render canvas view if not \em NULL. */
 	void DropRCanvasView();
@@ -277,7 +277,7 @@ public:
 	void OnReposition(int x, int y);
 	
 	/** Windows resized (render thread event loop). */
-	void OnResize( int width, int height );
+	void OnResize(int width, int height);
 	
 	
 	

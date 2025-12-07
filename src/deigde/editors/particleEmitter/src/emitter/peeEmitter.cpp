@@ -84,9 +84,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeEmitter::peeEmitter( igdeEnvironment *environment, peeLoadSaveSystem &loadSaveSystem ) :
-igdeEditableEntity( environment ),
-pLoadSaveSystem( loadSaveSystem )
+peeEmitter::peeEmitter(igdeEnvironment *environment, peeLoadSaveSystem &loadSaveSystem) :
+igdeEditableEntity(environment),
+pLoadSaveSystem(loadSaveSystem)
 {
 	deEngine * const engine = GetEngine();
 	
@@ -111,79 +111,79 @@ pLoadSaveSystem( loadSaveSystem )
 	pBurstInterval = 1.0f;
 	
 	try{
-		SetFilePath( "new.depemit" );
+		SetFilePath("new.depemit");
 		
 		// create world
 		pEngWorld = engine->GetWorldManager()->CreateWorld();
-		pEngWorld->SetGravity( decVector( 0.0f, -9.81f, 0.0f ) );
-		pEngWorld->SetDisableLights( false );
-		pEngWorld->SetAmbientLight( decColor( 0.0f, 0.0f, 0.0f ) );
+		pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
+		pEngWorld->SetDisableLights(false);
+		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
 		
 		// create camera
-		pCamera = new igdeCamera( engine );
-		pCamera->SetEngineWorld( pEngWorld );
+		pCamera = new igdeCamera(engine);
+		pCamera->SetEngineWorld(pEngWorld);
 		pCamera->Reset();
-		pCamera->SetPosition( decDVector( 0.0, 1.0, 0.0 ) );
-		pCamera->SetOrientation( decVector( 0.0f, 180.0f, 0.0f ) );
-		pCamera->SetDistance( 5.0f );
-		pCamera->SetHighestIntensity( 20.0f );
-		pCamera->SetLowestIntensity( 18.0f );
-		pCamera->SetAdaptionTime( 4.0f );
+		pCamera->SetPosition(decDVector(0.0, 1.0, 0.0));
+		pCamera->SetOrientation(decVector(0.0f, 180.0f, 0.0f));
+		pCamera->SetDistance(5.0f);
+		pCamera->SetHighestIntensity(20.0f);
+		pCamera->SetLowestIntensity(18.0f);
+		pCamera->SetAdaptionTime(4.0f);
 		
 		// create sky
-		pSky = new igdeWSky( *environment );
+		pSky = new igdeWSky(*environment);
 		pSky->SetGDDefaultSky();
-		pSky->SetWorld( pEngWorld );
+		pSky->SetWorld(pEngWorld);
 		
 		// create the environment wrapper object
 		pEnvObject.TakeOver(new igdeWObject(*environment));
-		pEnvObject->SetWorld( pEngWorld );
-		pEnvObject->SetPosition( decDVector( 0.0, 0.0, 0.0 ) );
+		pEnvObject->SetWorld(pEngWorld);
+		pEnvObject->SetPosition(decDVector(0.0, 0.0, 0.0));
 		
 		decLayerMask layerMask;
-		layerMask.SetBit( peeEmitter::eclmObjects );
-		pEnvObject->SetCollisionFilter( decCollisionFilter( layerMask ) );
-		pEnvObject->SetCollisionFilterFallback( decCollisionFilter( layerMask ) );
+		layerMask.SetBit(peeEmitter::eclmObjects);
+		pEnvObject->SetCollisionFilter(decCollisionFilter(layerMask));
+		pEnvObject->SetCollisionFilterFallback(decCollisionFilter(layerMask));
 		
-		pEnvObject->SetGDClassName( "IGDETestTerrain" );
+		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
 		// create particle emitter instance
 		pEngEmitterInstance = engine->GetParticleEmitterInstanceManager()->CreateInstance();
-		pEngWorld->AddParticleEmitter( pEngEmitterInstance );
+		pEngWorld->AddParticleEmitter(pEngEmitterInstance);
 		
-		pEngEmitterInstance->SetPosition( decDVector( pPosition ) );
-		pEngEmitterInstance->SetWarmUpTime( pWarmUpTime );
-		pEngEmitterInstance->SetEnableCasting( pEnableCasting );
+		pEngEmitterInstance->SetPosition(decDVector(pPosition));
+		pEngEmitterInstance->SetWarmUpTime(pWarmUpTime);
+		pEngEmitterInstance->SetEnableCasting(pEnableCasting);
 		
 		layerMask.ClearMask();
-		layerMask.SetBit( peeEmitter::eclmHeightTerrains );
-		layerMask.SetBit( peeEmitter::eclmObjects );
-		layerMask.SetBit( peeEmitter::eclmPropFields );
-		layerMask.SetBit( peeEmitter::eclmWind );
-		pEngEmitterInstance->SetCollisionFilter( decCollisionFilter( layerMask, layerMask ) );
+		layerMask.SetBit(peeEmitter::eclmHeightTerrains);
+		layerMask.SetBit(peeEmitter::eclmObjects);
+		layerMask.SetBit(peeEmitter::eclmPropFields);
+		layerMask.SetBit(peeEmitter::eclmWind);
+		pEngEmitterInstance->SetCollisionFilter(decCollisionFilter(layerMask, layerMask));
 		
 		// create debug drawers
 		pDDEmitter = engine->GetDebugDrawerManager()->CreateDebugDrawer();
-		pDDEmitter->SetXRay( true );
-		pEngWorld->AddDebugDrawer( pDDEmitter );
+		pDDEmitter->SetXRay(true);
+		pEngWorld->AddDebugDrawer(pDDEmitter);
 		
 		// create debug drawer shape
-		pDDSEmitter.SetArrowLength( 0.25f );
-		pDDSEmitter.SetArrowSize( 0.02f );
-		pDDSEmitter.SetParentDebugDrawer( pDDEmitter );
-		pDDSEmitter.SetVisible( true );
+		pDDSEmitter.SetArrowLength(0.25f);
+		pDDSEmitter.SetArrowSize(0.02f);
+		pDDSEmitter.SetParentDebugDrawer(pDDEmitter);
+		pDDSEmitter.SetVisible(true);
 		
 		// set default parameters
-		SetPosition( decVector( 0.0f, 1.0f, 0.0f ) );
-		SetOrientation( decVector( 0.0f, 0.0f, 0.0f ) ); // 90.0f, 0.0f, 0.0f
+		SetPosition(decVector(0.0f, 1.0f, 0.0f));
+		SetOrientation(decVector(0.0f, 0.0f, 0.0f)); // 90.0f, 0.0f, 0.0f
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
-	SetChanged( false );
-	SetSaved( false );
+	SetChanged(false);
+	SetSaved(false);
 }
 
 peeEmitter::~peeEmitter(){
@@ -195,27 +195,27 @@ peeEmitter::~peeEmitter(){
 // Management
 ///////////////
 
-void peeEmitter::SetPosition( const decVector &position ){
-	if( ! pPosition.IsEqualTo( position ) ){
-		const decDVector dposition( position );
+void peeEmitter::SetPosition(const decVector &position){
+	if(!pPosition.IsEqualTo(position)){
+		const decDVector dposition(position);
 		
 		pPosition = position;
 		
-		pEngEmitterInstance->SetPosition( dposition );
-		pDDSEmitter.SetPosition( dposition );
+		pEngEmitterInstance->SetPosition(dposition);
+		pDDSEmitter.SetPosition(dposition);
 		
 		NotifyEmitterChanged();
 	}
 }
 
-void peeEmitter::SetOrientation( const decVector &orientation ){
-	if( ! pOrientation.IsEqualTo( orientation ) ){
-		const decQuaternion &qorientation = decMatrix::CreateRotation( orientation * DEG2RAD ).ToQuaternion();
+void peeEmitter::SetOrientation(const decVector &orientation){
+	if(!pOrientation.IsEqualTo(orientation)){
+		const decQuaternion &qorientation = decMatrix::CreateRotation(orientation * DEG2RAD).ToQuaternion();
 		
 		pOrientation = orientation;
 		
-		pEngEmitterInstance->SetOrientation( qorientation );
-		pDDSEmitter.SetOrientation( qorientation );
+		pEngEmitterInstance->SetOrientation(qorientation);
+		pDDSEmitter.SetOrientation(qorientation);
 		
 		NotifyEmitterChanged();
 	}
@@ -223,52 +223,52 @@ void peeEmitter::SetOrientation( const decVector &orientation ){
 
 
 
-void peeEmitter::SetWarmUpTime( float warmUpTime ){
-	if( fabsf( warmUpTime - pWarmUpTime ) > FLOAT_SAFE_EPSILON ){
+void peeEmitter::SetWarmUpTime(float warmUpTime){
+	if(fabsf(warmUpTime - pWarmUpTime) > FLOAT_SAFE_EPSILON){
 		pWarmUpTime = warmUpTime;
-		pEngEmitterInstance->SetWarmUpTime( warmUpTime );
+		pEngEmitterInstance->SetWarmUpTime(warmUpTime);
 		NotifyEmitterChanged();
 	}
 }
 
-void peeEmitter::SetBurstLifetime( float lifetime ){
-	if( fabsf( lifetime - pBurstLifetime ) > FLOAT_SAFE_EPSILON ){
+void peeEmitter::SetBurstLifetime(float lifetime){
+	if(fabsf(lifetime - pBurstLifetime) > FLOAT_SAFE_EPSILON){
 		pBurstLifetime = lifetime;
 		FreeEmitter();
 		NotifyEmitterChanged();
 	}
 }
 
-void peeEmitter::SetEmitBurst( bool emitBurst ){
-	if( emitBurst != pEmitBurst ){
+void peeEmitter::SetEmitBurst(bool emitBurst){
+	if(emitBurst != pEmitBurst){
 		pEmitBurst = emitBurst;
 		
 		FreeEmitter();
 		NotifyEmitterChanged();
 		
-		pEngEmitterInstance->SetEnableCasting( pEnableCasting );
+		pEngEmitterInstance->SetEnableCasting(pEnableCasting);
 	}
 }
 
-void peeEmitter::SetEnableCasting( bool enableCasting ){
-	if( enableCasting != pEnableCasting ){
+void peeEmitter::SetEnableCasting(bool enableCasting){
+	if(enableCasting != pEnableCasting){
 		pEnableCasting = enableCasting;
 		
 		NotifyEmitterChanged();
 		
-		if( enableCasting ){
+		if(enableCasting){
 			pBurstTimer = 0.0f;
 			pEngEmitterInstance->ResetBurst();
 		}
 		
-		pEngEmitterInstance->SetEnableCasting( enableCasting );
+		pEngEmitterInstance->SetEnableCasting(enableCasting);
 	}
 }
 
 
 
-void peeEmitter::SetBurstInterval( float interval ){
-	if( fabs( interval - pBurstInterval ) > FLOAT_SAFE_EPSILON ){
+void peeEmitter::SetBurstInterval(float interval){
+	if(fabs(interval - pBurstInterval) > FLOAT_SAFE_EPSILON){
 		pBurstInterval = interval;
 		NotifyViewChanged();
 	}
@@ -286,37 +286,37 @@ void peeEmitter::Dispose(){
 void peeEmitter::Reset(){
 }
 
-void peeEmitter::Update( float elapsed ){
-	if( ! pEngEmitter ){
+void peeEmitter::Update(float elapsed){
+	if(!pEngEmitter){
 		RebuildEmitter();
 	}
 	
-	if( pEmitBurst ){
+	if(pEmitBurst){
 		float burstTime = pBurstLifetime + pBurstInterval;
 		
-		if( burstTime < 0.1f ){
+		if(burstTime < 0.1f){
 			burstTime = 0.1f;
 		}
 		
 		pBurstTimer += elapsed;
 		
-		if( pBurstTimer >= burstTime ){
-			pBurstTimer = fmodf( pBurstTimer, burstTime );
+		if(pBurstTimer >= burstTime){
+			pBurstTimer = fmodf(pBurstTimer, burstTime);
 			pEngEmitterInstance->ResetBurst();
-			pEngEmitterInstance->SetEnableCasting( pEnableCasting );
+			pEngEmitterInstance->SetEnableCasting(pEnableCasting);
 		}
 	}
 	
-	pEnvObject->Update( elapsed );
+	pEnvObject->Update(elapsed);
 	
-	pEngWorld->Update( elapsed );
-	pEngWorld->ProcessPhysics( elapsed );
+	pEngWorld->Update(elapsed);
+	pEngWorld->ProcessPhysics(elapsed);
 }
 
 void peeEmitter::FreeEmitter(){
-	pEngEmitterInstance->SetEmitter( NULL );
+	pEngEmitterInstance->SetEmitter(NULL);
 	
-	if( pEngEmitter ){
+	if(pEngEmitter){
 		pEngEmitter->FreeReference();
 		pEngEmitter = NULL;
 	}
@@ -330,11 +330,11 @@ void peeEmitter::RebuildEmitter(){
 	
 	FreeEmitter();
 	
-	for( i=0; i<controllerCount; i++ ){
-		pControllerList.GetAt( i )->SetEngineControllerIndex( i );
+	for(i=0; i<controllerCount; i++){
+		pControllerList.GetAt(i)->SetEngineControllerIndex(i);
 	}
-	for( i=0; i<typeCount; i++ ){
-		pTypeList.GetAt( i )->SetIndex( i );
+	for(i=0; i<typeCount; i++){
+		pTypeList.GetAt(i)->SetIndex(i);
 	}
 	
 	pBurstTimer = 0.0f;
@@ -342,26 +342,26 @@ void peeEmitter::RebuildEmitter(){
 	try{
 		pEngEmitter = GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter();
 		
-		for( i=0; i<controllerCount; i++ ){
+		for(i=0; i<controllerCount; i++){
 			engController = new deParticleEmitterController;
-			pControllerList.GetAt( i )->UpdateEngineController( *engController );
-			pEngEmitter->AddController( engController );
+			pControllerList.GetAt(i)->UpdateEngineController(*engController);
+			pEngEmitter->AddController(engController);
 			engController = NULL;
 		}
 		
-		pEngEmitter->SetBurstLifetime( pBurstLifetime );
-		pEngEmitter->SetEmitBurst( pEmitBurst );
+		pEngEmitter->SetBurstLifetime(pBurstLifetime);
+		pEngEmitter->SetEmitBurst(pEmitBurst);
 		
-		pEngEmitter->SetTypeCount( typeCount );
-		for( i=0; i<typeCount; i++ ){
-			pTypeList.GetAt( i )->UpdateEngineType( pEngEmitter->GetTypeAt( i ) );
-			pEngEmitter->NotifyTypeChangedAt( i );
+		pEngEmitter->SetTypeCount(typeCount);
+		for(i=0; i<typeCount; i++){
+			pTypeList.GetAt(i)->UpdateEngineType(pEngEmitter->GetTypeAt(i));
+			pEngEmitter->NotifyTypeChangedAt(i);
 		}
 		
-		pEngEmitterInstance->SetEmitter( pEngEmitter );
+		pEngEmitterInstance->SetEmitter(pEngEmitter);
 		
-	}catch( const deException &e ){
-		if( engController ){
+	}catch(const deException &e){
+		if(engController){
 			delete engController;
 		}
 		e.PrintError();
@@ -375,50 +375,50 @@ void peeEmitter::RebuildEmitter(){
 // Controllers
 ////////////////
 
-void peeEmitter::AddController( peeController *controller ){
-	pControllerList.Add( controller );
-	controller->SetEmitter( this );
+void peeEmitter::AddController(peeController *controller){
+	pControllerList.Add(controller);
+	controller->SetEmitter(this);
 	NotifyControllerStructureChanged();
 	
-	if( ! pActiveController ){
-		SetActiveController( controller );
+	if(!pActiveController){
+		SetActiveController(controller);
 	}
 }
 
-void peeEmitter::InsertControllerAt( peeController *controller, int index ){
-	pControllerList.InsertAt( controller, index );
-	controller->SetEmitter( this );
+void peeEmitter::InsertControllerAt(peeController *controller, int index){
+	pControllerList.InsertAt(controller, index);
+	controller->SetEmitter(this);
 	NotifyControllerStructureChanged();
 	
-	if( ! pActiveController ){
-		SetActiveController( controller );
+	if(!pActiveController){
+		SetActiveController(controller);
 	}
 }
 
-void peeEmitter::MoveControllerTo( peeController *controller, int index ){
-	pControllerList.MoveTo( controller, index );
+void peeEmitter::MoveControllerTo(peeController *controller, int index){
+	pControllerList.MoveTo(controller, index);
 	NotifyControllerStructureChanged();
 }
 
-void peeEmitter::RemoveController( peeController *controller ){
-	if( ! controller || controller->GetEmitter() != this ) DETHROW( deeInvalidParam );
+void peeEmitter::RemoveController(peeController *controller){
+	if(!controller || controller->GetEmitter() != this) DETHROW(deeInvalidParam);
 	
-	if( controller->GetActive() ){
-		if( pControllerList.GetCount() == 1 ){
-			SetActiveController( NULL );
+	if(controller->GetActive()){
+		if(pControllerList.GetCount() == 1){
+			SetActiveController(NULL);
 			
 		}else{
-			if( pControllerList.GetAt( 0 ) == controller ){
-				SetActiveController( pControllerList.GetAt( 1 ) );
+			if(pControllerList.GetAt(0) == controller){
+				SetActiveController(pControllerList.GetAt(1));
 				
 			}else{
-				SetActiveController( pControllerList.GetAt( 0 ) );
+				SetActiveController(pControllerList.GetAt(0));
 			}
 		}
 	}
 	
-	controller->SetEmitter( NULL );
-	pControllerList.Remove( controller );
+	controller->SetEmitter(NULL);
+	pControllerList.Remove(controller);
 	NotifyControllerStructureChanged();
 }
 
@@ -426,10 +426,10 @@ void peeEmitter::RemoveAllControllers(){
 	const int count = pControllerList.GetCount();
 	int i;
 	
-	SetActiveController( NULL );
+	SetActiveController(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pControllerList.GetAt( i )->SetEmitter( NULL );
+	for(i=0; i<count; i++){
+		pControllerList.GetAt(i)->SetEmitter(NULL);
 	}
 	pControllerList.RemoveAll();
 	NotifyControllerStructureChanged();
@@ -439,18 +439,18 @@ bool peeEmitter::HasActiveController() const{
 	return pActiveController != NULL;
 }
 
-void peeEmitter::SetActiveController( peeController *controller ){
-	if( controller != pActiveController ){
-		if( pActiveController ){
-			pActiveController->SetActive( false );
+void peeEmitter::SetActiveController(peeController *controller){
+	if(controller != pActiveController){
+		if(pActiveController){
+			pActiveController->SetActive(false);
 			pActiveController->FreeReference();
 		}
 		
 		pActiveController = controller;
 		
-		if( controller ){
+		if(controller){
 			controller->AddReference();
-			controller->SetActive( true );
+			controller->SetActive(true);
 		}
 		
 		NotifyActiveControllerChanged();
@@ -462,59 +462,59 @@ void peeEmitter::SetActiveController( peeController *controller ){
 // Types
 //////////
 
-void peeEmitter::AddType( peeType *type ){
+void peeEmitter::AddType(peeType *type){
 	FreeEmitter();
 	
-	pTypeList.Add( type );
-	type->SetEmitter( this );
+	pTypeList.Add(type);
+	type->SetEmitter(this);
 	NotifyTypeStructureChanged();
 	
-	if( ! pActiveType ){
-		SetActiveType( type );
+	if(!pActiveType){
+		SetActiveType(type);
 	}
 }
 
-void peeEmitter::InsertTypeAt( peeType *type, int index ){
+void peeEmitter::InsertTypeAt(peeType *type, int index){
 	FreeEmitter();
 	
-	pTypeList.InsertAt( type, index );
-	type->SetEmitter( this );
+	pTypeList.InsertAt(type, index);
+	type->SetEmitter(this);
 	NotifyTypeStructureChanged();
 	
-	if( ! pActiveType ){
-		SetActiveType( type );
+	if(!pActiveType){
+		SetActiveType(type);
 	}
 }
 
-void peeEmitter::MoveTypeTo( peeType *type, int index ){
+void peeEmitter::MoveTypeTo(peeType *type, int index){
 	FreeEmitter();
-	pTypeList.MoveTo( type, index );
+	pTypeList.MoveTo(type, index);
 	NotifyTypeStructureChanged();
 }
 
-void peeEmitter::RemoveType( peeType *type ){
-	if( ! type || type->GetEmitter() != this ){
-		DETHROW( deeInvalidParam );
+void peeEmitter::RemoveType(peeType *type){
+	if(!type || type->GetEmitter() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
 	FreeEmitter();
 	
-	if( type->GetActive() ){
-		if( pTypeList.GetCount() == 1 ){
-			SetActiveType( NULL );
+	if(type->GetActive()){
+		if(pTypeList.GetCount() == 1){
+			SetActiveType(NULL);
 			
 		}else{
-			if( pTypeList.GetAt( 0 ) == type ){
-				SetActiveType( pTypeList.GetAt( 1 ) );
+			if(pTypeList.GetAt(0) == type){
+				SetActiveType(pTypeList.GetAt(1));
 				
 			}else{
-				SetActiveType( pTypeList.GetAt( 0 ) );
+				SetActiveType(pTypeList.GetAt(0));
 			}
 		}
 	}
 	
-	type->SetEmitter( NULL );
-	pTypeList.Remove( type );
+	type->SetEmitter(NULL);
+	pTypeList.Remove(type);
 	NotifyTypeStructureChanged();
 }
 
@@ -523,10 +523,10 @@ void peeEmitter::RemoveAllTypes(){
 	int i;
 	
 	FreeEmitter();
-	SetActiveType( NULL );
+	SetActiveType(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pTypeList.GetAt( i )->SetEmitter( NULL );
+	for(i=0; i<count; i++){
+		pTypeList.GetAt(i)->SetEmitter(NULL);
 	}
 	pTypeList.RemoveAll();
 	NotifyTypeStructureChanged();
@@ -536,18 +536,18 @@ bool peeEmitter::HasActiveType() const{
 	return pActiveType != NULL;
 }
 
-void peeEmitter::SetActiveType( peeType *type ){
-	if( type != pActiveType ){
-		if( pActiveType ){
-			pActiveType->SetActive( false );
+void peeEmitter::SetActiveType(peeType *type){
+	if(type != pActiveType){
+		if(pActiveType){
+			pActiveType->SetActive(false);
 			pActiveType->FreeReference();
 		}
 		
 		pActiveType = type;
 		
-		if( type ){
+		if(type){
 			type->AddReference();
-			type->SetActive( true );
+			type->SetActive(true);
 		}
 		
 		NotifyActiveTypeChanged();
@@ -559,14 +559,14 @@ void peeEmitter::SetActiveType( peeType *type ){
 // Listeners
 //////////////
 
-void peeEmitter::AddListener( peeEmitterListener *listener ){
-	if( ! listener ) DETHROW( deeInvalidParam );
+void peeEmitter::AddListener(peeEmitterListener *listener){
+	if(!listener) DETHROW(deeInvalidParam);
 	
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void peeEmitter::RemoveListener( peeEmitterListener *listener ){
-	pListeners.RemoveIfPresent( listener );
+void peeEmitter::RemoveListener(peeEmitterListener *listener){
+	pListeners.RemoveIfPresent(listener);
 }
 
 
@@ -575,8 +575,8 @@ void peeEmitter::NotifyStateChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->StateChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->StateChanged(this);
 	}
 }
 
@@ -584,8 +584,8 @@ void peeEmitter::NotifyUndoChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->UndoChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->UndoChanged(this);
 	}
 }
 
@@ -593,19 +593,19 @@ void peeEmitter::NotifyEmitterChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->EmitterChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->EmitterChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void peeEmitter::NotifySkyChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->SkyChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->SkyChanged(this);
 	}
 }
 
@@ -613,8 +613,8 @@ void peeEmitter::NotifyEnvObjectChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->EnvObjectChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->EnvObjectChanged(this);
 	}
 }
 
@@ -622,8 +622,8 @@ void peeEmitter::NotifyViewChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->ViewChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->ViewChanged(this);
 	}
 }
 
@@ -631,8 +631,8 @@ void peeEmitter::NotifyCameraChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->CameraChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->CameraChanged(this);
 	}
 }
 
@@ -644,43 +644,43 @@ void peeEmitter::NotifyControllerStructureChanged(){
 	
 	FreeEmitter();
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->ControllerStructureChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->ControllerStructureChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerNameChanged( peeController *controller ){
+void peeEmitter::NotifyControllerNameChanged(peeController *controller){
 	const int count = pListeners.GetCount();
 	int i;
 	
 	FreeEmitter();
 	
-	for( i=0; i<count; i++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( i ) )->ControllerNameChanged( this, controller );
+	for(i=0; i<count; i++){
+		((peeEmitterListener*)pListeners.GetAt(i))->ControllerNameChanged(this, controller);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerChanged( peeController *controller ){
+void peeEmitter::NotifyControllerChanged(peeController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->ControllerChanged( this, controller );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->ControllerChanged(this, controller);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerValueChanged( peeController *controller ){
+void peeEmitter::NotifyControllerValueChanged(peeController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->ControllerValueChanged( this, controller );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->ControllerValueChanged(this, controller);
 	}
 }
 
@@ -688,8 +688,8 @@ void peeEmitter::NotifyActiveControllerChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->ActiveControllerChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->ActiveControllerChanged(this);
 	}
 }
 
@@ -701,61 +701,61 @@ void peeEmitter::NotifyTypeStructureChanged(){
 	
 	FreeEmitter();
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->TypeStructureChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->TypeStructureChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void peeEmitter::NotifyTypeChanged( peeType *type ){
+void peeEmitter::NotifyTypeChanged(peeType *type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
 	FreeEmitter();
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->TypeChanged( this, type );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->TypeChanged(this, type);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void peeEmitter::NotifyTypeActiveTrailControllerChanged( peeType *type ){
+void peeEmitter::NotifyTypeActiveTrailControllerChanged(peeType *type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->TypeActiveTrailControllerChanged( this, type );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->TypeActiveTrailControllerChanged(this, type);
 	}
 }
 
-void peeEmitter::NotifyTypeActiveEmitControllerChanged( peeType *type ){
+void peeEmitter::NotifyTypeActiveEmitControllerChanged(peeType *type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->TypeActiveEmitControllerChanged( this, type );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->TypeActiveEmitControllerChanged(this, type);
 	}
 }
 
-void peeEmitter::NotifyTypeParameterChanged( peeType *type, peeParameter *parameter ){
+void peeEmitter::NotifyTypeParameterChanged(peeType *type, peeParameter *parameter){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->TypeParameterChanged( this, type, parameter );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->TypeParameterChanged(this, type, parameter);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void peeEmitter::NotifyActiveTypeParameterChanged( peeType *type ){
+void peeEmitter::NotifyActiveTypeParameterChanged(peeType *type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->ActiveTypeParameterChanged( this, type );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->ActiveTypeParameterChanged(this, type);
 	}
 }
 
@@ -763,8 +763,8 @@ void peeEmitter::NotifyActiveTypeChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
-	for( l=0; l<listenerCount; l++ ){
-		( ( peeEmitterListener* )pListeners.GetAt( l ) )->ActiveTypeChanged( this );
+	for(l=0; l<listenerCount; l++){
+		((peeEmitterListener*)pListeners.GetAt(l))->ActiveTypeChanged(this);
 	}
 }
 
@@ -774,36 +774,36 @@ void peeEmitter::NotifyActiveTypeChanged(){
 //////////////////////
 
 void peeEmitter::pCleanUp(){
-	pDDSEmitter.SetParentDebugDrawer( NULL );
+	pDDSEmitter.SetParentDebugDrawer(NULL);
 	
-	if( pSky ){
+	if(pSky){
 		delete pSky;
 	}
 	pEnvObject = nullptr;
 	
 	pListeners.RemoveAll();
 	
-	if( pCamera ){
+	if(pCamera){
 		delete pCamera;
 	}
 	
 	RemoveAllTypes();
 	RemoveAllControllers();
 	
-	if( pEngEmitterInstance ){
-		pEngEmitterInstance->SetEmitter( NULL );
+	if(pEngEmitterInstance){
+		pEngEmitterInstance->SetEmitter(NULL);
 	}
-	if( pEngEmitter ){
+	if(pEngEmitter){
 		pEngEmitter->FreeReference();
 	}
-	if( pEngWorld ){
-		if( pDDEmitter ){
-			pEngWorld->RemoveDebugDrawer( pDDEmitter );
+	if(pEngWorld){
+		if(pDDEmitter){
+			pEngWorld->RemoveDebugDrawer(pDDEmitter);
 			pDDEmitter->FreeReference();
 		}
 		
-		if( pEngEmitterInstance ){
-			pEngWorld->RemoveParticleEmitter( pEngEmitterInstance );
+		if(pEngEmitterInstance){
+			pEngWorld->RemoveParticleEmitter(pEngEmitterInstance);
 			pEngEmitterInstance->FreeReference();
 		}
 		pEngWorld->FreeReference();

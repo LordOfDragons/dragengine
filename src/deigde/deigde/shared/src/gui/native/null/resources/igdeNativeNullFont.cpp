@@ -39,7 +39,7 @@ igdeNativeNullFont::igdeNativeNullFont(){
 igdeNativeNullFont::~igdeNativeNullFont(){
 }
 
-igdeNativeNullFont *igdeNativeNullFont::CreateNativeFont( igdeFont& ){
+igdeNativeNullFont *igdeNativeNullFont::CreateNativeFont(igdeFont&){
 	return new igdeNativeNullFont;
 }
 
@@ -56,8 +56,8 @@ deFont *igdeNativeNullFont::CreateEngineFont(){
 	return nullptr;
 }
 
-decPoint igdeNativeNullFont::TextSize( const char * ) const{
-	return decPoint( 32, 16 );
+decPoint igdeNativeNullFont::TextSize(const char *) const{
+	return decPoint(32, 16);
 }
 
 #endif

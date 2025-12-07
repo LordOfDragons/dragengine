@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShapeHull( reWPShape &wpShapes );
+	reWPPanelShapeHull(reWPShape &wpShapes);
 	
 protected:
 	/** \brief Clean up panel. */

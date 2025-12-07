@@ -68,8 +68,8 @@ private:
 	bool pSuccess;
 	
 public:
-	igdeWOSOSpeakerResLoadComponent( igdeWOSOSpeaker &owner ) :
-	pOwner( &owner ), pCounter( 0 ), pSuccess( true ){
+	igdeWOSOSpeakerResLoadComponent(igdeWOSOSpeaker &owner) :
+	pOwner(&owner), pCounter(0), pSuccess(true){
 	}
 	
 	virtual ~igdeWOSOSpeakerResLoadComponent(){
@@ -79,38 +79,38 @@ public:
 		pOwner = NULL;
 	}
 	
-	void LoadSound( const char *path ){
+	void LoadSound(const char *path){
 		pPathSound = path;
-		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource( path, deResourceLoader::ertSound, this );
+		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSound, this);
 		pCounter++;
 	}
 	inline deSound *GetSound() const{ return pSound; }
 	
-	virtual void LoadingFinished( const igdeResourceLoaderTask &task, deFileResource *resource){
-		if( ! pOwner ){
+	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
+		if(!pOwner){
 			return;
 		}
 		
 		const deResourceLoader::eResourceType type = task.GetResourceType();
 		const decString &filename = task.GetFilename();
 		
-		if( type == deResourceLoader::ertSound && pPathSound == filename ){
-			pSound = ( deSound* )resource;
+		if(type == deResourceLoader::ertSound && pPathSound == filename){
+			pSound = (deSound*)resource;
 			pCounter--;
 		}
 		
 		CheckFinished();
 	}
 	
-	virtual void LoadingFailed( const igdeResourceLoaderTask &task ){
-		if( ! pOwner ){
+	virtual void LoadingFailed(const igdeResourceLoaderTask &task){
+		if(!pOwner){
 			return;
 		}
 		
 		const deResourceLoader::eResourceType type = task.GetResourceType();
 		const decString &filename = task.GetFilename();
 		
-		if( type == deResourceLoader::ertSound && pPathSound == filename ){
+		if(type == deResourceLoader::ertSound && pPathSound == filename){
 			pCounter--;
 			pSuccess = false;
 		}
@@ -119,8 +119,8 @@ public:
 	}
 	
 	void CheckFinished(){
-		if( pOwner && pCounter == 0 ){
-			pOwner->AsyncLoadFinished( pSuccess );
+		if(pOwner && pCounter == 0){
+			pOwner->AsyncLoadFinished(pSuccess);
 		}
 	}
 };
@@ -132,24 +132,24 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSOSpeaker::igdeWOSOSpeaker( igdeWObject &wrapper,
-	const igdeGDCSpeaker &gdSpeaker, const decString &prefix ) :
-igdeWOSubObject( wrapper, prefix ),
-pGDSpeaker( gdSpeaker ),
-pAddedToWorld( false ),
-pAttachment( NULL )
+igdeWOSOSpeaker::igdeWOSOSpeaker(igdeWObject &wrapper,
+	const igdeGDCSpeaker &gdSpeaker, const decString &prefix) :
+igdeWOSubObject(wrapper, prefix),
+pGDSpeaker(gdSpeaker),
+pAddedToWorld(false),
+pAttachment(NULL)
 {
 	pLoadResources();
 }
 
 igdeWOSOSpeaker::~igdeWOSOSpeaker(){
-	if( pResLoad ){
-		( ( igdeWOSOSpeakerResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
+	if(pResLoad){
+		((igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
 		pResLoad = NULL;
 	}
 	pDestroySpeaker();
-	pClearTrigger( pTriggerPlaying );
-	pClearTrigger( pTriggerMuted );
+	pClearTrigger(pTriggerPlaying);
+	pClearTrigger(pTriggerMuted);
 }
 
 
@@ -162,29 +162,29 @@ void igdeWOSOSpeaker::UpdateParameters(){
 }
 
 void igdeWOSOSpeaker::InitTriggers(){
-	pInitTrigger( pTriggerPlaying, pGDSpeaker.GetTriggerName( igdeGDCSpeaker::etPlaying ) );
-	pInitTrigger( pTriggerMuted, pGDSpeaker.GetTriggerName( igdeGDCSpeaker::etMuted ) );
+	pInitTrigger(pTriggerPlaying, pGDSpeaker.GetTriggerName(igdeGDCSpeaker::etPlaying));
+	pInitTrigger(pTriggerMuted, pGDSpeaker.GetTriggerName(igdeGDCSpeaker::etMuted));
 }
 
 void igdeWOSOSpeaker::UpdateTriggers(){
-	if( ! pSpeaker ){
+	if(!pSpeaker){
 		return;
 	}
 	
-	if( GetWrapper().GetVisible() ){
-		if( pTriggerMuted ){
+	if(GetWrapper().GetVisible()){
+		if(pTriggerMuted){
 			pTriggerMuted->Evaluate();
-			pSpeaker->SetMuted( pTriggerMuted->GetResult() );
+			pSpeaker->SetMuted(pTriggerMuted->GetResult());
 			
 		}else{
-			pSpeaker->SetMuted( false );
+			pSpeaker->SetMuted(false);
 		}
 		
-		if( pTriggerPlaying ){
+		if(pTriggerPlaying){
 			pTriggerPlaying->Evaluate();
 		}
 		
-		if( pEvalPlaying() ){
+		if(pEvalPlaying()){
 			pSpeaker->Play();
 			
 		}else{
@@ -192,17 +192,17 @@ void igdeWOSOSpeaker::UpdateTriggers(){
 		}
 		
 	}else{
-		pSpeaker->SetMuted( false );
+		pSpeaker->SetMuted(false);
 		pSpeaker->Stop();
 	}
 }
 
 void igdeWOSOSpeaker::UpdateVisibility(){
-	if( ! pSpeaker ){
+	if(!pSpeaker){
 		return;
 	}
 	
-	if( pEvalPlaying() ){
+	if(pEvalPlaying()){
 		pSpeaker->Play();
 		
 	}else{
@@ -211,8 +211,8 @@ void igdeWOSOSpeaker::UpdateVisibility(){
 }
 
 void igdeWOSOSpeaker::UpdateLayerMasks(){
-	if( pSpeaker ){
-		pSpeaker->SetLayerMask( LayerMaskFromInt( GetWrapper().GetAudioLayerMask() ) );
+	if(pSpeaker){
+		pSpeaker->SetLayerMask(LayerMaskFromInt(GetWrapper().GetAudioLayerMask()));
 	}
 }
 
@@ -220,18 +220,18 @@ void igdeWOSOSpeaker::OnAllSubObjectsFinishedLoading(){
 	pUpdateSpeaker();
 }
 
-void igdeWOSOSpeaker::Visit( igdeWOSOVisitor &visitor ){
-	visitor.VisitSpeaker( *this );
+void igdeWOSOSpeaker::Visit(igdeWOSOVisitor &visitor){
+	visitor.VisitSpeaker(*this);
 }
 
-void igdeWOSOSpeaker::AsyncLoadFinished( bool success ){
-	if( ! pResLoad ){
+void igdeWOSOSpeaker::AsyncLoadFinished(bool success){
+	if(!pResLoad){
 		return;
 	}
 	
-	( ( igdeWOSOSpeakerResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
+	((igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
 	
-	GetWrapper().SubObjectFinishedLoading( *this, success );
+	GetWrapper().SubObjectFinishedLoading(*this, success);
 }
 
 
@@ -240,19 +240,19 @@ void igdeWOSOSpeaker::AsyncLoadFinished( bool success ){
 //////////////////////
 
 void igdeWOSOSpeaker::pLoadResources(){
-	if( pResLoad ){
-		( ( igdeWOSOSpeakerResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
+	if(pResLoad){
+		((igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
 		pResLoad = NULL;
 	}
 	
-	pResLoad.TakeOver( new igdeWOSOSpeakerResLoadComponent( *this ) );
+	pResLoad.TakeOver(new igdeWOSOSpeakerResLoadComponent(*this));
 	igdeWOSOSpeakerResLoadComponent &rl =
-		( igdeWOSOSpeakerResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
+		(igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
-	const decString pathSound( GetStringProperty(
-		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epSound ), pGDSpeaker.GetPathSound() ) );
-	if( ! pathSound.IsEmpty() ){
-		rl.LoadSound( pathSound );
+	const decString pathSound(GetStringProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epSound), pGDSpeaker.GetPathSound()));
+	if(!pathSound.IsEmpty()){
+		rl.LoadSound(pathSound);
 	}
 	
 	rl.CheckFinished();
@@ -260,40 +260,40 @@ void igdeWOSOSpeaker::pLoadResources(){
 
 void igdeWOSOSpeaker::pUpdateSpeaker(){
 	const igdeWOSOSpeakerResLoadComponent &rl =
-		( igdeWOSOSpeakerResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
+		(igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
-	if( ! pSpeaker ){
-		pSpeaker.TakeOver( GetEngine().GetSpeakerManager()->CreateSpeaker() );
+	if(!pSpeaker){
+		pSpeaker.TakeOver(GetEngine().GetSpeakerManager()->CreateSpeaker());
 		
 		UpdateLayerMasks();
 		UpdateVisibility();
 	}
 	
-	pSpeaker->SetSound( rl.GetSound() );
-	pSpeaker->SetLooping( GetBoolProperty(
-		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epLooping ),
-		pGDSpeaker.GetLooping() ) );
-	pSpeaker->SetVolume( GetFloatProperty(
-		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epVolume ),
-		pGDSpeaker.GetVolume() ) );
-	pSpeaker->SetRange( GetFloatProperty(
-		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epRange ),
-		pGDSpeaker.GetRange() ) );
-	pSpeaker->SetRollOff( GetFloatProperty(
-		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epRollOff ),
-		pGDSpeaker.GetRollOff() ) );
-	pSpeaker->SetDistanceOffset( GetFloatProperty(
-		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epDistanceOffset ),
-		pGDSpeaker.GetDistanceOffset() ) );
-	pSpeaker->SetPlaySpeed( GetFloatProperty(
-		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epPlaySpeed ),
-		pGDSpeaker.GetPlaySpeed() ) );
+	pSpeaker->SetSound(rl.GetSound());
+	pSpeaker->SetLooping(GetBoolProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epLooping),
+		pGDSpeaker.GetLooping()));
+	pSpeaker->SetVolume(GetFloatProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epVolume),
+		pGDSpeaker.GetVolume()));
+	pSpeaker->SetRange(GetFloatProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epRange),
+		pGDSpeaker.GetRange()));
+	pSpeaker->SetRollOff(GetFloatProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epRollOff),
+		pGDSpeaker.GetRollOff()));
+	pSpeaker->SetDistanceOffset(GetFloatProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epDistanceOffset),
+		pGDSpeaker.GetDistanceOffset()));
+	pSpeaker->SetPlaySpeed(GetFloatProperty(
+		pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epPlaySpeed),
+		pGDSpeaker.GetPlaySpeed()));
 	
-	if( ! pAddedToWorld ){
-		GetWrapper().GetWorld()->AddSpeaker( pSpeaker );
+	if(!pAddedToWorld){
+		GetWrapper().GetWorld()->AddSpeaker(pSpeaker);
 		pAddedToWorld = true;
 	}
-	if( pAddedToWorld && ! pAttachedToCollider ){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 	
@@ -301,14 +301,14 @@ void igdeWOSOSpeaker::pUpdateSpeaker(){
 }
 
 void igdeWOSOSpeaker::pDestroySpeaker(){
-	if( ! pSpeaker ){
+	if(!pSpeaker){
 		return;
 	}
 	
 	DetachFromCollider();
 	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveSpeaker( pSpeaker );
+	if(pAddedToWorld){
+		GetWrapper().GetWorld()->RemoveSpeaker(pSpeaker);
 	}
 	
 	pSpeaker = nullptr;
@@ -318,7 +318,7 @@ void igdeWOSOSpeaker::pDestroySpeaker(){
 void igdeWOSOSpeaker::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pSpeaker ){
+	if(!pSpeaker){
 		return;
 	}
 	
@@ -327,32 +327,32 @@ void igdeWOSOSpeaker::AttachToCollider(){
 	deColliderAttachment *attachment = nullptr;
 	
 	try{
-		attachment = new deColliderAttachment( pSpeaker );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( GetVectorProperty(
-			pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epAttachPosition ),
-			pGDSpeaker.GetPosition() ) );
-		attachment->SetOrientation( GetRotationProperty(
-			pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epAttachRotation ),
-			pGDSpeaker.GetOrientation() ) );
+		attachment = new deColliderAttachment(pSpeaker);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
+		attachment->SetPosition(GetVectorProperty(
+			pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epAttachPosition),
+			pGDSpeaker.GetPosition()));
+		attachment->SetOrientation(GetRotationProperty(
+			pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epAttachRotation),
+			pGDSpeaker.GetOrientation()));
 		
-		if( colliderComponent ){
-			if( ! pGDSpeaker.GetBoneName().IsEmpty() ){
-				attachment->SetAttachType( deColliderAttachment::eatBone );
-				attachment->SetTrackBone( pGDSpeaker.GetBoneName() );
+		if(colliderComponent){
+			if(!pGDSpeaker.GetBoneName().IsEmpty()){
+				attachment->SetAttachType(deColliderAttachment::eatBone);
+				attachment->SetTrackBone(pGDSpeaker.GetBoneName());
 			}
-			colliderComponent->AddAttachment( attachment );
+			colliderComponent->AddAttachment(attachment);
 			pAttachedToCollider = colliderComponent;
 			
 		}else{
-			colliderFallback->AddAttachment( attachment );
+			colliderFallback->AddAttachment(attachment);
 			pAttachedToCollider = colliderFallback;
 		}
 		
 		pAttachment = attachment;
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			delete attachment;
 		}
 		throw;
@@ -360,24 +360,24 @@ void igdeWOSOSpeaker::AttachToCollider(){
 }
 
 void igdeWOSOSpeaker::DetachFromCollider(){
-	if( ! pAttachedToCollider ){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
-	pAttachedToCollider->RemoveAttachment( pAttachment );
+	pAttachedToCollider->RemoveAttachment(pAttachment);
 	pAttachment = nullptr;
 	pAttachedToCollider = nullptr;
 }
 
 bool igdeWOSOSpeaker::pEvalPlaying(){
-	if( ! GetWrapper().GetVisible() ){
+	if(!GetWrapper().GetVisible()){
 		return false;
 	}
 	
-	if( pTriggerPlaying ){
+	if(pTriggerPlaying){
 		return pTriggerPlaying->GetResult();
 	}
 	
-	return GetBoolProperty( pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epPlaying ),
-		pGDSpeaker.GetPlaying() );
+	return GetBoolProperty(pGDSpeaker.GetPropertyName(igdeGDCSpeaker::epPlaying),
+		pGDSpeaker.GetPlaying());
 }

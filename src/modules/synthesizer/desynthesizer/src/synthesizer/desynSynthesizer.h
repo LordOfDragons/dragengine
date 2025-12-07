@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer peer. */
-	desynSynthesizer( deDESynthesizer &module, deSynthesizer &synthesizer );
+	desynSynthesizer(deDESynthesizer &module, deSynthesizer &synthesizer);
 	
 	/** \brief Clean up synthesizer peer. */
 	virtual ~desynSynthesizer();
@@ -92,13 +92,13 @@ public:
 	inline bool GetSilent() const{ return pSilent; }
 	
 	/** \brief Set if synthesizer is silent. */
-	void SetSilent( bool silent );
+	void SetSilent(bool silent);
 	
 	/** \brief Size of state data in bytes. */
 	inline int GetStateDataSize() const{ return pStateDataSize; }
 	
 	/** \brief Set size of state data in bytes. */
-	void SetStateDataSize( int size );
+	void SetStateDataSize(int size);
 	
 	/** \brief Current update tracker value. */
 	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
@@ -124,10 +124,10 @@ public:
 	int GetLinkCount() const;
 	
 	/** \brief Link at index. */
-	const desynSynthesizerLink &GetLinkAt( int index ) const;
+	const desynSynthesizerLink &GetLinkAt(int index) const;
 	
 	/** \brief Add link. */
-	void AddLink( desynSynthesizerLink *link );
+	void AddLink(desynSynthesizerLink *link);
 	
 	
 	
@@ -135,7 +135,7 @@ public:
 	inline int GetSourceCount() const{ return pSourceCount; }
 	
 	/** \brief Source at index. */
-	const desynSynthesizerSource &GetSourceAt( int index ) const;
+	const desynSynthesizerSource &GetSourceAt(int index) const;
 	
 	
 	
@@ -143,10 +143,10 @@ public:
 	void Prepare();
 	
 	/** \brief Init state data. */
-	void InitStateData( char *stateData );
+	void InitStateData(char *stateData);
 	
 	/** \brief Clean up state data. */
-	void CleanUpStateData( char *stateData );
+	void CleanUpStateData(char *stateData);
 	
 	/**
 	 * \brief Generate sound.
@@ -155,7 +155,7 @@ public:
 	 * \param[in] offset Offset in samples to start producing sound at.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSound( const desynSynthesizerInstance &instance, char *stateData, float *buffer, int samples );
+	void GenerateSound(const desynSynthesizerInstance &instance, char *stateData, float *buffer, int samples);
 	/*@}*/
 	
 	

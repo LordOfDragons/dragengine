@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text box. */
-	cePlayerChoiceBox( ceConversation &conversation );
+	cePlayerChoiceBox(ceConversation &conversation);
 	
 	/** \brief Clean up text box. */
 	~cePlayerChoiceBox();
@@ -93,49 +93,49 @@ public:
 	inline const decString &GetPathFont() const{ return pPathFont; }
 	
 	/** \brief Set font path. */
-	void SetPathFont( const char *path );
+	void SetPathFont(const char *path);
 	
 	/** \brief Background color. */
 	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
 	
 	/** \brief Set background color. */
-	void SetBackgroundColor( const decColor &color );
+	void SetBackgroundColor(const decColor &color);
 	
 	/** \brief Text color. */
 	inline const decColor &GetTextColor() const{ return pTextColor; }
 	
 	/** \brief Set text color. */
-	void SetTextColor( const decColor &color );
+	void SetTextColor(const decColor &color);
 	
 	/** \brief Selected background color. */
 	inline const decColor &GetSelectedBackgroundColor() const{ return pSelectedBackgroundColor; }
 	
 	/** \brief Set selected background color. */
-	void SetSelectedBackgroundColor( const decColor &color );
+	void SetSelectedBackgroundColor(const decColor &color);
 	
 	/** \brief Selected text color. */
 	inline const decColor &GetSelectedTextColor() const{ return pSelectedTextColor; }
 	
 	/** \brief Set selected text color. */
-	void SetSelectedTextColor( const decColor &color );
+	void SetSelectedTextColor(const decColor &color);
 	
 	/** \brief Text size. */
 	inline int GetTextSize() const{ return pTextSize; }
 	
 	/** \brief Set text size. */
-	void SetTextSize( int size );
+	void SetTextSize(int size);
 	
 	/** \brief Text padding. */
 	inline int GetPadding() const{ return pPadding; }
 	
 	/** \brief Set text padding. */
-	void SetPadding( int padding );
+	void SetPadding(int padding);
 	
 	/** \brief Playback stack depth to return to after selecting an option. */
 	inline int GetPlaybackStackDepth() const{ return pPlaybackStackDepth; }
 	
 	/** \brief Set playback stack depth to return to after selecting an option. */
-	void SetPlaybackStackDepth( int depth );
+	void SetPlaybackStackDepth(int depth);
 	
 	/** \brief List of options. */
 	inline cePCBOptionList &GetOptionList(){ return pOptions; }
@@ -145,13 +145,13 @@ public:
 	inline int GetSelectedOption() const{ return pSelectedOption; }
 	
 	/** \brief Set index of the selected option or -1 if there is none. */
-	void SetSelectedOption( int index );
+	void SetSelectedOption(int index);
 	
 	/** \brief Index of the option under the given cursor position or -1 if there is none. */
-	int IndexOfOptionAt( int x, int y ) const;
+	int IndexOfOptionAt(int x, int y) const;
 	
 	/** \brief Select option under the given cursor position if located over an option. */
-	void SelectOptionAt( int x, int y );
+	void SelectOptionAt(int x, int y);
 	
 	/** \brief Clear player choice box. */
 	void Clear();

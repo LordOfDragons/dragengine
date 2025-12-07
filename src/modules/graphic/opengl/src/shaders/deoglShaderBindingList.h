@@ -66,19 +66,19 @@ public:
 	inline int GetCount() const{ return pCount; }
 	
 	/** Named binding is present. */
-	bool HasNamed( const char *name );
+	bool HasNamed(const char *name);
 	
 	/** Index of named binding or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** Binding name at index. */
-	const decString &GetNameAt( int index ) const;
+	const decString &GetNameAt(int index) const;
 	
 	/** Binding target at index. */
-	int GetTargetAt( int index ) const;
+	int GetTargetAt(int index) const;
 	
 	/** Add binding. */
-	void Add( const char *name, int target );
+	void Add(const char *name, int target);
 	
 	/** Remove all bindings. */
 	void RemoveAll();

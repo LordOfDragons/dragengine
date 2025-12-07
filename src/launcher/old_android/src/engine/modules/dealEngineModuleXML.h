@@ -42,7 +42,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new engine module xml read. */
-	dealEngineModuleXML( deLogger *logger, const char *loggerSource );
+	dealEngineModuleXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the engine module xml read. */
 	virtual ~dealEngineModuleXML();
 	/*@}*/
@@ -50,13 +50,13 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, dealEngineModule &module );
+	void ReadFromFile(decBaseFileReader &reader, dealEngineModule &module);
 	/*@}*/
 	
 private:
-	void pReadModule( const decXmlElementTag &root, dealEngineModule &module );
-	void pReadModuleLibrary( const decXmlElementTag &root, dealEngineModule &module );
-	dealEngineModule::eModuleTypes pModuleTypeFromString( const char *typeString ) const;
+	void pReadModule(const decXmlElementTag &root, dealEngineModule &module);
+	void pReadModuleLibrary(const decXmlElementTag &root, dealEngineModule &module);
+	dealEngineModule::eModuleTypes pModuleTypeFromString(const char *typeString) const;
 };
 
 #endif // _DEGLGAME_H_

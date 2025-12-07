@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create keyframe list. */
-	dearAnimationKeyframeVPSList( const deAnimationKeyframeVertexPositionSetList &list );
+	dearAnimationKeyframeVPSList(const deAnimationKeyframeVertexPositionSetList &list);
 	
 	/** Clean up keyframe list. */
 	~dearAnimationKeyframeVPSList();
@@ -60,10 +60,10 @@ public:
 	inline int GetCount() const{ return pKeyframeCount; }
 	
 	/** Keyframe at index. */
-	dearAnimationKeyframeVPS &GetAt( int index ) const;
+	dearAnimationKeyframeVPS &GetAt(int index) const;
 	
 	/** Keyframe with range containing time in seconds or nullptr if absent. */
-	dearAnimationKeyframeVPS *GetWithTime( float time ) const;
+	dearAnimationKeyframeVPS *GetWithTime(float time) const;
 	/*@}*/
 	
 	
@@ -71,7 +71,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateKeyframes( const deAnimationKeyframeVertexPositionSetList &list );
+	void pCreateKeyframes(const deAnimationKeyframeVertexPositionSetList &list);
 };
 
 #endif

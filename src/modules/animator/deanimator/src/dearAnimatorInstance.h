@@ -98,7 +98,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	dearAnimatorInstance( deDEAnimator &module, deAnimatorInstance &instance );
+	dearAnimatorInstance(deDEAnimator &module, deAnimatorInstance &instance);
 	
 	/** Clean up peer. */
 	virtual ~dearAnimatorInstance();
@@ -139,10 +139,10 @@ public:
 	int GetLinkCount() const;
 	
 	/** Link at index. */
-	dearLink *GetLinkAt( int index ) const;
+	dearLink *GetLinkAt(int index) const;
 	
 	/** Add link. */
-	void AddLink( dearLink *link );
+	void AddLink(dearLink *link);
 	
 	
 	
@@ -176,19 +176,19 @@ public:
 	 *          resources take care of waiting for the result to become ready
 	 *          if required.
 	 */
-	virtual void Apply( bool direct );
+	virtual void Apply(bool direct);
 	
 	/**
 	 * Capture current state of component into rules matching identifier.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	virtual void CaptureStateInto(int identifier);
 	
 	/**
 	 * Store animation frame from animation into rules matching identifier.
 	 * \details If \em moveName does not exist in the animation a default state is captured.
 	 * \throws deeInvalidParam \em moveName is nullptr.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	/*@}*/
 	
 	
@@ -214,7 +214,7 @@ public:
 	virtual void ProtectDynamicBonesChanged();
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int index );
+	virtual void ControllerChanged(int index);
 	/*@}*/
 	
 	

@@ -51,61 +51,61 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRCamera::deoglRCamera( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglRCamera::deoglRCamera(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pParentWorld( NULL ),
+pParentWorld(NULL),
 
-pTextureToneMapParams( nullptr ),
-pElapsedToneMapAdaption( 0.0f ),
-pForceToneMapAdaption( true ),
+pTextureToneMapParams(nullptr),
+pElapsedToneMapAdaption(0.0f),
+pForceToneMapAdaption(true),
 
-pEnableHDRR( true ),
-pExposure( 1.0f ),
-pLowestIntensity( 0.0f ),
-pHighestIntensity( 1.0f ),
-pAdaptionTime( 1.0f ),
+pEnableHDRR(true),
+pExposure(1.0f),
+pLowestIntensity(0.0f),
+pHighestIntensity(1.0f),
+pAdaptionTime(1.0f),
 
-pEnableGI( false ),
+pEnableGI(false),
 
-pWhiteIntensity( 1.0f ), // 1.5f
-pBloomIntensity( 1.5f ), // 2.0f
-pBloomStrength( 1.0f ),
-pBloomBlend( 1.0f ),
-pBloomSize( 0.25f ),
+pWhiteIntensity(1.0f), // 1.5f
+pBloomIntensity(1.5f), // 2.0f
+pBloomStrength(1.0f),
+pBloomBlend(1.0f),
+pBloomSize(0.25f),
 
-pToneMapCurveResolution( 1024 ),
-pTextureToneMapCurve( nullptr ),
-pDirtyToneMapCurve( true ),
+pToneMapCurveResolution(1024),
+pTextureToneMapCurve(nullptr),
+pDirtyToneMapCurve(true),
 
-pPlan( NULL ),
+pPlan(NULL),
 
-pInitTexture( true ),
+pInitTexture(true),
 
-pLastAverageLuminance( 0.0f ),
-pDirtyLastAverageLuminance( true ),
+pLastAverageLuminance(0.0f),
+pDirtyLastAverageLuminance(true),
 
-pVR( nullptr )
+pVR(nullptr)
 {
 	try{
 		// create render plan
-		pPlan = new deoglRenderPlan( renderThread );
-		pPlan->SetCamera( this );
+		pPlan = new deoglRenderPlan(renderThread);
+		pPlan->SetCamera(this);
 		
 		// create tone mapping parameters texture
-		pTextureToneMapParams = new deoglTexture( renderThread );
-		pTextureToneMapParams->SetSize( 1, 1 );
-		pTextureToneMapParams->SetFBOFormat( 4, renderThread.GetConfiguration().GetUseHDRR() );
+		pTextureToneMapParams = new deoglTexture(renderThread);
+		pTextureToneMapParams->SetSize(1, 1);
+		pTextureToneMapParams->SetFBOFormat(4, renderThread.GetConfiguration().GetUseHDRR());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
-	LEAK_CHECK_CREATE( renderThread, Camera );
+	LEAK_CHECK_CREATE(renderThread, Camera);
 }
 
 deoglRCamera::~deoglRCamera(){
-	LEAK_CHECK_FREE( pRenderThread, Camera );
+	LEAK_CHECK_FREE(pRenderThread, Camera);
 	pCleanUp();
 }
 
@@ -114,51 +114,51 @@ deoglRCamera::~deoglRCamera(){
 // Management
 ///////////////
 
-void deoglRCamera::SetParentWorld( deoglRWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void deoglRCamera::SetParentWorld(deoglRWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
-	pPlan->SetWorld( NULL ); // has to come first since SetWorld accesses previous world
+	pPlan->SetWorld(NULL); // has to come first since SetWorld accesses previous world
 	
-	if( pParentWorld ){
+	if(pParentWorld){
 		pParentWorld->FreeReference();
 	}
 	
 	pParentWorld = parentWorld;
 	
-	if( parentWorld ){
+	if(parentWorld){
 		parentWorld->AddReference();
 	}
 	
-	pPlan->SetWorld( parentWorld );
+	pPlan->SetWorld(parentWorld);
 }
 
 
 
-void deoglRCamera::SetPosition( const decDVector &position ){
+void deoglRCamera::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
 
 
-void deoglRCamera::SetCameraMatrices( const decDMatrix &matrix ){
+void deoglRCamera::SetCameraMatrices(const decDMatrix &matrix){
 	pCameraMatrix = matrix;
 	pInverseCameraMatrix = pCameraMatrix.QuickInvert();
 }
 
 
 
-void deoglRCamera::SetToneMapParamsTexture( deoglTexture *texture ){
+void deoglRCamera::SetToneMapParamsTexture(deoglTexture *texture){
 	pTextureToneMapParams = texture;
 	pDirtyLastAverageLuminance = true;
 }
 
-void deoglRCamera::SetElapsedToneMapAdaption( float elapsed ){
+void deoglRCamera::SetElapsedToneMapAdaption(float elapsed){
 	pElapsedToneMapAdaption = elapsed;
 }
 
-void deoglRCamera::SetForceToneMapAdaption( bool forceAdaption ){
+void deoglRCamera::SetForceToneMapAdaption(bool forceAdaption){
 	pForceToneMapAdaption = forceAdaption;
 	pDirtyLastAverageLuminance |= forceAdaption;
 }
@@ -173,38 +173,38 @@ bool deoglRCamera::UseCustomToneMapCurve() const{
 
 
 
-void deoglRCamera::SetEnableHDRR( bool enable ){
+void deoglRCamera::SetEnableHDRR(bool enable){
 	pEnableHDRR = enable;
 }
 
-void deoglRCamera::SetExposure( float exposure ){
-	pExposure = decMath::max( exposure, 0.0f );
+void deoglRCamera::SetExposure(float exposure){
+	pExposure = decMath::max(exposure, 0.0f);
 }
 
-void deoglRCamera::SetLowestIntensity( float lowestIntensity ){
-	pLowestIntensity = decMath::max( lowestIntensity, 0.0f );
+void deoglRCamera::SetLowestIntensity(float lowestIntensity){
+	pLowestIntensity = decMath::max(lowestIntensity, 0.0f);
 }
 
-void deoglRCamera::SetHighestIntensity( float highestIntensity ){
-	pHighestIntensity = decMath::max( highestIntensity, 0.0f );
+void deoglRCamera::SetHighestIntensity(float highestIntensity){
+	pHighestIntensity = decMath::max(highestIntensity, 0.0f);
 }
 
-void deoglRCamera::SetAdaptionTime( float adaptionTime ){
-	pAdaptionTime = decMath::max( adaptionTime, 0.0f );
+void deoglRCamera::SetAdaptionTime(float adaptionTime){
+	pAdaptionTime = decMath::max(adaptionTime, 0.0f);
 }
 
 
 
-void deoglRCamera::SetEnableGI( bool enable ){
+void deoglRCamera::SetEnableGI(bool enable){
 	pEnableGI = enable;
-	pPlan->SetUseGIState( enable );
+	pPlan->SetUseGIState(enable);
 }
 
 
 
-void deoglRCamera::SetWhiteIntensity( float intensity ){
-	intensity = decMath::max( intensity, 0.01f );
-	if( fabsf( intensity - pWhiteIntensity ) < FLOAT_SAFE_EPSILON ){
+void deoglRCamera::SetWhiteIntensity(float intensity){
+	intensity = decMath::max(intensity, 0.01f);
+	if(fabsf(intensity - pWhiteIntensity) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -212,24 +212,24 @@ void deoglRCamera::SetWhiteIntensity( float intensity ){
 	pDirtyToneMapCurve = true;
 }
 
-void deoglRCamera::SetBloomIntensity( float intensity ){
-	pBloomIntensity = decMath::max( intensity, 0.0f );
+void deoglRCamera::SetBloomIntensity(float intensity){
+	pBloomIntensity = decMath::max(intensity, 0.0f);
 }
 
-void deoglRCamera::SetBloomStrength( float strength ){
-	pBloomStrength = decMath::max( strength, 0.0f );
+void deoglRCamera::SetBloomStrength(float strength){
+	pBloomStrength = decMath::max(strength, 0.0f);
 }
 
-void deoglRCamera::SetBloomBlend( float blend ){
-	pBloomBlend = decMath::clamp( blend, 0.0f, 1.0f );
+void deoglRCamera::SetBloomBlend(float blend){
+	pBloomBlend = decMath::clamp(blend, 0.0f, 1.0f);
 }
 
-void deoglRCamera::SetBloomSize( float size ){
-	pBloomSize = decMath::clamp( size, 0.0f, 1.0f );
+void deoglRCamera::SetBloomSize(float size){
+	pBloomSize = decMath::clamp(size, 0.0f, 1.0f);
 }
 
-void deoglRCamera::SetToneMapCurve( const decCurveBezier &curve ){
-	if( curve == pToneMapCurve ){
+void deoglRCamera::SetToneMapCurve(const decCurveBezier &curve){
+	if(curve == pToneMapCurve){
 		return;
 	}
 	
@@ -239,20 +239,20 @@ void deoglRCamera::SetToneMapCurve( const decCurveBezier &curve ){
 
 
 
-void deoglRCamera::EnableVR( bool enable ){
-	if( enable ){
-		if( ! pVR ){
-			pVR = new deoglVR( *this );
+void deoglRCamera::EnableVR(bool enable){
+	if(enable){
+		if(!pVR){
+			pVR = new deoglVR(*this);
 		}
 		
-		pRenderThread.SetVRCamera( this );
+		pRenderThread.SetVRCamera(this);
 		
 	}else{
-		if( pRenderThread.GetVRCamera() == this ){
-			pRenderThread.SetVRCamera( nullptr );
+		if(pRenderThread.GetVRCamera() == this){
+			pRenderThread.SetVRCamera(nullptr);
 		}
 		
-		if( pVR ){
+		if(pVR){
 			delete pVR;
 			pVR = nullptr;
 		}
@@ -262,16 +262,16 @@ void deoglRCamera::EnableVR( bool enable ){
 
 
 float deoglRCamera::GetLastAverageLuminance(){
-	if( pDirtyLastAverageLuminance ){
+	if(pDirtyLastAverageLuminance){
 		pDirtyLastAverageLuminance = false;
 		
-		if( pInitTexture || pForceToneMapAdaption ){
+		if(pInitTexture || pForceToneMapAdaption){
 			pLastAverageLuminance = pHighestIntensity * pRenderThread.GetConfiguration().GetHDRRSceneKey();
 			
 		}else{
-			const deoglPixelBuffer::Ref pbToneMapParams( deoglPixelBuffer::Ref::New(
-				new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
-			pTextureToneMapParams->GetPixels( pbToneMapParams );
+			const deoglPixelBuffer::Ref pbToneMapParams(deoglPixelBuffer::Ref::New(
+				new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, 1, 1, 1)));
+			pTextureToneMapParams->GetPixels(pbToneMapParams);
 			pLastAverageLuminance = pbToneMapParams->GetPointerFloat4()->r;
 		}
 	}
@@ -285,12 +285,12 @@ int deoglRCamera::GetEffectCount() const{
 	return pEffects.GetCount();
 }
 
-deoglREffect &deoglRCamera::GetEffectAt( int index ) const{
-	return *( deoglREffect* )pEffects.GetAt( index );
+deoglREffect &deoglRCamera::GetEffectAt(int index) const{
+	return *(deoglREffect*)pEffects.GetAt(index);
 }
 
-void deoglRCamera::AddEffect( deoglREffect *effect ){
-	pEffects.Add( effect );
+void deoglRCamera::AddEffect(deoglREffect *effect){
+	pEffects.Add(effect);
 }
 
 void deoglRCamera::RemoveAllEffects(){
@@ -299,34 +299,34 @@ void deoglRCamera::RemoveAllEffects(){
 
 
 
-void deoglRCamera::Update( float elapsed ){
+void deoglRCamera::Update(float elapsed){
 	pElapsedToneMapAdaption += elapsed;
-	pPlan->GetDirectEnvMapFader().Update( elapsed );
+	pPlan->GetDirectEnvMapFader().Update(elapsed);
 }
 
 void deoglRCamera::PrepareForRender(){
-	if( pInitTexture ){
-		const deoglPixelBuffer::Ref pbToneMapParams( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
+	if(pInitTexture){
+		const deoglPixelBuffer::Ref pbToneMapParams(deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, 1, 1, 1)));
 		deoglPixelBuffer::sFloat4 &dataToneMapParams = *pbToneMapParams->GetPointerFloat4();
 		dataToneMapParams.r = pRenderThread.GetConfiguration().GetHDRRSceneKey(); // averageLuminance
 		dataToneMapParams.g = 0.0f; // scaleLum
 		dataToneMapParams.b = 0.0f; // lwhite
 		dataToneMapParams.a = 0.0f; // brightPassThreshold
-		pTextureToneMapParams->SetPixels( pbToneMapParams );
+		pTextureToneMapParams->SetPixels(pbToneMapParams);
 		pInitTexture = false;
 		pForceToneMapAdaption = true;
 		pDirtyLastAverageLuminance = true;
 	}
 	
-	if( UseCustomToneMapCurve() ){
+	if(UseCustomToneMapCurve()){
 		pPrepareToneMapCurveTexture();
 	}
 	
 	const int effectCount = pEffects.GetCount();
 	int i;
-	for( i=0; i<effectCount; i++ ){
-		( ( deoglREffect* )pEffects.GetAt( i ) )->PrepareForRender();
+	for(i=0; i<effectCount; i++){
+		((deoglREffect*)pEffects.GetAt(i))->PrepareForRender();
 	}
 }
 
@@ -336,52 +336,52 @@ void deoglRCamera::PrepareForRender(){
 //////////////////////
 
 void deoglRCamera::pCleanUp(){
-	EnableVR( false );
-	SetParentWorld( nullptr );
+	EnableVR(false);
+	SetParentWorld(nullptr);
 	
 	RemoveAllEffects();
 	
 	delete pPlan;
 	
-	if( pTextureToneMapCurve ){
+	if(pTextureToneMapCurve){
 		delete pTextureToneMapCurve;
 	}
-	if( pTextureToneMapParams ){
+	if(pTextureToneMapParams){
 		delete pTextureToneMapParams;
 	}
 }
 
 void deoglRCamera::pPrepareToneMapCurveTexture(){
-	if( ! pDirtyToneMapCurve ){
+	if(!pDirtyToneMapCurve){
 		return;
 	}
 	pDirtyToneMapCurve = false;
 	
-	if( ! pTextureToneMapCurve ){
-		pTextureToneMapCurve = new deoglTexture( pRenderThread );
-		pTextureToneMapCurve->SetSize( pToneMapCurveResolution, 1 );
-		pTextureToneMapCurve->SetMapingFormat( 1, true, false );
+	if(!pTextureToneMapCurve){
+		pTextureToneMapCurve = new deoglTexture(pRenderThread);
+		pTextureToneMapCurve->SetSize(pToneMapCurveResolution, 1);
+		pTextureToneMapCurve->SetMapingFormat(1, true, false);
 	}
 	
-	const deoglPixelBuffer::Ref pbuf( deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, pToneMapCurveResolution, 1, 1 ) ) );
+	const deoglPixelBuffer::Ref pbuf(deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, pToneMapCurveResolution, 1, 1)));
 	deoglPixelBuffer::sFloat1 * const pixels = pbuf->GetPointerFloat1();
 	
 	int i;
 	
-	if( pToneMapCurve.GetPointCount() > 0 ){
-		const float factor = pWhiteIntensity / ( float )( pToneMapCurveResolution - 1 );
-		decCurveBezierEvaluator evaluator( pToneMapCurve );
-		for( i=0; i<pToneMapCurveResolution; i++ ){
-			pixels[ i ].r = ( GLfloat )( evaluator.EvaluateAt( factor * ( float )i ) );
+	if(pToneMapCurve.GetPointCount() > 0){
+		const float factor = pWhiteIntensity / (float)(pToneMapCurveResolution - 1);
+		decCurveBezierEvaluator evaluator(pToneMapCurve);
+		for(i=0; i<pToneMapCurveResolution; i++){
+			pixels[i].r = (GLfloat)(evaluator.EvaluateAt(factor * (float)i));
 		}
 		
 	}else{
-		const float factor = 1.0f / ( float )( pToneMapCurveResolution - 1 );
-		for( i=0; i<pToneMapCurveResolution; i++ ){
-			pixels[ i ].r = ( GLfloat )( factor * ( float )i );
+		const float factor = 1.0f / (float)(pToneMapCurveResolution - 1);
+		for(i=0; i<pToneMapCurveResolution; i++){
+			pixels[i].r = (GLfloat)(factor * (float)i);
 		}
 	}
 	
-	pTextureToneMapCurve->SetPixels( pbuf );
+	pTextureToneMapCurve->SetPixels(pbuf);
 }

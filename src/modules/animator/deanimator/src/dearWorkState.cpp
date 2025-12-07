@@ -50,14 +50,14 @@ dearWorkState::~dearWorkState(){
 // Management
 ///////////////
 
-void dearWorkState::SetBoneState( dearBoneState *boneState ){
+void dearWorkState::SetBoneState(dearBoneState *boneState){
 	pBoneState = boneState;
 }
 
-void dearWorkState::SetGlobalMatrix( const decMatrix &matrix ){
+void dearWorkState::SetGlobalMatrix(const decMatrix &matrix){
 	pGlobalMatrix = matrix;
 }
 
-void dearWorkState::SetInverseGlobalMatrix( const decMatrix &matrix ){
+void dearWorkState::SetInverseGlobalMatrix(const decMatrix &matrix){
 	pInvGlobalMatrix = matrix;
 }

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new type. */
-	deoglParticleEmitterInstanceType( deoglParticleEmitterInstance &instance, int index );
+	deoglParticleEmitterInstanceType(deoglParticleEmitterInstance &instance, int index);
 	
 	/** Clean up type. */
 	~deoglParticleEmitterInstanceType();

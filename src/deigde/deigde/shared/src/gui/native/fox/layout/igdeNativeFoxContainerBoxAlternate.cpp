@@ -33,7 +33,7 @@
 namespace{
 
 class igdeNativeFoxContainerBoxAlternateY : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxContainerBoxAlternateY )
+	FXDECLARE(igdeNativeFoxContainerBoxAlternateY)
 	
 protected:
 	igdeNativeFoxContainerBoxAlternateY();
@@ -42,48 +42,48 @@ private:
 	igdeContainerBoxAlternate *pOwner;
 	
 public:
-	igdeNativeFoxContainerBoxAlternateY( igdeContainerBoxAlternate &powner, FXComposite *pparent, int layoutFlags );
+	igdeNativeFoxContainerBoxAlternateY(igdeContainerBoxAlternate &powner, FXComposite *pparent, int layoutFlags);
 	virtual ~igdeNativeFoxContainerBoxAlternateY();
 	
-	long onResize( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 };
 
 
-FXDEFMAP( igdeNativeFoxContainerBoxAlternateY ) igdeNativeFoxContainerBoxAlternateYMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, igdeNativeFoxContainerBoxAlternateY::onResize ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerBoxAlternateY::onChildLayoutFlags )
+FXDEFMAP(igdeNativeFoxContainerBoxAlternateY) igdeNativeFoxContainerBoxAlternateYMap[] = {
+	FXMAPFUNC(SEL_CONFIGURE, 0, igdeNativeFoxContainerBoxAlternateY::onResize),
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerBoxAlternateY::onChildLayoutFlags)
 };
 
-FXIMPLEMENT( igdeNativeFoxContainerBoxAlternateY, FXVerticalFrame,
-	igdeNativeFoxContainerBoxAlternateYMap, ARRAYNUMBER( igdeNativeFoxContainerBoxAlternateYMap ) )
+FXIMPLEMENT(igdeNativeFoxContainerBoxAlternateY, FXVerticalFrame,
+	igdeNativeFoxContainerBoxAlternateYMap, ARRAYNUMBER(igdeNativeFoxContainerBoxAlternateYMap))
 
-igdeNativeFoxContainerBoxAlternateY::igdeNativeFoxContainerBoxAlternateY(){ }
+igdeNativeFoxContainerBoxAlternateY::igdeNativeFoxContainerBoxAlternateY(){}
 
-igdeNativeFoxContainerBoxAlternateY::igdeNativeFoxContainerBoxAlternateY( igdeContainerBoxAlternate &powner, FXComposite *pparent, int layoutFlags ) :
-FXVerticalFrame( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &powner ){
+igdeNativeFoxContainerBoxAlternateY::igdeNativeFoxContainerBoxAlternateY(igdeContainerBoxAlternate &powner, FXComposite *pparent, int layoutFlags) :
+FXVerticalFrame(pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+pOwner(&powner){
 }
 
 igdeNativeFoxContainerBoxAlternateY::~igdeNativeFoxContainerBoxAlternateY(){
 }
 
-long igdeNativeFoxContainerBoxAlternateY::onResize( FXObject*, FXSelector, void* ){
+long igdeNativeFoxContainerBoxAlternateY::onResize(FXObject*, FXSelector, void*){
 	pOwner->OnResize();
 	return 1;
 }
 
-long igdeNativeFoxContainerBoxAlternateY::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxContainerBoxAlternateY::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_X;
 	
-	const int index = pOwner->IndexOfChild( clflags.widget );
-	if( index == -1 ){
+	const int index = pOwner->IndexOfChild(clflags.widget);
+	if(index == -1){
 		return 1;
 	}
 	
 	const bool oddIndex = index % 2 == 1;
-	if( pOwner->GetStretchOdd() == oddIndex ){
+	if(pOwner->GetStretchOdd() == oddIndex){
 		clflags.flags |= LAYOUT_FILL_Y;
 	}
 	
@@ -93,7 +93,7 @@ long igdeNativeFoxContainerBoxAlternateY::onChildLayoutFlags( FXObject*, FXSelec
 
 
 class igdeNativeFoxContainerBoxAlternateX : public FXHorizontalFrame{
-	FXDECLARE( igdeNativeFoxContainerBoxAlternateX )
+	FXDECLARE(igdeNativeFoxContainerBoxAlternateX)
 	
 protected:
 	igdeNativeFoxContainerBoxAlternateX();
@@ -102,50 +102,50 @@ private:
 	igdeContainerBoxAlternate *pOwner;
 	
 public:
-	igdeNativeFoxContainerBoxAlternateX( igdeContainerBoxAlternate &powner, FXComposite *pparent, int layoutFlags );
+	igdeNativeFoxContainerBoxAlternateX(igdeContainerBoxAlternate &powner, FXComposite *pparent, int layoutFlags);
 	virtual ~igdeNativeFoxContainerBoxAlternateX();
 	
-	long onResize( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 };
 
 
-FXDEFMAP( igdeNativeFoxContainerBoxAlternateX ) igdeNativeFoxContainerBoxAlternateXMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, igdeNativeFoxContainerBoxAlternateX::onResize ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerBoxAlternateX::onChildLayoutFlags ),
+FXDEFMAP(igdeNativeFoxContainerBoxAlternateX) igdeNativeFoxContainerBoxAlternateXMap[] = {
+	FXMAPFUNC(SEL_CONFIGURE, 0, igdeNativeFoxContainerBoxAlternateX::onResize),
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerBoxAlternateX::onChildLayoutFlags),
 };
 
-FXIMPLEMENT( igdeNativeFoxContainerBoxAlternateX, FXHorizontalFrame,
-	igdeNativeFoxContainerBoxAlternateXMap, ARRAYNUMBER( igdeNativeFoxContainerBoxAlternateXMap ) )
+FXIMPLEMENT(igdeNativeFoxContainerBoxAlternateX, FXHorizontalFrame,
+	igdeNativeFoxContainerBoxAlternateXMap, ARRAYNUMBER(igdeNativeFoxContainerBoxAlternateXMap))
 
-igdeNativeFoxContainerBoxAlternateX::igdeNativeFoxContainerBoxAlternateX(){ }
+igdeNativeFoxContainerBoxAlternateX::igdeNativeFoxContainerBoxAlternateX(){}
 
-igdeNativeFoxContainerBoxAlternateX::igdeNativeFoxContainerBoxAlternateX( igdeContainerBoxAlternate &powner,
-	FXComposite *pparent, int layoutFlags ) :
-FXHorizontalFrame( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
-	powner.GetSpacing(), powner.GetSpacing() ),
-pOwner( &powner ){
+igdeNativeFoxContainerBoxAlternateX::igdeNativeFoxContainerBoxAlternateX(igdeContainerBoxAlternate &powner,
+	FXComposite *pparent, int layoutFlags) :
+FXHorizontalFrame(pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
+	powner.GetSpacing(), powner.GetSpacing()),
+pOwner(&powner){
 }
 
 igdeNativeFoxContainerBoxAlternateX::~igdeNativeFoxContainerBoxAlternateX(){
 }
 
-long igdeNativeFoxContainerBoxAlternateX::onResize( FXObject*, FXSelector, void* ){
+long igdeNativeFoxContainerBoxAlternateX::onResize(FXObject*, FXSelector, void*){
 	pOwner->OnResize();
 	return 1;
 }
 
-long igdeNativeFoxContainerBoxAlternateX::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxContainerBoxAlternateX::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_Y;
 	
-	const int index = pOwner->IndexOfChild( clflags.widget );
-	if( index == -1 ){
+	const int index = pOwner->IndexOfChild(clflags.widget);
+	if(index == -1){
 		return 1;
 	}
 	
 	const bool oddIndex = index % 2 == 1;
-	if( pOwner->GetStretchOdd() == oddIndex ){
+	if(pOwner->GetStretchOdd() == oddIndex){
 		clflags.flags |= LAYOUT_FILL_X;
 	}
 	
@@ -159,35 +159,35 @@ long igdeNativeFoxContainerBoxAlternateX::onChildLayoutFlags( FXObject*, FXSelec
 // Class igdeNativeFoxContainerBoxAlternate
 /////////////////////////////////////////////
 
-void *igdeNativeFoxContainerBoxAlternate::CreateNativeWidget( igdeContainerBoxAlternate &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+void *igdeNativeFoxContainerBoxAlternate::CreateNativeWidget(igdeContainerBoxAlternate &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( &powner );
+	const int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags(&powner);
 	
-	if( powner.GetAxis() == igdeContainerBoxAlternate::eaX ){
-		return new igdeNativeFoxContainerBoxAlternateX( powner, pparent, layoutFlags );
+	if(powner.GetAxis() == igdeContainerBoxAlternate::eaX){
+		return new igdeNativeFoxContainerBoxAlternateX(powner, pparent, layoutFlags);
 		
 	}else{
-		return new igdeNativeFoxContainerBoxAlternateY( powner, pparent, layoutFlags );
+		return new igdeNativeFoxContainerBoxAlternateY(powner, pparent, layoutFlags);
 	}
 }
 
-void igdeNativeFoxContainerBoxAlternate::PostCreateNativeWidget( igdeContainerBoxAlternate &powner, void *native ){
-	FXComposite &pparent = *( ( FXComposite* )powner.GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
-		( ( FXPacker* )native )->create();
+void igdeNativeFoxContainerBoxAlternate::PostCreateNativeWidget(igdeContainerBoxAlternate &powner, void *native){
+	FXComposite &pparent = *((FXComposite*)powner.GetParent()->GetNativeContainer());
+	if(pparent.id()){
+		((FXPacker*)native)->create();
 	}
 }
 
-void igdeNativeFoxContainerBoxAlternate::DestroyNativeWidget( igdeContainerBoxAlternate&, void *native ){
-	delete ( FXPacker* )native;
+void igdeNativeFoxContainerBoxAlternate::DestroyNativeWidget(igdeContainerBoxAlternate&, void *native){
+	delete (FXPacker*)native;
 }
 
 #endif

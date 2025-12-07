@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan tasks. */
-	deoglRenderPlanTasks( deoglRenderPlan &plan );
+	deoglRenderPlanTasks(deoglRenderPlan &plan);
 	
 	/** Clean up render plan tasks. */
 	~deoglRenderPlanTasks();
@@ -130,13 +130,13 @@ public:
 	
 	
 	/** Build compute render tasks and begin reading back steps. */
-	void BuildComputeRenderTasks( const deoglRenderPlanMasked *mask, bool rebuild = false );
+	void BuildComputeRenderTasks(const deoglRenderPlanMasked *mask, bool rebuild = false);
 	
 	/** Finish read back compute render tasks. */
-	void FinishReadBackComputeRenderTasks( const deoglRenderPlanMasked *mask );
+	void FinishReadBackComputeRenderTasks(const deoglRenderPlanMasked *mask);
 	
 	/** Start building render tasks. */
-	void StartBuildTasks( const deoglRenderPlanMasked *mask );
+	void StartBuildTasks(const deoglRenderPlanMasked *mask);
 	
 	/** Wait for task building to finish. */
 	void WaitFinishBuildingTasksDepth();
@@ -149,11 +149,11 @@ public:
 	
 	
 private:
-	void pBuildCRTSolidDepth( deoglComputeRenderTask &renderTask,
-		const deoglRenderPlanMasked *mask , bool xray );
+	void pBuildCRTSolidDepth(deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray);
 	
-	void pBuildCRTSolidGeometry( deoglComputeRenderTask &renderTask,
-		const deoglRenderPlanMasked *mask , bool xray );
+	void pBuildCRTSolidGeometry(deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray);
 };
 
 #endif

@@ -68,21 +68,21 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create tree item. */
-	igdeTreeItem( const char *text );
+	igdeTreeItem(const char *text);
 	
-	igdeTreeItem( const char *text, igdeIcon *icon );
+	igdeTreeItem(const char *text, igdeIcon *icon);
 	
-	igdeTreeItem( const char *text, igdeIcon *icon, const char *description );
+	igdeTreeItem(const char *text, igdeIcon *icon, const char *description);
 	
 	/** \brief Create tree item. */
-	igdeTreeItem( const char *text, void *data );
+	igdeTreeItem(const char *text, void *data);
 	
-	igdeTreeItem( const char *text, igdeIcon *icon, void *data );
+	igdeTreeItem(const char *text, igdeIcon *icon, void *data);
 	
-	igdeTreeItem( const char *text, igdeIcon *icon, const char *description, void *data );
+	igdeTreeItem(const char *text, igdeIcon *icon, const char *description, void *data);
 	
 	/** \brief Create copy of tree item. */
-	igdeTreeItem( const igdeTreeItem &treeItem );
+	igdeTreeItem(const igdeTreeItem &treeItem);
 	
 	
 	
@@ -105,37 +105,37 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
 	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief User data pointer. */
 	inline void *GetData() const{ return pData; }
 	
 	/** \brief Set user data pointer. */
-	void SetData( void *data );
+	void SetData(void *data);
 	
 	/** \brief Item is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if item is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** \brief Item is expanded. */
 	inline bool GetExpanded() const{ return pExpanded; }
 	
 	/** \brief Set if item is expanded. */
-	void SetExpanded( bool expanded );
+	void SetExpanded(bool expanded);
 	
 	
 	
@@ -143,25 +143,25 @@ public:
 	inline igdeTreeItem *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent item. */
-	void SetParent( igdeTreeItem *item );
+	void SetParent(igdeTreeItem *item);
 	
 	/** \brief Previous item. */
 	inline igdeTreeItem *GetPrevious() const{ return pPrevious; }
 	
 	/** \brief Set previous item. */
-	void SetPrevious( igdeTreeItem *item );
+	void SetPrevious(igdeTreeItem *item);
 	
 	/** \brief Next item. */
 	inline igdeTreeItem *GetNext() const{ return pNext; }
 	
 	/** \brief Set next item. */
-	void SetNext( igdeTreeItem *item );
+	void SetNext(igdeTreeItem *item);
 	
 	/** \brief First child item. */
 	inline igdeTreeItem *GetFirstChild() const{ return pFirstChild; }
 	
 	/** \brief Set first child item. */
-	void SetFirstChild( igdeTreeItem *item );
+	void SetFirstChild(igdeTreeItem *item);
 	
 	/** \brief Get last child. */
 	igdeTreeItem *GetLastChild() const;
@@ -172,7 +172,7 @@ public:
 	
 	
 	/** \brief Set from another item. */
-	igdeTreeItem &operator=( const igdeTreeItem &treeItem );
+	igdeTreeItem &operator=(const igdeTreeItem &treeItem);
 	
 	
 	
@@ -186,7 +186,7 @@ public:
 	 * \brief Set native widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void SetNativeWidget( void *nativeWidget );
+	void SetNativeWidget(void *nativeWidget);
 	/*@}*/
 };
 

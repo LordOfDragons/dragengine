@@ -46,7 +46,7 @@ public:
 	fbxPropertyArrayDouble();
 	
 	/** \brief Load property. */
-	fbxPropertyArrayDouble( decBaseFileReader &reader );
+	fbxPropertyArrayDouble(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
@@ -62,34 +62,34 @@ public:
 	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Value at index. */
-	double GetValueAt( int index ) const;
+	double GetValueAt(int index) const;
 	
 	/** \brief Add value. */
-	void AddValue( double value );
+	void AddValue(double value);
 	
 	/** \brief Casting throwing exception if wrong type. */
 	virtual fbxPropertyArrayDouble &CastArrayDouble();
 	
 	/** \brief Get values as specific type if possible. */
 	virtual int GetValueCount() const;
-	virtual bool GetValueAtAsBool( int index ) const;
-	virtual int GetValueAtAsInt( int index ) const;
-	virtual int64_t GetValueAtAsLong( int index ) const;
-	virtual float GetValueAtAsFloat( int index ) const;
-	virtual double GetValueAtAsDouble( int index ) const;
+	virtual bool GetValueAtAsBool(int index) const;
+	virtual int GetValueAtAsInt(int index) const;
+	virtual int64_t GetValueAtAsLong(int index) const;
+	virtual float GetValueAtAsFloat(int index) const;
+	virtual double GetValueAtAsDouble(int index) const;
 	
 	/** \brief Read sequence of values as composed type. */
-	virtual decVector2 GetValueAtAsVector2( int index ) const;
-	virtual decVector GetValueAtAsVector( int index ) const;
-	virtual decMatrix GetValueAtAsMatrix( int index ) const;
+	virtual decVector2 GetValueAtAsVector2(int index) const;
+	virtual decVector GetValueAtAsVector(int index) const;
+	virtual decMatrix GetValueAtAsMatrix(int index) const;
 	
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	virtual void Save(decBaseFileWriter &writer);
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;
 	/*@}*/
 };
 

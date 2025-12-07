@@ -50,7 +50,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dynamic skin. */
-	seDynamicSkin( seSkin *parentSkin );
+	seDynamicSkin(seSkin *parentSkin);
 	/** Cleans up the dynamic skin. */
 	~seDynamicSkin();
 	/*@}*/
@@ -66,7 +66,7 @@ public:
 	/** Dispose of all resources. */
 	void Dispose();
 	/** Updates the dynamic skin. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/** Resets the dynamic skin. */
 	void Reset();
 	/*@}*/
@@ -76,9 +76,9 @@ public:
 	/** Retrieves the renderable list read-only. */
 	inline const seDynamicSkinRenderableList &GetRenderableList() const{ return pRenderableList; }
 	/** Adds a new renderable. */
-	void AddRenderable( seDynamicSkinRenderable *renderable );
+	void AddRenderable(seDynamicSkinRenderable *renderable);
 	/** Removes a renderable. */
-	void RemoveRenderable( seDynamicSkinRenderable *renderable );
+	void RemoveRenderable(seDynamicSkinRenderable *renderable);
 	/** Removes all renderables. */
 	void RemoveAllRenderables();
 	/** Retrieves the active renderable or NULL if none is active. */
@@ -86,7 +86,7 @@ public:
 	/** Determines if there is an active renderable or not. */
 	bool HasActiveRenderable() const;
 	/** Sets the active renderable or NULL if none is active. */
-	void SetActiveRenderable( seDynamicSkinRenderable *renderable );
+	void SetActiveRenderable(seDynamicSkinRenderable *renderable);
 	/*@}*/
 	
 private:

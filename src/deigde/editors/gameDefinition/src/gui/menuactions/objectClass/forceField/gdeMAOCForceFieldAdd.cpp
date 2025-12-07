@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCForceFieldAdd::gdeMAOCForceFieldAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Force Field...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class force field" )
+gdeMAOCForceFieldAdd::gdeMAOCForceFieldAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Force Field...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class force field")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Force Field...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCForceFieldAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCForceFieldAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddForceField(&objectClass, gdeOCForceField::Ref::NewWith());
 }
 
 void gdeMAOCForceFieldAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

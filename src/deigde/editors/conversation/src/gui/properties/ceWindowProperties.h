@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWindowProperties( ceWindowMain &windowMain );
+	ceWindowProperties(ceWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -73,7 +73,7 @@ public:
 	ceWPTopic &GetPanelTopic() const;
 	
 	/** \brief Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Conversation path changed. */
 	void OnConversationPathChanged();

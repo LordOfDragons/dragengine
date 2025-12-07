@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	meCDProperties( const decStringDictionary &properties );
+	meCDProperties(const decStringDictionary &properties);
 	
 protected:
 	/**

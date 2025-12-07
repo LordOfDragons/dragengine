@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video audio decoder peer. */
-	deBaseVideoAudioDecoder( decBaseFileReader *file );
+	deBaseVideoAudioDecoder(decBaseFileReader *file);
 	
 	/** \brief Clean up sound decoder object. */
 	virtual ~deBaseVideoAudioDecoder();
@@ -64,7 +64,7 @@ public:
 	virtual int GetPosition() = 0;
 	
 	/** \brief Set file position in samples from the beginning. */
-	virtual void SetPosition( int position ) = 0;
+	virtual void SetPosition(int position) = 0;
 	
 	/**
 	 * \brief Read chunk of sound data from current file position and advance.
@@ -75,7 +75,7 @@ public:
 	 * has been reached. If reading fails an error is signaled using the engine error
 	 * signaling and 0 returned.
 	 */
-	virtual int ReadSamples( void *buffer, int size ) = 0;
+	virtual int ReadSamples(void *buffer, int size) = 0;
 	/*@}*/
 };
 

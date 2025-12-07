@@ -40,8 +40,8 @@
 ////////////////////////////
 
 igdeSMCollider::igdeSMCollider() :
-pDelegee( NULL ),
-pUserPointer( NULL ){
+pDelegee(NULL),
+pUserPointer(NULL){
 }
 
 igdeSMCollider::~igdeSMCollider(){
@@ -52,11 +52,11 @@ igdeSMCollider::~igdeSMCollider(){
 // Management
 ///////////////
 
-void igdeSMCollider::SetDelegee( deBaseScriptingCollider *delegee ){
+void igdeSMCollider::SetDelegee(deBaseScriptingCollider *delegee){
 	pDelegee = delegee;
 }
 
-void igdeSMCollider::SetUserPointer( void *userPointer ){
+void igdeSMCollider::SetUserPointer(void *userPointer){
 	pUserPointer = userPointer;
 }
 
@@ -65,22 +65,22 @@ void igdeSMCollider::SetUserPointer( void *userPointer ){
 // Notifications
 //////////////////
 
-void igdeSMCollider::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( pDelegee ){
-		pDelegee->CollisionResponse( owner, info );
+void igdeSMCollider::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(pDelegee){
+		pDelegee->CollisionResponse(owner, info);
 	}
 }
 
-bool igdeSMCollider::CanHitCollider( deCollider *owner, deCollider *collider ){
-	if( pDelegee ){
-		return pDelegee->CanHitCollider( owner, collider );
+bool igdeSMCollider::CanHitCollider(deCollider *owner, deCollider *collider){
+	if(pDelegee){
+		return pDelegee->CanHitCollider(owner, collider);
 	}
 	
 	return false;
 }
 
-void igdeSMCollider::ColliderChanged( deCollider *owner ){
-	if( pDelegee ){
-		pDelegee->ColliderChanged( owner );
+void igdeSMCollider::ColliderChanged(deCollider *owner){
+	if(pDelegee){
+		pDelegee->ColliderChanged(owner);
 	}
 }

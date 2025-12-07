@@ -79,8 +79,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new occlusion mesh with the given resource manager. */
-	deOcclusionMesh( deOcclusionMeshManager *manager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deOcclusionMesh(deOcclusionMeshManager *manager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -112,19 +112,19 @@ public:
 	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** \brief Set number of bones. */
-	void SetBoneCount( int count );
+	void SetBoneCount(int count);
 	
 	/** \brief Retrieves a bone by index. */
-	deOcclusionMeshBone &GetBoneAt( int index ) const;
+	deOcclusionMeshBone &GetBoneAt(int index) const;
 	
 	/** \brief Pointer to the bones. */
 	inline deOcclusionMeshBone *GetBones() const{ return pBones; }
 	
 	/** \brief Index of the bone with the given name or -1 if not found. */
-	int IndexOfBoneNamed( const char *name ) const;
+	int IndexOfBoneNamed(const char *name) const;
 	
 	/** \brief Determiens if a bone with the given name exists. */
-	bool HasBoneNamed( const char *name ) const;
+	bool HasBoneNamed(const char *name) const;
 	/*@}*/
 	
 	
@@ -135,10 +135,10 @@ public:
 	inline int GetWeightCount() const{ return pWeightCount; }
 	
 	/** \brief Set number of weights. */
-	void SetWeightCount( int count );
+	void SetWeightCount(int count);
 	
 	/** \brief Weight at the given position. */
-	deOcclusionMeshWeight &GetWeightAt( int index ) const;
+	deOcclusionMeshWeight &GetWeightAt(int index) const;
 	
 	/** \brief Pointer to the weights. */
 	inline deOcclusionMeshWeight *GetWeights() const{ return pWeights; }
@@ -147,13 +147,13 @@ public:
 	inline int GetWeightGroupCount() const{ return pWeightGroupCount; }
 	
 	/** \brief Set number of weight groups. */
-	void SetWeightGroupCount( int count );
+	void SetWeightGroupCount(int count);
 	
 	/** \brief Weight group at the given position. */
-	int GetWeightGroupAt( int index ) const;
+	int GetWeightGroupAt(int index) const;
 	
 	/** \brief Set weight group at the given position. */
-	void SetWeightGroupAt( int index, int weightSetCount ) const;
+	void SetWeightGroupAt(int index, int weightSetCount) const;
 	
 	/** \brief Pointer to the weight groups. */
 	inline int *GetWeightGroups() const{ return pWeightGroups; }
@@ -167,10 +167,10 @@ public:
 	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Set number of vertices. */
-	void SetVertexCount( int count );
+	void SetVertexCount(int count);
 	
 	/** \brief Vertex at the given position. */
-	deOcclusionMeshVertex &GetVertexAt( int index ) const;
+	deOcclusionMeshVertex &GetVertexAt(int index) const;
 	
 	/** \brief Pointer to the vertices. */
 	inline deOcclusionMeshVertex *GetVertices() const{ return pVertices; }
@@ -184,13 +184,13 @@ public:
 	inline int GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Set number of corners. */
-	void SetCornerCount( int count );
+	void SetCornerCount(int count);
 	
 	/** \brief Corner at the given position. */
-	unsigned short GetCornerAt( int index ) const;
+	unsigned short GetCornerAt(int index) const;
 	
 	/** \brief Set corner at the given position. */
-	void SetCornerAt( int index, unsigned short vertexIndex );
+	void SetCornerAt(int index, unsigned short vertexIndex);
 	
 	/** \brief Pointer to the corners. */
 	inline unsigned short *GetCorners() const{ return pCorners; }
@@ -204,19 +204,19 @@ public:
 	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Set number of faces. */
-	void SetFaceCount( int count );
+	void SetFaceCount(int count);
 	
 	/** \brief Number of faces at the end of the face list that are double sided not single sided. */
 	inline int GetDoubleSidedFaceCount() const{ return pDoubleSidedFaceCount; }
 	
 	/** \brief Set number of faces at the end of the face list that are double sided not single sided. */
-	void SetDoubleSidedFaceCount( int count );
+	void SetDoubleSidedFaceCount(int count);
 	
 	/** \brief Corner count for the face at the given position. */
-	unsigned short GetFaceAt( int index ) const;
+	unsigned short GetFaceAt(int index) const;
 	
 	/** \brief Set corner count for the face at the given position. */
-	void SetFaceAt( int index, unsigned short cornerCount );
+	void SetFaceAt(int index, unsigned short cornerCount);
 	
 	/** \brief Pointer to the face corner counts. */
 	inline unsigned short *GetFaces() const{ return pFaces; }
@@ -230,7 +230,7 @@ public:
 	inline deBaseGraphicOcclusionMesh *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicOcclusionMesh *peer );
+	void SetPeerGraphic(deBaseGraphicOcclusionMesh *peer);
 	/*@}*/
 };
 

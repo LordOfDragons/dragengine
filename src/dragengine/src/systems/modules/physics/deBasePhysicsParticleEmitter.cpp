@@ -49,13 +49,13 @@ void deBasePhysicsParticleEmitter::BurstChanged(){
 void deBasePhysicsParticleEmitter::ControllerCountChanged(){
 }
 
-void deBasePhysicsParticleEmitter::ControllerChanged( int ){
+void deBasePhysicsParticleEmitter::ControllerChanged(int){
 }
 
 void deBasePhysicsParticleEmitter::TypeCountChanged(){
 }
 
-void deBasePhysicsParticleEmitter::TypeChanged( int ){
+void deBasePhysicsParticleEmitter::TypeChanged(int){
 }
 
 void deBasePhysicsParticleEmitter::GraphicModuleRequestsChanged(){

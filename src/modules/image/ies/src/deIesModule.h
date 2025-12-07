@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deIesModule( deLoadableModule &loadableModule );
+	deIesModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deIesModule();
@@ -48,13 +48,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Quick check if the file can be loaded by this module.  */
-	virtual deBaseImageInfo *InitLoadImage( decBaseFileReader &reader );
+	virtual deBaseImageInfo *InitLoadImage(decBaseFileReader &reader);
 	
 	/** \brief Load image. */
-	virtual void LoadImage( decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos );
+	virtual void LoadImage(decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos);
 	
 	/** \brief Save image. */
-	virtual void SaveImage( decBaseFileWriter &writer, const deImage &image );
+	virtual void SaveImage(decBaseFileWriter &writer, const deImage &image);
 	/*@}*/
 };
 

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetScaling::gdeUOCNavBlockerSetScaling( gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, const decVector &newValue ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCNavBlockerSetScaling::gdeUOCNavBlockerSetScaling(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, const decVector &newValue) :
+pObjectClass(NULL),
+pNavBlocker(NULL)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-blocker set scaling" );
+	SetShortInfo("Nav-blocker set scaling");
 	
 	pOldValue = navblocker->GetScaling();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavBlocker( NULL )
 }
 
 gdeUOCNavBlockerSetScaling::~gdeUOCNavBlockerSetScaling(){
-	if( pNavBlocker ){
+	if(pNavBlocker){
 		pNavBlocker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavBlockerSetScaling::~gdeUOCNavBlockerSetScaling(){
 ///////////////
 
 void gdeUOCNavBlockerSetScaling::Undo(){
-	pNavBlocker->SetScaling( pOldValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetScaling(pOldValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerSetScaling::Redo(){
-	pNavBlocker->SetScaling( pNewValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetScaling(pNewValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }

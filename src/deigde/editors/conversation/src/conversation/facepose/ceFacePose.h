@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new face pose. */
-	ceFacePose( const char *name = "Face Pose");
+	ceFacePose(const char *name = "Face Pose");
 	/** Cleans up the face pose. */
 	virtual ~ceFacePose();
 	/*@}*/
@@ -62,12 +62,12 @@ public:
 	/** Retrieves the conversation or NULL if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	/** Sets the conversation or NULL if not set. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the controller value list. */
 	inline ceControllerValueList &GetControllerList(){ return pControllers; }
 	inline const ceControllerValueList &GetControllerList() const{ return pControllers; }

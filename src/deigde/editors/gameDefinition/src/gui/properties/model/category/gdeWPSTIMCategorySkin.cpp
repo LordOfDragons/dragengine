@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMCategorySkin::gdeWPSTIMCategorySkin( gdeWPSTreeModel &tree, gdeCategory *category ) :
-gdeWPSTIMCategory( tree, etCategorySkin, category ){
+gdeWPSTIMCategorySkin::gdeWPSTIMCategorySkin(gdeWPSTreeModel &tree, gdeCategory *category) :
+gdeWPSTIMCategory(tree, etCategorySkin, category){
 }
 
 gdeWPSTIMCategorySkin::~gdeWPSTIMCategorySkin(){
@@ -56,22 +56,22 @@ gdeWPSTIMCategorySkin::~gdeWPSTIMCategorySkin(){
 // Management
 ///////////////
 
-gdeWPSTIMCategorySkin *gdeWPSTIMCategorySkin::GetChildWith( gdeCategory* category, bool deep ) const{
-	gdeWPSTIMCategorySkin *child = ( gdeWPSTIMCategorySkin* )GetFirstChild();
+gdeWPSTIMCategorySkin *gdeWPSTIMCategorySkin::GetChildWith(gdeCategory* category, bool deep) const{
+	gdeWPSTIMCategorySkin *child = (gdeWPSTIMCategorySkin*)GetFirstChild();
 	
-	while( child ){
-		if( child->GetCategory() == category ){
+	while(child){
+		if(child->GetCategory() == category){
 			return child;
 		}
 		
-		if( deep ){
-			gdeWPSTIMCategorySkin * const deepChild = child->GetChildWith( category, true );
-			if( deepChild ){
+		if(deep){
+			gdeWPSTIMCategorySkin * const deepChild = child->GetChildWith(category, true);
+			if(deepChild){
 				return deepChild;
 			}
 		}
 		
-		child = ( gdeWPSTIMCategorySkin* )child->GetNext();
+		child = (gdeWPSTIMCategorySkin*)child->GetNext();
 	}
 	
 	return NULL;
@@ -86,27 +86,27 @@ void gdeWPSTIMCategorySkin::CategoriesChanged(){
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeCategory * const category = list.GetAt( i );
-		gdeWPSTIMCategorySkin * const modelCategory = GetChildWith( category, false );
+	for(i=0; i<count; i++){
+		gdeCategory * const category = list.GetAt(i);
+		gdeWPSTIMCategorySkin * const modelCategory = GetChildWith(category, false);
 		
-		if( modelCategory ){
+		if(modelCategory){
 			modelCategory->CategoriesChanged();
 			
 		}else{
-			item.TakeOver( new gdeWPSTIMCategorySkin( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+			item.TakeOver(new gdeWPSTIMCategorySkin(GetTree(), list.GetAt(i)));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMCategorySkin * const modelCategory = ( gdeWPSTIMCategorySkin* )child;
+	while(child){
+		gdeWPSTIMCategorySkin * const modelCategory = (gdeWPSTIMCategorySkin*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelCategory->GetCategory() ) ){
-			RemoveModel( modelCategory );
+		if(!list.Has(modelCategory->GetCategory())){
+			RemoveModel(modelCategory);
 		}
 	}
 	
@@ -122,41 +122,41 @@ void gdeWPSTIMCategorySkin::OnAddedToTree(){
 	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMCategorySkin( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item.TakeOver(new gdeWPSTIMCategorySkin(GetTree(), list.GetAt(i)));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
 void gdeWPSTIMCategorySkin::OnSelected(){
-	GetGameDefinition().SetActiveCategory( GetCategory() );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotCategorySkin );
+	GetGameDefinition().SetActiveCategory(GetCategory());
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotCategorySkin);
 }
 
-void gdeWPSTIMCategorySkin::OnContextMenu( igdeMenuCascade &contextMenu ){
-	gdeWPSTIMCategory::OnContextMenu( contextMenu );
+void gdeWPSTIMCategorySkin::OnContextMenu(igdeMenuCascade &contextMenu){
+	gdeWPSTIMCategory::OnContextMenu(contextMenu);
 }
 
-void gdeWPSTIMCategorySkin::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMCategorySkin::SelectBestMatching(const char *string){
+	if(!string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	igdeTreeItem *child = GetFirstChild();
 	
-	while( child ){
-		gdeCategory * const category = ( ( gdeWPSTIMCategorySkin* )child )->GetCategory();
+	while(child){
+		gdeCategory * const category = ((gdeWPSTIMCategorySkin*)child)->GetCategory();
 		child = child->GetNext();
 		
-		if( category->GetName().GetLower().FindString( searchString ) == -1 ){
+		if(category->GetName().GetLower().FindString(searchString) == -1){
 			continue;
 		}
 		
-		GetGameDefinition().SetActiveCategory( category );
-		GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotCategorySkin );
+		GetGameDefinition().SetActiveCategory(category);
+		GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotCategorySkin);
 		return;
 	}
 }

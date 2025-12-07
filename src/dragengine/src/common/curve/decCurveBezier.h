@@ -63,7 +63,7 @@ public:
 	decCurveBezier();
 	
 	/** \brief Create copy of bezier curve. */
-	decCurveBezier( const decCurveBezier &curve );
+	decCurveBezier(const decCurveBezier &curve);
 	
 	/** \brief Clean up the bezier curve. */
 	~decCurveBezier();
@@ -81,7 +81,7 @@ public:
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount()-1.
 	 */
-	const decCurveBezierPoint &GetPointAt( int position ) const;
+	const decCurveBezierPoint &GetPointAt(int position) const;
 	
 	/**
 	 * \brief Index of the point with matching x coordinates or the point closest on the smaller side.
@@ -89,17 +89,17 @@ public:
 	 * This method can be used to find the interval a point is located in by returning the most
 	 * prior point. Retrieves -1 if there are no points satisfying this criteria.
 	 */
-	int FindPointPriorTo( float coordinate ) const;
+	int FindPointPriorTo(float coordinate) const;
 	
 	/** \brief Add point returning the index where it has been added. */
-	int AddPoint( const decCurveBezierPoint &point );
+	int AddPoint(const decCurveBezierPoint &point);
 	
 	/**
 	 * \brief Remove point from the given position.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount()-1.
 	 */
-	void RemovePointFrom( int position );
+	void RemovePointFrom(int position);
 	
 	/** \brief Remove all points. */
 	void RemoveAllPoints();
@@ -111,7 +111,7 @@ public:
 	 * \brief Set interpolation mode.
 	 * \throws deeInvalidParam \em mode is not a member of decCurveBezier::eInterpolationModes.
 	 */
-	void SetInterpolationMode( eInterpolationModes mode );
+	void SetInterpolationMode(eInterpolationModes mode);
 	
 	
 	
@@ -127,13 +127,13 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Curves are equal. */
-	bool operator==( const decCurveBezier &curve ) const;
+	bool operator==(const decCurveBezier &curve) const;
 	
 	/** \brief Curves are not equal. */
-	bool operator!=( const decCurveBezier &curve ) const;
+	bool operator!=(const decCurveBezier &curve) const;
 	
 	/** \brief Copy another curve to this curve. */
-	decCurveBezier &operator=( const decCurveBezier &curve );
+	decCurveBezier &operator=(const decCurveBezier &curve);
 	/*@}*/
 };
 

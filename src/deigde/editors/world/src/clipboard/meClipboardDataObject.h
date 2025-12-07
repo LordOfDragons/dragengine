@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data from selected objects. */
-	meClipboardDataObject( const meWorld &world );
+	meClipboardDataObject(const meWorld &world);
 	
 protected:
 	/**
@@ -77,7 +77,7 @@ public:
 	inline int GetObjectCount() const{ return pObjectCount; }
 	
 	/** \brief Object at index. */
-	meCDOObject *GetObjectAt( int index ) const;
+	meCDOObject *GetObjectAt(int index) const;
 	/*@}*/
 	
 	

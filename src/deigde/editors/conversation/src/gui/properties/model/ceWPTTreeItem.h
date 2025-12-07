@@ -53,7 +53,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item. */
-	ceWPTTreeItem( igdeTreeList *treeList );
+	ceWPTTreeItem(igdeTreeList *treeList);
 	
 protected:
 	/** \brief Clean up tree item. */
@@ -72,22 +72,22 @@ public:
 	inline ceWPTTreeItemModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model or \em NULL. */
-	void SetModel( ceWPTTreeItemModel *model );
+	void SetModel(ceWPTTreeItemModel *model);
 	
 	
 	
 	/** \brief Add item with model. */
-	void AddItem( ceWPTTreeItemModel *model );
+	void AddItem(ceWPTTreeItemModel *model);
 	
 	/** \brief Insert item with model at position. */
-	void InsertItem( ceWPTTreeItemModel *model, int position );
+	void InsertItem(ceWPTTreeItemModel *model, int position);
 	
 	/**
 	 * \brief Remove item for model.
 	 * 
 	 * Clears model from removed item if present.
 	 */
-	void RemoveItem( ceWPTTreeItemModel *model );
+	void RemoveItem(ceWPTTreeItemModel *model);
 	
 	/**
 	 * \brief Remove all child items.
@@ -108,7 +108,7 @@ public:
 	void OnSelected();
 	
 	/** \brief Build context menu. */
-	void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief User expanded item. */
 	void OnExpanded();

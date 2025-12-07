@@ -48,30 +48,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-seLayer::seLayer( igdeEnvironment &environment ) :
-pEnvironment( environment ),
+seLayer::seLayer(igdeEnvironment &environment) :
+pEnvironment(environment),
 
-pSky( NULL ),
+pSky(NULL),
 
-pName( "Layer" ),
+pName("Layer"),
 
-pColor( 1.0f, 1.0f, 1.0f ),
-pIntensity( 20.0f ),
-pTransparency( 1.0f ),
+pColor(1.0f, 1.0f, 1.0f),
+pIntensity(20.0f),
+pTransparency(1.0f),
 
-pLightColor( 1.0f, 1.0f, 1.0f ),
-pLightIntensity( 0.0f ),
-pAmbientIntensity( 0.0f ),
+pLightColor(1.0f, 1.0f, 1.0f),
+pLightIntensity(0.0f),
+pAmbientIntensity(0.0f),
 
-pMulBySkyLight( false ),
-pMulBySkyColor( false ),
+pMulBySkyLight(false),
+pMulBySkyColor(false),
 
-pActiveBody( NULL ),
+pActiveBody(NULL),
 
-pActiveTarget( deSkyLayer::etRotationX ),
+pActiveTarget(deSkyLayer::etRotationX),
 
-pSelected( false ),
-pActive( false ){
+pSelected(false),
+pActive(false){
 }
 
 seLayer::~seLayer(){
@@ -83,8 +83,8 @@ seLayer::~seLayer(){
 // Management
 ///////////////
 
-void seLayer::SetSky( seSky *sky ){
-	if( sky == pSky ){
+void seLayer::SetSky(seSky *sky){
+	if(sky == pSky){
 		return;
 	}
 	
@@ -92,163 +92,163 @@ void seLayer::SetSky( seSky *sky ){
 	UpdateRelativeResources();
 }
 
-void seLayer::SetName( const char *name ){
-	if( pName == name ){
+void seLayer::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
-	if( pSky ){
-		pSky->NotifyLayerNameChanged( this );
+	if(pSky){
+		pSky->NotifyLayerNameChanged(this);
 	}
 }
 
 
 
-void seLayer::SetOffset( const decVector &offset ){
-	if( offset.IsEqualTo( pOffset ) ){
+void seLayer::SetOffset(const decVector &offset){
+	if(offset.IsEqualTo(pOffset)){
 		return;
 	}
 	
 	pOffset = offset;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetOrientation( const decVector &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void seLayer::SetOrientation(const decVector &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetColor( const decColor &color ){
-	if( color.IsEqualTo( pColor ) ){
+void seLayer::SetColor(const decColor &color){
+	if(color.IsEqualTo(pColor)){
 		return;
 	}
 	
 	pColor = color;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetIntensity( float intensity ){
-	intensity = decMath::max( intensity, 0.0f );
-	if( fabsf( intensity - pIntensity ) <= FLOAT_SAFE_EPSILON ){
+void seLayer::SetIntensity(float intensity){
+	intensity = decMath::max(intensity, 0.0f);
+	if(fabsf(intensity - pIntensity) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pIntensity = intensity;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetTransparency( float transparency ){
-	transparency = decMath::clamp( transparency, 0.0f, 1.0f );
-	if( fabsf( transparency - pTransparency ) <= FLOAT_SAFE_EPSILON ){
+void seLayer::SetTransparency(float transparency){
+	transparency = decMath::clamp(transparency, 0.0f, 1.0f);
+	if(fabsf(transparency - pTransparency) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pTransparency = transparency;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetSkinPath( const char *skinPath ){
-	if( pPathSkin == skinPath ){
+void seLayer::SetSkinPath(const char *skinPath){
+	if(pPathSkin == skinPath){
 		return;
 	}
 	
 	pPathSkin = skinPath;
 	pUpdateSkin();
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
 
 
-void seLayer::SetLightOrientation( const decVector &orientation ){
-	if( orientation.IsEqualTo( pLightOrientation ) ){
+void seLayer::SetLightOrientation(const decVector &orientation){
+	if(orientation.IsEqualTo(pLightOrientation)){
 		return;
 	}
 	
 	pLightOrientation = orientation;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetLightColor( const decColor &color ){
-	if( color.IsEqualTo( pLightColor ) ){
+void seLayer::SetLightColor(const decColor &color){
+	if(color.IsEqualTo(pLightColor)){
 		return;
 	}
 	
 	pLightColor = color;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetLightIntensity( float intensity ){
-	intensity = decMath::max( intensity, 0.0f );
-	if( fabsf( intensity - pLightIntensity ) <= FLOAT_SAFE_EPSILON ){
+void seLayer::SetLightIntensity(float intensity){
+	intensity = decMath::max(intensity, 0.0f);
+	if(fabsf(intensity - pLightIntensity) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pLightIntensity = intensity;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetAmbientIntensity( float intensity ){
-	intensity = decMath::max( intensity, 0.0f );
-	if( fabsf( intensity - pAmbientIntensity ) <= FLOAT_SAFE_EPSILON ){
+void seLayer::SetAmbientIntensity(float intensity){
+	intensity = decMath::max(intensity, 0.0f);
+	if(fabsf(intensity - pAmbientIntensity) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pAmbientIntensity = intensity;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetMultiplyBySkyLight( bool multiply ){
-	if( multiply == pMulBySkyLight ){
+void seLayer::SetMultiplyBySkyLight(bool multiply){
+	if(multiply == pMulBySkyLight){
 		return;
 	}
 	
 	pMulBySkyLight = multiply;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetMultiplyBySkyColor( bool multiply ){
-	if( multiply == pMulBySkyColor ){
+void seLayer::SetMultiplyBySkyColor(bool multiply){
+	if(multiply == pMulBySkyColor){
 		return;
 	}
 	
 	pMulBySkyColor = multiply;
-	if( pSky ){
-		pSky->NotifyLayerChanged( this );
+	if(pSky){
+		pSky->NotifyLayerChanged(this);
 	}
 }
 
-void seLayer::SetSelected( bool selected ){
+void seLayer::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void seLayer::SetActive( bool active ){
+void seLayer::SetActive(bool active){
 	pActive = active;
 }
 
@@ -257,8 +257,8 @@ void seLayer::UpdateRelativeResources(){
 	
 	const int bodyCount = pBodies.GetCount();
 	int i;
-	for( i=0; i<bodyCount; i++ ){
-		pBodies.GetAt( i )->UpdateRelativeResources();
+	for(i=0; i<bodyCount; i++){
+		pBodies.GetAt(i)->UpdateRelativeResources();
 	}
 }
 
@@ -267,73 +267,73 @@ void seLayer::UpdateRelativeResources(){
 // Bodies
 ///////////
 
-void seLayer::AddBody( seBody *body ){
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+void seLayer::AddBody(seBody *body){
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pBodies.Add( body );
-	body->SetLayer( this );
+	pBodies.Add(body);
+	body->SetLayer(this);
 	
-	if( pSky ){
-		pSky->NotifyBodyStructureChanged( this );
+	if(pSky){
+		pSky->NotifyBodyStructureChanged(this);
 	}
 	
-	if( ! pActiveBody ){
-		SetActiveBody( body );
-	}
-}
-
-void seLayer::InsertBodyAt( seBody *body, int index ){
-	if( ! body ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pBodies.InsertAt( body, index );
-	body->SetLayer( this );
-	
-	if( pSky ){
-		pSky->NotifyBodyStructureChanged( this );
-	}
-	
-	if( ! pActiveBody ){
-		SetActiveBody( body );
+	if(!pActiveBody){
+		SetActiveBody(body);
 	}
 }
 
-void seLayer::MoveBodyTo( seBody *body, int index ){
-	pBodies.MoveTo( body, index );
+void seLayer::InsertBodyAt(seBody *body, int index){
+	if(!body){
+		DETHROW(deeInvalidParam);
+	}
 	
-	if( pSky ){
-		pSky->NotifyBodyStructureChanged( this );
+	pBodies.InsertAt(body, index);
+	body->SetLayer(this);
+	
+	if(pSky){
+		pSky->NotifyBodyStructureChanged(this);
+	}
+	
+	if(!pActiveBody){
+		SetActiveBody(body);
 	}
 }
 
-void seLayer::RemoveBody( seBody *body ){
-	if( ! pBodies.Has( body ) ){
-		DETHROW( deeInvalidParam );
+void seLayer::MoveBodyTo(seBody *body, int index){
+	pBodies.MoveTo(body, index);
+	
+	if(pSky){
+		pSky->NotifyBodyStructureChanged(this);
+	}
+}
+
+void seLayer::RemoveBody(seBody *body){
+	if(!pBodies.Has(body)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( body->GetActive() ){
+	if(body->GetActive()){
 		const int count = pBodies.GetCount();
-		const int index = pBodies.IndexOf( body );
+		const int index = pBodies.IndexOf(body);
 		
-		if( index < count - 1 ){
-			SetActiveBody( pBodies.GetAt( index + 1 ) );
+		if(index < count - 1){
+			SetActiveBody(pBodies.GetAt(index + 1));
 			
-		}else if( index > 0 ){
-			SetActiveBody( pBodies.GetAt( index - 1 ) );
+		}else if(index > 0){
+			SetActiveBody(pBodies.GetAt(index - 1));
 			
 		}else{
-			SetActiveBody( NULL );
+			SetActiveBody(NULL);
 		}
 	}
 	
-	body->SetLayer( NULL );
-	pBodies.Remove( body );
+	body->SetLayer(NULL);
+	pBodies.Remove(body);
 	
-	if( pSky ){
-		pSky->NotifyBodyStructureChanged( this );
+	if(pSky){
+		pSky->NotifyBodyStructureChanged(this);
 	}
 }
 
@@ -341,37 +341,37 @@ void seLayer::RemoveAllBodies(){
 	const int count = pBodies.GetCount();
 	int i;
 	
-	SetActiveBody( NULL );
+	SetActiveBody(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pBodies.GetAt( i )->SetLayer( NULL );
+	for(i=0; i<count; i++){
+		pBodies.GetAt(i)->SetLayer(NULL);
 	}
 	pBodies.RemoveAll();
 	
-	if( pSky ){
-		pSky->NotifyBodyStructureChanged( this );
+	if(pSky){
+		pSky->NotifyBodyStructureChanged(this);
 	}
 }
 
-void seLayer::SetActiveBody( seBody *body ){
-	if( body == pActiveBody ){
+void seLayer::SetActiveBody(seBody *body){
+	if(body == pActiveBody){
 		return;
 	}
 	
-	if( pActiveBody ){
-		pActiveBody->SetActive( false );
+	if(pActiveBody){
+		pActiveBody->SetActive(false);
 		pActiveBody->FreeReference();
 	}
 	
 	pActiveBody = body;
 	
-	if( body ){
+	if(body){
 		body->AddReference();
-		body->SetActive( true );
+		body->SetActive(true);
 	}
 	
-	if( pSky ){
-		pSky->NotifyActiveBodyChanged( this );
+	if(pSky){
+		pSky->NotifyActiveBodyChanged(this);
 	}
 }
 
@@ -380,38 +380,38 @@ void seLayer::SetActiveBody( seBody *body ){
 // Targets
 ////////////
 
-const seControllerTarget &seLayer::GetTarget( deSkyLayer::eTargets target ) const{
-	if( target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity ){
-		DETHROW( deeInvalidParam );
+const seControllerTarget &seLayer::GetTarget(deSkyLayer::eTargets target) const{
+	if(target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
+		DETHROW(deeInvalidParam);
 	}
-	return pTargets[ target ];
+	return pTargets[target];
 }
 
-seControllerTarget &seLayer::GetTarget( deSkyLayer::eTargets target ){
-	if( target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity ){
-		DETHROW( deeInvalidParam );
+seControllerTarget &seLayer::GetTarget(deSkyLayer::eTargets target){
+	if(target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
+		DETHROW(deeInvalidParam);
 	}
-	return pTargets[ target ];
+	return pTargets[target];
 }
 
-void seLayer::SetActiveTarget( deSkyLayer::eTargets target ){
-	if( target == pActiveTarget ){
+void seLayer::SetActiveTarget(deSkyLayer::eTargets target){
+	if(target == pActiveTarget){
 		return;
 	}
 	
 	pActiveTarget = target;
-	if( pSky ){
-		pSky->NotifyActiveTargetChanged( this );
+	if(pSky){
+		pSky->NotifyActiveTargetChanged(this);
 	}
 }
 
-void seLayer::NotifyTargetChanged( deSkyLayer::eTargets target ){
-	if( target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity ){
-		DETHROW( deeInvalidParam );
+void seLayer::NotifyTargetChanged(deSkyLayer::eTargets target){
+	if(target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pSky ){
-		pSky->NotifyTargetChanged( this, target );
+	if(pSky){
+		pSky->NotifyTargetChanged(this, target);
 	}
 }
 
@@ -421,23 +421,23 @@ void seLayer::NotifyTargetChanged( deSkyLayer::eTargets target ){
 //////////////////////
 
 void seLayer::pUpdateSkin(){
-	if( pPathSkin.IsEmpty() ){
+	if(pPathSkin.IsEmpty()){
 		pEngSkin = NULL;
 		return;
 	}
 	
 	deSkinManager &skinMgr = *pEnvironment.GetEngineController()->GetEngine()->GetSkinManager();
 	const char *basePath = "/";
-	if( pSky ){
+	if(pSky){
 		basePath = pSky->GetDirectoryPath();
 	}
 	
 	try{
-		pEngSkin.TakeOver( skinMgr.LoadSkin( pPathSkin, basePath ) );
+		pEngSkin.TakeOver(skinMgr.LoadSkin(pPathSkin, basePath));
 		
-	}catch( const deException & ){
-		if( pSky ){
-			pEngSkin = pSky->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
+	}catch(const deException &){
+		if(pSky){
+			pEngSkin = pSky->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
 		}
 	}
 }

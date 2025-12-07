@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	reIGDEModule( igdeEnvironment &environment );
+	reIGDEModule(igdeEnvironment &environment);
 	
 	/** \brief Clean up editor module. */
 	virtual ~reIGDEModule();

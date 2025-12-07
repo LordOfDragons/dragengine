@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
-	deoglCLVisitorElements( deoglCollideList *collideList, deoglDCollisionVolume *volume );
+	deoglCLVisitorElements(deoglCollideList *collideList, deoglDCollisionVolume *volume);
 	/*@}*/
 	
 	/** \name Management */
@@ -59,7 +59,7 @@ public:
 	 * Visits an octree node. The default implementation is to visit all
 	 * world elements stored in the node.
 	 */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	virtual void VisitNode(deoglDOctree *node, int intersection);
 	/*@}*/
 };
 

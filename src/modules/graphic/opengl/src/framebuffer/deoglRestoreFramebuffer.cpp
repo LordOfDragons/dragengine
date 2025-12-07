@@ -36,11 +36,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRestoreFramebuffer::deoglRestoreFramebuffer( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pFBO( renderThread.GetFramebuffer().GetActive() ){
+deoglRestoreFramebuffer::deoglRestoreFramebuffer(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pFBO(renderThread.GetFramebuffer().GetActive()){
 }
 
 deoglRestoreFramebuffer::~deoglRestoreFramebuffer(){
-	pRenderThread.GetFramebuffer().Activate( pFBO );
+	pRenderThread.GetFramebuffer().Activate(pFBO);
 }

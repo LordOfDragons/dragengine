@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPBone( reWindowProperties &windowProperties );
+	reWPBone(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -85,13 +85,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Bone. */
 	inline reRigBone *GetBone() const{ return pBone; }
 	
 	/** \brief Set bone. */
-	void SetBone( reRigBone *bone );
+	void SetBone(reRigBone *bone);
 	
 	/** \brief Update list of possible parent bone names. */
 	void UpdateParentBoneList();

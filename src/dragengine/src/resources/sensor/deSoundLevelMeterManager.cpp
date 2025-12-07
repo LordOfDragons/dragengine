@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSoundLevelMeterManager::deSoundLevelMeterManager( deEngine *engine ) :
-deResourceManager( engine, ertSoundLevelMeter ){
-	SetLoggingName( "sound level meter" );
+deSoundLevelMeterManager::deSoundLevelMeterManager(deEngine *engine) :
+deResourceManager(engine, ertSoundLevelMeter){
+	SetLoggingName("sound level meter");
 }
 
 deSoundLevelMeterManager::~deSoundLevelMeterManager(){
@@ -61,22 +61,22 @@ int deSoundLevelMeterManager::GetSoundLevelMeterCount() const{
 }
 
 deSoundLevelMeter *deSoundLevelMeterManager::GetRootSoundLevelMeter() const{
-	return ( deSoundLevelMeter* )pSoundLevelMeters.GetRoot();
+	return (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 }
 
 deSoundLevelMeter *deSoundLevelMeterManager::CreateSoundLevelMeter(){
 	deSoundLevelMeter *soundLevelMeter = NULL;
 	
 	try{
-		soundLevelMeter = new deSoundLevelMeter( this );
+		soundLevelMeter = new deSoundLevelMeter(this);
 		
-		GetAudioSystem()->LoadSoundLevelMeter( soundLevelMeter );
-		GetScriptingSystem()->LoadSoundLevelMeter( soundLevelMeter );
+		GetAudioSystem()->LoadSoundLevelMeter(soundLevelMeter);
+		GetScriptingSystem()->LoadSoundLevelMeter(soundLevelMeter);
 		
-		pSoundLevelMeters.Add( soundLevelMeter );
+		pSoundLevelMeters.Add(soundLevelMeter);
 		
-	}catch( const deException & ){
-		if( soundLevelMeter ){
+	}catch(const deException &){
+		if(soundLevelMeter){
 			soundLevelMeter->FreeReference();
 		}
 		throw;
@@ -89,11 +89,11 @@ deSoundLevelMeter *deSoundLevelMeterManager::CreateSoundLevelMeter(){
 
 void deSoundLevelMeterManager::ReleaseLeakingResources(){
 	const int count = GetSoundLevelMeterCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	LogWarnFormat( "%i leaking sound level meters", count );
+	LogWarnFormat("%i leaking sound level meters", count);
 	pSoundLevelMeters.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 }
 
@@ -103,49 +103,49 @@ void deSoundLevelMeterManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSoundLevelMeterManager::SystemAudioLoad(){
-	deSoundLevelMeter *soundLevelMeter = ( deSoundLevelMeter* )pSoundLevelMeters.GetRoot();
+	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	deAudioSystem &audioSystem = *GetAudioSystem();
 	
-	while( soundLevelMeter ){
-		if( ! soundLevelMeter->GetPeerAudio() ){
-			audioSystem.LoadSoundLevelMeter( soundLevelMeter );
+	while(soundLevelMeter){
+		if(!soundLevelMeter->GetPeerAudio()){
+			audioSystem.LoadSoundLevelMeter(soundLevelMeter);
 		}
-		soundLevelMeter = ( deSoundLevelMeter* )soundLevelMeter->GetLLManagerNext();
+		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
 	}
 }
 
 void deSoundLevelMeterManager::SystemAudioUnload(){
-	deSoundLevelMeter *soundLevelMeter = ( deSoundLevelMeter* )pSoundLevelMeters.GetRoot();
+	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	
-	while( soundLevelMeter ){
-		soundLevelMeter->SetPeerAudio( NULL );
-		soundLevelMeter = ( deSoundLevelMeter* )soundLevelMeter->GetLLManagerNext();
+	while(soundLevelMeter){
+		soundLevelMeter->SetPeerAudio(NULL);
+		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
 	}
 }
 
 void deSoundLevelMeterManager::SystemScriptingLoad(){
-	deSoundLevelMeter *soundLevelMeter = ( deSoundLevelMeter* )pSoundLevelMeters.GetRoot();
+	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	deScriptingSystem &scriptingSystem = *GetScriptingSystem();
 	
-	while( soundLevelMeter ){
-		if( ! soundLevelMeter->GetPeerScripting() ){
-			scriptingSystem.LoadSoundLevelMeter( soundLevelMeter );
+	while(soundLevelMeter){
+		if(!soundLevelMeter->GetPeerScripting()){
+			scriptingSystem.LoadSoundLevelMeter(soundLevelMeter);
 		}
-		soundLevelMeter = ( deSoundLevelMeter* )soundLevelMeter->GetLLManagerNext();
+		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
 	}
 }
 
 void deSoundLevelMeterManager::SystemScriptingUnload(){
-	deSoundLevelMeter *soundLevelMeter = ( deSoundLevelMeter* )pSoundLevelMeters.GetRoot();
+	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	
-	while( soundLevelMeter ){
-		soundLevelMeter->SetPeerScripting( NULL );
-		soundLevelMeter = ( deSoundLevelMeter* )soundLevelMeter->GetLLManagerNext();
+	while(soundLevelMeter){
+		soundLevelMeter->SetPeerScripting(NULL);
+		soundLevelMeter = (deSoundLevelMeter*)soundLevelMeter->GetLLManagerNext();
 	}
 }
 
 
 
-void deSoundLevelMeterManager::RemoveResource( deResource *resource ){
-	pSoundLevelMeters.RemoveIfPresent( resource );
+void deSoundLevelMeterManager::RemoveResource(deResource *resource){
+	pSoundLevelMeters.RemoveIfPresent(resource);
 }

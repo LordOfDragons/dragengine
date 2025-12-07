@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPUndoHistoryListener( gdeWPUndoHistory &panel );
+	gdeWPUndoHistoryListener(gdeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( gdeGameDefinition *gameDefinition );
+	virtual void UndoChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

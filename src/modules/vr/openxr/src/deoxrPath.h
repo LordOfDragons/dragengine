@@ -49,13 +49,13 @@ public:
 	deoxrPath();
 	
 	/** Create path. */
-	deoxrPath( const deoxrInstance &instance, XrPath path );
+	deoxrPath(const deoxrInstance &instance, XrPath path);
 	
 	/** Create path. */
-	deoxrPath( const deoxrInstance &instance, const char *name );
+	deoxrPath(const deoxrInstance &instance, const char *name);
 	
 	/** Create path. */
-	deoxrPath( const deoxrPath &path );
+	deoxrPath(const deoxrPath &path);
 	
 	/** Clean up path. */
 	~deoxrPath();
@@ -102,31 +102,31 @@ public:
 	inline bool operator!() const{ return pPath == XR_NULL_PATH; }
 	
 	/** Same path. */
-	inline bool operator==( const deoxrPath &path ) const{ return pPath == path.pPath; }
+	inline bool operator==(const deoxrPath &path) const{ return pPath == path.pPath; }
 	
 	/** Same path. */
-	inline bool operator==( XrPath path ) const{ return pPath == path; }
+	inline bool operator==(XrPath path) const{ return pPath == path; }
 	
 	/** Same path. */
-	inline bool operator==( const decString &path ) const{ return pName == path; }
+	inline bool operator==(const decString &path) const{ return pName == path; }
 	
 	/** Same path. */
-	inline bool operator==( const char *path ) const{ return pName == path; }
+	inline bool operator==(const char *path) const{ return pName == path; }
 	
 	/** Different path. */
-	inline bool operator!=( const deoxrPath &path ) const{ return pPath != path.pPath; }
+	inline bool operator!=(const deoxrPath &path) const{ return pPath != path.pPath; }
 	
 	/** Different path. */
-	inline bool operator!=( XrPath path ) const{ return pPath != path; }
+	inline bool operator!=(XrPath path) const{ return pPath != path; }
 	
 	/** Different path. */
-	inline bool operator!=( const decString &path ) const{ return pName != path; }
+	inline bool operator!=(const decString &path) const{ return pName != path; }
 	
 	/** Different path. */
-	inline bool operator!=( const char *path ) const{ return pName != path; }
+	inline bool operator!=(const char *path) const{ return pName != path; }
 	
 	/** Assign. */
-	deoxrPath &operator=( const deoxrPath &path );
+	deoxrPath &operator=(const deoxrPath &path);
 	/*@}*/
 };
 

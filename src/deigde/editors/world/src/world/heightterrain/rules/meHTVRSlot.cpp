@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meHTVRSlot::meHTVRSlot() :
-pIsInput( true ){
+pIsInput(true){
 }
 
 meHTVRSlot::~meHTVRSlot(){
@@ -52,7 +52,7 @@ meHTVRSlot::~meHTVRSlot(){
 // Management
 ///////////////
 
-void meHTVRSlot::SetIsInput( bool isInput ){
+void meHTVRSlot::SetIsInput(bool isInput){
 	pIsInput = isInput;
 }
 
@@ -62,27 +62,27 @@ int meHTVRSlot::GetLinkCount() const{
 	return pLinks.GetCount();
 }
 
-meHTVRLink *meHTVRSlot::GetLinkAt( int index ) const{
-	return ( meHTVRLink* )pLinks.GetAt( index );
+meHTVRLink *meHTVRSlot::GetLinkAt(int index) const{
+	return (meHTVRLink*)pLinks.GetAt(index);
 }
 
-int meHTVRSlot::IndexOfLink( meHTVRLink *link ) const{
-	return pLinks.IndexOf( link );
+int meHTVRSlot::IndexOfLink(meHTVRLink *link) const{
+	return pLinks.IndexOf(link);
 }
 
-bool meHTVRSlot::HasLink( meHTVRLink *link ) const{
-	return pLinks.Has( link );
+bool meHTVRSlot::HasLink(meHTVRLink *link) const{
+	return pLinks.Has(link);
 }
 
-void meHTVRSlot::AddLink( meHTVRLink *link ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+void meHTVRSlot::AddLink(meHTVRLink *link){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Add( link );
+	pLinks.Add(link);
 }
 
-void meHTVRSlot::RemoveLink( meHTVRLink *link ){
-	pLinks.Remove( link );
+void meHTVRSlot::RemoveLink(meHTVRLink *link){
+	pLinks.Remove(link);
 }
 
 void meHTVRSlot::RemoveAllLinks(){
@@ -91,13 +91,13 @@ void meHTVRSlot::RemoveAllLinks(){
 
 
 
-bool meHTVRSlot::HasLinkWithSource( meHTVRule *rule, int slot ) const{
+bool meHTVRSlot::HasLinkWithSource(meHTVRule *rule, int slot) const{
 	const int count = pLinks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meHTVRLink &link = *( meHTVRLink* )pLinks.GetAt( i );
-		if( link.GetSourceRule() == rule && link.GetSourceSlot() == slot ){
+	for(i=0; i<count; i++){
+		const meHTVRLink &link = *(meHTVRLink*)pLinks.GetAt(i);
+		if(link.GetSourceRule() == rule && link.GetSourceSlot() == slot){
 			return true;
 		}
 	}
@@ -105,13 +105,13 @@ bool meHTVRSlot::HasLinkWithSource( meHTVRule *rule, int slot ) const{
 	return false;
 }
 
-meHTVRLink *meHTVRSlot::GetLinkWithSource( meHTVRule *rule, int slot ) const{
+meHTVRLink *meHTVRSlot::GetLinkWithSource(meHTVRule *rule, int slot) const{
 	const int count = pLinks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		meHTVRLink * const link = ( meHTVRLink* )pLinks.GetAt( i );
-		if( link->GetSourceRule() == rule && link->GetSourceSlot() == slot ){
+	for(i=0; i<count; i++){
+		meHTVRLink * const link = (meHTVRLink*)pLinks.GetAt(i);
+		if(link->GetSourceRule() == rule && link->GetSourceSlot() == slot){
 			return link;
 		}
 	}
@@ -119,13 +119,13 @@ meHTVRLink *meHTVRSlot::GetLinkWithSource( meHTVRule *rule, int slot ) const{
 	return NULL;
 }
 
-bool meHTVRSlot::HasLinkWithDestination( meHTVRule *rule, int slot ) const{
+bool meHTVRSlot::HasLinkWithDestination(meHTVRule *rule, int slot) const{
 	const int count = pLinks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meHTVRLink &link = *( meHTVRLink* )pLinks.GetAt( i );
-		if( link.GetDestinationRule() == rule && link.GetDestinationSlot() == slot ){
+	for(i=0; i<count; i++){
+		const meHTVRLink &link = *(meHTVRLink*)pLinks.GetAt(i);
+		if(link.GetDestinationRule() == rule && link.GetDestinationSlot() == slot){
 			return true;
 		}
 	}
@@ -133,13 +133,13 @@ bool meHTVRSlot::HasLinkWithDestination( meHTVRule *rule, int slot ) const{
 	return false;
 }
 
-meHTVRLink *meHTVRSlot::GetLinkWithDestination( meHTVRule *rule, int slot ) const{
+meHTVRLink *meHTVRSlot::GetLinkWithDestination(meHTVRule *rule, int slot) const{
 	const int count = pLinks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		meHTVRLink * const link = ( meHTVRLink* )pLinks.GetAt( i );
-		if( link->GetDestinationRule() == rule && link->GetDestinationSlot() == slot ){
+	for(i=0; i<count; i++){
+		meHTVRLink * const link = (meHTVRLink*)pLinks.GetAt(i);
+		if(link->GetDestinationRule() == rule && link->GetDestinationSlot() == slot){
 			return link;
 		}
 	}

@@ -58,7 +58,7 @@ class igdeWidget;
  * toolbar itself has to be deleted too.
  */
 class igdeNativeFoxToolBar : public FXToolBar{
-	FXDECLARE( igdeNativeFoxToolBar )
+	FXDECLARE(igdeNativeFoxToolBar)
 	
 protected:
 	igdeNativeFoxToolBar();
@@ -76,14 +76,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxToolBar( igdeToolBar &owner, FXComposite *parent,
-		FXComposite *windowParent, int layoutFlags );
+	igdeNativeFoxToolBar(igdeToolBar &owner, FXComposite *parent,
+		FXComposite *windowParent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxToolBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxToolBar* CreateNativeWidget( igdeToolBar &owner );
+	static igdeNativeFoxToolBar* CreateNativeWidget(igdeToolBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

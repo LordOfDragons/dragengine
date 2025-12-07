@@ -49,11 +49,11 @@ pActionTime(0.0f)
 	pEntryCount = 0;
 	pEntrySize = 0;
 	
-	SetStackSize( 100 );
+	SetStackSize(100);
 }
 
 cePlaybackActionStack::~cePlaybackActionStack(){
-	if( pEntries ){
+	if(pEntries){
 		Clear();
 		delete [] pEntries;
 	}
@@ -72,15 +72,15 @@ void cePlaybackActionStack::SetActionTime(float time){
 // Management
 ///////////////
 
-void cePlaybackActionStack::SetStackSize( int size ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+void cePlaybackActionStack::SetStackSize(int size){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	Clear();
 	
-	cePlaybackActionStackEntry *newArray = new cePlaybackActionStackEntry[ size ];
-	if( pEntries ){
+	cePlaybackActionStackEntry *newArray = new cePlaybackActionStackEntry[size];
+	if(pEntries){
 		delete [] pEntries;
 	}
 	pEntries = newArray;
@@ -88,59 +88,59 @@ void cePlaybackActionStack::SetStackSize( int size ){
 }
 
 cePlaybackActionStackEntry &cePlaybackActionStack::GetTop() const{
-	if( pEntryCount == 0 ){
-		DETHROW( deeStackEmpty );
+	if(pEntryCount == 0){
+		DETHROW(deeStackEmpty);
 	}
 	
-	return pEntries[ pEntryCount - 1 ];
+	return pEntries[pEntryCount - 1];
 }
 
-cePlaybackActionStackEntry &cePlaybackActionStack::GetAt( int position ) const{
-	if( position < 0 || position >= pEntryCount ){
-		DETHROW( deeInvalidParam );
+cePlaybackActionStackEntry &cePlaybackActionStack::GetAt(int position) const{
+	if(position < 0 || position >= pEntryCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pEntries[ pEntryCount - 1 - position ];
+	return pEntries[pEntryCount - 1 - position];
 }
 
-void cePlaybackActionStack::Push( ceConversationTopic *topic,
-ceConversationAction *action, const ceConversationActionList *list, int index ){
-	if( ( ! topic && ! action ) || ! list || index < 0 ){
-		DETHROW( deeInvalidParam );
+void cePlaybackActionStack::Push(ceConversationTopic *topic,
+ceConversationAction *action, const ceConversationActionList *list, int index){
+	if((!topic && !action) || !list || index < 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( pEntryCount == pEntrySize ){
-		DETHROW( deeStackOverflow );
+	if(pEntryCount == pEntrySize){
+		DETHROW(deeStackOverflow);
 	}
 	
-	pEntries[ pEntryCount ].SetParentTopic( topic );
-	pEntries[ pEntryCount ].SetParentAction( action );
-	pEntries[ pEntryCount ].SetParentList( list );
-	pEntries[ pEntryCount ].SetNextIndex( index );
+	pEntries[pEntryCount].SetParentTopic(topic);
+	pEntries[pEntryCount].SetParentAction(action);
+	pEntries[pEntryCount].SetParentList(list);
+	pEntries[pEntryCount].SetNextIndex(index);
 	pEntryCount++;
 }
 
 void cePlaybackActionStack::Pop(){
-	if( pEntryCount == 0 ){
-		DETHROW( deeStackEmpty );
+	if(pEntryCount == 0){
+		DETHROW(deeStackEmpty);
 	}
 	
 	pEntryCount--;
-	pEntries[ pEntryCount ].Clear();
+	pEntries[pEntryCount].Clear();
 }
 
 bool cePlaybackActionStack::HasNextAction() const{
-	if( pEntryCount == 0 ){
+	if(pEntryCount == 0){
 		return NULL;
 		
 	}else{
-		return pEntries[ pEntryCount - 1 ].HasNextAction();
+		return pEntries[pEntryCount - 1].HasNextAction();
 	}
 }
 
 void cePlaybackActionStack::Clear(){
-	while( pEntryCount > 0 ){
+	while(pEntryCount > 0){
 		pEntryCount--;
-		pEntries[ pEntryCount ].Clear();
+		pEntries[pEntryCount].Clear();
 	}
 	
 	pActionTime = 0.0f;

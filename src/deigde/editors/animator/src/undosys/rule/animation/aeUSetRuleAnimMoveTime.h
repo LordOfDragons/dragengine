@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleAnimMoveTime( aeRuleAnimation *rule, float newTime );
+	aeUSetRuleAnimMoveTime(aeRuleAnimation *rule, float newTime);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleAnimMoveTime();

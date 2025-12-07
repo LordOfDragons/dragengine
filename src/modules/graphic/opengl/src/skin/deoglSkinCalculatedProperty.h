@@ -46,7 +46,7 @@ public:
 	
 	
 private:
-	int pMappedComponent[ 4 ];
+	int pMappedComponent[4];
 	bool pRequiresTexture;
 	
 	
@@ -67,19 +67,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Mapped component. */
-	int GetMappedComponent( int index ) const;
+	int GetMappedComponent(int index) const;
 	
 	/** Set mapped component. */
-	void SetMappedComponent( int index, int mapped );
+	void SetMappedComponent(int index, int mapped);
 	
 	/** Requires texture. */
 	inline bool GetRequiresTexture() const{ return pRequiresTexture; }
 	
 	/** Set if texture is required. */
-	void SetRequiresTexture( bool requiresTexture );
+	void SetRequiresTexture(bool requiresTexture);
 	
 	/** Calculated value. */
-	decColor Calculate( const deoglSkinState &skinState ) const;
+	decColor Calculate(const deoglSkinState &skinState) const;
 	/*@}*/
 };
 

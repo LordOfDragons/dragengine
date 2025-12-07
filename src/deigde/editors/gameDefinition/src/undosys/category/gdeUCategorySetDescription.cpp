@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUCategorySetDescription::gdeUCategorySetDescription( gdeGameDefinition *gameDefinition,
-gdeCategory *category, eCategoryType type, const char *newValue ) :
-gdeUCategoryBase( gameDefinition, type ),
-pCategory( NULL )
+gdeUCategorySetDescription::gdeUCategorySetDescription(gdeGameDefinition *gameDefinition,
+gdeCategory *category, eCategoryType type, const char *newValue) :
+gdeUCategoryBase(gameDefinition, type),
+pCategory(NULL)
 {
-	if( ! category ){
-		DETHROW( deeInvalidParam );
+	if(!category){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Category set description" );
+	SetShortInfo("Category set description");
 	
 	pOldValue = category->GetDescription();
 	pNewValue = newValue;
@@ -59,7 +59,7 @@ pCategory( NULL )
 }
 
 gdeUCategorySetDescription::~gdeUCategorySetDescription(){
-	if( pCategory ){
+	if(pCategory){
 		pCategory->FreeReference();
 	}
 }
@@ -70,11 +70,11 @@ gdeUCategorySetDescription::~gdeUCategorySetDescription(){
 ///////////////
 
 void gdeUCategorySetDescription::Undo(){
-	pCategory->SetDescription( pOldValue );
+	pCategory->SetDescription(pOldValue);
 	Notify();
 }
 
 void gdeUCategorySetDescription::Redo(){
-	pCategory->SetDescription( pNewValue );
+	pCategory->SetDescription(pNewValue);
 	Notify();
 }

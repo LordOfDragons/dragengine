@@ -38,12 +38,12 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decMemoryFileReader::decMemoryFileReader( decMemoryFile *memoryFile ) :
-pFile( NULL ),
-pPosition( 0 )
+decMemoryFileReader::decMemoryFileReader(decMemoryFile *memoryFile) :
+pFile(NULL),
+pPosition(0)
 {
-	if( ! memoryFile ){
-		DETHROW( deeInvalidParam );
+	if(!memoryFile){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFile = memoryFile;
@@ -51,7 +51,7 @@ pPosition( 0 )
 }
 
 decMemoryFileReader::~decMemoryFileReader(){
-	if( pFile ){
+	if(pFile){
 		pFile->FreeReference();
 	}
 }
@@ -82,24 +82,24 @@ int decMemoryFileReader::GetPosition(){
 	return pPosition;
 }
 
-void decMemoryFileReader::SetPosition( int position ){
-	if( position < 0 || position > pFile->GetLength() ){
-		DETHROW( deeOutOfBoundary );
+void decMemoryFileReader::SetPosition(int position){
+	if(position < 0 || position > pFile->GetLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = position;
 }
 
-void decMemoryFileReader::MovePosition( int offset ){
+void decMemoryFileReader::MovePosition(int offset){
 	const int newPos = pPosition + offset;
-	if( newPos < 0 || newPos > pFile->GetLength() ){
-		DETHROW( deeOutOfBoundary );
+	if(newPos < 0 || newPos > pFile->GetLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = newPos;
 }
 
-void decMemoryFileReader::SetPositionEnd( int position ){
-	if( position < 0 || position > pFile->GetLength() ){
-		DETHROW( deeOutOfBoundary );
+void decMemoryFileReader::SetPositionEnd(int position){
+	if(position < 0 || position > pFile->GetLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = pFile->GetLength() - position;
 }
@@ -109,14 +109,14 @@ void decMemoryFileReader::SetPositionEnd( int position ){
 // Reading
 ////////////
 
-void decMemoryFileReader::Read( void *buffer, int size ){
-	if( ! buffer ){
-		DETHROW( deeInvalidParam );
+void decMemoryFileReader::Read(void *buffer, int size){
+	if(!buffer){
+		DETHROW(deeInvalidParam);
 	}
-	if( pPosition + size > pFile->GetLength() ){
-		DETHROW( deeInvalidParam );
+	if(pPosition + size > pFile->GetLength()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	memcpy( buffer, pFile->GetPointer() + pPosition, size );
+	memcpy(buffer, pFile->GetPointer() + pPosition, size);
 	pPosition += size;
 }

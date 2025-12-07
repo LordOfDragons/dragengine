@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deEosSdkPendingRequest( const deServiceObject::Ref &data = nullptr );
+	deEosSdkPendingRequest(const deServiceObject::Ref &data = nullptr);
 	
 	/** Delete module. */
 	~deEosSdkPendingRequest() override;

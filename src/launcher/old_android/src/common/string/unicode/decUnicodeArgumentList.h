@@ -59,11 +59,11 @@ public:
 	/** Retrieves the number of arguments. */
 	inline int GetArgumentCount() const{ return pArgumentCount; }
 	/** Retrieves the argument at the given index. */
-	const decUnicodeString *GetArgumentAt( int index ) const;
+	const decUnicodeString *GetArgumentAt(int index) const;
 	/** Adds an argument to the end of the list. */
-	void AddArgument( const decUnicodeString &argument );
+	void AddArgument(const decUnicodeString &argument);
 	/** Determines if the given argument matches the provided utf8 string. */
-	bool MatchesArgumentAt( int index, const char *string ) const;
+	bool MatchesArgumentAt(int index, const char *string) const;
 	/** Removes all arguments. */
 	void RemoveAllArguments();
 	/**
@@ -73,7 +73,7 @@ public:
 	 * This function is present for operating systems not providing
 	 * an entry point function which already splits up the arguments.
 	 */
-	void ParseCommand( const decUnicodeString &command );
+	void ParseCommand(const decUnicodeString &command);
 	/*@}*/
 };
 

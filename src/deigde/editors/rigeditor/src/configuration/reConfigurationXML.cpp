@@ -51,7 +51,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-reConfigurationXML::reConfigurationXML( deLogger *logger, const char *loggerSource ) : igdeBaseXML( logger, loggerSource ){
+reConfigurationXML::reConfigurationXML(deLogger *logger, const char *loggerSource) : igdeBaseXML(logger, loggerSource){
 }
 
 reConfigurationXML::~reConfigurationXML(){
@@ -62,28 +62,28 @@ reConfigurationXML::~reConfigurationXML(){
 // Management
 ///////////////
 
-void reConfigurationXML::ReadFromFile( decBaseFileReader &reader, reConfiguration &config ){
+void reConfigurationXML::ReadFromFile(decBaseFileReader &reader, reConfiguration &config){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "rigEditor" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "rigEditor") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void reConfigurationXML::WriteToFile( decBaseFileWriter &writer, const reConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void reConfigurationXML::WriteToFile(decBaseFileWriter &writer, const reConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -91,48 +91,48 @@ void reConfigurationXML::WriteToFile( decBaseFileWriter &writer, const reConfigu
 // Private Functions
 //////////////////////
 
-void reConfigurationXML::pWriteConfig( decXmlWriter &writer, const reConfiguration &config ){
-	writer.WriteOpeningTag( "rigEditor", false, true );
+void reConfigurationXML::pWriteConfig(decXmlWriter &writer, const reConfiguration &config){
+	writer.WriteOpeningTag("rigEditor", false, true);
 	
-	writer.WriteDataTagFloat( "gridSize", config.GetGridSize() );
-	writer.WriteDataTagInt( "snapToGrid", config.GetSnapToGrid() ? 1 : 0 );
-	writer.WriteDataTagFloat( "sensitivity", config.GetSensitivity() );
-	writer.WriteDataTagInt( "rotationSnapAngle", config.GetRotSnapAngle() ? 1 : 0 );
+	writer.WriteDataTagFloat("gridSize", config.GetGridSize());
+	writer.WriteDataTagInt("snapToGrid", config.GetSnapToGrid() ? 1 : 0);
+	writer.WriteDataTagFloat("sensitivity", config.GetSensitivity());
+	writer.WriteDataTagInt("rotationSnapAngle", config.GetRotSnapAngle() ? 1 : 0);
 	
-	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
+	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
 	
-	writer.WriteClosingTag( "rigEditor", true );
+	writer.WriteClosingTag("rigEditor", true);
 }
 
 
 
-void reConfigurationXML::pReadConfig( const decXmlElementTag &root, reConfiguration &config ){
+void reConfigurationXML::pReadConfig(const decXmlElementTag &root, reConfiguration &config){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "gridSize" ){
-			config.SetGridSize( GetCDataFloat( *tag ) );
+		if(tag->GetName() == "gridSize"){
+			config.SetGridSize(GetCDataFloat(*tag));
 			
-		}else if( tag->GetName() == "snapToGrid" ){
-			config.SetSnapToGrid( GetCDataInt( *tag ) != 0 );
+		}else if(tag->GetName() == "snapToGrid"){
+			config.SetSnapToGrid(GetCDataInt(*tag) != 0);
 			
-		}else if( tag->GetName() == "sensitivity" ){
-			config.SetSensitivity( GetCDataFloat( *tag ) );
+		}else if(tag->GetName() == "sensitivity"){
+			config.SetSensitivity(GetCDataFloat(*tag));
 			
-		}else if( tag->GetName() == "rotationSnapAngle" ){
-			config.SetRotSnapAngle( GetCDataFloat( *tag ) );
+		}else if(tag->GetName() == "rotationSnapAngle"){
+			config.SetRotSnapAngle(GetCDataFloat(*tag));
 			
-		}else if( tag->GetName() == "recentFiles" ){
-			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+		}else if(tag->GetName() == "recentFiles"){
+			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

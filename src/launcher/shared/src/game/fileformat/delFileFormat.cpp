@@ -33,14 +33,14 @@
 /////////////////////////////////
 
 delFileFormat::delFileFormat() :
-pType( deModuleSystem::emtUnknown ),
-pSupported( false ){
+pType(deModuleSystem::emtUnknown),
+pSupported(false){
 }
 
-delFileFormat::delFileFormat( deModuleSystem::eModuleTypes type, const char *pattern ) :
-pType( type ),
-pPattern( pattern ),
-pSupported( false ){
+delFileFormat::delFileFormat(deModuleSystem::eModuleTypes type, const char *pattern) :
+pType(type),
+pPattern(pattern),
+pSupported(false){
 }
 
 delFileFormat::~delFileFormat(){
@@ -51,14 +51,14 @@ delFileFormat::~delFileFormat(){
 // Management
 ///////////////
 
-void delFileFormat::SetType( deModuleSystem::eModuleTypes type ){
+void delFileFormat::SetType(deModuleSystem::eModuleTypes type){
 	pType = type;
 }
 
-void delFileFormat::SetPattern( const char *pattern ){
+void delFileFormat::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
-void delFileFormat::SetSupported( bool supported ){
+void delFileFormat::SetSupported(bool supported){
 	pSupported = supported;
 }

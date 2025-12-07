@@ -58,7 +58,7 @@ public:
 	 * scripting peer. The format of the address is specific to the network
 	 * module.
 	 */
-	virtual bool ConnectTo( const char *address );
+	virtual bool ConnectTo(const char *address);
 	
 	/**
 	 * \brief Disconnect from remote connection if connected.
@@ -73,7 +73,7 @@ public:
 	 * The message is send unreliable and it is acceptable for the message to get
 	 * lost due to transmission failure.
 	 */
-	virtual void SendMessage( deNetworkMessage *message, int maxDelay );
+	virtual void SendMessage(deNetworkMessage *message, int maxDelay);
 	
 	/**
 	 * \brief Send reliable message to remote connection if connected.
@@ -82,7 +82,7 @@ public:
 	 * soon as possible. Reliable messages always arrive in the same order
 	 * they have been queued.
 	 */
-	virtual void SendReliableMessage( deNetworkMessage *message );
+	virtual void SendReliableMessage(deNetworkMessage *message);
 	
 	/**
 	 * \brief Link network state to remote network state.
@@ -92,7 +92,7 @@ public:
 	 * is considered the master state and the remote state the slave state.
 	 * By default only the master state can apply changes.
 	 */
-	virtual void LinkState( deNetworkMessage *message, deNetworkState *state, bool readOnly );
+	virtual void LinkState(deNetworkMessage *message, deNetworkState *state, bool readOnly);
 	/*@}*/
 };
 

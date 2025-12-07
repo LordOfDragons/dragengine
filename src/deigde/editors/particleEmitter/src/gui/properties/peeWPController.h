@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	peeWPController( peeWindowProperties &windowProperties );
+	peeWPController(peeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -85,7 +85,7 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Active controller or \em NULL. */
 	peeController *GetController() const;

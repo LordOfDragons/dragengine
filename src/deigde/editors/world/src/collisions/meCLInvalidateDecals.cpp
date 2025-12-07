@@ -94,29 +94,29 @@ meCLInvalidateDecals::~meCLInvalidateDecals(){
 void meCLInvalidateDecals::InvalidateDecals(){
 	decPointerSet set;
 	int i, count = GetCollectedElements().GetEntryCount();
-	for( i=0; i<count; i++ ){
-		set.AddIfAbsent( GetCollectedElements().GetEntryAt( i )->GetDecal() );
+	for(i=0; i<count; i++){
+		set.AddIfAbsent(GetCollectedElements().GetEntryAt(i)->GetDecal());
 	}
 	
 	count = set.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( meDecal* )set.GetAt( i ) )->InvalidateDecals();
+	for(i=0; i<count; i++){
+		((meDecal*)set.GetAt(i))->InvalidateDecals();
 	}
 }
 
-void meCLInvalidateDecals::Collect( const decDVector &position, const decVector &minExtend,
-const decVector &maxExtend, const decQuaternion &orientation ){
+void meCLInvalidateDecals::Collect(const decDVector &position, const decVector &minExtend,
+const decVector &maxExtend, const decQuaternion &orientation){
 	decLayerMask collisionCategory;
-	collisionCategory.SetBit( meWorld::eclmEditing );
+	collisionCategory.SetBit(meWorld::eclmEditing);
 	
 	decLayerMask collisionFilter;
-	collisionFilter.SetBit( meWorld::eclmDecals );
+	collisionFilter.SetBit(meWorld::eclmDecals);
 	
-	GetWorld().CollisionTestBox( position, minExtend, maxExtend, orientation,
-		this, decCollisionFilter( collisionCategory, collisionFilter ) );
+	GetWorld().CollisionTestBox(position, minExtend, maxExtend, orientation,
+		this, decCollisionFilter(collisionCategory, collisionFilter));
 }
 
-void meCLInvalidateDecals::Collect( igdeWObject &wobject ){
-	Collect( wobject.GetPosition(), wobject.GetBoxMinExtend(),
-		wobject.GetBoxMaxExtend(), wobject.GetOrientation() );
+void meCLInvalidateDecals::Collect(igdeWObject &wobject){
+	Collect(wobject.GetPosition(), wobject.GetBoxMinExtend(),
+		wobject.GetBoxMaxExtend(), wobject.GetOrientation());
 }

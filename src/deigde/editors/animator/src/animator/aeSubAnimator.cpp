@@ -57,8 +57,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeSubAnimator::aeSubAnimator( deEngine *engine ){
-	if( ! engine ) DETHROW( deeInvalidParam );
+aeSubAnimator::aeSubAnimator(deEngine *engine){
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	
@@ -69,9 +69,9 @@ aeSubAnimator::aeSubAnimator( deEngine *engine ){
 		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
-		pEngAnimatorInstance->SetAnimator( pEngAnimator );
+		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -86,22 +86,22 @@ aeSubAnimator::~aeSubAnimator(){
 // Management
 ///////////////
 
-void aeSubAnimator::SetPathAnimator( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void aeSubAnimator::SetPathAnimator(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
 	pPathAnimator = path;
 }
 
-void aeSubAnimator::LoadAnimator( aeLoadSaveSystem &lssys ){
-	pEngAnimatorInstance->SetAnimation( NULL );
+void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
+	pEngAnimatorInstance->SetAnimation(NULL);
 	
-	if( pEngAnimator ){
+	if(pEngAnimator){
 		pEngAnimator->FreeReference();
 		pEngAnimator = NULL;
 	}
 	
-	if( pPathAnimator.IsEmpty() ){
-		pEngAnimatorInstance->SetAnimator( NULL );
+	if(pPathAnimator.IsEmpty()){
+		pEngAnimatorInstance->SetAnimator(NULL);
 		return;
 	}
 	
@@ -111,12 +111,12 @@ void aeSubAnimator::LoadAnimator( aeLoadSaveSystem &lssys ){
 	aeAnimator *animator = NULL;
 	int i;
 	
-	pEngine->GetLogger()->LogInfoFormat( "Animator Editor",
-		"Loading animator %s", pPathAnimator.GetString() );
+	pEngine->GetLogger()->LogInfoFormat("Animator Editor",
+		"Loading animator %s", pPathAnimator.GetString());
 	
 	try{
 		// load from file
-		animator = lssys.LoadAnimator( pPathAnimator );
+		animator = lssys.LoadAnimator(pPathAnimator);
 		
 		const int controllerCount = animator->GetControllers().GetCount();
 		const int linkCount = animator->GetLinks().GetCount();
@@ -124,45 +124,45 @@ void aeSubAnimator::LoadAnimator( aeLoadSaveSystem &lssys ){
 		
 		// create animator
 		pEngAnimator = pEngine->GetAnimatorManager()->CreateAnimator();
-		pEngAnimator->SetRig( animator->GetEngineAnimator()->GetRig() );
-		pEngAnimator->SetAnimation( animator->GetEngineAnimator()->GetAnimation() );
+		pEngAnimator->SetRig(animator->GetEngineAnimator()->GetRig());
+		pEngAnimator->SetAnimation(animator->GetEngineAnimator()->GetAnimation());
 		
 		// add controllers
-		for( i=0; i<controllerCount; i++ ){
-			const aeController &controller = *animator->GetControllers().GetAt( i );
+		for(i=0; i<controllerCount; i++){
+			const aeController &controller = *animator->GetControllers().GetAt(i);
 			
 			engController = new deAnimatorController;
-			engController->SetName( controller.GetName() );
-			engController->SetValueRange( controller.GetMinimumValue(), controller.GetMaximumValue() );
-			engController->SetCurrentValue( controller.GetCurrentValue() );
-			engController->SetFrozen( controller.GetFrozen() );
-			engController->SetClamp( controller.GetClamp() );
-			engController->SetVector( controller.GetVector() );
+			engController->SetName(controller.GetName());
+			engController->SetValueRange(controller.GetMinimumValue(), controller.GetMaximumValue());
+			engController->SetCurrentValue(controller.GetCurrentValue());
+			engController->SetFrozen(controller.GetFrozen());
+			engController->SetClamp(controller.GetClamp());
+			engController->SetVector(controller.GetVector());
 			
-			pEngAnimator->AddController( engController );
+			pEngAnimator->AddController(engController);
 			engController = NULL;
 		}
 		
 		// add links
-		for( i=0; i<linkCount; i++ ){
-			const aeLink &link = *animator->GetLinks().GetAt( i );
+		for(i=0; i<linkCount; i++){
+			const aeLink &link = *animator->GetLinks().GetAt(i);
 			
 			engLink = new deAnimatorLink;
 			
-			if( link.GetController() ){
-				engLink->SetController( animator->GetControllers().IndexOf( link.GetController() ) );
+			if(link.GetController()){
+				engLink->SetController(animator->GetControllers().IndexOf(link.GetController()));
 			}
-			engLink->SetCurve( link.GetCurve() );
-			engLink->SetRepeat( link.GetRepeat() );
+			engLink->SetCurve(link.GetCurve());
+			engLink->SetRepeat(link.GetRepeat());
 			
-			pEngAnimator->AddLink( engLink );
+			pEngAnimator->AddLink(engLink);
 			engLink = NULL;
 		}
 		
 		// add rules
-		for( i=0; i<ruleCount; i++ ){
-			engRule = animator->GetRules().GetAt( i )->CreateEngineRule();
-			pEngAnimator->AddRule( engRule );
+		for(i=0; i<ruleCount; i++){
+			engRule = animator->GetRules().GetAt(i)->CreateEngineRule();
+			pEngAnimator->AddRule(engRule);
 			engRule->FreeReference();
 			engRule = NULL;
 		}
@@ -170,27 +170,27 @@ void aeSubAnimator::LoadAnimator( aeLoadSaveSystem &lssys ){
 		// free the loaded animator as it is no more needed
 		animator->FreeReference();
 		
-	}catch( const deException &e ){
-		pEngine->GetLogger()->LogException( "Animator Editor", e );
-		if( engRule ){
+	}catch(const deException &e){
+		pEngine->GetLogger()->LogException("Animator Editor", e);
+		if(engRule){
 			engRule->FreeReference();
 		}
-		if( engLink ){
+		if(engLink){
 			delete engLink;
 		}
-		if( engController ){
+		if(engController){
 			delete engController;
 		}
-		if( animator ){
+		if(animator){
 			animator->FreeReference();
 		}
-		if( pEngAnimator ){
+		if(pEngAnimator){
 			pEngAnimator->FreeReference();
 			pEngAnimator = NULL;
 		}
 	}
 	
-	pEngAnimatorInstance->SetAnimator( pEngAnimator );
+	pEngAnimatorInstance->SetAnimator(pEngAnimator);
 }
 
 
@@ -203,45 +203,45 @@ void aeSubAnimator::ClearAnimator(){
 	*/
 }
 
-void aeSubAnimator::AddController( const char *name, float minimum, float maximum, bool clamp ){
+void aeSubAnimator::AddController(const char *name, float minimum, float maximum, bool clamp){
 	deAnimatorController *engController = NULL;
 	
-	pEngAnimatorInstance->SetAnimator( NULL );
+	pEngAnimatorInstance->SetAnimator(NULL);
 	
 	try{
 		engController = new deAnimatorController;
-		engController->SetName( name );
-		engController->SetValueRange( minimum, maximum );
-		engController->SetFrozen( false );
-		engController->SetClamp( clamp );
+		engController->SetName(name);
+		engController->SetValueRange(minimum, maximum);
+		engController->SetFrozen(false);
+		engController->SetClamp(clamp);
 		
-		pEngAnimator->AddController( engController );
+		pEngAnimator->AddController(engController);
 		
-	}catch( const deException & ){
-		if( engController ) delete engController;
+	}catch(const deException &){
+		if(engController) delete engController;
 		throw;
 	}
 	
-	pEngAnimatorInstance->SetAnimator( pEngAnimator );
+	pEngAnimatorInstance->SetAnimator(pEngAnimator);
 }
 
-void aeSubAnimator::SetControllerValue( int controller, float value ){
-	pEngAnimatorInstance->GetControllerAt( controller ).SetCurrentValue( value );
-	pEngAnimatorInstance->NotifyControllerChangedAt( controller );
+void aeSubAnimator::SetControllerValue(int controller, float value){
+	pEngAnimatorInstance->GetControllerAt(controller).SetCurrentValue(value);
+	pEngAnimatorInstance->NotifyControllerChangedAt(controller);
 }
 
-void aeSubAnimator::AddLink( int controller, const decCurveBezier &curve ){
+void aeSubAnimator::AddLink(int controller, const decCurveBezier &curve){
 	deAnimatorLink *engLink = NULL;
 	
 	try{
 		engLink = new deAnimatorLink;
-		engLink->SetController( controller );
-		engLink->SetCurve( curve );
+		engLink->SetController(controller);
+		engLink->SetCurve(curve);
 		
-		pEngAnimator->AddLink( engLink );
+		pEngAnimator->AddLink(engLink);
 		
-	}catch( const deException & ){
-		if( engLink ) delete engLink;
+	}catch(const deException &){
+		if(engLink) delete engLink;
 		throw;
 	}
 }
@@ -251,104 +251,104 @@ void aeSubAnimator::AddRuleSS(){
 	
 	try{
 		engRule = new deAnimatorRuleStateSnapshot;
-		engRule->SetUseLastState( true );
-		pEngAnimator->AddRule( engRule );
+		engRule->SetUseLastState(true);
+		pEngAnimator->AddRule(engRule);
 		engRule->FreeReference();
 		
-	}catch( const deException & ){
-		if( engRule ){
+	}catch(const deException &){
+		if(engRule){
 			engRule->FreeReference();
 		}
 		throw;
 	}
 }
 
-void aeSubAnimator::AddRuleIK( const decVector &localPosition, const decVector &localOrientation,
-const char *solverBone, int linkBlendFactor ){
+void aeSubAnimator::AddRuleIK(const decVector &localPosition, const decVector &localOrientation,
+const char *solverBone, int linkBlendFactor){
 	deAnimatorRuleInverseKinematic *engRule = NULL;
 	
 	try{
 		engRule = new deAnimatorRuleInverseKinematic;
-		if( ! engRule ) DETHROW( deeOutOfMemory );
+		if(!engRule) DETHROW(deeOutOfMemory);
 		
-		engRule->SetLocalPosition( localPosition );
-		engRule->SetLocalOrientation( decMatrix::CreateRotation( localOrientation * DEG2RAD ).ToQuaternion() );
-		engRule->SetUseSolverBone( true );
-		engRule->SetSolverBone( solverBone );
-		engRule->SetAdjustOrientation( true );
-		engRule->SetBlendMode( deAnimatorRule::ebmBlend );
+		engRule->SetLocalPosition(localPosition);
+		engRule->SetLocalOrientation(decMatrix::CreateRotation(localOrientation * DEG2RAD).ToQuaternion());
+		engRule->SetUseSolverBone(true);
+		engRule->SetSolverBone(solverBone);
+		engRule->SetAdjustOrientation(true);
+		engRule->SetBlendMode(deAnimatorRule::ebmBlend);
 		
-		if( linkBlendFactor != -1 ){
-			engRule->GetTargetBlendFactor().AddLink( linkBlendFactor );
+		if(linkBlendFactor != -1){
+			engRule->GetTargetBlendFactor().AddLink(linkBlendFactor);
 		}
 		
-		pEngAnimator->AddRule( engRule );
+		pEngAnimator->AddRule(engRule);
 		engRule->FreeReference();
 		
-	}catch( const deException & ){
-		if( engRule ){
+	}catch(const deException &){
+		if(engRule){
 			engRule->FreeReference();
 		}
 		throw;
 	}
 }
 
-void aeSubAnimator::AddBoneToRule( int rule, const char *bone ){
-	pEngAnimator->GetRuleAt( rule )->GetListBones().Add( bone );
+void aeSubAnimator::AddBoneToRule(int rule, const char *bone){
+	pEngAnimator->GetRuleAt(rule)->GetListBones().Add(bone);
 	pEngAnimator->NotifyRulesChanged();
 }
 
-void aeSubAnimator::EnableRule( int rule, bool enable ){
-	pEngAnimator->GetRuleAt( rule )->SetEnabled( enable );
+void aeSubAnimator::EnableRule(int rule, bool enable){
+	pEngAnimator->GetRuleAt(rule)->SetEnabled(enable);
 	pEngAnimator->NotifyRulesChanged();
 }
 
 
 
-void aeSubAnimator::SetComponent( deComponent *component ){
-	pEngAnimator->SetRig( NULL );
-	pEngAnimatorInstance->SetComponent( NULL );
+void aeSubAnimator::SetComponent(deComponent *component){
+	pEngAnimator->SetRig(NULL);
+	pEngAnimatorInstance->SetComponent(NULL);
 	
-	if( component ){
-		pEngAnimator->SetRig( component->GetRig() );
+	if(component){
+		pEngAnimator->SetRig(component->GetRig());
 		
 	}else{
-		pEngAnimator->SetRig( NULL );
+		pEngAnimator->SetRig(NULL);
 	}
-	pEngAnimatorInstance->SetComponent( component );
+	pEngAnimatorInstance->SetComponent(component);
 }
 
-void aeSubAnimator::SetComponentAndAnimation( deComponent *component, deAnimation *animation ){
-	pEngAnimator->SetAnimation( NULL );
-	pEngAnimator->SetRig( NULL );
-	pEngAnimatorInstance->SetComponent( NULL );
+void aeSubAnimator::SetComponentAndAnimation(deComponent *component, deAnimation *animation){
+	pEngAnimator->SetAnimation(NULL);
+	pEngAnimator->SetRig(NULL);
+	pEngAnimatorInstance->SetComponent(NULL);
 	
-	pEngAnimator->SetAnimation( animation );
-	if( component ){
-		pEngAnimator->SetRig( component->GetRig() );
+	pEngAnimator->SetAnimation(animation);
+	if(component){
+		pEngAnimator->SetRig(component->GetRig());
 		
 	}else{
-		pEngAnimator->SetRig( NULL );
+		pEngAnimator->SetRig(NULL);
 	}
-	pEngAnimatorInstance->SetComponent( component );
+	pEngAnimatorInstance->SetComponent(component);
 }
 
-void aeSubAnimator::CopyControllers( deAnimatorInstance &instance ){
+void aeSubAnimator::CopyControllers(deAnimatorInstance &instance){
 	const int count = pEngAnimatorInstance->GetControllerCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deAnimatorController &to = pEngAnimatorInstance->GetControllerAt( i );
-		const int index = instance.IndexOfControllerNamed( to.GetName() );
-		if( index == -1 ){
+	for(i=0; i<count; i++){
+		deAnimatorController &to = pEngAnimatorInstance->GetControllerAt(i);
+		const int index = instance.IndexOfControllerNamed(to.GetName());
+		if(index == -1){
 			continue;
 		}
 		
-		const deAnimatorController &from = instance.GetControllerAt( index );
-		to.SetValueRange( from.GetMinimumValue(), from.GetMaximumValue() );
-		to.SetCurrentValue( from.GetCurrentValue() );
-		to.SetVector( from.GetVector() );
-		pEngAnimatorInstance->NotifyControllerChangedAt( i );
+		const deAnimatorController &from = instance.GetControllerAt(index);
+		to.SetValueRange(from.GetMinimumValue(), from.GetMaximumValue());
+		to.SetCurrentValue(from.GetCurrentValue());
+		to.SetVector(from.GetVector());
+		pEngAnimatorInstance->NotifyControllerChangedAt(i);
 	}
 }
 
@@ -362,15 +362,15 @@ void aeSubAnimator::Apply(){
 //////////////////////
 
 void aeSubAnimator::pCleanUp(){
-	if( pEngAnimatorInstance ){
-		pEngAnimatorInstance->SetAnimator( NULL );
-		pEngAnimatorInstance->SetComponent( NULL );
+	if(pEngAnimatorInstance){
+		pEngAnimatorInstance->SetAnimator(NULL);
+		pEngAnimatorInstance->SetComponent(NULL);
 		pEngAnimatorInstance->FreeReference();
 	}
 	
-	if( pEngAnimator ){
-		pEngAnimator->SetRig( NULL );
-		pEngAnimator->SetAnimation( NULL );
+	if(pEngAnimator){
+		pEngAnimator->SetRig(NULL);
+		pEngAnimator->SetAnimation(NULL);
 		pEngAnimator->FreeReference();
 	}
 }

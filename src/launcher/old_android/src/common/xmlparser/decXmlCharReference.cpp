@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlCharReference::decXmlCharReference( const char *data, eRadices radix ) :
-pData( data ),
-pRadix( erDecimal ){
-	SetRadix( radix );
+decXmlCharReference::decXmlCharReference(const char *data, eRadices radix) :
+pData(data),
+pRadix(erDecimal){
+	SetRadix(radix);
 }
 
 decXmlCharReference::~decXmlCharReference(){
@@ -53,21 +53,21 @@ decXmlCharReference::~decXmlCharReference(){
 // Management
 ///////////////
 
-void decXmlCharReference::SetData( const char *data ){
+void decXmlCharReference::SetData(const char *data){
 	pData = data;
 }
 
-void decXmlCharReference::SetRadix( eRadices radix ){
-	if( radix < erDecimal || radix > erHexadecimal ){
-		DETHROW( deeInvalidParam );
+void decXmlCharReference::SetRadix(eRadices radix){
+	if(radix < erDecimal || radix > erHexadecimal){
+		DETHROW(deeInvalidParam);
 	}
 	pRadix = radix;
 }
 
 
 
-void decXmlCharReference::Visit( decXmlVisitor &visitor ){
-	visitor.VisitCharReference( *this );
+void decXmlCharReference::Visit(decXmlVisitor &visitor){
+	visitor.VisitCharReference(*this);
 }
 
 bool decXmlCharReference::CanCastToCharReference() const{

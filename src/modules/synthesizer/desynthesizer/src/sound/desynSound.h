@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound peer. */
-	desynSound( deDESynthesizer &module, deSound &sound );
+	desynSound(deDESynthesizer &module, deSound &sound);
 	
 	/** \brief Clean up sound peer. */
 	virtual ~desynSound();

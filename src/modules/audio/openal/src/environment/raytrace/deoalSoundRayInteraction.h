@@ -63,7 +63,7 @@ public:
 	deoalSoundRayInteraction();
 	
 	/** \brief Create copy of sound ray interaction. */
-	deoalSoundRayInteraction( const deoalSoundRayInteraction &ray );
+	deoalSoundRayInteraction(const deoalSoundRayInteraction &ray);
 	/*@}*/
 	
 	
@@ -74,25 +74,25 @@ public:
 	inline float GetDistance() const{ return pDistance; }
 	
 	/** \brief Set distance in meters to hit point. */
-	void SetDistance( float distance );
+	void SetDistance(float distance);
 	
 	/** \brief Hit point in world coordinates. */
 	inline const decDVector &GetPoint() const{ return pPoint; }
 	
 	/** \brief Set hit point in world coordinates. */
-	void SetPoint( const decDVector &point );
+	void SetPoint(const decDVector &point);
 	
 	/** \brief Hit normal in world coordinates. */
 	inline const decDVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set hit normal in world coordinates. */
-	void SetNormal( const decDVector &normal );
+	void SetNormal(const decDVector &normal);
 	
 	/** \brief Ray ends. */
 	inline bool GetRayEnds() const{ return pRayEnds; }
 	
 	/** \brief Set if ray ends. */
-	void SetRayEnds( bool rayEnds );
+	void SetRayEnds(bool rayEnds);
 	
 	
 	
@@ -131,7 +131,7 @@ public:
 	 * Reflected is set to "1 - absorption - trannsmission"
 	 * RayEnds is set to true if all transmission values are 0.
 	 */
-	void SetParameters( const deoalAComponentTexture &texture, float distance );
+	void SetParameters(const deoalAComponentTexture &texture, float distance);
 	
 	/**
 	 * \brief Set parameters from component texture using infinite distance.
@@ -143,17 +143,17 @@ public:
 	 * 
 	 * Same as if texture has all transmission ranges set to 0.
 	 */
-	void SetParameters( const deoalAComponentTexture &texture );
+	void SetParameters(const deoalAComponentTexture &texture);
 	
 	
 	
 	/** \brief Debug print. */
-	void DebugPrint( deoalAudioThread &audioThread, const char *prefix );
+	void DebugPrint(deoalAudioThread &audioThread, const char *prefix);
 	
 	
 	
 	/** \brief Assign element. */
-	deoalSoundRayInteraction &operator=( const deoalSoundRayInteraction &element );
+	deoalSoundRayInteraction &operator=(const deoalSoundRayInteraction &element);
 	/*@}*/
 };
 

@@ -38,7 +38,7 @@
 ////////////////////////////
 
 deLoggerBufferEntry::deLoggerBufferEntry() :
-pType( emtInfo ){
+pType(emtInfo){
 }
 
 deLoggerBufferEntry::~deLoggerBufferEntry(){
@@ -49,17 +49,17 @@ deLoggerBufferEntry::~deLoggerBufferEntry(){
 // Management
 ///////////////
 
-void deLoggerBufferEntry::SetType( eMessageTypes type ){
-	if( type < emtInfo || type > emtError ){
-		DETHROW( deeInvalidParam );
+void deLoggerBufferEntry::SetType(eMessageTypes type){
+	if(type < emtInfo || type > emtError){
+		DETHROW(deeInvalidParam);
 	}
 	pType = type;
 }
 
-void deLoggerBufferEntry::SetSource( const char *source ){
+void deLoggerBufferEntry::SetSource(const char *source){
 	pSource = source;
 }
 
-void deLoggerBufferEntry::SetMessage( const char *message ){
+void deLoggerBufferEntry::SetMessage(const char *message){
 	pMessage = message;
 }

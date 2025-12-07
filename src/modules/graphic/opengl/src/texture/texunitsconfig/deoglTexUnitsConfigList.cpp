@@ -40,19 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglTexUnitsConfigList::deoglTexUnitsConfigList( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pRootTUC( NULL ),
-pTailTUC( NULL ),
-pTUCCount( 0 ),
-pTUCEmpty( NULL )
+deoglTexUnitsConfigList::deoglTexUnitsConfigList(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pRootTUC(NULL),
+pTailTUC(NULL),
+pTUCCount(0),
+pTUCEmpty(NULL)
 {
-	pTUCEmpty = GetWith( NULL, 0, NULL );
+	pTUCEmpty = GetWith(NULL, 0, NULL);
 	pTUCEmpty->EnsureRTSTexture();
 }
 
 deoglTexUnitsConfigList::~deoglTexUnitsConfigList(){
-	while( pRootTUC ){
+	while(pRootTUC){
 		pTailTUC = pRootTUC;
 		pRootTUC = pRootTUC->GetLLNext();
 		delete pTailTUC;
@@ -65,13 +65,13 @@ deoglTexUnitsConfigList::~deoglTexUnitsConfigList(){
 // Management
 ///////////////
 
-deoglTexUnitsConfig *deoglTexUnitsConfigList::GetWith( const deoglTexUnitConfig *units,
-int unitCount, deoglShaderParameterBlock *paramBlock ){
+deoglTexUnitsConfig *deoglTexUnitsConfigList::GetWith(const deoglTexUnitConfig *units,
+int unitCount, deoglShaderParameterBlock *paramBlock){
 	deoglTexUnitsConfig *tuc = pRootTUC;
 	
 	// if there exists already a texture units configuration with these properties add a usage and return it
-	while( tuc ){
-		if( tuc->Equals( units, unitCount, paramBlock ) ){
+	while(tuc){
+		if(tuc->Equals(units, unitCount, paramBlock)){
 			tuc->AddUsage();
 			return tuc;
 		}
@@ -79,16 +79,16 @@ int unitCount, deoglShaderParameterBlock *paramBlock ){
 	}
 	
 	// otherwise create a new texture units configuration with these parameters and return it
-	tuc = new deoglTexUnitsConfig( pRenderThread );
+	tuc = new deoglTexUnitsConfig(pRenderThread);
 	
 	try{
-		tuc->SetUnits( units, unitCount );
-		tuc->SetParameterBlock( paramBlock );
+		tuc->SetUnits(units, unitCount);
+		tuc->SetParameterBlock(paramBlock);
 		tuc->CalcUnitsHashCode();
 		
-		if( pTailTUC ){
-			pTailTUC->SetLLNext( tuc );
-			tuc->SetLLPrev( pTailTUC );
+		if(pTailTUC){
+			pTailTUC->SetLLNext(tuc);
+			tuc->SetLLPrev(pTailTUC);
 			pTailTUC = tuc;
 			
 		}else{
@@ -97,7 +97,7 @@ int unitCount, deoglShaderParameterBlock *paramBlock ){
 		}
 		pTUCCount++;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		delete tuc;
 		throw;
 	}
@@ -116,21 +116,21 @@ deoglTexUnitsConfig *deoglTexUnitsConfigList::GetEmptyNoUsage() const{
 
 
 
-void deoglTexUnitsConfigList::Remove( deoglTexUnitsConfig *config ){
-	if( ! config ){
-		DETHROW( deeInvalidParam );
+void deoglTexUnitsConfigList::Remove(deoglTexUnitsConfig *config){
+	if(!config){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( config->GetLLPrev() ){
-		config->GetLLPrev()->SetLLNext( config->GetLLNext() );
+	if(config->GetLLPrev()){
+		config->GetLLPrev()->SetLLNext(config->GetLLNext());
 	}
-	if( config->GetLLNext() ){
-		config->GetLLNext()->SetLLPrev( config->GetLLPrev() );
+	if(config->GetLLNext()){
+		config->GetLLNext()->SetLLPrev(config->GetLLPrev());
 	}
-	if( pRootTUC == config ){
+	if(pRootTUC == config){
 		pRootTUC = config->GetLLNext();
 	}
-	if( pTailTUC == config ){
+	if(pTailTUC == config){
 		pTailTUC = config->GetLLPrev();
 	}
 	pTUCCount--;

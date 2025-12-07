@@ -63,25 +63,25 @@ public:
 	/** @name Visiting */
 	/*@{*/
 	/** Visits a network value. */
-	virtual void VisitValue( deNetworkValue *value );
+	virtual void VisitValue(deNetworkValue *value);
 	/** Visits an integer network value. */
-	virtual void VisitInteger( deNetworkValueInteger *value );
+	virtual void VisitInteger(deNetworkValueInteger *value);
 	/** Visits a float network value. */
-	virtual void VisitFloat( deNetworkValueFloat *value );
+	virtual void VisitFloat(deNetworkValueFloat *value);
 	/** Visits a string network value. */
-	virtual void VisitString( deNetworkValueString *value );
+	virtual void VisitString(deNetworkValueString *value);
 	/** Visits a data network value. */
-	virtual void VisitData( deNetworkValueData *value );
+	virtual void VisitData(deNetworkValueData *value);
 	/** Visits a point-2 network value. */
-	virtual void VisitPoint2( deNetworkValuePoint2 *value );
+	virtual void VisitPoint2(deNetworkValuePoint2 *value);
 	/** Visits a point-3 network value. */
-	virtual void VisitPoint3( deNetworkValuePoint3 *value );
+	virtual void VisitPoint3(deNetworkValuePoint3 *value);
 	/** Visits a vector-2 network value. */
-	virtual void VisitVector2( deNetworkValueVector2 *value );
+	virtual void VisitVector2(deNetworkValueVector2 *value);
 	/** Visits a vector-3 network value. */
-	virtual void VisitVector3( deNetworkValueVector3 *value );
+	virtual void VisitVector3(deNetworkValueVector3 *value);
 	/** Visits a quaternion network value. */
-	virtual void VisitQuaternion( deNetworkValueQuaternion *value );
+	virtual void VisitQuaternion(deNetworkValueQuaternion *value);
 	/*@}*/
 };
 

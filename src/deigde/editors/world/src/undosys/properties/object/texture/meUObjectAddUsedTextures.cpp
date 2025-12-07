@@ -47,28 +47,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAddUsedTextures::meUObjectAddUsedTextures( meObject *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pObject = NULL;
 	
-	SetShortInfo( "Add Used Object Textures" );
+	SetShortInfo("Add Used Object Textures");
 	
 	decStringList modelTextureNames;
-	object->GetModelTextureNameList( modelTextureNames );
+	object->GetModelTextureNameList(modelTextureNames);
 	const int count = modelTextureNames.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ! object->HasTextureNamed( modelTextureNames.GetAt( i ).GetString() ) ){
-			pTextureNameList.Add( modelTextureNames.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(!object->HasTextureNamed(modelTextureNames.GetAt(i).GetString())){
+			pTextureNameList.Add(modelTextureNames.GetAt(i));
 		}
 	}
 	
@@ -78,7 +78,7 @@ meUObjectAddUsedTextures::meUObjectAddUsedTextures( meObject *object ){
 
 meUObjectAddUsedTextures::~meUObjectAddUsedTextures(){
 	pTextureList.RemoveAllTextures();
-	if( pObject ){
+	if(pObject){
 		pObject->FreeReference();
 	}
 }
@@ -92,47 +92,47 @@ void meUObjectAddUsedTextures::Undo(){
 	const int count = pTextureList.GetTextureCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pObject->RemoveTexture( pTextureList.GetTextureAt( i ) );
+	for(i=0; i<count; i++){
+		pObject->RemoveTexture(pTextureList.GetTextureAt(i));
 	}
 }
 
 void meUObjectAddUsedTextures::Redo(){
 	int i, count;
 	
-	if( pTextureList.GetTextureCount() == 0 ){
-		const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent( pObject->GetGDClass() );
+	if(pTextureList.GetTextureCount() == 0){
+		const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent(pObject->GetGDClass());
 		
 		const igdeGDCCTextureList *gdctexlist = NULL;
 		const igdeGDCCTextureList *gdccomptex = NULL;
 		
-		if( gdcomponent ){
+		if(gdcomponent){
 			gdctexlist = &gdcomponent->GetTextureList();
 		}
-		if( pObject->GetGDClass() ){
+		if(pObject->GetGDClass()){
 			gdccomptex = &pObject->GetGDClass()->GetComponentTextures();
 		}
 		
 		count = pTextureNameList.GetCount();
-		for( i=0; i<count; i++ ){
-			const decString &textureName = pTextureNameList.GetAt( i );
+		for(i=0; i<count; i++){
+			const decString &textureName = pTextureNameList.GetAt(i);
 			
 			igdeGDCCTexture *gdctex = NULL;
-			if( gdctexlist ){
-				gdctex = gdctexlist->GetNamed( textureName );
+			if(gdctexlist){
+				gdctex = gdctexlist->GetNamed(textureName);
 			}
-			if( ! gdctex && gdccomptex ){
-				gdctex = gdccomptex->GetNamed( textureName );
+			if(!gdctex && gdccomptex){
+				gdctex = gdccomptex->GetNamed(textureName);
 			}
 			
 			meObjectTexture::Ref texture;
-			meHelpers::CreateTexture( texture, pObject, textureName, gdctex );
-			pTextureList.AddTexture( texture );
+			meHelpers::CreateTexture(texture, pObject, textureName, gdctex);
+			pTextureList.AddTexture(texture);
 		}
 	}
 	
 	count = pTextureList.GetTextureCount();
-	for( i=0; i<count; i++ ){
-		pObject->AddTexture( pTextureList.GetTextureAt( i ) );
+	for(i=0; i<count; i++){
+		pObject->AddTexture(pTextureList.GetTextureAt(i));
 	}
 }

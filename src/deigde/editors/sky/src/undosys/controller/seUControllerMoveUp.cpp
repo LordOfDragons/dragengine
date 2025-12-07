@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerMoveUp::seUControllerMoveUp( seController *controller ) :
-pController( NULL ),
-pIndex( 0 )
+seUControllerMoveUp::seUControllerMoveUp(seController *controller) :
+pController(NULL),
+pIndex(0)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const seSky * const sky = controller->GetSky();
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Move Controller Up" );
+	SetShortInfo("Move Controller Up");
 	
-	pIndex = sky->GetControllers().IndexOf( controller );
-	if( pIndex < 1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = sky->GetControllers().IndexOf(controller);
+	if(pIndex < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pController = controller;
@@ -65,7 +65,7 @@ pIndex( 0 )
 }
 
 seUControllerMoveUp::~seUControllerMoveUp(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -76,9 +76,9 @@ seUControllerMoveUp::~seUControllerMoveUp(){
 ///////////////
 
 void seUControllerMoveUp::Undo(){
-	pController->GetSky()->MoveControllerTo( pController, pIndex );
+	pController->GetSky()->MoveControllerTo(pController, pIndex);
 }
 
 void seUControllerMoveUp::Redo(){
-	pController->GetSky()->MoveControllerTo( pController, pIndex - 1 );
+	pController->GetSky()->MoveControllerTo(pController, pIndex - 1);
 }

@@ -55,19 +55,19 @@ int ceActorGestureList::GetCount() const{
 	return pGestures.GetCount();
 }
 
-ceActorGesture *ceActorGestureList::GetAt( int index ) const{
-	return ( ceActorGesture* )pGestures.GetAt( index );
+ceActorGesture *ceActorGestureList::GetAt(int index) const{
+	return (ceActorGesture*)pGestures.GetAt(index);
 }
 
-ceActorGesture *ceActorGestureList::GetNamed( const char *name ) const{
+ceActorGesture *ceActorGestureList::GetNamed(const char *name) const{
 	const int count = pGestures.GetCount();
 	ceActorGesture *gesture;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gesture = ( ceActorGesture* )pGestures.GetAt( i );
+	for(i=0; i<count; i++){
+		gesture = (ceActorGesture*)pGestures.GetAt(i);
 		
-		if( gesture->GetName().Equals( name ) ){
+		if(gesture->GetName().Equals(name)){
 			return gesture;
 		}
 	}
@@ -75,16 +75,16 @@ ceActorGesture *ceActorGestureList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int ceActorGestureList::IndexOf( ceActorGesture *gesture ) const{
-	return pGestures.IndexOf( gesture );
+int ceActorGestureList::IndexOf(ceActorGesture *gesture) const{
+	return pGestures.IndexOf(gesture);
 }
 
-int ceActorGestureList::IndexOfNamed( const char *name ) const{
+int ceActorGestureList::IndexOfNamed(const char *name) const{
 	const int count = pGestures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceActorGesture* )pGestures.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceActorGesture*)pGestures.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int ceActorGestureList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool ceActorGestureList::Has( ceActorGesture *gesture ) const{
-	return pGestures.Has( gesture );
+bool ceActorGestureList::Has(ceActorGesture *gesture) const{
+	return pGestures.Has(gesture);
 }
 
-bool ceActorGestureList::HasNamed( const char *name ) const{
+bool ceActorGestureList::HasNamed(const char *name) const{
 	const int count = pGestures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceActorGesture* )pGestures.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceActorGesture*)pGestures.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool ceActorGestureList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void ceActorGestureList::Add( ceActorGesture *gesture ){
-	if( ! gesture || HasNamed( gesture->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void ceActorGestureList::Add(ceActorGesture *gesture){
+	if(!gesture || HasNamed(gesture->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pGestures.Add( gesture );
+	pGestures.Add(gesture);
 }
 
-void ceActorGestureList::Remove( ceActorGesture *gesture ){
-	pGestures.Remove( gesture );
+void ceActorGestureList::Remove(ceActorGesture *gesture){
+	pGestures.Remove(gesture);
 }
 
 void ceActorGestureList::RemoveAll(){
@@ -125,7 +125,7 @@ void ceActorGestureList::RemoveAll(){
 
 
 
-ceActorGestureList &ceActorGestureList::operator=( const ceActorGestureList &list ){
+ceActorGestureList &ceActorGestureList::operator=(const ceActorGestureList &list){
 	pGestures = list.pGestures;
 	return *this;
 }

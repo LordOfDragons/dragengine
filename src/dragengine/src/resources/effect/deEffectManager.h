@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new effect resource manager linked to the given engine. */
-	deEffectManager( deEngine *engine );
+	deEffectManager(deEngine *engine);
 	
 	/** \brief Clean up effect resource manager and reports leaking resources. */
 	virtual ~deEffectManager();
@@ -100,7 +100,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

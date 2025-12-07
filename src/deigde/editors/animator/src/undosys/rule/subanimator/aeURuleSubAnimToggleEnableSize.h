@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSubAnimToggleEnableSize( aeRuleSubAnimator *rule );
+	aeURuleSubAnimToggleEnableSize(aeRuleSubAnimator *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleSubAnimToggleEnableSize();

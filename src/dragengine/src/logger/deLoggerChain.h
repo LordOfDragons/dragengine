@@ -76,13 +76,13 @@ public:
 	int GetLoggerCount();
 	
 	/** \brief Logger at position. */
-	deLogger *GetLoggerAt( int index );
+	deLogger *GetLoggerAt(int index);
 	
 	/** \brief Add logger to chain. */
-	void AddLogger( deLogger *logger );
+	void AddLogger(deLogger *logger);
 	
 	/** \brief Remove logger from chain. */
-	void RemoveLogger( deLogger *logger );
+	void RemoveLogger(deLogger *logger);
 	
 	/** \brief Remove all logger from chain. */
 	void RemoveAllLoggers();
@@ -90,13 +90,13 @@ public:
 	
 	
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	/*@}*/
 	
 	

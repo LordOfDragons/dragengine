@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAActorAdd::ceCAActorAdd() : ceConversationAction( eatActorAdd ){
+ceCAActorAdd::ceCAActorAdd() : ceConversationAction(eatActorAdd){
 }
 
-ceCAActorAdd::ceCAActorAdd( const ceCAActorAdd &action ) : ceConversationAction( action ){
+ceCAActorAdd::ceCAActorAdd(const ceCAActorAdd &action) : ceConversationAction(action){
 	   pID = action.GetID();
 	pAliasID = action.GetAliasID();
 }
@@ -54,16 +54,16 @@ ceCAActorAdd::~ceCAActorAdd(){
 // Management
 ///////////////
 
-void ceCAActorAdd::SetID( const char *id ){
+void ceCAActorAdd::SetID(const char *id){
 	   pID = id;
 }
 
-void ceCAActorAdd::SetAliasID( const char *id ){
+void ceCAActorAdd::SetAliasID(const char *id){
 	pAliasID = id;
 }
 
 
 
 ceConversationAction *ceCAActorAdd::CreateCopy() const{
-	return new ceCAActorAdd( *this );
+	return new ceCAActorAdd(*this);
 }

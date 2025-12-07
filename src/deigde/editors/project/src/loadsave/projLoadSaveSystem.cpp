@@ -55,8 +55,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projLoadSaveSystem::projLoadSaveSystem( projWindowMain &windowMain ) :
-pWindowMain( windowMain )
+projLoadSaveSystem::projLoadSaveSystem(projWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
 	pBuildFilePattern();
 }
@@ -78,11 +78,11 @@ void projLoadSaveSystem::pBuildFilePattern(){
 	igdeFilePattern *filePattern = NULL;
 	
 	try{
-		filePattern = new igdeFilePattern( "DELGA", "*.delga", ".delga" );
-		pFPDelga.AddFilePattern( filePattern );
+		filePattern = new igdeFilePattern("DELGA", "*.delga", ".delga");
+		pFPDelga.AddFilePattern(filePattern);
 		
-	}catch( const deException & ){
-		if( filePattern ){
+	}catch(const deException &){
+		if(filePattern){
 			delete filePattern;
 		}
 		throw;

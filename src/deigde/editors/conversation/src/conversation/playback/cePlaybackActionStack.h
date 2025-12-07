@@ -73,7 +73,7 @@ public:
 	/** Retrieves the size of the stack. */
 	inline int GetStackSize() const{ return pEntrySize; }
 	/** Sets the size of the stack. */
-	void SetStackSize( int size );
+	void SetStackSize(int size);
 	/** Retrieves the number of entries in the stack. */
 	inline int GetCount() const{ return pEntryCount; }
 	/** Determines if the stack is empty. */
@@ -83,10 +83,10 @@ public:
 	/** Retrieves the top entry. */
 	cePlaybackActionStackEntry &GetTop() const;
 	/** Retrieves the entry from the given position. */
-	cePlaybackActionStackEntry &GetAt( int position ) const;
+	cePlaybackActionStackEntry &GetAt(int position) const;
 	/** Pushes an entry to the top of the stack. */
-	void Push( ceConversationTopic *topic, ceConversationAction *action,
-		const ceConversationActionList *list, int index );
+	void Push(ceConversationTopic *topic, ceConversationAction *action,
+		const ceConversationActionList *list, int index);
 	/** Pops the entry from the top of the stack. */
 	void Pop();
 	/** Determines the next entry which is NULL if the stack is empty or GetNextAction from GetTop. */

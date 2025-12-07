@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	peeTaskSyncGameDefinition( peeWindowMain &windowMain );
+	peeTaskSyncGameDefinition(peeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	virtual ~peeTaskSyncGameDefinition();

@@ -43,35 +43,35 @@ projProjectListener::~projProjectListener(){
 // Notifications
 //////////////////
 
-void projProjectListener::StateChanged( projProject *project ){
+void projProjectListener::StateChanged(projProject *project){
 }
 
-void projProjectListener::UndoChanged( projProject *project ){
+void projProjectListener::UndoChanged(projProject *project){
 }
 
-void projProjectListener::ProjectChanged( projProject *project ){
-}
-
-
-
-void projProjectListener::ProfileStructureChanged( projProject *project ){
-}
-
-void projProjectListener::ProfileChanged( projProject *project,
-projProfile *profile ){
-}
-
-void projProjectListener::ProfileNameChanged( projProject *project,
-projProfile *profile ){
-	ProfileChanged( project, profile );
-}
-
-void projProjectListener::ActiveProfileChanged( projProject *project ){
+void projProjectListener::ProjectChanged(projProject *project){
 }
 
 
 
-void projProjectListener::ActiveLaunchProfileChanged( projProject *project ){
+void projProjectListener::ProfileStructureChanged(projProject *project){
+}
+
+void projProjectListener::ProfileChanged(projProject *project,
+projProfile *profile){
+}
+
+void projProjectListener::ProfileNameChanged(projProject *project,
+projProfile *profile){
+	ProfileChanged(project, profile);
+}
+
+void projProjectListener::ActiveProfileChanged(projProject *project){
+}
+
+
+
+void projProjectListener::ActiveLaunchProfileChanged(projProject *project){
 }
 
 void projProjectListener::RemoteClientConnected(projProject *project,

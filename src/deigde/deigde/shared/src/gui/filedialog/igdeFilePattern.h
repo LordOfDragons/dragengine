@@ -44,10 +44,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file pattern. */
-	igdeFilePattern( const char *name, const char *pattern, const char *defaultExtension );
+	igdeFilePattern(const char *name, const char *pattern, const char *defaultExtension);
 	
 	/** \brief Create copy of a file pattern. */
-	igdeFilePattern( const igdeFilePattern &filePattern );
+	igdeFilePattern(const igdeFilePattern &filePattern);
 	
 	/** \brief Clean up file pattern. */
 	~igdeFilePattern();

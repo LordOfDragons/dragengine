@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetMovement( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newMovement );
+	ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newMovement);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakSetMovement();

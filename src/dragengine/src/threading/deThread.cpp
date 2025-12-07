@@ -71,31 +71,31 @@ bool deThread::IsRunning(){
 void deThread::Start(){
 	bool running = IsRunning();
 	
-	if( pCreated && ! running ) Stop();
+	if(pCreated && !running) Stop();
 	
 	// unix, beos
 	#if defined OS_UNIX || defined OS_BEOS
-	if( ! pCreated ){
+	if(!pCreated){
 		pCreated = true;
 		pRunning = true;
-		if( pthread_create( &pThread, NULL, deThread::pThreadRunner, this ) != 0 ){
+		if(pthread_create(&pThread, NULL, deThread::pThreadRunner, this) != 0){
 			pCreated = false;
 			pRunning = false;
-			DETHROW( deeOutOfMemory );
+			DETHROW(deeOutOfMemory);
 		}
 	}
 	#endif
 	
 	// window
 	#ifdef OS_W32
-	if( ! pCreated ){
+	if(!pCreated){
 		pCreated = true;
 		pRunning = true;
-		pThread = CreateThread( NULL, 0, ( LPTHREAD_START_ROUTINE )deThread::pThreadRunner, this, 0, NULL );
-		if( ! pThread ){
+		pThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)deThread::pThreadRunner, this, 0, NULL);
+		if(!pThread){
 			pCreated = false;
 			pRunning = false;
-			DETHROW( deeOutOfMemory );
+			DETHROW(deeOutOfMemory);
 		}
 	}
 	#endif
@@ -104,7 +104,7 @@ void deThread::Start(){
 #ifdef OS_WEBWASM
 void deThread::Start(pthread_attr_t &attributes){
 	bool running = IsRunning();
-	if(pCreated && ! running){
+	if(pCreated && !running){
 		Stop();
 	}
 	if(!pCreated){
@@ -124,19 +124,19 @@ void deThread::Stop(){
 	
 	// unix, beos
 	#if defined OS_UNIX || defined OS_BEOS
-	if( running ){
+	if(running){
 		#ifdef HAS_FUNC_PTRHEAD_CANCEL
-		if( pthread_cancel( pThread ) != 0 ){
-			 DETHROW( deeInvalidAction );
+		if(pthread_cancel(pThread) != 0){
+			 DETHROW(deeInvalidAction);
 		}
 		#else
-		if( pthread_kill( pThread, SIGTERM ) != 0 ){
-			 DETHROW( deeInvalidAction );
+		if(pthread_kill(pThread, SIGTERM) != 0){
+			 DETHROW(deeInvalidAction);
 		}
 		#endif
 	}
-	if( pCreated ){
-		if( pthread_join( pThread, NULL ) != 0 ) DETHROW( deeInvalidAction );
+	if(pCreated){
+		if(pthread_join(pThread, NULL) != 0) DETHROW(deeInvalidAction);
 		pCreated = false;
 		pRunning = false; // just to make sure
 	}
@@ -144,15 +144,15 @@ void deThread::Stop(){
 	
 	// windows
 	#ifdef OS_W32
-	if( running ){
-		if( TerminateThread( pThread, 0 ) == 0 ) DETHROW( deeInvalidAction );
+	if(running){
+		if(TerminateThread(pThread, 0) == 0) DETHROW(deeInvalidAction);
 	}
-	if( pCreated ){
+	if(pCreated){
 		DWORD exitCode = STILL_ACTIVE;
-		while( exitCode == STILL_ACTIVE ){
-			if( GetExitCodeThread( pThread, &exitCode ) == 0 ) DETHROW( deeInvalidAction );
+		while(exitCode == STILL_ACTIVE){
+			if(GetExitCodeThread(pThread, &exitCode) == 0) DETHROW(deeInvalidAction);
 		}
-		CloseHandle( pThread );
+		CloseHandle(pThread);
 		pThread = NULL;
 		pCreated = false;
 		pRunning = false; // just to make sure
@@ -163,8 +163,8 @@ void deThread::Stop(){
 void deThread::WaitForExit(){
 	// unix, beos
 	#if defined OS_UNIX || defined OS_BEOS
-	if( IsRunning() && pCreated ){
-		if( pthread_join( pThread, NULL ) != 0 ) DETHROW( deeInvalidAction );
+	if(IsRunning() && pCreated){
+		if(pthread_join(pThread, NULL) != 0) DETHROW(deeInvalidAction);
 		pCreated = false;
 		pRunning = false; // just to make sure
 	}
@@ -172,12 +172,12 @@ void deThread::WaitForExit(){
 	
 	// windows
 	#ifdef OS_W32
-	if( IsRunning() && pCreated ){
+	if(IsRunning() && pCreated){
 		DWORD exitCode = STILL_ACTIVE;
-		while( exitCode == STILL_ACTIVE ){
-			if( GetExitCodeThread( pThread, &exitCode ) == 0 ) DETHROW( deeInvalidAction );
+		while(exitCode == STILL_ACTIVE){
+			if(GetExitCodeThread(pThread, &exitCode) == 0) DETHROW(deeInvalidAction);
 		}
-		CloseHandle( pThread );
+		CloseHandle(pThread);
 		pThread = NULL;
 		pCreated = false;
 		pRunning = false; // just to make sure
@@ -188,11 +188,11 @@ void deThread::WaitForExit(){
 
 
 #ifdef OS_BEOS
-void deThread::SetName( const char *name ){
+void deThread::SetName(const char *name){
 	pName = name;
-	if( pBeOSThreadID != -1 ){
-		if( rename_thread( pBeOSThreadID, name ) != B_OK ){
-			DETHROW( deeInvalidParam );
+	if(pBeOSThreadID != -1){
+		if(rename_thread(pBeOSThreadID, name) != B_OK){
+			DETHROW(deeInvalidParam);
 		}
 	}
 }
@@ -203,17 +203,17 @@ void deThread::SetName( const char *name ){
 //////////////////////
 
 #if defined OS_UNIX || defined OS_BEOS
-void *deThread::pThreadRunner( void *parameter )
+void *deThread::pThreadRunner(void *parameter)
 #endif
 #ifdef OS_W32
-DWORD WINAPI deThread::pThreadRunner( LPVOID parameter )
+DWORD WINAPI deThread::pThreadRunner(LPVOID parameter)
 #endif
 {
-	deThread *thread = ( deThread* )parameter;
+	deThread *thread = (deThread*)parameter;
 	
 	#ifdef OS_BEOS
-	thread->pBeOSThreadID = find_thread( NULL );
-	rename_thread( thread->pBeOSThreadID, thread->pName );
+	thread->pBeOSThreadID = find_thread(NULL);
+	rename_thread(thread->pBeOSThreadID, thread->pName);
 	#endif
 	
 	thread->Run();

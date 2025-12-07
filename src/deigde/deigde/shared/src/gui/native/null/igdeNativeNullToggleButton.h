@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullToggleButton();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullToggleButton* CreateNativeWidget( igdeToggleButton &owner );
+	static igdeNativeNullToggleButton* CreateNativeWidget(igdeToggleButton &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWPUndoHistory::peeWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pListener( new peeWPUndoHistoryListener( *this ) ),
-pEmitter( NULL ){
+peeWPUndoHistory::peeWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(new peeWPUndoHistoryListener(*this)),
+pEmitter(NULL){
 }
 
 peeWPUndoHistory::~peeWPUndoHistory(){
-	SetEmitter( NULL );
+	SetEmitter(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -59,24 +59,24 @@ peeWPUndoHistory::~peeWPUndoHistory(){
 // Management
 ///////////////
 
-void peeWPUndoHistory::SetEmitter( peeEmitter *emitter ){
-	if( emitter == pEmitter ){
+void peeWPUndoHistory::SetEmitter(peeEmitter *emitter){
+	if(emitter == pEmitter){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(NULL);
 	
-	if( pEmitter ){
-		pEmitter->RemoveListener( pListener );
+	if(pEmitter){
+		pEmitter->RemoveListener(pListener);
 		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
-	if( emitter ){
-		emitter->AddListener( pListener );
+	if(emitter){
+		emitter->AddListener(pListener);
 		emitter->AddReference();
 		
-		SetUndoSystem( emitter->GetUndoSystem() );
+		SetUndoSystem(emitter->GetUndoSystem());
 	}
 }

@@ -56,7 +56,7 @@ public:
 		virtual ~cAsyncLoadFinished();
 		
 		/** \brief Loading finished. */
-		virtual void LoadFinished( igdeWSky &wrapper, bool succeeded ) = 0;
+		virtual void LoadFinished(igdeWSky &wrapper, bool succeeded) = 0;
 	};
 	
 	
@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky wrapper. */
-	igdeWSky( igdeEnvironment &environment );
+	igdeWSky(igdeEnvironment &environment);
 	
 	/** \brief Clean up wrapper. */
 	~igdeWSky();
@@ -96,7 +96,7 @@ public:
 	inline deWorld *GetWorld() const{ return pEngWorld; }
 	
 	/** \brief Set world or NULL. */
-	void SetWorld( deWorld *world );
+	void SetWorld(deWorld *world);
 	
 	/** \brief Maximum light intensity found in the sky. */
 	inline float GetMaxLightIntensity() const{ return pMaxLightIntensity; }
@@ -105,10 +105,10 @@ public:
 	int GetControllerCount() const;
 	
 	/** \brief Get sky instance controller. */
-	const deSkyController &GetControllerAt( int index ) const;
+	const deSkyController &GetControllerAt(int index) const;
 	
 	/** \brief Set controller value. */
-	void SetControllerValue( int index, float value );
+	void SetControllerValue(int index, float value);
 	
 	/** \brief Get sky or NULL. */
 	const deSky *GetSky() const;
@@ -120,20 +120,20 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set sky to use. */
-	void SetSky( deSky *sky );
+	void SetSky(deSky *sky);
 	
 	/** \brief Set sky from default sky game definition if present. */
 	void SetGDDefaultSky();
 	
 	/** \brief Set sky from game definition sky. */
-	void SetGDSky( igdeGDSky *gdSky );
+	void SetGDSky(igdeGDSky *gdSky);
 	
 	/**
 	 * \brief Set sky from path if present.
 	 * 
 	 * If path exists in game definition stores also the game definition.
 	 */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	
 	
@@ -145,7 +145,7 @@ public:
 	 * 
 	 * Caller is responsible to keep the listener alive. Wrapper does not hold reference.
 	 */
-	void SetAsyncLoadFinished( cAsyncLoadFinished *listener );
+	void SetAsyncLoadFinished(cAsyncLoadFinished *listener);
 	
 	
 	
@@ -160,7 +160,7 @@ public:
 	
 	
 private:
-	void pLoadSky( const char *path );
+	void pLoadSky(const char *path);
 	void pCheckAsyncLoadFinished();
 };
 

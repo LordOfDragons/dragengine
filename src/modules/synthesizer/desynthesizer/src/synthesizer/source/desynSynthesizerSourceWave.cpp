@@ -39,7 +39,7 @@
 // Definitions
 ////////////////
 
-#define PI2 ( PI * 2.0f )
+#define PI2 (PI * 2.0f)
 
 struct sStateData{
 	float phase;
@@ -53,17 +53,17 @@ struct sStateData{
 // Constructor, destructor
 ////////////////////////////
 
-desynSynthesizerSourceWave::desynSynthesizerSourceWave( desynSynthesizer &synthesizer,
-int firstLink, const deSynthesizerSourceWave &source ) :
-desynSynthesizerSource( synthesizer, firstLink, source ),
-pType( source.GetType() ),
-pMinFrequency( source.GetMinFrequency() ),
-pMaxFrequency( source.GetMaxFrequency() ),
-pFrequencyRange( pMaxFrequency - pMinFrequency ),
-pTargetFrequency( synthesizer, firstLink, source.GetTargetFrequency() )
+desynSynthesizerSourceWave::desynSynthesizerSourceWave(desynSynthesizer &synthesizer,
+int firstLink, const deSynthesizerSourceWave &source) :
+desynSynthesizerSource(synthesizer, firstLink, source),
+pType(source.GetType()),
+pMinFrequency(source.GetMinFrequency()),
+pMaxFrequency(source.GetMaxFrequency()),
+pFrequencyRange(pMaxFrequency - pMinFrequency),
+pTargetFrequency(synthesizer, firstLink, source.GetTargetFrequency())
 {
-	SetSilent( ! source.GetEnabled() );
-	if( GetSilent() ){
+	SetSilent(!source.GetEnabled());
+	if(GetSilent()){
 		return;
 	}
 }
@@ -76,214 +76,214 @@ desynSynthesizerSourceWave::~desynSynthesizerSourceWave(){
 // Management
 ///////////////
 
-float desynSynthesizerSourceWave::GetFrequency( const desynSynthesizerInstance &instance, int sample ) const{
-	return pMinFrequency + pFrequencyRange * pTargetFrequency.GetValue( instance, sample, 0.0f );
+float desynSynthesizerSourceWave::GetFrequency(const desynSynthesizerInstance &instance, int sample) const{
+	return pMinFrequency + pFrequencyRange * pTargetFrequency.GetValue(instance, sample, 0.0f);
 }
 
 
 
-int desynSynthesizerSourceWave::StateDataSizeSource( int offset ){
-	return ( int )sizeof( sStateData );
+int desynSynthesizerSourceWave::StateDataSizeSource(int offset){
+	return (int)sizeof(sStateData);
 }
 
-void desynSynthesizerSourceWave::InitStateDataSource( char *stateData ){
-	sStateData& sdata = *( ( sStateData* )( stateData + GetStateDataOffset() ) );
+void desynSynthesizerSourceWave::InitStateDataSource(char *stateData){
+	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
 	sdata.phase = 0.0f;
 }
 
 
 
-void desynSynthesizerSourceWave::GenerateSourceSound( const desynSynthesizerInstance &instance,
-char *stateData, float *buffer, int samples, float curveOffset, float curveFactor ){
-	switch( pType ){
+void desynSynthesizerSourceWave::GenerateSourceSound(const desynSynthesizerInstance &instance,
+char *stateData, float *buffer, int samples, float curveOffset, float curveFactor){
+	switch(pType){
 	case deSynthesizerSourceWave::ewtSine:
-		GenerateSineWave( instance, stateData, buffer, samples, curveOffset, curveFactor );
+		GenerateSineWave(instance, stateData, buffer, samples, curveOffset, curveFactor);
 		break;
 		
 	case deSynthesizerSourceWave::ewtSquare:
-		GenerateSquareWave( instance, stateData, buffer, samples, curveOffset, curveFactor );
+		GenerateSquareWave(instance, stateData, buffer, samples, curveOffset, curveFactor);
 		break;
 		
 	case deSynthesizerSourceWave::ewtSawTooth:
-		GenerateSawToothWave( instance, stateData, buffer, samples, curveOffset, curveFactor );
+		GenerateSawToothWave(instance, stateData, buffer, samples, curveOffset, curveFactor);
 		break;
 		
 	case deSynthesizerSourceWave::ewtTriangle:
-		GenerateTriangleWave( instance, stateData, buffer, samples, curveOffset, curveFactor );
+		GenerateTriangleWave(instance, stateData, buffer, samples, curveOffset, curveFactor);
 		break;
 	};
 }
 
-void desynSynthesizerSourceWave::GenerateSineWave( const desynSynthesizerInstance &instance,
-char *stateData, float *buffer, int samples, float curveOffset, float curveFactor ){
-	sStateData& sdata = *( ( sStateData* )( stateData + GetStateDataOffset() ) );
+void desynSynthesizerSourceWave::GenerateSineWave(const desynSynthesizerInstance &instance,
+char *stateData, float *buffer, int samples, float curveOffset, float curveFactor){
+	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
 	const int channelCount = instance.GetChannelCount();
 	const float invSampleRate = instance.GetInverseSampleRate();
 	int i;
 	
-	if( channelCount == 1 ){
-		sGenerateBufferMono * const sbuf = ( sGenerateBufferMono* )buffer;
+	if(channelCount == 1){
+		sGenerateBufferMono * const sbuf = (sGenerateBufferMono*)buffer;
 		
-		for( i=0; i<samples; i++ ){
-			const int curveEvalPos = NearestCurveEvalPosition( i, curveOffset, curveFactor );
-			sbuf[ i ].value = sinf( sdata.phase * PI2 );
-			sdata.phase += GetFrequency( instance, curveEvalPos ) * invSampleRate;
+		for(i=0; i<samples; i++){
+			const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
+			sbuf[i].value = sinf(sdata.phase * PI2);
+			sdata.phase += GetFrequency(instance, curveEvalPos) * invSampleRate;
 		}
 		
-	}else if( channelCount == 2 ){
-		sGenerateBufferStereo * const sbuf = ( sGenerateBufferStereo* )buffer;
+	}else if(channelCount == 2){
+		sGenerateBufferStereo * const sbuf = (sGenerateBufferStereo*)buffer;
 		
-		for( i=0; i<samples; i++ ){
-			const int curveEvalPos = NearestCurveEvalPosition( i, curveOffset, curveFactor );
-			const float panning = GetPanning( instance, curveEvalPos );
-			const float value = sinf( sdata.phase * PI2 );
+		for(i=0; i<samples; i++){
+			const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
+			const float panning = GetPanning(instance, curveEvalPos);
+			const float value = sinf(sdata.phase * PI2);
 			
-			sbuf[ i ].left = decMath::min( 1.0f - panning, 1.0f ) * value;
-			sbuf[ i ].right = decMath::min( 1.0f + panning, 1.0f ) * value;
+			sbuf[i].left = decMath::min(1.0f - panning, 1.0f) * value;
+			sbuf[i].right = decMath::min(1.0f + panning, 1.0f) * value;
 			
-			sdata.phase += GetFrequency( instance, curveEvalPos ) * invSampleRate;
+			sdata.phase += GetFrequency(instance, curveEvalPos) * invSampleRate;
 		}
 	}
 	
 	float intpart;
-	sdata.phase = modff( sdata.phase, &intpart );
+	sdata.phase = modff(sdata.phase, &intpart);
 }
 
-void desynSynthesizerSourceWave::GenerateSquareWave( const desynSynthesizerInstance &instance,
-char *stateData, float *buffer, int samples, float curveOffset, float curveFactor ){
-	sStateData& sdata = *( ( sStateData* )( stateData + GetStateDataOffset() ) );
+void desynSynthesizerSourceWave::GenerateSquareWave(const desynSynthesizerInstance &instance,
+char *stateData, float *buffer, int samples, float curveOffset, float curveFactor){
+	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
 	const int channelCount = instance.GetChannelCount();
 	const float invSampleRate = instance.GetInverseSampleRate();
 	float intpart;
 	int i;
 	
-	if( channelCount == 1 ){
-		sGenerateBufferMono * const sbuf = ( sGenerateBufferMono* )buffer;
+	if(channelCount == 1){
+		sGenerateBufferMono * const sbuf = (sGenerateBufferMono*)buffer;
 		
-		for( i=0; i<samples; i++ ){
-			const int curveEvalPos = NearestCurveEvalPosition( i, curveOffset, curveFactor );
+		for(i=0; i<samples; i++){
+			const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
 			
-			if( sdata.phase < 0.5f ){
-				sbuf[ i ].value = 1.0f;
+			if(sdata.phase < 0.5f){
+				sbuf[i].value = 1.0f;
 				
 			}else{
-				sbuf[ i ].value = -1.0f;
+				sbuf[i].value = -1.0f;
 			}
 			
-			sdata.phase = modff( sdata.phase + GetFrequency( instance, curveEvalPos ) * invSampleRate, &intpart );
+			sdata.phase = modff(sdata.phase + GetFrequency(instance, curveEvalPos) * invSampleRate, &intpart);
 		}
 		
-	}else if( channelCount == 2 ){
-		sGenerateBufferStereo * const sbuf = ( sGenerateBufferStereo* )buffer;
+	}else if(channelCount == 2){
+		sGenerateBufferStereo * const sbuf = (sGenerateBufferStereo*)buffer;
 		
-		for( i=0; i<samples; i++ ){
-			const int curveEvalPos = NearestCurveEvalPosition( i, curveOffset, curveFactor );
-			const float panning = GetPanning( instance, curveEvalPos );
-			const float panLeft = decMath::min( 1.0f - panning, 1.0f );
-			const float panRight = decMath::min( 1.0f + panning, 1.0f );
+		for(i=0; i<samples; i++){
+			const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
+			const float panning = GetPanning(instance, curveEvalPos);
+			const float panLeft = decMath::min(1.0f - panning, 1.0f);
+			const float panRight = decMath::min(1.0f + panning, 1.0f);
 			
-			if( sdata.phase < 0.5f ){
-				sbuf[ i ].left = panLeft;
-				sbuf[ i ].right = panRight;
+			if(sdata.phase < 0.5f){
+				sbuf[i].left = panLeft;
+				sbuf[i].right = panRight;
 				
 			}else{
-				sbuf[ i ].left = -panLeft;
-				sbuf[ i ].right = -panRight;
+				sbuf[i].left = -panLeft;
+				sbuf[i].right = -panRight;
 			}
 			
-			sdata.phase = modff( sdata.phase + GetFrequency( instance, curveEvalPos ) * invSampleRate, &intpart );
+			sdata.phase = modff(sdata.phase + GetFrequency(instance, curveEvalPos) * invSampleRate, &intpart);
 		}
 	}
 }
 
-void desynSynthesizerSourceWave::GenerateSawToothWave( const desynSynthesizerInstance &instance,
-char *stateData, float *buffer, int samples, float curveOffset, float curveFactor ){
-	sStateData& sdata = *( ( sStateData* )( stateData + GetStateDataOffset() ) );
+void desynSynthesizerSourceWave::GenerateSawToothWave(const desynSynthesizerInstance &instance,
+char *stateData, float *buffer, int samples, float curveOffset, float curveFactor){
+	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
 	const int channelCount = instance.GetChannelCount();
 	const float invSampleRate = instance.GetInverseSampleRate();
 	float intpart;
 	int i;
 	
-	if( channelCount == 1 ){
-		sGenerateBufferMono * const sbuf = ( sGenerateBufferMono* )buffer;
+	if(channelCount == 1){
+		sGenerateBufferMono * const sbuf = (sGenerateBufferMono*)buffer;
 		
-		for( i=0; i<samples; i++ ){
-			const int curveEvalPos = NearestCurveEvalPosition( i, curveOffset, curveFactor );
-			sbuf[ i ].value = sdata.phase - 1.0f;
-			sdata.phase = modff( sdata.phase + GetFrequency( instance, curveEvalPos ) * invSampleRate, &intpart );
+		for(i=0; i<samples; i++){
+			const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
+			sbuf[i].value = sdata.phase - 1.0f;
+			sdata.phase = modff(sdata.phase + GetFrequency(instance, curveEvalPos) * invSampleRate, &intpart);
 		}
 		
-	}else if( channelCount == 2 ){
-		sGenerateBufferStereo * const sbuf = ( sGenerateBufferStereo* )buffer;
+	}else if(channelCount == 2){
+		sGenerateBufferStereo * const sbuf = (sGenerateBufferStereo*)buffer;
 		
-		for( i=0; i<samples; i++ ){
-			const int curveEvalPos = NearestCurveEvalPosition( i, curveOffset, curveFactor );
-			const float panning = GetPanning( instance, curveEvalPos );
+		for(i=0; i<samples; i++){
+			const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
+			const float panning = GetPanning(instance, curveEvalPos);
 			const float value = sdata.phase - 1.0f;
-			sbuf[ i ].left = decMath::min( 1.0f - panning, 1.0f ) * value;
-			sbuf[ i ].right = decMath::min( 1.0f + panning, 1.0f ) * value;
+			sbuf[i].left = decMath::min(1.0f - panning, 1.0f) * value;
+			sbuf[i].right = decMath::min(1.0f + panning, 1.0f) * value;
 			
-			sdata.phase = modff( sdata.phase + GetFrequency( instance, curveEvalPos ) * invSampleRate, &intpart );
+			sdata.phase = modff(sdata.phase + GetFrequency(instance, curveEvalPos) * invSampleRate, &intpart);
 		}
 	}
 }
 
-void desynSynthesizerSourceWave::GenerateTriangleWave( const desynSynthesizerInstance &instance,
-char *stateData, float *buffer, int samples, float curveOffset, float curveFactor ){
-	sStateData& sdata = *( ( sStateData* )( stateData + GetStateDataOffset() ) );
+void desynSynthesizerSourceWave::GenerateTriangleWave(const desynSynthesizerInstance &instance,
+char *stateData, float *buffer, int samples, float curveOffset, float curveFactor){
+	sStateData& sdata = *((sStateData*)(stateData + GetStateDataOffset()));
 	const int channelCount = instance.GetChannelCount();
 	const float invSampleRate = instance.GetInverseSampleRate();
 	float intpart;
 	int i;
 	
-	if( channelCount == 1 ){
-		sGenerateBufferMono * const sbuf = ( sGenerateBufferMono* )buffer;
+	if(channelCount == 1){
+		sGenerateBufferMono * const sbuf = (sGenerateBufferMono*)buffer;
 		
-		for( i=0; i<samples; i++ ){
-			const int curveEvalPos = NearestCurveEvalPosition( i, curveOffset, curveFactor );
+		for(i=0; i<samples; i++){
+			const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
 			const float fract = sdata.phase * 4.0f;
 			
-			if( fract < 1.0f ){
-				sbuf[ i ].value = fract;
+			if(fract < 1.0f){
+				sbuf[i].value = fract;
 				
-			}else if( fract > 3.0f ){
-				sbuf[ i ].value = fract - 4.0f;
+			}else if(fract > 3.0f){
+				sbuf[i].value = fract - 4.0f;
 				
 			}else{
-				sbuf[ i ].value = 2.0f - fract;
+				sbuf[i].value = 2.0f - fract;
 			}
 			
-			sdata.phase = modff( sdata.phase + GetFrequency( instance, curveEvalPos ) * invSampleRate, &intpart );
+			sdata.phase = modff(sdata.phase + GetFrequency(instance, curveEvalPos) * invSampleRate, &intpart);
 		}
 		
-	}else if( channelCount == 2 ){
-		sGenerateBufferStereo * const sbuf = ( sGenerateBufferStereo* )buffer;
+	}else if(channelCount == 2){
+		sGenerateBufferStereo * const sbuf = (sGenerateBufferStereo*)buffer;
 		
-		for( i=0; i<samples; i++ ){
-			const int curveEvalPos = NearestCurveEvalPosition( i, curveOffset, curveFactor );
-			const float panning = GetPanning( instance, curveEvalPos );
+		for(i=0; i<samples; i++){
+			const int curveEvalPos = NearestCurveEvalPosition(i, curveOffset, curveFactor);
+			const float panning = GetPanning(instance, curveEvalPos);
 			
 			const float fract = sdata.phase * 4.0f;
 			float value;
 			
-			if( fract < 1.0f ){
+			if(fract < 1.0f){
 				value = fract;
 				
-			}else if( fract > 3.0f ){
+			}else if(fract > 3.0f){
 				value = fract - 4.0f;
 				
 			}else{
 				value = 2.0f - fract;
 			}
 			
-			sbuf[ i ].left = decMath::min( 1.0f - panning, 1.0f ) * value;
-			sbuf[ i ].right = decMath::min( 1.0f + panning, 1.0f ) * value;
+			sbuf[i].left = decMath::min(1.0f - panning, 1.0f) * value;
+			sbuf[i].right = decMath::min(1.0f + panning, 1.0f) * value;
 			
-			sdata.phase = modff( sdata.phase + GetFrequency( instance, curveEvalPos ) * invSampleRate, &intpart );
+			sdata.phase = modff(sdata.phase + GetFrequency(instance, curveEvalPos) * invSampleRate, &intpart);
 		}
 	}
 }
 
-void desynSynthesizerSourceWave::SkipSourceSound( const desynSynthesizerInstance &instance,
-char *stateData, int samples, float curveOffset, float curveFactor ){
+void desynSynthesizerSourceWave::SkipSourceSound(const desynSynthesizerInstance &instance,
+char *stateData, int samples, float curveOffset, float curveFactor){
 }

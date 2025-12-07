@@ -52,7 +52,7 @@ public:
 	deNetworkValueString();
 	
 	/** \brief Create network value object. */
-	deNetworkValueString( const char *value );
+	deNetworkValueString(const char *value);
 	
 	/** \brief Clean up network value object. */
 	virtual ~deNetworkValueString();
@@ -66,7 +66,7 @@ public:
 	inline const decString &GetString() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetString( const char *value );
+	void SetString(const char *value);
 	/*@}*/
 	
 	
@@ -74,7 +74,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

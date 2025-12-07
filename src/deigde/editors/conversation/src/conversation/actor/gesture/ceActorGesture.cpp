@@ -56,27 +56,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceActorGesture::ceActorGesture( igdeEnvironment &environment, const char *name ) :
-pEnvironment( environment ),
-pEngAnimator( NULL ),
-pName( name ){
+ceActorGesture::ceActorGesture(igdeEnvironment &environment, const char *name) :
+pEnvironment(environment),
+pEngAnimator(NULL),
+pName(name){
 }
 
-ceActorGesture::ceActorGesture( const ceActorGesture &gesture ) :
-pEnvironment( gesture.pEnvironment ),
-pEngAnimator( NULL ),
-pName( gesture.pName ),
-pPathAnimator( gesture.pPathAnimator )
+ceActorGesture::ceActorGesture(const ceActorGesture &gesture) :
+pEnvironment(gesture.pEnvironment),
+pEngAnimator(NULL),
+pName(gesture.pName),
+pPathAnimator(gesture.pPathAnimator)
 {
 	pEngAnimator = gesture.pEngAnimator;
-	if( pEngAnimator ){
+	if(pEngAnimator){
 		pEngAnimator->AddReference();
 	}
 }
 
 ceActorGesture::~ceActorGesture(){
-	if( pEngAnimator ){
-		pEngAnimator->SetRig( NULL );
+	if(pEngAnimator){
+		pEngAnimator->SetRig(NULL);
 		pEngAnimator->FreeReference();
 	}
 }
@@ -86,12 +86,12 @@ ceActorGesture::~ceActorGesture(){
 // Management
 ///////////////
 
-void ceActorGesture::SetName( const char *name ){
+void ceActorGesture::SetName(const char *name){
 	pName = name;
 }
 
-void ceActorGesture::SetPathAnimator( const char *path ){
-	if( pPathAnimator.Equals( path ) ){
+void ceActorGesture::SetPathAnimator(const char *path){
+	if(pPathAnimator.Equals(path)){
 		return;
 	}
 	
@@ -105,7 +105,7 @@ void ceActorGesture::SetPathAnimator( const char *path ){
 //////////////////////
 
 void ceActorGesture::pLoadAnimator(){
-	if( pPathAnimator.IsEmpty() ){
+	if(pPathAnimator.IsEmpty()){
 		return;
 	}
 	
@@ -114,26 +114,26 @@ void ceActorGesture::pLoadAnimator(){
 	deAnimator *animator = NULL;
 	
 	try{
-		reader.TakeOver( engine.GetVirtualFileSystem()->OpenFileForReading(
-			decPath::CreatePathUnix( pPathAnimator ) ) );
+		reader.TakeOver(engine.GetVirtualFileSystem()->OpenFileForReading(
+			decPath::CreatePathUnix(pPathAnimator)));
 		animator = engine.GetAnimatorManager()->CreateAnimator();
 		
-		igdeLoadAnimator( pEnvironment, pEnvironment.GetLogger(), LOGSOURCE ).
-			Load( pPathAnimator, *animator, reader );
+		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
+			Load(pPathAnimator, *animator, reader);
 		
-		if( pEngAnimator ){
+		if(pEngAnimator){
 			pEngAnimator->FreeReference();
 		}
 		pEngAnimator = animator;
 		
-	}catch( const deException &e ){
-		if( animator ){
+	}catch(const deException &e){
+		if(animator){
 			animator->FreeReference();
 		}
-		pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development
-		if( pEngAnimator ){
+		if(pEngAnimator){
 			pEngAnimator->FreeReference();
 		}
 		pEngAnimator = nullptr;

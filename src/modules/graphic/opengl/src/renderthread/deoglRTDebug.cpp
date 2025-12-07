@@ -45,9 +45,9 @@
 // Callbacks
 //////////////
 
-void fDebugOutput( GLenum source, GLenum type, GLuint id, GLenum severity,
-GLsizei /*length*/, const GLchar *message, const void *userParam ){
-	deoglRenderThread &renderThread = *( ( deoglRenderThread* )userParam );
+void fDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity,
+GLsizei /*length*/, const GLchar *message, const void *userParam){
+	deoglRenderThread &renderThread = *((deoglRenderThread*)userParam);
 	if(!renderThread.HasDebug() || !renderThread.GetDebug().GetEnableHwDebugOutput()){
 		return;
 	}
@@ -55,7 +55,7 @@ GLsizei /*length*/, const GLchar *message, const void *userParam ){
 	bool stackTrace = false; //true;
 	
 	const char *strSource;
-	switch( source ){
+	switch(source){
 	case GL_DEBUG_SOURCE_API_ARB:
 		strSource = "API";
 		break;
@@ -85,7 +85,7 @@ GLsizei /*length*/, const GLchar *message, const void *userParam ){
 	}
 	
 	const char *strType;
-	switch( type ){
+	switch(type){
 	case GL_DEBUG_TYPE_ERROR_ARB:
 		strType = "Error";
 		break;
@@ -123,31 +123,31 @@ GLsizei /*length*/, const GLchar *message, const void *userParam ){
 // 		return; // nvidia spams this like hell
 // 	}
 	
-	switch( severity ){
+	switch(severity){
 	case GL_DEBUG_SEVERITY_HIGH_ARB:
-		renderThread.GetLogger().LogErrorFormat( "Source(%s) Type(%s) ID(0x%x): %s",
-			strSource, strType, id, message );
-		if( stackTrace ){
-			renderThread.GetLogger().LogException( deeInvalidAction( __FILE__, __LINE__ ) );
+		renderThread.GetLogger().LogErrorFormat("Source(%s) Type(%s) ID(0x%x): %s",
+			strSource, strType, id, message);
+		if(stackTrace){
+			renderThread.GetLogger().LogException(deeInvalidAction(__FILE__, __LINE__));
 		}
 		break;
 		
 	case GL_DEBUG_SEVERITY_MEDIUM_ARB:
-		if( renderThread.GetConfiguration().GetDoLogWarn() ){
-			renderThread.GetLogger().LogWarnFormat( "Source(%s) Type(%s) ID(0x%x): %s",
-				strSource, strType, id, message );
-			if( stackTrace ){
-				renderThread.GetLogger().LogException( deeInvalidAction( __FILE__, __LINE__ ) );
+		if(renderThread.GetConfiguration().GetDoLogWarn()){
+			renderThread.GetLogger().LogWarnFormat("Source(%s) Type(%s) ID(0x%x): %s",
+				strSource, strType, id, message);
+			if(stackTrace){
+				renderThread.GetLogger().LogException(deeInvalidAction(__FILE__, __LINE__));
 			}
 		}
 		break;
 		
 	case GL_DEBUG_SEVERITY_LOW_ARB:
-		if( renderThread.GetConfiguration().GetDoLogDebug() ){
-			renderThread.GetLogger().LogInfoFormat( "Source(%s) Type(%s) ID(0x%x): %s",
-				strSource, strType, id, message );
-			if( stackTrace ){
-				renderThread.GetLogger().LogException( deeInvalidAction( __FILE__, __LINE__ ) );
+		if(renderThread.GetConfiguration().GetDoLogDebug()){
+			renderThread.GetLogger().LogInfoFormat("Source(%s) Type(%s) ID(0x%x): %s",
+				strSource, strType, id, message);
+			if(stackTrace){
+				renderThread.GetLogger().LogException(deeInvalidAction(__FILE__, __LINE__));
 			}
 		}
 		break;
@@ -157,15 +157,15 @@ GLsizei /*length*/, const GLchar *message, const void *userParam ){
 	}
 }
 
-void fDebugOutputAMD( GLuint id, GLenum category, GLenum severity, GLsizei length,
-const GLchar *message, void *userParam ){
-	deoglRenderThread &renderThread = *( ( deoglRenderThread* )userParam );
-	if( ! renderThread.GetDebug().GetEnableHwDebugOutput() ){
+void fDebugOutputAMD(GLuint id, GLenum category, GLenum severity, GLsizei length,
+const GLchar *message, void *userParam){
+	deoglRenderThread &renderThread = *((deoglRenderThread*)userParam);
+	if(!renderThread.GetDebug().GetEnableHwDebugOutput()){
 		return;
 	}
 	
 	const char *strCategory;
-	switch( category ){
+	switch(category){
 	case GL_DEBUG_CATEGORY_API_ERROR_AMD:
 		strCategory = "API";
 		break;
@@ -202,23 +202,23 @@ const GLchar *message, void *userParam ){
 		strCategory = "Unknown";
 	}
 	
-	switch( severity ){
+	switch(severity){
 	case GL_DEBUG_SEVERITY_HIGH_AMD:
-		renderThread.GetLogger().LogErrorFormat( "Category(%s) ID(0x%x): %s",
-			strCategory, id, message );
+		renderThread.GetLogger().LogErrorFormat("Category(%s) ID(0x%x): %s",
+			strCategory, id, message);
 		break;
 		
 	case GL_DEBUG_SEVERITY_MEDIUM_AMD:
-		if( renderThread.GetConfiguration().GetDoLogWarn() ){
-			renderThread.GetLogger().LogWarnFormat( "Category(%s) ID(0x%x): %s",
-				strCategory, id, message );
+		if(renderThread.GetConfiguration().GetDoLogWarn()){
+			renderThread.GetLogger().LogWarnFormat("Category(%s) ID(0x%x): %s",
+				strCategory, id, message);
 		}
 		break;
 		
 	case GL_DEBUG_SEVERITY_LOW_AMD:
-		if( renderThread.GetConfiguration().GetDoLogDebug() ){
-			renderThread.GetLogger().LogInfoFormat( "Category(%s) ID(0x%x): %s",
-				strCategory, id, message );
+		if(renderThread.GetConfiguration().GetDoLogDebug()){
+			renderThread.GetLogger().LogInfoFormat("Category(%s) ID(0x%x): %s",
+				strCategory, id, message);
 		}
 		break;
 		
@@ -235,35 +235,35 @@ const GLchar *message, void *userParam ){
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTDebug::deoglRTDebug( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pDebugSaveTexture( NULL ),
-pDeveloperMode( NULL ),
-pEnableHwDebugOutput( true ),
-pDebugMemoryConsumption( renderThread ),
-pEnableDebugTrace( false )
+deoglRTDebug::deoglRTDebug(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pDebugSaveTexture(NULL),
+pDeveloperMode(NULL),
+pEnableHwDebugOutput(true),
+pDebugMemoryConsumption(renderThread),
+pEnableDebugTrace(false)
 {
 	try{
-		if( renderThread.GetConfiguration().GetDebugContext() ){
+		if(renderThread.GetConfiguration().GetDebugContext()){
 			// enable debug output
-			if( renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_KHR_debug )
-			|| renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_debug_output ) ){
-				pglDebugMessageCallback( fDebugOutput, &renderThread );
+			if(renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_KHR_debug)
+			|| renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_ARB_debug_output)){
+				pglDebugMessageCallback(fDebugOutput, &renderThread);
 				
-				glEnable( GL_DEBUG_OUTPUT );
+				glEnable(GL_DEBUG_OUTPUT);
 				
-				if( renderThread.GetConfiguration().GetDebugNoMessages() ){
-					renderThread.GetLogger().LogInfo( "Suppress hardware debug messages" );
-					pglDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE );
+				if(renderThread.GetConfiguration().GetDebugNoMessages()){
+					renderThread.GetLogger().LogInfo("Suppress hardware debug messages");
+					pglDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
 					
 				}else{
 // 					glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
 					
-					pglDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE );
+					pglDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 					
 					
 					// disable message not interesting for us but flodding the logs
-					GLuint disableMessages[ 20 ];
+					GLuint disableMessages[20];
 					int disableMessagesCount = 0;
 					
 					
@@ -271,21 +271,21 @@ pEnableDebugTrace( false )
 					//   Source(API) Type(Other) ID(20084): Texture state usage warning:
 					//     The texture object (0) bound to texture image unit 0 does not
 					//     have a defined base level and cannot be used for texture mapping.
-					disableMessages[ disableMessagesCount++ ] = 0x20084;
+					disableMessages[disableMessagesCount++] = 0x20084;
 					
 					// nVidia:
 					//   Source(API) Type(Other) ID(0x20060): Framebuffer info: The drawbuffer
 					//     supplied (34854) is currently bound to NONE, no clear will take place.
-					disableMessages[ disableMessagesCount++ ] = 0x20060;
+					disableMessages[disableMessagesCount++] = 0x20060;
 					
 					// nVidia:
 					//   Source(API) Type(Other) ID(0x20081): Texture state detailed info:
 					//     GL_TEXTURE_BUFFER_EXT texture 349 was (re)sized to store 145 elements.
-					disableMessages[ disableMessagesCount++ ] = 0x20081;
+					disableMessages[disableMessagesCount++] = 0x20081;
 					
-					if( disableMessagesCount > 0 ){
-						pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_OTHER_ARB,
-							GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
+					if(disableMessagesCount > 0){
+						pglDebugMessageControl(GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_OTHER_ARB,
+							GL_DONT_CARE, disableMessagesCount, &disableMessages[0], GL_FALSE);
 					}
 					
 					
@@ -296,16 +296,16 @@ pEnableDebugTrace( false )
 					//     Buffer object 34 (bound to GL_TRANSFORM_FEEDBACK_BUFFER_NV (0),
 					//     GL_ARRAY_BUFFER_ARB, and GL_TRANSFORM_FEEDBACK_BUFFER_NV, usage hint 
 					//     is GL_STREAM_READ) is being copied/moved from VIDEO memory to HOST memory.
-					disableMessages[ disableMessagesCount++ ] = 0x20072;
+					disableMessages[disableMessagesCount++] = 0x20072;
 					
 					// nVidia:
 					//   Source(API) Type(Performance) ID(0x20092): Program/shader state performance
 					//     warning: Vertex shader in program 15 is being recompiled based on GL state.
-					disableMessages[ disableMessagesCount++ ] = 0x20092;
+					disableMessages[disableMessagesCount++] = 0x20092;
 					
-					if( disableMessagesCount > 0 ){
-						pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB,
-							GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
+					if(disableMessagesCount > 0){
+						pglDebugMessageControl(GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB,
+							GL_DONT_CARE, disableMessagesCount, &disableMessages[0], GL_FALSE);
 					}
 					
 					
@@ -317,38 +317,38 @@ pEnableDebugTrace( false )
 					//     depth comparisons disabled, with a texture object (355) with a depth
 					//     format, by a shader that samples it with a shadow sampler.
 					//     Using this state to sample would result in undefined behavior.
-					disableMessages[ disableMessagesCount++ ] = 0x20096;
+					disableMessages[disableMessagesCount++] = 0x20096;
 					
-					if( disableMessagesCount > 0 ){
-						pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB,
-							GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
+					if(disableMessagesCount > 0){
+						pglDebugMessageControl(GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB,
+							GL_DONT_CARE, disableMessagesCount, &disableMessages[0], GL_FALSE);
 					}
 					
 					// done
-					if( renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_KHR_debug ) ){
-						renderThread.GetLogger().LogInfo( "Debugging callback using KHR_debug activated" );
+					if(renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_KHR_debug)){
+						renderThread.GetLogger().LogInfo("Debugging callback using KHR_debug activated");
 						
 					}else{
-						renderThread.GetLogger().LogInfo( "Debugging callback using ARB_debug_output activated" );
+						renderThread.GetLogger().LogInfo("Debugging callback using ARB_debug_output activated");
 					}
 				}
 				
-			}else if( renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_AMD_debug_output ) ){
-				pglDebugMessageCallbackAMD( fDebugOutputAMD, this );
-				pglDebugMessageEnableAMD( 0, 0, 0, NULL, GL_TRUE );
-				renderThread.GetLogger().LogInfo( "Debugging callback using AMD_debug_output activated" );
+			}else if(renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_AMD_debug_output)){
+				pglDebugMessageCallbackAMD(fDebugOutputAMD, this);
+				pglDebugMessageEnableAMD(0, 0, 0, NULL, GL_TRUE);
+				renderThread.GetLogger().LogInfo("Debugging callback using AMD_debug_output activated");
 			}
 			
 			// enable debug trace grouping
-			pEnableDebugTrace = renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_KHR_debug );
+			pEnableDebugTrace = renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_KHR_debug);
 		}
 		
-		pDebugSaveTexture = new deoglDebugSaveTexture( renderThread );
-		pDebugSaveTexture->SetBasePath( "/capture/debug_save_texture" );
+		pDebugSaveTexture = new deoglDebugSaveTexture(renderThread);
+		pDebugSaveTexture->SetBasePath("/capture/debug_save_texture");
 		
-		pDeveloperMode = new deoglDeveloperMode( renderThread );
+		pDeveloperMode = new deoglDeveloperMode(renderThread);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -363,15 +363,15 @@ deoglRTDebug::~deoglRTDebug(){
 // Management
 ///////////////
 
-decBaseFileWriter *deoglRTDebug::OpenFileForWriting( const decPath &path ){
+decBaseFileWriter *deoglRTDebug::OpenFileForWriting(const decPath &path){
 	deoglDelayedFileWrite *fileWrite = NULL;
 	
 	try{
-		fileWrite = new deoglDelayedFileWrite( path );
-		pRenderThread.GetDelayedOperations().AddFileWrite( fileWrite );
+		fileWrite = new deoglDelayedFileWrite(path);
+		pRenderThread.GetDelayedOperations().AddFileWrite(fileWrite);
 		
-	}catch( const deException & ){
-		if( fileWrite ){
+	}catch(const deException &){
+		if(fileWrite){
 			delete fileWrite;
 		}
 		throw;
@@ -380,25 +380,25 @@ decBaseFileWriter *deoglRTDebug::OpenFileForWriting( const decPath &path ){
 	return fileWrite->GetFileWriter();
 }
 
-void deoglRTDebug::SetEnableHwDebugOutput( bool enable ){
+void deoglRTDebug::SetEnableHwDebugOutput(bool enable){
 	pEnableHwDebugOutput = enable;
 }
 
-void deoglRTDebug::BeginDebugGroup( const char *name, int id ){
-	if( pEnableDebugTrace ){
-		pglPushDebugGroup( GL_DEBUG_SOURCE_APPLICATION, id, ( GLsizei )strlen( name ), name );
+void deoglRTDebug::BeginDebugGroup(const char *name, int id){
+	if(pEnableDebugTrace){
+		pglPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, id, (GLsizei)strlen(name), name);
 	}
 }
 
 void deoglRTDebug::EndDebugGroup(){
-	if( pEnableDebugTrace ){
+	if(pEnableDebugTrace){
 		pglPopDebugGroup();
 	}
 }
 
-void deoglRTDebug::SetDebugObjectLabel( GLenum type, GLuint object, const char *name ){
-	if( pEnableDebugTrace ){
-		pglObjectLabel( type, object, ( GLsizei )strlen( name ), name );
+void deoglRTDebug::SetDebugObjectLabel(GLenum type, GLuint object, const char *name){
+	if(pEnableDebugTrace){
+		pglObjectLabel(type, object, (GLsizei)strlen(name), name);
 	}
 }
 
@@ -408,17 +408,17 @@ void deoglRTDebug::SetDebugObjectLabel( GLenum type, GLuint object, const char *
 //////////////////////
 
 void deoglRTDebug::pCleanUp(){
-	if( pDeveloperMode ){
+	if(pDeveloperMode){
 		delete pDeveloperMode;
 	}
-	if( pDebugSaveTexture ){
+	if(pDebugSaveTexture){
 		delete pDebugSaveTexture;
 	}
 	
-	if( pglDebugMessageCallback ){
-		pglDebugMessageCallback( NULL, NULL );
+	if(pglDebugMessageCallback){
+		pglDebugMessageCallback(NULL, NULL);
 		
-	}else if( pglDebugMessageCallbackAMD ){
-		pglDebugMessageCallbackAMD( NULL, NULL );
+	}else if(pglDebugMessageCallbackAMD){
+		pglDebugMessageCallbackAMD(NULL, NULL);
 	}
 }

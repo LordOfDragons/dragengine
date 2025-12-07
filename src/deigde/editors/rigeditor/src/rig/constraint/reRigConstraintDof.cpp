@@ -42,15 +42,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigConstraintDof::reRigConstraintDof( reRigConstraint &constraint,
-	deColliderConstraint::eDegreesOfFreedom dofIndex ) :
-pRigConstraint( constraint ),
-pDofIndex( dofIndex ),
-pLowerLimit( 0.0f ),
-pUpperLimit( 0.0f ),
-pStaticFriction( 0.0f ),
-pKinematicFriction( 0.0f ),
-pSpringStiffness( 0.0f ){
+reRigConstraintDof::reRigConstraintDof(reRigConstraint &constraint,
+	deColliderConstraint::eDegreesOfFreedom dofIndex) :
+pRigConstraint(constraint),
+pDofIndex(dofIndex),
+pLowerLimit(0.0f),
+pUpperLimit(0.0f),
+pStaticFriction(0.0f),
+pKinematicFriction(0.0f),
+pSpringStiffness(0.0f){
 }
 
 reRigConstraintDof::~reRigConstraintDof(){
@@ -62,7 +62,7 @@ reRigConstraintDof::~reRigConstraintDof(){
 ///////////////
 
 float reRigConstraintDof::GetThresholdLimits() const{
-	switch( pDofIndex ){
+	switch(pDofIndex){
 	case deColliderConstraint::edofLinearX:
 	case deColliderConstraint::edofLinearY:
 	case deColliderConstraint::edofLinearZ:
@@ -76,25 +76,25 @@ float reRigConstraintDof::GetThresholdLimits() const{
 	}
 }
 
-void reRigConstraintDof::SetLowerLimit( float lowerLimit ){
-	if( fabsf( lowerLimit - pLowerLimit ) < GetThresholdLimits() ){
+void reRigConstraintDof::SetLowerLimit(float lowerLimit){
+	if(fabsf(lowerLimit - pLowerLimit) < GetThresholdLimits()){
 		return;
 	}
 	
 	pLowerLimit = lowerLimit;
 	
-	if( pRigConstraint.GetEngineConstraint() ){
-		switch( pDofIndex ){
+	if(pRigConstraint.GetEngineConstraint()){
+		switch(pDofIndex){
 		case deColliderConstraint::edofLinearX:
 		case deColliderConstraint::edofLinearY:
 		case deColliderConstraint::edofLinearZ:
-			pRigConstraint.GetEngineConstraint()->GetDof( pDofIndex ).SetLowerLimit( lowerLimit );
+			pRigConstraint.GetEngineConstraint()->GetDof(pDofIndex).SetLowerLimit(lowerLimit);
 			break;
 			
 		case deColliderConstraint::edofAngularX:
 		case deColliderConstraint::edofAngularY:
 		case deColliderConstraint::edofAngularZ:
-			pRigConstraint.GetEngineConstraint()->GetDof( pDofIndex ).SetLowerLimit( lowerLimit * DEG2RAD );
+			pRigConstraint.GetEngineConstraint()->GetDof(pDofIndex).SetLowerLimit(lowerLimit * DEG2RAD);
 			break;
 		}
 	}
@@ -103,26 +103,26 @@ void reRigConstraintDof::SetLowerLimit( float lowerLimit ){
 	NotifyAllConstraintDofChanged();
 }
 
-void reRigConstraintDof::SetUpperLimit( float upperLimit ){
-	if( fabsf( upperLimit - pUpperLimit ) < GetThresholdLimits() ){
+void reRigConstraintDof::SetUpperLimit(float upperLimit){
+	if(fabsf(upperLimit - pUpperLimit) < GetThresholdLimits()){
 		return;
 	}
 	
 	pUpperLimit = upperLimit;
 	
-	if( pRigConstraint.GetEngineConstraint() ){
-		switch( pDofIndex ){
+	if(pRigConstraint.GetEngineConstraint()){
+		switch(pDofIndex){
 		case deColliderConstraint::edofLinearX:
 		case deColliderConstraint::edofLinearY:
 		case deColliderConstraint::edofLinearZ:
-			pRigConstraint.GetEngineConstraint()->GetDof( pDofIndex ).SetUpperLimit( upperLimit );
+			pRigConstraint.GetEngineConstraint()->GetDof(pDofIndex).SetUpperLimit(upperLimit);
 			break;
 			
 		case deColliderConstraint::edofAngularX:
 		case deColliderConstraint::edofAngularY:
 		case deColliderConstraint::edofAngularZ:
 		default:
-			pRigConstraint.GetEngineConstraint()->GetDof( pDofIndex ).SetUpperLimit( upperLimit * DEG2RAD );
+			pRigConstraint.GetEngineConstraint()->GetDof(pDofIndex).SetUpperLimit(upperLimit * DEG2RAD);
 		}
 	}
 	
@@ -132,38 +132,38 @@ void reRigConstraintDof::SetUpperLimit( float upperLimit ){
 
 
 
-void reRigConstraintDof::SetStaticFriction( float friction ){
-	if( friction < 0.0f ){
+void reRigConstraintDof::SetStaticFriction(float friction){
+	if(friction < 0.0f){
 		friction = 0.0;
 	}
 	
-	if( fabsf( friction - pStaticFriction ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(friction - pStaticFriction) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pStaticFriction = friction;
 	
-	if( pRigConstraint.GetEngineConstraint() ){
-		pRigConstraint.GetEngineConstraint()->GetDof( pDofIndex ).SetStaticFriction( friction );
+	if(pRigConstraint.GetEngineConstraint()){
+		pRigConstraint.GetEngineConstraint()->GetDof(pDofIndex).SetStaticFriction(friction);
 	}
 	
 	NotifyEngineConstraintChanged();
 	NotifyAllConstraintDofChanged();
 }
 
-void reRigConstraintDof::SetKinematicFriction( float friction ){
-	if( friction < 0.0f ){
+void reRigConstraintDof::SetKinematicFriction(float friction){
+	if(friction < 0.0f){
 		friction = 0.0;
 	}
 	
-	if( fabsf( friction - pKinematicFriction ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(friction - pKinematicFriction) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pKinematicFriction = friction;
 	
-	if( pRigConstraint.GetEngineConstraint() ){
-		pRigConstraint.GetEngineConstraint()->GetDof( pDofIndex ).SetKinematicFriction( friction );
+	if(pRigConstraint.GetEngineConstraint()){
+		pRigConstraint.GetEngineConstraint()->GetDof(pDofIndex).SetKinematicFriction(friction);
 	}
 	
 	NotifyEngineConstraintChanged();
@@ -172,15 +172,15 @@ void reRigConstraintDof::SetKinematicFriction( float friction ){
 
 
 
-void reRigConstraintDof::SetSpringStiffness( float stiffness ){
-	if( fabsf( stiffness - pSpringStiffness ) < FLOAT_SAFE_EPSILON ){
+void reRigConstraintDof::SetSpringStiffness(float stiffness){
+	if(fabsf(stiffness - pSpringStiffness) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pSpringStiffness = stiffness;
 	
-	if( pRigConstraint.GetEngineConstraint() ){
-		pRigConstraint.GetEngineConstraint()->GetDof( pDofIndex ).SetSpringStiffness( stiffness );
+	if(pRigConstraint.GetEngineConstraint()){
+		pRigConstraint.GetEngineConstraint()->GetDof(pDofIndex).SetSpringStiffness(stiffness);
 	}
 	
 	NotifyEngineConstraintChanged();
@@ -189,30 +189,30 @@ void reRigConstraintDof::SetSpringStiffness( float stiffness ){
 
 
 
-void reRigConstraintDof::UpdateEngineDof( deColliderConstraintDof &engDof ) const{
-	switch( pDofIndex ){
+void reRigConstraintDof::UpdateEngineDof(deColliderConstraintDof &engDof) const{
+	switch(pDofIndex){
 	case deColliderConstraint::edofLinearX:
 	case deColliderConstraint::edofLinearY:
 	case deColliderConstraint::edofLinearZ:
-		engDof.SetLowerLimit( pLowerLimit );
-		engDof.SetUpperLimit( pUpperLimit );
+		engDof.SetLowerLimit(pLowerLimit);
+		engDof.SetUpperLimit(pUpperLimit);
 		break;
 		
 	case deColliderConstraint::edofAngularX:
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
-		engDof.SetLowerLimit( pLowerLimit * DEG2RAD );
-		engDof.SetUpperLimit( pUpperLimit * DEG2RAD );
+		engDof.SetLowerLimit(pLowerLimit * DEG2RAD);
+		engDof.SetUpperLimit(pUpperLimit * DEG2RAD);
 	}
 	
-	engDof.SetStaticFriction( pStaticFriction );
-	engDof.SetKinematicFriction( pKinematicFriction );
+	engDof.SetStaticFriction(pStaticFriction);
+	engDof.SetKinematicFriction(pKinematicFriction);
 	
-	engDof.SetSpringStiffness( pSpringStiffness );
+	engDof.SetSpringStiffness(pSpringStiffness);
 }
 
-void reRigConstraintDof::SetFromEngineDof( const deColliderConstraintDof &engDof ){
-	switch( pDofIndex ){
+void reRigConstraintDof::SetFromEngineDof(const deColliderConstraintDof &engDof){
+	switch(pDofIndex){
 	case deColliderConstraint::edofLinearX:
 	case deColliderConstraint::edofLinearY:
 	case deColliderConstraint::edofLinearZ:
@@ -235,7 +235,7 @@ void reRigConstraintDof::SetFromEngineDof( const deColliderConstraintDof &engDof
 
 
 
-void reRigConstraintDof::SetParametersFrom( const reRigConstraintDof &dof ){
+void reRigConstraintDof::SetParametersFrom(const reRigConstraintDof &dof){
 	pLowerLimit = dof.pLowerLimit;
 	pUpperLimit = dof.pUpperLimit;
 	
@@ -248,17 +248,17 @@ void reRigConstraintDof::SetParametersFrom( const reRigConstraintDof &dof ){
 
 
 void reRigConstraintDof::NotifyAllConstraintDofChanged(){
-	if( pRigConstraint.GetRig() ){
-		pRigConstraint.GetRig()->NotifyAllConstraintDofChanged( &pRigConstraint, pDofIndex );
+	if(pRigConstraint.GetRig()){
+		pRigConstraint.GetRig()->NotifyAllConstraintDofChanged(&pRigConstraint, pDofIndex);
 	}
 }
 
 void reRigConstraintDof::NotifyEngineConstraintChanged(){
-	if( ! pRigConstraint.GetEngineConstraint() ){
+	if(!pRigConstraint.GetEngineConstraint()){
 		return;
 	}
 	
 	deColliderComponent &engSimCollider = *pRigConstraint.GetRig()->GetEngineSimulationCollider();
-	engSimCollider.NotifyConstraintChanged( engSimCollider.IndexOfConstraint( pRigConstraint.GetEngineConstraint() ) );
+	engSimCollider.NotifyConstraintChanged(engSimCollider.IndexOfConstraint(pRigConstraint.GetEngineConstraint()));
 	pRigConstraint.InvalidatePositions();
 }

@@ -91,7 +91,7 @@ enum eSPRender{
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderParticles::deoglRenderParticles( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
+deoglRenderParticles::deoglRenderParticles(deoglRenderThread &renderThread) : deoglRenderBase(renderThread){
 }
 
 deoglRenderParticles::~deoglRenderParticles(){
@@ -102,7 +102,7 @@ deoglRenderParticles::~deoglRenderParticles(){
 // Rendering
 //////////////
 
-void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &renderTask ){
+void deoglRenderParticles::RenderTaskParticles(const deoglRenderTaskParticles &renderTask){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
@@ -110,48 +110,48 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 	const deoglVAO *curVAO = NULL;
 	int i;
 	
-	if( stepCount == 0 ){
+	if(stepCount == 0){
 		return;
 	}
 	
-	const deoglDebugTraceGroup debugTrace( renderThread, "Particles.RenderTaskParticles" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "Particles.RenderTaskParticles");
 	
-	for( i=0; i<stepCount; i++ ){
-		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt( i );
+	for(i=0; i<stepCount; i++){
+		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt(i);
 		
 		const int instanceCount = renderTaskStep.GetInstanceCount();
-		if( instanceCount == 0 ){
+		if(instanceCount == 0){
 			continue;
 		}
 		
 		renderTaskStep.GetPipeline()->Activate();
 		
-		if( renderParamBlock ){
+		if(renderParamBlock){
 			renderParamBlock->Activate();
 		}
 		
 		// set texture
-		if( renderTaskStep.GetParameterBlockTexture() ){
+		if(renderTaskStep.GetParameterBlockTexture()){
 			renderTaskStep.GetParameterBlockTexture()->Activate();
 		}
 		
 		const deoglTexUnitsConfig * const tuc = renderTaskStep.GetTUC();
-		if( tuc ){
+		if(tuc){
 			tuc->Apply();
-			if( tuc->GetParameterBlock() ){
+			if(tuc->GetParameterBlock()){
 				tuc->GetParameterBlock()->Activate();
 			}
 		}
 		
 		// activate vao
 		const deoglVAO * const vao = renderTaskStep.GetVAO();
-		if( vao != curVAO ){
-			pglBindVertexArray( vao->GetVAO() );
+		if(vao != curVAO){
+			pglBindVertexArray(vao->GetVAO());
 			curVAO = vao;
 		}
 		
 		// set instance parameter block
-		if( renderTaskStep.GetParameterBlockInstance() ){
+		if(renderTaskStep.GetParameterBlockInstance()){
 			renderTaskStep.GetParameterBlockInstance()->Activate();
 		}
 		
@@ -162,19 +162,19 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 		//GetOgl().LogInfoFormat( "RenderTaskParticles: s=%i sha=%p tuc=%p vao=%i ic=%i",
 		//	s, renderTaskStep.GetShader(), renderTaskStep.GetTUC(), vao->GetVAO(),
 		//	renderTaskStep.GetIndexCount() );
-		if( renderVSStereo ){
-			const GLsizei count[ 2 ] = { renderTaskStep.GetIndexCount(), renderTaskStep.GetIndexCount() };
-			const void * const indices[ 2 ] = {
-				( void* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ),
-				( void* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) };
-			OGL_CHECK( renderThread, pglMultiDrawElements( renderTaskStep.GetPrimitiveType(), count, indexGLType, indices, 2 ) );
+		if(renderVSStereo){
+			const GLsizei count[2] = {renderTaskStep.GetIndexCount(), renderTaskStep.GetIndexCount()};
+			const void * const indices[2] = {
+				(void*)(intptr_t)(indexSize * renderTaskStep.GetFirstIndex()),
+				(void*)(intptr_t)(indexSize * renderTaskStep.GetFirstIndex())};
+			OGL_CHECK(renderThread, pglMultiDrawElements(renderTaskStep.GetPrimitiveType(), count, indexGLType, indices, 2));
 			
 		}else{
-			OGL_CHECK( renderThread, glDrawElements( renderTaskStep.GetPrimitiveType(),
+			OGL_CHECK(renderThread, glDrawElements(renderTaskStep.GetPrimitiveType(),
 				renderTaskStep.GetIndexCount(), indexGLType,
-				( GLvoid* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) ) );
+				(GLvoid*)(intptr_t)(indexSize * renderTaskStep.GetFirstIndex())));
 		}
 	}
 	
-	pglBindVertexArray( 0 );
+	pglBindVertexArray(0);
 }

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUSetRuleBlendFactor( aeRule *rule, float newFactor );
+	aeUSetRuleBlendFactor(aeRule *rule, float newFactor);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleBlendFactor();

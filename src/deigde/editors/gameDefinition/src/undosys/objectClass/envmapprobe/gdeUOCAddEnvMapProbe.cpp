@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddEnvMapProbe::gdeUOCAddEnvMapProbe( gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCAddEnvMapProbe::gdeUOCAddEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe) :
+pObjectClass(NULL),
+pEnvMapProbe(NULL)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add environment map probe" );
+	SetShortInfo("Add environment map probe");
 	
 	pEnvMapProbe = envMapProbe;
 	envMapProbe->AddReference();
@@ -59,10 +59,10 @@ pEnvMapProbe( NULL )
 }
 
 gdeUOCAddEnvMapProbe::~gdeUOCAddEnvMapProbe(){
-	if( pEnvMapProbe ){
+	if(pEnvMapProbe){
 		pEnvMapProbe->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddEnvMapProbe::~gdeUOCAddEnvMapProbe(){
 
 void gdeUOCAddEnvMapProbe::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCEnvMapProbe() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCEnvMapProbe()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCEnvMapProbe( NULL );
+		gameDefinition->SetActiveOCEnvMapProbe(NULL);
 	}
 	
-	pObjectClass->GetEnvMapProbes().Remove( pEnvMapProbe );
+	pObjectClass->GetEnvMapProbes().Remove(pEnvMapProbe);
 	pObjectClass->NotifyEnvMapProbesChanged();
 }
 
 void gdeUOCAddEnvMapProbe::Redo(){
-	pObjectClass->GetEnvMapProbes().Add( pEnvMapProbe );
+	pObjectClass->GetEnvMapProbes().Add(pEnvMapProbe);
 	pObjectClass->NotifyEnvMapProbesChanged();
 }

@@ -50,7 +50,7 @@ public:
 	/** \brief Creates a new conversation condition. */
 	ceCConditionActorCommand();
 	/** \brief Creates a new conversation condition. */
-	ceCConditionActorCommand( const ceCConditionActorCommand &condition );
+	ceCConditionActorCommand(const ceCConditionActorCommand &condition);
 	/** \brief Cleans up the conversation condition. */
 	virtual ~ceCConditionActorCommand();
 	/*@}*/
@@ -60,15 +60,15 @@ public:
 	/** \brief Retrieves the actor id. */
 	inline const decString &GetActor() const{ return pActor; }
 	/** \brief Sets the actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	/** \brief Retrieves the command. */
 	inline const decString &GetCommand() const{ return pCommand; }
 	/** \brief Sets the command. */
-	void SetCommand( const char *command );
+	void SetCommand(const char *command);
 	/** \brief Determines if the result is true if the command returned false. */
 	inline bool GetNegate() const{ return pNegate; }
 	/** \brief Sets if the result is true if the command returned false. */
-	void SetNegate( bool negate );
+	void SetNegate(bool negate);
 	
 	/** \brief Create a copy of this condition. */
     virtual ceConversationCondition *CreateCopy() const;

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPWorldListener::meWPWorldListener( meWPWorld &panel ) :
-pPanel( panel ){
+meWPWorldListener::meWPWorldListener(meWPWorld &panel) :
+pPanel(panel){
 }
 
 meWPWorldListener::~meWPWorldListener(){
@@ -51,34 +51,34 @@ meWPWorldListener::~meWPWorldListener(){
 // Notifications
 //////////////////
 
-void meWPWorldListener::WorldParametersChanged( meWorld* ){
+void meWPWorldListener::WorldParametersChanged(meWorld*){
 	pPanel.UpdateWorldParameters();
 }
 
-void meWPWorldListener::LightingChanged( meWorld* ){
+void meWPWorldListener::LightingChanged(meWorld*){
 	pPanel.UpdateWorld();
 }
 
-void meWPWorldListener::PathFindTestChanged( meWorld* ){
+void meWPWorldListener::PathFindTestChanged(meWorld*){
 	pPanel.UpdatePathFindTest();
 }
 
-void meWPWorldListener::MusicChanged( meWorld* ){
+void meWPWorldListener::MusicChanged(meWorld*){
 	pPanel.UpdateMusic();
 }
 
-void meWPWorldListener::PropertiesChanged( meWorld* ){
+void meWPWorldListener::PropertiesChanged(meWorld*){
 	pPanel.UpdateProperties();
 }
 
-void meWPWorldListener::ActivePropertyChanged( meWorld* ){
+void meWPWorldListener::ActivePropertyChanged(meWorld*){
 	pPanel.SelectActiveProperty();
 }
 
-void meWPWorldListener::ObjectPropertiesChanged( meWorld*, meObject* ){
+void meWPWorldListener::ObjectPropertiesChanged(meWorld*, meObject*){
 	pPanel.UpdateIdentifierLists();
 }
 
-void meWPWorldListener::ObjectTexturePropertiesChanged( meWorld*, meObject*, meObjectTexture* ){
+void meWPWorldListener::ObjectTexturePropertiesChanged(meWorld*, meObject*, meObjectTexture*){
 	pPanel.UpdateIdentifierLists();
 }

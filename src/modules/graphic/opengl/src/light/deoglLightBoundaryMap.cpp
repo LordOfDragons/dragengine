@@ -43,17 +43,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglLightBoundaryMap::deoglLightBoundaryMap( deoglRenderThread &renderThread, int size ) :
-pRenderThread( renderThread  ),
+deoglLightBoundaryMap::deoglLightBoundaryMap(deoglRenderThread &renderThread, int size) :
+pRenderThread(renderThread),
 
-pTextureMin( NULL ),
-pTextureMax( NULL ),
+pTextureMin(NULL),
+pTextureMax(NULL),
 
 pPixBufBoundaryMin(deoglPixelBuffer::Ref::NewWith(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
 pPixBufBoundaryMax(deoglPixelBuffer::Ref::NewWith(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
 
-pSize( size ),
-pLevelCount( 1 )
+pSize(size),
+pLevelCount(1)
 {
 	DEASSERT_TRUE(pSize >= 2)
 	
@@ -61,7 +61,7 @@ pLevelCount( 1 )
 		pCreateTextures();
 		pCreateFBOs();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -76,11 +76,11 @@ deoglLightBoundaryMap::~deoglLightBoundaryMap(){
 // Management
 ///////////////
 
-int deoglLightBoundaryMap::GetBaseLevel( int baseSize ){
+int deoglLightBoundaryMap::GetBaseLevel(int baseSize){
 	int tempSize = pSize;
 	int baseLevel = 0;
 	
-	while( tempSize > baseSize ){
+	while(tempSize > baseSize){
 		tempSize >>= 1;
 		baseLevel++;
 	}
@@ -90,26 +90,26 @@ int deoglLightBoundaryMap::GetBaseLevel( int baseSize ){
 
 
 
-deoglFramebuffer *deoglLightBoundaryMap::GetFBOAt( int level ){
+deoglFramebuffer *deoglLightBoundaryMap::GetFBOAt(int level){
 	return (deoglFramebuffer*)pFBOs.GetAt(level);
 }
 
 
 
-void deoglLightBoundaryMap::GetResult( decVector &boundaryMin, decVector &boundaryMax ){
-	pTextureMin->GetPixelsLevel( pLevelCount - 1, pPixBufBoundaryMin );
-	pTextureMax->GetPixelsLevel( pLevelCount - 1, pPixBufBoundaryMax );
+void deoglLightBoundaryMap::GetResult(decVector &boundaryMin, decVector &boundaryMax){
+	pTextureMin->GetPixelsLevel(pLevelCount - 1, pPixBufBoundaryMin);
+	pTextureMax->GetPixelsLevel(pLevelCount - 1, pPixBufBoundaryMax);
 	
 	const deoglPixelBuffer::sFloat3 &resultMin = *pPixBufBoundaryMin->GetPointerFloat3();
 	const deoglPixelBuffer::sFloat3 &resultMax = *pPixBufBoundaryMax->GetPointerFloat3();
 	
-	boundaryMin.x = ( float )resultMin.r;
-	boundaryMin.y = ( float )resultMin.g;
-	boundaryMin.z = ( float )resultMin.b;
+	boundaryMin.x = (float)resultMin.r;
+	boundaryMin.y = (float)resultMin.g;
+	boundaryMin.z = (float)resultMin.b;
 	
-	boundaryMax.x = ( float )resultMax.r;
-	boundaryMax.y = ( float )resultMax.g;
-	boundaryMax.z = ( float )resultMax.b;
+	boundaryMax.x = (float)resultMax.r;
+	boundaryMax.y = (float)resultMax.g;
+	boundaryMax.z = (float)resultMax.b;
 }
 
 
@@ -119,29 +119,29 @@ void deoglLightBoundaryMap::GetResult( decVector &boundaryMin, decVector &bounda
 
 void deoglLightBoundaryMap::pCleanUp(){
 	pFBOs.RemoveAll();
-	if( pTextureMax ){
+	if(pTextureMax){
 		delete pTextureMax;
 	}
-	if( pTextureMin ){
+	if(pTextureMin){
 		delete pTextureMin;
 	}
 }
 
 void deoglLightBoundaryMap::pCreateTextures(){
-	pLevelCount = ( int )( ceilf( log2f( ( float )pSize ) ) ) + 1;
+	pLevelCount = (int)(ceilf(log2f((float)pSize))) + 1;
 	
-	pTextureMin = new deoglTexture( pRenderThread );
-	pTextureMin->SetSize( pSize, pSize );
-	pTextureMin->SetFBOFormat( 3, true );
-	pTextureMin->SetMipMapped( true );
-	pTextureMin->SetMipMapLevelCount( pLevelCount - 1 );
+	pTextureMin = new deoglTexture(pRenderThread);
+	pTextureMin->SetSize(pSize, pSize);
+	pTextureMin->SetFBOFormat(3, true);
+	pTextureMin->SetMipMapped(true);
+	pTextureMin->SetMipMapLevelCount(pLevelCount - 1);
 	pTextureMin->CreateTexture();
 	
-	pTextureMax = new deoglTexture( pRenderThread );
-	pTextureMax->SetSize( pSize, pSize );
-	pTextureMax->SetFBOFormat( 3, true );
-	pTextureMax->SetMipMapped( true );
-	pTextureMax->SetMipMapLevelCount( pLevelCount - 1 );
+	pTextureMax = new deoglTexture(pRenderThread);
+	pTextureMax->SetSize(pSize, pSize);
+	pTextureMax->SetFBOFormat(3, true);
+	pTextureMax->SetMipMapped(true);
+	pTextureMax->SetMipMapLevelCount(pLevelCount - 1);
 	pTextureMax->CreateTexture();
 }
 
@@ -150,7 +150,7 @@ void deoglLightBoundaryMap::pCreateFBOs(){
 	const deoglRestoreFramebuffer restoreFbo(pRenderThread);
 	int i;
 	
-	for( i=0; i<pLevelCount; i++ ){
+	for(i=0; i<pLevelCount; i++){
 		const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
 		
 		pRenderThread.GetFramebuffer().Activate(fbo);

@@ -34,15 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeCylinderTopRadius::reUSetShapeCylinderTopRadius( reRigShapeCylinder *shape, float topRadius ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeCylinderTopRadius::reUSetShapeCylinderTopRadius(reRigShapeCylinder *shape, float topRadius){
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	
 	pOldTopRadius = shape->GetTopRadius();
 	pNewTopRadius = topRadius;
 	
-	SetShortInfo( "Set Cylinder Shape Half Height" );
+	SetShortInfo("Set Cylinder Shape Half Height");
 	
 	pShape->AddReference();
 }
@@ -57,9 +57,9 @@ reUSetShapeCylinderTopRadius::~reUSetShapeCylinderTopRadius(){
 ///////////////
 
 void reUSetShapeCylinderTopRadius::Undo(){
-	pShape->SetTopRadius( pOldTopRadius );
+	pShape->SetTopRadius(pOldTopRadius);
 }
 
 void reUSetShapeCylinderTopRadius::Redo(){
-	pShape->SetTopRadius( pNewTopRadius );
+	pShape->SetTopRadius(pNewTopRadius);
 }

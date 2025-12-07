@@ -55,33 +55,33 @@ int delFileFormatList::GetCount() const{
 	return pFormats.GetCount();
 }
 
-delFileFormat *delFileFormatList::GetAt( int index ) const{
-	return ( delFileFormat* )pFormats.GetAt( index );
+delFileFormat *delFileFormatList::GetAt(int index) const{
+	return (delFileFormat*)pFormats.GetAt(index);
 }
 
-bool delFileFormatList::Has( delFileFormat *format ) const{
-	return pFormats.Has( format );
+bool delFileFormatList::Has(delFileFormat *format) const{
+	return pFormats.Has(format);
 }
 
-int delFileFormatList::IndexOf( delFileFormat *format ) const{
-	return pFormats.IndexOf( format );
+int delFileFormatList::IndexOf(delFileFormat *format) const{
+	return pFormats.IndexOf(format);
 }
 
-void delFileFormatList::Add( delFileFormat *format ){
-	if( ! format ){
-		DETHROW_INFO( deeNullPointer, "format" );
+void delFileFormatList::Add(delFileFormat *format){
+	if(!format){
+		DETHROW_INFO(deeNullPointer, "format");
 	}
 	
-	pFormats.Add( format );
+	pFormats.Add(format);
 }
 
-void delFileFormatList::Remove( delFileFormat *format ){
-	const int index = IndexOf ( format );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "format is absent" );
+void delFileFormatList::Remove(delFileFormat *format){
+	const int index = IndexOf (format);
+	if(index == -1){
+		DETHROW_INFO(deeInvalidParam, "format is absent");
 	}
 	
-	pFormats.RemoveFrom( index );
+	pFormats.RemoveFrom(index);
 }
 
 void delFileFormatList::RemoveAll(){

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	igdeWindowLoggerListener( igdeWindowLogger &window );
+	igdeWindowLoggerListener(igdeWindowLogger &window);
 	
 	/** \brief Clean up listener. */
 	virtual ~igdeWindowLoggerListener();
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Message added to history. */
-	virtual void MessageAdded( igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry );
+	virtual void MessageAdded(igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry);
 	
 	/** \brief History cleared. */
-	virtual void HistoryCleared( igdeLoggerHistory *history );
+	virtual void HistoryCleared(igdeLoggerHistory *history);
 	/*@}*/
 };
 

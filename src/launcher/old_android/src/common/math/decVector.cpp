@@ -37,28 +37,28 @@
 ////////////////
 
 decVector::decVector() :
-x( 0.0f ),
-y( 0.0f ),
-z( 0.0f )
-{ }
+x(0.0f),
+y(0.0f),
+z(0.0f)
+{}
 
-decVector::decVector( float nx, float ny, float nz ) :
-x( nx ),
-y( ny ),
-z( nz )
-{ }
+decVector::decVector(float nx, float ny, float nz) :
+x(nx),
+y(ny),
+z(nz)
+{}
 
-decVector::decVector( const decVector &v ) :
-x( v.x ),
-y( v.y ),
-z( v.z )
-{ }
+decVector::decVector(const decVector &v) :
+x(v.x),
+y(v.y),
+z(v.z)
+{}
 
-decVector::decVector( const decDVector &v ) :
-x( ( float )v.x ),
-y( ( float )v.y ),
-z( ( float )v.z )
-{ }
+decVector::decVector(const decDVector &v) :
+x((float)v.x),
+y((float)v.y),
+z((float)v.z)
+{}
 
 
 
@@ -66,7 +66,7 @@ z( ( float )v.z )
 ///////////////
 
 float decVector::Length() const{
-	return sqrtf( x * x + y * y + z * z );
+	return sqrtf(x * x + y * y + z * z);
 }
 
 float decVector::LengthSquared() const{
@@ -74,10 +74,10 @@ float decVector::LengthSquared() const{
 }
 
 void decVector::Normalize(){
-	const float len = sqrtf( x * x + y * y + z * z );
+	const float len = sqrtf(x * x + y * y + z * z);
 	
-	if( len == 0.0f ){
-		DETHROW( deeDivisionByZero );
+	if(len == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
 	x /= len;
@@ -86,31 +86,31 @@ void decVector::Normalize(){
 }
 
 const decVector decVector::Normalized() const{
-	const float len = sqrtf( x * x + y * y + z * z );
+	const float len = sqrtf(x * x + y * y + z * z);
 	
-	if( len == 0.0f ){
-		DETHROW( deeDivisionByZero );
+	if(len == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
-	return decVector( x / len, y / len, z / len );
+	return decVector(x / len, y / len, z / len);
 }
 
 const decVector decVector::Absolute() const{
-	return decVector( fabsf( x ), fabsf( y ), fabsf( z ) );
+	return decVector(fabsf(x), fabsf(y), fabsf(z));
 }
 
-void decVector::Snap( float grid ){
-	if( grid == 0.0f ){
-		DETHROW( deeDivisionByZero );
+void decVector::Snap(float grid){
+	if(grid == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
 	const float halfGrid = grid * 0.5f;
 	float integral;
 	
 	// x
-	integral = grid * ( float )floorf( x / grid );
+	integral = grid * (float)floorf(x / grid);
 	
-	if( x - integral < halfGrid ){
+	if(x - integral < halfGrid){
 		x = integral;
 		
 	}else{
@@ -118,9 +118,9 @@ void decVector::Snap( float grid ){
 	}
 	
 	// y
-	integral = grid * ( float )floorf( y / grid );
+	integral = grid * (float)floorf(y / grid);
 	
-	if( y - integral < halfGrid ){
+	if(y - integral < halfGrid){
 		y = integral;
 		
 	}else{
@@ -128,9 +128,9 @@ void decVector::Snap( float grid ){
 	}
 	
 	// z
-	integral = grid * ( float )floorf( z / grid );
+	integral = grid * (float)floorf(z / grid);
 	
-	if( z - integral < halfGrid ){
+	if(z - integral < halfGrid){
 		z = integral;
 		
 	}else{
@@ -138,12 +138,12 @@ void decVector::Snap( float grid ){
 	}
 }
 
-bool decVector::IsEqualTo( const decVector &v, float threshold ) const{
-	return fabsf( x - v.x ) < threshold && fabsf( y - v.y ) < threshold && fabsf( z - v.z ) < threshold;
+bool decVector::IsEqualTo(const decVector &v, float threshold) const{
+	return fabsf(x - v.x) < threshold && fabsf(y - v.y) < threshold && fabsf(z - v.z) < threshold;
 }
 
-bool decVector::IsZero( float threshold ) const{
-	return fabsf( x ) < threshold && fabsf( y ) < threshold && fabsf( z ) < threshold;
+bool decVector::IsZero(float threshold) const{
+	return fabsf(x) < threshold && fabsf(y) < threshold && fabsf(z) < threshold;
 }
 
 void decVector::SetZero(){
@@ -152,13 +152,13 @@ void decVector::SetZero(){
 	z = 0;
 }
 
-void decVector::Set( float nx, float ny, float nz ){
+void decVector::Set(float nx, float ny, float nz){
 	x = nx;
 	y = ny;
 	z = nz;
 }
 
-void decVector::Set( const decVector &v ){
+void decVector::Set(const decVector &v){
 	x = v.x;
 	y = v.y;
 	z = v.z;
@@ -170,75 +170,75 @@ void decVector::Negate(){
 	z = -z;
 }
 
-void decVector::SetSmallest( const decVector &v ){
-	if( v.x < x ){
+void decVector::SetSmallest(const decVector &v){
+	if(v.x < x){
 		x = v.x;
 	}
-	if( v.y < y ){
+	if(v.y < y){
 		y = v.y;
 	}
-	if( v.z < z ){
+	if(v.z < z){
 		z = v.z;
 	}
 }
 
-decVector decVector::Smallest( const decVector &v ) const{
+decVector decVector::Smallest(const decVector &v) const{
 	return decVector(
-		( x < v.x ) ? x : v.x,
-		( y < v.y ) ? y : v.y,
-		( z < v.z ) ? z : v.z
-	);
+		(x < v.x) ? x : v.x,
+		(y < v.y) ? y : v.y,
+		(z < v.z) ? z : v.z
+);
 }
 
-void decVector::SetLargest( const decVector &v ){
-	if( v.x > x ){
+void decVector::SetLargest(const decVector &v){
+	if(v.x > x){
 		x = v.x;
 	}
-	if( v.y > y ){
+	if(v.y > y){
 		y = v.y;
 	}
-	if( v.z > z ){
+	if(v.z > z){
 		z = v.z;
 	}
 }
 
-decVector decVector::Largest( const decVector &v ) const{
+decVector decVector::Largest(const decVector &v) const{
 	return decVector(
-		( x > v.x ) ? x : v.x,
-		( y > v.y ) ? y : v.y,
-		( z > v.z ) ? z : v.z
-	);
+		(x > v.x) ? x : v.x,
+		(y > v.y) ? y : v.y,
+		(z > v.z) ? z : v.z
+);
 }
 
-void decVector::SetClamped( const decVector &minValue, const decVector &maxValue ){
-	if( x < minValue.x ){
+void decVector::SetClamped(const decVector &minValue, const decVector &maxValue){
+	if(x < minValue.x){
 		x = minValue.x;
 		
-	}else if( x > maxValue.x ){
+	}else if(x > maxValue.x){
 		x = maxValue.x;
 	}
 	
-	if( y < minValue.y ){
+	if(y < minValue.y){
 		y = minValue.y;
 		
-	}else if( y > maxValue.y ){
+	}else if(y > maxValue.y){
 		y = maxValue.y;
 	}
 	
-	if( z < minValue.z ){
+	if(z < minValue.z){
 		z = minValue.z;
 		
-	}else if( z > maxValue.z ){
+	}else if(z > maxValue.z){
 		z = maxValue.z;
 	}
 }
 
-decVector decVector::Clamped( const decVector &minValue, const decVector &maxValue ) const{
+decVector decVector::Clamped(const decVector &minValue, const decVector &maxValue) const{
 	return decVector(
-		( x < minValue.x ) ? minValue.x : ( ( x > maxValue.x ) ? maxValue.x : x ),
-		( y < minValue.y ) ? minValue.y : ( ( y > maxValue.y ) ? maxValue.y : y ),
-		( z < minValue.z ) ? minValue.z : ( ( z > maxValue.z ) ? maxValue.z : z )
-	);
+		(x < minValue.x) ? minValue.x : ((x > maxValue.x) ? maxValue.x : x),
+		(y < minValue.y) ? minValue.y : ((y > maxValue.y) ? maxValue.y : y),
+		(z < minValue.z) ? minValue.z : ((z > maxValue.z) ? maxValue.z : z)
+);
 }
 
 
@@ -247,40 +247,40 @@ decVector decVector::Clamped( const decVector &minValue, const decVector &maxVal
 //////////////
 
 decVector decVector::operator-() const{
-	return decVector( -x, -y, -z );
+	return decVector(-x, -y, -z);
 }
 
-decVector &decVector::operator=( const decVector &v ){
+decVector &decVector::operator=(const decVector &v){
 	x = v.x;
 	y = v.y;
 	z = v.z;
 	return *this;
 }
 
-decVector &decVector::operator+=( const decVector &v ){
+decVector &decVector::operator+=(const decVector &v){
 	x += v.x;
 	y += v.y;
 	z += v.z;
 	return *this;
 }
 
-decVector &decVector::operator-=( const decVector &v ){
+decVector &decVector::operator-=(const decVector &v){
 	x -= v.x;
 	y -= v.y;
 	z -= v.z;
 	return *this;
 }
 
-decVector &decVector::operator*=( float k ){
+decVector &decVector::operator*=(float k){
 	x *= k;
 	y *= k;
 	z *= k;
 	return *this;
 }
 
-decVector &decVector::operator/=( float k ){
-	if( k == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decVector &decVector::operator/=(float k){
+	if(k == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	x /= k;
 	y /= k;
@@ -288,45 +288,45 @@ decVector &decVector::operator/=( float k ){
 	return *this;
 }
 
-decVector decVector::operator+( const decVector &v ) const{
-	return decVector( x + v.x, y + v.y, z + v.z );
+decVector decVector::operator+(const decVector &v) const{
+	return decVector(x + v.x, y + v.y, z + v.z);
 }
 
-decVector decVector::operator-( const decVector &v ) const{
-	return decVector( x - v.x, y - v.y, z - v.z );
+decVector decVector::operator-(const decVector &v) const{
+	return decVector(x - v.x, y - v.y, z - v.z);
 }
 
-decVector decVector::operator*( float k ) const{
-	return decVector( x * k, y * k, z * k );
+decVector decVector::operator*(float k) const{
+	return decVector(x * k, y * k, z * k);
 }
 
-float decVector::operator*( const decVector &v ) const{
+float decVector::operator*(const decVector &v) const{
 	return x * v.x + y * v.y + z * v.z;
 }
 
-decVector decVector::operator/( float k ) const{
-	if( k == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decVector decVector::operator/(float k) const{
+	if(k == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
-	return decVector( x / k, y / k, z / k );
+	return decVector(x / k, y / k, z / k);
 }
 
-decVector decVector::operator%( const decVector &v ) const{
-	return decVector( y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x );
+decVector decVector::operator%(const decVector &v) const{
+	return decVector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
 }
 
-bool decVector::operator<( const decVector &v ) const{
+bool decVector::operator<(const decVector &v) const{
 	return x < v.x && y < v.y && z < v.z;
 }
 
-bool decVector::operator>( const decVector &v ) const{
+bool decVector::operator>(const decVector &v) const{
 	return x > v.x && y > v.y && z > v.z;
 }
 
-bool decVector::operator<=( const decVector &v ) const{
+bool decVector::operator<=(const decVector &v) const{
 	return x <= v.x && y <= v.y && z <= v.z;
 }
 
-bool decVector::operator>=( const decVector &v ) const{
+bool decVector::operator>=(const decVector &v) const{
 	return x >= v.x && y >= v.y && z >= v.z;
 }

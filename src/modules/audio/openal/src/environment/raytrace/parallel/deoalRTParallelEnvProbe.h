@@ -140,7 +140,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel. */
-	deoalRTParallelEnvProbe( deoalAudioThread &audioThread );
+	deoalRTParallelEnvProbe(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up ray trace parallel. */
 	~deoalRTParallelEnvProbe();
@@ -157,10 +157,10 @@ public:
 	
 	
 	/** \brief Trace sound rays. */
-	void TraceSoundRays( sRoomParameters &roomParameters, deoalSoundRayList &soundRayList,
+	void TraceSoundRays(sRoomParameters &roomParameters, deoalSoundRayList &soundRayList,
 		const decDVector &position, float range, float refDist, float rollOff,
 		float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
-		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config );
+		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config);
 	
 // 	void TraceSoundRays( sRoomParameters &roomParameters, deoalSoundRayList &soundRayList,
 // 		const decDVector &position, float range, deoalAWorld &world,
@@ -171,9 +171,9 @@ public:
 	 * 
 	 * Updates environment probe with collected data
 	 */
-	void Listen( const deoalEnvProbe &sourceProbe, const deoalEnvProbe *listenProbe,
+	void Listen(const deoalEnvProbe &sourceProbe, const deoalEnvProbe *listenProbe,
 		deoalEnvProbeListener &listener, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
-		const decLayerMask &layerMask, const decDVector &position );
+		const decLayerMask &layerMask, const decDVector &position);
 	
 	/**
 	 * \brief Calculate probe full.
@@ -184,9 +184,9 @@ public:
 // 		const deoalRayTraceConfig &probeConfig, const decDVector &listenPosition );
 	
 	/** \brief Estimate room parameters. */
-	void EstimateRoomParameters( sRoomParameters &roomParameters, const decDVector &position,
+	void EstimateRoomParameters(sRoomParameters &roomParameters, const decDVector &position,
 		float range, deoalAWorld &world, const decLayerMask &layerMask,
-		const deoalRayTraceConfig &probeConfig );
+		const deoalRayTraceConfig &probeConfig);
 	
 	
 	
@@ -226,44 +226,44 @@ public:
 	 * \brief Finish task finished.
 	 * \warning For use by finish parallel tasks only.
 	 */
-	void FinishTaskFinished( deParallelTask *task );
+	void FinishTaskFinished(deParallelTask *task);
 	
 	/**
 	 * \brief Enable task.
 	 * \warning For use by respective task only.
 	 */
 // 	void Enable( deoalRTPTTraceSoundRays *task );
-	void Enable( deoalRTPTTraceSoundRaysFinish *task );
+	void Enable(deoalRTPTTraceSoundRaysFinish *task);
 // 	void Enable( deoalRTPTRoomEstimate *task );
-	void Enable( deoalRTPTRoomEstimateFinish *task );
+	void Enable(deoalRTPTRoomEstimateFinish *task);
 // 	void Enable( deoalRTPTListen *task );
-	void Enable( deoalRTPTListenFinish *task );
+	void Enable(deoalRTPTListenFinish *task);
 	/*@}*/
 	
 	
 	
 private:
-	void pRunTraceSoundRaysUsingTasks( sRoomParameters &roomParameters,
+	void pRunTraceSoundRaysUsingTasks(sRoomParameters &roomParameters,
 		deoalSoundRayList &soundRayList, const decDVector &position, float range, float refDist,
 		float rollOff, float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
-		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config );
+		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config);
 	
-	bool pRunListenUsingTasks( const deoalEnvProbe &sourceProbe, const deoalEnvProbe *listenProbe,
+	bool pRunListenUsingTasks(const deoalEnvProbe &sourceProbe, const deoalEnvProbe *listenProbe,
 		deoalEnvProbeListener &listener, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
-		const decLayerMask &layerMask, const decDVector &position );
+		const decLayerMask &layerMask, const decDVector &position);
 	
 // 	void pStartTasksFull( deoalEnvProbe &envProbe, deoalAWorld &world,
 // 		const deoalRayTraceConfig &probeConfig, const decDVector &listenPosition );
 // 	void pProcessResultsFull( const deoalRayTraceConfig &probeConfig );
 	
-	void pRunRoomEstimateUsingTasks( sRoomParameters &roomParameters, const decDVector &position,
+	void pRunRoomEstimateUsingTasks(sRoomParameters &roomParameters, const decDVector &position,
 		float range, deoalAWorld &world, const decLayerMask &layerMask,
-		const deoalRayTraceConfig &probeConfig );
+		const deoalRayTraceConfig &probeConfig);
 	
-	void pAddTask( deParallelProcessing &parallel, deParallelTask *task );
-	void pWaitForFinishTask( deParallelProcessing &parallel, deParallelTask *task );
-	void pAddTasks( deParallelProcessing &parallel, decPointerList &tasks,
-		int count, decPointerList &running );
+	void pAddTask(deParallelProcessing &parallel, deParallelTask *task);
+	void pWaitForFinishTask(deParallelProcessing &parallel, deParallelTask *task);
+	void pAddTasks(deParallelProcessing &parallel, decPointerList &tasks,
+		int count, decPointerList &running);
 };
 
 #endif

@@ -34,7 +34,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SAnimEditorCreateModule( igdeEnvironment *environment );
+MOD_ENTRY_POINT_ATTR igdeEditorModule *SAnimEditorCreateModule(igdeEnvironment *environment);
 #ifdef  __cplusplus
 }
 #endif
@@ -44,13 +44,13 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *SAnimEditorCreateModule( igdeEnvironment 
 // entry point
 ////////////////
 
-igdeEditorModule *SAnimEditorCreateModule( igdeEnvironment *environment ){
+igdeEditorModule *SAnimEditorCreateModule(igdeEnvironment *environment){
 	saeIGDEModule *module = NULL;
 	
 	try{
-		module = new saeIGDEModule( environment );
+		module = new saeIGDEModule(environment);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	

@@ -69,31 +69,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set parent debug drawer or NULL. */
-	void SetParentDebugDrawer( deDebugDrawer *debugDrawer );
+	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Disk line color. */
 	inline const decColor &GetColorDiskLine() const{ return pColorDiskLine; }
 	
 	/** \brief Set disk line color. */
-	void SetDiskLineColor( const decColor &color );
+	void SetDiskLineColor(const decColor &color);
 	
 	/** \brief Disk area color. */
 	inline const decColor &GetColorDiskArea() const{ return pColorDiskArea; }
 	
 	/** \brief Set disk area color. */
-	void SetDiskAreaColor( const decColor &color );
+	void SetDiskAreaColor(const decColor &color);
 	
 	/** \brief Lower angle. */
 	inline float GetLower() const{ return pLower; }
@@ -102,19 +102,19 @@ public:
 	inline float GetUpper() const{ return pUpper; }
 	
 	/** \brief Set lower and upper angle. */
-	void SetRange( float lower, float upper );
+	void SetRange(float lower, float upper);
 	
 	/** \brief Disk radius. */
 	inline float GetRadius() const{ return pRadius; }
 	
 	/** \brief Set disk radius. */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/** \brief Determines if the debug drawer shape is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Sets if the debug drawer shape is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	/*@}*/
 	
 	

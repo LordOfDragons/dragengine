@@ -30,43 +30,43 @@
 // Class deMCUser
 ///////////////////
 
-std::vector<Modio::UserID> deMCUser::UserIDList( const deServiceObject &so ){
+std::vector<Modio::UserID> deMCUser::UserIDList(const deServiceObject &so){
 	const int count = so.GetChildCount();
 	std::vector<Modio::UserID> list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		list.push_back( ( Modio::UserID )deMCCommon::ID( *so.GetChildAt( i ) ) );
+	for(i=0; i<count; i++){
+		list.push_back((Modio::UserID)deMCCommon::ID(*so.GetChildAt(i)));
 	}
 	
 	return list;
 }
 
-deServiceObject::Ref deMCUser::User( const Modio::User &user ){
-	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
+deServiceObject::Ref deMCUser::User(const Modio::User &user){
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 	
-	so->SetChildAt( "userId", deMCCommon::ID( user.UserId ) );
+	so->SetChildAt("userId", deMCCommon::ID(user.UserId));
 	
-	if( ! user.Username.empty() ){
-		so->SetStringChildAt( "username", user.Username.c_str() );
+	if(!user.Username.empty()){
+		so->SetStringChildAt("username", user.Username.c_str());
 	}
 	
-	if( ! user.ProfileUrl.empty() ){
-		so->SetStringChildAt( "profileUrl", user.ProfileUrl.c_str() );
+	if(!user.ProfileUrl.empty()){
+		so->SetStringChildAt("profileUrl", user.ProfileUrl.c_str());
 	}
 	
-	if( ! user.DisplayNamePortal.empty() ){
-		so->SetStringChildAt( "displayNamePortal", user.DisplayNamePortal.c_str() );
+	if(!user.DisplayNamePortal.empty()){
+		so->SetStringChildAt("displayNamePortal", user.DisplayNamePortal.c_str());
 	}
 	
-	if( user.AuthToken.has_value() && user.AuthToken->GetToken().has_value() ){
-		so->SetStringChildAt( "authToken", user.AuthToken->GetToken()->c_str() );
+	if(user.AuthToken.has_value() && user.AuthToken->GetToken().has_value()){
+		so->SetStringChildAt("authToken", user.AuthToken->GetToken()->c_str());
 	}
 	
-	so->SetChildAt( "avatar", deMCDetail::Avatar( user.UserId, user.Avatar ) );
+	so->SetChildAt("avatar", deMCDetail::Avatar(user.UserId, user.Avatar));
 	
-	if( user.DateOnline != 0 ){
-		so->SetChildAt( "dateOnline", deMCCommon::DateTime( user.DateOnline ) );
+	if(user.DateOnline != 0){
+		so->SetChildAt("dateOnline", deMCCommon::DateTime(user.DateOnline));
 	}
 	
 	return so;

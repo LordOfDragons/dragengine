@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seVCIKeyHandling( seViewConstructedView &view );
+	seVCIKeyHandling(seViewConstructedView &view);
 	
 	/** \brief Clean up listener. */
 	virtual ~seVCIKeyHandling();
@@ -60,38 +60,38 @@ public:
 	/**
 	 * \brief User pressed down key while view is focused.
 	 */
-	virtual void OnKeyPress( igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key );
+	virtual void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key);
 	
 	/**
 	 * \brief User released down key while view is focused.
 	 */
-	virtual void OnKeyRelease( igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key );
+	virtual void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key);
 	
 	/**
 	 * \brief User pressed down mouse button.
 	 */
-	virtual void OnButtonPress( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	virtual void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User released down mouse button.
 	 */
-	virtual void OnButtonRelease( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	virtual void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User wheeled mouse.
 	 */
-	virtual void OnMouseWheeled( igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers );
+	virtual void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers);
 	
 	/**
 	 * \brief User double clicked mouse button.
 	 */
-	virtual void OnDoubleClicked( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	virtual void OnDoubleClicked(igdeWidget *widget, int button, const decPoint &position, int modifiers);
 	/*@}*/
 	
 	
 	
 protected:
-	void ShowContextMenu( const decPoint &position );
+	void ShowContextMenu(const decPoint &position);
 };
 
 #endif

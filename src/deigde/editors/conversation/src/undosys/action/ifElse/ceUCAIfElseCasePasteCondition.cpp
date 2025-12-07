@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseCasePasteCondition::ceUCAIfElseCasePasteCondition( ceConversationTopic *topic, ceCAIfElse *ifElse,
-ceCAIfElseCase *ifcase, ceConversationCondition *newCondition ) :
-ceUCAIfElseCaseSetCondition( topic, ifElse, ifcase, newCondition ){
-	SetShortInfo( "If-else paste case condition" );
+ceUCAIfElseCasePasteCondition::ceUCAIfElseCasePasteCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, ceConversationCondition *newCondition) :
+ceUCAIfElseCaseSetCondition(topic, ifElse, ifcase, newCondition){
+	SetShortInfo("If-else paste case condition");
 }

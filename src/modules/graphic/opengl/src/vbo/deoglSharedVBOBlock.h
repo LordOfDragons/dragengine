@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create empty shared vbo block. */
-	deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size, int indexOffset, int indexCount );
+	deoglSharedVBOBlock(deoglSharedVBO *vbo, int offset, int size, int indexOffset, int indexCount);
 	
 	/** Clean up shared vbo. */
 	virtual ~deoglSharedVBOBlock();
@@ -93,7 +93,7 @@ public:
 	inline int GetSize() const{ return pSize; }
 	
 	/** Set size of block. Sets data pointer to NULL. */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/** Data pointer or NULL if block is empty. */
 	inline unsigned char *GetData() const{ return pData; }
@@ -107,7 +107,7 @@ public:
 	inline int GetIndexCount() const{ return pIndexCount; }
 	
 	/** Set count of indices in block. Sets index data pointer to NULL. */
-	void SetIndexCount( int count );
+	void SetIndexCount(int count);
 	
 	/** Index data pointer or NULL if block is empty. */
 	inline unsigned char *GetIndexData() const{ return pIndexData; }
@@ -118,13 +118,13 @@ public:
 	inline bool GetEmpty() const{ return pEmpty; }
 	
 	/** Set if block is empty. */
-	void SetEmpty( bool empty );
+	void SetEmpty(bool empty);
 	
 	/** Block is valid. */
 	inline bool GetValid() const{ return pValid; }
 	
 	/** Set if block is valid. */
-	void SetValid( bool valid );
+	void SetValid(bool valid);
 	
 	/** Convenience call to prepare the parent VBO if required. */
 	void Prepare();

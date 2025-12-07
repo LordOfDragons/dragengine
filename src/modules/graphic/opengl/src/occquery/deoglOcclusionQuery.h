@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create occlusion query. */
-	deoglOcclusionQuery( deoglRenderThread &renderThread );
+	deoglOcclusionQuery(deoglRenderThread &renderThread);
 	
 	/** Clean up occlusion query. */
 	~deoglOcclusionQuery();
@@ -85,7 +85,7 @@ public:
 	 * \throws deeInvalidParam \em type is \em eQueryTypes::eqtCount and Platform is Android.
 	 *                         OpenGL ES does not support counting queries only any queries.
 	 */
-	void BeginQuery( eQueryTypes type );
+	void BeginQuery(eQueryTypes type);
 	
 	/**
 	 * End query.

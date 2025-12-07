@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetPosition::gdeUOCNavSpaceSetPosition( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, const decVector &newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetPosition::gdeUOCNavSpaceSetPosition(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, const decVector &newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set position" );
+	SetShortInfo("Nav-space set position");
 	
 	pOldValue = navspace->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCNavSpaceSetPosition::~gdeUOCNavSpaceSetPosition(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavSpaceSetPosition::~gdeUOCNavSpaceSetPosition(){
 ///////////////
 
 void gdeUOCNavSpaceSetPosition::Undo(){
-	pNavSpace->SetPosition( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetPosition(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetPosition::Redo(){
-	pNavSpace->SetPosition( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetPosition(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

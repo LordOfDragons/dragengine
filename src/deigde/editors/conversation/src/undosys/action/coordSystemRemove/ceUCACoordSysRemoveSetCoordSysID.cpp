@@ -41,10 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACoordSysRemoveSetCoordSysID::ceUCACoordSysRemoveSetCoordSysID( ceConversationTopic *topic,
-ceCACoordSystemRemove *action, const char *newCoordSystemID ){
-	if( ! topic || ! newCoordSystemID ){
-		DETHROW( deeInvalidParam );
+ceUCACoordSysRemoveSetCoordSysID::ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic *topic,
+ceCACoordSystemRemove *action, const char *newCoordSystemID){
+	if(!topic || !newCoordSystemID){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -52,7 +52,7 @@ ceCACoordSystemRemove *action, const char *newCoordSystemID ){
 	pOldCoordSystemID = action->GetCoordSystemID();
 	pNewCoordSystemID = newCoordSystemID;
 	
-	SetShortInfo( "Coord system remove set coord system id" );
+	SetShortInfo("Coord system remove set coord system id");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -62,10 +62,10 @@ ceCACoordSystemRemove *action, const char *newCoordSystemID ){
 }
 
 ceUCACoordSysRemoveSetCoordSysID::~ceUCACoordSysRemoveSetCoordSysID(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ ceUCACoordSysRemoveSetCoordSysID::~ceUCACoordSysRemoveSetCoordSysID(){
 ///////////////
 
 void ceUCACoordSysRemoveSetCoordSysID::Undo(){
-	pAction->SetCoordSystemID( pOldCoordSystemID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetCoordSystemID(pOldCoordSystemID.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCACoordSysRemoveSetCoordSysID::Redo(){
-	pAction->SetCoordSystemID( pNewCoordSystemID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetCoordSystemID(pNewCoordSystemID.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }

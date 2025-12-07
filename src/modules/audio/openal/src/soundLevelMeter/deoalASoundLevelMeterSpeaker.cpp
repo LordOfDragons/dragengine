@@ -54,24 +54,24 @@
 ////////////////////////////
 
 deoalASoundLevelMeterSpeaker::deoalASoundLevelMeterSpeaker(
-	deoalASoundLevelMeter &soundLevelMeter, deoalASpeaker *speaker ) :
-pSoundLevelMeter( soundLevelMeter ),
-pSpeaker( speaker ),
-pVolume( 0.0f ),
-pEnvProbe( NULL ),
-pListener( NULL ),
-pGainLow( 0.0f ),
-pGainMedium( 0.0f ),
-pGainHigh( 0.0f ){
+	deoalASoundLevelMeter &soundLevelMeter, deoalASpeaker *speaker) :
+pSoundLevelMeter(soundLevelMeter),
+pSpeaker(speaker),
+pVolume(0.0f),
+pEnvProbe(NULL),
+pListener(NULL),
+pGainLow(0.0f),
+pGainMedium(0.0f),
+pGainHigh(0.0f){
 }
 
 deoalASoundLevelMeterSpeaker::~deoalASoundLevelMeterSpeaker(){
 	EnvProbeDropOctreeNode();
 	
-	if( pEnvProbe ){
+	if(pEnvProbe){
 		delete pEnvProbe;
 	}
-	if( pListener ){
+	if(pListener){
 		delete pListener;
 	}
 }
@@ -81,68 +81,68 @@ deoalASoundLevelMeterSpeaker::~deoalASoundLevelMeterSpeaker(){
 // Management
 ///////////////
 
-void deoalASoundLevelMeterSpeaker::SetVolume( float volume ){
+void deoalASoundLevelMeterSpeaker::SetVolume(float volume){
 	pVolume = volume;
 }
 
 void deoalASoundLevelMeterSpeaker::EnvProbeDropOctreeNode(){
-	if( pEnvProbe && pEnvProbe->GetOctreeNode() ){
-		pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+	if(pEnvProbe && pEnvProbe->GetOctreeNode()){
+		pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 	}
 }
 
 void deoalASoundLevelMeterSpeaker::SpeakerPositionChanged(){
-	if( ! pEnvProbe ){
+	if(!pEnvProbe){
 		return;
 	}
 	
-	pEnvProbe->SetPosition( pSpeaker->GetPosition() );
+	pEnvProbe->SetPosition(pSpeaker->GetPosition());
 	
-	if( pEnvProbe->GetOctreeNode() ){
-		pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+	if(pEnvProbe->GetOctreeNode()){
+		pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 	}
 }
 
 void deoalASoundLevelMeterSpeaker::SpeakerLayerMaskChanged(){
-	if( ! pEnvProbe ){
+	if(!pEnvProbe){
 		return;
 	}
 	
-	pEnvProbe->SetLayerMask( pSpeaker->GetLayerMask() );
+	pEnvProbe->SetLayerMask(pSpeaker->GetLayerMask());
 	
-	if( pEnvProbe->GetOctreeNode() ){
-		pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+	if(pEnvProbe->GetOctreeNode()){
+		pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 	}
 }
 
 void deoalASoundLevelMeterSpeaker::SpeakerRangeChanged(){
-	if( ! pEnvProbe ){
+	if(!pEnvProbe){
 		return;
 	}
 	
-	pEnvProbe->SetRange( pSpeaker->GetRange() );
+	pEnvProbe->SetRange(pSpeaker->GetRange());
 	
-	if( pEnvProbe->GetOctreeNode() ){
-		pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+	if(pEnvProbe->GetOctreeNode()){
+		pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 	}
 }
 
 void deoalASoundLevelMeterSpeaker::SpeakerAttenuationChanged(){
-	if( ! pEnvProbe ){
+	if(!pEnvProbe){
 		return;
 	}
 	
-	pEnvProbe->SetAttenuation( pSpeaker->GetAttenuationRefDist(),
-		pSpeaker->GetAttenuationRolloff(), pSpeaker->GetAttenuationDistanceOffset() );
+	pEnvProbe->SetAttenuation(pSpeaker->GetAttenuationRefDist(),
+		pSpeaker->GetAttenuationRolloff(), pSpeaker->GetAttenuationDistanceOffset());
 	
-	if( pEnvProbe->GetOctreeNode() ){
-		pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+	if(pEnvProbe->GetOctreeNode()){
+		pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 	}
 }
 
 void deoalASoundLevelMeterSpeaker::Listen(){
-	if( ! pSoundLevelMeter.GetParentWorld() ){
-		DETHROW( deeInvalidParam );
+	if(!pSoundLevelMeter.GetParentWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGainLow = 0.0f;
@@ -152,7 +152,7 @@ void deoalASoundLevelMeterSpeaker::Listen(){
 	pListenDirect();
 	pListenReflected();
 	
-	pVolume = decMath::max( pGainLow, pGainMedium, pGainHigh );
+	pVolume = decMath::max(pGainLow, pGainMedium, pGainHigh);
 }
 
 
@@ -163,9 +163,9 @@ void deoalASoundLevelMeterSpeaker::Listen(){
 void deoalASoundLevelMeterSpeaker::pListenDirect(){
 	const decDVector &speakerPosition = pSpeaker->GetPosition();
 	const decDVector &meterPosition = pSoundLevelMeter.GetPosition();
-	const float distance = ( float )( ( speakerPosition - meterPosition ).Length() );
-	const float gain = pSpeaker->GetVolume() * pSpeaker->AttenuatedGain( distance );
-	if( gain < 1e-3f ){
+	const float distance = (float)((speakerPosition - meterPosition).Length());
+	const float gain = pSpeaker->GetVolume() * pSpeaker->AttenuatedGain(distance);
+	if(gain < 1e-3f){
 		return;
 	}
 	
@@ -176,11 +176,11 @@ void deoalASoundLevelMeterSpeaker::pListenDirect(){
 	rtresult.Clear();
 	
 	deoalWOVRayHitsElement &visitor = audioThread.GetWOVRayHitsElement();
-	visitor.SetRay( meterPosition, speakerPosition - meterPosition );
-	visitor.SetResult( &rtresult );
-	visitor.SetLayerMask( pSoundLevelMeter.GetLayerMask() );
+	visitor.SetRay(meterPosition, speakerPosition - meterPosition);
+	visitor.SetResult(&rtresult);
+	visitor.SetLayerMask(pSoundLevelMeter.GetLayerMask());
 	
-	world.GetOctree()->VisitNodesColliding( &visitor, visitor.GetRayBoxMin(), visitor.GetRayBoxMax() );
+	world.GetOctree()->VisitNodesColliding(&visitor, visitor.GetRayBoxMin(), visitor.GetRayBoxMax());
 	
 	const int count = rtresult.GetElementCount();
 	int index = 0;
@@ -189,30 +189,30 @@ void deoalASoundLevelMeterSpeaker::pListenDirect(){
 	float gainMedium = gain;
 	float gainHigh = gain;
 	
-	while( index < count ){
-		const deoalRayTraceHitElement * const forward = pNextHitElement( rtresult, index, true );
-		if( ! forward ){
+	while(index < count){
+		const deoalRayTraceHitElement * const forward = pNextHitElement(rtresult, index, true);
+		if(!forward){
 			break;
 		}
 		
-		const deoalRayTraceHitElement * const backward = pNextHitElement( rtresult, index, false );
-		if( ! backward ){
+		const deoalRayTraceHitElement * const backward = pNextHitElement(rtresult, index, false);
+		if(!backward){
 			return;
 		}
 		
 		const float thickness = backward->GetDistance() - forward->GetDistance();
 		
-		if( forward->GetComponent() ){
+		if(forward->GetComponent()){
 			deoalAComponent &component = *forward->GetComponent();
-			const deoalModelFace &face = component.GetModel()->GetFaceAt( forward->GetComponentFace() );
-			const deoalAComponentTexture &compTex = component.GetModelTextureAt( face.GetTexture() );
+			const deoalModelFace &face = component.GetModel()->GetFaceAt(forward->GetComponentFace());
+			const deoalAComponentTexture &compTex = component.GetModelTextureAt(face.GetTexture());
 			
-			gainLow *= decMath::linearStep( thickness, 0.0f, compTex.GetTransmissionLow(),
-				1.0f - compTex.GetAbsorptionLow(), 0.0f );
-			gainMedium *= decMath::linearStep( thickness, 0.0f, compTex.GetTransmissionMedium(),
-				1.0f - compTex.GetAbsorptionMedium(), 0.0f );
-			gainHigh *= decMath::linearStep( thickness, 0.0f, compTex.GetTransmissionHigh(),
-				1.0f - compTex.GetAbsorptionHigh(), 0.0f );
+			gainLow *= decMath::linearStep(thickness, 0.0f, compTex.GetTransmissionLow(),
+				1.0f - compTex.GetAbsorptionLow(), 0.0f);
+			gainMedium *= decMath::linearStep(thickness, 0.0f, compTex.GetTransmissionMedium(),
+				1.0f - compTex.GetAbsorptionMedium(), 0.0f);
+			gainHigh *= decMath::linearStep(thickness, 0.0f, compTex.GetTransmissionHigh(),
+				1.0f - compTex.GetAbsorptionHigh(), 0.0f);
 			
 		}else{
 			return;
@@ -225,23 +225,23 @@ void deoalASoundLevelMeterSpeaker::pListenDirect(){
 }
 
 void deoalASoundLevelMeterSpeaker::pListenReflected(){
-	if( ! pEnvProbe ){
-		pEnvProbe = new deoalEnvProbe( pSoundLevelMeter.GetAudioThread() );
-		pEnvProbe->SetPosition( pSpeaker->GetPosition() );
-		pEnvProbe->SetRange( pSpeaker->GetRange() );
-		pEnvProbe->SetAttenuation( pSpeaker->GetAttenuationRefDist(),
-			pSpeaker->GetAttenuationRolloff(), pSpeaker->GetAttenuationDistanceOffset() );
+	if(!pEnvProbe){
+		pEnvProbe = new deoalEnvProbe(pSoundLevelMeter.GetAudioThread());
+		pEnvProbe->SetPosition(pSpeaker->GetPosition());
+		pEnvProbe->SetRange(pSpeaker->GetRange());
+		pEnvProbe->SetAttenuation(pSpeaker->GetAttenuationRefDist(),
+			pSpeaker->GetAttenuationRolloff(), pSpeaker->GetAttenuationDistanceOffset());
 	}
 	
-	if( ! pListener ){
+	if(!pListener){
 		pListener = new deoalEnvProbeListener;
 	}
 	
-	pEnvProbe->CalcListener( *pListener, *pSoundLevelMeter.GetParentWorld(),
-		pSoundLevelMeter.GetPosition(), &pSoundLevelMeter );
+	pEnvProbe->CalcListener(*pListener, *pSoundLevelMeter.GetParentWorld(),
+		pSoundLevelMeter.GetPosition(), &pSoundLevelMeter);
 	
-	if( ! pEnvProbe->GetOctreeNode() ){
-		pSoundLevelMeter.GetParentWorld()->GetOctree()->InsertEnvProbeIntoTree( pEnvProbe, 8 );
+	if(!pEnvProbe->GetOctreeNode()){
+		pSoundLevelMeter.GetParentWorld()->GetOctree()->InsertEnvProbeIntoTree(pEnvProbe, 8);
 	}
 	
 // 	pSoundLevelMeter.GetAudioThread().GetLogger().LogInfoFormat( "pListenReflected: %f %f %f, %f %f %f %d",
@@ -261,11 +261,11 @@ void deoalASoundLevelMeterSpeaker::pListenReflected(){
 }
 
 const deoalRayTraceHitElement *deoalASoundLevelMeterSpeaker::pNextHitElement(
-const deoalRayTraceResult &rtresult, int& index, bool forwardFacing ) const{
+const deoalRayTraceResult &rtresult, int& index, bool forwardFacing) const{
 	const int count = rtresult.GetElementCount();
-	while( index < count ){
-		const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt( index++ );
-		if( hitElement.GetForwardFacing() == forwardFacing ){
+	while(index < count){
+		const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt(index++);
+		if(hitElement.GetForwardFacing() == forwardFacing){
 			return &hitElement;
 		}
 	}

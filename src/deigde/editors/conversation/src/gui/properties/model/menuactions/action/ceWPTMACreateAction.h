@@ -52,8 +52,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACreateAction( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationAction::eActionTypes actionType );
+	ceWPTMACreateAction(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationAction::eActionTypes actionType);
 	/*@}*/
 	
 	
@@ -72,7 +72,7 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationAction *action );
+	virtual igdeUndo *CreateUndo(ceConversationAction *action);
 	
 	
 	
@@ -80,12 +80,12 @@ public:
 	ceConversationAction *CreateAction();
 	
 	/** \brief Text for action type. */
-	static const char *ActionTypeText( ceWindowMain &windowMain,
-		ceConversationAction::eActionTypes actionType );
+	static const char *ActionTypeText(ceWindowMain &windowMain,
+		ceConversationAction::eActionTypes actionType);
 	
 	/** \brief Icon for action type. */
-	static igdeIcon *ActionTypeIcon( ceWindowMain &windowMain,
-		ceConversationAction::eActionTypes actionType );
+	static igdeIcon *ActionTypeIcon(ceWindowMain &windowMain,
+		ceConversationAction::eActionTypes actionType);
 	/*@}*/
 };
 

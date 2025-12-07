@@ -44,18 +44,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDSRenderableValue::deoglRDSRenderableValue( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( etValue, dynamicSkin ),
-pTexture( NULL ),
-pValue( 0.0f ),
-pDirty( true )
+deoglRDSRenderableValue::deoglRDSRenderableValue(deoglRDynamicSkin &dynamicSkin) :
+deoglRDSRenderable(etValue, dynamicSkin),
+pTexture(NULL),
+pValue(0.0f),
+pDirty(true)
 {
-	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableValue );
+	LEAK_CHECK_CREATE(dynamicSkin.GetRenderThread(), DSRenderableValue);
 }
 
 deoglRDSRenderableValue::~deoglRDSRenderableValue(){
-	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableValue );
-	if( pTexture ){
+	LEAK_CHECK_FREE(GetDynamicSkin().GetRenderThread(), DSRenderableValue);
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -65,8 +65,8 @@ deoglRDSRenderableValue::~deoglRDSRenderableValue(){
 // Management
 ///////////////
 
-void deoglRDSRenderableValue::SetValue( float value ){
-	if( fabsf( value - pValue ) < FLOAT_SAFE_EPSILON ){
+void deoglRDSRenderableValue::SetValue(float value){
+	if(fabsf(value - pValue) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -74,32 +74,32 @@ void deoglRDSRenderableValue::SetValue( float value ){
 	pDirty = true;
 }
 
-void deoglRDSRenderableValue::PrepareForRender( const deoglRenderPlanMasked * ){
+void deoglRDSRenderableValue::PrepareForRender(const deoglRenderPlanMasked *){
 }
 
-float deoglRDSRenderableValue::GetRenderValue( float ){
+float deoglRDSRenderableValue::GetRenderValue(float){
 	return pValue;
 }
 
-decColor deoglRDSRenderableValue::GetRenderColor( const decColor & ){
-	return decColor( pValue, pValue, pValue, 1.0f );
+decColor deoglRDSRenderableValue::GetRenderColor(const decColor &){
+	return decColor(pValue, pValue, pValue, 1.0f);
 }
 
 deoglTexture *deoglRDSRenderableValue::GetRenderTexture(){
-	if( ! pTexture ){
-		pTexture = new deoglTexture( GetDynamicSkin().GetRenderThread() );
-		pTexture->SetSize( 1, 1 );
-		pTexture->SetMipMapped( false );
-		pTexture->SetMapingFormat( 4, false, false );
+	if(!pTexture){
+		pTexture = new deoglTexture(GetDynamicSkin().GetRenderThread());
+		pTexture->SetSize(1, 1);
+		pTexture->SetMipMapped(false);
+		pTexture->SetMapingFormat(4, false, false);
 		
 		pDirty = true;
 	}
 	
-	if( pDirty ){
-		const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, 1, 1, 1 ) ) );
-		pixelBuffer->SetToFloatColor( pValue, pValue, pValue, 1.0f );
-		pTexture->SetPixels( pixelBuffer );
+	if(pDirty){
+		const deoglPixelBuffer::Ref pixelBuffer(deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer(deoglPixelBuffer::epfByte4, 1, 1, 1)));
+		pixelBuffer->SetToFloatColor(pValue, pValue, pValue, 1.0f);
+		pTexture->SetPixels(pixelBuffer);
 		
 		pDirty = false;
 	}

@@ -74,11 +74,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader program. */
-	deoglShaderProgram( deoglRenderThread &renderThread, const deoglShaderSources *sources );
+	deoglShaderProgram(deoglRenderThread &renderThread, const deoglShaderSources *sources);
 	
 	/** Create shader program. */
-	deoglShaderProgram( deoglRenderThread &renderThread,
-		const deoglShaderSources *sources, const deoglShaderDefines &defines );
+	deoglShaderProgram(deoglRenderThread &renderThread,
+		const deoglShaderSources *sources, const deoglShaderDefines &defines);
 	
 protected:
 	/** Clean up shader program. */
@@ -101,7 +101,7 @@ public:
 	inline const decString &GetCacheId() const{ return pCacheId; }
 	
 	/** Set cache identifier. */
-	void SetCacheId( const decString &id );
+	void SetCacheId(const decString &id);
 	
 	/** Compute unit or nullptr. */
 	inline deoglShaderProgramUnit *GetUnitCompute() const{ return pUnitCompute; }
@@ -146,7 +146,7 @@ public:
 	inline deoglShaderCompiled *GetCompiled() const{ return pCompiled; }
 	
 	/** Set compiled shader or nullptr. */
-	void SetCompiled( deoglShaderCompiled *compiled );
+	void SetCompiled(deoglShaderCompiled *compiled);
 	
 	/** Move compiled shader or nullptr. */
 	void MoveCompiled(deoglShaderProgram &program);

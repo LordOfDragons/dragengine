@@ -57,34 +57,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Module at index. */
-	delGPModule *GetAt( int index ) const;
+	delGPModule *GetAt(int index) const;
 	
 	/** \brief Named module or nullptr if absent. */
-	delGPModule *GetNamed( const char *name ) const;
+	delGPModule *GetNamed(const char *name) const;
 	
 	/** \brief Module is present. */
-	bool Has( delGPModule *module ) const;
+	bool Has(delGPModule *module) const;
 	
 	/** \brief Named module is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Index of module or -1 if absent. */
-	int IndexOf( delGPModule *module ) const;
+	int IndexOf(delGPModule *module) const;
 	
 	/** \brief Index of named module or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Add module. */
-	void Add( delGPModule *module );
+	void Add(delGPModule *module);
 	
 	/** \brief Remove module. */
-	void Remove( delGPModule *module );
+	void Remove(delGPModule *module);
 	
 	/** \brief Remove all modules. */
 	void RemoveAll();
 	
 	/** \brief Update module list with another. */
-	void Update( const delGPModuleList &list );
+	void Update(const delGPModuleList &list);
 	/*@}*/
 };
 

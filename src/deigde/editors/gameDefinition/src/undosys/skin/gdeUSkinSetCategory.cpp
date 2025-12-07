@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUSkinSetCategory::gdeUSkinSetCategory(
-gdeSkin *skin, const char *newValue ) :
-pSkin( NULL )
+gdeSkin *skin, const char *newValue) :
+pSkin(NULL)
 {
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
+	if(!skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Skin set category" );
+	SetShortInfo("Skin set category");
 	
 	pOldValue = skin->GetCategory();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pSkin( NULL )
 }
 
 gdeUSkinSetCategory::~gdeUSkinSetCategory(){
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUSkinSetCategory::~gdeUSkinSetCategory(){
 ///////////////
 
 void gdeUSkinSetCategory::Undo(){
-	pSkin->SetCategory( pOldValue );
+	pSkin->SetCategory(pOldValue);
 }
 
 void gdeUSkinSetCategory::Redo(){
-	pSkin->SetCategory( pNewValue );
+	pSkin->SetCategory(pNewValue);
 }

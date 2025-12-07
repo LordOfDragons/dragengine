@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPController( seWindowProperties &windowProperties );
+	seWPController(seWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -85,7 +85,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Active controller or \em NULL. */
 	seController *GetController() const;

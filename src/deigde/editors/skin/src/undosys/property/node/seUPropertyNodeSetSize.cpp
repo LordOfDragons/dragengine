@@ -39,15 +39,15 @@
 ////////////////////////////
 
 seUPropertyNodeSetSize::seUPropertyNodeSetSize(
-sePropertyNode *node, const decPoint3 &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNode *node, const decPoint3 &newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set size" );
+	SetShortInfo("Node set size");
 	
 	pOldValue = node->GetSize();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetSize::~seUPropertyNodeSetSize(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUPropertyNodeSetSize::~seUPropertyNodeSetSize(){
 ///////////////
 
 void seUPropertyNodeSetSize::Undo(){
-	pNode->SetSize( pOldValue );
+	pNode->SetSize(pOldValue);
 }
 
 void seUPropertyNodeSetSize::Redo(){
-	pNode->SetSize( pNewValue );
+	pNode->SetSize(pNewValue);
 }

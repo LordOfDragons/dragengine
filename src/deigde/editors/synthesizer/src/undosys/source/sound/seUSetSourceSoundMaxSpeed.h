@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSetSourceSoundMaxSpeed( seSourceSound *source, float newSpeed );
+	seUSetSourceSoundMaxSpeed(seSourceSound *source, float newSpeed);
 	
 protected:
 	/** \brief Clean up undo action. */

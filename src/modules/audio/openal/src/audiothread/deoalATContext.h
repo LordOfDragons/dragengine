@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create audio context. */
-	deoalATContext( deoalAudioThread &audioThread );
+	deoalATContext(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up audio context. */
 	~deoalATContext();

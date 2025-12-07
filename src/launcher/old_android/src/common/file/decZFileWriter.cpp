@@ -46,23 +46,23 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decZFileWriter::decZFileWriter( decBaseFileWriter *writer ) :
-pWriter( NULL ),
+decZFileWriter::decZFileWriter(decBaseFileWriter *writer) :
+pWriter(NULL),
 
-pZStream( NULL ),
+pZStream(NULL),
 
-pBufferIn( NULL ),
-pBufferInSize( 0 ),
-pBufferInPosition( 0 ),
+pBufferIn(NULL),
+pBufferInSize(0),
+pBufferInPosition(0),
 
-pBufferOut( NULL ),
-pBufferOutSize( 0 )
+pBufferOut(NULL),
+pBufferOutSize(0)
 {
-	if( ! writer ){
-		DETHROW( deeInvalidParam );
+	if(!writer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	writer->WriteByte( 0 ); // options in case we want to expand on functionality internally
+	writer->WriteByte(0); // options in case we want to expand on functionality internally
 	
 	pBufferIn = NULL;
 	pBufferInPosition = 0;
@@ -71,25 +71,25 @@ pBufferOutSize( 0 )
 	pBufferOutSize = 0;
 	
 	z_stream * const zstream = new z_stream;
-	memset( zstream, 0, sizeof( z_stream ) );
+	memset(zstream, 0, sizeof(z_stream));
 	zstream->zalloc = NULL;
 	zstream->zfree = NULL;
 	zstream->opaque = NULL;
 	//if( deflateInit( zstream, Z_BEST_SPEED ) != Z_OK ){
 	//if( deflateInit( zstream, Z_BEST_COMPRESSION ) != Z_OK ){
-	if( deflateInit( zstream, Z_DEFAULT_COMPRESSION ) != Z_OK ){
+	if(deflateInit(zstream, Z_DEFAULT_COMPRESSION) != Z_OK){
 		delete zstream;
-		DETHROW( deeOutOfMemory );
+		DETHROW(deeOutOfMemory);
 	}
 	
-	pBufferIn = new Bytef[ BUFFER_SIZE ];
+	pBufferIn = new Bytef[BUFFER_SIZE];
 	pBufferInSize = BUFFER_SIZE;
-	pBufferOut = new Bytef[ BUFFER_SIZE ];
+	pBufferOut = new Bytef[BUFFER_SIZE];
 	pBufferOutSize = BUFFER_SIZE;
 	
-	zstream->next_in = ( Bytef* )pBufferIn;
+	zstream->next_in = (Bytef*)pBufferIn;
 	zstream->avail_in = 0;
-	zstream->next_out = ( Bytef* )pBufferOut;
+	zstream->next_out = (Bytef*)pBufferOut;
 	zstream->avail_out = pBufferOutSize;
 	pZStream = zstream;
 	
@@ -100,18 +100,18 @@ pBufferOutSize( 0 )
 decZFileWriter::~decZFileWriter(){
 	EndZWriting();
 	
-	if( pZStream ){
-		delete ( z_stream* )pZStream;
+	if(pZStream){
+		delete (z_stream*)pZStream;
 	}
 	
-	if( pWriter ){
+	if(pWriter){
 		pWriter->FreeReference();
 	}
-	if( pBufferOut ){
-		delete [] ( Bytef* )pBufferOut;
+	if(pBufferOut){
+		delete [] (Bytef*)pBufferOut;
 	}
-	if( pBufferIn ){
-		delete [] ( Bytef* )pBufferIn;
+	if(pBufferIn){
+		delete [] (Bytef*)pBufferIn;
 	}
 }
 
@@ -124,16 +124,16 @@ int decZFileWriter::GetPosition(){
 	return pWriter->GetPosition();
 }
 
-void decZFileWriter::SetPosition( int position ){
-	DETHROW( deeInvalidAction );
+void decZFileWriter::SetPosition(int position){
+	DETHROW(deeInvalidAction);
 }
 
-void decZFileWriter::MovePosition( int offset ){
-	DETHROW( deeInvalidAction );
+void decZFileWriter::MovePosition(int offset){
+	DETHROW(deeInvalidAction);
 }
 
-void decZFileWriter::SetPositionEnd( int position ){
-	DETHROW( deeInvalidAction );
+void decZFileWriter::SetPositionEnd(int position){
+	DETHROW(deeInvalidAction);
 }
 
 
@@ -145,26 +145,26 @@ const char *decZFileWriter::GetFilename(){
 	return pWriter->GetFilename();
 }
 
-void decZFileWriter::Write( const void *buffer, int size ){
-	z_stream * const zstream = ( z_stream* )pZStream;
-	const char *cbuffer = ( const char* )buffer;
+void decZFileWriter::Write(const void *buffer, int size){
+	z_stream * const zstream = (z_stream*)pZStream;
+	const char *cbuffer = (const char*)buffer;
 	
-	while( size > 0 ){
-		if( pBufferInPosition + size > pBufferInSize ){
+	while(size > 0){
+		if(pBufferInPosition + size > pBufferInSize){
 			const int writeSize = pBufferInSize - pBufferInPosition;
-			memcpy( ( Bytef* )pBufferIn + pBufferInPosition, cbuffer, writeSize );
+			memcpy((Bytef*)pBufferIn + pBufferInPosition, cbuffer, writeSize);
 			
-			zstream->next_in = ( Bytef* )pBufferIn;
+			zstream->next_in = (Bytef*)pBufferIn;
 			zstream->avail_in = pBufferInSize;
 			
-			while( zstream->avail_in > 0 ){
-				if( deflate( zstream, Z_NO_FLUSH ) != Z_OK ){
-					DETHROW( deeInvalidParam );
+			while(zstream->avail_in > 0){
+				if(deflate(zstream, Z_NO_FLUSH) != Z_OK){
+					DETHROW(deeInvalidParam);
 				}
 				
-				if( zstream->avail_out == 0 ){
-					pWriter->Write( pBufferOut, pBufferOutSize );
-					zstream->next_out = ( Bytef* )pBufferOut;
+				if(zstream->avail_out == 0){
+					pWriter->Write(pBufferOut, pBufferOutSize);
+					zstream->next_out = (Bytef*)pBufferOut;
 					zstream->avail_out = pBufferOutSize;
 				}
 			}
@@ -174,7 +174,7 @@ void decZFileWriter::Write( const void *buffer, int size ){
 			size -= writeSize;
 			
 		}else{
-			memcpy( ( Bytef* )pBufferIn + pBufferInPosition, cbuffer, size );
+			memcpy((Bytef*)pBufferIn + pBufferInPosition, cbuffer, size);
 			pBufferInPosition += size;
 			size = 0;
 		}
@@ -184,36 +184,36 @@ void decZFileWriter::Write( const void *buffer, int size ){
 
 
 void decZFileWriter::EndZWriting(){
-	z_stream * const zstream = ( z_stream* )pZStream;
-	zstream->next_in = ( Bytef* )pBufferIn;
+	z_stream * const zstream = (z_stream*)pZStream;
+	zstream->next_in = (Bytef*)pBufferIn;
 	zstream->avail_in = pBufferInPosition;
 	
-	while( true ){
-		const int result = deflate( zstream, Z_FINISH );
+	while(true){
+		const int result = deflate(zstream, Z_FINISH);
 		
-		if( result == Z_OK ){
-			pWriter->Write( pBufferOut, pBufferOutSize );
-			zstream->next_out = ( Bytef* )pBufferOut;
+		if(result == Z_OK){
+			pWriter->Write(pBufferOut, pBufferOutSize);
+			zstream->next_out = (Bytef*)pBufferOut;
 			zstream->avail_out = pBufferOutSize;
 			
-		}else if( result == Z_STREAM_END ){
+		}else if(result == Z_STREAM_END){
 			break;
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
 	pBufferInPosition = 0;
 	
-	const int remainingSize = pBufferOutSize - ( int )zstream->avail_out;
-	if( remainingSize > 0 ){
-		pWriter->Write( pBufferOut, remainingSize );
-		zstream->next_out = ( Bytef* )pBufferOut;
+	const int remainingSize = pBufferOutSize - (int)zstream->avail_out;
+	if(remainingSize > 0){
+		pWriter->Write(pBufferOut, remainingSize);
+		zstream->next_out = (Bytef*)pBufferOut;
 		zstream->avail_out = pBufferOutSize;
 	}
 	
-	if( deflateEnd( zstream ) != Z_OK ){
-		DETHROW( deeInvalidParam );
+	if(deflateEnd(zstream) != Z_OK){
+		DETHROW(deeInvalidParam);
 	}
 }

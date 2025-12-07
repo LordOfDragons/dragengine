@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNVLink::igdeNVLink( igdeNVSlot *source, igdeNVSlot *target ) :
-pSource( source ),
-pTarget( target ),
-pOwnerBoard( NULL ){
+igdeNVLink::igdeNVLink(igdeNVSlot *source, igdeNVSlot *target) :
+pSource(source),
+pTarget(target),
+pOwnerBoard(NULL){
 }
 
 igdeNVLink::~igdeNVLink(){
@@ -53,6 +53,6 @@ igdeNVLink::~igdeNVLink(){
 // Management
 ///////////////
 
-void igdeNVLink::SetOwnerBoard( igdeNVBoard *board ){
+void igdeNVLink::SetOwnerBoard(igdeNVBoard *board){
 	pOwnerBoard = board;
 }

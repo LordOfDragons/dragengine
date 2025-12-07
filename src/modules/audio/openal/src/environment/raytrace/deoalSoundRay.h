@@ -49,7 +49,7 @@ public:
 	deoalSoundRay();
 	
 	/** \brief Create copy of sound ray. */
-	deoalSoundRay( const deoalSoundRay &ray );
+	deoalSoundRay(const deoalSoundRay &ray);
 	/*@}*/
 	
 	
@@ -60,13 +60,13 @@ public:
 	inline int GetFirstSegment() const{ return pFirstSegment; }
 	
 	/** \brief Set index of first segment. */
-	void SetFirstSegment( int index );
+	void SetFirstSegment(int index);
 	
 	/** \brief Number of segments. */
 	inline int GetSegmentCount() const{ return pSegmentCount; }
 	
 	/** \brief Set number of segments. */
-	void SetSegmentCount( int count );
+	void SetSegmentCount(int count);
 		
 	/** \brief Increment number of segments by one. */
 	void IncSegmentCount();
@@ -75,13 +75,13 @@ public:
 	inline int GetFirstTransmittedRay() const{ return pFirstTransmittedRay; }
 	
 	/** \brief Set index of first transmitted ray. */
-	void SetFirstTransmittedRay( int index );
+	void SetFirstTransmittedRay(int index);
 	
 	/** \brief Number of transmitted rays. */
 	inline int GetTransmittedRayCount() const{ return pTransmittedRayCount; }
 	
 	/** \brief Set number of transmitted rays. */
-	void SetTransmittedRayCount( int count );
+	void SetTransmittedRayCount(int count);
 	
 	/** \brief Increment number of transmitted rays by one. */
 	void IncTransmittedRayCount();
@@ -90,12 +90,12 @@ public:
 	inline bool GetOutside() const{ return pOutside; }
 	
 	/** \brief Set if ray is outside. */
-	void SetOutside( bool outside );
+	void SetOutside(bool outside);
 	
 	
 	
 	/** \brief Set from other ray. */
-	deoalSoundRay &operator=( const deoalSoundRay &ray );
+	deoalSoundRay &operator=(const deoalSoundRay &ray);
 	/*@}*/
 };
 

@@ -43,10 +43,10 @@
 // Constructor
 ////////////////
 
-gdeMACategorySkinAdd::gdeMACategorySkinAdd( gdeWindowMain &windowMain ) :
-gdeMACategoryAdd( windowMain, "Add Skin Category...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add skin category" )
+gdeMACategorySkinAdd::gdeMACategorySkinAdd(gdeWindowMain &windowMain) :
+gdeMACategoryAdd(windowMain, "Add Skin Category...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add skin category")
 {
 }
 
@@ -55,7 +55,7 @@ gdeMACategoryAdd( windowMain, "Add Skin Category...",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategorySkinAdd::OnAction( gdeGameDefinition &gameDefinition ){
-	return AddCategory( gameDefinition, NULL,
-		gameDefinition.GetCategoriesSkin(), gdeUCategoryBase::ectSkin );
+igdeUndo *gdeMACategorySkinAdd::OnAction(gdeGameDefinition &gameDefinition){
+	return AddCategory(gameDefinition, NULL,
+		gameDefinition.GetCategoriesSkin(), gdeUCategoryBase::ectSkin);
 }

@@ -45,23 +45,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCamera::meCamera( deEngine *engine ) :
-igdeCamera( engine ),
+meCamera::meCamera(deEngine *engine) :
+igdeCamera(engine),
 
-pDDVolume( NULL ),
-pWorld( NULL ),
-pHostObject( NULL )
+pDDVolume(NULL),
+pWorld(NULL),
+pHostObject(NULL)
 {
-	SetLowestIntensity( 1.0f );
-	SetHighestIntensity( 20.0f );
+	SetLowestIntensity(1.0f);
+	SetHighestIntensity(20.0f);
 	
-	GetEngineCamera()->GetLayerMask().SetBit( meWorld::elmCamera );
-	GetEngineCamera()->GetLayerMask().SetBit( meWorld::elmEnvMapProbes );
+	GetEngineCamera()->GetLayerMask().SetBit(meWorld::elmCamera);
+	GetEngineCamera()->GetLayerMask().SetBit(meWorld::elmEnvMapProbes);
 	GetEngineCamera()->NotifyLayerMaskChanged();
 }
 
 meCamera::~meCamera(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 }
 
 
@@ -70,14 +70,14 @@ meCamera::~meCamera(){
 ///////////////
 
 void meCamera::Dispose(){
-	SetHostObject( NULL );
+	SetHostObject(NULL);
 }
 
-void meCamera::SetWorld( meWorld *world ){
-	if( world == pWorld ) return;
+void meCamera::SetWorld(meWorld *world){
+	if(world == pWorld) return;
 	
-	if( pWorld ){
-		if( pDDVolume ){
+	if(pWorld){
+		if(pDDVolume){
 			//pWorld->GetDDCameras()->RemoveVolume( pDDVolume );
 			pDDVolume = NULL;
 		}
@@ -85,11 +85,11 @@ void meCamera::SetWorld( meWorld *world ){
 	
 	pWorld = world;
 	
-	if( world ){
-		SetEngineWorld( world->GetEngineWorld() );
+	if(world){
+		SetEngineWorld(world->GetEngineWorld());
 		
 	}else{
-		SetEngineWorld( NULL );
+		SetEngineWorld(NULL);
 	}
 	
 	pUpdateDDVGeometry();
@@ -102,7 +102,7 @@ bool meCamera::HasHostObject() const{
 	return pHostObject != NULL;
 }
 
-void meCamera::SetHostObject( meObject *object ){
+void meCamera::SetHostObject(meObject *object){
 	pHostObject = object;
 }
 
@@ -132,15 +132,15 @@ void meCamera::AdaptionChanged(){
 void meCamera::pUpdateDDVolume(){
 	/*
 	// check if we need a volume and create or destroy it if required
-	if( pWorld && pVisible && ( pCurrent || pSelected ) ){
-		if( ! pDDVolume ){
+	if(pWorld && pVisible && (pCurrent || pSelected)){
+		if(!pDDVolume){
 			try{
 				pDDVolume = new deDebugDrawerShape;
-				if( ! pDDVolume ) DETHROW( deeOutOfMemory );
-				pWorld->GetDDObjects()->AddVolume( pDDVolume );
+				if(!pDDVolume) DETHROW(deeOutOfMemory);
+				pWorld->GetDDObjects()->AddVolume(pDDVolume);
 				
-			}catch( const deException & ){
-				if( pDDVolume ){
+			}catch(const deException &){
+				if(pDDVolume){
 					delete pDDVolume;
 					pDDVolume = NULL;
 				}
@@ -149,37 +149,37 @@ void meCamera::pUpdateDDVolume(){
 			pUpdateDDVGeometry();
 		}
 		
-	}else if( pDDVolume ){
-		pWorld->GetDDObjects()->RemoveVolume( pDDVolume );
+	}else if(pDDVolume){
+		pWorld->GetDDObjects()->RemoveVolume(pDDVolume);
 		pDDVolume = NULL;
 	}
 	
 	// update color if volume exists
-	if( pDDVolume ){
-		if( pCurrent ){
-			pDDVolume->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
-		}else if( pSelected ){
-			pDDVolume->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 1.0 ) );
+	if(pDDVolume){
+		if(pCurrent){
+			pDDVolume->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 1.0));
+		}else if(pSelected){
+			pDDVolume->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 1.0));
 		}else{
-			pDDVolume->SetEdgeColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
+			pDDVolume->SetEdgeColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
 		}
-		pDDVolume->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
+		pDDVolume->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
 	}
 	*/
 }
 
 void meCamera::pUpdateDDVGeometry(){
 	/*
-	if( pDDVolume ){
+	if(pDDVolume){
 		decCollisionBox *colBox = NULL;
 		
 		try{
-			colBox = new decCollisionBox( pPosition,
-				pSize * 0.5f + decVector( 0.01f, 0.01f, 0.01f ),
-				decMatrix::CreateRotation( pRotation ).ToQuaternion() );
-			pDDVolume->SetVolume( colBox );
-		}catch( const deException & ){
-			if( colBox ) delete colBox;
+			colBox = new decCollisionBox(pPosition,
+				pSize * 0.5f + decVector(0.01f, 0.01f, 0.01f),
+				decMatrix::CreateRotation(pRotation).ToQuaternion());
+			pDDVolume->SetVolume(colBox);
+		}catch(const deException &){
+			if(colBox) delete colBox;
 		}
 	}
 	*/

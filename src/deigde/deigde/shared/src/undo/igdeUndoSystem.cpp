@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeUndoSystem::igdeUndoSystem( igdeEditableEntity *editableEntity ) :
-pEditableEntity( editableEntity ),
-pRedoCount( 0 ),
-pMaxUndos( 100 ),
-pMaxMemory( 0 ){
+igdeUndoSystem::igdeUndoSystem(igdeEditableEntity *editableEntity) :
+pEditableEntity(editableEntity),
+pRedoCount(0),
+pMaxUndos(100),
+pMaxMemory(0){
 }
 
 igdeUndoSystem::~igdeUndoSystem(){
@@ -58,39 +58,39 @@ int igdeUndoSystem::GetCount() const{
 	return pUndos.GetCount();
 }
 
-igdeUndo *igdeUndoSystem::GetAt( int index ) const{
-	return ( igdeUndo* )pUndos.GetAt( pUndos.GetCount() - 1 - index );
+igdeUndo *igdeUndoSystem::GetAt(int index) const{
+	return (igdeUndo*)pUndos.GetAt(pUndos.GetCount() - 1 - index);
 }
 
 igdeUndo *igdeUndoSystem::GetTop() const{
-	return ( igdeUndo* )pUndos.GetAt( 0 );
+	return (igdeUndo*)pUndos.GetAt(0);
 }
 
-void igdeUndoSystem::Add( igdeUndo *undo, bool runRedo ){
-	if( ! undo ){
-		DETHROW( deeInvalidParam );
+void igdeUndoSystem::Add(igdeUndo *undo, bool runRedo){
+	if(!undo){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pMaxUndos == 0 ){
+	if(pMaxUndos == 0){
 		return;
 	}
 	
 	RemoveAllRedoable();
 	
-	if( runRedo ){
+	if(runRedo){
 		undo->Redo();
 	}
 	
-	if( pUndos.GetCount() == pMaxUndos ){
-		pUndos.RemoveFrom( 0 );
+	if(pUndos.GetCount() == pMaxUndos){
+		pUndos.RemoveFrom(0);
 	}
-	pUndos.Add( undo );
+	pUndos.Add(undo);
 	
 	pEditableEntity->NotifyUndoChanged();
 }
 
 void igdeUndoSystem::RemoveAll(){
-	if( pUndos.GetCount() == 0 ){
+	if(pUndos.GetCount() == 0){
 		return;
 	}
 	
@@ -101,12 +101,12 @@ void igdeUndoSystem::RemoveAll(){
 
 
 
-void igdeUndoSystem::SetMaxUndoCount( int maxUndos ){
-	if( maxUndos < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeUndoSystem::SetMaxUndoCount(int maxUndos){
+	if(maxUndos < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( maxUndos == pMaxUndos ){
+	if(maxUndos == pMaxUndos){
 		return;
 	}
 	
@@ -114,9 +114,9 @@ void igdeUndoSystem::SetMaxUndoCount( int maxUndos ){
 	pMaxUndos = maxUndos;
 }
 
-void igdeUndoSystem::SetMaxMemory( int maxMemory ){
-	if( maxMemory < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeUndoSystem::SetMaxMemory(int maxMemory){
+	if(maxMemory < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMaxUndos = maxMemory;
@@ -129,11 +129,11 @@ int igdeUndoSystem::GetUndoableCount() const{
 }
 
 void igdeUndoSystem::Undo(){
-	if( pUndos.GetCount() <= pRedoCount ){
+	if(pUndos.GetCount() <= pRedoCount){
 		return;
 	}
 	
-	igdeUndo &undo = *( ( igdeUndo* )pUndos.GetAt( pUndos.GetCount() - 1 - pRedoCount ) );
+	igdeUndo &undo = *((igdeUndo*)pUndos.GetAt(pUndos.GetCount() - 1 - pRedoCount));
 	
 	// undo the given action. the undo action is responsible to do its work alike that in
 	// the case of an exception the system is still in a working state but not necessary
@@ -143,7 +143,7 @@ void igdeUndoSystem::Undo(){
 	try{
 		undo.Undo();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		RemoveAll();
 		throw;
 	}
@@ -153,11 +153,11 @@ void igdeUndoSystem::Undo(){
 }
 
 void igdeUndoSystem::Redo(){
-	if( pRedoCount == 0 ){
+	if(pRedoCount == 0){
 		return;
 	}
 	
-	igdeUndo &undo = *( ( igdeUndo* )pUndos.GetAt( pUndos.GetCount() - pRedoCount ) );
+	igdeUndo &undo = *((igdeUndo*)pUndos.GetAt(pUndos.GetCount() - pRedoCount));
 	
 	// redo the given action. the redo action is responsible to do its work alike that in the
 	// case of an exception the system is still in a working state but not necessary in a
@@ -166,7 +166,7 @@ void igdeUndoSystem::Redo(){
 	try{
 		undo.Redo();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		RemoveAll();
 		throw;
 	}
@@ -176,12 +176,12 @@ void igdeUndoSystem::Redo(){
 }
 
 void igdeUndoSystem::RemoveAllRedoable(){
-	if( pRedoCount == 0 ){
+	if(pRedoCount == 0){
 		return;
 	}
 	
-	for( ; pRedoCount>0; pRedoCount-- ){
-		pUndos.RemoveFrom( pUndos.GetCount() - 1 );
+	for(; pRedoCount>0; pRedoCount--){
+		pUndos.RemoveFrom(pUndos.GetCount() - 1);
 	}
 	
 	pEditableEntity->NotifyUndoChanged();

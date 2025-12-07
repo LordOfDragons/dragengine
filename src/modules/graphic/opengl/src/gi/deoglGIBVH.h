@@ -211,7 +211,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination BVH. */
-	deoglGIBVH( deoglRenderThread &renderThread );
+	deoglGIBVH(deoglRenderThread &renderThread);
 	
 	/** Clean up global illumination BVH. */
 	~deoglGIBVH();
@@ -231,7 +231,7 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. If changed marks BVH dirty. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	
 	
@@ -245,19 +245,19 @@ public:
 	void Clear();
 	
 	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances );
+	void AddComponents(deoglRenderPlan &plan, const deoglGIInstances &instances);
 	
 	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic );
+	void AddComponents(deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic);
 	
 	/** Add component. */
-	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance );
+	void AddComponent(deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance);
 	
 	/** Build BVH. */
 	void BuildBVH();
 	
 	/** Debug print BVH. */
-	void DebugPrint( const decDVector &position );
+	void DebugPrint(const decDVector &position);
 	
 	
 	
@@ -277,18 +277,18 @@ public:
 private:
 	void pCleanUp();
 	void pDropBlockBVH();
-	sComponent &pAddComponent( const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix );
+	sComponent &pAddComponent(const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix);
 	
-	void pAddMaterial( deoglGIInstance &instance, int index,
-		const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc );
+	void pAddMaterial(deoglGIInstance &instance, int index,
+		const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc);
 	
-	void pAddMaterial( deoglGIInstance &instance, int index, const deoglSkinTexture &skinTexture,
+	void pAddMaterial(deoglGIInstance &instance, int index, const deoglSkinTexture &skinTexture,
 		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin,
-		deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix );
+		deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix);
 	
 // 	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
 // 		const deoglBVHNode &node, deoglBVHNode &target );
-	void pEnsureRecalcNodeSize( int size );
+	void pEnsureRecalcNodeSize(int size);
 };
 
 #endif

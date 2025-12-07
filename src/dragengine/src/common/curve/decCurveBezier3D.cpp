@@ -39,21 +39,21 @@
 ////////////////////////////
 
 decCurveBezier3D::decCurveBezier3D() :
-pPoints( NULL ),
-pPointCount( 0 ),
-pInterpolationMode( eimBezier ){
+pPoints(NULL),
+pPointCount(0),
+pInterpolationMode(eimBezier){
 }
 
-decCurveBezier3D::decCurveBezier3D( const decCurveBezier3D &copy ) :
-pPoints( NULL ),
-pPointCount( 0 ),
-pInterpolationMode( eimBezier )
+decCurveBezier3D::decCurveBezier3D(const decCurveBezier3D &copy) :
+pPoints(NULL),
+pPointCount(0),
+pInterpolationMode(eimBezier)
 {
 	*this = copy;
 }
 
 decCurveBezier3D::~decCurveBezier3D(){
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 }
@@ -63,72 +63,72 @@ decCurveBezier3D::~decCurveBezier3D(){
 // Management
 ///////////////
 
-decCurveBezier3DPoint &decCurveBezier3D::GetPointAt( int position ){
-	if( position < 0 || position >= pPointCount ){
-		DETHROW( deeInvalidParam );
+decCurveBezier3DPoint &decCurveBezier3D::GetPointAt(int position){
+	if(position < 0 || position >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pPoints[ position ];
+	return pPoints[position];
 }
 
-const decCurveBezier3DPoint &decCurveBezier3D::GetPointAt( int position ) const{
-	if( position < 0 || position >= pPointCount ){
-		DETHROW( deeInvalidParam );
+const decCurveBezier3DPoint &decCurveBezier3D::GetPointAt(int position) const{
+	if(position < 0 || position >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pPoints[ position ];
+	return pPoints[position];
 }
 
-void decCurveBezier3D::AddPoint( const decCurveBezier3DPoint &point ){
+void decCurveBezier3D::AddPoint(const decCurveBezier3DPoint &point){
 	int p;
 	
-	decCurveBezier3DPoint *newArray = new decCurveBezier3DPoint[ pPointCount + 1 ];
+	decCurveBezier3DPoint *newArray = new decCurveBezier3DPoint[pPointCount + 1];
 	
-	for( p=0; p<pPointCount; p++ ){
-		newArray[ p ] = pPoints[ p ];
+	for(p=0; p<pPointCount; p++){
+		newArray[p] = pPoints[p];
 	}
-	newArray[ pPointCount ] = point;
+	newArray[pPointCount] = point;
 	
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 	pPoints = newArray;
 	pPointCount++;
 }
 
-void decCurveBezier3D::InsertPoint( int position, const decCurveBezier3DPoint &point ){
-	if( position < 0 || position > pPointCount ){
-		DETHROW( deeInvalidParam );
+void decCurveBezier3D::InsertPoint(int position, const decCurveBezier3DPoint &point){
+	if(position < 0 || position > pPointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int p;
 	
-	decCurveBezier3DPoint *newArray = new decCurveBezier3DPoint[ pPointCount + 1 ];
+	decCurveBezier3DPoint *newArray = new decCurveBezier3DPoint[pPointCount + 1];
 	
-	for( p=0; p<=position; p++ ){
-		newArray[ p ] = pPoints[ p ];
+	for(p=0; p<=position; p++){
+		newArray[p] = pPoints[p];
 	}
-	newArray[ position + 1 ] = point;
-	for( p=position+1; p<pPointCount; p++ ){
-		newArray[ p + 1 ] = pPoints[ p ];
+	newArray[position + 1] = point;
+	for(p=position+1; p<pPointCount; p++){
+		newArray[p + 1] = pPoints[p];
 	}
 	
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 	pPoints = newArray;
 	pPointCount++;
 }
 
-void decCurveBezier3D::RemovePointFrom( int position ){
-	if( position < 0 || position >= pPointCount ){
-		DETHROW( deeInvalidParam );
+void decCurveBezier3D::RemovePointFrom(int position){
+	if(position < 0 || position >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int p;
 	
-	for( p=position+1; p<pPointCount; p++ ){
-		pPoints[ p - 1 ] = pPoints[ p ];
+	for(p=position+1; p<pPointCount; p++){
+		pPoints[p - 1] = pPoints[p];
 	}
 	pPointCount--;
 }
@@ -139,9 +139,9 @@ void decCurveBezier3D::RemoveAllPoints(){
 
 
 
-void decCurveBezier3D::SetInterpolationMode( eInterpolationModes mode ){
-	if( mode < eimConstant || mode > eimBezier ){
-		DETHROW( deeInvalidParam );
+void decCurveBezier3D::SetInterpolationMode(eInterpolationModes mode){
+	if(mode < eimConstant || mode > eimBezier){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pInterpolationMode = mode;
@@ -152,28 +152,28 @@ void decCurveBezier3D::SetInterpolationMode( eInterpolationModes mode ){
 // Operators
 //////////////
 
-decCurveBezier3DPoint &decCurveBezier3D::operator[]( int position ){
-	return GetPointAt( position );
+decCurveBezier3DPoint &decCurveBezier3D::operator[](int position){
+	return GetPointAt(position);
 }
 
-const decCurveBezier3DPoint &decCurveBezier3D::operator[]( int position ) const{
-	return GetPointAt( position );
+const decCurveBezier3DPoint &decCurveBezier3D::operator[](int position) const{
+	return GetPointAt(position);
 }
 
-decCurveBezier3D &decCurveBezier3D::operator=( const decCurveBezier3D &curve ){
+decCurveBezier3D &decCurveBezier3D::operator=(const decCurveBezier3D &curve){
 	int p, pointCount = curve.GetPointCount();
 	decCurveBezier3DPoint *newArray = NULL;
 	
-	if( pointCount > 0 ){
-		newArray = new decCurveBezier3DPoint[ pointCount ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+	if(pointCount > 0){
+		newArray = new decCurveBezier3DPoint[pointCount];
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
-		for( p=0; p<pointCount; p++ ){
-			newArray[ p ] = curve.pPoints[ p ];
+		for(p=0; p<pointCount; p++){
+			newArray[p] = curve.pPoints[p];
 		}
 	}
 	
-	if( pPoints ) delete [] pPoints;
+	if(pPoints) delete [] pPoints;
 	pPoints = newArray;
 	pPointCount = pointCount;
 	
@@ -182,18 +182,18 @@ decCurveBezier3D &decCurveBezier3D::operator=( const decCurveBezier3D &curve ){
 	return *this;
 }
 
-bool decCurveBezier3D::operator==( const decCurveBezier3D &curve ) const{
-	if( curve.pPointCount != pPointCount ){
+bool decCurveBezier3D::operator==(const decCurveBezier3D &curve) const{
+	if(curve.pPointCount != pPointCount){
 		return false;
 	}
 	
-	if( pInterpolationMode != curve.pInterpolationMode ){
+	if(pInterpolationMode != curve.pInterpolationMode){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<pPointCount; i++ ){
-		if( pPoints[ i ] != curve.pPoints[ i ] ){
+	for(i=0; i<pPointCount; i++){
+		if(pPoints[i] != curve.pPoints[i]){
 			return false;
 		}
 	}

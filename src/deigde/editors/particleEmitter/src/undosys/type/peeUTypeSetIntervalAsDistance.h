@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetIntervalAsDistance( peeType *type );
+	peeUTypeSetIntervalAsDistance(peeType *type);
 	
 protected:
 	/** \brief Clean up the undo action. */

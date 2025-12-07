@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCParticleEmitterToggleCasting::gdeUOCParticleEmitterToggleCasting(
-	gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+	gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
+pObjectClass(NULL),
+pParticleEmitter(NULL)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "ParticleEmitter toggle casting" );
+	SetShortInfo("ParticleEmitter toggle casting");
 	
 	pParticleEmitter = particleEmitter;
 	particleEmitter->AddReference();
@@ -59,10 +59,10 @@ pParticleEmitter( NULL )
 }
 
 gdeUOCParticleEmitterToggleCasting::~gdeUOCParticleEmitterToggleCasting(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCParticleEmitterToggleCasting::~gdeUOCParticleEmitterToggleCasting(){
 ///////////////
 
 void gdeUOCParticleEmitterToggleCasting::Undo(){
-	pParticleEmitter->SetCasting( ! pParticleEmitter->GetCasting() );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetCasting(!pParticleEmitter->GetCasting());
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterToggleCasting::Redo(){

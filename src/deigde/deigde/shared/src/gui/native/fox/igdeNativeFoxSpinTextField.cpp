@@ -44,8 +44,8 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxSpinTextField ) igdeNativeFoxSpinTextFieldMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxSpinTextField::ID_SELF, igdeNativeFoxSpinTextField::onCommand )
+FXDEFMAP(igdeNativeFoxSpinTextField) igdeNativeFoxSpinTextFieldMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxSpinTextField::ID_SELF, igdeNativeFoxSpinTextField::onCommand)
 };
 
 
@@ -53,54 +53,54 @@ FXDEFMAP( igdeNativeFoxSpinTextField ) igdeNativeFoxSpinTextFieldMap[] = {
 // Class igdeNativeFoxSpinTextField
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxSpinTextField, FXSpinner, igdeNativeFoxSpinTextFieldMap, ARRAYNUMBER( igdeNativeFoxSpinTextFieldMap ) )
+FXIMPLEMENT(igdeNativeFoxSpinTextField, FXSpinner, igdeNativeFoxSpinTextFieldMap, ARRAYNUMBER(igdeNativeFoxSpinTextFieldMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxSpinTextField::igdeNativeFoxSpinTextField(){ }
+igdeNativeFoxSpinTextField::igdeNativeFoxSpinTextField(){}
 
-igdeNativeFoxSpinTextField::igdeNativeFoxSpinTextField( igdeSpinTextField &powner, FXComposite *pparent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXSpinner( pparent, powner.GetColumns(), this, ID_SELF, layoutFlags | SpinTextFieldFlags( powner ),
+igdeNativeFoxSpinTextField::igdeNativeFoxSpinTextField(igdeSpinTextField &powner, FXComposite *pparent,
+int layoutFlags, const igdeGuiTheme &guitheme) :
+FXSpinner(pparent, powner.GetColumns(), this, ID_SELF, layoutFlags | SpinTextFieldFlags(powner),
 	0, 0, 0, 0,
-	SpinTextFieldPadLeft( guitheme ), SpinTextFieldPadRight( guitheme ),
-	SpinTextFieldPadTop( guitheme ), SpinTextFieldPadBottom( guitheme ) ),
-pOwner( &powner ),
-pFont( SpinTextFieldFont( powner, guitheme ) )
+	SpinTextFieldPadLeft(guitheme), SpinTextFieldPadRight(guitheme),
+	SpinTextFieldPadTop(guitheme), SpinTextFieldPadBottom(guitheme)),
+pOwner(&powner),
+pFont(SpinTextFieldFont(powner, guitheme))
 {
-	setFont( (FXFont*)pFont->GetNativeFont() );
+	setFont((FXFont*)pFont->GetNativeFont());
 	
-	if( ! powner.GetEnabled() ){
+	if(!powner.GetEnabled()){
 		disable();
 	}
 	
-	setRange( powner.GetLower(), powner.GetUpper() );
-	setValue( powner.GetValue() );
-	setTipText( powner.GetDescription().GetString() );
-	setHelpText( powner.GetDescription().GetString() );
+	setRange(powner.GetLower(), powner.GetUpper());
+	setValue(powner.GetValue());
+	setTipText(powner.GetDescription().GetString());
+	setHelpText(powner.GetDescription().GetString());
 }
 
 igdeNativeFoxSpinTextField::~igdeNativeFoxSpinTextField(){
 }
 
-igdeNativeFoxSpinTextField *igdeNativeFoxSpinTextField::CreateNativeWidget( igdeSpinTextField &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxSpinTextField *igdeNativeFoxSpinTextField::CreateNativeWidget(igdeSpinTextField &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxSpinTextField( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
+	return new igdeNativeFoxSpinTextField(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner), *powner.GetGuiTheme());
 }
 
 void igdeNativeFoxSpinTextField::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -119,11 +119,11 @@ void igdeNativeFoxSpinTextField::Focus(){
 }
 
 void igdeNativeFoxSpinTextField::UpdateRange(){
-	setRange( pOwner->GetLower(), pOwner->GetUpper() );
+	setRange(pOwner->GetLower(), pOwner->GetUpper());
 }
 
 void igdeNativeFoxSpinTextField::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -132,60 +132,60 @@ void igdeNativeFoxSpinTextField::UpdateEnabled(){
 }
 
 void igdeNativeFoxSpinTextField::UpdateValue(){
-	setValue( pOwner->GetValue() );
+	setValue(pOwner->GetValue());
 }
 
 void igdeNativeFoxSpinTextField::UpdateDescription(){
 	const char * const description = pOwner->GetDescription();
-	setTipText( description );
-	setHelpText( description );
+	setTipText(description);
+	setHelpText(description);
 }
 
 
 
 
-int igdeNativeFoxSpinTextField::SpinTextFieldFlags( const igdeSpinTextField& ){
+int igdeNativeFoxSpinTextField::SpinTextFieldFlags(const igdeSpinTextField&){
 	return FRAME_SUNKEN;
 }
 
-igdeFont *igdeNativeFoxSpinTextField::SpinTextFieldFont( const igdeSpinTextField &powner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxSpinTextField::SpinTextFieldFont(const igdeSpinTextField &powner, const igdeGuiTheme &guitheme){
 	igdeFont::sConfiguration configuration;
-	powner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute, 0 );
+	if(guitheme.HasProperty(igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::spinTextFieldFontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::spinTextFieldFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::spinTextFieldFontSize, 1.0f );
+			igdeGuiThemePropertyNames::spinTextFieldFontSize, 1.0f);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
+			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
 	
-	return powner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont(configuration);
 }
 
-int igdeNativeFoxSpinTextField::SpinTextFieldPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::spinTextFieldPaddingLeft, DEFAULT_PAD );
+int igdeNativeFoxSpinTextField::SpinTextFieldPadLeft(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::spinTextFieldPaddingLeft, DEFAULT_PAD);
 }
 
-int igdeNativeFoxSpinTextField::SpinTextFieldPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::spinTextFieldPaddingRight, DEFAULT_PAD );
+int igdeNativeFoxSpinTextField::SpinTextFieldPadRight(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::spinTextFieldPaddingRight, DEFAULT_PAD);
 }
 
-int igdeNativeFoxSpinTextField::SpinTextFieldPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::spinTextFieldPaddingTop, DEFAULT_PAD );
+int igdeNativeFoxSpinTextField::SpinTextFieldPadTop(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::spinTextFieldPaddingTop, DEFAULT_PAD);
 }
 
-int igdeNativeFoxSpinTextField::SpinTextFieldPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::spinTextFieldPaddingBottom, DEFAULT_PAD );
+int igdeNativeFoxSpinTextField::SpinTextFieldPadBottom(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::spinTextFieldPaddingBottom, DEFAULT_PAD);
 }
 
 
@@ -193,18 +193,18 @@ int igdeNativeFoxSpinTextField::SpinTextFieldPadBottom( const igdeGuiTheme &guit
 // Events
 ///////////
 
-long igdeNativeFoxSpinTextField::onCommand( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxSpinTextField::onCommand(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
 	try{
-		pOwner->SetValue( getValue() );
+		pOwner->SetValue(getValue());
 		pOwner->NotifyValueChanged();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	

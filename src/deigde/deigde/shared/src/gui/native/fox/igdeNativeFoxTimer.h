@@ -35,7 +35,7 @@ class igdeTimer;
  * \brief FOX toolkit Native Timer.
  */
 class igdeNativeFoxTimer : public FXObject{
-	FXDECLARE( igdeNativeFoxTimer )
+	FXDECLARE(igdeNativeFoxTimer)
 protected:
 	   igdeNativeFoxTimer();
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create timer. */
-	igdeNativeFoxTimer( igdeTimer &owner, FXApp *app );
+	igdeNativeFoxTimer(igdeTimer &owner, FXApp *app);
 	
 	/** \brief Clean up timer. */
 	virtual ~igdeNativeFoxTimer();
 	
 	/** \brief Create native timer. */
-	static igdeNativeFoxTimer* CreateNativeTimer( igdeTimer &owner );
+	static igdeNativeFoxTimer* CreateNativeTimer(igdeTimer &owner);
 	
 	/** \brief Destroy native timer. */
 	virtual void DestroyNativeTimer();
@@ -82,7 +82,7 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onTimeout( FXObject*, FXSelector, void* );
+	long onTimeout(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

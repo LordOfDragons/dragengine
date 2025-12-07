@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUSkySetPath::gdeUSkySetPath(
-gdeSky *sky, const char *newValue ) :
-pSky( NULL )
+gdeSky *sky, const char *newValue) :
+pSky(NULL)
 {
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Sky set path" );
+	SetShortInfo("Sky set path");
 	
 	pOldValue = sky->GetPath();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pSky( NULL )
 }
 
 gdeUSkySetPath::~gdeUSkySetPath(){
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUSkySetPath::~gdeUSkySetPath(){
 ///////////////
 
 void gdeUSkySetPath::Undo(){
-	pSky->SetPath( pOldValue );
+	pSky->SetPath(pOldValue);
 }
 
 void gdeUSkySetPath::Redo(){
-	pSky->SetPath( pNewValue );
+	pSky->SetPath(pNewValue);
 }

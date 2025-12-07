@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new debug font. */
-	deoglDebugFont( deoglRenderThread &renderThread );
+	deoglDebugFont(deoglRenderThread &renderThread);
 	/** Cleans up the shared vbo. */
 	~deoglDebugFont();
 	/*@}*/

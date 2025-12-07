@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicPaste( ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic,
-		const ceConversationConditionList &conditions );
+	ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic,
+		const ceConversationConditionList &conditions);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCLogicPaste();

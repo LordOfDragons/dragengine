@@ -52,9 +52,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglVolumeShape::deoglVolumeShape( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pShape( NULL ){
+deoglVolumeShape::deoglVolumeShape(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pShape(NULL){
 }
 
 deoglVolumeShape::~deoglVolumeShape(){
@@ -74,42 +74,42 @@ void deoglVolumeShape::Reset(){
 // Visiting
 /////////////
 
-void deoglVolumeShape::VisitShape( decShape &shape ){
+void deoglVolumeShape::VisitShape(decShape &shape){
 	Reset();
 }
 
-void deoglVolumeShape::VisitShapeSphere( decShapeSphere &sphere ){
-	pShape = pRenderThread.GetBufferObject().GetShapeManager().GetShapeAt( deoglRTBufferObject::esSphere );
+void deoglVolumeShape::VisitShapeSphere(decShapeSphere &sphere){
+	pShape = pRenderThread.GetBufferObject().GetShapeManager().GetShapeAt(deoglRTBufferObject::esSphere);
 	
-	( ( deoglShapeSphere* )pShape )->CalcMatrix( pMatrix1, sphere.GetPosition(), sphere.GetRadius() );
+	((deoglShapeSphere*)pShape)->CalcMatrix(pMatrix1, sphere.GetPosition(), sphere.GetRadius());
 	pMatrix2.SetIdentity();
 }
 
-void deoglVolumeShape::VisitShapeBox( decShapeBox &box ){
-	pShape = pRenderThread.GetBufferObject().GetShapeManager().GetShapeAt( deoglRTBufferObject::esBox );
+void deoglVolumeShape::VisitShapeBox(decShapeBox &box){
+	pShape = pRenderThread.GetBufferObject().GetShapeManager().GetShapeAt(deoglRTBufferObject::esBox);
 	
-	( ( deoglShapeBox* )pShape )->CalcMatrix( pMatrix1, box.GetPosition(),
-		box.GetOrientation(), box.GetHalfExtends() );
+	((deoglShapeBox*)pShape)->CalcMatrix(pMatrix1, box.GetPosition(),
+		box.GetOrientation(), box.GetHalfExtends());
 	pMatrix2.SetIdentity();
 }
 
-void deoglVolumeShape::VisitShapeCylinder( decShapeCylinder &cylinder ){
-	pShape = pRenderThread.GetBufferObject().GetShapeManager().GetShapeAt( deoglRTBufferObject::esCylinder );
+void deoglVolumeShape::VisitShapeCylinder(decShapeCylinder &cylinder){
+	pShape = pRenderThread.GetBufferObject().GetShapeManager().GetShapeAt(deoglRTBufferObject::esCylinder);
 	
-	( ( deoglShapeCylinder* )pShape )->CalcMatrices( pMatrix1, pMatrix2, cylinder.GetPosition(),
+	((deoglShapeCylinder*)pShape)->CalcMatrices(pMatrix1, pMatrix2, cylinder.GetPosition(),
 		cylinder.GetOrientation(), cylinder.GetHalfHeight(), cylinder.GetTopRadius(),
-		cylinder.GetBottomRadius() );
+		cylinder.GetBottomRadius());
 }
 
-void deoglVolumeShape::VisitShapeCapsule( decShapeCapsule &capsule ){
-	pShape = pRenderThread.GetBufferObject().GetShapeManager().GetShapeAt( deoglRTBufferObject::esCapsule );
+void deoglVolumeShape::VisitShapeCapsule(decShapeCapsule &capsule){
+	pShape = pRenderThread.GetBufferObject().GetShapeManager().GetShapeAt(deoglRTBufferObject::esCapsule);
 	
-	( ( deoglShapeCapsule* )pShape )->CalcMatrices( pMatrix1, pMatrix2, capsule.GetPosition(),
+	((deoglShapeCapsule*)pShape)->CalcMatrices(pMatrix1, pMatrix2, capsule.GetPosition(),
 		capsule.GetOrientation(), capsule.GetHalfHeight(), capsule.GetTopRadius(),
-		capsule.GetBottomRadius() );
+		capsule.GetBottomRadius());
 }
 
-void deoglVolumeShape::VisitShapeHull( decShapeHull &hull ){
+void deoglVolumeShape::VisitShapeHull(decShapeHull &hull){
 	// not supported yet
-	VisitShape( hull );
+	VisitShape(hull);
 }

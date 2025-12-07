@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLumimeter::deLumimeter( deLumimeterManager *manager ) : deResource( manager ){
-	pDirection.Set( 0.0f, 0.0f, 1.0f );
+deLumimeter::deLumimeter(deLumimeterManager *manager) : deResource(manager){
+	pDirection.Set(0.0f, 0.0f, 1.0f);
 	pConeInnerAngle = PI;
 	pConeOuterAngle = PI;
 	pConeExponent = 1.0f;
@@ -54,7 +54,7 @@ deLumimeter::deLumimeter( deLumimeterManager *manager ) : deResource( manager ){
 }
 
 deLumimeter::~deLumimeter(){
-	if( pPeerGraphic ) delete pPeerGraphic;
+	if(pPeerGraphic) delete pPeerGraphic;
 }
 
 
@@ -62,51 +62,51 @@ deLumimeter::~deLumimeter(){
 // Management
 ///////////////
 
-void deLumimeter::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void deLumimeter::SetPosition(const decDVector &position){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		if( pPeerGraphic ) pPeerGraphic->PositionChanged();
+		if(pPeerGraphic) pPeerGraphic->PositionChanged();
 	}
 }
 
-void deLumimeter::SetDirection( const decVector &direction ){
-	if( ! direction.IsEqualTo( pDirection ) ){
+void deLumimeter::SetDirection(const decVector &direction){
+	if(!direction.IsEqualTo(pDirection)){
 		pDirection = direction;
 		
-		if( pPeerGraphic ) pPeerGraphic->DirectionChanged();
+		if(pPeerGraphic) pPeerGraphic->DirectionChanged();
 	}
 }
 
-void deLumimeter::SetConeInnerAngle( float angle ){
-	if( angle < 0.0f ) angle = 0.0f;
-	if( angle > PI ) angle = PI;
+void deLumimeter::SetConeInnerAngle(float angle){
+	if(angle < 0.0f) angle = 0.0f;
+	if(angle > PI) angle = PI;
 	
-	if( fabs( angle - pConeInnerAngle ) > 1e-5 ){
+	if(fabs(angle - pConeInnerAngle) > 1e-5){
 		pConeInnerAngle = angle;
 		
-		if( pPeerGraphic ) pPeerGraphic->ConeParameterChanged();
+		if(pPeerGraphic) pPeerGraphic->ConeParameterChanged();
 	}
 }
 
-void deLumimeter::SetConeOuterAngle( float angle ){
-	if( angle < 0.0f ) angle = 0.0f;
-	if( angle > PI ) angle = PI;
+void deLumimeter::SetConeOuterAngle(float angle){
+	if(angle < 0.0f) angle = 0.0f;
+	if(angle > PI) angle = PI;
 	
-	if( fabs( angle - pConeOuterAngle ) > 1e-5 ){
+	if(fabs(angle - pConeOuterAngle) > 1e-5){
 		pConeOuterAngle = angle;
 		
-		if( pPeerGraphic ) pPeerGraphic->ConeParameterChanged();
+		if(pPeerGraphic) pPeerGraphic->ConeParameterChanged();
 	}
 }
 
-void deLumimeter::SetConeExponent( float exponent ){
-	if( exponent < 0.0f ) exponent = 0.0f;
+void deLumimeter::SetConeExponent(float exponent){
+	if(exponent < 0.0f) exponent = 0.0f;
 	
-	if( fabs( exponent - pConeExponent ) > 1e-5 ){
+	if(fabs(exponent - pConeExponent) > 1e-5){
 		pConeExponent = exponent;
 		
-		if( pPeerGraphic ) pPeerGraphic->ConeParameterChanged();
+		if(pPeerGraphic) pPeerGraphic->ConeParameterChanged();
 	}
 }
 
@@ -116,7 +116,7 @@ void deLumimeter::SetConeExponent( float exponent ){
 //////////////
 
 float deLumimeter::MeasureLuminance(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		return pPeerGraphic->MeasureLuminance();
 		
 	}else{
@@ -125,7 +125,7 @@ float deLumimeter::MeasureLuminance(){
 }
 
 decColor deLumimeter::MeasureColor(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		return pPeerGraphic->MeasureColor();
 		
 	}else{
@@ -138,15 +138,15 @@ decColor deLumimeter::MeasureColor(){
 // Linked List
 ////////////////
 
-void deLumimeter::SetParentWorld( deWorld *world ){
+void deLumimeter::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deLumimeter::SetLLWorldPrev( deLumimeter *lumimeter ){
+void deLumimeter::SetLLWorldPrev(deLumimeter *lumimeter){
 	pLLWorldPrev = lumimeter;
 }
 
-void deLumimeter::SetLLWorldNext( deLumimeter *lumimeter ){
+void deLumimeter::SetLLWorldNext(deLumimeter *lumimeter){
 	pLLWorldNext = lumimeter;
 }
 
@@ -155,12 +155,12 @@ void deLumimeter::SetLLWorldNext( deLumimeter *lumimeter ){
 // System Peers
 /////////////////
 
-void deLumimeter::SetPeerGraphic( deBaseGraphicLumimeter *peer ){
-	if( peer == pPeerGraphic ){
+void deLumimeter::SetPeerGraphic(deBaseGraphicLumimeter *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	

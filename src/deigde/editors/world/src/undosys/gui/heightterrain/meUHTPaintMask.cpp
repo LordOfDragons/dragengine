@@ -46,17 +46,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTPaintMask::meUHTPaintMask( int drawMode, meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, unsigned char *oldValues ){
-	if( ! world || ! sector || ! texture || ! oldValues ) DETHROW( deeInvalidParam );
+meUHTPaintMask::meUHTPaintMask(int drawMode, meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, unsigned char *oldValues){
+	if(!world || !sector || !texture || !oldValues) DETHROW(deeInvalidParam);
 	
 	int pixelCount = size.x * size.y;
 	
-	if( drawMode == meWorldGuiParameters::empdmDraw ){
-		SetShortInfo( "Draw Mask" );
+	if(drawMode == meWorldGuiParameters::empdmDraw){
+		SetShortInfo("Draw Mask");
 		
 	}else{
-		SetShortInfo( "Erase Mask" );
+		SetShortInfo("Erase Mask");
 	}
 	
 	pWorld = world;
@@ -71,22 +71,22 @@ meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, uns
 	pGrid.y1 = grid.y;
 	pGrid.x2 = grid.x + size.x;
 	pGrid.y2 = grid.y + size.y;
-	pWorld->GetLogger()->LogInfoFormat( "World Editor", "UHTPaintMask: g=(%i,%i,%i,%i)", pGrid.x1, pGrid.y1, pGrid.x2, pGrid.y2 );
+	pWorld->GetLogger()->LogInfoFormat("World Editor", "UHTPaintMask: g=(%i,%i,%i,%i)", pGrid.x1, pGrid.y1, pGrid.x2, pGrid.y2);
 	
-	SetMemoryConsumption( sizeof( meUHTPaintMask ) + sizeof( unsigned char ) * pixelCount * 2 );
+	SetMemoryConsumption(sizeof(meUHTPaintMask) + sizeof(unsigned char) * pixelCount * 2);
 	
 	try{
-		pOldValues = new unsigned char[ pixelCount ];
-		if( ! pOldValues ) DETHROW( deeOutOfMemory );
+		pOldValues = new unsigned char[pixelCount];
+		if(!pOldValues) DETHROW(deeOutOfMemory);
 		
-		pNewValues = new unsigned char[ pixelCount ];
-		if( ! pNewValues ) DETHROW( deeOutOfMemory );
+		pNewValues = new unsigned char[pixelCount];
+		if(!pNewValues) DETHROW(deeOutOfMemory);
 		
 		pSaveValues();
 		
-		memcpy( pOldValues, oldValues, sizeof( unsigned char ) * pixelCount );
+		memcpy(pOldValues, oldValues, sizeof(unsigned char) * pixelCount);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -102,11 +102,11 @@ meUHTPaintMask::~meUHTPaintMask(){
 ///////////////
 
 void meUHTPaintMask::Undo(){
-	pRestoreValues( pOldValues );
+	pRestoreValues(pOldValues);
 }
 
 void meUHTPaintMask::Redo(){
-	pRestoreValues( pNewValues );
+	pRestoreValues(pNewValues);
 }
 
 
@@ -115,41 +115,41 @@ void meUHTPaintMask::Redo(){
 //////////////////////
 
 void meUHTPaintMask::pCleanUp(){
-	if( pNewValues ) delete [] pNewValues;
-	if( pOldValues ) delete [] pOldValues;
+	if(pNewValues) delete [] pNewValues;
+	if(pOldValues) delete [] pOldValues;
 }
 
 void meUHTPaintMask::pSaveValues(){
 	deImage *mask = pTexture->GetMaskImage();
-	meTerrainMaskImage tmi( mask );
+	meTerrainMaskImage tmi(mask);
 	int sgx, sgy;
 	int x, y;
 	
-	for( y=0; y<pSize.y; y++ ){
-		for( x=0; x<pSize.x; x++ ){
+	for(y=0; y<pSize.y; y++){
+		for(x=0; x<pSize.x; x++){
 			sgx = pGrid.x1 + x;
 			sgy = pGrid.y1 + y;
 			
-			pNewValues[ y * pSize.x + x ] = tmi.GetMaskValueAt( sgx, sgy );
+			pNewValues[y * pSize.x + x] = tmi.GetMaskValueAt(sgx, sgy);
 		}
 	}
 }
 
-void meUHTPaintMask::pRestoreValues( unsigned char *values ){
+void meUHTPaintMask::pRestoreValues(unsigned char *values){
 	deImage *mask = pTexture->GetMaskImage();
-	meTerrainMaskImage tmi( mask );
+	meTerrainMaskImage tmi(mask);
 	int sgx, sgy;
 	int x, y;
 	
-	for( y=0; y<pSize.y; y++ ){
-		for( x=0; x<pSize.x; x++ ){
+	for(y=0; y<pSize.y; y++){
+		for(x=0; x<pSize.x; x++){
 			sgx = pGrid.x1 + x;
 			sgy = pGrid.y1 + y;
 			
-			tmi.SetMaskValueAt( sgx, sgy, values[ y * pSize.x + x ] );
+			tmi.SetMaskValueAt(sgx, sgy, values[y * pSize.x + x]);
 		}
 	}
 	
-	pTexture->SetMaskChanged( true );
+	pTexture->SetMaskChanged(true);
 	pTexture->NotifyTextureMaskChanged();
 }

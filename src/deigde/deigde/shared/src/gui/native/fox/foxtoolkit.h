@@ -124,25 +124,25 @@ private:
 	igdeUIFoxHelper();
 	
 public:
-	static FXString AccelString( const igdeHotKey &hotKey );
-	static FXuchar MnemonicKey( deInputEvent::eKeyCodes keyCode );
-	static FXString MnemonizeString( const char* string, deInputEvent::eKeyCodes keyCode );
-	static deInputEvent::eKeyCodes KeyCodeFromEvent( const FXEvent &event );
-	static int ModifiersFromEvent( const FXEvent &event );
-	static FXString FilePatternListToFOX( const igdeFilePatternList &filePatterns );
+	static FXString AccelString(const igdeHotKey &hotKey);
+	static FXuchar MnemonicKey(deInputEvent::eKeyCodes keyCode);
+	static FXString MnemonizeString(const char* string, deInputEvent::eKeyCodes keyCode);
+	static deInputEvent::eKeyCodes KeyCodeFromEvent(const FXEvent &event);
+	static int ModifiersFromEvent(const FXEvent &event);
+	static FXString FilePatternListToFOX(const igdeFilePatternList &filePatterns);
 	
-	static int GetChildLayoutFlags( igdeWidget *widget, int defaultFlags =
-		LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT );
-	static sChildLayoutFlags GetChildLayoutFlagsAll( igdeWidget *widget,
-		int defaultFlags = LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT );
-	static void UpdateLayoutFlags( igdeWidget *widget );
-	static void UpdateLayoutFlagsChildren( igdeContainer *container );
-	static FXColor BlendColor( FXColor color1, FXColor color2, float factor );
+	static int GetChildLayoutFlags(igdeWidget *widget, int defaultFlags =
+		LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT);
+	static sChildLayoutFlags GetChildLayoutFlagsAll(igdeWidget *widget,
+		int defaultFlags = LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT);
+	static void UpdateLayoutFlags(igdeWidget *widget);
+	static void UpdateLayoutFlagsChildren(igdeContainer *container);
+	static FXColor BlendColor(FXColor color1, FXColor color2, float factor);
 	static FX::FXColor ConvertColor(const decColor& color);
 	static decColor ConvertColor(FX::FXColor color);
 	static FX::FXColor BrighterColor(FX::FXColor color, int amount);
 	
-	static int DebugCountWindows( FXWindow *rootWindow );
+	static int DebugCountWindows(FXWindow *rootWindow);
 };
 
 #define SEL_IGDE_CHILD_LAYOUT_FLAGS (SEL_LAST + 1)

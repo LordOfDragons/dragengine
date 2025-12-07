@@ -47,7 +47,7 @@ public:
 	gdeSkyList();
 	
 	/** \brief Create copy of sky list. */
-	gdeSkyList( const gdeSkyList &list );
+	gdeSkyList(const gdeSkyList &list);
 	
 	/** \brief Clean up sky list. */
 	~gdeSkyList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Sky at position. */
-	gdeSky *GetAt( int index ) const;
+	gdeSky *GetAt(int index) const;
 	
 	/** \brief Sky with path or \em NULL if absent. */
-	gdeSky *GetWithPath( const char *path ) const;
+	gdeSky *GetWithPath(const char *path) const;
 	
 	/** \brief Index of sky or -1 if absent. */
-	int IndexOf( gdeSky *sky ) const;
+	int IndexOf(gdeSky *sky) const;
 	
 	/** \brief Index of  sky with path or -1 if absent. */
-	int IndexOfWithPath( const char *path ) const;
+	int IndexOfWithPath(const char *path) const;
 	
 	/** \brief Sky is present. */
-	bool Has( gdeSky *sky ) const;
+	bool Has(gdeSky *sky) const;
 	
 	/** \brief Sky with path is present. */
-	bool HasWithPath( const char *path ) const;
+	bool HasWithPath(const char *path) const;
 	
 	/** \brief Add sky. */
-	void Add( gdeSky *sky );
+	void Add(gdeSky *sky);
 	
 	/** \brief Remove sky. */
-	void Remove( gdeSky *sky );
+	void Remove(gdeSky *sky);
 	
 	/** \brief Remove all skys. */
 	void RemoveAll();
 	
 	/** \brief Set from another sky list. */
-	gdeSkyList &operator=( const gdeSkyList &list );
+	gdeSkyList &operator=(const gdeSkyList &list);
 	/*@}*/
 };
 

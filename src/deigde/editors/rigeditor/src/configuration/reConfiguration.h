@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration. */
-	reConfiguration( reWindowMain &windowMain );
+	reConfiguration(reWindowMain &windowMain);
 	
 	/** \brief Clean up configuration. */
 	~reConfiguration();
@@ -66,25 +66,25 @@ public:
 	inline float GetGridSize() const{ return pGridSize; }
 	
 	/** \brief Set grid size. */
-	void SetGridSize( float size );
+	void SetGridSize(float size);
 	
 	/** \brief Snap elements to grid. */
 	inline bool GetSnapToGrid() const{ return pSnapToGrid; }
 	
 	/** \brief Set snap elements to grid. */
-	void SetSnapToGrid( bool snap );
+	void SetSnapToGrid(bool snap);
 	
 	/** \brief Rotation snap angle. */
 	inline float GetRotSnapAngle() const{ return pRotSnap; }
 	
 	/** \brief Set rotation snap angle. */
-	void SetRotSnapAngle( float angle );
+	void SetRotSnapAngle(float angle);
 	
 	/** \brief Mouse sensitivity. */
 	inline float GetSensitivity() const{ return pSensitivity; }
 	
 	/** \brief Set mouse sensitivity. */
-	void SetSensitivity( float sensitivity );
+	void SetSensitivity(float sensitivity);
 	
 	
 	
@@ -92,7 +92,7 @@ public:
 	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
-	void SetPreventSaving( bool preventSaving );
+	void SetPreventSaving(bool preventSaving);
 	
 	/** \brief Load configuration. */
 	void LoadConfiguration();

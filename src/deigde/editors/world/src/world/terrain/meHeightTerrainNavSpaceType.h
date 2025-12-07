@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates height terrain navigation space type. */
-	meHeightTerrainNavSpaceType( const char *name = "" );
+	meHeightTerrainNavSpaceType(const char *name = "");
 	
 	/** \brief Clean up height terrain navigation space type. */
 	virtual ~meHeightTerrainNavSpaceType();
@@ -78,7 +78,7 @@ public:
 	meHeightTerrainNavSpace *GetNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Set parent height terrain navigation space. */
-	void SetNavSpace( meHeightTerrainNavSpace *navspace );
+	void SetNavSpace(meHeightTerrainNavSpace *navspace);
 	
 	
 	
@@ -86,19 +86,19 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Display color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set display color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Navigation space type. */
 	inline int GetType() const{ return pType; }
 	
 	/** \brief Set navigation type. */
-	void SetType( int type );
+	void SetType(int type);
 	
 	
 	
@@ -114,7 +114,7 @@ public:
 	inline deDebugDrawerShape *GetDDShape() const{ return pDDShape; }
 	
 	/** \brief Set debug drawer shape or \em NULL. */
-	void SetDDShape( deDebugDrawerShape *shape );
+	void SetDDShape(deDebugDrawerShape *shape);
 	
 	/** \brief Update heights. */
 	void UpdateHeights();
@@ -128,19 +128,19 @@ public:
 	int GetFaceCount() const;
 	
 	/** \brief Face at index. */
-	meHeightTerrainNavSpaceFace *GetFaceAt( int index ) const;
+	meHeightTerrainNavSpaceFace *GetFaceAt(int index) const;
 	
 	/** \brief Face is present. */
-	bool HasFace( meHeightTerrainNavSpaceFace *face ) const;
+	bool HasFace(meHeightTerrainNavSpaceFace *face) const;
 	
 	/** \brief Index of the face or -1 if absent. */
-	int IndexOfFace( meHeightTerrainNavSpaceFace *face ) const;
+	int IndexOfFace(meHeightTerrainNavSpaceFace *face) const;
 	
 	/** \brief Add face. */
-	void AddFace( meHeightTerrainNavSpaceFace *face );
+	void AddFace(meHeightTerrainNavSpaceFace *face);
 	
 	/** \brief Remove face. */
-	void RemoveFace( meHeightTerrainNavSpaceFace *face );
+	void RemoveFace(meHeightTerrainNavSpaceFace *face);
 	
 	/** \brief Remove all faces. */
 	void RemoveAllFaces();

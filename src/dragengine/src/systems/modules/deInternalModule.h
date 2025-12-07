@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new internal module object. */
-	deInternalModule( deModuleSystem *system );
+	deInternalModule(deModuleSystem *system);
 	
 	/** \brief Clean up loadable module. */
 	virtual ~deInternalModule();
@@ -101,7 +101,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit module. */
-	virtual void Visit( deLoadableModuleVisitor &visitor );
+	virtual void Visit(deLoadableModuleVisitor &visitor);
 	/*@}*/
 };
 

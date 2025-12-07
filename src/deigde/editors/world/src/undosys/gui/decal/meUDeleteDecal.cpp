@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDeleteDecal::meUDeleteDecal( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meUDeleteDecal::meUDeleteDecal(meWorld *world){
+	if(!world) DETHROW(deeInvalidParam);
 	decString text;
 	
 	const meDecalList &selection = world->GetSelectionDecal().GetSelected();
@@ -52,26 +52,26 @@ meUDeleteDecal::meUDeleteDecal( meWorld *world ){
 	pDecalCount = 0;
 	
 	try{
-		if( count > 0 ){
-			pDecals = new meUndoDataDecal*[ count ];
-			if( ! pDecals ) DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pDecals = new meUndoDataDecal*[count];
+			if(!pDecals) DETHROW(deeOutOfMemory);
 			
-			while( pDecalCount < count ){
-				pDecals[ pDecalCount ] = new meUndoDataDecal( selection.GetAt( pDecalCount ) );
-				if( ! pDecals[ pDecalCount ] ) DETHROW( deeOutOfMemory );
+			while(pDecalCount < count){
+				pDecals[pDecalCount] = new meUndoDataDecal(selection.GetAt(pDecalCount));
+				if(!pDecals[pDecalCount]) DETHROW(deeOutOfMemory);
 				pDecalCount++;
 			}
 		}
 		
-		SetShortInfo( "Delete Decals" );
-		if( pDecalCount > 1 ){
-			text.Format( "%d decals", pDecalCount );
+		SetShortInfo("Delete Decals");
+		if(pDecalCount > 1){
+			text.Format("%d decals", pDecalCount);
 		}else{
 			text = "1 object";
 		}
-		SetLongInfo( text );
+		SetLongInfo(text);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -92,15 +92,15 @@ void meUDeleteDecal::Undo(){
 	int i;
 	
 	selection.Reset();
-	for( i=0; i<pDecalCount; i++ ){
-		decal = pDecals[ i ]->GetDecal();
+	for(i=0; i<pDecalCount; i++){
+		decal = pDecals[i]->GetDecal();
 		
-		if( pDecals[ i ]->GetParentObject() ){
-			pDecals[ i ]->GetParentObject()->InsertDecalAt( decal, pDecals[ i ]->GetIndex() );
+		if(pDecals[i]->GetParentObject()){
+			pDecals[i]->GetParentObject()->InsertDecalAt(decal, pDecals[i]->GetIndex());
 		}
 		
-		pWorld->AddDecal( decal );
-		selection.Add( decal );
+		pWorld->AddDecal(decal);
+		selection.Add(decal);
 	}
 	selection.ActivateNext();
 }
@@ -110,18 +110,18 @@ void meUDeleteDecal::Redo(){
 	meDecal *decal;
 	int i;
 	
-	for( i=0; i<pDecalCount; i++ ){
-		decal = pDecals[ i ]->GetDecal();
+	for(i=0; i<pDecalCount; i++){
+		decal = pDecals[i]->GetDecal();
 		
-		selection.Remove( decal );
-		if( decal->GetActive() ){
+		selection.Remove(decal);
+		if(decal->GetActive()){
 			selection.ActivateNext();
 		}
 		
-		pWorld->RemoveDecal( pDecals[ i ]->GetDecal() );
+		pWorld->RemoveDecal(pDecals[i]->GetDecal());
 		
-		if( pDecals[ i ]->GetParentObject() ){
-			pDecals[ i ]->GetParentObject()->RemoveDecal( decal );
+		if(pDecals[i]->GetParentObject()){
+			pDecals[i]->GetParentObject()->RemoveDecal(decal);
 		}
 	}
 }
@@ -132,9 +132,9 @@ void meUDeleteDecal::Redo(){
 //////////////////////
 
 void meUDeleteDecal::pCleanUp(){
-	if( pDecals ){
-		while( pDecalCount > 0 ){
-			delete pDecals[ pDecalCount - 1 ];
+	if(pDecals){
+		while(pDecalCount > 0){
+			delete pDecals[pDecalCount - 1];
 			pDecalCount--;
 		}
 		delete [] pDecals;

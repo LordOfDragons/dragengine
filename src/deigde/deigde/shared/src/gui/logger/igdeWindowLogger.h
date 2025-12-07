@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create logger window. */
-	igdeWindowLogger( igdeEnvironment &environment );
+	igdeWindowLogger(igdeEnvironment &environment);
 	
 	/** \brief Clean up logger window. */
 	virtual ~igdeWindowLogger();
@@ -78,7 +78,7 @@ public:
 	inline igdeLoggerHistory *GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger or NULL. */
-	void SetLogger( igdeLoggerHistory *logger );
+	void SetLogger(igdeLoggerHistory *logger);
 	
 	
 	
@@ -124,7 +124,7 @@ protected:
 	
 private:
 	void pRemoveOldLines();
-	void pAddLog( const igdeLoggerHistoryEntry &entry );
+	void pAddLog(const igdeLoggerHistoryEntry &entry);
 	void pClearLogs();
 };
 

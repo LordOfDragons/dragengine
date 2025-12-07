@@ -39,7 +39,7 @@ class deglPanelEngine;
  * Engine Panel List Item Module.
  */
 class deglPEListItemModule : public FXIconItem{
-	FXDECLARE( deglPEListItemModule )
+	FXDECLARE(deglPEListItemModule)
 protected:
 	deglPEListItemModule();
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list item. */
-	deglPEListItemModule( deglPanelEngine *panelEngine, delEngineModule *module );
+	deglPEListItemModule(deglPanelEngine *panelEngine, delEngineModule *module);
 	
 	/** Clean up list item. */
 	virtual ~deglPEListItemModule();

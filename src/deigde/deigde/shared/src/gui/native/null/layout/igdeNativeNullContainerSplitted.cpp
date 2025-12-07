@@ -39,7 +39,7 @@ igdeNativeNullContainerSplitted::igdeNativeNullContainerSplitted(){
 igdeNativeNullContainerSplitted::~igdeNativeNullContainerSplitted(){
 }
 
-igdeNativeNullContainerSplitted *igdeNativeNullContainerSplitted::CreateNativeWidget( igdeContainerSplitted& ){
+igdeNativeNullContainerSplitted *igdeNativeNullContainerSplitted::CreateNativeWidget(igdeContainerSplitted&){
 	return new igdeNativeNullContainerSplitted;
 }
 

@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetPathSound( gdeObjectClass *objectClass,
-		gdeOCSpeaker *speaker, const char *newValue );
+	gdeUOCSpeakerSetPathSound(gdeObjectClass *objectClass,
+		gdeOCSpeaker *speaker, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

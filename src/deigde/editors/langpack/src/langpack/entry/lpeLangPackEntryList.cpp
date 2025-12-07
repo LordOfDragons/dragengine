@@ -43,8 +43,8 @@
 lpeLangPackEntryList::lpeLangPackEntryList(){
 }
 
-lpeLangPackEntryList::lpeLangPackEntryList( const lpeLangPackEntryList &list ) :
-pEntries( list.pEntries ){
+lpeLangPackEntryList::lpeLangPackEntryList(const lpeLangPackEntryList &list) :
+pEntries(list.pEntries){
 }
 
 lpeLangPackEntryList::~lpeLangPackEntryList(){
@@ -59,19 +59,19 @@ int lpeLangPackEntryList::GetCount() const{
 	return pEntries.GetCount();
 }
 
-lpeLangPackEntry *lpeLangPackEntryList::GetAt( int index ) const{
-	return ( lpeLangPackEntry* )pEntries.GetAt( index );
+lpeLangPackEntry *lpeLangPackEntryList::GetAt(int index) const{
+	return (lpeLangPackEntry*)pEntries.GetAt(index);
 }
 
-lpeLangPackEntry *lpeLangPackEntryList::GetNamed( const char *name ) const{
+lpeLangPackEntry *lpeLangPackEntryList::GetNamed(const char *name) const{
 	const int count = pEntries.GetCount();
 	lpeLangPackEntry *entry;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		entry = ( lpeLangPackEntry* )pEntries.GetAt( p );
+	for(p=0; p<count; p++){
+		entry = (lpeLangPackEntry*)pEntries.GetAt(p);
 		
-		if( entry->GetName().Equals( name ) ){
+		if(entry->GetName().Equals(name)){
 			return entry;
 		}
 	}
@@ -79,16 +79,16 @@ lpeLangPackEntry *lpeLangPackEntryList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int lpeLangPackEntryList::IndexOf( lpeLangPackEntry *entry ) const{
-	return pEntries.IndexOf( entry );
+int lpeLangPackEntryList::IndexOf(lpeLangPackEntry *entry) const{
+	return pEntries.IndexOf(entry);
 }
 
-int lpeLangPackEntryList::IndexOfNamed( const char *name ) const{
+int lpeLangPackEntryList::IndexOfNamed(const char *name) const{
 	const int count = pEntries.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( lpeLangPackEntry* )pEntries.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((lpeLangPackEntry*)pEntries.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -96,16 +96,16 @@ int lpeLangPackEntryList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool lpeLangPackEntryList::Has( lpeLangPackEntry *entry ) const{
-	return pEntries.Has( entry );
+bool lpeLangPackEntryList::Has(lpeLangPackEntry *entry) const{
+	return pEntries.Has(entry);
 }
 
-bool lpeLangPackEntryList::HasNamed( const char *name ) const{
+bool lpeLangPackEntryList::HasNamed(const char *name) const{
 	const int count = pEntries.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( lpeLangPackEntry* )pEntries.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((lpeLangPackEntry*)pEntries.GetAt(p))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -113,24 +113,24 @@ bool lpeLangPackEntryList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void lpeLangPackEntryList::Add( lpeLangPackEntry *entry ){
-	if( ! entry || HasNamed( entry->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void lpeLangPackEntryList::Add(lpeLangPackEntry *entry){
+	if(!entry || HasNamed(entry->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pEntries.Add( entry );
+	pEntries.Add(entry);
 }
 
-void lpeLangPackEntryList::InsertAt( lpeLangPackEntry *entry, int index ){
-	if( ! entry || HasNamed( entry->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void lpeLangPackEntryList::InsertAt(lpeLangPackEntry *entry, int index){
+	if(!entry || HasNamed(entry->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pEntries.Insert( entry, index );
+	pEntries.Insert(entry, index);
 }
 
-void lpeLangPackEntryList::MoveTo( lpeLangPackEntry *entry, int index ){
-	pEntries.Move( entry, index );
+void lpeLangPackEntryList::MoveTo(lpeLangPackEntry *entry, int index){
+	pEntries.Move(entry, index);
 }
 
-void lpeLangPackEntryList::Remove( lpeLangPackEntry *entry ){
-	pEntries.Remove( entry );
+void lpeLangPackEntryList::Remove(lpeLangPackEntry *entry){
+	pEntries.Remove(entry);
 }
 
 void lpeLangPackEntryList::RemoveAll(){
@@ -139,7 +139,7 @@ void lpeLangPackEntryList::RemoveAll(){
 
 
 
-lpeLangPackEntryList &lpeLangPackEntryList::operator=( const lpeLangPackEntryList &list ){
+lpeLangPackEntryList &lpeLangPackEntryList::operator=(const lpeLangPackEntryList &list){
 	pEntries = list.pEntries;
 	return *this;
 }

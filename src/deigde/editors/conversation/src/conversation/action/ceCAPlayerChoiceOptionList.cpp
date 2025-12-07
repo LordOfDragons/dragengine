@@ -55,36 +55,36 @@ int ceCAPlayerChoiceOptionList::GetCount() const{
 	return pOptions.GetCount();
 }
 
-ceCAPlayerChoiceOption *ceCAPlayerChoiceOptionList::GetAt( int index ) const{
-	return ( ceCAPlayerChoiceOption* )pOptions.GetAt( index );
+ceCAPlayerChoiceOption *ceCAPlayerChoiceOptionList::GetAt(int index) const{
+	return (ceCAPlayerChoiceOption*)pOptions.GetAt(index);
 }
 
-int ceCAPlayerChoiceOptionList::IndexOf( ceCAPlayerChoiceOption *option ) const{
-	return pOptions.IndexOf( option );
+int ceCAPlayerChoiceOptionList::IndexOf(ceCAPlayerChoiceOption *option) const{
+	return pOptions.IndexOf(option);
 }
 
-bool ceCAPlayerChoiceOptionList::Has( ceCAPlayerChoiceOption *option ) const{
-	return pOptions.Has( option );
+bool ceCAPlayerChoiceOptionList::Has(ceCAPlayerChoiceOption *option) const{
+	return pOptions.Has(option);
 }
 
-void ceCAPlayerChoiceOptionList::Add( ceCAPlayerChoiceOption *option ){
-	if( ! option ) DETHROW( deeInvalidParam );
+void ceCAPlayerChoiceOptionList::Add(ceCAPlayerChoiceOption *option){
+	if(!option) DETHROW(deeInvalidParam);
 	
-	pOptions.Add( option );
+	pOptions.Add(option);
 }
 
-void ceCAPlayerChoiceOptionList::InsertAt( ceCAPlayerChoiceOption *option, int index ){
-	if( ! option ) DETHROW( deeInvalidParam );
+void ceCAPlayerChoiceOptionList::InsertAt(ceCAPlayerChoiceOption *option, int index){
+	if(!option) DETHROW(deeInvalidParam);
 	
-	pOptions.Insert( option, index );
+	pOptions.Insert(option, index);
 }
 
-void ceCAPlayerChoiceOptionList::MoveTo( ceCAPlayerChoiceOption *option, int index ){
-	pOptions.Move( option, index );
+void ceCAPlayerChoiceOptionList::MoveTo(ceCAPlayerChoiceOption *option, int index){
+	pOptions.Move(option, index);
 }
 
-void ceCAPlayerChoiceOptionList::Remove( ceCAPlayerChoiceOption *option ){
-	pOptions.Remove( option );
+void ceCAPlayerChoiceOptionList::Remove(ceCAPlayerChoiceOption *option){
+	pOptions.Remove(option);
 }
 
 void ceCAPlayerChoiceOptionList::RemoveAll(){
@@ -93,7 +93,7 @@ void ceCAPlayerChoiceOptionList::RemoveAll(){
 
 
 
-ceCAPlayerChoiceOptionList &ceCAPlayerChoiceOptionList::operator=( const ceCAPlayerChoiceOptionList &list ){
+ceCAPlayerChoiceOptionList &ceCAPlayerChoiceOptionList::operator=(const ceCAPlayerChoiceOptionList &list){
 	pOptions = list.pOptions;
 	return *this;
 }

@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new module. */
-	deBasePhysicsModule( deLoadableModule &loadableModule );
+	deBasePhysicsModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBasePhysicsModule();
@@ -97,47 +97,47 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create peer for the given component object. */
-	virtual deBasePhysicsComponent *CreateComponent( deComponent *comp ) = 0;
+	virtual deBasePhysicsComponent *CreateComponent(deComponent *comp) = 0;
 	
 	/** \brief Create peer for the given model object. */
-	virtual deBasePhysicsModel *CreateModel( deModel *model ) = 0;
+	virtual deBasePhysicsModel *CreateModel(deModel *model) = 0;
 	
 	/** \brief Create peer for the given skin object. */
-	virtual deBasePhysicsSkin *CreateSkin( deSkin *skin ) = 0;
+	virtual deBasePhysicsSkin *CreateSkin(deSkin *skin) = 0;
 	
 	/** \brief Create peer for the given rig object. */
-	virtual deBasePhysicsRig *CreateRig( deRig *rig ) = 0;
+	virtual deBasePhysicsRig *CreateRig(deRig *rig) = 0;
 	
 	/** \brief Create peer for the given world object. */
-	virtual deBasePhysicsWorld *CreateWorld( deWorld *world ) = 0;
+	virtual deBasePhysicsWorld *CreateWorld(deWorld *world) = 0;
 	
 	/** \brief Create peer for the given collider. */
-	virtual deBasePhysicsCollider *CreateCollider( deCollider *collider ) = 0;
+	virtual deBasePhysicsCollider *CreateCollider(deCollider *collider) = 0;
 	
 	/** \brief Create peer for the given decal. */
-	virtual deBasePhysicsDecal *CreateDecal( deDecal *decal ) = 0;
+	virtual deBasePhysicsDecal *CreateDecal(deDecal *decal) = 0;
 	
 	/** \brief Create peer for the given touch sensor. */
-	virtual deBasePhysicsTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor ) = 0;
+	virtual deBasePhysicsTouchSensor *CreateTouchSensor(deTouchSensor *touchSensor) = 0;
 	
 	/** \brief Create peer for the given height terrain. */
-	virtual deBasePhysicsHeightTerrain *CreateHeightTerrain( deHeightTerrain *heightTerrain ) = 0;
+	virtual deBasePhysicsHeightTerrain *CreateHeightTerrain(deHeightTerrain *heightTerrain) = 0;
 	
 	/** \brief Create peer for the given prop field. */
-	virtual deBasePhysicsPropField *CreatePropField( dePropField *propField ) = 0;
+	virtual deBasePhysicsPropField *CreatePropField(dePropField *propField) = 0;
 	
 	/** \brief Create peer for the given force field. */
-	virtual deBasePhysicsForceField *CreateForceField( deForceField *forceField ) = 0;
+	virtual deBasePhysicsForceField *CreateForceField(deForceField *forceField) = 0;
 	
 	/** \brief Create peer for the given particle emitter. */
-	virtual deBasePhysicsParticleEmitter *CreateParticleEmitter( deParticleEmitter *emitter ) = 0;
+	virtual deBasePhysicsParticleEmitter *CreateParticleEmitter(deParticleEmitter *emitter) = 0;
 	
 	/** \brief Create peer for the given particle emitter instance. */
 	virtual deBasePhysicsParticleEmitterInstance *CreateParticleEmitterInstance(
-		deParticleEmitterInstance *instance ) = 0;
+		deParticleEmitterInstance *instance) = 0;
 	
 	/** \brief Create peer for the given smoke emitter. */
-	virtual deBasePhysicsSmokeEmitter *CreateSmokeEmitter( deSmokeEmitter *smokeEmitter ) = 0;
+	virtual deBasePhysicsSmokeEmitter *CreateSmokeEmitter(deSmokeEmitter *smokeEmitter) = 0;
 	/*@}*/
 };
 

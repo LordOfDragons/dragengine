@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetBoneParameter::aeULinkSetBoneParameter( aeLink *link, deAnimatorLink::eBoneParameter newBoneParameter ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+aeULinkSetBoneParameter::aeULinkSetBoneParameter(aeLink *link, deAnimatorLink::eBoneParameter newBoneParameter){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLink = NULL;
 	
-	SetShortInfo( "Link set bone parameter" );
+	SetShortInfo("Link set bone parameter");
 	
 	pLink = link;
 	pLink->AddReference();
@@ -57,7 +57,7 @@ aeULinkSetBoneParameter::aeULinkSetBoneParameter( aeLink *link, deAnimatorLink::
 }
 
 aeULinkSetBoneParameter::~aeULinkSetBoneParameter(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ aeULinkSetBoneParameter::~aeULinkSetBoneParameter(){
 ///////////////
 
 void aeULinkSetBoneParameter::Undo(){
-	pLink->SetBoneParameter( pOldValue );
+	pLink->SetBoneParameter(pOldValue);
 }
 
 void aeULinkSetBoneParameter::Redo(){
-	pLink->SetBoneParameter( pNewValue );
+	pLink->SetBoneParameter(pNewValue);
 }

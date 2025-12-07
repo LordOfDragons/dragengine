@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new model resource manager linked to the given engine. */
-	deModelManager( deEngine *engine );
+	deModelManager(deEngine *engine);
 	
 	/** \brief Clean up model resource manager and reports leaking resources. */
 	~deModelManager();
@@ -63,22 +63,22 @@ public:
 	deModel *GetRootModel() const;
 	
 	/** \brief Model with the given filename or NULL if not loaded yet. */
-	deModel *GetModelWith( const char *filename ) const;
+	deModel *GetModelWith(const char *filename) const;
 	
 	/** \brief Model with the given filename or NULL if not loaded yet. */
-	deModel *GetModelWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deModel *GetModelWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new and empty model. */
-	deModel *CreateModel( const char *filename, deModelBuilder &builder );
+	deModel *CreateModel(const char *filename, deModelBuilder &builder);
 	
 	/** \brief Create new and empty model. */
-	deModel *CreateModel( deVirtualFileSystem *vfs, const char *filename, deModelBuilder &builder );
+	deModel *CreateModel(deVirtualFileSystem *vfs, const char *filename, deModelBuilder &builder);
 	
 	/** \brief Loads a model from the given file relative to the given base path. */
-	deModel *LoadModel( const char *filename, const char *basePath );
+	deModel *LoadModel(const char *filename, const char *basePath);
 	
 	/** \brief Loads a model from the given file relative to the given base path. */
-	deModel *LoadModel( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deModel *LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * \brief Add loaded and fully prepared model.
@@ -86,7 +86,7 @@ public:
 	 * This method is to be used only by the resource loader to add an model that has
 	 * been loaded asynchronously.
 	 */
-	void AddLoadedModel( deModel *model );
+	void AddLoadedModel(deModel *model);
 	
 	/** \brief Release leaking resources and report them. */
 	virtual void ReleaseLeakingResources();
@@ -112,7 +112,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

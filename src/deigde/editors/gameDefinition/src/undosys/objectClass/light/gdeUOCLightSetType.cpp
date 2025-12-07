@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetType::gdeUOCLightSetType( gdeObjectClass *objectClass,
-gdeOCLight *light, deLight::eLightTypes newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetType::gdeUOCLightSetType(gdeObjectClass *objectClass,
+gdeOCLight *light, deLight::eLightTypes newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set type" );
+	SetShortInfo("Light set type");
 	
 	pOldValue = light->GetType();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetType::~gdeUOCLightSetType(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetType::~gdeUOCLightSetType(){
 ///////////////
 
 void gdeUOCLightSetType::Undo(){
-	pLight->SetType( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetType(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetType::Redo(){
-	pLight->SetType( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetType(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

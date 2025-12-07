@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupToggleEnablePosition::aeURuleGroupToggleEnablePosition( aeRuleGroup *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleGroupToggleEnablePosition::aeURuleGroupToggleEnablePosition(aeRuleGroup *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,9 +50,9 @@ aeURuleGroupToggleEnablePosition::aeURuleGroupToggleEnablePosition( aeRuleGroup 
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule group toggle enable position" );
+		SetShortInfo("Rule group toggle enable position");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ aeURuleGroupToggleEnablePosition::~aeURuleGroupToggleEnablePosition(){
 ///////////////
 
 void aeURuleGroupToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleGroupToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 
@@ -81,7 +81,7 @@ void aeURuleGroupToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleEnablePosition::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

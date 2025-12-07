@@ -59,12 +59,12 @@ public:
 	 * \details Claims next free buffer or creates a new one. Claimed buffer is marked
 	 *          as in use and resized to \em size floats if not large enough.
 	 */
-	desynSharedBuffer *ClaimBuffer( int size );
+	desynSharedBuffer *ClaimBuffer(int size);
 	
 	/**
 	 * \brief Release buffer.
 	 */
-	void ReleaseBuffer( desynSharedBuffer *buffer );
+	void ReleaseBuffer(desynSharedBuffer *buffer);
 	/*@}*/
 };
 

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetCFrame( aeRuleBoneTransformator *rule, deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame );
+	aeURuleBTransSetCFrame(aeRuleBoneTransformator *rule, deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleBTransSetCFrame();

@@ -35,9 +35,9 @@
 ////////////////////////////
 
 aeUSetRuleSModMaxVertexPositionSet::aeUSetRuleSModMaxVertexPositionSet(
-	aeRuleStateManipulator *rule, float newMax )
+	aeRuleStateManipulator *rule, float newMax)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
@@ -48,9 +48,9 @@ aeUSetRuleSModMaxVertexPositionSet::aeUSetRuleSModMaxVertexPositionSet(
 		pOldMax = rule->GetMaximumVertexPositionSet();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Set state manipulator rule maximum vertex position set" );
+		SetShortInfo("Set state manipulator rule maximum vertex position set");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ aeUSetRuleSModMaxVertexPositionSet::~aeUSetRuleSModMaxVertexPositionSet(){
 ///////////////
 
 void aeUSetRuleSModMaxVertexPositionSet::Undo(){
-	pRule->SetMaximumVertexPositionSet( pOldMax );
+	pRule->SetMaximumVertexPositionSet(pOldMax);
 }
 
 void aeUSetRuleSModMaxVertexPositionSet::Redo(){
-	pRule->SetMaximumVertexPositionSet( pNewMax );
+	pRule->SetMaximumVertexPositionSet(pNewMax);
 }
 
 
@@ -79,7 +79,7 @@ void aeUSetRuleSModMaxVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxVertexPositionSet::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

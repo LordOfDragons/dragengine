@@ -58,16 +58,16 @@ public:
 	int GetParameterCount() const;
 	
 	/** Index of named parameter or -1 if absent. */
-	int IndexOfParameterNamed( const char *name ) const;
+	int IndexOfParameterNamed(const char *name) const;
 	
 	/** Parameter at index. */
-	deoglParameter &GetParameterAt( int index ) const;
+	deoglParameter &GetParameterAt(int index) const;
 	
 	/** Named parameter. */
-	deoglParameter &GetParameterNamed( const char *name ) const;
+	deoglParameter &GetParameterNamed(const char *name) const;
 	
 	/** Add parameter. */
-	void AddParameter( deoglParameter *parameter );
+	void AddParameter(deoglParameter *parameter);
 	
 	/** Remove all parameters. */
 	void RemoveAllParameters();

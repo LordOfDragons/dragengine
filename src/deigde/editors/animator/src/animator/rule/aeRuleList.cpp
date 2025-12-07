@@ -43,8 +43,8 @@
 aeRuleList::aeRuleList(){
 }
 
-aeRuleList::aeRuleList( const aeRuleList &copy ) :
-pRules( copy.pRules ){
+aeRuleList::aeRuleList(const aeRuleList &copy) :
+pRules(copy.pRules){
 }
 
 aeRuleList::~aeRuleList(){
@@ -59,38 +59,38 @@ int aeRuleList::GetCount() const{
 	return pRules.GetCount();
 }
 
-aeRule *aeRuleList::GetAt( int index ) const{
-	return ( aeRule* )pRules.GetAt( index );
+aeRule *aeRuleList::GetAt(int index) const{
+	return (aeRule*)pRules.GetAt(index);
 }
 
-int aeRuleList::IndexOf( aeRule *rule ) const{
-	return pRules.IndexOf( rule );
+int aeRuleList::IndexOf(aeRule *rule) const{
+	return pRules.IndexOf(rule);
 }
 
-bool aeRuleList::Has( aeRule *rule ) const{
-	return pRules.Has( rule );
+bool aeRuleList::Has(aeRule *rule) const{
+	return pRules.Has(rule);
 }
 
-void aeRuleList::Add( aeRule *rule ){
-	if( Has( rule ) ){
-		DETHROW( deeInvalidParam );
+void aeRuleList::Add(aeRule *rule){
+	if(Has(rule)){
+		DETHROW(deeInvalidParam);
 	}
-	pRules.Add( rule );
+	pRules.Add(rule);
 }
 
-void aeRuleList::Insert( aeRule *rule, int index ){
-	if( Has( rule ) ){
-		DETHROW( deeInvalidParam );
+void aeRuleList::Insert(aeRule *rule, int index){
+	if(Has(rule)){
+		DETHROW(deeInvalidParam);
 	}
-	pRules.Insert( rule, index );
+	pRules.Insert(rule, index);
 }
 
-void aeRuleList::Move( aeRule *rule, int index ){
-	pRules.Move( rule, index );
+void aeRuleList::Move(aeRule *rule, int index){
+	pRules.Move(rule, index);
 }
 
-void aeRuleList::Remove( aeRule *rule ){
-	pRules.Remove( rule );
+void aeRuleList::Remove(aeRule *rule){
+	pRules.Remove(rule);
 }
 
 void aeRuleList::RemoveAll(){
@@ -102,7 +102,7 @@ void aeRuleList::RemoveAll(){
 // Operators
 //////////////
 
-aeRuleList &aeRuleList::operator=( const aeRuleList &list ){
+aeRuleList &aeRuleList::operator=(const aeRuleList &list){
 	pRules = list.pRules;
 	return *this;
 }

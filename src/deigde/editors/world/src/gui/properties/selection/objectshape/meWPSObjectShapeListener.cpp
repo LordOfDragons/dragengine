@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPSObjectShapeListener::meWPSObjectShapeListener( meWPSObjectShape &panel ) :
-pPanel( panel ){
+meWPSObjectShapeListener::meWPSObjectShapeListener(meWPSObjectShape &panel) :
+pPanel(panel){
 }
 
 meWPSObjectShapeListener::~meWPSObjectShapeListener(){
@@ -53,58 +53,58 @@ meWPSObjectShapeListener::~meWPSObjectShapeListener(){
 // Management
 ///////////////
 
-void meWPSObjectShapeListener::ObjectSelectionChanged( meWorld* ){
-	pPanel.UpdateListProperties( false );
+void meWPSObjectShapeListener::ObjectSelectionChanged(meWorld*){
+	pPanel.UpdateListProperties(false);
 	pPanel.UpdateSelection();
 	pPanel.UpdateActiveShape();
 }
 
-void meWPSObjectShapeListener::ObjectClassChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectShapeListener::ObjectClassChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
-	pPanel.UpdateListProperties( false );
+	pPanel.UpdateListProperties(false);
 	pPanel.UpdateSelection();
 	pPanel.UpdateActiveShape();
 }
 
-void meWPSObjectShapeListener::ObjectGeometryChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectShapeListener::ObjectGeometryChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateObjectShapeShapes();
 }
 
-void meWPSObjectShapeListener::ObjectPropertiesChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectShapeListener::ObjectPropertiesChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
-	pPanel.UpdateListProperties( true );
+	pPanel.UpdateListProperties(true);
 	pPanel.UpdateSelection();
 	pPanel.UpdateActiveShape();
 }
 
-void meWPSObjectShapeListener::ObjectActivePropertyChanged( meWorld*, meObject *object ){
-	if( ! object->GetActive() ){
+void meWPSObjectShapeListener::ObjectActivePropertyChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
 		return;
 	}
 	
-	pPanel.UpdateListProperties( false );
+	pPanel.UpdateListProperties(false);
 	pPanel.UpdateSelection();
 	pPanel.UpdateActiveShape();
 }
 
 
 
-void meWPSObjectShapeListener::ObjectShapeListChanged( meWorld* ){
+void meWPSObjectShapeListener::ObjectShapeListChanged(meWorld*){
 	pPanel.UpdateSelection();
 	pPanel.UpdateActiveShape();
 }
 
-void meWPSObjectShapeListener::ObjectShapeSelectionChanged( meWorld* ){
+void meWPSObjectShapeListener::ObjectShapeSelectionChanged(meWorld*){
 	pPanel.UpdateSelection();
 	pPanel.UpdateActiveShape();
 }

@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMASetVariable::ceWPTTIMASetVariable( ceWindowMain &windowMain,
-ceConversation &conversation, ceCASetVariable *action ) :
-ceWPTTIMAction( windowMain, etActionSetVariable, conversation, action )
+ceWPTTIMASetVariable::ceWPTTIMASetVariable(ceWindowMain &windowMain,
+ceConversation &conversation, ceCASetVariable *action) :
+ceWPTTIMAction(windowMain, etActionSetVariable, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionVariable() );
+	SetIcon(windowMain.GetIconActionVariable());
 	Update();
 }
 
@@ -57,8 +57,8 @@ ceWPTTIMASetVariable::~ceWPTTIMASetVariable(){
 // Management
 ///////////////
 
-const char *ceWPTTIMASetVariable::GetOperatorText( ceCASetVariable::eOperators anOperator ){
-	switch( anOperator ){
+const char *ceWPTTIMASetVariable::GetOperatorText(ceCASetVariable::eOperators anOperator){
+	switch(anOperator){
 	case ceCASetVariable::eopSet:
 		return "=";
 		
@@ -72,7 +72,7 @@ const char *ceWPTTIMASetVariable::GetOperatorText( ceCASetVariable::eOperators a
 		return "random";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -80,16 +80,16 @@ void ceWPTTIMASetVariable::Update(){
 	const ceCASetVariable &action = *GetActionSetVariable();
 	decString text;
 	
-	const char * const textOperator = GetOperatorText( action.GetOperator() );
+	const char * const textOperator = GetOperatorText(action.GetOperator());
 	
-	if( ! action.GetValueVariable().IsEmpty() ){
-		text.Format( "Set Variable: '%s' %s '%s'", action.GetName().GetString(),
-			textOperator, action.GetValueVariable().GetString() );
+	if(!action.GetValueVariable().IsEmpty()){
+		text.Format("Set Variable: '%s' %s '%s'", action.GetName().GetString(),
+			textOperator, action.GetValueVariable().GetString());
 		
 	}else{
-		text.Format( "Set Variable: '%s' %s %d", action.GetName().GetString(),
-			textOperator, action.GetValue() );
+		text.Format("Set Variable: '%s' %s %d", action.GetName().GetString(),
+			textOperator, action.GetValue());
 	}
 	
-	SetText( text );
+	SetText(text);
 }

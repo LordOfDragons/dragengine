@@ -44,8 +44,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCSnapPoint( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCSnapPoint *snapPoint, int index );
+	gdeWPSTIMOCSnapPoint(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCSnapPoint *snapPoint, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -75,7 +75,7 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Update name. */
 	void UpdateName();

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeMath( meWindowVegetation &windowVegetation, meHTVRuleMath *rule );
+	meWVNodeMath(meWindowVegetation &windowVegetation, meHTVRuleMath *rule);
 	
 protected:
 	/** \brief Clean up object. */

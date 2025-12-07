@@ -76,23 +76,23 @@ protected:
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cBaseEditVectorListener( gdeWPSOCParticleEmitter &panel ) : pPanel( panel ){ }
+	cBaseEditVectorListener(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if( ! particleEmitter ){
+		if(!particleEmitter){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), particleEmitter ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), particleEmitter)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-		gdeOCParticleEmitter *particleEmitter ) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+		gdeOCParticleEmitter *particleEmitter) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -100,23 +100,23 @@ protected:
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cBaseComboBoxListener( gdeWPSOCParticleEmitter &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if( ! particleEmitter ){
+		if(!particleEmitter){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( *comboBox, pPanel.GetObjectClass(), particleEmitter ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnChanged(*comboBox, pPanel.GetObjectClass(), particleEmitter)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox,
-		gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter ) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox,
+		gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -124,36 +124,36 @@ protected:
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cBaseAction( gdeWPSOCParticleEmitter &panel, const char *text, const char *description ) :
-		igdeAction( text, description ), pPanel( panel ){ }
+	cBaseAction(gdeWPSOCParticleEmitter &panel, const char *text, const char *description) :
+		igdeAction(text, description), pPanel(panel){}
 	
 	virtual void OnAction(){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if( ! particleEmitter ){
+		if(!particleEmitter){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnActionParticleEmitter( pPanel.GetObjectClass(), particleEmitter ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnActionParticleEmitter(pPanel.GetObjectClass(), particleEmitter)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionParticleEmitter( gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter ) = 0;
+	virtual igdeUndo *OnActionParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) = 0;
 	
 	virtual void Update(){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if( particleEmitter ){
-			Update( *pPanel.GetObjectClass(), *particleEmitter );
+		if(particleEmitter){
+			Update(*pPanel.GetObjectClass(), *particleEmitter);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const gdeObjectClass &, const gdeOCParticleEmitter & ){
+	virtual void Update(const gdeObjectClass &, const gdeOCParticleEmitter &){
 	}
 };
 
@@ -162,23 +162,23 @@ protected:
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cBaseTextFieldListener( gdeWPSOCParticleEmitter &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if( ! particleEmitter ){
+		if(!particleEmitter){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( *textField, pPanel.GetObjectClass(), particleEmitter ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnChanged(*textField, pPanel.GetObjectClass(), particleEmitter)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField,
-		gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField &textField,
+		gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) = 0;
 };
 
 
@@ -186,11 +186,11 @@ class cEditPath : public igdeEditPathListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cEditPath( gdeWPSOCParticleEmitter &panel ) : pPanel( panel ){ }
+	cEditPath(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if( ! particleEmitter || particleEmitter->GetPath() == editPath->GetPath() ){
+		if(!particleEmitter || particleEmitter->GetPath() == editPath->GetPath()){
 			return;
 		}
 		
@@ -201,55 +201,55 @@ public:
 
 class cEditPosition : public cBaseEditVectorListener {
 public:
-	cEditPosition( gdeWPSOCParticleEmitter &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditPosition(gdeWPSOCParticleEmitter &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCParticleEmitter *particleEmitter ){
-		if( particleEmitter->GetPosition().IsEqualTo( vector ) ){
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCParticleEmitter *particleEmitter){
+		if(particleEmitter->GetPosition().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new gdeUOCParticleEmitterSetPosition( objectClass, particleEmitter, vector );
+		return new gdeUOCParticleEmitterSetPosition(objectClass, particleEmitter, vector);
 	}
 };
 
 class cEditRotation : public cBaseEditVectorListener {
 public:
-	cEditRotation( gdeWPSOCParticleEmitter &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditRotation(gdeWPSOCParticleEmitter &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCParticleEmitter *particleEmitter ){
-		if( particleEmitter->GetRotation().IsEqualTo( vector ) ){
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCParticleEmitter *particleEmitter){
+		if(particleEmitter->GetRotation().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new gdeUOCParticleEmitterSetRotation( objectClass, particleEmitter, vector );
+		return new gdeUOCParticleEmitterSetRotation(objectClass, particleEmitter, vector);
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
-	cTextBoneName( gdeWPSOCParticleEmitter &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextBoneName(gdeWPSOCParticleEmitter &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCParticleEmitter *particleEmitter ){
-		if( particleEmitter->GetBoneName() == textField.GetText() ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCParticleEmitter *particleEmitter){
+		if(particleEmitter->GetBoneName() == textField.GetText()){
 			return NULL;
 		}
-		return new gdeUOCParticleEmitterSetBoneName( objectClass, particleEmitter, textField.GetText() );
+		return new gdeUOCParticleEmitterSetBoneName(objectClass, particleEmitter, textField.GetText());
 	}
 };
 
 class cActionCasting : public cBaseAction{
 public:
-	cActionCasting( gdeWPSOCParticleEmitter &panel ) :
-	cBaseAction( panel, "Casting Particles", "Particle emitter is casting particles" ){ }
+	cActionCasting(gdeWPSOCParticleEmitter &panel) :
+	cBaseAction(panel, "Casting Particles", "Particle emitter is casting particles"){}
 	
-	virtual igdeUndo *OnActionParticleEmitter( gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter ){
-		return new gdeUOCParticleEmitterToggleCasting( objectClass, particleEmitter );
+	virtual igdeUndo *OnActionParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter){
+		return new gdeUOCParticleEmitterToggleCasting(objectClass, particleEmitter);
 	}
 	
-	virtual void Update( const gdeObjectClass &, const gdeOCParticleEmitter &particleEmitter ){
-		SetEnabled( true );
-		SetSelected( particleEmitter.GetCasting() );
+	virtual void Update(const gdeObjectClass &, const gdeOCParticleEmitter &particleEmitter){
+		SetEnabled(true);
+		SetSelected(particleEmitter.GetCasting());
 	}
 };
 
@@ -258,10 +258,10 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cComboPropertyNames( gdeWPSOCParticleEmitter &panel ) : pPanel( panel ){ }
+	cComboPropertyNames(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox* ){
-		if( pPanel.GetParticleEmitter() ){
+	virtual void OnTextChanged(igdeComboBox*){
+		if(pPanel.GetParticleEmitter()){
 			pPanel.UpdatePropertyName();
 		}
 	}
@@ -271,16 +271,16 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cComboPropertyNameTarget( gdeWPSOCParticleEmitter &panel ) : pPanel( panel ){ }
+	cComboPropertyNameTarget(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
-		if( ! particleEmitter ){
+		if(!particleEmitter){
 			return;
 		}
 		
 		const gdeOCParticleEmitter::eProperties propertyName = pPanel.GetPropertyName();
-		if( particleEmitter->GetPropertyName( propertyName ) == comboBox->GetText() ){
+		if(particleEmitter->GetPropertyName(propertyName) == comboBox->GetText()){
 			return;
 		}
 		
@@ -294,10 +294,10 @@ class cComboTriggerNames : public igdeComboBoxListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cComboTriggerNames( gdeWPSOCParticleEmitter &panel ) : pPanel( panel ){ }
+	cComboTriggerNames(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox* ){
-		if( pPanel.GetParticleEmitter() ){
+	virtual void OnTextChanged(igdeComboBox*){
+		if(pPanel.GetParticleEmitter()){
 			pPanel.UpdateTriggerName();
 		}
 	}
@@ -307,15 +307,15 @@ class cComboTriggerNameTarget : public igdeComboBoxListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
-	cComboTriggerNameTarget( gdeWPSOCParticleEmitter &panel ) : pPanel( panel ){ }
+	cComboTriggerNameTarget(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( ! pPanel.GetParticleEmitter() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(!pPanel.GetParticleEmitter()){
 			return;
 		}
 		
 		const gdeOCParticleEmitter::eTriggers triggerName = pPanel.GetTriggerName();
-		if( pPanel.GetParticleEmitter()->GetTriggerName( triggerName ) == comboBox->GetText() ){
+		if(pPanel.GetParticleEmitter()->GetTriggerName(triggerName) == comboBox->GetText()){
 			return;
 		}
 		
@@ -335,65 +335,65 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCParticleEmitter::gdeWPSOCParticleEmitter( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pGameDefinition( NULL )
+gdeWPSOCParticleEmitter::gdeWPSOCParticleEmitter(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
+pGameDefinition(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCParticleEmitterListener( *this );
+	pListener = new gdeWPSOCParticleEmitterListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
-	helper.GroupBox( content, groupBox, "Object Class Particle Emitter:" );
+	helper.GroupBox(content, groupBox, "Object Class Particle Emitter:");
 	
-	helper.EditPath( groupBox, "Path:", "Path to particle emitter",
-		igdeEnvironment::efpltParticleEmitter, pEditPath, new cEditPath( *this ) );
-	helper.EditVector( groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation( *this ) );
-	helper.CheckBox( groupBox, pChkCasting, new cActionCasting( *this ), true );
-	helper.EditString( groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName( *this ) );
+	helper.EditPath(groupBox, "Path:", "Path to particle emitter",
+		igdeEnvironment::efpltParticleEmitter, pEditPath, new cEditPath(*this));
+	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+		pEditPosition, new cEditPosition(*this));
+	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+		pEditRotation, new cEditRotation(*this));
+	helper.CheckBox(groupBox, pChkCasting, new cActionCasting(*this), true);
+	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
+		pEditBoneName, new cTextBoneName(*this));
 	
 	// property targets
-	helper.GroupBox( content, groupBox, "Properties:" );
-	helper.ComboBox( groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames( *this ) );
-	pCBPropertyNames->AddItem( "Path", NULL, ( void* )( intptr_t )gdeOCParticleEmitter::epPath );
-	pCBPropertyNames->AddItem( "Attach position", NULL, ( void* )( intptr_t )gdeOCParticleEmitter::epAttachPosition );
-	pCBPropertyNames->AddItem( "Attach rotation", NULL, ( void* )( intptr_t )gdeOCParticleEmitter::epAttachRotation );
-	pCBPropertyNames->AddItem( "Casting", NULL, ( void* )( intptr_t )gdeOCParticleEmitter::epCasting );
+	helper.GroupBox(content, groupBox, "Properties:");
+	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+		pCBPropertyNames, new cComboPropertyNames(*this));
+	pCBPropertyNames->AddItem("Path", NULL, (void*)(intptr_t)gdeOCParticleEmitter::epPath);
+	pCBPropertyNames->AddItem("Attach position", NULL, (void*)(intptr_t)gdeOCParticleEmitter::epAttachPosition);
+	pCBPropertyNames->AddItem("Attach rotation", NULL, (void*)(intptr_t)gdeOCParticleEmitter::epAttachRotation);
+	pCBPropertyNames->AddItem("Casting", NULL, (void*)(intptr_t)gdeOCParticleEmitter::epCasting);
 	
-	helper.ComboBoxFilter( groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget( *this ) );
-	pCBPropertyNameTarget->SetEditable( true );
+	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
-	pCBPropertyNameTarget->SetFilterCaseInsentive( true );
+	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 	
 	// trigger targets
-	helper.GroupBox( content, groupBox, "Triggers:" );
-	helper.ComboBox( groupBox, "Trigger:", "Trigger to set target for",
-		pCBTriggerNames, new cComboTriggerNames( *this ) );
-	pCBTriggerNames->AddItem( "Casting", NULL, ( void* )( intptr_t )gdeOCParticleEmitter::etCasting );
+	helper.GroupBox(content, groupBox, "Triggers:");
+	helper.ComboBox(groupBox, "Trigger:", "Trigger to set target for",
+		pCBTriggerNames, new cComboTriggerNames(*this));
+	pCBTriggerNames->AddItem("Casting", NULL, (void*)(intptr_t)gdeOCParticleEmitter::etCasting);
 	
-	helper.ComboBoxFilter( groupBox, "Target:", true, "Object class property to target",
-		pCBTriggerNameTarget, new cComboTriggerNameTarget( *this ) );
-	pCBTriggerNameTarget->SetEditable( true );
+	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+		pCBTriggerNameTarget, new cComboTriggerNameTarget(*this));
+	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();
-	pCBTriggerNameTarget->SetFilterCaseInsentive( true );
+	pCBTriggerNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCParticleEmitter::~gdeWPSOCParticleEmitter(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -403,20 +403,20 @@ gdeWPSOCParticleEmitter::~gdeWPSOCParticleEmitter(){
 // Management
 ///////////////
 
-void gdeWPSOCParticleEmitter::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 		gameDefinition->AddReference();
 	}
 	
@@ -436,11 +436,11 @@ gdeOCParticleEmitter *gdeWPSOCParticleEmitter::GetParticleEmitter() const{
 }
 
 const gdeOCParticleEmitter::eProperties gdeWPSOCParticleEmitter::GetPropertyName() const{
-	return ( gdeOCParticleEmitter::eProperties )( intptr_t )pCBPropertyNames->GetSelectedItem()->GetData();
+	return (gdeOCParticleEmitter::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 
 const gdeOCParticleEmitter::eTriggers gdeWPSOCParticleEmitter::GetTriggerName() const{
-	return ( gdeOCParticleEmitter::eTriggers )( intptr_t )pCBTriggerNames->GetSelectedItem()->GetData();
+	return (gdeOCParticleEmitter::eTriggers)(intptr_t)pCBTriggerNames->GetSelectedItem()->GetData();
 }
 
 
@@ -450,26 +450,26 @@ void gdeWPSOCParticleEmitter::UpdatePropertyList(){
 	int i;
 	
 	decStringSet properties;
-	if( objectClass ){
-		objectClass->AddPropertyNamesTo( properties, true );
+	if(objectClass){
+		objectClass->AddPropertyNamesTo(properties, true);
 	}
 	
-	const decString selectionProperty( pCBPropertyNameTarget->GetText() );
-	const decString selectionTrigger( pCBTriggerNameTarget->GetText() );
+	const decString selectionProperty(pCBPropertyNameTarget->GetText());
+	const decString selectionTrigger(pCBTriggerNameTarget->GetText());
 	pCBPropertyNameTarget->RemoveAllItems();
 	pCBTriggerNameTarget->RemoveAllItems();
 	
 	const int count = properties.GetCount();
-	for( i=0; i<count; i++ ){
-		pCBPropertyNameTarget->AddItem( properties.GetAt( i ) );
-		pCBTriggerNameTarget->AddItem( properties.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pCBPropertyNameTarget->AddItem(properties.GetAt(i));
+		pCBTriggerNameTarget->AddItem(properties.GetAt(i));
 	}
 	
 	pCBPropertyNameTarget->SortItems();
-	pCBPropertyNameTarget->SetText( selectionProperty );
+	pCBPropertyNameTarget->SetText(selectionProperty);
 	
 	pCBTriggerNameTarget->SortItems();
-	pCBTriggerNameTarget->SetText( selectionTrigger );
+	pCBTriggerNameTarget->SetText(selectionTrigger);
 }
 
 
@@ -477,25 +477,25 @@ void gdeWPSOCParticleEmitter::UpdatePropertyList(){
 void gdeWPSOCParticleEmitter::UpdateParticleEmitter(){
 	const gdeOCParticleEmitter * const particleEmitter = GetParticleEmitter();
 	
-	if( particleEmitter ){
-		pEditPath->SetPath( particleEmitter->GetPath() );
-		pEditPosition->SetVector( particleEmitter->GetPosition() );
-		pEditRotation->SetVector( particleEmitter->GetRotation() );
-		pEditBoneName->SetText( particleEmitter->GetBoneName() );
+	if(particleEmitter){
+		pEditPath->SetPath(particleEmitter->GetPath());
+		pEditPosition->SetVector(particleEmitter->GetPosition());
+		pEditRotation->SetVector(particleEmitter->GetRotation());
+		pEditBoneName->SetText(particleEmitter->GetBoneName());
 		
 		
 	}else{
 		pEditPath->ClearPath();
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
 		pEditBoneName->ClearText();
 	}
 	
 	const bool enabled = particleEmitter;
-	pEditPath->SetEnabled( enabled );
-	pEditPosition->SetEnabled( enabled );	
-	pEditRotation->SetEnabled( enabled );
-	pEditBoneName->SetEnabled( enabled );
+	pEditPath->SetEnabled(enabled);
+	pEditPosition->SetEnabled(enabled);	
+	pEditRotation->SetEnabled(enabled);
+	pEditBoneName->SetEnabled(enabled);
 	
 	pChkCasting->GetAction()->Update();
 	
@@ -506,25 +506,25 @@ void gdeWPSOCParticleEmitter::UpdateParticleEmitter(){
 void gdeWPSOCParticleEmitter::UpdatePropertyName(){
 	const gdeOCParticleEmitter * const particleEmitter = GetParticleEmitter();
 	
-	if( particleEmitter ){
-		pCBPropertyNameTarget->SetText( particleEmitter->GetPropertyName( GetPropertyName() ) );
+	if(particleEmitter){
+		pCBPropertyNameTarget->SetText(particleEmitter->GetPropertyName(GetPropertyName()));
 		
 	}else{
 		pCBPropertyNameTarget->ClearText();
 	}
 	
-	pCBPropertyNameTarget->SetEnabled( particleEmitter );
+	pCBPropertyNameTarget->SetEnabled(particleEmitter);
 }
 
 void gdeWPSOCParticleEmitter::UpdateTriggerName(){
 	const gdeOCParticleEmitter * const particleEmitter = GetParticleEmitter();
 	
-	if( particleEmitter ){
-		pCBTriggerNameTarget->SetText( particleEmitter->GetTriggerName( GetTriggerName() ) );
+	if(particleEmitter){
+		pCBTriggerNameTarget->SetText(particleEmitter->GetTriggerName(GetTriggerName()));
 		
 	}else{
 		pCBTriggerNameTarget->ClearText();
 	}
 	
-	pCBTriggerNameTarget->SetEnabled( particleEmitter );
+	pCBTriggerNameTarget->SetEnabled(particleEmitter);
 }

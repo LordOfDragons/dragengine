@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
-	deoglLightShaderManager( deoglRenderThread &renderThread );
+	deoglLightShaderManager(deoglRenderThread &renderThread);
 	/** Cleans up the shader manager object. */
 	~deoglLightShaderManager();
 	/*@}*/
@@ -106,10 +106,10 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves a unit source code path. */
-	const char *GetUnitSourceCodePath( int unitSourceCodePath ) const;
+	const char *GetUnitSourceCodePath(int unitSourceCodePath) const;
 	
 	/** Retrieves the shader with the given configuration creating it if not existing. */
-	deoglLightShader *GetShaderWith( deoglLightShaderConfig &configuration );
+	deoglLightShader *GetShaderWith(deoglLightShaderConfig &configuration);
 	
 	/** Asynchonous shader with configuration creating it if absent. */
 	void GetShaderWithAsync(deoglLightShaderConfig &configuration, cGetShaderListener *listener);

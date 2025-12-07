@@ -43,8 +43,8 @@
 gdeOCSnapPointList::gdeOCSnapPointList(){
 }
 
-gdeOCSnapPointList::gdeOCSnapPointList( const gdeOCSnapPointList &list ) :
-pSnapPoints( list.pSnapPoints ){
+gdeOCSnapPointList::gdeOCSnapPointList(const gdeOCSnapPointList &list) :
+pSnapPoints(list.pSnapPoints){
 }
 
 gdeOCSnapPointList::~gdeOCSnapPointList(){
@@ -59,27 +59,27 @@ int gdeOCSnapPointList::GetCount() const{
 	return pSnapPoints.GetCount();
 }
 
-gdeOCSnapPoint *gdeOCSnapPointList::GetAt( int index ) const{
-	return ( gdeOCSnapPoint* )pSnapPoints.GetAt( index );
+gdeOCSnapPoint *gdeOCSnapPointList::GetAt(int index) const{
+	return (gdeOCSnapPoint*)pSnapPoints.GetAt(index);
 }
 
-int gdeOCSnapPointList::IndexOf( gdeOCSnapPoint *snapPoint ) const{
-	return pSnapPoints.IndexOf( snapPoint );
+int gdeOCSnapPointList::IndexOf(gdeOCSnapPoint *snapPoint) const{
+	return pSnapPoints.IndexOf(snapPoint);
 }
 
-bool gdeOCSnapPointList::Has( gdeOCSnapPoint *snapPoint ) const{
-	return pSnapPoints.Has( snapPoint );
+bool gdeOCSnapPointList::Has(gdeOCSnapPoint *snapPoint) const{
+	return pSnapPoints.Has(snapPoint);
 }
 
-void gdeOCSnapPointList::Add( gdeOCSnapPoint *snapPoint ){
-	if( ! snapPoint || Has( snapPoint ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCSnapPointList::Add(gdeOCSnapPoint *snapPoint){
+	if(!snapPoint || Has(snapPoint)){
+		DETHROW(deeInvalidParam);
 	}
-	pSnapPoints.Add( snapPoint );
+	pSnapPoints.Add(snapPoint);
 }
 
-void gdeOCSnapPointList::Remove( gdeOCSnapPoint *snapPoint ){
-	pSnapPoints.Remove( snapPoint );
+void gdeOCSnapPointList::Remove(gdeOCSnapPoint *snapPoint){
+	pSnapPoints.Remove(snapPoint);
 }
 
 void gdeOCSnapPointList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCSnapPointList::RemoveAll(){
 
 
 
-gdeOCSnapPointList &gdeOCSnapPointList::operator=( const gdeOCSnapPointList &list ){
+gdeOCSnapPointList &gdeOCSnapPointList::operator=(const gdeOCSnapPointList &list){
 	pSnapPoints = list.pSnapPoints;
 	return *this;
 }

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	seWindowProperties( seWindowMain &windowMain );
+	seWindowProperties(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -69,7 +69,7 @@ public:
 	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set sky to monitor. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Sky path changed. */
 	void OnSkyPathChanged();

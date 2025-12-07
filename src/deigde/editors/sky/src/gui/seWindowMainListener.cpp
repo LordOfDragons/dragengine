@@ -33,8 +33,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWindowMainListener::seWindowMainListener( seWindowMain &window ) :
-pWindow( window ){
+seWindowMainListener::seWindowMainListener(seWindowMain &window) :
+pWindow(window){
 }
 
 seWindowMainListener::~seWindowMainListener(){
@@ -45,14 +45,14 @@ seWindowMainListener::~seWindowMainListener(){
 // Management
 ///////////////
 
-void seWindowMainListener::StateChanged( seSky* ){
+void seWindowMainListener::StateChanged(seSky*){
 	pWindow.UpdateAllActions();
 }
 
-void seWindowMainListener::UndoChanged( seSky* ){
+void seWindowMainListener::UndoChanged(seSky*){
 	pWindow.UpdateAllActions();
 }
 
-void seWindowMainListener::ViewChanged( seSky* ){
+void seWindowMainListener::ViewChanged(seSky*){
 	pWindow.UpdateAllActions();
 }

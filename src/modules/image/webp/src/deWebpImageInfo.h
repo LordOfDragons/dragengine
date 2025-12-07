@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image information. */
-	deWebpImageInfo( decBaseFileReader &reader );
+	deWebpImageInfo(decBaseFileReader &reader);
 	
 	/** Clean up image information. */
 	virtual ~deWebpImageInfo();
@@ -90,7 +90,7 @@ public:
 	virtual int GetBitCount();
 	
 	/** Assert status code. .*/
-	void Assert( VP8StatusCode statusCode ) const;
+	void Assert(VP8StatusCode statusCode) const;
 	/*@}*/
 };
 

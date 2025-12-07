@@ -51,15 +51,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deainpDeviceManager::deainpDeviceManager( deAndroidInput &module ) :
-pModule( module ),
-pMouse( NULL ),
-pKeyboard( NULL )
+deainpDeviceManager::deainpDeviceManager(deAndroidInput &module) :
+pModule(module),
+pMouse(NULL),
+pKeyboard(NULL)
 {
 	try{
 		pCreateDevices();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -83,17 +83,17 @@ int deainpDeviceManager::GetCount() const{
 	return pDevices.GetCount();
 }
 
-deainpDevice *deainpDeviceManager::GetAt( int index ) const{
-	return ( deainpDevice* )pDevices.GetAt( index );
+deainpDevice *deainpDeviceManager::GetAt(int index) const{
+	return (deainpDevice*)pDevices.GetAt(index);
 }
 
-deainpDevice *deainpDeviceManager::GetWithID( const char *id ) const{
+deainpDevice *deainpDeviceManager::GetWithID(const char *id) const{
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deainpDevice * const device = ( deainpDevice* )pDevices.GetAt( i );
-		if( device->GetID() == id ){
+	for(i=0; i<count; i++){
+		deainpDevice * const device = (deainpDevice*)pDevices.GetAt(i);
+		if(device->GetID() == id){
 			return device;
 		}
 	}
@@ -101,13 +101,13 @@ deainpDevice *deainpDeviceManager::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-int deainpDeviceManager::IndexOfWithID( const char *id ) const{
+int deainpDeviceManager::IndexOfWithID(const char *id) const{
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deainpDevice * const device = ( deainpDevice* )pDevices.GetAt( i );
-		if( device->GetID() == id ){
+	for(i=0; i<count; i++){
+		deainpDevice * const device = (deainpDevice*)pDevices.GetAt(i);
+		if(device->GetID() == id){
 			return i;
 		}
 	}
@@ -121,32 +121,32 @@ void deainpDeviceManager::LogDevices(){
 	const int count = pDevices.GetCount();
 	int i, j;
 	
-	pModule.LogInfo( "Input Devices:" );
+	pModule.LogInfo("Input Devices:");
 	
-	for( i=0; i<count; i++ ){
-		const deainpDevice &device = *( ( deainpDevice* )pDevices.GetAt( i ) );
-		pModule.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
-			device.GetID().GetString(), device.GetType() );
+	for(i=0; i<count; i++){
+		const deainpDevice &device = *((deainpDevice*)pDevices.GetAt(i));
+		pModule.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
+			device.GetID().GetString(), device.GetType());
 		
 		const int axisCount = device.GetAxisCount();
-		if( axisCount > 0 ){
-			pModule.LogInfo( "  Axes:" );
-			for( j=0; j<axisCount; j++ ){
-				const deainpDeviceAxis &axis = device.GetAxisAt( j );
-				pModule.LogInfoFormat( "    - '%s' (%s) %d .. %d [%d %d]",
+		if(axisCount > 0){
+			pModule.LogInfo("  Axes:");
+			for(j=0; j<axisCount; j++){
+				const deainpDeviceAxis &axis = device.GetAxisAt(j);
+				pModule.LogInfoFormat("    - '%s' (%s) %d .. %d [%d %d]",
 					axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
-					axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
+					axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat());
 			}
 		}
 		
 		const int buttonCount = device.GetButtonCount();
-		if( buttonCount > 0 ){
-			pModule.LogInfo( "  Buttons:" );
-			for( j=0; j<buttonCount; j++ ){
-				const deainpDeviceButton &button = device.GetButtonAt( j );
-				pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
+		if(buttonCount > 0){
+			pModule.LogInfo("  Buttons:");
+			for(j=0; j<buttonCount; j++){
+				const deainpDeviceButton &button = device.GetButtonAt(j);
+				pModule.LogInfoFormat("    - '%s' (%s) %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
-					button.GetAICode(), j );
+					button.GetAICode(), j);
 			}
 		}
 	}
@@ -159,20 +159,20 @@ void deainpDeviceManager::LogDevices(){
 
 void deainpDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
-	if( pKeyboard ){
+	if(pKeyboard){
 		pKeyboard->FreeReference();
 	}
-	if( pMouse ){
+	if(pMouse){
 		pMouse->FreeReference();
 	}
 }
 
 void deainpDeviceManager::pCreateDevices(){
-	pMouse = new deainpDeviceMouse( pModule );
-	pMouse->SetIndex( pDevices.GetCount() );
-	pDevices.Add( pMouse );
+	pMouse = new deainpDeviceMouse(pModule);
+	pMouse->SetIndex(pDevices.GetCount());
+	pDevices.Add(pMouse);
 	
-	pKeyboard = new deainpDeviceKeyboard( pModule );
-	pKeyboard->SetIndex( pDevices.GetCount() );
-	pDevices.Add( pKeyboard );
+	pKeyboard = new deainpDeviceKeyboard(pModule);
+	pKeyboard->SetIndex(pDevices.GetCount());
+	pDevices.Add(pKeyboard);
 }

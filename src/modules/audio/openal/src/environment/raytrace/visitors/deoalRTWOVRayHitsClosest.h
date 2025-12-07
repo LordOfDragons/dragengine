@@ -93,33 +93,33 @@ public:
 	inline bool GetHasResult() const{ return pHasResult; }
 	
 	/** \brief Set if result is set. */
-	void SetHasResult( bool hasResult );
+	void SetHasResult(bool hasResult);
 	
 	/** \brief Find front facing hits otherwise back facing hits. */
 	inline bool GetFrontFacing() const{ return pFrontFacing; }
 	
 	/** \brief Set to find front facing hits or back facing hits. */
-	void SetFrontFacing( bool frontFacing );
+	void SetFrontFacing(bool frontFacing);
 	
 	/** \brief Limit distance. */
 	float GetLimitDistance() const{ return pLimitDistance; }
 	
 	/** \brief Set limit distance. */
-	void SetLimitDistance( float limitDistance );
+	void SetLimitDistance(float limitDistance);
 	
 	
 	
 	/** \brief Visit optimized ray-trace BVH node. */
-	void VisitBVH( const deoalRTWorldBVH &bvh );
+	void VisitBVH(const deoalRTWorldBVH &bvh);
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( const deoalRTWorldBVH::sVisitComponent &rtcomponent );
+	virtual void VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent);
 	/*@}*/
 	
 	
 	
 protected:
-	void pVisitNode( const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node );
+	void pVisitNode(const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node);
 };
 
 #endif

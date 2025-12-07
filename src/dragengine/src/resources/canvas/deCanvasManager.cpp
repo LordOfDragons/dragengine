@@ -45,8 +45,8 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deCanvasManager::deCanvasManager( deEngine *engine ) : deResourceManager( engine, ertCanvas ){
-	SetLoggingName( "canvas" );
+deCanvasManager::deCanvasManager(deEngine *engine) : deResourceManager(engine, ertCanvas){
+	SetLoggingName("canvas");
 }
 
 deCanvasManager::~deCanvasManager(){
@@ -63,19 +63,19 @@ int deCanvasManager::GetCanvasCount() const{
 }
 
 deCanvas *deCanvasManager::GetRootCanvas() const{
-	return ( deCanvas* )pCanvas.GetRoot();
+	return (deCanvas*)pCanvas.GetRoot();
 }
 
 deCanvasImage *deCanvasManager::CreateCanvasImage(){
 	deCanvasImage *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasImage( this );
-		GetGraphicSystem()->LoadCanvas( canvas );
-		pCanvas.Add( canvas );
+		canvas = new deCanvasImage(this);
+		GetGraphicSystem()->LoadCanvas(canvas);
+		pCanvas.Add(canvas);
 		
-	}catch( const deException & ){
-		if( canvas ){
+	}catch(const deException &){
+		if(canvas){
 			canvas->FreeReference();
 		}
 		throw;
@@ -88,12 +88,12 @@ deCanvasPaint *deCanvasManager::CreateCanvasPaint(){
 	deCanvasPaint *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasPaint( this );
-		GetGraphicSystem()->LoadCanvas( canvas );
-		pCanvas.Add( canvas );
+		canvas = new deCanvasPaint(this);
+		GetGraphicSystem()->LoadCanvas(canvas);
+		pCanvas.Add(canvas);
 		
-	}catch( const deException & ){
-		if( canvas ){
+	}catch(const deException &){
+		if(canvas){
 			canvas->FreeReference();
 		}
 		throw;
@@ -106,12 +106,12 @@ deCanvasCanvasView *deCanvasManager::CreateCanvasCanvasView(){
 	deCanvasCanvasView *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasCanvasView( this );
-		GetGraphicSystem()->LoadCanvas( canvas );
-		pCanvas.Add( canvas );
+		canvas = new deCanvasCanvasView(this);
+		GetGraphicSystem()->LoadCanvas(canvas);
+		pCanvas.Add(canvas);
 		
-	}catch( const deException & ){
-		if( canvas ){
+	}catch(const deException &){
+		if(canvas){
 			canvas->FreeReference();
 		}
 		throw;
@@ -124,12 +124,12 @@ deCanvasRenderWorld *deCanvasManager::CreateCanvasRenderWorld(){
 	deCanvasRenderWorld *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasRenderWorld( this );
-		GetGraphicSystem()->LoadCanvas( canvas );
-		pCanvas.Add( canvas );
+		canvas = new deCanvasRenderWorld(this);
+		GetGraphicSystem()->LoadCanvas(canvas);
+		pCanvas.Add(canvas);
 		
-	}catch( const deException & ){
-		if( canvas ){
+	}catch(const deException &){
+		if(canvas){
 			canvas->FreeReference();
 		}
 		throw;
@@ -142,12 +142,12 @@ deCanvasText *deCanvasManager::CreateCanvasText(){
 	deCanvasText *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasText( this );
-		GetGraphicSystem()->LoadCanvas( canvas );
-		pCanvas.Add( canvas );
+		canvas = new deCanvasText(this);
+		GetGraphicSystem()->LoadCanvas(canvas);
+		pCanvas.Add(canvas);
 		
-	}catch( const deException & ){
-		if( canvas ){
+	}catch(const deException &){
+		if(canvas){
 			canvas->FreeReference();
 		}
 		throw;
@@ -160,12 +160,12 @@ deCanvasVideoPlayer *deCanvasManager::CreateCanvasVideoPlayer(){
 	deCanvasVideoPlayer *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasVideoPlayer( this );
-		GetGraphicSystem()->LoadCanvas( canvas );
-		pCanvas.Add( canvas );
+		canvas = new deCanvasVideoPlayer(this);
+		GetGraphicSystem()->LoadCanvas(canvas);
+		pCanvas.Add(canvas);
 		
-	}catch( const deException & ){
-		if( canvas ){
+	}catch(const deException &){
+		if(canvas){
 			canvas->FreeReference();
 		}
 		throw;
@@ -178,12 +178,12 @@ deCanvasView *deCanvasManager::CreateCanvasView(){
 	deCanvasView *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasView( this );
-		GetGraphicSystem()->LoadCanvas( canvas );
-		pCanvas.Add( canvas );
+		canvas = new deCanvasView(this);
+		GetGraphicSystem()->LoadCanvas(canvas);
+		pCanvas.Add(canvas);
 		
-	}catch( const deException & ){
-		if( canvas ){
+	}catch(const deException &){
+		if(canvas){
 			canvas->FreeReference();
 		}
 		throw;
@@ -195,8 +195,8 @@ deCanvasView *deCanvasManager::CreateCanvasView(){
 
 
 void deCanvasManager::ReleaseLeakingResources(){
-	if( GetCanvasCount() > 0 ){
-		LogWarnFormat( "%i leaking canvas", GetCanvasCount() );
+	if(GetCanvasCount() > 0){
+		LogWarnFormat("%i leaking canvas", GetCanvasCount());
 		pCanvas.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -207,26 +207,26 @@ void deCanvasManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deCanvasManager::SystemGraphicLoad(){
-	deCanvas *canvas = ( deCanvas* )pCanvas.GetRoot();
+	deCanvas *canvas = (deCanvas*)pCanvas.GetRoot();
 	
-	while( canvas ){
-		if( ! canvas->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadCanvas( canvas );
+	while(canvas){
+		if(!canvas->GetPeerGraphic()){
+			GetGraphicSystem()->LoadCanvas(canvas);
 		}
 		
-		canvas = ( deCanvas* )canvas->GetLLManagerNext();
+		canvas = (deCanvas*)canvas->GetLLManagerNext();
 	}
 }
 
 void deCanvasManager::SystemGraphicUnload(){
-	deCanvas *canvas = ( deCanvas* )pCanvas.GetRoot();
+	deCanvas *canvas = (deCanvas*)pCanvas.GetRoot();
 	
-	while( canvas ){
-		canvas->SetPeerGraphic( NULL );
-		canvas = ( deCanvas* )canvas->GetLLManagerNext();
+	while(canvas){
+		canvas->SetPeerGraphic(NULL);
+		canvas = (deCanvas*)canvas->GetLLManagerNext();
 	}
 }
 
-void deCanvasManager::RemoveResource( deResource *resource ){
-	pCanvas.RemoveIfPresent( resource );
+void deCanvasManager::RemoveResource(deResource *resource){
+	pCanvas.RemoveIfPresent(resource);
 }

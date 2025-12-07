@@ -40,31 +40,31 @@
 /////////////////////////////////////////////
 
 deSoundLevelMeter::cAudibleSpeaker::cAudibleSpeaker() :
-pVolume( 0.0f ){
+pVolume(0.0f){
 }
 
-deSoundLevelMeter::cAudibleSpeaker::cAudibleSpeaker( deSpeaker *speaker, float volume ) :
-pSpeaker( speaker ),
-pVolume( decMath::max( volume, 0.0f ) )
+deSoundLevelMeter::cAudibleSpeaker::cAudibleSpeaker(deSpeaker *speaker, float volume) :
+pSpeaker(speaker),
+pVolume(decMath::max(volume, 0.0f))
 {
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!speaker){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void deSoundLevelMeter::cAudibleSpeaker::SetSpeaker( deSpeaker *speaker ){
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+void deSoundLevelMeter::cAudibleSpeaker::SetSpeaker(deSpeaker *speaker){
+	if(!speaker){
+		DETHROW(deeInvalidParam);
 	}
 	pSpeaker = speaker;
 }
 
-void deSoundLevelMeter::cAudibleSpeaker::SetVolume( float volume ){
-	pVolume = decMath::max( volume, 0.0f );
+void deSoundLevelMeter::cAudibleSpeaker::SetVolume(float volume){
+	pVolume = decMath::max(volume, 0.0f);
 }
 
 deSoundLevelMeter::cAudibleSpeaker &deSoundLevelMeter::cAudibleSpeaker::operator=(
-const deSoundLevelMeter::cAudibleSpeaker &speaker ){
+const deSoundLevelMeter::cAudibleSpeaker &speaker){
 	pSpeaker = speaker.pSpeaker;
 	pVolume = speaker.pVolume;
 	return *this;
@@ -78,27 +78,27 @@ const deSoundLevelMeter::cAudibleSpeaker &speaker ){
 // Constructor, destructor
 ////////////////////////////
 
-deSoundLevelMeter::deSoundLevelMeter( deSoundLevelMeterManager *manager ) :
-deResource( manager ),
+deSoundLevelMeter::deSoundLevelMeter(deSoundLevelMeterManager *manager) :
+deResource(manager),
 
-pType( emtPoint ),
-pConeAngle( 45.0f ),
-pAudibleDistance( 100.0f ),
-pEnabled( true ),
+pType(emtPoint),
+pConeAngle(45.0f),
+pAudibleDistance(100.0f),
+pEnabled(true),
 
-pPeerAudio( NULL ),
-pPeerScripting( NULL ),
+pPeerAudio(NULL),
+pPeerScripting(NULL),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ){
+pParentWorld(NULL),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL){
 }
 
 deSoundLevelMeter::~deSoundLevelMeter(){
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 }
@@ -108,89 +108,89 @@ deSoundLevelMeter::~deSoundLevelMeter(){
 // Management
 ///////////////
 
-void deSoundLevelMeter::SetType( deSoundLevelMeter::eMeterTypes type ){
-	if( type < emtPoint || type > emtDirected ){
-		DETHROW( deeInvalidParam );
+void deSoundLevelMeter::SetType(deSoundLevelMeter::eMeterTypes type){
+	if(type < emtPoint || type > emtDirected){
+		DETHROW(deeInvalidParam);
 	}
-	if( type == pType ){
+	if(type == pType){
 		return;
 	}
 	
 	pType = type;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->TypeChanged();
 	}
 }
 
-void deSoundLevelMeter::SetPosition( const decDVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void deSoundLevelMeter::SetPosition(const decDVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PositionChanged();
 	}
 }
 
-void deSoundLevelMeter::SetOrientation( const decQuaternion &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void deSoundLevelMeter::SetOrientation(const decQuaternion &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->OrientationChanged();
 	}
 }
 
-void deSoundLevelMeter::SetConeAngle( float angle ){
-	if( fabsf( angle - pConeAngle ) < FLOAT_SAFE_EPSILON ){
+void deSoundLevelMeter::SetConeAngle(float angle){
+	if(fabsf(angle - pConeAngle) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pConeAngle = angle;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->ConeAngleChanged();
 	}
 }
 
-void deSoundLevelMeter::SetAudibleDistance( float audibleDistance ){
-	if( fabsf( audibleDistance - pAudibleDistance ) < FLOAT_SAFE_EPSILON ){
+void deSoundLevelMeter::SetAudibleDistance(float audibleDistance){
+	if(fabsf(audibleDistance - pAudibleDistance) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pAudibleDistance = audibleDistance;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->AudibleDistanceChanged();
 	}
 }
 
-void deSoundLevelMeter::SetLayerMask( const decLayerMask &layerMask ){
-	if( layerMask == pLayerMask ){
+void deSoundLevelMeter::SetLayerMask(const decLayerMask &layerMask){
+	if(layerMask == pLayerMask){
 		return;
 	}
 	
 	pLayerMask = layerMask;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->LayerMaskChanged();
 	}
 }
 
-void deSoundLevelMeter::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void deSoundLevelMeter::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
 	pEnabled = enabled;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->EnabledChanged();
 	}
 }
@@ -198,7 +198,7 @@ void deSoundLevelMeter::SetEnabled( bool enabled ){
 
 
 int deSoundLevelMeter::GetAudibleSpeakerCount() const{
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		return pPeerAudio->GetAudibleSpeakerCount();
 		
 	}else{
@@ -206,28 +206,28 @@ int deSoundLevelMeter::GetAudibleSpeakerCount() const{
 	}
 }
 
-const deSoundLevelMeter::cAudibleSpeaker &deSoundLevelMeter::GetAudibleSpeakerAt( int index ) const{
-	if( pPeerAudio ){
-		return pPeerAudio->GetAudibleSpeakerAt( index );
+const deSoundLevelMeter::cAudibleSpeaker &deSoundLevelMeter::GetAudibleSpeakerAt(int index) const{
+	if(pPeerAudio){
+		return pPeerAudio->GetAudibleSpeakerAt(index);
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void deSoundLevelMeter::NotifySpeakerAudible( const deSoundLevelMeter::cAudibleSpeaker &speaker ){
-	if( pPeerScripting ){
-		pPeerScripting->SpeakerAudible( speaker );
+void deSoundLevelMeter::NotifySpeakerAudible(const deSoundLevelMeter::cAudibleSpeaker &speaker){
+	if(pPeerScripting){
+		pPeerScripting->SpeakerAudible(speaker);
 	}
 }
 
-void deSoundLevelMeter::NotifySpeakerInaudible( deSpeaker *speaker ){
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+void deSoundLevelMeter::NotifySpeakerInaudible(deSpeaker *speaker){
+	if(!speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerScripting ){
-		pPeerScripting->SpeakerInaudible( speaker );
+	if(pPeerScripting){
+		pPeerScripting->SpeakerInaudible(speaker);
 	}
 }
 
@@ -236,23 +236,23 @@ void deSoundLevelMeter::NotifySpeakerInaudible( deSpeaker *speaker ){
 // System Peers
 /////////////////
 
-void deSoundLevelMeter::SetPeerAudio( deBaseAudioSoundLevelMeter *peer ){
-	if( peer == pPeerAudio ){
+void deSoundLevelMeter::SetPeerAudio(deBaseAudioSoundLevelMeter *peer){
+	if(peer == pPeerAudio){
 		return;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 	pPeerAudio = peer;
 }
 
-void deSoundLevelMeter::SetPeerScripting( deBaseScriptingSoundLevelMeter *peer ){
-	if( peer == pPeerScripting ){
+void deSoundLevelMeter::SetPeerScripting(deBaseScriptingSoundLevelMeter *peer){
+	if(peer == pPeerScripting){
 		return;
 	}
 	
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 	pPeerScripting = peer;
@@ -263,14 +263,14 @@ void deSoundLevelMeter::SetPeerScripting( deBaseScriptingSoundLevelMeter *peer )
 // Linked List
 ////////////////
 
-void deSoundLevelMeter::SetParentWorld( deWorld *world ){
+void deSoundLevelMeter::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deSoundLevelMeter::SetLLWorldPrev( deSoundLevelMeter *touchSensor ){
+void deSoundLevelMeter::SetLLWorldPrev(deSoundLevelMeter *touchSensor){
 	pLLWorldPrev = touchSensor;
 }
 
-void deSoundLevelMeter::SetLLWorldNext( deSoundLevelMeter *touchSensor ){
+void deSoundLevelMeter::SetLLWorldNext(deSoundLevelMeter *touchSensor){
 	pLLWorldNext = touchSensor;
 }

@@ -45,9 +45,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditableEntity::igdeEditableEntity( igdeEnvironment *environment ){
-	if( ! environment ){
-		DETHROW( deeInvalidParam );
+igdeEditableEntity::igdeEditableEntity(igdeEnvironment *environment){
+	if(!environment){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEnvironment = environment;
@@ -58,10 +58,10 @@ igdeEditableEntity::igdeEditableEntity( igdeEnvironment *environment ){
 	pUndoSystem = NULL;
 	
 	try{
-		pUndoSystem = new igdeUndoSystem( this );
+		pUndoSystem = new igdeUndoSystem(this);
 		
-	}catch( const deException & ){
-		if( pUndoSystem ){
+	}catch(const deException &){
+		if(pUndoSystem){
 			delete pUndoSystem;
 		}
 		throw;
@@ -69,7 +69,7 @@ igdeEditableEntity::igdeEditableEntity( igdeEnvironment *environment ){
 }
 
 igdeEditableEntity::~igdeEditableEntity(){
-	if( pUndoSystem ){
+	if(pUndoSystem){
 		delete pUndoSystem;
 	}
 }
@@ -91,37 +91,37 @@ deLogger *igdeEditableEntity::GetLogger() const{
 	return pEnvironment->GetLogger();
 }
 
-void igdeEditableEntity::SetFilePath( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+void igdeEditableEntity::SetFilePath(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pPathFile.Equals( path ) ){
+	if(!pPathFile.Equals(path)){
 		decPath pathDirectory;
 		
 		pPathFile = path;
 		
-		pathDirectory.SetFromUnix( path );
-		if( pathDirectory.GetComponentCount() > 1 ){
+		pathDirectory.SetFromUnix(path);
+		if(pathDirectory.GetComponentCount() > 1){
 			pathDirectory.RemoveLastComponent();
 			
 		}else{
-			pathDirectory.SetFromUnix( "/" );
+			pathDirectory.SetFromUnix("/");
 		}
 		
 		pPathDirectory = pathDirectory.GetPathUnix();
 	}
 }
 
-void igdeEditableEntity::SetChanged( bool changed ){
-	if( changed != pChanged ){
+void igdeEditableEntity::SetChanged(bool changed){
+	if(changed != pChanged){
 		pChanged = changed;
 		NotifyStateChanged();
 	}
 }
 
-void igdeEditableEntity::SetSaved( bool saved ){
-	if( saved != pSaved ){
+void igdeEditableEntity::SetSaved(bool saved){
+	if(saved != pSaved){
 		pSaved = saved;
 		NotifyStateChanged();
 	}

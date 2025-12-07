@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleVertexPositionSets( aeRule *rule, const decStringSet &newValue );
+	aeUSetRuleVertexPositionSets(aeRule *rule, const decStringSet &newValue);
 	
 protected:
 	/** Clean up undo. */

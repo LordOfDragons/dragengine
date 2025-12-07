@@ -32,7 +32,7 @@
 /////////////////////////////////
 
 dearAnimationVPSState::dearAnimationVPSState() :
-pWeight( 0.0f ){
+pWeight(0.0f){
 }
 
 dearAnimationVPSState::~dearAnimationVPSState(){
@@ -43,7 +43,7 @@ dearAnimationVPSState::~dearAnimationVPSState(){
 // Management
 ///////////////
 
-void dearAnimationVPSState::SetWeight( float weight ){
+void dearAnimationVPSState::SetWeight(float weight){
 	pWeight = weight;
 }
 

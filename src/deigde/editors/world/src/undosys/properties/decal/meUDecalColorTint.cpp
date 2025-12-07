@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalColorTint::meUDecalColorTint( meDecal *decal, const decColor &newColor ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+meUDecalColorTint::meUDecalColorTint(meDecal *decal, const decColor &newColor){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Decal Texture Color Tint" );
+	SetShortInfo("Decal Texture Color Tint");
 	
 	pDecal = NULL;
 	
@@ -63,7 +63,7 @@ meUDecalColorTint::meUDecalColorTint( meDecal *decal, const decColor &newColor )
 }
 
 meUDecalColorTint::~meUDecalColorTint(){
-	if( pDecal ){
+	if(pDecal){
 		pDecal->FreeReference();
 	}
 }
@@ -74,11 +74,11 @@ meUDecalColorTint::~meUDecalColorTint(){
 ///////////////
 
 void meUDecalColorTint::Undo(){
-	pDecal->SetColorTint( pOldColor );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetColorTint(pOldColor);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalColorTint::Redo(){
-	pDecal->SetColorTint( pNewColor );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetColorTint(pNewColor);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }

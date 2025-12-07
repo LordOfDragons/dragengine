@@ -44,17 +44,17 @@
 ////////////////////////////
 
 aeGizmoControllerIKPosition::aeGizmoControllerIKPosition(
-	igdeEnvironment &environment, aeController &controller ) :
-igdeGizmoMove( environment ),
-pController( controller )
+	igdeEnvironment &environment, aeController &controller) :
+igdeGizmoMove(environment),
+pController(controller)
 {
-	SetScale( decVector( 0.25f, 0.25f, 0.25f ) );
+	SetScale(decVector(0.25f, 0.25f, 0.25f));
 	
 	decLayerMask layerMask;
-	layerMask.SetBit( aeAnimator::eclGizmo );
-	SetCollisionFilter( decCollisionFilter( layerMask ) );
+	layerMask.SetBit(aeAnimator::eclGizmo);
+	SetCollisionFilter(decCollisionFilter(layerMask));
 	
-	SetColliderUserPointer( ( aeElementVisitable* )this );
+	SetColliderUserPointer((aeElementVisitable*)this);
 }
 
 aeGizmoControllerIKPosition::~aeGizmoControllerIKPosition(){
@@ -66,11 +66,11 @@ aeGizmoControllerIKPosition::~aeGizmoControllerIKPosition(){
 ///////////////
 
 decDVector aeGizmoControllerIKPosition::GetObjectPosition(){
-	return decDVector( pController.GetVector() );
+	return decDVector(pController.GetVector());
 }
 
-void aeGizmoControllerIKPosition::SetObjectPosition( const decDVector &position ){
-	pController.SetVector( position.ToVector() );
+void aeGizmoControllerIKPosition::SetObjectPosition(const decDVector &position){
+	pController.SetVector(position.ToVector());
 }
 
 
@@ -78,6 +78,6 @@ void aeGizmoControllerIKPosition::SetObjectPosition( const decDVector &position 
 // Visiting
 /////////////
 
-void aeGizmoControllerIKPosition::VisitElement( aeElementVisitor &visitor ){
-	visitor.VisitGizmo( this );
+void aeGizmoControllerIKPosition::VisitElement(aeElementVisitor &visitor){
+	visitor.VisitGizmo(this);
 }

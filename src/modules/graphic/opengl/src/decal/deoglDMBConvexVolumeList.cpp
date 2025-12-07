@@ -53,11 +53,11 @@ deoglDMBConvexVolumeList::~deoglDMBConvexVolumeList(){
 // Subclassing
 ////////////////
 
-decConvexVolumeFace *deoglDMBConvexVolumeList::CreateVolumeFace( decConvexVolumeFace *face ){
+decConvexVolumeFace *deoglDMBConvexVolumeList::CreateVolumeFace(decConvexVolumeFace *face){
 	deoglDMBConvexVolumeFace * const newFace = new deoglDMBConvexVolumeFace;
 	
-	if( face ){
-		newFace->SetDecalFace( ( ( deoglDMBConvexVolumeFace* )face )->GetDecalFace() );
+	if(face){
+		newFace->SetDecalFace(((deoglDMBConvexVolumeFace*)face)->GetDecalFace());
 	}
 	
 	return newFace;

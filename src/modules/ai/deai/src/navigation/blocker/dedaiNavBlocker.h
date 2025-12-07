@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates peer. */
-	dedaiNavBlocker( deDEAIModule &deai, const deNavigationBlocker &blocker );
+	dedaiNavBlocker(deDEAIModule &deai, const deNavigationBlocker &blocker);
 	
 	/** \brief Clean up peer. */
 	virtual ~dedaiNavBlocker();
@@ -92,7 +92,7 @@ public:
 	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL if not set. */
-	void SetParentWorld( dedaiWorld *world );
+	void SetParentWorld(dedaiWorld *world);
 	
 	
 	

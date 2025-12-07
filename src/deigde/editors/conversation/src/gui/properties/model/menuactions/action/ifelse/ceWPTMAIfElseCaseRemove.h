@@ -53,9 +53,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseRemove( ceWindowMain &windowMain,
+	ceWPTMAIfElseCaseRemove(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase );
+		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase);
 	/*@}*/
 	
 	

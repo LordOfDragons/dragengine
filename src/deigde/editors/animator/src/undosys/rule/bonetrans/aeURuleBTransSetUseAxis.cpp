@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetUseAxis::aeURuleBTransSetUseAxis( aeRuleBoneTransformator *rule ) :
-pRule( rule )
+aeURuleBTransSetUseAxis::aeURuleBTransSetUseAxis(aeRuleBoneTransformator *rule) :
+pRule(rule)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Bone transformator toggle use axis" );
+	SetShortInfo("Bone transformator toggle use axis");
 }
 
 aeURuleBTransSetUseAxis::~aeURuleBTransSetUseAxis(){
@@ -62,5 +62,5 @@ void aeURuleBTransSetUseAxis::Undo(){
 }
 
 void aeURuleBTransSetUseAxis::Redo(){
-	pRule->SetUseAxis( ! pRule->GetUseAxis() );
+	pRule->SetUseAxis(!pRule->GetUseAxis());
 }

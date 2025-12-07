@@ -153,7 +153,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new height terrain sector. */
-	meHeightTerrainSector( deEngine *engine, const decPoint &coordinates );
+	meHeightTerrainSector(deEngine *engine, const decPoint &coordinates);
 	/** Cleans up the height terrain sector. */
 	virtual ~meHeightTerrainSector();
 	/*@}*/
@@ -169,7 +169,7 @@ public:
 	/** Retrieves the parent height terrain. */
 	inline meHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	/** Sets the parent height terrain. */
-	void SetHeightTerrain( meHeightTerrain *heightTerrain );
+	void SetHeightTerrain(meHeightTerrain *heightTerrain);
 	
 	/** \brief Engine height terrain sector. */
 	inline deHeightTerrainSector *GetEngineSector() const{ return pEngSector; }
@@ -196,7 +196,7 @@ public:
 	/** Retrieves the coordinates. */
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	/** Sets the coordinates. */
-	void SetCoordinates( const decPoint &coordinates );
+	void SetCoordinates(const decPoint &coordinates);
 	
 	/** \brief Height terrain sector size or resolution changed. */
 	void SectorSizeOrResChanged();
@@ -208,23 +208,23 @@ public:
 	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if sector is active. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** Init the delegates. */
-	void InitDelegates( igdeEnvironment *environment );
+	void InitDelegates(igdeEnvironment *environment);
 	
 	/** \brief Get coordinates in grid points (0 to image-dimension-1) for point. */
-	decVector2 GetGridPointAt( const decDVector &position ) const;
+	decVector2 GetGridPointAt(const decDVector &position) const;
 	
 	/** \brief Height at grid point. */
-	float GetHeightAtPoint( int x, int z ) const;
+	float GetHeightAtPoint(int x, int z) const;
 	
 	/** Retrieves the height image relative coordinates. */
-	void GetHeightLocalAt( float x, float z, int &imgX, int &imgZ, float &imgFacX, float &imgFacZ ) const;
+	void GetHeightLocalAt(float x, float z, int &imgX, int &imgZ, float &imgFacX, float &imgFacZ) const;
 	/** Determines the height at a given position. */
-	bool GetHeightAt( float x, float z, float &height ) const;
+	bool GetHeightAt(float x, float z, float &height) const;
 	/** Retrieves height terrain parameters at a given position. */
-	bool GetHeightNormalAt( float x, float z, float &height, decVector &normal ) const;
+	bool GetHeightNormalAt(float x, float z, float &height, decVector &normal) const;
 	
 	/** \brief World position of sector center. */
 	decDVector GetWorldPosition() const;
@@ -242,7 +242,7 @@ public:
 	/** Retrieves the radius of influence due to vegetation rules. */
 	inline float GetRadiusOfInfluence() const{ return pRadiusOfInfluence; }
 	/** Sets the radius of influence due to vegetation rules. */
-	void SetRadiusOfInfluence( float radius );
+	void SetRadiusOfInfluence(float radius);
 	
 	/** \brief Show states changed. This typically changes debug drawer shape visibilites. */
 	void ShowStateChanged();
@@ -256,22 +256,22 @@ public:
 	/** Retrieves the data type. */
 	inline int GetDataType() const{ return pDataType; }
 	/** Sets the data type. */
-	void SetDataType( int dataType );
+	void SetDataType(int dataType);
 	/** Determines if the height values have to be limited to the range from -0.5 to 0.5 inclusive. */
 	bool DoClampValues() const;
 	
 	/** Retrieves the height image path. */
 	inline const decString &GetPathHeightImage() const{ return pPathHeightImage; }
 	/** Sets the height image path. */
-	void SetPathHeightImage( const char *path, bool loadFile );
+	void SetPathHeightImage(const char *path, bool loadFile);
 	/** Determines if the height image has changed. */
 	inline bool GetHeightImageChanged() const{ return pHeightImageChanged; }
 	/** Sets if the height image has changed. */
-	void SetHeightImageChanged( bool changed );
+	void SetHeightImageChanged(bool changed);
 	/** Determines if the height image has been saved. */
 	inline bool GetHeightImageSaved() const{ return pHeightImageSaved; }
 	/** Sets if the height image has been saved. */
-	void SetHeightImageSaved( bool saved );
+	void SetHeightImageSaved(bool saved);
 	/*@}*/
 	
 	/** \name Visibility */
@@ -282,20 +282,20 @@ public:
 	/** Retrieves the visibility image path. */
 	inline const decString &GetPathVisibilityImage() const{ return pPathVisImage; }
 	/** Sets the visibility image path. */
-	void SetPathVisibilityImage( const char *path );
+	void SetPathVisibilityImage(const char *path);
 	/** Determines if the visibility has changed. */
 	inline bool GetVisibilityChanged() const{ return pVisImageChanged; }
 	/** Sets if the visibility has changed. */
-	void SetVisibilityChanged( bool changed );
+	void SetVisibilityChanged(bool changed);
 	/** Determines if the visibility has been saved. */
 	inline bool GetVisibilitySaved() const{ return pVisImageSaved; }
 	/** Sets if the visibility has been saved. */
-	void SetVisibilitySaved( bool saved );
+	void SetVisibilitySaved(bool saved);
 	
 	/** Inits the values from the given height map. */
-	void InitVisibilityFromSector( deHeightTerrainSector *sector ) const;
+	void InitVisibilityFromSector(deHeightTerrainSector *sector) const;
 	/** Sets the value in the given height map using the stored values. */
-	void UpdateVisibilitySector( deHeightTerrainSector *sector ) const;
+	void UpdateVisibilitySector(deHeightTerrainSector *sector) const;
 	
 	/** Loads the visibility from the stored path. */
 	void LoadVisibilityFromImage();
@@ -306,29 +306,29 @@ public:
 	/** Retrieves the number of textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	/** Retrieves the texture at the given index. */
-	meHeightTerrainTexture *GetTextureAt( int index ) const;
+	meHeightTerrainTexture *GetTextureAt(int index) const;
 	/** Retrieves the texture with the given name of NULL if not found. */
-	meHeightTerrainTexture *GetTextureNamed( const char *name ) const;
+	meHeightTerrainTexture *GetTextureNamed(const char *name) const;
 	/** Determines if a texture with the given name exists. */
-	bool HasTextureNamed( const char *name ) const;
+	bool HasTextureNamed(const char *name) const;
 	/** Retrieves the index of the texture or -1 if not found. */
-	int IndexOfTexture( meHeightTerrainTexture *texture ) const;
+	int IndexOfTexture(meHeightTerrainTexture *texture) const;
 	/** Retrieves the index of the texture with the given name or -1 if not found. */
-	int IndexOfTextureNamed( const char *name ) const;
+	int IndexOfTextureNamed(const char *name) const;
 	/** Determines if the texture exists. */
-	bool HasTexture( meHeightTerrainTexture *texture ) const;
+	bool HasTexture(meHeightTerrainTexture *texture) const;
 	/** Adds a texture. */
-	void AddTexture( meHeightTerrainTexture *texture );
+	void AddTexture(meHeightTerrainTexture *texture);
 	/** Removes a texture. */
-	void RemoveTexture( meHeightTerrainTexture *texture );
+	void RemoveTexture(meHeightTerrainTexture *texture);
 	/** Removes all textures. */
 	void RemoveAllTextures();
 	/** Retrieves the active texture or NULL. */
 	inline meHeightTerrainTexture *GetActiveTexture() const{ return pActiveTexture; }
 	/** Sets the active texture or NULL. */
-	void SetActiveTexture( meHeightTerrainTexture *texture );
+	void SetActiveTexture(meHeightTerrainTexture *texture);
 	/** Retrieves the texture under the given point. */
-	meHeightTerrainTexture *GetTextureUnder( float x, float y ) const;
+	meHeightTerrainTexture *GetTextureUnder(float x, float y) const;
 	/*@}*/
 	
 	
@@ -338,34 +338,34 @@ public:
 	/** Retrieves the number of prop fields. */
 	inline int GetPFLayerCount() const{ return pPFLayerCount; }
 	/** Retrieves the prop field at the given index. */
-	meHeightTerrainPFLayer *GetPFLayerAt( int index ) const;
+	meHeightTerrainPFLayer *GetPFLayerAt(int index) const;
 	/** Retrieves the index of the prop field or -1 if not found. */
-	int IndexOfPFLayer( meHeightTerrainPFLayer *pflayer ) const;
+	int IndexOfPFLayer(meHeightTerrainPFLayer *pflayer) const;
 	/** Determines if the prop field exists. */
-	bool HasPFLayer( meHeightTerrainPFLayer *pflayer ) const;
+	bool HasPFLayer(meHeightTerrainPFLayer *pflayer) const;
 	/** Adds a prop field. */
-	void AddPFLayer( meHeightTerrainPFLayer *pflayer );
+	void AddPFLayer(meHeightTerrainPFLayer *pflayer);
 	/** Removes a prop field. */
-	void RemovePFLayer( meHeightTerrainPFLayer *pflayer );
+	void RemovePFLayer(meHeightTerrainPFLayer *pflayer);
 	/** Removes all prop fields. */
 	void RemoveAllPFLayers();
 	/** Retrieves the active prop field or NULL. */
 	inline meHeightTerrainPFLayer *GetActivePFLayer() const{ return pActivePFLayer; }
 	/** Sets the active prop field or NULL. */
-	void SetActivePFLayer( meHeightTerrainPFLayer *pflayer );
+	void SetActivePFLayer(meHeightTerrainPFLayer *pflayer);
 	
 	/** Retrieves the number of cells prop fields. */
 	inline int GetPropFieldCellCount() const{ return pPropFieldCellCount; }
 	/** Retrieves the number of prop fields. */
 	inline int GetPropFieldCount() const{ return pPropFieldCount; }
 	/** Retrieves the prop field at the given index. */
-	meHeightTerrainPropField *GetPropFieldAt( int index ) const;
+	meHeightTerrainPropField *GetPropFieldAt(int index) const;
 	
 	/** \brief Height image of sector changed. */
-	void InvalidateHeights( const decPoint &fromGrid, const decPoint &toGrid );
+	void InvalidateHeights(const decPoint &fromGrid, const decPoint &toGrid);
 	
 	/** Invalidate prop fields in the given area. */
-	void InvalidatePropFields( const decPoint &fromGrid, const decPoint &toGrid );
+	void InvalidatePropFields(const decPoint &fromGrid, const decPoint &toGrid);
 	
 	/** \brief Invalidate all prop. */
 	void InvalidateAllPropFields();
@@ -376,15 +376,15 @@ public:
 	/** Retrieves the prop field cache path. */
 	inline const decString &GetPathPFCacheImage() const{ return pPathPFCache; }
 	/** Sets the prop field cache path. */
-	void SetPathPFCache( const char *path );
+	void SetPathPFCache(const char *path);
 	/** Determines if the prop field cache has changed. */
 	inline bool GetPFCacheChanged() const{ return pPFCacheChanged; }
 	/** Sets if the prop field cache has changed. */
-	void SetPFCacheChanged( bool changed );
+	void SetPFCacheChanged(bool changed);
 	/** Determines if the prop field cache has been saved. */
 	inline bool GetPFCacheSaved() const{ return pPFCacheSaved; }
 	/** Sets if the prop field cache has been saved. */
-	void SetPFCacheSaved( bool saved );
+	void SetPFCacheSaved(bool saved);
 	/*@}*/
 	
 	
@@ -395,28 +395,28 @@ public:
 	int GetNavSpaceCount() const;
 	
 	/** \brief Navigation space at index. */
-	meHeightTerrainNavSpace *GetNavSpaceAt( int index ) const;
+	meHeightTerrainNavSpace *GetNavSpaceAt(int index) const;
 	
 	/** \brief Named navigation space or \em NULL if absent. */
-	meHeightTerrainNavSpace *GetNavSpaceNamed( const char *name ) const;
+	meHeightTerrainNavSpace *GetNavSpaceNamed(const char *name) const;
 	
 	/** \brief Named navigation space is present. */
-	bool HasNavSpaceNamed( const char *name ) const;
+	bool HasNavSpaceNamed(const char *name) const;
 	
 	/** \brief Index of the navigation space or -1 if absent. */
-	int IndexOfNavSpace( meHeightTerrainNavSpace *navspace ) const;
+	int IndexOfNavSpace(meHeightTerrainNavSpace *navspace) const;
 	
 	/** \brief Index of named navigation space or -1 if absent. */
-	int IndexOfNavSpaceNamed( const char *name ) const;
+	int IndexOfNavSpaceNamed(const char *name) const;
 	
 	/** \brief Navigation space is present. */
-	bool HasNavSpace( meHeightTerrainNavSpace *navspace ) const;
+	bool HasNavSpace(meHeightTerrainNavSpace *navspace) const;
 	
 	/** \brief Add navigation space. */
-	void AddNavSpace( meHeightTerrainNavSpace *navspace );
+	void AddNavSpace(meHeightTerrainNavSpace *navspace);
 	
 	/** \brief Remove navigation space. */
-	void RemoveNavSpace( meHeightTerrainNavSpace *navspace );
+	void RemoveNavSpace(meHeightTerrainNavSpace *navspace);
 	
 	/** \brief Remove all navigation spaces. */
 	void RemoveAllNavSpaces();
@@ -425,13 +425,13 @@ public:
 	inline meHeightTerrainNavSpace *GetActiveNavSpace() const{ return pActiveNavSpace; }
 	
 	/** \brief Set active navigation space or \em NULL. */
-	void SetActiveNavSpace( meHeightTerrainNavSpace *navspace );
+	void SetActiveNavSpace(meHeightTerrainNavSpace *navspace);
 	
 	/** \brief Selected navigation space points. */
 	inline const decIntList &GetSelectedNavPoints() const{ return pSelectedNavPoints; }
 	
 	/** \brief Set selected navigation space points. */
-	void SetSelectedNavPoints( const decIntList &points );
+	void SetSelectedNavPoints(const decIntList &points);
 	/*@}*/
 	
 	
@@ -443,15 +443,15 @@ private:
 	void pCreateHeightImage();
 	
 	void pCreateVisibility();
-	void pSetPropFieldCount( int cellCount );
+	void pSetPropFieldCount(int cellCount);
 	void pUpdatePropFieldPositions();
 	
 	void pCreateDDEdges();
 	void pFreeDDEdges();
-	void pAddDDEdgesToWorld( deWorld &world );
-	void pRemoveDDEdgesFromWorld( deWorld &world );
+	void pAddDDEdgesToWorld(deWorld &world);
+	void pRemoveDDEdgesFromWorld(deWorld &world);
 	void pUpdateDDEdgesColors();
-	void pUpdateDDEdgesHeights( const decPoint &fromGrid, const decPoint &toGrid );
+	void pUpdateDDEdgesHeights(const decPoint &fromGrid, const decPoint &toGrid);
 	
 	void pUpdateNavSpaceDDColors();
 	void pRepositionDebugDrawers();

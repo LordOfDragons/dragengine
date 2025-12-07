@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	deClassEffectFilterKernel( deScriptingDragonScript &ds );
+	deClassEffectFilterKernel(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassEffectFilterKernel();
@@ -60,19 +60,19 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve effect filter kernel from a script object.
 	 * \details Returns \em NULL if \em myself is \em NULL.
 	 */
-	deEffectFilterKernel *GetEffect( dsRealObject *myself ) const;
+	deEffectFilterKernel *GetEffect(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push effect filter kernel onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushEffect( dsRunTime *rt, deEffectFilterKernel *effect );
+	void PushEffect(dsRunTime *rt, deEffectFilterKernel *effect);
 	/*@}*/
 	
 private:
@@ -80,21 +80,21 @@ private:
 		dsClass *clsEffFilKer, *clsVoid, *clsInt, *clsFlt, *clsStr, *clsObj, *clsBool;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetKernelSize );
-	DEF_NATFUNC( nfSetKernelValue );
-	DEF_NATFUNC( nfGetScale );
-	DEF_NATFUNC( nfSetScale );
+	DEF_NATFUNC(nfSetKernelSize);
+	DEF_NATFUNC(nfSetKernelValue);
+	DEF_NATFUNC(nfGetScale);
+	DEF_NATFUNC(nfSetScale);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

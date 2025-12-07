@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetLength::saeUPhonemeSetLength( saePhoneme *phoneme, float newLength ){
-	if( ! phoneme ) DETHROW( deeInvalidParam );
+saeUPhonemeSetLength::saeUPhonemeSetLength(saePhoneme *phoneme, float newLength){
+	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
 	
-	SetShortInfo( "Phoneme Set Length" );
+	SetShortInfo("Phoneme Set Length");
 	
 	pOldLength = phoneme->GetLength();
 	pNewLength = newLength;
@@ -54,7 +54,7 @@ saeUPhonemeSetLength::saeUPhonemeSetLength( saePhoneme *phoneme, float newLength
 }
 
 saeUPhonemeSetLength::~saeUPhonemeSetLength(){
-	if( pPhoneme ){
+	if(pPhoneme){
 		pPhoneme->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ saeUPhonemeSetLength::~saeUPhonemeSetLength(){
 ///////////////
 
 void saeUPhonemeSetLength::Undo(){
-	pPhoneme->SetLength( pOldLength );
+	pPhoneme->SetLength(pOldLength);
 }
 
 void saeUPhonemeSetLength::Redo(){
-	pPhoneme->SetLength( pNewLength );
+	pPhoneme->SetLength(pNewLength);
 }

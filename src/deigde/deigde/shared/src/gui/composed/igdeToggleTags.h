@@ -57,7 +57,7 @@ protected:
 		igdeToggleTags &pWidget;
 		
 	public:
-		cActionEnableAll( igdeToggleTags &widget );
+		cActionEnableAll(igdeToggleTags &widget);
 		virtual void OnAction();
 	};
 	
@@ -67,7 +67,7 @@ protected:
 		igdeToggleTags &pWidget;
 		
 	public:
-		cActionDisableAll( igdeToggleTags &widget );
+		cActionDisableAll(igdeToggleTags &widget);
 		virtual void OnAction();
 	};
 	
@@ -90,10 +90,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeToggleTags( igdeUIHelper &helper, int rows );
+	igdeToggleTags(igdeUIHelper &helper, int rows);
 	
 	/** \brief Create panel. */
-	igdeToggleTags( igdeUIHelper &helper, int rows, igdeAction *action );
+	igdeToggleTags(igdeUIHelper &helper, int rows, igdeAction *action);
 	
 	
 	
@@ -111,13 +111,13 @@ public:
 	inline igdeIcon *GetIconEnabled() const{ return pIconEnabled; }
 	
 	/** \brief Set enable tag icon. */
-	void SetIconEnabled( igdeIcon *icon );
+	void SetIconEnabled(igdeIcon *icon);
 	
 	/** \brief Disabled tag icon. */
 	inline igdeIcon *GetIconDisabled() const{ return pIconDisabled; }
 	
 	/** \brief Set disabled tag icon. */
-	void SetIconDisabled( igdeIcon *icon );
+	void SetIconDisabled(igdeIcon *icon);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -132,7 +132,7 @@ public:
 	 * 
 	 * Sets all tags disabled.
 	 */
-	void SetTags( const decStringSet &tags );
+	void SetTags(const decStringSet &tags);
 	
 	/** \brief Clear. */
 	void Clear();
@@ -149,7 +149,7 @@ public:
 	const decString &GetSelectedTag() const;
 	
 	/** \brief Select tag. */
-	void SelectTag( const char *tag );
+	void SelectTag(const char *tag);
 	
 	/** \brief Enable all tags. */
 	void EnableAllTags();
@@ -158,16 +158,16 @@ public:
 	void DisableAllTags();
 	
 	/** \brief Enabled tags. */
-	void EnableTags( const decStringSet &set );
+	void EnableTags(const decStringSet &set);
 	
 	/** \brief Tag is enabled. */
-	bool GetTagEnabled( const char *tag ) const;
+	bool GetTagEnabled(const char *tag) const;
 	
 	/** \brief Set tag enabled. */
-	void SetTagEnabled( const char *tag, bool enabled );
+	void SetTagEnabled(const char *tag, bool enabled);
 	
 	/** \brief Toggle tag enabled. */
-	void ToggleTagEnabled( const char *tag );
+	void ToggleTagEnabled(const char *tag);
 	
 	
 	
@@ -175,7 +175,7 @@ public:
 	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	void SetAction(igdeAction *action);
 	
 	/**
 	 * \brief Tags changed.
@@ -185,10 +185,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	virtual void OnDestroyed(igdeAction *action);
 	
 	
 	
@@ -205,15 +205,15 @@ public:
 	inline igdeListBox &GetListBox() const{ return pListBox; }
 	
 	/** \brief Toggle tag enabled. */
-	void ToggleTagEnabled( int index );
+	void ToggleTagEnabled(int index);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper, int rows );
+	void pCreateContent(igdeUIHelper &helper, int rows);
 	void pUpdateAllIcons();
-	void pUpdateIcon( int index );
+	void pUpdateIcon(int index);
 };
 
 #endif

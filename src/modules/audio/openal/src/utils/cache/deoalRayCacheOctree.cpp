@@ -42,8 +42,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalRayCacheOctree::deoalRayCacheOctree( const decVector &center, const decVector &halfSize ) :
-deoalOctree( center, halfSize ){
+deoalRayCacheOctree::deoalRayCacheOctree(const decVector &center, const decVector &halfSize) :
+deoalOctree(center, halfSize){
 }
 
 deoalRayCacheOctree::~deoalRayCacheOctree(){
@@ -55,33 +55,33 @@ deoalRayCacheOctree::~deoalRayCacheOctree(){
 // Management
 ///////////////
 
-deoalOctree *deoalRayCacheOctree::CreateOctree( int octant ) const{
-	const decVector halfSize( GetHalfSize() * 0.5f );
+deoalOctree *deoalRayCacheOctree::CreateOctree(int octant) const{
+	const decVector halfSize(GetHalfSize() * 0.5f);
 	const decVector &center = GetCenter();
 	decVector nc;
 	
-	if( ( octant & 4 ) == 4 ){
+	if((octant & 4) == 4){
 		nc.x = center.x + halfSize.x;
 		
 	}else{
 		nc.x = center.x - halfSize.x;
 	}
 	
-	if( ( octant & 2 ) == 2 ){
+	if((octant & 2) == 2){
 		nc.y = center.y + halfSize.y;
 		
 	}else{
 		nc.y = center.y - halfSize.y;
 	}
 	
-	if( ( octant & 1 ) == 1 ){
+	if((octant & 1) == 1){
 		nc.z = center.z + halfSize.z;
 		
 	}else{
 		nc.z = center.z - halfSize.z;
 	}
 	
-	return new deoalRayCacheOctree( nc, halfSize );
+	return new deoalRayCacheOctree(nc, halfSize);
 }
 
 void deoalRayCacheOctree::ClearNodeContent(){
@@ -92,20 +92,20 @@ void deoalRayCacheOctree::ClearRays(){
 	RemoveAllRays();
 	
 	int i;
-	for( i=0; i<8; i++ ){
-		deoalOctree * const node = GetNodeAt( i );
-		if( node ){
-			( ( deoalRayCacheOctree* )node )->ClearRays();
+	for(i=0; i<8; i++){
+		deoalOctree * const node = GetNodeAt(i);
+		if(node){
+			((deoalRayCacheOctree*)node)->ClearRays();
 		}
 	}
 }
 
-void deoalRayCacheOctree::InsertRayIntoTree( deoalRayCacheRay *ray, int maxDepth ){
-	if( ! ray || maxDepth < 0 ){
-		DETHROW( deeInvalidParam );
+void deoalRayCacheOctree::InsertRayIntoTree(deoalRayCacheRay *ray, int maxDepth){
+	if(!ray || maxDepth < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pGetNodeFor( ray->GetOrigin(), maxDepth )->AddRay( ray );
+	pGetNodeFor(ray->GetOrigin(), maxDepth)->AddRay(ray);
 }
 
 
@@ -117,38 +117,38 @@ int deoalRayCacheOctree::GetRayCount() const{
 	return pRays.GetCount();
 }
 
-deoalRayCacheRay *deoalRayCacheOctree::GetRayAt( int index ) const{
-	return ( deoalRayCacheRay* )pRays.GetAt( index );
+deoalRayCacheRay *deoalRayCacheOctree::GetRayAt(int index) const{
+	return (deoalRayCacheRay*)pRays.GetAt(index);
 }
 
-int deoalRayCacheOctree::IndexOfRay( deoalRayCacheRay *ray ) const{
-	return pRays.IndexOf( ray );
+int deoalRayCacheOctree::IndexOfRay(deoalRayCacheRay *ray) const{
+	return pRays.IndexOf(ray);
 }
 
-void deoalRayCacheOctree::AddRay( deoalRayCacheRay *ray ){
-	if( ! ray || ray->GetOctreeNode() ){
-		DETHROW( deeInvalidParam );
+void deoalRayCacheOctree::AddRay(deoalRayCacheRay *ray){
+	if(!ray || ray->GetOctreeNode()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRays.Add( ray );
-	ray->SetOctreeNode( this );
+	pRays.Add(ray);
+	ray->SetOctreeNode(this);
 }
 
-void deoalRayCacheOctree::RemoveRay( deoalRayCacheRay *ray ){
-	if( ! ray || ray->GetOctreeNode() != this ){
-		DETHROW( deeInvalidParam );
+void deoalRayCacheOctree::RemoveRay(deoalRayCacheRay *ray){
+	if(!ray || ray->GetOctreeNode() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRays.RemoveFrom( pRays.IndexOf( ray ) );
-	ray->SetOctreeNode( NULL );
+	pRays.RemoveFrom(pRays.IndexOf(ray));
+	ray->SetOctreeNode(NULL);
 }
 
 void deoalRayCacheOctree::RemoveAllRays(){
 	const int count = pRays.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoalRayCacheRay* )pRays.GetAt( i ) )->SetOctreeNode( NULL );
+	for(i=0; i<count; i++){
+		((deoalRayCacheRay*)pRays.GetAt(i))->SetOctreeNode(NULL);
 	}
 	pRays.RemoveAll();
 }
@@ -159,24 +159,24 @@ void deoalRayCacheOctree::RemoveAllRays(){
 // Private Functions
 //////////////////////
 
-deoalRayCacheOctree *deoalRayCacheOctree::pGetNodeFor( const decVector &position, int maxDepth ){
+deoalRayCacheOctree *deoalRayCacheOctree::pGetNodeFor(const decVector &position, int maxDepth){
 	deoalOctree *curNode = this;
 	int i;
 	
-	for( i=0; i<maxDepth; i++ ){
-		const int octant = curNode->FindOctantAtPoint( position );
-		if( octant == deoalOctree::eoNotFound ){
+	for(i=0; i<maxDepth; i++){
+		const int octant = curNode->FindOctantAtPoint(position);
+		if(octant == deoalOctree::eoNotFound){
 			break;
 		}
 		
-		deoalOctree *nextNode = curNode->GetNodeAt( octant );
-		if( ! nextNode ){
-			nextNode = curNode->CreateOctree( octant );
-			curNode->SetNodeAt( octant, nextNode );
+		deoalOctree *nextNode = curNode->GetNodeAt(octant);
+		if(!nextNode){
+			nextNode = curNode->CreateOctree(octant);
+			curNode->SetNodeAt(octant, nextNode);
 		}
 		
 		curNode = nextNode;
 	}
 	
-	return ( deoalRayCacheOctree* )curNode;
+	return (deoalRayCacheOctree*)curNode;
 }

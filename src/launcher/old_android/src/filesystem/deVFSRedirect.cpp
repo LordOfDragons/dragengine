@@ -40,43 +40,43 @@
 // Constructor, destructor
 ////////////////////////////
 
-deVFSRedirect::deVFSRedirect( const decPath &rootPath, const decPath &redirectPath,
-deVFSContainer *container ) :
-deVFSContainer( rootPath ),
-pRedirectPath( redirectPath ),
-pContainer( container ),
-pVFS( NULL ),
-pHoldVFSReference( false )
+deVFSRedirect::deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
+deVFSContainer *container) :
+deVFSContainer(rootPath),
+pRedirectPath(redirectPath),
+pContainer(container),
+pVFS(NULL),
+pHoldVFSReference(false)
 {
-	if( ! container ){
-		DETHROW( deeInvalidParam );
+	if(!container){
+		DETHROW(deeInvalidParam);
 	}
 	container->AddReference();
 }
 
-deVFSRedirect::deVFSRedirect( const decPath &rootPath, const decPath &redirectPath,
-deVirtualFileSystem *vfs, bool holdVFSReference ) :
-deVFSContainer( rootPath ),
-pRedirectPath( redirectPath ),
-pContainer( NULL ),
-pVFS( vfs ),
-pHoldVFSReference( false )
+deVFSRedirect::deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
+deVirtualFileSystem *vfs, bool holdVFSReference) :
+deVFSContainer(rootPath),
+pRedirectPath(redirectPath),
+pContainer(NULL),
+pVFS(vfs),
+pHoldVFSReference(false)
 {
-	if( ! vfs ){
-		DETHROW( deeInvalidParam );
+	if(!vfs){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( holdVFSReference ){
+	if(holdVFSReference){
 		pHoldVFSReference = true;
 		vfs->AddReference();
 	}
 }
 
 deVFSRedirect::~deVFSRedirect(){
-	if( pVFS && pHoldVFSReference ){
+	if(pVFS && pHoldVFSReference){
 		pVFS->FreeReference();
 	}
-	if( pContainer ){
+	if(pContainer){
 		pContainer->FreeReference();
 	}
 }
@@ -86,75 +86,75 @@ deVFSRedirect::~deVFSRedirect(){
 // Management
 ///////////////
 
-bool deVFSRedirect::ExistsFile( const decPath &path ){
-	if( pContainer ){
-		return pContainer->ExistsFile( pRedirectPath + path );
+bool deVFSRedirect::ExistsFile(const decPath &path){
+	if(pContainer){
+		return pContainer->ExistsFile(pRedirectPath + path);
 		
 	}else{
-		return pVFS->ExistsFile( pRedirectPath + path );
+		return pVFS->ExistsFile(pRedirectPath + path);
 	}
 }
 
-bool deVFSRedirect::CanReadFile( const decPath &path ){
-	if( pContainer ){
-		return pContainer->CanReadFile( pRedirectPath + path );
+bool deVFSRedirect::CanReadFile(const decPath &path){
+	if(pContainer){
+		return pContainer->CanReadFile(pRedirectPath + path);
 		
 	}else{
-		return pVFS->CanReadFile( pRedirectPath + path );
+		return pVFS->CanReadFile(pRedirectPath + path);
 	}
 }
 
-bool deVFSRedirect::CanWriteFile( const decPath &path ){
-	if( pContainer ){
-		return pContainer->CanWriteFile( pRedirectPath + path );
+bool deVFSRedirect::CanWriteFile(const decPath &path){
+	if(pContainer){
+		return pContainer->CanWriteFile(pRedirectPath + path);
 		
 	}else{
-		return pVFS->CanWriteFile( pRedirectPath + path );
+		return pVFS->CanWriteFile(pRedirectPath + path);
 	}
 }
 
-bool deVFSRedirect::CanDeleteFile( const decPath &path ){
-	if( pContainer ){
-		return pContainer->CanDeleteFile( pRedirectPath + path );
+bool deVFSRedirect::CanDeleteFile(const decPath &path){
+	if(pContainer){
+		return pContainer->CanDeleteFile(pRedirectPath + path);
 		
 	}else{
-		return pVFS->CanDeleteFile( pRedirectPath + path );
+		return pVFS->CanDeleteFile(pRedirectPath + path);
 	}
 }
 
-decBaseFileReader *deVFSRedirect::OpenFileForReading( const decPath &path ){
-	if( pContainer ){
-		return pContainer->OpenFileForReading( pRedirectPath + path );
+decBaseFileReader *deVFSRedirect::OpenFileForReading(const decPath &path){
+	if(pContainer){
+		return pContainer->OpenFileForReading(pRedirectPath + path);
 		
 	}else{
-		return pVFS->OpenFileForReading( pRedirectPath + path );
+		return pVFS->OpenFileForReading(pRedirectPath + path);
 	}
 }
 
-decBaseFileWriter *deVFSRedirect::OpenFileForWriting( const decPath &path ){
-	if( pContainer ){
-		return pContainer->OpenFileForWriting( pRedirectPath + path );
+decBaseFileWriter *deVFSRedirect::OpenFileForWriting(const decPath &path){
+	if(pContainer){
+		return pContainer->OpenFileForWriting(pRedirectPath + path);
 		
 	}else{
-		return pVFS->OpenFileForWriting( pRedirectPath + path );
+		return pVFS->OpenFileForWriting(pRedirectPath + path);
 	}
 }
 
-void deVFSRedirect::DeleteFile( const decPath &path ){
-	if( pContainer ){
-		pContainer->DeleteFile( pRedirectPath + path );
+void deVFSRedirect::DeleteFile(const decPath &path){
+	if(pContainer){
+		pContainer->DeleteFile(pRedirectPath + path);
 		
 	}else{
-		pVFS->DeleteFile( pRedirectPath + path );
+		pVFS->DeleteFile(pRedirectPath + path);
 	}
 }
 
-void deVFSRedirect::TouchFile( const decPath &path ){
-	if( pContainer ){
-		pContainer->TouchFile( pRedirectPath + path );
+void deVFSRedirect::TouchFile(const decPath &path){
+	if(pContainer){
+		pContainer->TouchFile(pRedirectPath + path);
 		
 	}else{
-		pVFS->TouchFile( pRedirectPath + path );
+		pVFS->TouchFile(pRedirectPath + path);
 	}
 }
 
@@ -163,58 +163,58 @@ private:
 	deContainerFileSearch &pSearcher;
 	
 public:
-	deVFSRedirectFSVisitor( deContainerFileSearch &searcher ) : pSearcher( searcher ){
+	deVFSRedirectFSVisitor(deContainerFileSearch &searcher) : pSearcher(searcher){
 	}
 	
-	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
-		pSearcher.Add( path.GetLastComponent(), deVFSContainer::eftRegularFile );
+	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
+		pSearcher.Add(path.GetLastComponent(), deVFSContainer::eftRegularFile);
 		return true;
 	}
 	
-	virtual bool VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path ){
-		pSearcher.Add( path.GetLastComponent(), deVFSContainer::eftDirectory );
+	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
+		pSearcher.Add(path.GetLastComponent(), deVFSContainer::eftDirectory);
 		return true;
 	}
 	
-	virtual bool VisitSpecial( const deVirtualFileSystem &vfs, const decPath &path ){
-		pSearcher.Add( path.GetLastComponent(), deVFSContainer::eftSpecial );
+	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path){
+		pSearcher.Add(path.GetLastComponent(), deVFSContainer::eftSpecial);
 		return true;
 	}
 };
 
-void deVFSRedirect::SearchFiles( const decPath &directory, deContainerFileSearch &searcher ){
-	if( pContainer ){
-		pContainer->SearchFiles( pRedirectPath + directory, searcher );
+void deVFSRedirect::SearchFiles(const decPath &directory, deContainerFileSearch &searcher){
+	if(pContainer){
+		pContainer->SearchFiles(pRedirectPath + directory, searcher);
 		
 	}else{
-		deVFSRedirectFSVisitor visitor( searcher );
-		pVFS->SearchFiles( pRedirectPath + directory, visitor );
+		deVFSRedirectFSVisitor visitor(searcher);
+		pVFS->SearchFiles(pRedirectPath + directory, visitor);
 	}
 }
 
-deVFSContainer::eFileTypes deVFSRedirect::GetFileType( const decPath &path ){
-	if( pContainer ){
-		return pContainer->GetFileType( pRedirectPath + path );
+deVFSContainer::eFileTypes deVFSRedirect::GetFileType(const decPath &path){
+	if(pContainer){
+		return pContainer->GetFileType(pRedirectPath + path);
 		
 	}else{
-		return pVFS->GetFileType( pRedirectPath + path );
+		return pVFS->GetFileType(pRedirectPath + path);
 	}
 }
 
-uint64_t deVFSRedirect::GetFileSize( const decPath &path ){
-	if( pContainer ){
-		return pContainer->GetFileSize( pRedirectPath + path );
+uint64_t deVFSRedirect::GetFileSize(const decPath &path){
+	if(pContainer){
+		return pContainer->GetFileSize(pRedirectPath + path);
 		
 	}else{
-		return pVFS->GetFileSize( pRedirectPath + path );
+		return pVFS->GetFileSize(pRedirectPath + path);
 	}
 }
 
-TIME_SYSTEM deVFSRedirect::GetFileModificationTime( const decPath &path ){
-	if( pContainer ){
-		return pContainer->GetFileModificationTime( pRedirectPath + path );
+TIME_SYSTEM deVFSRedirect::GetFileModificationTime(const decPath &path){
+	if(pContainer){
+		return pContainer->GetFileModificationTime(pRedirectPath + path);
 		
 	}else{
-		return pVFS->GetFileModificationTime( pRedirectPath + path );
+		return pVFS->GetFileModificationTime(pRedirectPath + path);
 	}
 }

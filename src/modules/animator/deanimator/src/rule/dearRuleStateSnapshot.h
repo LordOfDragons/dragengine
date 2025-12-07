@@ -59,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleStateSnapshot( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleStateSnapshot &rule );
+	dearRuleStateSnapshot(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleStateSnapshot &rule);
 	
 	/** Clean up animator. */
 	virtual ~dearRuleStateSnapshot();
@@ -74,16 +74,16 @@ public:
 	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	virtual void CaptureStateInto(int identifier);
 	
 	/**
 	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
 	
 	/** Rule changed. */
 	virtual void RuleChanged();

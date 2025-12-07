@@ -52,7 +52,7 @@ public:
 	seSourceWave();
 	
 	/** \brief Create copy of source. */
-	seSourceWave( const seSourceWave &copy );
+	seSourceWave(const seSourceWave &copy);
 	
 	/** \brief Clean up source. */
 	virtual ~seSourceWave();
@@ -66,7 +66,7 @@ public:
 	inline deSynthesizerSourceWave::eWaveType GetWaveType() const{ return pWaveType; }
 	
 	/** \brief Set wave type. */
-	void SetWaveType( deSynthesizerSourceWave::eWaveType type );
+	void SetWaveType(deSynthesizerSourceWave::eWaveType type);
 	
 	
 	
@@ -74,13 +74,13 @@ public:
 	inline float GetMinFrequency() const{ return pMinFrequency; }
 	
 	/** \brief Set minimum frequency in Hz. */
-	void SetMinFrequency( float frequency );
+	void SetMinFrequency(float frequency);
 	
 	/** \brief Maximum frequency in Hz. */
 	inline float GetMaxFrequency() const{ return pMaxFrequency; }
 	
 	/** \brief Set maximum frequency in Hz. */
-	void SetMaxFrequency( float frequency );
+	void SetMaxFrequency(float frequency);
 	
 	
 	
@@ -97,10 +97,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** \brief Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( seLink *link ) const;
+	virtual int CountLinkUsage(seLink *link) const;
 	
 	/** \brief Removes a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( seLink *link );
+	virtual void RemoveLinkFromTargets(seLink *link);
 	
 	/** \brief Removes all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -109,7 +109,7 @@ public:
 	virtual seSource *CreateCopy() const;
 	
 	/** \brief List all links of all source targets. */
-	virtual void ListLinks( seLinkList& list );
+	virtual void ListLinks(seLinkList& list);
 	/*@}*/
 	
 	
@@ -117,7 +117,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another synthesizer difference source to this synthesizer difference source. */
-	virtual seSourceWave &operator=( const seSourceWave &copy );
+	virtual seSourceWave &operator=(const seSourceWave &copy);
 	/*@}*/
 };
 

@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAMusic::ceWPTTIMAMusic( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAMusic *action ) :
-ceWPTTIMAction( windowMain, etActionMusic, conversation, action )
+ceWPTTIMAMusic::ceWPTTIMAMusic(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAMusic *action) :
+ceWPTTIMAction(windowMain, etActionMusic, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionMusic() );
+	SetIcon(windowMain.GetIconActionMusic());
 	Update();
 }
 
@@ -58,5 +58,5 @@ ceWPTTIMAMusic::~ceWPTTIMAMusic(){
 ///////////////
 
 void ceWPTTIMAMusic::Update(){
-	SetText( "Music" );
+	SetText("Music");
 }

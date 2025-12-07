@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetRenderableComponent( seMapped *mapped, deSkinMapped::eRenderableComponent newComponent );
+	seUMappedSetRenderableComponent(seMapped *mapped, deSkinMapped::eRenderableComponent newComponent);
 	
 protected:
 	/** Clean up undo. */

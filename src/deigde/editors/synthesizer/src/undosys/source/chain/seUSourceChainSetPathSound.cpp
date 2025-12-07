@@ -40,25 +40,25 @@
 ////////////////////////////
 
 seUSourceChainSetPathSound::seUSourceChainSetPathSound(
-seSourceChain *source, int index, const char *newPath ) :
-pSource( NULL ),
-pNewPath( newPath )
+seSourceChain *source, int index, const char *newPath) :
+pSource(NULL),
+pNewPath(newPath)
 {
-	if( ! source || index < 0 || index >= source->GetPathSounds().GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(!source || index < 0 || index >= source->GetPathSounds().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pIndex = index;
-	pOldPath = source->GetPathSounds().GetAt( index );
+	pOldPath = source->GetPathSounds().GetAt(index);
 	
-	SetShortInfo( "Chain source set path sound" );
+	SetShortInfo("Chain source set path sound");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSourceChainSetPathSound::~seUSourceChainSetPathSound(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -69,9 +69,9 @@ seUSourceChainSetPathSound::~seUSourceChainSetPathSound(){
 ///////////////
 
 void seUSourceChainSetPathSound::Undo(){
-	pSource->SetPathSound( pIndex, pOldPath );
+	pSource->SetPathSound(pIndex, pOldPath);
 }
 
 void seUSourceChainSetPathSound::Redo(){
-	pSource->SetPathSound( pIndex, pNewPath );
+	pSource->SetPathSound(pIndex, pNewPath);
 }

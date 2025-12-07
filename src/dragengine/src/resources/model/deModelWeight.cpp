@@ -48,19 +48,19 @@ deModelWeight::~deModelWeight(){
 // Management
 ///////////////
 
-void deModelWeight::SetBone( int bone ){
-	if( bone < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelWeight::SetBone(int bone){
+	if(bone < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBone = bone;
 }
 
-void deModelWeight::SetWeight( float weight ){
-	if( pWeight < 0.0f ){
+void deModelWeight::SetWeight(float weight){
+	if(pWeight < 0.0f){
 		pWeight = 0.0f;
 		
-	}else if( pWeight > 1.0f ){
+	}else if(pWeight > 1.0f){
 		pWeight = 1.0f;
 		
 	}else{

@@ -66,9 +66,9 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cListenerTextField( igdeEditPath &editPath );
+		cListenerTextField(igdeEditPath &editPath);
 		virtual ~cListenerTextField();
-		virtual void OnTextChanged( igdeTextField *textField );
+		virtual void OnTextChanged(igdeTextField *textField);
 	};
 	
 	/** \brief Button action. */
@@ -77,7 +77,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionButton( igdeEditPath &editPath, const char *description );
+		cActionButton(igdeEditPath &editPath, const char *description);
 		virtual ~cActionButton();
 		virtual void OnAction();
 		virtual void Update();
@@ -89,9 +89,9 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionButtonMenu( igdeEditPath &editPath, const char *description );
+		cActionButtonMenu(igdeEditPath &editPath, const char *description);
 		virtual ~cActionButtonMenu();
-		virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
+		virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
 		virtual void Update();
 	};
 	
@@ -102,10 +102,10 @@ protected:
 		bool pUseRelativePath;
 		
 	public:
-		cActionSelectFileDialog( igdeEditPath &editPath, igdeTextField &textField );
+		cActionSelectFileDialog(igdeEditPath &editPath, igdeTextField &textField);
 		virtual ~cActionSelectFileDialog();
-		virtual void PrepareFile( decString &path );
-		virtual bool AcceptFile( decString &path );
+		virtual void PrepareFile(decString &path);
+		virtual bool AcceptFile(decString &path);
 		virtual decString DefaultPath();
 	};
 	
@@ -115,7 +115,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionSkinSelectDialog( igdeEditPath &editPath );
+		cActionSkinSelectDialog(igdeEditPath &editPath);
 		virtual ~cActionSkinSelectDialog();
 		virtual void OnAction();
 	};
@@ -126,7 +126,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionBrowseFile( igdeEditPath &editPath );
+		cActionBrowseFile(igdeEditPath &editPath);
 		virtual ~cActionBrowseFile();
 		virtual void OnAction();
 		virtual void Update();
@@ -138,7 +138,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionConvertAbsolute( igdeEditPath &editPath );
+		cActionConvertAbsolute(igdeEditPath &editPath);
 		virtual ~cActionConvertAbsolute();
 		virtual void OnAction();
 		virtual void Update();
@@ -150,7 +150,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
-		cActionConvertRelative( igdeEditPath &editPath );
+		cActionConvertRelative(igdeEditPath &editPath);
 		virtual ~cActionConvertRelative();
 		virtual void OnAction();
 		virtual void Update();
@@ -183,11 +183,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit point. */
-	igdeEditPath( igdeUIHelper &helper, igdeEnvironment::eFilePatternListTypes resourceType,
-		const char *description = "", bool useGameVFS = true );
+	igdeEditPath(igdeUIHelper &helper, igdeEnvironment::eFilePatternListTypes resourceType,
+		const char *description = "", bool useGameVFS = true);
 	
-	igdeEditPath( igdeUIHelper &helper, const igdeFilePatternList &filePatterns,
-		const char *description = "", bool useGameVFS = true );
+	igdeEditPath(igdeUIHelper &helper, const igdeFilePatternList &filePatterns,
+		const char *description = "", bool useGameVFS = true);
 	
 	
 	
@@ -214,7 +214,7 @@ public:
 	 * 
 	 * If resource type is different than the current type SetSelectPathActions() is called.
 	 */
-	void SetResourceType( igdeEnvironment::eFilePatternListTypes resourceType );
+	void SetResourceType(igdeEnvironment::eFilePatternListTypes resourceType);
 	
 	/**
 	 * \brief Custom pattern list overruling GetResourceType if not empty.
@@ -234,7 +234,7 @@ public:
 	 * 
 	 * Validates path if changed.
 	 */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Clear path. */
 	void ClearPath();
@@ -267,19 +267,19 @@ public:
 	bool GetEnabled() const;
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Description shown in tool tips. */
 	const decString &GetDescription() const;
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Default path. */
 	inline const decString &GetDefaultPath() const{ return pDefaultPath; }
 	
 	/** \brief Set default path. */
-	void SetDefaultPath( const char *path );
+	void SetDefaultPath(const char *path);
 	
 	/** \brief Path is valid. */
 	bool IsPathValid() const;
@@ -288,7 +288,7 @@ public:
 	inline bool GetAutoValidatePath() const{ return pAutoValidatePath; }
 	
 	/** \brief Set if path is auto validated if changed. */
-	void SetAutoValidatePath( bool autoValidatePath );
+	void SetAutoValidatePath(bool autoValidatePath);
 	
 	/** \brief Validate path. */
 	void ValidatePath();
@@ -308,7 +308,7 @@ public:
 	 * 
 	 * If base is set relative path can be entered.
 	 */
-	void SetBasePath( const char *path );
+	void SetBasePath(const char *path);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -319,13 +319,13 @@ public:
 	int GetSelectPathActionCount() const;
 	
 	/** \brief Get select path action at index. */
-	igdeAction *GetSelectPathActionAt( int index ) const;
+	igdeAction *GetSelectPathActionAt(int index) const;
 	
 	/** \brief Add action providing support to select path. */
-	void AddSelectPathAction( igdeAction *action );
+	void AddSelectPathAction(igdeAction *action);
 	
 	/** \brief Remove action providing support to select path. */
-	void RemoveSelectPathAction( igdeAction *action );
+	void RemoveSelectPathAction(igdeAction *action);
 	
 	/** \brief Remove all actions providing support to select path. */
 	void RemoveAllSelectPathActions();
@@ -349,7 +349,7 @@ public:
 	 * 
 	 * Called by menu button action.
 	 */
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
 	
 	/** \brief Convert to absolute path if possible. */
 	void ToAbsolutePath();
@@ -363,10 +363,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditPathListener *listener );
+	void AddListener(igdeEditPathListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditPathListener *listener );
+	void RemoveListener(igdeEditPathListener *listener);
 	
 	/** \brief Notify listeners path changed. */
 	virtual void NotifyEditPathChanged();

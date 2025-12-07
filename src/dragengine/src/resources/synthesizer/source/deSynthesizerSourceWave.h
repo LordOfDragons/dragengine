@@ -90,7 +90,7 @@ public:
 	inline eWaveType GetType() const{ return pType; }
 	
 	/** \brief Set wave type. */
-	void SetType( eWaveType type );
+	void SetType(eWaveType type);
 	
 	
 	
@@ -98,13 +98,13 @@ public:
 	inline float GetMinFrequency() const{ return pMinFrequency; }
 	
 	/** \brief Set minimum frequency in Hz. */
-	void SetMinFrequency( float frequency );
+	void SetMinFrequency(float frequency);
 	
 	/** \brief Maximum frequency in Hz. */
 	inline float GetMaxFrequency() const{ return pMaxFrequency; }
 	
 	/** \brief Set maximum frequency in Hz. */
-	void SetMaxFrequency( float frequency );
+	void SetMaxFrequency(float frequency);
 	
 	
 	
@@ -118,7 +118,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	virtual void Visit(deSynthesizerSourceVisitor &visitor);
 	/*@}*/
 };
 

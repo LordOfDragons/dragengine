@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPAOSelfShadowEnable( deGraphicOpenGl &ogl );
+	deoglPAOSelfShadowEnable(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
 	virtual ~deoglPAOSelfShadowEnable();
 	/*@}*/
@@ -49,7 +49,7 @@ public:
 	/** Retrieves the current value. */
 	virtual bool GetParameterBool();
 	/** Sets the current value. */
-	virtual void SetParameterBool( bool value );
+	virtual void SetParameterBool(bool value);
 	/*@}*/
 };
 

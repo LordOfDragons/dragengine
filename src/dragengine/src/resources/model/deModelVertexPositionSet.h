@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model vertex position set. */
-	deModelVertexPositionSet( const char *name );
+	deModelVertexPositionSet(const char *name);
 	
 	/** \brief Clean up model vertex position set. */
 	~deModelVertexPositionSet();
@@ -80,7 +80,7 @@ public:
 	inline int GetBaseSet() const{ return pBaseSet; }
 	
 	/** \brief Set base set index or -1. */
-	void SetBaseSet( int baseSet );
+	void SetBaseSet(int baseSet);
 	/*@}*/
 };
 

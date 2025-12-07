@@ -70,7 +70,7 @@ public:
 	 * manager release the reference to the listener. The subclass has to
 	 * add a reference to the image to hold it.
 	 */
-	virtual void ImageCreated( deImage *image ) = 0;
+	virtual void ImageCreated(deImage *image) = 0;
 	/*@}*/
 };
 

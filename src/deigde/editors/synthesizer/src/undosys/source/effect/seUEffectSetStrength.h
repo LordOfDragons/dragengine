@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUEffectSetStrength( seEffect *effect, float newStrength );
+	seUEffectSetStrength(seEffect *effect, float newStrength);
 	
 protected:
 	/** \brief Clean up undo action. */

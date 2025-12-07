@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new result callback. */
-	debpRayResultCallback( deCollisionInfo *colinfo );
+	debpRayResultCallback(deCollisionInfo *colinfo);
 	/*@}*/
 	
 	/** \name Management */
@@ -65,16 +65,16 @@ public:
 	void Reset();
 	
 	/** \brief Set the ray to test with. */
-	void SetTestRay( const decDVector &rayOrigin, const decDVector &rayDirection,
-	const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener );
+	void SetTestRay(const decDVector &rayOrigin, const decDVector &rayDirection,
+	const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener);
 	/*@}*/
 	
 	/** \name Bullet */
 	/*@{*/
 	/** \brief Determines if a collision is possible. */
-	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const;
+	virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
 	/** \brief Adds a result. This fills in the parameters for later delivery to the collision info. */
-	virtual btScalar addSingleResult( btCollisionWorld::LocalRayResult &rayResult, bool normalInWorldSpace );
+	virtual btScalar addSingleResult(btCollisionWorld::LocalRayResult &rayResult, bool normalInWorldSpace);
 	/*@}*/
 };
 

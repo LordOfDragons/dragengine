@@ -49,9 +49,9 @@ dePropFieldGround::dePropFieldGround(){
 
 dePropFieldGround::~dePropFieldGround(){
 	RemoveAllComponents();
-	if( pComponents ) delete [] pComponents;
+	if(pComponents) delete [] pComponents;
 	
-	if( pHeightTerrain ) pHeightTerrain->FreeReference();
+	if(pHeightTerrain) pHeightTerrain->FreeReference();
 }
 
 
@@ -62,17 +62,17 @@ dePropFieldGround::~dePropFieldGround(){
 void dePropFieldGround::Clear(){
 	RemoveAllComponents();
 	
-	if( pHeightTerrain ){
+	if(pHeightTerrain){
 		pHeightTerrain->FreeReference();
 		pHeightTerrain = NULL;
 	}
 }
 
-void dePropFieldGround::SetHeightTerrain( deHeightTerrain *heightTerrain ){
-	if( heightTerrain != pHeightTerrain ){
-		if( pHeightTerrain ) pHeightTerrain->FreeReference();
+void dePropFieldGround::SetHeightTerrain(deHeightTerrain *heightTerrain){
+	if(heightTerrain != pHeightTerrain){
+		if(pHeightTerrain) pHeightTerrain->FreeReference();
 		pHeightTerrain = heightTerrain;
-		if( heightTerrain ) heightTerrain->AddReference();
+		if(heightTerrain) heightTerrain->AddReference();
 	}
 }
 
@@ -81,19 +81,19 @@ void dePropFieldGround::SetHeightTerrain( deHeightTerrain *heightTerrain ){
 // Components
 //////////////
 
-deComponent *dePropFieldGround::GetComponentAt( int index ) const{
-	if( index < 0 || index >= pComponentCount ) DETHROW( deeOutOfBoundary );
+deComponent *dePropFieldGround::GetComponentAt(int index) const{
+	if(index < 0 || index >= pComponentCount) DETHROW(deeOutOfBoundary);
 	
-	return pComponents[ index ];
+	return pComponents[index];
 }
 
-int dePropFieldGround::IndexOfComponent( deComponent *component ) const{
-	if( ! component ) DETHROW( deeInvalidParam );
+int dePropFieldGround::IndexOfComponent(deComponent *component) const{
+	if(!component) DETHROW(deeInvalidParam);
 	
 	int t;
 	
-	for( t=0; t<pComponentCount; t++ ){
-		if( component == pComponents[ t ] ){
+	for(t=0; t<pComponentCount; t++){
+		if(component == pComponents[t]){
 			return t;
 		}
 	}
@@ -101,13 +101,13 @@ int dePropFieldGround::IndexOfComponent( deComponent *component ) const{
 	return -1;
 }
 
-bool dePropFieldGround::HasComponent( deComponent *component ) const{
-	if( ! component ) DETHROW( deeInvalidParam );
+bool dePropFieldGround::HasComponent(deComponent *component) const{
+	if(!component) DETHROW(deeInvalidParam);
 	
 	int t;
 	
-	for( t=0; t<pComponentCount; t++ ){
-		if( component == pComponents[ t ] ){
+	for(t=0; t<pComponentCount; t++){
+		if(component == pComponents[t]){
 			return true;
 		}
 	}
@@ -115,33 +115,33 @@ bool dePropFieldGround::HasComponent( deComponent *component ) const{
 	return false;
 }
 
-void dePropFieldGround::AddComponent( deComponent *component ){
-	if( ! component ) DETHROW( deeInvalidParam );
+void dePropFieldGround::AddComponent(deComponent *component){
+	if(!component) DETHROW(deeInvalidParam);
 	
-	if( pComponentCount == pComponentSize ){
+	if(pComponentCount == pComponentSize){
 		int newSize = pComponentSize * 3 / 2 + 1;
-		deComponent **newArray = new deComponent*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pComponents ){
-			memcpy( newArray, pComponents, sizeof( deComponent* ) * pComponentSize );
+		deComponent **newArray = new deComponent*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pComponents){
+			memcpy(newArray, pComponents, sizeof(deComponent*) * pComponentSize);
 			delete [] pComponents;
 		}
 		pComponents = newArray;
 		pComponentSize = newSize;
 	}
 	
-	pComponents[ pComponentCount ] = component;
+	pComponents[pComponentCount] = component;
 	component->AddReference();
 	pComponentCount++;
 }
 
-void dePropFieldGround::RemoveComponent( deComponent *component ){
-	int i, index = IndexOfComponent( component );
+void dePropFieldGround::RemoveComponent(deComponent *component){
+	int i, index = IndexOfComponent(component);
 	
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pComponentCount; i++ ){
-		pComponents[ i - 1 ] = pComponents[ i ];
+	for(i=index+1; i<pComponentCount; i++){
+		pComponents[i - 1] = pComponents[i];
 	}
 	pComponentCount--;
 	
@@ -149,8 +149,8 @@ void dePropFieldGround::RemoveComponent( deComponent *component ){
 }
 
 void dePropFieldGround::RemoveAllComponents(){
-	while( pComponentCount > 0 ){
+	while(pComponentCount > 0){
 		pComponentCount--;
-		pComponents[ pComponentCount ]->FreeReference();
+		pComponents[pComponentCount]->FreeReference();
 	}
 }

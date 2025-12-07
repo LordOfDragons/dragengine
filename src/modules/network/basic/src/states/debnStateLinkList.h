@@ -59,17 +59,17 @@ public:
 	/** Retrieves the number of links. */
 	inline int GetLinkCount() const{ return pLinkCount; }
 	/** Retrieves the link at the given index. */
-	debnStateLink *GetLinkAt( int index ) const;
+	debnStateLink *GetLinkAt(int index) const;
 	/** Retrieves the index of the link or -1 if not found. */
-	int IndexOfLink( debnStateLink *link ) const;
+	int IndexOfLink(debnStateLink *link) const;
 	/** Determines if the link exists in the list. */
-	bool HasLink( debnStateLink *link ) const;
+	bool HasLink(debnStateLink *link) const;
 	/** Adds a link. */
-	void AddLink( debnStateLink *link );
+	void AddLink(debnStateLink *link);
 	/** Removes a link. */
-	void RemoveLink( debnStateLink *link );
+	void RemoveLink(debnStateLink *link);
 	/** Removes a link if existing in the list. */
-	void RemoveLinkIfExisting( debnStateLink *link );
+	void RemoveLinkIfExisting(debnStateLink *link);
 	/** Removes all links. */
 	void RemoveAllLinks();
 	/*@}*/

@@ -46,20 +46,20 @@ deoglDCollisionVolumeVisitor::~deoglDCollisionVolumeVisitor(){
 // Visiting
 /////////////
 
-void deoglDCollisionVolumeVisitor::VisitSphere( deoglDCollisionSphere *sphere ){
+void deoglDCollisionVolumeVisitor::VisitSphere(deoglDCollisionSphere *sphere){
 }
 
-void deoglDCollisionVolumeVisitor::VisitCylinder( deoglDCollisionCylinder *cylinder ){
+void deoglDCollisionVolumeVisitor::VisitCylinder(deoglDCollisionCylinder *cylinder){
 }
 
-void deoglDCollisionVolumeVisitor::VisitCapsule( deoglDCollisionCapsule *capsule ){
+void deoglDCollisionVolumeVisitor::VisitCapsule(deoglDCollisionCapsule *capsule){
 }
 
-void deoglDCollisionVolumeVisitor::VisitBox( deoglDCollisionBox *box ){
+void deoglDCollisionVolumeVisitor::VisitBox(deoglDCollisionBox *box){
 }
 
-void deoglDCollisionVolumeVisitor::VisitTriangle( deoglDCollisionTriangle *triangle ){
+void deoglDCollisionVolumeVisitor::VisitTriangle(deoglDCollisionTriangle *triangle){
 }
 
-void deoglDCollisionVolumeVisitor::VisitFrustum( deoglDCollisionFrustum *frustum ){
+void deoglDCollisionVolumeVisitor::VisitFrustum(deoglDCollisionFrustum *frustum){
 }

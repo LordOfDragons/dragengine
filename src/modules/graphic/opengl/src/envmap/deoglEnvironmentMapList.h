@@ -60,34 +60,34 @@ public:
 	int GetCount() const;
 	
 	/** Index of environment map or -1 if absent. */
-	int IndexOf( deoglEnvironmentMap *envmap ) const;
+	int IndexOf(deoglEnvironmentMap *envmap) const;
 	
 	/** Environment map is present. */
-	bool Has( deoglEnvironmentMap *envmap ) const;
+	bool Has(deoglEnvironmentMap *envmap) const;
 	
 	/** Environment map at index. */
-	deoglEnvironmentMap *GetAt( int index ) const;
+	deoglEnvironmentMap *GetAt(int index) const;
 	
 	/** Add environment map. */
-	void Add( deoglEnvironmentMap *envmap );
+	void Add(deoglEnvironmentMap *envmap);
 	
 	/**
 	 * Add environment map if absent.
 	 * \returns true if added.
 	 */
-	bool AddIfMissing( deoglEnvironmentMap *envmap );
+	bool AddIfMissing(deoglEnvironmentMap *envmap);
 	
 	/** Remove environment map. */
-	void Remove( deoglEnvironmentMap *envmap );
+	void Remove(deoglEnvironmentMap *envmap);
 	
 	/**
 	 * Remove environment map if present.
 	 * \returns true if removed.
 	 */
-	bool RemoveIfExisting( deoglEnvironmentMap *envmap );
+	bool RemoveIfExisting(deoglEnvironmentMap *envmap);
 	
 	/** Remove environment map from the index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	
 	/** Removes all environment maps. */
 	void RemoveAll();

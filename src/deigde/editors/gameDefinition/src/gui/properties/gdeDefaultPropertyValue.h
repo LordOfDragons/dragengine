@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	gdeDefaultPropertyValue( igdeUIHelper &helper );
+	gdeDefaultPropertyValue(igdeUIHelper &helper);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -61,15 +61,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create and add. */
-	static void CreateAndAdd( igdeContainer &parent, igdeUIHelper &helper,
-		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener );
+	static void CreateAndAdd(igdeContainer &parent, igdeUIHelper &helper,
+		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener);
 	
-	static void CreateAndAdd( igdeContainer &form, igdeUIHelper &helper, const char *label,
+	static void CreateAndAdd(igdeContainer &form, igdeUIHelper &helper, const char *label,
 		const char *description, igdeEditPropertyValue::Ref &widget,
-		igdeEditPropertyValueListener *listener );
+		igdeEditPropertyValueListener *listener);
 	
 	/** \brief Set value. */
-	void SetValue( const decString &value, const gdeProperty &property );
+	void SetValue(const decString &value, const gdeProperty &property);
 	/*@}*/
 };
 

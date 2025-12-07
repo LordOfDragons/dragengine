@@ -135,7 +135,7 @@ public:
 	
 	
 private:
-	deParticleEmitterParameter pParameters[ epBeamEnd + 1 ];
+	deParticleEmitterParameter pParameters[epBeamEnd + 1];
 	
 	deSkin::Ref pSkin;
 	deModel::Ref pModel;
@@ -145,14 +145,14 @@ private:
 	bool pIntervalAsDistance;
 	
 	deParticleEmitter::Ref pTrailEmitter;
-	int pTrailControllers[ eecAngularVelocity + 1 ];
+	int pTrailControllers[eecAngularVelocity + 1];
 	
 	float pPhysicsSize;
 	
 	eCollisionResponses pCollisionResponse;
 	deParticleEmitter::Ref pCollisionEmitter;
 	float pEmitMinImpulse;
-	int pEmitControllers[ eecAngularVelocity + 1 ];
+	int pEmitControllers[eecAngularVelocity + 1];
 	
 	float pMaxLinearVelocity;
 	float pMaxAngularVelocity;
@@ -178,37 +178,37 @@ public:
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Model used for casting or NULL. */
 	inline deModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model used for casting or NULL. */
-	void SetModel( deModel *model );
+	void SetModel(deModel *model);
 	
 	/** \brief Skin for the model used for casting or NULL. */
 	inline deSkin *GetModelSkin() const{ return pModelSkin; }
 	
 	/** \brief Set skin for the model used for casting or NULL. */
-	void SetModelSkin( deSkin *skin );
+	void SetModelSkin(deSkin *skin);
 	
 	/** \brief What part of the model to cast particles from. */
 	inline eCastFrom GetCastFrom() const{ return pCastFrom; }
 	
 	/** \brief Set what part of the model to cast particles from. */
-	void SetCastFrom( eCastFrom castFrom );
+	void SetCastFrom(eCastFrom castFrom);
 	
 	/** \brief Simulation type. */
 	inline eSimulationTypes GetSimulationType() const{ return pSimulationType; }
 	
 	/** \brief Set simulation type. */
-	void SetSimulationType( eSimulationTypes simulationType );
+	void SetSimulationType(eSimulationTypes simulationType);
 	
 	/** \brief Interval parameter is used as distance not time. */
 	inline bool GetIntervalAsDistance() const{ return pIntervalAsDistance; }
 	
 	/** \brief Set if interval parameter is used as distance not time. */
-	void SetIntervalAsDistance( bool intervalAsDistance );
+	void SetIntervalAsDistance(bool intervalAsDistance);
 	
 	
 	
@@ -216,13 +216,13 @@ public:
 	inline deParticleEmitter *GetTrailEmitter() const{ return pTrailEmitter; }
 	
 	/** \brief Set particle emitter for trails behind particles or NULL. */
-	void SetTrailEmitter( deParticleEmitter *emitter );
+	void SetTrailEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Trail controller index or -1 if not set. */
-	int GetTrailController( eEmitControllers controller ) const;
+	int GetTrailController(eEmitControllers controller) const;
 	
 	/** \brief Set trail controller index or -1 if not set. */
-	void SetTrailController( eEmitControllers controller, int targetController );
+	void SetTrailController(eEmitControllers controller, int targetController);
 	
 	
 	
@@ -230,7 +230,7 @@ public:
 	inline float GetPhysicsSize() const{ return pPhysicsSize; }
 	
 	/** \brief Set physics size. */
-	void SetPhysicsSize( float size );
+	void SetPhysicsSize(float size);
 	
 	
 	
@@ -238,25 +238,25 @@ public:
 	inline eCollisionResponses GetCollisionResponse() const{ return pCollisionResponse; }
 	
 	/** \brief Set collision response. */
-	void SetCollisionResponse( eCollisionResponses response );
+	void SetCollisionResponse(eCollisionResponses response);
 	
 	/** \brief Particle emitter for colliding particles or NULL. */
 	inline deParticleEmitter *GetCollisionEmitter() const{ return pCollisionEmitter; }
 	
 	/** \brief Set particle emitter for colliding particles or NULL. */
-	void SetCollisionEmitter( deParticleEmitter *emitter );
+	void SetCollisionEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Minimum impulse required for colliding particles to emit instances. */
 	inline float GetEmitMinImpulse() const{ return pEmitMinImpulse; }
 	
 	/** \brief Set minimum impulse required for colliding particles to emit instances. */
-	void SetEmitMinImpulse( float impulse );
+	void SetEmitMinImpulse(float impulse);
 	
 	/** \brief Emit controller index or -1 if not set. */
-	int GetEmitController( eEmitControllers controller ) const;
+	int GetEmitController(eEmitControllers controller) const;
 	
 	/** \brief Set emit controller index or -1 if not set. */
-	void SetEmitController( eEmitControllers controller, int targetController );
+	void SetEmitController(eEmitControllers controller, int targetController);
 	
 	
 	
@@ -264,25 +264,25 @@ public:
 	inline float GetMaxLinearVelocity() const{ return pMaxLinearVelocity; }
 	
 	/** \brief Set maximum linear velocity for mapping as requested by the graphic module. */
-	void SetMaxLinearVelocity( float maxLinearVelocity );
+	void SetMaxLinearVelocity(float maxLinearVelocity);
 	
 	/** \brief Maximum angular velocity for mapping as requested by the graphic module. */
 	inline float GetMaxAngularVelocity() const{ return pMaxAngularVelocity; }
 	
 	/** \brief Set maximum angular velocity for mapping as requested by the graphic module. */
-	void SetMaxAngularVelocity( float maxAngularVelocity );
+	void SetMaxAngularVelocity(float maxAngularVelocity);
 	
 	/** \brief Velocities have to be squared as requested by the graphic module. */
 	inline bool GetSquareVelocities() const{ return pSquaredVelocities; }
 	
 	/** \brief Set if velocities have to be squared as requested by the graphic module. */
-	void SetSquareVelocities( bool squareVelocities );
+	void SetSquareVelocities(bool squareVelocities);
 	
 	
 	
 	/** \brief Parameter. */
-	deParticleEmitterParameter &GetParameter( eParameters parameter );
-	const deParticleEmitterParameter &GetParameter( eParameters parameter ) const;
+	deParticleEmitterParameter &GetParameter(eParameters parameter);
+	const deParticleEmitterParameter &GetParameter(eParameters parameter) const;
 	/*@}*/
 };
 

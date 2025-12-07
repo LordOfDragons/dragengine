@@ -47,7 +47,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new line buffer object. */
-	decUnicodeLineBuffer( int initialSize );
+	decUnicodeLineBuffer(int initialSize);
 	/** Frees the line buffer object. */
 	~decUnicodeLineBuffer();
 	/*@}*/
@@ -65,20 +65,20 @@ public:
 	 * Sets the size of the line buffer. All lines beyond this
 	 * limit are discarded automatically.
 	 */
-	void SetBufferSize( int bufferSize );
+	void SetBufferSize(int bufferSize);
 	/** Retrieves the string at the given line with 0 being the most recent line. */
-	const decUnicodeString *GetLineAt( int line ) const;
+	const decUnicodeString *GetLineAt(int line) const;
 	/** Adds a string to the end of the list and discards lines beyond the buffer size. */
-	void AddLine( const decUnicodeString &line );
+	void AddLine(const decUnicodeString &line);
 	/** Clears the line buffer. */
 	void Clear();
 	/**
 	 * Convenience function for adding lines separated by newlines. Breaks up the
 	 * provided string into individual lines and adds them.
 	 */
-	void AddMultipleLines( const decUnicodeString &lines );
+	void AddMultipleLines(const decUnicodeString &lines);
 	/** Fills a unicode string with all lines separated by newlines. */
-	void FillLinesInto( decUnicodeString &string );
+	void FillLinesInto(decUnicodeString &string);
 	/*@}*/
 	
 private:

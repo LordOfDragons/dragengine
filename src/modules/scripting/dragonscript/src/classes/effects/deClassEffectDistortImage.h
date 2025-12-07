@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	deClassEffectDistortImage( deScriptingDragonScript &ds );
+	deClassEffectDistortImage(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassEffectDistortImage();
@@ -60,19 +60,19 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve effect distort image from a script object.
 	 * \details Returns \em NULL if \em myself is \em NULL.
 	 */
-	deEffectDistortImage *GetEffect( dsRealObject *myself ) const;
+	deEffectDistortImage *GetEffect(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push effect distort image onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushEffect( dsRunTime *rt, deEffectDistortImage *effect );
+	void PushEffect(dsRunTime *rt, deEffectDistortImage *effect);
 	/*@}*/
 	
 private:
@@ -81,19 +81,19 @@ private:
 		dsClass *clsImage;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetImage );
-	DEF_NATFUNC( nfSetStrength );
+	DEF_NATFUNC(nfSetImage);
+	DEF_NATFUNC(nfSetStrength);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

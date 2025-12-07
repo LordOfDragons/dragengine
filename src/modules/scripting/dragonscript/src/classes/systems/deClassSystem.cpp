@@ -45,9 +45,9 @@ DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsStr); // text
 }
 void deClassSystem::nfPrint::RunFunction(dsRunTime *RT, dsValue *This){
-	deScriptingDragonScript &ds = *( ( ( deClassSystem* )GetOwnerClass() )->GetDS() );
+	deScriptingDragonScript &ds = *(((deClassSystem*)GetOwnerClass())->GetDS());
 	
-	ds.LogInfo( RT->GetValue( 0 )->GetString() );
+	ds.LogInfo(RT->GetValue(0)->GetString());
 }
 
 
@@ -59,12 +59,12 @@ void deClassSystem::nfPrint::RunFunction(dsRunTime *RT, dsValue *This){
 // Constructors, destructor
 /////////////////////////////
 
-deClassSystem::deClassSystem( deScriptingDragonScript *ds ) :
-dsClass( "System", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ){
+deClassSystem::deClassSystem(deScriptingDragonScript *ds) :
+dsClass("System", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
 	pDS = ds;
 	
 	GetParserInfo()->SetBase("Object");
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 	CalcMemberOffsets();
 }
 
@@ -76,7 +76,7 @@ deClassSystem::~deClassSystem(){
 // Management
 ///////////////
 
-void deClassSystem::CreateClassMembers( dsEngine *engine ){
+void deClassSystem::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	init.clsSys = this;
@@ -85,5 +85,5 @@ void deClassSystem::CreateClassMembers( dsEngine *engine ){
 	init.clsStr = engine->GetClassString();
 	init.clsInt = engine->GetClassInt();
 	
-	AddFunction( new nfPrint( init ) );
+	AddFunction(new nfPrint(init));
 }

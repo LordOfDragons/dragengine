@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetTransMax( aeRuleBoneTransformator *rule, const decVector &newMax );
+	aeURuleBTransSetTransMax(aeRuleBoneTransformator *rule, const decVector &newMax);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleBTransSetTransMax();

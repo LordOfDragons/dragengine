@@ -43,8 +43,8 @@
 seLinkList::seLinkList(){
 }
 
-seLinkList::seLinkList( const seLinkList &copy ) :
-pLinks( copy.pLinks ){
+seLinkList::seLinkList(const seLinkList &copy) :
+pLinks(copy.pLinks){
 }
 
 seLinkList::~seLinkList(){
@@ -59,38 +59,38 @@ int seLinkList::GetCount() const{
 	return pLinks.GetCount();
 }
 
-seLink *seLinkList::GetAt( int index ) const{
-	return ( seLink* )pLinks.GetAt( index );
+seLink *seLinkList::GetAt(int index) const{
+	return (seLink*)pLinks.GetAt(index);
 }
 
-int seLinkList::IndexOf( seLink *link ) const{
-	return pLinks.IndexOf( link );
+int seLinkList::IndexOf(seLink *link) const{
+	return pLinks.IndexOf(link);
 }
 
-bool seLinkList::Has( seLink *link ) const{
-	return pLinks.Has( link );
+bool seLinkList::Has(seLink *link) const{
+	return pLinks.Has(link);
 }
 
-void seLinkList::Add( seLink *link ){
-	if( ! link || Has( link ) ){
-		DETHROW( deeInvalidParam );
+void seLinkList::Add(seLink *link){
+	if(!link || Has(link)){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Add( link );
+	pLinks.Add(link);
 }
 
-void seLinkList::Insert( seLink *link, int index ){
-	if( ! link || Has( link ) ){
-		DETHROW( deeInvalidParam );
+void seLinkList::Insert(seLink *link, int index){
+	if(!link || Has(link)){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Insert( link, index );
+	pLinks.Insert(link, index);
 }
 
-void seLinkList::Move( seLink *link, int index ){
-	pLinks.Move( link, index );
+void seLinkList::Move(seLink *link, int index){
+	pLinks.Move(link, index);
 }
 
-void seLinkList::Remove( seLink *link ){
-	pLinks.Remove( link );
+void seLinkList::Remove(seLink *link){
+	pLinks.Remove(link);
 }
 
 void seLinkList::RemoveAll(){
@@ -102,12 +102,12 @@ void seLinkList::RemoveAll(){
 // Operators
 //////////////
 
-seLinkList &seLinkList::operator=( const seLinkList &list ){
+seLinkList &seLinkList::operator=(const seLinkList &list){
 	pLinks = list.pLinks;
 	return *this;
 }
 
-seLinkList &seLinkList::operator+=( const seLinkList &list ){
+seLinkList &seLinkList::operator+=(const seLinkList &list){
 	pLinks += list.pLinks;
 	return *this;
 }

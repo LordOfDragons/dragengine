@@ -66,7 +66,7 @@ public:
 	
 	
 		/** \brief Factory constructor. */
-		Factory( deLogger *engineLogger = nullptr );
+		Factory(deLogger *engineLogger = nullptr);
 		
 	protected:
 		/** \brief Factory destructor. */
@@ -77,16 +77,16 @@ public:
 		inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
 		
 		/** \brief Set logger to use for new engine instance or nullptr. */
-		void SetEngineLogger( deLogger *logger );
+		void SetEngineLogger(deLogger *logger);
 		
 		/** \brief Use console. */
 		inline bool GetUseConsole() const{ return pUseConsole; }
 		
 		/** \brief Set use console. */
-		void SetUseConsole( bool useConsole );
+		void SetUseConsole(bool useConsole);
 		
 		/** \brief Create engine instance. */
-		virtual delEngineInstance *CreateEngineInstance( delLauncher &launcher, const char *logFile );
+		virtual delEngineInstance *CreateEngineInstance(delLauncher &launcher, const char *logFile);
 		
 #ifdef OS_ANDROID
 		/** \brief Configuration to use for creating OS instance. */
@@ -141,7 +141,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine instance. */
-	delEngineInstanceDirect( delLauncher &launcher, const char *logfile );
+	delEngineInstanceDirect(delLauncher &launcher, const char *logfile);
 	
 protected:
 	/** \brief Clean up engine instance. */
@@ -160,13 +160,13 @@ public:
 	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger to use for new engine instances. */
-	void SetLogger( deLogger *logger );
+	void SetLogger(deLogger *logger);
 	
 	/** \brief Logger to use for new engine or nullptr to use engine instance logger. */
 	inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
 	
 	/** \brief Set logger to use for new engine or nullptr to use engine instance logger. */
-	void SetEngineLogger( deLogger *logger );
+	void SetEngineLogger(deLogger *logger);
 		
 #ifdef OS_ANDROID
 	/** \brief Configuration to use for creating OS instance. */
@@ -199,7 +199,7 @@ public:
 	void KillEngine() override;
 	
 	/** \brief Get property from engine. */
-	void GetProperty( int property, decString &value ) override;
+	void GetProperty(int property, decString &value) override;
 	
 	/** \brief Load modules. */
 	void LoadModules() override;
@@ -208,54 +208,54 @@ public:
 	void GetInternalModules(delEngineModuleList &list) override;
 	
 	/** \brief Command get module status. */
-	int GetModuleStatus( const char *moduleName, const char *moduleVersion ) override;
+	int GetModuleStatus(const char *moduleName, const char *moduleVersion) override;
 	
 	/** \brief Get module parameter list. */
-	void GetModuleParams ( delEngineModule &module ) override;
+	void GetModuleParams (delEngineModule &module) override;
 	
 	/** \brief Set module parameter. */
-	void SetModuleParameter( const char *moduleName, const char *moduleVersion,
-		const char *parameter, const char *value ) override;
+	void SetModuleParameter(const char *moduleName, const char *moduleVersion,
+		const char *parameter, const char *value) override;
 	
 	/** \brief Activate module. */
-	void ActivateModule( const char *moduleName, const char *moduleVersion ) override;
+	void ActivateModule(const char *moduleName, const char *moduleVersion) override;
 	
 	/** \brief Enable or disable module. */
-	void EnableModule( const char *moduleName, const char *moduleVersion, bool enable ) override;
+	void EnableModule(const char *moduleName, const char *moduleVersion, bool enable) override;
 	
 	/** \brief Set data directory. */
-	void SetDataDirectory( const char *directory ) override;
+	void SetDataDirectory(const char *directory) override;
 	
 	/** \brief Set cache application identifier. */
-	void SetCacheAppID( const char *cacheAppID ) override;
+	void SetCacheAppID(const char *cacheAppID) override;
 	
 	/**
 	 * \brief Set overlay directory.
 	 * \version 1.7
 	 */
-	void SetPathOverlay( const char *path ) override;
+	void SetPathOverlay(const char *path) override;
 	
 	/**
 	 * \brief Set capture directory.
 	 * \version 1.7
 	 */
-	void SetPathCapture( const char *path ) override;
+	void SetPathCapture(const char *path) override;
 	
 	/**
 	 * \brief Set config directory.
 	 * \version 1.7
 	 */
-	void SetPathConfig( const char *path ) override;
+	void SetPathConfig(const char *path) override;
 	
 	/** \brief Add disk directory to virtual file system. */
-	void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ) override;
+	void VFSAddDiskDir(const char *vfsRoot, const char *nativeDirectory, bool readOnly) override;
 	
 	/**
 	 * \brief Add disk directory to virtual file system hidding a set of path.
 	 * \version 1.13
 	 */
-	void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory,
-		bool readOnly, const decStringSet &hiddenPath ) override;
+	void VFSAddDiskDir(const char *vfsRoot, const char *nativeDirectory,
+		bool readOnly, const decStringSet &hiddenPath) override;
 	
 	/** \brief Add virtual file system container for module shared data. */
 	void VFSAddScriptSharedDataDir() override;
@@ -265,7 +265,7 @@ public:
 	 * 
 	 * Container maps the content of \em archivePath into the virtual file system.
 	 */
-	void VFSAddDelgaFile( const char *delgaFile, const char *archivePath ) override;
+	void VFSAddDelgaFile(const char *delgaFile, const char *archivePath) override;
 	
 	/**
 	 * \brief Add DELGA file to virtual file system as root container.
@@ -273,35 +273,35 @@ public:
 	 * 
 	 * Container maps the content of \em archivePath into the virtual file system.
 	 */
-	void VFSAddDelgaFile( const char *delgaFile, const char *archivePath,
-		const decStringSet &hiddenPath ) override;
+	void VFSAddDelgaFile(const char *delgaFile, const char *archivePath,
+		const decStringSet &hiddenPath) override;
 	
 	/**
 	 * \brief Make modules add stage specific containers to virtual file system.
 	 * \version 1.23
 	 */
-	void ModulesAddVFSContainers( const char *stage ) override;
+	void ModulesAddVFSContainers(const char *stage) override;
 	
 	/** \brief Set command line arguments. */
-	void SetCmdLineArgs( const char *arguments ) override;
+	void SetCmdLineArgs(const char *arguments) override;
 	
 	/** \brief Create render window. */
-	void CreateRenderWindow( int width, int height, bool fullScreen,
-		const char *windowTitle, const char *iconPath ) override;
+	void CreateRenderWindow(int width, int height, bool fullScreen,
+		const char *windowTitle, const char *iconPath) override;
 	
 	/**
 	 * \brief Start game.
 	 * \deprecated Use StartGame(const char*, const char*, const char*, delGPModuleList*).
 	 */
-	void StartGame( const char *scriptDirectory, const char *gameObject,
-		delGPModuleList *collectChangedParams = NULL ) override;
+	void StartGame(const char *scriptDirectory, const char *gameObject,
+		delGPModuleList *collectChangedParams = NULL) override;
 	
 	/**
 	 * \brief Start game.
 	 * \version 1.9
 	 */
-	void StartGame( const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
-		delGPModuleList *collectChangedParams = NULL ) override;
+	void StartGame(const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
+		delGPModuleList *collectChangedParams = NULL) override;
 	
 	/** \brief Stop game. */
 	void StopGame() override;
@@ -310,7 +310,7 @@ public:
 	int IsGameRunning() override;
 	
 	/** \brief Current display resolution. */
-	decPoint GetDisplayCurrentResolution( int display ) override;
+	decPoint GetDisplayCurrentResolution(int display) override;
 	
 	/**
 	 * \brief Resolution for display.
@@ -320,7 +320,7 @@ public:
 	 * fill with information. \em resolutionCount indicates the size of \em resolutions. The number
 	 * of written entries is returned which can be less than \em resolutionCount.
 	 */
-	int GetDisplayResolutions( int display, decPoint *resolutions, int resolutionCount ) override;
+	int GetDisplayResolutions(int display, decPoint *resolutions, int resolutionCount) override;
 	
 	/**
 	 * \brief Current global scaling factor for display.
@@ -334,22 +334,22 @@ public:
 	 * 
 	 * Replaces \em list with content of all found files.
 	 */
-	void ReadDelgaGameDefs( const char *delgaFile, decStringList &list ) override;
+	void ReadDelgaGameDefs(const char *delgaFile, decStringList &list) override;
 	
 	/**
 	 * \brief Read game definitions from DELGA file.
 	 * 
 	 * Replaces \em list with content of all found files.
 	 */
-	void ReadDelgaPatchDefs( const char *delgaFile, decStringList &list ) override;
+	void ReadDelgaPatchDefs(const char *delgaFile, decStringList &list) override;
 	
 	/**
 	 * \brief Read files from DELGA file.
 	 * 
 	 * Stores content of files to \em filesContent as instances of decMemoryFile.
 	 */
-	void ReadDelgaFiles( const char *delgaFile, const decStringList &filenames,
-		decObjectOrderedSet &filesContent ) override;
+	void ReadDelgaFiles(const char *delgaFile, const decStringList &filenames,
+		decObjectOrderedSet &filesContent) override;
 
 	
 #ifdef OS_BEOS
@@ -358,7 +358,7 @@ public:
 	 * 
 	 * Required for direct engine instance on BeOS only.
 	 */
-	void BeosMessageReceived( BMessage *message ) override;
+	void BeosMessageReceived(BMessage *message) override;
 #endif
 	
 #ifdef OS_ANDROID

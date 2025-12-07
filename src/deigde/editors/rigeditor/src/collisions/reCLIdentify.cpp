@@ -47,8 +47,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCLIdentify::reCLIdentify( reRig *rig ){
-	if( ! rig ) DETHROW( deeInvalidParam );
+reCLIdentify::reCLIdentify(reRig *rig){
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	pBone = NULL;
@@ -81,29 +81,29 @@ bool reCLIdentify::HasShape() const{
 // Notifications
 //////////////////
 
-void reCLIdentify::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( info->IsCollider() ){
+void reCLIdentify::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(info->IsCollider()){
 		deCollider *collider = info->GetCollider();
 		deColliderVisitorIdentify identify;
 		
-		collider->Visit( identify );
-		if( identify.IsVolume() ){
+		collider->Visit(identify);
+		if(identify.IsVolume()){
 			pBone = NULL;
-			pShape = pGetShapeFromCollider( &identify.CastToVolume() );
+			pShape = pGetShapeFromCollider(&identify.CastToVolume());
 		}
 	}
 }
 
-bool reCLIdentify::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool reCLIdentify::CanHitCollider(deCollider *owner, deCollider *collider){
 	/*
-	meObject *object = pGetObjectForCollider( collider );
-	if( object ) return object->GetVisible();
+	meObject *object = pGetObjectForCollider(collider);
+	if(object) return object->GetVisible();
 	return false;
 	*/
 	return true;
 }
 
-void reCLIdentify::ColliderChanged( deCollider *owner ){
+void reCLIdentify::ColliderChanged(deCollider *owner){
 }
 
 
@@ -111,22 +111,22 @@ void reCLIdentify::ColliderChanged( deCollider *owner ){
 // Private Functions
 //////////////////////
 
-reRigBone *reCLIdentify::pGetBoneFromCollider( deCollider *collider ) const{
+reRigBone *reCLIdentify::pGetBoneFromCollider(deCollider *collider) const{
 	return NULL; // TODO
 }
 
-reRigShape *reCLIdentify::pGetShapeFromCollider( deColliderVolume *collider ) const{
+reRigShape *reCLIdentify::pGetShapeFromCollider(deColliderVolume *collider) const{
 	int b, boneCount = pRig->GetBoneCount();
 	reRigShape *shape = NULL;
 	
 	// check if a rig shape belongs to this collider
-	shape = pRig->GetShapeWith( collider );
-	if( shape ) return shape;
+	shape = pRig->GetShapeWith(collider);
+	if(shape) return shape;
 	
 	// check if a bone shape belongs to this collider
-	for( b=0; b<boneCount; b++ ){
-		shape = pRig->GetBoneAt( b )->GetShapeWith( collider );
-		if( shape ) return shape;
+	for(b=0; b<boneCount; b++){
+		shape = pRig->GetBoneAt(b)->GetShapeWith(collider);
+		if(shape) return shape;
 	}
 	
 	// otherwise no shape belongs to this collider

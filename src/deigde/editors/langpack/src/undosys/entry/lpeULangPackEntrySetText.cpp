@@ -40,15 +40,15 @@
 ////////////////////////////
 
 lpeULangPackEntrySetText::lpeULangPackEntrySetText(
-	lpeLangPackEntry *entry, const decUnicodeString &newName ) :
-pEntry( NULL ),
-pNewText( newName )
+	lpeLangPackEntry *entry, const decUnicodeString &newName) :
+pEntry(NULL),
+pNewText(newName)
 {
-	if( ! entry ){
-		DETHROW( deeInvalidParam );
+	if(!entry){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Entry set text" );
+	SetShortInfo("Entry set text");
 	
 	pOldText = entry->GetText();
 	
@@ -57,7 +57,7 @@ pNewText( newName )
 }
 
 lpeULangPackEntrySetText::~lpeULangPackEntrySetText(){
-	if( pEntry ){
+	if(pEntry){
 		pEntry->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ lpeULangPackEntrySetText::~lpeULangPackEntrySetText(){
 ///////////////
 
 void lpeULangPackEntrySetText::Undo(){
-	pEntry->SetText( pOldText );
+	pEntry->SetText(pOldText);
 }
 
 void lpeULangPackEntrySetText::Redo(){
-	pEntry->SetText( pNewText );
+	pEntry->SetText(pNewText);
 }

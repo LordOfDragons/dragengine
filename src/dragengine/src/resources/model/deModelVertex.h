@@ -56,13 +56,13 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Index of the weight set or -1 if not used. */
 	inline int GetWeightSet() const{ return pWeightSet; }
 	
 	/** \brief Set index of the weight set or -1 if not used. */
-	void SetWeightSet( int index );
+	void SetWeightSet(int index);
 	/*@}*/
 };
 

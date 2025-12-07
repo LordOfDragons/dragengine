@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create animator peer. */
-	dearAnimator( deDEAnimator &module, deAnimator &animator );
+	dearAnimator(deDEAnimator &module, deAnimator &animator);
 	
 	/** Clean up animator. */
 	virtual ~dearAnimator();

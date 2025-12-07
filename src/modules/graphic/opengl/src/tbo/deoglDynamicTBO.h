@@ -62,7 +62,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dynamic tbo. */
-	deoglDynamicTBO( deoglRenderThread &renderThread, int componentCount, int dataTypeSize );
+	deoglDynamicTBO(deoglRenderThread &renderThread, int componentCount, int dataTypeSize);
 	
 	/** Clean up dynamic tbo. */
 	virtual ~deoglDynamicTBO();
@@ -97,37 +97,37 @@ public:
 	inline int GetDataCount() const{ return pDataCount; }
 	
 	/** Increase count of entries. New entries have undefined content. */
-	void IncreaseDataCount( int byAmount );
+	void IncreaseDataCount(int byAmount);
 	
 	/** Set count of entries. New entries have undefined content. */
-	void SetDataCount( int count );
+	void SetDataCount(int count);
 	
 	/** Get pixel count. */
 	int GetPixelCount() const;
 	
 	/** Increase count of pixels. New entries have undefined content. */
-	void IncreasePixelCount( int byAmount );
+	void IncreasePixelCount(int byAmount);
 	
 	/** Set count of pixels. New entries have undefined content. */
-	void SetPixelCount( int count );
+	void SetPixelCount(int count);
 	
 	/** Data point offset at start of pixel. */
-	int GetPixelOffset( int pixel ) const;
+	int GetPixelOffset(int pixel) const;
 	
 	/** Clear TBO. */
 	void Clear();
 	
 	/** Add content from another dynamic TBO. */
-	void AddTBO( const deoglDynamicTBO &tbo );
+	void AddTBO(const deoglDynamicTBO &tbo);
 	
 	/** Set content from another dynamic TBO at offset measured in entries. */
-	void SetTBO( int offset, const deoglDynamicTBO &tbo );
+	void SetTBO(int offset, const deoglDynamicTBO &tbo);
 	
 	/** Update TBO with added data. */
 	void Update();
 	
 	/** Update sub range of TBO with data measured in pixels. */
-	void Update( int offset, int count );
+	void Update(int offset, int count);
 	
 	/** Memory consumption. */
 	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumption() const{ return pMemUse; }
@@ -142,7 +142,7 @@ public:
 	
 	
 protected:
-	void pEnlarge( int count );
+	void pEnlarge(int count);
 	void pEnsureVBO();
 	void pEnsureTBO();
 	void pEnsurePadding();

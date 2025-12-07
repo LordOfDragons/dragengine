@@ -30,15 +30,15 @@
 
 namespace squish {
 
-RangeFit::RangeFit( ColourSet const* colours, int flags ) 
-  : ColourFit( colours, flags )
+RangeFit::RangeFit(ColourSet const* colours, int flags) 
+  : ColourFit(colours, flags)
 {
 	// initialise the metric
-	bool perceptual = ( ( m_flags & kColourMetricPerceptual ) != 0 );
-	if( perceptual )
-		m_metric = Vec3( 0.2126f, 0.7152f, 0.0722f );
+	bool perceptual = ((m_flags & kColourMetricPerceptual) != 0);
+	if(perceptual)
+		m_metric = Vec3(0.2126f, 0.7152f, 0.0722f);
 	else
-		m_metric = Vec3( 1.0f );
+		m_metric = Vec3(1.0f);
 
 	// initialise the best error
 	m_besterror = FLT_MAX;
@@ -49,30 +49,30 @@ RangeFit::RangeFit( ColourSet const* colours, int flags )
 	float const* weights = m_colours->GetWeights();
 	
 	// get the covariance matrix
-	Sym3x3 covariance = ComputeWeightedCovariance( count, values, weights );
+	Sym3x3 covariance = ComputeWeightedCovariance(count, values, weights);
 	
 	// compute the principle component
-	Vec3 principle = ComputePrincipleComponent( covariance );
+	Vec3 principle = ComputePrincipleComponent(covariance);
 
 	// get the min and max range as the codebook endpoints
-	Vec3 start( 0.0f );
-	Vec3 end( 0.0f );
-	if( count > 0 )
+	Vec3 start(0.0f);
+	Vec3 end(0.0f);
+	if(count > 0)
 	{
 		float min, max;
 		
 		// compute the range
 		start = end = values[0];
-		min = max = Dot( values[0], principle );
-		for( int i = 1; i < count; ++i )
+		min = max = Dot(values[0], principle);
+		for(int i = 1; i < count; ++i)
 		{
-			float val = Dot( values[i], principle );
-			if( val < min )
+			float val = Dot(values[i], principle);
+			if(val < min)
 			{
 				start = values[i];
 				min = val;
 			}
-			else if( val > max )
+			else if(val > max)
 			{
 				end = values[i];
 				max = val;
@@ -81,20 +81,20 @@ RangeFit::RangeFit( ColourSet const* colours, int flags )
 	}
 			
 	// clamp the output to [0, 1]
-	Vec3 const one( 1.0f );
-	Vec3 const zero( 0.0f );
-	start = Min( one, Max( zero, start ) );
-	end = Min( one, Max( zero, end ) );
+	Vec3 const one(1.0f);
+	Vec3 const zero(0.0f);
+	start = Min(one, Max(zero, start));
+	end = Min(one, Max(zero, end));
 
 	// clamp to the grid and save
-	Vec3 const grid( 31.0f, 63.0f, 31.0f );
-	Vec3 const gridrcp( 1.0f/31.0f, 1.0f/63.0f, 1.0f/31.0f );
-	Vec3 const half( 0.5f );
-	m_start = Truncate( grid*start + half )*gridrcp;
-	m_end = Truncate( grid*end + half )*gridrcp;
+	Vec3 const grid(31.0f, 63.0f, 31.0f);
+	Vec3 const gridrcp(1.0f/31.0f, 1.0f/63.0f, 1.0f/31.0f);
+	Vec3 const half(0.5f);
+	m_start = Truncate(grid*start + half)*gridrcp;
+	m_end = Truncate(grid*end + half)*gridrcp;
 }
 
-void RangeFit::Compress3( void* block )
+void RangeFit::Compress3(void* block)
 {
 	// cache some values
 	int const count = m_colours->GetCount();
@@ -109,15 +109,15 @@ void RangeFit::Compress3( void* block )
 	// match each point to the closest code
 	u8 closest[16];
 	float error = 0.0f;
-	for( int i = 0; i < count; ++i )
+	for(int i = 0; i < count; ++i)
 	{
 		// find the closest code
 		float dist = FLT_MAX;
 		int idx = 0;
-		for( int j = 0; j < 3; ++j )
+		for(int j = 0; j < 3; ++j)
 		{
-			float d = LengthSquared( m_metric*( values[i] - codes[j] ) );
-			if( d < dist )
+			float d = LengthSquared(m_metric*(values[i] - codes[j]));
+			if(d < dist)
 			{
 				dist = d;
 				idx = j;
@@ -125,28 +125,28 @@ void RangeFit::Compress3( void* block )
 		}
 		
 		// save the index
-		closest[i] = ( u8 )idx;
+		closest[i] = (u8)idx;
 		
 		// accumulate the error
 		error += dist;
 	}
 	
 	// save this scheme if it wins
-	if( error < m_besterror )
+	if(error < m_besterror)
 	{
 		// remap the indices
 		u8 indices[16];
-		m_colours->RemapIndices( closest, indices );
+		m_colours->RemapIndices(closest, indices);
 		
 		// save the block
-		WriteColourBlock3( m_start, m_end, indices, block );
+		WriteColourBlock3(m_start, m_end, indices, block);
 		
 		// save the error
 		m_besterror = error;
 	}
 }
 
-void RangeFit::Compress4( void* block )
+void RangeFit::Compress4(void* block)
 {
 	// cache some values
 	int const count = m_colours->GetCount();
@@ -156,21 +156,21 @@ void RangeFit::Compress4( void* block )
 	Vec3 codes[4];
 	codes[0] = m_start;
 	codes[1] = m_end;
-	codes[2] = ( 2.0f/3.0f )*m_start + ( 1.0f/3.0f )*m_end;
-	codes[3] = ( 1.0f/3.0f )*m_start + ( 2.0f/3.0f )*m_end;
+	codes[2] = (2.0f/3.0f)*m_start + (1.0f/3.0f)*m_end;
+	codes[3] = (1.0f/3.0f)*m_start + (2.0f/3.0f)*m_end;
 
 	// match each point to the closest code
 	u8 closest[16];
 	float error = 0.0f;
-	for( int i = 0; i < count; ++i )
+	for(int i = 0; i < count; ++i)
 	{
 		// find the closest code
 		float dist = FLT_MAX;
 		int idx = 0;
-		for( int j = 0; j < 4; ++j )
+		for(int j = 0; j < 4; ++j)
 		{
-			float d = LengthSquared( m_metric*( values[i] - codes[j] ) );
-			if( d < dist )
+			float d = LengthSquared(m_metric*(values[i] - codes[j]));
+			if(d < dist)
 			{
 				dist = d;
 				idx = j;
@@ -178,21 +178,21 @@ void RangeFit::Compress4( void* block )
 		}
 		
 		// save the index
-		closest[i] = ( u8 )idx;
+		closest[i] = (u8)idx;
 		
 		// accumulate the error
 		error += dist;
 	}
 	
 	// save this scheme if it wins
-	if( error < m_besterror )
+	if(error < m_besterror)
 	{
 		// remap the indices
 		u8 indices[16];
-		m_colours->RemapIndices( closest, indices );
+		m_colours->RemapIndices(closest, indices);
 		
 		// save the block
-		WriteColourBlock4( m_start, m_end, indices, block );
+		WriteColourBlock4(m_start, m_end, indices, block);
 
 		// save the error
 		m_besterror = error;

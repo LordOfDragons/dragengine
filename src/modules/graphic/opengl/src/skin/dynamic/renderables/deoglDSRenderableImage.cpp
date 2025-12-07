@@ -43,17 +43,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDSRenderableImage::deoglDSRenderableImage( deoglDynamicSkin &dynamicSkin, const deDSRenderableImage &renderable ) :
-deoglDSRenderable( dynamicSkin, renderable ),
-pRenderableImage( renderable ),
-pRRenderableImage( NULL ),
-pImage( NULL ),
-pDirty( true )
+deoglDSRenderableImage::deoglDSRenderableImage(deoglDynamicSkin &dynamicSkin, const deDSRenderableImage &renderable) :
+deoglDSRenderable(dynamicSkin, renderable),
+pRenderableImage(renderable),
+pRRenderableImage(NULL),
+pImage(NULL),
+pDirty(true)
 {
 	try{
-		pRRenderableImage = new deoglRDSRenderableImage( *dynamicSkin.GetRDynamicSkin() );
+		pRRenderableImage = new deoglRDSRenderableImage(*dynamicSkin.GetRDynamicSkin());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -74,31 +74,31 @@ deoglRDSRenderable *deoglDSRenderableImage::GetRRenderable() const{
 
 void deoglDSRenderableImage::RenderableChanged(){
 	deoglImage * const image = pRenderableImage.GetImage()
-		? ( deoglImage* )pRenderableImage.GetImage()->GetPeerGraphic() : NULL;
+		? (deoglImage*)pRenderableImage.GetImage()->GetPeerGraphic() : NULL;
 	
-	if( image != pImage ){
+	if(image != pImage){
 		pImage = image;
 		pDirty = true;
 		
-		pDynamicSkin.NotifyRenderableChanged( *this );
+		pDynamicSkin.NotifyRenderableChanged(*this);
 	}
 	
-	if( pRenderableImage.GetName() != pRRenderableImage->GetName() ){
+	if(pRenderableImage.GetName() != pRRenderableImage->GetName()){
 		pDynamicSkin.NotifyRenderablesChanged();
 	}
 }
 
 void deoglDSRenderableImage::SyncToRender(){
-	if( pDirty ){
-		pRRenderableImage->SetName( pRenderableImage.GetName() );
+	if(pDirty){
+		pRRenderableImage->SetName(pRenderableImage.GetName());
 		
-		if( pRenderableImage.GetImage() ){
-			deoglImage &image = *( ( deoglImage* )pRenderableImage.GetImage()->GetPeerGraphic() );
+		if(pRenderableImage.GetImage()){
+			deoglImage &image = *((deoglImage*)pRenderableImage.GetImage()->GetPeerGraphic());
 			image.SyncToRender();
-			pRRenderableImage->SetImage( image.GetRImage() );
+			pRRenderableImage->SetImage(image.GetRImage());
 			
 		}else{
-			pRRenderableImage->SetImage( NULL );
+			pRRenderableImage->SetImage(NULL);
 		}
 		
 		pDirty = false;
@@ -111,7 +111,7 @@ void deoglDSRenderableImage::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableImage::pCleanUp(){
-	if( pRRenderableImage ){
+	if(pRRenderableImage){
 		pRRenderableImage->FreeReference();
 	}
 }

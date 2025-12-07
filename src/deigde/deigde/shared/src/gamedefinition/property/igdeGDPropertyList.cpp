@@ -42,8 +42,8 @@
 igdeGDPropertyList::igdeGDPropertyList(){
 }
 
-igdeGDPropertyList::igdeGDPropertyList( const igdeGDPropertyList &list ) :
-pProperties( list.pProperties ){
+igdeGDPropertyList::igdeGDPropertyList(const igdeGDPropertyList &list) :
+pProperties(list.pProperties){
 }
 
 igdeGDPropertyList::~igdeGDPropertyList(){
@@ -58,17 +58,17 @@ int igdeGDPropertyList::GetCount() const{
 	return pProperties.GetCount();
 }
 
-igdeGDProperty *igdeGDPropertyList::GetAt( int index ) const{
-	return ( igdeGDProperty* )pProperties.GetAt( index );
+igdeGDProperty *igdeGDPropertyList::GetAt(int index) const{
+	return (igdeGDProperty*)pProperties.GetAt(index);
 }
 
-igdeGDProperty *igdeGDPropertyList::GetNamed( const char *name ) const{
+igdeGDProperty *igdeGDPropertyList::GetNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		igdeGDProperty * const property = ( igdeGDProperty* )pProperties.GetAt( i );
-		if( property->GetName() == name ){
+	for(i=0; i<count; i++){
+		igdeGDProperty * const property = (igdeGDProperty*)pProperties.GetAt(i);
+		if(property->GetName() == name){
 			return property;
 		}
 	}
@@ -76,16 +76,16 @@ igdeGDProperty *igdeGDPropertyList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int igdeGDPropertyList::IndexOf( igdeGDProperty *property ) const{
-	return pProperties.IndexOf( property );
+int igdeGDPropertyList::IndexOf(igdeGDProperty *property) const{
+	return pProperties.IndexOf(property);
 }
 
-int igdeGDPropertyList::IndexOfNamed( const char *name ) const{
+int igdeGDPropertyList::IndexOfNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeGDProperty* )pProperties.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((igdeGDProperty*)pProperties.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -93,16 +93,16 @@ int igdeGDPropertyList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool igdeGDPropertyList::Has( igdeGDProperty *property ) const{
-	return pProperties.Has( property );
+bool igdeGDPropertyList::Has(igdeGDProperty *property) const{
+	return pProperties.Has(property);
 }
 
-bool igdeGDPropertyList::HasNamed( const char *name ) const{
+bool igdeGDPropertyList::HasNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeGDProperty* )pProperties.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((igdeGDProperty*)pProperties.GetAt(i))->GetName() == name){
 			return true;
 		}
 	}
@@ -110,35 +110,35 @@ bool igdeGDPropertyList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void igdeGDPropertyList::Add( igdeGDProperty *property ){
-	if( ! property || HasNamed( property->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void igdeGDPropertyList::Add(igdeGDProperty *property){
+	if(!property || HasNamed(property->GetName())){
+		DETHROW(deeInvalidParam);
 	}
-	pProperties.Add( property );
+	pProperties.Add(property);
 }
 
-void igdeGDPropertyList::Remove( igdeGDProperty *property ){
-	pProperties.Remove( property );
+void igdeGDPropertyList::Remove(igdeGDProperty *property){
+	pProperties.Remove(property);
 }
 
 void igdeGDPropertyList::RemoveAll(){
 	pProperties.RemoveAll();
 }
 
-void igdeGDPropertyList::SetToDeepCopyFrom( const igdeGDPropertyList &list ){
+void igdeGDPropertyList::SetToDeepCopyFrom(const igdeGDPropertyList &list){
 	const int count = list.pProperties.GetCount();
 	igdeGDProperty::Ref property;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		property.TakeOver( new igdeGDProperty( *list.GetAt( i ) ) );
-		Add( property );
+	for(i=0; i<count; i++){
+		property.TakeOver(new igdeGDProperty(*list.GetAt(i)));
+		Add(property);
 	}
 }
 
 
 
-igdeGDPropertyList &igdeGDPropertyList::operator=( const igdeGDPropertyList &list ){
+igdeGDPropertyList &igdeGDPropertyList::operator=(const igdeGDPropertyList &list){
 	pProperties = list.pProperties;
 	return *this;
 }

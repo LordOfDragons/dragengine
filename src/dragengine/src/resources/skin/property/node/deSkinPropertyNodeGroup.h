@@ -59,10 +59,10 @@ public:
 	int GetNodeCount() const;
 	
 	/** \brief Node at index. */
-	deSkinPropertyNode *GetNodeAt( int index ) const;
+	deSkinPropertyNode *GetNodeAt(int index) const;
 	
 	/** \brief Add node. */
-	void AddNode( deSkinPropertyNode *node );
+	void AddNode(deSkinPropertyNode *node);
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits node. */
-	virtual void Visit( deSkinPropertyNodeVisitor &visitor );
+	virtual void Visit(deSkinPropertyNodeVisitor &visitor);
 	/*@}*/
 };
 

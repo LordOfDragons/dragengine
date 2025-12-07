@@ -67,11 +67,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create session. */
-	deoxrAction( deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName );
+	deoxrAction(deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName);
 	
 	/** Create session. */
-	deoxrAction( deoxrActionSet &actionSet, eType type, const char *name,
-		const char *localizedName, const XrPath *subactionPath, int subactionPathCount );
+	deoxrAction(deoxrActionSet &actionSet, eType type, const char *name,
+		const char *localizedName, const XrPath *subactionPath, int subactionPathCount);
 	
 protected:
 	/** Clean up space. */

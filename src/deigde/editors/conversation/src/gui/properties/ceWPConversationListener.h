@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new listener. */
-	ceWPConversationListener( ceWPConversation &panel );
+	ceWPConversationListener(ceWPConversation &panel);
 	/** Cleans up the listener. */
 	virtual ~ceWPConversationListener();
 	/*@}*/
@@ -52,42 +52,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Conversation changed. */
-	virtual void ConversationChanged( ceConversation *conversation );
+	virtual void ConversationChanged(ceConversation *conversation);
 	
 	/** Target count or order changed. */
-	virtual void TargetStructureChanged( ceConversation *conversation );
+	virtual void TargetStructureChanged(ceConversation *conversation);
 	/** Target changed. */
-	virtual void TargetChanged( ceConversation *conversation, ceTarget *target );
+	virtual void TargetChanged(ceConversation *conversation, ceTarget *target);
 	/** Active target changed. */
-	virtual void ActiveTargetChanged( ceConversation *conversation );
+	virtual void ActiveTargetChanged(ceConversation *conversation);
 	
 	/** Camera shot count or order changed. */
-	virtual void CameraShotStructureChanged( ceConversation *conversation );
+	virtual void CameraShotStructureChanged(ceConversation *conversation);
 	/** Camera shot changed. */
-	virtual void CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot );
+	virtual void CameraShotChanged(ceConversation *conversation, ceCameraShot *cameraShot);
 	/** Active camera shot changed. */
-	virtual void ActiveCameraShotChanged( ceConversation *conversation );
+	virtual void ActiveCameraShotChanged(ceConversation *conversation);
 	
 	/** Gesture count or order changed. */
-	virtual void GestureStructureChanged( ceConversation *conversation );
+	virtual void GestureStructureChanged(ceConversation *conversation);
 	/** Gesture changed. */
-	virtual void GestureChanged( ceConversation *conversation, ceGesture *gesture );
+	virtual void GestureChanged(ceConversation *conversation, ceGesture *gesture);
 	/** Active gesture changed. */
-	virtual void ActiveGestureChanged( ceConversation *conversation );
+	virtual void ActiveGestureChanged(ceConversation *conversation);
 	
 	/** Face pose controller names changed. */
-	virtual void FacePoseControllerNamesChanged( ceConversation *conversation );
+	virtual void FacePoseControllerNamesChanged(ceConversation *conversation);
 	/** Face pose count or order changed. */
-	virtual void FacePoseStructureChanged( ceConversation *conversation );
+	virtual void FacePoseStructureChanged(ceConversation *conversation);
 	/** Face pose changed. */
-	virtual void FacePoseChanged( ceConversation *conversation, ceFacePose *facePose );
+	virtual void FacePoseChanged(ceConversation *conversation, ceFacePose *facePose);
 	/** Active face pose changed. */
-	virtual void ActiveFacePoseChanged( ceConversation *conversation );
+	virtual void ActiveFacePoseChanged(ceConversation *conversation);
 	
 	/** Actor count or order changed. */
-	virtual void ActorStructureChanged( ceConversation *conversation );
+	virtual void ActorStructureChanged(ceConversation *conversation);
 	/** Actor changed. */
-	virtual void ActorChanged( ceConversation *conversation, ceConversationActor *actor );
+	virtual void ActorChanged(ceConversation *conversation, ceConversationActor *actor);
 	/*@}*/
 };
 

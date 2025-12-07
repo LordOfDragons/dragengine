@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create type. */
-	deoglParticleEmitterType( deoglParticleEmitter &emitter, const deParticleEmitterType &type );
+	deoglParticleEmitterType(deoglParticleEmitter &emitter, const deParticleEmitterType &type);
 	
 	/** Clean up type. */
 	~deoglParticleEmitterType();

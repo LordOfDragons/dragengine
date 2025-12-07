@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkSetBoneMinimum( aeLink *link, float newValue );
+	aeULinkSetBoneMinimum(aeLink *link, float newValue);
 	
 protected:
 	/** Clean up undo. */

@@ -50,8 +50,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElseIfCase( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index );
+	ceWPTTIMAIfElseIfCase(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -70,7 +70,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Parent if-else model. */
 	ceWPTTIMAIfElse *GetModelIfElse() const;
@@ -91,7 +91,7 @@ public:
 	virtual void OnExpandedChanged();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 	
 	

@@ -63,7 +63,7 @@ public:
 	deoalImpulseResponse();
 	
 	/** \brief Create copy of impulse response. */
-	deoalImpulseResponse( const deoalImpulseResponse &response );
+	deoalImpulseResponse(const deoalImpulseResponse &response);
 	
 	/** \brief Clean up impulse response. */
 	~deoalImpulseResponse();
@@ -77,28 +77,28 @@ public:
 	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Impulse at index. */
-	const sImpulse &GetAt( int index ) const;
+	const sImpulse &GetAt(int index) const;
 	
 	/** \brief Add impulse producing unsorted impulse response. */
-	void Add( float time, float low, float medium, float high );
+	void Add(float time, float low, float medium, float high);
 	
 	/** \brief Add impulse response producing unsorted impulse response. */
-	void Add( const deoalImpulseResponse &response );
+	void Add(const deoalImpulseResponse &response);
 	
 	/** \brief Insert impulse producing impulse response sorted by time. */
-	void Insert( float time, float low, float medium, float high );
+	void Insert(float time, float low, float medium, float high);
 	
 	/** \brief Insert impulse response producing impulse response sorted by time. */
-	void Insert( const deoalImpulseResponse &response );
+	void Insert(const deoalImpulseResponse &response);
 	
 	/** \brief Insert scaled impulse response producing impulse response sorted by time. */
-	void InsertScaled( const deoalImpulseResponse &response, float scale );
+	void InsertScaled(const deoalImpulseResponse &response, float scale);
 	
 	/** \brief Clear impulse response. */
 	void Clear();
 	
 	/** \brief Reserve space in the array to make future Add/Insert more efficient. */
-	void ReserveSize( int size );
+	void ReserveSize(int size);
 	
 	
 	
@@ -153,7 +153,7 @@ public:
 	 * 
 	 * The reverberation time is calculated as "dropDb / slope[dB/s]" with default dropDb = 60.
 	 */
-	sImpulse ReverberationTime( float dropDb = 60.0f ) const;
+	sImpulse ReverberationTime(float dropDb = 60.0f) const;
 	/*@}*/
 	
 	
@@ -161,17 +161,17 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Assign. */
-	deoalImpulseResponse &operator=( const deoalImpulseResponse &list );
+	deoalImpulseResponse &operator=(const deoalImpulseResponse &list);
 	
 	/** \brief Scale values by factor. */
-	deoalImpulseResponse &operator*=( float factor );
+	deoalImpulseResponse &operator*=(float factor);
 	/*@}*/
 	
 	
 	
 private:
-	void pResize( int size );
-	void pInsert( float time, float low, float medium, float high );
+	void pResize(int size);
+	void pInsert(float time, float low, float medium, float high);
 };
 
 #endif

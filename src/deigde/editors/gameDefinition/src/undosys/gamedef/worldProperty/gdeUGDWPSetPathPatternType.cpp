@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetPathPatternType::gdeUGDWPSetPathPatternType( gdeGameDefinition *gamedef,
-gdeProperty *property, gdeProperty::ePathPatternTypes newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDWPSetPathPatternType::gdeUGDWPSetPathPatternType(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeProperty::ePathPatternTypes newValue) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set path pattern type" );
+	SetShortInfo("Game definition property set path pattern type");
 	
 	pOldValue = property->GetPathPatternType();
 	pNewValue = newValue;
@@ -61,10 +61,10 @@ pProperty( NULL )
 }
 
 gdeUGDWPSetPathPatternType::~gdeUGDWPSetPathPatternType(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUGDWPSetPathPatternType::~gdeUGDWPSetPathPatternType(){
 ///////////////
 
 void gdeUGDWPSetPathPatternType::Undo(){
-	pProperty->SetPathPatternType( pOldValue );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->SetPathPatternType(pOldValue);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }
 
 void gdeUGDWPSetPathPatternType::Redo(){
-	pProperty->SetPathPatternType( pNewValue );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->SetPathPatternType(pNewValue);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }

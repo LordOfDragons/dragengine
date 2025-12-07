@@ -43,8 +43,8 @@ deBaseScriptingSoundLevelMeter::~deBaseScriptingSoundLevelMeter(){
 // Notifications
 //////////////////
 
-void deBaseScriptingSoundLevelMeter::SpeakerAudible( const deSoundLevelMeter::cAudibleSpeaker &speaker ){
+void deBaseScriptingSoundLevelMeter::SpeakerAudible(const deSoundLevelMeter::cAudibleSpeaker &speaker){
 }
 
-void deBaseScriptingSoundLevelMeter::SpeakerInaudible( deSpeaker *speaker ){
+void deBaseScriptingSoundLevelMeter::SpeakerInaudible(deSpeaker *speaker){
 }

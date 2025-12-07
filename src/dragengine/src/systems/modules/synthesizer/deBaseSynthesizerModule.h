@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseSynthesizerModule( deLoadableModule &loadableModule );
+	deBaseSynthesizerModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseSynthesizerModule();
@@ -73,14 +73,14 @@ public:
 	/** \name Synthesizer Management */
 	/*@{*/
 	/** \brief Create peer for sound. */
-	virtual deBaseSynthesizerSound *CreateSound( deSound *sound ) = 0;
+	virtual deBaseSynthesizerSound *CreateSound(deSound *sound) = 0;
 	
 	/**
 	 * \brief Create peer for synthesizer or NULL if no explicit peer is required.
 	 * 
 	 * Default implementation return NULL.
 	 */
-	virtual deBaseSynthesizerSynthesizer *CreateSynthesizer( deSynthesizer *synthesizer ) = 0;
+	virtual deBaseSynthesizerSynthesizer *CreateSynthesizer(deSynthesizer *synthesizer) = 0;
 	
 	/**
 	 * \brief Create peer for synthesizer instance or NULL if no explicit peer is required.
@@ -88,7 +88,7 @@ public:
 	 * Default implementation return NULL.
 	 */
 	virtual deBaseSynthesizerSynthesizerInstance *CreateSynthesizerInstance(
-		deSynthesizerInstance *instance ) = 0;
+		deSynthesizerInstance *instance) = 0;
 	/*@}*/
 };
 

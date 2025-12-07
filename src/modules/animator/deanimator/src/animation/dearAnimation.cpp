@@ -42,9 +42,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearAnimation::dearAnimation( deDEAnimator *module, deAnimation *animation ){
-	if( ! module || ! animation ){
-		DETHROW( deeInvalidParam );
+dearAnimation::dearAnimation(deDEAnimator *module, deAnimation *animation){
+	if(!module || !animation){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pModule = module;
@@ -70,8 +70,8 @@ dearAnimation::~dearAnimation(){
 	static decTimer timer;
 	
 	#define DEBUG_RESET_TIMERS				timer.Reset(); timerTotal.Reset()
-	#define DEBUG_PRINT_TIMER(what)			pModule->LogInfoFormat( "Animation Timer: %s = %iys", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) ); timer.Reset()
-	#define DEBUG_PRINT_TIMER_TOTAL(what)	pModule->LogInfoFormat( "Animation Timer-Total: %s = %iys", what, ( int )( timerTotal.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER(what)			pModule->LogInfoFormat("Animation Timer: %s = %iys", what, (int)(timer.GetElapsedTime() * 1000000.0)); timer.Reset()
+	#define DEBUG_PRINT_TIMER_TOTAL(what)	pModule->LogInfoFormat("Animation Timer-Total: %s = %iys", what, (int)(timerTotal.GetElapsedTime() * 1000000.0))
 #else
 	#define DEBUG_RESET_TIMERS
 	#define DEBUG_PRINT_TIMER(what)
@@ -84,21 +84,21 @@ int dearAnimation::GetMoveCount() const{
 	return pMoves.GetCount();
 }
 
-dearAnimationMove *dearAnimation::GetMoveAt( int index ) const{
-	return ( dearAnimationMove* )pMoves.GetAt( index );
+dearAnimationMove *dearAnimation::GetMoveAt(int index) const{
+	return (dearAnimationMove*)pMoves.GetAt(index);
 }
 
-dearAnimationMove *dearAnimation::GetMoveNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+dearAnimationMove *dearAnimation::GetMoveNamed(const char *name) const{
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pMoves.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dearAnimationMove * const move = ( dearAnimationMove* )pMoves.GetAt( i );
-		if( move->GetName() == name ){
+	for(i=0; i<count; i++){
+		dearAnimationMove * const move = (dearAnimationMove*)pMoves.GetAt(i);
+		if(move->GetName() == name){
 			return move;
 		}
 	}
@@ -113,14 +113,14 @@ dearAnimationMove *dearAnimation::GetMoveNamed( const char *name ) const{
 
 void dearAnimation::pCreateMoves(){
 	const int count = pAnimation->GetMoveCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	pMoves.RemoveAll();
 	
 	int i;
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pMoves.Add(dearAnimationMove::Ref::NewWith(*pAnimation->GetMove(i)));
 	}
 }

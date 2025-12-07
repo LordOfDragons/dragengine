@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCComponentRemove::gdeMAOCComponentRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Component",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class component" )
+gdeMAOCComponentRemove::gdeMAOCComponentRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Component",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class component")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Component",
 ///////////////
 
 igdeUndo *gdeMAOCComponentRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent){
 		return NULL;
 	}
 	
 	gdeOCComponent * const component = gameDefinition.GetActiveOCComponent();
-	if( ! component ){
+	if(!component){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveComponent( &objectClass, component );
+	return new gdeUOCRemoveComponent(&objectClass, component);
 }
 
 void gdeMAOCComponentRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent
-		&& gameDefinition->GetActiveOCComponent() != NULL );
+		&& gameDefinition->GetActiveOCComponent() != NULL);
 }

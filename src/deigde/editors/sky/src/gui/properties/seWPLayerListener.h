@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPLayerListener( seWPLayer &panel );
+	seWPLayerListener(seWPLayer &panel);
 	
 protected:
 	/** \brief Clean up listener. */
@@ -57,43 +57,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Link added or removed. */
-	virtual void LinkStructureChanged ( seSky *sky );
+	virtual void LinkStructureChanged (seSky *sky);
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged( seSky *sky, seLink *link );
+	virtual void LinkNameChanged(seSky *sky, seLink *link);
 	
 	
 	
 	/** \brief Layer added or removed. */
-	virtual void LayerStructureChanged ( seSky *sky );
+	virtual void LayerStructureChanged (seSky *sky);
 	
 	/** \brief Layer changed. */
-	virtual void LayerChanged( seSky *sky, seLayer *layer );
+	virtual void LayerChanged(seSky *sky, seLayer *layer);
 	
 	/** \brief Layer name changed. */
-	virtual void LayerNameChanged( seSky *sky, seLayer *layer );
+	virtual void LayerNameChanged(seSky *sky, seLayer *layer);
 	
 	/** \brief Active layer changed. */
-	virtual void ActiveLayerChanged( seSky *sky );
+	virtual void ActiveLayerChanged(seSky *sky);
 	
 	
 	
 	/** \brief Body added or removed. */
-	virtual void BodyStructureChanged ( seSky *sky, seLayer *layer );
+	virtual void BodyStructureChanged (seSky *sky, seLayer *layer);
 	
 	/** \brief Body changed. */
-	virtual void BodyChanged( seSky *sky, seLayer *layer, seBody *body );
+	virtual void BodyChanged(seSky *sky, seLayer *layer, seBody *body);
 	
 	/** \brief Active body changed. */
-	virtual void ActiveBodyChanged( seSky *sky, seLayer *layer );
+	virtual void ActiveBodyChanged(seSky *sky, seLayer *layer);
 	
 	
 	
 	/** \brief Target changed. */
-    virtual void TargetChanged( seSky *sky, seLayer *layer, deSkyLayer::eTargets target );
+    virtual void TargetChanged(seSky *sky, seLayer *layer, deSkyLayer::eTargets target);
 	
 	/** \brief Active target changed. */
-	virtual void ActiveTargetChanged( seSky *sky, seLayer *layer );
+	virtual void ActiveTargetChanged(seSky *sky, seLayer *layer);
 	/*@}*/
 };
 

@@ -51,8 +51,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAPlayerChoiceOption( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option, int index );
+	ceWPTTIMAPlayerChoiceOption(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -71,7 +71,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Parent player choice model. */
 	ceWPTTIMAPlayerChoice *GetModelPlayerChoice() const;
@@ -92,7 +92,7 @@ public:
 	virtual void OnExpandedChanged();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 	
 	

@@ -60,14 +60,14 @@ public:
 	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Element at index. */
-	const deoalRayTraceHitElement &GetAt( int index ) const;
+	const deoalRayTraceHitElement &GetAt(int index) const;
 	
 	/** \brief Add element. */
-	void Add( const deoalRayTraceHitElement &element );
+	void Add(const deoalRayTraceHitElement &element);
 	
 	/** \brief Add element to hit component face. */
-	void AddComponentFace( float distance, const decDVector &point, const decDVector &normal,
-		deoalAComponent *component, int face, bool frontFacing );
+	void AddComponentFace(float distance, const decDVector &point, const decDVector &normal,
+		deoalAComponent *component, int face, bool frontFacing);
 	
 	/** \brief Remove all elements. */
 	void RemoveAll();

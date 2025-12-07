@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loader. */
-	deoxrLoader( deVROpenXR &oxr );
+	deoxrLoader(deVROpenXR &oxr);
 	
 	/** Clean up loader. */
 	~deoxrLoader();
@@ -100,7 +100,7 @@ public:
 	int GetApiLayerCount() const;
 	
 	/** API layer at index. */
-	deoxrApiLayer *GetApiLayerAt( int index ) const;
+	deoxrApiLayer *GetApiLayerAt(int index) const;
 	/*@}*/
 	
 	

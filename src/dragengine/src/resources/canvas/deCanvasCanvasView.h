@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasCanvasView( deCanvasManager *manager );
+	deCanvasCanvasView(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -75,7 +75,7 @@ public:
 	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Set canvas view or NULL to unset. */
-	void SetCanvasView( deCanvasView *canvasView );
+	void SetCanvasView(deCanvasView *canvasView);
 	
 	/** \brief Repeat count along X axis. */
 	inline int GetRepeatX() const{ return pRepeatX; }
@@ -84,7 +84,7 @@ public:
 	 * \brief Set repeat count along X axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatX( int count );
+	void SetRepeatX(int count);
 	
 	/** \brief Repeat count along Y axis. */
 	inline int GetRepeatY() const{ return pRepeatY; }
@@ -93,7 +93,7 @@ public:
 	 * \brief Set repeat count along Y axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatY( int count );
+	void SetRepeatY(int count);
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	virtual void Visit(deCanvasVisitor &visitor);
 	/*@}*/
 };
 

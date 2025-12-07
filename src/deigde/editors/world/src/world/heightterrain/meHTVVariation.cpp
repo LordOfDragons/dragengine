@@ -49,8 +49,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVVariation::meHTVVariation( deEngine *engine ){
-	if( ! engine ) DETHROW( deeInvalidParam );
+meHTVVariation::meHTVVariation(deEngine *engine){
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pVLayer = NULL;
@@ -67,8 +67,8 @@ meHTVVariation::meHTVVariation( deEngine *engine ){
 }
 
 meHTVVariation::~meHTVVariation(){
-	if( pSkin ) pSkin->FreeReference();
-	if( pModel ) pModel->FreeReference();
+	if(pSkin) pSkin->FreeReference();
+	if(pModel) pModel->FreeReference();
 }
 
 
@@ -76,28 +76,28 @@ meHTVVariation::~meHTVVariation(){
 // Management
 ///////////////
 
-void meHTVVariation::SetVLayer( meHTVegetationLayer *vlayer ){
+void meHTVVariation::SetVLayer(meHTVegetationLayer *vlayer){
 	pVLayer = vlayer;
 }
 
 
 
-void meHTVVariation::SetPathModel( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void meHTVVariation::SetPathModel(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if( ! pPathModel.Equals( path ) ){
+	if(!pPathModel.Equals(path)){
 		pPathModel = path;
 		
-		if( pModel ){
+		if(pModel){
 			pModel->FreeReference();
 			pModel = NULL;
 		}
 		
-		if( ! pPathModel.IsEmpty() ){
+		if(!pPathModel.IsEmpty()){
 			try{
-				pModel = pEngine->GetModelManager()->LoadModel( pPathModel.GetString(), "/" );
+				pModel = pEngine->GetModelManager()->LoadModel(pPathModel.GetString(), "/");
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 			}
 		}
 		
@@ -105,25 +105,25 @@ void meHTVVariation::SetPathModel( const char *path ){
 	}
 }
 
-void meHTVVariation::SetPathSkin( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void meHTVVariation::SetPathSkin(const char *path){
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if( ! pPathSkin.Equals( path ) ){
+	if(!pPathSkin.Equals(path)){
 		pPathSkin = path;
 		
-		if( pSkin ){
+		if(pSkin){
 			pSkin->FreeReference();
 			pSkin = NULL;
 		}
 		
-		if( ! pPathSkin.IsEmpty() ){
+		if(!pPathSkin.IsEmpty()){
 			try{
-				pSkin = pEngine->GetSkinManager()->LoadSkin( pPathSkin.GetString(), "/" );
+				pSkin = pEngine->GetSkinManager()->LoadSkin(pPathSkin.GetString(), "/");
 				
-			}catch( const deException & ){
-				if( pVLayer && pVLayer->GetHeightTerrain() ){
+			}catch(const deException &){
+				if(pVLayer && pVLayer->GetHeightTerrain()){
 					pSkin = pVLayer->GetHeightTerrain()->GetWorld().GetEnvironment()->
-						GetStockSkin( igdeEnvironment::essError );
+						GetStockSkin(igdeEnvironment::essError);
 					pSkin->AddReference();
 				}
 			}
@@ -133,20 +133,20 @@ void meHTVVariation::SetPathSkin( const char *path ){
 	}
 }
 
-void meHTVVariation::SetRotationPerForce( float rotation ){
-	if( rotation < 0.0f ) rotation = 0.0f;
+void meHTVVariation::SetRotationPerForce(float rotation){
+	if(rotation < 0.0f) rotation = 0.0f;
 	
-	if( fabsf( rotation - pRotationPerForce ) > 1e-5f ){
+	if(fabsf(rotation - pRotationPerForce) > 1e-5f){
 		pRotationPerForce = rotation;
 		
 		NotifyChanged();
 	}
 }
 
-void meHTVVariation::SetRestitution( float restitution ){
-	if( restitution < 0.0f ) restitution = 0.0f;
+void meHTVVariation::SetRestitution(float restitution){
+	if(restitution < 0.0f) restitution = 0.0f;
 	
-	if( fabsf( restitution - pRestitution ) > 1e-5f ){
+	if(fabsf(restitution - pRestitution) > 1e-5f){
 		pRestitution = restitution;
 		
 		NotifyChanged();
@@ -155,32 +155,32 @@ void meHTVVariation::SetRestitution( float restitution ){
 
 
 
-void meHTVVariation::SetMinimumRandomScaling( float scaling ){
-	if( fabsf( scaling - pRandomScaleMin ) > 1e-5f ){
+void meHTVVariation::SetMinimumRandomScaling(float scaling){
+	if(fabsf(scaling - pRandomScaleMin) > 1e-5f){
 		pRandomScaleMin = scaling;
 		
 		NotifyChanged();
 	}
 }
 
-void meHTVVariation::SetMaximumRandomScaling( float scaling ){
-	if( fabsf( scaling - pRandomScaleMax ) > 1e-5f ){
+void meHTVVariation::SetMaximumRandomScaling(float scaling){
+	if(fabsf(scaling - pRandomScaleMax) > 1e-5f){
 		pRandomScaleMax = scaling;
 		
 		NotifyChanged();
 	}
 }
 
-void meHTVVariation::SetMinimumRandomRotation( float rotation ){
-	if( fabsf( rotation - pRandomRotationMin ) > 1e-5f ){
+void meHTVVariation::SetMinimumRandomRotation(float rotation){
+	if(fabsf(rotation - pRandomRotationMin) > 1e-5f){
 		pRandomRotationMin = rotation;
 		
 		NotifyChanged();
 	}
 }
 
-void meHTVVariation::SetMaximumRandomRotation( float rotation ){
-	if( fabsf( rotation - pRandomRotationMax ) > 1e-5f ){
+void meHTVVariation::SetMaximumRandomRotation(float rotation){
+	if(fabsf(rotation - pRandomRotationMax) > 1e-5f){
 		pRandomRotationMax = rotation;
 		
 		NotifyChanged();
@@ -190,11 +190,11 @@ void meHTVVariation::SetMaximumRandomRotation( float rotation ){
 
 
 void meHTVVariation::NotifyChanged(){
-	if( pVLayer ){
+	if(pVLayer){
 		meHeightTerrain *hterrain = pVLayer->GetHeightTerrain();
-		if( hterrain ){
-			hterrain->GetWorld().NotifyHTVLVariationChanged( pVLayer, this );
-			hterrain->SetChanged( true );
+		if(hterrain){
+			hterrain->GetWorld().NotifyHTVLVariationChanged(pVLayer, this);
+			hterrain->SetChanged(true);
 			hterrain->InvalidateAllPropFields();
 		}
 	}

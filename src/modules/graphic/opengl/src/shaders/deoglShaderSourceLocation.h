@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader source location. */
-	deoglShaderSourceLocation( const char *inputFile, int inputLine, int outputLine );
+	deoglShaderSourceLocation(const char *inputFile, int inputLine, int outputLine);
 	
 	/** Clean up shader source location. */
 	virtual ~deoglShaderSourceLocation();

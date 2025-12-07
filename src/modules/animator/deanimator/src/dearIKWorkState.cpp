@@ -40,15 +40,15 @@
 /////////////////////////////////
 
 dearIKWorkState::dearIKWorkState() :
-pBoneStateIndex( 0 ),
-pAxisTypeX( eatFree ),
-pAxisTypeY( eatFree ),
-pAxisTypeZ( eatFree ),
-pHasLimits( false ),
-pDampening( 1.0f, 1.0f, 1.0f ),
-pHasDampening( false ),
-pWeight( 1.0f ),
-pLength( 0.0f ){
+pBoneStateIndex(0),
+pAxisTypeX(eatFree),
+pAxisTypeY(eatFree),
+pAxisTypeZ(eatFree),
+pHasLimits(false),
+pDampening(1.0f, 1.0f, 1.0f),
+pHasDampening(false),
+pWeight(1.0f),
+pLength(0.0f){
 }
 
 dearIKWorkState::~dearIKWorkState(){
@@ -58,84 +58,84 @@ dearIKWorkState::~dearIKWorkState(){
 
 // Management	
 	/** Transform global matrix and update inverse global matrix. */
-	void TransformGlobalMatrixInverse( const decMatrix &matrix );
+	void TransformGlobalMatrixInverse(const decMatrix &matrix);
 
 ///////////////
 
-void dearIKWorkState::SetBoneStateIndex( int index ){
+void dearIKWorkState::SetBoneStateIndex(int index){
 	pBoneStateIndex = index;
 }
 
-void dearIKWorkState::SetGlobalMatrix( const decMatrix &matrix ){
+void dearIKWorkState::SetGlobalMatrix(const decMatrix &matrix){
 	pGlobalMatrix = matrix;
 }
 
-void dearIKWorkState::SetInverseGlobalMatrix( const decMatrix &matrix ){
+void dearIKWorkState::SetInverseGlobalMatrix(const decMatrix &matrix){
 	pInvGlobalMatrix = matrix;
 }
 
-void dearIKWorkState::TransformGlobalMatrix( const decMatrix &matrix, bool updateInverse ){
-	pGlobalMatrix = pGlobalMatrix.QuickMultiply( matrix );
-	if( updateInverse ){
+void dearIKWorkState::TransformGlobalMatrix(const decMatrix &matrix, bool updateInverse){
+	pGlobalMatrix = pGlobalMatrix.QuickMultiply(matrix);
+	if(updateInverse){
 		pInvGlobalMatrix = pGlobalMatrix.QuickInvert();
 	}
 }
 
-void dearIKWorkState::SetAxisTypeX( eAxisTypes type ){
+void dearIKWorkState::SetAxisTypeX(eAxisTypes type){
 	pAxisTypeX = type;
 }
 
-void dearIKWorkState::SetAxisTypeY( eAxisTypes type ){
+void dearIKWorkState::SetAxisTypeY(eAxisTypes type){
 	pAxisTypeY = type;
 }
 
-void dearIKWorkState::SetAxisTypeZ( eAxisTypes type ){
+void dearIKWorkState::SetAxisTypeZ(eAxisTypes type){
 	pAxisTypeZ = type;
 }
 
-void dearIKWorkState::SetHasLimits( bool hasLimits ){
+void dearIKWorkState::SetHasLimits(bool hasLimits){
 	pHasLimits = hasLimits;
 }
 
-void dearIKWorkState::SetDampening( const decVector &dampening ){
-	pDampening = dampening.Clamped( decVector( 0.0f, 0.0f, 0.0f ), decVector( 1.0f, 1.0f, 1.0f ) );
-	pHasDampening = ! pDampening.IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ), 0.01f );
+void dearIKWorkState::SetDampening(const decVector &dampening){
+	pDampening = dampening.Clamped(decVector(0.0f, 0.0f, 0.0f), decVector(1.0f, 1.0f, 1.0f));
+	pHasDampening = !pDampening.IsEqualTo(decVector(1.0f, 1.0f, 1.0f), 0.01f);
 }
 
-void dearIKWorkState::UpdateLimits( const deRigBone &bone ){
+void dearIKWorkState::UpdateLimits(const deRigBone &bone){
 	pLimitLower = bone.GetIKLimitsLower();
 	pLimitUpper = bone.GetIKLimitsUpper();
 	
-	if( pAxisTypeX != eatLimited ){
+	if(pAxisTypeX != eatLimited){
 		pLimitUpper.x = pLimitLower.x = 0.0f;
 	}
-	if( pAxisTypeY != eatLimited ){
+	if(pAxisTypeY != eatLimited){
 		pLimitUpper.y = pLimitLower.y = 0.0f;
 	}
-	if( pAxisTypeZ != eatLimited ){
+	if(pAxisTypeZ != eatLimited){
 		pLimitUpper.z = pLimitLower.z = 0.0f;
 	}
 	
-	pLimitZeroQuatInv.SetFromEuler( ( pLimitLower + pLimitUpper ) * 0.5f );
+	pLimitZeroQuatInv.SetFromEuler((pLimitLower + pLimitUpper) * 0.5f);
 	pLimitZeroQuat = pLimitZeroQuatInv.Conjugate();
 	
-	pLimitUpper = ( pLimitUpper - pLimitLower ) * 0.5f;
+	pLimitUpper = (pLimitUpper - pLimitLower) * 0.5f;
 	pLimitLower = -pLimitUpper;
 }
 
-void dearIKWorkState::SetLockedRotation( const decVector &rotation ){
+void dearIKWorkState::SetLockedRotation(const decVector &rotation){
 	pLockedRotation = rotation;
 }
 
-void dearIKWorkState::SetWeight( float weight ){
+void dearIKWorkState::SetWeight(float weight){
 	pWeight = weight;
 }
 
-void dearIKWorkState::SetLength( float length ){
+void dearIKWorkState::SetLength(float length){
 	pLength = length;
 }
 
-void dearIKWorkState::SetEndPosition( const decVector &position ){
+void dearIKWorkState::SetEndPosition(const decVector &position){
 	pEndPosition = position;
 	pLength = position.Length();
 }
@@ -144,12 +144,12 @@ decVector dearIKWorkState::GetGlobalEnd() const{
 	return pGlobalMatrix * pEndPosition;
 }
 
-void dearIKWorkState::SetRigLocalRotation( const decQuaternion &rotation ){
+void dearIKWorkState::SetRigLocalRotation(const decQuaternion &rotation){
 	pRigLocalRot = rotation;
 	pInvRigLocalRot = rotation.Conjugate();
 }
 
-void dearIKWorkState::SetLastGlobalOrientation( const decQuaternion &orientation ){
+void dearIKWorkState::SetLastGlobalOrientation(const decQuaternion &orientation){
 	pLastGlobalOrientation = orientation;
 	pInvLastGlobalOrientation = orientation.Conjugate();
 }

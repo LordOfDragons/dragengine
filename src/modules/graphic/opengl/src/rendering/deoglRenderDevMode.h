@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
-	deoglRenderDevMode( deoglRenderThread &renderThread );
+	deoglRenderDevMode(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
 	~deoglRenderDevMode();
 	/*@}*/
@@ -64,70 +64,70 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Renders the developer mode information. */
-	void RenderDevMode( deoglRenderPlan &plan );
+	void RenderDevMode(deoglRenderPlan &plan);
 	
 	/** Renders the visiblity of components in the view. */
-	void RenderVisComponent( deoglRenderPlan &plan );
+	void RenderVisComponent(deoglRenderPlan &plan);
 	/** Renders the visiblity of lights in the view. */
-	void RenderVisLight( deoglRenderPlan &plan );
+	void RenderVisLight(deoglRenderPlan &plan);
 	/** Renders the component lod levels. */
-	void RenderComponentLodLevels( deoglRenderPlan &plan );
+	void RenderComponentLodLevels(deoglRenderPlan &plan);
 	/** Highlight transparent objects. */
-	void RenderHighlightTransparentObjects( deoglRenderPlan& plan );
+	void RenderHighlightTransparentObjects(deoglRenderPlan& plan);
 	
 	/** Renders the height terrain boxes. */
-	void RenderHeightTerrainBoxes( deoglRenderPlan &plan );
+	void RenderHeightTerrainBoxes(deoglRenderPlan &plan);
 	/** Renders the prop field information. */
-	void RenderPropFieldInfo( deoglRenderPlan &plan );
+	void RenderPropFieldInfo(deoglRenderPlan &plan);
 	
 	/** Renders light infos. */
-	void RenderLightInfos( deoglRenderPlan &plan );
+	void RenderLightInfos(deoglRenderPlan &plan);
 	
 	/** Render environment map information. */
-	void RenderEnvMapInfo( deoglRenderPlan &plan );
+	void RenderEnvMapInfo(deoglRenderPlan &plan);
 	
 	/** Display overlay information stacked from top to bottom. */
-	void RenderOverlayInfos( deoglRenderPlan &plan );
+	void RenderOverlayInfos(deoglRenderPlan &plan);
 	/** Display occlusion map level. */
-	void RenderOccMapLevel( deoglRenderPlan &plan );
+	void RenderOccMapLevel(deoglRenderPlan &plan);
 	/** Renders the LOD levels of the height terrain surrounding the camera using an overlay image. */
-	void RenderHeightTerrainLODLevels( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	void RenderHeightTerrainLODLevels(deoglRenderPlan &plan, const decPoint &position, decPoint &size);
 	/** Display the number of transparency levels as a dot bar. */
-	void RenderTraspLevelCount( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	void RenderTraspLevelCount(deoglRenderPlan &plan, const decPoint &position, decPoint &size);
 	
 	/** Display render plan debug information. */
-	void RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const decPoint &viewport,
-		const decPoint &position, decPoint &size );
+	void RenderRenderPlanDebugInfo(deoglRenderPlan &plan, const decPoint &viewport,
+		const decPoint &position, decPoint &size);
 	
 	/** Display memory information. */
-	void RenderMemoryInfo( deoglRenderPlan &plan, const decPoint &viewport,
-		const decPoint &position, decPoint &size );
+	void RenderMemoryInfo(deoglRenderPlan &plan, const decPoint &viewport,
+		const decPoint &position, decPoint &size);
 	
 	
 	
 	/** Show visible debug information. */
-	void RenderDebugInformation( const decPoint &viewport, const decPoint &position,
-		decPoint &size, bool forceSolid );
+	void RenderDebugInformation(const decPoint &viewport, const decPoint &position,
+		decPoint &size, bool forceSolid);
 	
 	/** Log visible debug information. */
 	void LogDebugInformation();
-	void LogDebugInformation( const deoglDebugInformationList &list, const decString &prefix );
+	void LogDebugInformation(const deoglDebugInformationList &list, const decString &prefix);
 	
 	/** Layout visible debug information for rendering. */
-	void LayoutDebugInformation( const decPoint &viewport, const decPoint &position, decPoint &size,
-		const deoglDebugInformationList &list, int minWidth, int maxWidth, bool alignSidewards );
+	void LayoutDebugInformation(const decPoint &viewport, const decPoint &position, decPoint &size,
+		const deoglDebugInformationList &list, int minWidth, int maxWidth, bool alignSidewards);
 	
-	void ChildMaxNameLen( const deoglDebugInformationList &list, int &maxNameWidth,
-		bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter ) const;
+	void ChildMaxNameLen(const deoglDebugInformationList &list, int &maxNameWidth,
+		bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter) const;
 	
 	/** Layout visible debug information for rendering. */
-	void LayoutDebugInformation( const decPoint &viewport, int maxNameWidth,
+	void LayoutDebugInformation(const decPoint &viewport, int maxNameWidth,
 		deoglDebugInformation &debugInformation, int minWidth, int maxWidth,
-		bool siblingsHaveElapsedTime, bool siblingsHaveCounter );
+		bool siblingsHaveElapsedTime, bool siblingsHaveCounter);
 	
 	/** Show visible debug information. */
-	void RenderDebugInformation( const decPoint &viewport, const decPoint &parentPosition,
-		const deoglDebugInformation &debugInformation, bool forceSolid );
+	void RenderDebugInformation(const decPoint &viewport, const decPoint &parentPosition,
+		const deoglDebugInformation &debugInformation, bool forceSolid);
 	/*@}*/
 	
 private:

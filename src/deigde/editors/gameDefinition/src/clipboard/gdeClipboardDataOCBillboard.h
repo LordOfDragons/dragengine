@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCBillboard( gdeOCBillboard *billboard );
+	gdeClipboardDataOCBillboard(gdeOCBillboard *billboard);
 	
 protected:
 	/**

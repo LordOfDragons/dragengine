@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new opengl camera peer. */
-	deoglCamera( deGraphicOpenGl &ogl, const deCamera &camera );
+	deoglCamera(deGraphicOpenGl &ogl, const deCamera &camera);
 	
 	/** Clean up camera peer. */
 	virtual ~deoglCamera();
@@ -90,12 +90,12 @@ public:
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
 	/** Updates the camera. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -138,10 +138,10 @@ public:
 	
 	
 	/** Effect has been added. */
-	virtual void EffectAdded( int index, deEffect *effect );
+	virtual void EffectAdded(int index, deEffect *effect);
 	
 	/** Effect has been removed. */
-	virtual void EffectRemoved( int index, deEffect *effect );
+	virtual void EffectRemoved(int index, deEffect *effect);
 	
 	/** All effects have been removed. */
 	virtual void AllEffectsRemoved();

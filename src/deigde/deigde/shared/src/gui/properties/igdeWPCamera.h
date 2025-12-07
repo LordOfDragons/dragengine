@@ -100,10 +100,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	igdeWPCamera( igdeEnvironment &environment );
+	igdeWPCamera(igdeEnvironment &environment);
 	
 	/** Create panel. */
-	igdeWPCamera( igdeEnvironment &environment, igdeAction *action );
+	igdeWPCamera(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -121,7 +121,7 @@ public:
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** Set camera or nullptr if not set. */
-	void SetCamera( igdeCamera *camera );
+	void SetCamera(igdeCamera *camera);
 	
 	/** Update widget after camera changed outside. */
 	void UpdateCamera();
@@ -138,7 +138,7 @@ public:
 	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** Set action or nullptr. */
-	void SetAction( igdeAction *action );
+	void SetAction(igdeAction *action);
 	
 	/**
 	 * Sky parameters changed.
@@ -149,10 +149,10 @@ public:
 	virtual void OnAction();
 	
 	/** Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	
 	/** Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	virtual void OnDestroyed(igdeAction *action);
 	/*@}*/
 	
 	

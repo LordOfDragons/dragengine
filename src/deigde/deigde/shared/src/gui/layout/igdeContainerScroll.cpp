@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeContainerScroll::igdeContainerScroll( igdeEnvironment &environment,
-	bool canScrollX, bool canScrollY ) :
-igdeContainer( environment ),
-pCanScrollX( canScrollX ),
-pCanScrollY( canScrollY ){
+igdeContainerScroll::igdeContainerScroll(igdeEnvironment &environment,
+	bool canScrollX, bool canScrollY) :
+igdeContainer(environment),
+pCanScrollX(canScrollX),
+pCanScrollY(canScrollY){
 }
 
 igdeContainerScroll::~igdeContainerScroll(){
@@ -55,33 +55,33 @@ igdeContainerScroll::~igdeContainerScroll(){
 // Management
 ///////////////
 
-void igdeContainerScroll::AddChild( igdeWidget *child ){
-	if( GetChildCount() > 0 ){
-		DETHROW( deeInvalidParam );
+void igdeContainerScroll::AddChild(igdeWidget *child){
+	if(GetChildCount() > 0){
+		DETHROW(deeInvalidParam);
 	}
-	igdeContainer::AddChild( child );
+	igdeContainer::AddChild(child);
 }
 
 
 
 void igdeContainerScroll::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerScroll * const native = igdeNativeContainerScroll::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeContainerScroll * const native = igdeNativeContainerScroll::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeContainerScroll::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerScroll * const native = ( igdeNativeContainerScroll* )GetNativeWidget();
+	igdeNativeContainerScroll * const native = (igdeNativeContainerScroll*)GetNativeWidget();
 	DropNativeWidget();
 	native->DestroyNativeWidget();
 }

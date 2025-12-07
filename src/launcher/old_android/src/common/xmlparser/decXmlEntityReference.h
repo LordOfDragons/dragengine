@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml entity reference. */
-	decXmlEntityReference( const char *name );
+	decXmlEntityReference(const char *name);
 	
 protected:
 	/** \brief Clean up xml entity refernece. */
@@ -59,14 +59,14 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	/** \name Casting */

@@ -43,18 +43,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNodeShape::sePropertyNodeShape( deEngine &engine ) :
-sePropertyNode( entShape, engine, ShapeMappedCount ),
-pShapeType( deSkinPropertyNodeShape::estRectangle ),
-pThickness( 1.0f ){
+sePropertyNodeShape::sePropertyNodeShape(deEngine &engine) :
+sePropertyNode(entShape, engine, ShapeMappedCount),
+pShapeType(deSkinPropertyNodeShape::estRectangle),
+pThickness(1.0f){
 }
 
-sePropertyNodeShape::sePropertyNodeShape( const sePropertyNodeShape &node ) :
-sePropertyNode( node ),
-pShapeType( node.pShapeType ),
-pFillColor( node.pFillColor ),
-pLineColor( node.pLineColor ),
-pThickness( node.pThickness ){
+sePropertyNodeShape::sePropertyNodeShape(const sePropertyNodeShape &node) :
+sePropertyNode(node),
+pShapeType(node.pShapeType),
+pFillColor(node.pFillColor),
+pLineColor(node.pLineColor),
+pThickness(node.pThickness){
 }
 
 sePropertyNodeShape::~sePropertyNodeShape(){
@@ -65,12 +65,12 @@ sePropertyNodeShape::~sePropertyNodeShape(){
 // Management
 ///////////////
 
-void sePropertyNodeShape::SetShapeType( deSkinPropertyNodeShape::eShapeTypes type ){
-	if( type < deSkinPropertyNodeShape::estRectangle || type > deSkinPropertyNodeShape::estEllipse ){
-		DETHROW( deeInvalidParam );
+void sePropertyNodeShape::SetShapeType(deSkinPropertyNodeShape::eShapeTypes type){
+	if(type < deSkinPropertyNodeShape::estRectangle || type > deSkinPropertyNodeShape::estEllipse){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( type == pShapeType ){
+	if(type == pShapeType){
 		return;
 	}
 	
@@ -78,8 +78,8 @@ void sePropertyNodeShape::SetShapeType( deSkinPropertyNodeShape::eShapeTypes typ
 	NotifyChanged();
 }
 
-void sePropertyNodeShape::SetFillColor( const decColor &color ){
-	if( color.IsEqualTo( pFillColor ) ){
+void sePropertyNodeShape::SetFillColor(const decColor &color){
+	if(color.IsEqualTo(pFillColor)){
 		return;
 	}
 	
@@ -87,8 +87,8 @@ void sePropertyNodeShape::SetFillColor( const decColor &color ){
 	NotifyChanged();
 }
 
-void sePropertyNodeShape::SetLineColor( const decColor &color ){
-	if( color.IsEqualTo( pLineColor ) ){
+void sePropertyNodeShape::SetLineColor(const decColor &color){
+	if(color.IsEqualTo(pLineColor)){
 		return;
 	}
 	
@@ -96,9 +96,9 @@ void sePropertyNodeShape::SetLineColor( const decColor &color ){
 	NotifyChanged();
 }
 
-void sePropertyNodeShape::SetThickness( float thickness ){
-	thickness = decMath::max( thickness, 0.0f );
-	if( fabsf( thickness - pThickness ) < FLOAT_SAFE_EPSILON ){
+void sePropertyNodeShape::SetThickness(float thickness){
+	thickness = decMath::max(thickness, 0.0f);
+	if(fabsf(thickness - pThickness) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -109,5 +109,5 @@ void sePropertyNodeShape::SetThickness( float thickness ){
 
 
 sePropertyNode *sePropertyNodeShape::Copy() const{
-	return new sePropertyNodeShape( *this );
+	return new sePropertyNodeShape(*this);
 }

@@ -52,9 +52,9 @@ public:
 	/** Retrieves the number of acks. */
 	inline int GetAckCount() const{ return pAckCount; }
 	/** Retrieves the ack at the given index. */
-	int GetAckAt( int index ) const;
+	int GetAckAt(int index) const;
 	/** Adds an ack. */
-	void AddAck( int number );
+	void AddAck(int number);
 	/** Removes all acks. */
 	void RemoveAllAcks();
 };

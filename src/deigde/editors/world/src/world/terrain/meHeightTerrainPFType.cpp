@@ -60,29 +60,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHeightTerrainPFType::meHeightTerrainPFType( deEngine *engine ) :
-pPFLayer( NULL ),
-pEngine( engine ),
-pModel( NULL ),
-pSkin( NULL ),
-pRotationPerForce( 5.0f ),
-pRestitution( 0.5f ),
-pCoverageDensity( 1 ), //10; // 10 props per 1m^2
-pRandomScaleMin( 0.5f ),
-pRandomScaleMax( 1.5f ),
-pRandomRotationMin( 0.0f, -30.0f, 0.0f ),
-pRandomRotationMax( 0.0f, 30.0f, 0.0f )
+meHeightTerrainPFType::meHeightTerrainPFType(deEngine *engine) :
+pPFLayer(NULL),
+pEngine(engine),
+pModel(NULL),
+pSkin(NULL),
+pRotationPerForce(5.0f),
+pRestitution(0.5f),
+pCoverageDensity(1), //10; // 10 props per 1m^2
+pRandomScaleMin(0.5f),
+pRandomScaleMax(1.5f),
+pRandomRotationMin(0.0f, -30.0f, 0.0f),
+pRandomRotationMax(0.0f, 30.0f, 0.0f)
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+	if(!engine){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 meHeightTerrainPFType::~meHeightTerrainPFType(){
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
-	if( pModel ){
+	if(pModel){
 		pModel->FreeReference();
 	}
 }
@@ -92,51 +92,51 @@ meHeightTerrainPFType::~meHeightTerrainPFType(){
 // Management
 ///////////////
 
-void meHeightTerrainPFType::SetPFLayer( meHeightTerrainPFLayer *pflayer ){
+void meHeightTerrainPFType::SetPFLayer(meHeightTerrainPFLayer *pflayer){
 	pPFLayer = pflayer;
 }
 
 void meHeightTerrainPFType::NotifyTypeChanged(){
-	if( ! pPFLayer ){
+	if(!pPFLayer){
 		return;
 	}
 	
 	meHeightTerrainSector * const htsector = pPFLayer->GetHTSector();
-	if( htsector == NULL ){
+	if(htsector == NULL){
 		return;
 	}
 	
-	if( htsector->GetHeightTerrain() ){
+	if(htsector->GetHeightTerrain()){
 		htsector->GetHeightTerrain()->RebuildVegetationPropFieldTypes();
-		htsector->GetHeightTerrain()->SetChanged( true );
+		htsector->GetHeightTerrain()->SetChanged(true);
 	}
 }
 
 
 
-void meHeightTerrainPFType::SetPathModel( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+void meHeightTerrainPFType::SetPathModel(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPathModel.Equals( path ) ){
+	if(pPathModel.Equals(path)){
 		return;
 	}
 	
 	pPathModel = path;
 	
-	if( pModel ){
+	if(pModel){
 		pModel->FreeReference();
 		pModel = NULL;
 	}
 	
-	if( ! pPathModel.IsEmpty() ){
+	if(!pPathModel.IsEmpty()){
 		try{
-			pModel = pEngine->GetModelManager()->LoadModel( pPathModel, "/" );
+			pModel = pEngine->GetModelManager()->LoadModel(pPathModel, "/");
 			
-		}catch( const deException &e ){
-			if( pPFLayer && pPFLayer->GetHTSector() && pPFLayer->GetHTSector()->GetHeightTerrain() ){
-				pPFLayer->GetHTSector()->GetHeightTerrain()->GetWorld().GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			if(pPFLayer && pPFLayer->GetHTSector() && pPFLayer->GetHTSector()->GetHeightTerrain()){
+				pPFLayer->GetHTSector()->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);
 			}
 		}
 	}
@@ -144,30 +144,30 @@ void meHeightTerrainPFType::SetPathModel( const char *path ){
 	NotifyTypeChanged();
 }
 
-void meHeightTerrainPFType::SetPathSkin( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+void meHeightTerrainPFType::SetPathSkin(const char *path){
+	if(!path){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPathSkin.Equals( path ) ){
+	if(pPathSkin.Equals(path)){
 		return;
 	}
 	
 	pPathSkin = path;
 	
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 		pSkin = NULL;
 	}
 	
-	if( ! pPathSkin.IsEmpty() ){
+	if(!pPathSkin.IsEmpty()){
 		try{
-			pSkin = pEngine->GetSkinManager()->LoadSkin( pPathSkin.GetString(), "/" );
+			pSkin = pEngine->GetSkinManager()->LoadSkin(pPathSkin.GetString(), "/");
 			
-		}catch( const deException & ){
-			if( pPFLayer && pPFLayer->GetHTSector() && pPFLayer->GetHTSector()->GetHeightTerrain() ){
+		}catch(const deException &){
+			if(pPFLayer && pPFLayer->GetHTSector() && pPFLayer->GetHTSector()->GetHeightTerrain()){
 				pSkin = pPFLayer->GetHTSector()->GetHeightTerrain()->GetWorld().
-					GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
+					GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
 				pSkin->AddReference();
 			}
 		}
@@ -176,10 +176,10 @@ void meHeightTerrainPFType::SetPathSkin( const char *path ){
 	NotifyTypeChanged();
 }
 
-void meHeightTerrainPFType::SetRotationPerForce( float rotation ){
-	rotation = decMath::max( rotation, 0.0f );
+void meHeightTerrainPFType::SetRotationPerForce(float rotation){
+	rotation = decMath::max(rotation, 0.0f);
 	
-	if( fabsf( rotation - pRotationPerForce ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(rotation - pRotationPerForce) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -188,10 +188,10 @@ void meHeightTerrainPFType::SetRotationPerForce( float rotation ){
 	NotifyTypeChanged();
 }
 
-void meHeightTerrainPFType::SetRestitution( float restitution ){
-	restitution = decMath::max( restitution, 0.0f );
+void meHeightTerrainPFType::SetRestitution(float restitution){
+	restitution = decMath::max(restitution, 0.0f);
 	
-	if( fabsf( restitution - pRestitution ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(restitution - pRestitution) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -202,8 +202,8 @@ void meHeightTerrainPFType::SetRestitution( float restitution ){
 
 
 
-void meHeightTerrainPFType::SetCoverageDensity( int density ){
-	if( density == pCoverageDensity ){
+void meHeightTerrainPFType::SetCoverageDensity(int density){
+	if(density == pCoverageDensity){
 		return;
 	}
 	
@@ -212,8 +212,8 @@ void meHeightTerrainPFType::SetCoverageDensity( int density ){
 	NotifyTypeChanged();
 }
 
-void meHeightTerrainPFType::SetMinimumRandomScaling( float scaling ){
-	if( fabsf( scaling - pRandomScaleMin ) < FLOAT_SAFE_EPSILON ){
+void meHeightTerrainPFType::SetMinimumRandomScaling(float scaling){
+	if(fabsf(scaling - pRandomScaleMin) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -222,8 +222,8 @@ void meHeightTerrainPFType::SetMinimumRandomScaling( float scaling ){
 	NotifyTypeChanged();
 }
 
-void meHeightTerrainPFType::SetMaximumRandomScaling( float scaling ){
-	if( fabsf( scaling - pRandomScaleMax ) < FLOAT_SAFE_EPSILON ){
+void meHeightTerrainPFType::SetMaximumRandomScaling(float scaling){
+	if(fabsf(scaling - pRandomScaleMax) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -232,8 +232,8 @@ void meHeightTerrainPFType::SetMaximumRandomScaling( float scaling ){
 	NotifyTypeChanged();
 }
 
-void meHeightTerrainPFType::SetMinimumRandomRotation( const decVector &rotation ){
-	if( rotation.IsEqualTo( pRandomRotationMin ) ){
+void meHeightTerrainPFType::SetMinimumRandomRotation(const decVector &rotation){
+	if(rotation.IsEqualTo(pRandomRotationMin)){
 		return;
 	}
 	
@@ -242,8 +242,8 @@ void meHeightTerrainPFType::SetMinimumRandomRotation( const decVector &rotation 
 	NotifyTypeChanged();
 }
 
-void meHeightTerrainPFType::SetMaximumRandomRotation( const decVector &rotation ){
-	if( rotation.IsEqualTo( pRandomRotationMax ) ){
+void meHeightTerrainPFType::SetMaximumRandomRotation(const decVector &rotation){
+	if(rotation.IsEqualTo(pRandomRotationMax)){
 		return;
 	}
 	

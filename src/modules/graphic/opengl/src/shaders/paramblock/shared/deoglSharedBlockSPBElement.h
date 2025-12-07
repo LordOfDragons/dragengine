@@ -45,7 +45,7 @@ public:
 	private:
 		deoglSharedBlockSPBElement *pElement;
 		
-		Ref( const Ref &ref ); // disallow compiler auto-use
+		Ref(const Ref &ref); // disallow compiler auto-use
 		
 	public:
 		Ref();
@@ -55,7 +55,7 @@ public:
 		operator deoglSharedBlockSPBElement&() const;
 		deoglSharedBlockSPBElement* operator->() const;
 		
-		Ref &operator=( deoglSharedBlockSPBElement *element );
+		Ref &operator=(deoglSharedBlockSPBElement *element);
 		bool operator!() const;
 		operator bool() const;
 	};
@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block element. */
-	deoglSharedBlockSPBElement( deoglSharedBlockSPB &spb, int index, int count );
+	deoglSharedBlockSPBElement(deoglSharedBlockSPB &spb, int index, int count);
 	
 	/** Clean up shared shader parameter block element. */
 	virtual ~deoglSharedBlockSPBElement();
@@ -94,13 +94,13 @@ public:
 	inline int GetCount() const{ return pCount; }
 	
 	/** Set count of elements. */
-	void SetCount( int count );
+	void SetCount(int count);
 	
 	/** Block is empty. */
 	inline bool GetEmpty() const{ return pEmpty; }
 	
 	/** Set if block is empty. */
-	void SetEmpty( bool empty );
+	void SetEmpty(bool empty);
 	
 	/**
 	 * Map buffer for element.

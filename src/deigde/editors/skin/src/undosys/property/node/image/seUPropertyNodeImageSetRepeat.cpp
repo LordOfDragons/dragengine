@@ -39,15 +39,15 @@
 ////////////////////////////
 
 seUPropertyNodeImageSetRepeat::seUPropertyNodeImageSetRepeat(
-sePropertyNodeImage *node, const decPoint &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeImage *node, const decPoint &newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node image set repeat" );
+	SetShortInfo("Node image set repeat");
 	
 	pOldValue = node->GetRepeat();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeImageSetRepeat::~seUPropertyNodeImageSetRepeat(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUPropertyNodeImageSetRepeat::~seUPropertyNodeImageSetRepeat(){
 ///////////////
 
 void seUPropertyNodeImageSetRepeat::Undo(){
-	pNode->SetRepeat( pOldValue );
+	pNode->SetRepeat(pOldValue);
 }
 
 void seUPropertyNodeImageSetRepeat::Redo(){
-	pNode->SetRepeat( pNewValue );
+	pNode->SetRepeat(pNewValue);
 }

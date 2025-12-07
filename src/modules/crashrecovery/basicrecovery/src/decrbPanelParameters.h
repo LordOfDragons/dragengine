@@ -43,7 +43,7 @@ class deModuleParameter;
  * also change them.
  */
 class decrbPanelParameters : public FXVerticalFrame{
-	FXDECLARE( decrbPanelParameters )
+	FXDECLARE(decrbPanelParameters)
 	
 protected:
 	decrbPanelParameters();
@@ -74,7 +74,7 @@ private:
 	
 public:
 	// constructor, destructor
-	decrbPanelParameters( decrbWindowMain *windowMain, FXComposite *container );
+	decrbPanelParameters(decrbWindowMain *windowMain, FXComposite *container);
 	virtual ~decrbPanelParameters();
 	
 	// management
@@ -83,10 +83,10 @@ public:
 	void UpdateModulesList();
 	
 	// events
-	long onCBModuleChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBParameterChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnSetCommand( FXObject *sender, FXSelector selector, void *data );
-	long onBtnResetCommand( FXObject *sender, FXSelector selector, void *data );
+	long onCBModuleChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBParameterChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnSetCommand(FXObject *sender, FXSelector selector, void *data);
+	long onBtnResetCommand(FXObject *sender, FXSelector selector, void *data);
 	
 private:
 };

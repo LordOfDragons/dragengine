@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky instance resource manager. */
-	deSkyInstanceManager( deEngine *engine );
+	deSkyInstanceManager(deEngine *engine);
 	
 	/** \brief Clean up sky instance resource manager and report leaking resources. */
 	virtual ~deSkyInstanceManager();
@@ -88,7 +88,7 @@ public:
 	 */
 	/*@{*/
 	/** \warning For internal use only. Never call this function on your own. */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

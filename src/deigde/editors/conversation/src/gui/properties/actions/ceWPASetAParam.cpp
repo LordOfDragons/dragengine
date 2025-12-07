@@ -72,12 +72,12 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	cComboActorID( ceWPASetAParam &panel ) : pPanel( panel ){ }
+	cComboActorID(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetActor() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetActor()){
 			return;
 		}
 		
@@ -90,12 +90,12 @@ class cTextName : public igdeTextFieldListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	cTextName( ceWPASetAParam &panel ) : pPanel( panel ){ }
+	cTextName(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetName() ){
+		if(!topic || !action || textField->GetText() == action->GetName()){
 			return;
 		}
 		
@@ -108,18 +108,18 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	cComboOperator( ceWPASetAParam &panel ) : pPanel( panel ){ }
+	cComboOperator(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
-		if( ! topic || ! action || ! comboBox->GetSelectedItem() ){
+		if(!topic || !action || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
 		const ceCASetActorParameter::eOperators newOperator =
-			( ceCASetActorParameter::eOperators )( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( newOperator == action->GetOperator() ){
+			(ceCASetActorParameter::eOperators)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(newOperator == action->GetOperator()){
 			return;
 		}
 		
@@ -132,13 +132,13 @@ class cTextValue : public igdeTextFieldListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	cTextValue( ceWPASetAParam &panel ) : pPanel( panel ){ }
+	cTextValue(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
 		const int value = textField->GetInteger();
-		if( ! topic || ! action || value == action->GetValue() ){
+		if(!topic || !action || value == action->GetValue()){
 			return;
 		}
 		
@@ -151,12 +151,12 @@ class cTextValueVariable : public igdeTextFieldListener {
 	ceWPASetAParam &pPanel;
 	
 public:
-	cTextValueVariable( ceWPASetAParam &panel ) : pPanel( panel ){ }
+	cTextValueVariable(ceWPASetAParam &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetActorParameter * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetValueVariable() ){
+		if(!topic || !action || textField->GetText() == action->GetValueVariable()){
 			return;
 		}
 		
@@ -175,28 +175,28 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPASetAParam::ceWPASetAParam( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPASetAParam::ceWPASetAParam(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Actor ID:", true, "Actor to modify", pCBActorID, new cComboActorID( *this ) );
+	helper.ComboBox(*this, "Actor ID:", true, "Actor to modify", pCBActorID, new cComboActorID(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.EditString( *this, "Name:", "Name of the parameter to set or empty to have no effect",
-		pEditName, new cTextName( *this ) );
+	helper.EditString(*this, "Name:", "Name of the parameter to set or empty to have no effect",
+		pEditName, new cTextName(*this));
 	
-	helper.ComboBox( *this, "Operator:", "How to apply the value to the parameter",
-		pCBOperator, new cComboOperator( *this ) );
-	pCBOperator->AddItem( "Set", NULL, ( void* )( intptr_t )ceCASetActorParameter::eopSet );
-	pCBOperator->AddItem( "Increment", NULL, ( void* )( intptr_t )ceCASetActorParameter::eopIncrement );
-	pCBOperator->AddItem( "Decrement", NULL, ( void* )( intptr_t )ceCASetActorParameter::eopDecrement );
-	pCBOperator->AddItem( "Random", NULL, ( void* )( intptr_t )ceCASetActorParameter::eopRandom );
+	helper.ComboBox(*this, "Operator:", "How to apply the value to the parameter",
+		pCBOperator, new cComboOperator(*this));
+	pCBOperator->AddItem("Set", NULL, (void*)(intptr_t)ceCASetActorParameter::eopSet);
+	pCBOperator->AddItem("Increment", NULL, (void*)(intptr_t)ceCASetActorParameter::eopIncrement);
+	pCBOperator->AddItem("Decrement", NULL, (void*)(intptr_t)ceCASetActorParameter::eopDecrement);
+	pCBOperator->AddItem("Random", NULL, (void*)(intptr_t)ceCASetActorParameter::eopRandom);
 	
-	helper.EditInteger( *this, "Value:", "Value to use for operation (integer value)",
-		pEditValue, new cTextValue( *this ) );
-	helper.EditString( *this, "Variable:", "Variable value to use for operation or empty string to use 'Value'",
-		pEditValueVariable, new cTextValueVariable( *this ) );
+	helper.EditInteger(*this, "Value:", "Value to use for operation (integer value)",
+		pEditValue, new cTextValue(*this));
+	helper.EditString(*this, "Variable:", "Variable value to use for operation or empty string to use 'Value'",
+		pEditValueVariable, new cTextValueVariable(*this));
 }
 
 ceWPASetAParam::~ceWPASetAParam(){
@@ -210,8 +210,8 @@ ceWPASetAParam::~ceWPASetAParam(){
 ceCASetActorParameter *ceWPASetAParam::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatSetActorParameter ){
-		return ( ceCASetActorParameter* )action;
+	if(action && action->GetType() == ceConversationAction::eatSetActorParameter){
+		return (ceCASetActorParameter*)action;
 		
 	}else{
 		return NULL;
@@ -223,17 +223,17 @@ void ceWPASetAParam::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBActorID->SetText( action->GetActor() );
-		pEditName->SetText( action->GetName() );
-		pCBOperator->SetSelectionWithData( ( void* )( intptr_t )action->GetOperator() );
-		pEditValue->SetInteger( action->GetValue() );
-		pEditValueVariable->SetText( action->GetValueVariable() );
+	if(action){
+		pCBActorID->SetText(action->GetActor());
+		pEditName->SetText(action->GetName());
+		pCBOperator->SetSelectionWithData((void*)(intptr_t)action->GetOperator());
+		pEditValue->SetInteger(action->GetValue());
+		pEditValueVariable->SetText(action->GetValueVariable());
 		
 	}else{
 		pCBActorID->ClearText();
 		pEditName->ClearText();
-		pCBOperator->SetSelectionWithData( ( void* )( intptr_t )ceCASetActorParameter::eopSet );
+		pCBOperator->SetSelectionWithData((void*)(intptr_t)ceCASetActorParameter::eopSet);
 		pEditValue->ClearText();
 		pEditValueVariable->ClearText();
 	}
@@ -243,5 +243,5 @@ void ceWPASetAParam::UpdateAction(){
 
 void ceWPASetAParam::UpdateActorIDLists(){
 	ceWPAction::UpdateActorIDLists();
-	UpdateComboBoxWithActorIDList( pCBActorID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
 }

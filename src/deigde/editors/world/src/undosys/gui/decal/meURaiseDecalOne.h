@@ -49,7 +49,7 @@ public:
 	typedef deTObjectReference<meURaiseDecalOne> Ref;
 	
 	// constructor, destructor
-	meURaiseDecalOne( meWorld *world, meDecal *decal );
+	meURaiseDecalOne(meWorld *world, meDecal *decal);
 	virtual ~meURaiseDecalOne();
 	
 	// undo and redo operations

@@ -57,10 +57,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	seSourceSound( deEngine *engine );
+	seSourceSound(deEngine *engine);
 	
 	/** \brief Create copy of synthesizer source. */
-	seSourceSound( const seSourceSound &copy );
+	seSourceSound(const seSourceSound &copy);
 	
 	/** \brief Clean up synthesizer source. */
 	virtual ~seSourceSound();
@@ -74,7 +74,7 @@ public:
 	inline const decString &GetPathSound() const{ return pPathSound; }
 	
 	/** \brief Set path to sound file. */
-	void SetPathSound( const char *path );
+	void SetPathSound(const char *path);
 	
 	/** \brief Update sound. */
 	void UpdateSound();
@@ -96,7 +96,7 @@ public:
 	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 *          values play backwards. A value of -1 would play back at original speed.
 	 */
-	void SetMinSpeed( float speed );
+	void SetMinSpeed(float speed);
 	
 	/**
 	 * \brief Maximum play speed.
@@ -110,13 +110,13 @@ public:
 	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 *          values play backwards. A value of -1 would play back at original speed.
 	 */
-	void SetMaxSpeed( float speed );
+	void SetMaxSpeed(float speed);
 	
 	/** \brief Sound is played back looping. */
 	inline bool GetLooping() const{ return pLooping; }
 	
 	/** \brief Set if sound is played back looping. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	
 	
@@ -141,10 +141,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** \brief Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( seLink *link ) const;
+	virtual int CountLinkUsage(seLink *link) const;
 	
 	/** \brief Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( seLink *link );
+	virtual void RemoveLinkFromTargets(seLink *link);
 	
 	/** \brief Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -153,7 +153,7 @@ public:
 	virtual seSource *CreateCopy() const;
 	
 	/** \brief List all links of all source targets. */
-	virtual void ListLinks( seLinkList& list );
+	virtual void ListLinks(seLinkList& list);
 	
 	/** \brief Parent synthesizer changed. */
 	virtual void SynthesizerChanged();
@@ -167,7 +167,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another animation source to this source. */
-	virtual seSourceSound &operator=( const seSourceSound &copy );
+	virtual seSourceSound &operator=(const seSourceSound &copy);
 	/*@}*/
 };
 

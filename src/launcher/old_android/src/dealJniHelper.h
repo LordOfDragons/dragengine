@@ -48,7 +48,7 @@ public:
 	jniGlobalJObject();
 	
 	/** \brief Create jobject. */
-	jniGlobalJObject( JNIEnv *env, jobject object );
+	jniGlobalJObject(JNIEnv *env, jobject object);
 	
 	/** \brief Clean jobject. */
 	~jniGlobalJObject();
@@ -71,10 +71,10 @@ public:
 	inline bool operator!(){ return pObject == NULL; }
 	
 	/** \brief Copy. */
-	jniGlobalJObject &operator=( const jniGlobalJObject &object );
+	jniGlobalJObject &operator=(const jniGlobalJObject &object);
 	
 	/** \brief Set. */
-	void Set( JNIEnv *env, jobject object );
+	void Set(JNIEnv *env, jobject object);
 	
 	/** \brief Clear. */
 	void Clear();
@@ -100,7 +100,7 @@ public:
 	jniGlobalJClass();
 	
 	/** \brief Create jobject. */
-	jniGlobalJClass( JNIEnv *env, jclass clazz );
+	jniGlobalJClass(JNIEnv *env, jclass clazz);
 	
 	/** \brief Clean jobject. */
 	~jniGlobalJClass();
@@ -123,10 +123,10 @@ public:
 	inline bool operator!(){ return pClass == NULL; }
 	
 	/** \brief Copy. */
-	jniGlobalJClass &operator=( const jniGlobalJClass &clazz );
+	jniGlobalJClass &operator=(const jniGlobalJClass &clazz);
 	
 	/** \brief Set. */
-	void Set( JNIEnv *env, jclass clazz );
+	void Set(JNIEnv *env, jclass clazz);
 	
 	/** \brief Clear. */
 	void Clear();
@@ -152,10 +152,10 @@ public:
 	jniGlobalJString();
 	
 	/** \brief Create jobject. */
-	jniGlobalJString( JNIEnv *env, jstring string );
+	jniGlobalJString(JNIEnv *env, jstring string);
 	
 	/** \brief Create jobject. */
-	jniGlobalJString( JNIEnv *env, const char *string );
+	jniGlobalJString(JNIEnv *env, const char *string);
 	
 	/** \brief Clean jobject. */
 	~jniGlobalJString();
@@ -181,10 +181,10 @@ public:
 	operator decString();
 	
 	/** \brief Copy. */
-	jniGlobalJString &operator=( const jniGlobalJString &string );
+	jniGlobalJString &operator=(const jniGlobalJString &string);
 	
 	/** \brief Set. */
-	void Set( JNIEnv *env, jstring string );
+	void Set(JNIEnv *env, jstring string);
 	
 	/** \brief Clear. */
 	void Clear();

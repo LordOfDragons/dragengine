@@ -54,20 +54,20 @@ int debpDebugInformationList::GetCount() const{
 	return pChildren.GetCount();
 }
 
-debpDebugInformation *debpDebugInformationList::GetAt( int index ) const{
-	return ( debpDebugInformation* )pChildren.GetAt( index );
+debpDebugInformation *debpDebugInformationList::GetAt(int index) const{
+	return (debpDebugInformation*)pChildren.GetAt(index);
 }
 
-void debpDebugInformationList::Add( debpDebugInformation *child ){
-	pChildren.Add( child );
+void debpDebugInformationList::Add(debpDebugInformation *child){
+	pChildren.Add(child);
 }
 
-void debpDebugInformationList::Remove( debpDebugInformation *child ){
-	pChildren.Remove( child );
+void debpDebugInformationList::Remove(debpDebugInformation *child){
+	pChildren.Remove(child);
 }
 
-void debpDebugInformationList::RemoveIfPresent( debpDebugInformation *child ){
-	pChildren.RemoveIfPresent( child );
+void debpDebugInformationList::RemoveIfPresent(debpDebugInformation *child){
+	pChildren.RemoveIfPresent(child);
 }
 
 void debpDebugInformationList::RemoveAll(){

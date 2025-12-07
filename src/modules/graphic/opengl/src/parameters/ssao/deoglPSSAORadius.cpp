@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSAORadius::deoglPSSAORadius( deGraphicOpenGl &ogl ) : deoglParameterFloat( ogl ){
-	SetName( "ssaoRadius" );
-	SetDescription( "Sets the world space radius for screen space ambient occlusion."
+deoglPSSAORadius::deoglPSSAORadius(deGraphicOpenGl &ogl) : deoglParameterFloat(ogl){
+	SetName("ssaoRadius");
+	SetDescription("Sets the world space radius for screen space ambient occlusion."
 		" Screen space ambient occlusion is a distance based algorithm sampling in a"
 		" certain radius around geometry."
 		" The radius is set in meters and determines the distance after which a test ray"
@@ -52,10 +52,10 @@ deoglPSSAORadius::deoglPSSAORadius( deGraphicOpenGl &ogl ) : deoglParameterFloat
 		" Large values provide a more correct larger scale ambient occlusion but have"
 		" troubles with smaller cravices."
 		" The risk of flickering, halos and edge undersampling rises with larger values."
-		" The default value of 0.5 (5dm) provides a reasonable balance between the two." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSAO Radius" );
-	SetDefaultValue( "0.5" );
+		" The default value of 0.5 (5dm) provides a reasonable balance between the two.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSAO Radius");
+	SetDefaultValue("0.5");
 }
 
 deoglPSSAORadius::~deoglPSSAORadius(){
@@ -70,6 +70,6 @@ float deoglPSSAORadius::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSAORadius();
 }
 
-void deoglPSSAORadius::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSAORadius( value );
+void deoglPSSAORadius::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSAORadius(value);
 }

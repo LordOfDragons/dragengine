@@ -50,8 +50,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-dealRemoveDirTree::dealRemoveDirTree( deLogger &logger ) :
-pLogger( logger ){
+dealRemoveDirTree::dealRemoveDirTree(deLogger &logger) :
+pLogger(logger){
 }
 
 dealRemoveDirTree::~dealRemoveDirTree(){
@@ -62,29 +62,29 @@ dealRemoveDirTree::~dealRemoveDirTree(){
 // Management
 ///////////////
 
-void dealRemoveDirTree::Remove( const char *path ){
-	pLogger.LogInfoFormat( LOGSOURCE, "RemoveDirTree '%s'", path );
+void dealRemoveDirTree::Remove(const char *path){
+	pLogger.LogInfoFormat(LOGSOURCE, "RemoveDirTree '%s'", path);
 	
 	// split path into parent directory and directory name
 	decPath diskPath;
-	diskPath.SetFromNative( path );
+	diskPath.SetFromNative(path);
 	
-	const decString dirName( diskPath.GetLastComponent() );
+	const decString dirName(diskPath.GetLastComponent());
 	diskPath.RemoveLastComponent();
 	
 	// create container for base directory
 	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(diskPath));
-	container->SetReadOnly( false );
-	vfs->AddContainer( container );
+	container->SetReadOnly(false);
+	vfs->AddContainer(container);
 	
 	// delete the directory recursively if present
 	decPath deletePath;
-	deletePath.AddComponent( dirName );
+	deletePath.AddComponent(dirName);
 	
-	if( vfs->ExistsFile( deletePath ) ){
-		pRemove( vfs, deletePath );
+	if(vfs->ExistsFile(deletePath)){
+		pRemove(vfs, deletePath);
 	}
 }
 
@@ -93,28 +93,28 @@ void dealRemoveDirTree::Remove( const char *path ){
 // Private Functions
 //////////////////////
 
-void dealRemoveDirTree::pRemove( deVirtualFileSystem &vfs, const decPath &deletePath ){
+void dealRemoveDirTree::pRemove(deVirtualFileSystem &vfs, const decPath &deletePath){
 	//pLogger.LogInfoFormat( LOGSOURCE, "Process '%s'", deletePath.GetPathUnix().GetString() );
 	// delete directories
 	deCollectDirectorySearchVisitor collectDirectories;
-	vfs.SearchFiles( deletePath, collectDirectories );
+	vfs.SearchFiles(deletePath, collectDirectories);
 	const dePathList &directories = collectDirectories.GetDirectories();
 	const int directoryCount = directories.GetCount();
 	int i;
 	
-	for( i=0; i<directoryCount; i++ ){
-		pRemove( vfs, directories.GetAt( i ) );
+	for(i=0; i<directoryCount; i++){
+		pRemove(vfs, directories.GetAt(i));
 	}
 	
 	// delete all files
 	deCollectFileSearchVisitor collectFiles;
-	vfs.SearchFiles( deletePath, collectFiles );
+	vfs.SearchFiles(deletePath, collectFiles);
 	const dePathList &files = collectFiles.GetFiles();
 	const int fileCount = directories.GetCount();
 	
-	for( i=0; i<fileCount; i++ ){
+	for(i=0; i<fileCount; i++){
 		//pLogger.LogInfoFormat( LOGSOURCE, "Delete File '%s'", files.GetAt( i ).GetPathUnix().GetString() );
-		vfs.DeleteFile( files.GetAt( i ) );
+		vfs.DeleteFile(files.GetAt(i));
 	}
 	
 	// delete directory itself. this is not done since android seems to delete directories

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkRemoveUnused( aeAnimator *animator );
+	aeULinkRemoveUnused(aeAnimator *animator);
 	
 protected:
 	/** Clean up undo. */

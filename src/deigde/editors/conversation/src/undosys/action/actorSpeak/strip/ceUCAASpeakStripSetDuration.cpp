@@ -42,10 +42,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripSetDuration::ceUCAASpeakStripSetDuration( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *strip, float newDuration ){
-	if( ! topic || ! actorSpeak || ! strip ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakStripSetDuration::ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *strip, float newDuration){
+	if(!topic || !actorSpeak || !strip){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -54,7 +54,7 @@ ceStrip *strip, float newDuration ){
 	pOldDuration = strip->GetDuration();
 	pNewDuration = newDuration;
 	
-	SetShortInfo( "Strip Set Duration" );
+	SetShortInfo("Strip Set Duration");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -67,13 +67,13 @@ ceStrip *strip, float newDuration ){
 }
 
 ceUCAASpeakStripSetDuration::~ceUCAASpeakStripSetDuration(){
-	if( pStrip ){
+	if(pStrip){
 		pStrip->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -83,20 +83,20 @@ ceUCAASpeakStripSetDuration::~ceUCAASpeakStripSetDuration(){
 // Management
 ///////////////
 
-void ceUCAASpeakStripSetDuration::SetNewDuration( float duration ){
+void ceUCAASpeakStripSetDuration::SetNewDuration(float duration){
 	pNewDuration = duration;
 }
 
 
 
 void ceUCAASpeakStripSetDuration::Undo(){
-	pStrip->SetDuration( pOldDuration );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pStrip->SetDuration(pOldDuration);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakStripSetDuration::Redo(){
-	pStrip->SetDuration( pNewDuration );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pStrip->SetDuration(pNewDuration);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakStripSetDuration::ProgressiveRedo(){

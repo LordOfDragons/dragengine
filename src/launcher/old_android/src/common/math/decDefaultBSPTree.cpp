@@ -37,7 +37,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-decDefaultBSPTree::decDefaultBSPTree( const decVector &faceNormal, float distance ) : decBSPTree( faceNormal, distance ){
+decDefaultBSPTree::decDefaultBSPTree(const decVector &faceNormal, float distance) : decBSPTree(faceNormal, distance){
 	pFaces = NULL;
 	pFaceCount = 0;
 	pFaceSize = 0;
@@ -45,7 +45,7 @@ decDefaultBSPTree::decDefaultBSPTree( const decVector &faceNormal, float distanc
 
 decDefaultBSPTree::~decDefaultBSPTree(){
 	RemoveAllFaces();
-	if( pFaces ) delete [] pFaces;
+	if(pFaces) delete [] pFaces;
 }
 
 
@@ -53,9 +53,9 @@ decDefaultBSPTree::~decDefaultBSPTree(){
 // Management
 ///////////////
 
-decBSPTree *decDefaultBSPTree::CreateBSPTree( const decVector &faceNormal, float distance ) const{
-	decDefaultBSPTree *bsptree = new decDefaultBSPTree( faceNormal, distance );
-	if( ! bsptree ) DETHROW( deeOutOfMemory );
+decBSPTree *decDefaultBSPTree::CreateBSPTree(const decVector &faceNormal, float distance) const{
+	decDefaultBSPTree *bsptree = new decDefaultBSPTree(faceNormal, distance);
+	if(!bsptree) DETHROW(deeOutOfMemory);
 	
 	return bsptree;
 }
@@ -64,24 +64,24 @@ void decDefaultBSPTree::ClearNodeContent(){
 	RemoveAllFaces();
 }
 
-void decDefaultBSPTree::AddCoplanarFace( const decBSPTreeFace &face ){
+void decDefaultBSPTree::AddCoplanarFace(const decBSPTreeFace &face){
 	int v, vertexCount = face.GetVertexCount();
 	decBSPTreeFace *newFace = NULL;
 	
 	try{
 		newFace = new decBSPTreeFace;
-		if( ! newFace ) DETHROW( deeOutOfMemory );
+		if(!newFace) DETHROW(deeOutOfMemory);
 		
-		for( v=0; v<vertexCount; v++ ){
-			newFace->AddVertex( face.GetVertexAt( v ) );
+		for(v=0; v<vertexCount; v++){
+			newFace->AddVertex(face.GetVertexAt(v));
 		}
 		
-		newFace->SetUserData( face.GetUserData() );
+		newFace->SetUserData(face.GetUserData());
 		
-		AddFace( newFace );
+		AddFace(newFace);
 		
-	}catch( const deException & ){
-		if( newFace ) delete newFace;
+	}catch(const deException &){
+		if(newFace) delete newFace;
 		throw;
 	}
 }
@@ -91,57 +91,57 @@ void decDefaultBSPTree::AddCoplanarFace( const decBSPTreeFace &face ){
 // Faces
 //////////
 
-decBSPTreeFace *decDefaultBSPTree::GetFaceAt( int index ) const{
-	if( index < 0 || index >= pFaceCount ) DETHROW( deeInvalidParam );
+decBSPTreeFace *decDefaultBSPTree::GetFaceAt(int index) const{
+	if(index < 0 || index >= pFaceCount) DETHROW(deeInvalidParam);
 	
-	return pFaces[ index ];
+	return pFaces[index];
 }
 
-int decDefaultBSPTree::IndexOfFace( decBSPTreeFace *face ) const{
+int decDefaultBSPTree::IndexOfFace(decBSPTreeFace *face) const{
 	int i;
 	
-	for( i=0; i<pFaceCount; i++ ){
-		if( pFaces[ i ] == face ) return i;
+	for(i=0; i<pFaceCount; i++){
+		if(pFaces[i] == face) return i;
 	}
 	
 	return -1;
 }
 
-void decDefaultBSPTree::AddFace( decBSPTreeFace *face ){
-	if( ! face ) DETHROW( deeInvalidParam );
+void decDefaultBSPTree::AddFace(decBSPTreeFace *face){
+	if(!face) DETHROW(deeInvalidParam);
 	
-	if( pFaceCount == pFaceSize ){
+	if(pFaceCount == pFaceSize){
 		int newSize = pFaceSize * 3 / 2 + 1;
-		decBSPTreeFace **newArray = new decBSPTreeFace*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pFaces ){
-			memcpy( newArray, pFaces, sizeof( decBSPTreeFace* ) * pFaceSize );
+		decBSPTreeFace **newArray = new decBSPTreeFace*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pFaces){
+			memcpy(newArray, pFaces, sizeof(decBSPTreeFace*) * pFaceSize);
 			delete [] pFaces;
 		}
 		pFaces = newArray;
 		pFaceSize = newSize;
 	}
 	
-	pFaces[ pFaceCount ] = face;
+	pFaces[pFaceCount] = face;
 	pFaceCount++;
 }
 
-void decDefaultBSPTree::RemoveFace( decBSPTreeFace *face ){
-	int i, index = IndexOfFace( face );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void decDefaultBSPTree::RemoveFace(decBSPTreeFace *face){
+	int i, index = IndexOfFace(face);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pFaceCount; i++ ){
-		pFaces[ i - 1 ] = pFaces[ i ];
+	for(i=index+1; i<pFaceCount; i++){
+		pFaces[i - 1] = pFaces[i];
 	}
-	pFaces[ pFaceCount - 1 ] = NULL;
+	pFaces[pFaceCount - 1] = NULL;
 	pFaceCount--;
 	
 	delete face;
 }
 
 void decDefaultBSPTree::RemoveAllFaces(){
-	while( pFaceCount > 0 ){
+	while(pFaceCount > 0){
 		pFaceCount--;
-		delete pFaces[ pFaceCount ];
+		delete pFaces[pFaceCount];
 	}
 }

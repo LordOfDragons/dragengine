@@ -40,7 +40,7 @@ class deglWindowMain;
  * Run Game With Panel.
  */
 class deglDialogRunGameWith : public FXDialogBox{
-	FXDECLARE( deglDialogRunGameWith )
+	FXDECLARE(deglDialogRunGameWith)
 protected:
 	deglDialogRunGameWith();
 	
@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	deglDialogRunGameWith( deglWindowMain *windowMain, delGame *game, FXWindow *owner );
+	deglDialogRunGameWith(deglWindowMain *windowMain, delGame *game, FXWindow *owner);
 	
 	/** Clean up dialog. */
 	virtual ~deglDialogRunGameWith();
@@ -93,15 +93,15 @@ public:
 	inline delGameProfile *GetProfile() const{ return pProfile; }
 	
 	/** Set profile. */
-	void SetProfile( delGameProfile *profile );
+	void SetProfile(delGameProfile *profile);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCBProfileChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnEditProfiles( FXObject *sender, FXSelector selector, void *data );
+	long onCBProfileChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnEditProfiles(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 };
 

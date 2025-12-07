@@ -14,7 +14,7 @@ namespace DragonScript{
 
 class KDEVDSDUCHAIN_EXPORT EditorIntegrator{
 public:
-	EditorIntegrator( ParseSession &session );
+	EditorIntegrator(ParseSession &session);
 	
 	inline ParseSession *parseSession() const{ return &pSession; }
 	
@@ -30,15 +30,15 @@ public:
 	
 	inline ParseSession &session() const{ return pSession; }
 	
-	QString tokenText( qint64 token ) const;
-	QString tokenText( const AstNode &node ) const;
+	QString tokenText(qint64 token) const;
+	QString tokenText(const AstNode &node) const;
 	
-	CursorInRevision findPosition( qint64 token, Edge edge=BackEdge ) const;
-	CursorInRevision findPosition( const AstNode &node, Edge edge=BackEdge ) const;
+	CursorInRevision findPosition(qint64 token, Edge edge=BackEdge) const;
+	CursorInRevision findPosition(const AstNode &node, Edge edge=BackEdge) const;
 	
-	RangeInRevision findRange( qint64 token ) const;
-	RangeInRevision findRange( const AstNode &node, RangeEdge edge=OuterEdge ) const;
-	RangeInRevision findRange( const AstNode &from, const AstNode &to ) const;
+	RangeInRevision findRange(qint64 token) const;
+	RangeInRevision findRange(const AstNode &node, RangeEdge edge=OuterEdge) const;
+	RangeInRevision findRange(const AstNode &from, const AstNode &to) const;
 	
 private:
 	ParseSession &pSession;

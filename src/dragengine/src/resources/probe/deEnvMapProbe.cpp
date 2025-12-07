@@ -42,13 +42,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deEnvMapProbe::deEnvMapProbe( deEnvMapProbeManager *manager ) : deResource( manager ){
-	pScaling.Set( 1.0f, 1.0f, 1.0f );
+deEnvMapProbe::deEnvMapProbe(deEnvMapProbeManager *manager) : deResource(manager){
+	pScaling.Set(1.0f, 1.0f, 1.0f);
 	pShapeReflection = NULL;
 	pInfluenceBorderSize = 0.1f;
 	pInfluencePriority = 0;
 	
-	pLayerMask.SetBit( 0 );
+	pLayerMask.SetBit(0);
 	
 	pPeerGraphic = NULL;
 	
@@ -58,12 +58,12 @@ deEnvMapProbe::deEnvMapProbe( deEnvMapProbeManager *manager ) : deResource( mana
 }
 
 deEnvMapProbe::~deEnvMapProbe(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
 	
-	if( pShapeReflection ){
+	if(pShapeReflection){
 		delete pShapeReflection;
 	}
 }
@@ -73,31 +73,31 @@ deEnvMapProbe::~deEnvMapProbe(){
 // Management
 ///////////////
 
-void deEnvMapProbe::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void deEnvMapProbe::SetPosition(const decDVector &position){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->PositionChanged();
 		}
 	}
 }
 
-void deEnvMapProbe::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void deEnvMapProbe::SetOrientation(const decQuaternion &orientation){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->OrientationChanged();
 		}
 	}
 }
 
-void deEnvMapProbe::SetScaling( const decVector &scaling ){
-	if( ! scaling.IsEqualTo( pScaling ) ){
+void deEnvMapProbe::SetScaling(const decVector &scaling){
+	if(!scaling.IsEqualTo(pScaling)){
 		pScaling = scaling;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->ScalingChanged();
 		}
 	}
@@ -106,16 +106,16 @@ void deEnvMapProbe::SetScaling( const decVector &scaling ){
 
 
 void deEnvMapProbe::NotifyShapeListInfluenceChanged(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ShapeListInfluenceChanged();
 	}
 }
 
 
 
-void deEnvMapProbe::SetShapeReflection( decShape *shape ){
-	if( shape != pShapeReflection ){
-		if( pShapeReflection ){
+void deEnvMapProbe::SetShapeReflection(decShape *shape){
+	if(shape != pShapeReflection){
+		if(pShapeReflection){
 			delete pShapeReflection;
 		}
 		
@@ -126,63 +126,63 @@ void deEnvMapProbe::SetShapeReflection( decShape *shape ){
 }
 
 void deEnvMapProbe::NotifyShapeReflectionChanged(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ShapeReflectionChanged();
 	}
 }
 
 
 
-void deEnvMapProbe::SetInfluenceBorderSize( float borderSize ){
-	if( borderSize < 0.0f ){
+void deEnvMapProbe::SetInfluenceBorderSize(float borderSize){
+	if(borderSize < 0.0f){
 		borderSize = 0.0f;
 	}
 	
-	if( fabsf( borderSize - pInfluenceBorderSize ) > FLOAT_SAFE_EPSILON ){
+	if(fabsf(borderSize - pInfluenceBorderSize) > FLOAT_SAFE_EPSILON){
 		pInfluenceBorderSize = borderSize;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->InfluenceBorderSizeChanged();
 		}
 	}
 }
 
-void deEnvMapProbe::SetInfluencePriority( int priority ){
-	if( priority < 0 ){
+void deEnvMapProbe::SetInfluencePriority(int priority){
+	if(priority < 0){
 		priority = 0;
 	}
 	
-	if( priority != pInfluencePriority ){
+	if(priority != pInfluencePriority){
 		pInfluencePriority = priority;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->InfluencePriorityChanged();
 		}
 	}
 }
 
-void deEnvMapProbe::SetLayerMask( const decLayerMask &layerMask ){
-	if( layerMask == pLayerMask ){
+void deEnvMapProbe::SetLayerMask(const decLayerMask &layerMask){
+	if(layerMask == pLayerMask){
 		return;
 	}
 	
 	pLayerMask = layerMask;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->LayerMaskChanged();
 	}
 }
 
 
 
-void deEnvMapProbe::SetImage( deImage *image ){
-	if( image == pImage ){
+void deEnvMapProbe::SetImage(deImage *image){
+	if(image == pImage){
 		return;
 	}
 	
 	pImage = image;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ImageChanged();
 	}
 }
@@ -192,9 +192,9 @@ void deEnvMapProbe::SetImage( deImage *image ){
 // System Peers
 /////////////////
 
-void deEnvMapProbe::SetPeerGraphic( deBaseGraphicEnvMapProbe *peer ){
-	if( peer != pPeerGraphic ){
-		if( pPeerGraphic ){
+void deEnvMapProbe::SetPeerGraphic(deBaseGraphicEnvMapProbe *peer){
+	if(peer != pPeerGraphic){
+		if(pPeerGraphic){
 			delete pPeerGraphic;
 		}
 		
@@ -207,14 +207,14 @@ void deEnvMapProbe::SetPeerGraphic( deBaseGraphicEnvMapProbe *peer ){
 // Linked List
 ////////////////
 
-void deEnvMapProbe::SetParentWorld( deWorld *world ){
+void deEnvMapProbe::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deEnvMapProbe::SetLLWorldPrev( deEnvMapProbe *instance ){
+void deEnvMapProbe::SetLLWorldPrev(deEnvMapProbe *instance){
 	pLLWorldPrev = instance;
 }
 
-void deEnvMapProbe::SetLLWorldNext( deEnvMapProbe *instance ){
+void deEnvMapProbe::SetLLWorldNext(deEnvMapProbe *instance){
 	pLLWorldNext = instance;
 }

@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpParameterFloat::debpParameterFloat( dePhysicsBullet &bullet ) : debpParameter( bullet )
+debpParameterFloat::debpParameterFloat(dePhysicsBullet &bullet) : debpParameter(bullet)
 {
-	SetType( deModuleParameter::eptNumeric );
+	SetType(deModuleParameter::eptNumeric);
 }
 
 debpParameterFloat::~debpParameterFloat(){
@@ -54,17 +54,17 @@ debpParameterFloat::~debpParameterFloat(){
 decString debpParameterFloat::GetParameterValue(){
 	decString value;
 	
-	value.Format( "%f", GetParameterFloat() );
+	value.Format("%f", GetParameterFloat());
 	
 	int len = value.GetLength();
-	while( len > 1 ){
+	while(len > 1){
 		len--;
-		if( value[ len ] == '.' ){
-			value[ len ] = 0;
+		if(value[len] == '.'){
+			value[len] = 0;
 			break;
 			
-		}else if( value[ len ] == '0' ){
-			value[ len ] = 0;
+		}else if(value[len] == '0'){
+			value[len] = 0;
 			
 		}else{
 			break;
@@ -74,6 +74,6 @@ decString debpParameterFloat::GetParameterValue(){
 	return value;
 }
 
-void debpParameterFloat::SetParameterValue( const char *value ){
-	SetParameterFloat( decString( value ).ToFloat() );
+void debpParameterFloat::SetParameterValue(const char *value){
+	SetParameterFloat(decString(value).ToFloat());
 }

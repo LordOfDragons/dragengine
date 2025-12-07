@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetSpotExponent( gdeObjectClass *objectClass, gdeOCLight *light, float newValue );
+	gdeUOCLightSetSpotExponent(gdeObjectClass *objectClass, gdeOCLight *light, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

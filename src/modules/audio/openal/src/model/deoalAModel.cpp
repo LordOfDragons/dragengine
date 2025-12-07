@@ -51,48 +51,48 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalAModel::deoalAModel( deoalAudioThread &audioThread, const deModel &model ) :
-pAudioThread( audioThread ),
-pFilename( model.GetFilename() ),
-pFaces( NULL ),
-pFaceCount( 0 ),
-pWeights( NULL ),
-pWeightCount( 0 ),
-pWeightSets( NULL ),
-pWeightSetCount( 0 ),
+deoalAModel::deoalAModel(deoalAudioThread &audioThread, const deModel &model) :
+pAudioThread(audioThread),
+pFilename(model.GetFilename()),
+pFaces(NULL),
+pFaceCount(0),
+pWeights(NULL),
+pWeightCount(0),
+pWeightSets(NULL),
+pWeightSetCount(0),
 // pRTSphereRadiusSquared( 0.0f ),
-pOctree( NULL ),
-pOctreeOverlap( NULL ),
+pOctree(NULL),
+pOctreeOverlap(NULL),
 // pRTOctree( NULL ),
-pRTBVH( NULL ),
-pRayCache( NULL )
+pRTBVH(NULL),
+pRayCache(NULL)
 {
 	// use the highest LOD level available for performance reasons
 	const int lodCount = model.GetLODCount();
-	if( lodCount < 1 ){
+	if(lodCount < 1){
 		return;
 	}
 	
-	const deModelLOD &lod = *model.GetLODAt( lodCount - 1 );
+	const deModelLOD &lod = *model.GetLODAt(lodCount - 1);
 	
 	try{
-		pInitBoneNames( model );
-		pInitTextureNames( model );
-		pBuildWeights( lod );
-		pBuildFaces( lod );
+		pInitBoneNames(model);
+		pInitTextureNames(model);
+		pBuildWeights(lod);
+		pBuildFaces(lod);
 // 		pInitRTSphere( lod );
 // 		pRayCache = new deoalRayCache( pMinExtend, pMaxExtend );
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
-	LEAK_CHECK_CREATE( audioThread, Model );
+	LEAK_CHECK_CREATE(audioThread, Model);
 }
 
 deoalAModel::~deoalAModel(){
-	LEAK_CHECK_FREE( pAudioThread, Model );
+	LEAK_CHECK_FREE(pAudioThread, Model);
 	
 	pCleanUp();
 }
@@ -102,15 +102,15 @@ deoalAModel::~deoalAModel(){
 // Management
 ///////////////
 
-const deoalModelFace &deoalAModel::GetFaceAt( int index ) const{
-	if( index < 0 || index >= pFaceCount ){
-		DETHROW( deeInvalidParam );
+const deoalModelFace &deoalAModel::GetFaceAt(int index) const{
+	if(index < 0 || index >= pFaceCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pFaces[ index ];
+	return pFaces[index];
 }
 
 void deoalAModel::PrepareOctree(){
-	if( pOctree ){
+	if(pOctree){
 		return;
 	}
 	
@@ -123,86 +123,86 @@ void deoalAModel::PrepareOctree(){
 //////////////////////
 
 void deoalAModel::pCleanUp(){
-	if( pRayCache ){
+	if(pRayCache){
 		delete pRayCache;
 	}
-	if( pRTBVH ){
+	if(pRTBVH){
 		delete pRTBVH;
 	}
 // 	if( pRTOctree ){
 // 		delete pRTOctree;
 // 	}
-	if( pOctree ){
+	if(pOctree){
 		delete pOctree;
 	}
-	if( pOctreeOverlap ){
+	if(pOctreeOverlap){
 		delete pOctreeOverlap;
 	}
-	if( pWeightSets ){
+	if(pWeightSets){
 		delete [] pWeightSets;
 	}
-	if( pWeights ){
+	if(pWeights){
 		delete [] pWeights;
 	}
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
 }
 
-void deoalAModel::pInitBoneNames( const deModel &model ){
+void deoalAModel::pInitBoneNames(const deModel &model){
 	const int count = model.GetBoneCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pBoneNames.Add( model.GetBoneAt( i )->GetName() );
+	for(i=0; i<count; i++){
+		pBoneNames.Add(model.GetBoneAt(i)->GetName());
 	}
 }
 
-void deoalAModel::pInitTextureNames( const deModel &model ){
+void deoalAModel::pInitTextureNames(const deModel &model){
 	const int count = model.GetTextureCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pTextureNames.Add( model.GetTextureAt( i )->GetName() );
+	for(i=0; i<count; i++){
+		pTextureNames.Add(model.GetTextureAt(i)->GetName());
 	}
 }
 
-void deoalAModel::pBuildWeights( const deModelLOD &lod ){
+void deoalAModel::pBuildWeights(const deModelLOD &lod){
 	const int * const weightGroups = lod.GetWeightGroups();
 	const deModelWeight * const weights = lod.GetWeights();
 	const int weightGroupCount = lod.GetWeightGroupCount();
 	const int weightCount = lod.GetWeightCount();
 	int i;
 	
-	if( weightCount > 0 ){
-		pWeights = new sWeight[ weightCount ];
+	if(weightCount > 0){
+		pWeights = new sWeight[weightCount];
 		pWeightCount = weightCount;
 		
-		for( i=0; i<weightCount; i++ ){
-			pWeights[ i ].bone = weights[ i ].GetBone();
-			pWeights[ i ].weight = weights[ i ].GetWeight();
+		for(i=0; i<weightCount; i++){
+			pWeights[i].bone = weights[i].GetBone();
+			pWeights[i].weight = weights[i].GetWeight();
 		}
 	}
 	
-	if( weightGroupCount > 0 ){
+	if(weightGroupCount > 0){
 		int weightSetCount = 0;
-		for( i=0; i<weightGroupCount; i++ ){
-			weightSetCount += weightGroups[ i ];
+		for(i=0; i<weightGroupCount; i++){
+			weightSetCount += weightGroups[i];
 		}
 		
-		if( weightSetCount ){
-			pWeightSets = new sWeightSet[ weightSetCount ];
+		if(weightSetCount){
+			pWeightSets = new sWeightSet[weightSetCount];
 			
 			pWeightSetCount = 0;
 			int weightIndex = 0;
 			int j;
 			
-			for( i=0; i<weightGroupCount; i++ ){
-				const int setsInGroupCount = weightGroups[ i ];
+			for(i=0; i<weightGroupCount; i++){
+				const int setsInGroupCount = weightGroups[i];
 				const int weightsInSetCount = i + 1;
 				
-				for( j=0; j<setsInGroupCount; j++ ){
-					sWeightSet &weightSet = pWeightSets[ pWeightSetCount++ ];
+				for(j=0; j<setsInGroupCount; j++){
+					sWeightSet &weightSet = pWeightSets[pWeightSetCount++];
 					
 					weightSet.firstWeight = weightIndex;
 					weightSet.weightCount = weightsInSetCount;
@@ -214,23 +214,23 @@ void deoalAModel::pBuildWeights( const deModelLOD &lod ){
 	}
 }
 
-void deoalAModel::pBuildFaces( const deModelLOD &lod ){
+void deoalAModel::pBuildFaces(const deModelLOD &lod){
 	const int faceCount = lod.GetFaceCount();
-	if( faceCount == 0 ){
+	if(faceCount == 0){
 		return;
 	}
 	
-	pFaces = new deoalModelFace[ faceCount ];
-	for( pFaceCount=0; pFaceCount<faceCount; pFaceCount++ ){
-		pFaces[ pFaceCount ].Init( lod, pFaceCount, lod.GetFaceAt( pFaceCount ) );
+	pFaces = new deoalModelFace[faceCount];
+	for(pFaceCount=0; pFaceCount<faceCount; pFaceCount++){
+		pFaces[pFaceCount].Init(lod, pFaceCount, lod.GetFaceAt(pFaceCount));
 		
-		if( pFaceCount > 0 ){
-			pMinExtend.SetSmallest( pFaces[ pFaceCount ].GetMinExtend() );
-			pMaxExtend.SetLargest( pFaces[ pFaceCount ].GetMaxExtend() );
+		if(pFaceCount > 0){
+			pMinExtend.SetSmallest(pFaces[pFaceCount].GetMinExtend());
+			pMaxExtend.SetLargest(pFaces[pFaceCount].GetMaxExtend());
 			
 		}else{
-			pMinExtend = pFaces[ pFaceCount ].GetMinExtend();
-			pMaxExtend = pFaces[ pFaceCount ].GetMaxExtend();
+			pMinExtend = pFaces[pFaceCount].GetMinExtend();
+			pMaxExtend = pFaces[pFaceCount].GetMaxExtend();
 		}
 	}
 	
@@ -238,14 +238,14 @@ void deoalAModel::pBuildFaces( const deModelLOD &lod ){
 }
 
 void deoalAModel::pBuildOctree(){
-	const decVector size( pMaxExtend - pMinExtend );
+	const decVector size(pMaxExtend - pMinExtend);
 	
 // 	pAudioThread.GetLogger().LogInfoFormat(
 // 		"ModelOctree.BuildOctree(%s) extends=(%.3f,%.3f,%.3f)-(%.3f,%.3f,%.3f)"
 // 		" size=(%.3f,%.3f,%.3f) faces=%d", pFilename.GetString(), pMinExtend.x, pMinExtend.y,
 // 		pMinExtend.z, pMaxExtend.x, pMaxExtend.y, pMaxExtend.z, size.x, size.y, size.z, pFaceCount );
 	
-	pOctree = new deoalModelOctree( ( pMinExtend + pMaxExtend ) * 0.5f, size * 0.5f );
+	pOctree = new deoalModelOctree((pMinExtend + pMaxExtend) * 0.5f, size * 0.5f);
 	
 // 	const float maxHalfSize = decMath::max( size.x, size.y, size.z ) * 0.5f;
 // 	pOctree = new deoalModelOctree( ( pMinExtend + pMaxExtend ) * 0.5f,
@@ -257,34 +257,34 @@ void deoalAModel::pBuildOctree(){
 	// clearer what value works best
 	const int maxDepth = 5;
 	int i;
-	for( i=0; i<pFaceCount; i++ ){
-		pOctree->InsertFaceIntoTree( pFaces + i, maxDepth );
+	for(i=0; i<pFaceCount; i++){
+		pOctree->InsertFaceIntoTree(pFaces + i, maxDepth);
 	}
 	
 	// overlapping octree for faster ray tracing
 #if 0
-	const float maxSize = decMath::max( size.x, size.y, size.z );
+	const float maxSize = decMath::max(size.x, size.y, size.z);
 	const float maxHalfSize = maxSize * 0.5f;
-	pOctreeOverlap = new deoalModelOctree( ( pMinExtend + pMaxExtend ) * 0.5f,
-		decVector( maxHalfSize, maxHalfSize, maxHalfSize ) );
+	pOctreeOverlap = new deoalModelOctree((pMinExtend + pMaxExtend) * 0.5f,
+		decVector(maxHalfSize, maxHalfSize, maxHalfSize));
 	
 	const float overlapNodeSize = 0.1;
 	const int minOverlapDepth = 4;
 	const int maxOverlapDepth = 8;
-	const int overlapDepth = 3 + 0*decMath::clamp( ( int )( ( maxSize / overlapNodeSize ) + 0.5f ),
-		minOverlapDepth, maxOverlapDepth );
-	pAudioThread.GetLogger().LogInfoFormat( "ModelOctree.BuildOctree(%s) Overlap depth=%d",
-		pFilename.GetString(), overlapDepth );
+	const int overlapDepth = 3 + 0*decMath::clamp((int)((maxSize / overlapNodeSize) + 0.5f),
+		minOverlapDepth, maxOverlapDepth);
+	pAudioThread.GetLogger().LogInfoFormat("ModelOctree.BuildOctree(%s) Overlap depth=%d",
+		pFilename.GetString(), overlapDepth);
 	
-	for( i=0; i<pFaceCount; i++ ){
-		pOctreeOverlap->InsertFaceOverlap( pFaces + i, overlapDepth );
+	for(i=0; i<pFaceCount; i++){
+		pOctreeOverlap->InsertFaceOverlap(pFaces + i, overlapDepth);
 	}
 #endif
 	
 	// ray-tracing optimized octree
 // 	pRTOctree = new deoalModelRTOctree( *pOctree );
 	pRTBVH = new deoalModelRTBVH;
-	pRTBVH->Build( pFaces, pFaceCount );
+	pRTBVH->Build(pFaces, pFaceCount);
 	pRTBVH->DropBuildData();
 	
 	// debug
@@ -294,24 +294,24 @@ void deoalAModel::pBuildOctree(){
 }
 
 /*
-void deoalAModel::pInitRTSphere( const deModelLOD &lod ){
+void deoalAModel::pInitRTSphere(const deModelLOD &lod){
 	const int vertexCount = lod.GetVertexCount();
-	if( vertexCount == 0 ){
+	if(vertexCount == 0){
 		return;
 	}
 	
 	int i;
 	
 	pRTSphereCenter.SetZero();
-	for( i=0; i<vertexCount; i++ ){
-		pRTSphereCenter += lod.GetVertexAt( i ).GetPosition();
+	for(i=0; i<vertexCount; i++){
+		pRTSphereCenter += lod.GetVertexAt(i).GetPosition();
 	}
-	pRTSphereCenter /= ( float )vertexCount;
+	pRTSphereCenter /= (float)vertexCount;
 	
 	pRTSphereRadiusSquared = 0.0f;
-	for( i=0; i<vertexCount; i++ ){
-		const float distSquared = ( lod.GetVertexAt( i ).GetPosition() - pRTSphereCenter ).LengthSquared();
-		if( distSquared > pRTSphereRadiusSquared ){
+	for(i=0; i<vertexCount; i++){
+		const float distSquared = (lod.GetVertexAt(i).GetPosition() - pRTSphereCenter).LengthSquared();
+		if(distSquared > pRTSphereRadiusSquared){
 			pRTSphereRadiusSquared = distSquared;
 		}
 	}
@@ -320,28 +320,28 @@ void deoalAModel::pInitRTSphere( const deModelLOD &lod ){
 
 
 
-void deoalAModel::pDebugLogOctreePerfMetrics( const deoalModelOctree &octree ){
+void deoalAModel::pDebugLogOctreePerfMetrics(const deoalModelOctree &octree){
 	int faces[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 	int i;
-	for( i=0; i<9; i++ ){
-		pDebugLogOctreePerfMetrics( octree, i, faces[i] );
+	for(i=0; i<9; i++){
+		pDebugLogOctreePerfMetrics(octree, i, faces[i]);
 	}
 	pAudioThread.GetLogger().LogInfoFormat(
 		"ModelOctree.PerfMetrics(%s) faces=(%d, %d, %d, %d, %d, %d, %d, %d, %d)",
 		pFilename.GetString(), faces[0], faces[1], faces[2], faces[3], faces[4],
-		faces[5], faces[6], faces[7], faces[8] );
+		faces[5], faces[6], faces[7], faces[8]);
 }
 
-void deoalAModel::pDebugLogOctreePerfMetrics( const deoalModelOctree &node, int level, int &count ){
-	if( level == 0 ){
+void deoalAModel::pDebugLogOctreePerfMetrics(const deoalModelOctree &node, int level, int &count){
+	if(level == 0){
 		count += node.GetFaceCount();
 		return;
 	}
 	
 	int i;
-	for( i=0; i<8; i++ ){
-		if( node.GetNodeAt( i ) ){
-			pDebugLogOctreePerfMetrics( ( const deoalModelOctree & )*node.GetNodeAt( i ), level - 1, count );
+	for(i=0; i<8; i++){
+		if(node.GetNodeAt(i)){
+			pDebugLogOctreePerfMetrics((const deoalModelOctree &)*node.GetNodeAt(i), level - 1, count);
 		}
 	}
 }

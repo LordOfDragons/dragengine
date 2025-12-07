@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feWPGlyphListener::feWPGlyphListener( feWPGlyph &panel ) :
-pPanel( panel ){
+feWPGlyphListener::feWPGlyphListener(feWPGlyph &panel) :
+pPanel(panel){
 }
 
 feWPGlyphListener::~feWPGlyphListener(){
@@ -52,16 +52,16 @@ feWPGlyphListener::~feWPGlyphListener(){
 // Management
 ///////////////
 
-void feWPGlyphListener::GlyphStructureChanged( feFont *font ){
+void feWPGlyphListener::GlyphStructureChanged(feFont *font){
 	pPanel.UpdateGlyphList();
 }
 
-void feWPGlyphListener::GlyphChanged( feFont *font, feFontGlyph *glyph ){
-	if( glyph == pPanel.GetGlyph() ){
+void feWPGlyphListener::GlyphChanged(feFont *font, feFontGlyph *glyph){
+	if(glyph == pPanel.GetGlyph()){
 		pPanel.UpdateGlyph();
 	}
 }
 
-void feWPGlyphListener::ActiveGlyphChanged( feFont *font ){
-	pPanel.SetGlyph( font->GetGlyphSelection().GetActiveGlyph() );
+void feWPGlyphListener::ActiveGlyphChanged(feFont *font){
+	pPanel.SetGlyph(font->GetGlyphSelection().GetActiveGlyph());
 }

@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAnimatorSetBones::aeUAnimatorSetBones( aeAnimator *animator, const decStringSet &newValue ) :
-pAnimator( animator ),
-pNewValue( newValue )
+aeUAnimatorSetBones::aeUAnimatorSetBones(aeAnimator *animator, const decStringSet &newValue) :
+pAnimator(animator),
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( animator )
+	DEASSERT_NOTNULL(animator)
 	
 	pOldValue = animator->GetListBones();
-	SetShortInfo( "Animator set bones" );
+	SetShortInfo("Animator set bones");
 }
 
 aeUAnimatorSetBones::~aeUAnimatorSetBones(){
@@ -58,9 +58,9 @@ aeUAnimatorSetBones::~aeUAnimatorSetBones(){
 ///////////////
 
 void aeUAnimatorSetBones::Undo(){
-	pAnimator->SetListBones( pOldValue );
+	pAnimator->SetListBones(pOldValue);
 }
 
 void aeUAnimatorSetBones::Redo(){
-	pAnimator->SetListBones( pNewValue );
+	pAnimator->SetListBones(pNewValue);
 }

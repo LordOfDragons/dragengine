@@ -124,10 +124,10 @@ public:
 	 * 
 	 * Clears visit and build nodes. Sets position.
 	 */
-	void Build( const decDVector &position );
+	void Build(const decDVector &position);
 	
 	/** \brief Add component during build phase. */
-	void AddComponent( deoalAComponent *component );
+	void AddComponent(deoalAComponent *component);
 	
 	/**
 	 * \brief Finish building octree.
@@ -159,10 +159,10 @@ public:
 private:
 	int pAddBuildNode();
 	int pAddBuildComponent();
-	void pUpdateNodeExtends( sBuildNode &node ) const;
-	void pSplitNode( int nodeIndex );
-	void pNodeAddComponent( sBuildNode &node, int componentIndex );
-	void pBuildVisitNode( const sBuildNode &buildNode );
+	void pUpdateNodeExtends(sBuildNode &node) const;
+	void pSplitNode(int nodeIndex);
+	void pNodeAddComponent(sBuildNode &node, int componentIndex);
+	void pBuildVisitNode(const sBuildNode &buildNode);
 };
 
 #endif

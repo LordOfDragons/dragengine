@@ -43,5 +43,5 @@ igdeSpinTextFieldListener::~igdeSpinTextFieldListener(){
 // Events
 ///////////
 
-void igdeSpinTextFieldListener::OnValueChanged( igdeSpinTextField* ){
+void igdeSpinTextFieldListener::OnValueChanged(igdeSpinTextField*){
 }

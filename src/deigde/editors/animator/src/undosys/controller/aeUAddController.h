@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAddController( aeAnimator *animator, aeController *controller );
+	aeUAddController(aeAnimator *animator, aeController *controller);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUAddController();

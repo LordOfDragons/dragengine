@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new panel. */
-	seWPEffect( seViewSynthesizer &viewSynthesizer );
+	seWPEffect(seViewSynthesizer &viewSynthesizer);
 	
 protected:
 	/** \brief Cleans up the panel. */
@@ -86,7 +86,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	/** \brief Source or \em NULL if not set. */
 	seSource *GetSource() const;

@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath( peeType *type, const char *newPath ){
-	if( ! type || ! newPath ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath(peeType *type, const char *newPath){
+	if(!type || !newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = NULL;
 	
-	SetShortInfo( "Set Type Model Skin Path" );
+	SetShortInfo("Set Type Model Skin Path");
 	
 	pOldPath = type->GetModelSkinPath();
 	pNewPath = newPath;
@@ -56,7 +56,7 @@ peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath( peeType *type, const char *n
 }
 
 peeUTypeSetModelSkinPath::~peeUTypeSetModelSkinPath(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ peeUTypeSetModelSkinPath::~peeUTypeSetModelSkinPath(){
 ///////////////
 
 void peeUTypeSetModelSkinPath::Undo(){
-	pType->SetModelSkinPath( pOldPath.GetString() );
+	pType->SetModelSkinPath(pOldPath.GetString());
 }
 
 void peeUTypeSetModelSkinPath::Redo(){
-	pType->SetModelSkinPath( pNewPath.GetString() );
+	pType->SetModelSkinPath(pNewPath.GetString());
 }

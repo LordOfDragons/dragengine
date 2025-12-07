@@ -62,7 +62,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new information object. */
-	deJpegImageInfo( deJpegModule *module, const char *filename );
+	deJpegImageInfo(deJpegModule *module, const char *filename);
 	/** Cleans up the information object. */
 	virtual ~deJpegImageInfo();
 	/*@}*/
@@ -98,11 +98,11 @@ public:
 	inline int GetFilePosition() const{ return pFilePosition; }
 	
 	/** Init reading into data buffer. */
-	void InitRead( decBaseFileReader *reader );
+	void InitRead(decBaseFileReader *reader);
 	/** Read data from file into data buffer returning the number of bytes read. */
 	void ReadNext();
 	/** Skip data from file adjusting the source manager accordingly. */
-	void SkipNext( int bytes );
+	void SkipNext(int bytes);
 	/** Close reader. */
 	void CloseReader();
 	/*@}*/

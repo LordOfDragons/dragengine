@@ -41,22 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureTCOffset::meUObjectTextureTCOffset( meObjectTexture *texture, const decVector2 &newOffset ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
+meUObjectTextureTCOffset::meUObjectTextureTCOffset(meObjectTexture *texture, const decVector2 &newOffset){
+	if(!texture){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meObject * const object = texture->GetObject();
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Objext Texture Offset" );
+	SetShortInfo("Objext Texture Offset");
 	
 	pTexture = NULL;
 	
@@ -68,7 +68,7 @@ meUObjectTextureTCOffset::meUObjectTextureTCOffset( meObjectTexture *texture, co
 }
 
 meUObjectTextureTCOffset::~meUObjectTextureTCOffset(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
 }
@@ -79,9 +79,9 @@ meUObjectTextureTCOffset::~meUObjectTextureTCOffset(){
 ///////////////
 
 void meUObjectTextureTCOffset::Undo(){
-	pTexture->SetTexCoordOffset( pOldOffset );
+	pTexture->SetTexCoordOffset(pOldOffset);
 }
 
 void meUObjectTextureTCOffset::Redo(){
-	pTexture->SetTexCoordOffset( pNewOffset );
+	pTexture->SetTexCoordOffset(pNewOffset);
 }

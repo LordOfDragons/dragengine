@@ -41,19 +41,19 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearAnimationMove::dearAnimationMove( const deAnimationMove &move ) :
-pName( move.GetName() ),
-pPlaytime( move.GetPlaytime() ),
-pKeyframeLists( nullptr ),
-pKeyframeListCount( 0 ),
-pKeyframeVPSLists( nullptr ),
-pKeyframeVPSListCount( 0 )
+dearAnimationMove::dearAnimationMove(const deAnimationMove &move) :
+pName(move.GetName()),
+pPlaytime(move.GetPlaytime()),
+pKeyframeLists(nullptr),
+pKeyframeListCount(0),
+pKeyframeVPSLists(nullptr),
+pKeyframeVPSListCount(0)
 {
 	try{
-		pCreateKeyframeLists( move );
-		pCreateKeyframeVPSLists( move );
+		pCreateKeyframeLists(move);
+		pCreateKeyframeVPSLists(move);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,18 +68,18 @@ dearAnimationMove::~dearAnimationMove(){
 // Management
 ///////////////
 
-dearAnimationKeyframeList *dearAnimationMove::GetKeyframeListAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pKeyframeListCount )
+dearAnimationKeyframeList *dearAnimationMove::GetKeyframeListAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pKeyframeListCount)
 	
-	return pKeyframeLists[ index ];
+	return pKeyframeLists[index];
 }
 
-dearAnimationKeyframeVPSList *dearAnimationMove::GetKeyframeVPSListAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pKeyframeVPSListCount )
+dearAnimationKeyframeVPSList *dearAnimationMove::GetKeyframeVPSListAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pKeyframeVPSListCount)
 	
-	return pKeyframeVPSLists[ index ];
+	return pKeyframeVPSLists[index];
 }
 
 
@@ -88,18 +88,18 @@ dearAnimationKeyframeVPSList *dearAnimationMove::GetKeyframeVPSListAt( int index
 //////////////////////
 
 void dearAnimationMove::pCleanUp(){
-	if( pKeyframeLists ){
+	if(pKeyframeLists){
 		int i;
-		for( i=0; i<pKeyframeListCount; i++ ){
-			delete pKeyframeLists[ i ];
+		for(i=0; i<pKeyframeListCount; i++){
+			delete pKeyframeLists[i];
 		}
 		delete [] pKeyframeLists;
 	}
 	
-	if( pKeyframeVPSLists ){
+	if(pKeyframeVPSLists){
 		int i;
-		for( i=0; i<pKeyframeVPSListCount; i++ ){
-			delete pKeyframeVPSLists[ i ];
+		for(i=0; i<pKeyframeVPSListCount; i++){
+			delete pKeyframeVPSLists[i];
 		}
 		delete [] pKeyframeVPSLists;
 	}
@@ -107,31 +107,31 @@ void dearAnimationMove::pCleanUp(){
 
 
 
-void dearAnimationMove::pCreateKeyframeLists( const deAnimationMove &move ){
+void dearAnimationMove::pCreateKeyframeLists(const deAnimationMove &move){
 	const int count = move.GetKeyframeListCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pKeyframeLists = new dearAnimationKeyframeList*[ count ];
+	pKeyframeLists = new dearAnimationKeyframeList*[count];
 	
-	while( pKeyframeListCount < count ){
-		pKeyframeLists[ pKeyframeListCount ] = new dearAnimationKeyframeList(
+	while(pKeyframeListCount < count){
+		pKeyframeLists[pKeyframeListCount] = new dearAnimationKeyframeList(
 			*move.GetKeyframeList( pKeyframeListCount ) );
 		pKeyframeListCount++;
 	}
 }
 
-void dearAnimationMove::pCreateKeyframeVPSLists( const deAnimationMove &move ){
+void dearAnimationMove::pCreateKeyframeVPSLists(const deAnimationMove &move){
 	const int count = move.GetVertexPositionSetKeyframeListCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pKeyframeVPSLists = new dearAnimationKeyframeVPSList*[ count ];
+	pKeyframeVPSLists = new dearAnimationKeyframeVPSList*[count];
 	
-	while( pKeyframeVPSListCount < count ){
-		pKeyframeVPSLists[ pKeyframeVPSListCount ] = new dearAnimationKeyframeVPSList(
+	while(pKeyframeVPSListCount < count){
+		pKeyframeVPSLists[pKeyframeVPSListCount] = new dearAnimationKeyframeVPSList(
 			*move.GetVertexPositionSetKeyframeList( pKeyframeVPSListCount ) );
 		pKeyframeVPSListCount++;
 	}

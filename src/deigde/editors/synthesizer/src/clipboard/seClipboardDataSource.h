@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	seClipboardDataSource( seSource *source );
+	seClipboardDataSource(seSource *source);
 	
 	/** \brief Create clipboard data. */
-	seClipboardDataSource( const seSourceList &sources );
+	seClipboardDataSource(const seSourceList &sources);
 	
 protected:
 	/**

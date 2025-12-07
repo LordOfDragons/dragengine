@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound level meter resource manager. */
-	deSoundLevelMeterManager( deEngine *engine );
+	deSoundLevelMeterManager(deEngine *engine);
 	
 	/** \brief Clean up sound level meter resource manager and report leaking resources. */
 	virtual ~deSoundLevelMeterManager();
@@ -92,7 +92,7 @@ public:
 	 * \warning Only for use by deSoundLevelMeter. Never be call directly.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

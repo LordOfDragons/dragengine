@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUndoCAction::ceUndoCAction( ceConversationAction *action, ceConversationTopic *topic ){
-	if( ! action || ! topic ) DETHROW( deeInvalidParam );
+ceUndoCAction::ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic){
+	if(!action || !topic) DETHROW(deeInvalidParam);
 	
 	pAction = NULL;
 	pTopic = NULL;
@@ -54,10 +54,10 @@ ceUndoCAction::ceUndoCAction( ceConversationAction *action, ceConversationTopic 
 }
 
 ceUndoCAction::~ceUndoCAction(){
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
 }

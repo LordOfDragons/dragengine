@@ -43,8 +43,8 @@
 seControllerList::seControllerList(){
 }
 
-seControllerList::seControllerList( const seControllerList &copy ) :
-pControllers( copy.pControllers ){
+seControllerList::seControllerList(const seControllerList &copy) :
+pControllers(copy.pControllers){
 }
 
 seControllerList::~seControllerList(){
@@ -59,17 +59,17 @@ int seControllerList::GetCount() const{
 	return pControllers.GetCount();
 }
 
-seController *seControllerList::GetAt( int index ) const{
-	return ( seController* )pControllers.GetAt( index );
+seController *seControllerList::GetAt(int index) const{
+	return (seController*)pControllers.GetAt(index);
 }
 
-seController *seControllerList::GetNamed( const char *name ) const{
+seController *seControllerList::GetNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		seController * const controller = ( seController* )pControllers.GetAt( i );
-		if( controller->GetName() == name ){
+	for(i=0; i<count; i++){
+		seController * const controller = (seController*)pControllers.GetAt(i);
+		if(controller->GetName() == name){
 			return controller;
 		}
 	}
@@ -77,38 +77,38 @@ seController *seControllerList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int seControllerList::IndexOf( seController *controller ) const{
-	return pControllers.IndexOf( controller );
+int seControllerList::IndexOf(seController *controller) const{
+	return pControllers.IndexOf(controller);
 }
 
-bool seControllerList::Has( seController *controller ) const{
-	return pControllers.Has( controller );
+bool seControllerList::Has(seController *controller) const{
+	return pControllers.Has(controller);
 }
 
-bool seControllerList::HasNamed( const char *name ) const{
-	return GetNamed( name ) != NULL;
+bool seControllerList::HasNamed(const char *name) const{
+	return GetNamed(name) != NULL;
 }
 
-void seControllerList::Add( seController *controller ){
-	if( ! controller || HasNamed( controller->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void seControllerList::Add(seController *controller){
+	if(!controller || HasNamed(controller->GetName())){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 }
 
-void seControllerList::Insert( seController *controller, int index ){
-	if( ! controller || HasNamed( controller->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void seControllerList::Insert(seController *controller, int index){
+	if(!controller || HasNamed(controller->GetName())){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Insert( controller, index );
+	pControllers.Insert(controller, index);
 }
 
-void seControllerList::Move( seController *controller, int index ){
-	pControllers.Move( controller, index );
+void seControllerList::Move(seController *controller, int index){
+	pControllers.Move(controller, index);
 }
 
-void seControllerList::Remove( seController *controller ){
-	pControllers.Remove( controller );
+void seControllerList::Remove(seController *controller){
+	pControllers.Remove(controller);
 }
 
 void seControllerList::RemoveAll(){
@@ -120,12 +120,12 @@ void seControllerList::RemoveAll(){
 // Operators
 //////////////
 
-seControllerList &seControllerList::operator=( const seControllerList &list ){
+seControllerList &seControllerList::operator=(const seControllerList &list){
 	pControllers = list.pControllers;
 	return *this;
 }
 
-seControllerList &seControllerList::operator+=( const seControllerList &list ){
+seControllerList &seControllerList::operator+=(const seControllerList &list){
 	pControllers += list.pControllers;
 	return *this;
 }

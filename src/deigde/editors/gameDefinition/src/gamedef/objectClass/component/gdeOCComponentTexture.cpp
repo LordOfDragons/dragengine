@@ -39,26 +39,26 @@
 ////////////////////////////
 
 gdeOCComponentTexture::gdeOCComponentTexture() :
-pScale( 1.0f, 1.0f ),
-pRotation( 0.0f ),
-pColorTint( 1.0f, 1.0f, 1.0f ){
+pScale(1.0f, 1.0f),
+pRotation(0.0f),
+pColorTint(1.0f, 1.0f, 1.0f){
 }
 
-gdeOCComponentTexture::gdeOCComponentTexture( const char *name ) :
-pName( name ),
-pScale( 1.0f, 1.0f ),
-pRotation( 0.0f ),
-pColorTint( 1.0f, 1.0f, 1.0f ){
+gdeOCComponentTexture::gdeOCComponentTexture(const char *name) :
+pName(name),
+pScale(1.0f, 1.0f),
+pRotation(0.0f),
+pColorTint(1.0f, 1.0f, 1.0f){
 }
 
-gdeOCComponentTexture::gdeOCComponentTexture( const gdeOCComponentTexture &texture ) :
-pName( texture.pName ),
-pPathSkin( texture.pPathSkin ),
-pOffset( texture.pOffset ),
-pScale( texture.pScale ),
-pRotation( texture.pRotation ),
-pColorTint( texture.pColorTint ),
-pProperties( texture.pProperties ){
+gdeOCComponentTexture::gdeOCComponentTexture(const gdeOCComponentTexture &texture) :
+pName(texture.pName),
+pPathSkin(texture.pPathSkin),
+pOffset(texture.pOffset),
+pScale(texture.pScale),
+pRotation(texture.pRotation),
+pColorTint(texture.pColorTint),
+pProperties(texture.pProperties){
 }
 
 gdeOCComponentTexture::~gdeOCComponentTexture(){
@@ -69,30 +69,30 @@ gdeOCComponentTexture::~gdeOCComponentTexture(){
 // Management
 ///////////////
 
-void gdeOCComponentTexture::SetName( const char *name ){
+void gdeOCComponentTexture::SetName(const char *name){
 	pName = name;
 }
 
-void gdeOCComponentTexture::SetPathSkin( const char *path ){
+void gdeOCComponentTexture::SetPathSkin(const char *path){
 	pPathSkin = path;
 }
 
-void gdeOCComponentTexture::SetOffset( const decVector2 &offset ){
+void gdeOCComponentTexture::SetOffset(const decVector2 &offset){
 	pOffset = offset;
 }
 
-void gdeOCComponentTexture::SetScale( const decVector2 &scale ){
+void gdeOCComponentTexture::SetScale(const decVector2 &scale){
 	pScale = scale;
 }
 
-void gdeOCComponentTexture::SetRotation( float rotation ){
+void gdeOCComponentTexture::SetRotation(float rotation){
 	pRotation = rotation;
 }
 
-void gdeOCComponentTexture::SetColorTint( const decColor &color ){
+void gdeOCComponentTexture::SetColorTint(const decColor &color){
 	pColorTint = color;
 }
 
-void gdeOCComponentTexture::SetActiveProperty( const char *property ){
+void gdeOCComponentTexture::SetActiveProperty(const char *property){
 	pActiveProperty = property;
 }

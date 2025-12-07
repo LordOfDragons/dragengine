@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rig shape. */
-	reRigShape( deEngine *engine, eShapeTypes shapeType );
+	reRigShape(deEngine *engine, eShapeTypes shapeType);
 	
 	/** \brief Clean up rig shape. */
 	virtual ~reRigShape();
@@ -101,13 +101,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set parent rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Parent rig bone. */
 	inline reRigBone *GetRigBone() const{ return pRigBone; }
 	
 	/** \brief Set parent rig bone. */
-	void SetRigBone( reRigBone *rigBone );
+	void SetRigBone(reRigBone *rigBone);
 	
 	/** \brief Collider. */
 	inline deColliderVolume *GetCollider() const{ return pCollider; }
@@ -119,31 +119,31 @@ public:
 	inline decVector GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline decVector GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Property. */
 	inline const decString &GetProperty() const{ return pProperty; }
 	
 	/** \brief Set property. */
-	void SetProperty( const char *property );
+	void SetProperty(const char *property);
 	
 	/** \brief Shape is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if shape is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** \brief Shape is the active one. */
 	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if shape is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	
 	
@@ -171,7 +171,7 @@ public:
 	virtual reRigShape *Duplicate() const = 0;
 	
 	/** \brief Uniformly scale shape. */
-	virtual void Scale( float scale ) = 0;
+	virtual void Scale(float scale) = 0;
 	
 	/** \brief Create shape. */
 	virtual decShape *CreateShape() = 0;

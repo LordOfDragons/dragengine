@@ -33,8 +33,8 @@
 // Class deBaseScriptingModule
 ////////////////////////////////
 
-deBaseScriptingModule::deBaseScriptingModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseScriptingModule::deBaseScriptingModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseScriptingModule::~deBaseScriptingModule(){
@@ -53,9 +53,9 @@ bool deBaseScriptingModule::OnAppActivate(){
 	return true;
 }
 
-void deBaseScriptingModule::AddVFSContainers( deVirtualFileSystem&, const char* ){
+void deBaseScriptingModule::AddVFSContainers(deVirtualFileSystem&, const char*){
 }
 
-deBaseScriptingService *deBaseScriptingModule::CreateService( deService* ){
+deBaseScriptingService *deBaseScriptingModule::CreateService(deService*){
 	return new deBaseScriptingService;
 }

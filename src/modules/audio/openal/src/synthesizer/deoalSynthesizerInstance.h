@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	deoalSynthesizerInstance( deAudioOpenAL &oal, deSynthesizerInstance &instance );
+	deoalSynthesizerInstance(deAudioOpenAL &oal, deSynthesizerInstance &instance);
 	
 	/** \brief Clean up peer. */
 	virtual ~deoalSynthesizerInstance();

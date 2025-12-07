@@ -51,9 +51,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseSetCondition( ceWindowMain &windowMain,
+	ceWPTMAIfElseCaseSetCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse,
-		ceCAIfElseCase &ifCase, ceConversationCondition::eConditionTypes conditionType );
+		ceCAIfElseCase &ifCase, ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *condition );
+	virtual igdeUndo *CreateUndo(ceConversationCondition *condition);
 	/*@}*/
 };
 

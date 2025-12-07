@@ -50,7 +50,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new info object. */
-	dePng3DImageInfo( const char *nfilename );
+	dePng3DImageInfo(const char *nfilename);
 	/** Cleans up the info object. */
 	virtual ~dePng3DImageInfo();
 	/*@}*/

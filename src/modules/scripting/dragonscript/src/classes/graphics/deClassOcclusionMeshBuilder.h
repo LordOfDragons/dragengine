@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassOcclusionMeshBuilder( deScriptingDragonScript &ds );
+	deClassOcclusionMeshBuilder(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassOcclusionMeshBuilder();
@@ -58,7 +58,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/*@}*/
 	
 	
@@ -79,29 +79,29 @@ private:
 		dsClass *clsVector2;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfBuild );
-	DEF_NATFUNC( nfBuildOcclusionMesh );
-	DEF_NATFUNC( nfSetBoneCount );
-	DEF_NATFUNC( nfSetBoneAt );
-	DEF_NATFUNC( nfSetWeightCount );
-	DEF_NATFUNC( nfSetWeightAt );
-	DEF_NATFUNC( nfSetWeightGroupCount );
-	DEF_NATFUNC( nfSetWeightGroupAt );
-	DEF_NATFUNC( nfSetVertexCount );
-	DEF_NATFUNC( nfSetVertexAt );
-	DEF_NATFUNC( nfSetCornerCount );
-	DEF_NATFUNC( nfSetCornerAt );
-	DEF_NATFUNC( nfSetFaceCount );
-	DEF_NATFUNC( nfSetFaceAt );
-	DEF_NATFUNC( nfSetDoubleSidedFaceCount );
+	DEF_NATFUNC(nfBuild);
+	DEF_NATFUNC(nfBuildOcclusionMesh);
+	DEF_NATFUNC(nfSetBoneCount);
+	DEF_NATFUNC(nfSetBoneAt);
+	DEF_NATFUNC(nfSetWeightCount);
+	DEF_NATFUNC(nfSetWeightAt);
+	DEF_NATFUNC(nfSetWeightGroupCount);
+	DEF_NATFUNC(nfSetWeightGroupAt);
+	DEF_NATFUNC(nfSetVertexCount);
+	DEF_NATFUNC(nfSetVertexAt);
+	DEF_NATFUNC(nfSetCornerCount);
+	DEF_NATFUNC(nfSetCornerAt);
+	DEF_NATFUNC(nfSetFaceCount);
+	DEF_NATFUNC(nfSetFaceAt);
+	DEF_NATFUNC(nfSetDoubleSidedFaceCount);
 #undef DEF_NATFUNC
 };
 

@@ -111,10 +111,10 @@
 #define OFFSET_RECT		3
 #define COUNT_RECT		4
 
-#define SCALEX( cx )	( pScalePosition.x * ( float )( cx ) )
-#define SCALEY( cy )	( pScalePosition.y * ( float )( cy ) )
-#define POSX( px )		( pScalePosition.x * ( float )( px ) + pOffsetPosition.x )
-#define POSY( py )		( pScalePosition.y * ( float )( py ) + pOffsetPosition.y )
+#define SCALEX(cx)	(pScalePosition.x * (float)(cx))
+#define SCALEY(cy)	(pScalePosition.y * (float)(cy))
+#define POSX(px)		(pScalePosition.x * (float)(px) + pOffsetPosition.x)
+#define POSY(py)		(pScalePosition.y * (float)(py) + pOffsetPosition.y)
 
 enum eSPSolidColor2D{
 	spsc2dColor,
@@ -149,7 +149,7 @@ enum eSPPanel{
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
+deoglRenderDevMode::deoglRenderDevMode(deoglRenderThread &renderThread) : deoglRenderBase(renderThread){
 	deoglShaderDefines commonDefines, defines;
 	deoglPipelineConfiguration pipconf;
 	const char *sources;
@@ -160,11 +160,11 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 	try{
 		pCreateShapesVAO();
 		
-		renderThread.GetShader().SetCommonDefines( commonDefines );
+		renderThread.GetShader().SetCommonDefines(commonDefines);
 		defines = commonDefines;
 		
 		pipconf.Reset();
-		pipconf.SetDepthMask( false );
+		pipconf.SetDepthMask(false);
 		pipconf.EnableBlendBlend();
 		
 		// 2d solid color
@@ -174,15 +174,15 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineSolidColor3D, pipconf, "3D Solid Color", defines);
 		
 		// shape
-		defines.SetDefines( "WITH_SELECTOR" );
-		if( renderThread.GetChoices().GetUseInverseDepth() ){
-			defines.SetDefines( "INVERSE_DEPTH" );
+		defines.SetDefines("WITH_SELECTOR");
+		if(renderThread.GetChoices().GetUseInverseDepth()){
+			defines.SetDefines("INVERSE_DEPTH");
 		}
 		//defines.SetDefines( "WITH_DEPTH" );
 		pAsyncGetPipeline(pPipelineShape, pipconf, "DefRen Shape", defines);
 		
 		// shape line
-		pipconf.SetPolygonMode( GL_LINE );
+		pipconf.SetPolygonMode(GL_LINE);
 		pAsyncGetPipeline(pPipelineShapeLine, pipconf, "DefRen Shape", defines);
 		
 		
@@ -190,14 +190,14 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		defines = commonDefines;
 		
 		pipconf.Reset();
-		pipconf.SetDepthMask( false );
-		pipconf.EnableCulling( false );
+		pipconf.SetDepthMask(false);
+		pipconf.EnableCulling(false);
 		pipconf.EnableBlendBlend();
 		pAsyncGetPipeline(pPipelineVRDebugPanel, pipconf, "DefRen Panel", defines);
 		
 		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_LAYER" );
+		if(renderThread.GetChoices().GetRenderFSQuadStereoVSLayer()){
+			defines.SetDefines("VS_RENDER_LAYER");
 			sources = "DefRen Panel";
 			
 		}else{
@@ -207,7 +207,7 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineVRDebugPanelStereo, pipconf, sources, defines);
 		
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -222,59 +222,59 @@ deoglRenderDevMode::~deoglRenderDevMode(){
 // Rendering
 //////////////
 
-void deoglRenderDevMode::RenderDevMode( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderDevMode(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderDevMode" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderDevMode");
 	deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
 	
 	// 3d information
-	if( devMode.GetShowHeightTerrain() ){
-		RenderHeightTerrainBoxes( plan );
+	if(devMode.GetShowHeightTerrain()){
+		RenderHeightTerrainBoxes(plan);
 	}
 	
-	if( devMode.GetShowPropFieldBox() || devMode.GetShowPropFieldClusters() > -1 ){
-		RenderPropFieldInfo( plan );
+	if(devMode.GetShowPropFieldBox() || devMode.GetShowPropFieldClusters() > -1){
+		RenderPropFieldInfo(plan);
 	}
 	
-	if( devMode.GetShowVisComponent() ){
-		RenderVisComponent( plan );
+	if(devMode.GetShowVisComponent()){
+		RenderVisComponent(plan);
 	}
 	
-	if( devMode.GetShowVisLight() ){
-		RenderVisLight( plan );
+	if(devMode.GetShowVisLight()){
+		RenderVisLight(plan);
 	}
 	
-	if( devMode.GetShowComponentLODLevels() ){
-		RenderComponentLodLevels( plan );
+	if(devMode.GetShowComponentLODLevels()){
+		RenderComponentLodLevels(plan);
 	}
 	
-	if( devMode.GetHighlightTransparentObjects() ){
-		RenderHighlightTransparentObjects( plan );
+	if(devMode.GetHighlightTransparentObjects()){
+		RenderHighlightTransparentObjects(plan);
 	}
 	
-	if( devMode.GetShowEnvMaps() || devMode.GetShowEnvMapHull() ){
-		RenderEnvMapInfo( plan );
+	if(devMode.GetShowEnvMaps() || devMode.GetShowEnvMapHull()){
+		RenderEnvMapInfo(plan);
 	}
 	
-	if( devMode.GetShowLightFullBox() || devMode.GetShowLightBox() || devMode.GetShowLightRooms()
-	|| devMode.GetShowLightVolume() || devMode.GetShowLightVisualInfo() != -1 ){
-		RenderLightInfos( plan );
+	if(devMode.GetShowLightFullBox() || devMode.GetShowLightBox() || devMode.GetShowLightRooms()
+	|| devMode.GetShowLightVolume() || devMode.GetShowLightVisualInfo() != -1){
+		RenderLightInfos(plan);
 	}
 	
 	// 2d information
-	RenderOverlayInfos( plan );
+	RenderOverlayInfos(plan);
 }
 
-void deoglRenderDevMode::RenderVisComponent( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderVisComponent(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderVisComponent" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderVisComponent");
 	const deoglCollideList &collideList = plan.GetCollideList();
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
-	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
+	deoglShape &shapeBox = *shapeManager.GetShapeAt(deoglRTBufferObject::esBox);
+	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix(plan.GetProjectionMatrix());
 	const int componentCount = collideList.GetComponentCount();
-	const decColor colorWire( 0.0f, 0.5f, 1.0f, 1.0f );
-	const decColor colorSolid( 0.0f, 0.5f, 1.0f, 0.1f );
+	const decColor colorWire(0.0f, 0.5f, 1.0f, 1.0f);
+	const decColor colorSolid(0.0f, 0.5f, 1.0f, 0.1f);
 	deoglDCollisionBox box;
 	int c;
 	
@@ -283,38 +283,38 @@ void deoglRenderDevMode::RenderVisComponent( deoglRenderPlan &plan ){
 	
 	shapeBox.ActivateVAO();
 	
-	shader.SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
-	for( c=0; c<componentCount; c++ ){
-		deoglRComponent &component = *collideList.GetComponentAt( c )->GetComponent();
+	shader.SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
+	for(c=0; c<componentCount; c++){
+		deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
 		
-		box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+		box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
+		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
 		
 		shapeBox.RenderFaces();
 	}
 	
-	shader.SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
-	for( c=0; c<componentCount; c++ ){
-		deoglRComponent &component = *collideList.GetComponentAt( c )->GetComponent();
+	shader.SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
+	for(c=0; c<componentCount; c++){
+		deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
 		
-		box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+		box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
+		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
 		
 		shapeBox.RenderLines();
 	}
-	pglBindVertexArray( 0 );
+	pglBindVertexArray(0);
 }
 
-void deoglRenderDevMode::RenderVisLight( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderVisLight(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderVisLight" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderVisLight");
 	const deoglCollideList &collideList = plan.GetCollideList();
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
-	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
+	deoglShape &shapeBox = *shapeManager.GetShapeAt(deoglRTBufferObject::esBox);
+	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix(plan.GetProjectionMatrix());
 	const int lightCount = collideList.GetLightCount();
-	const decColor colorWire( 0.0f, 0.5f, 1.0f, 1.0f );
-	const decColor colorSolid( 0.0f, 0.5f, 1.0f, 0.1f );
+	const decColor colorWire(0.0f, 0.5f, 1.0f, 1.0f);
+	const decColor colorSolid(0.0f, 0.5f, 1.0f, 0.1f);
 	deoglDCollisionBox box;
 	int l;
 	
@@ -323,39 +323,39 @@ void deoglRenderDevMode::RenderVisLight( deoglRenderPlan &plan ){
 	
 	shapeBox.ActivateVAO();
 	
-	shader.SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
-	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
-		box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
-		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+	shader.SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
+	for(l=0; l<lightCount; l++){
+		deoglRLight &light = *collideList.GetLightAt(l)->GetLight();
+		box.SetFromExtends(light.GetMinimumExtend(), light.GetMaximumExtend());
+		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
 		shapeBox.RenderFaces();
 	}
 	
-	shader.SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
-	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
-		box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
-		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+	shader.SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
+	for(l=0; l<lightCount; l++){
+		deoglRLight &light = *collideList.GetLightAt(l)->GetLight();
+		box.SetFromExtends(light.GetMinimumExtend(), light.GetMaximumExtend());
+		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
 		shapeBox.RenderLines();
 	}
-	pglBindVertexArray( 0 );
+	pglBindVertexArray(0);
 }
 
-void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderComponentLodLevels(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderComponentLodLevels" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderComponentLodLevels");
 	const deoglCollideList &collideList = plan.GetCollideList();
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
-	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
+	deoglShape &shapeBox = *shapeManager.GetShapeAt(deoglRTBufferObject::esBox);
+	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix(plan.GetProjectionMatrix());
 	const int componentCount = collideList.GetComponentCount();
-	const decColor colorLevels[ 6 ] = {
-		decColor( 1.0f, 0.0f, 0.0f ),
-		decColor( 0.5f, 0.5f, 0.0f ),
-		decColor( 0.0f, 1.0f, 0.0f ),
-		decColor( 0.0f, 0.5f, 0.5f ),
-		decColor( 0.0f, 0.0f, 1.0f ),
-		decColor( 0.5f, 0.0f, 0.5f ) };
+	const decColor colorLevels[6] = {
+		decColor(1.0f, 0.0f, 0.0f),
+		decColor(0.5f, 0.5f, 0.0f),
+		decColor(0.0f, 1.0f, 0.0f),
+		decColor(0.0f, 0.5f, 0.5f),
+		decColor(0.0f, 0.0f, 1.0f),
+		decColor(0.5f, 0.0f, 0.5f)};
 	const float alphaSolid = 0.1f;
 	const float alphaWire = 1.0f;
 	deoglDCollisionBox box;
@@ -366,44 +366,44 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 	
 	shapeBox.ActivateVAO();
 	
-	for( c=0; c<componentCount; c++ ){
-		deoglCollideListComponent &clComponent = *collideList.GetComponentAt( c );
+	for(c=0; c<componentCount; c++){
+		deoglCollideListComponent &clComponent = *collideList.GetComponentAt(c);
 		deoglRComponent &component = *clComponent.GetComponent();
 		
-		const int lodLevel = decMath::min( clComponent.GetLODLevel(), 5 );
-		shader.SetParameterFloat( spsc3dColor, colorLevels[ lodLevel ].r, colorLevels[ lodLevel ].g, colorLevels[ lodLevel ].b, alphaSolid );
+		const int lodLevel = decMath::min(clComponent.GetLODLevel(), 5);
+		shader.SetParameterFloat(spsc3dColor, colorLevels[lodLevel].r, colorLevels[lodLevel].g, colorLevels[lodLevel].b, alphaSolid);
 		
-		box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+		box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
+		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
 		
 		shapeBox.RenderFaces();
 	}
 	
-	for( c=0; c<componentCount; c++ ){
-		deoglCollideListComponent &clComponent = *collideList.GetComponentAt( c );
+	for(c=0; c<componentCount; c++){
+		deoglCollideListComponent &clComponent = *collideList.GetComponentAt(c);
 		deoglRComponent &component = *clComponent.GetComponent();
 		
-		const int lodLevel = decMath::min( clComponent.GetLODLevel(), 5 );
-		shader.SetParameterFloat( spsc3dColor, colorLevels[ lodLevel ].r, colorLevels[ lodLevel ].g, colorLevels[ lodLevel ].b, alphaWire );
+		const int lodLevel = decMath::min(clComponent.GetLODLevel(), 5);
+		shader.SetParameterFloat(spsc3dColor, colorLevels[lodLevel].r, colorLevels[lodLevel].g, colorLevels[lodLevel].b, alphaWire);
 		
-		box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+		box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
+		shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize()) * decDMatrix::CreateTranslation(box.GetCenter()) * matrixVP);
 		
 		shapeBox.RenderLines();
 	}
-	pglBindVertexArray( 0 );
+	pglBindVertexArray(0);
 }
 
-void deoglRenderDevMode::RenderHighlightTransparentObjects( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderHighlightTransparentObjects(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderHighlightTransparentObjects" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderHighlightTransparentObjects");
 	const deoglCollideList &collideList = plan.GetCollideList();
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
-	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
+	deoglShape &shapeBox = *shapeManager.GetShapeAt(deoglRTBufferObject::esBox);
+	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix(plan.GetProjectionMatrix());
 	const int componentCount = collideList.GetComponentCount();
-	const decColor colorWire( 1.0f, 0.0f, 0.0f, 1.0f );
-	const decColor colorSolid( 1.0f, 0.0f, 0.0f, 0.1f );
+	const decColor colorWire(1.0f, 0.0f, 0.0f, 1.0f);
+	const decColor colorSolid(1.0f, 0.0f, 0.0f, 0.1f);
 	deoglDCollisionBox box;
 	int c;
 	
@@ -412,46 +412,46 @@ void deoglRenderDevMode::RenderHighlightTransparentObjects( deoglRenderPlan &pla
 	
 	shapeBox.ActivateVAO();
 	
-	shader.SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
-	for( c=0; c<componentCount; c++ ){
-		const deoglRComponent &component = *collideList.GetComponentAt( c )->GetComponent();
+	shader.SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
+	for(c=0; c<componentCount; c++){
+		const deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
 		
-		if( component.GetSkin() && ! component.GetSkin()->GetIsSolid() ){
-			box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-			shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+		if(component.GetSkin() && !component.GetSkin()->GetIsSolid()){
+			box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
+			shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 				* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
 			
 			shapeBox.RenderFaces();
 		}
 	}
 	
-	shader.SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
-	for( c=0; c<componentCount; c++ ){
-		const deoglRComponent &component = *collideList.GetComponentAt( c )->GetComponent();
+	shader.SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
+	for(c=0; c<componentCount; c++){
+		const deoglRComponent &component = *collideList.GetComponentAt(c)->GetComponent();
 		
-		if( component.GetSkin() && ! component.GetSkin()->GetIsSolid() ){
-			box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-			shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+		if(component.GetSkin() && !component.GetSkin()->GetIsSolid()){
+			box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
+			shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 				* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
 			
 			shapeBox.RenderLines();
 		}
 	}
-	pglBindVertexArray( 0 );
+	pglBindVertexArray(0);
 }
 
-void deoglRenderDevMode::RenderHeightTerrainBoxes( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderHeightTerrainBoxes(deoglRenderPlan &plan){
 	deoglRHeightTerrain *heightTerrain = plan.GetWorld()->GetHeightTerrain();
-	if( ! heightTerrain ) return;
+	if(!heightTerrain) return;
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderHeightTerrainBoxes" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderHeightTerrainBoxes");
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
-	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
+	deoglShape &shapeBox = *shapeManager.GetShapeAt(deoglRTBufferObject::esBox);
+	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix(plan.GetProjectionMatrix());
 	const float sectorDim = heightTerrain->GetSectorSize();
 	const int sectorCount = heightTerrain->GetSectorCount();
-	const decColor colorWire( 0.75f, 0.75f, 0.0f, 1.0 );
+	const decColor colorWire(0.75f, 0.75f, 0.0f, 1.0);
 	int s, c;
 	
 	pPipelineSolidColor3D->Activate();
@@ -459,19 +459,19 @@ void deoglRenderDevMode::RenderHeightTerrainBoxes( deoglRenderPlan &plan ){
 	
 	shapeBox.ActivateVAO();
 	
-	shader.SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
-	for( s=0; s<sectorCount; s++ ){
-		const deoglRHTSector &sector = heightTerrain->GetSectorAt( s );
+	shader.SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
+	for(s=0; s<sectorCount; s++){
+		const deoglRHTSector &sector = heightTerrain->GetSectorAt(s);
 		
-		if( sector.GetValid() ){
+		if(sector.GetValid()){
 			// TODO test if inside view frustum
 			
 			const int clusterCount = sector.GetClusterCount() * sector.GetClusterCount();
 			const deoglHTSCluster * const clusters = sector.GetClusters();
 			const decPoint &scoord = sector.GetCoordinates();
 			
-			for( c=0; c<clusterCount; c++ ){
-				shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateTranslation( sectorDim * ( double )scoord.x, 0.0, sectorDim * ( double )scoord.y )
+			for(c=0; c<clusterCount; c++){
+				shader.SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateTranslation(sectorDim * (double)scoord.x, 0.0, sectorDim * (double)scoord.y)
 					* decDMatrix::CreateScale( clusters[ c ].GetHalfExtends() )
 					* decDMatrix::CreateTranslation( clusters[ c ].GetCenter() ) * matrixVP );
 				
@@ -479,15 +479,15 @@ void deoglRenderDevMode::RenderHeightTerrainBoxes( deoglRenderPlan &plan ){
 			}
 		}
 	}
-	pglBindVertexArray( 0 );
+	pglBindVertexArray(0);
 }
 
-void deoglRenderDevMode::RenderPropFieldInfo( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderPropFieldInfo(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderPropFieldInfo" );
-	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderPropFieldInfo");
+	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix(plan.GetProjectionMatrix());
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShapeBox &shapeBox = *( ( deoglShapeBox* )shapeManager.GetShapeAt( deoglRTBufferObject::esBox ) );
+	deoglShapeBox &shapeBox = *((deoglShapeBox*)shapeManager.GetShapeAt(deoglRTBufferObject::esBox));
 	const deoglCollideList &collideList = plan.GetCollideList();
 	const int propFieldCount = collideList.GetPropFieldCount();
 	const deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
@@ -502,54 +502,54 @@ void deoglRenderDevMode::RenderPropFieldInfo( deoglRenderPlan &plan ){
 	
 	shapeBox.ActivateVAO();
 	
-	if( devMode.GetShowPropFieldBox() ){
-		const decColor colorSolid( 0.0f, 1.0f, 0.0f, alphaSolid );
-		const decColor colorWire( colorSolid.r, colorSolid.g, colorSolid.b, alphaWire );
+	if(devMode.GetShowPropFieldBox()){
+		const decColor colorSolid(0.0f, 1.0f, 0.0f, alphaSolid);
+		const decColor colorWire(colorSolid.r, colorSolid.g, colorSolid.b, alphaWire);
 		
-		for( i=0; i<propFieldCount; i++ ){
-			deoglRPropField &propField = *collideList.GetPropFieldAt( i )->GetPropField();
+		for(i=0; i<propFieldCount; i++){
+			deoglRPropField &propField = *collideList.GetPropFieldAt(i)->GetPropField();
 			
-			box.SetFromExtends( propField.GetMinimumExtend(), propField.GetMaximumExtend() );
+			box.SetFromExtends(propField.GetMinimumExtend(), propField.GetMaximumExtend());
 			
-			shader->SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+			shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 				* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
 			
-			shader->SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
+			shader->SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
 			shapeBox.RenderFaces();
 			
-			shader->SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
+			shader->SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
 			shapeBox.RenderLines();
 		}
 	}
 	
-	if( typeIndex > -1 ){
-		const decColor colorSolid( 1.0f, 0.0f, 0.0f, alphaSolid );
-		const decColor colorWire( colorSolid.r, colorSolid.g, colorSolid.b, alphaWire );
+	if(typeIndex > -1){
+		const decColor colorSolid(1.0f, 0.0f, 0.0f, alphaSolid);
+		const decColor colorWire(colorSolid.r, colorSolid.g, colorSolid.b, alphaWire);
 		
-		for( i=0; i<propFieldCount; i++ ){
-			const deoglCollideListPropField &clPropField = *collideList.GetPropFieldAt( i );
+		for(i=0; i<propFieldCount; i++){
+			const deoglCollideListPropField &clPropField = *collideList.GetPropFieldAt(i);
 			deoglRPropField &propField = *clPropField.GetPropField();
 			const decDVector propFieldOffset = propField.GetPosition();
 			const int typeCount = clPropField.GetTypeCount();
 			
-			for( j=0; j<typeCount; j++ ){
-				if( j == typeIndex ){
-					const deoglCollideListPropFieldType &cltype = *clPropField.GetTypeAt( j );
+			for(j=0; j<typeCount; j++){
+				if(j == typeIndex){
+					const deoglCollideListPropFieldType &cltype = *clPropField.GetTypeAt(j);
 					const int clusterCount = cltype.GetClusterCount();
 					
-					for( k=0; k<clusterCount; k++ ){
-						const deoglPropFieldCluster &cluster = *cltype.GetClusterAt( k ).GetCluster();
+					for(k=0; k<clusterCount; k++){
+						const deoglPropFieldCluster &cluster = *cltype.GetClusterAt(k).GetCluster();
 						
-						box.SetFromExtends( propFieldOffset + decDVector( cluster.GetMinimumExtend() ),
-							propFieldOffset + decDVector( cluster.GetMaximumExtend() ) );
+						box.SetFromExtends(propFieldOffset + decDVector(cluster.GetMinimumExtend()),
+							propFieldOffset + decDVector(cluster.GetMaximumExtend()));
 						
-						shader->SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+						shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 							* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
 						
-						shader->SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
+						shader->SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
 						shapeBox.RenderFaces();
 						
-						shader->SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
+						shader->SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
 						shapeBox.RenderLines();
 					}
 				}
@@ -560,13 +560,13 @@ void deoglRenderDevMode::RenderPropFieldInfo( deoglRenderPlan &plan ){
 
 
 
-void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderLightInfos(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderLightInfos" );
-	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderLightInfos");
+	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix(plan.GetProjectionMatrix());
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShapeBox &shapeBox = *( ( deoglShapeBox* )shapeManager.GetShapeAt( deoglRTBufferObject::esBox ) );
-	deoglShapeCylinder &shapeCylinder = *( ( deoglShapeCylinder* )renderThread.GetBufferObject().GetShapeManager().GetShapeAt( deoglRTBufferObject::esCylinder ) );
+	deoglShapeBox &shapeBox = *((deoglShapeBox*)shapeManager.GetShapeAt(deoglRTBufferObject::esBox));
+	deoglShapeCylinder &shapeCylinder = *((deoglShapeCylinder*)renderThread.GetBufferObject().GetShapeManager().GetShapeAt(deoglRTBufferObject::esCylinder));
 	const deoglCollideList &collideList = plan.GetCollideList();
 	const int lightCount = collideList.GetLightCount();
 	const deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
@@ -581,105 +581,105 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 	
 	shapeBox.ActivateVAO();
 	
-	if( devMode.GetShowLightBox() ){
-		const decColor colorSolid( 1.0f, 0.0f, 1.0f, alphaSolid );
-		const decColor colorWire( colorSolid.r, colorSolid.g, colorSolid.b, alphaWire );
+	if(devMode.GetShowLightBox()){
+		const decColor colorSolid(1.0f, 0.0f, 1.0f, alphaSolid);
+		const decColor colorWire(colorSolid.r, colorSolid.g, colorSolid.b, alphaWire);
 		
-		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
+		for(l=0; l<lightCount; l++){
+			deoglRLight &light = *collideList.GetLightAt(l)->GetLight();
 			
-			box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
+			box.SetFromExtends(light.GetMinimumExtend(), light.GetMaximumExtend());
 			
-			shader->SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+			shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 				* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
 			
-			shader->SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
+			shader->SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
 			shapeBox.RenderFaces();
 			
-			shader->SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
+			shader->SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
 			shapeBox.RenderLines();
 		}
 	}
 	
-	if( devMode.GetShowLightFullBox() ){
-		const decColor colorSolid( 1.0f, 0.5f, 0.0f, alphaSolid );
-		const decColor colorWire( colorSolid.r, colorSolid.g, colorSolid.b, alphaWire );
+	if(devMode.GetShowLightFullBox()){
+		const decColor colorSolid(1.0f, 0.5f, 0.0f, alphaSolid);
+		const decColor colorWire(colorSolid.r, colorSolid.g, colorSolid.b, alphaWire);
 		
-		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
+		for(l=0; l<lightCount; l++){
+			deoglRLight &light = *collideList.GetLightAt(l)->GetLight();
 			
-			box.SetFromExtends( light.GetFullMinExtend(), light.GetFullMaxExtend() );
+			box.SetFromExtends(light.GetFullMinExtend(), light.GetFullMaxExtend());
 			
-			shader->SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+			shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 				* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
 			
-			shader->SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
+			shader->SetParameterFloat(spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a);
 			shapeBox.RenderFaces();
 			
-			shader->SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
+			shader->SetParameterFloat(spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a);
 			shapeBox.RenderLines();
 		}
 	}
 	
-	if( devMode.GetShowLightVolume() ){
+	if(devMode.GetShowLightVolume()){
 		// face
 		pPipelineShape->Activate();
 		shader = &pPipelineShape->GetShader();
-		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
 		
-		for( l=0; l<lightCount; l++ ){
-			const deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+		for(l=0; l<lightCount; l++){
+			const deoglCollideListLight &cllight = *collideList.GetLightAt(l);
 			const deoglRLight &light = *cllight.GetLight();
 			const deoglLightVolume &lightVolume = *light.GetLightVolume();
 			
-			pglBindVertexArray( lightVolume.GetVAO() );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP, light.GetMatrix() * matrixVP );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP2, light.GetMatrix() * matrixVP );
+			pglBindVertexArray(lightVolume.GetVAO());
+			shader->SetParameterDMatrix4x4(spsMatrixMVP, light.GetMatrix() * matrixVP);
+			shader->SetParameterDMatrix4x4(spsMatrixMVP2, light.GetMatrix() * matrixVP);
 			
-			if( cllight.GetCameraInside() ){
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.01f ) );
+			if(cllight.GetCameraInside()){
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.0f, 0.0f, 0.01f));
 				
 			}else{
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 0.01f ) );
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 0.01f));
 			}
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPointCount()));
 		}
 		
 		// line
 		pPipelineShapeLine->Activate();
 		shader = &pPipelineShapeLine->GetShader();
-		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
 		
-		for( l=0; l<lightCount; l++ ){
-			const deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+		for(l=0; l<lightCount; l++){
+			const deoglCollideListLight &cllight = *collideList.GetLightAt(l);
 			const deoglRLight &light = *cllight.GetLight();
 			const deoglLightVolume &lightVolume = *light.GetLightVolume();
 			
-			pglBindVertexArray( lightVolume.GetVAO() );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP, light.GetMatrix() * matrixVP );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP2, light.GetMatrix() * matrixVP );
+			pglBindVertexArray(lightVolume.GetVAO());
+			shader->SetParameterDMatrix4x4(spsMatrixMVP, light.GetMatrix() * matrixVP);
+			shader->SetParameterDMatrix4x4(spsMatrixMVP2, light.GetMatrix() * matrixVP);
 			
-			if( cllight.GetCameraInside() ){
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
+			if(cllight.GetCameraInside()){
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.0f, 0.0f, 1.0f));
 				
 			}else{
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 1.0f));
 			}
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPointCount()));
 		}
 	}
 	
-	if( devMode.GetShowLightVisualInfo() >= 0 && devMode.GetShowLightVisualInfo() < collideList.GetLightCount() ){
+	if(devMode.GetShowLightVisualInfo() >= 0 && devMode.GetShowLightVisualInfo() < collideList.GetLightCount()){
 		pPipelineShape->Activate();
 		shader = &pPipelineShape->GetShader();
 		
-		const decQuaternion orientationCylinder = decMatrix::CreateRotationX( DEG2RAD * 90.0f ).ToQuaternion();
-		const deoglCollideListLight &cllight = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() );
+		const decQuaternion orientationCylinder = decMatrix::CreateRotationX(DEG2RAD * 90.0f).ToQuaternion();
+		const deoglCollideListLight &cllight = *collideList.GetLightAt(devMode.GetShowLightVisualInfo());
 		const deoglRLight &light = *cllight.GetLight();
 		decMatrix matrix1, matrix2;
 		decDMatrix matrixMVP;
 		
-		if( light.GetLightType() == deLight::eltSpot ){
+		if(light.GetLightType() == deLight::eltSpot){
 			const deoglComponentSet &listStatic = light.GetStaticComponentList();
 			const deoglComponentSet &listDynamic = light.GetDynamicComponentList();
 			const float cutOffDist = light.GetRange();
@@ -689,62 +689,62 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 			shapeBox.ActivateVAO();
 			
 			count = listStatic.GetCount();
-			for( i=0; i<count; i++ ){
-				deoglRComponent &component = *listStatic.GetAt( i );
+			for(i=0; i<count; i++){
+				deoglRComponent &component = *listStatic.GetAt(i);
 				
-				if( component.GetSolid() ){
-					box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
+				if(component.GetSolid()){
+					box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
 					
-					shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-					shader->SetParameterDMatrix4x4( spsMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+					shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
+					shader->SetParameterDMatrix4x4(spsMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 						* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
-					shader->SetParameterDMatrix4x4( spsMatrixMVP2, matrixMVP );
+					shader->SetParameterDMatrix4x4(spsMatrixMVP2, matrixMVP);
 					
-					shader->SetParameterColor4( spsColor, decColor( 0.0f, 0.5f, 0.0f, 0.1f ) );
+					shader->SetParameterColor4(spsColor, decColor(0.0f, 0.5f, 0.0f, 0.1f));
 					shapeBox.RenderFaces();
 					
-					shader->SetParameterColor4( spsColor, decColor( 0.0f, 0.5f, 0.0f, 1.0f ) );
+					shader->SetParameterColor4(spsColor, decColor(0.0f, 0.5f, 0.0f, 1.0f));
 					shapeBox.RenderLines();
 				}
 			}
 			
 			// static transparent components
-			for( i=0; i<count; i++ ){
-				deoglRComponent &component = *listStatic.GetAt( i );
+			for(i=0; i<count; i++){
+				deoglRComponent &component = *listStatic.GetAt(i);
 				
-				if( ! component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow() ){
-					box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
+				if(!component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow()){
+					box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
 					
-					shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-					shader->SetParameterDMatrix4x4( spsMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+					shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
+					shader->SetParameterDMatrix4x4(spsMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 						* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
-					shader->SetParameterDMatrix4x4( spsMatrixMVP2, matrixMVP );
+					shader->SetParameterDMatrix4x4(spsMatrixMVP2, matrixMVP);
 					
-					shader->SetParameterColor4( spsColor, decColor( 0.0f, 1.0f, 0.0f, 0.1f ) );
+					shader->SetParameterColor4(spsColor, decColor(0.0f, 1.0f, 0.0f, 0.1f));
 					shapeBox.RenderFaces();
 					
-					shader->SetParameterColor4( spsColor, decColor( 0.0f, 1.0f, 0.0f, 1.0f ) );
+					shader->SetParameterColor4(spsColor, decColor(0.0f, 1.0f, 0.0f, 1.0f));
 					shapeBox.RenderLines();
 				}
 			}
 			
 			// dynamic components
 			count = listDynamic.GetCount();
-			for( i=0; i<count; i++ ){
-				deoglRComponent &component = *listDynamic.GetAt( i );
+			for(i=0; i<count; i++){
+				deoglRComponent &component = *listDynamic.GetAt(i);
 				
 				//if( component.GetSolid() ){
-					box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
+					box.SetFromExtends(component.GetMinimumExtend(), component.GetMaximumExtend());
 					
-					shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-					shader->SetParameterDMatrix4x4( spsMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+					shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
+					shader->SetParameterDMatrix4x4(spsMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 						* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
-					shader->SetParameterDMatrix4x4( spsMatrixMVP2, matrixMVP );
+					shader->SetParameterDMatrix4x4(spsMatrixMVP2, matrixMVP);
 					
-					shader->SetParameterColor4( spsColor, decColor( 0.0f, 0.5f, 1.0f, 0.1f ) );
+					shader->SetParameterColor4(spsColor, decColor(0.0f, 0.5f, 1.0f, 0.1f));
 					shapeBox.RenderFaces();
 					
-					shader->SetParameterColor4( spsColor, decColor( 0.0f, 0.5f, 1.0f, 1.0f ) );
+					shader->SetParameterColor4(spsColor, decColor(0.0f, 0.5f, 1.0f, 1.0f));
 					shapeBox.RenderLines();
 				//}
 			}
@@ -752,58 +752,58 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 			// spot light cone
 			shapeCylinder.ActivateVAO();
 			
-			shapeCylinder.CalcMatrices( matrix1, matrix2, decVector( 0.0f, 0.0f, cutOffDist * 0.5f ),
+			shapeCylinder.CalcMatrices(matrix1, matrix2, decVector(0.0f, 0.0f, cutOffDist * 0.5f),
 				orientationCylinder, cutOffDist * 0.5f, 0.0f,
-				sinf( light.GetSpotAngle() * 0.5f ) * cutOffDist * 2.0f );
+				sinf(light.GetSpotAngle() * 0.5f) * cutOffDist * 2.0f);
 			
 			matrixMVP = light.GetMatrix() * matrixVP;
 			
-			shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP, decDMatrix( matrix1 ) * matrixMVP );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP2, decDMatrix( matrix2 ) * matrixMVP );
+			shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
+			shader->SetParameterDMatrix4x4(spsMatrixMVP, decDMatrix(matrix1) * matrixMVP);
+			shader->SetParameterDMatrix4x4(spsMatrixMVP2, decDMatrix(matrix2) * matrixMVP);
 			
-			if( cllight.GetCameraInside() ){
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
+			if(cllight.GetCameraInside()){
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.0f, 0.0f, 0.1f));
 				shapeCylinder.RenderFaces();
 				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.0f, 0.0f, 1.0f));
 				shapeCylinder.RenderLines();
 				
 			}else{
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 0.1f));
 				shapeCylinder.RenderFaces();
 				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 1.0f));
 				shapeCylinder.RenderLines();
 			}
 		}
 	}
 	
-	pglBindVertexArray( 0 );
+	pglBindVertexArray(0);
 }
 
 
 
-void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderEnvMapInfo(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderEnvMapInfo" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderEnvMapInfo");
 	const decDMatrix &matrixV = plan.GetCameraMatrix();
-	const decDMatrix &matrixVP = matrixV * decDMatrix( plan.GetProjectionMatrix() );
+	const decDMatrix &matrixVP = matrixV * decDMatrix(plan.GetProjectionMatrix());
 	const deoglEnvironmentMapList &list = plan.GetWorld()->GetEnvMapList();
 	const deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const int envmapCount = list.GetCount();
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShapeBox &shapeBox = *( ( deoglShapeBox* )shapeManager.GetShapeAt( deoglRTBufferObject::esBox ) );
+	deoglShapeBox &shapeBox = *((deoglShapeBox*)shapeManager.GetShapeAt(deoglRTBufferObject::esBox));
 	int i;
 	
-	if( devMode.GetShowEnvMaps() ){
+	if(devMode.GetShowEnvMaps()){
 		const float alphaSolid = 0.1f;
 		const float alphaWire = 1.0f;
-		const decColor colorPosition( 1.0f, 0.0f, 0.0f );
-		const decColor colorInfluence( 1.0f, 0.0f, 0.0f );
-		const decColor colorReflection( 0.0f, 1.0f, 0.0f );
-		const decColor colorMask( 0.0f, 0.0f, 1.0f );
+		const decColor colorPosition(1.0f, 0.0f, 0.0f);
+		const decColor colorInfluence(1.0f, 0.0f, 0.0f);
+		const decColor colorReflection(0.0f, 1.0f, 0.0f);
+		const decColor colorMask(0.0f, 0.0f, 1.0f);
 		deoglDCollisionBox box;
 		
 		pPipelineSolidColor3D->Activate();
@@ -811,75 +811,75 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 		
 		shapeBox.ActivateVAO();
 		
-		for( i=0; i<envmapCount; i++ ){
-			const deoglEnvironmentMap &envmap = *list.GetAt( i );
-			if( envmap.GetSkyOnly() ){
+		for(i=0; i<envmapCount; i++){
+			const deoglEnvironmentMap &envmap = *list.GetAt(i);
+			if(envmap.GetSkyOnly()){
 				continue;
 			}
 			
 			// position
-			box.SetCenter( envmap.GetPosition() );
-			box.SetHalfSize( decDVector( 0.02f, 0.02f, 0.02f ) );
+			box.SetCenter(envmap.GetPosition());
+			box.SetHalfSize(decDVector(0.02f, 0.02f, 0.02f));
 			
-			shader->SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() )
+			shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, decDMatrix::CreateScale(box.GetHalfSize())
 				* decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
 			
-			shader->SetParameterFloat( spsc3dColor, colorPosition.r, colorPosition.g, colorPosition.b, alphaSolid );
+			shader->SetParameterFloat(spsc3dColor, colorPosition.r, colorPosition.g, colorPosition.b, alphaSolid);
 			shapeBox.RenderFaces();
 			
-			shader->SetParameterFloat( spsc3dColor, colorPosition.r, colorPosition.g, colorPosition.b, alphaWire );
+			shader->SetParameterFloat(spsc3dColor, colorPosition.r, colorPosition.g, colorPosition.b, alphaWire);
 			shapeBox.RenderLines();
 			
 			// influence box
-			if( envmap.GetHasInfluenceBox() ){
-				shader->SetParameterDMatrix4x4( spsc3dMatrixMVP, envmap.GetMatrixInfluenceBox() * matrixVP );
+			if(envmap.GetHasInfluenceBox()){
+				shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, envmap.GetMatrixInfluenceBox() * matrixVP);
 				
-				shader->SetParameterFloat( spsc3dColor, colorInfluence.r, colorInfluence.g, colorInfluence.b, alphaSolid );
+				shader->SetParameterFloat(spsc3dColor, colorInfluence.r, colorInfluence.g, colorInfluence.b, alphaSolid);
 				shapeBox.RenderFaces();
 				
-				shader->SetParameterFloat( spsc3dColor, colorInfluence.r, colorInfluence.g, colorInfluence.b, alphaWire );
+				shader->SetParameterFloat(spsc3dColor, colorInfluence.r, colorInfluence.g, colorInfluence.b, alphaWire);
 				shapeBox.RenderLines();
 			}
 			
 			// reflection shape
-			if( envmap.GetHasReflectionBox() ){
-				shader->SetParameterDMatrix4x4( spsc3dMatrixMVP, envmap.GetMatrixReflectionBox() * matrixVP );
+			if(envmap.GetHasReflectionBox()){
+				shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, envmap.GetMatrixReflectionBox() * matrixVP);
 				
-				shader->SetParameterFloat( spsc3dColor, colorReflection.r, colorReflection.g, colorReflection.b, alphaSolid );
+				shader->SetParameterFloat(spsc3dColor, colorReflection.r, colorReflection.g, colorReflection.b, alphaSolid);
 				shapeBox.RenderFaces();
 				
-				shader->SetParameterFloat( spsc3dColor, colorReflection.r, colorReflection.g, colorReflection.b, alphaWire );
+				shader->SetParameterFloat(spsc3dColor, colorReflection.r, colorReflection.g, colorReflection.b, alphaWire);
 				shapeBox.RenderLines();
 			}
 			
 			// mask shapes
 			const int maskCount = envmap.GetReflectionMaskBoxMatrixCount();
 			int j;
-			for( j=0; j<maskCount; j++ ){
-				shader->SetParameterDMatrix4x4( spsc3dMatrixMVP, envmap.GetReflectionMaskBoxMatrixAt( j ) * matrixVP );
+			for(j=0; j<maskCount; j++){
+				shader->SetParameterDMatrix4x4(spsc3dMatrixMVP, envmap.GetReflectionMaskBoxMatrixAt(j) * matrixVP);
 				
-				shader->SetParameterFloat( spsc3dColor, colorMask.r, colorMask.g, colorMask.b, alphaSolid );
+				shader->SetParameterFloat(spsc3dColor, colorMask.r, colorMask.g, colorMask.b, alphaSolid);
 				shapeBox.RenderFaces();
 				
-				shader->SetParameterFloat( spsc3dColor, colorMask.r, colorMask.g, colorMask.b, alphaWire );
+				shader->SetParameterFloat(spsc3dColor, colorMask.r, colorMask.g, colorMask.b, alphaWire);
 				shapeBox.RenderLines();
 			}
 		}
 	}
 	
 	// hull
-	if( devMode.GetShowEnvMapHull() ){
+	if(devMode.GetShowEnvMapHull()){
 		double closestDist = 0.0;
 		int closestEnvMap = -1;
 		
-		for( i=0; i<envmapCount; i++ ){
-			deoglEnvironmentMap &envmap = *list.GetAt( i );
+		for(i=0; i<envmapCount; i++){
+			deoglEnvironmentMap &envmap = *list.GetAt(i);
 			const decDVector lpos = matrixV * envmap.GetPosition();
 			
-			if( lpos.z > 0.0 && fabs( lpos.x ) < lpos.z && fabs( lpos.y ) < lpos.z ){
+			if(lpos.z > 0.0 && fabs(lpos.x) < lpos.z && fabs(lpos.y) < lpos.z){
 				const double dist = lpos.Length();
 				
-				if( closestEnvMap == -1 || dist < closestDist ){
+				if(closestEnvMap == -1 || dist < closestDist){
 					closestEnvMap = i;
 					closestDist = dist;
 				}
@@ -889,85 +889,85 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 		// fill
 		pPipelineShape->Activate();
 		deoglShaderCompiled *shader = &pPipelineShape->GetShader();
-		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
 		
-		for( i=0; i<envmapCount; i++ ){
-			deoglEnvironmentMap &envmap = *list.GetAt( i );
+		for(i=0; i<envmapCount; i++){
+			deoglEnvironmentMap &envmap = *list.GetAt(i);
 			const deoglLightVolume &lightVolume = *envmap.GetLightVolume();
-			const decDMatrix matrix = decDMatrix::CreateTranslation( envmap.GetPosition() ) * matrixVP;
+			const decDMatrix matrix = decDMatrix::CreateTranslation(envmap.GetPosition()) * matrixVP;
 			
-			pglBindVertexArray( lightVolume.GetVAO() );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP, matrix );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP2, matrix );
+			pglBindVertexArray(lightVolume.GetVAO());
+			shader->SetParameterDMatrix4x4(spsMatrixMVP, matrix);
+			shader->SetParameterDMatrix4x4(spsMatrixMVP2, matrix);
 			
-			if( i == closestEnvMap ){
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.05f ) );
+			if(i == closestEnvMap){
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.0f, 0.0f, 0.05f));
 				
 			}else{
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 0.05f ) );
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 0.05f));
 			}
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPointCount()));
 		}
 		
 		// line
 		pPipelineShapeLine->Activate();
 		shader = &pPipelineShapeLine->GetShader();
-		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		shader->SetParameterFloat(spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV());
 		
-		for( i=0; i<envmapCount; i++ ){
-			deoglEnvironmentMap &envmap = *list.GetAt( i );
+		for(i=0; i<envmapCount; i++){
+			deoglEnvironmentMap &envmap = *list.GetAt(i);
 			const deoglLightVolume &lightVolume = *envmap.GetLightVolume();
-			const decDMatrix matrix = decDMatrix::CreateTranslation( envmap.GetPosition() ) * matrixVP;
+			const decDMatrix matrix = decDMatrix::CreateTranslation(envmap.GetPosition()) * matrixVP;
 			
-			pglBindVertexArray( lightVolume.GetVAO() );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP, matrix );
-			shader->SetParameterDMatrix4x4( spsMatrixMVP2, matrix );
+			pglBindVertexArray(lightVolume.GetVAO());
+			shader->SetParameterDMatrix4x4(spsMatrixMVP, matrix);
+			shader->SetParameterDMatrix4x4(spsMatrixMVP2, matrix);
 			
-			if( i == closestEnvMap ){
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
+			if(i == closestEnvMap){
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.0f, 0.0f, 1.0f));
 				
 			}else{
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+				shader->SetParameterColor4(spsColor, decColor(1.0f, 0.5f, 0.0f, 1.0f));
 			}
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
+			OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLES, 0, lightVolume.GetPointCount()));
 		}
 	}
 	
-	pglBindVertexArray( 0 );
+	pglBindVertexArray(0);
 }
 
 
 
-void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderOverlayInfos(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
 	bool hasOverlay = false;
 	
 	// determine first if we have any overlay information to show
-	if( devMode.GetShowHeightTerrain() ){
+	if(devMode.GetShowHeightTerrain()){
 		hasOverlay = true;
 	}
-	if( devMode.GetShowTranspLevelCount() ){
+	if(devMode.GetShowTranspLevelCount()){
 		hasOverlay = true;
 	}
-	if( devMode.GetShowMemoryInfo() ){
+	if(devMode.GetShowMemoryInfo()){
 		hasOverlay = true;
 	}
-	if( plan.GetDebug() ){
+	if(plan.GetDebug()){
 		hasOverlay = true;
 	}
-	if( devMode.GetShowOccMapLevel() > -1 ){
+	if(devMode.GetShowOccMapLevel() > -1){
 		hasOverlay = true;
 	}
-	if( devMode.GetTextureDebugImage() ){
+	if(devMode.GetTextureDebugImage()){
 		hasOverlay = true;
 	}
-	if( devMode.GetShowDebugInfo() ){
+	if(devMode.GetShowDebugInfo()){
 		hasOverlay = true;
 	}
 	
 	// if there are no overlay information leave now
-	if( ! hasOverlay ){
+	if(!hasOverlay){
 		return;
 	}
 	
@@ -975,16 +975,16 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 	deoglVR *vr = nullptr;
 	
 	{
-	const deoglRestoreFramebuffer restoreFbo( renderThread );
-	decPoint viewportSize( plan.GetViewportWidth(), plan.GetViewportHeight() );
+	const deoglRestoreFramebuffer restoreFbo(renderThread);
+	decPoint viewportSize(plan.GetViewportWidth(), plan.GetViewportHeight());
 	
-	if( plan.GetRenderVR() != deoglRenderPlan::ervrNone ){
+	if(plan.GetRenderVR() != deoglRenderPlan::ervrNone){
 		vr = renderThread.GetVRCamera()->GetVR();
-		if( ! vr ){
+		if(!vr){
 			return;
 		}
 		
-		switch( plan.GetRenderVR() ){
+		switch(plan.GetRenderVR()){
 		case deoglRenderPlan::ervrLeftEye:
 		case deoglRenderPlan::ervrStereo:
 			break;
@@ -994,115 +994,115 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 		}
 		
 		// activate debug panel render target framebuffer
-		renderThread.GetFramebuffer().Activate( vr->GetRenderTargetDebugPanel()->GetFBO() );
+		renderThread.GetFramebuffer().Activate(vr->GetRenderTargetDebugPanel()->GetFBO());
 		viewportSize = vr->GetRenderTargetDebugPanel()->GetSize();
 		
 		GetPipelineClearBuffers()->Activate();
 		
-		SetViewport( viewportSize );
+		SetViewport(viewportSize);
 		
-		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, clearColor ) );
+		const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, clearColor));
 	}
 	
 	// overwise prepare for rendering the overlay information
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderOverlayInfos" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderOverlayInfos");
 	decPoint position, size;
 	const int vgap = 5;
 	
-	OGL_CHECK( renderThread, pglBindVertexArray( pVAOShapes ) );
+	OGL_CHECK(renderThread, pglBindVertexArray(pVAOShapes));
 	
-	pScalePosition.x = 2.0f / ( float )viewportSize.x;
-	pScalePosition.y = -2.0f / ( float )viewportSize.y;
+	pScalePosition.x = 2.0f / (float)viewportSize.x;
+	pScalePosition.y = -2.0f / (float)viewportSize.y;
 	pOffsetPosition.x = pScalePosition.x * 0.375f - 1.0f;
 	pOffsetPosition.y = pScalePosition.y * 0.375f + 1.0f;
 	
 	position.x = 5;
 	position.y = 30; //5;
 	
-	if( devMode.GetShowOccMapLevel() > -1 && plan.GetOcclusionMap() ){
-		RenderOccMapLevel( plan );
+	if(devMode.GetShowOccMapLevel() > -1 && plan.GetOcclusionMap()){
+		RenderOccMapLevel(plan);
 	}
 	
-	if( devMode.GetTextureDebugImage() ){
-		GetRenderThread().GetRenderers().GetDebug().DisplayTexture( plan, devMode.GetTextureDebugImage(), false );
+	if(devMode.GetTextureDebugImage()){
+		GetRenderThread().GetRenderers().GetDebug().DisplayTexture(plan, devMode.GetTextureDebugImage(), false);
 	}
 	
 	// render every visible overlay information stacked one below the other
-	if( devMode.GetShowTranspLevelCount() ){
-		RenderTraspLevelCount( plan, position, size );
+	if(devMode.GetShowTranspLevelCount()){
+		RenderTraspLevelCount(plan, position, size);
 		position.y += size.y + vgap;
 	}
 	
-	if( devMode.GetShowHeightTerrain() ){
-		RenderHeightTerrainLODLevels( plan, position, size );
+	if(devMode.GetShowHeightTerrain()){
+		RenderHeightTerrainLODLevels(plan, position, size);
 		position.y += size.y + vgap;
 	}
 	
-	if( devMode.GetShowMemoryInfo() ){
-		RenderMemoryInfo( plan, viewportSize, position, size );
+	if(devMode.GetShowMemoryInfo()){
+		RenderMemoryInfo(plan, viewportSize, position, size);
 		position.y += size.y + vgap;
 	}
 	
-	if( plan.GetDebug() ){
-		RenderRenderPlanDebugInfo( plan, viewportSize, position, size );
+	if(plan.GetDebug()){
+		RenderRenderPlanDebugInfo(plan, viewportSize, position, size);
 		position.y += size.y + vgap;
 	}
 	
-	if( devMode.GetShowDebugInfo() ){
-		RenderDebugInformation( viewportSize, position, size, vr != nullptr );
-		if( devMode.GetDebugInfoLog() ){
+	if(devMode.GetShowDebugInfo()){
+		RenderDebugInformation(viewportSize, position, size, vr != nullptr);
+		if(devMode.GetDebugInfoLog()){
 			LogDebugInformation();
 		}
 		position.y += size.y + vgap;
 	}
 	
-	if( vr ){
+	if(vr){
 		deoglRCanvas * const debugOverlayCanvas = renderThread.GetCanvasDebugOverlay();
-		if( debugOverlayCanvas ){
-			const deoglRenderCanvasContext context( *debugOverlayCanvas,
-				vr->GetRenderTargetDebugPanel()->GetFBO(), decPoint(), viewportSize, true, nullptr );
-			renderThread.GetRenderers().GetCanvas().Prepare( context );
-			debugOverlayCanvas->Render( context );
+		if(debugOverlayCanvas){
+			const deoglRenderCanvasContext context(*debugOverlayCanvas,
+				vr->GetRenderTargetDebugPanel()->GetFBO(), decPoint(), viewportSize, true, nullptr);
+			renderThread.GetRenderers().GetCanvas().Prepare(context);
+			debugOverlayCanvas->Render(context);
 		}
 	}
 	}
 	
-	SetViewport( plan ); // restore viewport
+	SetViewport(plan); // restore viewport
 	
 	// render vr debug panel
-	if( vr ){
-		const deoglDebugTraceGroup debugTrace2( renderThread, "VR DebugPanel" );
+	if(vr){
+		const deoglDebugTraceGroup debugTrace2(renderThread, "VR DebugPanel");
 		const deoglPipeline &pipeline = plan.GetRenderStereo()
 			? *pPipelineVRDebugPanelStereo : *pPipelineVRDebugPanel;
 		pipeline.Activate();
 		
 		deoglShaderCompiled &shader = pipeline.GetShader();
-		shader.SetParameterMatrix4x3( esppMatrixModel, decDMatrix::CreateScale(
-			( double )vr->GetDebugPanelRenderSize().x * 0.5,
-			( double )vr->GetDebugPanelRenderSize().y * 0.5, 1.0 )
+		shader.SetParameterMatrix4x3(esppMatrixModel, decDMatrix::CreateScale(
+			(double)vr->GetDebugPanelRenderSize().x * 0.5,
+			(double)vr->GetDebugPanelRenderSize().y * 0.5, 1.0)
 				* renderThread.GetVRDebugPanelMatrix() ); // pMatrixModel
-		shader.SetParameterMatrix4x4( esppMatrixVP, plan.GetRefPosCameraMatrix() * plan.GetProjectionMatrix() ); // pMatrixVP
-		shader.SetParameterMatrix4x4( esppMatrixVP2, plan.GetRefPosCameraMatrix() * plan.GetCameraStereoMatrix()
+		shader.SetParameterMatrix4x4(esppMatrixVP, plan.GetRefPosCameraMatrix() * plan.GetProjectionMatrix()); // pMatrixVP
+		shader.SetParameterMatrix4x4(esppMatrixVP2, plan.GetRefPosCameraMatrix() * plan.GetCameraStereoMatrix()
 			* plan.GetProjectionMatrixStereo() ); // pMatrixVP2
-		shader.SetParameterColorMatrix5x4( esppColorTransform, esppColorTransform2, vr->GetDebugPanelColorTransform() );
+		shader.SetParameterColorMatrix5x4(esppColorTransform, esppColorTransform2, vr->GetDebugPanelColorTransform());
 		
-		OGL_CHECK( renderThread, pglBindVertexArray(
-			renderThread.GetDeferredRendering().GetVAOBillboard()->GetVAO() ) );
+		OGL_CHECK(renderThread, pglBindVertexArray(
+			renderThread.GetDeferredRendering().GetVAOBillboard()->GetVAO()));
 		
-		renderThread.GetTexture().GetStages().EnableTexture( 0,
+		renderThread.GetTexture().GetStages().EnableTexture(0,
 			*vr->GetRenderTargetDebugPanel()->GetTexture(), GetSamplerClampLinear() );
 		
-		RenderFullScreenQuad( plan );
+		RenderFullScreenQuad(plan);
 	}
 	
 	// clean up
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	OGL_CHECK(renderThread, pglBindVertexArray(0));
 }
 
-void deoglRenderDevMode::RenderOccMapLevel( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderOccMapLevel(deoglRenderPlan &plan){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderOccMapLevel" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderOccMapLevel");
 	deoglOcclusionMap &occmap = *plan.GetOcclusionMap();
 	deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
 	const int occMapBaseLevel = plan.GetOcclusionMapBaseLevel();
@@ -1110,19 +1110,19 @@ void deoglRenderDevMode::RenderOccMapLevel( deoglRenderPlan &plan ){
 	const int occMapMaxLevel = occmap.GetLevelCount();
 	int occMapLevel = occMapBaseLevel + devMode.GetShowOccMapLevel();
 	
-	if( occMapLevel > occMapMaxLevel ){
+	if(occMapLevel > occMapMaxLevel){
 		occMapLevel = occMapMaxLevel;
 	}
 	
-	GetRenderThread().GetRenderers().GetDebug().DisplayArrayTextureLayerLevel( plan, occmap.GetTexture(), 0, occMapLevel, false );
+	GetRenderThread().GetRenderers().GetDebug().DisplayArrayTextureLayerLevel(plan, occmap.GetTexture(), 0, occMapLevel, false);
 }
 
-void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
+void deoglRenderDevMode::RenderHeightTerrainLODLevels(deoglRenderPlan &plan, const decPoint &position, decPoint &size){
 	deoglHTView *htview = plan.GetHeightTerrainView();
-	if( ! htview ) return;
+	if(!htview) return;
 	
-	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderHeightTerrainLODLevels" );
+	OGL_IF_CHECK(deoglRenderThread &renderThread = GetRenderThread());
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderHeightTerrainLODLevels");
 	const deoglRHeightTerrain &heightTerrain = htview->GetHeightTerrain();
 	const int sectorCount = heightTerrain.GetSectorCount();
 	const decDVector &campos = plan.GetCameraPosition();
@@ -1135,7 +1135,7 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 	int ci;
 	int s;
 	
-	size.Set( 0, 0 );
+	size.Set(0, 0);
 	
 	// determine the render parementers
 	fromSector.x = 0;
@@ -1148,14 +1148,14 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 	deoglShaderCompiled &shader = pPipelineSolidColor2D->GetShader();
 	
 	// render sectors falling into the range
-	for( s=0; s<sectorCount; s++ ){
-		const deoglRHTSector &htsector = heightTerrain.GetSectorAt( s );
+	for(s=0; s<sectorCount; s++){
+		const deoglRHTSector &htsector = heightTerrain.GetSectorAt(s);
 		
-		if( htsector.GetValid() ){
+		if(htsector.GetValid()){
 			const decPoint &scoord = htsector.GetCoordinates();
 			
-			if( scoord.x >= fromSector.x && scoord.y >= fromSector.y && scoord.x <= toSector.x && scoord.y <= toSector.y ){
-				const deoglHTViewSector &htvsector = *htview->GetSectorAt( s );
+			if(scoord.x >= fromSector.x && scoord.y >= fromSector.y && scoord.x <= toSector.x && scoord.y <= toSector.y){
+				const deoglHTViewSector &htvsector = *htview->GetSectorAt(s);
 				const deoglHTSCluster * const htclusters = htsector.GetClusters();
 				const int clusterCount = htsector.GetClusterCount();
 				
@@ -1166,64 +1166,64 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 				y1 = position.y;
 				x2 = position.x + clusterCount * 2 + 11;
 				y2 = position.y + clusterCount * 2 + 11;
-				shader.SetParameterFloat( spsc2dColor, 0.0f, 0.0f, 0.0f, 1.0f );
-				shader.SetParameterFloat( spsc2dPosTransform, SCALEX( x2 - x1 ), SCALEY( y2 - y1 ), POSX( x1 ), POSY( y1 ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT ) );
+				shader.SetParameterFloat(spsc2dColor, 0.0f, 0.0f, 0.0f, 1.0f);
+				shader.SetParameterFloat(spsc2dPosTransform, SCALEX(x2 - x1), SCALEY(y2 - y1), POSX(x1), POSY(y1));
+				OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT));
 				
 				x1 = position.x + 5;
 				y1 = position.y + 5;
 				x2 = position.x + 5 + clusterCount * 2 + 1;
 				y2 = position.y + 5 + clusterCount * 2 + 1;
-				shader.SetParameterFloat( spsc2dColor, 0.75f, 0.75f, 0.75f, 1.0f );
-				shader.SetParameterFloat( spsc2dPosTransform, SCALEX( x2 - x1 ), SCALEY( y2 - y1 ), POSX( x1 ), POSY( y1 ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT ) );
+				shader.SetParameterFloat(spsc2dColor, 0.75f, 0.75f, 0.75f, 1.0f);
+				shader.SetParameterFloat(spsc2dPosTransform, SCALEX(x2 - x1), SCALEY(y2 - y1), POSX(x1), POSY(y1));
+				OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT));
 				
 				size.x = clusterCount * 2 + 11;
 				size.y = clusterCount * 2 + 11;
 				
 				ci = 0;
-				for( z=0; z<clusterCount; z++ ){
-					for( x=0; x<clusterCount; x++ ){
-						lodLevel = htvsector.GetClusterAt( ci ).GetLodLevel();
+				for(z=0; z<clusterCount; z++){
+					for(x=0; x<clusterCount; x++){
+						lodLevel = htvsector.GetClusterAt(ci).GetLodLevel();
 						
-						if( lodLevel < 0 ){
-							shader.SetParameterFloat( spsc2dColor, 0.25f, 0.25f, 0.25f, 1.0f );
+						if(lodLevel < 0){
+							shader.SetParameterFloat(spsc2dColor, 0.25f, 0.25f, 0.25f, 1.0f);
 							
-						}else if( lodLevel == 0 ){
-							shader.SetParameterFloat( spsc2dColor, 1.0f, 0.0f, 0.0f, 1.0f );
+						}else if(lodLevel == 0){
+							shader.SetParameterFloat(spsc2dColor, 1.0f, 0.0f, 0.0f, 1.0f);
 							
-						}else if( lodLevel == 1 ){
-							shader.SetParameterFloat( spsc2dColor, 1.0f, 1.0f, 0.0f, 1.0f );
+						}else if(lodLevel == 1){
+							shader.SetParameterFloat(spsc2dColor, 1.0f, 1.0f, 0.0f, 1.0f);
 							
-						}else if( lodLevel == 2 ){
-							shader.SetParameterFloat( spsc2dColor, 0.0f, 1.0f, 1.0f, 1.0f );
+						}else if(lodLevel == 2){
+							shader.SetParameterFloat(spsc2dColor, 0.0f, 1.0f, 1.0f, 1.0f);
 							
-						}else if( lodLevel == 3 ){
-							shader.SetParameterFloat( spsc2dColor, 0.0f, 1.0f, 0.0f, 1.0f );
+						}else if(lodLevel == 3){
+							shader.SetParameterFloat(spsc2dColor, 0.0f, 1.0f, 0.0f, 1.0f);
 							
-						}else if( lodLevel == 4 ){
-							shader.SetParameterFloat( spsc2dColor, 1.0f, 0.0f, 1.0f, 1.0f );
+						}else if(lodLevel == 4){
+							shader.SetParameterFloat(spsc2dColor, 1.0f, 0.0f, 1.0f, 1.0f);
 							
 						}else{
-							shader.SetParameterFloat( spsc2dColor, 0.0f, 0.0f, 1.0f, 1.0f );
+							shader.SetParameterFloat(spsc2dColor, 0.0f, 0.0f, 1.0f, 1.0f);
 						}
 						
 						posx = position.x + 6 + x * 2;
 						posy = position.y + 6 + z * 2;
-						shader.SetParameterFloat( spsc2dPosTransform, 0.0f, 0.0f, POSX( posx ), POSY( posy ) );
-						OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, OFFSET_POINT, COUNT_POINT ) );
+						shader.SetParameterFloat(spsc2dPosTransform, 0.0f, 0.0f, POSX(posx), POSY(posy));
+						OGL_CHECK(renderThread, glDrawArrays(GL_POINTS, OFFSET_POINT, COUNT_POINT));
 						
-						boxmin = htclusters[ ci ].GetCenter() - htclusters[ ci ].GetHalfExtends();
-						boxmax = htclusters[ ci ].GetCenter() + htclusters[ ci ].GetHalfExtends();
+						boxmin = htclusters[ci].GetCenter() - htclusters[ci].GetHalfExtends();
+						boxmax = htclusters[ci].GetCenter() + htclusters[ci].GetHalfExtends();
 						
-						if( camrelpos.x >= boxmin.x && camrelpos.x < boxmax.x && camrelpos.z >= boxmin.z && camrelpos.z < boxmax.z ){
+						if(camrelpos.x >= boxmin.x && camrelpos.x < boxmax.x && camrelpos.z >= boxmin.z && camrelpos.z < boxmax.z){
 							x1 = posx - 1;
 							y1 = posy - 1;
 							x2 = posx + 1;
 							y2 = posy + 1;
-							shader.SetParameterFloat( spsc2dColor, 0.0f, 0.5f, 0.5f, 1.0f );
-							shader.SetParameterFloat( spsc2dPosTransform, SCALEX( x2 - x1 ), SCALEY( y2 - y1 ), POSX( x1 ), POSY( y1 ) );
-							OGL_CHECK( renderThread, glDrawArrays( GL_LINE_LOOP, OFFSET_RECT, COUNT_RECT ) );
+							shader.SetParameterFloat(spsc2dColor, 0.0f, 0.5f, 0.5f, 1.0f);
+							shader.SetParameterFloat(spsc2dPosTransform, SCALEX(x2 - x1), SCALEY(y2 - y1), POSX(x1), POSY(y1));
+							OGL_CHECK(renderThread, glDrawArrays(GL_LINE_LOOP, OFFSET_RECT, COUNT_RECT));
 						}
 						
 						ci++;
@@ -1234,13 +1234,13 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 	}
 }
 
-void deoglRenderDevMode::RenderTraspLevelCount( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderTraspLevelCount" );
+void deoglRenderDevMode::RenderTraspLevelCount(deoglRenderPlan &plan, const decPoint &position, decPoint &size){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = GetRenderThread());
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderTraspLevelCount");
 	const int transpLevelCount = plan.GetTransparencyLayerCount();
-	const decColor clrBorder( 0.0f, 0.0f, 0.0f );
-	const decColor clrDotOn( 1.0f, 0.0f, 0.0f );
-	const decColor clrDotOff( 0.25f, 0.25f, 0.25f );
+	const decColor clrBorder(0.0f, 0.0f, 0.0f);
+	const decColor clrDotOn(1.0f, 0.0f, 0.0f);
+	const decColor clrDotOff(0.25f, 0.25f, 0.25f);
 	const float transparency = 0.85f;
 	const int dotWidth = 6;
 	const int dotHeight = 10;
@@ -1250,35 +1250,35 @@ void deoglRenderDevMode::RenderTraspLevelCount( deoglRenderPlan &plan, const dec
 	pPipelineSolidColor2D->Activate();
 	deoglShaderCompiled &shader = pPipelineSolidColor2D->GetShader();
 	
-	for( p=0; p<100; p++ ){
+	for(p=0; p<100; p++){
 		x1 = position.x + dotWidth * p;
 		y1 = position.y;
 		x2 = x1 + dotWidth - 1;
 		y2 = y1 + dotHeight - 1;
-		shader.SetParameterFloat( spsc2dColor, clrBorder.r, clrBorder.g, clrBorder.b, transparency );
-		shader.SetParameterFloat( spsc2dPosTransform, SCALEX( x2 - x1 ), SCALEY( y2 - y1 ), POSX( x1 ), POSY( y1 ) );
-		OGL_CHECK( renderThread, glDrawArrays( GL_LINE_LOOP, OFFSET_RECT, COUNT_RECT ) );
+		shader.SetParameterFloat(spsc2dColor, clrBorder.r, clrBorder.g, clrBorder.b, transparency);
+		shader.SetParameterFloat(spsc2dPosTransform, SCALEX(x2 - x1), SCALEY(y2 - y1), POSX(x1), POSY(y1));
+		OGL_CHECK(renderThread, glDrawArrays(GL_LINE_LOOP, OFFSET_RECT, COUNT_RECT));
 		
 		x1++;
 		y1++;
-		if( p < transpLevelCount ){
-			shader.SetParameterFloat( spsc2dColor, clrDotOn.r, clrDotOn.g, clrDotOn.b, transparency );
+		if(p < transpLevelCount){
+			shader.SetParameterFloat(spsc2dColor, clrDotOn.r, clrDotOn.g, clrDotOn.b, transparency);
 			
 		}else{
-			shader.SetParameterFloat( spsc2dColor, clrDotOff.r, clrDotOff.g, clrDotOff.b, transparency );
+			shader.SetParameterFloat(spsc2dColor, clrDotOff.r, clrDotOff.g, clrDotOff.b, transparency);
 		}
-		shader.SetParameterFloat( spsc2dPosTransform, SCALEX( x2 - x1 ), SCALEY( y2 - y1 ), POSX( x1 ), POSY( y1 ) );
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT ) );
+		shader.SetParameterFloat(spsc2dPosTransform, SCALEX(x2 - x1), SCALEY(y2 - y1), POSX(x1), POSY(y1));
+		OGL_CHECK(renderThread, glDrawArrays(GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT));
 	}
 	
 	size.x = p * dotWidth;
 	size.y = dotHeight;
 }
 
-void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan,
-const decPoint &viewport, const decPoint &position, decPoint &size ){
-	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "DevMode.RenderRenderPlanDebugInfo" );
-	const decColor color1 = decColor( 1.0f, 1.0f, 1.0f );
+void deoglRenderDevMode::RenderRenderPlanDebugInfo(deoglRenderPlan &plan,
+const decPoint &viewport, const decPoint &position, decPoint &size){
+	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "DevMode.RenderRenderPlanDebugInfo");
+	const decColor color1 = decColor(1.0f, 1.0f, 1.0f);
 	const deoglRenderPlanDebug &debug = *plan.GetDebug();
 	deoglRenderDebug &renderDebug = GetRenderThread().GetRenderers().GetDebug();
 	const int fontHeight = renderDebug.GetDebugFont().GetFontHeight();
@@ -1302,8 +1302,8 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	const int viewLights = debug.GetViewLights();
 	const int viewEnvMaps = debug.GetViewEnvMaps();
 	
-	text.Format( "View:    O %5i       | T %7i       | L %3d       | E %3d", viewObjects, viewTriangles, viewLights, viewEnvMaps );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format("View:    O %5i       | T %7i       | L %3d       | E %3d", viewObjects, viewTriangles, viewLights, viewEnvMaps);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1315,20 +1315,20 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	double cullPSTrianglesRatio = 0.0;
 	double cullPSLightsRatio = 0.0;
 	
-	if( viewObjects > 0 ){
-		cullPSObjectsRatio = 100.0 * ( ( double )cullPSObjects / ( double )viewObjects );
+	if(viewObjects > 0){
+		cullPSObjectsRatio = 100.0 * ((double)cullPSObjects / (double)viewObjects);
 	}
-	if( viewTriangles > 0 ){
-		cullPSTrianglesRatio = 100.0 * ( ( double )cullPSTriangles / ( double )viewTriangles );
+	if(viewTriangles > 0){
+		cullPSTrianglesRatio = 100.0 * ((double)cullPSTriangles / (double)viewTriangles);
 	}
-	if( viewLights > 0 ){
-		cullPSLightsRatio = 100.0 * ( ( double )cullPSLights / ( double )viewLights );
+	if(viewLights > 0){
+		cullPSLightsRatio = 100.0 * ((double)cullPSLights / (double)viewLights);
 	}
 	
-	text.Format( "CullPS:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%)", cullPSObjects,
-		( int )cullPSObjectsRatio, cullPSTriangles, ( int )cullPSTrianglesRatio, cullPSLights,
-		( int )cullPSLightsRatio );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format("CullPS:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%)", cullPSObjects,
+		(int)cullPSObjectsRatio, cullPSTriangles, (int)cullPSTrianglesRatio, cullPSLights,
+		(int)cullPSLightsRatio);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1340,12 +1340,12 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	const float occTotalTime = occmapRenderTime + occTestTime;
 	const int occTestCount = debug.GetOccTestCount();
 	
-	text.Format( "OccMap:  O %5i | T %7i | I %5i | Rt %2d.%1ims | Tt %2d.%1ims | Ot %2d.%1ims",
+	text.Format("OccMap:  O %5i | T %7i | I %5i | Rt %2d.%1ims | Tt %2d.%1ims | Ot %2d.%1ims",
 		occmapObjects, occmapTriangles, occTestCount,
-		( int )( occmapRenderTime * 1000.0f ), ( int )( occmapRenderTime * 10000.0f ) % 10,
-		( int )( occTestTime * 1000.0f ), ( int )( occTestTime * 10000.0f ) % 10,
-		( int )( occTotalTime * 1000.0f ), ( int )( occTotalTime * 10000.0f ) % 10 );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+		(int)(occmapRenderTime * 1000.0f), (int)(occmapRenderTime * 10000.0f) % 10,
+		(int)(occTestTime * 1000.0f), (int)(occTestTime * 10000.0f) % 10,
+		(int)(occTotalTime * 1000.0f), (int)(occTotalTime * 10000.0f) % 10);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1362,29 +1362,29 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	double renderLightsRatio = 0.0;
 	double lodTrianglesRatio = 0.0;
 	
-	if( viewTriangles > 0 ){
-		lodTrianglesRatio = 100.0 * ( ( double )renderTriangles / ( double )lodTriangles );
+	if(viewTriangles > 0){
+		lodTrianglesRatio = 100.0 * ((double)renderTriangles / (double)lodTriangles);
 	}
 	
-	text.Format( "LOD:     O       (   ) | T %7i(%3d%%)", lodTriangles, ( int )lodTrianglesRatio );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format("LOD:     O       () | T %7i(%3d%%)", lodTriangles, (int)lodTrianglesRatio);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
-	if( viewObjects > 0 ){
-		renderObjectsRatio = 100.0 * ( ( double )renderObjects / ( double )viewObjects );
+	if(viewObjects > 0){
+		renderObjectsRatio = 100.0 * ((double)renderObjects / (double)viewObjects);
 	}
-	if( viewTriangles > 0 ){
-		renderTrianglesRatio = 100.0 * ( ( double )renderTriangles / ( double )viewTriangles );
+	if(viewTriangles > 0){
+		renderTrianglesRatio = 100.0 * ((double)renderTriangles / (double)viewTriangles);
 	}
-	if( viewLights > 0 ){
-		renderLightsRatio = 100.0 * ( ( double )renderLights / ( double )viewLights );
+	if(viewLights > 0){
+		renderLightsRatio = 100.0 * ((double)renderLights / (double)viewLights);
 	}
 	
-	text.Format( "Render:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%) | E %3d | P %2d", renderObjects,
-		( int )renderObjectsRatio, renderTriangles, ( int )renderTrianglesRatio, renderLights,
-		( int )renderLightsRatio, ( int )renderEnvMaps, renderPasses );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format("Render:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%) | E %3d | P %2d", renderObjects,
+		(int)renderObjectsRatio, renderTriangles, (int)renderTrianglesRatio, renderLights,
+		(int)renderLightsRatio, (int)renderEnvMaps, renderPasses);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1394,11 +1394,11 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	size.x = maxWidth;
 }
 
-void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan,
-const decPoint &viewport, const decPoint &position, decPoint &size ){
-	const decColor color1 = decColor( 1.0f, 1.0f, 1.0f );
+void deoglRenderDevMode::RenderMemoryInfo(deoglRenderPlan &plan,
+const decPoint &viewport, const decPoint &position, decPoint &size){
+	const decColor color1 = decColor(1.0f, 1.0f, 1.0f);
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderMemoryInfo" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "DevMode.RenderMemoryInfo");
 	const deoglMemoryConsumption &consumption = renderThread.GetMemoryManager().GetConsumption();
 	deoglRenderDebug &renderDebug = GetRenderThread().GetRenderers().GetDebug();
 	const int fontHeight = renderDebug.GetDebugFont().GetFontHeight();
@@ -1432,15 +1432,15 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	double textureColorRatioCompressed = 0.0;
 	//double textureDepthRatioCompressed = 0.0;
 	
-	if( textureGPU > 0 ){
-		textureRatioCompressed = 100.0 * ( ( double )textureGPUCompressed / ( double )textureGPU );
-		if( textureRatioCompressed > 99 ){
+	if(textureGPU > 0){
+		textureRatioCompressed = 100.0 * ((double)textureGPUCompressed / (double)textureGPU);
+		if(textureRatioCompressed > 99){
 			textureRatioCompressed = 99; // just so we can use at most 2 digits
 		}
 	}
-	if( textureColorGPU > 0 ){
-		textureColorRatioCompressed = 100.0 * ( ( double )textureColorGPUCompressed / ( double )textureColorGPU );
-		if( textureColorRatioCompressed > 99 ){
+	if(textureColorGPU > 0){
+		textureColorRatioCompressed = 100.0 * ((double)textureColorGPUCompressed / (double)textureColorGPU);
+		if(textureColorRatioCompressed > 99){
 			textureColorRatioCompressed = 99; // just so we can use at most 2 digits
 		}
 	}
@@ -1460,10 +1460,10 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	
 	renderDebug.BeginRenderText();
 	
-	text.Format( fmtTex2D, textureCount, textureGPU, textureGPUCompressed, ( int )textureRatioCompressed,
+	text.Format(fmtTex2D, textureCount, textureGPU, textureGPUCompressed, (int)textureRatioCompressed,
 		textureGPUUncompressed, textureColorCount, textureColorGPU, textureColorGPUCompressed,
-		( int )textureColorRatioCompressed, textureColorGPUUncompressed, textureDepthCount, textureDepthGPU );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+		(int)textureColorRatioCompressed, textureColorGPUUncompressed, textureDepthCount, textureDepthGPU);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1485,15 +1485,15 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	double textureArrayColorRatioCompressed = 0.0;
 	//double textureArrayDepthRatioCompressed = 0.0;
 	
-	if( textureArrayGPU > 0 ){
-		textureArrayRatioCompressed = 100.0 * ( ( double )textureArrayGPUCompressed / ( double )textureArrayGPU );
-		if( textureArrayRatioCompressed > 99 ){
+	if(textureArrayGPU > 0){
+		textureArrayRatioCompressed = 100.0 * ((double)textureArrayGPUCompressed / (double)textureArrayGPU);
+		if(textureArrayRatioCompressed > 99){
 			textureArrayRatioCompressed = 99; // just so we can use at most 2 digits
 		}
 	}
-	if( textureArrayColorGPU > 0 ){
-		textureArrayColorRatioCompressed = 100.0 * ( ( double )textureArrayColorGPUCompressed / ( double )textureArrayColorGPU );
-		if( textureArrayColorRatioCompressed > 99 ){
+	if(textureArrayColorGPU > 0){
+		textureArrayColorRatioCompressed = 100.0 * ((double)textureArrayColorGPUCompressed / (double)textureArrayColorGPU);
+		if(textureArrayColorRatioCompressed > 99){
 			textureArrayColorRatioCompressed = 99; // just so we can use at most 2 digits
 		}
 	}
@@ -1511,10 +1511,10 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	//textureArrayDepthGPUCompressed /= 1000000ull;
 	//textureArrayDepthGPUUncompressed /= 1000000ull;
 	
-	text.Format( fmtTexArr, textureArrayCount, textureArrayGPU, textureArrayGPUCompressed, ( int )textureArrayRatioCompressed,
+	text.Format(fmtTexArr, textureArrayCount, textureArrayGPU, textureArrayGPUCompressed, (int)textureArrayRatioCompressed,
 		textureArrayGPUUncompressed, textureArrayColorCount, textureArrayColorGPU, textureArrayColorGPUCompressed,
-		( int )textureArrayColorRatioCompressed, textureArrayColorGPUUncompressed, textureArrayDepthCount, textureArrayDepthGPU );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+		(int)textureArrayColorRatioCompressed, textureArrayColorGPUUncompressed, textureArrayDepthCount, textureArrayDepthGPU);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1536,15 +1536,15 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	double cubemapColorRatioCompressed = 0.0f;
 	//double cubemapDepthRatioCompressed = 0.0f;
 	
-	if( cubemapGPU > 0 ){
-		cubemapRatioCompressed = 100.0 * ( ( double )cubemapGPUCompressed / ( double )cubemapGPU );
-		if( cubemapRatioCompressed > 99 ){
+	if(cubemapGPU > 0){
+		cubemapRatioCompressed = 100.0 * ((double)cubemapGPUCompressed / (double)cubemapGPU);
+		if(cubemapRatioCompressed > 99){
 			cubemapRatioCompressed = 99; // just so we can use at most 2 digits
 		}
 	}
-	if( cubemapColorGPU > 0 ){
-		cubemapColorRatioCompressed = 100.0 * ( ( double )cubemapColorGPUCompressed / ( double )cubemapColorGPU );
-		if( cubemapColorRatioCompressed > 99 ){
+	if(cubemapColorGPU > 0){
+		cubemapColorRatioCompressed = 100.0 * ((double)cubemapColorGPUCompressed / (double)cubemapColorGPU);
+		if(cubemapColorRatioCompressed > 99){
 			cubemapColorRatioCompressed = 99; // just so we can use at most 2 digits
 		}
 	}
@@ -1562,10 +1562,10 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	//cubemapDepthGPUCompressed /= 1000000ull;
 	//cubemapDepthGPUUncompressed /= 1000000ull;
 	
-	text.Format( fmtCube, cubemapCount, cubemapGPU, cubemapGPUCompressed, ( int )cubemapRatioCompressed, cubemapGPUUncompressed,
-		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, ( int )cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
-		cubemapDepthCount, cubemapDepthGPU );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format(fmtCube, cubemapCount, cubemapGPU, cubemapGPUCompressed, (int)cubemapRatioCompressed, cubemapGPUUncompressed,
+		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, (int)cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
+		cubemapDepthCount, cubemapDepthGPU);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1577,9 +1577,9 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	unsigned long long skinGPUUncompressed = consumptionSkin.allUncompressed.GetConsumption();
 	double percentageCompressed = 0.0;
 	
-	if( skinGPU > 0 ){
-		percentageCompressed = 100.0 * ( ( double )skinGPUCompressed / ( double )skinGPU );
-		if( percentageCompressed > 99 ){
+	if(skinGPU > 0){
+		percentageCompressed = 100.0 * ((double)skinGPUCompressed / (double)skinGPU);
+		if(percentageCompressed > 99){
 			percentageCompressed = 99; // just so we can use at most 2 digits
 		}
 	}
@@ -1588,8 +1588,8 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	skinGPUCompressed /= 1000000ull;
 	skinGPUUncompressed /= 1000000ull;
 	
-	text.Format( fmtSkin, skinCount, skinGPU, skinGPUCompressed, ( int )percentageCompressed, skinGPUUncompressed );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format(fmtSkin, skinCount, skinGPU, skinGPUCompressed, (int)percentageCompressed, skinGPUUncompressed);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1608,10 +1608,10 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	renderableArrayColorGPU /= 1000000ull;
 	renderableArrayDepthGPU /= 1000000ull;
 	
-	text.Format( fmtRender, renderable2DColorCount, renderable2DColorGPU, renderable2DDepthCount,
+	text.Format(fmtRender, renderable2DColorCount, renderable2DColorGPU, renderable2DDepthCount,
 		renderable2DDepthGPU, renderableArrayColorCount, renderableArrayColorGPU,
-		renderableArrayDepthCount, renderableArrayDepthGPU );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+		renderableArrayDepthCount, renderableArrayDepthGPU);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1628,9 +1628,9 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	unsigned int iboSharedGPU = consumptionBO.iboShared.GetConsumptionMB();
 	unsigned int tboGPU = consumptionBO.tbo.GetConsumptionMB();
 	
-	text.Format( fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, iboCount,
-		iboGPU, iboSharedCount, iboSharedGPU, tboCount, tboGPU );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format(fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, iboCount,
+		iboGPU, iboSharedCount, iboSharedGPU, tboCount, tboGPU);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1639,8 +1639,8 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	unsigned int defrenGPU = consumptionDefren.target.GetConsumptionMB();
 	unsigned int defrenGPUTexture = consumptionDefren.texture.GetConsumptionMB();
 	
-	text.Format( fmtDefRen, defrenGPU, defrenGPUTexture );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format(fmtDefRen, defrenGPU, defrenGPUTexture);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1656,8 +1656,8 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 	totalGPU += consumptionBO.ssbo.GetConsumption();
 	totalGPU /= 1000000ull;
 	
-	text.Format( "Total %4" OGLPFLLU "M", totalGPU );
-	renderDebug.AddRenderText( viewport, text.GetString(), position.x, y, color1 );
+	text.Format("Total %4" OGLPFLLU "M", totalGPU);
+	renderDebug.AddRenderText(viewport, text.GetString(), position.x, y, color1);
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1668,28 +1668,28 @@ const decPoint &viewport, const decPoint &position, decPoint &size ){
 
 
 
-void deoglRenderDevMode::RenderDebugInformation( const decPoint &viewport,
-const decPoint &position, decPoint &size, bool forceSolid ){
+void deoglRenderDevMode::RenderDebugInformation(const decPoint &viewport,
+const decPoint &position, decPoint &size, bool forceSolid){
 	const deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
 	const int count = list.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "DevMode.RenderDebugInformation" );
+	const deoglDebugTraceGroup debugTrace(GetRenderThread(), "DevMode.RenderDebugInformation");
 	const int maxWidth = viewport.x - position.x;
 	
-	LayoutDebugInformation( viewport, decPoint(), size, list, 0, maxWidth, true );
+	LayoutDebugInformation(viewport, decPoint(), size, list, 0, maxWidth, true);
 	
 	deoglRenderDebug &renderDebug = GetRenderThread().GetRenderers().GetDebug();
 	renderDebug.BeginRenderRectangle();
 	renderDebug.BeginRenderText();
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		const deoglDebugInformation &debugInformation = *list.GetAt( i );
-		if( debugInformation.GetVisible() ){
-			RenderDebugInformation( viewport, position, debugInformation, forceSolid );
+	for(i=0; i<count; i++){
+		const deoglDebugInformation &debugInformation = *list.GetAt(i);
+		if(debugInformation.GetVisible()){
+			RenderDebugInformation(viewport, position, debugInformation, forceSolid);
 		}
 	}
 	
@@ -1700,205 +1700,205 @@ const decPoint &position, decPoint &size, bool forceSolid ){
 void deoglRenderDevMode::LogDebugInformation(){
 	const deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
 	const int count = list.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	deoglRTLogger &logger = GetRenderThread().GetLogger();
-	logger.LogInfo( "LogDebugInformation:" );
-	LogDebugInformation( list, decString() );
+	logger.LogInfo("LogDebugInformation:");
+	LogDebugInformation(list, decString());
 }
 
-void deoglRenderDevMode::LogDebugInformation( const deoglDebugInformationList &list, const decString &prefix ){
+void deoglRenderDevMode::LogDebugInformation(const deoglDebugInformationList &list, const decString &prefix){
 	deoglRTLogger &logger = GetRenderThread().GetLogger();
 	const int count = list.GetCount();
 	int i;
 	
-	const decString childPrefix( prefix + "  " );
-	for( i=0; i<count; i++ ){
-		const deoglDebugInformation &di = *list.GetAt( i );
-		if( ! di.GetVisible() ){
+	const decString childPrefix(prefix + "  ");
+	for(i=0; i<count; i++){
+		const deoglDebugInformation &di = *list.GetAt(i);
+		if(!di.GetVisible()){
 			continue;
 		}
 		
-		if( di.HasElapsedTime() && di.HasCounter() ){
-			logger.LogInfoFormat( "%s- %s: %d.%01dms (%d)", prefix.GetString(), di.GetName().GetString(),
-				( int )( di.GetElapsedTimeAccum() * 1000.0f ), ( int )( di.GetElapsedTimeAccum() * 10000.0f ) % 10, di.GetCounter() );
+		if(di.HasElapsedTime() && di.HasCounter()){
+			logger.LogInfoFormat("%s- %s: %d.%01dms (%d)", prefix.GetString(), di.GetName().GetString(),
+				(int)(di.GetElapsedTimeAccum() * 1000.0f), (int)(di.GetElapsedTimeAccum() * 10000.0f) % 10, di.GetCounter());
 			
-		}else if( di.HasElapsedTime() ){
-			logger.LogInfoFormat( "%s- %s: %d.%01dms", prefix.GetString(), di.GetName().GetString(),
-				( int )( di.GetElapsedTimeAccum() * 1000.0f ), ( int )( di.GetElapsedTimeAccum() * 10000.0f ) % 10 );
+		}else if(di.HasElapsedTime()){
+			logger.LogInfoFormat("%s- %s: %d.%01dms", prefix.GetString(), di.GetName().GetString(),
+				(int)(di.GetElapsedTimeAccum() * 1000.0f), (int)(di.GetElapsedTimeAccum() * 10000.0f) % 10);
 			
 		}else{
-			logger.LogInfoFormat( "%s- %s: -", prefix.GetString(), di.GetName().GetString() );
+			logger.LogInfoFormat("%s- %s: -", prefix.GetString(), di.GetName().GetString());
 		}
 		
-		if( di.GetChildren().GetCount() > 0 ){
-			LogDebugInformation( di.GetChildren(), childPrefix );
+		if(di.GetChildren().GetCount() > 0){
+			LogDebugInformation(di.GetChildren(), childPrefix);
 		}
 	}
 }
 
-void deoglRenderDevMode::LayoutDebugInformation( const decPoint &viewport,
+void deoglRenderDevMode::LayoutDebugInformation(const decPoint &viewport,
 const decPoint &position, decPoint &size, const deoglDebugInformationList &list,
-int minWidth, int maxWidth, bool alignSidewards ) {
+int minWidth, int maxWidth, bool alignSidewards) {
 	const int count = list.GetCount();
 	bool siblingsHaveElapsedTime = false;
 	bool siblingsHaveCounter = false;
 	int maxNameWidth = 0;
 	int i;
 	
-	if( ! alignSidewards ){
-		ChildMaxNameLen( list, maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter );
+	if(!alignSidewards){
+		ChildMaxNameLen(list, maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter);
 	}
 	
-	decPoint childPos( position );
+	decPoint childPos(position);
 	const int paddingSidewards = 2;
 	int rowHeight = 0;
 	
 	size.x = 0;
 	
-	for( i=0; i<count; i++ ){
-		deoglDebugInformation &child = *list.GetAt( i );
-		if( ! child.GetVisible() ){
+	for(i=0; i<count; i++){
+		deoglDebugInformation &child = *list.GetAt(i);
+		if(!child.GetVisible()){
 			continue;
 		}
 		
-		if( alignSidewards ){
+		if(alignSidewards){
 			maxNameWidth = child.GetName().GetLength() + 1;
 			siblingsHaveElapsedTime = child.HasElapsedTime();
 			siblingsHaveCounter = child.HasCounter();
 			
-			LayoutDebugInformation( viewport, maxNameWidth, child, minWidth,
-				maxWidth - childPos.x, siblingsHaveElapsedTime, siblingsHaveCounter );
+			LayoutDebugInformation(viewport, maxNameWidth, child, minWidth,
+				maxWidth - childPos.x, siblingsHaveElapsedTime, siblingsHaveCounter);
 			
 			const decPoint &childSize = child.GetRenderSize();
 			
-			if( childPos.x + childSize.x > maxWidth ){
+			if(childPos.x + childSize.x > maxWidth){
 				childPos.x = position.x;
 				childPos.y += rowHeight;
-				child.SetRenderPosition( childPos );
+				child.SetRenderPosition(childPos);
 				childPos.x += childSize.x + paddingSidewards;
 				rowHeight = childSize.y;
 				
 			}else{
-				child.SetRenderPosition( childPos );
+				child.SetRenderPosition(childPos);
 				childPos.x = childPos.x + childSize.x + paddingSidewards;
-				rowHeight = decMath::max( rowHeight, childSize.y );
+				rowHeight = decMath::max(rowHeight, childSize.y);
 			}
 			
 		}else{
-			LayoutDebugInformation( viewport, maxNameWidth, child, 0, maxWidth,
-				siblingsHaveElapsedTime, siblingsHaveCounter );
+			LayoutDebugInformation(viewport, maxNameWidth, child, 0, maxWidth,
+				siblingsHaveElapsedTime, siblingsHaveCounter);
 			
 			const decPoint &childSize = child.GetRenderSize();
 			
-			child.SetRenderPosition( childPos );
+			child.SetRenderPosition(childPos);
 			childPos.y += childSize.y;
-			size.x = decMath::max( size.x, childSize.x );
+			size.x = decMath::max(size.x, childSize.x);
 		}
 	}
 	
-	if( alignSidewards ){
+	if(alignSidewards){
 		childPos.y += rowHeight;
 	}
 	
 	size.y = childPos.y - position.y;
 }
 
-void deoglRenderDevMode::ChildMaxNameLen( const deoglDebugInformationList &list,
-int &maxNameWidth, bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter ) const{
+void deoglRenderDevMode::ChildMaxNameLen(const deoglDebugInformationList &list,
+int &maxNameWidth, bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter) const{
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deoglDebugInformation &child = *list.GetAt( i );
-		if( ! child.GetVisible() ){
+	for(i=0; i<count; i++){
+		const deoglDebugInformation &child = *list.GetAt(i);
+		if(!child.GetVisible()){
 			continue;
 		}
 		
-		maxNameWidth = decMath::max( maxNameWidth, child.GetName().GetLength() + 1 );
+		maxNameWidth = decMath::max(maxNameWidth, child.GetName().GetLength() + 1);
 		siblingsHaveElapsedTime |= child.HasElapsedTime();
 		siblingsHaveCounter |= child.HasCounter();
 		
-		ChildMaxNameLen( child.GetChildren(), maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter );
+		ChildMaxNameLen(child.GetChildren(), maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter);
 	}
 }
 
-void deoglRenderDevMode::LayoutDebugInformation( const decPoint &viewport, int maxNameWidth,
+void deoglRenderDevMode::LayoutDebugInformation(const decPoint &viewport, int maxNameWidth,
 deoglDebugInformation& debugInformation, int minWidth, int maxWidth,
 bool siblingsHaveElapsedTime, bool siblingsHaveCounter){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugInformationList &children = debugInformation.GetChildren();
 	deoglRenderDebug &renderDebug = renderThread.GetRenderers().GetDebug();
-	const int charWidth = renderDebug.GetDebugFont().GetGlyphs()[ 32 ].width;
+	const int charWidth = renderDebug.GetDebugFont().GetGlyphs()[32].width;
 	const int fontHeight = renderDebug.GetDebugFont().GetFontHeight();
 	const int count = children.GetCount();
 	int i;
 	
 	// text to display
-	decString text( debugInformation.GetName() );
-	for( i=debugInformation.GetName().GetLength()+1; i<maxNameWidth; i++ ){
-		text.AppendCharacter( ' ' );
+	decString text(debugInformation.GetName());
+	for(i=debugInformation.GetName().GetLength()+1; i<maxNameWidth; i++){
+		text.AppendCharacter(' ');
 	}
 	
-	if( siblingsHaveElapsedTime ){
-		if( debugInformation.HasElapsedTime() ){
-			text.AppendFormat( " % 3i.%01i", ( int )( debugInformation.GetElapsedTime() * 1000.0f ),
-				( int )( debugInformation.GetElapsedTime() * 10000.0f ) % 10 );
+	if(siblingsHaveElapsedTime){
+		if(debugInformation.HasElapsedTime()){
+			text.AppendFormat(" % 3i.%01i", (int)(debugInformation.GetElapsedTime() * 1000.0f),
+				(int)(debugInformation.GetElapsedTime() * 10000.0f) % 10);
 			
 		}else{
 			text += "   ---";
 		}
 	}
 	
-	if( siblingsHaveCounter ){
-		if( debugInformation.HasCounter() ){
-			text.AppendFormat( " % 5i", debugInformation.GetCounter() );
+	if(siblingsHaveCounter){
+		if(debugInformation.HasCounter()){
+			text.AppendFormat(" % 5i", debugInformation.GetCounter());
 			
 		}else{
 			text += "     -";
 		}
 	}
 	
-	debugInformation.SetRenderText( text );
+	debugInformation.SetRenderText(text);
 	
-	decPoint size( decMath::max( minWidth, charWidth * text.GetLength() ), fontHeight );
+	decPoint size(decMath::max(minWidth, charWidth * text.GetLength()), fontHeight);
 	
 	// layout children
-	if( count > 0 ){
+	if(count > 0){
 		const int childPaddingLeft = charWidth;
 		const int childPaddingRight = 0;
 		
-		decPoint childrenPosition( childPaddingLeft, fontHeight );
+		decPoint childrenPosition(childPaddingLeft, fontHeight);
 		const int childrenMaxWidth = maxWidth - childPaddingRight - childrenPosition.x;
 		decPoint childrenSize;
 		
-		LayoutDebugInformation( viewport, childrenPosition, childrenSize,
-			children, size.x, childrenMaxWidth, false );
+		LayoutDebugInformation(viewport, childrenPosition, childrenSize,
+			children, size.x, childrenMaxWidth, false);
 		
 		/*
-		if( childPaddingLeft > 0 ){
-			renderDebug.RenderRectangle( plan, position.x, childrenPosition.y, childrenPosition.x,
-				childrenPosition.y + childrenSize.y, debugInformation.GetColorBackground() );
+		if(childPaddingLeft > 0){
+			renderDebug.RenderRectangle(plan, position.x, childrenPosition.y, childrenPosition.x,
+				childrenPosition.y + childrenSize.y, debugInformation.GetColorBackground());
 		}
 		
-		if( childPaddingRight > 0 ){
-			renderDebug.RenderRectangle( plan, childrenPosition.x + childrenSize.x,
+		if(childPaddingRight > 0){
+			renderDebug.RenderRectangle(plan, childrenPosition.x + childrenSize.x,
 				childrenPosition.y, childrenPosition.x + childrenSize.x + childPaddingRight,
-				childrenPosition.y + childrenSize.y, debugInformation.GetColorBackground() );
+				childrenPosition.y + childrenSize.y, debugInformation.GetColorBackground());
 		}
 		*/
 		
-		size.x = decMath::max( size.x, childPaddingLeft + childrenSize.x + childPaddingRight );
+		size.x = decMath::max(size.x, childPaddingLeft + childrenSize.x + childPaddingRight);
 		size.y += childrenSize.y;
 	}
 	
-	debugInformation.SetRenderSize( size );
+	debugInformation.SetRenderSize(size);
 }
 
-void deoglRenderDevMode::RenderDebugInformation( const decPoint &viewport,
-const decPoint &parentPosition, const deoglDebugInformation &debugInformation, bool forceSolid ){
+void deoglRenderDevMode::RenderDebugInformation(const decPoint &viewport,
+const decPoint &parentPosition, const deoglDebugInformation &debugInformation, bool forceSolid){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugInformationList &children = debugInformation.GetChildren();
 	deoglRenderDebug &renderDebug = renderThread.GetRenderers().GetDebug();
@@ -1906,27 +1906,27 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation, b
 	const int count = children.GetCount();
 	
 	// render text
-	const decPoint position( parentPosition + debugInformation.GetRenderPosition() );
-	decColor colorBackground( debugInformation.GetColorBackground() );
-	decColor colorText( debugInformation.GetColorText() );
-	if( forceSolid ){
+	const decPoint position(parentPosition + debugInformation.GetRenderPosition());
+	decColor colorBackground(debugInformation.GetColorBackground());
+	decColor colorText(debugInformation.GetColorText());
+	if(forceSolid){
 		colorBackground.a = 1.0f;
 		colorText.a = 1.0f;
 	}
 	
-	renderDebug.AddRenderRectangle( viewport, position.x, position.y,
-		position.x + debugInformation.GetRenderSize().x, position.y + fontHeight, colorBackground );
+	renderDebug.AddRenderRectangle(viewport, position.x, position.y,
+		position.x + debugInformation.GetRenderSize().x, position.y + fontHeight, colorBackground);
 	
 // 	renderDebug.RenderText( plan, debugInformation.GetRenderText(), position.x, position.y, colorText );
-	renderDebug.AddRenderText( viewport, debugInformation.GetRenderText(), position.x, position.y, colorText );
+	renderDebug.AddRenderText(viewport, debugInformation.GetRenderText(), position.x, position.y, colorText);
 	
 	// render children
-	if( count > 0 ){
+	if(count > 0){
 		int i;
-		for( i=0; i<count; i++ ){
-			const deoglDebugInformation &child = *children.GetAt( i );
-			if( child.GetVisible() ){
-				RenderDebugInformation( viewport, position, child, forceSolid );
+		for(i=0; i<count; i++){
+			const deoglDebugInformation &child = *children.GetAt(i);
+			if(child.GetVisible()){
+				RenderDebugInformation(viewport, position, child, forceSolid);
 			}
 		}
 	}
@@ -1939,53 +1939,53 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation, b
 
 void deoglRenderDevMode::pCleanUp(){
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
-	dops.DeleteOpenGLVertexArray( pVAOShapes );
-	dops.DeleteOpenGLBuffer( pVBOShapes );
+	dops.DeleteOpenGLVertexArray(pVAOShapes);
+	dops.DeleteOpenGLBuffer(pVBOShapes);
 }
 
 void deoglRenderDevMode::pCreateShapesVAO(){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
-	GLfloat vbodata[ 14 ];
+	OGL_IF_CHECK(deoglRenderThread &renderThread = GetRenderThread());
+	GLfloat vbodata[14];
 	
 	// the actual geometry points are obtain by calculating x'=x*scale+offset.
 	
 	// set up vbo data for a point shape
-	vbodata[ 0 ] = 0.0f; // p1.x = x
-	vbodata[ 1 ] = 0.0f; // p1.y = y
+	vbodata[0] = 0.0f; // p1.x = x
+	vbodata[1] = 0.0f; // p1.y = y
 	
 	// set up vbo data for a line shape
-	vbodata[ 2 ] = 0.0f; // p1.x = x1
-	vbodata[ 3 ] = 0.0f; // p1.y = y1
+	vbodata[2] = 0.0f; // p1.x = x1
+	vbodata[3] = 0.0f; // p1.y = y1
 	
-	vbodata[ 4 ] = 1.0f; // p2.x = x2
-	vbodata[ 5 ] = 1.0f; // p2.y = y2
+	vbodata[4] = 1.0f; // p2.x = x2
+	vbodata[5] = 1.0f; // p2.y = y2
 	
 	// set up vbo data for a rectangular shape
-	vbodata[ 6 ] = 0.0f; // p1.x = x1
-	vbodata[ 7 ] = 0.0f; // p1.y = y1
+	vbodata[6] = 0.0f; // p1.x = x1
+	vbodata[7] = 0.0f; // p1.y = y1
 	
-	vbodata[ 8 ] = 0.0f; // p2.x = x1
-	vbodata[ 9 ] = 1.0f; // p2.y = y2
+	vbodata[8] = 0.0f; // p2.x = x1
+	vbodata[9] = 1.0f; // p2.y = y2
 	
-	vbodata[ 10 ] = 1.0f; // p3.x = x2
-	vbodata[ 11 ] = 1.0f; // p3.y = y2
+	vbodata[10] = 1.0f; // p3.x = x2
+	vbodata[11] = 1.0f; // p3.y = y2
 	
-	vbodata[ 12 ] = 1.0f; // p4.x = x2
-	vbodata[ 13 ] = 0.0f; // p4.y = y1
+	vbodata[12] = 1.0f; // p4.x = x2
+	vbodata[13] = 0.0f; // p4.y = y1
 	
 	// create vbo and vao
-	OGL_CHECK( renderThread, pglGenVertexArrays( 1, &pVAOShapes ) );
-	if( ! pVAOShapes ) DETHROW( deeOutOfMemory );
-	OGL_CHECK( renderThread, pglBindVertexArray( pVAOShapes ) );
+	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAOShapes));
+	if(!pVAOShapes) DETHROW(deeOutOfMemory);
+	OGL_CHECK(renderThread, pglBindVertexArray(pVAOShapes));
 	
-	OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBOShapes ) );
-	if( ! pVBOShapes ) DETHROW( deeOutOfMemory );
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOShapes ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, sizeof( vbodata ), ( const GLvoid * )&vbodata, GL_STATIC_DRAW ) );
+	OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOShapes));
+	if(!pVBOShapes) DETHROW(deeOutOfMemory);
+	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShapes));
+	OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(vbodata), (const GLvoid *)&vbodata, GL_STATIC_DRAW));
 	
-	OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) );
-	OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, ( const GLvoid * )0 ) );
+	OGL_CHECK(renderThread, pglEnableVertexAttribArray(0));
+	OGL_CHECK(renderThread, pglVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid *)0));
 	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
+	OGL_CHECK(renderThread, pglBindVertexArray(0));
 }

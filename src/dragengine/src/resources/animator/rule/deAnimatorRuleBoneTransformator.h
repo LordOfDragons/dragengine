@@ -115,37 +115,37 @@ public:
 	inline const decVector &GetMinimumTranslation() const{ return pMinTranslation; }
 	
 	/** \brief Set minimum translation. */
-	void SetMinimumTranslation( const decVector &translation );
+	void SetMinimumTranslation(const decVector &translation);
 	
 	/** \brief Maximum translation. */
 	inline const decVector &GetMaximumTranslation() const{ return pMaxTranslation; }
 	
 	/** \brief Set maximum translation. */
-	void SetMaximumTranslation( const decVector &translation );
+	void SetMaximumTranslation(const decVector &translation);
 	
 	/** \brief Minimum rotation. */
 	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
 	
 	/** \brief Set minimum rotation. */
-	void SetMinimumRotation( const decVector &rotation );
+	void SetMinimumRotation(const decVector &rotation);
 	
 	/** \brief Maximum rotation. */
 	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
 	
 	/** \brief Set maximum rotation. */
-	void SetMaximumRotation( const decVector &rotation );
+	void SetMaximumRotation(const decVector &rotation);
 	
 	/** \brief Minimum scaling. */
 	inline const decVector &GetMinimumScaling() const{ return pMinScaling; }
 	
 	/** \brief Set minimum scaling. */
-	void SetMinimumScaling( const decVector &scaling );
+	void SetMinimumScaling(const decVector &scaling);
 	
 	/** \brief Maximum scaling. */
 	inline const decVector &GetMaximumScaling() const{ return pMaxScaling; }
 	
 	/** \brief Set maximum scaling. */
-	void SetMaximumScaling( const decVector &scaling );
+	void SetMaximumScaling(const decVector &scaling);
 	
 	/**
 	 * \brief Rotation axis.
@@ -157,7 +157,7 @@ public:
 	 * \brief Set rotation axis.
 	 * \version 1.6
 	 */
-	void SetAxis( const decVector &axis );
+	void SetAxis(const decVector &axis);
 	
 	/**
 	 * \brief Minimum axis rotation angle.
@@ -169,7 +169,7 @@ public:
 	 * \brief Set minimum axis rotation angle.
 	 * \version 1.6
 	 */
-	void SetMinimumAngle( float angle );
+	void SetMinimumAngle(float angle);
 	
 	/**
 	 * \brief Maximum axis rotation angle.
@@ -181,31 +181,31 @@ public:
 	 * \brief Set maximum axis rotation angle.
 	 * \version 1.6
 	 */
-	void SetMaximumAngle( float angle );
+	void SetMaximumAngle(float angle);
 	
 	/** \brief Transformation coordinate frame. */
 	inline eCoordinateFrames GetCoordinateFrame() const{ return pCoordinateFrame; }
 	
 	/** \brief Set transformation coordinate frame. */
-	void SetCoordinateFrame( eCoordinateFrames coordinateFrame );
+	void SetCoordinateFrame(eCoordinateFrames coordinateFrame);
 	
 	/** \brief Determines if position is altered. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position is altered. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation is altered. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Sets if orientation is altered. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/**
 	 * \brief Use rotation axis instead of rotation directly.
@@ -217,13 +217,13 @@ public:
 	 * \brief Set to use rotation axis instead of rotation directly.
 	 * \version 1.6
 	 */
-	void SetUseAxis( bool useAxis );
+	void SetUseAxis(bool useAxis);
 	
 	/** \brief Name of the target bone. */
 	inline const decString &GetTargetBone() const{ return pTargetBone; }
 	
 	/** \brief Set name of the target bone. */
-	void SetTargetBone( const char *boneName );
+	void SetTargetBone(const char *boneName);
 	
 	/** \brief Name of the input bone. */
 	inline const decString &GetInputBone() const{ return pInputBone; }
@@ -255,7 +255,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	virtual void Visit(deAnimatorRuleVisitor &visitor);
 	/*@}*/
 };
 

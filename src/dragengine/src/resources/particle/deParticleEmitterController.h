@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create controller with range 0 to 1 and the value 0. */
-	deParticleEmitterController( const char *name = "Controller" );
+	deParticleEmitterController(const char *name = "Controller");
 	
 	/** \brief Clean up controller. */
 	~deParticleEmitterController();
@@ -70,7 +70,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Lower value. */
 	inline float GetLower() const{ return pLower; }
@@ -79,35 +79,35 @@ public:
 	inline float GetUpper() const{ return pUpper; }
 	
 	/** \brief Set value range. */
-	void SetRange( float lower, float upper );
+	void SetRange(float lower, float upper);
 	
 	/** \brief Current value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set current value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Increment value. */
-	void Increment( float amount );
+	void Increment(float amount);
 	
 	/** \brief Che controller is frozen. */
 	inline bool GetFrozen() const{ return pFrozen; }
 	
 	/** \brief Set if controller is frozen. */
-	void SetFrozen( bool frozen );
+	void SetFrozen(bool frozen);
 	
 	/** \brief Values passed the range are clamped or wrapped around. */
 	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if values passed the range are clamped or wrapped around. */
-	void SetClamp( bool clamp );
+	void SetClamp(bool clamp);
 	
 	
 	
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy controller parameters. */
-	deParticleEmitterController &operator=( const deParticleEmitterController &controller );
+	deParticleEmitterController &operator=(const deParticleEmitterController &controller);
 	/*@}*/
 	/*@}*/
 	

@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device button. */
-	deovrDeviceButton( deovrDevice &device );
+	deovrDeviceButton(deovrDevice &device);
 	
 protected:
 	/** Clean up device button. */
@@ -95,7 +95,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	
 	
@@ -103,13 +103,13 @@ public:
 	inline vr::VRActionHandle_t GetActionPressHandle() const{ return pActionPressHandle; }
 	
 	/** Set press button action handle. */
-	void SetActionPressHandle( vr::VRActionHandle_t handle );
+	void SetActionPressHandle(vr::VRActionHandle_t handle);
 	
 	/** Touch button action handle. */
 	inline vr::VRActionHandle_t GetActionTouchHandle() const{ return pActionTouchHandle; }
 	
 	/** Set touch button action handle. */
-	void SetActionTouchHandle( vr::VRActionHandle_t handle );
+	void SetActionTouchHandle(vr::VRActionHandle_t handle);
 	
 	
 	
@@ -117,43 +117,43 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Type. */
 	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( deInputDeviceButton::eButtonTypes type );
+	void SetType(deInputDeviceButton::eButtonTypes type);
 	
 	/** Input device component. */
 	inline deovrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
 	
 	/** Set input device component. */
-	void SetInputDeviceComponent( deovrDeviceComponent *component );
+	void SetInputDeviceComponent(deovrDeviceComponent *component);
 	
 	/** Button is pressed. */
 	inline bool GetPressed() const{ return pPressed; }
 	
 	/** Set if button is pressed. */
-	void SetPressed( bool pressed );
+	void SetPressed(bool pressed);
 	
 	/** Update pressed sending event if changed. */
-	void UpdatePressed( bool pressed );
+	void UpdatePressed(bool pressed);
 	
 	/** Button is touched. */
 	inline bool GetTouched() const{ return pTouched; }
 	
 	/** Set if button is touched. */
-	void SetTouched( bool touched );
+	void SetTouched(bool touched);
 	
 	/** Update touched sending event if changed. */
-	void UpdateTouched( bool touched );
+	void UpdateTouched(bool touched);
 	
 	
 	
@@ -164,21 +164,21 @@ public:
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const deovrDeviceButton &button );
+	void SetDisplayImages(const deovrDeviceButton &button);
 	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
 	/** Update engine input device information button. */
-	void GetInfo( deInputDeviceButton &info ) const;
+	void GetInfo(deInputDeviceButton &info) const;
 	
 	/** Track state. */
 	void TrackState();

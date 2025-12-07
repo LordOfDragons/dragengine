@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableVideoFrame( deoglDynamicSkin &dynamicSkin, const deDSRenderableVideoFrame &renderable );
+	deoglDSRenderableVideoFrame(deoglDynamicSkin &dynamicSkin, const deDSRenderableVideoFrame &renderable);
 	
 	/** Clean up peer. */
 	virtual ~deoglDSRenderableVideoFrame();

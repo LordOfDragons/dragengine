@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create openal buffer. */
-	deoalSource( deoalAudioThread &audioThread );
+	deoalSource(deoalAudioThread &audioThread);
 	
 	/** Clean up openal buffer. */
 	~deoalSource();
@@ -100,10 +100,10 @@ public:
 	inline int GetBufferCount() const{ return pBufferCount; }
 	
 	/** Set number of streaming buffers. */
-	void SetBufferCount( int count );
+	void SetBufferCount(int count);
 	
 	/** Buffer. */
-	ALuint GetBufferAt( int position ) const;
+	ALuint GetBufferAt(int position) const;
 	
 	
 	
@@ -111,13 +111,13 @@ public:
 	inline void *GetOwner() const{ return pOwner; }
 	
 	/** Set owner or \em NULL if not bound. */
-	void SetOwner( void *owner );
+	void SetOwner(void *owner);
 	
 	/** Importance. */
 	inline float GetImportance() const{ return pImportance; }
 	
 	/** Set importance. */
-	void SetImportance( float importance );
+	void SetImportance(float importance);
 	
 	
 	

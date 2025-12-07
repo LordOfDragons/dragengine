@@ -50,7 +50,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief State value changed. */
-	virtual void StateValueChanged( int index );
+	virtual void StateValueChanged(int index);
 	/*@}*/
 };
 

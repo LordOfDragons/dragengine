@@ -59,11 +59,11 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	cTextX( meWVNodeCombine &node ) : pNode( node ){ }
+	cTextX(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleCombine()->GetX() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleCombine()->GetX()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -78,11 +78,11 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	cTextY( meWVNodeCombine &node ) : pNode( node ){ }
+	cTextY(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleCombine()->GetY() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleCombine()->GetY()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -97,11 +97,11 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	cTextZ( meWVNodeCombine &node ) : pNode( node ){ }
+	cTextZ(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleCombine()->GetZ() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleCombine()->GetZ()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -121,15 +121,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeCombine::meWVNodeCombine( meWindowVegetation &windowVegetation, meHTVRuleCombine *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleCombine( rule )
+meWVNodeCombine::meWVNodeCombine(meWindowVegetation &windowVegetation, meHTVRuleCombine *rule) :
+meWVNode(windowVegetation, rule),
+pRuleCombine(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Combine" );
+	SetTitle("Combine");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -145,19 +145,19 @@ pRuleCombine( rule )
 	
 	slot.TakeOverWith(env, "Y", "Y component of vector",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisY);
-	helper.EditFloat( slot, "Y component of vector if slot is not connected.",
-		pEditY, new cTextY( *this ) );
-	AddSlot( slot );
+	helper.EditFloat(slot, "Y component of vector if slot is not connected.",
+		pEditY, new cTextY(*this));
+	AddSlot(slot);
 	
 	slot.TakeOverWith(env, "Z", "Z component of vector",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisZ);
-	helper.EditFloat( slot, "Z component of vector if slot is not connected.",
-		pEditZ, new cTextZ( *this ) );
-	AddSlot( slot );
+	helper.EditFloat(slot, "Z component of vector if slot is not connected.",
+		pEditZ, new cTextZ(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 }
 
 meWVNodeCombine::~meWVNodeCombine(){
@@ -171,7 +171,7 @@ meWVNodeCombine::~meWVNodeCombine(){
 void meWVNodeCombine::Update(){
 	meWVNode::Update();
 	
-	pEditX->SetFloat( pRuleCombine->GetX() );
-	pEditY->SetFloat( pRuleCombine->GetY() );
-	pEditZ->SetFloat( pRuleCombine->GetZ() );
+	pEditX->SetFloat(pRuleCombine->GetX());
+	pEditY->SetFloat(pRuleCombine->GetY());
+	pEditZ->SetFloat(pRuleCombine->GetZ());
 }

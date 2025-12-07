@@ -43,46 +43,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGroupBox::igdeGroupBox( igdeEnvironment &environment, const char *title,
-	eTitleAlignment titleAlignment ) :
-igdeContainer( environment ),
-pTitle( title ),
-pTitleAlignment( titleAlignment ),
-pCanCollapse( false ),
-pCollapsed( false ),
-pStretchLast( false ){
+igdeGroupBox::igdeGroupBox(igdeEnvironment &environment, const char *title,
+	eTitleAlignment titleAlignment) :
+igdeContainer(environment),
+pTitle(title),
+pTitleAlignment(titleAlignment),
+pCanCollapse(false),
+pCollapsed(false),
+pStretchLast(false){
 }
 
-igdeGroupBox::igdeGroupBox( igdeEnvironment &environment, const char *title,
-	const char *description, eTitleAlignment titleAlignment ) :
-igdeContainer( environment ),
-pTitle( title ),
-pTitleAlignment( titleAlignment ),
-pDescription( description ),
-pCanCollapse( false ),
-pCollapsed( false ),
-pStretchLast( false ){
+igdeGroupBox::igdeGroupBox(igdeEnvironment &environment, const char *title,
+	const char *description, eTitleAlignment titleAlignment) :
+igdeContainer(environment),
+pTitle(title),
+pTitleAlignment(titleAlignment),
+pDescription(description),
+pCanCollapse(false),
+pCollapsed(false),
+pStretchLast(false){
 }
 
-igdeGroupBox::igdeGroupBox( igdeEnvironment &environment, const char *title,
-	bool collapsed, eTitleAlignment titleAlignment ) :
-igdeContainer( environment ),
-pTitle( title ),
-pTitleAlignment( titleAlignment ),
-pCanCollapse( true ),
-pCollapsed( collapsed ),
-pStretchLast( false ){
+igdeGroupBox::igdeGroupBox(igdeEnvironment &environment, const char *title,
+	bool collapsed, eTitleAlignment titleAlignment) :
+igdeContainer(environment),
+pTitle(title),
+pTitleAlignment(titleAlignment),
+pCanCollapse(true),
+pCollapsed(collapsed),
+pStretchLast(false){
 }
 
-igdeGroupBox::igdeGroupBox( igdeEnvironment &environment, const char *title,
-	const char *description, bool collapsed, eTitleAlignment titleAlignment ) :
-igdeContainer( environment ),
-pTitle( title ),
-pTitleAlignment( titleAlignment ),
-pDescription( description ),
-pCanCollapse( true ),
-pCollapsed( collapsed ),
-pStretchLast( false ){
+igdeGroupBox::igdeGroupBox(igdeEnvironment &environment, const char *title,
+	const char *description, bool collapsed, eTitleAlignment titleAlignment) :
+igdeContainer(environment),
+pTitle(title),
+pTitleAlignment(titleAlignment),
+pDescription(description),
+pCanCollapse(true),
+pCollapsed(collapsed),
+pStretchLast(false){
 }
 
 igdeGroupBox::~igdeGroupBox(){
@@ -94,8 +94,8 @@ igdeGroupBox::~igdeGroupBox(){
 // Management
 ///////////////
 
-void igdeGroupBox::SetTitle( const char *title ){
-	if( pTitle == title ){
+void igdeGroupBox::SetTitle(const char *title){
+	if(pTitle == title){
 		return;
 	}
 	
@@ -103,8 +103,8 @@ void igdeGroupBox::SetTitle( const char *title ){
 	OnTitleChanged();
 }
 
-void igdeGroupBox::SetTitleAlignment( eTitleAlignment titleAlignment ){
-	if( pTitleAlignment == titleAlignment ){
+void igdeGroupBox::SetTitleAlignment(eTitleAlignment titleAlignment){
+	if(pTitleAlignment == titleAlignment){
 		return;
 	}
 	
@@ -112,8 +112,8 @@ void igdeGroupBox::SetTitleAlignment( eTitleAlignment titleAlignment ){
 	OnTitleAlignmentChanged();
 }
 
-void igdeGroupBox::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeGroupBox::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -121,21 +121,21 @@ void igdeGroupBox::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeGroupBox::SetCanCollapse( bool canCollapse ){
-	if( pCanCollapse == canCollapse ){
+void igdeGroupBox::SetCanCollapse(bool canCollapse){
+	if(pCanCollapse == canCollapse){
 		return;
 	}
 	
-	if( ! canCollapse ){
-		SetCollapsed( false );
+	if(!canCollapse){
+		SetCollapsed(false);
 	}
 	
 	pCanCollapse = canCollapse;
 	OnCanCollapseChanged();
 }
 
-void igdeGroupBox::SetCollapsed( bool collapsed ){
-	if( pCollapsed == collapsed ){
+void igdeGroupBox::SetCollapsed(bool collapsed){
+	if(pCollapsed == collapsed){
 		return;
 	}
 	
@@ -143,8 +143,8 @@ void igdeGroupBox::SetCollapsed( bool collapsed ){
 	OnCollapsedChanged();
 }
 
-void igdeGroupBox::SetStretchLast( bool stretchLast ){
-	if( stretchLast == pStretchLast ){
+void igdeGroupBox::SetStretchLast(bool stretchLast){
+	if(stretchLast == pStretchLast){
 		return;
 	}
 	pStretchLast = stretchLast;
@@ -153,20 +153,20 @@ void igdeGroupBox::SetStretchLast( bool stretchLast ){
 
 
 
-void igdeGroupBox::AddChild( igdeWidget *child ){
-	if( GetChildCount() > 0 ){
-		DETHROW( deeInvalidParam );
+void igdeGroupBox::AddChild(igdeWidget *child){
+	if(GetChildCount() > 0){
+		DETHROW(deeInvalidParam);
 	}
-	igdeContainer::AddChild( child );
+	igdeContainer::AddChild(child);
 }
 
-void igdeGroupBox::RemoveChild( igdeWidget *child ){
-	igdeContainer::RemoveChild( child );
+void igdeGroupBox::RemoveChild(igdeWidget *child){
+	igdeContainer::RemoveChild(child);
 	
 	/* // TODO if stretching last widget is supported activate this
-	if( GetChildCount() > 0 ){
-		igdeUIFoxHelper::UpdateLayoutFlags( GetChildAt( GetChildCount() - 1 ) );
-		( ( FXPacker* )GetNativeContainer() )->recalc();
+	if(GetChildCount() > 0){
+		igdeUIFoxHelper::UpdateLayoutFlags(GetChildAt(GetChildCount() - 1));
+		((FXPacker*)GetNativeContainer())->recalc();
 	}
 	*/
 }
@@ -174,53 +174,53 @@ void igdeGroupBox::RemoveChild( igdeWidget *child ){
 
 
 void igdeGroupBox::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeGroupBox * const native = igdeNativeGroupBox::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeGroupBox * const native = igdeNativeGroupBox::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeGroupBox::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeGroupBox* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeGroupBox*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeGroupBox::OnTitleChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeGroupBox* )GetNativeWidget() )->UpdateTitle();
+	((igdeNativeGroupBox*)GetNativeWidget())->UpdateTitle();
 }
 
 void igdeGroupBox::OnTitleAlignmentChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeGroupBox* )GetNativeWidget() )->UpdateTitleAlignment();
+	((igdeNativeGroupBox*)GetNativeWidget())->UpdateTitleAlignment();
 }
 
 void igdeGroupBox::OnDescriptionChanged(){
 	/* // not supported
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeFoxGroupBox &groupbox = *( ( igdeNativeFoxGroupBox* )GetNativeWidget() );
-	groupbox.setTipText( pDescription.GetString() );
-	groupbox.setHelpText( pDescription.GetString() );
+	igdeNativeFoxGroupBox &groupbox = *((igdeNativeFoxGroupBox*)GetNativeWidget());
+	groupbox.setTipText(pDescription.GetString());
+	groupbox.setHelpText(pDescription.GetString());
 	*/
 }
 
@@ -228,17 +228,17 @@ void igdeGroupBox::OnCanCollapseChanged(){
 }
 
 void igdeGroupBox::OnCollapsedChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeGroupBox* )GetNativeWidget() )->UpdateCollapsed();
+	((igdeNativeGroupBox*)GetNativeWidget())->UpdateCollapsed();
 }
 
 void igdeGroupBox::OnStretchLastChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeGroupBox* )GetNativeWidget() )->UpdateStretchLast();
+	((igdeNativeGroupBox*)GetNativeWidget())->UpdateStretchLast();
 }

@@ -33,12 +33,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorSetEnableVertexPositionSet::aeURuleMirrorSetEnableVertexPositionSet( aeRuleMirror *rule ) :
-pRule( rule )
+aeURuleMirrorSetEnableVertexPositionSet::aeURuleMirrorSetEnableVertexPositionSet(aeRuleMirror *rule) :
+pRule(rule)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
-	SetShortInfo( "Toggle mirror rule enable vertex poosition set" );
+	SetShortInfo("Toggle mirror rule enable vertex poosition set");
 }
 
 aeURuleMirrorSetEnableVertexPositionSet::~aeURuleMirrorSetEnableVertexPositionSet(){
@@ -50,9 +50,9 @@ aeURuleMirrorSetEnableVertexPositionSet::~aeURuleMirrorSetEnableVertexPositionSe
 ///////////////
 
 void aeURuleMirrorSetEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleMirrorSetEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }

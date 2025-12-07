@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetMoveName::saeUPhonemeSetMoveName( saePhoneme *phoneme, const char *newName ){
-	if( ! phoneme || ! newName ) DETHROW( deeInvalidParam );
+saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *newName){
+	if(!phoneme || !newName) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
 	
-	SetShortInfo( "Phoneme Set Move Name" );
+	SetShortInfo("Phoneme Set Move Name");
 	
 	pOldName = phoneme->GetMoveName();
 	pNewName = newName;
@@ -54,7 +54,7 @@ saeUPhonemeSetMoveName::saeUPhonemeSetMoveName( saePhoneme *phoneme, const char 
 }
 
 saeUPhonemeSetMoveName::~saeUPhonemeSetMoveName(){
-	if( pPhoneme ){
+	if(pPhoneme){
 		pPhoneme->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ saeUPhonemeSetMoveName::~saeUPhonemeSetMoveName(){
 ///////////////
 
 void saeUPhonemeSetMoveName::Undo(){
-	pPhoneme->SetMoveName( pOldName.GetString() );
+	pPhoneme->SetMoveName(pOldName.GetString());
 }
 
 void saeUPhonemeSetMoveName::Redo(){
-	pPhoneme->SetMoveName( pNewName.GetString() );
+	pPhoneme->SetMoveName(pNewName.GetString());
 }

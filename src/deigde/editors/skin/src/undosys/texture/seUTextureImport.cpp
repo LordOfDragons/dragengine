@@ -41,14 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureImport::seUTextureImport( seTexture *texture, const seTexture *importTexture ){
-	if( ! texture || ! importTexture ){
-		DETHROW( deeInvalidParam );
+seUTextureImport::seUTextureImport(seTexture *texture, const seTexture *importTexture){
+	if(!texture || !importTexture){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTexture = NULL;
 	
-	SetShortInfo( "Texture import" );
+	SetShortInfo("Texture import");
 	
 	pOldProperties = texture->GetPropertyList();
 	pNewProperties = importTexture->GetPropertyList();
@@ -58,7 +58,7 @@ seUTextureImport::seUTextureImport( seTexture *texture, const seTexture *importT
 }
 
 seUTextureImport::~seUTextureImport(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ void seUTextureImport::Undo(){
 	int i;
 	
 	pTexture->RemoveAllProperties();
-	for( i=0; i<propertyCount; i++ ){
-		pTexture->AddProperty( pOldProperties.GetAt( i ) );
+	for(i=0; i<propertyCount; i++){
+		pTexture->AddProperty(pOldProperties.GetAt(i));
 	}
 }
 
@@ -83,7 +83,7 @@ void seUTextureImport::Redo(){
 	int i;
 	
 	pTexture->RemoveAllProperties();
-	for( i=0; i<propertyCount; i++ ){
-		pTexture->AddProperty( pNewProperties.GetAt( i ) );
+	for(i=0; i<propertyCount; i++){
+		pTexture->AddProperty(pNewProperties.GetAt(i));
 	}
 }

@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new path find test. */
-	mePathFindTest( deEngine *engine );
+	mePathFindTest(deEngine *engine);
 	/** \brief Cleans up the path find test. */
 	virtual ~mePathFindTest();
 	/*@}*/
@@ -91,49 +91,49 @@ public:
 	/** \brief Retrieves the world or NULL. */
 	inline meWorld *GetWorld() const{ return pWorld; }
 	/** \brief Sets the world or NULL. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Retrieves the start position. */
 	inline const decDVector &GetStartPosition() const{ return pStartPosition; }
 	/** \brief Sets the start position. */
-	void SetStartPosition( const decDVector &position );
+	void SetStartPosition(const decDVector &position);
 	/** \brief Retrieves the goal position. */
 	inline const decDVector &GetGoalPosition() const{ return pGoalPosition; }
 	/** \brief Sets the goal position. */
-	void SetGoalPosition( const decDVector &position );
+	void SetGoalPosition(const decDVector &position);
 	/** \brief Retrieves the start orientation. */
 	inline const decVector &GetStartOrientation() const{ return pStartOrientation; }
 	/** \brief Sets the start orientation. */
-	void SetStartOrientation( const decVector &orientation );
+	void SetStartOrientation(const decVector &orientation);
 	/** \brief Retrieves the goal orientation. */
 	inline const decVector &GetGoalOrientation() const{ return pGoalOrientation; }
 	/** \brief Sets the goal orientation. */
-	void SetGoalOrientation( const decVector &orientation );
+	void SetGoalOrientation(const decVector &orientation);
 	/** \brief Retrieves the layer number. */
 	inline int GetLayer() const{ return pLayer; }
 	/** \brief Sets the layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	/** \brief Retrieves the space type to navigate. */
 	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{ return pSpaceType; }
 	/** \brief Sets the space type to navigate. */
-	void SetSpaceType( deNavigationSpace::eSpaceTypes spaceType );
+	void SetSpaceType(deNavigationSpace::eSpaceTypes spaceType);
 	
 	/** \brief Found path. */
 	inline const deNavigatorPath &GetPath() const{ return pPath; }
 	
 	/** \brief Set found path. */
-	void SetPath( const deNavigatorPath &path );
+	void SetPath(const deNavigatorPath &path);
 	
 	/** \brief Blocking cost. */
 	inline float GetBlockingCost() const{ return pBlockingCost; }
 	
 	/** \brief Set blocking cost. */
-	void SetBlockingCost( float cost );
+	void SetBlockingCost(float cost);
 	
 	/** \brief Determines if the path is shown. */
 	inline bool GetShowPath() const{ return pShowPath; }
 	/** \brief Sets if the path is shown. */
-	void SetShowPath( bool showPath );
+	void SetShowPath(bool showPath);
 	
 	/** \brief Retrieves the type list. */
 	inline mePathFindTestTypeList &GetTypeList(){ return pTypeList; }

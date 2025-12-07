@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPSDecalListener::meWPSDecalListener( meWPSDecal &panel ) :
-pPanel( panel ){
+meWPSDecalListener::meWPSDecalListener(meWPSDecal &panel) :
+pPanel(panel){
 }
 
 meWPSDecalListener::~meWPSDecalListener(){
@@ -52,7 +52,7 @@ meWPSDecalListener::~meWPSDecalListener(){
 // Management
 ///////////////
 
-void meWPSDecalListener::DecalSelectionChanged( meWorld* ){
+void meWPSDecalListener::DecalSelectionChanged(meWorld*){
 	pPanel.UpdateSelection();
 	pPanel.UpdateEnabled();
 	pPanel.UpdateDecal();
@@ -62,8 +62,8 @@ void meWPSDecalListener::DecalSelectionChanged( meWorld* ){
 	pPanel.UpdateIdentifierLists();
 }
 
-void meWPSDecalListener::DecalChanged( meWorld*, meDecal *decal ){
-	if( ! decal->GetActive() ){
+void meWPSDecalListener::DecalChanged(meWorld*, meDecal *decal){
+	if(!decal->GetActive()){
 		return;
 	}
 	
@@ -71,16 +71,16 @@ void meWPSDecalListener::DecalChanged( meWorld*, meDecal *decal ){
 	pPanel.UpdateTexture();
 }
 
-void meWPSDecalListener::DecalGeometryChanged( meWorld*, meDecal *decal ){
-	if( ! decal->GetActive() ){
+void meWPSDecalListener::DecalGeometryChanged(meWorld*, meDecal *decal){
+	if(!decal->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateGeometry();
 }
 
-void meWPSDecalListener::DecalPropertiesChanged( meWorld*, meDecal *decal ){
-	if( ! decal->GetActive() ){
+void meWPSDecalListener::DecalPropertiesChanged(meWorld*, meDecal *decal){
+	if(!decal->GetActive()){
 		return;
 	}
 	
@@ -88,8 +88,8 @@ void meWPSDecalListener::DecalPropertiesChanged( meWorld*, meDecal *decal ){
 	pPanel.UpdateIdentifierLists();
 }
 
-void meWPSDecalListener::DecalActivePropertyChanged( meWorld*, meDecal *decal ){
-	if( ! decal->GetActive() ){
+void meWPSDecalListener::DecalActivePropertyChanged(meWorld*, meDecal *decal){
+	if(!decal->GetActive()){
 		return;
 	}
 	

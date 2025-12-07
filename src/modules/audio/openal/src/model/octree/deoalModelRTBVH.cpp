@@ -41,24 +41,24 @@
 /////////////////////////////////
 
 deoalModelRTBVH::deoalModelRTBVH() :
-pFaces( NULL ),
-pFaceCount( 0 ),
-pFaceSize( 0 ),
+pFaces(NULL),
+pFaceCount(0),
+pFaceSize(0),
 
-pNodes( NULL ),
-pNodeCount( 0 ),
-pNodeSize( 0 ),
+pNodes(NULL),
+pNodeCount(0),
+pNodeSize(0),
 
-pBuildNodes( NULL ),
-pBuildNodeCount( 0 ),
-pBuildNodeSize( 0 ),
+pBuildNodes(NULL),
+pBuildNodeCount(0),
+pBuildNodeSize(0),
 
-pBuildFaces( NULL ),
-pBuildFaceCount( 0 ),
-pBuildFaceSize( 0 ),
+pBuildFaces(NULL),
+pBuildFaceCount(0),
+pBuildFaceSize(0),
 
-pIndexNode( 0 ),
-pIndexFace( 0 ){
+pIndexNode(0),
+pIndexFace(0){
 }
 
 deoalModelRTBVH::~deoalModelRTBVH(){
@@ -70,85 +70,85 @@ deoalModelRTBVH::~deoalModelRTBVH(){
 // Management
 ///////////////
 
-void deoalModelRTBVH::Build( const deoalModelFace *faces, int faceCount ){
+void deoalModelRTBVH::Build(const deoalModelFace *faces, int faceCount){
 	pNodeCount = 0;
 	pFaceCount = 0;
 	pBuildFaceCount = 0;
 	pBuildNodeCount = 0;
-	if( faceCount == 0 ){
+	if(faceCount == 0){
 		return;
 	}
 	
-	if( faceCount > pBuildFaceSize ){
-		if( pBuildFaces ){
+	if(faceCount > pBuildFaceSize){
+		if(pBuildFaces){
 			delete [] pBuildFaces;
 			pBuildFaces = NULL;
 			pBuildFaceSize = 0;
 		}
-		pBuildFaces = new sBuildFace[ faceCount ];
+		pBuildFaces = new sBuildFace[faceCount];
 		pBuildFaceSize = faceCount;
 	}
 	pBuildFaceCount = faceCount;
 	
 	int i;
-	for( i=0; i<pBuildFaceCount; i++ ){
-		const deoalModelFace &modelFace = faces[ i ];
-		sBuildFace &buildFace = pBuildFaces[ i ];
+	for(i=0; i<pBuildFaceCount; i++){
+		const deoalModelFace &modelFace = faces[i];
+		sBuildFace &buildFace = pBuildFaces[i];
 		buildFace.minExtend = modelFace.GetMinExtend();
 		buildFace.maxExtend = modelFace.GetMaxExtend();
-		buildFace.center = ( buildFace.minExtend + buildFace.maxExtend ) * 0.5f;
+		buildFace.center = (buildFace.minExtend + buildFace.maxExtend) * 0.5f;
 		buildFace.modelFace = &modelFace;
 		buildFace.next = i + 1;
 	}
-	pBuildFaces[ pBuildFaceCount - 1 ].next = -1;
+	pBuildFaces[pBuildFaceCount - 1].next = -1;
 	
 	// build root node
 	pAddBuildNode();
-	sBuildNode &rootNode = pBuildNodes[ 0 ];
+	sBuildNode &rootNode = pBuildNodes[0];
 	rootNode.faceCount = pBuildFaceCount;
 	rootNode.firstFace = 0;
 	rootNode.lastFace = pBuildFaceCount - 1;
-	pUpdateNodeExtends( rootNode );
+	pUpdateNodeExtends(rootNode);
 	
 	// split root node
-	pSplitNode( 0 );
+	pSplitNode(0);
 	
 	// build visit arrays
-	if( pBuildNodeCount > pNodeSize ){
-		if( pNodes ){
+	if(pBuildNodeCount > pNodeSize){
+		if(pNodes){
 			delete [] pNodes;
 			pNodes = NULL;
 			pNodeSize = 0;
 		}
-		pNodes = new sNode[ pBuildNodeCount ];
+		pNodes = new sNode[pBuildNodeCount];
 		pNodeSize = pBuildNodeCount;
 	}
 	pNodeCount = pBuildNodeCount;
 	
-	if( pBuildFaceCount > pFaceSize ){
-		if( pFaces ){
+	if(pBuildFaceCount > pFaceSize){
+		if(pFaces){
 			delete [] pFaces;
 			pFaces = NULL;
 			pFaceSize = 0;
 		}
-		pFaces = new sFace[ pBuildFaceCount ];
+		pFaces = new sFace[pBuildFaceCount];
 		pFaceSize = pBuildFaceCount;
 	}
 	pFaceCount = pBuildFaceCount;
 	
 	pIndexNode = 0;
 	pIndexFace = 0;
-	pBuildVisitNode( pBuildNodes[ 0 ] );
+	pBuildVisitNode(pBuildNodes[0]);
 }
 
 void deoalModelRTBVH::DropBuildData(){
-	if( pBuildNodes ){
+	if(pBuildNodes){
 		delete [] pBuildNodes;
 		pBuildNodes = NULL;
 		pBuildNodeCount = 0;
 		pBuildNodeSize = 0;
 	}
-	if( pBuildFaces ){
+	if(pBuildFaces){
 		delete [] pBuildFaces;
 		pBuildFaces = NULL;
 		pBuildFaceCount = 0;
@@ -162,26 +162,26 @@ void deoalModelRTBVH::DropBuildData(){
 //////////////////////
 
 void deoalModelRTBVH::pCleanUp(){
-	if( pNodes ){
+	if(pNodes){
 		delete [] pNodes;
 	}
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
-	if( pBuildNodes ){
+	if(pBuildNodes){
 		delete [] pBuildNodes;
 	}
-	if( pBuildFaces ){
+	if(pBuildFaces){
 		delete [] pBuildFaces;
 	}
 }
 
 int deoalModelRTBVH::pAddBuildNode(){
-	if( pBuildNodeCount == pBuildNodeSize ){
+	if(pBuildNodeCount == pBuildNodeSize){
 		const int size = pBuildNodeSize + 100;
-		sBuildNode * const nodes = new sBuildNode[ size ];
-		if( pBuildNodes ){
-			memcpy( nodes, pBuildNodes, sizeof( sBuildNode ) * pBuildNodeSize );
+		sBuildNode * const nodes = new sBuildNode[size];
+		if(pBuildNodes){
+			memcpy(nodes, pBuildNodes, sizeof(sBuildNode) * pBuildNodeSize);
 			delete [] pBuildNodes;
 		}
 		pBuildNodes = nodes;
@@ -189,7 +189,7 @@ int deoalModelRTBVH::pAddBuildNode(){
 	}
 	
 	const int index = pBuildNodeCount++;
-	sBuildNode &node = pBuildNodes[ index ];
+	sBuildNode &node = pBuildNodes[index];
 	node.child1 = -1;
 	node.child2 = -1;
 	node.firstFace = -1;
@@ -199,82 +199,82 @@ int deoalModelRTBVH::pAddBuildNode(){
 	return index;
 }
 
-void deoalModelRTBVH::pUpdateNodeExtends( sBuildNode &node ) const{
-	if( node.firstFace == -1 ){
+void deoalModelRTBVH::pUpdateNodeExtends(sBuildNode &node) const{
+	if(node.firstFace == -1){
 		node.center.SetZero();
 		node.halfSize.SetZero();
 		return;
 	}
 	
-	const sBuildFace &firstFace = pBuildFaces[ node.firstFace ];
-	decVector minExtend( firstFace.minExtend );
-	decVector maxExtend( firstFace.maxExtend );
+	const sBuildFace &firstFace = pBuildFaces[node.firstFace];
+	decVector minExtend(firstFace.minExtend);
+	decVector maxExtend(firstFace.maxExtend);
 	int faceIndex = firstFace.next;
 	
-	while( faceIndex != -1 ){
-		const sBuildFace &face = pBuildFaces[ faceIndex ];
-		minExtend.SetSmallest( face.minExtend );
-		maxExtend.SetLargest( face.maxExtend );
+	while(faceIndex != -1){
+		const sBuildFace &face = pBuildFaces[faceIndex];
+		minExtend.SetSmallest(face.minExtend);
+		maxExtend.SetLargest(face.maxExtend);
 		faceIndex = face.next;
 	}
 	
-	node.center = ( minExtend + maxExtend ) * 0.5f;
-	node.halfSize = ( maxExtend - minExtend ) * 0.5f;
+	node.center = (minExtend + maxExtend) * 0.5f;
+	node.halfSize = (maxExtend - minExtend) * 0.5f;
 }
 
-void deoalModelRTBVH::pSplitNode( int nodeIndex ){
-	if( pBuildNodes[ nodeIndex ].faceCount < 3 ){
+void deoalModelRTBVH::pSplitNode(int nodeIndex){
+	if(pBuildNodes[nodeIndex].faceCount < 3){
 		return;
 	}
 	
 	// find center extends. we need to use this instead of the node extends since only this
 	// shows us in corner cases if a split is possible
-	const sBuildFace &firstFace = pBuildFaces[ pBuildNodes[ nodeIndex ].firstFace ];
-	decVector centerMin( firstFace.center );
-	decVector centerMax( firstFace.center );
+	const sBuildFace &firstFace = pBuildFaces[pBuildNodes[nodeIndex].firstFace];
+	decVector centerMin(firstFace.center);
+	decVector centerMax(firstFace.center);
 	int faceIndex = firstFace.next;
 	
-	while( faceIndex != -1 ){
-		const sBuildFace &face = pBuildFaces[ faceIndex ];
-		centerMin.SetSmallest( face.center );
-		centerMax.SetLargest( face.center );
+	while(faceIndex != -1){
+		const sBuildFace &face = pBuildFaces[faceIndex];
+		centerMin.SetSmallest(face.center);
+		centerMax.SetLargest(face.center);
 		faceIndex = face.next;
 	}
 	
 	// find primary axis
-	const decVector centerSize( centerMax - centerMin );
+	const decVector centerSize(centerMax - centerMin);
 	const float splitThreshold = 0.1f; //0.001f; // 0.01f
 	float splitPosition;
 	int primaryAxis;
 	
-	if( centerSize.x >= centerSize.y ){
-		if( centerSize.x >= centerSize.z ){
-			if( centerSize.x < splitThreshold ){
+	if(centerSize.x >= centerSize.y){
+		if(centerSize.x >= centerSize.z){
+			if(centerSize.x < splitThreshold){
 				return;
 			}
-			splitPosition = ( centerMin.x + centerMax.x ) * 0.5f;
+			splitPosition = (centerMin.x + centerMax.x) * 0.5f;
 			primaryAxis = 0;
 			
 		}else{
-			if( centerSize.z < splitThreshold ){
+			if(centerSize.z < splitThreshold){
 				return;
 			}
-			splitPosition = ( centerMin.z + centerMax.z ) * 0.5f;
+			splitPosition = (centerMin.z + centerMax.z) * 0.5f;
 			primaryAxis = 2;
 		}
 		
-	}else if( centerSize.y >= centerSize.z ){
-		if( centerSize.y < splitThreshold ){
+	}else if(centerSize.y >= centerSize.z){
+		if(centerSize.y < splitThreshold){
 			return;
 		}
-		splitPosition = ( centerMin.y + centerMax.y ) * 0.5f;
+		splitPosition = (centerMin.y + centerMax.y) * 0.5f;
 		primaryAxis = 1;
 		
 	}else{
-		if( centerSize.z < splitThreshold ){
+		if(centerSize.z < splitThreshold){
 			return;
 		}
-		splitPosition = ( centerMin.z + centerMax.z ) * 0.5f;
+		splitPosition = (centerMin.z + centerMax.z) * 0.5f;
 		primaryAxis = 2;
 	}
 	
@@ -282,24 +282,24 @@ void deoalModelRTBVH::pSplitNode( int nodeIndex ){
 	const int childIndex1 = pAddBuildNode();
 	const int childIndex2 = pAddBuildNode();
 	
-	sBuildNode &node = pBuildNodes[ nodeIndex ];
-	sBuildNode &child1 = pBuildNodes[ childIndex1 ];
-	sBuildNode &child2 = pBuildNodes[ childIndex2 ];
+	sBuildNode &node = pBuildNodes[nodeIndex];
+	sBuildNode &child1 = pBuildNodes[childIndex1];
+	sBuildNode &child2 = pBuildNodes[childIndex2];
 	
 	faceIndex = node.firstFace;
 	
-	switch( primaryAxis ){
+	switch(primaryAxis){
 	case 0: // x largest
-		while( faceIndex != -1 ){
-			sBuildFace &face = pBuildFaces[ faceIndex ];
+		while(faceIndex != -1){
+			sBuildFace &face = pBuildFaces[faceIndex];
 			const int nextFaceIndex = face.next;
 			face.next = -1;
 			
-			if( face.center.x < splitPosition ){
-				pNodeAddFace( child1, faceIndex );
+			if(face.center.x < splitPosition){
+				pNodeAddFace(child1, faceIndex);
 				
 			}else{
-				pNodeAddFace( child2, faceIndex );
+				pNodeAddFace(child2, faceIndex);
 			}
 			
 			faceIndex = nextFaceIndex;
@@ -307,16 +307,16 @@ void deoalModelRTBVH::pSplitNode( int nodeIndex ){
 		break;
 		
 	case 1: // y largest
-		while( faceIndex != -1 ){
-			sBuildFace &face = pBuildFaces[ faceIndex ];
+		while(faceIndex != -1){
+			sBuildFace &face = pBuildFaces[faceIndex];
 			const int nextFaceIndex = face.next;
 			face.next = -1;
 			
-			if( face.center.y < splitPosition ){
-				pNodeAddFace( child1, faceIndex );
+			if(face.center.y < splitPosition){
+				pNodeAddFace(child1, faceIndex);
 				
 			}else{
-				pNodeAddFace( child2, faceIndex );
+				pNodeAddFace(child2, faceIndex);
 			}
 			
 			faceIndex = nextFaceIndex;
@@ -324,16 +324,16 @@ void deoalModelRTBVH::pSplitNode( int nodeIndex ){
 		break;
 		
 	case 2: // z largest
-		while( faceIndex != -1 ){
-			sBuildFace &face = pBuildFaces[ faceIndex ];
+		while(faceIndex != -1){
+			sBuildFace &face = pBuildFaces[faceIndex];
 			const int nextFaceIndex = face.next;
 			face.next = -1;
 			
-			if( face.center.z < splitPosition ){
-				pNodeAddFace( child1, faceIndex );
+			if(face.center.z < splitPosition){
+				pNodeAddFace(child1, faceIndex);
 				
 			}else{
-				pNodeAddFace( child2, faceIndex );
+				pNodeAddFace(child2, faceIndex);
 			}
 			
 			faceIndex = nextFaceIndex;
@@ -347,16 +347,16 @@ void deoalModelRTBVH::pSplitNode( int nodeIndex ){
 	node.child1 = childIndex1;
 	node.child2 = childIndex2;
 	
-	pUpdateNodeExtends( child1 );
-	pUpdateNodeExtends( child2 );
+	pUpdateNodeExtends(child1);
+	pUpdateNodeExtends(child2);
 	
-	pSplitNode( childIndex1 );
-	pSplitNode( childIndex2 );
+	pSplitNode(childIndex1);
+	pSplitNode(childIndex2);
 }
 
-void deoalModelRTBVH::pNodeAddFace( sBuildNode &node, int faceIndex ){
-	if( node.lastFace != -1 ){
-		pBuildFaces[ node.lastFace ].next = faceIndex;
+void deoalModelRTBVH::pNodeAddFace(sBuildNode &node, int faceIndex){
+	if(node.lastFace != -1){
+		pBuildFaces[node.lastFace].next = faceIndex;
 		
 	}else{
 		node.firstFace = faceIndex;
@@ -366,32 +366,32 @@ void deoalModelRTBVH::pNodeAddFace( sBuildNode &node, int faceIndex ){
 	node.faceCount++;
 }
 
-void deoalModelRTBVH::pBuildVisitNode( const sBuildNode &buildNode ){
-	sNode &visitNode = pNodes[ pIndexNode++ ];
+void deoalModelRTBVH::pBuildVisitNode(const sBuildNode &buildNode){
+	sNode &visitNode = pNodes[pIndexNode++];
 	visitNode.center = buildNode.center;
 	visitNode.halfSize = buildNode.halfSize;
 	
 	// components
-	if( buildNode.faceCount > 0 ){
+	if(buildNode.faceCount > 0){
 		visitNode.firstFace = pIndexFace;
 		visitNode.faceCount = buildNode.faceCount;
 		visitNode.node1 = -1;
 		visitNode.node2 = -1;
 		
 		int indexBuildFace = buildNode.firstFace;
-		while( indexBuildFace != -1 ){
-			const sBuildFace &buildFace = pBuildFaces[ indexBuildFace ];
-			sFace &visitFace = pFaces[ pIndexFace++ ];
+		while(indexBuildFace != -1){
+			const sBuildFace &buildFace = pBuildFaces[indexBuildFace];
+			sFace &visitFace = pFaces[pIndexFace++];
 			const deoalModelFace &modelFace = *buildFace.modelFace;
 			
 			visitFace.normal = modelFace.GetNormal();
 			visitFace.baseVertex = modelFace.GetVertex1();
-			visitFace.edgeNormal[ 0 ] = modelFace.GetEdge1Normal();
-			visitFace.edgeNormal[ 1 ] = modelFace.GetEdge2Normal();
-			visitFace.edgeNormal[ 2 ] = modelFace.GetEdge3Normal();
-			visitFace.edgeDistance[ 0 ] = modelFace.GetEdge1DistanceSafe();
-			visitFace.edgeDistance[ 1 ] = modelFace.GetEdge2DistanceSafe();
-			visitFace.edgeDistance[ 2 ] = modelFace.GetEdge3DistanceSafe();
+			visitFace.edgeNormal[0] = modelFace.GetEdge1Normal();
+			visitFace.edgeNormal[1] = modelFace.GetEdge2Normal();
+			visitFace.edgeNormal[2] = modelFace.GetEdge3Normal();
+			visitFace.edgeDistance[0] = modelFace.GetEdge1DistanceSafe();
+			visitFace.edgeDistance[1] = modelFace.GetEdge2DistanceSafe();
+			visitFace.edgeDistance[2] = modelFace.GetEdge3DistanceSafe();
 			visitFace.indexFace = modelFace.GetIndex();
 			visitFace.indexTexture = modelFace.GetTexture();
 			
@@ -399,18 +399,18 @@ void deoalModelRTBVH::pBuildVisitNode( const sBuildNode &buildNode ){
 		}
 		
 	// child nodes
-	}else if( buildNode.child1 != -1 ){
+	}else if(buildNode.child1 != -1){
 		visitNode.firstFace = -1;
 		visitNode.faceCount = 0;
 		
 		visitNode.node1 = pIndexNode;
-		pBuildVisitNode( pBuildNodes[ buildNode.child1 ] );
+		pBuildVisitNode(pBuildNodes[buildNode.child1]);
 		
 		visitNode.node2 = pIndexNode;
-		pBuildVisitNode( pBuildNodes[ buildNode.child2 ] );
+		pBuildVisitNode(pBuildNodes[buildNode.child2]);
 		
 	// this should never happen
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }

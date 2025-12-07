@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetPropertyName( gdeObjectClass *objectClass, gdeOCSpeaker *speaker,
-		gdeOCSpeaker::eProperties property, const char *newValue );
+	gdeUOCSpeakerSetPropertyName(gdeObjectClass *objectClass, gdeOCSpeaker *speaker,
+		gdeOCSpeaker::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

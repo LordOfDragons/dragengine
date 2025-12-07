@@ -44,10 +44,10 @@
 // Constructor
 ////////////////
 
-gdeMACategoryRemove::gdeMACategoryRemove( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Remove Category",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove category" )
+gdeMACategoryRemove::gdeMACategoryRemove(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "Remove Category",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove category")
 {
 }
 
@@ -56,24 +56,24 @@ gdeBaseAction( windowMain, "Remove Category",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategoryRemove::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo *gdeMACategoryRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeCategory * const category = gameDefinition.GetActiveCategory();
-	if( ! category ){
+	if(!category){
 		return NULL;
 	}
 	
-	switch( gameDefinition.GetSelectedObjectType() ){
+	switch(gameDefinition.GetSelectedObjectType()){
 	case gdeGameDefinition::eotCategoryObjectClass:
-		return new gdeUCategoryRemove( &gameDefinition, category, gdeUCategoryBase::ectObjectClass );
+		return new gdeUCategoryRemove(&gameDefinition, category, gdeUCategoryBase::ectObjectClass);
 		
 	case gdeGameDefinition::eotCategoryParticleEmitter:
-		return new gdeUCategoryRemove( &gameDefinition, category, gdeUCategoryBase::ectParticleEmitter );
+		return new gdeUCategoryRemove(&gameDefinition, category, gdeUCategoryBase::ectParticleEmitter);
 		
 	case gdeGameDefinition::eotCategorySkin:
-		return new gdeUCategoryRemove( &gameDefinition, category, gdeUCategoryBase::ectSkin );
+		return new gdeUCategoryRemove(&gameDefinition, category, gdeUCategoryBase::ectSkin);
 		
 	case gdeGameDefinition::eotCategorySky:
-		return new gdeUCategoryRemove( &gameDefinition, category, gdeUCategoryBase::ectSky );
+		return new gdeUCategoryRemove(&gameDefinition, category, gdeUCategoryBase::ectSky);
 		
 	default:
 		return NULL;
@@ -82,21 +82,21 @@ igdeUndo *gdeMACategoryRemove::OnAction( gdeGameDefinition &gameDefinition ){
 
 void gdeMACategoryRemove::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	switch( gameDefinition->GetSelectedObjectType() ){
+	switch(gameDefinition->GetSelectedObjectType()){
 	case gdeGameDefinition::eotCategoryObjectClass:
 	case gdeGameDefinition::eotCategoryParticleEmitter:
 	case gdeGameDefinition::eotCategorySkin:
 	case gdeGameDefinition::eotCategorySky:
-		SetEnabled( gameDefinition->GetActiveCategory() != NULL );
+		SetEnabled(gameDefinition->GetActiveCategory() != NULL);
 		break;
 		
 	default:
-		SetEnabled( false );
+		SetEnabled(false);
 		break;
 	}
 }

@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUEffectTargetRemoveLink( seEffect *effect, seControllerTarget *target, seLink *link );
+	seUEffectTargetRemoveLink(seEffect *effect, seControllerTarget *target, seLink *link);
 	
 protected:
 	/** \brief Clean up undo action. */

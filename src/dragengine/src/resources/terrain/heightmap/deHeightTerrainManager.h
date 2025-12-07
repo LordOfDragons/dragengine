@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resource manager. */
-	deHeightTerrainManager( deEngine *engine );
+	deHeightTerrainManager(deEngine *engine);
 	
 	/** \brief Clean up resource manager and reports leaking resources. */
 	virtual ~deHeightTerrainManager();
@@ -62,7 +62,7 @@ public:
 	deHeightTerrain *GetRootHeightTerrain() const;
 	
 	/** \brief Create height terrain. */
-	deHeightTerrain *CreateHeightTerrain( float sectorSize, int heightImageSize );
+	deHeightTerrain *CreateHeightTerrain(float sectorSize, int heightImageSize);
 	
 	/** \brief Release leaking resources and report them. */
 	virtual void ReleaseLeakingResources();
@@ -105,7 +105,7 @@ public:
 	 * For use by resource objects only. Do not call directly.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

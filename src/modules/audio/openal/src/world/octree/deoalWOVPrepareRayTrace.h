@@ -75,25 +75,25 @@ public:
 	inline const decDVector &GetCenter() const{ return pCenter; }
 	
 	/** \brief Set center. */
-	void SetCenter( const decDVector &center );
+	void SetCenter(const decDVector &center);
 	
 	/** \brief Radius. */
 	inline double GetRadius() const{ return pRadius; }
 	
 	/** \brief Set radius. */
-	void SetRadius( double radius );
+	void SetRadius(double radius);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Ray trace world BVH or NULL. */
 	inline deoalRTWorldBVH *GetRTWorldBVH() const{ return pRTWorldBVH; }
 	
 	/** \brief Set ray trace world bch or NULL. */
-	void SetRTWorldBVH( deoalRTWorldBVH *bvh );
+	void SetRTWorldBVH(deoalRTWorldBVH *bvh);
 	
 	
 	
@@ -103,18 +103,18 @@ public:
 	 * Always use this method instead of doing visiting on your own. Clears first the array
 	 * of components, then visits the world and then prepare the collected components.
 	 */
-	void Visit( deoalAWorld &world );
+	void Visit(deoalAWorld &world);
 	
 	
 	
 	/** \brief Visits components affecting sound hit by ray. */
-	virtual void VisitNode( deoalDOctree *node, int intersection );
+	virtual void VisitNode(deoalDOctree *node, int intersection);
 	/*@}*/
 	
 	
 	
 private:
-	void pPrepareRTWorldBVH( deoalRTWorldBVH &bvh );
+	void pPrepareRTWorldBVH(deoalRTWorldBVH &bvh);
 };
 
 #endif

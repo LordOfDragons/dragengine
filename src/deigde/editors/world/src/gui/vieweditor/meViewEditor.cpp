@@ -53,14 +53,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meViewEditor::meViewEditor( meView3D &view ) :
-pView( view ),
+meViewEditor::meViewEditor(meView3D &view) :
+pView(view),
 
-pShiftStart( false ),
-pControlStart( false ),
+pShiftStart(false),
+pControlStart(false),
 
-pDragLMB( false ),
-pDragRMB( false ){
+pDragLMB(false),
+pDragRMB(false){
 }
 
 meViewEditor::~meViewEditor(){
@@ -107,41 +107,41 @@ void meViewEditor::UpdateMatrices(){
 	pMatrixViewLocalInverse = pMatrixViewLocal.Invert();
 }
 
-bool meViewEditor::CheckAxisLocking( deInputEvent::eKeyCodes key ){
+bool meViewEditor::CheckAxisLocking(deInputEvent::eKeyCodes key){
 	meWorldGuiParameters &guiparams = GetWorldGuiParameters();
 	const meConfiguration &config = GetConfiguration();
 	
-	if( key == config.GetHotKeyAt( meConfiguration::ehkEditLockX ) ){
-		guiparams.SetLockAxisX( ! guiparams.GetLockAxisX() );
+	if(key == config.GetHotKeyAt(meConfiguration::ehkEditLockX)){
+		guiparams.SetLockAxisX(!guiparams.GetLockAxisX());
 		return true;
 		
-	}else if( key == config.GetHotKeyAt( meConfiguration::ehkEditLockY ) ){
-		guiparams.SetLockAxisY( ! guiparams.GetLockAxisY() );
+	}else if(key == config.GetHotKeyAt(meConfiguration::ehkEditLockY)){
+		guiparams.SetLockAxisY(!guiparams.GetLockAxisY());
 		return true;
 		
-	}else if( key == config.GetHotKeyAt( meConfiguration::ehkEditLockZ ) ){
-		guiparams.SetLockAxisZ( ! guiparams.GetLockAxisZ() );
+	}else if(key == config.GetHotKeyAt(meConfiguration::ehkEditLockZ)){
+		guiparams.SetLockAxisZ(!guiparams.GetLockAxisZ());
 		return true;
 		
-	}else if( key == config.GetHotKeyAt( meConfiguration::ehkEditLocalCFrame ) ){
-		guiparams.SetUseLocal( ! guiparams.GetUseLocal() );
+	}else if(key == config.GetHotKeyAt(meConfiguration::ehkEditLocalCFrame)){
+		guiparams.SetUseLocal(!guiparams.GetUseLocal());
 		return true;
 		
-	}else if( key == config.GetHotKeyAt( meConfiguration::ehkEditSnapToSnapPoints ) ){
-		guiparams.SetSnapToSnapPoints( ! guiparams.GetSnapToSnapPoints() );
+	}else if(key == config.GetHotKeyAt(meConfiguration::ehkEditSnapToSnapPoints)){
+		guiparams.SetSnapToSnapPoints(!guiparams.GetSnapToSnapPoints());
 		return true;
 	}
 	
 	return false;
 }
 
-void meViewEditor::LogException( const deException &exception ) const{
-	pView.GetWindowMain().GetEditorModule().LogException( exception );
+void meViewEditor::LogException(const deException &exception) const{
+	pView.GetWindowMain().GetEditorModule().LogException(exception);
 }
 
 
 
-void meViewEditor::GetSelectedObjectsWithAttached( meObjectList &list ){
+void meViewEditor::GetSelectedObjectsWithAttached(meObjectList &list){
 	const meObjectList &listSelected = GetWorld().GetSelectionObject().GetSelected();
 	const int selectedCount = listSelected.GetCount();
 	meObject *object;
@@ -149,36 +149,36 @@ void meViewEditor::GetSelectedObjectsWithAttached( meObjectList &list ){
 	
 	list.RemoveAll();
 	
-	for( i=0; i<selectedCount; i++ ){
-		list.Add( listSelected.GetAt( i ) );
+	for(i=0; i<selectedCount; i++){
+		list.Add(listSelected.GetAt(i));
 	}
 	
-	for( i=0; i<list.GetCount(); i++ ){
-		object = list.GetAt( i );
+	for(i=0; i<list.GetCount(); i++){
+		object = list.GetAt(i);
 		
 		const meObjectList &listChildren = object->GetAttachedObjectsList();
 		const int childrenCount = listChildren.GetCount();
 		
-		for( j=0; j<childrenCount; j++ ){
-			list.AddIfAbsent( listChildren.GetAt( j ) );
+		for(j=0; j<childrenCount; j++){
+			list.AddIfAbsent(listChildren.GetAt(j));
 		}
 	}
 }
 
 
 
-void meViewEditor::RayTestCollision( deBaseScriptingCollider *listener, const decDVector &rayPosition,
-const decVector &rayDirection, const decCollisionFilter &collisionFilter ){
+void meViewEditor::RayTestCollision(deBaseScriptingCollider *listener, const decDVector &rayPosition,
+const decVector &rayDirection, const decCollisionFilter &collisionFilter){
 	deBasePhysicsWorld * const peer = GetWorld().GetEngineWorld()->GetPeerPhysics();
-	if( peer ){
-		peer->RayHits( rayPosition, rayDirection, listener, collisionFilter );
+	if(peer){
+		peer->RayHits(rayPosition, rayDirection, listener, collisionFilter);
 	}
 }
 
-void meViewEditor::ColliderTestCollision( deBaseScriptingCollider *listener, deCollider *collider ){
+void meViewEditor::ColliderTestCollision(deBaseScriptingCollider *listener, deCollider *collider){
 	deBasePhysicsWorld * const peer = GetWorld().GetEngineWorld()->GetPeerPhysics();
-	if( peer ){
-		peer->ColliderHits( collider, listener );
+	if(peer){
+		peer->ColliderHits(collider, listener);
 	}
 }
 
@@ -192,18 +192,18 @@ decDMatrix meViewEditor::CalculateViewLocalMatrix() const{
 	const int elementMode = GetElementMode();
 	meWorld &world = GetWorld();
 	
-	if( elementMode == meWorldGuiParameters::eemObject ){
+	if(elementMode == meWorldGuiParameters::eemObject){
 		meObject * const object = world.GetSelectionObject().GetActive();
 		
-		if( object ){
-			return decDMatrix::CreateRotation( object->GetRotation() * DEG2RAD );
+		if(object){
+			return decDMatrix::CreateRotation(object->GetRotation() * DEG2RAD);
 		}
 		
-	}else if( elementMode == meWorldGuiParameters::eemDecal ){
+	}else if(elementMode == meWorldGuiParameters::eemDecal){
 		meDecal * const decal = world.GetSelectionDecal().GetActive();
 		
-		if( decal ){
-			return decDMatrix::CreateRotation( decal->GetRotation() * DEG2RAD );
+		if(decal){
+			return decDMatrix::CreateRotation(decal->GetRotation() * DEG2RAD);
 		}
 	}
 	
@@ -212,7 +212,7 @@ decDMatrix meViewEditor::CalculateViewLocalMatrix() const{
 
 
 
-void meViewEditor::OnFrameUpdate( float elapsed ){
+void meViewEditor::OnFrameUpdate(float elapsed){
 }
 
 
@@ -223,21 +223,21 @@ void meViewEditor::OnFrameUpdate( float elapsed ){
 void meViewEditor::OnResize(){
 }
 
-bool meViewEditor::OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control ){
+bool meViewEditor::OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control){
 	return false;
 }
 
-bool meViewEditor::OnKeyRelease( deInputEvent::eKeyCodes key, bool shift, bool control ){
+bool meViewEditor::OnKeyRelease(deInputEvent::eKeyCodes key, bool shift, bool control){
 	return false;
 }
 
-void meViewEditor::OnLeftMouseButtonPress( int x, int y, bool shift, bool control ){
-	if( ! pDragLMB && ! pDragRMB ){
-		pDragOrgin.Set( x, y );
+void meViewEditor::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
+	if(!pDragLMB && !pDragRMB){
+		pDragOrgin.Set(x, y);
 		pShiftStart = shift;
 		pControlStart = control;
 		
-		pDragCurrent.Set( x, y );
+		pDragCurrent.Set(x, y);
 		
 		pDragDistanceLast.SetZero();
 		pDragDistanceStart.SetZero();
@@ -248,17 +248,17 @@ void meViewEditor::OnLeftMouseButtonPress( int x, int y, bool shift, bool contro
 	UpdateMatrices();
 }
 
-void meViewEditor::OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ){
+void meViewEditor::OnLeftMouseButtonRelease(int x, int y, bool shift, bool control){
 	pDragLMB = false;
 }
 
-void meViewEditor::OnRightMouseButtonPress( int x, int y, bool shift, bool control ){
-	if( ! pDragLMB && ! pDragRMB ){
-		pDragOrgin.Set( x, y );
+void meViewEditor::OnRightMouseButtonPress(int x, int y, bool shift, bool control){
+	if(!pDragLMB && !pDragRMB){
+		pDragOrgin.Set(x, y);
 		pShiftStart = shift;
 		pControlStart = control;
 		
-		pDragCurrent.Set( x, y );
+		pDragCurrent.Set(x, y);
 		
 		pDragDistanceLast.SetZero();
 		pDragDistanceStart.SetZero();
@@ -269,22 +269,22 @@ void meViewEditor::OnRightMouseButtonPress( int x, int y, bool shift, bool contr
 	UpdateMatrices();
 }
 
-void meViewEditor::OnRightMouseButtonRelease( int x, int y, bool shift, bool control ){
+void meViewEditor::OnRightMouseButtonRelease(int x, int y, bool shift, bool control){
 	pDragRMB = false;
 }
 
-void meViewEditor::OnMouseMove( int x, int y, bool shift, bool control ){
-	if( pDragLMB || pDragRMB ){
+void meViewEditor::OnMouseMove(int x, int y, bool shift, bool control){
+	if(pDragLMB || pDragRMB){
 		pDragDistanceLast.x = x - pDragCurrent.x;
 		pDragDistanceLast.y = pDragCurrent.y - y;
 		
-		pDragCurrent.Set( x, y );
+		pDragCurrent.Set(x, y);
 		pDragDistanceStart.x = pDragCurrent.x - pDragOrgin.x;
 		pDragDistanceStart.y = pDragOrgin.y - pDragCurrent.y;
 	}
 }
 
-void meViewEditor::OnMouseWheel( int steps, bool shift, bool control ){
+void meViewEditor::OnMouseWheel(int steps, bool shift, bool control){
 }
 
 void meViewEditor::OnMouseEnter(){

@@ -37,10 +37,10 @@ class DE_DLL_EXPORT deSkinPropertyNodeText : public deSkinPropertyNode{
 public:
 	/** \brief Mapped. */
 	enum eTextMapped{
-		etmFontSize, //<! Font size
-		etmColorRed, //<! Color red component
-		etmColorGreen, //<! Color green component
-		etmColorBlue //<! Color blue component
+		etmFontSize, //!< Font size
+		etmColorRed, //!< Color red component
+		etmColorGreen, //!< Color green component
+		etmColorBlue //!< Color blue component
 	};
 	
 	static const int TextMappedCount = etmColorBlue + 1;
@@ -54,7 +54,7 @@ private:
 	decString pText;
 	decColor pColor;
 	
-	int pTextMapped[ TextMappedCount ];
+	int pTextMapped[TextMappedCount];
 	
 	
 	
@@ -76,13 +76,13 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set font path or empty path if not set. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Font or nullptr if not set. */
 	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font or nullptr to unset. */
-	void SetFont( deFont *font );
+	void SetFont(deFont *font);
 	
 	/** \brief Font size in canvas units. */
 	inline float GetFontSize() const{ return pFontSize; }
@@ -92,27 +92,27 @@ public:
 	 * 
 	 * Size is clamped to 0 or larger.
 	 */
-	void SetFontSize( float size );
+	void SetFontSize(float size);
 	
 	/** \brief Text. */
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Text color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	
 	
 	/** \brief Index of mapped value or -1 to use static value. */
-	int GetTextMappedFor( eTextMapped mapped ) const;
+	int GetTextMappedFor(eTextMapped mapped) const;
 	
 	/** \brief Set index of mapped value or -1 to use static value. */
-	void SetTextMappedFor( eTextMapped mapped, int index );
+	void SetTextMappedFor(eTextMapped mapped, int index);
 	/*@}*/
 	
 	
@@ -120,7 +120,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits node. */
-	virtual void Visit( deSkinPropertyNodeVisitor &visitor );
+	virtual void Visit(deSkinPropertyNodeVisitor &visitor);
 	/*@}*/
 };
 

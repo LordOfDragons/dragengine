@@ -48,7 +48,7 @@ dedsSTNParagraph::dedsSTNParagraph(){
 
 dedsSTNParagraph::~dedsSTNParagraph(){
 	RemoveAllNodes();
-	if( pNodes ) delete [] pNodes;
+	if(pNodes) delete [] pNodes;
 }
 
 
@@ -56,19 +56,19 @@ dedsSTNParagraph::~dedsSTNParagraph(){
 // Management
 ///////////////
 
-dedsStyledTextNode* dedsSTNParagraph::GetNodeAt( int index ) const{
-	if( index < 0 || index >= pNodeCount ) DSTHROW( dueInvalidParam );
+dedsStyledTextNode* dedsSTNParagraph::GetNodeAt(int index) const{
+	if(index < 0 || index >= pNodeCount) DSTHROW(dueInvalidParam);
 	
-	return pNodes[ index ];
+	return pNodes[index];
 }
 
-int dedsSTNParagraph::IndexOfNode( dedsStyledTextNode* node ) const{
-	if( ! node ) DSTHROW( dueInvalidParam );
+int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode* node) const{
+	if(!node) DSTHROW(dueInvalidParam);
 	
 	int n;
 	
-	for( n=0; n<pNodeCount; n++ ){
-		if( node == pNodes[ n ] ){
+	for(n=0; n<pNodeCount; n++){
+		if(node == pNodes[n]){
 			return n;
 		}
 	}
@@ -76,13 +76,13 @@ int dedsSTNParagraph::IndexOfNode( dedsStyledTextNode* node ) const{
 	return -1;
 }
 
-bool dedsSTNParagraph::HasNode( dedsStyledTextNode* node ) const{
-	if( ! node ) DSTHROW( dueInvalidParam );
+bool dedsSTNParagraph::HasNode(dedsStyledTextNode* node) const{
+	if(!node) DSTHROW(dueInvalidParam);
 	
 	int n;
 	
-	for( n=0; n<pNodeCount; n++ ){
-		if( node == pNodes[ n ] ){
+	for(n=0; n<pNodeCount; n++){
+		if(node == pNodes[n]){
 			return true;
 		}
 	}
@@ -90,40 +90,40 @@ bool dedsSTNParagraph::HasNode( dedsStyledTextNode* node ) const{
 	return false;
 }
 
-void dedsSTNParagraph::AddNode( dedsStyledTextNode* node ){
-	if( HasNode( node ) ) DSTHROW( dueInvalidParam );
+void dedsSTNParagraph::AddNode(dedsStyledTextNode* node){
+	if(HasNode(node)) DSTHROW(dueInvalidParam);
 	
-	if( pNodeCount == pNodeSize ){
+	if(pNodeCount == pNodeSize){
 		int newSize = pNodeSize + 10;
-		dedsStyledTextNode **newArray = new dedsStyledTextNode*[ newSize ];
-		if( ! newArray ) DSTHROW( dueOutOfMemory );
-		if( pNodes ){
-			memcpy( newArray, pNodes, sizeof( dedsStyledTextNode* ) * pNodeSize );
+		dedsStyledTextNode **newArray = new dedsStyledTextNode*[newSize];
+		if(!newArray) DSTHROW(dueOutOfMemory);
+		if(pNodes){
+			memcpy(newArray, pNodes, sizeof(dedsStyledTextNode*) * pNodeSize);
 			delete [] pNodes;
 		}
 		pNodes = newArray;
 		pNodeSize = newSize;
 	}
 	
-	pNodes[ pNodeCount ] = node;
+	pNodes[pNodeCount] = node;
 	node->AddReference();
 	pNodeCount++;
 }
 
-void dedsSTNParagraph::RemoveNode( dedsStyledTextNode* node ){
-	int n, index = IndexOfNode( node );
+void dedsSTNParagraph::RemoveNode(dedsStyledTextNode* node){
+	int n, index = IndexOfNode(node);
 	
-	if( index == -1 ) DSTHROW( dueInvalidParam );
+	if(index == -1) DSTHROW(dueInvalidParam);
 	
-	for( n=index+1; n<pNodeCount; n++ ){
-		pNodes[ n - 1 ] = pNodes[ n ];
+	for(n=index+1; n<pNodeCount; n++){
+		pNodes[n - 1] = pNodes[n];
 	}
 	pNodeCount--;
 }
 
 void dedsSTNParagraph::RemoveAllNodes(){
-	while( pNodeCount > 0 ){
+	while(pNodeCount > 0){
 		pNodeCount--;
-		pNodes[ pNodeCount ]->FreeReference();
+		pNodes[pNodeCount]->FreeReference();
 	}
 }

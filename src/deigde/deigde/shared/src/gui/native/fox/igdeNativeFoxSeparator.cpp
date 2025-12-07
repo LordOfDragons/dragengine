@@ -39,40 +39,40 @@
 // Class igdeNativeFoxSeparator
 /////////////////////////////////
 
-void *igdeNativeFoxSeparator::CreateNativeWidget( igdeSeparator &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+void *igdeNativeFoxSeparator::CreateNativeWidget(igdeSeparator &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( &powner ) | SEPARATOR_GROOVE;
+	const int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags(&powner) | SEPARATOR_GROOVE;
 	
-	switch( powner.GetOrientation() ){
+	switch(powner.GetOrientation()){
 	case igdeSeparator::eoHorizontal:
-		return new FXHorizontalSeparator( pparent, layoutFlags );
+		return new FXHorizontalSeparator(pparent, layoutFlags);
 		
 	case igdeSeparator::eoVertical:
-		return new FXVerticalSeparator( pparent, layoutFlags );
+		return new FXVerticalSeparator(pparent, layoutFlags);
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void igdeNativeFoxSeparator::PostCreateNativeWidget( igdeSeparator &powner, void *native ){
-	FXComposite &pparent = *( ( FXComposite* ) powner.GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
-		( ( FXSeparator* )native )->create();
+void igdeNativeFoxSeparator::PostCreateNativeWidget(igdeSeparator &powner, void *native){
+	FXComposite &pparent = *((FXComposite*) powner.GetParent()->GetNativeContainer());
+	if(pparent.id()){
+		((FXSeparator*)native)->create();
 	}
 }
 
-void igdeNativeFoxSeparator::DestroyNativeWidget( igdeSeparator&, void *native ){
-	delete ( FXSeparator* )native;
+void igdeNativeFoxSeparator::DestroyNativeWidget(igdeSeparator&, void *native){
+	delete (FXSeparator*)native;
 }
 
 #endif

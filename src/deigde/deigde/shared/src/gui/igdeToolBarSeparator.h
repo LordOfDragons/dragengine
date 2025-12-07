@@ -43,7 +43,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create toolbar separator. */
-	igdeToolBarSeparator( igdeEnvironment &environment );
+	igdeToolBarSeparator(igdeEnvironment &environment);
 	
 	
 	

@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetRotation( gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *component, const decVector &newValue );
+	gdeUOCEnvMapProbeSetRotation(gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *component, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

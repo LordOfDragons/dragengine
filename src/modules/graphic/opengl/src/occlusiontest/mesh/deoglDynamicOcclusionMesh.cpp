@@ -60,13 +60,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDynamicOcclusionMesh::deoglDynamicOcclusionMesh( deoglRenderThread &renderThread,
-deoglROcclusionMesh *occlusionmesh, deoglRComponent *component ) :
-pRenderThread( renderThread ),
-pBVH( NULL )
+deoglDynamicOcclusionMesh::deoglDynamicOcclusionMesh(deoglRenderThread &renderThread,
+deoglROcclusionMesh *occlusionmesh, deoglRComponent *component) :
+pRenderThread(renderThread),
+pBVH(NULL)
 {
-	if( ! occlusionmesh || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!occlusionmesh || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOcclusionMesh = occlusionmesh;
@@ -98,7 +98,7 @@ deoglDynamicOcclusionMesh::~deoglDynamicOcclusionMesh(){
 ///////////////
 
 deoglVAO *deoglDynamicOcclusionMesh::GetVAO() const{
-	if( pVAO ){
+	if(pVAO){
 		return pVAO;
 		
 	}else{
@@ -107,7 +107,7 @@ deoglVAO *deoglDynamicOcclusionMesh::GetVAO() const{
 }
 
 void deoglDynamicOcclusionMesh::InvalidateVAO(){
-	if( pVAO ){
+	if(pVAO){
 		delete pVAO;
 		pVAO = NULL;
 	}
@@ -120,10 +120,10 @@ void deoglDynamicOcclusionMesh::ComponentStateChanged(){
 	pDirtyOccMesh = true;
 }
 
-void deoglDynamicOcclusionMesh::UpdateBoneMappings( const deComponent &component ){
+void deoglDynamicOcclusionMesh::UpdateBoneMappings(const deComponent &component){
 	pBoneMappings.RemoveAll();
 	
-	if( ! component.GetModel() || ! component.GetOcclusionMesh() ){
+	if(!component.GetModel() || !component.GetOcclusionMesh()){
 		return;
 	}
 	
@@ -141,15 +141,15 @@ void deoglDynamicOcclusionMesh::UpdateBoneMappings( const deComponent &component
 	const int occmeshBoneCount = occmesh.GetBoneCount();
 	int i;
 	
-	for( i=0; i<occmeshBoneCount; i++ ){
-		pBoneMappings.Add( model.IndexOfBoneNamed( occmesh.GetBoneAt( i ).GetName() ) );
+	for(i=0; i<occmeshBoneCount; i++){
+		pBoneMappings.Add(model.IndexOfBoneNamed(occmesh.GetBoneAt(i).GetName()));
 	}
 	
 	pDirtyVBO = true;
 }
 
 void deoglDynamicOcclusionMesh::PrepareForRender(){
-	if( ! pDirtyVBO ){
+	if(!pDirtyVBO){
 		return;
 	}
 	
@@ -163,7 +163,7 @@ void deoglDynamicOcclusionMesh::PrepareForRender(){
 }
 
 void deoglDynamicOcclusionMesh::PrepareBVH(){
-	if( pBVH ){
+	if(pBVH){
 		return;
 	}
 	
@@ -172,39 +172,39 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 	deoglBVH::sBuildPrimitive *primitives = NULL;
 	const int faceCount = pOcclusionMesh->GetSingleSidedFaceCount() + pOcclusionMesh->GetDoubleSidedFaceCount();
 	
-	if( faceCount > 0 ){
-		primitives = new deoglBVH::sBuildPrimitive[ faceCount ];
+	if(faceCount > 0){
+		primitives = new deoglBVH::sBuildPrimitive[faceCount];
 		const unsigned short *corners = pOcclusionMesh->GetCorners();
 		int i;
 		
-		for( i=0; i<faceCount; i++ ){
-			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
-			const decVector &v1 = pVertices[ *(corners++) ];
-			const decVector &v2 = pVertices[ *(corners++) ];
-			const decVector &v3 = pVertices[ *(corners++) ];
+		for(i=0; i<faceCount; i++){
+			deoglBVH::sBuildPrimitive &primitive = primitives[i];
+			const decVector &v1 = pVertices[*(corners++)];
+			const decVector &v2 = pVertices[*(corners++)];
+			const decVector &v3 = pVertices[*(corners++)];
 			
-			primitive.minExtend = v1.Smallest( v2 ).Smallest( v3 );
-			primitive.maxExtend = v1.Largest( v2 ).Largest( v3 );
-			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+			primitive.minExtend = v1.Smallest(v2).Smallest(v3);
+			primitive.maxExtend = v1.Largest(v2).Largest(v3);
+			primitive.center = (primitive.minExtend + primitive.maxExtend) * 0.5f;
 		}
 	}
 	
 	try{
 		pBVH = new deoglBVH;
-		pBVH->Build( primitives, faceCount, 6 );
+		pBVH->Build(primitives, faceCount, 6);
 		
-	}catch( const deException & ){
-		if( pBVH ){
+	}catch(const deException &){
+		if(pBVH){
 			delete pBVH;
 			pBVH = NULL;
 		}
-		if( primitives ){
+		if(primitives){
 			delete [] primitives;
 		}
 		throw;
 	}
 	
-	if( primitives ){
+	if(primitives){
 		delete [] primitives;
 	}
 }
@@ -215,29 +215,29 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 //////////////////////
 
 void deoglDynamicOcclusionMesh::pCleanUp(){
-	if( pOcclusionMesh ){
+	if(pOcclusionMesh){
 		pOcclusionMesh->FreeReference();
 	}
 	
-	if( pVBOData ){
+	if(pVBOData){
 		delete [] pVBOData;
 	}
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
-	if( pWeights ){
+	if(pWeights){
 		delete [] pWeights;
 	}
-	if( pVAO ){
+	if(pVAO){
 		delete pVAO;
 	}
 	
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-	dops.DeleteOpenGLBuffer( pVBO );
+	dops.DeleteOpenGLBuffer(pVBO);
 }
 
 void deoglDynamicOcclusionMesh::pBuildArrays(){
-	if( ! pDirtyOccMesh ){
+	if(!pDirtyOccMesh){
 		return;
 	}
 	
@@ -247,29 +247,29 @@ void deoglDynamicOcclusionMesh::pBuildArrays(){
 	decVector *vertices = NULL;
 	
 	try{
-		if( weightCount > 0 ){
-			weights = new oglMatrix3x4[ weightCount ];
+		if(weightCount > 0){
+			weights = new oglMatrix3x4[weightCount];
 		}
-		if( vertexCount > 0 ){
-			vertices = new decVector[ vertexCount ];
+		if(vertexCount > 0){
+			vertices = new decVector[vertexCount];
 		}
 		
-	}catch( const deException & ){
-		if( vertices ){
+	}catch(const deException &){
+		if(vertices){
 			delete [] vertices;
 		}
-		if( weights ){
+		if(weights){
 			delete [] weights;
 		}
 		throw;
 	}
 	
-	if( pWeights ){
+	if(pWeights){
 		delete [] pWeights;
 	}
 	pWeights = weights;
 	
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
 	pVertices = vertices;
@@ -287,11 +287,11 @@ void deoglDynamicOcclusionMesh::pCalculateWeights(){
 	
 	//pComponent->UpdateBoneMatrices(); // done by sync
 	
-	for( w=0; w<weightsCount; w++ ){
-		oglMatrix3x4 &weightsMatrix = pWeights[ w ];
-		const int entryCount = weightsCounts[ w ];
+	for(w=0; w<weightsCount; w++){
+		oglMatrix3x4 &weightsMatrix = pWeights[w];
+		const int entryCount = weightsCounts[w];
 		
-		if( entryCount == 0 || ! boneMatrices ){
+		if(entryCount == 0 || !boneMatrices){
 			weightsMatrix.a11 = 1.0f;
 			weightsMatrix.a12 = 0.0f;
 			weightsMatrix.a13 = 0.0f;
@@ -305,11 +305,11 @@ void deoglDynamicOcclusionMesh::pCalculateWeights(){
 			weightsMatrix.a33 = 1.0f;
 			weightsMatrix.a34 = 0.0f;
 			
-		}else if( entryCount == 1 ){
-			const int modelBoneIndex = pBoneMappings.GetAt( weightsEntries->bone );
+		}else if(entryCount == 1){
+			const int modelBoneIndex = pBoneMappings.GetAt(weightsEntries->bone);
 			
-			if( modelBoneIndex != -1 ){
-				const oglMatrix3x4 &boneMatrix = boneMatrices[ modelBoneIndex ];
+			if(modelBoneIndex != -1){
+				const oglMatrix3x4 &boneMatrix = boneMatrices[modelBoneIndex];
 				weightsMatrix.a11 = boneMatrix.a11;
 				weightsMatrix.a12 = boneMatrix.a12;
 				weightsMatrix.a13 = boneMatrix.a13;
@@ -341,11 +341,11 @@ void deoglDynamicOcclusionMesh::pCalculateWeights(){
 			weightsEntries++;
 			
 		}else{
-			const int rigBoneIndex = pBoneMappings.GetAt( weightsEntries->bone );
+			const int rigBoneIndex = pBoneMappings.GetAt(weightsEntries->bone);
 			factor = weightsEntries->weight;
 			
-			if( rigBoneIndex != -1 ){
-				const oglMatrix3x4 &boneMatrix = boneMatrices[ rigBoneIndex ];
+			if(rigBoneIndex != -1){
+				const oglMatrix3x4 &boneMatrix = boneMatrices[rigBoneIndex];
 				weightsMatrix.a11 = boneMatrix.a11 * factor;
 				weightsMatrix.a12 = boneMatrix.a12 * factor;
 				weightsMatrix.a13 = boneMatrix.a13 * factor;
@@ -376,12 +376,12 @@ void deoglDynamicOcclusionMesh::pCalculateWeights(){
 			
 			weightsEntries++;
 			
-			for( e=1; e<entryCount; e++ ){
-				const int modelBoneIndex = pBoneMappings.GetAt( weightsEntries->bone );
+			for(e=1; e<entryCount; e++){
+				const int modelBoneIndex = pBoneMappings.GetAt(weightsEntries->bone);
 				factor = weightsEntries->weight;
 				
-				if( modelBoneIndex != -1 ){
-					const oglMatrix3x4 &boneMatrix = boneMatrices[ modelBoneIndex ];
+				if(modelBoneIndex != -1){
+					const oglMatrix3x4 &boneMatrix = boneMatrices[modelBoneIndex];
 					weightsMatrix.a11 += boneMatrix.a11 * factor;
 					weightsMatrix.a12 += boneMatrix.a12 * factor;
 					weightsMatrix.a13 += boneMatrix.a13 * factor;
@@ -412,15 +412,15 @@ void deoglDynamicOcclusionMesh::pTransformVertices(){
 	const int vertexCount = pOcclusionMesh->GetVertexCount();
 	int v;
 	
-	for( v=0; v<vertexCount; v++ ){
-		const deoglROcclusionMesh::sVertex &orgvertex = vertices[ v ];
-		decVector &trapos = pVertices[ v ];
+	for(v=0; v<vertexCount; v++){
+		const deoglROcclusionMesh::sVertex &orgvertex = vertices[v];
+		decVector &trapos = pVertices[v];
 		
-		if( orgvertex.weight == -1 ){
+		if(orgvertex.weight == -1){
 			trapos = orgvertex.position;
 			
 		}else{
-			const oglMatrix3x4 &matrix = pWeights[ orgvertex.weight ];
+			const oglMatrix3x4 &matrix = pWeights[orgvertex.weight];
 			const decVector &orgpos = orgvertex.position;
 			
 			trapos.x = matrix.a11 * orgpos.x + matrix.a12 * orgpos.y + matrix.a13 * orgpos.z + matrix.a14;
@@ -437,18 +437,18 @@ void deoglDynamicOcclusionMesh::pBuildVBO(){
 	
 	dataSize = VBO_P_STRIDE * vertexCount;
 	
-	if( ! pVBO ){
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
+	if(!pVBO){
+		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
+		if(!pVBO){
+			DETHROW(deeOutOfMemory);
 		}
 	}
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
 	
-	if( vertexCount > pVBOVertexSize ){
-		newArray = new deoglVBOp[ vertexCount ];
-		if( pVBOData ){
+	if(vertexCount > pVBOVertexSize){
+		newArray = new deoglVBOp[vertexCount];
+		if(pVBOData){
 			delete [] pVBOData;
 		}
 		pVBOData = newArray;
@@ -457,8 +457,8 @@ void deoglDynamicOcclusionMesh::pBuildVBO(){
 	
 	pWriteVBOData();
 	
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER, dataSize, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER, dataSize, pVBOData, GL_STREAM_DRAW ) );
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, dataSize, NULL, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, dataSize, pVBOData, GL_STREAM_DRAW));
 	
 	pVBOVertexCount = vertexCount;
 }
@@ -467,34 +467,34 @@ void deoglDynamicOcclusionMesh::pWriteVBOData(){
 	const int vertexCount = pOcclusionMesh->GetVertexCount();
 	int i;
 	
-	for( i=0; i<vertexCount; i++ ){
-		pVBOData[ i ].x = ( GLfloat )pVertices[ i ].x;
-		pVBOData[ i ].y = ( GLfloat )pVertices[ i ].y;
-		pVBOData[ i ].z = ( GLfloat )pVertices[ i ].z;
+	for(i=0; i<vertexCount; i++){
+		pVBOData[i].x = (GLfloat)pVertices[i].x;
+		pVBOData[i].y = (GLfloat)pVertices[i].y;
+		pVBOData[i].z = (GLfloat)pVertices[i].z;
 	}
 }
 
 void deoglDynamicOcclusionMesh::pUpdateVAO(){
-	if( pVAO || ! pVBO ){
+	if(pVAO || !pVBO){
 		return;
 	}
 	
 	const deoglSharedVBOBlock &vboBlock = *pOcclusionMesh->GetVBOBlock();
 	const deoglVBOLayout &vboLayout = vboBlock.GetVBO()->GetParentList()->GetLayout();
 	
-	pVAO = new deoglVAO( pRenderThread );
-	pVAO->SetIndexType( vboLayout.GetIndexType() );
-	OGL_CHECK( pRenderThread, pglBindVertexArray( pVAO->GetVAO() ) );
+	pVAO = new deoglVAO(pRenderThread);
+	pVAO->SetIndexType(vboLayout.GetIndexType());
+	OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO->GetVAO()));
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-	vboLayout.SetVAOAttributeAt( pRenderThread, 0, 0 ); // pos(0) => vao(0)
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
+	vboLayout.SetVAOAttributeAt(pRenderThread, 0, 0); // pos(0) => vao(0)
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
 	
-	if( vboBlock.GetVBO()->GetIBO() ){
-		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vboBlock.GetVBO()->GetIBO() ) );
+	if(vboBlock.GetVBO()->GetIBO()){
+		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboBlock.GetVBO()->GetIBO()));
 	}
 	
-	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+	OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 	
 	pVAO->EnsureRTSVAO();
 }

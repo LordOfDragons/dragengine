@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeCombine( meWindowVegetation &windowVegetation, meHTVRuleCombine *rule );
+	meWVNodeCombine(meWindowVegetation &windowVegetation, meHTVRuleCombine *rule);
 	
 protected:
 	/** \brief Clean up object. */

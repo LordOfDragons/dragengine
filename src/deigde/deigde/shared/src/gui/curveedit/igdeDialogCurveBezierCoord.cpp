@@ -44,14 +44,14 @@ class igdeDialogCurveBezierCoordEditPoint : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
-	igdeDialogCurveBezierCoordEditPoint( igdeDialogCurveBezierCoord &dialog ) :
-	pDialog( dialog ){ }
+	igdeDialogCurveBezierCoordEditPoint(igdeDialogCurveBezierCoord &dialog) :
+	pDialog(dialog){}
 	
-	virtual void OnVector2Changed( igdeEditVector2 *editVector2 ){
+	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		const decCurveBezierPoint &point = pDialog.GetPoint();
-		const decVector2 diff( editVector2->GetVector2() - point.GetPoint() );
-		pDialog.SetPoint( decCurveBezierPoint( editVector2->GetVector2(),
-			point.GetHandle1() + diff, point.GetHandle2() + diff ) );
+		const decVector2 diff(editVector2->GetVector2() - point.GetPoint());
+		pDialog.SetPoint(decCurveBezierPoint(editVector2->GetVector2(),
+			point.GetHandle1() + diff, point.GetHandle2() + diff));
 	}
 };
 
@@ -59,13 +59,13 @@ class igdeDialogCurveBezierCoordEditHandle1 : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
-	igdeDialogCurveBezierCoordEditHandle1( igdeDialogCurveBezierCoord &dialog ) :
-	pDialog( dialog ){ }
+	igdeDialogCurveBezierCoordEditHandle1(igdeDialogCurveBezierCoord &dialog) :
+	pDialog(dialog){}
 	
-	virtual void OnVector2Changed( igdeEditVector2 *editVector2 ){
+	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		const decCurveBezierPoint &point = pDialog.GetPoint();
-		pDialog.SetPoint( decCurveBezierPoint( point.GetPoint(),
-			editVector2->GetVector2(), point.GetHandle2() ) );
+		pDialog.SetPoint(decCurveBezierPoint(point.GetPoint(),
+			editVector2->GetVector2(), point.GetHandle2()));
 	}
 };
 
@@ -73,13 +73,13 @@ class igdeDialogCurveBezierCoordEditHandle2 : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
-	igdeDialogCurveBezierCoordEditHandle2( igdeDialogCurveBezierCoord &dialog ) :
-	pDialog( dialog ){ }
+	igdeDialogCurveBezierCoordEditHandle2(igdeDialogCurveBezierCoord &dialog) :
+	pDialog(dialog){}
 	
-	virtual void OnVector2Changed( igdeEditVector2 *editVector2 ){
+	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		const decCurveBezierPoint &point = pDialog.GetPoint();
-		pDialog.SetPoint( decCurveBezierPoint( point.GetPoint(),
-			point.GetHandle1(), editVector2->GetVector2() ) );
+		pDialog.SetPoint(decCurveBezierPoint(point.GetPoint(),
+			point.GetHandle1(), editVector2->GetVector2()));
 	}
 };
 
@@ -91,18 +91,18 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogCurveBezierCoord::igdeDialogCurveBezierCoord( igdeEnvironment &environment ) :
-igdeDialog( environment, "Point Coordinates" )
+igdeDialogCurveBezierCoord::igdeDialogCurveBezierCoord(igdeEnvironment &environment) :
+igdeDialog(environment, "Point Coordinates")
 {
-	pCreateContent( environment );
+	pCreateContent(environment);
 }
 
-igdeDialogCurveBezierCoord::igdeDialogCurveBezierCoord( igdeEnvironment &environment,
-const decCurveBezierPoint &point ) :
-igdeDialog( environment, "Point Coordinates" )
+igdeDialogCurveBezierCoord::igdeDialogCurveBezierCoord(igdeEnvironment &environment,
+const decCurveBezierPoint &point) :
+igdeDialog(environment, "Point Coordinates")
 {
-	pCreateContent( environment );
-	SetPoint( point );
+	pCreateContent(environment);
+	SetPoint(point);
 }
 
 igdeDialogCurveBezierCoord::~igdeDialogCurveBezierCoord(){
@@ -113,15 +113,15 @@ igdeDialogCurveBezierCoord::~igdeDialogCurveBezierCoord(){
 // Management
 ///////////////
 
-void igdeDialogCurveBezierCoord::SetPoint( const decCurveBezierPoint &point ){
-	if( point.IsEqualTo( pPoint ) ){
+void igdeDialogCurveBezierCoord::SetPoint(const decCurveBezierPoint &point){
+	if(point.IsEqualTo(pPoint)){
 		return;
 	}
 	
 	pPoint = point;
-	pEditPoint->SetVector2( point.GetPoint() );
-	pEditHandle1->SetVector2( point.GetHandle1() );
-	pEditHandle2->SetVector2( point.GetHandle2() );
+	pEditPoint->SetVector2(point.GetPoint());
+	pEditHandle1->SetVector2(point.GetHandle1());
+	pEditHandle2->SetVector2(point.GetHandle2());
 }
 
 
@@ -129,20 +129,20 @@ void igdeDialogCurveBezierCoord::SetPoint( const decCurveBezierPoint &point ){
 // Private Functions
 //////////////////////
 
-void igdeDialogCurveBezierCoord::pCreateContent( igdeEnvironment &environment ){
+void igdeDialogCurveBezierCoord::pCreateContent(igdeEnvironment &environment){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(environment));
 	
-	helper.EditVector2( content, "Point:", "Point coordinates",
-		pEditPoint, new igdeDialogCurveBezierCoordEditPoint( *this ) );
-	helper.EditVector2( content, "Left Handle:", "Left handle coordinates",
-		pEditHandle1, new igdeDialogCurveBezierCoordEditHandle1( *this ) );
-	helper.EditVector2( content, "Right Handle:", "Right handle coordinates",
-		pEditHandle2, new igdeDialogCurveBezierCoordEditHandle2( *this ) );
+	helper.EditVector2(content, "Point:", "Point coordinates",
+		pEditPoint, new igdeDialogCurveBezierCoordEditPoint(*this));
+	helper.EditVector2(content, "Left Handle:", "Left handle coordinates",
+		pEditHandle1, new igdeDialogCurveBezierCoordEditHandle1(*this));
+	helper.EditVector2(content, "Right Handle:", "Right handle coordinates",
+		pEditHandle2, new igdeDialogCurveBezierCoordEditHandle2(*this));
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar( buttonBar, "Accept", "Discard" );
+	CreateButtonBar(buttonBar, "Accept", "Discard");
 	
-	AddContent( content, buttonBar );
+	AddContent(content, buttonBar);
 }

@@ -38,7 +38,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create flow. */
-	deEosSdkFlowInit( deEosSdkServiceEos &service );
+	deEosSdkFlowInit(deEosSdkServiceEos &service);
 	/*@}*/
 	
 	
@@ -47,10 +47,10 @@ public:
 	/*@{*/
 	void CreateDeviceId();
 	void ConnectLogin();
-	void FinishFlowEvent( EOS_EResult res );
+	void FinishFlowEvent(EOS_EResult res);
 	
-	void OnCreateDeviceIdCallback( const EOS_Connect_CreateDeviceIdCallbackInfo &data );
-	void OnLoginCallback( const EOS_Connect_LoginCallbackInfo &data );
+	void OnCreateDeviceIdCallback(const EOS_Connect_CreateDeviceIdCallbackInfo &data);
+	void OnLoginCallback(const EOS_Connect_LoginCallbackInfo &data);
 	/*@}*/
 	
 	

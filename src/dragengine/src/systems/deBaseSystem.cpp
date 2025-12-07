@@ -49,27 +49,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-deBaseSystem::deBaseSystem( deEngine *engine, const char *systemName, int requiredModuleType ) :
-pSystemName( systemName ),
-pEngine( engine ),
-pActiveLoadableModule( nullptr ),
-pRequiredModuleType( requiredModuleType ),
-pRunning( false ),
-pFailed( false )
+deBaseSystem::deBaseSystem(deEngine *engine, const char *systemName, int requiredModuleType) :
+pSystemName(systemName),
+pEngine(engine),
+pActiveLoadableModule(nullptr),
+pRequiredModuleType(requiredModuleType),
+pRunning(false),
+pFailed(false)
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+	if(!engine){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 deBaseSystem::~deBaseSystem(){
-	if( pRunning ){
+	if(pRunning){
 		Stop();
 	}
 	
 	ClearPermanents();
 	
-	if( pActiveLoadableModule ){
+	if(pActiveLoadableModule){
 		pActiveLoadableModule->FreeReference();
 		pActiveLoadableModule = NULL;
 	}
@@ -80,7 +80,7 @@ deBaseSystem::~deBaseSystem(){
 // Management
 ///////////////
 
-void deBaseSystem::SetHasFailed( bool hasFailed ){
+void deBaseSystem::SetHasFailed(bool hasFailed){
 	pFailed = hasFailed;
 }
 
@@ -89,16 +89,16 @@ bool deBaseSystem::CanStart(){
 }
 
 void deBaseSystem::Start(){
-	if( pRunning || ! CanStart() ){
-		DETHROW( deeInvalidAction );
+	if(pRunning || !CanStart()){
+		DETHROW(deeInvalidAction);
 	}
 	
-	LogInfoFormat( "Starting %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString() );
+	LogInfoFormat("Starting %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString());
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
-	const bool resumeParallelProcessing = ! parallelProcessing.GetPaused();
+	const bool resumeParallelProcessing = !parallelProcessing.GetPaused();
 	
-	if( resumeParallelProcessing ){
+	if(resumeParallelProcessing){
 		parallelProcessing.Pause();
 	}
 	
@@ -110,30 +110,30 @@ void deBaseSystem::Start(){
 		// post start
 		PostStart();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		Stop();
-		if( resumeParallelProcessing ){
+		if(resumeParallelProcessing){
 			parallelProcessing.Resume();
 		}
 		throw;
 	}
 	
-	if( resumeParallelProcessing ){
+	if(resumeParallelProcessing){
 		parallelProcessing.Resume();
 	}
 }
 
 void deBaseSystem::Stop(){
-	if( ! pRunning || ! pActiveLoadableModule ){
+	if(!pRunning || !pActiveLoadableModule){
 		return;
 	}
 	
-	LogInfoFormat( "Stopping %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString() );
+	LogInfoFormat("Stopping %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString());
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
-	const bool resumeParallelProcessing = ! parallelProcessing.GetPaused();
+	const bool resumeParallelProcessing = !parallelProcessing.GetPaused();
 	
-	if( resumeParallelProcessing ){
+	if(resumeParallelProcessing){
 		parallelProcessing.Pause();
 	}
 	
@@ -144,14 +144,14 @@ void deBaseSystem::Stop(){
 		pRunning = false;
 		pActiveLoadableModule->Unlock();
 		
-	}catch( const deException & ){
-		if( resumeParallelProcessing ){
+	}catch(const deException &){
+		if(resumeParallelProcessing){
 			parallelProcessing.Resume();
 		}
 		throw;
 	}
 	
-	if( resumeParallelProcessing ){
+	if(resumeParallelProcessing){
 		parallelProcessing.Resume();
 	}
 }
@@ -161,17 +161,17 @@ void deBaseSystem::Stop(){
 // Helper Functions
 /////////////////////
 
-void deBaseSystem::CheckAndActivateFirst( deModuleSystem::eModuleTypes type ){
+void deBaseSystem::CheckAndActivateFirst(deModuleSystem::eModuleTypes type){
 	deModuleSystem *moduleSystem = pEngine->GetModuleSystem();
 	
 	// check for modules
-	if( moduleSystem->GetLoadedModuleCountFor( type ) == 0 ){
-		LogErrorFormat( "No loaded %s modules found", GetSystemName().GetString() );
-		DETHROW( deeNoModuleFound );
+	if(moduleSystem->GetLoadedModuleCountFor(type) == 0){
+		LogErrorFormat("No loaded %s modules found", GetSystemName().GetString());
+		DETHROW(deeNoModuleFound);
 	}
 	
 	// select first module as default one
-	SetActiveModule( moduleSystem->GetFirstLoadedModuleFor( type ) );
+	SetActiveModule(moduleSystem->GetFirstLoadedModuleFor(type));
 }
 
 
@@ -182,25 +182,25 @@ void deBaseSystem::CheckAndActivateFirst( deModuleSystem::eModuleTypes type ){
 void deBaseSystem::ClearPermanents(){
 }
 
-void deBaseSystem::SetActiveModule( deLoadableModule *module ){
-	if( ! module || ! module->IsLoaded() || module->GetType() != pRequiredModuleType ){
-		DETHROW( deeInvalidParam );
+void deBaseSystem::SetActiveModule(deLoadableModule *module){
+	if(!module || !module->IsLoaded() || module->GetType() != pRequiredModuleType){
+		DETHROW(deeInvalidParam);
 	}
-	if( pRunning ){
-		DETHROW( deeInvalidAction );
+	if(pRunning){
+		DETHROW(deeInvalidAction);
 	}
 	
-	LogInfoFormat( "Activating %s module %s %s", GetSystemName().GetString(),
-		module->GetName().GetString(), module->GetVersion().GetString() );
+	LogInfoFormat("Activating %s module %s %s", GetSystemName().GetString(),
+		module->GetName().GetString(), module->GetVersion().GetString());
 	
 	// set new module
-	if( pActiveLoadableModule ){
+	if(pActiveLoadableModule){
 		pActiveLoadableModule->FreeReference();
 	}
 	
 	pActiveLoadableModule = module;
 	
-	if( pActiveLoadableModule ){
+	if(pActiveLoadableModule){
 		pActiveLoadableModule->AddReference();
 	}
 }
@@ -221,51 +221,51 @@ void deBaseSystem::PreStop(){
 // Debugging
 //////////////
 
-void deBaseSystem::LogInfo( const char *message ){
-	pEngine->GetLogger()->LogInfo( LOGSOURCE, message );
+void deBaseSystem::LogInfo(const char *message){
+	pEngine->GetLogger()->LogInfo(LOGSOURCE, message);
 }
 
-void deBaseSystem::LogInfoFormat( const char *message, ... ){
+void deBaseSystem::LogInfoFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	pEngine->GetLogger()->LogInfoFormatUsing( LOGSOURCE, message, list );
-	va_end( list );
+	va_start(list, message);
+	pEngine->GetLogger()->LogInfoFormatUsing(LOGSOURCE, message, list);
+	va_end(list);
 }
 
-void deBaseSystem::LogInfoFormatUsing( const char *message, va_list args ){
-	pEngine->GetLogger()->LogInfoFormatUsing( LOGSOURCE, message, args );
+void deBaseSystem::LogInfoFormatUsing(const char *message, va_list args){
+	pEngine->GetLogger()->LogInfoFormatUsing(LOGSOURCE, message, args);
 }
 
-void deBaseSystem::LogWarn( const char *message ){
-	pEngine->GetLogger()->LogWarn( LOGSOURCE, message );
+void deBaseSystem::LogWarn(const char *message){
+	pEngine->GetLogger()->LogWarn(LOGSOURCE, message);
 }
 
-void deBaseSystem::LogWarnFormat( const char *message, ... ){
+void deBaseSystem::LogWarnFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	pEngine->GetLogger()->LogWarnFormatUsing( LOGSOURCE, message, list );
-	va_end( list );
+	va_start(list, message);
+	pEngine->GetLogger()->LogWarnFormatUsing(LOGSOURCE, message, list);
+	va_end(list);
 }
 
-void deBaseSystem::LogWarnFormatUsing( const char *message, va_list args ){
-	pEngine->GetLogger()->LogWarnFormatUsing( LOGSOURCE, message, args );
+void deBaseSystem::LogWarnFormatUsing(const char *message, va_list args){
+	pEngine->GetLogger()->LogWarnFormatUsing(LOGSOURCE, message, args);
 }
 
-void deBaseSystem::LogError( const char *message ){
-	pEngine->GetLogger()->LogError( LOGSOURCE, message );
+void deBaseSystem::LogError(const char *message){
+	pEngine->GetLogger()->LogError(LOGSOURCE, message);
 }
 
-void deBaseSystem::LogErrorFormat( const char *message, ... ){
+void deBaseSystem::LogErrorFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
-	pEngine->GetLogger()->LogErrorFormatUsing( LOGSOURCE, message, list );
-	va_end( list );
+	va_start(list, message);
+	pEngine->GetLogger()->LogErrorFormatUsing(LOGSOURCE, message, list);
+	va_end(list);
 }
 
-void deBaseSystem::LogErrorFormatUsing( const char *message, va_list args ){
-	pEngine->GetLogger()->LogErrorFormatUsing( LOGSOURCE, message, args );
+void deBaseSystem::LogErrorFormatUsing(const char *message, va_list args){
+	pEngine->GetLogger()->LogErrorFormatUsing(LOGSOURCE, message, args);
 }
 
-void deBaseSystem::LogException( const deException &exception ){
-	pEngine->GetLogger()->LogException( LOGSOURCE, exception );
+void deBaseSystem::LogException(const deException &exception){
+	pEngine->GetLogger()->LogException(LOGSOURCE, exception);
 }

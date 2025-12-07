@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMACameraShot( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCACameraShot *action );
+	ceWPTTIMACameraShot(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCACameraShot *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCACameraShot *GetActionCameraShot() const{ return ( ceCACameraShot* )GetAction(); }
+	inline ceCACameraShot *GetActionCameraShot() const{ return (ceCACameraShot*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

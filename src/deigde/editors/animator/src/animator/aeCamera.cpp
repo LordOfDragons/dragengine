@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeCamera::aeCamera( aeAnimator *animator, deEngine *engine ) : igdeCamera( engine ){
-	if( ! animator ) DETHROW( deeInvalidParam );
+aeCamera::aeCamera(aeAnimator *animator, deEngine *engine) : igdeCamera(engine){
+	if(!animator) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
 	
@@ -62,8 +62,8 @@ aeCamera::~aeCamera(){
 // Management
 ///////////////
 
-void aeCamera::SetBone( const char *bone ){
-	if( pBone == bone ){
+void aeCamera::SetBone(const char *bone){
+	if(pBone == bone){
 		return;
 	}
 	
@@ -73,8 +73,8 @@ void aeCamera::SetBone( const char *bone ){
 	pAnimator->NotifyCameraChanged();
 }
 
-void aeCamera::SetFreePosition( const decDVector &freePosition ){
-	if( ! freePosition.IsEqualTo( pFreePosition ) ){
+void aeCamera::SetFreePosition(const decDVector &freePosition){
+	if(!freePosition.IsEqualTo(pFreePosition)){
 		pFreePosition = freePosition;
 		pDirty = true;
 		
@@ -82,8 +82,8 @@ void aeCamera::SetFreePosition( const decDVector &freePosition ){
 	}
 }
 
-void aeCamera::SetFreeOrientation( const decVector &freeOrientation ){
-	if( ! freeOrientation.IsEqualTo( pFreeOrientation ) ){
+void aeCamera::SetFreeOrientation(const decVector &freeOrientation){
+	if(!freeOrientation.IsEqualTo(pFreeOrientation)){
 		pFreeOrientation = freeOrientation;
 		pDirty = true;
 		
@@ -91,8 +91,8 @@ void aeCamera::SetFreeOrientation( const decVector &freeOrientation ){
 	}
 }
 
-void aeCamera::SetFreeDistance( float freeDistance ){
-	if( fabsf( freeDistance - pFreeDistance ) > 1e-5f ){
+void aeCamera::SetFreeDistance(float freeDistance){
+	if(fabsf(freeDistance - pFreeDistance) > 1e-5f){
 		pFreeDistance = freeDistance;
 		pDirty = true;
 		
@@ -100,8 +100,8 @@ void aeCamera::SetFreeDistance( float freeDistance ){
 	}
 }
 
-void aeCamera::SetRelativePosition( const decVector &relativePosition ){
-	if( ! relativePosition.IsEqualTo( pRelPosition ) ){
+void aeCamera::SetRelativePosition(const decVector &relativePosition){
+	if(!relativePosition.IsEqualTo(pRelPosition)){
 		pRelPosition = relativePosition;
 		pDirty = true;
 		
@@ -109,8 +109,8 @@ void aeCamera::SetRelativePosition( const decVector &relativePosition ){
 	}
 }
 
-void aeCamera::SetRelativeOrientation( const decVector &relativeOrientation ){
-	if( ! relativeOrientation.IsEqualTo( pRelOrientation ) ){
+void aeCamera::SetRelativeOrientation(const decVector &relativeOrientation){
+	if(!relativeOrientation.IsEqualTo(pRelOrientation)){
 		pRelOrientation = relativeOrientation;
 		pDirty = true;
 		
@@ -118,8 +118,8 @@ void aeCamera::SetRelativeOrientation( const decVector &relativeOrientation ){
 	}
 }
 
-void aeCamera::SetAttachToBone( bool attachToBone ){
-	if( pAttachToBone != attachToBone ){
+void aeCamera::SetAttachToBone(bool attachToBone){
+	if(pAttachToBone != attachToBone){
 		pAttachToBone = attachToBone;
 		pDirty = true;
 		
@@ -130,51 +130,51 @@ void aeCamera::SetAttachToBone( bool attachToBone ){
 void aeCamera::Update(){
 	aeAnimatorLocomotion &locomotion = pAnimator->GetLocomotion();
 	
-	if( pDirty || pAttachToBone || locomotion.GetEnabled() ){
-		if( pAttachToBone ){
-			decMatrix matrix( decMatrix::CreateRT( pRelOrientation * DEG2RAD, pRelPosition ) );
+	if(pDirty || pAttachToBone || locomotion.GetEnabled()){
+		if(pAttachToBone){
+			decMatrix matrix(decMatrix::CreateRT(pRelOrientation * DEG2RAD, pRelPosition));
 			deComponent *engComponent = pAnimator->GetEngineComponent();
 			
-			if( engComponent ){
+			if(engComponent){
 				decMatrix compMat;
 				
 				engComponent->PrepareBones();
 				
-				if( ! pBone.IsEmpty() && engComponent->GetRig() ){
-					const int index = engComponent->GetRig()->IndexOfBoneNamed( pBone );
-					if( index != -1 ){
-						compMat = engComponent->GetBoneAt( index ).GetMatrix();
+				if(!pBone.IsEmpty() && engComponent->GetRig()){
+					const int index = engComponent->GetRig()->IndexOfBoneNamed(pBone);
+					if(index != -1){
+						compMat = engComponent->GetBoneAt(index).GetMatrix();
 					}
 				}
 				
-				compMat = compMat.QuickMultiply( engComponent->GetMatrix() );
+				compMat = compMat.QuickMultiply(engComponent->GetMatrix());
 				
-				matrix = matrix.QuickMultiply( compMat.Normalized() );
+				matrix = matrix.QuickMultiply(compMat.Normalized());
 			}
 			
-			SetPosition( matrix.GetPosition() );
-			SetOrientation( matrix.GetEulerAngles() * RAD2DEG );
-			SetDistance( 0.0f );
+			SetPosition(matrix.GetPosition());
+			SetOrientation(matrix.GetEulerAngles() * RAD2DEG);
+			SetDistance(0.0f);
 			
 			pDirty = false;
 			
-		}else if( locomotion.GetEnabled() ){
+		}else if(locomotion.GetEnabled()){
 			const float orientation = locomotion.GetOrientation().GetValue();
 			const float lookLeftRight = locomotion.GetLookLeftRight().GetValue();
-			decDMatrix matrix( decDMatrix::CreateRT( decDVector( pFreeOrientation * DEG2RAD ), pFreePosition )
-				.QuickMultiply( decDMatrix::CreateRotationY( ( orientation + lookLeftRight ) * DEG2RAD ) )
-				.QuickMultiply( decDMatrix::CreateTranslation( locomotion.GetPosition() ) ) );
+			decDMatrix matrix(decDMatrix::CreateRT(decDVector(pFreeOrientation * DEG2RAD), pFreePosition)
+				.QuickMultiply(decDMatrix::CreateRotationY((orientation + lookLeftRight) * DEG2RAD))
+				.QuickMultiply(decDMatrix::CreateTranslation(locomotion.GetPosition())));
 			
-			SetPosition( matrix.GetPosition() );
-			SetOrientation( matrix.GetEulerAngles().ToVector() * RAD2DEG );
-			SetDistance( pFreeDistance );
+			SetPosition(matrix.GetPosition());
+			SetOrientation(matrix.GetEulerAngles().ToVector() * RAD2DEG);
+			SetDistance(pFreeDistance);
 			
 			pDirty = true; // so that when we stop the testing an update is done to recover
 			
 		}else{
-			SetPosition( pFreePosition );
-			SetOrientation( pFreeOrientation );
-			SetDistance( pFreeDistance );
+			SetPosition(pFreePosition);
+			SetOrientation(pFreeOrientation);
+			SetDistance(pFreeDistance);
 			
 			pDirty = false;
 		}
@@ -190,15 +190,15 @@ void aeCamera::Reset(){
 	
 	pFreeDistance = 5.0f;
 	pBone.Empty();
-	pFreePosition.Set( 0.0, 1.5, 0.0 );
-	pFreeOrientation.Set( 0.0f, 180.0f, 0.0f );
-	pRelPosition.Set( 0.0f, 0.0f, 0.0f );
-	pRelOrientation.Set( 0.0f, 0.0f, 0.0f );
+	pFreePosition.Set(0.0, 1.5, 0.0);
+	pFreeOrientation.Set(0.0f, 180.0f, 0.0f);
+	pRelPosition.Set(0.0f, 0.0f, 0.0f);
+	pRelOrientation.Set(0.0f, 0.0f, 0.0f);
 	pAttachToBone = false;
 	
-	SetExposure( 1.0f ); // 2.0f
-	SetLowestIntensity( 20.0f );
-	SetHighestIntensity( 20.0f );
+	SetExposure(1.0f); // 2.0f
+	SetLowestIntensity(20.0f);
+	SetHighestIntensity(20.0f);
 	
 //	SetAdaptionTime( 0.8f );
 //	SetExposure( 1.0f );

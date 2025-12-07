@@ -65,7 +65,7 @@ public:
 	aeRuleStateManipulator();
 	
 	/** Create copy of rule. */
-	aeRuleStateManipulator( const aeRuleStateManipulator &copy );
+	aeRuleStateManipulator(const aeRuleStateManipulator &copy);
 	
 	/** Clean up rule. */
 	virtual ~aeRuleStateManipulator();
@@ -79,49 +79,49 @@ public:
 	inline const decVector &GetMinimumPosition() const{ return pMinPosition; }
 	
 	/** Set minimum position. */
-	void SetMinimumPosition( const decVector &position );
+	void SetMinimumPosition(const decVector &position);
 	
 	/** Maximum position. */
 	inline const decVector &GetMaximumPosition() const{ return pMaxPosition; }
 	
 	/** Set maximum position. */
-	void SetMaximumPosition( const decVector &position );
+	void SetMaximumPosition(const decVector &position);
 	
 	/** Minimum rotation. */
 	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
 	
 	/** Set minimum rotation. */
-	void SetMinimumRotation( const decVector &rotation );
+	void SetMinimumRotation(const decVector &rotation);
 	
 	/** Maximum rotation. */
 	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
 	
 	/** Set maximum rotation. */
-	void SetMaximumRotation( const decVector &rotation );
+	void SetMaximumRotation(const decVector &rotation);
 	
 	/** Minimum size. */
 	inline const decVector &GetMinimumSize() const{ return pMinSize; }
 	
 	/** Set minimum size. */
-	void SetMinimumSize( const decVector &size );
+	void SetMinimumSize(const decVector &size);
 	
 	/** Maximum size. */
 	inline const decVector &GetMaximumSize() const{ return pMaxSize; }
 	
 	/** Set maximum size. */
-	void SetMaximumSize( const decVector &size );
+	void SetMaximumSize(const decVector &size);
 	
 	/** Minimum vertex position set. */
 	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
 	
 	/** Set minimum vertex position set. */
-	void SetMinimumVertexPositionSet( float weight );
+	void SetMinimumVertexPositionSet(float weight);
 	
 	/** Maximum vertex position set. */
 	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
 	
 	/** Set maximum vertex position set. */
-	void SetMaximumVertexPositionSet( float weight );
+	void SetMaximumVertexPositionSet(float weight);
 	
 	
 	
@@ -129,25 +129,25 @@ public:
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** Rotation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableRotation; }
 	
 	/** Set if rotation manipulation is enabled. */
-	void SetEnableRotation( bool enabled );
+	void SetEnableRotation(bool enabled);
 	
 	/** Size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** Vertex position set manipulation is enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	
 	
@@ -176,10 +176,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( aeLink *link ) const;
+	virtual int CountLinkUsage(aeLink *link) const;
 	
 	/** Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( aeLink *link );
+	virtual void RemoveLinkFromTargets(aeLink *link);
 	
 	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -192,7 +192,7 @@ public:
 	
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	virtual void ListLinks(aeLinkList& list);
 	/*@}*/
 	
 	
@@ -200,7 +200,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy another state manipulator rule to this state manipulator rule. */
-	virtual aeRuleStateManipulator &operator=( const aeRuleStateManipulator &copy );
+	virtual aeRuleStateManipulator &operator=(const aeRuleStateManipulator &copy);
 	/*@}*/
 };
 

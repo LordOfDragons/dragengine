@@ -43,23 +43,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSPBlockMemory::deoglSPBlockMemory( deoglRenderThread &renderThread ) :
-deoglShaderParameterBlock( renderThread ),
-pBuffer( NULL ),
-pBufferCapacity( 0 ){
+deoglSPBlockMemory::deoglSPBlockMemory(deoglRenderThread &renderThread) :
+deoglShaderParameterBlock(renderThread),
+pBuffer(NULL),
+pBufferCapacity(0){
 }
 
-deoglSPBlockMemory::deoglSPBlockMemory( const deoglSPBlockMemory &paramBlock ) :
-deoglShaderParameterBlock( paramBlock ),
-pBuffer( NULL ),
-pBufferCapacity( 0 ){
+deoglSPBlockMemory::deoglSPBlockMemory(const deoglSPBlockMemory &paramBlock) :
+deoglShaderParameterBlock(paramBlock),
+pBuffer(NULL),
+pBufferCapacity(0){
 }
 
 deoglSPBlockMemory::~deoglSPBlockMemory(){
-	if( IsBufferMapped() ){
+	if(IsBufferMapped()){
 		pClearMapped();
 	}
-	if( pBuffer ){
+	if(pBuffer){
 		delete [] pBuffer;
 	}
 }
@@ -70,54 +70,54 @@ deoglSPBlockMemory::~deoglSPBlockMemory(){
 ///////////////
 
 void deoglSPBlockMemory::Activate() const{
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void deoglSPBlockMemory::Activate( int ) const{
-	DETHROW( deeInvalidParam );
+void deoglSPBlockMemory::Activate(int) const{
+	DETHROW(deeInvalidParam);
 }
 
 void deoglSPBlockMemory::Deactivate() const{
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void deoglSPBlockMemory::Deactivate( int ) const{
-	DETHROW( deeInvalidParam );
+void deoglSPBlockMemory::Deactivate(int) const{
+	DETHROW(deeInvalidParam);
 }
 
 void deoglSPBlockMemory::MapBuffer(){
-	if( IsBufferMapped() || GetBufferSize() == 0 ){
-		DETHROW( deeInvalidParam );
+	if(IsBufferMapped() || GetBufferSize() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGrowBuffer();
-	pSetMapped( pBuffer );
+	pSetMapped(pBuffer);
 }
 
-void deoglSPBlockMemory::MapBuffer( int element ){
-	MapBuffer( element, 1 );
+void deoglSPBlockMemory::MapBuffer(int element){
+	MapBuffer(element, 1);
 }
 
-void deoglSPBlockMemory::MapBuffer ( int element, int count ){
-	if( IsBufferMapped() || GetBufferSize() == 0 || element < 0 || count < 1
-	|| element + count > GetElementCount() ){
-		DETHROW( deeInvalidParam );
+void deoglSPBlockMemory::MapBuffer (int element, int count){
+	if(IsBufferMapped() || GetBufferSize() == 0 || element < 0 || count < 1
+	|| element + count > GetElementCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGrowBuffer();
-	pSetMapped( pBuffer, element, count );
+	pSetMapped(pBuffer, element, count);
 }
 
 void deoglSPBlockMemory::UnmapBuffer(){
-	if( ! IsBufferMapped() ){
-		DETHROW( deeInvalidParam );
+	if(!IsBufferMapped()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pClearMapped();
 }
 
 deoglShaderParameterBlock *deoglSPBlockMemory::Copy() const{
-	return new deoglSPBlockMemory( *this );
+	return new deoglSPBlockMemory(*this);
 }
 
 
@@ -128,18 +128,18 @@ deoglShaderParameterBlock *deoglSPBlockMemory::Copy() const{
 void deoglSPBlockMemory::pGrowBuffer(){
 	const int bufferSize = GetBufferSize();
 	
-	if( pBuffer && bufferSize > pBufferCapacity ){
-		char * const newBuffer = new char[ bufferSize ];
-		if( pBufferCapacity > 0 ){
-			memcpy( newBuffer, pBuffer, pBufferCapacity );
+	if(pBuffer && bufferSize > pBufferCapacity){
+		char * const newBuffer = new char[bufferSize];
+		if(pBufferCapacity > 0){
+			memcpy(newBuffer, pBuffer, pBufferCapacity);
 		}
 		delete [] pBuffer;
 		pBuffer = newBuffer;
 		pBufferCapacity = bufferSize;
 	}
 	
-	if( ! pBuffer ){
-		pBuffer = new char[ bufferSize ];
+	if(!pBuffer){
+		pBuffer = new char[bufferSize];
 		pBufferCapacity = bufferSize;
 	}
 }

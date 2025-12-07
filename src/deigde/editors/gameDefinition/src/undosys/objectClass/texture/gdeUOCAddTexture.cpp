@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddTexture::gdeUOCAddTexture( gdeObjectClass *objectClass, gdeOCComponentTexture *texture ) :
-pObjectClass( NULL ),
-pTexture( NULL )
+gdeUOCAddTexture::gdeUOCAddTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) :
+pObjectClass(NULL),
+pTexture(NULL)
 {
-	if( ! objectClass || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add texture" );
+	SetShortInfo("Add texture");
 	
 	pTexture = texture;
 	texture->AddReference();
@@ -58,10 +58,10 @@ pTexture( NULL )
 }
 
 gdeUOCAddTexture::~gdeUOCAddTexture(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -72,11 +72,11 @@ gdeUOCAddTexture::~gdeUOCAddTexture(){
 ///////////////
 
 void gdeUOCAddTexture::Undo(){
-	pObjectClass->GetTextures().Remove( pTexture );
+	pObjectClass->GetTextures().Remove(pTexture);
 	pObjectClass->NotifyTexturesChanged();
 }
 
 void gdeUOCAddTexture::Redo(){
-	pObjectClass->GetTextures().Add( pTexture );
+	pObjectClass->GetTextures().Add(pTexture);
 	pObjectClass->NotifyTexturesChanged();
 }

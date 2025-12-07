@@ -39,7 +39,7 @@ igdeNativeNullContainerFixed::igdeNativeNullContainerFixed(){
 igdeNativeNullContainerFixed::~igdeNativeNullContainerFixed(){
 }
 
-igdeNativeNullContainerFixed *igdeNativeNullContainerFixed::CreateNativeWidget( igdeContainerFixed& ){
+igdeNativeNullContainerFixed *igdeNativeNullContainerFixed::CreateNativeWidget(igdeContainerFixed&){
 	return new igdeNativeNullContainerFixed;
 }
 

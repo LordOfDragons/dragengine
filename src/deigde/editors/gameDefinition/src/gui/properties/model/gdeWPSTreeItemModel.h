@@ -91,7 +91,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTreeItemModel( gdeWPSTreeModel &tree, eTypes type );
+	gdeWPSTreeItemModel(gdeWPSTreeModel &tree, eTypes type);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -127,10 +127,10 @@ public:
 	void SetAsCurrentItem();
 	
 	/** \brief Append model of type gdeWPSTreeItemModel and call OnAddedToTree(). */
-	void AppendModel( igdeTreeItem *item );
+	void AppendModel(igdeTreeItem *item);
 	
 	/** \brief Remove model of type gdeWPSTreeItemModel. */
-	void RemoveModel( igdeTreeItem *item );
+	void RemoveModel(igdeTreeItem *item);
 	
 	/** \brief Remove all models of type gdeWPSTreeItemModel. */
 	void RemoveAllModels();
@@ -148,16 +148,16 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	virtual int Compare(const gdeWPSTreeItemModel &item) const;
 	
 	/** \brief User selected item. */
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	virtual void SelectBestMatching(const char *string);
 	/*@}*/
 };
 

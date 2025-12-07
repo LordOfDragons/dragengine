@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	dealDialog( dealDisplay &display, const char *title );
+	dealDialog(dealDisplay &display, const char *title);
 	
 	/** \brief Clean up dialog. */
 	virtual ~dealDialog();
@@ -74,7 +74,7 @@ public:
 	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
 	/** \brief Content layout. */
 	inline dealWidgetLayoutFlow *GetContent() const{ return pContent; }
@@ -83,7 +83,7 @@ public:
 	inline dealDialog *GetPopupDialog() const{ return pPopupDialog; }
 	
 	/** \brief Pop up or down dialog replacing the previous one if set. */
-	void SetPopupDialog( dealDialog *dialog );
+	void SetPopupDialog(dealDialog *dialog);
 	
 	
 	

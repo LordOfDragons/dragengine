@@ -38,16 +38,16 @@
 // Class deSharedVulkan
 /////////////////////////
 
-deSharedVulkan::deSharedVulkan( deBaseModule &module, bool enableDebug ) :
-pModule( module ),
-pLoader( NULL ),
-pCachePath( decPath::CreatePathUnix( "/cache/local/vulkan" ) )
+deSharedVulkan::deSharedVulkan(deBaseModule &module, bool enableDebug) :
+pModule(module),
+pLoader(NULL),
+pCachePath(decPath::CreatePathUnix("/cache/local/vulkan"))
 {
 	try{
-		pLoader = new devkLoader( *this );
-		pInstance.TakeOver( new devkInstance( *this, enableDebug ) );
+		pLoader = new devkLoader(*this);
+		pInstance.TakeOver(new devkInstance(*this, enableDebug));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -62,7 +62,7 @@ deSharedVulkan::~deSharedVulkan(){
 // Management
 ///////////////
 
-void deSharedVulkan::SetCachePath( const decPath &path ){
+void deSharedVulkan::SetCachePath(const decPath &path){
 	pCachePath = path;
 }
 
@@ -75,7 +75,7 @@ void deSharedVulkan::SetCachePath( const decPath &path ){
 void deSharedVulkan::pCleanUp(){
 	pInstance = nullptr;
 	
-	if( pLoader ){
+	if(pLoader){
 		delete pLoader;
 	}
 }

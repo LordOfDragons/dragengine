@@ -45,7 +45,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new configuration xml read/save. */
-	reConfigurationXML( deLogger *logger, const char *loggerSource );
+	reConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the configuration xml read/save. */
 	virtual ~reConfigurationXML();
 	/*@}*/
@@ -53,15 +53,15 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, reConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, reConfiguration &config);
 	/** Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const reConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const reConfiguration &config);
 	/*@}*/
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const reConfiguration &config );
+	void pWriteConfig(decXmlWriter &writer, const reConfiguration &config);
 	
-	void pReadConfig( const decXmlElementTag &root, reConfiguration &config );
+	void pReadConfig(const decXmlElementTag &root, reConfiguration &config);
 };
 
 #endif

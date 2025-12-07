@@ -38,21 +38,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX( seProperty *property ) :
-pProperty( NULL )
+seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX(seProperty *property) :
+pProperty(NULL)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed tile X" );
+	SetShortInfo("Property constructed tile X");
 	
 	pProperty = property;
 	property->AddReference();
 }
 
 seUPropertyConstructedToggleTileX::~seUPropertyConstructedToggleTileX(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -63,9 +63,9 @@ seUPropertyConstructedToggleTileX::~seUPropertyConstructedToggleTileX(){
 ///////////////
 
 void seUPropertyConstructedToggleTileX::Undo(){
-	pProperty->SetNodeTileX( ! pProperty->GetNodeTileX() );
+	pProperty->SetNodeTileX(!pProperty->GetNodeTileX());
 }
 
 void seUPropertyConstructedToggleTileX::Redo(){
-	pProperty->SetNodeTileX( ! pProperty->GetNodeTileX() );
+	pProperty->SetNodeTileX(!pProperty->GetNodeTileX());
 }

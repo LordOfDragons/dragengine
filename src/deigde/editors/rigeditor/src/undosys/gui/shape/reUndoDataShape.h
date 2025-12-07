@@ -49,7 +49,7 @@ public:
 	/**
 	 * \brief Create a new undo data object which holding a not owned pointer to the given object.
 	 */
-	reUndoDataShape( reRigShape *shape );
+	reUndoDataShape(reRigShape *shape);
 	
 	/** \brief Clean up the data object. */
 	~reUndoDataShape();

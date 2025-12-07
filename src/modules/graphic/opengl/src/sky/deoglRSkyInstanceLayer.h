@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky instance layer. */
-	deoglRSkyInstanceLayer( deoglRSkyInstance &instance, int index );
+	deoglRSkyInstanceLayer(deoglRSkyInstance &instance, int index);
 	
 	/** Clean up sky instance layer. */
 	~deoglRSkyInstanceLayer();
@@ -165,7 +165,7 @@ public:
 	inline deoglShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }
 	
 	/** Notify skies render static component changed requiring updates. */
-	void NotifyUpdateStaticComponent( deoglRComponent *component );
+	void NotifyUpdateStaticComponent(deoglRComponent *component);
 	
 	
 	
@@ -173,16 +173,16 @@ public:
 	int GetGICascadeCount() const;
 	
 	/** GI Cascade or NULL if not found. */
-	deoglSkyLayerGICascade *GetGICascade( const deoglGICascade &cascade ) const;
+	deoglSkyLayerGICascade *GetGICascade(const deoglGICascade &cascade) const;
 	
 	/** Add GI Cascade if absent. */
-	deoglSkyLayerGICascade *AddGICascade( const deoglGICascade &cascade );
+	deoglSkyLayerGICascade *AddGICascade(const deoglGICascade &cascade);
 	
 	/** Remove GI Cascade if present. */
-	void RemoveGICascade( const deoglGICascade &cascade );
+	void RemoveGICascade(const deoglGICascade &cascade);
 	
 	/** Remove all GI Cascades for GI State if present. */
-	void RemoveAllGICascades( const deoglGIState &state );
+	void RemoveAllGICascades(const deoglGIState &state);
 	
 	/** Remove all GI Cascades. */
 	void RemoveAllGICascades();

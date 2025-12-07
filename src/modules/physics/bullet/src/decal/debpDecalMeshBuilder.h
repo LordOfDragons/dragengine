@@ -79,30 +79,30 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Initializes the builder. */
-	void Init( deDecal *decal, float distance );
+	void Init(deDecal *decal, float distance);
 	/** Cut using the given face. */
-	void CutTriangle( const decVector &v1, const decVector &v2, const decVector &v3 );
+	void CutTriangle(const decVector &v1, const decVector &v2, const decVector &v3);
 	/** Builds mesh for a component. */
-	void BuildMeshForComponent( debpComponent *bpComponent );
+	void BuildMeshForComponent(debpComponent *bpComponent);
 	/** Debug. */
-	void Debug( dePhysicsBullet &module );
+	void Debug(dePhysicsBullet &module);
 	
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	/** Retrieves the point at the given index. */
-	const decVector &GetPointAt( int index ) const;
+	const decVector &GetPointAt(int index) const;
 	/**
 	 * Adds a point and returns the index. If the point already exists only
 	 * the index is returned.
 	 */
-	int AddPoint( const decVector &point );
+	int AddPoint(const decVector &point);
 	/** Removes all points. */
 	void RemoveAllPoints();
 	
 	/** Retrieves the number of faces. */
 	inline int GetFaceCount() const{ return pFaceCount; }
 	/** Retrieves the face at the given index. */
-	debpDecalMeshBuilderFace *GetFaceAt( int index ) const;
+	debpDecalMeshBuilderFace *GetFaceAt(int index) const;
 	/** Adds a new face. */
 	debpDecalMeshBuilderFace *AddFace();
 	/** Removes all faces. */
@@ -110,9 +110,9 @@ public:
 	/*@}*/
 	
 private:
-	void pVolumeAddFace( decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal, bool decal );
-	void pVolumeAddFace( decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal, bool decal );
-	int pIndexOfPoint( const decVector &point ) const;
+	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal, bool decal);
+	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal, bool decal);
+	int pIndexOfPoint(const decVector &point) const;
 };
 
 // end of include only once

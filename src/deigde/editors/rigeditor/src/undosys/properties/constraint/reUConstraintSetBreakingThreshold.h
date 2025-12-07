@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetBreakingThreshold( reRigConstraint *constraint, float newBreakingThreshold );
+	reUConstraintSetBreakingThreshold(reRigConstraint *constraint, float newBreakingThreshold);
 	
 protected:
 	/** \brief Clean up the undo. */

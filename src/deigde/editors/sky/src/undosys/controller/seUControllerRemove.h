@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	seUControllerRemove( seController *controller );
+	seUControllerRemove(seController *controller);
 	
 protected:
 	/** Clean up undo action. */

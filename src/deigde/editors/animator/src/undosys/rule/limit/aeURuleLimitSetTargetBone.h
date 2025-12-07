@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetTargetBone( aeRuleLimit *rule, const char *newBone );
+	aeURuleLimitSetTargetBone(aeRuleLimit *rule, const char *newBone);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleLimitSetTargetBone();

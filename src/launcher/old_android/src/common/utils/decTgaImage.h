@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create targa image from data. */
-	decTgaImage( decBaseFileReader &reader );
+	decTgaImage(decBaseFileReader &reader);
 	
 	/** \brief Clean up targa image. */
 	~decTgaImage();
@@ -68,7 +68,7 @@ public:
 	/*@}*/
 	
 private:
-	void pReadTga( decBaseFileReader &reader );
+	void pReadTga(decBaseFileReader &reader);
 };
 
 #endif

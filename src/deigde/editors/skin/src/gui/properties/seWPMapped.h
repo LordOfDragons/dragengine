@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	seWPMapped( seWindowProperties &windowProperties );
+	seWPMapped(seWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -89,7 +89,7 @@ public:
 	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** Active mapped. */
 	seMapped *GetMapped() const;

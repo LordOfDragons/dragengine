@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loader. */
-	deoxrApiLayer( deVROpenXR &oxr, const char *configFile );
+	deoxrApiLayer(deVROpenXR &oxr, const char *configFile);
 	
 	/** Clean up loader. */
 	virtual ~deoxrApiLayer();

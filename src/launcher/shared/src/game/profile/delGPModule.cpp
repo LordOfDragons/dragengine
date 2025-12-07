@@ -44,11 +44,11 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delGPModule::delGPModule( const char *name ) :
-pName( name ){
+delGPModule::delGPModule(const char *name) :
+pName(name){
 }
 
-delGPModule::delGPModule( const delGPModule &module ){
+delGPModule::delGPModule(const delGPModule &module){
 	*this = module;
 }
 
@@ -60,14 +60,14 @@ delGPModule::~delGPModule(){
 // Management
 ///////////////
 
-void delGPModule::SetName( const char *name ){
+void delGPModule::SetName(const char *name){
 	pName = name;
 }
 
-void delGPModule::ApplyParameters( const char *version, delLauncher &launcher,
-delEngineInstance &engineInstance ) const{
-	delEngineModule * const module = launcher.GetEngine().GetModules().GetNamed( pName, version );
-	if( ! module ){
+void delGPModule::ApplyParameters(const char *version, delLauncher &launcher,
+delEngineInstance &engineInstance) const{
+	delEngineModule * const module = launcher.GetEngine().GetModules().GetNamed(pName, version);
+	if(!module){
 		return;
 	}
 	
@@ -75,10 +75,10 @@ delEngineInstance &engineInstance ) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const delGPMParameter &parameter = *pParameters.GetAt ( i );
-		if( parameters.HasNamed( parameter.GetName() ) ){
-			engineInstance.SetModuleParameter( pName, version, parameter.GetName(), parameter.GetValue() );
+	for(i=0; i<count; i++){
+		const delGPMParameter &parameter = *pParameters.GetAt (i);
+		if(parameters.HasNamed(parameter.GetName())){
+			engineInstance.SetModuleParameter(pName, version, parameter.GetName(), parameter.GetValue());
 		}
 	}
 }
@@ -88,7 +88,7 @@ delEngineInstance &engineInstance ) const{
 // Operators
 //////////////
 
-delGPModule &delGPModule::operator=( const delGPModule &module ){
+delGPModule &delGPModule::operator=(const delGPModule &module){
 	const delGPMParameterList &parameters = module.GetParameters();
 	const int count = parameters.GetCount();
 	int i;
@@ -97,8 +97,8 @@ delGPModule &delGPModule::operator=( const delGPModule &module ){
 	
 	pParameters.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		pParameters.Add ( delGPMParameter::Ref::NewWith(*parameters.GetAt ( i )) );
+	for(i=0; i<count; i++){
+		pParameters.Add (delGPMParameter::Ref::NewWith(*parameters.GetAt (i)));
 	}
 	
 	return *this;

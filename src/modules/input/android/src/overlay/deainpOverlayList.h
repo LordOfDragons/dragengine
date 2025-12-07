@@ -56,13 +56,13 @@ public:
 	int GetCount() const;
 	
 	/** \brief Overlay at index. */
-	deainpOverlay *GetAt( int index ) const;
+	deainpOverlay *GetAt(int index) const;
 	
 	/** \brief Add overlay. */
-	void Add( deainpOverlay *overlay );
+	void Add(deainpOverlay *overlay);
 	
 	/** \brief Remove overlay. */
-	void Remove( deainpOverlay *overlay );
+	void Remove(deainpOverlay *overlay);
 	
 	/** \brief Removes all overlays. */
 	void RemoveAll();

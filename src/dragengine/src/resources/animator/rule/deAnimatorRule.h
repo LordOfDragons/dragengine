@@ -115,25 +115,25 @@ public:
 	 * This function has to be used only by the deAnimator class to
 	 * assign itself as a parent. Do not call this function directly.
 	 */
-	void SetAnimator( deAnimator *animator );
+	void SetAnimator(deAnimator *animator);
 	
 	/** \brief Rule is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if rule is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Blend mode. */
 	inline eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
 	/** \brief Set blend mode. */
-	void SetBlendMode( eBlendModes mode );
+	void SetBlendMode(eBlendModes mode);
 	
 	/** \brief Blend factor. */
 	inline float GetBlendFactor() const{ return pBlendFactor; }
 	
 	/** \brief Set source blend factor. */
-	void SetBlendFactor( float factor );
+	void SetBlendFactor(float factor);
 	
 	/**
 	 * \brief Invert blend factor (1 - factor).
@@ -145,7 +145,7 @@ public:
 	 * \brief Set to invert blend factor (1 - factor).
 	 * \version 1.13
 	 */
-	void SetInvertBlendFactor( bool invert );
+	void SetInvertBlendFactor(bool invert);
 	
 	/** \brief List of bones. */
 	inline decStringSet &GetListBones(){ return pListBones; }
@@ -168,7 +168,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	virtual void Visit(deAnimatorRuleVisitor &visitor);
 	/*@}*/
 };
 

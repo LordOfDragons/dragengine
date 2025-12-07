@@ -37,8 +37,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	peeUParameterSetCurveSpread( peeType *type, peeParameter *parameter,
-		const decCurveBezier &newCurve );
+	peeUParameterSetCurveSpread(peeType *type, peeParameter *parameter,
+		const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up undo. */

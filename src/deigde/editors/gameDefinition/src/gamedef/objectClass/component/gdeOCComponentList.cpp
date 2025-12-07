@@ -43,8 +43,8 @@
 gdeOCComponentList::gdeOCComponentList(){
 }
 
-gdeOCComponentList::gdeOCComponentList( const gdeOCComponentList &list ) :
-pComponents( list.pComponents ){
+gdeOCComponentList::gdeOCComponentList(const gdeOCComponentList &list) :
+pComponents(list.pComponents){
 }
 
 gdeOCComponentList::~gdeOCComponentList(){
@@ -59,28 +59,28 @@ int gdeOCComponentList::GetCount() const{
 	return pComponents.GetCount();
 }
 
-gdeOCComponent *gdeOCComponentList::GetAt( int index ) const{
-	return ( gdeOCComponent* )pComponents.GetAt( index );
+gdeOCComponent *gdeOCComponentList::GetAt(int index) const{
+	return (gdeOCComponent*)pComponents.GetAt(index);
 }
 
-int gdeOCComponentList::IndexOf( gdeOCComponent *component ) const{
-	return pComponents.IndexOf( component );
+int gdeOCComponentList::IndexOf(gdeOCComponent *component) const{
+	return pComponents.IndexOf(component);
 }
 
-bool gdeOCComponentList::Has( gdeOCComponent *component ) const{
-	return pComponents.Has( component );
+bool gdeOCComponentList::Has(gdeOCComponent *component) const{
+	return pComponents.Has(component);
 }
 
-void gdeOCComponentList::Add( gdeOCComponent *component ){
-	if( ! component || Has( component ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCComponentList::Add(gdeOCComponent *component){
+	if(!component || Has(component)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pComponents.Add( component );
+	pComponents.Add(component);
 }
 
-void gdeOCComponentList::Remove( gdeOCComponent *component ){
-	pComponents.Remove( component );
+void gdeOCComponentList::Remove(gdeOCComponent *component){
+	pComponents.Remove(component);
 }
 
 void gdeOCComponentList::RemoveAll(){
@@ -89,7 +89,7 @@ void gdeOCComponentList::RemoveAll(){
 
 
 
-gdeOCComponentList &gdeOCComponentList::operator=( const gdeOCComponentList &list ){
+gdeOCComponentList &gdeOCComponentList::operator=(const gdeOCComponentList &list){
 	pComponents = list.pComponents;
 	return *this;
 }

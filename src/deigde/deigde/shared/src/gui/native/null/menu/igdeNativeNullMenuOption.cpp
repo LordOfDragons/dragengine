@@ -39,7 +39,7 @@ igdeNativeNullMenuOption::igdeNativeNullMenuOption(){
 igdeNativeNullMenuOption::~igdeNativeNullMenuOption(){
 }
 
-igdeNativeNullMenuOption *igdeNativeNullMenuOption::CreateNativeWidget( igdeMenuOption& ){
+igdeNativeNullMenuOption *igdeNativeNullMenuOption::CreateNativeWidget(igdeMenuOption&){
 	return new igdeNativeNullMenuOption;
 }
 

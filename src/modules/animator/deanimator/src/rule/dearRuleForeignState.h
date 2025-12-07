@@ -66,8 +66,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleForeignState( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleForeignState &rule );
+	dearRuleForeignState(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleForeignState &rule);
 	
 	/** Clean up rule. */
 	virtual ~dearRuleForeignState();
@@ -83,7 +83,7 @@ public:
 	
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
 	
 	/** Rule changed. */
 	virtual void RuleChanged();

@@ -47,14 +47,14 @@ deModelVertex::~deModelVertex(){
 // Management
 ///////////////
 
-void deModelVertex::SetWeightSet( int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
+void deModelVertex::SetWeightSet(int index){
+	if(index < -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWeightSet = index;
 }
 
-void deModelVertex::SetPosition( const decVector &position ){
+void deModelVertex::SetPosition(const decVector &position){
 	pPosition = position;
 }

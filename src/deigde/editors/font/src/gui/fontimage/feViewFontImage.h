@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font image view. */
-	feViewFontImage( feWindowMain &windowMain );
+	feViewFontImage(feWindowMain &windowMain);
 	
 	/** \brief Clean up font image view. */
 	virtual ~feViewFontImage();
@@ -76,10 +76,10 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	
 	/** \brief Set if rendering is enabled. */
-	void SetEnableRendering( bool enable );
+	void SetEnableRendering(bool enable);
 	
 	
 	
@@ -102,7 +102,7 @@ public:
 	
 	
 	/** \brief Game like frame update. */
-	void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed);
 	
 	/** \brief Update scrollbar ranges. */
 	void UpdateScrollbarRanges();

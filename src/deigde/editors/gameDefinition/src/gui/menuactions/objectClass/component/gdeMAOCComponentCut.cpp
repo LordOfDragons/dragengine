@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCComponentCut::gdeMAOCComponentCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Component",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class component" )
+gdeMAOCComponentCut::gdeMAOCComponentCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Cut Object Class Component",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"Cut object class component")
 {
 }
 
@@ -61,13 +61,13 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Component",
 ///////////////
 
 igdeUndo *gdeMAOCComponentCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent){
 		return NULL;
 	}
 	
 	gdeOCComponent * const component = gameDefinition.GetActiveOCComponent();
-	if( ! component ){
+	if(!component){
 		return NULL;
 	}
 	
@@ -75,12 +75,12 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	pWindowMain.GetClipboard().Set(gdeClipboardDataOCComponent::Ref::NewWith(clipOCComponent));
 	
-	return new gdeUOCRemoveComponent( &objectClass, component );
+	return new gdeUOCRemoveComponent(&objectClass, component);
 }
 
 void gdeMAOCComponentCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent
-		&& gameDefinition->GetActiveOCComponent() != NULL );
+		&& gameDefinition->GetActiveOCComponent() != NULL);
 }

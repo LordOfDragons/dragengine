@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglDynamicSkin( deGraphicOpenGl &ogl, const deDynamicSkin &dynamicSkin );
+	deoglDynamicSkin(deGraphicOpenGl &ogl, const deDynamicSkin &dynamicSkin);
 	
 	/** Clean up peer. */
 	virtual ~deoglDynamicSkin();
@@ -85,7 +85,7 @@ public:
 	int GetRenderableCount() const;
 	
 	/** Renderable at index. */
-	deoglDSRenderable *GetRenderableAt( int index ) const;
+	deoglDSRenderable *GetRenderableAt(int index) const;
 	
 	
 	
@@ -98,10 +98,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglDynamicSkinListener *listener );
+	void AddListener(deoglDynamicSkinListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglDynamicSkinListener *listener );
+	void RemoveListener(deoglDynamicSkinListener *listener);
 	
 	/** Notify all dynamic skin has been destroyed. */
 	void NotifyDestroyed();
@@ -110,10 +110,10 @@ public:
 	void NotifyRenderablesChanged();
 	
 	/** Notify all renderable changed. */
-	void NotifyRenderableChanged( deoglDSRenderable &renderable );
+	void NotifyRenderableChanged(deoglDSRenderable &renderable);
 	
 	/** Notify all renderable content requires sync. */
-	void NotifyRenderableRequiresSync( deoglDSRenderable &renderable );
+	void NotifyRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 	
 	
@@ -121,13 +121,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Renderable added. */
-	virtual void RenderableAdded( int index, deDSRenderable *renderable );
+	virtual void RenderableAdded(int index, deDSRenderable *renderable);
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged( int index, deDSRenderable *renderable );
+	virtual void RenderableChanged(int index, deDSRenderable *renderable);
 	
 	/** Renderable removed. */
-	virtual void RenderableRemoved( int index, deDSRenderable *renderable );
+	virtual void RenderableRemoved(int index, deDSRenderable *renderable);
 	
 	/** All renderables removed. */
 	virtual void AllRenderablesRemoved();

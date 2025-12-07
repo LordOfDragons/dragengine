@@ -54,34 +54,34 @@ protected:
 	seWPView &pPanel;
 	
 public:
-	cBaseAction( seWPView &panel, const char *text, const char *description ) :
-	igdeAction( text, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPView &panel, const char *text, const char *description) :
+	igdeAction(text, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		seSky * const sky = pPanel.GetSky();
-		if( sky ){
-			OnAction( *sky );
+		if(sky){
+			OnAction(*sky);
 		}
 	}
 	
-	virtual void OnAction( seSky &sky ) = 0;
+	virtual void OnAction(seSky &sky) = 0;
 };
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	cActionCameraChanged( seWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cActionCameraChanged(seWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction( seSky &sky ){
+	virtual void OnAction(seSky &sky){
 		sky.NotifyCameraChanged();
 	}
 };
 
 class cActionEnvObjChanged : public cBaseAction{
 public:
-	cActionEnvObjChanged( seWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cActionEnvObjChanged(seWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction( seSky &sky ){
+	virtual void OnAction(seSky &sky){
 		sky.NotifyEnvObjectChanged();
 	}
 };
@@ -96,31 +96,31 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPView::seWPView( seWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pSky( NULL ),
-pListener( NULL )
+seWPView::seWPView(seWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pSky(NULL),
+pListener(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener = new seWPViewListener( *this );
+	pListener = new seWPViewListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
-	helper.WPCamera( content, pWPCamera, new cActionCameraChanged( *this ),
-		"Camera:", false, false, true );
-	helper.WPWObject( content, pWPEnvObject, new cActionEnvObjChanged( *this ),
-		"Environment Object:", false, false, true );
+	helper.WPCamera(content, pWPCamera, new cActionCameraChanged(*this),
+		"Camera:", false, false, true);
+	helper.WPWObject(content, pWPEnvObject, new cActionEnvObjChanged(*this),
+		"Environment Object:", false, false, true);
 }
 
 seWPView::~seWPView(){
-	SetSky( NULL );
+	SetSky(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -130,27 +130,27 @@ seWPView::~seWPView(){
 // Management
 ///////////////
 
-void seWPView::SetSky( seSky *sky ){
-	if( sky == pSky ){
+void seWPView::SetSky(seSky *sky){
+	if(sky == pSky){
 		return;
 	}
 	
 	pWPEnvObject->SetObject(nullptr);
-	pWPCamera->SetCamera( NULL );
+	pWPCamera->SetCamera(NULL);
 	
-	if( pSky ){
-		pSky->RemoveListener( pListener );
+	if(pSky){
+		pSky->RemoveListener(pListener);
 		pSky->FreeReference();
 		pSky = NULL;
 	}
 	
 	pSky = sky;
 	
-	if( sky ){
-		sky->AddListener( pListener );
+	if(sky){
+		sky->AddListener(pListener);
 		sky->AddReference();
 		
-		pWPCamera->SetCamera( sky->GetCamera() );
+		pWPCamera->SetCamera(sky->GetCamera());
 		pWPEnvObject->SetObject(sky->GetEnvObject());
 	}
 	

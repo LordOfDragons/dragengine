@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNUngroupNodes( sePropertyNodeGroup *nodeGroup );
+	seUPNUngroupNodes(sePropertyNodeGroup *nodeGroup);
 	
 protected:
 	/** \brief Clean up undo. */

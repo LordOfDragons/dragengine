@@ -42,21 +42,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deapngDecoder::deapngDecoder( deVideoApng &module, decBaseFileReader *file ) :
-deBaseVideoDecoder( file ),
-pModule( module ),
-pReader( NULL )
+deapngDecoder::deapngDecoder(deVideoApng &module, decBaseFileReader *file) :
+deBaseVideoDecoder(file),
+pModule(module),
+pReader(NULL)
 {
-	module.LogInfoFormat( "Create decoder for %s", file->GetFilename() );
+	module.LogInfoFormat("Create decoder for %s", file->GetFilename());
 	
 	try{
-		pReader = new deapngReader( module, file );
+		pReader = new deapngReader(module, file);
 		
-		module.LogInfoFormat( "width=%d height=%d componentCount=%d frameCount=%d frameRate=%g",
+		module.LogInfoFormat("width=%d height=%d componentCount=%d frameCount=%d frameRate=%g",
 			pReader->GetWidth(), pReader->GetHeight(), pReader->GetComponentCount(),
-			pReader->GetFrameCount(), pReader->GetFrameRate() );
+			pReader->GetFrameCount(), pReader->GetFrameRate());
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		module.LogErrorFormat("Failed to create decoder for file %s", file->GetFilename());
 		module.LogException(e);
 		pCleanUp();
@@ -66,7 +66,7 @@ pReader( NULL )
 
 deapngDecoder::~deapngDecoder(){
 	pCleanUp();
-	pModule.LogInfoFormat( "Free decoder for %s", GetFile()->GetFilename() );
+	pModule.LogInfoFormat("Free decoder for %s", GetFile()->GetFilename());
 }
 
 
@@ -78,17 +78,17 @@ int deapngDecoder::GetPosition(){
 	return pReader->GetCurrentFrame();
 }
 
-void deapngDecoder::SetPosition( int position ){
-	pReader->SeekFrame( position );
+void deapngDecoder::SetPosition(int position){
+	pReader->SeekFrame(position);
 }
 
-bool deapngDecoder::DecodeFrame( void *buffer, int size ){
-	if( pReader->GetCurrentFrame() >= pReader->GetFrameCount() ){
+bool deapngDecoder::DecodeFrame(void *buffer, int size){
+	if(pReader->GetCurrentFrame() >= pReader->GetFrameCount()){
 		return false; // trying to read past end of stream
 	}
 	
 	pReader->ReadImage();
-	pReader->CopyAccumImage( buffer, size );
+	pReader->CopyAccumImage(buffer, size);
 	return true;
 }
 
@@ -98,7 +98,7 @@ bool deapngDecoder::DecodeFrame( void *buffer, int size ){
 //////////////////////
 
 void deapngDecoder::pCleanUp(){
-	if( pReader ){
+	if(pReader){
 		delete pReader;
 	}
 }

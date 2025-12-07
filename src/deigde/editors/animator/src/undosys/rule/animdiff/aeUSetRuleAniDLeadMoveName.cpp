@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleAniDLeadMoveName::aeUSetRuleAniDLeadMoveName( aeRuleAnimationDifference *rule, const char *newName ){
-	if( ! rule || ! newName ) DETHROW( deeInvalidParam );
+aeUSetRuleAniDLeadMoveName::aeUSetRuleAniDLeadMoveName(aeRuleAnimationDifference *rule, const char *newName){
+	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	pOldName = rule->GetLeadingMoveName();
 	pNewName = newName;
 	
-	SetShortInfo( "Set animation difference rule leading move name" );
+	SetShortInfo("Set animation difference rule leading move name");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeUSetRuleAniDLeadMoveName::~aeUSetRuleAniDLeadMoveName(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }
 
 
@@ -62,9 +62,9 @@ aeUSetRuleAniDLeadMoveName::~aeUSetRuleAniDLeadMoveName(){
 ///////////////
 
 void aeUSetRuleAniDLeadMoveName::Undo(){
-	pRule->SetLeadingMoveName( pOldName.GetString() );
+	pRule->SetLeadingMoveName(pOldName.GetString());
 }
 
 void aeUSetRuleAniDLeadMoveName::Redo(){
-	pRule->SetLeadingMoveName( pNewName.GetString() );
+	pRule->SetLeadingMoveName(pNewName.GetString());
 }

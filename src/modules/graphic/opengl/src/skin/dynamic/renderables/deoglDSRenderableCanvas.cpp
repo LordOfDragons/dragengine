@@ -45,22 +45,22 @@
 ////////////////////////////
 
 deoglDSRenderableCanvas::deoglDSRenderableCanvas(
-deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable ) :
-deoglDSRenderable( dynamicSkin, renderable ),
-pRenderableCanvas( renderable ),
-pRRenderableCanvas( NULL ),
-pCanvasView( NULL ),
-pDirty( true )
+deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable) :
+deoglDSRenderable(dynamicSkin, renderable),
+pRenderableCanvas(renderable),
+pRRenderableCanvas(NULL),
+pCanvasView(NULL),
+pDirty(true)
 {
 	try{
-		pRRenderableCanvas = new deoglRDSRenderableCanvas( *dynamicSkin.GetRDynamicSkin(), renderable );
+		pRRenderableCanvas = new deoglRDSRenderableCanvas(*dynamicSkin.GetRDynamicSkin(), renderable);
 		
-		if( renderable.GetCanvas() ){
-			pCanvasView = ( deoglCanvasView* )renderable.GetCanvas()->GetPeerGraphic();
-			pCanvasView->AddListener( this );
+		if(renderable.GetCanvas()){
+			pCanvasView = (deoglCanvasView*)renderable.GetCanvas()->GetPeerGraphic();
+			pCanvasView->AddListener(this);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -81,44 +81,44 @@ deoglRDSRenderable *deoglDSRenderableCanvas::GetRRenderable() const{
 
 void deoglDSRenderableCanvas::RenderableChanged(){
 	deoglCanvasView * const canvasView = pRenderableCanvas.GetCanvas()
-		? ( deoglCanvasView* )pRenderableCanvas.GetCanvas()->GetPeerGraphic() : NULL;
+		? (deoglCanvasView*)pRenderableCanvas.GetCanvas()->GetPeerGraphic() : NULL;
 	
-	if( canvasView != pCanvasView ){
-		if( pCanvasView ){
-			pCanvasView->RemoveListener( this );
+	if(canvasView != pCanvasView){
+		if(pCanvasView){
+			pCanvasView->RemoveListener(this);
 		}
 		
 		pCanvasView = canvasView;
 		
-		if( canvasView ){
-			canvasView->AddListener( this );
+		if(canvasView){
+			canvasView->AddListener(this);
 		}
 		
 		pDirty = true;
 		
-		pDynamicSkin.NotifyRenderableChanged( *this );
+		pDynamicSkin.NotifyRenderableChanged(*this);
 	}
 	
-	if( pRenderableCanvas.GetName() != pRRenderableCanvas->GetName() ){
+	if(pRenderableCanvas.GetName() != pRRenderableCanvas->GetName()){
 		pDynamicSkin.NotifyRenderablesChanged();
 	}
 }
 
 void deoglDSRenderableCanvas::SyncToRender(){
-	if( pCanvasView ){
+	if(pCanvasView){
 		pCanvasView->SyncToRender();
 	}
 	
-	if( pDirty ){
-		pRRenderableCanvas->SetName( pRenderableCanvas.GetName() );
-		pRRenderableCanvas->SetComponentCount( pRenderableCanvas.GetComponentCount() );
-		pRRenderableCanvas->SetBitCount( pRenderableCanvas.GetBitCount() );
+	if(pDirty){
+		pRRenderableCanvas->SetName(pRenderableCanvas.GetName());
+		pRRenderableCanvas->SetComponentCount(pRenderableCanvas.GetComponentCount());
+		pRRenderableCanvas->SetBitCount(pRenderableCanvas.GetBitCount());
 		
-		if( pCanvasView ){
-			pRRenderableCanvas->SetCanvas( pCanvasView->GetRCanvasView() );
+		if(pCanvasView){
+			pRRenderableCanvas->SetCanvas(pCanvasView->GetRCanvasView());
 			
 		}else{
-			pRRenderableCanvas->SetCanvas( NULL );
+			pRRenderableCanvas->SetCanvas(NULL);
 		}
 		
 		pDirty = false;
@@ -130,7 +130,7 @@ void deoglDSRenderableCanvas::CanvasViewDestroyed(){
 }
 
 void deoglDSRenderableCanvas::CanvasViewRequiresSync(){
-	pDynamicSkin.NotifyRenderableRequiresSync( *this );
+	pDynamicSkin.NotifyRenderableRequiresSync(*this);
 }
 
 
@@ -139,11 +139,11 @@ void deoglDSRenderableCanvas::CanvasViewRequiresSync(){
 //////////////////////
 
 void deoglDSRenderableCanvas::pCleanUp(){
-	if( pRRenderableCanvas ){
+	if(pRRenderableCanvas){
 		pRRenderableCanvas->FreeReference();
 	}
 	
-	if( pCanvasView ){
-		pCanvasView->RemoveListener( this );
+	if(pCanvasView){
+		pCanvasView->RemoveListener(this);
 	}
 }

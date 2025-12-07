@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjectCopyScale( meWorld *world, bool copyX, bool copyY, bool copyZ );
+	meUObjectCopyScale(meWorld *world, bool copyX, bool copyY, bool copyZ);
 	
 protected:
 	/** \brief Clean up undo object. */

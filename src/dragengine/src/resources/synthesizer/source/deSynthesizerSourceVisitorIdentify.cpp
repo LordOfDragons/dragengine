@@ -44,8 +44,8 @@
 ////////////////////////////
 
 deSynthesizerSourceVisitorIdentify::deSynthesizerSourceVisitorIdentify() :
-pSource( NULL ),
-pType( estUnknown ){
+pSource(NULL),
+pType(estUnknown){
 }
 
 deSynthesizerSourceVisitorIdentify::~deSynthesizerSourceVisitorIdentify(){
@@ -57,38 +57,38 @@ deSynthesizerSourceVisitorIdentify::~deSynthesizerSourceVisitorIdentify(){
 ///////////////
 
 deSynthesizerSourceSound &deSynthesizerSourceVisitorIdentify::CastToSound() const{
-	if( pType != estSound ){
-		DETHROW( deeInvalidParam );
+	if(pType != estSound){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSynthesizerSourceSound* )pSource );
+	return *((deSynthesizerSourceSound*)pSource);
 }
 
 deSynthesizerSourceWave &deSynthesizerSourceVisitorIdentify::CastToWave() const{
-	if( pType != estWave ){
-		DETHROW( deeInvalidParam );
+	if(pType != estWave){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSynthesizerSourceWave* )pSource );
+	return *((deSynthesizerSourceWave*)pSource);
 }
 
 deSynthesizerSourceChain &deSynthesizerSourceVisitorIdentify::CastToChain() const{
-	if( pType != estChain ){
-		DETHROW( deeInvalidParam );
+	if(pType != estChain){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSynthesizerSourceChain* )pSource );
+	return *((deSynthesizerSourceChain*)pSource);
 }
 
 deSynthesizerSourceSynthesizer &deSynthesizerSourceVisitorIdentify::CastToSynthesizer() const{
-	if( pType != estSynthesizer ){
-		DETHROW( deeInvalidParam );
+	if(pType != estSynthesizer){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSynthesizerSourceSynthesizer* )pSource );
+	return *((deSynthesizerSourceSynthesizer*)pSource);
 }
 
 deSynthesizerSourceGroup &deSynthesizerSourceVisitorIdentify::CastToGroup() const{
-	if( pType != estGroup ){
-		DETHROW( deeInvalidParam );
+	if(pType != estGroup){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSynthesizerSourceGroup* )pSource );
+	return *((deSynthesizerSourceGroup*)pSource);
 }
 
 void deSynthesizerSourceVisitorIdentify::Reset(){
@@ -101,32 +101,32 @@ void deSynthesizerSourceVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deSynthesizerSourceVisitorIdentify::VisitSource( deSynthesizerSource &source ){
+void deSynthesizerSourceVisitorIdentify::VisitSource(deSynthesizerSource &source){
 	pSource = &source;
 	pType = estUnknown;
 }
 
-void deSynthesizerSourceVisitorIdentify::VisitSound( deSynthesizerSourceSound &source ){
+void deSynthesizerSourceVisitorIdentify::VisitSound(deSynthesizerSourceSound &source){
 	pSource = &source;
 	pType = estSound;
 }
 
-void deSynthesizerSourceVisitorIdentify::VisitWave( deSynthesizerSourceWave &source ){
+void deSynthesizerSourceVisitorIdentify::VisitWave(deSynthesizerSourceWave &source){
 	pSource = &source;
 	pType = estWave;
 }
 
-void deSynthesizerSourceVisitorIdentify::VisitChain( deSynthesizerSourceChain &source ){
+void deSynthesizerSourceVisitorIdentify::VisitChain(deSynthesizerSourceChain &source){
 	pSource = &source;
 	pType = estChain;
 }
 
-void deSynthesizerSourceVisitorIdentify::VisitSynthesizer( deSynthesizerSourceSynthesizer &source ){
+void deSynthesizerSourceVisitorIdentify::VisitSynthesizer(deSynthesizerSourceSynthesizer &source){
 	pSource = &source;
 	pType = estSynthesizer;
 }
 
-void deSynthesizerSourceVisitorIdentify::VisitGroup( deSynthesizerSourceGroup &source ){
+void deSynthesizerSourceVisitorIdentify::VisitGroup(deSynthesizerSourceGroup &source){
 	pSource = &source;
 	pType = estGroup;
 }

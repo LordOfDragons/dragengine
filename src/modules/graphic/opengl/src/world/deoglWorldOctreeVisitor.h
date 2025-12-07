@@ -50,7 +50,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit octree node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	virtual void VisitNode(deoglDOctree *node, int intersection);
 	/*@}*/
 };
 

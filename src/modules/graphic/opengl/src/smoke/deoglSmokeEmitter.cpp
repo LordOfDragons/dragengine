@@ -46,8 +46,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSmokeEmitter::deoglSmokeEmitter( deGraphicOpenGl *ogl, deSmokeEmitter *smokeEmitter ){
-	if( ! ogl || ! smokeEmitter ) DETHROW( deeInvalidParam );
+deoglSmokeEmitter::deoglSmokeEmitter(deGraphicOpenGl *ogl, deSmokeEmitter *smokeEmitter){
+	if(!ogl || !smokeEmitter) DETHROW(deeInvalidParam);
 	
 	pOgl = ogl;
 	pSmokeEmitter = smokeEmitter;
@@ -65,17 +65,17 @@ deoglSmokeEmitter::~deoglSmokeEmitter(){
 // Management
 ///////////////
 
-void deoglSmokeEmitter::SetParentWorld( deoglWorld *world ){
+void deoglSmokeEmitter::SetParentWorld(deoglWorld *world){
 	pParentWorld = world;
 }
 
 
 
-void deoglSmokeEmitter::Update( float elapsed ){
+void deoglSmokeEmitter::Update(float elapsed){
 }
 
 void deoglSmokeEmitter::PrepareForRender(){
-	if( pDirtyExtends ){
+	if(pDirtyExtends){
 		pUpdateExtends();
 		
 		pDirtyExtends = false;

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetRunArguments( projProfile *profile, const char *newValue );
+	projUProfileSetRunArguments(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetRunArguments();

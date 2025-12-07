@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine. */
-	projTestRunEngine( projTestRunProcess &process );
+	projTestRunEngine(projTestRunProcess &process);
 	
 	/** \brief Clean up engine. */
 	~projTestRunEngine();
@@ -84,7 +84,7 @@ public:
 	void ActivateModules();
 	
 	/** \brief Activate module. */
-	void ActivateModule( deModuleSystem::eModuleTypes type, const char *name, const char *version = "" );
+	void ActivateModule(deModuleSystem::eModuleTypes type, const char *name, const char *version = "");
 	
 	/** \brief Set data directory. */
 	void SetDataDirectory();
@@ -96,7 +96,7 @@ public:
 	void InitVFS();
 	
 	/** \brief Add disk directory. */
-	void VFSAddDiskDir( const char *pathRoot, const char *pathDisk, bool readOnly );
+	void VFSAddDiskDir(const char *pathRoot, const char *pathDisk, bool readOnly);
 	
 	/** \brief Create main window. */
 	void CreateMainWindow();

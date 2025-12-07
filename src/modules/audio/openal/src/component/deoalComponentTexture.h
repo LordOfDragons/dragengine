@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component texture. */
-	deoalComponentTexture( deoalComponent &component, int index );
+	deoalComponentTexture(deoalComponent &component, int index);
 	
 	/** \brief Clean up component texture. */
 	~deoalComponentTexture();
@@ -80,7 +80,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Texture changed. */
-	void TextureChanged( const deComponentTexture &texture );
+	void TextureChanged(const deComponentTexture &texture);
 	
 	/** \brief Mark texture dirty. */
 	void MarkDirty();

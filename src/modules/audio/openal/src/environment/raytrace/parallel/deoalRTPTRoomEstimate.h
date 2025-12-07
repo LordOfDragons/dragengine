@@ -106,7 +106,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel task. */
-	deoalRTPTRoomEstimate( deoalRTParallelEnvProbe &owner );
+	deoalRTPTRoomEstimate(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
@@ -127,30 +127,30 @@ public:
 	
 	
 	/** \brief Set world. */
-	void SetWorld( deoalAWorld *world );
+	void SetWorld(deoalAWorld *world);
 	
 	/** \brief Set environment probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set index of first ray from configuration to process. */
-	void SetFirstRay( int firstRay );
+	void SetFirstRay(int firstRay);
 	
 	/** \brief Set number of rays from configuration to process. */
 	#ifndef RTPTRE_ONE_TASK_PER_RAY
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	#endif
 	
 	/** \brief Position to trace from. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Maximum range to trace rays for. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Initial length of rays for testing before enlarging. */
-	void SetInitialRayLength( float length );
+	void SetInitialRayLength(float length);
 	
 	/** \brief Layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
@@ -202,7 +202,7 @@ public:
 	
 	
 private:
-	bool pTraceRay( const decVector &direction, sHitResult &hitResult );
+	bool pTraceRay(const decVector &direction, sHitResult &hitResult);
 };
 
 #endif

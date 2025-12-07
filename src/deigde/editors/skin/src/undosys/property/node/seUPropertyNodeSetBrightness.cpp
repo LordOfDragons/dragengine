@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness(sePropertyNode *node, float newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set brightness" );
+	SetShortInfo("Node set brightness");
 	
 	pOldValue = node->GetBrightness();
 	
@@ -55,7 +55,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetBrightness::~seUPropertyNodeSetBrightness(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ seUPropertyNodeSetBrightness::~seUPropertyNodeSetBrightness(){
 ///////////////
 
 void seUPropertyNodeSetBrightness::Undo(){
-	pNode->SetBrightness( pOldValue );
+	pNode->SetBrightness(pOldValue);
 }
 
 void seUPropertyNodeSetBrightness::Redo(){
-	pNode->SetBrightness( pNewValue );
+	pNode->SetBrightness(pNewValue);
 }

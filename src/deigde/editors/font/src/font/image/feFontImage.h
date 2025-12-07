@@ -65,7 +65,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new font image. */
-	feFontImage( deEngine *engine );
+	feFontImage(deEngine *engine);
 	/** Cleans up the font image. */
 	virtual ~feFontImage();
 	/*@}*/
@@ -80,29 +80,29 @@ public:
 	/** Retrieves the parent font or NULL if not assigned. */
 	inline feFont *GetParentFont() const{ return pParentFont; }
 	/** Sets the parent font or NULL it not assigned. */
-	void SetParentFont( feFont *font );
+	void SetParentFont(feFont *font);
 	
 	/** Retrieves the width of the image. */
 	inline int GetWidth() const{ return pWidth; }
 	/** Retrieves the height of the image. */
 	inline int GetHeight() const{ return pHeight; }
 	/** Sets the size of the image. */
-	void SetSize( int width, int height );
+	void SetSize(int width, int height);
 	/** Retrieves the filename. */
 	inline const decString &GetFilename() const{ return pFilename; }
 	/** Sets the filename. */
-	void SetFilename( const char *filename, bool load );
+	void SetFilename(const char *filename, bool load);
 	/** Loads the image from the stored path. */
     void LoadImage();
 	
 	/** Determines if the image has changed. */
 	inline bool GetChanged() const{ return pChanged; }
 	/** Sets if the image has changed. */
-	void SetChanged( bool changed );
+	void SetChanged(bool changed);
 	/** Determines if the image has been saved. */
 	inline bool GetSaved() const{ return pSaved; }
 	/** Sets if the image has been saved. */
-	void SetSaved( bool saved );
+	void SetSaved(bool saved);
 	
 	/** Notifies the parent if assigned that the image changed. */
     void NotifyImageChanged();

@@ -37,33 +37,33 @@
 // class devkShaderModule
 ///////////////////////////
 
-devkShaderModule::devkShaderModule( devkDevice &device, const char *path, decBaseFileReader &reader ) :
-pDevice( device ),
-pPath( path ),
-pSource( nullptr ),
-pSourceLength( 0 ),
-pModule( VK_NULL_HANDLE )
+devkShaderModule::devkShaderModule(devkDevice &device, const char *path, decBaseFileReader &reader) :
+pDevice(device),
+pPath(path),
+pSource(nullptr),
+pSourceLength(0),
+pModule(VK_NULL_HANDLE)
 {
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
+		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan());
 		
 		// load source
 		pSourceLength = reader.GetLength();
-		if( pSourceLength == 0 ){
-			DETHROW_INFO( deeInvalidParam, "empty sources" );
+		if(pSourceLength == 0){
+			DETHROW_INFO(deeInvalidParam, "empty sources");
 		}
 		
-		pSource = new char[ pSourceLength ];
-		reader.Read( pSource, pSourceLength );
+		pSource = new char[pSourceLength];
+		reader.Read(pSource, pSourceLength);
 		
 		// create shader module
 		VkShaderModuleCreateInfo info{VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
 		info.codeSize = pSourceLength;
-		info.pCode = ( const uint32_t * )pSource;
+		info.pCode = (const uint32_t *)pSource;
 		
-		VK_CHECK( vulkan, device.vkCreateShaderModule( device.GetDevice(), &info, NULL, &pModule ) );
+		VK_CHECK(vulkan, device.vkCreateShaderModule(device.GetDevice(), &info, NULL, &pModule));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -84,10 +84,10 @@ devkShaderModule::~devkShaderModule(){
 //////////////////////
 
 void devkShaderModule::pCleanUp(){
-	if( pModule ){
-		pDevice.vkDestroyShaderModule( pDevice.GetDevice(), pModule, VK_NULL_HANDLE );
+	if(pModule){
+		pDevice.vkDestroyShaderModule(pDevice.GetDevice(), pModule, VK_NULL_HANDLE);
 	}
-	if( pSource ){
+	if(pSource){
 		delete [] pSource;
 	}
 }

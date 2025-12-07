@@ -38,11 +38,11 @@
 /////////////////////////////////
 
 dearVPSState::dearVPSState() :
-pIndex( 0 ),
-pModelIndex( -1 ),
-pWeight( 0.0f ),
-pProtect( false ),
-pDirty( true ){
+pIndex(0),
+pModelIndex(-1),
+pWeight(0.0f),
+pProtect(false),
+pDirty(true){
 }
 
 dearVPSState::~dearVPSState(){
@@ -53,117 +53,117 @@ dearVPSState::~dearVPSState(){
 // Management
 ///////////////
 
-void dearVPSState::SetName( const char *name ){
+void dearVPSState::SetName(const char *name){
 	pName = name;
 }
 
-void dearVPSState::SetIndex( int index ){
-	DEASSERT_TRUE( index >= 0 )
+void dearVPSState::SetIndex(int index){
+	DEASSERT_TRUE(index >= 0)
 	
 	pIndex = index;
 }
 
-void dearVPSState::SetModelIndex( int index ){
+void dearVPSState::SetModelIndex(int index){
 	pModelIndex = index;
 }
 
-void dearVPSState::SetWeight( float weight ){
+void dearVPSState::SetWeight(float weight){
 	pWeight = weight;
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearVPSState::SetProtected( bool prot ){
+void dearVPSState::SetProtected(bool prot){
 	pProtect = prot;
 }
 
-void dearVPSState::SetDirty( bool dirty ){
+void dearVPSState::SetDirty(bool dirty){
 	pDirty = dirty;
 }
 
 
 
-void dearVPSState::SetFrom( const dearVPSState &state ){
+void dearVPSState::SetFrom(const dearVPSState &state){
 	pWeight = state.pWeight;
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearVPSState::SetFrom( const deComponent &component ){
-	pWeight = component.GetVertexPositionSetWeightAt( pModelIndex );
-	SetDirty( true );
+void dearVPSState::SetFrom(const deComponent &component){
+	pWeight = component.GetVertexPositionSetWeightAt(pModelIndex);
+	SetDirty(true);
 }
 
-void dearVPSState::SetFrom( const dearComponentVPSState &state ){
+void dearVPSState::SetFrom(const dearComponentVPSState &state){
 	pWeight = state.GetWeight();
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearVPSState::BlendWithDefault( deAnimatorRule::eBlendModes blendMode,
-float blendFactor, bool enableWeight ){
-	BlendWith( 0.0f, blendMode, blendFactor, enableWeight );
+void dearVPSState::BlendWithDefault(deAnimatorRule::eBlendModes blendMode,
+float blendFactor, bool enableWeight){
+	BlendWith(0.0f, blendMode, blendFactor, enableWeight);
 }
 
-void dearVPSState::BlendWith( const dearVPSState &state,
-deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight ){
-	BlendWith( state.GetWeight(), blendMode, blendFactor, enableWeight );
+void dearVPSState::BlendWith(const dearVPSState &state,
+deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight){
+	BlendWith(state.GetWeight(), blendMode, blendFactor, enableWeight);
 }
 
-void dearVPSState::BlendWith( const dearAnimationVPSState &state,
-deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight ){
-	BlendWith( state.GetWeight(), blendMode, blendFactor, enableWeight );
+void dearVPSState::BlendWith(const dearAnimationVPSState &state,
+deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight){
+	BlendWith(state.GetWeight(), blendMode, blendFactor, enableWeight);
 }
 
-void dearVPSState::BlendWith( const deComponent &component,
-deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight ){
-	BlendWith( component.GetVertexPositionSetWeightAt( pModelIndex ),
-		blendMode, blendFactor, enableWeight );
+void dearVPSState::BlendWith(const deComponent &component,
+deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight){
+	BlendWith(component.GetVertexPositionSetWeightAt(pModelIndex),
+		blendMode, blendFactor, enableWeight);
 }
 
-void dearVPSState::BlendWith( const dearComponentVPSState &state,
-deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight ){
-	BlendWith( state.GetWeight(), blendMode, blendFactor, enableWeight );
+void dearVPSState::BlendWith(const dearComponentVPSState &state,
+deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enableWeight){
+	BlendWith(state.GetWeight(), blendMode, blendFactor, enableWeight);
 }
 
-void dearVPSState::BlendWith( float weight, deAnimatorRule::eBlendModes blendMode,
-float blendFactor, bool enableWeight ){
-	switch( blendMode ){
+void dearVPSState::BlendWith(float weight, deAnimatorRule::eBlendModes blendMode,
+float blendFactor, bool enableWeight){
+	switch(blendMode){
 	case deAnimatorRule::ebmBlend:
 		// blend new state over old state
-		if( fabsf( blendFactor ) < FLOAT_SAFE_EPSILON ){ // blendFactor = 0
+		if(fabsf(blendFactor) < FLOAT_SAFE_EPSILON){ // blendFactor = 0
 			// keep the old state
 			return;
 			
-		}else if( fabsf( 1.0f - blendFactor ) < FLOAT_SAFE_EPSILON ){ // blendFactor = 1
+		}else if(fabsf(1.0f - blendFactor) < FLOAT_SAFE_EPSILON){ // blendFactor = 1
 			// apply the new state
-			if( enableWeight ){
+			if(enableWeight){
 				pWeight = weight;
 			}
 			
 		}else{
 			// blend the state
-			if( enableWeight ){
-				pWeight = pWeight * ( 1.0f - blendFactor ) + weight * blendFactor;
+			if(enableWeight){
+				pWeight = pWeight * (1.0f - blendFactor) + weight * blendFactor;
 			}
 		}
 		break;
 		
 	case deAnimatorRule::ebmOverlay:
 		// overlay new state over the old state
-		if( fabsf( blendFactor ) < FLOAT_SAFE_EPSILON ){ // blendFactor = 0
+		if(fabsf(blendFactor) < FLOAT_SAFE_EPSILON){ // blendFactor = 0
 			// keep the old state
 			return;
 			
 		}else{
 			// add new state to the old state
-			if( enableWeight ){
+			if(enableWeight){
 				pWeight += weight * blendFactor;
 			}
 		}
 	}
 	
-	SetDirty( true );
+	SetDirty(true);
 }
 
-dearVPSState &dearVPSState::operator=( const dearVPSState &state ){
+dearVPSState &dearVPSState::operator=(const dearVPSState &state){
 	pIndex = state.pIndex;
 	pModelIndex = state.pModelIndex;
 	pWeight = state.pWeight;

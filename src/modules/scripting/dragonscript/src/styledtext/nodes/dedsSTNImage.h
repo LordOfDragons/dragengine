@@ -50,7 +50,7 @@ public:
 	/** Creates a new image node. */
 	dedsSTNImage();
 	/** Creates a new image node with the given image. */
-	dedsSTNImage( deImage *image );
+	dedsSTNImage(deImage *image);
 	/** Cleans up the image node. */
 	virtual ~dedsSTNImage();
 	/*@}*/
@@ -60,7 +60,7 @@ public:
 	/** Retrieves the image or NULL if not set. */
 	inline deImage *GetImage() const{ return pImage; }
 	/** Sets the image. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	/*@}*/
 };
 

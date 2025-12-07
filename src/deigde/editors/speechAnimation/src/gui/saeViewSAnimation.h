@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speech animation view. */
-	saeViewSAnimation( saeWindowMain &windowMain );
+	saeViewSAnimation(saeWindowMain &windowMain);
 	
 protected:
 	/** Clean up speech animation view. */
@@ -73,10 +73,10 @@ public:
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** Create canvas. */
 	virtual void CreateCanvas();

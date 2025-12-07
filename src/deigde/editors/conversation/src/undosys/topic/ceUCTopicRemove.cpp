@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicRemove::ceUCTopicRemove( ceConversationTopic *topic ){
-	if( ! topic ) DETHROW( deeInvalidParam );
+ceUCTopicRemove::ceUCTopicRemove(ceConversationTopic *topic){
+	if(!topic) DETHROW(deeInvalidParam);
 	
 	ceConversationFile *file = topic->GetFile();
-	if( ! file ) DETHROW( deeInvalidParam );
+	if(!file) DETHROW(deeInvalidParam);
 	
 	pFile = NULL;
 	pTopic = NULL;
 	
-	SetShortInfo( "Remove Topic" );
+	SetShortInfo("Remove Topic");
 	
 	pFile = file;
 	file->AddReference();
@@ -59,10 +59,10 @@ ceUCTopicRemove::ceUCTopicRemove( ceConversationTopic *topic ){
 }
 
 ceUCTopicRemove::~ceUCTopicRemove(){
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
-	if( pFile ){
+	if(pFile){
 		pFile->FreeReference();
 	}
 }
@@ -73,9 +73,9 @@ ceUCTopicRemove::~ceUCTopicRemove(){
 ///////////////
 
 void ceUCTopicRemove::Undo(){
-	pFile->AddTopic( pTopic );
+	pFile->AddTopic(pTopic);
 }
 
 void ceUCTopicRemove::Redo(){
-	pFile->RemoveTopic( pTopic );
+	pFile->RemoveTopic(pTopic);
 }

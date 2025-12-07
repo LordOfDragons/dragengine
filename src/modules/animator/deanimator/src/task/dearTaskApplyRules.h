@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	dearTaskApplyRules( dearAnimatorInstance &instance );
+	dearTaskApplyRules(dearAnimatorInstance &instance);
 	
 	/** Clean up task. */
 	virtual ~dearTaskApplyRules();

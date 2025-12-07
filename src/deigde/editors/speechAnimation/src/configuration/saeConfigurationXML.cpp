@@ -51,7 +51,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-saeConfigurationXML::saeConfigurationXML( deLogger *logger, const char *loggerSource ) : igdeBaseXML( logger, loggerSource ){
+saeConfigurationXML::saeConfigurationXML(deLogger *logger, const char *loggerSource) : igdeBaseXML(logger, loggerSource){
 }
 
 saeConfigurationXML::~saeConfigurationXML(){
@@ -62,28 +62,28 @@ saeConfigurationXML::~saeConfigurationXML(){
 // Management
 ///////////////
 
-void saeConfigurationXML::ReadFromFile( decBaseFileReader &reader, saeConfiguration &config ){
+void saeConfigurationXML::ReadFromFile(decBaseFileReader &reader, saeConfiguration &config){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "speechAnimationEditor" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "speechAnimationEditor") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void saeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const saeConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void saeConfigurationXML::WriteToFile(decBaseFileWriter &writer, const saeConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -91,31 +91,31 @@ void saeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const saeConfi
 // Private Functions
 //////////////////////
 
-void saeConfigurationXML::pWriteConfig( decXmlWriter &writer, const saeConfiguration &config ){
-	writer.WriteOpeningTag( "speechAnimationEditor", false, true );
+void saeConfigurationXML::pWriteConfig(decXmlWriter &writer, const saeConfiguration &config){
+	writer.WriteOpeningTag("speechAnimationEditor", false, true);
 	
-	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
+	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
 	
-	writer.WriteClosingTag( "speechAnimationEditor", true );
+	writer.WriteClosingTag("speechAnimationEditor", true);
 }
 
 
 
-void saeConfigurationXML::pReadConfig( const decXmlElementTag &root, saeConfiguration &config ){
+void saeConfigurationXML::pReadConfig(const decXmlElementTag &root, saeConfiguration &config){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "recentFiles" ){
-			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+		if(tag->GetName() == "recentFiles"){
+			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

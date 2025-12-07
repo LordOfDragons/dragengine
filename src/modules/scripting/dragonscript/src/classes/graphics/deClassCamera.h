@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassCamera( deScriptingDragonScript &ds );
+	deClassCamera(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	~deClassCamera();
@@ -60,16 +60,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** Get camera from real object. */
-	deCamera *GetCamera( dsRealObject *myself ) const;
+	deCamera *GetCamera(dsRealObject *myself) const;
 	
 	/** Push camera to real object. */
-	void PushCamera( dsRunTime *rt, deCamera *camera );
+	void PushCamera(dsRunTime *rt, deCamera *camera);
 	/*@}*/
 	
 	
@@ -95,74 +95,74 @@ private:
 		dsClass *clsCurveBezier;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetFov );
-	DEF_NATFUNC( nfSetFov );
-	DEF_NATFUNC( nfGetFovRatio );
-	DEF_NATFUNC( nfSetFovRatio );
-	DEF_NATFUNC( nfGetImageDistance );
-	DEF_NATFUNC( nfSetImageDistance );
-	DEF_NATFUNC( nfGetViewDistance );
-	DEF_NATFUNC( nfSetViewDistance );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetFov);
+	DEF_NATFUNC(nfSetFov);
+	DEF_NATFUNC(nfGetFovRatio);
+	DEF_NATFUNC(nfSetFovRatio);
+	DEF_NATFUNC(nfGetImageDistance);
+	DEF_NATFUNC(nfSetImageDistance);
+	DEF_NATFUNC(nfGetViewDistance);
+	DEF_NATFUNC(nfSetViewDistance);
 	
-	DEF_NATFUNC( nfGetEnableHDRR );
-	DEF_NATFUNC( nfSetEnableHDRR );
-	DEF_NATFUNC( nfGetExposure );
-	DEF_NATFUNC( nfSetExposure );
-	DEF_NATFUNC( nfGetLowestIntensity );
-	DEF_NATFUNC( nfSetLowestIntensity );
-	DEF_NATFUNC( nfGetHighestIntensity );
-	DEF_NATFUNC( nfSetHighestIntensity );
-	DEF_NATFUNC( nfGetAdaptionTime );
-	DEF_NATFUNC( nfSetAdaptionTime );
-	DEF_NATFUNC( nfResetAdaptedIntensity );
+	DEF_NATFUNC(nfGetEnableHDRR);
+	DEF_NATFUNC(nfSetEnableHDRR);
+	DEF_NATFUNC(nfGetExposure);
+	DEF_NATFUNC(nfSetExposure);
+	DEF_NATFUNC(nfGetLowestIntensity);
+	DEF_NATFUNC(nfSetLowestIntensity);
+	DEF_NATFUNC(nfGetHighestIntensity);
+	DEF_NATFUNC(nfSetHighestIntensity);
+	DEF_NATFUNC(nfGetAdaptionTime);
+	DEF_NATFUNC(nfSetAdaptionTime);
+	DEF_NATFUNC(nfResetAdaptedIntensity);
 	
-	DEF_NATFUNC( nfGetEnableGI );
-	DEF_NATFUNC( nfSetEnableGI );
+	DEF_NATFUNC(nfGetEnableGI);
+	DEF_NATFUNC(nfSetEnableGI);
 	
-	DEF_NATFUNC( nfGetWhiteIntensity );
-	DEF_NATFUNC( nfSetWhiteIntensity );
-	DEF_NATFUNC( nfGetBloomIntensity );
-	DEF_NATFUNC( nfSetBloomIntensity );
-	DEF_NATFUNC( nfGetBloomStrength );
-	DEF_NATFUNC( nfSetBloomStrength );
-	DEF_NATFUNC( nfGetBloomSize );
-	DEF_NATFUNC( nfSetBloomSize );
-	DEF_NATFUNC( nfGetBloomBlend );
-	DEF_NATFUNC( nfSetBloomBlend );
-	DEF_NATFUNC( nfGetToneMapCurve );
-	DEF_NATFUNC( nfSetToneMapCurve );
+	DEF_NATFUNC(nfGetWhiteIntensity);
+	DEF_NATFUNC(nfSetWhiteIntensity);
+	DEF_NATFUNC(nfGetBloomIntensity);
+	DEF_NATFUNC(nfSetBloomIntensity);
+	DEF_NATFUNC(nfGetBloomStrength);
+	DEF_NATFUNC(nfSetBloomStrength);
+	DEF_NATFUNC(nfGetBloomSize);
+	DEF_NATFUNC(nfSetBloomSize);
+	DEF_NATFUNC(nfGetBloomBlend);
+	DEF_NATFUNC(nfSetBloomBlend);
+	DEF_NATFUNC(nfGetToneMapCurve);
+	DEF_NATFUNC(nfSetToneMapCurve);
 	
-	DEF_NATFUNC( nfProject );
-	DEF_NATFUNC( nfBackProject );
-	DEF_NATFUNC( nfBackProject2 );
+	DEF_NATFUNC(nfProject);
+	DEF_NATFUNC(nfBackProject);
+	DEF_NATFUNC(nfBackProject2);
 	
-	DEF_NATFUNC( nfGetLayerMask );
-	DEF_NATFUNC( nfSetLayerMask );
+	DEF_NATFUNC(nfGetLayerMask);
+	DEF_NATFUNC(nfSetLayerMask);
 	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC(nfGetMatrix);
 	DEF_NATFUNC(nfGetInverseMatrix);
 	
-	DEF_NATFUNC( nfGetEffectCount );
-	DEF_NATFUNC( nfGetEffectAt );
-	DEF_NATFUNC( nfAddEffect );
-	DEF_NATFUNC( nfRemoveEffect );
-	DEF_NATFUNC( nfRemoveAllEffects );
+	DEF_NATFUNC(nfGetEffectCount);
+	DEF_NATFUNC(nfGetEffectAt);
+	DEF_NATFUNC(nfAddEffect);
+	DEF_NATFUNC(nfRemoveEffect);
+	DEF_NATFUNC(nfRemoveAllEffects);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

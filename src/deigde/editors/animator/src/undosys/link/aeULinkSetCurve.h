@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeULinkSetCurve( aeLink *link, const decCurveBezier &newCurve );
+	aeULinkSetCurve(aeLink *link, const decCurveBezier &newCurve);
 	
 protected:
 	/** Clean up undo. */
@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set new curve. */
-	void SetNewCurve( const decCurveBezier &curve );
+	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** Undo. */
 	virtual void Undo();

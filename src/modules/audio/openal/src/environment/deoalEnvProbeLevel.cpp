@@ -39,17 +39,17 @@
 /////////////////////////////////
 
 deoalEnvProbeLevel::deoalEnvProbeLevel() :
-pRayCount( 0 ),
-pRayOpeningAngle( 0.0f ),
-pReverberationTimeMedium( 0.0f ),
-pReverberationTimeLow( 0.0f ),
-pReverberationTimeHigh( 0.0f ),
-pEchoDelay( 0.0f ),
-pRoomVolume( 0.0f ),
-pRoomSurface( 0.0f ),
-pRoomSabineLow( 0.0f ),
-pRoomSabineMedium( 0.0f ),
-pRoomSabineHigh( 0.0f ){
+pRayCount(0),
+pRayOpeningAngle(0.0f),
+pReverberationTimeMedium(0.0f),
+pReverberationTimeLow(0.0f),
+pReverberationTimeHigh(0.0f),
+pEchoDelay(0.0f),
+pRoomVolume(0.0f),
+pRoomSurface(0.0f),
+pRoomSabineLow(0.0f),
+pRoomSabineMedium(0.0f),
+pRoomSabineHigh(0.0f){
 }
 
 deoalEnvProbeLevel::~deoalEnvProbeLevel(){
@@ -60,26 +60,26 @@ deoalEnvProbeLevel::~deoalEnvProbeLevel(){
 // Manegement
 ///////////////
 
-void deoalEnvProbeLevel::SetRayCount( int rayCount ){
+void deoalEnvProbeLevel::SetRayCount(int rayCount){
 	pRayCount = rayCount;
 }
 
-void deoalEnvProbeLevel::SetRayOpeningAngle( float angle ){
+void deoalEnvProbeLevel::SetRayOpeningAngle(float angle){
 	pRayOpeningAngle = angle;
 }
 
-void deoalEnvProbeLevel::SetReverberationTime( float timeLow, float timeMedium, float timeHigh ){
+void deoalEnvProbeLevel::SetReverberationTime(float timeLow, float timeMedium, float timeHigh){
 	pReverberationTimeLow = timeLow;
 	pReverberationTimeMedium = timeMedium;
 	pReverberationTimeHigh = timeHigh;
 }
 
-void deoalEnvProbeLevel::SetEcho( float delay ){
+void deoalEnvProbeLevel::SetEcho(float delay){
 	pEchoDelay = delay;
 }
 
 void deoalEnvProbeLevel::SetRoom(float volume, float surface, float sabineLow,
-float sabineMedium, float sabineHigh ){
+float sabineMedium, float sabineHigh){
 	pRoomVolume = volume;
 	pRoomSurface = surface;
 	pRoomSabineLow = sabineLow;

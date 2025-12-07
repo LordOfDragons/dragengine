@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model peer. */
-	deoalModel( deAudioOpenAL &oal, const deModel &model );
+	deoalModel(deAudioOpenAL &oal, const deModel &model);
 	
 	/** \brief Clean up model peer. */
 	virtual ~deoalModel();

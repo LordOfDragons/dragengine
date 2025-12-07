@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCEnvMapProbeSetInfluenceBorderSize::gdeUOCEnvMapProbeSetInfluenceBorderSize(
-gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, float newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, float newValue) :
+pObjectClass(NULL),
+pEnvMapProbe(NULL)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set influence border size" );
+	SetShortInfo("Env-map probe set influence border size");
 	
 	pOldValue = envMapProbe->GetInfluenceBorderSize();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pEnvMapProbe( NULL )
 }
 
 gdeUOCEnvMapProbeSetInfluenceBorderSize::~gdeUOCEnvMapProbeSetInfluenceBorderSize(){
-	if( pEnvMapProbe ){
+	if(pEnvMapProbe){
 		pEnvMapProbe->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCEnvMapProbeSetInfluenceBorderSize::~gdeUOCEnvMapProbeSetInfluenceBorderSiz
 ///////////////
 
 void gdeUOCEnvMapProbeSetInfluenceBorderSize::Undo(){
-	pEnvMapProbe->SetInfluenceBorderSize( pOldValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetInfluenceBorderSize(pOldValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetInfluenceBorderSize::Redo(){
-	pEnvMapProbe->SetInfluenceBorderSize( pNewValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetInfluenceBorderSize(pNewValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

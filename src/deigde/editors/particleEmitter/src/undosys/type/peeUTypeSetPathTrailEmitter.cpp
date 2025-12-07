@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter( peeType *type, const char *newPath ){
-	if( ! type || ! newPath ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType *type, const char *newPath){
+	if(!type || !newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = NULL;
 	
-	SetShortInfo( "Set Type Path Trail Emitter" );
+	SetShortInfo("Set Type Path Trail Emitter");
 	
 	pOldPath = type->GetPathTrailEmitter();
 	pNewPath = newPath;
@@ -56,7 +56,7 @@ peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter( peeType *type, const c
 }
 
 peeUTypeSetPathTrailEmitter::~peeUTypeSetPathTrailEmitter(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ peeUTypeSetPathTrailEmitter::~peeUTypeSetPathTrailEmitter(){
 ///////////////
 
 void peeUTypeSetPathTrailEmitter::Undo(){
-	pType->SetPathTrailEmitter( pOldPath.GetString() );
+	pType->SetPathTrailEmitter(pOldPath.GetString());
 }
 
 void peeUTypeSetPathTrailEmitter::Redo(){
-	pType->SetPathTrailEmitter( pNewPath.GetString() );
+	pType->SetPathTrailEmitter(pNewPath.GetString());
 }

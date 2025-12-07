@@ -101,7 +101,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render skin. */
-	deoglRSkin( deoglRenderThread &renderThread, deoglSkin &owner, const deSkin &Skin );
+	deoglRSkin(deoglRenderThread &renderThread, deoglSkin &owner, const deSkin &Skin);
 	
 	/** Clean up render skin. */
 	virtual ~deoglRSkin();
@@ -176,7 +176,7 @@ public:
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Texture at index. */
-	deoglSkinTexture &GetTextureAt( int index ) const;
+	deoglSkinTexture &GetTextureAt(int index) const;
 	
 	
 	
@@ -184,13 +184,13 @@ public:
 	int GetRenderableCount() const;
 	
 	/** Renderable at index. */
-	deoglSkinRenderable &GetRenderableAt( int index );
+	deoglSkinRenderable &GetRenderableAt(int index);
 	
 	/** Add renderable if absent. */
-	int AddRenderable( const char *name );
+	int AddRenderable(const char *name);
 	
 	/** Index of named renderable or -1 if not found. */
-	int IndexOfRenderableNamed( const char *name ) const;
+	int IndexOfRenderableNamed(const char *name) const;
 	
 	
 	
@@ -209,7 +209,7 @@ public:
 	int GetMappedCount() const;
 	
 	/** Mapped. */
-	deoglSkinMapped *GetMappedAt( int index ) const;
+	deoglSkinMapped *GetMappedAt(int index) const;
 	
 	
 	
@@ -217,13 +217,13 @@ public:
 	int GetCalculatedPropertyCount() const;
 	
 	/** Calculated property. */
-	deoglSkinCalculatedProperty *GetCalculatedPropertyAt( int index ) const;
+	deoglSkinCalculatedProperty *GetCalculatedPropertyAt(int index) const;
 	
 	/**
 	 * Add calculated property.
 	 * \returns Index of calculated property.
 	 */
-	int AddCalculatedProperty( deoglSkinCalculatedProperty *calculated );
+	int AddCalculatedProperty(deoglSkinCalculatedProperty *calculated);
 	
 	
 	
@@ -231,10 +231,10 @@ public:
 	int GetConstructedPropertyCount() const;
 	
 	/** Constructed property. */
-	deoglSkinConstructedProperty *GetConstructedPropertyAt( int index ) const;
+	deoglSkinConstructedProperty *GetConstructedPropertyAt(int index) const;
 	
 	/** Add constructed property and returns index of property. */
-	int AddConstructedProperty( deoglSkinConstructedProperty *constructed );
+	int AddConstructedProperty(deoglSkinConstructedProperty *constructed);
 	
 	
 	
@@ -242,10 +242,10 @@ public:
 	int GetBoneCount() const;
 	
 	/** Bones. */
-	deoglSkinBone *GetBoneAt( int index ) const;
+	deoglSkinBone *GetBoneAt(int index) const;
 	
 	/** Add bone and returns index. */
-	int AddBone( const char *name );
+	int AddBone(const char *name);
 
 
 
@@ -258,7 +258,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pRetainImageData( const deSkin &skin );
+	void pRetainImageData(const deSkin &skin);
 };
 
 #endif

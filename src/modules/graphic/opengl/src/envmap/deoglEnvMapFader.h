@@ -74,7 +74,7 @@ public:
 	/** Retrieves the amount of fading per second. */
 	inline float GetFadePerTime() const{ return pFadePerTime; }
 	/** Sets the amount of fading per second. */
-	void SetFadePerTime( float fadePerTime );
+	void SetFadePerTime(float fadePerTime);
 	
 	/**
 	 * Switch the active environment map. If a fading is in progress the environment map
@@ -82,7 +82,7 @@ public:
 	 * is in progress the environment map is set as the fading environment map and fading
 	 * starts.
 	 */
-	void FadeTo( deoglEnvironmentMap *envmap );
+	void FadeTo(deoglEnvironmentMap *envmap);
 	/** Determines if fading is in progess. */
 	bool IsFading() const;
 	/**
@@ -91,12 +91,12 @@ public:
 	 * be deleted or if the contained texture is about to get invalid. This operation can lead
 	 * to popping.
 	 */
-	void Drop( deoglEnvironmentMap *envmap );
+	void Drop(deoglEnvironmentMap *envmap);
 	/** Drop all environment maps. */
 	void DropAll();
 	
 	/** Update fading. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 };
 

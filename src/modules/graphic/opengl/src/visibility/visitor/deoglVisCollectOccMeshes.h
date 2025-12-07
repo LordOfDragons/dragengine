@@ -62,11 +62,11 @@ public:
 	/** Retrieves the maximum extend of the box used to visit the occlusion meshes. */
 	inline const decDVector &GetVisitMaxExtend() const{ return pVisitMaxExtend; }
 	/** Sets the extends of the box used to visit the occlusion meshes. */
-	void SetVisitExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetVisitExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	/** Retrieves the inverse matrix hull to transfor the occlusion meshes into the hull space. */
 	inline const decDMatrix &GetMatrixInvHull() const{ return pMatrixInvHull; }
 	/** Sets the inverse matrix hull to transfor the occlusion meshes into the hull space. */
-	void SetMatrixInvHull( const decDMatrix &matrixInvHull );
+	void SetMatrixInvHull(const decDMatrix &matrixInvHull);
 	
 	/** Retrieves the triangle sorter. */
 	inline deoglTriangleSorter *GetTriangleSorter() const{ return pTriangleSorter; }
@@ -75,10 +75,10 @@ public:
 	void Reset();
 	
 	/** Visits an octree node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	virtual void VisitNode(deoglDOctree *node, int intersection);
 	
 	/** Add occlusion mesh to triangle sorter. */
-	void AddOcclusionMesh( deoglRComponent &component );
+	void AddOcclusionMesh(deoglRComponent &component);
 	/*@}*/
 };
 

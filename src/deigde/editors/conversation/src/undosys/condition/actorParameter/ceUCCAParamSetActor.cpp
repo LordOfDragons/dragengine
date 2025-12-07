@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAParamSetActor::ceUCCAParamSetActor( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionActorParameter *condition, const char *newActor ){
-	if( ! topic || ! action || ! condition ) DETHROW( deeInvalidParam );
+ceUCCAParamSetActor::ceUCCAParamSetActor(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionActorParameter *condition, const char *newActor){
+	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
@@ -52,7 +52,7 @@ ceCConditionActorParameter *condition, const char *newActor ){
 	pOldActor = condition->GetActor();
 	pNewActor = newActor;
 	
-	SetShortInfo( "Condition ActorParameter: Set Actor" );
+	SetShortInfo("Condition ActorParameter: Set Actor");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -65,13 +65,13 @@ ceCConditionActorParameter *condition, const char *newActor ){
 }
 
 ceUCCAParamSetActor::~ceUCCAParamSetActor(){
-	if( pCondition ){
+	if(pCondition){
 		pCondition->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -82,11 +82,11 @@ ceUCCAParamSetActor::~ceUCCAParamSetActor(){
 ///////////////
 
 void ceUCCAParamSetActor::Undo(){
-	pCondition->SetActor( pOldActor );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetActor(pOldActor);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCAParamSetActor::Redo(){
-	pCondition->SetActor( pNewActor );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetActor(pNewActor);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

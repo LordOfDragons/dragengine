@@ -42,7 +42,7 @@
 sePropertyNodeList::sePropertyNodeList(){
 }
 
-sePropertyNodeList::sePropertyNodeList( const sePropertyNodeList &list ) : pNodes( list.pNodes ){
+sePropertyNodeList::sePropertyNodeList(const sePropertyNodeList &list) : pNodes(list.pNodes){
 }
 
 sePropertyNodeList::~sePropertyNodeList(){
@@ -57,53 +57,53 @@ int sePropertyNodeList::GetCount() const{
 	return pNodes.GetCount();
 }
 
-sePropertyNode *sePropertyNodeList::GetAt( int index ) const{
-	return ( sePropertyNode* )pNodes.GetAt( index );
+sePropertyNode *sePropertyNodeList::GetAt(int index) const{
+	return (sePropertyNode*)pNodes.GetAt(index);
 }
 
-bool sePropertyNodeList::Has( sePropertyNode *node ) const{
-	return pNodes.Has( node );
+bool sePropertyNodeList::Has(sePropertyNode *node) const{
+	return pNodes.Has(node);
 }
 
-int sePropertyNodeList::IndexOf( sePropertyNode *node ) const{
-	return pNodes.IndexOf( node );
+int sePropertyNodeList::IndexOf(sePropertyNode *node) const{
+	return pNodes.IndexOf(node);
 }
 
-void sePropertyNodeList::Add( sePropertyNode *node ){
-	if( ! node ){
-		DETHROW( deeInvalidParam );
+void sePropertyNodeList::Add(sePropertyNode *node){
+	if(!node){
+		DETHROW(deeInvalidParam);
 	}
-	pNodes.Add( node );
+	pNodes.Add(node);
 }
 
-void sePropertyNodeList::AddIfAbsent( sePropertyNode *node ){
-	if( ! node ){
-		DETHROW( deeInvalidParam );
+void sePropertyNodeList::AddIfAbsent(sePropertyNode *node){
+	if(!node){
+		DETHROW(deeInvalidParam);
 	}
-	pNodes.AddIfAbsent( node );
+	pNodes.AddIfAbsent(node);
 }
 
-void sePropertyNodeList::Insert( int index, sePropertyNode *node ){
-	if( ! node ){
-		DETHROW( deeInvalidParam );
+void sePropertyNodeList::Insert(int index, sePropertyNode *node){
+	if(!node){
+		DETHROW(deeInvalidParam);
 	}
-	pNodes.Insert( node, index );
+	pNodes.Insert(node, index);
 }
 
-void sePropertyNodeList::Remove( sePropertyNode *node ){
-	pNodes.Remove( node );
+void sePropertyNodeList::Remove(sePropertyNode *node){
+	pNodes.Remove(node);
 }
 
-void sePropertyNodeList::RemoveIfPresent( sePropertyNode *node ){
-	pNodes.RemoveIfPresent( node );
+void sePropertyNodeList::RemoveIfPresent(sePropertyNode *node){
+	pNodes.RemoveIfPresent(node);
 }
 
 void sePropertyNodeList::RemoveAll(){
 	pNodes.RemoveAll();
 }
 
-void sePropertyNodeList::Move( sePropertyNode *node, int index ){
-	pNodes.Move( node, index );
+void sePropertyNodeList::Move(sePropertyNode *node, int index){
+	pNodes.Move(node, index);
 }
 
 
@@ -111,7 +111,7 @@ void sePropertyNodeList::Move( sePropertyNode *node, int index ){
 // Operators
 //////////////
 
-sePropertyNodeList &sePropertyNodeList::operator=( const sePropertyNodeList &list ){
+sePropertyNodeList &sePropertyNodeList::operator=(const sePropertyNodeList &list){
 	pNodes = list.pNodes;
 	return *this;
 }

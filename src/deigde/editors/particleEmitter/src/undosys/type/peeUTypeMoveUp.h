@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeMoveUp( peeType *type );
+	peeUTypeMoveUp(peeType *type);
 	
 protected:
 	/** \brief Clean up the undo action. */

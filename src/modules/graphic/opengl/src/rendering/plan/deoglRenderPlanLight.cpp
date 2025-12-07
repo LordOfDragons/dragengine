@@ -46,28 +46,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderPlanLight::deoglRenderPlanLight( deoglRenderPlan &plan ) :
-pPlan( plan ),
-pLight( NULL ),
+deoglRenderPlanLight::deoglRenderPlanLight(deoglRenderPlan &plan) :
+pPlan(plan),
+pLight(NULL),
 
-pDistance( 0.0f ),
-pReductionFactorStatic( 1 ),
-pReductionFactorDynamic( 1 ),
+pDistance(0.0f),
+pReductionFactorStatic(1),
+pReductionFactorDynamic(1),
 
-pShadowSizeStatic( 0 ),
-pTranspShadowSizeStatic( 0 ),
-pAmbientShadowSizeStatic( 0 ),
+pShadowSizeStatic(0),
+pTranspShadowSizeStatic(0),
+pAmbientShadowSizeStatic(0),
 
-pShadowSizeDynamic( 0 ),
-pTranspShadowSizeDynamic( 0 ),
-pAmbientShadowSizeDynamic( 0 ),
+pShadowSizeDynamic(0),
+pTranspShadowSizeDynamic(0),
+pAmbientShadowSizeDynamic(0),
 
-pGIShadowSizeDynamic( 0 ),
+pGIShadowSizeDynamic(0),
 
-pUseShadow( false ),
-pUseShadowTemporary( false ),
-pUseAmbient( false ),
-pRefilterShadows( false ){
+pUseShadow(false),
+pUseShadowTemporary(false),
+pUseAmbient(false),
+pRefilterShadows(false){
 }
 
 deoglRenderPlanLight::~deoglRenderPlanLight(){
@@ -78,7 +78,7 @@ deoglRenderPlanLight::~deoglRenderPlanLight(){
 // Management
 ///////////////
 
-void deoglRenderPlanLight::SetLight( deoglCollideListLight *light ){
+void deoglRenderPlanLight::SetLight(deoglCollideListLight *light){
 	pLight = light;
 }
 
@@ -87,7 +87,7 @@ void deoglRenderPlanLight::Init(){
 	
 	// calculate distance of light to camera
 	pPosition = light.GetMatrix().GetPosition();
-	pDistance = ( float )( pPosition - pPlan.GetCameraPosition() ).Length();
+	pDistance = (float)(pPosition - pPlan.GetCameraPosition()).Length();
 }
 
 void deoglRenderPlanLight::PlanShadowCasting(){
@@ -112,7 +112,7 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	const int minSize = 16;
 	
 	// static shadow map size
-	switch( light.GetLightType() ){
+	switch(light.GetLightType()){
 	case deLight::eltSpot:
 	case deLight::eltProjector:
 		pShadowSizeStatic = pPlan.GetShadowMapSize();
@@ -123,7 +123,7 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
 	pShadowSizeDynamic = pShadowSizeStatic;
@@ -136,9 +136,9 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	
 	// for temporary shadow casting reduce shadow map size. this is done to avoid requesting
 	// and keeping large shared textures. rendering time is not affected much by size
-	int giReductionFactorDynamic = decMath::max( 2, pReductionFactorDynamic );
+	int giReductionFactorDynamic = decMath::max(2, pReductionFactorDynamic);
 	
-	if( pUseShadowTemporary ){
+	if(pUseShadowTemporary){
 		pReductionFactorStatic += 2;
 		pReductionFactorDynamic += 2;
 		
@@ -146,29 +146,29 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	}
 	
 	// reduce shadow map size
-	if( pReductionFactorStatic > 0 ){
-		pShadowSizeStatic = decMath::max( pShadowSizeStatic >> pReductionFactorStatic, minSize );
+	if(pReductionFactorStatic > 0){
+		pShadowSizeStatic = decMath::max(pShadowSizeStatic >> pReductionFactorStatic, minSize);
 	}
 	
-	if( pReductionFactorDynamic > 0 ){
-		pShadowSizeDynamic = decMath::max( pShadowSizeDynamic >> pReductionFactorDynamic, minSize );
+	if(pReductionFactorDynamic > 0){
+		pShadowSizeDynamic = decMath::max(pShadowSizeDynamic >> pReductionFactorDynamic, minSize);
 	}
 	
-	pGIShadowSizeDynamic = decMath::max( pShadowSizeDynamic >> giReductionFactorDynamic, minSize );
+	pGIShadowSizeDynamic = decMath::max(pShadowSizeDynamic >> giReductionFactorDynamic, minSize);
 	
 	// reduce size for transparent shadow maps (or use static sizes?)
-	pTranspShadowSizeStatic = decMath::max( pShadowSizeStatic >> 1, minSize );
-	pTranspShadowSizeDynamic = decMath::max( pShadowSizeDynamic >> 1, minSize );
+	pTranspShadowSizeStatic = decMath::max(pShadowSizeStatic >> 1, minSize);
+	pTranspShadowSizeDynamic = decMath::max(pShadowSizeDynamic >> 1, minSize);
 	
 	// temporary hack. calculating the static point shadow map at higher resolution
 	// is currently a problem and causes noticeable stutter. reducing the static
 	// point shadow map size until this problem is fixed
 	/*
-	switch( light.GetLightType() ){
+	switch(light.GetLightType()){
 	case deLight::eltPoint:
 	case deLight::eltSemiPoint:
 	case deLight::eltAmbient:
-		sizeSolidStatic = decMath::max( pShadowCubeSize >> 1, minSize );
+		sizeSolidStatic = decMath::max(pShadowCubeSize >> 1, minSize);
 		break;
 		
 	default:
@@ -181,21 +181,21 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	pAmbientShadowSizeDynamic = pShadowSizeDynamic;
 	
 	// manipulate cached shadows only if not using temporary shadows
-	if( ! pUseShadowTemporary ){
+	if(!pUseShadowTemporary){
 		// update next frame sizes. this keeps the largest size across an entire frame
 		deoglShadowCaster &shadowCaster = *pLight->GetLight()->GetShadowCaster();
 		deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
 		deoglSCAmbient &scambient = shadowCaster.GetAmbient();
 		deoglSCSolid &scsolid = shadowCaster.GetSolid();
 		
-		scsolid.SetLargestNextSizeStatic( pShadowSizeStatic );
-		scsolid.SetLargestNextSizeDynamic( pShadowSizeDynamic );
+		scsolid.SetLargestNextSizeStatic(pShadowSizeStatic);
+		scsolid.SetLargestNextSizeDynamic(pShadowSizeDynamic);
 		
-		sctransp.SetLargestNextSizeStatic( pTranspShadowSizeStatic );
-		sctransp.SetLargestNextSizeDynamic( pTranspShadowSizeDynamic );
+		sctransp.SetLargestNextSizeStatic(pTranspShadowSizeStatic);
+		sctransp.SetLargestNextSizeDynamic(pTranspShadowSizeDynamic);
 		
-		scambient.SetLargestNextSizeStatic( pAmbientShadowSizeStatic );
-		scambient.SetLargestNextSizeDynamic( pAmbientShadowSizeDynamic );
+		scambient.SetLargestNextSizeStatic(pAmbientShadowSizeStatic);
+		scambient.SetLargestNextSizeDynamic(pAmbientShadowSizeDynamic);
 		
 		// clamp sizes to last frame and next frame sizes to avoid resizing textures.
 		// using the last frame size avoids resizing if the first rendered camera requires
@@ -204,58 +204,58 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat("PlanShadowCasting: %p %d %d %d",
 	// 		pLight->GetLight(), pShadowSizeDynamic, scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );
 		
-		pShadowSizeStatic = decMath::max( pShadowSizeStatic,
-			scsolid.GetLastSizeStatic(), scsolid.GetNextSizeStatic() );
+		pShadowSizeStatic = decMath::max(pShadowSizeStatic,
+			scsolid.GetLastSizeStatic(), scsolid.GetNextSizeStatic());
 		
-		pShadowSizeDynamic = decMath::max( pShadowSizeDynamic,
-			scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );
+		pShadowSizeDynamic = decMath::max(pShadowSizeDynamic,
+			scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic());
 		
-		pTranspShadowSizeStatic = decMath::max( pTranspShadowSizeStatic,
-			sctransp.GetLastSizeStatic(), sctransp.GetNextSizeStatic() );
+		pTranspShadowSizeStatic = decMath::max(pTranspShadowSizeStatic,
+			sctransp.GetLastSizeStatic(), sctransp.GetNextSizeStatic());
 		
-		pTranspShadowSizeDynamic = decMath::max( pTranspShadowSizeDynamic,
-			sctransp.GetLastSizeDynamic(), sctransp.GetNextSizeDynamic() );
+		pTranspShadowSizeDynamic = decMath::max(pTranspShadowSizeDynamic,
+			sctransp.GetLastSizeDynamic(), sctransp.GetNextSizeDynamic());
 		
-		pAmbientShadowSizeStatic = decMath::max( pAmbientShadowSizeStatic,
-			scambient.GetLastSizeStatic(), scambient.GetNextSizeStatic() );
+		pAmbientShadowSizeStatic = decMath::max(pAmbientShadowSizeStatic,
+			scambient.GetLastSizeStatic(), scambient.GetNextSizeStatic());
 		
-		pAmbientShadowSizeDynamic = decMath::max( pAmbientShadowSizeDynamic,
-			scambient.GetLastSizeDynamic(), scambient.GetNextSizeDynamic() );
+		pAmbientShadowSizeDynamic = decMath::max(pAmbientShadowSizeDynamic,
+			scambient.GetLastSizeDynamic(), scambient.GetNextSizeDynamic());
 	}
 	
 	// log values used
 #if 0
-	static const char * const lightTypeNames[] = { "point", "spot", "projector" };
+	static const char * const lightTypeNames[] = {"point", "spot", "projector"};
 	pPlan.GetRenderThread().GetLogger().LogInfoFormat(
 		"RenderPlanLight: %s (%g,%g,%g): r=%g d=%.1f r=%d size=%d",
-		lightTypeNames[ light.GetLightType() ], pPosition.x, pPosition.y, pPosition.z,
-		light.GetRange(), pDistance, pReductionFactor, pSolidShadowSizeStatic );
+		lightTypeNames[light.GetLightType()], pPosition.x, pPosition.y, pPosition.z,
+		light.GetRange(), pDistance, pReductionFactor, pSolidShadowSizeStatic);
 #endif
 }
 
 
 
-void deoglRenderPlanLight::SetShadowSizeStatic( int size ){
+void deoglRenderPlanLight::SetShadowSizeStatic(int size){
 	pShadowSizeStatic = size;
 }
 
-void deoglRenderPlanLight::SetTranspShadowSizeStatic( int size ){
+void deoglRenderPlanLight::SetTranspShadowSizeStatic(int size){
 	pTranspShadowSizeStatic = size;
 }
 
-void deoglRenderPlanLight::SetAmbientShadowSizeStatic( int size ){
+void deoglRenderPlanLight::SetAmbientShadowSizeStatic(int size){
 	pAmbientShadowSizeStatic = size;
 }
 
-void deoglRenderPlanLight::SetShadowSizeDynamic( int size ){
+void deoglRenderPlanLight::SetShadowSizeDynamic(int size){
 	pShadowSizeDynamic = size;
 }
 
-void deoglRenderPlanLight::SetTranspShadowSizeDynamic( int size ){
+void deoglRenderPlanLight::SetTranspShadowSizeDynamic(int size){
 	pTranspShadowSizeDynamic = size;
 }
 
-void deoglRenderPlanLight::SetAmbientShadowSizeDynamic( int size ){
+void deoglRenderPlanLight::SetAmbientShadowSizeDynamic(int size){
 	pAmbientShadowSizeDynamic = size;
 }
 
@@ -272,8 +272,8 @@ void deoglRenderPlanLight::pCalcReductionFactorStatic(){
 	pReductionFactorStatic = 0;
 	
 	// up to the light range the scaling has to be highest quality
-	const float range = decMath::max( light.GetRange(), 1.0f );
-	if( pDistance <= range ){
+	const float range = decMath::max(light.GetRange(), 1.0f);
+	if(pDistance <= range){
 		return;
 	}
 	
@@ -284,8 +284,8 @@ void deoglRenderPlanLight::pCalcReductionFactorStatic(){
 	// 
 	// to be more on the safe side the multiple is reduced by 0.5 . this way the first
 	// reduction step happens at 1.5 multiple and the next at 2.5
-	const float multiple = ( pDistance / range ) - 0.5f;
-	pReductionFactorStatic = decMath::clamp( ( int )log2f( multiple ), 0, 8 );
+	const float multiple = (pDistance / range) - 0.5f;
+	pReductionFactorStatic = decMath::clamp((int)log2f(multiple), 0, 8);
 	
 	// NOTE maybe this can be improved by using the light clamp box if present to reduce
 	//      the range. this would allow for higher reduction for lights
@@ -316,13 +316,13 @@ void deoglRenderPlanLight::pCalcReductionFactorDynamic(){
 // 	const float rangeReduction = 0.4f; // consumption ~2.4x compared to version 1
 // 	const float rangeReduction = 0.25f; // consumption ~2x compared to version 1
 	
-	const float range = decMath::max( pLight->GetLight()->GetRange(), 1.0f ) * rangeReduction;
-	if( pDistance <= range ){
+	const float range = decMath::max(pLight->GetLight()->GetRange(), 1.0f) * rangeReduction;
+	if(pDistance <= range){
 		return;
 	}
 	
-	const float multiple = ( pDistance / range ) - 0.5f;
-	pReductionFactorDynamic = decMath::clamp( ( int )log2f( multiple ), 0, 8 );
+	const float multiple = (pDistance / range) - 0.5f;
+	pReductionFactorDynamic = decMath::clamp((int)log2f(multiple), 0, 8);
 }
 
 void deoglRenderPlanLight::pDetermineUseShadow(){
@@ -330,25 +330,25 @@ void deoglRenderPlanLight::pDetermineUseShadow(){
 	pUseShadowTemporary = false;
 	
 	// no shadows if the light wishes so
-	if( ! pLight->GetLight()->GetCastShadows() ){
+	if(!pLight->GetLight()->GetCastShadows()){
 		pUseShadow = false;
 	}
 	
 	// it can also happen that the light has nothing to cast shadows with
 	// so in this case shadow casting is disabled too as it is faster
 	const deoglShadowCaster::eShadowTypes shadowType = pLight->GetLight()->GetShadowCaster()->GetShadowType();
-	if( shadowType == deoglShadowCaster::estNoShadows ){
+	if(shadowType == deoglShadowCaster::estNoShadows){
 		pUseShadow = false;
 	}
 }
 
 void deoglRenderPlanLight::pDetermineUseAmbient(){
-	pUseAmbient = ! pPlan.GetNoAmbientLight();
+	pUseAmbient = !pPlan.GetNoAmbientLight();
 	
 	// disable ambient if GI is used. for rendering uses faster shader. for boundary
 	// calculation uses only depth map. ambient is only required if GI is disabled
 	// since then lights have no way to do ambient lighting otherwise
-	if( pPlan.GetRenderGIState() ){
+	if(pPlan.GetRenderGIState()){
 		pUseAmbient = false;
 	}
 }
@@ -367,9 +367,9 @@ void deoglRenderPlanLight::pDetermineRefilterShadows(){
 	// requirement to use the static shadow maps.
 	// TODO check if this special filter check should be added or not
 	pRefilterShadows = pPlan.GetUseLayerMask()
-		&& ! pLight->GetLight()->StaticMatchesCamera( pPlan.GetLayerMask() );
+		&& !pLight->GetLight()->StaticMatchesCamera(pPlan.GetLayerMask());
 	
-	if( pRefilterShadows ){
+	if(pRefilterShadows){
 		// if refiltering is used temporary shadow maps have to use used to avoid rebuilding
 		// cached shadow maps slowing rendering down and producing hitches
 		pUseShadowTemporary = true;

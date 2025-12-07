@@ -43,40 +43,40 @@ decIntSet::decIntSet(){
 	pValueSize = 0;
 }
 
-decIntSet::decIntSet( int capacity ){
-	if( capacity < 0 ){
-		DETHROW( deeInvalidParam );
+decIntSet::decIntSet(int capacity){
+	if(capacity < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pValues = NULL;
 	pValueCount = 0;
 	pValueSize = 0;
 	
-	if( capacity > 0 ){
-		pValues = new int[ capacity ];
+	if(capacity > 0){
+		pValues = new int[capacity];
 		pValueSize = capacity;
 	}
 }
 
-decIntSet::decIntSet( const decIntSet &set ){
+decIntSet::decIntSet(const decIntSet &set){
 	int count = set.GetCount();
 	
 	pValues = NULL;
 	pValueCount = 0;
 	pValueSize = 0;
 	
-	if( count > 0 ){
-		pValues = new int[ count ];
+	if(count > 0){
+		pValues = new int[count];
 		pValueSize = count;
 		
-		for( pValueCount=0; pValueCount<count; pValueCount++ ){
-			pValues[ pValueCount ] = set.pValues[ pValueCount ];
+		for(pValueCount=0; pValueCount<count; pValueCount++){
+			pValues[pValueCount] = set.pValues[pValueCount];
 		}
 	}
 }
 
 decIntSet::~decIntSet(){
-	if( pValues ){
+	if(pValues){
 		delete [] pValues;
 	}
 }
@@ -86,19 +86,19 @@ decIntSet::~decIntSet(){
 // Management
 ///////////////
 
-int decIntSet::GetAt( int index ) const{
-	if( index < 0 || index >= pValueCount ){
-		DETHROW( deeInvalidParam );
+int decIntSet::GetAt(int index) const{
+	if(index < 0 || index >= pValueCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pValues[ index ];
+	return pValues[index];
 }
 
-bool decIntSet::Has( int value ) const{
+bool decIntSet::Has(int value) const{
 	int p;
 	
-	for( p=0; p<pValueCount; p++ ){
-		if( value == pValues[ p ] ){
+	for(p=0; p<pValueCount; p++){
+		if(value == pValues[p]){
 			return true;
 		}
 	}
@@ -106,68 +106,68 @@ bool decIntSet::Has( int value ) const{
 	return false;
 }
 
-void decIntSet::Add( int value ){
-	if( Has( value ) ){
-		DETHROW( deeInvalidParam );
+void decIntSet::Add(int value){
+	if(Has(value)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pValueCount == pValueSize ){
+	if(pValueCount == pValueSize){
 		int newSize = pValueSize * 3 / 2 + 1;
-		int *newArray = new int[ newSize ];
-		if( pValues ){
-			memcpy( newArray, pValues, sizeof( int ) * pValueSize );
+		int *newArray = new int[newSize];
+		if(pValues){
+			memcpy(newArray, pValues, sizeof(int) * pValueSize);
 			delete [] pValues;
 		}
 		pValues = newArray;
 		pValueSize = newSize;
 	}
 	
-	pValues[ pValueCount ] = value;
+	pValues[pValueCount] = value;
 	pValueCount++;
 }
 
-void decIntSet::AddIfAbsent( int value ){
-	if( Has( value ) ){
+void decIntSet::AddIfAbsent(int value){
+	if(Has(value)){
 		return;
 	}
 	
-	if( pValueCount == pValueSize ){
+	if(pValueCount == pValueSize){
 		int newSize = pValueSize * 3 / 2 + 1;
-		int *newArray = new int[ newSize ];
-		if( pValues ){
-			memcpy( newArray, pValues, sizeof( int ) * pValueSize );
+		int *newArray = new int[newSize];
+		if(pValues){
+			memcpy(newArray, pValues, sizeof(int) * pValueSize);
 			delete [] pValues;
 		}
 		pValues = newArray;
 		pValueSize = newSize;
 	}
 	
-	pValues[ pValueCount ] = value;
+	pValues[pValueCount] = value;
 	pValueCount++;
 }
 
-void decIntSet::Remove( int value ){
-	int p, position = pIndexOf( value );
+void decIntSet::Remove(int value){
+	int p, position = pIndexOf(value);
 	
-	if( position == -1 ){
-		DETHROW( deeInvalidParam );
+	if(position == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( p=position+1; p<pValueCount; p++ ){
-		pValues[ p - 1 ] = pValues[ p ];
+	for(p=position+1; p<pValueCount; p++){
+		pValues[p - 1] = pValues[p];
 	}
 	pValueCount--;
 }
 
-void decIntSet::RemoveIfPresent( int value ){
-	int p, position = pIndexOf( value );
+void decIntSet::RemoveIfPresent(int value){
+	int p, position = pIndexOf(value);
 	
-	if( position == -1 ){
+	if(position == -1){
 		return;
 	}
 	
-	for( p=position+1; p<pValueCount; p++ ){
-		pValues[ p - 1 ] = pValues[ p ];
+	for(p=position+1; p<pValueCount; p++){
+		pValues[p - 1] = pValues[p];
 	}
 	pValueCount--;
 }
@@ -178,15 +178,15 @@ void decIntSet::RemoveAll(){
 
 
 
-bool decIntSet::Equals( const decIntSet &set ) const{
+bool decIntSet::Equals(const decIntSet &set) const{
 	int p;
 	
-	if( set.pValueCount != pValueCount ){
+	if(set.pValueCount != pValueCount){
 		return false;
 	}
 	
-	for( p=0; p<pValueCount; p++ ){
-		if( ! set.Has( pValues[ p ] ) ){
+	for(p=0; p<pValueCount; p++){
+		if(!set.Has(pValues[p])){
 			return false;
 		}
 	}
@@ -199,64 +199,64 @@ bool decIntSet::Equals( const decIntSet &set ) const{
 // Operators
 //////////////
 
-bool decIntSet::operator==( const decIntSet &set ) const{
-	return Equals( set );
+bool decIntSet::operator==(const decIntSet &set) const{
+	return Equals(set);
 }
 
-decIntSet decIntSet::operator+( const decIntSet &set ) const{
-	decIntSet nset( pValueCount + set.pValueCount );
+decIntSet decIntSet::operator+(const decIntSet &set) const{
+	decIntSet nset(pValueCount + set.pValueCount);
 	int i;
 	
-	for( i=0; i<pValueCount; i++ ){
-		nset.pValues[ i ] = pValues[ i ];
+	for(i=0; i<pValueCount; i++){
+		nset.pValues[i] = pValues[i];
 	}
 	
-	for( i=0; i<set.pValueCount; i++ ){
-		nset.AddIfAbsent( set.pValues[ i ] );
+	for(i=0; i<set.pValueCount; i++){
+		nset.AddIfAbsent(set.pValues[i]);
 	}
 	
 	return nset;
 }
 
-int decIntSet::operator[]( int position ) const{
-	return GetAt( position );
+int decIntSet::operator[](int position) const{
+	return GetAt(position);
 }
 
 
 
-decIntSet &decIntSet::operator=( const decIntSet &set ){
-	if( set.pValueCount > pValueSize ){
-		int *newArray = new int[ set.pValueCount ];
-		if( pValues ){
+decIntSet &decIntSet::operator=(const decIntSet &set){
+	if(set.pValueCount > pValueSize){
+		int *newArray = new int[set.pValueCount];
+		if(pValues){
 			delete [] pValues;
 		}
 		pValues = newArray;
 		pValueSize = set.pValueCount;
 	}
 	
-	for( pValueCount=0; pValueCount<set.pValueCount; pValueCount++ ){
-		pValues[ pValueCount ] = set.pValues[ pValueCount ];
+	for(pValueCount=0; pValueCount<set.pValueCount; pValueCount++){
+		pValues[pValueCount] = set.pValues[pValueCount];
 	}
 	
 	return *this;
 }
 
-decIntSet &decIntSet::operator+=( const decIntSet &set ){
-	if( set.pValueCount > 0 ){
+decIntSet &decIntSet::operator+=(const decIntSet &set){
+	if(set.pValueCount > 0){
 		int i, count = pValueCount + set.pValueCount;
 		
-		if( count > pValueSize ){
-			int *newArray = new int[ count ];
-			if( pValues ){
-				memcpy( newArray, pValues, sizeof( int ) * pValueSize );
+		if(count > pValueSize){
+			int *newArray = new int[count];
+			if(pValues){
+				memcpy(newArray, pValues, sizeof(int) * pValueSize);
 				delete [] pValues;
 			}
 			pValues = newArray;
 			pValueSize = count;
 		}
 		
-		for( i=0; i<count; i++ ){
-			AddIfAbsent( set.pValues[ i ] );
+		for(i=0; i<count; i++){
+			AddIfAbsent(set.pValues[i]);
 		}
 	}
 	
@@ -268,11 +268,11 @@ decIntSet &decIntSet::operator+=( const decIntSet &set ){
 // Private Functions
 //////////////////////
 
-int decIntSet::pIndexOf( int value ) const{
+int decIntSet::pIndexOf(int value) const{
 	int p;
 	
-	for( p=0; p<pValueCount; p++ ){
-		if( value == pValues[ p ] ){
+	for(p=0; p<pValueCount; p++){
+		if(value == pValues[p]){
 			return p;
 		}
 	}

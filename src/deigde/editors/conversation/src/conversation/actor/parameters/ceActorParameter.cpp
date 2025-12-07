@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceActorParameter::ceActorParameter( const char *name, int value ){
-	if( ! name || strlen( name ) == 0 ){
-		DETHROW( deeInvalidParam );
+ceActorParameter::ceActorParameter(const char *name, int value){
+	if(!name || strlen(name) == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
@@ -56,6 +56,6 @@ ceActorParameter::~ceActorParameter(){
 // Management
 ///////////////
 
-void ceActorParameter::SetValue( int value ){
+void ceActorParameter::SetValue(int value){
 	pValue = value;
 }

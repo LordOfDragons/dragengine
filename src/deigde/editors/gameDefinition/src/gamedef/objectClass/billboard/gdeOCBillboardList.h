@@ -47,7 +47,7 @@ public:
 	gdeOCBillboardList();
 	
 	/** \brief Create copy of object class billboard list. */
-	gdeOCBillboardList( const gdeOCBillboardList &list );
+	gdeOCBillboardList(const gdeOCBillboardList &list);
 	
 	/** \brief Clean up object class billboard list. */
 	~gdeOCBillboardList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class billboard at position. */
-	gdeOCBillboard *GetAt( int index ) const;
+	gdeOCBillboard *GetAt(int index) const;
 	
 	/** \brief Index of named object class billboard or -1 if absent. */
-	int IndexOf( gdeOCBillboard *billboard ) const;
+	int IndexOf(gdeOCBillboard *billboard) const;
 	
 	/** \brief Object class billboard is present. */
-	bool Has( gdeOCBillboard *billboard ) const;
+	bool Has(gdeOCBillboard *billboard) const;
 	
 	/** \brief Add object class billboard. */
-	void Add( gdeOCBillboard *billboard );
+	void Add(gdeOCBillboard *billboard);
 	
 	/** \brief Remove object class billboard. */
-	void Remove( gdeOCBillboard *billboard );
+	void Remove(gdeOCBillboard *billboard);
 	
 	/** \brief Remove all object class billboards. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class billboard list. */
-	gdeOCBillboardList &operator=( const gdeOCBillboardList &list );
+	gdeOCBillboardList &operator=(const gdeOCBillboardList &list);
 	/*@}*/
 };
 

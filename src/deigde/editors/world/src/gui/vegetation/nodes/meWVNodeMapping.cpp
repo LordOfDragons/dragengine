@@ -62,11 +62,11 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	cTextLower( meWVNodeMapping &node ) : pNode( node ){ }
+	cTextLower(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleMapping()->GetLower() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleMapping()->GetLower()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -81,11 +81,11 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	cTextUpper( meWVNodeMapping &node ) : pNode( node ){ }
+	cTextUpper(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleMapping()->GetUpper() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleMapping()->GetUpper()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -100,11 +100,11 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	cTextValue( meWVNodeMapping &node ) : pNode( node ){ }
+	cTextValue(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleMapping()->GetValue() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleMapping()->GetValue()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -119,8 +119,8 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	cActionInversed( meWVNodeMapping &node ) :
-		igdeAction( "Inversed", NULL, "Invert value" ), pNode( node ){ }
+	cActionInversed(meWVNodeMapping &node) :
+		igdeAction("Inversed", NULL, "Invert value"), pNode(node){}
 	
 	virtual void OnAction(){
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
@@ -139,15 +139,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeMapping::meWVNodeMapping( meWindowVegetation &windowVegetation, meHTVRuleMapping *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleMapping( rule )
+meWVNodeMapping::meWVNodeMapping(meWindowVegetation &windowVegetation, meHTVRuleMapping *rule) :
+meWVNode(windowVegetation, rule),
+pRuleMapping(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Mapping" );
+	SetTitle("Mapping");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -157,27 +157,27 @@ pRuleMapping( rule )
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
 		"Lower", "Lower value",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower));
-	helper.EditFloat( slot, "Lower value if slot is not connected.",
-		pEditLower, new cTextLower( *this ) );
-	AddSlot( slot );
+	helper.EditFloat(slot, "Lower value if slot is not connected.",
+		pEditLower, new cTextLower(*this));
+	AddSlot(slot);
 	
 	slot.TakeOverWith(env, "Upper", "Upper value",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper);
-	helper.EditFloat( slot, "Upper value if slot is not connected.",
-		pEditUpper, new cTextUpper( *this ) );
-	AddSlot( slot );
+	helper.EditFloat(slot, "Upper value if slot is not connected.",
+		pEditUpper, new cTextUpper(*this));
+	AddSlot(slot);
 	
 	slot.TakeOverWith(env, "Value", "Value to map",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue);
-	helper.EditFloat( slot, "Value to map if slot is not connected.",
-		pEditValue, new cTextValue( *this ) );
-	AddSlot( slot );
+	helper.EditFloat(slot, "Value to map if slot is not connected.",
+		pEditValue, new cTextValue(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 	
-	helper.CheckBox( pFraParameters, pChkInversed, new cActionInversed( *this ) );
+	helper.CheckBox(pFraParameters, pChkInversed, new cActionInversed(*this));
 }
 
 meWVNodeMapping::~meWVNodeMapping(){
@@ -191,8 +191,8 @@ meWVNodeMapping::~meWVNodeMapping(){
 void meWVNodeMapping::Update(){
 	meWVNode::Update();
 	
-	pEditLower->SetFloat( pRuleMapping->GetLower() );
-	pEditUpper->SetFloat( pRuleMapping->GetUpper() );
-	pEditValue->SetFloat( pRuleMapping->GetValue() );
-	pChkInversed->SetChecked( pRuleMapping->GetInversed() );
+	pEditLower->SetFloat(pRuleMapping->GetLower());
+	pEditUpper->SetFloat(pRuleMapping->GetUpper());
+	pEditValue->SetFloat(pRuleMapping->GetValue());
+	pChkInversed->SetChecked(pRuleMapping->GetInversed());
 }

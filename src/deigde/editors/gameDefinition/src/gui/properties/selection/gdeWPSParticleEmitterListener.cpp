@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSParticleEmitterListener::gdeWPSParticleEmitterListener( gdeWPSParticleEmitter &panel ) :
-pPanel( panel ){
+gdeWPSParticleEmitterListener::gdeWPSParticleEmitterListener(gdeWPSParticleEmitter &panel) :
+pPanel(panel){
 }
 
 gdeWPSParticleEmitterListener::~gdeWPSParticleEmitterListener(){
@@ -52,19 +52,19 @@ gdeWPSParticleEmitterListener::~gdeWPSParticleEmitterListener(){
 // Management
 ///////////////
 
-void gdeWPSParticleEmitterListener::ParticleEmitterCategoriesChanged( gdeGameDefinition* ){
+void gdeWPSParticleEmitterListener::ParticleEmitterCategoriesChanged(gdeGameDefinition*){
 	pPanel.UpdateCategoryList();
 }
 
 
 
-void gdeWPSParticleEmitterListener::ParticleEmitterChanged( gdeGameDefinition*,
-gdeParticleEmitter *particleEmitter ){
-	if( pPanel.GetParticleEmitter() == particleEmitter ){
+void gdeWPSParticleEmitterListener::ParticleEmitterChanged(gdeGameDefinition*,
+gdeParticleEmitter *particleEmitter){
+	if(pPanel.GetParticleEmitter() == particleEmitter){
 		pPanel.UpdateParticleEmitter();
 	}
 }
 
-void gdeWPSParticleEmitterListener::ActiveParticleEmitterChanged( gdeGameDefinition* ){
+void gdeWPSParticleEmitterListener::ActiveParticleEmitterChanged(gdeGameDefinition*){
 	pPanel.UpdateParticleEmitter();
 }

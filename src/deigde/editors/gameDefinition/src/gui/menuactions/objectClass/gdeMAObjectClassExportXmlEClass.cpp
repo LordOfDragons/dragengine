@@ -52,10 +52,10 @@ decString gdeMAObjectClassExportXmlEClass::pLastDirExportXmlEClass;
 // Constructor
 ////////////////
 
-gdeMAObjectClassExportXmlEClass::gdeMAObjectClassExportXmlEClass( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Object Class Export XML EClass",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
-	"Export object class as XML EClass (*.deeclass)" )
+gdeMAObjectClassExportXmlEClass::gdeMAObjectClassExportXmlEClass(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "Object Class Export XML EClass",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+	"Export object class as XML EClass (*.deeclass)")
 {
 }
 
@@ -64,46 +64,46 @@ gdeBaseAction( windowMain, "Object Class Export XML EClass",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassExportXmlEClass::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo *gdeMAObjectClassExportXmlEClass::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass ){
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
 		return NULL;
 	}
 	
 	const gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if( ! objectClass ){
+	if(!objectClass){
 		return NULL;
 	}
 	
-	if( pLastDirExportXmlEClass.IsEmpty() ){
+	if(pLastDirExportXmlEClass.IsEmpty()){
 		pLastDirExportXmlEClass = gameDefinition.GetBasePath();
 	}
 	
-	decPath path( decPath::CreatePathNative( pLastDirExportXmlEClass ) );
-	path.AddComponent( objectClass->GetName() );
+	decPath path(decPath::CreatePathNative(pLastDirExportXmlEClass));
+	path.AddComponent(objectClass->GetName());
 	
-	decString filename( path.GetPathNative() );
+	decString filename(path.GetPathNative());
 	
-	if( ! igdeCommonDialogs::GetFileSave( &pWindowMain, "Export XML Element Class",
-	pWindowMain.GetLoadSaveSystem().GetXmlEClassFilePatterns(), filename ) ){
+	if(!igdeCommonDialogs::GetFileSave(&pWindowMain, "Export XML Element Class",
+	pWindowMain.GetLoadSaveSystem().GetXmlEClassFilePatterns(), filename)){
 		return NULL;
 	}
 	
-	path.SetFromNative( filename );
+	path.SetFromNative(filename);
 	path.RemoveLastComponent();
 	pLastDirExportXmlEClass = path.GetPathNative();
 	
-	pWindowMain.GetLoadSaveSystem().SaveXmlEClass( gameDefinition, *objectClass, filename );
+	pWindowMain.GetLoadSaveSystem().SaveXmlEClass(gameDefinition, *objectClass, filename);
 	return NULL;
 }
 
 void gdeMAObjectClassExportXmlEClass::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
+		&& gameDefinition->GetActiveObjectClass() != NULL);
 }

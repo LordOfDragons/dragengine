@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeWPSAnimListener::saeWPSAnimListener( saeWPSAnim &panel ) :
-pPanel( panel ){
+saeWPSAnimListener::saeWPSAnimListener(saeWPSAnim &panel) :
+pPanel(panel){
 }
 
 saeWPSAnimListener::~saeWPSAnimListener(){
@@ -51,43 +51,43 @@ saeWPSAnimListener::~saeWPSAnimListener(){
 // Management
 ///////////////
 
-void saeWPSAnimListener::SAnimationChanged( saeSAnimation *sanimation ){
+void saeWPSAnimListener::SAnimationChanged(saeSAnimation *sanimation){
 	pPanel.UpdateSAnimation();
 }
 
-void saeWPSAnimListener::ModelChanged( saeSAnimation *sanimation ){
+void saeWPSAnimListener::ModelChanged(saeSAnimation *sanimation){
 	pPanel.UpdateNeutralVertexPositionSetList();
 	pPanel.UpdatePhonemeVertexPositionSetList();
 }
 
 
 
-void saeWPSAnimListener::PhonemeStructureChanged( saeSAnimation *sanimation ){
+void saeWPSAnimListener::PhonemeStructureChanged(saeSAnimation *sanimation){
 	pPanel.UpdatePhonemeList();
 }
 
-void saeWPSAnimListener::PhonemeChanged( saeSAnimation *sanimation, saePhoneme *phoneme ){
+void saeWPSAnimListener::PhonemeChanged(saeSAnimation *sanimation, saePhoneme *phoneme){
 	pPanel.UpdatePhonemeList();
 }
 
-void saeWPSAnimListener::ActivePhonemeChanged( saeSAnimation *sanimation ){
+void saeWPSAnimListener::ActivePhonemeChanged(saeSAnimation *sanimation){
 	pPanel.SelectActivePhoneme();
 }
 
 
 
-void saeWPSAnimListener::WordStructureChanged( saeSAnimation *sanimation ){
+void saeWPSAnimListener::WordStructureChanged(saeSAnimation *sanimation){
 	pPanel.UpdateWordList();
 }
 
-void saeWPSAnimListener::WordNameChanged( saeSAnimation *sanimation, saeWord *word ){
+void saeWPSAnimListener::WordNameChanged(saeSAnimation *sanimation, saeWord *word){
 	pPanel.UpdateWordList();
 }
 
-void saeWPSAnimListener::WordChanged( saeSAnimation *sanimation, saeWord *word ){
+void saeWPSAnimListener::WordChanged(saeSAnimation *sanimation, saeWord *word){
 	pPanel.UpdateWord();
 }
 
-void saeWPSAnimListener::ActiveWordChanged( saeSAnimation *sanimation ){
+void saeWPSAnimListener::ActiveWordChanged(saeSAnimation *sanimation){
 	pPanel.SelectActiveWord();
 }

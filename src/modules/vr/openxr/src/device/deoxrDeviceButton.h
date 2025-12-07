@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device button. */
-	deoxrDeviceButton( deoxrDevice &device );
+	deoxrDeviceButton(deoxrDevice &device);
 	
 protected:
 	/** Clean up device button. */
@@ -99,7 +99,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	
 	
@@ -107,16 +107,16 @@ public:
 	inline deoxrAction *GetActionPress() const{ return pActionPress; }
 	
 	/** Set press button action. */
-	void SetActionPress( deoxrAction *action );
+	void SetActionPress(deoxrAction *action);
 	
 	/** Touch button action. */
 	inline deoxrAction *GetActionTouch() const{ return pActionTouch; }
 	
 	/** Set touch button action. */
-	void SetActionTouch( deoxrAction *action );
+	void SetActionTouch(deoxrAction *action);
 	
 	/** Near button action. */
-	inline deoxrAction *GetActionNear() const{return pActionApproach;}
+	inline deoxrAction *GetActionNear() const{ return pActionApproach; }
 	
 	/** Set approach button action. */
 	void SetActionApproach(deoxrAction *action);
@@ -125,7 +125,7 @@ public:
 	inline const deoxrDeviceAxis::Ref &GetFakeFromAxis() const{ return pFakeFromAxis; }
 
 	/** Set button state is faked from axis state. */
-	void SetFakeFromAxis( const deoxrDeviceAxis::Ref &axis );
+	void SetFakeFromAxis(const deoxrDeviceAxis::Ref &axis);
 
 	
 	
@@ -133,25 +133,25 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Type. */
 	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( deInputDeviceButton::eButtonTypes type );
+	void SetType(deInputDeviceButton::eButtonTypes type);
 	
 	/** Input device component. */
 	inline deoxrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
 	
 	/** Set input device component. */
-	void SetInputDeviceComponent( deoxrDeviceComponent *component );
+	void SetInputDeviceComponent(deoxrDeviceComponent *component);
 	
 	/** Finger. */
 	inline int GetFinger() const{ return pFinger; }
@@ -163,19 +163,19 @@ public:
 	inline bool GetPressed() const{ return pPressed; }
 	
 	/** Set if button is pressed. */
-	void SetPressed( bool pressed );
+	void SetPressed(bool pressed);
 	
 	/** Update pressed sending event if changed. */
-	void UpdatePressed( bool pressed );
+	void UpdatePressed(bool pressed);
 	
 	/** Button is touched. */
 	inline bool GetTouched() const{ return pTouched; }
 	
 	/** Set if button is touched. */
-	void SetTouched( bool touched );
+	void SetTouched(bool touched);
 	
 	/** Update touched sending event if changed. */
-	void UpdateTouched( bool touched );
+	void UpdateTouched(bool touched);
 	
 	/** Near button. */
 	inline bool GetNear() const{ return pNear; }
@@ -195,21 +195,21 @@ public:
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const deoxrDeviceButton &button );
+	void SetDisplayImages(const deoxrDeviceButton &button);
 	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
 	/** Update engine input device information button. */
-	void GetInfo( deInputDeviceButton &info ) const;
+	void GetInfo(deInputDeviceButton &info) const;
 	
 	/** Track state. */
 	void TrackState();

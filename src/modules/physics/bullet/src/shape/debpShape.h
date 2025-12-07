@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shape. */
-	debpShape( int type, decShape *shape );
+	debpShape(int type, decShape *shape);
 	
 protected:
 	/** \brief Clean up shape. */
@@ -92,17 +92,17 @@ public:
 	inline debpDCollisionVolume *GetCollisionVolume() const{ return pCollisionVolume; }
 	
 	/** \brief Update collision volume using a transformation matrix. */
-	virtual void UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ) = 0;
+	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale) = 0;
 	
 	/** \brief Print out on console debugging information about shape. */
-	virtual void PrintDebug( dePhysicsBullet &module ) = 0;
+	virtual void PrintDebug(dePhysicsBullet &module) = 0;
 	/*@}*/
 	
 	
 	
 protected:
-	void SetCollisionVolume( debpDCollisionVolume *collisionVolume );
-	static float UniformScale( const decDMatrix &matrix );
+	void SetCollisionVolume(debpDCollisionVolume *collisionVolume);
+	static float UniformScale(const decDMatrix &matrix);
 };
 
 #endif

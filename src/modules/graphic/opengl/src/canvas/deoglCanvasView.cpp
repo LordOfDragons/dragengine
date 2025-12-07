@@ -46,13 +46,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCanvasView::deoglCanvasView( deGraphicOpenGl &ogl, deCanvasView &canvas ) :
-deoglCanvas( ogl, canvas ),
-pCanvasView( canvas ),
-pRCanvasView( NULL ),
-pDirtyPaint( false ),
-pResizeRenderTarget( false ),
-pSyncRequestSend( false ){
+deoglCanvasView::deoglCanvasView(deGraphicOpenGl &ogl, deCanvasView &canvas) :
+deoglCanvas(ogl, canvas),
+pCanvasView(canvas),
+pRCanvasView(NULL),
+pDirtyPaint(false),
+pResizeRenderTarget(false),
+pSyncRequestSend(false){
 }
 
 deoglCanvasView::~deoglCanvasView(){
@@ -77,7 +77,7 @@ void deoglCanvasView::ChildOrderChanged(){
 }
 
 void deoglCanvasView::SetDirtyPaint(){
-	if( pDirtyPaint ){
+	if(pDirtyPaint){
 		return;
 	}
 	
@@ -91,25 +91,25 @@ void deoglCanvasView::SyncToRender(){
 	// PrepareContentForRender() which would result in NULL RCanvas to be added
 	deCanvas *child = pCanvasView.GetRootCanvas();
 	
-	while( child ){
-		( ( deoglCanvas* )child->GetPeerGraphic() )->SyncToRender();
+	while(child){
+		((deoglCanvas*)child->GetPeerGraphic())->SyncToRender();
 		child = child->GetLLViewNext();
 	}
 	
 	// if paint dirty update the paint tracker in the render counterpart
-	if( pDirtyPaint ){
+	if(pDirtyPaint){
 		pDirtyPaint = false;
 		
-		if( pRCanvasView ){
+		if(pRCanvasView){
 			pRCanvasView->IncrementPaintTracker();
 		}
 	}
 	
 	// resize render target if existing and required
-	if( pResizeRenderTarget ){
+	if(pResizeRenderTarget){
 		pResizeRenderTarget = false;
 		
-		if( pRCanvasView ){
+		if(pRCanvasView){
 			pRCanvasView->SetResizeRenderTarget();
 		}
 	}
@@ -124,8 +124,8 @@ void deoglCanvasView::SyncContentToRender(){
 	
 	pRCanvasView->RemoveAllChildren();
 	
-	while( child ){
-		pRCanvasView->AddChild( ( ( deoglCanvas* )child->GetPeerGraphic() )->GetRCanvas() );
+	while(child){
+		pRCanvasView->AddChild(((deoglCanvas*)child->GetPeerGraphic())->GetRCanvas());
 		child = child->GetLLViewNext();
 	}
 }
@@ -135,30 +135,30 @@ void deoglCanvasView::SyncContentToRender(){
 // Listeners
 //////////////
 
-void deoglCanvasView::AddListener( deoglCanvasViewListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void deoglCanvasView::AddListener(deoglCanvasViewListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void deoglCanvasView::RemoveListener( deoglCanvasViewListener *listener ){
-	pListeners.RemoveIfPresent( listener );
+void deoglCanvasView::RemoveListener(deoglCanvasViewListener *listener){
+	pListeners.RemoveIfPresent(listener);
 }
 
 void deoglCanvasView::NotifyDestroyed(){
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglCanvasViewListener* )pListeners.GetAt( i ) )->CanvasViewDestroyed();
+	for(i=0; i<count; i++){
+		((deoglCanvasViewListener*)pListeners.GetAt(i))->CanvasViewDestroyed();
 	}
 }
 
 void deoglCanvasView::NotifyRequiresSync(){
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglCanvasViewListener* )pListeners.GetAt( i ) )->CanvasViewRequiresSync();
+	for(i=0; i<count; i++){
+		((deoglCanvasViewListener*)pListeners.GetAt(i))->CanvasViewRequiresSync();
 	}
 }
 
@@ -227,7 +227,7 @@ void deoglCanvasView::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasView::CreateRCanvas(){
-	pRCanvasView = new deoglRCanvasView( GetOgl().GetRenderThread() );
+	pRCanvasView = new deoglRCanvasView(GetOgl().GetRenderThread());
 	return pRCanvasView;
 }
 
@@ -237,7 +237,7 @@ deoglRCanvas *deoglCanvasView::CreateRCanvas(){
 //////////////////////
 
 void deoglCanvasView::pRequiresSync(){
-	if( pSyncRequestSend ){
+	if(pSyncRequestSend){
 		return;
 	}
 	

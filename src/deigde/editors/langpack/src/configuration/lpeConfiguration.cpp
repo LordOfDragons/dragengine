@@ -59,9 +59,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeConfiguration::lpeConfiguration( lpeWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pPreventSaving( false )
+lpeConfiguration::lpeConfiguration(lpeWindowMain &windowMain) :
+pWindowMain(windowMain),
+pPreventSaving(false)
 {
 	pReset();
 }
@@ -75,7 +75,7 @@ lpeConfiguration::~lpeConfiguration(){
 // Management
 ///////////////
 
-void lpeConfiguration::SetPreventSaving( bool preventSaving ){
+void lpeConfiguration::SetPreventSaving(bool preventSaving){
 	pPreventSaving = preventSaving;
 }
 
@@ -87,41 +87,41 @@ void lpeConfiguration::LoadConfiguration(){
 		pReset();
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
-		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/languagePackEditor.xml" ) );
-		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		const decPath pathFile(decPath::CreatePathUnix("/igde/local/languagePackEditor.xml"));
+		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
 		
-		lpeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile(
+		lpeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
 			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pPreventSaving = false;
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
 void lpeConfiguration::SaveConfiguration(){
-	if( pPreventSaving ){
+	if(pPreventSaving){
 		return;
 	}
 	
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/languagePackEditor.xml" ) );
-	if( ! vfs.CanWriteFile( pathFile ) ){
+	const decPath pathFile(decPath::CreatePathUnix("/igde/local/languagePackEditor.xml"));
+	if(!vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	
 	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
-		lpeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
+		lpeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
 		
-	}catch( const deException &e ){
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 

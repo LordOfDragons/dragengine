@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reIGDEModule::reIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+reIGDEModule::reIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 reIGDEModule::~reIGDEModule(){
@@ -51,7 +51,7 @@ reIGDEModule::~reIGDEModule(){
 ///////////////
 
 void reIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new reWindowMain( *this ) );
+	if(!GetEditorWindow()){
+		SetEditorWindow(new reWindowMain(*this));
 	}
 }

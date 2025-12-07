@@ -49,31 +49,31 @@ deoglRenderTaskConfigTexture::~deoglRenderTaskConfigTexture(){
 // Management
 ///////////////
 
-void deoglRenderTaskConfigTexture::SetRenderTaskFilter( int filter ){
+void deoglRenderTaskConfigTexture::SetRenderTaskFilter(int filter){
 	pRenderTaskFilter = filter;
 }
 
-void deoglRenderTaskConfigTexture::SetPipeline( const deoglPipeline *pipeline ){
+void deoglRenderTaskConfigTexture::SetPipeline(const deoglPipeline *pipeline){
 	pPipeline = pipeline;
 	pPipelineIndex = pipeline ? pipeline->GetRTSIndex() : -1;
 }
 
-void deoglRenderTaskConfigTexture::SetTexture( const deoglRenderTaskSharedTexture *texture ){
+void deoglRenderTaskConfigTexture::SetTexture(const deoglRenderTaskSharedTexture *texture){
 	pTexture = texture;
 	pTextureIndex = texture ? texture->GetIndex() : 0;
 }
 
-void deoglRenderTaskConfigTexture::SetVAO( const deoglRenderTaskSharedVAO *vao ){
+void deoglRenderTaskConfigTexture::SetVAO(const deoglRenderTaskSharedVAO *vao){
 	pVAO = vao;
 	pVAOIndex = vao ? vao->GetIndex() : 0;
 }
 
-void deoglRenderTaskConfigTexture::SetInstance( const deoglRenderTaskSharedInstance *instance ){
+void deoglRenderTaskConfigTexture::SetInstance(const deoglRenderTaskSharedInstance *instance){
 	pInstance = instance;
 	pInstanceIndex = instance ? instance->GetIndex() : 0;
 }
 
-void deoglRenderTaskConfigTexture::SetGroupIndex( int groupIndex ){
+void deoglRenderTaskConfigTexture::SetGroupIndex(int groupIndex){
 	pGroupIndex = groupIndex;
 }
 

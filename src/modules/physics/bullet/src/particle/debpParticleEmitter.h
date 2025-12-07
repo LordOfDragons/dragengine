@@ -54,7 +54,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpParticleEmitter( dePhysicsBullet *bullet, deParticleEmitter *emitter );
+	debpParticleEmitter(dePhysicsBullet *bullet, deParticleEmitter *emitter);
 	/** Cleans up the peer. */
 	virtual ~debpParticleEmitter();
 	/*@}*/
@@ -69,8 +69,8 @@ public:
 	/** Retrieves the number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
 	/** Retrieves the type at the given position. */
-	debpParticleEmitterType &GetTypeAt( int index );
-	const debpParticleEmitterType &GetTypeAt( int index ) const;
+	debpParticleEmitterType &GetTypeAt(int index);
+	const debpParticleEmitterType &GetTypeAt(int index) const;
 	
 	/** Update parameters. */
 	void UpdateParameters();
@@ -81,7 +81,7 @@ public:
 	/** Type count changed. */
 	virtual void TypeCountChanged();
 	/** Type changed. */
-	virtual void TypeChanged( int type );
+	virtual void TypeChanged(int type);
 	/** Requests of the Graphic Module changed. */
 	virtual void GraphicModuleRequestsChanged();
 	/*@}*/

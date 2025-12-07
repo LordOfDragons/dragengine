@@ -53,7 +53,7 @@ public:
 	seEffectStretch();
 	
 	/** \brief Create copy of effect. */
-	seEffectStretch( const seEffectStretch &copy );
+	seEffectStretch(const seEffectStretch &copy);
 	
 	/** \brief Clean up effect. */
 	virtual ~seEffectStretch();
@@ -67,25 +67,25 @@ public:
 	inline float GetMinTime() const{ return pMinTime; }
 	
 	/** \brief Set minimum time stretch factor. */
-	void SetMinTime( float stretch );
+	void SetMinTime(float stretch);
 	
 	/** \brief Maximum time stretch factor. */
 	inline float GetMaxTime() const{ return pMaxTime; }
 	
 	/** \brief Set maximum time stretch factor. */
-	void SetMaxTime( float stretch );
+	void SetMaxTime(float stretch);
 	
 	/** \brief Minimum pitch shift factor. */
 	inline float GetMinPitch() const{ return pMinPitch; }
 	
 	/** \brief Set minimum pitch shift factor. */
-	void SetMinPitch( float shift );
+	void SetMinPitch(float shift);
 	
 	/** \brief Maximum pitch shift factor. */
 	inline float GetMaxPitch() const{ return pMaxPitch; }
 	
 	/** \brief Set maximum pitch shift factor. */
-	void SetMaxPitch( float shift );
+	void SetMaxPitch(float shift);
 	
 	
 	
@@ -106,10 +106,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** \brief Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( seLink *link ) const;
+	virtual int CountLinkUsage(seLink *link) const;
 	
 	/** \brief Removes a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( seLink *link );
+	virtual void RemoveLinkFromTargets(seLink *link);
 	
 	/** \brief Removes all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -118,7 +118,7 @@ public:
 	virtual seEffect *CreateCopy() const;
 	
 	/** \brief List all links of all effect targets. */
-	virtual void ListLinks( seLinkList& list );
+	virtual void ListLinks(seLinkList& list);
 	/*@}*/
 	
 	
@@ -126,7 +126,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another synthesizer difference effect to this synthesizer difference effect. */
-	virtual seEffectStretch &operator=( const seEffectStretch &copy );
+	virtual seEffectStretch &operator=(const seEffectStretch &copy);
 	/*@}*/
 };
 

@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogTexturePropertyList( igdeEnvironment &environment );
+	igdeDialogTexturePropertyList(igdeEnvironment &environment);
 	
 	
 	

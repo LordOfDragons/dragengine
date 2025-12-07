@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetName::seUMappedSetName( seMapped *mapped, const char *newName ) :
-pMapped( mapped ),
-pOldName( mapped ? mapped->GetName().GetString() : "" ),
-pNewName( newName )
+seUMappedSetName::seUMappedSetName(seMapped *mapped, const char *newName) :
+pMapped(mapped),
+pOldName(mapped ? mapped->GetName().GetString() : ""),
+pNewName(newName)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Name" );
+	SetShortInfo("Set Mapped Name");
 }
 
 seUMappedSetName::~seUMappedSetName(){
@@ -53,9 +53,9 @@ seUMappedSetName::~seUMappedSetName(){
 ///////////////
 
 void seUMappedSetName::Undo(){
-	pMapped->SetName( pOldName );
+	pMapped->SetName(pOldName);
 }
 
 void seUMappedSetName::Redo(){
-	pMapped->SetName( pNewName );
+	pMapped->SetName(pNewName);
 }

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new configuration. */
-	saeConfiguration( saeWindowMain &windowMain );
+	saeConfiguration(saeWindowMain &windowMain);
 	
 	/** Cleans up the configuration. */
 	~saeConfiguration();
@@ -64,7 +64,7 @@ public:
 	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** Set prevent saving. */
-	void SetPreventSaving( bool preventSaving );
+	void SetPreventSaving(bool preventSaving);
 	
 	/**
 	 * Load the configuration. Tries to locate the configuration file in

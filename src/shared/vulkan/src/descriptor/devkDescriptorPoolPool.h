@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create descriptor pool pool. */
-	devkDescriptorPoolPool( devkDescriptorPool &owner, const VkDescriptorPoolCreateInfo &poolCreateInfo );
+	devkDescriptorPoolPool(devkDescriptorPool &owner, const VkDescriptorPoolCreateInfo &poolCreateInfo);
 	
 protected:
 	/** Clean up descriptor pool pool. */
@@ -76,7 +76,7 @@ public:
 	devkDescriptorPoolSlot *Get();
 	
 	/** Return slot to pool. */
-	void Return( devkDescriptorPoolSlot *slot );
+	void Return(devkDescriptorPoolSlot *slot);
 	/*@}*/
 	
 	

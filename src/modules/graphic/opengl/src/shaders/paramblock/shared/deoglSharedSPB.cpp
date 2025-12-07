@@ -41,20 +41,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPB::deoglSharedSPB( const deoglShaderParameterBlock::Ref &parameterBlock ) :
-pParameterBlock( parameterBlock ),
-pElements( NULL ),
-pSize( parameterBlock->GetElementCount() ),
-pCount( 0 )
+deoglSharedSPB::deoglSharedSPB(const deoglShaderParameterBlock::Ref &parameterBlock) :
+pParameterBlock(parameterBlock),
+pElements(NULL),
+pSize(parameterBlock->GetElementCount()),
+pCount(0)
 {
-	DEASSERT_TRUE( parameterBlock->GetElementCount() >= 1 )
+	DEASSERT_TRUE(parameterBlock->GetElementCount() >= 1)
 	
-	pElements = new deoglSharedSPBElement*[ pSize ];
-	memset( pElements, '\0', sizeof( deoglSharedSPB* ) * pSize );
+	pElements = new deoglSharedSPBElement*[pSize];
+	memset(pElements, '\0', sizeof(deoglSharedSPB*) * pSize);
 }
 
 deoglSharedSPB::~deoglSharedSPB(){
-	if( pElements ){
+	if(pElements){
 		delete [] pElements;
 	}
 }
@@ -64,34 +64,34 @@ deoglSharedSPB::~deoglSharedSPB(){
 // Management
 ///////////////
 
-deoglSharedSPBElement *deoglSharedSPB::GetElementAt( int index ) const{
-	return pElements[ index ];
+deoglSharedSPBElement *deoglSharedSPB::GetElementAt(int index) const{
+	return pElements[index];
 }
 
 deoglSharedSPBElement *deoglSharedSPB::AddElement(){
-	if( pCount == pSize ){
+	if(pCount == pSize){
 		return NULL;
 	}
 	
 	int i;
-	for( i=0; i<pSize; i++ ){
-		if( pElements[ i ] ){
+	for(i=0; i<pSize; i++){
+		if(pElements[i]){
 			continue;
 		}
 		
-		pElements[ i ] = new deoglSharedSPBElement( *this, i );
+		pElements[i] = new deoglSharedSPBElement(*this, i);
 		pCount++;
-		return pElements[ i ];
+		return pElements[i];
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void deoglSharedSPB::RemoveElement( int index ){
-	if( index < 0 || index >= pSize || ! pElements[ index ] ){
-		DETHROW( deeInvalidParam );
+void deoglSharedSPB::RemoveElement(int index){
+	if(index < 0 || index >= pSize || !pElements[index]){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pElements[ index ] = NULL;
+	pElements[index] = NULL;
 	pCount--;
 }

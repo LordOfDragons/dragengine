@@ -108,7 +108,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window. */
-	seWindowMain( seIGDEModule &module );
+	seWindowMain(seIGDEModule &module);
 	
 protected:
 	/** \brief Clean up main window. */
@@ -140,16 +140,16 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set Skin. */
-	void SetSkin( seSkin *Skin );
+	void SetSkin(seSkin *Skin);
 	
 	/** \brief Create new skin. */
 	void CreateNewSkin();
 	
 	/** \brief Load skin. */
-	void LoadSkin( const char *filename );
+	void LoadSkin(const char *filename);
 	
 	/** \brief Save skin. */
-	void SaveSkin( const char *filename );
+	void SaveSkin(const char *filename);
 	
 	
 	
@@ -186,7 +186,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -197,12 +197,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -212,7 +212,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -252,10 +252,10 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuSkin( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuMapped( igdeMenuCascade &menu );
-	void pCreateMenuTexture( igdeMenuCascade &menu );
+	void pCreateMenuSkin(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuMapped(igdeMenuCascade &menu);
+	void pCreateMenuTexture(igdeMenuCascade &menu);
 };
 
 #endif

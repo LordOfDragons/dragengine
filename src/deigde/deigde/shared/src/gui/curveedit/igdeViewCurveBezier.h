@@ -49,21 +49,21 @@ public:
 	class DE_DLL_EXPORT cActionResetView : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionResetView( igdeViewCurveBezier &view );
+		cActionResetView(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionFitToCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionFitToCurve( igdeViewCurveBezier &view );
+		cActionFitToCurve(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionEditSelectedPoint : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionEditSelectedPoint( igdeViewCurveBezier &view );
+		cActionEditSelectedPoint(igdeViewCurveBezier &view);
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -72,9 +72,9 @@ public:
 		igdeViewCurveBezier &pView;
 		decCurveBezier::eInterpolationModes pMode;
 	public:
-		cActionSetInterpolationMode( igdeViewCurveBezier &view,
+		cActionSetInterpolationMode(igdeViewCurveBezier &view,
 			decCurveBezier::eInterpolationModes mode, const char *text, igdeIcon *icon,
-			const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined );
+			const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined);
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -82,70 +82,70 @@ public:
 	class DE_DLL_EXPORT cActionCopyCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionCopyCurve( igdeViewCurveBezier &view );
+		cActionCopyCurve(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionPasteCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionPasteCurve( igdeViewCurveBezier &view );
+		cActionPasteCurve(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionClearCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionClearCurve( igdeViewCurveBezier &view );
+		cActionClearCurve(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionSetDefaultConstant : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionSetDefaultConstant( igdeViewCurveBezier &view );
+		cActionSetDefaultConstant(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionSetDefaultLinear : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionSetDefaultLinear( igdeViewCurveBezier &view );
+		cActionSetDefaultLinear(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionSetDefaultBezier : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionSetDefaultBezier( igdeViewCurveBezier &view );
+		cActionSetDefaultBezier(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionInvertCurveX : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionInvertCurveX( igdeViewCurveBezier &view );
+		cActionInvertCurveX(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionInvertCurveY : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionInvertCurveY( igdeViewCurveBezier &view );
+		cActionInvertCurveY(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionEditClamp : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionEditClamp( igdeViewCurveBezier &view );
+		cActionEditClamp(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionAutoHandles : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
-		cActionAutoHandles( igdeViewCurveBezier &view );
+		cActionAutoHandles(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
 	
@@ -171,7 +171,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	igdeViewCurveBezier( igdeEnvironment &environment );
+	igdeViewCurveBezier(igdeEnvironment &environment);
 	
 	
 	
@@ -189,7 +189,7 @@ public:
 	inline const decPoint &GetDefaultSize() const{ return pDefaultSize; }
 	
 	/** \brief Set default size. */
-	void SetDefaultSize( const decPoint &size );
+	void SetDefaultSize(const decPoint &size);
 	
 	
 	
@@ -197,7 +197,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -205,7 +205,7 @@ public:
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Set bezier curve. */
-	void SetCurve( const decCurveBezier &curve, bool changing = false );
+	void SetCurve(const decCurveBezier &curve, bool changing = false);
 	
 	/** \brief Clear curve. */
 	void ClearCurve();
@@ -247,7 +247,7 @@ public:
 	inline int GetSelectedPoint() const{ return pSelPoint; }
 	
 	/** \brief Set selected point or -1. */
-	void SetSelectedPoint( int index );
+	void SetSelectedPoint(int index);
 	
 	
 	
@@ -255,19 +255,19 @@ public:
 	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if curve is clamped. */
-	void SetClamp( bool clamp );
+	void SetClamp(bool clamp);
 	
 	/** \brief Clamp minimum coordinates. */
 	inline const decVector2 &GetClampMin() const{ return pClampMin; }
 	
 	/** \brief Set clamp minimum coordinates. */
-	void SetClampMin( const decVector2 &clamp );
+	void SetClampMin(const decVector2 &clamp);
 	
 	/** \brief Clamp maximum coordinates. */
 	inline const decVector2 &GetClampMax() const{ return pClampMax; }
 	
 	/** \brief Set clamp maximum coordinates. */
-	void SetClampMax( const decVector2 &clamp );
+	void SetClampMax(const decVector2 &clamp);
 	
 	
 	
@@ -278,15 +278,15 @@ public:
 	void FitViewToCurve();
 	
 	/** \brief Show context menu at position. */
-	void ShowContextMenu( const decPoint &position );
+	void ShowContextMenu(const decPoint &position);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeViewCurveBezierListener *listener );
+	void AddListener(igdeViewCurveBezierListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeViewCurveBezierListener *listener );
+	void RemoveListener(igdeViewCurveBezierListener *listener);
 	
 	/** \brief Notify listeners changed. */
 	virtual void NotifyCurveChanged();

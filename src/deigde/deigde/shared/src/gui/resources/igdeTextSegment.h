@@ -57,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text segment. */
-	igdeTextSegment( int begin, int end );
+	igdeTextSegment(int begin, int end);
 	
-	igdeTextSegment( int begin, int end, const char *style );
+	igdeTextSegment(int begin, int end, const char *style);
 	
-	igdeTextSegment( int begin, int end, const char *style, igdeAction *action );
+	igdeTextSegment(int begin, int end, const char *style, igdeAction *action);
 	
 	
 	

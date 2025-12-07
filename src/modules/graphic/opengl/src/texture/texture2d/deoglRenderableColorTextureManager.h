@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable texture manager. */
-	deoglRenderableColorTextureManager( deoglRenderThread &renderThread );
+	deoglRenderableColorTextureManager(deoglRenderThread &renderThread);
 	/** Cleans up the renderable texture manager. */
 	~deoglRenderableColorTextureManager();
 	/*@}*/
@@ -60,10 +60,10 @@ public:
 	/** Retrieves the number of renderable textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	/** Retrieves the renderable texture for reading only at the given location. */
-	const deoglRenderableColorTexture *GetTextureAt( int index ) const;
+	const deoglRenderableColorTexture *GetTextureAt(int index) const;
 	
 	/** Retrieves the renderable texture for the given format. */
-	deoglRenderableColorTexture *GetTextureWith( int width, int height, int componentCount, bool isFloat );
+	deoglRenderableColorTexture *GetTextureWith(int width, int height, int componentCount, bool isFloat);
 	/*@}*/
 };
 

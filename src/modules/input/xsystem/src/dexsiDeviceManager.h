@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device list. */
-	dexsiDeviceManager( deXSystemInput &module );
+	dexsiDeviceManager(deXSystemInput &module);
 	
 protected:
 	/** Clean up device list. */
@@ -94,13 +94,13 @@ public:
 	int GetCount() const;
 	
 	/** Device at index. */
-	dexsiDevice *GetAt( int index ) const;
+	dexsiDevice *GetAt(int index) const;
 	
 	/** Device with identifier or \em NULL if absent. */
-	dexsiDevice *GetWithID( const char *id );
+	dexsiDevice *GetWithID(const char *id);
 	
 	/** Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id );
+	int IndexOfWithID(const char *id);
 	
 	
 	
@@ -125,12 +125,12 @@ public:
 	void LogDevices();
 	
 	/** Log device. */
-	void LogDevice( const dexsiDevice &device );
+	void LogDevice(const dexsiDevice &device);
 	
 	
 	
 	/** Normalize identifier. */
-	static decString NormalizeID( const char *id );
+	static decString NormalizeID(const char *id);
 	/*@}*/
 	
 	
@@ -148,11 +148,11 @@ private:
 	void pStartWatchEvdev();
 	void pStopWatchEvdev();
 	void pUpdateWatchEvdev();
-	void pEvdevAppeared( const decString &path );
-	bool pEvdevDisappeared( const decString &path );
+	void pEvdevAppeared(const decString &path);
+	bool pEvdevDisappeared(const decString &path);
 	
 	void pUpdateDelayProbeDevices();
-	bool pProbeDevice( const decString &path );
+	bool pProbeDevice(const decString &path);
 	void pUpdateDeviceIndices();
 };
 

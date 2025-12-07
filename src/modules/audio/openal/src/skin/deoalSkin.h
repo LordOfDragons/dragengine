@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin peer. */
-	deoalSkin( deAudioOpenAL &oal, const deSkin &skin );
+	deoalSkin(deAudioOpenAL &oal, const deSkin &skin);
 	
 	/** \brief Clean up skin peer. */
 	virtual ~deoalSkin();

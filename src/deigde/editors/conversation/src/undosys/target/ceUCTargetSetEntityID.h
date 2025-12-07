@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetEntityID( ceTarget *target, const char *newID );
+	ceUCTargetSetEntityID(ceTarget *target, const char *newID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetEntityID();

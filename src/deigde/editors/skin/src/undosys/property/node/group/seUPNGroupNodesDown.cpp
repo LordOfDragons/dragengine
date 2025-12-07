@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupNodesDown::seUPNGroupNodesDown( sePropertyNodeGroup *node, const sePropertyNodeList &children ) :
-seUPNGroupMoveNodes( node, children )
+seUPNGroupNodesDown::seUPNGroupNodesDown(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
+seUPNGroupMoveNodes(node, children)
 {
-	SetShortInfo( "Move nodes down" );
+	SetShortInfo("Move nodes down");
 	
-	if( pCount > 0 && pChildren[ 0 ].index == 0 ){
+	if(pCount > 0 && pChildren[0].index == 0){
 		pClearChildNodes(); // has no effect
 	}
 }
@@ -58,14 +58,14 @@ seUPNGroupNodesDown::~seUPNGroupNodesDown(){
 
 void seUPNGroupNodesDown::Undo(){
 	int i;
-	for( i=pCount-1; i>=0; i-- ){
-		pNode->MoveNode( pChildren[ i ].node, pChildren[ i ].index );
+	for(i=pCount-1; i>=0; i--){
+		pNode->MoveNode(pChildren[i].node, pChildren[i].index);
 	}
 }
 
 void seUPNGroupNodesDown::Redo(){
 	int i;
-	for( i=0; i<pCount; i++ ){
-		pNode->MoveNode( pChildren[ i ].node, pChildren[ i ].index - 1 );
+	for(i=0; i<pCount; i++){
+		pNode->MoveNode(pChildren[i].node, pChildren[i].index - 1);
 	}
 }

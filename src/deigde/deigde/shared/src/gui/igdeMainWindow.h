@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window prototype. */
-	igdeMainWindow( igdeEnvironment &environment, const char *title );
+	igdeMainWindow(igdeEnvironment &environment, const char *title);
 	
 	
 	
@@ -83,7 +83,7 @@ public:
 	inline eWindowStates GetWindowState() const{ return pWindowState; }
 	
 	/** \brief Set window state. */
-	void SetWindowState( eWindowStates windowState );
+	void SetWindowState(eWindowStates windowState);
 	
 	/** \brief Position in normal state. */
 	inline const decPoint &GetNormalPosition() const{ return pNormalPosition; }

@@ -54,7 +54,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
-		cActionAdd( igdeEditTags &widget );
+		cActionAdd(igdeEditTags &widget);
 		virtual void OnAction();
 	};
 	
@@ -64,7 +64,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
-		cActionRemove( igdeEditTags &widget );
+		cActionRemove(igdeEditTags &widget);
 		virtual void OnAction();
 	};
 	
@@ -74,7 +74,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
-		cActionClear( igdeEditTags &widget );
+		cActionClear(igdeEditTags &widget);
 		virtual void OnAction();
 	};
 	
@@ -98,10 +98,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeEditTags( igdeUIHelper &helper, int rows );
+	igdeEditTags(igdeUIHelper &helper, int rows);
 	
 	/** \brief Create panel. */
-	igdeEditTags( igdeUIHelper &helper, int rows, igdeAction *action );
+	igdeEditTags(igdeUIHelper &helper, int rows, igdeAction *action);
 	
 	
 	
@@ -119,7 +119,7 @@ public:
 	inline const decStringSet &GetTags() const{ return pTags; }
 	
 	/** \brief Set tags. */
-	void SetTags( const decStringSet &tags );
+	void SetTags(const decStringSet &tags);
 	
 	
 	
@@ -127,13 +127,13 @@ public:
 	const decString &GetSelectedTag() const;
 	
 	/** \brief Select tag. */
-	void SelectTag( const decString &tag );
+	void SelectTag(const decString &tag);
 	
 	/** \brief Update tag list. */
 	void UpdateList();
 	
 	/** \brief Update used tag list in the combo box. */
-	void UpdateUsedTagList( const decStringSet &usedTags );
+	void UpdateUsedTagList(const decStringSet &usedTags);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -144,7 +144,7 @@ public:
 	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	void SetAction(igdeAction *action);
 	
 	/**
 	 * \brief Tags changed.
@@ -154,10 +154,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	virtual void OnDestroyed(igdeAction *action);
 	
 	
 	
@@ -181,7 +181,7 @@ public:
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper, int rows );
+	void pCreateContent(igdeUIHelper &helper, int rows);
 };
 
 #endif

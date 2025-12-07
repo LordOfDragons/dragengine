@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	inline bool GetModifyPosition() const{ return pModifyPosition; }
-	void SetModifyPosition( bool modifyPosition );
+	void SetModifyPosition(bool modifyPosition);
 	inline bool GetModifySize() const{ return pModifySize; }
-	void SetModifySize( bool modifySize );
+	void SetModifySize(bool modifySize);
 	inline const decVector &GetFactors() const{ return pFactors; }
-	void SetFactors( const decVector &factors );
+	void SetFactors(const decVector &factors);
 	inline const decVector &GetCenter() const{ return pCenter; }
-	void SetCenter( const decVector &center );
+	void SetCenter(const decVector &center);
 	
 	void Update();
 	

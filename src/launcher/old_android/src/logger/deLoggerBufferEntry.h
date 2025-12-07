@@ -69,19 +69,19 @@ public:
 	inline eMessageTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( eMessageTypes type );
+	void SetType(eMessageTypes type);
 	
 	/** \brief Source. */
 	inline const decString &GetSource() const{ return pSource; }
 	
 	/** \brief Set source. */
-	void SetSource( const char *source );
+	void SetSource(const char *source);
 	
 	/** \brief Message. */
 	inline const decString &GetMessage() const{ return pMessage; }
 	
 	/** \brief Set message. */
-	void SetMessage( const char *message );
+	void SetMessage(const char *message);
 	/*@}*/
 };
 

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath( gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const char *newValue ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const char *newValue) :
+pObjectClass(NULL),
+pParticleEmitter(NULL)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set path" );
+	SetShortInfo("Particle emitter set path");
 	
 	pOldValue = particleEmitter->GetPath();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pParticleEmitter( NULL )
 }
 
 gdeUOCParticleEmitterSetPath::~gdeUOCParticleEmitterSetPath(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCParticleEmitterSetPath::~gdeUOCParticleEmitterSetPath(){
 ///////////////
 
 void gdeUOCParticleEmitterSetPath::Undo(){
-	pParticleEmitter->SetPath( pOldValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPath(pOldValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterSetPath::Redo(){
-	pParticleEmitter->SetPath( pNewValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPath(pNewValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }

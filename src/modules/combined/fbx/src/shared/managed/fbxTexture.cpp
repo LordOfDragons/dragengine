@@ -45,24 +45,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxTexture::fbxTexture( fbxScene &scene, fbxNode &nodeTexture ) :
-pScene( scene ),
-pNodeTexture( nodeTexture ),
-pTextureID( nodeTexture.GetPropertyAt( 0 )->CastLong().GetValue() ),
-pName( nodeTexture.GetPropertyAt( 1 )->CastString().GetValue() ),
-pUVSet( nodeTexture.GetPropertyString( "UVSet", "" ) ),
-pUseMipMap( nodeTexture.GetPropertyBool( "UseMipMap", true ) )
+fbxTexture::fbxTexture(fbxScene &scene, fbxNode &nodeTexture) :
+pScene(scene),
+pNodeTexture(nodeTexture),
+pTextureID(nodeTexture.GetPropertyAt(0)->CastLong().GetValue()),
+pName(nodeTexture.GetPropertyAt(1)->CastString().GetValue()),
+pUVSet(nodeTexture.GetPropertyString("UVSet", "")),
+pUseMipMap(nodeTexture.GetPropertyBool("UseMipMap", true))
 {
 	fbxNode *node;
 	
-	node = nodeTexture.FirstNodeNamedOrNull( "FileName" );
-	if( node ){
-		pFilename = node->GetPropertyAt( 0 )->CastString().GetValue();
+	node = nodeTexture.FirstNodeNamedOrNull("FileName");
+	if(node){
+		pFilename = node->GetPropertyAt(0)->CastString().GetValue();
 	}
 	
-	node = nodeTexture.FirstNodeNamedOrNull( "RelativeFilename" );
-	if( node ){
-		pRelativeFilename = node->GetPropertyAt( 0 )->CastString().GetValue();
+	node = nodeTexture.FirstNodeNamedOrNull("RelativeFilename");
+	if(node){
+		pRelativeFilename = node->GetPropertyAt(0)->CastString().GetValue();
 	}
 	
 // 	node = nodeTexture.FirstNodeNamedOrNull( "Media" );
@@ -79,12 +79,12 @@ fbxTexture::~fbxTexture(){
 // Management
 ///////////////
 
-void fbxTexture::SetName( const char *name ){
+void fbxTexture::SetName(const char *name){
 	pName = name;
 }
 
 
 
-void fbxTexture::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose ) const{
-	module.LogInfoFormat( "%sTexture '%s':", prefix.GetString(), pName.GetString() );
+void fbxTexture::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
+	module.LogInfoFormat("%sTexture '%s':", prefix.GetString(), pName.GetString());
 }

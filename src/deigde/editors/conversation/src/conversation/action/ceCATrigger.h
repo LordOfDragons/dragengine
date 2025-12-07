@@ -60,7 +60,7 @@ public:
 	/** \brief Creates a new trigger conversation action. */
 	ceCATrigger();
 	/** \brief Creates a new trigger conversation action. */
-	ceCATrigger( const ceCATrigger &action );
+	ceCATrigger(const ceCATrigger &action);
 	/** \brief Cleans up the trigger conversation action. */
 	virtual ~ceCATrigger();
 	/*@}*/
@@ -70,11 +70,11 @@ public:
 	/** \brief Retrieves the name of the trigger. */
 	inline const decString &GetName() const{ return pName; }
 	/** \brief Sets the name of the trigger. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** \brief Retrieves the action. */
 	inline eActions GetAction() const{ return pAction; }
 	/** \brief Sets the action. */
-	void SetAction( eActions action );
+	void SetAction(eActions action);
 	
 	/** \brief Create a copy of this action. */
     virtual ceConversationAction *CreateCopy() const;

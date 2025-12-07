@@ -119,7 +119,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin. */
-	seSkin( igdeEnvironment *environment );
+	seSkin(igdeEnvironment *environment);
 	/** Cleans up the skin. */
 	virtual ~seSkin();
 	/*@}*/
@@ -152,32 +152,32 @@ public:
 	inline ePreviewMode GetPreviewMode() const{ return pPreviewMode; }
 	
 	/** \brief Set preview mode. */
-	void SetPreviewMode( ePreviewMode mode );
+	void SetPreviewMode(ePreviewMode mode);
 	
 	/** Retrieves the model path. */
 	inline const decString &GetModelPath() const{ return pModelPath; }
 	/** Sets the model path. */
-	void SetModelPath( const char *path );
+	void SetModelPath(const char *path);
 	/** Retrieves the rig path. */
 	inline const decString &GetRigPath() const{ return pRigPath; }
 	/** Sets the rig path. */
-	void SetRigPath( const char *path );
+	void SetRigPath(const char *path);
 	/** Retrieves the animation path. */
 	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
 	/** Sets the animation path. */
-	void SetAnimationPath( const char *path );
+	void SetAnimationPath(const char *path);
 	/** Retrieves the name of the move to display. */
 	inline const decString &GetMoveName() const{ return pMoveName; }
 	/** Sets the move name to display. */
-	void SetMoveName( const char *moveName );
+	void SetMoveName(const char *moveName);
 	/** Retrieves the move time to display. */
 	inline float GetMoveTime() const{ return pMoveTime; }
 	/** Sets the move time to display. */
-	void SetMoveTime( float moveTime );
+	void SetMoveTime(float moveTime);
 	/** Determines if the animation is played back. */
 	inline bool GetPlayback() const{ return pPlayback; }
 	/** Sets if the animation is played back. */
-	void SetPlayback( bool playback );
+	void SetPlayback(bool playback);
 	
 	/** Retrieves the dynamic skin. */
 	inline seDynamicSkin &GetDynamicSkin() const{ return *pDynamicSkin; }
@@ -186,12 +186,12 @@ public:
 	inline bool GetEnableSkinUpdate() const{ return pEnableSkinUpdate; }
 	
 	/** \brief Set if skin updating if changed is enabled. */
-	void SetEnableSkinUpdate( bool enableSkinUpdate );
+	void SetEnableSkinUpdate(bool enableSkinUpdate);
 	
 	/** Dispose of all resources. */
 	void Dispose();
 	/** Updates the skin. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/** Resets the skin. */
 	void Reset();
 	
@@ -222,10 +222,10 @@ public:
 	inline const seMappedList &GetMappedList() const{ return pMappedList; }
 	
 	/** Add mapped. */
-	void AddMapped( seMapped *mapped );
+	void AddMapped(seMapped *mapped);
 	
 	/** Remove mapped. */
-	void RemoveMapped( seMapped *mapped );
+	void RemoveMapped(seMapped *mapped);
 	
 	/** Remove all mappeds. */
 	void RemoveAllMapped();
@@ -237,7 +237,7 @@ public:
 	bool HasActiveMapped() const;
 	
 	/** Set active mapped or nullptr. */
-	void SetActiveMapped( seMapped *mapped );
+	void SetActiveMapped(seMapped *mapped);
 	/*@}*/
 	
 	
@@ -247,9 +247,9 @@ public:
 	/** Retrieves the texture list read-only. */
 	inline const seTextureList &GetTextureList() const{ return pTextureList; }
 	/** Adds a new texture. */
-	void AddTexture( seTexture *texture );
+	void AddTexture(seTexture *texture);
 	/** Removes a texture. */
-	void RemoveTexture( seTexture *texture );
+	void RemoveTexture(seTexture *texture);
 	/** Removes all textures. */
 	void RemoveAllTextures();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -257,7 +257,7 @@ public:
 	/** Determines if there is an active texture or not. */
 	bool HasActiveTexture() const;
 	/** Sets the active texture or NULL if none is active. */
-	void SetActiveTexture( seTexture *texture );
+	void SetActiveTexture(seTexture *texture);
 	/*@}*/
 	
 	
@@ -265,9 +265,9 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** Adds a listener. */
-	void AddListener( seSkinListener *listener );
+	void AddListener(seSkinListener *listener);
 	/** Removes a listener. */
-	void RemoveListener( seSkinListener *listener );
+	void RemoveListener(seSkinListener *listener);
 	
 	/** Notify all listeners that the changed or saved state changed. */
 	virtual void NotifyStateChanged();
@@ -291,10 +291,10 @@ public:
 	void NotifyMappedStructureChanged();
 	
 	/** Notify all mapped changed. */
-	void NotifyMappedChanged( seMapped *mapped );
+	void NotifyMappedChanged(seMapped *mapped);
 	
 	/** Notify all mapped name changed. */
-	void NotifyMappedNameChanged( seMapped *mapped );
+	void NotifyMappedNameChanged(seMapped *mapped);
 	
 	/** Active mapped changed. */
 	void NotifyActiveMappedChanged();
@@ -304,46 +304,46 @@ public:
 	/** Notify all that textures have been added or removed. */
 	void NotifyTextureStructureChanged();
 	/** Notify all that a texture changed. */
-	void NotifyTextureChanged( seTexture *texture );
+	void NotifyTextureChanged(seTexture *texture);
 	/** Notify all that a texture name changed. */
-	void NotifyTextureNameChanged( seTexture *texture );
+	void NotifyTextureNameChanged(seTexture *texture);
 	/** Active texture changed. */
 	void NotifyActiveTextureChanged();
 	
 	
 	/** Notify all that properties have been added or removed. */
-	void NotifyPropertyStructureChanged( seTexture *texture );
+	void NotifyPropertyStructureChanged(seTexture *texture);
 	/** Notify all that a property changed. */
-	void NotifyPropertyChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyChanged(seTexture *texture, seProperty *property);
 	/** Active property changed. */
-	void NotifyActivePropertyChanged( seTexture *texture );
+	void NotifyActivePropertyChanged(seTexture *texture);
 	
 	/** \brief Property node structre changed. */
-	void NotifyPropertyNodeStructureChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyNodeStructureChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Property node changed. */
-	void NotifyPropertyNodeChanged( seTexture *texture, seProperty *property, sePropertyNode *node );
+	void NotifyPropertyNodeChanged(seTexture *texture, seProperty *property, sePropertyNode *node);
 	
 	/** \brief Active property node changed. */
-	void NotifyPropertyActiveNodeChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyActiveNodeChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Property node selection changed. */
-	void NotifyPropertyNodeSelectionChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyNodeSelectionChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Active property node group changed. */
-	void NotifyPropertyActiveNodeGroupChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyActiveNodeGroupChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Active property node layer changed. */
-	void NotifyPropertyActiveNodeLayerChanged( seTexture *texture, seProperty *property );
+	void NotifyPropertyActiveNodeLayerChanged(seTexture *texture, seProperty *property);
 	
 	/** \brief Dynamic skin renderables have been added or removed. */
 	void NotifyDynamicSkinRenderableStructureChanged();
 	
 	/** \brief Dynamic skin renderable changed. */
-	void NotifyDynamicSkinRenderableChanged( seDynamicSkinRenderable *renderable );
+	void NotifyDynamicSkinRenderableChanged(seDynamicSkinRenderable *renderable);
 	
 	/** \brief Dynamic skin renderable name changed. */
-	void NotifyDynamicSkinRenderableNameChanged( seDynamicSkinRenderable *renderable );
+	void NotifyDynamicSkinRenderableNameChanged(seDynamicSkinRenderable *renderable);
 	
 	/** \brief Active dynamic skin renderable changed. */
 	void NotifyDynamicSkinActiveRenderableChanged();

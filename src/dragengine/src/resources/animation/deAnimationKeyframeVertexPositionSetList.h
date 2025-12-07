@@ -61,17 +61,17 @@ public:
 	inline int GetKeyframeCount() const{ return pKeyframeCount; }
 	
 	/** \brief Keyframe at the given index. */
-	deAnimationKeyframeVertexPositionSet *GetKeyframe( int index ) const;
+	deAnimationKeyframeVertexPositionSet *GetKeyframe(int index) const;
 	
 	/** \brief Adds a new keyframe */
-	void AddKeyframe( deAnimationKeyframeVertexPositionSet *keyframe );
+	void AddKeyframe(deAnimationKeyframeVertexPositionSet *keyframe);
 	
 	/**
 	 * \brief Index of the keyframe the biggest time right before or exactly at the given time.
 	 * 
 	 * This function is depracted and will be removed soon.
 	 */
-	int GetLeadingKeyframe( int startkf, float time ) const;
+	int GetLeadingKeyframe(int startkf, float time) const;
 	/*@}*/
 };
 

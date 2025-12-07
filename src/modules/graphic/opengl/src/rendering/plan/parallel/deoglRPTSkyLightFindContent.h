@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightFindContent( deoglRenderPlanSkyLight &plan );
+	deoglRPTSkyLightFindContent(deoglRenderPlanSkyLight &plan);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTSkyLightFindContent();

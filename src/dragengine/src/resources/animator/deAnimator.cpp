@@ -45,15 +45,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimator::deAnimator( deAnimatorManager *manager ) :
-deResource( manager ),
-pControllers( NULL ),
-pControllerCount( 0 ),
-pControllerSize( 0 ),
-pLinks( NULL ),
-pLinkCount( 0 ),
-pLinkSize( 0 ),
-pPeerAnimator( NULL ){
+deAnimator::deAnimator(deAnimatorManager *manager) :
+deResource(manager),
+pControllers(NULL),
+pControllerCount(0),
+pControllerSize(0),
+pLinks(NULL),
+pLinkCount(0),
+pLinkSize(0),
+pPeerAnimator(NULL){
 }
 
 deAnimator::~deAnimator(){
@@ -65,38 +65,38 @@ deAnimator::~deAnimator(){
 // Management
 ///////////////
 
-void deAnimator::SetRig( deRig *rig ){
-	if( rig == pRig ){
+void deAnimator::SetRig(deRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
 	pRig = rig;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->RigChanged();
 	}
 }
 
-void deAnimator::SetAnimation( deAnimation *animation ){
-	if( pAnimation == animation ){
+void deAnimator::SetAnimation(deAnimation *animation){
+	if(pAnimation == animation){
 		return;
 	}
 	
 	pAnimation = animation;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->AnimationChanged();
 	}
 }
 
 void deAnimator::NotifyBonesChanged(){
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->BonesChanged();
 	}
 }
 
 void deAnimator::NotifyVertexPositionSetsChanged(){
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->VertexPositionSetsChanged();
 	}
 }
@@ -106,21 +106,21 @@ void deAnimator::NotifyVertexPositionSetsChanged(){
 // Controller Management
 //////////////////////////
 
-deAnimatorController *deAnimator::GetControllerAt( int index ) const{
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+deAnimatorController *deAnimator::GetControllerAt(int index) const{
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pControllers[ index ];
+	return pControllers[index];
 }
 
-int deAnimator::IndexOfController( deAnimatorController *controller ) const{
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+int deAnimator::IndexOfController(deAnimatorController *controller) const{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ] == controller ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i] == controller){
 			return i;
 		}
 	}
@@ -128,10 +128,10 @@ int deAnimator::IndexOfController( deAnimatorController *controller ) const{
 	return -1;
 }
 
-int deAnimator::IndexOfControllerNamed( const char *name ) const{
+int deAnimator::IndexOfControllerNamed(const char *name) const{
 	int i;
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ]->GetName() == name ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i]->GetName() == name){
 			return i;
 		}
 	}
@@ -139,13 +139,13 @@ int deAnimator::IndexOfControllerNamed( const char *name ) const{
 	return -1;
 }
 
-bool deAnimator::HasController( deAnimatorController *controller ) const{
-	if( ! controller ) DETHROW( deeInvalidParam );
+bool deAnimator::HasController(deAnimatorController *controller) const{
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	int i;
 	
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ] == controller ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i] == controller){
 			return true;
 		}
 	}
@@ -153,60 +153,60 @@ bool deAnimator::HasController( deAnimatorController *controller ) const{
 	return false;
 }
 
-void deAnimator::AddController( deAnimatorController *controller ){
-	if( ! controller ) DETHROW( deeInvalidParam );
+void deAnimator::AddController(deAnimatorController *controller){
+	if(!controller) DETHROW(deeInvalidParam);
 	
-	if( pControllerCount == pControllerSize ){
+	if(pControllerCount == pControllerSize){
 		int i, newSize = pControllerSize * 3 / 2 + 1;
-		deAnimatorController **newArray = new deAnimatorController*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pControllers ){
-			for( i=0; i<pControllerSize; i++ ) newArray[ i ] = pControllers[ i ];
+		deAnimatorController **newArray = new deAnimatorController*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pControllers){
+			for(i=0; i<pControllerSize; i++) newArray[i] = pControllers[i];
 			delete [] pControllers;
 		}
 		pControllers = newArray;
 		pControllerSize = newSize;
 	}
-	pControllers[ pControllerCount ] = controller;
+	pControllers[pControllerCount] = controller;
 	pControllerCount++;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->ControllerCountChanged();
 	}
 }
 
-void deAnimator::RemoveController( deAnimatorController *controller ){
-	int index = IndexOfController( controller );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void deAnimator::RemoveController(deAnimatorController *controller){
+	int index = IndexOfController(controller);
+	if(index == -1) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=index+1; i<pControllerCount; i++ ){
-		pControllers[ i - 1 ] = pControllers[ i ];
+	for(i=index+1; i<pControllerCount; i++){
+		pControllers[i - 1] = pControllers[i];
 	}
 	pControllerCount--;
 	delete controller;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->ControllerCountChanged();
 	}
 }
 
 void deAnimator::RemoveAllControllers(){
-	while( pControllerCount > 0 ){
-		delete pControllers[ pControllerCount - 1 ];
+	while(pControllerCount > 0){
+		delete pControllers[pControllerCount - 1];
 		pControllerCount--;
 	}
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->ControllerCountChanged();
 	}
 }
 
-void deAnimator::NotifyControllerChangedAt( int index ){
-	if( index < 0 || index >= pControllerCount ) DETHROW( deeInvalidParam );
+void deAnimator::NotifyControllerChangedAt(int index){
+	if(index < 0 || index >= pControllerCount) DETHROW(deeInvalidParam);
 	
-	if( pPeerAnimator ){
-		pPeerAnimator->ControllerChanged( index, pControllers[ index ] );
+	if(pPeerAnimator){
+		pPeerAnimator->ControllerChanged(index, pControllers[index]);
 	}
 }
 
@@ -215,85 +215,85 @@ void deAnimator::NotifyControllerChangedAt( int index ){
 // Link Management
 ////////////////////
 
-deAnimatorLink *deAnimator::GetLinkAt( int index ) const{
-	if( index < 0 || index >= pLinkCount ) DETHROW( deeInvalidParam );
+deAnimatorLink *deAnimator::GetLinkAt(int index) const{
+	if(index < 0 || index >= pLinkCount) DETHROW(deeInvalidParam);
 	
-	return pLinks[ index ];
+	return pLinks[index];
 }
 
-int deAnimator::IndexOfLink( deAnimatorLink *link ) const{
-	if( ! link ) DETHROW( deeInvalidParam );
+int deAnimator::IndexOfLink(deAnimatorLink *link) const{
+	if(!link) DETHROW(deeInvalidParam);
 	
 	int i;
 	
-	for( i=0; i<pLinkCount; i++ ){
-		if( pLinks[ i ] == link ) return i;
+	for(i=0; i<pLinkCount; i++){
+		if(pLinks[i] == link) return i;
 	}
 	
 	return -1;
 }
 
-bool deAnimator::HasLink( deAnimatorLink *link ) const{
-	if( ! link ) DETHROW( deeInvalidParam );
+bool deAnimator::HasLink(deAnimatorLink *link) const{
+	if(!link) DETHROW(deeInvalidParam);
 	
 	int i;
 	
-	for( i=0; i<pLinkCount; i++ ){
-		if( pLinks[ i ] == link ) return true;
+	for(i=0; i<pLinkCount; i++){
+		if(pLinks[i] == link) return true;
 	}
 	
 	return false;
 }
 
-void deAnimator::AddLink( deAnimatorLink *link ){
-	if( ! link ) DETHROW( deeInvalidParam );
+void deAnimator::AddLink(deAnimatorLink *link){
+	if(!link) DETHROW(deeInvalidParam);
 	
-	if( pLinkCount == pLinkSize ){
+	if(pLinkCount == pLinkSize){
 		int i, newSize = pLinkSize * 3 / 2 + 1;
-		deAnimatorLink **newArray = new deAnimatorLink*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pLinks ){
-			for( i=0; i<pLinkSize; i++ ) newArray[ i ] = pLinks[ i ];
+		deAnimatorLink **newArray = new deAnimatorLink*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pLinks){
+			for(i=0; i<pLinkSize; i++) newArray[i] = pLinks[i];
 			delete [] pLinks;
 		}
 		pLinks = newArray;
 		pLinkSize = newSize;
 	}
 	
-	pLinks[ pLinkCount ] = link;
+	pLinks[pLinkCount] = link;
 	pLinkCount++;
 	
-	if( pPeerAnimator ) pPeerAnimator->LinksChanged();
+	if(pPeerAnimator) pPeerAnimator->LinksChanged();
 }
 
-void deAnimator::RemoveLink( deAnimatorLink *link ){
-	int i, index = IndexOfLink( link );
+void deAnimator::RemoveLink(deAnimatorLink *link){
+	int i, index = IndexOfLink(link);
 	
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pLinkCount; i++ ){
-		pLinks[ i - 1 ] = pLinks[ i ];
+	for(i=index+1; i<pLinkCount; i++){
+		pLinks[i - 1] = pLinks[i];
 	}
 	pLinkCount--;
 	
-	if( pPeerAnimator ) pPeerAnimator->LinksChanged();
+	if(pPeerAnimator) pPeerAnimator->LinksChanged();
 	
 	delete link;
 }
 
 void deAnimator::RemoveAllLinks(){
-	while( pLinkCount > 0 ){
-		delete pLinks[ pLinkCount - 1 ];
+	while(pLinkCount > 0){
+		delete pLinks[pLinkCount - 1];
 		pLinkCount--;
 	}
 	
-	if( pPeerAnimator ) pPeerAnimator->LinksChanged();
+	if(pPeerAnimator) pPeerAnimator->LinksChanged();
 }
 
-void deAnimator::NotifyLinkChangedAt( int index ){
-	if( index < 0 || index >= pLinkCount ) DETHROW( deeInvalidParam );
+void deAnimator::NotifyLinkChangedAt(int index){
+	if(index < 0 || index >= pLinkCount) DETHROW(deeInvalidParam);
 	
-	if( pPeerAnimator ) pPeerAnimator->LinksChanged();
+	if(pPeerAnimator) pPeerAnimator->LinksChanged();
 }
 
 
@@ -305,34 +305,34 @@ int deAnimator::GetRuleCount() const{
 	return pRules.GetCount();
 }
 
-deAnimatorRule *deAnimator::GetRuleAt( int index ) const{
-	return ( deAnimatorRule* )pRules.GetAt( index );
+deAnimatorRule *deAnimator::GetRuleAt(int index) const{
+	return (deAnimatorRule*)pRules.GetAt(index);
 }
 
-int deAnimator::IndexOfRule( deAnimatorRule *rule ) const{
-	return pRules.IndexOf( rule );
+int deAnimator::IndexOfRule(deAnimatorRule *rule) const{
+	return pRules.IndexOf(rule);
 }
 
-bool deAnimator::HasRule( deAnimatorRule *rule ) const{
-	return pRules.Has( rule );
+bool deAnimator::HasRule(deAnimatorRule *rule) const{
+	return pRules.Has(rule);
 }
 
-void deAnimator::AddRule( deAnimatorRule *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+void deAnimator::AddRule(deAnimatorRule *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRules.Add( rule );
+	pRules.Add(rule);
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->RulesChanged();
 	}
 }
 
-void deAnimator::RemoveRule( deAnimatorRule *rule ){
-	pRules.Remove( rule );
+void deAnimator::RemoveRule(deAnimatorRule *rule){
+	pRules.Remove(rule);
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->RulesChanged();
 	}
 }
@@ -340,13 +340,13 @@ void deAnimator::RemoveRule( deAnimatorRule *rule ){
 void deAnimator::RemoveAllRules(){
 	pRules.RemoveAll();
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->RulesChanged();
 	}
 }
 
 void deAnimator::NotifyRulesChanged(){
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->RulesChanged();
 	}
 }
@@ -355,12 +355,12 @@ void deAnimator::NotifyRulesChanged(){
 // System Peers
 /////////////////
 
-void deAnimator::SetPeerAnimator( deBaseAnimatorAnimator *peer ){
-	if( peer == pPeerAnimator ){
+void deAnimator::SetPeerAnimator(deBaseAnimatorAnimator *peer){
+	if(peer == pPeerAnimator){
 		return;
 	}
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		delete pPeerAnimator;
 	}
 	pPeerAnimator = peer;
@@ -372,7 +372,7 @@ void deAnimator::SetPeerAnimator( deBaseAnimatorAnimator *peer ){
 /////////////////////
 
 void deAnimator::pCleanUp(){
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		delete pPeerAnimator;
 		pPeerAnimator = NULL;
 	}
@@ -380,10 +380,10 @@ void deAnimator::pCleanUp(){
 	RemoveAllRules();
 	
 	RemoveAllLinks();
-	if( pLinks ) delete [] pLinks;
+	if(pLinks) delete [] pLinks;
 	
 	RemoveAllControllers();
-	if( pControllers ){
+	if(pControllers){
 		delete [] pControllers;
 	}
 }

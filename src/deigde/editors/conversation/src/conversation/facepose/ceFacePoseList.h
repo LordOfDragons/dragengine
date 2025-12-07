@@ -52,29 +52,29 @@ public:
 	/** Retrieves the number of face poses. */
 	int GetCount() const;
 	/** Retrieves the face pose at the given position. */
-	ceFacePose *GetAt( int index ) const;
+	ceFacePose *GetAt(int index) const;
 	/** Retrieves the named face pose or NULL if not found. */
-	ceFacePose *GetNamed( const char *name ) const;
+	ceFacePose *GetNamed(const char *name) const;
 	/** Retrieves the index of a face pose or -1 if not found. */
-	int IndexOf( ceFacePose *facePose ) const;
+	int IndexOf(ceFacePose *facePose) const;
 	/** Retrieves the index of the named face pose or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a face pose exists. */
-	bool Has( ceFacePose *facePose ) const;
+	bool Has(ceFacePose *facePose) const;
 	/** Determines if a named face pose exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a face pose. */
-	void Add( ceFacePose *facePose );
+	void Add(ceFacePose *facePose);
 	/** Removes a face pose. */
-	void Remove( ceFacePose *facePose );
+	void Remove(ceFacePose *facePose);
 	/** Removes all face poses. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceFacePoseList &operator=( const ceFacePoseList &list );
+	ceFacePoseList &operator=(const ceFacePoseList &list);
 	
 	/** \brief Append face poses if absent. */
-	ceFacePoseList &operator+=( const ceFacePoseList &list );
+	ceFacePoseList &operator+=(const ceFacePoseList &list);
 	/*@}*/
 };
 

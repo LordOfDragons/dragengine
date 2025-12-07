@@ -42,19 +42,19 @@
 ////////////////////////////
 
 seController::seController() :
-pSky( NULL ),
-pIndex( -1 ),
+pSky(NULL),
+pIndex(-1),
 
-pName( "Controller" ),
+pName("Controller"),
 
-pMinValue( 0.0f ),
-pMaxValue( 1.0f ),
-pCurValue( 0.0f ),
-pClamp( true ),
-pFrozen( false ),
+pMinValue(0.0f),
+pMaxValue(1.0f),
+pCurValue(0.0f),
+pClamp(true),
+pFrozen(false),
 
-pSelected( false ),
-pActive( false ){
+pSelected(false),
+pActive(false){
 }
 
 seController::~seController(){
@@ -65,31 +65,31 @@ seController::~seController(){
 // Management
 ///////////////
 
-void seController::SetSky( seSky *sky ){
+void seController::SetSky(seSky *sky){
 	pSky = sky;
 }
 
-void seController::SetIndex( int index ){
+void seController::SetIndex(int index){
 	pIndex = index;
 }
 
-void seController::SetName( const char *name ){
-	if( pName == name ){
+void seController::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
-	if( pSky ){
-		pSky->NotifyControllerNameChanged( this );
+	if(pSky){
+		pSky->NotifyControllerNameChanged(this);
 	}
 }
 
-void seController::SetMinimumValue( float value ){
-	if( fabsf( value - pMinValue ) <= FLOAT_SAFE_EPSILON ){
+void seController::SetMinimumValue(float value){
+	if(fabsf(value - pMinValue) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
-	if( value > pMaxValue ){
+	if(value > pMaxValue){
 		pMinValue = value;
 		pMaxValue = value;
 		
@@ -97,19 +97,19 @@ void seController::SetMinimumValue( float value ){
 		pMinValue = value;
 	}
 	
-	pCurValue = pCheckValue( pCurValue );
+	pCurValue = pCheckValue(pCurValue);
 	
-	if( pSky ){
-		pSky->NotifyControllerChanged( this );
+	if(pSky){
+		pSky->NotifyControllerChanged(this);
 	}
 }
 
-void seController::SetMaximumValue( float value ){
-	if( fabsf( value - pMaxValue ) <= FLOAT_SAFE_EPSILON ){
+void seController::SetMaximumValue(float value){
+	if(fabsf(value - pMaxValue) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
-	if( value < pMinValue ){
+	if(value < pMinValue){
 		pMinValue = value;
 		pMaxValue = value;
 		
@@ -117,62 +117,62 @@ void seController::SetMaximumValue( float value ){
 		pMaxValue = value;
 	}
 	
-	pCurValue = pCheckValue( pCurValue );
+	pCurValue = pCheckValue(pCurValue);
 	
-	if( pSky ){
-		pSky->NotifyControllerChanged( this );
+	if(pSky){
+		pSky->NotifyControllerChanged(this);
 	}
 }
 
-void seController::SetCurrentValue( float value ){
-	if( pFrozen ){
+void seController::SetCurrentValue(float value){
+	if(pFrozen){
 		return;
 	}
 	
-	value = pCheckValue( value );
-	if( fabsf( value - pCurValue ) <= FLOAT_SAFE_EPSILON ){
+	value = pCheckValue(value);
+	if(fabsf(value - pCurValue) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pCurValue = value;
 	
-	if( pSky && pSky->GetEngineSkyInstance() ){
-		pSky->GetEngineSkyInstance()->GetControllerAt( pIndex ).SetCurrentValue( pCurValue );
-		pSky->GetEngineSkyInstance()->NotifyControllerChangedAt( pIndex );
+	if(pSky && pSky->GetEngineSkyInstance()){
+		pSky->GetEngineSkyInstance()->GetControllerAt(pIndex).SetCurrentValue(pCurValue);
+		pSky->GetEngineSkyInstance()->NotifyControllerChangedAt(pIndex);
 	}
 	
-	if( pSky ){
-		pSky->NotifyControllerValueChanged( this );
+	if(pSky){
+		pSky->NotifyControllerValueChanged(this);
 	}
 }
 
-void seController::SetFrozen( bool frozen ){
-	if( frozen == pFrozen ){
+void seController::SetFrozen(bool frozen){
+	if(frozen == pFrozen){
 		return;
 	}
 	
 	pFrozen = frozen;
-	if( pSky ){
-		pSky->NotifyControllerChanged( this );
+	if(pSky){
+		pSky->NotifyControllerChanged(this);
 	}
 }
 
-void seController::SetClamp( bool clamp ){
-	if( clamp == pClamp ){
+void seController::SetClamp(bool clamp){
+	if(clamp == pClamp){
 		return;
 	}
 	
 	pClamp = clamp;
-	if( pSky ){
-		pSky->NotifyControllerChanged( this );
+	if(pSky){
+		pSky->NotifyControllerChanged(this);
 	}
 }
 
-void seController::SetSelected( bool selected ){
+void seController::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void seController::SetActive( bool active ){
+void seController::SetActive(bool active){
 	pActive = active;
 }
 
@@ -181,11 +181,11 @@ void seController::SetActive( bool active ){
 // Private Functions
 //////////////////////
 
-float seController::pCheckValue( float value ){
-	if( pClamp ){
-		return decMath::clamp( value, pMinValue, pMaxValue );
+float seController::pCheckValue(float value){
+	if(pClamp){
+		return decMath::clamp(value, pMinValue, pMaxValue);
 		
 	}else{
-		return decMath::normalize( value, pMinValue, pMaxValue );
+		return decMath::normalize(value, pMinValue, pMaxValue);
 	}
 }

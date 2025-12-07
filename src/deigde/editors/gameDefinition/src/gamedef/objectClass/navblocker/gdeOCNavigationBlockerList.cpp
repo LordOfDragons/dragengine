@@ -43,8 +43,8 @@
 gdeOCNavigationBlockerList::gdeOCNavigationBlockerList(){
 }
 
-gdeOCNavigationBlockerList::gdeOCNavigationBlockerList( const gdeOCNavigationBlockerList &list ) :
-pNavigationBlockers( list.pNavigationBlockers ){
+gdeOCNavigationBlockerList::gdeOCNavigationBlockerList(const gdeOCNavigationBlockerList &list) :
+pNavigationBlockers(list.pNavigationBlockers){
 }
 
 gdeOCNavigationBlockerList::~gdeOCNavigationBlockerList(){
@@ -59,27 +59,27 @@ int gdeOCNavigationBlockerList::GetCount() const{
 	return pNavigationBlockers.GetCount();
 }
 
-gdeOCNavigationBlocker *gdeOCNavigationBlockerList::GetAt( int index ) const{
-	return ( gdeOCNavigationBlocker* )pNavigationBlockers.GetAt( index );
+gdeOCNavigationBlocker *gdeOCNavigationBlockerList::GetAt(int index) const{
+	return (gdeOCNavigationBlocker*)pNavigationBlockers.GetAt(index);
 }
 
-int gdeOCNavigationBlockerList::IndexOf( gdeOCNavigationBlocker *blocker ) const{
-	return pNavigationBlockers.IndexOf( blocker );
+int gdeOCNavigationBlockerList::IndexOf(gdeOCNavigationBlocker *blocker) const{
+	return pNavigationBlockers.IndexOf(blocker);
 }
 
-bool gdeOCNavigationBlockerList::Has( gdeOCNavigationBlocker *blocker ) const{
-	return pNavigationBlockers.Has( blocker );
+bool gdeOCNavigationBlockerList::Has(gdeOCNavigationBlocker *blocker) const{
+	return pNavigationBlockers.Has(blocker);
 }
 
-void gdeOCNavigationBlockerList::Add( gdeOCNavigationBlocker *blocker ){
-	if( ! blocker || Has( blocker ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCNavigationBlockerList::Add(gdeOCNavigationBlocker *blocker){
+	if(!blocker || Has(blocker)){
+		DETHROW(deeInvalidParam);
 	}
-	pNavigationBlockers.Add( blocker );
+	pNavigationBlockers.Add(blocker);
 }
 
-void gdeOCNavigationBlockerList::Remove( gdeOCNavigationBlocker *blocker ){
-	pNavigationBlockers.Remove( blocker );
+void gdeOCNavigationBlockerList::Remove(gdeOCNavigationBlocker *blocker){
+	pNavigationBlockers.Remove(blocker);
 }
 
 void gdeOCNavigationBlockerList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCNavigationBlockerList::RemoveAll(){
 
 
 
-gdeOCNavigationBlockerList &gdeOCNavigationBlockerList::operator=( const gdeOCNavigationBlockerList &list ){
+gdeOCNavigationBlockerList &gdeOCNavigationBlockerList::operator=(const gdeOCNavigationBlockerList &list){
 	pNavigationBlockers = list.pNavigationBlockers;
 	return *this;
 }

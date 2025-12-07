@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	meTaskSyncGameDefinition( meWindowMain &windowMain );
+	meTaskSyncGameDefinition(meWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	virtual ~meTaskSyncGameDefinition();

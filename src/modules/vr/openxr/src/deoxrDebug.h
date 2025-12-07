@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug. */
-	deoxrDebug( deoxrInstance &instance );
+	deoxrDebug(deoxrInstance &instance);
 	
 	/** Clean up debug. */
 	~deoxrDebug();
@@ -65,7 +65,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** Enable or disable debug mode. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -73,11 +73,11 @@ private:
 	void pRegisterReportCallback();
 	void pUnregisterReportCallback();
 	
-	void DebugMessage( const char *function, const char *messageId, const char *message );
+	void DebugMessage(const char *function, const char *messageId, const char *message);
 	
-	static XrBool32 DebugMessageCallback( XrDebugUtilsMessageSeverityFlagsEXT messageSeverity,
+	static XrBool32 DebugMessageCallback(XrDebugUtilsMessageSeverityFlagsEXT messageSeverity,
 		XrDebugUtilsMessageTypeFlagsEXT messageTypes,
-		const XrDebugUtilsMessengerCallbackDataEXT *callbackData, void *userData );
+		const XrDebugUtilsMessengerCallbackDataEXT *callbackData, void *userData);
 };
 
 #endif

@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPEffectListener::seWPEffectListener( seWPEffect &panel ) :
-pPanel( panel ){
+seWPEffectListener::seWPEffectListener(seWPEffect &panel) :
+pPanel(panel){
 }
 
 seWPEffectListener::~seWPEffectListener(){
@@ -53,16 +53,16 @@ seWPEffectListener::~seWPEffectListener(){
 // Notifications
 //////////////////
 
-void seWPEffectListener::ControllerNameChanged( seSynthesizer *synthesizer, seController* ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPEffectListener::ControllerNameChanged(seSynthesizer *synthesizer, seController*){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
 	pPanel.UpdateControllerList();
 }
 
-void seWPEffectListener::ControllerStructureChanged( seSynthesizer *synthesizer ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPEffectListener::ControllerStructureChanged(seSynthesizer *synthesizer){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
@@ -71,16 +71,16 @@ void seWPEffectListener::ControllerStructureChanged( seSynthesizer *synthesizer 
 
 
 
-void seWPEffectListener::LinkNameChanged( seSynthesizer *synthesizer, seLink* ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPEffectListener::LinkNameChanged(seSynthesizer *synthesizer, seLink*){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
 	pPanel.UpdateLinkList();
 }
 
-void seWPEffectListener::LinkStructureChanged( seSynthesizer *synthesizer ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPEffectListener::LinkStructureChanged(seSynthesizer *synthesizer){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
@@ -89,16 +89,16 @@ void seWPEffectListener::LinkStructureChanged( seSynthesizer *synthesizer ){
 
 
 
-void seWPEffectListener::ActiveSourceChanged( seSynthesizer *synthesizer, seSource* ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPEffectListener::ActiveSourceChanged(seSynthesizer *synthesizer, seSource*){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
 	pPanel.UpdateEffectList();
 }
 
-void seWPEffectListener::ActiveEffectChanged( seSynthesizer*, seSource *source ){
-	if( source != pPanel.GetSource() ){
+void seWPEffectListener::ActiveEffectChanged(seSynthesizer*, seSource *source){
+	if(source != pPanel.GetSource()){
 		return;
 	}
 	
@@ -107,16 +107,16 @@ void seWPEffectListener::ActiveEffectChanged( seSynthesizer*, seSource *source )
 	pPanel.UpdateEffect();
 }
 
-void seWPEffectListener::EffectChanged( seSynthesizer*, seSource*, seEffect *effect ) {
-	if( effect != pPanel.GetEffect() ){
+void seWPEffectListener::EffectChanged(seSynthesizer*, seSource*, seEffect *effect) {
+	if(effect != pPanel.GetEffect()){
 		return;
 	}
 	
 	pPanel.UpdateEffect();
 }
 
-void seWPEffectListener::EffectStructureChanged( seSynthesizer*, seSource *source ) {
-	if( source != pPanel.GetSource() ){
+void seWPEffectListener::EffectStructureChanged(seSynthesizer*, seSource *source) {
+	if(source != pPanel.GetSource()){
 		return;
 	}
 	

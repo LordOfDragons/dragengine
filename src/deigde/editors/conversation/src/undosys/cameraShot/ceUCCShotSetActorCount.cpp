@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetActorCount::ceUCCShotSetActorCount( ceCameraShot *cameraShot, int newCount ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetActorCount::ceUCCShotSetActorCount(ceCameraShot *cameraShot, int newCount){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Set Actor Count" );
+	SetShortInfo("Camera Shot Set Actor Count");
 	
 	pOldCount = cameraShot->GetActorCount();
 	pNewCount = newCount;
@@ -54,7 +54,7 @@ ceUCCShotSetActorCount::ceUCCShotSetActorCount( ceCameraShot *cameraShot, int ne
 }
 
 ceUCCShotSetActorCount::~ceUCCShotSetActorCount(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ ceUCCShotSetActorCount::~ceUCCShotSetActorCount(){
 ///////////////
 
 void ceUCCShotSetActorCount::Undo(){
-	pCameraShot->SetActorCount( pOldCount );
+	pCameraShot->SetActorCount(pOldCount);
 }
 
 void ceUCCShotSetActorCount::Redo(){
-	pCameraShot->SetActorCount( pNewCount );
+	pCameraShot->SetActorCount(pNewCount);
 }

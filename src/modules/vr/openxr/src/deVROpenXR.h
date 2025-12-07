@@ -126,7 +126,7 @@ private:
 	deoxrActionSet::Ref pActionSet;
 	deoxrPassthrough::Ref pPassthrough;
 	
-	deoxrAction *pActions[ InputActionCount ];
+	deoxrAction *pActions[InputActionCount];
 	
 	deCamera::Ref pCamera;
 	deMutex pMutexOpenXR;
@@ -149,7 +149,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create null VR OpenXR. */
-	deVROpenXR( deLoadableModule &loadableModule );
+	deVROpenXR(deLoadableModule &loadableModule);
 	
 	/** Clean up null VR OpenXR. */
 	virtual ~deVROpenXR();
@@ -186,13 +186,13 @@ public:
 	inline const deoxrPassthrough::Ref &GetPassthrough() const{ return pPassthrough; }
 	
 	/** Action. */
-	inline deoxrAction *GetAction( eInputActions inputAction ) const{ return pActions[ inputAction ]; }
+	inline deoxrAction *GetAction(eInputActions inputAction) const{ return pActions[inputAction]; }
 	
 	/** Send event. */
-	void SendEvent( const deInputEvent &event );
+	void SendEvent(const deInputEvent &event);
 	
 	/** Set input event timestamp. */
-	void InputEventSetTimestamp( deInputEvent &event ) const;
+	void InputEventSetTimestamp(deInputEvent &event) const;
 	
 	/** Graphic api OpenGL. */
 	inline deoxrGraphicApiOpenGL &GetGraphicApiOpenGL(){ return pGraphicApiOpenGL; }
@@ -202,7 +202,7 @@ public:
 	void WaitUntilReadyExit();
 	
 	/** Session swapchain for eye or nullptr. */
-	deoxrSwapchain *GetEyeSwapchain( eEye eye ) const;
+	deoxrSwapchain *GetEyeSwapchain(eEye eye) const;
 	
 	/** Session state. */
 	inline XrSessionState GetSessionState() const{ return pSessionState; }
@@ -231,7 +231,7 @@ public:
 	
 	/** Log level. */
 	inline LogLevel GetLogLevel() const{ return pLogLevel; }
-	void SetLogLevel(LogLevel level){ pLogLevel = level; }
+	void SetLogLevel(LogLevel level){pLogLevel = level;}
 	/*@}*/
 	
 	
@@ -261,10 +261,10 @@ public:
 	virtual bool RuntimeUsable();
 	
 	/** Set feature request level for eye gaze tracking. */
-	virtual void RequestFeatureEyeGazeTracking( eFeatureSupportLevel level );
+	virtual void RequestFeatureEyeGazeTracking(eFeatureSupportLevel level);
 	
 	/** Set feature request level for facial tracking. */
-	virtual void RequestFeatureFacialTracking( eFeatureSupportLevel level );
+	virtual void RequestFeatureFacialTracking(eFeatureSupportLevel level);
 	
 	/**
 	 * Start VR.
@@ -296,16 +296,16 @@ public:
 	inline deCamera *GetCamera() const{ return pCamera; }
 	
 	/** Set camera to render on head mounted display. */
-	virtual void SetCamera( deCamera *camera );
+	virtual void SetCamera(deCamera *camera);
 	
 	/** VR Runtime supports presenting user environment inside the rendered world. */
 	virtual bool SupportsPassthrough();
 	
 	/** Enable presenting user environment inside the rendered world. */
-	virtual void SetEnablePassthrough( bool enable );
+	virtual void SetEnablePassthrough(bool enable);
 	
 	/** Set transparency of user environment presented inside the rendered world. */
-	virtual void SetPassthroughTransparency( float transparency );
+	virtual void SetPassthroughTransparency(float transparency);
 	
 	/**
 	 * \brief Center playspace with forward direction matching looking direction.
@@ -326,50 +326,50 @@ public:
 	virtual int GetDeviceCount();
 	
 	/** Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index );
+	virtual deInputDevice *GetDeviceAt(int index);
 	
 	/** Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id );
+	virtual int IndexOfDeviceWithID(const char *id);
 	
 	/** Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id );
+	virtual int IndexOfButtonWithID(int device, const char *id);
 	
 	/** Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id );
+	virtual int IndexOfAxisWithID(int device, const char *id);
 	
 	/** Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id );
+	virtual int IndexOfFeedbackWithID(int device, const char *id);
 	
 	/** Index of component with identifier on device at index or -1 if absent. */
-	virtual int IndexOfComponentWithID( int device, const char *id );
+	virtual int IndexOfComponentWithID(int device, const char *id);
 	
 	/** Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed( int device, int button );
+	virtual bool GetButtonPressed(int device, int button);
 	
 	/** Button at index on device at index is touched. */
-	virtual bool GetButtonTouched( int device, int button );
+	virtual bool GetButtonTouched(int device, int button);
 	
 	/** User finger is near button at index on device at index. */
 	virtual bool GetButtonNear(int device, int button);
 	
 	/** Value of axis at index on device at index. */
-	virtual float GetAxisValue( int device, int axis );
+	virtual float GetAxisValue(int device, int axis);
 	
 	/** Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue( int device, int feedback );
+	virtual float GetFeedbackValue(int device, int feedback);
 	
 	/** Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue( int device, int feedback, float value );
+	virtual void SetFeedbackValue(int device, int feedback, float value);
 	
 	/** Device pose or identity if not supported. */
-	virtual void GetDevicePose( int device, deInputDevicePose &pose );
+	virtual void GetDevicePose(int device, deInputDevicePose &pose);
 	
 	/** Device bone pose or identity if not supported. */
-	virtual void GetDeviceBonePose( int device, int bone,
-		bool withController, deInputDevicePose &pose );
+	virtual void GetDeviceBonePose(int device, int bone,
+		bool withController, deInputDevicePose &pose);
 	
 	/** Device face expression or 0 if not supported. */
-	virtual float GetDeviceFaceExpression( int device, int expression );
+	virtual float GetDeviceFaceExpression(int device, int expression);
 	/*@}*/
 	
 	
@@ -399,22 +399,22 @@ public:
 	virtual eVRRenderFormat GetRenderFormat();
 	
 	/** VR render projection matrix parameters. */
-	virtual void GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom );
+	virtual void GetProjectionParameters(eEye eye, float &left, float &right, float &top, float &bottom);
 	
 	/** VR render matrix transforming from camera space to eye space. */
-	virtual decMatrix GetMatrixViewEye( eEye eye );
+	virtual decMatrix GetMatrixViewEye(eEye eye);
 	
 	/** VR render hidden area model or nullptr if not supported. */
-	virtual deModel *GetHiddenArea( eEye eye );
+	virtual deModel *GetHiddenArea(eEye eye);
 	
 	/** VR render distortion image or nullptr if not supported. */
-	virtual deImage *GetDistortionMap( eEye eye );
+	virtual deImage *GetDistortionMap(eEye eye);
 	
 	/** Get eye view images to use for rendering. */
-	virtual int GetEyeViewImages( eEye eye, int count, void *views );
+	virtual int GetEyeViewImages(eEye eye, int count, void *views);
 	
 	/** Get eye view render texture coordinates. */
-	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
+	virtual void GetEyeViewRenderTexCoords(eEye eye, decVector2 &tcFrom, decVector2 &tcTo);
 	
 	/** Start begin frame. */
 	virtual void StartBeginFrame();
@@ -423,14 +423,14 @@ public:
 	virtual void WaitBeginFrameFinished();
 	
 	/** Acquire eye view image to render into. */
-	virtual int AcquireEyeViewImage( eEye eye );
+	virtual int AcquireEyeViewImage(eEye eye);
 	
 	/** Release eye view image after render into. */
-	virtual void ReleaseEyeViewImage( eEye eye );
+	virtual void ReleaseEyeViewImage(eEye eye);
 	
 	/** Submit OpenGL rendered image to the HMD. */
-	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
-		const decVector2 &tcTo, bool distortionApplied );
+	virtual void SubmitOpenGLTexture2D(eEye eye, void *texture, const decVector2 &tcFrom,
+		const decVector2 &tcTo, bool distortionApplied);
 	
 	/** End frame. */
 	virtual void EndFrame();
@@ -448,16 +448,16 @@ public:
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
 	
 	/** Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed( const char *name ) const;
+	virtual int IndexOfParameterNamed(const char *name) const;
 	
 	/** Value of named parameter. */
-	virtual decString GetParameterValue( const char *name ) const;
+	virtual decString GetParameterValue(const char *name) const;
 	
 	/** Set value of named parameter. */
-	virtual void SetParameterValue( const char *name, const char *value );
+	virtual void SetParameterValue(const char *name, const char *value);
 	/*@}*/
 	
 	

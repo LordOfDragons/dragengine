@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectPropertyCopyToSelected( const meObjectList &list, const char *key, const char *value );
+	meUObjectPropertyCopyToSelected(const meObjectList &list, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -65,7 +65,7 @@ public:
 	inline decObjectList &GetList(){ return pList; }
 	inline const decObjectList &GetList() const{ return pList; }
 	/** Sets the value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Undo. */
 	virtual void Undo();

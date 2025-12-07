@@ -48,18 +48,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinTexturePipelinesList::deoglSkinTexturePipelinesList( const deoglSkinTexture &texture ){
-	pPipelines[ eptComponent ].TakeOver( new deoglSTPipelinesComponent( texture ) );
-	pPipelines[ eptBillboard ].TakeOver( new deoglSTPipelinesBillboard( texture ) );
-	pPipelines[ eptDecal ].TakeOver( new deoglSTPipelinesDecal( texture ) );
-	pPipelines[ eptPropField ].TakeOver( new deoglSTPipelinesPropField( texture ) );
-	pPipelines[ eptPropFieldImposter ].TakeOver( new deoglSTPipelinesPropFieldImposter( texture ) );
-	pPipelines[ eptHeightMap1 ].TakeOver( new deoglSTPipelinesHeightMap1( texture ) );
-	pPipelines[ eptHeightMap2 ].TakeOver( new deoglSTPipelinesHeightMap2( texture ) );
-	pPipelines[ eptParticle ].TakeOver( new deoglSTPipelinesParticle( texture ) );
-	pPipelines[ eptParticleRibbon ].TakeOver( new deoglSTPipelinesParticleRibbon( texture ) );
-	pPipelines[ eptParticleBeam ].TakeOver( new deoglSTPipelinesParticleBeam( texture ) );
-	pPipelines[ eptOutline ].TakeOver( new deoglSTPipelinesOutline( texture ) );
+deoglSkinTexturePipelinesList::deoglSkinTexturePipelinesList(const deoglSkinTexture &texture){
+	pPipelines[eptComponent].TakeOver(new deoglSTPipelinesComponent(texture));
+	pPipelines[eptBillboard].TakeOver(new deoglSTPipelinesBillboard(texture));
+	pPipelines[eptDecal].TakeOver(new deoglSTPipelinesDecal(texture));
+	pPipelines[eptPropField].TakeOver(new deoglSTPipelinesPropField(texture));
+	pPipelines[eptPropFieldImposter].TakeOver(new deoglSTPipelinesPropFieldImposter(texture));
+	pPipelines[eptHeightMap1].TakeOver(new deoglSTPipelinesHeightMap1(texture));
+	pPipelines[eptHeightMap2].TakeOver(new deoglSTPipelinesHeightMap2(texture));
+	pPipelines[eptParticle].TakeOver(new deoglSTPipelinesParticle(texture));
+	pPipelines[eptParticleRibbon].TakeOver(new deoglSTPipelinesParticleRibbon(texture));
+	pPipelines[eptParticleBeam].TakeOver(new deoglSTPipelinesParticleBeam(texture));
+	pPipelines[eptOutline].TakeOver(new deoglSTPipelinesOutline(texture));
 }
 
 deoglSkinTexturePipelinesList::~deoglSkinTexturePipelinesList(){
@@ -70,8 +70,8 @@ deoglSkinTexturePipelinesList::~deoglSkinTexturePipelinesList(){
 // Management
 ///////////////
 
-deoglSkinTexturePipelines &deoglSkinTexturePipelinesList::GetAt( ePipelineTypes type ) const{
-	return pPipelines[ type ];
+deoglSkinTexturePipelines &deoglSkinTexturePipelinesList::GetAt(ePipelineTypes type) const{
+	return pPipelines[type];
 }
 
 void deoglSkinTexturePipelinesList::Prepare(deoglBatchedShaderLoading &batched){

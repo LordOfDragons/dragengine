@@ -46,12 +46,12 @@ public:
 		GLfloat selector;
 		
 		/** Helper functions to set the data in a more tidy way. */
-		void Set( float nx, float ny, float nz, bool nselector );
-		void SetSelTrue( float nx, float ny, float nz );
-		void SetSelFalse( float nx, float ny, float nz );
-		void SetFrom( const sVBOData &data );
-		void SetFromSelTrue( const sVBOData &data );
-		void SetFromSelFalse( const sVBOData &data );
+		void Set(float nx, float ny, float nz, bool nselector);
+		void SetSelTrue(float nx, float ny, float nz);
+		void SetSelFalse(float nx, float ny, float nz);
+		void SetFrom(const sVBOData &data);
+		void SetFromSelTrue(const sVBOData &data);
+		void SetFromSelFalse(const sVBOData &data);
 	};
 	
 private:
@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
-	deoglShape( deoglRenderThread &renderThread );
+	deoglShape(deoglRenderThread &renderThread);
 	/** Cleans up the shape. */
 	virtual ~deoglShape();
 	/*@}*/
@@ -79,26 +79,26 @@ public:
 	/** Retrieves the VBO block. */
 	deoglSharedVBOBlock *GetVBOBlock();
 	/** Add lines data. */
-	virtual void AddVBOLines( sVBOData *data ) = 0;
+	virtual void AddVBOLines(sVBOData *data) = 0;
 	/** Add faces data. */
-	virtual void AddVBOFaces( sVBOData *data ) = 0;
+	virtual void AddVBOFaces(sVBOData *data) = 0;
 	
 	/** Retrieves the faces point offset. */
 	inline int GetPointOffsetFaces() const{ return pPointOffsetFaces; }
 	/** Sets the faces point offset. */
-	void SetPointOffsetFaces( int pointOffset );
+	void SetPointOffsetFaces(int pointOffset);
 	/** Retrieves the faces point count. */
 	inline int GetPointCountFaces() const{ return pPointCountFaces; }
 	/** Sets the faces point count. */
-	void SetPointCountFaces( int pointCount );
+	void SetPointCountFaces(int pointCount);
 	/** Retrieves the lines point offset. */
 	inline int GetPointOffsetLines() const{ return pPointOffsetLines; }
 	/** Sets the lines point offset. */
-	void SetPointOffsetLines( int pointLines );
+	void SetPointOffsetLines(int pointLines);
 	/** Retrieves the lines point count. */
 	inline int GetPointCountLines() const{ return pPointCountLines; }
 	/** Sets the lines point count. */
-	void SetPointCountLines( int pointCount );
+	void SetPointCountLines(int pointCount);
 	
 	/** Retrieves the VAO from the vbo block. */
 	deoglVAO *GetVAO();
@@ -109,13 +109,13 @@ public:
 	void RenderLines();
 	
 	/** Render lines. */
-	void RenderLines( const deoglRenderPlan &plan );
+	void RenderLines(const deoglRenderPlan &plan);
 	
 	/** Render faces. */
 	void RenderFaces();
 	
 	/** Render faces. */
-	void RenderFaces( const deoglRenderPlan &plan );
+	void RenderFaces(const deoglRenderPlan &plan);
 	/*@}*/
 };
 

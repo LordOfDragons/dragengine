@@ -50,28 +50,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalASoundLevelMeter::deoalASoundLevelMeter( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pType( deSoundLevelMeter::emtPoint ),
-pConeAngle( 45.0f ),
-pAudibleDistance( 1.0f ),
-pEnabled( false ),
-pParentWorld( NULL ),
-pOctreeNode( NULL ),
-pEnvProbeList( NULL ),
-pEnvProbe( NULL ),
-pDirtyEnvProbe( true ),
+deoalASoundLevelMeter::deoalASoundLevelMeter(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pType(deSoundLevelMeter::emtPoint),
+pConeAngle(45.0f),
+pAudibleDistance(1.0f),
+pEnabled(false),
+pParentWorld(NULL),
+pOctreeNode(NULL),
+pEnvProbeList(NULL),
+pEnvProbe(NULL),
+pDirtyEnvProbe(true),
 
-pWorldMarkedRemove( false ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pWorldMarkedRemove(false),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL)
 {
-	pWOVPrepareRayTrace.SetRadius( pAudibleDistance );
-	LEAK_CHECK_CREATE( audioThread, SoundLevelMeter );
+	pWOVPrepareRayTrace.SetRadius(pAudibleDistance);
+	LEAK_CHECK_CREATE(audioThread, SoundLevelMeter);
 }
 
 deoalASoundLevelMeter::~deoalASoundLevelMeter(){
-	LEAK_CHECK_FREE( pAudioThread, SoundLevelMeter );
+	LEAK_CHECK_FREE(pAudioThread, SoundLevelMeter);
 	
 	pCleanUp();
 }
@@ -81,45 +81,45 @@ deoalASoundLevelMeter::~deoalASoundLevelMeter(){
 // Management
 ///////////////
 
-void deoalASoundLevelMeter::SetType( deSoundLevelMeter::eMeterTypes type ){
+void deoalASoundLevelMeter::SetType(deSoundLevelMeter::eMeterTypes type){
 	pType = type;
 }
 
-void deoalASoundLevelMeter::SetGeometry( const decDVector &position, const decQuaternion &orientation ){
+void deoalASoundLevelMeter::SetGeometry(const decDVector &position, const decQuaternion &orientation){
 	pPosition = position;
 	pOrientation = orientation;
-	pWOVPrepareRayTrace.SetCenter( position );
+	pWOVPrepareRayTrace.SetCenter(position);
 	
 	pDirtyEnvProbe = true;
 }
 
-void deoalASoundLevelMeter::SetConeAngle( float angle ){
+void deoalASoundLevelMeter::SetConeAngle(float angle){
 	pConeAngle = angle;
 	
 	pDirtyEnvProbe = true;
 }
 
-void deoalASoundLevelMeter::SetAudibleDistance( float audibleDistance ){
+void deoalASoundLevelMeter::SetAudibleDistance(float audibleDistance){
 	pAudibleDistance = audibleDistance;
-	pWOVPrepareRayTrace.SetRadius( pAudibleDistance );
+	pWOVPrepareRayTrace.SetRadius(pAudibleDistance);
 	
-	if( pEnvProbeList ){
-		pEnvProbeList->SetRange( audibleDistance );
+	if(pEnvProbeList){
+		pEnvProbeList->SetRange(audibleDistance);
 	}
 	pDirtyEnvProbe = true;
 }
 
-void deoalASoundLevelMeter::SetLayerMask( const decLayerMask &layerMask ){
+void deoalASoundLevelMeter::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
-	pWOVPrepareRayTrace.SetLayerMask( layerMask );
+	pWOVPrepareRayTrace.SetLayerMask(layerMask);
 	
-	if( pEnvProbeList ){
-		pEnvProbeList->SetLayerMask( layerMask );
+	if(pEnvProbeList){
+		pEnvProbeList->SetLayerMask(layerMask);
 	}
 	pDirtyEnvProbe = true;
 }
 
-void deoalASoundLevelMeter::SetEnabled( bool enabled ){
+void deoalASoundLevelMeter::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
@@ -129,18 +129,18 @@ int deoalASoundLevelMeter::GetSpeakerCount() const{
 	return pSpeakers.GetCount();
 }
 
-const deoalASoundLevelMeterSpeaker &deoalASoundLevelMeter::GetSpeakerAt( int index ) const{
-	return *( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( index ) );
+const deoalASoundLevelMeterSpeaker &deoalASoundLevelMeter::GetSpeakerAt(int index) const{
+	return *((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(index));
 }
 
-deoalASoundLevelMeterSpeaker *deoalASoundLevelMeter::GetSpeakerWith( deoalASpeaker *speaker ) const{
+deoalASoundLevelMeterSpeaker *deoalASoundLevelMeter::GetSpeakerWith(deoalASpeaker *speaker) const{
 	const int count = pSpeakers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		deoalASoundLevelMeterSpeaker * const slmspeaker =
-			( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i );
-		if( slmspeaker->GetSpeaker() == speaker ){
+			(deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(i);
+		if(slmspeaker->GetSpeaker() == speaker){
 			return slmspeaker;
 		}
 	}
@@ -148,58 +148,58 @@ deoalASoundLevelMeterSpeaker *deoalASoundLevelMeter::GetSpeakerWith( deoalASpeak
 	return NULL;
 }
 
-void deoalASoundLevelMeter::RemoveSpeakerIfPresent( deoalASpeaker *speaker ){
-	const int index = pIndexOfSpeaker( speaker );
-	if( index != -1 ){
-		pRemoveSpeakerFrom( index );
+void deoalASoundLevelMeter::RemoveSpeakerIfPresent(deoalASpeaker *speaker){
+	const int index = pIndexOfSpeaker(speaker);
+	if(index != -1){
+		pRemoveSpeakerFrom(index);
 	}
 }
 
-void deoalASoundLevelMeter::SpeakerDropEnvProbeOctreeNode( deoalASpeaker *speaker ){
-	deoalASoundLevelMeterSpeaker * const slmspeaker = GetSpeakerWith( speaker );
-	if( slmspeaker ){
+void deoalASoundLevelMeter::SpeakerDropEnvProbeOctreeNode(deoalASpeaker *speaker){
+	deoalASoundLevelMeterSpeaker * const slmspeaker = GetSpeakerWith(speaker);
+	if(slmspeaker){
 		slmspeaker->EnvProbeDropOctreeNode();
 	}
 }
 
 
 
-void deoalASoundLevelMeter::SetParentWorld( deoalAWorld *world ){
+void deoalASoundLevelMeter::SetParentWorld(deoalAWorld *world){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( world == pParentWorld ){
+	if(world == pParentWorld){
 		return;
 	}
 	
 	pRemoveAllSpeakers();
 	
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		delete pEnvProbeList;
 		pEnvProbeList = NULL;
 	}
 	
-	if( pOctreeNode ){
-		pOctreeNode->RemoveSoundLevelMeter( this );
+	if(pOctreeNode){
+		pOctreeNode->RemoveSoundLevelMeter(this);
 	}
 	
 	pParentWorld = world;
 }
 
-void deoalASoundLevelMeter::SetOctreeNode( deoalWorldOctree *node ){
+void deoalASoundLevelMeter::SetOctreeNode(deoalWorldOctree *node){
 	pOctreeNode = node;
 }
 
 void deoalASoundLevelMeter::UpdateOctreeNode(){
-	if( pParentWorld && pEnabled ){
-		pParentWorld->GetOctree()->InsertSoundLevelMeterIntoTree( this, 8 );
+	if(pParentWorld && pEnabled){
+		pParentWorld->GetOctree()->InsertSoundLevelMeterIntoTree(this, 8);
 		
-	}else if( pOctreeNode ){
-		pOctreeNode->RemoveSoundLevelMeter( this );
+	}else if(pOctreeNode){
+		pOctreeNode->RemoveSoundLevelMeter(this);
 	}
 }
 
 void deoalASoundLevelMeter::PrepareQuickDispose(){
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		pEnvProbeList->PrepareQuickDispose();
 		delete pEnvProbeList;
 		pEnvProbeList = NULL;
@@ -213,7 +213,7 @@ void deoalASoundLevelMeter::PrepareQuickDispose(){
 
 
 deoalEnvProbe *deoalASoundLevelMeter::GetEnvProbe(){
-	if( ! pDirtyEnvProbe ){
+	if(!pDirtyEnvProbe){
 		return pEnvProbe;
 	}
 	
@@ -221,27 +221,27 @@ deoalEnvProbe *deoalASoundLevelMeter::GetEnvProbe(){
 	pEnvProbe = NULL;
 	
 	deoalAWorld * const world = GetParentWorld();
-	if( ! world ){
+	if(!world){
 		return NULL;
 	}
 	
-	if( ! pEnvProbeList ){
+	if(!pEnvProbeList){
 		const float reuseDistance = 1.0;
 		const int maxProbeCount = 20;
 		
-		pEnvProbeList = new deoalEnvProbeList( *pParentWorld, reuseDistance, maxProbeCount );
-		pEnvProbeList->SetRange( pAudibleDistance );
-		pEnvProbeList->SetLayerMask( pLayerMask );
-		pEnvProbeList->SetRTConfig( &pAudioThread.GetRayTracing().GetConfigSoundTracingMetering() );
+		pEnvProbeList = new deoalEnvProbeList(*pParentWorld, reuseDistance, maxProbeCount);
+		pEnvProbeList->SetRange(pAudibleDistance);
+		pEnvProbeList->SetLayerMask(pLayerMask);
+		pEnvProbeList->SetRTConfig(&pAudioThread.GetRayTracing().GetConfigSoundTracingMetering());
 	}
 	
-	pWOVPrepareRayTrace.Visit( *pParentWorld );
+	pWOVPrepareRayTrace.Visit(*pParentWorld);
 	
 	try{
-		pEnvProbe = pEnvProbeList->GetProbeTraceSoundRays( pPosition );
+		pEnvProbe = pEnvProbeList->GetProbeTraceSoundRays(pPosition);
 		
-	}catch( const deException &e ){
-		pAudioThread.GetLogger().LogException( e );
+	}catch(const deException &e){
+		pAudioThread.GetLogger().LogException(e);
 		// exceptions can happen during cancelling. using NULL is fine
 	}
 	
@@ -253,41 +253,41 @@ deoalEnvProbe *deoalASoundLevelMeter::GetEnvProbe(){
 void deoalASoundLevelMeter::FindSpeakers(){
 	deoalSpeakerList &list = pAudioThread.GetSpeakerList();
 	list.RemoveAll();
-	if( pParentWorld ){
-		deoalWOVSLMFindSpeakers( *this, list ).Visit( *pParentWorld );
+	if(pParentWorld){
+		deoalWOVSLMFindSpeakers(*this, list).Visit(*pParentWorld);
 	}
 	
-	pFlagAllSpeakers( false );
-	list.FlagAll( true );
+	pFlagAllSpeakers(false);
+	list.FlagAll(true);
 	
 	int i, count = pSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		deoalASoundLevelMeterSpeaker &speaker =
 			*( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) );
-		if( ! speaker.GetSpeaker()->GetFlag() ){
+		if(!speaker.GetSpeaker()->GetFlag()){
 // 			pAudioThread.GetLogger().LogInfoFormat( "FindSpeakers: Remove %p", speaker.GetSpeaker() );
-			pRemoveSpeakerFrom( i );
+			pRemoveSpeakerFrom(i);
 			i--;
 			count--;
 		}
 	}
 	
-	pFlagAllSpeakers( false );
+	pFlagAllSpeakers(false);
 	count = list.GetCount();
-	for( i=0; i<count; i++ ){
-		deoalASpeaker * const speaker = list.GetAt( i );
-		if( speaker->GetFlag() ){
+	for(i=0; i<count; i++){
+		deoalASpeaker * const speaker = list.GetAt(i);
+		if(speaker->GetFlag()){
 // 			pAudioThread.GetLogger().LogInfoFormat( "FindSpeakers: Add %p", speaker );
-			pAddSpeaker( speaker );
+			pAddSpeaker(speaker);
 		}
 	}
 }
 
 void deoalASoundLevelMeter::MeterSpeakers(){
 	int i, count = pSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 // 			const bool debugPrint = ( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) )->GetVolume() > 1e-3f;
-		( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) )->Listen();
+		((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(i))->Listen();
 // 			if( debugPrint ){
 // 				pAudioThread.GetLogger().LogInfoFormat( "Speaker %p(%f,%f,%f) Volume %f",
 // 					( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) )->GetSpeaker(),
@@ -304,15 +304,15 @@ void deoalASoundLevelMeter::MeterSpeakers(){
 // World usage
 ////////////////
 
-void deoalASoundLevelMeter::SetWorldMarkedRemove( bool marked ){
+void deoalASoundLevelMeter::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
-void deoalASoundLevelMeter::SetLLWorldPrev( deoalASoundLevelMeter *soundLevelMeter ){
+void deoalASoundLevelMeter::SetLLWorldPrev(deoalASoundLevelMeter *soundLevelMeter){
 	pLLWorldPrev = soundLevelMeter;
 }
 
-void deoalASoundLevelMeter::SetLLWorldNext( deoalASoundLevelMeter *soundLevelMeter ){
+void deoalASoundLevelMeter::SetLLWorldNext(deoalASoundLevelMeter *soundLevelMeter){
 	pLLWorldNext = soundLevelMeter;
 }
 
@@ -323,26 +323,26 @@ void deoalASoundLevelMeter::SetLLWorldNext( deoalASoundLevelMeter *soundLevelMet
 
 void deoalASoundLevelMeter::pCleanUp(){
 	pEnvProbe = NULL;
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		delete pEnvProbeList;
 	}
 	
 	pRemoveAllSpeakers();
 }
 
-void deoalASoundLevelMeter::pAddSpeaker( deoalASpeaker *speaker ){
+void deoalASoundLevelMeter::pAddSpeaker(deoalASpeaker *speaker){
 	pSpeakers.Add(deoalASoundLevelMeterSpeaker::Ref::New(
 		new deoalASoundLevelMeterSpeaker(*this, speaker)));
 	
-	speaker->GetSoundLevelMeters().AddIfAbsent( this );
+	speaker->GetSoundLevelMeters().AddIfAbsent(this);
 }
 
-int deoalASoundLevelMeter::pIndexOfSpeaker( deoalASpeaker *speaker ) const{
+int deoalASoundLevelMeter::pIndexOfSpeaker(deoalASpeaker *speaker) const{
 	const int count = pSpeakers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) )->GetSpeaker() == speaker ){
+	for(i=0; i<count; i++){
+		if(((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(i))->GetSpeaker() == speaker){
 			return i;
 		}
 	}
@@ -350,40 +350,40 @@ int deoalASoundLevelMeter::pIndexOfSpeaker( deoalASpeaker *speaker ) const{
 	return -1;
 }
 
-void deoalASoundLevelMeter::pRemoveSpeakerFrom( int index ){
-	( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( index ) )
-		->GetSpeaker()->GetSoundLevelMeters().RemoveIfPresent( this );
+void deoalASoundLevelMeter::pRemoveSpeakerFrom(int index){
+	((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(index))
+		->GetSpeaker()->GetSoundLevelMeters().RemoveIfPresent(this);
 	
 	const int last = pSpeakers.GetCount() - 1;
-	if( index < last ){
-		pSpeakers.SetAt( index, pSpeakers.GetAt( last ) );
+	if(index < last){
+		pSpeakers.SetAt(index, pSpeakers.GetAt(last));
 	}
 	
-	pSpeakers.RemoveFrom( last );
+	pSpeakers.RemoveFrom(last);
 }
 
 void deoalASoundLevelMeter::pRemoveAllSpeakers(){
 	const int count = pSpeakers.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) )
-			->GetSpeaker()->GetSoundLevelMeters().RemoveIfPresent( this );
+	for(i=0; i<count; i++){
+		((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(i))
+			->GetSpeaker()->GetSoundLevelMeters().RemoveIfPresent(this);
 	}
 	pSpeakers.RemoveAll();
 }
 
-void deoalASoundLevelMeter::pFlagAllSpeakers( bool flag ) const{
+void deoalASoundLevelMeter::pFlagAllSpeakers(bool flag) const{
 	const int count = pSpeakers.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) )->GetSpeaker()->SetFlag( flag );
+	for(i=0; i<count; i++){
+		((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(i))->GetSpeaker()->SetFlag(flag);
 	}
 }
 
 void deoalASoundLevelMeter::pDropEnvProbeOctreeNodeAllSpeakers(){
 	const int count = pSpeakers.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoalASoundLevelMeterSpeaker* )pSpeakers.GetAt( i ) )->EnvProbeDropOctreeNode();
+	for(i=0; i<count; i++){
+		((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(i))->EnvProbeDropOctreeNode();
 	}
 }

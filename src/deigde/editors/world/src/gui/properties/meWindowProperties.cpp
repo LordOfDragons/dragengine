@@ -47,45 +47,45 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWindowProperties::meWindowProperties( meWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
+meWindowProperties::meWindowProperties(meWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain),
 
-pPropSelection( NULL ),
-pPropView( NULL ),
-pPropWorld( NULL ),
-pPropSensors( NULL ),
-pPropHT( NULL ),
-pPropBrowser( NULL ),
-pPropAdd( NULL )
+pPropSelection(NULL),
+pPropView(NULL),
+pPropWorld(NULL),
+pPropSensors(NULL),
+pPropHT(NULL),
+pPropBrowser(NULL),
+pPropAdd(NULL)
 {
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPropWorld = new meWPWorld( *this );
-	AddChild( pPropWorld, "World" );
+	pPropWorld = new meWPWorld(*this);
+	AddChild(pPropWorld, "World");
 	
-	pPropSelection = new meWPSelection( *this );
-	AddChild( pPropSelection, "Selection" );
+	pPropSelection = new meWPSelection(*this);
+	AddChild(pPropSelection, "Selection");
 	
-	pPropBrowser = new meWPBrowser( *this );
-	AddChild( pPropBrowser, "Browser" );
+	pPropBrowser = new meWPBrowser(*this);
+	AddChild(pPropBrowser, "Browser");
 	
 // 	pPropAdd = new meWPAdd( *this );
 // 	AddChild( pPropAdd, "Add" );
 	
-	pPropHT = new meWPHeightTerrain( *this );
-	AddChild( pPropHT, "Height Terrain" );
+	pPropHT = new meWPHeightTerrain(*this);
+	AddChild(pPropHT, "Height Terrain");
 	
-	pPropView = new meWPView( *this );
-	AddChild( pPropView, "View" );
+	pPropView = new meWPView(*this);
+	AddChild(pPropView, "View");
 	
-	pPropSensors = new meWPSensors( *this );
-	AddChild( pPropSensors, "Sensors" );
+	pPropSensors = new meWPSensors(*this);
+	AddChild(pPropSensors, "Sensors");
 	
-	pPanelUndoHistory.TakeOver( new meWPUndoHistory( GetEnvironment() ) );
-	AddChild( pPanelUndoHistory, "History" );
+	pPanelUndoHistory.TakeOver(new meWPUndoHistory(GetEnvironment()));
+	AddChild(pPanelUndoHistory, "History");
 	
-	SetActivePanel( 1 ); // selection
+	SetActivePanel(1); // selection
 }
 
 meWindowProperties::~meWindowProperties(){
@@ -96,14 +96,14 @@ meWindowProperties::~meWindowProperties(){
 // Management
 ///////////////
 
-void meWindowProperties::SetWorld( meWorld *world ){
-	pPropWorld->SetWorld( world );
-	pPropView->SetWorld( world );
-	pPropHT->SetWorld( world );
-	pPropSelection->SetWorld( world );
-	pPropBrowser->SetWorld( world );
+void meWindowProperties::SetWorld(meWorld *world){
+	pPropWorld->SetWorld(world);
+	pPropView->SetWorld(world);
+	pPropHT->SetWorld(world);
+	pPropSelection->SetWorld(world);
+	pPropBrowser->SetWorld(world);
 // 	pPropAdd->SetWorld( world );
-	( ( meWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetWorld( world );
+	((meWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetWorld(world);
 }
 
 void meWindowProperties::OnWorldPathChanged(){
@@ -123,5 +123,5 @@ void meWindowProperties::OnGameDefinitionChanged(){
 }
 
 void meWindowProperties::SwitchToBrowser(){
-	SetActivePanel( 2 );
+	SetActivePanel(2);
 }

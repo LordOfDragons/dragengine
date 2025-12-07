@@ -41,63 +41,63 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectClass::meUSetObjectClass( meObject *object, const char *newcname ){
-	if( ! object || ! newcname ) DETHROW( deeInvalidParam );
+meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
+	if(!object || !newcname) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if( ! world ) DETHROW( deeInvalidParam );
+	if(!world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Set Object class" );
+	SetShortInfo("Set Object class");
 	
 	pObjects = NULL;
 	pObjectCount = 0;
 	
 	try{
-		pObjects = new sObject[ 1 ];
-		if( ! pObjects ) DETHROW( deeOutOfMemory );
+		pObjects = new sObject[1];
+		if(!pObjects) DETHROW(deeOutOfMemory);
 		
-		pObjects[ 0 ].oldcname = object->GetClassName();
-		pObjects[ 0 ].newcname = newcname;
-		pObjects[ 0 ].oldsize = object->GetSize();
-		pObjects[ 0 ].oldscaling = object->GetScaling();
-		pObjects[ 0 ].object = object;
+		pObjects[0].oldcname = object->GetClassName();
+		pObjects[0].newcname = newcname;
+		pObjects[0].oldsize = object->GetSize();
+		pObjects[0].oldscaling = object->GetScaling();
+		pObjects[0].object = object;
 		object->AddReference();
 		
 		pObjectCount = 1;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-meUSetObjectClass::meUSetObjectClass( meObjectList &objects, const char *newcname ){
+meUSetObjectClass::meUSetObjectClass(meObjectList &objects, const char *newcname){
 	int count = objects.GetCount();
 	meObject *object;
 	
-	if( count == 0 || ! newcname ) DETHROW( deeInvalidParam );
+	if(count == 0 || !newcname) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Set Object classes" );
+	SetShortInfo("Set Object classes");
 	
 	pObjects = NULL;
 	pObjectCount = 0;
 	
 	try{
-		pObjects = new sObject[ count ];
-		if( ! pObjects ) DETHROW( deeOutOfMemory );
+		pObjects = new sObject[count];
+		if(!pObjects) DETHROW(deeOutOfMemory);
 		
-		for( pObjectCount=0; pObjectCount<count; pObjectCount++ ){
-			object = objects.GetAt( pObjectCount );
+		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
+			object = objects.GetAt(pObjectCount);
 			
-			pObjects[ pObjectCount ].oldcname = object->GetClassName();
-			pObjects[ pObjectCount ].newcname = newcname;
-			pObjects[ pObjectCount ].oldsize = object->GetSize();
-			pObjects[ pObjectCount ].oldscaling = object->GetScaling();
-			pObjects[ pObjectCount ].object = object;
+			pObjects[pObjectCount].oldcname = object->GetClassName();
+			pObjects[pObjectCount].newcname = newcname;
+			pObjects[pObjectCount].oldsize = object->GetSize();
+			pObjects[pObjectCount].oldscaling = object->GetScaling();
+			pObjects[pObjectCount].object = object;
 			object->AddReference();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -117,15 +117,15 @@ void meUSetObjectClass::Undo(){
 	meWorld *world;
 	int o;
 	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ].object;
+	for(o=0; o<pObjectCount; o++){
+		object = pObjects[o].object;
 		world = object->GetWorld();
 		
-		object->SetClassName( pObjects[ o ].oldcname.GetString() );
-		object->SetSizeAndScaling( pObjects[ o ].oldsize, pObjects[ o ].oldscaling );
+		object->SetClassName(pObjects[o].oldcname.GetString());
+		object->SetSizeAndScaling(pObjects[o].oldsize, pObjects[o].oldscaling);
 		
-		world->NotifyObjectClassChanged( object );
-		world->NotifyObjectGeometryChanged( object );
+		world->NotifyObjectClassChanged(object);
+		world->NotifyObjectGeometryChanged(object);
 	}
 }
 
@@ -134,14 +134,14 @@ void meUSetObjectClass::Redo(){
 	meWorld *world;
 	int o;
 	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ].object;
+	for(o=0; o<pObjectCount; o++){
+		object = pObjects[o].object;
 		world = object->GetWorld();
 		
-		object->SetClassName( pObjects[ o ].newcname.GetString() );
+		object->SetClassName(pObjects[o].newcname.GetString());
 		
-		world->NotifyObjectClassChanged( object );
-		world->NotifyObjectGeometryChanged( object );
+		world->NotifyObjectClassChanged(object);
+		world->NotifyObjectGeometryChanged(object);
 	}
 }
 
@@ -151,10 +151,10 @@ void meUSetObjectClass::Redo(){
 //////////////////////
 
 void meUSetObjectClass::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
+	if(pObjects){
+		while(pObjectCount > 0){
 			pObjectCount--;
-			pObjects[ pObjectCount ].object->FreeReference();
+			pObjects[pObjectCount].object->FreeReference();
 		}
 		
 		delete [] pObjects;

@@ -57,7 +57,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create list item sorter. */
-	igdeListItemSorter( bool ascending = true );
+	igdeListItemSorter(bool ascending = true);
 	
 	
 	
@@ -80,7 +80,7 @@ public:
 	inline bool GetAscending() const{ return pAscending; }
 	
 	/** \brief Sort ascending. */
-	void SetAscending( bool ascending );
+	void SetAscending(bool ascending);
 	
 	
 	
@@ -90,7 +90,7 @@ public:
 	 * Default implementation compares item texts lexicographically using
 	 * "less than or equal" if sorting ascending otherwise "greater than or equal".
 	 */
-	virtual bool Precedes( const igdeListItem &item1, const igdeListItem &item2 );
+	virtual bool Precedes(const igdeListItem &item1, const igdeListItem &item2);
 	/*@}*/
 };
 

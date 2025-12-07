@@ -42,24 +42,24 @@
 ////////////////////////////
 
 deoglRenderTaskTexture::deoglRenderTaskTexture() :
-pTexture( NULL ),
+pTexture(NULL),
 
-pVAOCount( 0 ),
+pVAOCount(0),
 
-pHasVAO( NULL ),
-pHasVAOCount( 0 ),
-pHasVAOSize( 0 ){
+pHasVAO(NULL),
+pHasVAOCount(0),
+pHasVAOSize(0){
 }
 
 deoglRenderTaskTexture::~deoglRenderTaskTexture(){
-	if( pHasVAO ){
+	if(pHasVAO){
 		delete [] pHasVAO;
 	}
 	
 	const int vaoCount = pVAOs.GetCount();
 	int i;
-	for( i=0; i<vaoCount; i++ ){
-		delete ( deoglRenderTaskVAO* )pVAOs.GetAt( i );
+	for(i=0; i<vaoCount; i++){
+		delete (deoglRenderTaskVAO*)pVAOs.GetAt(i);
 	}
 	pVAOs.RemoveAll();
 }
@@ -79,54 +79,54 @@ void deoglRenderTaskTexture::Reset(){
 
 int deoglRenderTaskTexture::GetTotalPointCount() const{
 	int i, pointCount = 0;
-	for( i=0; i<pVAOCount; i++ ){
-		pointCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetTotalPointCount();
+	for(i=0; i<pVAOCount; i++){
+		pointCount += ((deoglRenderTaskVAO*)pVAOs.GetAt(i))->GetTotalPointCount();
 	}
 	return pointCount;
 }
 
 int deoglRenderTaskTexture::GetTotalInstanceCount() const{
 	int i, instanceCount = 0;
-	for( i=0; i<pVAOCount; i++ ){
-		instanceCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetInstanceCount();
+	for(i=0; i<pVAOCount; i++){
+		instanceCount += ((deoglRenderTaskVAO*)pVAOs.GetAt(i))->GetInstanceCount();
 	}
 	return instanceCount;
 }
 
 int deoglRenderTaskTexture::GetTotalSubInstanceCount() const{
 	int i, subInstanceCount = 0;
-	for( i=0; i<pVAOCount; i++ ){
-		subInstanceCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetTotalSubInstanceCount();
+	for(i=0; i<pVAOCount; i++){
+		subInstanceCount += ((deoglRenderTaskVAO*)pVAOs.GetAt(i))->GetTotalSubInstanceCount();
 	}
 	return subInstanceCount;
 }
 
 
 
-void deoglRenderTaskTexture::SetTexture( const deoglRenderTaskSharedTexture *texture ){
+void deoglRenderTaskTexture::SetTexture(const deoglRenderTaskSharedTexture *texture){
 	pTexture = texture;
 }
 
 
 
-deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOAt( int index ) const{
-	return ( deoglRenderTaskVAO* )pVAOs.GetAt( index );
+deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOAt(int index) const{
+	return (deoglRenderTaskVAO*)pVAOs.GetAt(index);
 }
 
-deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO( const deoglRenderTaskSharedVAO *vao ){
-	if( ! vao ){
-		DETHROW( deeInvalidParam );
+deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO(const deoglRenderTaskSharedVAO *vao){
+	if(!vao){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int index = vao->GetIndex();
 	
-	if( index >= pHasVAOCount ){
-		if( index >= pHasVAOSize ){
-			deoglRenderTaskVAO ** const newArray = new deoglRenderTaskVAO*[ index + 1 ];
+	if(index >= pHasVAOCount){
+		if(index >= pHasVAOSize){
+			deoglRenderTaskVAO ** const newArray = new deoglRenderTaskVAO*[index + 1];
 			
-			if( pHasVAO ){
-				if( pHasVAOCount > 0 ){
-					memcpy( newArray, pHasVAO, sizeof( deoglRenderTaskVAO* ) * pHasVAOCount );
+			if(pHasVAO){
+				if(pHasVAOCount > 0){
+					memcpy(newArray, pHasVAO, sizeof(deoglRenderTaskVAO*) * pHasVAOCount);
 				}
 				delete [] pHasVAO;
 			}
@@ -135,28 +135,28 @@ deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO( const deoglRenderTaskSharedV
 			pHasVAOSize = index + 1;
 		}
 		
-		if( pHasVAOCount <= index ){
-			memset( pHasVAO + pHasVAOCount, 0, sizeof( deoglRenderTaskVAO* ) * ( index - pHasVAOCount + 1 ) );
+		if(pHasVAOCount <= index){
+			memset(pHasVAO + pHasVAOCount, 0, sizeof(deoglRenderTaskVAO*) * (index - pHasVAOCount + 1));
 			pHasVAOCount = index + 1;
 		}
 	}
 	
-	deoglRenderTaskVAO *rtvao = pHasVAO[ index ];
-	if( rtvao ){
+	deoglRenderTaskVAO *rtvao = pHasVAO[index];
+	if(rtvao){
 		return rtvao;
 	}
 	
-	if( pVAOCount == pVAOs.GetCount() ){
+	if(pVAOCount == pVAOs.GetCount()){
 		rtvao = new deoglRenderTaskVAO;
-		pVAOs.Add( rtvao );
+		pVAOs.Add(rtvao);
 		
 	}else{
-		rtvao = ( deoglRenderTaskVAO* )pVAOs.GetAt( pVAOCount );
+		rtvao = (deoglRenderTaskVAO*)pVAOs.GetAt(pVAOCount);
 		rtvao->Reset();
 	}
 	pVAOCount++;
 	
-	rtvao->SetVAO( vao );
-	pHasVAO[ index ] = rtvao;
+	rtvao->SetVAO(vao);
+	pHasVAO[index] = rtvao;
 	return rtvao;
 }

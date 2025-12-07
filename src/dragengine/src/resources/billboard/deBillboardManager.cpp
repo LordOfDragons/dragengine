@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deBillboardManager::deBillboardManager( deEngine *engine ) : deResourceManager( engine, ertBillboard ){
-	SetLoggingName( "billboard" );
+deBillboardManager::deBillboardManager(deEngine *engine) : deResourceManager(engine, ertBillboard){
+	SetLoggingName("billboard");
 }
 
 deBillboardManager::~deBillboardManager(){
@@ -58,22 +58,22 @@ int deBillboardManager::GetBillboardCount() const{
 }
 
 deBillboard *deBillboardManager::GetRootBillboard() const{
-	return ( deBillboard* )pBillboards.GetRoot();
+	return (deBillboard*)pBillboards.GetRoot();
 }
 
 deBillboard *deBillboardManager::CreateBillboard(){
 	deBillboard *billboard = NULL;
 	
 	try{
-		billboard = new deBillboard( this );
-		if( ! billboard ) DETHROW( deeOutOfMemory );
+		billboard = new deBillboard(this);
+		if(!billboard) DETHROW(deeOutOfMemory);
 		
-		GetGraphicSystem()->LoadBillboard( billboard );
+		GetGraphicSystem()->LoadBillboard(billboard);
 		
-		pBillboards.Add( billboard );
+		pBillboards.Add(billboard);
 		
-	}catch( const deException & ){
-		if( billboard ){
+	}catch(const deException &){
+		if(billboard){
 			billboard->FreeReference();
 		}
 		throw;
@@ -85,8 +85,8 @@ deBillboard *deBillboardManager::CreateBillboard(){
 
 
 void deBillboardManager::ReleaseLeakingResources(){
-	if( GetBillboardCount() > 0 ){
-		LogWarnFormat( "%i leaking billboards", GetBillboardCount() );
+	if(GetBillboardCount() > 0){
+		LogWarnFormat("%i leaking billboards", GetBillboardCount());
 		pBillboards.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -97,26 +97,26 @@ void deBillboardManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deBillboardManager::SystemGraphicLoad(){
-	deBillboard *billboard = ( deBillboard* )pBillboards.GetRoot();
+	deBillboard *billboard = (deBillboard*)pBillboards.GetRoot();
 	
-	while( billboard ){
-		if( ! billboard->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadBillboard( billboard );
+	while(billboard){
+		if(!billboard->GetPeerGraphic()){
+			GetGraphicSystem()->LoadBillboard(billboard);
 		}
 		
-		billboard = ( deBillboard* )billboard->GetLLManagerNext();
+		billboard = (deBillboard*)billboard->GetLLManagerNext();
 	}
 }
 
 void deBillboardManager::SystemGraphicUnload(){
-	deBillboard *billboard = ( deBillboard* )pBillboards.GetRoot();
+	deBillboard *billboard = (deBillboard*)pBillboards.GetRoot();
 	
-	while( billboard ){
-		billboard->SetPeerGraphic( NULL );
-		billboard = ( deBillboard* )billboard->GetLLManagerNext();
+	while(billboard){
+		billboard->SetPeerGraphic(NULL);
+		billboard = (deBillboard*)billboard->GetLLManagerNext();
 	}
 }
 
-void deBillboardManager::RemoveResource( deResource *resource ){
-	pBillboards.RemoveIfPresent( resource );
+void deBillboardManager::RemoveResource(deResource *resource){
+	pBillboards.RemoveIfPresent(resource);
 }

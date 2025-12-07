@@ -42,15 +42,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglOcclusionQuery::deoglOcclusionQuery( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pQuery( 0 )
+deoglOcclusionQuery::deoglOcclusionQuery(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pQuery(0)
 {
-	OGL_CHECK( renderThread, pglGenQueries( 1, &pQuery ) );
+	OGL_CHECK(renderThread, pglGenQueries(1, &pQuery));
 }
 
 deoglOcclusionQuery::~deoglOcclusionQuery(){
-	pRenderThread.GetDelayedOperations().DeleteOpenGLQuery( pQuery );
+	pRenderThread.GetDelayedOperations().DeleteOpenGLQuery(pQuery);
 }
 
 
@@ -62,70 +62,70 @@ bool deoglOcclusionQuery::IsActive() const{
 	return pRenderThread.GetOcclusionQueryManager().GetActiveQuery() == this;
 }
 
-void deoglOcclusionQuery::BeginQuery( eQueryTypes type ){
+void deoglOcclusionQuery::BeginQuery(eQueryTypes type){
 	deoglOcclusionQueryManager &ocmgr = pRenderThread.GetOcclusionQueryManager();
 	
-	switch( type ){
+	switch(type){
 	case eqtAny:
 		ocmgr.EndActiveQuery();
-		OGL_CHECK( pRenderThread, pglBeginQuery( GL_ANY_SAMPLES_PASSED, pQuery ) );
+		OGL_CHECK(pRenderThread, pglBeginQuery(GL_ANY_SAMPLES_PASSED, pQuery));
 		break;
 		
 	case eqtCount:
 		#ifdef WITH_OPENGLES
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 		#else
 		ocmgr.EndActiveQuery();
-		OGL_CHECK( pRenderThread, pglBeginQuery( GL_SAMPLES_PASSED, pQuery ) );
+		OGL_CHECK(pRenderThread, pglBeginQuery(GL_SAMPLES_PASSED, pQuery));
 		#endif
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = type;
 	
-	ocmgr.SetActiveQuery( this );
+	ocmgr.SetActiveQuery(this);
 }
 
 void deoglOcclusionQuery::EndQuery(){
 	deoglOcclusionQueryManager &ocmgr = pRenderThread.GetOcclusionQueryManager();
-	if( ocmgr.GetActiveQuery() != this ){
+	if(ocmgr.GetActiveQuery() != this){
 		return;
 	}
 	
-	switch( pType ){
+	switch(pType){
 	case eqtAny:
-		OGL_CHECK( pRenderThread, pglEndQuery( GL_ANY_SAMPLES_PASSED ) );
+		OGL_CHECK(pRenderThread, pglEndQuery(GL_ANY_SAMPLES_PASSED));
 		break;
 		
 	case eqtCount:
 		#ifdef WITH_OPENGLES
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 		#else
-		OGL_CHECK( pRenderThread, pglEndQuery( GL_SAMPLES_PASSED ) );
+		OGL_CHECK(pRenderThread, pglEndQuery(GL_SAMPLES_PASSED));
 		#endif
 		break;
 	}
 	
-	ocmgr.SetActiveQuery( NULL );
+	ocmgr.SetActiveQuery(NULL);
 }
 
 bool deoglOcclusionQuery::HasResult() const{
 	GLuint result;
-	OGL_CHECK( pRenderThread, pglGetQueryObjectuiv( pQuery, GL_QUERY_RESULT_AVAILABLE, &result ) );
+	OGL_CHECK(pRenderThread, pglGetQueryObjectuiv(pQuery, GL_QUERY_RESULT_AVAILABLE, &result));
 	return result == GL_TRUE;
 }
 
 int deoglOcclusionQuery::GetResult() const{
 	GLuint result;
-	OGL_CHECK( pRenderThread, pglGetQueryObjectuiv( pQuery, GL_QUERY_RESULT, &result ) );
-	return ( int )result;
+	OGL_CHECK(pRenderThread, pglGetQueryObjectuiv(pQuery, GL_QUERY_RESULT, &result));
+	return (int)result;
 }
 
 bool deoglOcclusionQuery::GetResultAny() const{
 	GLuint result;
-	OGL_CHECK( pRenderThread, pglGetQueryObjectuiv( pQuery, GL_QUERY_RESULT, &result ) );
+	OGL_CHECK(pRenderThread, pglGetQueryObjectuiv(pQuery, GL_QUERY_RESULT, &result));
 	return result > 0;
 }

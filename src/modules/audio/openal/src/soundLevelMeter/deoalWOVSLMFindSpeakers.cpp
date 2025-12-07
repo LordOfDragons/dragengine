@@ -44,13 +44,13 @@
 /////////////////////////////////
 
 deoalWOVSLMFindSpeakers::deoalWOVSLMFindSpeakers(
-const deoalASoundLevelMeter &soundLevelMeter, deoalSpeakerList &list ) :
-pSoundLevelMeter( soundLevelMeter ),
-pRangeSquared( soundLevelMeter.GetAudibleDistance() * soundLevelMeter.GetAudibleDistance() ),
-pList( list )
+const deoalASoundLevelMeter &soundLevelMeter, deoalSpeakerList &list) :
+pSoundLevelMeter(soundLevelMeter),
+pRangeSquared(soundLevelMeter.GetAudibleDistance() * soundLevelMeter.GetAudibleDistance()),
+pList(list)
 {
-	SetVisitAll( false );
-	SetVisitSpeakers( true );
+	SetVisitAll(false);
+	SetVisitSpeakers(true);
 }
 
 deoalWOVSLMFindSpeakers::~deoalWOVSLMFindSpeakers(){
@@ -61,31 +61,31 @@ deoalWOVSLMFindSpeakers::~deoalWOVSLMFindSpeakers(){
 // Visiting
 /////////////
 
-void deoalWOVSLMFindSpeakers::Visit( deoalAWorld &world ){
+void deoalWOVSLMFindSpeakers::Visit(deoalAWorld &world){
 	const double audibleDistance = pSoundLevelMeter.GetAudibleDistance();
 	const decDVector &position = pSoundLevelMeter.GetPosition();
-	const decDVector radius( audibleDistance, audibleDistance, audibleDistance );
-	world.GetOctree()->VisitNodesColliding( this, position - radius, position + radius );
+	const decDVector radius(audibleDistance, audibleDistance, audibleDistance);
+	world.GetOctree()->VisitNodesColliding(this, position - radius, position + radius);
 }
 
 
 
-void deoalWOVSLMFindSpeakers::VisitNode( deoalDOctree *node, int ){
-	const deoalWorldOctree &sonode = *( ( deoalWorldOctree* )node );
+void deoalWOVSLMFindSpeakers::VisitNode(deoalDOctree *node, int){
+	const deoalWorldOctree &sonode = *((deoalWorldOctree*)node);
 	const decLayerMask &layerMask = pSoundLevelMeter.GetLayerMask();
 	const decDVector &position = pSoundLevelMeter.GetPosition();
 	const int count = sonode.GetSpeakerCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoalASpeaker * const speaker = sonode.GetSpeakerAt( i );
-		if( speaker->GetLayerMask().MatchesNot( layerMask ) ){
+	for(i=0; i<count; i++){
+		deoalASpeaker * const speaker = sonode.GetSpeakerAt(i);
+		if(speaker->GetLayerMask().MatchesNot(layerMask)){
 			continue;
 		}
-		if( ( speaker->GetPosition() - position ).LengthSquared() > pRangeSquared ){
+		if((speaker->GetPosition() - position).LengthSquared() > pRangeSquared){
 			continue;
 		}
 		
-		pList.Add( speaker );
+		pList.Add(speaker);
 	}
 }

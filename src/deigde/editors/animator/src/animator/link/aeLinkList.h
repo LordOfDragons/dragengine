@@ -45,7 +45,7 @@ public:
 	aeLinkList();
 	
 	/** Create copy of a link list. */
-	aeLinkList( const aeLinkList &copy );
+	aeLinkList(const aeLinkList &copy);
 	
 	/** Clean up link list. */
 	~aeLinkList();
@@ -60,40 +60,40 @@ public:
 	 * Link at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	aeLink *GetAt( int index ) const;
+	aeLink *GetAt(int index) const;
 	
 	/** Named link. */
-	aeLink *GetNamed( const char *name ) const;
+	aeLink *GetNamed(const char *name) const;
 	
 	/**
 	 * Index of link or -1 if not present in the list.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
-	int IndexOf( aeLink *link ) const;
+	int IndexOf(aeLink *link) const;
 	
 	/**
 	 * Determine if a link is present in the list.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
-	bool Has( aeLink *link ) const;
+	bool Has(aeLink *link) const;
 	
 	/**
 	 * Named link is present in the list.
 	 */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/**
 	 * Add link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
-	void Add( aeLink *link );
+	void Add(aeLink *link);
 	
 	/**
 	 * Insert link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	void Insert( aeLink *link, int index );
+	void Insert(aeLink *link, int index);
 	
 	/**
 	 * Move link.
@@ -101,14 +101,14 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
-	void Move( aeLink *link, int index );
+	void Move(aeLink *link, int index);
 	
 	/**
 	 * Remove link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 * \throws deeInvalidParam \em link is not present in the list.
 	 */
-	void Remove( aeLink *link );
+	void Remove(aeLink *link);
 	
 	/** Remove all links. */
 	void RemoveAll();
@@ -117,10 +117,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy link list to this link list. */
-	aeLinkList &operator=( const aeLinkList &list );
+	aeLinkList &operator=(const aeLinkList &list);
 	
 	/** Add links from link list if not present in this link list. */
-	aeLinkList &operator+=( const aeLinkList &list );
+	aeLinkList &operator+=(const aeLinkList &list);
 	/*@}*/
 };
 

@@ -43,10 +43,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetLayoutStack( dealDisplay &display );
+	dealWidgetLayoutStack(dealDisplay &display);
 	
 	/** \brief Create widget. */
-	dealWidgetLayoutStack( dealDisplay &display, bool fullSize );
+	dealWidgetLayoutStack(dealDisplay &display, bool fullSize);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetLayoutStack();
@@ -60,7 +60,7 @@ public:
 	inline bool GetFullSize() const{ return pFullSize; }
 	
 	/** \brief Set if widgets are resized to content area size. */
-	void SetFullSize( bool fullSize );
+	void SetFullSize(bool fullSize);
 	
 	
 	

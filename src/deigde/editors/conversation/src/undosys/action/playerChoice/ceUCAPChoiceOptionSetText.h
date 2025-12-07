@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceOptionSetText( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-		ceCAPlayerChoiceOption *option, const decUnicodeString &newText );
+	ceUCAPChoiceOptionSetText(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+		ceCAPlayerChoiceOption *option, const decUnicodeString &newText);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAPChoiceOptionSetText();

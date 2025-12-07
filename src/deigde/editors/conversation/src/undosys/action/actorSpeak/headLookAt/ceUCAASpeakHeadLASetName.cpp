@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakHeadLASetName::ceUCAASpeakHeadLASetName( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, const char *newName )
-: ceUCAASpeakStripSetID( topic, actorSpeak, headLookAt, newName ){
-	SetShortInfo( "HeadLookAt Set Name" );
+ceUCAASpeakHeadLASetName::ceUCAASpeakHeadLASetName(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, const char *newName)
+: ceUCAASpeakStripSetID(topic, actorSpeak, headLookAt, newName){
+	SetShortInfo("HeadLookAt Set Name");
 }
 
 ceUCAASpeakHeadLASetName::~ceUCAASpeakHeadLASetName(){

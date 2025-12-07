@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create cache disk directory mapping a disk path to the root path. */
-	deVFSCacheDiskDirectory( const decPath &diskPath );
+	deVFSCacheDiskDirectory(const decPath &diskPath);
 	
 	/** \brief Create cache disk directory mapping a disk path to a root path. */
-	deVFSCacheDiskDirectory( const decPath &rootPath, const decPath &diskPath );
+	deVFSCacheDiskDirectory(const decPath &rootPath, const decPath &diskPath);
 	
 protected:
 	/**
@@ -77,13 +77,13 @@ public:
 	inline int GetMaxCacheSize() const{ return pMaxCacheSize; }
 	
 	/** \brief Set maximum cache size in kilobytes. */
-	void SetMaxCacheSize( int kilobytes );
+	void SetMaxCacheSize(int kilobytes);
 	
 	/** \brief Current cache size in kilobytes. */
 	inline int GetCacheSize() const{ return pCacheSize; }
 	
 	/** \brief Set current cache size in kilobytes. */
-	void SetCacheSize( int kilobytes );
+	void SetCacheSize(int kilobytes);
 	
 	
 	
@@ -91,14 +91,14 @@ public:
 	uint64_t CalculateCacheSize();
 	
 	/** \brief Calculate size of a native path directory in bytes. */
-	uint64_t CalculateDirectorySize( const char *path );
+	uint64_t CalculateDirectorySize(const char *path);
 	
 	/** \brief Find the oldest file. */
-	bool FindOldestFiles( decPath &oldestFile, uint64_t &oldestFileSize );
+	bool FindOldestFiles(decPath &oldestFile, uint64_t &oldestFileSize);
 	
 	/** \brief Scan directory for the oldest. */
-	void FindOldestFilesIn( decPath &oldestFile, uint64_t &oldestFileSize,
-		TIME_SYSTEM &oldestAccesTime, bool &hasOldestFile, const char *path );
+	void FindOldestFilesIn(decPath &oldestFile, uint64_t &oldestFileSize,
+		TIME_SYSTEM &oldestAccesTime, bool &hasOldestFile, const char *path);
 	
 	/** \brief Update the cache deleting old files if required. */
 	virtual void UpdateCache();
@@ -112,14 +112,14 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path );
+	virtual void DeleteFile(const decPath &path);
 	/*@}*/
 };
 

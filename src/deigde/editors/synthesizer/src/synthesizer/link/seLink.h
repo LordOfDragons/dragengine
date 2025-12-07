@@ -65,7 +65,7 @@ public:
 	seLink();
 	
 	/** \brief Create copy of link. */
-	seLink( const seLink &copy );
+	seLink(const seLink &copy);
 	
 	/** \brief Clean up link. */
 	virtual ~seLink();
@@ -79,7 +79,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	
 	
@@ -92,7 +92,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
@@ -100,7 +100,7 @@ public:
 	inline seController *GetController() const{ return pController; }
 	
 	/** \brief Set controller or \em NULL. */
-	void SetController( seController *controller );
+	void SetController(seController *controller);
 	
 	/** \brief Repeat count of input value. */
 	inline int GetRepeat() const{ return pRepeat; }
@@ -109,7 +109,7 @@ public:
 	 * \brief Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	
 	/** \brief Curve. */
 	inline decCurveBezier &GetCurve(){ return pCurve; }
@@ -134,7 +134,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy link to this link. */
-	seLink &operator=( const seLink &copy );
+	seLink &operator=(const seLink &copy);
 	/*@}*/
 };
 

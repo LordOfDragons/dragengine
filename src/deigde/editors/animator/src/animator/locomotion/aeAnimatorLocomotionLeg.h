@@ -83,7 +83,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	aeAnimatorLocomotionLeg( aeAnimatorLocomotion *locomotion );
+	aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotion);
 	/** Cleans up the object. */
 	~aeAnimatorLocomotionLeg();
 	/*@}*/
@@ -93,29 +93,29 @@ public:
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Retrieves the stand put down position. */
 	inline const decVector &GetPutDownPositionStand() const{ return pPutDownPosStand; }
 	/** Sets the stand put down position. */
-	void SetPutDownPositionStand( const decVector &position );
+	void SetPutDownPositionStand(const decVector &position);
 	/** Retrieves the walk put down position. */
 	inline const decVector &GetPutDownPositionWalk() const{ return pPutDownPosWalk; }
 	/** Sets the walk put down position. */
-	void SetPutDownPositionWalk( const decVector &position );
+	void SetPutDownPositionWalk(const decVector &position);
 	/** Retrieves the run put down position. */
 	inline const decVector &GetPutDownPositionRun() const{ return pPutDownPosRun; }
 	/** Sets the run put down position. */
-	void SetPutDownPositionRun( const decVector &position );
+	void SetPutDownPositionRun(const decVector &position);
 	
 	/** Retrieves the lift off time. */
 	inline float GetLiftOffTime() const{ return pLiftOffTime; }
 	/** Sets the lift off time. */
-	void SetLiftOffTime( float time );
+	void SetLiftOffTime(float time);
 	/** Retrieves the put down time. */
 	inline float GetPutDownTime() const{ return pPutDownTime; }
 	/** Sets the put down time. */
-	void SetPutDownTime( float time );
+	void SetPutDownTime(float time);
 	
 	/** Retrieves the ground position. */
 	inline const decVector &GetGroundPosition() const{ return pGroundPosition; }
@@ -132,12 +132,12 @@ public:
 	/** Retrieves the name of the visualization bone. */
 	inline const decString &GetVisBoneName() const{ return pVisBoneName; }
 	/** Sets the name of the visualization bone. */
-	void SetVisBoneName( const char *name );
+	void SetVisBoneName(const char *name);
 	
 	/** Resets leg. */
 	void Reset();
 	/** Update leg. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/** Post update after the animator has been applied. */
 	void PostUpdate();
 	/** Update debug drawers before rendering. */
@@ -148,7 +148,7 @@ public:
 	void RepositionShapes();
 	
 	/** Sets the shapes visible or not. */
-	void SetShapesVisible( bool visible );
+	void SetShapesVisible(bool visible);
 	/*@}*/
 };
 

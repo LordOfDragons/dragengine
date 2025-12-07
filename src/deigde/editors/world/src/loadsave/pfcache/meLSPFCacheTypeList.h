@@ -63,11 +63,11 @@ public:
 	/** Retrieves the number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
 	/** Retrieves the type at the given index. */
-	sType &GetTypeAt( int index ) const;
+	sType &GetTypeAt(int index) const;
 	/** Retrieves the index of the type with the given vlayer and variation or -1 if not found. */
-	int IndexOfTypeWith( int vlayer, int variation ) const;
+	int IndexOfTypeWith(int vlayer, int variation) const;
 	/** Adds the type if not existing already. */
-	void AddType( int vlayer, int variation );
+	void AddType(int vlayer, int variation);
 	/** Removes all types. */
 	void RemoveAllTypes();
 	/*@}*/

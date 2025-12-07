@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkyInstanceManager::deSkyInstanceManager( deEngine *engine ) :
-deResourceManager( engine, ertSkyInstance ){
-	SetLoggingName( "sky instance" );
+deSkyInstanceManager::deSkyInstanceManager(deEngine *engine) :
+deResourceManager(engine, ertSkyInstance){
+	SetLoggingName("sky instance");
 }
 
 deSkyInstanceManager::~deSkyInstanceManager(){
@@ -61,19 +61,19 @@ int deSkyInstanceManager::GetSkyInstanceCount() const{
 }
 
 deSkyInstance *deSkyInstanceManager::GetRootSkyInstance() const{
-	return ( deSkyInstance* )pInstances.GetRoot();
+	return (deSkyInstance*)pInstances.GetRoot();
 }
 
 deSkyInstance *deSkyInstanceManager::CreateSkyInstance(){
 	deSkyInstance *instance = NULL;
 	
 	try{
-		instance = new deSkyInstance( this );
-		GetGraphicSystem()->LoadSkyInstance( instance );
-		pInstances.Add( instance );
+		instance = new deSkyInstance(this);
+		GetGraphicSystem()->LoadSkyInstance(instance);
+		pInstances.Add(instance);
 		
-	}catch( const deException & ){
-		if( instance ){
+	}catch(const deException &){
+		if(instance){
 			instance->FreeReference();
 		}
 		
@@ -87,8 +87,8 @@ deSkyInstance *deSkyInstanceManager::CreateSkyInstance(){
 
 void deSkyInstanceManager::ReleaseLeakingResources(){
 	const int count = GetSkyInstanceCount();
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking sky instances", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking sky instances", count);
 		pInstances.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -99,28 +99,28 @@ void deSkyInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSkyInstanceManager::SystemGraphicLoad(){
-	deSkyInstance *instance = ( deSkyInstance* )pInstances.GetRoot();
+	deSkyInstance *instance = (deSkyInstance*)pInstances.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
-	while( instance ){
-		if( ! instance->GetPeerGraphic() ){
-			graSys.LoadSkyInstance( instance );
+	while(instance){
+		if(!instance->GetPeerGraphic()){
+			graSys.LoadSkyInstance(instance);
 		}
-		instance = ( deSkyInstance* )instance->GetLLManagerNext();
+		instance = (deSkyInstance*)instance->GetLLManagerNext();
 	}
 }
 
 void deSkyInstanceManager::SystemGraphicUnload(){
-	deSkyInstance *instance = ( deSkyInstance* )pInstances.GetRoot();
+	deSkyInstance *instance = (deSkyInstance*)pInstances.GetRoot();
 	
-	while( instance ){
-		instance->SetPeerGraphic( NULL );
-		instance = ( deSkyInstance* )instance->GetLLManagerNext();
+	while(instance){
+		instance->SetPeerGraphic(NULL);
+		instance = (deSkyInstance*)instance->GetLLManagerNext();
 	}
 }
 
 
 
-void deSkyInstanceManager::RemoveResource( deResource *resource ){
-	pInstances.RemoveIfPresent( resource );
+void deSkyInstanceManager::RemoveResource(deResource *resource){
+	pInstances.RemoveIfPresent(resource);
 }

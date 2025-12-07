@@ -55,25 +55,25 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit renderable. */
-	virtual void VisitRenderable( deDSRenderable &renderable );
+	virtual void VisitRenderable(deDSRenderable &renderable);
 	
 	/** \brief Visit value renderable. */
-	virtual void VisitValue( deDSRenderableValue &renderable );
+	virtual void VisitValue(deDSRenderableValue &renderable);
 	
 	/** \brief Visit color renderable. */
-	virtual void VisitColor( deDSRenderableColor &renderable );
+	virtual void VisitColor(deDSRenderableColor &renderable);
 	
 	/** \brief Visit image renderable. */
-	virtual void VisitImage( deDSRenderableImage &renderable );
+	virtual void VisitImage(deDSRenderableImage &renderable);
 	
 	/** \brief Visit canvas renderable. */
-	virtual void VisitCanvas( deDSRenderableCanvas &renderable );
+	virtual void VisitCanvas(deDSRenderableCanvas &renderable);
 	
 	/** \brief Visit video frame renderable. */
-	virtual void VisitVideoFrame( deDSRenderableVideoFrame &renderable );
+	virtual void VisitVideoFrame(deDSRenderableVideoFrame &renderable);
 	
 	/** \brief Visit camera renderable. */
-	virtual void VisitCamera( deDSRenderableCamera &renderable );
+	virtual void VisitCamera(deDSRenderableCamera &renderable);
 	/*@}*/
 };
 

@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUNavSpaceSetPath::meUNavSpaceSetPath( meNavigationSpace *navspace, const char *newPath ){
-	if( ! navspace || ! newPath ){
-		DETHROW( deeInvalidParam );
+meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace *navspace, const char *newPath){
+	if(!navspace || !newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld *world = navspace->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNavSpace = NULL;
 	
-	SetShortInfo( "NavSpace Set Path" );
+	SetShortInfo("NavSpace Set Path");
 	
 	pOldPath = navspace->GetFilename();
 	pNewPath = newPath;
@@ -63,7 +63,7 @@ meUNavSpaceSetPath::meUNavSpaceSetPath( meNavigationSpace *navspace, const char 
 }
 
 meUNavSpaceSetPath::~meUNavSpaceSetPath(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
 }
@@ -74,11 +74,11 @@ meUNavSpaceSetPath::~meUNavSpaceSetPath(){
 ///////////////
 
 void meUNavSpaceSetPath::Undo(){
-	pNavSpace->SetFilename( pOldPath.GetString() );
-	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemNavSpace );
+	pNavSpace->SetFilename(pOldPath.GetString());
+	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemNavSpace);
 }
 
 void meUNavSpaceSetPath::Redo(){
-	pNavSpace->SetFilename( pNewPath.GetString() );
-	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemNavSpace );
+	pNavSpace->SetFilename(pNewPath.GetString());
+	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemNavSpace);
 }

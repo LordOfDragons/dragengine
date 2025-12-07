@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	declActionDelgaHelper( declLauncher &launcher, const decString &filename );
+	declActionDelgaHelper(declLauncher &launcher, const decString &filename);
 	
 	/** \brief Clean up action. */
 	~declActionDelgaHelper();

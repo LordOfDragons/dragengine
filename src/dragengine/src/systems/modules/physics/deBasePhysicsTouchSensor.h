@@ -85,7 +85,7 @@ public:
 	 * \brief Collider at index in touch sensor.
 	 * \param collider Index of the collider retrieve.
 	 */
-	virtual deCollider *GetColliderAt( int collider );
+	virtual deCollider *GetColliderAt(int collider);
 	/*@}*/
 	
 	
@@ -93,14 +93,14 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** \brief Test if a point is located inside the collider. */
-	virtual bool PointInside( const decDVector &point );
+	virtual bool PointInside(const decDVector &point);
 	
 	/**
 	 * \brief Visit all touching elements with listener.
 	 * 
 	 * To stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void AllHits( deBaseScriptingCollider *listener );
+	virtual void AllHits(deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test ray for collision with the element in the given shape.
@@ -110,8 +110,8 @@ public:
 	 * The distance parameter in the collision response represents the actual distance to the
 	 * ray origin along the ray direction.
 	 */
-	virtual void RayHits( const decDVector &rayOrigin, const decVector &rayDirection,
-		deBaseScriptingCollider *listener );
+	virtual void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+		deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test collider for collision with scene elements.
@@ -120,7 +120,7 @@ public:
 	 * collider is called. To stop testing set StopTesting in the provided collision
 	 * information object to true.
 	 */
-	virtual void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
+	virtual void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test moving collider for collision with scene elements.
@@ -129,8 +129,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderMoveHits( deCollider *collider, const decVector &displacement,
-		deBaseScriptingCollider *listener );
+	virtual void ColliderMoveHits(deCollider *collider, const decVector &displacement,
+		deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test rotating collider for collision with scene elements.
@@ -139,8 +139,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderRotateHits( deCollider *collider, const decVector &rotation,
-		deBaseScriptingCollider *listener );
+	virtual void ColliderRotateHits(deCollider *collider, const decVector &rotation,
+		deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Test moving and rotating collider for collision with scene elements.
@@ -149,8 +149,8 @@ public:
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
 	 * provided collision information object to true.
 	 */
-	virtual void ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-		const decVector &rotation, deBaseScriptingCollider *listener );
+	virtual void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+		const decVector &rotation, deBaseScriptingCollider *listener);
 	/*@}*/
 };
 

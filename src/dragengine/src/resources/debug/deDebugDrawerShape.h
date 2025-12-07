@@ -75,19 +75,19 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
 	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scale. */
-	void SetScale( const decVector &scale );
+	void SetScale(const decVector &scale);
 	
 	
 	
@@ -95,13 +95,13 @@ public:
 	inline const decColor &GetEdgeColor() const{ return pEdgeColor; }
 	
 	/** \brief Set edge color. */
-	void SetEdgeColor( const decColor &color );
+	void SetEdgeColor(const decColor &color);
 	
 	/** \brief Fill color. */
 	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** \brief Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	/** \brief Shape list. */
 	inline decShapeList &GetShapeList(){ return pShapeList; }
@@ -116,10 +116,10 @@ public:
 	int GetFaceCount() const;
 	
 	/** \brief Face at index. */
-	deDebugDrawerShapeFace *GetFaceAt( int index ) const;
+	deDebugDrawerShapeFace *GetFaceAt(int index) const;
 	
 	/** \brief Add face. */
-	void AddFace( deDebugDrawerShapeFace *face );
+	void AddFace(deDebugDrawerShapeFace *face);
 	
 	/** \brief Remove all faces. */
 	void RemoveAllFaces();

@@ -41,15 +41,15 @@
 ////////////////////////////
 
 ceCAIfElse::ceCAIfElse() :
-ceConversationAction( eatIfElse ),
-pTIMExpanded( true ),
-pTIMElseExpanded( true ){
+ceConversationAction(eatIfElse),
+pTIMExpanded(true),
+pTIMElseExpanded(true){
 }
 
-ceCAIfElse::ceCAIfElse( const ceCAIfElse &action ) :
-ceConversationAction( action ),
-pTIMExpanded( action.pTIMExpanded ),
-pTIMElseExpanded( action.pTIMElseExpanded )
+ceCAIfElse::ceCAIfElse(const ceCAIfElse &action) :
+ceConversationAction(action),
+pTIMExpanded(action.pTIMExpanded),
+pTIMElseExpanded(action.pTIMElseExpanded)
 {
 	const ceCAIfElseCaseList &cases = action.GetCases();
 	const ceConversationActionList &elseActions = action.GetElseActions();
@@ -59,26 +59,26 @@ pTIMElseExpanded( action.pTIMElseExpanded )
 	
 	try{
 		count = cases.GetCount();
-		for( i=0; i<count; i++ ){
-			newCase = new ceCAIfElseCase( *cases.GetAt( i ) );
-			pCases.Add( newCase );
+		for(i=0; i<count; i++){
+			newCase = new ceCAIfElseCase(*cases.GetAt(i));
+			pCases.Add(newCase);
 			newCase->FreeReference();
 			newCase = NULL;
 		}
 		
 		count = elseActions.GetCount();
-		for( i=0; i<count; i++ ){
-			newAction = elseActions.GetAt( i )->CreateCopy();
-			pElseActions.Add( newAction );
+		for(i=0; i<count; i++){
+			newAction = elseActions.GetAt(i)->CreateCopy();
+			pElseActions.Add(newAction);
 			newAction->FreeReference();
 			newAction = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( newAction ){
+	}catch(const deException &){
+		if(newAction){
 			newAction->FreeReference();
 		}
-		if( newCase ){
+		if(newCase){
 			newCase->FreeReference();
 		}
 		pCases.RemoveAll();
@@ -98,7 +98,7 @@ ceCAIfElse::~ceCAIfElse(){
 ///////////////
 
 ceConversationAction *ceCAIfElse::CreateCopy() const{
-	return new ceCAIfElse( *this );
+	return new ceCAIfElse(*this);
 }
 
 
@@ -106,10 +106,10 @@ ceConversationAction *ceCAIfElse::CreateCopy() const{
 // UI
 ///////
 
-void ceCAIfElse::SetTIMExpanded( bool expanded ){
+void ceCAIfElse::SetTIMExpanded(bool expanded){
 	pTIMExpanded = expanded;
 }
 
-void ceCAIfElse::SetTIMElseExpanded( bool expanded ){
+void ceCAIfElse::SetTIMElseExpanded(bool expanded){
 	pTIMElseExpanded = expanded;
 }

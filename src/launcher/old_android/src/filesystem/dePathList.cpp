@@ -38,22 +38,22 @@
 ////////////////////////////
 
 dePathList::dePathList() :
-pPath( NULL ),
-pPathCount( 0 ),
-pPathSize( 0 ){
+pPath(NULL),
+pPathCount(0),
+pPathSize(0){
 }
 
-dePathList::dePathList ( const dePathList &list ):
-pPath( NULL ),
-pPathCount( 0 ),
-pPathSize( 0 )
+dePathList::dePathList (const dePathList &list):
+pPath(NULL),
+pPathCount(0),
+pPathSize(0)
 {
 	*this = list;
 }
 
 dePathList::~dePathList(){
 	RemoveAll();
-	if( pPath ){
+	if(pPath){
 		delete [] pPath;
 	}
 }
@@ -64,19 +64,19 @@ dePathList::~dePathList(){
 // Management
 ///////////////
 
-const decPath &dePathList::GetAt( int index ) const{
-	if( index < 0 || index >= pPathCount ){
-		DETHROW( deeOutOfBoundary );
+const decPath &dePathList::GetAt(int index) const{
+	if(index < 0 || index >= pPathCount){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	return *pPath[ index ];
+	return *pPath[index];
 }
 
-int dePathList::IndexOf( const decPath &path ) const{
+int dePathList::IndexOf(const decPath &path) const{
 	int p;
 	
-	for( p=0; p<pPathCount; p++ ){
-		if( path == *pPath[ p ] ){
+	for(p=0; p<pPathCount; p++){
+		if(path == *pPath[p]){
 			return p;
 		}
 	}
@@ -84,11 +84,11 @@ int dePathList::IndexOf( const decPath &path ) const{
 	return -1;
 }
 
-bool dePathList::Has( const decPath &path ) const{
+bool dePathList::Has(const decPath &path) const{
 	int p;
 	
-	for( p=0; p<pPathCount; p++ ){
-		if( path == *pPath[ p ] ){
+	for(p=0; p<pPathCount; p++){
+		if(path == *pPath[p]){
 			return true;
 		}
 	}
@@ -96,80 +96,80 @@ bool dePathList::Has( const decPath &path ) const{
 	return false;
 }
 
-void dePathList::Add( const decPath &path ){
-	if( Has( path ) ){
-		DETHROW( deeInvalidParam );
+void dePathList::Add(const decPath &path){
+	if(Has(path)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPathCount == pPathSize ){
+	if(pPathCount == pPathSize){
 		const int newSize = pPathSize * 3 / 2 + 1;
-		decPath ** const newArray = new decPath*[ newSize ];
-		if( pPath ){
-			memcpy( newArray, pPath, sizeof( decPath* ) * pPathSize );
+		decPath ** const newArray = new decPath*[newSize];
+		if(pPath){
+			memcpy(newArray, pPath, sizeof(decPath*) * pPathSize);
 			delete [] pPath;
 		}
 		pPath = newArray;
 		pPathSize = newSize;
 	}
 	
-	pPath[ pPathCount ] = new decPath( path );
+	pPath[pPathCount] = new decPath(path);
 	
 	pPathCount++;
 }
 
-void dePathList::AddIfAbsent( const decPath &path ){
-	if( Has( path ) ){
+void dePathList::AddIfAbsent(const decPath &path){
+	if(Has(path)){
 		return;
 	}
 	
-	if( pPathCount == pPathSize ){
+	if(pPathCount == pPathSize){
 		const int newSize = pPathSize * 3 / 2 + 1;
-		decPath ** const newArray = new decPath*[ newSize ];
-		if( pPath ){
-			memcpy( newArray, pPath, sizeof( decPath* ) * pPathSize );
+		decPath ** const newArray = new decPath*[newSize];
+		if(pPath){
+			memcpy(newArray, pPath, sizeof(decPath*) * pPathSize);
 			delete [] pPath;
 		}
 		pPath = newArray;
 		pPathSize = newSize;
 	}
 	
-	pPath[ pPathCount ] = new decPath( path );
+	pPath[pPathCount] = new decPath(path);
 	
 	pPathCount++;
 }
 
-void dePathList::Remove( const decPath &path ){
-	int i, index = IndexOf( path );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void dePathList::Remove(const decPath &path){
+	int i, index = IndexOf(path);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	delete pPath[ index ];
+	delete pPath[index];
 	
-	for( i=index+1; i<pPathCount; i++ ){
-		pPath[ i - 1 ] = pPath[ i ];
+	for(i=index+1; i<pPathCount; i++){
+		pPath[i - 1] = pPath[i];
 	}
 	pPathCount--;
 }
 
-void dePathList::RemoveIfPresent( const decPath &path ){
-	int i, index = IndexOf( path );
-	if( index == -1 ){
+void dePathList::RemoveIfPresent(const decPath &path){
+	int i, index = IndexOf(path);
+	if(index == -1){
 		return;
 	}
 	
-	delete pPath[ index ];
+	delete pPath[index];
 	
-	for( i=index+1; i<pPathCount; i++ ){
-		pPath[ i - 1 ] = pPath[ i ];
+	for(i=index+1; i<pPathCount; i++){
+		pPath[i - 1] = pPath[i];
 	}
 	pPathCount--;
 }
 
 void dePathList::RemoveAll(){
-	while( pPathCount > 0 ){
+	while(pPathCount > 0){
 		pPathCount--;
-		delete pPath[ pPathCount ];
+		delete pPath[pPathCount];
 	}
 }
 
@@ -178,12 +178,12 @@ void dePathList::RemoveAll(){
 // Operators
 //////////////
 
-dePathList &dePathList::operator=( const dePathList &list ){
+dePathList &dePathList::operator=(const dePathList &list){
 	pPathCount = 0;
 	
 	int i;
-	for( i=0; i<list.pPathCount; i++ ){
-		Add( *list.pPath[ i ] );
+	for(i=0; i<list.pPathCount; i++){
+		Add(*list.pPath[i]);
 	}
 	
 	return *this;

@@ -40,12 +40,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetVertexPositionSet::aeULinkSetVertexPositionSet( aeLink *link, const char *newSet ){
-	DEASSERT_NOTNULL( link )
+aeULinkSetVertexPositionSet::aeULinkSetVertexPositionSet(aeLink *link, const char *newSet){
+	DEASSERT_NOTNULL(link)
 	
 	pLink = nullptr;
 	
-	SetShortInfo( "Link set vertex position set" );
+	SetShortInfo("Link set vertex position set");
 	
 	pLink = link;
 	pLink->AddReference();
@@ -55,7 +55,7 @@ aeULinkSetVertexPositionSet::aeULinkSetVertexPositionSet( aeLink *link, const ch
 }
 
 aeULinkSetVertexPositionSet::~aeULinkSetVertexPositionSet(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ aeULinkSetVertexPositionSet::~aeULinkSetVertexPositionSet(){
 ///////////////
 
 void aeULinkSetVertexPositionSet::Undo(){
-	pLink->SetVertexPositionSet( pOldValue );
+	pLink->SetVertexPositionSet(pOldValue);
 }
 
 void aeULinkSetVertexPositionSet::Redo(){
-	pLink->SetVertexPositionSet( pNewValue );
+	pLink->SetVertexPositionSet(pNewValue);
 }

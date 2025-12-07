@@ -105,7 +105,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	projWindowMain( igdeEditorModule &module );
+	projWindowMain(igdeEditorModule &module);
 	
 	/** \brief Clean up window. */
 	virtual ~projWindowMain();
@@ -172,7 +172,7 @@ public:
 	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set project. */
-	void SetProject( projProject *project );
+	void SetProject(projProject *project);
 	
 	
 	
@@ -180,7 +180,7 @@ public:
 	void LoadProject();
 	
 	/** \brief Load project local. */
-	void LoadProjectLocal( projProject &project );
+	void LoadProjectLocal(projProject &project);
 	
 	/** \brief Save project. */
 	void SaveProject();
@@ -191,13 +191,13 @@ public:
 	
 	
 	/** \brief Game like frame update. */
-	void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed);
 	
 	/** \brief Retrieve a list of unsaved open documents. */
-	void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list);
 	
 	/** \brief Requests a document to be saved. */
-	bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename);
 	
 	/** \brief The game project has changed. */
 	void OnGameProjectChanged();
@@ -214,7 +214,7 @@ public:
 	 * wishes to close the application it has to return false. Return true to continue
 	 * processing command line arguments.
 	 */
-	bool ProcessCommandLine( decUnicodeStringList &arguments );
+	bool ProcessCommandLine(decUnicodeStringList &arguments);
 	/*@}*/
 	
 	
@@ -225,12 +225,12 @@ private:
 	void pCreateToolBarDistribute();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuDistribute( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuProfile( igdeMenuCascade &menu );
-	bool pCmdLineProfileDistribute( decUnicodeStringList &arguments );
-	bool pCmdLineProfileDistributeFile( decUnicodeStringList &arguments );
-	bool pCmdLineProfileList( decUnicodeStringList &arguments );
+	void pCreateMenuDistribute(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuProfile(igdeMenuCascade &menu);
+	bool pCmdLineProfileDistribute(decUnicodeStringList &arguments);
+	bool pCmdLineProfileDistributeFile(decUnicodeStringList &arguments);
+	bool pCmdLineProfileList(decUnicodeStringList &arguments);
 	void pCmdLineHelp();
 };
 

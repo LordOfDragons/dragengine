@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new error trace point object. */
-	deErrorTracePoint( const char *sourceFunc, int sourceLine );
+	deErrorTracePoint(const char *sourceFunc, int sourceLine);
 	
 	/** \brief Create new error trace point object. */
-	deErrorTracePoint( deLoadableModule *module, const char *sourceFunc, int sourceLine );
+	deErrorTracePoint(deLoadableModule *module, const char *sourceFunc, int sourceLine);
 	
 	/** \brief Clean up error trace object. */
 	~deErrorTracePoint();
@@ -83,13 +83,13 @@ public:
 	inline int GetValueCount() const{ return pValueCount; }
 	
 	/** \brief Indexed trace value. */
-	deErrorTraceValue *GetValue( int index ) const;
+	deErrorTraceValue *GetValue(int index) const;
 	
 	/** \brief Named trace value or NULL if not found. */
-	deErrorTraceValue *FindValue( const char *name ) const;
+	deErrorTraceValue *FindValue(const char *name) const;
 	
 	/** \brief Adds a new trace value. */
-	void AddValue( deErrorTraceValue *value );
+	void AddValue(deErrorTraceValue *value);
 	
 	/** \brief Removes all trace values. */
 	void RemoveAllValues();
@@ -100,16 +100,16 @@ public:
 	/** \name Convenience Functions */
 	/*@{*/
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValue( const char *name, const char *value );
+	deErrorTraceValue *AddValue(const char *name, const char *value);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueInt( const char *name, int value );
+	deErrorTraceValue *AddValueInt(const char *name, int value);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueFloat( const char *name, float );
+	deErrorTraceValue *AddValueFloat(const char *name, float);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueBool( const char *name, bool value );
+	deErrorTraceValue *AddValueBool(const char *name, bool value);
 	/*@}*/
 };
 

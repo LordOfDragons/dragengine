@@ -55,23 +55,23 @@ int ceConversationActorList::GetCount() const{
 	return pActors.GetCount();
 }
 
-ceConversationActor *ceConversationActorList::GetAt( int index ) const{
-	return ( ceConversationActor* )pActors.GetAt( index );
+ceConversationActor *ceConversationActorList::GetAt(int index) const{
+	return (ceConversationActor*)pActors.GetAt(index);
 }
 
-ceConversationActor *ceConversationActorList::GetWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+ceConversationActor *ceConversationActorList::GetWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	ceConversationActor *actor;
 	const int count = pActors.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		actor = ( ceConversationActor* )pActors.GetAt( i );
+	for(i=0; i<count; i++){
+		actor = (ceConversationActor*)pActors.GetAt(i);
 		
-		if( actor->GetID().Equals( id ) ){
+		if(actor->GetID().Equals(id)){
 			return actor;
 		}
 	}
@@ -79,19 +79,19 @@ ceConversationActor *ceConversationActorList::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-ceConversationActor *ceConversationActorList::GetWithAliasID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+ceConversationActor *ceConversationActorList::GetWithAliasID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	ceConversationActor *actor;
 	const int count = pActors.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		actor = ( ceConversationActor* )pActors.GetAt( i );
+	for(i=0; i<count; i++){
+		actor = (ceConversationActor*)pActors.GetAt(i);
 		
-		if( ! actor->GetAliasID().IsEmpty() && actor->GetAliasID().Equals( id ) ){
+		if(!actor->GetAliasID().IsEmpty() && actor->GetAliasID().Equals(id)){
 			return actor;
 		}
 	}
@@ -99,32 +99,32 @@ ceConversationActor *ceConversationActorList::GetWithAliasID( const char *id ) c
 	return NULL;
 }
 
-ceConversationActor *ceConversationActorList::GetWithIDOrAliasID( const char *id ) const{
-	ceConversationActor *actor = GetWithAliasID( id );
+ceConversationActor *ceConversationActorList::GetWithIDOrAliasID(const char *id) const{
+	ceConversationActor *actor = GetWithAliasID(id);
 	
-	if( ! actor ){
-		actor = GetWithID( id );
+	if(!actor){
+		actor = GetWithID(id);
 	}
 	
 	return actor;
 }
 
-int ceConversationActorList::IndexOf( ceConversationActor *actor ) const{
-	return pActors.IndexOf( actor );
+int ceConversationActorList::IndexOf(ceConversationActor *actor) const{
+	return pActors.IndexOf(actor);
 }
 
-int ceConversationActorList::IndexWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+int ceConversationActorList::IndexWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pActors.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceConversationActor &actor = *( ( ceConversationActor* )pActors.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceConversationActor &actor = *((ceConversationActor*)pActors.GetAt(i));
 		
-		if( actor.GetID().Equals( id ) ){
+		if(actor.GetID().Equals(id)){
 			return i;
 		}
 	}
@@ -132,18 +132,18 @@ int ceConversationActorList::IndexWithID( const char *id ) const{
 	return -1;
 }
 
-int ceConversationActorList::IndexWithAliasID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+int ceConversationActorList::IndexWithAliasID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pActors.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceConversationActor &actor = *( ( ceConversationActor* )pActors.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceConversationActor &actor = *((ceConversationActor*)pActors.GetAt(i));
 		
-		if( ! actor.GetAliasID().IsEmpty() && actor.GetAliasID().Equals( id ) ){
+		if(!actor.GetAliasID().IsEmpty() && actor.GetAliasID().Equals(id)){
 			return i;
 		}
 	}
@@ -151,32 +151,32 @@ int ceConversationActorList::IndexWithAliasID( const char *id ) const{
 	return -1;
 }
 
-int ceConversationActorList::IndexWithIDOrAliasID( const char *id ) const{
-	int index = IndexWithAliasID( id );
+int ceConversationActorList::IndexWithIDOrAliasID(const char *id) const{
+	int index = IndexWithAliasID(id);
 	
-	if( index == -1 ){
-		index = IndexWithID( id );
+	if(index == -1){
+		index = IndexWithID(id);
 	}
 	
 	return index;
 }
 
-bool ceConversationActorList::Has( ceConversationActor *actor ) const{
-	return pActors.Has( actor );
+bool ceConversationActorList::Has(ceConversationActor *actor) const{
+	return pActors.Has(actor);
 }
 
-bool ceConversationActorList::HasWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+bool ceConversationActorList::HasWithID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pActors.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceConversationActor &actor = *( ( ceConversationActor* )pActors.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceConversationActor &actor = *((ceConversationActor*)pActors.GetAt(i));
 		
-		if( actor.GetID().Equals( id ) ){
+		if(actor.GetID().Equals(id)){
 			return true;
 		}
 	}
@@ -184,18 +184,18 @@ bool ceConversationActorList::HasWithID( const char *id ) const{
 	return false;
 }
 
-bool ceConversationActorList::HasWithAliasID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+bool ceConversationActorList::HasWithAliasID(const char *id) const{
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pActors.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceConversationActor &actor = *( ( ceConversationActor* )pActors.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceConversationActor &actor = *((ceConversationActor*)pActors.GetAt(i));
 		
-		if( ! actor.GetAliasID().IsEmpty() && actor.GetAliasID().Equals( id ) ){
+		if(!actor.GetAliasID().IsEmpty() && actor.GetAliasID().Equals(id)){
 			return true;
 		}
 	}
@@ -203,28 +203,28 @@ bool ceConversationActorList::HasWithAliasID( const char *id ) const{
 	return false;
 }
 
-bool ceConversationActorList::HasWithIDOrAliasID( const char *id ) const{
-	return HasWithAliasID( id ) || HasWithID( id );
+bool ceConversationActorList::HasWithIDOrAliasID(const char *id) const{
+	return HasWithAliasID(id) || HasWithID(id);
 }
 
-void ceConversationActorList::Add( ceConversationActor *actor ){
-	if( ! actor ) DETHROW( deeInvalidParam );
+void ceConversationActorList::Add(ceConversationActor *actor){
+	if(!actor) DETHROW(deeInvalidParam);
 	
-	pActors.Add( actor );
+	pActors.Add(actor);
 }
 
-void ceConversationActorList::InsertAt( ceConversationActor *actor, int index ){
-	if( ! actor ) DETHROW( deeInvalidParam );
+void ceConversationActorList::InsertAt(ceConversationActor *actor, int index){
+	if(!actor) DETHROW(deeInvalidParam);
 	
-	pActors.Insert( actor, index );
+	pActors.Insert(actor, index);
 }
 
-void ceConversationActorList::MoveTo( ceConversationActor *actor, int index ){
-	pActors.Move( actor, index );
+void ceConversationActorList::MoveTo(ceConversationActor *actor, int index){
+	pActors.Move(actor, index);
 }
 
-void ceConversationActorList::Remove( ceConversationActor *actor ){
-	pActors.Remove( actor );
+void ceConversationActorList::Remove(ceConversationActor *actor){
+	pActors.Remove(actor);
 }
 
 void ceConversationActorList::RemoveAll(){
@@ -233,7 +233,7 @@ void ceConversationActorList::RemoveAll(){
 
 
 
-ceConversationActorList &ceConversationActorList::operator=( const ceConversationActorList &list ){
+ceConversationActorList &ceConversationActorList::operator=(const ceConversationActorList &list){
 	pActors = list.pActors;
 	return *this;
 }

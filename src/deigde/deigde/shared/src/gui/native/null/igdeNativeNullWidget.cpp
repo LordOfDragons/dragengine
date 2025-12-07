@@ -33,48 +33,48 @@
 // Management
 ///////////////
 
-decPoint igdeNativeNullWidget::WidgetToScreen( const igdeWidget &, const decPoint &position ){
+decPoint igdeNativeNullWidget::WidgetToScreen(const igdeWidget &, const decPoint &position){
 	return position;
 }
 
-decPoint igdeNativeNullWidget::GetCursorPosition( const igdeWidget & ){
+decPoint igdeNativeNullWidget::GetCursorPosition(const igdeWidget &){
 	return decPoint();
 }
 
-decPoint igdeNativeNullWidget::GetSize( const igdeWidget & ){
-	return decPoint( 256, 256 );
+decPoint igdeNativeNullWidget::GetSize(const igdeWidget &){
+	return decPoint(256, 256);
 }
 
-void igdeNativeNullWidget::UpdateVisible( const igdeWidget & ){
+void igdeNativeNullWidget::UpdateVisible(const igdeWidget &){
 }
 
-bool igdeNativeNullWidget::HasNativeParent( const igdeWidget & ){
+bool igdeNativeNullWidget::HasNativeParent(const igdeWidget &){
 	return false;
 }
 
 #if defined OS_UNIX && defined HAS_LIB_X11
-Window igdeNativeNullWidget::NativeWidgetID( const igdeWidget & ){
+Window igdeNativeNullWidget::NativeWidgetID(const igdeWidget &){
 	return 0;
 }
 #endif
 #ifdef OS_W32
-HWND igdeNativeNullWidget::NativeWidgetID( const igdeWidget & ){
+HWND igdeNativeNullWidget::NativeWidgetID(const igdeWidget &){
 	return NULL;
 }
 #endif
 
 #if defined OS_UNIX && defined HAS_LIB_X11
-Window igdeNativeNullWidget::NativeWidgetParentID( const igdeWidget & ){
+Window igdeNativeNullWidget::NativeWidgetParentID(const igdeWidget &){
 	return 0;
 }
 #endif
 #ifdef OS_W32
-HWND igdeNativeNullWidget::NativeWidgetParentID( const igdeWidget & ){
+HWND igdeNativeNullWidget::NativeWidgetParentID(const igdeWidget &){
 	return NULL;
 }
 #endif
 
-void igdeNativeNullWidget::DetachNativeWindow( const igdeWidget & ){
+void igdeNativeNullWidget::DetachNativeWindow(const igdeWidget &){
 }
 
 #if defined OS_UNIX && defined HAS_LIB_X11

@@ -36,9 +36,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakHeadLAScale::ceUCAASpeakHeadLAScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak )
-: ceUCAASpeakStripsScale( topic, actorSpeak ){
-	SetShortInfo( "Scale head look-at" );
+ceUCAASpeakHeadLAScale::ceUCAASpeakHeadLAScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
+: ceUCAASpeakStripsScale(topic, actorSpeak){
+	SetShortInfo("Scale head look-at");
 }
 
 ceUCAASpeakHeadLAScale::~ceUCAASpeakHeadLAScale(){

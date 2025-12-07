@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound peer. */
-	deoalASound( deoalAudioThread &audioThread, deSound &sound );
+	deoalASound(deoalAudioThread &audioThread, deSound &sound);
 	
 protected:
 	/** \brief Clean up sound peer. */
@@ -140,7 +140,7 @@ public:
 	 * 
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void PreloadSound( deSound &sound );
+	void PreloadSound(deSound &sound);
 	
 	/**
 	 * \brief Prepare sound buffer if required.
@@ -169,7 +169,7 @@ private:
 	void pDetermineStreaming();
 	void pDetermineFormat();
 	
-	void pLoadEntireSound( deSound &sound );
+	void pLoadEntireSound(deSound &sound);
 };
 
 #endif

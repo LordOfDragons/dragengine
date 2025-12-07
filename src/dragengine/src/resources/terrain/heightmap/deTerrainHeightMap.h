@@ -42,9 +42,9 @@ class deImage;
 #define THM_16BIT_HTOP		65535.0f
 
 /** 8-bit scaling factor pixel to height. */
-#define THM_8BIT_PTOH		( 1.0f / 255.0f )
+#define THM_8BIT_PTOH		(1.0f / 255.0f)
 /** 16-bit scaling factor pixel to height. */
-#define THM_16BIT_PTOH		( 1.0f / 65535.0f )
+#define THM_16BIT_PTOH		(1.0f / 65535.0f)
 
 
 /**
@@ -93,34 +93,34 @@ public:
 	inline const decPoint &GetPointCount() const{ return pPointCount; }
 	
 	/** \brief Set number of points. */
-	void SetPointCount( const decPoint &pointCount );
+	void SetPointCount(const decPoint &pointCount);
 	
 	/** \brief Size of the grid. */
 	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** \brief Set size of the grid. */
-	void SetSize( const decVector2 &size );
+	void SetSize(const decVector2 &size);
 	
 	/** \brief Scaling. */
 	inline float GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	/** \brief Path of the image used to store the height map or NULL if not used. */
 	inline const decString &GetPathHeightImage() const{ return pPathHeightImage; }
 	
 	/** \brief Set path of the image used to store the height map or NULL if not used. */
-	void SetPathHeightImage( const  char *path );
+	void SetPathHeightImage(const  char *path);
 	
 	/** \brief Height image or NULL if not set. */
 	inline deImage *GetHeightImage() const{ return pHeightImage; }
 	
 	/** \brief Set height image or NULL if not set. */
-	void SetHeightImage( deImage *heightImage );
+	void SetHeightImage(deImage *heightImage);
 	
 	/** \brief Calculates the extends. */
-	void CalculateExtends( decVector &minExtend, decVector &maxExtend );
+	void CalculateExtends(decVector &minExtend, decVector &maxExtend);
 	/*@}*/
 	
 	
@@ -131,16 +131,16 @@ public:
 	inline const decString &GetPathVisibilityImage() const{ return pPathVisImage; }
 	
 	/** \brief Set path of the image used to store the visibility map or NULL if not used. */
-	void SetPathVisibilityImage( const  char *path );
+	void SetPathVisibilityImage(const  char *path);
 	
 	/** \brief Face with the given upper left coordinate is visible. */
-	bool GetFaceVisibleAt( int x, int y );
+	bool GetFaceVisibleAt(int x, int y);
 	
 	/** \brief Set if face at the given upper left coordinate is visible. */
-	void SetFaceVisibleAt( int x, int y, bool visible );
+	void SetFaceVisibleAt(int x, int y, bool visible);
 	
 	/** \brief Set visibility for all faces. */
-	void SetAllFacesVisible( bool visible );
+	void SetAllFacesVisible(bool visible);
 	/*@}*/
 	
 	

@@ -60,8 +60,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleSubAnimator( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping );
+	dearRuleSubAnimator(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping);
 	
 	/** Clean up animator. */
 	virtual ~dearRuleSubAnimator();
@@ -75,13 +75,13 @@ public:
 	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	virtual void CaptureStateInto(int identifier);
 	
 	/**
 	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	
 	/**
 	 * Check if a full rebuild of the animator instance is required.
@@ -89,12 +89,12 @@ public:
 	virtual bool RebuildInstance() const;
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	void pCreateRules( const decIntList &controllerMapping );
+	void pCreateRules(const decIntList &controllerMapping);
 };
 
 #endif

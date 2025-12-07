@@ -46,8 +46,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deParticleEmitterManager::deParticleEmitterManager( deEngine *engine ) : deResourceManager( engine, ertParticleEmitter ){
-	SetLoggingName( "particle emitter" );
+deParticleEmitterManager::deParticleEmitterManager(deEngine *engine) : deResourceManager(engine, ertParticleEmitter){
+	SetLoggingName("particle emitter");
 }
 
 deParticleEmitterManager::~deParticleEmitterManager(){
@@ -64,23 +64,23 @@ int deParticleEmitterManager::GetParticleEmitterCount() const{
 }
 
 deParticleEmitter *deParticleEmitterManager::GetRootParticleEmitter() const{
-	return ( deParticleEmitter* )pParticleEmitters.GetRoot();
+	return (deParticleEmitter*)pParticleEmitters.GetRoot();
 }
 
 deParticleEmitter *deParticleEmitterManager::CreateParticleEmitter(){
 	deParticleEmitter *psys = NULL;
 	
 	try{
-		psys = new deParticleEmitter( this );
-		if( ! psys ) DETHROW( deeOutOfMemory );
+		psys = new deParticleEmitter(this);
+		if(!psys) DETHROW(deeOutOfMemory);
 		
-		GetGraphicSystem()->LoadParticleEmitter( psys );
-		GetPhysicsSystem()->LoadParticleEmitter( psys );
+		GetGraphicSystem()->LoadParticleEmitter(psys);
+		GetPhysicsSystem()->LoadParticleEmitter(psys);
 		
-		pParticleEmitters.Add( psys );
+		pParticleEmitters.Add(psys);
 		
-	}catch( const deException & ){
-		if( psys ){
+	}catch(const deException &){
+		if(psys){
 			psys->FreeReference();
 		}
 		throw;
@@ -92,8 +92,8 @@ deParticleEmitter *deParticleEmitterManager::CreateParticleEmitter(){
 
 
 void deParticleEmitterManager::ReleaseLeakingResources(){
-	if( GetParticleEmitterCount() > 0 ){
-		LogWarnFormat( "%i leaking particle emitters", GetParticleEmitterCount() );
+	if(GetParticleEmitterCount() > 0){
+		LogWarnFormat("%i leaking particle emitters", GetParticleEmitterCount());
 		pParticleEmitters.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -104,49 +104,49 @@ void deParticleEmitterManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deParticleEmitterManager::SystemGraphicLoad(){
-	deParticleEmitter *psys = ( deParticleEmitter* )pParticleEmitters.GetRoot();
+	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
-	while( psys ){
-		if( ! psys->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadParticleEmitter( psys );
+	while(psys){
+		if(!psys->GetPeerGraphic()){
+			GetGraphicSystem()->LoadParticleEmitter(psys);
 		}
 		
-		psys = ( deParticleEmitter* )psys->GetLLManagerNext();
+		psys = (deParticleEmitter*)psys->GetLLManagerNext();
 	}
 }
 
 void deParticleEmitterManager::SystemGraphicUnload(){
-	deParticleEmitter *psys = ( deParticleEmitter* )pParticleEmitters.GetRoot();
+	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
-	while( psys ){
-		psys->SetPeerGraphic( NULL );
-		psys = ( deParticleEmitter* )psys->GetLLManagerNext();
+	while(psys){
+		psys->SetPeerGraphic(NULL);
+		psys = (deParticleEmitter*)psys->GetLLManagerNext();
 	}
 }
 
 void deParticleEmitterManager::SystemPhysicsLoad(){
-	deParticleEmitter *psys = ( deParticleEmitter* )pParticleEmitters.GetRoot();
+	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
-	while( psys ){
-		if( ! psys->GetPeerPhysics() ){
-			GetPhysicsSystem()->LoadParticleEmitter( psys );
+	while(psys){
+		if(!psys->GetPeerPhysics()){
+			GetPhysicsSystem()->LoadParticleEmitter(psys);
 		}
 		
-		psys = ( deParticleEmitter* )psys->GetLLManagerNext();
+		psys = (deParticleEmitter*)psys->GetLLManagerNext();
 	}
 }
 
 void deParticleEmitterManager::SystemPhysicsUnload(){
-	deParticleEmitter *psys = ( deParticleEmitter* )pParticleEmitters.GetRoot();
+	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
-	while( psys ){
-		psys->SetPeerPhysics( NULL );
-		psys = ( deParticleEmitter* )psys->GetLLManagerNext();
+	while(psys){
+		psys->SetPeerPhysics(NULL);
+		psys = (deParticleEmitter*)psys->GetLLManagerNext();
 	}
 }
 
 
 
-void deParticleEmitterManager::RemoveResource( deResource *resource ){
-	pParticleEmitters.RemoveIfPresent( resource );
+void deParticleEmitterManager::RemoveResource(deResource *resource){
+	pParticleEmitters.RemoveIfPresent(resource);
 }

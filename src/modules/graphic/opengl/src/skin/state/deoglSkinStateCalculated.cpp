@@ -37,12 +37,12 @@
 ////////////////////////////
 
 deoglSkinStateCalculated::deoglSkinStateCalculated() :
-pTexture( nullptr ),
-pProperty( nullptr ){
+pTexture(nullptr),
+pProperty(nullptr){
 }
 
 deoglSkinStateCalculated::~deoglSkinStateCalculated(){
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -52,30 +52,30 @@ deoglSkinStateCalculated::~deoglSkinStateCalculated(){
 // Management
 ///////////////
 
-void deoglSkinStateCalculated::SetColor( const decColor &color ){
+void deoglSkinStateCalculated::SetColor(const decColor &color){
 	pColor = color;
 }
 
-void deoglSkinStateCalculated::SetTexture( deoglTexture* texture ) {
-	if( texture == pTexture ){
+void deoglSkinStateCalculated::SetTexture(deoglTexture* texture) {
+	if(texture == pTexture){
 		return;
 	}
 	
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 	pTexture = texture;
 }
 
-void deoglSkinStateCalculated::SetProperty( deoglSkinCalculatedProperty *property ){
+void deoglSkinStateCalculated::SetProperty(deoglSkinCalculatedProperty *property){
 	pProperty = property;
 }
 
-void deoglSkinStateCalculated::Update( deoglSkinState &skinState ){
-	if( pProperty ){
-		pColor = pProperty->Calculate( skinState );
+void deoglSkinStateCalculated::Update(deoglSkinState &skinState){
+	if(pProperty){
+		pColor = pProperty->Calculate(skinState);
 		
 	}else{
-		pColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
+		pColor.Set(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 }

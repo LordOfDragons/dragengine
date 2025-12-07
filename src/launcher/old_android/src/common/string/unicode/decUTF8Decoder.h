@@ -57,9 +57,9 @@ public:
 	/** Determines if the end of the string has been reached. */
 	bool HasReachedEnd() const;
 	/** Sets the encoder to use the given string and sets the position. */
-	void SetString( const char *string );
+	void SetString(const char *string);
 	/** Sets the position. */
-	void SetPosition( int position );
+	void SetPosition(int position);
 	/**
 	 * Decodes the next unicode character from the string. If the string end has been
 	 * reached or the encoded character is invalid -1 is returned. Otherwise the

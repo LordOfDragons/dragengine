@@ -37,17 +37,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPHDRRMaximumIntensity::deoglPHDRRMaximumIntensity( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPHDRRMaximumIntensity::deoglPHDRRMaximumIntensity(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "hdrrMaximumIntensity" );
-	SetDescription( "Sets the maximum intensity for the HDRR tone mapper. "
+	SetName("hdrrMaximumIntensity");
+	SetDescription("Sets the maximum intensity for the HDRR tone mapper. "
 		"This parameter defines the maximum intensity of a color before becomg white. "
 		"The default value is 2 which is double the intensity of a white pixel with "
-		"full ambient and no other lights." );
-	SetCategory( ecExpert );
-	SetDisplayName( "HDRR Maximum Intensity" );
-	SetDefaultValue( "1.5" );
+		"full ambient and no other lights.");
+	SetCategory(ecExpert);
+	SetDisplayName("HDRR Maximum Intensity");
+	SetDefaultValue("1.5");
 }
 
 deoglPHDRRMaximumIntensity::~deoglPHDRRMaximumIntensity(){
@@ -62,6 +62,6 @@ float deoglPHDRRMaximumIntensity::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetHDRRMaximumIntensity();
 }
 
-void deoglPHDRRMaximumIntensity::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetHDRRMaximumIntensity( value );
+void deoglPHDRRMaximumIntensity::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetHDRRMaximumIntensity(value);
 }

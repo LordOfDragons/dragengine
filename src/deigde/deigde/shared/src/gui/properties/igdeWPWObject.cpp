@@ -62,15 +62,15 @@ protected:
 	igdeWPWObject &pPanel;
 	
 public:
-	cBaseEditVector( igdeWPWObject &panel ) : pPanel( panel ){ }
+	cBaseEditVector(igdeWPWObject &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
-		if( pPanel.GetObject() ){
-			OnVectorChanged( *pPanel.GetObject(), editVector->GetVector() );
+	virtual void OnVectorChanged(igdeEditVector *editVector){
+		if(pPanel.GetObject()){
+			OnVectorChanged(*pPanel.GetObject(), editVector->GetVector());
 		}
 	}
 	
-	virtual void OnVectorChanged( igdeWObject &object, const decVector &vector ) = 0;
+	virtual void OnVectorChanged(igdeWObject &object, const decVector &vector) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -78,16 +78,16 @@ protected:
 	igdeWPWObject &pPanel;
 	
 public:
-	cBaseAction( igdeWPWObject &panel, const char *text, const char *description ) :
-	igdeAction( text, description ), pPanel( panel ){ }
+	cBaseAction(igdeWPWObject &panel, const char *text, const char *description) :
+	igdeAction(text, description), pPanel(panel){}
 	
 	virtual void OnAction(){
-		if( pPanel.GetObject() ){
-			OnAction( *pPanel.GetObject() );
+		if(pPanel.GetObject()){
+			OnAction(*pPanel.GetObject());
 		}
 	}
 	
-	virtual void OnAction( igdeWObject &object ) = 0;
+	virtual void OnAction(igdeWObject &object) = 0;
 };
 
 
@@ -332,21 +332,21 @@ void igdeWPWObject::UndoChanges::Redo(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeWPWObject::igdeWPWObject( igdeEnvironment &environment ) :
-igdeContainerFlow( environment, igdeContainerFlow::eaY ),
+igdeWPWObject::igdeWPWObject(igdeEnvironment &environment) :
+igdeContainerFlow(environment, igdeContainerFlow::eaY),
 pObject(nullptr),
 pUndoSystem(nullptr)
 {
 	pCreateContent();
 }
 
-igdeWPWObject::igdeWPWObject( igdeEnvironment &environment, igdeAction *action ) :
-igdeContainerFlow( environment, igdeContainerFlow::eaY ),
+igdeWPWObject::igdeWPWObject(igdeEnvironment &environment, igdeAction *action) :
+igdeContainerFlow(environment, igdeContainerFlow::eaY),
 pObject(nullptr),
 pUndoSystem(nullptr)
 {
 	pCreateContent();
-	SetAction( action );
+	SetAction(action);
 }
 
 igdeWPWObject::~igdeWPWObject(){
@@ -359,8 +359,8 @@ igdeWPWObject::~igdeWPWObject(){
 // Management
 ///////////////
 
-void igdeWPWObject::SetObject( igdeWObject *object ){
-	if( object == pObject ){
+void igdeWPWObject::SetObject(igdeWObject *object){
+	if(object == pObject){
 		return;
 	}
 	
@@ -369,54 +369,54 @@ void igdeWPWObject::SetObject( igdeWObject *object ){
 }
 
 void igdeWPWObject::UpdateObject(){
-	if( pObject ){
-		if( pObject->GetGDClass() ){
-			pEditClass->SetText( pObject->GetGDClass()->GetName() );
+	if(pObject){
+		if(pObject->GetGDClass()){
+			pEditClass->SetText(pObject->GetGDClass()->GetName());
 			
 		}else{
 			pEditClass->ClearText();
 		}
 		
-		pEditPosition->SetVector( pObject->GetPosition() );
-		pEditOrientation->SetVector( pObject->GetOrientation().GetEulerAngles() * RAD2DEG );
-		pEditScaling->SetVector( pObject->GetScaling() );
-		pChkVisible->SetChecked( pObject->GetVisible() );
-		pChkDynamicCollider->SetChecked( pObject->GetDynamicCollider() );
+		pEditPosition->SetVector(pObject->GetPosition());
+		pEditOrientation->SetVector(pObject->GetOrientation().GetEulerAngles() * RAD2DEG);
+		pEditScaling->SetVector(pObject->GetScaling());
+		pChkVisible->SetChecked(pObject->GetVisible());
+		pChkDynamicCollider->SetChecked(pObject->GetDynamicCollider());
 		
 	}else{
 		pEditClass->ClearText();
-		pEditPosition->SetVector( decVector() );
-		pEditOrientation->SetVector( decVector() );
-		pEditScaling->SetVector( decVector() );
-		pChkVisible->SetChecked( false );
-		pChkDynamicCollider->SetChecked( false );
+		pEditPosition->SetVector(decVector());
+		pEditOrientation->SetVector(decVector());
+		pEditScaling->SetVector(decVector());
+		pChkVisible->SetChecked(false);
+		pChkDynamicCollider->SetChecked(false);
 	}
 	
 	const bool enabled = pObject;
-	pEditClass->SetEnabled( enabled );
-	pEditPosition->SetEnabled( enabled );
-	pEditOrientation->SetEnabled( enabled );
-	pEditScaling->SetEnabled( enabled );
-	pChkVisible->SetEnabled( enabled );
-	pChkDynamicCollider->SetEnabled( enabled );
+	pEditClass->SetEnabled(enabled);
+	pEditPosition->SetEnabled(enabled);
+	pEditOrientation->SetEnabled(enabled);
+	pEditScaling->SetEnabled(enabled);
+	pChkVisible->SetEnabled(enabled);
+	pChkDynamicCollider->SetEnabled(enabled);
 }
 
 
 
-void igdeWPWObject::SetAction( igdeAction *action ){
-	if( pAction == action ){
+void igdeWPWObject::SetAction(igdeAction *action){
+	if(pAction == action){
 		return;
 	}
 	
-	if( pAction ){
-		pAction->RemoveListener( this );
+	if(pAction){
+		pAction->RemoveListener(this);
 	}
 	
 	pAction = action;
 	
-	if( action ){
-		action->AddListener( this );
-		OnParameterChanged( action );
+	if(action){
+		action->AddListener(this);
+		OnParameterChanged(action);
 	}
 }
 
@@ -426,18 +426,18 @@ void igdeWPWObject::SetUndoSystem(igdeUndoSystem *undoSystem){
 
 
 void igdeWPWObject::OnAction(){
-	if( pAction ){
+	if(pAction){
 		pAction->OnAction();
 	}
 }
 
-void igdeWPWObject::OnParameterChanged( igdeAction *action ){
+void igdeWPWObject::OnParameterChanged(igdeAction *action){
 	//SetEnabled( action->GetEnabled() );
 }
 
-void igdeWPWObject::OnDestroyed( igdeAction *action ){
-	GetLogger()->LogWarnFormat( "IGDE", "igdeWPWObject::OnDestroyed: "
-		"Action(%s) destroyed while still listening on it", action->GetText().GetString() );
+void igdeWPWObject::OnDestroyed(igdeAction *action){
+	GetLogger()->LogWarnFormat("IGDE", "igdeWPWObject::OnDestroyed: "
+		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
 	pAction = NULL;
 }
 
@@ -451,22 +451,22 @@ void igdeWPWObject::pCreateContent(){
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref form, frameLine;
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	AddChild( form );
+	form.TakeOver(new igdeContainerForm(env));
+	AddChild(form);
 	
-	helper.FormLineStretchFirst( form, "Class:",
-		"Game definition class to use for the object.", frameLine );
-	helper.EditString( frameLine, "Path to the sky to use.",
-		pEditClass, new cTextClass( *this ) );
-	helper.Button( frameLine, pBtnClass, new cActionSelectClass( *this, pEditClass ), true );
+	helper.FormLineStretchFirst(form, "Class:",
+		"Game definition class to use for the object.", frameLine);
+	helper.EditString(frameLine, "Path to the sky to use.",
+		pEditClass, new cTextClass(*this));
+	helper.Button(frameLine, pBtnClass, new cActionSelectClass(*this, pEditClass), true);
 	
-	helper.EditVector( form, "Position:", "Position of object in meters.",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( form, "Orientation:", "Orientation of object in euler coordinates.",
-		pEditOrientation, new cEditOrientation( *this ) );
-	helper.EditVector( form, "Scaling:", "Scaling of object.",
-		pEditScaling, new cEditScaling( *this ) );
+	helper.EditVector(form, "Position:", "Position of object in meters.",
+		pEditPosition, new cEditPosition(*this));
+	helper.EditVector(form, "Orientation:", "Orientation of object in euler coordinates.",
+		pEditOrientation, new cEditOrientation(*this));
+	helper.EditVector(form, "Scaling:", "Scaling of object.",
+		pEditScaling, new cEditScaling(*this));
 	
-	helper.CheckBox( form, pChkVisible, new cCheckVisible( *this ), true );
-	helper.CheckBox( form, pChkDynamicCollider, new cCheckDynamicCollider( *this ), true );
+	helper.CheckBox(form, pChkVisible, new cCheckVisible(*this), true);
+	helper.CheckBox(form, pChkDynamicCollider, new cCheckDynamicCollider(*this), true);
 }

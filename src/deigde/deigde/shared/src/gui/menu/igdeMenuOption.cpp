@@ -46,19 +46,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMenuOption::igdeMenuOption( igdeEnvironment &environment ) :
-igdeMenuCommand( environment ),
-pSelected( false ){
+igdeMenuOption::igdeMenuOption(igdeEnvironment &environment) :
+igdeMenuCommand(environment),
+pSelected(false){
 }
 
-igdeMenuOption::igdeMenuOption( igdeEnvironment &environment, igdeAction *action ) :
-igdeMenuCommand( environment ),
-pSelected( false )
+igdeMenuOption::igdeMenuOption(igdeEnvironment &environment, igdeAction *action) :
+igdeMenuCommand(environment),
+pSelected(false)
 {
 	// WARNING we have to use SetAction not the base class constructor otherwise
 	//         OnParameterChanged is called before pSelected is constructed
 	//         and initialized causing wrong state to be stored
-	SetAction( action );
+	SetAction(action);
 }
 
 igdeMenuOption::~igdeMenuOption(){
@@ -70,8 +70,8 @@ igdeMenuOption::~igdeMenuOption(){
 // Management
 ///////////////
 
-void igdeMenuOption::SetSelected( bool selected ){
-	if( pSelected == selected ){
+void igdeMenuOption::SetSelected(bool selected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -81,37 +81,37 @@ void igdeMenuOption::SetSelected( bool selected ){
 
 
 
-void igdeMenuOption::OnParameterChanged( igdeAction *action ){
-	igdeMenuCommand::OnParameterChanged( action );
+void igdeMenuOption::OnParameterChanged(igdeAction *action){
+	igdeMenuCommand::OnParameterChanged(action);
 	
-	SetSelected( action->GetSelected() );
+	SetSelected(action->GetSelected());
 }
 
 
 
 void igdeMenuOption::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMenuOption * const native = igdeNativeMenuOption::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeMenuOption * const native = igdeNativeMenuOption::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeMenuOption::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeMenuOption* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeMenuOption*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeMenuOption::OnSelectedChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMenuOption* )GetNativeWidget() )->UpdateSelected();
+	if(GetNativeWidget()){
+		((igdeNativeMenuOption*)GetNativeWidget())->UpdateSelected();
 	}
 }

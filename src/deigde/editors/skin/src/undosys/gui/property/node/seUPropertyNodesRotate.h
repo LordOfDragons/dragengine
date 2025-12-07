@@ -63,8 +63,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodesRotate( const sePropertyNodeList &nodes,
-		const decVector2 &pivot, const decVector2 &origin );
+	seUPropertyNodesRotate(const sePropertyNodeList &nodes,
+		const decVector2 &pivot, const decVector2 &origin);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set target. */
-	void SetTarget( const decVector2 &target );
+	void SetTarget(const decVector2 &target);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

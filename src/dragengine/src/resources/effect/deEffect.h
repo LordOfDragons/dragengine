@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new world object with the given resource manager. */
-	deEffect( deEffectManager *manager );
+	deEffect(deEffectManager *manager);
 	
 protected:
 	/**
@@ -82,7 +82,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if effect is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	inline deBaseGraphicEffect *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
-	void SetPeerGraphic( deBaseGraphicEffect *peer );
+	void SetPeerGraphic(deBaseGraphicEffect *peer);
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deEffectVisitor &visitor );
+	virtual void Visit(deEffectVisitor &visitor);
 	/*@}*/
 	
 	

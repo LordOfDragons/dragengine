@@ -63,23 +63,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRSkyInstanceLayer::deoglRSkyInstanceLayer( deoglRSkyInstance &instance, int index ) :
-pInstance( instance ),
-pIndex( index ),
+deoglRSkyInstanceLayer::deoglRSkyInstanceLayer(deoglRSkyInstance &instance, int index) :
+pInstance(instance),
+pIndex(index),
 
-pTrackerEnvMap( NULL ),
-pSkyNeedsUpdate( false )
+pTrackerEnvMap(NULL),
+pSkyNeedsUpdate(false)
 {
-	pShadowCaster = new deoglShadowCaster( instance.GetRenderThread() );
+	pShadowCaster = new deoglShadowCaster(instance.GetRenderThread());
 }
 
 deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
 	RemoveAllGICascades();
 	
-	if( pTrackerEnvMap ){
+	if(pTrackerEnvMap){
 		delete pTrackerEnvMap;
 	}
-	if( pShadowCaster ){
+	if(pShadowCaster){
 		delete pShadowCaster;
 	}
 }
@@ -90,7 +90,7 @@ deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
 ///////////////
 
 void deoglRSkyInstanceLayer::Update(){
-	if( ! pInstance.GetRSky() ){
+	if(!pInstance.GetRSky()){
 		pSkyNeedsUpdate = false;
 		return;
 	}
@@ -100,13 +100,13 @@ void deoglRSkyInstanceLayer::Update(){
 }
 
 void deoglRSkyInstanceLayer::UpdateWithModifiers(){
-	const deoglRSkyLayer &layer = pInstance.GetRSky()->GetLayerAt( pIndex );
+	const deoglRSkyLayer &layer = pInstance.GetRSky()->GetLayerAt(pIndex);
 	
-	if( layer.GetMuliplyBySkyLight() ){
+	if(layer.GetMuliplyBySkyLight()){
 		pIntensity *= pInstance.GetTotalSkyLightIntensity();
 	}
 	
-	if( layer.GetMuliplyBySkyColor() ){
+	if(layer.GetMuliplyBySkyColor()){
 		pColor *= pInstance.GetTotalSkyLightColor();
 	}
 }
@@ -148,26 +148,26 @@ deoglLightPipelines &deoglRSkyInstanceLayer::GetPipelines(){
 }
 
 const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetLightParameterBlock(){
-	if( ! pParamBlockLight ){
+	if(!pParamBlockLight){
 		pParamBlockLight = GetPipelines().GetWithRef(
-			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
+			deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBLightParam();
 	}
 	return pParamBlockLight;
 }
 
 const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
-	if( ! pParamBlockInstance ){
+	if(!pParamBlockInstance){
 		pParamBlockInstance = GetPipelines().GetWithRef(
-			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
+			deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBInstParam();
 	}
 	return pParamBlockInstance;
 }
 
-void deoglRSkyInstanceLayer::NotifyUpdateStaticComponent( deoglRComponent *component ){
+void deoglRSkyInstanceLayer::NotifyUpdateStaticComponent(deoglRComponent *component){
 	const int count = pGICascades.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglSkyLayerGICascade* )pGICascades.GetAt( i ) )->NotifyUpdateStaticComponent( component );
+	for(i=0; i<count; i++){
+		((deoglSkyLayerGICascade*)pGICascades.GetAt(i))->NotifyUpdateStaticComponent(component);
 	}
 }
 
@@ -177,13 +177,13 @@ int deoglRSkyInstanceLayer::GetGICascadeCount() const{
 	return pGICascades.GetCount();
 }
 
-deoglSkyLayerGICascade *deoglRSkyInstanceLayer::GetGICascade( const deoglGICascade &cascade ) const{
+deoglSkyLayerGICascade *deoglRSkyInstanceLayer::GetGICascade(const deoglGICascade &cascade) const{
 	const int count = pGICascades.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglSkyLayerGICascade * const slgc = ( deoglSkyLayerGICascade* )pGICascades.GetAt( i );
-		if( &slgc->GetGICascade() == &cascade ){
+	for(i=0; i<count; i++){
+		deoglSkyLayerGICascade * const slgc = (deoglSkyLayerGICascade*)pGICascades.GetAt(i);
+		if(&slgc->GetGICascade() == &cascade){
 			return slgc;
 		}
 	}
@@ -191,43 +191,43 @@ deoglSkyLayerGICascade *deoglRSkyInstanceLayer::GetGICascade( const deoglGICasca
 	return NULL;
 }
 
-deoglSkyLayerGICascade *deoglRSkyInstanceLayer::AddGICascade( const deoglGICascade &cascade ){
-	deoglSkyLayerGICascade *slgc = GetGICascade( cascade );
-	if( slgc ){
+deoglSkyLayerGICascade *deoglRSkyInstanceLayer::AddGICascade(const deoglGICascade &cascade){
+	deoglSkyLayerGICascade *slgc = GetGICascade(cascade);
+	if(slgc){
 		return slgc;
 	}
 	
-	slgc = new deoglSkyLayerGICascade( *this, cascade );
-	pGICascades.Add( slgc );
+	slgc = new deoglSkyLayerGICascade(*this, cascade);
+	pGICascades.Add(slgc);
 	return slgc;
 }
 
-void deoglRSkyInstanceLayer::RemoveGICascade( const deoglGICascade &cascade ){
+void deoglRSkyInstanceLayer::RemoveGICascade(const deoglGICascade &cascade){
 	const int count = pGICascades.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglSkyLayerGICascade * const slgc = ( deoglSkyLayerGICascade* )pGICascades.GetAt( i );
-		if( &slgc->GetGICascade() == &cascade ){
+	for(i=0; i<count; i++){
+		deoglSkyLayerGICascade * const slgc = (deoglSkyLayerGICascade*)pGICascades.GetAt(i);
+		if(&slgc->GetGICascade() == &cascade){
 			delete slgc;
-			pGICascades.RemoveFrom( i );
+			pGICascades.RemoveFrom(i);
 			return;
 		}
 	}
 }
 
-void deoglRSkyInstanceLayer::RemoveAllGICascades( const deoglGIState &state ){
+void deoglRSkyInstanceLayer::RemoveAllGICascades(const deoglGIState &state){
 	const int count = state.GetCascadeCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		RemoveGICascade( state.GetCascadeAt( i ) );
+	for(i=0; i<count; i++){
+		RemoveGICascade(state.GetCascadeAt(i));
 	}
 }
 
 void deoglRSkyInstanceLayer::RemoveAllGICascades(){
 	int count = pGICascades.GetCount();
-	while( count > 0 ){
-		delete ( deoglSkyLayerGICascade* )pGICascades.GetAt( --count );
+	while(count > 0){
+		delete (deoglSkyLayerGICascade*)pGICascades.GetAt(--count);
 	}
 }
 
@@ -237,32 +237,32 @@ void deoglRSkyInstanceLayer::RemoveAllGICascades(){
 //////////////////////
 
 void deoglRSkyInstanceLayer::pUpdateParameters(){
-	const deoglRSkyLayer &layer = pInstance.GetRSky()->GetLayerAt( pIndex );
+	const deoglRSkyLayer &layer = pInstance.GetRSky()->GetLayerAt(pIndex);
 	const deoglRSkyControllerTarget ** const targets = layer.GetTargets();
 	
 	// offset
 	pOffset = layer.GetOffset();
-	if( targets[ deSkyLayer::etOffsetX ] ){
-		pOffset.x = targets[ deSkyLayer::etOffsetX ]->GetValue( pInstance, 0.0f );
+	if(targets[deSkyLayer::etOffsetX]){
+		pOffset.x = targets[deSkyLayer::etOffsetX]->GetValue(pInstance, 0.0f);
 	}
-	if( targets[ deSkyLayer::etOffsetY ] ){
-		pOffset.y = targets[ deSkyLayer::etOffsetY ]->GetValue( pInstance, 0.0f );
+	if(targets[deSkyLayer::etOffsetY]){
+		pOffset.y = targets[deSkyLayer::etOffsetY]->GetValue(pInstance, 0.0f);
 	}
-	if( targets[ deSkyLayer::etOffsetZ ] ){
-		pOffset.z = targets[ deSkyLayer::etOffsetZ ]->GetValue( pInstance, 0.0f );
+	if(targets[deSkyLayer::etOffsetZ]){
+		pOffset.z = targets[deSkyLayer::etOffsetZ]->GetValue(pInstance, 0.0f);
 	}
 	
 	// orientation
 	pOrientation = layer.GetOrientation();
-	if( targets[ deSkyLayer::etOrientationX ] ){
+	if(targets[deSkyLayer::etOrientationX]){
 		pOrientation.x = PI * 2.0f
 			* targets[ deSkyLayer::etOrientationX ]->GetValue( pInstance, 0.0f );
 	}
-	if( targets[ deSkyLayer::etOrientationY ] ){
+	if(targets[deSkyLayer::etOrientationY]){
 		pOrientation.y = PI * 2.0f
 			* targets[ deSkyLayer::etOrientationY ]->GetValue( pInstance, 0.0f );
 	}
-	if( targets[ deSkyLayer::etOrientationZ ] ){
+	if(targets[deSkyLayer::etOrientationZ]){
 		pOrientation.z = PI * 2.0f
 			* targets[ deSkyLayer::etOrientationZ ]->GetValue( pInstance, 0.0f );
 	}
@@ -270,58 +270,58 @@ void deoglRSkyInstanceLayer::pUpdateParameters(){
 	// rotation
 	bool hasRotation = false;
 	pRotation.SetZero();
-	if( targets[ deSkyLayer::etRotationX ] ){
-		pRotation.x = PI * 2.0f * targets[ deSkyLayer::etRotationX ]->GetValue( pInstance, 0.0f );
+	if(targets[deSkyLayer::etRotationX]){
+		pRotation.x = PI * 2.0f * targets[deSkyLayer::etRotationX]->GetValue(pInstance, 0.0f);
 		hasRotation = true;
 	}
-	if( targets[ deSkyLayer::etRotationY ] ){
-		pRotation.y = PI * 2.0f * targets[ deSkyLayer::etRotationY ]->GetValue( pInstance, 0.0f );
+	if(targets[deSkyLayer::etRotationY]){
+		pRotation.y = PI * 2.0f * targets[deSkyLayer::etRotationY]->GetValue(pInstance, 0.0f);
 		hasRotation = true;
 	}
-	if( targets[ deSkyLayer::etRotationZ ] ){
-		pRotation.z = PI * 2.0f * targets[ deSkyLayer::etRotationZ ]->GetValue( pInstance, 0.0f );
+	if(targets[deSkyLayer::etRotationZ]){
+		pRotation.z = PI * 2.0f * targets[deSkyLayer::etRotationZ]->GetValue(pInstance, 0.0f);
 		hasRotation = true;
 	}
 	
 	// set matrices
-	if( hasRotation ){
-		pMatrix = decMatrix::CreateRotation( pRotation )
+	if(hasRotation){
+		pMatrix = decMatrix::CreateRotation(pRotation)
 			* decMatrix::CreateRT( pOrientation, pOffset );
 		
 	}else{
-		pMatrix.SetRT( pOrientation, pOffset );
+		pMatrix.SetRT(pOrientation, pOffset);
 	}
 	
 	pInvMatrix = pMatrix.Invert();
 	
 	// color
 	pColor = layer.GetColor();
-	if( targets[ deSkyLayer::etColorR ] ){
-		pColor.r = decMath::max( 0.0f,
-			targets[ deSkyLayer::etColorR ]->GetValue( pInstance, 0.0f ) );
+	if(targets[deSkyLayer::etColorR]){
+		pColor.r = decMath::max(0.0f,
+			targets[deSkyLayer::etColorR]->GetValue(pInstance, 0.0f));
 	}
-	if( targets[ deSkyLayer::etColorG ] ){
-		pColor.g = decMath::max( 0.0f,
-			targets[ deSkyLayer::etColorG ]->GetValue( pInstance, 0.0f ) );
+	if(targets[deSkyLayer::etColorG]){
+		pColor.g = decMath::max(0.0f,
+			targets[deSkyLayer::etColorG]->GetValue(pInstance, 0.0f));
 	}
-	if( targets[ deSkyLayer::etColorB ] ){
-		pColor.b = decMath::max( 0.0f,
-			targets[ deSkyLayer::etColorB ]->GetValue( pInstance, 0.0f ) );
+	if(targets[deSkyLayer::etColorB]){
+		pColor.b = decMath::max(0.0f,
+			targets[deSkyLayer::etColorB]->GetValue(pInstance, 0.0f));
 	}
 	
 	// intensity
 	pIntensity = layer.GetIntensity();
-	if( targets[ deSkyLayer::etIntensity ] ){
-		pIntensity *= decMath::max( 0.0f,
-			targets[ deSkyLayer::etIntensity ]->GetValue( pInstance, 1.0f ) );
+	if(targets[deSkyLayer::etIntensity]){
+		pIntensity *= decMath::max(0.0f,
+			targets[deSkyLayer::etIntensity]->GetValue(pInstance, 1.0f));
 	}
 	
 	// transparency
 	pTransparency = layer.GetTransparency();
-	if( targets[ deSkyLayer::etTransparency ] ){
-		pTransparency = decMath::clamp( pTransparency
+	if(targets[deSkyLayer::etTransparency]){
+		pTransparency = decMath::clamp(pTransparency
 			* targets[ deSkyLayer::etTransparency ]->GetValue( pInstance, 1.0f ),
-				0.0f, 1.0f );
+				0.0f, 1.0f);
 	}
 	
 	// light orientation
@@ -329,62 +329,62 @@ void deoglRSkyInstanceLayer::pUpdateParameters(){
 	
 	// light color
 	pLightColor = layer.GetLightColor();
-	if( targets[ deSkyLayer::etLightColorR ] ){
-		pLightColor.r = decMath::max( 0.0f,
-			targets[ deSkyLayer::etLightColorR ]->GetValue( pInstance, 0.0f ) );
+	if(targets[deSkyLayer::etLightColorR]){
+		pLightColor.r = decMath::max(0.0f,
+			targets[deSkyLayer::etLightColorR]->GetValue(pInstance, 0.0f));
 	}
-	if( targets[ deSkyLayer::etLightColorG ] ){
-		pLightColor.g = decMath::max( 0.0f,
-			targets[ deSkyLayer::etLightColorG ]->GetValue( pInstance, 0.0f ) );
+	if(targets[deSkyLayer::etLightColorG]){
+		pLightColor.g = decMath::max(0.0f,
+			targets[deSkyLayer::etLightColorG]->GetValue(pInstance, 0.0f));
 	}
-	if( targets[ deSkyLayer::etLightColorB ] ){
-		pLightColor.b = decMath::max( 0.0f,
-			targets[ deSkyLayer::etLightColorB ]->GetValue( pInstance, 0.0f ) );
+	if(targets[deSkyLayer::etLightColorB]){
+		pLightColor.b = decMath::max(0.0f,
+			targets[deSkyLayer::etLightColorB]->GetValue(pInstance, 0.0f));
 	}
 	
 	// light intensity
 	pLightIntensity = layer.GetLightIntensity();
-	if( targets[ deSkyLayer::etLightIntensity ] ){
-		pLightIntensity *= decMath::max( 0.0f,
-			targets[ deSkyLayer::etLightIntensity ]->GetValue( pInstance, 1.0f ) );
+	if(targets[deSkyLayer::etLightIntensity]){
+		pLightIntensity *= decMath::max(0.0f,
+			targets[deSkyLayer::etLightIntensity]->GetValue(pInstance, 1.0f));
 	}
 	
 	// ambient intensity
 	pAmbientIntensity = layer.GetAmbientIntensity();
-	if( targets[ deSkyLayer::etAmbientIntensity ] ){
-		pAmbientIntensity *= decMath::max( 0.0f,
-			targets[ deSkyLayer::etAmbientIntensity ]->GetValue( pInstance, 1.0f ) );
+	if(targets[deSkyLayer::etAmbientIntensity]){
+		pAmbientIntensity *= decMath::max(0.0f,
+			targets[deSkyLayer::etAmbientIntensity]->GetValue(pInstance, 1.0f));
 	}
 }
 
 void deoglRSkyInstanceLayer::pCheckTracker(){
 	pSkyNeedsUpdate = false;
 	
-	if( ! pTrackerEnvMap ){
+	if(!pTrackerEnvMap){
 		pTrackerEnvMap = new deoglSkyLayerTracker;
 		
 		pTrackerEnvMap->SetThresholdOrientation(
-			deoglSkyLayerTracker::THRESHOLD_ONE_DEGREE_ORIENTATION * 1.0f );
+			deoglSkyLayerTracker::THRESHOLD_ONE_DEGREE_ORIENTATION * 1.0f);
 		
-		pTrackerEnvMap->SetThresholdIntensity( 0.01f );
+		pTrackerEnvMap->SetThresholdIntensity(0.01f);
 			// better percentage of camera intensity range perhaps?
 		
-		pTrackerEnvMap->SetThresholdTransparency( 0.02f ); // 2% change
+		pTrackerEnvMap->SetThresholdTransparency(0.02f); // 2% change
 		
-		pTrackerEnvMap->SetThresholdColor( 0.02f );
+		pTrackerEnvMap->SetThresholdColor(0.02f);
 			// 2% change equals roughly 5 difference in RGB per color component
 		
 		pSkyNeedsUpdate = true;
 	}
 	
 	// TODO offset
-	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateOrientation( pMatrix.ToQuaternion() );
-	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateColor( pColor );
-	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateIntensity( pIntensity );
-	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateTransparency( pTransparency );
+	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateOrientation(pMatrix.ToQuaternion());
+	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateColor(pColor);
+	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateIntensity(pIntensity);
+	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateTransparency(pTransparency);
 	
-	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateLightOrientation( pLightOrientation );
-	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateLightColor( pLightColor );
-	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateLightIntensity( pLightIntensity );
-	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateAmbientIntensity( pAmbientIntensity );
+	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateLightOrientation(pLightOrientation);
+	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateLightColor(pLightColor);
+	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateLightIntensity(pLightIntensity);
+	pSkyNeedsUpdate |= pTrackerEnvMap->UpdateAmbientIntensity(pAmbientIntensity);
 }

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassLanguagePack( deScriptingDragonScript &ds );
+	deClassLanguagePack(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassLanguagePack();
@@ -61,13 +61,13 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Language pack or \em NULL if myself is \em NULL. */
-	deLanguagePack *GetLanguagePack( dsRealObject *myself ) const;
+	deLanguagePack *GetLanguagePack(dsRealObject *myself) const;
 	
 	/** \brief Push language pack which can be \em NULL. */
-	void PushLanguagePack( dsRunTime *rt, deLanguagePack *languagePack );
+	void PushLanguagePack(dsRunTime *rt, deLanguagePack *languagePack);
 	/*@}*/
 	
 	
@@ -83,25 +83,25 @@ private:
 		dsClass *clsUS;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetIdentifier );
-	DEF_NATFUNC( nfGetName );
-	DEF_NATFUNC( nfGetDescription );
-	DEF_NATFUNC( nfGetFilename );
+	DEF_NATFUNC(nfGetIdentifier);
+	DEF_NATFUNC(nfGetName);
+	DEF_NATFUNC(nfGetDescription);
+	DEF_NATFUNC(nfGetFilename);
 	
-	DEF_NATFUNC( nfTranslate );
-	DEF_NATFUNC( nfTranslate2 );
-	DEF_NATFUNC( nfGetMissingText );
+	DEF_NATFUNC(nfTranslate);
+	DEF_NATFUNC(nfTranslate2);
+	DEF_NATFUNC(nfGetMissingText);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

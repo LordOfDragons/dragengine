@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new class. */
-	deClassNavigationBlocker( deScriptingDragonScript *ds );
+	deClassNavigationBlocker(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
 	virtual ~deClassNavigationBlocker();
 	/*@}*/
@@ -55,12 +55,12 @@ public:
 	/** \brief Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Retrieves the navigation blocker or NULL if myself is NULL. */
-	deNavigationBlocker *GetNavigationBlocker( dsRealObject *myself ) const;
+	deNavigationBlocker *GetNavigationBlocker(dsRealObject *myself) const;
 	/** \brief Pushes the navigation blocker which can be NULL. */
-	void PushNavigationBlocker( dsRunTime *rt, deNavigationBlocker *blocker );
+	void PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker *blocker);
 	
 	inline dsClass *GetClassNavigationSpaceType() const{ return pClsNavigationSpaceType; }
 	/*@}*/
@@ -73,33 +73,33 @@ private:
 		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetLayer );
-	DEF_NATFUNC( nfSetLayer );
-	DEF_NATFUNC( nfGetSpaceType );
-	DEF_NATFUNC( nfSetSpaceType );
-	DEF_NATFUNC( nfGetBlockingPriority );
-	DEF_NATFUNC( nfSetBlockingPriority );
-	DEF_NATFUNC( nfGetEnabled );
-	DEF_NATFUNC( nfSetEnabled );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetLayer);
+	DEF_NATFUNC(nfSetLayer);
+	DEF_NATFUNC(nfGetSpaceType);
+	DEF_NATFUNC(nfSetSpaceType);
+	DEF_NATFUNC(nfGetBlockingPriority);
+	DEF_NATFUNC(nfSetBlockingPriority);
+	DEF_NATFUNC(nfGetEnabled);
+	DEF_NATFUNC(nfSetEnabled);
 	DEF_NATFUNC(nfGetParentWorld);
 	
-	DEF_NATFUNC( nfGetShapeList );
-	DEF_NATFUNC( nfSetShapeList );
+	DEF_NATFUNC(nfGetShapeList);
+	DEF_NATFUNC(nfSetShapeList);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

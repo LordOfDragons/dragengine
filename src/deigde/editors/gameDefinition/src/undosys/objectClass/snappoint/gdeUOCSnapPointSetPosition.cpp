@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSnapPointSetPosition::gdeUOCSnapPointSetPosition( gdeObjectClass *objectClass,
-gdeOCSnapPoint *snapPoint, const decVector &newValue ) :
-pObjectClass( NULL ),
-pSnapPoint( NULL )
+gdeUOCSnapPointSetPosition::gdeUOCSnapPointSetPosition(gdeObjectClass *objectClass,
+gdeOCSnapPoint *snapPoint, const decVector &newValue) :
+pObjectClass(NULL),
+pSnapPoint(NULL)
 {
-	if( ! objectClass || ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Snap point set position" );
+	SetShortInfo("Snap point set position");
 	
 	pOldValue = snapPoint->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pSnapPoint( NULL )
 }
 
 gdeUOCSnapPointSetPosition::~gdeUOCSnapPointSetPosition(){
-	if( pSnapPoint ){
+	if(pSnapPoint){
 		pSnapPoint->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCSnapPointSetPosition::~gdeUOCSnapPointSetPosition(){
 ///////////////
 
 void gdeUOCSnapPointSetPosition::Undo(){
-	pSnapPoint->SetPosition( pOldValue );
-	pObjectClass->NotifySnapPointChanged( pSnapPoint );
+	pSnapPoint->SetPosition(pOldValue);
+	pObjectClass->NotifySnapPointChanged(pSnapPoint);
 }
 
 void gdeUOCSnapPointSetPosition::Redo(){
-	pSnapPoint->SetPosition( pNewValue );
-	pObjectClass->NotifySnapPointChanged( pSnapPoint );
+	pSnapPoint->SetPosition(pNewValue);
+	pObjectClass->NotifySnapPointChanged(pSnapPoint);
 }

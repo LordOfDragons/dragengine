@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deMPLogLevel( deModio &module );
+	deMPLogLevel(deModio &module);
 	
 	/** Cleans up the parameter. */
 	~deMPLogLevel() override;
@@ -57,7 +57,7 @@ public:
 	decString GetParameterValue() override;
 	
 	/** Set current value. */
-	void SetParameterValue( const char *value ) override;
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

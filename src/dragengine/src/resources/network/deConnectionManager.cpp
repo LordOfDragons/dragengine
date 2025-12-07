@@ -45,9 +45,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deConnectionManager::deConnectionManager( deEngine *engine ) :
-deResourceManager( engine, ertConnection ){
-	SetLoggingName( "connection" );
+deConnectionManager::deConnectionManager(deEngine *engine) :
+deResourceManager(engine, ertConnection){
+	SetLoggingName("connection");
 }
 
 deConnectionManager::~deConnectionManager(){
@@ -64,22 +64,22 @@ int deConnectionManager::GetConnectionCount() const{
 }
 
 deConnection *deConnectionManager::GetRootConnection() const{
-	return ( deConnection* )pConnections.GetRoot();
+	return (deConnection*)pConnections.GetRoot();
 }
 
 deConnection *deConnectionManager::CreateConnection(){
 	deConnection *connection = NULL;
 	
 	try{
-		connection = new deConnection( this );
+		connection = new deConnection(this);
 		
-		GetNetworkSystem()->LoadConnection( connection );
-		GetScriptingSystem()->LoadConnection( connection );
+		GetNetworkSystem()->LoadConnection(connection);
+		GetScriptingSystem()->LoadConnection(connection);
 		
-		pConnections.Add( connection );
+		pConnections.Add(connection);
 		
-	}catch( const deException & ){
-		if( connection ){
+	}catch(const deException &){
+		if(connection){
 			connection->FreeReference();
 		}
 		throw;
@@ -92,8 +92,8 @@ deConnection *deConnectionManager::CreateConnection(){
 
 void deConnectionManager::ReleaseLeakingResources(){
 	const int count = GetConnectionCount();
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking connections", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking connections", count);
 		pConnections.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -104,49 +104,49 @@ void deConnectionManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deConnectionManager::SystemNetworkLoad(){
-	deConnection *connection = ( deConnection* )pConnections.GetRoot();
+	deConnection *connection = (deConnection*)pConnections.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	
-	while( connection ){
-		if( ! connection->GetPeerNetwork() ){
-			netSys.LoadConnection( connection );
+	while(connection){
+		if(!connection->GetPeerNetwork()){
+			netSys.LoadConnection(connection);
 		}
 		
-		connection = ( deConnection* )connection->GetLLManagerNext();
+		connection = (deConnection*)connection->GetLLManagerNext();
 	}
 }
 
 void deConnectionManager::SystemNetworkUnload(){
-	deConnection *connection = ( deConnection* )pConnections.GetRoot();
+	deConnection *connection = (deConnection*)pConnections.GetRoot();
 	
-	while( connection ){
-		connection->SetPeerNetwork( NULL );
-		connection = ( deConnection* )connection->GetLLManagerNext();
+	while(connection){
+		connection->SetPeerNetwork(NULL);
+		connection = (deConnection*)connection->GetLLManagerNext();
 	}
 }
 
 void deConnectionManager::SystemScriptingLoad(){
-	deConnection *connection = ( deConnection* )pConnections.GetRoot();
+	deConnection *connection = (deConnection*)pConnections.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
-	while( connection ){
-		if( ! connection->GetPeerScripting() ){
-			scrSys.LoadConnection( connection );
+	while(connection){
+		if(!connection->GetPeerScripting()){
+			scrSys.LoadConnection(connection);
 		}
 		
-		connection = ( deConnection* )connection->GetLLManagerNext();
+		connection = (deConnection*)connection->GetLLManagerNext();
 	}
 }
 
 void deConnectionManager::SystemScriptingUnload(){
-	deConnection *connection = ( deConnection* )pConnections.GetRoot();
+	deConnection *connection = (deConnection*)pConnections.GetRoot();
 	
-	while( connection ){
-		connection->SetPeerScripting( NULL );
-		connection = ( deConnection* )connection->GetLLManagerNext();
+	while(connection){
+		connection->SetPeerScripting(NULL);
+		connection = (deConnection*)connection->GetLLManagerNext();
 	}
 }
 
-void deConnectionManager::RemoveResource( deResource *resource ){
-	pConnections.RemoveIfPresent( resource );
+void deConnectionManager::RemoveResource(deResource *resource){
+	pConnections.RemoveIfPresent(resource);
 }

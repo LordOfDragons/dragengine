@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassForceField( deScriptingDragonScript &ds );
+	deClassForceField(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassForceField();
@@ -62,15 +62,15 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	
 	
 	/** \brief Force field or \em NULL if myself is \em NULL. */
-	deForceField *GetForceField( dsRealObject *myself ) const;
+	deForceField *GetForceField(dsRealObject *myself) const;
 	
 	/** \brief Push force field which can be \em NULL. */
-	void PushForceField( dsRunTime *rt, deForceField *forcefield );
+	void PushForceField(dsRunTime *rt, deForceField *forcefield);
 	
 	inline dsClass *GetClassForceFieldType() const{ return pClsForceFieldType; }
 	inline dsClass *GetClassForceFieldApplication() const{ return pClsForceFieldApplication; }
@@ -99,49 +99,49 @@ private:
 		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
 	DEF_NATFUNC(nfGetParentWorld);
 	
-	DEF_NATFUNC( nfGetInfluenceArea );
-	DEF_NATFUNC( nfSetInfluenceArea );
-	DEF_NATFUNC( nfGetRadius );
-	DEF_NATFUNC( nfSetRadius );
-	DEF_NATFUNC( nfGetExponent );
-	DEF_NATFUNC( nfSetExponent );
+	DEF_NATFUNC(nfGetInfluenceArea);
+	DEF_NATFUNC(nfSetInfluenceArea);
+	DEF_NATFUNC(nfGetRadius);
+	DEF_NATFUNC(nfSetRadius);
+	DEF_NATFUNC(nfGetExponent);
+	DEF_NATFUNC(nfSetExponent);
 	
-	DEF_NATFUNC( nfGetFieldType );
-	DEF_NATFUNC( nfSetFieldType );
-	DEF_NATFUNC( nfGetApplicationType );
-	DEF_NATFUNC( nfSetApplicationType );
-	DEF_NATFUNC( nfGetDirection );
-	DEF_NATFUNC( nfSetDirection );
-	DEF_NATFUNC( nfGetForce );
-	DEF_NATFUNC( nfSetForce );
-	DEF_NATFUNC( nfGetFluctuationDirection );
-	DEF_NATFUNC( nfSetFluctuationDirection );
-	DEF_NATFUNC( nfGetFluctuationForce );
-	DEF_NATFUNC( nfSetFluctuationForce );
+	DEF_NATFUNC(nfGetFieldType);
+	DEF_NATFUNC(nfSetFieldType);
+	DEF_NATFUNC(nfGetApplicationType);
+	DEF_NATFUNC(nfSetApplicationType);
+	DEF_NATFUNC(nfGetDirection);
+	DEF_NATFUNC(nfSetDirection);
+	DEF_NATFUNC(nfGetForce);
+	DEF_NATFUNC(nfSetForce);
+	DEF_NATFUNC(nfGetFluctuationDirection);
+	DEF_NATFUNC(nfSetFluctuationDirection);
+	DEF_NATFUNC(nfGetFluctuationForce);
+	DEF_NATFUNC(nfSetFluctuationForce);
 	
-	DEF_NATFUNC( nfGetShape );
-	DEF_NATFUNC( nfSetShape );
-	DEF_NATFUNC( nfGetCollisionFilter );
-	DEF_NATFUNC( nfSetCollisionFilter );
-	DEF_NATFUNC( nfGetEnabled );
-	DEF_NATFUNC( nfSetEnabled );
+	DEF_NATFUNC(nfGetShape);
+	DEF_NATFUNC(nfSetShape);
+	DEF_NATFUNC(nfGetCollisionFilter);
+	DEF_NATFUNC(nfSetCollisionFilter);
+	DEF_NATFUNC(nfGetEnabled);
+	DEF_NATFUNC(nfSetEnabled);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

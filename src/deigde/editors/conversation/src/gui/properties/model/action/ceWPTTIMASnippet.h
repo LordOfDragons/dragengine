@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMASnippet( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCASnippet *action );
+	ceWPTTIMASnippet(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCASnippet *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCASnippet *GetActionSnippet() const{ return ( ceCASnippet* )GetAction(); }
+	inline ceCASnippet *GetActionSnippet() const{ return (ceCASnippet*)GetAction(); }
 	
 	/** \brief Update action. */
 	virtual void Update();

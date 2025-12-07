@@ -43,8 +43,8 @@
 gdeSkyList::gdeSkyList(){
 }
 
-gdeSkyList::gdeSkyList( const gdeSkyList &list ) :
-pSkys( list.pSkys ){
+gdeSkyList::gdeSkyList(const gdeSkyList &list) :
+pSkys(list.pSkys){
 }
 
 gdeSkyList::~gdeSkyList(){
@@ -59,18 +59,18 @@ int gdeSkyList::GetCount() const{
 	return pSkys.GetCount();
 }
 
-gdeSky *gdeSkyList::GetAt( int index ) const{
-	return ( gdeSky* )pSkys.GetAt( index );
+gdeSky *gdeSkyList::GetAt(int index) const{
+	return (gdeSky*)pSkys.GetAt(index);
 }
 
-gdeSky *gdeSkyList::GetWithPath( const char *path ) const{
+gdeSky *gdeSkyList::GetWithPath(const char *path) const{
 	const int count = pSkys.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeSky * const sky = ( gdeSky* )pSkys.GetAt( i );
+	for(i=0; i<count; i++){
+		gdeSky * const sky = (gdeSky*)pSkys.GetAt(i);
 		
-		if( sky->GetPath() == path ){
+		if(sky->GetPath() == path){
 			return sky;
 		}
 	}
@@ -78,16 +78,16 @@ gdeSky *gdeSkyList::GetWithPath( const char *path ) const{
 	return NULL;
 }
 
-int gdeSkyList::IndexOf( gdeSky *sky ) const{
-	return pSkys.IndexOf( sky );
+int gdeSkyList::IndexOf(gdeSky *sky) const{
+	return pSkys.IndexOf(sky);
 }
 
-int gdeSkyList::IndexOfWithPath( const char *path ) const{
+int gdeSkyList::IndexOfWithPath(const char *path) const{
 	const int count = pSkys.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeSky* )pSkys.GetAt( i ) )->GetPath() == path ){
+	for(i=0; i<count; i++){
+		if(((gdeSky*)pSkys.GetAt(i))->GetPath() == path){
 			return i;
 		}
 	}
@@ -95,16 +95,16 @@ int gdeSkyList::IndexOfWithPath( const char *path ) const{
 	return -1;
 }
 
-bool gdeSkyList::Has( gdeSky *sky ) const{
-	return pSkys.Has( sky );
+bool gdeSkyList::Has(gdeSky *sky) const{
+	return pSkys.Has(sky);
 }
 
-bool gdeSkyList::HasWithPath( const char *path ) const{
+bool gdeSkyList::HasWithPath(const char *path) const{
 	const int count = pSkys.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeSky* )pSkys.GetAt( i ) )->GetPath() == path ){
+	for(i=0; i<count; i++){
+		if(((gdeSky*)pSkys.GetAt(i))->GetPath() == path){
 			return true;
 		}
 	}
@@ -112,16 +112,16 @@ bool gdeSkyList::HasWithPath( const char *path ) const{
 	return false;
 }
 
-void gdeSkyList::Add( gdeSky *sky ){
-	if( ! sky || HasWithPath( sky->GetPath() ) ){
-		DETHROW( deeInvalidParam );
+void gdeSkyList::Add(gdeSky *sky){
+	if(!sky || HasWithPath(sky->GetPath())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pSkys.Add( sky );
+	pSkys.Add(sky);
 }
 
-void gdeSkyList::Remove( gdeSky *sky ){
-	pSkys.Remove( sky );
+void gdeSkyList::Remove(gdeSky *sky){
+	pSkys.Remove(sky);
 }
 
 void gdeSkyList::RemoveAll(){
@@ -130,7 +130,7 @@ void gdeSkyList::RemoveAll(){
 
 
 
-gdeSkyList &gdeSkyList::operator=( const gdeSkyList &list ){
+gdeSkyList &gdeSkyList::operator=(const gdeSkyList &list){
 	pSkys = list.pSkys;
 	return *this;
 }

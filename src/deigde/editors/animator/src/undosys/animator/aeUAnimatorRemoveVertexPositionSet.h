@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUAnimatorRemoveVertexPositionSet( aeAnimator *animator, const char *pattern );
+	aeUAnimatorRemoveVertexPositionSet(aeAnimator *animator, const char *pattern);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUAnimatorRemoveVertexPositionSet();

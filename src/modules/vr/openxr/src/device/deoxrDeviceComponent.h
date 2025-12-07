@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device component. */
-	deoxrDeviceComponent( deoxrDevice &device );
+	deoxrDeviceComponent(deoxrDevice &device);
 	
 protected:
 	/** Clean up device component. */
@@ -80,7 +80,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	
 	
@@ -88,19 +88,19 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Type. */
 	inline deInputDeviceComponent::eComponentTypes GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( deInputDeviceComponent::eComponentTypes type );
+	void SetType(deInputDeviceComponent::eComponentTypes type);
 	
 	
 	
@@ -111,21 +111,21 @@ public:
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const deoxrDeviceComponent &component );
+	void SetDisplayImages(const deoxrDeviceComponent &component);
 	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
 	/** Update engine input device information component. */
-	void GetInfo( deInputDeviceComponent &info ) const;
+	void GetInfo(deInputDeviceComponent &info) const;
 	/*@}*/
 };
 

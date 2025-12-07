@@ -58,7 +58,7 @@ public:
 	/** Creates a new conversation condition. */
 	ceCConditionLogic();
 	/** Creates a new conversation condition. */
-	ceCConditionLogic( const ceCConditionLogic &condition );
+	ceCConditionLogic(const ceCConditionLogic &condition);
 	/** Cleans up the conversation condition. */
 	virtual ~ceCConditionLogic();
 	/*@}*/
@@ -68,7 +68,7 @@ public:
 	/** Retrieves the operator. */
 	inline eOperators GetOperator() const{ return pOperator; }
 	/** Sets the operator. */
-	void SetOperator( eOperators aOperator );
+	void SetOperator(eOperators aOperator);
 	/** Retrieves the list of conditions. */
 	inline ceConversationConditionList &GetConditions(){ return pConditions; }
 	inline const ceConversationConditionList &GetConditions() const { return pConditions; }
@@ -85,7 +85,7 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	/*@}*/
 };
 

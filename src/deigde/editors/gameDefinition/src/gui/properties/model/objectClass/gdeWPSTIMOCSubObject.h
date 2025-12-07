@@ -44,7 +44,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCSubObject( gdeWPSTreeModel &tree, eTypes type, gdeObjectClass *objectClass, int index );
+	gdeWPSTIMOCSubObject(gdeWPSTreeModel &tree, eTypes type, gdeObjectClass *objectClass, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -75,10 +75,10 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	virtual int Compare(const gdeWPSTreeItemModel &item) const;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	virtual void SelectBestMatching(const char *string);
 	/*@}*/
 };
 

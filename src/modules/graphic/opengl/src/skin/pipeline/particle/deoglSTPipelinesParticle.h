@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesParticle( const deoglSkinTexture &texture );
+	deoglSTPipelinesParticle(const deoglSkinTexture &texture);
 	
 protected:
 	/** Clean up skin texture pipeline. */
@@ -55,31 +55,31 @@ public:
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 	
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigDepth( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigDepthReversed( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigMask( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigShadowProjection( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigShadowDistance( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigGeometryDepthTest(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigDepth(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigDepthReversed(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigCounter(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigMask(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigShadowProjection(deoglPipelineConfiguration &config);
+	virtual void pPipelineConfigShadowDistance(deoglPipelineConfiguration &config);
 	
-	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowOrthogonalCascaded(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pPrepareShadowDistanceCube( deoglPipelineConfiguration &basePipelineConfig,
+	virtual void pPrepareShadowDistanceCube(deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglBatchedShaderLoading &batched );
+		deoglBatchedShaderLoading &batched);
 	
-	virtual void pSetTypeGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetTypeGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetTexturesGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 	
-	virtual void pSetDynamicsGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDynamicsGeometryLuminance( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDynamicsDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetDynamicsGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetDynamicsGeometryLuminance(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	virtual void pSetDynamicsDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 };
 
 #endif

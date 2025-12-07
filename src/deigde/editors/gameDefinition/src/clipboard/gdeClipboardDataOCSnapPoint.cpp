@@ -38,12 +38,12 @@ const char * const gdeClipboardDataOCSnapPoint::TYPE_NAME = "OCSnapPoint";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCSnapPoint::gdeClipboardDataOCSnapPoint( gdeOCSnapPoint *snapPoint ) :
-igdeClipboardData( TYPE_NAME ),
-pSnapPoint( NULL )
+gdeClipboardDataOCSnapPoint::gdeClipboardDataOCSnapPoint(gdeOCSnapPoint *snapPoint) :
+igdeClipboardData(TYPE_NAME),
+pSnapPoint(NULL)
 {
-	if( ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSnapPoint = snapPoint;
@@ -51,7 +51,7 @@ pSnapPoint( NULL )
 }
 
 gdeClipboardDataOCSnapPoint::~gdeClipboardDataOCSnapPoint(){
-	if( pSnapPoint ){
+	if(pSnapPoint){
 		pSnapPoint->FreeReference();
 	}
 }

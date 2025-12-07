@@ -72,40 +72,40 @@ cePlaybackEvaluateCondition::~cePlaybackEvaluateCondition(){
 // Management
 ///////////////
 
-bool cePlaybackEvaluateCondition::EvaluateCondition( ceConversation &conversation,
-const ceConversationCondition &condition ){
-	switch( condition.GetType() ){
+bool cePlaybackEvaluateCondition::EvaluateCondition(ceConversation &conversation,
+const ceConversationCondition &condition){
+	switch(condition.GetType()){
 	case ceConversationCondition::ectLogic:
-		return EvaluateLogic( conversation,
-			( const ceCConditionLogic & )condition );
+		return EvaluateLogic(conversation,
+			(const ceCConditionLogic &)condition);
 		
 	case ceConversationCondition::ectHasActor:
-		return EvaluateHasActor( conversation,
-			( const ceCConditionHasActor & )condition );
+		return EvaluateHasActor(conversation,
+			(const ceCConditionHasActor &)condition);
 		
 	case ceConversationCondition::ectActorInConversation:
-		return EvaluateActorInConversation( conversation,
-			( const ceCConditionActorInConversation & )condition );
+		return EvaluateActorInConversation(conversation,
+			(const ceCConditionActorInConversation &)condition);
 		
 	case ceConversationCondition::ectVariable:
-		return EvaluateVariable( conversation,
-			( const ceCConditionVariable & )condition );
+		return EvaluateVariable(conversation,
+			(const ceCConditionVariable &)condition);
 		
 	case ceConversationCondition::ectActorParameter:
-		return EvaluateActorParameter( conversation,
-			( const ceCConditionActorParameter & )condition );
+		return EvaluateActorParameter(conversation,
+			(const ceCConditionActorParameter &)condition);
 		
 	case ceConversationCondition::ectActorCommand:
-		return EvaluateActorCommand( conversation,
-			( const ceCConditionActorCommand & )condition );
+		return EvaluateActorCommand(conversation,
+			(const ceCConditionActorCommand &)condition);
 		
 	case ceConversationCondition::ectGameCommand:
-		return EvaluateGameCommand( conversation,
-			( const ceCConditionGameCommand & )condition );
+		return EvaluateGameCommand(conversation,
+			(const ceCConditionGameCommand &)condition);
 		
 	case ceConversationCondition::ectTrigger:
-		return EvaluateTrigger( conversation,
-			( const ceCConditionTrigger & )condition );
+		return EvaluateTrigger(conversation,
+			(const ceCConditionTrigger &)condition);
 	}
 	
 	return false;
@@ -113,32 +113,32 @@ const ceConversationCondition &condition ){
 
 
 
-bool cePlaybackEvaluateCondition::EvaluateLogic( ceConversation &conversation,
-const ceCConditionLogic &condition ){
+bool cePlaybackEvaluateCondition::EvaluateLogic(ceConversation &conversation,
+const ceCConditionLogic &condition){
 	const ceConversationConditionList &list = condition.GetConditions();
 	const int count = list.GetCount();
 	int i;
 	
-	switch( condition.GetOperator() ){
+	switch(condition.GetOperator()){
 	case ceCConditionLogic::eopNone:
-		for( i=0; i<count; i++ ){
-			if( EvaluateCondition( conversation, *list.GetAt( i ) ) ){
+		for(i=0; i<count; i++){
+			if(EvaluateCondition(conversation, *list.GetAt(i))){
 				return false;
 			}
 		}
 		return true;
 		
 	case ceCConditionLogic::eopAny:
-		for( i=0; i<count; i++ ){
-			if( EvaluateCondition( conversation, *list.GetAt( i ) ) ){
+		for(i=0; i<count; i++){
+			if(EvaluateCondition(conversation, *list.GetAt(i))){
 				return true;
 			}
 		}
 		return false;
 		
 	case ceCConditionLogic::eopAll:
-		for( i=0; i<count; i++ ){
-			if( ! EvaluateCondition( conversation, *list.GetAt( i ) ) ){
+		for(i=0; i<count; i++){
+			if(!EvaluateCondition(conversation, *list.GetAt(i))){
 				return false;
 			}
 		}
@@ -148,49 +148,49 @@ const ceCConditionLogic &condition ){
 	return false;
 }
 
-bool cePlaybackEvaluateCondition::EvaluateHasActor( ceConversation &conversation,
-const ceCConditionHasActor &condition ){
-	const bool result = conversation.GetActorList().HasWithIDOrAliasID( condition.GetActor() );
+bool cePlaybackEvaluateCondition::EvaluateHasActor(ceConversation &conversation,
+const ceCConditionHasActor &condition){
+	const bool result = conversation.GetActorList().HasWithIDOrAliasID(condition.GetActor());
 	
-	if( condition.GetNegate() ){
-		return ! result;
+	if(condition.GetNegate()){
+		return !result;
 		
 	}else{
 		return result;
 	}
 }
 
-bool cePlaybackEvaluateCondition::EvaluateActorInConversation( ceConversation &conversation,
-const ceCConditionActorInConversation &condition ){
-	const bool result = conversation.GetActorList().HasWithIDOrAliasID( condition.GetActor() );
+bool cePlaybackEvaluateCondition::EvaluateActorInConversation(ceConversation &conversation,
+const ceCConditionActorInConversation &condition){
+	const bool result = conversation.GetActorList().HasWithIDOrAliasID(condition.GetActor());
 	
-	if( condition.GetNegate() ){
-		return ! result;
+	if(condition.GetNegate()){
+		return !result;
 		
 	}else{
 		return result;
 	}
 }
 
-bool cePlaybackEvaluateCondition::EvaluateVariable( ceConversation &conversation,
-const ceCConditionVariable &condition ){
+bool cePlaybackEvaluateCondition::EvaluateVariable(ceConversation &conversation,
+const ceCConditionVariable &condition){
 	cePlaybackVariableList &variableList = conversation.GetPlayback()->GetVariables();
 	
 	int testValue = condition.GetTestValue();
-	if( ! condition.GetTestVariable().IsEmpty() ){
-		const cePlaybackVariable * const variable = variableList.GetNamed( condition.GetTestVariable() );
-		if( variable ){
+	if(!condition.GetTestVariable().IsEmpty()){
+		const cePlaybackVariable * const variable = variableList.GetNamed(condition.GetTestVariable());
+		if(variable){
 			testValue = variable->GetValue();
 		}
 	}
 	
 	int variableValue = 0;
-	const cePlaybackVariable * const variable = variableList.GetNamed( condition.GetVariable() );
-	if( variable ){
+	const cePlaybackVariable * const variable = variableList.GetNamed(condition.GetVariable());
+	if(variable){
 		variableValue = variable->GetValue();
 	}
 	
-	switch( condition.GetOperator() ){
+	switch(condition.GetOperator()){
 	case ceCConditionVariable::eopEqual:
 		return variableValue == testValue;
 		
@@ -213,32 +213,32 @@ const ceCConditionVariable &condition ){
 	return false;
 }
 
-bool cePlaybackEvaluateCondition::EvaluateActorParameter( ceConversation &conversation,
-const ceCConditionActorParameter &condition ){
+bool cePlaybackEvaluateCondition::EvaluateActorParameter(ceConversation &conversation,
+const ceCConditionActorParameter &condition){
 	cePlayback &playback = *conversation.GetPlayback();
 	const decString &actorID = condition.GetActor();
 	const decString &name = condition.GetParameter();
 	int paramValue = 0;
 	
 	int testValue = condition.GetTestValue();
-	if( ! condition.GetTestVariable().IsEmpty() ){
+	if(!condition.GetTestVariable().IsEmpty()){
 		const cePlaybackVariable * const variable =
-			playback.GetVariables().GetNamed( condition.GetTestVariable() );
-		if( variable ){
+			playback.GetVariables().GetNamed(condition.GetTestVariable());
+		if(variable){
 			testValue = variable->GetValue();
 		}
 	}
 	
-	ceConversationActor const * conversationActor = conversation.GetActorList().GetWithIDOrAliasID( actorID );
-	if( conversationActor ){
-		ceActorParameter *parameter = conversationActor->GetParameter().GetNamed( name );
+	ceConversationActor const * conversationActor = conversation.GetActorList().GetWithIDOrAliasID(actorID);
+	if(conversationActor){
+		ceActorParameter *parameter = conversationActor->GetParameter().GetNamed(name);
 		
-		if( parameter ){
+		if(parameter){
 			paramValue = parameter->GetValue();
 		}
 	}
 	
-	switch( condition.GetOperator() ){
+	switch(condition.GetOperator()){
 	case ceCConditionActorParameter::eopEqual:
 		return paramValue == testValue;
 		
@@ -261,63 +261,63 @@ const ceCConditionActorParameter &condition ){
 	return false;
 }
 
-bool cePlaybackEvaluateCondition::EvaluateActorCommand( ceConversation &conversation,
-const ceCConditionActorCommand &condition ){
+bool cePlaybackEvaluateCondition::EvaluateActorCommand(ceConversation &conversation,
+const ceCConditionActorCommand &condition){
 	const decString &actorID = condition.GetActor();
 	
-	ceConversationActor const * conversationActor = conversation.GetActorList().GetWithIDOrAliasID( actorID );
-	if( ! conversationActor ){
+	ceConversationActor const * conversationActor = conversation.GetActorList().GetWithIDOrAliasID(actorID);
+	if(!conversationActor){
 		return condition.GetNegate();
 	}
 	
 	const cePlaybackCommandList &list = conversationActor->GetCommands();
-	const cePlaybackCommand * const pcommand = list.GetWith( condition.GetCommand() );
-	if( ! pcommand ){
+	const cePlaybackCommand * const pcommand = list.GetWith(condition.GetCommand());
+	if(!pcommand){
 		return condition.GetNegate();
 	}
 	
-	if( condition.GetNegate() ){
-		return ! pcommand->GetValue();
+	if(condition.GetNegate()){
+		return !pcommand->GetValue();
 		
 	}else{
 		return pcommand->GetValue();
 	}
 }
 
-bool cePlaybackEvaluateCondition::EvaluateGameCommand( ceConversation &conversation,
-const ceCConditionGameCommand &condition ){
+bool cePlaybackEvaluateCondition::EvaluateGameCommand(ceConversation &conversation,
+const ceCConditionGameCommand &condition){
 	const cePlaybackCommandList &list = conversation.GetPlayback()->GetCommands();
-	const cePlaybackCommand * const pcommand = list.GetWith( condition.GetCommand() );
+	const cePlaybackCommand * const pcommand = list.GetWith(condition.GetCommand());
 	bool result = false;
 	
-	if( pcommand ){
+	if(pcommand){
 		result = pcommand->GetValue();
 	}
 	
-	if( condition.GetNegate() ){
-		return ! result;
+	if(condition.GetNegate()){
+		return !result;
 		
 	}else{
 		return result;
 	}
 }
 
-bool cePlaybackEvaluateCondition::EvaluateTrigger( ceConversation &conversation,
-const ceCConditionTrigger &condition ){
-	igdeTriggerTarget * const target = conversation.GetPlayback()->GetTriggerTable().GetNamed( condition.GetTrigger() );
+bool cePlaybackEvaluateCondition::EvaluateTrigger(ceConversation &conversation,
+const ceCConditionTrigger &condition){
+	igdeTriggerTarget * const target = conversation.GetPlayback()->GetTriggerTable().GetNamed(condition.GetTrigger());
 	
-	switch( condition.GetTestMode() ){
+	switch(condition.GetTestMode()){
 	case ceCConditionTrigger::etmFired:
 		return target && target->GetFired();
 		
 	case ceCConditionTrigger::etmNotFired:
-		return ! target || ! target->GetFired();
+		return !target || !target->GetFired();
 		
 	case ceCConditionTrigger::etmEverFired:
 		return target && target->GetHasFired();
 		
 	case ceCConditionTrigger::etmNeverFired:
-		return ! target || ! target->GetHasFired();
+		return !target || !target->GetHasFired();
 	}
 	
 	return false;

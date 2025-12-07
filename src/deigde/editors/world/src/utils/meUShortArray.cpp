@@ -38,30 +38,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUShortArray::meUShortArray( int colons, int rows ) :
-pColons( colons ),
-pRows( rows ),
-pValues( NULL )
+meUShortArray::meUShortArray(int colons, int rows) :
+pColons(colons),
+pRows(rows),
+pValues(NULL)
 {
-	if( colons < 1 || rows < 1 ) {
-		DETHROW( deeInvalidParam );
+	if(colons < 1 || rows < 1) {
+		DETHROW(deeInvalidParam);
 	}
 	
-	pValues = new unsigned short[ colons * rows ];
-	SetAll( 0 );
+	pValues = new unsigned short[colons * rows];
+	SetAll(0);
 }
 
-meUShortArray::meUShortArray( const meUShortArray &array ) :
-pColons( array.pColons ),
-pRows( array.pRows ),
-pValues( NULL )
+meUShortArray::meUShortArray(const meUShortArray &array) :
+pColons(array.pColons),
+pRows(array.pRows),
+pValues(NULL)
 {
-	pValues = new unsigned short[ pColons * pRows ];
+	pValues = new unsigned short[pColons * pRows];
 	*this = array;
 }
 
 meUShortArray::~meUShortArray(){
-	if( pValues ){
+	if(pValues){
 		delete [] pValues;
 	}
 }
@@ -71,27 +71,27 @@ meUShortArray::~meUShortArray(){
 // Management
 ///////////////
 
-int meUShortArray::GetValueAt( int x, int y ) const{
-	if( x < 0 || x >= pColons || y < 0 || y >= pRows ){
-		DETHROW( deeInvalidParam );
+int meUShortArray::GetValueAt(int x, int y) const{
+	if(x < 0 || x >= pColons || y < 0 || y >= pRows){
+		DETHROW(deeInvalidParam);
 	}
-	return ( int )pValues[ y * pColons + x ];
+	return (int)pValues[y * pColons + x];
 }
 
-void meUShortArray::SetValueAt( int x, int y, int value ){
-	if( x < 0 || x >= pColons || y < 0 || y >= pRows ){
-		DETHROW( deeInvalidParam );
+void meUShortArray::SetValueAt(int x, int y, int value){
+	if(x < 0 || x >= pColons || y < 0 || y >= pRows){
+		DETHROW(deeInvalidParam);
 	}
-	pValues[ y * pColons + x ] = ( unsigned short )value;
+	pValues[y * pColons + x] = (unsigned short)value;
 }
 
-void meUShortArray::SetAll( int value ){
-	const unsigned short rvalue = ( unsigned short )value;
+void meUShortArray::SetAll(int value){
+	const unsigned short rvalue = (unsigned short)value;
 	const int count = pColons * pRows;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pValues[ i ] = rvalue;
+	for(i=0; i<count; i++){
+		pValues[i] = rvalue;
 	}
 }
 
@@ -100,15 +100,15 @@ void meUShortArray::SetAll( int value ){
 // Operators
 //////////////
 
-bool meUShortArray::operator==( const meUShortArray &array ) const{
+bool meUShortArray::operator==(const meUShortArray &array) const{
 	return pColons == array.pColons && pRows == array.pRows
-		&& memcmp( pValues, array.pValues, pColons * pRows ) == 0;
+		&& memcmp(pValues, array.pValues, pColons * pRows) == 0;
 }
 
-meUShortArray &meUShortArray::operator=( const meUShortArray &array ){
-	if( array.pColons != pColons || array.pRows != pRows ){
-		DETHROW( deeInvalidParam );
+meUShortArray &meUShortArray::operator=(const meUShortArray &array){
+	if(array.pColons != pColons || array.pRows != pRows){
+		DETHROW(deeInvalidParam);
 	}
-	memcpy( pValues, array.pValues, pColons * pRows );
+	memcpy(pValues, array.pValues, pColons * pRows);
 	return *this;
 }

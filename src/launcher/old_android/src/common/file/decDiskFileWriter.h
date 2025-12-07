@@ -53,7 +53,7 @@ public:
 	 * \throws deeInvalidParam \em filename is NULL.
 	 * \throws deeFileNotFound \em filename can not be opened for writing.
 	 */
-	decDiskFileWriter( const char *filename, bool append );
+	decDiskFileWriter(const char *filename, bool append);
 	
 protected:
 	/**
@@ -77,13 +77,13 @@ public:
 	virtual int GetPosition();
 	
 	/** \brief Set file position for the next write action. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/** \brief Move file position by the given offset. */
-	virtual void MovePosition( int offset );
+	virtual void MovePosition(int offset);
 	
 	/** \brief Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position );
+	virtual void SetPositionEnd(int position);
 	
 	/**
 	 * \brief Write \em size bytes from \em buffer and advances the file pointer.
@@ -91,7 +91,7 @@ public:
 	 * \throws deeInvalidParam \em size is less than 0.
 	 * \throws deeWriteFile Can not write to file.
 	 */
-	virtual void Write( const void *buffer, int size );
+	virtual void Write(const void *buffer, int size);
 	/*@}*/
 };
 

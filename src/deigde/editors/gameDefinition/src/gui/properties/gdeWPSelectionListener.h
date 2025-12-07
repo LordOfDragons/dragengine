@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSelectionListener( gdeWPSelection &panel );
+	gdeWPSelectionListener(gdeWPSelection &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPSelectionListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Selected object changed. */
-	virtual void SelectedObjectChanged( gdeGameDefinition *gameDefinition );
+	virtual void SelectedObjectChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

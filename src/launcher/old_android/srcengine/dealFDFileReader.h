@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file reader. */
-	dealFDFileReader( const char *filename, int fileDescriptor, long offset, long length );
+	dealFDFileReader(const char *filename, int fileDescriptor, long offset, long length);
 	
 protected:
 	/**
@@ -79,13 +79,13 @@ public:
 	virtual int GetPosition();
 	
 	/** \brief Set file position for the next read action. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/** \brief Move file position by the given offset. */
-	virtual void MovePosition( int offset );
+	virtual void MovePosition(int offset);
 	
 	/** \brief Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position );
+	virtual void SetPositionEnd(int position);
 	
 	/**
 	 * \brief Read \em size bytes into \em buffer and advances the file pointer.
@@ -93,7 +93,7 @@ public:
 	 * \throws deeInvalidParam \em size is less than 1.
 	 * \throws deeReadFile Can not read from file.
 	 */
-	virtual void Read( void *buffer, int size );
+	virtual void Read(void *buffer, int size);
 	/*@}*/
 };
 

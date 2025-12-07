@@ -54,9 +54,9 @@ class deBaseAIHeightTerrain;
 #define HT_16BIT_HTOP		65535.0f
 
 /** 8-bit scaling factor pixel to height. */
-#define HT_8BIT_PTOH		( 1.0f / 255.0f )
+#define HT_8BIT_PTOH		(1.0f / 255.0f)
 /** 16-bit scaling factor pixel to height. */
-#define HT_16BIT_PTOH		( 1.0f / 65535.0f )
+#define HT_16BIT_PTOH		(1.0f / 65535.0f)
 
 
 /**
@@ -95,7 +95,7 @@ public:
 	 * \param[in] sectorSize Size in meters of sectors along the X and Z axis.
 	 * \param[in] sectorResolution Resolution of sectors (width and height of height images).
 	 */
-	deHeightTerrain( deHeightTerrainManager *manager, float sectorSize, int sectorResolution );
+	deHeightTerrain(deHeightTerrainManager *manager, float sectorSize, int sectorResolution);
 	
 protected:
 	/**
@@ -122,23 +122,23 @@ public:
 	inline float GetBaseHeight() const{ return pBaseHeight; }
 	
 	/** \brief Set base height in meters. */
-	void SetBaseHeight( float height );
+	void SetBaseHeight(float height);
 	
 	/** \brief Height scaling. */
 	inline float GetHeightScaling() const{ return pHeightScaling; }
 	
 	/** \brief Set height scaling. */
-	void SetHeightScaling( float scaling );
+	void SetHeightScaling(float scaling);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &collisionFilter );
+	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Notifies the peers that a sector heights changed. */
-	void NotifyHeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates );
+	void NotifyHeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates);
 	/*@}*/
 	
 	
@@ -149,22 +149,22 @@ public:
 	int GetSectorCount() const;
 	
 	/** \brief Sector at the given index. */
-	deHeightTerrainSector *GetSectorAt( int index ) const;
+	deHeightTerrainSector *GetSectorAt(int index) const;
 	
 	/** \brief Sector with the given coordinates or NULL if not existing. */
-	deHeightTerrainSector *GetSectorWith( const decPoint &coordinates ) const;
+	deHeightTerrainSector *GetSectorWith(const decPoint &coordinates) const;
 	
 	/** \brief Adds a sector to the world. */
-	void AddSector( deHeightTerrainSector *sector );
+	void AddSector(deHeightTerrainSector *sector);
 	
 	/** \brief Removes the given sector from the world. */
-	void RemoveSector( deHeightTerrainSector *sector );
+	void RemoveSector(deHeightTerrainSector *sector);
 	
 	/** \brief Removes all sectors from the world. */
 	void RemoveAllSectors();
 	
 	/** \brief Notifies the peers that a sector changed. */
-	void NotifySectorChanged( int sector );
+	void NotifySectorChanged(int sector);
 	/*@}*/
 	
 	
@@ -175,25 +175,25 @@ public:
 	inline deBaseGraphicHeightTerrain *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
-	void SetPeerGraphic( deBaseGraphicHeightTerrain *peer );
+	void SetPeerGraphic(deBaseGraphicHeightTerrain *peer);
 	
 	/** \brief Physics system peer object. */
 	inline deBasePhysicsHeightTerrain *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
-	void SetPeerPhysics( deBasePhysicsHeightTerrain *peer );
+	void SetPeerPhysics(deBasePhysicsHeightTerrain *peer);
 	
 	/** \brief Audio system peer or NULL. */
 	inline deBaseAudioHeightTerrain *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set Audio system peer or NULL. */
-	void SetPeerAudio( deBaseAudioHeightTerrain *peer );
+	void SetPeerAudio(deBaseAudioHeightTerrain *peer);
 	
 	/** \brief AI system peer or NULL. */
 	inline deBaseAIHeightTerrain *GetPeerAI() const{ return pPeerAI; }
 	
 	/** \brief Set AI system peer or NULL. */
-	void SetPeerAI( deBaseAIHeightTerrain *peer );
+	void SetPeerAI(deBaseAIHeightTerrain *peer);
 	/*@}*/
 	
 	
@@ -207,14 +207,14 @@ public:
 	 * \param point Point on the surface to test.
 	 * \param list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsAt( const decDVector &point, deDecalList &list );
+	void FindDecalsAt(const decDVector &point, deDecalList &list);
 	
 	/**
 	 * Stores all decals in contact with the given shape into the provided list.
 	 * \param shape Shape to test.
 	 * \param list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsTouching( const decShape &shape, deDecalList &list );
+	void FindDecalsTouching(const decShape &shape, deDecalList &list);
 	/*@}*/
 	
 	

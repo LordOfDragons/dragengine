@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new peer. */
-	deoglOcclusionMesh( deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh );
+	deoglOcclusionMesh(deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh);
 	
 	/** Clean up peer. */
 	virtual ~deoglOcclusionMesh();

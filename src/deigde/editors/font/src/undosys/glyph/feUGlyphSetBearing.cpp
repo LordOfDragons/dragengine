@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetBearing::feUGlyphSetBearing( feFontGlyph *glyph, int newBearing ){
-	SetShortInfo( "Glyph set bearing" );
+feUGlyphSetBearing::feUGlyphSetBearing(feFontGlyph *glyph, int newBearing){
+	SetShortInfo("Glyph set bearing");
 	
 	pOldBearing = glyph->GetBearing();
 	pNewBearing = newBearing;
@@ -50,7 +50,7 @@ feUGlyphSetBearing::feUGlyphSetBearing( feFontGlyph *glyph, int newBearing ){
 }
 
 feUGlyphSetBearing::~feUGlyphSetBearing(){
-	if( pGlyph ) pGlyph->FreeReference();
+	if(pGlyph) pGlyph->FreeReference();
 }
 
 
@@ -59,9 +59,9 @@ feUGlyphSetBearing::~feUGlyphSetBearing(){
 ///////////////
 
 void feUGlyphSetBearing::Undo(){
-	pGlyph->SetBearing( pOldBearing );
+	pGlyph->SetBearing(pOldBearing);
 }
 
 void feUGlyphSetBearing::Redo(){
-	pGlyph->SetBearing( pNewBearing );
+	pGlyph->SetBearing(pNewBearing);
 }

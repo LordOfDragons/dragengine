@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerToggleClamp::peeUControllerToggleClamp( peeController *controller ){
-	if( ! controller ) DETHROW( deeInvalidParam );
+peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
+	if(!controller) DETHROW(deeInvalidParam);
 	
 	pController = NULL;
 	
-	SetShortInfo( "Toggle Controller Clamp" );
+	SetShortInfo("Toggle Controller Clamp");
 	
 	pController = controller;
 	controller->AddReference();
 }
 
 peeUControllerToggleClamp::~peeUControllerToggleClamp(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -62,9 +62,9 @@ peeUControllerToggleClamp::~peeUControllerToggleClamp(){
 ///////////////
 
 void peeUControllerToggleClamp::Undo(){
-	pController->SetClamp( ! pController->GetClamp() );
+	pController->SetClamp(!pController->GetClamp());
 }
 
 void peeUControllerToggleClamp::Redo(){
-	pController->SetClamp( ! pController->GetClamp() );
+	pController->SetClamp(!pController->GetClamp());
 }

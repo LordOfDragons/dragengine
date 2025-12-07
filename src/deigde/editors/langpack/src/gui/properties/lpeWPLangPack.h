@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	lpeWPLangPack( lpeWindowProperties &windowProperties );
+	lpeWPLangPack(lpeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -75,7 +75,7 @@ public:
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
 	/** \brief Set language pack or NULL. */
-	void SetLangPack( lpeLangPack *langpack );
+	void SetLangPack(lpeLangPack *langpack);
 	
 	/** \brief Update language pack. */
 	void UpdateLangPack();

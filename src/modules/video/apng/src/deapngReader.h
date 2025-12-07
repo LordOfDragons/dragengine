@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create reader. */
-	deapngReader( deVideoApng &module, decBaseFileReader *reader );
+	deapngReader(deVideoApng &module, decBaseFileReader *reader);
 	
 	/** Clean up reader. */
 	~deapngReader();
@@ -124,13 +124,13 @@ public:
 	void Rewind();
 	
 	/** Seek to frame. */
-	void SeekFrame( int frame );
+	void SeekFrame(int frame);
 	
 	/** Read frame image into accum image and advance to next frame. */
 	void ReadImage();
 	
 	/** Copy accum image. */
-	void CopyAccumImage( void *buffer, int size ) const;
+	void CopyAccumImage(void *buffer, int size) const;
 	/*@}*/
 	
 	

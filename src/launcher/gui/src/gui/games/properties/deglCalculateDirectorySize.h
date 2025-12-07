@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create. */
-	deglCalculateDirectorySize( const char *directory );
+	deglCalculateDirectorySize(const char *directory);
 	
 	/** Clean up. */
 	virtual ~deglCalculateDirectorySize();
@@ -84,13 +84,13 @@ public:
 	virtual void Run();
 	
 	/** For internal use only. */
-	void IncrementSize( int size );
+	void IncrementSize(int size);
 	
 	
 	
 private:
-	void pSetSize( int size );
-	void pScanDirectory( const decPath &directory );
+	void pSetSize(int size);
+	void pScanDirectory(const decPath &directory);
 };
 
 #endif

@@ -54,13 +54,13 @@ igdeRealApplication::~igdeRealApplication(){
 
 igdeWindowMain &igdeRealApplication::GetWindowMain() const{
 	igdeMainWindow * const mainWindow = GetMainWindow();
-	DEASSERT_NOTNULL( mainWindow )
-	return *( ( igdeWindowMain* )mainWindow );
+	DEASSERT_NOTNULL(mainWindow)
+	return *((igdeWindowMain*)mainWindow);
 }
 
-bool igdeRealApplication::Initialize( const decUnicodeStringList &arguments ){
+bool igdeRealApplication::Initialize(const decUnicodeStringList &arguments){
 	try{
-		SetMainWindow( new igdeWindowMain( pEnvironment ), true );
+		SetMainWindow(new igdeWindowMain(pEnvironment), true);
 		GetWindowMain().CreateNativeWidget();
 		
 	// 	if( updateWithTimer ){
@@ -68,31 +68,31 @@ bool igdeRealApplication::Initialize( const decUnicodeStringList &arguments ){
 	// 		GetWindowMain().SetMinUpdateTime( 1.0f / 100.0f - 0.001f ); // 100Hz max update speed, 1ms timer granularity
 	// 		
 	// 	}else{
-			GetWindowMain().SetMinUpdateTime( 1.0f / 100.0f ); // 100Hz max update speed
+			GetWindowMain().SetMinUpdateTime(1.0f / 100.0f); // 100Hz max update speed
 	// 	}
 		
 		// process command line. run application only if it succeeded
-		if( ! GetWindowMain().ProcessCommandLine( arguments ) ){
+		if(!GetWindowMain().ProcessCommandLine(arguments)){
 			GetWindowMain().Close();
 			return false;
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		// it is possible creating the window already failed so we have to check
-		if( GetMainWindow() ){
-			GetWindowMain().DisplayException( e );
+		if(GetMainWindow()){
+			GetWindowMain().DisplayException(e);
 			
 		}else{
 			// if is even possible the logger could not be created so check this too
-			if( pEnvironment.GetLogger() ){
-				pEnvironment.GetLogger()->LogException( "IGDE", e );
+			if(pEnvironment.GetLogger()){
+				pEnvironment.GetLogger()->LogException("IGDE", e);
 				
 			}else{
 				e.PrintError();
 			}
 			
-			igdeCommonDialogs::ErrorFormat( nullptr, "Failed starting IGDE",
-				"Please see logs for details:\n%s", e.FormatOutput().Join( "\n" ).GetString() );
+			igdeCommonDialogs::ErrorFormat(nullptr, "Failed starting IGDE",
+				"Please see logs for details:\n%s", e.FormatOutput().Join("\n").GetString());
 		}
 		return false;
 	}

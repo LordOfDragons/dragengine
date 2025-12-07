@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetWindowSize( projProfile *profile, const decPoint &newValue );
+	projUProfileSetWindowSize(projProfile *profile, const decPoint &newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetWindowSize();

@@ -38,12 +38,12 @@
 ////////////////////////////
 
 deModelLodVertexPositionSet::deModelLodVertexPositionSet() :
-pPositions( nullptr ),
-pPositionCount( 0 ){
+pPositions(nullptr),
+pPositionCount(0){
 }
 
 deModelLodVertexPositionSet::~deModelLodVertexPositionSet(){
-	if( pPositions ){
+	if(pPositions){
 		delete [] pPositions;
 	}
 }
@@ -53,31 +53,31 @@ deModelLodVertexPositionSet::~deModelLodVertexPositionSet(){
 // Management
 ///////////////
 
-void deModelLodVertexPositionSet::SetPositionCount( int count ){
-	DEASSERT_TRUE( count >= 0 )
+void deModelLodVertexPositionSet::SetPositionCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
-	if( pPositions ){
+	if(pPositions){
 		delete [] pPositions;
 		pPositions = nullptr;
 		pPositionCount = 0;
 	}
 	
-	if( count > 0 ){
-		pPositions = new deModelLodVertexPositionSetPosition[ count ];
+	if(count > 0){
+		pPositions = new deModelLodVertexPositionSetPosition[count];
 		pPositionCount = count;
 	}
 }
 
-deModelLodVertexPositionSetPosition &deModelLodVertexPositionSet::GetPositionAt( int index ){
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pPositionCount );
+deModelLodVertexPositionSetPosition &deModelLodVertexPositionSet::GetPositionAt(int index){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pPositionCount);
 	
-	return pPositions[ index ];
+	return pPositions[index];
 }
 
-const deModelLodVertexPositionSetPosition &deModelLodVertexPositionSet::GetPositionAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pPositionCount );
+const deModelLodVertexPositionSetPosition &deModelLodVertexPositionSet::GetPositionAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pPositionCount);
 	
-	return pPositions[ index ];
+	return pPositions[index];
 }

@@ -46,26 +46,26 @@ float debpDECollisionDetection::RayPlane(const decVector &pp, const decVector &p
 const decVector &rp, const decVector &rd){
 //	return -((pn * rp - (pn * pp)) / (pn * rd));
 //	float numer = pn * rp - ( pn * pp );
-	float numer = pn * ( rp - pp );
+	float numer = pn * (rp - pp);
 	float denom = pn * rd;
 	return denom == 0.0f ? -1.0f : -(numer / denom);
 }
 
 
 
-decVector debpDECollisionDetection::ClosestPointOnLine( const decVector &lineFrom, const decVector &lineTo, const decVector &point ){
+decVector debpDECollisionDetection::ClosestPointOnLine(const decVector &lineFrom, const decVector &lineTo, const decVector &point){
 	const decVector lineDir = lineTo - lineFrom;
 	const decVector offset = point - lineFrom;
 	const float lineLenSquared = lineDir.LengthSquared();
 	
-	if( fabs( lineLenSquared ) > FLOAT_SAFE_EPSILON ){
+	if(fabs(lineLenSquared) > FLOAT_SAFE_EPSILON){
 		// lambda = ( lineDir.Normalized() * offset ) / lineDir.Length()
-		const float lambda = ( lineDir * offset ) / lineLenSquared;
+		const float lambda = (lineDir * offset) / lineLenSquared;
 		
-		if( lambda <= 0.0f ){
+		if(lambda <= 0.0f){
 			return lineFrom;
 		}
-		if( lambda >= 1.0f ){
+		if(lambda >= 1.0f){
 			return lineTo;
 		}
 		
@@ -76,9 +76,9 @@ decVector debpDECollisionDetection::ClosestPointOnLine( const decVector &lineFro
 	}
 }
 
-decVector debpDECollisionDetection::ClosestPointOnRay( const decVector &rayOrigin, const decVector &rayDirection, const decVector &point ){
+decVector debpDECollisionDetection::ClosestPointOnRay(const decVector &rayOrigin, const decVector &rayDirection, const decVector &point){
 	// rayOrigin + rayDirection * distanceOnRay
-	return rayOrigin + rayDirection * ( rayDirection * ( point - rayOrigin ) );
+	return rayOrigin + rayDirection * (rayDirection * (point - rayOrigin));
 }
 
 
@@ -107,32 +107,32 @@ const decVector &tp2, const decVector &tp3, const decVector &p){
 	return result;
 }
 
-decVector debpDECollisionDetection::ClosestPointOnTriangle( const decVector &tp1,
-const decVector &tp2, const decVector &tp3, const decVector &p ){
+decVector debpDECollisionDetection::ClosestPointOnTriangle(const decVector &tp1,
+const decVector &tp2, const decVector &tp3, const decVector &p){
 	const decVector edge0 = tp2 - tp1;
 	const decVector edge1 = tp3 - tp2;
-	const decVector faceNormal = ( edge0 % edge1 ).Normalized();
+	const decVector faceNormal = (edge0 % edge1).Normalized();
 	decVector point = p;
 	
-	decVector normal = ( faceNormal % edge0 ).Normalized();
-	float distance = ( point - tp1 ) * normal;
-	if( distance < 0.0f ){
+	decVector normal = (faceNormal % edge0).Normalized();
+	float distance = (point - tp1) * normal;
+	if(distance < 0.0f){
 		point -= normal * distance;
 	}
 	
-	normal = ( faceNormal % edge1 ).Normalized();
-	distance = ( point - tp2 ) * normal;
-	if( distance < 0.0f ){
+	normal = (faceNormal % edge1).Normalized();
+	distance = (point - tp2) * normal;
+	if(distance < 0.0f){
 		point -= normal * distance;
 	}
 	
-	normal = ( faceNormal % ( tp1 - tp3 ) ).Normalized();
-	distance = ( point - tp3 ) * normal;
-	if( distance < 0.0f ){
+	normal = (faceNormal % (tp1 - tp3)).Normalized();
+	distance = (point - tp3) * normal;
+	if(distance < 0.0f){
 		point -= normal * distance;
 	}
 	
-	return point- faceNormal * ( ( point - tp1 ) * faceNormal );
+	return point- faceNormal * ((point - tp1) * faceNormal);
 }
 
 
@@ -168,38 +168,38 @@ const decVector &tp2, const decVector &tp3, const decVector &tp4, const decVecto
 	return result;
 }
 
-decVector debpDECollisionDetection::ClosestPointOnQuad( const decVector &tp1,
-const decVector &tp2, const decVector &tp3, const decVector &tp4, const decVector &p ){
+decVector debpDECollisionDetection::ClosestPointOnQuad(const decVector &tp1,
+const decVector &tp2, const decVector &tp3, const decVector &tp4, const decVector &p){
 	const decVector edge0 = tp2 - tp1;
 	const decVector edge1 = tp3 - tp2;
-	const decVector faceNormal = ( edge0 % edge1 ).Normalized();
+	const decVector faceNormal = (edge0 % edge1).Normalized();
 	decVector point = p;
 	
-	decVector normal = ( faceNormal % edge0 ).Normalized();
-	float distance = ( point - tp1 ) * normal;
-	if( distance < 0.0f ){
+	decVector normal = (faceNormal % edge0).Normalized();
+	float distance = (point - tp1) * normal;
+	if(distance < 0.0f){
 		point -= normal * distance;
 	}
 	
-	normal = ( faceNormal % edge1 ).Normalized();
-	distance = ( point - tp2 ) * normal;
-	if( distance < 0.0f ){
+	normal = (faceNormal % edge1).Normalized();
+	distance = (point - tp2) * normal;
+	if(distance < 0.0f){
 		point-= normal * distance;
 	}
 	
-	normal = ( faceNormal % ( tp4 - tp3 ) ).Normalized();
-	distance = ( point - tp3 ) * normal;
-	if( distance < 0.0f ){
+	normal = (faceNormal % (tp4 - tp3)).Normalized();
+	distance = (point - tp3) * normal;
+	if(distance < 0.0f){
 		point -= normal * distance;
 	}
 	
-	normal = ( faceNormal % ( tp1 - tp4 ) ).Normalized();
-	distance = ( point - tp4 ) * normal;
-	if( distance < 0.0f ){
+	normal = (faceNormal % (tp1 - tp4)).Normalized();
+	distance = (point - tp4) * normal;
+	if(distance < 0.0f){
 		point -= normal * distance;
 	}
 	
-	return point - faceNormal * ( ( point - tp1 ) * faceNormal );
+	return point - faceNormal * ((point - tp1) * faceNormal);
 }
 
 
@@ -227,21 +227,21 @@ const decVector &sc, float sr){
 	decVector diff = rp - sc;
 	float a = rd * rd;
 	float b = diff * rd;
-	float disc = b * b - a * ( diff * diff - sr * sr );
-	if( disc < 0.0001 ){
+	float disc = b * b - a * (diff * diff - sr * sr);
+	if(disc < 0.0001){
 		return -1;
 	}else{
-		return ( - b - sqrt( disc ) ) / a;
+		return (- b - sqrt(disc)) / a;
 	}
 */
 	float a = rd * rd;
-	float b = rd * ( rp - sc );
-	float c = rp * rp + sc * sc - ( rp * sc ) * 2.0f - sr * sr;
+	float b = rd * (rp - sc);
+	float c = rp * rp + sc * sc - (rp * sc) * 2.0f - sr * sr;
 	float disc = b * b - a * c;
-	if( disc < 0.0f ) return -1.0f;
-	disc = sqrtf( disc );
+	if(disc < 0.0f) return -1.0f;
+	disc = sqrtf(disc);
 	float lambda = -b - disc;
-	if( lambda < 0.0f ) lambda = -b + disc;
+	if(lambda < 0.0f) lambda = -b + disc;
 	return lambda / a;
 }
 
@@ -257,8 +257,8 @@ const decVector &sc, float sr){
 // bs = segment b start position
 // be = segment b end position
 // http://softsurfer.com/Archive/algorithm_0106/algorithm_0106.htm
-float debpDECollisionDetection::SegmentSegmentDistance( const decVector &as, const decVector &ae,
-const decVector &bs, const decVector &be ){
+float debpDECollisionDetection::SegmentSegmentDistance(const decVector &as, const decVector &ae,
+const decVector &bs, const decVector &be){
 	decVector u = ae - as;
 	decVector v = be - bs;
 	decVector w = as - bs;
@@ -271,72 +271,72 @@ const decVector &bs, const decVector &be ){
 	float sc, sN, sD = D;
 	float tc, tN, tD = D;
 	// segments parallel
-	if( D < 0.00001f){
+	if(D < 0.00001f){
 		sN = 0.0f;
 		sD = 1.0f;
 		tN = e;
 		tD = c;
 	// segments not parallel
 	}else{
-		sN = ( b * e - c * d );
-		tN = ( a * e - b * d );
+		sN = (b * e - c * d);
+		tN = (a * e - b * d);
 		// sc < 0 => the s=0 edge is visible
-		if( sN < 0.0f ){
+		if(sN < 0.0f){
 			sN = 0;
 			tN = e;
 			tD = c;
 		// sc > 1 => the s=1 edge is visible
-		}else if( sN > sD ){
+		}else if(sN > sD){
 			sN = sD;
 			tN = e + b;
 			tD = c;
 		}
 	}
 	// tc < 0 => the t=0 edge is visible
-	if( tN < 0.0f ){
+	if(tN < 0.0f){
 		tN = 0.0f;
 		// recompute sc for this edge
-		if( -d < 0.0f ){
+		if(-d < 0.0f){
 			sN = 0.0f;
-		}else if( -d > a){
+		}else if(-d > a){
 			sN = sD;
 		}else{
 			sN = -d;
 			sD = a;
 		}
 	// tc > 1 => the t=1 edge is visible
-	}else if( tN > tD ){
+	}else if(tN > tD){
 		tN = tD;
 		// recompute sc for this edge
-		if( ( -d + b ) < 0.0f ){
+		if((-d + b) < 0.0f){
 			sN = 0.0f;
-		}else if( ( -d + b ) > a ){
+		}else if((-d + b) > a){
 			sN = sD;
 		}else{
-			sN = ( -d + b );
+			sN = (-d + b);
 			sD = a;
 		}
 	}
 	// finally do the division to get sc and tc
-	if( fabs( sN ) < 0.00001f ){
+	if(fabs(sN) < 0.00001f){
 		sc = 0.0f;
 	}else{
 		sc = sN / sD;
 	}
-	if( fabs( tN ) < 0.00001f ){
+	if(fabs(tN) < 0.00001f){
 		tc = 0.0f;
 	}else{
 		tc = tN / tD;
 	}
 	// get the difference of the two closest points
-	return ( w + ( u * sc ) - ( v * tc ) ).Length();
+	return (w + (u * sc) - (v * tc)).Length();
 }
 
-float debpDECollisionDetection::PointRayDistance( const decVector &rayOrigin, const decVector &rayDirection, const decVector &point ){
+float debpDECollisionDetection::PointRayDistance(const decVector &rayOrigin, const decVector &rayDirection, const decVector &point){
 	// ( point - ClosestPointOnRay( rayOrigin, rayDirection, point ) ).Length()
 	// ( point - rayOrigin - rayDirection * ( rayDirection * ( point - rayOrigin ) ) ).Length()
 	const decVector offset = point - rayOrigin;
-	return ( offset - rayDirection * ( rayDirection * offset ) ).Length();
+	return (offset - rayDirection * (rayDirection * offset)).Length();
 }
 
 
@@ -350,20 +350,20 @@ const decVector &tp3, const decVector &p){
 	decVector edge2 = tp3 - tp2;
 	decVector edge3 = tp1 - tp3;
 	decVector normal = edge1 % edge2;
-	if( (edge1 % (p - tp1)) * normal < 0.0f ) return false;
-	if( (edge2 % (p - tp2)) * normal < 0.0f ) return false;
-	if( (edge3 % (p - tp3)) * normal < 0.0f ) return false;
+	if((edge1 % (p - tp1)) * normal < 0.0f) return false;
+	if((edge2 % (p - tp2)) * normal < 0.0f) return false;
+	if((edge3 % (p - tp3)) * normal < 0.0f) return false;
 	return true;
 }
 
-bool debpDECollisionDetection::PointInTriangle( const decVector &tp1, const decVector &tp2,
-const decVector &tp3, const decVector &tnormal, const decVector &p ){
+bool debpDECollisionDetection::PointInTriangle(const decVector &tp1, const decVector &tp2,
+const decVector &tp3, const decVector &tnormal, const decVector &p){
 	decVector edge1 = tp2 - tp1;
 	decVector edge2 = tp3 - tp2;
 	decVector edge3 = tp1 - tp3;
-	if( ( edge1 % ( p - tp1 ) ) * tnormal < 0.0f ) return false;
-	if( ( edge2 % ( p - tp2 ) ) * tnormal < 0.0f ) return false;
-	if( ( edge3 % ( p - tp3 ) ) * tnormal < 0.0f ) return false;
+	if((edge1 % (p - tp1)) * tnormal < 0.0f) return false;
+	if((edge2 % (p - tp2)) * tnormal < 0.0f) return false;
+	if((edge3 % (p - tp3)) * tnormal < 0.0f) return false;
 	return true;
 }
 
@@ -378,30 +378,30 @@ const decVector &tp3, const decVector &tp4, const decVector &p){
 	v2.Normalize();
 	v3.Normalize();
 	v4.Normalize();
-	arcsum += acosf( v1 * v2 );
-	arcsum += acosf( v2 * v3 );
-	arcsum += acosf( v3 * v4 );
-	arcsum += acosf( v4 * v1 );
+	arcsum += acosf(v1 * v2);
+	arcsum += acosf(v2 * v3);
+	arcsum += acosf(v3 * v4);
+	arcsum += acosf(v4 * v1);
 	return fabsf(arcsum - 2.0f*PI) <= 0.005f;
 }
 
 
 
-bool debpDECollisionDetection::RayHitsSphere( const decVector &rayOrigin, const decVector &rayDirection,
-const decVector &sphereCenter, float sphereRadius, float &hitDistance ){
+bool debpDECollisionDetection::RayHitsSphere(const decVector &rayOrigin, const decVector &rayDirection,
+const decVector &sphereCenter, float sphereRadius, float &hitDistance){
 	float a = rayDirection * rayDirection;
-	float b = rayDirection * ( rayOrigin - sphereCenter );
+	float b = rayDirection * (rayOrigin - sphereCenter);
 	float c = rayOrigin * rayOrigin + sphereCenter * sphereCenter
-		- ( rayOrigin * sphereCenter ) * 2.0f - sphereRadius * sphereRadius;
+		- (rayOrigin * sphereCenter) * 2.0f - sphereRadius * sphereRadius;
 	float disc = b * b - a * c;
 	
-	if( disc < 0.0f ){
+	if(disc < 0.0f){
 		return false;
 	}
 	
-	disc = sqrtf( disc );
+	disc = sqrtf(disc);
 	float lambda = -b - disc;
-	if( lambda < 0.0f ){
+	if(lambda < 0.0f){
 		lambda = -b + disc;
 	}
 	
@@ -409,17 +409,17 @@ const decVector &sphereCenter, float sphereRadius, float &hitDistance ){
 	return true;
 }
 
-bool debpDECollisionDetection::SphereHitsSphere( const decVector &sphere1Center, float sphere1Radius,
-const decVector &sphere2Center, float sphere2Radius ){
+bool debpDECollisionDetection::SphereHitsSphere(const decVector &sphere1Center, float sphere1Radius,
+const decVector &sphere2Center, float sphere2Radius){
 	decVector centerDist = sphere2Center - sphere1Center;
 	float radiusDist = sphere1Radius + sphere2Radius;
 	
-	return ( ( centerDist * centerDist ) <= radiusDist * radiusDist );
+	return ((centerDist * centerDist) <= radiusDist * radiusDist);
 }
 
-float debpDECollisionDetection::SphereMoveHitsSphere( const decVector &sphere1Center, float sphere1Radius,
-const decVector &sphere2Center, float sphere2Radius, const decVector &displacement, decVector *normal ){
-	decVector diff( sphere2Center - sphere1Center );
+float debpDECollisionDetection::SphereMoveHitsSphere(const decVector &sphere1Center, float sphere1Radius,
+const decVector &sphere2Center, float sphere2Radius, const decVector &displacement, decVector *normal){
+	decVector diff(sphere2Center - sphere1Center);
 	float a, b, r, rr, disc, lambda, factor;
 	
 	// check for a collision at the beginning
@@ -427,13 +427,13 @@ const decVector &sphere2Center, float sphere2Radius, const decVector &displaceme
 	factor = diff * diff;
 	rr = r * r;
 	
-	if( factor <= rr ){
-		if( normal ){
+	if(factor <= rr){
+		if(normal){
 			factor = diff.Length();
-			if( factor <= 0.000001f ){
-				normal->Set( -displacement );
+			if(factor <= 0.000001f){
+				normal->Set(-displacement);
 			}else{
-				normal->Set( diff );
+				normal->Set(diff);
 			}
 			normal->Normalize();
 		}
@@ -442,20 +442,20 @@ const decVector &sphere2Center, float sphere2Radius, const decVector &displaceme
 	
 	// check if there exist one or more points on the line with the needed distance
 	a = displacement * displacement;
-	b = ( diff * displacement ) * 2.0f;
-	disc = b * b - a * ( factor - rr ) * 4.0f;
-	if( disc < 0.0f ) return 1.0f;
+	b = (diff * displacement) * 2.0f;
+	disc = b * b - a * (factor - rr) * 4.0f;
+	if(disc < 0.0f) return 1.0f;
 	
 	// determine the closer of the two points
-	disc = sqrtf( disc );
-	factor = 1.0f / ( a * 2.0f );
-	lambda = ( -b - disc ) * factor;
-	if( lambda < 0.0f ) lambda = ( -b + disc ) * factor;
+	disc = sqrtf(disc);
+	factor = 1.0f / (a * 2.0f);
+	lambda = (-b - disc) * factor;
+	if(lambda < 0.0f) lambda = (-b + disc) * factor;
 	
 	// check if the point is inside the movement range
-	if( lambda <= 0.0f || lambda >= 1.0f ) return 1.0f;
-	if( normal ){
-		normal->Set( sphere2Center + displacement * lambda - sphere1Center );
+	if(lambda <= 0.0f || lambda >= 1.0f) return 1.0f;
+	if(normal){
+		normal->Set(sphere2Center + displacement * lambda - sphere1Center);
 		normal->Normalize();
 	}
 	
@@ -464,24 +464,24 @@ const decVector &sphere2Center, float sphere2Radius, const decVector &displaceme
 
 
 
-bool debpDECollisionDetection::RayHitsBox( const decVector &rayOrigin, const decVector &rayDirection,
-const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance ){
+bool debpDECollisionDetection::RayHitsBox(const decVector &rayOrigin, const decVector &rayDirection,
+const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance){
 	decVector point = rayOrigin - boxCenter;
 	bool hasBestDistance = false;
 	float lambda, hp, factor;
 	float bestDistance = 0.0f;
 	
 	// box faces on the x axis
-	if( fabs( rayDirection.x ) > 1e-6f ){
+	if(fabs(rayDirection.x) > 1e-6f){
 		factor = 1.0f / rayDirection.x;
 		
 		// face on the positive side
-		lambda = ( boxHalfExtends.x - point.x ) * factor;
-		if( lambda >= 0.0f && lambda <= 1.0f && ( ! hasBestDistance || lambda < bestDistance ) ){
+		lambda = (boxHalfExtends.x - point.x) * factor;
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.y + rayDirection.y * lambda;
-			if( hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y ){
+			if(hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y){
 				hp = point.z + rayDirection.z * lambda;
-				if( hp >= -boxHalfExtends.z && hp <= boxHalfExtends.z ){
+				if(hp >= -boxHalfExtends.z && hp <= boxHalfExtends.z){
 					hasBestDistance = true;
 					bestDistance = lambda;
 				}
@@ -489,12 +489,12 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance 
 		}
 		
 		// face on the negative side
-		lambda = ( -boxHalfExtends.x - point.x ) * factor;
-		if( lambda >= 0.0f && lambda <= 1.0f && ( ! hasBestDistance || lambda < bestDistance ) ){
+		lambda = (-boxHalfExtends.x - point.x) * factor;
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.y + rayDirection.y * lambda;
-			if( hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y ){
+			if(hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y){
 				hp = point.z + rayDirection.z * lambda;
-				if( hp >= -boxHalfExtends.z && hp <= boxHalfExtends.z ){
+				if(hp >= -boxHalfExtends.z && hp <= boxHalfExtends.z){
 					hasBestDistance = true;
 					bestDistance = lambda;
 				}
@@ -503,16 +503,16 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance 
 	}
 	
 	// box faces on the y axis
-	if( fabs( rayDirection.y ) > 1e-6f ){
+	if(fabs(rayDirection.y) > 1e-6f){
 		factor = 1.0f / rayDirection.y;
 		
 		// face on the positive side
-		lambda = ( boxHalfExtends.y - point.y ) * factor;
-		if( lambda >= 0.0f && lambda <= 1.0f && ( ! hasBestDistance || lambda < bestDistance ) ){
+		lambda = (boxHalfExtends.y - point.y) * factor;
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.x + rayDirection.x * lambda;
-			if( hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x ){
+			if(hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x){
 				hp = point.z + rayDirection.z * lambda;
-				if( hp >= -boxHalfExtends.z && hp <= boxHalfExtends.z ){
+				if(hp >= -boxHalfExtends.z && hp <= boxHalfExtends.z){
 					hasBestDistance = true;
 					bestDistance = lambda;
 				}
@@ -520,12 +520,12 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance 
 		}
 		
 		// face on the negative side
-		lambda = ( -boxHalfExtends.y - point.y ) * factor;
-		if( lambda >= 0.0f && lambda <= 1.0f && ( ! hasBestDistance || lambda < bestDistance ) ){
+		lambda = (-boxHalfExtends.y - point.y) * factor;
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.x + rayDirection.x * lambda;
-			if( hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x ){
+			if(hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x){
 				hp = point.z + rayDirection.z * lambda;
-				if( hp >= -boxHalfExtends.z && hp <= boxHalfExtends.z ){
+				if(hp >= -boxHalfExtends.z && hp <= boxHalfExtends.z){
 					hasBestDistance = true;
 					bestDistance = lambda;
 				}
@@ -534,16 +534,16 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance 
 	}
 	
 	// box faces on the z axis
-	if( fabs( rayDirection.z ) > 1e-6f ){
+	if(fabs(rayDirection.z) > 1e-6f){
 		factor = 1.0f / rayDirection.z;
 		
 		// face on the positive side
-		lambda = ( boxHalfExtends.z - point.z ) * factor;
-		if( lambda >= 0.0f && lambda <= 1.0f && ( ! hasBestDistance || lambda < bestDistance ) ){
+		lambda = (boxHalfExtends.z - point.z) * factor;
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.x + rayDirection.x * lambda;
-			if( hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x ){
+			if(hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x){
 				hp = point.y + rayDirection.y * lambda;
-				if( hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y ){
+				if(hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y){
 					hasBestDistance = true;
 					bestDistance = lambda;
 				}
@@ -551,12 +551,12 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance 
 		}
 		
 		// face on the negative side
-		lambda = ( -boxHalfExtends.z - point.z ) * factor;
-		if( lambda >= 0.0f && lambda <= 1.0f && ( ! hasBestDistance || lambda < bestDistance ) ){
+		lambda = (-boxHalfExtends.z - point.z) * factor;
+		if(lambda >= 0.0f && lambda <= 1.0f && (!hasBestDistance || lambda < bestDistance)){
 			hp = point.x + rayDirection.x * lambda;
-			if( hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x ){
+			if(hp >= -boxHalfExtends.x && hp <= boxHalfExtends.x){
 				hp = point.y + rayDirection.y * lambda;
-				if( hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y ){
+				if(hp >= -boxHalfExtends.y && hp <= boxHalfExtends.y){
 					hasBestDistance = true;
 					bestDistance = lambda;
 				}
@@ -565,36 +565,36 @@ const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance 
 	}
 	
 	// deliver result
-	if( hasBestDistance ){
+	if(hasBestDistance){
 		hitDistance = bestDistance;
 	}
 	return hasBestDistance;
 }
 
-int debpDECollisionDetection::AABoxIntersectsAABox( const decVector &minExtend1, const decVector &maxExtend1, const decVector &minExtend2, const decVector &maxExtend2 ){
-	if( maxExtend1.x < minExtend2.x ) return eirOutside;
-	if( maxExtend1.y < minExtend2.y ) return eirOutside;
-	if( maxExtend1.z < minExtend2.z ) return eirOutside;
+int debpDECollisionDetection::AABoxIntersectsAABox(const decVector &minExtend1, const decVector &maxExtend1, const decVector &minExtend2, const decVector &maxExtend2){
+	if(maxExtend1.x < minExtend2.x) return eirOutside;
+	if(maxExtend1.y < minExtend2.y) return eirOutside;
+	if(maxExtend1.z < minExtend2.z) return eirOutside;
 	
-	if( minExtend1.x > maxExtend2.x ) return eirOutside;
-	if( minExtend1.y > maxExtend2.y ) return eirOutside;
-	if( minExtend1.z > maxExtend2.z ) return eirOutside;
+	if(minExtend1.x > maxExtend2.x) return eirOutside;
+	if(minExtend1.y > maxExtend2.y) return eirOutside;
+	if(minExtend1.z > maxExtend2.z) return eirOutside;
 	
-	if( minExtend1.x < minExtend2.x ) return eirPartial;
-	if( minExtend1.y < minExtend2.y ) return eirPartial;
-	if( minExtend1.z < minExtend2.z ) return eirPartial;
+	if(minExtend1.x < minExtend2.x) return eirPartial;
+	if(minExtend1.y < minExtend2.y) return eirPartial;
+	if(minExtend1.z < minExtend2.z) return eirPartial;
 	
-	if( maxExtend1.x > maxExtend2.x ) return eirPartial;
-	if( maxExtend1.y > maxExtend2.y ) return eirPartial;
-	if( maxExtend1.z > maxExtend2.z ) return eirPartial;
+	if(maxExtend1.x > maxExtend2.x) return eirPartial;
+	if(maxExtend1.y > maxExtend2.y) return eirPartial;
+	if(maxExtend1.z > maxExtend2.z) return eirPartial;
 	
 	return eirInside;
 }
 
 
 
-bool debpDECollisionDetection::RayHitsCylinder( const decVector &rayOrigin, const decVector &rayDirection,
-const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderRadius, float &hitDistance ){
+bool debpDECollisionDetection::RayHitsCylinder(const decVector &rayOrigin, const decVector &rayDirection,
+const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderRadius, float &hitDistance){
 	decVector localRayOrigin = rayOrigin - cylinderCenter;
 	float radius2 = cylinderRadius * cylinderRadius;
 	float distance, bestDistance = -1.0f;
@@ -602,27 +602,27 @@ const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderRadius,
 	
 	// test for collision with the cylinder hull
 	a = rayDirection.x * rayDirection.x + rayDirection.z * rayDirection.z;
-	b = 2.0f * ( localRayOrigin.x * rayDirection.x + localRayOrigin.z * rayDirection.z );
+	b = 2.0f * (localRayOrigin.x * rayDirection.x + localRayOrigin.z * rayDirection.z);
 	c = localRayOrigin.x * localRayOrigin.x + localRayOrigin.z * localRayOrigin.z - radius2;
 	
 	disc = b * b - 4.0f * a * c;
 	
-	if( disc > 1e-6f ){
-		disc = sqrtf( disc );
+	if(disc > 1e-6f){
+		disc = sqrtf(disc);
 		
-		distance = ( disc - b ) / ( 2.0f * a );
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = (disc - b) / (2.0f * a);
+		if(distance >= 0.0f && distance <= 1.0f){
 			y = localRayOrigin.y + rayDirection.y * distance;
-			if( y > -cylinderHalfHeight && y < cylinderHalfHeight ){
+			if(y > -cylinderHalfHeight && y < cylinderHalfHeight){
 				bestDistance = distance;
 			}
 		}
 		
-		distance = -( disc + b ) / ( 2.0f * a );
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = -(disc + b) / (2.0f * a);
+		if(distance >= 0.0f && distance <= 1.0f){
 			y = localRayOrigin.y + rayDirection.y * distance;
-			if( y > -cylinderHalfHeight && y < cylinderHalfHeight ){
-				if( bestDistance < 0.0f || distance < bestDistance ){
+			if(y > -cylinderHalfHeight && y < cylinderHalfHeight){
+				if(bestDistance < 0.0f || distance < bestDistance){
 					bestDistance = distance;
 				}
 			}
@@ -630,32 +630,32 @@ const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderRadius,
 	}
 	
 	// test top and bottom caps
-	if( fabs( rayDirection.y ) > 1e-6f ){
+	if(fabs(rayDirection.y) > 1e-6f){
 		disc = 1.0f / rayDirection.y;
 		
 		// top cap
-		distance = ( cylinderHalfHeight - localRayOrigin.y ) * disc;
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = (cylinderHalfHeight - localRayOrigin.y) * disc;
+		if(distance >= 0.0f && distance <= 1.0f){
 			x = localRayOrigin.x + rayDirection.x * distance;
 			z = localRayOrigin.z + rayDirection.z * distance;
-			if( x * x + z * z <= radius2 && ( bestDistance < 0.0f || distance < bestDistance ) ){
+			if(x * x + z * z <= radius2 && (bestDistance < 0.0f || distance < bestDistance)){
 				bestDistance = distance;
 			}
 		}
 		
 		// bottom cap
-		distance = ( -cylinderHalfHeight - localRayOrigin.y ) * disc;
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = (-cylinderHalfHeight - localRayOrigin.y) * disc;
+		if(distance >= 0.0f && distance <= 1.0f){
 			x = localRayOrigin.x + rayDirection.x * distance;
 			z = localRayOrigin.z + rayDirection.z * distance;
-			if( x * x + z * z <= radius2 && ( bestDistance < 0.0f || distance < bestDistance ) ){
+			if(x * x + z * z <= radius2 && (bestDistance < 0.0f || distance < bestDistance)){
 				bestDistance = distance;
 			}
 		}
 	}
 	
 	// return result
-	if( bestDistance < 0.0 ){
+	if(bestDistance < 0.0){
 		return false;
 		
 	}else{
@@ -664,9 +664,9 @@ const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderRadius,
 	}
 }
 
-bool debpDECollisionDetection::RayHitsTaperedCylinder( const decVector &rayOrigin, const decVector &rayDirection,
+bool debpDECollisionDetection::RayHitsTaperedCylinder(const decVector &rayOrigin, const decVector &rayDirection,
 const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderTopRadius, float cylinderBottomRadius,
-float &hitDistance ){
+float &hitDistance){
 	decVector localRayOrigin = rayOrigin - cylinderCenter;
 	float radiusDifference = cylinderTopRadius - cylinderBottomRadius;
 	float radiusBottom2 = cylinderBottomRadius * cylinderBottomRadius;
@@ -677,34 +677,34 @@ float &hitDistance ){
 	
 	// test for collision with the cylinder hull
 	f1 = cylinderBottomRadius * radiusDifference / cylinderHalfHeight;
-	f2 = ( radiusDifference * radiusDifference ) / ( 4.0f * cylinderHalfHeight * cylinderHalfHeight );
+	f2 = (radiusDifference * radiusDifference) / (4.0f * cylinderHalfHeight * cylinderHalfHeight);
 	f3 = localRayOrigin.y + cylinderHalfHeight;
 	
 	a = rayDirection.x * rayDirection.x + rayDirection.z * rayDirection.z
 		- f2 * rayDirection.y * rayDirection.y;
-	b = 2.0f * ( localRayOrigin.x * rayDirection.x + localRayOrigin.z * rayDirection.z )
-		- rayDirection.y * ( f2 * 2.0f * f3 + f1 );
+	b = 2.0f * (localRayOrigin.x * rayDirection.x + localRayOrigin.z * rayDirection.z)
+		- rayDirection.y * (f2 * 2.0f * f3 + f1);
 	c = localRayOrigin.x * localRayOrigin.x + localRayOrigin.z * localRayOrigin.z
-		- radiusBottom2 - f3 * ( f1 + f2 * f3 );
+		- radiusBottom2 - f3 * (f1 + f2 * f3);
 	
 	disc = b * b - 4.0f * a * c;
 	
-	if( disc > 1e-6f ){
-		disc = sqrtf( disc );
+	if(disc > 1e-6f){
+		disc = sqrtf(disc);
 		
-		distance = ( disc - b ) / ( 2.0f * a );
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = (disc - b) / (2.0f * a);
+		if(distance >= 0.0f && distance <= 1.0f){
 			y = localRayOrigin.y + rayDirection.y * distance;
-			if( y > -cylinderHalfHeight && y < cylinderHalfHeight ){
+			if(y > -cylinderHalfHeight && y < cylinderHalfHeight){
 				bestDistance = distance;
 			}
 		}
 		
-		distance = -( disc + b ) / ( 2.0f * a );
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = -(disc + b) / (2.0f * a);
+		if(distance >= 0.0f && distance <= 1.0f){
 			y = localRayOrigin.y + rayDirection.y * distance;
-			if( y > -cylinderHalfHeight && y < cylinderHalfHeight ){
-				if( bestDistance < 0.0f || distance < bestDistance ){
+			if(y > -cylinderHalfHeight && y < cylinderHalfHeight){
+				if(bestDistance < 0.0f || distance < bestDistance){
 					bestDistance = distance;
 				}
 			}
@@ -712,32 +712,32 @@ float &hitDistance ){
 	}
 	
 	// test top and bottom caps
-	if( fabs( rayDirection.y ) > 1e-6f ){
+	if(fabs(rayDirection.y) > 1e-6f){
 		disc = 1.0f / rayDirection.y;
 		
 		// top cap
-		distance = ( cylinderHalfHeight - localRayOrigin.y ) * disc;
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = (cylinderHalfHeight - localRayOrigin.y) * disc;
+		if(distance >= 0.0f && distance <= 1.0f){
 			x = localRayOrigin.x + rayDirection.x * distance;
 			z = localRayOrigin.z + rayDirection.z * distance;
-			if( x * x + z * z <= radiusTop2 && ( bestDistance < 0.0f || distance < bestDistance ) ){
+			if(x * x + z * z <= radiusTop2 && (bestDistance < 0.0f || distance < bestDistance)){
 				bestDistance = distance;
 			}
 		}
 		
 		// bottom cap
-		distance = ( -cylinderHalfHeight - localRayOrigin.y ) * disc;
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = (-cylinderHalfHeight - localRayOrigin.y) * disc;
+		if(distance >= 0.0f && distance <= 1.0f){
 			x = localRayOrigin.x + rayDirection.x * distance;
 			z = localRayOrigin.z + rayDirection.z * distance;
-			if( x * x + z * z <= radiusBottom2 && ( bestDistance < 0.0f || distance < bestDistance ) ){
+			if(x * x + z * z <= radiusBottom2 && (bestDistance < 0.0f || distance < bestDistance)){
 				bestDistance = distance;
 			}
 		}
 	}
 	
 	// return result
-	if( bestDistance < 0.0f ){
+	if(bestDistance < 0.0f){
 		return false;
 		
 	}else{
@@ -748,8 +748,8 @@ float &hitDistance ){
 
 
 
-bool debpDECollisionDetection::RayHitsCapsule( const decVector &rayOrigin, const decVector &rayDirection,
-const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleRadius, float &hitDistance ){
+bool debpDECollisionDetection::RayHitsCapsule(const decVector &rayOrigin, const decVector &rayDirection,
+const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleRadius, float &hitDistance){
 	decVector localRayOrigin = rayOrigin - capsuleCenter;
 	float radius2 = capsuleRadius * capsuleRadius;
 	float distance, bestDistance = -1.0f;
@@ -757,27 +757,27 @@ const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleRadius, fl
 	
 	// test for collision with the capsule hull
 	a = rayDirection.x * rayDirection.x + rayDirection.z * rayDirection.z;
-	b = 2.0f * ( localRayOrigin.x * rayDirection.x + localRayOrigin.z * rayDirection.z );
+	b = 2.0f * (localRayOrigin.x * rayDirection.x + localRayOrigin.z * rayDirection.z);
 	c = localRayOrigin.x * localRayOrigin.x + localRayOrigin.z * localRayOrigin.z - radius2;
 	
 	disc = b * b - 4.0f * a * c;
 	
-	if( disc > 1e-6f ){
-		disc = sqrtf( disc );
+	if(disc > 1e-6f){
+		disc = sqrtf(disc);
 		
-		distance = ( disc - b ) / ( 2.0f * a );
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = (disc - b) / (2.0f * a);
+		if(distance >= 0.0f && distance <= 1.0f){
 			y = localRayOrigin.y + rayDirection.y * distance;
-			if( y > -capsuleHalfHeight && y < capsuleHalfHeight ){
+			if(y > -capsuleHalfHeight && y < capsuleHalfHeight){
 				bestDistance = distance;
 			}
 		}
 		
-		distance = -( disc + b ) / ( 2.0f * a );
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = -(disc + b) / (2.0f * a);
+		if(distance >= 0.0f && distance <= 1.0f){
 			y = localRayOrigin.y + rayDirection.y * distance;
-			if( y > -capsuleHalfHeight && y < capsuleHalfHeight ){
-				if( bestDistance < 0.0f || distance < bestDistance ){
+			if(y > -capsuleHalfHeight && y < capsuleHalfHeight){
+				if(bestDistance < 0.0f || distance < bestDistance){
 					bestDistance = distance;
 				}
 			}
@@ -785,24 +785,24 @@ const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleRadius, fl
 	}
 	
 	// test top and bottom caps
-	if( fabs( rayDirection.y ) > 1e-6f ){
+	if(fabs(rayDirection.y) > 1e-6f){
 		disc = 1.0f / rayDirection.y;
 		
 		// top cap
-		distance = RaySphere( localRayOrigin, rayDirection, decVector( 0.0f, capsuleHalfHeight, 0.0f ), capsuleRadius );
-		if( distance >= 0.0f && distance <= 1.0f && ( bestDistance < 0.0f || distance < bestDistance ) ){
+		distance = RaySphere(localRayOrigin, rayDirection, decVector(0.0f, capsuleHalfHeight, 0.0f), capsuleRadius);
+		if(distance >= 0.0f && distance <= 1.0f && (bestDistance < 0.0f || distance < bestDistance)){
 			bestDistance = distance;
 		}
 		
 		// bottom cap
-		distance = RaySphere( localRayOrigin, rayDirection, decVector( 0.0f, -capsuleHalfHeight, 0.0f ), capsuleRadius );
-		if( distance >= 0.0f && distance <= 1.0f && ( bestDistance < 0.0f || distance < bestDistance ) ){
+		distance = RaySphere(localRayOrigin, rayDirection, decVector(0.0f, -capsuleHalfHeight, 0.0f), capsuleRadius);
+		if(distance >= 0.0f && distance <= 1.0f && (bestDistance < 0.0f || distance < bestDistance)){
 			bestDistance = distance;
 		}
 	}
 	
 	// return result
-	if( bestDistance < 0.0f ){
+	if(bestDistance < 0.0f){
 		return false;
 		
 	}else{
@@ -811,9 +811,9 @@ const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleRadius, fl
 	}
 }
 
-bool debpDECollisionDetection::RayHitsTaperedCapsule( const decVector &rayOrigin, const decVector &rayDirection,
+bool debpDECollisionDetection::RayHitsTaperedCapsule(const decVector &rayOrigin, const decVector &rayDirection,
 const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleTopRadius, float capsuleBottomRadius,
-float &hitDistance ){
+float &hitDistance){
 	decVector localRayOrigin = rayOrigin - capsuleCenter;
 	float radiusTop, radiusBottom, halfHeight;
 	float distance, bestDistance = -1.0f;
@@ -822,11 +822,11 @@ float &hitDistance ){
 	float f1, f2, f3;
 	
 	// adjust parameters
-	f1 = ( capsuleBottomRadius - capsuleTopRadius ) / ( 2.0f * capsuleHalfHeight ); // sin(a)
-	f2 = sqrtf( 1.0f - f1 * f1 ); // cos(a)
+	f1 = (capsuleBottomRadius - capsuleTopRadius) / (2.0f * capsuleHalfHeight); // sin(a)
+	f2 = sqrtf(1.0f - f1 * f1); // cos(a)
 	
 	f3 = capsuleBottomRadius * f1;
-	halfHeight = capsuleHalfHeight + ( capsuleTopRadius * f1 - f3 ) * 0.5f;
+	halfHeight = capsuleHalfHeight + (capsuleTopRadius * f1 - f3) * 0.5f;
 	f3 = localRayOrigin.y + capsuleHalfHeight - f3; // localRayOrigin.y adjusted
 	radiusTop = capsuleTopRadius * f2;
 	radiusBottom = capsuleBottomRadius * f2;
@@ -835,33 +835,33 @@ float &hitDistance ){
 	
 	// test for collision with the capsule hull
 	f1 = radiusBottom * radiusDifference / halfHeight;
-	f2 = ( radiusDifference * radiusDifference ) / ( 4.0f * halfHeight * halfHeight );
+	f2 = (radiusDifference * radiusDifference) / (4.0f * halfHeight * halfHeight);
 	
 	a = rayDirection.x * rayDirection.x + rayDirection.z * rayDirection.z
 		- f2 * rayDirection.y * rayDirection.y;
-	b = 2.0f * ( localRayOrigin.x * rayDirection.x + localRayOrigin.z * rayDirection.z )
-		- rayDirection.y * ( f2 * 2.0f * f3 + f1 );
+	b = 2.0f * (localRayOrigin.x * rayDirection.x + localRayOrigin.z * rayDirection.z)
+		- rayDirection.y * (f2 * 2.0f * f3 + f1);
 	c = localRayOrigin.x * localRayOrigin.x + localRayOrigin.z * localRayOrigin.z
-		- radiusBottom * radiusBottom - f3 * ( f1 + f2 * f3 );
+		- radiusBottom * radiusBottom - f3 * (f1 + f2 * f3);
 	
 	disc = b * b - 4.0f * a * c;
 	
-	if( disc > 1e-6f ){
-		disc = sqrtf( disc );
+	if(disc > 1e-6f){
+		disc = sqrtf(disc);
 		
-		distance = ( disc - b ) / ( 2.0f * a );
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = (disc - b) / (2.0f * a);
+		if(distance >= 0.0f && distance <= 1.0f){
 			y = f3 + rayDirection.y * distance;
-			if( y > 0.0f && y < 2.0f * halfHeight ){
+			if(y > 0.0f && y < 2.0f * halfHeight){
 				bestDistance = distance;
 			}
 		}
 		
-		distance = -( disc + b ) / ( 2.0f * a );
-		if( distance >= 0.0f && distance <= 1.0f ){
+		distance = -(disc + b) / (2.0f * a);
+		if(distance >= 0.0f && distance <= 1.0f){
 			y = f3 + rayDirection.y * distance;
-			if( y > 0.0f && y < 2.0f * halfHeight ){
-				if( bestDistance < 0.0f || distance < bestDistance ){
+			if(y > 0.0f && y < 2.0f * halfHeight){
+				if(bestDistance < 0.0f || distance < bestDistance){
 					bestDistance = distance;
 				}
 			}
@@ -869,24 +869,24 @@ float &hitDistance ){
 	}
 	
 	// test top and bottom caps
-	if( fabs( rayDirection.y ) > 1e-6f ){
+	if(fabs(rayDirection.y) > 1e-6f){
 		disc = 1.0f / rayDirection.y;
 		
 		// top cap
-		distance = RaySphere( localRayOrigin, rayDirection, decVector( 0.0f, capsuleHalfHeight, 0.0f ), capsuleTopRadius );
-		if( distance >= 0.0f && distance <= 1.0f && ( bestDistance < 0.0f || distance < bestDistance ) ){
+		distance = RaySphere(localRayOrigin, rayDirection, decVector(0.0f, capsuleHalfHeight, 0.0f), capsuleTopRadius);
+		if(distance >= 0.0f && distance <= 1.0f && (bestDistance < 0.0f || distance < bestDistance)){
 			bestDistance = distance;
 		}
 		
 		// bottom cap
-		distance = RaySphere( localRayOrigin, rayDirection, decVector( 0.0f, -capsuleHalfHeight, 0.0f ), capsuleBottomRadius );
-		if( distance >= 0.0f && distance <= 1.0f && ( bestDistance < 0.0f || distance < bestDistance ) ){
+		distance = RaySphere(localRayOrigin, rayDirection, decVector(0.0f, -capsuleHalfHeight, 0.0f), capsuleBottomRadius);
+		if(distance >= 0.0f && distance <= 1.0f && (bestDistance < 0.0f || distance < bestDistance)){
 			bestDistance = distance;
 		}
 	}
 	
 	// return result
-	if( bestDistance < 0.0f ){
+	if(bestDistance < 0.0f){
 		return false;
 		
 	}else{
@@ -897,23 +897,23 @@ float &hitDistance ){
 
 
 
-bool debpDECollisionDetection::RayHitsTriangle( const decVector &rayOrigin, const decVector &rayDirection,
-const decVector &tri1, const decVector &tri2, const decVector &tri3 ){
+bool debpDECollisionDetection::RayHitsTriangle(const decVector &rayOrigin, const decVector &rayDirection,
+const decVector &tri1, const decVector &tri2, const decVector &tri3){
 	decVector edge1 = tri2 - tri1;
 	decVector edge2 = tri3 - tri2;
-	decVector trinormal( edge1 % edge2 );
+	decVector trinormal(edge1 % edge2);
 	float dot = rayDirection * trinormal, lambda;
 	
-	if( dot < -0.00001f || dot > 0.00001f ){
-		lambda = ( ( tri1 - rayOrigin ) * trinormal ) / dot;
+	if(dot < -0.00001f || dot > 0.00001f){
+		lambda = ((tri1 - rayOrigin) * trinormal) / dot;
 		
-		if( lambda > 0.0f && lambda <= 1.0f ){
-			decVector hitPoint( rayOrigin + rayDirection * lambda );
+		if(lambda > 0.0f && lambda <= 1.0f){
+			decVector hitPoint(rayOrigin + rayDirection * lambda);
 			
-			if( ( edge1 % ( hitPoint - tri1 ) ) * trinormal < 0.0f ) return false;
-			if( ( edge2 % ( hitPoint - tri2 ) ) * trinormal < 0.0f ) return false;
-			decVector edge3( tri1 - tri3 );
-			if( ( edge3 % ( hitPoint - tri3 ) ) * trinormal < 0.0f ) return false;
+			if((edge1 % (hitPoint - tri1)) * trinormal < 0.0f) return false;
+			if((edge2 % (hitPoint - tri2)) * trinormal < 0.0f) return false;
+			decVector edge3(tri1 - tri3);
+			if((edge3 % (hitPoint - tri3)) * trinormal < 0.0f) return false;
 			
 			return true;
 		}
@@ -922,22 +922,22 @@ const decVector &tri1, const decVector &tri2, const decVector &tri3 ){
 	return false;
 }
 
-bool debpDECollisionDetection::RayHitsTriangle( const decVector &rayOrigin, const decVector &rayDirection,
-const decVector &tri1, const decVector &tri2, const decVector &tri3, const decVector &trinormal ){
+bool debpDECollisionDetection::RayHitsTriangle(const decVector &rayOrigin, const decVector &rayDirection,
+const decVector &tri1, const decVector &tri2, const decVector &tri3, const decVector &trinormal){
 	float dot = rayDirection * trinormal, lambda;
 	
-	if( dot < -0.00001f || dot > 0.00001f ){
-		lambda = ( ( tri1 - rayOrigin ) * trinormal ) / dot;
+	if(dot < -0.00001f || dot > 0.00001f){
+		lambda = ((tri1 - rayOrigin) * trinormal) / dot;
 		
-		if( lambda > 0.0f && lambda <= 1.0f ){
-			decVector hitPoint( rayOrigin + rayDirection * lambda );
+		if(lambda > 0.0f && lambda <= 1.0f){
+			decVector hitPoint(rayOrigin + rayDirection * lambda);
 			
-			decVector edge( tri2 - tri1 );
-			if( ( edge % ( hitPoint - tri1 ) ) * trinormal < 0.0 ) return false;
+			decVector edge(tri2 - tri1);
+			if((edge % (hitPoint - tri1)) * trinormal < 0.0) return false;
 			edge = tri3 - tri2;
-			if( ( edge % ( hitPoint - tri2 ) ) * trinormal < 0.0 ) return false;
+			if((edge % (hitPoint - tri2)) * trinormal < 0.0) return false;
 			edge = tri1 - tri3;
-			if( ( edge % ( hitPoint - tri3 ) ) * trinormal < 0.0 ) return false;
+			if((edge % (hitPoint - tri3)) * trinormal < 0.0) return false;
 			
 			return true;
 		}

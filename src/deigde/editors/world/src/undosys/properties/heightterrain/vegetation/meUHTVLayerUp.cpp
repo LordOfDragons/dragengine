@@ -41,16 +41,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLayerUp::meUHTVLayerUp( meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer ){
-	if( ! world || ! heightTerrain || ! vlayer ) DETHROW( deeInvalidParam );
+meUHTVLayerUp::meUHTVLayerUp(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer){
+	if(!world || !heightTerrain || !vlayer) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pHeightTerrain = heightTerrain;
 	
-	pIndex = heightTerrain->IndexOfVLayer( vlayer );
-	if( pIndex < 1 ) DETHROW( deeInvalidParam );
+	pIndex = heightTerrain->IndexOfVLayer(vlayer);
+	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move Height Terrain Vegetation Layer Up" );
+	SetShortInfo("Move Height Terrain Vegetation Layer Up");
 	
 	world->AddReference();
 	
@@ -59,8 +59,8 @@ meUHTVLayerUp::meUHTVLayerUp( meWorld *world, meHeightTerrain *heightTerrain, me
 }
 
 meUHTVLayerUp::~meUHTVLayerUp(){
-	if( pVLayer ) pVLayer->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -69,9 +69,9 @@ meUHTVLayerUp::~meUHTVLayerUp(){
 ///////////////
 
 void meUHTVLayerUp::Undo(){
-	pHeightTerrain->MoveVLayer( pVLayer, pIndex );
+	pHeightTerrain->MoveVLayer(pVLayer, pIndex);
 }
 
 void meUHTVLayerUp::Redo(){
-	pHeightTerrain->MoveVLayer( pVLayer, pIndex - 1 );
+	pHeightTerrain->MoveVLayer(pVLayer, pIndex - 1);
 }

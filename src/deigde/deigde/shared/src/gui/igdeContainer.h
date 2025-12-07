@@ -50,7 +50,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget with layout elNone. */
-	igdeContainer( igdeEnvironment &environment );
+	igdeContainer(igdeEnvironment &environment);
 	
 	/**
 	 * \brief Clean up widget.
@@ -70,16 +70,16 @@ public:
 	int GetChildCount() const;
 	
 	/** \brief Get child at index. */
-	igdeWidget *GetChildAt( int index ) const;
+	igdeWidget *GetChildAt(int index) const;
 	
 	/** \brief Index of child or -1 if absent. */
-	int IndexOfChild( igdeWidget *widget ) const;
+	int IndexOfChild(igdeWidget *widget) const;
 	
 	/** \brief Add child. */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	
 	/** \brief Remove all children. */
 	virtual void RemoveAllChildren();

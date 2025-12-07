@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video decoder. */
-	deVideoDecoder( deVideoManager &manager, deVideo *video );
+	deVideoDecoder(deVideoManager &manager, deVideo *video);
 	
 protected:
 	/**
@@ -87,7 +87,7 @@ public:
 	int GetPosition();
 	
 	/** \brief Set file position in frames from the beginning. */
-	void SetPosition( int position );
+	void SetPosition(int position);
 	
 	/**
 	 * \brief Decode next frame into buffer and advances file position.
@@ -100,7 +100,7 @@ public:
 	 * has been decoded successfully. Otherwise \em fals is returned and an error
 	 * is signaled using the engine error signaling.
 	 */
-	bool DecodeFrame( void *buffer, int size );
+	bool DecodeFrame(void *buffer, int size);
 	/*@}*/
 	
 	
@@ -111,7 +111,7 @@ public:
 	inline deBaseVideoDecoder *GetPeerVideo() const{ return pPeerVideo; }
 	
 	/** \brief Set decoder peer. */
-	void SetPeerVideo( deBaseVideoDecoder *peer );
+	void SetPeerVideo(deBaseVideoDecoder *peer);
 	/*@}*/
 	
 	
@@ -128,7 +128,7 @@ public:
 	 * \brief Set next resource in the resource manager linked list.
 	 * \warning For internal use only. Never call on your own!
 	 */
-	void SetLLManagerPrev( deVideoDecoder *resource );
+	void SetLLManagerPrev(deVideoDecoder *resource);
 	
 	/** \brief Next resource in the resource manager linked list. */
 	inline deVideoDecoder *GetLLManagerNext() const{ return pLLManagerNext; }
@@ -137,7 +137,7 @@ public:
 	 * \brief Set next resource in the resource manager linked list.
 	 * \warning For internal use only. Never call on your own!
 	 */
-	void SetLLManagerNext( deVideoDecoder *resource );
+	void SetLLManagerNext(deVideoDecoder *resource);
 	
 	/**
 	 * \brief Marks the resource leaking.

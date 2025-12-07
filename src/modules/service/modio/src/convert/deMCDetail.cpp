@@ -30,70 +30,70 @@
 // Class deMCDetail
 /////////////////////
 
-deServiceObject::Ref deMCDetail::Avatar( Modio::ModID modId, const Modio::Detail::Avatar &avatar ){
-	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
+deServiceObject::Ref deMCDetail::Avatar(Modio::ModID modId, const Modio::Detail::Avatar &avatar){
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 	
-	so->SetStringChildAt( "original", deModioResourceUrl::FormatUrl(
-		"mod", modId, "avatar", "original" ) );
-	so->SetStringChildAt( "thumb50x50", deModioResourceUrl::FormatUrl(
-		"mod", modId, "avatar", "thumb50x50" ) );
-	so->SetStringChildAt( "thumb100x100", deModioResourceUrl::FormatUrl(
-		"mod", modId, "avatar", "thumb100x100" ) );
-	
-	return so;
-}
-
-deServiceObject::Ref deMCDetail::Avatar( Modio::UserID userId, const Modio::Detail::Avatar &avatar ){
-	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
-	
-	so->SetStringChildAt( "original", deModioResourceUrl::FormatUrl(
-		"user", userId, "avatar", "original" ) );
-	so->SetStringChildAt( "thumb50x50", deModioResourceUrl::FormatUrl(
-		"user", userId, "avatar", "thumb50x50" ) );
-	so->SetStringChildAt( "thumb100x100", deModioResourceUrl::FormatUrl(
-		"user", userId, "avatar", "thumb100x100" ) );
+	so->SetStringChildAt("original", deModioResourceUrl::FormatUrl(
+		"mod", modId, "avatar", "original"));
+	so->SetStringChildAt("thumb50x50", deModioResourceUrl::FormatUrl(
+		"mod", modId, "avatar", "thumb50x50"));
+	so->SetStringChildAt("thumb100x100", deModioResourceUrl::FormatUrl(
+		"mod", modId, "avatar", "thumb100x100"));
 	
 	return so;
 }
 
-deServiceObject::Ref deMCDetail::Image( Modio::ModID modId, int index,
-const Modio::Detail::Image &image ){
-	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
+deServiceObject::Ref deMCDetail::Avatar(Modio::UserID userId, const Modio::Detail::Avatar &avatar){
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 	
-	so->SetStringChildAt( "original", deModioResourceUrl::FormatUrl(
-		"mod", modId, "gallery", index, "original" ) );
-	so->SetStringChildAt( "thumb320x180", deModioResourceUrl::FormatUrl(
-		"mod", modId, "gallery", index, "thumb320x180" ) );
-	so->SetStringChildAt( "thumb1280x720", deModioResourceUrl::FormatUrl(
-		"mod", modId, "gallery", index, "thumb1280x720" ) );
+	so->SetStringChildAt("original", deModioResourceUrl::FormatUrl(
+		"user", userId, "avatar", "original"));
+	so->SetStringChildAt("thumb50x50", deModioResourceUrl::FormatUrl(
+		"user", userId, "avatar", "thumb50x50"));
+	so->SetStringChildAt("thumb100x100", deModioResourceUrl::FormatUrl(
+		"user", userId, "avatar", "thumb100x100"));
 	
 	return so;
 }
 
-deServiceObject::Ref deMCDetail::ImageList( Modio::ModID modId,
-const std::vector<Modio::Detail::Image> &list ){
-	const deServiceObject::Ref so( deServiceObject::NewList() );
-	const int count = ( int )list.size();
+deServiceObject::Ref deMCDetail::Image(Modio::ModID modId, int index,
+const Modio::Detail::Image &image){
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	
+	so->SetStringChildAt("original", deModioResourceUrl::FormatUrl(
+		"mod", modId, "gallery", index, "original"));
+	so->SetStringChildAt("thumb320x180", deModioResourceUrl::FormatUrl(
+		"mod", modId, "gallery", index, "thumb320x180"));
+	so->SetStringChildAt("thumb1280x720", deModioResourceUrl::FormatUrl(
+		"mod", modId, "gallery", index, "thumb1280x720"));
+	
+	return so;
+}
+
+deServiceObject::Ref deMCDetail::ImageList(Modio::ModID modId,
+const std::vector<Modio::Detail::Image> &list){
+	const deServiceObject::Ref so(deServiceObject::NewList());
+	const int count = (int)list.size();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		so->AddChild( Image( modId, i, list[ i ] ) );
+	for(i=0; i<count; i++){
+		so->AddChild(Image(modId, i, list[i]));
 	}
 	
 	return so;
 }
 
-deServiceObject::Ref deMCDetail::Logo( Modio::ModID modId, const Modio::Detail::Logo &logo ){
-	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
+deServiceObject::Ref deMCDetail::Logo(Modio::ModID modId, const Modio::Detail::Logo &logo){
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 	
-	so->SetStringChildAt( "original", deModioResourceUrl::FormatUrl(
-		"mod", modId, "logo", "original" ) );
-	so->SetStringChildAt( "thumb320x180", deModioResourceUrl::FormatUrl(
-		"mod", modId, "logo", "thumb320x180" ) );
-	so->SetStringChildAt( "thumb640x360", deModioResourceUrl::FormatUrl(
-		"mod", modId, "logo", "thumb640x360" ) );
-	so->SetStringChildAt( "thumb1280x720", deModioResourceUrl::FormatUrl(
-		"mod", modId, "logo", "thumb1280x720" ) );
+	so->SetStringChildAt("original", deModioResourceUrl::FormatUrl(
+		"mod", modId, "logo", "original"));
+	so->SetStringChildAt("thumb320x180", deModioResourceUrl::FormatUrl(
+		"mod", modId, "logo", "thumb320x180"));
+	so->SetStringChildAt("thumb640x360", deModioResourceUrl::FormatUrl(
+		"mod", modId, "logo", "thumb640x360"));
+	so->SetStringChildAt("thumb1280x720", deModioResourceUrl::FormatUrl(
+		"mod", modId, "logo", "thumb1280x720"));
 	
 	return so;
 }

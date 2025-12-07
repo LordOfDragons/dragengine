@@ -90,7 +90,7 @@ public:
 	inline deoalRayTraceResult *GetResult() const{ return pResult; }
 	
 	/** \brief Set result or NULL if not set. */
-	void SetResult( deoalRayTraceResult *result );
+	void SetResult(deoalRayTraceResult *result);
 	
 	/** \brief Component result. */
 	inline deoalRayTraceResult &GetComponentResult(){ return pComponentResult; }
@@ -99,14 +99,14 @@ public:
 	
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( deoalAComponent *component );
+	virtual void VisitComponent(deoalAComponent *component);
 	/*@}*/
 	
 	
 	
 protected:
-	decVector pClampToBox( const decVector &minExtend, const decVector &maxExtend,
-		const decVector &rayOrigin, const decVector &rayDirection );
+	decVector pClampToBox(const decVector &minExtend, const decVector &maxExtend,
+		const decVector &rayOrigin, const decVector &rayDirection);
 };
 
 #endif

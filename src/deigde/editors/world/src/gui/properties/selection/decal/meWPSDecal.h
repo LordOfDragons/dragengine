@@ -85,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPSDecal( meWPSelection &wpselection );
+	meWPSDecal(meWPSelection &wpselection);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -104,7 +104,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Active decal or NULL. */
 	meDecal *GetActiveDecal() const;

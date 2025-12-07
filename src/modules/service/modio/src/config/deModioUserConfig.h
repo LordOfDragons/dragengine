@@ -55,10 +55,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create mod config. */
-	deModioUserConfig( deModio &module, const decString &id );
+	deModioUserConfig(deModio &module, const decString &id);
 	
 	/** Load mod config. */
-	deModioUserConfig( deModio &module, decBaseFileReader &reader );
+	deModioUserConfig(deModio &module, decBaseFileReader &reader);
 	
 protected:
 	/** Delete mod config. */
@@ -82,13 +82,13 @@ public:
 	inline decStringSet &GetDisabledMods(){ return pDisabledMods; }
 	
 	/** Set disabled modifications. */
-	void SetDisabledMods( const decStringSet &mods );
+	void SetDisabledMods(const decStringSet &mods);
 	
 	/** Mod disabled. */
-	bool GetModDisabled( const decString &id ) const;
+	bool GetModDisabled(const decString &id) const;
 	
 	/** Set mod disabled. */
-	void SetModDisabled( const decString &id, bool disabled );
+	void SetModDisabled(const decString &id, bool disabled);
 	
 	
 	
@@ -96,21 +96,21 @@ public:
 	inline const decIntDictionary &GetUserRatings() const{ return pUserRatings; }
 	
 	/** User rating for mod. */
-	Modio::Rating GetUserRating( const decString &id ) const;
+	Modio::Rating GetUserRating(const decString &id) const;
 	
 	/** Set user rating for mod. */
-	void SetUserRating( const decString &id, Modio::Rating rating );
+	void SetUserRating(const decString &id, Modio::Rating rating);
 	
 	
 	
 	/** Write config to file. */
-	void WriteToFile( decBaseFileWriter &writer );
+	void WriteToFile(decBaseFileWriter &writer);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadFromFileV0( decBaseFileReader &reader );
+	void pReadFromFileV0(decBaseFileReader &reader);
 };
 
 #endif

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetDelgaPath( projProfile *profile, const char *newValue );
+	projUProfileSetDelgaPath(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetDelgaPath();

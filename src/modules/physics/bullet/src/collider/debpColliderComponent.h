@@ -113,7 +113,7 @@ private:
 	
 public:
 	// constructor, destructor
-	debpColliderComponent( dePhysicsBullet *bullet, deColliderComponent &collider );
+	debpColliderComponent(dePhysicsBullet *bullet, deColliderComponent &collider);
 	~debpColliderComponent();
 	
 	// physics management
@@ -122,7 +122,7 @@ public:
 	/** Retrieves the linked component. */
 	inline debpComponent *GetLinkedComponent() const{ return pLinkedComponent; }
 	/** Sets the linked component or NULL to clear the link. */
-	void SetLinkedComponent( debpComponent *component );
+	void SetLinkedComponent(debpComponent *component);
 	
 	// information
 	/** Retrieves the predicted displacement. */
@@ -139,7 +139,7 @@ public:
 	void DirtyAttachments();
 	
 	/** \brief Parent world changed. */
-	void SetParentWorld( debpWorld *parentWorld ) override;
+	void SetParentWorld(debpWorld *parentWorld) override;
 	
 	/** Create physics body if not existing already. */
 	void CreateBody() override;
@@ -153,31 +153,31 @@ public:
 	void PrepareForStep() override;
 	
 	/** Detect collision for a custom collision step. */
-	void DetectCustomCollision( float elapsed ) override;
+	void DetectCustomCollision(float elapsed) override;
 	
 	bool GetRigidBodyDeactivated() const override;
 	
 	/** \brief Apply gravity to linear velocity for kinematic simulation. */
-	void ApplyGravity( float elapsed );
+	void ApplyGravity(float elapsed);
 	
 	/** \brief Apply force fields to linear and angular velocity for dynamic somulation. */
-	void ApplyForceFields( float elapsed );
+	void ApplyForceFields(float elapsed);
 	
 	/** Predict the displacement. */
-	void PredictDisplacement( float elapsed );
+	void PredictDisplacement(float elapsed);
 	/** Interpolate position using the predicted displacement. */
-	void InterpolatePosition( float percentage );
+	void InterpolatePosition(float percentage);
 	/** Applies the predicted displacement to the position. */
 	void ApplyDisplacement();
 	/** Predict rotation. */
-	void PredictRotation( float elapsed );
+	void PredictRotation(float elapsed);
 	/** Interpolate rotation using predicted rotation. */
-	void InterpolateRotation( float percentage );
+	void InterpolateRotation(float percentage);
 	/** Applies the predicted rotation to the orientation. */
 	void ApplyRotation();
 	
 	/** Prepares the collision detection. */
-	void PrepareDetection( float elapsed ) override;
+	void PrepareDetection(float elapsed) override;
 	/** Finished the collision detection updating the collider and send notifications. */
 	void FinishDetection() override;
 	
@@ -209,7 +209,7 @@ public:
 	/** Updates shapes with the current matirx. */
 	void UpdateShapes() override;
 	/** Updates shapes using a transformation matrix. */
-	void UpdateShapesWithMatrix( const decDMatrix &transformation ) override;
+	void UpdateShapesWithMatrix(const decDMatrix &transformation) override;
 	/** Updates the shape extends. */
 	void UpdateShapeExtends();
 	
@@ -264,42 +264,42 @@ public:
 	/** \name Actions */
 	/*@{*/
 	/** \brief Enable or disable a component or rigged collider bone constraint. */
-	void EnableBoneConstraint( int bone, int constraint, bool enable ) override;
+	void EnableBoneConstraint(int bone, int constraint, bool enable) override;
 	/**
 	 * \brief Replace a component or rigged collider bone constraint.
 	 * \details The provided rig constraint only serves as source to copy the
 	 *          new parameters. It has to be freed by the called afterwards.
 	 */
-	void ReplaceBoneConstraint( int bone, int constraint, const deRigConstraint &replacement ) override;
+	void ReplaceBoneConstraint(int bone, int constraint, const deRigConstraint &replacement) override;
 	/*@}*/
 	
 	/** @name Forces */
 	/*@{*/
 	/** \brief Applies an impuls at the center mass point. */
-	void ApplyImpuls( const decVector &impuls ) override;
+	void ApplyImpuls(const decVector &impuls) override;
 	/** \brief Applies an impuls relative to the collider position. */
-	void ApplyImpulsAt( const decVector &impuls, const decVector &position ) override;
+	void ApplyImpulsAt(const decVector &impuls, const decVector &position) override;
 	/** \brief Applies a torque impuls at the center mass point. */
-	void ApplyTorqueImpuls( const decVector &torqueImpuls ) override;
+	void ApplyTorqueImpuls(const decVector &torqueImpuls) override;
 	/** \brief Applies a force at the center mass point. */
-	void ApplyForce( const decVector &force ) override;
+	void ApplyForce(const decVector &force) override;
 	/** \brief Applies a force relative to the collider position. */
-	void ApplyForceAt( const decVector &force, const decVector &position ) override;
+	void ApplyForceAt(const decVector &force, const decVector &position) override;
 	/** \brief Applies a torque force at the center mass point. */
-	void ApplyTorque( const decVector &torque ) override;
+	void ApplyTorque(const decVector &torque) override;
 	
 	/** \brief Applies an impuls at the center mass point of the given bone. */
-	void ApplyBoneImpuls( int bone, const decVector &impuls ) override;
+	void ApplyBoneImpuls(int bone, const decVector &impuls) override;
 	/** \brief Applies an impuls relative to the bone position. */
-	void ApplyBoneImpulsAt( int bone, const decVector &impuls, const decVector &position ) override;
+	void ApplyBoneImpulsAt(int bone, const decVector &impuls, const decVector &position) override;
 	/** \brief Applies a torque impuls force at the center mass point of the given bone. */
-	void ApplyBoneTorqueImpuls( int bone, const decVector &torqueImpuls ) override;
+	void ApplyBoneTorqueImpuls(int bone, const decVector &torqueImpuls) override;
 	/** \brief Applies a force at the center mass point of the given bone. */
-	void ApplyBoneForce( int bone, const decVector &force ) override;
+	void ApplyBoneForce(int bone, const decVector &force) override;
 	/** \brief Applies a force relative to the bone position. */
-	void ApplyBoneForceAt( int bone, const decVector &force, const decVector &position ) override;
+	void ApplyBoneForceAt(int bone, const decVector &force, const decVector &position) override;
 	/** \brief Applies a torque force at the center mass point of the given bone. */
-	void ApplyBoneTorque( int bone, const decVector &torque ) override;
+	void ApplyBoneTorque(int bone, const decVector &torque) override;
 	/*@}*/
 	
 	/** @name Notifications */
@@ -346,13 +346,13 @@ public:
 	
 	
 	/** \brief Attachment added. */
-	void AttachmentAdded( int index, deColliderAttachment *attachment ) override;
+	void AttachmentAdded(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief Attachment changed. */
-	void AttachmentChanged( int index, deColliderAttachment *attachment ) override;
+	void AttachmentChanged(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief Attachment removed. */
-	void AttachmentRemoved( int index, deColliderAttachment *attachment ) override;
+	void AttachmentRemoved(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief All attachments removed. */
 	void AllAttachmentsRemoved() override;
@@ -361,15 +361,15 @@ public:
 	void AttachmentsForceUpdate() override;
 	
 	/** \brief Set up weight based attachment parameters. */
-	void InitWeightAttachment( deColliderAttachment &attachment, int face ) override;
+	void InitWeightAttachment(deColliderAttachment &attachment, int face) override;
 	
 	
 	
 	/** \brief Constraint added. */
-	void ConstraintAdded( int index, deColliderConstraint *attachment ) override;
+	void ConstraintAdded(int index, deColliderConstraint *attachment) override;
 	
 	/** \brief Constraint changed. */
-	void ConstraintChanged( int index, deColliderConstraint *attachment ) override;
+	void ConstraintChanged(int index, deColliderConstraint *attachment) override;
 	
 	
 	
@@ -379,22 +379,22 @@ public:
 	
 	
 	/** \brief Bone position changed. */
-	void BonePositionChanged( int index ) override;
+	void BonePositionChanged(int index) override;
 	
 	/** \brief Bone orientation changed. */
-	void BoneOrientationChanged( int index ) override;
+	void BoneOrientationChanged(int index) override;
 	
 	/** \brief Bone linear velocity changed. */
-	void BoneLinearVelocityChanged( int index ) override;
+	void BoneLinearVelocityChanged(int index) override;
 	
 	/** \brief Bone angular velocity changed. */
-	void BoneAngularVelocityChanged( int index ) override;
+	void BoneAngularVelocityChanged(int index) override;
 	
 	/** \brief Bone properties changed. */
-	void BonePropertiesChanged( int index ) override;
+	void BonePropertiesChanged(int index) override;
 	
 	/** \brief Bone dynamic changed. */
-	void BoneDynamicChanged( int index ) override;
+	void BoneDynamicChanged(int index) override;
 	/*@}*/
 	
 	
@@ -402,7 +402,7 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** \brief Test if a point is located inside the collider. */
-	bool PointInside( const decDVector &point ) override;
+	bool PointInside(const decDVector &point) override;
 	
 	/**
 	 * \brief Test ray for collision with the collider.
@@ -415,7 +415,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void RayHits( const decDVector &rayOrigin, const decVector &rayDirection, deBaseScriptingCollider *listener ) override;
+	void RayHits(const decDVector &rayOrigin, const decVector &rayDirection, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * \brief Test collider for collision with collider.
@@ -427,7 +427,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void ColliderHits( deCollider *engCollider, deBaseScriptingCollider *listener ) override;
+	void ColliderHits(deCollider *engCollider, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * \brief Test moving collider for collision with collider.
@@ -439,7 +439,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void ColliderMoveHits( deCollider *engCollider, const decVector &displacement, deBaseScriptingCollider *listener ) override;
+	void ColliderMoveHits(deCollider *engCollider, const decVector &displacement, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * \brief Test rotating collider for collision with collider.
@@ -451,7 +451,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void ColliderRotateHits( deCollider *engCollider, const decVector &rotation, deBaseScriptingCollider *listener ) override;
+	void ColliderRotateHits(deCollider *engCollider, const decVector &rotation, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * \brief Test moving and rotating collider for collision with collider.
@@ -463,8 +463,8 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void ColliderMoveRotateHits( deCollider *engCollider, const decVector &displacement,
-		const decVector &rotation, deBaseScriptingCollider *listener ) override;
+	void ColliderMoveRotateHits(deCollider *engCollider, const decVector &displacement,
+		const decVector &rotation, deBaseScriptingCollider *listener) override;
 	/*@}*/
 	
 	
@@ -487,7 +487,7 @@ public:
 private:
 	void pCleanUp();
 	void pUpdateBones();
-	void pUpdateAttachments( bool force );
+	void pUpdateAttachments(bool force);
 	void pApplyAccumRelMoveMatrices();
 	void pUpdateIsMoving();
 	

@@ -47,7 +47,7 @@ public:
 	gdeOCNavigationBlockerList();
 	
 	/** \brief Create copy of object class navigation blocker list. */
-	gdeOCNavigationBlockerList( const gdeOCNavigationBlockerList &list );
+	gdeOCNavigationBlockerList(const gdeOCNavigationBlockerList &list);
 	
 	/** \brief Clean up object class navigation blocker list. */
 	~gdeOCNavigationBlockerList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class navigation blocker at position. */
-	gdeOCNavigationBlocker *GetAt( int index ) const;
+	gdeOCNavigationBlocker *GetAt(int index) const;
 	
 	/** \brief Index of named object class navigation blocker or -1 if absent. */
-	int IndexOf( gdeOCNavigationBlocker *blocker ) const;
+	int IndexOf(gdeOCNavigationBlocker *blocker) const;
 	
 	/** \brief Object class navigation blocker is present. */
-	bool Has( gdeOCNavigationBlocker *blocker ) const;
+	bool Has(gdeOCNavigationBlocker *blocker) const;
 	
 	/** \brief Add object class navigation blocker. */
-	void Add( gdeOCNavigationBlocker *blocker );
+	void Add(gdeOCNavigationBlocker *blocker);
 	
 	/** \brief Remove object class navigation blocker. */
-	void Remove( gdeOCNavigationBlocker *blocker );
+	void Remove(gdeOCNavigationBlocker *blocker);
 	
 	/** \brief Remove all object class navigation blockers. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class navigation blocker list. */
-	gdeOCNavigationBlockerList &operator=( const gdeOCNavigationBlockerList &list );
+	gdeOCNavigationBlockerList &operator=(const gdeOCNavigationBlockerList &list);
 	/*@}*/
 };
 

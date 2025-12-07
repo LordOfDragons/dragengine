@@ -52,7 +52,7 @@ void deBaseGraphicVideoPlayer::PlayRangeChanged(){
 void deBaseGraphicVideoPlayer::PlaySpeedChanged(){
 }
 
-void deBaseGraphicVideoPlayer::PlayPositionChanged( bool ){
+void deBaseGraphicVideoPlayer::PlayPositionChanged(bool){
 }
 
 void deBaseGraphicVideoPlayer::PlayStateChanged(){

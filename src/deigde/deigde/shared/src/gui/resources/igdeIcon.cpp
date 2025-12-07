@@ -47,88 +47,88 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeIcon::igdeIcon( deImage &image ) :
-pNativeIcon( NULL ),
-pSize( image.GetWidth(), image.GetHeight() )
+igdeIcon::igdeIcon(deImage &image) :
+pNativeIcon(NULL),
+pSize(image.GetWidth(), image.GetHeight())
 {
-	pNativeIcon = igdeNativeIcon::CreateNativeIcon( image );
+	pNativeIcon = igdeNativeIcon::CreateNativeIcon(image);
 }
 
-igdeIcon::igdeIcon( deImage &image, int width, int height ) :
-pNativeIcon( NULL ),
-pSize( width, height )
+igdeIcon::igdeIcon(deImage &image, int width, int height) :
+pNativeIcon(NULL),
+pSize(width, height)
 {
-	pNativeIcon = igdeNativeIcon::CreateNativeIcon( image );
-	igdeNativeIcon::Scale( pSize, pNativeIcon );
+	pNativeIcon = igdeNativeIcon::CreateNativeIcon(image);
+	igdeNativeIcon::Scale(pSize, pNativeIcon);
 }
 
-igdeIcon *igdeIcon::LoadPNG( igdeEnvironment &environment, const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+igdeIcon *igdeIcon::LoadPNG(igdeEnvironment &environment, const char *filename){
+	if(!filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(environment.GetFileSystemIGDE()->
-		OpenFileForReading( decPath::CreatePathUnix( filename ) )));
+		OpenFileForReading(decPath::CreatePathUnix(filename))));
 	
-	void * const native = igdeNativeIcon::CreateNativeIconPNG( reader );
+	void * const native = igdeNativeIcon::CreateNativeIconPNG(reader);
 	
 	try{
-		return new igdeIcon( native, igdeNativeIcon::GetSize( native ) );
+		return new igdeIcon(native, igdeNativeIcon::GetSize(native));
 		
-	}catch( const deException & ){
-		igdeNativeIcon::DestroyNativeIcon( native );
+	}catch(const deException &){
+		igdeNativeIcon::DestroyNativeIcon(native);
 		throw;
 	}
 }
 
-igdeIcon *igdeIcon::LoadPNG( const igdeEditorModule &editor, const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+igdeIcon *igdeIcon::LoadPNG(const igdeEditorModule &editor, const char *filename){
+	if(!filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decPath path;
-	path.SetFromUnix( "/data/modules" );
-	path.AddComponent( editor.GetEditorDirectory() );
-	path.AddUnixPath( filename );
+	path.SetFromUnix("/data/modules");
+	path.AddComponent(editor.GetEditorDirectory());
+	path.AddUnixPath(filename);
 	
 	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-		 editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading( path ) ));
-	void * const native = igdeNativeIcon::CreateNativeIconPNG( reader );
+		 editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading(path)));
+	void * const native = igdeNativeIcon::CreateNativeIconPNG(reader);
 	
 	try{
-		return new igdeIcon( native, igdeNativeIcon::GetSize( native ) );
+		return new igdeIcon(native, igdeNativeIcon::GetSize(native));
 		
-	}catch( const deException & ){
-		igdeNativeIcon::DestroyNativeIcon( native );
+	}catch(const deException &){
+		igdeNativeIcon::DestroyNativeIcon(native);
 		throw;
 	}
 }
 
-igdeIcon *igdeIcon::LoadImage( igdeEnvironment &environment, const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+igdeIcon *igdeIcon::LoadImage(igdeEnvironment &environment, const char *filename){
+	if(!filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deImage::Ref image(deImage::Ref::New(environment.GetEngineController()->GetEngine()->
-		GetImageManager()->LoadImage( filename, "/" )));
-	void * const native = igdeNativeIcon::CreateNativeIcon( image );
+		GetImageManager()->LoadImage(filename, "/")));
+	void * const native = igdeNativeIcon::CreateNativeIcon(image);
 	
 	try{
-		return new igdeIcon( native, igdeNativeIcon::GetSize( native ) );
+		return new igdeIcon(native, igdeNativeIcon::GetSize(native));
 		
-	}catch( const deException & ){
-		igdeNativeIcon::DestroyNativeIcon( native );
+	}catch(const deException &){
+		igdeNativeIcon::DestroyNativeIcon(native);
 		throw;
 	}
 }
 
-igdeIcon::igdeIcon( void *nativeIcon, const decPoint &size ) :
-pNativeIcon( nativeIcon ), pSize( size ){
+igdeIcon::igdeIcon(void *nativeIcon, const decPoint &size) :
+pNativeIcon(nativeIcon), pSize(size){
 }
 
 igdeIcon::~igdeIcon(){
-	if( pNativeIcon ){
-		igdeNativeIcon::DestroyNativeIcon( pNativeIcon );
+	if(pNativeIcon){
+		igdeNativeIcon::DestroyNativeIcon(pNativeIcon);
 	}
 }
 
@@ -136,19 +136,19 @@ igdeIcon::~igdeIcon(){
 // Management
 ///////////////
 
-igdeIcon *igdeIcon::Scale( const decPoint &size ) const{
-	if( ! ( size >= decPoint( 1, 1 ) ) || ! pNativeIcon ){
-		DETHROW( deeInvalidParam );
+igdeIcon *igdeIcon::Scale(const decPoint &size) const{
+	if(!(size >= decPoint(1, 1)) || !pNativeIcon){
+		DETHROW(deeInvalidParam);
 	}
 	
-	void * const nativeScaled = igdeNativeIcon::DuplicateNativeIcon( pNativeIcon );
-	igdeNativeIcon::Scale( size, nativeScaled );
+	void * const nativeScaled = igdeNativeIcon::DuplicateNativeIcon(pNativeIcon);
+	igdeNativeIcon::Scale(size, nativeScaled);
 	
-	return new igdeIcon( nativeScaled, size );
+	return new igdeIcon(nativeScaled, size);
 }
 
-void igdeIcon::Update( deImage &image ){
-	if( pNativeIcon ){
-		igdeNativeIcon::UpdatePixels( pNativeIcon, image );
+void igdeIcon::Update(deImage &image){
+	if(pNativeIcon){
+		igdeNativeIcon::UpdatePixels(pNativeIcon, image);
 	}
 }

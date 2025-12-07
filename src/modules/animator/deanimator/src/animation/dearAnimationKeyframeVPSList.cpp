@@ -39,14 +39,14 @@
 /////////////////////////////////
 
 dearAnimationKeyframeVPSList::dearAnimationKeyframeVPSList(
-	const deAnimationKeyframeVertexPositionSetList &list ) :
-pKeyframes( nullptr ),
-pKeyframeCount( 0 )
+	const deAnimationKeyframeVertexPositionSetList &list) :
+pKeyframes(nullptr),
+pKeyframeCount(0)
 {
 	try{
-		pCreateKeyframes( list );
+		pCreateKeyframes(list);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -61,30 +61,30 @@ dearAnimationKeyframeVPSList::~dearAnimationKeyframeVPSList(){
 // Management
 ///////////////
 
-dearAnimationKeyframeVPS &dearAnimationKeyframeVPSList::GetAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pKeyframeCount )
+dearAnimationKeyframeVPS &dearAnimationKeyframeVPSList::GetAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pKeyframeCount)
 	
-	return pKeyframes[ index ];
+	return pKeyframes[index];
 }
 
-dearAnimationKeyframeVPS *dearAnimationKeyframeVPSList::GetWithTime( float time ) const{
-	if( pKeyframeCount == 0 ){
+dearAnimationKeyframeVPS *dearAnimationKeyframeVPSList::GetWithTime(float time) const{
+	if(pKeyframeCount == 0){
 		return nullptr;
 	}
 	
-	if( time <= pKeyframes[ 0 ].GetTime() ){
+	if(time <= pKeyframes[0].GetTime()){
 		return pKeyframes;
 	}
 	
 	int i;
-	for( i=1; i<pKeyframeCount; i++ ){
-		if( time < pKeyframes[ i ].GetTime() ){
-			return pKeyframes + ( i - 1 );
+	for(i=1; i<pKeyframeCount; i++){
+		if(time < pKeyframes[i].GetTime()){
+			return pKeyframes + (i - 1);
 		}
 	}
 	
-	return pKeyframes + ( pKeyframeCount - 1 );
+	return pKeyframes + (pKeyframeCount - 1);
 }
 
 
@@ -93,27 +93,27 @@ dearAnimationKeyframeVPS *dearAnimationKeyframeVPSList::GetWithTime( float time 
 //////////////////////
 
 void dearAnimationKeyframeVPSList::pCleanUp(){
-	if( pKeyframes ){
+	if(pKeyframes){
 		delete [] pKeyframes;
 	}
 }
 
 void dearAnimationKeyframeVPSList::pCreateKeyframes(
-const deAnimationKeyframeVertexPositionSetList &list ){
+const deAnimationKeyframeVertexPositionSetList &list){
 	const int count = list.GetKeyframeCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pKeyframes = new dearAnimationKeyframeVPS[ count ];
+	pKeyframes = new dearAnimationKeyframeVPS[count];
 	
-	while( pKeyframeCount < count ){
-		if( pKeyframeCount < count - 1 ){
-			pKeyframes[ pKeyframeCount ].Set( *list.GetKeyframe( pKeyframeCount ),
+	while(pKeyframeCount < count){
+		if(pKeyframeCount < count - 1){
+			pKeyframes[pKeyframeCount].Set(*list.GetKeyframe(pKeyframeCount),
 				*list.GetKeyframe( pKeyframeCount + 1 ) );
 			
 		}else{
-			pKeyframes[ pKeyframeCount ].Set( *list.GetKeyframe( pKeyframeCount ) );
+			pKeyframes[pKeyframeCount].Set(*list.GetKeyframe(pKeyframeCount));
 		}
 		
 		pKeyframeCount++;

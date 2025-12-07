@@ -86,7 +86,7 @@ public:
 	 * file name in the constructor of the subclass. The saved and changed
 	 * state are both set to false.
 	 */
-	igdeEditableEntity( igdeEnvironment *environment );
+	igdeEditableEntity(igdeEnvironment *environment);
 	
 	/** \brief Clean up editable entity. */
 	virtual ~igdeEditableEntity();
@@ -112,7 +112,7 @@ public:
 	/** \brief Retrieves the file path. */
 	inline const decString &GetFilePath() const{ return pPathFile; }
 	/** \brief Sets the file path. */
-	void SetFilePath( const char *path );
+	void SetFilePath(const char *path);
 	
 	/** \brief Determines if the entity has changed. */
 	inline bool GetChanged() const{ return pChanged; }
@@ -121,7 +121,7 @@ public:
 	 * 
 	 * If this is different than the current changed state a notification is send to all listeners.
 	 */
-	void SetChanged( bool changed );
+	void SetChanged(bool changed);
 	
 	/** \brief Determines if the entity has been saved. */
 	inline bool GetSaved() const{ return pSaved; }
@@ -130,7 +130,7 @@ public:
 	 * 
 	 * If this is different than the current saved state a notification is send to all listeners.
 	 */
-	void SetSaved( bool saved );
+	void SetSaved(bool saved);
 	
 	/** \brief Retrieves the undo system. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }

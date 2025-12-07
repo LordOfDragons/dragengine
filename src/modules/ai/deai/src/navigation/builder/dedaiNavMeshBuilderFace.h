@@ -53,7 +53,7 @@ public:
 	/** Retrieves the index. */
 	inline int GetIndex() const{ return pIndex; }
 	/** Sets the index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	/** Retrieves the vertex list. */
 	inline decIntSet &GetVertices(){ return pVertices; }
 	inline const decIntSet &GetVertices() const{ return pVertices; }

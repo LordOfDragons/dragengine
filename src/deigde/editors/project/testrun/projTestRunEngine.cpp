@@ -78,17 +78,17 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-projTestRunEngine::projTestRunEngine( projTestRunProcess &process ) :
-pProcess( process ),
-pEngine( NULL ){
+projTestRunEngine::projTestRunEngine(projTestRunProcess &process) :
+pProcess(process),
+pEngine(NULL){
 }
 
 projTestRunEngine::~projTestRunEngine(){
 	try{
 		Stop();
 		
-	}catch( const deException &e ){
-		pProcess.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pProcess.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
@@ -105,41 +105,41 @@ void projTestRunEngine::Start(){
 	try{
 		// create os
 		#ifdef OS_BEOS
-		logger->LogInfo( LOGSOURCE, "Creating OS BeOS" );
+		logger->LogInfo(LOGSOURCE, "Creating OS BeOS");
 		os = new deOSBeOS();
 		#elif defined OS_UNIX
 			#ifdef HAS_LIB_X11
-			logger->LogInfo( LOGSOURCE, "Creating OS Unix" );
+			logger->LogInfo(LOGSOURCE, "Creating OS Unix");
 			os = new deOSUnix();
 			#else
-			logger->LogInfo( LOGSOURCE, "Creating OS Console" );
+			logger->LogInfo(LOGSOURCE, "Creating OS Console");
 			os = new deOSConsole();
 			#endif
 		#elif defined OS_W32
-		logger->LogInfo( LOGSOURCE, "Creating OS Windows" );
+		logger->LogInfo(LOGSOURCE, "Creating OS Windows");
 		os = new deOSWindows();
-		os->CastToOSWindows()->SetInstApp( GetModuleHandle( NULL ) );
+		os->CastToOSWindows()->SetInstApp(GetModuleHandle(NULL));
 		#endif
 		
 		// create game engine
-		logger->LogInfo( LOGSOURCE, "Creating game engine" );
-		pEngine = new deEngine( os );
+		logger->LogInfo(LOGSOURCE, "Creating game engine");
+		pEngine = new deEngine(os);
 		os = NULL;
 		
-		pEngine->SetLogger( logger );
-		pEngine->SetCacheAppID( runParameters.identifier );
+		pEngine->SetLogger(logger);
+		pEngine->SetCacheAppID(runParameters.identifier);
 		
-		logger->LogInfo( LOGSOURCE, "Loading Modules." );
+		logger->LogInfo(LOGSOURCE, "Loading Modules.");
 		pEngine->LoadModules();
 		
-	}catch( const deException &e ){
-		logger->LogError( LOGSOURCE, "Failed starting game engine" );
-		logger->LogException( LOGSOURCE, e );
-		if( pEngine ){
+	}catch(const deException &e){
+		logger->LogError(LOGSOURCE, "Failed starting game engine");
+		logger->LogException(LOGSOURCE, e);
+		if(pEngine){
 			delete pEngine;
 			pEngine = NULL;
 		}
-		if( os ){
+		if(os){
 			delete os;
 		}
 		throw;
@@ -149,10 +149,10 @@ void projTestRunEngine::Start(){
 	pPathShare = pEngine->GetOS()->GetPathShare();
 	pPathLib = pEngine->GetOS()->GetPathEngine();
 	
-	logger->LogInfoFormat( LOGSOURCE, "Cache application ID = '%s'", runParameters.identifier.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine config path = '%s'", pPathConfig.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine share path = '%s'", pPathShare.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'", pPathLib.GetString() );
+	logger->LogInfoFormat(LOGSOURCE, "Cache application ID = '%s'", runParameters.identifier.GetString());
+	logger->LogInfoFormat(LOGSOURCE, "Engine config path = '%s'", pPathConfig.GetString());
+	logger->LogInfoFormat(LOGSOURCE, "Engine share path = '%s'", pPathShare.GetString());
+	logger->LogInfoFormat(LOGSOURCE, "Engine lib path = '%s'", pPathLib.GetString());
 }
 
 void projTestRunEngine::PutIntoVFS(){
@@ -160,214 +160,214 @@ void projTestRunEngine::PutIntoVFS(){
 	deVFSContainer::Ref container;
 	decPath pathRootDir, pathDiskDir;
 	
-	if( ! pEngine->GetOS()->GetPathSystemConfig().IsEmpty() ){
-		pathRootDir.SetFromUnix( "/engine/configSystem" );
-		pathDiskDir.SetFromNative( pEngine->GetOS()->GetPathSystemConfig() );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-		vfs.AddContainer( container );
+	if(!pEngine->GetOS()->GetPathSystemConfig().IsEmpty()){
+		pathRootDir.SetFromUnix("/engine/configSystem");
+		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathSystemConfig());
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
+		vfs.AddContainer(container);
 	}
 	
-	if( ! pPathConfig.IsEmpty() ){
-		pathRootDir.SetFromUnix( "/engine/config" );
-		pathDiskDir.SetFromNative( pPathConfig );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-		vfs.AddContainer( container );
+	if(!pPathConfig.IsEmpty()){
+		pathRootDir.SetFromUnix("/engine/config");
+		pathDiskDir.SetFromNative(pPathConfig);
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
+		vfs.AddContainer(container);
 	}
 	
-	if( ! pPathShare.IsEmpty() ){
-		pathRootDir.SetFromUnix( "/engine/share" );
-		pathDiskDir.SetFromNative( pPathShare );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-		vfs.AddContainer( container );
+	if(!pPathShare.IsEmpty()){
+		pathRootDir.SetFromUnix("/engine/share");
+		pathDiskDir.SetFromNative(pPathShare);
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
+		vfs.AddContainer(container);
 	}
 	
-	if( ! pPathLib.IsEmpty() ){
-		pathRootDir.SetFromUnix( "/engine/lib" );
-		pathDiskDir.SetFromNative( pPathLib );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-		vfs.AddContainer( container );
+	if(!pPathLib.IsEmpty()){
+		pathRootDir.SetFromUnix("/engine/lib");
+		pathDiskDir.SetFromNative(pPathLib);
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
+		vfs.AddContainer(container);
 	}
 	
-	if( ! pEngine->GetOS()->GetPathUserCache().IsEmpty() ){
-		pathRootDir.SetFromUnix( "/engine/cache" );
-		pathDiskDir.SetFromNative( pEngine->GetOS()->GetPathUserCache() );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-		vfs.AddContainer( container );
+	if(!pEngine->GetOS()->GetPathUserCache().IsEmpty()){
+		pathRootDir.SetFromUnix("/engine/cache");
+		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathUserCache());
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
+		vfs.AddContainer(container);
 	}
 	
-	if( ! pEngine->GetOS()->GetPathUserCapture().IsEmpty() ){
-		pathRootDir.SetFromUnix( "/engine/capture" );
-		pathDiskDir.SetFromNative( pEngine->GetOS()->GetPathUserCapture() );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		vfs.AddContainer( container );
+	if(!pEngine->GetOS()->GetPathUserCapture().IsEmpty()){
+		pathRootDir.SetFromUnix("/engine/capture");
+		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathUserCapture());
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		vfs.AddContainer(container);
 	}
 }
 
 void projTestRunEngine::ActivateModules(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
 	
-	ActivateModule( deModuleSystem::emtCrashRecovery, runParameters.moduleCrashRecovery );
-	ActivateModule( deModuleSystem::emtGraphic, runParameters.moduleGraphic );
-	ActivateModule( deModuleSystem::emtInput, runParameters.moduleInput );
-	ActivateModule( deModuleSystem::emtPhysics, runParameters.modulePhysics );
-	ActivateModule( deModuleSystem::emtAnimator, runParameters.moduleAnimator );
-	ActivateModule( deModuleSystem::emtAI, runParameters.moduleAI );
-	ActivateModule( deModuleSystem::emtAudio, runParameters.moduleAudio );
-	ActivateModule( deModuleSystem::emtSynthesizer, runParameters.moduleSynthesizer );
-	ActivateModule( deModuleSystem::emtNetwork, runParameters.moduleNetwork );
-	ActivateModule( deModuleSystem::emtVR, runParameters.moduleVR );
+	ActivateModule(deModuleSystem::emtCrashRecovery, runParameters.moduleCrashRecovery);
+	ActivateModule(deModuleSystem::emtGraphic, runParameters.moduleGraphic);
+	ActivateModule(deModuleSystem::emtInput, runParameters.moduleInput);
+	ActivateModule(deModuleSystem::emtPhysics, runParameters.modulePhysics);
+	ActivateModule(deModuleSystem::emtAnimator, runParameters.moduleAnimator);
+	ActivateModule(deModuleSystem::emtAI, runParameters.moduleAI);
+	ActivateModule(deModuleSystem::emtAudio, runParameters.moduleAudio);
+	ActivateModule(deModuleSystem::emtSynthesizer, runParameters.moduleSynthesizer);
+	ActivateModule(deModuleSystem::emtNetwork, runParameters.moduleNetwork);
+	ActivateModule(deModuleSystem::emtVR, runParameters.moduleVR);
 	
-	ActivateModule( deModuleSystem::emtScript,
-		runParameters.moduleScript, runParameters.moduleScriptVersion );
+	ActivateModule(deModuleSystem::emtScript,
+		runParameters.moduleScript, runParameters.moduleScriptVersion);
 }
 
-void projTestRunEngine::ActivateModule( deModuleSystem::eModuleTypes type,
-const char *name, const char *version ){
+void projTestRunEngine::ActivateModule(deModuleSystem::eModuleTypes type,
+const char *name, const char *version){
 	deModuleSystem &moduleSystem = *pEngine->GetModuleSystem();
 	const int count = moduleSystem.GetModuleCount();
 	deLoadableModule *module = NULL;
 	int i;
 	
-	if( name[ 0 ] ){ // not empty
-		if( version[ 0 ] ){ // not empty
-			module = moduleSystem.GetModuleNamedAtLeast( name, version );
+	if(name[0]){ // not empty
+		if(version[0]){ // not empty
+			module = moduleSystem.GetModuleNamedAtLeast(name, version);
 			
 		}else{
-			module = moduleSystem.GetModuleNamed( name );
+			module = moduleSystem.GetModuleNamed(name);
 		}
 		
 	}else{
 		// find best module
-		for( i=0; i<count; i++ ){
-			deLoadableModule * const module2 = moduleSystem.GetModuleAt( i );
+		for(i=0; i<count; i++){
+			deLoadableModule * const module2 = moduleSystem.GetModuleAt(i);
 			
-			if( ! module2->IsLoaded() || ! module2->GetEnabled() ){
+			if(!module2->IsLoaded() || !module2->GetEnabled()){
 				continue;
 			}
-			if( module2->GetType() != type ){
+			if(module2->GetType() != type){
 				continue;
 			}
-			if( module2->GetErrorCode() != deLoadableModule::eecSuccess ){
+			if(module2->GetErrorCode() != deLoadableModule::eecSuccess){
 				continue;
 			}
 			
 			// no best module found. use this module
-			if( ! module ){
+			if(!module){
 				module = module2;
 				
 			// best module has been found and this module is fallback. skip module
-			}else if( module2->GetIsFallback() ){
+			}else if(module2->GetIsFallback()){
 				
 			// best module has same name as this module
-			}else if( module2->GetName() == module->GetName() ){
+			}else if(module2->GetName() == module->GetName()){
 				// use this module if it has higher version than the best module
-				if( deModuleSystem::CompareVersion( module2->GetVersion(), module->GetVersion() ) > 0 ){
+				if(deModuleSystem::CompareVersion(module2->GetVersion(), module->GetVersion()) > 0){
 					module = module2;
 				}
 				
 			// best module has different name than this module. use this module if
 			// it has higher priority than the best module or best module is fallback
-			}else if( module2->GetPriority() > module->GetPriority() || module->GetIsFallback() ){
+			}else if(module2->GetPriority() > module->GetPriority() || module->GetIsFallback()){
 				module = module2;
 			}
 		}
 	}
 	
-	if( ! module ){
-		pProcess.GetLogger()->LogErrorFormat( LOGSOURCE, "Module '%s' with version '%s' not found", name, version );
-		DETHROW( deeInvalidAction );
+	if(!module){
+		pProcess.GetLogger()->LogErrorFormat(LOGSOURCE, "Module '%s' with version '%s' not found", name, version);
+		DETHROW(deeInvalidAction);
 	}
 	
 	// TODO apply disabled module versions
 	
-	if( module->GetType() != type || ! module->IsLoaded() || ! module->GetEnabled() ){
-		DETHROW( deeInvalidParam );
+	if(module->GetType() != type || !module->IsLoaded() || !module->GetEnabled()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// activate module
-	switch( type ){
+	switch(type){
 	case deModuleSystem::emtCrashRecovery:
-		pEngine->GetCrashRecoverySystem()->SetActiveModule( module );
+		pEngine->GetCrashRecoverySystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtGraphic:
-		pEngine->GetGraphicSystem()->SetActiveModule( module );
+		pEngine->GetGraphicSystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtInput:
-		pEngine->GetInputSystem()->SetActiveModule( module );
+		pEngine->GetInputSystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtPhysics:
-		pEngine->GetPhysicsSystem()->SetActiveModule( module );
+		pEngine->GetPhysicsSystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtAnimator:
-		pEngine->GetAnimatorSystem()->SetActiveModule( module );
+		pEngine->GetAnimatorSystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtAI:
-		pEngine->GetAISystem()->SetActiveModule( module );
+		pEngine->GetAISystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtAudio:
-		pEngine->GetAudioSystem()->SetActiveModule( module );
+		pEngine->GetAudioSystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtSynthesizer:
-		pEngine->GetSynthesizerSystem()->SetActiveModule( module );
+		pEngine->GetSynthesizerSystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtNetwork:
-		pEngine->GetNetworkSystem()->SetActiveModule( module );
+		pEngine->GetNetworkSystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtScript:
-		pEngine->GetScriptingSystem()->SetActiveModule( module );
+		pEngine->GetScriptingSystem()->SetActiveModule(module);
 		break;
 		
 	case deModuleSystem::emtVR:
-		pEngine->GetVRSystem()->SetActiveModule( module );
+		pEngine->GetVRSystem()->SetActiveModule(module);
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
 	// apply parameters
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
 	
-	for( i=0; i<runParameters.parameterCount; i++ ){
-		if( runParameters.parameters[ i ].module != name ){
+	for(i=0; i<runParameters.parameterCount; i++){
+		if(runParameters.parameters[i].module != name){
 			continue;
 		}
 		
-		if( module->GetModule()->IndexOfParameterNamed( runParameters.parameters[ i ].parameter ) == -1 ){
+		if(module->GetModule()->IndexOfParameterNamed(runParameters.parameters[i].parameter) == -1){
 			continue;
 		}
 		
-		module->GetModule()->SetParameterValue( runParameters.parameters[ i ].parameter,
-			runParameters.parameters[ i ].value );
+		module->GetModule()->SetParameterValue(runParameters.parameters[i].parameter,
+			runParameters.parameters[i].value);
 	}
 }
 
 void projTestRunEngine::SetDataDirectory(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "Using data directory '%s'",
-		runParameters.pathDataDirectory.GetString() );
-	pEngine->SetDataDir( runParameters.pathDataDirectory );
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "Using data directory '%s'",
+		runParameters.pathDataDirectory.GetString());
+	pEngine->SetDataDir(runParameters.pathDataDirectory);
 }
 
 void projTestRunEngine::SetRunArguments(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "Passing game arguments '%s'",
-		runParameters.runArguments.GetString() );
-	pEngine->GetArguments()->AddArgsSplit( runParameters.runArguments );
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "Passing game arguments '%s'",
+		runParameters.runArguments.GetString());
+	pEngine->GetArguments()->AddArgsSplit(runParameters.runArguments);
 }
 
 void projTestRunEngine::InitVFS(){
@@ -379,53 +379,53 @@ void projTestRunEngine::InitVFS(){
 	decPath path;
 	
 	// add data directory as root directory
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '/' => '%s' (read-only)",
-		runParameters.pathDataDirectory.GetString() );
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
-		decPath::CreatePathNative( runParameters.pathDataDirectory ) ) );
-	( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-	vfs.AddContainer( container );
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "VFS: '/' => '%s' (read-only)",
+		runParameters.pathDataDirectory.GetString());
+	container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix("/"),
+		decPath::CreatePathNative(runParameters.pathDataDirectory)));
+	((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
+	vfs.AddContainer(container);
 	
 	// add script module shared data if existing
-	scrsys.AddVFSSharedDataDir( vfs );
+	scrsys.AddVFSSharedDataDir(vfs);
 	
 	// make modules add stage containers to virtual file system
-	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStagePatches );
-	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStagePatches );
+	modsys.ServicesAddVFSContainers(vfs, deModuleSystem::VFSStagePatches);
+	scrsys.AddVFSContainers(vfs, deModuleSystem::VFSStagePatches);
 	
-	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStageMods );
-	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStageMods );
+	modsys.ServicesAddVFSContainers(vfs, deModuleSystem::VFSStageMods);
+	scrsys.AddVFSContainers(vfs, deModuleSystem::VFSStageMods);
 	
-	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStageOverlay );
-	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStageOverlay );
+	modsys.ServicesAddVFSContainers(vfs, deModuleSystem::VFSStageOverlay);
+	scrsys.AddVFSContainers(vfs, deModuleSystem::VFSStageOverlay);
 	
 	// add the game overlay directory (writeable).
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '/' => '%s'",
-		runParameters.pathOverlay.GetString() );
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
-		decPath::CreatePathNative( runParameters.pathOverlay ) ) );
-	vfs.AddContainer( container );
-	pEngine->SetPathOverlay( runParameters.pathOverlay );
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "VFS: '/' => '%s'",
+		runParameters.pathOverlay.GetString());
+	container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix("/"),
+		decPath::CreatePathNative(runParameters.pathOverlay)));
+	vfs.AddContainer(container);
+	pEngine->SetPathOverlay(runParameters.pathOverlay);
 	
 	// add the user game configuration directory (writeable)
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '%s' => '%s'",
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "VFS: '%s' => '%s'",
 		runParameters.vfsPathConfig.GetString(),
-		runParameters.pathConfig.GetString() );
-	container.TakeOver( new deVFSDiskDirectory(
-		decPath::CreatePathUnix( runParameters.vfsPathConfig ),
-		decPath::CreatePathNative( runParameters.pathConfig ) ) );
-	vfs.AddContainer( container );
-	pEngine->SetPathConfig( runParameters.pathConfig );
+		runParameters.pathConfig.GetString());
+	container.TakeOver(new deVFSDiskDirectory(
+		decPath::CreatePathUnix(runParameters.vfsPathConfig),
+		decPath::CreatePathNative(runParameters.pathConfig)));
+	vfs.AddContainer(container);
+	pEngine->SetPathConfig(runParameters.pathConfig);
 	
 	// add the user game capture directory (writeable)
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '%s' => '%s'",
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "VFS: '%s' => '%s'",
 		runParameters.vfsPathCapture.GetString(),
-		runParameters.pathCapture.GetString() );
-	container.TakeOver( new deVFSDiskDirectory(
-		decPath::CreatePathUnix( runParameters.vfsPathCapture ),
-		decPath::CreatePathNative( runParameters.pathCapture ) ) );
-	vfs.AddContainer( container );
-	pEngine->SetPathCapture( runParameters.pathCapture );
+		runParameters.pathCapture.GetString());
+	container.TakeOver(new deVFSDiskDirectory(
+		decPath::CreatePathUnix(runParameters.vfsPathCapture),
+		decPath::CreatePathNative(runParameters.pathCapture)));
+	vfs.AddContainer(container);
+	pEngine->SetPathCapture(runParameters.pathCapture);
 }
 
 void projTestRunEngine::CreateMainWindow(){
@@ -435,28 +435,28 @@ void projTestRunEngine::CreateMainWindow(){
 	int height = runParameters.windowSizeY;
 	
 	/*
-	if( runParameters.fullScreen ){
-		const decPoint resolution( pEngine->GetOS()->GetDisplayCurrentResolution( 0 ) );
+	if(runParameters.fullScreen){
+		const decPoint resolution(pEngine->GetOS()->GetDisplayCurrentResolution(0));
 		width = resolution.x;
 		height = resolution.y;
 	}
 	*/
 	
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "Creating window %i x %i", width, height );
-	pEngine->GetGraphicSystem()->CreateAndSetRenderWindow( width, height,
-		runParameters.fullScreen, runParameters.windowTitle, NULL );
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "Creating window %i x %i", width, height);
+	pEngine->GetGraphicSystem()->CreateAndSetRenderWindow(width, height,
+		runParameters.fullScreen, runParameters.windowTitle, NULL);
 }
 
 void projTestRunEngine::Run(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
 	
-	pProcess.GetLogger()->LogInfo( LOGSOURCE, "Handing control over to game" );
-	pEngine->Run( runParameters.scriptDirectory, runParameters.scriptVersion, runParameters.gameObject );
-	pProcess.GetLogger()->LogInfo( LOGSOURCE, "Game exited" );
+	pProcess.GetLogger()->LogInfo(LOGSOURCE, "Handing control over to game");
+	pEngine->Run(runParameters.scriptDirectory, runParameters.scriptVersion, runParameters.gameObject);
+	pProcess.GetLogger()->LogInfo(LOGSOURCE, "Game exited");
 }
 
 void projTestRunEngine::Stop(){
-	if( ! pEngine ){
+	if(!pEngine){
 		return;
 	}
 	

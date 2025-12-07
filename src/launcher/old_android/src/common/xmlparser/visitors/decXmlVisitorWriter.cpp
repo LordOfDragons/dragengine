@@ -50,8 +50,8 @@
 ////////////////////////////
 
 decXmlVisitorWriter::decXmlVisitorWriter() :
-pCompact( false ),
-pWriter( NULL ){
+pCompact(false),
+pWriter(NULL){
 }
 
 decXmlVisitorWriter::~decXmlVisitorWriter(){
@@ -62,33 +62,33 @@ decXmlVisitorWriter::~decXmlVisitorWriter(){
 // Management
 ///////////////
 
-void decXmlVisitorWriter::SetCompact( bool compact ){
+void decXmlVisitorWriter::SetCompact(bool compact){
 	pCompact = compact;
 }
 
-void decXmlVisitorWriter::WriteDocument( decBaseFileWriter *file, decXmlDocument &document ){
-	if( ! file || ! document.GetRoot() ){
-		DETHROW( deeInvalidParam );
+void decXmlVisitorWriter::WriteDocument(decBaseFileWriter *file, decXmlDocument &document){
+	if(!file || !document.GetRoot()){
+		DETHROW(deeInvalidParam);
 	}
-	if( pWriter ){
-		DETHROW( deeInvalidAction );
+	if(pWriter){
+		DETHROW(deeInvalidAction);
 	}
 	
 	try{
-		pWriter = new decXmlWriter( file );
+		pWriter = new decXmlWriter(file);
 		pWriter->WriteXMLDeclaration();
 		
-		if( ! document.GetDocType().IsEmpty() && ! document.GetSystemLiteral() ){
-			pWriter->WriteDocTypeDeclaration( document.GetDocType(), document.GetSystemLiteral() );
+		if(!document.GetDocType().IsEmpty() && !document.GetSystemLiteral()){
+			pWriter->WriteDocTypeDeclaration(document.GetDocType(), document.GetSystemLiteral());
 		}
 		
-		document.GetRoot()->Visit( *this );
+		document.GetRoot()->Visit(*this);
 		
 		delete pWriter;
 		pWriter = NULL;
 		
-	}catch( const deException & ){
-		if( pWriter ){
+	}catch(const deException &){
+		if(pWriter){
 			delete pWriter;
 			pWriter = NULL;
 		}
@@ -101,15 +101,15 @@ void decXmlVisitorWriter::WriteDocument( decBaseFileWriter *file, decXmlDocument
 // Visiting
 /////////////
 
-void decXmlVisitorWriter::VisitComment( decXmlComment &comment ){
-	pWriter->WriteComment( comment.GetComment(), ! pCompact, ! pCompact );
+void decXmlVisitorWriter::VisitComment(decXmlComment &comment){
+	pWriter->WriteComment(comment.GetComment(), !pCompact, !pCompact);
 }
 
-void decXmlVisitorWriter::VisitPI( decXmlPI &pi ){
+void decXmlVisitorWriter::VisitPI(decXmlPI &pi){
 	// ignore
 }
 
-void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
+void decXmlVisitorWriter::VisitElementTag(decXmlElementTag &tag){
 	const int elementCount = tag.GetElementCount();
 	int i;
 	
@@ -118,20 +118,20 @@ void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 	bool lastChildCData = true;
 	bool emptyTag = true;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElement &child = *tag.GetElementAt( i );
+	for(i=0; i<elementCount; i++){
+		const decXmlElement &child = *tag.GetElementAt(i);
 		
-		if( child.CanCastToAttValue() ){
+		if(child.CanCastToAttValue()){
 			continue;
 		}
 		
-		if( child.CanCastToElementTag() ){
-			if( emptyTag ){
+		if(child.CanCastToElementTag()){
+			if(emptyTag){
 				firstChildIsTag = true;
 			}
 			lastChildCData = false;
 			
-		}else if( child.CanCastToCharacterData() || child.CanCastToCDSect() ){
+		}else if(child.CanCastToCharacterData() || child.CanCastToCDSect()){
 			lastChildCData = true;
 		}
 		
@@ -139,54 +139,54 @@ void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 	}
 	
 	// write opening tag
-	pWriter->WriteOpeningTagStart( tag.GetName(), ! pCompact );
+	pWriter->WriteOpeningTagStart(tag.GetName(), !pCompact);
 	
-	for( i=0; i<elementCount; i++ ){
-		decXmlElement &child = *tag.GetElementAt( i );
+	for(i=0; i<elementCount; i++){
+		decXmlElement &child = *tag.GetElementAt(i);
 		
-		if( child.CanCastToAttValue() ){
-			VisitAttValue( *child.CastToAttValue() );
+		if(child.CanCastToAttValue()){
+			VisitAttValue(*child.CastToAttValue());
 		}
 	}
 	
-	pWriter->WriteOpeningTagEnd( emptyTag, ( emptyTag || firstChildIsTag ) && ! pCompact );
+	pWriter->WriteOpeningTagEnd(emptyTag, (emptyTag || firstChildIsTag) && !pCompact);
 	
 	// write tag content if present
-	if( ! emptyTag ){
-		for( i=0; i<elementCount; i++ ){
-			decXmlElement &child = *tag.GetElementAt( i );
-			if( ! child.CanCastToAttValue() ){
-				child.Visit( *this );
+	if(!emptyTag){
+		for(i=0; i<elementCount; i++){
+			decXmlElement &child = *tag.GetElementAt(i);
+			if(!child.CanCastToAttValue()){
+				child.Visit(*this);
 			}
 		}
 		
 		// write end tag
-		pWriter->WriteClosingTag( tag.GetName(), ! lastChildCData && ! pCompact, ! pCompact );
+		pWriter->WriteClosingTag(tag.GetName(), !lastChildCData && !pCompact, !pCompact);
 	}
 }
 
-void decXmlVisitorWriter::VisitCharacterData( decXmlCharacterData &data ){
-	pWriter->WriteTextString( data.GetData() );
+void decXmlVisitorWriter::VisitCharacterData(decXmlCharacterData &data){
+	pWriter->WriteTextString(data.GetData());
 }
 
-void decXmlVisitorWriter::VisitEntityReference( decXmlEntityReference &ref ){
+void decXmlVisitorWriter::VisitEntityReference(decXmlEntityReference &ref){
 	decString text;
-	text.Format( "&%s;", ref.GetName().GetString() );
-	pWriter->WriteTextString( text );
+	text.Format("&%s;", ref.GetName().GetString());
+	pWriter->WriteTextString(text);
 }
 
-void decXmlVisitorWriter::VisitCharReference( decXmlCharReference &ref ){
+void decXmlVisitorWriter::VisitCharReference(decXmlCharReference &ref){
 	// not created by parser
 }
 
-void decXmlVisitorWriter::VisitCDSect( decXmlCDSect &cdsect ){
-	pWriter->WriteTextString( cdsect.GetData() );
+void decXmlVisitorWriter::VisitCDSect(decXmlCDSect &cdsect){
+	pWriter->WriteTextString(cdsect.GetData());
 }
 
-void decXmlVisitorWriter::VisitAttValue( decXmlAttValue &attribute ){
-	pWriter->WriteAttributeString( attribute.GetName(), attribute.GetValue() );
+void decXmlVisitorWriter::VisitAttValue(decXmlAttValue &attribute){
+	pWriter->WriteAttributeString(attribute.GetName(), attribute.GetValue());
 }
 
-void decXmlVisitorWriter::VisitNamespace( decXmlNamespace &ns ){
+void decXmlVisitorWriter::VisitNamespace(decXmlNamespace &ns){
 	// not used
 }

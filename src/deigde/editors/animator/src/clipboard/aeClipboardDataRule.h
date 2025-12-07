@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataRule( aeRule *rule );
+	aeClipboardDataRule(aeRule *rule);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataRule( const aeRuleList &rules );
+	aeClipboardDataRule(const aeRuleList &rules);
 	
 protected:
 	/**

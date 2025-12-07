@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPShape( reWindowProperties &windowProperties );
+	reWPShape(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -84,13 +84,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Shape. */
 	inline reRigShape *GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
-	void SetShape( reRigShape *shape );
+	void SetShape(reRigShape *shape);
 	
 	/** \brief Update shape. */
 	void UpdateShape();

@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeRemove::meUHTNavSpaceTypeRemove( meHeightTerrainNavSpaceType *type ) :
-pNavSpace( NULL ),
-pType( NULL )
+meUHTNavSpaceTypeRemove::meUHTNavSpaceTypeRemove(meHeightTerrainNavSpaceType *type) :
+pNavSpace(NULL),
+pType(NULL)
 {
-	if( ! type || ! type->GetNavSpace() ){
-		DETHROW( deeInvalidParam );
+	if(!type || !type->GetNavSpace()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Height terrain nav-space remove type" );
+	SetShortInfo("Height terrain nav-space remove type");
 	
 	pNavSpace = type->GetNavSpace();
 	pNavSpace->AddReference();
@@ -58,10 +58,10 @@ pType( NULL )
 }
 
 meUHTNavSpaceTypeRemove::~meUHTNavSpaceTypeRemove(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
 }
@@ -73,9 +73,9 @@ meUHTNavSpaceTypeRemove::~meUHTNavSpaceTypeRemove(){
 
 
 void meUHTNavSpaceTypeRemove::Undo(){
-	pNavSpace->AddType( pType );
+	pNavSpace->AddType(pType);
 }
 
 void meUHTNavSpaceTypeRemove::Redo(){
-	pNavSpace->RemoveType( pType );
+	pNavSpace->RemoveType(pType);
 }

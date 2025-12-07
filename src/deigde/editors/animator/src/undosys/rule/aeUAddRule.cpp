@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAddRule::aeUAddRule( aeAnimator *animator, aeRule *rule, int index ){
-	if( ! animator || ! rule ){
-		DETHROW( deeInvalidParam );
+aeUAddRule::aeUAddRule(aeAnimator *animator, aeRule *rule, int index){
+	if(!animator || !rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pAnimator = NULL;
 	pRule = NULL;
 	pIndex = index;
 	
-	SetShortInfo( "Add rule" );
+	SetShortInfo("Add rule");
 	
 	pAnimator = animator;
 	animator->AddReference();
@@ -68,12 +68,12 @@ aeUAddRule::~aeUAddRule(){
 ///////////////
 
 void aeUAddRule::Undo(){
-	pAnimator->RemoveRule( pRule );
+	pAnimator->RemoveRule(pRule);
 }
 
 void aeUAddRule::Redo(){
-	pAnimator->InsertRuleAt( pRule, pIndex );
-	pAnimator->SetActiveRule( pRule );
+	pAnimator->InsertRuleAt(pRule, pIndex);
+	pAnimator->SetActiveRule(pRule);
 }
 
 
@@ -82,10 +82,10 @@ void aeUAddRule::Redo(){
 //////////////////////
 
 void aeUAddRule::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
-	if( pAnimator ){
+	if(pAnimator){
 		pAnimator->FreeReference();
 	}
 }

@@ -50,8 +50,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dealConfigXML::dealConfigXML( deLogger *logger, const char *loggerSource ) :
-dealBaseXML( logger, loggerSource ){
+dealConfigXML::dealConfigXML(deLogger *logger, const char *loggerSource) :
+dealBaseXML(logger, loggerSource){
 }
 
 dealConfigXML::~dealConfigXML(){
@@ -62,28 +62,28 @@ dealConfigXML::~dealConfigXML(){
 // Management
 ///////////////
 
-void dealConfigXML::ReadFromFile( decBaseFileReader &reader, dealConfiguration &config ){
+void dealConfigXML::ReadFromFile(decBaseFileReader &reader, dealConfiguration &config){
 	decXmlDocument::Ref xmldoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser parser( GetLogger() );
+	decXmlParser parser(GetLogger());
 	
-	parser.ParseXml( &reader, xmldoc );
+	parser.ParseXml(&reader, xmldoc);
 	
 	xmldoc->StripComments();
 	xmldoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmldoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "delaunchergui" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "delaunchergui") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void dealConfigXML::WriteToFile( decBaseFileWriter &writer, const dealConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void dealConfigXML::WriteToFile(decBaseFileWriter &writer, const dealConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	xmlWriter.WriteXMLDeclaration();
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -91,67 +91,67 @@ void dealConfigXML::WriteToFile( decBaseFileWriter &writer, const dealConfigurat
 // Private Functions
 //////////////////////
 
-void dealConfigXML::pWriteConfig( decXmlWriter &writer, const dealConfiguration &config ){
-	writer.WriteOpeningTag( "delaunchergui", false, true );
+void dealConfigXML::pWriteConfig(decXmlWriter &writer, const dealConfiguration &config){
+	writer.WriteOpeningTag("delaunchergui", false, true);
 	
-	pWriteWindow( writer, config.GetWindowMain(), "windowMain" );
+	pWriteWindow(writer, config.GetWindowMain(), "windowMain");
 	
-	writer.WriteClosingTag( "delaunchergui", true );
+	writer.WriteClosingTag("delaunchergui", true);
 }
 
-void dealConfigXML::pWriteWindow( decXmlWriter &writer, const dealConfigWindow &window, const char *tagName ){
-	writer.WriteOpeningTag( tagName, false, true );
+void dealConfigXML::pWriteWindow(decXmlWriter &writer, const dealConfigWindow &window, const char *tagName){
+	writer.WriteOpeningTag(tagName, false, true);
 	
-	writer.WriteDataTagInt( "x", window.GetX() );
-	writer.WriteDataTagInt( "y", window.GetY() );
-	writer.WriteDataTagInt( "width", window.GetWidth() );
-	writer.WriteDataTagInt( "height", window.GetHeight() );
+	writer.WriteDataTagInt("x", window.GetX());
+	writer.WriteDataTagInt("y", window.GetY());
+	writer.WriteDataTagInt("width", window.GetWidth());
+	writer.WriteDataTagInt("height", window.GetHeight());
 	
-	writer.WriteClosingTag( tagName, true );
+	writer.WriteClosingTag(tagName, true);
 }
 
 
 
-void dealConfigXML::pReadConfig( const decXmlElementTag &root, dealConfiguration &config ){
+void dealConfigXML::pReadConfig(const decXmlElementTag &root, dealConfiguration &config){
 	int e, elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "windowMain" ) == 0 ){
-				pReadWindow( *tag, config.GetWindowMain() );
+		if(tag){
+			if(strcmp(tag->GetName(), "windowMain") == 0){
+				pReadWindow(*tag, config.GetWindowMain());
 				
 			}else{
-				pErrorUnknownTag( root, *tag );
+				pErrorUnknownTag(root, *tag);
 			}
 		}
 	}
 }
 
-void dealConfigXML::pReadWindow( const decXmlElementTag &root, dealConfigWindow &window ){
+void dealConfigXML::pReadWindow(const decXmlElementTag &root, dealConfigWindow &window){
 	int e, elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "x" ) == 0 ){
-				window.SetX( pGetCDataInt( *tag ) );
+		if(tag){
+			if(strcmp(tag->GetName(), "x") == 0){
+				window.SetX(pGetCDataInt(*tag));
 				
-			}else if( strcmp( tag->GetName(), "y" ) == 0 ){
-				window.SetY( pGetCDataInt( *tag ) );
+			}else if(strcmp(tag->GetName(), "y") == 0){
+				window.SetY(pGetCDataInt(*tag));
 				
-			}else if( strcmp( tag->GetName(), "width" ) == 0 ){
-				window.SetWidth( pGetCDataInt( *tag ) );
+			}else if(strcmp(tag->GetName(), "width") == 0){
+				window.SetWidth(pGetCDataInt(*tag));
 				
-			}else if( strcmp( tag->GetName(), "height" ) == 0 ){
-				window.SetHeight( pGetCDataInt( *tag ) );
+			}else if(strcmp(tag->GetName(), "height") == 0){
+				window.SetHeight(pGetCDataInt(*tag));
 				
 			}else{
-				pErrorUnknownTag( root, *tag );
+				pErrorUnknownTag(root, *tag);
 			}
 		}
 	}

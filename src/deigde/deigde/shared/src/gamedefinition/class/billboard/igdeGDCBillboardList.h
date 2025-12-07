@@ -47,7 +47,7 @@ public:
 	igdeGDCBillboardList();
 	
 	/** \brief Create copy of a game definition class billboard list. */
-	igdeGDCBillboardList( const igdeGDCBillboardList &list );
+	igdeGDCBillboardList(const igdeGDCBillboardList &list);
 	
 	/** \brief Clean up list. */
 	~igdeGDCBillboardList();
@@ -61,31 +61,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Billboard by index. */
-	igdeGDCBillboard *GetAt( int index ) const;
+	igdeGDCBillboard *GetAt(int index) const;
 	
 	/** \brief Index of an billboard or -1 if not found. */
-	int IndexOf( igdeGDCBillboard *billboard ) const;
+	int IndexOf(igdeGDCBillboard *billboard) const;
 	
 	/** \brief Determines if an billboard exists. */
-	bool Has( igdeGDCBillboard *billboard ) const;
+	bool Has(igdeGDCBillboard *billboard) const;
 	
 	/** \brief Adds an billboard. */
-	void Add( igdeGDCBillboard *billboard );
+	void Add(igdeGDCBillboard *billboard);
 	
 	/** \brief Inserts a new billboard. */
-	void InsertAt( igdeGDCBillboard *billboard, int index );
+	void InsertAt(igdeGDCBillboard *billboard, int index);
 	
 	/** \brief Moves an billboard to a new position. */
-	void MoveTo( igdeGDCBillboard *billboard, int index );
+	void MoveTo(igdeGDCBillboard *billboard, int index);
 	
 	/** \brief Removes an billboard. */
-	void Remove( igdeGDCBillboard *billboard );
+	void Remove(igdeGDCBillboard *billboard);
 	
 	/** \brief Removes all billboards. */
 	void RemoveAll();
 	
 	/** \brief Set this list to a deep copy of another list. */
-	void SetToDeepCopyFrom( const igdeGDCBillboardList &list );
+	void SetToDeepCopyFrom(const igdeGDCBillboardList &list);
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set list from another list. */
-	igdeGDCBillboardList &operator=( const igdeGDCBillboardList &list );
+	igdeGDCBillboardList &operator=(const igdeGDCBillboardList &list);
 	/*@}*/
 };
 

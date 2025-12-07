@@ -58,13 +58,13 @@ public:
 	inline int GetTextureCoordinatesCount() const{ return pTextureCoordinatesCount; }
 	
 	/** \brief Set number of texture coordinates. */
-	void SetTextureCoordinatesCount( int count );
+	void SetTextureCoordinatesCount(int count);
 	
 	/** \brief Texture coordinates by index. */
-	const decVector2 &GetTextureCoordinatesAt( int index ) const;
+	const decVector2 &GetTextureCoordinatesAt(int index) const;
 	
 	/** \brief Set texture coordinates  by index. */
-	void SetTextureCoordinatesAt( int index, const decVector2 &textureCoordinates );
+	void SetTextureCoordinatesAt(int index, const decVector2 &textureCoordinates);
 	
 	/** \brief Pointer to the texture coordinates. */
 	inline decVector2 *GetTextureCoordinates() const{ return pTextureCoordinates; }

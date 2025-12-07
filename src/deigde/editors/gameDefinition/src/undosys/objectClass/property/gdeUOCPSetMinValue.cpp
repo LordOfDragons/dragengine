@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetMinValue::gdeUOCPSetMinValue( gdeObjectClass *objectClass, gdeProperty *property, float newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetMinValue::gdeUOCPSetMinValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set minimum value" );
+	SetShortInfo("Object class property set minimum value");
 	
 	pOldValue = property->GetMinimumValue();
 	pNewValue = newValue;
@@ -61,10 +61,10 @@ pProperty( NULL )
 }
 
 gdeUOCPSetMinValue::~gdeUOCPSetMinValue(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUOCPSetMinValue::~gdeUOCPSetMinValue(){
 ///////////////
 
 void gdeUOCPSetMinValue::Undo(){
-	pProperty->SetMinimumValue( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetMinimumValue(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetMinValue::Redo(){
-	pProperty->SetMinimumValue( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetMinimumValue(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

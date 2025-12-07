@@ -70,19 +70,19 @@ public:
 	int GetTypeCount() const;
 	
 	/** \brief Type at index. */
-	int GetTypeAt( int index ) const;
+	int GetTypeAt(int index) const;
 	
 	/**
 	 * \brief Index of type with type number.
 	 * \details Adds type if absent.
 	 */
-	int GetTypeWith( int typeNumber );
+	int GetTypeWith(int typeNumber);
 	
 	/**
 	 * \brief Index of type with type number.
 	 * \returns \em defaultValue if type is absent.
 	 */
-	int GetTypeWith( int typeNumber, int defaultValue ) const;
+	int GetTypeWith(int typeNumber, int defaultValue) const;
 	
 	/** \brief Remove all types. */
 	void RemoveAllTypes();

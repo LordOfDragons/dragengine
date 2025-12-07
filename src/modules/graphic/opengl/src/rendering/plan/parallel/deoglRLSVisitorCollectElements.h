@@ -65,9 +65,9 @@ private:
 	decVector pFrustumBoxMinExtend;
 	decVector pFrustumBoxMaxExtend;
 	
-	decVector pSplitMinExtend[ 4 ];
-	decVector pSplitMaxExtend[ 4 ];
-	decVector2 pSplitSizeThreshold[ 4 ];
+	decVector pSplitMinExtend[4];
+	decVector pSplitMaxExtend[4];
+	decVector2 pSplitSizeThreshold[4];
 	int pSplitCount;
 	
 	float pShaftFar;
@@ -78,14 +78,14 @@ private:
 	decVector pAbsAxisY;
 	decVector pAbsAxisZ;
 	
-	decVector pFrustumPlaneNormal[ 6 ];
-	decVector pFrustumPlaneNormalAbs[ 6 ];
-	double pFrustumPlaneDistance[ 6 ];
+	decVector pFrustumPlaneNormal[6];
+	decVector pFrustumPlaneNormalAbs[6];
+	double pFrustumPlaneDistance[6];
 	int pFrustumPlaneCount;
 	
-	decVector2 pEdgeNormal[ 5 ];
-	decVector2 pEdgeNormalAbs[ 5 ];
-	float pEdgeDistance[ 5 ];
+	decVector2 pEdgeNormal[5];
+	decVector2 pEdgeNormalAbs[5];
+	float pEdgeDistance[5];
 	int pEdgeCount;
 	
 	bool pCullLayerMask;
@@ -100,7 +100,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglRLSVisitorCollectElements( deoglCollideList &collideList );
+	deoglRLSVisitorCollectElements(deoglCollideList &collideList);
 	/*@}*/
 	
 	
@@ -138,35 +138,35 @@ public:
 	inline bool GetCullLayerMask() const{ return pCullLayerMask; }
 	
 	/** Set if layer mask is used for culling. */
-	void SetCullLayerMask( bool cull );
+	void SetCullLayerMask(bool cull);
 	
 	/** Layer mask. */
-	const decLayerMask &GetLayerMask(){ return pLayerMask; }
+	const decLayerMask &GetLayerMask(){return pLayerMask;}
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Init visitor from frustum. */
-	void InitFromFrustum( deoglRenderPlan &plan, deoglRSkyInstanceLayer &skyLayer, float backtrack );
+	void InitFromFrustum(deoglRenderPlan &plan, deoglRSkyInstanceLayer &skyLayer, float backtrack);
 	
 	/** Init visitor from box. */
-	void InitFromGIBox( const decDVector &position, const decVector &detectionBox,
-		deoglRSkyInstanceLayer &skyLayer, float backtrack );
+	void InitFromGIBox(const decDVector &position, const decVector &detectionBox,
+		deoglRSkyInstanceLayer &skyLayer, float backtrack);
 	
 	/** Add split to check. */
-	void AddSplit( const decVector &minExtend, const decVector &maxExtend, const decVector2 &sizeThreshold );
+	void AddSplit(const decVector &minExtend, const decVector &maxExtend, const decVector2 &sizeThreshold);
 	
 	/** Add occlusion test input data. */
-	void AddOcclusionTestInputData( deoglOcclusionTest *occlusionTest, const decDVector &referencePosition );
+	void AddOcclusionTestInputData(deoglOcclusionTest *occlusionTest, const decDVector &referencePosition);
 	
 	/** Visit world octree using visitor. */
-	void VisitWorldOctree( deoglWorldOctree &octree );
+	void VisitWorldOctree(deoglWorldOctree &octree);
 	
 	/** Visit height terrain view. */
-	void VisitHTView( const deoglHTView &htview );
+	void VisitHTView(const deoglHTView &htview);
 	
 	/** Visit prop fields view. */
-	void VisitPropFields( const deoglRWorld &world );
+	void VisitPropFields(const deoglRWorld &world);
 	/*@}*/
 	
 	
@@ -174,20 +174,20 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit an octree node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	virtual void VisitNode(deoglDOctree *node, int intersection);
 	
 	/** Test axis aligned box for visibility. */
-	bool TestAxisAlignedBox( const decDVector &minExtend, const decDVector &maxExtend );
+	bool TestAxisAlignedBox(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** Test axis aligned box for visibility and store the shadow box split extends to be written to the element. */
-	bool TestAxisAlignedBox( const decDVector &minExtend, const decDVector &maxExtend, int &splitMask );
+	bool TestAxisAlignedBox(const decDVector &minExtend, const decDVector &maxExtend, int &splitMask);
 	/*@}*/
 	
 	
 	
 private:
-	void pVisitComponents( const deoglWorldOctree &sonode );
-	void pVisitBillboards( const deoglWorldOctree &sonode );
+	void pVisitComponents(const deoglWorldOctree &sonode);
+	void pVisitBillboards(const deoglWorldOctree &sonode);
 };
 
 #endif

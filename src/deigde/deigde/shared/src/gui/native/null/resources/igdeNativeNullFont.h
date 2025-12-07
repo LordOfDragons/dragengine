@@ -45,7 +45,7 @@ public:
 	virtual ~igdeNativeNullFont();
 	
 	/** \brief Create native font. */
-	static igdeNativeNullFont* CreateNativeFont( igdeFont &owner );
+	static igdeNativeNullFont* CreateNativeFont(igdeFont &owner);
 	
 	/** \brief Destroy native font. */
 	virtual void DestroyNativeFont();
@@ -58,7 +58,7 @@ public:
 	virtual deFont *CreateEngineFont();
 	
 	/** \brief Text size. */
-	virtual decPoint TextSize( const char *text ) const;
+	virtual decPoint TextSize(const char *text) const;
 	/*@}*/
 };
 

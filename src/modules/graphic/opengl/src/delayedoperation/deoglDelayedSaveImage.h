@@ -49,8 +49,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create delayed save image object. */
-	deoglDelayedSaveImage( const decPath &path, int width, int height, int depth,
-		int componentCount, int bitCount, char *data );
+	deoglDelayedSaveImage(const decPath &path, int width, int height, int depth,
+		int componentCount, int bitCount, char *data);
 	
 	/** Clean up delayed save image object. */
 	~deoglDelayedSaveImage();
@@ -64,7 +64,7 @@ public:
 	 * Save image to virtual file system.
 	 * \details This has to be called during main thread.
 	 */
-	void SaveImage( deGraphicOpenGl &ogl, deVirtualFileSystem &vfs );
+	void SaveImage(deGraphicOpenGl &ogl, deVirtualFileSystem &vfs);
 	/*@}*/
 };
 

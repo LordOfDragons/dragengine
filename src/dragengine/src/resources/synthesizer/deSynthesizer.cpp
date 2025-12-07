@@ -43,17 +43,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSynthesizer::deSynthesizer( deSynthesizerManager *manager ) :
-deResource( manager ),
-pChannelCount( 1 ),
-pSampleRate( 44100 ),
-pBytesPerSample( 2 ),
-pSampleCount( pSampleRate * 10 ),
-pPeerSynthesizer( NULL ){
+deSynthesizer::deSynthesizer(deSynthesizerManager *manager) :
+deResource(manager),
+pChannelCount(1),
+pSampleRate(44100),
+pBytesPerSample(2),
+pSampleCount(pSampleRate * 10),
+pPeerSynthesizer(NULL){
 }
 
 deSynthesizer::~deSynthesizer(){
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		delete pPeerSynthesizer;
 		pPeerSynthesizer = NULL;
 	}
@@ -68,66 +68,66 @@ deSynthesizer::~deSynthesizer(){
 // Management
 ///////////////
 
-void deSynthesizer::SetChannelCount( int channelCount ){
-	if( channelCount < 1 ){
-		DETHROW( deeInvalidParam );
+void deSynthesizer::SetChannelCount(int channelCount){
+	if(channelCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( channelCount == pChannelCount ){
+	if(channelCount == pChannelCount){
 		return;
 	}
 	
 	pChannelCount = channelCount;
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->ParametersChanged();
 	}
 }
 
-void deSynthesizer::SetSampleRate( int sampleRate ){
-	if( sampleRate < 1 ){
-		DETHROW( deeInvalidParam );
+void deSynthesizer::SetSampleRate(int sampleRate){
+	if(sampleRate < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( sampleRate == pSampleRate ){
+	if(sampleRate == pSampleRate){
 		return;
 	}
 	
 	pSampleRate = sampleRate;
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->ParametersChanged();
 	}
 }
 
-void deSynthesizer::SetBytesPerSample( int bytesPerSample ){
-	if( bytesPerSample < 1 ){
-		DETHROW( deeInvalidParam );
+void deSynthesizer::SetBytesPerSample(int bytesPerSample){
+	if(bytesPerSample < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( bytesPerSample == pBytesPerSample ){
+	if(bytesPerSample == pBytesPerSample){
 		return;
 	}
 	
 	pBytesPerSample = bytesPerSample;
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->ParametersChanged();
 	}
 }
 
-void deSynthesizer::SetSampleCount( int sampleCount ){
-	if( sampleCount < 1 ){
-		DETHROW( deeInvalidParam );
+void deSynthesizer::SetSampleCount(int sampleCount){
+	if(sampleCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( sampleCount == pSampleCount ){
+	if(sampleCount == pSampleCount){
 		return;
 	}
 	
 	pSampleCount = sampleCount;
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->ParametersChanged();
 	}
 }
@@ -141,20 +141,20 @@ int deSynthesizer::GetControllerCount() const{
 	return pControllers.GetCount();
 }
 
-deSynthesizerController *deSynthesizer::GetControllerAt( int index ) const{
-	return ( deSynthesizerController* )pControllers.GetAt( index );
+deSynthesizerController *deSynthesizer::GetControllerAt(int index) const{
+	return (deSynthesizerController*)pControllers.GetAt(index);
 }
 
-int deSynthesizer::IndexOfController( deSynthesizerController *controller ) const{
-	return pControllers.IndexOf( controller );
+int deSynthesizer::IndexOfController(deSynthesizerController *controller) const{
+	return pControllers.IndexOf(controller);
 }
 
-int deSynthesizer::IndexOfControllerNamed( const char *name ) const{
+int deSynthesizer::IndexOfControllerNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deSynthesizerController* )pControllers.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((deSynthesizerController*)pControllers.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -162,26 +162,26 @@ int deSynthesizer::IndexOfControllerNamed( const char *name ) const{
 	return -1;
 }
 
-bool deSynthesizer::HasController( deSynthesizerController *controller ) const{
-	return pControllers.Has( controller );
+bool deSynthesizer::HasController(deSynthesizerController *controller) const{
+	return pControllers.Has(controller);
 }
 
-void deSynthesizer::AddController( deSynthesizerController *controller ){
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+void deSynthesizer::AddController(deSynthesizerController *controller){
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->ControllersChanged();
 	}
 }
 
-void deSynthesizer::RemoveController( deSynthesizerController *controller ){
-	pControllers.Remove( controller );
+void deSynthesizer::RemoveController(deSynthesizerController *controller){
+	pControllers.Remove(controller);
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->ControllersChanged();
 	}
 }
@@ -189,13 +189,13 @@ void deSynthesizer::RemoveController( deSynthesizerController *controller ){
 void deSynthesizer::RemoveAllControllers(){
 	pControllers.RemoveAll();
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->ControllersChanged();
 	}
 }
 
 void deSynthesizer::NotifyControllersChanged(){
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->ControllersChanged();
 	}
 }
@@ -209,34 +209,34 @@ int deSynthesizer::GetLinkCount() const{
 	return pLinks.GetCount();
 }
 
-deSynthesizerLink *deSynthesizer::GetLinkAt( int index ) const{
-	return ( deSynthesizerLink* )pLinks.GetAt( index );
+deSynthesizerLink *deSynthesizer::GetLinkAt(int index) const{
+	return (deSynthesizerLink*)pLinks.GetAt(index);
 }
 
-int deSynthesizer::IndexOfLink( deSynthesizerLink *link ) const{
-	return pLinks.IndexOf( link );
+int deSynthesizer::IndexOfLink(deSynthesizerLink *link) const{
+	return pLinks.IndexOf(link);
 }
 
-bool deSynthesizer::HasLink( deSynthesizerLink *link ) const{
-	return pLinks.Has( link );
+bool deSynthesizer::HasLink(deSynthesizerLink *link) const{
+	return pLinks.Has(link);
 }
 
-void deSynthesizer::AddLink( deSynthesizerLink *link ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+void deSynthesizer::AddLink(deSynthesizerLink *link){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLinks.Add( link );
+	pLinks.Add(link);
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->LinksChanged();
 	}
 }
 
-void deSynthesizer::RemoveLink( deSynthesizerLink *link ){
-	pLinks.Remove( link );
+void deSynthesizer::RemoveLink(deSynthesizerLink *link){
+	pLinks.Remove(link);
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->LinksChanged();
 	}
 }
@@ -244,13 +244,13 @@ void deSynthesizer::RemoveLink( deSynthesizerLink *link ){
 void deSynthesizer::RemoveAllLinks(){
 	pLinks.RemoveAll();
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->LinksChanged();
 	}
 }
 
 void deSynthesizer::NotifyLinksChanged(){
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->LinksChanged();
 	}
 }
@@ -264,34 +264,34 @@ int deSynthesizer::GetSourceCount() const{
 	return pSources.GetCount();
 }
 
-deSynthesizerSource *deSynthesizer::GetSourceAt( int index ) const{
-	return ( deSynthesizerSource* )pSources.GetAt( index );
+deSynthesizerSource *deSynthesizer::GetSourceAt(int index) const{
+	return (deSynthesizerSource*)pSources.GetAt(index);
 }
 
-int deSynthesizer::IndexOfSource( deSynthesizerSource *source ) const{
-	return pSources.IndexOf( source );
+int deSynthesizer::IndexOfSource(deSynthesizerSource *source) const{
+	return pSources.IndexOf(source);
 }
 
-bool deSynthesizer::HasSource( deSynthesizerSource *source ) const{
-	return pSources.Has( source );
+bool deSynthesizer::HasSource(deSynthesizerSource *source) const{
+	return pSources.Has(source);
 }
 
-void deSynthesizer::AddSource( deSynthesizerSource *source ){
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+void deSynthesizer::AddSource(deSynthesizerSource *source){
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pSources.Add( source );
+	pSources.Add(source);
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->SourcesChanged();
 	}
 }
 
-void deSynthesizer::RemoveSource( deSynthesizerSource *source ){
-	pSources.Remove( source );
+void deSynthesizer::RemoveSource(deSynthesizerSource *source){
+	pSources.Remove(source);
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->SourcesChanged();
 	}
 }
@@ -299,13 +299,13 @@ void deSynthesizer::RemoveSource( deSynthesizerSource *source ){
 void deSynthesizer::RemoveAllSources(){
 	pSources.RemoveAll();
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->SourcesChanged();
 	}
 }
 
 void deSynthesizer::NotifySourcesChanged(){
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->SourcesChanged();
 	}
 }
@@ -315,12 +315,12 @@ void deSynthesizer::NotifySourcesChanged(){
 // System Peers
 /////////////////
 
-void deSynthesizer::SetPeerSynthesizer( deBaseSynthesizerSynthesizer *peer ){
-	if( peer == pPeerSynthesizer ){
+void deSynthesizer::SetPeerSynthesizer(deBaseSynthesizerSynthesizer *peer){
+	if(peer == pPeerSynthesizer){
 		return;
 	}
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		delete pPeerSynthesizer;
 	}
 	pPeerSynthesizer = peer;

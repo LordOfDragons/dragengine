@@ -51,9 +51,9 @@ private:
 		const seProperty::Ref property;
 		const int mappedComponent;
 		
-		sDependency( seProperty *aproperty, int amappedComponent ) :
-		property( aproperty ),
-		mappedComponent( amappedComponent ){ };
+		sDependency(seProperty *aproperty, int amappedComponent) :
+		property(aproperty),
+		mappedComponent(amappedComponent){};
 	};
 	
 	
@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedRemove( seMapped *mapped );
+	seUMappedRemove(seMapped *mapped);
 	
 protected:
 	/** Clean up undo. */

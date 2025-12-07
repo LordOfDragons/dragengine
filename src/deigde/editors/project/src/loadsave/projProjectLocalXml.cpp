@@ -47,8 +47,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-projProjectLocalXml::projProjectLocalXml( deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ){
+projProjectLocalXml::projProjectLocalXml(deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource){
 }
 
 projProjectLocalXml::~projProjectLocalXml(){
@@ -59,26 +59,26 @@ projProjectLocalXml::~projProjectLocalXml(){
 // Management
 ///////////////
 
-void projProjectLocalXml::ReadFromFile( decBaseFileReader &reader, projProject &project ){
+void projProjectLocalXml::ReadFromFile(decBaseFileReader &reader, projProject &project){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "projectLocal" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "projectLocal") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadProjectLocal( *root, project );
+	pReadProjectLocal(*root, project);
 }
 
-void projProjectLocalXml::WriteToFile( decBaseFileWriter &writer, const projProject &project ){
-	decXmlWriter xmlWriter( &writer );
+void projProjectLocalXml::WriteToFile(decBaseFileWriter &writer, const projProject &project){
+	decXmlWriter xmlWriter(&writer);
 	xmlWriter.WriteXMLDeclaration();
-	pWriteProjectLocal( xmlWriter, project );
+	pWriteProjectLocal(xmlWriter, project);
 }
 
 
@@ -86,56 +86,56 @@ void projProjectLocalXml::WriteToFile( decBaseFileWriter &writer, const projProj
 // Private Functions
 //////////////////////
 
-void projProjectLocalXml::pWriteProjectLocal( decXmlWriter &writer,
-const projProject &project ){
-	writer.WriteOpeningTag( "projectLocal" );
+void projProjectLocalXml::pWriteProjectLocal(decXmlWriter &writer,
+const projProject &project){
+	writer.WriteOpeningTag("projectLocal");
 	
-	if( project.GetActiveProfile() ){
-		writer.WriteDataTagString( "activeProfile", project.GetActiveProfile()->GetName() );
+	if(project.GetActiveProfile()){
+		writer.WriteDataTagString("activeProfile", project.GetActiveProfile()->GetName());
 	}
 	
-	if( ! project.GetActiveLaunchProfile().IsEmpty() ){
-		writer.WriteDataTagString( "launchProfile", project.GetActiveLaunchProfile() );
+	if(!project.GetActiveLaunchProfile().IsEmpty()){
+		writer.WriteDataTagString("launchProfile", project.GetActiveLaunchProfile());
 	}
 	
-	writer.WriteClosingTag( "projectLocal" );
+	writer.WriteClosingTag("projectLocal");
 }
 
 
 
-void projProjectLocalXml::pReadProjectLocal( const decXmlElementTag &root,
-projProject &project ){
+void projProjectLocalXml::pReadProjectLocal(const decXmlElementTag &root,
+projProject &project){
 	const int count = root.GetElementCount();
 	decString activeProfile;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
 		
-		if( tagName == "activeProfile" ){
-			activeProfile = GetCDataString( *tag );
+		if(tagName == "activeProfile"){
+			activeProfile = GetCDataString(*tag);
 			
-		}else if( tagName == "launchProfile" ){
-			project.SetActiveLaunchProfile( GetCDataString( *tag ) );
+		}else if(tagName == "launchProfile"){
+			project.SetActiveLaunchProfile(GetCDataString(*tag));
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 	
 	// select active profile
 	const projProfileList &profiles = project.GetProfiles();
 	
-	if( ! activeProfile.IsEmpty() ){
-		project.SetActiveProfile( profiles.GetNamed( activeProfile ) );
+	if(!activeProfile.IsEmpty()){
+		project.SetActiveProfile(profiles.GetNamed(activeProfile));
 	}
 	
-	if( ! project.GetActiveProfile() && profiles.GetCount() > 0 ){
-		project.SetActiveProfile( profiles.GetAt( 0 ) );
+	if(!project.GetActiveProfile() && profiles.GetCount() > 0){
+		project.SetActiveProfile(profiles.GetAt(0));
 	}
 }

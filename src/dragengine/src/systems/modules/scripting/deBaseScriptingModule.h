@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new module. */
-	deBaseScriptingModule( deLoadableModule &loadableModule );
+	deBaseScriptingModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseScriptingModule();
@@ -101,7 +101,7 @@ public:
 	 * The sript version to be compatible against can be queried using
 	 * deScriptingSystem::GetScriptVersion().
 	 */
-	virtual bool Init( const char *scriptDirectory, const char *gameObject ) = 0;
+	virtual bool Init(const char *scriptDirectory, const char *gameObject) = 0;
 	
 	/** \brief Shut down scripting module and frees all resources. */
 	virtual void ShutDown() = 0;
@@ -112,38 +112,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create peer for the given collider object. */
-	virtual deBaseScriptingCollider *CreateCollider( deCollider *collider ) = 0;
+	virtual deBaseScriptingCollider *CreateCollider(deCollider *collider) = 0;
 	
 	/** \brief Create peer for the given server object. */
-	virtual deBaseScriptingServer *CreateServer( deServer *server ) = 0;
+	virtual deBaseScriptingServer *CreateServer(deServer *server) = 0;
 	
 	/** \brief Create peer for the given connection object. */
-	virtual deBaseScriptingConnection *CreateConnection( deConnection *connection ) = 0;
+	virtual deBaseScriptingConnection *CreateConnection(deConnection *connection) = 0;
 	
 	/** \brief Create peer for the given network state object. */
-	virtual deBaseScriptingNetworkState *CreateNetworkState( deNetworkState *state ) = 0;
+	virtual deBaseScriptingNetworkState *CreateNetworkState(deNetworkState *state) = 0;
 	
 	/** \brief Create peer for the given touch sensor object. */
-	virtual deBaseScriptingTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor ) = 0;
+	virtual deBaseScriptingTouchSensor *CreateTouchSensor(deTouchSensor *touchSensor) = 0;
 	
 	/** \brief Create peer for the given prop field object. */
-	virtual deBaseScriptingPropField *CreatePropField( dePropField *propField ) = 0;
+	virtual deBaseScriptingPropField *CreatePropField(dePropField *propField) = 0;
 	
 	/** \brief Create peer for the given particle emitter instance object or NULL if not used. */
 	virtual deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance(
-		deParticleEmitterInstance *instance ) = 0;
+		deParticleEmitterInstance *instance) = 0;
 	
 	/** \brief Create deSoundLevelMeter peer. */
-	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter ) = 0;
+	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter) = 0;
 	
 	/** \brief Create deSpeaker peer. */
-	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker ) = 0;
+	virtual deBaseScriptingSpeaker *CreateSpeaker(deSpeaker *speaker) = 0;
 	
 	/**
 	 * \brief Create deService peer.
 	 * \version 1.23
 	 */
-	virtual deBaseScriptingService *CreateService( deService *service );
+	virtual deBaseScriptingService *CreateService(deService *service);
 	
 	/**
 	 * \brief Initialize game scripts.
@@ -179,7 +179,7 @@ public:
 	 * \brief Send the given event to game scripts.
 	 * \return true if the call has been successfull or false otherwise
 	 */
-	virtual bool SendEvent( deInputEvent *event ) = 0;
+	virtual bool SendEvent(deInputEvent *event) = 0;
 	
 	/**
 	 * \brief User requested window to be closed.
@@ -214,7 +214,7 @@ public:
 	 *   The user overlay directory is always aded after this stage. Hence user
 	 *   overlay content is always used first before any other content.
 	 */
-	virtual void AddVFSContainers( deVirtualFileSystem &vfs, const char *stage );
+	virtual void AddVFSContainers(deVirtualFileSystem &vfs, const char *stage);
 	/*@}*/
 };
 

@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deModioParameter( deModio &module );
+	deModioParameter(deModio &module);
 	
 	/** Clean up parameter. */
 	virtual ~deModioParameter();
@@ -58,7 +58,7 @@ public:
 	virtual decString GetParameterValue() = 0;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value ) = 0;
+	virtual void SetParameterValue(const char *value) = 0;
 	/*@}*/
 };
 

@@ -39,7 +39,7 @@ igdeNativeNullTabBook::igdeNativeNullTabBook(){
 igdeNativeNullTabBook::~igdeNativeNullTabBook(){
 }
 
-igdeNativeNullTabBook *igdeNativeNullTabBook::CreateNativeWidget( igdeTabBook& ){
+igdeNativeNullTabBook *igdeNativeNullTabBook::CreateNativeWidget(igdeTabBook&){
 	return new igdeNativeNullTabBook;
 }
 
@@ -55,16 +55,16 @@ void igdeNativeNullTabBook::DestroyNativeWidget(){
 // Management
 ///////////////
 
-void igdeNativeNullTabBook::AddHeader( const igdeTabBook::cHeader & ){
+void igdeNativeNullTabBook::AddHeader(const igdeTabBook::cHeader &){
 }
 
-void igdeNativeNullTabBook::RemoveHeader( int ){
+void igdeNativeNullTabBook::RemoveHeader(int){
 }
 
 void igdeNativeNullTabBook::RemoveAllHeaders(){
 }
 
-void igdeNativeNullTabBook::ChangePanel( int ){
+void igdeNativeNullTabBook::ChangePanel(int){
 }
 
 void *igdeNativeNullTabBook::GetNativeContainer(){

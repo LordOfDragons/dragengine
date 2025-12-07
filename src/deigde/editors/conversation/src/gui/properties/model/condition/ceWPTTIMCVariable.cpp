@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCVariable::ceWPTTIMCVariable( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionVariable *condition ) :
-ceWPTTIMCondition( windowMain, etConditionVariable, conversation, action, condition )
+ceWPTTIMCVariable::ceWPTTIMCVariable(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionVariable *condition) :
+ceWPTTIMCondition(windowMain, etConditionVariable, conversation, action, condition)
 {
-	SetIcon( windowMain.GetIconConditionVariable() );
+	SetIcon(windowMain.GetIconConditionVariable());
 	Update();
 }
 
@@ -57,8 +57,8 @@ ceWPTTIMCVariable::~ceWPTTIMCVariable(){
 // Management
 ///////////////
 
-const char *ceWPTTIMCVariable::GetOperatorText( ceCConditionVariable::eOperators anOperator ){
-	switch( anOperator ){
+const char *ceWPTTIMCVariable::GetOperatorText(ceCConditionVariable::eOperators anOperator){
+	switch(anOperator){
 	case ceCConditionVariable::eopEqual:
 		return "=";
 		
@@ -78,7 +78,7 @@ const char *ceWPTTIMCVariable::GetOperatorText( ceCConditionVariable::eOperators
 		return ">=";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -86,14 +86,14 @@ void ceWPTTIMCVariable::Update(){
 	const ceCConditionVariable &condition = *GetConditionVariable();
 	decString text;
 	
-	if( ! condition.GetTestVariable().IsEmpty() ){
-		text.Format( "Variable '%s' %s '%s'", condition.GetVariable().GetString(),
-			GetOperatorText( condition.GetOperator() ), condition.GetTestVariable().GetString() );
+	if(!condition.GetTestVariable().IsEmpty()){
+		text.Format("Variable '%s' %s '%s'", condition.GetVariable().GetString(),
+			GetOperatorText(condition.GetOperator()), condition.GetTestVariable().GetString());
 		
 	}else{
-		text.Format( "Variable '%s' %s %d", condition.GetVariable().GetString(),
-			GetOperatorText( condition.GetOperator() ), condition.GetTestValue() );
+		text.Format("Variable '%s' %s %d", condition.GetVariable().GetString(),
+			GetOperatorText(condition.GetOperator()), condition.GetTestValue());
 	}
 	
-	SetText( text );
+	SetText(text);
 }

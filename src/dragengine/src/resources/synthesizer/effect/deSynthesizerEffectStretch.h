@@ -73,25 +73,25 @@ public:
 	inline float GetMinTime() const{ return pMinTime; }
 	
 	/** \brief Set minimum time stretch factor. */
-	void SetMinTime( float stretch );
+	void SetMinTime(float stretch);
 	
 	/** \brief Maximum time stretch factor. */
 	inline float GetMaxTime() const{ return pMaxTime; }
 	
 	/** \brief Set maximum time stretch factor. */
-	void SetMaxTime( float stretch );
+	void SetMaxTime(float stretch);
 	
 	/** \brief Minimum pitch shift factor. */
 	inline float GetMinPitch() const{ return pMinPitch; }
 	
 	/** \brief Set minimum pitch shift factor. */
-	void SetMinPitch( float shift );
+	void SetMinPitch(float shift);
 	
 	/** \brief Maximum pitch shift factor. */
 	inline float GetMaxPitch() const{ return pMaxPitch; }
 	
 	/** \brief Set maximum pitch shift factor. */
-	void SetMaxPitch( float shift );
+	void SetMaxPitch(float shift);
 	
 	
 	
@@ -109,7 +109,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deSynthesizerEffectVisitor &visitor );
+	virtual void Visit(deSynthesizerEffectVisitor &visitor);
 	/*@}*/
 };
 

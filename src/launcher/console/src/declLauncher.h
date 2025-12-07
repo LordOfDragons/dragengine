@@ -74,7 +74,7 @@ public:
 	inline const decUnicodeArgumentList &GetArgumentList() const{ return pArgList; }
 	
 	/** Add argument to the command line argument list. */
-	void AddArgument( const decUnicodeString &argument );
+	void AddArgument(const decUnicodeString &argument);
 	
 	/** Configuration. */
 	inline declConfiguration &GetConfiguration() const{ return *pConfiguration; }

@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	feWPFont( feWindowProperties &windowProperties );
+	feWPFont(feWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
 	virtual ~feWPFont();
@@ -74,7 +74,7 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	
 	/** \brief Update font. */
 	void UpdateFont();

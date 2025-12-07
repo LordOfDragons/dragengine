@@ -56,8 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object camera. */
-	gdeVAOCamera( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCCamera *occamera );
+	gdeVAOCamera(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCCamera *occamera);
 	
 protected:
 	/**

@@ -54,7 +54,7 @@ public:
 	delFileFormat();
 	
 	/** \brief Create file format. */
-	delFileFormat( deModuleSystem::eModuleTypes type, const char *pattern );
+	delFileFormat(deModuleSystem::eModuleTypes type, const char *pattern);
 	
 protected:
 	/** \brief Clean up file format. */
@@ -70,19 +70,19 @@ public:
 	inline deModuleSystem::eModuleTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( deModuleSystem::eModuleTypes type );
+	void SetType(deModuleSystem::eModuleTypes type);
 	
 	/** \brief Pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief File format is supported. */
 	inline bool GetSupported() const{ return pSupported; }
 	
 	/** \brief Set if file format is supported. */
-	void SetSupported( bool supported );
+	void SetSupported(bool supported);
 	/*@}*/
 };
 

@@ -34,7 +34,7 @@
  * \brief FOX toolkit Native tree item.
  */
 class igdeNativeFoxTreeItem : public FXTreeItem{
-	FXDECLARE( igdeNativeFoxTreeItem )
+	FXDECLARE(igdeNativeFoxTreeItem)
 protected:
 	   igdeNativeFoxTreeItem();
 	
@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxTreeItem( igdeTreeItem &owner );
+	igdeNativeFoxTreeItem(igdeTreeItem &owner);
 	
 	/** \brief Clean up native widget. */
 	~igdeNativeFoxTreeItem() override;

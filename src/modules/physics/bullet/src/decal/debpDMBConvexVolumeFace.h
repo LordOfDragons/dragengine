@@ -55,7 +55,7 @@ public:
 	/** Determines if this face is a decal face. */
 	inline bool GetDecalFace() const{ return pDecalFace; }
 	/** Sets if this face is a decal face. */
-	void SetDecalFace( bool decalFace );
+	void SetDecalFace(bool decalFace);
 	/*@}*/
 };
 

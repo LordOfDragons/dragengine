@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxRigBone( fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel );
+	fbxRigBone(fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel);
 	
 protected:
 	/** \brief Clean up connection. */
@@ -105,10 +105,10 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Set bone name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Node model ID. */
 	inline int64_t GetNodeModelID() const{ return pNodeModelID; }
@@ -146,7 +146,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

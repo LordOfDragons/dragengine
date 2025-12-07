@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky controller target. */
-	deoglRSkyControllerTarget( const deSkyControllerTarget &target );
+	deoglRSkyControllerTarget(const deSkyControllerTarget &target);
 	
 	/** Clean up sky controller target. */
 	~deoglRSkyControllerTarget();
@@ -58,10 +58,10 @@ public:
 	inline int GetLinkCount() const{ return pLinkCount; }
 	
 	/** Link at index. */
-	int GetLinkAt( int index ) const;
+	int GetLinkAt(int index) const;
 	
 	/** Value of target. */
-	float GetValue( const deoglRSkyInstance &instance, float defaultValue ) const;
+	float GetValue(const deoglRSkyInstance &instance, float defaultValue) const;
 	/*@}*/
 };
 

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
-	meViewEditorNavigation( meView3D &view );
+	meViewEditorNavigation(meView3D &view);
 	/** Cleans up the view editor. */
 	virtual ~meViewEditorNavigation();
 	/*@}*/
@@ -69,13 +69,13 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** The right mouse button has been pressed. Return true if handled. */
-	virtual void OnRightMouseButtonPress( int x, int y, bool shift, bool control );
+	virtual void OnRightMouseButtonPress(int x, int y, bool shift, bool control);
 	/** The right mouse button has been released. Return true if handled. */
-	virtual void OnRightMouseButtonRelease( int x, int y, bool shift, bool control );
+	virtual void OnRightMouseButtonRelease(int x, int y, bool shift, bool control);
 	/** The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	virtual void OnMouseMove(int x, int y, bool shift, bool control);
 	/** The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
-	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	virtual void OnMouseWheel(int steps, bool shift, bool control);
 	/*@}*/
 };
 

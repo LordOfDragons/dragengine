@@ -38,23 +38,23 @@
 ////////////////
 
 decPoint::decPoint() :
-x( 0 ),
-y( 0 ){
+x(0),
+y(0){
 }
 
-decPoint::decPoint( int nx, int ny ) :
-x( nx ),
-y( ny ){
+decPoint::decPoint(int nx, int ny) :
+x(nx),
+y(ny){
 }
 
-decPoint::decPoint( const decPoint &p ) :
-x( p.x ),
-y( p.y ){
+decPoint::decPoint(const decPoint &p) :
+x(p.x),
+y(p.y){
 }
 
-decPoint::decPoint( const decVector2 &v ) :
-x( ( int )v.x ),
-y( ( int )v.y ){
+decPoint::decPoint(const decVector2 &v) :
+x((int)v.x),
+y((int)v.y){
 }
 
 
@@ -63,7 +63,7 @@ y( ( int )v.y ){
 ///////////////
 
 float decPoint::Length() const{
-	return sqrtf( ( float )( x * x + y * y ) );
+	return sqrtf((float)(x * x + y * y));
 }
 
 void decPoint::SetZero(){
@@ -71,68 +71,68 @@ void decPoint::SetZero(){
 	y = 0;
 }
 
-void decPoint::Set( int nx, int ny ){
+void decPoint::Set(int nx, int ny){
 	x = nx;
 	y = ny;
 }
 
 decPoint decPoint::Absolute() const{
-	return decPoint( x < 0 ? -x : x, y < 0 ? -y : y );
+	return decPoint(x < 0 ? -x : x, y < 0 ? -y : y);
 }
 
-void decPoint::SetSmallest( const decPoint &p ){
-	if( p.x < x ){
+void decPoint::SetSmallest(const decPoint &p){
+	if(p.x < x){
 		x = p.x;
 	}
-	if( p.y < y ){
+	if(p.y < y){
 		y = p.y;
 	}
 }
 
-decPoint decPoint::Smallest( const decPoint &p ) const{
+decPoint decPoint::Smallest(const decPoint &p) const{
 	return decPoint(
-		( x < p.x ) ? x : p.x,
-		( y < p.y ) ? y : p.y
-	);
+		(x < p.x) ? x : p.x,
+		(y < p.y) ? y : p.y
+);
 }
 
-void decPoint::SetLargest( const decPoint &p ){
-	if( p.x > x ){
+void decPoint::SetLargest(const decPoint &p){
+	if(p.x > x){
 		x = p.x;
 	}
-	if( p.y > y ){
+	if(p.y > y){
 		y = p.y;
 	}
 }
 
-decPoint decPoint::Largest( const decPoint &p ) const{
+decPoint decPoint::Largest(const decPoint &p) const{
 	return decPoint(
-		( x > p.x ) ? x : p.x,
-		( y > p.y ) ? y : p.y
-	);
+		(x > p.x) ? x : p.x,
+		(y > p.y) ? y : p.y
+);
 }
 
-void decPoint::SetClamped( const decPoint &minValue, const decPoint &maxValue ){
-	if( x < minValue.x ){
+void decPoint::SetClamped(const decPoint &minValue, const decPoint &maxValue){
+	if(x < minValue.x){
 		x = minValue.x;
 		
-	}else if( x > maxValue.x ){
+	}else if(x > maxValue.x){
 		x = maxValue.x;
 	}
 	
-	if( y < minValue.y ){
+	if(y < minValue.y){
 		y = minValue.y;
 		
-	}else if( y > maxValue.y ){
+	}else if(y > maxValue.y){
 		y = maxValue.y;
 	}
 }
 
-decPoint decPoint::Clamped( const decPoint &minValue, const decPoint &maxValue ) const{
+decPoint decPoint::Clamped(const decPoint &minValue, const decPoint &maxValue) const{
 	return decPoint(
-		( x < minValue.x ) ? minValue.x : ( ( x > maxValue.x ) ? maxValue.x : x ),
-		( y < minValue.y ) ? minValue.y : ( ( y > maxValue.y ) ? maxValue.y : y )
-	);
+		(x < minValue.x) ? minValue.x : ((x > maxValue.x) ? maxValue.x : x),
+		(y < minValue.y) ? minValue.y : ((y > maxValue.y) ? maxValue.y : y)
+);
 }
 
 
@@ -141,85 +141,85 @@ decPoint decPoint::Clamped( const decPoint &minValue, const decPoint &maxValue )
 //////////////
 
 decPoint decPoint::operator-() const{
-	return decPoint( -x, -y );
+	return decPoint(-x, -y);
 }
 
-decPoint &decPoint::operator=( const decPoint &p ){
+decPoint &decPoint::operator=(const decPoint &p){
 	x = p.x;
 	y = p.y;
 	return *this;
 }
 
-decPoint &decPoint::operator+=( const decPoint &p ){
+decPoint &decPoint::operator+=(const decPoint &p){
 	x += p.x;
 	y += p.y;
 	return *this;
 }
 
-decPoint &decPoint::operator-=( const decPoint &p ){
+decPoint &decPoint::operator-=(const decPoint &p){
 	x -= p.x;
 	y -= p.y;
 	return *this;
 }
 
-decPoint &decPoint::operator*=( int k ){
+decPoint &decPoint::operator*=(int k){
 	x = x * k;
 	y = x * k;
 	return *this;
 }
 
-decPoint &decPoint::operator/=( int k ){
-	if( k == 0 ){
-		DETHROW( deeDivisionByZero );
+decPoint &decPoint::operator/=(int k){
+	if(k == 0){
+		DETHROW(deeDivisionByZero);
 	}
 	x /= k;
 	y /= k;
 	return *this;
 }
 
-decPoint decPoint::operator+( const decPoint &p ) const{
-	return decPoint( x + p.x, y + p.y );
+decPoint decPoint::operator+(const decPoint &p) const{
+	return decPoint(x + p.x, y + p.y);
 }
 
-decPoint decPoint::operator-( const decPoint &p ) const{
-	return decPoint( x - p.x, y - p.y );
+decPoint decPoint::operator-(const decPoint &p) const{
+	return decPoint(x - p.x, y - p.y);
 }
 
-decPoint decPoint::operator*( int k ) const{
-	return decPoint( x * k, y * k );
+decPoint decPoint::operator*(int k) const{
+	return decPoint(x * k, y * k);
 }
 
-int decPoint::operator*( const decPoint &p ) const{
+int decPoint::operator*(const decPoint &p) const{
 	return x * p.x + y * p.y;
 }
 
-decPoint decPoint::operator/( int k ) const{
-	if( k == 0 ){
-		DETHROW( deeDivisionByZero );
+decPoint decPoint::operator/(int k) const{
+	if(k == 0){
+		DETHROW(deeDivisionByZero);
 	}
-	return decPoint( x / k, y / k );
+	return decPoint(x / k, y / k);
 }
 
-bool decPoint::operator==( const decPoint &p ) const{
+bool decPoint::operator==(const decPoint &p) const{
 	return x == p.x && y == p.y;
 }
 
-bool decPoint::operator!=( const decPoint &p ) const{
+bool decPoint::operator!=(const decPoint &p) const{
 	return x != p.x || y != p.y;
 }
 
-bool decPoint::operator<( const decPoint &p ) const{
+bool decPoint::operator<(const decPoint &p) const{
 	return x < p.x && y < p.y;
 }
 
-bool decPoint::operator>( const decPoint &p ) const{
+bool decPoint::operator>(const decPoint &p) const{
 	return x > p.x && y > p.y;
 }
 
-bool decPoint::operator<=( const decPoint &p ) const{
+bool decPoint::operator<=(const decPoint &p) const{
 	return x <= p.x && y <= p.y;
 }
 
-bool decPoint::operator>=( const decPoint &p ) const{
+bool decPoint::operator>=(const decPoint &p) const{
 	return x >= p.x && y >= p.y;
 }

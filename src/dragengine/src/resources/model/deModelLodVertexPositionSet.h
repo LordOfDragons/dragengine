@@ -79,11 +79,11 @@ public:
 	inline int GetPositionCount() const{ return pPositionCount; }
 	
 	/** \brief Set count of vertex positions. */
-	void SetPositionCount( int count );
+	void SetPositionCount(int count);
 	
 	/** \brief Vertex position at index. */
-	deModelLodVertexPositionSetPosition &GetPositionAt( int index );
-	const deModelLodVertexPositionSetPosition &GetPositionAt( int index ) const;
+	deModelLodVertexPositionSetPosition &GetPositionAt(int index);
+	const deModelLodVertexPositionSetPosition &GetPositionAt(int index) const;
 	
 	/** \brief Pointer to vertex positions. */
 	inline deModelLodVertexPositionSetPosition *GetPositions() const{ return pPositions; }

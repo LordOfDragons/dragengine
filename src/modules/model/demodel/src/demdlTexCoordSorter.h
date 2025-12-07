@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set number of faces and texture coordinate sets. */
-	void Resize( int faceCount, int texCoordSetCount );
+	void Resize(int faceCount, int texCoordSetCount);
 	
 	/**
 	 * \brief Sort texture coordinates.
@@ -92,29 +92,29 @@ public:
 	inline int GetTexCoordSetCount() const{ return pTexCoordSetCount; }
 	
 	/** \brief Face corner texture coordinate index. */
-	int GetFaceCornerAt( int face, int corner ) const;
+	int GetFaceCornerAt(int face, int corner) const;
 	
 	/** \brief Set face corner texture coordinate index. */
-	void SetFaceCornerAt( int face, int corner, int texCoord );
+	void SetFaceCornerAt(int face, int corner, int texCoord);
 	
 	/** \brief Face texture coordinate. */
-	const decVector2 &GetFaceTexCoordAt( int face, int corner, int texCoordSet ) const;
+	const decVector2 &GetFaceTexCoordAt(int face, int corner, int texCoordSet) const;
 	
 	/** \brief Set face texture coordinate. */
-	void SetFaceTexCoordAt( int face, int corner, int texCoordSet, const decVector2 &texCoord );
+	void SetFaceTexCoordAt(int face, int corner, int texCoordSet, const decVector2 &texCoord);
 	
 	/** \brief Number of texture coordinates. */
 	inline int GetTexCoordCount() const{ return pTexCoordCount; }
 	
 	/** \brief Texture coordinate. */
-	const decVector2 &GetTexCoordAt( int index, int texCoordSet ) const;
+	const decVector2 &GetTexCoordAt(int index, int texCoordSet) const;
 	/*@}*/
 	
 	
 	
 private:
-	int HashTexCoords( const decVector2 *texCoords ) const;
-	bool TexCoordsAreEqual( const decVector2 *texCoords1, const decVector2 *texCoords2 ) const;
+	int HashTexCoords(const decVector2 *texCoords) const;
+	bool TexCoordsAreEqual(const decVector2 *texCoords1, const decVector2 *texCoords2) const;
 };
 
 #endif

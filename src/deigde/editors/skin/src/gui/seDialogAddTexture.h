@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	seDialogAddTexture( seWindowMain &windowMain );
+	seDialogAddTexture(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
@@ -67,7 +67,7 @@ public:
 	const decString &GetTextureName() const;
 	
 	/** \brief Set texture name. */
-	void SetTextureName( const char *name );
+	void SetTextureName(const char *name);
 	/*@}*/
 	
 	

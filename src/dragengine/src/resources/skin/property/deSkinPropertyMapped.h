@@ -56,7 +56,7 @@
  */
 class DE_DLL_EXPORT deSkinPropertyMapped : public deSkinProperty{
 private:
-	int pComponents[ 4 ];
+	int pComponents[4];
 	
 	
 	
@@ -68,7 +68,7 @@ public:
 	 * \param type Type of the skin property obtained from adding a property
 	 * name to the texture property map object held by the engine.
 	 */
-	deSkinPropertyMapped( const char *type );
+	deSkinPropertyMapped(const char *type);
 	
 	/** \brief Clean up skin property color. */
 	virtual ~deSkinPropertyMapped();
@@ -79,34 +79,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Red component. */
-	inline int GetRed() const{ return pComponents[ 0 ]; }
+	inline int GetRed() const{ return pComponents[0]; }
 	
 	/** \brief Set red component. */
-	void SetRed( int mapped );
+	void SetRed(int mapped);
 	
 	/** \brief Green component. */
-	inline int GetGreen() const{ return pComponents[ 1 ]; }
+	inline int GetGreen() const{ return pComponents[1]; }
 	
 	/** \brief Set green component. */
-	void SetGreen( int mapped );
+	void SetGreen(int mapped);
 	
 	/** \brief Blue component. */
-	inline int GetBlue() const{ return pComponents[ 2 ]; }
+	inline int GetBlue() const{ return pComponents[2]; }
 	
 	/** \brief Set blue component. */
-	void SetBlue( int mapped );
+	void SetBlue(int mapped);
 	
 	/** \brief Alpha component. */
-	inline int GetAlpha() const{ return pComponents[ 3 ]; }
+	inline int GetAlpha() const{ return pComponents[3]; }
 	
 	/** \brief Set alpha component. */
-	void SetAlpha( int mapped );
+	void SetAlpha(int mapped);
 	
 	/** \brief Component. */
-	int GetComponent( int component ) const;
+	int GetComponent(int component) const;
 	
 	/** \brief Set component. */
-	void SetComponent( int component, int mapped );
+	void SetComponent(int component, int mapped);
 	/*@}*/
 	
 	
@@ -114,7 +114,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	virtual void Visit(deSkinPropertyVisitor &visitor);
 	/*@}*/
 };
 

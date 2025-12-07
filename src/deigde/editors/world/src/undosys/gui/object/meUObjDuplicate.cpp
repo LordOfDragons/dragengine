@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjDuplicate::meUObjDuplicate( meWorld *world, const decVector &offset ) :
+meUObjDuplicate::meUObjDuplicate(meWorld *world, const decVector &offset) :
 pWorld(nullptr)
 {
 	DEASSERT_NOTNULL(world)
@@ -54,20 +54,20 @@ pWorld(nullptr)
 	
 	int i, j;
 	
-	SetShortInfo( "Duplicate Objects" );
+	SetShortInfo("Duplicate Objects");
 	
 	try{
-		for( i=0; i<count; i++ ){
-			const meObject &object = *list.GetAt( i );
+		for(i=0; i<count; i++){
+			const meObject &object = *list.GetAt(i);
 			
 			const meObject::Ref duplicate(meObject::Ref::NewWith(world->GetEnvironment()));
 			
-			duplicate->SetClassName( object.GetClassName() );
-			duplicate->SetPosition( object.GetPosition() + decDVector( offset ) );
-			duplicate->SetRotation( object.GetRotation() );
-			duplicate->SetSize( object.GetSize() );
-			duplicate->SetScaling( object.GetScaling() );
-			duplicate->SetProperties( object.GetProperties() );
+			duplicate->SetClassName(object.GetClassName());
+			duplicate->SetPosition(object.GetPosition() + decDVector(offset));
+			duplicate->SetRotation(object.GetRotation());
+			duplicate->SetSize(object.GetSize());
+			duplicate->SetScaling(object.GetScaling());
+			duplicate->SetProperties(object.GetProperties());
 			duplicate->SetAttachBehaviors(object.GetAttachBehaviors());
 			
 			const int textureCount = object.GetTextureCount();
@@ -75,34 +75,34 @@ pWorld(nullptr)
 				duplicate->AddTexture(meObjectTexture::Ref::NewWith(*object.GetTextureAt(j)));
 			}
 			
-			duplicate->SetID( world->NextObjectID() );
+			duplicate->SetID(world->NextObjectID());
 			
 			pObjects.Add(meUndoDataObject::Ref::NewWith(duplicate));
 		}
 		
 		// update attachment
-		for( i=0; i<count; i++ ){
-			const meObject &object = *list.GetAt( i );
-			if( ! object.GetAttachedTo() ){
+		for(i=0; i<count; i++){
+			const meObject &object = *list.GetAt(i);
+			if(!object.GetAttachedTo()){
 				continue;
 			}
 			
-			meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
-			for( j=0; j<count; j++ ){
-				if( list.GetAt( j ) == object.GetAttachedTo() ){
+			meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+			for(j=0; j<count; j++){
+				if(list.GetAt(j) == object.GetAttachedTo()){
 					// attached to a duplicated object
-					data.SetAttachedTo( ( ( meUndoDataObject* )pObjects.GetAt( j ) )->GetObject() );
+					data.SetAttachedTo(((meUndoDataObject*)pObjects.GetAt(j))->GetObject());
 					break;
 				}
 			}
 			
 			// attached to a not duplicated object
-			if( ! data.GetAttachedTo() ){
-				data.SetAttachedTo( object.GetAttachedTo() );
+			if(!data.GetAttachedTo()){
+				data.SetAttachedTo(object.GetAttachedTo());
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -125,20 +125,20 @@ void meUObjDuplicate::Undo(){
 	const int count = pObjects.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
 		meObject * const object = data.GetObject();
 		
-		object->SetAttachedTo( NULL );
+		object->SetAttachedTo(NULL);
 		
-		selection.Remove( object );
-		if( object->GetActive() ){
+		selection.Remove(object);
+		if(object->GetActive()){
 			selection.ActivateNext();
 		}
 		
-		pWorld->RemoveObject( data.GetObject() );
+		pWorld->RemoveObject(data.GetObject());
 		
-		pWorld->NotifyObjectRemoved( object );
+		pWorld->NotifyObjectRemoved(object);
 	}
 	
 	pWorld->NotifyObjectSelectionChanged();
@@ -151,19 +151,19 @@ void meUObjDuplicate::Redo(){
 	
 	selection.Reset();
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
 		meObject * const object = data.GetObject();
 		
-		pWorld->AddObject( object );
-		selection.Add( object );
+		pWorld->AddObject(object);
+		selection.Add(object);
 		
-		pWorld->NotifyObjectAdded( object );
+		pWorld->NotifyObjectAdded(object);
 	}
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
-		data.GetObject()->SetAttachedTo( data.GetAttachedTo() );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+		data.GetObject()->SetAttachedTo(data.GetAttachedTo());
 	}
 	
 	selection.ActivateNext();
@@ -177,5 +177,5 @@ void meUObjDuplicate::Redo(){
 //////////////////////
 
 void meUObjDuplicate::pCleanUp(){
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create model peer. */
-	deoglModel( deGraphicOpenGl &ogl, const deModel &model );
+	deoglModel(deGraphicOpenGl &ogl, const deModel &model);
 	
 	/** Cleans up the opengl model. */
 	virtual ~deoglModel();

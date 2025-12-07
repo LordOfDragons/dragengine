@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDynamicSkin::deDynamicSkin( deDynamicSkinManager *manager ) : deResource( manager ){
+deDynamicSkin::deDynamicSkin(deDynamicSkinManager *manager) : deResource(manager){
 	pRenderables = NULL;
 	pRenderableCount = 0;
 	pRenderableSize = 0;
@@ -50,13 +50,13 @@ deDynamicSkin::deDynamicSkin( deDynamicSkinManager *manager ) : deResource( mana
 }
 
 deDynamicSkin::~deDynamicSkin(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
 	
 	RemoveAllRenderables();
-	if( pRenderables ) delete [] pRenderables;
+	if(pRenderables) delete [] pRenderables;
 }
 
 
@@ -64,37 +64,37 @@ deDynamicSkin::~deDynamicSkin(){
 // Management
 ///////////////
 
-deDSRenderable *deDynamicSkin::GetRenderableAt( int index ) const{
-	if( index < 0 || index >= pRenderableCount ) DETHROW( deeInvalidParam );
+deDSRenderable *deDynamicSkin::GetRenderableAt(int index) const{
+	if(index < 0 || index >= pRenderableCount) DETHROW(deeInvalidParam);
 	
-	return pRenderables[ index ];
+	return pRenderables[index];
 }
 
-deDSRenderable *deDynamicSkin::GetRenderableNamed( const char *name ) const{
-	int index = IndexOfRenderableNamed( name );
+deDSRenderable *deDynamicSkin::GetRenderableNamed(const char *name) const{
+	int index = IndexOfRenderableNamed(name);
 	
-	if( index == -1 ){
+	if(index == -1){
 		return NULL;
 		
 	}else{
-		return pRenderables[ index ];
+		return pRenderables[index];
 	}
 }
 
-bool deDynamicSkin::HasRenderable( deDSRenderable *renderable ) const{
-	return IndexOfRenderable( renderable ) != -1;
+bool deDynamicSkin::HasRenderable(deDSRenderable *renderable) const{
+	return IndexOfRenderable(renderable) != -1;
 }
 
-bool deDynamicSkin::HasRenderableNamed( const char *name ) const{
-	return IndexOfRenderableNamed( name ) != -1;
+bool deDynamicSkin::HasRenderableNamed(const char *name) const{
+	return IndexOfRenderableNamed(name) != -1;
 }
 
-int deDynamicSkin::IndexOfRenderable( deDSRenderable *renderable ) const{
-	if( ! renderable ) DETHROW( deeInvalidParam );
+int deDynamicSkin::IndexOfRenderable(deDSRenderable *renderable) const{
+	if(!renderable) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pRenderableCount; i++ ){
-		if( renderable == pRenderables[ i ] ){
+	for(i=0; i<pRenderableCount; i++){
+		if(renderable == pRenderables[i]){
 			return i;
 		}
 	}
@@ -102,12 +102,12 @@ int deDynamicSkin::IndexOfRenderable( deDSRenderable *renderable ) const{
 	return -1;
 }
 
-int deDynamicSkin::IndexOfRenderableNamed( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+int deDynamicSkin::IndexOfRenderableNamed(const char *name) const{
+	if(!name) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pRenderableCount; i++ ){
-		if( strcmp( name, pRenderables[ i ]->GetName() ) == 0 ){
+	for(i=0; i<pRenderableCount; i++){
+		if(strcmp(name, pRenderables[i]->GetName()) == 0){
 			return i;
 		}
 	}
@@ -115,81 +115,81 @@ int deDynamicSkin::IndexOfRenderableNamed( const char *name ) const{
 	return -1;
 }
 
-void deDynamicSkin::AddRenderable( deDSRenderable *renderable ){
-	if( ! renderable || HasRenderableNamed( renderable->GetName() ) ) DETHROW( deeInvalidParam );
+void deDynamicSkin::AddRenderable(deDSRenderable *renderable){
+	if(!renderable || HasRenderableNamed(renderable->GetName())) DETHROW(deeInvalidParam);
 	
-	if( pRenderableCount == pRenderableSize ){
+	if(pRenderableCount == pRenderableSize){
 		int newSize = pRenderableSize * 3 / 2 + 1;
-		deDSRenderable **newArray = new deDSRenderable*[ newSize ];
-		if( pRenderables ){
-			memcpy( newArray, pRenderables, sizeof( deDSRenderable* ) * pRenderableSize );
+		deDSRenderable **newArray = new deDSRenderable*[newSize];
+		if(pRenderables){
+			memcpy(newArray, pRenderables, sizeof(deDSRenderable*) * pRenderableSize);
 			delete [] pRenderables;
 		}
 		pRenderables = newArray;
 		pRenderableSize = newSize;
 	}
 	
-	pRenderables[ pRenderableCount ] = renderable;
+	pRenderables[pRenderableCount] = renderable;
 	pRenderableCount++;
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->RenderableAdded( pRenderableCount - 1, renderable );
+	if(pPeerGraphic){
+		pPeerGraphic->RenderableAdded(pRenderableCount - 1, renderable);
 	}
 }
 
-void deDynamicSkin::RemoveRenderable( deDSRenderable *renderable ){
-	int i, index = IndexOfRenderable( renderable );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void deDynamicSkin::RemoveRenderable(deDSRenderable *renderable){
+	int i, index = IndexOfRenderable(renderable);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->RenderableRemoved( index, renderable );
+	if(pPeerGraphic){
+		pPeerGraphic->RenderableRemoved(index, renderable);
 	}
 	
-	for( i=index+1; i<pRenderableCount; i++ ){
-		pRenderables[ i - 1 ] = pRenderables[ i ];
+	for(i=index+1; i<pRenderableCount; i++){
+		pRenderables[i - 1] = pRenderables[i];
 	}
 	pRenderableCount--;
 	
 	delete renderable;
 }
 
-void deDynamicSkin::RemoveRenderableNamed( const char *name ){
-	int i, index = IndexOfRenderableNamed( name );
+void deDynamicSkin::RemoveRenderableNamed(const char *name){
+	int i, index = IndexOfRenderableNamed(name);
 	
-	if( index != -1 ){
-		if( pPeerGraphic ){
-			pPeerGraphic->RenderableRemoved( index, pRenderables[ index ] );
+	if(index != -1){
+		if(pPeerGraphic){
+			pPeerGraphic->RenderableRemoved(index, pRenderables[index]);
 		}
 		
-		delete pRenderables[ index ];
+		delete pRenderables[index];
 		
-		for( i=index+1; i<pRenderableCount; i++ ){
-			pRenderables[ i - 1 ] = pRenderables[ i ];
+		for(i=index+1; i<pRenderableCount; i++){
+			pRenderables[i - 1] = pRenderables[i];
 		}
 		pRenderableCount--;
 	}
 }
 
 void deDynamicSkin::RemoveAllRenderables(){
-	if( pRenderableCount > 0 ){
-		if( pPeerGraphic ){
+	if(pRenderableCount > 0){
+		if(pPeerGraphic){
 			pPeerGraphic->AllRenderablesRemoved();
 		}
 		
-		while( pRenderableCount > 0 ){
+		while(pRenderableCount > 0){
 			pRenderableCount--;
-			delete pRenderables[ pRenderableCount ];
+			delete pRenderables[pRenderableCount];
 		}
 	}
 }
 
 
 
-void deDynamicSkin::NotifyRenderableChanged( int index ){
-	if( index < 0 || index >= pRenderableCount ) DETHROW( deeInvalidParam );
+void deDynamicSkin::NotifyRenderableChanged(int index){
+	if(index < 0 || index >= pRenderableCount) DETHROW(deeInvalidParam);
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->RenderableChanged( index, pRenderables[ index ] );
+	if(pPeerGraphic){
+		pPeerGraphic->RenderableChanged(index, pRenderables[index]);
 	}
 }
 
@@ -199,7 +199,7 @@ void deDynamicSkin::NotifyRenderableChanged( int index ){
 // System Peers
 /////////////////
 
-void deDynamicSkin::SetPeerGraphic( deBaseGraphicDynamicSkin *peer ){
-	if( pPeerGraphic ) delete pPeerGraphic;
+void deDynamicSkin::SetPeerGraphic(deBaseGraphicDynamicSkin *peer){
+	if(pPeerGraphic) delete pPeerGraphic;
 	pPeerGraphic = peer;
 }

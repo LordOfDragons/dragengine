@@ -68,83 +68,83 @@ struct csCanvas : public csObject{
 // Constructor, destructor
 ////////////////////////////
 
-stClassCanvas::stClassCanvas( ScriptingSmalltalk &st ) :
-pST( st ){
+stClassCanvas::stClassCanvas(ScriptingSmalltalk &st) :
+pST(st){
 	// deCanvasVisitorIdentify::eCanvasTypes
-	pSymbolImage = gst_symbol_to_oop( "image" );
-	pSymbolPaint = gst_symbol_to_oop( "paint" );
-	pSymbolCanvasView = gst_symbol_to_oop( "canvasView" );
-	pSymbolRenderWorld = gst_symbol_to_oop( "renderWorld" );
-	pSymbolText = gst_symbol_to_oop( "text" );
-	pSymbolVideoPlayer = gst_symbol_to_oop( "videoPlayer" );
-	pSymbolView = gst_symbol_to_oop( "view" );
+	pSymbolImage = gst_symbol_to_oop("image");
+	pSymbolPaint = gst_symbol_to_oop("paint");
+	pSymbolCanvasView = gst_symbol_to_oop("canvasView");
+	pSymbolRenderWorld = gst_symbol_to_oop("renderWorld");
+	pSymbolText = gst_symbol_to_oop("text");
+	pSymbolVideoPlayer = gst_symbol_to_oop("videoPlayer");
+	pSymbolView = gst_symbol_to_oop("view");
 	
 	// deCanvasPaint::eShapeTypes
-	pSymbolPoints = gst_symbol_to_oop( "points" );
-	pSymbolLines = gst_symbol_to_oop( "lines" );
-	pSymbolRectangle = gst_symbol_to_oop( "rectangle" );
-	pSymbolEllipse = gst_symbol_to_oop( "ellipse" );
-	pSymbolPie = gst_symbol_to_oop( "pie" );
-	pSymbolPolygon = gst_symbol_to_oop( "polygon" );
+	pSymbolPoints = gst_symbol_to_oop("points");
+	pSymbolLines = gst_symbol_to_oop("lines");
+	pSymbolRectangle = gst_symbol_to_oop("rectangle");
+	pSymbolEllipse = gst_symbol_to_oop("ellipse");
+	pSymbolPie = gst_symbol_to_oop("pie");
+	pSymbolPolygon = gst_symbol_to_oop("polygon");
 	
 	// functions
-	gst_define_cfunc( "DECanvas.new", ( void* )ccNew );
-	gst_define_cfunc( "DECanvas.finalize", ( void* )ccFinalize );
+	gst_define_cfunc("DECanvas.new", (void*)ccNew);
+	gst_define_cfunc("DECanvas.finalize", (void*)ccFinalize);
 	
-	gst_define_cfunc( "DECanvas.getType", ( void* )ccGetType );
-	gst_define_cfunc( "DECanvas.getPosition", ( void* )ccGetPosition );
-	gst_define_cfunc( "DECanvas.setPosition", ( void* )ccSetPosition );
-	gst_define_cfunc( "DECanvas.getSize", ( void* )ccGetSize );
-	gst_define_cfunc( "DECanvas.setSize", ( void* )ccSetSize );
-	gst_define_cfunc( "DECanvas.getTransform", ( void* )ccGetTransform );
-	gst_define_cfunc( "DECanvas.setTransform", ( void* )ccSetTransform );
-	gst_define_cfunc( "DECanvas.getVisible", ( void* )ccGetVisible );
-	gst_define_cfunc( "DECanvas.setVisible", ( void* )ccSetVisible );
-	gst_define_cfunc( "DECanvas.getOrder", ( void* )ccGetOrder );
-	gst_define_cfunc( "DECanvas.setOrder", ( void* )ccSetOrder );
-	gst_define_cfunc( "DECanvas.getTransparency", ( void* )ccGetTransparency );
-	gst_define_cfunc( "DECanvas.setTransparency", ( void* )ccSetTransparency );
+	gst_define_cfunc("DECanvas.getType", (void*)ccGetType);
+	gst_define_cfunc("DECanvas.getPosition", (void*)ccGetPosition);
+	gst_define_cfunc("DECanvas.setPosition", (void*)ccSetPosition);
+	gst_define_cfunc("DECanvas.getSize", (void*)ccGetSize);
+	gst_define_cfunc("DECanvas.setSize", (void*)ccSetSize);
+	gst_define_cfunc("DECanvas.getTransform", (void*)ccGetTransform);
+	gst_define_cfunc("DECanvas.setTransform", (void*)ccSetTransform);
+	gst_define_cfunc("DECanvas.getVisible", (void*)ccGetVisible);
+	gst_define_cfunc("DECanvas.setVisible", (void*)ccSetVisible);
+	gst_define_cfunc("DECanvas.getOrder", (void*)ccGetOrder);
+	gst_define_cfunc("DECanvas.setOrder", (void*)ccSetOrder);
+	gst_define_cfunc("DECanvas.getTransparency", (void*)ccGetTransparency);
+	gst_define_cfunc("DECanvas.setTransparency", (void*)ccSetTransparency);
 	
-	gst_define_cfunc( "DECanvas.getImage", ( void* )ccGetImage );
-	gst_define_cfunc( "DECanvas.setImage", ( void* )ccSetImage );
-	gst_define_cfunc( "DECanvas.getRepeatX", ( void* )ccGetRepeatX );
-	gst_define_cfunc( "DECanvas.setRepeatX", ( void* )ccSetRepeatX );
-	gst_define_cfunc( "DECanvas.getRepeatY", ( void* )ccGetRepeatY );
-	gst_define_cfunc( "DECanvas.setRepeatY", ( void* )ccSetRepeatY );
+	gst_define_cfunc("DECanvas.getImage", (void*)ccGetImage);
+	gst_define_cfunc("DECanvas.setImage", (void*)ccSetImage);
+	gst_define_cfunc("DECanvas.getRepeatX", (void*)ccGetRepeatX);
+	gst_define_cfunc("DECanvas.setRepeatX", (void*)ccSetRepeatX);
+	gst_define_cfunc("DECanvas.getRepeatY", (void*)ccGetRepeatY);
+	gst_define_cfunc("DECanvas.setRepeatY", (void*)ccSetRepeatY);
 	
-	gst_define_cfunc( "DECanvas.getShapeType", ( void* )ccGetShapeType );
-	gst_define_cfunc( "DECanvas.setShapeType", ( void* )ccSetShapeType );
-	gst_define_cfunc( "DECanvas.getLineColor", ( void* )ccGetLineColor );
-	gst_define_cfunc( "DECanvas.setLineColor", ( void* )ccSetLineColor );
-	gst_define_cfunc( "DECanvas.getFillColor", ( void* )ccGetFillColor );
-	gst_define_cfunc( "DECanvas.setFillColor", ( void* )ccSetFillColor );
-	gst_define_cfunc( "DECanvas.getThickness", ( void* )ccGetThickness );
-	gst_define_cfunc( "DECanvas.setThickness", ( void* )ccSetThickness );
-	gst_define_cfunc( "DECanvas.getPointCount", ( void* )ccGetPointCount );
-	gst_define_cfunc( "DECanvas.getPointAt", ( void* )ccGetPointAt );
-	gst_define_cfunc( "DECanvas.addPoint", ( void* )ccAddPoint );
-	gst_define_cfunc( "DECanvas.removeAllPoints", ( void* )ccRemoveAllPoints );
+	gst_define_cfunc("DECanvas.getShapeType", (void*)ccGetShapeType);
+	gst_define_cfunc("DECanvas.setShapeType", (void*)ccSetShapeType);
+	gst_define_cfunc("DECanvas.getLineColor", (void*)ccGetLineColor);
+	gst_define_cfunc("DECanvas.setLineColor", (void*)ccSetLineColor);
+	gst_define_cfunc("DECanvas.getFillColor", (void*)ccGetFillColor);
+	gst_define_cfunc("DECanvas.setFillColor", (void*)ccSetFillColor);
+	gst_define_cfunc("DECanvas.getThickness", (void*)ccGetThickness);
+	gst_define_cfunc("DECanvas.setThickness", (void*)ccSetThickness);
+	gst_define_cfunc("DECanvas.getPointCount", (void*)ccGetPointCount);
+	gst_define_cfunc("DECanvas.getPointAt", (void*)ccGetPointAt);
+	gst_define_cfunc("DECanvas.addPoint", (void*)ccAddPoint);
+	gst_define_cfunc("DECanvas.removeAllPoints", (void*)ccRemoveAllPoints);
 	
-	gst_define_cfunc( "DECanvas.getCanvasView", ( void* )ccGetCanvasView );
-	gst_define_cfunc( "DECanvas.setCanvasView", ( void* )ccSetCanvasView );
+	gst_define_cfunc("DECanvas.getCanvasView", (void*)ccGetCanvasView);
+	gst_define_cfunc("DECanvas.setCanvasView", (void*)ccSetCanvasView);
 	
-	gst_define_cfunc( "DECanvas.getCamera", ( void* )ccGetCamera );
-	gst_define_cfunc( "DECanvas.setCamera", ( void* )ccSetCamera );
+	gst_define_cfunc("DECanvas.getCamera", (void*)ccGetCamera);
+	gst_define_cfunc("DECanvas.setCamera", (void*)ccSetCamera);
 	
-	gst_define_cfunc( "DECanvas.getFont", ( void* )ccGetFont );
-	gst_define_cfunc( "DECanvas.setFont", ( void* )ccSetFont );
-	gst_define_cfunc( "DECanvas.getText", ( void* )ccGetText );
-	gst_define_cfunc( "DECanvas.setText", ( void* )ccSetText );
-	gst_define_cfunc( "DECanvas.getColor", ( void* )ccGetColor );
-	gst_define_cfunc( "DECanvas.setColor", ( void* )ccSetColor );
+	gst_define_cfunc("DECanvas.getFont", (void*)ccGetFont);
+	gst_define_cfunc("DECanvas.setFont", (void*)ccSetFont);
+	gst_define_cfunc("DECanvas.getText", (void*)ccGetText);
+	gst_define_cfunc("DECanvas.setText", (void*)ccSetText);
+	gst_define_cfunc("DECanvas.getColor", (void*)ccGetColor);
+	gst_define_cfunc("DECanvas.setColor", (void*)ccSetColor);
 	
-	gst_define_cfunc( "DECanvas.getVideoPlayer", ( void* )ccGetVideoPlayer );
-	gst_define_cfunc( "DECanvas.setVideoPlayer", ( void* )ccSetVideoPlayer );
+	gst_define_cfunc("DECanvas.getVideoPlayer", (void*)ccGetVideoPlayer);
+	gst_define_cfunc("DECanvas.setVideoPlayer", (void*)ccSetVideoPlayer);
 	
-	gst_define_cfunc( "DECanvas.getCanvasCount", ( void* )ccGetCanvasCount );
-	gst_define_cfunc( "DECanvas.addCanvas", ( void* )ccAddCanvas );
-	gst_define_cfunc( "DECanvas.removeCanvas", ( void* )ccRemoveCanvas );
-	gst_define_cfunc( "DECanvas.removeAllCanvas", ( void* )ccRemoveAllCanvas );
+	gst_define_cfunc("DECanvas.getCanvasCount", (void*)ccGetCanvasCount);
+	gst_define_cfunc("DECanvas.addCanvas", (void*)ccAddCanvas);
+	gst_define_cfunc("DECanvas.removeCanvas", (void*)ccRemoveCanvas);
+	gst_define_cfunc("DECanvas.removeAllCanvas", (void*)ccRemoveAllCanvas);
 }
 
 stClassCanvas::~stClassCanvas(){
@@ -156,45 +156,45 @@ stClassCanvas::~stClassCanvas(){
 ///////////////
 
 void stClassCanvas::SetUpLinks(){
-	pOOPClass = gst_class_name_to_oop( "DECanvas" );
-	if( ! pOOPClass ){
-		DETHROW( deeInvalidParam ); // Canvas.st missing !
+	pOOPClass = gst_class_name_to_oop("DECanvas");
+	if(!pOOPClass){
+		DETHROW(deeInvalidParam); // Canvas.st missing !
 	}
 	
-	csCanvasClass &csclass = *( ( csCanvasClass* )OOP_TO_OBJ( pOOPClass ) );
+	csCanvasClass &csclass = *((csCanvasClass*)OOP_TO_OBJ(pOOPClass));
 	csclass.scripting = pST.GetClassScripting()->GetSingleton();
 }
 
-deCanvas *stClassCanvas::OOPToCanvas( OOP object ) const{
-	if( object == pST.GetNil() ){
+deCanvas *stClassCanvas::OOPToCanvas(OOP object) const{
+	if(object == pST.GetNil()){
 		return NULL;
 	}
 	
-	if( gst_get_object_class( object ) != pOOPClass ){
-		DETHROW( deeInvalidAction );
+	if(gst_get_object_class(object) != pOOPClass){
+		DETHROW(deeInvalidAction);
 	}
-	return ( ( csCanvas* )OOP_TO_OBJ( object ) )->canvas;
+	return ((csCanvas*)OOP_TO_OBJ(object))->canvas;
 }
 
-OOP stClassCanvas::CanvasToOOP( deCanvas *canvas ){
-	if( ! canvas ){
+OOP stClassCanvas::CanvasToOOP(deCanvas *canvas){
+	if(!canvas){
 		return pST.GetNil();
 	}
 	
 	OOP oopCanvas = NULL;
 	
 	deCanvasVisitorIdentify identify;
-	canvas->Visit( identify );
-	if( identify.IsUnknown() ){
-		DETHROW( deeInvalidParam );
+	canvas->Visit(identify);
+	if(identify.IsUnknown()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	oopCanvas = pST.CreateNewObjectWithInit( pOOPClass, sizeof( csCanvas ) - sizeof( csObject ) );
-	if( ! oopCanvas || oopCanvas == pST.GetNil() ){
-		DETHROW( deeOutOfMemory );
+	oopCanvas = pST.CreateNewObjectWithInit(pOOPClass, sizeof(csCanvas) - sizeof(csObject));
+	if(!oopCanvas || oopCanvas == pST.GetNil()){
+		DETHROW(deeOutOfMemory);
 	}
 	
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( oopCanvas ) );
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(oopCanvas));
 	cscanvas.clsCanvas = this;
 	cscanvas.canvas = canvas;
 	cscanvas.canvas->AddReference();
@@ -208,51 +208,51 @@ OOP stClassCanvas::CanvasToOOP( deCanvas *canvas ){
 // cCall Methods
 //////////////////
 
-OOP stClassCanvas::ccNew( OOP self, OOP type ){
-	csCanvasClass &csclass = *( ( csCanvasClass* )OOP_TO_OBJ( self ) );
-	ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+OOP stClassCanvas::ccNew(OOP self, OOP type){
+	csCanvasClass &csclass = *((csCanvasClass*)OOP_TO_OBJ(self));
+	ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	const stClassCanvas &clsCanvas = *st.GetClassCanvas();
 	deCanvas *canvas = NULL;
 	OOP result = NULL;
 	
 	try{
-		if( ! IS_OOP( type ) ){
-			DETHROW( deeInvalidParam );
+		if(!IS_OOP(type)){
+			DETHROW(deeInvalidParam);
 		}
 		
-		if( OOP_TO_OBJ( type ) == OOP_TO_OBJ( clsCanvas.pSymbolPaint ) ){
+		if(OOP_TO_OBJ(type) == OOP_TO_OBJ(clsCanvas.pSymbolPaint)){
 			canvas = st.GetGameEngine()->GetCanvasManager()->CreateCanvasPaint();
 			
-		}else if( OOP_TO_OBJ( type ) == OOP_TO_OBJ( clsCanvas.pSymbolImage ) ){
+		}else if(OOP_TO_OBJ(type) == OOP_TO_OBJ(clsCanvas.pSymbolImage)){
 			canvas = st.GetGameEngine()->GetCanvasManager()->CreateCanvasImage();
 			
-		}else if( OOP_TO_OBJ( type ) == OOP_TO_OBJ( clsCanvas.pSymbolText ) ){
+		}else if(OOP_TO_OBJ(type) == OOP_TO_OBJ(clsCanvas.pSymbolText)){
 			canvas = st.GetGameEngine()->GetCanvasManager()->CreateCanvasText();
 			
-		}else if( OOP_TO_OBJ( type ) == OOP_TO_OBJ( clsCanvas.pSymbolCanvasView ) ){
+		}else if(OOP_TO_OBJ(type) == OOP_TO_OBJ(clsCanvas.pSymbolCanvasView)){
 			canvas = st.GetGameEngine()->GetCanvasManager()->CreateCanvasCanvasView();
 			
-		}else if( OOP_TO_OBJ( type ) == OOP_TO_OBJ( clsCanvas.pSymbolRenderWorld ) ){
+		}else if(OOP_TO_OBJ(type) == OOP_TO_OBJ(clsCanvas.pSymbolRenderWorld)){
 			canvas = st.GetGameEngine()->GetCanvasManager()->CreateCanvasRenderWorld();
 			
-		}else if( OOP_TO_OBJ( type ) == OOP_TO_OBJ( clsCanvas.pSymbolVideoPlayer ) ){
+		}else if(OOP_TO_OBJ(type) == OOP_TO_OBJ(clsCanvas.pSymbolVideoPlayer)){
 			canvas = st.GetGameEngine()->GetCanvasManager()->CreateCanvasVideoPlayer();
 			
-		}else if( OOP_TO_OBJ( type ) == OOP_TO_OBJ( clsCanvas.pSymbolView ) ){
+		}else if(OOP_TO_OBJ(type) == OOP_TO_OBJ(clsCanvas.pSymbolView)){
 			canvas = st.GetGameEngine()->GetCanvasManager()->CreateCanvasView();
 			
 		}else{
-			gst_eval_code( "SystemExceptions.InvalidArgument new signal" );
+			gst_eval_code("SystemExceptions.InvalidArgument new signal");
 		}
 		
-		result = st.GetClassCanvas()->CanvasToOOP( canvas );
-		gst_perform( result, st.GetSelectorInitialize() );
+		result = st.GetClassCanvas()->CanvasToOOP(canvas);
+		gst_perform(result, st.GetSelectorInitialize());
 		
-		printf( "new canvas %p\n", canvas );
+		printf("new canvas %p\n", canvas);
 		canvas->FreeReference();
 		
-	}catch( const deException &e ){
-		if( canvas ){
+	}catch(const deException &e){
+		if(canvas){
 			canvas->FreeReference();
 		}
 		result = st.GetNil();
@@ -262,11 +262,11 @@ OOP stClassCanvas::ccNew( OOP self, OOP type ){
 	return result;
 }
 
-void stClassCanvas::ccFinalize( OOP self ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccFinalize(OOP self){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
 	//printf( "finalize canvas %p\n", cscanvas.canvas );
-	if( cscanvas.canvas ){
+	if(cscanvas.canvas){
 		cscanvas.canvas->FreeReference();
 		cscanvas.canvas = NULL;
 		cscanvas.type = deCanvasVisitorIdentify::ectUnknown;
@@ -276,10 +276,10 @@ void stClassCanvas::ccFinalize( OOP self ){
 
 
 
-OOP stClassCanvas::ccGetType( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+OOP stClassCanvas::ccGetType(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectImage:
 		return cscanvas.clsCanvas->pSymbolImage;
 		
@@ -306,127 +306,127 @@ OOP stClassCanvas::ccGetType( OOP self ){
 	}
 }
 
-OOP stClassCanvas::ccGetPosition( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+OOP stClassCanvas::ccGetPosition(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = cscanvas.clsCanvas->GetST();
 	
 	try{
-		return st.GetClassPoint()->PointToOOP( cscanvas.canvas->GetPosition() );
+		return st.GetClassPoint()->PointToOOP(cscanvas.canvas->GetPosition());
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return st.GetNil();
 	}
 }
 
-void stClassCanvas::ccSetPosition( OOP self, OOP position ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccSetPosition(OOP self, OOP position){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = cscanvas.clsCanvas->GetST();
 	
 	try{
-		const decPoint &rposition = st.GetClassPoint()->OOPToPoint( position );
-		cscanvas.canvas->SetPosition( rposition );
+		const decPoint &rposition = st.GetClassPoint()->OOPToPoint(position);
+		cscanvas.canvas->SetPosition(rposition);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 	}
 }
 
-OOP stClassCanvas::ccGetSize( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+OOP stClassCanvas::ccGetSize(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = cscanvas.clsCanvas->GetST();
 	
 	try{
-		return st.GetClassPoint()->PointToOOP( cscanvas.canvas->GetSize() );
+		return st.GetClassPoint()->PointToOOP(cscanvas.canvas->GetSize());
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return st.GetNil();
 	}
 }
 
-void stClassCanvas::ccSetSize( OOP self, OOP size ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccSetSize(OOP self, OOP size){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = cscanvas.clsCanvas->GetST();
 	
 	try{
-		const decPoint &rsize = st.GetClassPoint()->OOPToPoint( size );
-		cscanvas.canvas->SetSize( rsize );
+		const decPoint &rsize = st.GetClassPoint()->OOPToPoint(size);
+		cscanvas.canvas->SetSize(rsize);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 	}
 }
 
-OOP stClassCanvas::ccGetTransform( OOP self ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
+OOP stClassCanvas::ccGetTransform(OOP self){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
 }
 
-void stClassCanvas::ccSetTransform( OOP self, OOP transform ){
+void stClassCanvas::ccSetTransform(OOP self, OOP transform){
 }
 
-bool stClassCanvas::ccGetVisible( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+bool stClassCanvas::ccGetVisible(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	return cscanvas.canvas->GetVisible();
 }
 
-void stClassCanvas::ccSetVisible( OOP self, bool visible ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
-	cscanvas.canvas->SetVisible( visible );
+void stClassCanvas::ccSetVisible(OOP self, bool visible){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
+	cscanvas.canvas->SetVisible(visible);
 }
 
-float stClassCanvas::ccGetOrder( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+float stClassCanvas::ccGetOrder(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	return cscanvas.canvas->GetOrder();
 }
 
-void stClassCanvas::ccSetOrder( OOP self, float order ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
-	cscanvas.canvas->SetOrder( order );
+void stClassCanvas::ccSetOrder(OOP self, float order){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
+	cscanvas.canvas->SetOrder(order);
 }
 
-float stClassCanvas::ccGetTransparency( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+float stClassCanvas::ccGetTransparency(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	return cscanvas.canvas->GetTransparency();
 }
 
-void stClassCanvas::ccSetTransparency( OOP self, float transparency ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
-	cscanvas.canvas->SetTransparency( transparency );
+void stClassCanvas::ccSetTransparency(OOP self, float transparency){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
+	cscanvas.canvas->SetTransparency(transparency);
 }
 
 
 
-OOP stClassCanvas::ccGetImage( OOP self ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
+OOP stClassCanvas::ccGetImage(OOP self){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
 }
 
-void stClassCanvas::ccSetImage( OOP self, OOP image ){
+void stClassCanvas::ccSetImage(OOP self, OOP image){
 }
 
-int stClassCanvas::ccGetRepeatX( OOP self ){
+int stClassCanvas::ccGetRepeatX(OOP self){
 	return 1;
 }
 
-void stClassCanvas::ccSetRepeatX( OOP self, int count ){
+void stClassCanvas::ccSetRepeatX(OOP self, int count){
 }
 
-int stClassCanvas::ccGetRepeatY( OOP self ){
+int stClassCanvas::ccGetRepeatY(OOP self){
 	return 1;
 }
 
-void stClassCanvas::ccSetRepeatY( OOP self, int count ){
+void stClassCanvas::ccSetRepeatY(OOP self, int count){
 }
 
 
 
-OOP stClassCanvas::ccGetShapeType( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+OOP stClassCanvas::ccGetShapeType(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		const deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
-		switch( canvasPaint.GetShapeType() ){
+		const deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
+		switch(canvasPaint.GetShapeType()){
 		case deCanvasPaint::estPoints:
 			return cscanvas.clsCanvas->pSymbolPoints;
 			
@@ -448,279 +448,279 @@ OOP stClassCanvas::ccGetShapeType( OOP self ){
 		}
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void stClassCanvas::ccSetShapeType( OOP self, OOP shapeType ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccSetShapeType(OOP self, OOP shapeType){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
+		deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
 		
-		if( ! IS_OOP( shapeType ) ){
-			DETHROW( deeInvalidParam );
+		if(!IS_OOP(shapeType)){
+			DETHROW(deeInvalidParam);
 		}
 		
-		if( OOP_TO_OBJ( shapeType ) == OOP_TO_OBJ( cscanvas.clsCanvas->pSymbolPoints ) ){
-			canvasPaint.SetShapeType( deCanvasPaint::estPoints );
+		if(OOP_TO_OBJ(shapeType) == OOP_TO_OBJ(cscanvas.clsCanvas->pSymbolPoints)){
+			canvasPaint.SetShapeType(deCanvasPaint::estPoints);
 			
-		}else if( OOP_TO_OBJ( shapeType ) == OOP_TO_OBJ( cscanvas.clsCanvas->pSymbolLines ) ){
-			canvasPaint.SetShapeType( deCanvasPaint::estLines );
+		}else if(OOP_TO_OBJ(shapeType) == OOP_TO_OBJ(cscanvas.clsCanvas->pSymbolLines)){
+			canvasPaint.SetShapeType(deCanvasPaint::estLines);
 			
-		}else if( OOP_TO_OBJ( shapeType ) == OOP_TO_OBJ( cscanvas.clsCanvas->pSymbolRectangle ) ){
-			canvasPaint.SetShapeType( deCanvasPaint::estRectangle );
+		}else if(OOP_TO_OBJ(shapeType) == OOP_TO_OBJ(cscanvas.clsCanvas->pSymbolRectangle)){
+			canvasPaint.SetShapeType(deCanvasPaint::estRectangle);
 			
-		}else if( OOP_TO_OBJ( shapeType ) == OOP_TO_OBJ( cscanvas.clsCanvas->pSymbolEllipse ) ){
-			canvasPaint.SetShapeType( deCanvasPaint::estEllipse );
+		}else if(OOP_TO_OBJ(shapeType) == OOP_TO_OBJ(cscanvas.clsCanvas->pSymbolEllipse)){
+			canvasPaint.SetShapeType(deCanvasPaint::estEllipse);
 			
-		}else if( OOP_TO_OBJ( shapeType ) == OOP_TO_OBJ( cscanvas.clsCanvas->pSymbolPie ) ){
-			canvasPaint.SetShapeType( deCanvasPaint::estPie );
+		}else if(OOP_TO_OBJ(shapeType) == OOP_TO_OBJ(cscanvas.clsCanvas->pSymbolPie)){
+			canvasPaint.SetShapeType(deCanvasPaint::estPie);
 			
-		}else if( OOP_TO_OBJ( shapeType ) == OOP_TO_OBJ( cscanvas.clsCanvas->pSymbolPolygon ) ){
-			canvasPaint.SetShapeType( deCanvasPaint::estPolygon );
+		}else if(OOP_TO_OBJ(shapeType) == OOP_TO_OBJ(cscanvas.clsCanvas->pSymbolPolygon)){
+			canvasPaint.SetShapeType(deCanvasPaint::estPolygon);
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-OOP stClassCanvas::ccGetLineColor( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+OOP stClassCanvas::ccGetLineColor(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = cscanvas.clsCanvas->GetST();
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		const deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
-		return st.GetClassColor()->ColorToOOP( canvasPaint.GetLineColor() );
+		const deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
+		return st.GetClassColor()->ColorToOOP(canvasPaint.GetLineColor());
 		}
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void stClassCanvas::ccSetLineColor( OOP self, OOP color ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccSetLineColor(OOP self, OOP color){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = cscanvas.clsCanvas->GetST();
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
-		const decColor &rcolor = st.GetClassColor()->OOPToColor( color );
-		canvasPaint.SetLineColor( rcolor );
+		deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
+		const decColor &rcolor = st.GetClassColor()->OOPToColor(color);
+		canvasPaint.SetLineColor(rcolor);
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-OOP stClassCanvas::ccGetFillColor( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+OOP stClassCanvas::ccGetFillColor(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = cscanvas.clsCanvas->GetST();
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		const deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
-		return st.GetClassColor()->ColorToOOP( canvasPaint.GetFillColor() );
+		const deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
+		return st.GetClassColor()->ColorToOOP(canvasPaint.GetFillColor());
 		}
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void stClassCanvas::ccSetFillColor( OOP self, OOP color ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccSetFillColor(OOP self, OOP color){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = cscanvas.clsCanvas->GetST();
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
-		const decColor &rcolor = st.GetClassColor()->OOPToColor( color );
-		canvasPaint.SetFillColor( rcolor );
+		deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
+		const decColor &rcolor = st.GetClassColor()->OOPToColor(color);
+		canvasPaint.SetFillColor(rcolor);
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-float stClassCanvas::ccGetThickness( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+float stClassCanvas::ccGetThickness(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		const deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
+		const deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
 		return canvasPaint.GetThickness();
 		}
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void stClassCanvas::ccSetThickness( OOP self, float thickness ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccSetThickness(OOP self, float thickness){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
-		canvasPaint.SetThickness( thickness );
+		deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
+		canvasPaint.SetThickness(thickness);
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-int stClassCanvas::ccGetPointCount( OOP self ){
-	const csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+int stClassCanvas::ccGetPointCount(OOP self){
+	const csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectPaint:{
-		const deCanvasPaint &canvasPaint = *( ( deCanvasPaint* )cscanvas.canvas );
+		const deCanvasPaint &canvasPaint = *((deCanvasPaint*)cscanvas.canvas);
 		return canvasPaint.GetPointCount();
 		}
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-OOP stClassCanvas::ccGetPointAt( OOP self, int index ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
+OOP stClassCanvas::ccGetPointAt(OOP self, int index){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
 }
 
-void stClassCanvas::ccAddPoint( OOP self, OOP point ){
+void stClassCanvas::ccAddPoint(OOP self, OOP point){
 }
 
-void stClassCanvas::ccRemoveAllPoints( OOP self ){
-}
-
-
-
-OOP stClassCanvas::ccGetCanvasView( OOP self ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
-}
-
-void stClassCanvas::ccSetCanvasView( OOP self, OOP canvasView ){
+void stClassCanvas::ccRemoveAllPoints(OOP self){
 }
 
 
 
-OOP stClassCanvas::ccGetCamera( OOP self ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
+OOP stClassCanvas::ccGetCanvasView(OOP self){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
 }
 
-void stClassCanvas::ccSetCamera( OOP self, OOP camera ){
-}
-
-
-
-OOP stClassCanvas::ccGetFont( OOP self ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
-}
-
-void stClassCanvas::ccSetFont( OOP self, OOP font ){
-}
-
-OOP stClassCanvas::ccGetText( OOP self ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
-}
-
-void stClassCanvas::ccSetText( OOP self, OOP text ){
-}
-
-OOP stClassCanvas::ccGetColor( OOP self ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
-}
-
-void stClassCanvas::ccSetColor( OOP self, OOP color ){
+void stClassCanvas::ccSetCanvasView(OOP self, OOP canvasView){
 }
 
 
 
-OOP stClassCanvas::ccGetVideoPlayer( OOP self ){
-	return ( ( csCanvas* )OOP_TO_OBJ( self ) )->clsCanvas->GetST().GetNil();
+OOP stClassCanvas::ccGetCamera(OOP self){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
 }
 
-void stClassCanvas::ccSetVideoPlayer( OOP self, OOP videoPlayer ){
+void stClassCanvas::ccSetCamera(OOP self, OOP camera){
 }
 
 
 
-int stClassCanvas::ccGetCanvasCount( OOP self ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+OOP stClassCanvas::ccGetFont(OOP self){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
+}
+
+void stClassCanvas::ccSetFont(OOP self, OOP font){
+}
+
+OOP stClassCanvas::ccGetText(OOP self){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
+}
+
+void stClassCanvas::ccSetText(OOP self, OOP text){
+}
+
+OOP stClassCanvas::ccGetColor(OOP self){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
+}
+
+void stClassCanvas::ccSetColor(OOP self, OOP color){
+}
+
+
+
+OOP stClassCanvas::ccGetVideoPlayer(OOP self){
+	return ((csCanvas*)OOP_TO_OBJ(self))->clsCanvas->GetST().GetNil();
+}
+
+void stClassCanvas::ccSetVideoPlayer(OOP self, OOP videoPlayer){
+}
+
+
+
+int stClassCanvas::ccGetCanvasCount(OOP self){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectView:{
-		deCanvasView &canvasView = *( ( deCanvasView* )cscanvas.canvas );
+		deCanvasView &canvasView = *((deCanvasView*)cscanvas.canvas);
 		return canvasView.GetCanvasCount();
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void stClassCanvas::ccAddCanvas( OOP self, OOP canvas ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccAddCanvas(OOP self, OOP canvas){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectView:{
-		deCanvasView &canvasView = *( ( deCanvasView* )cscanvas.canvas );
+		deCanvasView &canvasView = *((deCanvasView*)cscanvas.canvas);
 		
-		deCanvas * const rcanvas = cscanvas.clsCanvas->OOPToCanvas( canvas );
-		if( ! canvas ){
-			DETHROW( deeNullPointer );
+		deCanvas * const rcanvas = cscanvas.clsCanvas->OOPToCanvas(canvas);
+		if(!canvas){
+			DETHROW(deeNullPointer);
 		}
 		
-		canvasView.AddCanvas( rcanvas );
+		canvasView.AddCanvas(rcanvas);
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void stClassCanvas::ccRemoveCanvas( OOP self, OOP canvas ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccRemoveCanvas(OOP self, OOP canvas){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectView:{
-		deCanvasView &canvasView = *( ( deCanvasView* )cscanvas.canvas );
+		deCanvasView &canvasView = *((deCanvasView*)cscanvas.canvas);
 		
-		deCanvas * const rcanvas = cscanvas.clsCanvas->OOPToCanvas( canvas );
-		if( ! canvas ){
-			DETHROW( deeNullPointer );
+		deCanvas * const rcanvas = cscanvas.clsCanvas->OOPToCanvas(canvas);
+		if(!canvas){
+			DETHROW(deeNullPointer);
 		}
 		
-		canvasView.RemoveCanvas( rcanvas );
+		canvasView.RemoveCanvas(rcanvas);
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void stClassCanvas::ccRemoveAllCanvas( OOP self ){
-	csCanvas &cscanvas = *( ( csCanvas* )OOP_TO_OBJ( self ) );
+void stClassCanvas::ccRemoveAllCanvas(OOP self){
+	csCanvas &cscanvas = *((csCanvas*)OOP_TO_OBJ(self));
 	
-	switch( cscanvas.type ){
+	switch(cscanvas.type){
 	case deCanvasVisitorIdentify::ectView:{
-		deCanvasView &canvasView = *( ( deCanvasView* )cscanvas.canvas );
+		deCanvasView &canvasView = *((deCanvasView*)cscanvas.canvas);
 		canvasView.RemoveAllCanvas();
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }

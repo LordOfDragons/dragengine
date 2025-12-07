@@ -47,17 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskWriteModel::deRLTaskWriteModel( deEngine &engine,
+deRLTaskWriteModel::deRLTaskWriteModel(deEngine &engine,
 deResourceLoader &resourceLoader, deModel *model,
-deVirtualFileSystem *vfs, const char *path ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertModel ),
-pModel( model ),
-pSucceeded( false )
+deVirtualFileSystem *vfs, const char *path) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertModel),
+pModel(model),
+pSucceeded(false)
 {
-	if( ! model ){
-		DETHROW( deeInvalidParam );
+	if(!model){
+		DETHROW(deeInvalidParam);
 	}
-	SetType( etWrite );
+	SetType(etWrite);
 }
 
 deRLTaskWriteModel::~deRLTaskWriteModel(){
@@ -70,14 +70,14 @@ deRLTaskWriteModel::~deRLTaskWriteModel(){
 
 void deRLTaskWriteModel::Run(){
 	LogRunEnter();
-	deBaseModelModule * const module = ( deBaseModelModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtModel, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseModelModule * const module = (deBaseModelModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtModel, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decPath path;
-	path.SetFromUnix( GetPath() );
+	path.SetFromUnix(GetPath());
 	
 	module->SaveModel(decBaseFileWriter::Ref::New(GetVFS()->OpenFileForWriting(path)), pModel);
 	
@@ -87,16 +87,16 @@ void deRLTaskWriteModel::Run(){
 
 void deRLTaskWriteModel::Finished(){
 	LogFinishedEnter();
-	if( pSucceeded ){
-		SetResource( pModel );
-		SetState( esSucceeded );
+	if(pSucceeded){
+		SetResource(pModel);
+		SetState(esSucceeded);
 		
 	}else{
 		pModel = NULL;
-		SetState( esFailed );
+		SetState(esFailed);
 	}
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

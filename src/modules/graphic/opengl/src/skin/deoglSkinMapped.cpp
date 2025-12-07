@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinMapped::deoglSkinMapped( const deSkinMapped &mapped ) :
-pMapped( mapped ),
-pCurveEvaluator( mapped.GetCurve() ),
-pRenderable( -1 ){
+deoglSkinMapped::deoglSkinMapped(const deSkinMapped &mapped) :
+pMapped(mapped),
+pCurveEvaluator(mapped.GetCurve()),
+pRenderable(-1){
 }
 
 deoglSkinMapped::~deoglSkinMapped(){
@@ -54,14 +54,14 @@ deoglSkinMapped::~deoglSkinMapped(){
 // Management
 ///////////////
 
-void deoglSkinMapped::SetRenderable( int renderable ){
-	DEASSERT_TRUE( renderable >= -1 )
+void deoglSkinMapped::SetRenderable(int renderable){
+	DEASSERT_TRUE(renderable >= -1)
 	
 	pRenderable = renderable;
 }
 
-float deoglSkinMapped::Calculate( const deoglSkinState &skinState, const deoglSkinStateMapped &mapped ) const{
-	return pCalculateOutputValue( pCalculateInputValue( skinState, mapped ) );
+float deoglSkinMapped::Calculate(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const{
+	return pCalculateOutputValue(pCalculateInputValue(skinState, mapped));
 }
 
 
@@ -69,11 +69,11 @@ float deoglSkinMapped::Calculate( const deoglSkinState &skinState, const deoglSk
 // Private Functions
 //////////////////////
 
-float deoglSkinMapped::pCalculateInputValue( const deoglSkinState &skinState,
-const deoglSkinStateMapped &mapped ) const{
+float deoglSkinMapped::pCalculateInputValue(const deoglSkinState &skinState,
+const deoglSkinStateMapped &mapped) const{
 	float input = 0.0f;
 	
-	switch( pMapped.GetInputType() ){
+	switch(pMapped.GetInputType()){
 	case deSkinMapped::eitTime:
 		input = skinState.GetTime();
 		break;
@@ -91,34 +91,34 @@ const deoglSkinStateMapped &mapped ) const{
 		break;
 		
 	case deSkinMapped::eitRenderable:{
-		if( pRenderable == -1 || pRenderable >= skinState.GetRenderableCount() ){
+		if(pRenderable == -1 || pRenderable >= skinState.GetRenderableCount()){
 			break;
 		}
 		
-		const deoglSkinStateRenderable * const renderable = skinState.GetRenderableAt( pRenderable );
-		if( ! renderable ){
+		const deoglSkinStateRenderable * const renderable = skinState.GetRenderableAt(pRenderable);
+		if(!renderable){
 			break;
 		}
 		
 		const deoglRDynamicSkin * const dynamicSkin = skinState.GetOwnerDynamicSkin();
-		if( ! dynamicSkin ){
+		if(!dynamicSkin){
 			break;
 		}
 		
 		const int hostRenderable = renderable->GetHostRenderable();
-		if( hostRenderable == -1 ){
+		if(hostRenderable == -1){
 			break;
 		}
 		
-		deoglRDSRenderable * const dsrenderable = dynamicSkin->GetRenderableAt( hostRenderable );
-		if( ! dsrenderable ){
+		deoglRDSRenderable * const dsrenderable = dynamicSkin->GetRenderableAt(hostRenderable);
+		if(!dsrenderable){
 			break;
 		}
 		
-		if( dsrenderable->GetType() == deoglRDSRenderable::etColor ){
-			const decColor color( dsrenderable->GetRenderColor( decColor() ) );
+		if(dsrenderable->GetType() == deoglRDSRenderable::etColor){
+			const decColor color(dsrenderable->GetRenderColor(decColor()));
 			
-			switch( pMapped.GetRenderableComponent() ){
+			switch(pMapped.GetRenderableComponent()){
 			case deSkinMapped::ercRed:
 				input = color.r;
 				break;
@@ -137,7 +137,7 @@ const deoglSkinStateMapped &mapped ) const{
 			}
 			
 		}else{
-			input = dsrenderable->GetRenderValue( 0.0f );
+			input = dsrenderable->GetRenderValue(0.0f);
 		}
 		}break;
 		
@@ -145,16 +145,16 @@ const deoglSkinStateMapped &mapped ) const{
 		break;
 	}
 	
-	if( ! pMapped.GetInputClamped() ){
-		input = decMath::normalize( input, pMapped.GetInputLower(), pMapped.GetInputUpper() );
+	if(!pMapped.GetInputClamped()){
+		input = decMath::normalize(input, pMapped.GetInputLower(), pMapped.GetInputUpper());
 	}
 	
-	return decMath::linearStep( input, pMapped.GetInputLower(), pMapped.GetInputUpper() );
+	return decMath::linearStep(input, pMapped.GetInputLower(), pMapped.GetInputUpper());
 }
 
-float deoglSkinMapped::pCalculateOutputValue( float inputValue ) const{
+float deoglSkinMapped::pCalculateOutputValue(float inputValue) const{
 	const float lower = pMapped.GetOutputLower();
 	const float upper = pMapped.GetOutputUpper();
 	
-	return lower + ( upper - lower ) * pCurveEvaluator.EvaluateAt( inputValue );
+	return lower + (upper - lower) * pCurveEvaluator.EvaluateAt(inputValue);
 }

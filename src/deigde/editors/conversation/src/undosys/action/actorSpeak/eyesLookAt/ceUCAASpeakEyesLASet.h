@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakEyesLASet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip );
+	ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakEyesLASet();

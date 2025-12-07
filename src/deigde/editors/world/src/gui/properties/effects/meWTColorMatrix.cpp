@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWTColorMatrix::meWTColorMatrix( const char *name, const decColorMatrix &colorMatrix ){
-	pName = new char[ strlen( name ) + 1 ];
-	if( ! pName ) DETHROW( deeOutOfMemory );
-	strcpy( pName, name );
+meWTColorMatrix::meWTColorMatrix(const char *name, const decColorMatrix &colorMatrix){
+	pName = new char[strlen(name) + 1];
+	if(!pName) DETHROW(deeOutOfMemory);
+	strcpy(pName, name);
 	
 	pColorMatrix = colorMatrix;
 }
@@ -56,7 +56,7 @@ meWTColorMatrix::~meWTColorMatrix(){
 ///////////////
 
 
-void meWTColorMatrix::SetColorMatrix( const decColorMatrix &colorMatrix ){
+void meWTColorMatrix::SetColorMatrix(const decColorMatrix &colorMatrix){
 	pColorMatrix = colorMatrix;
 }
 

@@ -51,21 +51,21 @@ deSkinPropertyNodeVisitor::~deSkinPropertyNodeVisitor(){
 // Visiting
 /////////////
 
-void deSkinPropertyNodeVisitor::VisitNode( deSkinPropertyNode &node ){
+void deSkinPropertyNodeVisitor::VisitNode(deSkinPropertyNode &node){
 }
 
-void deSkinPropertyNodeVisitor::VisitGroup( deSkinPropertyNodeGroup &node ){
-	VisitNode( node );
+void deSkinPropertyNodeVisitor::VisitGroup(deSkinPropertyNodeGroup &node){
+	VisitNode(node);
 }
 
-void deSkinPropertyNodeVisitor::VisitImage( deSkinPropertyNodeImage &node ){
-	VisitNode( node );
+void deSkinPropertyNodeVisitor::VisitImage(deSkinPropertyNodeImage &node){
+	VisitNode(node);
 }
 
-void deSkinPropertyNodeVisitor::VisitShape( deSkinPropertyNodeShape &node ){
-	VisitNode( node );
+void deSkinPropertyNodeVisitor::VisitShape(deSkinPropertyNodeShape &node){
+	VisitNode(node);
 }
 
-void deSkinPropertyNodeVisitor::VisitText( deSkinPropertyNodeText &node ){
-	VisitNode( node );
+void deSkinPropertyNodeVisitor::VisitText(deSkinPropertyNodeText &node){
+	VisitNode(node);
 }

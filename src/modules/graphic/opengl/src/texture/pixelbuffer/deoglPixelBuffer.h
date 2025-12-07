@@ -197,10 +197,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new pixel buffer. */
-	deoglPixelBuffer( ePixelFormats format, int width, int height, int depth );
+	deoglPixelBuffer(ePixelFormats format, int width, int height, int depth);
 	
 	/** Create copy of pixel buffer. */
-	deoglPixelBuffer( const deoglPixelBuffer &pixelBuffer );
+	deoglPixelBuffer(const deoglPixelBuffer &pixelBuffer);
 	
 protected:
 	/** Cleans up the opengl array texture. */
@@ -264,11 +264,11 @@ public:
 	sDXT3 *GetPointerDXT3() const;
 	
 	/** Sets the pixel data to a uniform color. */
-	void SetToIntColor( int red, int green, int blue, int alpha );
+	void SetToIntColor(int red, int green, int blue, int alpha);
 	/** Sets the pixel data to a uniform color. */
-	void SetToUIntColor( unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha );
+	void SetToUIntColor(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha);
 	/** Sets the pixel data to a uniform color. */
-	void SetToFloatColor( float red, float green, float blue, float alpha );
+	void SetToFloatColor(float red, float green, float blue, float alpha);
 	/** Sets the pixel data to a uniform depth/stencil. */
 	void SetToDepthStencil(float depth, int stencil);
 	

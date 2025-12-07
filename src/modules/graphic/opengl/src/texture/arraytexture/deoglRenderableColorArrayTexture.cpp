@@ -41,31 +41,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableColorArrayTexture::deoglRenderableColorArrayTexture( deoglRenderThread &renderThread,
-	int width, int height, int layerCount, int componentCount, bool isFloat ) :
-pWidth( width ),
-pHeight( height ),
-pLayerCount( layerCount ),
-pComponentCount( componentCount ),
-pIsFloat( isFloat ),
-pInUse( false ),
-pArrayTexture( NULL ),
-pMemoryUsageGPU( 0 )
+deoglRenderableColorArrayTexture::deoglRenderableColorArrayTexture(deoglRenderThread &renderThread,
+	int width, int height, int layerCount, int componentCount, bool isFloat) :
+pWidth(width),
+pHeight(height),
+pLayerCount(layerCount),
+pComponentCount(componentCount),
+pIsFloat(isFloat),
+pInUse(false),
+pArrayTexture(NULL),
+pMemoryUsageGPU(0)
 {
-	if( width < 1 || height < 1 || layerCount < 1 ){
-		DETHROW( deeInvalidParam );
+	if(width < 1 || height < 1 || layerCount < 1){
+		DETHROW(deeInvalidParam);
 	}
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
+	if(componentCount < 1 || componentCount > 4){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		pArrayTexture = new deoglArrayTexture( renderThread );
-		pArrayTexture->SetSize( width, height, layerCount );
-		pArrayTexture->SetFBOFormat( componentCount, isFloat );
+		pArrayTexture = new deoglArrayTexture(renderThread);
+		pArrayTexture->SetSize(width, height, layerCount);
+		pArrayTexture->SetFBOFormat(componentCount, isFloat);
 		pArrayTexture->CreateTexture();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -84,21 +84,21 @@ deoglRenderableColorArrayTexture::~deoglRenderableColorArrayTexture(){
 // Management
 ///////////////
 
-bool deoglRenderableColorArrayTexture::Matches( int width, int height, int layers,
-int componentCount, bool isFloat ) const{
+bool deoglRenderableColorArrayTexture::Matches(int width, int height, int layers,
+int componentCount, bool isFloat) const{
 	return width == pWidth && height == pHeight && layers == pLayerCount
 		&& componentCount == pComponentCount && isFloat == pIsFloat;
 }
 
-void deoglRenderableColorArrayTexture::SetInUse( bool inUse ){
+void deoglRenderableColorArrayTexture::SetInUse(bool inUse){
 	pInUse = inUse;
 }
 
 
 
 void deoglRenderableColorArrayTexture::UpdateMemoryUsage(){
-	if( pArrayTexture ){
-		pMemoryUsageGPU = ( int )pArrayTexture->GetMemoryConsumption().Total();
+	if(pArrayTexture){
+		pMemoryUsageGPU = (int)pArrayTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;
@@ -111,7 +111,7 @@ void deoglRenderableColorArrayTexture::UpdateMemoryUsage(){
 //////////////////////
 
 void deoglRenderableColorArrayTexture::pCleanUp(){
-	if( pArrayTexture ){
+	if(pArrayTexture){
 		delete pArrayTexture;
 	}
 }

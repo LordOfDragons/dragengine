@@ -41,10 +41,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Begin debug tracing group. */
-	deoglDebugTraceGroup( const deoglRenderThread &renderThread, const char *name, int id = 0 );
+	deoglDebugTraceGroup(const deoglRenderThread &renderThread, const char *name, int id = 0);
 	
 	/** Close other group then begin debug tracing group. */
-	deoglDebugTraceGroup( deoglDebugTraceGroup &closeGroup, const char *name, int id = 0 );
+	deoglDebugTraceGroup(deoglDebugTraceGroup &closeGroup, const char *name, int id = 0);
 	
 	/** End debug tracing group if open. */
 	~deoglDebugTraceGroup();

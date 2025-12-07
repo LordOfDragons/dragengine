@@ -38,12 +38,12 @@ const char * const gdeClipboardDataProperty::TYPE_NAME = "Property";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataProperty::gdeClipboardDataProperty( gdeProperty *property ) :
-igdeClipboardData( TYPE_NAME ),
-pProperty( NULL )
+gdeClipboardDataProperty::gdeClipboardDataProperty(gdeProperty *property) :
+igdeClipboardData(TYPE_NAME),
+pProperty(NULL)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pProperty = property;
@@ -51,7 +51,7 @@ pProperty( NULL )
 }
 
 gdeClipboardDataProperty::~gdeClipboardDataProperty(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }

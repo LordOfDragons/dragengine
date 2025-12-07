@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device list. */
-	deainpDeviceManager( deAndroidInput &module );
+	deainpDeviceManager(deAndroidInput &module);
 	
 	/** \brief Clean up device list. */
 	~deainpDeviceManager();
@@ -71,13 +71,13 @@ public:
 	int GetCount() const;
 	
 	/** \brief Device at index. */
-	deainpDevice *GetAt( int index ) const;
+	deainpDevice *GetAt(int index) const;
 	
 	/** \brief Device with identifier or \em NULL if absent. */
-	deainpDevice *GetWithID( const char *id ) const;
+	deainpDevice *GetWithID(const char *id) const;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id ) const;
+	int IndexOfWithID(const char *id) const;
 	
 	
 	

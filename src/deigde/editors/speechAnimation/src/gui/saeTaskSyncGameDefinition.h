@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	saeTaskSyncGameDefinition( saeWindowMain &windowMain );
+	saeTaskSyncGameDefinition(saeWindowMain &windowMain);
 	
 	/** Clean up task. */
 	virtual ~saeTaskSyncGameDefinition();

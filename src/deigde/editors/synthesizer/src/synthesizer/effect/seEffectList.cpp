@@ -43,8 +43,8 @@
 seEffectList::seEffectList(){
 }
 
-seEffectList::seEffectList( const seEffectList &copy ) :
-pEffects( copy.pEffects ){
+seEffectList::seEffectList(const seEffectList &copy) :
+pEffects(copy.pEffects){
 }
 
 seEffectList::~seEffectList(){
@@ -59,38 +59,38 @@ int seEffectList::GetCount() const{
 	return pEffects.GetCount();
 }
 
-seEffect *seEffectList::GetAt( int index ) const{
-	return ( seEffect* )pEffects.GetAt( index );
+seEffect *seEffectList::GetAt(int index) const{
+	return (seEffect*)pEffects.GetAt(index);
 }
 
-int seEffectList::IndexOf( seEffect *effect ) const{
-	return pEffects.IndexOf( effect );
+int seEffectList::IndexOf(seEffect *effect) const{
+	return pEffects.IndexOf(effect);
 }
 
-bool seEffectList::Has( seEffect *effect ) const{
-	return pEffects.Has( effect );
+bool seEffectList::Has(seEffect *effect) const{
+	return pEffects.Has(effect);
 }
 
-void seEffectList::Add( seEffect *effect ){
-	if( ! effect || Has( effect ) ){
-		DETHROW( deeInvalidParam );
+void seEffectList::Add(seEffect *effect){
+	if(!effect || Has(effect)){
+		DETHROW(deeInvalidParam);
 	}
-	pEffects.Add( effect );
+	pEffects.Add(effect);
 }
 
-void seEffectList::Insert( seEffect *effect, int index ){
-	if( ! effect || Has( effect ) ){
-		DETHROW( deeInvalidParam );
+void seEffectList::Insert(seEffect *effect, int index){
+	if(!effect || Has(effect)){
+		DETHROW(deeInvalidParam);
 	}
-	pEffects.Insert( effect, index );
+	pEffects.Insert(effect, index);
 }
 
-void seEffectList::Move( seEffect *effect, int index ){
-	pEffects.Move( effect, index );
+void seEffectList::Move(seEffect *effect, int index){
+	pEffects.Move(effect, index);
 }
 
-void seEffectList::Remove( seEffect *effect ){
-	pEffects.Remove( effect );
+void seEffectList::Remove(seEffect *effect){
+	pEffects.Remove(effect);
 }
 
 void seEffectList::RemoveAll(){
@@ -102,12 +102,12 @@ void seEffectList::RemoveAll(){
 // Operators
 //////////////
 
-seEffectList &seEffectList::operator=( const seEffectList &list ){
+seEffectList &seEffectList::operator=(const seEffectList &list){
 	pEffects = list.pEffects;
 	return *this;
 }
 
-seEffectList &seEffectList::operator+=( const seEffectList &list ){
+seEffectList &seEffectList::operator+=(const seEffectList &list){
 	pEffects += list.pEffects;
 	return *this;
 }

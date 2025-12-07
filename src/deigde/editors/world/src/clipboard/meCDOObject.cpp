@@ -40,29 +40,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCDOObject::meCDOObject( const meObject &object ) :
-pClassname( object.GetClassName() ),
-pPosition( object.GetPosition() ),
-pRotation( object.GetRotation() ),
-pScale( object.GetScaling() ),
-pProperties( object.GetProperties() ),
+meCDOObject::meCDOObject(const meObject &object) :
+pClassname(object.GetClassName()),
+pPosition(object.GetPosition()),
+pRotation(object.GetRotation()),
+pScale(object.GetScaling()),
+pProperties(object.GetProperties()),
 pAttachBehaviors(object.GetAttachBehaviors()),
-pAttachToIndex( -1 )
+pAttachToIndex(-1)
 {
 	const int count = object.GetTextureCount();
 	meObjectTexture *texture = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			texture = new meObjectTexture( *object.GetTextureAt( i ) );
-			pTextures.AddTexture( texture );
+		for(i=0; i<count; i++){
+			texture = new meObjectTexture(*object.GetTextureAt(i));
+			pTextures.AddTexture(texture);
 			texture->FreeReference();
 			texture = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( texture ){
+	}catch(const deException &){
+		if(texture){
 			texture->FreeReference();
 			throw;
 		}
@@ -77,20 +77,20 @@ meCDOObject::~meCDOObject(){
 // Management
 ///////////////
 
-void meCDOObject::SetAttachToIndex( int index ){
+void meCDOObject::SetAttachToIndex(int index){
 	pAttachToIndex = index;
 }
 
-void meCDOObject::SetAttachToID( const char *id ){
+void meCDOObject::SetAttachToID(const char *id){
 	pAttachToID = id;
 }
 
-void meCDOObject::UpdateObject( meObject &object ) const{
-	object.SetClassName( pClassname );
-	object.SetPosition( pPosition );
-	object.SetScaling( pScale );
-	object.SetRotation( pRotation );
-	object.SetProperties( pProperties );
+void meCDOObject::UpdateObject(meObject &object) const{
+	object.SetClassName(pClassname);
+	object.SetPosition(pPosition);
+	object.SetScaling(pScale);
+	object.SetRotation(pRotation);
+	object.SetProperties(pProperties);
 	object.SetAttachBehaviors(pAttachBehaviors);
 	
 	const int count = pTextures.GetTextureCount();
@@ -98,19 +98,19 @@ void meCDOObject::UpdateObject( meObject &object ) const{
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			texture = new meObjectTexture( *pTextures.GetTextureAt( i ) );
-			object.AddTexture( texture );
+		for(i=0; i<count; i++){
+			texture = new meObjectTexture(*pTextures.GetTextureAt(i));
+			object.AddTexture(texture);
 			texture->FreeReference();
 			texture = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( texture ){
+	}catch(const deException &){
+		if(texture){
 			texture->FreeReference();
 			throw;
 		}
 	}
 	
-	object.SetAttachedToID( pAttachToID ); // attach to non-pasted object
+	object.SetAttachedToID(pAttachToID); // attach to non-pasted object
 }

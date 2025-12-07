@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSkySetBgColor::seUSkySetBgColor( seSky *sky, const decColor &newColor ) :
-pSky( NULL ),
-pNewColor( newColor )
+seUSkySetBgColor::seUSkySetBgColor(seSky *sky, const decColor &newColor) :
+pSky(NULL),
+pNewColor(newColor)
 {
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Sky Bg Color" );
+	SetShortInfo("Set Sky Bg Color");
 	
 	pOldColor = sky->GetBgColor();
 	
@@ -56,7 +56,7 @@ pNewColor( newColor )
 }
 
 seUSkySetBgColor::~seUSkySetBgColor(){
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSkySetBgColor::~seUSkySetBgColor(){
 ///////////////
 
 void seUSkySetBgColor::Undo(){
-	pSky->SetBgColor( pOldColor );
+	pSky->SetBgColor(pOldColor);
 }
 
 void seUSkySetBgColor::Redo(){
-	pSky->SetBgColor( pNewColor );
+	pSky->SetBgColor(pNewColor);
 }

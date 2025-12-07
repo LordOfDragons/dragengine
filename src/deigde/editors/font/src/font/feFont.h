@@ -108,7 +108,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creat font. */
-	feFont( igdeEnvironment *environment );
+	feFont(igdeEnvironment *environment);
 	
 	/** \brief Clean up font. */
 	virtual ~feFont();
@@ -125,13 +125,13 @@ public:
 	inline int GetLineHeight() const{ return pLineHeight; }
 	
 	/** \brief Set height of a line of text. */
-	void SetLineHeight( int lineHeight );
+	void SetLineHeight(int lineHeight);
 	
 	/** \brief Font is a color font. */
 	inline bool GetColorFont() const{ return pColorFont; }
 	
 	/** \brief Set if font is a color font. */
-	void SetColorFont( bool colorFont );
+	void SetColorFont(bool colorFont);
 	
 	/** \brief Base line. */
 	inline int GetBaseLine() const{ return pBaseLine; }
@@ -148,13 +148,13 @@ public:
 	inline int GetElementMode() const{ return pElementMode; }
 	
 	/** \brief Set element mode indicating which type of element to edit. */
-	void SetElementMode( int mode );
+	void SetElementMode(int mode);
 	
 	/** \brief Work mode. */
 	inline int GetWorkMode() const{ return pWorkMode; }
 	
 	/** \brief Set work mode. */
-	void SetWorkMode( int mode );
+	void SetWorkMode(int mode);
 	
 	
 	
@@ -162,7 +162,7 @@ public:
 	void Dispose();
 	
 	/** \brief Update font. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Reset font. */
 	void Reset();
@@ -182,31 +182,31 @@ public:
 	int GetGlyphCount() const;
 	
 	/** \brief Glyph at the given position. */
-	feFontGlyph *GetGlyphAt( int index ) const;
+	feFontGlyph *GetGlyphAt(int index) const;
 	
 	/** \brief Glyph with the given code or NULL if not found. */
-	feFontGlyph *GetGlyphWithCode( int code ) const;
+	feFontGlyph *GetGlyphWithCode(int code) const;
 	
 	/** \brief Index of the given glyph or -1 if not found. */
-	int IndexOfGlyph( feFontGlyph *glyph ) const;
+	int IndexOfGlyph(feFontGlyph *glyph) const;
 	
 	/** \brief Index of the glyph with the given code or -1 if not found. */
-	int IndexOfGlyphWithCode( int code ) const;
+	int IndexOfGlyphWithCode(int code) const;
 	
 	/** \brief Glyph exists. */
-	bool HasGlyph( feFontGlyph *glyph ) const;
+	bool HasGlyph(feFontGlyph *glyph) const;
 	
 	/** \brief Glyph with the given code exists. */
-	bool HasGlyphWithCode( int code ) const;
+	bool HasGlyphWithCode(int code) const;
 	
 	/** \brief Add glyph. */
-	void AddGlyph( feFontGlyph *glyph );
+	void AddGlyph(feFontGlyph *glyph);
 	
 	/** \brief Remove glyph. */
-	void RemoveGlyph( feFontGlyph *glyph );
+	void RemoveGlyph(feFontGlyph *glyph);
 	
 	/** \brief Remove glyph with the given code if existing. */
-	void RemoveGlyphWithCode( int code );
+	void RemoveGlyphWithCode(int code);
 	
 	/** \brief Remove all glyphs. */
 	void RemoveAllGlyphs();
@@ -221,10 +221,10 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** \brief Add notifier. */
-	void AddNotifier( feFontNotifier *notifier );
+	void AddNotifier(feFontNotifier *notifier);
 	
 	/** \brief Remove notifier. */
-	void RemoveNotifier( feFontNotifier *notifier );
+	void RemoveNotifier(feFontNotifier *notifier);
 	
 	
 	
@@ -238,7 +238,7 @@ public:
 	void NotifyModeChanged();
 	
 	/** \brief Notify all that an image changed. */
-    void NotifyImageChanged( feFontImage *image );
+    void NotifyImageChanged(feFontImage *image);
 	
 	/** \brief Notify all that a font parameter changed. */
 	void NotifyFontChanged();
@@ -247,7 +247,7 @@ public:
 	void NotifyGlyphStructureChanged();
 	
 	/** \brief Notify all that a glyph changed. */
-	void NotifyGlyphChanged( feFontGlyph *glyph );
+	void NotifyGlyphChanged(feFontGlyph *glyph);
 	
 	/** Glyph selection changed. */
 	void NotifyGlyphSelectionChanged();

@@ -34,14 +34,14 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delGPMParameter::delGPMParameter( const char *name, const char *value ) :
-pName( name ),
-pValue( value ){
+delGPMParameter::delGPMParameter(const char *name, const char *value) :
+pName(name),
+pValue(value){
 }
 
-delGPMParameter::delGPMParameter( const delGPMParameter &parameter ) :
-pName( parameter.pName ),
-pValue( parameter.pValue ){
+delGPMParameter::delGPMParameter(const delGPMParameter &parameter) :
+pName(parameter.pName),
+pValue(parameter.pValue){
 }
 
 delGPMParameter::~delGPMParameter(){
@@ -52,11 +52,11 @@ delGPMParameter::~delGPMParameter(){
 // Management
 ///////////////
 
-void delGPMParameter::SetName( const char *name ){
+void delGPMParameter::SetName(const char *name){
 	pName = name;
 }
 
-void delGPMParameter::SetValue( const char *value ){
+void delGPMParameter::SetValue(const char *value){
 	pValue = value;
 }
 
@@ -65,7 +65,7 @@ void delGPMParameter::SetValue( const char *value ){
 // Operators
 //////////////
 
-delGPMParameter &delGPMParameter::operator=( const delGPMParameter& parameter ){
+delGPMParameter &delGPMParameter::operator=(const delGPMParameter& parameter){
 	pName = parameter.pName;
 	pValue = parameter.pValue;
 	return *this;

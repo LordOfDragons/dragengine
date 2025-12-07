@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseImageModule( deLoadableModule &loadableModule );
+	deBaseImageModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseImageModule();
@@ -62,7 +62,7 @@ public:
 	 * You can be sure that the file pointer is located at the
 	 * beginning of the file.
 	 */
-	virtual deBaseImageInfo *InitLoadImage( decBaseFileReader &reader ) = 0;
+	virtual deBaseImageInfo *InitLoadImage(decBaseFileReader &reader) = 0;
 	
 	/**
 	 * \brief Load image.
@@ -73,7 +73,7 @@ public:
 	 * call has been created with the information stored in the infos
 	 * parameter obtained from a prior call to the CheckLoadImage function.
 	 */
-	virtual void LoadImage( decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos ) = 0;
+	virtual void LoadImage(decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos) = 0;
 	
 	/**
 	 * \brief Save image.
@@ -81,7 +81,7 @@ public:
 	 * You can be sure that the file provided has been rewinded prior to this
 	 * function call.
 	 */
-	virtual void SaveImage( decBaseFileWriter &writer, const deImage &image ) = 0;
+	virtual void SaveImage(decBaseFileWriter &writer, const deImage &image) = 0;
 	/*@}*/
 };
 

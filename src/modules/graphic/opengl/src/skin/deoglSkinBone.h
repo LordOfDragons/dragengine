@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin bone. */
-	deoglSkinBone( const decString &name );
+	deoglSkinBone(const decString &name);
 	
 protected:
 	/** Clean up skin bone. */
@@ -65,7 +65,7 @@ public:
 	const decString &GetName() const{ return pName; }
 	
 	/** Set bone index. */
-	void SetBone( int bone );
+	void SetBone(int bone);
 	/*@}*/
 };
 

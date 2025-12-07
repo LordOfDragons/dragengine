@@ -39,11 +39,11 @@
 ////////////////////////////
 
 deoglEnvMapFader::deoglEnvMapFader() :
-pEnvMapActive( NULL ),
-pEnvMapFading( NULL ),
-pEnvMapDelayed( NULL ),
-pFadePerTime( 1.0f ),
-pBlendFactor( 1.0f ){
+pEnvMapActive(NULL),
+pEnvMapFading(NULL),
+pEnvMapDelayed(NULL),
+pFadePerTime(1.0f),
+pBlendFactor(1.0f){
 }
 
 deoglEnvMapFader::~deoglEnvMapFader(){
@@ -54,8 +54,8 @@ deoglEnvMapFader::~deoglEnvMapFader(){
 // Management
 ///////////////
 
-void deoglEnvMapFader::SetFadePerTime( float fadePerTime ){
-	if( fadePerTime < 0.1f ){
+void deoglEnvMapFader::SetFadePerTime(float fadePerTime){
+	if(fadePerTime < 0.1f){
 		pFadePerTime = 0.1f;
 		
 	}else{
@@ -63,23 +63,23 @@ void deoglEnvMapFader::SetFadePerTime( float fadePerTime ){
 	}
 }
 
-void deoglEnvMapFader::FadeTo( deoglEnvironmentMap *envmap ){
-	if( envmap == pEnvMapActive ){
+void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
+	if(envmap == pEnvMapActive){
 		return;
 	}
 	
-	if( ! pEnvMapActive ){
+	if(!pEnvMapActive){
 		pEnvMapActive = envmap;
-		if( envmap ){
+		if(envmap){
 			envmap->AddReference();
 		}
 		return;
 	}
 	
 	// has pEnvMapActive and it is not envmap
-	if( ! pEnvMapFading ){
+	if(!pEnvMapFading){
 		pEnvMapFading = envmap;
-		if( envmap ){
+		if(envmap){
 			envmap->AddReference();
 		}
 		return;
@@ -87,36 +87,36 @@ void deoglEnvMapFader::FadeTo( deoglEnvironmentMap *envmap ){
 	
 	// has pEnvMapActive and it is not envmap. has pEnvMapFading which could be envmap.
 	// drop pEnvMapDelayed. this is correct no matter if pEnvMapFading is envmpa or not
-	if( pEnvMapDelayed ){
+	if(pEnvMapDelayed){
 		pEnvMapDelayed->FreeReference();
 		pEnvMapDelayed = NULL;
 	}
 	
 	// here pEnvMapActive is not NULL, pEnvMapFading is not NULL and pEnvMapDelayed is NULL.
 	// add envmap as delayed env map in case it is not the fading one
-	if( envmap == pEnvMapFading ){
+	if(envmap == pEnvMapFading){
 		return;
 	}
 	
 	pEnvMapDelayed = envmap;
-	if( envmap ){
+	if(envmap){
 		envmap->AddReference();
 	}
 	//printf( "fadeto %p: active=%p fading=%p delayed=%p\n", envmap, pEnvMapActive, pEnvMapFading, pEnvMapDelayed );
 }
 
-void deoglEnvMapFader::Drop( deoglEnvironmentMap *envmap ){
-	if( ! envmap ){
-		DETHROW( deeInvalidParam );
+void deoglEnvMapFader::Drop(deoglEnvironmentMap *envmap){
+	if(!envmap){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pEnvMapDelayed == envmap ){
+	if(pEnvMapDelayed == envmap){
 		pEnvMapDelayed->FreeReference();
 		pEnvMapDelayed = NULL;
 	}
 	
-	if( pEnvMapFading == envmap ){
-		if( pEnvMapFading ){
+	if(pEnvMapFading == envmap){
+		if(pEnvMapFading){
 			pEnvMapFading->FreeReference();
 		}
 		pEnvMapFading = pEnvMapDelayed;
@@ -124,8 +124,8 @@ void deoglEnvMapFader::Drop( deoglEnvironmentMap *envmap ){
 		pBlendFactor = 1.0f;
 	}
 	
-	if( pEnvMapActive == envmap ){
-		if( pEnvMapActive ){
+	if(pEnvMapActive == envmap){
+		if(pEnvMapActive){
 			pEnvMapActive->FreeReference();
 		}
 		pEnvMapActive = pEnvMapFading;
@@ -137,17 +137,17 @@ void deoglEnvMapFader::Drop( deoglEnvironmentMap *envmap ){
 }
 
 void deoglEnvMapFader::DropAll(){
-	if( pEnvMapActive ){
+	if(pEnvMapActive){
 		pEnvMapActive->FreeReference();
 		pEnvMapActive = NULL;
 	}
 	
-	if( pEnvMapFading ){
+	if(pEnvMapFading){
 		pEnvMapFading->FreeReference();
 		pEnvMapFading = NULL;
 	}
 	
-	if( pEnvMapDelayed ){
+	if(pEnvMapDelayed){
 		pEnvMapDelayed->FreeReference();
 		pEnvMapDelayed = NULL;
 	}
@@ -159,23 +159,23 @@ bool deoglEnvMapFader::IsFading() const{
 	return pEnvMapFading != NULL;
 }
 
-void deoglEnvMapFader::Update( float elapsed ){
-	if( ! pEnvMapFading ){
+void deoglEnvMapFader::Update(float elapsed){
+	if(!pEnvMapFading){
 		return;
 	}
 	
 	pBlendFactor -= pFadePerTime * elapsed;
 	//printf( "update: blend=%f\n", pBlendFactor );
 	
-	while( pBlendFactor <= 0.0f ){
-		if( pEnvMapActive ){
+	while(pBlendFactor <= 0.0f){
+		if(pEnvMapActive){
 			pEnvMapActive->FreeReference();
 		}
 		pEnvMapActive = pEnvMapFading;
 		pEnvMapFading = pEnvMapDelayed;
 		pEnvMapDelayed = NULL;
 		
-		if( pEnvMapFading ){
+		if(pEnvMapFading){
 			pBlendFactor += 1.0f;
 			
 		}else{

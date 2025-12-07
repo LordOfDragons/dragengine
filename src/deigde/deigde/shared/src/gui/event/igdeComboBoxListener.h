@@ -71,7 +71,7 @@ public:
 	 * This can be because the user selected an item from the drop down list or because
 	 * he entered text into the text field and accepted it.
 	 */
-	virtual void OnTextChanged( igdeComboBox *comboBox );
+	virtual void OnTextChanged(igdeComboBox *comboBox);
 	
 	/**
 	 * \brief ComboBox text is changing.
@@ -81,7 +81,7 @@ public:
 	 * send if the combo box is editable. While editing the current text can be obtained
 	 * using GetText(). Once accepted OnTextChanged() is called.
 	 */
-	virtual void OnTextChanging( igdeComboBox *comboBox );
+	virtual void OnTextChanging(igdeComboBox *comboBox);
 	/*@}*/
 };
 

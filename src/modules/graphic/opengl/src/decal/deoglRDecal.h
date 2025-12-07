@@ -69,9 +69,9 @@ private:
 	typedef deTObjectReference<deoglRDecal> Ref;
 
 
-		WorldComputeElement( deoglRDecal &decal );
-		virtual void UpdateData( sDataElement &data ) const;
-		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+		WorldComputeElement(deoglRDecal &decal);
+		virtual void UpdateData(sDataElement &data) const;
+		virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
 	};
 	
 	
@@ -132,7 +132,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render decal. */
-	deoglRDecal( deoglRenderThread &renderThread );
+	deoglRDecal(deoglRenderThread &renderThread);
 	
 	/** Clean up render decal. */
 	virtual ~deoglRDecal();
@@ -151,36 +151,36 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** Size. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** Set size. */
-	void SetSize( const decVector &size );
+	void SetSize(const decVector &size);
 	
 	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** Set texture coordinate transformation matrix. */
-	void SetTransform( const decTexMatrix2 &matrix );
+	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** Decal is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set decal is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	
 	
 	/** Update skin. */
-	void UpdateSkin( float elapsed );
+	void UpdateSkin(float elapsed);
 	
 	/** Set vbo dirty. */
 	void SetDirtyVBO();
@@ -191,13 +191,13 @@ public:
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or \em NULL if not set. */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not set. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not set. */
-	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Retrieves the skin state or NULL if there is none. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
@@ -206,7 +206,7 @@ public:
 	 * Set skin state or \em NULL if there is none.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void SetSkinState( deoglSkinState *skinState );
+	void SetSkinState(deoglSkinState *skinState);
 	
 	/** Retrieves the actual skin to use. */
 	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
@@ -246,7 +246,7 @@ public:
 	 * Set parent component or \em NULL.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void SetParentComponent( deoglRComponent *component );
+	void SetParentComponent(deoglRComponent *component);
 	
 	bool IsParentComponentSolid() const;
 	
@@ -260,10 +260,10 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglComponent only. Non-thread safe.
 	 */
-	void SetComponentMarkedRemove( bool marked );
+	void SetComponentMarkedRemove(bool marked);
 	
 	/** Add to world compute. */
-	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	void AddToWorldCompute(deoglWorldCompute &worldCompute);
 	
 	/** Update world compute. */
 	void UpdateWorldCompute();
@@ -280,7 +280,7 @@ public:
 	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const;
 	
 	/**
 	 * Texture units configuration for geometry type shaders or NULL if empty.
@@ -308,7 +308,7 @@ public:
 	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const;
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	/** Mark parameter blocks dirty. */
@@ -319,10 +319,10 @@ public:
 	
 	
 	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
-	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
-	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareForRenderRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Prepare for quick disposal of decal. */
 	void PrepareQuickDispose();
@@ -355,10 +355,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglDecalListener *listener );
+	void AddListener(deoglDecalListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglDecalListener *listener );
+	void RemoveListener(deoglDecalListener *listener);
 	
 	/** Notify all geometry changed. */
 	void NotifyGeometryChanged();
@@ -381,12 +381,12 @@ private:
 	void pUpdateUseSkin();
 	void pPrepareTUCs();
 	void pPrepareParamBlocks();
-	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
-	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void pPrepareSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask);
+	void pRenderSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask);
 	void pPrepareSkinStateConstructed();
 	void pUpdateRTSInstance();
-	void pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
-		int element, deoglSkinShader &skinShader );
+	void pUpdateInstanceParamBlock(deoglShaderParameterBlock &paramBlock,
+		int element, deoglSkinShader &skinShader);
 	
 	void pRequiresPrepareForRender();
 };

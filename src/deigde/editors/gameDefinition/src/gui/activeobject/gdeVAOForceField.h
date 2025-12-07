@@ -59,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object forceField. */
-	gdeVAOForceField( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCForceField *ocfield );
+	gdeVAOForceField(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCForceField *ocfield);
 	
 protected:
 	/**

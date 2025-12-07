@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAMusicSetName::ceUCAMusicSetName( ceConversationTopic *topic, ceCAMusic *music, const char *newName ){
-	if( ! topic || ! newName ) DETHROW( deeInvalidParam );
+ceUCAMusicSetName::ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *music, const char *newName){
+	if(!topic || !newName) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pMusic = NULL;
 	pOldName = music->GetName();
 	pNewName = newName;
 	
-	SetShortInfo( "Music Set Name" );
+	SetShortInfo("Music Set Name");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCAMusicSetName::ceUCAMusicSetName( ceConversationTopic *topic, ceCAMusic *mus
 }
 
 ceUCAMusicSetName::~ceUCAMusicSetName(){
-	if( pMusic ){
+	if(pMusic){
 		pMusic->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCAMusicSetName::~ceUCAMusicSetName(){
 ///////////////
 
 void ceUCAMusicSetName::Undo(){
-	pMusic->SetName( pOldName.GetString() );
-	pTopic->NotifyActionChanged( pMusic );
+	pMusic->SetName(pOldName.GetString());
+	pTopic->NotifyActionChanged(pMusic);
 }
 
 void ceUCAMusicSetName::Redo(){
-	pMusic->SetName( pNewName.GetString() );
-	pTopic->NotifyActionChanged( pMusic );
+	pMusic->SetName(pNewName.GetString());
+	pTopic->NotifyActionChanged(pMusic);
 }

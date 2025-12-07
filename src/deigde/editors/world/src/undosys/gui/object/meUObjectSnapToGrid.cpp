@@ -41,35 +41,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSnapToGrid::meUObjectSnapToGrid( meWorld *world, const meObjectList &objects, float grid ) :
-pWorld( NULL ),
-pObjects( NULL ),
-pObjectCount( 0 ),
-pGrid( ( double )grid )
+meUObjectSnapToGrid::meUObjectSnapToGrid(meWorld *world, const meObjectList &objects, float grid) :
+pWorld(NULL),
+pObjects(NULL),
+pObjectCount(0),
+pGrid((double)grid)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = objects.GetCount();
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
+	if(count == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Snap objects to grid" );
+	SetShortInfo("Snap objects to grid");
 	
 	try{
-		pObjects = new sObject[ count ];
+		pObjects = new sObject[count];
 		
-		for( pObjectCount=0; pObjectCount<count; pObjectCount++ ){
-			meObject * const object = objects.GetAt( pObjectCount );
+		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
+			meObject * const object = objects.GetAt(pObjectCount);
 			
-			pObjects[ pObjectCount ].object = object;
-			pObjects[ pObjectCount ].position = object->GetPosition();
+			pObjects[pObjectCount].object = object;
+			pObjects[pObjectCount].position = object->GetPosition();
 			object->AddReference();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -90,20 +90,20 @@ meUObjectSnapToGrid::~meUObjectSnapToGrid(){
 void meUObjectSnapToGrid::Undo(){
 	int i;
 	
-	for( i=0; i<pObjectCount; i++ ){
-		pObjects[ i ].object->SetPosition( pObjects[ i ].position );
-		pWorld->NotifyObjectGeometryChanged( pObjects[ i ].object );
+	for(i=0; i<pObjectCount; i++){
+		pObjects[i].object->SetPosition(pObjects[i].position);
+		pWorld->NotifyObjectGeometryChanged(pObjects[i].object);
 	}
 }
 
 void meUObjectSnapToGrid::Redo(){
 	int i;
 	
-	for( i =0; i <pObjectCount; i++ ){
-		decDVector position( pObjects[ i ].position );
-		position.Snap( pGrid );
-		pObjects[ i ].object->SetPosition( position );
-		pWorld->NotifyObjectGeometryChanged( pObjects[ i ].object );
+	for(i =0; i <pObjectCount; i++){
+		decDVector position(pObjects[i].position);
+		position.Snap(pGrid);
+		pObjects[i].object->SetPosition(position);
+		pWorld->NotifyObjectGeometryChanged(pObjects[i].object);
 	}
 }
 
@@ -113,16 +113,16 @@ void meUObjectSnapToGrid::Redo(){
 //////////////////////
 
 void meUObjectSnapToGrid::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
+	if(pObjects){
+		while(pObjectCount > 0){
 			pObjectCount--;
-			pObjects[ pObjectCount ].object->FreeReference();
+			pObjects[pObjectCount].object->FreeReference();
 		}
 		
 		delete [] pObjects;
 	}
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }

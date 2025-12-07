@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create ooclusion mpa manager. */
-	deoglOcclusionMapPool( deoglRenderThread &renderThread );
+	deoglOcclusionMapPool(deoglRenderThread &renderThread);
 	
 	/** Clean up occlusion map manager. */
 	~deoglOcclusionMapPool();
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get occlusion map for size. */
-	deoglOcclusionMap *Get( int width, int height, int layerCount );
+	deoglOcclusionMap *Get(int width, int height, int layerCount);
 	
 	/** Return occlusion map. */
-	void Return( deoglOcclusionMap *occlusionMap );
+	void Return(deoglOcclusionMap *occlusionMap);
 	/*@}*/
 };
 

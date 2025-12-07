@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, ceStrip *newStrip ){
-	if( ! topic || ! actorSpeak || ! headLookAt || ! newStrip ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, ceStrip *newStrip){
+	if(!topic || !actorSpeak || !headLookAt || !newStrip){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -53,9 +53,9 @@ ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet( ceConversationTopic *topic, ceCAActo
 	pOldStrip = NULL;
 	pNewStrip = NULL;
 	
-	SetShortInfo( "Set head look-at" );
+	SetShortInfo("Set head look-at");
 	
-	pOldStrip = new ceStrip( *headLookAt );
+	pOldStrip = new ceStrip(*headLookAt);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();
@@ -71,19 +71,19 @@ ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet( ceConversationTopic *topic, ceCAActo
 }
 
 ceUCAASpeakHeadLASet::~ceUCAASpeakHeadLASet(){
-	if( pNewStrip ){
+	if(pNewStrip){
 		pNewStrip->FreeReference();
 	}
-	if( pOldStrip ){
+	if(pOldStrip){
 		pOldStrip->FreeReference();
 	}
-	if( pHeadLA ){
+	if(pHeadLA){
 		pHeadLA->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -95,10 +95,10 @@ ceUCAASpeakHeadLASet::~ceUCAASpeakHeadLASet(){
 
 void ceUCAASpeakHeadLASet::Undo(){
 	*pHeadLA = *pOldStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakHeadLASet::Redo(){
 	*pHeadLA = *pNewStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

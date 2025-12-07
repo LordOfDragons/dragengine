@@ -45,10 +45,10 @@
 ////////////////////////////
 
 deSkinPropertyNodeVisitorLoad::deSkinPropertyNodeVisitorLoad(
-deEngine &engine, deVirtualFileSystem *vfs, const char *basePath ) :
-pEngine( engine ),
-pVirtualFileSystem( vfs ),
-pBasePath( basePath ){
+deEngine &engine, deVirtualFileSystem *vfs, const char *basePath) :
+pEngine(engine),
+pVirtualFileSystem(vfs),
+pBasePath(basePath){
 }
 
 deSkinPropertyNodeVisitorLoad::~deSkinPropertyNodeVisitorLoad(){
@@ -59,42 +59,42 @@ deSkinPropertyNodeVisitorLoad::~deSkinPropertyNodeVisitorLoad(){
 // Visiting
 /////////////
 
-void deSkinPropertyNodeVisitorLoad::VisitNode( deSkinPropertyNode &node ){
-	if( node.GetMask() ){
-		node.GetMask()->Visit( *this );
+void deSkinPropertyNodeVisitorLoad::VisitNode(deSkinPropertyNode &node){
+	if(node.GetMask()){
+		node.GetMask()->Visit(*this);
 	}
 }
 
-void deSkinPropertyNodeVisitorLoad::VisitGroup( deSkinPropertyNodeGroup &node ){
-	deSkinPropertyNodeVisitor::VisitGroup( node );
+void deSkinPropertyNodeVisitorLoad::VisitGroup(deSkinPropertyNodeGroup &node){
+	deSkinPropertyNodeVisitor::VisitGroup(node);
 	
 	const int count = node.GetNodeCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		node.GetNodeAt( i )->Visit( *this );
+	for(i=0; i<count; i++){
+		node.GetNodeAt(i)->Visit(*this);
 	}
 }
 
-void deSkinPropertyNodeVisitorLoad::VisitImage( deSkinPropertyNodeImage &node ){
-	deSkinPropertyNodeVisitor::VisitImage( node );
+void deSkinPropertyNodeVisitorLoad::VisitImage(deSkinPropertyNodeImage &node){
+	deSkinPropertyNodeVisitor::VisitImage(node);
 	
-	if( node.GetImage() ){
+	if(node.GetImage()){
 		return;
 	}
 	
 	const decString &path = node.GetPath();
 	deImage *image = NULL;
 	
-	if( ! path.IsEmpty() ){
+	if(!path.IsEmpty()){
 		try{
-			image = pEngine.GetImageManager()->LoadImage( pVirtualFileSystem, path, pBasePath );
-			node.SetImage( image );
+			image = pEngine.GetImageManager()->LoadImage(pVirtualFileSystem, path, pBasePath);
+			node.SetImage(image);
 			image->FreeReference();
 			image = NULL;
 			
-		}catch( const deException & ){
-			if( image ){
+		}catch(const deException &){
+			if(image){
 				image->FreeReference();
 				image = NULL;
 			}
@@ -102,25 +102,25 @@ void deSkinPropertyNodeVisitorLoad::VisitImage( deSkinPropertyNodeImage &node ){
 	}
 }
 
-void deSkinPropertyNodeVisitorLoad::VisitText( deSkinPropertyNodeText &node ){
-	deSkinPropertyNodeVisitor::VisitText( node );
+void deSkinPropertyNodeVisitorLoad::VisitText(deSkinPropertyNodeText &node){
+	deSkinPropertyNodeVisitor::VisitText(node);
 	
-	if( node.GetFont() ){
+	if(node.GetFont()){
 		return;
 	}
 	
 	const decString &path = node.GetPath();
 	deFont *font = NULL;
 	
-	if( ! path.IsEmpty() ){
+	if(!path.IsEmpty()){
 		try{
-			font = pEngine.GetFontManager()->LoadFont( pVirtualFileSystem, path, pBasePath );
-			node.SetFont( font );
+			font = pEngine.GetFontManager()->LoadFont(pVirtualFileSystem, path, pBasePath);
+			node.SetFont(font);
 			font->FreeReference();
 			font = NULL;
 			
-		}catch( const deException & ){
-			if( font ){
+		}catch(const deException &){
+			if(font){
 				font->FreeReference();
 				font = NULL;
 			}

@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUEffectSetStrength::seUEffectSetStrength( seEffect *effect, float newStrength ) :
-pEffect( NULL )
+seUEffectSetStrength::seUEffectSetStrength(seEffect *effect, float newStrength) :
+pEffect(NULL)
 {
-	if( ! effect ){
-		DETHROW( deeInvalidParam );
+	if(!effect){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldStrength = effect->GetStrength();
@@ -54,9 +54,9 @@ pEffect( NULL )
 		pEffect = effect;
 		pEffect->AddReference();
 		
-		SetShortInfo( "Effect set strength" );
+		SetShortInfo("Effect set strength");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -72,11 +72,11 @@ seUEffectSetStrength::~seUEffectSetStrength(){
 ///////////////
 
 void seUEffectSetStrength::Undo(){
-	pEffect->SetStrength( pOldStrength );
+	pEffect->SetStrength(pOldStrength);
 }
 
 void seUEffectSetStrength::Redo(){
-	pEffect->SetStrength( pNewStrength );
+	pEffect->SetStrength(pNewStrength);
 }
 
 
@@ -85,7 +85,7 @@ void seUEffectSetStrength::Redo(){
 //////////////////////
 
 void seUEffectSetStrength::pCleanUp(){
-	if( pEffect ){
+	if(pEffect){
 		pEffect->FreeReference();
 	}
 }

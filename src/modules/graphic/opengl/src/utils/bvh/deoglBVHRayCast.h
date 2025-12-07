@@ -52,13 +52,13 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Perform ray cast against BVH. */
-	void RayCast( deoglBVH &bvh );
+	void RayCast(deoglBVH &bvh);
 	
 	
 	
 protected:
 	/** Ray cast against node. */
-	void RayCastNode( deoglBVH &bvh, deoglBVHNode &node );
+	void RayCastNode(deoglBVH &bvh, deoglBVHNode &node);
 	/*@}*/
 };
 

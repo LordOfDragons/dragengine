@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create memory files with root path. */
-	deVFSMemoryFiles( const decPath &rootPath );
+	deVFSMemoryFiles(const decPath &rootPath);
 	
 protected:
 	/**
@@ -81,7 +81,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile( const decPath &path );
+	virtual bool ExistsFile(const decPath &path);
 	
 	/**
 	 * \brief File can be read.
@@ -90,7 +90,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile( const decPath &path );
+	virtual bool CanReadFile(const decPath &path);
 	
 	/**
 	 * \brief File can be written.
@@ -102,14 +102,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile( const decPath &path );
+	virtual bool CanWriteFile(const decPath &path);
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile( const decPath &path );
+	virtual bool CanDeleteFile(const decPath &path);
 	
 	/**
 	 * \brief Open file for reading.
@@ -118,7 +118,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path );
+	virtual decBaseFileReader *OpenFileForReading(const decPath &path);
 	
 	/**
 	 * \brief Open file for writing.
@@ -129,43 +129,43 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path );
+	virtual void DeleteFile(const decPath &path);
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile( const decPath &path );
+	virtual void TouchFile(const decPath &path);
 	
 	/**
 	 * \brief Search all visible files and directories.
 	 */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher );
+	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher);
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual eFileTypes GetFileType( const decPath &path );
+	virtual eFileTypes GetFileType(const decPath &path);
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path );
+	virtual uint64_t GetFileSize(const decPath &path);
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path );
+	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path);
 	/*@}*/
 	
 	
@@ -176,25 +176,25 @@ public:
 	int GetMemoryFileCount() const;
 	
 	/** \brief Memory file at position. */
-	decMemoryFile *GetMemoryFileAt( int index ) const;
+	decMemoryFile *GetMemoryFileAt(int index) const;
 	
 	/** \brief Index of memory file or -1 if absent. */
-	int IndexOfMemoryFile( decMemoryFile *memoryFile ) const;
+	int IndexOfMemoryFile(decMemoryFile *memoryFile) const;
 	
 	/** \brief Index of memory file with path or -1 if absent. */
-	int IndexOfMemoryFileWith( const char *path ) const;
+	int IndexOfMemoryFileWith(const char *path) const;
 	
 	/** \brief Memory file is present. */
-	bool HasMemoryFile( decMemoryFile *memoryFile ) const;
+	bool HasMemoryFile(decMemoryFile *memoryFile) const;
 	
 	/** \brief Memory file with path is present. */
-	bool HasMemoryFileWith( const char *path ) const;
+	bool HasMemoryFileWith(const char *path) const;
 	
 	/** \brief Add memory file. */
-	void AddMemoryFile( decMemoryFile *memoryFile );
+	void AddMemoryFile(decMemoryFile *memoryFile);
 	
 	/** \brief Remove memory file. */
-	void RemoveMemoryFile( decMemoryFile *memoryFile );
+	void RemoveMemoryFile(decMemoryFile *memoryFile);
 	
 	/** \brief Remove all memory files. */
 	void RemoveAllMemoryFiles();

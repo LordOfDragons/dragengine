@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassARGroup( deScriptingDragonScript &ds );
+	deClassARGroup(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassARGroup();
@@ -74,16 +74,16 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
-	deAnimatorRuleGroup *GetRule( dsRealObject *myself ) const;
+	deAnimatorRuleGroup *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator( dsRealObject *myself, deAnimator *animator );
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleGroup *rule );
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleGroup *rule);
 	
 	inline dsClass *GetClassARGroupTarget() const{ return pClsARGroupTarget; }
 	inline dsClass *GetClassARGroupApplication() const{ return pClsARGroupApplication; }
@@ -97,27 +97,27 @@ private:
 		dsClass *clsARGroupApplication;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetApplicationType );
-	DEF_NATFUNC( nfSetUseCurrentState );
-	DEF_NATFUNC( nfAddRule );
-	DEF_NATFUNC( nfRemoveRule );
-	DEF_NATFUNC( nfRemoveAllRules );
+	DEF_NATFUNC(nfSetApplicationType);
+	DEF_NATFUNC(nfSetUseCurrentState);
+	DEF_NATFUNC(nfAddRule);
+	DEF_NATFUNC(nfRemoveRule);
+	DEF_NATFUNC(nfRemoveAllRules);
 	
-	DEF_NATFUNC( nfSetEnablePosition );
-	DEF_NATFUNC( nfSetEnableOrientation );
-	DEF_NATFUNC( nfSetEnableSize );
-	DEF_NATFUNC( nfSetEnableVertexPositionSet );
+	DEF_NATFUNC(nfSetEnablePosition);
+	DEF_NATFUNC(nfSetEnableOrientation);
+	DEF_NATFUNC(nfSetEnableSize);
+	DEF_NATFUNC(nfSetEnableVertexPositionSet);
 #undef DEF_NATFUNC
 };
 

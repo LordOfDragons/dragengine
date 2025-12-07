@@ -43,7 +43,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig sphere shape. */
-	reRigShapeSphere( deEngine *engine );
+	reRigShapeSphere(deEngine *engine);
 	/** Cleans up the rig shape shape. */
 	virtual ~reRigShapeSphere();
 	/*@}*/
@@ -53,12 +53,12 @@ public:
 	/** Retrieves the radius. */
 	inline float GetRadius() const{ return pRadius; }
 	/** Sets the radius. */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/** Creates a copy of this shape. */
 	virtual reRigShape *Duplicate() const;
 	/** Uniformly scale shape. */
-	virtual void Scale( float scale );
+	virtual void Scale(float scale);
 	
 	/** Creates shape. */
 	virtual decShape *CreateShape();

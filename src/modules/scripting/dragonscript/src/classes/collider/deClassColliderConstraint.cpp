@@ -56,32 +56,32 @@ struct sCConNatDat{
 /////////////////////
 
 // public func new()
-deClassColliderConstraint::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsCCon,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassColliderConstraint::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCCon,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassColliderConstraint::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sCConNatDat *nd = ( sCConNatDat* )p_GetNativeData( myself );
+void deClassColliderConstraint::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sCConNatDat *nd = (sCConNatDat*)p_GetNativeData(myself);
 	
 	// clear ( important )
 	nd->constraint = NULL;
 	
 	// create a constraint
 	nd->constraint = new deColliderConstraint();
-	if( ! nd->constraint ) DSTHROW( dueOutOfMemory );
+	if(!nd->constraint) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
-deClassColliderConstraint::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsCCon,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassColliderConstraint::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsCCon,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassColliderConstraint::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassColliderConstraint::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCConNatDat *nd = ( sCConNatDat* )p_GetNativeData( myself );
+	sCConNatDat *nd = (sCConNatDat*)p_GetNativeData(myself);
 	
-	if( nd->constraint ){
+	if(nd->constraint){
 		delete nd->constraint;
 		nd->constraint = NULL;
 	}
@@ -93,713 +93,713 @@ void deClassColliderConstraint::nfDestructor::RunFunction( dsRunTime *rt, dsValu
 ///////////////
 
 // public func Collider getTargetCollider()
-deClassColliderConstraint::nfGetTargetCollider::nfGetTargetCollider( const sInitData &init ) : dsFunction( init.clsCCon,
-"getTargetCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol ){
+deClassColliderConstraint::nfGetTargetCollider::nfGetTargetCollider(const sInitData &init) : dsFunction(init.clsCCon,
+"getTargetCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
 }
-void deClassColliderConstraint::nfGetTargetCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	const deScriptingDragonScript &ds = *( ( deClassColliderConstraint* )GetOwnerClass() )->GetScriptModule();
+void deClassColliderConstraint::nfGetTargetCollider::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	const deScriptingDragonScript &ds = *((deClassColliderConstraint*)GetOwnerClass())->GetScriptModule();
 	
-	ds.GetClassCollider()->PushCollider( rt, constraint.GetTargetCollider() );
+	ds.GetClassCollider()->PushCollider(rt, constraint.GetTargetCollider());
 }
 
 // public func void setTargetCollider( Collider collider )
-deClassColliderConstraint::nfSetTargetCollider::nfSetTargetCollider( const sInitData &init ) : dsFunction( init.clsCCon,
-"setTargetCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
+deClassColliderConstraint::nfSetTargetCollider::nfSetTargetCollider(const sInitData &init) : dsFunction(init.clsCCon,
+"setTargetCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
 }
-void deClassColliderConstraint::nfSetTargetCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = *( ( deClassColliderConstraint* )GetOwnerClass() )->GetScriptModule();
-	deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
+void deClassColliderConstraint::nfSetTargetCollider::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = *((deClassColliderConstraint*)GetOwnerClass())->GetScriptModule();
+	deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
 	
-	deCollider * const collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
+	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
 	
-	constraint.SetTargetCollider( collider );
+	constraint.SetTargetCollider(collider);
 }
 
 // public func String getTargetBone()
-deClassColliderConstraint::nfGetTargetBone::nfGetTargetBone( const sInitData &init ) : dsFunction( init.clsCCon,
-"getTargetBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassColliderConstraint::nfGetTargetBone::nfGetTargetBone(const sInitData &init) : dsFunction(init.clsCCon,
+"getTargetBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassColliderConstraint::nfGetTargetBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	rt->PushString( constraint.GetTargetBone() );
+void deClassColliderConstraint::nfGetTargetBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	rt->PushString(constraint.GetTargetBone());
 }
 
 // public func void setTargetBone( String bone )
-deClassColliderConstraint::nfSetTargetBone::nfSetTargetBone( const sInitData &init ) : dsFunction( init.clsCCon,
-"setTargetBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // bone
+deClassColliderConstraint::nfSetTargetBone::nfSetTargetBone(const sInitData &init) : dsFunction(init.clsCCon,
+"setTargetBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // bone
 }
-void deClassColliderConstraint::nfSetTargetBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	const char *bone = rt->GetValue( 0 )->GetString();
+void deClassColliderConstraint::nfSetTargetBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	const char *bone = rt->GetValue(0)->GetString();
 	
-	constraint.SetTargetBone( bone );
+	constraint.SetTargetBone(bone);
 }
 
 
 
 
 // public func Vector getPosition1()
-deClassColliderConstraint::nfGetPosition1::nfGetPosition1( const sInitData &init ) : dsFunction( init.clsCCon,
-"getPosition1", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassColliderConstraint::nfGetPosition1::nfGetPosition1(const sInitData &init) : dsFunction(init.clsCCon,
+"getPosition1", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassColliderConstraint::nfGetPosition1::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfGetPosition1::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	clsCCon->GetClassVector()->PushVector( rt, constraint->GetPosition1() );
+	clsCCon->GetClassVector()->PushVector(rt, constraint->GetPosition1());
 }
 
 // public func void setPosition1( Vector position )
-deClassColliderConstraint::nfSetPosition1::nfSetPosition1( const sInitData &init ) : dsFunction( init.clsCCon,
-"setPosition1", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // position
+deClassColliderConstraint::nfSetPosition1::nfSetPosition1(const sInitData &init) : dsFunction(init.clsCCon,
+"setPosition1", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // position
 }
-void deClassColliderConstraint::nfSetPosition1::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfSetPosition1::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	dsRealObject *obj = rt->GetValue( 0 )->GetRealObject();
-	if( ! obj ) DSTHROW( dueNullPointer );
+	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
+	if(!obj) DSTHROW(dueNullPointer);
 	
-	constraint->SetPosition1( clsCCon->GetClassVector()->GetVector( obj ) );
+	constraint->SetPosition1(clsCCon->GetClassVector()->GetVector(obj));
 }
 
 // public func Quaternion getOrientation1()
-deClassColliderConstraint::nfGetOrientation1::nfGetOrientation1( const sInitData &init ) : dsFunction( init.clsCCon,
-"getOrientation1", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
+deClassColliderConstraint::nfGetOrientation1::nfGetOrientation1(const sInitData &init) : dsFunction(init.clsCCon,
+"getOrientation1", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
-void deClassColliderConstraint::nfGetOrientation1::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfGetOrientation1::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	clsCCon->GetClassQuaternion()->PushQuaternion( rt, constraint->GetOrientation1() );
+	clsCCon->GetClassQuaternion()->PushQuaternion(rt, constraint->GetOrientation1());
 }
 
 // public func void setOrientation1( Quaternion orientation )
-deClassColliderConstraint::nfSetOrientation1::nfSetOrientation1( const sInitData &init ) : dsFunction( init.clsCCon,
-"setOrientation1", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsQuat ); // orientation
+deClassColliderConstraint::nfSetOrientation1::nfSetOrientation1(const sInitData &init) : dsFunction(init.clsCCon,
+"setOrientation1", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsQuat); // orientation
 }
-void deClassColliderConstraint::nfSetOrientation1::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfSetOrientation1::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	dsRealObject *obj = rt->GetValue( 0 )->GetRealObject();
-	if( ! obj ) DSTHROW( dueNullPointer );
+	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
+	if(!obj) DSTHROW(dueNullPointer);
 	
-	constraint->SetOrientation1( clsCCon->GetClassQuaternion()->GetQuaternion( obj ) );
+	constraint->SetOrientation1(clsCCon->GetClassQuaternion()->GetQuaternion(obj));
 }
 
 // public func Vector getPosition2()
-deClassColliderConstraint::nfGetPosition2::nfGetPosition2( const sInitData &init ) : dsFunction( init.clsCCon,
-"getPosition2", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassColliderConstraint::nfGetPosition2::nfGetPosition2(const sInitData &init) : dsFunction(init.clsCCon,
+"getPosition2", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassColliderConstraint::nfGetPosition2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfGetPosition2::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	clsCCon->GetClassVector()->PushVector( rt, constraint->GetPosition2() );
+	clsCCon->GetClassVector()->PushVector(rt, constraint->GetPosition2());
 }
 
 // public func void setPosition2( Vector position )
-deClassColliderConstraint::nfSetPosition2::nfSetPosition2( const sInitData &init ) : dsFunction( init.clsCCon,
-"setPosition2", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // position
+deClassColliderConstraint::nfSetPosition2::nfSetPosition2(const sInitData &init) : dsFunction(init.clsCCon,
+"setPosition2", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // position
 }
-void deClassColliderConstraint::nfSetPosition2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfSetPosition2::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	dsRealObject *obj = rt->GetValue( 0 )->GetRealObject();
-	if( ! obj ) DSTHROW( dueNullPointer );
+	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
+	if(!obj) DSTHROW(dueNullPointer);
 	
-	constraint->SetPosition2( clsCCon->GetClassVector()->GetVector( obj ) );
+	constraint->SetPosition2(clsCCon->GetClassVector()->GetVector(obj));
 }
 
 // public func Quaternion getOrientation2()
-deClassColliderConstraint::nfGetOrientation2::nfGetOrientation2( const sInitData &init ) : dsFunction( init.clsCCon,
-"getOrientation2", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
+deClassColliderConstraint::nfGetOrientation2::nfGetOrientation2(const sInitData &init) : dsFunction(init.clsCCon,
+"getOrientation2", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
-void deClassColliderConstraint::nfGetOrientation2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfGetOrientation2::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	clsCCon->GetClassQuaternion()->PushQuaternion( rt, constraint->GetOrientation2() );
+	clsCCon->GetClassQuaternion()->PushQuaternion(rt, constraint->GetOrientation2());
 }
 
 // public func void setOrientation2( Quaternion orientation )
-deClassColliderConstraint::nfSetOrientation2::nfSetOrientation2( const sInitData &init ) : dsFunction( init.clsCCon,
-"setOrientation2", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsQuat ); // orientation
+deClassColliderConstraint::nfSetOrientation2::nfSetOrientation2(const sInitData &init) : dsFunction(init.clsCCon,
+"setOrientation2", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsQuat); // orientation
 }
-void deClassColliderConstraint::nfSetOrientation2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfSetOrientation2::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	dsRealObject *obj = rt->GetValue( 0 )->GetRealObject();
-	if( ! obj ) DSTHROW( dueNullPointer );
+	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
+	if(!obj) DSTHROW(dueNullPointer);
 	
-	constraint->SetOrientation2( clsCCon->GetClassQuaternion()->GetQuaternion( obj ) );
+	constraint->SetOrientation2(clsCCon->GetClassQuaternion()->GetQuaternion(obj));
 }
 
 
 
 // public func float getLowerLimitFor( ColliderConstraintDof dof )
-deClassColliderConstraint::nfGetLowerLimitFor::nfGetLowerLimitFor( const sInitData &init ) : dsFunction( init.clsCCon,
-"getLowerLimitFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
+deClassColliderConstraint::nfGetLowerLimitFor::nfGetLowerLimitFor(const sInitData &init) : dsFunction(init.clsCCon,
+"getLowerLimitFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
-void deClassColliderConstraint::nfGetLowerLimitFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfGetLowerLimitFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	switch( dof ){
+	switch(dof){
 	case deColliderConstraint::edofAngularX:
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
-		rt->PushFloat( constraint->GetDof( dof ).GetLowerLimit() * RAD2DEG );
+		rt->PushFloat(constraint->GetDof(dof).GetLowerLimit() * RAD2DEG);
 		break;
 		
 	case deColliderConstraint::edofLinearX:
 	case deColliderConstraint::edofLinearY:
 	case deColliderConstraint::edofLinearZ:
-		rt->PushFloat( constraint->GetDof( dof ).GetLowerLimit() );
+		rt->PushFloat(constraint->GetDof(dof).GetLowerLimit());
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 }
 
 // public func float getUpperLimitFor( ColliderConstraintDof dof )
-deClassColliderConstraint::nfGetUpperLimitFor::nfGetUpperLimitFor( const sInitData &init ) : dsFunction( init.clsCCon,
-"getUpperLimitFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
+deClassColliderConstraint::nfGetUpperLimitFor::nfGetUpperLimitFor(const sInitData &init) : dsFunction(init.clsCCon,
+"getUpperLimitFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
-void deClassColliderConstraint::nfGetUpperLimitFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfGetUpperLimitFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	switch( dof ){
+	switch(dof){
 	case deColliderConstraint::edofAngularX:
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
-		rt->PushFloat( constraint->GetDof( dof ).GetUpperLimit() * RAD2DEG );
+		rt->PushFloat(constraint->GetDof(dof).GetUpperLimit() * RAD2DEG);
 		break;
 		
 	case deColliderConstraint::edofLinearX:
 	case deColliderConstraint::edofLinearY:
 	case deColliderConstraint::edofLinearZ:
-		rt->PushFloat( constraint->GetDof( dof ).GetUpperLimit() );
+		rt->PushFloat(constraint->GetDof(dof).GetUpperLimit());
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 }
 
 // public func void setLimitsFor( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
-deClassColliderConstraint::nfSetLimitsFor::nfSetLimitsFor( const sInitData &init ) : dsFunction( init.clsCCon,
-"setLimitsFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
-	p_AddParameter( init.clsFlt ); // lowerLimit
-	p_AddParameter( init.clsFlt ); // upperLimit
+deClassColliderConstraint::nfSetLimitsFor::nfSetLimitsFor(const sInitData &init) : dsFunction(init.clsCCon,
+"setLimitsFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
+	p_AddParameter(init.clsFlt); // lowerLimit
+	p_AddParameter(init.clsFlt); // upperLimit
 }
-void deClassColliderConstraint::nfSetLimitsFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfSetLimitsFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
-	float lowerLimit = rt->GetValue( 1 )->GetFloat();
-	float upperLimit = rt->GetValue( 2 )->GetFloat();
+	float lowerLimit = rt->GetValue(1)->GetFloat();
+	float upperLimit = rt->GetValue(2)->GetFloat();
 	
-	switch( dof ){
+	switch(dof){
 	case deColliderConstraint::edofAngularX:
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
-		constraint->GetDof( dof ).SetLowerLimit( lowerLimit * DEG2RAD );
-		constraint->GetDof( dof ).SetUpperLimit( upperLimit * DEG2RAD );
+		constraint->GetDof(dof).SetLowerLimit(lowerLimit * DEG2RAD);
+		constraint->GetDof(dof).SetUpperLimit(upperLimit * DEG2RAD);
 		break;
 		
 	case deColliderConstraint::edofLinearX:
 	case deColliderConstraint::edofLinearY:
 	case deColliderConstraint::edofLinearZ:
-		constraint->GetDof( dof ).SetLowerLimit( lowerLimit );
-		constraint->GetDof( dof ).SetUpperLimit( upperLimit );
+		constraint->GetDof(dof).SetLowerLimit(lowerLimit);
+		constraint->GetDof(dof).SetUpperLimit(upperLimit);
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 }
 
 // public func void setLockedFor( ColliderConstraintDof dof )
-deClassColliderConstraint::nfSetLockedFor::nfSetLockedFor( const sInitData &init ) : dsFunction( init.clsCCon,
-"setLockedFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
+deClassColliderConstraint::nfSetLockedFor::nfSetLockedFor(const sInitData &init) : dsFunction(init.clsCCon,
+"setLockedFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
-void deClassColliderConstraint::nfSetLockedFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+void deClassColliderConstraint::nfSetLockedFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof =
-		( deColliderConstraint::eDegreesOfFreedom )rt->GetValue( 0 )->GetInt();
+		(deColliderConstraint::eDegreesOfFreedom)rt->GetValue(0)->GetInt();
 	
-	constraint->GetDof( dof ).SetLocked( 0.0f );
+	constraint->GetDof(dof).SetLocked(0.0f);
 }
 
 // public func void setFreeFor( ColliderConstraintDof dof )
-deClassColliderConstraint::nfSetFreeFor::nfSetFreeFor( const sInitData &init ) : dsFunction( init.clsCCon,
-"setFreeFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
+deClassColliderConstraint::nfSetFreeFor::nfSetFreeFor(const sInitData &init) : dsFunction(init.clsCCon,
+"setFreeFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
-void deClassColliderConstraint::nfSetFreeFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+void deClassColliderConstraint::nfSetFreeFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof =
-		( deColliderConstraint::eDegreesOfFreedom )rt->GetValue( 0 )->GetInt();
+		(deColliderConstraint::eDegreesOfFreedom)rt->GetValue(0)->GetInt();
 	
-	constraint->GetDof( dof ).SetFree();
+	constraint->GetDof(dof).SetFree();
 }
 
 
 
 // public func Vector getLinearLowerLimits()
-deClassColliderConstraint::nfGetLinearLowerLimits::nfGetLinearLowerLimits( const sInitData &init ) : dsFunction( init.clsCCon,
-"getLinearLowerLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassColliderConstraint::nfGetLinearLowerLimits::nfGetLinearLowerLimits(const sInitData &init) : dsFunction(init.clsCCon,
+"getLinearLowerLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassColliderConstraint::nfGetLinearLowerLimits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfGetLinearLowerLimits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	clsCCon->GetClassVector()->PushVector( rt, decVector(
+	clsCCon->GetClassVector()->PushVector(rt, decVector(
 		constraint->GetDofLinearX().GetLowerLimit(),
 		constraint->GetDofLinearY().GetLowerLimit(),
-		constraint->GetDofLinearZ().GetLowerLimit() ) );
+		constraint->GetDofLinearZ().GetLowerLimit()));
 }
 
 // public func Vector getLinearUpperLimits()
-deClassColliderConstraint::nfGetLinearUpperLimits::nfGetLinearUpperLimits( const sInitData &init ) : dsFunction( init.clsCCon,
-"getLinearUpperLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassColliderConstraint::nfGetLinearUpperLimits::nfGetLinearUpperLimits(const sInitData &init) : dsFunction(init.clsCCon,
+"getLinearUpperLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassColliderConstraint::nfGetLinearUpperLimits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfGetLinearUpperLimits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	clsCCon->GetClassVector()->PushVector( rt, decVector(
+	clsCCon->GetClassVector()->PushVector(rt, decVector(
 		constraint->GetDofLinearX().GetUpperLimit(),
 		constraint->GetDofLinearY().GetUpperLimit(),
-		constraint->GetDofLinearZ().GetUpperLimit() ) );
+		constraint->GetDofLinearZ().GetUpperLimit()));
 }
 
 // public func void setLinearLimits( Vector lowerLimits, Vector upperLimits )
-deClassColliderConstraint::nfSetLinearLimits::nfSetLinearLimits( const sInitData &init ) : dsFunction( init.clsCCon,
-"setLinearLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // lowerLimits
-	p_AddParameter( init.clsVec ); // upperLimits
+deClassColliderConstraint::nfSetLinearLimits::nfSetLinearLimits(const sInitData &init) : dsFunction(init.clsCCon,
+"setLinearLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // lowerLimits
+	p_AddParameter(init.clsVec); // upperLimits
 }
-void deClassColliderConstraint::nfSetLinearLimits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfSetLinearLimits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	dsRealObject *objLower = rt->GetValue( 0 )->GetRealObject();
-	dsRealObject *objUpper = rt->GetValue( 1 )->GetRealObject();
-	if( ! objLower || ! objUpper ) DSTHROW( dueNullPointer );
+	dsRealObject *objLower = rt->GetValue(0)->GetRealObject();
+	dsRealObject *objUpper = rt->GetValue(1)->GetRealObject();
+	if(!objLower || !objUpper) DSTHROW(dueNullPointer);
 	
-	const decVector &lowerLimits = clsCCon->GetClassVector()->GetVector( objLower );
-	const decVector &upperLimits = clsCCon->GetClassVector()->GetVector( objUpper );
+	const decVector &lowerLimits = clsCCon->GetClassVector()->GetVector(objLower);
+	const decVector &upperLimits = clsCCon->GetClassVector()->GetVector(objUpper);
 	
-	constraint->GetDofLinearX().SetLowerLimit( lowerLimits.x );
-	constraint->GetDofLinearY().SetLowerLimit( lowerLimits.y );
-	constraint->GetDofLinearZ().SetLowerLimit( lowerLimits.z );
+	constraint->GetDofLinearX().SetLowerLimit(lowerLimits.x);
+	constraint->GetDofLinearY().SetLowerLimit(lowerLimits.y);
+	constraint->GetDofLinearZ().SetLowerLimit(lowerLimits.z);
 	
-	constraint->GetDofLinearX().SetUpperLimit( upperLimits.x );
-	constraint->GetDofLinearY().SetUpperLimit( upperLimits.y );
-	constraint->GetDofLinearZ().SetUpperLimit( upperLimits.z );
+	constraint->GetDofLinearX().SetUpperLimit(upperLimits.x);
+	constraint->GetDofLinearY().SetUpperLimit(upperLimits.y);
+	constraint->GetDofLinearZ().SetUpperLimit(upperLimits.z);
 }
 
 // public func Vector getAngularLowerLimits()
-deClassColliderConstraint::nfGetAngularLowerLimits::nfGetAngularLowerLimits( const sInitData &init ) : dsFunction( init.clsCCon,
-"getAngularLowerLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassColliderConstraint::nfGetAngularLowerLimits::nfGetAngularLowerLimits(const sInitData &init) : dsFunction(init.clsCCon,
+"getAngularLowerLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassColliderConstraint::nfGetAngularLowerLimits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfGetAngularLowerLimits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	clsCCon->GetClassVector()->PushVector( rt, decVector(
+	clsCCon->GetClassVector()->PushVector(rt, decVector(
 		constraint->GetDofAngularX().GetLowerLimit() * RAD2DEG,
 		constraint->GetDofAngularY().GetLowerLimit() * RAD2DEG,
-		constraint->GetDofAngularZ().GetLowerLimit() * RAD2DEG ) );
+		constraint->GetDofAngularZ().GetLowerLimit() * RAD2DEG));
 }
 
 // public func Vector getAngularUpperLimits()
-deClassColliderConstraint::nfGetAngularUpperLimits::nfGetAngularUpperLimits( const sInitData &init ) : dsFunction( init.clsCCon,
-"getAngularUpperLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassColliderConstraint::nfGetAngularUpperLimits::nfGetAngularUpperLimits(const sInitData &init) : dsFunction(init.clsCCon,
+"getAngularUpperLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassColliderConstraint::nfGetAngularUpperLimits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfGetAngularUpperLimits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	clsCCon->GetClassVector()->PushVector( rt, decVector(
+	clsCCon->GetClassVector()->PushVector(rt, decVector(
 		constraint->GetDofAngularX().GetUpperLimit() * RAD2DEG,
 		constraint->GetDofAngularY().GetUpperLimit() * RAD2DEG,
-		constraint->GetDofAngularZ().GetUpperLimit() * RAD2DEG ) );
+		constraint->GetDofAngularZ().GetUpperLimit() * RAD2DEG));
 }
 
 // public func void setAngularLimits( Vector lowerLimits, Vector upperLimits )
-deClassColliderConstraint::nfSetAngularLimits::nfSetAngularLimits( const sInitData &init ) : dsFunction( init.clsCCon,
-"setAngularLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // lowerLimits
-	p_AddParameter( init.clsVec ); // upperLimits
+deClassColliderConstraint::nfSetAngularLimits::nfSetAngularLimits(const sInitData &init) : dsFunction(init.clsCCon,
+"setAngularLimits", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // lowerLimits
+	p_AddParameter(init.clsVec); // upperLimits
 }
-void deClassColliderConstraint::nfSetAngularLimits::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
+void deClassColliderConstraint::nfSetAngularLimits::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
 	
-	dsRealObject *objLower = rt->GetValue( 0 )->GetRealObject();
-	dsRealObject *objUpper = rt->GetValue( 1 )->GetRealObject();
-	if( ! objLower || ! objUpper ) DSTHROW( dueNullPointer );
+	dsRealObject *objLower = rt->GetValue(0)->GetRealObject();
+	dsRealObject *objUpper = rt->GetValue(1)->GetRealObject();
+	if(!objLower || !objUpper) DSTHROW(dueNullPointer);
 	
-	const decVector &lowerLimits = clsCCon->GetClassVector()->GetVector( objLower );
-	const decVector &upperLimits = clsCCon->GetClassVector()->GetVector( objUpper );
+	const decVector &lowerLimits = clsCCon->GetClassVector()->GetVector(objLower);
+	const decVector &upperLimits = clsCCon->GetClassVector()->GetVector(objUpper);
 	
-	constraint->GetDofAngularX().SetLowerLimit( lowerLimits.x * DEG2RAD );
-	constraint->GetDofAngularY().SetLowerLimit( lowerLimits.y * DEG2RAD );
-	constraint->GetDofAngularZ().SetLowerLimit( lowerLimits.z * DEG2RAD );
+	constraint->GetDofAngularX().SetLowerLimit(lowerLimits.x * DEG2RAD);
+	constraint->GetDofAngularY().SetLowerLimit(lowerLimits.y * DEG2RAD);
+	constraint->GetDofAngularZ().SetLowerLimit(lowerLimits.z * DEG2RAD);
 	
-	constraint->GetDofAngularX().SetUpperLimit( upperLimits.x * DEG2RAD );
-	constraint->GetDofAngularY().SetUpperLimit( upperLimits.y * DEG2RAD );
-	constraint->GetDofAngularZ().SetUpperLimit( upperLimits.z * DEG2RAD );
+	constraint->GetDofAngularX().SetUpperLimit(upperLimits.x * DEG2RAD);
+	constraint->GetDofAngularY().SetUpperLimit(upperLimits.y * DEG2RAD);
+	constraint->GetDofAngularZ().SetUpperLimit(upperLimits.z * DEG2RAD);
 }
 
 
 
 // public func float getStaticFrictionFor(ColliderConstraintDof dof)
-deClassColliderConstraint::nfGetStaticFrictionFor::nfGetStaticFrictionFor( const sInitData &init ) :
-dsFunction( init.clsCCon, "getStaticFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
+deClassColliderConstraint::nfGetStaticFrictionFor::nfGetStaticFrictionFor(const sInitData &init) :
+dsFunction(init.clsCCon, "getStaticFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
-void deClassColliderConstraint::nfGetStaticFrictionFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfGetStaticFrictionFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	rt->PushFloat( constraint->GetDof( dof ).GetStaticFriction() );
+	rt->PushFloat(constraint->GetDof(dof).GetStaticFriction());
 }
 
 // public func void setStaticFrictionFor(ColliderConstraintDof dof, float friction)
-deClassColliderConstraint::nfSetStaticFrictionFor::nfSetStaticFrictionFor( const sInitData &init ) :
-dsFunction( init.clsCCon, "setStaticFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
-	p_AddParameter( init.clsFlt ); // friction
+deClassColliderConstraint::nfSetStaticFrictionFor::nfSetStaticFrictionFor(const sInitData &init) :
+dsFunction(init.clsCCon, "setStaticFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
+	p_AddParameter(init.clsFlt); // friction
 }
-void deClassColliderConstraint::nfSetStaticFrictionFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfSetStaticFrictionFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	constraint->GetDof( dof ).SetStaticFriction( rt->GetValue( 1 )->GetFloat() );
+	constraint->GetDof(dof).SetStaticFriction(rt->GetValue(1)->GetFloat());
 }
 
 // public func float getKinematicFrictionFor(ColliderConstraintDof dof)
-deClassColliderConstraint::nfGetKinematicFrictionFor::nfGetKinematicFrictionFor( const sInitData &init ) :
-dsFunction( init.clsCCon, "getKinematicFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
+deClassColliderConstraint::nfGetKinematicFrictionFor::nfGetKinematicFrictionFor(const sInitData &init) :
+dsFunction(init.clsCCon, "getKinematicFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
-void deClassColliderConstraint::nfGetKinematicFrictionFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfGetKinematicFrictionFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	rt->PushFloat( constraint->GetDof( dof ).GetKinematicFriction() );
+	rt->PushFloat(constraint->GetDof(dof).GetKinematicFriction());
 }
 
 // public func void setKinematicFrictionFor(ColliderConstraintDof dof, float friction)
-deClassColliderConstraint::nfSetKinematicFrictionFor::nfSetKinematicFrictionFor( const sInitData &init ) :
-dsFunction( init.clsCCon, "setKinematicFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
-	p_AddParameter( init.clsFlt ); // friction
+deClassColliderConstraint::nfSetKinematicFrictionFor::nfSetKinematicFrictionFor(const sInitData &init) :
+dsFunction(init.clsCCon, "setKinematicFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
+	p_AddParameter(init.clsFlt); // friction
 }
-void deClassColliderConstraint::nfSetKinematicFrictionFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfSetKinematicFrictionFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	constraint->GetDof( dof ).SetKinematicFriction( rt->GetValue( 1 )->GetFloat() );
+	constraint->GetDof(dof).SetKinematicFriction(rt->GetValue(1)->GetFloat());
 }
 
 // public func float getSpringStiffnessFor(ColliderConstraintDof dof)
-deClassColliderConstraint::nfGetSpringStiffnessFor::nfGetSpringStiffnessFor( const sInitData &init ) :
-dsFunction( init.clsCCon, "getSpringStiffnessFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
+deClassColliderConstraint::nfGetSpringStiffnessFor::nfGetSpringStiffnessFor(const sInitData &init) :
+dsFunction(init.clsCCon, "getSpringStiffnessFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
 }
-void deClassColliderConstraint::nfGetSpringStiffnessFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfGetSpringStiffnessFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	rt->PushFloat( constraint->GetDof( dof ).GetSpringStiffness() );
+	rt->PushFloat(constraint->GetDof(dof).GetSpringStiffness());
 }
 
 // public func void setSpringStiffnessFor(ColliderConstraintDof dof, float stiffness)
-deClassColliderConstraint::nfSetSpringStiffnessFor::nfSetSpringStiffnessFor( const sInitData &init ) :
-dsFunction( init.clsCCon, "setSpringStiffnessFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
-	p_AddParameter( init.clsFlt ); // stiffness
+deClassColliderConstraint::nfSetSpringStiffnessFor::nfSetSpringStiffnessFor(const sInitData &init) :
+dsFunction(init.clsCCon, "setSpringStiffnessFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
+	p_AddParameter(init.clsFlt); // stiffness
 }
-void deClassColliderConstraint::nfSetSpringStiffnessFor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfSetSpringStiffnessFor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	constraint->GetDof( dof ).SetSpringStiffness( rt->GetValue( 1 )->GetFloat() );
+	constraint->GetDof(dof).SetSpringStiffness(rt->GetValue(1)->GetFloat());
 }
 
 
 
 // public func float getLinearDamping()
-deClassColliderConstraint::nfGetLinearDamping::nfGetLinearDamping( const sInitData &init ) : dsFunction( init.clsCCon,
-"getLinearDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassColliderConstraint::nfGetLinearDamping::nfGetLinearDamping(const sInitData &init) : dsFunction(init.clsCCon,
+"getLinearDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassColliderConstraint::nfGetLinearDamping::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	rt->PushFloat( constraint.GetLinearDamping() );
+void deClassColliderConstraint::nfGetLinearDamping::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	rt->PushFloat(constraint.GetLinearDamping());
 }
 
 // public func void setLinearDamping( float damping )
-deClassColliderConstraint::nfSetLinearDamping::nfSetLinearDamping( const sInitData &init ) : dsFunction( init.clsCCon,
-"setLinearDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // damping
+deClassColliderConstraint::nfSetLinearDamping::nfSetLinearDamping(const sInitData &init) : dsFunction(init.clsCCon,
+"setLinearDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // damping
 }
-void deClassColliderConstraint::nfSetLinearDamping::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	const float damping = rt->GetValue( 0 )->GetFloat();
+void deClassColliderConstraint::nfSetLinearDamping::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	const float damping = rt->GetValue(0)->GetFloat();
 	
-	constraint.SetLinearDamping( damping );
+	constraint.SetLinearDamping(damping);
 }
 
 // public func float getAngularDamping()
-deClassColliderConstraint::nfGetAngularDamping::nfGetAngularDamping( const sInitData &init ) : dsFunction( init.clsCCon,
-"getAngularDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassColliderConstraint::nfGetAngularDamping::nfGetAngularDamping(const sInitData &init) : dsFunction(init.clsCCon,
+"getAngularDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassColliderConstraint::nfGetAngularDamping::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	rt->PushFloat( constraint.GetAngularDamping() );
+void deClassColliderConstraint::nfGetAngularDamping::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	rt->PushFloat(constraint.GetAngularDamping());
 }
 
 // public func void setAngularDamping( float damping )
-deClassColliderConstraint::nfSetAngularDamping::nfSetAngularDamping( const sInitData &init ) : dsFunction( init.clsCCon,
-"setAngularDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // damping
+deClassColliderConstraint::nfSetAngularDamping::nfSetAngularDamping(const sInitData &init) : dsFunction(init.clsCCon,
+"setAngularDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // damping
 }
-void deClassColliderConstraint::nfSetAngularDamping::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	const float damping = rt->GetValue( 0 )->GetFloat();
+void deClassColliderConstraint::nfSetAngularDamping::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	const float damping = rt->GetValue(0)->GetFloat();
 	
-	constraint.SetAngularDamping( damping );
+	constraint.SetAngularDamping(damping);
 }
 
 // public func float getSpringDamping()
-deClassColliderConstraint::nfGetSpringDamping::nfGetSpringDamping( const sInitData &init ) : dsFunction( init.clsCCon,
-"getSpringDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassColliderConstraint::nfGetSpringDamping::nfGetSpringDamping(const sInitData &init) : dsFunction(init.clsCCon,
+"getSpringDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassColliderConstraint::nfGetSpringDamping::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	rt->PushFloat( constraint.GetSpringDamping() );
+void deClassColliderConstraint::nfGetSpringDamping::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	rt->PushFloat(constraint.GetSpringDamping());
 }
 
 // public func void setSpringDamping( float damping )
-deClassColliderConstraint::nfSetSpringDamping::nfSetSpringDamping( const sInitData &init ) : dsFunction( init.clsCCon,
-"setSpringDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // damping
+deClassColliderConstraint::nfSetSpringDamping::nfSetSpringDamping(const sInitData &init) : dsFunction(init.clsCCon,
+"setSpringDamping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // damping
 }
-void deClassColliderConstraint::nfSetSpringDamping::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	const float damping = rt->GetValue( 0 )->GetFloat();
+void deClassColliderConstraint::nfSetSpringDamping::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	const float damping = rt->GetValue(0)->GetFloat();
 	
-	constraint.SetSpringDamping( damping );
+	constraint.SetSpringDamping(damping);
 }
 
 
 
 // public func void lockAll()
-deClassColliderConstraint::nfLockAll::nfLockAll( const sInitData &init ) : dsFunction( init.clsCCon,
-"lockAll", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassColliderConstraint::nfLockAll::nfLockAll(const sInitData &init) : dsFunction(init.clsCCon,
+"lockAll", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassColliderConstraint::nfLockAll::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+void deClassColliderConstraint::nfLockAll::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
 	
 	constraint->LockAll();
 }
 
 // public func void setToBallJoint()
-deClassColliderConstraint::nfSetToBallJoint::nfSetToBallJoint( const sInitData &init ) : dsFunction( init.clsCCon,
-"setToBallJoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassColliderConstraint::nfSetToBallJoint::nfSetToBallJoint(const sInitData &init) : dsFunction(init.clsCCon,
+"setToBallJoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassColliderConstraint::nfSetToBallJoint::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+void deClassColliderConstraint::nfSetToBallJoint::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
 	
 	constraint->SetToBallJoint();
 }
 
 // public func void setToHingeJoint( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
-deClassColliderConstraint::nfSetToHingeJoint::nfSetToHingeJoint( const sInitData &init ) : dsFunction( init.clsCCon,
-"setToHingeJoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
-	p_AddParameter( init.clsFlt ); // lowerLimit
-	p_AddParameter( init.clsFlt ); // upperLimit
+deClassColliderConstraint::nfSetToHingeJoint::nfSetToHingeJoint(const sInitData &init) : dsFunction(init.clsCCon,
+"setToHingeJoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
+	p_AddParameter(init.clsFlt); // lowerLimit
+	p_AddParameter(init.clsFlt); // upperLimit
 }
-void deClassColliderConstraint::nfSetToHingeJoint::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfSetToHingeJoint::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
-	float lowerLimit = rt->GetValue( 1 )->GetFloat();
-	float upperLimit = rt->GetValue( 2 )->GetFloat();
+	float lowerLimit = rt->GetValue(1)->GetFloat();
+	float upperLimit = rt->GetValue(2)->GetFloat();
 	
-	constraint->SetToHingeJoint( dof, lowerLimit * DEG2RAD, upperLimit * DEG2RAD );
+	constraint->SetToHingeJoint(dof, lowerLimit * DEG2RAD, upperLimit * DEG2RAD);
 }
 
 // public func void setToPistonJoint( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
-deClassColliderConstraint::nfSetToPistonJoint::nfSetToPistonJoint( const sInitData &init ) : dsFunction( init.clsCCon,
-"setToPistonJoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColliderConstraintDof ); // dof
-	p_AddParameter( init.clsFlt ); // lowerLimit
-	p_AddParameter( init.clsFlt ); // upperLimit
+deClassColliderConstraint::nfSetToPistonJoint::nfSetToPistonJoint(const sInitData &init) : dsFunction(init.clsCCon,
+"setToPistonJoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColliderConstraintDof); // dof
+	p_AddParameter(init.clsFlt); // lowerLimit
+	p_AddParameter(init.clsFlt); // upperLimit
 }
-void deClassColliderConstraint::nfSetToPistonJoint::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassColliderConstraint::nfSetToPistonJoint::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
-	float lowerLimit = rt->GetValue( 1 )->GetFloat();
-	float upperLimit = rt->GetValue( 2 )->GetFloat();
+	float lowerLimit = rt->GetValue(1)->GetFloat();
+	float upperLimit = rt->GetValue(2)->GetFloat();
 	
-	constraint->SetToPistonJoint( dof, lowerLimit, upperLimit );
+	constraint->SetToPistonJoint(dof, lowerLimit, upperLimit);
 }
 
 
 
 // public func bool getIsRope()
-deClassColliderConstraint::nfGetIsRope::nfGetIsRope( const sInitData &init ) : dsFunction( init.clsCCon,
-"getIsRope", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassColliderConstraint::nfGetIsRope::nfGetIsRope(const sInitData &init) : dsFunction(init.clsCCon,
+"getIsRope", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassColliderConstraint::nfGetIsRope::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	rt->PushBool( constraint.GetIsRope() );
+void deClassColliderConstraint::nfGetIsRope::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	rt->PushBool(constraint.GetIsRope());
 }
 
 // public func void setIsRope( bool isRope )
-deClassColliderConstraint::nfSetIsRope::nfSetIsRope( const sInitData &init ) : dsFunction( init.clsCCon,
-"setIsRope", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // isRope
+deClassColliderConstraint::nfSetIsRope::nfSetIsRope(const sInitData &init) : dsFunction(init.clsCCon,
+"setIsRope", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // isRope
 }
-void deClassColliderConstraint::nfSetIsRope::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	const bool isRope = rt->GetValue( 0 )->GetBool();
+void deClassColliderConstraint::nfSetIsRope::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	const bool isRope = rt->GetValue(0)->GetBool();
 	
-	constraint.SetIsRope( isRope );
+	constraint.SetIsRope(isRope);
 }
 
 
 
 // public func float getBreakingThreshold()
-deClassColliderConstraint::nfGetBreakingThreshold::nfGetBreakingThreshold( const sInitData &init ) : dsFunction( init.clsCCon,
-"getBreakingThreshold", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassColliderConstraint::nfGetBreakingThreshold::nfGetBreakingThreshold(const sInitData &init) : dsFunction(init.clsCCon,
+"getBreakingThreshold", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassColliderConstraint::nfGetBreakingThreshold::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	rt->PushFloat( constraint.GetBreakingThreshold() );
+void deClassColliderConstraint::nfGetBreakingThreshold::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	rt->PushFloat(constraint.GetBreakingThreshold());
 }
 
 // public func void setBreakingThreshold( float impuls )
-deClassColliderConstraint::nfSetBreakingThreshold::nfSetBreakingThreshold( const sInitData &init ) : dsFunction( init.clsCCon,
-"setBreakingThreshold", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // impuls
+deClassColliderConstraint::nfSetBreakingThreshold::nfSetBreakingThreshold(const sInitData &init) : dsFunction(init.clsCCon,
+"setBreakingThreshold", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // impuls
 }
-void deClassColliderConstraint::nfSetBreakingThreshold::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint &constraint = *( ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint );
-	const float impuls = rt->GetValue( 0 )->GetFloat();
+void deClassColliderConstraint::nfSetBreakingThreshold::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint &constraint = *(((sCConNatDat*)p_GetNativeData(myself))->constraint);
+	const float impuls = rt->GetValue(0)->GetFloat();
 	
-	constraint.SetBreakingThreshold( impuls );
+	constraint.SetBreakingThreshold(impuls);
 }
 
 
 
 // public func int getBone()
-deClassColliderConstraint::nfGetBone::nfGetBone( const sInitData &init ) : dsFunction( init.clsCCon,
-"getBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassColliderConstraint::nfGetBone::nfGetBone(const sInitData &init) : dsFunction(init.clsCCon,
+"getBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassColliderConstraint::nfGetBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+void deClassColliderConstraint::nfGetBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
 	
-	rt->PushInt( constraint->GetBone() );
+	rt->PushInt(constraint->GetBone());
 }
 
 // public func void setBone( int bone )
-deClassColliderConstraint::nfSetBone::nfSetBone( const sInitData &init ) : dsFunction( init.clsCCon,
-"setBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // bone
+deClassColliderConstraint::nfSetBone::nfSetBone(const sInitData &init) : dsFunction(init.clsCCon,
+"setBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInt); // bone
 }
-void deClassColliderConstraint::nfSetBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	int bone = rt->GetValue( 0 )->GetInt();
+void deClassColliderConstraint::nfSetBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	int bone = rt->GetValue(0)->GetInt();
 	
-	constraint->SetBone( bone );
+	constraint->SetBone(bone);
 }
 
 
@@ -808,33 +808,33 @@ void deClassColliderConstraint::nfSetBone::RunFunction( dsRunTime *rt, dsValue *
 /////////
 
 // public func int hashCode()
-deClassColliderConstraint::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsCCon, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassColliderConstraint::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsCCon, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
-void deClassColliderConstraint::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+void deClassColliderConstraint::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
 	
 	// hash code = memory location
-	rt->PushInt( ( int )( intptr_t )constraint );
+	rt->PushInt((int)(intptr_t)constraint);
 }
 
 // public func bool equals( Object obj )
-deClassColliderConstraint::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsCCon, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // obj
+deClassColliderConstraint::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsCCon, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // obj
 }
-void deClassColliderConstraint::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
-	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
-	dsValue *obj = rt->GetValue( 0 );
+void deClassColliderConstraint::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderConstraint *constraint = ((sCConNatDat*)p_GetNativeData(myself))->constraint;
+	deClassColliderConstraint *clsCCon = (deClassColliderConstraint*)GetOwnerClass();
+	dsValue *obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsCCon ) ){
-		rt->PushBool( false );
+	if(!p_IsObjOfType(obj, clsCCon)){
+		rt->PushBool(false);
 		
 	}else{
-		deColliderConstraint *otherConstraint = ( ( sCConNatDat* )p_GetNativeData( obj ) )->constraint;
-		rt->PushBool( constraint == otherConstraint );
+		deColliderConstraint *otherConstraint = ((sCConNatDat*)p_GetNativeData(obj))->constraint;
+		rt->PushBool(constraint == otherConstraint);
 	}
 }
 
@@ -846,20 +846,20 @@ void deClassColliderConstraint::nfEquals::RunFunction( dsRunTime *rt, dsValue *m
 // Constructor and Destructor
 ///////////////////////////////
 
-deClassColliderConstraint::deClassColliderConstraint( deEngine *gameEngine, deScriptingDragonScript *scrDS ) :
-dsClass( "ColliderConstraint", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
-	if( ! gameEngine || ! scrDS ) DSTHROW( dueInvalidParam );
+deClassColliderConstraint::deClassColliderConstraint(deEngine *gameEngine, deScriptingDragonScript *scrDS) :
+dsClass("ColliderConstraint", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
+	if(!gameEngine || !scrDS) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
 	pScrDS = scrDS;
 	
 	// store information into parser info
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
 	// do the rest
-	p_SetNativeDataSize( sizeof( sCConNatDat ) );
+	p_SetNativeDataSize(sizeof(sCConNatDat));
 }
 
 deClassColliderConstraint::~deClassColliderConstraint(){
@@ -870,10 +870,10 @@ deClassColliderConstraint::~deClassColliderConstraint(){
 // Management
 ///////////////
 
-void deClassColliderConstraint::CreateClassMembers( dsEngine *engine ){
+void deClassColliderConstraint::CreateClassMembers(dsEngine *engine){
 	pClsVec = pScrDS->GetClassVector();
 	pClsQuat = pScrDS->GetClassQuaternion();
-	pClsColliderConstraintDof = engine->GetClass( "Dragengine.Scenery.ColliderConstraintDof" );
+	pClsColliderConstraintDof = engine->GetClass("Dragengine.Scenery.ColliderConstraintDof");
 	
 	sInitData init;
 	init.clsCCon = this;
@@ -889,98 +889,98 @@ void deClassColliderConstraint::CreateClassMembers( dsEngine *engine ){
 	init.clsColliderConstraintDof = pClsColliderConstraintDof;
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetTargetCollider( init ) );
-	AddFunction( new nfSetTargetCollider( init ) );
-	AddFunction( new nfGetTargetBone( init ) );
-	AddFunction( new nfSetTargetBone( init ) );
+	AddFunction(new nfGetTargetCollider(init));
+	AddFunction(new nfSetTargetCollider(init));
+	AddFunction(new nfGetTargetBone(init));
+	AddFunction(new nfSetTargetBone(init));
 	
-	AddFunction( new nfGetPosition1( init ) );
-	AddFunction( new nfSetPosition1( init ) );
-	AddFunction( new nfGetOrientation1( init ) );
-	AddFunction( new nfSetOrientation1( init ) );
-	AddFunction( new nfGetPosition2( init ) );
-	AddFunction( new nfSetPosition2( init ) );
-	AddFunction( new nfGetOrientation2( init ) );
-	AddFunction( new nfSetOrientation2( init ) );
+	AddFunction(new nfGetPosition1(init));
+	AddFunction(new nfSetPosition1(init));
+	AddFunction(new nfGetOrientation1(init));
+	AddFunction(new nfSetOrientation1(init));
+	AddFunction(new nfGetPosition2(init));
+	AddFunction(new nfSetPosition2(init));
+	AddFunction(new nfGetOrientation2(init));
+	AddFunction(new nfSetOrientation2(init));
 	
-	AddFunction( new nfGetLowerLimitFor( init ) );
-	AddFunction( new nfGetUpperLimitFor( init ) );
-	AddFunction( new nfSetLimitsFor( init ) );
-	AddFunction( new nfSetLockedFor( init ) );
-	AddFunction( new nfSetFreeFor( init ) );
+	AddFunction(new nfGetLowerLimitFor(init));
+	AddFunction(new nfGetUpperLimitFor(init));
+	AddFunction(new nfSetLimitsFor(init));
+	AddFunction(new nfSetLockedFor(init));
+	AddFunction(new nfSetFreeFor(init));
 	
-	AddFunction( new nfGetLinearLowerLimits( init ) );
-	AddFunction( new nfGetLinearUpperLimits( init ) );
-	AddFunction( new nfSetLinearLimits( init ) );
-	AddFunction( new nfGetAngularLowerLimits( init ) );
-	AddFunction( new nfGetAngularUpperLimits( init ) );
-	AddFunction( new nfSetAngularLimits( init ) );
+	AddFunction(new nfGetLinearLowerLimits(init));
+	AddFunction(new nfGetLinearUpperLimits(init));
+	AddFunction(new nfSetLinearLimits(init));
+	AddFunction(new nfGetAngularLowerLimits(init));
+	AddFunction(new nfGetAngularUpperLimits(init));
+	AddFunction(new nfSetAngularLimits(init));
 	
-	AddFunction( new nfGetStaticFrictionFor( init ) );
-	AddFunction( new nfSetStaticFrictionFor( init ) );
-	AddFunction( new nfGetKinematicFrictionFor( init ) );
-	AddFunction( new nfSetKinematicFrictionFor( init ) );
-	AddFunction( new nfGetSpringStiffnessFor( init ) );
-	AddFunction( new nfSetSpringStiffnessFor( init ) );
+	AddFunction(new nfGetStaticFrictionFor(init));
+	AddFunction(new nfSetStaticFrictionFor(init));
+	AddFunction(new nfGetKinematicFrictionFor(init));
+	AddFunction(new nfSetKinematicFrictionFor(init));
+	AddFunction(new nfGetSpringStiffnessFor(init));
+	AddFunction(new nfSetSpringStiffnessFor(init));
 	
-	AddFunction( new nfGetLinearDamping( init ) );
-	AddFunction( new nfSetLinearDamping( init ) );
-	AddFunction( new nfGetAngularDamping( init ) );
-	AddFunction( new nfSetAngularDamping( init ) );
-	AddFunction( new nfGetSpringDamping( init ) );
-	AddFunction( new nfSetSpringDamping( init ) );
+	AddFunction(new nfGetLinearDamping(init));
+	AddFunction(new nfSetLinearDamping(init));
+	AddFunction(new nfGetAngularDamping(init));
+	AddFunction(new nfSetAngularDamping(init));
+	AddFunction(new nfGetSpringDamping(init));
+	AddFunction(new nfSetSpringDamping(init));
 	
-	AddFunction( new nfLockAll( init ) );
-	AddFunction( new nfSetToBallJoint( init ) );
-	AddFunction( new nfSetToHingeJoint( init ) );
-	AddFunction( new nfSetToPistonJoint( init ) );
+	AddFunction(new nfLockAll(init));
+	AddFunction(new nfSetToBallJoint(init));
+	AddFunction(new nfSetToHingeJoint(init));
+	AddFunction(new nfSetToPistonJoint(init));
 	
-	AddFunction( new nfGetIsRope( init ) );
-	AddFunction( new nfSetIsRope( init ) );
+	AddFunction(new nfGetIsRope(init));
+	AddFunction(new nfSetIsRope(init));
 	
-	AddFunction( new nfGetBreakingThreshold( init ) );
-	AddFunction( new nfSetBreakingThreshold( init ) );
+	AddFunction(new nfGetBreakingThreshold(init));
+	AddFunction(new nfSetBreakingThreshold(init));
 	
-	AddFunction( new nfGetBone( init ) );
-	AddFunction( new nfSetBone( init ) );
+	AddFunction(new nfGetBone(init));
+	AddFunction(new nfSetBone(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deColliderConstraint *deClassColliderConstraint::GetConstraint( dsRealObject *myself ) const{
-	if( ! myself ){
+deColliderConstraint *deClassColliderConstraint::GetConstraint(dsRealObject *myself) const{
+	if(!myself){
 		return NULL;
 	}
 	
-	return ( ( sCConNatDat* )p_GetNativeData( myself->GetBuffer() ) )->constraint;
+	return ((sCConNatDat*)p_GetNativeData(myself->GetBuffer()))->constraint;
 }
 
-void deClassColliderConstraint::PushConstraint( dsRunTime *rt, deColliderConstraint *constraint ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassColliderConstraint::PushConstraint(dsRunTime *rt, deColliderConstraint *constraint){
+	if(!rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! constraint ){
-		rt->PushObject( NULL, this );
+	if(!constraint){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sCConNatDat &nd = *( ( sCConNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sCConNatDat &nd = *((sCConNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.constraint = NULL;
 	
 	try{
-		nd.constraint = new deColliderConstraint( *constraint );
+		nd.constraint = new deColliderConstraint(*constraint);
 		
-	}catch( ... ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(...){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

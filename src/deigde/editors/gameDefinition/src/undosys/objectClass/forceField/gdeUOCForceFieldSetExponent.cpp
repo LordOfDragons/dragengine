@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetExponent::gdeUOCForceFieldSetExponent( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, float newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetExponent::gdeUOCForceFieldSetExponent(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, float newValue) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set exponent" );
+	SetShortInfo("Force field set exponent");
 	
 	pOldValue = forceField->GetExponent();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pForceField( NULL )
 }
 
 gdeUOCForceFieldSetExponent::~gdeUOCForceFieldSetExponent(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCForceFieldSetExponent::~gdeUOCForceFieldSetExponent(){
 ///////////////
 
 void gdeUOCForceFieldSetExponent::Undo(){
-	pForceField->SetExponent( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetExponent(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetExponent::Redo(){
-	pForceField->SetExponent( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetExponent(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

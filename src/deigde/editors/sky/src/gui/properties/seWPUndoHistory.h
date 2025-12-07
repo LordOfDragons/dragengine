@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPUndoHistory( igdeEnvironment &environment );
+	seWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -62,7 +62,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	/*@}*/
 };
 

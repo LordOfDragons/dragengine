@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetScaleMode( gdeObjectClass *objectClass, gdeObjectClass::eScaleModes newValue );
+	gdeUOCSetScaleMode(gdeObjectClass *objectClass, gdeObjectClass::eScaleModes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

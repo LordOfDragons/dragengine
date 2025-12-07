@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create VR eye. */
-	deoglVREye( deoglVR &vr, deBaseVRModule::eEye eye );
+	deoglVREye(deoglVR &vr, deBaseVRModule::eEye eye);
 	
 	/** Clean up VR eye. */
 	~deoglVREye();
@@ -126,32 +126,32 @@ public:
 	 * Create projection matrix matching depth usage mode. Depending on the inverse depth
 	 * mode used the projection matrix is either infinite or non-infinite.
 	 */
-	decDMatrix CreateProjectionDMatrix( float znear, float zfar ) const;
+	decDMatrix CreateProjectionDMatrix(float znear, float zfar) const;
 	
 	/**
 	 * Create frustum matrix. This is the same as CreateProjectionDMatrix but always
 	 * creates a non-infinite projection matrix.
 	 */
-	decDMatrix CreateFrustumDMatrix( float znear, float zfar ) const;
+	decDMatrix CreateFrustumDMatrix(float znear, float zfar) const;
 	
 	/** Begin frame. */
-	void BeginFrame( deBaseVRModule &vrmodule );
+	void BeginFrame(deBaseVRModule &vrmodule);
 	
 	/** Render if required. */
 	void Render();
 	
 	/** Submit if required. */
-	void Submit( deBaseVRModule &vrmodule );
+	void Submit(deBaseVRModule &vrmodule);
 	/*@}*/
 	
 	
 	
 private:
-	void pGetParameters( deBaseVRModule &vrmodule );
-	void pLogParameters( deoglRenderThread &renderThread );
-	void pUpdateEyeViews( deBaseVRModule &vrmodule );
+	void pGetParameters(deBaseVRModule &vrmodule);
+	void pLogParameters(deoglRenderThread &renderThread);
+	void pUpdateEyeViews(deBaseVRModule &vrmodule);
 	void pDestroyEyeViews();
-	void pRender( deoglRenderThread &renderThread );
+	void pRender(deoglRenderThread &renderThread);
 	const char *LogPrefix() const;
 };
 

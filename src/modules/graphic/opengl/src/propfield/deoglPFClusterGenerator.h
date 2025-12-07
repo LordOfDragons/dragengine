@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new prop field cluster generator. */
-	deoglPFClusterGenerator( const decVector2 &minExtend, const decVector2 &maxExtend, int maxEntryCount );
+	deoglPFClusterGenerator(const decVector2 &minExtend, const decVector2 &maxExtend, int maxEntryCount);
 	/** Cleans up the prop field cluster generator. */
 	~deoglPFClusterGenerator();
 	/*@}*/
@@ -75,11 +75,11 @@ public:
 	/** Retrieves the number of entries. */
 	inline int GetEntryCount() const{ return pEntryCount; }
 	/** Adds an entry to the list of entries. */
-	void AddEntry( int index, const decVector2 &position );
+	void AddEntry(int index, const decVector2 &position);
 	/** Remove all entries in this node. */
 	void RemoveAllEntries();
 	/** Retrieves the extends of all the entries. */
-	void GetEntryExtends( decVector2 &minExtend, decVector2 &maxExtend );
+	void GetEntryExtends(decVector2 &minExtend, decVector2 &maxExtend);
 	
 	/** Retrieves the first node or NULL if there is none. */
 	inline deoglPFClusterGenerator *GetNode1() const{ return pNode1; }
@@ -90,13 +90,13 @@ public:
 	 * Adds an entry to the tree. Finds the smallest matching node and adds it. If the node is already
 	 * full the node is split in two smaller nodes and the entry added to the appropriate node.
 	 */
-	void AddEntryToTree( int index, const decVector2 &position );
+	void AddEntryToTree(int index, const decVector2 &position);
 	/** Locates the smallest node containing the given position. */
-	deoglPFClusterGenerator *GetNodeContaining( const decVector2 &position ) const;
+	deoglPFClusterGenerator *GetNodeContaining(const decVector2 &position) const;
 	/** Split node into two nodes along the given x value distributing the entries into the matching nodes. */
-	void SplitAtX( float position );
+	void SplitAtX(float position);
 	/** Split node into two nodes along the given y value distributing the entries into the matching nodes. */
-	void SplitAtY( float position );
+	void SplitAtY(float position);
 	/** Clear tree. */
 	void ClearTree();
 	/*@}*/

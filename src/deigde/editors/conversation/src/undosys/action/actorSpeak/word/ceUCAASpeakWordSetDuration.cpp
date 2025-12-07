@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordSetDuration::ceUCAASpeakWordSetDuration( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *word, float newDuration )
-: ceUCAASpeakStripSetDuration( topic, actorSpeak, word, newDuration ){
-	SetShortInfo( "Word Set Duration" );
+ceUCAASpeakWordSetDuration::ceUCAASpeakWordSetDuration(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *word, float newDuration)
+: ceUCAASpeakStripSetDuration(topic, actorSpeak, word, newDuration){
+	SetShortInfo("Word Set Duration");
 }
 
 ceUCAASpeakWordSetDuration::~ceUCAASpeakWordSetDuration(){

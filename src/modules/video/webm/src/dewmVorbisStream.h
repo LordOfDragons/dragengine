@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create vorbis stream. */
-	dewmVorbisStream( dewmAudioTrackCallback &callback );
+	dewmVorbisStream(dewmAudioTrackCallback &callback);
 	
 	/** Clean up vorbis stream. */
 	~dewmVorbisStream();
@@ -84,13 +84,13 @@ public:
 	inline int GetBufferSampleSize() const{ return pBufferSampleSize; }
 	
 	/** Open track. */
-	bool OpenTrack( const webm::TrackEntry &track );
+	bool OpenTrack(const webm::TrackEntry &track);
 	
 	/** Copy samples. */
 	void CopySamples();
 	
 	/** Load frame data. */
-	void LoadFrameData( std::uint64_t frameSize );
+	void LoadFrameData(std::uint64_t frameSize);
 	
 	/** Rewind. */
 	void Rewind();

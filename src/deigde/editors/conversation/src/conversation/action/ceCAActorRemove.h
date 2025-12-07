@@ -45,7 +45,7 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCAActorRemove();
 	/** \brief Creates a new conversation action. */
-	ceCAActorRemove( const ceCAActorRemove &action );
+	ceCAActorRemove(const ceCAActorRemove &action);
 	/** \brief Cleans up the conversation action. */
 	virtual ~ceCAActorRemove();
 	/*@}*/
@@ -55,7 +55,7 @@ public:
 	/** \brief Retrieves the actor id. */
 	inline const decString &GetActor() const{ return pActor; }
 	/** \brief Sets the actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	
 	/** \brief Create a copy of this action. */
     virtual ceConversationAction *CreateCopy() const;

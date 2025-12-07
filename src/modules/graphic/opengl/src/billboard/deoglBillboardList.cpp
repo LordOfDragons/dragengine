@@ -46,7 +46,7 @@ deoglBillboardList::deoglBillboardList(){
 }
 
 deoglBillboardList::~deoglBillboardList(){
-	if( pBillboards ){
+	if(pBillboards){
 		delete [] pBillboards;
 	}
 }
@@ -56,19 +56,19 @@ deoglBillboardList::~deoglBillboardList(){
 // Management
 ///////////////
 
-deoglRBillboard *deoglBillboardList::GetAt( int index ) const{
-	if( index < 0 || index >= pBillboardCount ) DETHROW( deeInvalidParam );
+deoglRBillboard *deoglBillboardList::GetAt(int index) const{
+	if(index < 0 || index >= pBillboardCount) DETHROW(deeInvalidParam);
 	
-	return pBillboards[ index ];
+	return pBillboards[index];
 }
 
-int deoglBillboardList::IndexOf( deoglRBillboard *billboard ) const{
-	if( ! billboard ) DETHROW( deeInvalidParam );
+int deoglBillboardList::IndexOf(deoglRBillboard *billboard) const{
+	if(!billboard) DETHROW(deeInvalidParam);
 	
 	int l;
 	
-	for( l=0; l<pBillboardCount; l++ ){
-		if( billboard == pBillboards[ l ] ){
+	for(l=0; l<pBillboardCount; l++){
+		if(billboard == pBillboards[l]){
 			return l;
 		}
 	}
@@ -76,13 +76,13 @@ int deoglBillboardList::IndexOf( deoglRBillboard *billboard ) const{
 	return -1;
 }
 
-bool deoglBillboardList::Has( deoglRBillboard *billboard ) const{
-	if( ! billboard ) DETHROW( deeInvalidParam );
+bool deoglBillboardList::Has(deoglRBillboard *billboard) const{
+	if(!billboard) DETHROW(deeInvalidParam);
 	
 	int l;
 	
-	for( l=0; l<pBillboardCount; l++ ){
-		if( billboard == pBillboards[ l ] ){
+	for(l=0; l<pBillboardCount; l++){
+		if(billboard == pBillboards[l]){
 			return true;
 		}
 	}
@@ -90,47 +90,47 @@ bool deoglBillboardList::Has( deoglRBillboard *billboard ) const{
 	return false;
 }
 
-void deoglBillboardList::Add( deoglRBillboard *billboard ){
-	if( Has( billboard ) ) DETHROW( deeInvalidParam );
+void deoglBillboardList::Add(deoglRBillboard *billboard){
+	if(Has(billboard)) DETHROW(deeInvalidParam);
 	
-	pAddBillboard( billboard );
+	pAddBillboard(billboard);
 }
 
-bool deoglBillboardList::AddIfMissing( deoglRBillboard *billboard ){
-	if( Has( billboard ) ) return false;
+bool deoglBillboardList::AddIfMissing(deoglRBillboard *billboard){
+	if(Has(billboard)) return false;
 	
-	pAddBillboard( billboard );
+	pAddBillboard(billboard);
 	return true;
 }
 
-void deoglBillboardList::Remove( deoglRBillboard *billboard ){
-	int index = IndexOf( billboard );
+void deoglBillboardList::Remove(deoglRBillboard *billboard){
+	int index = IndexOf(billboard);
 	
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	if( index < pBillboardCount - 1 ){
-		pBillboards[ index ] = pBillboards[ pBillboardCount - 1 ];
+	if(index < pBillboardCount - 1){
+		pBillboards[index] = pBillboards[pBillboardCount - 1];
 	}
 	pBillboardCount--;
 }
 
-bool deoglBillboardList::RemoveIfExisting( deoglRBillboard *billboard ){
-	int index = IndexOf( billboard );
+bool deoglBillboardList::RemoveIfExisting(deoglRBillboard *billboard){
+	int index = IndexOf(billboard);
 	
-	if( index == -1 ) return false;
+	if(index == -1) return false;
 	
-	if( index < pBillboardCount - 1 ){
-		pBillboards[ index ] = pBillboards[ pBillboardCount - 1 ];
+	if(index < pBillboardCount - 1){
+		pBillboards[index] = pBillboards[pBillboardCount - 1];
 	}
 	pBillboardCount--;
 	return true;
 }
 
-void deoglBillboardList::RemoveFrom( int index ){
-	if( index < 0 || index >= pBillboardCount ) DETHROW( deeInvalidParam );
+void deoglBillboardList::RemoveFrom(int index){
+	if(index < 0 || index >= pBillboardCount) DETHROW(deeInvalidParam);
 	
-	if( index < pBillboardCount - 1 ){
-		pBillboards[ index ] = pBillboards[ pBillboardCount - 1 ];
+	if(index < pBillboardCount - 1){
+		pBillboards[index] = pBillboards[pBillboardCount - 1];
 	}
 	pBillboardCount--;
 }
@@ -144,14 +144,14 @@ void deoglBillboardList::RemoveAll(){
 // Private Functions
 //////////////////////
 
-void deoglBillboardList::pAddBillboard( deoglRBillboard *billboard ){
-	if( pBillboardCount == pBillboardSize ){
+void deoglBillboardList::pAddBillboard(deoglRBillboard *billboard){
+	if(pBillboardCount == pBillboardSize){
 		int newSize = pBillboardCount + 10; // * 3 / 2 + 1;
-		deoglRBillboard **newArray = new deoglRBillboard*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		deoglRBillboard **newArray = new deoglRBillboard*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
 		
-		if( pBillboards ){
-			memcpy( newArray, pBillboards, sizeof( deoglRBillboard* ) * pBillboardSize );
+		if(pBillboards){
+			memcpy(newArray, pBillboards, sizeof(deoglRBillboard*) * pBillboardSize);
 			delete [] pBillboards;
 		}
 		
@@ -159,5 +159,5 @@ void deoglBillboardList::pAddBillboard( deoglRBillboard *billboard ){
 		pBillboardSize = newSize;
 	}
 	
-	pBillboards[ pBillboardCount++ ] = billboard;
+	pBillboards[pBillboardCount++] = billboard;
 }

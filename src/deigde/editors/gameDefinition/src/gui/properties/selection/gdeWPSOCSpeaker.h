@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCSpeaker( gdeWindowProperties &windowMain );
+	gdeWPSOCSpeaker(gdeWindowProperties &windowMain);
 	
 	/** \brief Clean up panel. */
 	virtual ~gdeWPSOCSpeaker();
@@ -91,7 +91,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	

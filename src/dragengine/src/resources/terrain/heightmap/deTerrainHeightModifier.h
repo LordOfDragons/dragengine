@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new height modifier. */
-	deTerrainHeightModifier( deImage *heightImage );
+	deTerrainHeightModifier(deImage *heightImage);
 	
 	/** \brief Clean up height modifier. */
 	~deTerrainHeightModifier();
@@ -67,13 +67,13 @@ public:
 	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position of the upper left corner. */
-	void SetPosition( const decPoint &position );
+	void SetPosition(const decPoint &position);
 	
 	/** \brief Scaling. */
 	inline float GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	/** \brief Height image. */
 	inline deImage *GetHeightImage() const{ return pHeightImage; }

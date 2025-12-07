@@ -56,22 +56,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeAttachment::aeAttachment( igdeEnvironment *environment, const char *name ) :
-pAnimator( NULL ),
-pName( name ),
-pAttachType( eatNone )
+aeAttachment::aeAttachment(igdeEnvironment *environment, const char *name) :
+pAnimator(NULL),
+pName(name),
+pAttachType(eatNone)
 {
 	try{
 		decLayerMask layerMask;
-		layerMask.SetBit( aeAnimator::eclElements );
+		layerMask.SetBit(aeAnimator::eclElements);
 		
 		pObjectWrapper.TakeOver(new igdeWObject(*environment));
-		pObjectWrapper->SetVisible( true );
-		pObjectWrapper->SetDynamicCollider( false );
-		pObjectWrapper->SetCollisionFilter( decCollisionFilter( layerMask ) );
-		pObjectWrapper->SetCollisionFilterFallback( decCollisionFilter( layerMask ) );
+		pObjectWrapper->SetVisible(true);
+		pObjectWrapper->SetDynamicCollider(false);
+		pObjectWrapper->SetCollisionFilter(decCollisionFilter(layerMask));
+		pObjectWrapper->SetCollisionFilterFallback(decCollisionFilter(layerMask));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -86,39 +86,39 @@ aeAttachment::~aeAttachment(){
 // Management
 ///////////////
 
-void aeAttachment::SetAnimator( aeAnimator *animator ){
-	if( animator == pAnimator ){
+void aeAttachment::SetAnimator(aeAnimator *animator){
+	if(animator == pAnimator){
 		return;
 	}
 	
 	pAnimator = animator;
 	
-	if( animator ){
-		pObjectWrapper->SetWorld( animator->GetEngineWorld() );
+	if(animator){
+		pObjectWrapper->SetWorld(animator->GetEngineWorld());
 		AttachCollider();
 		
 	}else{
 		DetachCollider();
-		pObjectWrapper->SetWorld( NULL );
+		pObjectWrapper->SetWorld(NULL);
 	}
 }
 
 
 
-void aeAttachment::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void aeAttachment::SetName(const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
 	
-	if( pAnimator ){
-		pAnimator->NotifyAttachmentChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyAttachmentChanged(this);
 	}
 }
 
-void aeAttachment::SetAttachType( eAttachTypes type ){
-	if( type == pAttachType ){
+void aeAttachment::SetAttachType(eAttachTypes type){
+	if(type == pAttachType){
 		return;
 	}
 	
@@ -127,22 +127,22 @@ void aeAttachment::SetAttachType( eAttachTypes type ){
 	DetachCollider();
 	AttachCollider();
 	
-	if( pAnimator ){
+	if(pAnimator){
 		pAnimator->AttachmentsForceUpdate();
 	}
 	ResetPhysics();
 	
-	if( pAnimator ){
-		pAnimator->NotifyAttachmentChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyAttachmentChanged(this);
 	}
 }
 
-void aeAttachment::SetBoneName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void aeAttachment::SetBoneName(const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pBoneName.Equals( name ) ){
+	if(pBoneName.Equals(name)){
 		return;
 	}
 	
@@ -151,20 +151,20 @@ void aeAttachment::SetBoneName( const char *name ){
 	DetachCollider();
 	AttachCollider();
 	
-	if( pAnimator ){
+	if(pAnimator){
 		pAnimator->AttachmentsForceUpdate();
 	}
 	ResetPhysics();
 	
-	if( pAnimator ){
-		pAnimator->NotifyAttachmentChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyAttachmentChanged(this);
 	}
 }
 
 
 
-void aeAttachment::Update( float elapsed ){
-	pObjectWrapper->Update( elapsed );
+void aeAttachment::Update(float elapsed){
+	pObjectWrapper->Update(elapsed);
 }
 
 void aeAttachment::ResetPhysics(){
@@ -172,29 +172,29 @@ void aeAttachment::ResetPhysics(){
 }
 
 void aeAttachment::AttachCollider(){
-	if( ! pAnimator ){
+	if(!pAnimator){
 		return;
 	}
 	
 	try{
-		switch( pAttachType ){
+		switch(pAttachType){
 		case eatBone:
-			if( ! pBoneName.IsEmpty() ){
-				pObjectWrapper->AttachColliderBone( pAnimator->GetEngineCollider(), pBoneName.GetString(),
-					pObjectWrapper->GetPosition(), pObjectWrapper->GetOrientation() );
+			if(!pBoneName.IsEmpty()){
+				pObjectWrapper->AttachColliderBone(pAnimator->GetEngineCollider(), pBoneName.GetString(),
+					pObjectWrapper->GetPosition(), pObjectWrapper->GetOrientation());
 			}
 			break;
 			
 		case eatRig:
-			pObjectWrapper->AttachColliderRig( pAnimator->GetEngineCollider() );
+			pObjectWrapper->AttachColliderRig(pAnimator->GetEngineCollider());
 			break;
 			
 		default:
 			break;
 		};
 		
-	}catch( const deException &e ){
-		pAnimator->GetLogger()->LogException( "Animator Editor", e );
+	}catch(const deException &e){
+		pAnimator->GetLogger()->LogException("Animator Editor", e);
 	}
 }
 
@@ -208,6 +208,6 @@ void aeAttachment::DetachCollider(){
 //////////////////////
 
 void aeAttachment::pCleanUp(){
-	SetAnimator( NULL );
+	SetAnimator(NULL);
 	pObjectWrapper = nullptr;
 }

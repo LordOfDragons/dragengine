@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleName( aeRule *rule, const char *newName );
+	aeUSetRuleName(aeRule *rule, const char *newName);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleName();

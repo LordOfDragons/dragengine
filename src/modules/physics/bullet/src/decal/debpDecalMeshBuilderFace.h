@@ -37,7 +37,7 @@
  */
 class debpDecalMeshBuilderFace{
 public:
-	int pPoints[ 3 ];
+	int pPoints[3];
 	int pFaceIndex;
 	
 public:
@@ -52,21 +52,21 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the first point. */
-	inline int GetPoint1() const{ return pPoints[ 0 ]; }
+	inline int GetPoint1() const{ return pPoints[0]; }
 	/** Sets the first point. */
-	void SetPoint1( int point );
+	void SetPoint1(int point);
 	/** Retrieves the second point. */
-	inline int GetPoint2() const{ return pPoints[ 1 ]; }
+	inline int GetPoint2() const{ return pPoints[1]; }
 	/** Sets the second point. */
-	void SetPoint2( int point );
+	void SetPoint2(int point);
 	/** Retrieves the thirdpoint. */
-	inline int GetPoint3() const{ return pPoints[ 2 ]; }
+	inline int GetPoint3() const{ return pPoints[2]; }
 	/** Sets the third point. */
-	void SetPoint3( int point );
+	void SetPoint3(int point);
 	/** Retrieves the face index. */
 	inline int GetFaceIndex() const{ return pFaceIndex; }
 	/** Sets the face index. */
-	void SetFaceIndex( int faceIndex );
+	void SetFaceIndex(int faceIndex);
 	/*@}*/
 };
 

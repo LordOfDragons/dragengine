@@ -38,20 +38,20 @@ class deoglRenderThread;
 
 
 #ifdef ENABLE_LEAK_TRACKING
-	#define IF_LEAK_CHECK( cmd ) cmd
+	#define IF_LEAK_CHECK(cmd) cmd
 	
 	#define LEAK_CHECK_CREATE(renderThread,type) \
-		(renderThread).GetLeakTracker().Add ## type( this )
+		(renderThread).GetLeakTracker().Add ## type(this)
 	
 	#define LEAK_CHECK_FREE(renderThread,type) \
-		(renderThread).GetLeakTracker().Remove ## type( this )
+		(renderThread).GetLeakTracker().Remove ## type(this)
 	
 	#define LEAK_CHECK_REPORT_LEAKS(renderThread,type) \
-		(renderThread).GetLeakTracker().ReportLeaks( #type, \
-			(renderThread).GetLeakTracker().Get ## type() )
+		(renderThread).GetLeakTracker().ReportLeaks(#type, \
+			(renderThread).GetLeakTracker().Get ## type())
 	
 #else
-	#define IF_LEAK_CHECK( cmd )
+	#define IF_LEAK_CHECK(cmd)
 	
 	#define LEAK_CHECK_CREATE(renderThread,type)
 	#define LEAK_CHECK_FREE(renderThread,type)
@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread texture related object. */
-	deoglRTLeakTracker( deoglRenderThread &renderThread );
+	deoglRTLeakTracker(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread texture related object. */
 	virtual ~deoglRTLeakTracker();
@@ -84,7 +84,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Report leaks. */
-	void ReportLeaks( const char *name, const decPointerSet &tracker );
+	void ReportLeaks(const char *name, const decPointerSet &tracker);
 	/*@}*/
 	
 	
@@ -93,58 +93,58 @@ public:
 #define DECLARE_TRACKER(type) \
 private: decPointerSet p ## type; \
 public: inline decPointerSet &Get ## type(){ return p ## type; } \
-public: inline void Add ## type( void *object ){ AddTracked( p ## type, object ); } \
-public: inline void Remove ## type( void *object ){ RemoveTracked( p ## type, object ); }
-	DECLARE_TRACKER( Billboard )
-	DECLARE_TRACKER( Camera )
-	DECLARE_TRACKER( CanvasCanvasView )
-	DECLARE_TRACKER( CanvasImage )
-	DECLARE_TRACKER( CanvasPaint )
-	DECLARE_TRACKER( CanvasRenderWorld )
-	DECLARE_TRACKER( CanvasText )
-	DECLARE_TRACKER( CanvasVideoPlayer )
-	DECLARE_TRACKER( CanvasView )
-	DECLARE_TRACKER( CaptureCanvas )
-	DECLARE_TRACKER( Component )
-	DECLARE_TRACKER( ComponentLOD )
-	DECLARE_TRACKER( ComponentTexture )
-	DECLARE_TRACKER( DebugDrawer )
-	DECLARE_TRACKER( Decal )
-	DECLARE_TRACKER( DSRenderableCamera )
-	DECLARE_TRACKER( DSRenderableCanvas )
-	DECLARE_TRACKER( DSRenderableColor )
-	DECLARE_TRACKER( DSRenderableImage )
-	DECLARE_TRACKER( DSRenderableValue )
-	DECLARE_TRACKER( DSRenderableVideoFrame )
-	DECLARE_TRACKER( DynamicSkin )
-	DECLARE_TRACKER( EffectColorMatrix )
-	DECLARE_TRACKER( EffectDistortImage )
-	DECLARE_TRACKER( EffectFilterKernel )
-	DECLARE_TRACKER( EffectOverlayImage )
-	DECLARE_TRACKER( EnvironmentMapProbe )
-	DECLARE_TRACKER( Font )
-	DECLARE_TRACKER( HeightTerrain )
-	DECLARE_TRACKER( HTSector )
-	DECLARE_TRACKER( Image )
-	DECLARE_TRACKER( Light )
-	DECLARE_TRACKER( Lumimeter )
-	DECLARE_TRACKER( Model )
-	DECLARE_TRACKER( OcclusionMesh )
-	DECLARE_TRACKER( ParticleEmitter )
-	DECLARE_TRACKER( ParticleEmitterType )
-	DECLARE_TRACKER( ParticleEmitterInstance )
-	DECLARE_TRACKER( ParticleEmitterInstanceType )
-	DECLARE_TRACKER( PropField )
-	DECLARE_TRACKER( PropFieldType )
-	DECLARE_TRACKER( RenderWindow )
-	DECLARE_TRACKER( Skin )
-	DECLARE_TRACKER( Sky )
-	DECLARE_TRACKER( SkyLayer )
-	DECLARE_TRACKER( SkyInstance )
-	DECLARE_TRACKER( World )
+public: inline void Add ## type(void *object){AddTracked(p ## type, object);} \
+public: inline void Remove ## type(void *object){RemoveTracked(p ## type, object);}
+	DECLARE_TRACKER(Billboard)
+	DECLARE_TRACKER(Camera)
+	DECLARE_TRACKER(CanvasCanvasView)
+	DECLARE_TRACKER(CanvasImage)
+	DECLARE_TRACKER(CanvasPaint)
+	DECLARE_TRACKER(CanvasRenderWorld)
+	DECLARE_TRACKER(CanvasText)
+	DECLARE_TRACKER(CanvasVideoPlayer)
+	DECLARE_TRACKER(CanvasView)
+	DECLARE_TRACKER(CaptureCanvas)
+	DECLARE_TRACKER(Component)
+	DECLARE_TRACKER(ComponentLOD)
+	DECLARE_TRACKER(ComponentTexture)
+	DECLARE_TRACKER(DebugDrawer)
+	DECLARE_TRACKER(Decal)
+	DECLARE_TRACKER(DSRenderableCamera)
+	DECLARE_TRACKER(DSRenderableCanvas)
+	DECLARE_TRACKER(DSRenderableColor)
+	DECLARE_TRACKER(DSRenderableImage)
+	DECLARE_TRACKER(DSRenderableValue)
+	DECLARE_TRACKER(DSRenderableVideoFrame)
+	DECLARE_TRACKER(DynamicSkin)
+	DECLARE_TRACKER(EffectColorMatrix)
+	DECLARE_TRACKER(EffectDistortImage)
+	DECLARE_TRACKER(EffectFilterKernel)
+	DECLARE_TRACKER(EffectOverlayImage)
+	DECLARE_TRACKER(EnvironmentMapProbe)
+	DECLARE_TRACKER(Font)
+	DECLARE_TRACKER(HeightTerrain)
+	DECLARE_TRACKER(HTSector)
+	DECLARE_TRACKER(Image)
+	DECLARE_TRACKER(Light)
+	DECLARE_TRACKER(Lumimeter)
+	DECLARE_TRACKER(Model)
+	DECLARE_TRACKER(OcclusionMesh)
+	DECLARE_TRACKER(ParticleEmitter)
+	DECLARE_TRACKER(ParticleEmitterType)
+	DECLARE_TRACKER(ParticleEmitterInstance)
+	DECLARE_TRACKER(ParticleEmitterInstanceType)
+	DECLARE_TRACKER(PropField)
+	DECLARE_TRACKER(PropFieldType)
+	DECLARE_TRACKER(RenderWindow)
+	DECLARE_TRACKER(Skin)
+	DECLARE_TRACKER(Sky)
+	DECLARE_TRACKER(SkyLayer)
+	DECLARE_TRACKER(SkyInstance)
+	DECLARE_TRACKER(World)
 	
-	void AddTracked( decPointerSet &list, void *object );
-	void RemoveTracked( decPointerSet &list, void *object );
+	void AddTracked(decPointerSet &list, void *object);
+	void RemoveTracked(decPointerSet &list, void *object);
 #endif
 };
 

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableCamera( const char *name );
+	deDSRenderableCamera(const char *name);
 	
 	/** \brief Clean up renderable. */
 	virtual ~deDSRenderableCamera();
@@ -60,7 +60,7 @@ public:
 	inline deCamera *GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or NULL if not set. */
-	void SetCamera( deCamera *camera );
+	void SetCamera(deCamera *camera);
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	virtual void Visit(deDSRenderableVisitor &visitor);
 };
 
 #endif

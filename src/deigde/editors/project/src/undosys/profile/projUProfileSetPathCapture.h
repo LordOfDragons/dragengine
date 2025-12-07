@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetPathCapture( projProfile *profile, const char *newValue );
+	projUProfileSetPathCapture(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetPathCapture();

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rig. */
-	seWPView( seWindowProperties &windowProperties );
+	seWPView(seWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up rig. */
@@ -69,7 +69,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Update view. */
 	void UpdateView();

@@ -72,7 +72,7 @@ public:
 	 * 
 	 * \warning Do not modify the parameter block after creating the shared object.
 	 */
-	deoglSharedBlockSPB( deoglShaderParameterBlock *parameterBlock );
+	deoglSharedBlockSPB(deoglShaderParameterBlock *parameterBlock);
 	
 protected:
 	/** Clean up shared shader parameter block. */
@@ -88,10 +88,10 @@ public:
 	inline const deoglShaderParameterBlock::Ref &GetParameterBlock() const{ return pParameterBlock; }
 	
 	/** Obtain element. Call deoglSharedBlockSPBElement::Return to return element. */
-	deoglSharedBlockSPBElement *GetElement( int count );
+	deoglSharedBlockSPBElement *GetElement(int count);
 	
 	/** Return element. */
-	void ReturnElement( deoglSharedBlockSPBElement *element );
+	void ReturnElement(deoglSharedBlockSPBElement *element);
 	
 	/** Maximal count of elements the buffer can store. */
 	inline int GetSize() const{ return pSize; }
@@ -106,14 +106,14 @@ public:
 	int GetFreeElementCountAtEnd() const;
 	
 	/** Debug print blocks. */
-	void DebugPrint( deoglRTLogger &logger ) const;
+	void DebugPrint(deoglRTLogger &logger) const;
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	int pIndexOfEmptyElementWithMinCount( int count );
+	int pIndexOfEmptyElementWithMinCount(int count);
 	void pCheckSize();
 };
 

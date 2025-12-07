@@ -54,7 +54,7 @@ public:
 	seSourceGroup();
 	
 	/** \brief Create copy of source. */
-	seSourceGroup( const seSourceGroup &copy );
+	seSourceGroup(const seSourceGroup &copy);
 	
 	/** \brief Clean up source. */
 	virtual ~seSourceGroup();
@@ -68,16 +68,16 @@ public:
 	inline const seSourceList &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
-	void AddSource( seSource *source );
+	void AddSource(seSource *source);
 	
 	/** \brief Insert source. */
-	void InsertSourceAt( seSource *source, int index );
+	void InsertSourceAt(seSource *source, int index);
 	
 	/** \brief Move source. */
-	void MoveSourceTo( seSource *source, int index );
+	void MoveSourceTo(seSource *source, int index);
 	
 	/** \brief Remove source. */
-	void RemoveSource( seSource *source );
+	void RemoveSource(seSource *source);
 	
 	/** \brief Remove all sources. */
 	void RemoveAllSources();
@@ -88,7 +88,7 @@ public:
 	inline deSynthesizerSourceGroup::eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set application type. */
-	void SetApplicationType( deSynthesizerSourceGroup::eApplicationTypes type );
+	void SetApplicationType(deSynthesizerSourceGroup::eApplicationTypes type);
 	
 	/** \brief Select target. */
 	inline seControllerTarget &GetTargetSelect(){ return pTargetSelect; }
@@ -103,10 +103,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** \brief Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( seLink *link ) const;
+	virtual int CountLinkUsage(seLink *link) const;
 	
 	/** \brief Removes a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( seLink *link );
+	virtual void RemoveLinkFromTargets(seLink *link);
 	
 	/** \brief Removes all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -115,7 +115,7 @@ public:
 	virtual seSource *CreateCopy() const;
 	
 	/** \brief List all links of all source targets. */
-	virtual void ListLinks( seLinkList& list );
+	virtual void ListLinks(seLinkList& list);
 	
 	
 	
@@ -123,7 +123,7 @@ public:
 	inline bool GetTreeListExpanded() const{ return pTreeListExpanded; }
 	
 	/** \brief Set tree list expanded state. */
-	void SetTreeListExpanded( bool expanded );
+	void SetTreeListExpanded(bool expanded);
 	
 	/** \brief Parent synthesizer changed. */
 	virtual void SynthesizerChanged();
@@ -137,7 +137,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copies another group source to this group source. */
-	virtual seSourceGroup &operator=( const seSourceGroup &copy );
+	virtual seSourceGroup &operator=(const seSourceGroup &copy);
 	/*@}*/
 	
 	

@@ -51,10 +51,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionSetCondition( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionSetCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option,
-		ceConversationCondition::eConditionTypes conditionType );
+		ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 	
 	
@@ -71,7 +71,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *condition );
+	virtual igdeUndo *CreateUndo(ceConversationCondition *condition);
 	/*@}*/
 };
 

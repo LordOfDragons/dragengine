@@ -45,7 +45,7 @@ class decUnicodeString;
  * module console ability of the engine.
  */
 class decrbPanelConsole : public FXVerticalFrame{
-	FXDECLARE( decrbPanelConsole )
+	FXDECLARE(decrbPanelConsole)
 	
 protected:
 	decrbPanelConsole();
@@ -68,17 +68,17 @@ private:
 	
 public:
 	// constructor, destructor
-	decrbPanelConsole( decrbWindowMain *windowMain, FXComposite *container );
+	decrbPanelConsole(decrbWindowMain *windowMain, FXComposite *container);
 	virtual ~decrbPanelConsole();
 	
 	// management
 	void UpdateModulesList();
-	void AddToConsole( decUnicodeString &text );
+	void AddToConsole(decUnicodeString &text);
 	void ClearConsole();
 	
 	// events
-	long onCBModuleChanged( FXObject *sender, FXSelector selector, void *data );
-	long onEditSendCommand( FXObject *sender, FXSelector selector, void *data );
+	long onCBModuleChanged(FXObject *sender, FXSelector selector, void *data);
+	long onEditSendCommand(FXObject *sender, FXSelector selector, void *data);
 	
 private:
 };

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalSound::deoalSound( deAudioOpenAL &oal, deSound &sound ) :
-pOal( oal ),
-pSound( sound ),
-pASound( new deoalASound( oal.GetAudioThread(), sound ) ){
+deoalSound::deoalSound(deAudioOpenAL &oal, deSound &sound) :
+pOal(oal),
+pSound(sound),
+pASound(new deoalASound(oal.GetAudioThread(), sound)){
 }
 
 deoalSound::~deoalSound(){
-	if( pASound ){
+	if(pASound){
 		pASound->FreeReference();
 	}
 }
@@ -58,5 +58,5 @@ deoalSound::~deoalSound(){
 ///////////////
 
 void deoalSound::Synchronize(){
-	pASound->PreloadSound( pSound );
+	pASound->PreloadSound(pSound);
 }

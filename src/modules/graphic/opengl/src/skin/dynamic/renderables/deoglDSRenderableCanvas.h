@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableCanvas( deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable );
+	deoglDSRenderableCanvas(deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable);
 	
 	/** Clean up peer. */
 	virtual ~deoglDSRenderableCanvas();

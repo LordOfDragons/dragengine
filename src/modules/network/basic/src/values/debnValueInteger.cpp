@@ -42,45 +42,45 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnValueInteger::debnValueInteger( deNetworkValueInteger &valueInt ) :
-pValueInt( valueInt ),
-pLastValue( valueInt.GetInt() )
+debnValueInteger::debnValueInteger(deNetworkValueInteger &valueInt) :
+pValueInt(valueInt),
+pLastValue(valueInt.GetInt())
 {
-	switch( valueInt.GetFormat() ){
+	switch(valueInt.GetFormat()){
 	case deNetworkValue::evfSInt8:
-		SetDataType( evtSInt8 );
+		SetDataType(evtSInt8);
 		break;
 		
 	case deNetworkValue::evfUInt8:
-		SetDataType( evtUInt8 );
+		SetDataType(evtUInt8);
 		break;
 		
 	case deNetworkValue::evfSInt16:
-		SetDataType( evtSInt16 );
+		SetDataType(evtSInt16);
 		break;
 		
 	case deNetworkValue::evfUInt16:
-		SetDataType( evtUInt16 );
+		SetDataType(evtUInt16);
 		break;
 		
 	case deNetworkValue::evfSInt32:
-		SetDataType( evtSInt32 );
+		SetDataType(evtSInt32);
 		break;
 		
 	case deNetworkValue::evfUInt32:
-		SetDataType( evtUInt32 );
+		SetDataType(evtUInt32);
 		break;
 		
 	case deNetworkValue::evfSInt64:
-		SetDataType( evtSInt64 );
+		SetDataType(evtSInt64);
 		break;
 		
 	case deNetworkValue::evfUInt64:
-		SetDataType( evtUInt64 );
+		SetDataType(evtUInt64);
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -92,8 +92,8 @@ debnValueInteger::~debnValueInteger(){
 // Management
 ///////////////
 
-bool debnValueInteger::UpdateValue( bool force ){
-	if( ! force && pValueInt.GetInt() == pLastValue ){
+bool debnValueInteger::UpdateValue(bool force){
+	if(!force && pValueInt.GetInt() == pLastValue){
 		return false;
 	}
 	
@@ -101,8 +101,8 @@ bool debnValueInteger::UpdateValue( bool force ){
 	return true;
 }
 
-void debnValueInteger::ReadValue( decBaseFileReader &reader ){
-	switch( GetDataType() ){
+void debnValueInteger::ReadValue(decBaseFileReader &reader){
+	switch(GetDataType()){
 	case evtSInt8:
 		pLastValue = reader.ReadChar();
 		break;
@@ -139,41 +139,41 @@ void debnValueInteger::ReadValue( decBaseFileReader &reader ){
 		return;
 	}
 	
-	pValueInt.SetInt( pLastValue );
+	pValueInt.SetInt(pLastValue);
 }
 
-void debnValueInteger::WriteValue( decBaseFileWriter &writer ){
-	switch( GetDataType() ){
+void debnValueInteger::WriteValue(decBaseFileWriter &writer){
+	switch(GetDataType()){
 	case evtSInt8:
-		writer.WriteChar( ( int8_t )pValueInt.GetInt() );
+		writer.WriteChar((int8_t)pValueInt.GetInt());
 		break;
 		
 	case evtUInt8:
-		writer.WriteByte( ( uint8_t )pValueInt.GetInt() );
+		writer.WriteByte((uint8_t)pValueInt.GetInt());
 		break;
 		
 	case evtSInt16:
-		writer.WriteShort( ( int16_t )pValueInt.GetInt() );
+		writer.WriteShort((int16_t)pValueInt.GetInt());
 		break;
 		
 	case evtUInt16:
-		writer.WriteUShort( ( uint16_t )pValueInt.GetInt() );
+		writer.WriteUShort((uint16_t)pValueInt.GetInt());
 		break;
 		
 	case evtSInt32:
-		writer.WriteInt( ( int32_t )pValueInt.GetInt() );
+		writer.WriteInt((int32_t)pValueInt.GetInt());
 		break;
 		
 	case evtUInt32:
-		writer.WriteUInt( ( uint32_t )pValueInt.GetInt() );
+		writer.WriteUInt((uint32_t)pValueInt.GetInt());
 		break;
 		
 	case evtSInt64:
-		writer.WriteLong( ( int64_t )pValueInt.GetInt() );
+		writer.WriteLong((int64_t)pValueInt.GetInt());
 		break;
 		
 	case evtUInt64:
-		writer.WriteULong( ( uint64_t )pValueInt.GetInt() );
+		writer.WriteULong((uint64_t)pValueInt.GetInt());
 		break;
 		
 	default:

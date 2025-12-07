@@ -59,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleAnimationDifference( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleAnimationDifference &rule );
+	dearRuleAnimationDifference(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleAnimationDifference &rule);
 	
 	/** Clean up animator. */
 	virtual ~dearRuleAnimationDifference();
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
 	
 	/** Rule changed. */
 	virtual void RuleChanged();

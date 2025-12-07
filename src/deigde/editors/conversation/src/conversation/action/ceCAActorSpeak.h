@@ -74,9 +74,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new actor speak conversation action. */
-	ceCAActorSpeak( deEngine *engine );
+	ceCAActorSpeak(deEngine *engine);
 	/** Creates a new actor speak conversation action. */
-	ceCAActorSpeak( const ceCAActorSpeak &action );
+	ceCAActorSpeak(const ceCAActorSpeak &action);
 	/** Cleans up the actor speak conversation action. */
 	virtual ~ceCAActorSpeak();
 	/*@}*/
@@ -91,31 +91,31 @@ public:
 	/** Retrieves the actor id. */
 	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	
 	/** Retrieves the text box text. */
 	inline const decUnicodeString &GetTextBoxText() const{ return pTextBoxText; }
 	
 	/** Sets the text box text. */
-	void SetTextBoxText( const decUnicodeString &text );
+	void SetTextBoxText(const decUnicodeString &text);
 	
 	/** Translated text box text. */
 	inline const decString &GetTextBoxTextTranslate() const{ return pTextBoxTextTranslate; }
 	
 	/** Set translated text box text. */
-	void SetTextBoxTextTranslate( const char *text );
+	void SetTextBoxTextTranslate(const char *text);
 	
 	/** Resolved text box text. */
-	decUnicodeString ResolveTextBoxText( const ceConversation &conversation ) const;
+	decUnicodeString ResolveTextBoxText(const ceConversation &conversation) const;
 	
 	/** \brief Retrieves the text box text style. */
 	inline const decString &GetTextBoxTextStyle() const{ return pTextBoxTextStyle; }
 	/** \brief Sets the text box text style. */
-	void SetTextBoxTextStyle( const char *style );
+	void SetTextBoxTextStyle(const char *style);
 	/** Retrieves the path to the sound file or empty to use none. */
 	inline const decString &GetPathSound() const{ return pPathSound; }
 	/** Sets the path to the sound file or empty to use none. */
-	void SetPathSound( const char *path );
+	void SetPathSound(const char *path);
 	/** Retrieves the words list for lip-sync. */
 	inline ceStripList &GetWordList(){ return pWords; }
 	inline const ceStripList &GetWordList() const{ return pWords; }
@@ -137,16 +137,16 @@ public:
 	/** Retrieves the movement to use or empty to not change. */
 	inline const decString &GetMovement() const{ return pMovement; }
 	/** Sets the movement to use or empty to not change. */
-	void SetMovement( const char *movement );
+	void SetMovement(const char *movement);
 	/** \brief Retrieves the minimum time the actor is speaking. */
 	inline float GetMinSpeechTime() const{ return pMinSpeechTime; }
 	/** \brief Sets the minimum time the actor is speaking. */
-	void SetMinSpeechTime( float minSpeechTime );
+	void SetMinSpeechTime(float minSpeechTime);
 	
 	/** \brief Determines if speech animation is used for this action. */
 	inline bool GetUseSpeechAnimation() const{ return pUseSpeechAnimation; }
 	/** \brief Sets if speech animation is used for this action. */
-	void SetUseSpeechAnimation( bool useSpeechAnimation );
+	void SetUseSpeechAnimation(bool useSpeechAnimation);
 	
 	/** Create a copy of this action. */
     virtual ceConversationAction *CreateCopy() const;

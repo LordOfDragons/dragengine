@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml comment. */
-	decXmlComment( const char *comment );
+	decXmlComment(const char *comment);
 	
 protected:
 	/** \brief Clean up xml comment. */
@@ -63,14 +63,14 @@ public:
 	inline const decString &GetComment() const{ return pComment; }
 	
 	/** \brief Set comment. */
-	void SetComment( const char *comment );
+	void SetComment(const char *comment);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	

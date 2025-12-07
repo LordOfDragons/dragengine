@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneIKLimitsLower::reUSetBoneIKLimitsLower( reRigBone *bone, const decVector &ikLimitsLower ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBoneIKLimitsLower::reUSetBoneIKLimitsLower(reRigBone *bone, const decVector &ikLimitsLower){
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();
@@ -45,9 +45,9 @@ reUSetBoneIKLimitsLower::reUSetBoneIKLimitsLower( reRigBone *bone, const decVect
 	pNewIKLimitsLower = ikLimitsLower;
 	
 	try{
-		SetShortInfo( "Set Bone IK Limits Lower" );
+		SetShortInfo("Set Bone IK Limits Lower");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,11 +63,11 @@ reUSetBoneIKLimitsLower::~reUSetBoneIKLimitsLower(){
 ///////////////
 
 void reUSetBoneIKLimitsLower::Undo(){
-	pBone->SetIKLimitsLower( pOldIKLimitsLower );
+	pBone->SetIKLimitsLower(pOldIKLimitsLower);
 }
 
 void reUSetBoneIKLimitsLower::Redo(){
-	pBone->SetIKLimitsLower( pNewIKLimitsLower );
+	pBone->SetIKLimitsLower(pNewIKLimitsLower);
 }
 
 
@@ -76,5 +76,5 @@ void reUSetBoneIKLimitsLower::Redo(){
 //////////////////////
 
 void reUSetBoneIKLimitsLower::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
+	if(pBone) pBone->FreeReference();
 }

@@ -37,12 +37,12 @@
 // unix entry point
 /////////////////////
 
-#if defined OS_UNIX && ! defined OS_BEOS && ! defined OS_MACOS
-int main( int argCount, char **args ){
+#if defined OS_UNIX && !defined OS_BEOS && !defined OS_MACOS
+int main(int argCount, char **args){
 	try{
-		igdeRealApplication().Run( argCount, args );
+		igdeRealApplication().Run(argCount, args);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return 1;
 	}
@@ -62,7 +62,7 @@ static int WINAPI RealWinMain(){
 	try{
 		igdeRealApplication().Run();
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return 1;
 	}
@@ -70,11 +70,11 @@ static int WINAPI RealWinMain(){
 }
 
 // MinGW does not support wWinMain
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ){
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow){
 	return RealWinMain();
 }
 
-int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow ){
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
 	return RealWinMain();
 }
 #endif

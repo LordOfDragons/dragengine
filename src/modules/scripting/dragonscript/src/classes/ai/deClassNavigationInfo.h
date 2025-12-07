@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassNavigationInfo( deScriptingDragonScript &ds );
+	deClassNavigationInfo(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassNavigationInfo();
@@ -58,15 +58,15 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	
 	
 	/** \brief Navigation information or \em NULL if myself is \em NULL. */
-	dedsNavigationInfo *GetNavigationInfo( dsRealObject *myself ) const;
+	dedsNavigationInfo *GetNavigationInfo(dsRealObject *myself) const;
 	
 	/** \brief Pushe navigation info or \em NULL. */
-	void PushNavigationInfo( dsRunTime *rt, dedsNavigationInfo *info );
+	void PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo *info);
 	/*@}*/
 	
 	
@@ -85,27 +85,27 @@ private:
 	};
 	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetCostType );
-	DEF_NATFUNC( nfSetCostType );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetCostType);
+	DEF_NATFUNC(nfSetCostType);
 	
-	DEF_NATFUNC( nfGetPathIndex );
-	DEF_NATFUNC( nfSetPathIndex );
-	DEF_NATFUNC( nfGetPathFactor );
-	DEF_NATFUNC( nfSetPathFactor );
+	DEF_NATFUNC(nfGetPathIndex);
+	DEF_NATFUNC(nfSetPathIndex);
+	DEF_NATFUNC(nfGetPathFactor);
+	DEF_NATFUNC(nfSetPathFactor);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

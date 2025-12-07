@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list. */
-	deoglTexUnitsConfigList( deoglRenderThread &renderThread );
+	deoglTexUnitsConfigList(deoglRenderThread &renderThread);
 	
 	/** Clean up list. */
 	~deoglTexUnitsConfigList();
@@ -73,8 +73,8 @@ public:
 	 * Texture units configuration matching parameters. Create texture units configuration
 	 * if absent. Adds usage to texture units configuration. To remove a usage use RemoveUsage.
 	 */
-	deoglTexUnitsConfig *GetWith( const deoglTexUnitConfig *units,
-		int unitCount, deoglShaderParameterBlock *paramBlock );
+	deoglTexUnitsConfig *GetWith(const deoglTexUnitConfig *units,
+		int unitCount, deoglShaderParameterBlock *paramBlock);
 	
 	/** Empty texture units configuration. */
 	deoglTexUnitsConfig *GetEmpty();
@@ -83,7 +83,7 @@ public:
 	deoglTexUnitsConfig *GetEmptyNoUsage() const;
 	
 	/** Remove texture units configuration. For use by deoglTexUnitsConfig only. */
-	void Remove( deoglTexUnitsConfig *config );
+	void Remove(deoglTexUnitsConfig *config);
 	/*@}*/
 };
 

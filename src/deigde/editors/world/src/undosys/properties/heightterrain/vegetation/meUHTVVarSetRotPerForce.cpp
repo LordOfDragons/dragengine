@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetRotPerForce::meUHTVVarSetRotPerForce( meHTVVariation *variation, float newRotPerForce ){
-	if( ! variation ) DETHROW( deeInvalidParam );
+meUHTVVarSetRotPerForce::meUHTVVarSetRotPerForce(meHTVVariation *variation, float newRotPerForce){
+	if(!variation) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
 	
 	pOldRotPerForce = variation->GetRotationPerForce();
 	pNewRotPerForce = newRotPerForce;
 	
-	SetShortInfo( "Vegetation Layer Variation Set Rotation Per Force" );
+	SetShortInfo("Vegetation Layer Variation Set Rotation Per Force");
 	
 	variation->AddReference();
 }
 
 meUHTVVarSetRotPerForce::~meUHTVVarSetRotPerForce(){
-	if( pVariation ) pVariation->FreeReference();
+	if(pVariation) pVariation->FreeReference();
 }
 
 
@@ -62,9 +62,9 @@ meUHTVVarSetRotPerForce::~meUHTVVarSetRotPerForce(){
 ///////////////
 
 void meUHTVVarSetRotPerForce::Undo(){
-	pVariation->SetRotationPerForce( pOldRotPerForce );
+	pVariation->SetRotationPerForce(pOldRotPerForce);
 }
 
 void meUHTVVarSetRotPerForce::Redo(){
-	pVariation->SetRotationPerForce( pNewRotPerForce );
+	pVariation->SetRotationPerForce(pNewRotPerForce);
 }

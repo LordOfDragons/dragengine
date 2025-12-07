@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaEnableVertexPositionSet( aeRuleForeignState *rule );
+	aeUSetRuleFStaEnableVertexPositionSet(aeRuleForeignState *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaEnableVertexPositionSet();

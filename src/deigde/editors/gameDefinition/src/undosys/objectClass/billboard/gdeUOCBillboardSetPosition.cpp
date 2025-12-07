@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetPosition::gdeUOCBillboardSetPosition( gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, const decVector &newValue ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeUOCBillboardSetPosition::gdeUOCBillboardSetPosition(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const decVector &newValue) :
+pObjectClass(NULL),
+pBillboard(NULL)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard set position" );
+	SetShortInfo("Billboard set position");
 	
 	pOldValue = billboard->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pBillboard( NULL )
 }
 
 gdeUOCBillboardSetPosition::~gdeUOCBillboardSetPosition(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCBillboardSetPosition::~gdeUOCBillboardSetPosition(){
 ///////////////
 
 void gdeUOCBillboardSetPosition::Undo(){
-	pBillboard->SetPosition( pOldValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetPosition(pOldValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardSetPosition::Redo(){
-	pBillboard->SetPosition( pNewValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetPosition(pNewValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }

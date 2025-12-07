@@ -40,13 +40,13 @@
 /////////////////////////////////
 
 deoalRayTraceHitElementList::deoalRayTraceHitElementList() :
-pElements( NULL ),
-pCount( 0 ),
-pSize( 0 ){
+pElements(NULL),
+pCount(0),
+pSize(0){
 }
 
 deoalRayTraceHitElementList::~deoalRayTraceHitElementList(){
-	if( pElements ){
+	if(pElements){
 		delete [] pElements;
 	}
 }
@@ -56,21 +56,21 @@ deoalRayTraceHitElementList::~deoalRayTraceHitElementList(){
 // Manegement
 ///////////////
 
-const deoalRayTraceHitElement &deoalRayTraceHitElementList::GetAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+const deoalRayTraceHitElement &deoalRayTraceHitElementList::GetAt(int index) const{
+	if(index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pElements[ index ];
+	return pElements[index];
 }
 
-void deoalRayTraceHitElementList::Add( const deoalRayTraceHitElement &element ){
+void deoalRayTraceHitElementList::Add(const deoalRayTraceHitElement &element){
 	pBareAdd() = element;
 }
 
-void deoalRayTraceHitElementList::AddComponentFace( float distance, const decDVector &point,
-const decDVector &normal, deoalAComponent *component, int face, bool frontFacing ){
-	pBareAdd().SetComponentFace( distance, point, normal, component, face, frontFacing );
+void deoalRayTraceHitElementList::AddComponentFace(float distance, const decDVector &point,
+const decDVector &normal, deoalAComponent *component, int face, bool frontFacing){
+	pBareAdd().SetComponentFace(distance, point, normal, component, face, frontFacing);
 }
 
 void deoalRayTraceHitElementList::RemoveAll(){
@@ -83,16 +83,16 @@ void deoalRayTraceHitElementList::RemoveAll(){
 //////////////////////
 
 deoalRayTraceHitElement &deoalRayTraceHitElementList::pBareAdd(){
-	if( pCount == pSize ){
+	if(pCount == pSize){
 		const int newSize = pSize + 10;
-		deoalRayTraceHitElement * const newArray = new deoalRayTraceHitElement[ newSize ];
-		if( pElements ){
-			memcpy( newArray, pElements, sizeof( deoalRayTraceHitElement ) * pSize );
+		deoalRayTraceHitElement * const newArray = new deoalRayTraceHitElement[newSize];
+		if(pElements){
+			memcpy(newArray, pElements, sizeof(deoalRayTraceHitElement) * pSize);
 			delete [] pElements;
 		}
 		pElements = newArray;
 		pSize = newSize;
 	}
 	
-	return pElements[ pCount++ ];
+	return pElements[pCount++];
 }

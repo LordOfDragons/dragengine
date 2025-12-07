@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component texture. */
-	deoalAComponentTexture( deoalAComponent &component, int index );
+	deoalAComponentTexture(deoalAComponent &component, int index);
 	
 protected:
 	/** \brief Clean up component texture. */
@@ -88,7 +88,7 @@ public:
 	inline deoalASkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( deoalASkin *skin );
+	void SetSkin(deoalASkin *skin);
 	
 	
 	

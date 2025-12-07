@@ -66,7 +66,7 @@ public:
 	/** \text Events */
 	/*@{*/
 	/** \brief ScrollBar value changed. */
-	virtual void OnValueChanged( igdeScrollBar *scrollBar );
+	virtual void OnValueChanged(igdeScrollBar *scrollBar);
 	/*@}*/
 };
 

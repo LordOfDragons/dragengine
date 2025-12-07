@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesParticleRibbon( const deoglSkinTexture &texture );
+	deoglSTPipelinesParticleRibbon(const deoglSkinTexture &texture);
 	
 protected:
 	/** Clean up skin texture pipeline. */

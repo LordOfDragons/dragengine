@@ -77,13 +77,13 @@ public:
 	inline unsigned int GetHash() const{ return pHash; }
 	
 	/** Set owner object or NULL. */
-	void SetOwner( void *owner, unsigned int hash );
+	void SetOwner(void *owner, unsigned int hash);
 	
 	/** Update marker. */
 	inline bool GetUpdateMarker() const{ return pUpdateMarker; }
 	
 	/** Set update marker. */
-	inline void SetUpdateMarker( bool marker ){ pUpdateMarker = marker; }
+	inline void SetUpdateMarker(bool marker){pUpdateMarker = marker;}
 	
 	/** Minimum extend. */
 	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
@@ -92,7 +92,7 @@ public:
 	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** Set extends. */
-	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	
 	
@@ -100,7 +100,7 @@ public:
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	
 	/** Set owner component or NULL. */
-	void SetComponent( deoglRComponent *component );
+	void SetComponent(deoglRComponent *component);
 	
 	
 	
@@ -108,10 +108,10 @@ public:
 	int GetInstanceCount() const;
 	
 	/** Instance at index. */
-	deoglPersistentRenderTaskInstance *GetInstanceAt( int index ) const;
+	deoglPersistentRenderTaskInstance *GetInstanceAt(int index) const;
 	
 	/** Add instance. */
-	void AddInstance( deoglPersistentRenderTaskInstance *instance );
+	void AddInstance(deoglPersistentRenderTaskInstance *instance);
 	
 	/** Remove all instances. */
 	void RemoveAllInstances();
@@ -122,10 +122,10 @@ public:
 	int GetSubInstanceCount() const;
 	
 	/** Sub instance at index. */
-	deoglPersistentRenderTaskSubInstance *GetSubInstanceAt( int index ) const;
+	deoglPersistentRenderTaskSubInstance *GetSubInstanceAt(int index) const;
 	
 	/** Add sub instance. */
-	void AddSubInstance( deoglPersistentRenderTaskSubInstance *subInstance );
+	void AddSubInstance(deoglPersistentRenderTaskSubInstance *subInstance);
 	
 	/** Remove all sub instances. */
 	void RemoveAllSubInstances();

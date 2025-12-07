@@ -68,7 +68,7 @@ public:
 	/**
 	 * \brief EditDirectory directory changed.
 	 */
-	virtual void OnEditDirectoryChanged( igdeEditDirectory *editDirectory );
+	virtual void OnEditDirectoryChanged(igdeEditDirectory *editDirectory);
 	/*@}*/
 };
 

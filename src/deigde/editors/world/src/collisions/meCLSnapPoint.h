@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	meCLSnapPoint( meWorld &world, meObject *object );
+	meCLSnapPoint(meWorld &world, meObject *object);
 	
 	/** \brief Clean up visitor. */
 	virtual ~meCLSnapPoint();
@@ -92,12 +92,12 @@ public:
 	 * relative to the object center. Thus set the collider position and orientation to
 	 * match the object position and orientation.
 	 */
-	void CalcBoundingBoxShape( decShapeList &list );
+	void CalcBoundingBoxShape(decShapeList &list);
 	
 	
 	
 	/** \brief Add object to ignore. */
-	void AddIgnoreObject( meObject *object );
+	void AddIgnoreObject(meObject *object);
 	
 	/** \brief Reset visitor. */
 	void Reset();
@@ -125,13 +125,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Collision response. */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	
 	/** \brief Can hit collider. */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	
 	/** \brief Collider changed which is not used. */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 	/*@}*/
 };
 

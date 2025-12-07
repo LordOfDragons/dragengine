@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableScaleYMin::aeURuleLimitSetEnableScaleYMin( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableScaleYMin::aeURuleLimitSetEnableScaleYMin(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	
-	SetShortInfo( "Limit toggle enable minimum y scaling" );
+	SetShortInfo("Limit toggle enable minimum y scaling");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleYMin::~aeURuleLimitSetEnableScaleYMin(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnableScaleYMin::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleYMin::Redo(){
-	pRule->SetEnableScalingYMin( ! pRule->GetEnableScalingYMin() );
+	pRule->SetEnableScalingYMin(!pRule->GetEnableScalingYMin());
 }

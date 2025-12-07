@@ -97,7 +97,7 @@ public:
 	 * \param type Type of the skin property obtained from adding a property
 	 * name to the texture property map object held by the engine.
 	 */
-	deSkinProperty( const char *type );
+	deSkinProperty(const char *type);
 	
 	/** \brief Clean up skin property. */
 	virtual ~deSkinProperty();
@@ -114,19 +114,19 @@ public:
 	inline const decString &GetTexCoordSet() const{ return pTexCoordSet; }
 	
 	/** \brief Set texture coordinate set name or an empty string to use the default one. */
-	void SetTexCoordSet( const char *name );
+	void SetTexCoordSet(const char *name);
 	
 	/** \brief Renderable name or empty string to use none. */
 	inline const decString &GetRenderable() const{ return pRenderable; }
 	
 	/** \brief Set renderable name or empty string to use none. */
-	void SetRenderable( const char *renderable );
+	void SetRenderable(const char *renderable);
 	
 	/** \brief Bone name or empty string. */
 	inline const decString &GetBone() const{ return pBone; }
 	
 	/** \brief Set bone name or empty string. */
-	void SetBone( const char *bone );
+	void SetBone(const char *bone);
 	/*@}*/
 	
 	
@@ -134,7 +134,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	virtual void Visit(deSkinPropertyVisitor &visitor);
 	/*@}*/
 };
 

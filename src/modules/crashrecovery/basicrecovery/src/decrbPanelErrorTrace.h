@@ -42,7 +42,7 @@ class deErrorTraceValue;
  * Panel showing the error trace.
  */
 class decrbPanelErrorTrace : public FXVerticalFrame{
-	FXDECLARE( decrbPanelErrorTrace )
+	FXDECLARE(decrbPanelErrorTrace)
 	
 protected:
 	decrbPanelErrorTrace();
@@ -62,7 +62,7 @@ private:
 	
 public:
 	// constructor, destructor
-	decrbPanelErrorTrace( decrbWindowMain *windowMain, FXComposite *container );
+	decrbPanelErrorTrace(decrbWindowMain *windowMain, FXComposite *container);
 	virtual ~decrbPanelErrorTrace();
 	
 	// management
@@ -71,7 +71,7 @@ public:
 	// events
 	
 private:
-	void pAddErrorTraceSubValues( int level, FXTreeItem *treeItem, deErrorTraceValue *value );
+	void pAddErrorTraceSubValues(int level, FXTreeItem *treeItem, deErrorTraceValue *value);
 };
 
 // end of include only once

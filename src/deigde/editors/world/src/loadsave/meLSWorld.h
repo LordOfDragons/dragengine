@@ -54,17 +54,17 @@ public:
 	// management
 	inline const decString &GetName() const{ return pName; }
 
-	void SetName( const char *name );
+	void SetName(const char *name);
 
 	inline const decString &GetPattern() const{ return pPattern; }
 
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 
 	// loading and saving
-	virtual void SaveWorld( meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file ) = 0;
+	virtual void SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file) = 0;
 	
 	/** \brief Create stepable loader. */
-	virtual igdeStepableTask *CreateLoadTask( meWorld *world, decBaseFileReader *file ) = 0;
+	virtual igdeStepableTask *CreateLoadTask(meWorld *world, decBaseFileReader *file) = 0;
 };
 
 // end of include only once

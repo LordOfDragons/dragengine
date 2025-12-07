@@ -40,19 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalAddProperty::meUDecalAddProperty( meDecal *decal, const char *key, const char *value ) :
-pDecal( NULL )
+meUDecalAddProperty::meUDecalAddProperty(meDecal *decal, const char *key, const char *value) :
+pDecal(NULL)
 {
-	if( ! decal || ! key || strlen( key ) == 0 || ! value ){
-		DETHROW( deeInvalidParam );
+	if(!decal || !key || strlen(key) == 0 || !value){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add decal property" );
+	SetShortInfo("Add decal property");
 	
 	pDecal = NULL;
 	
@@ -72,18 +72,18 @@ meUDecalAddProperty::~meUDecalAddProperty(){
 // Management
 ///////////////
 
-void meUDecalAddProperty::SetValue( const char *value ){
+void meUDecalAddProperty::SetValue(const char *value){
 	pValue = value;
 }
 
 
 
 void meUDecalAddProperty::Undo(){
-	pDecal->RemoveProperty( pKey );
+	pDecal->RemoveProperty(pKey);
 }
 
 void meUDecalAddProperty::Redo(){
-	pDecal->SetProperty( pKey, pValue );
+	pDecal->SetProperty(pKey, pValue);
 }
 
 void meUDecalAddProperty::ProgressiveRedo(){
@@ -96,7 +96,7 @@ void meUDecalAddProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUDecalAddProperty::pCleanUp(){
-	if( pDecal ){
+	if(pDecal){
 		pDecal->FreeReference();
 	}
 }

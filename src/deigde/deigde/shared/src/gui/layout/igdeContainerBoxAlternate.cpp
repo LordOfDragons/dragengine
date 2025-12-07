@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeContainerBoxAlternate::igdeContainerBoxAlternate( igdeEnvironment &environment,
-	eAxis axis, bool stretchOdd, int spacing ) :
-igdeContainerBox( environment, axis, spacing ),
-pStretchOdd( stretchOdd ){
+igdeContainerBoxAlternate::igdeContainerBoxAlternate(igdeEnvironment &environment,
+	eAxis axis, bool stretchOdd, int spacing) :
+igdeContainerBox(environment, axis, spacing),
+pStretchOdd(stretchOdd){
 }
 
 igdeContainerBoxAlternate::~igdeContainerBoxAlternate(){
@@ -55,23 +55,23 @@ igdeContainerBoxAlternate::~igdeContainerBoxAlternate(){
 ///////////////
 
 void igdeContainerBoxAlternate::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	void * const native = igdeNativeContainerBoxAlternate::CreateNativeWidget( *this );
-	SetNativeWidget( native );
-	igdeNativeContainerBoxAlternate::PostCreateNativeWidget( *this, native );
+	void * const native = igdeNativeContainerBoxAlternate::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	igdeNativeContainerBoxAlternate::PostCreateNativeWidget(*this, native);
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeContainerBoxAlternate::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
 	void * const native = GetNativeWidget();
 	DropNativeWidget();
-	igdeNativeContainerBoxAlternate::DestroyNativeWidget( *this, native );
+	igdeNativeContainerBoxAlternate::DestroyNativeWidget(*this, native);
 }

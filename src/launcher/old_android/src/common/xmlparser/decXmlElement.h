@@ -105,7 +105,7 @@ public:
 	 * The line number is set by the parser for locating the error line.
 	 * The line has to be 1 or larger with 1 beeing the first line.
 	 */
-	void SetLineNumber( int lineNumber );
+	void SetLineNumber(int lineNumber);
 	
 	/**
 	 * \brief Position number this element starts at in the source file.
@@ -121,13 +121,13 @@ public:
 	 * The position number is set by the parser for locating the error position.
 	 * The position has to be 0 or larger with 0 beeing the start of the line.
 	 */
-	void SetPositionNumber( int positionNumber );
+	void SetPositionNumber(int positionNumber);
 	
 	/** \brief Parent or NULL. */
 	inline decXmlElement *GetParent() const{ return pParent; }
 	
 	/** \brief Set parent or NULL. */
-	void SetParent( decXmlElement *parent );
+	void SetParent(decXmlElement *parent);
 	/*@}*/
 	
 	
@@ -135,7 +135,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit node. */
-	virtual void Visit( decXmlVisitor &visitor );
+	virtual void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	

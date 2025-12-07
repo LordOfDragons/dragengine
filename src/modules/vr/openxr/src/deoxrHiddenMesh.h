@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load hidden mesh. */
-	deoxrHiddenMesh( deoxrSession &session, XrViewConfigurationType viewConfig, uint32_t viewIndex );
+	deoxrHiddenMesh(deoxrSession &session, XrViewConfigurationType viewConfig, uint32_t viewIndex);
 	
 protected:
 	/** Clean up hidden mesh. */
@@ -83,7 +83,7 @@ public:
 	inline XrFovf GetFov() const{ return pFov; }
 	
 	/** Set fov. */
-	void SetFov( XrFovf fov );
+	void SetFov(XrFovf fov);
 	
 	/** Model. */
 	inline deModel *GetModel() const{ return pModel; }
@@ -95,10 +95,10 @@ public:
 	
 	
 private:
-	void pFetchData( XrVisibilityMaskKHR &mask ) const;
-	void pProjectVertices( XrVisibilityMaskKHR &mask ) const;
-	void pMapVerticesToWindow( XrVisibilityMaskKHR &mask ) const;
-	void pFitVertices( XrVisibilityMaskKHR &mask ) const;
+	void pFetchData(XrVisibilityMaskKHR &mask) const;
+	void pProjectVertices(XrVisibilityMaskKHR &mask) const;
+	void pMapVerticesToWindow(XrVisibilityMaskKHR &mask) const;
+	void pFitVertices(XrVisibilityMaskKHR &mask) const;
 };
 
 #endif

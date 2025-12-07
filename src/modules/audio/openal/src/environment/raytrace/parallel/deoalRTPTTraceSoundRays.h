@@ -163,7 +163,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel task. */
-	deoalRTPTTraceSoundRays( deoalRTParallelEnvProbe &owner );
+	deoalRTPTTraceSoundRays(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
@@ -184,54 +184,54 @@ public:
 	
 	
 	/** \brief Set world. */
-	void SetWorld( deoalAWorld *world, deoalRTWorldBVH *rtBVH );
+	void SetWorld(deoalAWorld *world, deoalRTWorldBVH *rtBVH);
 	
 	/** \brief Set position to trace rays from. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Set trace range. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Set attenuation parameters. */
-	void SetAttenuationParameters( float refDist, float rollOff, float distanceOffset );
+	void SetAttenuationParameters(float refDist, float rollOff, float distanceOffset);
 	
 	/** \brief Set environment probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set index of first ray from configuration to process. */
-	void SetFirstRay( int firstRay );
+	void SetFirstRay(int firstRay);
 	
 	/** \brief Set number of rays from configuration to process. */
 	#ifndef RTPTTSR_ONE_TASK_PER_RAY
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	#endif
 	
 	/** \brief Minimum length for rays required to be added to the ray list. */
-	void SetAddRayMinLength( float length );
+	void SetAddRayMinLength(float length);
 	
 	/** \brief Gain threshold to continue tracing transmit rays. */
-	void SetThresholdTransmit( float gain );
+	void SetThresholdTransmit(float gain);
 	
 	/** \brief Gain threshold to continue tracing reflected rays. */
-	void SetThresholdReflect( float gain );
+	void SetThresholdReflect(float gain);
 	
 	/** \brief Maximum number of bounces before stopping. */
-	void SetMaxBounceCount( int count );
+	void SetMaxBounceCount(int count);
 	
 	/** \brief Maximum number of transmissions before stopping. */
-	void SetMaxTransmitCount( int count );
+	void SetMaxTransmitCount(int count);
 	
 	/** \brief Initial length of rays for testing before enlarging. */
-	void SetInitialRayLength( float length );
+	void SetInitialRayLength(float length);
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Set invertse ray tracing. */
-	void SetInverseRayTracing( bool inverseRayTracing );
+	void SetInverseRayTracing(bool inverseRayTracing);
 	
 	/** \brief Set detect outside length. */
-	void SetDetectOutsideLength( double detectOutsideLength );
+	void SetDetectOutsideLength(double detectOutsideLength);
 	
 	
 	
@@ -306,12 +306,12 @@ public:
 	
 	
 protected:
-	void pTraceRay( const sTraceRay &ray, const sTraceGain &gain,
-		const sTraceAbsorptionSum &absorptionSum );
-	void pUpdateExtends( const decDVector &position );
-	float Attenuate( float distance ) const;
-	void DetectRayOutside( const sTraceRay &ray, const decDVector &position );
-	bool IsRayBlocked( const decDVector &position, const decDVector &direction );
+	void pTraceRay(const sTraceRay &ray, const sTraceGain &gain,
+		const sTraceAbsorptionSum &absorptionSum);
+	void pUpdateExtends(const decDVector &position);
+	float Attenuate(float distance) const;
+	void DetectRayOutside(const sTraceRay &ray, const decDVector &position);
+	bool IsRayBlocked(const decDVector &position, const decDVector &direction);
 };
 
 #endif

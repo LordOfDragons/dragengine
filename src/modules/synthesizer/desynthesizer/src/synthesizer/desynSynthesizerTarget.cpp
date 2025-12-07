@@ -42,26 +42,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynSynthesizerTarget::desynSynthesizerTarget( const desynSynthesizer &synthesizer,
-int firstLink, const deSynthesizerControllerTarget &target ) :
-pLinks( NULL ),
-pLinkCount( 0 )
+desynSynthesizerTarget::desynSynthesizerTarget(const desynSynthesizer &synthesizer,
+int firstLink, const deSynthesizerControllerTarget &target) :
+pLinks(NULL),
+pLinkCount(0)
 {
 	const int linkCount = target.GetLinkCount();
 	
-	if( linkCount == 0 ){
+	if(linkCount == 0){
 		return;
 	}
 	
-	pLinks = new const desynSynthesizerLink*[ linkCount ];
+	pLinks = new const desynSynthesizerLink*[linkCount];
 	
-	for( pLinkCount=0; pLinkCount<linkCount; pLinkCount++ ){
-		pLinks[ pLinkCount ] = &synthesizer.GetLinkAt( firstLink + target.GetLinkAt( pLinkCount ) );
+	for(pLinkCount=0; pLinkCount<linkCount; pLinkCount++){
+		pLinks[pLinkCount] = &synthesizer.GetLinkAt(firstLink + target.GetLinkAt(pLinkCount));
 	}
 }
 
 desynSynthesizerTarget::~desynSynthesizerTarget(){
-	if( pLinks ){
+	if(pLinks){
 		delete [] pLinks;
 	}
 }
@@ -71,17 +71,17 @@ desynSynthesizerTarget::~desynSynthesizerTarget(){
 // Management
 ///////////////
 
-const desynSynthesizerLink &desynSynthesizerTarget::GetLinkAt( int index ) const{
-	if( index < 0 || index >= pLinkCount ){
-		DETHROW( deeInvalidParam );
+const desynSynthesizerLink &desynSynthesizerTarget::GetLinkAt(int index) const{
+	if(index < 0 || index >= pLinkCount){
+		DETHROW(deeInvalidParam);
 	}
-	return *pLinks[ index ];
+	return *pLinks[index];
 }
 
 
 
-float desynSynthesizerTarget::GetValue( const desynSynthesizerInstance &instance, int sample, float defaultValue ) const{
-	if( pLinkCount == 0 ){
+float desynSynthesizerTarget::GetValue(const desynSynthesizerInstance &instance, int sample, float defaultValue) const{
+	if(pLinkCount == 0){
 		return defaultValue;
 	}
 	
@@ -89,20 +89,20 @@ float desynSynthesizerTarget::GetValue( const desynSynthesizerInstance &instance
 	bool firstValue = true;
 	int i;
 	
-	for( i=0; i<pLinkCount; i++ ){
-		const desynSynthesizerLink &link = *pLinks[ i ];
-		if( ! link.HasController() ){
+	for(i=0; i<pLinkCount; i++){
+		const desynSynthesizerLink &link = *pLinks[i];
+		if(!link.HasController()){
 			continue;
 		}
 		
-		if( firstValue ){
-			value = link.GetValue( instance, sample, 1.0f );
+		if(firstValue){
+			value = link.GetValue(instance, sample, 1.0f);
 			firstValue = false;
 			
 		}else{
-			value *= link.GetValue( instance, sample, 1.0f );
+			value *= link.GetValue(instance, sample, 1.0f);
 		}
 	}
 	
-	return decMath::clamp( value, 0.0f, 1.0f );
+	return decMath::clamp(value, 0.0f, 1.0f);
 }

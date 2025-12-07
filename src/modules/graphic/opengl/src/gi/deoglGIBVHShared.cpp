@@ -44,31 +44,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIBVHShared::deoglGIBVHShared( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pTBONodeBox( NULL ),
-pTBOIndex( NULL ),
-pTBOFace( NULL ),
-pTBOVertex( NULL ),
-pTBOTexCoord( NULL ),
-pTBOMaterial( NULL ),
-pTBOMaterial2( NULL )
+deoglGIBVHShared::deoglGIBVHShared(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pTBONodeBox(NULL),
+pTBOIndex(NULL),
+pTBOFace(NULL),
+pTBOVertex(NULL),
+pTBOTexCoord(NULL),
+pTBOMaterial(NULL),
+pTBOMaterial2(NULL)
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32( renderThread, 4 );
-		pTBOIndex = new deoglDynamicTBOUInt16( renderThread, 2 );
-		pTBOFace = new deoglDynamicTBOUInt16( renderThread, 4 );
-		pTBOVertex = new deoglDynamicTBOFloat32( renderThread, 4 );
-		pTBOTexCoord = new deoglDynamicTBOFloat16( renderThread, 2 );
-		pTBOMaterial = new deoglDynamicTBOUInt32( renderThread, 4 );
-		pTBOMaterial2 = new deoglDynamicTBOFloat16( renderThread, 4 );
+		pTBONodeBox = new deoglDynamicTBOFloat32(renderThread, 4);
+		pTBOIndex = new deoglDynamicTBOUInt16(renderThread, 2);
+		pTBOFace = new deoglDynamicTBOUInt16(renderThread, 4);
+		pTBOVertex = new deoglDynamicTBOFloat32(renderThread, 4);
+		pTBOTexCoord = new deoglDynamicTBOFloat16(renderThread, 2);
+		pTBOMaterial = new deoglDynamicTBOUInt32(renderThread, 4);
+		pTBOMaterial2 = new deoglDynamicTBOFloat16(renderThread, 4);
 		
-		pSharedTBONode = new deoglDynamicTBOShared( pTBOIndex, 1, pTBONodeBox, 2 );
-		pSharedTBOFace = new deoglDynamicTBOShared( pTBOFace, 1, pTBOTexCoord, 3 );
-		pSharedTBOVertex = new deoglDynamicTBOShared( pTBOVertex, 1 );
-		pSharedTBOMaterial = new deoglDynamicTBOShared( pTBOMaterial, 1, pTBOMaterial2, 3 );
+		pSharedTBONode = new deoglDynamicTBOShared(pTBOIndex, 1, pTBONodeBox, 2);
+		pSharedTBOFace = new deoglDynamicTBOShared(pTBOFace, 1, pTBOTexCoord, 3);
+		pSharedTBOVertex = new deoglDynamicTBOShared(pTBOVertex, 1);
+		pSharedTBOMaterial = new deoglDynamicTBOShared(pTBOMaterial, 1, pTBOMaterial2, 3);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -89,38 +89,38 @@ deoglGIBVHShared::~deoglGIBVHShared(){
 //////////////////////
 
 void deoglGIBVHShared::pCleanUp(){
-	if( pSharedTBONode ){
+	if(pSharedTBONode){
 		pSharedTBONode->FreeReference();
 	}
-	if( pSharedTBOFace ){
+	if(pSharedTBOFace){
 		pSharedTBOFace->FreeReference();
 	}
-	if( pSharedTBOVertex ){
+	if(pSharedTBOVertex){
 		pSharedTBOVertex->FreeReference();
 	}
-	if( pSharedTBOMaterial ){
+	if(pSharedTBOMaterial){
 		pSharedTBOMaterial->FreeReference();
 	}
 	
-	if( pTBONodeBox ){
+	if(pTBONodeBox){
 		pTBONodeBox->FreeReference();
 	}
-	if( pTBOIndex ){
+	if(pTBOIndex){
 		pTBOIndex->FreeReference();
 	}
-	if( pTBOFace ){
+	if(pTBOFace){
 		pTBOFace->FreeReference();
 	}
-	if( pTBOVertex ){
+	if(pTBOVertex){
 		pTBOVertex->FreeReference();
 	}
-	if( pTBOTexCoord ){
+	if(pTBOTexCoord){
 		pTBOTexCoord->FreeReference();
 	}
-	if( pTBOMaterial ){
+	if(pTBOMaterial){
 		pTBOMaterial->FreeReference();
 	}
-	if( pTBOMaterial2 ){
+	if(pTBOMaterial2){
 		pTBOMaterial2->FreeReference();
 	}
 }

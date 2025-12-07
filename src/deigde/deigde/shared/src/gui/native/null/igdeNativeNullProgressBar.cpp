@@ -39,7 +39,7 @@ igdeNativeNullProgressBar::igdeNativeNullProgressBar(){
 igdeNativeNullProgressBar::~igdeNativeNullProgressBar(){
 }
 
-igdeNativeNullProgressBar *igdeNativeNullProgressBar::CreateNativeWidget( igdeProgressBar& ){
+igdeNativeNullProgressBar *igdeNativeNullProgressBar::CreateNativeWidget(igdeProgressBar&){
 	return new igdeNativeNullProgressBar;
 }
 

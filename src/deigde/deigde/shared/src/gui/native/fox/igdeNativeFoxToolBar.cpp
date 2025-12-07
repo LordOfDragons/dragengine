@@ -44,43 +44,43 @@
 // Class igdeNativeFoxToolBar
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxToolBar, FXToolBar, nullptr, 0 )
+FXIMPLEMENT(igdeNativeFoxToolBar, FXToolBar, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxToolBar::igdeNativeFoxToolBar(){ }
+igdeNativeFoxToolBar::igdeNativeFoxToolBar(){}
 
-igdeNativeFoxToolBar::igdeNativeFoxToolBar( igdeToolBar &powner, FXComposite *pparent,
-	FXComposite *windowParent, int layoutFlags ) :
-FXToolBar( pparent, new FXToolBarShell( windowParent, FRAME_RAISED ),
-	FRAME_RAISED | /* LAYOUT_DOCK_NEXT | */ layoutFlags ),
-pOwner( &powner ),
-pWetDock( ( FXToolBarShell* )getWetDock() )
+igdeNativeFoxToolBar::igdeNativeFoxToolBar(igdeToolBar &powner, FXComposite *pparent,
+	FXComposite *windowParent, int layoutFlags) :
+FXToolBar(pparent, new FXToolBarShell(windowParent, FRAME_RAISED),
+	FRAME_RAISED | /* LAYOUT_DOCK_NEXT | */ layoutFlags),
+pOwner(&powner),
+pWetDock((FXToolBarShell*)getWetDock())
 {
-	new FXToolBarGrip( this, this, FXToolBar::ID_TOOLBARGRIP, TOOLBARGRIP_DOUBLE );
+	new FXToolBarGrip(this, this, FXToolBar::ID_TOOLBARGRIP, TOOLBARGRIP_DOUBLE);
 }
 
 igdeNativeFoxToolBar::~igdeNativeFoxToolBar(){
 }
 
-igdeNativeFoxToolBar *igdeNativeFoxToolBar::CreateNativeWidget( igdeToolBar &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxToolBar *igdeNativeFoxToolBar::CreateNativeWidget(igdeToolBar &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxToolBar( powner, pparent, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxToolBar(powner, pparent, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxToolBar::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( ! pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(!pparent.id()){
 		return;
 	}
 	
@@ -88,7 +88,7 @@ void igdeNativeFoxToolBar::PostCreateNativeWidget(){
 	
 	pWetDock->create();
 	
-	if( createOurself ){
+	if(createOurself){
 		create();
 	}
 }
@@ -98,7 +98,7 @@ void igdeNativeFoxToolBar::DestroyNativeWidget(){
 	
 	delete pWetDock;
 	
-	if( deleteOurself ){
+	if(deleteOurself){
 		delete this;
 	}
 }

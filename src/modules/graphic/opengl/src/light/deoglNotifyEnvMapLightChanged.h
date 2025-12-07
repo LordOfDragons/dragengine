@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglNotifyEnvMapLightChanged( deoglRLight &light );
+	deoglNotifyEnvMapLightChanged(deoglRLight &light);
 	/*@}*/
 	
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit environment maps. */
-	virtual void VisitEnvMaps( deoglEnvironmentMap *envmap );
+	virtual void VisitEnvMaps(deoglEnvironmentMap *envmap);
 	/*@}*/
 };
 

@@ -54,9 +54,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create capabilities texture format. */
-	deoglCapsTextureFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
+	deoglCapsTextureFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
 		int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil,
-		bool isCompressed, const char *name );
+		bool isCompressed, const char *name);
 	
 	/** Clean up capabilities texture format. */
 	~deoglCapsTextureFormat();
@@ -94,7 +94,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Print format to buffer. */
-	void WriteToString( decUnicodeString &buffer ) const;
+	void WriteToString(decUnicodeString &buffer) const;
 	/*@}*/
 };
 

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetScaling::gdeUOCEnvMapProbeSetScaling( gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decVector &newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCEnvMapProbeSetScaling::gdeUOCEnvMapProbeSetScaling(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
+pObjectClass(NULL),
+pEnvMapProbe(NULL)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set scaling" );
+	SetShortInfo("Env-map probe set scaling");
 	
 	pOldValue = envMapProbe->GetScaling();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pEnvMapProbe( NULL )
 }
 
 gdeUOCEnvMapProbeSetScaling::~gdeUOCEnvMapProbeSetScaling(){
-	if( pEnvMapProbe ){
+	if(pEnvMapProbe){
 		pEnvMapProbe->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCEnvMapProbeSetScaling::~gdeUOCEnvMapProbeSetScaling(){
 ///////////////
 
 void gdeUOCEnvMapProbeSetScaling::Undo(){
-	pEnvMapProbe->SetScaling( pOldValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetScaling(pOldValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetScaling::Redo(){
-	pEnvMapProbe->SetScaling( pNewValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetScaling(pNewValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

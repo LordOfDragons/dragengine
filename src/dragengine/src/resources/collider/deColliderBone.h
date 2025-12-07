@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new collider bone object with the given parent collider. */
-	deColliderBone( deCollider *collider, int index );
+	deColliderBone(deCollider *collider, int index);
 	
 	/** \brief Clean up collider bone object. */
 	~deColliderBone();
@@ -78,25 +78,25 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position relative to parent bone or collider if there is no parent bone. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Linear velocity in m/s. */
 	inline const decVector &GetLinearVelocity() const{ return pLinearVelocity; }
 	
 	/** \brief Set linear velocity in m/s. */
-	void SetLinearVelocity( const decVector &linVelo );
+	void SetLinearVelocity(const decVector &linVelo);
 	
 	/** \brief Angular velocity in degree/s. */
 	inline const decVector &GetAngularVelocity() const{ return pAngularVelocity; }
 	
 	/** \brief Set angular velocity in degree/s. */
-	void SetAngularVelocity( const decVector &angVelo );
+	void SetAngularVelocity(const decVector &angVelo);
 	
 	/** \brief Matrix. */
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
@@ -111,13 +111,13 @@ public:
 	inline float GetMass() const{ return pMass; }
 	
 	/** \brief Set mass factor. */
-	void SetMass( float mass );
+	void SetMass(float mass);
 	
 	/** \brief Bone is dynamic. */
 	inline bool GetDynamic() const{ return pDynamic; }
 	
 	/** \brief Sets of the bone is dynamic. */
-	void SetDynamic( bool dynamic );
+	void SetDynamic(bool dynamic);
 	/*@}*/
 };
 

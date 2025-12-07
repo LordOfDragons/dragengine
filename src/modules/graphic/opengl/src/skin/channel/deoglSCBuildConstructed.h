@@ -87,8 +87,8 @@ private:
 		float gamma;
 		
 		sContext();
-		sContext( const deSkinPropertyNode &node, sContext *pparent );
-		decColor applyGamma( const decColor &color ) const;
+		sContext(const deSkinPropertyNode &node, sContext *pparent);
+		decColor applyGamma(const decColor &color) const;
 	};
 	
 	deoglSkinChannel &pChannel;
@@ -101,7 +101,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglSCBuildConstructed( deoglSkinChannel &channel );
+	deoglSCBuildConstructed(deoglSkinChannel &channel);
 	
 	/** Clean up visitor. */
 	virtual ~deoglSCBuildConstructed();
@@ -112,8 +112,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Build from constructed property. */
-	bool BuildFromProperty( const deSkinPropertyConstructed &property, int targetRed,
-		int targetGreen, int targetBlue, int targetAlpha );
+	bool BuildFromProperty(const deSkinPropertyConstructed &property, int targetRed,
+		int targetGreen, int targetBlue, int targetAlpha);
 	/*@}*/
 	
 	
@@ -121,31 +121,31 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit group node. */
-	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
+	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
 	
 	/** Visit image node. */
-	virtual void VisitImage( deSkinPropertyNodeImage &node );
+	virtual void VisitImage(deSkinPropertyNodeImage &node);
 	
 	/** Visit shape node. */
-	virtual void VisitShape( deSkinPropertyNodeShape &node );
+	virtual void VisitShape(deSkinPropertyNodeShape &node);
 	
 	/** Visit text node. */
-	virtual void VisitText( deSkinPropertyNodeText &node );
+	virtual void VisitText(deSkinPropertyNodeText &node);
 	/*@}*/
 	
 	
 	
 private:
-	bool pInitPixelBuffer( sTarget &target );
-	void pDrawMaskIfPresent( const deSkinPropertyNode &node, sTarget &target );
-	void pFillBackground( const decColor &color );
-	void pTileNode( const decPoint &offset, const decTexMatrix2 &transformScreen,
-		const decTexMatrix2 &transformInverse, deSkinPropertyNode &childNode );
+	bool pInitPixelBuffer(sTarget &target);
+	void pDrawMaskIfPresent(const deSkinPropertyNode &node, sTarget &target);
+	void pFillBackground(const decColor &color);
+	void pTileNode(const decPoint &offset, const decTexMatrix2 &transformScreen,
+		const decTexMatrix2 &transformInverse, deSkinPropertyNode &childNode);
 	void pDrawImage(const sContext &context, const deImage &image,
 		const decVector2 &tcScale, const decVector2 &tcOffset, int layer);
-	void pWritePixel( const sContext &context, int offset, const decColor &color );
-	void pWritePixelSet( int offset, const decColor &color );
-	void pWritePixelBlend( int offset, const decColor &color, float alpha );
+	void pWritePixel(const sContext &context, int offset, const decColor &color);
+	void pWritePixelSet(int offset, const decColor &color);
+	void pWritePixelBlend(int offset, const decColor &color, float alpha);
 };
 
 #endif

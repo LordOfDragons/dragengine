@@ -41,29 +41,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPasteSource::seUPasteSource( seSynthesizer *synthesizer, const seSourceList &sourceList, int index ) :
-pSynthesizer( NULL ),
-pIndex( index )
+seUPasteSource::seUPasteSource(seSynthesizer *synthesizer, const seSourceList &sourceList, int index) :
+pSynthesizer(NULL),
+pIndex(index)
 {
 	const int sourceCount = sourceList.GetCount();
 	
-	if( ! synthesizer || sourceCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(!synthesizer || sourceCount == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	seSource *source = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<sourceCount; i++ ){
-			source = sourceList.GetAt( i )->CreateCopy();
-			pSourceList.Add( source );
+		for(i=0; i<sourceCount; i++){
+			source = sourceList.GetAt(i)->CreateCopy();
+			pSourceList.Add(source);
 			source->FreeReference();
 			source = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( source ){
+	}catch(const deException &){
+		if(source){
 			source->FreeReference();
 		}
 		throw;
@@ -87,21 +87,21 @@ void seUPasteSource::Undo(){
 	int i;
 	
 	// remove the sources
-	for( i=0; i<sourceCount; i++ ){
-		pSynthesizer->RemoveSource( pSourceList.GetAt( i ) );
+	for(i=0; i<sourceCount; i++){
+		pSynthesizer->RemoveSource(pSourceList.GetAt(i));
 	}
 	
 	// remove links added in a prior redo
 	const int linkCount = pRemoveLinkList.GetCount();
-	for( i=0; i<linkCount; i++ ){
-		pSynthesizer->RemoveLink( pRemoveLinkList.GetAt( i ) );
+	for(i=0; i<linkCount; i++){
+		pSynthesizer->RemoveLink(pRemoveLinkList.GetAt(i));
 	}
 	pRemoveLinkList.RemoveAll();
 	
 	// remove controller added in a prior redo
 	const int controllerCount = pRemoveControllerList.GetCount();
-	for( i=0; i<controllerCount; i++ ){
-		pSynthesizer->RemoveController( pRemoveControllerList.GetAt( i ) );
+	for(i=0; i<controllerCount; i++){
+		pSynthesizer->RemoveController(pRemoveControllerList.GetAt(i));
 	}
 	pRemoveControllerList.RemoveAll();
 }
@@ -113,31 +113,31 @@ void seUPasteSource::Redo(){
 	pRemoveLinkList.RemoveAll();
 	pRemoveControllerList.RemoveAll();
 	
-	for( i=0; i<sourceCount; i++ ){
-		seSource * const source = pSourceList.GetAt( i );
+	for(i=0; i<sourceCount; i++){
+		seSource * const source = pSourceList.GetAt(i);
 		
 		// check if links exist in the synthesizer. if not add them and mark them to remove during undo
 		seLinkList linkList;
-		source->ListLinks( linkList );
+		source->ListLinks(linkList);
 		
 		const int linkCount = linkList.GetCount();
-		for( j=0; j<linkCount; j++ ){
-			seLink * const link = linkList.GetAt( j );
+		for(j=0; j<linkCount; j++){
+			seLink * const link = linkList.GetAt(j);
 			
-			if( ! pSynthesizer->GetLinks().Has( link ) ){
+			if(!pSynthesizer->GetLinks().Has(link)){
 				seController * const controller = link->GetController();
-				if( controller && ! pSynthesizer->GetControllers().Has( controller ) ){
-					pRemoveControllerList.Add( controller );
-					pSynthesizer->AddController( controller );
+				if(controller && !pSynthesizer->GetControllers().Has(controller)){
+					pRemoveControllerList.Add(controller);
+					pSynthesizer->AddController(controller);
 				}
 				
-				pRemoveLinkList.Add( link );
-				pSynthesizer->AddLink( link );
+				pRemoveLinkList.Add(link);
+				pSynthesizer->AddLink(link);
 			}
 		}
 		
 		// insert the source
-		pSynthesizer->InsertSourceAt( source, pIndex + i );
+		pSynthesizer->InsertSourceAt(source, pIndex + i);
 	}
 }
 
@@ -147,7 +147,7 @@ void seUPasteSource::Redo(){
 //////////////////////
 
 void seUPasteSource::pCleanUp(){
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }

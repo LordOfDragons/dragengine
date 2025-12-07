@@ -33,18 +33,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkinEditorCreateModule( igdeEnvironment *environment );
+MOD_ENTRY_POINT_ATTR igdeEditorModule *SkinEditorCreateModule(igdeEnvironment *environment);
 #ifdef  __cplusplus
 }
 #endif
 
 
 
-igdeEditorModule *SkinEditorCreateModule( igdeEnvironment *environment ){
+igdeEditorModule *SkinEditorCreateModule(igdeEnvironment *environment){
 	try{
-		return new seIGDEModule( *environment );
+		return new seIGDEModule(*environment);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 }

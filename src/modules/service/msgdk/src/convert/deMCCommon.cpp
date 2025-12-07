@@ -30,39 +30,39 @@
 // Class deMCCommon
 /////////////////////
 
-uint32_t deMCCommon::UInt32( const deServiceObject &so ){
-	return UInt32( so.GetString() );
+uint32_t deMCCommon::UInt32(const deServiceObject &so){
+	return UInt32(so.GetString());
 }
 
-deServiceObject::Ref deMCCommon::UInt32( uint32_t value ){
-	return deServiceObject::NewString( UInt32ToString( value ) );
+deServiceObject::Ref deMCCommon::UInt32(uint32_t value){
+	return deServiceObject::NewString(UInt32ToString(value));
 }
 
-uint32_t deMCCommon::UInt32( const decString &string ){
-	return ( uint32_t )string.ToLongValid();
+uint32_t deMCCommon::UInt32(const decString &string){
+	return (uint32_t)string.ToLongValid();
 }
 
-decString deMCCommon::UInt32ToString( uint32_t value ){
+decString deMCCommon::UInt32ToString(uint32_t value){
 	decString string;
-	string.AppendValue( ( unsigned long long )value );
+	string.AppendValue((unsigned long long)value);
 	return string;
 }
 
-uint64_t deMCCommon::UInt64( const deServiceObject &so ){
-	return UInt64( so.GetString() );
+uint64_t deMCCommon::UInt64(const deServiceObject &so){
+	return UInt64(so.GetString());
 }
 
-deServiceObject::Ref deMCCommon::UInt64( uint64_t value ){
-	return deServiceObject::NewString( UInt64ToString( value ) );
+deServiceObject::Ref deMCCommon::UInt64(uint64_t value){
+	return deServiceObject::NewString(UInt64ToString(value));
 }
 
-uint64_t deMCCommon::UInt64( const decString &string ){
-	return ( uint64_t )string.ToLongValid();
+uint64_t deMCCommon::UInt64(const decString &string){
+	return (uint64_t)string.ToLongValid();
 }
 
-decString deMCCommon::UInt64ToString( uint64_t value ){
+decString deMCCommon::UInt64ToString(uint64_t value){
 	decString string;
-	string.AppendValue( ( long long )value );
+	string.AppendValue((long long)value);
 	return string;
 }
 
@@ -71,14 +71,14 @@ decStringList deMCCommon::StringList(const deServiceObject &so){
 	decStringList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		list.Add(so.GetChildAt( i )->GetString());
+	for(i=0; i<count; i++){
+		list.Add(so.GetChildAt(i)->GetString());
 	}
 	
 	return list;
 }
 
-deServiceObject::Ref deMCCommon::StringList( const decStringList &list ){
+deServiceObject::Ref deMCCommon::StringList(const decStringList &list){
 	const deServiceObject::Ref so(deServiceObject::NewList());
 	
 	const int count = list.GetCount();

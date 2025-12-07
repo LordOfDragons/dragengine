@@ -46,9 +46,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seVCIKeyHandling::seVCIKeyHandling( seViewConstructedView &view ) :
-pView( view ),
-pIsLeftMouseButtonPressed( false ){
+seVCIKeyHandling::seVCIKeyHandling(seViewConstructedView &view) :
+pView(view),
+pIsLeftMouseButtonPressed(false){
 }
 
 seVCIKeyHandling::~seVCIKeyHandling(){
@@ -59,12 +59,12 @@ seVCIKeyHandling::~seVCIKeyHandling(){
 // Management
 ///////////////
 
-void seVCIKeyHandling::OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ){
-	if( pIsLeftMouseButtonPressed || ! pView.GetSkin() ){
+void seVCIKeyHandling::OnKeyPress(igdeWidget*, deInputEvent::eKeyCodes keyCode, int){
+	if(pIsLeftMouseButtonPressed || !pView.GetSkin()){
 		return;
 	}
 	
-	switch( keyCode ){
+	switch(keyCode){
 	case deInputEvent::ekcPageDown:
 		pView.GetActionMoveNodeDown()->OnAction();
 		break;
@@ -90,50 +90,50 @@ void seVCIKeyHandling::OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode,
 	}
 }
 
-void seVCIKeyHandling::OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes, int ){
+void seVCIKeyHandling::OnKeyRelease(igdeWidget*, deInputEvent::eKeyCodes, int){
 }
 
-void seVCIKeyHandling::OnButtonPress( igdeWidget*, int button, const decPoint &position, int ){
-	switch( button ){
+void seVCIKeyHandling::OnButtonPress(igdeWidget*, int button, const decPoint &position, int){
+	switch(button){
 	case deInputEvent::embcLeft:
 		pIsLeftMouseButtonPressed = true;
 		break;
 		
 	case deInputEvent::embcRight:
-		ShowContextMenu( position );
+		ShowContextMenu(position);
 		break;
 	}
 }
 
-void seVCIKeyHandling::OnButtonRelease( igdeWidget*, int button, const decPoint &, int ){
-	if( button == deInputEvent::embcLeft ){
+void seVCIKeyHandling::OnButtonRelease(igdeWidget*, int button, const decPoint &, int){
+	if(button == deInputEvent::embcLeft){
 		pIsLeftMouseButtonPressed = false;
 	}
 }
 
-void seVCIKeyHandling::OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &, int ){
+void seVCIKeyHandling::OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &, int){
 }
 
-void seVCIKeyHandling::OnDoubleClicked( igdeWidget*, int button, const decPoint &, int ){
-	if( pIsLeftMouseButtonPressed || button != deInputEvent::embcLeft ){
+void seVCIKeyHandling::OnDoubleClicked(igdeWidget*, int button, const decPoint &, int){
+	if(pIsLeftMouseButtonPressed || button != deInputEvent::embcLeft){
 		return;
 	}
 	
 	seProperty * const property = pView.GetActiveProperty();
-	if( ! property ){
+	if(!property){
 		return;
 	}
 	
 	sePropertyNode * const node = pView.GetActiveNode();
-	if( node ){
-		if( node->GetNodeType() == sePropertyNode::entGroup ){
+	if(node){
+		if(node->GetNodeType() == sePropertyNode::entGroup){
 			pView.GetActionEnterGroup()->OnAction();
 		}
 		return;
 	}
 	
 	sePropertyNodeGroup * const nodeGroup = property->GetActiveNodeGroup();
-	if( nodeGroup ){
+	if(nodeGroup){
 		pView.GetActionExitGroup()->OnAction();
 	}
 }
@@ -143,8 +143,8 @@ void seVCIKeyHandling::OnDoubleClicked( igdeWidget*, int button, const decPoint 
 // Protected Functions
 ////////////////////////
 
-void seVCIKeyHandling::ShowContextMenu( const decPoint &position ){
-	if( pIsLeftMouseButtonPressed || ! pView.GetSkin() ){
+void seVCIKeyHandling::ShowContextMenu(const decPoint &position){
+	if(pIsLeftMouseButtonPressed || !pView.GetSkin()){
 		return;
 	}
 	
@@ -153,40 +153,40 @@ void seVCIKeyHandling::ShowContextMenu( const decPoint &position ){
 	
 	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(env));
 	
-	helper.MenuCommand( menu, pView.GetActionAddShape() );
-	helper.MenuCommand( menu, pView.GetActionAddImage() );
-	helper.MenuCommand( menu, pView.GetActionAddText() );
+	helper.MenuCommand(menu, pView.GetActionAddShape());
+	helper.MenuCommand(menu, pView.GetActionAddImage());
+	helper.MenuCommand(menu, pView.GetActionAddText());
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pView.GetActionRemoveNode() );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pView.GetActionRemoveNode());
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pView.GetActionCopyNode() );
-	helper.MenuCommand( menu, pView.GetActionCutNode() );
-	helper.MenuCommand( menu, pView.GetActionPasteNode() );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pView.GetActionCopyNode());
+	helper.MenuCommand(menu, pView.GetActionCutNode());
+	helper.MenuCommand(menu, pView.GetActionPasteNode());
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pView.GetActionMoveNodeUp() );
-	helper.MenuCommand( menu, pView.GetActionMoveNodeDown() );
-	helper.MenuCommand( menu, pView.GetActionMoveNodeTop() );
-	helper.MenuCommand( menu, pView.GetActionMoveNodeBottom() );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pView.GetActionMoveNodeUp());
+	helper.MenuCommand(menu, pView.GetActionMoveNodeDown());
+	helper.MenuCommand(menu, pView.GetActionMoveNodeTop());
+	helper.MenuCommand(menu, pView.GetActionMoveNodeBottom());
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pView.GetActionEnterGroup() );
-	helper.MenuCommand( menu, pView.GetActionExitGroup() );
-	helper.MenuCommand( menu, pView.GetActionGroupNodes() );
-	helper.MenuCommand( menu, pView.GetActionUngroupNodes() );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pView.GetActionEnterGroup());
+	helper.MenuCommand(menu, pView.GetActionExitGroup());
+	helper.MenuCommand(menu, pView.GetActionGroupNodes());
+	helper.MenuCommand(menu, pView.GetActionUngroupNodes());
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pView.GetActionSetMask() );
-	helper.MenuCommand( menu, pView.GetActionRemoveMask() );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pView.GetActionSetMask());
+	helper.MenuCommand(menu, pView.GetActionRemoveMask());
 	
 	// node type specific
-	if( pView.GetActiveNode() ){
-		switch( pView.GetActiveNode()->GetNodeType() ){
+	if(pView.GetActiveNode()){
+		switch(pView.GetActiveNode()->GetNodeType()){
 		case sePropertyNode::entImage:
-			helper.MenuSeparator( menu );
-			helper.MenuCommand( menu, pView.GetActionSizeFromImage() );
+			helper.MenuSeparator(menu);
+			helper.MenuCommand(menu, pView.GetActionSizeFromImage());
 			break;
 			
 		default:
@@ -195,8 +195,8 @@ void seVCIKeyHandling::ShowContextMenu( const decPoint &position ){
 	}
 	
 	// constructed from image
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pView.GetActionConstructedFromImage() );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pView.GetActionConstructedFromImage());
 	
-	menu->Popup( pView, position );
+	menu->Popup(pView, position);
 }

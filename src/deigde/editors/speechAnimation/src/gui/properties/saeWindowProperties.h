@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	saeWindowProperties( saeWindowMain &windowMain );
+	saeWindowProperties(saeWindowMain &windowMain);
 	
 protected:
 	/** Clean up panel. */
@@ -67,7 +67,7 @@ public:
 	inline saeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Speech animation path changed. */
 	void OnSAnimationPathChanged();

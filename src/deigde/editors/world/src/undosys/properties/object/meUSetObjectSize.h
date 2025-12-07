@@ -50,7 +50,7 @@ public:
 	typedef deTObjectReference<meUSetObjectSize> Ref;
 	
 	// constructor, destructor
-	meUSetObjectSize( meObject *object, const decVector &newSize );
+	meUSetObjectSize(meObject *object, const decVector &newSize);
 	
 protected:
 	~meUSetObjectSize();

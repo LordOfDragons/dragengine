@@ -53,7 +53,7 @@ public:
 	virtual void OrderChanged();
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int index );
+	virtual void ControllerChanged(int index);
 	
 	/** \brief Layer mask changed. */
 	virtual void LayerMaskChanged();

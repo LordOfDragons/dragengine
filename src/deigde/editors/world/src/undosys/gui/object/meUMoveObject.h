@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUMoveObject( meWorld *world, const meObjectList &objects );
+	meUMoveObject(meWorld *world, const meObjectList &objects);
 	
 	/** \brief Clean up undo action. */
 	virtual ~meUMoveObject();

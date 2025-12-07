@@ -49,25 +49,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDPreviewCreator::igdeGDPreviewCreator( igdeEnvironment &environment, const decPoint &size ) :
-pEnvironment( environment ),
-pState( esInitial ),
-pEnableDebug( false )
+igdeGDPreviewCreator::igdeGDPreviewCreator(igdeEnvironment &environment, const decPoint &size) :
+pEnvironment(environment),
+pState(esInitial),
+pEnableDebug(false)
 {
-	if( ! ( size > decPoint( 1, 1 ) ) ){
-		DETHROW( deeInvalidParam );
+	if(!(size > decPoint(1, 1))){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
-	pCanvas.TakeOver( engine.GetCanvasManager()->CreateCanvasView() );
-	pCanvas->SetSize( size );
+	pCanvas.TakeOver(engine.GetCanvasManager()->CreateCanvasView());
+	pCanvas->SetSize(size);
 	
-	pImage.TakeOver( engine.GetImageManager()->CreateImage( size.x, size.y, 1, 3, 8 ) );
+	pImage.TakeOver(engine.GetImageManager()->CreateImage(size.x, size.y, 1, 3, 8));
 	
-	pCaptureCanvas.TakeOver( engine.GetCaptureCanvasManager()->CreateCaptureCanvas() );
-	pCaptureCanvas->SetCanvasView( pCanvas );
-	pCaptureCanvas->SetImage( pImage );
+	pCaptureCanvas.TakeOver(engine.GetCaptureCanvasManager()->CreateCaptureCanvas());
+	pCaptureCanvas->SetCanvasView(pCanvas);
+	pCaptureCanvas->SetImage(pImage);
 }
 
 igdeGDPreviewCreator::~igdeGDPreviewCreator(){
@@ -78,26 +78,26 @@ igdeGDPreviewCreator::~igdeGDPreviewCreator(){
 // Management
 ///////////////
 
-void igdeGDPreviewCreator::SetImage( deImage *image ){
+void igdeGDPreviewCreator::SetImage(deImage *image){
 	pImage = image;
-	pCaptureCanvas->SetImage( image );
+	pCaptureCanvas->SetImage(image);
 }
 
-void igdeGDPreviewCreator::AddListener( igdeGDPreviewListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeGDPreviewCreator::AddListener(igdeGDPreviewListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
 
 
-void igdeGDPreviewCreator::Update( float elapsed ){
+void igdeGDPreviewCreator::Update(float elapsed){
 	pUpdate();
 	
-	if( pState == esFrameUpdate ){
-		DebugLog( "update canvas for render" );
-		UpdateCanvasForRender( elapsed );
+	if(pState == esFrameUpdate){
+		DebugLog("update canvas for render");
+		UpdateCanvasForRender(elapsed);
 		pState = esBeginCapture;
 		
 		pUpdate();
@@ -105,8 +105,8 @@ void igdeGDPreviewCreator::Update( float elapsed ){
 }
 
 void igdeGDPreviewCreator::BeginCreation(){
-	if( pState == esInitial ){
-		DebugLog( "prepare canvas" );
+	if(pState == esInitial){
+		DebugLog("prepare canvas");
 		pState = esPrepareCanvas;
 		pUpdate();
 	}
@@ -115,35 +115,35 @@ void igdeGDPreviewCreator::BeginCreation(){
 bool igdeGDPreviewCreator::FinishCreation(){
 	pUpdate();
 	
-	if( pState != esCaptureFinished ){
+	if(pState != esCaptureFinished){
 		return false;
 	}
 	
-	DebugLog( "finish creation" );
-	NotifyImageCreated( pImage );
+	DebugLog("finish creation");
+	NotifyImageCreated(pImage);
 	pListeners.RemoveAll();
 	return true;
 }
 
 void igdeGDPreviewCreator::AbortCreation(){
-	DebugLog( "abort creation" );
+	DebugLog("abort creation");
 	pState = esCaptureFinished;
-	pCaptureCanvas->SetCapture( false );
-	NotifyImageCreated( NULL );
+	pCaptureCanvas->SetCapture(false);
+	NotifyImageCreated(NULL);
 }
 
 
 
-void igdeGDPreviewCreator::NotifyImageCreated( deImage *image ){
+void igdeGDPreviewCreator::NotifyImageCreated(deImage *image){
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeGDPreviewListener* )pListeners.GetAt( i ) )->ImageCreated( image );
+	for(i=0; i<count; i++){
+		((igdeGDPreviewListener*)pListeners.GetAt(i))->ImageCreated(image);
 	}
 }
 
-void igdeGDPreviewCreator::DebugLog( const char *message ){
-	if( ! pEnableDebug ){
+void igdeGDPreviewCreator::DebugLog(const char *message){
+	if(!pEnableDebug){
 		return;
 	}
 	
@@ -156,7 +156,7 @@ void igdeGDPreviewCreator::DebugLog( const char *message ){
 	
 	const decString prefix = DebugPrefix();
 	//pEnvironment.GetLogger()->LogInfoFormat( "%s [%s] %s", prefix.GetString(), stateNames[ pState ], message );
-	pEnvironment.GetLogger()->LogInfoFormat( "IGDE", "%s %s", prefix.GetString(), message );
+	pEnvironment.GetLogger()->LogInfoFormat("IGDE", "%s %s", prefix.GetString(), message);
 }
 
 
@@ -165,35 +165,35 @@ void igdeGDPreviewCreator::DebugLog( const char *message ){
 //////////////////////
 
 void igdeGDPreviewCreator::pUpdate(){
-	if( pState == esInitial ){
+	if(pState == esInitial){
 		return;
 	}
 	
-	if( pState == esPrepareCanvas ){
-		DebugLog( "prepare canvas for render" );
+	if(pState == esPrepareCanvas){
+		DebugLog("prepare canvas for render");
 		PrepareCanvasForRender();
 		pState = esWaitCanvasReady;
 	}
 	
-	if( pState == esWaitCanvasReady ){
-		if( ! IsCanvasReadyForRender() ){
+	if(pState == esWaitCanvasReady){
+		if(!IsCanvasReadyForRender()){
 			return;
 		}
-		DebugLog( "canvas ready for render" );
+		DebugLog("canvas ready for render");
 		pState = esBeginCapture;
 	}
 	
-	if( pState == esBeginCapture ){
-		DebugLog( "begin capture" );
-		pCaptureCanvas->SetCapture( true );
+	if(pState == esBeginCapture){
+		DebugLog("begin capture");
+		pCaptureCanvas->SetCapture(true);
 		pState = esWaitCaptureFinished;
 	}
 	
-	if( pState == esWaitCaptureFinished ){
-		if( pCaptureCanvas->GetCapture() ){
+	if(pState == esWaitCaptureFinished){
+		if(pCaptureCanvas->GetCapture()){
 			return;
 		}
-		DebugLog( "capture finished" );
+		DebugLog("capture finished");
 		pState = esCaptureFinished;
 	}
 }

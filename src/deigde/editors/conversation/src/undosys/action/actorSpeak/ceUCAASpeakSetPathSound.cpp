@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetPathSound::ceUCAASpeakSetPathSound( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newPath ){
-	if( ! topic || ! newPath ) DETHROW( deeInvalidParam );
+ceUCAASpeakSetPathSound::ceUCAASpeakSetPathSound(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newPath){
+	if(!topic || !newPath) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pOldPath = actorSpeak->GetPathSound();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Actor Speak Set Path Sound" );
+	SetShortInfo("Actor Speak Set Path Sound");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCAASpeakSetPathSound::ceUCAASpeakSetPathSound( ceConversationTopic *topic, ce
 }
 
 ceUCAASpeakSetPathSound::~ceUCAASpeakSetPathSound(){
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCAASpeakSetPathSound::~ceUCAASpeakSetPathSound(){
 ///////////////
 
 void ceUCAASpeakSetPathSound::Undo(){
-	pActorSpeak->SetPathSound( pOldPath.GetString() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetPathSound(pOldPath.GetString());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakSetPathSound::Redo(){
-	pActorSpeak->SetPathSound( pNewPath.GetString() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetPathSound(pNewPath.GetString());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

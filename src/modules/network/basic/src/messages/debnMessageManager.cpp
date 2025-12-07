@@ -47,7 +47,7 @@ debnMessageManager::debnMessageManager(){
 
 debnMessageManager::~debnMessageManager(){
 	RemoveAllMessages();
-	if( pMessages ) delete [] pMessages;
+	if(pMessages) delete [] pMessages;
 }
 
 
@@ -55,74 +55,74 @@ debnMessageManager::~debnMessageManager(){
 // Management
 ///////////////
 
-debnMessage *debnMessageManager::GetMessageAt( int index ) const{
-	if( index < 0 || index >= pMessageCount ) DETHROW( deeInvalidParam );
+debnMessage *debnMessageManager::GetMessageAt(int index) const{
+	if(index < 0 || index >= pMessageCount) DETHROW(deeInvalidParam);
 	
-	return pMessages[ index ];
+	return pMessages[index];
 }
 
-int debnMessageManager::IndexOfMessageWithNumber( int number ) const{
+int debnMessageManager::IndexOfMessageWithNumber(int number) const{
 	int i;
 	
-	for( i=0; i<pMessageCount; i++ ){
-		if( number == pMessages[ i ]->GetNumber() ) return i;
+	for(i=0; i<pMessageCount; i++){
+		if(number == pMessages[i]->GetNumber()) return i;
 	}
 	
 	return -1;
 }
 
-int debnMessageManager::IndexOfMessage( debnMessage *message ) const{
-	if( ! message ) DETHROW( deeInvalidParam );
+int debnMessageManager::IndexOfMessage(debnMessage *message) const{
+	if(!message) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pMessageCount; i++ ){
-		if( message == pMessages[ i ] ) return i;
+	for(i=0; i<pMessageCount; i++){
+		if(message == pMessages[i]) return i;
 	}
 	
 	return -1;
 }
 
-bool debnMessageManager::HasMessage( debnMessage *message ) const{
-	if( ! message ) DETHROW( deeInvalidParam );
+bool debnMessageManager::HasMessage(debnMessage *message) const{
+	if(!message) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pMessageCount; i++ ){
-		if( message == pMessages[ i ] ) return true;
+	for(i=0; i<pMessageCount; i++){
+		if(message == pMessages[i]) return true;
 	}
 	
 	return false;
 }
 
-void debnMessageManager::AddMessage( debnMessage *message ){
-	if( ! message ) DETHROW( deeInvalidParam );
+void debnMessageManager::AddMessage(debnMessage *message){
+	if(!message) DETHROW(deeInvalidParam);
 	
-	if( pMessageCount == pMessageSize ){
+	if(pMessageCount == pMessageSize){
 		int newSize = pMessageSize * 3 / 2 + 1;
-		debnMessage **newArray = new debnMessage*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pMessages ){
-			memcpy( newArray, pMessages, sizeof( debnMessage* ) * pMessageSize );
+		debnMessage **newArray = new debnMessage*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pMessages){
+			memcpy(newArray, pMessages, sizeof(debnMessage*) * pMessageSize);
 			delete [] pMessages;
 		}
 		pMessages = newArray;
 		pMessageSize = newSize;
 	}
 	
-	pMessages[ pMessageCount ] = message;
+	pMessages[pMessageCount] = message;
 	pMessageCount++;
 }
 
-void debnMessageManager::RemoveMessage( debnMessage *message ){
-	RemoveMessageAt( IndexOfMessage( message ) );
+void debnMessageManager::RemoveMessage(debnMessage *message){
+	RemoveMessageAt(IndexOfMessage(message));
 }
 
-void debnMessageManager::RemoveMessageAt( int index ){
-	if( index < 0 || index >= pMessageCount ) DETHROW( deeInvalidParam );
-	debnMessage *message = pMessages[ index ];
+void debnMessageManager::RemoveMessageAt(int index){
+	if(index < 0 || index >= pMessageCount) DETHROW(deeInvalidParam);
+	debnMessage *message = pMessages[index];
 	int i;
 	
-	for( i=index+1; i<pMessageCount; i++ ){
-		pMessages[ i - 1 ] = pMessages[ i ];
+	for(i=index+1; i<pMessageCount; i++){
+		pMessages[i - 1] = pMessages[i];
 	}
 	pMessageCount--;
 	
@@ -130,8 +130,8 @@ void debnMessageManager::RemoveMessageAt( int index ){
 }
 
 void debnMessageManager::RemoveAllMessages(){
-	while( pMessageCount > 0 ){
+	while(pMessageCount > 0){
 		pMessageCount--;
-		delete pMessages[ pMessageCount ];
+		delete pMessages[pMessageCount];
 	}
 }

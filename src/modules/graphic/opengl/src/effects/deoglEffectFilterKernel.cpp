@@ -43,18 +43,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglEffectFilterKernel::deoglEffectFilterKernel( deGraphicOpenGl &ogl,
-const deEffectFilterKernel &effect ) :
-deoglEffect( ogl, effect ),
+deoglEffectFilterKernel::deoglEffectFilterKernel(deGraphicOpenGl &ogl,
+const deEffectFilterKernel &effect) :
+deoglEffect(ogl, effect),
 
-pEffectFilterKernel( effect ),
+pEffectFilterKernel(effect),
 
-pREffectFilterKernel( NULL ),
+pREffectFilterKernel(NULL),
 
-pDirtyKernel( true )
+pDirtyKernel(true)
 {
-	pREffectFilterKernel = new deoglREffectFilterKernel( ogl.GetRenderThread() );
-	InitREffect( pREffectFilterKernel );
+	pREffectFilterKernel = new deoglREffectFilterKernel(ogl.GetRenderThread());
+	InitREffect(pREffectFilterKernel);
 }
 
 deoglEffectFilterKernel::~deoglEffectFilterKernel(){
@@ -68,19 +68,19 @@ deoglEffectFilterKernel::~deoglEffectFilterKernel(){
 void deoglEffectFilterKernel::SyncToRender(){
 	deoglEffect::SyncToRender();
 	
-	if( pDirtyKernel ){
+	if(pDirtyKernel){
 		const int rows = pEffectFilterKernel.GetKernelRows();
 		const int cols = pEffectFilterKernel.GetKernelCols();
 		int r, c;
 		
-		pREffectFilterKernel->SetKernelSize( rows, cols );
-		for( r=0; r<rows; r++ ){
-			for( c=0; c<cols; c++ ){
-				pREffectFilterKernel->SetKernelValueAt( r, c, pEffectFilterKernel.GetKernelValueAt( r, c ) );
+		pREffectFilterKernel->SetKernelSize(rows, cols);
+		for(r=0; r<rows; r++){
+			for(c=0; c<cols; c++){
+				pREffectFilterKernel->SetKernelValueAt(r, c, pEffectFilterKernel.GetKernelValueAt(r, c));
 			}
 		}
 		
-		pREffectFilterKernel->SetScale( pEffectFilterKernel.GetScale() );
+		pREffectFilterKernel->SetScale(pEffectFilterKernel.GetScale());
 		
 		pDirtyKernel = false;
 	}

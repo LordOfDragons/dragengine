@@ -51,45 +51,45 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWPUndoHistory::igdeWPUndoHistory( igdeEnvironment &environment ) :
-igdeContainerBox( environment, igdeContainerBox::eaY ),
-pUndoSystem( NULL )
+igdeWPUndoHistory::igdeWPUndoHistory(igdeEnvironment &environment) :
+igdeContainerBox(environment, igdeContainerBox::eaY),
+pUndoSystem(NULL)
 {
 	igdeUIHelper &helper = environment.GetUIHelperProperties();
 	
 	// group box
 	igdeGroupBox::Ref groupBoxFrame(igdeGroupBox::Ref::NewWith(environment, "Undo History:"));
-	groupBoxFrame->SetStretchLast( true );
-	AddChild( groupBoxFrame );
+	groupBoxFrame->SetStretchLast(true);
+	AddChild(groupBoxFrame);
 	
 	igdeContainerBorder::Ref groupBox(igdeContainerBorder::Ref::NewWith(environment));
-	groupBoxFrame->AddChild( groupBox );
+	groupBoxFrame->AddChild(groupBox);
 	
 	// buttons
 	igdeContainerBox::Ref buttons(igdeContainerBox::Ref::NewWith(environment, igdeContainerBox::eaY));
-	groupBox->AddChild( buttons, igdeContainerBorder::eaTop );
+	groupBox->AddChild(buttons, igdeContainerBorder::eaTop);
 	
 	// button row 1
 	igdeContainerBox::Ref buttonLine(igdeContainerBox::Ref::NewWith(
 		environment, igdeContainerBox::eaX));
-	buttons->AddChild( buttonLine );
+	buttons->AddChild(buttonLine);
 	
-	pActionUndo.TakeOver( new igdeActionUndo( environment ) );
-	helper.Button( buttonLine, pActionUndo );
+	pActionUndo.TakeOver(new igdeActionUndo(environment));
+	helper.Button(buttonLine, pActionUndo);
 	
-	pActionRedo.TakeOver( new igdeActionRedo( environment ) );
-	helper.Button( buttonLine, pActionRedo );
+	pActionRedo.TakeOver(new igdeActionRedo(environment));
+	helper.Button(buttonLine, pActionRedo);
 	
 	// button row 2
-	buttonLine.TakeOver( new igdeContainerBox( environment, igdeContainerBox::eaX ) );
-	buttons->AddChild( buttonLine );
+	buttonLine.TakeOver(new igdeContainerBox(environment, igdeContainerBox::eaX));
+	buttons->AddChild(buttonLine);
 	
-	pActionClear.TakeOver( new igdeActionClearUndo( environment ) );
-	helper.Button( buttonLine, pActionClear );
+	pActionClear.TakeOver(new igdeActionClearUndo(environment));
+	helper.Button(buttonLine, pActionClear);
 	
 	// undo action list
-	pListUndo.TakeOver( new igdeListBox( environment, 10 ) );
-	groupBox->AddChild( pListUndo, igdeContainerBorder::eaCenter );
+	pListUndo.TakeOver(new igdeListBox(environment, 10));
+	groupBox->AddChild(pListUndo, igdeContainerBorder::eaCenter);
 }
 
 igdeWPUndoHistory::~igdeWPUndoHistory(){
@@ -100,16 +100,16 @@ igdeWPUndoHistory::~igdeWPUndoHistory(){
 // Management
 ///////////////
 
-void igdeWPUndoHistory::SetUndoSystem( igdeUndoSystem *undoSystem ){
-	if( undoSystem == pUndoSystem ){
+void igdeWPUndoHistory::SetUndoSystem(igdeUndoSystem *undoSystem){
+	if(undoSystem == pUndoSystem){
 		return;
 	}
 	
 	pUndoSystem = undoSystem;
 	
-	pActionUndo->SetUndoSystem( undoSystem );
-	pActionRedo->SetUndoSystem( undoSystem );
-	pActionClear->SetUndoSystem( undoSystem );
+	pActionUndo->SetUndoSystem(undoSystem);
+	pActionRedo->SetUndoSystem(undoSystem);
+	pActionClear->SetUndoSystem(undoSystem);
 	
 	UpdateUndo();
 }
@@ -119,7 +119,7 @@ void igdeWPUndoHistory::SetUndoSystem( igdeUndoSystem *undoSystem ){
 void igdeWPUndoHistory::UpdateUndo(){
 	pListUndo->RemoveAllItems();
 	
-	if( ! pUndoSystem ){
+	if(!pUndoSystem){
 		return;
 	}
 	
@@ -129,19 +129,19 @@ void igdeWPUndoHistory::UpdateUndo(){
 	const int count = pUndoSystem->GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeUndo &undo = *pUndoSystem->GetAt( i );
+	for(i=0; i<count; i++){
+		const igdeUndo &undo = *pUndoSystem->GetAt(i);
 		//undo.GetLongInfo(), undo.GetMemoryConsumption()
 		
-		if( i < redoCount ){
-			pListUndo->AddItem( undo.GetShortInfo(), iconRedo );
+		if(i < redoCount){
+			pListUndo->AddItem(undo.GetShortInfo(), iconRedo);
 			
 		}else{
-			pListUndo->AddItem( undo.GetShortInfo(), iconUndo );
+			pListUndo->AddItem(undo.GetShortInfo(), iconUndo);
 		}
 	}
 	
-	if( count > 0 ){
-		pListUndo->SetSelection( decMath::min( redoCount, count - 1 ) );
+	if(count > 0){
+		pListUndo->SetSelection(decMath::min(redoCount, count - 1));
 	}
 }

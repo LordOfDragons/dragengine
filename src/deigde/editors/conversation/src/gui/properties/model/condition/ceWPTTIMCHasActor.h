@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCHasActor( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionHasActor *condition );
+	ceWPTTIMCHasActor(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionHasActor *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -52,7 +52,7 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionHasActor *GetConditionHasActor() const{
-		return ( ceCConditionHasActor* )GetCondition();
+		return (ceCConditionHasActor*)GetCondition();
 	}
 	
 	/** \brief Update condition. */

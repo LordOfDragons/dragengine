@@ -42,7 +42,7 @@
 igdeGDCCTextureList::igdeGDCCTextureList(){
 }
 
-igdeGDCCTextureList::igdeGDCCTextureList( const igdeGDCCTextureList &list ){
+igdeGDCCTextureList::igdeGDCCTextureList(const igdeGDCCTextureList &list){
 	pTextures = list.pTextures;
 }
 
@@ -58,19 +58,19 @@ int igdeGDCCTextureList::GetCount() const{
 	return pTextures.GetCount();
 }
 
-igdeGDCCTexture *igdeGDCCTextureList::GetAt( int index ) const{
-	return ( igdeGDCCTexture* )pTextures.GetAt( index );
+igdeGDCCTexture *igdeGDCCTextureList::GetAt(int index) const{
+	return (igdeGDCCTexture*)pTextures.GetAt(index);
 }
 
-igdeGDCCTexture *igdeGDCCTextureList::GetNamed( const char *name ) const{
+igdeGDCCTexture *igdeGDCCTextureList::GetNamed(const char *name) const{
 	const int count = pTextures.GetCount();
 	igdeGDCCTexture *texture;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		texture = ( igdeGDCCTexture* )pTextures.GetAt( i );
+	for(i=0; i<count; i++){
+		texture = (igdeGDCCTexture*)pTextures.GetAt(i);
 		
-		if( texture->GetName().Equals( name ) ){
+		if(texture->GetName().Equals(name)){
 			return texture;
 		}
 	}
@@ -78,16 +78,16 @@ igdeGDCCTexture *igdeGDCCTextureList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int igdeGDCCTextureList::IndexOf( igdeGDCCTexture *texture ) const{
-	return pTextures.IndexOf( texture );
+int igdeGDCCTextureList::IndexOf(igdeGDCCTexture *texture) const{
+	return pTextures.IndexOf(texture);
 }
 
-int igdeGDCCTextureList::IndexOfNamed( const char *name ) const{
+int igdeGDCCTextureList::IndexOfNamed(const char *name) const{
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeGDCCTexture* )pTextures.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((igdeGDCCTexture*)pTextures.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -95,36 +95,36 @@ int igdeGDCCTextureList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool igdeGDCCTextureList::Has( igdeGDCCTexture *texture ) const{
-	return pTextures.Has( texture );
+bool igdeGDCCTextureList::Has(igdeGDCCTexture *texture) const{
+	return pTextures.Has(texture);
 }
 
-bool igdeGDCCTextureList::HasNamed( const char *name ) const{
-	return GetNamed( name ) != NULL;
+bool igdeGDCCTextureList::HasNamed(const char *name) const{
+	return GetNamed(name) != NULL;
 }
 
-void igdeGDCCTextureList::Add( igdeGDCCTexture *texture ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
+void igdeGDCCTextureList::Add(igdeGDCCTexture *texture){
+	if(!texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTextures.Add( texture );
+	pTextures.Add(texture);
 }
 
-void igdeGDCCTextureList::InsertAt( igdeGDCCTexture *texture, int index ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
+void igdeGDCCTextureList::InsertAt(igdeGDCCTexture *texture, int index){
+	if(!texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTextures.Insert( texture, index );
+	pTextures.Insert(texture, index);
 }
 
-void igdeGDCCTextureList::MoveTo( igdeGDCCTexture *texture, int index ){
-	pTextures.Move( texture, index );
+void igdeGDCCTextureList::MoveTo(igdeGDCCTexture *texture, int index){
+	pTextures.Move(texture, index);
 }
 
-void igdeGDCCTextureList::Remove( igdeGDCCTexture *texture ){
-	pTextures.Remove( texture );
+void igdeGDCCTextureList::Remove(igdeGDCCTexture *texture){
+	pTextures.Remove(texture);
 }
 
 void igdeGDCCTextureList::RemoveAll(){
@@ -133,22 +133,22 @@ void igdeGDCCTextureList::RemoveAll(){
 
 
 
-void igdeGDCCTextureList::SetToDeepCopyFrom( const igdeGDCCTextureList &list ){
+void igdeGDCCTextureList::SetToDeepCopyFrom(const igdeGDCCTextureList &list){
 	const int count = list.GetCount();
 	igdeGDCCTexture *texture = NULL;
 	
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			texture = new igdeGDCCTexture( *list.GetAt( i ) );
-			Add( texture );
+		for(i=0; i<count; i++){
+			texture = new igdeGDCCTexture(*list.GetAt(i));
+			Add(texture);
 			texture->FreeReference();
 			texture = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( texture ){
+	}catch(const deException &){
+		if(texture){
 			texture->FreeReference();
 		}
 		throw;
@@ -160,7 +160,7 @@ void igdeGDCCTextureList::SetToDeepCopyFrom( const igdeGDCCTextureList &list ){
 // Operators
 //////////////
 
-igdeGDCCTextureList &igdeGDCCTextureList::operator=( const igdeGDCCTextureList &list ){
+igdeGDCCTextureList &igdeGDCCTextureList::operator=(const igdeGDCCTextureList &list){
 	pTextures = list.pTextures;
 	return *this;
 }

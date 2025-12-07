@@ -62,8 +62,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHeightTerrainTexture::meHeightTerrainTexture( deEngine *engine, const char *name ){
-	if( ! engine || ! name ) DETHROW( deeInvalidParam );
+meHeightTerrainTexture::meHeightTerrainTexture(deEngine *engine, const char *name){
+	if(!engine || !name) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pEngTexture = NULL;
@@ -72,7 +72,7 @@ meHeightTerrainTexture::meHeightTerrainTexture( deEngine *engine, const char *na
 	
 	pSector = NULL;
 	
-	pProjScaling.Set( 1.0f, 1.0f );
+	pProjScaling.Set(1.0f, 1.0f);
 	pProjRotation = 0.0f;
 	
 	pMaskChanged = false;
@@ -81,7 +81,7 @@ meHeightTerrainTexture::meHeightTerrainTexture( deEngine *engine, const char *na
 	try{
 		pName = name;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -96,12 +96,12 @@ meHeightTerrainTexture::~meHeightTerrainTexture(){
 // Management
 ///////////////
 
-void meHeightTerrainTexture::SetSector( meHeightTerrainSector *sector ){
-	if( sector == pSector ){
+void meHeightTerrainTexture::SetSector(meHeightTerrainSector *sector){
+	if(sector == pSector){
 		return;
 	}
 	
-	SetEngineTexture( NULL );
+	SetEngineTexture(NULL);
 	
 	pSector = sector;
 	
@@ -114,40 +114,40 @@ deHeightTerrainTexture *meHeightTerrainTexture::CreateEngineTexture() const{
 	
 	try{
 		engTexture = new deHeightTerrainTexture;
-		engTexture->SetProjectionOffset( pProjOffset );
-		engTexture->SetProjectionScaling( pProjScaling );
-		engTexture->SetProjectionRotation( pProjRotation * DEG2RAD );
-		engTexture->SetSkin( pSkin );
-		engTexture->SetMaskImage( pMaskImage );
+		engTexture->SetProjectionOffset(pProjOffset);
+		engTexture->SetProjectionScaling(pProjScaling);
+		engTexture->SetProjectionRotation(pProjRotation * DEG2RAD);
+		engTexture->SetSkin(pSkin);
+		engTexture->SetMaskImage(pMaskImage);
 		
-	}catch( const deException & ){
-		if( engTexture ) delete engTexture;
+	}catch(const deException &){
+		if(engTexture) delete engTexture;
 		throw;
 	}
 	
 	return engTexture;
 }
 
-void meHeightTerrainTexture::SetEngineTexture( deHeightTerrainTexture *engTexture ){
+void meHeightTerrainTexture::SetEngineTexture(deHeightTerrainTexture *engTexture){
 	pEngTexture = engTexture;
 }
 
 
 
-void meHeightTerrainTexture::SetName( const char *name ){
+void meHeightTerrainTexture::SetName(const char *name){
 	pName = name;
 }
 
-void meHeightTerrainTexture::SetTypeNumber( int typeNumber ){
-	if( typeNumber != pTypeNumber ){
+void meHeightTerrainTexture::SetTypeNumber(int typeNumber){
+	if(typeNumber != pTypeNumber){
 		pTypeNumber = typeNumber;
 		
 		NotifyTextureChanged();
 	}
 }
 
-void meHeightTerrainTexture::SetPathSkin( const char *path ){
-	if( pPathSkin == path ){
+void meHeightTerrainTexture::SetPathSkin(const char *path){
+	if(pPathSkin == path){
 		return;
 	}
 	
@@ -160,60 +160,60 @@ void meHeightTerrainTexture::SetPathSkin( const char *path ){
 
 
 
-void meHeightTerrainTexture::SetProjectionOffsetU( float offset ){
-	if( fabsf( offset - pProjOffset.x ) > 1e-5f ){
+void meHeightTerrainTexture::SetProjectionOffsetU(float offset){
+	if(fabsf(offset - pProjOffset.x) > 1e-5f){
 		pProjOffset.x = offset;
 		
-		if( pEngTexture ){
-			pEngTexture->SetProjectionOffset( pProjOffset );
+		if(pEngTexture){
+			pEngTexture->SetProjectionOffset(pProjOffset);
 		}
 		
 		NotifyTextureChanged();
 	}
 }
 
-void meHeightTerrainTexture::SetProjectionOffsetV( float offset ){
-	if( fabsf( offset - pProjOffset.y ) > 1e-5f ){
+void meHeightTerrainTexture::SetProjectionOffsetV(float offset){
+	if(fabsf(offset - pProjOffset.y) > 1e-5f){
 		pProjOffset.y = offset;
 		
-		if( pEngTexture ){
-			pEngTexture->SetProjectionOffset( pProjOffset );
+		if(pEngTexture){
+			pEngTexture->SetProjectionOffset(pProjOffset);
 		}
 		
 		NotifyTextureChanged();
 	}
 }
 
-void meHeightTerrainTexture::SetProjectionScalingU( float scaling ){
-	if( fabsf( scaling - pProjScaling.x ) > 1e-5f ){
+void meHeightTerrainTexture::SetProjectionScalingU(float scaling){
+	if(fabsf(scaling - pProjScaling.x) > 1e-5f){
 		pProjScaling.x = scaling;
 		
-		if( pEngTexture ){
-			pEngTexture->SetProjectionScaling( pProjScaling );
+		if(pEngTexture){
+			pEngTexture->SetProjectionScaling(pProjScaling);
 		}
 		
 		NotifyTextureChanged();
 	}
 }
 
-void meHeightTerrainTexture::SetProjectionScalingV( float scaling ){
-	if( fabsf( scaling - pProjScaling.y ) > 1e-5f ){
+void meHeightTerrainTexture::SetProjectionScalingV(float scaling){
+	if(fabsf(scaling - pProjScaling.y) > 1e-5f){
 		pProjScaling.y = scaling;
 		
-		if( pEngTexture ){
-			pEngTexture->SetProjectionScaling( pProjScaling );
+		if(pEngTexture){
+			pEngTexture->SetProjectionScaling(pProjScaling);
 		}
 		
 		NotifyTextureChanged();
 	}
 }
 
-void meHeightTerrainTexture::SetProjectionRotation( float rotation ){
-	if( fabsf( rotation - pProjRotation ) > 1e-5f ){
+void meHeightTerrainTexture::SetProjectionRotation(float rotation){
+	if(fabsf(rotation - pProjRotation) > 1e-5f){
 		pProjRotation = rotation;
 		
-		if( pEngTexture ){
-			pEngTexture->SetProjectionRotation( rotation * DEG2RAD );
+		if(pEngTexture){
+			pEngTexture->SetProjectionRotation(rotation * DEG2RAD);
 		}
 		
 		NotifyTextureChanged();
@@ -222,97 +222,97 @@ void meHeightTerrainTexture::SetProjectionRotation( float rotation ){
 
 
 
-void meHeightTerrainTexture::SetPathMask( const char *path, bool load ){
-	if( ! path ) DETHROW( deeInvalidParam );
+void meHeightTerrainTexture::SetPathMask(const char *path, bool load){
+	if(!path) DETHROW(deeInvalidParam);
 	
-	if( ! pPathMask.Equals( path ) ){
+	if(!pPathMask.Equals(path)){
 		pPathMask = path;
 		
-		if( load ){
+		if(load){
 			LoadMaskImage();
 			
 		}else{
-			SetMaskSaved( true );
+			SetMaskSaved(true);
 		}
-		SetMaskChanged( true );
+		SetMaskChanged(true);
 		
 		NotifyTextureMaskChanged();
 	}
 }
 
 deImage *meHeightTerrainTexture::GetOrAddMaskImage(){
-	if( pMaskImage ){
+	if(pMaskImage){
 		return pMaskImage;
 	}
 	
-	if( ! pSector || ! pSector->GetHeightTerrain() ){
-		DETHROW( deeNullPointer );
+	if(!pSector || !pSector->GetHeightTerrain()){
+		DETHROW(deeNullPointer);
 	}
 	
 	const int imageDim =  pSector->GetHeightTerrain()->GetSectorResolution();
 	deImage::Ref image(deImage::Ref::New(
-		 pEngine->GetImageManager()->CreateImage( imageDim, imageDim, 1, 1, 8 ) ));
+		 pEngine->GetImageManager()->CreateImage(imageDim, imageDim, 1, 1, 8)));
 	sGrayscale8 * const pixels = image->GetDataGrayscale8();
 	const int pixelCount = imageDim * imageDim;
 	int i;
-	for( i=0; i<pixelCount; i++ ){
-		pixels[ i ].value = 255;
+	for(i=0; i<pixelCount; i++){
+		pixels[i].value = 255;
 	}
 	image->NotifyImageDataChanged();
-	SetMaskImage( image );
+	SetMaskImage(image);
 	
 	return image;
 }
 
-void meHeightTerrainTexture::SetMaskImage( deImage *image ){
+void meHeightTerrainTexture::SetMaskImage(deImage *image){
 	// TODO: sanity tests
 	
-	if( pMaskImage == image ){
+	if(pMaskImage == image){
 		return;
 	}
 	
-	if( pMaskImage ){
+	if(pMaskImage){
 		pMaskImage->ReleaseImageData();
 	}
 	
 	pMaskImage = image;
 	
-	if( pEngTexture ){
-		pEngTexture->SetMaskImage( image );
+	if(pEngTexture){
+		pEngTexture->SetMaskImage(image);
 	}
 }
 
 void meHeightTerrainTexture::LoadMaskImage(){
-	if( pMaskImage ){
+	if(pMaskImage){
 		pMaskImage->ReleaseImageData();
 	}
 	pMaskImage = NULL;
 	
-	if( pSector && pSector->GetHeightTerrain() && ! pPathMask.IsEmpty() ){
-		const decString baseDir( pSector->GetHeightTerrain()->GetBaseDirectory() );
-		if( pEngine->GetVirtualFileSystem()->ExistsFile( decPath::AbsolutePathUnix( pPathMask, baseDir ) ) ){
+	if(pSector && pSector->GetHeightTerrain() && !pPathMask.IsEmpty()){
+		const decString baseDir(pSector->GetHeightTerrain()->GetBaseDirectory());
+		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathMask, baseDir))){
 			try{
-				pMaskImage.TakeOver( pEngine->GetImageManager()->LoadImage( pPathMask, baseDir ) );
+				pMaskImage.TakeOver(pEngine->GetImageManager()->LoadImage(pPathMask, baseDir));
 				
-			}catch( const deException &e ){
-				pSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);
 			}
 			
-			if( pMaskImage->GetComponentCount() != 1 || pMaskImage->GetDepth() != 1 ){
+			if(pMaskImage->GetComponentCount() != 1 || pMaskImage->GetDepth() != 1){
 				pMaskImage = NULL;
 			}
 		}
 	}
 	
-	if( pMaskImage ){
+	if(pMaskImage){
 		// we have to create a copy of the mask to allow editing it
-		const deImage::Ref loadedImage( pMaskImage );
+		const deImage::Ref loadedImage(pMaskImage);
 		loadedImage->RetainImageData();
 		
-		pMaskImage.TakeOver( pEngine->GetImageManager()->CreateImage( loadedImage->GetWidth(),
+		pMaskImage.TakeOver(pEngine->GetImageManager()->CreateImage(loadedImage->GetWidth(),
 			loadedImage->GetHeight(), loadedImage->GetDepth(), loadedImage->GetComponentCount(),
-			loadedImage->GetBitCount() ) );
-		memcpy( pMaskImage->GetData(), loadedImage->GetData(), loadedImage->GetWidth()
+			loadedImage->GetBitCount()));
+		memcpy(pMaskImage->GetData(), loadedImage->GetData(), loadedImage->GetWidth()
 			* loadedImage->GetHeight() * ( loadedImage->GetBitCount() / 8 ) );
 		
 		loadedImage->ReleaseImageData();
@@ -320,51 +320,51 @@ void meHeightTerrainTexture::LoadMaskImage(){
 		pMaskImage->NotifyImageDataChanged();
 	}
 	
-	if( pEngTexture ){
-		pEngTexture->SetMaskImage( pMaskImage );
+	if(pEngTexture){
+		pEngTexture->SetMaskImage(pMaskImage);
 	}
 	
-	if( pMaskImage ){
-		SetMaskSaved( true );
+	if(pMaskImage){
+		SetMaskSaved(true);
 		
 	}else{
-		SetMaskSaved( false );
+		SetMaskSaved(false);
 	}
 	
-	SetMaskChanged( false );
+	SetMaskChanged(false);
 	
 	NotifyTextureMaskChanged();
 }
 
-void meHeightTerrainTexture::SetMaskChanged( bool changed ){
-	if( changed != pMaskChanged ){
+void meHeightTerrainTexture::SetMaskChanged(bool changed){
+	if(changed != pMaskChanged){
 		pMaskChanged = changed;
 		
-		if( changed && pSector && pSector->GetHeightTerrain() ){
-			pSector->GetHeightTerrain()->SetDepChanged( true );
+		if(changed && pSector && pSector->GetHeightTerrain()){
+			pSector->GetHeightTerrain()->SetDepChanged(true);
 		}
 	}
 }
 
-void meHeightTerrainTexture::SetMaskSaved( bool saved ){
+void meHeightTerrainTexture::SetMaskSaved(bool saved){
 	pMaskSaved = saved;
 }
 
 void meHeightTerrainTexture::NotifyTextureChanged(){
-	if( pSector ){
+	if(pSector){
 		pSector->NotifySectorChanged();
-		if( pSector->GetHeightTerrain() ){
-			pSector->GetHeightTerrain()->GetWorld().NotifyHTSTextureChanged( pSector, this );
+		if(pSector->GetHeightTerrain()){
+			pSector->GetHeightTerrain()->GetWorld().NotifyHTSTextureChanged(pSector, this);
 		}
 	}
 }
 
 void meHeightTerrainTexture::NotifyTextureMaskChanged(){
-	if( pSector ){
+	if(pSector){
 		pSector->NotifySectorChanged();
-		if( pSector->GetHeightTerrain() ){
-			pSector->GetHeightTerrain()->SetDepChanged( true );
-			pSector->GetHeightTerrain()->GetWorld().NotifyHTSTextureMaskChanged( pSector, this );
+		if(pSector->GetHeightTerrain()){
+			pSector->GetHeightTerrain()->SetDepChanged(true);
+			pSector->GetHeightTerrain()->GetWorld().NotifyHTSTextureMaskChanged(pSector, this);
 		}
 	}
 }
@@ -380,21 +380,21 @@ void meHeightTerrainTexture::pCleanUp(){
 void meHeightTerrainTexture::pLoadSkin(){
 	pSkin = NULL;
 	
-	if( pSector && pSector->GetHeightTerrain() && ! pPathSkin.IsEmpty() ){
-		const decString baseDir( pSector->GetHeightTerrain()->GetBaseDirectory() );
-		if( pEngine->GetVirtualFileSystem()->ExistsFile( decPath::AbsolutePathUnix( pPathSkin, baseDir ) ) ){
+	if(pSector && pSector->GetHeightTerrain() && !pPathSkin.IsEmpty()){
+		const decString baseDir(pSector->GetHeightTerrain()->GetBaseDirectory());
+		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathSkin, baseDir))){
 			try{
-				pSkin.TakeOver( pEngine->GetSkinManager()->LoadSkin( pPathSkin, baseDir ) );
+				pSkin.TakeOver(pEngine->GetSkinManager()->LoadSkin(pPathSkin, baseDir));
 				
-			}catch( const deException &e ){
-				pSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException( LOGSOURCE, e );
-				pSkin = pSector->GetHeightTerrain()->GetWorld().GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
+			}catch(const deException &e){
+				pSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);
+				pSkin = pSector->GetHeightTerrain()->GetWorld().GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
 			}
 		}
 	}
 	
-	if( pEngTexture ){
-		pEngTexture->SetSkin( pSkin );
+	if(pEngTexture){
+		pEngTexture->SetSkin(pSkin);
 	}
 	
 	NotifyTextureChanged();

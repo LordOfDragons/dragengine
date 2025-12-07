@@ -55,38 +55,38 @@ int seLinkList::GetCount() const{
 	return pLinks.GetCount();
 }
 
-seLink *seLinkList::GetAt( int index ) const{
-	return ( seLink* )pLinks.GetAt( index );
+seLink *seLinkList::GetAt(int index) const{
+	return (seLink*)pLinks.GetAt(index);
 }
 
-int seLinkList::IndexOf( seLink *link ) const{
-	return pLinks.IndexOf( link );
+int seLinkList::IndexOf(seLink *link) const{
+	return pLinks.IndexOf(link);
 }
 
-bool seLinkList::Has( seLink *link ) const{
-	return pLinks.Has( link );
+bool seLinkList::Has(seLink *link) const{
+	return pLinks.Has(link);
 }
 
-void seLinkList::Add( seLink *link ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+void seLinkList::Add(seLink *link){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Add( link );
+	pLinks.Add(link);
 }
 
-void seLinkList::InsertAt( seLink *link, int index ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+void seLinkList::InsertAt(seLink *link, int index){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Insert( link, index );
+	pLinks.Insert(link, index);
 }
 
-void seLinkList::MoveTo( seLink *link, int index ){
-	pLinks.Move( link, index );
+void seLinkList::MoveTo(seLink *link, int index){
+	pLinks.Move(link, index);
 }
 
-void seLinkList::Remove( seLink *link ){
-	pLinks.Remove( link );
+void seLinkList::Remove(seLink *link){
+	pLinks.Remove(link);
 }
 
 void seLinkList::RemoveAll(){
@@ -95,12 +95,12 @@ void seLinkList::RemoveAll(){
 
 
 
-seLinkList &seLinkList::operator=( const seLinkList &list ){
+seLinkList &seLinkList::operator=(const seLinkList &list){
 	pLinks = list.pLinks;
 	return *this;
 }
 
-seLinkList &seLinkList::operator+=( const seLinkList &list ){
+seLinkList &seLinkList::operator+=(const seLinkList &list){
 	pLinks += list.pLinks;
 	return *this;
 }

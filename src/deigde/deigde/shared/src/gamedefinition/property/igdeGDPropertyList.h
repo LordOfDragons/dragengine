@@ -47,7 +47,7 @@ public:
 	igdeGDPropertyList();
 	
 	/** \brief Create copy of property list. */
-	igdeGDPropertyList( const igdeGDPropertyList &list );
+	igdeGDPropertyList(const igdeGDPropertyList &list);
 	
 	/** \brief Clean up property list. */
 	~igdeGDPropertyList();
@@ -61,37 +61,37 @@ public:
 	int GetCount() const;
 	
 	/** \brief Property at position. */
-	igdeGDProperty *GetAt( int index ) const;
+	igdeGDProperty *GetAt(int index) const;
 	
 	/** \brief Named property or NULL if absent. */
-	igdeGDProperty *GetNamed( const char *name ) const;
+	igdeGDProperty *GetNamed(const char *name) const;
 	
 	/** \brief Index of named property or -1 if absent. */
-	int IndexOf( igdeGDProperty *proeprty ) const;
+	int IndexOf(igdeGDProperty *proeprty) const;
 	
 	/** \brief Index of named property or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Property is present. */
-	bool Has( igdeGDProperty *proeprty ) const;
+	bool Has(igdeGDProperty *proeprty) const;
 	
 	/** \brief Named property is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add property. */
-	void Add( igdeGDProperty *proeprty );
+	void Add(igdeGDProperty *proeprty);
 	
 	/** \brief Remove property. */
-	void Remove( igdeGDProperty *proeprty );
+	void Remove(igdeGDProperty *proeprty);
 	
 	/** \brief Remove all propertyes. */
 	void RemoveAll();
 	
 	/** \brief Set this list to a deep copy of another list. */
-	void SetToDeepCopyFrom( const igdeGDPropertyList &list );
+	void SetToDeepCopyFrom(const igdeGDPropertyList &list);
 	
 	/** \brief Set from another property list. */
-	igdeGDPropertyList &operator=( const igdeGDPropertyList &list );
+	igdeGDPropertyList &operator=(const igdeGDPropertyList &list);
 	/*@}*/
 };
 

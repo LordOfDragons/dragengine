@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUFontSetImagePath::feUFontSetImagePath( feFontImage *image, const char *newPath ){
-	if( ! newPath ) DETHROW( deeInvalidParam );
+feUFontSetImagePath::feUFontSetImagePath(feFontImage *image, const char *newPath){
+	if(!newPath) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Font set image path" );
+	SetShortInfo("Font set image path");
 	
 	pOldPath = image->GetFilename();
 	pNewPath = newPath;
@@ -52,7 +52,7 @@ feUFontSetImagePath::feUFontSetImagePath( feFontImage *image, const char *newPat
 }
 
 feUFontSetImagePath::~feUFontSetImagePath(){
-	if( pImage ) pImage->FreeReference();
+	if(pImage) pImage->FreeReference();
 }
 
 
@@ -61,9 +61,9 @@ feUFontSetImagePath::~feUFontSetImagePath(){
 ///////////////
 
 void feUFontSetImagePath::Undo(){
-	pImage->SetFilename( pOldPath.GetString(), false );
+	pImage->SetFilename(pOldPath.GetString(), false);
 }
 
 void feUFontSetImagePath::Redo(){
-	pImage->SetFilename( pNewPath.GetString(), false );
+	pImage->SetFilename(pNewPath.GetString(), false);
 }

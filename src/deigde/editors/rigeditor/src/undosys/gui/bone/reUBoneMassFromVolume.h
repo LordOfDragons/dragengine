@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUBoneMassFromVolume( reRig *rig, const decObjectOrderedSet &bones, float density );
+	reUBoneMassFromVolume(reRig *rig, const decObjectOrderedSet &bones, float density);
 	
 protected:
 	/** \brief Clean up the undo. */
@@ -90,7 +90,7 @@ public:
 	
 private:
 	void pCleanUp();
-	float pCalcVolume( const reRigBone &bone ) const;
+	float pCalcVolume(const reRigBone &bone) const;
 };
 
 #endif

@@ -156,7 +156,7 @@ void deoxrDPMetaTouchControllerPlus::pSuggestBindings(){
 	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 }
 
-void deoxrDPMetaTouchControllerPlus::pAddDevice( bool left ){
+void deoxrDPMetaTouchControllerPlus::pAddDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
 	if(device){
 		return;

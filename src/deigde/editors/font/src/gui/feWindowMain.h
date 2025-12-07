@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create editor window. */
-	feWindowMain( igdeEditorModule &module );
+	feWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** \brief Clean up editor window. */
@@ -129,16 +129,16 @@ public:
 	inline const igdeFont::sConfiguration &GetGenFontConfig() const{ return pGenFontConfig; }
 	
 	/** \brief Set font generation font configuration. */
-	void SetGenFontConfig( const igdeFont::sConfiguration &config );
+	void SetGenFontConfig(const igdeFont::sConfiguration &config);
 	
 	/** Retrieves the rig. */
 	inline feFont *GetFont() const{ return pFont; }
 	/** Sets the font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	/** Creates a new font. */
 	void CreateNewFont();
 	/** Saves the font under the given file. */
-	void SaveFont( const char *filename );
+	void SaveFont(const char *filename);
 	
 	/** \brief Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();
@@ -159,18 +159,18 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief List of unsaved open documents. */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/** \brief Request document to be saved. */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -189,8 +189,8 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFont( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
+	void pCreateMenuFont(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
 };
 
 #endif

@@ -109,7 +109,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination. */
-	deoglGI( deoglRenderThread &renderThread );
+	deoglGI(deoglRenderThread &renderThread);
 	
 	/** Clean up global illumination. */
 	~deoglGI();

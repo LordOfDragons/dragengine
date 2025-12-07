@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	seLoadSaveSynthesizer( seLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource );
+	seLoadSaveSynthesizer(seLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	/** @name Management */
@@ -78,84 +78,84 @@ public:
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Load synthesizer from file. */
-	void LoadSynthesizer( seSynthesizer &synthesizer, decBaseFileReader &reader );
+	void LoadSynthesizer(seSynthesizer &synthesizer, decBaseFileReader &reader);
 	
 	/** \brief Save synthesizer to file. */
-	void SaveSynthesizer( const seSynthesizer &synthesizer, decBaseFileWriter &writer );
+	void SaveSynthesizer(const seSynthesizer &synthesizer, decBaseFileWriter &writer);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteSynthesizer( decXmlWriter &writer, const seSynthesizer &synthesizer );
+	void pWriteSynthesizer(decXmlWriter &writer, const seSynthesizer &synthesizer);
 	
-	void pWriteController( decXmlWriter &writer, const seController &controller );
+	void pWriteController(decXmlWriter &writer, const seController &controller);
 	
-	void pWriteLink( decXmlWriter &writer, const seSynthesizer &synthesizer, const seLink &link );
+	void pWriteLink(decXmlWriter &writer, const seSynthesizer &synthesizer, const seLink &link);
 	
-	void pWriteSourceCommon( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seSource &source );
+	void pWriteSourceCommon(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seSource &source);
 	
-	void pWriteControllerTarget( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seControllerTarget &target, const char *name );
+	void pWriteControllerTarget(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seControllerTarget &target, const char *name);
 	
-	void pWriteSource( decXmlWriter &writer, const seSynthesizer &synthesizer, const seSource &source );
+	void pWriteSource(decXmlWriter &writer, const seSynthesizer &synthesizer, const seSource &source);
 	
-	void pWriteSourceSound( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seSourceSound &source );
+	void pWriteSourceSound(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seSourceSound &source);
 	
-	void pWriteSourceWave( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seSourceWave &source );
+	void pWriteSourceWave(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seSourceWave &source);
 	
-	void pWriteSourceChain( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seSourceChain &source );
+	void pWriteSourceChain(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seSourceChain &source);
 	
-	void pWriteSourceGroup( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seSourceGroup &source );
+	void pWriteSourceGroup(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seSourceGroup &source);
 	
-	void pWriteSourceSynthesizer( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seSourceSynthesizer &source );
+	void pWriteSourceSynthesizer(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seSourceSynthesizer &source);
 	
-	void pWriteEffectCommon( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seEffect &effect );
+	void pWriteEffectCommon(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seEffect &effect);
 	
-	void pWriteEffect( decXmlWriter &writer, const seSynthesizer &synthesizer, const seEffect &effect );
+	void pWriteEffect(decXmlWriter &writer, const seSynthesizer &synthesizer, const seEffect &effect);
 	
-	void pWriteEffectStretch( decXmlWriter &writer, const seSynthesizer &synthesizer,
-		const seEffectStretch &effect );
+	void pWriteEffectStretch(decXmlWriter &writer, const seSynthesizer &synthesizer,
+		const seEffectStretch &effect);
 	
 	
 	
-	void pReadSynthesizer( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	void pReadSynthesizer(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	void pReadController( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	void pReadController(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	void pReadControllerLimit( const decXmlElementTag &root, seController &controller );
+	void pReadControllerLimit(const decXmlElementTag &root, seController &controller);
 	
-	void pReadLink( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	void pReadLink(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSource( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	seSource *pReadSource(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceSound( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	seSource *pReadSourceSound(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceWave( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	seSource *pReadSourceWave(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceChain( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	seSource *pReadSourceChain(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceGroup( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	seSource *pReadSourceGroup(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceSynthesizer( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	seSource *pReadSourceSynthesizer(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	bool pReadSourceCommon( const decXmlElementTag &root, seSynthesizer &synthesizer, seSource &source );
+	bool pReadSourceCommon(const decXmlElementTag &root, seSynthesizer &synthesizer, seSource &source);
 	
-	void pReadControllerTarget( const decXmlElementTag &root,
-		seSynthesizer &synthesizer, seControllerTarget &target );
+	void pReadControllerTarget(const decXmlElementTag &root,
+		seSynthesizer &synthesizer, seControllerTarget &target);
 	
-	seEffect *pReadEffect( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	seEffect *pReadEffect(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seEffect *pReadEffectStretch( const decXmlElementTag &root, seSynthesizer &synthesizer );
+	seEffect *pReadEffectStretch(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	bool pReadEffectCommon( const decXmlElementTag &root, seSynthesizer &synthesizer, seEffect &effect );
+	bool pReadEffectCommon(const decXmlElementTag &root, seSynthesizer &synthesizer, seEffect &effect);
 };
 
 #endif

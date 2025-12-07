@@ -36,16 +36,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModelTexture::deModelTexture( const char *name, int width, int height ) :
-pName( name ),
-pWidth( width ),
-pHeight( height ),
-pDoubleSided( false ),
-pDecal( false ),
-pDecalOffset( 0 )
+deModelTexture::deModelTexture(const char *name, int width, int height) :
+pName(name),
+pWidth(width),
+pHeight(height),
+pDoubleSided(false),
+pDecal(false),
+pDecalOffset(0)
 {
-	if( ! name || width < 1 || height < 1 ){
-		DETHROW( deeInvalidParam );
+	if(!name || width < 1 || height < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -57,14 +57,14 @@ deModelTexture::~deModelTexture(){
 // Management
 ///////////////
 
-void deModelTexture::SetDoubleSided( bool doubleSided ){
+void deModelTexture::SetDoubleSided(bool doubleSided){
 	pDoubleSided = doubleSided;
 }
 
-void deModelTexture::SetDecal( bool decal ){
+void deModelTexture::SetDecal(bool decal){
 	pDecal = decal;
 }
 
-void deModelTexture::SetDecalOffset( int offset ){
+void deModelTexture::SetDecalOffset(int offset){
 	pDecalOffset = offset;
 }

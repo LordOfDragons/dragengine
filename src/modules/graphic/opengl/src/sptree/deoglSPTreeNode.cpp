@@ -36,7 +36,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglSPTreeNode::deoglSPTreeNode( const decVector &center, const decVector &halfSize ){
+deoglSPTreeNode::deoglSPTreeNode(const decVector &center, const decVector &halfSize){
 	pCenter = center;
 	pHalfSize = halfSize;
 	pSplitState = essNone;
@@ -45,8 +45,8 @@ deoglSPTreeNode::deoglSPTreeNode( const decVector &center, const decVector &half
 }
 
 deoglSPTreeNode::~deoglSPTreeNode(){
-	if( pChildRight ) delete pChildRight;
-	if( pChildLeft ) delete pChildLeft;
+	if(pChildRight) delete pChildRight;
+	if(pChildLeft) delete pChildLeft;
 }
 
 
@@ -54,53 +54,53 @@ deoglSPTreeNode::~deoglSPTreeNode(){
 // Management
 ///////////////
 
-void deoglSPTreeNode::SetSplitState( int splitState ){
-	if( splitState < essNone || splitState > essZAxis ) DETHROW( deeInvalidParam );
+void deoglSPTreeNode::SetSplitState(int splitState){
+	if(splitState < essNone || splitState > essZAxis) DETHROW(deeInvalidParam);
 	
-	if( splitState != pSplitState ){
+	if(splitState != pSplitState){
 		pSplitState = splitState;
 		
-		if( pChildRight ){
+		if(pChildRight){
 			delete pChildRight;
 			pChildRight = NULL;
 		}
-		if( pChildLeft ){
+		if(pChildLeft){
 			delete pChildLeft;
 			pChildLeft = NULL;
 		}
 		
-		if( splitState == essXAxis ){
+		if(splitState == essXAxis){
 			float halfSize = pHalfSize.x * 0.5f;
 			
-			pChildLeft = new deoglSPTreeNode( decVector( pCenter.x - halfSize, pCenter.y, pCenter.z ),
-				decVector( halfSize, pHalfSize.y, pHalfSize.z ) );
-			if( ! pChildLeft ) DETHROW( deeOutOfMemory );
+			pChildLeft = new deoglSPTreeNode(decVector(pCenter.x - halfSize, pCenter.y, pCenter.z),
+				decVector(halfSize, pHalfSize.y, pHalfSize.z));
+			if(!pChildLeft) DETHROW(deeOutOfMemory);
 			
-			pChildRight = new deoglSPTreeNode( decVector( pCenter.x + halfSize, pCenter.y, pCenter.z ),
-				decVector( halfSize, pHalfSize.y, pHalfSize.z ) );
-			if( ! pChildRight ) DETHROW( deeOutOfMemory );
+			pChildRight = new deoglSPTreeNode(decVector(pCenter.x + halfSize, pCenter.y, pCenter.z),
+				decVector(halfSize, pHalfSize.y, pHalfSize.z));
+			if(!pChildRight) DETHROW(deeOutOfMemory);
 			
-		}else if( splitState == essYAxis ){
+		}else if(splitState == essYAxis){
 			float halfSize = pHalfSize.y * 0.5f;
 			
-			pChildLeft = new deoglSPTreeNode( decVector( pCenter.x, pCenter.y - halfSize, pCenter.z ),
-				decVector( pHalfSize.x, halfSize, pHalfSize.z ) );
-			if( ! pChildLeft ) DETHROW( deeOutOfMemory );
+			pChildLeft = new deoglSPTreeNode(decVector(pCenter.x, pCenter.y - halfSize, pCenter.z),
+				decVector(pHalfSize.x, halfSize, pHalfSize.z));
+			if(!pChildLeft) DETHROW(deeOutOfMemory);
 			
-			pChildRight = new deoglSPTreeNode( decVector( pCenter.x, pCenter.y + halfSize, pCenter.z ),
-				decVector( pHalfSize.x, halfSize, pHalfSize.z ) );
-			if( ! pChildRight ) DETHROW( deeOutOfMemory );
+			pChildRight = new deoglSPTreeNode(decVector(pCenter.x, pCenter.y + halfSize, pCenter.z),
+				decVector(pHalfSize.x, halfSize, pHalfSize.z));
+			if(!pChildRight) DETHROW(deeOutOfMemory);
 			
-		}else if( splitState == essZAxis ){
+		}else if(splitState == essZAxis){
 			float halfSize = pHalfSize.z * 0.5f;
 			
-			pChildLeft = new deoglSPTreeNode( decVector( pCenter.x, pCenter.y, pCenter.z - halfSize ),
-				decVector( pHalfSize.x, pHalfSize.y, halfSize ) );
-			if( ! pChildLeft ) DETHROW( deeOutOfMemory );
+			pChildLeft = new deoglSPTreeNode(decVector(pCenter.x, pCenter.y, pCenter.z - halfSize),
+				decVector(pHalfSize.x, pHalfSize.y, halfSize));
+			if(!pChildLeft) DETHROW(deeOutOfMemory);
 			
-			pChildRight = new deoglSPTreeNode( decVector( pCenter.x, pCenter.y, pCenter.z + halfSize ),
-				decVector( pHalfSize.x, pHalfSize.y, halfSize ) );
-			if( ! pChildRight ) DETHROW( deeOutOfMemory );
+			pChildRight = new deoglSPTreeNode(decVector(pCenter.x, pCenter.y, pCenter.z + halfSize),
+				decVector(pHalfSize.x, pHalfSize.y, halfSize));
+			if(!pChildRight) DETHROW(deeOutOfMemory);
 		}
 	}
 }

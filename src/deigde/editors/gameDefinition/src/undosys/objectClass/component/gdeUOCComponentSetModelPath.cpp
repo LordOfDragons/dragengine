@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetModelPath::gdeUOCComponentSetModelPath( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetModelPath::gdeUOCComponentSetModelPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set model path" );
+	SetShortInfo("Component set model path");
 	
 	pOldValue = component->GetModelPath();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentSetModelPath::~gdeUOCComponentSetModelPath(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCComponentSetModelPath::~gdeUOCComponentSetModelPath(){
 ///////////////
 
 void gdeUOCComponentSetModelPath::Undo(){
-	pComponent->SetModelPath( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetModelPath(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetModelPath::Redo(){
-	pComponent->SetModelPath( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetModelPath(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

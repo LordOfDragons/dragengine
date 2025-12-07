@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sieve. */
-	deoglPointSieve( int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ );
+	deoglPointSieve(int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ);
 	/** Cleans up the sieve. */
 	~deoglPointSieve();
 	/*@}*/
@@ -75,14 +75,14 @@ public:
 	/** Retrieves the number of buckets. */
 	inline int GetBucketCount() const{ return pBucketCount; }
 	/** Retrieves the bucket at the given index. */
-	deoglPointSieveBucket &GetBucketAt( int index ) const;
+	deoglPointSieveBucket &GetBucketAt(int index) const;
 	/** Retrieves the bucket at the given index. */
-	deoglPointSieveBucket &GetBucketWith( int x, int z ) const;
+	deoglPointSieveBucket &GetBucketWith(int x, int z) const;
 	/** Retrieves the bucket containing the given position. */
-	deoglPointSieveBucket &GetBucketContaining( float x, float z ) const;
+	deoglPointSieveBucket &GetBucketContaining(float x, float z) const;
 	
 	/** Drops a point into the sieve. */
-	void DropPoint( float x, float z, int index );
+	void DropPoint(float x, float z, int index);
 	
 	/** Clears the sieve. */
 	void Clear();

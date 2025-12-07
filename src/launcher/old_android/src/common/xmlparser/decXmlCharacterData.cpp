@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlCharacterData::decXmlCharacterData( const char *data ) :
-pData( data ){
+decXmlCharacterData::decXmlCharacterData(const char *data) :
+pData(data){
 }
 
 decXmlCharacterData::~decXmlCharacterData(){
@@ -51,22 +51,22 @@ decXmlCharacterData::~decXmlCharacterData(){
 // Management
 ///////////////
 
-void decXmlCharacterData::SetData( const char *data ){
+void decXmlCharacterData::SetData(const char *data){
 	pData = data;
 }
 
-void decXmlCharacterData::AppendData( const char *data ){
-	pData.Append( data );
+void decXmlCharacterData::AppendData(const char *data){
+	pData.Append(data);
 }
 
-void decXmlCharacterData::AppendCharacter( char character ){
-	pData.AppendCharacter( character );
+void decXmlCharacterData::AppendCharacter(char character){
+	pData.AppendCharacter(character);
 }
 
 
 
-void decXmlCharacterData::Visit( decXmlVisitor &visitor ){
-	visitor.VisitCharacterData( *this );
+void decXmlCharacterData::Visit(decXmlVisitor &visitor){
+	visitor.VisitCharacterData(*this);
 }
 
 bool decXmlCharacterData::CanCastToCharacterData() const{

@@ -49,12 +49,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRPTSkyLightFindContent::deoglRPTSkyLightFindContent( deoglRenderPlanSkyLight &plan ) :
-deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
-pPlan( plan ),
-pElapsedTime( 0.0f )
+deoglRPTSkyLightFindContent::deoglRPTSkyLightFindContent(deoglRenderPlanSkyLight &plan) :
+deParallelTask(&plan.GetPlan().GetRenderThread().GetOgl()),
+pPlan(plan),
+pElapsedTime(0.0f)
 {
-	SetMarkFinishedAfterRun( true );
+	SetMarkFinishedAfterRun(true);
 }
 
 deoglRPTSkyLightFindContent::~deoglRPTSkyLightFindContent(){
@@ -76,7 +76,7 @@ deoglRPTSkyLightFindContent::~deoglRPTSkyLightFindContent(){
 #endif
 
 void deoglRPTSkyLightFindContent::Run(){
-	if( IsCancelled() ){
+	if(IsCancelled()){
 		return;
 	}
 	
@@ -87,45 +87,45 @@ void deoglRPTSkyLightFindContent::Run(){
 		INIT_SPECIAL_TIMING
 		
 		deoglCollideList &collideList = pPlan.GetCollideList();
-		deoglRLSVisitorCollectElements visitor( collideList );
+		deoglRLSVisitorCollectElements visitor(collideList);
 		
-		visitor.InitFromFrustum( plan, *pPlan.GetLayer(), 2000.0f );
-		visitor.SetCullLayerMask( plan.GetUseLayerMask() );
-		visitor.SetLayerMask( plan.GetLayerMask() );
+		visitor.InitFromFrustum(plan, *pPlan.GetLayer(), 2000.0f);
+		visitor.SetCullLayerMask(plan.GetUseLayerMask());
+		visitor.SetLayerMask(plan.GetLayerMask());
 		
-		visitor.AddOcclusionTestInputData( pPlan.GetOcclusionTest(), plan.GetWorld()->GetReferencePosition() );
+		visitor.AddOcclusionTestInputData(pPlan.GetOcclusionTest(), plan.GetWorld()->GetReferencePosition());
 		
 		const int shadowMapSize = plan.GetShadowSkySize();
 		const int shadowLayerCount = pPlan.GetShadowLayerCount();
 		const float splitSizeLimitPixels = 1.0f;
-		const float splitFactor = ( 1.0f / ( float )shadowMapSize ) * splitSizeLimitPixels;
+		const float splitFactor = (1.0f / (float)shadowMapSize) * splitSizeLimitPixels;
 		int i;
 		
-		for( i=0; i<shadowLayerCount; i++ ){
-			const deoglRenderPlanSkyLight::sShadowLayer &sl = pPlan.GetShadowLayerAt( i );
-			const decVector splitMinExtend( sl.minExtend.x, sl.minExtend.y, sl.minExtend.z - 2000.0f );
+		for(i=0; i<shadowLayerCount; i++){
+			const deoglRenderPlanSkyLight::sShadowLayer &sl = pPlan.GetShadowLayerAt(i);
+			const decVector splitMinExtend(sl.minExtend.x, sl.minExtend.y, sl.minExtend.z - 2000.0f);
 			const decVector &splitMaxExtend = sl.maxExtend;
-			const float sizeThresholdX = ( sl.maxExtend.x - sl.minExtend.x ) * splitFactor;
-			const float sizeThresholdY = ( sl.maxExtend.y - sl.minExtend.y ) * splitFactor;
+			const float sizeThresholdX = (sl.maxExtend.x - sl.minExtend.x) * splitFactor;
+			const float sizeThresholdY = (sl.maxExtend.y - sl.minExtend.y) * splitFactor;
 			
-			visitor.AddSplit( splitMinExtend, splitMaxExtend, decVector2( sizeThresholdX, sizeThresholdY ) );
+			visitor.AddSplit(splitMinExtend, splitMaxExtend, decVector2(sizeThresholdX, sizeThresholdY));
 		}
 		
-		visitor.VisitWorldOctree( plan.GetWorld()->GetOctree() );
+		visitor.VisitWorldOctree(plan.GetWorld()->GetOctree());
 		
-		pPlan.SetFrustumBoxExtend( visitor.GetFrustumBoxMinExtend(), visitor.GetFrustumBoxMaxExtend() );
+		pPlan.SetFrustumBoxExtend(visitor.GetFrustumBoxMinExtend(), visitor.GetFrustumBoxMaxExtend());
 		SPECIAL_TIMER_PRINT("Octree")
 		
-		if( plan.GetHeightTerrainView() ){
-			visitor.VisitHTView( *plan.GetHeightTerrainView() );
+		if(plan.GetHeightTerrainView()){
+			visitor.VisitHTView(*plan.GetHeightTerrainView());
 			SPECIAL_TIMER_PRINT("HTSector")
 		}
 		
-		visitor.VisitPropFields( *plan.GetWorld() );
+		visitor.VisitPropFields(*plan.GetWorld());
 		SPECIAL_TIMER_PRINT("PropField")
 		
-	}catch( const deException &e ){
-		plan.GetRenderThread().GetLogger().LogException( e );
+	}catch(const deException &e){
+		plan.GetRenderThread().GetLogger().LogException(e);
 		pSemaphore.Signal();
 		throw;
 	}

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseAnimatorModule( deLoadableModule &loadableModule );
+	deBaseAnimatorModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseAnimatorModule();
@@ -68,16 +68,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create peer for animator. */
-	virtual deBaseAnimatorAnimator *CreateAnimator( deAnimator *animator ) = 0;
+	virtual deBaseAnimatorAnimator *CreateAnimator(deAnimator *animator) = 0;
 	
 	/** \brief Create peer for animator instance. */
-	virtual deBaseAnimatorAnimatorInstance *CreateAnimatorInstance( deAnimatorInstance *instance ) = 0;
+	virtual deBaseAnimatorAnimatorInstance *CreateAnimatorInstance(deAnimatorInstance *instance) = 0;
 	
 	/** \brief Create peer for animation. */
-	virtual deBaseAnimatorAnimation *CreateAnimation( deAnimation *animation ) = 0;
+	virtual deBaseAnimatorAnimation *CreateAnimation(deAnimation *animation) = 0;
 	
 	/** \brief Create peer for component. */
-	virtual deBaseAnimatorComponent *CreateComponent( deComponent *component ) = 0;
+	virtual deBaseAnimatorComponent *CreateComponent(deComponent *component) = 0;
 	/*@}*/
 };
 

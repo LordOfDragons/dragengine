@@ -52,26 +52,26 @@ public:
 	/** Retrieves the number of words. */
 	int GetCount() const;
 	/** Retrieves the word at the given position. */
-	ceSAWord *GetAt( int index ) const;
+	ceSAWord *GetAt(int index) const;
 	/** Retrieves the word with the given name or NULL if not found. */
-	ceSAWord *GetNamed( const char *name ) const;
+	ceSAWord *GetNamed(const char *name) const;
 	/** Retrieves the index of the given word or -1 if not found. */
-	int IndexOf( ceSAWord *word ) const;
+	int IndexOf(ceSAWord *word) const;
 	/** Retrieves the index of the word with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a word exists. */
-	bool Has( ceSAWord *word ) const;
+	bool Has(ceSAWord *word) const;
 	/** Determines if a word with the given name exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a word. */
-	void Add( ceSAWord *word );
+	void Add(ceSAWord *word);
 	/** Removes a word. */
-	void Remove( ceSAWord *word );
+	void Remove(ceSAWord *word);
 	/** Removes all words. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceSAWordList &operator=( const ceSAWordList &list );
+	ceSAWordList &operator=(const ceSAWordList &list);
 	/*@}*/
 };
 

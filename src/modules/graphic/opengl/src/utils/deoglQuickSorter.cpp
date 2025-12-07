@@ -48,10 +48,10 @@ deoglQuickSorter::deoglQuickSorter(){
 }
 
 deoglQuickSorter::~deoglQuickSorter(){
-	if( pScores ){
+	if(pScores){
 		delete [] pScores;
 	}
-	if( pElements ){
+	if(pElements){
 		delete [] pElements;
 	}
 }
@@ -61,36 +61,36 @@ deoglQuickSorter::~deoglQuickSorter(){
 // Management
 ///////////////
 
-void *deoglQuickSorter::GetElementAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+void *deoglQuickSorter::GetElementAt(int index) const{
+	if(index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pElements[ index ];
+	return pElements[index];
 }
 
 void deoglQuickSorter::RemoveAllElements(){
 	pCount = 0;
 }
 
-void deoglQuickSorter::AddElement( void *element, float score ){
-	if( ! element ){
-		DETHROW( deeInvalidParam );
+void deoglQuickSorter::AddElement(void *element, float score){
+	if(!element){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pCount == pSize ){
+	if(pCount == pSize){
 		const int newSize = pSize + 10;
-		void ** const newElements = new void*[ newSize ];
-		float * const newScore = new float[ newSize ];
+		void ** const newElements = new void*[newSize];
+		float * const newScore = new float[newSize];
 		
-		if( pElements ){
-			memcpy( newElements, pElements, sizeof( void* ) * pCount );
+		if(pElements){
+			memcpy(newElements, pElements, sizeof(void*) * pCount);
 			delete [] pElements;
 		}
 		pElements = newElements;
 		
-		if( pScores ){
-			memcpy( newScore, pScores, sizeof( float ) * pCount );
+		if(pScores){
+			memcpy(newScore, pScores, sizeof(float) * pCount);
 			delete [] pScores;
 		}
 		pScores = newScore;
@@ -98,63 +98,63 @@ void deoglQuickSorter::AddElement( void *element, float score ){
 		pSize = newSize;
 	}
 	
-	pElements[ pCount ] = element;
-	pScores[ pCount ] = score;
+	pElements[pCount] = element;
+	pScores[pCount] = score;
 	pCount++;
 }
 
 void deoglQuickSorter::SortAscending(){
-	if( pCount > 1 ){
-		pSortAscendingStep( 0, pCount - 1 );
+	if(pCount > 1){
+		pSortAscendingStep(0, pCount - 1);
 	}
 }
 
 void deoglQuickSorter::SortDescending(){
-	if( pCount > 1 ){
-		pSortDescendingStep( 0, pCount - 1 );
+	if(pCount > 1){
+		pSortDescendingStep(0, pCount - 1);
 	}
 }
 
 
 
 void deoglQuickSorter::TestImplementation(){
-	const float score[ 10 ] = { 7.6f, 4.1f, 8.1f, 9.6f, 1.2f, 5.7f, 8.2f, 3.4f, 3.7f, 2.8f };
-	const int order[ 10 ] =   {   7,   5,    8,    10,   1,    6,    9,    3,    4,    2   };
+	const float score[10] = {7.6f, 4.1f, 8.1f, 9.6f, 1.2f, 5.7f, 8.2f, 3.4f, 3.7f, 2.8f};
+	const int order[10] =   {7,   5,    8,    10,   1,    6,    9,    3,    4,    2};
 	deoglQuickSorter sorter;
 	int i;
 	
 	// test ascending sort
-	for( i=0; i<10; i++ ){
-		sorter.AddElement( ( void* )( intptr_t )order[ i ], score[ i ] );
+	for(i=0; i<10; i++){
+		sorter.AddElement((void*)(intptr_t)order[i], score[i]);
 	}
 	sorter.SortAscending();
 	
-	for( i=0; i<10; i++ ){
-		if( ( int )( ( char* )sorter.GetElementAt( i ) - ( char* )0x1 ) != i ){
-			printf( "result [" );
-			for( i=0; i<10; i++ ){
-				printf( " %p", sorter.GetElementAt( i ) );
+	for(i=0; i<10; i++){
+		if((int)((char*)sorter.GetElementAt(i) - (char*)0x1) != i){
+			printf("result [");
+			for(i=0; i<10; i++){
+				printf(" %p", sorter.GetElementAt(i));
 			}
-			printf( " ]\n" );
-			DETHROW( deeInvalidAction );
+			printf("]\n");
+			DETHROW(deeInvalidAction);
 		}
 	}
 	
 	// test descending sort
 	sorter.RemoveAllElements();
-	for( i=0; i<10; i++ ){
-		sorter.AddElement( ( void* )( intptr_t )order[ i ], score[ i ] );
+	for(i=0; i<10; i++){
+		sorter.AddElement((void*)(intptr_t)order[i], score[i]);
 	}
 	sorter.SortDescending();
 	
-	for( i=0; i<10; i++ ){
-		if( ( int )( ( char* )sorter.GetElementAt( i ) - ( char* )0x1 ) != ( 9 - i ) ){
-			printf( "result [" );
-			for( i=0; i<10; i++ ){
-				printf( " %p", sorter.GetElementAt( i ) );
+	for(i=0; i<10; i++){
+		if((int)((char*)sorter.GetElementAt(i) - (char*)0x1) != (9 - i)){
+			printf("result [");
+			for(i=0; i<10; i++){
+				printf(" %p", sorter.GetElementAt(i));
 			}
-			printf( " ]\n" );
-			DETHROW( deeInvalidAction );
+			printf("]\n");
+			DETHROW(deeInvalidAction);
 		}
 	}
 }
@@ -164,76 +164,76 @@ void deoglQuickSorter::TestImplementation(){
 // Private Functions
 // ///////////////////
 
-void deoglQuickSorter::pSortAscendingStep( int left, int right ){
-	void * const pivotElement = pElements[ left ];
-	const float pivotScore = pScores[ left ];
+void deoglQuickSorter::pSortAscendingStep(int left, int right){
+	void * const pivotElement = pElements[left];
+	const float pivotScore = pScores[left];
 	const int r_hold = right;
 	const int l_hold = left;
 	
-	while( left < right ){
-		while( ( pScores[ right ] >= pivotScore ) && ( left < right ) ){
+	while(left < right){
+		while((pScores[right] >= pivotScore) && (left < right)){
 			right--;
 		}
-		if( left != right ){
-			pElements[ left ] = pElements[ right ];
-			pScores[ left ] = pScores[ right ];
+		if(left != right){
+			pElements[left] = pElements[right];
+			pScores[left] = pScores[right];
 			left++;
 		}
-		while( ( pScores[ left ] <= pivotScore ) && ( left < right ) ){
+		while((pScores[left] <= pivotScore) && (left < right)){
 			left++;
 		}
-		if( left != right ){
-			pElements[ right ] = pElements[ left ];
-			pScores[ right ] = pScores[ left];
+		if(left != right){
+			pElements[right] = pElements[left];
+			pScores[right] = pScores[left];
 			right--;
 		}
 	}
 	
-	pElements[ left ] = pivotElement;
-	pScores[ left ] = pivotScore;
+	pElements[left] = pivotElement;
+	pScores[left] = pivotScore;
 	
-	if( l_hold < left ){
-		pSortAscendingStep( l_hold, left - 1 );
+	if(l_hold < left){
+		pSortAscendingStep(l_hold, left - 1);
 	}
 	
-	if( r_hold > left ){
-		pSortAscendingStep( left + 1, r_hold );
+	if(r_hold > left){
+		pSortAscendingStep(left + 1, r_hold);
 	}
 }
 
-void deoglQuickSorter::pSortDescendingStep( int left, int right ){
-	void * const pivotElement = pElements[ left ];
-	const float pivotScore = pScores[ left ];
+void deoglQuickSorter::pSortDescendingStep(int left, int right){
+	void * const pivotElement = pElements[left];
+	const float pivotScore = pScores[left];
 	const int r_hold = right;
 	const int l_hold = left;
 	
-	while( left < right ){
-		while( ( pScores[ right ] <= pivotScore ) && ( left < right ) ){
+	while(left < right){
+		while((pScores[right] <= pivotScore) && (left < right)){
 			right--;
 		}
-		if( left != right ){
-			pElements[ left ] = pElements[ right ];
-			pScores[ left ] = pScores[ right ];
+		if(left != right){
+			pElements[left] = pElements[right];
+			pScores[left] = pScores[right];
 			left++;
 		}
-		while( ( pScores[ left ] >= pivotScore ) && ( left < right ) ){
+		while((pScores[left] >= pivotScore) && (left < right)){
 			left++;
 		}
-		if( left != right ){
-			pElements[ right ] = pElements[ left ];
-			pScores[ right ] = pScores[ left];
+		if(left != right){
+			pElements[right] = pElements[left];
+			pScores[right] = pScores[left];
 			right--;
 		}
 	}
 	
-	pElements[ left ] = pivotElement;
-	pScores[ left ] = pivotScore;
+	pElements[left] = pivotElement;
+	pScores[left] = pivotScore;
 	
-	if( l_hold < left ){
-		pSortDescendingStep( l_hold, left - 1 );
+	if(l_hold < left){
+		pSortDescendingStep(l_hold, left - 1);
 	}
 	
-	if( r_hold > left ){
-		pSortDescendingStep( left + 1, r_hold );
+	if(r_hold > left){
+		pSortDescendingStep(left + 1, r_hold);
 	}
 }

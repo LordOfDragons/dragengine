@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create copy of sound level meter speaker. */
-	deoalASoundLevelMeterSpeaker( deoalASoundLevelMeter &soundLevelMeter, deoalASpeaker *speaker );
+	deoalASoundLevelMeterSpeaker(deoalASoundLevelMeter &soundLevelMeter, deoalASpeaker *speaker);
 	
 protected:
 	/** \brief Clean up sound level meter speaker. */
@@ -84,7 +84,7 @@ public:
 	inline float GetVolume() const{ return pVolume; }
 	
 	/** \brief Set volume. */
-	void SetVolume( float volume );
+	void SetVolume(float volume);
 	
 	/** \brief Env probe of \em NULL if not present. */
 	inline deoalEnvProbe *GetEnvProbe() const{ return pEnvProbe; }
@@ -125,8 +125,8 @@ public:
 private:
 	void pListenDirect();
 	void pListenReflected();
-	const deoalRayTraceHitElement *pNextHitElement( const deoalRayTraceResult &rtresult,
-		int &index, bool forwardFacing ) const;
+	const deoalRayTraceHitElement *pNextHitElement(const deoalRayTraceResult &rtresult,
+		int &index, bool forwardFacing) const;
 };
 
 #endif

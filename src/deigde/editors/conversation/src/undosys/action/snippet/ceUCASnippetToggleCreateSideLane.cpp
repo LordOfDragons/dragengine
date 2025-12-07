@@ -54,10 +54,10 @@ pSnippet(nullptr)
 }
 
 ceUCASnippetToggleCreateSideLane::~ceUCASnippetToggleCreateSideLane(){
-	if( pSnippet ){
+	if(pSnippet){
 		pSnippet->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPSDecalListener( meWPSDecal &panel );
+	meWPSDecalListener(meWPSDecal &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWPSDecalListener();
@@ -55,19 +55,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Decal selection changed. */
-	virtual void DecalSelectionChanged( meWorld *world );
+	virtual void DecalSelectionChanged(meWorld *world);
 	
 	/** \brief Decal changed. */
-	virtual void DecalChanged( meWorld *world, meDecal *decal );
+	virtual void DecalChanged(meWorld *world, meDecal *decal);
 	
 	/** \brief Decal geometry changed. */
-	virtual void DecalGeometryChanged( meWorld *world, meDecal *decal );
+	virtual void DecalGeometryChanged(meWorld *world, meDecal *decal);
 	
 	/** \brief Decal properties changed. */
-	virtual void DecalPropertiesChanged( meWorld *world, meDecal *decal );
+	virtual void DecalPropertiesChanged(meWorld *world, meDecal *decal);
 	
 	/** \brief Decal active property changed. */
-	virtual void DecalActivePropertyChanged( meWorld *world, meDecal *decal );
+	virtual void DecalActivePropertyChanged(meWorld *world, meDecal *decal);
 	/*@}*/
 };
 

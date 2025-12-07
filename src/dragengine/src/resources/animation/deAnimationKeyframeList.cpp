@@ -48,9 +48,9 @@ deAnimationKeyframeList::deAnimationKeyframeList(){
 
 deAnimationKeyframeList::~deAnimationKeyframeList(){
 	int i;
-	if( pKeyframes ){
-		for( i=0; i<pKeyframeCount; i++ ){
-			if( pKeyframes[ i ] ) delete pKeyframes[ i ];
+	if(pKeyframes){
+		for(i=0; i<pKeyframeCount; i++){
+			if(pKeyframes[i]) delete pKeyframes[i];
 		}
 		delete [] pKeyframes;
 	}
@@ -61,33 +61,33 @@ deAnimationKeyframeList::~deAnimationKeyframeList(){
 // management
 ///////////////
 
-deAnimationKeyframe *deAnimationKeyframeList::GetKeyframe( int index ) const{
-	if( index < 0 || index >= pKeyframeCount ) DETHROW( deeOutOfBoundary );
-	return pKeyframes[ index ];
+deAnimationKeyframe *deAnimationKeyframeList::GetKeyframe(int index) const{
+	if(index < 0 || index >= pKeyframeCount) DETHROW(deeOutOfBoundary);
+	return pKeyframes[index];
 }
 
-void deAnimationKeyframeList::AddKeyframe( deAnimationKeyframe *keyframe ){
-	if( ! keyframe ) DETHROW( deeInvalidParam );
-	if( pKeyframeCount == pKeyframeSize ){
+void deAnimationKeyframeList::AddKeyframe(deAnimationKeyframe *keyframe){
+	if(!keyframe) DETHROW(deeInvalidParam);
+	if(pKeyframeCount == pKeyframeSize){
 		int i, newSize = pKeyframeCount * 3 / 2 + 1;
-		deAnimationKeyframe **newArray = new deAnimationKeyframe*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pKeyframes ){
-			for( i=0; i<pKeyframeCount; i++ ) newArray[ i ] = pKeyframes[ i ];
+		deAnimationKeyframe **newArray = new deAnimationKeyframe*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pKeyframes){
+			for(i=0; i<pKeyframeCount; i++) newArray[i] = pKeyframes[i];
 			delete [] pKeyframes;
 		}
 		pKeyframes = newArray;
 		pKeyframeSize = newSize;
 	}
-	pKeyframes[ pKeyframeCount ] = keyframe;
+	pKeyframes[pKeyframeCount] = keyframe;
 	pKeyframeCount++;
 }
 
-int deAnimationKeyframeList::GetLeadingKeyframe( int startkf, float time ) const{
+int deAnimationKeyframeList::GetLeadingKeyframe(int startkf, float time) const{
 	int leadkf = 0;
-	if( startkf > 0 && time >= pKeyframes[ startkf ]->GetTime() ){
+	if(startkf > 0 && time >= pKeyframes[startkf]->GetTime()){
 		leadkf = startkf;
 	}
-	while( leadkf < pKeyframeCount && pKeyframes[ leadkf ]->GetTime() < time ) leadkf++;
+	while(leadkf < pKeyframeCount && pKeyframes[leadkf]->GetTime() < time) leadkf++;
 	return leadkf > 0 ? leadkf - 1 : 0;
 }

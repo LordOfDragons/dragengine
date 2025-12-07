@@ -39,20 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUEffectToggleEnabled::seUEffectToggleEnabled( seEffect *effect ) :
-pEffect( NULL )
+seUEffectToggleEnabled::seUEffectToggleEnabled(seEffect *effect) :
+pEffect(NULL)
 {
-	if( ! effect ){
-		DETHROW( deeInvalidParam );
+	if(!effect){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
 		pEffect = effect;
 		pEffect->AddReference();
 		
-		SetShortInfo( "Effect toggle enabled" );
+		SetShortInfo("Effect toggle enabled");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ seUEffectToggleEnabled::~seUEffectToggleEnabled(){
 ///////////////
 
 void seUEffectToggleEnabled::Undo(){
-	pEffect->SetEnabled( ! pEffect->GetEnabled() );
+	pEffect->SetEnabled(!pEffect->GetEnabled());
 }
 
 void seUEffectToggleEnabled::Redo(){
-	pEffect->SetEnabled( ! pEffect->GetEnabled() );
+	pEffect->SetEnabled(!pEffect->GetEnabled());
 }
 
 
@@ -81,7 +81,7 @@ void seUEffectToggleEnabled::Redo(){
 //////////////////////
 
 void seUEffectToggleEnabled::pCleanUp(){
-	if( pEffect ){
+	if(pEffect){
 		pEffect->FreeReference();
 	}
 }

@@ -50,7 +50,7 @@ igdeTriggerExpression::igdeTriggerExpression(){
 igdeTriggerExpression::~igdeTriggerExpression(){
 	UnlinkTriggerTargets();
 	
-	if( pRootComponent ){
+	if(pRootComponent){
 		pRootComponent->FreeReference();
 	}
 }
@@ -60,15 +60,15 @@ igdeTriggerExpression::~igdeTriggerExpression(){
 // Management
 ///////////////
 
-void igdeTriggerExpression::SetRootComponent( igdeTriggerExpressionComponent *component ){
-	if( component != pRootComponent ){
-		if( pRootComponent ){
+void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *component){
+	if(component != pRootComponent){
+		if(pRootComponent){
 			pRootComponent->FreeReference();
 		}
 		
 		pRootComponent = component;
 		
-		if( component ){
+		if(component){
 			component->AddReference();
 		}
 	}
@@ -84,34 +84,34 @@ bool igdeTriggerExpression::IsNotEmpty() const{
 	return pRootComponent != NULL;
 }
 
-void igdeTriggerExpression::SetResult( bool result ){
+void igdeTriggerExpression::SetResult(bool result){
 	pResult = result;
 }
 
-void igdeTriggerExpression::SetEnabled( bool enabled ){
+void igdeTriggerExpression::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
 
 
-void igdeTriggerExpression::LinkTriggerTargets( igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener ){
-	if( pRootComponent ){
-		pRootComponent->LinkTargets( triggerTable, listener );
+void igdeTriggerExpression::LinkTriggerTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener){
+	if(pRootComponent){
+		pRootComponent->LinkTargets(triggerTable, listener);
 		Evaluate();
 	}
 }
 
 void igdeTriggerExpression::UnlinkTriggerTargets(){
-	if( pRootComponent ){
+	if(pRootComponent){
 		pRootComponent->UnlinkTargets();
 	}
 }
 
 bool igdeTriggerExpression::Evaluate(){
-	if( pEnabled && pRootComponent ){
+	if(pEnabled && pRootComponent){
 		const bool result = pRootComponent->Evaluate();
 		
-		if( result != pResult ){
+		if(result != pResult){
 			pResult = result;
 			return true;
 		}

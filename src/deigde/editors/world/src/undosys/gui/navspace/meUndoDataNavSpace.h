@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create navigation space undo data. */
-	meUndoDataNavSpace( meNavigationSpace *navspace );
+	meUndoDataNavSpace(meNavigationSpace *navspace);
 	
 	/** \brief Clean up navigation space undo data. */
 	virtual ~meUndoDataNavSpace();

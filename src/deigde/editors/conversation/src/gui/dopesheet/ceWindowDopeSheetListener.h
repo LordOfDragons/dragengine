@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	ceWindowDopeSheetListener( ceWindowDopeSheet &window );
+	ceWindowDopeSheetListener(ceWindowDopeSheet &window);
 	
 	/** \brief Clean up listener. */
 	virtual ~ceWindowDopeSheetListener();
@@ -55,47 +55,47 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Conversation changed. */
-	virtual void ConversationChanged( ceConversation *conversation );
+	virtual void ConversationChanged(ceConversation *conversation);
 	
 	/** \brief Camera shot changed. */
-	virtual void CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot );
+	virtual void CameraShotChanged(ceConversation *conversation, ceCameraShot *cameraShot);
 	
 	/** \brief Active camera shot changed. */
-	virtual void ActiveCameraShotChanged( ceConversation *conversation );
+	virtual void ActiveCameraShotChanged(ceConversation *conversation);
 	
 	
 	
 	/** \brief File count or order changed. */
-	virtual void FileStructureChanged( ceConversation *conversation );
+	virtual void FileStructureChanged(ceConversation *conversation);
 	
 	/** \brief Active file changed. */
-	virtual void ActiveFileChanged( ceConversation *conversation );
+	virtual void ActiveFileChanged(ceConversation *conversation);
 	
 	
 	
 	/** \brief Topic count or order changed. */
-	virtual void TopicStructureChanged( ceConversation *conversation, ceConversationFile *file );
+	virtual void TopicStructureChanged(ceConversation *conversation, ceConversationFile *file);
 	
 	/** \brief Active topic changed. */
-	virtual void ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file );
+	virtual void ActiveTopicChanged(ceConversation *conversation, ceConversationFile *file);
 	
 	
 	
 	/** \brief Action changed. */
-	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file,
-		ceConversationTopic *topic, ceConversationAction *action );
+	virtual void ActionChanged(ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action);
 	
 	/** \brief Active element changed. */
-	virtual void ActiveChanged( ceConversation *conversation, ceConversationFile *file,
-		ceConversationTopic *topic );
+	virtual void ActiveChanged(ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic);
 	
 	
 	
 	/** \brief Playback parameters changed. */
-	virtual void PlaybackChanged( ceConversation *conversation );
+	virtual void PlaybackChanged(ceConversation *conversation);
 	
 	/** \brief Playback action stack changed. */
-	virtual void PlaybackActionStackChanged( ceConversation *conversation );
+	virtual void PlaybackActionStackChanged(ceConversation *conversation);
 	/*@}*/
 };
 

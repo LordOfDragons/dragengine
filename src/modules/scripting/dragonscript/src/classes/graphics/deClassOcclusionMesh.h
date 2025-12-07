@@ -44,7 +44,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new script class. */
-	deClassOcclusionMesh( deScriptingDragonScript *ds );
+	deClassOcclusionMesh(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
 	~deClassOcclusionMesh();
 	/*@}*/
@@ -52,14 +52,14 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the scripting module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	/** Retrieves the occlusion mesh or NULL if object is NULL. */
-	deOcclusionMesh *GetOcclusionMesh( dsRealObject *object ) const;
+	deOcclusionMesh *GetOcclusionMesh(dsRealObject *object) const;
 	/** Pushes an occlusion mesh on the stack (pushes nil if instance is NULL). */
-	void PushOcclusionMesh( dsRunTime *rt, deOcclusionMesh *occlusionMesh );
+	void PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occlusionMesh);
 	/*@}*/
 	
 private:
@@ -67,20 +67,20 @@ private:
 		dsClass *clsOccM, *clsVoid, *clsBool, *clsStr, *clsInt, *clsObj, *clsRN;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfLoadAsynchron );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfLoadAsynchron);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
+	DEF_NATFUNC(nfGetFilename);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfEquals2 );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfEquals2);
 #undef DEF_NATFUNC
 };
 

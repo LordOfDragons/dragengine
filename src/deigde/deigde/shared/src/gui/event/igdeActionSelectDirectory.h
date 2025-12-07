@@ -57,7 +57,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionSelectDirectory( igdeEnvironment &environment, igdeTextField &textField, bool useGameVFS = true );
+	igdeActionSelectDirectory(igdeEnvironment &environment, igdeTextField &textField, bool useGameVFS = true);
 	
 	
 	
@@ -104,7 +104,7 @@ public:
 	 * 
 	 * \note Implementation is allowed to change \em path to modify the stored value.
 	 */
-	virtual bool AcceptDirectory( decString &directory );
+	virtual bool AcceptDirectory(decString &directory);
 	
 	/**
 	 * \brief Default directory if text is empty.

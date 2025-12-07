@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	inline const decString &GetName() const{ return pName; }
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	inline const decUnicodeString &GetText() const{ return pText; }
-	void SetText( const decUnicodeString &text );
+	void SetText(const decUnicodeString &text);
 	/*@}*/
 };
 

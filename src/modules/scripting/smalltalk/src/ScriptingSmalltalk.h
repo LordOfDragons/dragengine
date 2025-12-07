@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create scripting module. */
-	ScriptingSmalltalk( deLoadableModule &loadableModule );
+	ScriptingSmalltalk(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up scripting module. */
 	virtual ~ScriptingSmalltalk();
@@ -118,7 +118,7 @@ public:
 	 *          those requirements. After the Init function has exited the scripting
 	 *          module is ready to operate the game.
 	 */
-	virtual bool Init( const char *scriptDirectory, const char *gameObject );
+	virtual bool Init(const char *scriptDirectory, const char *gameObject);
 	
 	/** \brief Shut down the scripting module and frees all resources. */
 	virtual void ShutDown();
@@ -126,32 +126,32 @@ public:
 	
 	
 	/** \brief Create peer for the given collider object. */
-	virtual deBaseScriptingCollider *CreateCollider( deCollider *collider );
+	virtual deBaseScriptingCollider *CreateCollider(deCollider *collider);
 	
 	/** \brief Create peer for the given server object. */
-	virtual deBaseScriptingServer *CreateServer( deServer *server );
+	virtual deBaseScriptingServer *CreateServer(deServer *server);
 	
 	/** \brief Create peer for the given connection object. */
-	virtual deBaseScriptingConnection *CreateConnection( deConnection *connection );
+	virtual deBaseScriptingConnection *CreateConnection(deConnection *connection);
 	
 	/** \brief Create peer for the given network state object. */
-	virtual deBaseScriptingNetworkState *CreateNetworkState( deNetworkState *state );
+	virtual deBaseScriptingNetworkState *CreateNetworkState(deNetworkState *state);
 	
 	/** \brief Create peer for the given touch sensor object. */
-	virtual deBaseScriptingTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor );
+	virtual deBaseScriptingTouchSensor *CreateTouchSensor(deTouchSensor *touchSensor);
 	
 	/** \brief Create peer for the given prop field object. */
-	virtual deBaseScriptingPropField *CreatePropField( dePropField *propField );
+	virtual deBaseScriptingPropField *CreatePropField(dePropField *propField);
 	
 	/** \brief Create peer for the given particle emitter instance object or NULL if not used. */
 	virtual deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance(
-		deParticleEmitterInstance *instance );
+		deParticleEmitterInstance *instance);
 	
 	/** \brief Create deSoundLevelMeter peer. */
-	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
+	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter);
 	
 	/** \brief Create deSpeaker peer. */
-	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	virtual deBaseScriptingSpeaker *CreateSpeaker(deSpeaker *speaker);
 	
 	
 	
@@ -186,7 +186,7 @@ public:
 	 * \brief Send the given event to game scripts.
 	 * \return true if the call has been successfull or false otherwise
 	 */
-	virtual bool SendEvent( deInputEvent *event );
+	virtual bool SendEvent(deInputEvent *event);
 	
 	
 	
@@ -202,20 +202,20 @@ public:
 	
 	
 	/** \brief Send message to game object. */
-	bool SendSTMessage( OOP selector );
+	bool SendSTMessage(OOP selector);
 	
 	/** \brief Create object for a class. */
-	OOP CreateNewObject( OOP stclass );
+	OOP CreateNewObject(OOP stclass);
 	
 	/**
 	 * \brief Create object for a given class with specific instance size.
 	 */
-	OOP CreateNewObject( OOP stclass, int instVarBytes );
+	OOP CreateNewObject(OOP stclass, int instVarBytes);
 	
 	/**
 	 * \brief Create object for the a class with specific instance size and sending 'initialize'.
 	 */
-	OOP CreateNewObjectWithInit( OOP stclass, int instVarBytes );
+	OOP CreateNewObjectWithInit(OOP stclass, int instVarBytes);
 	
 	
 	
@@ -240,19 +240,19 @@ public:
 	inline OOP GetSelectorAt() const{ return pSelectorAt; }
 	
 	/** \brief Load scripts from a directory. */
-	bool LoadScripts( deVirtualFileSystem &vfs, const char *directory );
+	bool LoadScripts(deVirtualFileSystem &vfs, const char *directory);
 	/*@}*/
 	
 private:
-	OOP pGetSystemClassByName( const char *name );
-	OOP pGetSystemSymbolByName( const char *name );
+	OOP pGetSystemClassByName(const char *name);
+	OOP pGetSystemSymbolByName(const char *name);
 	
 	void pObtainSTStuff();
 	void pCreateClasses();
 	
-	bool pLoadGameScripts( const char *directory, const char *gameClass );
-	void pAddScripts( deVirtualFileSystem &vfs, const char *path );
-	bool pIsFileType( const char *filename, const char *extension );
+	bool pLoadGameScripts(const char *directory, const char *gameClass);
+	void pAddScripts(deVirtualFileSystem &vfs, const char *path);
+	bool pIsFileType(const char *filename, const char *extension);
 };
 
 #endif

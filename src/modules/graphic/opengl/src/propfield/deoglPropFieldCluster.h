@@ -47,8 +47,8 @@ public:
 	/** Instance. */
 	struct sInstance{
 		int instance;
-		float rotation[ 9 ];
-		float position[ 3 ];
+		float rotation[9];
+		float position[3];
 		float scaling;
 		int bstate;
 	};
@@ -60,9 +60,9 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglPropFieldCluster &pCluster;
 	public:
-		WorldComputeElement( deoglPropFieldCluster &cluster );
-		virtual void UpdateData( sDataElement &data ) const;
-		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+		WorldComputeElement(deoglPropFieldCluster &cluster);
+		virtual void UpdateData(sDataElement &data) const;
+		virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
 	};
 	
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new prop field cluster. */
-	deoglPropFieldCluster( deoglRPropFieldType &propFieldType );
+	deoglPropFieldCluster(deoglRPropFieldType &propFieldType);
 	
 	/** Clean up prop field cluster. */
 	~deoglPropFieldCluster();
@@ -125,7 +125,7 @@ public:
 	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Set extends. */
-	void SetExtends( const decVector &minExtend, const decVector &maxExtend );
+	void SetExtends(const decVector &minExtend, const decVector &maxExtend);
 	
 	
 	
@@ -133,7 +133,7 @@ public:
 	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
 	/** Set number of instances. */
-	void SetInstanceCount( int count );
+	void SetInstanceCount(int count);
 	
 	/** Instances. */
 	inline sInstance *GetInstances() const{ return pInstances; }
@@ -159,10 +159,10 @@ public:
 	 * Prepare bend state data.
 	 * \warning Called during synchronization by main thread.
 	 */
-	void PrepareBendStateData( const dePropFieldType &type );
+	void PrepareBendStateData(const dePropFieldType &type);
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const;
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -199,7 +199,7 @@ public:
 	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const;
 	
 	/** Mark texture units configurations dirty. */
 	void MarkTUCsDirty();
@@ -213,7 +213,7 @@ public:
 	
 	
 	/** Add to world compute. */
-	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	void AddToWorldCompute(deoglWorldCompute &worldCompute);
 	
 	/** Update world compute. */
 	void UpdateWorldCompute();

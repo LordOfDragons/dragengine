@@ -27,8 +27,8 @@
 // Class deBaseOcclusionMeshModule
 ////////////////////////////////////
 
-deBaseOcclusionMeshModule::deBaseOcclusionMeshModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseOcclusionMeshModule::deBaseOcclusionMeshModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseOcclusionMeshModule::~deBaseOcclusionMeshModule(){

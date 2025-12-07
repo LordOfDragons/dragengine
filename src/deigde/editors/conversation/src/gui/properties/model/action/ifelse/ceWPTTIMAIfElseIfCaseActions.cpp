@@ -57,11 +57,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAIfElseIfCaseActions::ceWPTTIMAIfElseIfCaseActions( ceWindowMain &windowMain,
-ceConversation &conversation, const ceConversationActionList &actions ) :
-ceWPTTIMActions( windowMain, conversation, etActionIfElseCaseActions, actions )
+ceWPTTIMAIfElseIfCaseActions::ceWPTTIMAIfElseIfCaseActions(ceWindowMain &windowMain,
+ceConversation &conversation, const ceConversationActionList &actions) :
+ceWPTTIMActions(windowMain, conversation, etActionIfElseCaseActions, actions)
 {
-	SetText( "Actions" );
+	SetText("Actions");
 }
 
 ceWPTTIMAIfElseIfCaseActions::~ceWPTTIMAIfElseIfCaseActions(){
@@ -74,12 +74,12 @@ ceWPTTIMAIfElseIfCaseActions::~ceWPTTIMAIfElseIfCaseActions(){
 
 ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElseIfCaseActions::GetModelIfCase() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if( ! parent ){
+	if(!parent){
 		return NULL;
 	}
 	
-	if( parent->GetType() == etActionIfElseCase ){
-		return ( ceWPTTIMAIfElseIfCase* )parent;
+	if(parent->GetType() == etActionIfElseCase){
+		return (ceWPTTIMAIfElseIfCase*)parent;
 		
 	}else{
 		return NULL;
@@ -88,7 +88,7 @@ ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElseIfCaseActions::GetModelIfCase() const{
 
 ceWPTTIMAIfElse *ceWPTTIMAIfElseIfCaseActions::GetModelIfElse() const{
 	ceWPTTIMAIfElseIfCase * const ifCase = GetModelIfCase();
-	if( ifCase ){
+	if(ifCase){
 		return ifCase->GetModelIfElse();
 		
 	}else{
@@ -98,18 +98,18 @@ ceWPTTIMAIfElse *ceWPTTIMAIfElseIfCaseActions::GetModelIfElse() const{
 
 
 
-void ceWPTTIMAIfElseIfCaseActions::OnContextMenu( igdeMenuCascade &contextMenu ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMAIfElseIfCaseActions::OnContextMenu(igdeMenuCascade &contextMenu){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAIfElseIfCase * const modelIfCase = GetModelIfCase();
-	if( ! modelIfCase ){
+	if(!modelIfCase){
 		return;
 	}
 	
 	ceWPTTIMAIfElse * const modelIfElse = modelIfCase->GetModelIfElse();
-	if( ! modelIfElse ){
+	if(!modelIfElse){
 		return;
 	}
 	
@@ -117,7 +117,7 @@ void ceWPTTIMAIfElseIfCaseActions::OnContextMenu( igdeMenuCascade &contextMenu )
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+	if(!topic){
 		return;
 	}
 	
@@ -131,37 +131,37 @@ void ceWPTTIMAIfElseIfCaseActions::OnContextMenu( igdeMenuCascade &contextMenu )
 	int i;
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
-		environment, "Add Action", environment.GetStockIcon( igdeEnvironment::esiPlus )));
-	contextMenu.AddChild( subMenu );
+		environment, "Add Action", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
 	
-	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMAIfElseCaseAddAction( windowMain, conversation, *topic,
-			ifElse, ifCase, ceWPTTIMAction::ListAddMenuActions[ i ], indexAppend ), true );
+	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
+		helper.MenuCommand(subMenu, new ceWPTMAIfElseCaseAddAction(windowMain, conversation, *topic,
+			ifElse, ifCase, ceWPTTIMAction::ListAddMenuActions[i], indexAppend), true);
 	}
 	
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCaseCopyActions( windowMain, ifCase ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCasePasteActions(
-		windowMain, conversation, *topic, ifElse, ifCase, indexAppend ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCasePasteSnippet(
-		windowMain, conversation, *topic, ifElse, ifCase, indexAppend ), true );
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseCopyActions(windowMain, ifCase), true);
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCasePasteActions(
+		windowMain, conversation, *topic, ifElse, ifCase, indexAppend), true);
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCasePasteSnippet(
+		windowMain, conversation, *topic, ifElse, ifCase, indexAppend), true);
 	
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCaseRemoveAllActions(
-		windowMain, conversation, *topic, ifElse, ifCase ), true );
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseRemoveAllActions(
+		windowMain, conversation, *topic, ifElse, ifCase), true);
 }
 
-void ceWPTTIMAIfElseIfCaseActions::ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMAIfElseIfCaseActions::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTIMAIfElseIfCase * const modelIfCase = GetModelIfCase();
-	if( ! modelIfCase ){
+	if(!modelIfCase){
 		return;
 	}
 	
 	ceWPTTIMAIfElse * const modelIfElse = modelIfCase->GetModelIfElse();
-	if( ! modelIfElse ){
+	if(!modelIfElse){
 		return;
 	}
 	
@@ -169,7 +169,7 @@ void ceWPTTIMAIfElseIfCaseActions::ContextMenuAction( igdeMenuCascade &contextMe
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+	if(!topic){
 		return;
 	}
 	
@@ -178,52 +178,52 @@ void ceWPTTIMAIfElseIfCaseActions::ContextMenuAction( igdeMenuCascade &contextMe
 	ceCAIfElse &ifElse = *modelIfElse->GetActionIfElse();
 	ceCAIfElseCase &ifCase = *modelIfCase->GetIfCase();
 	const ceConversationActionList &actions = ifCase.GetActions();
-	const int indexAction = action ? actions.IndexOf( action ) : -1;
+	const int indexAction = action ? actions.IndexOf(action) : -1;
 	int i;
 	
 	// child action specific
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCaseMoveAction( windowMain, conversation,
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseMoveAction(windowMain, conversation,
 		*topic, ifElse, ifCase, action, indexAction - 1, "Move Action Up",
-		windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ) ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCaseMoveAction( windowMain, conversation,
+		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)), true);
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseMoveAction(windowMain, conversation,
 		*topic, ifElse, ifCase, action, indexAction + 1, "Move Action Down",
-		windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiDown ) ), true );
-	helper.MenuSeparator( contextMenu );
+		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)), true);
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, new ceWPTMACopyAction( windowMain, action ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCaseCutAction(
-		windowMain, conversation, *topic, ifElse, ifCase, action ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCasePasteActions( windowMain, conversation,
+	helper.MenuCommand(contextMenu, new ceWPTMACopyAction(windowMain, action), true);
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseCutAction(
+		windowMain, conversation, *topic, ifElse, ifCase, action), true);
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCasePasteActions(windowMain, conversation,
 		*topic, ifElse, ifCase, indexAction, "Paste Actions Before" ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCasePasteActions( windowMain, conversation,
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCasePasteActions(windowMain, conversation,
 		*topic, ifElse, ifCase, indexAction + 1, "Paste Actions After" ), true );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, new ceWPTMAIfElseCaseRemoveAction(
-		windowMain, conversation, *topic, ifElse, ifCase, action ), true );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseRemoveAction(
+		windowMain, conversation, *topic, ifElse, ifCase, action), true);
+	helper.MenuSeparator(contextMenu);
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
-		environment, "Insert Action Before", environment.GetStockIcon( igdeEnvironment::esiPlus )));
-	contextMenu.AddChild( subMenu );
-	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMAIfElseCaseAddAction( windowMain, conversation, *topic,
-			ifElse, ifCase, ceWPTTIMAction::ListAddMenuActions[ i ], indexAction ), true );
+		environment, "Insert Action Before", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
+	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
+		helper.MenuCommand(subMenu, new ceWPTMAIfElseCaseAddAction(windowMain, conversation, *topic,
+			ifElse, ifCase, ceWPTTIMAction::ListAddMenuActions[i], indexAction), true);
 	}
 	
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Insert Action After",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
-	contextMenu.AddChild( subMenu );
-	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMAIfElseCaseAddAction( windowMain, conversation, *topic,
-			ifElse, ifCase, ceWPTTIMAction::ListAddMenuActions[ i ], indexAction + 1 ), true );
+	subMenu.TakeOver(new igdeMenuCascade(environment, "Insert Action After",
+		environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
+	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
+		helper.MenuCommand(subMenu, new ceWPTMAIfElseCaseAddAction(windowMain, conversation, *topic,
+			ifElse, ifCase, ceWPTTIMAction::ListAddMenuActions[i], indexAction + 1), true);
 	}
 }
 
 void ceWPTTIMAIfElseIfCaseActions::Update(){
 	ceWPTTIMAIfElseIfCase * const ifCase = GetModelIfCase();
-	if( ifCase ){
-		SetExpanded( ifCase->GetIfCase()->GetTIMActionsExpanded() );
+	if(ifCase){
+		SetExpanded(ifCase->GetIfCase()->GetTIMActionsExpanded());
 	}
 	
 	ceWPTTIMActions::Update();
@@ -231,7 +231,7 @@ void ceWPTTIMAIfElseIfCaseActions::Update(){
 
 void ceWPTTIMAIfElseIfCaseActions::OnExpandedChanged(){
 	ceWPTTIMAIfElseIfCase * const ifCase = GetModelIfCase();
-	if( ifCase ){
-		ifCase->GetIfCase()->SetTIMActionsExpanded( GetExpanded() );
+	if(ifCase){
+		ifCase->GetIfCase()->SetTIMActionsExpanded(GetExpanded());
 	}
 }

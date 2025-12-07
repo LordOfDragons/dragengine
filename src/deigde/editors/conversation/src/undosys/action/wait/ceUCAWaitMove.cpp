@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitMove::ceUCAWaitMove( ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int newIndex ){
-	if( ! topic || ! wait || ! action ) DETHROW( deeInvalidParam );
+ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int newIndex){
+	if(!topic || !wait || !action) DETHROW(deeInvalidParam);
 	
 	int count = 0;
 	
@@ -52,14 +52,14 @@ ceUCAWaitMove::ceUCAWaitMove( ceConversationTopic *topic, ceCAWait *wait, ceConv
 	pNewIndex = newIndex;
 	pOldIndex = -1;
 	
-	pOldIndex = wait->GetActions().IndexOf( action );
+	pOldIndex = wait->GetActions().IndexOf(action);
 	count = wait->GetActions().GetCount();
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= count ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= count) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Action Wait Move Action" );
+	SetShortInfo("Action Wait Move Action");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -72,13 +72,13 @@ ceUCAWaitMove::ceUCAWaitMove( ceConversationTopic *topic, ceCAWait *wait, ceConv
 }
 
 ceUCAWaitMove::~ceUCAWaitMove(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pWait ){
+	if(pWait){
 		pWait->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -89,11 +89,11 @@ ceUCAWaitMove::~ceUCAWaitMove(){
 ///////////////
 
 void ceUCAWaitMove::Undo(){
-	pWait->GetActions().MoveTo( pAction, pOldIndex );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->GetActions().MoveTo(pAction, pOldIndex);
+	pTopic->NotifyActionStructureChanged(pWait);
 }
 
 void ceUCAWaitMove::Redo(){
-	pWait->GetActions().MoveTo( pAction, pNewIndex );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->GetActions().MoveTo(pAction, pNewIndex);
+	pTopic->NotifyActionStructureChanged(pWait);
 }

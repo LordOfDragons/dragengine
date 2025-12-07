@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create properties panel. */
-	seWPSynthesizer( seViewSynthesizer &viewSynthesizer );
+	seWPSynthesizer(seViewSynthesizer &viewSynthesizer);
 	
 protected:
 	/** \brief Clean up properties panel. */
@@ -89,7 +89,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	
 	

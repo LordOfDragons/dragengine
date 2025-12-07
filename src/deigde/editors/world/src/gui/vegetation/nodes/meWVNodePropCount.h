@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodePropCount( meWindowVegetation &windowVegetation, meHTVRulePropCount *rule );
+	meWVNodePropCount(meWindowVegetation &windowVegetation, meHTVRulePropCount *rule);
 	
 protected:
 	/** \brief Clean up object. */

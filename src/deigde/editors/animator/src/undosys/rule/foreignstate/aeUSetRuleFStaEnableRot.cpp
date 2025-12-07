@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaEnableRot::aeUSetRuleFStaEnableRot( aeRuleForeignState *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaEnableRot::aeUSetRuleFStaEnableRot(aeRuleForeignState *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -48,9 +48,9 @@ aeUSetRuleFStaEnableRot::aeUSetRuleFStaEnableRot( aeRuleForeignState *rule ){
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Set bone rotator rule enable rotation" );
+		SetShortInfo("Set bone rotator rule enable rotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ aeUSetRuleFStaEnableRot::~aeUSetRuleFStaEnableRot(){
 ///////////////
 
 void aeUSetRuleFStaEnableRot::Undo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeUSetRuleFStaEnableRot::Redo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 
@@ -79,5 +79,5 @@ void aeUSetRuleFStaEnableRot::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableRot::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

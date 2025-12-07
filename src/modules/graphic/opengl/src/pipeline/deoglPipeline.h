@@ -169,7 +169,7 @@ public:
 	inline int GetRTSIndex() const{ return pRTSIndex; }
 	
 	/** Set render task shader pipeline. */
-	void SetRTSIndex( int index );
+	void SetRTSIndex(int index);
 	
 	
 	

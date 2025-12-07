@@ -43,9 +43,9 @@
 ////////////////////////////
 
 deoglCapCheckUBODirectLinkDeadloop::deoglCapCheckUBODirectLinkDeadloop(
-deoglCapabilities &capabilities ) :
-pCapabilities( capabilities ),
-pWorking( true ){
+deoglCapabilities &capabilities) :
+pCapabilities(capabilities),
+pWorking(true){
 }
 
 
@@ -53,7 +53,7 @@ pWorking( true ){
 // Management
 ///////////////
 
-void deoglCapCheckUBODirectLinkDeadloop::Check( GLuint fbo ){
+void deoglCapCheckUBODirectLinkDeadloop::Check(GLuint fbo){
 	// Summary:
 	//    The UBO direct link deadloop bug is has been observed on smartphone devices so far. It is
 	//    not known if it affects only OpenGL ES used in these devices or if it is a smartphone driver
@@ -102,9 +102,9 @@ void deoglCapCheckUBODirectLinkDeadloop::Check( GLuint fbo ){
 	
 	#ifdef OS_ANDROID
 		pWorking = false;
-		logger.LogWarn( "Capabilities: UBO Direct Link Deadloop: Driver Bug (Android)!" );
+		logger.LogWarn("Capabilities: UBO Direct Link Deadloop: Driver Bug (Android)!");
 		
 	#else
-		logger.LogInfo( "Capabilities: UBO Direct Link Deadloop: Working" );
+		logger.LogInfo("Capabilities: UBO Direct Link Deadloop: Working");
 	#endif
 }

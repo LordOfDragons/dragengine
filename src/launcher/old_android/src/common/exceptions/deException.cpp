@@ -51,11 +51,11 @@
 // Constructors
 /////////////////
 
-deException::deException( const char *name, const char *description, const char *file, int line ) :
-pName( name ? name : STR_NULL ),
-pDescription( description ? description : STR_NULL ),
-pFile( file ? file : STR_NULL ),
-pLine( decMath::max( line, 0 ) ){
+deException::deException(const char *name, const char *description, const char *file, int line) :
+pName(name ? name : STR_NULL),
+pDescription(description ? description : STR_NULL),
+pFile(file ? file : STR_NULL),
+pLine(decMath::max(line, 0)){
 	pBuildBacktrace();
 }
 
@@ -63,7 +63,7 @@ pLine( decMath::max( line, 0 ) ){
 
 // Management
 ///////////////
-bool deException::IsNamed( const char *name ) const{
+bool deException::IsNamed(const char *name) const{
 	return pName == name;
 }
 
@@ -80,23 +80,23 @@ decStringList deException::FormatOutput() const{
 	decStringList output;
 	
 	decString text;
-	text.Format( "Exception: %s", pName.GetString() );
-	output.Add( text );
+	text.Format("Exception: %s", pName.GetString());
+	output.Add(text);
 	
-	text.Format( "Description: %s", pDescription.GetString() );
-	output.Add( text );
+	text.Format("Description: %s", pDescription.GetString());
+	output.Add(text);
 	
-	text.Format( "Source File: %s", pFile.GetString() );
-	output.Add( text );
+	text.Format("Source File: %s", pFile.GetString());
+	output.Add(text);
 	
-	text.Format( "Source Line: %i", pLine );
-	output.Add( text );
+	text.Format("Source Line: %i", pLine);
+	output.Add(text);
 	
 	const int backtraceCount = pBacktrace.GetCount();
 	int i;
-	for( i=0; i<backtraceCount; i++ ){
-		text.Format( "Backtrace: %s", pBacktrace[ i ].GetString() );
-		output.Add( text );
+	for(i=0; i<backtraceCount; i++){
+		text.Format("Backtrace: %s", pBacktrace[i].GetString());
+		output.Add(text);
 	}
 	
 	output += AdditionalInformation();
@@ -109,8 +109,8 @@ void deException::PrintError() const{
 	const int count = output.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		__android_log_print( ANDROID_LOG_VERBOSE, "DEAndroidLauncher", "%s", output.GetAt( i ).GetString() );
+	for(i=0; i<count; i++){
+		__android_log_print(ANDROID_LOG_VERBOSE, "DEAndroidLauncher", "%s", output.GetAt(i).GetString());
 	}
 }
 
@@ -124,22 +124,22 @@ struct sBacktraceState{
 	const void **end;
 };
 
-static _Unwind_Reason_Code unwindCallback( _Unwind_Context *context, void *arg ){
-	__android_log_print( ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__ );
-	sBacktraceState &state = *( ( sBacktraceState* )arg );
-	const uintptr_t pc = _Unwind_GetIP( context );
-	if( pc ){
-	__android_log_print( ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__ );
-		if( state.current == state.end ){
-	__android_log_print( ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__ );
+static _Unwind_Reason_Code unwindCallback(_Unwind_Context *context, void *arg){
+	__android_log_print(ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__);
+	sBacktraceState &state = *((sBacktraceState*)arg);
+	const uintptr_t pc = _Unwind_GetIP(context);
+	if(pc){
+	__android_log_print(ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__);
+		if(state.current == state.end){
+	__android_log_print(ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__);
 			return _URC_END_OF_STACK;
 			
 		}else{
-	__android_log_print( ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__ );
+	__android_log_print(ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__);
 			*state.current++ = ( const void* )pc;
 		}
 	}
-	__android_log_print( ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__ );
+	__android_log_print(ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__);
 	
 	return _URC_NO_REASON;
 }
@@ -157,30 +157,30 @@ void deException::pBuildBacktrace(){
 	// developers once in life-time implement something which does NOT SUCK!!!!
 	return;
 	
-	const void *context[ MAX_BACKTRACE_COUNT ];
-	const void ** const stateBegin = &context[ 0 ];
+	const void *context[MAX_BACKTRACE_COUNT];
+	const void ** const stateBegin = &context[0];
 	sBacktraceState state;
 	state.current = stateBegin;
 	state.end = stateBegin + MAX_BACKTRACE_COUNT;
-	__android_log_print( ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__ );
-	_Unwind_Backtrace( unwindCallback, &state );
-	__android_log_print( ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__ );
-	const size_t count = ( size_t )( state.current - stateBegin );
+	__android_log_print(ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__);
+	_Unwind_Backtrace(unwindCallback, &state);
+	__android_log_print(ANDROID_LOG_VERBOSE, "CHECKPOINT", "%i", __LINE__);
+	const size_t count = (size_t)(state.current - stateBegin);
 	decString symbol;
 	size_t i;
 	
-	for( i=SKIP_SELF_TRACE_COUNT; i<count; i++ ){
-		const void * const addr = context[ i ];
+	for(i=SKIP_SELF_TRACE_COUNT; i<count; i++){
+		const void * const addr = context[i];
 		
 		Dl_info info;
-		if( dladdr( addr, &info ) && info.dli_sname ){
-			symbol.Format( "%s(%s+%p) [%p]", info.dli_fname, info.dli_sname,
-				( const char* )addr - ( const char* )info.dli_saddr, addr );
+		if(dladdr(addr, &info) && info.dli_sname){
+			symbol.Format("%s(%s+%p) [%p]", info.dli_fname, info.dli_sname,
+				(const char*)addr - (const char*)info.dli_saddr, addr);
 			
 		}else{
-			symbol.Format( "%p ??", addr );
+			symbol.Format("%p ??", addr);
 		}
 		
-		pBacktrace.Add( symbol );
+		pBacktrace.Add(symbol);
 	}
 }

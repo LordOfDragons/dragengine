@@ -42,8 +42,8 @@
 ceActorControllerList::ceActorControllerList(){
 }
 
-ceActorControllerList::ceActorControllerList( const ceActorControllerList &list ) :
-pControllers( list.pControllers ){
+ceActorControllerList::ceActorControllerList(const ceActorControllerList &list) :
+pControllers(list.pControllers){
 }
 
 ceActorControllerList::~ceActorControllerList(){
@@ -58,44 +58,44 @@ int ceActorControllerList::GetCount() const{
 	return pControllers.GetCount();
 }
 
-ceActorController *ceActorControllerList::GetAt( int index ) const{
-	return ( ceActorController* )pControllers.GetAt( index );
+ceActorController *ceActorControllerList::GetAt(int index) const{
+	return (ceActorController*)pControllers.GetAt(index);
 }
 
-ceActorController *ceActorControllerList::GetNamed( const char *name ) const{
+ceActorController *ceActorControllerList::GetNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		ceActorController * const controller = ( ceActorController* )pControllers.GetAt( i );
-		if( controller->GetName() == name ){
+	for(i=0; i<count; i++){
+		ceActorController * const controller = (ceActorController*)pControllers.GetAt(i);
+		if(controller->GetName() == name){
 			return controller;
 		}
 	}
 	return nullptr;
 }
 
-int ceActorControllerList::IndexOf( ceActorController *controller ) const{
-	return pControllers.IndexOf( controller );
+int ceActorControllerList::IndexOf(ceActorController *controller) const{
+	return pControllers.IndexOf(controller);
 }
 
-bool ceActorControllerList::Has( ceActorController *controller ) const{
-	return pControllers.Has( controller );
+bool ceActorControllerList::Has(ceActorController *controller) const{
+	return pControllers.Has(controller);
 }
 
-bool ceActorControllerList::HasNamed( const char *name ) const{
-	return GetNamed( name ) != nullptr;
+bool ceActorControllerList::HasNamed(const char *name) const{
+	return GetNamed(name) != nullptr;
 }
 
-void ceActorControllerList::Add( ceActorController *controller ){
-	if( ! controller || Has( controller ) ){
-		DETHROW( deeInvalidParam );
+void ceActorControllerList::Add(ceActorController *controller){
+	if(!controller || Has(controller)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 }
 
-void ceActorControllerList::Remove( ceActorController *controller ){
-	pControllers.Remove( controller );
+void ceActorControllerList::Remove(ceActorController *controller){
+	pControllers.Remove(controller);
 }
 
 void ceActorControllerList::RemoveAll(){
@@ -104,7 +104,7 @@ void ceActorControllerList::RemoveAll(){
 
 
 
-ceActorControllerList &ceActorControllerList::operator=( const ceActorControllerList &list ){
+ceActorControllerList &ceActorControllerList::operator=(const ceActorControllerList &list){
 	pControllers = list.pControllers;
 	return *this;
 }

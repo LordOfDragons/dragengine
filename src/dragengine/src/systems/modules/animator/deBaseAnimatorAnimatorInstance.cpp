@@ -43,13 +43,13 @@ deBaseAnimatorAnimatorInstance::~deBaseAnimatorAnimatorInstance(){
 // Notifications
 //////////////////
 
-void deBaseAnimatorAnimatorInstance::Apply( bool direct ){
+void deBaseAnimatorAnimatorInstance::Apply(bool direct){
 }
 
-void deBaseAnimatorAnimatorInstance::CaptureStateInto( int identifier ){
+void deBaseAnimatorAnimatorInstance::CaptureStateInto(int identifier){
 }
 
-void deBaseAnimatorAnimatorInstance::StoreFrameInto( int identifier, const char *moveName, float moveTime ){
+void deBaseAnimatorAnimatorInstance::StoreFrameInto(int identifier, const char *moveName, float moveTime){
 }
 
 
@@ -72,5 +72,5 @@ void deBaseAnimatorAnimatorInstance::EnableRetargetingChanged(){
 void deBaseAnimatorAnimatorInstance::ProtectDynamicBonesChanged(){
 }
 
-void deBaseAnimatorAnimatorInstance::ControllerChanged( int index ){
+void deBaseAnimatorAnimatorInstance::ControllerChanged(int index){
 }

@@ -50,7 +50,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new font. */
-	feFontGlyphSelection( feFont *parentFont );
+	feFontGlyphSelection(feFont *parentFont);
 	/** Cleans up the font. */
 	~feFontGlyphSelection();
 	/*@}*/
@@ -60,27 +60,27 @@ public:
 	/** Retrieves the number of selected glyphs. */
 	int GetSelectedGlyphCount() const;
 	/** Retrieves the n-thed selected glyph. */
-	feFontGlyph *GetSelectedGlyphAt( int index ) const;
+	feFontGlyph *GetSelectedGlyphAt(int index) const;
 	/** Determines if a glyph is in the list of selected glyphs. */
-	bool IsGlypthSelected( feFontGlyph *glyph ) const;
+	bool IsGlypthSelected(feFontGlyph *glyph) const;
 	/** Retrieves the index of the glyph if in the list of selected glyphs. */
-	int IndexOfGlyph( feFontGlyph *glyph ) const;
+	int IndexOfGlyph(feFontGlyph *glyph) const;
 	/** Adds a glyph to the selection if not there already. */
-	void AddGlyphToSelection( feFontGlyph *glyph );
+	void AddGlyphToSelection(feFontGlyph *glyph);
 	/** Removes a glyph from the selection if selected. */
-	void RemoveGlyphFromSelection( feFontGlyph *glyph );
+	void RemoveGlyphFromSelection(feFontGlyph *glyph);
 	/** Removes all glyph from the selection. */
 	void RemoveAllGlyphsFromSelection();
 	
 	/** Retrieves the list of selected glyphs. */
-	void GetSelectedList( feFontGlyphList &list ) const;
+	void GetSelectedList(feFontGlyphList &list) const;
 	
 	/** Retrieves the active glyph or NULL if none is active. */
 	inline feFontGlyph *GetActiveGlyph() const{ return pActive; }
 	/** Determines if there is an active glyph or not. */
 	bool HasActiveGlyph() const;
 	/** Sets the active glyph or NULL if none is active. */
-	void SetActiveGlyph( feFontGlyph *glyph );
+	void SetActiveGlyph(feFontGlyph *glyph);
 	/**
 	 * Sets the next possible glyph from the selection as the active one or
 	 * NULL if the selection is empty.

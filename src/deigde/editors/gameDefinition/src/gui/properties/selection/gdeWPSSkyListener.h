@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSSkyListener( gdeWPSSky &panel );
+	gdeWPSSkyListener(gdeWPSSky &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPSSkyListener();
@@ -55,15 +55,15 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object class categories changed. */
-	virtual void SkyCategoriesChanged( gdeGameDefinition *gameDefinition );
+	virtual void SkyCategoriesChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** \brief Object class changed. */
-	virtual void SkyChanged( gdeGameDefinition *gameDefinition, gdeSky *sky );
+	virtual void SkyChanged(gdeGameDefinition *gameDefinition, gdeSky *sky);
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveSkyChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveSkyChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

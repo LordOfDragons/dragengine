@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedsServer( deScriptingDragonScript *ds, deServer *server );
+	dedsServer(deScriptingDragonScript *ds, deServer *server);
 	
 	/** \brief Clean up peer. */
 	virtual ~dedsServer();
@@ -63,7 +63,7 @@ public:
 	dsRealObject *GetCallback() const;
 	
 	/** \brief Set callback object or NULL if not set. */
-	void SetCallback( dsRealObject *object );
+	void SetCallback(dsRealObject *object);
 	/*@}*/
 	
 	
@@ -73,7 +73,7 @@ public:
 	/**
 	 * \brief Remote host connected.
 	 */
-	virtual void ClientConnected( deConnection *connection );
+	virtual void ClientConnected(deConnection *connection);
 	/*@}*/
 };
 

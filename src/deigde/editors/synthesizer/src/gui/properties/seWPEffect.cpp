@@ -80,40 +80,40 @@ class cListEffects : public igdeListBoxListener{
 	seWPEffect &pPanel;
 	
 public:
-	cListEffects( seWPEffect &panel ) : pPanel( panel ){ }
+	cListEffects(seWPEffect &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSource * const source = pPanel.GetSource();
-		if( ! source ){
+		if(!source){
 			return;
 		}
 		
 		const igdeListItem * const selection = listBox->GetSelectedItem();
-		if( selection ){
-			source->SetActiveEffect( selection ? ( seEffect* )selection->GetData() : NULL );
+		if(selection){
+			source->SetActiveEffect(selection ? (seEffect*)selection->GetData() : NULL);
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( menu, pPanel.GetActionEffectCopy() );
-		helper.MenuCommand( menu, pPanel.GetActionEffectCut() );
-		helper.MenuCommand( menu, pPanel.GetActionEffectPasteAdd() );
-		helper.MenuCommand( menu, pPanel.GetActionEffectPasteInsert() );
+		helper.MenuCommand(menu, pPanel.GetActionEffectCopy());
+		helper.MenuCommand(menu, pPanel.GetActionEffectCut());
+		helper.MenuCommand(menu, pPanel.GetActionEffectPasteAdd());
+		helper.MenuCommand(menu, pPanel.GetActionEffectPasteInsert());
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
 		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::NewWith(menu.GetEnvironment(), "Add"));
-		helper.MenuCommand( submenu, windowMain.GetActionEffectAddStretch() );
-		menu.AddChild( submenu );
+		helper.MenuCommand(submenu, windowMain.GetActionEffectAddStretch());
+		menu.AddChild(submenu);
 		
-		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Insert" ) );
-		helper.MenuCommand( submenu, windowMain.GetActionEffectInsertStretch() );
-		menu.AddChild( submenu );
+		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Insert"));
+		helper.MenuCommand(submenu, windowMain.GetActionEffectInsertStretch());
+		menu.AddChild(submenu);
 		
-		helper.MenuCommand( menu, windowMain.GetActionEffectRemove() );
-		helper.MenuCommand( menu, windowMain.GetActionEffectUp() );
-		helper.MenuCommand( menu, windowMain.GetActionEffectDown() );
+		helper.MenuCommand(menu, windowMain.GetActionEffectRemove());
+		helper.MenuCommand(menu, windowMain.GetActionEffectUp());
+		helper.MenuCommand(menu, windowMain.GetActionEffectDown());
 	}
 };
 
@@ -122,13 +122,13 @@ class cActionEffectCopy : public igdeAction{
 	seWPEffect &pPanel;
 	
 public:
-	cActionEffectCopy( seWPEffect &panel ) : igdeAction( "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-		"Copy effect to clipboard" ), pPanel( panel ){ }
+	cActionEffectCopy(seWPEffect &panel) : igdeAction("Copy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"Copy effect to clipboard"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		seEffect * const effect = pPanel.GetEffect();
-		if( ! effect ){
+		if(!effect){
 			return;
 		}
 		
@@ -137,7 +137,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetSelected( pPanel.GetEffect() );
+		SetSelected(pPanel.GetEffect());
 	}
 };
 
@@ -145,13 +145,13 @@ class cActionEffectCut : public igdeAction{
 	seWPEffect &pPanel;
 	
 public:
-	cActionEffectCut( seWPEffect &panel ) : igdeAction( "Cut",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-		"Cut effect to clipboard" ), pPanel( panel ){ }
+	cActionEffectCut(seWPEffect &panel) : igdeAction("Cut",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"Cut effect to clipboard"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		seEffect * const effect = pPanel.GetEffect();
-		if( ! effect ){
+		if(!effect){
 			return;
 		}
 		
@@ -164,7 +164,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetSelected( pPanel.GetEffect() );
+		SetSelected(pPanel.GetEffect());
 	}
 };
 
@@ -173,50 +173,50 @@ protected:
 	seWPEffect &pPanel;
 	
 public:
-	cActionEffectPasteAdd( seWPEffect &panel ) : igdeAction( "Paste",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste effect from clipboard" ), pPanel( panel ){ }
+	cActionEffectPasteAdd(seWPEffect &panel) : igdeAction("Paste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"Paste effect from clipboard"), pPanel(panel){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetSource() ){
+		if(!pPanel.GetSource()){
 			return;
 		}
 		
-		seClipboardDataEffect * const cdata = ( seClipboardDataEffect* )pPanel.GetViewSynthesizer()
-			.GetWindowMain().GetClipboard().GetWithTypeName( seClipboardDataEffect::TYPE_NAME );
-		if( ! cdata ){
+		seClipboardDataEffect * const cdata = (seClipboardDataEffect*)pPanel.GetViewSynthesizer()
+			.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataEffect::TYPE_NAME);
+		if(!cdata){
 			return;
 		}
 		
 		seEffect * const effect = pPanel.GetEffect();
 		const seEffectList &list = pPanel.GetSource()->GetEffects();
-		const int index = effect ? list.IndexOf( effect ) : list.GetCount();
+		const int index = effect ? list.IndexOf(effect) : list.GetCount();
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seUSourcePasteEffect::Ref::NewWith(
 			pPanel.GetSource(), cdata->GetEffects(), index));
 	}
 	
 	virtual void Update(){
-		SetSelected( pPanel.GetSource() && pPanel.GetViewSynthesizer().GetWindowMain()
-			.GetClipboard().HasWithTypeName( seClipboardDataEffect::TYPE_NAME )  );
+		SetSelected(pPanel.GetSource() && pPanel.GetViewSynthesizer().GetWindowMain()
+			.GetClipboard().HasWithTypeName(seClipboardDataEffect::TYPE_NAME));
 	}
 };
 
 class cActionEffectPasteInsert : public cActionEffectPasteAdd{
 public:
-	cActionEffectPasteInsert( seWPEffect &panel ) : cActionEffectPasteAdd( panel ){
-		SetText( "Paste Append" );
-		SetDescription( "Paste effect from clipboard" );
+	cActionEffectPasteInsert(seWPEffect &panel) : cActionEffectPasteAdd(panel){
+		SetText("Paste Append");
+		SetDescription("Paste effect from clipboard");
 	}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetSource() ){
+		if(!pPanel.GetSource()){
 			return;
 		}
 		
-		seClipboardDataEffect * const cdata = ( seClipboardDataEffect* )pPanel.GetViewSynthesizer()
-			.GetWindowMain().GetClipboard().GetWithTypeName( seClipboardDataEffect::TYPE_NAME );
-		if( ! cdata ){
+		seClipboardDataEffect * const cdata = (seClipboardDataEffect*)pPanel.GetViewSynthesizer()
+			.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataEffect::TYPE_NAME);
+		if(!cdata){
 			return;
 		}
 		
@@ -235,47 +235,47 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPEffect::seWPEffect( seViewSynthesizer &viewSynthesizer ) :
-igdeContainerFlow( viewSynthesizer.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast ),
-pViewSynthesizer( viewSynthesizer ),
-pListener( NULL ),
-pSynthesizer( NULL ),
-pPanelStretch( NULL ),
-pActivePanel( NULL )
+seWPEffect::seWPEffect(seViewSynthesizer &viewSynthesizer) :
+igdeContainerFlow(viewSynthesizer.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast),
+pViewSynthesizer(viewSynthesizer),
+pListener(NULL),
+pSynthesizer(NULL),
+pPanelStretch(NULL),
+pActivePanel(NULL)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
-	pListener = new seWPEffectListener( *this );
+	pListener = new seWPEffectListener(*this);
 	
 	
-	pActionEffectCopy.TakeOver( new cActionEffectCopy( *this ) );
-	pActionEffectCut.TakeOver( new cActionEffectCut( *this ) );
-	pActionEffectPasteAdd.TakeOver( new cActionEffectPasteAdd( *this ) );
-	pActionEffectPasteInsert.TakeOver( new cActionEffectPasteInsert( *this ) );
+	pActionEffectCopy.TakeOver(new cActionEffectCopy(*this));
+	pActionEffectCut.TakeOver(new cActionEffectCut(*this));
+	pActionEffectPasteAdd.TakeOver(new cActionEffectPasteAdd(*this));
+	pActionEffectPasteInsert.TakeOver(new cActionEffectPasteInsert(*this));
 	
 	
-	helper.GroupBoxFlow( *this, groupBox, "Effects:" );
-	helper.ListBox( groupBox, 3, "Effects", pListEffect, new cListEffects( *this ) );
+	helper.GroupBoxFlow(*this, groupBox, "Effects:");
+	helper.ListBox(groupBox, 3, "Effects", pListEffect, new cListEffects(*this));
 	
 	
-	pSwitcher.TakeOver( new igdeSwitcher( env ) );
-	AddChild( pSwitcher );
+	pSwitcher.TakeOver(new igdeSwitcher(env));
+	AddChild(pSwitcher);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
-	pSwitcher->AddChild( panel );
+	pSwitcher->AddChild(panel);
 	
-	panel.TakeOver( pPanelStretch = new seWPAPanelEffectStretch( *this ) );
-	pSwitcher->AddChild( panel );
+	panel.TakeOver(pPanelStretch = new seWPAPanelEffectStretch(*this));
+	pSwitcher->AddChild(panel);
 	
-	pSwitcher->SetCurrent( epEmpty );
+	pSwitcher->SetCurrent(epEmpty);
 }
 
 seWPEffect::~seWPEffect(){
-	SetSynthesizer( NULL );
+	SetSynthesizer(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -285,20 +285,20 @@ seWPEffect::~seWPEffect(){
 // Management
 ///////////////
 
-void seWPEffect::SetSynthesizer( seSynthesizer *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void seWPEffect::SetSynthesizer(seSynthesizer *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
-	if( pSynthesizer ){
-		pSynthesizer->RemoveNotifier( pListener );
+	if(pSynthesizer){
+		pSynthesizer->RemoveNotifier(pListener);
 		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
-	if( synthesizer ){
-		synthesizer->AddNotifier( pListener );
+	if(synthesizer){
+		synthesizer->AddNotifier(pListener);
 		synthesizer->AddReference();
 	}
 	
@@ -320,13 +320,13 @@ seEffect *seWPEffect::GetEffect() const{
 
 
 void seWPEffect::UpdateControllerList(){
-	if( pActivePanel ){
+	if(pActivePanel){
 		pActivePanel->UpdateControllerList();
 	}
 }
 
 void seWPEffect::UpdateLinkList(){
-	if( pActivePanel ){
+	if(pActivePanel){
 		pActivePanel->UpdateLinkList();
 	}
 }
@@ -337,59 +337,59 @@ void seWPEffect::UpdateEffectList(){
 	
 	pListEffect->RemoveAllItems();
 	
-	if( source ){
+	if(source){
 		const seEffectList &list = source->GetEffects();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			seEffect * const effect = list.GetAt( i );
+		for(i=0; i<count; i++){
+			seEffect * const effect = list.GetAt(i);
 			
-			switch( effect->GetType() ){
+			switch(effect->GetType()){
 			case deSynthesizerEffectVisitorIdentify::eetStretch:
-				pListEffect->AddItem( "Time/Pitch Stretch", NULL, effect );
+				pListEffect->AddItem("Time/Pitch Stretch", NULL, effect);
 				break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				DETHROW(deeInvalidParam);
 			}
 		}
 	}
 	
-	pListEffect->SetSelectionWithData( selection );
+	pListEffect->SetSelectionWithData(selection);
 	ShowActiveEffectPanel();
 	UpdateEffect();
 }
 
 void seWPEffect::SelectActiveEffect(){
-	pListEffect->SetSelectionWithData( GetEffect() );
+	pListEffect->SetSelectionWithData(GetEffect());
 }
 
 void seWPEffect::ShowActiveEffectPanel(){
 	const seEffect * const effect = GetEffect();
-	if( ! effect ){
-		pSwitcher->SetCurrent( epEmpty );
+	if(!effect){
+		pSwitcher->SetCurrent(epEmpty);
 		return;
 	}
 	
 	const deSynthesizerEffectVisitorIdentify::eEffectTypes type = effect->GetType();
 	
-	if( type == pPanelStretch->GetRequiredType() ){
-		pSwitcher->SetCurrent( epStretch );
+	if(type == pPanelStretch->GetRequiredType()){
+		pSwitcher->SetCurrent(epStretch);
 		pActivePanel = pPanelStretch;
 		
 	}else{
-		pSwitcher->SetCurrent( epEmpty );
+		pSwitcher->SetCurrent(epEmpty);
 		pActivePanel = NULL;
 	}
 	
-	if( pActivePanel ){
+	if(pActivePanel){
 		pActivePanel->OnActivated();
 	}
 }
 
 void seWPEffect::UpdateEffect(){
-	if( pActivePanel ){
+	if(pActivePanel){
 		pActivePanel->UpdateEffect();
 	}
 }

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-decCurveBezier3DEvaluator::decCurveBezier3DEvaluator( const decCurveBezier3D &curve ) :
-pCurve( curve ){
+decCurveBezier3DEvaluator::decCurveBezier3DEvaluator(const decCurveBezier3D &curve) :
+pCurve(curve){
 }
 
 decCurveBezier3DEvaluator::~decCurveBezier3DEvaluator(){
@@ -51,47 +51,47 @@ decCurveBezier3DEvaluator::~decCurveBezier3DEvaluator(){
 // Management
 ///////////////
 
-decVector decCurveBezier3DEvaluator::EvaluateAt( int segment, float blend ) const{
+decVector decCurveBezier3DEvaluator::EvaluateAt(int segment, float blend) const{
 	const int pointCount = pCurve.GetPointCount();
 	
-	if( pointCount == 0 ){
+	if(pointCount == 0){
 		return decVector();
 	}
 	
-	if( segment < 0 ){
-		return pCurve.GetPointAt( 0 ).GetPoint();
+	if(segment < 0){
+		return pCurve.GetPointAt(0).GetPoint();
 		
-	}else if( segment >= pointCount - 1 ){
-		return pCurve.GetPointAt( segment ).GetPoint();
+	}else if(segment >= pointCount - 1){
+		return pCurve.GetPointAt(segment).GetPoint();
 		
 	}else{
-		if( pCurve.GetInterpolationMode() == decCurveBezier3D::eimConstant ){
-			return pCurve.GetPointAt( segment ).GetPoint();
+		if(pCurve.GetInterpolationMode() == decCurveBezier3D::eimConstant){
+			return pCurve.GetPointAt(segment).GetPoint();
 			
-		}else if( pCurve.GetInterpolationMode() == decCurveBezier3D::eimLinear ){
-			const decCurveBezier3DPoint &point1 = pCurve.GetPointAt( segment );
-			const decCurveBezier3DPoint &point2 = pCurve.GetPointAt( segment + 1 );
+		}else if(pCurve.GetInterpolationMode() == decCurveBezier3D::eimLinear){
+			const decCurveBezier3DPoint &point1 = pCurve.GetPointAt(segment);
+			const decCurveBezier3DPoint &point2 = pCurve.GetPointAt(segment + 1);
 			const decVector &p1 = point1.GetPoint();
 			const decVector &p2 = point2.GetPoint();
 			
-			if( blend <= 0.0f ){
+			if(blend <= 0.0f){
 				return p1;
 				
-			}else if( blend >= 1.0f ){
+			}else if(blend >= 1.0f){
 				return p2;
 				
 			}else{
-				return p1 * ( 1.0f - blend ) + p2 * blend;
+				return p1 * (1.0f - blend) + p2 * blend;
 			}
 			
 		}else{ // pCurve.GetInterpolationMode() == decCurveBezier3D::eimBezier
-			const decCurveBezier3DPoint &point1 = pCurve.GetPointAt( segment );
-			const decCurveBezier3DPoint &point2 = pCurve.GetPointAt( segment + 1 );
+			const decCurveBezier3DPoint &point1 = pCurve.GetPointAt(segment);
+			const decCurveBezier3DPoint &point2 = pCurve.GetPointAt(segment + 1);
 			const float blend1 = 1.0f - blend;
 			
 			const decVector &p1 = point1.GetPoint();
-			const decVector p2( point1.GetHandle2() );
-			const decVector p3( point2.GetHandle1() );
+			const decVector p2(point1.GetHandle2());
+			const decVector p3(point2.GetHandle1());
 			const decVector &p4 = point2.GetPoint();
 			const decVector qp1 = p1 * blend1 + p2 * blend;
 			const decVector qp2 = p2 * blend1 + p3 * blend;

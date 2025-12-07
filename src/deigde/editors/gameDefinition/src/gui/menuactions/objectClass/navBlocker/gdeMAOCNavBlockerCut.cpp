@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavBlockerCut::gdeMAOCNavBlockerCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Navigation Blocker",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class navigation blocker" )
+gdeMAOCNavBlockerCut::gdeMAOCNavBlockerCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Cut Object Class Navigation Blocker",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"Cut object class navigation blocker")
 {
 }
 
@@ -61,13 +61,13 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Navigation Blocker",
 ///////////////
 
 igdeUndo *gdeMAOCNavBlockerCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker){
 		return NULL;
 	}
 	
 	gdeOCNavigationBlocker * const navBlocker = gameDefinition.GetActiveOCNavigationBlocker();
-	if( ! navBlocker ){
+	if(!navBlocker){
 		return NULL;
 	}
 	
@@ -75,12 +75,12 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	pWindowMain.GetClipboard().Set(gdeClipboardDataOCNavBlocker::Ref::NewWith(clipOCNavigationBlocker));
 	
-	return new gdeUOCRemoveNavBlocker( &objectClass, navBlocker );
+	return new gdeUOCRemoveNavBlocker(&objectClass, navBlocker);
 }
 
 void gdeMAOCNavBlockerCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
-		&& gameDefinition->GetActiveOCNavigationBlocker() != NULL );
+		&& gameDefinition->GetActiveOCNavigationBlocker() != NULL);
 }

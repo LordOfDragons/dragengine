@@ -42,9 +42,9 @@
 ////////////////////////////
 
 deSynthesizerEffect::deSynthesizerEffect() :
-pSynthesizer( NULL ),
-pStrength( 1.0f ),
-pEnabled( true ){
+pSynthesizer(NULL),
+pStrength(1.0f),
+pEnabled(true){
 }
 
 deSynthesizerEffect::~deSynthesizerEffect(){
@@ -55,15 +55,15 @@ deSynthesizerEffect::~deSynthesizerEffect(){
 // Management
 ///////////////
 
-void deSynthesizerEffect::SetSynthesizer( deSynthesizer *synthesizer ){
+void deSynthesizerEffect::SetSynthesizer(deSynthesizer *synthesizer){
 	pSynthesizer = synthesizer;
 }
 
-void deSynthesizerEffect::SetEnabled( bool enabled ){
+void deSynthesizerEffect::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
-void deSynthesizerEffect::SetStrength( float strength ){
+void deSynthesizerEffect::SetStrength(float strength){
 	pStrength = strength;
 }
 
@@ -72,6 +72,6 @@ void deSynthesizerEffect::SetStrength( float strength ){
 // Visiting
 /////////////
 
-void deSynthesizerEffect::Visit( deSynthesizerEffectVisitor &visitor ){
-	visitor.VisitEffect( *this );
+void deSynthesizerEffect::Visit(deSynthesizerEffectVisitor &visitor){
+	visitor.VisitEffect(*this);
 }

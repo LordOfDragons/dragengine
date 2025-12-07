@@ -54,7 +54,7 @@ public:
 	inline float GetWeight() const{ return pWeight; }
 	
 	/** Set weight. */
-	void SetWeight( float weight );
+	void SetWeight(float weight);
 	
 	/** Reset. */
 	void Reset();

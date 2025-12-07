@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCComponentCopy::gdeMAOCComponentCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Component",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class component" )
+gdeMAOCComponentCopy::gdeMAOCComponentCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Component",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class component")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Component",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent ){
+igdeUndo *gdeMAOCComponentCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent){
 		return NULL;
 	}
 	
 	gdeOCComponent * const component = gameDefinition.GetActiveOCComponent();
-	if( ! component ){
+	if(!component){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCComponentCopy::OnActionSubObject( gdeGameDefinition &gameDefini
 
 void gdeMAOCComponentCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent
-		&& gameDefinition->GetActiveOCComponent() != NULL );
+		&& gameDefinition->GetActiveOCComponent() != NULL);
 }

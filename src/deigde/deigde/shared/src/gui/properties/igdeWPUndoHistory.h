@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeWPUndoHistory( igdeEnvironment &environment );
+	igdeWPUndoHistory(igdeEnvironment &environment);
 	
 	/** \brief Clean up panel. */
 	virtual ~igdeWPUndoHistory();
@@ -72,7 +72,7 @@ public:
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	

@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create delayed file write object. */
-	deoglDelayedFileWrite( const decPath &path );
+	deoglDelayedFileWrite(const decPath &path);
 	
 	/** Clean up delayed file write object. */
 	~deoglDelayedFileWrite();
@@ -62,7 +62,7 @@ public:
 	 * Write file to virtual file system.
 	 * \details This has to be called during main thread.
 	 */
-	void SaveFile( deVirtualFileSystem &vfs );
+	void SaveFile(deVirtualFileSystem &vfs);
 	/*@}*/
 	
 private:

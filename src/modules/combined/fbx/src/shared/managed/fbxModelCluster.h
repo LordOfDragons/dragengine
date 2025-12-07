@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxModelCluster( fbxModel &model, fbxNode &nodeCluser );
+	fbxModelCluster(fbxModel &model, fbxNode &nodeCluser);
 	
 protected:
 	/** \brief Clean up connection. */
@@ -88,7 +88,7 @@ public:
 	inline fbxRigBone *GetRigBone() const{ return pRigBone; }
 	
 	/** \brief Set rig bone or NULL. */
-	void SetRigBone( fbxRigBone *rigBone );
+	void SetRigBone(fbxRigBone *rigBone);
 	
 	
 	
@@ -96,7 +96,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

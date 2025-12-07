@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVariationRemove::meUHTVVariationRemove( meHTVegetationLayer *vlayer, meHTVVariation *variation ){
-	if( ! vlayer || ! variation ) DETHROW( deeInvalidParam );
+meUHTVVariationRemove::meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVVariation *variation){
+	if(!vlayer || !variation) DETHROW(deeInvalidParam);
 	
 	pVLayer = vlayer;
 	pVariation = variation;
 	
-	pIndex = vlayer->IndexOfVariation( variation );
-	if( pIndex == -1 ) DETHROW( deeInvalidParam );
+	pIndex = vlayer->IndexOfVariation(variation);
+	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Remove Vegetation Layer Variation" );
+	SetShortInfo("Remove Vegetation Layer Variation");
 	
 	vlayer->AddReference();
 	variation->AddReference();
 }
 
 meUHTVVariationRemove::~meUHTVVariationRemove(){
-	if( pVariation ) pVariation->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pVariation) pVariation->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -66,9 +66,9 @@ meUHTVVariationRemove::~meUHTVVariationRemove(){
 ///////////////
 
 void meUHTVVariationRemove::Undo(){
-	pVLayer->InsertVariation( pIndex, pVariation );
+	pVLayer->InsertVariation(pIndex, pVariation);
 }
 
 void meUHTVVariationRemove::Redo(){
-	pVLayer->RemoveVariation( pVariation );
+	pVLayer->RemoveVariation(pVariation);
 }

@@ -113,13 +113,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinTexture::deoglSkinTexture( deoglRenderThread &renderThread, deoglRSkin &skin, const deSkinTexture &texture ) :
-pRenderThread( renderThread ),
-pRTSIndex( -1 ),
-pSkin( skin ),
-pName( texture.GetName() ),
-pPipelines( *this ),
-pSharedSPBElement( nullptr )
+deoglSkinTexture::deoglSkinTexture(deoglRenderThread &renderThread, deoglRSkin &skin, const deSkinTexture &texture) :
+pRenderThread(renderThread),
+pRTSIndex(-1),
+pSkin(skin),
+pName(texture.GetName()),
+pPipelines(*this),
+pSharedSPBElement(nullptr)
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
@@ -140,39 +140,39 @@ pSharedSPBElement( nullptr )
 	pRenderableChannels = false;
 	pRenderableMaterialProperties = false;
 	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		pChannels[ i ] = NULL;
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		pChannels[i] = NULL;
 	}
 	
-	pAbsorption.Set( 0.0f, 0.0f, 0.0f );
+	pAbsorption.Set(0.0f, 0.0f, 0.0f);
 	pAbsorptionHalfIntensityDistance = 1.25f;
 	pAbsorptionRange = 0.0f;
 	pAmbientOcclusion = 1.0f;
 	pAmbientOcclusionSolidityMultiplier = 1.0f;
-	pColor.Set( 0.0f, 0.0f, 0.0f );
+	pColor.Set(0.0f, 0.0f, 0.0f);
 	pColorGamma = 2.2f;
-	pColorTint.Set( 1.0f, 1.0f, 1.0f );
+	pColorTint.Set(1.0f, 1.0f, 1.0f);
 	pColorTintMask = 1.0f;
 	pColorSolidityMultiplier = 1.0f;
-	pColorOmnidirCube.Set( 0.0f, 0.0f, 0.0f );
-	pColorOmnidirEquirect.Set( 0.0f, 0.0f, 0.0f );
-	pEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
+	pColorOmnidirCube.Set(0.0f, 0.0f, 0.0f);
+	pColorOmnidirEquirect.Set(0.0f, 0.0f, 0.0f);
+	pEmissivityTint.Set(1.0f, 1.0f, 1.0f);
 	pEmissivityIntensity = 0.0f;
 	pEmissivity.SetZero();
 	pEmissivityCameraAdapted = false;
 	pEmissivityTint.Set(1.0f, 1.0f, 1.0f);
-	pEnvironmentRoomEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
+	pEnvironmentRoomEmissivityTint.Set(1.0f, 1.0f, 1.0f);
 	pEnvironmentRoomEmissivityIntensity = 0.0f;
 	pEnvironmentRoomTint.Set(1.0f, 1.0f, 1.0f);
-	pEnvironmentRoomSize.Set( 1.0f, 1.0f );
-	pEnvironmentRoomOffset.Set( 0.0f, 0.0f, 0.0f );
+	pEnvironmentRoomSize.Set(1.0f, 1.0f);
+	pEnvironmentRoomOffset.Set(0.0f, 0.0f, 0.0f);
 	pHeightScale = 0.1f;
 	pHeightOffset = 0.0f;
-	pNormal.Set( 0.5f, 0.5f, 1.0f );
+	pNormal.Set(0.5f, 0.5f, 1.0f);
 	pNormalStrength = 1.0f;
 	pNormalSolidityMultiplier = 1.0f;
 	pReflectivityMultiplier = 1.0f;
-	pReflectivity.Set( 0.0f, 0.0f, 0.0f );
+	pReflectivity.Set(0.0f, 0.0f, 0.0f);
 	pReflectivitySolidityMultiplier = 1.0f;
 	pRefractDistortStrength = 0.0f;
 	pRoughness = 1.0f;
@@ -196,8 +196,8 @@ pSharedSPBElement( nullptr )
 	pHintNoCompression = false;
 	pHintLightBlocker = false;
 	pTexCoordClamp = false;
-	pTexCoordOffset.Set( 0.0f, 0.0f );
-	pTexCoordScale.Set( 1.0f, 1.0f );
+	pTexCoordOffset.Set(0.0f, 0.0f);
+	pTexCoordScale.Set(1.0f, 1.0f);
 	pTexCoordRotate = 0.0f;
 	pRenderTaskFilters = 0;
 	
@@ -206,25 +206,25 @@ pSharedSPBElement( nullptr )
 	
 	pParticleSheetCount = 1;
 	
-	pOutlineColor.Set( 0.0f, 0.0f, 0.0f );
-	pOutlineColorTint.Set( 1.0f, 1.0f, 1.0f );
+	pOutlineColor.Set(0.0f, 0.0f, 0.0f);
+	pOutlineColorTint.Set(1.0f, 1.0f, 1.0f);
 	pOutlineThickness = 0.0f;
 	pOutlineThicknessScreen = false;
 	pOutlineSolidity = 1.0f;
-	pOutlineEmissivity.Set( 0.0f, 0.0f, 0.0f );
-	pOutlineEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
+	pOutlineEmissivity.Set(0.0f, 0.0f, 0.0f);
+	pOutlineEmissivityTint.Set(1.0f, 1.0f, 1.0f);
 	pOutlineEmissivityIntensity = 0.0f;
 	pHasOutline = false;
 	pIsOutlineSolid = true;
 	pIsOutlineEmissive = false;
 	
-	pRimEmissivity.Set( 0.0f, 0.0f, 0.0f );
-	pRimEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
+	pRimEmissivity.Set(0.0f, 0.0f, 0.0f);
+	pRimEmissivityTint.Set(1.0f, 1.0f, 1.0f);
 	pRimEmissivityIntensity = 0.0f;
 	pRimAngle = 0.0f;
 	pRimExponent = 1.0f;
 	
-	pNonPbrAlbedo.Set( 0.0f, 0.0f, 0.0f );
+	pNonPbrAlbedo.Set(0.0f, 0.0f, 0.0f);
 	pNonPbrMetalness = 0.0f;
 	
 	pSkinClipPlane = 0.0f;
@@ -237,20 +237,20 @@ pSharedSPBElement( nullptr )
 	pReflects = false;
 	
 	try{
-		pPrepareChannels( skin, texture );
+		pPrepareChannels(skin, texture);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
 	// store texture features required to do educated choices later on
-	if( pHasTransparency ){
+	if(pHasTransparency){
 		pSolid = false;
 		pHasHoles = false;
 		
-	}else if( pHasSolidity ){
-		if( pHasZeroSolidity ){
+	}else if(pHasSolidity){
+		if(pHasZeroSolidity){
 			// special case. the entire material is invisible. in general this would mean
 			// the material has not to be rendered at all but if emissivity is present
 			// a faster rendering can be done for this material only adding light to the
@@ -258,8 +258,8 @@ pSharedSPBElement( nullptr )
 			pSolid = false;
 			pHasHoles = false;
 			
-		}else if( pSolidityMasked ){
-			if( pHasEmissivity ){
+		}else if(pSolidityMasked){
+			if(pHasEmissivity){
 				// if we have emissivity we have a problem. non-solid fragmenents will be
 				// discarded. if these have now emissivity larger than 0 the emissivity
 				// would not be rendered. we need to make this texture non-solid
@@ -290,15 +290,15 @@ deoglSkinTexture::~deoglSkinTexture(){
 ///////////////
 
 void deoglSkinTexture::AssignRTSIndex(){
-	if( pRTSIndex != -1 ){
+	if(pRTSIndex != -1){
 		return;
 	}
 	
-	pRTSIndex = pRenderThread.GetRenderTaskSharedPool().AssignSkinTexture( this );
+	pRTSIndex = pRenderThread.GetRenderTaskSharedPool().AssignSkinTexture(this);
 	pRenderThread.GetShader().InvalidateSSBOSkinTextures();
 }
 
-void deoglSkinTexture::BuildChannels( deoglRSkin &skin, const deSkinTexture &texture ){
+void deoglSkinTexture::BuildChannels(deoglRSkin &skin, const deSkinTexture &texture){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	#ifdef DO_PERFORMANCE_TIMING
 	decTimer timer;
@@ -307,15 +307,15 @@ void deoglSkinTexture::BuildChannels( deoglRSkin &skin, const deSkinTexture &tex
 	const bool enableCacheLogging = ENABLE_CACHE_LOGGING;
 	int i;
 	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( ! pChannels[ i ] ){
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(!pChannels[i]){
 			continue;
 		}
-		if( pChannels[ i ]->GetIsCached() ){
+		if(pChannels[i]->GetIsCached()){
 			continue; // loaded from cache
 		}
 		
-		if(pChannels[ i ]->GetImage()){
+		if(pChannels[i]->GetImage()){
 			bool hasUseSkin = false;
 			switch(pChannels[i]->GetTextureType()){
 			case deoglSkinChannel::ett2d:
@@ -343,89 +343,89 @@ void deoglSkinTexture::BuildChannels( deoglRSkin &skin, const deSkinTexture &tex
 				// wrong the cache-id has to be cleared and the pixel buffer dropped. then
 				// pWriteCached() will not pick it up and delayed operations will not try to init the
 				// skin using non-initialized data
-				pChannels[ i ]->SetCacheID( "" );
-				pChannels[ i ]->SetCanBeCached( false );
-				pChannels[ i ]->SetPixelBufferMipMap( NULL );
+				pChannels[i]->SetCacheID("");
+				pChannels[i]->SetCanBeCached(false);
+				pChannels[i]->SetPixelBufferMipMap(NULL);
 				continue;
 			}
 		}
 		
-		if( enableCacheLogging ){
-			pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Not cached, building"
+		if(enableCacheLogging){
+			pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Not cached, building"
 				" (skin='%s' texture='%s' channel='%s' id='%s')",
 				skin.GetFilename().GetString(), pName.GetString(),
-				deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-				pChannels[ i ]->GetCacheID().GetString() );
+				deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+				pChannels[i]->GetCacheID().GetString());
 		}
 		
-		pChannels[ i ]->BuildChannel( texture );
+		pChannels[i]->BuildChannel(texture);
 		#ifdef DO_PERFORMANCE_TIMING
-		pRenderThread.GetOgl().LogInfoFormat( "Skin(%s) Texture(%s) Channel(%s): Build %dms",
+		pRenderThread.GetOgl().LogInfoFormat("Skin(%s) Texture(%s) Channel(%s): Build %dms",
 			skin.GetFilename().GetString(), pName.GetString(),
-			deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-			( int )( timer.GetElapsedTime() * 1e3f ) );
+			deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+			(int)(timer.GetElapsedTime() * 1e3f));
 		#endif
 	}
 	
 	pCreateMipMaps();
 	#ifdef DO_PERFORMANCE_TIMING
-	pRenderThread.GetOgl().LogInfoFormat( "Skin(%s) Texture(%s): MipMaps %dms",
+	pRenderThread.GetOgl().LogInfoFormat("Skin(%s) Texture(%s): MipMaps %dms",
 		skin.GetFilename().GetString(), pName.GetString(),
-		( int )( timer.GetElapsedTime() * 1e3f ) );
+		(int)(timer.GetElapsedTime() * 1e3f));
 	#endif
 	
-	pCompressTextures( skin, texture );
+	pCompressTextures(skin, texture);
 	#ifdef DO_PERFORMANCE_TIMING
-	pRenderThread.GetOgl().LogInfoFormat( "Skin(%s) Texture(%s): Compress %dms",
+	pRenderThread.GetOgl().LogInfoFormat("Skin(%s) Texture(%s): Compress %dms",
 		skin.GetFilename().GetString(), pName.GetString(),
-		( int )( timer.GetElapsedTime() * 1e3f ) );
+		(int)(timer.GetElapsedTime() * 1e3f));
 	#endif
 	
 	// write channels to cache suitable for caching
-	pWriteCached( skin );
+	pWriteCached(skin);
 	#ifdef DO_PERFORMANCE_TIMING
-	pRenderThread.GetOgl().LogInfoFormat( "Skin(%s) Texture(%s): SaveCache %dms",
+	pRenderThread.GetOgl().LogInfoFormat("Skin(%s) Texture(%s): SaveCache %dms",
 		skin.GetFilename().GetString(), pName.GetString(),
-		( int )( timer.GetElapsedTime() * 1e3f ) );
+		(int)(timer.GetElapsedTime() * 1e3f));
 	#endif
 	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( pChannels[ i ] ){
-			pChannels[ i ]->ClearCacheData();
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(pChannels[i]){
+			pChannels[i]->ClearCacheData();
 		}
 	}
 }
 
 void deoglSkinTexture::FinalizeAsyncResLoading(){
 	int i;
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( pChannels[ i ] ){
-			pChannels[ i ]->FinalizeAsyncResLoading();
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(pChannels[i]){
+			pChannels[i]->FinalizeAsyncResLoading();
 		}
 	}
 }
 
 
 
-void deoglSkinTexture::SetHasSolidity( bool hasSolidity ){
+void deoglSkinTexture::SetHasSolidity(bool hasSolidity){
 	pHasSolidity = hasSolidity;
 }
 
-void deoglSkinTexture::SetHasZeroSolidity( bool hasZeroSolidity ){
+void deoglSkinTexture::SetHasZeroSolidity(bool hasZeroSolidity){
 	pHasZeroSolidity = hasZeroSolidity;
 }
 
-void deoglSkinTexture::SetHasTransparency( bool hasTransparency ){
+void deoglSkinTexture::SetHasTransparency(bool hasTransparency){
 	pHasTransparency = hasTransparency;
 }
 
-void deoglSkinTexture::SetHasEmissivity( bool hasEmissivity ){
+void deoglSkinTexture::SetHasEmissivity(bool hasEmissivity){
 	pHasEmissivity = hasEmissivity;
 }
 
 
 
-void deoglSkinTexture::SetSolidityMasked( bool solidityMasked ){
+void deoglSkinTexture::SetSolidityMasked(bool solidityMasked){
 	pSolidityMasked = solidityMasked;
 }
 
@@ -433,54 +433,54 @@ void deoglSkinTexture::SetSolidityInvert(bool solidityInvert){
 	pSolidityInvert = solidityInvert;
 }
 
-void deoglSkinTexture::SetSolidityFilterPriority( float solidityFilterPriority ){
-	pSolidityFilterPriority = decMath::clamp( solidityFilterPriority, 0.0f, 1.0f );
+void deoglSkinTexture::SetSolidityFilterPriority(float solidityFilterPriority){
+	pSolidityFilterPriority = decMath::clamp(solidityFilterPriority, 0.0f, 1.0f);
 }
 
-void deoglSkinTexture::SetSolid( bool solid ){
+void deoglSkinTexture::SetSolid(bool solid){
 	pSolid = solid;
 }
 
-void deoglSkinTexture::SetHasHoles( bool hasHoles ){
+void deoglSkinTexture::SetHasHoles(bool hasHoles){
 	pHasHoles = hasHoles;
 }
 
-void deoglSkinTexture::SetQuickTransparency( bool quickTransp ){
+void deoglSkinTexture::SetQuickTransparency(bool quickTransp){
 	pQuickTransp = quickTransp;
 }
 
-void deoglSkinTexture::SetDynamicChannels( bool dynamicChannels ){
+void deoglSkinTexture::SetDynamicChannels(bool dynamicChannels){
 	pDynamicChannels = dynamicChannels;
 }
 
-void deoglSkinTexture::SetCalculatedProperties( bool calculatedProperties ){
+void deoglSkinTexture::SetCalculatedProperties(bool calculatedProperties){
 	pCalculatedProperties = calculatedProperties;
 }
 
-void deoglSkinTexture::SetConstructedProperties( bool constructedProperties ){
+void deoglSkinTexture::SetConstructedProperties(bool constructedProperties){
 	pConstructedProperties = constructedProperties;
 }
 
-void deoglSkinTexture::SetBoneProperties( bool boneProperties ){
+void deoglSkinTexture::SetBoneProperties(bool boneProperties){
 	pBoneProperties = boneProperties;
 }
 
-void deoglSkinTexture::SetRenderableChannels( bool renderableChannels ){
+void deoglSkinTexture::SetRenderableChannels(bool renderableChannels){
 	pRenderableChannels = renderableChannels;
 }
 
-void deoglSkinTexture::SetRenderableMaterialProperties( bool renderableMaterialProperties ){
+void deoglSkinTexture::SetRenderableMaterialProperties(bool renderableMaterialProperties){
 	pRenderableMaterialProperties = renderableMaterialProperties;
 }
 
 
 
-deoglSkinChannel *deoglSkinTexture::GetChannelAt( deoglSkinChannel::eChannelTypes type ) const{
-	return pChannels[ type ];
+deoglSkinChannel *deoglSkinTexture::GetChannelAt(deoglSkinChannel::eChannelTypes type) const{
+	return pChannels[type];
 }
 
-bool deoglSkinTexture::IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) const{
-	return pChannels[ type ] != NULL;
+bool deoglSkinTexture::IsChannelEnabled(deoglSkinChannel::eChannelTypes type) const{
+	return pChannels[type] != NULL;
 }
 
 void deoglSkinTexture::DropAllCaches(){
@@ -503,20 +503,20 @@ void deoglSkinTexture::DropAllCaches(){
 }
 
 void deoglSkinTexture::PrepareParamBlock(){
-	if( pSharedSPBElement ){
+	if(pSharedSPBElement){
 		return;
 	}
 	
-	if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+	if(pRenderThread.GetChoices().GetSharedSPBUseSSBO()){
 		pSharedSPBElement = pRenderThread.GetBufferObject()
-			.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureSSBO ).AddElement();
+			.GetSharedSPBList(deoglRTBufferObject::esspblSkinTextureSSBO).AddElement();
 		
 	}else{
 		pSharedSPBElement = pRenderThread.GetBufferObject()
-			.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureUBO ).AddElement();
+			.GetSharedSPBList(deoglRTBufferObject::esspblSkinTextureUBO).AddElement();
 	}
 	
-	pUpdateParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ), pSharedSPBElement->GetIndex() );
+	pUpdateParamBlock(deoglSharedSPBElementMapBuffer(*pSharedSPBElement), pSharedSPBElement->GetIndex());
 }
 
 
@@ -524,115 +524,115 @@ void deoglSkinTexture::PrepareParamBlock(){
 // Material Properties
 ////////////////////////
 
-void deoglSkinTexture::SetColor( const decColor &color ){
+void deoglSkinTexture::SetColor(const decColor &color){
 	pColor = color;
 }
 
-void deoglSkinTexture::SetColorGamma( float gamma ){
+void deoglSkinTexture::SetColorGamma(float gamma){
 	pColorGamma = gamma;
 }
 
-void deoglSkinTexture::SetColorTint( const decColor &tint ){
+void deoglSkinTexture::SetColorTint(const decColor &tint){
 	pColorTint = tint;
 }
 
-void deoglSkinTexture::SetColorTintMask( float mask ){
-	pColorTintMask = decMath::clamp( mask, 0.0f, 1.0f );
+void deoglSkinTexture::SetColorTintMask(float mask){
+	pColorTintMask = decMath::clamp(mask, 0.0f, 1.0f);
 }
 
-void deoglSkinTexture::SetColorSolidityMultiplier( float multiplier ){
+void deoglSkinTexture::SetColorSolidityMultiplier(float multiplier){
 	pColorSolidityMultiplier = multiplier;
 }
 
-void deoglSkinTexture::SetColorOmnidirCube( const decColor &color ){
+void deoglSkinTexture::SetColorOmnidirCube(const decColor &color){
 	pColorOmnidirCube = color;
 }
 
-void deoglSkinTexture::SetColorOmnidirEquirect( const decColor &color ){
+void deoglSkinTexture::SetColorOmnidirEquirect(const decColor &color){
 	pColorOmnidirEquirect = color;
 }
 
-void deoglSkinTexture::SetAmbientOcclusion( float ao ){
+void deoglSkinTexture::SetAmbientOcclusion(float ao){
 	pAmbientOcclusion = ao;
 }
 
-void deoglSkinTexture::SetAmbientOcclusionSolidityMultiplier( float multiplier ){
+void deoglSkinTexture::SetAmbientOcclusionSolidityMultiplier(float multiplier){
 	pAmbientOcclusionSolidityMultiplier = multiplier;
 }
 
-void deoglSkinTexture::SetTransparency( float transparency ){
+void deoglSkinTexture::SetTransparency(float transparency){
 	pTransparency = transparency;
 }
 
-void deoglSkinTexture::SetTransparencyMultiplier( float multiplier ){
+void deoglSkinTexture::SetTransparencyMultiplier(float multiplier){
 	pTransparencyMultiplier = multiplier;
 }
 
-void deoglSkinTexture::SetSolidity( float solidity ){
+void deoglSkinTexture::SetSolidity(float solidity){
 	pSolidity = solidity;
 }
 
-void deoglSkinTexture::SetSolidityMultiplier( float multiplier ){
+void deoglSkinTexture::SetSolidityMultiplier(float multiplier){
 	pSolidityMultiplier = multiplier;
 }
 
-void deoglSkinTexture::SetHeightScale( float scale ){
+void deoglSkinTexture::SetHeightScale(float scale){
 	pHeightScale = scale;
 }
 
-void deoglSkinTexture::SetHeightOffset( float offset ){
+void deoglSkinTexture::SetHeightOffset(float offset){
 	pHeightOffset = offset;
 }
 
-void deoglSkinTexture::SetNormal( const decColor &normal ){
+void deoglSkinTexture::SetNormal(const decColor &normal){
 	pNormal = normal;
 }
 
-void deoglSkinTexture::SetNormalStrength( float strength ){
+void deoglSkinTexture::SetNormalStrength(float strength){
 	pNormalStrength = strength;
 }
 
-void deoglSkinTexture::SetNormalSolidityMultiplier( float multiplier ){
+void deoglSkinTexture::SetNormalSolidityMultiplier(float multiplier){
 	pNormalSolidityMultiplier = multiplier;
 }
 
-void deoglSkinTexture::SetRoughness( float roughness ){
+void deoglSkinTexture::SetRoughness(float roughness){
 	pRoughness = roughness;
 }
 
-void deoglSkinTexture::SetRoughnessRemapLower( float value ){
+void deoglSkinTexture::SetRoughnessRemapLower(float value){
 	pRoughnessRemapLower = value;
 }
 
-void deoglSkinTexture::SetRoughnessRemapUpper( float value ){
+void deoglSkinTexture::SetRoughnessRemapUpper(float value){
 	pRoughnessRemapUpper = value;
 }
 
-void deoglSkinTexture::SetRoughnessGamma( float gamma ){
+void deoglSkinTexture::SetRoughnessGamma(float gamma){
 	pRoughnessGamma = gamma;
 }
 
-void deoglSkinTexture::SetRoughnessSolidityMultiplier( float multiplier ){
+void deoglSkinTexture::SetRoughnessSolidityMultiplier(float multiplier){
 	pRoughnessSolidityMultiplier = multiplier;
 }
 
-void deoglSkinTexture::SetRefractDistortStrength( float strength ){
+void deoglSkinTexture::SetRefractDistortStrength(float strength){
 	pRefractDistortStrength = strength;
 }
 
-void deoglSkinTexture::SetReflectivity( const decColor &reflectivity ){
+void deoglSkinTexture::SetReflectivity(const decColor &reflectivity){
 	pReflectivity = reflectivity;
 }
 
-void deoglSkinTexture::SetReflectivityMultiplier( float multiplier ){
+void deoglSkinTexture::SetReflectivityMultiplier(float multiplier){
 	pReflectivityMultiplier = multiplier;
 }
 
-void deoglSkinTexture::SetReflectivitySolidityMultiplier( float multiplier ){
+void deoglSkinTexture::SetReflectivitySolidityMultiplier(float multiplier){
 	pReflectivitySolidityMultiplier = multiplier;
 }
 
-void deoglSkinTexture::SetReflected( bool reflected ){
+void deoglSkinTexture::SetReflected(bool reflected){
 	pReflected = reflected;
 }
 
@@ -640,231 +640,231 @@ void deoglSkinTexture::SetEnvironmentRoomTint(const decColor &tint){
 	pEnvironmentRoomTint = tint;
 }
 
-void deoglSkinTexture::SetEnvironmentRoomSize( const decVector2 &size ){
+void deoglSkinTexture::SetEnvironmentRoomSize(const decVector2 &size){
 	pEnvironmentRoomSize = size;
 }
 
-void deoglSkinTexture::SetEnvironmentRoomOffset( const decVector &offset ){
+void deoglSkinTexture::SetEnvironmentRoomOffset(const decVector &offset){
 	pEnvironmentRoomOffset = offset;
 }
 
-void deoglSkinTexture::SetEnvironmentRoomEmissivityTint( const decColor &tint ){
+void deoglSkinTexture::SetEnvironmentRoomEmissivityTint(const decColor &tint){
 	pEnvironmentRoomEmissivityTint = tint;
 }
 
-void deoglSkinTexture::SetEnvironmentRoomEmissivityIntensity( float intensity ){
+void deoglSkinTexture::SetEnvironmentRoomEmissivityIntensity(float intensity){
 	pEnvironmentRoomEmissivityIntensity = intensity;
 }
 
-void deoglSkinTexture::SetEmissivity( const decColor &emissivity ){
+void deoglSkinTexture::SetEmissivity(const decColor &emissivity){
 	pEmissivity = emissivity;
 }
 
-void deoglSkinTexture::SetEmissivityTint( const decColor &tint ){
+void deoglSkinTexture::SetEmissivityTint(const decColor &tint){
 	pEmissivityTint = tint;
 }
 
-void deoglSkinTexture::SetEmissivityIntensity( float intensity ){
+void deoglSkinTexture::SetEmissivityIntensity(float intensity){
 	pEmissivityIntensity = intensity;
 }
 
-void deoglSkinTexture::SetEmissivityCameraAdapted( bool cameraAdapted ){
+void deoglSkinTexture::SetEmissivityCameraAdapted(bool cameraAdapted){
 	pEmissivityCameraAdapted = cameraAdapted;
 }
 
-void deoglSkinTexture::SetThickness( float thickness ){
+void deoglSkinTexture::SetThickness(float thickness){
 	pThickness = thickness;
 }
 
-void deoglSkinTexture::SetAbsorption( const decColor &absorption ){
+void deoglSkinTexture::SetAbsorption(const decColor &absorption){
 	pAbsorption = absorption;
 }
 
-void deoglSkinTexture::SetAbsorptionRange( float range ){
+void deoglSkinTexture::SetAbsorptionRange(float range){
 	pAbsorptionRange = range;
 }
 
-void deoglSkinTexture::SetAbsorptionHalfIntensityDistance( float distance ){
+void deoglSkinTexture::SetAbsorptionHalfIntensityDistance(float distance){
 	pAbsorptionHalfIntensityDistance = distance;
 }
 
-void deoglSkinTexture::SetRimEmissivity( const decColor &emissivity ){
+void deoglSkinTexture::SetRimEmissivity(const decColor &emissivity){
 	pRimEmissivity = emissivity;
 }
 
-void deoglSkinTexture::SetRimEmissivityTint( const decColor &tint ){
+void deoglSkinTexture::SetRimEmissivityTint(const decColor &tint){
 	pRimEmissivityTint = tint;
 }
 
-void deoglSkinTexture::SetRimEmissivityIntensity( float intensity ){
-	pRimEmissivityIntensity = decMath::max( intensity, 0.0f );
+void deoglSkinTexture::SetRimEmissivityIntensity(float intensity){
+	pRimEmissivityIntensity = decMath::max(intensity, 0.0f);
 }
 
-void deoglSkinTexture::SetRimAngle( float angle ){
-	pRimAngle = decMath::clamp( angle, 0.0f, 1.0f );
+void deoglSkinTexture::SetRimAngle(float angle){
+	pRimAngle = decMath::clamp(angle, 0.0f, 1.0f);
 }
 
-void deoglSkinTexture::SetRimExponent( float exponent ){
-	pRimExponent = decMath::max( exponent, 0.0f );
+void deoglSkinTexture::SetRimExponent(float exponent){
+	pRimExponent = decMath::max(exponent, 0.0f);
 }
 
-void deoglSkinTexture::SetSkinClipPlane( float clipPlane ){
-	pSkinClipPlane = decMath::clamp( clipPlane, 0.0f, 1.0f );
+void deoglSkinTexture::SetSkinClipPlane(float clipPlane){
+	pSkinClipPlane = decMath::clamp(clipPlane, 0.0f, 1.0f);
 }
 
-void deoglSkinTexture::SetSkinClipPlaneBorder( float border ){
+void deoglSkinTexture::SetSkinClipPlaneBorder(float border){
 	pSkinClipPlaneBorder = border;
 }
 
 
 
-void deoglSkinTexture::SetShadeless( bool shadeless ){
+void deoglSkinTexture::SetShadeless(bool shadeless){
 	pShadeless = shadeless;
 }
 
-void deoglSkinTexture::SetShadowNone( bool shadowNone ){
+void deoglSkinTexture::SetShadowNone(bool shadowNone){
 	pShadowNone = shadowNone;
 }
 
-void deoglSkinTexture::SetShadowImportance( int shadowImportance ){
-	if( shadowImportance < 0 ){
+void deoglSkinTexture::SetShadowImportance(int shadowImportance){
+	if(shadowImportance < 0){
 		pShadowImportance = 0;
 		
-	}else if( shadowImportance > 10 ){
+	}else if(shadowImportance > 10){
 		pShadowImportance = 10;
 		
 	}else{
-		pShadowImportance = ( char )shadowImportance;
+		pShadowImportance = (char)shadowImportance;
 	}
 }
 
-void deoglSkinTexture::SetHintNoCompression( bool hintNoCompression ){
+void deoglSkinTexture::SetHintNoCompression(bool hintNoCompression){
 	pHintNoCompression = hintNoCompression;
 }
 
-void deoglSkinTexture::SetHintLightBlocker( bool hintLightBlocker ){
+void deoglSkinTexture::SetHintLightBlocker(bool hintLightBlocker){
 	pHintLightBlocker = hintLightBlocker;
 }
 
 
 
-void deoglSkinTexture::SetTexCoordClamp( bool clamp ){
+void deoglSkinTexture::SetTexCoordClamp(bool clamp){
 	pTexCoordClamp = clamp;
 }
 
-void deoglSkinTexture::SetTexCoordOffset( const decVector2 &offset ){
+void deoglSkinTexture::SetTexCoordOffset(const decVector2 &offset){
 	pTexCoordOffset = offset;
 }
 
-void deoglSkinTexture::SetTexCoordScale( const decVector2 &scale ){
+void deoglSkinTexture::SetTexCoordScale(const decVector2 &scale){
 	pTexCoordScale = scale;
 }
 
-void deoglSkinTexture::SetTexCoordRotate( float rotate ){
+void deoglSkinTexture::SetTexCoordRotate(float rotate){
 	pTexCoordRotate = rotate;
 }
 
-void deoglSkinTexture::SetOmniDirRotate( const decVector &rotate ){
+void deoglSkinTexture::SetOmniDirRotate(const decVector &rotate){
 	pOmniDirRotate = rotate;
 }
 
-void deoglSkinTexture::SetOmniDirRotateSpot( const decVector &rotate ){
+void deoglSkinTexture::SetOmniDirRotateSpot(const decVector &rotate){
 	pOmniDirRotateSpot = rotate;
 }
 
 
 
-void deoglSkinTexture::SetVariationU( bool enable ){
+void deoglSkinTexture::SetVariationU(bool enable){
 	pVariationU = enable;
 }
 
-void deoglSkinTexture::SetVariationV( bool enable ){
+void deoglSkinTexture::SetVariationV(bool enable){
 	pVariationV = enable;
 }
 
-void deoglSkinTexture::SetParticleSheetCount( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void deoglSkinTexture::SetParticleSheetCount(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pParticleSheetCount = count;
 }
 
 
 
-void deoglSkinTexture::SetOutlineColor( const decColor &color ){
+void deoglSkinTexture::SetOutlineColor(const decColor &color){
 	pOutlineColor = color;
 }
 
-void deoglSkinTexture::SetOutlineColorTint( const decColor &color ){
+void deoglSkinTexture::SetOutlineColorTint(const decColor &color){
 	pOutlineColorTint = color;
 }
 
-void deoglSkinTexture::SetOutlineSolidity( float solidity ){
-	pOutlineSolidity = decMath::clamp( solidity, 0.0f, 1.0f );
+void deoglSkinTexture::SetOutlineSolidity(float solidity){
+	pOutlineSolidity = decMath::clamp(solidity, 0.0f, 1.0f);
 }
 
-void deoglSkinTexture::SetOutlineThickness( float thickness ){
-	pOutlineThickness = decMath::max( thickness, 0.0f );
+void deoglSkinTexture::SetOutlineThickness(float thickness){
+	pOutlineThickness = decMath::max(thickness, 0.0f);
 }
 
-void deoglSkinTexture::SetOutlineThicknessScreen( bool enable ){
+void deoglSkinTexture::SetOutlineThicknessScreen(bool enable){
 	pOutlineThicknessScreen = enable;
 }
 
-void deoglSkinTexture::SetOutlineEmissivity( const decColor &emissivity ){
+void deoglSkinTexture::SetOutlineEmissivity(const decColor &emissivity){
 	pOutlineEmissivity = emissivity;
 }
 
-void deoglSkinTexture::SetOutlineEmissivityTint( const decColor &emissivity ){
+void deoglSkinTexture::SetOutlineEmissivityTint(const decColor &emissivity){
 	pOutlineEmissivityTint = emissivity;
 }
 
-void deoglSkinTexture::SetOutlineEmissivityIntensity( float intensity ){
-	pOutlineEmissivityIntensity = decMath::max( intensity, 0.0f );
+void deoglSkinTexture::SetOutlineEmissivityIntensity(float intensity){
+	pOutlineEmissivityIntensity = decMath::max(intensity, 0.0f);
 }
 
-void deoglSkinTexture::SetNonPbrAlbedo( const decColor &albedo ){
+void deoglSkinTexture::SetNonPbrAlbedo(const decColor &albedo){
 	pNonPbrAlbedo = albedo;
 }
 
-void deoglSkinTexture::SetNonPbrMetalness( float metalness ){
+void deoglSkinTexture::SetNonPbrMetalness(float metalness){
 	pNonPbrMetalness = metalness;
 }
 
-void deoglSkinTexture::SetXRay( bool xray ){
+void deoglSkinTexture::SetXRay(bool xray){
 	pXRay = xray;
 }
 
 
 
-void deoglSkinTexture::SetMirror( bool mirror ){
+void deoglSkinTexture::SetMirror(bool mirror){
 	pMirror = mirror;
 }
 
-void deoglSkinTexture::SetRendered( bool rendered ){
+void deoglSkinTexture::SetRendered(bool rendered){
 	pRendered = rendered;
 }
 
-void deoglSkinTexture::SetReflects( bool reflects ){
+void deoglSkinTexture::SetReflects(bool reflects){
 	pReflects = reflects;
 }
 
 
 
-deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt( int property ){
-	if( property < 0 || property >= EMP_COUNT ){
-		DETHROW( deeInvalidParam );
+deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt(int property){
+	if(property < 0 || property >= EMP_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pMaterialProperties[ property ];
+	return pMaterialProperties[property];
 }
 
-const deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt( int property ) const{
-	if( property < 0 || property >= EMP_COUNT ){
-		DETHROW( deeInvalidParam );
+const deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt(int property) const{
+	if(property < 0 || property >= EMP_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pMaterialProperties[ property ];
+	return pMaterialProperties[property];
 }
 
 
@@ -873,21 +873,21 @@ const deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt( int pro
 //////////////////////
 
 void deoglSkinTexture::pCleanUp(){
-	if( pRTSIndex != -1 ){
-		pRenderThread.GetRenderTaskSharedPool().ReturnSkinTexture( pRTSIndex );
+	if(pRTSIndex != -1){
+		pRenderThread.GetRenderTaskSharedPool().ReturnSkinTexture(pRTSIndex);
 		pRTSIndex = -1;
 		pRenderThread.GetShader().InvalidateSSBOSkinTextures();
 	}
 	
-	if( pSharedSPBElement ){
+	if(pSharedSPBElement){
 		pSharedSPBElement->FreeReference();
 	}
 	
 	int i;
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( pChannels[ i ] ){
-			delete pChannels[ i ];
-			pChannels[ i ] = NULL;
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(pChannels[i]){
+			delete pChannels[i];
+			pChannels[i] = NULL;
 		}
 	}
 }
@@ -898,7 +898,7 @@ void deoglSkinTexture::pCleanUp(){
 	#define DO_PERFORMANCE_TIMING
 #endif
 
-void deoglSkinTexture::pPrepareChannels( deoglRSkin &skin, const deSkinTexture &texture ){
+void deoglSkinTexture::pPrepareChannels(deoglRSkin &skin, const deSkinTexture &texture){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	#ifdef DO_PERFORMANCE_TIMING
 	decTimer timer;
@@ -906,15 +906,15 @@ void deoglSkinTexture::pPrepareChannels( deoglRSkin &skin, const deSkinTexture &
 	
 	const int propertyCount = texture.GetPropertyCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		pProcessProperty( skin, *texture.GetPropertyAt( i ) );
+	for(i=0; i<propertyCount; i++){
+		pProcessProperty(skin, *texture.GetPropertyAt(i));
 	}
 	
 	// determine if the skin uses renderables at all
 	pRenderableMaterialProperties = false;
 	
-	for( i=0; i<EMP_COUNT; i++ ){
-		if( pMaterialProperties[ i ].GetRenderable() != -1 ){
+	for(i=0; i<EMP_COUNT; i++){
+		if(pMaterialProperties[i].GetRenderable() != -1){
 			pRenderableMaterialProperties = true;
 			break;
 		}
@@ -924,48 +924,48 @@ void deoglSkinTexture::pPrepareChannels( deoglRSkin &skin, const deSkinTexture &
 	pRendered = pMirror;
 	
 	// prepare channels required for cache loading
-	deoglVSDetermineChannelFormat determineFormat( pRenderThread, skin, *this, texture );
+	deoglVSDetermineChannelFormat determineFormat(pRenderThread, skin, *this, texture);
 	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		determineFormat.ProcessChannel( ( deoglSkinChannel::eChannelTypes )i );
-		if( ! determineFormat.GetIsDefined() ){
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		determineFormat.ProcessChannel((deoglSkinChannel::eChannelTypes)i);
+		if(!determineFormat.GetIsDefined()){
 			continue;
 		}
 		
 		/*
-		if( determineFormat.GetSharedImage() && determineFormat.GetSharedImage()->GetSkinUse() ){
-			pRenderThread.GetOgl().LogInfoFormat( "Skin(%s) Texture(%s) Channel(%s): Using existing image %s",
+		if(determineFormat.GetSharedImage() && determineFormat.GetSharedImage()->GetSkinUse()){
+			pRenderThread.GetOgl().LogInfoFormat("Skin(%s) Texture(%s) Channel(%s): Using existing image %s",
 				skin.GetFilename().GetString(), pName.GetString(),
-				deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-				determineFormat.GetSharedImage()->GetFilename().GetString() );
+				deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+				determineFormat.GetSharedImage()->GetFilename().GetString());
 		}
 		*/
 		
-		pChannels[ i ] = new deoglSkinChannel( pRenderThread, ( deoglSkinChannel::eChannelTypes )i );
-		pChannels[ i ]->PrepareChannel( skin, *this, texture, determineFormat );
+		pChannels[i] = new deoglSkinChannel(pRenderThread, (deoglSkinChannel::eChannelTypes)i);
+		pChannels[i]->PrepareChannel(skin, *this, texture, determineFormat);
 		
-		if( i == deoglSkinChannel::ectReflectivity ){
+		if(i == deoglSkinChannel::ectReflectivity){
 			pReflects = true;
 		}
 	}
 	#ifdef DO_PERFORMANCE_TIMING
-	pRenderThread.GetOgl().LogInfoFormat( "Skin(%s) Texture(%s): Prepare %dms",
+	pRenderThread.GetOgl().LogInfoFormat("Skin(%s) Texture(%s): Prepare %dms",
 		skin.GetFilename().GetString(), pName.GetString(),
-		( int )( timer.GetElapsedTime() * 1e3f ) );
+		(int)(timer.GetElapsedTime() * 1e3f));
 	#endif
 	
 	// load caches
-	pLoadCached( skin );
+	pLoadCached(skin);
 	#ifdef DO_PERFORMANCE_TIMING
-	pRenderThread.GetOgl().LogInfoFormat( "Skin(%s) Texture(%s): LoadCache %dms",
+	pRenderThread.GetOgl().LogInfoFormat("Skin(%s) Texture(%s): LoadCache %dms",
 		skin.GetFilename().GetString(), pName.GetString(),
-		( int )( timer.GetElapsedTime() * 1e3f ) );
+		(int)(timer.GetElapsedTime() * 1e3f));
 	#endif
 	
 	// for the rest BuildChannel() has to be called in time
 }
 
-void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
+void deoglSkinTexture::pLoadCached(deoglRSkin &skin){
 	// try to load caches using the calculated cache ids
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheTextures = caches.GetSkinTextures();
@@ -1096,7 +1096,7 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 			/*
 			if(i == deoglSkinChannel::ectSolidity){
 				expectedMaxMipMaxLevel = decMath::clamp(
-					(int)(floorf(log2f((float)((height > width) ? height : width)))) - 3, 0, 100 );
+					(int)(floorf(log2f((float)((height > width) ? height : width)))) - 3, 0, 100);
 			}
 			*/
 			
@@ -1168,20 +1168,20 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 void deoglSkinTexture::pCreateMipMaps(){
 	int i;
 	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( ! pChannels[ i ] ){
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(!pChannels[i]){
 			continue;
 		}
-		if( pChannels[ i ]->GetIsCached() ){
-			continue;
-		}
-		
-		deoglPixelBufferMipMap * const pbMipMap = pChannels[ i ]->GetPixelBufferMipMap();
-		if( ! pbMipMap ){
+		if(pChannels[i]->GetIsCached()){
 			continue;
 		}
 		
-		switch( ( deoglSkinChannel::eChannelTypes )i ){
+		deoglPixelBufferMipMap * const pbMipMap = pChannels[i]->GetPixelBufferMipMap();
+		if(!pbMipMap){
+			continue;
+		}
+		
+		switch((deoglSkinChannel::eChannelTypes)i){
 		case deoglSkinChannel::ectColor:
 		case deoglSkinChannel::ectTransparency:
 		case deoglSkinChannel::ectColorOmnidirCube:
@@ -1236,16 +1236,16 @@ void deoglSkinTexture::pCreateMipMaps(){
 			// in tests both favor holes and favor geometry did not look that good.
 			// so right now regular mip-mapping is used without limiting the mip-map level
 			#if 0
-			pbMipMap->ReducePixelBufferCount( 3 ); // minimum 8x8
-			if( pbMipMap->GetPixelBufferCount() == 0 ){
-				pChannels[ i ]->SetPixelBufferMipMap( NULL );
+			pbMipMap->ReducePixelBufferCount(3); // minimum 8x8
+			if(pbMipMap->GetPixelBufferCount() == 0){
+				pChannels[i]->SetPixelBufferMipMap(NULL);
 				break;
 			}
 			#endif
-			if( pSolidityFilterPriority < 0.35f ){
+			if(pSolidityFilterPriority < 0.35f){
 				pbMipMap->CreateMipMapsMin();
 				
-			}else if( pSolidityFilterPriority > 0.65f ){
+			}else if(pSolidityFilterPriority > 0.65f){
 				pbMipMap->CreateMipMapsMax();
 				
 			}else{
@@ -1267,43 +1267,43 @@ void deoglSkinTexture::pCreateMipMaps(){
 	}
 }
 
-void deoglSkinTexture::pCompressTextures( deoglRSkin &skin, const deSkinTexture &texture ){
+void deoglSkinTexture::pCompressTextures(deoglRSkin &skin, const deSkinTexture &texture){
 	deoglTextureCompression textureCompression;
 	int i;
 	
-	textureCompression.SetFastCompression( true );
+	textureCompression.SetFastCompression(true);
 	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( ! pChannels[ i ] ){
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(!pChannels[i]){
 			continue;
 		}
-		if( pChannels[ i ]->GetIsCached() ){
+		if(pChannels[i]->GetIsCached()){
 			continue;
 		}
 		
-		deoglPixelBufferMipMap * const pbMipMapSource = pChannels[ i ]->GetPixelBufferMipMap();
-		if( ! pbMipMapSource ){
+		deoglPixelBufferMipMap * const pbMipMapSource = pChannels[i]->GetPixelBufferMipMap();
+		if(!pbMipMapSource){
 			continue;
 		}
 		
 		// determine texture format depending on the texture type
 		const deoglCapsTextureFormat *texformat;
 		
-		if( pChannels[ i ]->GetTexture() ){
-			texformat = pChannels[ i ]->GetTexture()->GetFormat();
+		if(pChannels[i]->GetTexture()){
+			texformat = pChannels[i]->GetTexture()->GetFormat();
 			
-		}else if( pChannels[ i ]->GetCubeMap() ){
-			texformat = pChannels[ i ]->GetCubeMap()->GetFormat();
+		}else if(pChannels[i]->GetCubeMap()){
+			texformat = pChannels[i]->GetCubeMap()->GetFormat();
 			
-		}else if( pChannels[ i ]->GetArrayTexture() ){
-			texformat = pChannels[ i ]->GetArrayTexture()->GetFormat();
+		}else if(pChannels[i]->GetArrayTexture()){
+			texformat = pChannels[i]->GetArrayTexture()->GetFormat();
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
 		// if the texture format is not compressed continue
-		if( ! texformat->GetIsCompressed() ){
+		if(!texformat->GetIsCompressed()){
 			continue;
 		}
 		
@@ -1312,56 +1312,56 @@ void deoglSkinTexture::pCompressTextures( deoglRSkin &skin, const deSkinTexture 
 		bool canCompress = false;
 		deoglPixelBuffer::ePixelFormats pbformat;
 		
-		if( glformat == GL_COMPRESSED_RGB_S3TC_DXT1 ){
+		if(glformat == GL_COMPRESSED_RGB_S3TC_DXT1){
 			pbformat = deoglPixelBuffer::epfDXT1;
 			canCompress = true;
 			
-		}else if( glformat == GL_COMPRESSED_RGBA_S3TC_DXT1 ){
+		}else if(glformat == GL_COMPRESSED_RGBA_S3TC_DXT1){
 			//pbformat = deoglPixelBuffer::epfDXT1;
 			
-		}else if( glformat == GL_COMPRESSED_RGBA_S3TC_DXT3 ){
+		}else if(glformat == GL_COMPRESSED_RGBA_S3TC_DXT3){
 			pbformat = deoglPixelBuffer::epfDXT3;
 			canCompress = true;
 			
-		}else if( glformat == GL_COMPRESSED_RGBA_S3TC_DXT5 ){
+		}else if(glformat == GL_COMPRESSED_RGBA_S3TC_DXT5){
 			//pbformat = deoglPixelBuffer::epfDXT5;
 		}
 		
-		if( ! canCompress ){
+		if(!canCompress){
 			// we can not compress it. in theory the driver would compress for us. unfortunately
 			// various drivers exhibit crashes and even GPU lock-ups due to faulty compression
 			// code included. for this reason only formats are allowed which we know how to
 			// compress. should we end up here something went wrong.
-			pRenderThread.GetLogger().LogErrorFormat( "CompressTextures of not supported format:"
+			pRenderThread.GetLogger().LogErrorFormat("CompressTextures of not supported format:"
 				" skin='%s' texture='%s' channel=%i pbformat=%x", skin.GetFilename().GetString(),
-				texture.GetName().GetString(), i, pChannels[ i ]->GetTexture()->GetFormat()->GetFormat() );
+				texture.GetName().GetString(), i, pChannels[i]->GetTexture()->GetFormat()->GetFormat());
 			
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
-		const deoglPixelBuffer &basePixelBuffer = pbMipMapSource->GetPixelBuffer( 0 );
-		const deoglPixelBufferMipMap::Ref pbMipMapCompressed( deoglPixelBufferMipMap::Ref::NewWith(pbformat,
+		const deoglPixelBuffer &basePixelBuffer = pbMipMapSource->GetPixelBuffer(0);
+		const deoglPixelBufferMipMap::Ref pbMipMapCompressed(deoglPixelBufferMipMap::Ref::NewWith(pbformat,
 				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
-				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1) );
+				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1));
 		
-		textureCompression.SetDecompressedDataMipMap( pbMipMapSource );
-		textureCompression.SetCompressedDataMipMap( pbMipMapCompressed );
+		textureCompression.SetDecompressedDataMipMap(pbMipMapSource);
+		textureCompression.SetCompressedDataMipMap(pbMipMapCompressed);
 		//decTimer timer;
 		textureCompression.CompressMipMap();
 		/*float elapsed = timer.GetElapsedTime();
-		pRenderThread.GetOgl().LogInfoFormat( "CompressTextures: skin='%s' texture='%s' channel=%i"
+		pRenderThread.GetOgl().LogInfoFormat("CompressTextures: skin='%s' texture='%s' channel=%i"
 			" pbformat=%x width=%i height=%i mipmaps=%i elapsed=%iys",
 			skin.GetSkin()->GetFilename(), texture.GetName(), i,
-			compressedPixelBufferMipMap->GetPixelBuffer( 0 )->GetFormat(),
+			compressedPixelBufferMipMap->GetPixelBuffer(0)->GetFormat(),
 			basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
 			compressedPixelBufferMipMap->GetPixelBufferCount(),
-			( int )( elapsed * 1e6f ) );*/
+			(int)(elapsed * 1e6f));*/
 		
-		pChannels[ i ]->SetPixelBufferMipMap( pbMipMapCompressed );
+		pChannels[i]->SetPixelBufferMipMap(pbMipMapCompressed);
 	}
 }
 
-void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
+void deoglSkinTexture::pWriteCached(deoglRSkin &skin){
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheTextures = caches.GetSkinTextures();
 	int i;
@@ -1495,20 +1495,20 @@ void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
 	//cacheTextures.DebugPrint(*pRenderThread.GetOgl().GetGameEngine()->GetLogger(), "OpenGL");
 }
 
-void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &property ){
+void deoglSkinTexture::pProcessProperty(deoglRSkin &skin, deSkinProperty &property){
 	const deoglSkinPropertyMap::ePropertyTypes propertyType =
-		deoglSkinPropertyMap::GetTypeFor( property.GetType().GetString() );
+		deoglSkinPropertyMap::GetTypeFor(property.GetType().GetString());
 	deSkinPropertyVisitorIdentify identify;
 	float value;
 	
-	property.Visit( identify );
+	property.Visit(identify);
 	
-	if( identify.IsValue() ){
+	if(identify.IsValue()){
 		value = identify.CastToValue().GetValue();
 		
-		switch( propertyType ){
+		switch(propertyType){
 		case deoglSkinPropertyMap::eptColor:
-			pColor.Set( value, value, value );
+			pColor.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptColorGamma:
@@ -1516,7 +1516,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptColorTint:
-			pColorTint.Set( value, value, value );
+			pColorTint.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptColorTintMask:
@@ -1528,11 +1528,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptColorOmnidir:
-			pColorOmnidirCube.Set( value, value, value );
+			pColorOmnidirCube.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptColorOmnidirEquirect:
-			pColorOmnidirEquirect.Set( value, value, value );
+			pColorOmnidirEquirect.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptAmbientOcclusion:
@@ -1552,7 +1552,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptNormal:
-			pNormal.Set( value, value, value );
+			pNormal.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptNormalStrength:
@@ -1609,7 +1609,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptSolidityFilterPriority:
-			pSolidityFilterPriority = decMath::clamp( value, 0.0f, 1.0f );
+			pSolidityFilterPriority = decMath::clamp(value, 0.0f, 1.0f);
 			break;
 			
 		case deoglSkinPropertyMap::eptRefractionDistortStrength:
@@ -1617,8 +1617,8 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptReflectivity:
-			pReflectivity.Set( value, value, value );
-			pReflects = ( value > FLOAT_SAFE_EPSILON );
+			pReflectivity.Set(value, value, value);
+			pReflects = (value > FLOAT_SAFE_EPSILON);
 			break;
 			
 		case deoglSkinPropertyMap::eptReflectivityMultiplier:
@@ -1638,11 +1638,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivity:
-			pEmissivity.Set( value, value, value );
+			pEmissivity.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivityTint:
-			pEmissivityTint.Set( value, value, value );
+			pEmissivityTint.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivityIntensity:
@@ -1658,11 +1658,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
-			pEnvironmentRoomSize.Set( value, value );
+			pEnvironmentRoomSize.Set(value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomOffset:
-			pEnvironmentRoomOffset.Set( value, value, value );
+			pEnvironmentRoomOffset.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomEmissivityIntensity:
@@ -1670,7 +1670,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomEmissivityTint:
-			pEnvironmentRoomEmissivityTint.Set( value, value, value );
+			pEnvironmentRoomEmissivityTint.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptThickness:
@@ -1678,7 +1678,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptAbsorption:
-			pAbsorption.Set( value, value, value );
+			pAbsorption.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptAbsorptionRange:
@@ -1706,11 +1706,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordOffset:
-			pTexCoordOffset.Set( value, value );
+			pTexCoordOffset.Set(value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordScale:
-			pTexCoordScale.Set( value, value );
+			pTexCoordScale.Set(value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordRotate:
@@ -1718,11 +1718,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptOmniDirRotate:
-			pOmniDirRotate.Set( value, value, value );
+			pOmniDirRotate.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
-			pOmniDirRotateSpot.Set( value, value, value );
+			pOmniDirRotateSpot.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptShadowNone:
@@ -1730,7 +1730,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptShadowImportance:
-			pShadowImportance = ( int )( value * 10.0f + 0.01f );
+			pShadowImportance = (int)(value * 10.0f + 0.01f);
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationU:
@@ -1742,15 +1742,15 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptParticleSheets:
-			pParticleSheetCount = decMath::max( ( int )( value + 0.5f ), 1 );
+			pParticleSheetCount = decMath::max((int)(value + 0.5f), 1);
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivity:
-			pEmissivity.Set( value, value, value );
+			pEmissivity.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivityTint:
-			pRimEmissivityTint.Set( value, value, value );
+			pRimEmissivityTint.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivityIntensity:
@@ -1758,24 +1758,24 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptRimAngle:
-			pRimAngle = decMath::clamp( value, 0.0f, 1.0f );
+			pRimAngle = decMath::clamp(value, 0.0f, 1.0f);
 			break;
 			
 		case deoglSkinPropertyMap::eptRimExponent:
-			pRimExponent = decMath::max( value, 0.0f );
+			pRimExponent = decMath::max(value, 0.0f);
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineColor:
-			pOutlineColor.Set( value, value, value );
+			pOutlineColor.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineColorTint:
-			pOutlineColorTint.Set( value, value, value );
+			pOutlineColorTint.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineThickness:
-			pOutlineThickness = decMath::max( value, 0.0f );
-			pHasOutline = pOutlineThickness != 0.0f || ! property.GetRenderable().IsEmpty();
+			pOutlineThickness = decMath::max(value, 0.0f);
+			pHasOutline = pOutlineThickness != 0.0f || !property.GetRenderable().IsEmpty();
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineThicknessScreen:
@@ -1783,25 +1783,25 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineSolidity:
-			pOutlineSolidity = decMath::clamp( value, 0.0f, 1.0f );
+			pOutlineSolidity = decMath::clamp(value, 0.0f, 1.0f);
 			pIsOutlineSolid = pOutlineSolidity == 1.0f && property.GetRenderable().IsEmpty();
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivity:
-			pOutlineEmissivity.Set( value, value, value );
+			pOutlineEmissivity.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
-			pOutlineEmissivityTint.Set( value, value, value );
+			pOutlineEmissivityTint.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
-			pOutlineEmissivityIntensity = decMath::max( value, 0.0f );
-			pIsOutlineEmissive = pOutlineEmissivityIntensity != 0.0f || ! property.GetRenderable().IsEmpty();
+			pOutlineEmissivityIntensity = decMath::max(value, 0.0f);
+			pIsOutlineEmissive = pOutlineEmissivityIntensity != 0.0f || !property.GetRenderable().IsEmpty();
 			break;
 			
 		case deoglSkinPropertyMap::eptNonPbrAlbedo:
-			pNonPbrAlbedo.Set( value, value, value );
+			pNonPbrAlbedo.Set(value, value, value);
 			break;
 			
 		case deoglSkinPropertyMap::eptNonPbrMetalness:
@@ -1813,7 +1813,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptClipPlane:
-			pSkinClipPlane = decMath::clamp( value, 0.0f, 1.0f );
+			pSkinClipPlane = decMath::clamp(value, 0.0f, 1.0f);
 			pHasSolidity = true;
 			pBoneProperties = true;
 			break;
@@ -1826,10 +1826,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 		}
 		
-	}else if( identify.IsColor() ){
+	}else if(identify.IsColor()){
 		const decColor &color = identify.CastToColor().GetColor();
 		
-		switch( propertyType ){
+		switch(propertyType){
 		case deoglSkinPropertyMap::eptAbsorption:
 			pAbsorption = color;
 			break;
@@ -1856,7 +1856,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptReflectivity:
 			pReflectivity = color;
-			pReflects = ( color.r > FLOAT_SAFE_EPSILON || color.g > FLOAT_SAFE_EPSILON || color.b > FLOAT_SAFE_EPSILON );
+			pReflects = (color.r > FLOAT_SAFE_EPSILON || color.g > FLOAT_SAFE_EPSILON || color.b > FLOAT_SAFE_EPSILON);
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivity:
@@ -1872,11 +1872,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
-			pEnvironmentRoomSize.Set( color.r, color.g );
+			pEnvironmentRoomSize.Set(color.r, color.g);
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomOffset:
-			pEnvironmentRoomOffset.Set( color.r, color.g, color.b );
+			pEnvironmentRoomOffset.Set(color.r, color.g, color.b);
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomEmissivityTint:
@@ -1884,19 +1884,19 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordOffset:
-			pTexCoordOffset.Set( color.r, color.g );
+			pTexCoordOffset.Set(color.r, color.g);
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordScale:
-			pTexCoordScale.Set( color.r, color.g );
+			pTexCoordScale.Set(color.r, color.g);
 			break;
 			
 		case deoglSkinPropertyMap::eptOmniDirRotate:
-			pOmniDirRotate.Set( color.r, color.g, color.b );
+			pOmniDirRotate.Set(color.r, color.g, color.b);
 			break;
 			
 		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
-			pOmniDirRotateSpot.Set( color.r, color.g, color.b );
+			pOmniDirRotateSpot.Set(color.r, color.g, color.b);
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivity:
@@ -1931,11 +1931,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 		}
 		
-	}else if( identify.IsMapped() ){
+	}else if(identify.IsMapped()){
 		deoglSkinTextureProperty *materialProperty = nullptr;
 		bool requiresTexture = false;
 		
-		switch( propertyType ){
+		switch(propertyType){
 		case deoglSkinPropertyMap::eptColor:
 			materialProperty = pMaterialProperties + empColor;
 			requiresTexture = true;
@@ -2210,167 +2210,167 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 		}
 		
-		if( materialProperty ){
+		if(materialProperty){
 			const deSkinPropertyMapped &mapped = identify.CastToMapped();
 			
 			const deoglSkinCalculatedProperty::Ref calculated(
-				deoglSkinCalculatedProperty::Ref::NewWith() );
+				deoglSkinCalculatedProperty::Ref::NewWith());
 			
-			calculated->SetMappedComponent( 0, mapped.GetRed() );
-			calculated->SetMappedComponent( 1, mapped.GetGreen() );
-			calculated->SetMappedComponent( 2, mapped.GetBlue() );
-			calculated->SetMappedComponent( 3, mapped.GetAlpha() );
-			calculated->SetRequiresTexture( requiresTexture );
+			calculated->SetMappedComponent(0, mapped.GetRed());
+			calculated->SetMappedComponent(1, mapped.GetGreen());
+			calculated->SetMappedComponent(2, mapped.GetBlue());
+			calculated->SetMappedComponent(3, mapped.GetAlpha());
+			calculated->SetRequiresTexture(requiresTexture);
 			
-			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( calculated ) );
+			materialProperty->SetCalculatedProperty(skin.AddCalculatedProperty(calculated));
 			pCalculatedProperties = true;
 		}
 	}
 	
 	// check if the property has a renderable
-	if( ! property.GetRenderable().IsEmpty() ){
+	if(!property.GetRenderable().IsEmpty()){
 		const decString &renderable = property.GetRenderable();
 		
-		switch( propertyType ){
+		switch(propertyType){
 		case deoglSkinPropertyMap::eptColor:
-			pMaterialProperties[ empColor ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empColor ].GetRenderable() ).SetRequiresTexture( true );
+			pMaterialProperties[empColor].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empColor].GetRenderable()).SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptColorOmnidir:
-			pMaterialProperties[ empColorOmnidirCube ].SetRenderable(
-				skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empColorOmnidirCube ].GetRenderable() ).
-				SetRequiresTexture( true );
+			pMaterialProperties[empColorOmnidirCube].SetRenderable(
+				skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empColorOmnidirCube].GetRenderable()).
+				SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptColorOmnidirEquirect:
-			pMaterialProperties[ empColorOmnidirEquirect ].SetRenderable(
-				skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empColorOmnidirEquirect ].GetRenderable() ).
-				SetRequiresTexture( true );
+			pMaterialProperties[empColorOmnidirEquirect].SetRenderable(
+				skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empColorOmnidirEquirect].GetRenderable()).
+				SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptColorTint:
-			pMaterialProperties[ empColorTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empColorTint].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptColorTintMask:
-			pMaterialProperties[ empColorTintMask ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empColorTintMask ].GetRenderable() ).
-				SetRequiresTexture( true );
+			pMaterialProperties[empColorTintMask].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empColorTintMask].GetRenderable()).
+				SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptColorGamma:
-			pMaterialProperties[ empColorGamma ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empColorGamma].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptColorSolidityMultiplier:
-			pMaterialProperties[ empColorSolidityMultiplier ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empColorSolidityMultiplier].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptAmbientOcclusion:
-			pMaterialProperties[ empAmbientOcclusion ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empAmbientOcclusion ].GetRenderable() )
-				.SetRequiresTexture( true );
+			pMaterialProperties[empAmbientOcclusion].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empAmbientOcclusion].GetRenderable())
+				.SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptAmbientOcclusionSolidityMultiplier:
-			pMaterialProperties[ empAmbientOcclusionSolidityMultiplier ]
-				.SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empAmbientOcclusionSolidityMultiplier]
+				.SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptTransparency:
-			pMaterialProperties[ empTransparency ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empTransparency ].GetRenderable() ).SetRequiresTexture( true );
+			pMaterialProperties[empTransparency].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empTransparency].GetRenderable()).SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptTransparencyMultiplier:
-			pMaterialProperties[ empTransparencyMultiplier ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empTransparencyMultiplier].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptSolidity:
-			pMaterialProperties[ empSolidity ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empSolidity ].GetRenderable() ).SetRequiresTexture( true );
+			pMaterialProperties[empSolidity].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empSolidity].GetRenderable()).SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptSolidityMultiplier:
-			pMaterialProperties[ empSolidityMultiplier ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empSolidityMultiplier].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptHeightScale:
-			pMaterialProperties[ empHeightScale ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empHeightScale].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptHeightOffset:
-			pMaterialProperties[ empHeightOffset ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empHeightOffset].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptNormal:
-			pMaterialProperties[ empNormal ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empNormal ].GetRenderable() ).SetRequiresTexture( true );
+			pMaterialProperties[empNormal].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empNormal].GetRenderable()).SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptNormalStrength:
-			pMaterialProperties[ empNormalStrength ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empNormalStrength].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptNormalSolidityMultiplier:
-			pMaterialProperties[ empNormalSolidityMultiplier ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empNormalSolidityMultiplier].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRoughness:
-			pMaterialProperties[ empRoughness ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empRoughness ].GetRenderable() ).SetRequiresTexture( true );
+			pMaterialProperties[empRoughness].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empRoughness].GetRenderable()).SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptRoughnessRemapLower:
-			pMaterialProperties[ empRoughnessRemapLower ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRoughnessRemapLower].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRoughnessRemapUpper:
-			pMaterialProperties[ empRoughnessRemapUpper ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRoughnessRemapUpper].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRoughnessGamma:
-			pMaterialProperties[ empRoughnessGamma ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRoughnessGamma].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRoughnessSolidityMultiplier:
-			pMaterialProperties[ empRoughnessSolidityMultiplier ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRoughnessSolidityMultiplier].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRefractionDistortStrength:
-			pMaterialProperties[ empRefractDistortStrength ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRefractDistortStrength].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptReflectivity:
-			pMaterialProperties[ empReflectivity ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empReflectivity ].GetRenderable() )
-				.SetRequiresTexture( true );
+			pMaterialProperties[empReflectivity].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empReflectivity].GetRenderable())
+				.SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptReflectivityMultiplier:
-			pMaterialProperties[ empReflectivityMultiplier ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empReflectivityMultiplier].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptReflectivitySolidityMultiplier:
-			pMaterialProperties[ empReflectivitySolidityMultiplier ]
-				.SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empReflectivitySolidityMultiplier]
+				.SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivity:
-			pMaterialProperties[ empEmissivity ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empEmissivity ].GetRenderable() )
-				.SetRequiresTexture( true );
+			pMaterialProperties[empEmissivity].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empEmissivity].GetRenderable())
+				.SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivityTint:
-			pMaterialProperties[ empEmissivityTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empEmissivityTint].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivityIntensity:
-			pMaterialProperties[ empEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empEmissivityIntensity].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
@@ -2379,140 +2379,140 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
-			pMaterialProperties[ empEnvironmentRoomSize ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empEnvironmentRoomSize].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomOffset:
-			pMaterialProperties[ empEnvironmentRoomOffset ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empEnvironmentRoomOffset].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomEmissivityTint:
-			pMaterialProperties[ empEnvironmentRoomEmissivityTint ]
-				.SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empEnvironmentRoomEmissivityTint]
+				.SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomEmissivityIntensity:
-			pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ]
-				.SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empEnvironmentRoomEmissivityIntensity]
+				.SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptThickness:
-			pMaterialProperties[ empThickness ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empThickness].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptAbsorption:
-			pMaterialProperties[ empAbsorption ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empAbsorption ]
-				.GetRenderable() ).SetRequiresTexture( true );
+			pMaterialProperties[empAbsorption].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empAbsorption]
+				.GetRenderable()).SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptAbsorptionRange:
-			pMaterialProperties[ empAbsorptionRange ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empAbsorptionRange].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptAbsorptionHalfIntensityDistance:
-			pMaterialProperties[ empAbsorptionHalfIntensityDistance ]
-				.SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empAbsorptionHalfIntensityDistance]
+				.SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordClamp:
-			pMaterialProperties[ empTexCoordClamp ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empTexCoordClamp].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordOffset:
-			pMaterialProperties[ empTexCoordOffset ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empTexCoordOffset].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordScale:
-			pMaterialProperties[ empTexCoordScale ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empTexCoordScale].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptTexCoordRotate:
-			pMaterialProperties[ empTexCoordRotate ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empTexCoordRotate].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOmniDirRotate:
-			pMaterialProperties[ empOmniDirRotate ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOmniDirRotate].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
-			pMaterialProperties[ empOmniDirRotateSpot ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOmniDirRotateSpot].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationU:
-			pMaterialProperties[ empVariationU ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empVariationU].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationV:
-			pMaterialProperties[ empVariationV ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empVariationV].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivity:
-			pMaterialProperties[ empRimEmissivity ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empRimEmissivity ].GetRenderable() )
-				.SetRequiresTexture( true );
+			pMaterialProperties[empRimEmissivity].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empRimEmissivity].GetRenderable())
+				.SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivityTint:
-			pMaterialProperties[ empRimEmissivityTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRimEmissivityTint].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivityIntensity:
-			pMaterialProperties[ empRimEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRimEmissivityIntensity].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRimAngle:
-			pMaterialProperties[ empRimAngle ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRimAngle].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptRimExponent:
-			pMaterialProperties[ empRimExponent ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empRimExponent].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineColor:
-			pMaterialProperties[ empOutlineColor ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOutlineColor].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineColorTint:
-			pMaterialProperties[ empOutlineColorTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOutlineColorTint].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineThickness:
-			pMaterialProperties[ empOutlineThickness ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOutlineThickness].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineSolidity:
-			pMaterialProperties[ empOutlineSolidity ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOutlineSolidity].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivity:
-			pMaterialProperties[ empOutlineEmissivity ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOutlineEmissivity].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
-			pMaterialProperties[ empOutlineEmissivityTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOutlineEmissivityTint].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
-			pMaterialProperties[ empOutlineEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empOutlineEmissivityIntensity].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptNonPbrAlbedo:
-			pMaterialProperties[ empNonPbrAlbedo ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empNonPbrAlbedo ].GetRenderable() ).SetRequiresTexture( true );
+			pMaterialProperties[empNonPbrAlbedo].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empNonPbrAlbedo].GetRenderable()).SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptNonPbrMetalness:
-			pMaterialProperties[ empNonPbrMetalness ].SetRenderable( skin.AddRenderable( renderable ) );
-			skin.GetRenderableAt( pMaterialProperties[ empNonPbrMetalness ].GetRenderable() ).SetRequiresTexture( true );
+			pMaterialProperties[empNonPbrMetalness].SetRenderable(skin.AddRenderable(renderable));
+			skin.GetRenderableAt(pMaterialProperties[empNonPbrMetalness].GetRenderable()).SetRequiresTexture(true);
 			break;
 			
 		case deoglSkinPropertyMap::eptClipPlane:
-			pMaterialProperties[ empSkinClipPlane ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empSkinClipPlane].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		case deoglSkinPropertyMap::eptClipPlaneBorder:
-			pMaterialProperties[ empSkinClipPlaneBorder ].SetRenderable( skin.AddRenderable( renderable ) );
+			pMaterialProperties[empSkinClipPlaneBorder].SetRenderable(skin.AddRenderable(renderable));
 			break;
 			
 		default:
@@ -2521,10 +2521,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 	}
 	
 	// check if the property has a boner
-	if( ! property.GetBone().IsEmpty() ){
-		switch( propertyType ){
+	if(!property.GetBone().IsEmpty()){
+		switch(propertyType){
 		case deoglSkinPropertyMap::eptClipPlane:
-			pMaterialProperties[ empSkinClipPlane ].SetBone( skin.AddBone( property.GetBone() ) );
+			pMaterialProperties[empSkinClipPlane].SetBone(skin.AddBone(property.GetBone()));
 			break;
 			
 		default:
@@ -2533,25 +2533,25 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 	}
 }
 
-void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int element ){
+void deoglSkinTexture::pUpdateParamBlock(deoglShaderParameterBlock &spb, int element){
 	// etutValueColorTransparency,
 	// etutValueNormalHeight,
 	// etutValueReflectivityRoughness,
 	// etutValueRefractionDistort,
 	// etutValueAO,
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexColorTint, element,
-		powf( pColorTint.r, 2.2f ), powf( pColorTint.g, 2.2f ), powf( pColorTint.b, 2.2f ) );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexColorTint, element,
+		powf(pColorTint.r, 2.2f), powf(pColorTint.g, 2.2f), powf(pColorTint.b, 2.2f));
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexColorGamma, element, pColorGamma );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexColorGamma, element, pColorGamma);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexColorSolidMultiplier, element,
-		pColorSolidityMultiplier );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexColorSolidMultiplier, element,
+		pColorSolidityMultiplier);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexAOSolidityMultiplier, element,
-		pAmbientOcclusionSolidityMultiplier );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexAOSolidityMultiplier, element,
+		pAmbientOcclusionSolidityMultiplier);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexTransparencyMultiplier, element,
-		pTransparencyMultiplier );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexTransparencyMultiplier, element,
+		pTransparencyMultiplier);
 	
 	{
 	float lower = 0.0f, upper = pSolidityMultiplier;
@@ -2564,125 +2564,125 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 	}
 	
 	// (texHeight - 0.5 + offset) * scale = texHeight*scale + (offset-0.5)*scale
-	spb.SetParameterDataVec2( deoglSkinShader::etutTexHeightRemap, element,
-		pHeightScale, ( pHeightOffset - 0.5f ) * pHeightScale );
+	spb.SetParameterDataVec2(deoglSkinShader::etutTexHeightRemap, element,
+		pHeightScale, (pHeightOffset - 0.5f) * pHeightScale);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalStrength, element, pNormalStrength );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexNormalStrength, element, pNormalStrength);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalSolidityMultiplier, element,
-		pNormalSolidityMultiplier );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexNormalSolidityMultiplier, element,
+		pNormalSolidityMultiplier);
 	
-	spb.SetParameterDataVec2( deoglSkinShader::etutTexRoughnessRemap, element,
-		pRoughnessRemapUpper - pRoughnessRemapLower, pRoughnessRemapLower );
+	spb.SetParameterDataVec2(deoglSkinShader::etutTexRoughnessRemap, element,
+		pRoughnessRemapUpper - pRoughnessRemapLower, pRoughnessRemapLower);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessGamma, element, pRoughnessGamma );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexRoughnessGamma, element, pRoughnessGamma);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessSolidityMultiplier, element,
-		pRoughnessSolidityMultiplier );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexRoughnessSolidityMultiplier, element,
+		pRoughnessSolidityMultiplier);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivitySolidityMultiplier, element,
-		pReflectivitySolidityMultiplier );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexReflectivitySolidityMultiplier, element,
+		pReflectivitySolidityMultiplier);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexRefractionDistortStrength, element,
-		pRefractDistortStrength );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexRefractionDistortStrength, element,
+		pRefractDistortStrength);
 	
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexEmissivityIntensity, element,
-		powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
-		powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
-		powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexEmissivityIntensity, element,
+		powf(pEmissivityTint.r, 2.2f) * pEmissivityIntensity,
+		powf(pEmissivityTint.g, 2.2f) * pEmissivityIntensity,
+		powf(pEmissivityTint.b, 2.2f) * pEmissivityIntensity);
 	
 	spb.SetParameterDataVec3(deoglSkinShader::etutTexEnvRoomTint, element,
 		powf(pEnvironmentRoomTint.r, 2.2f),
 		powf(pEnvironmentRoomTint.g, 2.2f),
 		powf(pEnvironmentRoomTint.b, 2.2f));
 	
-	spb.SetParameterDataVec2( deoglSkinShader::etutTexEnvRoomSize, element,
-		1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );
+	spb.SetParameterDataVec2(deoglSkinShader::etutTexEnvRoomSize, element,
+		1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y);
 	
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomOffset, element,
-		pEnvironmentRoomOffset );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexEnvRoomOffset, element,
+		pEnvironmentRoomOffset);
 	
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomEmissivityIntensity, element,
-		powf( pEnvironmentRoomEmissivityTint.r, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
-		powf( pEnvironmentRoomEmissivityTint.g, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
-		powf( pEnvironmentRoomEmissivityTint.b, 2.2f ) * pEnvironmentRoomEmissivityIntensity );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexEnvRoomEmissivityIntensity, element,
+		powf(pEnvironmentRoomEmissivityTint.r, 2.2f) * pEnvironmentRoomEmissivityIntensity,
+		powf(pEnvironmentRoomEmissivityTint.g, 2.2f) * pEnvironmentRoomEmissivityIntensity,
+		powf(pEnvironmentRoomEmissivityTint.b, 2.2f) * pEnvironmentRoomEmissivityIntensity);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexThickness, element, pThickness );
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexAbsorptionRange, element, pAbsorptionRange );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexThickness, element, pThickness);
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexAbsorptionRange, element, pAbsorptionRange);
 	
-	spb.SetParameterDataVec2( deoglSkinShader::etutTexVariationEnableScale, element,
-		pVariationU ? 1.0f : 0.0f, pVariationV ? 1.0f : 0.0f );
+	spb.SetParameterDataVec2(deoglSkinShader::etutTexVariationEnableScale, element,
+		pVariationU ? 1.0f : 0.0f, pVariationV ? 1.0f : 0.0f);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivityMultiplier, element,
-		pReflectivityMultiplier );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexReflectivityMultiplier, element,
+		pReflectivityMultiplier);
 	
 	// see shader source geometry/defren/skin/particle_ribbon.glsl for the
 	// calculation of the maximum number of supported sheets (4)
-	spb.SetParameterDataInt( deoglSkinShader::etutTexParticleSheetCount, element,
+	spb.SetParameterDataInt(deoglSkinShader::etutTexParticleSheetCount, element,
 		decMath::clamp(pParticleSheetCount, 1, 4));
 	
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexRimEmissivityIntensity, element,
-		powf( pRimEmissivityTint.r, 2.2f ) * pRimEmissivityIntensity,
-		powf( pRimEmissivityTint.g, 2.2f ) * pRimEmissivityIntensity,
-		powf( pRimEmissivityTint.b, 2.2f ) * pRimEmissivityIntensity );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexRimEmissivityIntensity, element,
+		powf(pRimEmissivityTint.r, 2.2f) * pRimEmissivityIntensity,
+		powf(pRimEmissivityTint.g, 2.2f) * pRimEmissivityIntensity,
+		powf(pRimEmissivityTint.b, 2.2f) * pRimEmissivityIntensity);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexRimAngle, element,
-		pRimAngle > 0.001f ? 1.0f / ( pRimAngle * HALF_PI ) : 0.0f );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexRimAngle, element,
+		pRimAngle > 0.001f ? 1.0f / (pRimAngle * HALF_PI) : 0.0f);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexRimExponent, element,
-		decMath::max( pRimExponent, 0.001f ) );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexRimExponent, element,
+		decMath::max(pRimExponent, 0.001f));
 	
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColor, element,
-		powf( pOutlineColor.r, 2.2f ), powf( pOutlineColor.g, 2.2f ),
-		powf( pOutlineColor.b, 2.2f ) );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexOutlineColor, element,
+		powf(pOutlineColor.r, 2.2f), powf(pOutlineColor.g, 2.2f),
+		powf(pOutlineColor.b, 2.2f));
 	
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColorTint, element,
-		powf( pOutlineColorTint.r, 2.2f ), powf( pOutlineColorTint.g, 2.2f ),
-		powf( pOutlineColorTint.b, 2.2f ) );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexOutlineColorTint, element,
+		powf(pOutlineColorTint.r, 2.2f), powf(pOutlineColorTint.g, 2.2f),
+		powf(pOutlineColorTint.b, 2.2f));
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineThickness, element, pOutlineThickness );
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineSolidity, element, pOutlineSolidity );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexOutlineThickness, element, pOutlineThickness);
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexOutlineSolidity, element, pOutlineSolidity);
 	
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivity, element,
-		powf( pOutlineEmissivity.r, 2.2f ) * pOutlineEmissivityIntensity,
-		powf( pOutlineEmissivity.g, 2.2f ) * pOutlineEmissivityIntensity,
-		powf( pOutlineEmissivity.b, 2.2f ) * pOutlineEmissivityIntensity );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexOutlineEmissivity, element,
+		powf(pOutlineEmissivity.r, 2.2f) * pOutlineEmissivityIntensity,
+		powf(pOutlineEmissivity.g, 2.2f) * pOutlineEmissivityIntensity,
+		powf(pOutlineEmissivity.b, 2.2f) * pOutlineEmissivityIntensity);
 	
-	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivityTint, element,
-		powf( pOutlineEmissivityTint.r, 2.2f ), powf( pOutlineEmissivityTint.g, 2.2f ),
-		powf( pOutlineEmissivityTint.b, 2.2f ) );
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexOutlineEmissivityTint, element,
+		powf(pOutlineEmissivityTint.r, 2.2f), powf(pOutlineEmissivityTint.g, 2.2f),
+		powf(pOutlineEmissivityTint.b, 2.2f));
 	
-	spb.SetParameterDataBool( deoglSkinShader::etutTexEmissivityCameraAdapted, element,
-		pEmissivityCameraAdapted );
+	spb.SetParameterDataBool(deoglSkinShader::etutTexEmissivityCameraAdapted, element,
+		pEmissivityCameraAdapted);
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexSkinClipPlane, element, pSkinClipPlane );
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexSkinClipPlaneBorder, element, pSkinClipPlaneBorder );
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexSkinClipPlane, element, pSkinClipPlane);
+	spb.SetParameterDataFloat(deoglSkinShader::etutTexSkinClipPlaneBorder, element, pSkinClipPlaneBorder);
 }
 
 void deoglSkinTexture::pUpdateRenderTaskFilters(){
 	pRenderTaskFilters = ertfRender;
-	if( pXRay ){
+	if(pXRay){
 		pRenderTaskFilters |= ertfXRay;
 	}
-	if( pSolid ){
+	if(pSolid){
 		pRenderTaskFilters |= ertfSolid;
 	}
-	if( pHasOutline ){
+	if(pHasOutline){
 		pRenderTaskFilters |= ertfOutline;
 	}
-	if( pIsOutlineSolid ){
+	if(pIsOutlineSolid){
 		pRenderTaskFilters |= ertfOutlineSolid;
 	}
-	if( pHasHoles ){
+	if(pHasHoles){
 		pRenderTaskFilters |= ertfHoles;
 	}
-	if( pShadowNone ){
+	if(pShadowNone){
 		pRenderTaskFilters |= ertfShadowNone;
 	}
-	if( pReflected ){
+	if(pReflected){
 		pRenderTaskFilters |= ertfReflected;
 	}
-	if( pRendered ){
+	if(pRendered){
 		pRenderTaskFilters |= ertfRendered;
 	}
 }

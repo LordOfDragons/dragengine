@@ -62,17 +62,17 @@ struct sIDComponentNatDat{
 /////////////////////
 
 // public func destructor()
-deClassInputDeviceComponent::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsIDComponent, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassInputDeviceComponent::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsIDComponent, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassInputDeviceComponent::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassInputDeviceComponent::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sIDComponentNatDat &nd = *( ( sIDComponentNatDat* )p_GetNativeData( myself ) );
-	if( nd.device ){
+	sIDComponentNatDat &nd = *((sIDComponentNatDat*)p_GetNativeData(myself));
+	if(nd.device){
 		nd.device->FreeReference();
 		nd.device = NULL;
 	}
@@ -85,189 +85,189 @@ void deClassInputDeviceComponent::nfDestructor::RunFunction( dsRunTime*, dsValue
 ///////////////
 
 // public func InputDevice getInputDevice()
-deClassInputDeviceComponent::nfGetInputDevice::nfGetInputDevice( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getInputDevice", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDevice ){
+deClassInputDeviceComponent::nfGetInputDevice::nfGetInputDevice(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getInputDevice", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDevice){
 }
-void deClassInputDeviceComponent::nfGetInputDevice::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceComponent* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceComponent::nfGetInputDevice::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassInputDeviceComponent*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device );
+	ds.GetClassInputDevice()->PushInputDevice(rt, nd.device);
 }
 
 // public func int getComponentIndex()
-deClassInputDeviceComponent::nfGetComponentIndex::nfGetComponentIndex( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getComponentIndex", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassInputDeviceComponent::nfGetComponentIndex::nfGetComponentIndex(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getComponentIndex", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassInputDeviceComponent::nfGetComponentIndex::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
+void deClassInputDeviceComponent::nfGetComponentIndex::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
 	
-	rt->PushInt( nd.componentIndex );
+	rt->PushInt(nd.componentIndex);
 }
 
 
 
 // public func String getID()
-deClassInputDeviceComponent::nfGetID::nfGetID( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getID", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceComponent::nfGetID::nfGetID(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getID", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceComponent::nfGetID::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
+void deClassInputDeviceComponent::nfGetID::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
 	
-	rt->PushString( component.GetID() );
+	rt->PushString(component.GetID());
 }
 
 // public func String getName()
-deClassInputDeviceComponent::nfGetName::nfGetName( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceComponent::nfGetName::nfGetName(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceComponent::nfGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
+void deClassInputDeviceComponent::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
 	
-	rt->PushString( component.GetName() );
+	rt->PushString(component.GetName());
 }
 
 // public func InputDeviceComponentType getType()
-deClassInputDeviceComponent::nfGetType::nfGetType( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getType", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceComponentType ){
+deClassInputDeviceComponent::nfGetType::nfGetType(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getType", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceComponentType){
 }
-void deClassInputDeviceComponent::nfGetType::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
+void deClassInputDeviceComponent::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
 	
-	rt->PushValue( ( ( deClassInputDeviceComponent* )GetOwnerClass() )->GetClassInputDeviceComponentType()
-		->GetVariable( component.GetType() )->GetStaticValue() );
+	rt->PushValue(((deClassInputDeviceComponent*)GetOwnerClass())->GetClassInputDeviceComponentType()
+		->GetVariable(component.GetType())->GetStaticValue());
 }
 
 // public func Image getDisplayImage()
-deClassInputDeviceComponent::nfGetDisplayImage::nfGetDisplayImage( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getDisplayIconAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
+deClassInputDeviceComponent::nfGetDisplayImage::nfGetDisplayImage(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getDisplayIconAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
-void deClassInputDeviceComponent::nfGetDisplayImage::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceComponent* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceComponent::nfGetDisplayImage::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
+	deScriptingDragonScript &ds = ((deClassInputDeviceComponent*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassImage()->PushImage( rt, component.GetDisplayImage() );
+	ds.GetClassImage()->PushImage(rt, component.GetDisplayImage());
 }
 
 // public func int getDisplayIconCount()
-deClassInputDeviceComponent::nfGetDisplayIconCount::nfGetDisplayIconCount( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getDisplayIconCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassInputDeviceComponent::nfGetDisplayIconCount::nfGetDisplayIconCount(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getDisplayIconCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassInputDeviceComponent::nfGetDisplayIconCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
-	rt->PushInt( component.GetDisplayIconCount() );
+void deClassInputDeviceComponent::nfGetDisplayIconCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
+	rt->PushInt(component.GetDisplayIconCount());
 }
 
 // public func Image getDisplayIconAt( int index )
-deClassInputDeviceComponent::nfGetDisplayIconAt::nfGetDisplayIconAt( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getDisplayIconAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // index
+deClassInputDeviceComponent::nfGetDisplayIconAt::nfGetDisplayIconAt(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getDisplayIconAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // index
 }
-void deClassInputDeviceComponent::nfGetDisplayIconAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceComponent* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceComponent::nfGetDisplayIconAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
+	deScriptingDragonScript &ds = ((deClassInputDeviceComponent*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassImage()->PushImage( rt, component.GetDisplayIconAt( rt->GetValue( 0 )->GetInt() ) );
+	ds.GetClassImage()->PushImage(rt, component.GetDisplayIconAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func Image getLargestDisplayIconX( int maxWidth )
-deClassInputDeviceComponent::nfGetLargestDisplayIconX::nfGetLargestDisplayIconX( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getLargestDisplayIconX", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // maxWidth
+deClassInputDeviceComponent::nfGetLargestDisplayIconX::nfGetLargestDisplayIconX(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getLargestDisplayIconX", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // maxWidth
 }
-void deClassInputDeviceComponent::nfGetLargestDisplayIconX::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceComponent* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceComponent::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
+	deScriptingDragonScript &ds = ((deClassInputDeviceComponent*)GetOwnerClass())->GetDS();
 	const int count = component.GetDisplayIconCount();
-	const int maxWidth = rt->GetValue( 0 )->GetInt();
+	const int maxWidth = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = NULL;
 	int bestWidth = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deImage * const icon = component.GetDisplayIconAt( i );
-		if( icon->GetWidth() <= maxWidth && ( ! bestIcon || icon->GetWidth() >= bestWidth ) ){
+	for(i=0; i<count; i++){
+		deImage * const icon = component.GetDisplayIconAt(i);
+		if(icon->GetWidth() <= maxWidth && (!bestIcon || icon->GetWidth() >= bestWidth)){
 			bestIcon = icon;
 			bestWidth = icon->GetWidth();
 		}
 	}
 	
-	ds.GetClassImage()->PushImage( rt, bestIcon );
+	ds.GetClassImage()->PushImage(rt, bestIcon);
 }
 
 // public func Image getLargestDisplayIconY( int maxHeight )
-deClassInputDeviceComponent::nfGetLargestDisplayIconY::nfGetLargestDisplayIconY( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getLargestDisplayIconY", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // maxHeight
+deClassInputDeviceComponent::nfGetLargestDisplayIconY::nfGetLargestDisplayIconY(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getLargestDisplayIconY", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // maxHeight
 }
-void deClassInputDeviceComponent::nfGetLargestDisplayIconY::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
-	deScriptingDragonScript &ds = ( ( deClassInputDeviceComponent* )GetOwnerClass() )->GetDS();
+void deClassInputDeviceComponent::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &component = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
+	deScriptingDragonScript &ds = ((deClassInputDeviceComponent*)GetOwnerClass())->GetDS();
 	const int count = component.GetDisplayIconCount();
-	const int maxHeight = rt->GetValue( 0 )->GetInt();
+	const int maxHeight = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = NULL;
 	int bestHeight = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deImage * const icon = component.GetDisplayIconAt( i );
-		if( icon->GetHeight() <= maxHeight && ( ! bestIcon || icon->GetHeight() >= bestHeight ) ){
+	for(i=0; i<count; i++){
+		deImage * const icon = component.GetDisplayIconAt(i);
+		if(icon->GetHeight() <= maxHeight && (!bestIcon || icon->GetHeight() >= bestHeight)){
 			bestIcon = icon;
 			bestHeight = icon->GetHeight();
 		}
 	}
 	
-	ds.GetClassImage()->PushImage( rt, bestIcon );
+	ds.GetClassImage()->PushImage(rt, bestIcon);
 }
 
 // public func String getDisplayText()
-deClassInputDeviceComponent::nfGetDisplayText::nfGetDisplayText( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "getDisplayText", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassInputDeviceComponent::nfGetDisplayText::nfGetDisplayText(const sInitData &init) :
+dsFunction(init.clsIDComponent, "getDisplayText", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassInputDeviceComponent::nfGetDisplayText::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceComponent &axis = nd.device->GetDevice()->GetComponentAt( nd.componentIndex );
+void deClassInputDeviceComponent::nfGetDisplayText::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	const deInputDeviceComponent &axis = nd.device->GetDevice()->GetComponentAt(nd.componentIndex);
 	
-	rt->PushString( axis.GetDisplayText() );
+	rt->PushString(axis.GetDisplayText());
 }
 
 
 
 // public func bool equals( Object obj )
-deClassInputDeviceComponent::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsIDComponent, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObject ); // obj
+deClassInputDeviceComponent::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsIDComponent, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObject); // obj
 }
-void deClassInputDeviceComponent::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassInputDeviceComponent * const clsIDComponent = ( deClassInputDeviceComponent* )GetOwnerClass();
-	const sIDComponentNatDat &nd = *( ( const sIDComponentNatDat* )p_GetNativeData( myself ) );
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassInputDeviceComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassInputDeviceComponent * const clsIDComponent = (deClassInputDeviceComponent*)GetOwnerClass();
+	const sIDComponentNatDat &nd = *((const sIDComponentNatDat*)p_GetNativeData(myself));
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsIDComponent ) ){
-		rt->PushBool( false );
+	if(!p_IsObjOfType(obj, clsIDComponent)){
+		rt->PushBool(false);
 		
 	}else{
-		const sIDComponentNatDat &other = *( ( const sIDComponentNatDat* )p_GetNativeData( obj ) );
-		rt->PushBool( nd.device == other.device && nd.componentIndex == other.componentIndex );
+		const sIDComponentNatDat &other = *((const sIDComponentNatDat*)p_GetNativeData(obj));
+		rt->PushBool(nd.device == other.device && nd.componentIndex == other.componentIndex);
 	}
 }
 
@@ -279,14 +279,14 @@ void deClassInputDeviceComponent::nfEquals::RunFunction( dsRunTime *rt, dsValue 
 // Constructor, destructor
 ////////////////////////////
 
-deClassInputDeviceComponent::deClassInputDeviceComponent( deScriptingDragonScript &ds ) :
-dsClass( "InputDeviceComponent", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassInputDeviceComponent::deClassInputDeviceComponent(deScriptingDragonScript &ds) :
+dsClass("InputDeviceComponent", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sIDComponentNatDat ) );
+	p_SetNativeDataSize(sizeof(sIDComponentNatDat));
 }
 
 deClassInputDeviceComponent::~deClassInputDeviceComponent(){
@@ -297,8 +297,8 @@ deClassInputDeviceComponent::~deClassInputDeviceComponent(){
 // Management
 ///////////////
 
-void deClassInputDeviceComponent::CreateClassMembers( dsEngine *engine ){
-	pClsInputDeviceComponentType = engine->GetClass( "Dragengine.InputDeviceComponentType" );
+void deClassInputDeviceComponent::CreateClassMembers(dsEngine *engine){
+	pClsInputDeviceComponentType = engine->GetClass("Dragengine.InputDeviceComponentType");
 	
 	sInitData init;
 	
@@ -314,34 +314,34 @@ void deClassInputDeviceComponent::CreateClassMembers( dsEngine *engine ){
 	init.clsInputDeviceComponentType = pClsInputDeviceComponentType;
 	init.clsImage = pDS.GetClassImage();
 	
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetInputDevice( init ) );
-	AddFunction( new nfGetComponentIndex( init ) );
+	AddFunction(new nfGetInputDevice(init));
+	AddFunction(new nfGetComponentIndex(init));
 	
-	AddFunction( new nfGetID( init ) );
-	AddFunction( new nfGetName( init ) );
-	AddFunction( new nfGetType( init ) );
-	AddFunction( new nfGetDisplayImage( init ) );
-	AddFunction( new nfGetDisplayIconCount( init ) );
-	AddFunction( new nfGetDisplayIconAt( init ) );
-	AddFunction( new nfGetLargestDisplayIconX( init ) );
-	AddFunction( new nfGetLargestDisplayIconY( init ) );
-	AddFunction( new nfGetDisplayText( init ) );
+	AddFunction(new nfGetID(init));
+	AddFunction(new nfGetName(init));
+	AddFunction(new nfGetType(init));
+	AddFunction(new nfGetDisplayImage(init));
+	AddFunction(new nfGetDisplayIconCount(init));
+	AddFunction(new nfGetDisplayIconAt(init));
+	AddFunction(new nfGetLargestDisplayIconX(init));
+	AddFunction(new nfGetLargestDisplayIconY(init));
+	AddFunction(new nfGetDisplayText(init));
 	
-	AddFunction( new nfEquals( init ) );
+	AddFunction(new nfEquals(init));
 	
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceComponent::PushComponent( dsRunTime *rt, dedsInputDevice *device, int index ){
-	if( ! rt || ! device || index < 0 || index >= device->GetDevice()->GetComponentCount() ){
-		DSTHROW( dueInvalidParam );
+void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice *device, int index){
+	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetComponentCount()){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sIDComponentNatDat &nd = *( ( sIDComponentNatDat* )p_GetNativeData(
-		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sIDComponentNatDat &nd = *((sIDComponentNatDat*)p_GetNativeData(
+		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
 	device->AddReference();
 	nd.componentIndex = index;

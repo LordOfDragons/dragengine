@@ -40,8 +40,8 @@ public:
 	struct sFace{
 		decVector normal;
 		decVector baseVertex;
-		decVector edgeNormal[ 3 ];
-		float edgeDistance[ 3 ];
+		decVector edgeNormal[3];
+		float edgeDistance[3];
 		int indexFace;
 		int indexTexture;
 	};
@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create octree. */
-	deoalModelRTOctree( deoalModelOctree &octree );
+	deoalModelRTOctree(deoalModelOctree &octree);
 	
 	/** \brief Clean up octree. */
 	~deoalModelRTOctree();

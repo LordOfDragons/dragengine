@@ -43,5 +43,5 @@ igdeColorBoxListener::~igdeColorBoxListener(){
 // Events
 ///////////
 
-void igdeColorBoxListener::OnColorChanged( igdeColorBox *colorBox ){
+void igdeColorBoxListener::OnColorChanged(igdeColorBox *colorBox){
 }

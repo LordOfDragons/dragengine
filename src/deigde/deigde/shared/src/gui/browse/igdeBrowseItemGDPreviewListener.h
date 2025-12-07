@@ -51,7 +51,7 @@ public:
 	/**  \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	igdeBrowseItemGDPreviewListener( igdeIconListBox *iconListBox, igdeListItem *listItem, int iconSize );
+	igdeBrowseItemGDPreviewListener(igdeIconListBox *iconListBox, igdeListItem *listItem, int iconSize);
 	
 protected:
 	/**
@@ -76,7 +76,7 @@ public:
 	 * manager release the reference to the listener. The subclass has to
 	 * add a reference to the image to hold it.
 	 */
-	virtual void ImageCreated( deImage *image );
+	virtual void ImageCreated(deImage *image);
 	/*@}*/
 };
 

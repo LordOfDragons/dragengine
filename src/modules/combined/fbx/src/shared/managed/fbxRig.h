@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxRig( fbxScene &scene, fbxNode *nodePose );
+	fbxRig(fbxScene &scene, fbxNode *nodePose);
 	
 protected:
 	/** \brief Clean up connection. */
@@ -88,13 +88,13 @@ public:
 	int GetBoneCount() const;
 	
 	/** \brief Bone at index. */
-	fbxRigBone *GetBoneAt( int index ) const;
+	fbxRigBone *GetBoneAt(int index) const;
 	
 	/** \brief Named bone or NULL if absent. */
-	fbxRigBone *GetBoneNamed( const char *name ) const;
+	fbxRigBone *GetBoneNamed(const char *name) const;
 	
 	/** \brief Bone with model ID or NULL if absent. */
-	fbxRigBone *GetBoneWithModelID( int64_t id ) const;
+	fbxRigBone *GetBoneWithModelID(int64_t id) const;
 	
 	
 	
@@ -107,13 +107,13 @@ public:
 	
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pAddRootBone( fbxScene &scene, fbxNode &nodeRoot );
+	void pAddRootBone(fbxScene &scene, fbxNode &nodeRoot);
 };
 
 #endif

@@ -494,11 +494,11 @@ GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect = nullptr;
 //////////////////////////////////////////////
 
 oglDrawArraysIndirectCommand::oglDrawArraysIndirectCommand() :
-count( 0 ), instanceCount( 0 ), first( 0 ), baseInstance( 0 ){
+count(0), instanceCount(0), first(0), baseInstance(0){
 }
 
 oglDrawElementsIndirectCommand::oglDrawElementsIndirectCommand() :
-count( 0 ), instanceCount( 0 ), firstIndex( 0 ), baseVertex( 0 ), baseInstance( 0 ){
+count(0), instanceCount(0), firstIndex(0), baseVertex(0), baseInstance(0){
 }
 
 GLAPI PFNGLDRAWARRAYSINDIRECTPROC pglDrawArraysIndirect = nullptr;

@@ -44,21 +44,21 @@
 // Class igdeEditPoint::cListener
 ///////////////////////////////////
 
-igdeEditPoint::cListener::cListener( igdeEditPoint &editPoint,
-	igdeTextField *textX, igdeTextField *textY ) :
-pEditPoint( editPoint ),
-pTextX( textX ),
-pTextY( textY ){
+igdeEditPoint::cListener::cListener(igdeEditPoint &editPoint,
+	igdeTextField *textX, igdeTextField *textY) :
+pEditPoint(editPoint),
+pTextX(textX),
+pTextY(textY){
 }
 
 igdeEditPoint::cListener::~cListener(){
 }
 
-void igdeEditPoint::cListener::OnTextChanged( igdeTextField* ){
-	pEditPoint.SetPoint( decPoint( pTextX->GetInteger(), pTextY->GetInteger() ) );
+void igdeEditPoint::cListener::OnTextChanged(igdeTextField*){
+	pEditPoint.SetPoint(decPoint(pTextX->GetInteger(), pTextY->GetInteger()));
 }
 
-void igdeEditPoint::cListener::OnTextChanging( igdeTextField* ){
+void igdeEditPoint::cListener::OnTextChanging(igdeTextField*){
 }
 
 
@@ -69,32 +69,32 @@ void igdeEditPoint::cListener::OnTextChanging( igdeTextField* ){
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditPoint::igdeEditPoint( igdeUIHelper &helper, int columns, const char *description ) :
-igdeContainerBoxAlternate( helper.GetEnvironment(), igdeContainerBox::eaX, true, 2 ),
-pEnabled( true ),
-pColumns( columns ),
-pEditable( true ),
-pDescription( description ),
-pPreventUpdate( false )
+igdeEditPoint::igdeEditPoint(igdeUIHelper &helper, int columns, const char *description) :
+igdeContainerBoxAlternate(helper.GetEnvironment(), igdeContainerBox::eaX, true, 2),
+pEnabled(true),
+pColumns(columns),
+pEditable(true),
+pDescription(description),
+pPreventUpdate(false)
 {
-	if( columns < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1){
+		DETHROW(deeInvalidParam);
 	}
-	pCreateContent( helper );
+	pCreateContent(helper);
 }
 
-igdeEditPoint::igdeEditPoint( igdeUIHelper &helper, int columns, bool editable, const char *description ) :
-igdeContainerBoxAlternate( helper.GetEnvironment(), igdeContainerBox::eaX, true, 2 ),
-pEnabled( true ),
-pColumns( columns ),
-pEditable( editable ),
-pDescription( description ),
-pPreventUpdate( false )
+igdeEditPoint::igdeEditPoint(igdeUIHelper &helper, int columns, bool editable, const char *description) :
+igdeContainerBoxAlternate(helper.GetEnvironment(), igdeContainerBox::eaX, true, 2),
+pEnabled(true),
+pColumns(columns),
+pEditable(editable),
+pDescription(description),
+pPreventUpdate(false)
 {
-	if( columns < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1){
+		DETHROW(deeInvalidParam);
 	}
-	pCreateContent( helper );
+	pCreateContent(helper);
 }
 
 igdeEditPoint::~igdeEditPoint(){
@@ -106,8 +106,8 @@ igdeEditPoint::~igdeEditPoint(){
 // Management
 ///////////////
 
-void igdeEditPoint::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeEditPoint::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -115,8 +115,8 @@ void igdeEditPoint::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeEditPoint::SetEditable( bool editable ){
-	if( pEditable == editable ){
+void igdeEditPoint::SetEditable(bool editable){
+	if(pEditable == editable){
 		return;
 	}
 	
@@ -124,8 +124,8 @@ void igdeEditPoint::SetEditable( bool editable ){
 	OnEditableChanged();
 }
 
-void igdeEditPoint::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeEditPoint::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -133,8 +133,8 @@ void igdeEditPoint::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeEditPoint::SetPoint( const decPoint &point ){
-	if( pPreventUpdate || point == pPoint ){
+void igdeEditPoint::SetPoint(const decPoint &point){
+	if(pPreventUpdate || point == pPoint){
 		return;
 	}
 	
@@ -149,24 +149,24 @@ void igdeEditPoint::Focus(){
 
 
 
-void igdeEditPoint::AddListener( igdeEditPointListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeEditPoint::AddListener(igdeEditPointListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeEditPoint::RemoveListener( igdeEditPointListener *listener ){
-	pListeners.Remove( listener );
+void igdeEditPoint::RemoveListener(igdeEditPointListener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeEditPoint::NotifyPointChanged(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeEditPointListener* )listeners.GetAt( i ) )->OnPointChanged( this );
+	for(i=0; i<count; i++){
+		((igdeEditPointListener*)listeners.GetAt(i))->OnPointChanged(this);
 	}
 }
 
@@ -176,50 +176,50 @@ void igdeEditPoint::OnPointChanged(){
 	pPreventUpdate = true;
 	try{
 // 		if( pPoint.x != pTextX->GetInteger() ){
-			pTextX->SetInteger( pPoint.x );
+			pTextX->SetInteger(pPoint.x);
 // 		}
 // 		if( pPoint.y != pTextY->GetInteger() ){
-			pTextY->SetInteger( pPoint.y );
+			pTextY->SetInteger(pPoint.y);
 // 		}
 		pPreventUpdate = false;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}
 }
 
 void igdeEditPoint::OnEnabledChanged(){
-	pTextX->SetEnabled( pEnabled );
-	pTextY->SetEnabled( pEnabled );
+	pTextX->SetEnabled(pEnabled);
+	pTextY->SetEnabled(pEnabled);
 }
 
 void igdeEditPoint::OnEditableChanged(){
-	pTextX->SetEditable( pEditable );
-	pTextY->SetEditable( pEditable );
+	pTextX->SetEditable(pEditable);
+	pTextY->SetEditable(pEditable);
 }
 
 void igdeEditPoint::OnDescriptionChanged(){
-	pTextX->SetDescription( pDescription );
-	pTextY->SetDescription( pDescription );
+	pTextX->SetDescription(pDescription);
+	pTextY->SetDescription(pDescription);
 }
 
 
 
-void igdeEditPoint::pCreateContent( igdeUIHelper &helper ){
+void igdeEditPoint::pCreateContent(igdeUIHelper &helper){
 	// create widgets
-	helper.Label( *this, "(" );
-	helper.EditInteger( *this, pDescription, pColumns, pTextX, NULL );
-	helper.Label( *this, "," );
-	helper.EditInteger( *this, pDescription, pColumns, pTextY, NULL );
-	helper.Label( *this, ")" );
+	helper.Label(*this, "(");
+	helper.EditInteger(*this, pDescription, pColumns, pTextX, NULL);
+	helper.Label(*this, ",");
+	helper.EditInteger(*this, pDescription, pColumns, pTextY, NULL);
+	helper.Label(*this, ")");
 	
 	// set value
-	pTextX->SetInteger( pPoint.x );
-	pTextY->SetInteger( pPoint.y );
+	pTextX->SetInteger(pPoint.x);
+	pTextY->SetInteger(pPoint.y);
 	
 	// add listener
 	cListener::Ref listener(cListener::Ref::NewWith(*this, pTextX, pTextY));
-	pTextX->AddListener( listener );
-	pTextY->AddListener( listener );
+	pTextX->AddListener(listener);
+	pTextY->AddListener(listener);
 }

@@ -58,19 +58,19 @@ public:
 	inline int GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( int type );
+	void SetType(int type);
 	
 	/** \brief Fix cost. */
 	inline float GetFixCost() const{ return pFixCost; }
 	
 	/** \brief Set fix cost. */
-	void SetFixCost( float cost );
+	void SetFixCost(float cost);
 	
 	/** \brief Retrieves cost per meter. */
 	inline float GetCostPerMeter() const{ return pCostPerMeter; }
 	
 	/** \brief Set cost per meter. */
-	void SetCostPerMeter( float costPerMeter );
+	void SetCostPerMeter(float costPerMeter);
 	/*@}*/
 };
 

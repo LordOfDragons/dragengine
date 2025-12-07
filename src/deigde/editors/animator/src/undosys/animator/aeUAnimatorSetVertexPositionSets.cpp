@@ -40,14 +40,14 @@
 ////////////////////////////
 
 aeUAnimatorSetVertexPositionSets::aeUAnimatorSetVertexPositionSets(
-	aeAnimator *animator, const decStringSet &newValue ) :
-pAnimator( animator ),
-pNewValue( newValue )
+	aeAnimator *animator, const decStringSet &newValue) :
+pAnimator(animator),
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( animator )
+	DEASSERT_NOTNULL(animator)
 	
 	pOldValue = animator->GetListVertexPositionSets();
-	SetShortInfo( "Animator set vertex position sets" );
+	SetShortInfo("Animator set vertex position sets");
 }
 
 aeUAnimatorSetVertexPositionSets::~aeUAnimatorSetVertexPositionSets(){
@@ -59,9 +59,9 @@ aeUAnimatorSetVertexPositionSets::~aeUAnimatorSetVertexPositionSets(){
 ///////////////
 
 void aeUAnimatorSetVertexPositionSets::Undo(){
-	pAnimator->SetListVertexPositionSets( pOldValue );
+	pAnimator->SetListVertexPositionSets(pOldValue);
 }
 
 void aeUAnimatorSetVertexPositionSets::Redo(){
-	pAnimator->SetListVertexPositionSets( pNewValue );
+	pAnimator->SetListVertexPositionSets(pNewValue);
 }

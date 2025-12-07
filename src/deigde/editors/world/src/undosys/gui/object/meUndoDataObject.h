@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data object. */
-	meUndoDataObject( meObject *object );
+	meUndoDataObject(meObject *object);
 	
 protected:
 	/** \brief Clean up data object. */
@@ -85,7 +85,7 @@ public:
 	inline const meObject::Ref &GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set attached to before redo action. */
-	void SetAttachedTo( meObject *object );
+	void SetAttachedTo(meObject *object);
 	/*@}*/
 };
 

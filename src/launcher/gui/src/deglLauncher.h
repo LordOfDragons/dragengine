@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create launcher. */
-	deglLauncher( deglWindowMain *windowMain, int argc, char **argv );
+	deglLauncher(deglWindowMain *windowMain, int argc, char **argv);
 	
 	/** Clean up launcher. */
 	virtual ~deglLauncher();
@@ -104,7 +104,7 @@ public:
 	
 	
 	/** Create game icon instance. */
-	virtual delGameIcon *CreateGameIcon( int size, const char *path );
+	virtual delGameIcon *CreateGameIcon(int size, const char *path);
 	/*@}*/
 	
 	
@@ -113,7 +113,7 @@ private:
 	void pParseArguments();
 	bool pParseWindowsURIScheme();
 	void pInitLogger();
-	static decString pUrlDecode( const char *url );
+	static decString pUrlDecode(const char *url);
 };
 
 #endif

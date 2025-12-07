@@ -41,27 +41,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpUnstuckCollider::debpUnstuckCollider( debpWorld &world ) :
-pWorld( world ),
+debpUnstuckCollider::debpUnstuckCollider(debpWorld &world) :
+pWorld(world),
 
-pStuckCollider( NULL ),
+pStuckCollider(NULL),
 
-pNearbyColliders( NULL ),
-pNearbyColliderCount( 0 ),
-pNearbyColliderSize( 0 ),
+pNearbyColliders(NULL),
+pNearbyColliderCount(0),
+pNearbyColliderSize(0),
 
-pBlockerNormals( NULL ),
-pBlockerNormalCount( 0 ),
-pBlockerNormalSize( 0 )
+pBlockerNormals(NULL),
+pBlockerNormalCount(0),
+pBlockerNormalSize(0)
 {
 	(void)pWorld; // will be used in the future
 }
 
 debpUnstuckCollider::~debpUnstuckCollider(){
-	if( pBlockerNormals ){
+	if(pBlockerNormals){
 		delete [] pBlockerNormals;
 	}
-	if( pNearbyColliders ){
+	if(pNearbyColliders){
 		delete [] pNearbyColliders;
 	}
 }
@@ -71,11 +71,11 @@ debpUnstuckCollider::~debpUnstuckCollider(){
 // Management
 ///////////////
 
-void debpUnstuckCollider::SetStuckCollider( debpCollider *collider ){
+void debpUnstuckCollider::SetStuckCollider(debpCollider *collider){
 	pStuckCollider = collider;
 }
 
-void debpUnstuckCollider::SetDisplacement( const decDVector &displacement ){
+void debpUnstuckCollider::SetDisplacement(const decDVector &displacement){
 	pDisplacement = displacement;
 }
 
@@ -104,27 +104,27 @@ bool debpUnstuckCollider::UnstuckCollider(){
 
 
 
-debpCollider *debpUnstuckCollider::GetNearbyColliderAt( int index ) const{
-	if( index < 0 || index >= pNearbyColliderCount ) DETHROW( deeInvalidParam );
+debpCollider *debpUnstuckCollider::GetNearbyColliderAt(int index) const{
+	if(index < 0 || index >= pNearbyColliderCount) DETHROW(deeInvalidParam);
 	
-	return pNearbyColliders[ index ];
+	return pNearbyColliders[index];
 }
 
-void debpUnstuckCollider::AddNearbyCollider( debpCollider *collider ){
-	if( ! collider ) DETHROW( deeInvalidParam );
+void debpUnstuckCollider::AddNearbyCollider(debpCollider *collider){
+	if(!collider) DETHROW(deeInvalidParam);
 	
-	if( pNearbyColliderCount == pNearbyColliderSize ){
-		debpCollider **newArray = new debpCollider*[ pNearbyColliderSize + 1 ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pNearbyColliders ){
-			memcpy( newArray, pNearbyColliders, sizeof( debpCollider* ) * pNearbyColliderSize );
+	if(pNearbyColliderCount == pNearbyColliderSize){
+		debpCollider **newArray = new debpCollider*[pNearbyColliderSize + 1];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pNearbyColliders){
+			memcpy(newArray, pNearbyColliders, sizeof(debpCollider*) * pNearbyColliderSize);
 			delete [] pNearbyColliders;
 		}
 		pNearbyColliders = newArray;
 		pNearbyColliderSize++;
 	}
 	
-	pNearbyColliders[ pNearbyColliderCount++ ] = collider;
+	pNearbyColliders[pNearbyColliderCount++] = collider;
 }
 
 void debpUnstuckCollider::RemoveAllNearbyColliders(){
@@ -133,25 +133,25 @@ void debpUnstuckCollider::RemoveAllNearbyColliders(){
 
 
 
-const decDVector& debpUnstuckCollider::GetBlockerNormalAt( int index ) const{
-	if( index < 0 || index >= pBlockerNormalCount ) DETHROW( deeInvalidParam );
+const decDVector& debpUnstuckCollider::GetBlockerNormalAt(int index) const{
+	if(index < 0 || index >= pBlockerNormalCount) DETHROW(deeInvalidParam);
 	
-	return pBlockerNormals[ index ];
+	return pBlockerNormals[index];
 }
 
-void debpUnstuckCollider::AddBlockerNormal( const decDVector &normal ){
-	if( pBlockerNormalCount == pBlockerNormalSize ){
-		decDVector *newArray = new decDVector[ pBlockerNormalSize + 1 ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pBlockerNormals ){
-			memcpy( newArray, pBlockerNormals, sizeof( decDVector ) * pBlockerNormalSize );
+void debpUnstuckCollider::AddBlockerNormal(const decDVector &normal){
+	if(pBlockerNormalCount == pBlockerNormalSize){
+		decDVector *newArray = new decDVector[pBlockerNormalSize + 1];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pBlockerNormals){
+			memcpy(newArray, pBlockerNormals, sizeof(decDVector) * pBlockerNormalSize);
 			delete [] pBlockerNormals;
 		}
 		pBlockerNormals = newArray;
 		pBlockerNormalSize++;
 	}
 	
-	pBlockerNormals[ pBlockerNormalCount++ ] = normal;
+	pBlockerNormals[pBlockerNormalCount++] = normal;
 }
 
 void debpUnstuckCollider::RemoveAllBlockerNormals(){

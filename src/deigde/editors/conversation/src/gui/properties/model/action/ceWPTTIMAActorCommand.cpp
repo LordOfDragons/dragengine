@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAActorCommand::ceWPTTIMAActorCommand( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAActorCommand *action ) :
-ceWPTTIMAction( windowMain, etActionActorCommand, conversation, action )
+ceWPTTIMAActorCommand::ceWPTTIMAActorCommand(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAActorCommand *action) :
+ceWPTTIMAction(windowMain, etActionActorCommand, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionActorCommand() );
+	SetIcon(windowMain.GetIconActionActorCommand());
 	Update();
 }
 
@@ -61,14 +61,14 @@ void ceWPTTIMAActorCommand::Update(){
 	const ceCAActorCommand &action = *GetActionActorCommand();
 	decString text, description;
 	
-	text.Format( "%s => ", action.GetActor().GetString() );
+	text.Format("%s => ", action.GetActor().GetString());
 	description = text;
 	
-	if( ! action.GetCommand().IsEmpty() ){
-		const decString lineCommand( action.GetCommand().Split( '\n' ).GetAt( 0 ) );
+	if(!action.GetCommand().IsEmpty()){
+		const decString lineCommand(action.GetCommand().Split('\n').GetAt(0));
 		
-		if( lineCommand.GetLength() > 40 ){
-			text += lineCommand.GetLeft( 40 ) + "...";
+		if(lineCommand.GetLength() > 40){
+			text += lineCommand.GetLeft(40) + "...";
 			
 		}else{
 			text += lineCommand;
@@ -77,6 +77,6 @@ void ceWPTTIMAActorCommand::Update(){
 		description += action.GetCommand();
 	}
 	
-	SetText( text );
-	SetDescription( description );
+	SetText(text);
+	SetDescription(description);
 }

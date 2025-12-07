@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetOutputUpper::seUMappedSetOutputUpper( seMapped *mapped, float newOutputUpper ) :
-pMapped( mapped ),
-pOldOutputUpper( mapped ? mapped->GetOutputUpper() : 1.0f ),
-pNewOutputUpper( newOutputUpper )
+seUMappedSetOutputUpper::seUMappedSetOutputUpper(seMapped *mapped, float newOutputUpper) :
+pMapped(mapped),
+pOldOutputUpper(mapped ? mapped->GetOutputUpper() : 1.0f),
+pNewOutputUpper(newOutputUpper)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Output Upper" );
+	SetShortInfo("Set Mapped Output Upper");
 }
 
 seUMappedSetOutputUpper::~seUMappedSetOutputUpper(){
@@ -53,9 +53,9 @@ seUMappedSetOutputUpper::~seUMappedSetOutputUpper(){
 ///////////////
 
 void seUMappedSetOutputUpper::Undo(){
-	pMapped->SetOutputUpper( pOldOutputUpper );
+	pMapped->SetOutputUpper(pOldOutputUpper);
 }
 
 void seUMappedSetOutputUpper::Redo(){
-	pMapped->SetOutputUpper( pNewOutputUpper );
+	pMapped->SetOutputUpper(pNewOutputUpper);
 }

@@ -45,7 +45,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSmokeEmitter::deSmokeEmitter( deSmokeEmitterManager *manager ) : deResource( manager ){
+deSmokeEmitter::deSmokeEmitter(deSmokeEmitterManager *manager) : deResource(manager){
 	pCastVelocityMin = 1.0f;
 	pCastVelocityMax = 1.0f;
 	pCastDensityMin = 0.1f;
@@ -70,17 +70,17 @@ deSmokeEmitter::deSmokeEmitter( deSmokeEmitterManager *manager ) : deResource( m
 }
 
 deSmokeEmitter::~deSmokeEmitter(){
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 		pPeerPhysics = NULL;
 	}
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
 	
-	if( pSkin ) pSkin->FreeReference();
-	if( pComponent ) pComponent->FreeReference();
+	if(pSkin) pSkin->FreeReference();
+	if(pComponent) pComponent->FreeReference();
 }
 
 
@@ -88,164 +88,164 @@ deSmokeEmitter::~deSmokeEmitter(){
 // Management
 ///////////////
 
-void deSmokeEmitter::SetEmitterPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pEmitterPosition ) ){
+void deSmokeEmitter::SetEmitterPosition(const decDVector &position){
+	if(!position.IsEqualTo(pEmitterPosition)){
 		pEmitterPosition = position;
 		
-		if( pPeerPhysics ) pPeerPhysics->EmitterPositionChanged();
+		if(pPeerPhysics) pPeerPhysics->EmitterPositionChanged();
 	}
 }
 
-void deSmokeEmitter::SetEmitterOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pEmitterOrientation ) ){
+void deSmokeEmitter::SetEmitterOrientation(const decQuaternion &orientation){
+	if(!orientation.IsEqualTo(pEmitterOrientation)){
 		pEmitterOrientation = orientation;
 		
-		if( pPeerPhysics ) pPeerPhysics->EmitterOrientationChanged();
+		if(pPeerPhysics) pPeerPhysics->EmitterOrientationChanged();
 	}
 }
 
 
 
-void deSmokeEmitter::SetVolumePosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pVolumePosition ) ){
+void deSmokeEmitter::SetVolumePosition(const decDVector &position){
+	if(!position.IsEqualTo(pVolumePosition)){
 		pVolumePosition = position;
 		
-		if( pPeerGraphic ) pPeerGraphic->VolumePositionChanged();
+		if(pPeerGraphic) pPeerGraphic->VolumePositionChanged();
 	}
 }
 
 
 
-void deSmokeEmitter::SetMinCastDirection( const decVector &deviation ){
-	if( ! deviation.IsEqualTo( pCastDirectionMin ) ){
+void deSmokeEmitter::SetMinCastDirection(const decVector &deviation){
+	if(!deviation.IsEqualTo(pCastDirectionMin)){
 		pCastDirectionMin = deviation;
 		
-		if( pPeerPhysics ) pPeerPhysics->CastPropertyChanged();
+		if(pPeerPhysics) pPeerPhysics->CastPropertyChanged();
 	}
 }
 
-void deSmokeEmitter::SetMaxCastDirection( const decVector &deviation ){
-	if( ! deviation.IsEqualTo( pCastDirectionMax ) ){
+void deSmokeEmitter::SetMaxCastDirection(const decVector &deviation){
+	if(!deviation.IsEqualTo(pCastDirectionMax)){
 		pCastDirectionMax = deviation;
 		
-		if( pPeerPhysics ) pPeerPhysics->CastPropertyChanged();
+		if(pPeerPhysics) pPeerPhysics->CastPropertyChanged();
 	}
 }
 
-void deSmokeEmitter::SetMinCastVelocity( float velocity ){
-	if( fabsf( velocity - pCastVelocityMin ) > 1e-5f ){
+void deSmokeEmitter::SetMinCastVelocity(float velocity){
+	if(fabsf(velocity - pCastVelocityMin) > 1e-5f){
 		pCastVelocityMin = velocity;
 		
-		if( pPeerPhysics ) pPeerPhysics->CastPropertyChanged();
+		if(pPeerPhysics) pPeerPhysics->CastPropertyChanged();
 	}
 }
 
-void deSmokeEmitter::SetMaxCastVelocity( float velocity ){
-	if( fabsf( velocity - pCastVelocityMax ) > 1e-5f ){
+void deSmokeEmitter::SetMaxCastVelocity(float velocity){
+	if(fabsf(velocity - pCastVelocityMax) > 1e-5f){
 		pCastVelocityMax = velocity;
 		
-		if( pPeerPhysics ) pPeerPhysics->CastPropertyChanged();
+		if(pPeerPhysics) pPeerPhysics->CastPropertyChanged();
 	}
 }
 
-void deSmokeEmitter::SetMinCastDensity( float density ){
-	if( fabsf( density - pCastDensityMin ) > 1e-5f ){
+void deSmokeEmitter::SetMinCastDensity(float density){
+	if(fabsf(density - pCastDensityMin) > 1e-5f){
 		pCastDensityMin = density;
 		
-		if( pPeerPhysics ) pPeerPhysics->CastPropertyChanged();
+		if(pPeerPhysics) pPeerPhysics->CastPropertyChanged();
 	}
 }
 
-void deSmokeEmitter::SetMaxCastDensity( float density ){
-	if( fabsf( density - pCastDensityMax ) > 1e-5f ){
+void deSmokeEmitter::SetMaxCastDensity(float density){
+	if(fabsf(density - pCastDensityMax) > 1e-5f){
 		pCastDensityMax = density;
 		
-		if( pPeerPhysics ) pPeerPhysics->CastPropertyChanged();
+		if(pPeerPhysics) pPeerPhysics->CastPropertyChanged();
 	}
 }
 
-void deSmokeEmitter::SetEnableCasting( bool enable ){
-	if( enable != pEnableCasting ){
+void deSmokeEmitter::SetEnableCasting(bool enable){
+	if(enable != pEnableCasting){
 		pEnableCasting = enable;
 		
-		if( pPeerPhysics ) pPeerPhysics->EnableCastingChanged();
+		if(pPeerPhysics) pPeerPhysics->EnableCastingChanged();
 	}
 }
 
 
 
-void deSmokeEmitter::SetComponent( deComponent *component ){
-	if( component != pComponent ){
-		if( pComponent ) pComponent->FreeReference();
+void deSmokeEmitter::SetComponent(deComponent *component){
+	if(component != pComponent){
+		if(pComponent) pComponent->FreeReference();
 		
 		pComponent = component;
 		
-		if( component ) component->AddReference();
+		if(component) component->AddReference();
 		
-		if( pPeerPhysics ) pPeerPhysics->ComponentChanged();
+		if(pPeerPhysics) pPeerPhysics->ComponentChanged();
 	}
 }
 
-void deSmokeEmitter::SetCastTexture( int texture ){
-	if( texture != pCastTexture ){
+void deSmokeEmitter::SetCastTexture(int texture){
+	if(texture != pCastTexture){
 		pCastTexture = texture;
 		
-		if( pPeerPhysics ) pPeerPhysics->CastTextureChanged();
+		if(pPeerPhysics) pPeerPhysics->CastTextureChanged();
 	}
 }
 
-void deSmokeEmitter::SetSkin( deSkin *skin ){
-	if( skin != pSkin ){
-		if( pSkin ) pSkin->FreeReference();
+void deSmokeEmitter::SetSkin(deSkin *skin){
+	if(skin != pSkin){
+		if(pSkin) pSkin->FreeReference();
 		
 		pSkin = skin;
 		
-		if( skin ) skin->AddReference();
+		if(skin) skin->AddReference();
 		
-		if( pPeerGraphic ) pPeerGraphic->SkinChanged();
-		if( pPeerPhysics ) pPeerPhysics->SkinChanged();
+		if(pPeerGraphic) pPeerGraphic->SkinChanged();
+		if(pPeerPhysics) pPeerPhysics->SkinChanged();
 	}
 }
 
-void deSmokeEmitter::SetCollisionFilter( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilter ){
+void deSmokeEmitter::SetCollisionFilter(const decCollisionFilter &collisionFilter){
+	if(collisionFilter == pCollisionFilter){
 		return;
 	}
 	
 	pCollisionFilter = collisionFilter;
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->CollisionFilterChanged();
 	}
 }
 
-void deSmokeEmitter::SetGravity( const decVector &gravity ){
-	if( ! gravity.IsEqualTo( pGravity ) ){
+void deSmokeEmitter::SetGravity(const decVector &gravity){
+	if(!gravity.IsEqualTo(pGravity)){
 		pGravity = gravity;
 		
-		if( pPeerPhysics ) pPeerPhysics->GravityChanged();
+		if(pPeerPhysics) pPeerPhysics->GravityChanged();
 	}
 }
 
-void deSmokeEmitter::SetUseLocalGravity( bool useLocalGravity ){
-	if( pUseLocalGravity != useLocalGravity ){
+void deSmokeEmitter::SetUseLocalGravity(bool useLocalGravity){
+	if(pUseLocalGravity != useLocalGravity){
 		pUseLocalGravity = useLocalGravity;
 		
-		if( pPeerPhysics ) pPeerPhysics->GravityChanged();
+		if(pPeerPhysics) pPeerPhysics->GravityChanged();
 	}
 }
 
 
 
-void deSmokeEmitter::SetPoints( deSmokeDensityPoint *points, int count ){
+void deSmokeEmitter::SetPoints(deSmokeDensityPoint *points, int count){
 	pPoints = points;
 	pPointCount = count;
 	
-	if( pPeerGraphic ) pPeerGraphic->PointsChanged();
+	if(pPeerGraphic) pPeerGraphic->PointsChanged();
 }
 
 void deSmokeEmitter::NotifyPointsChanged(){
-	if( pPeerGraphic ) pPeerGraphic->PointsChanged();
+	if(pPeerGraphic) pPeerGraphic->PointsChanged();
 }
 
 
@@ -253,13 +253,13 @@ void deSmokeEmitter::NotifyPointsChanged(){
 // System Peers
 /////////////////
 
-void deSmokeEmitter::SetPeerGraphic( deBaseGraphicSmokeEmitter *peer ){
-	if( pPeerGraphic ) delete pPeerGraphic;
+void deSmokeEmitter::SetPeerGraphic(deBaseGraphicSmokeEmitter *peer){
+	if(pPeerGraphic) delete pPeerGraphic;
 	pPeerGraphic = peer;
 }
 
-void deSmokeEmitter::SetPeerPhysics( deBasePhysicsSmokeEmitter *peer ){
-	if( pPeerPhysics ) delete pPeerPhysics;
+void deSmokeEmitter::SetPeerPhysics(deBasePhysicsSmokeEmitter *peer){
+	if(pPeerPhysics) delete pPeerPhysics;
 	pPeerPhysics = peer;
 }
 
@@ -268,14 +268,14 @@ void deSmokeEmitter::SetPeerPhysics( deBasePhysicsSmokeEmitter *peer ){
 // Linked List
 ////////////////
 
-void deSmokeEmitter::SetParentWorld( deWorld *world ){
+void deSmokeEmitter::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deSmokeEmitter::SetLLWorldPrev( deSmokeEmitter *smokeEmitter ){
+void deSmokeEmitter::SetLLWorldPrev(deSmokeEmitter *smokeEmitter){
 	pLLWorldPrev = smokeEmitter;
 }
 
-void deSmokeEmitter::SetLLWorldNext( deSmokeEmitter *smokeEmitter ){
+void deSmokeEmitter::SetLLWorldNext(deSmokeEmitter *smokeEmitter){
 	pLLWorldNext = smokeEmitter;
 }

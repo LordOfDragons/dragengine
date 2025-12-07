@@ -41,30 +41,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpBulletShapeModel::debpBulletShapeModel( btTriangleMeshShape *meshShape,
+debpBulletShapeModel::debpBulletShapeModel(btTriangleMeshShape *meshShape,
 btTriangleIndexVertexArray *indexVertexArray, btScalar *vertices,
-int *faces, int vertexCount, int faceCount ) :
-debpBulletShape( meshShape ),
-pMeshShape( meshShape ),
-pIndexVertexArray( indexVertexArray ),
-pVertices( vertices ),
-pFaces( faces ),
-pVertexCount( vertexCount ),
-pFaceCount( faceCount )
+int *faces, int vertexCount, int faceCount) :
+debpBulletShape(meshShape),
+pMeshShape(meshShape),
+pIndexVertexArray(indexVertexArray),
+pVertices(vertices),
+pFaces(faces),
+pVertexCount(vertexCount),
+pFaceCount(faceCount)
 {
-	if( ! indexVertexArray || vertexCount < 0 || faceCount < 0 ){
-		DETHROW( deeInvalidParam );
+	if(!indexVertexArray || vertexCount < 0 || faceCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 debpBulletShapeModel::~debpBulletShapeModel(){
-	if( pIndexVertexArray ){
+	if(pIndexVertexArray){
 		delete pIndexVertexArray;
 	}
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
 }

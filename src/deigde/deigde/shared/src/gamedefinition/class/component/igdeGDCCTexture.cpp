@@ -39,19 +39,19 @@
 ////////////////////////////
 
 igdeGDCCTexture::igdeGDCCTexture() :
-pScale( 1.0f, 1.0f ),
-pRotation( 0.0f ),
-pColorTint( 1.0f, 1.0f, 1.0f ){
+pScale(1.0f, 1.0f),
+pRotation(0.0f),
+pColorTint(1.0f, 1.0f, 1.0f){
 }
 
-igdeGDCCTexture::igdeGDCCTexture( const igdeGDCCTexture &texture ) :
-pName( texture.pName ),
-pPathSkin( texture.pPathSkin ),
-pOffset( texture.pOffset ),
-pScale( texture.pScale ),
-pRotation( texture.pRotation ),
-pColorTint( texture.pColorTint ),
-pProperties( texture.pProperties ){
+igdeGDCCTexture::igdeGDCCTexture(const igdeGDCCTexture &texture) :
+pName(texture.pName),
+pPathSkin(texture.pPathSkin),
+pOffset(texture.pOffset),
+pScale(texture.pScale),
+pRotation(texture.pRotation),
+pColorTint(texture.pColorTint),
+pProperties(texture.pProperties){
 }
 
 igdeGDCCTexture::~igdeGDCCTexture(){
@@ -62,30 +62,30 @@ igdeGDCCTexture::~igdeGDCCTexture(){
 // Management
 ///////////////
 
-void igdeGDCCTexture::SetName( const char *name ){
+void igdeGDCCTexture::SetName(const char *name){
 	pName = name;
 }
 
-void igdeGDCCTexture::SetPathSkin( const char *path ){
+void igdeGDCCTexture::SetPathSkin(const char *path){
 	pPathSkin = path;
 }
 
-void igdeGDCCTexture::SetOffset( const decVector2 &offset ){
+void igdeGDCCTexture::SetOffset(const decVector2 &offset){
 	pOffset = offset;
 }
 
-void igdeGDCCTexture::SetScale( const decVector2 &scale ){
+void igdeGDCCTexture::SetScale(const decVector2 &scale){
 	pScale = scale;
 }
 
-void igdeGDCCTexture::SetRotation( float rotation ){
+void igdeGDCCTexture::SetRotation(float rotation){
 	pRotation = rotation;
 }
 
-void igdeGDCCTexture::SetColorTint( const decColor &color ){
+void igdeGDCCTexture::SetColorTint(const decColor &color){
 	pColorTint = color;
 }
 
-void igdeGDCCTexture::SetProperties( const decStringDictionary &properties ){
+void igdeGDCCTexture::SetProperties(const decStringDictionary &properties){
 	pProperties = properties;
 }

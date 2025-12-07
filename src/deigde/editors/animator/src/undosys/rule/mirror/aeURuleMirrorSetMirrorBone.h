@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetMirrorBone( aeRuleMirror *rule, const char *newValue );
+	aeURuleMirrorSetMirrorBone(aeRuleMirror *rule, const char *newValue);
 	
 protected:
 	/** Clean up undo. */

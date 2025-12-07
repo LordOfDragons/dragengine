@@ -52,29 +52,29 @@ public:
 	/** Retrieves the number of gestures. */
 	int GetCount() const;
 	/** Retrieves the gesture at the given position. */
-	ceGesture *GetAt( int index ) const;
+	ceGesture *GetAt(int index) const;
 	/** Retrieves the named gesture or NULL if not found. */
-	ceGesture *GetNamed( const char *name ) const;
+	ceGesture *GetNamed(const char *name) const;
 	/** Retrieves the index of a gesture or -1 if not found. */
-	int IndexOf( ceGesture *gesture ) const;
+	int IndexOf(ceGesture *gesture) const;
 	/** Retrieves the index of the named gesture or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a gesture exists. */
-	bool Has( ceGesture *gesture ) const;
+	bool Has(ceGesture *gesture) const;
 	/** Determines if a named gesture exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a gesture. */
-	void Add( ceGesture *gesture );
+	void Add(ceGesture *gesture);
 	/** Removes a gesture. */
-	void Remove( ceGesture *gesture );
+	void Remove(ceGesture *gesture);
 	/** Removes all gestures. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceGestureList &operator=( const ceGestureList &list );
+	ceGestureList &operator=(const ceGestureList &list);
 	
 	/** \brief Append gesture if absent. */
-	ceGestureList &operator+=( const ceGestureList &list );
+	ceGestureList &operator+=(const ceGestureList &list);
 	/*@}*/
 };
 

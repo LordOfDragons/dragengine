@@ -38,11 +38,11 @@
 ////////////////////////////
 
 deoglSkinCalculatedProperty::deoglSkinCalculatedProperty() :
-pRequiresTexture( false )
+pRequiresTexture(false)
 {
 	int i;
-	for( i=0; i<4; i++ ){
-		pMappedComponent[ i ] = -1;
+	for(i=0; i<4; i++){
+		pMappedComponent[i] = -1;
 	}
 }
 
@@ -54,46 +54,46 @@ deoglSkinCalculatedProperty::~deoglSkinCalculatedProperty(){
 // Management
 ///////////////
 
-int deoglSkinCalculatedProperty::GetMappedComponent( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index <= 3 )
-	return pMappedComponent[ index ];
+int deoglSkinCalculatedProperty::GetMappedComponent(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index <= 3)
+	return pMappedComponent[index];
 }
 
-void deoglSkinCalculatedProperty::SetMappedComponent( int index, int mapped ){
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index <= 3 )
-	DEASSERT_TRUE( mapped >= -1 )
-	pMappedComponent[ index ] = mapped;
+void deoglSkinCalculatedProperty::SetMappedComponent(int index, int mapped){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index <= 3)
+	DEASSERT_TRUE(mapped >= -1)
+	pMappedComponent[index] = mapped;
 }
 
-void deoglSkinCalculatedProperty::SetRequiresTexture( bool requiresTexture ){
+void deoglSkinCalculatedProperty::SetRequiresTexture(bool requiresTexture){
 	pRequiresTexture = requiresTexture;
 }
 
-decColor deoglSkinCalculatedProperty::Calculate( const deoglSkinState &skinState ) const{
+decColor deoglSkinCalculatedProperty::Calculate(const deoglSkinState &skinState) const{
 	decColor color;
 	
-	if( pMappedComponent[ 0 ] != -1 ){
-		color.r = skinState.GetMappedAt( pMappedComponent[ 0 ] ).GetValue();
+	if(pMappedComponent[0] != -1){
+		color.r = skinState.GetMappedAt(pMappedComponent[0]).GetValue();
 	}
 	
-	if( pMappedComponent[ 1 ] != -1 ){
-		color.g = skinState.GetMappedAt( pMappedComponent[ 1 ] ).GetValue();
+	if(pMappedComponent[1] != -1){
+		color.g = skinState.GetMappedAt(pMappedComponent[1]).GetValue();
 		
 	}else{
 		color.g = color.r;
 	}
 	
-	if ( pMappedComponent[ 2 ] != -1 ){
-		color.b = skinState.GetMappedAt( pMappedComponent[ 2 ] ).GetValue();
+	if (pMappedComponent[2] != -1){
+		color.b = skinState.GetMappedAt(pMappedComponent[2]).GetValue();
 		
 	}else{
 		color.b = color.r;
 	}
 	
-	if( pMappedComponent[ 3 ] != -1 ){
-		color.a = skinState.GetMappedAt( pMappedComponent[ 3 ] ).GetValue();
+	if(pMappedComponent[3] != -1){
+		color.a = skinState.GetMappedAt(pMappedComponent[3]).GetValue();
 		
 	}else{
 		color.a = color.r;

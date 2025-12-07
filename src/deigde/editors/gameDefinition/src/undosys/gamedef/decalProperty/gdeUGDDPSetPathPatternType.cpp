@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetPathPatternType::gdeUGDDPSetPathPatternType( gdeGameDefinition *gamedef,
-gdeProperty *property, gdeProperty::ePathPatternTypes newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDDPSetPathPatternType::gdeUGDDPSetPathPatternType(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeProperty::ePathPatternTypes newValue) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set path pattern type" );
+	SetShortInfo("Game definition property set path pattern type");
 	
 	pOldValue = property->GetPathPatternType();
 	pNewValue = newValue;
@@ -61,10 +61,10 @@ pProperty( NULL )
 }
 
 gdeUGDDPSetPathPatternType::~gdeUGDDPSetPathPatternType(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUGDDPSetPathPatternType::~gdeUGDDPSetPathPatternType(){
 ///////////////
 
 void gdeUGDDPSetPathPatternType::Undo(){
-	pProperty->SetPathPatternType( pOldValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetPathPatternType(pOldValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPSetPathPatternType::Redo(){
-	pProperty->SetPathPatternType( pNewValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetPathPatternType(pNewValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

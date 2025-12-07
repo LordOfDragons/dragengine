@@ -80,40 +80,40 @@ protected:
 	aeWPAPanelRuleMirror &pPanel;
 	
 public:
-	cBaseAction( aeWPAPanelRuleMirror &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(aeWPAPanelRuleMirror &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleMirror * const rule = ( aeRuleMirror* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleMirror * const rule = (aeRuleMirror*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRuleMirror *rule ) = 0;
+	virtual igdeUndo *OnAction(aeAnimator *animator, aeRuleMirror *rule) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleMirror * const rule = ( aeRuleMirror* )pPanel.GetRule();
-		if( animator && rule ){
-			Update( *animator, *rule );
+		aeRuleMirror * const rule = (aeRuleMirror*)pPanel.GetRule();
+		if(animator && rule){
+			Update(*animator, *rule);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleMirror & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &, const aeRuleMirror &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -122,57 +122,57 @@ protected:
 	aeWPAPanelRuleMirror &pPanel;
 	
 public:
-	cBaseComboBoxListener( aeWPAPanelRuleMirror &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(aeWPAPanelRuleMirror &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleMirror * const rule = ( aeRuleMirror* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleMirror * const rule = (aeRuleMirror*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, animator, rule ) ));
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, animator, rule)));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator *animator, aeRuleMirror *rule ) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleMirror *rule) = 0;
 };
 
 
 class cComboMirrorAxis : public cBaseComboBoxListener{
 public:
-	cComboMirrorAxis( aeWPAPanelRuleMirror &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboMirrorAxis(aeWPAPanelRuleMirror &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleMirror *rule ){
-		if( ! comboBox->GetSelectedItem() ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleMirror *rule){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
-		deAnimatorRuleMirror::eMirrorAxis value = ( deAnimatorRuleMirror::eMirrorAxis )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		return rule->GetMirrorAxis() != value ? new aeURuleMirrorSetAxis( rule, value ) : nullptr;
+		deAnimatorRuleMirror::eMirrorAxis value = (deAnimatorRuleMirror::eMirrorAxis)
+			(intptr_t)comboBox->GetSelectedItem()->GetData();
+		return rule->GetMirrorAxis() != value ? new aeURuleMirrorSetAxis(rule, value) : nullptr;
 	}
 };
 
 class cComboMirrorBone : public cBaseComboBoxListener{
 public:
-	cComboMirrorBone( aeWPAPanelRuleMirror &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboMirrorBone(aeWPAPanelRuleMirror &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleMirror *rule ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleMirror *rule){
 		return rule->GetMirrorBone() != comboBox->GetText()
-			? new aeURuleMirrorSetMirrorBone( rule, comboBox->GetText() ) : nullptr;
+			? new aeURuleMirrorSetMirrorBone(rule, comboBox->GetText()) : nullptr;
 	}
 };
 
 
 class cActionMatchNameAdd : public cBaseAction{
 public:
-	cActionMatchNameAdd( aeWPAPanelRuleMirror &panel ) : cBaseAction( panel, "Add...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add match name" ){}
+	cActionMatchNameAdd(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Add...",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add match name"){}
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
 		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::NewWith(
 			pPanel.GetEnvironment(), "Add match name"));
 		return dialog->Run(&pPanel) ?
@@ -185,21 +185,21 @@ class cActionMatchNameAddTemplate : public cBaseAction{
 	const decString pSecond;
 	const deAnimatorRuleMirror::eMatchNameType pType;
 public:
-	cActionMatchNameAddTemplate( aeWPAPanelRuleMirror &panel, const char *first, const char *second,
-		deAnimatorRuleMirror::eMatchNameType type ) :
-	cBaseAction( panel, CreateText( first, second, type ), panel.GetEnvironment().GetStockIcon(
-		igdeEnvironment::esiPlus ), "Add match name" ),
-	pFirst( first ), pSecond( second ), pType( type ){}
+	cActionMatchNameAddTemplate(aeWPAPanelRuleMirror &panel, const char *first, const char *second,
+		deAnimatorRuleMirror::eMatchNameType type) :
+	cBaseAction(panel, CreateText(first, second, type), panel.GetEnvironment().GetStockIcon(
+		igdeEnvironment::esiPlus), "Add match name"),
+	pFirst(first), pSecond(second), pType(type){}
 	
-	static decString CreateText( const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type ){
-		if( ! first || ! second ){
-			DETHROW( deeNullPointer );
+	static decString CreateText(const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type){
+		if(!first || !second){
+			DETHROW(deeNullPointer);
 		}
 		
 		const char *typeStr;
 		decString text;
 		
-		switch( type ){
+		switch(type){
 		case deAnimatorRuleMirror::emntFirst:
 			typeStr = "Begin";
 			break;
@@ -216,11 +216,11 @@ public:
 			typeStr = "?";
 		}
 		
-		text.Format( "Add: %s '%s' <-> '%s'", typeStr, first, second );
+		text.Format("Add: %s '%s' <-> '%s'", typeStr, first, second);
 		return text;
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
 		return new aeURuleMirrorAddMatchName(rule, aeRuleMirror::cMatchName::Ref::New(
 				new aeRuleMirror::cMatchName(pFirst, pSecond, pType)));
 	}
@@ -230,60 +230,60 @@ class cActionMatchNameEdit : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionMatchNameEdit> Ref;
 	
-	cActionMatchNameEdit( aeWPAPanelRuleMirror &panel ) :
-	cBaseAction( panel, "Edit...", nullptr, "Edit match name" ){}
+	cActionMatchNameEdit(aeWPAPanelRuleMirror &panel) :
+	cBaseAction(panel, "Edit...", nullptr, "Edit match name"){}
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
 		aeRuleMirror::cMatchName * const matchName = pPanel.GetSelectedMatchBone();
-		if( ! matchName ){
+		if(!matchName){
 			return nullptr;
 		}
 		
 		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::NewWith(
 			pPanel.GetEnvironment(), "Edit match name"));
-		( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).Set( *matchName );
-		if( ! dialog->Run( &pPanel ) ){
+		((aeDialogMirrorMatchName&)(igdeDialog&)dialog).Set(*matchName);
+		if(!dialog->Run(&pPanel)){
 			return nullptr;
 		}
 		
 		const aeRuleMirror::cMatchName::Ref edited(
-			( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).CreateMatchName() );
+			((aeDialogMirrorMatchName&)(igdeDialog&)dialog).CreateMatchName());
 		
-		return edited->operator!=( *matchName ) ? new aeURuleMirrorSetMatchName( rule,
-			rule->IndexOfMatchName( matchName ), edited ) : nullptr;
+		return edited->operator!=(*matchName) ? new aeURuleMirrorSetMatchName(rule,
+			rule->IndexOfMatchName(matchName), edited) : nullptr;
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleMirror & ){
-		SetEnabled( pPanel.GetSelectedMatchBone() );
+	virtual void Update(const aeAnimator &, const aeRuleMirror &){
+		SetEnabled(pPanel.GetSelectedMatchBone());
 	}
 };
 
 class cActionMatchNameRemove : public cBaseAction{
 public:
-	cActionMatchNameRemove( aeWPAPanelRuleMirror &panel ) : cBaseAction( panel, "Remove...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove match name" ){}
+	cActionMatchNameRemove(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Remove...",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove match name"){}
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
 		aeRuleMirror::cMatchName * const matchName = pPanel.GetSelectedMatchBone();
-		return matchName ? new aeURuleMirrorRemoveMatchName( rule, matchName ) : nullptr;
+		return matchName ? new aeURuleMirrorRemoveMatchName(rule, matchName) : nullptr;
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleMirror & ){
-		SetEnabled( pPanel.GetSelectedMatchBone() );
+	virtual void Update(const aeAnimator &, const aeRuleMirror &){
+		SetEnabled(pPanel.GetSelectedMatchBone());
 	}
 };
 
 class cActionMatchNameRemoveAll : public cBaseAction{
 public:
-	cActionMatchNameRemoveAll( aeWPAPanelRuleMirror &panel ) : cBaseAction( panel, "Remove All",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all match names" ){}
+	cActionMatchNameRemoveAll(aeWPAPanelRuleMirror &panel) : cBaseAction(panel, "Remove All",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all match names"){}
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		return rule->GetMatchNameCount() > 0 ? new aeURuleMirrorRemoveAllMatchNames( rule ) : nullptr;
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
+		return rule->GetMatchNameCount() > 0 ? new aeURuleMirrorRemoveAllMatchNames(rule) : nullptr;
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleMirror &rule ){
-		SetEnabled( rule.GetMatchNameCount() > 0 );
+	virtual void Update(const aeAnimator &, const aeRuleMirror &rule){
+		SetEnabled(rule.GetMatchNameCount() > 0);
 	}
 };
 
@@ -291,96 +291,96 @@ class cListMatchNames : public igdeListBoxListener{
 	aeWPAPanelRuleMirror &pPanel;
 	
 public:
-	cListMatchNames( aeWPAPanelRuleMirror &panel ) : pPanel( panel ){ }
+	cListMatchNames(aeWPAPanelRuleMirror &panel) : pPanel(panel){}
 	
-	virtual void OnDoubleClickItem( igdeListBox*, int ){
+	virtual void OnDoubleClickItem(igdeListBox*, int){
 		((cBaseAction&)cActionMatchNameEdit::Ref::NewWith(pPanel)).OnAction();
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
-		if( ! pPanel.GetRule() ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
+		if(!pPanel.GetRule()){
 			return;
 		}
 		
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( menu, new cActionMatchNameAdd( pPanel ), true );
-		helper.MenuCommand( menu, new cActionMatchNameAddTemplate( pPanel,
-			".l", ".r", deAnimatorRuleMirror::emntLast ), true );
-		helper.MenuCommand( menu, new cActionMatchNameAddTemplate( pPanel,
-			".L", ".R", deAnimatorRuleMirror::emntLast ), true );
-		helper.MenuCommand( menu, new cActionMatchNameAddTemplate( pPanel,
-			"Left", "Right", deAnimatorRuleMirror::emntMiddle ), true );
-		helper.MenuCommand( menu, new cActionMatchNameAddTemplate( pPanel,
-			"LEFT", "RIGHT", deAnimatorRuleMirror::emntMiddle ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionMatchNameEdit( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionMatchNameRemove( pPanel ), true );
-		helper.MenuCommand( menu, new cActionMatchNameRemoveAll( pPanel ), true );
+		helper.MenuCommand(menu, new cActionMatchNameAdd(pPanel), true);
+		helper.MenuCommand(menu, new cActionMatchNameAddTemplate(pPanel,
+			".l", ".r", deAnimatorRuleMirror::emntLast), true);
+		helper.MenuCommand(menu, new cActionMatchNameAddTemplate(pPanel,
+			".L", ".R", deAnimatorRuleMirror::emntLast), true);
+		helper.MenuCommand(menu, new cActionMatchNameAddTemplate(pPanel,
+			"Left", "Right", deAnimatorRuleMirror::emntMiddle), true);
+		helper.MenuCommand(menu, new cActionMatchNameAddTemplate(pPanel,
+			"LEFT", "RIGHT", deAnimatorRuleMirror::emntMiddle), true);
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, new cActionMatchNameEdit(pPanel), true);
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, new cActionMatchNameRemove(pPanel), true);
+		helper.MenuCommand(menu, new cActionMatchNameRemoveAll(pPanel), true);
 	}
 };
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition( aeWPAPanelRuleMirror &panel ) : cBaseAction( panel,
+	cActionEnablePosition(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
 		"Enable position manipulation", nullptr,
-		"Determines if the position is modified or kept as it is" ){ }
+		"Determines if the position is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		return new aeURuleMirrorSetEnablePosition( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
+		return new aeURuleMirrorSetEnablePosition(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleMirror &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnablePosition() );
+	virtual void Update(const aeAnimator & , const aeRuleMirror &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetEnablePosition());
 	}
 };
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation( aeWPAPanelRuleMirror &panel ) : cBaseAction( panel,
+	cActionEnableRotation(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
 		"Enable rotation manipulation", nullptr,
-		"Determines if the rotation is modified or kept as it is" ){ }
+		"Determines if the rotation is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		return new aeURuleMirrorSetEnableRotation( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
+		return new aeURuleMirrorSetEnableRotation(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleMirror &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableOrientation() );
+	virtual void Update(const aeAnimator & , const aeRuleMirror &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetEnableOrientation());
 	}
 };
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize( aeWPAPanelRuleMirror &panel ) : cBaseAction( panel,
+	cActionEnableSize(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
 		"Enable size manipulation", nullptr,
-		"Determines if the size is modified or kept as it is" ){ }
+		"Determines if the size is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		return new aeURuleMirrorSetEnableSize( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
+		return new aeURuleMirrorSetEnableSize(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleMirror &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableSize() );
+	virtual void Update(const aeAnimator & , const aeRuleMirror &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetEnableSize());
 	}
 };
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	cActionEnableVertexPositionSet( aeWPAPanelRuleMirror &panel ) : cBaseAction( panel,
+	cActionEnableVertexPositionSet(aeWPAPanelRuleMirror &panel) : cBaseAction(panel,
 		"Enable vertex position set manipulation", nullptr,
-		"Determines if the vertex position set is modified or kept as it is" ){ }
+		"Determines if the vertex position set is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		return new aeURuleMirrorSetEnableVertexPositionSet( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleMirror *rule){
+		return new aeURuleMirrorSetEnableVertexPositionSet(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleMirror &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableVertexPositionSet() );
+	virtual void Update(const aeAnimator & , const aeRuleMirror &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetEnableVertexPositionSet());
 	}
 };
 
@@ -394,32 +394,32 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAPanelRuleMirror::aeWPAPanelRuleMirror( aeWPRule &wpRule ) :
-aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertMirror )
+aeWPAPanelRuleMirror::aeWPAPanelRuleMirror(aeWPRule &wpRule) :
+aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertMirror)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Mirror:" );
+	helper.GroupBox(*this, groupBox, "Mirror:");
 	
-	helper.ComboBox( groupBox, "Axis:", "Mirror axis", pCBMirrorAxis, new cComboMirrorAxis( *this ) );
-	pCBMirrorAxis->AddItem( "X", nullptr, ( void* )( intptr_t )deAnimatorRuleMirror::emaX );
-	pCBMirrorAxis->AddItem( "Y", nullptr, ( void* )( intptr_t )deAnimatorRuleMirror::emaY );
-	pCBMirrorAxis->AddItem( "Z", nullptr, ( void* )( intptr_t )deAnimatorRuleMirror::emaZ );
+	helper.ComboBox(groupBox, "Axis:", "Mirror axis", pCBMirrorAxis, new cComboMirrorAxis(*this));
+	pCBMirrorAxis->AddItem("X", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaX);
+	pCBMirrorAxis->AddItem("Y", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaY);
+	pCBMirrorAxis->AddItem("Z", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emaZ);
 	
-	helper.ComboBoxFilter( groupBox, "Bone:", true, "Mirror bone or empty string to use component",
-		pCBMirrorBone, new cComboMirrorBone( *this ) );
+	helper.ComboBoxFilter(groupBox, "Bone:", true, "Mirror bone or empty string to use component",
+		pCBMirrorBone, new cComboMirrorBone(*this));
 	pCBMirrorBone->SetDefaultSorter();
 	
-	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
+	helper.CheckBox(groupBox, pChkEnablePosition, new cActionEnablePosition(*this), true);
+	helper.CheckBox(groupBox, pChkEnableRotation, new cActionEnableRotation(*this), true);
+	helper.CheckBox(groupBox, pChkEnableSize, new cActionEnableSize(*this), true);
+	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet(*this), true);
 	
-	helper.ListBox( groupBox, "Pairs:", 3, "Match bone pairs by name.",
-		pListMatchName, new cListMatchNames( *this ) );
+	helper.ListBox(groupBox, "Pairs:", 3, "Match bone pairs by name.",
+		pListMatchName, new cListMatchNames(*this));
 }
 
 aeWPAPanelRuleMirror::~aeWPAPanelRuleMirror(){
@@ -432,40 +432,40 @@ aeWPAPanelRuleMirror::~aeWPAPanelRuleMirror(){
 
 aeRuleMirror::cMatchName *aeWPAPanelRuleMirror::GetSelectedMatchBone() const{
 	return pListMatchName->GetSelectedItem()
-		? ( aeRuleMirror::cMatchName* )pListMatchName->GetSelectedItem()->GetData() : nullptr;
+		? (aeRuleMirror::cMatchName*)pListMatchName->GetSelectedItem()->GetData() : nullptr;
 }
 
 void aeWPAPanelRuleMirror::UpdateRigBoneList(){
 	aeWPAPanelRule::UpdateRigBoneList();
 	
-	const decString selection( pCBMirrorBone->GetText() );
+	const decString selection(pCBMirrorBone->GetText());
 	
 	pCBMirrorBone->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deRig * const rig = GetAnimator()->GetEngineRig();
-		if( rig ){
+		if(rig){
 			const int count = rig->GetBoneCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBMirrorBone->AddItem( rig->GetBoneAt( i ).GetName() );
+			for(i=0; i<count; i++){
+				pCBMirrorBone->AddItem(rig->GetBoneAt(i).GetName());
 			}
 		}
 		pCBMirrorBone->SortItems();
 	}
 	
 	pCBMirrorBone->StoreFilterItems();
-	pCBMirrorBone->SetText( selection );
+	pCBMirrorBone->SetText(selection);
 }
 
 void aeWPAPanelRuleMirror::UpdateRule(){
 	aeWPAPanelRule::UpdateRule();
 	
-	const aeRuleMirror * const rule = ( aeRuleMirror* )GetRule();
+	const aeRuleMirror * const rule = (aeRuleMirror*)GetRule();
 	
-	if( rule ){
-		pCBMirrorAxis->SetSelectionWithData( ( void* )( intptr_t )rule->GetMirrorAxis() );
-		pCBMirrorBone->SetText( rule->GetMirrorBone() );
+	if(rule){
+		pCBMirrorAxis->SetSelectionWithData((void*)(intptr_t)rule->GetMirrorAxis());
+		pCBMirrorBone->SetText(rule->GetMirrorBone());
 		
 		aeRuleMirror::cMatchName * const selection = GetSelectedMatchBone();
 		pListMatchName->RemoveAllItems();
@@ -475,10 +475,10 @@ void aeWPAPanelRuleMirror::UpdateRule(){
 		decString text;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			aeRuleMirror::cMatchName * const matchName = rule->GetMatchNameAt( i );
+		for(i=0; i<count; i++){
+			aeRuleMirror::cMatchName * const matchName = rule->GetMatchNameAt(i);
 			
-			switch( matchName->GetType() ){
+			switch(matchName->GetType()){
 			case deAnimatorRuleMirror::emntFirst:
 				typeStr = "Begin";
 				break;
@@ -495,23 +495,23 @@ void aeWPAPanelRuleMirror::UpdateRule(){
 				typeStr = "?";
 			}
 			
-			text.Format( "%s: '%s' <-> '%s'", typeStr,
-				matchName->GetFirst().GetString(), matchName->GetSecond().GetString() );
-			pListMatchName->AddItem( text, nullptr, matchName );
+			text.Format("%s: '%s' <-> '%s'", typeStr,
+				matchName->GetFirst().GetString(), matchName->GetSecond().GetString());
+			pListMatchName->AddItem(text, nullptr, matchName);
 		}
 		
-		pListMatchName->SetSelectionWithData( selection );
+		pListMatchName->SetSelectionWithData(selection);
 		
 	}else{
-		pCBMirrorAxis->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleMirror::emaX );
+		pCBMirrorAxis->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleMirror::emaX);
 		pCBMirrorBone->ClearText();
 		pListMatchName->RemoveAllItems();
 	}
 	
 	const bool enabled = rule;
-	pCBMirrorAxis->SetEnabled( enabled );
-	pCBMirrorBone->SetEnabled( enabled );
-	pListMatchName->SetEnabled( enabled );
+	pCBMirrorAxis->SetEnabled(enabled);
+	pCBMirrorBone->SetEnabled(enabled);
+	pListMatchName->SetEnabled(enabled);
 	
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();

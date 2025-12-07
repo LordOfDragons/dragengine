@@ -49,7 +49,7 @@ private:
 		igdeFont::Ref pFont;
 		
 	public:
-		cFont( const igdeFont::sConfiguration &config, igdeFont *font );
+		cFont(const igdeFont::sConfiguration &config, igdeFont *font);
 		virtual ~cFont();
 		
 		inline igdeFont *GetFont() const{ return pFont; }
@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shared font list. */
-	igdeSharedFontList( igdeEnvironment &environment );
+	igdeSharedFontList(igdeEnvironment &environment);
 	
 	/** \brief Clean up shared font list. */
 	~igdeSharedFontList();
@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get font matching configuration. */
-	igdeFont *GetFontWith( const igdeFont::sConfiguration &configuration );
+	igdeFont *GetFontWith(const igdeFont::sConfiguration &configuration);
 	/*@}*/
 };
 

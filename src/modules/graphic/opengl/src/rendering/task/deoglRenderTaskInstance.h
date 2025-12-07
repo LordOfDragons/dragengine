@@ -76,7 +76,7 @@ public:
 	inline const deoglRenderTaskSharedInstance *GetInstance() const{ return pInstance; }
 	
 	/** Set shared render task instance. */
-	void SetInstance( const deoglRenderTaskSharedInstance *instance );
+	void SetInstance(const deoglRenderTaskSharedInstance *instance);
 	
 	
 	
@@ -84,10 +84,10 @@ public:
 	inline int GetSubInstanceCount() const{ return pSubInstanceCount; }
 	
 	/** Sub instance at index. */
-	const sSubInstance &GetSubInstanceAt( int index ) const;
+	const sSubInstance &GetSubInstanceAt(int index) const;
 	
 	/** Add sub instance. */
-	void AddSubInstance( int indexInstance, int flags );
+	void AddSubInstance(int indexInstance, int flags);
 	
 	/** Sub instance index SPB. */
 	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{ return pSIIndexInstanceSPB; }
@@ -96,23 +96,23 @@ public:
 	inline int GetSIIndexInstanceFirst() const{ return pSIIndexInstanceFirst; }
 	
 	/** Set sub instance SPB information for later update. */
-	void SetSIIndexInstanceParam( deoglShaderParameterBlock *paramBlock, int firstIndex );
+	void SetSIIndexInstanceParam(deoglShaderParameterBlock *paramBlock, int firstIndex);
 	
 	/** Write sub instance indices for instance shared SPB. */
-	void WriteSIIndexInstanceInt( bool useFlags );
+	void WriteSIIndexInstanceInt(bool useFlags);
 	void WriteSIIndexInstanceCompute();
 	
 	/** Draw indirect index. */
 	inline int GetDrawIndirectIndex() const{ return pDrawIndirectIndex; }
 	
 	/** Set draw indirect index. */
-	void SetDrawIndirectIndex( int index );
+	void SetDrawIndirectIndex(int index);
 	
 	/** Draw indirect count. */
 	inline int GetDrawIndirectCount() const{ return pDrawIndirectCount; }
 	
 	/** Set draw indirect count. */
-	void SetDrawIndirectCount( int count );
+	void SetDrawIndirectCount(int count);
 	
 	
 	

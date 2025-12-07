@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCSpeakerListener::gdeWPSOCSpeakerListener( gdeWPSOCSpeaker &panel ) :
-pPanel( panel ){
+gdeWPSOCSpeakerListener::gdeWPSOCSpeakerListener(gdeWPSOCSpeaker &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCSpeakerListener::~gdeWPSOCSpeakerListener(){
@@ -53,45 +53,45 @@ gdeWPSOCSpeakerListener::~gdeWPSOCSpeakerListener(){
 // Management
 ///////////////
 
-void gdeWPSOCSpeakerListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCSpeakerListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCSpeakerListener::OCPropertiesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCSpeakerListener::OCPropertiesChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCSpeakerListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCSpeakerListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 }
 
 
 
-void gdeWPSOCSpeakerListener::OCSpeakersChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCSpeakerListener::OCSpeakersChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateSpeaker();
 }
 
-void gdeWPSOCSpeakerListener::OCSpeakerChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCSpeaker *speaker ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCSpeakerListener::OCSpeakerChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCSpeaker *speaker){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
-	if( pPanel.GetSpeaker() != speaker ){
+	if(pPanel.GetSpeaker() != speaker){
 		return;
 	}
 	pPanel.UpdateSpeaker();
 }
 
-void gdeWPSOCSpeakerListener::ActiveOCSpeakerChanged( gdeGameDefinition* ){
+void gdeWPSOCSpeakerListener::ActiveOCSpeakerChanged(gdeGameDefinition*){
 	pPanel.UpdateSpeaker();
 }

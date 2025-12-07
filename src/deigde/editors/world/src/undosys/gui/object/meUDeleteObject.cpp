@@ -38,11 +38,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDeleteObject::meUDeleteObject( meWorld *world ) :
-pWorld( NULL )
+meUDeleteObject::meUDeleteObject(meWorld *world) :
+pWorld(NULL)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const meObjectList &list = world->GetSelectionObject().GetSelected();
@@ -50,34 +50,34 @@ pWorld( NULL )
 	decString text;
 	int i;
 	
-	SetShortInfo( "Delete Objects" );
-	if( count > 1 ){
-		text.Format( "%i objects", count );
+	SetShortInfo("Delete Objects");
+	if(count > 1){
+		text.Format("%i objects", count);
 		
 	}else{
 		text = "1 object";
 	}
-	SetLongInfo( text );
+	SetLongInfo(text);
 	
 	try{
 		pWorld = world;
 		world->AddReference();
 		
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pObjects.Add(meUndoDataObject::Ref::NewWith(list.GetAt(i)));
 		}
 		
 		// keep track of object attached to deleted objects
 		const meObjectList &allObjects = world->GetObjects();
 		const int allCount = allObjects.GetCount();
-		for( i=0; i<allCount; i++ ){
-			meObject * const object = allObjects.GetAt( i );
-			if( object->GetAttachedTo() && list.Has( object->GetAttachedTo() ) ){
+		for(i=0; i<allCount; i++){
+			meObject * const object = allObjects.GetAt(i);
+			if(object->GetAttachedTo() && list.Has(object->GetAttachedTo())){
 				pAttached.Add(meUndoDataObject::Ref::NewWith(object));
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -99,23 +99,23 @@ void meUDeleteObject::Undo(){
 	
 	selection.Reset();
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
 		meObject * const object = data.GetObject();
 		
-		pWorld->AddObject( object );
-		selection.Add( object );
+		pWorld->AddObject(object);
+		selection.Add(object);
 		
-		pWorld->NotifyObjectAdded( object );
+		pWorld->NotifyObjectAdded(object);
 		
-		object->SetAttachedTo( data.GetAttachedTo() );
+		object->SetAttachedTo(data.GetAttachedTo());
 	}
 	
 	const int attachCount = pAttached.GetCount();
-	for( i=0; i<attachCount; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pAttached.GetAt( i ) );
+	for(i=0; i<attachCount; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pAttached.GetAt(i));
 		meObject * const object = data.GetObject();
-		object->SetAttachedTo( data.GetAttachedTo() );
+		object->SetAttachedTo(data.GetAttachedTo());
 	}
 	
 	selection.ActivateNext();
@@ -128,26 +128,26 @@ void meUDeleteObject::Redo(){
 	int i;
 	
 	const int attachCount = pAttached.GetCount();
-	for( i=0; i<attachCount; i++ ){
-		( ( meUndoDataObject* )pAttached.GetAt( i ) )->GetObject()->SetAttachedTo( NULL );
+	for(i=0; i<attachCount; i++){
+		((meUndoDataObject*)pAttached.GetAt(i))->GetObject()->SetAttachedTo(NULL);
 	}
 	
 	const int count = pObjects.GetCount();
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
 		meObject * const object = data.GetObject();
 		
-		object->SetAttachedTo( NULL );
+		object->SetAttachedTo(NULL);
 			// done automatically if removed from world but better be safe
 		
-		selection.Remove( object );
-		if( object->GetActive() ){
+		selection.Remove(object);
+		if(object->GetActive()){
 			selection.ActivateNext();
 		}
 		
-		pWorld->RemoveObject( object );
+		pWorld->RemoveObject(object);
 		
-		pWorld->NotifyObjectRemoved( object );
+		pWorld->NotifyObjectRemoved(object);
 	}
 	
 	pWorld->NotifyObjectSelectionChanged();
@@ -159,7 +159,7 @@ void meUDeleteObject::Redo(){
 //////////////////////
 
 void meUDeleteObject::pCleanUp(){
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }

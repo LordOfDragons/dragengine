@@ -37,19 +37,19 @@
 // class devkDescriptorSetLayout
 //////////////////////////////////
 
-devkDescriptorSetLayout::devkDescriptorSetLayout( devkDevice &device,
-	const devkDescriptorSetLayoutConfiguration &configuration ) :
-pDevice( device ),
-pConfiguration( configuration ),
-pLayout( VK_NULL_HANDLE )
+devkDescriptorSetLayout::devkDescriptorSetLayout(devkDevice &device,
+	const devkDescriptorSetLayoutConfiguration &configuration) :
+pDevice(device),
+pConfiguration(configuration),
+pLayout(VK_NULL_HANDLE)
 {
 	VkDescriptorSetLayoutBinding *bindings = nullptr;
 	try{
-		if( configuration.GetLayoutBindingCount() > 0 ){
-			bindings = new VkDescriptorSetLayoutBinding[ configuration.GetLayoutBindingCount() ];
+		if(configuration.GetLayoutBindingCount() > 0){
+			bindings = new VkDescriptorSetLayoutBinding[configuration.GetLayoutBindingCount()];
 			int i;
-			for( i=0; i<configuration.GetLayoutBindingCount(); i++ ){
-				bindings[ i ] = configuration.GetLayoutBindingAt( i );
+			for(i=0; i<configuration.GetLayoutBindingCount(); i++){
+				bindings[i] = configuration.GetLayoutBindingAt(i);
 			}
 		}
 		
@@ -57,15 +57,15 @@ pLayout( VK_NULL_HANDLE )
 		layout.pBindings = bindings;
 		layout.bindingCount = configuration.GetLayoutBindingCount();
 		
-		VK_CHECK( device.GetInstance().GetVulkan(), device.vkCreateDescriptorSetLayout(
-			device.GetDevice(), &layout, VK_NULL_HANDLE, &pLayout ) );
+		VK_CHECK(device.GetInstance().GetVulkan(), device.vkCreateDescriptorSetLayout(
+			device.GetDevice(), &layout, VK_NULL_HANDLE, &pLayout));
 		
-		if( bindings ){
+		if(bindings){
 			delete [] bindings;
 		}
 		
-	}catch( const deException & ){
-		if( bindings ){
+	}catch(const deException &){
+		if(bindings){
 			delete [] bindings;
 		}
 		throw;
@@ -73,8 +73,8 @@ pLayout( VK_NULL_HANDLE )
 }
 
 devkDescriptorSetLayout::~devkDescriptorSetLayout(){
-	if( pLayout ){
-		pDevice.vkDestroyDescriptorSetLayout( pDevice.GetDevice(), pLayout, VK_NULL_HANDLE );
+	if(pLayout){
+		pDevice.vkDestroyDescriptorSetLayout(pDevice.GetDevice(), pLayout, VK_NULL_HANDLE);
 	}
 }
 

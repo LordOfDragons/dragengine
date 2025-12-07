@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device axis. */
-	deovrDeviceAxis( deovrDevice &device );
+	deovrDeviceAxis(deovrDevice &device);
 	
 protected:
 	/** Clean up device axis. */
@@ -97,7 +97,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	
 	
@@ -105,19 +105,19 @@ public:
 	inline vr::VRActionHandle_t GetActionAnalogHandle() const{ return pActionAnalogHandle; }
 	
 	/** Set analog action handle. */
-	void SetActionAnalogHandle( vr::VRActionHandle_t handle );
+	void SetActionAnalogHandle(vr::VRActionHandle_t handle);
 	
 	/** Component to use. */
 	inline int GetComponent() const{ return pComponent; }
 	
 	/** Set component to use. */
-	void SetComponent( int component );
+	void SetComponent(int component);
 	
 	/** Finger. */
 	inline int GetFinger() const{ return pFinger; }
 	
 	/** Set finger. */
-	void SetFinger( int finger );
+	void SetFinger(int finger);
 	
 	
 	
@@ -125,25 +125,25 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Type. */
 	inline deInputDeviceAxis::eAxisTypes GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( deInputDeviceAxis::eAxisTypes type );
+	void SetType(deInputDeviceAxis::eAxisTypes type);
 	
 	/** Input device component. */
 	inline deovrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
 	
 	/** Set input device component. */
-	void SetInputDeviceComponent( deovrDeviceComponent *component );
+	void SetInputDeviceComponent(deovrDeviceComponent *component);
 	
 	
 	
@@ -154,13 +154,13 @@ public:
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
@@ -171,25 +171,25 @@ public:
 	inline float GetMaximum() const{ return pMaximum; }
 	
 	/** Set range. */
-	void SetRange( float minimum, float maximum );
+	void SetRange(float minimum, float maximum);
 	
 	/** Center value. */
 	inline float GetCenter() const{ return pCenter; }
 	
 	/** Set center value. */
-	void SetCenter( float center );
+	void SetCenter(float center);
 	
 	/** Dead zone value. */
 	inline float GetDeadZone() const{ return pDeadZone; }
 	
 	/** Set dead zone value. */
-	void SetDeadZone( float deadZone );
+	void SetDeadZone(float deadZone);
 	
 	/** Resolution. */
 	inline float GetResolution() const{ return pResolution; }
 	
 	/** Set resolution value. */
-	void SetResolution( float resolution );
+	void SetResolution(float resolution);
 	
 	
 	
@@ -197,10 +197,10 @@ public:
 	inline float GetValue() const{ return pValue; }
 	
 	/** Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** Update value if changed. */
-	void UpdateValue( float value );
+	void UpdateValue(float value);
 	
 	/** Track state. */
 	void TrackState();
@@ -211,7 +211,7 @@ public:
 	
 	
 	/** Update engine input device information axis. */
-	void GetInfo( deInputDeviceAxis &info ) const;
+	void GetInfo(deInputDeviceAxis &info) const;
 	/*@}*/
 	
 	

@@ -102,94 +102,94 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderThread::deoglRenderThread( deGraphicOpenGl &ogl ) :
-pOgl( ogl ),
+deoglRenderThread::deoglRenderThread(deGraphicOpenGl &ogl) :
+pOgl(ogl),
 
-pAsyncRendering( true ),
-pConfigChanged( true ),
-pFrameCounter( 0 ),
-pVRCamera( nullptr ),
+pAsyncRendering(true),
+pConfigChanged(true),
+pFrameCounter(0),
+pVRCamera(nullptr),
 
-pLeakTracker( *this ),
+pLeakTracker(*this),
 
-pCanvasInputOverlay( nullptr ),
-pCanvasDebugOverlay( nullptr ),
-pCanvasOverlay( nullptr ),
+pCanvasInputOverlay(nullptr),
+pCanvasDebugOverlay(nullptr),
+pCanvasOverlay(nullptr),
 
-pChoices( nullptr ),
-pBufferObject( nullptr ),
-pContext( nullptr ),
-pLoaderThread( nullptr ),
-pDebug( nullptr ),
-pDefaultTextures( nullptr ),
-pFramebuffer( nullptr ),
-pLogger( nullptr ),
-pRenderers( nullptr ),
-pShader( nullptr ),
-pTexture( nullptr ),
+pChoices(nullptr),
+pBufferObject(nullptr),
+pContext(nullptr),
+pLoaderThread(nullptr),
+pDebug(nullptr),
+pDefaultTextures(nullptr),
+pFramebuffer(nullptr),
+pLogger(nullptr),
+pRenderers(nullptr),
+pShader(nullptr),
+pTexture(nullptr),
 
-pCapabilities( nullptr ),
-pDeferredRendering( nullptr ),
-pDelayedOperations( nullptr ),
-pEnvMapSlotManager( nullptr ),
-pExtensions( nullptr ),
-pLightBoundarybox( nullptr ),
-pOccQueryMgr( nullptr ),
-pGI( nullptr ),
-pShadowMapper( nullptr ),
-pTriangleSorter( nullptr ),
-pPersistentRenderTaskPool( nullptr ),
-pRenderTaskSharedPool( nullptr ),
-pUniqueKey( nullptr ),
-pOcclusionTestPool( nullptr ),
+pCapabilities(nullptr),
+pDeferredRendering(nullptr),
+pDelayedOperations(nullptr),
+pEnvMapSlotManager(nullptr),
+pExtensions(nullptr),
+pLightBoundarybox(nullptr),
+pOccQueryMgr(nullptr),
+pGI(nullptr),
+pShadowMapper(nullptr),
+pTriangleSorter(nullptr),
+pPersistentRenderTaskPool(nullptr),
+pRenderTaskSharedPool(nullptr),
+pUniqueKey(nullptr),
+pOcclusionTestPool(nullptr),
 
-pTimeHistoryMain( 29, 2 ),
-pTimeHistoryRender( 29, 2 ),
-pTimeHistoryFrame( 29, 2 ),
-pEstimatedRenderTime( 0.0f ),
-pAccumulatedMainTime( 0.0f ),
-pFrameTimeLimit( 1.0f / 30.0f ),
+pTimeHistoryMain(29, 2),
+pTimeHistoryRender(29, 2),
+pTimeHistoryFrame(29, 2),
+pEstimatedRenderTime(0.0f),
+pAccumulatedMainTime(0.0f),
+pFrameTimeLimit(1.0f / 30.0f),
 
-pMainThreadShowDebugInfoModule( false ),
+pMainThreadShowDebugInfoModule(false),
 
-pDebugTimeThreadMainWaitFinish( 0.0f ),
+pDebugTimeThreadMainWaitFinish(0.0f),
 
-pDebugTimeThreadRenderSyncGpu( 0.0f ),
-pDebugTimeThreadRenderBegin( 0.0f ),
-pDebugTimeThreadRenderWindows( 0.0f ),
-pDebugTimeThreadRenderWindowsPrepare( 0.0f ),
-pDebugTimeThreadRenderWindowsRender( 0.0f ),
-pDebugTimeThreadRenderCapture( 0.0f ),
-pDebugTimeThreadRenderSwap( 0.0f ),
-pDebugTimeVRRender( 0.0f ),
-pDebugCountThreadWindows( 0 ),
+pDebugTimeThreadRenderSyncGpu(0.0f),
+pDebugTimeThreadRenderBegin(0.0f),
+pDebugTimeThreadRenderWindows(0.0f),
+pDebugTimeThreadRenderWindowsPrepare(0.0f),
+pDebugTimeThreadRenderWindowsRender(0.0f),
+pDebugTimeThreadRenderCapture(0.0f),
+pDebugTimeThreadRenderSwap(0.0f),
+pDebugTimeVRRender(0.0f),
+pDebugCountThreadWindows(0),
 
 // deprecated
-pQuickSorter( nullptr ),
-pOptimizerManager( nullptr ),
+pQuickSorter(nullptr),
+pOptimizerManager(nullptr),
 
 // thread control parameters
-pInitialRenderWindow( nullptr ), // temporary variable for thread initialization
-pThreadState( etsStopped ),
-pThreadFailure( false ),
-pBarrierSyncIn( 2 ),
-pBarrierSyncOut( 2 ),
-pSignalSemaphoreSyncVR( false )
+pInitialRenderWindow(nullptr), // temporary variable for thread initialization
+pThreadState(etsStopped),
+pThreadFailure(false),
+pBarrierSyncIn(2),
+pBarrierSyncOut(2),
+pSignalSemaphoreSyncVR(false)
 {
 	try{
 		pConfiguration = ogl.GetConfiguration();
-		pConfiguration.SetDirty( false );
-		ogl.GetConfiguration().SetDirty( false );
+		pConfiguration.SetDirty(false);
+		ogl.GetConfiguration().SetDirty(false);
 		
 		pAsyncRendering = ogl.GetConfiguration().GetAsyncRendering();
 		
-		pLogger = new deoglRTLogger( *this );
+		pLogger = new deoglRTLogger(*this);
 		
 		#ifdef OS_BEOS
-		SetName( "OpenGL Render" );
+		SetName("OpenGL Render");
 		#endif
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -204,26 +204,26 @@ deoglRenderThread::~deoglRenderThread(){
 // Management
 ///////////////
 
-deoglLightBoundaryMap &deoglRenderThread::GetLightBoundaryMap( int size ){
-	if( size > pLightBoundarybox->GetSize() ){
+deoglLightBoundaryMap &deoglRenderThread::GetLightBoundaryMap(int size){
+	if(size > pLightBoundarybox->GetSize()){
 		int bitCount = 0;
 		int temp = size;
 		
-		while( temp > 0 ){
-			if( ( temp & 1 ) == 1 ){
+		while(temp > 0){
+			if((temp & 1) == 1){
 				bitCount++;
 			}
 			temp >>= 1;
 		}
 		
-		if( bitCount != 1 ){
-			DETHROW( deeInvalidParam );
+		if(bitCount != 1){
+			DETHROW(deeInvalidParam);
 		}
 		
 		delete pLightBoundarybox;
 		pLightBoundarybox = NULL;
 		
-		pLightBoundarybox = new deoglLightBoundaryMap( *this, size );
+		pLightBoundarybox = new deoglLightBoundaryMap(*this, size);
 	}
 	
 	return *pLightBoundarybox;
@@ -237,58 +237,58 @@ bool deoglRenderThread::HasContext() const{
 
 
 
-void deoglRenderThread::SetVRCamera( deoglRCamera *camera ){
+void deoglRenderThread::SetVRCamera(deoglRCamera *camera){
 	pVRCamera = camera;
 }
 
-void deoglRenderThread::SetVRDebugPanelMatrix( const decDMatrix &matrix ){
+void deoglRenderThread::SetVRDebugPanelMatrix(const decDMatrix &matrix){
 	pVRDebugPanelMatrix = matrix;
 }
 
-void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvasView *canvas ){
-	if( canvas == pCanvasInputOverlay ){
+void deoglRenderThread::SetCanvasInputOverlay(deoglRCanvasView *canvas){
+	if(canvas == pCanvasInputOverlay){
 		return;
 	}
 	
-	if( pCanvasInputOverlay ){
+	if(pCanvasInputOverlay){
 		pCanvasInputOverlay->FreeReference();
 	}
 	
 	pCanvasInputOverlay = canvas;
 	
-	if( canvas ){
+	if(canvas){
 		canvas->AddReference();
 	}
 }
 
-void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvasView *canvas ){
-	if( canvas == pCanvasDebugOverlay ){
+void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView *canvas){
+	if(canvas == pCanvasDebugOverlay){
 		return;
 	}
 	
-	if( pCanvasDebugOverlay ){
+	if(pCanvasDebugOverlay){
 		pCanvasDebugOverlay->FreeReference();
 	}
 	
 	pCanvasDebugOverlay = canvas;
 	
-	if( canvas ){
+	if(canvas){
 		canvas->AddReference();
 	}
 }
 
-void deoglRenderThread::SetCanvasOverlay( deoglRCanvasView *canvas ){
-	if( canvas == pCanvasOverlay ){
+void deoglRenderThread::SetCanvasOverlay(deoglRCanvasView *canvas){
+	if(canvas == pCanvasOverlay){
 		return;
 	}
 	
-	if( pCanvasOverlay ){
+	if(pCanvasOverlay){
 		pCanvasOverlay->FreeReference();
 	}
 	
 	pCanvasOverlay = canvas;
 	
-	if( canvas ){
+	if(canvas){
 		canvas->AddReference();
 	}
 }
@@ -313,22 +313,22 @@ void deoglRenderThread::SetCanvasOverlay( deoglRCanvasView *canvas ){
 	#define DEBUG_SYNC_MT_PASS(b)
 #endif
 
-void deoglRenderThread::Init( deRenderWindow *renderWindow ){
+void deoglRenderThread::Init(deRenderWindow *renderWindow){
 	OGL_INIT_MAIN_THREAD_CHECK;
 	
 	pConfigChanged = true;
 	pInitialRenderWindow = renderWindow;
 	pUpdateConfigFrameLimiter();
 	
-	if( pAsyncRendering ){
-		pLogger->LogInfoFormat( "Init rendering using asynchronous rendering" );
+	if(pAsyncRendering){
+		pLogger->LogInfoFormat("Init rendering using asynchronous rendering");
 		
 		// phase 1
 		try{
 			pInitThreadPhase1();
 			pLogger->Synchronize(); // send asynchronous logs to game logger
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pLogger->Synchronize(); // send asynchronous logs to game logger
 			throw;
 		}
@@ -356,11 +356,11 @@ void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 		
 		pLogger->Synchronize(); // send asynchronous logs to game logger
 		
-		if( pThreadFailure ){
+		if(pThreadFailure){
 			pThreadState = etsStopped;
 			DEBUG_SYNC_MT_STATE
 			WaitForExit();
-			DETHROW( deeInvalidAction );
+			DETHROW(deeInvalidAction);
 		}
 		
 		// phase 3
@@ -368,7 +368,7 @@ void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 			pInitThreadPhase3();
 			pLogger->Synchronize(); // send asynchronous logs to game logger
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pLogger->Synchronize(); // send asynchronous logs to game logger
 			throw;
 		}
@@ -387,11 +387,11 @@ void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 		
 		pLogger->Synchronize(); // send asynchronous logs to game logger
 		
-		if( pThreadFailure ){
+		if(pThreadFailure){
 			pThreadState = etsStopped;
 			DEBUG_SYNC_MT_STATE
 			WaitForExit();
-			DETHROW( deeInvalidAction );
+			DETHROW(deeInvalidAction);
 		}
 		
 		// ready
@@ -401,7 +401,7 @@ void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 		pTimerMain.Reset();
 		
 	}else{
-		pLogger->LogInfoFormat( "Init rendering using synchronous rendering" );
+		pLogger->LogInfoFormat("Init rendering using synchronous rendering");
 		OGL_INIT_THREAD_CHECK;
 		pInitThreadPhase1();
 		pInitThreadPhase2();
@@ -411,8 +411,8 @@ void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 }
 
 void deoglRenderThread::CleanUp(){
-	if( pAsyncRendering ){
-		if( pThreadState == etsStopped ){
+	if(pAsyncRendering){
+		if(pThreadState == etsStopped){
 			return;
 		}
 		
@@ -426,11 +426,11 @@ void deoglRenderThread::CleanUp(){
 		WaitForExit();
 		
 		pLogger->Synchronize(); // send asynchronous logs to game logger
-		if( pThreadFailure ){
+		if(pThreadFailure){
 			pThreadState = etsStopped;
 			DEBUG_SYNC_MT_STATE
 			Stop();
-			DETHROW( deeInvalidAction );
+			DETHROW(deeInvalidAction);
 		}
 		
 	}else{
@@ -440,8 +440,8 @@ void deoglRenderThread::CleanUp(){
 
 #ifdef WITH_OPENGLES
 void deoglRenderThread::InitAppWindow(){
-	if( pAsyncRendering ){
-		if( pThreadState != etsWindowDown ){
+	if(pAsyncRendering){
+		if(pThreadState != etsWindowDown){
 			return;
 		}
 		
@@ -458,8 +458,8 @@ void deoglRenderThread::InitAppWindow(){
 }
 
 void deoglRenderThread::TerminateAppWindow(){
-	if( pAsyncRendering ){
-		if( pThreadState != etsRendering ){
+	if(pAsyncRendering){
+		if(pThreadState != etsRendering){
 			return;
 		}
 		
@@ -509,8 +509,8 @@ void deoglRenderThread::Run(){
 		pThreadFailure = false;
 		DEBUG_SYNC_RT_FAILURE
 		
-	}catch( const deException &exception ){
-		pLogger->LogException( exception );
+	}catch(const deException &exception){
+		pLogger->LogException(exception);
 		
 		pThreadFailure = true;
 		DEBUG_SYNC_RT_FAILURE
@@ -522,8 +522,8 @@ void deoglRenderThread::Run(){
 		try{
 			pCleanUpThread();
 			
-		}catch( const deException &exception2 ){
-			pLogger->LogException( exception2 );
+		}catch(const deException &exception2){
+			pLogger->LogException(exception2);
 		}
 		
 		return;
@@ -539,22 +539,22 @@ void deoglRenderThread::Run(){
 	pLastFrameTime = 0.0f;
 	pTimerFrameUpdate.Reset();
 	pTimerVRFrameUpdate.Reset();
-	while( true ){
+	while(true){
 		// wait for entering synchronize. we wait only for a small amount of time. if the
 		// main thread does not meet up in this time we do an update with the last frame
 		// data. main threads should be always faster than 20Hz during regular game play.
 		// while loading stuff the main thread can be lagging behind. this ensures loading
 		// displays keep responsive as good as possible from a visual point of view
 		DEBUG_SYNC_RT_WAIT("in")
-		if( pBarrierSyncIn.TryWait( 1000 / 20 ) ){
+		if(pBarrierSyncIn.TryWait(1000 / 20)){
 			DEBUG_SYNC_RT_PASS("in")
 			
 			// main thread is messing with our state here. proceed to next barrier doing nothing
 			// except alter the estimated render time. this value is used by the main thread
 			// only outside the synchronization part so we can update it here
 			{
-			const deMutexGuard lock( pMutexShared );
-			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
+			const deMutexGuard lock(pMutexShared);
+			pEstimatedRenderTime = decMath::max(pTimeHistoryRender.GetAverage(), pFrameTimeLimit);
 			}
 			
 			// wait for leaving synchronize
@@ -568,16 +568,16 @@ void deoglRenderThread::Run(){
 			// main thread did not synchronize in time. render another time using the old state
 			// then wait for synchronization again. we still have to update the estimated render
 			// time though
-			const deMutexGuard lock( pMutexShared );
-			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
+			const deMutexGuard lock(pMutexShared);
+			pEstimatedRenderTime = decMath::max(pTimeHistoryRender.GetAverage(), pFrameTimeLimit);
 		}
 		
 		// exit if shutting down
-		if( pThreadState == etsCleaningUp ){
+		if(pThreadState == etsCleaningUp){
 			break;
 			
 		// render a single frame if ready
-		}else if( pThreadState == etsRendering ){
+		}else if(pThreadState == etsRendering){
 			float elapsedRender = 0.0f;
 			
 			try{
@@ -588,20 +588,20 @@ void deoglRenderThread::Run(){
 				DEBUG_SYNC_RT_FAILURE
 				
 				elapsedRender = pTimerRender.GetElapsedTime();
-				pTimeHistoryRender.Add( elapsedRender );
+				pTimeHistoryRender.Add(elapsedRender);
 				//pLogger->LogInfo( decString("TimeHistory Render: ") + pTimeHistoryRender.DebugPrint() );
 // 				pLogger->LogInfoFormat( "RenderThread Elapsed %.1fms (FPS %.1f)", elapsed * 1000.0f, 1.0f / decMath::max( elapsed, 0.001f ) );
 				
-				pLimitFrameRate( elapsedRender );
+				pLimitFrameRate(elapsedRender);
 				pThreadFailure = false;
 				gpuDeadTimer.Reset();
 				DEBUG_SYNC_RT_FAILURE
 				
-			}catch( const deException &exception ){
-				pLogger->LogException( exception );
+			}catch(const deException &exception){
+				pLogger->LogException(exception);
 				pTimerRender.Reset();
 				
-				if( pSignalSemaphoreSyncVR ){
+				if(pSignalSemaphoreSyncVR){
 					pSignalSemaphoreSyncVR = false;
 					pSemaphoreSyncVR.Signal();
 				}
@@ -615,8 +615,8 @@ void deoglRenderThread::Run(){
 				// out in case the GPU does not recover anymore
 				// pThreadFailure = true;
 				const float gpuDeadTimerElapsed = gpuDeadTimer.PeekElapsedTime();
-				pLogger->LogErrorFormat( "GPU Dead Timer: %.1fs", gpuDeadTimerElapsed );
-				if( gpuDeadTimerElapsed < 6.0f ){
+				pLogger->LogErrorFormat("GPU Dead Timer: %.1fs", gpuDeadTimerElapsed);
+				if(gpuDeadTimerElapsed < 6.0f){
 					pThreadFailure = false;
 					
 				}else{
@@ -627,37 +627,37 @@ void deoglRenderThread::Run(){
 			
 			pLastFrameTime = pTimerFrameUpdate.GetElapsedTime();
 			{
-			const deMutexGuard lock( pMutexShared );
-			pTimeHistoryFrame.Add( pLastFrameTime );
+			const deMutexGuard lock(pMutexShared);
+			pTimeHistoryFrame.Add(pLastFrameTime);
 			}
 			
 			/*
-			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
+			pLogger->LogInfoFormat("RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
 				elapsedRender * 1000.0f, pLastFrameTime * 1000.0f,
-				1.0f / decMath::max( pLastFrameTime, 0.001f ) );
+				1.0f / decMath::max(pLastFrameTime, 0.001f));
 			*/
 			
 		#ifdef WITH_OPENGLES
-		}else if( pThreadState == etsWindowTerminate ){
+		}else if(pThreadState == etsWindowTerminate){
 			try{
 				pContext->TerminateAppWindow();
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
-			}catch( const deException &exception ){
-				pLogger->LogException( exception );
+			}catch(const deException &exception){
+				pLogger->LogException(exception);
 				pThreadFailure = true;
 				DEBUG_SYNC_RT_FAILURE
 			}
 			
-		}else if( pThreadState == etsWindowInit ){
+		}else if(pThreadState == etsWindowInit){
 			try{
 				pContext->InitAppWindow();
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
-			}catch( const deException &exception ){
-				pLogger->LogException( exception );
+			}catch(const deException &exception){
+				pLogger->LogException(exception);
 				pThreadFailure = true;
 				DEBUG_SYNC_RT_FAILURE
 			}
@@ -674,8 +674,8 @@ void deoglRenderThread::Run(){
 		pThreadFailure = false;
 		DEBUG_SYNC_RT_FAILURE
 		
-	}catch( const deException &exception ){
-		pLogger->LogException( exception );
+	}catch(const deException &exception){
+		pLogger->LogException(exception);
 		pThreadFailure = true;
 		DEBUG_SYNC_RT_FAILURE
 	}
@@ -717,48 +717,48 @@ void deoglRenderThread::Synchronize(){
 	
 	pSyncConfiguration();
 	
-	if( pMainThreadShowDebugInfoModule ){
+	if(pMainThreadShowDebugInfoModule){
 		const float timeSync = pDebugTimerMainThread2.GetElapsedTime();
 		const float timeMain = pDebugTimerMainThread1.GetElapsedTime();
 		
 		pDebugInfoThreadMain->Clear();
-		pDebugInfoThreadMain->IncrementElapsedTime( timeMain );
+		pDebugInfoThreadMain->IncrementElapsedTime(timeMain);
 		
 		pDebugInfoThreadMainWaitFinish->Clear();
-		pDebugInfoThreadMainWaitFinish->IncrementElapsedTime( pDebugTimeThreadMainWaitFinish );
+		pDebugInfoThreadMainWaitFinish->IncrementElapsedTime(pDebugTimeThreadMainWaitFinish);
 		
 		pDebugInfoThreadMainSynchronize->Clear();
-		pDebugInfoThreadMainSynchronize->IncrementElapsedTime( timeSync );
+		pDebugInfoThreadMainSynchronize->IncrementElapsedTime(timeSync);
 	}
 	
-	if( pDebugInfoFrameLimiter->GetVisible() ){
+	if(pDebugInfoFrameLimiter->GetVisible()){
 		pDebugInfoFLEstimMain->Clear();
 		pDebugInfoFLFrameRateMain->Clear();
 		
-		if( pTimeHistoryMain.HasMetrics() ){
-			pDebugInfoFLEstimMain->IncrementElapsedTime( pTimeHistoryMain.GetAverage() );
-			pDebugInfoFLFrameRateMain->IncrementCounter( ( int )( 1.0f / pTimeHistoryMain.GetAverage() ) );
+		if(pTimeHistoryMain.HasMetrics()){
+			pDebugInfoFLEstimMain->IncrementElapsedTime(pTimeHistoryMain.GetAverage());
+			pDebugInfoFLFrameRateMain->IncrementCounter((int)(1.0f / pTimeHistoryMain.GetAverage()));
 		}
 	}
 	
 	pMainThreadShowDebugInfoModule = pDebugInfoModule->GetVisible();
 	
 	{
-	const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryFrame
+	const deMutexGuard lock(pMutexShared); // due to pTimeHistoryFrame
 	pFPSRate = 0;
-	if( pTimeHistoryFrame.HasMetrics() ){
-		pFPSRate = ( int )( 1.0f / pTimeHistoryFrame.GetAverage() );
+	if(pTimeHistoryFrame.HasMetrics()){
+		pFPSRate = (int)(1.0f / pTimeHistoryFrame.GetAverage());
 	}
 	}
 	
-	if( pAsyncRendering ){
+	if(pAsyncRendering){
 		// begin rendering next frame unless thread is not active
-		if( pThreadState == etsStopped ){
+		if(pThreadState == etsStopped){
 			return;
 		}
 		
 		const bool hasVR = pVRCamera && pVRCamera->GetVR();
-		if( hasVR ){
+		if(hasVR){
 			pSignalSemaphoreSyncVR = true;
 		}
 		
@@ -769,13 +769,13 @@ void deoglRenderThread::Synchronize(){
 		pBarrierSyncOut.Wait();
 		DEBUG_SYNC_MT_PASS("out");
 		
-		if( pThreadFailure ){
-			DETHROW_INFO( deeInvalidAction, "Render thread failed. See logs" );
+		if(pThreadFailure){
+			DETHROW_INFO(deeInvalidAction, "Render thread failed. See logs");
 		}
 		
 		pTimerMain.Reset();
 		
-		if( hasVR ){
+		if(hasVR){
 			pSemaphoreSyncVR.Wait();
 		}
 		
@@ -785,15 +785,15 @@ void deoglRenderThread::Synchronize(){
 	}
 	
 	// from event loop processing
-	pOgl.GetOS()->SetAppActive( pContext->GetAppActivated() );
+	pOgl.GetOS()->SetAppActive(pContext->GetAppActivated());
 	
-	if( pContext->GetUserRequestedQuit() ){
+	if(pContext->GetUserRequestedQuit()){
 		pOgl.GetGameEngine()->GetScriptingSystem()->UserRequestQuit();
 	}
 }
 
 void deoglRenderThread::WaitFinishRendering(){
-	switch( pThreadState ){
+	switch(pThreadState){
 	case etsStopped:
 	case etsFinishedRendering:
 	case etsFrozen:
@@ -812,34 +812,34 @@ void deoglRenderThread::WaitFinishRendering(){
 }
 
 bool deoglRenderThread::MainThreadWaitFinishRendering(){
-	if( pAsyncRendering ){
+	if(pAsyncRendering){
 		const float gameTime = pTimerMain.GetElapsedTime();
 		
-		pTimeHistoryMain.Add( gameTime );
+		pTimeHistoryMain.Add(gameTime);
 		//pLogger->LogInfo( decString("TimeHistory Main: ") + pTimeHistoryMain.DebugPrint() );
 		
-		if( pTimeHistoryMain.HasMetrics() ){
+		if(pTimeHistoryMain.HasMetrics()){
 			pAccumulatedMainTime += gameTime;
 			
 			float estimatedRenderTime;
 			{
-			const deMutexGuard lock( pMutexShared );
+			const deMutexGuard lock(pMutexShared);
 			estimatedRenderTime = pEstimatedRenderTime;
 			}
 			
 			const float ratioTimes = pOgl.GetConfiguration().GetAsyncRenderSkipSyncTimeRatio();
 			const float remainingTime = estimatedRenderTime - pAccumulatedMainTime;
-			const float estimatedGameTime = decMath::max( pTimeHistoryMain.GetAverage(), 0.001f ); // stay above 1ms
+			const float estimatedGameTime = decMath::max(pTimeHistoryMain.GetAverage(), 0.001f); // stay above 1ms
 			
 			/*
-			pLogger->LogInfoFormat( "SkinSync: skip=%d: estimRenTime=%.1fms estimGameTime=%.1fms remainTime=%.1fms ratio=%.3f threshold=%f",
+			pLogger->LogInfoFormat("SkinSync: skip=%d: estimRenTime=%.1fms estimGameTime=%.1fms remainTime=%.1fms ratio=%.3f threshold=%f",
 				remainingTime / estimatedGameTime >= ratioTimes, pEstimatedRenderTime * 1e3f, estimatedGameTime * 1e3f,
-				remainingTime * 1e3f, remainingTime / estimatedGameTime, ratioTimes );
+				remainingTime * 1e3f, remainingTime / estimatedGameTime, ratioTimes);
 			*/
 			
 			const bool hasVR = pVRCamera && pVRCamera->GetVR();
 			
-			if( remainingTime / estimatedGameTime >= ratioTimes && ! hasVR ){
+			if(remainingTime / estimatedGameTime >= ratioTimes && !hasVR){
 				return false; // enough time to do another game frame update
 			}
 		}
@@ -848,14 +848,14 @@ bool deoglRenderThread::MainThreadWaitFinishRendering(){
 		pAccumulatedMainTime = 0.0f;
 	}
 	
-	if( pMainThreadShowDebugInfoModule ){
+	if(pMainThreadShowDebugInfoModule){
 		pDebugTimerMainThread1.Reset();
 		pDebugTimerMainThread2.Reset();
 	}
 	
 	WaitFinishRendering();
 	
-	if( pMainThreadShowDebugInfoModule ){
+	if(pMainThreadShowDebugInfoModule){
 		pDebugTimeThreadMainWaitFinish = pDebugTimerMainThread2.GetElapsedTime();
 	}
 	
@@ -863,7 +863,7 @@ bool deoglRenderThread::MainThreadWaitFinishRendering(){
 }
 
 void deoglRenderThread::Freeze(){
-	if( pThreadState != etsRendering ){
+	if(pThreadState != etsRendering){
 		return;
 	}
 	
@@ -875,7 +875,7 @@ void deoglRenderThread::Freeze(){
 }
 
 void deoglRenderThread::Unfreeze(){
-	if( pThreadState != etsFrozen ){
+	if(pThreadState != etsFrozen){
 		return;
 	}
 	
@@ -887,12 +887,12 @@ void deoglRenderThread::Unfreeze(){
 	DEBUG_SYNC_MT_PASS("out");
 }
 
-void deoglRenderThread::CreateRenderWindow( deoglRRenderWindow *window ){
-	if( ! window ){
-		DETHROW( deeInvalidParam );
+void deoglRenderThread::CreateRenderWindow(deoglRRenderWindow *window){
+	if(!window){
+		DETHROW(deeInvalidParam);
 	}
 	
-	switch( pThreadState ){
+	switch(pThreadState){
 	case etsInitialize: 
 		// special handling during initialization
 		OGL_ON_MAIN_THREAD // make sure this is never called on the render thread
@@ -917,7 +917,7 @@ void deoglRenderThread::CreateRenderWindow( deoglRRenderWindow *window ){
 		try{
 			window->CreateWindow();
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			DEBUG_SYNC_MT_WAIT("out");
 			pBarrierSyncOut.Wait();
 			DEBUG_SYNC_MT_PASS("out");
@@ -937,20 +937,20 @@ void deoglRenderThread::CreateRenderWindow( deoglRRenderWindow *window ){
 //////////////
 
 void deoglRenderThread::SampleDebugTimerRenderThreadRenderWindowsPrepare(){
-	if( pDebugInfoModule->GetVisible() ){
+	if(pDebugInfoModule->GetVisible()){
 		pDebugTimeThreadRenderWindowsPrepare = pDebugTimerRenderThread3.GetElapsedTime();
 	}
 }
 
 void deoglRenderThread::SampleDebugTimerRenderThreadRenderWindowsRender(){
-	if( pDebugInfoModule->GetVisible() ){
+	if(pDebugInfoModule->GetVisible()){
 		pDebugTimeThreadRenderWindowsRender = pDebugTimerRenderThread3.GetElapsedTime();
 		pDebugCountThreadWindows++;
 	}
 }
 
 void deoglRenderThread::SampleDebugTimerVRRender(){
-	if( pDebugInfoModule->GetVisible() ){
+	if(pDebugInfoModule->GetVisible()){
 		pDebugTimeVRRender = pDebugTimerRenderThread3.GetElapsedTime();
 	}
 }
@@ -958,11 +958,11 @@ void deoglRenderThread::SampleDebugTimerVRRender(){
 void deoglRenderThread::DevModeDebugInfoChanged(){
 	const deoglDeveloperMode &devmode = pDebug->GetDeveloperMode();
 	
-	pDebugInfoModule->SetVisible( devmode.GetEnabled() && devmode.GetShowDebugInfo() &&
-		( devmode.GetDebugInfoDetails() & deoglDeveloperMode::edimModule ) == deoglDeveloperMode::edimModule );
+	pDebugInfoModule->SetVisible(devmode.GetEnabled() && devmode.GetShowDebugInfo() &&
+		(devmode.GetDebugInfoDetails() & deoglDeveloperMode::edimModule) == deoglDeveloperMode::edimModule);
 	
-	pDebugInfoFrameLimiter->SetVisible( devmode.GetEnabled() && devmode.GetShowDebugInfo() &&
-		( devmode.GetDebugInfoDetails() & deoglDeveloperMode::edimFrameLimiter ) == deoglDeveloperMode::edimFrameLimiter );
+	pDebugInfoFrameLimiter->SetVisible(devmode.GetEnabled() && devmode.GetShowDebugInfo() &&
+		(devmode.GetDebugInfoDetails() & deoglDeveloperMode::edimFrameLimiter) == deoglDeveloperMode::edimFrameLimiter);
 	
 	pRenderers->DevModeDebugInfoChanged();
 	
@@ -976,7 +976,7 @@ void deoglRenderThread::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderThread::pCleanUp(){
-	if( pLogger ){
+	if(pLogger){
 		delete pLogger;
 		pLogger = NULL;
 	}
@@ -985,17 +985,17 @@ void deoglRenderThread::pCleanUp(){
 
 
 void deoglRenderThread::pInitThreadPhase1(){
-	pLoaderThread = new deoglLoaderThread( *this );
-	pContext = new deoglRTContext( *this );
-	pContext->InitPhase1( pInitialRenderWindow );
+	pLoaderThread = new deoglLoaderThread(*this);
+	pContext = new deoglRTContext(*this);
+	pContext->InitPhase1(pInitialRenderWindow);
 }
 
 void deoglRenderThread::pInitThreadPhase2(){
-	pContext->InitPhase2( pInitialRenderWindow );
+	pContext->InitPhase2(pInitialRenderWindow);
 }
 
 void deoglRenderThread::pInitThreadPhase3(){
-	pContext->InitPhase3( pInitialRenderWindow );
+	pContext->InitPhase3(pInitialRenderWindow);
 }
 
 // #define DO_VULKAN_TEST
@@ -1024,7 +1024,7 @@ void deoglRenderThread::pInitThreadPhase3(){
 #endif
 
 void deoglRenderThread::pInitThreadPhase4(){
-	pContext->InitPhase4( pInitialRenderWindow );
+	pContext->InitPhase4(pInitialRenderWindow);
 	pInitialRenderWindow = NULL;
 	
 	// deprecated
@@ -1034,20 +1034,20 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	// required to be present before anything else
 	pUniqueKey = new deoglRTUniqueKey;
-	pRenderTaskSharedPool = new deoglRenderTaskSharedPool( *this );
+	pRenderTaskSharedPool = new deoglRenderTaskSharedPool(*this);
 	
 	// init extensions
 	pInitExtensions();
 	
 	// below depends on extensions to be initialized first
-	pDebug = new deoglRTDebug( *this );
-	pTexture = new deoglRTTexture( *this );
-	pFramebuffer = new deoglRTFramebuffer( *this );
-	pDelayedOperations = new deoglDelayedOperations( *this );
+	pDebug = new deoglRTDebug(*this);
+	pTexture = new deoglRTTexture(*this);
+	pFramebuffer = new deoglRTFramebuffer(*this);
+	pDelayedOperations = new deoglDelayedOperations(*this);
 		// ^== has to come before RTShader creation since shader compile threads failing
 	    //     can call into delayed operations. if null this can segfault.
-	pShader = new deoglRTShader( *this );
-	pPipelineManager.TakeOver( new deoglPipelineManager( *this ) );
+	pShader = new deoglRTShader(*this);
+	pPipelineManager.TakeOver(new deoglPipelineManager(*this));
 	
 	pInitCapabilities();
 	
@@ -1055,99 +1055,99 @@ void deoglRenderThread::pInitThreadPhase4(){
 	bool verified = true;
 	verified &= pCapabilities->Verify();
 	verified &= pExtensions->VerifyPresence(); // capabilities possibly disabled extensions
-	if( ! verified ){
-		DETHROW_INFO( deeInvalidAction, "Required hardware support missing. Please see logs" );
+	if(!verified){
+		DETHROW_INFO(deeInvalidAction, "Required hardware support missing. Please see logs");
 	}
 	
 	// debug information
-	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
-	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
-	const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
-	const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
+	const decColor colorText(1.0f, 1.0f, 1.0f, 1.0f);
+	const decColor colorBg(0.0f, 0.0f, 0.25f, 0.75f);
+	const decColor colorBgSub(0.05f, 0.05f, 0.05f, 0.75f);
+	const decColor colorBgSub2(0.1f, 0.1f, 0.1f, 0.75f);
+	const decColor colorBgSub3(0.15f, 0.15f, 0.15f, 0.75f);
 	
-	pDebugInfoModule.TakeOver( new deoglDebugInformation( "Module", colorText, colorBg ) );
-	pDebugInfoModule->SetVisible( false );
-	pDebug->GetDebugInformationList().Add( pDebugInfoModule );
+	pDebugInfoModule.TakeOver(new deoglDebugInformation("Module", colorText, colorBg));
+	pDebugInfoModule->SetVisible(false);
+	pDebug->GetDebugInformationList().Add(pDebugInfoModule);
  	
-	pDebugInfoThreadMain.TakeOver( new deoglDebugInformation( "Main Thread", colorText, colorBgSub ) );
-	pDebugInfoModule->GetChildren().Add( pDebugInfoThreadMain );
+	pDebugInfoThreadMain.TakeOver(new deoglDebugInformation("Main Thread", colorText, colorBgSub));
+	pDebugInfoModule->GetChildren().Add(pDebugInfoThreadMain);
 		
-		pDebugInfoThreadMainWaitFinish.TakeOver( new deoglDebugInformation( "Wait Finish", colorText, colorBgSub2 ) );
-		pDebugInfoThreadMain->GetChildren().Add( pDebugInfoThreadMainWaitFinish );
+		pDebugInfoThreadMainWaitFinish.TakeOver(new deoglDebugInformation("Wait Finish", colorText, colorBgSub2));
+		pDebugInfoThreadMain->GetChildren().Add(pDebugInfoThreadMainWaitFinish);
 		
-		pDebugInfoThreadMainSynchronize.TakeOver( new deoglDebugInformation( "Synchronize", colorText, colorBgSub2 ) );
-		pDebugInfoThreadMain->GetChildren().Add( pDebugInfoThreadMainSynchronize );
+		pDebugInfoThreadMainSynchronize.TakeOver(new deoglDebugInformation("Synchronize", colorText, colorBgSub2));
+		pDebugInfoThreadMain->GetChildren().Add(pDebugInfoThreadMainSynchronize);
 	
-	pDebugInfoThreadRender.TakeOver( new deoglDebugInformation( "Render Thread", colorText, colorBgSub ) );
-	pDebugInfoModule->GetChildren().Add( pDebugInfoThreadRender );
+	pDebugInfoThreadRender.TakeOver(new deoglDebugInformation("Render Thread", colorText, colorBgSub));
+	pDebugInfoModule->GetChildren().Add(pDebugInfoThreadRender);
 		
-		pDebugInfoThreadRenderSyncGpu.TakeOver( new deoglDebugInformation( "Sync GPU", colorText, colorBgSub2 ) );
-		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSyncGpu );
+		pDebugInfoThreadRenderSyncGpu.TakeOver(new deoglDebugInformation("Sync GPU", colorText, colorBgSub2));
+		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderSyncGpu);
 		
-		pDebugInfoThreadRenderBegin.TakeOver( new deoglDebugInformation( "Begin", colorText, colorBgSub2 ) );
-		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderBegin );
+		pDebugInfoThreadRenderBegin.TakeOver(new deoglDebugInformation("Begin", colorText, colorBgSub2));
+		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderBegin);
 		
-		pDebugInfoThreadRenderWindows.TakeOver( new deoglDebugInformation( "Windows", colorText, colorBgSub2 ) );
-		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderWindows );
+		pDebugInfoThreadRenderWindows.TakeOver(new deoglDebugInformation("Windows", colorText, colorBgSub2));
+		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderWindows);
 			
-			pDebugInfoVRRender.TakeOver( new deoglDebugInformation( "VR Render", colorText, colorBgSub3 ) );
-			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoVRRender );
+			pDebugInfoVRRender.TakeOver(new deoglDebugInformation("VR Render", colorText, colorBgSub3));
+			pDebugInfoThreadRenderWindows->GetChildren().Add(pDebugInfoVRRender);
 			
-			pDebugInfoThreadRenderWindowsPrepare.TakeOver( new deoglDebugInformation( "Prepare", colorText, colorBgSub3 ) );
-			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoThreadRenderWindowsPrepare );
+			pDebugInfoThreadRenderWindowsPrepare.TakeOver(new deoglDebugInformation("Prepare", colorText, colorBgSub3));
+			pDebugInfoThreadRenderWindows->GetChildren().Add(pDebugInfoThreadRenderWindowsPrepare);
 			
-			pDebugInfoThreadRenderWindowsRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub3 ) );
-			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoThreadRenderWindowsRender );
+			pDebugInfoThreadRenderWindowsRender.TakeOver(new deoglDebugInformation("Render", colorText, colorBgSub3));
+			pDebugInfoThreadRenderWindows->GetChildren().Add(pDebugInfoThreadRenderWindowsRender);
 		
-		pDebugInfoThreadRenderCapture.TakeOver( new deoglDebugInformation( "Capture", colorText, colorBgSub2 ) );
-		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderCapture );
+		pDebugInfoThreadRenderCapture.TakeOver(new deoglDebugInformation("Capture", colorText, colorBgSub2));
+		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderCapture);
 		
-		pDebugInfoThreadRenderEnd.TakeOver( new deoglDebugInformation( "End", colorText, colorBgSub2 ) );
-		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderEnd );
+		pDebugInfoThreadRenderEnd.TakeOver(new deoglDebugInformation("End", colorText, colorBgSub2));
+		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderEnd);
 		
-		pDebugInfoThreadRenderSwap.TakeOver( new deoglDebugInformation( "Swap Buffers", colorText, colorBgSub2 ) );
-		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSwap );
+		pDebugInfoThreadRenderSwap.TakeOver(new deoglDebugInformation("Swap Buffers", colorText, colorBgSub2));
+		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderSwap);
 	
-	pDebugInfoFrameLimiter.TakeOver( new deoglDebugInformation( "Frame Limiter", colorText, colorBg ) );
-	pDebugInfoFrameLimiter->SetVisible( false );
-	pDebug->GetDebugInformationList().Add( pDebugInfoFrameLimiter );
+	pDebugInfoFrameLimiter.TakeOver(new deoglDebugInformation("Frame Limiter", colorText, colorBg));
+	pDebugInfoFrameLimiter->SetVisible(false);
+	pDebug->GetDebugInformationList().Add(pDebugInfoFrameLimiter);
 		
-		pDebugInfoFLEstimMain.TakeOver( new deoglDebugInformation( "Estimate main", colorText, colorBgSub ) );
-		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLEstimMain );
+		pDebugInfoFLEstimMain.TakeOver(new deoglDebugInformation("Estimate main", colorText, colorBgSub));
+		pDebugInfoFrameLimiter->GetChildren().Add(pDebugInfoFLEstimMain);
 		
-		pDebugInfoFLEstimRender.TakeOver( new deoglDebugInformation( "Estimate Render", colorText, colorBgSub ) );
-		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLEstimRender );
+		pDebugInfoFLEstimRender.TakeOver(new deoglDebugInformation("Estimate Render", colorText, colorBgSub));
+		pDebugInfoFrameLimiter->GetChildren().Add(pDebugInfoFLEstimRender);
 		
-		pDebugInfoFLFrameRateMain.TakeOver( new deoglDebugInformation( "FPS Main", colorText, colorBgSub ) );
-		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLFrameRateMain );
+		pDebugInfoFLFrameRateMain.TakeOver(new deoglDebugInformation("FPS Main", colorText, colorBgSub));
+		pDebugInfoFrameLimiter->GetChildren().Add(pDebugInfoFLFrameRateMain);
 		
-		pDebugInfoFLFrameRateRender.TakeOver( new deoglDebugInformation( "FPS Render", colorText, colorBgSub ) );
-		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLFrameRateRender );
+		pDebugInfoFLFrameRateRender.TakeOver(new deoglDebugInformation("FPS Render", colorText, colorBgSub));
+		pDebugInfoFrameLimiter->GetChildren().Add(pDebugInfoFLFrameRateRender);
 	
 	// below depends on capabilities being known
 	pPipelineManager->GetState().Reset();
 	
-	pChoices = new deoglRTChoices( *this );
+	pChoices = new deoglRTChoices(*this);
 	
-	pBufferObject = new deoglRTBufferObject( *this );
+	pBufferObject = new deoglRTBufferObject(*this);
 	pBufferObject->Init();
 	
 	pTriangleSorter = new deoglTriangleSorter;
-	pOcclusionTestPool = new deoglOcclusionTestPool( *this );
+	pOcclusionTestPool = new deoglOcclusionTestPool(*this);
 	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
-	pShadowMapper = new deoglShadowMapper( *this );
-	pDeferredRendering = new deoglDeferredRendering( *this );
-	pEnvMapSlotManager = new deoglEnvMapSlotManager( *this );
+	pShadowMapper = new deoglShadowMapper(*this);
+	pDeferredRendering = new deoglDeferredRendering(*this);
+	pEnvMapSlotManager = new deoglEnvMapSlotManager(*this);
 	
-	pOccQueryMgr = new deoglOcclusionQueryManager( *this );
-	pLightBoundarybox = new deoglLightBoundaryMap( *this,
-		deoglShadowMapper::ShadowMapSize( pConfiguration ) >> 1 );
+	pOccQueryMgr = new deoglOcclusionQueryManager(*this);
+	pLightBoundarybox = new deoglLightBoundaryMap(*this,
+		deoglShadowMapper::ShadowMapSize(pConfiguration) >> 1);
 	
 	decTimer timer;
-	pRenderers = new deoglRTRenderers( *this );
-	pGI = new deoglGI( *this );
-	pDefaultTextures = new deoglRTDefaultTextures( *this );
+	pRenderers = new deoglRTRenderers(*this);
+	pGI = new deoglGI(*this);
+	pDefaultTextures = new deoglRTDefaultTextures(*this);
 	
 	pShader->GetShaderManager().WaitAllProgramsCompiled();
 	pShader->GetShaderManager().GetLanguage()->WaitAllTasksFinished();
@@ -1157,54 +1157,54 @@ void deoglRenderThread::pInitThreadPhase4(){
 #ifdef BACKEND_OPENGL
 	// load vulkan and create device if supported
 	try{
-		pVulkan.TakeOver( new deSharedVulkan( pOgl ) );
-		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic( 0 );
+		pVulkan.TakeOver(new deSharedVulkan(pOgl));
+		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
 		// pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
 		
-	}catch( const deException &e ){
-		pLogger->LogException( e );
+	}catch(const deException &e){
+		pLogger->LogException(e);
 		pVulkanDevice = nullptr;
 		pVulkan = nullptr;
 	}
 #endif
 	
 #ifdef DO_VULKAN_TEST
-	if( pVulkan ){
+	if(pVulkan){
 		#define VKTLOG(cmd,s) timer.Reset(); cmd; pLogger->LogInfoFormat("Vulkan Test: " s " %dys", (int)(timer.GetElapsedTime()*1e6));
 		devkQueue &queue = pVulkanDevice->GetComputeQueue();
-		const devkCommandPool::Ref commandPool( queue.CreateCommandPool() );
+		const devkCommandPool::Ref commandPool(queue.CreateCommandPool());
 		const int inputDataCount = 32;
-		devkBuffer::Ref bufferInput( devkBuffer::Ref::NewWith(pVulkanDevice, sizeof( uint32_t ) * inputDataCount,
-			VK_BUFFER_USAGE_STORAGE_BUFFER_BIT) );
+		devkBuffer::Ref bufferInput(devkBuffer::Ref::NewWith(pVulkanDevice, sizeof(uint32_t) * inputDataCount,
+			VK_BUFFER_USAGE_STORAGE_BUFFER_BIT));
 		int i;
-		uint32_t bufferInputData[ inputDataCount ];
-		for( i=0; i<inputDataCount; i++ ){
-			bufferInputData[ i ] = i;
+		uint32_t bufferInputData[inputDataCount];
+		for(i=0; i<inputDataCount; i++){
+			bufferInputData[i] = i;
 		}
 		decTimer timer;
-		VKTLOG( bufferInput->SetData( bufferInputData ), "Buffer SetData")
+		VKTLOG(bufferInput->SetData(bufferInputData), "Buffer SetData")
 		{
 		VKTLOG(devkCommandBuffer &cbuf = bufferInput->BeginCommandBuffer(commandPool), "Buffer BeginCommandBuffer");
 		VKTLOG(bufferInput->TransferToDevice(cbuf), "Buffer TransferToDevice")
 		VKTLOG(cbuf.Submit(), "Buffer Submit");
 		}
-		VKTLOG( bufferInput->Wait(), "Buffer Wait")
+		VKTLOG(bufferInput->Wait(), "Buffer Wait")
 		
 		devkDescriptorSetLayoutConfiguration dslSSBOConfig;
-		dslSSBOConfig.SetShaderStageFlags( VK_DESCRIPTOR_TYPE_STORAGE_BUFFER );
-		dslSSBOConfig.SetLayoutBindingCount( 1 );
-		dslSSBOConfig.SetLayoutBindingAt( 0, 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT );
+		dslSSBOConfig.SetShaderStageFlags(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+		dslSSBOConfig.SetLayoutBindingCount(1);
+		dslSSBOConfig.SetLayoutBindingAt(0, 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT);
 		
-		devkDescriptorSetLayout * const dslSSBO = pVulkanDevice->GetDescriptorSetLayoutManager().GetWith( dslSSBOConfig );
+		devkDescriptorSetLayout * const dslSSBO = pVulkanDevice->GetDescriptorSetLayoutManager().GetWith(dslSSBOConfig);
 		
 		devkDescriptorPool::Ref dpSSBO(devkDescriptorPool::Ref::NewWith(
-			pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO ));
+			pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO));
 		
 		devkDescriptorSet::Ref dsSSBO;
-		VKTLOG( dsSSBO.TakeOver( new devkDescriptorSet( dpSSBO ) ), "DescriptorSet SSBO")
+		VKTLOG(dsSSBO.TakeOver(new devkDescriptorSet(dpSSBO)), "DescriptorSet SSBO")
 		
-		dsSSBO->SetBinding( 0, bufferInput );
-		VKTLOG( dsSSBO->Update(), "DescriptorSet SSBO Update" );
+		dsSSBO->SetBinding(0, bufferInput);
+		VKTLOG(dsSSBO->Update(), "DescriptorSet SSBO Update");
 		
 		const uint32_t test1_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000027,0x00000000,0x00020011,0x00000001,0x0006000b,
@@ -1259,83 +1259,83 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x00000023,0x00000022,0x0000001f,0x00060041,0x00000020,0x00000024,0x0000001b,0x0000001d,
 			0x0000001e,0x0003003e,0x00000024,0x00000023,0x000100fd,0x00010038
 		};
-		decMemoryFile::Ref mfshader( decMemoryFile::Ref::NewWith("/shaders/vulkantest.spv") );
-		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test1_spv_data, sizeof( test1_spv_data ) );
+		decMemoryFile::Ref mfshader(decMemoryFile::Ref::NewWith("/shaders/vulkantest.spv"));
+		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test1_spv_data, sizeof(test1_spv_data));
 		
 		devkShaderModule::Ref shader;
-		VKTLOG( shader.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest.spv",
-			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+		VKTLOG(shader.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest.spv",
+			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
 		
 		devkPipelineConfiguration pipelineConfig;
-		pipelineConfig.SetDescriptorSetLayout( dslSSBO );
-		pipelineConfig.SetType( devkPipelineConfiguration::etCompute );
-		pipelineConfig.SetShaderCompute( shader );
+		pipelineConfig.SetDescriptorSetLayout(dslSSBO);
+		pipelineConfig.SetType(devkPipelineConfiguration::etCompute);
+		pipelineConfig.SetShaderCompute(shader);
 		
 		const struct ShaderConfig{
 			uint32_t valueCount = inputDataCount;
 		} shaderConfig;
 		
 		devkSpecialization::Ref specialization(devkSpecialization::Ref::NewWith(
-			&shaderConfig, sizeof( shaderConfig ), 1 ));
-		specialization->SetEntryUIntAt( 0, 0, offsetof( ShaderConfig, valueCount ) );
-		pipelineConfig.SetSpecialization( specialization );
+			&shaderConfig, sizeof(shaderConfig), 1));
+		specialization->SetEntryUIntAt(0, 0, offsetof(ShaderConfig, valueCount));
+		pipelineConfig.SetSpecialization(specialization);
 		
 		devkPipeline *pipeline;
-		VKTLOG( pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineCompute")
+		VKTLOG(pipeline = pVulkanDevice->GetPipelineManager().GetWith(pipelineConfig), "PipelineCompute")
 		
-		devkCommandBuffer::Ref cmdbuf( commandPool->GetCommandBuffer() );
-		VKTLOG( cmdbuf->Begin(), "CmdBuf Begin")
-		VKTLOG( cmdbuf->BarrierHostShader( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierShader")
-		VKTLOG( cmdbuf->BindPipeline( *pipeline ), "CmdBuf BindPipeline")
-		VKTLOG( cmdbuf->BindDescriptorSet( 0, dsSSBO ), "CmdBuf BindDescriptorSet")
-		VKTLOG( cmdbuf->DispatchCompute( shaderConfig.valueCount, 1, 1 ), "CmdBuf DispatchCompute")
-		VKTLOG( cmdbuf->BarrierShaderTransfer( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierHost")
-		VKTLOG( bufferInput->FetchFromDevice(cmdbuf), "CmdBuf ReadBuffer")
-		VKTLOG( cmdbuf->BarrierTransferHost( bufferInput ), "CmdBuf BarrierTransferHost")
-		VKTLOG( cmdbuf->End(), "CmdBuf End")
-		VKTLOG( cmdbuf->Submit(), "CmdBuf Submit")
+		devkCommandBuffer::Ref cmdbuf(commandPool->GetCommandBuffer());
+		VKTLOG(cmdbuf->Begin(), "CmdBuf Begin")
+		VKTLOG(cmdbuf->BarrierHostShader(bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT), "CmdBuf BarrierShader")
+		VKTLOG(cmdbuf->BindPipeline(*pipeline), "CmdBuf BindPipeline")
+		VKTLOG(cmdbuf->BindDescriptorSet(0, dsSSBO), "CmdBuf BindDescriptorSet")
+		VKTLOG(cmdbuf->DispatchCompute(shaderConfig.valueCount, 1, 1), "CmdBuf DispatchCompute")
+		VKTLOG(cmdbuf->BarrierShaderTransfer(bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT), "CmdBuf BarrierHost")
+		VKTLOG(bufferInput->FetchFromDevice(cmdbuf), "CmdBuf ReadBuffer")
+		VKTLOG(cmdbuf->BarrierTransferHost(bufferInput), "CmdBuf BarrierTransferHost")
+		VKTLOG(cmdbuf->End(), "CmdBuf End")
+		VKTLOG(cmdbuf->Submit(), "CmdBuf Submit")
 		
-		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait")
+		VKTLOG(cmdbuf->Wait(), "CmdBuf Wait")
 		
-		VKTLOG( bufferInput->GetData( bufferInputData ), "Buffer GetData")
-		decString string( "Computed: [" );
-		for( i=0; i<inputDataCount; i++ ){
-			string.AppendFormat( "%s%d", i > 0 ? ", " : "", bufferInputData[ i ] );
+		VKTLOG(bufferInput->GetData(bufferInputData), "Buffer GetData")
+		decString string("Computed: [");
+		for(i=0; i<inputDataCount; i++){
+			string.AppendFormat("%s%d", i > 0 ? ", " : "", bufferInputData[i]);
 		}
-		string.Append( "]" );
-		pLogger->LogInfo( string );
+		string.Append("]");
+		pLogger->LogInfo(string);
 		
 		// graphic test
 		devkRenderPassConfiguration renPassConfig;
 		
-		renPassConfig.SetAttachmentCount( 1 );
-		renPassConfig.SetColorAttachmentAt( 0, VK_FORMAT_R8G8B8A8_UNORM /* VK_FORMAT_R8G8B8_UNORM not working? */,
-			devkRenderPassConfiguration::eitClear, devkRenderPassConfiguration::eotReadBack );
-		renPassConfig.SetClearValueColorFloatAt( 0, 0, 0, 0, 0 );
+		renPassConfig.SetAttachmentCount(1);
+		renPassConfig.SetColorAttachmentAt(0, VK_FORMAT_R8G8B8A8_UNORM /* VK_FORMAT_R8G8B8_UNORM not working? */,
+			devkRenderPassConfiguration::eitClear, devkRenderPassConfiguration::eotReadBack);
+		renPassConfig.SetClearValueColorFloatAt(0, 0, 0, 0, 0);
 		
-		renPassConfig.SetSubPassCount( 1 );
-		renPassConfig.SetSubPassAt( 0, -1, 0 );
+		renPassConfig.SetSubPassCount(1);
+		renPassConfig.SetSubPassAt(0, -1, 0);
 		
 		devkRenderPass::Ref renderPass;
-		VKTLOG( renderPass.TakeOver( new devkRenderPass( pVulkanDevice, renPassConfig ) ), "Create Render Pass" )
+		VKTLOG(renderPass.TakeOver(new devkRenderPass(pVulkanDevice, renPassConfig)), "Create Render Pass")
 		
 		devkImageConfiguration imageConfig;
-		imageConfig.Set2D( decPoint( 64, 32 ), VK_FORMAT_R8G8B8A8_UNORM );
-		imageConfig.EnableColorAttachment( true );
-		imageConfig.EnableTransferSource( true );
+		imageConfig.Set2D(decPoint(64, 32), VK_FORMAT_R8G8B8A8_UNORM);
+		imageConfig.EnableColorAttachment(true);
+		imageConfig.EnableTransferSource(true);
 		devkImage::Ref image;
-		VKTLOG( image.TakeOver( new devkImage( pVulkanDevice, imageConfig ) ), "Create Image" )
+		VKTLOG(image.TakeOver(new devkImage(pVulkanDevice, imageConfig)), "Create Image")
 		
 		devkImageView::Ref imageView;
-		VKTLOG( imageView.TakeOver( new devkImageView( image ) ), "Create Image View" )
+		VKTLOG(imageView.TakeOver(new devkImageView(image)), "Create Image View")
 		
 		devkFramebufferConfiguration framebufferConfig;
-		framebufferConfig.SetAttachmentCount( 1 );
-		framebufferConfig.SetAttachmentAt( 0, imageView );
-		framebufferConfig.SetSize( decPoint( 64, 32 ) );
+		framebufferConfig.SetAttachmentCount(1);
+		framebufferConfig.SetAttachmentAt(0, imageView);
+		framebufferConfig.SetSize(decPoint(64, 32));
 		
 		devkFramebuffer::Ref framebuffer;
-		VKTLOG( framebuffer.TakeOver( new devkFramebuffer( renderPass, framebufferConfig ) ), "Create Framebuffer" )
+		VKTLOG(framebuffer.TakeOver(new devkFramebuffer(renderPass, framebufferConfig)), "Create Framebuffer")
 		
 		const uint32_t test2_vert_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000022,0x00000000,0x00020011,0x00000001,0x0006000b,
@@ -1395,12 +1395,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x000100fd,0x00010038
 		};
 		
-		mfshader.TakeOver( decMemoryFile::Ref::NewWith("/shaders/vulkantest2_vert.spv") );
-		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test2_vert_spv_data, sizeof( test2_vert_spv_data ) );
+		mfshader.TakeOver(decMemoryFile::Ref::NewWith("/shaders/vulkantest2_vert.spv"));
+		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test2_vert_spv_data, sizeof(test2_vert_spv_data));
 		
 		devkShaderModule::Ref shaderVert;
-		VKTLOG( shaderVert.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest2_vert.spv",
-			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+		VKTLOG(shaderVert.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest2_vert.spv",
+			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
 		
 		const uint32_t test2_frag_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000014,0x00000000,0x00020011,0x00000001,0x0006000b,
@@ -1438,12 +1438,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x0000000f,0x0003003e,0x0000000a,0x00000013,0x000100fd,0x00010038
 		};
 		
-		mfshader.TakeOver( decMemoryFile::Ref::NewWith("/shaders/vulkantest2_frag.spv") );
-		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test2_frag_spv_data, sizeof( test2_frag_spv_data ) );
+		mfshader.TakeOver(decMemoryFile::Ref::NewWith("/shaders/vulkantest2_frag.spv"));
+		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test2_frag_spv_data, sizeof(test2_frag_spv_data));
 		
 		devkShaderModule::Ref shaderFrag;
-		VKTLOG( shaderFrag.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest2_frag.spv",
-			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+		VKTLOG(shaderFrag.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest2_frag.spv",
+			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
 		
 		struct sVertex{
 			struct{
@@ -1454,63 +1454,63 @@ void deoglRenderThread::pInitThreadPhase4(){
 			} color;
 			uint32_t packed;
 		};
-		const sVertex vertices[ 3 ] = {
-			{ {  1,  1, 0 }, { 1, 0, 0 }, 0 },
-			{ { -1,  1, 0 }, { 1, 0, 0 }, 0 },
-			{ {  0, -1, 0 }, { 0, 0, 0 }, 0 }
+		const sVertex vertices[3] = {
+			{{1,  1, 0}, {1, 0, 0}, 0},
+			{{-1,  1, 0}, {1, 0, 0}, 0},
+			{{0, -1, 0}, {0, 0, 0}, 0}
 		};
 		
-		bufferInput.TakeOver( devkBuffer::Ref::NewWith(pVulkanDevice,
-			sizeof( vertices ), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT) );
-		VKTLOG( bufferInput->SetData( vertices ), "Buffer SetData" )
+		bufferInput.TakeOver(devkBuffer::Ref::NewWith(pVulkanDevice,
+			sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT));
+		VKTLOG(bufferInput->SetData(vertices), "Buffer SetData")
 		{
 		VKTLOG(devkCommandBuffer &cbuf = bufferInput->BeginCommandBuffer(commandPool), "Buffer BeginCommandBuffer")
 		VKTLOG(bufferInput->TransferToDevice(cbuf), "Buffer TransferToDevice")
 		VKTLOG(cbuf.Submit(), "Buffer Submit");
 		}
-		VKTLOG( bufferInput->Wait(), "Buffer Wait" )
+		VKTLOG(bufferInput->Wait(), "Buffer Wait")
 		
 		pipelineConfig = devkPipelineConfiguration();
-		pipelineConfig.SetType( devkPipelineConfiguration::etGraphics );
-		pipelineConfig.SetRenderPass( renderPass );
-		pipelineConfig.SetShaderVertex( shaderVert );
-		pipelineConfig.SetShaderFragment( shaderFrag );
+		pipelineConfig.SetType(devkPipelineConfiguration::etGraphics);
+		pipelineConfig.SetRenderPass(renderPass);
+		pipelineConfig.SetShaderVertex(shaderVert);
+		pipelineConfig.SetShaderFragment(shaderFrag);
 		
-		pipelineConfig.SetBindingCount( 1 );
-		pipelineConfig.SetBindingAt( 0, 0, sizeof( sVertex ) );
+		pipelineConfig.SetBindingCount(1);
+		pipelineConfig.SetBindingAt(0, 0, sizeof(sVertex));
 		
-		pipelineConfig.SetAttributeCount( 3 );
-		pipelineConfig.SetAttributeAt( 0, 0, 0, devkPipelineConfiguration::eafFloat3, offsetof( sVertex, position ) );
-		pipelineConfig.SetAttributeAt( 1, 1, 0, devkPipelineConfiguration::eafFloat3, offsetof( sVertex, color ) );
-		pipelineConfig.SetAttributeAt( 2, 2, 0, devkPipelineConfiguration::eafUIntNormA8B8G8R8, offsetof( sVertex, packed ) );
+		pipelineConfig.SetAttributeCount(3);
+		pipelineConfig.SetAttributeAt(0, 0, 0, devkPipelineConfiguration::eafFloat3, offsetof(sVertex, position));
+		pipelineConfig.SetAttributeAt(1, 1, 0, devkPipelineConfiguration::eafFloat3, offsetof(sVertex, color));
+		pipelineConfig.SetAttributeAt(2, 2, 0, devkPipelineConfiguration::eafUIntNormA8B8G8R8, offsetof(sVertex, packed));
 		
-		VKTLOG( pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineGraphic" )
+		VKTLOG(pipeline = pVulkanDevice->GetPipelineManager().GetWith(pipelineConfig), "PipelineGraphic")
 		
-		VKTLOG( cmdbuf->Begin(), "CmdBuf Begin" )
-		VKTLOG( cmdbuf->BarrierHostShader( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierShader" )
-		VKTLOG( cmdbuf->BeginRenderPass( renderPass, framebuffer ), "CmdBuf BeginRenderPass" )
-		VKTLOG( cmdbuf->BindPipeline( *pipeline ), "CmdBuf BindPipeline" )
-		VKTLOG( cmdbuf->BindVertexBuffer( 0, bufferInput ), "CmdBuf BindVertexBuffer" )
-		VKTLOG( cmdbuf->Draw( 3, 1 ), "CmdBuf Draw" )
-		VKTLOG( cmdbuf->EndRenderPass(), "CmdBuf EndRenderPass" )
-		VKTLOG( image->BarrierShaderTransfer(cmdbuf, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT), "CmdBuf BarrierHost" )
-		VKTLOG( image->FetchFromDevice(cmdbuf), "CmdBuf ReadImage" )
-		VKTLOG( image->BarrierTransferHost(cmdbuf), "CmdBuf BarrierTransferHost" )
-		VKTLOG( cmdbuf->End(), "CmdBuf End" )
-		VKTLOG( cmdbuf->Submit(), "CmdBuf Submit" )
+		VKTLOG(cmdbuf->Begin(), "CmdBuf Begin")
+		VKTLOG(cmdbuf->BarrierHostShader(bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT), "CmdBuf BarrierShader")
+		VKTLOG(cmdbuf->BeginRenderPass(renderPass, framebuffer), "CmdBuf BeginRenderPass")
+		VKTLOG(cmdbuf->BindPipeline(*pipeline), "CmdBuf BindPipeline")
+		VKTLOG(cmdbuf->BindVertexBuffer(0, bufferInput), "CmdBuf BindVertexBuffer")
+		VKTLOG(cmdbuf->Draw(3, 1), "CmdBuf Draw")
+		VKTLOG(cmdbuf->EndRenderPass(), "CmdBuf EndRenderPass")
+		VKTLOG(image->BarrierShaderTransfer(cmdbuf, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT), "CmdBuf BarrierHost")
+		VKTLOG(image->FetchFromDevice(cmdbuf), "CmdBuf ReadImage")
+		VKTLOG(image->BarrierTransferHost(cmdbuf), "CmdBuf BarrierTransferHost")
+		VKTLOG(cmdbuf->End(), "CmdBuf End")
+		VKTLOG(cmdbuf->Submit(), "CmdBuf Submit")
 		
-		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait" )
+		VKTLOG(cmdbuf->Wait(), "CmdBuf Wait")
 		
-		oglRGBA imgdata[ 64 * 32 ];
-		VKTLOG( image->GetData( imgdata ), "Image GetData" )
+		oglRGBA imgdata[64 * 32];
+		VKTLOG(image->GetData(imgdata), "Image GetData")
 		int x, y;
-		for( y=0; y<32; y++ ){
+		for(y=0; y<32; y++){
 			string = "Drawn: [";
-			for( x=0; x<64; x++ ){
-				string.AppendCharacter( 'a' + ( int )imgdata[ 64 * y + x ].r * 25 / 255 );
+			for(x=0; x<64; x++){
+				string.AppendCharacter('a' + (int)imgdata[64 * y + x].r * 25 / 255);
 			}
-			string.Append( "]" );
-			pLogger->LogInfo( string );
+			string.Append("]");
+			pLogger->LogInfo(string);
 		}
 	}
 #endif
@@ -1529,20 +1529,20 @@ void deoglRenderThread::pInitThreadPhase4(){
 
 void deoglRenderThread::pInitExtensions(){
 	// load extensions
-	pExtensions = new deoglExtensions( *this );
+	pExtensions = new deoglExtensions(*this);
 	pExtensions->Initialize();
 	
 	pExtensions->PrintSummary(); // print this always to help debug customer problems
 	
-	if( ! pExtensions->VerifyPresence() ){
-		DETHROW_INFO( deeInvalidAction,
-			"Required extensions or functions could not be found. Please see logs" );
+	if(!pExtensions->VerifyPresence()){
+		DETHROW_INFO(deeInvalidAction,
+			"Required extensions or functions could not be found. Please see logs");
 	}
 	
 	// enable states never touched again later (and that can not be changed)
 	// NOTE: on android this is always enabled for 3.2
 #ifndef WITH_OPENGLES
-	if( pExtensions->GetHasSeamlessCubeMap() ){
+	if(pExtensions->GetHasSeamlessCubeMap()){
 		// on nVidia this crashes due to a bug with linear filtering on float textures
 		// TODO is this still affecting the newer driver versions?
 		if(pConfiguration.GetDisableCubeMapLinearFiltering()){
@@ -1557,44 +1557,44 @@ void deoglRenderThread::pInitExtensions(){
 
 void deoglRenderThread::pInitCapabilities(){
 	// query hardware information
-	pCapabilities = new deoglCapabilities( *this );
+	pCapabilities = new deoglCapabilities(*this);
 	pCapabilities->DetectCapabilities();
 	
 	#ifdef WITH_OPENGLES
-	pLogger->LogInfo( "Hardware information:" );
+	pLogger->LogInfo("Hardware information:");
 	
 	int i, j;
 	decString text;
-	GLint resultsInt[ 2 ];
+	GLint resultsInt[2];
 	const int capabilityCount = 18;
 	const struct sCapability{
 		GLint id;
 		const char *name;
 		int valueCount;
-	} capabilities[ capabilityCount ] = {
-		{ GL_MAX_TEXTURE_SIZE, "GL: Maximum texture size", 1 },
-		{ GL_MAX_VIEWPORT_DIMS, "GL: Maximum viewport size", 2 },
+	} capabilities[capabilityCount] = {
+		{GL_MAX_TEXTURE_SIZE, "GL: Maximum texture size", 1},
+		{GL_MAX_VIEWPORT_DIMS, "GL: Maximum viewport size", 2},
 		
-		{ GL_MAX_TEXTURE_IMAGE_UNITS, "Shaders: Maximum number of texture image units", 1 },
-		{ GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, "Shaders: Maximum number of combined texture image units", 1 },
+		{GL_MAX_TEXTURE_IMAGE_UNITS, "Shaders: Maximum number of texture image units", 1},
+		{GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, "Shaders: Maximum number of combined texture image units", 1},
 		
-		{ GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, "Vertex Shader: Maximum number of texture image units", 1 },
-		{ GL_MAX_VERTEX_ATTRIBS, "Vertex Shader: Maximum number of vertex attributes", 1 },
-		{ GL_MAX_VARYING_FLOATS, "Vertex Shader: Maximum number of varying floats", 1 },
-		{ GL_MAX_VERTEX_UNIFORM_COMPONENTS, "Vertex Shader: Maximum number of vertex uniform components", 1 },
+		{GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, "Vertex Shader: Maximum number of texture image units", 1},
+		{GL_MAX_VERTEX_ATTRIBS, "Vertex Shader: Maximum number of vertex attributes", 1},
+		{GL_MAX_VARYING_FLOATS, "Vertex Shader: Maximum number of varying floats", 1},
+		{GL_MAX_VERTEX_UNIFORM_COMPONENTS, "Vertex Shader: Maximum number of vertex uniform components", 1},
 		
-		{ GL_MAX_ARRAY_TEXTURE_LAYERS, "Texture Array: Maximum number of texture layers", 1 },
+		{GL_MAX_ARRAY_TEXTURE_LAYERS, "Texture Array: Maximum number of texture layers", 1},
 		
-		{ GL_MAX_VERTEX_UNIFORM_BLOCKS, "Uniform Buffer Object: Maximum vertex uniform blocks", 1 },
-		{ GL_MAX_FRAGMENT_UNIFORM_BLOCKS, "Uniform Buffer Object: Maximum fragment uniform blocks", 1 },
-		{ GL_MAX_COMBINED_UNIFORM_BLOCKS, "Uniform Buffer Object: Maximum combined uniform blocks", 1 },
-		{ GL_MAX_UNIFORM_BUFFER_BINDINGS, "Uniform Buffer Object: Maximum bindings", 1 },
-		{ GL_MAX_UNIFORM_BLOCK_SIZE, "Uniform Buffer Object: Maximum block size", 1 },
-		{ GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS, "Uniform Buffer Object: Maximum vertex components", 1 },
-		{ GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS, "Uniform Buffer Object: Maximum fragment components", 1 },
+		{GL_MAX_VERTEX_UNIFORM_BLOCKS, "Uniform Buffer Object: Maximum vertex uniform blocks", 1},
+		{GL_MAX_FRAGMENT_UNIFORM_BLOCKS, "Uniform Buffer Object: Maximum fragment uniform blocks", 1},
+		{GL_MAX_COMBINED_UNIFORM_BLOCKS, "Uniform Buffer Object: Maximum combined uniform blocks", 1},
+		{GL_MAX_UNIFORM_BUFFER_BINDINGS, "Uniform Buffer Object: Maximum bindings", 1},
+		{GL_MAX_UNIFORM_BLOCK_SIZE, "Uniform Buffer Object: Maximum block size", 1},
+		{GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS, "Uniform Buffer Object: Maximum vertex components", 1},
+		{GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS, "Uniform Buffer Object: Maximum fragment components", 1},
 		
-		{ GL_MAX_DRAW_BUFFERS, "Maximum number of draw buffers", 1 },
-		{ GL_MAX_COLOR_ATTACHMENTS, "Maximum color attachments", 1 }
+		{GL_MAX_DRAW_BUFFERS, "Maximum number of draw buffers", 1},
+		{GL_MAX_COLOR_ATTACHMENTS, "Maximum color attachments", 1}
 	};
 	/* not supported by android
 	GL_MAX_TEXTURE_COORDS
@@ -1608,14 +1608,14 @@ void deoglRenderThread::pInitCapabilities(){
 	GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS
 	*/
 	
-	for( i=0; i<capabilityCount; i++ ){
-		OGL_CHECK( *this, glGetIntegerv( capabilities[ i ].id, &resultsInt[ 0 ] ) );
+	for(i=0; i<capabilityCount; i++){
+		OGL_CHECK(*this, glGetIntegerv(capabilities[i].id, &resultsInt[0]));
 		
-		text.Format( "- %s:", capabilities[ i ].name );
-		for( j=0; j<capabilities[ i ].valueCount; j++ ){
-			text.AppendFormat( " %i", resultsInt[ j ] );
+		text.Format("- %s:", capabilities[i].name);
+		for(j=0; j<capabilities[i].valueCount; j++){
+			text.AppendFormat(" %i", resultsInt[j]);
 		}
-		pLogger->LogInfo( text );
+		pLogger->LogInfo(text);
 	}
 	#endif
 }
@@ -1623,8 +1623,8 @@ void deoglRenderThread::pInitCapabilities(){
 
 
 void deoglRenderThread::pRenderSingleFrame(){
-	const deoglDebugTraceGroup debugTrace( *this, "RenderSingleFrame" );
-	if( pConfigChanged ){
+	const deoglDebugTraceGroup debugTrace(*this, "RenderSingleFrame");
+	if(pConfigChanged){
 		pConfigChanged = false;
 		
 		pGI->GetTraceRays().UpdateFromConfig();
@@ -1633,18 +1633,18 @@ void deoglRenderThread::pRenderSingleFrame(){
 	//const deoglDeveloperMode &devmode = pDebug->GetDeveloperMode();
 	const bool showDebugInfoModule = pDebugInfoModule->GetVisible();
 	
-	if( pDebugInfoFrameLimiter->GetVisible() ){
+	if(pDebugInfoFrameLimiter->GetVisible()){
 		pDebugInfoFLEstimRender->Clear();
 		pDebugInfoFLFrameRateRender->Clear();
 		
-		if( pTimeHistoryRender.HasMetrics() ){
-			pDebugInfoFLEstimRender->IncrementElapsedTime( pTimeHistoryRender.GetAverage() );
-			pDebugInfoFLFrameRateRender->IncrementCounter( ( int )( 1.0f /
-				decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit ) ) );
+		if(pTimeHistoryRender.HasMetrics()){
+			pDebugInfoFLEstimRender->IncrementElapsedTime(pTimeHistoryRender.GetAverage());
+			pDebugInfoFLFrameRateRender->IncrementCounter((int)(1.0f /
+				decMath::max(pTimeHistoryRender.GetAverage(), pFrameTimeLimit)));
 		}
 	}
 	
-	if( showDebugInfoModule ){
+	if(showDebugInfoModule){
 		pDebugTimeThreadRenderWindowsPrepare = 0.0f;
 		pDebugTimeThreadRenderWindowsRender = 0.0f;
 		pDebugCountThreadWindows = 0;
@@ -1656,7 +1656,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		pDebugTimerRenderThread2.Reset();
 	}
 #ifdef WITH_OPENGLES
-	DebugMemoryUsage( "deoglRenderThread::pRenderSingleFrame IN" );
+	DebugMemoryUsage("deoglRenderThread::pRenderSingleFrame IN");
 	decTimer timer;
 #endif
 	
@@ -1665,11 +1665,11 @@ void deoglRenderThread::pRenderSingleFrame(){
 	// transfer. by synchronizing with the GPU we can ensure all rendering has finished so
 	// we can use the GPU for pre-render processing. this trades stalling at an unfortunate
 	// time with stalling at a well known time
-	if( ! ( pVRCamera && pVRCamera->GetVR() ) && showDebugInfoModule ){
-		OGL_CHECK( *this, glFinish() );
+	if(!(pVRCamera && pVRCamera->GetVR()) && showDebugInfoModule){
+		OGL_CHECK(*this, glFinish());
 	}
 	
-	if( showDebugInfoModule ){
+	if(showDebugInfoModule){
 		pDebugTimeThreadRenderSyncGpu = pDebugTimerRenderThread2.GetElapsedTime();
 	}
 	
@@ -1677,9 +1677,9 @@ void deoglRenderThread::pRenderSingleFrame(){
 	//      can using a single window. we have to go through each window individually
 	//      or using a render thread for each of them which would be a problem. this
 	//      scenario though happens only on applications like the game editor
-	if( pRRenderWindowList.GetCount() > 1 ){
+	if(pRRenderWindowList.GetCount() > 1){
 		pBeginFrame();
-		if( showDebugInfoModule ){
+		if(showDebugInfoModule){
 			pDebugTimeThreadRenderSwap = 0.0f;
 			pDebugTimeThreadRenderWindows = 0.0f;
 			pDebugTimeThreadRenderBegin = pDebugTimerRenderThread2.GetElapsedTime();
@@ -1689,21 +1689,21 @@ void deoglRenderThread::pRenderSingleFrame(){
 		pVRRender();
 		const int count = pRRenderWindowList.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			deoglRRenderWindow &window = *( ( deoglRRenderWindow* )pRRenderWindowList.GetAt( i ) );
+		for(i=0; i<count; i++){
+			deoglRRenderWindow &window = *((deoglRRenderWindow*)pRRenderWindowList.GetAt(i));
 			window.Render();
-			if( showDebugInfoModule ){
+			if(showDebugInfoModule){
 				pDebugTimeThreadRenderWindows += pDebugTimerRenderThread2.GetElapsedTime();
 			}
 			
 			window.SwapBuffers();
-			if( showDebugInfoModule ){
+			if(showDebugInfoModule){
 				pDebugTimeThreadRenderSwap += pDebugTimerRenderThread2.GetElapsedTime();
 			}
 		}
 		
 		pCaptureCanvas();
-		if( showDebugInfoModule ){
+		if(showDebugInfoModule){
 			pDebugTimeThreadRenderCapture = pDebugTimerRenderThread2.GetElapsedTime();
 		}
 		
@@ -1717,32 +1717,32 @@ void deoglRenderThread::pRenderSingleFrame(){
 		// }
 		
 		#ifdef WITH_OPENGLES
-		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame ENTER");
+		if(DoesDebugMemoryUsage()) pLogger->LogInfo("pRenderSingleFrame ENTER");
 		#endif
 		pBeginFrame();
-		if( showDebugInfoModule ){
+		if(showDebugInfoModule){
 			pDebugTimeThreadRenderBegin = pDebugTimerRenderThread2.GetElapsedTime();
 			pDebugTimerRenderThread3.Reset();
 		}
 		#ifdef WITH_OPENGLES
-		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame BeginFrame");
+		if(DoesDebugMemoryUsage()) pLogger->LogInfo("pRenderSingleFrame BeginFrame");
 		#endif
 		
 		pVRRender();
 		pRenderWindows();
-		if( showDebugInfoModule ){
+		if(showDebugInfoModule){
 			pDebugTimeThreadRenderWindows = pDebugTimerRenderThread2.GetElapsedTime();
 		}
 		#ifdef WITH_OPENGLES
-		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame RenderWindows");
+		if(DoesDebugMemoryUsage()) pLogger->LogInfo("pRenderSingleFrame RenderWindows");
 		#endif
 		
 		pCaptureCanvas();
-		if( showDebugInfoModule ){
+		if(showDebugInfoModule){
 			pDebugTimeThreadRenderCapture = pDebugTimerRenderThread2.GetElapsedTime();
 		}
 		#ifdef WITH_OPENGLES
-		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame CaptureCanvas");
+		if(DoesDebugMemoryUsage()) pLogger->LogInfo("pRenderSingleFrame CaptureCanvas");
 		#endif
 		
 		pVRSubmit();
@@ -1754,54 +1754,54 @@ void deoglRenderThread::pRenderSingleFrame(){
 		// at the start of rendering since after this swap buffer call the render thread
 		// waits on a barrier
 		pSwapBuffers();
-		if( showDebugInfoModule ){
+		if(showDebugInfoModule){
 			pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
 		}
 	}
 	
-	if( showDebugInfoModule ){
-		const deoglDebugTraceGroup debugTraceDI( *this, "DebugInfo" );
+	if(showDebugInfoModule){
+		const deoglDebugTraceGroup debugTraceDI(*this, "DebugInfo");
 		const float time2 = pDebugTimerRenderThread2.GetElapsedTime();
 		const float time1 = pDebugTimerRenderThread1.GetElapsedTime();
 		
 		pDebugInfoThreadRenderSyncGpu->Clear();
-		pDebugInfoThreadRenderSyncGpu->IncrementElapsedTime( pDebugTimeThreadRenderSyncGpu );
+		pDebugInfoThreadRenderSyncGpu->IncrementElapsedTime(pDebugTimeThreadRenderSyncGpu);
 		
 		pDebugInfoThreadRenderBegin->Clear();
-		pDebugInfoThreadRenderBegin->IncrementElapsedTime( pDebugTimeThreadRenderBegin );
+		pDebugInfoThreadRenderBegin->IncrementElapsedTime(pDebugTimeThreadRenderBegin);
 		
 		pDebugInfoVRRender->Clear();
-		pDebugInfoVRRender->IncrementElapsedTime( pDebugTimeVRRender );
+		pDebugInfoVRRender->IncrementElapsedTime(pDebugTimeVRRender);
 		
 		pDebugInfoThreadRenderWindows->Clear();
-		pDebugInfoThreadRenderWindows->IncrementElapsedTime( pDebugTimeThreadRenderWindows );
+		pDebugInfoThreadRenderWindows->IncrementElapsedTime(pDebugTimeThreadRenderWindows);
 		
 		pDebugInfoThreadRenderWindowsPrepare->Clear();
-		pDebugInfoThreadRenderWindowsPrepare->IncrementElapsedTime( pDebugTimeThreadRenderWindowsPrepare );
-		pDebugInfoThreadRenderWindowsPrepare->IncrementCounter( pDebugCountThreadWindows );
+		pDebugInfoThreadRenderWindowsPrepare->IncrementElapsedTime(pDebugTimeThreadRenderWindowsPrepare);
+		pDebugInfoThreadRenderWindowsPrepare->IncrementCounter(pDebugCountThreadWindows);
 		
 		pDebugInfoThreadRenderWindowsRender->Clear();
-		pDebugInfoThreadRenderWindowsRender->IncrementElapsedTime( pDebugTimeThreadRenderWindowsRender );
-		pDebugInfoThreadRenderWindowsRender->IncrementCounter( pDebugCountThreadWindows );
+		pDebugInfoThreadRenderWindowsRender->IncrementElapsedTime(pDebugTimeThreadRenderWindowsRender);
+		pDebugInfoThreadRenderWindowsRender->IncrementCounter(pDebugCountThreadWindows);
 		
 		pDebugInfoThreadRenderCapture->Clear();
-		pDebugInfoThreadRenderCapture->IncrementElapsedTime( pDebugTimeThreadRenderCapture );
+		pDebugInfoThreadRenderCapture->IncrementElapsedTime(pDebugTimeThreadRenderCapture);
 		
 		pDebugInfoThreadRenderEnd->Clear();
-		pDebugInfoThreadRenderEnd->IncrementElapsedTime( time2 );
+		pDebugInfoThreadRenderEnd->IncrementElapsedTime(time2);
 		
 		pDebugInfoThreadRenderSwap->Clear();
-		pDebugInfoThreadRenderSwap->IncrementElapsedTime( pDebugTimeThreadRenderSwap );
+		pDebugInfoThreadRenderSwap->IncrementElapsedTime(pDebugTimeThreadRenderSwap);
 		
 		pDebugInfoThreadRender->Clear();
-		pDebugInfoThreadRender->IncrementElapsedTime( time1 );
+		pDebugInfoThreadRender->IncrementElapsedTime(time1);
 		
 		pRenderers->GetCanvas().DebugInfoCanvasUpdate();
 	}
 	
 #ifdef WITH_OPENGLES
 	//pLogger->LogInfoFormat( "pRenderSingleFrame: %dms", (int )(timer.GetElapsedTime() * 1000.0f) );
-	DebugMemoryUsage( "deoglRenderThread::pRenderSingleFrame OUT" );
+	DebugMemoryUsage("deoglRenderThread::pRenderSingleFrame OUT");
 #endif
 }
 
@@ -1839,17 +1839,17 @@ void deoglRenderThread::pRenderSingleFrame(){
 #include <malloc.h>
 
 bool deoglRenderThread::DoesDebugMemoryUsage() const{
-	if( ! pLogger ) return false;
-	if( ! pTexture ) return false;
-	if( ! pDeferredRendering ) return false;
+	if(!pLogger) return false;
+	if(!pTexture) return false;
+	if(!pDeferredRendering) return false;
 	
 	return pOgl.GetGameEngine()->GetCacheAppID() == "testing";
 }
 
-void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
-	if( ! DoesDebugMemoryUsage() ) return;
+void deoglRenderThread::DebugMemoryUsage(const char *prefix){
+	if(!DoesDebugMemoryUsage()) return;
 	
-	pLogger->LogInfoFormat( "DebugMemoryUsage: %s", prefix );
+	pLogger->LogInfoFormat("DebugMemoryUsage: %s", prefix);
 	
 #if 0
 	const char * const fmtTex2D  = "Tex2D (%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
@@ -1875,11 +1875,11 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	double textureRatioCompressed = 0.0f;
 	double textureColorRatioCompressed = 0.0f;
 	
-	if( textureGPU > 0 ){
-		textureRatioCompressed = 100.0 * ( ( double )textureGPUCompressed / ( double )textureGPU );
+	if(textureGPU > 0){
+		textureRatioCompressed = 100.0 * ((double)textureGPUCompressed / (double)textureGPU);
 	}
-	if( textureColorGPU > 0 ){
-		textureColorRatioCompressed = 100.0 * ( ( double )textureColorGPUCompressed / ( double )textureColorGPU );
+	if(textureColorGPU > 0){
+		textureColorRatioCompressed = 100.0 * ((double)textureColorGPUCompressed / (double)textureColorGPU);
 	}
 	
 	textureGPU /= 1000000;
@@ -1890,9 +1890,9 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	textureColorGPUUncompressed /= 1000000;
 	textureDepthGPU /= 1000000;
 	
-	pLogger->LogInfoFormat( fmtTex2D, textureCount, textureGPU, textureGPUCompressed, ( int )textureRatioCompressed,
+	pLogger->LogInfoFormat(fmtTex2D, textureCount, textureGPU, textureGPUCompressed, (int)textureRatioCompressed,
 		textureGPUUncompressed, textureColorCount, textureColorGPU, textureColorGPUCompressed,
-		( int )textureColorRatioCompressed, textureColorGPUUncompressed, textureDepthCount, textureDepthGPU );
+		(int)textureColorRatioCompressed, textureColorGPUUncompressed, textureDepthCount, textureDepthGPU);
 	
 	// textures array
 	const deoglMemoryConsumptionTexture &consumptionTextureArray = pMemoryManager.GetConsumption().textureArray;
@@ -1909,11 +1909,11 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	double textureArrayRatioCompressed = 0.0f;
 	double textureArrayColorRatioCompressed = 0.0f;
 	
-	if( textureArrayGPU > 0 ){
-		textureArrayRatioCompressed = 100.0 * ( ( double )textureArrayGPUCompressed / ( double )textureArrayGPU );
+	if(textureArrayGPU > 0){
+		textureArrayRatioCompressed = 100.0 * ((double)textureArrayGPUCompressed / (double)textureArrayGPU);
 	}
-	if( textureArrayColorGPU > 0 ){
-		textureArrayColorRatioCompressed = 100.0 * ( ( double )textureArrayColorGPUCompressed / ( double )textureArrayColorGPU );
+	if(textureArrayColorGPU > 0){
+		textureArrayColorRatioCompressed = 100.0 * ((double)textureArrayColorGPUCompressed / (double)textureArrayColorGPU);
 	}
 	
 	textureArrayGPU /= 1000000;
@@ -1924,9 +1924,9 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	textureArrayColorGPUUncompressed /= 1000000;
 	textureArrayDepthGPU /= 1000000;
 	
-	pLogger->LogInfoFormat( fmtTexArr, textureArrayCount, textureArrayGPU, textureArrayGPUCompressed, ( int )textureArrayRatioCompressed,
+	pLogger->LogInfoFormat(fmtTexArr, textureArrayCount, textureArrayGPU, textureArrayGPUCompressed, (int)textureArrayRatioCompressed,
 		textureArrayGPUUncompressed, textureArrayColorCount, textureArrayColorGPU, textureArrayColorGPUCompressed,
-		( int )textureArrayColorRatioCompressed, textureArrayColorGPUUncompressed, textureArrayDepthCount, textureArrayDepthGPU );
+		(int)textureArrayColorRatioCompressed, textureArrayColorGPUUncompressed, textureArrayDepthCount, textureArrayDepthGPU);
 	
 	// cube maps
 	const deoglMemoryConsumptionTexture &consumptionTextureCube = pMemoryManager.GetConsumption().textureCube;
@@ -1943,11 +1943,11 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	double cubemapRatioCompressed = 0.0f;
 	double cubemapColorRatioCompressed = 0.0f;
 	
-	if( cubemapGPU > 0 ){
-		cubemapRatioCompressed = 100.0 * ( ( double )cubemapGPUCompressed / ( double )cubemapGPU );
+	if(cubemapGPU > 0){
+		cubemapRatioCompressed = 100.0 * ((double)cubemapGPUCompressed / (double)cubemapGPU);
 	}
-	if( cubemapColorGPU > 0 ){
-		cubemapColorRatioCompressed = 100.0 * ( ( double )cubemapColorGPUCompressed / ( double )cubemapColorGPU );
+	if(cubemapColorGPU > 0){
+		cubemapColorRatioCompressed = 100.0 * ((double)cubemapColorGPUCompressed / (double)cubemapColorGPU);
 	}
 	
 	cubemapGPU /= 1000000;
@@ -1958,9 +1958,9 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	cubemapColorGPUUncompressed /= 1000000;
 	cubemapDepthGPU /= 1000000;
 	
-	pLogger->LogInfoFormat( fmtCube, cubemapCount, cubemapGPU, cubemapGPUCompressed, ( int )cubemapRatioCompressed, cubemapGPUUncompressed,
-		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, ( int )cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
-		cubemapDepthCount, cubemapDepthGPU );
+	pLogger->LogInfoFormat(fmtCube, cubemapCount, cubemapGPU, cubemapGPUCompressed, (int)cubemapRatioCompressed, cubemapGPUUncompressed,
+		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, (int)cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
+		cubemapDepthCount, cubemapDepthGPU);
 	
 	// skin memory consumption
 	const deoglMemoryConsumptionTexture &consumptionSkin = pMemoryManager.GetConsumption().skin;
@@ -1970,15 +1970,15 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	unsigned int skinGPUUncompressed = consumptionSkin.GetGPUUncompressed();
 	double percentageCompressed = 0.0f;
 	
-	if( skinGPU > 0 ){
-		percentageCompressed = 100.0 * ( ( double )skinGPUCompressed / ( double )skinGPU );
+	if(skinGPU > 0){
+		percentageCompressed = 100.0 * ((double)skinGPUCompressed / (double)skinGPU);
 	}
 	
 	skinGPU /= 1000000;
 	skinGPUCompressed /= 1000000;
 	skinGPUUncompressed /= 1000000;
 	
-	pLogger->LogInfoFormat( fmtSkin, skinCount, skinGPU, skinGPUCompressed, ( int )percentageCompressed, skinGPUUncompressed );
+	pLogger->LogInfoFormat(fmtSkin, skinCount, skinGPU, skinGPUCompressed, (int)percentageCompressed, skinGPUUncompressed);
 	
 	// renderable memory consumption
 	const int renderable2DColorCount = pTexture->GetRenderableColorTexture().GetTextureCount();
@@ -1992,8 +1992,8 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	renderable2DDepthGPU /= 1000000;
 	renderableArrayGPU /= 1000000;
 	
-	pLogger->LogInfoFormat( fmtRender, renderable2DColorCount, renderable2DColorGPU, renderable2DDepthCount, renderable2DDepthGPU,
-		renderableArrayCount, renderableArrayGPU );
+	pLogger->LogInfoFormat(fmtRender, renderable2DColorCount, renderable2DColorGPU, renderable2DDepthCount, renderable2DDepthGPU,
+		renderableArrayCount, renderableArrayGPU);
 	
 	// vbo
 	const deoglMemoryConsumptionBufferObject &consumptionVBO = pMemoryManager.GetConsumption().vbo;
@@ -2006,13 +2006,13 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	unsigned int vboIBOGPU = consumptionVBO.GetIBOGPU() / 1000000;
 	unsigned int vboTBOGPU = consumptionVBO.GetTBOGPU() / 1000000;
 	
-	pLogger->LogInfoFormat( fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, vboIBOCount, vboIBOGPU, vboTBOCount, vboTBOGPU );
+	pLogger->LogInfoFormat(fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, vboIBOCount, vboIBOGPU, vboTBOCount, vboTBOGPU);
 	
 	// deferred rendering system
 	int defrenGPU = pDeferredRendering->GetMemoryUsageGPU() / 1000000;
 	int defrenGPUTexture = pDeferredRendering->GetMemoryUsageGPUTexture() / 1000000;
 	
-	pLogger->LogInfoFormat( fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf );
+	pLogger->LogInfoFormat(fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf);
 	
 	// grand total of all above
 	int totalGPU;
@@ -2023,7 +2023,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	totalGPU += consumptionVBO.GetGPU();
 	totalGPU /= 1000000;
 	
-	pLogger->LogInfoFormat( "Total %4iM", totalGPU );
+	pLogger->LogInfoFormat("Total %4iM", totalGPU);
 #endif
 	
 	// proc/self/statm info
@@ -2033,66 +2033,66 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	bufstatm[lenstam] = '\0';
 	close(filestam);
 	const decStringList statm(decString(bufstatm).Split(' '));
-	pLogger->LogInfoFormat( "TotalProgramSize=%d ResidentSetSize=%d SharedPages%d Text(code)=%d DataStack=%d Library=%d DirtyPages=%d",
+	pLogger->LogInfoFormat("TotalProgramSize=%d ResidentSetSize=%d SharedPages%d Text(code)=%d DataStack=%d Library=%d DirtyPages=%d",
 		statm.GetAt(0).ToInt(), statm.GetAt(1).ToInt(), statm.GetAt(2).ToInt(), statm.GetAt(3).ToInt(),
-		statm.GetAt(4).ToInt(), statm.GetAt(5).ToInt(), statm.GetAt(6).ToInt() );
+		statm.GetAt(4).ToInt(), statm.GetAt(5).ToInt(), statm.GetAt(6).ToInt());
 	
 	// malloc info
-	const struct mallinfo minfo( mallinfo() );
+	const struct mallinfo minfo(mallinfo());
 	//pLogger->LogInfoFormat( "HeapSize=%d HeapAllocSize=%d", minfo.usmblks, minfo.uordblks );
-	pLogger->LogInfoFormat( "TotalAllocSpace=%zu TotalFreeSpace=%zu", minfo.uordblks, minfo.fordblks );
+	pLogger->LogInfoFormat("TotalAllocSpace=%zu TotalFreeSpace=%zu", minfo.uordblks, minfo.fordblks);
 	
 	#if 0
 	char *minfoString = NULL;
 	size_t minfoSize = 0;
-	FILE *minfoFile = open_memstream( &minfoString, &minfoSize );
-	if( minfoFile ){
-		if( malloc_info( 0, minfoFile ) == 0 ){
-			decMemoryFile *memFile = new decMemoryFile( "malloc_info" );
-			memFile->Resize( minfoSize );
-			memcpy( memFile->GetPointer(), minfoString, minfoSize );
-			decMemoryFileReader *memFileReader = new decMemoryFileReader( memFile );
+	FILE *minfoFile = open_memstream(&minfoString, &minfoSize);
+	if(minfoFile){
+		if(malloc_info(0, minfoFile) == 0){
+			decMemoryFile *memFile = new decMemoryFile("malloc_info");
+			memFile->Resize(minfoSize);
+			memcpy(memFile->GetPointer(), minfoString, minfoSize);
+			decMemoryFileReader *memFileReader = new decMemoryFileReader(memFile);
 			decXmlDocument xmlDoc;
-			decXmlParser xmlParser( pLogger );
-			xmlParser.ParseXml( memFileReader, &xmlDoc );
+			decXmlParser xmlParser(pLogger);
+			xmlParser.ParseXml(memFileReader, &xmlDoc);
 			memFileReader->FreeReference();
 			memFile->FreeReference();
 			long systemCurrent = 0;
 			long systemMax = 0;
 			int i;
-			for( i=0; i<xmlDoc.GetRoot()->GetElementCount(); i++ ){
-				const decXmlElement * const element = xmlDoc.GetRoot()->GetElementAt( i );
-				if( ! element->CanCastToElementTag() ){
+			for(i=0; i<xmlDoc.GetRoot()->GetElementCount(); i++){
+				const decXmlElement * const element = xmlDoc.GetRoot()->GetElementAt(i);
+				if(!element->CanCastToElementTag()){
 					continue;
 				}
 				const decXmlElementTag * const tag = element->CastToElementTag():
-				if( strcmp( tag->GetName(), "system" ) == 0 ){
+				if(strcmp(tag->GetName(), "system") == 0){
 					const char *type = NULL;
 					long size = 0;
 					int j;
-					for( j=0; j<tag.GetElementCount(); j++ ){
-						const decXmlElement * const element2 = tag->GetElementAt( j );
-						if( ! element2->CanCastToAttValue() ){
+					for(j=0; j<tag.GetElementCount(); j++){
+						const decXmlElement * const element2 = tag->GetElementAt(j);
+						if(!element2->CanCastToAttValue()){
 							continue;
 						}
 						const decXmlAttValue * const attr = element2->CastToAttValue();
-						if( strcmp( attr->GetName(), "type" ) == 0 ){
+						if(strcmp(attr->GetName(), "type") == 0){
 							type = attr->GetValue();
-						}else if( strcmp( attr->GetName(), "size" ) == 0 ){
-							size = strtol( attr->GetValue(), NULL, 10 );
+						}else if(strcmp(attr->GetName(), "size") == 0){
+							size = strtol(attr->GetValue(), NULL, 10);
 						}
 					}
-					if( strcmp( type, "current" ) == 0 ){
+					if(strcmp(type, "current") == 0){
 						systemCurrent = size;
-					}else if( strcmp( type, "max" ) == 0 ){
+					}else if(strcmp(type, "max") == 0){
 						systemMax = size;
 					}
 				}
 			}
 		}
-		free( minfoString );
+		free(minfoString);
 	}
-	pLogger->LogInfoFormat( "SystemCurrent=%ld SystemMax=%ld", systemCurrent, systemMax );
+	pLogger->LogInfoFormat("SystemCurrent=%ld SystemMax=%ld", systemCurrent, systemMax);
 #endif
 	
 #if 0
@@ -2101,142 +2101,142 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	int imageMemUsage = 0;
 	int imageCountRetained = 0;
 	int imageCountReleased = 0;
-	while( scanImage ){
-		if( scanImage->GetData() ){
+	while(scanImage){
+		if(scanImage->GetData()){
 			imageMemUsage += scanImage->GetWidth() * scanImage->GetHeight() * scanImage->GetDepth()
 				* scanImage->GetComponentCount() * ( scanImage->GetBitCount() / 8 );
 			imageCountRetained++;
 		}else{
 			imageCountReleased++;
 		}
-		scanImage = ( deImage* )scanImage->GetLLManagerNext();
+		scanImage = (deImage*)scanImage->GetLLManagerNext();
 	}
-	pLogger->LogInfoFormat( "Images: Usage=%dM Retained=%d Released=%d",
-		imageMemUsage / 1000000, imageCountRetained, imageCountReleased );
+	pLogger->LogInfoFormat("Images: Usage=%dM Retained=%d Released=%d",
+		imageMemUsage / 1000000, imageCountRetained, imageCountReleased);
 	
 	deModel *scanModel = pOgl.GetGameEngine()->GetModelManager()->GetRootModel();
 	int modelMemUsage = 0;
 	int modelCount = 0;
-	while( scanModel ){
+	while(scanModel){
 		const int lodCount = scanModel->GetLODCount();
 		int l;
-		for( l=0; l<lodCount; l++ ){
-			const deModelLOD &lod = *scanModel->GetLODAt( l );
-			modelMemUsage += sizeof( deModelWeight ) * lod.GetWeightCount()
-				+ sizeof( int ) * lod.GetWeightGroupCount()
-				+ sizeof( deModelVertex ) * lod.GetVertexCount()
-				+ sizeof( deModelFace ) * lod.GetFaceCount()
-				+ sizeof( decVector2 ) * ( lod.GetTextureCoordinatesSetCount() * lod.GetTextureCoordinatesCount() );
+		for(l=0; l<lodCount; l++){
+			const deModelLOD &lod = *scanModel->GetLODAt(l);
+			modelMemUsage += sizeof(deModelWeight) * lod.GetWeightCount()
+				+ sizeof(int) * lod.GetWeightGroupCount()
+				+ sizeof(deModelVertex) * lod.GetVertexCount()
+				+ sizeof(deModelFace) * lod.GetFaceCount()
+				+ sizeof(decVector2) * (lod.GetTextureCoordinatesSetCount() * lod.GetTextureCoordinatesCount());
 		}
 		modelCount++;
-		scanModel = ( deModel* )scanModel->GetLLManagerNext();
+		scanModel = (deModel*)scanModel->GetLLManagerNext();
 	}
-	pLogger->LogInfoFormat( "Models: Usage=%dM Count=%d", modelMemUsage / 1000000, modelCount );
+	pLogger->LogInfoFormat("Models: Usage=%dM Count=%d", modelMemUsage / 1000000, modelCount);
 	
 	modelMemUsage = 0;
 	modelCount = 0;
 	scanModel = pOgl.GetGameEngine()->GetModelManager()->GetRootModel();
-	while( scanModel ){
-		const deoglRModel &rmodel = *( ( ( deoglModel* )scanModel->GetPeerGraphic() )->GetRModel() );
+	while(scanModel){
+		const deoglRModel &rmodel = *(((deoglModel*)scanModel->GetPeerGraphic())->GetRModel());
 		const int lodCount = rmodel.GetLODCount();
 		int l;
-		for( l=0; l<lodCount; l++ ){
-			const deoglModelLOD &lod = rmodel.GetLODAt( l );
-			modelMemUsage += sizeof( oglModelPosition ) * lod.GetPositionCount()
-				+ sizeof( decVector2 ) * lod.GetTextureCoordinatesCount()
-				+ sizeof( decVector ) * lod.GetNormalCount()
-				+ ( sizeof( decVector ) + sizeof( bool ) ) * lod.GetTangentCount()
-				+ sizeof( oglModelWeight * ) * lod.GetWeightsEntryCount()
-				+ sizeof( int ) * lod.GetWeightsCount()
-				+ sizeof( oglModelVertex ) * lod.GetVertexCount()
-				+ sizeof( deoglModelFace ) * lod.GetFaceCount()
-				+ ( sizeof( decVector2 ) + sizeof( decVector ) + sizeof( bool ) ) * lod.GetTextureCoordinatesCount();
+		for(l=0; l<lodCount; l++){
+			const deoglModelLOD &lod = rmodel.GetLODAt(l);
+			modelMemUsage += sizeof(oglModelPosition) * lod.GetPositionCount()
+				+ sizeof(decVector2) * lod.GetTextureCoordinatesCount()
+				+ sizeof(decVector) * lod.GetNormalCount()
+				+ (sizeof(decVector) + sizeof(bool)) * lod.GetTangentCount()
+				+ sizeof(oglModelWeight *) * lod.GetWeightsEntryCount()
+				+ sizeof(int) * lod.GetWeightsCount()
+				+ sizeof(oglModelVertex) * lod.GetVertexCount()
+				+ sizeof(deoglModelFace) * lod.GetFaceCount()
+				+ (sizeof(decVector2) + sizeof(decVector) + sizeof(bool)) * lod.GetTextureCoordinatesCount();
 		}
 		modelCount++;
-		scanModel = ( deModel* )scanModel->GetLLManagerNext();
+		scanModel = (deModel*)scanModel->GetLLManagerNext();
 	}
-	pLogger->LogInfoFormat( "OGL-Models: Usage=%dM Count=%d", modelMemUsage / 1000000, modelCount );
+	pLogger->LogInfoFormat("OGL-Models: Usage=%dM Count=%d", modelMemUsage / 1000000, modelCount);
 	/*
 	deVideo *scanVideo = pOgl.GetGameEngine()->GetVideoManager()->GetRootVideo();
 	int videoMemUsage = 0;
 	int videoCountRetained = 0;
 	int videoCountReleased = 0;
-	while( scanVideo ){
-		if( scanVideo->GetFrameData() ){
+	while(scanVideo){
+		if(scanVideo->GetFrameData()){
 			videoMemUsage += scanVideo->GetWidth() * scanVideo->GetHeight() * 3 * scanVideo->GetFrameCount();
 			videoCountRetained++;
 		}else{
 			videoCountReleased++;
 		}
-		scanVideo = ( deVideo* )scanVideo->GetLLManagerNext();
+		scanVideo = (deVideo*)scanVideo->GetLLManagerNext();
 	}
-	pLogger->LogInfoFormat( "Videos: Usage=%dM Retained=%d Released=%d",
-		videoMemUsage / 1000000, videoCountRetained, videoCountReleased );
+	pLogger->LogInfoFormat("Videos: Usage=%dM Retained=%d Released=%d",
+		videoMemUsage / 1000000, videoCountRetained, videoCountReleased);
 	*/
 	
 	deComponent *scanComponent = pOgl.GetGameEngine()->GetComponentManager()->GetRootComponent();
 	int componentMemUsage = 0;
 	int componentCount = 0;
-	while( scanComponent ){
-		if( scanComponent->GetModel() ){
-			componentMemUsage += sizeof( decVector ) * scanComponent->GetModel()->GetLODAt( 0 )->GetVertexCount();
+	while(scanComponent){
+		if(scanComponent->GetModel()){
+			componentMemUsage += sizeof(decVector) * scanComponent->GetModel()->GetLODAt(0)->GetVertexCount();
 		}
 		componentCount++;
-		scanComponent = ( deComponent* )scanComponent->GetLLManagerNext();
+		scanComponent = (deComponent*)scanComponent->GetLLManagerNext();
 	}
-	pLogger->LogInfoFormat( "Components: Usage=%dM Bare=%dB Count=%d",
-		componentMemUsage / 1000000, sizeof( deComponent ) * componentCount, componentCount );
+	pLogger->LogInfoFormat("Components: Usage=%dM Bare=%dB Count=%d",
+		componentMemUsage / 1000000, sizeof(deComponent) * componentCount, componentCount);
 	
 	scanComponent = pOgl.GetGameEngine()->GetComponentManager()->GetRootComponent();
 	componentMemUsage = 0;
 	int componentBareUsage = 0;
 	componentCount = 0;
-	while( scanComponent ){
-		const deoglRComponent &oglComponent = *( ( ( deoglComponent* )scanComponent->GetPeerGraphic() )->GetRComponent() );
-		componentBareUsage += sizeof( deoglRComponent );
-		componentMemUsage += sizeof( oglMatrix3x4 ) * oglComponent.GetBoneMatrixCount();
+	while(scanComponent){
+		const deoglRComponent &oglComponent = *(((deoglComponent*)scanComponent->GetPeerGraphic())->GetRComponent());
+		componentBareUsage += sizeof(deoglRComponent);
+		componentMemUsage += sizeof(oglMatrix3x4) * oglComponent.GetBoneMatrixCount();
 		
 		const int lodCount = oglComponent.GetLODCount();
 		int l;
-		for( l=0; l<lodCount; l++ ){
-			const deoglRComponentLOD &lod = oglComponent.GetLODAt( l );
+		for(l=0; l<lodCount; l++){
+			const deoglRComponentLOD &lod = oglComponent.GetLODAt(l);
 			deoglRModel * const model = oglComponent.GetModel();
 			
-			componentBareUsage += sizeof( deoglRComponentLOD );
-			componentMemUsage += sizeof( deoglVBOpnt ) * lod.GetPointCount();
-			if( model ){
-				const deoglModelLOD &mlod = model->GetLODAt( lod.GetLODIndex() );
-				if( lod.GetWeights() ){
-					componentMemUsage += sizeof( oglMatrix3x4 ) + mlod.GetWeightsCount();
+			componentBareUsage += sizeof(deoglRComponentLOD);
+			componentMemUsage += sizeof(deoglVBOpnt) * lod.GetPointCount();
+			if(model){
+				const deoglModelLOD &mlod = model->GetLODAt(lod.GetLODIndex());
+				if(lod.GetWeights()){
+					componentMemUsage += sizeof(oglMatrix3x4) + mlod.GetWeightsCount();
 				}
-				if( lod.GetPositions() ){
-					componentMemUsage += sizeof( oglVector ) * mlod.GetPositionCount();
+				if(lod.GetPositions()){
+					componentMemUsage += sizeof(oglVector) * mlod.GetPositionCount();
 				}
-				if( lod.GetNormals() ){
-					componentMemUsage += sizeof( oglVector ) * mlod.GetNormalCount();
+				if(lod.GetNormals()){
+					componentMemUsage += sizeof(oglVector) * mlod.GetNormalCount();
 				}
-				if( lod.GetTangents() ){
-					componentMemUsage += sizeof( oglVector ) * mlod.GetTangentCount();
+				if(lod.GetTangents()){
+					componentMemUsage += sizeof(oglVector) * mlod.GetTangentCount();
 				}
-				if( lod.GetFaceNormals() ){
-					componentMemUsage += sizeof( oglVector ) * mlod.GetFaceCount();
+				if(lod.GetFaceNormals()){
+					componentMemUsage += sizeof(oglVector) * mlod.GetFaceCount();
 				}
 			}
 		}
 		componentCount++;
-		scanComponent = ( deComponent* )scanComponent->GetLLManagerNext();
+		scanComponent = (deComponent*)scanComponent->GetLLManagerNext();
 	}
-	pLogger->LogInfoFormat( "OGL-Components: Usage=%dM Bare=%dB Count=%d",
-		componentMemUsage / 1000000, componentBareUsage, componentCount );
+	pLogger->LogInfoFormat("OGL-Components: Usage=%dM Bare=%dB Count=%d",
+		componentMemUsage / 1000000, componentBareUsage, componentCount);
 #endif
 }
 
-void deoglRenderThread::DebugMemoryUsageSmall( const char *prefix ){
-	if( ! DoesDebugMemoryUsage() ) return;
+void deoglRenderThread::DebugMemoryUsageSmall(const char *prefix){
+	if(!DoesDebugMemoryUsage()) return;
 	
-	const struct mallinfo minfo( mallinfo() );
-	pLogger->LogInfoFormat( "DebugMemoryUsageSmall: %s) TotalAllocSpace=%zu TotalFreeSpace=%zu",
-		prefix, minfo.uordblks, minfo.fordblks );
+	const struct mallinfo minfo(mallinfo());
+	pLogger->LogInfoFormat("DebugMemoryUsageSmall: %s) TotalAllocSpace=%zu TotalFreeSpace=%zu",
+		prefix, minfo.uordblks, minfo.fordblks);
 }
 #endif
 
@@ -2244,13 +2244,13 @@ void deoglRenderThread::pSwapBuffers(){
 	const int count = pRRenderWindowList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRRenderWindow* )pRRenderWindowList.GetAt( i ) )->SwapBuffers();
+	for(i=0; i<count; i++){
+		((deoglRRenderWindow*)pRRenderWindowList.GetAt(i))->SwapBuffers();
 	}
 }
 
 void deoglRenderThread::pBeginFrame(){
-	const deoglDebugTraceGroup debugTrace( *this, "BeginFrame" );
+	const deoglDebugTraceGroup debugTrace(*this, "BeginFrame");
 	#ifdef WITH_OPENGLES
 	pContext->CheckConfigurationChanged();
 	#endif
@@ -2263,17 +2263,17 @@ void deoglRenderThread::pBeginFrame(){
 	
 	pDelayedOperations->ProcessInitOperations();
 	
-	pOptimizerManager->Run( 2000 ); // 4000 // DEPRECATED do this using parallel tasks if required
+	pOptimizerManager->Run(2000); // 4000 // DEPRECATED do this using parallel tasks if required
 	
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
 	pShader->GetShaderManager().Update();
 	
-	#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
 	
-	pOgl.GetShaderCompilingInfo()->PrepareForRender( pLastFrameTime );
+	pOgl.GetShaderCompilingInfo()->PrepareForRender(pLastFrameTime);
 	
 	pFrameCounter++; // wraps around when hitting maximum
 	pVRWaitBeginFrameFinished();
@@ -2285,21 +2285,21 @@ void deoglRenderThread::pSyncConfiguration(){
 	// the main thread configuration is dirty so the user changed some parameters. copy
 	// the configuration over to the render thread configuration and set both
 	// configurations non-dirty
-	if( config.GetDirty() ){
+	if(config.GetDirty()){
 		pConfiguration = config;
 		pConfigChanged = true;
 		
-		pConfiguration.SetDirty( false );
-		config.SetDirty( false );
+		pConfiguration.SetDirty(false);
+		config.SetDirty(false);
 		
 		pUpdateConfigFrameLimiter();
 		
 	// the main thread configuration did not change but the render thread configuration
 	// change then a single-frame debug parameter has been reset. in this case update the
 	// main thread configuration and mark it non-dirty
-	}else if( pConfiguration.GetDirty() ){
-		config.SetDirty( false );
-		pConfiguration.SetDirty( false );
+	}else if(pConfiguration.GetDirty()){
+		config.SetDirty(false);
+		pConfiguration.SetDirty(false);
 	}
 }
 
@@ -2307,14 +2307,14 @@ void deoglRenderThread::pRenderWindows(){
 	const int count = pRRenderWindowList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRRenderWindow* )pRRenderWindowList.GetAt( i ) )->Render();
+	for(i=0; i<count; i++){
+		((deoglRRenderWindow*)pRRenderWindowList.GetAt(i))->Render();
 	}
 }
 
 void deoglRenderThread::pVRStartBeginFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( ! vr ){
+	if(!vr){
 		return;
 	}
 	
@@ -2323,11 +2323,11 @@ void deoglRenderThread::pVRStartBeginFrame(){
 
 void deoglRenderThread::pVRWaitBeginFrameFinished(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( vr ){
+	if(vr){
 		vr->WaitBeginFrameFinished();
 	}
 	
-	if( pSignalSemaphoreSyncVR ){
+	if(pSignalSemaphoreSyncVR){
 		pSignalSemaphoreSyncVR = false;
 		pSemaphoreSyncVR.Signal();
 	}
@@ -2335,21 +2335,21 @@ void deoglRenderThread::pVRWaitBeginFrameFinished(){
 
 void deoglRenderThread::pVRRender(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( vr ){
+	if(vr){
 		vr->Render();
 	}
 }
 
 void deoglRenderThread::pVRSubmit(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( vr ){
+	if(vr){
 		vr->Submit();
 	}
 }
 
 void deoglRenderThread::pVREndFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( vr ){
+	if(vr){
 		vr->EndFrame();
 		pVRStartBeginFrame();
 	}
@@ -2359,21 +2359,21 @@ void deoglRenderThread::pCaptureCanvas(){
 	const int count = pRCaptureCanvasList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRCaptureCanvas* )pRCaptureCanvasList.GetAt( i ) )->CapturePending();
+	for(i=0; i<count; i++){
+		((deoglRCaptureCanvas*)pRCaptureCanvasList.GetAt(i))->CapturePending();
 	}
 }
 
 void deoglRenderThread::pEndFrame(){
 	pVREndFrame();
-	if( pDebug->GetDeveloperMode().GetEnabled() ){
-		if( pDebug->GetDeveloperMode().GetLogMemoryConsumption() ){
+	if(pDebug->GetDeveloperMode().GetEnabled()){
+		if(pDebug->GetDeveloperMode().GetLogMemoryConsumption()){
 			pDebug->GetDebugMemoryConsumption().Update();
 		}
 	}
 }
 
-void deoglRenderThread::pLimitFrameRate( float elapsed ){
+void deoglRenderThread::pLimitFrameRate(float elapsed){
 	float limit = pFrameTimeLimit;
 	
 	// if VR is used frame limiter has to be overriden. VR does frame limiting itself
@@ -2386,7 +2386,7 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 	// to avoid oscillating a hystersis value is used before switching to a higher
 	// target FPS rate. by default the hysteresis is 20%. this ensures the rendering
 	// can really keep up with a higher frame rate before switching up
-	if( pVRCamera && pVRCamera->GetVR() ){
+	if(pVRCamera && pVRCamera->GetVR()){
 		// the way SteamVR handles frame time guessing calculation nowadays conflicts
 		// largely with this code below. we now simply try to churn out the frames at
 		// the time it takes to render them hoping for the runtime to make good guesses
@@ -2395,13 +2395,13 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 		elapsed = pTimerVRFrameUpdate.GetElapsedTime();
 		
 		deoglVR &vr = *pVRCamera->GetVR();
-		vr.UpdateTargetFPS( elapsed );
+		vr.UpdateTargetFPS(elapsed);
 		
-		if( vr.GetTargetFPS() == 90 ){
+		if(vr.GetTargetFPS() == 90){
 			return;
 		}
 		
-		limit = 1.0f / ( float )vr.GetTargetFPS();
+		limit = 1.0f / (float)vr.GetTargetFPS();
 		
 		// VR runtimes use a head-start time of roughly 3ms. if we end up inside the
 		// head-start time the VR runtime can guess wrong the required time causing
@@ -2416,7 +2416,7 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 	timer.Reset();
 	#endif
 	
-	while( elapsed < limit ){
+	while(elapsed < limit){
 		// we have some spare time due to the frame limiter. we could do here some
 		// optimization work to use the time for intelligent stuff. we can touch
 		// the GPU during this time if necessary but if possible it should be
@@ -2430,8 +2430,8 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 		#else
 		timespec timeout, remaining;
 		timeout.tv_sec = 0;
-		timeout.tv_nsec = ( long )( ( limit - elapsed ) * 1e9f );
-		while( nanosleep( &timeout, &remaining ) == -1 && errno == EINTR ){
+		timeout.tv_nsec = (long)((limit - elapsed) * 1e9f);
+		while(nanosleep(&timeout, &remaining) == -1 && errno == EINTR){
 			timeout = remaining;
 		}
 		break;
@@ -2446,12 +2446,12 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 void deoglRenderThread::pUpdateConfigFrameLimiter(){
 	int refreshRate = pConfiguration.GetFrameRateLimit();
 	
-	if( refreshRate == 0 ){
-		refreshRate = pOgl.GetGameEngine()->GetOS()->GetDisplayCurrentRefreshRate( 0 );
-		pLogger->LogInfoFormat( "Using Current Display Refresh Rate: %d", refreshRate );
+	if(refreshRate == 0){
+		refreshRate = pOgl.GetGameEngine()->GetOS()->GetDisplayCurrentRefreshRate(0);
+		pLogger->LogInfoFormat("Using Current Display Refresh Rate: %d", refreshRate);
 	}
 	
-	pFrameTimeLimit = 1.0f / ( ( float )refreshRate + 0.5f );
+	pFrameTimeLimit = 1.0f / ((float)refreshRate + 0.5f);
 }
 
 //#define TIME_CLEANUP 1
@@ -2488,132 +2488,132 @@ void deoglRenderThread::pCleanUpThread(){
 // 			cleanUpWindow->DropRCanvasView();
 // 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: render windows (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: render windows (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
 		// remove canvas if present
-		if( pCanvasOverlay ){
+		if(pCanvasOverlay){
 			pCanvasOverlay->FreeReference();
 			pCanvasOverlay = nullptr;
 		}
-		if( pCanvasDebugOverlay ){
+		if(pCanvasDebugOverlay){
 			pCanvasDebugOverlay->FreeReference();
 			pCanvasDebugOverlay = nullptr;
 		}
-		if( pCanvasInputOverlay ){
+		if(pCanvasInputOverlay){
 			pCanvasInputOverlay->FreeReference();
 			pCanvasInputOverlay = nullptr;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: canvas overlay (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: canvas overlay (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
 		// synchronize to break reference loops in leak checked objects
 		pLogger->Synchronize();
-		if( pDelayedOperations ){
+		if(pDelayedOperations){
 			pDelayedOperations->ProcessSynchronizeOperations();
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: delayed operations synchronize (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: delayed operations synchronize (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
 		// process free operations to remove remaining objects included in the leak report.
 		// force deleting all objects to get a clean slate for the leak report.
-		if( pDelayedOperations ){
-			pDelayedOperations->ProcessFreeOperations( true );
+		if(pDelayedOperations){
+			pDelayedOperations->ProcessFreeOperations(true);
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: delayed operations free (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: delayed operations free (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
 		// report leaks
 		pReportLeaks(); // only if enabled
 		
 		// clean up objects
-		if( pRenderers ){
+		if(pRenderers){
 			delete pRenderers;
 			pRenderers = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy renderers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy renderers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pLightBoundarybox ){
+		if(pLightBoundarybox){
 			delete pLightBoundarybox;
 			pLightBoundarybox = NULL;
 		}
-		if( pOcclusionTestPool ){
+		if(pOcclusionTestPool){
 			delete pOcclusionTestPool;
 			pOcclusionTestPool = NULL;
 		}
-		if( pPersistentRenderTaskPool ){
+		if(pPersistentRenderTaskPool){
 			delete pPersistentRenderTaskPool;
 			pPersistentRenderTaskPool = NULL;
 		}
-		if( pTriangleSorter ){
+		if(pTriangleSorter){
 			delete pTriangleSorter;
 			pTriangleSorter = NULL;
 		}
 		
-		if( pOccQueryMgr ){
+		if(pOccQueryMgr){
 			delete pOccQueryMgr;
 			pOccQueryMgr = NULL;
 		}
-		if( pGI ){
+		if(pGI){
 			delete pGI;
 			pGI = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy occlusion managers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy occlusion managers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pDelayedOperations ){
+		if(pDelayedOperations){
 			pDelayedOperations->Clear(); // first stage clear
 		}
 		
-		if( pDeferredRendering ){
+		if(pDeferredRendering){
 			delete pDeferredRendering;
 			pDeferredRendering = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy deferred rendering (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy deferred rendering (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
-		if( pShadowMapper ){
+		if(pShadowMapper){
 			delete pShadowMapper;
 			pShadowMapper = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
-		if( pEnvMapSlotManager ){
+		if(pEnvMapSlotManager){
 			delete pEnvMapSlotManager;
 			pEnvMapSlotManager = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy env-map slot manager (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy env-map slot manager (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
-		if( pBufferObject ){
+		if(pBufferObject){
 			delete pBufferObject;
 			pBufferObject = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy buffer objects (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy buffer objects (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pFramebuffer ){
+		if(pFramebuffer){
 			delete pFramebuffer;
 			pFramebuffer = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy framebuffers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy framebuffers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		pPipelineManager = nullptr;
-		if( pTexture ){
+		if(pTexture){
 			delete pTexture;
 			pTexture = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
 #ifdef BACKEND_OPENGL
@@ -2648,105 +2648,105 @@ void deoglRenderThread::pCleanUpThread(){
 		pDebugInfoFLFrameRateRender = nullptr;
 		
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy debug-info (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy debug-info (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pDebug ){
+		if(pDebug){
 			delete pDebug;
 			pDebug = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy debug (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy debug (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pCapabilities ){
+		if(pCapabilities){
 			delete pCapabilities;
 			pCapabilities = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy capabilities (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy capabilities (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pExtensions ){
+		if(pExtensions){
 			delete pExtensions;
 			pExtensions = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy extensions (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy extensions (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pDefaultTextures ){
+		if(pDefaultTextures){
 			delete pDefaultTextures;
 			pDefaultTextures = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy default textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy default textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pShader ){
+		if(pShader){
 			delete pShader;
 			pShader = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy shaders (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy shaders (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
-		if( pChoices ){
+		if(pChoices){
 			delete pChoices;
 			pChoices = NULL;
 		}
 		
 		// deprecated
-		if( pOptimizerManager ){
+		if(pOptimizerManager){
 			delete pOptimizerManager;
 			pOptimizerManager = NULL;
 		}
-		if( pQuickSorter ){
+		if(pQuickSorter){
 			delete pQuickSorter;
 			pQuickSorter = NULL;
 		}
 		// deprecated
 		
 		// has to come last
-		if( pRenderTaskSharedPool ){
+		if(pRenderTaskSharedPool){
 			delete pRenderTaskSharedPool;
 			pRenderTaskSharedPool = NULL;
 		}
-		if( pUniqueKey ){
+		if(pUniqueKey){
 			delete pUniqueKey;
 			pUniqueKey = NULL;
 		}
 		
-		if( pDelayedOperations ){
+		if(pDelayedOperations){
 			delete pDelayedOperations;
 			pDelayedOperations = NULL;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
 		// free context
 // 		cleanUpWindow->FreeReference();
 // 		cleanUpWindow = NULL;
 		
-		if( pContext ){
+		if(pContext){
 			pContext->CleanUp();
 			
 			delete pContext;
 			pContext = nullptr;
 		}
-		if( pLoaderThread ){
+		if(pLoaderThread){
 			delete pLoaderThread;
 			pLoaderThread = nullptr;
 		}
 		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy context (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		pLogger->LogInfoFormat("RT-CleanUp: destroy context (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
 		#endif
 		
 		// synchronize again to process log messages build up during cleaning up
 		pLogger->Synchronize();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 // 		if( cleanUpWindow ){
 // 			cleanUpWindow->FreeReference();
 // 		}
@@ -2758,56 +2758,56 @@ void deoglRenderThread::pCleanUpThread(){
 
 void deoglRenderThread::pReportLeaks(){
 	// if disabled this all boils down to empty lines
-	IF_LEAK_CHECK( pLogger->LogInfo( "*** Leak check reports ***" ) );
-	IF_LEAK_CHECK( pLogger->LogInfo( "(NOTE the main render window will be reported as leak although it does not)" ) );
+	IF_LEAK_CHECK(pLogger->LogInfo("*** Leak check reports ***"));
+	IF_LEAK_CHECK(pLogger->LogInfo("(NOTE the main render window will be reported as leak although it does not)"));
 	
-	LEAK_CHECK_REPORT_LEAKS( *this, Billboard );
-	LEAK_CHECK_REPORT_LEAKS( *this, Camera );
-	LEAK_CHECK_REPORT_LEAKS( *this, CanvasCanvasView );
-	LEAK_CHECK_REPORT_LEAKS( *this, CanvasImage );
-	LEAK_CHECK_REPORT_LEAKS( *this, CanvasPaint );
-	LEAK_CHECK_REPORT_LEAKS( *this, CanvasRenderWorld );
-	LEAK_CHECK_REPORT_LEAKS( *this, CanvasText );
-	LEAK_CHECK_REPORT_LEAKS( *this, CanvasVideoPlayer );
-	LEAK_CHECK_REPORT_LEAKS( *this, CanvasView );
-	LEAK_CHECK_REPORT_LEAKS( *this, CaptureCanvas );
-	LEAK_CHECK_REPORT_LEAKS( *this, Component );
-	LEAK_CHECK_REPORT_LEAKS( *this, ComponentLOD );
-	LEAK_CHECK_REPORT_LEAKS( *this, ComponentTexture );
-	LEAK_CHECK_REPORT_LEAKS( *this, Decal );
-	LEAK_CHECK_REPORT_LEAKS( *this, DebugDrawer );
-	LEAK_CHECK_REPORT_LEAKS( *this, DSRenderableCamera );
-	LEAK_CHECK_REPORT_LEAKS( *this, DSRenderableCanvas );
-	LEAK_CHECK_REPORT_LEAKS( *this, DSRenderableColor );
-	LEAK_CHECK_REPORT_LEAKS( *this, DSRenderableImage );
-	LEAK_CHECK_REPORT_LEAKS( *this, DSRenderableValue );
-	LEAK_CHECK_REPORT_LEAKS( *this, DSRenderableVideoFrame );
-	LEAK_CHECK_REPORT_LEAKS( *this, DynamicSkin );
-	LEAK_CHECK_REPORT_LEAKS( *this, EffectColorMatrix );
-	LEAK_CHECK_REPORT_LEAKS( *this, EffectDistortImage );
-	LEAK_CHECK_REPORT_LEAKS( *this, EffectFilterKernel );
-	LEAK_CHECK_REPORT_LEAKS( *this, EffectOverlayImage );
-	LEAK_CHECK_REPORT_LEAKS( *this, EnvironmentMapProbe );
-	LEAK_CHECK_REPORT_LEAKS( *this, Font );
-	LEAK_CHECK_REPORT_LEAKS( *this, HeightTerrain );
-	LEAK_CHECK_REPORT_LEAKS( *this, HTSector );
-	LEAK_CHECK_REPORT_LEAKS( *this, Image );
-	LEAK_CHECK_REPORT_LEAKS( *this, Light );
-	LEAK_CHECK_REPORT_LEAKS( *this, Lumimeter );
-	LEAK_CHECK_REPORT_LEAKS( *this, Model );
-	LEAK_CHECK_REPORT_LEAKS( *this, OcclusionMesh );
-	LEAK_CHECK_REPORT_LEAKS( *this, ParticleEmitter );
-	LEAK_CHECK_REPORT_LEAKS( *this, ParticleEmitterType );
-	LEAK_CHECK_REPORT_LEAKS( *this, ParticleEmitterInstance );
-	LEAK_CHECK_REPORT_LEAKS( *this, ParticleEmitterInstanceType );
-	LEAK_CHECK_REPORT_LEAKS( *this, PropField );
-	LEAK_CHECK_REPORT_LEAKS( *this, PropFieldType );
-	LEAK_CHECK_REPORT_LEAKS( *this, RenderWindow );
-	LEAK_CHECK_REPORT_LEAKS( *this, Skin );
-	LEAK_CHECK_REPORT_LEAKS( *this, Sky );
-	LEAK_CHECK_REPORT_LEAKS( *this, SkyLayer );
-	LEAK_CHECK_REPORT_LEAKS( *this, SkyInstance );
-	LEAK_CHECK_REPORT_LEAKS( *this, World );
+	LEAK_CHECK_REPORT_LEAKS(*this, Billboard);
+	LEAK_CHECK_REPORT_LEAKS(*this, Camera);
+	LEAK_CHECK_REPORT_LEAKS(*this, CanvasCanvasView);
+	LEAK_CHECK_REPORT_LEAKS(*this, CanvasImage);
+	LEAK_CHECK_REPORT_LEAKS(*this, CanvasPaint);
+	LEAK_CHECK_REPORT_LEAKS(*this, CanvasRenderWorld);
+	LEAK_CHECK_REPORT_LEAKS(*this, CanvasText);
+	LEAK_CHECK_REPORT_LEAKS(*this, CanvasVideoPlayer);
+	LEAK_CHECK_REPORT_LEAKS(*this, CanvasView);
+	LEAK_CHECK_REPORT_LEAKS(*this, CaptureCanvas);
+	LEAK_CHECK_REPORT_LEAKS(*this, Component);
+	LEAK_CHECK_REPORT_LEAKS(*this, ComponentLOD);
+	LEAK_CHECK_REPORT_LEAKS(*this, ComponentTexture);
+	LEAK_CHECK_REPORT_LEAKS(*this, Decal);
+	LEAK_CHECK_REPORT_LEAKS(*this, DebugDrawer);
+	LEAK_CHECK_REPORT_LEAKS(*this, DSRenderableCamera);
+	LEAK_CHECK_REPORT_LEAKS(*this, DSRenderableCanvas);
+	LEAK_CHECK_REPORT_LEAKS(*this, DSRenderableColor);
+	LEAK_CHECK_REPORT_LEAKS(*this, DSRenderableImage);
+	LEAK_CHECK_REPORT_LEAKS(*this, DSRenderableValue);
+	LEAK_CHECK_REPORT_LEAKS(*this, DSRenderableVideoFrame);
+	LEAK_CHECK_REPORT_LEAKS(*this, DynamicSkin);
+	LEAK_CHECK_REPORT_LEAKS(*this, EffectColorMatrix);
+	LEAK_CHECK_REPORT_LEAKS(*this, EffectDistortImage);
+	LEAK_CHECK_REPORT_LEAKS(*this, EffectFilterKernel);
+	LEAK_CHECK_REPORT_LEAKS(*this, EffectOverlayImage);
+	LEAK_CHECK_REPORT_LEAKS(*this, EnvironmentMapProbe);
+	LEAK_CHECK_REPORT_LEAKS(*this, Font);
+	LEAK_CHECK_REPORT_LEAKS(*this, HeightTerrain);
+	LEAK_CHECK_REPORT_LEAKS(*this, HTSector);
+	LEAK_CHECK_REPORT_LEAKS(*this, Image);
+	LEAK_CHECK_REPORT_LEAKS(*this, Light);
+	LEAK_CHECK_REPORT_LEAKS(*this, Lumimeter);
+	LEAK_CHECK_REPORT_LEAKS(*this, Model);
+	LEAK_CHECK_REPORT_LEAKS(*this, OcclusionMesh);
+	LEAK_CHECK_REPORT_LEAKS(*this, ParticleEmitter);
+	LEAK_CHECK_REPORT_LEAKS(*this, ParticleEmitterType);
+	LEAK_CHECK_REPORT_LEAKS(*this, ParticleEmitterInstance);
+	LEAK_CHECK_REPORT_LEAKS(*this, ParticleEmitterInstanceType);
+	LEAK_CHECK_REPORT_LEAKS(*this, PropField);
+	LEAK_CHECK_REPORT_LEAKS(*this, PropFieldType);
+	LEAK_CHECK_REPORT_LEAKS(*this, RenderWindow);
+	LEAK_CHECK_REPORT_LEAKS(*this, Skin);
+	LEAK_CHECK_REPORT_LEAKS(*this, Sky);
+	LEAK_CHECK_REPORT_LEAKS(*this, SkyLayer);
+	LEAK_CHECK_REPORT_LEAKS(*this, SkyInstance);
+	LEAK_CHECK_REPORT_LEAKS(*this, World);
 	
-	IF_LEAK_CHECK( pLogger->LogInfo( "*** End of leak check reports ***" ) );
+	IF_LEAK_CHECK(pLogger->LogInfo("*** End of leak check reports ***"));
 }

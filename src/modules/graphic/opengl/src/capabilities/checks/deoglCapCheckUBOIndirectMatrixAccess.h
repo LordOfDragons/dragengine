@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create capability check. */
-	deoglCapCheckUBOIndirectMatrixAccess( deoglCapabilities &capabilities );
+	deoglCapCheckUBOIndirectMatrixAccess(deoglCapabilities &capabilities);
 	/*@}*/
 	
 	
@@ -56,10 +56,10 @@ public:
 	inline bool Working() const{ return pWorking; }
 	
 	/** UBO indirect access is not working correctly. */
-	inline bool Broken() const{ return ! pWorking; }
+	inline bool Broken() const{ return !pWorking; }
 	
 	/** Run check. */
-	void Check( GLuint fbo );
+	void Check(GLuint fbo);
 	/*@}*/
 };
 

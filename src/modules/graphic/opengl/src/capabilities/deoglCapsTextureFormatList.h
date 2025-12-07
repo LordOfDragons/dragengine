@@ -60,14 +60,14 @@ public:
 	inline int GetFormatCount() const{ return pFormatCount; }
 	
 	/** Format at index. */
-	const deoglCapsTextureFormat *GetFormatAt( int index ) const;
+	const deoglCapsTextureFormat *GetFormatAt(int index) const;
 	
 	/** Format with opengl format or \em NULL if absent. */
-	const deoglCapsTextureFormat *GetFormatWith( GLint format ) const;
+	const deoglCapsTextureFormat *GetFormatWith(GLint format) const;
 	
 	/** Add format. */
-	void AddFormat( GLint format, GLenum pixelFormat, GLenum pixelType, int bitsPerPixel,
-		bool isDepth, bool isDepthFloat, bool isStencil, bool isCompressed, const char *name );
+	void AddFormat(GLint format, GLenum pixelFormat, GLenum pixelType, int bitsPerPixel,
+		bool isDepth, bool isDepthFloat, bool isStencil, bool isCompressed, const char *name);
 	/*@}*/
 };
 

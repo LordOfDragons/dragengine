@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUEmitterSetBurstLifetime( peeEmitter *emitter, float newLifetime );
+	peeUEmitterSetBurstLifetime(peeEmitter *emitter, float newLifetime);
 	
 protected:
 	/** \brief Clean up the undo action. */

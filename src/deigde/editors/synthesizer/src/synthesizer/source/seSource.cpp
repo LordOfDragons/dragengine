@@ -57,59 +57,59 @@
 // Constructor, destructor
 ////////////////////////////
 
-seSource::seSource( deSynthesizerSourceVisitorIdentify::eSourceTypes type ) :
-pSynthesizer( NULL ),
-pParentGroup( NULL ),
-pEngSource( NULL ),
-pName( "Source" ),
-pType( type ),
-pMixMode( deSynthesizerSource::emmAdd ),
-pBlendFactor( 1.0f ),
-pEnabled( true ),
-pMinVolume( 1.0f ),
-pMaxVolume( 1.0f ),
-pMinPanning( 0.0f ),
-pMaxPanning( 0.0f ),
-pActiveEffect( NULL )
+seSource::seSource(deSynthesizerSourceVisitorIdentify::eSourceTypes type) :
+pSynthesizer(NULL),
+pParentGroup(NULL),
+pEngSource(NULL),
+pName("Source"),
+pType(type),
+pMixMode(deSynthesizerSource::emmAdd),
+pBlendFactor(1.0f),
+pEnabled(true),
+pMinVolume(1.0f),
+pMaxVolume(1.0f),
+pMinPanning(0.0f),
+pMaxPanning(0.0f),
+pActiveEffect(NULL)
 {
-	if( type < deSynthesizerSourceVisitorIdentify::estSound || type > deSynthesizerSourceVisitorIdentify::estGroup ){
-		DETHROW( deeInvalidParam );
+	if(type < deSynthesizerSourceVisitorIdentify::estSound || type > deSynthesizerSourceVisitorIdentify::estGroup){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-seSource::seSource( const seSource &copy ) :
-pSynthesizer( NULL ),
-pParentGroup( NULL ),
-pEngSource( NULL ),
-pName( copy.pName ),
-pType( copy.pType ),
-pMixMode( copy.pMixMode ),
-pBlendFactor( copy.pBlendFactor ),
-pEnabled( copy.pEnabled ),
-pMinVolume( 1.0f ),
-pMaxVolume( 1.0f ),
-pMinPanning( 0.0f ),
-pMaxPanning( 0.0f ),
-pTargetBlendFactor( copy.pTargetBlendFactor ),
-pTargetVolume( copy.pTargetVolume ),
-pTargetPanning( copy.pTargetPanning ),
-pActiveEffect( NULL )
+seSource::seSource(const seSource &copy) :
+pSynthesizer(NULL),
+pParentGroup(NULL),
+pEngSource(NULL),
+pName(copy.pName),
+pType(copy.pType),
+pMixMode(copy.pMixMode),
+pBlendFactor(copy.pBlendFactor),
+pEnabled(copy.pEnabled),
+pMinVolume(1.0f),
+pMaxVolume(1.0f),
+pMinPanning(0.0f),
+pMaxPanning(0.0f),
+pTargetBlendFactor(copy.pTargetBlendFactor),
+pTargetVolume(copy.pTargetVolume),
+pTargetPanning(copy.pTargetPanning),
+pActiveEffect(NULL)
 {
 	const int effectCount = copy.pEffects.GetCount();
 	seEffect *effect = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<effectCount; i++ ){
-			effect = copy.pEffects.GetAt( i )->CreateCopy();
-			pEffects.Add( effect );
-			effect->SetParentSource( this );
+		for(i=0; i<effectCount; i++){
+			effect = copy.pEffects.GetAt(i)->CreateCopy();
+			pEffects.Add(effect);
+			effect->SetParentSource(this);
 			effect->FreeReference();
 			effect = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( effect ){
+	}catch(const deException &){
+		if(effect){
 			effect->FreeReference();
 		}
 		throw;
@@ -117,7 +117,7 @@ pActiveEffect( NULL )
 }
 
 seSource::~seSource(){
-	SetSynthesizer( NULL );
+	SetSynthesizer(NULL);
 }
 
 
@@ -126,7 +126,7 @@ seSource::~seSource(){
 ///////////////
 
 seSynthesizer *seSource::GetSynthesizer() const{
-	if( pParentGroup ){
+	if(pParentGroup){
 		return pParentGroup->GetSynthesizer();
 		
 	}else{
@@ -134,8 +134,8 @@ seSynthesizer *seSource::GetSynthesizer() const{
 	}
 }
 
-void seSource::SetSynthesizer( seSynthesizer *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void seSource::SetSynthesizer(seSynthesizer *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
@@ -146,51 +146,51 @@ void seSource::SetSynthesizer( seSynthesizer *synthesizer ){
 
 
 
-void seSource::SetEngineSource( deSynthesizerSource *engSource ){
+void seSource::SetEngineSource(deSynthesizerSource *engSource){
 	pEngSource = engSource;
 }
 
-void seSource::InitEngineSource( deSynthesizerSource *engSource ) const{
-	if( ! engSource ){
-		DETHROW( deeInvalidParam );
+void seSource::InitEngineSource(deSynthesizerSource *engSource) const{
+	if(!engSource){
+		DETHROW(deeInvalidParam);
 	}
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	
-	engSource->SetEnabled( pEnabled );
-	engSource->SetMixMode( pMixMode );
-	engSource->SetBlendFactor( pBlendFactor );
-	engSource->SetMinVolume( pMinVolume );
-	engSource->SetMaxVolume( pMaxVolume );
-	engSource->SetMinPanning( pMinPanning );
-	engSource->SetMaxPanning( pMaxPanning );
+	engSource->SetEnabled(pEnabled);
+	engSource->SetMixMode(pMixMode);
+	engSource->SetBlendFactor(pBlendFactor);
+	engSource->SetMinVolume(pMinVolume);
+	engSource->SetMaxVolume(pMaxVolume);
+	engSource->SetMinPanning(pMinPanning);
+	engSource->SetMaxPanning(pMaxPanning);
 	
-	pTargetBlendFactor.UpdateEngineTarget( synthesizer, engSource->GetTargetBlendFactor() );
-	pTargetVolume.UpdateEngineTarget( synthesizer, engSource->GetTargetVolume() );
-	pTargetPanning.UpdateEngineTarget( synthesizer, engSource->GetTargetPanning() );
+	pTargetBlendFactor.UpdateEngineTarget(synthesizer, engSource->GetTargetBlendFactor());
+	pTargetVolume.UpdateEngineTarget(synthesizer, engSource->GetTargetVolume());
+	pTargetPanning.UpdateEngineTarget(synthesizer, engSource->GetTargetPanning());
 	
 	// effects
 	deSynthesizerEffect *engEffect = NULL;
 	const int effectCount = pEffects.GetCount();
 	int i;
 	
-	for( i=0; i<effectCount; i++ ){
-		pEffects.GetAt( i )->SetEngineEffect( NULL );
+	for(i=0; i<effectCount; i++){
+		pEffects.GetAt(i)->SetEngineEffect(NULL);
 	}
 	
 	try{
-		for( i=0; i<effectCount; i++ ){
-			seEffect * const effect = pEffects.GetAt( i );
+		for(i=0; i<effectCount; i++){
+			seEffect * const effect = pEffects.GetAt(i);
 			
 			engEffect = effect->CreateEngineEffect();
-			engSource->AddEffect( engEffect );
-			effect->SetEngineEffect( engEffect );
+			engSource->AddEffect(engEffect);
+			effect->SetEngineEffect(engEffect);
 			engEffect->FreeReference();
 			engEffect = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( engEffect ){
+	}catch(const deException &){
+		if(engEffect){
 			engEffect->FreeReference();
 		}
 		throw;
@@ -199,122 +199,122 @@ void seSource::InitEngineSource( deSynthesizerSource *engSource ) const{
 
 
 
-void seSource::SetParentGroup( seSourceGroup *group ){
+void seSource::SetParentGroup(seSourceGroup *group){
 	pParentGroup = group;
 }
 
 
 
-void seSource::SetName( const char *name ){
-	if( pName == name ){
+void seSource::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
-		synthesizer->NotifySourceNameChanged( this );
+	if(synthesizer){
+		synthesizer->NotifySourceNameChanged(this);
 	}
 }
 
-void seSource::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void seSource::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
 	pEnabled = enabled;
 	
-	if( pEngSource ){
-		pEngSource->SetEnabled( enabled );
+	if(pEngSource){
+		pEngSource->SetEnabled(enabled);
 	}
 	
 	NotifySourceChanged();
 }
 
-void seSource::SetMixMode( deSynthesizerSource::eMixModes mode ){
-	if( mode < deSynthesizerSource::emmBlend || mode > deSynthesizerSource::deSynthesizerSource::emmAdd ){
-		DETHROW( deeInvalidParam );
+void seSource::SetMixMode(deSynthesizerSource::eMixModes mode){
+	if(mode < deSynthesizerSource::emmBlend || mode > deSynthesizerSource::deSynthesizerSource::emmAdd){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( mode == pMixMode ){
+	if(mode == pMixMode){
 		return;
 	}
 	
 	pMixMode = mode;
 	
-	if( pEngSource ){
-		pEngSource->SetMixMode( mode );
+	if(pEngSource){
+		pEngSource->SetMixMode(mode);
 	}
 	
 	NotifySourceChanged();
 }
 
-void seSource::SetBlendFactor( float factor ){
-	if( fabsf( factor - pBlendFactor ) <= FLOAT_SAFE_EPSILON ){
+void seSource::SetBlendFactor(float factor){
+	if(fabsf(factor - pBlendFactor) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pBlendFactor = factor;
 	
-	if( pEngSource ){
-		pEngSource->SetBlendFactor( factor );
+	if(pEngSource){
+		pEngSource->SetBlendFactor(factor);
 	}
 	
 	NotifySourceChanged();
 }
 
-void seSource::SetMinVolume( float volume ){
-	if( fabsf( volume - pMinVolume ) <= FLOAT_SAFE_EPSILON ){
+void seSource::SetMinVolume(float volume){
+	if(fabsf(volume - pMinVolume) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMinVolume = volume;
 	
-	if( pEngSource ){
-		pEngSource->SetMinVolume( volume );
+	if(pEngSource){
+		pEngSource->SetMinVolume(volume);
 	}
 	
 	NotifySourceChanged();
 }
 
-void seSource::SetMaxVolume( float volume ){
-	if( fabsf( volume - pMaxVolume ) <= FLOAT_SAFE_EPSILON ){
+void seSource::SetMaxVolume(float volume){
+	if(fabsf(volume - pMaxVolume) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMaxVolume = volume;
 	
-	if( pEngSource ){
-		pEngSource->SetMaxVolume( volume );
+	if(pEngSource){
+		pEngSource->SetMaxVolume(volume);
 	}
 	
 	NotifySourceChanged();
 }
 
-void seSource::SetMinPanning( float panning ){
-	if( fabsf( panning - pMinPanning ) <= FLOAT_SAFE_EPSILON ){
+void seSource::SetMinPanning(float panning){
+	if(fabsf(panning - pMinPanning) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMinPanning = panning;
 	
-	if( pEngSource ){
-		pEngSource->SetMinPanning( panning );
+	if(pEngSource){
+		pEngSource->SetMinPanning(panning);
 	}
 	
 	NotifySourceChanged();
 }
 
-void seSource::SetMaxPanning( float panning ){
-	if( fabsf( panning - pMaxPanning ) <= FLOAT_SAFE_EPSILON ){
+void seSource::SetMaxPanning(float panning){
+	if(fabsf(panning - pMaxPanning) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMaxPanning = panning;
 	
-	if( pEngSource ){
-		pEngSource->SetMaxPanning( panning );
+	if(pEngSource){
+		pEngSource->SetMaxPanning(panning);
 	}
 	
 	NotifySourceChanged();
@@ -324,56 +324,56 @@ void seSource::SetMaxPanning( float panning ){
 
 void seSource::UpdateTargets(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( pEngSource && synthesizer ){
-		pTargetBlendFactor.UpdateEngineTarget( synthesizer, pEngSource->GetTargetBlendFactor() );
-		pTargetVolume.UpdateEngineTarget( synthesizer, pEngSource->GetTargetVolume() );
-		pTargetPanning.UpdateEngineTarget( synthesizer, pEngSource->GetTargetPanning() );
+	if(pEngSource && synthesizer){
+		pTargetBlendFactor.UpdateEngineTarget(synthesizer, pEngSource->GetTargetBlendFactor());
+		pTargetVolume.UpdateEngineTarget(synthesizer, pEngSource->GetTargetVolume());
+		pTargetPanning.UpdateEngineTarget(synthesizer, pEngSource->GetTargetPanning());
 	}
 	
 	const int effectCount = pEffects.GetCount();
 	int i;
-	for( i=0; i< effectCount; i++ ){
-		pEffects.GetAt( i )->UpdateTargets();
+	for(i=0; i< effectCount; i++){
+		pEffects.GetAt(i)->UpdateTargets();
 	}
 }
 
-int seSource::CountLinkUsage( seLink *link ) const{
+int seSource::CountLinkUsage(seLink *link) const{
 	int usageCount = 0;
 	
-	if( pTargetBlendFactor.HasLink( link ) ){
+	if(pTargetBlendFactor.HasLink(link)){
 		usageCount++;
 	}
-	if( pTargetVolume.HasLink( link ) ){
+	if(pTargetVolume.HasLink(link)){
 		usageCount++;
 	}
-	if( pTargetPanning.HasLink( link ) ){
+	if(pTargetPanning.HasLink(link)){
 		usageCount++;
 	}
 	
 	const int effectCount = pEffects.GetCount();
 	int i;
-	for( i=0; i<effectCount; i++ ){
-		usageCount += pEffects.GetAt( i )->CountLinkUsage( link );
+	for(i=0; i<effectCount; i++){
+		usageCount += pEffects.GetAt(i)->CountLinkUsage(link);
 	}
 	
 	return usageCount;
 }
 
-void seSource::RemoveLinkFromTargets( seLink *link ){
-	if( pTargetBlendFactor.HasLink( link ) ){
-		pTargetBlendFactor.RemoveLink( link );
+void seSource::RemoveLinkFromTargets(seLink *link){
+	if(pTargetBlendFactor.HasLink(link)){
+		pTargetBlendFactor.RemoveLink(link);
 	}
-	if( pTargetVolume.HasLink( link ) ){
-		pTargetVolume.RemoveLink( link );
+	if(pTargetVolume.HasLink(link)){
+		pTargetVolume.RemoveLink(link);
 	}
-	if( pTargetPanning.HasLink( link ) ){
-		pTargetPanning.RemoveLink( link );
+	if(pTargetPanning.HasLink(link)){
+		pTargetPanning.RemoveLink(link);
 	}
 	
 	const int effectCount = pEffects.GetCount();
 	int i;
-	for( i=0; i< effectCount; i++ ){
-		pEffects.GetAt( i )->RemoveLinkFromTargets( link );
+	for(i=0; i< effectCount; i++){
+		pEffects.GetAt(i)->RemoveLinkFromTargets(link);
 	}
 }
 
@@ -384,22 +384,22 @@ void seSource::RemoveLinksFromAllTargets(){
 	
 	const int effectCount = pEffects.GetCount();
 	int i;
-	for( i=0; i< effectCount; i++ ){
-		pEffects.GetAt( i )->RemoveLinksFromAllTargets();
+	for(i=0; i< effectCount; i++){
+		pEffects.GetAt(i)->RemoveLinksFromAllTargets();
 	}
 }
 
 
 
-void seSource::ListLinks( seLinkList &list ){
-	pTargetBlendFactor.AddLinksToList( list );
-	pTargetVolume.AddLinksToList( list );
-	pTargetPanning.AddLinksToList( list );
+void seSource::ListLinks(seLinkList &list){
+	pTargetBlendFactor.AddLinksToList(list);
+	pTargetVolume.AddLinksToList(list);
+	pTargetPanning.AddLinksToList(list);
 	
 	const int effectCount = pEffects.GetCount();
 	int i;
-	for( i=0; i< effectCount; i++ ){
-		pEffects.GetAt( i )->ListLinks( list );
+	for(i=0; i< effectCount; i++){
+		pEffects.GetAt(i)->ListLinks(list);
 	}
 }
 
@@ -407,22 +407,22 @@ void seSource::ListLinks( seLinkList &list ){
 
 void seSource::NotifySourceChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( ! synthesizer ){
+	if(!synthesizer){
 		return;
 	}
 	
 	UpdateTargets();
 	
-	if( pEngSource ){
+	if(pEngSource){
 		synthesizer->GetEngineSynthesizer()->NotifySourcesChanged();
 	}
 	
-	synthesizer->NotifySourceChanged( this );
+	synthesizer->NotifySourceChanged(this);
 }
 
 void seSource::NotifyEngineOnlySourceChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( ! synthesizer || ! pEngSource ){
+	if(!synthesizer || !pEngSource){
 		return;
 	}
 	
@@ -433,8 +433,8 @@ void seSource::SynthesizerChanged(){
 	const int effectCount = pEffects.GetCount();
 	int i;
 	
-	for( i=0; i<effectCount; i++ ){
-		pEffects.GetAt( i )->SynthesizerChanged();
+	for(i=0; i<effectCount; i++){
+		pEffects.GetAt(i)->SynthesizerChanged();
 	}
 }
 
@@ -442,8 +442,8 @@ void seSource::SynthesizerDirectoryChanged(){
 	const int effectCount = pEffects.GetCount();
 	int i;
 	
-	for( i=0; i< effectCount; i++ ){
-		pEffects.GetAt( i )->SynthesizerDirectoryChanged();
+	for(i=0; i< effectCount; i++){
+		pEffects.GetAt(i)->SynthesizerDirectoryChanged();
 	}
 }
 
@@ -452,95 +452,95 @@ void seSource::SynthesizerDirectoryChanged(){
 // Effects
 ////////////
 
-void seSource::SetActiveEffect( seEffect *effect ){
-	if( effect == pActiveEffect ){
+void seSource::SetActiveEffect(seEffect *effect){
+	if(effect == pActiveEffect){
 		return;
 	}
 	
-	if( pActiveEffect ){
+	if(pActiveEffect){
 		pActiveEffect->FreeReference();
 	}
 	
 	pActiveEffect = effect;
 	
-	if( effect ){
+	if(effect){
 		effect->AddReference();
 	}
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
-		synthesizer->NotifyActiveEffectChanged( this );
+	if(synthesizer){
+		synthesizer->NotifyActiveEffectChanged(this);
 	}
 }
 
-void seSource::AddEffect( seEffect *effect ){
-	pEffects.Add( effect );
+void seSource::AddEffect(seEffect *effect){
+	pEffects.Add(effect);
 	
-	effect->SetParentSource( this );
+	effect->SetParentSource(this);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
-		synthesizer->NotifyEffectStructureChanged( this );
+		synthesizer->NotifyEffectStructureChanged(this);
 	}
 	
-	if( ! pActiveEffect ){
-		SetActiveEffect( effect );
+	if(!pActiveEffect){
+		SetActiveEffect(effect);
 	}
 }
 
-void seSource::InsertEffectAt( seEffect *effect, int index ){
-	pEffects.Insert( effect, index );
+void seSource::InsertEffectAt(seEffect *effect, int index){
+	pEffects.Insert(effect, index);
 	
-	effect->SetParentSource( this );
+	effect->SetParentSource(this);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
-		synthesizer->NotifyEffectStructureChanged( this );
+		synthesizer->NotifyEffectStructureChanged(this);
 	}
 	
-	if( ! pActiveEffect ){
-		SetActiveEffect( effect );
+	if(!pActiveEffect){
+		SetActiveEffect(effect);
 	}
 }
 
-void seSource::MoveEffectTo( seEffect *effect, int index ){
-	pEffects.Move( effect, index );
+void seSource::MoveEffectTo(seEffect *effect, int index){
+	pEffects.Move(effect, index);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
-		synthesizer->NotifyEffectStructureChanged( this );
+		synthesizer->NotifyEffectStructureChanged(this);
 	}
 }
 
-void seSource::RemoveEffect( seEffect *effect ){
-	const int index = pEffects.IndexOf( effect );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void seSource::RemoveEffect(seEffect *effect){
+	const int index = pEffects.IndexOf(effect);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( effect == pActiveEffect ){
-		if( pEffects.GetCount() == 1 ){
-			SetActiveEffect( NULL );
+	if(effect == pActiveEffect){
+		if(pEffects.GetCount() == 1){
+			SetActiveEffect(NULL);
 			
-		}else if( index < pEffects.GetCount() - 1 ){
-			SetActiveEffect( pEffects.GetAt( index + 1 ) );
+		}else if(index < pEffects.GetCount() - 1){
+			SetActiveEffect(pEffects.GetAt(index + 1));
 			
 		}else{
-			SetActiveEffect( pEffects.GetAt( index - 1 ) );
+			SetActiveEffect(pEffects.GetAt(index - 1));
 		}
 	}
 	
-	effect->SetParentSource( NULL );
+	effect->SetParentSource(NULL);
 	
-	pEffects.Remove( effect );
+	pEffects.Remove(effect);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
-		synthesizer->NotifyEffectStructureChanged( this );
+		synthesizer->NotifyEffectStructureChanged(this);
 	}
 }
 
@@ -548,17 +548,17 @@ void seSource::RemoveAllEffects(){
 	const int count = pEffects.GetCount();
 	int i;
 	
-	SetActiveEffect( NULL );
+	SetActiveEffect(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pEffects.GetAt( i )->SetParentSource( NULL );
+	for(i=0; i<count; i++){
+		pEffects.GetAt(i)->SetParentSource(NULL);
 	}
 	pEffects.RemoveAll();
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
-		synthesizer->NotifyEffectStructureChanged( this );
+		synthesizer->NotifyEffectStructureChanged(this);
 	}
 }
 
@@ -567,15 +567,15 @@ void seSource::RemoveAllEffects(){
 // Operators
 //////////////
 
-seSource &seSource::operator=( const seSource &copy ){
-	SetName( copy.pName );
-	SetMixMode( copy.pMixMode );
-	SetBlendFactor( copy.pBlendFactor );
-	SetEnabled( copy.pEnabled );
-	SetMinVolume( copy.pMinVolume );
-	SetMaxVolume( copy.pMaxVolume );
-	SetMinPanning( copy.pMinPanning );
-	SetMaxPanning( copy.pMaxPanning );
+seSource &seSource::operator=(const seSource &copy){
+	SetName(copy.pName);
+	SetMixMode(copy.pMixMode);
+	SetBlendFactor(copy.pBlendFactor);
+	SetEnabled(copy.pEnabled);
+	SetMinVolume(copy.pMinVolume);
+	SetMaxVolume(copy.pMaxVolume);
+	SetMinPanning(copy.pMinPanning);
+	SetMaxPanning(copy.pMaxPanning);
 	pTargetBlendFactor = copy.pTargetBlendFactor;
 	pTargetVolume = copy.pTargetVolume;
 	pTargetPanning = copy.pTargetPanning;
@@ -586,15 +586,15 @@ seSource &seSource::operator=( const seSource &copy ){
 	
 	RemoveAllEffects();
 	try{
-		for( i=0; i<effectCount; i++ ){
-			effect = copy.pEffects.GetAt( i )->CreateCopy();
-			AddEffect( effect );
+		for(i=0; i<effectCount; i++){
+			effect = copy.pEffects.GetAt(i)->CreateCopy();
+			AddEffect(effect);
 			effect->FreeReference();
 			effect = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( effect ){
+	}catch(const deException &){
+		if(effect){
 			effect->FreeReference();
 		}
 		throw;
@@ -610,24 +610,24 @@ seSource &seSource::operator=( const seSource &copy ){
 // Helper
 ///////////
 
-seSource *seSource::CreateSourceFromType( deEngine *engine, deSynthesizerSourceVisitorIdentify::eSourceTypes type ){
-	switch( type ){
+seSource *seSource::CreateSourceFromType(deEngine *engine, deSynthesizerSourceVisitorIdentify::eSourceTypes type){
+	switch(type){
 	case deSynthesizerSourceVisitorIdentify::estSound:
-		return new seSourceSound( engine );
+		return new seSourceSound(engine);
 		
 	case deSynthesizerSourceVisitorIdentify::estWave:
 		return new seSourceWave;
 		
 	case deSynthesizerSourceVisitorIdentify::estChain:
-		return new seSourceChain( engine );
+		return new seSourceChain(engine);
 		
 	case deSynthesizerSourceVisitorIdentify::estGroup:
 		return new seSourceGroup;
 		
 	case deSynthesizerSourceVisitorIdentify::estSynthesizer:
-		return new seSourceSynthesizer( engine );
+		return new seSourceSynthesizer(engine);
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }

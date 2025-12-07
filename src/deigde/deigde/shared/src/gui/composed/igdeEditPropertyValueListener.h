@@ -70,7 +70,7 @@ public:
 	 * 
 	 * User entered value and accepted it.
 	 */
-	virtual void OnPropertyValueChanged( igdeEditPropertyValue *editPropertyValue );
+	virtual void OnPropertyValueChanged(igdeEditPropertyValue *editPropertyValue);
 	
 	/**
 	 * \brief EditPropertyValue value is changing.
@@ -78,7 +78,7 @@ public:
 	 * User is actively changing the value (for example slide changing) but has not
 	 * yet accepted the value. OnPropertyValueChanged() will be called once finished.
 	 */
-	virtual void OnPropertyValueChanging( igdeEditPropertyValue *editPropertyValue );
+	virtual void OnPropertyValueChanging(igdeEditPropertyValue *editPropertyValue);
 	/*@}*/
 };
 

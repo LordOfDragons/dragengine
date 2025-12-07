@@ -44,8 +44,8 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxToolBarDock ) igdeNativeFoxToolBarDockMap[] = {
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxToolBarDock::onChildLayoutFlags )
+FXDEFMAP(igdeNativeFoxToolBarDock) igdeNativeFoxToolBarDockMap[] = {
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxToolBarDock::onChildLayoutFlags)
 };
 
 
@@ -53,38 +53,38 @@ FXDEFMAP( igdeNativeFoxToolBarDock ) igdeNativeFoxToolBarDockMap[] = {
 // Class igdeNativeFoxToolBarDock
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxToolBarDock, FXDockSite,
-	igdeNativeFoxToolBarDockMap, ARRAYNUMBER( igdeNativeFoxToolBarDockMap ) )
+FXIMPLEMENT(igdeNativeFoxToolBarDock, FXDockSite,
+	igdeNativeFoxToolBarDockMap, ARRAYNUMBER(igdeNativeFoxToolBarDockMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxToolBarDock::igdeNativeFoxToolBarDock(){ }
+igdeNativeFoxToolBarDock::igdeNativeFoxToolBarDock(){}
 
-igdeNativeFoxToolBarDock::igdeNativeFoxToolBarDock( igdeToolBarDock &powner, FXComposite *pparent ) :
-FXDockSite( pparent, LayoutFlags( powner ) ),
-pOwner( &powner ){
+igdeNativeFoxToolBarDock::igdeNativeFoxToolBarDock(igdeToolBarDock &powner, FXComposite *pparent) :
+FXDockSite(pparent, LayoutFlags(powner)),
+pOwner(&powner){
 }
 
 igdeNativeFoxToolBarDock::~igdeNativeFoxToolBarDock(){
 }
 
-igdeNativeFoxToolBarDock *igdeNativeFoxToolBarDock::CreateNativeWidget( igdeToolBarDock &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxToolBarDock *igdeNativeFoxToolBarDock::CreateNativeWidget(igdeToolBarDock &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxToolBarDock( powner, pparent );
+	return new igdeNativeFoxToolBarDock(powner, pparent);
 }
 
 void igdeNativeFoxToolBarDock::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -98,8 +98,8 @@ void igdeNativeFoxToolBarDock::DestroyNativeWidget(){
 // Management
 ///////////////
 
-int igdeNativeFoxToolBarDock::LayoutFlags( const igdeToolBarDock &powner ){
-	switch( powner.GetSide() ){
+int igdeNativeFoxToolBarDock::LayoutFlags(const igdeToolBarDock &powner){
+	switch(powner.GetSide()){
 	case igdeToolBarDock::esTop:
 		return LAYOUT_SIDE_TOP | LAYOUT_FILL_X;
 		
@@ -122,10 +122,10 @@ int igdeNativeFoxToolBarDock::LayoutFlags( const igdeToolBarDock &powner ){
 // Events
 ///////////
 
-long igdeNativeFoxToolBarDock::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxToolBarDock::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	
-	switch( pOwner->GetSide() ){
+	switch(pOwner->GetSide()){
 	case igdeToolBarDock::esTop:
 		clflags.flags = LAYOUT_SIDE_TOP; // | LAYOUT_FILL_X;
 		break;

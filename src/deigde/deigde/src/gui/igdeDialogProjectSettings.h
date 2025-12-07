@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogProjectSettings( igdeWindowMain &windowMain );
+	igdeDialogProjectSettings(igdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */

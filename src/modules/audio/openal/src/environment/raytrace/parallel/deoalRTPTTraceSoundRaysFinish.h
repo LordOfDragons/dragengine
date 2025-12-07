@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace finish parallel task. */
-	deoalRTPTTraceSoundRaysFinish( deoalRTParallelEnvProbe &owner );
+	deoalRTPTTraceSoundRaysFinish(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace finish parallel task. */
@@ -73,19 +73,19 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Add dependencies. */
-	void AddDependencies( const decPointerList &tasks );
+	void AddDependencies(const decPointerList &tasks);
 	
 	/** \brief Set range. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set sound ray list to update. */
-	void SetSoundRayList( deoalSoundRayList *soundRayList );
+	void SetSoundRayList(deoalSoundRayList *soundRayList);
 	
 	/** \brief Set room parameters to update. */
-	void SetRoomParameters( deoalRTParallelEnvProbe::sRoomParameters *roomParameters );
+	void SetRoomParameters(deoalRTParallelEnvProbe::sRoomParameters *roomParameters);
 	
 	/** \brief Trace tasks (deoalRTPTTraceSoundRays*). */
 	inline decPointerList GetTraceTasks(){ return pTasks; }

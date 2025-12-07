@@ -48,7 +48,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeCylinder::reRigShapeCylinder( deEngine *engine ) : reRigShape( engine, estCylinder ){
+reRigShapeCylinder::reRigShapeCylinder(deEngine *engine) : reRigShape(engine, estCylinder){
 	pTopRadius = 0.5f;
 	pBottomRadius = 0.5f;
 	pHalfHeight = 0.5f;
@@ -62,22 +62,22 @@ reRigShapeCylinder::~reRigShapeCylinder(){
 // Management
 ///////////////
 
-void reRigShapeCylinder::SetHalfHeight( float halfHeight ){
-	if( fabs( halfHeight - pHalfHeight ) > 1e-5f ){
+void reRigShapeCylinder::SetHalfHeight(float halfHeight){
+	if(fabs(halfHeight - pHalfHeight) > 1e-5f){
 		pHalfHeight = halfHeight;
 		NotifyShapeChanged();
 	}
 }
 
-void reRigShapeCylinder::SetTopRadius( float topRadius ){
-	if( fabs( topRadius - pTopRadius ) > 1e-5f ){
+void reRigShapeCylinder::SetTopRadius(float topRadius){
+	if(fabs(topRadius - pTopRadius) > 1e-5f){
 		pTopRadius = topRadius;
 		NotifyShapeChanged();
 	}
 }
 
-void reRigShapeCylinder::SetBottomRadius( float bottomRadius ){
-	if( fabs( bottomRadius - pBottomRadius ) > 1e-5f ){
+void reRigShapeCylinder::SetBottomRadius(float bottomRadius){
+	if(fabs(bottomRadius - pBottomRadius) > 1e-5f){
 		pBottomRadius = bottomRadius;
 		NotifyShapeChanged();
 	}
@@ -87,31 +87,31 @@ reRigShape *reRigShapeCylinder::Duplicate() const{
 	reRigShapeCylinder *shape = NULL;
 	
 	try{
-		shape = new reRigShapeCylinder( GetEngine() );
-		if( ! shape ) DETHROW( deeOutOfMemory );
+		shape = new reRigShapeCylinder(GetEngine());
+		if(!shape) DETHROW(deeOutOfMemory);
 		
-		shape->SetPosition( GetPosition() );
-		shape->SetOrientation( GetOrientation() );
-		shape->SetHalfHeight( GetHalfHeight() );
-		shape->SetTopRadius( GetTopRadius() );
-		shape->SetBottomRadius( GetBottomRadius() );
+		shape->SetPosition(GetPosition());
+		shape->SetOrientation(GetOrientation());
+		shape->SetHalfHeight(GetHalfHeight());
+		shape->SetTopRadius(GetTopRadius());
+		shape->SetBottomRadius(GetBottomRadius());
 		
-	}catch( const deException & ){
-		if( shape ) shape->FreeReference();
+	}catch(const deException &){
+		if(shape) shape->FreeReference();
 		throw;
 	}
 	
 	return shape;
 }
 
-void reRigShapeCylinder::Scale( float scale ){
-	SetPosition( GetPosition() * scale );
+void reRigShapeCylinder::Scale(float scale){
+	SetPosition(GetPosition() * scale);
 	pTopRadius *= scale;
 	pBottomRadius *= scale;
 	pHalfHeight *= scale;
 }
 
 decShape *reRigShapeCylinder::CreateShape(){
-	return new decShapeCylinder( pHalfHeight, pTopRadius, pBottomRadius,
-		GetPosition(), decQuaternion::CreateFromEuler( GetOrientation() * DEG2RAD ) );
+	return new decShapeCylinder(pHalfHeight, pTopRadius, pBottomRadius,
+		GetPosition(), decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
 }

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedsService( deScriptingDragonScript &ds, deService *service );
+	dedsService(deScriptingDragonScript &ds, deService *service);
 	
 	/** \brief Clean up peer. */
 	~dedsService() override;
@@ -64,13 +64,13 @@ public:
 	dsRealObject *GetOwner() const;
 	
 	/** \brief Set owner object or nullptr. */
-	void SetOwner( dsRealObject *object );
+	void SetOwner(dsRealObject *object);
 	
 	/** \brief Callback object or nullptr. */
 	dsRealObject *GetCallback() const;
 	
 	/** \brief Set callback object or nullptr. */
-	void SetCallback( dsRealObject *object );
+	void SetCallback(dsRealObject *object);
 	
 	
 	
@@ -80,20 +80,20 @@ public:
 	 * If finished is true the request finished with this response otherwise more responses
 	 * will be delivered. Id is a unique identifier used to start the matching request.
 	 */
-	void RequestResponse( const decUniqueID &id, const deServiceObject::Ref &response,
-		bool finished ) override;
+	void RequestResponse(const decUniqueID &id, const deServiceObject::Ref &response,
+		bool finished) override;
 	
 	/**
 	 * \brief Response received for request.
 	 * 
 	 * Id is a unique identifier used to start the matching request.
 	 */
-	void RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error ) override;
+	void RequestFailed(const decUniqueID &id, const deServiceObject::Ref &error) override;
 	
 	/**
 	 * \brief Service event received.
 	 */
-	void EventReceived( const deServiceObject::Ref &event ) override;
+	void EventReceived(const deServiceObject::Ref &event) override;
 	/*@}*/
 };
 

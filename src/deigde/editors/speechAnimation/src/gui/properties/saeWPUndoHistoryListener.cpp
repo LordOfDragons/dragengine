@@ -36,8 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeWPUndoHistoryListener::saeWPUndoHistoryListener( saeWPUndoHistory &panel ) :
-pPanel( panel ){
+saeWPUndoHistoryListener::saeWPUndoHistoryListener(saeWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 saeWPUndoHistoryListener::~saeWPUndoHistoryListener(){
@@ -48,6 +48,6 @@ saeWPUndoHistoryListener::~saeWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void saeWPUndoHistoryListener::UndoChanged( saeSAnimation *emitter ){
+void saeWPUndoHistoryListener::UndoChanged(saeSAnimation *emitter){
 	pPanel.UpdateUndo();
 }

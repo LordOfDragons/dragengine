@@ -103,7 +103,7 @@ int deMsgdkGameConfig::pGetAttributeInt(decXmlElementTag &tag, const char *name)
 	}
 
 	pModule.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name, tag.GetName().GetString());
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 float deMsgdkGameConfig::pGetAttributeFloat(decXmlElementTag &tag, const char *name)

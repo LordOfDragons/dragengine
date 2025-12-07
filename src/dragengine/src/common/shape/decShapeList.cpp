@@ -39,29 +39,29 @@
 //////////////////////////////
 
 decShapeList::decShapeList() :
-pShapes( NULL ),
-pCount( 0 ),
-pSize( 0 ){
+pShapes(NULL),
+pCount(0),
+pSize(0){
 }
 
-decShapeList::decShapeList( const decShapeList &copy ) :
-pShapes( NULL ),
-pCount( 0 ),
-pSize( 0 )
+decShapeList::decShapeList(const decShapeList &copy) :
+pShapes(NULL),
+pCount(0),
+pSize(0)
 {
-	if( copy.pCount == 0 ){
+	if(copy.pCount == 0){
 		return;
 	}
 	
 	try{
-		pShapes = new decShape*[ copy.pCount ];
+		pShapes = new decShape*[copy.pCount];
 		pSize = copy.pCount;
 		
-		for( pCount=0; pCount<copy.pCount; pCount++ ){
-			pShapes[ pCount ] = copy.pShapes[ pCount ]->Copy();
+		for(pCount=0; pCount<copy.pCount; pCount++){
+			pShapes[pCount] = copy.pShapes[pCount]->Copy();
 		}
 		
-	}catch( ... ){
+	}catch(...){
 		pCleanUp();
 		throw;
 	}
@@ -76,23 +76,23 @@ decShapeList::~decShapeList(){
 // Management
 ///////////////
 
-decShape *decShapeList::GetAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+decShape *decShapeList::GetAt(int index) const{
+	if(index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pShapes[ index ];
+	return pShapes[index];
 }
 
-int decShapeList::IndexOf( decShape *shape ) const{
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
+int decShapeList::IndexOf(decShape *shape) const{
+	if(!shape){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pCount; i++ ){
-		if( shape == pShapes[ i ] ){
+	for(i=0; i<pCount; i++){
+		if(shape == pShapes[i]){
 			return i;
 		}
 	}
@@ -100,15 +100,15 @@ int decShapeList::IndexOf( decShape *shape ) const{
 	return -1;
 }
 
-bool decShapeList::Has( decShape *shape ) const{
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
+bool decShapeList::Has(decShape *shape) const{
+	if(!shape){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pCount; i++ ){
-		if( shape == pShapes[ i ] ){
+	for(i=0; i<pCount; i++){
+		if(shape == pShapes[i]){
 			return true;
 		}
 	}
@@ -116,83 +116,83 @@ bool decShapeList::Has( decShape *shape ) const{
 	return false;
 }
 
-void decShapeList::SetAt( int index, decShape *shape ){
-	if( ! shape || index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+void decShapeList::SetAt(int index, decShape *shape){
+	if(!shape || index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( shape == pShapes[ index ] ){
+	if(shape == pShapes[index]){
 		return;
 	}
 	
-	delete pShapes[ index ];
-	pShapes[ index ] = shape;
+	delete pShapes[index];
+	pShapes[index] = shape;
 }
 
-void decShapeList::Add( decShape *shape ){
-	if( Has( shape ) ){
-		DETHROW( deeInvalidParam );
+void decShapeList::Add(decShape *shape){
+	if(Has(shape)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pCount == pSize ){
+	if(pCount == pSize){
 		const int newSize = pSize * 3 / 2 + 1;
-		decShape ** const newArray = new decShape*[ newSize ];
-		if( pShapes ){
-			memcpy( newArray, pShapes, sizeof( decShape* ) * pSize );
+		decShape ** const newArray = new decShape*[newSize];
+		if(pShapes){
+			memcpy(newArray, pShapes, sizeof(decShape*) * pSize);
 			delete [] pShapes;
 		}
 		pShapes = newArray;
 		pSize = newSize;
 	}
 	
-	pShapes[ pCount ] = shape;
+	pShapes[pCount] = shape;
 	pCount++;
 }
 
-void decShapeList::Remove( decShape *shape ){
-	const int index = IndexOf( shape );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void decShapeList::Remove(decShape *shape){
+	const int index = IndexOf(shape);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=index+1; i<pCount; i++ ){
-		pShapes[ i - 1 ] = pShapes[ i ];
+	for(i=index+1; i<pCount; i++){
+		pShapes[i - 1] = pShapes[i];
 	}
 	pCount--;
 	
 	delete shape;
 }
 
-void decShapeList::RemoveFrom( int index ){
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+void decShapeList::RemoveFrom(int index){
+	if(index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	delete pShapes[ index ];
+	delete pShapes[index];
 	
-	for( i=index+1; i<pCount; i++ ){
-		pShapes[ i - 1 ] = pShapes[ i ];
+	for(i=index+1; i<pCount; i++){
+		pShapes[i - 1] = pShapes[i];
 	}
 	pCount--;
 }
 
 void decShapeList::RemoveAll(){
-	while( pCount > 0 ){
+	while(pCount > 0){
 		pCount--;
-		delete pShapes[ pCount ];
+		delete pShapes[pCount];
 	}
 }
 
 
 
-void decShapeList::Visit( decShapeVisitor &visitor ){
+void decShapeList::Visit(decShapeVisitor &visitor){
 	int i;
-	for( i=0; i<pCount; i++ ){
-		pShapes[ i ]->Visit( visitor );
+	for(i=0; i<pCount; i++){
+		pShapes[i]->Visit(visitor);
 	}
 }
 
@@ -201,11 +201,11 @@ void decShapeList::Visit( decShapeVisitor &visitor ){
 // Operators
 //////////////
 
-decShapeList &decShapeList::operator=( const decShapeList& list ){
+decShapeList &decShapeList::operator=(const decShapeList& list){
 	RemoveAll();
 	
-	while( pCount < list.pCount ){
-		Add( list.pShapes[ pCount ]->Copy() );
+	while(pCount < list.pCount){
+		Add(list.pShapes[pCount]->Copy());
 	}
 	
 	return *this;
@@ -218,7 +218,7 @@ decShapeList &decShapeList::operator=( const decShapeList& list ){
 
 void decShapeList::pCleanUp(){
 	RemoveAll();
-	if( pShapes ){
+	if(pShapes){
 		delete [] pShapes;
 	}
 }

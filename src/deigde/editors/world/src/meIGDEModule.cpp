@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meIGDEModule::meIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+meIGDEModule::meIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 meIGDEModule::~meIGDEModule(){
@@ -51,7 +51,7 @@ meIGDEModule::~meIGDEModule(){
 ///////////////
 
 void meIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new meWindowMain( *this ) );
+	if(!GetEditorWindow()){
+		SetEditorWindow(new meWindowMain(*this));
 	}
 }

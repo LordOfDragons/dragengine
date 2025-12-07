@@ -59,7 +59,7 @@ public:
 	/** Retrieves the number of texture coordinates. */
 	inline int GetTextureCoordinateCount() const{ return pTexCoordCount; }
 	/** Sets the number of texture coordinates. */
-	void SetTextureCoordinateCount( int count, bool copyContent );
+	void SetTextureCoordinateCount(int count, bool copyContent);
 	
 	/** Retrieves the tangents. */
 	inline decVector *GetTangents() const{ return pTangents; }
@@ -68,7 +68,7 @@ public:
 	/** Retrieves the tangent count. */
 	inline int GetTangentCount() const{ return pTangentCount; }
 	/** Sets the tangent count. */
-	void SetTangentCount( int count );
+	void SetTangentCount(int count);
 	/*@}*/
 	
 private:

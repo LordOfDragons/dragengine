@@ -53,16 +53,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit container. */
-	virtual void VisitContainer( decXmlContainer &container );
+	virtual void VisitContainer(decXmlContainer &container);
 	
 	/** \brief Visit element character data. */
-	virtual void VisitCharacterData( decXmlCharacterData &data );
+	virtual void VisitCharacterData(decXmlCharacterData &data);
 	/*@}*/
 	
 	
 	
 private:
-	static bool IsSpace( int character );
+	static bool IsSpace(int character);
 };
 
 #endif

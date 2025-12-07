@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDynamicTBOFloat32::deoglDynamicTBOFloat32( deoglRenderThread &renderThread, int componentCount ) :
-deoglDynamicTBO( renderThread, componentCount, sizeof( float ) ){
+deoglDynamicTBOFloat32::deoglDynamicTBOFloat32(deoglRenderThread &renderThread, int componentCount) :
+deoglDynamicTBO(renderThread, componentCount, sizeof(float)){
 }
 
 deoglDynamicTBOFloat32::~deoglDynamicTBOFloat32(){
@@ -52,377 +52,377 @@ deoglDynamicTBOFloat32::~deoglDynamicTBOFloat32(){
 // Management
 ///////////////
 
-void deoglDynamicTBOFloat32::AddBool( bool value ){
-	if( value ){
-		AddFloat( 1.0f );
+void deoglDynamicTBOFloat32::AddBool(bool value){
+	if(value){
+		AddFloat(1.0f);
 		
 	}else{
-		AddFloat( 0.0f );
+		AddFloat(0.0f);
 	}
 }
 
-void deoglDynamicTBOFloat32::AddFloat( float value ){
-	pEnlarge( 1 );
+void deoglDynamicTBOFloat32::AddFloat(float value){
+	pEnlarge(1);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value;
 }
 
-void deoglDynamicTBOFloat32::AddVec2( float value1, float value2 ){
-	pEnlarge( 2 );
+void deoglDynamicTBOFloat32::AddVec2(float value1, float value2){
+	pEnlarge(2);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value1;
-	dataFloat[ pDataCount++ ] = value2;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value1;
+	dataFloat[pDataCount++] = value2;
 }
 
-void deoglDynamicTBOFloat32::AddVec2( const decVector2 &value ){
-	pEnlarge( 2 );
+void deoglDynamicTBOFloat32::AddVec2(const decVector2 &value){
+	pEnlarge(2);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value.x;
-	dataFloat[ pDataCount++ ] = value.y;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value.x;
+	dataFloat[pDataCount++] = value.y;
 }
 
-void deoglDynamicTBOFloat32::AddVec3( float value1, float value2, float value3 ){
-	pEnlarge( 3 );
+void deoglDynamicTBOFloat32::AddVec3(float value1, float value2, float value3){
+	pEnlarge(3);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value1;
-	dataFloat[ pDataCount++ ] = value2;
-	dataFloat[ pDataCount++ ] = value3;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value1;
+	dataFloat[pDataCount++] = value2;
+	dataFloat[pDataCount++] = value3;
 }
 
-void deoglDynamicTBOFloat32::AddVec3( const decVector &value ){
-	pEnlarge( 3 );
+void deoglDynamicTBOFloat32::AddVec3(const decVector &value){
+	pEnlarge(3);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value.x;
-	dataFloat[ pDataCount++ ] = value.y;
-	dataFloat[ pDataCount++ ] = value.z;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value.x;
+	dataFloat[pDataCount++] = value.y;
+	dataFloat[pDataCount++] = value.z;
 }
 
-void deoglDynamicTBOFloat32::AddVec4( float value1, float value2, float value3, float value4 ){
-	pEnlarge( 4 );
+void deoglDynamicTBOFloat32::AddVec4(float value1, float value2, float value3, float value4){
+	pEnlarge(4);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value1;
-	dataFloat[ pDataCount++ ] = value2;
-	dataFloat[ pDataCount++ ] = value3;
-	dataFloat[ pDataCount++ ] = value4;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value1;
+	dataFloat[pDataCount++] = value2;
+	dataFloat[pDataCount++] = value3;
+	dataFloat[pDataCount++] = value4;
 }
 
-void deoglDynamicTBOFloat32::AddVec4( const decVector &value, float value4 ){
-	pEnlarge( 4 );
+void deoglDynamicTBOFloat32::AddVec4(const decVector &value, float value4){
+	pEnlarge(4);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value.x;
-	dataFloat[ pDataCount++ ] = value.y;
-	dataFloat[ pDataCount++ ] = value.z;
-	dataFloat[ pDataCount++ ] = value4;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value.x;
+	dataFloat[pDataCount++] = value.y;
+	dataFloat[pDataCount++] = value.z;
+	dataFloat[pDataCount++] = value4;
 }
 
-void deoglDynamicTBOFloat32::AddVec4( const decVector4 &value ){
-	pEnlarge( 4 );
+void deoglDynamicTBOFloat32::AddVec4(const decVector4 &value){
+	pEnlarge(4);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value.x;
-	dataFloat[ pDataCount++ ] = value.y;
-	dataFloat[ pDataCount++ ] = value.z;
-	dataFloat[ pDataCount++ ] = value.w;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value.x;
+	dataFloat[pDataCount++] = value.y;
+	dataFloat[pDataCount++] = value.z;
+	dataFloat[pDataCount++] = value.w;
 }
 
-void deoglDynamicTBOFloat32::AddMat4x3( const decMatrix &value ){
-	pEnlarge( 12 );
+void deoglDynamicTBOFloat32::AddMat4x3(const decMatrix &value){
+	pEnlarge(12);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value.a11;
-	dataFloat[ pDataCount++ ] = value.a21;
-	dataFloat[ pDataCount++ ] = value.a31;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value.a11;
+	dataFloat[pDataCount++] = value.a21;
+	dataFloat[pDataCount++] = value.a31;
 	
-	dataFloat[ pDataCount++ ] = value.a12;
-	dataFloat[ pDataCount++ ] = value.a22;
-	dataFloat[ pDataCount++ ] = value.a32;
+	dataFloat[pDataCount++] = value.a12;
+	dataFloat[pDataCount++] = value.a22;
+	dataFloat[pDataCount++] = value.a32;
 	
-	dataFloat[ pDataCount++ ] = value.a13;
-	dataFloat[ pDataCount++ ] = value.a23;
-	dataFloat[ pDataCount++ ] = value.a33;
+	dataFloat[pDataCount++] = value.a13;
+	dataFloat[pDataCount++] = value.a23;
+	dataFloat[pDataCount++] = value.a33;
 	
-	dataFloat[ pDataCount++ ] = value.a14;
-	dataFloat[ pDataCount++ ] = value.a24;
-	dataFloat[ pDataCount++ ] = value.a34;
+	dataFloat[pDataCount++] = value.a14;
+	dataFloat[pDataCount++] = value.a24;
+	dataFloat[pDataCount++] = value.a34;
 }
 
-void deoglDynamicTBOFloat32::AddMat3x4( const decMatrix &value ){
-	pEnlarge( 12 );
+void deoglDynamicTBOFloat32::AddMat3x4(const decMatrix &value){
+	pEnlarge(12);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value.a11;
-	dataFloat[ pDataCount++ ] = value.a12;
-	dataFloat[ pDataCount++ ] = value.a13;
-	dataFloat[ pDataCount++ ] = value.a14;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value.a11;
+	dataFloat[pDataCount++] = value.a12;
+	dataFloat[pDataCount++] = value.a13;
+	dataFloat[pDataCount++] = value.a14;
 	
-	dataFloat[ pDataCount++ ] = value.a21;
-	dataFloat[ pDataCount++ ] = value.a22;
-	dataFloat[ pDataCount++ ] = value.a23;
-	dataFloat[ pDataCount++ ] = value.a24;
+	dataFloat[pDataCount++] = value.a21;
+	dataFloat[pDataCount++] = value.a22;
+	dataFloat[pDataCount++] = value.a23;
+	dataFloat[pDataCount++] = value.a24;
 	
-	dataFloat[ pDataCount++ ] = value.a31;
-	dataFloat[ pDataCount++ ] = value.a32;
-	dataFloat[ pDataCount++ ] = value.a33;
-	dataFloat[ pDataCount++ ] = value.a34;
+	dataFloat[pDataCount++] = value.a31;
+	dataFloat[pDataCount++] = value.a32;
+	dataFloat[pDataCount++] = value.a33;
+	dataFloat[pDataCount++] = value.a34;
 }
 
-void deoglDynamicTBOFloat32::AddMat3x3( const decMatrix &value ){
-	pEnlarge( 9 );
+void deoglDynamicTBOFloat32::AddMat3x3(const decMatrix &value){
+	pEnlarge(9);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value.a11;
-	dataFloat[ pDataCount++ ] = value.a21;
-	dataFloat[ pDataCount++ ] = value.a31;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value.a11;
+	dataFloat[pDataCount++] = value.a21;
+	dataFloat[pDataCount++] = value.a31;
 	
-	dataFloat[ pDataCount++ ] = value.a12;
-	dataFloat[ pDataCount++ ] = value.a22;
-	dataFloat[ pDataCount++ ] = value.a32;
+	dataFloat[pDataCount++] = value.a12;
+	dataFloat[pDataCount++] = value.a22;
+	dataFloat[pDataCount++] = value.a32;
 	
-	dataFloat[ pDataCount++ ] = value.a13;
-	dataFloat[ pDataCount++ ] = value.a23;
-	dataFloat[ pDataCount++ ] = value.a33;
+	dataFloat[pDataCount++] = value.a13;
+	dataFloat[pDataCount++] = value.a23;
+	dataFloat[pDataCount++] = value.a33;
 }
 
-void deoglDynamicTBOFloat32::AddMat3x2( const decMatrix &value ){
-	pEnlarge( 6 );
+void deoglDynamicTBOFloat32::AddMat3x2(const decMatrix &value){
+	pEnlarge(6);
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ pDataCount++ ] = value.a11;
-	dataFloat[ pDataCount++ ] = value.a21;
+	float * const dataFloat = (float*)pData;
+	dataFloat[pDataCount++] = value.a11;
+	dataFloat[pDataCount++] = value.a21;
 	
-	dataFloat[ pDataCount++ ] = value.a12;
-	dataFloat[ pDataCount++ ] = value.a22;
+	dataFloat[pDataCount++] = value.a12;
+	dataFloat[pDataCount++] = value.a22;
 	
-	dataFloat[ pDataCount++ ] = value.a13;
-	dataFloat[ pDataCount++ ] = value.a23;
+	dataFloat[pDataCount++] = value.a13;
+	dataFloat[pDataCount++] = value.a23;
 }
 
-void deoglDynamicTBOFloat32::SetBoolAt( int offset, bool value ){
-	SetFloatAt( offset, value ? 1.0f : 0.0f );
+void deoglDynamicTBOFloat32::SetBoolAt(int offset, bool value){
+	SetFloatAt(offset, value ? 1.0f : 0.0f);
 }
 
-void deoglDynamicTBOFloat32::SetFloatAt( int offset, float value ){
-	if( offset < 0 || offset >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetFloatAt(int offset, float value){
+	if(offset < 0 || offset >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value;
 }
 
-void deoglDynamicTBOFloat32::SetVec2At( int offset, float value1, float value2 ){
-	if( offset < 0 || offset + 1 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetVec2At(int offset, float value1, float value2){
+	if(offset < 0 || offset + 1 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value1;
-	dataFloat[ offset + 1 ] = value2;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value1;
+	dataFloat[offset + 1] = value2;
 }
 
-void deoglDynamicTBOFloat32::SetVec2At( int offset, const decVector2 &value ){
-	if( offset < 0 || offset + 1 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetVec2At(int offset, const decVector2 &value){
+	if(offset < 0 || offset + 1 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value.x;
-	dataFloat[ offset + 1 ] = value.y;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value.x;
+	dataFloat[offset + 1] = value.y;
 }
 
-void deoglDynamicTBOFloat32::SetVec3At( int offset, float value1, float value2, float value3 ){
-	if( offset < 0 || offset + 2 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetVec3At(int offset, float value1, float value2, float value3){
+	if(offset < 0 || offset + 2 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value1;
-	dataFloat[ offset + 1 ] = value2;
-	dataFloat[ offset + 2 ] = value3;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value1;
+	dataFloat[offset + 1] = value2;
+	dataFloat[offset + 2] = value3;
 }
 
-void deoglDynamicTBOFloat32::SetVec3At( int offset, const decVector &value ){
-	if( offset < 0 || offset + 2 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetVec3At(int offset, const decVector &value){
+	if(offset < 0 || offset + 2 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value.x;
-	dataFloat[ offset + 1 ] = value.y;
-	dataFloat[ offset + 2 ] = value.z;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value.x;
+	dataFloat[offset + 1] = value.y;
+	dataFloat[offset + 2] = value.z;
 }
 
-void deoglDynamicTBOFloat32::SetVec4At( int offset, float value1, float value2,
-float value3, float value4 ){
-	if( offset < 0 || offset + 3 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetVec4At(int offset, float value1, float value2,
+float value3, float value4){
+	if(offset < 0 || offset + 3 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value1;
-	dataFloat[ offset + 1 ] = value2;
-	dataFloat[ offset + 2 ] = value3;
-	dataFloat[ offset + 3 ] = value4;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value1;
+	dataFloat[offset + 1] = value2;
+	dataFloat[offset + 2] = value3;
+	dataFloat[offset + 3] = value4;
 }
 
-void deoglDynamicTBOFloat32::SetVec4At( int offset, const decVector &value, float value4 ){
-	if( offset < 0 || offset + 3 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetVec4At(int offset, const decVector &value, float value4){
+	if(offset < 0 || offset + 3 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value.x;
-	dataFloat[ offset + 1 ] = value.y;
-	dataFloat[ offset + 2 ] = value.z;
-	dataFloat[ offset + 3 ] = value4;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value.x;
+	dataFloat[offset + 1] = value.y;
+	dataFloat[offset + 2] = value.z;
+	dataFloat[offset + 3] = value4;
 }
 
-void deoglDynamicTBOFloat32::SetVec4At( int offset, const decVector4 &value ){
-	if( offset < 0 || offset + 3 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetVec4At(int offset, const decVector4 &value){
+	if(offset < 0 || offset + 3 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value.x;
-	dataFloat[ offset + 1 ] = value.y;
-	dataFloat[ offset + 2 ] = value.z;
-	dataFloat[ offset + 3 ] = value.w;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value.x;
+	dataFloat[offset + 1] = value.y;
+	dataFloat[offset + 2] = value.z;
+	dataFloat[offset + 3] = value.w;
 }
 
-void deoglDynamicTBOFloat32::SetMat4x3At( int offset, const decMatrix &value ){
-	if( offset < 0 || offset + 11 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetMat4x3At(int offset, const decMatrix &value){
+	if(offset < 0 || offset + 11 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value.a11;
-	dataFloat[ offset + 1 ] = value.a21;
-	dataFloat[ offset + 2 ] = value.a31;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value.a11;
+	dataFloat[offset + 1] = value.a21;
+	dataFloat[offset + 2] = value.a31;
 	
-	dataFloat[ offset + 3 ] = value.a12;
-	dataFloat[ offset + 4 ] = value.a22;
-	dataFloat[ offset + 5 ] = value.a32;
+	dataFloat[offset + 3] = value.a12;
+	dataFloat[offset + 4] = value.a22;
+	dataFloat[offset + 5] = value.a32;
 	
-	dataFloat[ offset + 6 ] = value.a13;
-	dataFloat[ offset + 7 ] = value.a23;
-	dataFloat[ offset + 8 ] = value.a33;
+	dataFloat[offset + 6] = value.a13;
+	dataFloat[offset + 7] = value.a23;
+	dataFloat[offset + 8] = value.a33;
 	
-	dataFloat[ offset + 9 ] = value.a14;
-	dataFloat[ offset + 10 ] = value.a24;
-	dataFloat[ offset + 11 ] = value.a34;
+	dataFloat[offset + 9] = value.a14;
+	dataFloat[offset + 10] = value.a24;
+	dataFloat[offset + 11] = value.a34;
 }
 
-void deoglDynamicTBOFloat32::SetMat3x4At( int offset, const decMatrix &value ){
-	if( offset < 0 || offset + 11 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetMat3x4At(int offset, const decMatrix &value){
+	if(offset < 0 || offset + 11 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value.a11;
-	dataFloat[ offset + 1 ] = value.a12;
-	dataFloat[ offset + 2 ] = value.a13;
-	dataFloat[ offset + 3 ] = value.a14;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value.a11;
+	dataFloat[offset + 1] = value.a12;
+	dataFloat[offset + 2] = value.a13;
+	dataFloat[offset + 3] = value.a14;
 	
-	dataFloat[ offset + 4 ] = value.a21;
-	dataFloat[ offset + 5 ] = value.a22;
-	dataFloat[ offset + 6 ] = value.a23;
-	dataFloat[ offset + 7] = value.a24;
+	dataFloat[offset + 4] = value.a21;
+	dataFloat[offset + 5] = value.a22;
+	dataFloat[offset + 6] = value.a23;
+	dataFloat[offset + 7] = value.a24;
 	
-	dataFloat[ offset + 8 ] = value.a31;
-	dataFloat[ offset + 9 ] = value.a32;
-	dataFloat[ offset + 10 ] = value.a33;
-	dataFloat[ offset + 11 ] = value.a34;
+	dataFloat[offset + 8] = value.a31;
+	dataFloat[offset + 9] = value.a32;
+	dataFloat[offset + 10] = value.a33;
+	dataFloat[offset + 11] = value.a34;
 }
 
-void deoglDynamicTBOFloat32::SetMat3x3At( int offset, const decMatrix &value ){
-	if( offset < 0 || offset + 8 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetMat3x3At(int offset, const decMatrix &value){
+	if(offset < 0 || offset + 8 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value.a11;
-	dataFloat[ offset + 1 ] = value.a21;
-	dataFloat[ offset + 2 ] = value.a31;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value.a11;
+	dataFloat[offset + 1] = value.a21;
+	dataFloat[offset + 2] = value.a31;
 	
-	dataFloat[ offset + 3 ] = value.a12;
-	dataFloat[ offset + 4 ] = value.a22;
-	dataFloat[ offset + 5 ] = value.a32;
+	dataFloat[offset + 3] = value.a12;
+	dataFloat[offset + 4] = value.a22;
+	dataFloat[offset + 5] = value.a32;
 	
-	dataFloat[ offset + 6 ] = value.a13;
-	dataFloat[ offset + 7 ] = value.a23;
-	dataFloat[ offset + 8 ] = value.a33;
+	dataFloat[offset + 6] = value.a13;
+	dataFloat[offset + 7] = value.a23;
+	dataFloat[offset + 8] = value.a33;
 }
 
-void deoglDynamicTBOFloat32::SetMat3x2At( int offset, const decMatrix &value ){
-	if( offset < 0 || offset + 5 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOFloat32::SetMat3x2At(int offset, const decMatrix &value){
+	if(offset < 0 || offset + 5 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	float * const dataFloat = ( float* )pData;
-	dataFloat[ offset ] = value.a11;
-	dataFloat[ offset + 1 ] = value.a21;
+	float * const dataFloat = (float*)pData;
+	dataFloat[offset] = value.a11;
+	dataFloat[offset + 1] = value.a21;
 	
-	dataFloat[ offset + 2 ] = value.a12;
-	dataFloat[ offset + 3 ] = value.a22;
+	dataFloat[offset + 2] = value.a12;
+	dataFloat[offset + 3] = value.a22;
 	
-	dataFloat[ offset + 4 ] = value.a13;
-	dataFloat[ offset + 5 ] = value.a23;
+	dataFloat[offset + 4] = value.a13;
+	dataFloat[offset + 5] = value.a23;
 }
 
 void deoglDynamicTBOFloat32::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
-	logger.LogInfoFormat( "TBO %d-Float32:", pComponentCount );
-	float *data = ( float* )pData;
+	logger.LogInfoFormat("TBO %d-Float32:", pComponentCount);
+	float *data = (float*)pData;
 	int i, pixel = 0;
 	
 	pEnsurePadding();
 	
-	switch( pComponentCount ){
+	switch(pComponentCount){
 	case 1:
-		for( i=0; i<pDataCount; i++ ){
+		for(i=0; i<pDataCount; i++){
 			const float v1 = *(data++);
-			logger.LogInfoFormat( "%5d: [%11.4f]", pixel++, v1 );
+			logger.LogInfoFormat("%5d: [%11.4f]", pixel++, v1);
 		}
 		break;
 		
 	case 2:
-		for( i=0; i<pDataCount; i+=2 ){
+		for(i=0; i<pDataCount; i+=2){
 			const float v1 = *(data++);
 			const float v2 = *(data++);
-			logger.LogInfoFormat( "%5d: [%11.4f | %11.4f]", pixel++, v1, v2 );
+			logger.LogInfoFormat("%5d: [%11.4f | %11.4f]", pixel++, v1, v2);
 		}
 		break;
 		
 	case 3:
-		for( i=0; i<pDataCount; i+=3 ){
+		for(i=0; i<pDataCount; i+=3){
 			const float v1 = *(data++);
 			const float v2 = *(data++);
 			const float v3 = *(data++);
-			logger.LogInfoFormat( "%5d: [%11.4f | %11.4f | %11.4f]", pixel++, v1, v2, v3 );
+			logger.LogInfoFormat("%5d: [%11.4f | %11.4f | %11.4f]", pixel++, v1, v2, v3);
 		}
 		break;
 		
 	case 4:
-		for( i=0; i<pDataCount; i+=4 ){
+		for(i=0; i<pDataCount; i+=4){
 			const float v1 = *(data++);
 			const float v2 = *(data++);
 			const float v3 = *(data++);
 			const float v4 = *(data++);
-			logger.LogInfoFormat( "%5d: [%11.4f | %11.4f | %11.4f | %11.4f]", pixel++, v1, v2, v3, v4 );
+			logger.LogInfoFormat("%5d: [%11.4f | %11.4f | %11.4f | %11.4f]", pixel++, v1, v2, v3, v4);
 		}
 		break;
 	}
 }
 
 GLenum deoglDynamicTBOFloat32::GetTBOFormat(){
-	switch( pComponentCount ){
+	switch(pComponentCount){
 	case 1:
 		return GL_R32F;
 		
@@ -436,6 +436,6 @@ GLenum deoglDynamicTBOFloat32::GetTBOFormat(){
 		return GL_RGBA32F;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }

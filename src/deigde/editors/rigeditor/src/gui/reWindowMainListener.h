@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWindowMainListener( reWindowMain &window );
+	reWindowMainListener(reWindowMain &window);
 	
 	/** \brief Clean up listener. */
 	~reWindowMainListener();
@@ -55,66 +55,66 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged( reRig *rig );
+	virtual void ModeChanged(reRig *rig);
 	
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( reRig *rig );
+	virtual void StateChanged(reRig *rig);
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged( reRig *rig );
+	virtual void UndoChanged(reRig *rig);
 	
 	
 	
 	/** \brief A bone changed selection state. */
-	virtual void BoneSelectedChanged( reRig *rig, reRigBone *bone );
+	virtual void BoneSelectedChanged(reRig *rig, reRigBone *bone);
 	
 	/** \brief All bones have been deselected. */
-	virtual void AllBonesDeselected( reRig *rig );
+	virtual void AllBonesDeselected(reRig *rig);
 	
 	/** \brief The active bone changed. */
-	virtual void ActiveBoneChanged( reRig *rig );
+	virtual void ActiveBoneChanged(reRig *rig);
 	
 	
 	
 	/** \brief Shape count changed. */
-	virtual void ShapeCountChanged( reRig *rig );
+	virtual void ShapeCountChanged(reRig *rig);
 	
 	/** \brief A shape changed selection state. */
-	virtual void ShapeSelectedChanged( reRig *rig, reRigShape *shape );
+	virtual void ShapeSelectedChanged(reRig *rig, reRigShape *shape);
 	
 	/** \brief All shapes have been deselected. */
-	virtual void AllShapesDeselected( reRig *rig );
+	virtual void AllShapesDeselected(reRig *rig);
 	
 	/** \brief The active shape changed. */
-	virtual void ActiveShapeChanged( reRig *rig );
+	virtual void ActiveShapeChanged(reRig *rig);
 	
 	
 	
 	/** \brief Constraint count changed. */
-	virtual void ConstraintCountChanged( reRig *rig );
+	virtual void ConstraintCountChanged(reRig *rig);
 	
 	/** \brief A constraint changed selection state. */
-	virtual void ConstraintSelectedChanged( reRig *rig, reRigConstraint *constraint );
+	virtual void ConstraintSelectedChanged(reRig *rig, reRigConstraint *constraint);
 	
 	/** \brief All constraints have been deselected. */
-	virtual void AllConstraintsDeselected( reRig *rig );
+	virtual void AllConstraintsDeselected(reRig *rig);
 	
 	/** \brief The active constraint changed. */
-	virtual void ActiveConstraintChanged( reRig *rig );
+	virtual void ActiveConstraintChanged(reRig *rig);
 	
 	
 	
 	/** \brief Push count changed. */
-	virtual void PushCountChanged( reRig *rig );
+	virtual void PushCountChanged(reRig *rig);
 	
 	/** \brief A push changed selection state. */
-	virtual void PushSelectedChanged( reRig *rig, reRigPush *push );
+	virtual void PushSelectedChanged(reRig *rig, reRigPush *push);
 	
 	/** \brief All pushes have been deselected. */
-	virtual void AllPushesDeselected( reRig *rig );
+	virtual void AllPushesDeselected(reRig *rig);
 	
 	/** \brief The active push changed. */
-	virtual void ActivePushChanged( reRig *rig );
+	virtual void ActivePushChanged(reRig *rig);
 	/*@}*/
 };
 

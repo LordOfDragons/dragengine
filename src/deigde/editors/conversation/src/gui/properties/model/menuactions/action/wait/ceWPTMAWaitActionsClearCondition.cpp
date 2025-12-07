@@ -47,15 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsClearCondition::ceWPTMAWaitActionsClearCondition( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait ) :
-ceWPTMenuAction( windowMain, "Clear Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pWait( &wait )
+ceWPTMAWaitActionsClearCondition::ceWPTMAWaitActionsClearCondition(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait) :
+ceWPTMenuAction(windowMain, "Clear Condition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pWait(&wait)
 {
-	SetEnabled( wait.GetCondition() != NULL );
+	SetEnabled(wait.GetCondition() != NULL);
 }
 
 

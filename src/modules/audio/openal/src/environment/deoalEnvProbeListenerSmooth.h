@@ -63,7 +63,7 @@ public:
 	deoalEnvProbeListenerSmooth();
 	
 	/** \brief Create environment probe listener. */
-	deoalEnvProbeListenerSmooth( const deoalEnvProbeListenerSmooth &listener );
+	deoalEnvProbeListenerSmooth(const deoalEnvProbeListenerSmooth &listener);
 	
 	/** \brief Clean up environment probe listener. */
 	~deoalEnvProbeListenerSmooth();
@@ -115,16 +115,16 @@ public:
 	
 	
 	/** \brief Set current and goal from listener. */
-	void Set( const deoalEnvProbeListener &listener );
+	void Set(const deoalEnvProbeListener &listener);
 	
 	/** \brif Set goal from listener. */
-	void SetGoal( const deoalEnvProbeListener &listener );
+	void SetGoal(const deoalEnvProbeListener &listener);
 	
 	/** \brief Update values. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Update listener with current values. */
-	void AssignTo( deoalEnvProbeListener &listener );
+	void AssignTo(deoalEnvProbeListener &listener);
 	/*@}*/
 	
 	
@@ -132,7 +132,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Assign. */
-	deoalEnvProbeListenerSmooth &operator=( const deoalEnvProbeListenerSmooth &listener );
+	deoalEnvProbeListenerSmooth &operator=(const deoalEnvProbeListenerSmooth &listener);
 	/*@}*/
 };
 

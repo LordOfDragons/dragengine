@@ -41,21 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTimer::igdeTimer( igdeEnvironment &environment ) :
-pEnvironment( environment ),
-pNativeTimer( NULL ),
-pTimeout( 0 ),
-pRepeating( false ),
-pRunning( false )
+igdeTimer::igdeTimer(igdeEnvironment &environment) :
+pEnvironment(environment),
+pNativeTimer(NULL),
+pTimeout(0),
+pRepeating(false),
+pRunning(false)
 {
-	pNativeTimer = igdeNativeTimer::CreateNativeTimer( *this );
+	pNativeTimer = igdeNativeTimer::CreateNativeTimer(*this);
 }
 
 igdeTimer::~igdeTimer(){
 	Stop();
 	
-	if( pNativeTimer ){
-		( ( igdeNativeTimer* )pNativeTimer )->DestroyNativeTimer();
+	if(pNativeTimer){
+		((igdeNativeTimer*)pNativeTimer)->DestroyNativeTimer();
 	}
 }
 
@@ -64,23 +64,23 @@ igdeTimer::~igdeTimer(){
 // Management
 ///////////////
 
-void igdeTimer::Start( int timeoutMS, bool repeating ){
+void igdeTimer::Start(int timeoutMS, bool repeating){
 	Stop();
 	
-	pTimeout = decMath::max( timeoutMS, 0 );
+	pTimeout = decMath::max(timeoutMS, 0);
 	pRepeating = repeating;
 	pRunning = true;
 	
-	( ( igdeNativeTimer* )pNativeTimer )->StartTimer();
+	((igdeNativeTimer*)pNativeTimer)->StartTimer();
 }
 
-void igdeTimer::Start( double timeout, bool repeating ){
-	Start( ( int )( timeout * 1000.0 + 0.5 ), repeating );
+void igdeTimer::Start(double timeout, bool repeating){
+	Start((int)(timeout * 1000.0 + 0.5), repeating);
 }
 
 void igdeTimer::Stop(){
-	if( pRunning ){
-		( ( igdeNativeTimer* )pNativeTimer )->StopTimer();
+	if(pRunning){
+		((igdeNativeTimer*)pNativeTimer)->StopTimer();
 		pRunning = false;
 	}
 }
@@ -93,6 +93,6 @@ void igdeTimer::OnTimeout(){
 // Protected Functions
 ////////////////////////
 
-void igdeTimer::SetNativeTimer( void *nativeTimer ){
+void igdeTimer::SetNativeTimer(void *nativeTimer){
 	pNativeTimer = nativeTimer;
 }

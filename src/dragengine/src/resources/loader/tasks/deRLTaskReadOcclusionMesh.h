@@ -43,8 +43,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadOcclusionMesh( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deOcclusionMesh *occlusionMesh );
+	deRLTaskReadOcclusionMesh(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deOcclusionMesh *occlusionMesh);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskReadOcclusionMesh();

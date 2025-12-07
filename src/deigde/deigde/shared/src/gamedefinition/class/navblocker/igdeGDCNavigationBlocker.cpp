@@ -39,28 +39,28 @@
 ////////////////////////////
 
 igdeGDCNavigationBlocker::igdeGDCNavigationBlocker() :
-pScaling( 1.0f, 1.0f, 1.0f ),
-pEnabled( true ),
-pLayer( 0 ),
-pType( deNavigationSpace::estMesh ),
-pBlockingPriority( 0 ){
+pScaling(1.0f, 1.0f, 1.0f),
+pEnabled(true),
+pLayer(0),
+pType(deNavigationSpace::estMesh),
+pBlockingPriority(0){
 }
 
-igdeGDCNavigationBlocker::igdeGDCNavigationBlocker( const igdeGDCNavigationBlocker &blocker ) :
-pPosition( blocker.pPosition ),
-pOrientation( blocker.pOrientation ),
-pScaling( blocker.pScaling ),
-pBoneName( blocker.pBoneName ),
-pEnabled( blocker.pEnabled ),
-pLayer( blocker.pLayer ),
-pType( blocker.pType ),
-pBlockingPriority( blocker.pBlockingPriority ),
-pShapeList( blocker.pShapeList )
+igdeGDCNavigationBlocker::igdeGDCNavigationBlocker(const igdeGDCNavigationBlocker &blocker) :
+pPosition(blocker.pPosition),
+pOrientation(blocker.pOrientation),
+pScaling(blocker.pScaling),
+pBoneName(blocker.pBoneName),
+pEnabled(blocker.pEnabled),
+pLayer(blocker.pLayer),
+pType(blocker.pType),
+pBlockingPriority(blocker.pBlockingPriority),
+pShapeList(blocker.pShapeList)
 {
 	int i;
 	
-	for( i=0; i<=epAttachRotation; i++ ){
-		pPropertyNames[ i ] = blocker.pPropertyNames[ i ];
+	for(i=0; i<=epAttachRotation; i++){
+		pPropertyNames[i] = blocker.pPropertyNames[i];
 	}
 }
 
@@ -72,64 +72,64 @@ igdeGDCNavigationBlocker::~igdeGDCNavigationBlocker(){
 // Management
 ///////////////
 
-void igdeGDCNavigationBlocker::SetPosition( const decVector &position ){
+void igdeGDCNavigationBlocker::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void igdeGDCNavigationBlocker::SetOrientation( const decQuaternion &orientation ){
+void igdeGDCNavigationBlocker::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void igdeGDCNavigationBlocker::SetScaling( const decVector &scaling ){
+void igdeGDCNavigationBlocker::SetScaling(const decVector &scaling){
 	pScaling = scaling;
 }
 
-void igdeGDCNavigationBlocker::SetBoneName( const char *boneName ){
+void igdeGDCNavigationBlocker::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
-void igdeGDCNavigationBlocker::SetEnabled( bool enabled ){
+void igdeGDCNavigationBlocker::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
 
 
-void igdeGDCNavigationBlocker::SetLayer( int layer ){
+void igdeGDCNavigationBlocker::SetLayer(int layer){
 	pLayer = layer;
 }
 
-void igdeGDCNavigationBlocker::SetType( deNavigationSpace::eSpaceTypes type ){
+void igdeGDCNavigationBlocker::SetType(deNavigationSpace::eSpaceTypes type){
 	pType = type;
 }
 
-void igdeGDCNavigationBlocker::SetBlockingPriority( int priority ){
+void igdeGDCNavigationBlocker::SetBlockingPriority(int priority){
 	pBlockingPriority = priority;
 }
 
 
 
-void igdeGDCNavigationBlocker::SetShapeList( const decShapeList &shapeList ){
+void igdeGDCNavigationBlocker::SetShapeList(const decShapeList &shapeList){
 	pShapeList = shapeList;
 }
 
 
 
-bool igdeGDCNavigationBlocker::IsPropertySet( eProperties property ) const{
-	return ! pPropertyNames[ property ].IsEmpty();
+bool igdeGDCNavigationBlocker::IsPropertySet(eProperties property) const{
+	return !pPropertyNames[property].IsEmpty();
 }
 
-const decString &igdeGDCNavigationBlocker::GetPropertyName( eProperties property ) const{
-	return pPropertyNames[ property ];
+const decString &igdeGDCNavigationBlocker::GetPropertyName(eProperties property) const{
+	return pPropertyNames[property];
 }
 
-void igdeGDCNavigationBlocker::SetPropertyName( eProperties property, const char *name ){
-	pPropertyNames[ property ] = name;
+void igdeGDCNavigationBlocker::SetPropertyName(eProperties property, const char *name){
+	pPropertyNames[property] = name;
 }
 
-bool igdeGDCNavigationBlocker::HasPropertyWithName( const char *name ) const{
+bool igdeGDCNavigationBlocker::HasPropertyWithName(const char *name) const{
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
-		if( pPropertyNames[ i ] == name ){
+	for(i=0; i<=epAttachRotation; i++){
+		if(pPropertyNames[i] == name){
 			return true;
 		}
 	}

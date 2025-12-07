@@ -43,28 +43,28 @@
 ////////////////////////////
 
 igdeWConnection::igdeWConnection() :
-pColor( 0.0f, 0.0f, 0.0f ),
-pArrowOnAnchor( false ),
-pArrowOnTarget( true ),
-pArrowSize( 0.05f ),
-pArrowLength( 2.0f ),
-pArrowRadius( 0.15f ),
-pVisible( true )
+pColor(0.0f, 0.0f, 0.0f),
+pArrowOnAnchor(false),
+pArrowOnTarget(true),
+pArrowSize(0.05f),
+pArrowLength(2.0f),
+pArrowRadius(0.15f),
+pVisible(true)
 {
 	try{
-		pDDSConnection.SetEdgeColor( pColor );
-		pDDSConnection.SetFillColor( decColor( pColor.r, pColor.g, pColor.b, pColor.a * 0.2f ) );
+		pDDSConnection.SetEdgeColor(pColor);
+		pDDSConnection.SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
 		
-		pDDSArrowAnchor.SetEdgeColor( pColor );
-		pDDSArrowAnchor.SetFillColor( decColor( pColor.r, pColor.g, pColor.b, pColor.a * 0.2f ) );
+		pDDSArrowAnchor.SetEdgeColor(pColor);
+		pDDSArrowAnchor.SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
 		
-		pDDSArrowTarget.SetEdgeColor( pColor );
-		pDDSArrowTarget.SetFillColor( decColor( pColor.r, pColor.g, pColor.b, pColor.a * 0.2f ) );
+		pDDSArrowTarget.SetEdgeColor(pColor);
+		pDDSArrowTarget.SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
 		
 		pRebuildArrow();
 		pUpdateGeometries();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -79,16 +79,16 @@ igdeWConnection::~igdeWConnection(){
 // Management
 ///////////////
 
-void igdeWConnection::SetParentDebugDrawer( deDebugDrawer *debugDrawer ){
-	pDDSConnection.SetParentDebugDrawer( debugDrawer );
-	pDDSArrowAnchor.SetParentDebugDrawer( debugDrawer );
-	pDDSArrowTarget.SetParentDebugDrawer( debugDrawer );
+void igdeWConnection::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
+	pDDSConnection.SetParentDebugDrawer(debugDrawer);
+	pDDSArrowAnchor.SetParentDebugDrawer(debugDrawer);
+	pDDSArrowTarget.SetParentDebugDrawer(debugDrawer);
 }
 
 
 
-void igdeWConnection::SetAnchorPosition( const decVector &position ){
-	if( position.IsEqualTo( pAnchorPosition ) ){
+void igdeWConnection::SetAnchorPosition(const decVector &position){
+	if(position.IsEqualTo(pAnchorPosition)){
 		return;
 	}
 	
@@ -96,8 +96,8 @@ void igdeWConnection::SetAnchorPosition( const decVector &position ){
 	pUpdateGeometries();
 }
 
-void igdeWConnection::SetTargetPosition( const decVector &position ){
-	if( position.IsEqualTo( pTargetPosition ) ){
+void igdeWConnection::SetTargetPosition(const decVector &position){
+	if(position.IsEqualTo(pTargetPosition)){
 		return;
 	}
 	
@@ -105,8 +105,8 @@ void igdeWConnection::SetTargetPosition( const decVector &position ){
 	pUpdateGeometries();
 }
 
-void igdeWConnection::SetPositions( const decVector &anchorPosition, const decVector &targetPosition ){
-	if( anchorPosition.IsEqualTo( pAnchorPosition ) && targetPosition.IsEqualTo( pTargetPosition ) ){
+void igdeWConnection::SetPositions(const decVector &anchorPosition, const decVector &targetPosition){
+	if(anchorPosition.IsEqualTo(pAnchorPosition) && targetPosition.IsEqualTo(pTargetPosition)){
 		return;
 	}
 	
@@ -117,25 +117,25 @@ void igdeWConnection::SetPositions( const decVector &anchorPosition, const decVe
 
 
 
-void igdeWConnection::SetColor( const decColor &color ){
-	if( color.IsEqualTo( pColor ) ){
+void igdeWConnection::SetColor(const decColor &color){
+	if(color.IsEqualTo(pColor)){
 		return;
 	}
 	
 	pColor = color;
 	
-	pDDSConnection.SetEdgeColor( color );
-	pDDSConnection.SetFillColor( decColor( color.r, color.g, color.b, color.a * 0.2f ) );
+	pDDSConnection.SetEdgeColor(color);
+	pDDSConnection.SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
 	
-	pDDSArrowAnchor.SetEdgeColor( color );
-	pDDSArrowAnchor.SetFillColor( decColor( color.r, color.g, color.b, color.a * 0.2f ) );
+	pDDSArrowAnchor.SetEdgeColor(color);
+	pDDSArrowAnchor.SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
 	
-	pDDSArrowTarget.SetEdgeColor( color );
-	pDDSArrowTarget.SetFillColor( decColor( color.r, color.g, color.b, color.a * 0.2f ) );
+	pDDSArrowTarget.SetEdgeColor(color);
+	pDDSArrowTarget.SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
 }
 
-void igdeWConnection::SetArrowOnAnchor( bool arrowOnAnchor ){
-	if( arrowOnAnchor == pArrowOnAnchor ){
+void igdeWConnection::SetArrowOnAnchor(bool arrowOnAnchor){
+	if(arrowOnAnchor == pArrowOnAnchor){
 		return;
 	}
 	
@@ -143,8 +143,8 @@ void igdeWConnection::SetArrowOnAnchor( bool arrowOnAnchor ){
 	pUpdateGeometries();
 }
 
-void igdeWConnection::SetArrowOnTarget( bool arrowOnTarget ){
-	if( arrowOnTarget == pArrowOnTarget ){
+void igdeWConnection::SetArrowOnTarget(bool arrowOnTarget){
+	if(arrowOnTarget == pArrowOnTarget){
 		return;
 	}
 	
@@ -152,9 +152,9 @@ void igdeWConnection::SetArrowOnTarget( bool arrowOnTarget ){
 	pUpdateGeometries();
 }
 
-void igdeWConnection::SetArrowSize( float size ){
-	size = decMath::max( size, 0.001f );
-	if( fabsf( size - pArrowSize ) < FLOAT_SAFE_EPSILON ){
+void igdeWConnection::SetArrowSize(float size){
+	size = decMath::max(size, 0.001f);
+	if(fabsf(size - pArrowSize) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -163,8 +163,8 @@ void igdeWConnection::SetArrowSize( float size ){
 	pUpdateGeometries();
 }
 
-void igdeWConnection::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void igdeWConnection::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
@@ -178,17 +178,17 @@ void igdeWConnection::SetVisible( bool visible ){
 //////////////////////
 
 void igdeWConnection::pCleanUp(){
-	SetParentDebugDrawer( NULL );
+	SetParentDebugDrawer(NULL);
 }
 
 void igdeWConnection::pRebuildArrow(){
 	igdeShapeBuilder builder;
 	
-	builder.CreateArrow( pDDSConnection, decVector( 0.0f, 0.0f, -0.5f ),
-		decVector( 0.0f, 0.0f, 0.5f ), 0.5f, 1e-5f, 0.5f );
+	builder.CreateArrow(pDDSConnection, decVector(0.0f, 0.0f, -0.5f),
+		decVector(0.0f, 0.0f, 0.5f), 0.5f, 1e-5f, 0.5f);
 	
-	builder.CreateArrowHead( pDDSArrowTarget, decVector( 0.0f, 0.0f, -1.0f ), decVector(), 0.5f );
-	builder.CreateArrowHead( pDDSArrowAnchor, decVector( 0.0f, 0.0f, 1.0f ), decVector(), 0.5f );
+	builder.CreateArrowHead(pDDSArrowTarget, decVector(0.0f, 0.0f, -1.0f), decVector(), 0.5f);
+	builder.CreateArrowHead(pDDSArrowAnchor, decVector(0.0f, 0.0f, 1.0f), decVector(), 0.5f);
 }
 
 void igdeWConnection::pUpdateGeometries(){
@@ -198,17 +198,17 @@ void igdeWConnection::pUpdateGeometries(){
 	// calculate matrix
 	decMatrix matrix;
 	
-	if( len < 1e-5f ){
-		matrix.SetTranslation( pAnchorPosition );
+	if(len < 1e-5f){
+		matrix.SetTranslation(pAnchorPosition);
 		
 	}else{
 		const decVector dirNor = direction / len;
 		
-		if( fabsf( dirNor.y ) < 0.999f ){
-			matrix.SetVU( dirNor, decVector( 0.0f, 1.0f, 0.0f ) );
+		if(fabsf(dirNor.y) < 0.999f){
+			matrix.SetVU(dirNor, decVector(0.0f, 1.0f, 0.0f));
 			
 		}else{
-			matrix.SetVU( dirNor, decVector( 0.0f, 0.0f, 1.0f ) );
+			matrix.SetVU(dirNor, decVector(0.0f, 0.0f, 1.0f));
 		}
 	}
 	
@@ -217,31 +217,31 @@ void igdeWConnection::pUpdateGeometries(){
 	const float arrowLength = pArrowSize * pArrowLength * 0.5f;
 	const float arrowSize = pArrowSize * pArrowRadius;
 	
-	pDDSArrowTarget.SetPosition( matrix.Transform( 0.0f, 0.0f, len ) );
-	pDDSArrowTarget.SetOrientation( orientation );
-	pDDSArrowTarget.SetScale( decVector( pArrowSize, pArrowSize, arrowLength ) );
-	pDDSArrowTarget.SetVisible( pVisible && pArrowOnTarget );
+	pDDSArrowTarget.SetPosition(matrix.Transform(0.0f, 0.0f, len));
+	pDDSArrowTarget.SetOrientation(orientation);
+	pDDSArrowTarget.SetScale(decVector(pArrowSize, pArrowSize, arrowLength));
+	pDDSArrowTarget.SetVisible(pVisible && pArrowOnTarget);
 	
-	pDDSArrowAnchor.SetPosition( matrix.GetPosition() );
-	pDDSArrowAnchor.SetOrientation( orientation );
-	pDDSArrowAnchor.SetScale( decVector( pArrowSize, pArrowSize, arrowLength ) );
-	pDDSArrowAnchor.SetVisible( pVisible && pArrowOnAnchor );
+	pDDSArrowAnchor.SetPosition(matrix.GetPosition());
+	pDDSArrowAnchor.SetOrientation(orientation);
+	pDDSArrowAnchor.SetScale(decVector(pArrowSize, pArrowSize, arrowLength));
+	pDDSArrowAnchor.SetVisible(pVisible && pArrowOnAnchor);
 	
 	float center = len * 0.5f;
-	if( pArrowOnTarget ){
+	if(pArrowOnTarget){
 		len -= arrowLength;
 		center -= arrowLength * 0.5f;
 	}
-	if( pArrowOnAnchor ){
+	if(pArrowOnAnchor){
 		len -= arrowLength;
 		center += arrowLength * 0.5f;
 	}
-	if( len < 1e-5f ){
+	if(len < 1e-5f){
 		len = 1e-5f;
 	}
 	
-	pDDSConnection.SetPosition( matrix.Transform( 0.0f, 0.0f, center ) );
-	pDDSConnection.SetOrientation( orientation );
-	pDDSConnection.SetScale( decVector( arrowSize, arrowSize, len ) );
-	pDDSConnection.SetVisible( pVisible );
+	pDDSConnection.SetPosition(matrix.Transform(0.0f, 0.0f, center));
+	pDDSConnection.SetOrientation(orientation);
+	pDDSConnection.SetScale(decVector(arrowSize, arrowSize, len));
+	pDDSConnection.SetVisible(pVisible);
 }

@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	desynParameterBool( deDESynthesizer &synthesizer );
+	desynParameterBool(deDESynthesizer &synthesizer);
 	/*@}*/
 	
 	
@@ -50,13 +50,13 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	
 	/** \brief Current value. */
 	virtual bool GetParameterBool() = 0;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterBool( bool value ) = 0;
+	virtual void SetParameterBool(bool value) = 0;
 	/*@}*/
 };
 

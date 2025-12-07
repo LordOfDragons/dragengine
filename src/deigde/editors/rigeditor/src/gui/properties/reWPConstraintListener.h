@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPConstraintListener( reWPConstraint &panel );
+	reWPConstraintListener(reWPConstraint &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~reWPConstraintListener();
@@ -55,20 +55,20 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Bone count changed. */
-	virtual void BoneCountChanged( reRig *rig );
+	virtual void BoneCountChanged(reRig *rig);
 	
 	/** \brief A bone changed. */
-	virtual void BoneChanged( reRig *rig, reRigBone *bone );
+	virtual void BoneChanged(reRig *rig, reRigBone *bone);
 	
 	/** \brief A constraint changed. */
-	virtual void ConstraintChanged( reRig *rig, reRigConstraint *constraint );
+	virtual void ConstraintChanged(reRig *rig, reRigConstraint *constraint);
 	
 	/** \brief A constraint degree of freedom changed. */
-	virtual void ConstraintDofChanged( reRig *rig, reRigConstraint *constraint,
-		deColliderConstraint::eDegreesOfFreedom dof );
+	virtual void ConstraintDofChanged(reRig *rig, reRigConstraint *constraint,
+		deColliderConstraint::eDegreesOfFreedom dof);
 	
 	/** \brief The active constraint changed. */
-	virtual void ActiveConstraintChanged( reRig *rig );
+	virtual void ActiveConstraintChanged(reRig *rig);
 	/*@}*/
 };
 

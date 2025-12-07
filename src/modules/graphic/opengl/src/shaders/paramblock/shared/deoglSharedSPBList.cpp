@@ -40,12 +40,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBList::deoglSharedSPBList( deoglRenderThread &renderThread, deoglShaderParameterBlock *layout ) :
-pRenderThread( renderThread ),
-pLayout( layout )
+deoglSharedSPBList::deoglSharedSPBList(deoglRenderThread &renderThread, deoglShaderParameterBlock *layout) :
+pRenderThread(renderThread),
+pLayout(layout)
 {
-	DEASSERT_NOTNULL( layout )
-	DEASSERT_TRUE( layout->GetElementCount() >= 1 )
+	DEASSERT_NOTNULL(layout)
+	DEASSERT_TRUE(layout->GetElementCount() >= 1)
 	
 	pSize = layout->GetElementCount();
 }
@@ -67,23 +67,23 @@ int deoglSharedSPBList::GetCount() const{
 	return pSPBs.GetCount();
 }
 
-deoglSharedSPB *deoglSharedSPBList::GetAt( int index ) const{
-	return ( deoglSharedSPB* )pSPBs.GetAt( index );
+deoglSharedSPB *deoglSharedSPBList::GetAt(int index) const{
+	return (deoglSharedSPB*)pSPBs.GetAt(index);
 }
 
 deoglSharedSPBElement *deoglSharedSPBList::AddElement(){
 	const int count = pSPBs.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglSharedSPBElement * const element = ( ( deoglSharedSPB* )pSPBs.GetAt( i ) )->AddElement();
-		if( element ){
+	for(i=0; i<count; i++){
+		deoglSharedSPBElement * const element = ((deoglSharedSPB*)pSPBs.GetAt(i))->AddElement();
+		if(element){
 			return element;
 		}
 	}
 	
-	const deoglSharedSPB::Ref spb( deoglSharedSPB::Ref::NewWith(pCreateBlock()) );
-	pSPBs.Add( spb );
+	const deoglSharedSPB::Ref spb(deoglSharedSPB::Ref::NewWith(pCreateBlock()));
+	pSPBs.Add(spb);
 	
 	return spb->AddElement();
 }

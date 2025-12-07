@@ -38,12 +38,12 @@ const char * const gdeClipboardDataOCSpeaker::TYPE_NAME = "OCSpeaker";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCSpeaker::gdeClipboardDataOCSpeaker( gdeOCSpeaker *speaker ) :
-igdeClipboardData( TYPE_NAME ),
-pSpeaker( NULL )
+gdeClipboardDataOCSpeaker::gdeClipboardDataOCSpeaker(gdeOCSpeaker *speaker) :
+igdeClipboardData(TYPE_NAME),
+pSpeaker(NULL)
 {
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSpeaker = speaker;
@@ -51,7 +51,7 @@ pSpeaker( NULL )
 }
 
 gdeClipboardDataOCSpeaker::~gdeClipboardDataOCSpeaker(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->FreeReference();
 	}
 }

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feViewFontImageListener::feViewFontImageListener( feViewFontImage &panel ) :
-pPanel( panel ){
+feViewFontImageListener::feViewFontImageListener(feViewFontImage &panel) :
+pPanel(panel){
 }
 
 feViewFontImageListener::~feViewFontImageListener(){
@@ -52,28 +52,28 @@ feViewFontImageListener::~feViewFontImageListener(){
 ///////////////
 
 
-void feViewFontImageListener::FontChanged( feFont *font ){
+void feViewFontImageListener::FontChanged(feFont *font){
 	pPanel.UpdateScrollbarRanges();
 	pPanel.UpdateImageViewCanvas();
 }
 
-void feViewFontImageListener::ImageChanged( feFont *font, feFontImage *image ){
+void feViewFontImageListener::ImageChanged(feFont *font, feFontImage *image){
     pPanel.UpdateScrollbarRanges();
 	pPanel.UpdateImageViewCanvas();
 }
 
-void feViewFontImageListener::GlyphStructureChanged( feFont *font ){
+void feViewFontImageListener::GlyphStructureChanged(feFont *font){
 	pPanel.UpdateImageViewCanvas();
 }
 
-void feViewFontImageListener::GlyphChanged( feFont *font, feFontGlyph *glyph ){
+void feViewFontImageListener::GlyphChanged(feFont *font, feFontGlyph *glyph){
 	pPanel.UpdateImageViewCanvas();
 }
 
-void feViewFontImageListener::GlyphSelectionChanged( feFont *font ){
+void feViewFontImageListener::GlyphSelectionChanged(feFont *font){
 	pPanel.UpdateImageViewCanvas();
 }
 
-void feViewFontImageListener::ActiveGlyphChanged( feFont *font ){
+void feViewFontImageListener::ActiveGlyphChanged(feFont *font){
 	pPanel.UpdateImageViewCanvas();
 }

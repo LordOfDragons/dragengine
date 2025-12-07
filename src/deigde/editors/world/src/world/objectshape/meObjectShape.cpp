@@ -60,13 +60,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meObjectShape::meObjectShape( igdeEnvironment *environment, const decShape &shape ) :
-pEnvironment( environment ),
+meObjectShape::meObjectShape(igdeEnvironment *environment, const decShape &shape) :
+pEnvironment(environment),
 
-pColliderOwner( this )
+pColliderOwner(this)
 {
-	if( ! environment ){
-		DETHROW( deeInvalidParam );
+	if(!environment){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWorld = NULL;
@@ -84,32 +84,32 @@ pColliderOwner( this )
 	
 	try{
 		pEngCollider = engine.GetColliderManager()->CreateColliderVolume();
-		pEngCollider->SetEnabled( true );
-		pEngCollider->SetResponseType( deCollider::ertStatic );
-		pEngCollider->SetUseLocalGravity( true );
+		pEngCollider->SetEnabled(true);
+		pEngCollider->SetResponseType(deCollider::ertStatic);
+		pEngCollider->SetUseLocalGravity(true);
 		
 		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmObjectShape );
+		collisionCategory.SetBit(meWorld::eclmObjectShape);
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
+		collisionFilter.SetBit(meWorld::eclmEditing);
 		
-		pEngCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+		pEngCollider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 		
-		pEnvironment->SetColliderUserPointer( pEngCollider, &pColliderOwner );
+		pEnvironment->SetColliderUserPointer(pEngCollider, &pColliderOwner);
 		
 		// create debug drawer and shapes
 		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
+		pDebugDrawer->SetXRay(true);
 		
 		pDDSShape = new igdeWDebugDrawerShape;
-		pDDSShape->SetVisible( true );
-		pDDSShape->SetParentDebugDrawer( pDebugDrawer );
+		pDDSShape->SetVisible(true);
+		pDDSShape->SetParentDebugDrawer(pDebugDrawer);
 		
 		// init the rest
 		pShape = shape.Copy();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -124,28 +124,28 @@ meObjectShape::~meObjectShape(){
 // Management
 ///////////////
 
-void meObjectShape::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meObjectShape::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pWorld ){
-		pWorld->GetEngineWorld()->RemoveCollider( pEngCollider );
-		pWorld->GetEngineWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pWorld){
+		pWorld->GetEngineWorld()->RemoveCollider(pEngCollider);
+		pWorld->GetEngineWorld()->RemoveDebugDrawer(pDebugDrawer);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->GetEngineWorld()->AddDebugDrawer( pDebugDrawer );
-		world->GetEngineWorld()->AddCollider( pEngCollider );
+	if(world){
+		world->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
+		world->GetEngineWorld()->AddCollider(pEngCollider);
 	}
 	
 	ShowStateChanged();
 }
 
-void meObjectShape::SetParentObject( meObject *parentObject ){
-	if( parentObject == pParentObject ){
+void meObjectShape::SetParentObject(meObject *parentObject){
+	if(parentObject == pParentObject){
 		return;
 	}
 	
@@ -156,17 +156,17 @@ void meObjectShape::SetParentObject( meObject *parentObject ){
 
 
 
-void meObjectShape::SetShape( const decShape &shape ){
+void meObjectShape::SetShape(const decShape &shape){
 	decShape *newShape = NULL;
 	
 	try{
 		newShape = shape.Copy();
-		if( pShape ){
+		if(pShape){
 			delete pShape;
 		}
 		
-	}catch( const deException & ){
-		if( newShape ){
+	}catch(const deException &){
+		if(newShape){
 			delete newShape;
 		}
 		throw;
@@ -179,8 +179,8 @@ void meObjectShape::SetShape( const decShape &shape ){
 
 
 
-void meObjectShape::SetSelected( bool selected ){
-	if( selected == pSelected ){
+void meObjectShape::SetSelected(bool selected){
+	if(selected == pSelected){
 		return;
 	}
 	
@@ -188,8 +188,8 @@ void meObjectShape::SetSelected( bool selected ){
 	UpdateDDSColors();
 }
 
-void meObjectShape::SetActive( bool active ){
-	if( active == pActive ){
+void meObjectShape::SetActive(bool active){
+	if(active == pActive){
 		return;
 	}
 	
@@ -209,48 +209,48 @@ void meObjectShape::UpdateShape(){
 	
 	try{
 		shape = pShape->Copy();
-		shapeList.Add( shape );
+		shapeList.Add(shape);
 		shape = NULL;
 		
 		shape = pShape->Copy();
-		pDDSShape->AddShape( shape );
+		pDDSShape->AddShape(shape);
 		
-	}catch( const deException & ){
-		if( shape ){
+	}catch(const deException &){
+		if(shape){
 			delete shape;
 		}
 		throw;
 	}
 	
-	pEngCollider->SetShapes( shapeList );
+	pEngCollider->SetShapes(shapeList);
 	
 	decQuaternion orientation;
 	decDVector position;
 	
-	if( pParentObject ){
-		orientation = decQuaternion::CreateFromEuler( pParentObject->GetRotation() * DEG2RAD );
+	if(pParentObject){
+		orientation = decQuaternion::CreateFromEuler(pParentObject->GetRotation() * DEG2RAD);
 		position = pParentObject->GetPosition();
 	}
 	
-	pDebugDrawer->SetPosition( position );
-	pDebugDrawer->SetOrientation( orientation );
+	pDebugDrawer->SetPosition(position);
+	pDebugDrawer->SetOrientation(orientation);
 	
-	pEngCollider->SetPosition( position );
-	pEngCollider->SetOrientation( orientation );
+	pEngCollider->SetPosition(position);
+	pEngCollider->SetOrientation(orientation);
 }
 
 void meObjectShape::UpdateDDSColors(){
-	if( pActive ){
-		pDDSShape->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
-		pDDSShape->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.2f ) );
+	if(pActive){
+		pDDSShape->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 1.0f));
+		pDDSShape->SetFillColor(decColor(1.0f, 0.5f, 0.0f, 0.2f));
 		
-	}else if( pSelected ){
-		pDDSShape->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
-		pDDSShape->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.2f ) );
+	}else if(pSelected){
+		pDDSShape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
+		pDDSShape->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.2f));
 		
 	}else{
-		pDDSShape->SetEdgeColor( decColor( 0.0f, 0.25f, 1.0f, 1.0f ) );
-		pDDSShape->SetFillColor( decColor( 0.0f, 0.25f, 1.0f, 0.2f ) );
+		pDDSShape->SetEdgeColor(decColor(0.0f, 0.25f, 1.0f, 1.0f));
+		pDDSShape->SetFillColor(decColor(0.0f, 0.25f, 1.0f, 0.2f));
 	}
 }
 
@@ -276,17 +276,17 @@ void meObjectShape::ShowStateChanged(){
 //////////////////////
 
 void meObjectShape::pCleanUp(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
-	if( pEngCollider ){
-		pEnvironment->SetColliderUserPointer( pEngCollider, NULL );
+	if(pEngCollider){
+		pEnvironment->SetColliderUserPointer(pEngCollider, NULL);
 		pEngCollider->FreeReference();
 	}
 	
-	if( pDDSShape ){
+	if(pDDSShape){
 		delete pDDSShape;
 	}
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
 }

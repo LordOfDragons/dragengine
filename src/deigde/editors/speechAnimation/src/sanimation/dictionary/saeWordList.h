@@ -47,7 +47,7 @@ public:
 	saeWordList();
 	
 	/** Create copy of word list. */
-	saeWordList( const saeWordList &list );
+	saeWordList(const saeWordList &list);
 	
 	/** Clean up word list. */
 	~saeWordList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** Word at index. */
-	saeWord *GetAt( int index ) const;
+	saeWord *GetAt(int index) const;
 	
 	/** Named word or NULL if absent. */
-	saeWord *GetNamed( const char *name ) const;
+	saeWord *GetNamed(const char *name) const;
 	
 	/** Index of word or -1 if absent. */
-	int IndexOf( saeWord *word ) const;
+	int IndexOf(saeWord *word) const;
 	
 	/** Index of named word or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** Word is present. */
-	bool Has( saeWord *word ) const;
+	bool Has(saeWord *word) const;
 	
 	/** Named word is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** Add word. */
-	void Add( saeWord *word );
+	void Add(saeWord *word);
 	
 	/** Remove word. */
-	void Remove( saeWord *word );
+	void Remove(saeWord *word);
 	
 	/** Remove all words. */
 	void RemoveAll();
 	
 	/** Set list. */
-	saeWordList &operator=( const saeWordList &list );
+	saeWordList &operator=(const saeWordList &list);
 	/*@}*/
 };
 

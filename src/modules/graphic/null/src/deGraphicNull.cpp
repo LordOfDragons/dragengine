@@ -38,7 +38,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *NullGraphicCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *NullGraphicCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -48,13 +48,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *NullGraphicCreateModule( deLoadableModule *lo
 // Entry Function
 ///////////////////
 
-deBaseModule *NullGraphicCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *NullGraphicCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deGraphicNull( *loadableModule );
+		module = new deGraphicNull(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -69,8 +69,8 @@ deBaseModule *NullGraphicCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deGraphicNull::deGraphicNull( deLoadableModule &loadableModule ) :
-deBaseGraphicModule( loadableModule ){
+deGraphicNull::deGraphicNull(deLoadableModule &loadableModule) :
+deBaseGraphicModule(loadableModule){
 }
 
 deGraphicNull::~deGraphicNull(){
@@ -81,14 +81,14 @@ deGraphicNull::~deGraphicNull(){
 // Management
 ///////////////
 
-bool deGraphicNull::Init( deRenderWindow *renderWindow ){
+bool deGraphicNull::Init(deRenderWindow *renderWindow){
 	return true;
 }
 
 void deGraphicNull::CleanUp(){
 }
 
-void deGraphicNull::SetRenderWindow( deRenderWindow *renderWindow ){
+void deGraphicNull::SetRenderWindow(deRenderWindow *renderWindow){
 }
 
 #ifdef OS_ANDROID
@@ -108,115 +108,115 @@ void deGraphicNull::InputOverlayCanvasChanged(){
 }
 
 
-deBaseGraphicCanvas *deGraphicNull::CreateCanvas( deCanvas* ){
+deBaseGraphicCanvas *deGraphicNull::CreateCanvas(deCanvas*){
 	return NULL;
 }
 
-deBaseGraphicCaptureCanvas *deGraphicNull::CreateCaptureCanvas( deCaptureCanvas* ){
+deBaseGraphicCaptureCanvas *deGraphicNull::CreateCaptureCanvas(deCaptureCanvas*){
 	return NULL;
 }
 
-deBaseGraphicDynamicSkin *deGraphicNull::CreateDynamicSkin( deDynamicSkin* ){
+deBaseGraphicDynamicSkin *deGraphicNull::CreateDynamicSkin(deDynamicSkin*){
 	return NULL;
 }
 
-deBaseGraphicEnvMapProbe *deGraphicNull::CreateEnvMapProbe( deEnvMapProbe* ){
+deBaseGraphicEnvMapProbe *deGraphicNull::CreateEnvMapProbe(deEnvMapProbe*){
 	return NULL;
 }
 
-deBaseGraphicOcclusionMesh *deGraphicNull::CreateOcclusionMesh( deOcclusionMesh* ){
+deBaseGraphicOcclusionMesh *deGraphicNull::CreateOcclusionMesh(deOcclusionMesh*){
 	return NULL;
 }
 
-deBaseGraphicModel *deGraphicNull::CreateModel( deModel* ){
+deBaseGraphicModel *deGraphicNull::CreateModel(deModel*){
 	return NULL;
 }
 
-deBaseGraphicSkin *deGraphicNull::CreateSkin( deSkin* ){
+deBaseGraphicSkin *deGraphicNull::CreateSkin(deSkin*){
 	return NULL;
 }
 
-deBaseGraphicImage *deGraphicNull::CreateImage( deImage* ){
+deBaseGraphicImage *deGraphicNull::CreateImage(deImage*){
 	return NULL;
 }
 
-deBaseGraphicComponent *deGraphicNull::CreateComponent( deComponent* ){
+deBaseGraphicComponent *deGraphicNull::CreateComponent(deComponent*){
 	return NULL;
 }
 
-deBaseGraphicLight *deGraphicNull::CreateLight( deLight* ){
+deBaseGraphicLight *deGraphicNull::CreateLight(deLight*){
 	return NULL;
 }
 
-deBaseGraphicFont *deGraphicNull::CreateFont( deFont* ){
+deBaseGraphicFont *deGraphicNull::CreateFont(deFont*){
 	return NULL;
 }
 
-deBaseGraphicSky *deGraphicNull::CreateSky( deSky* ){
+deBaseGraphicSky *deGraphicNull::CreateSky(deSky*){
 	return NULL;
 }
 
-deBaseGraphicSkyInstance *deGraphicNull::CreateSkyInstance( deSkyInstance* ){
+deBaseGraphicSkyInstance *deGraphicNull::CreateSkyInstance(deSkyInstance*){
 	return NULL;
 }
 
-deBaseGraphicWorld *deGraphicNull::CreateWorld( deWorld* ){
+deBaseGraphicWorld *deGraphicNull::CreateWorld(deWorld*){
 	return NULL;
 }
 
-deBaseGraphicEffect *deGraphicNull::CreateEffect( deEffect* ){
+deBaseGraphicEffect *deGraphicNull::CreateEffect(deEffect*){
 	return NULL;
 }
 
-deBaseGraphicDebugDrawer *deGraphicNull::CreateDebugDrawer( deDebugDrawer* ){
+deBaseGraphicDebugDrawer *deGraphicNull::CreateDebugDrawer(deDebugDrawer*){
 	return NULL;
 }
 
-deBaseGraphicRenderWindow *deGraphicNull::CreateRenderWindow( deRenderWindow* ){
+deBaseGraphicRenderWindow *deGraphicNull::CreateRenderWindow(deRenderWindow*){
 	return NULL;
 }
 
-deBaseGraphicBillboard *deGraphicNull::CreateBillboard( deBillboard* ){
+deBaseGraphicBillboard *deGraphicNull::CreateBillboard(deBillboard*){
 	return NULL;
 }
 
-deBaseGraphicDecal *deGraphicNull::CreateDecal( deDecal* ){
+deBaseGraphicDecal *deGraphicNull::CreateDecal(deDecal*){
 	return NULL;
 }
 
-deBaseGraphicCamera *deGraphicNull::CreateCamera( deCamera* ){
+deBaseGraphicCamera *deGraphicNull::CreateCamera(deCamera*){
 	return NULL;
 }
 
-deBaseGraphicLumimeter *deGraphicNull::CreateLumimeter( deLumimeter* ){
+deBaseGraphicLumimeter *deGraphicNull::CreateLumimeter(deLumimeter*){
 	return NULL;
 }
 
-deBaseGraphicHeightTerrain *deGraphicNull::CreateHeightTerrain( deHeightTerrain* ){
+deBaseGraphicHeightTerrain *deGraphicNull::CreateHeightTerrain(deHeightTerrain*){
 	return NULL;
 }
 
-deBaseGraphicPropField *deGraphicNull::CreatePropField( dePropField* ){
+deBaseGraphicPropField *deGraphicNull::CreatePropField(dePropField*){
 	return NULL;
 }
 
-deBaseGraphicParticleEmitter *deGraphicNull::CreateParticleEmitter( deParticleEmitter* ){
+deBaseGraphicParticleEmitter *deGraphicNull::CreateParticleEmitter(deParticleEmitter*){
 	return NULL;
 }
 
-deBaseGraphicParticleEmitterInstance *deGraphicNull::CreateParticleEmitterInstance( deParticleEmitterInstance* ){
+deBaseGraphicParticleEmitterInstance *deGraphicNull::CreateParticleEmitterInstance(deParticleEmitterInstance*){
 	return NULL;
 }
 
-deBaseGraphicSmokeEmitter *deGraphicNull::CreateSmokeEmitter( deSmokeEmitter* ){
+deBaseGraphicSmokeEmitter *deGraphicNull::CreateSmokeEmitter(deSmokeEmitter*){
 	return NULL;
 }
 
-deBaseGraphicVideo *deGraphicNull::CreateVideo( deVideo* ){
+deBaseGraphicVideo *deGraphicNull::CreateVideo(deVideo*){
 	return NULL;
 }
 
-deBaseGraphicVideoPlayer *deGraphicNull::CreateVideoPlayer( deVideoPlayer* ){
+deBaseGraphicVideoPlayer *deGraphicNull::CreateVideoPlayer(deVideoPlayer*){
 	return NULL;
 }
 

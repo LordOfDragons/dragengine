@@ -43,8 +43,8 @@
 saeWordList::saeWordList(){
 }
 
-saeWordList::saeWordList( const saeWordList &list ) :
-pWords( list.pWords ){
+saeWordList::saeWordList(const saeWordList &list) :
+pWords(list.pWords){
 }
 
 saeWordList::~saeWordList(){
@@ -59,19 +59,19 @@ int saeWordList::GetCount() const{
 	return pWords.GetCount();
 }
 
-saeWord *saeWordList::GetAt( int index ) const{
-	return ( saeWord* )pWords.GetAt( index );
+saeWord *saeWordList::GetAt(int index) const{
+	return (saeWord*)pWords.GetAt(index);
 }
 
-saeWord *saeWordList::GetNamed( const char *name ) const{
+saeWord *saeWordList::GetNamed(const char *name) const{
 	const int count = pWords.GetCount();
 	saeWord *word;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		word = ( saeWord* )pWords.GetAt( p );
+	for(p=0; p<count; p++){
+		word = (saeWord*)pWords.GetAt(p);
 		
-		if( word->GetName().Equals( name ) ){
+		if(word->GetName().Equals(name)){
 			return word;
 		}
 	}
@@ -79,16 +79,16 @@ saeWord *saeWordList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int saeWordList::IndexOf( saeWord *word ) const{
-	return pWords.IndexOf( word );
+int saeWordList::IndexOf(saeWord *word) const{
+	return pWords.IndexOf(word);
 }
 
-int saeWordList::IndexOfNamed( const char *name ) const{
+int saeWordList::IndexOfNamed(const char *name) const{
 	const int count = pWords.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( saeWord* )pWords.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((saeWord*)pWords.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -96,16 +96,16 @@ int saeWordList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool saeWordList::Has( saeWord *word ) const{
-	return pWords.Has( word );
+bool saeWordList::Has(saeWord *word) const{
+	return pWords.Has(word);
 }
 
-bool saeWordList::HasNamed( const char *name ) const{
+bool saeWordList::HasNamed(const char *name) const{
 	const int count = pWords.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( saeWord* )pWords.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((saeWord*)pWords.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -113,16 +113,16 @@ bool saeWordList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void saeWordList::Add( saeWord *word ){
-	if( ! word || HasNamed( word->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void saeWordList::Add(saeWord *word){
+	if(!word || HasNamed(word->GetName())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pWords.Add( word );
+	pWords.Add(word);
 }
 
-void saeWordList::Remove( saeWord *word ){
-	pWords.Remove( word );
+void saeWordList::Remove(saeWord *word){
+	pWords.Remove(word);
 }
 
 void saeWordList::RemoveAll(){
@@ -131,7 +131,7 @@ void saeWordList::RemoveAll(){
 
 
 
-saeWordList &saeWordList::operator=( const saeWordList &list ){
+saeWordList &saeWordList::operator=(const saeWordList &list){
 	pWords = list.pWords;
 	return *this;
 }

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load/save system. */
-	projLoadSaveSystem( projWindowMain &windowMain );
+	projLoadSaveSystem(projWindowMain &windowMain);
 	
 	/** \brief Clean up load/save system. */
 	~projLoadSaveSystem();

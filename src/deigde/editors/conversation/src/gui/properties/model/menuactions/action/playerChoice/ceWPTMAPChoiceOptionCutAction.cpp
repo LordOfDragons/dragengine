@@ -47,15 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionCutAction::ceWPTMAPChoiceOptionCutAction( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionCutAction::ceWPTMAPChoiceOptionCutAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, ceConversationAction *action ) :
-ceWPTMACopyAction( windowMain, action, "Cut Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option ){
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, ceConversationAction *action) :
+ceWPTMACopyAction(windowMain, action, "Cut Action",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option){
 }
 
 
@@ -68,6 +68,6 @@ void ceWPTMAPChoiceOptionCutAction::OnAction(){
 	
 	ceUCAPChoiceActionRemove::Ref undo(ceUCAPChoiceActionRemove::Ref::NewWith(
 		pTopic, pPlayerChoice, pOption, GetAction()));
-	undo->SetShortInfo( "Cut Action" );
-	pConversation->GetUndoSystem()->Add( undo );
+	undo->SetShortInfo("Cut Action");
+	pConversation->GetUndoSystem()->Add(undo);
 }

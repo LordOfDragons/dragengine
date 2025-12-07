@@ -47,22 +47,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeWindowProperties::saeWindowProperties( saeWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+saeWindowProperties::saeWindowProperties(saeWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelSAnimation.TakeOver( new saeWPSAnim( *this ) );
-	AddChild( pPanelSAnimation, "SAnimation" );
+	pPanelSAnimation.TakeOver(new saeWPSAnim(*this));
+	AddChild(pPanelSAnimation, "SAnimation");
 	
-	pPanelView.TakeOver( new saeWPView( *this ) );
-	AddChild( pPanelView, "View" );
+	pPanelView.TakeOver(new saeWPView(*this));
+	AddChild(pPanelView, "View");
 	
-	pPanelUndoHistory.TakeOver( new saeWPUndoHistory( GetEnvironment() ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory.TakeOver(new saeWPUndoHistory(GetEnvironment()));
+	AddChild(pPanelUndoHistory, "Undo");
 	
-	SetActivePanel( 0 ); // speech animation panel
+	SetActivePanel(0); // speech animation panel
 }
 
 saeWindowProperties::~saeWindowProperties(){
@@ -73,12 +73,12 @@ saeWindowProperties::~saeWindowProperties(){
 // Management
 ///////////////
 
-void saeWindowProperties::SetSAnimation( saeSAnimation *sanimation ){
-	( ( saeWPSAnim& )( igdeWidget& )pPanelSAnimation ).SetSAnimation( sanimation );
-	( ( saeWPView& )( igdeWidget& )pPanelView ).SetSAnimation( sanimation );
-	( ( saeWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetSAnimation( sanimation );
+void saeWindowProperties::SetSAnimation(saeSAnimation *sanimation){
+	((saeWPSAnim&)(igdeWidget&)pPanelSAnimation).SetSAnimation(sanimation);
+	((saeWPView&)(igdeWidget&)pPanelView).SetSAnimation(sanimation);
+	((saeWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetSAnimation(sanimation);
 }
 
 void saeWindowProperties::OnSAnimationPathChanged(){
-	( ( saeWPSAnim& )( igdeWidget& )pPanelSAnimation ).OnSAnimationPathChanged();
+	((saeWPSAnim&)(igdeWidget&)pPanelSAnimation).OnSAnimationPathChanged();
 }

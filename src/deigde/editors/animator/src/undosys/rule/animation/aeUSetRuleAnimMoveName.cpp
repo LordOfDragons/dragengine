@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleAnimMoveName::aeUSetRuleAnimMoveName( aeRuleAnimation *rule, const char *newName ){
-	if( ! rule || ! newName ) DETHROW( deeInvalidParam );
+aeUSetRuleAnimMoveName::aeUSetRuleAnimMoveName(aeRuleAnimation *rule, const char *newName){
+	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	pOldName = rule->GetMoveName();
 	pNewName = newName;
 	
-	SetShortInfo( "Set animation rule move name" );
+	SetShortInfo("Set animation rule move name");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeUSetRuleAnimMoveName::~aeUSetRuleAnimMoveName(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }
 
 
@@ -62,9 +62,9 @@ aeUSetRuleAnimMoveName::~aeUSetRuleAnimMoveName(){
 ///////////////
 
 void aeUSetRuleAnimMoveName::Undo(){
-	pRule->SetMoveName( pOldName.GetString() );
+	pRule->SetMoveName(pOldName.GetString());
 }
 
 void aeUSetRuleAnimMoveName::Redo(){
-	pRule->SetMoveName( pNewName.GetString() );
+	pRule->SetMoveName(pNewName.GetString());
 }

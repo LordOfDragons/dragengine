@@ -50,7 +50,7 @@ decTimer::~decTimer(){
 void decTimer::Reset(){
 #ifdef OS_UNIX
 	timeval vTime;
-	gettimeofday( &vTime, NULL );
+	gettimeofday(&vTime, NULL);
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
 #endif
@@ -64,17 +64,17 @@ float decTimer::GetElapsedTime(){
 #ifdef OS_UNIX
 	timeval vTime;
 	suseconds_t diff;
-	gettimeofday( &vTime, NULL );
-	diff = ( int )( vTime.tv_sec - pLastSec ) * 1000000 + ( ( int )vTime.tv_usec - ( int )pLastUSec );
+	gettimeofday(&vTime, NULL);
+	diff = (int)(vTime.tv_sec - pLastSec) * 1000000 + ((int)vTime.tv_usec - (int)pLastUSec);
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
-	return ( float )diff * 1e-6f; // / 1000000.0f;
+	return (float)diff * 1e-6f; // / 1000000.0f;
 #endif
 
 #ifdef OS_W32
 	DWORD curTime = timeGetTime();
 	DWORD diff = curTime - pLastTime;
 	pLastTime = curTime;
-	return ( float )diff * 1e-3f; // / 1000.0f;
+	return (float)diff * 1e-3f; // / 1000.0f;
 #endif
 }

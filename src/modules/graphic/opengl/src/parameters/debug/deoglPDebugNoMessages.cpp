@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPDebugNoMessages::deoglPDebugNoMessages( deGraphicOpenGl &ogl ) : deoglParameterBool( ogl ){
-	SetName( "debugNoMessages" );
-	SetDescription( "Suppress hardware debug messages. This parameter has no effect after the module has been started" );
-	SetCategory( ecExpert );
+deoglPDebugNoMessages::deoglPDebugNoMessages(deGraphicOpenGl &ogl) : deoglParameterBool(ogl){
+	SetName("debugNoMessages");
+	SetDescription("Suppress hardware debug messages. This parameter has no effect after the module has been started");
+	SetCategory(ecExpert);
 }
 
 deoglPDebugNoMessages::~deoglPDebugNoMessages(){
@@ -57,6 +57,6 @@ bool deoglPDebugNoMessages::GetParameterBool(){
 	return pOgl.GetConfiguration().GetDebugNoMessages();
 }
 
-void deoglPDebugNoMessages::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetDebugNoMessages( value );
+void deoglPDebugNoMessages::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetDebugNoMessages(value);
 }

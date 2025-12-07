@@ -47,10 +47,10 @@ deComponentTexture::deComponentTexture(){
 }
 
 deComponentTexture::~deComponentTexture(){
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 }
@@ -60,40 +60,40 @@ deComponentTexture::~deComponentTexture(){
 // Management
 ///////////////
 
-void deComponentTexture::SetSkin( deSkin *skin ){
-	if( skin != pSkin ){
-		if( pSkin ){
+void deComponentTexture::SetSkin(deSkin *skin){
+	if(skin != pSkin){
+		if(pSkin){
 			pSkin->FreeReference();
 		}
 		
 		pSkin = skin;
 		
-		if( skin ){
+		if(skin){
 			skin->AddReference();
 		}
 	}
 }
 
-void deComponentTexture::SetTexture( int texture ){
+void deComponentTexture::SetTexture(int texture){
 	pTexture = texture;
 }
 
-void deComponentTexture::SetTransform( const decTexMatrix2 &matrix ){
+void deComponentTexture::SetTransform(const decTexMatrix2 &matrix){
 	pTransform = matrix;
 }
 
-void deComponentTexture::SetDynamicSkin( deDynamicSkin *dynamicSkin ){
-	if( dynamicSkin == pDynamicSkin ){
+void deComponentTexture::SetDynamicSkin(deDynamicSkin *dynamicSkin){
+	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
 	
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
 	
 	pDynamicSkin = dynamicSkin;
 	
-	if( dynamicSkin ){
+	if(dynamicSkin){
 		dynamicSkin->AddReference();
 	}
 }

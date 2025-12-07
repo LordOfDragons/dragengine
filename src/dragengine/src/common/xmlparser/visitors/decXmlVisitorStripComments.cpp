@@ -51,18 +51,18 @@ decXmlVisitorStripComments::~decXmlVisitorStripComments(){
 // Visiting
 /////////////
 
-void decXmlVisitorStripComments::VisitContainer( decXmlContainer &container ){
+void decXmlVisitorStripComments::VisitContainer(decXmlContainer &container){
 	int i;
 	
-	for( i=0; i<container.GetElementCount(); i++ ){
-		decXmlElement * const element = container.GetElementAt( i );
+	for(i=0; i<container.GetElementCount(); i++){
+		decXmlElement * const element = container.GetElementAt(i);
 		
-		if( element->CanCastToComment() ){
-			container.RemoveElement( element );
+		if(element->CanCastToComment()){
+			container.RemoveElement(element);
 			i--;
 			
 		}else{
-			element->Visit( *this );
+			element->Visit(*this);
 		}
 	}
 }

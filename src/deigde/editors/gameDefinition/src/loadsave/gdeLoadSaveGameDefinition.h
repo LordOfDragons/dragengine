@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load/save. */
-	gdeLoadSaveGameDefinition( gdeLoadSaveSystem &loadSaveSystem, deLogger *logger, const char *loggerSource );
+	gdeLoadSaveGameDefinition(gdeLoadSaveSystem &loadSaveSystem, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	
@@ -94,71 +94,71 @@ public:
 	
 	
 	/** \brief Load game definition from file. */
-	void LoadGameDefinition( gdeGameDefinition &gameDefinition, decBaseFileReader &reader );
+	void LoadGameDefinition(gdeGameDefinition &gameDefinition, decBaseFileReader &reader);
 	
 	/** \brief Save game definition to file. */
-	void SaveGameDefinition( const gdeGameDefinition &gameDefinition, decBaseFileWriter &writer );
+	void SaveGameDefinition(const gdeGameDefinition &gameDefinition, decBaseFileWriter &writer);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadGameDefinition( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
-	void pReadProperty( const decXmlElementTag &root, gdePropertyList &propertyList );
-	void pReadProperty( const decXmlElementTag &root, gdeProperty &property );
-	void pReadObjectClass( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
-	void pReadObjectClassInherit( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassBillboard( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassCamera( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassComponent( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassComponentTexture( const decXmlElementTag &root, gdeObjectClass &objectClass, gdeOCComponent &component );
-	void pReadObjectClassLight( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassSnapPoint( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassParticleEmitter( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassForceField( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassEnvMapProbe( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassSpeaker( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassNavigationSpace( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadObjectClassNavigationBlocker( const decXmlElementTag &root, gdeObjectClass &objectClass );
+	void pReadGameDefinition(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
+	void pReadProperty(const decXmlElementTag &root, gdePropertyList &propertyList);
+	void pReadProperty(const decXmlElementTag &root, gdeProperty &property);
+	void pReadObjectClass(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
+	void pReadObjectClassInherit(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassBillboard(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassCamera(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassComponent(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassComponentTexture(const decXmlElementTag &root, gdeObjectClass &objectClass, gdeOCComponent &component);
+	void pReadObjectClassLight(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassSnapPoint(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassParticleEmitter(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassForceField(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassEnvMapProbe(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassSpeaker(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassNavigationSpace(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadObjectClassNavigationBlocker(const decXmlElementTag &root, gdeObjectClass &objectClass);
 	void pReadObjectClassWorld(const decXmlElementTag &root, gdeObjectClass &objectClass);
-	void pReadObjectClassTexture( const decXmlElementTag &root, gdeObjectClass &objectClass );
-	void pReadCustomFilePatternList( const decXmlElementTag &root, gdeFilePatternList &list );
-	void pReadParticleEmitter( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
-	void pReadSkin( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
-	void pReadSky( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
-	void pReadCategories( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
-	void pReadCategories( const decXmlElementTag &root, gdeCategoryList *list, gdeCategory *parent );
-	void pReadCategory( const decXmlElementTag &root, gdeCategoryList *list, gdeCategory *parent );
+	void pReadObjectClassTexture(const decXmlElementTag &root, gdeObjectClass &objectClass);
+	void pReadCustomFilePatternList(const decXmlElementTag &root, gdeFilePatternList &list);
+	void pReadParticleEmitter(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
+	void pReadSkin(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
+	void pReadSky(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
+	void pReadCategories(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
+	void pReadCategories(const decXmlElementTag &root, gdeCategoryList *list, gdeCategory *parent);
+	void pReadCategory(const decXmlElementTag &root, gdeCategoryList *list, gdeCategory *parent);
 	
-	void pWriteGameDefinition( decXmlWriter &writer, const gdeGameDefinition &gameDefinition );
-	void pWriteObjectClass( decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
-		const gdeObjectClass &objectClass );
-	void pWriteObjectClassInherit( decXmlWriter &writer, const gdeOCInherit &inherit );
-	void pWriteObjectClassComponent( decXmlWriter &writer, const gdeOCComponent &component );
-	void pWriteObjectClassComponentTexture( decXmlWriter &writer, const gdeOCComponentTexture &texture );
-	void pWriteObjectClassBillboard( decXmlWriter &writer, const gdeOCBillboard &billboard );
-	void pWriteObjectClassCamera( decXmlWriter &writer, const gdeOCCamera &camera );
-	void pWriteObjectClassLight( decXmlWriter &writer, const gdeOCLight &light );
-	void pWriteObjectClassSnapPoint( decXmlWriter &writer, const gdeOCSnapPoint &snapPoint );
-	void pWriteObjectClassParticleEmitter( decXmlWriter &writer, const gdeOCParticleEmitter &particleEmitter );
-	void pWriteObjectClassForceField( decXmlWriter &writer, const gdeOCForceField &forceField);
-	void pWriteObjectClassEnvMapProbe( decXmlWriter &writer, const gdeOCEnvMapProbe &envMapProbe );
-	void pWriteObjectClassSpeaker( decXmlWriter &writer, const gdeOCSpeaker &speaker );
-	void pWriteObjectClassNavSpace( decXmlWriter &writer, const gdeOCNavigationSpace &navspace );
+	void pWriteGameDefinition(decXmlWriter &writer, const gdeGameDefinition &gameDefinition);
+	void pWriteObjectClass(decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass);
+	void pWriteObjectClassInherit(decXmlWriter &writer, const gdeOCInherit &inherit);
+	void pWriteObjectClassComponent(decXmlWriter &writer, const gdeOCComponent &component);
+	void pWriteObjectClassComponentTexture(decXmlWriter &writer, const gdeOCComponentTexture &texture);
+	void pWriteObjectClassBillboard(decXmlWriter &writer, const gdeOCBillboard &billboard);
+	void pWriteObjectClassCamera(decXmlWriter &writer, const gdeOCCamera &camera);
+	void pWriteObjectClassLight(decXmlWriter &writer, const gdeOCLight &light);
+	void pWriteObjectClassSnapPoint(decXmlWriter &writer, const gdeOCSnapPoint &snapPoint);
+	void pWriteObjectClassParticleEmitter(decXmlWriter &writer, const gdeOCParticleEmitter &particleEmitter);
+	void pWriteObjectClassForceField(decXmlWriter &writer, const gdeOCForceField &forceField);
+	void pWriteObjectClassEnvMapProbe(decXmlWriter &writer, const gdeOCEnvMapProbe &envMapProbe);
+	void pWriteObjectClassSpeaker(decXmlWriter &writer, const gdeOCSpeaker &speaker);
+	void pWriteObjectClassNavSpace(decXmlWriter &writer, const gdeOCNavigationSpace &navspace);
 	void pWriteObjectClassWorld(decXmlWriter &writer, const gdeOCWorld &world);
-	void pWriteObjectClassNavBlocker( decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker );
-	void pWriteObjectClassTexture( decXmlWriter &writer, const gdeOCComponentTexture &texture );
-	void pWriteLink( decXmlWriter &writer, const decString &link, const char *tagName, const char *target );
-	void pWriteTags( decXmlWriter &writer, const decStringSet &tags, const char *tagName );
-	void pWriteSkin( decXmlWriter &writer, const gdeGameDefinition &gameDefinition, const gdeSkin &skin );
-	void pWriteSky( decXmlWriter &writer, const gdeGameDefinition &gameDefinition, const gdeSky &sky );
-	void pWriteParticleEmitter( decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
-		const gdeParticleEmitter &particleEmitter );
-	void pWriteCategories( decXmlWriter &writer, const gdeCategoryList &categories, const char *name );
-	void pWriteCategory( decXmlWriter &writer, const gdeCategory &category );
-	void pWriteProperties( decXmlWriter &writer, const decStringDictionary &properties, const char *tagName );
-	void pWriteProperties( decXmlWriter &writer, const gdePropertyList &properties, const char *tagName );
-	void pWriteProperty( decXmlWriter &writer, const gdeProperty &property, const char *tagName );
+	void pWriteObjectClassNavBlocker(decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker);
+	void pWriteObjectClassTexture(decXmlWriter &writer, const gdeOCComponentTexture &texture);
+	void pWriteLink(decXmlWriter &writer, const decString &link, const char *tagName, const char *target);
+	void pWriteTags(decXmlWriter &writer, const decStringSet &tags, const char *tagName);
+	void pWriteSkin(decXmlWriter &writer, const gdeGameDefinition &gameDefinition, const gdeSkin &skin);
+	void pWriteSky(decXmlWriter &writer, const gdeGameDefinition &gameDefinition, const gdeSky &sky);
+	void pWriteParticleEmitter(decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
+		const gdeParticleEmitter &particleEmitter);
+	void pWriteCategories(decXmlWriter &writer, const gdeCategoryList &categories, const char *name);
+	void pWriteCategory(decXmlWriter &writer, const gdeCategory &category);
+	void pWriteProperties(decXmlWriter &writer, const decStringDictionary &properties, const char *tagName);
+	void pWriteProperties(decXmlWriter &writer, const gdePropertyList &properties, const char *tagName);
+	void pWriteProperty(decXmlWriter &writer, const gdeProperty &property, const char *tagName);
 };
 
 #endif

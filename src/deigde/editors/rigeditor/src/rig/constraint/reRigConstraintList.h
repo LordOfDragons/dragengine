@@ -55,15 +55,15 @@ public:
 	/** Retrieves the number of constraints. */
 	inline int GetConstraintCount() const{ return pConstraintCount; }
 	/** Retrieves the constraint at the given index. */
-	reRigConstraint *GetConstraintAt( int index ) const;
+	reRigConstraint *GetConstraintAt(int index) const;
 	/** Retrieves the index of the constraint or -1 if not found. */
-	int IndexOfConstraint( reRigConstraint *constraint ) const;
+	int IndexOfConstraint(reRigConstraint *constraint) const;
 	/** Determines if the constraint exists. */
-	bool HasConstraint( reRigConstraint *constraint ) const;
+	bool HasConstraint(reRigConstraint *constraint) const;
 	/** Adds a new constraint. */
-	void AddConstraint( reRigConstraint *constraint );
+	void AddConstraint(reRigConstraint *constraint);
 	/** Removes the given constraint. */
-	void RemoveConstraint( reRigConstraint *constraint );
+	void RemoveConstraint(reRigConstraint *constraint);
 	/** Removes all constraints. */
 	void RemoveAllConstraints();
 	/*@}*/

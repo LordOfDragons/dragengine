@@ -52,17 +52,17 @@ deColliderVisitor::~deColliderVisitor(){
 // Visiting
 /////////////
 
-void deColliderVisitor::VisitCollider( deCollider &collider ){
+void deColliderVisitor::VisitCollider(deCollider &collider){
 }
 
-void deColliderVisitor::VisitVolume( deColliderVolume &collider ){
-	VisitCollider( collider );
+void deColliderVisitor::VisitVolume(deColliderVolume &collider){
+	VisitCollider(collider);
 }
 
-void deColliderVisitor::VisitRig( deColliderRig &collider ){
-	VisitCollider( collider );
+void deColliderVisitor::VisitRig(deColliderRig &collider){
+	VisitCollider(collider);
 }
 
-void deColliderVisitor::VisitComponent( deColliderComponent &collider ){
-	VisitCollider( collider );
+void deColliderVisitor::VisitComponent(deColliderComponent &collider){
+	VisitCollider(collider);
 }

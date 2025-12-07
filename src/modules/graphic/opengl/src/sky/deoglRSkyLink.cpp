@@ -44,19 +44,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRSkyLink::deoglRSkyLink( const deSkyLink &link ) :
-pController( link.GetController() ),
-pRepeat( link.GetRepeat() ),
-pSamples( NULL ),
-pSampleCount( 0 ),
-pUpperLimit( 0.0f ),
-pDisabled( false )
+deoglRSkyLink::deoglRSkyLink(const deSkyLink &link) :
+pController(link.GetController()),
+pRepeat(link.GetRepeat()),
+pSamples(NULL),
+pSampleCount(0),
+pUpperLimit(0.0f),
+pDisabled(false)
 {
-	pUpdateSamples( link );
+	pUpdateSamples(link);
 }
 
 deoglRSkyLink::~deoglRSkyLink(){
-	if( pSamples ){
+	if(pSamples){
 		delete [] pSamples;
 	}
 }
@@ -66,34 +66,34 @@ deoglRSkyLink::~deoglRSkyLink(){
 // Management
 ///////////////
 
-float deoglRSkyLink::GetValue( const deoglRSkyInstance &instance ) const{
-	if( pDisabled ){
+float deoglRSkyLink::GetValue(const deoglRSkyInstance &instance) const{
+	if(pDisabled){
 		return 1.0f; // default
 	}
 	
-	float value = instance.GetControllerStateAt( pController );
+	float value = instance.GetControllerStateAt(pController);
 	
-	if( pRepeat > 1 ){
-		value *= ( float )pRepeat;
-		value -= floorf( value );
+	if(pRepeat > 1){
+		value *= (float)pRepeat;
+		value -= floorf(value);
 	}
 	
 	value *= pUpperLimit;
 	
-	if( value <= 0.0f ){
-		return pSamples[ 0 ];
+	if(value <= 0.0f){
+		return pSamples[0];
 		
-	}else if( value >= pUpperLimit ){
-		return pSamples[ pSampleCount - 1 ];
+	}else if(value >= pUpperLimit){
+		return pSamples[pSampleCount - 1];
 		
 	}else{
 		float integral;
-		const float fractional = modff( value, &integral );
-		const int base = ( int )integral;
-		const float value1 = pSamples[ base ];
-		const float value2 = pSamples[ base + 1 ];
+		const float fractional = modff(value, &integral);
+		const int base = (int)integral;
+		const float value1 = pSamples[base];
+		const float value2 = pSamples[base + 1];
 		
-		return value1 * ( 1.0f - fractional ) + value2 * fractional;
+		return value1 * (1.0f - fractional) + value2 * fractional;
 	}
 }
 
@@ -102,38 +102,38 @@ float deoglRSkyLink::GetValue( const deoglRSkyInstance &instance ) const{
 // Private Functions
 //////////////////////
 
-void deoglRSkyLink::pUpdateSamples( const deSkyLink &link ){
-	if( pController == -1 ){
+void deoglRSkyLink::pUpdateSamples(const deSkyLink &link){
+	if(pController == -1){
 		pDisabled = true;
 		return;
 	}
 	
 	const int pointCount = link.GetCurve().GetPointCount();
-	if( pointCount == 0 ){
+	if(pointCount == 0){
 		pDisabled = true;
 		return;
 	}
 	
 	// determine number of samples to use. right now we use 256 samples
 	pSampleCount = 256;
-	pSamples = new float[ pSampleCount ];
-	pUpperLimit = ( float )( pSampleCount - 1 );
+	pSamples = new float[pSampleCount];
+	pUpperLimit = (float)(pSampleCount - 1);
 	
 	// sample curve
 	int i;
 	
-	if( pointCount == 1 ){
-		const float value = link.GetCurve().GetPointAt( 0 ).GetPoint().y;
-		for( i=0; i<pSampleCount; i++ ){
-			pSamples[ i ] = value;
+	if(pointCount == 1){
+		const float value = link.GetCurve().GetPointAt(0).GetPoint().y;
+		for(i=0; i<pSampleCount; i++){
+			pSamples[i] = value;
 		}
 		
 	}else{
-		decCurveBezierEvaluator evaluator( link.GetCurve() );
+		decCurveBezierEvaluator evaluator(link.GetCurve());
 		const float factor = 1.0f / pUpperLimit;
 		
-		for( i=0; i<pSampleCount; i++ ){
-			pSamples[ i ] = evaluator.EvaluateAt( ( float )i * factor );
+		for(i=0; i<pSampleCount; i++){
+			pSamples[i] = evaluator.EvaluateAt((float)i * factor);
 		}
 	}
 }

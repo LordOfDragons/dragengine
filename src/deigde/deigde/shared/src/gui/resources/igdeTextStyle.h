@@ -58,10 +58,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text style. */
-	igdeTextStyle( const char *name );
+	igdeTextStyle(const char *name);
 	
 	/** \brief Create copy of text style. */
-	igdeTextStyle( const char *name, const igdeTextStyle &textStyle );
+	igdeTextStyle(const char *name, const igdeTextStyle &textStyle);
 	
 	
 	
@@ -90,7 +90,7 @@ public:
 	inline bool GetHasColor() const{ return pHasColor; }
 	
 	/** \brief Set text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Clear text color. */
 	void ClearColor();
@@ -104,7 +104,7 @@ public:
 	inline bool GetHasBgColor() const{ return pHasBgColor; }
 	
 	/** \brief Set background color. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	
 	/** \brief Clear background color. */
 	void ClearBgColor();
@@ -115,25 +115,25 @@ public:
 	inline bool GetBold() const{ return pBold; }
 	
 	/** \brief Set bold. */
-	void SetBold( bool bold );
+	void SetBold(bool bold);
 	
 	/** \brief Italic. */
 	inline bool GetItalic() const{ return pItalic; }
 	
 	/** \brief Set italic. */
-	void SetItalic( bool italic );
+	void SetItalic(bool italic);
 	
 	/** \brief Underline. */
 	inline bool GetUnderline() const{ return pUnderline; }
 	
 	/** \brief Set underline. */
-	void SetUnderline( bool underline );
+	void SetUnderline(bool underline);
 	
 	/** \brief Strike through. */
 	inline bool GetStrikeThrough() const{ return pStrikeThrough; }
 	
 	/** \brief Set strike through. */
-	void SetStrikeThrough( bool strikeThrough );
+	void SetStrikeThrough(bool strikeThrough);
 	/*@}*/
 	
 	
@@ -141,7 +141,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set text style. */
-	igdeTextStyle &operator=( const igdeTextStyle &textStyle );
+	igdeTextStyle &operator=(const igdeTextStyle &textStyle);
 	/*@}*/
 };
 

@@ -53,20 +53,20 @@ public:
 	/** \brief Retrieves the number of actions. */
 	int GetCount() const;
 	/** \brief Retrieves the action at the given position. */
-	ceUndoCAction *GetAt( int index ) const;
+	ceUndoCAction *GetAt(int index) const;
 	/** \brief Retrieves the index of the given action or -1 if not found. */
-	int IndexOf( ceUndoCAction *action ) const;
+	int IndexOf(ceUndoCAction *action) const;
 	/** \brief Determines if a action exists. */
-	bool Has( ceUndoCAction *action ) const;
+	bool Has(ceUndoCAction *action) const;
 	/** \brief Adds a action. */
-	void Add( ceUndoCAction *action );
+	void Add(ceUndoCAction *action);
 	/** \brief Removes a action. */
-	void Remove( ceUndoCAction *action );
+	void Remove(ceUndoCAction *action);
 	/** \brief Removes all actions. */
 	void RemoveAll();
 	
 	/** \brief Sets the list from another list. */
-	ceUndoCActionList &operator=( const ceUndoCActionList &list );
+	ceUndoCActionList &operator=(const ceUndoCActionList &list);
 	/*@}*/
 };
 

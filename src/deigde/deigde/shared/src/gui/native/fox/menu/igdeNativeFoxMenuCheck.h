@@ -34,7 +34,7 @@ class igdeMenuCheck;
  * FOX native widget.
  */
 class igdeNativeFoxMenuCheck : public FXMenuCheck{
-	FXDECLARE( igdeNativeFoxMenuCheck )
+	FXDECLARE(igdeNativeFoxMenuCheck)
 	
 protected:
 	igdeNativeFoxMenuCheck();
@@ -51,13 +51,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxMenuCheck( igdeMenuCheck &owner, FXComposite *parent );
+	igdeNativeFoxMenuCheck(igdeMenuCheck &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxMenuCheck();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMenuCheck* CreateNativeWidget( igdeMenuCheck &owner );
+	static igdeNativeFoxMenuCheck* CreateNativeWidget(igdeMenuCheck &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -72,15 +72,15 @@ public:
 	/*@{*/
 	virtual void UpdateChecked();
 	
-	static FXString BuildConstrText( igdeMenuCheck &owner );
+	static FXString BuildConstrText(igdeMenuCheck &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onMenuAction( FXObject*, FXSelector, void* );
-	long updateMenuAction( FXObject*, FXSelector, void* );
+	long onMenuAction(FXObject*, FXSelector, void*);
+	long updateMenuAction(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

@@ -42,25 +42,25 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deoglCaches::deoglCaches( deGraphicOpenGl &ogl ) :
-pOgl( ogl ),
-pSkinTextures( nullptr ),
-pModels( nullptr ),
-pShaders( nullptr )
+deoglCaches::deoglCaches(deGraphicOpenGl &ogl) :
+pOgl(ogl),
+pSkinTextures(nullptr),
+pModels(nullptr),
+pShaders(nullptr)
 {
 	(void)pOgl;
 	
 	try{
-		pSkinTextures = new deCacheHelper( &ogl.GetVFS(),
-			decPath::CreatePathUnix( "/cache/local/skintextures" ) );
+		pSkinTextures = new deCacheHelper(&ogl.GetVFS(),
+			decPath::CreatePathUnix("/cache/local/skintextures"));
 		
-		pModels = new deCacheHelper( &ogl.GetVFS(),
-			decPath::CreatePathUnix( "/cache/local/models" ) );
+		pModels = new deCacheHelper(&ogl.GetVFS(),
+			decPath::CreatePathUnix("/cache/local/models"));
 		
-		pShaders = new deCacheHelper( &ogl.GetVFS(),
-			decPath::CreatePathUnix( "/cache/global/shaders" ) );
+		pShaders = new deCacheHelper(&ogl.GetVFS(),
+			decPath::CreatePathUnix("/cache/global/shaders"));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -76,13 +76,13 @@ deoglCaches::~deoglCaches(){
 //////////////////////
 
 void deoglCaches::pCleanUp(){
-	if( pModels ){
+	if(pModels){
 		delete pModels;
 	}
-	if( pSkinTextures ){
+	if(pSkinTextures){
 		delete pSkinTextures;
 	}
-	if( pShaders ){
+	if(pShaders){
 		delete pShaders;
 	}
 }

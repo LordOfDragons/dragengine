@@ -85,8 +85,8 @@ enum eSPLight{
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderLightParticles::deoglRenderLightParticles( deoglRenderThread &renderThread ) :
-deoglRenderLightBase( renderThread ){
+deoglRenderLightParticles::deoglRenderLightParticles(deoglRenderThread &renderThread) :
+deoglRenderLightBase(renderThread){
 }
 
 deoglRenderLightParticles::~deoglRenderLightParticles(){
@@ -98,11 +98,11 @@ deoglRenderLightParticles::~deoglRenderLightParticles(){
 // Rendering
 //////////////
 
-void deoglRenderLightParticles::RenderLights( deoglRenderPlan &plan ){
+void deoglRenderLightParticles::RenderLights(deoglRenderPlan &plan){
 	const deoglParticleEmitterInstanceList &instanceList = plan.GetCollideList().GetParticleEmitterList();
 	const int instanceCount = instanceList.GetCount();
 	
-	if( instanceCount == 0 ){
+	if(instanceCount == 0){
 		return;
 	}
 	
@@ -110,42 +110,42 @@ void deoglRenderLightParticles::RenderLights( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	int i;
 	
-	RestoreFBO( plan );
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	RestoreFBO(plan);
+	OGL_CHECK(renderThread, pglBindVertexArray(defren.GetVAOFullScreenQuad()->GetVAO()));
 	
 	// render
-	for( i=0; i<instanceCount; i++ ){
-		deoglRParticleEmitterInstance &instance = *instanceList.GetAt( i );
+	for(i=0; i<instanceCount; i++){
+		deoglRParticleEmitterInstance &instance = *instanceList.GetAt(i);
 		
-		if( instance.GetParticleCount() > 0 ){
-			RenderParticleEmitterInstance( plan, instance );
+		if(instance.GetParticleCount() > 0){
+			RenderParticleEmitterInstance(plan, instance);
 		}
 	}
 	
 	// clean up
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	OGL_CHECK(renderThread, pglBindVertexArray(0));
 }
 
-void deoglRenderLightParticles::RenderParticleEmitterInstance( deoglRenderPlan &plan,
-deoglRParticleEmitterInstance &emitterInstance ){
+void deoglRenderLightParticles::RenderParticleEmitterInstance(deoglRenderPlan &plan,
+deoglRParticleEmitterInstance &emitterInstance){
 	const deoglRParticleEmitter &emitter = *emitterInstance.GetEmitter();
 	const int typeCount = emitterInstance.GetTypeCount();
 	int i;
 	
-	for( i=0; i<typeCount; i++ ){
-		deoglRParticleEmitterInstanceType &itype = emitterInstance.GetTypeAt( i );
-		deoglRParticleEmitterType &etype = emitter.GetTypeAt( i );
+	for(i=0; i<typeCount; i++){
+		deoglRParticleEmitterInstanceType &itype = emitterInstance.GetTypeAt(i);
+		deoglRParticleEmitterType &etype = emitter.GetTypeAt(i);
 		
-		if( etype.GetEmitLight() ){
-			RenderParticleEmitterInstanceType( plan, emitterInstance, itype, etype );
+		if(etype.GetEmitLight()){
+			RenderParticleEmitterInstanceType(plan, emitterInstance, itype, etype);
 		}
 	}
 }
 
-void deoglRenderLightParticles::RenderParticleEmitterInstanceType( deoglRenderPlan &plan,
-deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &itype, deoglRParticleEmitterType &etype ){
+void deoglRenderLightParticles::RenderParticleEmitterInstanceType(deoglRenderPlan &plan,
+deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &itype, deoglRParticleEmitterType &etype){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "LightParticle.RenderParticleEmitterInstanceType" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "LightParticle.RenderParticleEmitterInstanceType");
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRParticleEmitter &emitter = *instance.GetEmitter();
 	
@@ -153,21 +153,21 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	
 	// debug
 	/*
-	if( plan.GetRenderPassNumber() == 1 && planDebug ){
+	if(plan.GetRenderPassNumber() == 1 && planDebug){
 		planDebug->IncrementRenderedLights();
 	}
 	*/
 	
 	int pipelineModifiers = 0;
-	if( plan.GetFlipCulling() ){
+	if(plan.GetFlipCulling()){
 		pipelineModifiers |= deoglLightPipelines::emFlipCullFace;
 	}
-	if( plan.GetRenderStereo() ){
+	if(plan.GetRenderStereo()){
 		pipelineModifiers |= deoglLightPipelines::emStereo;
 	}
 	
 	const deoglLightPipeline &pipeline = etype.GetPipelines().
-		GetWithRef( deoglLightPipelines::etNoShadow, pipelineModifiers );
+		GetWithRef(deoglLightPipelines::etNoShadow, pipelineModifiers);
 	pipeline.GetPipeline()->Activate();
 	
 	// set program parameters
@@ -175,107 +175,107 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	deoglSPBlockUBO &spbLight = etype.GetLightParameterBlock();
 	deoglLightShader &lightShader = pipeline.GetShader();
 	
-	UpdateLightParamBlock( lightShader, spbLight, plan, emitter, etype );
-	UpdateInstanceParamBlock( lightShader, spbInstance, plan, instance, itype );
+	UpdateLightParamBlock(lightShader, spbLight, plan, emitter, etype);
+	UpdateInstanceParamBlock(lightShader, spbInstance, plan, instance, itype);
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	spbLight.Activate();
 	spbInstance.Activate();
 	
 	// set textures
-	int target = lightShader.GetTextureTarget( deoglLightShader::ettSamples );
-	if( target != -1 ){
-		tsmgr.EnableTexture( target, *etype.GetTextureSamples(),
+	int target = lightShader.GetTextureTarget(deoglLightShader::ettSamples);
+	if(target != -1){
+		tsmgr.EnableTexture(target, *etype.GetTextureSamples(),
 			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	}
 	
 	// render particles
-	pglBindVertexArray( instance.GetVAO()->GetVAO() );
+	pglBindVertexArray(instance.GetVAO()->GetVAO());
 	
 	/*
-	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if(plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer()){
 		// for some strange reason this code randomly fails to render properly.
 		// renderdoc can not capture this behavior nor does any code review show
 		// anything potentially wrong or dangerous. since a geometry shader is
 		// anway used for particles this code can be ignored
-		const GLint first[ 2 ] = { itype.GetFirstParticle(), itype.GetFirstParticle() };
-		const GLsizei count[ 2 ] = { itype.GetParticleCount(), itype.GetParticleCount() };
-		OGL_CHECK( renderThread, pglMultiDrawArrays( GL_POINTS, first, count, 2 ) );
+		const GLint first[2] = {itype.GetFirstParticle(), itype.GetFirstParticle()};
+		const GLsizei count[2] = {itype.GetParticleCount(), itype.GetParticleCount()};
+		OGL_CHECK(renderThread, pglMultiDrawArrays(GL_POINTS, first, count, 2));
 		
 	}else{
 		*/
-		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, itype.GetFirstParticle(), itype.GetParticleCount() ) );
+		OGL_CHECK(renderThread, glDrawArrays(GL_POINTS, itype.GetFirstParticle(), itype.GetParticleCount()));
 // 	}
 }
 
 
 
-void deoglRenderLightParticles::UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-deoglRenderPlan &plan, deoglRParticleEmitter &emitter, deoglRParticleEmitterType &type ){
+void deoglRenderLightParticles::UpdateLightParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+deoglRenderPlan &plan, deoglRParticleEmitter &emitter, deoglRParticleEmitterType &type){
 	const float halfIntDistance = 0.15f; // a bit stronger than natural since particle lights are small in general
 	const float range = 1.0f; // we use 1m as range since range is scaled per particle in the shader
-	const float attenuationCoefficient = ( 1.0f / ( halfIntDistance * halfIntDistance ) - 2.0f ) / ( range * range );
-	const float rangeNormInt = 1.0f / ( 1.0f + attenuationCoefficient * range * range );
-	const float dampCoefficient = 1.0f / ( 1.0f - rangeNormInt );
+	const float attenuationCoefficient = (1.0f / (halfIntDistance * halfIntDistance) - 2.0f) / (range * range);
+	const float rangeNormInt = 1.0f / (1.0f + attenuationCoefficient * range * range);
+	const float dampCoefficient = 1.0f / (1.0f - rangeNormInt);
 	const float dampThreshold = -rangeNormInt * dampCoefficient;
-	const deoglSPBMapBuffer mapped( paramBlock );
+	const deoglSPBMapBuffer mapped(paramBlock);
 	int target;
 	
-	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAttenuationCoefficient );
-	if( target != -1 ){
-		paramBlock.SetParameterDataFloat( target, attenuationCoefficient );
+	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightAttenuationCoefficient);
+	if(target != -1){
+		paramBlock.SetParameterDataFloat(target, attenuationCoefficient);
 	}
 	
-	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightDampingCoefficient );
-	if( target != -1 ){
-		paramBlock.SetParameterDataFloat( target, dampCoefficient );
+	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightDampingCoefficient);
+	if(target != -1){
+		paramBlock.SetParameterDataFloat(target, dampCoefficient);
 	}
 	
-	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightDampingThreshold );
-	if( target != -1 ){
-		paramBlock.SetParameterDataFloat( target, dampThreshold );
+	target = lightShader.GetLightUniformTarget(deoglLightShader::elutLightDampingThreshold);
+	if(target != -1){
+		paramBlock.SetParameterDataFloat(target, dampThreshold);
 	}
 }
 
-void deoglRenderLightParticles::UpdateInstanceParamBlock( deoglLightShader &lightShader,
+void deoglRenderLightParticles::UpdateInstanceParamBlock(deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance,
-deoglRParticleEmitterInstanceType &type ){
+deoglRParticleEmitterInstanceType &type){
 	int target;
 	
 	// calculate matrices
-	const decDMatrix matrixRefPos( decDMatrix::CreateTranslation( instance.GetReferencePosition() ) );
+	const decDMatrix matrixRefPos(decDMatrix::CreateTranslation(instance.GetReferencePosition()));
 	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
 	
-	const decDMatrix matrixMV( matrixRefPos * matrixCamera );
+	const decDMatrix matrixMV(matrixRefPos * matrixCamera);
 	
-	const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraStereoMatrix() );
-	const decDMatrix matrixMVStereo( matrixRefPos * matrixCameraStereo );
+	const decDMatrix matrixCameraStereo(matrixCamera * plan.GetCameraStereoMatrix());
+	const decDMatrix matrixMVStereo(matrixRefPos * matrixCameraStereo);
 	
-	const deoglSPBMapBuffer mapped( paramBlock );
+	const deoglSPBMapBuffer mapped(paramBlock);
 	
-	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMVP );
-	if( target != -1 ){
-		paramBlock.SetParameterDataArrayMat4x4( target, 0, plan.GetProjectionMatrix() );
-		paramBlock.SetParameterDataArrayMat4x4( target, 1, plan.GetProjectionMatrixStereo() );
+	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutMatrixMVP);
+	if(target != -1){
+		paramBlock.SetParameterDataArrayMat4x4(target, 0, plan.GetProjectionMatrix());
+		paramBlock.SetParameterDataArrayMat4x4(target, 1, plan.GetProjectionMatrixStereo());
 	}
 	
-	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMV );
-	if( target != -1 ){
-		paramBlock.SetParameterDataArrayMat4x3( target, 0, matrixMV );
-		paramBlock.SetParameterDataArrayMat4x3( target, 1, matrixMVStereo );
+	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutMatrixMV);
+	if(target != -1){
+		paramBlock.SetParameterDataArrayMat4x3(target, 0, matrixMV);
+		paramBlock.SetParameterDataArrayMat4x3(target, 1, matrixMVStereo);
 	}
 	
-	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutSamplesParams );
-	if( target != -1 ){
+	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutSamplesParams);
+	if(target != -1){
 		//const float width = 256.0f;
 		//const float height = 4.0f;
 		//paramBlock.SetParameterDataVec4( target, 255.0f / width, 0.5f / width, 1.0f / height, 0.5f / height );
-		paramBlock.SetParameterDataVec4( target, 255.0f / 256.0f, 0.5f / 256.0f, 1.0f / 4.0f, 0.5f / 4.0f );
+		paramBlock.SetParameterDataVec4(target, 255.0f / 256.0f, 0.5f / 256.0f, 1.0f / 4.0f, 0.5f / 4.0f);
 	}
 	
-	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutBurstFactor );
-	if( target != -1 ){
-		paramBlock.SetParameterDataFloat( target, instance.GetBurstTime() );
+	target = lightShader.GetInstanceUniformTarget(deoglLightShader::eiutBurstFactor);
+	if(target != -1){
+		paramBlock.SetParameterDataFloat(target, instance.GetBurstTime());
 	}
 }
 

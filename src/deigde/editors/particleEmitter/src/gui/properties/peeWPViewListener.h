@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWPViewListener( peeWPView &panel );
+	peeWPViewListener(peeWPView &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~peeWPViewListener();
@@ -55,19 +55,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter changed. */
-	virtual void EmitterChanged( peeEmitter *emitter );
+	virtual void EmitterChanged(peeEmitter *emitter);
 	
 	/** \brief The sky changed. */
-	virtual void SkyChanged( peeEmitter *emitter );
+	virtual void SkyChanged(peeEmitter *emitter);
 	
 	/** \brief The environment component changed. */
-	virtual void EnvObjectChanged( peeEmitter *emitter );
+	virtual void EnvObjectChanged(peeEmitter *emitter);
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged( peeEmitter *emitter );
+	virtual void ViewChanged(peeEmitter *emitter);
 	
 	/** \brief The camera changed. */
-	virtual void CameraChanged( peeEmitter *emitter );
+	virtual void CameraChanged(peeEmitter *emitter);
 	/*@}*/
 };
 

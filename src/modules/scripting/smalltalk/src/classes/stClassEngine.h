@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	stClassEngine( ScriptingSmalltalk &st );
+	stClassEngine(ScriptingSmalltalk &st);
 	
 	/** \brief Clean up class. */
 	virtual ~stClassEngine();
@@ -64,22 +64,22 @@ public:
 	/** \name cCall Methods */
 	/*@{*/
 	/** \brief exit the game. */
-	static void ccQuit( OOP self );
+	static void ccQuit(OOP self);
 	
 	/** \brief Elapsed time. */
-	static float ccElapsedTime( OOP self );
+	static float ccElapsedTime(OOP self);
 	
 	/** \brief Reset timers. */
-	static void ccResetTimers( OOP self );
+	static void ccResetTimers(OOP self);
 	
 	/** \brief Game object. */
-	static OOP ccGame( OOP self );
+	static OOP ccGame(OOP self);
 	
 	/** \brief Average frame rate. */
-	static int ccFPSRate( OOP self );
+	static int ccFPSRate(OOP self);
 	
 	/** \brief Command line arguments. */
-	static OOP ccArguments( OOP self );
+	static OOP ccArguments(OOP self);
 	/*@}*/
 };
 

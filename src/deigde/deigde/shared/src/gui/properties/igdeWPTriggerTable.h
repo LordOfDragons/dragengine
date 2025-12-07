@@ -74,10 +74,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeWPTriggerTable( igdeEnvironment &environment );
+	igdeWPTriggerTable(igdeEnvironment &environment);
 	
 	/** \brief Create panel. */
-	igdeWPTriggerTable( igdeEnvironment &environment, igdeAction *action );
+	igdeWPTriggerTable(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -95,13 +95,13 @@ public:
 	inline igdeTriggerTargetList *GetTriggerTargetList() const{ return pTriggerTargetList; }
 	
 	/** \brief Set trigger target list or NULL if not set. */
-	void SetTriggerTargetList( igdeTriggerTargetList *triggerTargetList );
+	void SetTriggerTargetList(igdeTriggerTargetList *triggerTargetList);
 	
 	/** \brief Selected target or NULL. */
 	igdeTriggerTarget *GetSelectedTarget() const;
 	
 	/** \brief Select target if possible. */
-	void SelectTarget( igdeTriggerTarget *target );
+	void SelectTarget(igdeTriggerTarget *target);
 	
 	/** \brief Update after changing trigger target list outside widget. */
 	void UpdateTable();
@@ -121,7 +121,7 @@ public:
 	inline igdeAction *GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	void SetAction(igdeAction *action);
 	
 	/**
 	 * \brief Trigger table changed.
@@ -132,10 +132,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	virtual void OnDestroyed(igdeAction *action);
 	/*@}*/
 	
 	

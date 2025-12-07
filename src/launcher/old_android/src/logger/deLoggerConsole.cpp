@@ -56,76 +56,76 @@ deLoggerConsole::~deLoggerConsole(){
 // Management
 ///////////////
 
-void deLoggerConsole::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsole::LogInfo(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		const int len = strlen( message );
+		const int len = strlen(message);
 		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			printf( "II [%s] %s", source, message );
+		if(len > 0 && message[len - 1] == '\n'){
+			printf("II [%s] %s", source, message);
 			
 		}else{
-			printf( "II [%s] %s\n", source, message );
+			printf("II [%s] %s\n", source, message);
 		}
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerConsole::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsole::LogWarn(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		const int len = strlen( message );
+		const int len = strlen(message);
 		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			printf( "WW [%s] %s", source, message );
+		if(len > 0 && message[len - 1] == '\n'){
+			printf("WW [%s] %s", source, message);
 			
 		}else{
-			printf( "WW [%s] %s\n", source, message );
+			printf("WW [%s] %s\n", source, message);
 		}
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerConsole::LogError( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsole::LogError(const char *source, const char *message){
+	if(!source || !message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		const int len = strlen( message );
+		const int len = strlen(message);
 		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			printf( "EE [%s] %s", source, message );
+		if(len > 0 && message[len - 1] == '\n'){
+			printf("EE [%s] %s", source, message);
 			
 		}else{
-			printf( "EE [%s] %s\n", source, message );
+			printf("EE [%s] %s\n", source, message);
 		}
 		
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}

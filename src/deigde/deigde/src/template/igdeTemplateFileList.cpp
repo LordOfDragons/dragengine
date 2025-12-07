@@ -42,8 +42,8 @@
 igdeTemplateFileList::igdeTemplateFileList(){
 }
 
-igdeTemplateFileList::igdeTemplateFileList( const igdeTemplateFileList &list ) :
-pFiles( list.pFiles ){
+igdeTemplateFileList::igdeTemplateFileList(const igdeTemplateFileList &list) :
+pFiles(list.pFiles){
 }
 
 igdeTemplateFileList::~igdeTemplateFileList(){
@@ -58,27 +58,27 @@ int igdeTemplateFileList::GetCount() const{
 	return pFiles.GetCount();
 }
 
-igdeTemplateFile *igdeTemplateFileList::GetAt( int index ) const{
-	return ( igdeTemplateFile* )pFiles.GetAt( index );
+igdeTemplateFile *igdeTemplateFileList::GetAt(int index) const{
+	return (igdeTemplateFile*)pFiles.GetAt(index);
 }
 
-int igdeTemplateFileList::IndexOf( igdeTemplateFile *file ) const{
-	return pFiles.IndexOf( file );
+int igdeTemplateFileList::IndexOf(igdeTemplateFile *file) const{
+	return pFiles.IndexOf(file);
 }
 
-bool igdeTemplateFileList::Has( igdeTemplateFile *file ) const{
-	return pFiles.Has( file );
+bool igdeTemplateFileList::Has(igdeTemplateFile *file) const{
+	return pFiles.Has(file);
 }
 
-void igdeTemplateFileList::Add( igdeTemplateFile *file ){
-	if( ! file ){
-		DETHROW( deeInvalidParam );
+void igdeTemplateFileList::Add(igdeTemplateFile *file){
+	if(!file){
+		DETHROW(deeInvalidParam);
 	}
-	pFiles.Add( file );
+	pFiles.Add(file);
 }
 
-void igdeTemplateFileList::Remove( igdeTemplateFile *file ){
-	pFiles.Remove( file );
+void igdeTemplateFileList::Remove(igdeTemplateFile *file){
+	pFiles.Remove(file);
 }
 
 void igdeTemplateFileList::RemoveAll(){
@@ -90,7 +90,7 @@ void igdeTemplateFileList::RemoveAll(){
 // Operators
 //////////////
 
-igdeTemplateFileList &igdeTemplateFileList::operator=( const igdeTemplateFileList &list ){
+igdeTemplateFileList &igdeTemplateFileList::operator=(const igdeTemplateFileList &list){
 	pFiles = list.pFiles;
 	return *this;
 }

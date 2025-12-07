@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml process instruction. */
-	decXmlPI( const char *target );
+	decXmlPI(const char *target);
 	
 protected:
 	/** \brief Clean up xml process instruction. */
@@ -60,20 +60,20 @@ public:
 	inline const decString &GetTarget() const{ return pTarget; }
 	
 	/** \brief Set target. */
-	void SetTarget( const char *target );
+	void SetTarget(const char *target);
 	
 	/** \brief Command. */
 	inline const decString &GetCommand() const{ return pCommand; }
 	
 	/** \brief Set command. */
-	void SetCommand( const char *command );
+	void SetCommand(const char *command);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	

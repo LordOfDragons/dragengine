@@ -58,8 +58,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTS( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTS(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -67,8 +67,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTA( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTA(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -76,8 +76,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTGS( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTGS(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -85,8 +85,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesLangPack( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesLangPack(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -173,7 +173,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create main window. */
-	ceWindowMain( ceIGDEModule &module );
+	ceWindowMain(ceIGDEModule &module);
 	
 protected:
 	/** Clean up main window. */
@@ -205,19 +205,19 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Create new conversation. */
 	void CreateNewConversation();
 	
 	/** Save conversation to file. */
-	void SaveConversation( const char *filename );
+	void SaveConversation(const char *filename);
 	
 	/** Properties window. */
 	inline ceWindowProperties &GetWindowProperties() const{ return *pWindowProperties; }
 	
 	/** Show found missing words dialog. */
-	void ShowFoundMissingWordsDialog( decStringSet &missingWords );
+	void ShowFoundMissingWordsDialog(decStringSet &missingWords);
 	
 	/** Recent files. */
 	inline cRecentFilesCTS &GetRecentFilesCTS(){ return pRecentFilesCTS; }
@@ -226,10 +226,10 @@ public:
 	inline cRecentFilesLangPack &GetRecentFilesLangPack(){ return pRecentFilesLangPack; }
 	
 	/** Open conversation test actor. */
-	void LoadCTA( const char *filename );
+	void LoadCTA(const char *filename);
 	
 	/** Attach language pack. */
-	void AttachLangPack( const char *filename );
+	void AttachLangPack(const char *filename);
 	
 	
 	/** Icons. */
@@ -292,7 +292,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -303,12 +303,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * Requests a document to be saved.
@@ -318,7 +318,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * Recent files changed.
@@ -358,9 +358,9 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
 };
 
 #endif

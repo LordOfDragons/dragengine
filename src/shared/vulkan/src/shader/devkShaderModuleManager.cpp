@@ -48,8 +48,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-devkShaderModuleManager::devkShaderModuleManager( devkDevice &device ) :
-pDevice( device ){
+devkShaderModuleManager::devkShaderModuleManager(devkDevice &device) :
+pDevice(device){
 }
 
 devkShaderModuleManager::~devkShaderModuleManager(){
@@ -64,16 +64,16 @@ int devkShaderModuleManager::GetCount() const{
 	return pSources.GetCount();
 }
 
-devkShaderModule *devkShaderModuleManager::GetAt( int index ) const{
-	return ( devkShaderModule* )pSources.GetAt( index );
+devkShaderModule *devkShaderModuleManager::GetAt(int index) const{
+	return (devkShaderModule*)pSources.GetAt(index);
 }
 
-devkShaderModule *devkShaderModuleManager::GetWithPath( const char *path ) const{
+devkShaderModule *devkShaderModuleManager::GetWithPath(const char *path) const{
 	const int count = pSources.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		devkShaderModule * const module = ( devkShaderModule* )pSources.GetAt( i );
-		if( module->GetPath() == path ){
+	for(i=0; i<count; i++){
+		devkShaderModule * const module = (devkShaderModule*)pSources.GetAt(i);
+		if(module->GetPath() == path){
 			return module;
 		}
 	}
@@ -81,11 +81,11 @@ devkShaderModule *devkShaderModuleManager::GetWithPath( const char *path ) const
 	return nullptr;
 }
 
-bool devkShaderModuleManager::HasWithPath( const char *path ) const{
+bool devkShaderModuleManager::HasWithPath(const char *path) const{
 	const int count = pSources.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( ( ( devkShaderModule* )pSources.GetAt( i ) )->GetPath() == path ){
+	for(i=0; i<count; i++){
+		if(((devkShaderModule*)pSources.GetAt(i))->GetPath() == path){
 			return true;
 		}
 	}
@@ -93,52 +93,52 @@ bool devkShaderModuleManager::HasWithPath( const char *path ) const{
 	return false;
 }
 
-void devkShaderModuleManager::Add( devkShaderModule *module ){
-	if( ! module ){
-		DETHROW_INFO( deeNullPointer, "module" );
+void devkShaderModuleManager::Add(devkShaderModule *module){
+	if(!module){
+		DETHROW_INFO(deeNullPointer, "module");
 	}
-	if( HasWithPath( module->GetPath() ) ){
-		DETHROW_INFO( deeInvalidParam, "module with path is present" );
+	if(HasWithPath(module->GetPath())){
+		DETHROW_INFO(deeInvalidParam, "module with path is present");
 	}
 	
-	pSources.Add( module );
+	pSources.Add(module);
 }
 
 void devkShaderModuleManager::Clear(){
 	pSources.RemoveAll();
 }
 
-void devkShaderModuleManager::Load( const char *directory ){
+void devkShaderModuleManager::Load(const char *directory){
 	deBaseModule &baseModule = pDevice.GetInstance().GetVulkan().GetModule();
 	deVirtualFileSystem &vfs = baseModule.GetVFS();
 	const int oldSourceCount = pSources.GetCount();
 	decBaseFileReader::Ref reader;
 	devkShaderModule::Ref module;
 	
-	const decPath basePath( decPath::CreatePathUnix( directory ) );
-	const int basePathLen = ( int )strlen( basePath.GetPathUnix() ) + 1;
+	const decPath basePath(decPath::CreatePathUnix(directory));
+	const int basePathLen = (int)strlen(basePath.GetPathUnix()) + 1;
 	
-	deCollectFileSearchVisitor collect( "*.spv", true );
-	vfs.SearchFiles( basePath, collect );
+	deCollectFileSearchVisitor collect("*.spv", true);
+	vfs.SearchFiles(basePath, collect);
 	
 	const dePathList &pathList = collect.GetFiles();
 	const int count = pathList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decPath &path = pathList.GetAt( i );
-		const decString filename( path.GetPathUnix().GetMiddle( basePathLen ) );
+	for(i=0; i<count; i++){
+		const decPath &path = pathList.GetAt(i);
+		const decString filename(path.GetPathUnix().GetMiddle(basePathLen));
 		
 		try{
-			reader.TakeOver( vfs.OpenFileForReading( path ) );
-			module.TakeOver( new devkShaderModule( pDevice, filename, reader ) );
-			Add( module );
+			reader.TakeOver(vfs.OpenFileForReading(path));
+			module.TakeOver(new devkShaderModule(pDevice, filename, reader));
+			Add(module);
 			
-		}catch( const deException & ){
-			baseModule.LogInfoFormat( "Vulkan: Loading shader module failed: %s", filename.GetString() );
+		}catch(const deException &){
+			baseModule.LogInfoFormat("Vulkan: Loading shader module failed: %s", filename.GetString());
 			throw;
 		}
 	}
 	
-	baseModule.LogInfoFormat( "Vulkan: Loaded %d shader modules.", pSources.GetCount() - oldSourceCount );
+	baseModule.LogInfoFormat("Vulkan: Loaded %d shader modules.", pSources.GetCount() - oldSourceCount);
 }

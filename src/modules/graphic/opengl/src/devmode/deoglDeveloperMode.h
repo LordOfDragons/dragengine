@@ -111,7 +111,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new developer mode object. */
-	deoglDeveloperMode( deoglRenderThread &renderThread );
+	deoglDeveloperMode(deoglRenderThread &renderThread);
 	/** Cleans up the developer mode object. */
 	~deoglDeveloperMode();
 	/*@}*/
@@ -205,7 +205,7 @@ public:
 	 * Retrieves the debug image framebuffer for the given size. Attached the debug image texture to the
 	 * framebuffer. If the texture does not exist or the size does not match it is created first.
 	 */
-	const deoglFramebuffer::Ref &GetFBODebugImageWith( int width, int height );
+	const deoglFramebuffer::Ref &GetFBODebugImageWith(int width, int height);
 	/** Check if the debug image has been used since the last time deleting it if so. */
 	void CheckDebugImageUse();
 	
@@ -213,70 +213,70 @@ public:
 	 * Executes a command. If the command is recognized true is returned
 	 * otherwise false.
 	 */
-	bool ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	bool ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 	
 private:
-	void pCmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdEnable(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowVisComponent( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowVisLight( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowComponentLodLevels( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowVisComponent(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowVisLight(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowComponentLodLevels(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowHeightTerrain( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowPropFieldBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowPropFieldClusters( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowHeightTerrain(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowPropFieldBox(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowPropFieldClusters(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdQuickTest( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdQuickTest(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdOpenGLCaps( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdOpenGLCaps(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdStats( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdStats(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdCapabilities( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdCapabilities(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdMemoryInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowLightFullBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowLightBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowLightVolume( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowLightRooms( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowLightVisualInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowLightFullBox(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowLightBox(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowLightVolume(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowLightRooms(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowLightVisualInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowTranspLayerCount( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdHighlightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowTranspLayerCount(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdHighlightTransparentObjects(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdTests( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdTests(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdDebugRenderPlan( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdLogMemoryConsumption( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdDebugRenderPlan(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowMemoryInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdLogMemoryConsumption(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowOccMapLevel( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowOccMapLevel(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowEnvMaps( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowEnvMaps(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowEnvMapHull( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowEnvMapHull(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowSSAO( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowSSAO(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdDebugEnableLightDepthStencil( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdDebugEnableLightDepthStencil(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdDebugInfoLog( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdDebugInfoDetails( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowDebugInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdDebugInfoSync(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdDebugInfoLog(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdDebugInfoDetails(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdGIShowProbes( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdGIShowProbeUpdate( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdGIShowProbeRays( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbes(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdGIShowProbeOffsets(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdGIShowProbeUpdate(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdGIShowCascade(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdGIShowProbeRays(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	bool pBaseCmdBool( const decUnicodeArgumentList &command, decUnicodeString &answer,
-		bool &variable, const char *commandName );
-	bool pBaseCmdInt( const decUnicodeArgumentList &command, decUnicodeString &answer,
-		int &variable, const char *commandName );
+	bool pBaseCmdBool(const decUnicodeArgumentList &command, decUnicodeString &answer,
+		bool &variable, const char *commandName);
+	bool pBaseCmdInt(const decUnicodeArgumentList &command, decUnicodeString &answer,
+		int &variable, const char *commandName);
 };
 
 #endif

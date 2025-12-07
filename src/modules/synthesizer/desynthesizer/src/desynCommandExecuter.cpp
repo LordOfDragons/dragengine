@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynCommandExecuter::desynCommandExecuter( deDESynthesizer &module ) :
-pModule( module ){
+desynCommandExecuter::desynCommandExecuter(deDESynthesizer &module) :
+pModule(module){
 }
 
 desynCommandExecuter::~desynCommandExecuter(){
@@ -57,24 +57,24 @@ desynCommandExecuter::~desynCommandExecuter(){
 // Management
 ///////////////
 
-void desynCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 0 ){
-		answer.SetFromUTF8( "No command provided." );
+void desynCommandExecuter::ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.GetArgumentCount() == 0){
+		answer.SetFromUTF8("No command provided.");
 		
 	}else{
-		if( command.MatchesArgumentAt( 0, "help" ) ){
-			CmdHelp( command, answer );
+		if(command.MatchesArgumentAt(0, "help")){
+			CmdHelp(command, answer);
 			
 		}else{
-			answer.SetFromUTF8( "Unknown command '" );
-			answer += *command.GetArgumentAt( 0 );
-			answer.AppendFromUTF8( "'." );
+			answer.SetFromUTF8("Unknown command '");
+			answer += *command.GetArgumentAt(0);
+			answer.AppendFromUTF8("'.");
 		}
 	}
 }
 
 
 
-void desynCommandExecuter::CmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	answer.SetFromUTF8( "help => Displays this help screen.\n" );
+void desynCommandExecuter::CmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	answer.SetFromUTF8("help => Displays this help screen.\n");
 }

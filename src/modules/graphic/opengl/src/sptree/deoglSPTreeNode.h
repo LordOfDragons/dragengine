@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new space partition tree node. */
-	deoglSPTreeNode( const decVector &center, const decVector &halfSize );
+	deoglSPTreeNode(const decVector &center, const decVector &halfSize);
 	/** Cleans up the space partition tree node. */
 	~deoglSPTreeNode();
 	/*@}*/
@@ -81,7 +81,7 @@ public:
 	 * Sets the split state. This affects the left and right child if
 	 * different than the current split state.
 	 */
-	void SetSplitState( int splitState );
+	void SetSplitState(int splitState);
 	/** Retrieves the left child or NULL. */
 	inline deoglSPTreeNode *GetLeftChild() const{ return pChildLeft; }
 	/** Retrieves the right child or NULL. */

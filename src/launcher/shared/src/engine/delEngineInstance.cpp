@@ -44,10 +44,10 @@ delEngineInstance::Factory::~Factory(){}
 // Constructors and Destructors
 /////////////////////////////////
 
-delEngineInstance::delEngineInstance( delLauncher &launcher, const char *logfile ) :
-pLauncher( launcher ),
-pLogFile( logfile ),
-pUseConsole( false ){
+delEngineInstance::delEngineInstance(delLauncher &launcher, const char *logfile) :
+pLauncher(launcher),
+pLogFile(logfile),
+pUseConsole(false){
 }
 
 delEngineInstance::~delEngineInstance(){
@@ -58,16 +58,16 @@ delEngineInstance::~delEngineInstance(){
 // Management
 ///////////////
 
-void delEngineInstance::SetLogFile( const decString &logFile ){
+void delEngineInstance::SetLogFile(const decString &logFile){
 	pLogFile = logFile;
 }
 
-void delEngineInstance::SetUseConsole( bool useConsole ){
+void delEngineInstance::SetUseConsole(bool useConsole){
 	pUseConsole = useConsole;
 }
 
 #ifdef OS_BEOS
-void delEngineInstance::BeosMessageReceived( BMessage *message ){
+void delEngineInstance::BeosMessageReceived(BMessage *message){
 }
 #endif
 
@@ -78,7 +78,7 @@ const char *delgaFile, decStringList &list){
 }
 
 void delEngineInstance::ReadDelgaFilesVfs(const deVFSContainer::Ref &container,
-const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &filesContent ){
+const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &filesContent){
 	DETHROW_INFO(deeInvalidAction, "not supported");
 }
 

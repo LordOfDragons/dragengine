@@ -134,13 +134,13 @@ void projProject::AddProfile(projProfile *profile){
 	profile->SetProject(this);
 	NotifyProfileStructureChanged();
 	
-	if(! pActiveProfile){
+	if(!pActiveProfile){
 		SetActiveProfile(profile);
 	}
 }
 
 void projProject::RemoveProfile(projProfile *profile){
-	if(! profile || profile->GetProject() != this){
+	if(!profile || profile->GetProject() != this){
 		DETHROW(deeInvalidParam);
 	}
 	

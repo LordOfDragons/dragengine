@@ -34,15 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeOrientation::reUSetShapeOrientation( reRigShape *shape, const decVector &newOrientation ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeOrientation::reUSetShapeOrientation(reRigShape *shape, const decVector &newOrientation){
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	
 	pOldOrientation = shape->GetOrientation();
 	pNewOrientation = newOrientation;
 	
-	SetShortInfo( "Set Shape Rotation" );
+	SetShortInfo("Set Shape Rotation");
 	
 	pShape->AddReference();
 }
@@ -57,9 +57,9 @@ reUSetShapeOrientation::~reUSetShapeOrientation(){
 ///////////////
 
 void reUSetShapeOrientation::Undo(){
-	pShape->SetOrientation( pOldOrientation );
+	pShape->SetOrientation(pOldOrientation);
 }
 
 void reUSetShapeOrientation::Redo(){
-	pShape->SetOrientation( pNewOrientation );
+	pShape->SetOrientation(pNewOrientation);
 }

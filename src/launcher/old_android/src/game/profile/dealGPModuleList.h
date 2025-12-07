@@ -56,28 +56,28 @@ public:
 	int GetModuleCount() const;
 	
 	/** \brief Module at index. */
-	dealGPModule *GetModuleAt( int index ) const;
+	dealGPModule *GetModuleAt(int index) const;
 	
 	/** \brief Module with the name or \em NULL if not found. */
-	dealGPModule *GetModuleNamed( const char *name ) const;
+	dealGPModule *GetModuleNamed(const char *name) const;
 	
 	/** \brief Module exists. */
-	bool HasModule( dealGPModule *module ) const;
+	bool HasModule(dealGPModule *module) const;
 	
 	/** \brief Module with name exists. */
-	bool HasModuleNamed( const char *name ) const;
+	bool HasModuleNamed(const char *name) const;
 	
 	/** \brief Index of module or -1 if not found. */
-	int IndexOfModule( dealGPModule *module ) const;
+	int IndexOfModule(dealGPModule *module) const;
 	
 	/** \brief Index of module with name or -1 if not found. */
-	int IndexOfModuleNamed( const char *name ) const;
+	int IndexOfModuleNamed(const char *name) const;
 	
 	/** \brief Add module. */
-	void AddModule( dealGPModule *module );
+	void AddModule(dealGPModule *module);
 	
 	/** \brief Remove module. */
-	void RemoveModule( dealGPModule *module );
+	void RemoveModule(dealGPModule *module);
 	
 	/** \brief Remove all modules. */
 	void RemoveAllModules();

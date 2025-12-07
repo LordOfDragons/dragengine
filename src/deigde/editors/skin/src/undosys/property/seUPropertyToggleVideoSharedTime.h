@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertyToggleVideoSharedTime( seProperty *property );
+	seUPropertyToggleVideoSharedTime(seProperty *property);
 	
 protected:
 	/** \brief Clean up undo. */

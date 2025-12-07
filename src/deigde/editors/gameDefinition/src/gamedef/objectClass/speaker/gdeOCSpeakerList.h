@@ -47,7 +47,7 @@ public:
 	gdeOCSpeakerList();
 	
 	/** \brief Create copy of object class speaker list. */
-	gdeOCSpeakerList( const gdeOCSpeakerList &list );
+	gdeOCSpeakerList(const gdeOCSpeakerList &list);
 	
 	/** \brief Clean up object class speaker list. */
 	~gdeOCSpeakerList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class speaker at position. */
-	gdeOCSpeaker *GetAt( int index ) const;
+	gdeOCSpeaker *GetAt(int index) const;
 	
 	/** \brief Index of named object class speaker or -1 if absent. */
-	int IndexOf( gdeOCSpeaker *speaker ) const;
+	int IndexOf(gdeOCSpeaker *speaker) const;
 	
 	/** \brief Object class speaker is present. */
-	bool Has( gdeOCSpeaker *speaker ) const;
+	bool Has(gdeOCSpeaker *speaker) const;
 	
 	/** \brief Add object class speaker. */
-	void Add( gdeOCSpeaker *speaker );
+	void Add(gdeOCSpeaker *speaker);
 	
 	/** \brief Remove object class speaker. */
-	void Remove( gdeOCSpeaker *speaker );
+	void Remove(gdeOCSpeaker *speaker);
 	
 	/** \brief Remove all object class speakers. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class speaker list. */
-	gdeOCSpeakerList &operator=( const gdeOCSpeakerList &list );
+	gdeOCSpeakerList &operator=(const gdeOCSpeakerList &list);
 	/*@}*/
 };
 

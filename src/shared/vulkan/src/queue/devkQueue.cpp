@@ -43,7 +43,7 @@ pFamily(family),
 pIndex(index),
 pQueue(queue)
 {
-	DEASSERT_NOTNULL(queue )
+	DEASSERT_NOTNULL(queue)
 }
 
 devkQueue::~devkQueue(){

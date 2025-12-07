@@ -46,7 +46,7 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCACoordSystemAdd();
 	/** \brief Creates a new conversation action. */
-	ceCACoordSystemAdd( const ceCACoordSystemAdd &action );
+	ceCACoordSystemAdd(const ceCACoordSystemAdd &action);
 	/** \brief Cleans up the conversation action. */
 	virtual ~ceCACoordSystemAdd();
 	/*@}*/
@@ -56,11 +56,11 @@ public:
 	/** \brief Retrieves the coordinate system id. */
 	inline const decString &GetCoordSystemID() const{ return pCoordSystemID; }
 	/** \brief Sets the coordinate system id. */
-	void SetCoordSystemID( const char *id );
+	void SetCoordSystemID(const char *id);
 	/** \brief Retrieves the alias id or an empty string if not used. */
 	inline const decString &GetAliasID() const{ return pAliasID; }
 	/** \brief Sets the alias id or an empty string if not used. */
-	void SetAliasID( const char *id );
+	void SetAliasID(const char *id);
 	
 	/** \brief Create a copy of this action. */
     virtual ceConversationAction *CreateCopy() const;

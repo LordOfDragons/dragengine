@@ -47,10 +47,10 @@ debpCollisionVolume::~debpCollisionVolume(){
 // Miscelanous Functions
 //////////////////////////
 
-decVector debpCollisionVolume::NormalAtPoint( const decVector &point ){
-	return decVector( 1.0f, 0.0f, 0.0f );
+decVector debpCollisionVolume::NormalAtPoint(const decVector &point){
+	return decVector(1.0f, 0.0f, 0.0f);
 }
 
-bool debpCollisionVolume::RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance ){
+bool debpCollisionVolume::RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance){
 	return false;
 }

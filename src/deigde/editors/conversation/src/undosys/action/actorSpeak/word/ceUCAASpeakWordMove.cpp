@@ -42,23 +42,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordMove::ceUCAASpeakWordMove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *word, int newIndex ){
-	if( ! topic || ! actorSpeak || ! word ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakWordMove::ceUCAASpeakWordMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *word, int newIndex){
+	if(!topic || !actorSpeak || !word){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pWord = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetWordList().IndexOf( word );
+	pOldIndex = actorSpeak->GetWordList().IndexOf(word);
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= actorSpeak->GetWordList().GetCount() ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetWordList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move Word" );
+	SetShortInfo("Move Word");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -71,13 +71,13 @@ ceStrip *word, int newIndex ){
 }
 
 ceUCAASpeakWordMove::~ceUCAASpeakWordMove(){
-	if( pWord ){
+	if(pWord){
 		pWord->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -88,11 +88,11 @@ ceUCAASpeakWordMove::~ceUCAASpeakWordMove(){
 ///////////////
 
 void ceUCAASpeakWordMove::Undo(){
-	pActorSpeak->GetWordList().MoveTo( pWord, pOldIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetWordList().MoveTo(pWord, pOldIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakWordMove::Redo(){
-	pActorSpeak->GetWordList().MoveTo( pWord, pNewIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetWordList().MoveTo(pWord, pNewIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

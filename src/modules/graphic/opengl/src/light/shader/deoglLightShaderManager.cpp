@@ -42,14 +42,14 @@
 // Unit Source Code Path
 ////////777///////////////
 
-static const char *vUnitSourceCodePath[ deoglLightShaderManager::EUSCP_COUNT ] = {
-	"V DefRen Light", //<! euscpVertexLight
-	"V DefRen Light Particle", //<! euscpVertexParticle
+static const char *vUnitSourceCodePath[deoglLightShaderManager::EUSCP_COUNT] = {
+	"V DefRen Light", //!< euscpVertexLight
+	"V DefRen Light Particle", //!< euscpVertexParticle
 	
-	"G DefRen Light Particle", //<! euscpGeometryParticle
-	"G DefRen Light Stereo", //<! euscpGeometryStereo
+	"G DefRen Light Particle", //!< euscpGeometryParticle
+	"G DefRen Light Stereo", //!< euscpGeometryStereo
 	
-	"F DefRen Light" //<! euscpFragmentLight
+	"F DefRen Light" //!< euscpFragmentLight
 };
 
 
@@ -105,9 +105,9 @@ void deoglLightShaderManager::cPrepareShader::PrepareShaderFinished(deoglLightSh
 // Constructor, destructor
 ////////////////////////////
 
-deoglLightShaderManager::deoglLightShaderManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pMaintananceInterval( 0 ){
+deoglLightShaderManager::deoglLightShaderManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pMaintananceInterval(0){
 }
 
 deoglLightShaderManager::~deoglLightShaderManager(){
@@ -115,13 +115,13 @@ deoglLightShaderManager::~deoglLightShaderManager(){
 	decString text;
 	int i;
 	
-	for( i=0; i<shaderCount; i++ ){
-		const deoglLightShader &shader = *( ( deoglLightShader* )pShaderList.GetAt( i ) );
+	for(i=0; i<shaderCount; i++){
+		const deoglLightShader &shader = *((deoglLightShader*)pShaderList.GetAt(i));
 		
-		if( shader.GetRefCount() != 1 ){
-			shader.GetConfig().DebugGetConfigString( text );
-			pRenderThread.GetLogger().LogWarnFormat( "LightShaderManager CleanUp: Shader with refcount %i. Config=%s",
-				shader.GetRefCount(), text.GetString() );
+		if(shader.GetRefCount() != 1){
+			shader.GetConfig().DebugGetConfigString(text);
+			pRenderThread.GetLogger().LogWarnFormat("LightShaderManager CleanUp: Shader with refcount %i. Config=%s",
+				shader.GetRefCount(), text.GetString());
 		}
 	}
 }
@@ -131,16 +131,16 @@ deoglLightShaderManager::~deoglLightShaderManager(){
 // Management
 ///////////////
 
-const char *deoglLightShaderManager::GetUnitSourceCodePath( int unitSourceCodePath ) const{
-	if( unitSourceCodePath < 0 || unitSourceCodePath >= EUSCP_COUNT ){
-		DETHROW( deeInvalidParam );
+const char *deoglLightShaderManager::GetUnitSourceCodePath(int unitSourceCodePath) const{
+	if(unitSourceCodePath < 0 || unitSourceCodePath >= EUSCP_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return vUnitSourceCodePath[ unitSourceCodePath ];
+	return vUnitSourceCodePath[unitSourceCodePath];
 }
 
 
-deoglLightShader *deoglLightShaderManager::GetShaderWith( deoglLightShaderConfig &configuration ){
+deoglLightShader *deoglLightShaderManager::GetShaderWith(deoglLightShaderConfig &configuration){
 	const deMutexGuard guard(pMutex);
 	configuration.UpdateKey();
 	
@@ -209,15 +209,15 @@ cGetShaderListener *listener){
 void deoglLightShaderManager::Maintanance(){
 	// currently no maintanance done... all greedy
 	
-	if( pMaintananceInterval == 0 ){
+	if(pMaintananceInterval == 0){
 		deoglLightShader *shader = NULL;
 		int i;
 		
-		for( i=pShaderList.GetCount()-1; i>=0; i-- ){
-			shader = ( deoglLightShader* )pShaderList.GetAt( i );
+		for(i=pShaderList.GetCount()-1; i>=0; i--){
+			shader = (deoglLightShader*)pShaderList.GetAt(i);
 			
-			if( shader->GetRefCount() == 1 ){
-				pShaderList.Remove( shader );
+			if(shader->GetRefCount() == 1){
+				pShaderList.Remove(shader);
 			}
 		}
 		

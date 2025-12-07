@@ -38,8 +38,8 @@
 decTimer::decTimer(){
 #ifdef OS_W32
 	LARGE_INTEGER frequency;
-	QueryPerformanceFrequency( &frequency );
-	pInvFrequency = 1.0 / ( double )frequency.QuadPart;
+	QueryPerformanceFrequency(&frequency);
+	pInvFrequency = 1.0 / (double)frequency.QuadPart;
 #endif
 
 	Reset();
@@ -56,13 +56,13 @@ decTimer::~decTimer(){
 void decTimer::Reset(){
 #if defined OS_UNIX
 	timeval vTime;
-	gettimeofday( &vTime, NULL );
+	gettimeofday(&vTime, NULL);
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
 	
 #elif defined OS_W32
 	LARGE_INTEGER curTime;
-	QueryPerformanceCounter( &curTime );
+	QueryPerformanceCounter(&curTime);
 	pLastTime = curTime.QuadPart;
 #endif
 }
@@ -70,34 +70,34 @@ void decTimer::Reset(){
 float decTimer::GetElapsedTime(){
 #if defined OS_UNIX
 	timeval vTime;
-	gettimeofday( &vTime, NULL );
-	const suseconds_t diff = ( int )( vTime.tv_sec - pLastSec ) * 1000000 + ( ( int )vTime.tv_usec - ( int )pLastUSec );
+	gettimeofday(&vTime, NULL);
+	const suseconds_t diff = (int)(vTime.tv_sec - pLastSec) * 1000000 + ((int)vTime.tv_usec - (int)pLastUSec);
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
-	return ( float )diff * 1e-6f; // / 1000000.0f;
+	return (float)diff * 1e-6f; // / 1000000.0f;
 	
 #elif defined OS_W32
 	LARGE_INTEGER curTime;
-	QueryPerformanceCounter( &curTime );
+	QueryPerformanceCounter(&curTime);
 	const LONGLONG diffTime = curTime.QuadPart - pLastTime;
 	pLastTime = curTime.QuadPart;
 
-	return ( float )( pInvFrequency * diffTime );
+	return (float)(pInvFrequency * diffTime);
 #endif
 }
 
 float decTimer::PeekElapsedTime(){
 #if defined OS_UNIX
 	timeval vTime;
-	gettimeofday( &vTime, NULL );
-	const suseconds_t diff = ( int )( vTime.tv_sec - pLastSec ) * 1000000 + ( ( int )vTime.tv_usec - ( int )pLastUSec );
-	return ( float )diff * 1e-6f; // / 1000000.0f;
+	gettimeofday(&vTime, NULL);
+	const suseconds_t diff = (int)(vTime.tv_sec - pLastSec) * 1000000 + ((int)vTime.tv_usec - (int)pLastUSec);
+	return (float)diff * 1e-6f; // / 1000000.0f;
 	
 #elif defined OS_W32
 	LARGE_INTEGER curTime;
-	QueryPerformanceCounter( &curTime );
+	QueryPerformanceCounter(&curTime);
 	const LONGLONG diffTime = curTime.QuadPart - pLastTime;
 
-	return ( float )( pInvFrequency * diffTime );
+	return (float)(pInvFrequency * diffTime);
 #endif
 }

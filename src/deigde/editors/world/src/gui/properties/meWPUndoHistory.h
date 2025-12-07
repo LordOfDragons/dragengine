@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPUndoHistory( igdeEnvironment &environment );
+	meWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -62,7 +62,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	/*@}*/
 };
 

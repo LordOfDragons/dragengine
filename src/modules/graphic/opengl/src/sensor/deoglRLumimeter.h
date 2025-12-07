@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render lumimeter. */
-	deoglRLumimeter( deoglRenderThread &renderThread );
+	deoglRLumimeter(deoglRenderThread &renderThread);
 	
 	/** Clean up render lumimeter. */
 	virtual ~deoglRLumimeter();
@@ -83,7 +83,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent scene or \em NULL if not set. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	/** Octree node or \em NULL if not inserted into the parent world octree. */
 	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
@@ -92,7 +92,7 @@ public:
 	 * Set octree node or \em NULL if not inserted into the parent world octree.
 	 * \details This call is to be used only by the deoglWorldOctree only.
 	 */
-	void SetOctreeNode( deoglWorldOctree *octreeNode );
+	void SetOctreeNode(deoglWorldOctree *octreeNode);
 	
 	/** Update position in the parent octree. */
 	void UpdateOctreeNode();
@@ -103,7 +103,7 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	
 	
@@ -130,13 +130,13 @@ public:
 	int GetLightCount() const;
 	
 	/** Light at index. */
-	deoglRLight *GetLightAt( int index ) const;
+	deoglRLight *GetLightAt(int index) const;
 	
 	/** Add light. */
-	void AddLight( deoglRLight *light );
+	void AddLight(deoglRLight *light);
 	
 	/** Remove light. */
-	void RemoveLight( deoglRLight *light );
+	void RemoveLight(deoglRLight *light);
 	
 	/** Remove all lights. */
 	void RemoveAllLights();
@@ -156,7 +156,7 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 };
 

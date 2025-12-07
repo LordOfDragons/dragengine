@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkAdd::seULinkAdd( seSynthesizer *synthesizer, seLink *link ) :
-pSynthesizer( NULL ),
-pLink( NULL )
+seULinkAdd::seULinkAdd(seSynthesizer *synthesizer, seLink *link) :
+pSynthesizer(NULL),
+pLink(NULL)
 {
-	if( ! link || ! synthesizer ){
-		DETHROW( deeInvalidParam );
+	if(!link || !synthesizer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add Link" );
+	SetShortInfo("Add Link");
 	
 	pSynthesizer = synthesizer;
 	pSynthesizer->AddReference();
@@ -59,10 +59,10 @@ pLink( NULL )
 }
 
 seULinkAdd::~seULinkAdd(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }
@@ -73,10 +73,10 @@ seULinkAdd::~seULinkAdd(){
 ///////////////
 
 void seULinkAdd::Undo(){
-	pSynthesizer->RemoveLink( pLink );
+	pSynthesizer->RemoveLink(pLink);
 }
 
 void seULinkAdd::Redo(){
-	pSynthesizer->AddLink( pLink );
-	pSynthesizer->SetActiveLink( pLink );
+	pSynthesizer->AddLink(pLink);
+	pSynthesizer->SetActiveLink(pLink);
 }

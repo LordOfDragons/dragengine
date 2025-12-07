@@ -50,10 +50,10 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeMenuCheck( igdeEnvironment &environment );
+	igdeMenuCheck(igdeEnvironment &environment);
 	
 	/** \brief Create menu entry. */
-	igdeMenuCheck( igdeEnvironment &environment, igdeAction *action );
+	igdeMenuCheck(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -76,12 +76,12 @@ public:
 	inline bool GetChecked() const{ return pChecked; }
 	
 	/** \brief Set if menu entry is checked. */
-	void SetChecked( bool checked );
+	void SetChecked(bool checked);
 	
 	
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	/*@}*/
 	
 	

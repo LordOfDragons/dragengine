@@ -40,16 +40,16 @@
 ////////////////////////////
 
 deoglCapsTextureFormatList::deoglCapsTextureFormatList() :
-pFormats( NULL ),
-pFormatCount( 0 ),
-pFormatSize( 0 ){
+pFormats(NULL),
+pFormatCount(0),
+pFormatSize(0){
 }
 
 deoglCapsTextureFormatList::~deoglCapsTextureFormatList(){
-	if( pFormats ){
-		while( pFormatCount > 0 ){
+	if(pFormats){
+		while(pFormatCount > 0){
 			pFormatCount--;
-			delete pFormats[ pFormatCount ];
+			delete pFormats[pFormatCount];
 		}
 		delete [] pFormats;
 	}
@@ -60,33 +60,33 @@ deoglCapsTextureFormatList::~deoglCapsTextureFormatList(){
 // Management
 ///////////////
 
-const deoglCapsTextureFormat *deoglCapsTextureFormatList::GetFormatAt( int index ) const{
-	if( index < 0 || index >= pFormatCount ){
-		DETHROW( deeInvalidParam );
+const deoglCapsTextureFormat *deoglCapsTextureFormatList::GetFormatAt(int index) const{
+	if(index < 0 || index >= pFormatCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pFormats[ index ];
+	return pFormats[index];
 }
 
-const deoglCapsTextureFormat *deoglCapsTextureFormatList::GetFormatWith( GLint format ) const{
+const deoglCapsTextureFormat *deoglCapsTextureFormatList::GetFormatWith(GLint format) const{
 	int i;
 	
-	for( i=0; i<pFormatCount; i++ ){
-		if( pFormats[ i ]->GetFormat() == format ){
-			return pFormats[ i ];
+	for(i=0; i<pFormatCount; i++){
+		if(pFormats[i]->GetFormat() == format){
+			return pFormats[i];
 		}
 	}
 	
 	return NULL;
 }
 
-void deoglCapsTextureFormatList::AddFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
-int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil, bool isCompressed, const char *name ){
-	if( pFormatCount == pFormatSize ){
+void deoglCapsTextureFormatList::AddFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
+int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil, bool isCompressed, const char *name){
+	if(pFormatCount == pFormatSize){
 		const int newSize = pFormatSize * 3 / 2 + 1;
-		deoglCapsTextureFormat ** const newArray = new deoglCapsTextureFormat*[ newSize ];
+		deoglCapsTextureFormat ** const newArray = new deoglCapsTextureFormat*[newSize];
 		
-		if( pFormats ){
-			memcpy( newArray, pFormats, sizeof( deoglCapsTextureFormat* ) * pFormatSize );
+		if(pFormats){
+			memcpy(newArray, pFormats, sizeof(deoglCapsTextureFormat*) * pFormatSize);
 			delete [] pFormats;
 		}
 		
@@ -94,7 +94,7 @@ int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil, bool isCompre
 		pFormatSize = newSize;
 	}
 	
-	pFormats[ pFormatCount ] = new deoglCapsTextureFormat( format, pixelFormat, pixelType,
-		bitsPerPixel, isDepth, isDepthFloat, isStencil, isCompressed, name );
+	pFormats[pFormatCount] = new deoglCapsTextureFormat(format, pixelFormat, pixelType,
+		bitsPerPixel, isDepth, isDepthFloat, isStencil, isCompressed, name);
 	pFormatCount++;
 }

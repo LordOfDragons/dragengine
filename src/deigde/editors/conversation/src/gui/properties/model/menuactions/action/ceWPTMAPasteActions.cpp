@@ -47,22 +47,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPasteActions::ceWPTMAPasteActions( ceWindowMain &windowMain,
-ceConversation &conversation ) :
-ceWPTMenuAction( windowMain, "Paste Actions",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ) ),
-pConversation( &conversation )
+ceWPTMAPasteActions::ceWPTMAPasteActions(ceWindowMain &windowMain,
+ceConversation &conversation) :
+ceWPTMenuAction(windowMain, "Paste Actions",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
+pConversation(&conversation)
 {
-	SetEnabled( windowMain.GetClipboard().HasWithTypeName( ceClipboardDataAction::TYPE_NAME ) );
+	SetEnabled(windowMain.GetClipboard().HasWithTypeName(ceClipboardDataAction::TYPE_NAME));
 }
 
-ceWPTMAPasteActions::ceWPTMAPasteActions( ceWindowMain &windowMain,
-ceConversation &conversation, const char *text ) :
-ceWPTMenuAction( windowMain, text,
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ) ),
-pConversation( &conversation )
+ceWPTMAPasteActions::ceWPTMAPasteActions(ceWindowMain &windowMain,
+ceConversation &conversation, const char *text) :
+ceWPTMenuAction(windowMain, text,
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
+pConversation(&conversation)
 {
-	SetEnabled( windowMain.GetClipboard().HasWithTypeName( ceClipboardDataAction::TYPE_NAME ) );
+	SetEnabled(windowMain.GetClipboard().HasWithTypeName(ceClipboardDataAction::TYPE_NAME));
 }
 
 
@@ -71,17 +71,17 @@ pConversation( &conversation )
 ///////////////
 
 void ceWPTMAPasteActions::OnAction(){
-	ceClipboardDataAction * const cdata = ( ceClipboardDataAction* )GetWindowMain().
-		GetClipboard().GetWithTypeName( ceClipboardDataAction::TYPE_NAME );
-	if( ! cdata ){
+	ceClipboardDataAction * const cdata = (ceClipboardDataAction*)GetWindowMain().
+		GetClipboard().GetWithTypeName(ceClipboardDataAction::TYPE_NAME);
+	if(!cdata){
 		return;
 	}
 	
 	pConversation->GetUndoSystem()->Add(igdeUndo::Ref::New(CreateUndo(cdata->GetActions())));
 }
 
-ceUCActionPaste *ceWPTMAPasteActions::CreateUndo( const ceConversationActionList &actions ){
+ceUCActionPaste *ceWPTMAPasteActions::CreateUndo(const ceConversationActionList &actions){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

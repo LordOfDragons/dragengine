@@ -43,8 +43,8 @@
 gdeOCCameraList::gdeOCCameraList(){
 }
 
-gdeOCCameraList::gdeOCCameraList( const gdeOCCameraList &list ) :
-pCameras( list.pCameras ){
+gdeOCCameraList::gdeOCCameraList(const gdeOCCameraList &list) :
+pCameras(list.pCameras){
 }
 
 gdeOCCameraList::~gdeOCCameraList(){
@@ -59,27 +59,27 @@ int gdeOCCameraList::GetCount() const{
 	return pCameras.GetCount();
 }
 
-gdeOCCamera *gdeOCCameraList::GetAt( int index ) const{
-	return ( gdeOCCamera* )pCameras.GetAt( index );
+gdeOCCamera *gdeOCCameraList::GetAt(int index) const{
+	return (gdeOCCamera*)pCameras.GetAt(index);
 }
 
-int gdeOCCameraList::IndexOf( gdeOCCamera *camera ) const{
-	return pCameras.IndexOf( camera );
+int gdeOCCameraList::IndexOf(gdeOCCamera *camera) const{
+	return pCameras.IndexOf(camera);
 }
 
-bool gdeOCCameraList::Has( gdeOCCamera *camera ) const{
-	return pCameras.Has( camera );
+bool gdeOCCameraList::Has(gdeOCCamera *camera) const{
+	return pCameras.Has(camera);
 }
 
-void gdeOCCameraList::Add( gdeOCCamera *camera ){
-	if( ! camera || Has( camera ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCCameraList::Add(gdeOCCamera *camera){
+	if(!camera || Has(camera)){
+		DETHROW(deeInvalidParam);
 	}
-	pCameras.Add( camera );
+	pCameras.Add(camera);
 }
 
-void gdeOCCameraList::Remove( gdeOCCamera *camera ){
-	pCameras.Remove( camera );
+void gdeOCCameraList::Remove(gdeOCCamera *camera){
+	pCameras.Remove(camera);
 }
 
 void gdeOCCameraList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCCameraList::RemoveAll(){
 
 
 
-gdeOCCameraList &gdeOCCameraList::operator=( const gdeOCCameraList &list ){
+gdeOCCameraList &gdeOCCameraList::operator=(const gdeOCCameraList &list){
 	pCameras = list.pCameras;
 	return *this;
 }

@@ -61,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared SPB render task instance group. */
-	deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList *parent,
-		deoglSharedSPB &sharedSPB, int textureCount );
+	deoglSharedSPBRTIGroup(deoglSharedSPBRTIGroupList *parent,
+		deoglSharedSPB &sharedSPB, int textureCount);
 	
 protected:
 	/** Clean up shared SPB render task instance group. */

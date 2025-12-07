@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCamOrbitTo::ceUCCShotSetCamOrbitTo( ceCameraShot *cameraShot, const decVector &newRot ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetCamOrbitTo::ceUCCShotSetCamOrbitTo(ceCameraShot *cameraShot, const decVector &newRot){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Set End Camera Rotition" );
+	SetShortInfo("Camera Shot Set End Camera Rotition");
 	
 	pOldRot = cameraShot->GetCameraOrbitTo();
 	pNewRot = newRot;
@@ -54,7 +54,7 @@ ceUCCShotSetCamOrbitTo::ceUCCShotSetCamOrbitTo( ceCameraShot *cameraShot, const 
 }
 
 ceUCCShotSetCamOrbitTo::~ceUCCShotSetCamOrbitTo(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ ceUCCShotSetCamOrbitTo::~ceUCCShotSetCamOrbitTo(){
 ///////////////
 
 void ceUCCShotSetCamOrbitTo::Undo(){
-	pCameraShot->SetCameraOrbitTo( pOldRot );
+	pCameraShot->SetCameraOrbitTo(pOldRot);
 }
 
 void ceUCCShotSetCamOrbitTo::Redo(){
-	pCameraShot->SetCameraOrbitTo( pNewRot );
+	pCameraShot->SetCameraOrbitTo(pNewRot);
 }

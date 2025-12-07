@@ -69,8 +69,8 @@ public:
 	inline int GetRayCount() const{ return pRayCount; }
 	
 	/** \brief Ray at index. */
-	deoalSoundRay &GetRayAt( int index );
-	const deoalSoundRay &GetRayAt( int index ) const;
+	deoalSoundRay &GetRayAt(int index);
+	const deoalSoundRay &GetRayAt(int index) const;
 	
 	/** \brief Add ray returning index. */
 	int AddRay();
@@ -79,8 +79,8 @@ public:
 	inline int GetSegmentCount() const{ return pSegmentCount; }
 	
 	/** \brief Segment at index. */
-	deoalSoundRaySegment &GetSegmentAt( int index );
-	const deoalSoundRaySegment &GetSegmentAt( int index ) const;
+	deoalSoundRaySegment &GetSegmentAt(int index);
+	const deoalSoundRaySegment &GetSegmentAt(int index) const;
 	
 	/** \brief Add segment returning index. */
 	int AddSegment();
@@ -89,8 +89,8 @@ public:
 	inline int GetTransmittedRayCount() const{ return pTransmittedRayCount; }
 	
 	/** \brief Transmitted ray at index. */
-	deoalSoundRay &GetTransmittedRayAt( int index );
-	const deoalSoundRay &GetTransmittedRayAt( int index ) const;
+	deoalSoundRay &GetTransmittedRayAt(int index);
+	const deoalSoundRay &GetTransmittedRayAt(int index) const;
 	
 	/** \brief Add transmitted ray returning index. */
 	int AddTransmittedRay();
@@ -99,7 +99,7 @@ public:
 	void RemoveAllRays();
 	
 	/** \brief Reserve space in the array to make future AddRay() and AddSegment() more efficient. */
-	void ReserveSize( int rays, int segments, int transmittedRays );
+	void ReserveSize(int rays, int segments, int transmittedRays);
 	/*@}*/
 	
 	
@@ -107,10 +107,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Assign. */
-	deoalSoundRayList &operator=( const deoalSoundRayList &list );
+	deoalSoundRayList &operator=(const deoalSoundRayList &list);
 	
 	/** \brief Append. */
-	deoalSoundRayList &operator+=( const deoalSoundRayList &list );
+	deoalSoundRayList &operator+=(const deoalSoundRayList &list);
 	/*@}*/
 };
 

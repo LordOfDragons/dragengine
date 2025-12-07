@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetDescription::gdeUGDDPSetDescription( gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDDPSetDescription::gdeUGDDPSetDescription(gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set description" );
+	SetShortInfo("Game definition property set description");
 	
 	pOldValue = property->GetDescription();
 	pNewValue = newValue;
@@ -61,10 +61,10 @@ pProperty( NULL )
 }
 
 gdeUGDDPSetDescription::~gdeUGDDPSetDescription(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUGDDPSetDescription::~gdeUGDDPSetDescription(){
 ///////////////
 
 void gdeUGDDPSetDescription::Undo(){
-	pProperty->SetDescription( pOldValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetDescription(pOldValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPSetDescription::Redo(){
-	pProperty->SetDescription( pNewValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetDescription(pNewValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

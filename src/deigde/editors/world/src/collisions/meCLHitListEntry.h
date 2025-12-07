@@ -128,7 +128,7 @@ public:
 	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	
 	/** \brief Sort decals. */

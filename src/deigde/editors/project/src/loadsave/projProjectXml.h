@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml project. */
-	projProjectXml( deLogger *logger, const char *loggerSource );
+	projProjectXml(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up xml project. */
 	virtual ~projProjectXml();
@@ -58,20 +58,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read configuration from xml file. */
-	void ReadFromFile( decBaseFileReader &reader, projProject &project );
+	void ReadFromFile(decBaseFileReader &reader, projProject &project);
 	
 	/** \brief Write configuration to xml file. */
-	void WriteToFile( decBaseFileWriter &writer, const projProject &project );
+	void WriteToFile(decBaseFileWriter &writer, const projProject &project);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteProject( decXmlWriter &writer, const projProject &project );
-	void pWriteProfile( decXmlWriter &writer, const projProfile &profile );
+	void pWriteProject(decXmlWriter &writer, const projProject &project);
+	void pWriteProfile(decXmlWriter &writer, const projProfile &profile);
 	
-	void pReadProject( const decXmlElementTag &root, projProject &project );
-	void pReadProfile( const decXmlElementTag &root, projProject &project );
+	void pReadProject(const decXmlElementTag &root, projProject &project);
+	void pReadProfile(const decXmlElementTag &root, projProject &project);
 };
 
 #endif

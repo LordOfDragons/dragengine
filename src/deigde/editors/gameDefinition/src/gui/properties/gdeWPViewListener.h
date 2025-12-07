@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPViewListener( gdeWPView &panel );
+	gdeWPViewListener(gdeWPView &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPViewListener();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition changed. */
-	virtual void GameDefinitionChanged( gdeGameDefinition *gameDefinition );
+	virtual void GameDefinitionChanged(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Sky changed. */
-	virtual void SkyChanged( gdeGameDefinition *gameDefinition );
+	virtual void SkyChanged(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Camera changed. */
-	virtual void CameraChanged( gdeGameDefinition *gameDefinition );
+	virtual void CameraChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetSkin::seULayerSetSkin( seLayer *layer, const char *newSkin ) :
-pLayer( NULL ),
-pNewSkin( newSkin )
+seULayerSetSkin::seULayerSetSkin(seLayer *layer, const char *newSkin) :
+pLayer(NULL),
+pNewSkin(newSkin)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Layer Skin" );
+	SetShortInfo("Set Layer Skin");
 	
 	pOldSkin = layer->GetSkinPath();
 	
@@ -56,7 +56,7 @@ pNewSkin( newSkin )
 }
 
 seULayerSetSkin::~seULayerSetSkin(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seULayerSetSkin::~seULayerSetSkin(){
 ///////////////
 
 void seULayerSetSkin::Undo(){
-	pLayer->SetSkinPath( pOldSkin );
+	pLayer->SetSkinPath(pOldSkin);
 }
 
 void seULayerSetSkin::Redo(){
-	pLayer->SetSkinPath( pNewSkin );
+	pLayer->SetSkinPath(pNewSkin);
 }

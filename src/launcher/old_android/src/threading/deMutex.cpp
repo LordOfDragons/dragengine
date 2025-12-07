@@ -43,37 +43,37 @@
 deMutex::deMutex(){
 #if defined OS_UNIX || defined OS_BEOS
 	/*
-	const int result = pthread_mutex_init( &pMutex, NULL );
-	if( result != 0 ){
-		if( result == ENOMEM ) DETHROW( deeOutOfMemory );
-		if( result == EAGAIN ) DETHROW_INFO( deeOutOfMemory, "lack of resources" );
-		if( result == EPERM ) DETHROW_INFO( deeInvalidAction, "permission denied" );
-		if( result == EBUSY ) DETHROW_INFO( deeInvalidAction, "double initialization" );
-		DETHROW_INFO( deeInvalidAction, "unknown error" );
+	const int result = pthread_mutex_init(&pMutex, NULL);
+	if(result != 0){
+		if(result == ENOMEM) DETHROW(deeOutOfMemory);
+		if(result == EAGAIN) DETHROW_INFO(deeOutOfMemory, "lack of resources");
+		if(result == EPERM) DETHROW_INFO(deeInvalidAction, "permission denied");
+		if(result == EBUSY) DETHROW_INFO(deeInvalidAction, "double initialization");
+		DETHROW_INFO(deeInvalidAction, "unknown error");
 	}
 	*/
-	if( pthread_mutex_init( &pMutex, NULL ) != 0 ){
-		DETHROW( deeOutOfMemory );
+	if(pthread_mutex_init(&pMutex, NULL) != 0){
+		DETHROW(deeOutOfMemory);
 	}
 #endif
 
 #ifdef OS_W32
-	InitializeCriticalSection( &pCritSec );
+	InitializeCriticalSection(&pCritSec);
 #endif
 }
 
 deMutex::~deMutex(){
 #if defined OS_UNIX || defined OS_BEOS
-	const int result = pthread_mutex_destroy( &pMutex );
-	if( result != 0 ){
-		if( result == EBUSY ) printf( "[MUTEX] %p: Still locked!\n", this );
-		if( result == EINVAL ) printf( "[MUTEX] %p: Invalid mutex!\n", this );
-		printf( "[MUTEX] %p: Cleanup failed ( %i )\n", this, result );
+	const int result = pthread_mutex_destroy(&pMutex);
+	if(result != 0){
+		if(result == EBUSY) printf("[MUTEX] %p: Still locked!\n", this);
+		if(result == EINVAL) printf("[MUTEX] %p: Invalid mutex!\n", this);
+		printf("[MUTEX] %p: Cleanup failed (%i)\n", this, result);
 	}
 #endif
 
 #ifdef OS_W32
-	DeleteCriticalSection( &pCritSec );
+	DeleteCriticalSection(&pCritSec);
 #endif
 }
 
@@ -84,42 +84,42 @@ deMutex::~deMutex(){
 
 void deMutex::Lock(){
 #if defined OS_UNIX || defined OS_BEOS
-	if( pthread_mutex_lock( &pMutex ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_mutex_lock(&pMutex) != 0){
+		DETHROW(deeInvalidAction);
 	}
 #endif
 
 #ifdef OS_W32
-	EnterCriticalSection( &pCritSec );
+	EnterCriticalSection(&pCritSec);
 #endif
 }
 
 bool deMutex::TryLock(){
 #if defined OS_UNIX || defined OS_BEOS
-	const int result = pthread_mutex_trylock( &pMutex );
-	if( result == 0 ){
+	const int result = pthread_mutex_trylock(&pMutex);
+	if(result == 0){
 		return true;
 	}
-	if( result == EBUSY ){
+	if(result == EBUSY){
 		return false;
 	}
 	
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 #endif
 
 #ifdef OS_W32
-	return TryEnterCriticalSection( &pCritSec ) != 0;
+	return TryEnterCriticalSection(&pCritSec) != 0;
 #endif
 }
 
 void deMutex::Unlock(){
 #if defined OS_UNIX || defined OS_BEOS
-	if( pthread_mutex_unlock( &pMutex ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_mutex_unlock(&pMutex) != 0){
+		DETHROW(deeInvalidAction);
 	}
 #endif
 
 #ifdef OS_W32
-	LeaveCriticalSection( &pCritSec );
+	LeaveCriticalSection(&pCritSec);
 #endif
 }

@@ -41,21 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPRenderDownScale::deoglPRenderDownScale( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
-	SetName( "renderDownScale" );
-	SetDescription( "Render at lower resolution the up-scale. Improves performance at the cost of quality." );
-	SetType( eptSelection );
-	SetCategory( ecBasic );
-	SetDisplayName( "Render Down-Scale" );
+deoglPRenderDownScale::deoglPRenderDownScale(deGraphicOpenGl &ogl) : deoglParameterInt(ogl){
+	SetName("renderDownScale");
+	SetDescription("Render at lower resolution the up-scale. Improves performance at the cost of quality.");
+	SetType(eptSelection);
+	SetCategory(ecBasic);
+	SetDisplayName("Render Down-Scale");
 	
-	const deModuleParameter::SelectionEntry entries[ 4 ] = {
-		{ "1", "1x", "Render at full resolution." },
-		{ "2", "2x", "Render at half resolution then up-scale to full resolution." },
-		{ "4", "4x", "Render at quarter resolution then up-scale to full resolution." },
-		{ "8", "8x", "Render at 1/8 resolution then up-scale to full resolution." }
+	const deModuleParameter::SelectionEntry entries[4] = {
+		{"1", "1x", "Render at full resolution."},
+		{"2", "2x", "Render at half resolution then up-scale to full resolution."},
+		{"4", "4x", "Render at quarter resolution then up-scale to full resolution."},
+		{"8", "8x", "Render at 1/8 resolution then up-scale to full resolution."}
 	};
-	AddSelectionEntries( entries, 4 );
-	SetDefaultValue( "1" );
+	AddSelectionEntries(entries, 4);
+	SetDefaultValue("1");
 }
 
 deoglPRenderDownScale::~deoglPRenderDownScale(){
@@ -70,6 +70,6 @@ int deoglPRenderDownScale::GetParameterInt(){
 	return pOgl.GetConfiguration().GetRenderDownScale();
 }
 
-void deoglPRenderDownScale::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetRenderDownScale( value );
+void deoglPRenderDownScale::SetParameterInt(int value){
+	pOgl.GetConfiguration().SetRenderDownScale(value);
 }

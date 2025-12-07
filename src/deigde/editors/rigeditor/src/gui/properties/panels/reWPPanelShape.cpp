@@ -61,22 +61,22 @@ namespace{
 class cTextProperty : public igdeTextFieldListener{
 	reWPPanelShape &pPanel;
 public:
-	cTextProperty( reWPPanelShape &panel ) : pPanel( panel ){ }
+	cTextProperty(reWPPanelShape &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
 		reRigShape * const shape = pPanel.GetShape();
-		if( ! rig || ! shape ){
+		if(!rig || !shape){
 			return;
 		}
 		
-		if( textField->GetText() == shape->GetProperty() ){
+		if(textField->GetText() == shape->GetProperty()){
 			return;
 		}
 		
 		reUShapeSetProperty::Ref undo(reUShapeSetProperty::Ref::NewWith(shape, textField->GetText()));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -88,24 +88,24 @@ public:
 // class reWPPanelShape::cEditPosition
 ////////////////////////////////////////
 
-reWPPanelShape::cEditPosition::cEditPosition( reWPPanelShape &panel ) :
-pPanel( panel ){
+reWPPanelShape::cEditPosition::cEditPosition(reWPPanelShape &panel) :
+pPanel(panel){
 }
 
-void reWPPanelShape::cEditPosition::OnVectorChanged( igdeEditVector *editVector ){
+void reWPPanelShape::cEditPosition::OnVectorChanged(igdeEditVector *editVector){
 	reRig * const rig = pPanel.GetRig();
 	reRigShape * const shape = pPanel.GetShape();
-	if( ! rig || ! shape ){
+	if(!rig || !shape){
 		return;
 	}
 	
-	if( editVector->GetVector().IsEqualTo( shape->GetPosition() ) ){
+	if(editVector->GetVector().IsEqualTo(shape->GetPosition())){
 		return;
 	}
 	
 	reUSetShapePosition::Ref undo(reUSetShapePosition::Ref::NewWith(shape, editVector->GetVector()));
-	if( undo ){
-		rig->GetUndoSystem()->Add( undo );
+	if(undo){
+		rig->GetUndoSystem()->Add(undo);
 	}
 };
 
@@ -114,25 +114,25 @@ void reWPPanelShape::cEditPosition::OnVectorChanged( igdeEditVector *editVector 
 // class reWPPanelShape::cEditRotation
 ////////////////////////////////////////
 
-reWPPanelShape::cEditRotation::cEditRotation( reWPPanelShape &panel ) :
-pPanel( panel ){
+reWPPanelShape::cEditRotation::cEditRotation(reWPPanelShape &panel) :
+pPanel(panel){
 }
 
-void reWPPanelShape::cEditRotation::OnVectorChanged( igdeEditVector *editVector ){
+void reWPPanelShape::cEditRotation::OnVectorChanged(igdeEditVector *editVector){
 	reRig * const rig = pPanel.GetRig();
 	reRigShape * const shape = pPanel.GetShape();
-	if( ! rig || ! shape ){
+	if(!rig || !shape){
 		return;
 	}
 	
-	if( editVector->GetVector().IsEqualTo( shape->GetOrientation() ) ){
+	if(editVector->GetVector().IsEqualTo(shape->GetOrientation())){
 		return;
 	}
 	
 	reUSetShapeOrientation::Ref undo(reUSetShapeOrientation::Ref::NewWith(
 		shape, editVector->GetVector()));
-	if( undo ){
-		rig->GetUndoSystem()->Add( undo );
+	if(undo){
+		rig->GetUndoSystem()->Add(undo);
 	}
 };
 
@@ -144,25 +144,25 @@ void reWPPanelShape::cEditRotation::OnVectorChanged( igdeEditVector *editVector 
 // Constructor, destructor
 ////////////////////////////
 
-reWPPanelShape::reWPPanelShape( reWPShape &wpShape, reRigShape::eShapeTypes requiredShapeType ) :
-igdeContainerFlow( wpShape.GetEnvironment(), igdeContainerFlow::eaY ),
-pWPShape( wpShape ),
-pRequiredShapeType( requiredShapeType ),
-pRig( NULL ),
-pShape( NULL )
+reWPPanelShape::reWPPanelShape(reWPShape &wpShape, reRigShape::eShapeTypes requiredShapeType) :
+igdeContainerFlow(wpShape.GetEnvironment(), igdeContainerFlow::eaY),
+pWPShape(wpShape),
+pRequiredShapeType(requiredShapeType),
+pRig(NULL),
+pShape(NULL)
 {
 	igdeEnvironment &env = wpShape.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(env));
-	AddChild( content );
+	AddChild(content);
 	
-	helper.EditString( content, "Parent:", "Parent bone name or empty string for rig shapes.",
-		pEditBone, NULL );
-	pEditBone->SetEditable( false );
+	helper.EditString(content, "Parent:", "Parent bone name or empty string for rig shapes.",
+		pEditBone, NULL);
+	pEditBone->SetEditable(false);
 	
-	helper.EditString( content, "Property:", "Custom shape property string.",
-		pEditProperty, new cTextProperty( *this ) );
+	helper.EditString(content, "Property:", "Custom shape property string.",
+		pEditProperty, new cTextProperty(*this));
 }
 
 reWPPanelShape::~reWPPanelShape(){
@@ -173,9 +173,9 @@ reWPPanelShape::~reWPPanelShape(){
 // Management
 ///////////////
 
-void reWPPanelShape::SetShape( reRig *rig, reRigShape *shape ){
-	if( rig && shape ){
-		if( shape->GetShapeType() == pRequiredShapeType ){
+void reWPPanelShape::SetShape(reRig *rig, reRigShape *shape){
+	if(rig && shape){
+		if(shape->GetShapeType() == pRequiredShapeType){
 			pRig = rig;
 			pShape = shape;
 			
@@ -193,17 +193,17 @@ void reWPPanelShape::SetShape( reRig *rig, reRigShape *shape ){
 
 
 void reWPPanelShape::UpdateShape(){
-	if( pShape ){
+	if(pShape){
 		reRigBone * const rigBone = pShape->GetRigBone();
 		
-		if( rigBone ){
-			pEditBone->SetText( rigBone->GetName() );
+		if(rigBone){
+			pEditBone->SetText(rigBone->GetName());
 			
 		}else{
 			pEditBone->ClearText();
 		}
 		
-		pEditProperty->SetText( pShape->GetProperty() );
+		pEditProperty->SetText(pShape->GetProperty());
 		
 	}else{
 		pEditBone->ClearText();
@@ -211,6 +211,6 @@ void reWPPanelShape::UpdateShape(){
 	}
 	
 	const bool enabled = pShape != NULL;
-	pEditBone->SetEnabled( enabled );
-	pEditProperty->SetEnabled( enabled );
+	pEditBone->SetEnabled(enabled);
+	pEditProperty->SetEnabled(enabled);
 }

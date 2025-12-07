@@ -49,8 +49,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpCDVMoveHitModelFace::debpCDVMoveHitModelFace( debpCollisionDetection *coldet ){
-	if( ! coldet ) DETHROW( deeInvalidParam );
+debpCDVMoveHitModelFace::debpCDVMoveHitModelFace(debpCollisionDetection *coldet){
+	if(!coldet) DETHROW(deeInvalidParam);
 	
 	pColDet = coldet;
 	
@@ -74,17 +74,17 @@ void debpCDVMoveHitModelFace::Reset(){
 	pHasCollision = false;
 }
 
-void debpCDVMoveHitModelFace::SetComponent( debpComponent *component ){
+void debpCDVMoveHitModelFace::SetComponent(debpComponent *component){
 	pComponent = component;
 }
 
-void debpCDVMoveHitModelFace::SetTestShape( debpShape *shape, const decDVector &direction ){
+void debpCDVMoveHitModelFace::SetTestShape(debpShape *shape, const decDVector &direction){
 	pShape = shape;
 	pCollider = NULL;
 	pDirection = direction;
 }
 
-void debpCDVMoveHitModelFace::SetTestCollider( debpCollider *collider, const decDVector &direction ){
+void debpCDVMoveHitModelFace::SetTestCollider(debpCollider *collider, const decDVector &direction){
 	pShape = NULL;
 	pCollider = collider;
 	pDirection = direction;
@@ -95,16 +95,16 @@ void debpCDVMoveHitModelFace::SetTestCollider( debpCollider *collider, const dec
 // Visiting
 /////////////
 
-void debpCDVMoveHitModelFace::VisitNode( debpDOctree *node, int intersection ){
-	const debpModelOctree &rnode = *( ( debpModelOctree* )node );
+void debpCDVMoveHitModelFace::VisitNode(debpDOctree *node, int intersection){
+	const debpModelOctree &rnode = *((debpModelOctree*)node);
 	int f, faceIndex, faceCount = rnode.GetFaceCount();
 	
-	if( pShape ){
-		for( f=0; f<faceCount; f++ ){
-			faceIndex = rnode.GetFaceAt( f );
+	if(pShape){
+		for(f=0; f<faceCount; f++){
+			faceIndex = rnode.GetFaceAt(f);
 			
-			if( pColDet->ShapeMoveHitsModelFace( *pShape, pDirection, *pComponent, faceIndex, pResultTest ) ){
-				if( ! pHasCollision || pResultTest.distance < pResultFinal.distance ){
+			if(pColDet->ShapeMoveHitsModelFace(*pShape, pDirection, *pComponent, faceIndex, pResultTest)){
+				if(!pHasCollision || pResultTest.distance < pResultFinal.distance){
 					pResultFinal.shape1 = 0;
 					pResultFinal.bone1 = -1;
 					pResultFinal.face = faceIndex;
@@ -116,12 +116,12 @@ void debpCDVMoveHitModelFace::VisitNode( debpDOctree *node, int intersection ){
 			}
 		}
 		
-	}else if( pCollider ){
-		for( f=0; f<faceCount; f++ ){
-			faceIndex = rnode.GetFaceAt( f );
+	}else if(pCollider){
+		for(f=0; f<faceCount; f++){
+			faceIndex = rnode.GetFaceAt(f);
 			
-			if( pColDet->ColliderMoveHitsModelFace( pCollider, pDirection, *pComponent, faceIndex, pResultTest ) ){
-				if( ! pHasCollision || pResultTest.distance < pResultFinal.distance ){
+			if(pColDet->ColliderMoveHitsModelFace(pCollider, pDirection, *pComponent, faceIndex, pResultTest)){
+				if(!pHasCollision || pResultTest.distance < pResultFinal.distance){
 					pResultFinal.shape1 = pResultTest.shape1;
 					pResultFinal.bone1 = pResultTest.bone1;
 					pResultFinal.face = faceIndex;

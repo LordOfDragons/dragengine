@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin renderable. */
-	deoglSkinRenderable( const char *name );
+	deoglSkinRenderable(const char *name);
 	
 protected:
 	/** Cleans up the skin renderable. */
@@ -67,7 +67,7 @@ public:
 	inline bool GetRequiresTexture() const{ return pRequiresTexture; }
 	
 	/** Set if one or more texture properties using this renderable require a texture. */
-	void SetRequiresTexture( bool requiresTexture );
+	void SetRequiresTexture(bool requiresTexture);
 	/*@}*/
 };
 

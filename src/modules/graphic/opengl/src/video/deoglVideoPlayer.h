@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new peer. */
-	deoglVideoPlayer( deGraphicOpenGl &ogl, deVideoPlayer &videoPlayer );
+	deoglVideoPlayer(deGraphicOpenGl &ogl, deVideoPlayer &videoPlayer);
 	
 	/** Clean up peer. */
 	virtual ~deoglVideoPlayer();
@@ -92,7 +92,7 @@ public:
 	inline deoglRVideoPlayer *GetRVideoPlayer() const{ return pRVideoPlayer; }
 	
 	/** Set current frame. */
-	void SetCurrentFrame( int frame );
+	void SetCurrentFrame(int frame);
 	
 	/** Update next frame. */
 	void UpdateNextFrame();
@@ -133,7 +133,7 @@ public:
 	 * Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
-	virtual void PlayPositionChanged( bool seeking );
+	virtual void PlayPositionChanged(bool seeking);
 	
 	/** Play state changed. */
 	virtual void PlayStateChanged();

@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPAPanelEffect( seWPEffect &wpEffect, deSynthesizerEffectVisitorIdentify::eEffectTypes requiredType );
+	seWPAPanelEffect(seWPEffect &wpEffect, deSynthesizerEffectVisitorIdentify::eEffectTypes requiredType);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -130,7 +130,7 @@ public:
 	void RemoveAllTargets();
 	
 	/** \brief Add target. */
-	void AddTarget( const char *name, seControllerTarget *target );
+	void AddTarget(const char *name, seControllerTarget *target);
 	
 	
 	

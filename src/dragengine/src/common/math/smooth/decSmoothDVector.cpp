@@ -35,27 +35,27 @@
 ////////////////////////////
 
 decSmoothDVector::decSmoothDVector() :
-pAdjustTime( 1.0 ),
-pAdjustRange( 1.0 ),
-pChangeSpeed( 0.0 ),
-pFactorTime( 0.0 ),
-pFactorLimit( 0.0 ),
-pFactorDrop( 0.0 ),
-pSmoothed( true )
+pAdjustTime(1.0),
+pAdjustRange(1.0),
+pChangeSpeed(0.0),
+pFactorTime(0.0),
+pFactorLimit(0.0),
+pFactorDrop(0.0),
+pSmoothed(true)
 {
 	pUpdateFactors();
 }
 
-decSmoothDVector::decSmoothDVector( const decSmoothDVector &copy ) :
-pValue( copy.pValue ),
-pGoal( copy.pGoal ),
-pAdjustTime( copy.pAdjustTime ),
-pAdjustRange( copy.pAdjustRange ),
-pChangeSpeed( copy.pChangeSpeed ),
-pFactorTime( copy.pFactorTime ),
-pFactorLimit( copy.pFactorLimit ),
-pFactorDrop( copy.pFactorDrop ),
-pSmoothed( copy.pSmoothed )
+decSmoothDVector::decSmoothDVector(const decSmoothDVector &copy) :
+pValue(copy.pValue),
+pGoal(copy.pGoal),
+pAdjustTime(copy.pAdjustTime),
+pAdjustRange(copy.pAdjustRange),
+pChangeSpeed(copy.pChangeSpeed),
+pFactorTime(copy.pFactorTime),
+pFactorLimit(copy.pFactorLimit),
+pFactorDrop(copy.pFactorDrop),
+pSmoothed(copy.pSmoothed)
 {
 }
 
@@ -67,25 +67,25 @@ decSmoothDVector::~decSmoothDVector(){
 // Management
 ///////////////
 
-void decSmoothDVector::SetValue( const decDVector &value ){
+void decSmoothDVector::SetValue(const decDVector &value){
 	pValue = value;
 }
 
-void decSmoothDVector::SetGoal( const decDVector &goal ){
+void decSmoothDVector::SetGoal(const decDVector &goal){
 	pGoal = goal;
 }
 
-void decSmoothDVector::SetAdjustTime( double adjustTime ){
-	pAdjustTime = decMath::max( adjustTime, 0.0 );
+void decSmoothDVector::SetAdjustTime(double adjustTime){
+	pAdjustTime = decMath::max(adjustTime, 0.0);
 	pUpdateFactors();
 }
 
-void decSmoothDVector::SetAdjustRange( double range ){
-	pAdjustRange = decMath::max( range, 0.0 );
+void decSmoothDVector::SetAdjustRange(double range){
+	pAdjustRange = decMath::max(range, 0.0);
 	pUpdateFactors();
 }
 
-void decSmoothDVector::SetChangeSpeed( double changeSpeed ){
+void decSmoothDVector::SetChangeSpeed(double changeSpeed){
 	pChangeSpeed = changeSpeed;
 }
 
@@ -97,30 +97,30 @@ void decSmoothDVector::Reset(){
 	pChangeSpeed = 0.0;
 }
 
-void decSmoothDVector::Update( double elapsed ){
-	if( elapsed < 0.001 ){
+void decSmoothDVector::Update(double elapsed){
+	if(elapsed < 0.001){
 		return;
 	}
 	
-	decDVector value( pGoal );
+	decDVector value(pGoal);
 	
-	if( pSmoothed ){
-		const double factorTime = decMath::min( elapsed * pFactorTime, 1.0 );
-		const decDVector vectorAdjust( ( value - pValue ) * factorTime );
+	if(pSmoothed){
+		const double factorTime = decMath::min(elapsed * pFactorTime, 1.0);
+		const decDVector vectorAdjust((value - pValue) * factorTime);
 		const double vectorAdjustLength = vectorAdjust.Length();
 		
-		if( vectorAdjustLength > FLOAT_SAFE_EPSILON ){
+		if(vectorAdjustLength > FLOAT_SAFE_EPSILON){
 			double adjustValue = vectorAdjustLength;
-			const double changeSpeedDifference = ( adjustValue / elapsed ) - pChangeSpeed;
+			const double changeSpeedDifference = (adjustValue / elapsed) - pChangeSpeed;
 			const double limitChangeSpeed = pFactorLimit * elapsed;
 			
-			if( changeSpeedDifference > limitChangeSpeed && adjustValue > 0.0 ){
-				adjustValue = ( pChangeSpeed + limitChangeSpeed ) * elapsed;
-				value = pValue + vectorAdjust * ( adjustValue / vectorAdjustLength );
+			if(changeSpeedDifference > limitChangeSpeed && adjustValue > 0.0){
+				adjustValue = (pChangeSpeed + limitChangeSpeed) * elapsed;
+				value = pValue + vectorAdjust * (adjustValue / vectorAdjustLength);
 				
-			}else if( changeSpeedDifference < -limitChangeSpeed && adjustValue < 0.0 ){
-				adjustValue = ( pChangeSpeed - limitChangeSpeed ) * elapsed;
-				value = pValue + vectorAdjust * ( adjustValue / vectorAdjustLength );
+			}else if(changeSpeedDifference < -limitChangeSpeed && adjustValue < 0.0){
+				adjustValue = (pChangeSpeed - limitChangeSpeed) * elapsed;
+				value = pValue + vectorAdjust * (adjustValue / vectorAdjustLength);
 				
 			}else{
 				value = pValue + vectorAdjust;
@@ -128,7 +128,7 @@ void decSmoothDVector::Update( double elapsed ){
 		}
 	}
 	
-	pChangeSpeed = ( value - pValue ).Length() / elapsed;
+	pChangeSpeed = (value - pValue).Length() / elapsed;
 	pValue = value;
 }
 
@@ -137,15 +137,15 @@ void decSmoothDVector::Update( double elapsed ){
 // Operators
 //////////////
 
-bool decSmoothDVector::operator==( const decSmoothDVector &other ) const{
-	return pValue.IsEqualTo( other.pValue );
+bool decSmoothDVector::operator==(const decSmoothDVector &other) const{
+	return pValue.IsEqualTo(other.pValue);
 }
 
-bool decSmoothDVector::operator!=( const decSmoothDVector &other ) const{
-	return ! pValue.IsEqualTo( other.pValue );
+bool decSmoothDVector::operator!=(const decSmoothDVector &other) const{
+	return !pValue.IsEqualTo(other.pValue);
 }
 
-decSmoothDVector &decSmoothDVector::operator=( const decSmoothDVector &other ){
+decSmoothDVector &decSmoothDVector::operator=(const decSmoothDVector &other){
 	pValue = other.pValue;
 	pGoal = other.pGoal;
 	pAdjustTime = other.pAdjustTime;
@@ -164,7 +164,7 @@ decSmoothDVector &decSmoothDVector::operator=( const decSmoothDVector &other ){
 //////////////////////
 
 void decSmoothDVector::pUpdateFactors(){
-	if( pAdjustTime < 0.001 ){
+	if(pAdjustTime < 0.001){
 		pFactorTime = 0.0;
 		pFactorLimit = 0.0;
 		pFactorDrop = 0.0;
@@ -172,7 +172,7 @@ void decSmoothDVector::pUpdateFactors(){
 		
 	}else{
 		pFactorTime = 4.0 / pAdjustTime;
-		pFactorLimit = pow( 4.0, 1.0 + log( 1.0 / pAdjustTime ) / log( 2.0 ) ) * pAdjustRange;
+		pFactorLimit = pow(4.0, 1.0 + log(1.0 / pAdjustTime) / log(2.0)) * pAdjustRange;
 		pFactorDrop = pAdjustRange * 0.0025 / pAdjustTime; // 0.25% drop of entire range over entire time
 		pSmoothed = true;
 	}

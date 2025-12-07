@@ -42,19 +42,19 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *APNGCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *APNGCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
-deBaseModule *APNGCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *APNGCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deVideoApng( *loadableModule );
+		module = new deVideoApng(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -69,8 +69,8 @@ deBaseModule *APNGCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deVideoApng::deVideoApng( deLoadableModule &loadableModule ) :
-deBaseVideoModule( loadableModule ){
+deVideoApng::deVideoApng(deLoadableModule &loadableModule) :
+deBaseVideoModule(loadableModule){
 }
 
 deVideoApng::~deVideoApng(){
@@ -81,28 +81,28 @@ deVideoApng::~deVideoApng(){
 // Management
 ///////////////
 
-void deVideoApng::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &info ){
-	deapngReader apngReader( *this, &reader );
+void deVideoApng::InitLoadVideo(decBaseFileReader &reader, deBaseVideoInfo &info){
+	deapngReader apngReader(*this, &reader);
 	
-	info.SetWidth( apngReader.GetWidth() );
-	info.SetHeight( apngReader.GetHeight() );
-	info.SetComponentCount( apngReader.GetComponentCount() );
-	info.SetFrameCount( apngReader.GetFrameCount() );
-	info.SetFrameRate( apngReader.GetFrameRate() );
+	info.SetWidth(apngReader.GetWidth());
+	info.SetHeight(apngReader.GetHeight());
+	info.SetComponentCount(apngReader.GetComponentCount());
+	info.SetFrameCount(apngReader.GetFrameCount());
+	info.SetFrameRate(apngReader.GetFrameRate());
 }
 
-void deVideoApng::SaveVideo( decBaseFileWriter &reader, const deVideo &video ){
+void deVideoApng::SaveVideo(decBaseFileWriter &reader, const deVideo &video){
 	// not supported yet
 }
 
-deBaseVideoDecoder *deVideoApng::CreateDecoder( decBaseFileReader *reader ){
-	if( ! reader ){
-		DETHROW( deeInvalidParam );
+deBaseVideoDecoder *deVideoApng::CreateDecoder(decBaseFileReader *reader){
+	if(!reader){
+		DETHROW(deeInvalidParam);
 	}
-	return new deapngDecoder( *this, reader );
+	return new deapngDecoder(*this, reader);
 }
 
-deBaseVideoAudioDecoder *deVideoApng::CreateAudioDecoder( decBaseFileReader* ){
+deBaseVideoAudioDecoder *deVideoApng::CreateAudioDecoder(decBaseFileReader*){
 	return NULL;
 }
 

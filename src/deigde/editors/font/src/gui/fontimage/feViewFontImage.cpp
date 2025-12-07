@@ -60,9 +60,9 @@ protected:
 	feViewFontImage &pView;
 	
 public:
-	cScrollView( feViewFontImage &view ) : pView( view ){ }
+	cScrollView(feViewFontImage &view) : pView(view){}
 	
-	virtual void OnValueChanged( igdeScrollBar *scrollBar ){
+	virtual void OnValueChanged(igdeScrollBar *scrollBar){
 		pView.ScrollView();
 	}
 };
@@ -76,15 +76,15 @@ protected:
 	feViewFontImage &pView;
 	
 public:
-	cChangeZoom( feViewFontImage &view ) : pView( view ){ }
+	cChangeZoom(feViewFontImage &view) : pView(view){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		pView.GetViewImage().SetZoom( comboBox->GetText().ToInt() );
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		pView.GetViewImage().SetZoom(comboBox->GetText().ToInt());
 		pView.UpdateScrollbarRanges();
 		
 		decString text;
-		text.Format( "%d", pView.GetViewImage().GetZoom() );
-		comboBox->SetText( text );
+		text.Format("%d", pView.GetViewImage().GetZoom());
+		comboBox->SetText(text);
 	}
 };
 
@@ -96,55 +96,55 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-feViewFontImage::feViewFontImage( feWindowMain &windowMain ) :
-igdeContainerBorder( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pListener( NULL ),
-pFont( NULL ),
-pViewImage( NULL )
+feViewFontImage::feViewFontImage(feWindowMain &windowMain) :
+igdeContainerBorder(windowMain.GetEnvironment()),
+pWindowMain(windowMain),
+pListener(NULL),
+pFont(NULL),
+pViewImage(NULL)
 {
-	pListener = new feViewFontImageListener( *this );
+	pListener = new feViewFontImageListener(*this);
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	
 	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::NewWith(
 		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
-	AddChild( bottomLine, igdeContainerBorder::eaBottom );
+	AddChild(bottomLine, igdeContainerBorder::eaBottom);
 	
 	cScrollView::Ref scrollView(cScrollView::Ref::NewWith(*this));
 	
-	pSBHorizontal.TakeOver( new igdeScrollBar( env, igdeScrollBar::eoHorizontal ) );
-	pSBHorizontal->AddListener( scrollView );
-	bottomLine->AddChild( pSBHorizontal );
+	pSBHorizontal.TakeOver(new igdeScrollBar(env, igdeScrollBar::eoHorizontal));
+	pSBHorizontal->AddListener(scrollView);
+	bottomLine->AddChild(pSBHorizontal);
 	
-	pCBZoom.TakeOver( new igdeComboBox( env, 6, 7, true ) );
-	pCBZoom->SetDescription( "Select zoom factor" );
-	pCBZoom->AddItem( "100" );
-	pCBZoom->AddItem( "150" );
-	pCBZoom->AddItem( "200" );
-	pCBZoom->AddItem( "300" );
-	pCBZoom->AddItem( "400" );
-	pCBZoom->AddItem( "600" );
-	pCBZoom->AddItem( "800" );
-	pCBZoom->SetSelection( 0 ); // 100
-	bottomLine->AddChild( pCBZoom );
+	pCBZoom.TakeOver(new igdeComboBox(env, 6, 7, true));
+	pCBZoom->SetDescription("Select zoom factor");
+	pCBZoom->AddItem("100");
+	pCBZoom->AddItem("150");
+	pCBZoom->AddItem("200");
+	pCBZoom->AddItem("300");
+	pCBZoom->AddItem("400");
+	pCBZoom->AddItem("600");
+	pCBZoom->AddItem("800");
+	pCBZoom->SetSelection(0); // 100
+	bottomLine->AddChild(pCBZoom);
 	
 	cChangeZoom::Ref changeZoom(cChangeZoom::Ref::NewWith(*this));
-	pCBZoom->AddListener( changeZoom );
+	pCBZoom->AddListener(changeZoom);
 	
-	pSBVertical.TakeOver( new igdeScrollBar( env, igdeScrollBar::eoVertical ) );
-	pSBVertical->AddListener( scrollView );
-	AddChild( pSBVertical, igdeContainerBorder::eaRight );
+	pSBVertical.TakeOver(new igdeScrollBar(env, igdeScrollBar::eoVertical));
+	pSBVertical->AddListener(scrollView);
+	AddChild(pSBVertical, igdeContainerBorder::eaRight);
 	
-	pViewImage = new feViewFIImage( windowMain );
-	AddChild( pViewImage, igdeContainerBorder::eaCenter );
+	pViewImage = new feViewFIImage(windowMain);
+	AddChild(pViewImage, igdeContainerBorder::eaCenter);
 	pViewImage->FreeReference();
 }
 
 feViewFontImage::~feViewFontImage(){
-	SetFont( NULL );
+	SetFont(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -154,30 +154,30 @@ feViewFontImage::~feViewFontImage(){
 // Management
 ///////////////
 
-void feViewFontImage::SetFont( feFont *font ){
-	if( font == pFont ){
+void feViewFontImage::SetFont(feFont *font){
+	if(font == pFont){
 		return;
 	}
 	
-	if( pFont ){
-		pFont->RemoveNotifier( pListener );
+	if(pFont){
+		pFont->RemoveNotifier(pListener);
 		pFont->FreeReference();
 	}
 	
 	pFont = font;
 	
-	if( font ){
+	if(font){
 		font->AddReference();
-		font->AddNotifier( pListener );
+		font->AddNotifier(pListener);
 	}
 	
-	pViewImage->SetFont( font );
+	pViewImage->SetFont(font);
 	
 	UpdateScrollbarRanges();
 }
 
-void feViewFontImage::SetEnableRendering( bool enable ){
-	pViewImage->SetEnableRendering( enable );
+void feViewFontImage::SetEnableRendering(bool enable){
+	pViewImage->SetEnableRendering(enable);
 }
 
 
@@ -194,8 +194,8 @@ void feViewFontImage::ResetView(){
 	pViewImage->ResetView();
 }
 
-void feViewFontImage::OnFrameUpdate( float elapsed ){
-	pViewImage->OnFrameUpdate( elapsed );
+void feViewFontImage::OnFrameUpdate(float elapsed){
+	pViewImage->OnFrameUpdate(elapsed);
 }
 
 void feViewFontImage::OnResize(){
@@ -205,24 +205,24 @@ void feViewFontImage::OnResize(){
 
 
 void feViewFontImage::UpdateScrollbarRanges(){
-	const decPoint size( pViewImage->GetRenderAreaSize() );
+	const decPoint size(pViewImage->GetRenderAreaSize());
 	const decPoint &offset = pViewImage->GetOffset();
 	
 	pContentSize = pViewImage->GetContentSize();
 	
-	const decPoint range( decPoint().Largest( pContentSize - size ) );
-	const decPoint pageSize( decPoint( 1, 1 ).Largest( size / 4 ) );
+	const decPoint range(decPoint().Largest(pContentSize - size));
+	const decPoint pageSize(decPoint(1, 1).Largest(size / 4));
 	
 	pScrollOffset = range / 2;
 	
-	pSBHorizontal->SetUpper( decMath::max( range.x + pageSize.x, 0 ) );
-	pSBVertical->SetUpper( decMath::max( range.y + pageSize.y, 0 ) );
+	pSBHorizontal->SetUpper(decMath::max(range.x + pageSize.x, 0));
+	pSBVertical->SetUpper(decMath::max(range.y + pageSize.y, 0));
 	
-	pSBHorizontal->SetPageSize( pageSize.x );
-	pSBVertical->SetPageSize( pageSize.y );
+	pSBHorizontal->SetPageSize(pageSize.x);
+	pSBVertical->SetPageSize(pageSize.y);
 	
-	pSBHorizontal->SetValue( pScrollOffset.x - offset.x );
-	pSBVertical->SetValue( pScrollOffset.y - offset.y );
+	pSBHorizontal->SetValue(pScrollOffset.x - offset.x);
+	pSBVertical->SetValue(pScrollOffset.y - offset.y);
 	
 	ScrollView();
 }
@@ -232,6 +232,6 @@ void feViewFontImage::UpdateImageViewCanvas(){
 }
 
 void feViewFontImage::ScrollView(){
-	pViewImage->SetOffset( pScrollOffset - decPoint(
-		pSBHorizontal->GetValue(), pSBVertical->GetValue() ) );
+	pViewImage->SetOffset(pScrollOffset - decPoint(
+		pSBHorizontal->GetValue(), pSBVertical->GetValue()));
 }

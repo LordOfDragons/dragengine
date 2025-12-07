@@ -41,8 +41,8 @@ public:
 	/** Sky layer body. */
 	struct sBody {
 		deoglRSkin *skin;
-		decVector vertex[ 4 ];
-		decVector2 texCoords[ 4 ];
+		decVector vertex[4];
+		decVector2 texCoords[4];
 		decColor color;
 		decVector2 size;
 		decQuaternion orientation;
@@ -89,13 +89,13 @@ public:
 private:
 	eLayerTypes pLayerType;
 	
-	int pTextures[ 6 ];
+	int pTextures[6];
 	deoglRSkin *pSkin;
 	
 	sBody *pBodies;
 	int pBodyCount;
 	
-	deoglRSkyControllerTarget *pTargets[ deSkyLayer::etAmbientIntensity + 1 ];
+	deoglRSkyControllerTarget *pTargets[deSkyLayer::etAmbientIntensity + 1];
 	
 	const decVector pOffset;
 	const decVector pOrientation;
@@ -117,7 +117,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky layer. */
-	deoglRSkyLayer( const deSkyLayer &layer );
+	deoglRSkyLayer(const deSkyLayer &layer);
 	
 	/** Clean up sky. */
 	~deoglRSkyLayer();
@@ -131,7 +131,7 @@ public:
 	inline eLayerTypes GetLayerType() const{ return pLayerType; }
 	
 	/** Textures. */
-	inline const int *GetTextures() const{ return &pTextures[ 0 ]; }
+	inline const int *GetTextures() const{ return &pTextures[0]; }
 	
 	/** Render skin. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
@@ -148,7 +148,7 @@ public:
 	
 	/** Target. */
 	inline const deoglRSkyControllerTarget **GetTargets() const{
-		return ( const deoglRSkyControllerTarget ** )pTargets; }
+		return (const deoglRSkyControllerTarget **)pTargets;}
 	
 	
 	
@@ -194,7 +194,7 @@ public:
 	
 private:
 	void pUpdateSkins();
-	void pInitBodies( const deSkyLayer &layer );
+	void pInitBodies(const deSkyLayer &layer);
 };
 
 #endif

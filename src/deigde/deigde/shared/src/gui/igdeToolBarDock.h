@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeToolBarDock( igdeEnvironment &environment, eSide site );
+	igdeToolBarDock(igdeEnvironment &environment, eSide site);
 	
 	
 	

@@ -49,7 +49,7 @@ public:
 	igdeFilePatternList();
 	
 	/** \brief Create copy of a file pattern list. */
-	igdeFilePatternList( const igdeFilePatternList &list );
+	igdeFilePatternList(const igdeFilePatternList &list);
 	
 	/** \brief Clean up file pattern list. */
 	~igdeFilePatternList();
@@ -63,19 +63,19 @@ public:
 	inline int GetFilePatternCount() const{ return pFilePatternCount; }
 	
 	/** \brief File pattern at the given position. */
-	igdeFilePattern *GetFilePatternAt( int index ) const;
+	igdeFilePattern *GetFilePatternAt(int index) const;
 	
 	/** \brief Index of the file pattern or -1 if not found. */
-	int IndexOfFilePattern( igdeFilePattern *filePattern ) const;
+	int IndexOfFilePattern(igdeFilePattern *filePattern) const;
 	
 	/** \brief Determines if a file pattern exists. */
-	bool HasFilePattern( igdeFilePattern *filePattern ) const;
+	bool HasFilePattern(igdeFilePattern *filePattern) const;
 	
 	/** \brief Adds a file pattern. */
-	void AddFilePattern( igdeFilePattern *filePattern );
+	void AddFilePattern(igdeFilePattern *filePattern);
 	
 	/** \brief Removes a file pattern. */
-	void RemoveFilePattern( igdeFilePattern *filePattern );
+	void RemoveFilePattern(igdeFilePattern *filePattern);
 	
 	/** \brief Removes all file patterns. */
 	void RemoveAllFilePatterns();
@@ -86,7 +86,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set list from another list. */
-	igdeFilePatternList &operator=( const igdeFilePatternList &list );
+	igdeFilePatternList &operator=(const igdeFilePatternList &list);
 	/*@}*/
 };
 

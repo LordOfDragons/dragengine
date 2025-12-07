@@ -47,7 +47,7 @@ private:
 	decColor pLineColor;
 	float pThickness;
 	
-	int pShapeMapped[ deSkinPropertyNodeShape::ShapeMappedCount ];
+	int pShapeMapped[deSkinPropertyNodeShape::ShapeMappedCount];
 	
 	bool pIsThick;
 	
@@ -69,10 +69,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state constructed node. */
-	deoglSkinStateCNShape( deSkinPropertyNodeShape &node );
+	deoglSkinStateCNShape(deSkinPropertyNodeShape &node);
 	
 	/** Create skin state constructed node. */
-	deoglSkinStateCNShape( const deoglSkinStateCNShape &node );
+	deoglSkinStateCNShape(const deoglSkinStateCNShape &node);
 	
 protected:
 	/** Clean up skin state mapped. */
@@ -97,7 +97,7 @@ public:
 	inline float GetThickness() const{ return pThickness; }
 	
 	/** Shape mapped for type. */
-	int GetShapeMappedFor( deSkinPropertyNodeShape::eShapeMapped type ) const;
+	int GetShapeMappedFor(deSkinPropertyNodeShape::eShapeMapped type) const;
 	
 	
 	
@@ -105,13 +105,13 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update( deoglSkinState &state ) override;
+	virtual void Update(deoglSkinState &state) override;
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( deoglSkinState &state ) override;
+	virtual void PrepareForRender(deoglSkinState &state) override;
 	
 	/** Render. */
-	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
+	virtual void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
 	
 	/** Create copy. */
 	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
@@ -150,10 +150,10 @@ public:
 	
 private:
 	int pRequiredPointCount();
-	void pPrepareVBOBlock( deoglSkinState &state );
-	void pWriteVBOData( deoglSkinState &state );
-	void pCalcArc( decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
-		float startAngle, float stopAngle, int stepCount );
+	void pPrepareVBOBlock(deoglSkinState &state);
+	void pWriteVBOData(deoglSkinState &state);
+	void pCalcArc(decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
+		float startAngle, float stopAngle, int stepCount);
 };
 
 #endif

@@ -42,41 +42,41 @@ const char * const seClipboardDataEffect::TYPE_NAME = "effect";
 // Constructor, destructor
 ////////////////////////////
 
-seClipboardDataEffect::seClipboardDataEffect( seEffect *effect ) :
-igdeClipboardData( TYPE_NAME )
+seClipboardDataEffect::seClipboardDataEffect(seEffect *effect) :
+igdeClipboardData(TYPE_NAME)
 {
 	seEffect *copyEffect = NULL;
 	
 	try{
 		copyEffect = effect->CreateCopy();
-		pEffects.Add( copyEffect );
+		pEffects.Add(copyEffect);
 		copyEffect->FreeReference();
 		
-	}catch( const deException & ){
-		if( copyEffect ){
+	}catch(const deException &){
+		if(copyEffect){
 			copyEffect->FreeReference();
 		}
 		throw;
 	}
 }
 
-seClipboardDataEffect::seClipboardDataEffect( const seEffectList &effects ) :
-igdeClipboardData( TYPE_NAME )
+seClipboardDataEffect::seClipboardDataEffect(const seEffectList &effects) :
+igdeClipboardData(TYPE_NAME)
 {
 	const int count = effects.GetCount();
 	seEffect *effect = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			effect = effects.GetAt( i )->CreateCopy();
-			pEffects.Add( effect );
+		for(i=0; i<count; i++){
+			effect = effects.GetAt(i)->CreateCopy();
+			pEffects.Add(effect);
 			effect->FreeReference();
 			effect = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( effect ){
+	}catch(const deException &){
+		if(effect){
 			effect->FreeReference();
 		}
 		throw;

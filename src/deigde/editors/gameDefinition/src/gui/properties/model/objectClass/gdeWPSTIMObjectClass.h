@@ -66,7 +66,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMObjectClass( gdeWPSTreeModel &tree, gdeObjectClass *objectClass );
+	gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass *objectClass);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -84,37 +84,37 @@ public:
 	
 	
 	/** \brief Model with billboard or \em NULL. */
-	gdeWPSTIMOCBillboard *GetChildWith( gdeOCBillboard *billboard ) const;
+	gdeWPSTIMOCBillboard *GetChildWith(gdeOCBillboard *billboard) const;
 	
 	/** \brief Model with camera or \em NULL. */
-	gdeWPSTIMOCCamera *GetChildWith( gdeOCCamera *camera ) const;
+	gdeWPSTIMOCCamera *GetChildWith(gdeOCCamera *camera) const;
 	
 	/** \brief Model with component or \em NULL. */
-	gdeWPSTIMOCComponent *GetChildWith( gdeOCComponent *component ) const;
+	gdeWPSTIMOCComponent *GetChildWith(gdeOCComponent *component) const;
 	
 	/** \brief Model with envmap probe or \em NULL. */
-	gdeWPSTIMOCEnvMapProbe *GetChildWith( gdeOCEnvMapProbe *envMapProbe ) const;
+	gdeWPSTIMOCEnvMapProbe *GetChildWith(gdeOCEnvMapProbe *envMapProbe) const;
 	
 	/** \brief Model with light or \em NULL. */
-	gdeWPSTIMOCLight *GetChildWith( gdeOCLight *light ) const;
+	gdeWPSTIMOCLight *GetChildWith(gdeOCLight *light) const;
 	
 	/** \brief Model with navblocker or \em NULL. */
-	gdeWPSTIMOCNavBlocker *GetChildWith( gdeOCNavigationBlocker *navblocker ) const;
+	gdeWPSTIMOCNavBlocker *GetChildWith(gdeOCNavigationBlocker *navblocker) const;
 	
 	/** \brief Model with navspace or \em NULL. */
-	gdeWPSTIMOCNavSpace *GetChildWith( gdeOCNavigationSpace *navspace ) const;
+	gdeWPSTIMOCNavSpace *GetChildWith(gdeOCNavigationSpace *navspace) const;
 	
 	/** \brief Model with particle emitter or \em NULL. */
-	gdeWPSTIMOCParticleEmitter *GetChildWith( gdeOCParticleEmitter *particleEmitter ) const;
+	gdeWPSTIMOCParticleEmitter *GetChildWith(gdeOCParticleEmitter *particleEmitter) const;
 	
 	/** \brief Model with force field or \em NULL. */
-	gdeWPSTIMOCForceField *GetChildWith( gdeOCForceField *forceField ) const;
+	gdeWPSTIMOCForceField *GetChildWith(gdeOCForceField *forceField) const;
 	
 	/** \brief Model with snap point or \em NULL. */
-	gdeWPSTIMOCSnapPoint *GetChildWith( gdeOCSnapPoint *snapPoint ) const;
+	gdeWPSTIMOCSnapPoint *GetChildWith(gdeOCSnapPoint *snapPoint) const;
 	
 	/** \brief Model with speaker or \em NULL. */
-	gdeWPSTIMOCSpeaker *GetChildWith( gdeOCSpeaker *speaker ) const;
+	gdeWPSTIMOCSpeaker *GetChildWith(gdeOCSpeaker *speaker) const;
 	
 	/** \brief Model with world or nullptr. */
 	gdeWPSTIMOCWorld *GetChildWith(gdeOCWorld *world) const;
@@ -145,16 +145,16 @@ public:
 	virtual void OnAddedToTree();
 	
 	/** \brief Compare this item with another for sorting. */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	virtual int Compare(const gdeWPSTreeItemModel &item) const;
 	
 	/** \brief User selected item. */
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	virtual void SelectBestMatching(const char *string);
 	/*@}*/
 	
 	

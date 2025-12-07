@@ -46,7 +46,7 @@ private:
 	
 	decObjectOrderedSet pDevices;
 	
-	vr::TrackedDevicePose_t pDevicePoses[ vr::k_unMaxTrackedDeviceCount ];
+	vr::TrackedDevicePose_t pDevicePoses[vr::k_unMaxTrackedDeviceCount];
 	
 	
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device list. */
-	deovrDeviceManager( deVROpenVR &ovr );
+	deovrDeviceManager(deVROpenVR &ovr);
 	
 	/** Clean up device list. */
 	~deovrDeviceManager();
@@ -76,40 +76,40 @@ public:
 	int GetCount() const;
 	
 	/** Device at index. */
-	deovrDevice *GetAt( int index ) const;
+	deovrDevice *GetAt(int index) const;
 	
 	/** Device with identifier or nullptr if absent. */
-	deovrDevice *GetWithID( const char *id ) const;
+	deovrDevice *GetWithID(const char *id) const;
 	
 	/** Device with device index or nullptr if absent. */
-	deovrDevice *GetWithIndex( vr::TrackedDeviceIndex_t index ) const;
+	deovrDevice *GetWithIndex(vr::TrackedDeviceIndex_t index) const;
 	
 	/** Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id ) const;
+	int IndexOfWithID(const char *id) const;
 	
 	/** Index of device with index or -1 if absent. */
-	int IndexOfWithIndex( vr::TrackedDeviceIndex_t index ) const;
+	int IndexOfWithIndex(vr::TrackedDeviceIndex_t index) const;
 	
 	/** Add device if absent and queue event. */
-	void Add( vr::TrackedDeviceIndex_t index );
+	void Add(vr::TrackedDeviceIndex_t index);
 	
 	/** Remove device if present and queue event. */
-	void Remove( vr::TrackedDeviceIndex_t index );
+	void Remove(vr::TrackedDeviceIndex_t index);
 	
 	/**
 	 * Update device parameters if present and queue event. If device becomes invalid
 	 * remove it instead.
 	 */
-	void UpdateParameters( vr::TrackedDeviceIndex_t index );
+	void UpdateParameters(vr::TrackedDeviceIndex_t index);
 	
 	/** Free name number for device type. */
-	int NextNameNumber( vr::TrackedDeviceClass deviceClass ) const;
+	int NextNameNumber(vr::TrackedDeviceClass deviceClass) const;
 	
 	/** Track device states. */
 	void TrackDeviceStates();
 	
 	/** Device pose at index. */
-	const vr::TrackedDevicePose_t &GetDevicePoseAt( int index ) const;
+	const vr::TrackedDevicePose_t &GetDevicePoseAt(int index) const;
 	
 	
 	
@@ -119,7 +119,7 @@ public:
 	
 	
 	/** Normalize identifier. */
-	static decString NormalizeID( const char *id );
+	static decString NormalizeID(const char *id);
 	/*@}*/
 	
 	

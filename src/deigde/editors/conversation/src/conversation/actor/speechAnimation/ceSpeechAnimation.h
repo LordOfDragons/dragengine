@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speech animation. */
-	ceSpeechAnimation( deEngine *engine );
+	ceSpeechAnimation(deEngine *engine);
 	
 	/** Clean up speech animation. */
 	~ceSpeechAnimation();
@@ -95,7 +95,7 @@ public:
 	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }
 	
 	/** Set neutral move name. */
-	void SetNeutralMoveName( const char *name );
+	void SetNeutralMoveName(const char *name);
 	
 	/** Neutral vertex position sets. */
 	inline decStringSet &GetNeutralVertexPositionSets(){ return pNeutralVertexPositionSets; }
@@ -113,7 +113,7 @@ public:
 	void RemoveAllSpeakPhonemes();
 	
 	/** Add speak phoneme. */
-	void AddSpeakPhoneme( int phoneme, float length );
+	void AddSpeakPhoneme(int phoneme, float length);
 	
 	/** Length of speaking. */
 	inline float GetSpeakLength() const{ return pSpeakLength; }
@@ -125,7 +125,7 @@ public:
 	void CreateAnimator();
 	
 	/** Update speech animation. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Clear speech animation. */
 	void Clear();

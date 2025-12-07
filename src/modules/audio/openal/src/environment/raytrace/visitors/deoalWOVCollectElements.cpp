@@ -43,8 +43,8 @@
 
 deoalWOVCollectElements::deoalWOVCollectElements()
 {
-	SetVisitAll( false );
-	SetVisitComponents( true );
+	SetVisitAll(false);
+	SetVisitComponents(true);
 }
 
 deoalWOVCollectElements::~deoalWOVCollectElements(){
@@ -55,13 +55,13 @@ deoalWOVCollectElements::~deoalWOVCollectElements(){
 // Visiting
 /////////////
 
-void deoalWOVCollectElements::SetBox( const decDVector &minimum, const decDVector &maximum ){
+void deoalWOVCollectElements::SetBox(const decDVector &minimum, const decDVector &maximum){
 	pBoxMin = minimum;
 	pBoxMax = maximum;
 }
 
-void deoalWOVCollectElements::SetBoxRange( const decDVector &position, double range ){
-	const decDVector rangeVector( range, range, range );
+void deoalWOVCollectElements::SetBoxRange(const decDVector &position, double range){
+	const decDVector rangeVector(range, range, range);
 	pBoxMin = position - rangeVector;
 	pBoxMax = position + rangeVector;
 }
@@ -76,22 +76,22 @@ int deoalWOVCollectElements::GetComponentCount() const{
 	return pComponents.GetCount();
 }
 
-deoalAComponent *deoalWOVCollectElements::GetComponentAt( int index ) const{
-	return ( deoalAComponent* )pComponents.GetAt( index );
+deoalAComponent *deoalWOVCollectElements::GetComponentAt(int index) const{
+	return (deoalAComponent*)pComponents.GetAt(index);
 }
 
 
 
-void deoalWOVCollectElements::VisitComponent( deoalAComponent *component ){
-	if( ! component->GetAffectsSound() ){
+void deoalWOVCollectElements::VisitComponent(deoalAComponent *component){
+	if(!component->GetAffectsSound()){
 		return;
 	}
-	if( component->GetMaxExtend() < pBoxMin || component->GetMinExtend() > pBoxMax ){
+	if(component->GetMaxExtend() < pBoxMin || component->GetMinExtend() > pBoxMax){
 		return;
 	}
-	if( ! component->GetModel() || ! component->GetModel()->GetOctree() ){
+	if(!component->GetModel() || !component->GetModel()->GetOctree()){
 		return;
 	}
 	
-	pComponents.Add( component );
+	pComponents.Add(component);
 }

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeWPUndoHistory::lpeWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pListener( new lpeWPUndoHistoryListener( *this ) ),
-pLangPack( NULL ){
+lpeWPUndoHistory::lpeWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(new lpeWPUndoHistoryListener(*this)),
+pLangPack(NULL){
 }
 
 lpeWPUndoHistory::~lpeWPUndoHistory(){
-	SetLangPack( NULL );
+	SetLangPack(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -59,25 +59,25 @@ lpeWPUndoHistory::~lpeWPUndoHistory(){
 // Management
 ///////////////
 
-void lpeWPUndoHistory::SetLangPack( lpeLangPack *langpack ){
-	if( langpack == pLangPack ){
+void lpeWPUndoHistory::SetLangPack(lpeLangPack *langpack){
+	if(langpack == pLangPack){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(NULL);
 	
-	if( pLangPack ){
-		pLangPack->RemoveListener( pListener );
+	if(pLangPack){
+		pLangPack->RemoveListener(pListener);
 		pLangPack->FreeReference();
 		pLangPack = NULL;
 	}
 	
 	pLangPack = langpack;
 	
-	if( langpack ){
-		langpack->AddListener( pListener );
+	if(langpack){
+		langpack->AddListener(pListener);
 		langpack->AddReference();
 		
-		SetUndoSystem( langpack->GetUndoSystem() );
+		SetUndoSystem(langpack->GetUndoSystem());
 	}
 }

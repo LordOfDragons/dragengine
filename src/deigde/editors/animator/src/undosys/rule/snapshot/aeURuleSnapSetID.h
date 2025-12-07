@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeURuleSnapSetID( aeRuleStateSnapshot *rule, int newID );
+	aeURuleSnapSetID(aeRuleStateSnapshot *rule, int newID);
 	
 protected:
 	/** Clean up undo. */

@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPropertyName::gdeUOCParticleEmitterSetPropertyName( gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL ),
-pProperty( property )
+gdeUOCParticleEmitterSetPropertyName::gdeUOCParticleEmitterSetPropertyName(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eProperties property, const char *newValue) :
+pObjectClass(NULL),
+pParticleEmitter(NULL),
+pProperty(property)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "ParticleEmitter set property name" );
+	SetShortInfo("ParticleEmitter set property name");
 	
-	pOldValue = particleEmitter->GetPropertyName( property );
+	pOldValue = particleEmitter->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
@@ -62,10 +62,10 @@ pProperty( property )
 }
 
 gdeUOCParticleEmitterSetPropertyName::~gdeUOCParticleEmitterSetPropertyName(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCParticleEmitterSetPropertyName::~gdeUOCParticleEmitterSetPropertyName(){
 ///////////////
 
 void gdeUOCParticleEmitterSetPropertyName::Undo(){
-	pParticleEmitter->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterSetPropertyName::Redo(){
-	pParticleEmitter->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }

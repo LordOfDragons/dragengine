@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyRemove::seUPropertyRemove( seProperty *property ){
-	if( ! property ) DETHROW( deeInvalidParam );
+seUPropertyRemove::seUPropertyRemove(seProperty *property){
+	if(!property) DETHROW(deeInvalidParam);
 	
 	seTexture *texture = property->GetTexture();
-	if( ! texture ) DETHROW( deeInvalidParam );
+	if(!texture) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	pTexture = NULL;
 	
-	SetShortInfo( "Remove Property" );
+	SetShortInfo("Remove Property");
 	
 	pProperty = property;
 	property->AddReference();
@@ -59,8 +59,8 @@ seUPropertyRemove::seUPropertyRemove( seProperty *property ){
 }
 
 seUPropertyRemove::~seUPropertyRemove(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pProperty ) pProperty->FreeReference();
+	if(pTexture) pTexture->FreeReference();
+	if(pProperty) pProperty->FreeReference();
 }
 
 
@@ -69,9 +69,9 @@ seUPropertyRemove::~seUPropertyRemove(){
 ///////////////
 
 void seUPropertyRemove::Undo(){
-	pTexture->AddProperty( pProperty );
+	pTexture->AddProperty(pProperty);
 }
 
 void seUPropertyRemove::Redo(){
-	pTexture->RemoveProperty( pProperty );
+	pTexture->RemoveProperty(pProperty);
 }

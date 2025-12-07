@@ -44,20 +44,20 @@
 // Class igdeEditSliderText::cListenerSlider
 //////////////////////////////////////////////
 
-igdeEditSliderText::cListenerSlider::cListenerSlider( igdeEditSliderText &sliderText ) :
-pSliderText( sliderText ){
+igdeEditSliderText::cListenerSlider::cListenerSlider(igdeEditSliderText &sliderText) :
+pSliderText(sliderText){
 }
 
 igdeEditSliderText::cListenerSlider::~cListenerSlider(){
 }
 
-void igdeEditSliderText::cListenerSlider::OnValueChanged( igdeSlider *slider ){
-	pSliderText.SetValue( slider->GetValue() );
+void igdeEditSliderText::cListenerSlider::OnValueChanged(igdeSlider *slider){
+	pSliderText.SetValue(slider->GetValue());
 	pSliderText.NotifySliderTextValueChanged();
 }
 
-void igdeEditSliderText::cListenerSlider::OnValueChanging( igdeSlider *slider ){
-	pSliderText.SetValue( slider->GetValue() );
+void igdeEditSliderText::cListenerSlider::OnValueChanging(igdeSlider *slider){
+	pSliderText.SetValue(slider->GetValue());
 	pSliderText.NotifySliderTextValueChanging();
 }
 
@@ -66,19 +66,19 @@ void igdeEditSliderText::cListenerSlider::OnValueChanging( igdeSlider *slider ){
 // Class igdeEditSliderText::cListenerTextField
 /////////////////////////////////////////////////
 
-igdeEditSliderText::cListenerTextField::cListenerTextField( igdeEditSliderText &sliderText ) :
-pSliderText( sliderText ){
+igdeEditSliderText::cListenerTextField::cListenerTextField(igdeEditSliderText &sliderText) :
+pSliderText(sliderText){
 }
 
 igdeEditSliderText::cListenerTextField::~cListenerTextField(){
 }
 
-void igdeEditSliderText::cListenerTextField::OnTextChanged( igdeTextField *textField ){
-	pSliderText.SetValue( textField->GetText().ToFloat() );
+void igdeEditSliderText::cListenerTextField::OnTextChanged(igdeTextField *textField){
+	pSliderText.SetValue(textField->GetText().ToFloat());
 	pSliderText.NotifySliderTextValueChanged();
 }
 
-void igdeEditSliderText::cListenerTextField::OnTextChanging( igdeTextField* ){
+void igdeEditSliderText::cListenerTextField::OnTextChanging(igdeTextField*){
 	// could result in problems so do nothing for the time being
 }
 
@@ -90,13 +90,13 @@ void igdeEditSliderText::cListenerTextField::OnTextChanging( igdeTextField* ){
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditSliderText::igdeEditSliderText( igdeUIHelper &helper, float lower, float upper,
-	int columns, int precision, float tickSpacing, const char *description ) :
-igdeContainerFlow( helper.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst, 2 ),
-pValue( lower ),
-pPreventNotify( false )
+igdeEditSliderText::igdeEditSliderText(igdeUIHelper &helper, float lower, float upper,
+	int columns, int precision, float tickSpacing, const char *description) :
+igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst, 2),
+pValue(lower),
+pPreventNotify(false)
 {
-	pCreateContent( helper, lower, upper, columns, precision, tickSpacing, description );
+	pCreateContent(helper, lower, upper, columns, precision, tickSpacing, description);
 }
 
 igdeEditSliderText::~igdeEditSliderText(){
@@ -116,20 +116,20 @@ float igdeEditSliderText::GetUpper() const{
 	return pSlider->GetUpper();
 }
 
-void igdeEditSliderText::SetRange( float lower, float upper ){
-	pSlider->SetRange( lower, upper );
+void igdeEditSliderText::SetRange(float lower, float upper){
+	pSlider->SetRange(lower, upper);
 }
 
 float igdeEditSliderText::GetTickSpacing() const{
 	return pSlider->GetTickSpacing();
 }
 
-void igdeEditSliderText::SetTickSpacing( float spacing ){
-	pSlider->SetTickSpacing( spacing );
+void igdeEditSliderText::SetTickSpacing(float spacing){
+	pSlider->SetTickSpacing(spacing);
 }
 
-void igdeEditSliderText::SetValue( float value ){
-	if( pPreventNotify || fabsf( value - pValue ) < FLOAT_SAFE_EPSILON ){
+void igdeEditSliderText::SetValue(float value){
+	if(pPreventNotify || fabsf(value - pValue) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -137,11 +137,11 @@ void igdeEditSliderText::SetValue( float value ){
 	
 	pPreventNotify = true;
 	try{
-		pSlider->SetValue( value );
-		pText->SetFloat( pSlider->GetValue() );
+		pSlider->SetValue(value);
+		pText->SetFloat(pSlider->GetValue());
 		pPreventNotify = false;
 		
-	}catch( ... ){
+	}catch(...){
 		pPreventNotify = false;
 		throw;
 	}
@@ -151,31 +151,31 @@ int igdeEditSliderText::GetPrecision() const{
 	return pSlider->GetPrecision();
 }
 
-void igdeEditSliderText::SetPrecision( int precision ){
-	if( precision == pSlider->GetPrecision() ){
+void igdeEditSliderText::SetPrecision(int precision){
+	if(precision == pSlider->GetPrecision()){
 		return;
 	}
 	
-	pSlider->SetPrecision( precision );
-	pText->SetPrecision( precision );
+	pSlider->SetPrecision(precision);
+	pText->SetPrecision(precision);
 }
 
 bool igdeEditSliderText::GetEnabled() const{
 	return pSlider->GetEnabled();
 }
 
-void igdeEditSliderText::SetEnabled( bool enabled ){
-	pSlider->SetEnabled( enabled );
-	pText->SetEnabled( enabled );
+void igdeEditSliderText::SetEnabled(bool enabled){
+	pSlider->SetEnabled(enabled);
+	pText->SetEnabled(enabled);
 }
 
 const decString &igdeEditSliderText::GetDescription() const{
 	return pSlider->GetDescription();
 }
 
-void igdeEditSliderText::SetDescription( const char *description ){
-	pSlider->SetDescription( description );
-	pText->SetDescription( description );
+void igdeEditSliderText::SetDescription(const char *description){
+	pSlider->SetDescription(description);
+	pText->SetDescription(description);
 }
 
 void igdeEditSliderText::Focus(){
@@ -184,53 +184,53 @@ void igdeEditSliderText::Focus(){
 
 
 
-void igdeEditSliderText::AddListener( igdeEditSliderTextListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeEditSliderText::AddListener(igdeEditSliderTextListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeEditSliderText::RemoveListener( igdeEditSliderTextListener *listener ){
-	pListeners.Remove( listener );
+void igdeEditSliderText::RemoveListener(igdeEditSliderTextListener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeEditSliderText::NotifySliderTextValueChanged(){
-	if( pPreventNotify ){
+	if(pPreventNotify){
 		return;
 	}
 	
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeEditSliderTextListener* )listeners.GetAt( i ) )->OnSliderTextValueChanged( this );
+	for(i=0; i<count; i++){
+		((igdeEditSliderTextListener*)listeners.GetAt(i))->OnSliderTextValueChanged(this);
 	}
 }
 
 void igdeEditSliderText::NotifySliderTextValueChanging(){
-	if( pPreventNotify ){
+	if(pPreventNotify){
 		return;
 	}
 	
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeEditSliderTextListener* )listeners.GetAt( i ) )->OnSliderTextValueChanging( this );
+	for(i=0; i<count; i++){
+		((igdeEditSliderTextListener*)listeners.GetAt(i))->OnSliderTextValueChanging(this);
 	}
 }
 
 
 
-void igdeEditSliderText::pCreateContent( igdeUIHelper &helper, float lower, float upper,
-int columns, int precision, float tickSpacing, const char *description ){
-	helper.Slider( *this, description, lower, upper, precision, tickSpacing,
-		pSlider, new cListenerSlider( *this ) );
-	helper.EditFloat( *this, description, columns, precision,
-		pText, new cListenerTextField( *this ) );
+void igdeEditSliderText::pCreateContent(igdeUIHelper &helper, float lower, float upper,
+int columns, int precision, float tickSpacing, const char *description){
+	helper.Slider(*this, description, lower, upper, precision, tickSpacing,
+		pSlider, new cListenerSlider(*this));
+	helper.EditFloat(*this, description, columns, precision,
+		pText, new cListenerTextField(*this));
 	
-	pText->SetFloat( lower );
+	pText->SetFloat(lower);
 }

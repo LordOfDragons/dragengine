@@ -94,7 +94,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPSObjectShape( meWPSelection &wpselection );
+	meWPSObjectShape(meWPSelection &wpselection);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -113,7 +113,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Active object. */
 	meObject *GetActiveObject() const;
@@ -125,7 +125,7 @@ public:
 	bool IsActivePropertyShape() const;
 	
 	/** \brief Update properties list. */
-	void UpdateListProperties( bool retainSelection );
+	void UpdateListProperties(bool retainSelection);
 	
 	/** \brief Update selection. */
 	void UpdateSelection();
@@ -140,16 +140,16 @@ public:
 	void UpdateShapeNone();
 	
 	/** \brief Switch panel to sphere and update using a sphere. */
-	void UpdateShapeSphere( const decShapeSphere &sphere );
+	void UpdateShapeSphere(const decShapeSphere &sphere);
 	
 	/** \brief Switch panel to sphere and update using a box. */
-	void UpdateShapeBox( const decShapeBox &box );
+	void UpdateShapeBox(const decShapeBox &box);
 	
 	/** \brief Switch panel to sphere and update using a cylinder. */
-	void UpdateShapeCylinder( const decShapeCylinder &cylinder );
+	void UpdateShapeCylinder(const decShapeCylinder &cylinder);
 	
 	/** \brief Switch panel to sphere and update using a capsule. */
-	void UpdateShapeCapsule( const decShapeCapsule &capsule );
+	void UpdateShapeCapsule(const decShapeCapsule &capsule);
 	
 	/** \brief Game project game definition changed. */
 	void OnGameDefinitionChanged();

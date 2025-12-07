@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSnapPointCopy::gdeMAOCSnapPointCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Snap Point",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class snap point" )
+gdeMAOCSnapPointCopy::gdeMAOCSnapPointCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Snap Point",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class snap point")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Snap Point",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSnapPoint ){
+igdeUndo *gdeMAOCSnapPointCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSnapPoint){
 		return NULL;
 	}
 	
 	gdeOCSnapPoint * const snapPoint = gameDefinition.GetActiveOCSnapPoint();
-	if( ! snapPoint ){
+	if(!snapPoint){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCSnapPointCopy::OnActionSubObject( gdeGameDefinition &gameDefini
 
 void gdeMAOCSnapPointCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint
-		&& gameDefinition->GetActiveOCSnapPoint() != NULL );
+		&& gameDefinition->GetActiveOCSnapPoint() != NULL);
 }

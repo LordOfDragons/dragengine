@@ -80,22 +80,22 @@ public:
 	 * Retrieve interpolated position.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
-	decVector InterpolatePosition( float time ) const;
+	decVector InterpolatePosition(float time) const;
 	/**
 	 * Retrieve interpolated rotation.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
-	decQuaternion InterpolateRotation( float time ) const;
+	decQuaternion InterpolateRotation(float time) const;
 	/**
 	 * Retrieve interpolated scaling.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
-	decVector InterpolateScaling( float time ) const;
+	decVector InterpolateScaling(float time) const;
 	
 	/** Set keyframe without interpolation data. */
-	void Set( const deAnimationKeyframe &keyframe, bool &negate );
+	void Set(const deAnimationKeyframe &keyframe, bool &negate);
 	/** Set keyframe with interpolation data. */
-	void Set( const deAnimationKeyframe &keyframe, const deAnimationKeyframe &nextKeyframe, bool &negate );
+	void Set(const deAnimationKeyframe &keyframe, const deAnimationKeyframe &nextKeyframe, bool &negate);
 	/*@}*/
 };
 

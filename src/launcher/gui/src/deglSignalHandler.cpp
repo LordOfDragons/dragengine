@@ -45,145 +45,145 @@
 #ifndef OS_W32
 static deglSignalHandler *pSignalHandler = nullptr;
 
-static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
+static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 	const char *logSource = "?";
 	deLogger *logger = nullptr;
 	
-	if( pSignalHandler ){
+	if(pSignalHandler){
 		logger = pSignalHandler->GetLauncher().GetLogger();
 		logSource = pSignalHandler->GetLauncher().GetLogSource();
 	}
 	
 	// some infos
-	if( infos->si_code == SEGV_MAPERR ){
-		if( logger ){
-			logger->LogErrorFormat( logSource,
+	if(infos->si_code == SEGV_MAPERR){
+		if(logger){
+			logger->LogErrorFormat(logSource,
 				"Segmentation Fault! Tried to access not allocated memory at %p.",
-				infos->si_addr );
+				infos->si_addr);
 			
 		}else{
-			printf( "Segmentation Fault! Tried to access not allocated memory at %p.\n",
-				infos->si_addr );
+			printf("Segmentation Fault! Tried to access not allocated memory at %p.\n",
+				infos->si_addr);
 		}
 		
-	}else if( infos->si_code == SEGV_ACCERR ){
-		if( logger ){
-			logger->LogErrorFormat( logSource,
+	}else if(infos->si_code == SEGV_ACCERR){
+		if(logger){
+			logger->LogErrorFormat(logSource,
 				"Segmentation Fault! Permission denied accessing memory at %p.",
-				infos->si_addr );
+				infos->si_addr);
 			
 		}else{
-			printf( "Segmentation Fault! Permission denied accessing memory at %p.\n",
-				infos->si_addr );
+			printf("Segmentation Fault! Permission denied accessing memory at %p.\n",
+				infos->si_addr);
 		}
 		
 	}else{
-		if( logger ){
-			logger->LogErrorFormat( logSource,
-				"Segmentation Fault! Unknown memory error at %p.", infos->si_addr );
+		if(logger){
+			logger->LogErrorFormat(logSource,
+				"Segmentation Fault! Unknown memory error at %p.", infos->si_addr);
 			
 		}else{
-			printf( "Segmentation Fault! Unknown memory error at %p.\n", infos->si_addr );
+			printf("Segmentation Fault! Unknown memory error at %p.\n", infos->si_addr);
 		}
 	}
 	
 	// stack trace
-	void *btentries[ 50 ]; // should be enough as usually only the last few are important
+	void *btentries[50]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
-	btentryCount = backtrace( btentries, 50 );
+	btentryCount = backtrace(btentries, 50);
 	
-	if( logger ){
-		logger->LogError( logSource, "Backtrace:" );
+	if(logger){
+		logger->LogError(logSource, "Backtrace:");
 		
-		char ** const btStrings = backtrace_symbols( btentries, btentryCount );
+		char ** const btStrings = backtrace_symbols(btentries, btentryCount);
 		int i;
 		
-		for( i=0; i<(int)btentryCount; i++ ){
-			logger->LogError( logSource, btStrings[ i ] );
+		for(i=0; i<(int)btentryCount; i++){
+			logger->LogError(logSource, btStrings[i]);
 		}
 		
-		free( btStrings );
+		free(btStrings);
 		
 	}else{
-		printf( "Backtrace:" );
-		backtrace_symbols_fd( btentries, btentryCount, fileno( stdout ) );
+		printf("Backtrace:");
+		backtrace_symbols_fd(btentries, btentryCount, fileno(stdout));
 	}
 	
 	/*
-	if( pSignalHandler ){
-		if( infos->si_code == SEGV_MAPERR ){
-			coreFault->HandleSegFault( decrbCoreFault::eecMemoryNotAllocated, infos->si_addr, ptrContext );
+	if(pSignalHandler){
+		if(infos->si_code == SEGV_MAPERR){
+			coreFault->HandleSegFault(decrbCoreFault::eecMemoryNotAllocated, infos->si_addr, ptrContext);
 			
-		}else if( infos->si_code == SEGV_ACCERR ){
-			coreFault->HandleSegFault( decrbCoreFault::eecMemoryNoPermision, infos->si_addr, ptrContext );
+		}else if(infos->si_code == SEGV_ACCERR){
+			coreFault->HandleSegFault(decrbCoreFault::eecMemoryNoPermision, infos->si_addr, ptrContext);
 			
 		}else{
-			coreFault->HandleSegFault( decrbCoreFault::eecMemoryUnknown, infos->si_addr, ptrContext );
+			coreFault->HandleSegFault(decrbCoreFault::eecMemoryUnknown, infos->si_addr, ptrContext);
 		}
 		
 	}else{
-		printf( "No launcher object found. Can not gather crash information!\n" );
+		printf("No launcher object found. Can not gather crash information!\n");
 	}
 	*/
 	
-	if( logger ){
-		logger->LogError( logSource, "Done, exiting." );
+	if(logger){
+		logger->LogError(logSource, "Done, exiting.");
 		
 	}else{
-		printf( "Done, exiting.\n" );
+		printf("Done, exiting.\n");
 	}
 	
-	exit( -1 );
+	exit(-1);
 }
 
-static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
+static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 	const char *logSource = "?";
 	deLogger *logger = nullptr;
 	
-	if( pSignalHandler ){
+	if(pSignalHandler){
 		logger = pSignalHandler->GetLauncher().GetLogger();
 		logSource = pSignalHandler->GetLauncher().GetLogSource();
 	}
 	
-	if( logger ){
-		logger->LogError( logSource, "Unhandled Exception!" );
+	if(logger){
+		logger->LogError(logSource, "Unhandled Exception!");
 		
 	}else{
-		printf( "Unhandled Exception\n" );
+		printf("Unhandled Exception\n");
 	}
 	
 	// stack trace
-	void *btentries[ 50 ]; // should be enough as usually only the last few are important
+	void *btentries[50]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
-	btentryCount = backtrace( btentries, 50 );
+	btentryCount = backtrace(btentries, 50);
 	
-	if( logger ){
-		logger->LogError( logSource, "Backtrace:" );
+	if(logger){
+		logger->LogError(logSource, "Backtrace:");
 		
-		char **btStrings = backtrace_symbols( btentries, btentryCount );
+		char **btStrings = backtrace_symbols(btentries, btentryCount);
 		int i;
 		
-		for( i=0; i<(int)btentryCount; i++ ){
-			logger->LogError( logSource, btStrings[ i ] );
+		for(i=0; i<(int)btentryCount; i++){
+			logger->LogError(logSource, btStrings[i]);
 		}
 		
-		free( btStrings );
+		free(btStrings);
 		
 	}else{
-		printf( "Backtrace:" );
-		backtrace_symbols_fd( btentries, btentryCount, fileno( stdout ) );
+		printf("Backtrace:");
+		backtrace_symbols_fd(btentries, btentryCount, fileno(stdout));
 	}
 	
-	if( logger ){
-		logger->LogError( logSource, "Done, exiting." );
+	if(logger){
+		logger->LogError(logSource, "Done, exiting.");
 		
 	}else{
-		printf( "Done, exiting.\n" );
+		printf("Done, exiting.\n");
 	}
 	
-	exit( -1 );
+	exit(-1);
 }
 #endif
 
@@ -195,8 +195,8 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 // Constructor, destructor
 ////////////////////////////
 
-deglSignalHandler::deglSignalHandler( deglLauncher &launcher ) :
-pLauncher( launcher ){
+deglSignalHandler::deglSignalHandler(deglLauncher &launcher) :
+pLauncher(launcher){
 	pRegisterSignals();
 }
 
@@ -224,33 +224,33 @@ void deglSignalHandler::pRegisterSignals(){
 	pSignalHandler = this;
 	
 	// add handler for SEGV signal
-	memset( &action, 0, sizeof( action ) );
+	memset(&action, 0, sizeof(action));
 	
 	action.sa_sigaction = signalSegV;
 	action.sa_flags = SA_SIGINFO;
 	
-	if( sigaction( SIGSEGV, &action, nullptr ) ){
-		DETHROW( deeInvalidAction );
+	if(sigaction(SIGSEGV, &action, nullptr)){
+		DETHROW(deeInvalidAction);
 	}
 	
 	// add handler for ABORT signal
-	memset( &action, 0, sizeof( action ) );
+	memset(&action, 0, sizeof(action));
 	
 	action.sa_sigaction = signalAbort;
 	action.sa_flags = SA_SIGINFO;
 	
-	if( sigaction( SIGABRT, &action, nullptr ) ){
-		DETHROW( deeInvalidAction );
+	if(sigaction(SIGABRT, &action, nullptr)){
+		DETHROW(deeInvalidAction);
 	}
 	
 	// ignore SIGPIPE signal
-	memset( &action, 0, sizeof( action ) );
+	memset(&action, 0, sizeof(action));
 	
 	action.sa_handler = SIG_IGN;
 	action.sa_flags = 0;
 	
-	if( sigaction( SIGPIPE, &action, nullptr ) ){
-		DETHROW( deeInvalidAction );
+	if(sigaction(SIGPIPE, &action, nullptr)){
+		DETHROW(deeInvalidAction);
 	}
 #endif
 }

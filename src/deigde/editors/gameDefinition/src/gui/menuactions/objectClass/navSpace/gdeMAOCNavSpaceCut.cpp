@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavSpaceCut::gdeMAOCNavSpaceCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Navigation Space",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class navigation space" )
+gdeMAOCNavSpaceCut::gdeMAOCNavSpaceCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Cut Object Class Navigation Space",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"Cut object class navigation space")
 {
 }
 
@@ -61,13 +61,13 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Navigation Space",
 ///////////////
 
 igdeUndo *gdeMAOCNavSpaceCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationSpace ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationSpace){
 		return NULL;
 	}
 	
 	gdeOCNavigationSpace * const navSpace = gameDefinition.GetActiveOCNavigationSpace();
-	if( ! navSpace ){
+	if(!navSpace){
 		return NULL;
 	}
 	
@@ -75,12 +75,12 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	pWindowMain.GetClipboard().Set(gdeClipboardDataOCNavSpace::Ref::NewWith(clipOCNavigationSpace));
 	
-	return new gdeUOCRemoveNavSpace( &objectClass, navSpace );
+	return new gdeUOCRemoveNavSpace(&objectClass, navSpace);
 }
 
 void gdeMAOCNavSpaceCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace
-		&& gameDefinition->GetActiveOCNavigationSpace() != NULL );
+		&& gameDefinition->GetActiveOCNavigationSpace() != NULL);
 }

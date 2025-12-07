@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Trigger target changed. */
-	virtual void TriggerTargetChanged( igdeTriggerTarget *target );
+	virtual void TriggerTargetChanged(igdeTriggerTarget *target);
 	/*@}*/
 };
 

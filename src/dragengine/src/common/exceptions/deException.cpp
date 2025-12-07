@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
+#if defined OS_UNIX && !defined OS_ANDROID && !defined OS_WEBWASM && !defined OS_BEOS
 #include <execinfo.h>
 #endif
 
@@ -65,11 +65,11 @@
 // Constructors, Destructors
 //////////////////////////////
 
-deException::deException( const char *name, const char *description, const char *file, int line ) :
-pName( name ? name : STR_NULL ),
-pDescription( description ? description : STR_NULL ),
-pFile( file ? file : STR_NULL ),
-pLine( decMath::max( line, 0 ) ){
+deException::deException(const char *name, const char *description, const char *file, int line) :
+pName(name ? name : STR_NULL),
+pDescription(description ? description : STR_NULL),
+pFile(file ? file : STR_NULL),
+pLine(decMath::max(line, 0)){
 	pBuildBacktrace();
 }
 
@@ -80,7 +80,7 @@ deException::~deException(){
 
 // Management
 ///////////////
-bool deException::IsNamed( const char *name ) const{
+bool deException::IsNamed(const char *name) const{
 	return pName == name;
 }
 
@@ -97,23 +97,23 @@ decStringList deException::FormatOutput() const{
 	decStringList output;
 	
 	decString text;
-	text.Format( "Exception: %s", pName.GetString() );
-	output.Add( text );
+	text.Format("Exception: %s", pName.GetString());
+	output.Add(text);
 	
-	text.Format( "Description: %s", pDescription.GetString() );
-	output.Add( text );
+	text.Format("Description: %s", pDescription.GetString());
+	output.Add(text);
 	
-	text.Format( "Source File: %s", pFile.GetString() );
-	output.Add( text );
+	text.Format("Source File: %s", pFile.GetString());
+	output.Add(text);
 	
-	text.Format( "Source Line: %i", pLine );
-	output.Add( text );
+	text.Format("Source Line: %i", pLine);
+	output.Add(text);
 	
 	const int backtraceCount = pBacktrace.GetCount();
 	int i;
-	for( i=0; i<backtraceCount; i++ ){
-		text.Format( "Backtrace: %s", pBacktrace[ i ].GetString() );
-		output.Add( text );
+	for(i=0; i<backtraceCount; i++){
+		text.Format("Backtrace: %s", pBacktrace[i].GetString());
+		output.Add(text);
 	}
 	
 	output += AdditionalInformation();
@@ -126,8 +126,8 @@ void deException::PrintError() const{
 	const int count = output.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		printf( "%s\n", output.GetAt( i ).GetString() );
+	for(i=0; i<count; i++){
+		printf("%s\n", output.GetAt(i).GetString());
 	}
 }
 
@@ -148,11 +148,11 @@ struct sBacktraceState{
 	void **end;
 };
 
-static _Unwind_Reason_Code unwindCallback( struct _Unwind_Context *context, void *arg ){
-	sBacktraceState &state = *( ( sBacktraceState* )arg );
-	const uintptr_t pc = _Unwind_GetIP( context );
-	if( pc ){
-		if( state.current == state.end ){
+static _Unwind_Reason_Code unwindCallback(struct _Unwind_Context *context, void *arg){
+	sBacktraceState &state = *((sBacktraceState*)arg);
+	const uintptr_t pc = _Unwind_GetIP(context);
+	if(pc){
+		if(state.current == state.end){
 			return _URC_END_OF_STACK;
 			
 		}else{
@@ -165,22 +165,22 @@ static _Unwind_Reason_Code unwindCallback( struct _Unwind_Context *context, void
 #endif
 
 void deException::pBuildBacktrace(){
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
+#if defined OS_UNIX && !defined OS_ANDROID && !defined OS_WEBWASM && !defined OS_BEOS
 	const int maxFramepointerCount = MAX_BACKTRACE_COUNT + SKIP_SELF_TRACE_COUNT;
-	void *framepointers[ maxFramepointerCount ];
-	const int fpcount = backtrace( framepointers, maxFramepointerCount );
-	if( fpcount == 0 ){
+	void *framepointers[maxFramepointerCount];
+	const int fpcount = backtrace(framepointers, maxFramepointerCount);
+	if(fpcount == 0){
 		return;
 	}
 	
-	char ** const symbols = backtrace_symbols( framepointers, fpcount );
+	char ** const symbols = backtrace_symbols(framepointers, fpcount);
 	int i;
 	
-	for( i=SKIP_SELF_TRACE_COUNT; i<fpcount; i++ ){
-		pBacktrace.Add( symbols[ i ] );
+	for(i=SKIP_SELF_TRACE_COUNT; i<fpcount; i++){
+		pBacktrace.Add(symbols[i]);
 	}
 	
-	free( symbols );
+	free(symbols);
 #endif
 	
 #ifdef OS_ANDROID
@@ -190,40 +190,40 @@ void deException::pBuildBacktrace(){
 	// 
 	// NOTE -fvisibility=hidden prevent demangling from working
 	
-	void *context[ MAX_BACKTRACE_COUNT ];
-	void ** const stateBegin = &context[ 0 ];
+	void *context[MAX_BACKTRACE_COUNT];
+	void ** const stateBegin = &context[0];
 	sBacktraceState state;
 	state.current = stateBegin;
 	state.end = stateBegin + MAX_BACKTRACE_COUNT;
-	_Unwind_Backtrace( unwindCallback, &state );
-	const size_t count = ( size_t )( state.current - stateBegin );
+	_Unwind_Backtrace(unwindCallback, &state);
+	const size_t count = (size_t)(state.current - stateBegin);
 	decString symbol;
 	size_t i;
 	
-	for( i=SKIP_SELF_TRACE_COUNT; i<count; i++ ){
-		const void * const addr = context[ i ];
+	for(i=SKIP_SELF_TRACE_COUNT; i<count; i++){
+		const void * const addr = context[i];
 		
 		Dl_info info;
-		if( dladdr( addr, &info ) && info.dli_sname ){
+		if(dladdr(addr, &info) && info.dli_sname){
 			int status = 0;
-			char * const demangled = abi::__cxa_demangle( symbol, 0, 0, &status );
-			if( demangled ){
-				symbol.Format( "%s(%s+0x%x) [%p] %s", info.dli_fname, info.dli_sname,
-					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
-					addr, demangled );
-				free( demangled );
+			char * const demangled = abi::__cxa_demangle(symbol, 0, 0, &status);
+			if(demangled){
+				symbol.Format("%s(%s+0x%x) [%p] %s", info.dli_fname, info.dli_sname,
+					(unsigned int)((const char*)addr - (const char*)info.dli_saddr),
+					addr, demangled);
+				free(demangled);
 				
 			}else{
-				symbol.Format( "%s(%s+0x%x) [%p]", info.dli_fname, info.dli_sname,
-					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
-					addr );
+				symbol.Format("%s(%s+0x%x) [%p]", info.dli_fname, info.dli_sname,
+					(unsigned int)((const char*)addr - (const char*)info.dli_saddr),
+					addr);
 			}
 			
 		}else{
-			symbol.Format( "%p ??", addr );
+			symbol.Format("%p ??", addr);
 		}
 		
-		pBacktrace.Add( symbol );
+		pBacktrace.Add(symbol);
 	}
 #endif
 
@@ -236,27 +236,27 @@ void deException::pBuildBacktrace(){
 	symOptions |= SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS | SYMOPT_UNDNAME;
 	symOptions |= SYMOPT_INCLUDE_32BIT_MODULES;
 
-	if( ! SymSetOptions( symOptions ) ){
+	if(!SymSetOptions(symOptions)){
 		return;
 	}
-	if( ! SymInitialize( process, NULL, TRUE ) ){
+	if(!SymInitialize(process, NULL, TRUE)){
 		return;
 	}
 	
 	CONTEXT context;
-	memset( &context, 0, sizeof( CONTEXT ) );
+	memset(&context, 0, sizeof(CONTEXT));
 	context.ContextFlags = CONTEXT_FULL;
-	RtlCaptureContext( &context );
+	RtlCaptureContext(&context);
 	
-	const int symbolBufferLen = sizeof( IMAGEHLP_SYMBOL64 ) + MAX_SYM_NAME;
-	char * const symbolBuffer = new char[ symbolBufferLen + 1 ];
-	memset( symbolBuffer, 0, symbolBufferLen + 1 );
-	PIMAGEHLP_SYMBOL64 const symbol = ( PIMAGEHLP_SYMBOL64 )symbolBuffer;
-	symbol->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
+	const int symbolBufferLen = sizeof(IMAGEHLP_SYMBOL64) + MAX_SYM_NAME;
+	char * const symbolBuffer = new char[symbolBufferLen + 1];
+	memset(symbolBuffer, 0, symbolBufferLen + 1);
+	PIMAGEHLP_SYMBOL64 const symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer;
+	symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
 	symbol->MaxNameLength = MAX_SYM_NAME;
 
 	STACKFRAME_EX stack;
-	memset( &stack, 0, sizeof( stack ) );
+	memset(&stack, 0, sizeof(stack));
 	DWORD machineType;
 
 	#ifdef _WIN64
@@ -278,56 +278,56 @@ void deException::pBuildBacktrace(){
 	#endif
 	
 	BOOL result;
-	char undecoratedName[ 256 ];
+	char undecoratedName[256];
 
 	IMAGEHLP_MODULE64 moduleInfo;
-	memset( &moduleInfo, 0, sizeof( moduleInfo ) );
-	moduleInfo.SizeOfStruct = sizeof( IMAGEHLP_MODULE64 );
+	memset(&moduleInfo, 0, sizeof(moduleInfo));
+	moduleInfo.SizeOfStruct = sizeof(IMAGEHLP_MODULE64);
 
-	char symbolInfoBuffer[ sizeof( SYMBOL_INFO ) + MAX_SYM_NAME * sizeof( TCHAR ) ];
-	memset( &symbolInfoBuffer, 0, sizeof( symbolInfoBuffer ) );
-	PSYMBOL_INFO symbolInfo = ( PSYMBOL_INFO )&symbolInfoBuffer;
-	symbolInfo->SizeOfStruct = sizeof( SYMBOL_INFO );
+	char symbolInfoBuffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
+	memset(&symbolInfoBuffer, 0, sizeof(symbolInfoBuffer));
+	PSYMBOL_INFO symbolInfo = (PSYMBOL_INFO)&symbolInfoBuffer;
+	symbolInfo->SizeOfStruct = sizeof(SYMBOL_INFO);
 	symbolInfo->MaxNameLen = MAX_SYM_NAME;
 
 	int i;
 	decString desymbol;
 
-	for( i=0; i<50; i++ ){
-		result = StackWalkEx( machineType, process, thread, &stack, &context, NULL,
-			SymFunctionTableAccess64, SymGetModuleBase64, NULL, 0 );
-		if( ! result || ! stack.AddrPC.Offset ){
+	for(i=0; i<50; i++){
+		result = StackWalkEx(machineType, process, thread, &stack, &context, NULL,
+			SymFunctionTableAccess64, SymGetModuleBase64, NULL, 0);
+		if(!result || !stack.AddrPC.Offset){
 			break;
 		}
 
-		symbol->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
+		symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
 		symbol->MaxNameLength = 255;
 
 		DWORD64 offsetSymbol = 0;
 		DWORD offsetLine = 0;
-		IMAGEHLP_LINE64 symbolLine = ( IMAGEHLP_LINE64 )0;
+		IMAGEHLP_LINE64 symbolLine = (IMAGEHLP_LINE64)0;
 
 		const void *address = 0;
 		const char *name = "??";
 		const char *sourceFile = "??";
 		int sourceLine = 0;
 
-		if( SymFromAddr( process, stack.AddrPC.Offset, &offsetSymbol, symbolInfo ) ){
-			address = ( void* )symbolInfo->Address;
+		if(SymFromAddr(process, stack.AddrPC.Offset, &offsetSymbol, symbolInfo)){
+			address = (void*)symbolInfo->Address;
 			
-			UnDecorateSymbolName( symbolInfo->Name, ( PSTR )undecoratedName, sizeof( undecoratedName ), UNDNAME_COMPLETE );
+			UnDecorateSymbolName(symbolInfo->Name, (PSTR)undecoratedName, sizeof(undecoratedName), UNDNAME_COMPLETE);
 			name = undecoratedName;
 		}
-		if( SymGetLineFromAddr64( process, stack.AddrPC.Offset, &offsetLine, &symbolLine ) ){
-			sourceLine = ( int )symbolLine.LineNumber;
+		if(SymGetLineFromAddr64(process, stack.AddrPC.Offset, &offsetLine, &symbolLine)){
+			sourceLine = (int)symbolLine.LineNumber;
 			sourceFile = symbolLine.FileName;
 		}
 		
-		desymbol.Format( "%s [%p] %s:%d", name, address, sourceFile, sourceLine );
-		pBacktrace.Add( desymbol );
+		desymbol.Format("%s [%p] %s:%d", name, address, sourceFile, sourceLine);
+		pBacktrace.Add(desymbol);
 	}
 	
-	SymCleanup( process );
+	SymCleanup(process);
 #endif
 #endif
 }

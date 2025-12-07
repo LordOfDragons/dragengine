@@ -39,24 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSnapSetID::aeURuleSnapSetID( aeRuleStateSnapshot *rule, int newID ) :
-pRule( NULL ),
-pNewID( newID )
+aeURuleSnapSetID::aeURuleSnapSetID(aeRuleStateSnapshot *rule, int newID) :
+pRule(NULL),
+pNewID(newID)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldID = rule->GetID();
 	
-	SetShortInfo( "State snapshot rule set ID" );
+	SetShortInfo("State snapshot rule set ID");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleSnapSetID::~aeURuleSnapSetID(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ aeURuleSnapSetID::~aeURuleSnapSetID(){
 ///////////////
 
 void aeURuleSnapSetID::Undo(){
-	pRule->SetID( pOldID );
+	pRule->SetID(pOldID);
 }
 
 void aeURuleSnapSetID::Redo(){
-	pRule->SetID( pNewID );
+	pRule->SetID(pNewID);
 }

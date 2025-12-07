@@ -62,10 +62,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game definition skin. */
-	igdeGDSkin( const char *path, const char *name );
+	igdeGDSkin(const char *path, const char *name);
 	
 	/** \brief Create game definition skin as a copy of a another game definition skin. */
-	igdeGDSkin( const igdeGDSkin &skin );
+	igdeGDSkin(const igdeGDSkin &skin);
 	
 protected:
 	/** \breif Clean up game definition skin. */
@@ -87,19 +87,19 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Category. */
 	inline const decString &GetCategory() const{ return pCategory; }
 	
 	/** \brief Set category. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
 	/** \brief Preview image or NULL if not created. */
 	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
 	
 	/** \brief Set preview image or NULL if not created. */
-	void SetPreviewImage( deImage *image );
+	void SetPreviewImage(deImage *image);
 	/*@}*/
 };
 

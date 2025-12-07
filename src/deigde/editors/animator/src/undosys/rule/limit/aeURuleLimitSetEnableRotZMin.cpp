@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableRotZMin::aeURuleLimitSetEnableRotZMin( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableRotZMin::aeURuleLimitSetEnableRotZMin(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	
-	SetShortInfo( "Limit toggle enable minimum y rotation" );
+	SetShortInfo("Limit toggle enable minimum y rotation");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotZMin::~aeURuleLimitSetEnableRotZMin(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnableRotZMin::Undo(){
 }
 
 void aeURuleLimitSetEnableRotZMin::Redo(){
-	pRule->SetEnableRotationZMin( ! pRule->GetEnableRotationZMin() );
+	pRule->SetEnableRotationZMin(!pRule->GetEnableRotationZMin());
 }

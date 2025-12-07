@@ -67,7 +67,7 @@ public:
 	 * @param topRadius Radius of the top cap. Has to be greater than 0.
 	 * @param bottomRadius Radius of the bottom cap. Has to be greater than 0.
 	 */
-	deoglCollisionCylinder( const decVector &position, float halfHeight, float topRadius, float bottomRadius );
+	deoglCollisionCylinder(const decVector &position, float halfHeight, float topRadius, float bottomRadius);
 	/**
 	 * Creates a new oriented cylinder.
 	 * @param position Center of the cylinder.
@@ -76,46 +76,46 @@ public:
 	 * @param bottomRadius Radius of the bottom cap. Has to be greater than 0.
 	 * @param orientation Orientation of the cylinder as normalized quaternion.
 	 */
-	deoglCollisionCylinder( const decVector &position, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation );
+	deoglCollisionCylinder(const decVector &position, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation);
 	/** Cleans up the collision Cylinder. */
 	virtual ~deoglCollisionCylinder();
 	/*@}*/
 	
 	/** \name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume );
-	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
+	virtual bool VolumeHitsVolume(deoglCollisionVolume *volume);
+	virtual float VolumeMoveHitsVolume(deoglCollisionVolume *volume, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere );
-	virtual bool CylinderHitsVolume( deoglCollisionCylinder *Cylinder );
-	virtual bool CapsuleHitsVolume( deoglCollisionCapsule *capsule );
-	virtual bool BoxHitsVolume( deoglCollisionBox *box );
-	virtual bool TriangleHitsVolume( deoglCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( deoglCollisionFrustum *frustum );
-	virtual float SphereMoveHitsVolume( deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal );
-	virtual float CylinderMoveHitsVolume( deoglCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal );
-	virtual float CapsuleMoveHitsVolume( deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
-	virtual float BoxMoveHitsVolume( deoglCollisionBox *box, const decVector &displacement, decVector *normal );
-	virtual float TriangleMoveHitsVolume( deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
-	virtual float FrustumMoveHitsVolume( deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
-	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
+	virtual bool SphereHitsVolume(deoglCollisionSphere *sphere);
+	virtual bool CylinderHitsVolume(deoglCollisionCylinder *Cylinder);
+	virtual bool CapsuleHitsVolume(deoglCollisionCapsule *capsule);
+	virtual bool BoxHitsVolume(deoglCollisionBox *box);
+	virtual bool TriangleHitsVolume(deoglCollisionTriangle *triangle);
+	virtual bool FrustumHitsVolume(deoglCollisionFrustum *frustum);
+	virtual float SphereMoveHitsVolume(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal);
+	virtual float CylinderMoveHitsVolume(deoglCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal);
+	virtual float CapsuleMoveHitsVolume(deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
+	virtual float BoxMoveHitsVolume(deoglCollisionBox *box, const decVector &displacement, decVector *normal);
+	virtual float TriangleMoveHitsVolume(deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal);
+	virtual float FrustumMoveHitsVolume(deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal);
+	virtual float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
-	virtual void GetEnclosingBox( deoglCollisionBox *box );
+	virtual void GetEnclosingSphere(deoglCollisionSphere *sphere);
+	virtual void GetEnclosingBox(deoglCollisionBox *box);
 	/*@}*/
 	
 	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decVector &point );
+	virtual bool IsPointInside(const decVector &point);
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo( const decVector &point );
+	virtual decVector ClosestPointTo(const decVector &point);
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -125,7 +125,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decVector NormalAtPoint( const decVector &point );
+	virtual decVector NormalAtPoint(const decVector &point);
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -134,12 +134,12 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
+	virtual bool RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance);
 	/*@}*/
 	
 	/** \name Visiting */
 	/*{*/
-	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
+	virtual void Visit(deoglCollisionVolumeVisitor *visitor);
 	/*}*/
 	
 	/** \name Collision Routines */
@@ -148,22 +148,22 @@ public:
 	 * Determines if the given sphere collides with this Cylinder.
 	 * @warning Function is not implemented yet and always returns false.
 	 */
-	bool SphereHitsCylinder( deoglCollisionSphere *sphere );
+	bool SphereHitsCylinder(deoglCollisionSphere *sphere);
 	/**
 	 * Determines if the given Cylinder collides with this Cylinder.
 	 * @warning Function is not implemented yet and always returns false.
 	 */
-	bool CylinderHitsCylinder( deoglCollisionCylinder *Cylinder );
+	bool CylinderHitsCylinder(deoglCollisionCylinder *Cylinder);
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this Cylinder.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float SphereMoveHitsCylinder( deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal );
+	float SphereMoveHitsCylinder(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given Cylinder to move until colliding with this Cylinder.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CylinderMoveHitsCylinder( deoglCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal );
+	float CylinderMoveHitsCylinder(deoglCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Management */
@@ -176,14 +176,14 @@ public:
 	 * Sets the position.
 	 * @param position Center of cylinder.
 	 */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** Retrieves the orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	/**
 	 * Sets the orientation.
 	 * @param orientation Normalized rotation quaternion.
 	 */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	/** Clears the orientation of the cylinder setting it to the identity quaternion. */
 	void ClearOrientation();
 	/** Retrieves the half height. */
@@ -192,26 +192,26 @@ public:
 	 * Sets the half height.
 	 * @param halfHeight Half the height of the cylinder. Has to be greater than 0.
 	 */
-	void SetHalfHeight( float halfHeight );
+	void SetHalfHeight(float halfHeight);
 	/** Retrieves the top radius. */
 	inline float GetTopRadius() const{ return pTopRadius; }
 	/**
 	 * Sets the top radius.
 	 * @param radius Radius of the top cylinder cap. Has to be greater than 0.
 	 */
-	void SetTopRadius( float radius );
+	void SetTopRadius(float radius);
 	/** Retrieves the bottom radius. */
 	inline float GetBottomRadius() const{ return pBottomRadius; }
 	/**
 	 * Sets the bottom radius.
 	 * @param radius Radius of the bottom cylinder cap. Has to be greater than 0.
 	 */
-	void SetBottomRadius( float radius );
+	void SetBottomRadius(float radius);
 	/**
 	 * Sets both radi to the same value.
 	 * @param radius Radius of both the top and bottom cap. Has to be greater than 0.
 	 */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/**
 	 * Determines if this cylinder is oriented.
@@ -222,7 +222,7 @@ public:
 	 * Determines if this cylinder is axis aligned.
 	 * @return True if the cylinder has an orientation equal to the identity quaternion.
 	 */
-	inline bool GetAxisAligned() const{ return ! pOriented; }
+	inline bool GetAxisAligned() const{ return !pOriented; }
 	/**
 	 * Determines if this cylinder is tapered.
 	 * @return True if the top and bottom radius are not identical.
@@ -246,13 +246,13 @@ public:
 	inline const decVector &GetAxisZ() const{ return pAxisZ; }
 	
 	/** Transforms a point from world coordinates into local coordinates. */
-	decVector WorldToLocal( const decVector &point ) const;
+	decVector WorldToLocal(const decVector &point) const;
 	/** Transforms a point from local coordinates into world coordinates. */
-	decVector LocalToWorld( const decVector &point ) const;
+	decVector LocalToWorld(const decVector &point) const;
 	/** Transforms a normal from world coordinates into local coordinates. */
-	decVector NormalWorldToLocal( const decVector &normal ) const;
+	decVector NormalWorldToLocal(const decVector &normal) const;
 	/** Transforms a normal from local coordinates into world coordinates. */
-	decVector NormalLocalToWorld( const decVector &normal ) const;
+	decVector NormalLocalToWorld(const decVector &normal) const;
 	/*@}*/
 };
 

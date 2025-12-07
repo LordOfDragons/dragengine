@@ -39,14 +39,14 @@
 
 
 
-FXDEFMAP( igdeNativeFoxNVSocket ) cNativeIgdeNVSocketMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, igdeNativeFoxNVSocket::onResize ),
-	FXMAPFUNC( SEL_PAINT, 0, igdeNativeFoxNVSocket::onPaint )
+FXDEFMAP(igdeNativeFoxNVSocket) cNativeIgdeNVSocketMap[] = {
+	FXMAPFUNC(SEL_CONFIGURE, 0, igdeNativeFoxNVSocket::onResize),
+	FXMAPFUNC(SEL_PAINT, 0, igdeNativeFoxNVSocket::onPaint)
 };
 
 
-FXIMPLEMENT( igdeNativeFoxNVSocket, FXFrame,
-	cNativeIgdeNVSocketMap, ARRAYNUMBER( cNativeIgdeNVSocketMap ) )
+FXIMPLEMENT(igdeNativeFoxNVSocket, FXFrame,
+	cNativeIgdeNVSocketMap, ARRAYNUMBER(cNativeIgdeNVSocketMap))
 
 
 // class igdeNativeFoxNVSocket
@@ -56,15 +56,15 @@ igdeNativeFoxNVSocket::igdeNativeFoxNVSocket(){
 	this->flags |= FLAG_ENABLED | FLAG_DROPTARGET;
 }
 
-igdeNativeFoxNVSocket::igdeNativeFoxNVSocket( FXComposite *pparent, FXObject *ttarget,
-	int selector, int fflags, const igdeGuiTheme & ) :
-FXFrame( pparent, fflags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pChecked( false ),
-pRadius( 6 ),
-pColorFrame( FXRGB( 0, 0, 0 ) ),
-pColorFillChecked( FXRGB( 0, 0, 255 ) ),
-pColorFillUnchecked( pparent->getApp()->getBackColor() ),
-pWindowShape( NULL )
+igdeNativeFoxNVSocket::igdeNativeFoxNVSocket(FXComposite *pparent, FXObject *ttarget,
+	int selector, int fflags, const igdeGuiTheme &) :
+FXFrame(pparent, fflags, 0, 0, 0, 0, 0, 0, 0, 0),
+pChecked(false),
+pRadius(6),
+pColorFrame(FXRGB(0, 0, 0)),
+pColorFillChecked(FXRGB(0, 0, 255)),
+pColorFillUnchecked(pparent->getApp()->getBackColor()),
+pWindowShape(NULL)
 {
 	this->flags |= FLAG_ENABLED | FLAG_DROPTARGET;
 	this->target = ttarget;
@@ -73,7 +73,7 @@ pWindowShape( NULL )
 }
 
 igdeNativeFoxNVSocket::~igdeNativeFoxNVSocket(){
-	if( pWindowShape ){
+	if(pWindowShape){
 		clearShape();
 		delete pWindowShape;
 	}
@@ -98,8 +98,8 @@ FXbool igdeNativeFoxNVSocket::canFocus() const{
 
 
 
-void igdeNativeFoxNVSocket::SetChecked( bool checked ){
-	if( checked == pChecked ){
+void igdeNativeFoxNVSocket::SetChecked(bool checked){
+	if(checked == pChecked){
 		return;
 	}
 	
@@ -107,8 +107,8 @@ void igdeNativeFoxNVSocket::SetChecked( bool checked ){
 	update();
 }
 
-void igdeNativeFoxNVSocket::SetColorFrame( FXColor color ){
-	if( color == pColorFrame ){
+void igdeNativeFoxNVSocket::SetColorFrame(FXColor color){
+	if(color == pColorFrame){
 		return;
 	}
 	
@@ -116,8 +116,8 @@ void igdeNativeFoxNVSocket::SetColorFrame( FXColor color ){
 	update();
 }
 
-void igdeNativeFoxNVSocket::SetColorFillChecked( FXColor color ){
-	if( color == pColorFillChecked ){
+void igdeNativeFoxNVSocket::SetColorFillChecked(FXColor color){
+	if(color == pColorFillChecked){
 		return;
 	}
 	
@@ -125,8 +125,8 @@ void igdeNativeFoxNVSocket::SetColorFillChecked( FXColor color ){
 	update();
 }
 
-void igdeNativeFoxNVSocket::SetColorFillUnchecked( FXColor color ){
-	if( color == pColorFillUnchecked ){
+void igdeNativeFoxNVSocket::SetColorFillUnchecked(FXColor color){
+	if(color == pColorFillUnchecked){
 		return;
 	}
 	
@@ -137,19 +137,19 @@ void igdeNativeFoxNVSocket::SetColorFillUnchecked( FXColor color ){
 
 
 decPoint igdeNativeFoxNVSocket::GetCenter() const{
-	return decPoint( getWidth() / 2, getHeight() / 2 );
+	return decPoint(getWidth() / 2, getHeight() / 2);
 }
 
 decPoint igdeNativeFoxNVSocket::GetBorderLeft() const{
-	return decPoint( getWidth() / 2 - pRadius, getHeight() / 2 );
+	return decPoint(getWidth() / 2 - pRadius, getHeight() / 2);
 }
 
 decPoint igdeNativeFoxNVSocket::GetBorderRight() const{
-	return decPoint( getWidth() / 2 + pRadius, getHeight() / 2 );
+	return decPoint(getWidth() / 2 + pRadius, getHeight() / 2);
 }
 
-bool igdeNativeFoxNVSocket::IsInsideSocket( const decPoint &point ) const{
-	return ( point - GetCenter() ).Length() < ( float )pRadius + 0.5f;
+bool igdeNativeFoxNVSocket::IsInsideSocket(const decPoint &point) const{
+	return (point - GetCenter()).Length() < (float)pRadius + 0.5f;
 }
 
 
@@ -157,28 +157,28 @@ bool igdeNativeFoxNVSocket::IsInsideSocket( const decPoint &point ) const{
 // Events
 ///////////
 
-long igdeNativeFoxNVSocket::onResize( FXObject*, FXSelector, void* ){
+long igdeNativeFoxNVSocket::onResize(FXObject*, FXSelector, void*){
 	pUpdateWindowShape();
 	return 1;
 }
 
-long igdeNativeFoxNVSocket::onPaint( FXObject*, FXSelector, void *pdata ){
-	FXEvent * const event = ( FXEvent* )pdata;
-	FXDCWindow dc( this, event );
-	const decPoint center( getWidth() / 2, getHeight() / 2 );
-	const decPoint position( center - decPoint( pRadius, pRadius ) );
-	const decPoint size( pRadius * 2 - 1, pRadius * 2 - 1 );
+long igdeNativeFoxNVSocket::onPaint(FXObject*, FXSelector, void *pdata){
+	FXEvent * const event = (FXEvent*)pdata;
+	FXDCWindow dc(this, event);
+	const decPoint center(getWidth() / 2, getHeight() / 2);
+	const decPoint position(center - decPoint(pRadius, pRadius));
+	const decPoint size(pRadius * 2 - 1, pRadius * 2 - 1);
 	
-	dc.setForeground( pColorFillUnchecked );
-	dc.fillEllipse( position.x, position.y, size.x, size.y );
+	dc.setForeground(pColorFillUnchecked);
+	dc.fillEllipse(position.x, position.y, size.x, size.y);
 	
-	if( pChecked ){
-		dc.setForeground( pColorFillChecked );
-		dc.fillEllipse( position.x + 2, position.y + 2, size.x - 4, size.y - 4 );
+	if(pChecked){
+		dc.setForeground(pColorFillChecked);
+		dc.fillEllipse(position.x + 2, position.y + 2, size.x - 4, size.y - 4);
 	}
 	
-	dc.setForeground( pColorFrame );
-	dc.drawEllipse( position.x, position.y, size.x, size.y );
+	dc.setForeground(pColorFrame);
+	dc.drawEllipse(position.x, position.y, size.x, size.y);
 	return 1;
 }
 
@@ -191,39 +191,39 @@ void igdeNativeFoxNVSocket::pUpdateWindowShape(){
 	// make sure the window shape exists and is created. should this fail for some reason we
 	// simply ignore the shape which causes garbage to show around the node but it would not
 	// prevent usage of the editor
-	if( ! pWindowShape ){
-		pWindowShape = new FXBitmap( getApp() );
-		if( pWindowShape ){
+	if(!pWindowShape){
+		pWindowShape = new FXBitmap(getApp());
+		if(pWindowShape){
 			pWindowShape->create();
-			setShape( pWindowShape );
+			setShape(pWindowShape);
 		}
 	}
 	
 	// if the window shape exists update it by drawing the node frame ontop of it
-	if( ! pWindowShape ){
+	if(!pWindowShape){
 		return;
 	}
 	
 	clearShape();
 	
-	const decPoint center( getWidth() / 2, getHeight() / 2 );
-	const decPoint position( center - decPoint( pRadius, pRadius ) );
-	const decPoint size( pRadius * 2 - 1, pRadius * 2 - 1 );
+	const decPoint center(getWidth() / 2, getHeight() / 2);
+	const decPoint position(center - decPoint(pRadius, pRadius));
+	const decPoint size(pRadius * 2 - 1, pRadius * 2 - 1);
 	
-	pWindowShape->resize( getWidth(), getHeight() );
+	pWindowShape->resize(getWidth(), getHeight());
 	
-	{ // just to make sure the dc is killed before we attempt to render the bitmap
-	FXDCWindow dc( pWindowShape );
-	dc.setForeground( FX_COLOR_WINDOW_SHAPE_TRANSPARENT );
-	dc.fillRectangle( 0, 0, getWidth(), getHeight() );
+	{// just to make sure the dc is killed before we attempt to render the bitmap
+	FXDCWindow dc(pWindowShape);
+	dc.setForeground(FX_COLOR_WINDOW_SHAPE_TRANSPARENT);
+	dc.fillRectangle(0, 0, getWidth(), getHeight());
 	
-	dc.setForeground( FX_COLOR_WINDOW_SHAPE_OPAQUE );
-	dc.fillEllipse( position.x, position.y, size.x, size.y );
-	dc.drawEllipse( position.x, position.y, size.x, size.y );
+	dc.setForeground(FX_COLOR_WINDOW_SHAPE_OPAQUE);
+	dc.fillEllipse(position.x, position.y, size.x, size.y);
+	dc.drawEllipse(position.x, position.y, size.x, size.y);
 	}
 	pWindowShape->render();
 	
-	setShape( pWindowShape );
+	setShape(pWindowShape);
 }
 
 #endif

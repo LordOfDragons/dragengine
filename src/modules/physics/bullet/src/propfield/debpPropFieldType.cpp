@@ -48,8 +48,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpPropFieldType::debpPropFieldType( debpPropField *propField, dePropFieldType *type ){
-	if( ! propField || ! type ) DETHROW( deeInvalidParam );
+debpPropFieldType::debpPropFieldType(debpPropField *propField, dePropFieldType *type){
+	if(!propField || !type) DETHROW(deeInvalidParam);
 	
 	pPropField = propField;
 	pType = type;
@@ -63,7 +63,7 @@ debpPropFieldType::debpPropFieldType( debpPropField *propField, dePropFieldType 
 }
 
 debpPropFieldType::~debpPropFieldType(){
-	if( pBendStates ) delete [] pBendStates;
+	if(pBendStates) delete [] pBendStates;
 }
 
 
@@ -75,26 +75,26 @@ void debpPropFieldType::MarkDirty(){
 	pDirty = true;
 }
 
-void debpPropFieldType::SetBendStateSize( int size ){
-	if( size != pBendStateSize ){
+void debpPropFieldType::SetBendStateSize(int size){
+	if(size != pBendStateSize){
 		debpPropFieldBendState *newArray = NULL;
 		
-		if( size > 0 ){
-			newArray = new debpPropFieldBendState[ size ];
-			if( ! newArray ) DETHROW( deeOutOfMemory );
+		if(size > 0){
+			newArray = new debpPropFieldBendState[size];
+			if(!newArray) DETHROW(deeOutOfMemory);
 		}
 		
-		if( pBendStates ) delete [] pBendStates;
+		if(pBendStates) delete [] pBendStates;
 		pBendStates = newArray;
 		pBendStateCount = 0;
 		pBendStateSize = size;
 	}
 }
 
-void debpPropFieldType::Update( float elapsed ){
-	float rfactor = 1.0f / ( float )RAND_MAX;
+void debpPropFieldType::Update(float elapsed){
+	float rfactor = 1.0f / (float)RAND_MAX;
 	
-	if( pDirty ){
+	if(pDirty){
 		dePropFieldInstance *engInstances = pType->GetInstances();
 		int i, instanceCount = pType->GetInstanceCount();
 		dePropField *pfield = pPropField->GetPropField();
@@ -106,16 +106,16 @@ void debpPropFieldType::Update( float elapsed ){
 		// the extends are and deducing the size from this
 		float fpx, fpz, extend = 0.1f;
 		
-		for( i=0; i<instanceCount; i++ ){
-			const decVector &position = engInstances[ i ].GetPosition();
+		for(i=0; i<instanceCount; i++){
+			const decVector &position = engInstances[i].GetPosition();
 			
-			fpx = fabsf( position.x );
-			fpz = fabsf( position.z );
+			fpx = fabsf(position.x);
+			fpz = fabsf(position.z);
 			
-			if( fpx > extend ){
+			if(fpx > extend){
 				extend = fpx;
 			}
-			if( fpz > extend ){
+			if(fpz > extend){
 				extend = fpz;
 			}
 		}
@@ -123,53 +123,53 @@ void debpPropFieldType::Update( float elapsed ){
 		// fill points into a sieve. each bucket that is not empty becomes
 		// one simulation unit we track later on
 		int bucketCountXZ = 10;
-		debpPointSieve sieve( bucketCountXZ, bucketCountXZ, extend * 2.0f, extend * 2.0f );
+		debpPointSieve sieve(bucketCountXZ, bucketCountXZ, extend * 2.0f, extend * 2.0f);
 		int b, bucketCount = sieve.GetBucketCount();
 		
-		for( i=0; i<instanceCount; i++ ){
-			const decVector &position = engInstances[ i ].GetPosition();
+		for(i=0; i<instanceCount; i++){
+			const decVector &position = engInstances[i].GetPosition();
 			
-			sieve.DropPoint( position.x, position.z, i );
+			sieve.DropPoint(position.x, position.z, i);
 		}
 		
 		// set bending state count
-		for( b=0; b<bucketCount; b++ ){
-			if( sieve.GetBucketAt( b ).GetIndexCount() > 0 ){
+		for(b=0; b<bucketCount; b++){
+			if(sieve.GetBucketAt(b).GetIndexCount() > 0){
 				bendStateCount++;
 			}
 		}
 		
 		//printf( "DIRTY buckets=%i instances=%i states=%i PTR=%p\n", bucketCount, instanceCount, bendStateCount, pType );
-		SetBendStateSize( bendStateCount );
-		pType->SetBendStateCount( bendStateCount );
+		SetBendStateSize(bendStateCount);
+		pType->SetBendStateCount(bendStateCount);
 		pBendStateCount = 0;
 		
 		// fill with bending states. at the same time assign the instances to
 		// their bending state
-		for( b=0; b<bucketCount; b++ ){
-			const debpPointSieveBucket &bucket = sieve.GetBucketAt( b );
+		for(b=0; b<bucketCount; b++){
+			const debpPointSieveBucket &bucket = sieve.GetBucketAt(b);
 			
 			indexCount = bucket.GetIndexCount();
-			if( indexCount > 0 ){
-				if( pBendStateCount == pBendStateSize ) DETHROW( deeInvalidAction );
+			if(indexCount > 0){
+				if(pBendStateCount == pBendStateSize) DETHROW(deeInvalidAction);
 				
-				pBendStates[ pBendStateCount ].position.SetZero();
+				pBendStates[pBendStateCount].position.SetZero();
 				
-				for( x=0; x<indexCount; x++ ){
-					index = bucket.GetIndexAt( x );
+				for(x=0; x<indexCount; x++){
+					index = bucket.GetIndexAt(x);
 					
-					pBendStates[ pBendStateCount ].position += engInstances[ index ].GetPosition();
-					engInstances[ index ].SetBendState( pBendStateCount );
+					pBendStates[pBendStateCount].position += engInstances[index].GetPosition();
+					engInstances[index].SetBendState(pBendStateCount);
 				}
 				
-				pBendStates[ pBendStateCount ].position /= ( float )indexCount;
-				pBendStates[ pBendStateCount ].flucDir = 0.0f;
-				pBendStates[ pBendStateCount ].flucStr = 0.0f;
+				pBendStates[pBendStateCount].position /= (float)indexCount;
+				pBendStates[pBendStateCount].flucDir = 0.0f;
+				pBendStates[pBendStateCount].flucStr = 0.0f;
 				pBendStateCount++;
 			}
 		}
 		
-		pfield->NotifyAssignmentsChanged( pfield->IndexOfType( pType ) );
+		pfield->NotifyAssignmentsChanged(pfield->IndexOfType(pType));
 		
 		// no more dirty
 		pDirty = false;
@@ -185,25 +185,25 @@ void debpPropFieldType::Update( float elapsed ){
 	int b;
 	
 	pFlucTimer += elapsed;
-	while( pFlucTimer > 0.04f ){
+	while(pFlucTimer > 0.04f){
 		pFlucTimer -= 0.04f;
 		
-		for( b=0; b<pBendStateCount; b++ ){
-			debpPropFieldBendState &bstate = pBendStates[ b ];
+		for(b=0; b<pBendStateCount; b++){
+			debpPropFieldBendState &bstate = pBendStates[b];
 			
-			bstate.flucDir += ( ( float )random() * rfactor * 2.0f - 1.0f ) * 0.4f;
-			if( bstate.flucDir > 1.0f ){
+			bstate.flucDir += ((float)random() * rfactor * 2.0f - 1.0f) * 0.4f;
+			if(bstate.flucDir > 1.0f){
 				bstate.flucDir = 1.0f; //-= elapsed;
 				
-			}else if( bstate.flucDir < -1.0f ){
+			}else if(bstate.flucDir < -1.0f){
 				bstate.flucDir = -1.0f; //+= elapsed;
 			}
 			
-			bstate.flucStr += ( ( float )random() * rfactor * 2.0f - 1.0f ) * 0.4f;
-			if( bstate.flucStr > 1.0f ){
+			bstate.flucStr += ((float)random() * rfactor * 2.0f - 1.0f) * 0.4f;
+			if(bstate.flucStr > 1.0f){
 				bstate.flucStr = 1.0f; //-= elapsed;
 				
-			}else if( bstate.flucStr < -1.0f ){
+			}else if(bstate.flucStr < -1.0f){
 				bstate.flucStr = -1.0f; //+= elapsed;
 			}
 		}

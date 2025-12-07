@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPCFPSetName::gdeUOCTPCFPSetName( gdeObjectClass *objectClass,
-gdeProperty *property, gdeFilePattern *filePattern, const char *newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL ),
-pFilePattern( NULL )
+gdeUOCTPCFPSetName::gdeUOCTPCFPSetName(gdeObjectClass *objectClass,
+gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
+pObjectClass(NULL),
+pProperty(NULL),
+pFilePattern(NULL)
 {
-	if( ! objectClass || ! property || ! filePattern ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property || !filePattern){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property custom file pattern set name" );
+	SetShortInfo("Object class texture property custom file pattern set name");
 	
 	pOldValue = filePattern->GetName();
 	pNewValue = newValue;
@@ -67,13 +67,13 @@ pFilePattern( NULL )
 }
 
 gdeUOCTPCFPSetName::~gdeUOCTPCFPSetName(){
-	if( pFilePattern ){
+	if(pFilePattern){
 		pFilePattern->FreeReference();
 	}
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -84,11 +84,11 @@ gdeUOCTPCFPSetName::~gdeUOCTPCFPSetName(){
 ///////////////
 
 void gdeUOCTPCFPSetName::Undo(){
-	pFilePattern->SetName( pOldValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pFilePattern->SetName(pOldValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPCFPSetName::Redo(){
-	pFilePattern->SetName( pNewValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pFilePattern->SetName(pNewValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

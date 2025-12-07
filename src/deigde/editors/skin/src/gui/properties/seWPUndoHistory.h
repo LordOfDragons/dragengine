@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPUndoHistory( igdeEnvironment &environment );
+	seWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -61,7 +61,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	/*@}*/
 };
 

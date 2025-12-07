@@ -63,16 +63,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-seLoadSaveSystem::seLoadSaveSystem( seWindowMain &windowMain ) :
-pWindowMain( windowMain )
+seLoadSaveSystem::seLoadSaveSystem(seWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	pLSSynthesizer = new seLoadSaveSynthesizer( this, windowMain.GetLogger(), LOGSOURCE );
+	pLSSynthesizer = new seLoadSaveSynthesizer(this, windowMain.GetLogger(), LOGSOURCE);
 	
 	pBuildFilePattern();
 }
 
 seLoadSaveSystem::~seLoadSaveSystem(){
-	if( pLSSynthesizer ){
+	if(pLSSynthesizer){
 		delete pLSSynthesizer;
 	}
 }
@@ -82,36 +82,36 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seSynthesizer *seLoadSaveSystem::LoadSynthesizer( const char *filename, const char *basePath ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const char *basePath){
+	if(!filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileReader::Ref fileReader;
 	seSynthesizer *synthesizer = NULL;
 	decPath path;
 	
-	if( decPath::IsUnixPathAbsolute( filename ) ){
-		path.SetFromUnix( filename );
+	if(decPath::IsUnixPathAbsolute(filename)){
+		path.SetFromUnix(filename);
 		
 	}else{
-		path.SetFromUnix( basePath );
-		path.AddUnixPath( filename );
+		path.SetFromUnix(basePath);
+		path.AddUnixPath(filename);
 	}
 	
-	fileReader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading( path ) );
+	fileReader.TakeOver(pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(path));
 	
 	try{
-		synthesizer = new seSynthesizer( &pWindowMain.GetEnvironment(), *this );
-		synthesizer->SetFilePath( filename ); // required for sources to use the right base directory
+		synthesizer = new seSynthesizer(&pWindowMain.GetEnvironment(), *this);
+		synthesizer->SetFilePath(filename); // required for sources to use the right base directory
 		
-		pLSSynthesizer->LoadSynthesizer( *synthesizer, fileReader );
+		pLSSynthesizer->LoadSynthesizer(*synthesizer, fileReader);
 		
-		synthesizer->SetChanged( false );
-		synthesizer->SetSaved( true );
+		synthesizer->SetChanged(false);
+		synthesizer->SetSaved(true);
 		
-	}catch( const deException & ){
-		if( synthesizer ){
+	}catch(const deException &){
+		if(synthesizer){
 			synthesizer->FreeReference();
 		}
 		throw;
@@ -120,24 +120,24 @@ seSynthesizer *seLoadSaveSystem::LoadSynthesizer( const char *filename, const ch
 	return synthesizer;
 }
 
-void seLoadSaveSystem::SaveSynthesizer( seSynthesizer *synthesizer, const char *filename ){
-	if( ! synthesizer || ! filename ){
-		DETHROW( deeInvalidParam );
+void seLoadSaveSystem::SaveSynthesizer(seSynthesizer *synthesizer, const char *filename){
+	if(!synthesizer || !filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileWriter *fileWriter = NULL;
 	decPath path;
 	
-	path.SetFromUnix( filename );
+	path.SetFromUnix(filename);
 	
 	try{
-		fileWriter = pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting( path );
-		pLSSynthesizer->SaveSynthesizer( *synthesizer, *fileWriter );
+		fileWriter = pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(path);
+		pLSSynthesizer->SaveSynthesizer(*synthesizer, *fileWriter);
 		
 		fileWriter->FreeReference();
 		
-	}catch( const deException & ){
-		if( fileWriter ){
+	}catch(const deException &){
+		if(fileWriter){
 			fileWriter->FreeReference();
 		}
 		throw;
@@ -155,12 +155,12 @@ void seLoadSaveSystem::pBuildFilePattern(){
 	decString pattern;
 	
 	try{
-		pattern.Format( "*%s", pLSSynthesizer->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSSynthesizer->GetName(), pattern, pLSSynthesizer->GetPattern() );
-		pFPSynthesizer.AddFilePattern( filePattern );
+		pattern.Format("*%s", pLSSynthesizer->GetPattern().GetString());
+		filePattern = new igdeFilePattern(pLSSynthesizer->GetName(), pattern, pLSSynthesizer->GetPattern());
+		pFPSynthesizer.AddFilePattern(filePattern);
 		
-	}catch( const deException & ){
-		if( filePattern ){
+	}catch(const deException &){
+		if(filePattern){
 			delete filePattern;
 		}
 		throw;

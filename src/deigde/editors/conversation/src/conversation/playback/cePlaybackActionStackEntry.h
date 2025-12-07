@@ -65,29 +65,29 @@ public:
 	/** Retrieves the parent topic or NULL if there is none. */
 	inline ceConversationTopic *GetParentTopic() const{ return pParentTopic; }
 	/** Sets the parent topic or NULL if there is none. */
-	void SetParentTopic( ceConversationTopic *topic );
+	void SetParentTopic(ceConversationTopic *topic);
 	/** Retrieves the parent action or NULL if there is none. */
 	inline ceConversationAction *GetParentAction() const{ return pParentAction; }
 	/** Sets the parent action or NULL if there is none. */
-	void SetParentAction( ceConversationAction *action );
+	void SetParentAction(ceConversationAction *action);
 	/** Retrieves the parent action list or NULL if there is none. */
 	inline const ceConversationActionList *GetParentList() const{ return pParentList; }
 	/** Sets the parent action list or NULL if there is none. */
-	void SetParentList( const ceConversationActionList *list );
+	void SetParentList(const ceConversationActionList *list);
 	
 	/** \brief Retrieves the loop condition or NULL if always true. */
 	inline ceConversationCondition *GetLoopCondition() const{ return pLoopCondition; }
 	/** \brief Sets the loop condition or NULL if always true. */
-	void SetLoopCondition( ceConversationCondition *condition );
+	void SetLoopCondition(ceConversationCondition *condition);
 	/** \brief Determines if the list of actions is looped. */
 	inline bool GetLooping() const{ return pLooping; }
 	/** \brief Sets if the list of actions is looped. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	/** Retrieves the next action index. */
 	inline int GetNextIndex() const{ return pNextIndex; }
 	/** Sets the next action index and sets the next action itself if possible. */
-	void SetNextIndex( int index );
+	void SetNextIndex(int index);
 	/** Advances the next index if not at the end of the list and sets the next action itself if possible. */
 	void AdvanceIndex();
 	/** Retrieves the next action or NULL if at the end of the current list. */

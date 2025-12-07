@@ -47,5 +47,5 @@ deoalDOctreeVisitor::~deoalDOctreeVisitor(){
 // Visiting
 /////////////
 
-void deoalDOctreeVisitor::VisitNode( deoalDOctree*, int ){
+void deoalDOctreeVisitor::VisitNode(deoalDOctree*, int){
 }

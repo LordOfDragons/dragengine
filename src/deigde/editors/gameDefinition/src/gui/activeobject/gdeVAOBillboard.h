@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAOBillboard( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCBillboard *ocbillboard );
+	gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCBillboard *ocbillboard);
 	
 protected:
 	/**
@@ -84,7 +84,7 @@ public:
 	void SelectedObjectChanged();
 	
 	/** \brief Extends. */
-	void GetExtends( decVector &minExtend, decVector &maxExtend ) const;
+	void GetExtends(decVector &minExtend, decVector &maxExtend) const;
 	/*@}*/
 	
 	

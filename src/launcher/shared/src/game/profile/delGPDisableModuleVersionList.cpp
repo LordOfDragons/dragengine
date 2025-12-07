@@ -42,7 +42,7 @@
 delGPDisableModuleVersionList::delGPDisableModuleVersionList(){
 }
 
-delGPDisableModuleVersionList::delGPDisableModuleVersionList( const delGPDisableModuleVersionList &copy ){
+delGPDisableModuleVersionList::delGPDisableModuleVersionList(const delGPDisableModuleVersionList &copy){
 	*this = copy;
 }
 
@@ -59,25 +59,25 @@ int delGPDisableModuleVersionList::GetCount() const{
 	return pList.GetCount();
 }
 
-delGPDisableModuleVersion *delGPDisableModuleVersionList::GetAt( int index ) const{
-	return ( delGPDisableModuleVersion* )pList.GetAt( index );
+delGPDisableModuleVersion *delGPDisableModuleVersionList::GetAt(int index) const{
+	return (delGPDisableModuleVersion*)pList.GetAt(index);
 }
 
 delGPDisableModuleVersion *delGPDisableModuleVersionList::GetWith(
-const char *name, const char *version ) const{
-	if( ! name ){
-		DETHROW_INFO( deeNullPointer, "name" );
+const char *name, const char *version) const{
+	if(!name){
+		DETHROW_INFO(deeNullPointer, "name");
 	}
-	if( ! version ){
-		DETHROW_INFO( deeNullPointer, "version" );
+	if(!version){
+		DETHROW_INFO(deeNullPointer, "version");
 	}
 	
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGPDisableModuleVersion * const module = ( delGPDisableModuleVersion* )pList.GetAt( i );
-		if( module->GetName() == name && module->GetVersion() == version ){
+	for(i=0; i<count; i++){
+		delGPDisableModuleVersion * const module = (delGPDisableModuleVersion*)pList.GetAt(i);
+		if(module->GetName() == name && module->GetVersion() == version){
 			return module;
 		}
 	}
@@ -85,32 +85,32 @@ const char *name, const char *version ) const{
 	return nullptr;
 }
 
-bool delGPDisableModuleVersionList::Has( delGPDisableModuleVersion *entry ) const{
-	return pList.Has( entry );
+bool delGPDisableModuleVersionList::Has(delGPDisableModuleVersion *entry) const{
+	return pList.Has(entry);
 }
 
-bool delGPDisableModuleVersionList::HasWith( const char *name, const char *version ) const{
-	return GetWith( name, version );
+bool delGPDisableModuleVersionList::HasWith(const char *name, const char *version) const{
+	return GetWith(name, version);
 }
 
-int delGPDisableModuleVersionList::IndexOf( delGPDisableModuleVersion *entry ) const{
-	return pList.IndexOf( entry );
+int delGPDisableModuleVersionList::IndexOf(delGPDisableModuleVersion *entry) const{
+	return pList.IndexOf(entry);
 }
 
-int delGPDisableModuleVersionList::IndexOfWith( const char *name, const char *version ) const{
-	if( ! name ){
-		DETHROW_INFO( deeNullPointer, "name" );
+int delGPDisableModuleVersionList::IndexOfWith(const char *name, const char *version) const{
+	if(!name){
+		DETHROW_INFO(deeNullPointer, "name");
 	}
-	if( ! version ){
-		DETHROW_INFO( deeNullPointer, "version" );
+	if(!version){
+		DETHROW_INFO(deeNullPointer, "version");
 	}
 	
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const delGPDisableModuleVersion &module = *( ( delGPDisableModuleVersion* )pList.GetAt( i ) );
-		if( module.GetName() == name && module.GetVersion() == version ){
+	for(i=0; i<count; i++){
+		const delGPDisableModuleVersion &module = *((delGPDisableModuleVersion*)pList.GetAt(i));
+		if(module.GetName() == name && module.GetVersion() == version){
 			return i;
 		}
 	}
@@ -118,24 +118,24 @@ int delGPDisableModuleVersionList::IndexOfWith( const char *name, const char *ve
 	return -1;
 }
 
-void delGPDisableModuleVersionList::Add( delGPDisableModuleVersion *entry ){
-	if( ! entry ){
-		DETHROW_INFO( deeNullPointer, "entry" );
+void delGPDisableModuleVersionList::Add(delGPDisableModuleVersion *entry){
+	if(!entry){
+		DETHROW_INFO(deeNullPointer, "entry");
 	}
-	if( HasWith( entry->GetName(), entry->GetVersion() ) ){
-		DETHROW_INFO( deeInvalidParam, "matching entry is present" );
+	if(HasWith(entry->GetName(), entry->GetVersion())){
+		DETHROW_INFO(deeInvalidParam, "matching entry is present");
 	}
 	
-	pList.Add( entry );
+	pList.Add(entry);
 }
 
-void delGPDisableModuleVersionList::Remove( delGPDisableModuleVersion *entry ){
-	const int index = IndexOf( entry );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "entry is absent" );
+void delGPDisableModuleVersionList::Remove(delGPDisableModuleVersion *entry){
+	const int index = IndexOf(entry);
+	if(index == -1){
+		DETHROW_INFO(deeInvalidParam, "entry is absent");
 	}
 	
-	pList.RemoveFrom( index );
+	pList.RemoveFrom(index);
 }
 
 void delGPDisableModuleVersionList::RemoveAll(){
@@ -148,15 +148,15 @@ void delGPDisableModuleVersionList::RemoveAll(){
 //////////////
 
 delGPDisableModuleVersionList &delGPDisableModuleVersionList::operator=(
-const delGPDisableModuleVersionList &other ){
+const delGPDisableModuleVersionList &other){
 	const decObjectList &otherList = other.pList;
 	const int count = otherList.GetCount();
 	int i;
 	
 	pList.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		pList.Add( delGPDisableModuleVersion::Ref::New( new delGPDisableModuleVersion(
+	for(i=0; i<count; i++){
+		pList.Add(delGPDisableModuleVersion::Ref::New(new delGPDisableModuleVersion(
 			*( ( delGPDisableModuleVersion* )otherList.GetAt( i ) ) ) ) );
 	}
 	

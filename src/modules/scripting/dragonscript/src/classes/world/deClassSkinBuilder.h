@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassSkinBuilder( deScriptingDragonScript &ds );
+	deClassSkinBuilder(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassSkinBuilder();
@@ -62,7 +62,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	inline dsClass *GetClassSkinPropertyNodeCombineMode() const{ return pClsSkinPropertyNodeCombineMode; }
 	/*@}*/
@@ -93,33 +93,33 @@ private:
 		dsClass *clsSkinMappedRenderableComponent;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfBuild );
-	DEF_NATFUNC( nfBuildSkin );
-	DEF_NATFUNC( nfAddMapped );
-	DEF_NATFUNC( nfAddTexture );
-	DEF_NATFUNC( nfAddPropertyValue );
-	DEF_NATFUNC( nfAddPropertyColor );
-	DEF_NATFUNC( nfAddPropertyImage );
-	DEF_NATFUNC( nfAddPropertyVideo );
-	DEF_NATFUNC( nfAddPropertyConstructed );
-	DEF_NATFUNC( nfAddPropertyMapped );
-	DEF_NATFUNC( nfAddPropertyMapped2 );
-	DEF_NATFUNC( nfSetPropertyBone );
-	DEF_NATFUNC( nfConstructedOpenContent );
-	DEF_NATFUNC( nfAddNodeImage );
-	DEF_NATFUNC( nfAddNodeText );
-	DEF_NATFUNC( nfAddNodeShape );
-	DEF_NATFUNC( nfAddNodeGroup );
-	DEF_NATFUNC( nfNextNodeAsMask );
-	DEF_NATFUNC( nfCloseNode );
+	DEF_NATFUNC(nfBuild);
+	DEF_NATFUNC(nfBuildSkin);
+	DEF_NATFUNC(nfAddMapped);
+	DEF_NATFUNC(nfAddTexture);
+	DEF_NATFUNC(nfAddPropertyValue);
+	DEF_NATFUNC(nfAddPropertyColor);
+	DEF_NATFUNC(nfAddPropertyImage);
+	DEF_NATFUNC(nfAddPropertyVideo);
+	DEF_NATFUNC(nfAddPropertyConstructed);
+	DEF_NATFUNC(nfAddPropertyMapped);
+	DEF_NATFUNC(nfAddPropertyMapped2);
+	DEF_NATFUNC(nfSetPropertyBone);
+	DEF_NATFUNC(nfConstructedOpenContent);
+	DEF_NATFUNC(nfAddNodeImage);
+	DEF_NATFUNC(nfAddNodeText);
+	DEF_NATFUNC(nfAddNodeShape);
+	DEF_NATFUNC(nfAddNodeGroup);
+	DEF_NATFUNC(nfNextNodeAsMask);
+	DEF_NATFUNC(nfCloseNode);
 #undef DEF_NATFUNC
 };
 

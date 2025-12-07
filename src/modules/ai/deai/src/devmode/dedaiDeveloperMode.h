@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create developer mode. */
-	dedaiDeveloperMode( deDEAIModule &dedai );
+	dedaiDeveloperMode(deDEAIModule &dedai);
 	
 	/** \brief Clean up developer mode. */
 	~dedaiDeveloperMode();
@@ -103,7 +103,7 @@ public:
 	 * \brief Execute command.
 	 * \returns \em true if command is recognized.
 	 */
-	bool ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	bool ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	
 	
@@ -120,17 +120,17 @@ public:
 	
 	
 private:
-	void pCmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdEnable(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowSpaces( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowSpaceLinks( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdSpaceHighlightCostType( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowBlockers( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowPath( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowPathFaces( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowSpaces(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowSpaceLinks(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdSpaceHighlightCostType(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowBlockers(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowPath(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowPathFaces(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdQuickDebug( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdQuickDebug(const decUnicodeArgumentList &command, decUnicodeString &answer);
 };
 
 #endif

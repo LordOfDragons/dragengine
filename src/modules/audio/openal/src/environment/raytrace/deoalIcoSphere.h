@@ -40,14 +40,14 @@ class deoalAudioThread;
 class deoalIcoSphere{
 public:
 	struct sFace{
-		unsigned short vertices[ 3 ];
-		unsigned short edges[ 3 ];
-		void Set( int vertex1, int vertex2, int vertex3, int edge1, int edge2, int edge3 );
+		unsigned short vertices[3];
+		unsigned short edges[3];
+		void Set(int vertex1, int vertex2, int vertex3, int edge1, int edge2, int edge3);
 	};
 	
 	struct sEdge{
-		unsigned short vertices[ 2 ];
-		void Set( int vertex1, int vertex2 );
+		unsigned short vertices[2];
+		void Set(int vertex1, int vertex2);
 	};
 	
 	
@@ -73,7 +73,7 @@ public:
 	deoalIcoSphere();
 	
 	/** \brief Create copy of ico sphere. */
-	deoalIcoSphere( const deoalIcoSphere &icosphere );
+	deoalIcoSphere(const deoalIcoSphere &icosphere);
 	
 	/** \brief Clean up ico sphere. */
 	~deoalIcoSphere();
@@ -106,7 +106,7 @@ public:
 	deoalIcoSphere Subdivide() const;
 	
 	/** \brief Debug print (blender output). */
-	void DebugPrintBlender( deoalAudioThread &audioThread ) const;
+	void DebugPrintBlender(deoalAudioThread &audioThread) const;
 	/*@}*/
 	
 	
@@ -114,7 +114,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy ico sphere. */
-	deoalIcoSphere &operator=( const deoalIcoSphere &ico );
+	deoalIcoSphere &operator=(const deoalIcoSphere &ico);
 	/*@}*/
 	
 	

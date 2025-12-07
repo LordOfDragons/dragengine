@@ -52,21 +52,21 @@ public:
 	/** Retrieves the number of entries. */
 	int GetCount() const;
 	/** Retrieves the entry at the given position. */
-	ceControllerValue *GetAt( int index ) const;
+	ceControllerValue *GetAt(int index) const;
 	/** Retrieves the entry with the given controller or -1 if not found. */
-	ceControllerValue *GetNamed( const char *controller ) const;
+	ceControllerValue *GetNamed(const char *controller) const;
 	/** Retrieves the index of the entry or -1 if not found. */
-	int IndexOf( ceControllerValue *entry ) const;
+	int IndexOf(ceControllerValue *entry) const;
 	/** Retrieves the index of the entry with the given controller or -1 if not found. */
-	int IndexOfNamed( const char *controller ) const;
+	int IndexOfNamed(const char *controller) const;
 	/** Determines if an entry exists. */
-	bool Has( ceControllerValue *entry ) const;
+	bool Has(ceControllerValue *entry) const;
 	/** Determines if an entry with the given controller exists. */
-	bool HasNamed( const char *controller ) const;
+	bool HasNamed(const char *controller) const;
 	/** Adds an entry. */
-	void Add( ceControllerValue *entry );
+	void Add(ceControllerValue *entry);
 	/** Removes an entry. */
-	void Remove( ceControllerValue *entry );
+	void Remove(ceControllerValue *entry);
 	/** Removes all entries. */
 	void RemoveAll();
 	/*@}*/
@@ -74,7 +74,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Set this list to the content of another list. */
-	ceControllerValueList &operator=( const ceControllerValueList &list );
+	ceControllerValueList &operator=(const ceControllerValueList &list);
 	/*@}*/
 };
 

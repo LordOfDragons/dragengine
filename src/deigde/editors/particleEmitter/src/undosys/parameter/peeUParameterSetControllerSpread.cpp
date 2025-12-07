@@ -41,9 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetControllerSpread::peeUParameterSetControllerSpread( peeType *type, peeParameter *parameter, peeController *newController ){
-	if( ! type || ! parameter ){
-		DETHROW( deeInvalidParam );
+peeUParameterSetControllerSpread::peeUParameterSetControllerSpread(peeType *type, peeParameter *parameter, peeController *newController){
+	if(!type || !parameter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = NULL;
@@ -51,15 +51,15 @@ peeUParameterSetControllerSpread::peeUParameterSetControllerSpread( peeType *typ
 	pOldController = NULL;
 	pNewController = NULL;
 	
-	SetShortInfo( "Set Parameter Spread Curve Controller" );
+	SetShortInfo("Set Parameter Spread Curve Controller");
 	
 	pOldController = parameter->GetControllerSpread();
-	if( pOldController ){
+	if(pOldController){
 		pOldController->AddReference();
 	}
 	
 	pNewController = newController;
-	if( pNewController ){
+	if(pNewController){
 		pNewController->AddReference();
 	}
 	
@@ -68,13 +68,13 @@ peeUParameterSetControllerSpread::peeUParameterSetControllerSpread( peeType *typ
 }
 
 peeUParameterSetControllerSpread::~peeUParameterSetControllerSpread(){
-	if( pNewController ){
+	if(pNewController){
 		pNewController->FreeReference();
 	}
-	if( pOldController ){
+	if(pOldController){
 		pOldController->FreeReference();
 	}
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -85,9 +85,9 @@ peeUParameterSetControllerSpread::~peeUParameterSetControllerSpread(){
 ///////////////
 
 void peeUParameterSetControllerSpread::Undo(){
-	pParameter->SetControllerSpread( pOldController );
+	pParameter->SetControllerSpread(pOldController);
 }
 
 void peeUParameterSetControllerSpread::Redo(){
-	pParameter->SetControllerSpread( pNewController );
+	pParameter->SetControllerSpread(pNewController);
 }

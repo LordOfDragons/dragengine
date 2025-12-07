@@ -42,25 +42,25 @@
 ////////////////////////////
 
 deoglRenderableDepthCubeMap::deoglRenderableDepthCubeMap(
-	deoglRenderThread &renderThread, int size, bool useFloat ) :
-pSize( size ),
-pUseFloat( useFloat ),
-pInUse( false ),
-pCubeMap( NULL ),
-pMemoryUsageGPU( 0 )
+	deoglRenderThread &renderThread, int size, bool useFloat) :
+pSize(size),
+pUseFloat(useFloat),
+pInUse(false),
+pCubeMap(NULL),
+pMemoryUsageGPU(0)
 {
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		pCubeMap = new deoglCubeMap( renderThread );
-		pCubeMap->SetSize( size );
-		pCubeMap->SetDepthFormat( useFloat );
+		pCubeMap = new deoglCubeMap(renderThread);
+		pCubeMap->SetSize(size);
+		pCubeMap->SetDepthFormat(useFloat);
 		pCubeMap->CreateCubeMap();
 		UpdateMemoryUsage();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -77,18 +77,18 @@ deoglRenderableDepthCubeMap::~deoglRenderableDepthCubeMap(){
 // Management
 ///////////////
 
-bool deoglRenderableDepthCubeMap::Matches( int size, bool useFloat ) const{
+bool deoglRenderableDepthCubeMap::Matches(int size, bool useFloat) const{
 	return size == pSize && useFloat == pUseFloat;
 }
 
-void deoglRenderableDepthCubeMap::SetInUse( bool inUse ){
+void deoglRenderableDepthCubeMap::SetInUse(bool inUse){
 	pInUse = inUse;
 }
 
 void deoglRenderableDepthCubeMap::UpdateMemoryUsage(){
 	//const int oldMemoryGPU = pMemoryUsageGPU;
 	
-	if( pCubeMap ){
+	if(pCubeMap){
 		pMemoryUsageGPU = pSize * pSize * 6 * 2;
 		
 	}else{
@@ -104,7 +104,7 @@ void deoglRenderableDepthCubeMap::UpdateMemoryUsage(){
 //////////////////////
 
 void deoglRenderableDepthCubeMap::pCleanUp(){
-	if( pCubeMap ){
+	if(pCubeMap){
 		delete pCubeMap;
 	}
 }

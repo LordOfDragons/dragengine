@@ -39,22 +39,22 @@
 ////////////////////////////
 
 seUPropertySetMappedComponent::seUPropertySetMappedComponent(
-	seProperty *property, int index, seMapped *newValue ) :
-pProperty( nullptr ),
-pIndex( index ),
-pOldValue( property ? property->GetMappedComponent( index ) : nullptr ),
-pNewValue( newValue )
+	seProperty *property, int index, seMapped *newValue) :
+pProperty(nullptr),
+pIndex(index),
+pOldValue(property ? property->GetMappedComponent(index) : nullptr),
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( property )
+	DEASSERT_NOTNULL(property)
 	
-	SetShortInfo( "Property Set Mapped Component" );
+	SetShortInfo("Property Set Mapped Component");
 	
 	pProperty = property;
 	property->AddReference();
 }
 
 seUPropertySetMappedComponent::~seUPropertySetMappedComponent(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -64,14 +64,14 @@ seUPropertySetMappedComponent::~seUPropertySetMappedComponent(){
 // Management
 ///////////////
 
-void seUPropertySetMappedComponent::SetNewValue( seMapped *newValue ){
+void seUPropertySetMappedComponent::SetNewValue(seMapped *newValue){
 	pNewValue = newValue;
 }
 
 void seUPropertySetMappedComponent::Undo(){
-	pProperty->SetMappedComponent( pIndex, pOldValue );
+	pProperty->SetMappedComponent(pIndex, pOldValue);
 }
 
 void seUPropertySetMappedComponent::Redo(){
-	pProperty->SetMappedComponent( pIndex, pNewValue );
+	pProperty->SetMappedComponent(pIndex, pNewValue);
 }

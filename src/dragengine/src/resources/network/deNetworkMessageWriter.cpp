@@ -38,21 +38,21 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deNetworkMessageWriter::deNetworkMessageWriter( deNetworkMessage *message, bool append ) :
-pMessage( message ),
-pPosition( 0 )
+deNetworkMessageWriter::deNetworkMessageWriter(deNetworkMessage *message, bool append) :
+pMessage(message),
+pPosition(0)
 {
-	if( ! message ){
-		DETHROW( deeInvalidParam );
+	if(!message){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! append ){
+	if(!append){
 		message->Clear();
 	}
 }
 
-deNetworkMessageWriter::deNetworkMessageWriter( const deNetworkMessageWriter &writer ) :
-pMessage( writer.pMessage ),
-pPosition( writer.pPosition ){
+deNetworkMessageWriter::deNetworkMessageWriter(const deNetworkMessageWriter &writer) :
+pMessage(writer.pMessage),
+pPosition(writer.pPosition){
 }
 
 deNetworkMessageWriter::~deNetworkMessageWriter(){
@@ -67,24 +67,24 @@ int deNetworkMessageWriter::GetPosition(){
 	return pPosition;
 }
 
-void deNetworkMessageWriter::SetPosition( int position ){
-	if( position < 0 || position > pMessage->GetDataLength() ){
-		DETHROW( deeOutOfBoundary );
+void deNetworkMessageWriter::SetPosition(int position){
+	if(position < 0 || position > pMessage->GetDataLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = position;
 }
 
-void deNetworkMessageWriter::MovePosition( int offset ){
+void deNetworkMessageWriter::MovePosition(int offset){
 	const int newPos = pPosition + offset;
-	if( newPos < 0 || newPos > pMessage->GetDataLength() ){
-		DETHROW( deeOutOfBoundary );
+	if(newPos < 0 || newPos > pMessage->GetDataLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = newPos;
 }
 
-void deNetworkMessageWriter::SetPositionEnd( int position ){
-	if( position < 0 || position > pMessage->GetDataLength() ){
-		DETHROW( deeOutOfBoundary );
+void deNetworkMessageWriter::SetPositionEnd(int position){
+	if(position < 0 || position > pMessage->GetDataLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = pMessage->GetDataLength() - position;
 }
@@ -98,22 +98,22 @@ const char *deNetworkMessageWriter::GetFilename(){
 	return "<NetworkMessage>";
 }
 
-void deNetworkMessageWriter::Write( const void *buffer, int size ){
-	if( size == 0 ){
+void deNetworkMessageWriter::Write(const void *buffer, int size){
+	if(size == 0){
 		return;
 	}
 	
-	if( ! buffer || size < 0 ){
-		DETHROW( deeInvalidParam );
+	if(!buffer || size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPosition + size > pMessage->GetDataLength() ){
-		pMessage->SetDataLength( pPosition + size );
+	if(pPosition + size > pMessage->GetDataLength()){
+		pMessage->SetDataLength(pPosition + size);
 	}
-	memcpy( pMessage->GetBuffer() + pPosition, buffer, size );
+	memcpy(pMessage->GetBuffer() + pPosition, buffer, size);
 	pPosition += size;
 }
 
 decBaseFileWriter::Ref deNetworkMessageWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New( new deNetworkMessageWriter( *this ) );
+	return decBaseFileWriter::Ref::New(new deNetworkMessageWriter(*this));
 }

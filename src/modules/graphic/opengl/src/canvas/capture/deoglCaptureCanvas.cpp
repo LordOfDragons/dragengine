@@ -47,21 +47,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCaptureCanvas::deoglCaptureCanvas( deGraphicOpenGl &ogl, deCaptureCanvas &captureCanvas ) :
-pOgl( ogl ),
-pCaptureCanvas( captureCanvas ),
+deoglCaptureCanvas::deoglCaptureCanvas(deGraphicOpenGl &ogl, deCaptureCanvas &captureCanvas) :
+pOgl(ogl),
+pCaptureCanvas(captureCanvas),
 
-pRCaptureCanvas( NULL ),
+pRCaptureCanvas(NULL),
 
-pDirtyCanvasView( true ),
-pCapturePending( false )
+pDirtyCanvasView(true),
+pCapturePending(false)
 {
-	ogl.GetCaptureCanvasList().Add( this );
+	ogl.GetCaptureCanvasList().Add(this);
 }
 
 deoglCaptureCanvas::~deoglCaptureCanvas(){
-	pOgl.GetCaptureCanvasList().Remove( this );
-	if( pRCaptureCanvas ){
+	pOgl.GetCaptureCanvasList().Remove(this);
+	if(pRCaptureCanvas){
 		pRCaptureCanvas->FreeReference();
 	}
 }
@@ -72,48 +72,48 @@ deoglCaptureCanvas::~deoglCaptureCanvas(){
 ///////////////
 
 void deoglCaptureCanvas::SyncToRender(){
-	if( ! pRCaptureCanvas ){
-		pRCaptureCanvas = new deoglRCaptureCanvas( GetOgl().GetRenderThread() );
+	if(!pRCaptureCanvas){
+		pRCaptureCanvas = new deoglRCaptureCanvas(GetOgl().GetRenderThread());
 	}
 	
-	if( pDirtyCanvasView ){
+	if(pDirtyCanvasView){
 		deCanvasView * const canvasView = pCaptureCanvas.GetCanvasView();
 		
 		pRCaptureCanvas->DropPixelBuffer();
 		
-		if( canvasView ){
-			deoglCanvasView * const oglCanvasView = ( deoglCanvasView* )canvasView->GetPeerGraphic();
+		if(canvasView){
+			deoglCanvasView * const oglCanvasView = (deoglCanvasView*)canvasView->GetPeerGraphic();
 			oglCanvasView->SyncToRender(); // required otherwise it does not work... strange
-			pRCaptureCanvas->SetCanvasView( oglCanvasView->GetRCanvasView() );
+			pRCaptureCanvas->SetCanvasView(oglCanvasView->GetRCanvasView());
 			
 		}else{
-			pRCaptureCanvas->SetCanvasView( NULL );
+			pRCaptureCanvas->SetCanvasView(NULL);
 		}
 		
 		pDirtyCanvasView = false;
 	}
 	
 	// handle capturing if enabled
-	if( ! pCaptureCanvas.GetCapture() ){
+	if(!pCaptureCanvas.GetCapture()){
 		return;
 	}
 	
 	deImage * const image = pCaptureCanvas.GetImage();
-	if( ! image ){
+	if(!image){
 		return;
 	}
 	
-	if( pCapturePending ){
-		if( ! pRCaptureCanvas->GetCapturePending() ){
-			if( image->GetData() ){ // in case the user forgot to retain the image data
+	if(pCapturePending){
+		if(!pRCaptureCanvas->GetCapturePending()){
+			if(image->GetData()){ // in case the user forgot to retain the image data
 				const deoglPixelBuffer &pixelBuffer = *pRCaptureCanvas->GetPixelBuffer();
-				memcpy( image->GetData(), pixelBuffer.GetPointer(), pixelBuffer.GetImageSize() );
+				memcpy(image->GetData(), pixelBuffer.GetPointer(), pixelBuffer.GetImageSize());
 				image->NotifyImageDataChanged();
 			}
 			
 			pRCaptureCanvas->DropPixelBuffer(); // save memory
 			
-			pCaptureCanvas.SetCapture( false );
+			pCaptureCanvas.SetCapture(false);
 			pCapturePending = false;
 		}
 		
@@ -121,13 +121,13 @@ void deoglCaptureCanvas::SyncToRender(){
 		// ensure canvas view is synchronized. required for rendering dynamic canvas view not
 		// part of a render window
 		deCanvasView * const canvasView = pCaptureCanvas.GetCanvasView();
-		if( canvasView ){
-			( ( deoglCanvasView* )canvasView->GetPeerGraphic() )->SyncToRender();
+		if(canvasView){
+			((deoglCanvasView*)canvasView->GetPeerGraphic())->SyncToRender();
 		}
 		
 		// now start capturing
-		pRCaptureCanvas->StartCapture( image->GetWidth(), image->GetHeight(),
-			image->GetComponentCount(), image->GetBitCount() );
+		pRCaptureCanvas->StartCapture(image->GetWidth(), image->GetHeight(),
+			image->GetComponentCount(), image->GetBitCount());
 		pCapturePending = true;
 	}
 }

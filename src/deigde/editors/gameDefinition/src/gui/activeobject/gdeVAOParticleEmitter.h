@@ -62,8 +62,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object particleEmitter. */
-	gdeVAOParticleEmitter( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCParticleEmitter *ocemitter );
+	gdeVAOParticleEmitter(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCParticleEmitter *ocemitter);
 	
 protected:
 	/**

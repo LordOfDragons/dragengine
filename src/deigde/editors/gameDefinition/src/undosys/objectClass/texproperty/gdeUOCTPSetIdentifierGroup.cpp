@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCTPSetIdentifierGroup::gdeUOCTPSetIdentifierGroup(
-gdeObjectClass *objectClass, gdeProperty *property, const char *newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeObjectClass *objectClass, gdeProperty *property, const char *newValue) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property set identifier group" );
+	SetShortInfo("Object class texture property set identifier group");
 	
 	pOldValue = property->GetIdentifierGroup();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pProperty( NULL )
 }
 
 gdeUOCTPSetIdentifierGroup::~gdeUOCTPSetIdentifierGroup(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCTPSetIdentifierGroup::~gdeUOCTPSetIdentifierGroup(){
 ///////////////
 
 void gdeUOCTPSetIdentifierGroup::Undo(){
-	pProperty->SetIdentifierGroup( pOldValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetIdentifierGroup(pOldValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPSetIdentifierGroup::Redo(){
-	pProperty->SetIdentifierGroup( pNewValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetIdentifierGroup(pNewValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSSWave( deScriptingDragonScript &ds );
+	deClassSSWave(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSSWave();
@@ -80,16 +80,16 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Source or \em NULL if deleted or myself is \em NULL. */
-	deSynthesizerSourceWave *GetSource( dsRealObject *myself ) const;
+	deSynthesizerSourceWave *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer( dsRealObject *myself, deSynthesizer *synthesizer );
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource( dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source );
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source);
 	
 	inline dsClass *GetClassSSWaveTarget() const{ return pClsSSWaveTarget; }
 	inline dsClass *GetClassSSWaveType() const{ return pClsSSWaveType; }
@@ -111,20 +111,20 @@ private:
 		dsClass *clsSSWaveType;
 	};
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetType );
-	DEF_NATFUNC( nfSetMinFrequency );
-	DEF_NATFUNC( nfSetMaxFrequency );
+	DEF_NATFUNC(nfSetType);
+	DEF_NATFUNC(nfSetMinFrequency);
+	DEF_NATFUNC(nfSetMaxFrequency);
 #undef DEF_NATFUNC
 };
 

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetPropertyName::gdeUOCCameraSetPropertyName( gdeObjectClass *objectClass,
-gdeOCCamera *camera, const char *newValue ) :
-pObjectClass( NULL ),
-pCamera( NULL )
+gdeUOCCameraSetPropertyName::gdeUOCCameraSetPropertyName(gdeObjectClass *objectClass,
+gdeOCCamera *camera, const char *newValue) :
+pObjectClass(NULL),
+pCamera(NULL)
 {
-	if( ! objectClass || ! camera ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !camera){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Camera set property name" );
+	SetShortInfo("Camera set property name");
 	
 	pOldValue = camera->GetPropName();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pCamera( NULL )
 }
 
 gdeUOCCameraSetPropertyName::~gdeUOCCameraSetPropertyName(){
-	if( pCamera ){
+	if(pCamera){
 		pCamera->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCCameraSetPropertyName::~gdeUOCCameraSetPropertyName(){
 ///////////////
 
 void gdeUOCCameraSetPropertyName::Undo(){
-	pCamera->SetPropName( pOldValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetPropName(pOldValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }
 
 void gdeUOCCameraSetPropertyName::Redo(){
-	pCamera->SetPropName( pNewValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetPropName(pNewValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }

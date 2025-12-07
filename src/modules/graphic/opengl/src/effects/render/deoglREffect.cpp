@@ -40,9 +40,9 @@
 // constructor, destructor
 ////////////////////////////
 
-deoglREffect::deoglREffect( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pEnabled( true ){
+deoglREffect::deoglREffect(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pEnabled(true){
 }
 
 deoglREffect::~deoglREffect(){
@@ -53,7 +53,7 @@ deoglREffect::~deoglREffect(){
 // Management
 ///////////////
 
-void deoglREffect::SetEnabled( bool enabled ){
+void deoglREffect::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 

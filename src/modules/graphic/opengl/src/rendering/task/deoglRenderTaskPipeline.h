@@ -82,16 +82,16 @@ public:
 	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Set pipeline. */
-	void SetPipeline( const deoglPipeline *pipeline );
+	void SetPipeline(const deoglPipeline *pipeline);
 	
 	/** Number of render task textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Render task texture at index. */
-	deoglRenderTaskTexture *GetTextureAt( int index ) const;
+	deoglRenderTaskTexture *GetTextureAt(int index) const;
 	
 	/** Add render task texture. */
-	deoglRenderTaskTexture *AddTexture( const deoglRenderTaskSharedTexture *texture );
+	deoglRenderTaskTexture *AddTexture(const deoglRenderTaskSharedTexture *texture);
 	/*@}*/
 };
 

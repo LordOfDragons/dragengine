@@ -64,8 +64,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object light. */
-	gdeVAOLight( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCLight *oclight );
+	gdeVAOLight(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCLight *oclight);
 	
 protected:
 	/**
@@ -86,7 +86,7 @@ public:
 	inline gdeOCLight *GetOCLight() const{ return pOCLight; }
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();
@@ -101,7 +101,7 @@ public:
 	void SelectedObjectChanged();
 	
 	/** \brief Ignore component during shadow casting. */
-	void ShadowIgnoreComponent( deComponent *component );
+	void ShadowIgnoreComponent(deComponent *component);
 	/*@}*/
 	
 	

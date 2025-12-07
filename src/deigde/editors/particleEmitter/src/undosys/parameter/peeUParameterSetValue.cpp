@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetValue::peeUParameterSetValue( peeType *type, peeParameter *parameter, float newValue ){
-	if( ! type || ! parameter ){
-		DETHROW( deeInvalidParam );
+peeUParameterSetValue::peeUParameterSetValue(peeType *type, peeParameter *parameter, float newValue){
+	if(!type || !parameter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = NULL;
 	pParameter = parameter;
 	
-	SetShortInfo( "Set Parameter Value" );
+	SetShortInfo("Set Parameter Value");
 	
 	pOldValue = parameter->GetValue();
 	pNewValue = newValue;
@@ -58,7 +58,7 @@ peeUParameterSetValue::peeUParameterSetValue( peeType *type, peeParameter *param
 }
 
 peeUParameterSetValue::~peeUParameterSetValue(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -69,9 +69,9 @@ peeUParameterSetValue::~peeUParameterSetValue(){
 ///////////////
 
 void peeUParameterSetValue::Undo(){
-	pParameter->SetValue( pOldValue );
+	pParameter->SetValue(pOldValue);
 }
 
 void peeUParameterSetValue::Redo(){
-	pParameter->SetValue( pNewValue );
+	pParameter->SetValue(pNewValue);
 }

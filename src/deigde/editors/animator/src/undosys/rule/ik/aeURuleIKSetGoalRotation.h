@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleIKSetGoalRotation( aeRuleInverseKinematic *rule, const decVector &newRot );
+	aeURuleIKSetGoalRotation(aeRuleInverseKinematic *rule, const decVector &newRot);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleIKSetGoalRotation();

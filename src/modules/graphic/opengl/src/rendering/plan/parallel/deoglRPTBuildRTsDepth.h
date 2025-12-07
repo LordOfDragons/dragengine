@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTBuildRTsDepth( deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask );
+	deoglRPTBuildRTsDepth(deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTBuildRTsDepth();
@@ -77,8 +77,8 @@ public:
 	
 	
 private:
-	void pSolid( bool xray );
-	void pSolidOutline( bool xray );
+	void pSolid(bool xray);
+	void pSolidOutline(bool xray);
 };
 
 #endif

@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassCut::gdeMAObjectClassCut( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Cut Object Class",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class" )
+gdeMAObjectClassCut::gdeMAObjectClassCut(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "Cut Object Class",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"Cut object class")
 {
 }
 
@@ -59,14 +59,14 @@ gdeBaseAction( windowMain, "Cut Object Class",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassCut::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo *gdeMAObjectClassCut::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass ){
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
 		return NULL;
 	}
 	
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if( ! objectClass ){
+	if(!objectClass){
 		return NULL;
 	}
 	
@@ -74,16 +74,16 @@ igdeUndo *gdeMAObjectClassCut::OnAction( gdeGameDefinition &gameDefinition ){
 	
 	pWindowMain.GetClipboard().Set(gdeClipboardDataObjectClass::Ref::NewWith(clipObjectClass));
 	
-	return new gdeURemoveObjectClass( &gameDefinition, objectClass );
+	return new gdeURemoveObjectClass(&gameDefinition, objectClass);
 }
 
 void gdeMAObjectClassCut::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
+		&& gameDefinition->GetActiveObjectClass() != NULL);
 }

@@ -39,8 +39,8 @@
 ////////////////////////////
 
 deOS::deOS() :
-pEngine( NULL ),
-pAppActive( false ){
+pEngine(NULL),
+pAppActive(false){
 }
 
 deOS::~deOS(){
@@ -51,18 +51,18 @@ deOS::~deOS(){
 // Management
 ///////////////
 
-void deOS::SetEngine( deEngine *engine ){
+void deOS::SetEngine(deEngine *engine){
 	pEngine = engine;
 }
 
-void deOS::SetAppActive( bool active ){
-	if( active == pAppActive ){
+void deOS::SetAppActive(bool active){
+	if(active == pAppActive){
 		return;
 	}
 	
 	pAppActive = active;
 	
-	if( pEngine ){
+	if(pEngine){
 		pEngine->GetInputSystem()->AppActivationChanged();
 		pEngine->GetScriptingSystem()->OnAppActivate();
 	}

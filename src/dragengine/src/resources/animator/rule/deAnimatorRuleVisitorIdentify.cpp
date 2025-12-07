@@ -52,8 +52,8 @@
 ////////////////////////////
 
 deAnimatorRuleVisitorIdentify::deAnimatorRuleVisitorIdentify() :
-pRule( NULL ),
-pType( ertUnknown ){
+pRule(NULL),
+pType(ertUnknown){
 }
 
 deAnimatorRuleVisitorIdentify::~deAnimatorRuleVisitorIdentify(){
@@ -65,94 +65,94 @@ deAnimatorRuleVisitorIdentify::~deAnimatorRuleVisitorIdentify(){
 ///////////////
 
 deAnimatorRuleAnimation &deAnimatorRuleVisitorIdentify::CastToAnimation() const{
-	if( pType != ertAnimation ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertAnimation){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleAnimation* )pRule );
+	return *((deAnimatorRuleAnimation*)pRule);
 }
 
 deAnimatorRuleAnimationDifference &deAnimatorRuleVisitorIdentify::CastToAnimationDifference() const{
-	if( pType != ertAnimationDifference ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertAnimationDifference){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleAnimationDifference* )pRule );
+	return *((deAnimatorRuleAnimationDifference*)pRule);
 }
 
 deAnimatorRuleAnimationSelect &deAnimatorRuleVisitorIdentify::CastToAnimationSelect() const{
-	if( pType != ertAnimationSelect ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertAnimationSelect){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleAnimationSelect* )pRule );
+	return *((deAnimatorRuleAnimationSelect*)pRule);
 }
 
 deAnimatorRuleBoneTransformator &deAnimatorRuleVisitorIdentify::CastToBoneTransformator() const{
-	if( pType != ertBoneTransformator ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertBoneTransformator){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleBoneTransformator* )pRule );
+	return *((deAnimatorRuleBoneTransformator*)pRule);
 }
 
 deAnimatorRuleInverseKinematic &deAnimatorRuleVisitorIdentify::CastToInverseKinematic() const{
-	if( pType != ertInverseKinematic ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertInverseKinematic){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleInverseKinematic* )pRule );
+	return *((deAnimatorRuleInverseKinematic*)pRule);
 }
 
 deAnimatorRuleStateManipulator &deAnimatorRuleVisitorIdentify::CastToStateManipulator() const{
-	if( pType != ertStateManipulator ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertStateManipulator){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleStateManipulator* )pRule );
+	return *((deAnimatorRuleStateManipulator*)pRule);
 }
 
 deAnimatorRuleStateSnapshot &deAnimatorRuleVisitorIdentify::CastToStateSnapshot() const{
-	if( pType != ertStateSnapshot ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertStateSnapshot){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleStateSnapshot* )pRule );
+	return *((deAnimatorRuleStateSnapshot*)pRule);
 }
 
 deAnimatorRuleForeignState &deAnimatorRuleVisitorIdentify::CastToForeignState() const{
-	if( pType != ertForeignState ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertForeignState){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleForeignState* )pRule );
+	return *((deAnimatorRuleForeignState*)pRule);
 }
 
 deAnimatorRuleGroup &deAnimatorRuleVisitorIdentify::CastToGroup() const{
-	if( pType != ertGroup ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertGroup){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleGroup* )pRule );
+	return *((deAnimatorRuleGroup*)pRule);
 }
 
 deAnimatorRuleSubAnimator &deAnimatorRuleVisitorIdentify::CastToSubAnimator() const{
-	if( pType != ertSubAnimator ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertSubAnimator){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleSubAnimator* )pRule );
+	return *((deAnimatorRuleSubAnimator*)pRule);
 }
 
 deAnimatorRuleTrackTo &deAnimatorRuleVisitorIdentify::CastToTrackTo() const{
-	if( pType != ertTrackTo ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertTrackTo){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleTrackTo* )pRule );
+	return *((deAnimatorRuleTrackTo*)pRule);
 }
 
 deAnimatorRuleLimit &deAnimatorRuleVisitorIdentify::CastToLimit() const{
-	if( pType != ertLimit ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertLimit){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleLimit* )pRule );
+	return *((deAnimatorRuleLimit*)pRule);
 }
 
 deAnimatorRuleMirror &deAnimatorRuleVisitorIdentify::CastToMirror() const{
-	if( pType != ertMirror ){
-		DETHROW( deeInvalidParam );
+	if(pType != ertMirror){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deAnimatorRuleMirror* )pRule );
+	return *((deAnimatorRuleMirror*)pRule);
 }
 
 void deAnimatorRuleVisitorIdentify::Reset(){
@@ -165,72 +165,72 @@ void deAnimatorRuleVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deAnimatorRuleVisitorIdentify::VisitRule( deAnimatorRule &rule ){
+void deAnimatorRuleVisitorIdentify::VisitRule(deAnimatorRule &rule){
 	pRule = &rule;
 	pType = ertUnknown;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitAnimation( deAnimatorRuleAnimation &rule ){
+void deAnimatorRuleVisitorIdentify::VisitAnimation(deAnimatorRuleAnimation &rule){
 	pRule = &rule;
 	pType = ertAnimation;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitAnimationDifference( deAnimatorRuleAnimationDifference &rule ){
+void deAnimatorRuleVisitorIdentify::VisitAnimationDifference(deAnimatorRuleAnimationDifference &rule){
 	pRule = &rule;
 	pType = ertAnimationDifference;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitAnimationSelect( deAnimatorRuleAnimationSelect &rule ){
+void deAnimatorRuleVisitorIdentify::VisitAnimationSelect(deAnimatorRuleAnimationSelect &rule){
 	pRule = &rule;
 	pType = ertAnimationSelect;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitBoneTransformator( deAnimatorRuleBoneTransformator &rule ){
+void deAnimatorRuleVisitorIdentify::VisitBoneTransformator(deAnimatorRuleBoneTransformator &rule){
 	pRule = &rule;
 	pType = ertBoneTransformator;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitInverseKinematic( deAnimatorRuleInverseKinematic &rule ){
+void deAnimatorRuleVisitorIdentify::VisitInverseKinematic(deAnimatorRuleInverseKinematic &rule){
 	pRule = &rule;
 	pType = ertInverseKinematic;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitStateManipulator( deAnimatorRuleStateManipulator &rule ){
+void deAnimatorRuleVisitorIdentify::VisitStateManipulator(deAnimatorRuleStateManipulator &rule){
 	pRule = &rule;
 	pType = ertStateManipulator;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitStateSnapshot( deAnimatorRuleStateSnapshot &rule ){
+void deAnimatorRuleVisitorIdentify::VisitStateSnapshot(deAnimatorRuleStateSnapshot &rule){
 	pRule = &rule;
 	pType = ertStateSnapshot;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitForeignState( deAnimatorRuleForeignState &rule ){
+void deAnimatorRuleVisitorIdentify::VisitForeignState(deAnimatorRuleForeignState &rule){
 	pRule = &rule;
 	pType = ertForeignState;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitGroup( deAnimatorRuleGroup &rule ){
+void deAnimatorRuleVisitorIdentify::VisitGroup(deAnimatorRuleGroup &rule){
 	pRule = &rule;
 	pType = ertGroup;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitSubAnimator( deAnimatorRuleSubAnimator &rule ){
+void deAnimatorRuleVisitorIdentify::VisitSubAnimator(deAnimatorRuleSubAnimator &rule){
 	pRule = &rule;
 	pType = ertSubAnimator;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitTrackTo( deAnimatorRuleTrackTo &rule ){
+void deAnimatorRuleVisitorIdentify::VisitTrackTo(deAnimatorRuleTrackTo &rule){
 	pRule = &rule;
 	pType = ertTrackTo;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitLimit( deAnimatorRuleLimit &rule ){
+void deAnimatorRuleVisitorIdentify::VisitLimit(deAnimatorRuleLimit &rule){
 	pRule = &rule;
 	pType = ertLimit;
 }
 
-void deAnimatorRuleVisitorIdentify::VisitMirror( deAnimatorRuleMirror &rule ){
+void deAnimatorRuleVisitorIdentify::VisitMirror(deAnimatorRuleMirror &rule){
 	pRule = &rule;
 	pType = ertMirror;
 }

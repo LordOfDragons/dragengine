@@ -63,73 +63,73 @@ public:
 	inline const char *GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Index of state. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index of state. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** Model index. */
 	inline int GetModelIndex() const{ return pModelIndex; }
 	
 	/** Set model index. */
-	void SetModelIndex( int index );
+	void SetModelIndex(int index);
 	
 	/** Weight. */
 	inline float GetWeight() const{ return pWeight; }
 	
 	/** Set weight. */
-	void SetWeight( float weight );
+	void SetWeight(float weight);
 	
 	/** State is protected. */
 	inline bool GetProtected() const{ return pProtect; }
 	
 	/** Set if state is protected. */
-	void SetProtected( bool prot );
+	void SetProtected(bool prot);
 	
 	/** State is dirty. */
 	inline bool GetDirty() const{ return pDirty; }
 	
 	/** Set if state is dirty. */
-	void SetDirty( bool dirty );
+	void SetDirty(bool dirty);
 	
 	/** Copy another state to this state. */
-	void SetFrom( const dearVPSState &state );
+	void SetFrom(const dearVPSState &state);
 	
 	/** Copy component state to this state. */
-	void SetFrom( const deComponent &component );
+	void SetFrom(const deComponent &component);
 	
 	/** Copy component state to this state. */
-	void SetFrom( const dearComponentVPSState &state );
+	void SetFrom(const dearComponentVPSState &state);
 	
 	/** Update state by blending it with an empty state. */
-	void BlendWithDefault( deAnimatorRule::eBlendModes blendMode,
-		float blendFactor, bool enableWeight );
+	void BlendWithDefault(deAnimatorRule::eBlendModes blendMode,
+		float blendFactor, bool enableWeight);
 	
 	/** Update state by blending it with an incoming state. */
-	void BlendWith( const dearVPSState &state, deAnimatorRule::eBlendModes blendMode,
-		float blendFactor, bool enableWeight );
+	void BlendWith(const dearVPSState &state, deAnimatorRule::eBlendModes blendMode,
+		float blendFactor, bool enableWeight);
 	
 	/** Update state by blending it with an incoming state. */
-	void BlendWith( const dearAnimationVPSState &state, deAnimatorRule::eBlendModes blendMode,
-		float blendFactor, bool enableWeight );
+	void BlendWith(const dearAnimationVPSState &state, deAnimatorRule::eBlendModes blendMode,
+		float blendFactor, bool enableWeight);
 	
 	/** Update state by blending it with an incoming state. */
-	void BlendWith( const deComponent &component, deAnimatorRule::eBlendModes blendMode,
-		float blendFactor, bool enableWeight );
+	void BlendWith(const deComponent &component, deAnimatorRule::eBlendModes blendMode,
+		float blendFactor, bool enableWeight);
 	
 	/** Update state by blending it with an incoming state. */
-	void BlendWith( const dearComponentVPSState &state, deAnimatorRule::eBlendModes blendMode,
-		float blendFactor, bool enableWeight );
+	void BlendWith(const dearComponentVPSState &state, deAnimatorRule::eBlendModes blendMode,
+		float blendFactor, bool enableWeight);
 	
 	/** Update state by blending it with an incoming state. */
-	void BlendWith( float weight, deAnimatorRule::eBlendModes blendMode,
-		float blendFactor, bool enableWeight );
+	void BlendWith(float weight, deAnimatorRule::eBlendModes blendMode,
+		float blendFactor, bool enableWeight);
 	
 	/** Full copy. */
-	dearVPSState &operator=( const dearVPSState &state );
+	dearVPSState &operator=(const dearVPSState &state);
 	/*@}*/
 };
 

@@ -58,8 +58,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeXMLGameProject::igdeXMLGameProject( deLogger *logger ) :
-igdeBaseXML( logger, LOGGING_NAME ){
+igdeXMLGameProject::igdeXMLGameProject(deLogger *logger) :
+igdeBaseXML(logger, LOGGING_NAME){
 }
 
 igdeXMLGameProject::~igdeXMLGameProject(){
@@ -70,28 +70,28 @@ igdeXMLGameProject::~igdeXMLGameProject(){
 // Loading and Saving
 ///////////////////////
 
-void igdeXMLGameProject::Load( decBaseFileReader &reader, igdeGameProject &project ){
+void igdeXMLGameProject::Load(decBaseFileReader &reader, igdeGameProject &project){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser parser( GetLogger() );
-	parser.ParseXml( &reader, xmlDoc );
+	decXmlParser parser(GetLogger());
+	parser.ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "gameProject" ){
-		DETHROW( deeInvalidParam );
+	if(!root || root->GetName() != "gameProject"){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadProject( *root, project );
+	pReadProject(*root, project);
 }
 
-void igdeXMLGameProject::Save( decBaseFileWriter &writer, const igdeGameProject &project ){
-	decXmlWriter xmlWriter( &writer );
+void igdeXMLGameProject::Save(decBaseFileWriter &writer, const igdeGameProject &project){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
-	pWriteProject( xmlWriter, project );
+	pWriteProject(xmlWriter, project);
 }
 
 
@@ -99,40 +99,40 @@ void igdeXMLGameProject::Save( decBaseFileWriter &writer, const igdeGameProject 
 // Private Functions
 //////////////////////
 
-void igdeXMLGameProject::pReadProject( const decXmlElementTag &root, igdeGameProject &project ){
+void igdeXMLGameProject::pReadProject(const decXmlElementTag &root, igdeGameProject &project){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
+	for(i=0; i<elementCount; i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "name" ) == 0 ){
-				project.SetName( GetCDataString( *tag ) );
+		if(tag){
+			if(strcmp(tag->GetName(), "name") == 0){
+				project.SetName(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "description" ) == 0 ){
-				project.SetDescription( ReadMultilineString( *tag ) );
+			}else if(strcmp(tag->GetName(), "description") == 0){
+				project.SetDescription(ReadMultilineString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "dataDirectory" ) == 0 ){
-				project.SetPathData( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "dataDirectory") == 0){
+				project.SetPathData(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "cacheDirectory" ) == 0 ){
-				project.SetPathCache( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "cacheDirectory") == 0){
+				project.SetPathCache(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "baseGameDefinition" ) == 0 ){
-				project.GetBaseGameDefinitionIDList().Add( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "baseGameDefinition") == 0){
+				project.GetBaseGameDefinitionIDList().Add(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "projectGameDefinition" ) == 0 ){
-				project.SetPathProjectGameDefinition( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "projectGameDefinition") == 0){
+				project.SetPathProjectGameDefinition(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "scriptModule" ) == 0 ){
-				project.SetScriptModule( GetCDataString( *tag ) );
-				if( HasAttribute( *tag, "version" ) ){
-					project.SetScriptModuleVersion( GetAttributeString( *tag, "version" ) );
+			}else if(strcmp(tag->GetName(), "scriptModule") == 0){
+				project.SetScriptModule(GetCDataString(*tag));
+				if(HasAttribute(*tag, "version")){
+					project.SetScriptModuleVersion(GetAttributeString(*tag, "version"));
 				}
 				
 			}else{
-				LogWarnUnknownTag( root, *tag );
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
 	}
@@ -140,31 +140,31 @@ void igdeXMLGameProject::pReadProject( const decXmlElementTag &root, igdeGamePro
 
 
 
-void igdeXMLGameProject::pWriteProject( decXmlWriter &writer, const igdeGameProject &project ){
-	writer.WriteOpeningTag( "gameProject" );
+void igdeXMLGameProject::pWriteProject(decXmlWriter &writer, const igdeGameProject &project){
+	writer.WriteOpeningTag("gameProject");
 	
-	writer.WriteDataTagString( "name", project.GetName() );
-	WriteMultilineString( writer, "description", project.GetDescription() );
-	writer.WriteDataTagString( "dataDirectory", project.GetPathData() );
-	writer.WriteDataTagString( "cacheDirectory", project.GetPathCache() );
+	writer.WriteDataTagString("name", project.GetName());
+	WriteMultilineString(writer, "description", project.GetDescription());
+	writer.WriteDataTagString("dataDirectory", project.GetPathData());
+	writer.WriteDataTagString("cacheDirectory", project.GetPathCache());
 	
 	const decStringList &baseGameDefList = project.GetBaseGameDefinitionIDList();
 	const int baseGameDefCount = baseGameDefList.GetCount();
 	int i;
 	
-	for( i=0; i<baseGameDefCount; i++ ){
-		writer.WriteDataTagString( "baseGameDefinition", baseGameDefList.GetAt( i ) );
+	for(i=0; i<baseGameDefCount; i++){
+		writer.WriteDataTagString("baseGameDefinition", baseGameDefList.GetAt(i));
 	}
 	
-	writer.WriteDataTagString( "projectGameDefinition", project.GetPathProjectGameDefinition() );
+	writer.WriteDataTagString("projectGameDefinition", project.GetPathProjectGameDefinition());
 	
-	writer.WriteOpeningTagStart( "scriptModule" );
-	if( ! project.GetScriptModuleVersion().IsEmpty() ){
-		writer.WriteAttributeString( "version", project.GetScriptModuleVersion() );
+	writer.WriteOpeningTagStart("scriptModule");
+	if(!project.GetScriptModuleVersion().IsEmpty()){
+		writer.WriteAttributeString("version", project.GetScriptModuleVersion());
 	}
-	writer.WriteOpeningTagEnd( false, false );
-	writer.WriteTextString( project.GetScriptModule() );
-	writer.WriteClosingTag( "scriptModule", false );
+	writer.WriteOpeningTagEnd(false, false);
+	writer.WriteTextString(project.GetScriptModule());
+	writer.WriteClosingTag("scriptModule", false);
 	
-	writer.WriteClosingTag( "gameProject" );
+	writer.WriteClosingTag("gameProject");
 }

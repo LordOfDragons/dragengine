@@ -39,10 +39,10 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCanvasCanvasView::deCanvasCanvasView( deCanvasManager *manager ) :
-deCanvas( manager ),
-pRepeatX( 1 ),
-pRepeatY( 1 ){
+deCanvasCanvasView::deCanvasCanvasView(deCanvasManager *manager) :
+deCanvas(manager),
+pRepeatX(1),
+pRepeatY(1){
 }
 
 deCanvasCanvasView::~deCanvasCanvasView(){
@@ -53,8 +53,8 @@ deCanvasCanvasView::~deCanvasCanvasView(){
 // Management
 ///////////////
 
-void deCanvasCanvasView::SetCanvasView( deCanvasView *canvasView ){
-	if( canvasView == pCanvasView ){
+void deCanvasCanvasView::SetCanvasView(deCanvasView *canvasView){
+	if(canvasView == pCanvasView){
 		return;
 	}
 	
@@ -62,12 +62,12 @@ void deCanvasCanvasView::SetCanvasView( deCanvasView *canvasView ){
 	NotifyContentChanged();
 }
 
-void deCanvasCanvasView::SetRepeatX( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void deCanvasCanvasView::SetRepeatX(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pRepeatX ){
+	if(count == pRepeatX){
 		return;
 	}
 	
@@ -75,12 +75,12 @@ void deCanvasCanvasView::SetRepeatX( int count ){
 	NotifyContentChanged();
 }
 
-void deCanvasCanvasView::SetRepeatY( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void deCanvasCanvasView::SetRepeatY(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pRepeatY ){
+	if(count == pRepeatY){
 		return;
 	}
 	
@@ -93,6 +93,6 @@ void deCanvasCanvasView::SetRepeatY( int count ){
 // Visiting
 /////////////
 
-void deCanvasCanvasView::Visit( deCanvasVisitor &visitor ){
-	visitor.VisitCanvasView( *this );
+void deCanvasCanvasView::Visit(deCanvasVisitor &visitor){
+	visitor.VisitCanvasView(*this);
 }

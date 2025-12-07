@@ -49,32 +49,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSCAmbient::deoglSCAmbient( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglSCAmbient::deoglSCAmbient(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pStaticMap( NULL ),
-pStaticCubeMap( NULL ),
-pLastUseStatic( 0 ),
-pHasStatic( false ),
+pStaticMap(NULL),
+pStaticCubeMap(NULL),
+pLastUseStatic(0),
+pHasStatic(false),
 
-pDynamicMap( NULL ),
-pDynamicCubeMap( NULL ),
-pLastUseDynamic( 0 ),
-pHasDynamic( false ),
-pDirtyDynamic( true ),
+pDynamicMap(NULL),
+pDynamicCubeMap(NULL),
+pLastUseDynamic(0),
+pHasDynamic(false),
+pDirtyDynamic(true),
 
-pTemporaryMap( NULL ),
-pTemporaryCubeMap( NULL ),
+pTemporaryMap(NULL),
+pTemporaryCubeMap(NULL),
 
-pLastSizeStatic( 0 ),
-pNextSizeStatic( 0 ),
-pLastSizeDynamic( 0 ),
-pNextSizeDynamic( 0 ),
+pLastSizeStatic(0),
+pNextSizeStatic(0),
+pLastSizeDynamic(0),
+pNextSizeDynamic(0),
 
-pMemUseStaMap( renderThread.GetMemoryManager().GetConsumption().shadow.ambientStaticMap ),
-pMemUseStaCube( renderThread.GetMemoryManager().GetConsumption().shadow.ambientStaticCube ),
-pMemUseDynMap( renderThread.GetMemoryManager().GetConsumption().shadow.ambientDynamicMap ),
-pMemUseDynCube( renderThread.GetMemoryManager().GetConsumption().shadow.ambientDynamicCube ){
+pMemUseStaMap(renderThread.GetMemoryManager().GetConsumption().shadow.ambientStaticMap),
+pMemUseStaCube(renderThread.GetMemoryManager().GetConsumption().shadow.ambientStaticCube),
+pMemUseDynMap(renderThread.GetMemoryManager().GetConsumption().shadow.ambientDynamicMap),
+pMemUseDynCube(renderThread.GetMemoryManager().GetConsumption().shadow.ambientDynamicCube){
 }
 
 deoglSCAmbient::~deoglSCAmbient(){
@@ -86,25 +86,25 @@ deoglSCAmbient::~deoglSCAmbient(){
 // Management
 ///////////////
 
-deoglTexture *deoglSCAmbient::ObtainStaticMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglTexture *deoglSCAmbient::ObtainStaticMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pStaticMap ){
-		if( pStaticMap->GetWidth() == size && pStaticMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+	if(pStaticMap){
+		if(pStaticMap->GetWidth() == size && pStaticMap->GetFormat()->GetIsDepthFloat() == useFloat){
 			return pStaticMap;
 		}
 		
-		if( pStaticMap ){
+		if(pStaticMap){
 			delete pStaticMap;
 			pStaticMap = NULL;
 		}
 	}
 	
-	pStaticMap = new deoglTexture( pRenderThread );
-	pStaticMap->SetDepthFormat( false, useFloat );
-	pStaticMap->SetSize( size, size );
+	pStaticMap = new deoglTexture(pRenderThread);
+	pStaticMap->SetDepthFormat(false, useFloat);
+	pStaticMap->SetSize(size, size);
 	pStaticMap->CreateTexture();
 	pMemUseStaMap = pStaticMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
@@ -114,25 +114,25 @@ deoglTexture *deoglSCAmbient::ObtainStaticMapWithSize( int size, bool useFloat )
 	return pStaticMap;
 }
 
-deoglCubeMap *deoglSCAmbient::ObtainStaticCubeMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglCubeMap *deoglSCAmbient::ObtainStaticCubeMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pStaticCubeMap ){
-		if( pStaticCubeMap->GetSize() == size && pStaticCubeMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+	if(pStaticCubeMap){
+		if(pStaticCubeMap->GetSize() == size && pStaticCubeMap->GetFormat()->GetIsDepthFloat() == useFloat){
 			return pStaticCubeMap;
 		}
 		
-		if( pStaticCubeMap ){
+		if(pStaticCubeMap){
 			delete pStaticCubeMap;
 			pStaticCubeMap = NULL;
 		}
 	}
 	
-	pStaticCubeMap = new deoglCubeMap( pRenderThread );
-	pStaticCubeMap->SetSize( size );
-	pStaticCubeMap->SetDepthFormat( useFloat );
+	pStaticCubeMap = new deoglCubeMap(pRenderThread);
+	pStaticCubeMap->SetSize(size);
+	pStaticCubeMap->SetDepthFormat(useFloat);
 	pStaticCubeMap->CreateCubeMap();
 	pMemUseStaCube = pStaticCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
@@ -146,11 +146,11 @@ void deoglSCAmbient::DropStatic(){
 	pMemUseStaMap = 0;
 	pMemUseStaCube = 0;
 	
-	if( pStaticMap ){
+	if(pStaticMap){
 		delete pStaticMap;
 		pStaticMap = NULL;
 	}
-	if( pStaticCubeMap ){
+	if(pStaticCubeMap){
 		delete pStaticCubeMap;
 		pStaticCubeMap = NULL;
 	}
@@ -169,26 +169,26 @@ void deoglSCAmbient::ResetLastUseStatic(){
 
 
 
-deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	
-	if( pDynamicMap ){
-		if( pDynamicMap->GetWidth() == size && pDynamicMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+	if(pDynamicMap){
+		if(pDynamicMap->GetWidth() == size && pDynamicMap->GetFormat()->GetIsDepthFloat() == useFloat){
 			return pDynamicMap;
 		}
 		
-		if( pDynamicMap ){
+		if(pDynamicMap){
 			delete pDynamicMap;
 			pDynamicMap = NULL;
 		}
 	}
 	
-	pDynamicMap = new deoglTexture( pRenderThread );
-	pDynamicMap->SetDepthFormat( false, useFloat );
-	pDynamicMap->SetSize( size, size );
+	pDynamicMap = new deoglTexture(pRenderThread);
+	pDynamicMap->SetDepthFormat(false, useFloat);
+	pDynamicMap->SetSize(size, size);
 	pDynamicMap->CreateTexture();
 	pMemUseDynMap = pDynamicMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
@@ -199,25 +199,25 @@ deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size, bool useFloat 
 	return pDynamicMap;
 }
 
-deoglCubeMap *deoglSCAmbient::ObtainDynamicCubeMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglCubeMap *deoglSCAmbient::ObtainDynamicCubeMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pDynamicCubeMap ){
-		if( pDynamicCubeMap->GetSize() == size && pDynamicCubeMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+	if(pDynamicCubeMap){
+		if(pDynamicCubeMap->GetSize() == size && pDynamicCubeMap->GetFormat()->GetIsDepthFloat() == useFloat){
 			return pDynamicCubeMap;
 		}
 		
-		if( pDynamicCubeMap ){
+		if(pDynamicCubeMap){
 			delete pDynamicCubeMap;
 			pDynamicCubeMap = NULL;
 		}
 	}
 	
-	pDynamicCubeMap = new deoglCubeMap( pRenderThread );
-	pDynamicCubeMap->SetSize( size );
-	pDynamicCubeMap->SetDepthFormat( useFloat );
+	pDynamicCubeMap = new deoglCubeMap(pRenderThread);
+	pDynamicCubeMap->SetSize(size);
+	pDynamicCubeMap->SetDepthFormat(useFloat);
 	pDynamicCubeMap->CreateCubeMap();
 	pMemUseDynCube = pDynamicCubeMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
@@ -232,11 +232,11 @@ void deoglSCAmbient::DropDynamic(){
 	pMemUseDynMap = 0;
 	pMemUseDynCube = 0;
 	
-	if( pDynamicMap ){
+	if(pDynamicMap){
 		delete pDynamicMap;
 		pDynamicMap = NULL;
 	}
-	if( pDynamicCubeMap ){
+	if(pDynamicCubeMap){
 		delete pDynamicCubeMap;
 		pDynamicCubeMap = NULL;
 	}
@@ -254,19 +254,19 @@ void deoglSCAmbient::ResetLastUseDynamic(){
 	pLastUseDynamic = 0;
 }
 
-void deoglSCAmbient::SetDirtyDynamic( bool dirty ){
+void deoglSCAmbient::SetDirtyDynamic(bool dirty){
 	pDirtyDynamic = dirty;
 }
 
 
 
-deoglRenderableDepthTexture *deoglSCAmbient::ObtainTemporaryMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglRenderableDepthTexture *deoglSCAmbient::ObtainTemporaryMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTemporaryMap ){
-		if( pTemporaryMap->GetWidth() == size && pTemporaryMap->GetUseFloat() == useFloat ){
+	if(pTemporaryMap){
+		if(pTemporaryMap->GetWidth() == size && pTemporaryMap->GetUseFloat() == useFloat){
 			return pTemporaryMap;
 		}
 		
@@ -274,49 +274,49 @@ deoglRenderableDepthTexture *deoglSCAmbient::ObtainTemporaryMapWithSize( int siz
 	}
 	
 	pTemporaryMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
-		.GetTextureWith( size, size, false, useFloat );
+		.GetTextureWith(size, size, false, useFloat);
 	
 	return pTemporaryMap;
 }
 
-deoglRenderableDepthCubeMap *deoglSCAmbient::ObtainTemporaryCubeMapWithSize( int size, bool useFloat ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+deoglRenderableDepthCubeMap *deoglSCAmbient::ObtainTemporaryCubeMapWithSize(int size, bool useFloat){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTemporaryCubeMap ){
-		if( pTemporaryCubeMap->GetSize() == size && pTemporaryCubeMap->GetUseFloat() == useFloat ){
+	if(pTemporaryCubeMap){
+		if(pTemporaryCubeMap->GetSize() == size && pTemporaryCubeMap->GetUseFloat() == useFloat){
 			return pTemporaryCubeMap;
 		}
 		DropTemporary();
 	}
 	
-	pTemporaryCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size, useFloat );
+	pTemporaryCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith(size, useFloat);
 	
 	return pTemporaryCubeMap;
 }
 
 void deoglSCAmbient::DropTemporary(){
-	if( pTemporaryMap ){
-		pTemporaryMap->SetInUse( false );
+	if(pTemporaryMap){
+		pTemporaryMap->SetInUse(false);
 		pTemporaryMap = NULL;
 	}
-	if( pTemporaryCubeMap ){
-		pTemporaryCubeMap->SetInUse( false );
+	if(pTemporaryCubeMap){
+		pTemporaryCubeMap->SetInUse(false);
 		pTemporaryCubeMap = NULL;
 	}
 }
 
 
 
-void deoglSCAmbient::SetLargestNextSizeStatic( int size ){
-	if( size > pNextSizeStatic ){
+void deoglSCAmbient::SetLargestNextSizeStatic(int size){
+	if(size > pNextSizeStatic){
 		pNextSizeStatic = size;
 	}
 }
 
-void deoglSCAmbient::SetLargestNextSizeDynamic( int size ){
-	if( size > pNextSizeDynamic ){
+void deoglSCAmbient::SetLargestNextSizeDynamic(int size){
+	if(size > pNextSizeDynamic){
 		pNextSizeDynamic = size;
 	}
 }
@@ -324,19 +324,19 @@ void deoglSCAmbient::SetLargestNextSizeDynamic( int size ){
 
 
 void deoglSCAmbient::Update(){
-	if( pHasStatic && pLastUseStatic++ > 5 ){ // for the time being 5 frames
+	if(pHasStatic && pLastUseStatic++ > 5){ // for the time being 5 frames
 		DropStatic();
 	}
-	if( pHasDynamic && pLastUseDynamic++ > 5 ){ // for the time being 5 frames
+	if(pHasDynamic && pLastUseDynamic++ > 5){ // for the time being 5 frames
 		DropDynamic();
 	}
 	
-	if( pNextSizeStatic > 0 ){
+	if(pNextSizeStatic > 0){
 		pLastSizeStatic = pNextSizeStatic;
 		pNextSizeStatic = 0;
 	}
 	
-	if( pNextSizeDynamic > 0 ){
+	if(pNextSizeDynamic > 0){
 		pLastSizeDynamic = pNextSizeDynamic;
 		pNextSizeDynamic = 0;
 	}

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create scrollbox. */
-	igdeContainerScroll( igdeEnvironment &environment, bool canScrollX = true, bool canScrollY = true );
+	igdeContainerScroll(igdeEnvironment &environment, bool canScrollX = true, bool canScrollY = true);
 	
 	
 	
@@ -76,7 +76,7 @@ public:
 	
 	
 	/** \brief Add child. */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	/*@}*/
 	
 	

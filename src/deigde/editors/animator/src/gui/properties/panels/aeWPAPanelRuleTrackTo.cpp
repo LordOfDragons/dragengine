@@ -75,92 +75,92 @@ protected:
 	aeWPAPanelRuleTrackTo &pPanel;
 	
 public:
-	cBaseComboBoxListener( aeWPAPanelRuleTrackTo &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(aeWPAPanelRuleTrackTo &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleTrackTo * const rule = ( aeRuleTrackTo* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleTrackTo * const rule = (aeRuleTrackTo*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, animator, rule ) ));
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, animator, rule)));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator *animator, aeRuleTrackTo *rule ) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleTrackTo *rule) = 0;
 };
 
 
 class cComboTrackBone : public cBaseComboBoxListener{
 public:
-	cComboTrackBone( aeWPAPanelRuleTrackTo &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboTrackBone(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
 		return rule->GetTrackBone() != comboBox->GetText()
-			? new aeURuleTrackToSetTrackBone( rule, comboBox->GetText() ) : NULL;
+			? new aeURuleTrackToSetTrackBone(rule, comboBox->GetText()) : NULL;
 	}
 };
 
 class cComboTrackAxis : public cBaseComboBoxListener{
 public:
-	cComboTrackAxis( aeWPAPanelRuleTrackTo &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboTrackAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule ){
-		if( ! comboBox->GetSelectedItem() ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
-		deAnimatorRuleTrackTo::eTrackAxis value = ( deAnimatorRuleTrackTo::eTrackAxis )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		return rule->GetTrackAxis() != value ? new aeURuleTrackToSetTrackAxis( rule, value ) : NULL;
+		deAnimatorRuleTrackTo::eTrackAxis value = (deAnimatorRuleTrackTo::eTrackAxis)
+			(intptr_t)comboBox->GetSelectedItem()->GetData();
+		return rule->GetTrackAxis() != value ? new aeURuleTrackToSetTrackAxis(rule, value) : NULL;
 	}
 };
 
 class cComboUpAxis : public cBaseComboBoxListener{
 public:
-	cComboUpAxis( aeWPAPanelRuleTrackTo &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboUpAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule ){
-		if( ! comboBox->GetSelectedItem() ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
-		deAnimatorRuleTrackTo::eTrackAxis value = ( deAnimatorRuleTrackTo::eTrackAxis )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		return rule->GetUpAxis() != value ? new aeURuleTrackToSetUpAxis( rule, value ) : NULL;
+		deAnimatorRuleTrackTo::eTrackAxis value = (deAnimatorRuleTrackTo::eTrackAxis)
+			(intptr_t)comboBox->GetSelectedItem()->GetData();
+		return rule->GetUpAxis() != value ? new aeURuleTrackToSetUpAxis(rule, value) : NULL;
 	}
 };
 
 class cComboUpTarget : public cBaseComboBoxListener{
 public:
-	cComboUpTarget( aeWPAPanelRuleTrackTo &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboUpTarget(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule ){
-		if( ! comboBox->GetSelectedItem() ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
-		deAnimatorRuleTrackTo::eUpTarget value = ( deAnimatorRuleTrackTo::eUpTarget )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		return rule->GetUpTarget() != value ? new aeURuleTrackToSetUpTarget( rule, value ) : NULL;
+		deAnimatorRuleTrackTo::eUpTarget value = (deAnimatorRuleTrackTo::eUpTarget)
+			(intptr_t)comboBox->GetSelectedItem()->GetData();
+		return rule->GetUpTarget() != value ? new aeURuleTrackToSetUpTarget(rule, value) : NULL;
 	}
 };
 
 class cComboLockedAxis : public cBaseComboBoxListener{
 public:
-	cComboLockedAxis( aeWPAPanelRuleTrackTo &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboLockedAxis(aeWPAPanelRuleTrackTo &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule ){
-		if( ! comboBox->GetSelectedItem() ){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleTrackTo *rule){
+		if(!comboBox->GetSelectedItem()){
 			return NULL;
 		}
 		
-		deAnimatorRuleTrackTo::eLockedAxis value = ( deAnimatorRuleTrackTo::eLockedAxis )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		return rule->GetLockedAxis() != value ? new aeURuleTrackToSetLockedAxis( rule, value ) : NULL;
+		deAnimatorRuleTrackTo::eLockedAxis value = (deAnimatorRuleTrackTo::eLockedAxis)
+			(intptr_t)comboBox->GetSelectedItem()->GetData();
+		return rule->GetLockedAxis() != value ? new aeURuleTrackToSetLockedAxis(rule, value) : NULL;
 	}
 };
 
@@ -174,57 +174,57 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAPanelRuleTrackTo::aeWPAPanelRuleTrackTo( aeWPRule &wpRule ) :
-aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertTrackTo )
+aeWPAPanelRuleTrackTo::aeWPAPanelRuleTrackTo(aeWPRule &wpRule) :
+aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertTrackTo)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Track To:" );
+	helper.GroupBox(*this, groupBox, "Track To:");
 	
-	helper.ComboBoxFilter( groupBox, "Track Bone:", true, "Name of the bone to track to",
-		pCBTrackBone, new cComboTrackBone( *this ) );
+	helper.ComboBoxFilter(groupBox, "Track Bone:", true, "Name of the bone to track to",
+		pCBTrackBone, new cComboTrackBone(*this));
 	pCBTrackBone->SetDefaultSorter();
 	
-	helper.ComboBox( groupBox, "Track Axis:", "Axis to point at the target",
-		pCBTrackAxis, new cComboTrackAxis( *this ) );
-	pCBTrackAxis->AddItem( "Positive X", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaPosX );
-	pCBTrackAxis->AddItem( "Positive Y", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaPosY );
-	pCBTrackAxis->AddItem( "Positive Z", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaPosZ );
-	pCBTrackAxis->AddItem( "Negative X", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaNegX );
-	pCBTrackAxis->AddItem( "Negative Y", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaNegY );
-	pCBTrackAxis->AddItem( "Negative Z", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaNegZ );
+	helper.ComboBox(groupBox, "Track Axis:", "Axis to point at the target",
+		pCBTrackAxis, new cComboTrackAxis(*this));
+	pCBTrackAxis->AddItem("Positive X", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosX);
+	pCBTrackAxis->AddItem("Positive Y", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosY);
+	pCBTrackAxis->AddItem("Positive Z", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosZ);
+	pCBTrackAxis->AddItem("Negative X", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegX);
+	pCBTrackAxis->AddItem("Negative Y", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegY);
+	pCBTrackAxis->AddItem("Negative Z", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegZ);
 	
-	helper.ComboBox( groupBox, "Up Axis:", "Up axis to align with the target up axis",
-		pCBUpAxis, new cComboUpAxis( *this ) );
-	pCBUpAxis->AddItem( "Positive X", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaPosX );
-	pCBUpAxis->AddItem( "Positive Y", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaPosY );
-	pCBUpAxis->AddItem( "Positive Z", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaPosZ );
-	pCBUpAxis->AddItem( "Negative X", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaNegX );
-	pCBUpAxis->AddItem( "Negative Y", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaNegY );
-	pCBUpAxis->AddItem( "Negative Z", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::etaNegZ );
+	helper.ComboBox(groupBox, "Up Axis:", "Up axis to align with the target up axis",
+		pCBUpAxis, new cComboUpAxis(*this));
+	pCBUpAxis->AddItem("Positive X", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosX);
+	pCBUpAxis->AddItem("Positive Y", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosY);
+	pCBUpAxis->AddItem("Positive Z", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaPosZ);
+	pCBUpAxis->AddItem("Negative X", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegX);
+	pCBUpAxis->AddItem("Negative Y", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegY);
+	pCBUpAxis->AddItem("Negative Z", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::etaNegZ);
 	
-	helper.ComboBox( groupBox, "Up Target:", "Target axis to align the up axis with",
-		pCBUpTarget, new cComboUpTarget( *this ) );
-	pCBUpTarget->AddItem( "World X-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutWorldX );
-	pCBUpTarget->AddItem( "World Y-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutWorldY );
-	pCBUpTarget->AddItem( "World Z-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutWorldZ );
-	pCBUpTarget->AddItem( "Component X-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutComponentX );
-	pCBUpTarget->AddItem( "Component Y-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutComponentY );
-	pCBUpTarget->AddItem( "Component Z-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutComponentZ );
-	pCBUpTarget->AddItem( "Track Bone X-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutTrackBoneX );
-	pCBUpTarget->AddItem( "Track Bone Y-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutTrackBoneY );
-	pCBUpTarget->AddItem( "Track Bone Z-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutTrackBoneZ );
-	pCBUpTarget->AddItem( "Controller", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::eutController );
+	helper.ComboBox(groupBox, "Up Target:", "Target axis to align the up axis with",
+		pCBUpTarget, new cComboUpTarget(*this));
+	pCBUpTarget->AddItem("World X-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldX);
+	pCBUpTarget->AddItem("World Y-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldY);
+	pCBUpTarget->AddItem("World Z-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutWorldZ);
+	pCBUpTarget->AddItem("Component X-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentX);
+	pCBUpTarget->AddItem("Component Y-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentY);
+	pCBUpTarget->AddItem("Component Z-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentZ);
+	pCBUpTarget->AddItem("Track Bone X-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneX);
+	pCBUpTarget->AddItem("Track Bone Y-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneY);
+	pCBUpTarget->AddItem("Track Bone Z-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutTrackBoneZ);
+	pCBUpTarget->AddItem("Controller", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::eutController);
 	
-	helper.ComboBox( groupBox, "Lock Axis:", "Axis to lock",
-		pCBLockedAxis, new cComboLockedAxis( *this ) );
-	pCBLockedAxis->AddItem( "None", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::elaNone );
-	pCBLockedAxis->AddItem( "X-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::elaX );
-	pCBLockedAxis->AddItem( "Y-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::elaY );
-	pCBLockedAxis->AddItem( "Z-Axis", NULL, ( void* )( intptr_t )deAnimatorRuleTrackTo::elaZ );
+	helper.ComboBox(groupBox, "Lock Axis:", "Axis to lock",
+		pCBLockedAxis, new cComboLockedAxis(*this));
+	pCBLockedAxis->AddItem("None", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::elaNone);
+	pCBLockedAxis->AddItem("X-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::elaX);
+	pCBLockedAxis->AddItem("Y-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::elaY);
+	pCBLockedAxis->AddItem("Z-Axis", NULL, (void*)(intptr_t)deAnimatorRuleTrackTo::elaZ);
 }
 
 aeWPAPanelRuleTrackTo::~aeWPAPanelRuleTrackTo(){
@@ -238,61 +238,61 @@ aeWPAPanelRuleTrackTo::~aeWPAPanelRuleTrackTo(){
 void aeWPAPanelRuleTrackTo::UpdateRigBoneList(){
 	aeWPAPanelRule::UpdateRigBoneList();
 	
-	const decString selection( pCBTrackBone->GetText() );
+	const decString selection(pCBTrackBone->GetText());
 	
 	pCBTrackBone->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deRig * const rig = GetAnimator()->GetEngineRig();
-		if( rig ){
+		if(rig){
 			const int count = rig->GetBoneCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBTrackBone->AddItem( rig->GetBoneAt( i ).GetName() );
+			for(i=0; i<count; i++){
+				pCBTrackBone->AddItem(rig->GetBoneAt(i).GetName());
 			}
 		}
 		pCBTrackBone->SortItems();
 	}
 	
 	pCBTrackBone->StoreFilterItems();
-	pCBTrackBone->SetText( selection );
+	pCBTrackBone->SetText(selection);
 }
 
 void aeWPAPanelRuleTrackTo::UpdateRule(){
 	aeWPAPanelRule::UpdateRule();
 	
-	const aeRuleTrackTo * const rule = ( aeRuleTrackTo* )GetRule();
+	const aeRuleTrackTo * const rule = (aeRuleTrackTo*)GetRule();
 	
-	if( rule ){
-		pCBTrackBone->SetText( rule->GetTrackBone() );
-		pCBTrackAxis->SetSelectionWithData( ( void* )( intptr_t )rule->GetTrackAxis() );
-		pCBUpAxis->SetSelectionWithData( ( void* )( intptr_t )rule->GetUpAxis() );
-		pCBUpTarget->SetSelectionWithData( ( void* )( intptr_t )rule->GetUpTarget() );
-		pCBLockedAxis->SetSelectionWithData( ( void* )( intptr_t )rule->GetLockedAxis() );
+	if(rule){
+		pCBTrackBone->SetText(rule->GetTrackBone());
+		pCBTrackAxis->SetSelectionWithData((void*)(intptr_t)rule->GetTrackAxis());
+		pCBUpAxis->SetSelectionWithData((void*)(intptr_t)rule->GetUpAxis());
+		pCBUpTarget->SetSelectionWithData((void*)(intptr_t)rule->GetUpTarget());
+		pCBLockedAxis->SetSelectionWithData((void*)(intptr_t)rule->GetLockedAxis());
 		
 	}else{
 		pCBTrackBone->ClearText();
-		pCBTrackAxis->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleTrackTo::etaPosZ );
-		pCBUpAxis->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleTrackTo::etaPosY );
-		pCBUpTarget->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleTrackTo::eutComponentY );
-		pCBLockedAxis->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleTrackTo::elaNone );
+		pCBTrackAxis->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleTrackTo::etaPosZ);
+		pCBUpAxis->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleTrackTo::etaPosY);
+		pCBUpTarget->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleTrackTo::eutComponentY);
+		pCBLockedAxis->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleTrackTo::elaNone);
 	}
 	
 	const bool enabled = rule;
-	pCBTrackBone->SetEnabled( enabled );
-	pCBTrackAxis->SetEnabled( enabled );
-	pCBUpAxis->SetEnabled( enabled );
-	pCBUpTarget->SetEnabled( enabled );
-	pCBLockedAxis->SetEnabled( enabled );
+	pCBTrackBone->SetEnabled(enabled);
+	pCBTrackAxis->SetEnabled(enabled);
+	pCBUpAxis->SetEnabled(enabled);
+	pCBUpTarget->SetEnabled(enabled);
+	pCBLockedAxis->SetEnabled(enabled);
 }
 
 void aeWPAPanelRuleTrackTo::UpdateTargetList(){
-	aeRuleTrackTo *rule = ( aeRuleTrackTo* )GetRule();
+	aeRuleTrackTo *rule = (aeRuleTrackTo*)GetRule();
 	
 	aeWPAPanelRule::UpdateTargetList();
 	
-	if( rule ){
-		AddTarget( "Position", &rule->GetTargetPosition() );
-		AddTarget( "Up", &rule->GetTargetUp() );
+	if(rule){
+		AddTarget("Position", &rule->GetTargetPosition());
+		AddTarget("Up", &rule->GetTargetUp());
 	}
 }

@@ -43,22 +43,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRLumimeter::deoglRLumimeter( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglRLumimeter::deoglRLumimeter(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pParentWorld( NULL ),
-pOctreeNode( NULL ),
-pDirtyOctree( true ),
+pParentWorld(NULL),
+pOctreeNode(NULL),
+pDirtyOctree(true),
 
-pLuminance( 0.0f ),
-pDirtyMeasurements( true ),
+pLuminance(0.0f),
+pDirtyMeasurements(true),
 
-pWorldMarkedRemove( false ){
-	LEAK_CHECK_CREATE( renderThread, Lumimeter );
+pWorldMarkedRemove(false){
+	LEAK_CHECK_CREATE(renderThread, Lumimeter);
 }
 
 deoglRLumimeter::~deoglRLumimeter(){
-	LEAK_CHECK_FREE( pRenderThread, Lumimeter );
+	LEAK_CHECK_FREE(pRenderThread, Lumimeter);
 	RemoveAllLights();
 }
 
@@ -73,32 +73,32 @@ void deoglRLumimeter::MarkDirty(){
 
 
 
-void deoglRLumimeter::SetParentWorld( deoglRWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void deoglRLumimeter::SetParentWorld(deoglRWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
 	pParentWorld = parentWorld;
 	
-	if( pOctreeNode ){
-		pOctreeNode->RemoveLumimeter( this );
+	if(pOctreeNode){
+		pOctreeNode->RemoveLumimeter(this);
 		pOctreeNode = NULL;
 	}
 }
 
-void deoglRLumimeter::SetOctreeNode( deoglWorldOctree *octreeNode ){
+void deoglRLumimeter::SetOctreeNode(deoglWorldOctree *octreeNode){
 	pOctreeNode = octreeNode;
 }
 
 void deoglRLumimeter::UpdateOctreeNode(){
-	if( pParentWorld ){
-		pParentWorld->GetOctree().InsertLumimeterIntoTree( this );
+	if(pParentWorld){
+		pParentWorld->GetOctree().InsertLumimeterIntoTree(this);
 	}
 }
 
 
 
-void deoglRLumimeter::SetPosition( const decDVector &position ){
+void deoglRLumimeter::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
@@ -111,17 +111,17 @@ void deoglRLumimeter::UpdateMeasurements(){
 	
 	RemoveAllLights();
 	
-	if( pParentWorld ){
+	if(pParentWorld){
 		const int lightCount = pParentWorld->GetLightCount();
 		
-		for( i=0; i<lightCount; i++ ){
-			deoglRLight * const light = pParentWorld->GetLightAt( i );
+		for(i=0; i<lightCount; i++){
+			deoglRLight * const light = pParentWorld->GetLightAt(i);
 			
 			const float cutOffDist = light->GetRange();
-			const decVector difference = ( light->GetMatrix().GetPosition() - pPosition ).ToVector();
+			const decVector difference = (light->GetMatrix().GetPosition() - pPosition).ToVector();
 			
-			if( difference * difference <= cutOffDist * cutOffDist ){
-				AddLight( light );
+			if(difference * difference <= cutOffDist * cutOffDist){
+				AddLight(light);
 			}
 		}
 	}
@@ -131,14 +131,14 @@ void deoglRLumimeter::UpdateMeasurements(){
 	pColor.SetZero();
 	
 	const int lightCount = pLights.GetCount();
-	for( i=0; i<lightCount; i++ ){
-		const deoglRLight &light = *pLights.GetAt( i );
+	for(i=0; i<lightCount; i++){
+		const deoglRLight &light = *pLights.GetAt(i);
 		
-		const float distance = ( float )( ( light.GetMatrix().GetPosition() - pPosition ).Length() );
+		const float distance = (float)((light.GetMatrix().GetPosition() - pPosition).Length());
 		
-		const float attenuation = decMath::max( ( light.GetDampingCoefficient() /
-			( 1.0f + light.GetAttenuationCoefficient() * distance * distance ) ) +
-				light.GetDampingThreshold(), 0.0f );
+		const float attenuation = decMath::max((light.GetDampingCoefficient() /
+			(1.0f + light.GetAttenuationCoefficient() * distance * distance)) +
+				light.GetDampingThreshold(), 0.0f);
 		
 		const float intensity = light.GetIntensity() * attenuation;
 		pLuminance += intensity;
@@ -168,20 +168,20 @@ int deoglRLumimeter::GetLightCount() const{
 	return pLights.GetCount();
 }
 
-deoglRLight *deoglRLumimeter::GetLightAt( int index ) const{
-	return pLights.GetAt( index );
+deoglRLight *deoglRLumimeter::GetLightAt(int index) const{
+	return pLights.GetAt(index);
 }
 
-void deoglRLumimeter::AddLight( deoglRLight *light ){
-	if( ! light ){
-		DETHROW( deeInvalidParam );
+void deoglRLumimeter::AddLight(deoglRLight *light){
+	if(!light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLights.Add( light );
+	pLights.Add(light);
 }
 
-void deoglRLumimeter::RemoveLight( deoglRLight *light ){
-	pLights.Remove( light );
+void deoglRLumimeter::RemoveLight(deoglRLight *light){
+	pLights.Remove(light);
 }
 
 void deoglRLumimeter::RemoveAllLights(){
@@ -193,6 +193,6 @@ void deoglRLumimeter::RemoveAllLights(){
 // Render world usage
 ///////////////////////
 
-void deoglRLumimeter::SetWorldMarkedRemove( bool marked ){
+void deoglRLumimeter::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }

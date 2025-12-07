@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPWireframeMode( deGraphicOpenGl &ogl );
+	deoglPWireframeMode(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
 	virtual ~deoglPWireframeMode();
 	/*@}*/
@@ -47,7 +47,7 @@ public:
 	/** Retrieves the current value. */
 	virtual bool GetParameterBool();
 	/** Sets the current value. */
-	virtual void SetParameterBool( bool value );
+	virtual void SetParameterBool(bool value);
 	/*@}*/
 };
 

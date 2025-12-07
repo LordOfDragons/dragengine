@@ -41,24 +41,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetCurve::seULinkSetCurve( seLink *link, const decCurveBezier &newCurve ) :
-pLink( NULL )
+seULinkSetCurve::seULinkSetCurve(seLink *link, const decCurveBezier &newCurve) :
+pLink(NULL)
 {
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldCurve = link->GetCurve();
 	pNewCurve = newCurve;
 	
-	SetShortInfo( "Set Link Curve" );
+	SetShortInfo("Set Link Curve");
 	
 	pLink = link;
 	pLink->AddReference();
 }
 
 seULinkSetCurve::~seULinkSetCurve(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -68,7 +68,7 @@ seULinkSetCurve::~seULinkSetCurve(){
 // Management
 ///////////////
 
-void seULinkSetCurve::SetNewCurve( const decCurveBezier &curve ){
+void seULinkSetCurve::SetNewCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }
 
@@ -78,12 +78,12 @@ void seULinkSetCurve::Undo(){
 	pLink->GetCurve() = pOldCurve;
 	pLink->UpdateCurve();
 	
-	pLink->GetSynthesizer()->NotifyLinkChanged( pLink );
+	pLink->GetSynthesizer()->NotifyLinkChanged(pLink);
 }
 
 void seULinkSetCurve::Redo(){
 	pLink->GetCurve() = pNewCurve;
 	pLink->UpdateCurve();
 	
-	pLink->GetSynthesizer()->NotifyLinkChanged( pLink );
+	pLink->GetSynthesizer()->NotifyLinkChanged(pLink);
 }

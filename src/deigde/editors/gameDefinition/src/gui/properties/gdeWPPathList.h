@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPPathList( igdeUIHelper &helper, int rows, const char *description );
+	gdeWPPathList(igdeUIHelper &helper, int rows, const char *description);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -77,13 +77,13 @@ public:
 	inline const decStringList *GetPathList() const{ return pPathList; }
 	
 	/** \brief Set path list to edit. */
-	void SetPathList( const decStringList *pathList );
+	void SetPathList(const decStringList *pathList);
 	
 	/** \brief Undo system or NULL. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	
@@ -94,7 +94,7 @@ public:
 	void UpdateList();
 	
 	/** \brief Select path. */
-	void SelectPath( const decString &path );
+	void SelectPath(const decString &path);
 	
 	
 	
@@ -109,7 +109,7 @@ public:
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet( const decStringList &paths ) = 0;
+	virtual igdeUndo *UndoSet(const decStringList &paths) = 0;
 	/*@}*/
 	
 	

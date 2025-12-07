@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaEnablePos::aeUSetRuleFStaEnablePos( aeRuleForeignState *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaEnablePos::aeUSetRuleFStaEnablePos(aeRuleForeignState *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -48,9 +48,9 @@ aeUSetRuleFStaEnablePos::aeUSetRuleFStaEnablePos( aeRuleForeignState *rule ){
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Set bone rotator rule enable position" );
+		SetShortInfo("Set bone rotator rule enable position");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ aeUSetRuleFStaEnablePos::~aeUSetRuleFStaEnablePos(){
 ///////////////
 
 void aeUSetRuleFStaEnablePos::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeUSetRuleFStaEnablePos::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 
@@ -79,5 +79,5 @@ void aeUSetRuleFStaEnablePos::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnablePos::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

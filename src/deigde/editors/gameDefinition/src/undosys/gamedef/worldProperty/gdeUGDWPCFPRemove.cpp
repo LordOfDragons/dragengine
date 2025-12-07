@@ -41,20 +41,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPCFPRemove::gdeUGDWPCFPRemove( gdeGameDefinition *gamedef,
-gdeProperty *property, gdeFilePattern *filePattern ) :
-pGameDefinition( NULL ),
-pProperty( NULL ),
-pFilePattern( NULL )
+gdeUGDWPCFPRemove::gdeUGDWPCFPRemove(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeFilePattern *filePattern) :
+pGameDefinition(NULL),
+pProperty(NULL),
+pFilePattern(NULL)
 {
-	if( ! gamedef || ! property || ! filePattern ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property || !filePattern){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! property->GetCustomPathPattern().Has( filePattern ) ){
-		DETHROW( deeInvalidParam );
+	if(!property->GetCustomPathPattern().Has(filePattern)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property remove custom file pattern" );
+	SetShortInfo("Game definition property remove custom file pattern");
 	
 	pGameDefinition = gamedef;
 	gamedef->AddReference();
@@ -67,13 +67,13 @@ pFilePattern( NULL )
 }
 
 gdeUGDWPCFPRemove::~gdeUGDWPCFPRemove(){
-	if( pFilePattern ){
+	if(pFilePattern){
 		pFilePattern->FreeReference();
 	}
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -84,11 +84,11 @@ gdeUGDWPCFPRemove::~gdeUGDWPCFPRemove(){
 ///////////////
 
 void gdeUGDWPCFPRemove::Undo(){
-	pProperty->GetCustomPathPattern().Add( pFilePattern );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->GetCustomPathPattern().Add(pFilePattern);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }
 
 void gdeUGDWPCFPRemove::Redo(){
-	pProperty->GetCustomPathPattern().Remove( pFilePattern );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->GetCustomPathPattern().Remove(pFilePattern);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }

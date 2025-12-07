@@ -48,21 +48,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsConnection::dedsConnection( deScriptingDragonScript &ds, deConnection *connection ) :
-pDS( ds ),
-pConnection( connection ),
-pValCB( NULL ),
-pHasCB( false )
+dedsConnection::dedsConnection(deScriptingDragonScript &ds, deConnection *connection) :
+pDS(ds),
+pConnection(connection),
+pValCB(NULL),
+pHasCB(false)
 {
-	if( ! connection ){
-		DSTHROW( dueInvalidParam );
+	if(!connection){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue( ds.GetClassConnectionListener() );
+	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassConnectionListener());
 }
 
 dedsConnection::~dedsConnection(){
-	if( ! pValCB ){
+	if(!pValCB){
 		return;
 	}
 	
@@ -70,11 +70,11 @@ dedsConnection::~dedsConnection(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
-	if( pConnection && pConnection->GetRefCount() > 0 ){
-		pDS.AddValueDeleteLater( pValCB );
+	if(pConnection && pConnection->GetRefCount() > 0){
+		pDS.AddValueDeleteLater(pValCB);
 		
 	}else{
-		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
 	pValCB = NULL;
@@ -87,36 +87,36 @@ dedsConnection::~dedsConnection(){
 ///////////////
 
 void dedsConnection::ConnectionClosed(){
-	if( pHasCB ){
+	if(pHasCB){
 		dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 		
 		try{
-			rt.RunFunction( pValCB, "connectionClosed", 0 );
+			rt.RunFunction(pValCB, "connectionClosed", 0);
 			
-		}catch( const duException &e ){
+		}catch(const duException &e){
 			rt.PrintExceptionTrace();
 			e.PrintError();
 		}
 	}
 }
 
-void dedsConnection::MessageProgress( int bytesReceived ){
-	if( pHasCB ){
+void dedsConnection::MessageProgress(int bytesReceived){
+	if(pHasCB){
 		dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 		
 		try{
-			rt.PushInt( bytesReceived ); // bytesReceived
-			rt.RunFunction( pValCB, "messageProgress", 1 );
+			rt.PushInt(bytesReceived); // bytesReceived
+			rt.RunFunction(pValCB, "messageProgress", 1);
 			
-		}catch( const duException &e ){
+		}catch(const duException &e){
 			rt.PrintExceptionTrace();
 			e.PrintError();
 		}
 	}
 }
 
-void dedsConnection::MessageReceived( deNetworkMessage *message ){
-	if( ! pHasCB || ! message ){
+void dedsConnection::MessageReceived(deNetworkMessage *message){
+	if(!pHasCB || !message){
 		return;
 	}
 	
@@ -125,34 +125,34 @@ void dedsConnection::MessageReceived( deNetworkMessage *message ){
 	deClassNetworkMessage &clsNM = *pDS.GetClassNetworkMessage();
 	
 	try{
-		clsNM.PushNetworkMessage( rt, message );
-		rt->RunFunctionFast( pValCB, funcIndex );
+		clsNM.PushNetworkMessage(rt, message);
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 }
 
-bool dedsConnection::LinkState( deNetworkState *networkState, deNetworkMessage *message ){
-	if( ! networkState || ! message || message->GetDataLength() < 1 ){
+bool dedsConnection::LinkState(deNetworkState *networkState, deNetworkMessage *message){
+	if(!networkState || !message || message->GetDataLength() < 1){
 		return false;
 	}
 	
 	const int funcIndex = pDS.GetClassConnectionListener()->GetFuncIndexLinkState();
 	
-	if( pHasCB ){
+	if(pHasCB){
 		dsRunTime * const rt = pDS.GetScriptEngine()->GetMainRunTime();
 		deClassNetworkMessage &clsNM = *pDS.GetClassNetworkMessage();
 		deClassNetworkState &clsNS = *pDS.GetClassNetworkState();
 		
 		try{
-			clsNM.PushNetworkMessage( rt, message );
-			clsNS.PushNetworkState( rt, networkState );
-			rt->RunFunctionFast( pValCB, funcIndex );
+			clsNM.PushNetworkMessage(rt, message);
+			clsNS.PushNetworkState(rt, networkState);
+			rt->RunFunctionFast(pValCB, funcIndex);
 			return rt->GetReturnBool();
 			
-		}catch( const duException &e ){
+		}catch(const duException &e){
 			rt->PrintExceptionTrace();
 			e.PrintError();
 		}
@@ -170,17 +170,17 @@ dsRealObject *dedsConnection::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsConnection::SetCallback( dsRealObject *cbObj ){
-	if( pValCB ){
+void dedsConnection::SetCallback(dsRealObject *cbObj){
+	if(pValCB){
 		dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 		
-		if( cbObj ){
-			rt.SetObject( pValCB, cbObj );
-			rt.CastValueTo( pValCB, pValCB, pDS.GetClassConnectionListener() );
+		if(cbObj){
+			rt.SetObject(pValCB, cbObj);
+			rt.CastValueTo(pValCB, pValCB, pDS.GetClassConnectionListener());
 			pHasCB = true;
 			
 		}else{
-			rt.SetNull( pValCB, pDS.GetClassConnectionListener() );
+			rt.SetNull(pValCB, pDS.GetClassConnectionListener());
 			pHasCB = false;
 		}
 	}

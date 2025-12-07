@@ -51,7 +51,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *EosSdkCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *EosSdkCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -64,10 +64,10 @@ MOD_ENTRY_POINT_ATTR deBaseModule *EosSdkCreateModule( deLoadableModule *loadabl
 // returns NULL on error.
 /////////////////////////////////////////////////////////
 
-deBaseModule *EosSdkCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *EosSdkCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new deEosSdk( *loadableModule );
-	}catch( ... ){
+		return new deEosSdk(*loadableModule);
+	}catch(...){
 		return nullptr;
 	}
 }
@@ -76,39 +76,39 @@ deBaseModule *EosSdkCreateModule( deLoadableModule *loadableModule ){
 // Callbacks
 //////////////
 
-static void fEosLogging( const EOS_LogMessage* message ){
+static void fEosLogging(const EOS_LogMessage* message){
 	deEosSdk * const mod = deEosSdk::globalModule;
-	if( ! mod ){
+	if(!mod){
 		return;
 	}
 	
-	switch( message->Level ){
+	switch(message->Level){
 	case EOS_ELogLevel::EOS_LOG_Fatal:
-		mod->LogErrorFormat( "EOS Fatal: %s: %s", message->Category, message->Message );
+		mod->LogErrorFormat("EOS Fatal: %s: %s", message->Category, message->Message);
 		break;
 		
 	case EOS_ELogLevel::EOS_LOG_Error:
-		mod->LogErrorFormat( "EOS Error: %s: %s", message->Category, message->Message );
+		mod->LogErrorFormat("EOS Error: %s: %s", message->Category, message->Message);
 		break;
 		
 	case EOS_ELogLevel::EOS_LOG_Warning:
-		mod->LogWarnFormat( "EOS Warning: %s: %s", message->Category, message->Message );
+		mod->LogWarnFormat("EOS Warning: %s: %s", message->Category, message->Message);
 		break;
 		
 	case EOS_ELogLevel::EOS_LOG_Info:
-		mod->LogInfoFormat( "EOS Info: %s: %s", message->Category, message->Message );
+		mod->LogInfoFormat("EOS Info: %s: %s", message->Category, message->Message);
 		break;
 		
 	case EOS_ELogLevel::EOS_LOG_Verbose:
-		mod->LogInfoFormat( "EOS Verbose: %s: %s", message->Category, message->Message );
+		mod->LogInfoFormat("EOS Verbose: %s: %s", message->Category, message->Message);
 		break;
 		
 	case EOS_ELogLevel::EOS_LOG_VeryVerbose:
-		mod->LogInfoFormat( "EOS VeryVerbose: %s: %s", message->Category, message->Message );
+		mod->LogInfoFormat("EOS VeryVerbose: %s: %s", message->Category, message->Message);
 		break;
 		
 	default:
-		mod->LogInfoFormat( "EOS Log: %s: %s", message->Category, message->Message );
+		mod->LogInfoFormat("EOS Log: %s: %s", message->Category, message->Message);
 		break;
 	}
 }
@@ -126,15 +126,15 @@ deEosSdk::cFrameUpdater::~cFrameUpdater(){}
 // Constructor, destructor
 ////////////////////////////
 
-deEosSdk::deEosSdk( deLoadableModule& loadableModule ) :
-deBaseServiceModule( loadableModule ),
-pSdkInited( false ){
+deEosSdk::deEosSdk(deLoadableModule& loadableModule) :
+deBaseServiceModule(loadableModule),
+pSdkInited(false){
 	globalModule = this;
 }
 
 deEosSdk::~deEosSdk(){
-	if( pSdkInited ){
-		LogInfo( "Shut down EOS SDK" );
+	if(pSdkInited){
+		LogInfo("Shut down EOS SDK");
 		EOS_Shutdown();
 	}
 	
@@ -147,68 +147,68 @@ deEosSdk::~deEosSdk(){
 
 decStringSet deEosSdk::GetSupportedServices(){
 	decStringSet names;
-	names.Add( deEosSdkServiceEos::serviceName );
+	names.Add(deEosSdkServiceEos::serviceName);
 	return names;
 }
 
-void deEosSdk::InitSdk( const deServiceObject::Ref &data ){
-	if( pSdkInited ){
+void deEosSdk::InitSdk(const deServiceObject::Ref &data){
+	if(pSdkInited){
 		return;
 	}
 	
-	LogInfo( "Initialize EOS SDK" );
+	LogInfo("Initialize EOS SDK");
 	
-	const decString &productName = data->GetChildAt( "productName" )->GetString();
-	const decString &productVersion = data->GetChildAt( "productVersion" )->GetString();
+	const decString &productName = data->GetChildAt("productName")->GetString();
+	const decString &productVersion = data->GetChildAt("productVersion")->GetString();
 	
 	EOS_InitializeOptions options = {};
 	options.ApiVersion = EOS_INITIALIZE_API_LATEST;
 	options.ProductName = productName.GetString();
 	options.ProductVersion = productVersion.GetString();
 	
-	const EOS_EResult res = EOS_Initialize( &options );
-	if( res != EOS_EResult::EOS_Success ){
-		DETHROW_INFO( deeInvalidAction, EOS_EResult_ToString( res ) );
+	const EOS_EResult res = EOS_Initialize(&options);
+	if(res != EOS_EResult::EOS_Success){
+		DETHROW_INFO(deeInvalidAction, EOS_EResult_ToString(res));
 	}
 	
-	LogInfo( "EOS SDK initialized successfully" );
+	LogInfo("EOS SDK initialized successfully");
 	pSdkInited = true;
 	
-	EOS_Logging_SetCallback( fEosLogging );
-	EOS_Logging_SetLogLevel( EOS_ELogCategory::EOS_LC_ALL_CATEGORIES, EOS_ELogLevel::EOS_LOG_VeryVerbose );
+	EOS_Logging_SetCallback(fEosLogging);
+	EOS_Logging_SetLogLevel(EOS_ELogCategory::EOS_LC_ALL_CATEGORIES, EOS_ELogLevel::EOS_LOG_VeryVerbose);
 }
 
-deBaseServiceService* deEosSdk::CreateService( deService *service,
-const char *name, const deServiceObject::Ref &data ){
-	DEASSERT_NOTNULL( service )
+deBaseServiceService* deEosSdk::CreateService(deService *service,
+const char *name, const deServiceObject::Ref &data){
+	DEASSERT_NOTNULL(service)
 	
-	if( strcmp( name, deEosSdkServiceEos::serviceName ) == 0 ){
-		return new deEosSdkServiceEos( *this, service, data );
+	if(strcmp(name, deEosSdkServiceEos::serviceName) == 0){
+		return new deEosSdkServiceEos(*this, service, data);
 	}
 	
 	return nullptr;
 }
 
-void deEosSdk::FrameUpdate( float elapsed ){
+void deEosSdk::FrameUpdate(float elapsed){
 	const int count = pFrameUpdaters.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( cFrameUpdater* )pFrameUpdaters.GetAt( i ) )->FrameUpdate( elapsed );
+	for(i=0; i<count; i++){
+		((cFrameUpdater*)pFrameUpdaters.GetAt(i))->FrameUpdate(elapsed);
 	}
 }
 
-void deEosSdk::AddFrameUpdater( cFrameUpdater *updater ){
-	DEASSERT_NOTNULL( updater )
-	DEASSERT_FALSE( pFrameUpdaters.Has( updater ) );
+void deEosSdk::AddFrameUpdater(cFrameUpdater *updater){
+	DEASSERT_NOTNULL(updater)
+	DEASSERT_FALSE(pFrameUpdaters.Has(updater));
 	
-	pFrameUpdaters.Add( updater );
+	pFrameUpdaters.Add(updater);
 }
 
-void deEosSdk::RemoveFrameUpdater( cFrameUpdater *updater ){
-	DEASSERT_NOTNULL( updater );
+void deEosSdk::RemoveFrameUpdater(cFrameUpdater *updater){
+	DEASSERT_NOTNULL(updater);
 	
-	const int index = pFrameUpdaters.IndexOf( updater );
-	if( index != -1 ){
-		pFrameUpdaters.RemoveFrom( index );
+	const int index = pFrameUpdaters.IndexOf(updater);
+	if(index != -1){
+		pFrameUpdaters.RemoveFrom(index);
 	}
 }

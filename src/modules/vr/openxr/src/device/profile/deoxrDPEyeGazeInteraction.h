@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPEyeGazeInteraction( deoxrInstance &instance );
+	deoxrDPEyeGazeInteraction(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */

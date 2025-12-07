@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderable( const char *name );
+	deDSRenderable(const char *name);
 	
 	/** \brief Clean up renderable. */
 	virtual ~deDSRenderable();
@@ -71,7 +71,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	virtual void Visit(deDSRenderableVisitor &visitor);
 };
 
 #endif

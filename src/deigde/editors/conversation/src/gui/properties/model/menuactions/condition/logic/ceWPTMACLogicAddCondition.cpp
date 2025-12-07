@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACLogicAddCondition::ceWPTMACLogicAddCondition( ceWindowMain &windowMain,
+ceWPTMACLogicAddCondition::ceWPTMACLogicAddCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceConversationAction &action, ceCConditionLogic &logic,
-ceConversationCondition::eConditionTypes actionType ) :
-ceWPTMACreateCondition( windowMain, conversation, actionType ),
-pTopic( &topic ),
-pAction( &action ),
-pLogic( &logic ){
+ceConversationCondition::eConditionTypes actionType) :
+ceWPTMACreateCondition(windowMain, conversation, actionType),
+pTopic(&topic),
+pAction(&action),
+pLogic(&logic){
 }
 
 
@@ -54,6 +54,6 @@ pLogic( &logic ){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMACLogicAddCondition::CreateUndo( ceConversationCondition *condition ){
-	return new ceUCCLogicAdd( pTopic, pAction, pLogic, condition );
+igdeUndo *ceWPTMACLogicAddCondition::CreateUndo(ceConversationCondition *condition){
+	return new ceUCCLogicAdd(pTopic, pAction, pLogic, condition);
 }

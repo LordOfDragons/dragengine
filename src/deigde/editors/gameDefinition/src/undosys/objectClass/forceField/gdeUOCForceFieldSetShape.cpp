@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetShape::gdeUOCForceFieldSetShape( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, const decShapeList &newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetShape::gdeUOCForceFieldSetShape(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, const decShapeList &newValue) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set shape" );
+	SetShortInfo("Force field set shape");
 	
 	pOldValue = forceField->GetShape();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pForceField( NULL )
 }
 
 gdeUOCForceFieldSetShape::~gdeUOCForceFieldSetShape(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCForceFieldSetShape::~gdeUOCForceFieldSetShape(){
 ///////////////
 
 void gdeUOCForceFieldSetShape::Undo(){
-	pForceField->SetShape( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetShape(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetShape::Redo(){
-	pForceField->SetShape( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetShape(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

@@ -48,14 +48,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeHull::reRigShapeHull( deEngine *engine ) :
-reRigShape( engine, estHull ),
-pPoints( NULL ),
-pPointCount( 0 ){
+reRigShapeHull::reRigShapeHull(deEngine *engine) :
+reRigShape(engine, estHull),
+pPoints(NULL),
+pPointCount(0){
 }
 
 reRigShapeHull::~reRigShapeHull(){
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 }
@@ -65,64 +65,64 @@ reRigShapeHull::~reRigShapeHull(){
 // Management
 ///////////////
 
-const decVector &reRigShapeHull::GetPointAt( int index ) const{
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeOutOfBoundary );
+const decVector &reRigShapeHull::GetPointAt(int index) const{
+	if(index < 0 || index >= pPointCount){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	return pPoints[ index ];
+	return pPoints[index];
 }
 
-void reRigShapeHull::AddPoint( const decVector &point ){
-	InsertPoint( point, pPointCount );
+void reRigShapeHull::AddPoint(const decVector &point){
+	InsertPoint(point, pPointCount);
 }
 
-void reRigShapeHull::InsertPoint( const decVector &point, int index ){
-	if( index < 0 || index > pPointCount ){
-		DETHROW( deeInvalidParam );
+void reRigShapeHull::InsertPoint(const decVector &point, int index){
+	if(index < 0 || index > pPointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decVector * const newArray = new decVector[ pPointCount + 1 ];
-	if( pPoints ){
+	decVector * const newArray = new decVector[pPointCount + 1];
+	if(pPoints){
 		int i;
-		for( i=0; i<index; i++ ){
-			newArray[ i ] = pPoints[ i ];
+		for(i=0; i<index; i++){
+			newArray[i] = pPoints[i];
 		}
-		for( i=index; i<pPointCount; i++ ){
-			newArray[ i + 1 ] = pPoints[ i ];
+		for(i=index; i<pPointCount; i++){
+			newArray[i + 1] = pPoints[i];
 		}
 		delete [] pPoints;
 	}
 	pPoints = newArray;
 	pPointCount++;
 	
-	pPoints[ index ] = point;
+	pPoints[index] = point;
 	
 	NotifyShapeChanged();
 }
 
-void reRigShapeHull::SetPointAt( int index, const decVector &point ){
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeOutOfBoundary );
+void reRigShapeHull::SetPointAt(int index, const decVector &point){
+	if(index < 0 || index >= pPointCount){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	if( pPoints[ index ].IsEqualTo( point ) ){
+	if(pPoints[index].IsEqualTo(point)){
 		return;
 	}
 	
-	pPoints[ index ] = point;
+	pPoints[index] = point;
 	
 	NotifyShapeChanged();
 }
 
-void reRigShapeHull::RemovePoint( int index ){
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeInvalidParam );
+void reRigShapeHull::RemovePoint(int index){
+	if(index < 0 || index >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
-	for( i=index+1; i<pPointCount; i++ ){
-		pPoints[ i - 1 ] = pPoints[ i ];
+	for(i=index+1; i<pPointCount; i++){
+		pPoints[i - 1] = pPoints[i];
 	}
 	pPointCount--;
 	
@@ -133,38 +133,38 @@ void reRigShapeHull::RemovePoint( int index ){
 
 reRigShape *reRigShapeHull::Duplicate() const{
 	const reRigShapeHull::Ref shape(reRigShapeHull::Ref::NewWith(GetEngine()));
-	shape->SetPosition( GetPosition() );
-	shape->SetOrientation( GetOrientation() );
-	if( pPointCount > 0 ){
-		shape->pPoints = new decVector[ pPointCount ];
+	shape->SetPosition(GetPosition());
+	shape->SetOrientation(GetOrientation());
+	if(pPointCount > 0){
+		shape->pPoints = new decVector[pPointCount];
 		shape->pPointCount = pPointCount;
-		memcpy( shape->pPoints, pPoints, sizeof( decVector ) * pPointCount );
+		memcpy(shape->pPoints, pPoints, sizeof(decVector) * pPointCount);
 	}
 	
 	shape->AddReference(); // caller takes over reference
 	return shape;
 }
 
-void reRigShapeHull::Scale( float scale ){
-	SetPosition( GetPosition() * scale );
+void reRigShapeHull::Scale(float scale){
+	SetPosition(GetPosition() * scale);
 	int i;
-	for( i=0; i<pPointCount; i++ ){
-		pPoints[ i ] *= scale;
+	for(i=0; i<pPointCount; i++){
+		pPoints[i] *= scale;
 	}
 }
 
 decShape *reRigShapeHull::CreateShape(){
-	decShapeHull * const shape = new decShapeHull( GetPosition(),
-		decQuaternion::CreateFromEuler( GetOrientation() * DEG2RAD ) );
-	if( pPointCount > 0 ){
+	decShapeHull * const shape = new decShapeHull(GetPosition(),
+		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD));
+	if(pPointCount > 0){
 		try{
-			shape->SetPointCount( pPointCount );
+			shape->SetPointCount(pPointCount);
 			int i;
-			for( i=0; i<pPointCount; i++ ){
-				shape->SetPointAt( i, pPoints[ i ] );
+			for(i=0; i<pPointCount; i++){
+				shape->SetPointAt(i, pPoints[i]);
 			}
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			delete shape;
 			throw;
 		}

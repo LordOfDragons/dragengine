@@ -66,7 +66,7 @@ public:
 	ceCConditionTrigger();
 	
 	/** \brief Creates a new conversation condition. */
-	ceCConditionTrigger( const ceCConditionTrigger &condition );
+	ceCConditionTrigger(const ceCConditionTrigger &condition);
 	
 	/** \brief Cleans up the conversation condition. */
 	virtual ~ceCConditionTrigger();
@@ -80,13 +80,13 @@ public:
 	inline const decString &GetTrigger() const{ return pTrigger; }
 	
 	/** \brief Set name of the trigger to test. */
-	void SetTrigger( const char *name );
+	void SetTrigger(const char *name);
 	
 	/** \brief Test mode. */
 	inline eTestModes GetTestMode() const{ return pTestMode; }
 	
 	/** \brief Set test mode. */
-	void SetTestMode( eTestModes testMode );
+	void SetTestMode(eTestModes testMode);
 	
 	/** \brief Create copy of condition. */
     virtual ceConversationCondition *CreateCopy() const;

@@ -35,7 +35,7 @@ class deglWindowMain;
  * Engine Properties Panel.
  */
 class deglDialogEngineProps : public FXDialogBox{
-	FXDECLARE( deglDialogEngineProps )
+	FXDECLARE(deglDialogEngineProps)
 protected:
 	deglDialogEngineProps();
 	
@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	deglDialogEngineProps( deglWindowMain *windowMain, FXWindow *owner );
+	deglDialogEngineProps(deglWindowMain *windowMain, FXWindow *owner);
 	
 	/** Clean up dialog. */
 	virtual ~deglDialogEngineProps();
@@ -89,8 +89,8 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onCBProfilesChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnEditProfiles( FXObject *sender, FXSelector selector, void *data );
+	long onCBProfilesChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnEditProfiles(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 };
 

@@ -43,8 +43,8 @@
 aeControllerList::aeControllerList(){
 }
 
-aeControllerList::aeControllerList( const aeControllerList &copy ) :
-pControllers( copy.pControllers ){
+aeControllerList::aeControllerList(const aeControllerList &copy) :
+pControllers(copy.pControllers){
 }
 
 aeControllerList::~aeControllerList(){
@@ -59,17 +59,17 @@ int aeControllerList::GetCount() const{
 	return pControllers.GetCount();
 }
 
-aeController *aeControllerList::GetAt( int index ) const{
-	return ( aeController* )pControllers.GetAt( index );
+aeController *aeControllerList::GetAt(int index) const{
+	return (aeController*)pControllers.GetAt(index);
 }
 
-aeController *aeControllerList::GetNamed( const char *name ) const{
+aeController *aeControllerList::GetNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		aeController * const controller = ( aeController* )pControllers.GetAt( i );
-		if( controller->GetName() == name ){
+	for(i=0; i<count; i++){
+		aeController * const controller = (aeController*)pControllers.GetAt(i);
+		if(controller->GetName() == name){
 			return controller;
 		}
 	}
@@ -77,49 +77,49 @@ aeController *aeControllerList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int aeControllerList::IndexOf( aeController *controller ) const{
-	return pControllers.IndexOf( controller );
+int aeControllerList::IndexOf(aeController *controller) const{
+	return pControllers.IndexOf(controller);
 }
 
-int aeControllerList::IndexOfNamed( const char *name ) const{
+int aeControllerList::IndexOfNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( ( ( aeController* )pControllers.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((aeController*)pControllers.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
 	return -1;
 }
 
-bool aeControllerList::Has( aeController *controller ) const{
-	return pControllers.Has( controller );
+bool aeControllerList::Has(aeController *controller) const{
+	return pControllers.Has(controller);
 }
 
-bool aeControllerList::HasNamed( const char *name ) const{
-	return GetNamed( name ) != NULL;
+bool aeControllerList::HasNamed(const char *name) const{
+	return GetNamed(name) != NULL;
 }
 
-void aeControllerList::Add( aeController *controller ){
-	if( ! controller || HasNamed( controller->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void aeControllerList::Add(aeController *controller){
+	if(!controller || HasNamed(controller->GetName())){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 }
 
-void aeControllerList::Insert( aeController *controller, int index ){
-	if( ! controller || HasNamed( controller->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void aeControllerList::Insert(aeController *controller, int index){
+	if(!controller || HasNamed(controller->GetName())){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Insert( controller, index );
+	pControllers.Insert(controller, index);
 }
 
-void aeControllerList::Move( aeController *controller, int index ){
-	pControllers.Move( controller, index );
+void aeControllerList::Move(aeController *controller, int index){
+	pControllers.Move(controller, index);
 }
 
-void aeControllerList::Remove( aeController *controller ){
-	pControllers.Remove( controller );
+void aeControllerList::Remove(aeController *controller){
+	pControllers.Remove(controller);
 }
 
 void aeControllerList::RemoveAll(){
@@ -131,12 +131,12 @@ void aeControllerList::RemoveAll(){
 // Operators
 //////////////
 
-aeControllerList &aeControllerList::operator=( const aeControllerList &list ){
+aeControllerList &aeControllerList::operator=(const aeControllerList &list){
 	pControllers = list.pControllers;
 	return *this;
 }
 
-aeControllerList &aeControllerList::operator+=( const aeControllerList &list ){
+aeControllerList &aeControllerList::operator+=(const aeControllerList &list){
 	pControllers += list.pControllers;
 	return *this;
 }

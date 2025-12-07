@@ -58,7 +58,7 @@ public:
 	decCurve2D();
 	
 	/** \brief Create copy of a curve. */
-	decCurve2D( const decCurve2D &curve );
+	decCurve2D(const decCurve2D &curve);
 	
 	/** \brief Clean up the curve. */
 	~decCurve2D();
@@ -76,14 +76,14 @@ public:
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount()-1.
 	 */
-	const decVector2 &GetPointAt( int position ) const;
+	const decVector2 &GetPointAt(int position) const;
 	
 	/**
 	 * \brief Index of the point closest to an x coordinate inside a margin.
 	 * 
 	 * If no such point can be found -1 is returned.
 	 */
-	int IndexOfPointClosestTo( float coordinate, float threshold = CURVE_THRESHOLD ) const;
+	int IndexOfPointClosestTo(float coordinate, float threshold = CURVE_THRESHOLD) const;
 	
 	/**
 	 * \brief Index of the point with matching x coordinates or closest on the smaller side.
@@ -91,17 +91,17 @@ public:
 	 * This method can be used to find the interval a point is located in by returning the
 	 * most prior point. Retrieves -1 if there are no points satisfying this criteria.
 	 */
-	int IndexOfPointBefore( float coordinate ) const;
+	int IndexOfPointBefore(float coordinate) const;
 	
 	/** \brief Add a point returning the index where it has been added. */
-	int AddPoint( const decVector2 &point, float threshold = CURVE_THRESHOLD );
+	int AddPoint(const decVector2 &point, float threshold = CURVE_THRESHOLD);
 	
 	/**
 	 * \brief Remove a point.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount()-1.
 	 */
-	void RemovePointFrom( int position );
+	void RemovePointFrom(int position);
 	
 	/** \brief Remove all points. */
 	void RemoveAllPoints();
@@ -110,16 +110,16 @@ public:
 	void SetDefaultCurve();
 	
 	/** \brief Offset the Y coordinate of all curve points. */
-	void OffsetPointsBy( float offset );
+	void OffsetPointsBy(float offset);
 	
 	/** \brief Scale the Y coordinate of all curve points. */
-	void ScalePointsBy( float scale );
+	void ScalePointsBy(float scale);
 	
 	/** \brief Evaluate curve using constant interpolation. */
-	float EvaluateConstant( float coordinate ) const;
+	float EvaluateConstant(float coordinate) const;
 	
 	/** \brief Evaluate curve using linear interpolation. */
-	float EvaluateLinear( float coordinate ) const;
+	float EvaluateLinear(float coordinate) const;
 	/*@}*/
 	
 	
@@ -127,7 +127,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another curve to this curve. */
-	decCurve2D &operator=( const decCurve2D &curve );
+	decCurve2D &operator=(const decCurve2D &curve);
 	/*@}*/
 };
 

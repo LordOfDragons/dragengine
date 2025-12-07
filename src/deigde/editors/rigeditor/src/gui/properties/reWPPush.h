@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPush( reWindowProperties &windowProperties );
+	reWPPush(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -76,13 +76,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Push. */
 	inline reRigPush *GetPush() const{ return pPush; }
 	
 	/** \brief Set push. */
-	void SetPush( reRigPush *push );
+	void SetPush(reRigPush *push);
 	
 	/** \brief Update push. */
 	void UpdatePush();

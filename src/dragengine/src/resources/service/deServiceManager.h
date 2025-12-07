@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create service manager linked to the given engine. */
-	deServiceManager( deEngine *engine );
+	deServiceManager(deEngine *engine);
 	
 	/** \brief Clean up service manager. */
 	~deServiceManager() override;
@@ -88,33 +88,33 @@ public:
 	 * Caller takes over reference. Use deService::Ref::New() or deService::Ref:TakeOver
 	 * to acquire the returned reference correctly.
 	 */
-	deService *CreateService( const char *name, const deServiceObject::Ref &data );
+	deService *CreateService(const char *name, const deServiceObject::Ref &data);
 	
 	/**
 	 * \brief Queue request response event.
 	 * \note Can be called from any thread.
 	 */
-	void QueueRequestResponse( deService *service, const decUniqueID &id,
-	const deServiceObject::Ref &response, bool finished );
+	void QueueRequestResponse(deService *service, const decUniqueID &id,
+	const deServiceObject::Ref &response, bool finished);
 	
 	/**
 	 * \brief Queue request failed event.
 	 * \note Can be called from any thread.
 	 */
-	void QueueRequestFailed( deService *service, const decUniqueID &id,
-	const deServiceObject::Ref &error );
+	void QueueRequestFailed(deService *service, const decUniqueID &id,
+	const deServiceObject::Ref &error);
 	
 	/**
 	 * \brief Queue event received event.
 	 * \note Can be called from any thread.
 	 */
-	void QueueEventReceived( deService *service, const deServiceObject::Ref &event );
+	void QueueEventReceived(deService *service, const deServiceObject::Ref &event);
 	
 	/**
 	 * \brief Remove all events matching service.
 	 * \note Can be called from any thread.
 	 */
-	void RemoveAllMatchingEvents( deService *service );
+	void RemoveAllMatchingEvents(deService *service);
 	
 	
 	
@@ -143,7 +143,7 @@ public:
 	 * \brief Those functions are only for resource objects and should never be called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource ) override;
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 	
 	

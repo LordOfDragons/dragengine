@@ -70,7 +70,7 @@ public:
 	 * 
 	 * User entered point and accepted it.
 	 */
-	virtual void OnPoint3Changed( igdeEditPoint3 *editPoint3 );
+	virtual void OnPoint3Changed(igdeEditPoint3 *editPoint3);
 	/*@}*/
 };
 

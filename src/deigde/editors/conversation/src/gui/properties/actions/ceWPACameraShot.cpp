@@ -73,12 +73,12 @@ class cComboName : public igdeComboBoxListener {
 	ceWPACameraShot &pPanel;
 	
 public:
-	cComboName( ceWPACameraShot &panel ) : pPanel( panel ){ }
+	cComboName(ceWPACameraShot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetName() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetName()){
 			return;
 		}
 		
@@ -91,13 +91,13 @@ class cTextDuration : public igdeTextFieldListener {
 	ceWPACameraShot &pPanel;
 	
 public:
-	cTextDuration( ceWPACameraShot &panel ) : pPanel( panel ){ }
+	cTextDuration(ceWPACameraShot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
 		const float duration = textField->GetFloat();
-		if( ! topic || ! action || fabsf( duration - action->GetDuration() ) < FLOAT_SAFE_EPSILON ){
+		if(!topic || !action || fabsf(duration - action->GetDuration()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -110,12 +110,12 @@ class cComboCameraTarget : public igdeComboBoxListener {
 	ceWPACameraShot &pPanel;
 	
 public:
-	cComboCameraTarget( ceWPACameraShot &panel ) : pPanel( panel ){ }
+	cComboCameraTarget(ceWPACameraShot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetCameraTarget() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetCameraTarget()){
 			return;
 		}
 		
@@ -128,12 +128,12 @@ class cComboLookAtTarget : public igdeComboBoxListener {
 	ceWPACameraShot &pPanel;
 	
 public:
-	cComboLookAtTarget( ceWPACameraShot &panel ) : pPanel( panel ){ }
+	cComboLookAtTarget(ceWPACameraShot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACameraShot * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetLookAtTarget() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetLookAtTarget()){
 			return;
 		}
 		
@@ -152,24 +152,24 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPACameraShot::ceWPACameraShot( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPACameraShot::ceWPACameraShot(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBoxFilter( *this, "Name:", true, "Name of the camera shot to use or empty to not change",
-		pCBName, new cComboName( *this ) );
+	helper.ComboBoxFilter(*this, "Name:", true, "Name of the camera shot to use or empty to not change",
+		pCBName, new cComboName(*this));
 	pCBName->SetDefaultSorter();
 	
-	helper.EditFloat( *this, "Duration:", "Duration of the camera shot",
-		pEditDuration, new cTextDuration( *this ) );
+	helper.EditFloat(*this, "Duration:", "Duration of the camera shot",
+		pEditDuration, new cTextDuration(*this));
 	
-	helper.ComboBoxFilter( *this, "Camera Target:", true, "Target the camera is attached to",
-		pCBCameraTarget, new cComboCameraTarget( *this ) );
+	helper.ComboBoxFilter(*this, "Camera Target:", true, "Target the camera is attached to",
+		pCBCameraTarget, new cComboCameraTarget(*this));
 	pCBCameraTarget->SetDefaultSorter();
 	
-	helper.ComboBoxFilter( *this, "Look-At Target:", true, "Target to point the camera at",
-		pCBLookAtTarget, new cComboLookAtTarget( *this ) );
+	helper.ComboBoxFilter(*this, "Look-At Target:", true, "Target to point the camera at",
+		pCBLookAtTarget, new cComboLookAtTarget(*this));
 	pCBLookAtTarget->SetDefaultSorter();
 }
 
@@ -184,8 +184,8 @@ ceWPACameraShot::~ceWPACameraShot(){
 ceCACameraShot *ceWPACameraShot::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatCameraShot ){
-		return ( ceCACameraShot* )action;
+	if(action && action->GetType() == ceConversationAction::eatCameraShot){
+		return (ceCACameraShot*)action;
 		
 	}else{
 		return NULL;
@@ -197,11 +197,11 @@ void ceWPACameraShot::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBName->SetText( action->GetName() );
-		pEditDuration->SetFloat( action->GetDuration() );
-		pCBCameraTarget->SetText( action->GetCameraTarget() );
-		pCBLookAtTarget->SetText( action->GetLookAtTarget() );
+	if(action){
+		pCBName->SetText(action->GetName());
+		pEditDuration->SetFloat(action->GetDuration());
+		pCBCameraTarget->SetText(action->GetCameraTarget());
+		pCBLookAtTarget->SetText(action->GetLookAtTarget());
 		
 	}else{
 		pCBName->ClearText();
@@ -213,43 +213,43 @@ void ceWPACameraShot::UpdateAction(){
 
 void ceWPACameraShot::UpdateCameraShotList(){
 	ceConversation * const conversation = GetParentPanel().GetConversation();
-	const decString selection( pCBName->GetText() );
+	const decString selection(pCBName->GetText());
 	
 	pCBName->RemoveAllItems();
 	
-	if( conversation ){
-		const ceCameraShotList list( conversation->AllCameraShots() );
+	if(conversation){
+		const ceCameraShotList list(conversation->AllCameraShots());
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pCBName->AddItem( list.GetAt( i )->GetName() );
+		for(i=0; i<count; i++){
+			pCBName->AddItem(list.GetAt(i)->GetName());
 		}
 		
 		pCBName->SortItems();
 		pCBName->StoreFilterItems();
 	}
 	
-	pCBName->SetText( selection );
+	pCBName->SetText(selection);
 }
 
 void ceWPACameraShot::UpdateTargetList(){
 	ceConversation * const conversation = GetParentPanel().GetConversation();
-	const decString selectionCamera( pCBCameraTarget->GetText() );
-	const decString selectionLookAt( pCBLookAtTarget->GetText() );
+	const decString selectionCamera(pCBCameraTarget->GetText());
+	const decString selectionLookAt(pCBLookAtTarget->GetText());
 	
 	pCBCameraTarget->RemoveAllItems();
 	pCBLookAtTarget->RemoveAllItems();
 	
-	if( conversation ){
-		const ceTargetList list( conversation->AllTargets() );
+	if(conversation){
+		const ceTargetList list(conversation->AllTargets());
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( ! list.GetAt( i )->GetName().IsEmpty() ){
-				pCBCameraTarget->AddItem( list.GetAt( i )->GetName() );
-				pCBLookAtTarget->AddItem( list.GetAt( i )->GetName() );
+		for(i=0; i<count; i++){
+			if(!list.GetAt(i)->GetName().IsEmpty()){
+				pCBCameraTarget->AddItem(list.GetAt(i)->GetName());
+				pCBLookAtTarget->AddItem(list.GetAt(i)->GetName());
 			}
 		}
 		
@@ -260,6 +260,6 @@ void ceWPACameraShot::UpdateTargetList(){
 		pCBLookAtTarget->StoreFilterItems();
 	}
 	
-	pCBCameraTarget->SetText( selectionCamera );
-	pCBLookAtTarget->SetText( selectionLookAt );
+	pCBCameraTarget->SetText(selectionCamera);
+	pCBLookAtTarget->SetText(selectionLookAt);
 }

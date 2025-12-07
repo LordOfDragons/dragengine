@@ -47,7 +47,7 @@ public:
 	sePropertyNodeList();
 	
 	/** \brief Create copy of node. */
-	sePropertyNodeList( const sePropertyNodeList &node );
+	sePropertyNodeList(const sePropertyNodeList &node);
 	
 	/** \brief Clean up node. */
 	~sePropertyNodeList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Node at index. */
-	sePropertyNode *GetAt( int index ) const;
+	sePropertyNode *GetAt(int index) const;
 	
 	/** \brief Node is present. */
-	bool Has( sePropertyNode *node ) const;
+	bool Has(sePropertyNode *node) const;
 	
 	/** \brief Index of node or -1 if absent. */
-	int IndexOf( sePropertyNode *node ) const;
+	int IndexOf(sePropertyNode *node) const;
 	
 	/** \brief Add node. */
-	void Add( sePropertyNode *node );
+	void Add(sePropertyNode *node);
 	
 	/** \brief Add node if absent. */
-	void AddIfAbsent( sePropertyNode *node );
+	void AddIfAbsent(sePropertyNode *node);
 	
 	/** \brief Insert node at index. */
-	void Insert( int index, sePropertyNode *node );
+	void Insert(int index, sePropertyNode *node);
 	
 	/** \brief Remove node. */
-	void Remove( sePropertyNode *node );
+	void Remove(sePropertyNode *node);
 	
 	/** \brief Remove node if present. */
-	void RemoveIfPresent( sePropertyNode *node );
+	void RemoveIfPresent(sePropertyNode *node);
 	
 	/** \brief Remove all nodes. */
 	void RemoveAll();
 	
 	/** \brief Move node to position. */
-	void Move( sePropertyNode *node, int index );
+	void Move(sePropertyNode *node, int index);
 	/*@}*/
 	
 	
@@ -97,7 +97,7 @@ public:
 	/*@{*/
 	
 	/** \brief Copy list. */
-	sePropertyNodeList &operator=( const sePropertyNodeList &list );
+	sePropertyNodeList &operator=(const sePropertyNodeList &list);
 	/*@}*/
 };
 

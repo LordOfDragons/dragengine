@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky link. */
-	deoglRSkyLink( const deSkyLink &link );
+	deoglRSkyLink(const deSkyLink &link);
 	
 	/** Clean up sky link. */
 	~deoglRSkyLink();
@@ -68,13 +68,13 @@ public:
 	inline bool IsDisabled() const{ return pDisabled; }
 	
 	/** Get value of link. */
-	float GetValue( const deoglRSkyInstance &instance ) const;
+	float GetValue(const deoglRSkyInstance &instance) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pUpdateSamples( const deSkyLink &link );
+	void pUpdateSamples(const deSkyLink &link);
 };
 
 #endif

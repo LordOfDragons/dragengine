@@ -89,13 +89,13 @@ public:
 	int GetSoundCount() const;
 	
 	/** \brief Sound at index. */
-	deSound *GetSoundAt( int index ) const;
+	deSound *GetSoundAt(int index) const;
 	
 	/** \brief Add sound. */
-	void AddSound( deSound *sound );
+	void AddSound(deSound *sound);
 	
 	/** \brief Remove sound from index. */
-	void RemoveSound( int index );
+	void RemoveSound(int index);
 	
 	/** \brief Remove all sounds. */
 	void RemoveAllSounds();
@@ -116,7 +116,7 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	void SetMinSpeed( float speed );
+	void SetMinSpeed(float speed);
 	
 	/**
 	 * \brief Maximum play speed.
@@ -132,7 +132,7 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	void SetMaxSpeed( float speed );
+	void SetMaxSpeed(float speed);
 	
 	
 	
@@ -164,7 +164,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	virtual void Visit(deSynthesizerSourceVisitor &visitor);
 	/*@}*/
 };
 

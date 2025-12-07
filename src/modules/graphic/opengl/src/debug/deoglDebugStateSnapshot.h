@@ -53,12 +53,12 @@ private:
 	GLint pBlendDstRgb;
 	GLint pBlendDstAlpha;
 	
-	GLboolean pColorWriteMask[ 4 ];
+	GLboolean pColorWriteMask[4];
 	GLint pCullFaceMode;
 	GLint pDepthFunc;
 	GLboolean pDepthWriteMask;
 	GLint pPolygonMode;
-	GLint pScissorBox[ 4 ];
+	GLint pScissorBox[4];
 	GLint pStencilBits;
 	GLint pStencilFunc;
 	GLint pStencilValueMask;
@@ -74,9 +74,9 @@ private:
 	GLint pStencilBackFail;
 	GLint pStencilBackPassDepthPass;
 	GLint pStencilBackPassDepthFail;
-	GLint pViewport[ 4 ];
+	GLint pViewport[4];
 	
-	GLfloat pBlendColor[ 4 ];
+	GLfloat pBlendColor[4];
 	GLint pBlendEquationRgb;
 	GLint pBlendEquationAlpha;
 	
@@ -91,7 +91,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create state snapshot. */
-	deoglDebugStateSnapshot( deoglRenderThread &renderThread );
+	deoglDebugStateSnapshot(deoglRenderThread &renderThread);
 	
 	/** Clean up state snapshot. */
 	~deoglDebugStateSnapshot();
@@ -105,15 +105,15 @@ public:
 	void LogState() const;
 	
 	/** Compare this state with another state logging difference. */
-	void LogDifference( const deoglDebugStateSnapshot &state ) const;
+	void LogDifference(const deoglDebugStateSnapshot &state) const;
 	/*@}*/
 	
 	
 	
 private:
-	decString pLogState( const char *key, const char *value ) const;
-	decString pGLConstantName( int value ) const;
-	decString pBitString( int value, int maxBits ) const;
+	decString pLogState(const char *key, const char *value) const;
+	decString pGLConstantName(int value) const;
+	decString pBitString(int value, int maxBits) const;
 };
 
 #endif

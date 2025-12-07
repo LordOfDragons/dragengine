@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	dexsiDeviceCoreMouse( deXSystemInput &module );
+	dexsiDeviceCoreMouse(deXSystemInput &module);
 	
 protected:
 	/** \brief Clean up device. */

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound peer. */
-	deoalSound( deAudioOpenAL &oal, deSound &sound );
+	deoalSound(deAudioOpenAL &oal, deSound &sound);
 	
 	/** \brief Clean up sound peer. */
 	virtual ~deoalSound();

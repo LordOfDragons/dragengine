@@ -42,30 +42,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLinkCut::meUHTVLinkCut( meHTVegetationLayer *vlayer ){
-	if( ! vlayer ) DETHROW( deeInvalidParam );
+meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer *vlayer){
+	if(!vlayer) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pLinks = NULL;
 	pLinkCount = 0;
 	
-	SetShortInfo( "Cut Vegetation Layer Links" );
-	SetMemoryConsumption( sizeof( meUHTVLinkCut ) );
+	SetShortInfo("Cut Vegetation Layer Links");
+	SetMemoryConsumption(sizeof(meUHTVLinkCut));
 	
 	pVLayer = vlayer;
 	vlayer->AddReference();
 }
 
 meUHTVLinkCut::~meUHTVLinkCut(){
-	if( pLinks ){
-		while( pLinkCount > 0 ){
+	if(pLinks){
+		while(pLinkCount > 0){
 			pLinkCount--;
-			pLinks[ pLinkCount ]->FreeReference();
+			pLinks[pLinkCount]->FreeReference();
 		}
 		delete [] pLinks;
 	}
 	
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -73,17 +73,17 @@ meUHTVLinkCut::~meUHTVLinkCut(){
 // Management
 ///////////////
 
-void meUHTVLinkCut::AddLinkToCut( meHTVRLink *link ){
-	if( ! link ) DETHROW( deeInvalidParam );
+void meUHTVLinkCut::AddLinkToCut(meHTVRLink *link){
+	if(!link) DETHROW(deeInvalidParam);
 	
-	meHTVRLink **newArray = new meHTVRLink*[ pLinkCount + 1 ];
-	if( ! newArray ) DETHROW( deeOutOfMemory );
-	if( pLinks ){
-		memcpy( newArray, pLinks, sizeof( meHTVRLink* ) * pLinkCount );
+	meHTVRLink **newArray = new meHTVRLink*[pLinkCount + 1];
+	if(!newArray) DETHROW(deeOutOfMemory);
+	if(pLinks){
+		memcpy(newArray, pLinks, sizeof(meHTVRLink*) * pLinkCount);
 		delete [] pLinks;
 	}
 	pLinks = newArray;
-	pLinks[ pLinkCount++ ] = link;
+	pLinks[pLinkCount++] = link;
 	
 	link->AddReference();
 }
@@ -94,16 +94,16 @@ void meUHTVLinkCut::Undo(){
 	meHTVRule *ruleSource, *ruleDestination;
 	int l, slotSource, slotDestination;
 	
-	for( l=0; l<pLinkCount; l++ ){
-		ruleSource = pLinks[ l ]->GetSourceRule();
-		ruleDestination = pLinks[ l ]->GetDestinationRule();
-		slotSource = pLinks[ l ]->GetSourceSlot();
-		slotDestination = pLinks[ l ]->GetDestinationSlot();
+	for(l=0; l<pLinkCount; l++){
+		ruleSource = pLinks[l]->GetSourceRule();
+		ruleDestination = pLinks[l]->GetDestinationRule();
+		slotSource = pLinks[l]->GetSourceSlot();
+		slotDestination = pLinks[l]->GetDestinationSlot();
 		
-		ruleSource->GetSlotAt( slotSource ).AddLink( pLinks[ l ] );
-		ruleDestination->GetSlotAt( slotDestination ).AddLink( pLinks[ l ] );
+		ruleSource->GetSlotAt(slotSource).AddLink(pLinks[l]);
+		ruleDestination->GetSlotAt(slotDestination).AddLink(pLinks[l]);
 		
-		pVLayer->AddLink( pLinks[ l ] );
+		pVLayer->AddLink(pLinks[l]);
 	}
 }
 
@@ -111,15 +111,15 @@ void meUHTVLinkCut::Redo(){
 	meHTVRule *ruleSource, *ruleDestination;
 	int l, slotSource, slotDestination;
 	
-	for( l=0; l<pLinkCount; l++ ){
-		ruleSource = pLinks[ l ]->GetSourceRule();
-		ruleDestination = pLinks[ l ]->GetDestinationRule();
-		slotSource = pLinks[ l ]->GetSourceSlot();
-		slotDestination = pLinks[ l ]->GetDestinationSlot();
+	for(l=0; l<pLinkCount; l++){
+		ruleSource = pLinks[l]->GetSourceRule();
+		ruleDestination = pLinks[l]->GetDestinationRule();
+		slotSource = pLinks[l]->GetSourceSlot();
+		slotDestination = pLinks[l]->GetDestinationSlot();
 		
-		ruleSource->GetSlotAt( slotSource ).RemoveLink( pLinks[ l ] );
-		ruleDestination->GetSlotAt( slotDestination ).RemoveLink( pLinks[ l ] );
+		ruleSource->GetSlotAt(slotSource).RemoveLink(pLinks[l]);
+		ruleDestination->GetSlotAt(slotDestination).RemoveLink(pLinks[l]);
 		
-		pVLayer->RemoveLink( pLinks[ l ] );
+		pVLayer->RemoveLink(pLinks[l]);
 	}
 }

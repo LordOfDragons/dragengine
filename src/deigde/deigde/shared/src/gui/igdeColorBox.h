@@ -48,42 +48,42 @@ public:
 	class DE_DLL_EXPORT cActionCopy : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionCopy( igdeColorBox &colorBox );
+		cActionCopy(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionCopyHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionCopyHex( igdeColorBox &colorBox );
+		cActionCopyHex(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionPaste : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionPaste( igdeColorBox &colorBox );
+		cActionPaste(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionPasteHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionPasteHex( igdeColorBox &colorBox );
+		cActionPasteHex(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionEditValues : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionEditValues( igdeColorBox &colorBox );
+		cActionEditValues(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
 	
 	class DE_DLL_EXPORT cActionEditHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionEditHex( igdeColorBox &colorBox );
+		cActionEditHex(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
 	
@@ -102,10 +102,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create color box. */
-	igdeColorBox( igdeEnvironment &environment );
+	igdeColorBox(igdeEnvironment &environment);
 	
 	/** \brief Create color box. */
-	igdeColorBox( igdeEnvironment &environment, const char *description );
+	igdeColorBox(igdeEnvironment &environment, const char *description);
 	
 	
 	
@@ -128,19 +128,19 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief ColorBox is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if color box is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -148,16 +148,16 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeColorBoxListener *listener );
+	void AddListener(igdeColorBoxListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeColorBoxListener *listener );
+	void RemoveListener(igdeColorBoxListener *listener);
 	
 	/** \brief Notify listeners color changed. */
 	virtual void NotifyColorChanged();
 	
 	/** \brief Show context menu at position. */
-	virtual void ShowContextMenu( const decPoint &position );
+	virtual void ShowContextMenu(const decPoint &position);
 	/*@}*/
 	
 	

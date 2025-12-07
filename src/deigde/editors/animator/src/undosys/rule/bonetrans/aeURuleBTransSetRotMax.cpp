@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetRotMax::aeURuleBTransSetRotMax( aeRuleBoneTransformator *rule, const decVector &newMax ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetRotMax::aeURuleBTransSetRotMax(aeRuleBoneTransformator *rule, const decVector &newMax){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -53,9 +53,9 @@ aeURuleBTransSetRotMax::aeURuleBTransSetRotMax( aeRuleBoneTransformator *rule, c
 		pOldMax = rule->GetMaximumRotation();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Bone transformator set maximum rotation" );
+		SetShortInfo("Bone transformator set maximum rotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ aeURuleBTransSetRotMax::~aeURuleBTransSetRotMax(){
 ///////////////
 
 void aeURuleBTransSetRotMax::Undo(){
-	pRule->SetMaximumRotation( pOldMax );
+	pRule->SetMaximumRotation(pOldMax);
 }
 
 void aeURuleBTransSetRotMax::Redo(){
-	pRule->SetMaximumRotation( pNewMax );
+	pRule->SetMaximumRotation(pNewMax);
 }
 
 
@@ -84,7 +84,7 @@ void aeURuleBTransSetRotMax::Redo(){
 //////////////////////
 
 void aeURuleBTransSetRotMax::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

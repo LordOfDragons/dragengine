@@ -46,7 +46,7 @@ deOSConsole::deOSConsole(){
 	pScreenHeight = 60; // ncurses?
 	
 	// init locale
-	setlocale( LC_ALL, "" );
+	setlocale(LC_ALL, "");
 }
 
 deOSConsole::~deOSConsole(){
@@ -58,30 +58,30 @@ deOSConsole::~deOSConsole(){
 ///////////////
 
 decString deOSConsole::GetPathEngine(){
-	const char * const envPath = getenv( "DE_ENGINE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_ENGINE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( DE_ENGINE_PATH );
+	return decString(DE_ENGINE_PATH);
 }
 
 decString deOSConsole::GetPathShare(){
-	const char * const envPath = getenv( "DE_SHARE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_SHARE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( DE_SHARE_PATH );
+	return decString(DE_SHARE_PATH);
 }
 
 decString deOSConsole::GetPathSystemConfig(){
-	const char * const envPath = getenv( "DE_CONFIG_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_CONFIG_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( DE_CONFIG_PATH );
+	return decString(DE_CONFIG_PATH);
 }
 
 decString deOSConsole::GetPathUserConfig(){
@@ -123,7 +123,7 @@ decString deOSConsole::GetPathUserCapture(){
 
 
 
-void deOSConsole::ProcessEventLoop( bool sendToInputModule ){
+void deOSConsole::ProcessEventLoop(bool sendToInputModule){
 	// do nothing for the moment
 	/*
 	see console input module
@@ -131,12 +131,12 @@ void deOSConsole::ProcessEventLoop( bool sendToInputModule ){
 }
 
 decString deOSConsole::GetUserLocaleLanguage(){
-	const char * const l = setlocale( LC_ALL, nullptr );
-	if( l ){
-		const decString ls( l );
-		const int deli = ls.Find( '_' );
-		if( deli != -1 ){
-			return ls.GetLeft( deli ).GetLower();
+	const char * const l = setlocale(LC_ALL, nullptr);
+	if(l){
+		const decString ls(l);
+		const int deli = ls.Find('_');
+		if(deli != -1){
+			return ls.GetLeft(deli).GetLower();
 			
 		}else{
 			return ls.GetLower();
@@ -146,17 +146,17 @@ decString deOSConsole::GetUserLocaleLanguage(){
 }
 
 decString deOSConsole::GetUserLocaleTerritory(){
-	const char * const l = setlocale( LC_ALL, nullptr );
-	if( l ){
-		const decString ls( l );
-		const int deli = ls.Find( '_' );
-		if( deli != -1 ){
-			const int deli2 = ls.Find( '.', deli + 1 );
-			if( deli2 != -1 ){
-				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+	const char * const l = setlocale(LC_ALL, nullptr);
+	if(l){
+		const decString ls(l);
+		const int deli = ls.Find('_');
+		if(deli != -1){
+			const int deli2 = ls.Find('.', deli + 1);
+			if(deli2 != -1){
+				return ls.GetMiddle(deli + 1, deli2).GetLower();
 				
 			}else{
-				return ls.GetMiddle( deli + 1 ).GetLower();
+				return ls.GetMiddle(deli + 1).GetLower();
 			}
 			
 		}else{
@@ -175,33 +175,33 @@ int deOSConsole::GetDisplayCount(){
 	return 1;
 }
 
-decPoint deOSConsole::GetDisplayCurrentResolution( int display ){
-	DEASSERT_TRUE( display == 0 )
+decPoint deOSConsole::GetDisplayCurrentResolution(int display){
+	DEASSERT_TRUE(display == 0)
 	
-	return decPoint( pScreenWidth, pScreenHeight );
+	return decPoint(pScreenWidth, pScreenHeight);
 }
 
-int deOSConsole::GetDisplayCurrentRefreshRate( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSConsole::GetDisplayCurrentRefreshRate(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return 30;
 }
 
-int deOSConsole::GetDisplayResolutionCount( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSConsole::GetDisplayResolutionCount(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return 1;
 }
 
-decPoint deOSConsole::GetDisplayResolution( int display, int resolution ){
-	DEASSERT_TRUE( display == 0 )
-	DEASSERT_TRUE( resolution == 0 )
+decPoint deOSConsole::GetDisplayResolution(int display, int resolution){
+	DEASSERT_TRUE(display == 0)
+	DEASSERT_TRUE(resolution == 0)
 	
-	return decPoint( pScreenWidth, pScreenHeight );
+	return decPoint(pScreenWidth, pScreenHeight);
 }
 
-int deOSConsole::GetDisplayCurrentScaleFactor( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSConsole::GetDisplayCurrentScaleFactor(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return 100;
 }
@@ -223,20 +223,20 @@ deOSConsole *deOSConsole::CastToOSConsole(){
 decString deOSConsole::pGetHomeDirectory(){
 	// the user configuration directory is located under the user home directory.
 	// can be changed at runtime using an environment parameter.
-	const char *envPath = getenv( "HOME" );
-	if( envPath ){
-		return decString( envPath );
+	const char *envPath = getenv("HOME");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	envPath = getenv( "USER" );
-	if( envPath ){
-		return decString( "/home/" ) + envPath;
+	envPath = getenv("USER");
+	if(envPath){
+		return decString("/home/") + envPath;
 	}
 	
-	envPath = getenv( "LOGUSER" );
-	if( envPath ){
-		return decString( "/home/" ) + envPath;
+	envPath = getenv("LOGUSER");
+	if(envPath){
+		return decString("/home/") + envPath;
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

@@ -39,7 +39,7 @@ igdeNativeNullSpinTextField::igdeNativeNullSpinTextField(){
 igdeNativeNullSpinTextField::~igdeNativeNullSpinTextField(){
 }
 
-igdeNativeNullSpinTextField *igdeNativeNullSpinTextField::CreateNativeWidget( igdeSpinTextField& ){
+igdeNativeNullSpinTextField *igdeNativeNullSpinTextField::CreateNativeWidget(igdeSpinTextField&){
 	return new igdeNativeNullSpinTextField;
 }
 

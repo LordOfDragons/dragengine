@@ -49,17 +49,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meTaskSyncGameDefinition::meTaskSyncGameDefinition( meWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pState( esProcessWorld ),
-pObjectIndex( 0 ),
-pDecalIndex( 0 ),
-pStepIndex( 0 ),
-pStepCount( 0 ),
-pBatchSizeObjects( 100 ),
-pBatchSizeDecals( 100 )
+meTaskSyncGameDefinition::meTaskSyncGameDefinition(meWindowMain &windowMain) :
+pWindowMain(windowMain),
+pState(esProcessWorld),
+pObjectIndex(0),
+pDecalIndex(0),
+pStepIndex(0),
+pStepCount(0),
+pBatchSizeObjects(100),
+pBatchSizeDecals(100)
 {
-	SetMessage( "World Editor: Synchronize Game Definition" );
+	SetMessage("World Editor: Synchronize Game Definition");
 }
 
 meTaskSyncGameDefinition::~meTaskSyncGameDefinition(){
@@ -71,19 +71,19 @@ meTaskSyncGameDefinition::~meTaskSyncGameDefinition(){
 ///////////////
 
 bool meTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetWorld() ){
+	if(!pWindowMain.GetWorld()){
 		return false;
 	}
 	
 	meWorld &world = *pWindowMain.GetWorld();
 	
-	switch( pState ){
+	switch(pState){
 	case esProcessWorld:
 		pStepCount = 1; // esProcessWorld
-		pStepCount += ( decMath::max( world.GetObjects().GetCount() - 1, 0 )
-			/ pBatchSizeObjects ) + 1;
-		pStepCount += ( decMath::max( world.GetDecals().GetCount() - 1, 0 )
-			/ pBatchSizeDecals ) + 1;
+		pStepCount += (decMath::max(world.GetObjects().GetCount() - 1, 0)
+			/ pBatchSizeObjects) + 1;
+		pStepCount += (decMath::max(world.GetDecals().GetCount() - 1, 0)
+			/ pBatchSizeDecals) + 1;
 		pStepCount += 1; // esProcessWindows
 		
 		world.GetSky()->OnGameDefinitionChanged();
@@ -95,36 +95,36 @@ bool meTaskSyncGameDefinition::Step(){
 	case esProcessObjects:{
 		const meObjectList &objects = world.GetObjects();
 		const int objectCount = objects.GetCount();
-		const int lastIndex = decMath::min( pObjectIndex + pBatchSizeObjects, objectCount );
+		const int lastIndex = decMath::min(pObjectIndex + pBatchSizeObjects, objectCount);
 		int i;
 		
-		SetProgress( ( float )pStepIndex / ( float )pStepCount );
+		SetProgress((float)pStepIndex / (float)pStepCount);
 		
 		decString message;
-		message.Format( "World Editor: Synchronize Game Definition: Objects (%d/%d)",
-			pObjectIndex, objectCount );
-		SetMessage( message );
+		message.Format("World Editor: Synchronize Game Definition: Objects (%d/%d)",
+			pObjectIndex, objectCount);
+		SetMessage(message);
 		
-		for( ; pObjectIndex<lastIndex; pObjectIndex++ ){
-			meObject &object = *objects.GetAt( pObjectIndex );
+		for(; pObjectIndex<lastIndex; pObjectIndex++){
+			meObject &object = *objects.GetAt(pObjectIndex);
 			object.OnGameDefinitionChanged();
 			
 			const int textureCount = object.GetTextureCount();
-			for( i=0; i<textureCount; i++ ){
-				meObjectTexture &texture = *object.GetTextureAt( i );
+			for(i=0; i<textureCount; i++){
+				meObjectTexture &texture = *object.GetTextureAt(i);
 				texture.LoadSkin();
 			}
 			
 			const int decalCount = object.GetDecalCount();
-			for( i=0; i<decalCount; i++ ){
-				meDecal &decal = *object.GetDecalAt( i );
+			for(i=0; i<decalCount; i++){
+				meDecal &decal = *object.GetDecalAt(i);
 				decal.OnGameDefinitionChanged();
 				decal.LoadSkin();
 			}
 		}
 		
 		pStepIndex++;
-		if( pObjectIndex == objectCount ){
+		if(pObjectIndex == objectCount){
 			pState = esProcessDecals;
 		}
 		}
@@ -133,30 +133,30 @@ bool meTaskSyncGameDefinition::Step(){
 	case esProcessDecals:{
 		const meDecalList &decals = world.GetDecals();
 		const int decalCount = decals.GetCount();
-		const int lastIndex = decMath::min( pDecalIndex + pBatchSizeDecals, decalCount );
+		const int lastIndex = decMath::min(pDecalIndex + pBatchSizeDecals, decalCount);
 		
-		SetProgress( ( float )pStepIndex / ( float )pStepCount );
+		SetProgress((float)pStepIndex / (float)pStepCount);
 		decString message;
-		message.Format( "World Editor: Synchronize Game Definition: Decals (%d/%d)",
-			pDecalIndex, pDecalIndex );
-		SetMessage( message );
+		message.Format("World Editor: Synchronize Game Definition: Decals (%d/%d)",
+			pDecalIndex, pDecalIndex);
+		SetMessage(message);
 		
-		for( ; pDecalIndex<lastIndex; pDecalIndex++ ){
-			meDecal &decal = *decals.GetAt( pDecalIndex );
+		for(; pDecalIndex<lastIndex; pDecalIndex++){
+			meDecal &decal = *decals.GetAt(pDecalIndex);
 			decal.OnGameDefinitionChanged();
 			decal.LoadSkin();
 		}
 		
 		pStepIndex++;
-		if( pDecalIndex == decalCount ){
+		if(pDecalIndex == decalCount){
 			pState = esProcessWindows;
 		}
 		}
 		return true;
 		
 	case esProcessWindows:
-		SetProgress( ( float )pStepIndex / ( float )pStepCount );
-		SetMessage( "World Editor: Synchronize Game Definition" );
+		SetProgress((float)pStepIndex / (float)pStepCount);
+		SetMessage("World Editor: Synchronize Game Definition");
 		
 		pWindowMain.GetWindowProperties()->OnGameDefinitionChanged();
 		pState = esFinished;

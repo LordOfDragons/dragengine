@@ -41,7 +41,7 @@ class decUnicodeArgumentList;
  * \brief FOX toolkit native application.
  */
 class igdeNativeFoxApplication : public FXApp{
-	FXDECLARE( igdeNativeFoxApplication )
+	FXDECLARE(igdeNativeFoxApplication)
 protected:
 	igdeNativeFoxApplication();
 	
@@ -49,13 +49,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create application. */
-	igdeNativeFoxApplication( igdeApplication &owner );
+	igdeNativeFoxApplication(igdeApplication &owner);
 	
 	/** \brief Clean up application. */
 	~igdeNativeFoxApplication();
 	
 	/** \brief Create native application. */
-	static igdeNativeFoxApplication* CreateNativeApplication( igdeApplication &application );
+	static igdeNativeFoxApplication* CreateNativeApplication(igdeApplication &application);
 	
 	/** \brief Destroy native application. */
 	virtual void DestroyNativeApplication();
@@ -67,14 +67,14 @@ public:
 	/*@{*/
 	/** \brief Get arguments from OS specific startup routine. */
 	#ifdef OS_UNIX
-	static void GetOSStartUpArguments( decUnicodeStringList &arguments, int argCount, char **args );
+	static void GetOSStartUpArguments(decUnicodeStringList &arguments, int argCount, char **args);
 	#elif defined OS_W32
-	static void GetOSStartUpArguments( decUnicodeStringList &arguments,
-		const decUnicodeArgumentList &windowsArguments );
+	static void GetOSStartUpArguments(decUnicodeStringList &arguments,
+		const decUnicodeArgumentList &windowsArguments);
 	#endif
 	
 	/** \brief Initialize application. */
-	void Initialize( decUnicodeStringList &arguments );
+	void Initialize(decUnicodeStringList &arguments);
 	
 	/** \brief Run. */
 	void Run();
@@ -83,16 +83,16 @@ public:
 	void Quit();
 	
 	/** \brief System color. */
-	decColor GetSystemColor( igdeEnvironment::eSystemColors color ) const;
+	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;
 	
 	/** \brief Get main app font config. */
-	void GetAppFontConfig( igdeFont::sConfiguration &config ) const;
+	void GetAppFontConfig(igdeFont::sConfiguration &config) const;
 	
 	/** \brief Show error. */
-	void ShowError( const deException &exception ) const;
+	void ShowError(const deException &exception) const;
 	
 	/** \brief Show window modal while keeping engine properly updating. */
-	void RunModalWhileShown( igdeWindow &window );
+	void RunModalWhileShown(igdeWindow &window);
 	
 	/**
 	 * \brief Global display scaling factor for display.

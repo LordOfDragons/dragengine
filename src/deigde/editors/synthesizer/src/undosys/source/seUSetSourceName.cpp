@@ -39,24 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceName::seUSetSourceName( seSource *source, const char *newName ) :
-pSource( NULL )
+seUSetSourceName::seUSetSourceName(seSource *source, const char *newName) :
+pSource(NULL)
 {
-	if( ! source || ! newName ){
-		DETHROW( deeInvalidParam );
+	if(!source || !newName){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldName = source->GetName();
 	pNewName = newName;
 	
-	SetShortInfo( "Set Source Name" );
+	SetShortInfo("Set Source Name");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSetSourceName::~seUSetSourceName(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSetSourceName::~seUSetSourceName(){
 ///////////////
 
 void seUSetSourceName::Undo(){
-	pSource->SetName( pOldName );
+	pSource->SetName(pOldName);
 }
 
 void seUSetSourceName::Redo(){
-	pSource->SetName( pNewName );
+	pSource->SetName(pNewName);
 }

@@ -52,13 +52,13 @@ public:
 	decUniqueID();
 	
 	/** \brief Create unique id from integer value. */
-	decUniqueID( int value );
+	decUniqueID(int value);
 	
 	/** \brief Create unique id from hex string. */
-	decUniqueID( const char *string );
+	decUniqueID(const char *string);
 	
 	/** \brief Create copy of unique id. */
-	decUniqueID( const decUniqueID &id );
+	decUniqueID(const decUniqueID &id);
 	
 	/** \brief Clean up unique id. */
 	~decUniqueID();
@@ -76,13 +76,13 @@ public:
 	 * 
 	 * ID is reset to 0 if bit count changes.
 	 */
-	void SetBitCount( int bitCount );
+	void SetBitCount(int bitCount);
 	
 	/** \brief Byte at the position in LSB. */
-	int GetByteAt( int position ) const;
+	int GetByteAt(int position) const;
 	
 	/** \brief Set byte at position in LSB. */
-	void SetByteAt( int position, int value );
+	void SetByteAt(int position, int value);
 	
 	/**
 	 * \brief Increment ID by 1.
@@ -96,23 +96,23 @@ public:
 	 * 
 	 * Increases bit count by multiples of 8 if overflowing.
 	 */
-	void IncrementBy( int amount );
+	void IncrementBy(int amount);
 	
 	/**
 	 * \brief Increment ID by another ID.
 	 * 
 	 * Increases bit count by multiples of 8 if overflowing.
 	 */
-	void IncrementBy( const decUniqueID &id );
+	void IncrementBy(const decUniqueID &id);
 	
 	/** \brief Decrement ID by 1. */
 	void Decrement();
 	
 	/** \brief Decrement ID by positive amount. */
-	void DecrementBy( int amount );
+	void DecrementBy(int amount);
 	
 	/** \brief Decrement ID by another ID. */
-	void DecrementBy( const decUniqueID &id );
+	void DecrementBy(const decUniqueID &id);
 	
 	/** \brief Reset id to 0 and bit count to 8. */
 	void Reset();
@@ -129,25 +129,25 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set ID. */
-	decUniqueID &operator=( const decUniqueID &id );
+	decUniqueID &operator=(const decUniqueID &id);
 	
 	/** \brief IDs are equal. */
-	bool operator==( const decUniqueID &id ) const;
+	bool operator==(const decUniqueID &id) const;
 	
 	/** \brief IDs are not equal. */
-	bool operator!=( const decUniqueID &id ) const;
+	bool operator!=(const decUniqueID &id) const;
 	
 	/** \brief ID is less than another ID. */
-	bool operator<( const decUniqueID &id ) const;
+	bool operator<(const decUniqueID &id) const;
 	
 	/** \brief ID is less than or equal to another ID. */
-	bool operator<=( const decUniqueID &id ) const;
+	bool operator<=(const decUniqueID &id) const;
 	
 	/** \brief ID is greater than another ID. */
-	bool operator>( const decUniqueID &id ) const;
+	bool operator>(const decUniqueID &id) const;
 	
 	/** \brief ID is greater than or equal to another ID. */
-	bool operator>=( const decUniqueID &id ) const;
+	bool operator>=(const decUniqueID &id) const;
 	/*@}*/
 };
 

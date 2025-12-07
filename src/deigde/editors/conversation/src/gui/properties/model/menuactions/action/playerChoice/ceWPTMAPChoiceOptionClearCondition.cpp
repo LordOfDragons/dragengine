@@ -49,17 +49,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionClearCondition::ceWPTMAPChoiceOptionClearCondition( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionClearCondition::ceWPTMAPChoiceOptionClearCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option ) :
-ceWPTMenuAction( windowMain, "Clear Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option )
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option) :
+ceWPTMenuAction(windowMain, "Clear Condition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option)
 {
-	SetEnabled( option.GetCondition() != nullptr );
+	SetEnabled(option.GetCondition() != nullptr);
 }
 
 

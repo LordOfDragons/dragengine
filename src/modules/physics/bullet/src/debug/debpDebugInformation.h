@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create debug information. */
-	debpDebugInformation( const char *name );
+	debpDebugInformation(const char *name);
 	
 	/** \brief Clean up debug information. */
 	virtual ~debpDebugInformation();
@@ -81,7 +81,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Clear elapsed time and counter. */
 	void Clear();
@@ -92,10 +92,10 @@ public:
 	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
 	/** \brief Set elapsed time. */
-	void SetElapsedTime( float time );
+	void SetElapsedTime(float time);
 	
 	/** \brief Increment elapsed time. */
-	void IncrementElapsedTime( float time );
+	void IncrementElapsedTime(float time);
 	
 	/** \brief Clear elapsed time. */
 	void ClearElapsedTime();
@@ -109,13 +109,13 @@ public:
 	inline int GetCounter() const{ return pCounter; }
 	
 	/** \brief Set counter. */
-	void SetCounter( int counter );
+	void SetCounter(int counter);
 	
 	/** \brief Increment counter by one. */
 	void IncrementCounter();
 	
 	/** \brief Increment counter. */
-	void IncrementCounter( int count );
+	void IncrementCounter(int count);
 	
 	/** \brief Clear counter. */
 	void ClearCounter();
@@ -129,7 +129,7 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	/*@}*/
 };
 

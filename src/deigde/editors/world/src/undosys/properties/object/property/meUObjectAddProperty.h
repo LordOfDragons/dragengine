@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectAddProperty( meObject *object, const char *key, const char *value );
+	meUObjectAddProperty(meObject *object, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sets the value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Undo. */
 	virtual void Undo();

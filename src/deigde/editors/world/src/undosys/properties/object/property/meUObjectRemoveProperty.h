@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectRemoveProperty( meObject *object, const char *key, const char *value );
+	meUObjectRemoveProperty(meObject *object, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */

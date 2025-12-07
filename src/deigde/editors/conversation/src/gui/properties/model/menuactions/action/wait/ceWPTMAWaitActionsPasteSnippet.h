@@ -51,9 +51,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsPasteSnippet( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsPasteSnippet(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAWait &wait, int index );
+		ceCAWait &wait, int index);
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
 	/*@}*/
 };
 

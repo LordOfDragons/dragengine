@@ -59,7 +59,7 @@ public:
 	aeRuleAnimationSelect();
 	
 	/** Create copy of animator select rule. */
-	aeRuleAnimationSelect( const aeRuleAnimationSelect &copy );
+	aeRuleAnimationSelect(const aeRuleAnimationSelect &copy);
 	
 	/** Clean up animator select rule. */
 	virtual ~aeRuleAnimationSelect();
@@ -73,7 +73,7 @@ public:
 	inline const decStringList &GetMoves() const{ return pMoves; }
 	
 	/** Set moves. */
-	void SetMoves( const decStringList &moves );
+	void SetMoves(const decStringList &moves);
 	
 	
 	
@@ -81,25 +81,25 @@ public:
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** Orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** Size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** Vertex position set manipulation is enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	
 	
@@ -122,10 +122,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** Number of targets using a given link. */
-	virtual int CountLinkUsage( aeLink *link ) const;
+	virtual int CountLinkUsage(aeLink *link) const;
 	
 	/** Remove link from all targets using it. */
-	virtual void RemoveLinkFromTargets( aeLink *link );
+	virtual void RemoveLinkFromTargets(aeLink *link);
 	
 	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -136,7 +136,7 @@ public:
 	virtual aeRule *CreateCopy() const;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	virtual void ListLinks(aeLinkList& list);
 	/*@}*/
 	
 	
@@ -144,7 +144,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy another animator difference rule to this animator difference rule. */
-	virtual aeRuleAnimationSelect &operator=( const aeRuleAnimationSelect &copy );
+	virtual aeRuleAnimationSelect &operator=(const aeRuleAnimationSelect &copy);
 	/*@}*/
 };
 

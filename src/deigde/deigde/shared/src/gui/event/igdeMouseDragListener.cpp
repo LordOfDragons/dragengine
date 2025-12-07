@@ -33,11 +33,11 @@
 ////////////////////////////
 
 igdeMouseDragListener::igdeMouseDragListener() :
-pDragState( edsNone ),
-pShiftOrigin( false ),
-pShiftNow( false ),
-pControlOrigin( false ),
-pControlNow( false ){
+pDragState(edsNone),
+pShiftOrigin(false),
+pShiftNow(false),
+pControlOrigin(false),
+pControlNow(false){
 }
 
 igdeMouseDragListener::~igdeMouseDragListener(){
@@ -48,11 +48,11 @@ igdeMouseDragListener::~igdeMouseDragListener(){
 // Management
 ///////////////
 
-void igdeMouseDragListener::SetDragOrigin( const decPoint &origin ){
+void igdeMouseDragListener::SetDragOrigin(const decPoint &origin){
 	pDragOrigin = origin;
 }
 
-void igdeMouseDragListener::SetDragPosition( const decPoint &position ){
+void igdeMouseDragListener::SetDragPosition(const decPoint &position){
 	pDragPosition = position;
 }
 
@@ -60,32 +60,32 @@ decPoint igdeMouseDragListener::GetDragDistance() const{
 	return pDragPosition - pDragOrigin;
 }
 
-void igdeMouseDragListener::SetDragState( eDragState state ){
+void igdeMouseDragListener::SetDragState(eDragState state){
 	pDragState = state;
 }
 
 void igdeMouseDragListener::Cancel(){
-	if( pDragState == edsNone ){
+	if(pDragState == edsNone){
 		return;
 	}
 	
-	OnDragFinish( false );
+	OnDragFinish(false);
 	pDragState = edsNone;
 }
 
-void igdeMouseDragListener::SetShiftOrigin( bool pressed ){
+void igdeMouseDragListener::SetShiftOrigin(bool pressed){
 	pShiftOrigin = pressed;
 }
 
-void igdeMouseDragListener::SetShiftNow( bool pressed ){
+void igdeMouseDragListener::SetShiftNow(bool pressed){
 	pShiftNow = pressed;
 }
 
-void igdeMouseDragListener::SetControlOrigin( bool pressed ){
+void igdeMouseDragListener::SetControlOrigin(bool pressed){
 	pControlOrigin = pressed;
 }
 
-void igdeMouseDragListener::SetControlNow( bool pressed ){
+void igdeMouseDragListener::SetControlNow(bool pressed){
 	pControlNow = pressed;
 }
 
@@ -101,7 +101,7 @@ bool igdeMouseDragListener::OnDragBegin(){
 void igdeMouseDragListener::OnDragUpdate(){
 }
 
-void igdeMouseDragListener::OnDragFinish( bool ){
+void igdeMouseDragListener::OnDragFinish(bool){
 }
 
 
@@ -109,13 +109,13 @@ void igdeMouseDragListener::OnDragFinish( bool ){
 // Events
 ///////////
 
-void igdeMouseDragListener::OnButtonPress( igdeWidget *widget,
-int button, const decPoint &position, int modifiers ){
-	if( pDragState != edsNone ){
+void igdeMouseDragListener::OnButtonPress(igdeWidget *widget,
+int button, const decPoint &position, int modifiers){
+	if(pDragState != edsNone){
 		return;
 	}
 	
-	switch( button ){
+	switch(button){
 	case deInputEvent::embcLeft:
 		pDragState = edsLeft;
 		break;
@@ -130,35 +130,35 @@ int button, const decPoint &position, int modifiers ){
 	
 	pDragOrigin = position;
 	pDragPosition = pDragOrigin;
-	pShiftOrigin = ( modifiers & deInputEvent::esmShift ) == deInputEvent::esmShift;
+	pShiftOrigin = (modifiers & deInputEvent::esmShift) == deInputEvent::esmShift;
 	pShiftNow = pShiftOrigin;
-	pControlOrigin = ( modifiers & deInputEvent::esmControl ) == deInputEvent::esmControl;
+	pControlOrigin = (modifiers & deInputEvent::esmControl) == deInputEvent::esmControl;
 	pControlNow = pControlOrigin;
 	
-	if( ! OnDragBegin() ){
+	if(!OnDragBegin()){
 		pDragState = edsNone;
 	}
 }
 
-void igdeMouseDragListener::OnButtonRelease( igdeWidget *widget,
-int button, const decPoint &position, int modifiers ){
-	if( pDragState == edsNone ){
+void igdeMouseDragListener::OnButtonRelease(igdeWidget *widget,
+int button, const decPoint &position, int modifiers){
+	if(pDragState == edsNone){
 		return;
 	}
 	
-	OnDragFinish( true );
+	OnDragFinish(true);
 	pDragState = edsNone;
 }
 
-void igdeMouseDragListener::OnMouseMoved( igdeWidget *widget,
-const decPoint &position, int modifiers ){
-	if( pDragState == edsNone ){
+void igdeMouseDragListener::OnMouseMoved(igdeWidget *widget,
+const decPoint &position, int modifiers){
+	if(pDragState == edsNone){
 		return;
 	}
 	
 	pDragPosition = position;
-	pShiftNow = ( modifiers & deInputEvent::esmShift ) == deInputEvent::esmShift;
-	pControlNow = ( modifiers & deInputEvent::esmControl ) == deInputEvent::esmControl;
+	pShiftNow = (modifiers & deInputEvent::esmShift) == deInputEvent::esmShift;
+	pControlNow = (modifiers & deInputEvent::esmControl) == deInputEvent::esmControl;
 	
 	OnDragUpdate();
 }

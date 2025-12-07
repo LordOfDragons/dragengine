@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCGestureToggleHold( ceGesture *file );
+	ceUCGestureToggleHold(ceGesture *file);
 	
 	/** \breif Clean up undo action. */
 	virtual ~ceUCGestureToggleHold();

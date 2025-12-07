@@ -41,7 +41,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *NullAudioCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *NullAudioCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -52,13 +52,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *NullAudioCreateModule( deLoadableModule *load
 // Entry Function
 ///////////////////
 
-deBaseModule *NullAudioCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *NullAudioCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deAudioNull( *loadableModule );
+		module = new deAudioNull(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -73,8 +73,8 @@ deBaseModule *NullAudioCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deAudioNull::deAudioNull( deLoadableModule &loadableModule ) :
-deBaseAudioModule( loadableModule ){
+deAudioNull::deAudioNull(deLoadableModule &loadableModule) :
+deBaseAudioModule(loadableModule){
 }
 
 deAudioNull::~deAudioNull(){
@@ -85,7 +85,7 @@ deAudioNull::~deAudioNull(){
 // Management
 ///////////////
 
-bool deAudioNull::Init( deMicrophone *activeMic ){
+bool deAudioNull::Init(deMicrophone *activeMic){
 	return true;
 }
 
@@ -99,24 +99,24 @@ void deAudioNull::ProcessAudio(){
 	// stepping the speakers is required as game code can synchronize to sound finished playing.
 	// for the time being we stop all speakers found playing. this is not correct but prevents
 	// problems until proper code is written
-	if( activeMicrophone ){
+	if(activeMicrophone){
 		world = activeMicrophone->GetParentWorld();
 	}
 	
-	if( world ){
+	if(world){
 		deSpeaker *speaker = world->GetRootSpeaker();
-		while( speaker ){
+		while(speaker){
 			deSpeaker * const safeSpeaker = speaker;
 			speaker = speaker->GetLLWorldNext();
 			
-			if( safeSpeaker->GetPlaying() ){
+			if(safeSpeaker->GetPlaying()){
 				safeSpeaker->Stop();
 			}
 		}
 	}
 }
 
-void deAudioNull::SetActiveMicrophone( deMicrophone *microphone ){
+void deAudioNull::SetActiveMicrophone(deMicrophone *microphone){
 }
 
 
@@ -124,51 +124,51 @@ void deAudioNull::SetActiveMicrophone( deMicrophone *microphone ){
 // Audio Management
 /////////////////////
 
-deBaseAudioWorld *deAudioNull::CreateWorld( deWorld* ){
+deBaseAudioWorld *deAudioNull::CreateWorld(deWorld*){
 	return NULL;
 }
 
-deBaseAudioSound *deAudioNull::CreateSound( deSound* ){
+deBaseAudioSound *deAudioNull::CreateSound(deSound*){
 	return NULL;
 }
 
-deBaseAudioSpeaker *deAudioNull::CreateSpeaker( deSpeaker* ){
+deBaseAudioSpeaker *deAudioNull::CreateSpeaker(deSpeaker*){
 	return NULL;
 }
 
-deBaseAudioMicrophone *deAudioNull::CreateMicrophone( deMicrophone* ){
+deBaseAudioMicrophone *deAudioNull::CreateMicrophone(deMicrophone*){
 	return NULL;
 }
 
-deBaseAudioComponent *deAudioNull::CreateComponent( deComponent* ){
+deBaseAudioComponent *deAudioNull::CreateComponent(deComponent*){
 	return NULL;
 }
 
-deBaseAudioModel *deAudioNull::CreateModel( deModel* ){
+deBaseAudioModel *deAudioNull::CreateModel(deModel*){
 	return NULL;
 }
 
-deBaseAudioSkin *deAudioNull::CreateSkin( deSkin* ){
+deBaseAudioSkin *deAudioNull::CreateSkin(deSkin*){
 	return NULL;
 }
 
-deBaseAudioDecal *deAudioNull::CreateDecal( deDecal* ){
+deBaseAudioDecal *deAudioNull::CreateDecal(deDecal*){
 	return NULL;
 }
 
-deBaseAudioSoundLevelMeter *deAudioNull::CreateSoundLevelMeter( deSoundLevelMeter* ){
+deBaseAudioSoundLevelMeter *deAudioNull::CreateSoundLevelMeter(deSoundLevelMeter*){
 	return NULL;
 }
 
-deBaseAudioVideoPlayer *deAudioNull::CreateVideoPlayer( deVideoPlayer* ){
+deBaseAudioVideoPlayer *deAudioNull::CreateVideoPlayer(deVideoPlayer*){
 	return NULL;
 }
 
-deBaseAudioSynthesizerInstance *deAudioNull::CreateSynthesizerInstance( deSynthesizerInstance* ){
+deBaseAudioSynthesizerInstance *deAudioNull::CreateSynthesizerInstance(deSynthesizerInstance*){
 	return NULL;
 }
 
-deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain( deHeightTerrain& ){
+deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain(deHeightTerrain&){
 	return NULL;
 }
 

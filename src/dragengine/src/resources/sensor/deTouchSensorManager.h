@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new touch sensor resource manager linked to the given engine. */
-	deTouchSensorManager( deEngine *engine );
+	deTouchSensorManager(deEngine *engine);
 	
 	/** \brief Clean up touch sensor resource manager and reports leaking resources. */
 	virtual ~deTouchSensorManager();
@@ -88,7 +88,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

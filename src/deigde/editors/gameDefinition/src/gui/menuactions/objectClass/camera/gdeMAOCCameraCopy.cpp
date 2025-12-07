@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCCameraCopy::gdeMAOCCameraCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Camera",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class camera" )
+gdeMAOCCameraCopy::gdeMAOCCameraCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Camera",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class camera")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Camera",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCCameraCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCCamera ){
+igdeUndo *gdeMAOCCameraCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCCamera){
 		return NULL;
 	}
 	
 	gdeOCCamera * const camera = gameDefinition.GetActiveOCCamera();
-	if( ! camera ){
+	if(!camera){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCCameraCopy::OnActionSubObject( gdeGameDefinition &gameDefinitio
 
 void gdeMAOCCameraCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera
-		&& gameDefinition->GetActiveOCCamera() != NULL );
+		&& gameDefinition->GetActiveOCCamera() != NULL);
 }

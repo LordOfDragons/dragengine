@@ -47,7 +47,7 @@ public:
 	igdeGDCNavigationSpaceList();
 	
 	/** \brief Create copy of a game definition class navigation space list. */
-	igdeGDCNavigationSpaceList( const igdeGDCNavigationSpaceList &list );
+	igdeGDCNavigationSpaceList(const igdeGDCNavigationSpaceList &list);
 	
 	/** \brief Clean up list. */
 	~igdeGDCNavigationSpaceList();
@@ -61,31 +61,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Navigation space by index. */
-	igdeGDCNavigationSpace *GetAt( int index ) const;
+	igdeGDCNavigationSpace *GetAt(int index) const;
 	
 	/** \brief Index of an navigation space or -1 if not found. */
-	int IndexOf( igdeGDCNavigationSpace *navSpace ) const;
+	int IndexOf(igdeGDCNavigationSpace *navSpace) const;
 	
 	/** \brief Determines if an navigation space exists. */
-	bool Has( igdeGDCNavigationSpace *navSpace ) const;
+	bool Has(igdeGDCNavigationSpace *navSpace) const;
 	
 	/** \brief Adds an navigation space. */
-	void Add( igdeGDCNavigationSpace *navSpace );
+	void Add(igdeGDCNavigationSpace *navSpace);
 	
 	/** \brief Inserts a new navigation space. */
-	void InsertAt( igdeGDCNavigationSpace *navSpace, int index );
+	void InsertAt(igdeGDCNavigationSpace *navSpace, int index);
 	
 	/** \brief Moves an navigation space to a new position. */
-	void MoveTo( igdeGDCNavigationSpace *navSpace, int index );
+	void MoveTo(igdeGDCNavigationSpace *navSpace, int index);
 	
 	/** \brief Removes an navigation space. */
-	void Remove( igdeGDCNavigationSpace *navSpace );
+	void Remove(igdeGDCNavigationSpace *navSpace);
 	
 	/** \brief Removes all navigation spaces. */
 	void RemoveAll();
 	
 	/** \brief Set this list to a deep copy of another list. */
-	void SetToDeepCopyFrom( const igdeGDCNavigationSpaceList &list );
+	void SetToDeepCopyFrom(const igdeGDCNavigationSpaceList &list);
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set list from another list. */
-	igdeGDCNavigationSpaceList &operator=( const igdeGDCNavigationSpaceList &list );
+	igdeGDCNavigationSpaceList &operator=(const igdeGDCNavigationSpaceList &list);
 	/*@}*/
 };
 

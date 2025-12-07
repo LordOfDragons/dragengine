@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new listener. */
-	peeWPTypeListener( peeWPType &panel );
+	peeWPTypeListener(peeWPType &panel);
 	
 	/** \brief Clean up the listener. */
 	virtual ~peeWPTypeListener();
@@ -52,31 +52,31 @@ public:
 	
 	/** \name Management */
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged( peeEmitter *emitter );
+	virtual void ControllerStructureChanged(peeEmitter *emitter);
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( peeEmitter *emitter, peeController *controller );
+	virtual void ControllerChanged(peeEmitter *emitter, peeController *controller);
 	
 	/** Type count or order changed. */
-	virtual void TypeStructureChanged( peeEmitter *emitter );
+	virtual void TypeStructureChanged(peeEmitter *emitter);
 	
 	/** Type changed. */
-	virtual void TypeChanged( peeEmitter *emitter, peeType *type );
+	virtual void TypeChanged(peeEmitter *emitter, peeType *type);
 	
 	/** Active type active trail controller changed. */
-	virtual void TypeActiveTrailControllerChanged( peeEmitter *emitter, peeType *type );
+	virtual void TypeActiveTrailControllerChanged(peeEmitter *emitter, peeType *type);
 	
 	/** Active type active emit controller changed. */
-	virtual void TypeActiveEmitControllerChanged( peeEmitter *emitter, peeType *type );
+	virtual void TypeActiveEmitControllerChanged(peeEmitter *emitter, peeType *type);
 	
 	/** A type parameter changed. */
-	virtual void TypeParameterChanged( peeEmitter *emitter, peeType *type, peeParameter *parameter );
+	virtual void TypeParameterChanged(peeEmitter *emitter, peeType *type, peeParameter *parameter);
 	
 	/** Active type parameter changed. */
-	virtual void ActiveTypeParameterChanged( peeEmitter *emitter, peeType *type );
+	virtual void ActiveTypeParameterChanged(peeEmitter *emitter, peeType *type);
 	
 	/** Active type changed. */
-	virtual void ActiveTypeChanged( peeEmitter *emitter );
+	virtual void ActiveTypeChanged(peeEmitter *emitter);
 	/*@}*/
 };
 

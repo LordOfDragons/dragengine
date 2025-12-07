@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image. */
-	deoglImage( deGraphicOpenGl &ogl, deImage &image );
+	deoglImage(deGraphicOpenGl &ogl, deImage &image);
 	
 	/** Clean up image. */
 	virtual ~deoglImage();
@@ -153,7 +153,7 @@ public:
 	
 private:
 	deoglPixelBuffer::Ref pCreatePixelBuffer();
-	void pCreatePixelBufferSafe( deoglPixelBuffer::Ref &pixelBuffer );
+	void pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer);
 	void pRequiresSync();
 };
 

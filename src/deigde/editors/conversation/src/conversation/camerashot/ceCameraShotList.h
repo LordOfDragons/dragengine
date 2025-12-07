@@ -52,29 +52,29 @@ public:
 	/** Retrieves the number of camera shots. */
 	int GetCount() const;
 	/** Retrieves the camera shot at the given position. */
-	ceCameraShot *GetAt( int index ) const;
+	ceCameraShot *GetAt(int index) const;
 	/** Retrieves the named camera shot or NULL if not found. */
-	ceCameraShot *GetNamed( const char *name ) const;
+	ceCameraShot *GetNamed(const char *name) const;
 	/** Retrieves the index of a camera shot or -1 if not found. */
-	int IndexOf( ceCameraShot *cameraShot ) const;
+	int IndexOf(ceCameraShot *cameraShot) const;
 	/** Retrieves the index of the named camera shot or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a camera shot exists. */
-	bool Has( ceCameraShot *cameraShot ) const;
+	bool Has(ceCameraShot *cameraShot) const;
 	/** Determines if a named camera shot exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a camera shot. */
-	void Add( ceCameraShot *cameraShot );
+	void Add(ceCameraShot *cameraShot);
 	/** Removes a camera shot. */
-	void Remove( ceCameraShot *cameraShot );
+	void Remove(ceCameraShot *cameraShot);
 	/** Removes all camera shots. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceCameraShotList &operator=( const ceCameraShotList &list );
+	ceCameraShotList &operator=(const ceCameraShotList &list);
 	
 	/** \brief Append camera shots if absent. */
-	ceCameraShotList &operator+=( const ceCameraShotList &list );
+	ceCameraShotList &operator+=(const ceCameraShotList &list);
 	/*@}*/
 };
 

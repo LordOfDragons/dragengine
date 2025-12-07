@@ -42,61 +42,61 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureSetSkin::meUObjectTextureSetSkin( meObjectTexture *texture, const char *newskin ){
-	if( ! texture || ! newskin ) DETHROW( deeInvalidParam );
+meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const char *newskin){
+	if(!texture || !newskin) DETHROW(deeInvalidParam);
 	
 	meObject *object = texture->GetObject();
-	if( ! object ) DETHROW( deeInvalidParam );
+	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if( ! world ) DETHROW( deeInvalidParam );
+	if(!world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Set object texture skin" );
+	SetShortInfo("Set object texture skin");
 	
 	pTextures = NULL;
 	pTextureCount = 0;
 	
 	try{
-		pTextures = new sTexture[ 1 ];
-		if( ! pTextures ) DETHROW( deeOutOfMemory );
+		pTextures = new sTexture[1];
+		if(!pTextures) DETHROW(deeOutOfMemory);
 		
-		pTextures[ 0 ].oldskin = texture->GetSkinPath();
-		pTextures[ 0 ].newskin = newskin;
-		pTextures[ 0 ].texture = texture;
+		pTextures[0].oldskin = texture->GetSkinPath();
+		pTextures[0].newskin = newskin;
+		pTextures[0].texture = texture;
 		texture->AddReference();
 		
 		pTextureCount = 1;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-meUObjectTextureSetSkin::meUObjectTextureSetSkin( meObjectTextureList &textures, const char *newskin ){
+meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTextureList &textures, const char *newskin){
 	int count = textures.GetTextureCount();
 	meObjectTexture *texture;
 	
-	if( count == 0 || ! newskin ) DETHROW( deeInvalidParam );
+	if(count == 0 || !newskin) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Set object texture skins" );
+	SetShortInfo("Set object texture skins");
 	
 	pTextures = NULL;
 	pTextureCount = 0;
 	
 	try{
-		pTextures = new sTexture[ count ];
-		if( ! pTextures ) DETHROW( deeOutOfMemory );
+		pTextures = new sTexture[count];
+		if(!pTextures) DETHROW(deeOutOfMemory);
 		
-		for( pTextureCount=0; pTextureCount<count; pTextureCount++ ){
-			texture = textures.GetTextureAt( pTextureCount );
-			pTextures[ pTextureCount ].oldskin = texture->GetSkinPath();
-			pTextures[ pTextureCount ].newskin = newskin;
-			pTextures[ pTextureCount ].texture = texture;
+		for(pTextureCount=0; pTextureCount<count; pTextureCount++){
+			texture = textures.GetTextureAt(pTextureCount);
+			pTextures[pTextureCount].oldskin = texture->GetSkinPath();
+			pTextures[pTextureCount].newskin = newskin;
+			pTextures[pTextureCount].texture = texture;
 			texture->AddReference();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -113,15 +113,15 @@ meUObjectTextureSetSkin::~meUObjectTextureSetSkin(){
 
 void meUObjectTextureSetSkin::Undo(){
 	int i;
-	for( i=0; i<pTextureCount; i++ ){
-		pTextures[ i ].texture->SetSkinPath( pTextures[ i ].oldskin );
+	for(i=0; i<pTextureCount; i++){
+		pTextures[i].texture->SetSkinPath(pTextures[i].oldskin);
 	}
 }
 
 void meUObjectTextureSetSkin::Redo(){
 	int i;
-	for( i=0; i<pTextureCount; i++ ){
-		pTextures[ i ].texture->SetSkinPath( pTextures[ i ].newskin );
+	for(i=0; i<pTextureCount; i++){
+		pTextures[i].texture->SetSkinPath(pTextures[i].newskin);
 	}
 }
 
@@ -131,10 +131,10 @@ void meUObjectTextureSetSkin::Redo(){
 //////////////////////
 
 void meUObjectTextureSetSkin::pCleanUp(){
-	if( pTextures ){
-		while( pTextureCount > 0 ){
+	if(pTextures){
+		while(pTextureCount > 0){
 			pTextureCount--;
-			pTextures[ pTextureCount ].texture->FreeReference();
+			pTextures[pTextureCount].texture->FreeReference();
 		}
 		delete [] pTextures;
 	}

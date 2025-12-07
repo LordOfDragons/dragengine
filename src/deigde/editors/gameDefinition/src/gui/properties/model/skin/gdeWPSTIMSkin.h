@@ -42,7 +42,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSkin( gdeWPSTreeModel &tree, gdeSkin *skin );
+	gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin *skin);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -67,16 +67,16 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	virtual int Compare(const gdeWPSTreeItemModel &item) const;
 	
 	/** \brief User selected item. */
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	virtual void SelectBestMatching(const char *string);
 	/*@}*/
 };
 

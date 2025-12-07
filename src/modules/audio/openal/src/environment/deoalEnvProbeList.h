@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create environment probe manager. */
-	deoalEnvProbeList( deoalAWorld &world, double reuseDistance, int maxProbeCount );
+	deoalEnvProbeList(deoalAWorld &world, double reuseDistance, int maxProbeCount);
 	
 	/** \brief Clean up environment probe manager. */
 	~deoalEnvProbeList();
@@ -91,7 +91,7 @@ public:
 	inline float GetRange() const{ return pRange; }
 	
 	/** \brief Set probe range. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Attenuation reference distance. */
 	inline float GetAttenuationRefDist() const{ return pAttenuationRefDist; }
@@ -103,25 +103,25 @@ public:
 	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
 	
 	/** \brief Set attenuation parameters. */
-	void SetAttenuation( float refDist, float rolloff, float distanceOffset );
+	void SetAttenuation(float refDist, float rolloff, float distanceOffset);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Ray-tracing world BVH or NULL. */
 	inline deoalRTWorldBVH *GetRTWorldBVH() const{ return pRTWorldBVH; }
 	
 	/** \brief Set ray-tracing world bvh or NULL. */
-	void SetRTWorldBVH( deoalRTWorldBVH *bvh );
+	void SetRTWorldBVH(deoalRTWorldBVH *bvh);
 	
 	/** \brief Set ray tracing config to use. */
 	inline const deoalATRayTracing::sConfigSoundTracing *GetRTConfig() const{ return pRTConfig; }
 	
 	/** \brief Set ray tracing config to use. */
-	void SetRTConfig( const deoalATRayTracing::sConfigSoundTracing *config );
+	void SetRTConfig(const deoalATRayTracing::sConfigSoundTracing *config);
 	
 	
 	
@@ -154,7 +154,7 @@ public:
 	 * \param[in] position Position of probe. This is the sound source position.
 	 * \param[in] range Range of the probe. This is the sound source range.
 	 */
-	deoalEnvProbe *GetProbeTraceSoundRays( const decDVector &position );
+	deoalEnvProbe *GetProbeTraceSoundRays(const decDVector &position);
 	
 	/**
 	 * \brief Get probe for world position by estimating room parameters only.
@@ -167,7 +167,7 @@ public:
 	 * \param[in] position Position of probe. This is the sound source position.
 	 * \param[in] range Range of the probe. This is the sound source range.
 	 */
-	deoalEnvProbe *GetProbeEstimateRoom( const decDVector &position );
+	deoalEnvProbe *GetProbeEstimateRoom(const decDVector &position);
 	
 	/**
 	 * \brief Remove probes overlapping box in world coordinates.
@@ -175,7 +175,7 @@ public:
 	 * Called by moving components to force probes to be recreated. Probes containing the
 	 * world position are removed from the world octree.
 	 */
-	void InvalidateProbesInside( const decDVector &minExtend, const decDVector &maxExtend );
+	void InvalidateProbesInside(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** \brief Remove all probes. */
 	void InvalidateAllProbes();

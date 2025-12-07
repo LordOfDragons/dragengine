@@ -52,9 +52,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsCutAction( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsCutAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAWait &wait, ceConversationAction *action );
+		ceCAWait &wait, ceConversationAction *action);
 	/*@}*/
 	
 	

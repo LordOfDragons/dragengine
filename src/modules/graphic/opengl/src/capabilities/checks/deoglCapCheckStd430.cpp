@@ -52,9 +52,9 @@
 ////////////////////////////
 
 deoglCapCheckStd430::deoglCapCheckStd430(
-deoglCapabilities &capabilities ) :
-pCapabilities( capabilities ),
-pWorking( false ){
+deoglCapabilities &capabilities) :
+pCapabilities(capabilities),
+pWorking(false){
 }
 
 
@@ -90,21 +90,21 @@ void deoglCapCheckStd430::Check(){
 	try{
 		deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 		
-		const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Test std430 Support" );
-		DEASSERT_NOTNULL( sources )
-		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
-		DEASSERT_NOTNULL( shader )
+		const deoglShaderSources * const sources = shaderManager.GetSourcesNamed("Test std430 Support");
+		DEASSERT_NOTNULL(sources)
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith(sources, deoglShaderDefines());
+		DEASSERT_NOTNULL(shader)
 		
 		pWorking = true;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pWorking = false;
 	}
 	
-	if( pWorking ){
-		renderThread.GetLogger().LogInfo( "Capabilities: std430 Layout: Supported" );
+	if(pWorking){
+		renderThread.GetLogger().LogInfo("Capabilities: std430 Layout: Supported");
 		
 	}else{
-		renderThread.GetLogger().LogWarn( "Capabilities: std430 Layout: Not Supported!" );
+		renderThread.GetLogger().LogWarn("Capabilities: std430 Layout: Not Supported!");
 	}
 }

@@ -58,55 +58,55 @@ public:
 	int GetCount() const;
 	
 	/** \brief Sky by index. */
-	igdeGDSky *GetAt( int index ) const;
+	igdeGDSky *GetAt(int index) const;
 	
 	/** \brief Sky with path or NULL if absent. */
-	igdeGDSky *GetWithPath( const char *path ) const;
+	igdeGDSky *GetWithPath(const char *path) const;
 	
 	/** \brief Sky with name or NULL if absent. */
-	igdeGDSky *GetWithName( const char *name ) const;
+	igdeGDSky *GetWithName(const char *name) const;
 	
 	/** \brief Index of sky or -1 if absent. */
-	int IndexOf( igdeGDSky *sky ) const;
+	int IndexOf(igdeGDSky *sky) const;
 	
 	/** \brief Index of sky with path or -1 if absent. */
-	int IndexOfWithPath( const char *path ) const;
+	int IndexOfWithPath(const char *path) const;
 	
 	/** \brief Index of sky with name or -1 if absent. */
-	int IndexOfWithName( const char *name ) const;
+	int IndexOfWithName(const char *name) const;
 	
 	/** \brief Index of sky with name or -1 if absent. */
-	int IndexOfWithPathOrName( const char *path, const char *name ) const;
+	int IndexOfWithPathOrName(const char *path, const char *name) const;
 	
 	/** \brief Sky is present. */
-	bool Has( igdeGDSky *sky ) const;
+	bool Has(igdeGDSky *sky) const;
 	
 	/** \brief Sky with path is present. */
-	bool HasWithPath( const char *path ) const;
+	bool HasWithPath(const char *path) const;
 	
 	/** \brief Sky with name is present. */
-	bool HasWithName( const char *name ) const;
+	bool HasWithName(const char *name) const;
 	
 	/** \brief Sky with name or path is present. */
-	bool HasWithPathOrName( const char *path, const char *name ) const;
+	bool HasWithPathOrName(const char *path, const char *name) const;
 	
 	/** \brief Add sky. */
-	void Add( igdeGDSky *sky );
+	void Add(igdeGDSky *sky);
 	
 	/** \brief Insert sky. */
-	void InsertAt( igdeGDSky *sky, int index );
+	void InsertAt(igdeGDSky *sky, int index);
 	
 	/** \brief Move sky to new position. */
-	void MoveTo( igdeGDSky *sky, int index );
+	void MoveTo(igdeGDSky *sky, int index);
 	
 	/** \brief Remove sky. */
-	void Remove( igdeGDSky *sky );
+	void Remove(igdeGDSky *sky);
 	
 	/** \brief Remove all skies. */
 	void RemoveAll();
 	
 	/** \brief Set list from another list. */
-	igdeGDSkyList &operator=( const igdeGDSkyList &list );
+	igdeGDSkyList &operator=(const igdeGDSkyList &list);
 	/*@}*/
 };
 

@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPToggleIdentifierUsage( gdeObjectClass *objectClass, gdeProperty *property );
+	gdeUOCTPToggleIdentifierUsage(gdeObjectClass *objectClass, gdeProperty *property);
 	
 protected:
 	/** \brief Clean up undo action. */

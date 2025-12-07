@@ -63,7 +63,7 @@ public:
 	deSynthesizerLink();
 	
 	/** \brief Create copy of link. */
-	deSynthesizerLink( const deSynthesizerLink &copy );
+	deSynthesizerLink(const deSynthesizerLink &copy);
 	
 protected:
 	/**
@@ -90,7 +90,7 @@ public:
 	 * \brief Set controller or -1 to not set.
 	 * \throws deeInvalidParam \em controller is less than -1.
 	 */
-	void SetController( int controller );
+	void SetController(int controller);
 	
 	/** \brief Curve. */
 	inline decCurveBezier &GetCurve(){ return pCurve; }
@@ -103,7 +103,7 @@ public:
 	 * \brief Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	/*@}*/
 	
 	
@@ -111,7 +111,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy link to this link. */
-	deSynthesizerLink &operator=( const deSynthesizerLink &copy );
+	deSynthesizerLink &operator=(const deSynthesizerLink &copy);
 	/*@}*/
 };
 

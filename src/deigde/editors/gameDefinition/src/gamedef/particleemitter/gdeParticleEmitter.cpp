@@ -41,22 +41,22 @@
 ////////////////////////////
 
 gdeParticleEmitter::gdeParticleEmitter() :
-pGameDefinition( NULL ){
+pGameDefinition(NULL){
 }
 
-gdeParticleEmitter::gdeParticleEmitter( const char *path, const char *name ) :
-pGameDefinition( NULL ),
-pPath( path ),
-pName( name ){
+gdeParticleEmitter::gdeParticleEmitter(const char *path, const char *name) :
+pGameDefinition(NULL),
+pPath(path),
+pName(name){
 }
 
-gdeParticleEmitter::gdeParticleEmitter( const gdeParticleEmitter &particleEmitter ) :
-pGameDefinition( NULL ),
+gdeParticleEmitter::gdeParticleEmitter(const gdeParticleEmitter &particleEmitter) :
+pGameDefinition(NULL),
 
-pPath( particleEmitter.pPath ),
-pName( particleEmitter.pName ),
-pDescription( particleEmitter.pDescription ),
-pCategory( particleEmitter.pCategory ){
+pPath(particleEmitter.pPath),
+pName(particleEmitter.pName),
+pDescription(particleEmitter.pDescription),
+pCategory(particleEmitter.pCategory){
 }
 
 gdeParticleEmitter::~gdeParticleEmitter(){
@@ -68,57 +68,57 @@ gdeParticleEmitter::~gdeParticleEmitter(){
 // Management
 ///////////////
 
-void gdeParticleEmitter::SetGameDefinition( gdeGameDefinition *gamedef ){
+void gdeParticleEmitter::SetGameDefinition(gdeGameDefinition *gamedef){
 	pGameDefinition = gamedef;
 }
 
 
 
-void gdeParticleEmitter::SetPath( const char *path ){
-	if( pPath == path ){
+void gdeParticleEmitter::SetPath(const char *path){
+	if(pPath == path){
 		return;
 	}
 	
 	pPath = path;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyParticleEmitterChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyParticleEmitterChanged(this);
 	}
 }
 
-void gdeParticleEmitter::SetName( const char *name ){
-	if( pName == name ){
+void gdeParticleEmitter::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyParticleEmitterNameChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyParticleEmitterNameChanged(this);
 	}
 }
 
-void gdeParticleEmitter::SetDescription( const char *description ){
-	if( pDescription == description ){
+void gdeParticleEmitter::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
 	pDescription = description;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyParticleEmitterChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyParticleEmitterChanged(this);
 	}
 }
 
-void gdeParticleEmitter::SetCategory( const char *category ){
-	if( pCategory == category ){
+void gdeParticleEmitter::SetCategory(const char *category){
+	if(pCategory == category){
 		return;
 	}
 	
 	pCategory = category;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifyParticleEmitterChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifyParticleEmitterChanged(this);
 	}
 }
 
@@ -128,5 +128,5 @@ void gdeParticleEmitter::SetCategory( const char *category ){
 //////////////////////
 
 void gdeParticleEmitter::pCleanUp(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 }

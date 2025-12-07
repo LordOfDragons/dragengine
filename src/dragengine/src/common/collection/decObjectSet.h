@@ -51,10 +51,10 @@ public:
 	 * \brief Create a new set with initial capacity.
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	decObjectSet( int capacity );
+	decObjectSet(int capacity);
 	
 	/** \brief Create copy of a set. */
-	decObjectSet( const decObjectSet &set );
+	decObjectSet(const decObjectSet &set);
 	
 	/** \brief Clean up the set. */
 	~decObjectSet();
@@ -71,34 +71,34 @@ public:
 	 * \brief Object at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	deObject *GetAt( int index ) const;
+	deObject *GetAt(int index) const;
 	
 	/** \brief Determine if object exists in the list. */
-	bool Has( deObject *object ) const;
+	bool Has(deObject *object) const;
 	
 	/**
 	 * \brief Add object.
 	 * \throws deeInvalidParam \em object is present in the set.
 	 */
-	void Add( deObject *object );
+	void Add(deObject *object);
 	
 	/** \brief Add object if absent from the set. */
-	void AddIfAbsent( deObject *object );
+	void AddIfAbsent(deObject *object);
 	
 	/**
 	 * \brief Remove object.
 	 * \throws deeInvalidParam \em object is is absent from the set.
 	 */
-	void Remove( deObject *object );
+	void Remove(deObject *object);
 	
 	/** \brief Remove object if present in the set. */
-	void RemoveIfPresent( deObject *object );
+	void RemoveIfPresent(deObject *object);
 	
 	/** \brief Remove all objects. */
 	void RemoveAll();
 	
 	/** \brief Determine if this set is equal to another set. */
-	bool Equals( const decObjectSet &set ) const;
+	bool Equals(const decObjectSet &set) const;
 	
 	
 	
@@ -111,7 +111,7 @@ public:
 	 */
 	void Visit(decObjectVisitor &visitor, int from, int to = -1, int step = 1) const;
 	
-	inline void Visit(decObjectVisitor &visitor) const{ Visit(visitor, 0, pObjectCount); }
+	inline void Visit(decObjectVisitor &visitor) const{Visit(visitor, 0, pObjectCount);}
 	
 	/**
 	 * \brief Find object.
@@ -150,7 +150,7 @@ public:
 	 */
 	void RemoveIf(decObjectEvaluator &evaluator, int from, int to = -1, int step = 1);
 	
-	inline void RemoveIf(decObjectEvaluator &evaluator){ RemoveIf(evaluator, 0, pObjectCount); }
+	inline void RemoveIf(decObjectEvaluator &evaluator){RemoveIf(evaluator, 0, pObjectCount);}
 	/*@}*/
 	
 	
@@ -158,26 +158,26 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if this set is equal to another set. */
-	bool operator==( const decObjectSet &set ) const;
+	bool operator==(const decObjectSet &set) const;
 	
 	/** \brief New set containing all objects of this set followed by all objects of another set. */
-	decObjectSet operator+( const decObjectSet &set ) const;
+	decObjectSet operator+(const decObjectSet &set) const;
 	
 	/**
 	 * \brief Object at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	deObject *operator[]( int position ) const;
+	deObject *operator[](int position) const;
 	
 	/** \brief Copy set to this set. */
-	decObjectSet &operator=( const decObjectSet &set );
+	decObjectSet &operator=(const decObjectSet &set);
 	
 	/** \brief Append objects of set to this set. */
-	decObjectSet &operator+=( const decObjectSet &set );
+	decObjectSet &operator+=(const decObjectSet &set);
 	/*@}*/
 	
 private:
-	int pIndexOf( deObject *object ) const;
+	int pIndexOf(deObject *object) const;
 };
 
 #endif

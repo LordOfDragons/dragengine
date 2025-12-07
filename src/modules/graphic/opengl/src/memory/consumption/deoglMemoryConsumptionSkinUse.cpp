@@ -35,9 +35,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglMemoryConsumptionSkinUse::deoglMemoryConsumptionSkinUse( deoglMemoryConsumptionSkin &tracker ) :
-compressed( tracker.allCompressed ),
-uncompressed( tracker.allUncompressed ){
+deoglMemoryConsumptionSkinUse::deoglMemoryConsumptionSkinUse(deoglMemoryConsumptionSkin &tracker) :
+compressed(tracker.allCompressed),
+uncompressed(tracker.allUncompressed){
 }
 
 deoglMemoryConsumptionSkinUse::~deoglMemoryConsumptionSkinUse(){

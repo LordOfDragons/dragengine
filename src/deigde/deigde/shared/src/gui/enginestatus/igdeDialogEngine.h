@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	igdeDialogEngine( igdeMainWindow &mainWindow );
+	igdeDialogEngine(igdeMainWindow &mainWindow);
 	
 	
 	

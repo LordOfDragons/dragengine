@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglOcclusionMap::deoglOcclusionMap( deoglRenderThread &renderThread, int width, int height, int layerCount ) :
-pRenderThread( renderThread  ){
-	if( width < 4 || height < 4 || layerCount < 1 ){
-		DETHROW( deeInvalidParam );
+deoglOcclusionMap::deoglOcclusionMap(deoglRenderThread &renderThread, int width, int height, int layerCount) :
+pRenderThread(renderThread){
+	if(width < 4 || height < 4 || layerCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTexture = NULL;
@@ -57,7 +57,7 @@ pRenderThread( renderThread  ){
 		pCreateTextures();
 		pCreateFBOs();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -72,7 +72,7 @@ deoglOcclusionMap::~deoglOcclusionMap(){
 // Management
 ///////////////
 
-deoglFramebuffer *deoglOcclusionMap::GetFBOAt( int level ){
+deoglFramebuffer *deoglOcclusionMap::GetFBOAt(int level){
 	return (deoglFramebuffer*)pFBOs.GetAt(level);
 }
 
@@ -83,7 +83,7 @@ deoglFramebuffer *deoglOcclusionMap::GetFBOAt( int level ){
 
 void deoglOcclusionMap::pCleanUp(){
 	pFBOs.RemoveAll();
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -91,25 +91,25 @@ void deoglOcclusionMap::pCleanUp(){
 void deoglOcclusionMap::pCreateTextures(){
 	int levelSize = pWidth;
 	
-	if( pHeight > pWidth ){
+	if(pHeight > pWidth){
 		levelSize = pHeight;
 	}
 	
 	pLevelCount = 1;
-	for( ; levelSize>2; levelSize>>=1 ){
+	for(; levelSize>2; levelSize>>=1){
 		pLevelCount++;
 	}
 	
-	pTexture = new deoglArrayTexture( pRenderThread );
-	pTexture->SetSize( pWidth, pHeight, pLayerCount );
-	pTexture->SetDepthFormat( false, false );
-	pTexture->SetMipMapped( true );
-	pTexture->SetMipMapLevelCount( pLevelCount - 1 );
+	pTexture = new deoglArrayTexture(pRenderThread);
+	pTexture->SetSize(pWidth, pHeight, pLayerCount);
+	pTexture->SetDepthFormat(false, false);
+	pTexture->SetMipMapped(true);
+	pTexture->SetMipMapLevelCount(pLevelCount - 1);
 	pTexture->CreateTexture();
 }
 
 void deoglOcclusionMap::pCreateFBOs(){
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
+	const deoglRestoreFramebuffer restoreFbo(pRenderThread);
 	const GLenum buffers[1] = {GL_NONE};
 	int i;
 	

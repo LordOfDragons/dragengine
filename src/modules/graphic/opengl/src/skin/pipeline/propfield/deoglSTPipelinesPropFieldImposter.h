@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesPropFieldImposter( const deoglSkinTexture &texture );
+	deoglSTPipelinesPropFieldImposter(const deoglSkinTexture &texture);
 	
 protected:
 	/** Clean up skin texture pipeline. */
@@ -55,7 +55,7 @@ public:
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	virtual void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
 };
 
 #endif

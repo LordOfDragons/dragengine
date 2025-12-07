@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	fbxAnimModule( deLoadableModule &loadableModule );
+	fbxAnimModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~fbxAnimModule();
@@ -58,20 +58,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load animation. */
-	virtual void LoadAnimation( decBaseFileReader &reader, deAnimation &animation );
+	virtual void LoadAnimation(decBaseFileReader &reader, deAnimation &animation);
 	
 	/** \brief Save animation. */
-	virtual void SaveAnimation( decBaseFileWriter &writer, const deAnimation &animation );
+	virtual void SaveAnimation(decBaseFileWriter &writer, const deAnimation &animation);
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadAnimation( deAnimation &animation, fbxScene &scene );
+	void pLoadAnimation(deAnimation &animation, fbxScene &scene);
 	
-	void pLoadMoves( deAnimation &animation, const fbxAnimation &loadAnimation );
+	void pLoadMoves(deAnimation &animation, const fbxAnimation &loadAnimation);
 	
-	void pLoadMove( deAnimation &animation, deAnimationMove &move, const fbxAnimationMove &loadMove );
+	void pLoadMove(deAnimation &animation, deAnimationMove &move, const fbxAnimationMove &loadMove);
 };
 
 #endif

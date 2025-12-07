@@ -169,7 +169,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new module system linked to the given engine. */
-	deModuleSystem( deEngine *engine );
+	deModuleSystem(deEngine *engine);
 	
 	/** \brief Clean up module system. */
 	~deModuleSystem();
@@ -194,25 +194,25 @@ public:
 	int GetModuleCount() const;
 	
 	/** \brief Count of modules of a given type. */
-	int GetModuleCountFor( eModuleTypes type ) const;
+	int GetModuleCountFor(eModuleTypes type) const;
 	
 	/** \brief Count of loaded modules of a given type. */
-	int GetLoadedModuleCountFor( eModuleTypes type ) const;
+	int GetLoadedModuleCountFor(eModuleTypes type) const;
 	
 	/** \brief Module at the given index. */
-	deLoadableModule *GetModuleAt( int index ) const;
+	deLoadableModule *GetModuleAt(int index) const;
 	
 	/** \brief Highest version module with the given name or NULL if not found. */
-	deLoadableModule *GetModuleNamed( const char *name ) const;
+	deLoadableModule *GetModuleNamed(const char *name) const;
 	
 	/** \brief Module with the given name and version or NULL if not found. */
-	deLoadableModule *GetModuleNamed( const char *name, const char *version ) const;
+	deLoadableModule *GetModuleNamed(const char *name, const char *version) const;
 	
 	/** \brief Module with the given name and at least version or NULL if not found. */
-	deLoadableModule *GetModuleNamedAtLeast( const char *name, const char *version ) const;
+	deLoadableModule *GetModuleNamedAtLeast(const char *name, const char *version) const;
 	
 	/** \brief First loaded module for the given type or NULL if not found. */
-	deLoadableModule *GetFirstLoadedModuleFor( eModuleTypes type ) const;
+	deLoadableModule *GetFirstLoadedModuleFor(eModuleTypes type) const;
 	
 	/**
 	 * \brief First module of the given type able to handle the given file.
@@ -222,7 +222,7 @@ public:
 	 * module it is considered able to handle the file. If multiple versions
 	 * of the same module exist the module with the highest version is returned.
 	 */
-	deLoadableModule *FindMatching( eModuleTypes type, const char *filename ) const;
+	deLoadableModule *FindMatching(eModuleTypes type, const char *filename) const;
 	
 	/**
 	 * \brief First modules of the given type able to handle the given file.
@@ -234,13 +234,13 @@ public:
 	 * If multiple versions of the same module exist the module with the highest
 	 * version is returned.
 	 */
-	deBaseModule *GetModuleAbleToLoad( eModuleTypes type, const char *filename ) const;
+	deBaseModule *GetModuleAbleToLoad(eModuleTypes type, const char *filename) const;
 	
 	/**
 	 * Adds a module to the system. The module has not to exist already and
 	 * has to be properly initialized to be accepted.
 	 */
-	void AddModule( deLoadableModule *module );
+	void AddModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Make service modules add stage specific VFS containers.
@@ -265,7 +265,7 @@ public:
 	 * - emtScript
 	 * - emtService
 	 */
-	void ServicesAddVFSContainers( deVirtualFileSystem &vfs, const char *stage );
+	void ServicesAddVFSContainers(deVirtualFileSystem &vfs, const char *stage);
 	
 	/** \brief Asset libraries virtual file system. */
 	inline const deVirtualFileSystem::Ref &GetVFSAssetLibraries() const{ return pVFSAssetLibraries; }
@@ -282,13 +282,13 @@ public:
 	 * is 0 if both strings are the same, -1 if the first differing version
 	 * string part of the first version is less than the second or 1 otherwise.
 	 */
-	static int CompareVersion( const char *version1, const char *version2 );
+	static int CompareVersion(const char *version1, const char *version2);
 	
 	/** \brief Filename matches the given pattern. */
-	bool MatchesPattern( const char *filename, const char *pattern ) const;
+	bool MatchesPattern(const char *filename, const char *pattern) const;
 	
 	/** \brief Determines if two strings are equal in a non-case sensitive comparisson. */
-	bool StrEqual( const char *str1, const char *str2, int length ) const;
+	bool StrEqual(const char *str1, const char *str2, int length) const;
 	
 	/**
 	 * Retrieves the type from eModuleTypes matching the given type string.
@@ -319,10 +319,10 @@ public:
 	 *
 	 * In all other cases emtUnknown is returned. Case does not matter.
 	 */
-	static eModuleTypes GetTypeFromString( const char *typeString );
+	static eModuleTypes GetTypeFromString(const char *typeString);
 	
 	/** \brief Retrieves directory name for a given type */
-	static const char *GetTypeDirectory( eModuleTypes type );
+	static const char *GetTypeDirectory(eModuleTypes type);
 	
 	/**
 	 * Retrieves if the given type is a single type. The following are single types:
@@ -340,7 +340,7 @@ public:
 	 *
 	 * All others are multiple type.
 	 */
-	static bool IsSingleType( eModuleTypes type );
+	static bool IsSingleType(eModuleTypes type);
 	
 	/**
 	 * Register internal module.

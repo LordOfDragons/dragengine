@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	reDialogImportBone( reWindowMain &windowMain );
+	reDialogImportBone(reWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
@@ -78,31 +78,31 @@ public:
 	const decString &GetPath() const;
 	
 	/** \brief Set path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Scaling. */
 	float GetScaling() const;
 	
 	/** \brief Set scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	/** \brief Bone properties are imported. */
 	bool GetImportBoneProperties() const;
 	
 	/** \brief Set if bone properties are imported. */
-	void SetImportBoneProperties( bool import );
+	void SetImportBoneProperties(bool import);
 	
 	/** \brief Shapes are imported. */
 	bool GetImportShapes() const;
 	
 	/** \brief Set if shapes are imported. */
-	void SetImportShapes( bool import );
+	void SetImportShapes(bool import);
 	
 	/** \brief Constraints are imported. */
 	bool GetImportConstraints() const;
 	
 	/** \brief Set if constraints are imported. */
-	void SetImportConstraints( bool import );
+	void SetImportConstraints(bool import);
 	
 	
 	

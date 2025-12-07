@@ -53,9 +53,9 @@ public:
 	/** Retrieves the list of selected object shapes. */
 	inline const meObjectShapeList &GetSelected() const{ return pSelection; }
 	/** Adds an object shape to the selection if not included already. */
-	void Add( meObjectShape *objectShape );
+	void Add(meObjectShape *objectShape);
 	/** Removes an object shape from the selection if included. */
-	void Remove( meObjectShape *objectShape );
+	void Remove(meObjectShape *objectShape);
 	/** Removes all object shapes from the selection. */
 	void RemoveAll();
 	
@@ -64,7 +64,7 @@ public:
 	/** Determines if there is an active object shape. */
 	bool HasActive() const;
 	/** Sets the active object shape or NULL if there is none. */
-	void SetActive( meObjectShape *object );
+	void SetActive(meObjectShape *object);
 	/** Activate the first object shape in the selection. */
 	void ActivateNext();
 	
@@ -72,9 +72,9 @@ public:
 	void Reset();
 	
 	/** Backup the selection and active as indicies relative to a list of shapes. */
-	void Backup( const meObjectShapeList &shapeList, decIntList &indicesSelected, int &indexActive );
+	void Backup(const meObjectShapeList &shapeList, decIntList &indicesSelected, int &indexActive);
 	/** Restores the selection and active from indices relative to a list of shapes if possible. */
-	void Restore( const meObjectShapeList &shapeList, const decIntList &indicesSelected, int indexActive );
+	void Restore(const meObjectShapeList &shapeList, const decIntList &indicesSelected, int indexActive);
 };
 
 #endif

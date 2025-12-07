@@ -50,7 +50,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new console input object. */
-	deConsoleInput( deLoadableModule &loadableModule );
+	deConsoleInput(deLoadableModule &loadableModule);
 	/** Cleans up the console input object. */
 	virtual ~deConsoleInput();
 	/*@}*/
@@ -75,31 +75,31 @@ public:
 	virtual int GetDeviceCount();
 	
 	/** \brief Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index );
+	virtual deInputDevice *GetDeviceAt(int index);
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id );
+	virtual int IndexOfDeviceWithID(const char *id);
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id );
+	virtual int IndexOfButtonWithID(int device, const char *id);
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id );
+	virtual int IndexOfAxisWithID(int device, const char *id);
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id );
+	virtual int IndexOfFeedbackWithID(int device, const char *id);
 	
 	/** \brief Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed( int device, int button );
+	virtual bool GetButtonPressed(int device, int button);
 	
 	/** \brief Value of axis at index on device at index. */
-	virtual float GetAxisValue( int device, int axis );
+	virtual float GetAxisValue(int device, int axis);
 	
 	/** \brief Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue( int device, int feedback );
+	virtual float GetFeedbackValue(int device, int feedback);
 	
 	/** \brief Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue( int device, int feedback, float value );
+	virtual void SetFeedbackValue(int device, int feedback, float value);
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.
@@ -112,7 +112,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode );
+	virtual int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode);
 	
 	/**
 	 * \brief Index of button best matching character or -1 if not found.
@@ -131,7 +131,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character );
+	virtual int ButtonMatchingKeyChar(int device, int character);
 	/*@}*/
 	
 	
@@ -151,10 +151,10 @@ public:
 private:
 	void pInitKeyCodeMap();
 	
-	void pAddKeyPress( int device, int button, int keyChar, deInputEvent::eKeyCodes keyCode,
-		const timeval &eventTime );
-	void pAddKeyRelease( int device, int button, int keyChar, deInputEvent::eKeyCodes keyCode,
-		const timeval &eventTime );
+	void pAddKeyPress(int device, int button, int keyChar, deInputEvent::eKeyCodes keyCode,
+		const timeval &eventTime);
+	void pAddKeyRelease(int device, int button, int keyChar, deInputEvent::eKeyCodes keyCode,
+		const timeval &eventTime);
 	void pProcessEventQueue();
 };
 

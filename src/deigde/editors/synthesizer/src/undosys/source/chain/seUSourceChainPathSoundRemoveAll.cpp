@@ -39,23 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceChainPathSoundRemoveAll::seUSourceChainPathSoundRemoveAll( seSourceChain *source ) :
-pSource( NULL )
+seUSourceChainPathSoundRemoveAll::seUSourceChainPathSoundRemoveAll(seSourceChain *source) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPathSounds = source->GetPathSounds();
 	
-	SetShortInfo( "Chain source remove all path sounds" );
+	SetShortInfo("Chain source remove all path sounds");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSourceChainPathSoundRemoveAll::~seUSourceChainPathSoundRemoveAll(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -69,8 +69,8 @@ void seUSourceChainPathSoundRemoveAll::Undo(){
 	const int count = pPathSounds.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSource->AddPathSound( pPathSounds.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pSource->AddPathSound(pPathSounds.GetAt(i));
 	}
 }
 

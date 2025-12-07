@@ -38,8 +38,8 @@
 ////////////////////////////
 
 // constructor, destructor
-deoglShadowVolume::deoglShadowVolume( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread )
+deoglShadowVolume::deoglShadowVolume(deoglRenderThread &renderThread) :
+pRenderThread(renderThread)
 {
 	pFaces = NULL;
 	pFaceCount = 0;
@@ -70,10 +70,10 @@ void deoglShadowVolume::FindOpenFaces(){
 		hasChanged = false;
 		// loop through all edges and flag all faces open if needed
 		for(e=0; e<pEdgeCount; e++){
-			if( (pEdges[e].face[1] == -1 || pFaces[pEdges[e].face[1]].isOpen) && !pFaces[pEdges[e].face[0]].isOpen ){
+			if((pEdges[e].face[1] == -1 || pFaces[pEdges[e].face[1]].isOpen) && !pFaces[pEdges[e].face[0]].isOpen){
 				pFaces[pEdges[e].face[0]].isOpen = true;
 				hasChanged = true;
-			}else if( pFaces[pEdges[e].face[0]].isOpen && pEdges[e].face[1] != -1 && !pFaces[pEdges[e].face[1]].isOpen ){
+			}else if(pFaces[pEdges[e].face[0]].isOpen && pEdges[e].face[1] != -1 && !pFaces[pEdges[e].face[1]].isOpen){
 				pFaces[pEdges[e].face[1]].isOpen = true;
 				hasChanged = true;
 			}
@@ -103,20 +103,20 @@ void deoglShadowVolume::FindDirectionalSilhouette(const decVector &lightDir, deo
 void deoglShadowVolume::RenderShadows(deoglMeshData *mesh, bool renderCaps){
 	// first pass
 	if(renderCaps){
-		OGL_CHECK( pRenderThread, glCullFace(GL_FRONT) );
-		OGL_CHECK( pRenderThread, glStencilOp(GL_KEEP, GL_INCR_WRAP, GL_KEEP) );
+		OGL_CHECK(pRenderThread, glCullFace(GL_FRONT));
+		OGL_CHECK(pRenderThread, glStencilOp(GL_KEEP, GL_INCR_WRAP, GL_KEEP));
 	}else{
-		OGL_CHECK( pRenderThread, glCullFace(GL_BACK) );
-		OGL_CHECK( pRenderThread, glStencilOp(GL_KEEP, GL_KEEP, GL_INCR_WRAP) );
+		OGL_CHECK(pRenderThread, glCullFace(GL_BACK));
+		OGL_CHECK(pRenderThread, glStencilOp(GL_KEEP, GL_KEEP, GL_INCR_WRAP));
 	}
 	pRenderShadowPass(mesh, renderCaps);
 	// second pass
 	if(renderCaps){
-		OGL_CHECK( pRenderThread, glCullFace(GL_BACK) );
-		OGL_CHECK( pRenderThread, glStencilOp(GL_KEEP, GL_DECR_WRAP, GL_KEEP) );
+		OGL_CHECK(pRenderThread, glCullFace(GL_BACK));
+		OGL_CHECK(pRenderThread, glStencilOp(GL_KEEP, GL_DECR_WRAP, GL_KEEP));
 	}else{
-		OGL_CHECK( pRenderThread, glCullFace(GL_FRONT) );
-		OGL_CHECK( pRenderThread, glStencilOp(GL_KEEP, GL_KEEP, GL_DECR_WRAP) );
+		OGL_CHECK(pRenderThread, glCullFace(GL_FRONT));
+		OGL_CHECK(pRenderThread, glStencilOp(GL_KEEP, GL_KEEP, GL_DECR_WRAP));
 	}
 	pRenderShadowPass(mesh, renderCaps);
 }
@@ -150,12 +150,12 @@ int deoglShadowVolume::GetOpenFaceCount() const{
 }
 void deoglShadowVolume::CloseVolume(){
 	int i, faceCount = pFaceCount;
-	for( i=0; i<faceCount; i++ ){
-		if( !pFaces[i].isOpen ) continue;
-		if( pFaces[i].vertex[3] == -1 ){
-			AddFace( pFaces[i].vertex[2], pFaces[i].vertex[1], pFaces[i].vertex[0], -1 );
+	for(i=0; i<faceCount; i++){
+		if(!pFaces[i].isOpen) continue;
+		if(pFaces[i].vertex[3] == -1){
+			AddFace(pFaces[i].vertex[2], pFaces[i].vertex[1], pFaces[i].vertex[0], -1);
 		}else{
-			AddFace( pFaces[i].vertex[3], pFaces[i].vertex[2], pFaces[i].vertex[1], pFaces[i].vertex[0] );
+			AddFace(pFaces[i].vertex[3], pFaces[i].vertex[2], pFaces[i].vertex[1], pFaces[i].vertex[0]);
 		}
 	}
 	FindOpenFaces();
@@ -222,8 +222,8 @@ int deoglShadowVolume::pFindEdge(int vertex1, int vertex2){
 	int i;
 	// find first edge that matches the vertices and has one or no face assigned
 	for(i=0; i<pEdgeCount; i++){
-		if( pEdges[i].vertex[0] == vertex1 && pEdges[i].vertex[1] == vertex2
-		&& pEdges[i].face[1] == -1 ){
+		if(pEdges[i].vertex[0] == vertex1 && pEdges[i].vertex[1] == vertex2
+		&& pEdges[i].face[1] == -1){
 			return i;
 		}
 	}
@@ -233,7 +233,7 @@ int deoglShadowVolume::pFindEdge(int vertex1, int vertex2){
 void deoglShadowVolume::pFindEdgeSilhouette(){
 	int e;
 	for(e=0; e<pEdgeCount; e++){
-		if( pFaces[pEdges[e].face[0]].isLit ){
+		if(pFaces[pEdges[e].face[0]].isLit){
 			pEdges[e].isSilhouette = pEdges[e].face[1] == -1 || !pFaces[pEdges[e].face[1]].isLit;
 		}else{
 			pEdges[e].isSilhouette = pEdges[e].face[1] != -1 && pFaces[pEdges[e].face[1]].isLit;
@@ -245,12 +245,12 @@ void deoglShadowVolume::pRenderShadowPass(deoglMeshData *mesh, bool renderCaps){
 	int e, f;
 	float w;
 	// render silhouette edges projected to infinity
-	glBegin( GL_TRIANGLE_FAN );
+	glBegin(GL_TRIANGLE_FAN);
 	for(e=0; e<pEdgeCount; e++){
-		if( !pEdges[e].isSilhouette ) continue;
+		if(!pEdges[e].isSilhouette) continue;
 		pt1 = mesh->GetVertexPosition(pEdges[e].vertex[0]);
 		pt2 = mesh->GetVertexPosition(pEdges[e].vertex[1]);
-		if( pFaces[pEdges[e].face[0]].isLit ){
+		if(pFaces[pEdges[e].face[0]].isLit){
 			glVertex4f(pt2.x, pt2.y, pt2.z, 1);
 			glVertex4f(pt2.x, pt2.y, pt2.z, 0);
 			glVertex4f(pt1.x, pt1.y, pt1.z, 0);
@@ -267,7 +267,7 @@ void deoglShadowVolume::pRenderShadowPass(deoglMeshData *mesh, bool renderCaps){
 	if(renderCaps){
 		// quad caps
 		if(pHasQuads){
-			glBegin( GL_TRIANGLE_FAN );
+			glBegin(GL_TRIANGLE_FAN);
 			for(f=0; f<pFaceCount; f++){
 				if(pFaces[f].vertex[3] == -1) continue;
 				if(pFaces[f].isOpen){

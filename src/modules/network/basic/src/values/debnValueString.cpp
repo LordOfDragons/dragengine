@@ -43,11 +43,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnValueString::debnValueString( deNetworkValueString &valueString ) :
-pValueString( valueString ),
-pLastValue( valueString.GetString() )
+debnValueString::debnValueString(deNetworkValueString &valueString) :
+pValueString(valueString),
+pLastValue(valueString.GetString())
 {
-	SetDataType( evtString );
+	SetDataType(evtString);
 }
 
 debnValueString::~debnValueString(){
@@ -58,8 +58,8 @@ debnValueString::~debnValueString(){
 // Management
 ///////////////
 
-bool debnValueString::UpdateValue( bool force ){
-	if( ! force && pValueString.GetString() == pLastValue ){
+bool debnValueString::UpdateValue(bool force){
+	if(!force && pValueString.GetString() == pLastValue){
 		return false;
 	}
 	
@@ -67,11 +67,11 @@ bool debnValueString::UpdateValue( bool force ){
 	return true;
 }
 
-void debnValueString::ReadValue( decBaseFileReader &reader ){
+void debnValueString::ReadValue(decBaseFileReader &reader){
 	pLastValue = reader.ReadString16();
-	pValueString.SetString( pLastValue );
+	pValueString.SetString(pLastValue);
 }
 
-void debnValueString::WriteValue( decBaseFileWriter &writer ){
-	writer.WriteString16( pValueString.GetString() );
+void debnValueString::WriteValue(decBaseFileWriter &writer){
+	writer.WriteString16(pValueString.GetString());
 }

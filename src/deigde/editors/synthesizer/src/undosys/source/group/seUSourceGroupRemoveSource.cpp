@@ -39,17 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupRemoveSource::seUSourceGroupRemoveSource( seSourceGroup *group, seSource *source ) :
-pGroup( NULL ),
-pSource( NULL )
+seUSourceGroupRemoveSource::seUSourceGroupRemoveSource(seSourceGroup *group, seSource *source) :
+pGroup(NULL),
+pSource(NULL)
 {
-	if( ! group || ! source ){
-		DETHROW( deeInvalidParam );
+	if(!group || !source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pIndex = group->GetSources().IndexOf( source );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = group->GetSources().IndexOf(source);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGroup = group;
@@ -60,10 +60,10 @@ pSource( NULL )
 }
 
 seUSourceGroupRemoveSource::~seUSourceGroupRemoveSource(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
-	if( pGroup ){
+	if(pGroup){
 		pGroup->FreeReference();
 	}
 }
@@ -74,9 +74,9 @@ seUSourceGroupRemoveSource::~seUSourceGroupRemoveSource(){
 ///////////////
 
 void seUSourceGroupRemoveSource::Undo(){
-	pGroup->InsertSourceAt( pSource, pIndex );
+	pGroup->InsertSourceAt(pSource, pIndex);
 }
 
 void seUSourceGroupRemoveSource::Redo(){
-	pGroup->RemoveSource( pSource );
+	pGroup->RemoveSource(pSource);
 }

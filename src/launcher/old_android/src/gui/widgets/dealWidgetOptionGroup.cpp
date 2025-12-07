@@ -53,37 +53,37 @@ int dealWidgetOptionGroup::GetCount() const{
 	return pWidgets.GetCount();
 }
 
-dealWidgetOptionBox *dealWidgetOptionGroup::GetAt( int index ) const{
-	return ( dealWidgetOptionBox* )pWidgets.GetAt( index );
+dealWidgetOptionBox *dealWidgetOptionGroup::GetAt(int index) const{
+	return (dealWidgetOptionBox*)pWidgets.GetAt(index);
 }
 
-void dealWidgetOptionGroup::Add( dealWidgetOptionBox *widget ){
-	if( ! widget || pWidgets.Has( widget ) ){
-		DETHROW( deeInvalidParam );
+void dealWidgetOptionGroup::Add(dealWidgetOptionBox *widget){
+	if(!widget || pWidgets.Has(widget)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( GetSelected() ){
-		widget->SetSelected( false );
+	if(GetSelected()){
+		widget->SetSelected(false);
 	}
 	
-	pWidgets.Add( widget );
+	pWidgets.Add(widget);
 	//widget->SetGroup( this );
 }
 
-void dealWidgetOptionGroup::Remove( dealWidgetOptionBox *widget ){
-	if( ! pWidgets.Has( widget ) ){
-		DETHROW( deeInvalidParam );
+void dealWidgetOptionGroup::Remove(dealWidgetOptionBox *widget){
+	if(!pWidgets.Has(widget)){
+		DETHROW(deeInvalidParam);
 	}
 	
 	//widget->SetGroup( NULL );
-	pWidgets.Remove( widget );
+	pWidgets.Remove(widget);
 }
 
 void dealWidgetOptionGroup::RemoveAll(){
-	while( pWidgets.GetCount() > 0 ){
-		dealWidgetOptionBox * const widget = ( dealWidgetOptionBox* )pWidgets.GetAt( pWidgets.GetCount() - 1 );
+	while(pWidgets.GetCount() > 0){
+		dealWidgetOptionBox * const widget = (dealWidgetOptionBox*)pWidgets.GetAt(pWidgets.GetCount() - 1);
 		//widget->SetGroup( NULL );
-		pWidgets.Remove( widget );
+		pWidgets.Remove(widget);
 	}
 }
 
@@ -91,9 +91,9 @@ dealWidgetOptionBox *dealWidgetOptionGroup::GetSelected() const{
 	const int count = pWidgets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dealWidgetOptionBox * const option = ( dealWidgetOptionBox* )pWidgets.GetAt( i );
-		if( option->GetSelected() ){
+	for(i=0; i<count; i++){
+		dealWidgetOptionBox * const option = (dealWidgetOptionBox*)pWidgets.GetAt(i);
+		if(option->GetSelected()){
 			return option;
 		}
 	}
@@ -101,12 +101,12 @@ dealWidgetOptionBox *dealWidgetOptionGroup::GetSelected() const{
 	return NULL;
 }
 
-void dealWidgetOptionGroup::Select( dealWidgetOptionBox *option ){
+void dealWidgetOptionGroup::Select(dealWidgetOptionBox *option){
 	const int count = pWidgets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dealWidgetOptionBox * const option2 = ( dealWidgetOptionBox* )pWidgets.GetAt( i );
-		option2->SetSelected( option2 == option );
+	for(i=0; i<count; i++){
+		dealWidgetOptionBox * const option2 = (dealWidgetOptionBox*)pWidgets.GetAt(i);
+		option2->SetSelected(option2 == option);
 	}
 }

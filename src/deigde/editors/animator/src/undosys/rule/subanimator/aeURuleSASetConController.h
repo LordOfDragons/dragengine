@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSASetConController( aeRuleSubAnimator *rule, int target, aeController *newController );
+	aeURuleSASetConController(aeRuleSubAnimator *rule, int target, aeController *newController);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleSASetConController();

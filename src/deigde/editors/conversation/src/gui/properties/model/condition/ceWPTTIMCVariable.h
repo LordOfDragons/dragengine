@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCVariable( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionVariable *condition );
+	ceWPTTIMCVariable(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionVariable *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -52,11 +52,11 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionVariable *GetConditionVariable() const{
-		return ( ceCConditionVariable* )GetCondition();
+		return (ceCConditionVariable*)GetCondition();
 	}
 	
 	/** \brief Text representation for operator. */
-	static const char *GetOperatorText( ceCConditionVariable::eOperators anOperator );
+	static const char *GetOperatorText(ceCConditionVariable::eOperators anOperator);
 	
 	/** \brief Update condition. */
 	virtual void Update();

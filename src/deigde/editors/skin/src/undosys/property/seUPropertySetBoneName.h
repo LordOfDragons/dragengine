@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetBoneName( seProperty *property, const char *newName );
+	seUPropertySetBoneName(seProperty *property, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */

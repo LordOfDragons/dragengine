@@ -59,10 +59,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation topic. */
-	ceConversationTopic( const char *id = "Topic" );
+	ceConversationTopic(const char *id = "Topic");
 	
 	/** \brief Create copy of conversation topic. */
-	ceConversationTopic( const ceConversationTopic &topic );
+	ceConversationTopic(const ceConversationTopic &topic);
 	
 	/** \brief Clean up conversation topic. */
 	virtual ~ceConversationTopic();
@@ -76,7 +76,7 @@ public:
 	inline ceConversationFile *GetFile() const{ return pFile; }
 	
 	/** \brief Set parent file or \em NULL if not set. */
-	void SetFile( ceConversationFile *file );
+	void SetFile(ceConversationFile *file);
 	
 	
 	
@@ -84,7 +84,7 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Actions. */
 	inline ceConversationActionList &GetActionList(){ return pActions; }
@@ -97,25 +97,25 @@ public:
 	inline ceConversationCondition *GetActiveCondition() const{ return pActiveCondition; }
 	
 	/** \brief Set active element. */
-	void SetActive( ceConversationAction *action, ceConversationCondition *condition );
+	void SetActive(ceConversationAction *action, ceConversationCondition *condition);
 	
 	/** Find missing words. */
-	void FindMissingWords( decStringSet &missingWords ) const;
-	void FindMissingWords( const ceConversationActionList &actions, decStringSet &missingWords ) const;
+	void FindMissingWords(decStringSet &missingWords) const;
+	void FindMissingWords(const ceConversationActionList &actions, decStringSet &missingWords) const;
 	
 	
 	
 	/** \brief Notify listeners action structure changed. */
-	void NotifyActionStructureChanged( ceConversationAction *action );
+	void NotifyActionStructureChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners action changed. */
-	void NotifyActionChanged( ceConversationAction *action );
+	void NotifyActionChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners condition structure changed. */
-	void NotifyConditionStructureChanged( ceConversationAction *action );
+	void NotifyConditionStructureChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners condition changed. */
-	void NotifyConditionChanged( ceConversationAction *action, ceConversationCondition *condition );
+	void NotifyConditionChanged(ceConversationAction *action, ceConversationCondition *condition);
 	/*@}*/
 };
 

@@ -52,16 +52,16 @@ public:
 	decColor();
 	
 	/** \brief Create color with initial values. */
-	decColor( float red, float green, float blue );
+	decColor(float red, float green, float blue);
 	
 	/** \brief Create color with the given values. */
-	decColor( float red, float green, float blue, float alpha );
+	decColor(float red, float green, float blue, float alpha);
 	
 	/** \brief Creates copy of a color. */
-	decColor( const decColor &copy );
+	decColor(const decColor &copy);
 	
 	/** \brief Creates copy of a color with different alpha value. */
-	decColor( const decColor &copy, float alpha );
+	decColor(const decColor &copy, float alpha);
 	/*@}*/
 	
 	
@@ -84,13 +84,13 @@ public:
 	void SetZero();
 	
 	/** \brief Set values. */
-	void Set( float red, float green, float blue );
+	void Set(float red, float green, float blue);
 	
 	/** \brief Sets values. */
-	void Set( float red, float green, float blue, float alpha );
+	void Set(float red, float green, float blue, float alpha);
 	
 	/** \brief Color is equal component wise to another color with respect to a threshold. */
-	bool IsEqualTo( const decColor &color, float threshold = COLOR_THRESHOLD ) const;
+	bool IsEqualTo(const decColor &color, float threshold = COLOR_THRESHOLD) const;
 	/*@}*/
 	
 	
@@ -98,39 +98,39 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy color to this color. */
-	decColor &operator=( const decColor &color );
+	decColor &operator=(const decColor &color);
 	
 	/** \brief Add components of another color to this one. */
-	decColor &operator+=( const decColor &color );
+	decColor &operator+=(const decColor &color);
 	
 	/** \brief Subtract components of another color from this color. */
-	decColor &operator-=( const decColor &color );
+	decColor &operator-=(const decColor &color);
 	
 	/** \brief Multiply components of this color with a value k. */
-	decColor &operator*=( float scalar );
+	decColor &operator*=(float scalar);
 	
 	/**
 	 * \brief Divide components of this color by a scalar value.
 	 * \throws deeDivisionByZero Scalar is 0.
 	 */
-	decColor &operator/=( float scalar );
+	decColor &operator/=(float scalar);
 	
 	/** \brief Color with the sum of this color with another one. */
-	decColor operator+( const decColor &color ) const;
+	decColor operator+(const decColor &color) const;
 	
 	/** \brief Color with the difference of this color to another one. */
-	decColor operator-( const decColor &color ) const;
+	decColor operator-(const decColor &color) const;
 	
 	/** \brief Color with this color scaled by a scalar. */
-	decColor operator*( float scalar ) const;
+	decColor operator*(float scalar) const;
 	
 	/** \brief Color with this color multiplied component wise with another one. */
-	decColor operator*( const decColor &color ) const;
+	decColor operator*(const decColor &color) const;
 	
 	/**
 	 * \brief Color with this color divided by a scalar.
 	 * \throws deeDivisionByZero Scalar is 0.
 	 */
-	decColor operator/( float scalar ) const;
+	decColor operator/(float scalar) const;
 	/*@}*/
 };

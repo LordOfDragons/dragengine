@@ -57,22 +57,22 @@ class cActionDeleteNode : public igdeAction {
 	meWVNode &pNode;
 	
 public:
-	cActionDeleteNode( meWVNode &node ) : igdeAction( "Delete Node",
-		node.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Delete Node" ),
-	pNode( node ){ }
+	cActionDeleteNode(meWVNode &node) : igdeAction("Delete Node",
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Delete Node"),
+	pNode(node){}
 	
 	virtual void OnAction(){
-		if( ! pNode.CanDelete() ){
+		if(!pNode.CanDelete()){
 			return;
 		}
 		
-		meWindowVegetation &view = *( ( meWindowVegetation* )pNode.GetOwnerBoard() );
+		meWindowVegetation &view = *((meWindowVegetation*)pNode.GetOwnerBoard());
 		view.GetWorld()->GetUndoSystem()->Add(
 			meUHTVRuleRemove::Ref::NewWith(view.GetVLayer(), pNode.GetRule()));
 	}
 	
 	virtual void Update(){
-		SetEnabled( pNode.CanDelete() );
+		SetEnabled(pNode.CanDelete());
 	}
 };
 
@@ -80,12 +80,12 @@ class cActionDuplicateNode : public igdeAction {
 	meWVNode &pNode;
 	
 public:
-	cActionDuplicateNode( meWVNode &node ) : igdeAction( "Duplicate Node",
-		node.GetEnvironment().GetStockIcon( igdeEnvironment::esiDuplicate ), "Duplicate Node" ),
-	pNode( node ){ }
+	cActionDuplicateNode(meWVNode &node) : igdeAction("Duplicate Node",
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "Duplicate Node"),
+	pNode(node){}
 	
 	virtual void OnAction(){
-		if( ! pNode.CanDuplicate() ){
+		if(!pNode.CanDuplicate()){
 			return;
 		}
 		
@@ -98,7 +98,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pNode.CanDuplicate() );
+		SetEnabled(pNode.CanDuplicate());
 	}
 };
 
@@ -109,20 +109,20 @@ class cActivationListener : public igdeNVNodeListener{
 public:
 	typedef deTObjectReference<cActivationListener> Ref;
 	
-	cActivationListener( meWVNode &node ) : pNode( node ){ }
+	cActivationListener(meWVNode &node) : pNode(node){}
 	
-	virtual void OnActivated( igdeNVNode* ){
+	virtual void OnActivated(igdeNVNode*){
 		meHTVegetationLayer * const vlayer = pNode.GetWindowVegetation().GetVLayer();
-		if( vlayer ){
-			vlayer->SetActiveRule( pNode.GetRule() );
+		if(vlayer){
+			vlayer->SetActiveRule(pNode.GetRule());
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeNVNode*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeNVNode*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( menu, new cActionDeleteNode( pNode ), true );
-		helper.MenuCommand( menu, new cActionDuplicateNode( pNode ), true );
+		helper.MenuCommand(menu, new cActionDeleteNode(pNode), true);
+		helper.MenuCommand(menu, new cActionDuplicateNode(pNode), true);
 	}
 };
 
@@ -133,32 +133,32 @@ class cDragNodeListener : public igdeNVNodeListener{
 public:
 	typedef deTObjectReference<cDragNodeListener> Ref;
 	
-	cDragNodeListener( meWVNode &node, igdeUndo::Ref &undo ) :
-		pNode( node ), pUndo( undo ){ }
+	cDragNodeListener(meWVNode &node, igdeUndo::Ref &undo) :
+		pNode(node), pUndo(undo){}
 	
-	virtual void OnDragBegin( igdeNVNode* ){
+	virtual void OnDragBegin(igdeNVNode*){
 		meHTVegetationLayer * const vlayer = pNode.GetWindowVegetation().GetVLayer();
-		if( vlayer ){
-			pUndo.TakeOver( new meUHTVRuleMove( vlayer, pNode.GetRule() ) );
+		if(vlayer){
+			pUndo.TakeOver(new meUHTVRuleMove(vlayer, pNode.GetRule()));
 		}
 	}
 	
-	virtual void OnDraging( igdeNVNode *node ){
-		if( ! pUndo ){
+	virtual void OnDraging(igdeNVNode *node){
+		if(!pUndo){
 			return;
 		}
 		
-		( ( meUHTVRuleMove& )( igdeUndo& )pUndo ).SetNewPosition(
-			decVector2( node->GetPosition() ) * pNode.GetWindowVegetation().GetPixelToUnits() );
+		((meUHTVRuleMove&)(igdeUndo&)pUndo).SetNewPosition(
+			decVector2(node->GetPosition()) * pNode.GetWindowVegetation().GetPixelToUnits());
 		pUndo->Redo();
 	}
 	
-	virtual void OnDragEnd( igdeNVNode* ){
-		if( ! pUndo ){
+	virtual void OnDragEnd(igdeNVNode*){
+		if(!pUndo){
 			return;
 		}
 		
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( pUndo, false );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(pUndo, false);
 		pUndo = NULL;
 	}
 };
@@ -173,13 +173,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNode::meWVNode( meWindowVegetation &windowVegetation, meHTVRule *rule ) :
-igdeNVNode( windowVegetation.GetEnvironment(), "Rule" ),
-pWindowVegetation( windowVegetation ),
-pRule( NULL )
+meWVNode::meWVNode(meWindowVegetation &windowVegetation, meHTVRule *rule) :
+igdeNVNode(windowVegetation.GetEnvironment(), "Rule"),
+pWindowVegetation(windowVegetation),
+pRule(NULL)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	AddListener(cActivationListener::Ref::NewWith(*this));
@@ -190,7 +190,7 @@ pRule( NULL )
 }
 
 meWVNode::~meWVNode(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -207,7 +207,7 @@ void meWVNode::UpdateClassLists(){
 }
 
 void meWVNode::UpdatePositionFromRule(){
-	SetPosition( decPoint( pRule->GetPosition() * pWindowVegetation.GetUnitsToPixel() ) );
+	SetPosition(decPoint(pRule->GetPosition() * pWindowVegetation.GetUnitsToPixel()));
 }
 
 bool meWVNode::CanDelete() const{

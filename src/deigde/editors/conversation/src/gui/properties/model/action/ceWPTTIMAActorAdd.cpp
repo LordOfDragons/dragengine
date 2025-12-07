@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAActorAdd::ceWPTTIMAActorAdd( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAActorAdd *action ) :
-ceWPTTIMAction( windowMain, etActionActorAdd, conversation, action )
+ceWPTTIMAActorAdd::ceWPTTIMAActorAdd(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAActorAdd *action) :
+ceWPTTIMAction(windowMain, etActionActorAdd, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionActorAdd() );
+	SetIcon(windowMain.GetIconActionActorAdd());
 	Update();
 }
 
@@ -61,6 +61,6 @@ void ceWPTTIMAActorAdd::Update(){
 	const ceCAActorAdd &action = *GetActionActorAdd();
 	decString text;
 	
-	text.Format( "Actor Add (%s)", action.GetID().GetString() );
-	SetText( text );
+	text.Format("Actor Add (%s)", action.GetID().GetString());
+	SetText(text);
 }

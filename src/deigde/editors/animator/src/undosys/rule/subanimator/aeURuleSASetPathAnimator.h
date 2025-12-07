@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSASetPathAnimator( aeRuleSubAnimator *rule, const char *newPath );
+	aeURuleSASetPathAnimator(aeRuleSubAnimator *rule, const char *newPath);
 	
 protected:
 	/** Clean up undo. */

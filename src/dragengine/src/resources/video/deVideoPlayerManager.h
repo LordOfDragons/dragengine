@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new video player resource manager linked to the given engine. */
-	deVideoPlayerManager( deEngine *engine );
+	deVideoPlayerManager(deEngine *engine);
 	
 	/** \brief Clean up video player resource manager and reports leaking resources. */
 	~deVideoPlayerManager();
@@ -86,7 +86,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

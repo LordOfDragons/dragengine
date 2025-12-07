@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSnapToggleEnablePosition::aeURuleSnapToggleEnablePosition( aeRuleStateSnapshot *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleSnapToggleEnablePosition::aeURuleSnapToggleEnablePosition(aeRuleStateSnapshot *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,9 +50,9 @@ aeURuleSnapToggleEnablePosition::aeURuleSnapToggleEnablePosition( aeRuleStateSna
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule state snapshot toggle enable position" );
+		SetShortInfo("Rule state snapshot toggle enable position");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ aeURuleSnapToggleEnablePosition::~aeURuleSnapToggleEnablePosition(){
 ///////////////
 
 void aeURuleSnapToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeURuleSnapToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 
@@ -81,7 +81,7 @@ void aeURuleSnapToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnablePosition::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

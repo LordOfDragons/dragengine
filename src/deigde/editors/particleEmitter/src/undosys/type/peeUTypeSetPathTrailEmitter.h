@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetPathTrailEmitter( peeType *type, const char *newPath );
+	peeUTypeSetPathTrailEmitter(peeType *type, const char *newPath);
 	
 protected:
 	/** \brief Clean up the undo action. */

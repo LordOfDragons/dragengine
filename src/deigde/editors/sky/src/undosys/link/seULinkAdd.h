@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkAdd( seSky *sky, seLink *link );
+	seULinkAdd(seSky *sky, seLink *link);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -38,21 +38,21 @@
 //////////////////////////////
 
 ceConversationCondition *ceUConditionHelpers::ActivateConditionAfterRemove(
-const ceConversationConditionList& list, ceConversationCondition *removedCondition ){
-	if( ! removedCondition ){
-		DETHROW( deeInvalidParam );
+const ceConversationConditionList& list, ceConversationCondition *removedCondition){
+	if(!removedCondition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int index = list.IndexOf( removedCondition );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	const int index = list.IndexOf(removedCondition);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < list.GetCount() - 1 ){
-		return list.GetAt( index + 1 );
+	if(index < list.GetCount() - 1){
+		return list.GetAt(index + 1);
 		
-	}else if( index > 0 ){
-		return list.GetAt( index - 1 );
+	}else if(index > 0){
+		return list.GetAt(index - 1);
 		
 	}else{
 		return NULL;

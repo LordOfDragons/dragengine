@@ -46,13 +46,13 @@ deBaseGraphicDynamicSkin::~deBaseGraphicDynamicSkin(){
 // Notifications
 //////////////////
 
-void deBaseGraphicDynamicSkin::RenderableAdded( int index, deDSRenderable *renderable ){
+void deBaseGraphicDynamicSkin::RenderableAdded(int index, deDSRenderable *renderable){
 }
 
-void deBaseGraphicDynamicSkin::RenderableChanged( int index, deDSRenderable *renderable ){
+void deBaseGraphicDynamicSkin::RenderableChanged(int index, deDSRenderable *renderable){
 }
 
-void deBaseGraphicDynamicSkin::RenderableRemoved( int index, deDSRenderable *renderable ){
+void deBaseGraphicDynamicSkin::RenderableRemoved(int index, deDSRenderable *renderable){
 }
 
 void deBaseGraphicDynamicSkin::AllRenderablesRemoved(){

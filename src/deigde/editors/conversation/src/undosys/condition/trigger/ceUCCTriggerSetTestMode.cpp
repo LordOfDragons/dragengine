@@ -41,10 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCTriggerSetTestMode::ceUCCTriggerSetTestMode( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode ){
-	if( ! topic || ! action || ! condition ){
-		DETHROW( deeInvalidParam );
+ceUCCTriggerSetTestMode::ceUCCTriggerSetTestMode(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode){
+	if(!topic || !action || !condition){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -53,7 +53,7 @@ ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode ){
 	pOldTestMode = condition->GetTestMode();
 	pNewTestMode = newTestMode;
 	
-	SetShortInfo( "Condition trigger set test mode" );
+	SetShortInfo("Condition trigger set test mode");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -66,13 +66,13 @@ ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode ){
 }
 
 ceUCCTriggerSetTestMode::~ceUCCTriggerSetTestMode(){
-	if( pCondition ){
+	if(pCondition){
 		pCondition->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -83,11 +83,11 @@ ceUCCTriggerSetTestMode::~ceUCCTriggerSetTestMode(){
 ///////////////
 
 void ceUCCTriggerSetTestMode::Undo(){
-	pCondition->SetTestMode( pOldTestMode );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetTestMode(pOldTestMode);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCTriggerSetTestMode::Redo(){
-	pCondition->SetTestMode( pNewTestMode );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetTestMode(pNewTestMode);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

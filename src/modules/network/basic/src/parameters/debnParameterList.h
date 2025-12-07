@@ -57,16 +57,16 @@ public:
 	int GetParameterCount() const;
 	
 	/** Index of named parameter or -1 if absent. */
-	int IndexOfParameterNamed( const char *name ) const;
+	int IndexOfParameterNamed(const char *name) const;
 	
 	/** Parameter at index. */
-	debnParameter &GetParameterAt( int index ) const;
+	debnParameter &GetParameterAt(int index) const;
 	
 	/** Named parameter. */
-	debnParameter &GetParameterNamed( const char *name ) const;
+	debnParameter &GetParameterNamed(const char *name) const;
 	
 	/** Add parameter. */
-	void AddParameter( debnParameter *parameter );
+	void AddParameter(debnParameter *parameter);
 	
 	/** Remove all parameters. */
 	void RemoveAllParameters();

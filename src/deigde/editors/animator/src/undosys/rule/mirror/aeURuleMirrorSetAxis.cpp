@@ -33,17 +33,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorSetAxis::aeURuleMirrorSetAxis( aeRuleMirror *rule, deAnimatorRuleMirror::eMirrorAxis newValue ) :
-pRule( rule ),
-pNewValue( newValue )
+aeURuleMirrorSetAxis::aeURuleMirrorSetAxis(aeRuleMirror *rule, deAnimatorRuleMirror::eMirrorAxis newValue) :
+pRule(rule),
+pNewValue(newValue)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = rule->GetMirrorAxis();
 	
-	SetShortInfo( "Set mirror rule axis" );
+	SetShortInfo("Set mirror rule axis");
 }
 
 aeURuleMirrorSetAxis::~aeURuleMirrorSetAxis(){
@@ -55,9 +55,9 @@ aeURuleMirrorSetAxis::~aeURuleMirrorSetAxis(){
 ///////////////
 
 void aeURuleMirrorSetAxis::Undo(){
-	pRule->SetMirrorAxis( pOldValue );
+	pRule->SetMirrorAxis(pOldValue);
 }
 
 void aeURuleMirrorSetAxis::Redo(){
-	pRule->SetMirrorAxis( pNewValue );
+	pRule->SetMirrorAxis(pNewValue);
 }

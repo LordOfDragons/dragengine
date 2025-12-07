@@ -45,7 +45,7 @@ public:
 	
 	/** Counters struct. */
 	struct sCounters{
-		uint32_t workGroupSize[ 3 ];
+		uint32_t workGroupSize[3];
 		uint32_t counter;
 	};
 	
@@ -66,7 +66,7 @@ private:
 	const deoglPipeline *pPipelineBuildRenderTask;
 	const deoglPipeline *pPipelineBuildRenderTaskOcclusion;
 	const deoglPipeline *pPipelineSortRenderTask;
-	const deoglPipeline *pPipelineRenderTaskSubInstGroup[ 3 ];
+	const deoglPipeline *pPipelineRenderTaskSubInstGroup[3];
 	
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
@@ -83,7 +83,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create renderer. */
-	deoglRenderCompute( deoglRenderThread &renderThread );
+	deoglRenderCompute(deoglRenderThread &renderThread);
 	
 	/** \brief Clean up renderer. */
 	virtual ~deoglRenderCompute();
@@ -115,48 +115,48 @@ public:
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleGeometries() const{ return pSSBOVisibleGeometries; }
 	
 	/** Counters dispatch offset. */
-	int CounterDispatchOffset( eCounters counter ) const;
+	int CounterDispatchOffset(eCounters counter) const;
 	
 	/** Update elements. */
-	void UpdateElements( const deoglRenderPlan &plan );
+	void UpdateElements(const deoglRenderPlan &plan);
 	
 	/** Update element geometries. */
-	void UpdateElementGeometries( const deoglRenderPlan &plan );
+	void UpdateElementGeometries(const deoglRenderPlan &plan);
 	
 	/** Clear element geometries. */
-	void ClearGeometries( const deoglRenderPlan &plan );
+	void ClearGeometries(const deoglRenderPlan &plan);
 	
 	/** Find content. */
-	void FindContent( const deoglRenderPlan &plan );
-	void FindContentSkyLight( const deoglRenderPlanSkyLight &planLight );
-	void FindContentSkyLightGIStatic( const deoglRenderPlanSkyLight &planLight );
-	void FindContentSkyLightGIDynamic( const deoglRenderPlanSkyLight &planLight );
+	void FindContent(const deoglRenderPlan &plan);
+	void FindContentSkyLight(const deoglRenderPlanSkyLight &planLight);
+	void FindContentSkyLightGIStatic(const deoglRenderPlanSkyLight &planLight);
+	void FindContentSkyLightGIDynamic(const deoglRenderPlanSkyLight &planLight);
 	
 	/** Clear cull result. */
-	void ClearCullResult( const deoglRenderPlan &plan );
+	void ClearCullResult(const deoglRenderPlan &plan);
 	
 	/** Update cull result. */
-	void UpdateCullResult( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
-		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, int lodLayer );
+	void UpdateCullResult(const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
+		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, int lodLayer);
 	
-	void UpdateCullResultOcclusion( const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
-		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters );
+	void UpdateCullResultOcclusion(const deoglRenderPlan &plan, const deoglSPBlockUBO &findConfig,
+		const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters);
 	
 	/** Find geometries. */
-	void FindGeometries( const deoglRenderPlan &plan );
-	void FindGeometriesSkyShadow( const deoglRenderPlan &plan );
+	void FindGeometries(const deoglRenderPlan &plan);
+	void FindGeometriesSkyShadow(const deoglRenderPlan &plan);
 	
 	/** Build render task. */
-	void BuildRenderTask( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
-	void BuildRenderTaskOcclusion( const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask );
-	void BuildRenderTaskSkyShadow( const deoglRenderPlanSkyLight &planLight, int layer );
+	void BuildRenderTask(const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask);
+	void BuildRenderTaskOcclusion(const deoglRenderPlan &plan, deoglComputeRenderTask &renderTask);
+	void BuildRenderTaskSkyShadow(const deoglRenderPlanSkyLight &planLight, int layer);
 	/*@}*/
 	
 	
 	
 protected:
-	void SortRenderTask( deoglComputeRenderTask &renderTask );
-	void pDebugPrintSSBOGeometries( const deoglRenderPlan &plan, const char *prefix );
+	void SortRenderTask(deoglComputeRenderTask &renderTask);
+	void pDebugPrintSSBOGeometries(const deoglRenderPlan &plan, const char *prefix);
 };
 
 #endif

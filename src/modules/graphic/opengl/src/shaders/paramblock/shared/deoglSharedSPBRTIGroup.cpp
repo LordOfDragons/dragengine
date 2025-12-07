@@ -39,24 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBRTIGroup::deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList *parent,
-deoglSharedSPB &sharedSPB, int textureCount ) :
-pParent( parent ),
-pSharedSPB( sharedSPB ),
-pTextureCount( textureCount ),
-pRTSInstance( NULL )
+deoglSharedSPBRTIGroup::deoglSharedSPBRTIGroup(deoglSharedSPBRTIGroupList *parent,
+deoglSharedSPB &sharedSPB, int textureCount) :
+pParent(parent),
+pSharedSPB(sharedSPB),
+pTextureCount(textureCount),
+pRTSInstance(NULL)
 {
-	DEASSERT_NOTNULL( parent )
+	DEASSERT_NOTNULL(parent)
 	
 	pRTSInstance = parent->GetRenderThread().GetRenderTaskSharedPool().GetInstance();
 	pUniqueKey = parent->GetRenderThread().GetUniqueKey().Get();
 }
 
 deoglSharedSPBRTIGroup::~deoglSharedSPBRTIGroup(){
-	if( pRTSInstance ){
+	if(pRTSInstance){
 		pRTSInstance->ReturnToPool();
 	}
 	
-	pParent->GetRenderThread().GetUniqueKey().Return( pUniqueKey );
-	pParent->Remove( this );
+	pParent->GetRenderThread().GetUniqueKey().Return(pUniqueKey);
+	pParent->Remove(this);
 }

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetBoneName::gdeUOCNavSpaceSetBoneName( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navSpace, const char *newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetBoneName::gdeUOCNavSpaceSetBoneName(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navSpace, const char *newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navSpace ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navSpace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "NavSpace set bone name" );
+	SetShortInfo("NavSpace set bone name");
 	
 	pOldValue = navSpace->GetBoneName();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCNavSpaceSetBoneName::~gdeUOCNavSpaceSetBoneName(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavSpaceSetBoneName::~gdeUOCNavSpaceSetBoneName(){
 ///////////////
 
 void gdeUOCNavSpaceSetBoneName::Undo(){
-	pNavSpace->SetBoneName( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetBoneName(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetBoneName::Redo(){
-	pNavSpace->SetBoneName( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetBoneName(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

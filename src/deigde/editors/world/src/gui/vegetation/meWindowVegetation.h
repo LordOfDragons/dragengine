@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	meWindowVegetation( meWindowMain &windowMain );
+	meWindowVegetation(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up view. */
@@ -77,19 +77,19 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Sector coordinates. */
 	inline const decPoint &GetSector() const{ return pSector; }
 	
 	/** \brief Set sector coordinates. */
-	void SetSector( const decPoint &sector );
+	void SetSector(const decPoint &sector);
 	
 	/** \brief Vegetation layer. */
 	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
-	void SetVLayer( meHTVegetationLayer *vlayer );
+	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** \brief Active vegetation layer rule. */
 	meHTVRule *GetVRule() const;
@@ -112,13 +112,13 @@ public:
 	inline float GetPixelToUnits() const{ return pPixelToUnits; }
 	
 	/** \brief Node with rule. */
-	meWVNode *GetNodeWithRule( meHTVRule *rule );
+	meWVNode *GetNodeWithRule(meHTVRule *rule);
 	
 	/** \brief Update node with rule. */
-	void UpdateNodeWithRule( meHTVRule *rule );
+	void UpdateNodeWithRule(meHTVRule *rule);
 	
 	/** \brief Node with rule moved. */
-	void NodeWithRuleMoved( meHTVRule *rule );
+	void NodeWithRuleMoved(meHTVRule *rule);
 	/*@}*/
 };
 

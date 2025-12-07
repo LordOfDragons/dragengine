@@ -43,5 +43,5 @@ igdeScrollBarListener::~igdeScrollBarListener(){
 // Events
 ///////////
 
-void igdeScrollBarListener::OnValueChanged( igdeScrollBar *scrollBar ){
+void igdeScrollBarListener::OnValueChanged(igdeScrollBar *scrollBar){
 }

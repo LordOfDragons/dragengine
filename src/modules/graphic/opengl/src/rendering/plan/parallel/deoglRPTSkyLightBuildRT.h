@@ -49,8 +49,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightBuildRT( deoglRenderPlanSkyLight &plan,
-		deoglCollideList &tempCollideList, int fromLayer, int toLayer );
+	deoglRPTSkyLightBuildRT(deoglRenderPlanSkyLight &plan,
+		deoglCollideList &tempCollideList, int fromLayer, int toLayer);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTSkyLightBuildRT();
@@ -79,7 +79,7 @@ public:
 	
 	
 private:
-	void pFilter( int layerIndex );
+	void pFilter(int layerIndex);
 };
 
 #endif

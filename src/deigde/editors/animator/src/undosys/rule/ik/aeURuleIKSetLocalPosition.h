@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleIKSetLocalPosition( aeRuleInverseKinematic *rule, const decVector &newPos );
+	aeURuleIKSetLocalPosition(aeRuleInverseKinematic *rule, const decVector &newPos);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleIKSetLocalPosition();

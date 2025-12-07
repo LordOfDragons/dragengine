@@ -64,7 +64,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeWidget( igdeEnvironment &environment );
+	igdeWidget(igdeEnvironment &environment);
 	
 	/**
 	 * \brief Clean up widget.
@@ -89,7 +89,7 @@ public:
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if widget is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Engine controller. */
 	igdeEngineController &GetEngineController() const;
@@ -111,13 +111,13 @@ public:
 	inline igdeGuiTheme *GetWidgetGuiTheme() const{ return pGuiTheme; }
 	
 	/** \brief Set widget specific GuiTheme or NULL to use parent GuiTheme. */
-	void SetWidgetGuiTheme( igdeGuiTheme *guitheme );
+	void SetWidgetGuiTheme(igdeGuiTheme *guitheme);
 	
 	/** \brief Widget specific GuiTheme name or empty string to use parent GuiTheme. */
 	inline const decString &GetWidgetGuiThemeName() const{ return pGuiThemeName; }
 	
 	/** \brief Set widget specific GuiTheme name or empty string to use parent GuiTheme. */
-	void SetWidgetGuiThemeName( const char *guitheme );
+	void SetWidgetGuiThemeName(const char *guitheme);
 	
 	/**
 	 * \brief GuiTheme to use.
@@ -136,7 +136,7 @@ public:
 	
 	
 	/** \brief Convert widget position to screen position. */
-	virtual decPoint WidgetToScreen( const decPoint &position ) const;
+	virtual decPoint WidgetToScreen(const decPoint &position) const;
 	
 	/** \brief Parent window. */
 	virtual igdeWindow *GetParentWindow();
@@ -152,7 +152,7 @@ public:
 	 * \brief Set parent.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void SetParent( igdeContainer *parent );
+	void SetParent(igdeContainer *parent);
 	
 	/**
 	 * \brief Create native widget.
@@ -190,7 +190,7 @@ protected:
 	 * \brief Set native widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void SetNativeWidget( void *nativeWidget );
+	void SetNativeWidget(void *nativeWidget);
 	/*@}*/
 };
 

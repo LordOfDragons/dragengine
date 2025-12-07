@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentToggleRenderEnvMap( gdeObjectClass *objectClass, gdeOCComponent *component );
+	gdeUOCComponentToggleRenderEnvMap(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 protected:
 	/** \brief Clean up undo action. */

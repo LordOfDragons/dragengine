@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCBillboardRemove::gdeMAOCBillboardRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Billboard",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class billboard" )
+gdeMAOCBillboardRemove::gdeMAOCBillboardRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Billboard",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class billboard")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Billboard",
 ///////////////
 
 igdeUndo *gdeMAOCBillboardRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard){
 		return NULL;
 	}
 	
 	gdeOCBillboard * const billboard = gameDefinition.GetActiveOCBillboard();
-	if( ! billboard ){
+	if(!billboard){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveBillboard( &objectClass, billboard );
+	return new gdeUOCRemoveBillboard(&objectClass, billboard);
 }
 
 void gdeMAOCBillboardRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard
-		&& gameDefinition->GetActiveOCBillboard() != NULL );
+		&& gameDefinition->GetActiveOCBillboard() != NULL);
 }

@@ -45,8 +45,8 @@
 ////////////////////////////
 
 deCanvasVisitorIdentify::deCanvasVisitorIdentify() :
-pCanvas( NULL ),
-pType( deCanvasVisitorIdentify::ectUnknown ){
+pCanvas(NULL),
+pType(deCanvasVisitorIdentify::ectUnknown){
 }
 
 deCanvasVisitorIdentify::~deCanvasVisitorIdentify(){
@@ -58,52 +58,52 @@ deCanvasVisitorIdentify::~deCanvasVisitorIdentify(){
 ///////////////
 
 deCanvasImage &deCanvasVisitorIdentify::CastToImage() const{
-	if( pType != ectImage ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectImage){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deCanvasImage* )pCanvas );
+	return *((deCanvasImage*)pCanvas);
 }
 
 deCanvasPaint &deCanvasVisitorIdentify::CastToPaint() const{
-	if( pType != ectPaint ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectPaint){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deCanvasPaint* )pCanvas );
+	return *((deCanvasPaint*)pCanvas);
 }
 
 deCanvasCanvasView &deCanvasVisitorIdentify::CastToCanvasView() const{
-	if( pType != ectCanvasView ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectCanvasView){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deCanvasCanvasView* )pCanvas );
+	return *((deCanvasCanvasView*)pCanvas);
 }
 
 deCanvasRenderWorld &deCanvasVisitorIdentify::CastToRenderWorld() const{
-	if( pType != ectRenderWorld ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectRenderWorld){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deCanvasRenderWorld* )pCanvas );
+	return *((deCanvasRenderWorld*)pCanvas);
 }
 
 deCanvasText &deCanvasVisitorIdentify::CastToText() const{
-	if( pType != ectText ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectText){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deCanvasText* )pCanvas );
+	return *((deCanvasText*)pCanvas);
 }
 
 deCanvasVideoPlayer &deCanvasVisitorIdentify::CastToVideoPlayer() const{
-	if( pType != ectVideoPlayer ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectVideoPlayer){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deCanvasVideoPlayer* )pCanvas );
+	return *((deCanvasVideoPlayer*)pCanvas);
 }
 
 deCanvasView &deCanvasVisitorIdentify::CastToView() const{
-	if( pType != ectView ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectView){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deCanvasView* )pCanvas );
+	return *((deCanvasView*)pCanvas);
 }
 
 void deCanvasVisitorIdentify::Reset(){
@@ -116,42 +116,42 @@ void deCanvasVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deCanvasVisitorIdentify::VisitCanvas( deCanvas &canvas ){
+void deCanvasVisitorIdentify::VisitCanvas(deCanvas &canvas){
 	pCanvas = &canvas;
 	pType = ectUnknown;
 }
 
-void deCanvasVisitorIdentify::VisitImage( deCanvasImage &canvas ){
+void deCanvasVisitorIdentify::VisitImage(deCanvasImage &canvas){
 	pCanvas = &canvas;
 	pType = ectImage;
 }
 
-void deCanvasVisitorIdentify::VisitPaint( deCanvasPaint &canvas ){
+void deCanvasVisitorIdentify::VisitPaint(deCanvasPaint &canvas){
 	pCanvas = &canvas;
 	pType = ectPaint;
 }
 
-void deCanvasVisitorIdentify::VisitCanvasView( deCanvasCanvasView &canvas ){
+void deCanvasVisitorIdentify::VisitCanvasView(deCanvasCanvasView &canvas){
 	pCanvas = &canvas;
 	pType = ectCanvasView;
 }
 
-void deCanvasVisitorIdentify::VisitRenderWorld( deCanvasRenderWorld &canvas ){
+void deCanvasVisitorIdentify::VisitRenderWorld(deCanvasRenderWorld &canvas){
 	pCanvas = &canvas;
 	pType = ectRenderWorld;
 }
 
-void deCanvasVisitorIdentify::VisitText( deCanvasText &canvas ){
+void deCanvasVisitorIdentify::VisitText(deCanvasText &canvas){
 	pCanvas = &canvas;
 	pType = ectText;
 }
 
-void deCanvasVisitorIdentify::VisitVideoPlayer( deCanvasVideoPlayer &canvas ){
+void deCanvasVisitorIdentify::VisitVideoPlayer(deCanvasVideoPlayer &canvas){
 	pCanvas = &canvas;
 	pType = ectVideoPlayer;
 }
 
-void deCanvasVisitorIdentify::VisitView( deCanvasView &canvas ){
+void deCanvasVisitorIdentify::VisitView(deCanvasView &canvas){
 	pCanvas = &canvas;
 	pType = ectView;
 }

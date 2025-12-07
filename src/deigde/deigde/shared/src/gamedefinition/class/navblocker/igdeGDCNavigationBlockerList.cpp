@@ -42,7 +42,7 @@
 igdeGDCNavigationBlockerList::igdeGDCNavigationBlockerList(){
 }
 
-igdeGDCNavigationBlockerList::igdeGDCNavigationBlockerList( const igdeGDCNavigationBlockerList &list ){
+igdeGDCNavigationBlockerList::igdeGDCNavigationBlockerList(const igdeGDCNavigationBlockerList &list){
 	pNavigationBlockers = list.pNavigationBlockers;
 }
 
@@ -58,38 +58,38 @@ int igdeGDCNavigationBlockerList::GetCount() const{
 	return pNavigationBlockers.GetCount();
 }
 
-igdeGDCNavigationBlocker *igdeGDCNavigationBlockerList::GetAt( int index ) const{
-	return ( igdeGDCNavigationBlocker* )pNavigationBlockers.GetAt( index );
+igdeGDCNavigationBlocker *igdeGDCNavigationBlockerList::GetAt(int index) const{
+	return (igdeGDCNavigationBlocker*)pNavigationBlockers.GetAt(index);
 }
 
-int igdeGDCNavigationBlockerList::IndexOf( igdeGDCNavigationBlocker *blocker ) const{
-	return pNavigationBlockers.IndexOf( blocker );
+int igdeGDCNavigationBlockerList::IndexOf(igdeGDCNavigationBlocker *blocker) const{
+	return pNavigationBlockers.IndexOf(blocker);
 }
 
-bool igdeGDCNavigationBlockerList::Has( igdeGDCNavigationBlocker *blocker ) const{
-	return pNavigationBlockers.Has( blocker );
+bool igdeGDCNavigationBlockerList::Has(igdeGDCNavigationBlocker *blocker) const{
+	return pNavigationBlockers.Has(blocker);
 }
 
-void igdeGDCNavigationBlockerList::Add( igdeGDCNavigationBlocker *blocker ){
-	if( ! blocker ){
-		DETHROW( deeInvalidParam );
+void igdeGDCNavigationBlockerList::Add(igdeGDCNavigationBlocker *blocker){
+	if(!blocker){
+		DETHROW(deeInvalidParam);
 	}
-	pNavigationBlockers.Add( blocker );
+	pNavigationBlockers.Add(blocker);
 }
 
-void igdeGDCNavigationBlockerList::InsertAt( igdeGDCNavigationBlocker *blocker, int index ){
-	if( ! blocker ){
-		DETHROW( deeInvalidParam );
+void igdeGDCNavigationBlockerList::InsertAt(igdeGDCNavigationBlocker *blocker, int index){
+	if(!blocker){
+		DETHROW(deeInvalidParam);
 	}
-	pNavigationBlockers.Insert( blocker, index );
+	pNavigationBlockers.Insert(blocker, index);
 }
 
-void igdeGDCNavigationBlockerList::MoveTo( igdeGDCNavigationBlocker *blocker, int index ){
-	pNavigationBlockers.Move( blocker, index );
+void igdeGDCNavigationBlockerList::MoveTo(igdeGDCNavigationBlocker *blocker, int index){
+	pNavigationBlockers.Move(blocker, index);
 }
 
-void igdeGDCNavigationBlockerList::Remove( igdeGDCNavigationBlocker *blocker ){
-	pNavigationBlockers.Remove( blocker );
+void igdeGDCNavigationBlockerList::Remove(igdeGDCNavigationBlocker *blocker){
+	pNavigationBlockers.Remove(blocker);
 }
 
 void igdeGDCNavigationBlockerList::RemoveAll(){
@@ -98,22 +98,22 @@ void igdeGDCNavigationBlockerList::RemoveAll(){
 
 
 
-void igdeGDCNavigationBlockerList::SetToDeepCopyFrom( const igdeGDCNavigationBlockerList &list ){
+void igdeGDCNavigationBlockerList::SetToDeepCopyFrom(const igdeGDCNavigationBlockerList &list){
 	igdeGDCNavigationBlocker *blocker = NULL;
 	const int count = list.GetCount();
 	
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			blocker = new igdeGDCNavigationBlocker( *list.GetAt( i ) );
-			Add( blocker );
+		for(i=0; i<count; i++){
+			blocker = new igdeGDCNavigationBlocker(*list.GetAt(i));
+			Add(blocker);
 			blocker->FreeReference();
 			blocker = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( blocker ){
+	}catch(const deException &){
+		if(blocker){
 			blocker->FreeReference();
 		}
 		throw;
@@ -125,7 +125,7 @@ void igdeGDCNavigationBlockerList::SetToDeepCopyFrom( const igdeGDCNavigationBlo
 // Operators
 //////////////
 
-igdeGDCNavigationBlockerList &igdeGDCNavigationBlockerList::operator=( const igdeGDCNavigationBlockerList &list ){
+igdeGDCNavigationBlockerList &igdeGDCNavigationBlockerList::operator=(const igdeGDCNavigationBlockerList &list){
 	pNavigationBlockers = list.pNavigationBlockers;
 	return *this;
 }

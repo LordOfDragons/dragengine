@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDWPToggleIdentifierUsage( gdeGameDefinition *gamedef, gdeProperty *property );
+	gdeUGDWPToggleIdentifierUsage(gdeGameDefinition *gamedef, gdeProperty *property);
 	
 protected:
 	/** \brief Clean up undo action. */

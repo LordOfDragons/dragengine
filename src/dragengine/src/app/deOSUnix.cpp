@@ -51,19 +51,19 @@
 // error handling function
 static deOSUnix *tempGlobalOS = NULL;
 
-static int errorHandler( Display *dpy, XErrorEvent *e ){
+static int errorHandler(Display *dpy, XErrorEvent *e){
 	// we need a way to get hold of a default logger. best way would be a global logger
 	// as the logger class is reference counted. this does not guarantee that the log
 	// is written to the correct engine object but this is anyways not possible since
 	// x errors are asynchronous to begin with.
 	
-	char errorText[ 1024 ];
-	XGetErrorText( dpy, e->error_code, errorText, sizeof( errorText ) );
+	char errorText[1024];
+	XGetErrorText(dpy, e->error_code, errorText, sizeof(errorText));
 	
 	const char * requestCodeName = "??";
 	const char * minorCodeName = "-";
 	
-	switch( e->request_code ){
+	switch(e->request_code){
 	case X_CreateWindow: requestCodeName = "CreateWindow"; break;              
 	case X_ChangeWindowAttributes: requestCodeName = "ChangeWindowAttributes"; break;        
 	case X_GetWindowAttributes: requestCodeName = "GetWindowAttributes"; break;     
@@ -189,8 +189,8 @@ static int errorHandler( Display *dpy, XErrorEvent *e ){
 	default: break;
 	}
 	
-	if( e->request_code == 153 ){
-		switch( e->minor_code ){
+	if(e->request_code == 153){
+		switch(e->minor_code){
 		case 1: minorCodeName = "GLXRender"; break;
 		case 2: minorCodeName = "GLXRenderLarge"; break;
 		case 3: minorCodeName = "GLXCreateContext"; break;
@@ -236,14 +236,14 @@ static int errorHandler( Display *dpy, XErrorEvent *e ){
 	*/
 
 	decString errorMessage;
-	errorMessage.Format( "XError %s: request_code=%s(%d) minor_code=%s(%d)",
-		errorText, requestCodeName, e->request_code, minorCodeName, e->minor_code );
+	errorMessage.Format("XError %s: request_code=%s(%d) minor_code=%s(%d)",
+		errorText, requestCodeName, e->request_code, minorCodeName, e->minor_code);
 	
-	if( tempGlobalOS ){
-		tempGlobalOS->GetEngine()->GetLogger()->LogError( "Engine-OSUnix", errorMessage );
+	if(tempGlobalOS){
+		tempGlobalOS->GetEngine()->GetLogger()->LogError("Engine-OSUnix", errorMessage);
 		
 	}else{
-		printf( "[XERR] %s\n", errorMessage.GetString() );
+		printf("[XERR] %s\n", errorMessage.GetString());
 	}
 	
 	// request_code = 155 => GLX (see /usr/include/GL/glxpoto.h)
@@ -260,43 +260,43 @@ static int errorHandler( Display *dpy, XErrorEvent *e ){
 ////////////////////////////
 
 deOSUnix::deOSUnix() :
-pDisplay( NULL ),
-pScreen( 0 ),
-pCurWindow( 0 ),
-pEventMask( 0 ),
-pHostingMainWindow( 0 ),
-pHostingRenderWindow( 0 ),
+pDisplay(NULL),
+pScreen(0),
+pCurWindow(0),
+pEventMask(0),
+pHostingMainWindow(0),
+pHostingRenderWindow(0),
 
-pDisplayInformation( NULL ),
-pDisplayCount( 0 ),
-pDisplayResolutions( NULL ),
-pDisplayResolutionCount( 0 ),
-pScaleFactor( 100 )
+pDisplayInformation(NULL),
+pDisplayCount(0),
+pDisplayResolutions(NULL),
+pDisplayResolutionCount(0),
+pScaleFactor(100)
 {
 	try{
 		// set error handler
 		tempGlobalOS = this;
-		XSetErrorHandler( &errorHandler );
+		XSetErrorHandler(&errorHandler);
 		
 		// open display
-		const char *dispName = getenv( "DISPLAY" );
-		if( ! dispName ){
+		const char *dispName = getenv("DISPLAY");
+		if(!dispName){
 			dispName = "";
 		}
-		pDisplay = XOpenDisplay( dispName );
-		if( ! pDisplay ){
-			printf( "[OSUNIX] Cannot not open display %s\n", XDisplayName( dispName ) );
-			DETHROW( deeInvalidAction );
+		pDisplay = XOpenDisplay(dispName);
+		if(!pDisplay){
+			printf("[OSUNIX] Cannot not open display %s\n", XDisplayName(dispName));
+			DETHROW(deeInvalidAction);
 	    }
 		
-		pScreen = XDefaultScreen( pDisplay );
+		pScreen = XDefaultScreen(pDisplay);
 		pGetDisplayInformation();
 		pScaleFactor = pGetGlobalScaling();
 		
 		// init locale
-		setlocale( LC_ALL, "" );
+		setlocale(LC_ALL, "");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -312,30 +312,30 @@ deOSUnix::~deOSUnix(){
 ///////////////
 
 decString deOSUnix::GetPathEngine(){
-	const char * const envPath = getenv( "DE_ENGINE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_ENGINE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( DE_ENGINE_PATH );
+	return decString(DE_ENGINE_PATH);
 }
 
 decString deOSUnix::GetPathShare(){
-	const char * const envPath = getenv( "DE_SHARE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_SHARE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( DE_SHARE_PATH );
+	return decString(DE_SHARE_PATH);
 }
 
 decString deOSUnix::GetPathSystemConfig(){
-	const char * const envPath = getenv( "DE_CONFIG_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_CONFIG_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( DE_CONFIG_PATH );
+	return decString(DE_CONFIG_PATH);
 }
 
 decString deOSUnix::GetPathUserConfig(){
@@ -384,39 +384,39 @@ int deOSUnix::GetDisplayCount(){
 	return pDisplayCount;
 }
 
-decPoint deOSUnix::GetDisplayCurrentResolution( int display ){
-	DEASSERT_TRUE( display >= 0 )
-	DEASSERT_TRUE( display < pDisplayCount )
+decPoint deOSUnix::GetDisplayCurrentResolution(int display){
+	DEASSERT_TRUE(display >= 0)
+	DEASSERT_TRUE(display < pDisplayCount)
 	
-	return pDisplayInformation[ display ].currentResolution;
+	return pDisplayInformation[display].currentResolution;
 }
 
-int deOSUnix::GetDisplayCurrentRefreshRate( int display ){
-	DEASSERT_TRUE( display >= 0 )
-	DEASSERT_TRUE( display < pDisplayCount )
+int deOSUnix::GetDisplayCurrentRefreshRate(int display){
+	DEASSERT_TRUE(display >= 0)
+	DEASSERT_TRUE(display < pDisplayCount)
 	
-	return pDisplayInformation[ display ].currentRefreshRate;
+	return pDisplayInformation[display].currentRefreshRate;
 }
 
-int deOSUnix::GetDisplayResolutionCount( int display ){
-	DEASSERT_TRUE( display >= 0 )
-	DEASSERT_TRUE( display < pDisplayCount )
+int deOSUnix::GetDisplayResolutionCount(int display){
+	DEASSERT_TRUE(display >= 0)
+	DEASSERT_TRUE(display < pDisplayCount)
 	
-	return pDisplayInformation[ display ].resolutionCount;
+	return pDisplayInformation[display].resolutionCount;
 }
 
-decPoint deOSUnix::GetDisplayResolution( int display, int resolution ){
-	DEASSERT_TRUE( display >= 0 )
-	DEASSERT_TRUE( display < pDisplayCount )
-	DEASSERT_TRUE( resolution >= 0 )
-	DEASSERT_TRUE( resolution < pDisplayInformation[ display ].resolutionCount )
+decPoint deOSUnix::GetDisplayResolution(int display, int resolution){
+	DEASSERT_TRUE(display >= 0)
+	DEASSERT_TRUE(display < pDisplayCount)
+	DEASSERT_TRUE(resolution >= 0)
+	DEASSERT_TRUE(resolution < pDisplayInformation[display].resolutionCount)
 	
-	return pDisplayInformation[ display ].resolutions[ resolution ];
+	return pDisplayInformation[display].resolutions[resolution];
 }
 
-int deOSUnix::GetDisplayCurrentScaleFactor( int display ){
-	DEASSERT_TRUE( display >= 0 )
-	DEASSERT_TRUE( display < pDisplayCount )
+int deOSUnix::GetDisplayCurrentScaleFactor(int display){
+	DEASSERT_TRUE(display >= 0)
+	DEASSERT_TRUE(display < pDisplayCount)
 	
 	return pScaleFactor;
 }
@@ -435,19 +435,19 @@ deOSUnix *deOSUnix::CastToOSUnix(){
 // Unix related
 /////////////////
 
-void deOSUnix::SetEventMask( long mask ){
+void deOSUnix::SetEventMask(long mask){
 	pEventMask = mask;
 	pSetWindowEventMask();
 }
 
-void deOSUnix::SetWindow( Window wnd ){
+void deOSUnix::SetWindow(Window wnd){
 	//XWindowAttributes xwa;
 	
 	// check if the is a window at the moment
-	if( pCurWindow > 255 ){
+	if(pCurWindow > 255){
 		// ungrab mouse pointer
-		XUngrabPointer( pDisplay, CurrentTime );
-		XUngrabKeyboard( pDisplay, CurrentTime );
+		XUngrabPointer(pDisplay, CurrentTime);
+		XUngrabKeyboard(pDisplay, CurrentTime);
 	}
 	
 	// set new window
@@ -459,9 +459,9 @@ void deOSUnix::SetWindow( Window wnd ){
 	pSetWindowEventMask();
 	
 	// show new window if not null
-	if( pCurWindow > 255 ){
-		XMapWindow( pDisplay, pCurWindow );
-		XFlush( pDisplay );
+	if(pCurWindow > 255){
+		XMapWindow(pDisplay, pCurWindow);
+		XFlush(pDisplay);
 		// fetch geometry information
 //		XGetWindowAttributes( pDisplay, pCurWindow, &xwa );
 //		pCurWindowWidth = xwa.width;
@@ -484,11 +484,11 @@ void deOSUnix::SetWindow( Window wnd ){
 	}
 }
 
-void deOSUnix::SetHostingMainWindow( Window window ){
+void deOSUnix::SetHostingMainWindow(Window window){
 	pHostingMainWindow = window;
 }
 
-void deOSUnix::SetHostingRenderWindow( Window window ){
+void deOSUnix::SetHostingRenderWindow(Window window){
 	pHostingRenderWindow = window;
 }
 
@@ -502,16 +502,16 @@ bool deOSUnix::HasHostingRenderWindow() const{
 
 
 
-void deOSUnix::ProcessEventLoop( bool sendToInputModule ){
+void deOSUnix::ProcessEventLoop(bool sendToInputModule){
 	deInputSystem &inpSys = *GetEngine()->GetInputSystem();
 	deBaseInputModule &inputModule = *inpSys.GetActiveModule();
 	XEvent event;
 	
-	while( XPending( pDisplay ) ){
-		XNextEvent( pDisplay, &event );
+	while(XPending(pDisplay)){
+		XNextEvent(pDisplay, &event);
 		
 // 		GetEngine()->GetLogger()->LogInfoFormat( "Dragengine", "event type %i", event.type );
-		switch( event.type ){
+		switch(event.type){
 		//case Expose:
 		//	break;
 			
@@ -534,19 +534,19 @@ void deOSUnix::ProcessEventLoop( bool sendToInputModule ){
 		//	break;
 		}
 		
-		if( sendToInputModule ){
-			inputModule.EventLoop( event );
+		if(sendToInputModule){
+			inputModule.EventLoop(event);
 		}
 	}
 }
 
 decString deOSUnix::GetUserLocaleLanguage(){
-	const char * const l = setlocale( LC_ALL, nullptr );
-	if( l ){
-		const decString ls( l );
-		const int deli = ls.Find( '_' );
-		if( deli != -1 ){
-			return ls.GetLeft( deli ).GetLower();
+	const char * const l = setlocale(LC_ALL, nullptr);
+	if(l){
+		const decString ls(l);
+		const int deli = ls.Find('_');
+		if(deli != -1){
+			return ls.GetLeft(deli).GetLower();
 			
 		}else{
 			return ls.GetLower();
@@ -556,17 +556,17 @@ decString deOSUnix::GetUserLocaleLanguage(){
 }
 
 decString deOSUnix::GetUserLocaleTerritory(){
-	const char * const l = setlocale( LC_ALL, nullptr );
-	if( l ){
-		const decString ls( l );
-		const int deli = ls.Find( '_' );
-		if( deli != -1 ){
-			const int deli2 = ls.Find( '.', deli + 1 );
-			if( deli2 != -1 ){
-				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+	const char * const l = setlocale(LC_ALL, nullptr);
+	if(l){
+		const decString ls(l);
+		const int deli = ls.Find('_');
+		if(deli != -1){
+			const int deli2 = ls.Find('.', deli + 1);
+			if(deli2 != -1){
+				return ls.GetMiddle(deli + 1, deli2).GetLower();
 				
 			}else{
-				return ls.GetMiddle( deli + 1 ).GetLower();
+				return ls.GetMiddle(deli + 1).GetLower();
 			}
 			
 		}else{
@@ -583,26 +583,26 @@ decString deOSUnix::GetUserLocaleTerritory(){
 
 void deOSUnix::pCleanUp(){
 	// close display
-	if( pDisplay ){
-		XCloseDisplay( pDisplay );
+	if(pDisplay){
+		XCloseDisplay(pDisplay);
 		pDisplay = NULL;
 	}
 	
-	if( pDisplayInformation ){
+	if(pDisplayInformation){
 		delete [] pDisplayInformation;
 		pDisplayInformation = NULL;
 		pDisplayCount = 0;
 	}
 	
-	if( pDisplayResolutions ){
+	if(pDisplayResolutions){
 		delete [] pDisplayResolutions;
 		pDisplayResolutions = NULL;
 		pDisplayResolutionCount = 0;
 	}
 	
 	// reset error handler
-	if( tempGlobalOS == this ){
-		XSetErrorHandler( NULL );
+	if(tempGlobalOS == this){
+		XSetErrorHandler(NULL);
 		tempGlobalOS = NULL;
 	}
 }
@@ -610,36 +610,36 @@ void deOSUnix::pCleanUp(){
 void deOSUnix::pSetWindowEventMask(){
 	XSetWindowAttributes swa;
 	
-	if( pCurWindow > 255 ){
+	if(pCurWindow > 255){
 		swa.event_mask = pEventMask;
-		XChangeWindowAttributes( pDisplay, pCurWindow, CWEventMask, &swa );
+		XChangeWindowAttributes(pDisplay, pCurWindow, CWEventMask, &swa);
 	}
 }
 
 decString deOSUnix::pGetHomeDirectory(){
 	// the user configuration directory is located under the user home directory.
 	// can be changed at runtime using an environment parameter.
-	const char *envPath = getenv( "HOME" );
-	if( envPath ){
-		return decString( envPath );
+	const char *envPath = getenv("HOME");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	envPath = getenv( "USER" );
-	if( envPath ){
-		return decString( "/home/" ) + envPath;
+	envPath = getenv("USER");
+	if(envPath){
+		return decString("/home/") + envPath;
 	}
 	
-	envPath = getenv( "LOGUSER" );
-	if( envPath ){
-		return decString( "/home/" ) + envPath;
+	envPath = getenv("LOGUSER");
+	if(envPath){
+		return decString("/home/") + envPath;
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 void deOSUnix::pGetDisplayInformation(){
-	const int screenCount = XScreenCount( pDisplay );
-	if( screenCount == 0 ){
+	const int screenCount = XScreenCount(pDisplay);
+	if(screenCount == 0){
 		return; // should never happen
 	}
 	
@@ -648,26 +648,26 @@ void deOSUnix::pGetDisplayInformation(){
 	int resolutionCount;
 	int i, j;
 	
-	for( i=0; i<screenCount; i++ ){
-		XRRSizes( pDisplay, i, &resolutionCount );
+	for(i=0; i<screenCount; i++){
+		XRRSizes(pDisplay, i, &resolutionCount);
 		totalResolutionCount += resolutionCount;
 	}
 	
-	if( totalResolutionCount == 0 ){
+	if(totalResolutionCount == 0){
 		return; // should never happen
 	}
 	
 	// create arrays and fill in the actual values
-	pDisplayResolutions = new decPoint[ totalResolutionCount ];
-	pDisplayInformation = new sDisplayInformation[ screenCount ];
+	pDisplayResolutions = new decPoint[totalResolutionCount];
+	pDisplayInformation = new sDisplayInformation[screenCount];
 	
-	for( i=0; i<screenCount; i++ ){
-		sDisplayInformation &di = pDisplayInformation[ i ];
+	for(i=0; i<screenCount; i++){
+		sDisplayInformation &di = pDisplayInformation[i];
 		di.resolutions = pDisplayResolutions + pDisplayResolutionCount;
 		
-		const XRRScreenSize * const resolutions = XRRSizes( pDisplay, i, &resolutionCount );
-		for( j=0; j<resolutionCount; j++ ){
-			di.resolutions[ j ].Set( resolutions[ j ].width, resolutions[ j ].height );
+		const XRRScreenSize * const resolutions = XRRSizes(pDisplay, i, &resolutionCount);
+		for(j=0; j<resolutionCount; j++){
+			di.resolutions[j].Set(resolutions[j].width, resolutions[j].height);
 		}
 		
 		// the calls XWidthOfScreen and XHeightOfScreen do not work well if used on screens
@@ -678,9 +678,9 @@ void deOSUnix::pGetDisplayInformation(){
 		// resolution. fall back to XWidthOfScreen and XHeightOfScreen in case no resolutions
 		// have been returned
 		if(resolutionCount == 0){
-			Screen * const screen = XScreenOfDisplay( pDisplay, i );
-			di.currentResolution.x = XWidthOfScreen( screen );
-			di.currentResolution.y = XHeightOfScreen( screen );
+			Screen * const screen = XScreenOfDisplay(pDisplay, i);
+			di.currentResolution.x = XWidthOfScreen(screen);
+			di.currentResolution.y = XHeightOfScreen(screen);
 			
 		}else{
 			di.currentResolution = di.resolutions[0];
@@ -715,8 +715,8 @@ void deOSUnix::pGetDisplayInformation(){
 }
 
 int deOSUnix::pGetGlobalScaling() const{
-	const char * const resourceString = XResourceManagerString( pDisplay );
-	if( ! resourceString ){
+	const char * const resourceString = XResourceManagerString(pDisplay);
+	if(!resourceString){
 		return 100;
 	}
 	
@@ -724,21 +724,21 @@ int deOSUnix::pGetGlobalScaling() const{
 	
 	XrmInitialize(); // initialize db before calling Xrm* functions
 	
-	const XrmDatabase db = XrmGetStringDatabase( resourceString );
+	const XrmDatabase db = XrmGetStringDatabase(resourceString);
 	
 	XrmValue value;
 	char *type = nullptr;
 	
-	if( XrmGetResource( db, "Xft.dpi", "String", &type, &value ) != True ){
+	if(XrmGetResource(db, "Xft.dpi", "String", &type, &value) != True){
 		return 100;
 	}
-	if( ! value.addr ){
+	if(!value.addr){
 		return 100;
 	}
 	
-	const double scale = 100.0 * atof( value.addr ) / 96.0;
+	const double scale = 100.0 * atof(value.addr) / 96.0;
 	// printf( "Scale: %g %d\n", scale, decMath::max( ( int )( scale / 25.0 + 0.5 ) * 25, 100 ) );
-	return decMath::max( ( int )( scale / 25.0 + 0.5 ) * 25, 100 );
+	return decMath::max((int)(scale / 25.0 + 0.5) * 25, 100);
 }
 
 #endif

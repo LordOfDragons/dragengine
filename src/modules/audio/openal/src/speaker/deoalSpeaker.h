@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create speaker peer. */
-	deoalSpeaker( deAudioOpenAL &oal, deSpeaker &speaker );
+	deoalSpeaker(deAudioOpenAL &oal, deSpeaker &speaker);
 	
 	/** \brief Clean up speaker peer. */
 	virtual ~deoalSpeaker();
@@ -100,13 +100,13 @@ public:
 	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL. */
-	void SetParentWorld( deoalWorld *world );
+	void SetParentWorld(deoalWorld *world);
 	
 	/** \brief Parent microphone. */
 	inline deoalMicrophone *GetParentMicrophone() const{ return pParentMicrophone; }
 	
 	/** \brief Set parent microphone. */
-	void SetParentMicrophone( deoalMicrophone *microphone );
+	void SetParentMicrophone(deoalMicrophone *microphone);
 	
 	/** \brief Audio speaker. */
 	inline deoalASpeaker *GetASpeaker() const{ return pASpeaker; }

@@ -209,7 +209,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create main window. */
-	meWindowMain( meIGDEModule &module );
+	meWindowMain(meIGDEModule &module);
 	
 protected:
 	/** Clean up main window. */
@@ -254,13 +254,13 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Create world. */
 	void CreateNewWorld();
 	
 	/** Load game world. */
-	void LoadWorld( const char *filename );
+	void LoadWorld(const char *filename);
 	
 	/** Notify configuration enable GI changed. */
 	void ConfigEnableGIChanged();
@@ -273,16 +273,16 @@ public:
 	inline bool GetUse3DCursor() const{ return pUse3DCursor; }
 	void SetUse3DCursor(bool useIt);
 	inline decVector Get3DCursor() const{ return p3DCursor; }
-	inline void Set3DCursor(const decVector &pos){ p3DCursor = pos; }
+	inline void Set3DCursor(const decVector &pos){p3DCursor = pos;}
 	
-	void RotateActiveObjectBy( const decVector &rotation );
+	void RotateActiveObjectBy(const decVector &rotation);
 	
 	/** Sets the visibility of the progress bar in the status bar. */
-	void SetProgressVisible( bool visible );
+	void SetProgressVisible(bool visible);
 	/** Sets the progress bar progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	/** Sets the progress text. */
-	void SetProgressText( const char *text );
+	void SetProgressText(const char *text);
 	
 	
 	
@@ -359,7 +359,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -370,12 +370,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * Requests a document to be saved.
@@ -385,7 +385,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * Recent files changed.
@@ -427,11 +427,11 @@ private:
 	void pCreateToolBarObject();
 	void pCreateToolBarDecal();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuObject( igdeMenuCascade &menu );
-	void pCreateMenuDecal( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuObject(igdeMenuCascade &menu);
+	void pCreateMenuDecal(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
 	
 	void pUpdateLoading();
 };

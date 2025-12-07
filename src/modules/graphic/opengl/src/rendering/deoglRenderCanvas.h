@@ -48,14 +48,14 @@ private:
 	GLuint pVAOShapes;
 	GLuint pActiveVAO;
 	
-	const deoglPipeline *pPipelineCanvasColor[ deoglRCanvas::BlendModeCount ];
-	const deoglPipeline *pPipelineCanvasColorMask[ deoglRCanvas::BlendModeCount ];
-	const deoglPipeline *pPipelineCanvasImage[ deoglRCanvas::BlendModeCount ];
-	const deoglPipeline *pPipelineCanvasImageMask[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasColor[deoglRCanvas::BlendModeCount];
+	const deoglPipeline *pPipelineCanvasColorMask[deoglRCanvas::BlendModeCount];
+	const deoglPipeline *pPipelineCanvasImage[deoglRCanvas::BlendModeCount];
+	const deoglPipeline *pPipelineCanvasImageMask[deoglRCanvas::BlendModeCount];
 	const deoglPipeline *pPipelineCanvasImageArray[deoglRCanvas::BlendModeCount];
 	const deoglPipeline *pPipelineCanvasImageArrayMask[deoglRCanvas::BlendModeCount];
-	const deoglPipeline *pPipelineCanvasRenderWorld[ deoglRCanvas::BlendModeCount ];
-	const deoglPipeline *pPipelineCanvasRenderWorldMask[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasRenderWorld[deoglRCanvas::BlendModeCount];
+	const deoglPipeline *pPipelineCanvasRenderWorldMask[deoglRCanvas::BlendModeCount];
 	
 	deoglDebugInformation::Ref pDebugInfoCanvas;
 	deoglDebugInformation::Ref pDebugInfoCanvasView;
@@ -105,7 +105,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create canvas renderer. */
-	deoglRenderCanvas( deoglRenderThread &renderThread );
+	deoglRenderCanvas(deoglRenderThread &renderThread);
 	
 	/** Clean up canvas renderer. */
 	virtual ~deoglRenderCanvas();
@@ -116,25 +116,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set opengl states required for canvas rendering. */
-	void Prepare( const deoglRenderCanvasContext &context );
+	void Prepare(const deoglRenderCanvasContext &context);
 	
 	/** Draw canvas paint. */
-	void DrawCanvasPaint( const deoglRenderCanvasContext &context, const deoglRCanvasPaint &canvas );
+	void DrawCanvasPaint(const deoglRenderCanvasContext &context, const deoglRCanvasPaint &canvas);
 	
 	/** Draw canvas image. */
-	void DrawCanvasImage( const deoglRenderCanvasContext &context, const deoglRCanvasImage &canvas );
+	void DrawCanvasImage(const deoglRenderCanvasContext &context, const deoglRCanvasImage &canvas);
 	
 	/** Draw canvas canvas view. */
-	void DrawCanvasCanvasView( const deoglRenderCanvasContext &context, const deoglRCanvasCanvasView &canvas );
+	void DrawCanvasCanvasView(const deoglRenderCanvasContext &context, const deoglRCanvasCanvasView &canvas);
 	
 	/** Draw canvas render world. */
-	void DrawCanvasRenderWorld( const deoglRenderCanvasContext &context, const deoglRCanvasRenderWorld &canvas );
+	void DrawCanvasRenderWorld(const deoglRenderCanvasContext &context, const deoglRCanvasRenderWorld &canvas);
 	
 	/** Draw canvas video player. */
-	void DrawCanvasVideoPlayer( const deoglRenderCanvasContext &context, const deoglRCanvasVideoPlayer &canvas );
+	void DrawCanvasVideoPlayer(const deoglRenderCanvasContext &context, const deoglRCanvasVideoPlayer &canvas);
 	
 	/** Draw canvas text. */
-	void DrawCanvasText( const deoglRenderCanvasContext &context, const deoglRCanvasText &canvas );
+	void DrawCanvasText(const deoglRenderCanvasContext &context, const deoglRCanvasText &canvas);
 	/*@}*/
 	
 	
@@ -150,28 +150,28 @@ public:
 	
 	
 	/** Clear all debug information prepare plan. */
-	void ClearAllDebugInfoPlanPrepare( deoglRenderPlan &plan );
+	void ClearAllDebugInfoPlanPrepare(deoglRenderPlan &plan);
 	
-	void SampleDebugInfoPlanPrepare( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareEarlyWorld( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed );
-	void SampleDebugInfoPlanPrepareBuildRTs( deoglRenderPlan &plan, float elapsed );
-	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );
-	void SampleDebugInfoPlanPrepareSkyLightBuildRT( deoglRenderPlan &plan, float elapsed );
-	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed );
-	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed );
-	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareCulling( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareEnvMaps( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPreparePrepareContent( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareHTViewVBOs( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareBuildPlan( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareLights( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareFinish( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepare(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareEarlyWorld(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareFindContent(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareFindContent(deoglRenderPlan &plan, float elapsed);
+	void SampleDebugInfoPlanPrepareBuildRTs(deoglRenderPlan &plan, float elapsed);
+	void SampleDebugInfoPlanPrepareSkyLightFindContent(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareSkyLightFindContent(deoglRenderPlan &plan, float elapsed);
+	void SampleDebugInfoPlanPrepareSkyLightBuildRT(deoglRenderPlan &plan, float elapsed);
+	void SampleDebugInfoPlanPrepareSkyLightGIFindContent(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareSkyLightGIFindContent(deoglRenderPlan &plan, float elapsed);
+	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask(deoglRenderPlan &plan, float elapsed);
+	void SampleDebugInfoPlanPrepareWorld(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareGIUpdate(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareCulling(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareEnvMaps(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPreparePrepareContent(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareHTViewVBOs(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareBuildPlan(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareLights(deoglRenderPlan &plan);
+	void SampleDebugInfoPlanPrepareFinish(deoglRenderPlan &plan);
 	
 	
 	
@@ -187,7 +187,7 @@ public:
 private:
 	void pCleanUp();
 	void pCreateShapesVAO();
-	void pWorldRenderSize( int &width, int &height ) const;
+	void pWorldRenderSize(int &width, int &height) const;
 	void pActivateVAOShapes();
 	void pCreatePipelines(const deoglPipeline* (&pipelines)[deoglRCanvas::BlendModeCount],
 		deoglPipelineConfiguration &config, const deoglShaderSources *sources,

@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddParticleEmitter::gdeUOCAddParticleEmitter( gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+gdeUOCAddParticleEmitter::gdeUOCAddParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
+pObjectClass(NULL),
+pParticleEmitter(NULL)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add particleEmitter" );
+	SetShortInfo("Add particleEmitter");
 	
 	pParticleEmitter = particleEmitter;
 	particleEmitter->AddReference();
@@ -59,10 +59,10 @@ pParticleEmitter( NULL )
 }
 
 gdeUOCAddParticleEmitter::~gdeUOCAddParticleEmitter(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddParticleEmitter::~gdeUOCAddParticleEmitter(){
 
 void gdeUOCAddParticleEmitter::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCParticleEmitter() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCParticleEmitter()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCParticleEmitter( NULL );
+		gameDefinition->SetActiveOCParticleEmitter(NULL);
 	}
 	
-	pObjectClass->GetParticleEmitters().Remove( pParticleEmitter );
+	pObjectClass->GetParticleEmitters().Remove(pParticleEmitter);
 	pObjectClass->NotifyParticleEmittersChanged();
 }
 
 void gdeUOCAddParticleEmitter::Redo(){
-	pObjectClass->GetParticleEmitters().Add( pParticleEmitter );
+	pObjectClass->GetParticleEmitters().Add(pParticleEmitter);
 	pObjectClass->NotifyParticleEmittersChanged();
 }

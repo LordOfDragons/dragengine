@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create solid shadow caster. */
-	deoglSCSolid( deoglRenderThread &renderThread );
+	deoglSCSolid(deoglRenderThread &renderThread);
 	
 	/** Clean up solid shadow caster. */
 	~deoglSCSolid();
@@ -92,19 +92,19 @@ public:
 	inline deoglTexture *GetStaticMap() const{ return pStaticMap; }
 	
 	/** Request static shadow map with size if absent. */
-	deoglTexture *ObtainStaticMapWithSize( int size, bool withStencil, bool useFloat );
+	deoglTexture *ObtainStaticMapWithSize(int size, bool withStencil, bool useFloat);
 	
 	/** Static shadow cube map if present or NULL otherwise. */
 	inline deoglCubeMap *GetStaticCubeMap() const{ return pStaticCubeMap; }
 	
 	/** Request static cube map with size if absent. */
-	deoglCubeMap *ObtainStaticCubeMapWithSize( int size, bool useFloat );
+	deoglCubeMap *ObtainStaticCubeMapWithSize(int size, bool useFloat);
 	
 	/** Static array shadow map if present or NULL otherwise. */
 	inline deoglArrayTexture *GetStaticArrayMap() const{ return pStaticArrayMap; }
 	
 	/** Request static array shadow map with size if absent. */
-	deoglArrayTexture *ObtainStaticArrayMapWithSize( int size, int layers, bool useFloat );
+	deoglArrayTexture *ObtainStaticArrayMapWithSize(int size, int layers, bool useFloat);
 	
 	/** Drop static shadow map if present. */
 	void DropStatic();
@@ -124,19 +124,19 @@ public:
 	inline deoglTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
 	/** Obtain dynamic shadow map with size if absent. */
-	deoglTexture *ObtainDynamicMapWithSize( int size, bool withStencil, bool useFloat );
+	deoglTexture *ObtainDynamicMapWithSize(int size, bool withStencil, bool useFloat);
 	
 	/** Dynamic shadow cube map if present or NULL otherwise. */
 	inline deoglCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglCubeMap *ObtainDynamicCubeMapWithSize( int size, bool useFloat );
+	deoglCubeMap *ObtainDynamicCubeMapWithSize(int size, bool useFloat);
 	
 	/** Dynamic array shadow map if present or NULL otherwise. */
 	inline deoglArrayTexture *GetDynamicArrayMap() const{ return pDynamicArrayMap; }
 	
 	/** Obtain dynamic array shadow map with size if absent. */
-	deoglArrayTexture *ObtainDynamicArrayMapWithSize( int size, int layers, bool useFloat );
+	deoglArrayTexture *ObtainDynamicArrayMapWithSize(int size, int layers, bool useFloat);
 	
 	/** Drop dynamic shadow map if present. */
 	void DropDynamic();
@@ -154,7 +154,7 @@ public:
 	inline bool GetDirtyDynamic() const{ return pDirtyDynamic; }
 	
 	/** Set dynamic shadow map dirty. */
-	void SetDirtyDynamic( bool dirty );
+	void SetDirtyDynamic(bool dirty);
 	
 	
 	
@@ -162,19 +162,19 @@ public:
 	inline deoglRenderableDepthTexture *GetTemporaryMap() const{ return pTemporaryMap; }
 	
 	/** Obtain temporary shadow map with size if absent. */
-	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize( int size, bool withStencil, bool useFloat );
+	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize(int size, bool withStencil, bool useFloat);
 	
 	/** Temporary shadow cube map if present or NULL otherwise. */
 	inline deoglRenderableDepthCubeMap *GetTemporaryCubeMap() const{ return pTemporaryCubeMap; }
 	
 	/** Obtain temporary shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize( int size, bool useFloat );
+	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize(int size, bool useFloat);
 	
 	/** Temporary array shadow map if present or NULL otherwise. */
 	inline deoglRenderableDepthArrayTexture *GetTemporaryArrayMap() const{ return pTemporaryArrayMap; }
 	
 	/** Obtain temporary array shadow map with size if absent. */
-	deoglRenderableDepthArrayTexture *ObtainTemporaryArrayMapWithSize( int size, int layers, bool useFloat );
+	deoglRenderableDepthArrayTexture *ObtainTemporaryArrayMapWithSize(int size, int layers, bool useFloat);
 	
 	/** Drop temporary shadow map if present. */
 	void DropTemporary();
@@ -188,7 +188,7 @@ public:
 	inline int GetNextSizeStatic() const{ return pNextSizeStatic; }
 	
 	/** Set next frame static size to largest value. */
-	void SetLargestNextSizeStatic( int size );
+	void SetLargestNextSizeStatic(int size);
 	
 	/** Last frame dynamic size or 0. */
 	inline int GetLastSizeDynamic() const{ return pLastSizeDynamic; }
@@ -197,7 +197,7 @@ public:
 	inline int GetNextSizeDynamic() const{ return pNextSizeDynamic; }
 	
 	/** Set next frame dynamic size to largest value. */
-	void SetLargestNextSizeDynamic( int size );
+	void SetLargestNextSizeDynamic(int size);
 	
 	
 	

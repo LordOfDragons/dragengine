@@ -46,7 +46,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new font builder. */
-	feFontBuilder( feFont *font );
+	feFontBuilder(feFont *font);
 	/** Cleans up the font. */
 	virtual ~feFontBuilder();
 	/*@}*/
@@ -54,7 +54,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Build font into the provided font object. */
-	virtual void BuildFont( deFont *engFont );
+	virtual void BuildFont(deFont *engFont);
 	/*@}*/
 };
 

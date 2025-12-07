@@ -47,41 +47,41 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglBillboard::deoglBillboard( deGraphicOpenGl &ogl, const deBillboard &billboard ) :
-pOgl( ogl ),
-pBillboard( billboard ),
-pRBillboard( NULL ),
+deoglBillboard::deoglBillboard(deGraphicOpenGl &ogl, const deBillboard &billboard) :
+pOgl(ogl),
+pBillboard(billboard),
+pRBillboard(NULL),
 
-pParentWorld( NULL ),
-pSkinStateController( NULL ),
-pDynamicSkin( NULL ),
+pParentWorld(NULL),
+pSkinStateController(NULL),
+pDynamicSkin(NULL),
 
-pAccumUpdate( 0.0f ),
+pAccumUpdate(0.0f),
 
-pDirtyGeometry( true ),
-pDirtyOctreeNode( true ),
-pDirtyExtends( true ),
-pDirtyLayerMask( true ),
-pDirtySkinStateController( true ),
-pDirtyCullSphere( true ),
-pDirtyRenderEnvMap( true ),
-pDirtySkin( true ),
-pDirtyDynamicSkin( true ),
-pDirtyRenderableMapping( true ),
-pDirtySkinStateStates( true ),
-pSkinStatePrepareRenderables( true ),
+pDirtyGeometry(true),
+pDirtyOctreeNode(true),
+pDirtyExtends(true),
+pDirtyLayerMask(true),
+pDirtySkinStateController(true),
+pDirtyCullSphere(true),
+pDirtyRenderEnvMap(true),
+pDirtySkin(true),
+pDirtyDynamicSkin(true),
+pDirtyRenderableMapping(true),
+pDirtySkinStateStates(true),
+pSkinStatePrepareRenderables(true),
 
-pDynamicSkinRenderablesChanged( true ),
-pDynamicSkinRequiresSync( true ),
-pRequiresUpdateEverySync( false ),
+pDynamicSkinRenderablesChanged(true),
+pDynamicSkinRequiresSync(true),
+pRequiresUpdateEverySync(false),
 
-pLLSyncWorld( this )
+pLLSyncWorld(this)
 {
 	try{
-		pRBillboard = new deoglRBillboard( ogl.GetRenderThread() );
+		pRBillboard = new deoglRBillboard(ogl.GetRenderThread());
 		pSkinStateController = new deoglSkinStateController;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -100,59 +100,59 @@ void deoglBillboard::SyncToRender(){
 	pSyncSkin();
 	pSyncDynamicSkin();
 	
-	if( pDirtyGeometry ){
-		pRBillboard->SetPosition( pBillboard.GetPosition() );
-		pRBillboard->SetAxis( pBillboard.GetAxis() );
-		pRBillboard->SetSize( pBillboard.GetSize() );
-		pRBillboard->SetOffset( pBillboard.GetOffset() );
-		pRBillboard->SetLocked( pBillboard.GetLocked() );
-		pRBillboard->SetSpherical( pBillboard.GetSpherical() );
-		pRBillboard->SetSizeFixedToScreen( pBillboard.GetSizeFixedToScreen() );
+	if(pDirtyGeometry){
+		pRBillboard->SetPosition(pBillboard.GetPosition());
+		pRBillboard->SetAxis(pBillboard.GetAxis());
+		pRBillboard->SetSize(pBillboard.GetSize());
+		pRBillboard->SetOffset(pBillboard.GetOffset());
+		pRBillboard->SetLocked(pBillboard.GetLocked());
+		pRBillboard->SetSpherical(pBillboard.GetSpherical());
+		pRBillboard->SetSizeFixedToScreen(pBillboard.GetSizeFixedToScreen());
 		pRBillboard->MarkParamBlocksDirty();
 		pDirtyGeometry = false;
 	}
-	if( pDirtyLayerMask ){
-		pRBillboard->SetLayerMask( pBillboard.GetLayerMask() );
+	if(pDirtyLayerMask){
+		pRBillboard->SetLayerMask(pBillboard.GetLayerMask());
 		pDirtyLayerMask = false;
 	}
-	if( pDirtyCullSphere ){
+	if(pDirtyCullSphere){
 		pRBillboard->SetDirtyCulling();
 		pDirtyCullSphere = false;
 	}
-	if( pDirtyRenderEnvMap ){
+	if(pDirtyRenderEnvMap){
 		pRBillboard->InvalidateRenderEnvMap();
 		pDirtyRenderEnvMap = false;
 	}
-	if( pDirtyRenderableMapping ){
+	if(pDirtyRenderableMapping){
 		pRBillboard->UpdateRenderableMapping();
 		pDirtyRenderableMapping = false;
 	}
 	
 	// sync skin state controller
-	if( pDirtySkinStateController ){
-		pSkinStateController->Init( *pRBillboard->GetSkinState(), pRBillboard->GetSkin(), pParentWorld );
+	if(pDirtySkinStateController){
+		pSkinStateController->Init(*pRBillboard->GetSkinState(), pRBillboard->GetSkin(), pParentWorld);
 		pDirtySkinStateController = false;
 	}
 	
 	// accumulated times
 	const float skinUpdate = pAccumUpdate;
 	
-	pSkinStateController->AdvanceTime( skinUpdate );
+	pSkinStateController->AdvanceTime(skinUpdate);
 	pSkinStateController->SyncToRender();
 	
-	pRBillboard->UpdateSkin( skinUpdate );
+	pRBillboard->UpdateSkin(skinUpdate);
 	
 	pAccumUpdate = 0.0f;
 	pCheckRequiresUpdateEverySync();
 	
 	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
 	// and pRBillboard->UpdateSkin()
-	if( pDirtySkinStateStates ){
+	if(pDirtySkinStateStates){
 		pRBillboard->InitSkinStateStates();
 		pDirtySkinStateStates = false;
 	}
 	
-	if( pSkinStatePrepareRenderables ){
+	if(pSkinStatePrepareRenderables){
 		pRBillboard->DirtyPrepareSkinStateRenderables();
 		pSkinStatePrepareRenderables = false;
 	}
@@ -160,33 +160,33 @@ void deoglBillboard::SyncToRender(){
 	pRBillboard->UpdateSkinStateStates(); // has to be done better. only some need this
 	
 	// octree, extends and matrices. order is important
-	if( pDirtyExtends ){
-		pRBillboard->UpdateExtends( pBillboard );
+	if(pDirtyExtends){
+		pRBillboard->UpdateExtends(pBillboard);
 		pDirtyExtends = false;
 	}
-	if( pDirtyOctreeNode ){
-		pRBillboard->SetVisible( pBillboard.GetVisible() );
+	if(pDirtyOctreeNode){
+		pRBillboard->SetVisible(pBillboard.GetVisible());
 		pRBillboard->UpdateOctreeNode();
 		pDirtyOctreeNode = false;
 	}
 }
 
-void deoglBillboard::Update( float elapsed ){
+void deoglBillboard::Update(float elapsed){
 	pAccumUpdate += elapsed;
 	
-	if( pRequiresUpdateEverySync ){
+	if(pRequiresUpdateEverySync){
 		pRequiresSync();
 	}
 }
 
 
 
-void deoglBillboard::SetParentWorld( deoglWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void deoglBillboard::SetParentWorld(deoglWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
-	if( pSkinStateController ){
+	if(pSkinStateController){
 		pSkinStateController->Clear();
 	}
 	
@@ -218,7 +218,7 @@ void deoglBillboard::DynamicSkinRenderablesChanged(){
 	pRequiresSync();
 }
 
-void deoglBillboard::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+void deoglBillboard::DynamicSkinRenderableChanged(deoglDSRenderable&){
 	pDynamicSkinRenderablesChanged = true;
 	pDynamicSkinRequiresSync = true;
 // 	pDirtyStaticTexture = true;
@@ -229,7 +229,7 @@ void deoglBillboard::DynamicSkinRenderableChanged( deoglDSRenderable& ){
 	pRequiresSync();
 }
 
-void deoglBillboard::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+void deoglBillboard::DynamicSkinRenderableRequiresSync(deoglDSRenderable&){
 	pDynamicSkinRequiresSync = true;
 	pSkinStatePrepareRenderables = true;
 	
@@ -292,13 +292,13 @@ void deoglBillboard::SkinChanged(){
 }
 
 void deoglBillboard::DynamicSkinChanged(){
-	if( pDynamicSkin ){
-		pDynamicSkin->RemoveListener( this );
+	if(pDynamicSkin){
+		pDynamicSkin->RemoveListener(this);
 	}
 	
-	if( pBillboard.GetDynamicSkin() ){
-		pDynamicSkin = ( deoglDynamicSkin* )pBillboard.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->AddListener( this );
+	if(pBillboard.GetDynamicSkin()){
+		pDynamicSkin = (deoglDynamicSkin*)pBillboard.GetDynamicSkin()->GetPeerGraphic();
+		pDynamicSkin->AddListener(this);
 		
 	}else{
 		pDynamicSkin = NULL;
@@ -342,63 +342,63 @@ void deoglBillboard::LayerMaskChanged(){
 //////////////////////
 
 void deoglBillboard::pCleanUp(){
-	if( pSkinStateController ){
+	if(pSkinStateController){
 		delete pSkinStateController;
 	}
-	if( pRBillboard ){
+	if(pRBillboard){
 		pRBillboard->FreeReference();
 	}
-	if( pDynamicSkin ){
-		pDynamicSkin->RemoveListener( this );
+	if(pDynamicSkin){
+		pDynamicSkin->RemoveListener(this);
 	}
 }
 
 
 
 void deoglBillboard::pSyncSkin(){
-	if( ! pDirtySkin ){
+	if(!pDirtySkin){
 		return;
 	}
 	
-	if( pBillboard.GetSkin() ){
-		pRBillboard->SetSkin( ( ( deoglSkin* )pBillboard.GetSkin()->GetPeerGraphic() )->GetRSkin() );
+	if(pBillboard.GetSkin()){
+		pRBillboard->SetSkin(((deoglSkin*)pBillboard.GetSkin()->GetPeerGraphic())->GetRSkin());
 		
 	}else{
-		pRBillboard->SetSkin( NULL );
+		pRBillboard->SetSkin(NULL);
 	}
 	
 	pDirtySkin = false;
 }
 
 void deoglBillboard::pSyncDynamicSkin(){
-	if( pDirtyDynamicSkin ){
-		if( pDynamicSkin ){
-			pRBillboard->SetDynamicSkin( pDynamicSkin->GetRDynamicSkin() );
+	if(pDirtyDynamicSkin){
+		if(pDynamicSkin){
+			pRBillboard->SetDynamicSkin(pDynamicSkin->GetRDynamicSkin());
 			
 		}else{
-			pRBillboard->SetDynamicSkin( NULL );
+			pRBillboard->SetDynamicSkin(NULL);
 		}
 		
 		pDirtyDynamicSkin = false;
 	}
 	
-	if( pDynamicSkinRenderablesChanged ){
+	if(pDynamicSkinRenderablesChanged){
 		pDynamicSkinRenderablesChanged = false;
 		pRBillboard->DynamicSkinRenderablesChanged();
 	}
 	
-	if( pDynamicSkinRequiresSync ){
+	if(pDynamicSkinRequiresSync){
 		pDynamicSkinRequiresSync = false;
-		if( pDynamicSkin ){
+		if(pDynamicSkin){
 			pDynamicSkin->SyncToRender();
 		}
 	}
 }
 
 void deoglBillboard::pCheckRequiresUpdateEverySync(){
-	if( pSkinStateController->RequiresSyncEveryFrameUpdate() ){
+	if(pSkinStateController->RequiresSyncEveryFrameUpdate()){
 		pRequiresUpdateEverySync = true;
-		if( pSkinStateController->RequiresPrepareRenderables() ){
+		if(pSkinStateController->RequiresPrepareRenderables()){
 			pRBillboard->DirtyPrepareSkinStateRenderables();
 		}
 	}
@@ -407,7 +407,7 @@ void deoglBillboard::pCheckRequiresUpdateEverySync(){
 
 
 void deoglBillboard::pRequiresSync(){
-	if( ! pLLSyncWorld.GetList() && pParentWorld ){
-		pParentWorld->AddSyncBillboard( this );
+	if(!pLLSyncWorld.GetList() && pParentWorld){
+		pParentWorld->AddSyncBillboard(this);
 	}
 }

@@ -44,10 +44,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-dearTaskApplyRules::dearTaskApplyRules( dearAnimatorInstance &instance ) :
-deParallelTask( &instance.GetModule() ),
-pInstance( instance ),
-pDropped( false ){
+dearTaskApplyRules::dearTaskApplyRules(dearAnimatorInstance &instance) :
+deParallelTask(&instance.GetModule()),
+pInstance(instance),
+pDropped(false){
 }
 
 dearTaskApplyRules::~dearTaskApplyRules(){
@@ -76,7 +76,7 @@ void dearTaskApplyRules::Run(){
 }
 
 void dearTaskApplyRules::Finished(){
-	if( pDropped ){
+	if(pDropped){
 		return; // pInstance became invalid
 	}
 	
@@ -94,15 +94,15 @@ void dearTaskApplyRules::Finished(){
 	// 
 	// GetDependedOnBy() can not be used because Finished() will be called after clearing
 	// both the 'depends on' and 'depended on by' list
-	if( ! IsCancelled() ){
+	if(!IsCancelled()){
 		dearComponent * const component = pInstance.GetComponent();
-		if( component && component->GetComponent().GetAnimatorTask() == this ){
+		if(component && component->GetComponent().GetAnimatorTask() == this){
 			try{
 // 				pInstance.GetModule().LogInfoFormat( "TaskApplyRules.Finished(%p): UpdateComponent", &pInstance );
 				component->UpdateComponent();
 // 				component->UpdateComponentPrepareBones();
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				pInstance.StopTaskApplyRules();
 				throw;
 			}

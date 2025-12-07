@@ -42,17 +42,17 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *WebmCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *WebmCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
-deBaseModule *WebmCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *WebmCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new deVideoWebm( *loadableModule );
+		return new deVideoWebm(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return nullptr;
 	}
 }
@@ -65,8 +65,8 @@ deBaseModule *WebmCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deVideoWebm::deVideoWebm( deLoadableModule &loadableModule ) :
-deBaseVideoModule( loadableModule ){
+deVideoWebm::deVideoWebm(deLoadableModule &loadableModule) :
+deBaseVideoModule(loadableModule){
 }
 
 deVideoWebm::~deVideoWebm(){
@@ -77,46 +77,46 @@ deVideoWebm::~deVideoWebm(){
 // Management
 ///////////////
 
-void deVideoWebm::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &info ){
+void deVideoWebm::InitLoadVideo(decBaseFileReader &reader, deBaseVideoInfo &info){
 	dewmInfos webmInfo;
-	dewmWebmCallbackInfos webmCallback( *this, webmInfo );
-	dewmWebmReader webmReader( reader );
+	dewmWebmCallbackInfos webmCallback(*this, webmInfo);
+	dewmWebmReader webmReader(reader);
 	webm::WebmParser parser;
-	DEASSERT_TRUE( parser.Feed( &webmCallback, &webmReader ).ok() )
+	DEASSERT_TRUE(parser.Feed(&webmCallback, &webmReader).ok())
 	
-	DEASSERT_TRUE( webmInfo.GetVideoCodec() != dewmInfos::evcUnsupported )
+	DEASSERT_TRUE(webmInfo.GetVideoCodec() != dewmInfos::evcUnsupported)
 	
-	info.SetWidth( webmInfo.GetWidth() );
-	info.SetHeight( webmInfo.GetHeight() );
-	info.SetComponentCount( webmInfo.GetComponentCount() );
-	info.SetFrameCount( webmInfo.GetFrameCount() );
-	info.SetFrameRate( webmInfo.GetFrameRate() );
-	info.SetColorConversionMatrix( webmInfo.GetColorConversionMatrix() );
+	info.SetWidth(webmInfo.GetWidth());
+	info.SetHeight(webmInfo.GetHeight());
+	info.SetComponentCount(webmInfo.GetComponentCount());
+	info.SetFrameCount(webmInfo.GetFrameCount());
+	info.SetFrameRate(webmInfo.GetFrameRate());
+	info.SetColorConversionMatrix(webmInfo.GetColorConversionMatrix());
 	
-	if( webmInfo.GetAudioCodec() != dewmInfos::eacUnsupported ){
-		info.SetBytesPerSample( webmInfo.GetBytesPerSample() );
-		info.SetSampleRate( webmInfo.GetSampleRate() );
-		info.SetSampleCount( webmInfo.GetSampleCount() );
-		info.SetChannelCount( webmInfo.GetChannelCount() );
+	if(webmInfo.GetAudioCodec() != dewmInfos::eacUnsupported){
+		info.SetBytesPerSample(webmInfo.GetBytesPerSample());
+		info.SetSampleRate(webmInfo.GetSampleRate());
+		info.SetSampleCount(webmInfo.GetSampleCount());
+		info.SetChannelCount(webmInfo.GetChannelCount());
 	}
 	
-	LogInfoFormat( "InitLoadVideo(%s): size=%dx%d components=%d frames=%d frameRate=%g"
+	LogInfoFormat("InitLoadVideo(%s): size=%dx%d components=%d frames=%d frameRate=%g"
 		" bps=%d channels=%d sampleRate=%d samples=%d", reader.GetFilename(),
 		webmInfo.GetWidth(), webmInfo.GetHeight(), webmInfo.GetComponentCount(),
 		webmInfo.GetFrameCount(), webmInfo.GetFrameRate(), webmInfo.GetBytesPerSample(),
-		webmInfo.GetChannelCount(), webmInfo.GetSampleRate(), webmInfo.GetSampleCount() );
+		webmInfo.GetChannelCount(), webmInfo.GetSampleRate(), webmInfo.GetSampleCount());
 }
 
-void deVideoWebm::SaveVideo( decBaseFileWriter &reader, const deVideo &video ){
+void deVideoWebm::SaveVideo(decBaseFileWriter &reader, const deVideo &video){
 	// not supported yet
 }
 
-deBaseVideoDecoder *deVideoWebm::CreateDecoder( decBaseFileReader *reader ){
-	return new dewmVideoDecoder( *this, reader );
+deBaseVideoDecoder *deVideoWebm::CreateDecoder(decBaseFileReader *reader){
+	return new dewmVideoDecoder(*this, reader);
 }
 
-deBaseVideoAudioDecoder *deVideoWebm::CreateAudioDecoder( decBaseFileReader *reader ){
-	return new dewmVideoAudioDecoder( *this, reader );
+deBaseVideoAudioDecoder *deVideoWebm::CreateAudioDecoder(decBaseFileReader *reader){
+	return new dewmVideoAudioDecoder(*this, reader);
 }
 
 #ifdef WITH_INTERNAL_MODULE

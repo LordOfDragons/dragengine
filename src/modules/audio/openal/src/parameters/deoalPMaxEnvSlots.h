@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoalPMaxEnvSlots( deAudioOpenAL &oal );
+	deoalPMaxEnvSlots(deAudioOpenAL &oal);
 	
 	/** Clean up parameter. */
 	virtual ~deoalPMaxEnvSlots() override;
@@ -50,7 +50,7 @@ public:
 	virtual int GetParameterInt() override;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterInt( int value ) override;
+	virtual void SetParameterInt(int value) override;
 	/*@}*/
 };
 

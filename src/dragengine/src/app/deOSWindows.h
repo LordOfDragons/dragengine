@@ -104,7 +104,7 @@ public:
 	 * to false if you want to clear the event queue after a lengthy operation to
 	 * avoid an event flood resulting in strange initial inputs.
 	 */
-	virtual void ProcessEventLoop( bool sendToInputModule );
+	virtual void ProcessEventLoop(bool sendToInputModule);
 	
 	/**
 	 * \brief Current user locale language (ISO 639 language code) in lower case.
@@ -127,7 +127,7 @@ public:
 	 * 
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
-	virtual int GetDisplayCurrentScaleFactor( int display );
+	virtual int GetDisplayCurrentScaleFactor(int display);
 	/*@}*/
 	
 	
@@ -143,7 +143,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayCurrentRefreshRate( int display );
+	virtual int GetDisplayCurrentRefreshRate(int display);
 	
 	/**
 	 * \brief Current resolution of display.
@@ -151,7 +151,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual decPoint GetDisplayCurrentResolution( int display );
+	virtual decPoint GetDisplayCurrentResolution(int display);
 	
 	/**
 	 * \brief Number of resolutions supported on display.
@@ -159,7 +159,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayResolutionCount( int display );
+	virtual int GetDisplayResolutionCount(int display);
 	
 	/**
 	 * \brief Resolution by index for display.
@@ -170,7 +170,7 @@ public:
 	 * \throws deeInvalidParam \em resolution is less than 0 or equal to or greater than
 	 *                         GetDisplayResolutionCount(display).
 	 */
-	virtual decPoint GetDisplayResolution( int display, int resolution );
+	virtual decPoint GetDisplayResolution(int display, int resolution);
 	/*@}*/
 	
 	
@@ -196,7 +196,7 @@ public:
 	 * 
 	 * This value has to be set by the launcher application.
 	 */
-	void SetInstApp( HINSTANCE hInstApp );
+	void SetInstApp(HINSTANCE hInstApp);
 	
 	/**
 	 * \brief Current game window.
@@ -217,7 +217,7 @@ public:
 	 * window as otherwise input modules relying on message or event queues
 	 * will not get them.
 	 */
-	void SetWindow( HWND window );
+	void SetWindow(HWND window);
 	
 	/**
 	 * \brief Parse path replacing special path indicators.
@@ -277,34 +277,34 @@ public:
 	 * Only one special path indicator can be used and it has to be the first component
 	 * in the path.
 	 */
-	static decString ParseNativePath( const char *path );
+	static decString ParseNativePath(const char *path);
 	
 	/** \brief Convert unicode to wide string. */
-	static void UnicodeToWide( const decUnicodeString &unicode, wchar_t *wide, int maxSize );
+	static void UnicodeToWide(const decUnicodeString &unicode, wchar_t *wide, int maxSize);
 	
 	/** \brief Convert utf8 to wide string. */
-	static void Utf8ToWide( const char *utf8, wchar_t *wide, int maxSize );
+	static void Utf8ToWide(const char *utf8, wchar_t *wide, int maxSize);
 	
 	/** \brief Convert utf8 from wide string. */
-	static decString WideToUtf8( const wchar_t *wide );
+	static decString WideToUtf8(const wchar_t *wide);
 	
 	/** \brief Convert unicode from wide string. */
-	static decUnicodeString WideToUnicode( const wchar_t *wide );
+	static decUnicodeString WideToUnicode(const wchar_t *wide);
 	
 	/**
 	 * \brief Get registry value.
 	 * 
 	 * If not present returns default value.
 	 */
-	static decString GetRegistryValue( const char *key,
-		const char *entry, const char *defaultValue );
+	static decString GetRegistryValue(const char *key,
+		const char *entry, const char *defaultValue);
 	
-	static decString GetRegistryValueCurrentUser( const char *key,
-		const char *entry, const char *defaultValue );
+	static decString GetRegistryValueCurrentUser(const char *key,
+		const char *entry, const char *defaultValue);
 	
 	/** \brief Set registry value. */
-	static void SetRegistryValue( const char *key,
-		const char *entry, const char *value );
+	static void SetRegistryValue(const char *key,
+		const char *entry, const char *value);
 	/*@}*/
 	
 	

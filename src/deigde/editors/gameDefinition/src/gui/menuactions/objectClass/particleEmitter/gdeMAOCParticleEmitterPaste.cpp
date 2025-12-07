@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCParticleEmitterPaste::gdeMAOCParticleEmitterPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Particle Emitter",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class particle emitter" )
+gdeMAOCParticleEmitterPaste::gdeMAOCParticleEmitterPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Paste Object Class Particle Emitter",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste object class particle emitter")
 {
 }
 
@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCParticleEmitter::TYPE_NAME ) );
-	if( ! clip ){
+igdeUndo *gdeMAOCParticleEmitterPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME));
+	if(!clip){
 		return NULL;
 	}
 	
 	const gdeClipboardDataOCParticleEmitter &clipOCParticleEmitter =
-		( const gdeClipboardDataOCParticleEmitter & )( igdeClipboardData& )clip;
+		(const gdeClipboardDataOCParticleEmitter &)(igdeClipboardData&)clip;
 	
 	const gdeOCParticleEmitter::Ref particleEmitter(gdeOCParticleEmitter::Ref::NewWith(*clipOCParticleEmitter.GetParticleEmitter()));
 	
-	igdeUndo * const undo = new gdeUOCAddParticleEmitter( &objectClass,
-		particleEmitter );
-	undo->SetShortInfo( "Paste object class particle emitter" );
+	igdeUndo * const undo = new gdeUOCAddParticleEmitter(&objectClass,
+		particleEmitter);
+	undo->SetShortInfo("Paste object class particle emitter");
 	return undo;
 }
 
 void gdeMAOCParticleEmitterPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCParticleEmitter::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != NULL
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME));
 }

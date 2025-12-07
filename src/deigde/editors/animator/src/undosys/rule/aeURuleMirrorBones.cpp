@@ -43,37 +43,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorBones::aeURuleMirrorBones( aeRule *rule ) :
-pRule( NULL )
+aeURuleMirrorBones::aeURuleMirrorBones(aeRule *rule) :
+pRule(NULL)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPatterns.Add( ".l" );
-	pPatterns.Add( ".r" );
+	pPatterns.Add(".l");
+	pPatterns.Add(".r");
 	
-	pPatterns.Add( ".L" );
-	pPatterns.Add( ".R" );
+	pPatterns.Add(".L");
+	pPatterns.Add(".R");
 	
-	pPatterns.Add( " l" );
-	pPatterns.Add( " r" );
+	pPatterns.Add(" l");
+	pPatterns.Add(" r");
 	
-	pPatterns.Add( " L" );
-	pPatterns.Add( " R" );
+	pPatterns.Add(" L");
+	pPatterns.Add(" R");
 	
-	pPatterns.Add( ".left" );
-	pPatterns.Add( ".right" );
+	pPatterns.Add(".left");
+	pPatterns.Add(".right");
 	
-	pPatterns.Add( " left" );
-	pPatterns.Add( " right" );
+	pPatterns.Add(" left");
+	pPatterns.Add(" right");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleMirrorBones::~aeURuleMirrorBones(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -89,13 +89,13 @@ bool aeURuleMirrorBones::HasAnyEffect() const{
 	const int boneCount = bones.GetCount();
 	int i, j;
 	
-	for( i=0; i<boneCount; i++ ){
-		const decString &bone = bones.GetAt( i );
+	for(i=0; i<boneCount; i++){
+		const decString &bone = bones.GetAt(i);
 		
-		for( j=0; j<patternCount; j++ ){
-			const decString &pattern = pPatterns.GetAt( j );
+		for(j=0; j<patternCount; j++){
+			const decString &pattern = pPatterns.GetAt(j);
 			
-			if( bone.GetRight( pattern.GetLength() ) == pattern ){
+			if(bone.GetRight(pattern.GetLength()) == pattern){
 				return true;
 			}
 		}
@@ -117,23 +117,23 @@ void aeURuleMirrorBones::Redo(){
 	decStringSet mirroredBones;
 	int i, j;
 	
-	for( i=0; i<boneCount; i++ ){
-		const decString &bone = bones.GetAt( i );
+	for(i=0; i<boneCount; i++){
+		const decString &bone = bones.GetAt(i);
 		
-		for( j=0; j<patternCount; j++ ){
-			const decString &pattern = pPatterns.GetAt( j );
+		for(j=0; j<patternCount; j++){
+			const decString &pattern = pPatterns.GetAt(j);
 			
-			if( bone.GetRight( pattern.GetLength() ) == pattern ){
-				const decString &replace = pPatterns.GetAt( ( ( j % 2 ) == 0 ) ? j + 1 : j - 1 );
-				mirroredBones.Add( bone.GetLeft( bone.GetLength() - pattern.GetLength() ) + replace );
+			if(bone.GetRight(pattern.GetLength()) == pattern){
+				const decString &replace = pPatterns.GetAt(((j % 2) == 0) ? j + 1 : j - 1);
+				mirroredBones.Add(bone.GetLeft(bone.GetLength() - pattern.GetLength()) + replace);
 				break;
 			}
 		}
 		
-		if( j == patternCount ){
-			mirroredBones.Add( bone );
+		if(j == patternCount){
+			mirroredBones.Add(bone);
 		}
 	}
 	
-	pRule->SetListBones( mirroredBones );
+	pRule->SetListBones(mirroredBones);
 }

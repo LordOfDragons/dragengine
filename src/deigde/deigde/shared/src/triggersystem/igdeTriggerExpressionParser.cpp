@@ -52,15 +52,15 @@ igdeTriggerExpressionParser::igdeTriggerExpressionParser(){
 	
 	pExceptionOnErrors = false;
 	
-	pRequiresQuoteCharacters.AppendCharacter( ' ' );
-	pRequiresQuoteCharacters.AppendCharacter( '\t' );
-	pRequiresQuoteCharacters.AppendCharacter( pSymbolNegate );
-	pRequiresQuoteCharacters.AppendCharacter( pSymbolCurState );
-	pRequiresQuoteCharacters.AppendCharacter( pSymbolAnd );
-	pRequiresQuoteCharacters.AppendCharacter( pSymbolOr );
-	pRequiresQuoteCharacters.AppendCharacter( pSymbolGroupStart );
-	pRequiresQuoteCharacters.AppendCharacter( pSymbolGroupEnd );
-	pRequiresQuoteCharacters.AppendCharacter( pSymbolQuote );
+	pRequiresQuoteCharacters.AppendCharacter(' ');
+	pRequiresQuoteCharacters.AppendCharacter('\t');
+	pRequiresQuoteCharacters.AppendCharacter(pSymbolNegate);
+	pRequiresQuoteCharacters.AppendCharacter(pSymbolCurState);
+	pRequiresQuoteCharacters.AppendCharacter(pSymbolAnd);
+	pRequiresQuoteCharacters.AppendCharacter(pSymbolOr);
+	pRequiresQuoteCharacters.AppendCharacter(pSymbolGroupStart);
+	pRequiresQuoteCharacters.AppendCharacter(pSymbolGroupEnd);
+	pRequiresQuoteCharacters.AppendCharacter(pSymbolQuote);
 }
 
 igdeTriggerExpressionParser::~igdeTriggerExpressionParser(){
@@ -71,7 +71,7 @@ igdeTriggerExpressionParser::~igdeTriggerExpressionParser(){
 // Management
 ///////////////
 
-void igdeTriggerExpressionParser::SetExceptionOnErrors( bool exceptionsOnErrors ){
+void igdeTriggerExpressionParser::SetExceptionOnErrors(bool exceptionsOnErrors){
 	pExceptionOnErrors = exceptionsOnErrors;
 }
 
@@ -103,61 +103,61 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	igdeTriggerExpressionComponent::Ref child, component(
 		igdeTriggerExpressionComponent::Ref::NewWith());
 	
-	while( mode != 4 && mode != 5 && state.HasMoreCharacters() ){
+	while(mode != 4 && mode != 5 && state.HasMoreCharacters()){
 		const int character = state.GetNextCharacter();
 		
-		if( mode == 2 && ! component->GetTargetName().IsEmpty() ){
+		if(mode == 2 && !component->GetTargetName().IsEmpty()){
 			child.TakeOverWith();
-			child->SetTargetName( component->GetTargetName() );
-			child->SetNegate( component->GetNegate() );
-			child->SetCurState( component->GetCurState() );
+			child->SetTargetName(component->GetTargetName());
+			child->SetNegate(component->GetNegate());
+			child->SetCurState(component->GetCurState());
 			component->AddChild(child);
-			component->SetTargetName( "" );
-			component->SetNegate( false );
-			component->SetCurState( false );
+			component->SetTargetName("");
+			component->SetNegate(false);
+			component->SetCurState(false);
 		}
 		
-		if( character == ' ' || character == '\t' ){
+		if(character == ' ' || character == '\t'){
 			continue;
 			
-		}else if( character == pSymbolNegate ){
-			switch( mode ){
+		}else if(character == pSymbolNegate){
+			switch(mode){
 			case 0:
 			case 2:
 				negate = true;
 				break;
 				
 			default:
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 			}
 			
-		}else if( character == pSymbolCurState ){
-			switch( mode ){
+		}else if(character == pSymbolCurState){
+			switch(mode){
 			case 0:
 			case 2:
 				curState = true;
 				break;
 				
 			default:
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 			}
 			
-		}else if( character == pSymbolGroupStart ){
-			if( curState ){
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+		}else if(character == pSymbolGroupStart){
+			if(curState){
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 				break;
 			}
 			
-			switch( mode ){
+			switch(mode){
 			case 0:{
 				child = ParseExpressionComponent(state, true, false, false);
 				child->SetNegate(negate);
@@ -179,31 +179,31 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			default:
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 			}
 			
-		}else if( character == pSymbolGroupEnd ){
-			switch( mode ){
+		}else if(character == pSymbolGroupEnd){
+			switch(mode){
 			case 3:
-				if( ! requireEnd ){
-					state.AdjustPosition( -1 );
+				if(!requireEnd){
+					state.AdjustPosition(-1);
 				}
 				mode = 4;
 				break;
 				
 			default:
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 			}
 			break;
 			
-		}else if( character == pSymbolAnd ){
-			switch( mode ){
+		}else if(character == pSymbolAnd){
+			switch(mode){
 			case 1:
 				component->SetType(igdeTriggerExpressionComponent::ectAnd);
 				mode = 2;
@@ -211,8 +211,8 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 3:
 				if(component->GetType() != igdeTriggerExpressionComponent::ectAnd){
-					if( pExceptionOnErrors ){
-						DETHROW( deeInvalidParam ); // and/or changed inside list
+					if(pExceptionOnErrors){
+						DETHROW(deeInvalidParam); // and/or changed inside list
 					}
 					mode = 5;
 					break;
@@ -221,14 +221,14 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			default:
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 			}
 			
-		}else if( character == pSymbolOr ){
-			switch( mode ){
+		}else if(character == pSymbolOr){
+			switch(mode){
 			case 1:
 				component->SetType(igdeTriggerExpressionComponent::ectOr);
 				mode = 2;
@@ -236,8 +236,8 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 3:
 				if(component->GetType() != igdeTriggerExpressionComponent::ectOr){
-					if( pExceptionOnErrors ){
-						DETHROW( deeInvalidParam ); // and/or changed inside list
+					if(pExceptionOnErrors){
+						DETHROW(deeInvalidParam); // and/or changed inside list
 					}
 					mode = 5;
 					break;
@@ -246,16 +246,16 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			default:
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 			}
 			
-		}else if( character == pSymbolQuote ){
-			switch( mode ){
+		}else if(character == pSymbolQuote){
+			switch(mode){
 			case 0:
-				ParseTargetName( name, state, true );
+				ParseTargetName(name, state, true);
 				component->SetTargetName(name);
 				component->SetNegate(negate);
 				component->SetCurState(curState);
@@ -267,7 +267,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			case 2:{
-				ParseTargetName( name, state, true );
+				ParseTargetName(name, state, true);
 				child.TakeOverWith();
 				child->SetTargetName(name);
 				child->SetNegate(negate);
@@ -280,19 +280,19 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				}break;
 				
 			default:
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 			}
 			
 		// ( character >= 'a' && character <= 'z' ) || ( character >= 'A' && character <= 'Z' ) || character == '_'
 		}else{
-			state.AdjustPosition( -1 );
+			state.AdjustPosition(-1);
 			
-			switch( mode ){
+			switch(mode){
 			case 0:
-				ParseTargetName( name, state, false );
+				ParseTargetName(name, state, false);
 				component->SetTargetName(name);
 				component->SetNegate(negate);
 				component->SetCurState(curState);
@@ -303,7 +303,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			case 2:{
-				ParseTargetName( name, state, false );
+				ParseTargetName(name, state, false);
 				child.TakeOverWith();
 				child->SetTargetName(name);
 				child->SetNegate(negate);
@@ -316,8 +316,8 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				}break;
 				
 			default:
-				if( pExceptionOnErrors ){
-					DETHROW( deeInvalidParam );
+				if(pExceptionOnErrors){
+					DETHROW(deeInvalidParam);
 				}
 				mode = 5;
 			}
@@ -327,19 +327,19 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 		}
 	}
 	
-	if( requireEnd && mode != 4 ){
-		if( pExceptionOnErrors ){
-			DETHROW( deeInvalidParam );
+	if(requireEnd && mode != 4){
+		if(pExceptionOnErrors){
+			DETHROW(deeInvalidParam);
 		}
 		mode = 5;
 	}
 	
-	if( mode == 0 ){
+	if(mode == 0){
 		return nullptr;
 	}
 	
-	if( mode != 5 ){
-		if( mode == 2 ){
+	if(mode != 5){
+		if(mode == 2){
 			// missing target after and/or. add an empty one to allow editors to work properly
 			child.TakeOverWith();
 			child->SetNegate(negate);
@@ -347,7 +347,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 			component->AddChild(child);
 		}
 		
-		if( component->GetChildCount() == 1 ){
+		if(component->GetChildCount() == 1){
 			child = component->GetChildAt(0);
 			if(child->GetTargetName().IsEmpty()){
 				component = child;
@@ -364,7 +364,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	return component;
 }
 
-void igdeTriggerExpressionParser::ParseTargetName( decString &name, igdeTriggerExpressionParserState &state, bool quoted ) const{
+void igdeTriggerExpressionParser::ParseTargetName(decString &name, igdeTriggerExpressionParserState &state, bool quoted) const{
 	// modes
 	// 0 => parse first character
 	// 1 => parse other characters
@@ -373,78 +373,78 @@ void igdeTriggerExpressionParser::ParseTargetName( decString &name, igdeTriggerE
 	
 	name = "";
 	
-	while( state.HasMoreCharacters() ){
+	while(state.HasMoreCharacters()){
 		character = state.GetNextCharacter();
 		
-		if( quoted ){
-			if( character == '\\' ){
-				if( ! state.HasMoreCharacters() ){
-					DETHROW( deeInvalidParam );
+		if(quoted){
+			if(character == '\\'){
+				if(!state.HasMoreCharacters()){
+					DETHROW(deeInvalidParam);
 				}
-				name.AppendCharacter( state.GetNextCharacter() );
+				name.AppendCharacter(state.GetNextCharacter());
 				mode = 1;
 				
-			}else if( character == pSymbolQuote ){
-				if( mode == 0 ){
-					DETHROW( deeInvalidParam );
+			}else if(character == pSymbolQuote){
+				if(mode == 0){
+					DETHROW(deeInvalidParam);
 				}
 				break;
 				
 			}else{
-				name.AppendCharacter( character );
+				name.AppendCharacter(character);
 				mode = 1;
 			}
 			
 		}else{
-			if( pRequiresQuoteCharacters.Find( character ) == -1 ){
+			if(pRequiresQuoteCharacters.Find(character) == -1){
 			/*if( ( character >= 'a' && character <= 'z' ) || ( character >= 'A' && character <= 'Z' )
-			|| character == '_' || character == '.' || ( character >= '0' && character <= '9' ) ){*/
-				name.AppendCharacter( character );
+			|| character == '_' || character == '.' || (character >= '0' && character <= '9')){*/
+				name.AppendCharacter(character);
 				mode = 1;
 				
 			}else{
-				if( mode == 0 ){
-					DETHROW( deeInvalidParam );
+				if(mode == 0){
+					DETHROW(deeInvalidParam);
 				}
 				
-				state.AdjustPosition( -1 );
+				state.AdjustPosition(-1);
 				break;
 			}
 		}
 	}
 }
 
-void igdeTriggerExpressionParser::ExpressionToString( decString &string, const igdeTriggerExpression &expression ) const{
+void igdeTriggerExpressionParser::ExpressionToString(decString &string, const igdeTriggerExpression &expression) const{
 	const igdeTriggerExpressionComponent * const component = expression.GetRootComponent();
 	
-	if( component ){
-		ExpressionComponentToString( string, *component, false );
+	if(component){
+		ExpressionComponentToString(string, *component, false);
 		
 	}else{
 		string = "";
 	}
 }
 
-void igdeTriggerExpressionParser::ExpressionComponentToString( decString &string,
-const igdeTriggerExpressionComponent &component, bool grouping ) const{
+void igdeTriggerExpressionParser::ExpressionComponentToString(decString &string,
+const igdeTriggerExpressionComponent &component, bool grouping) const{
 	const decString &targetName = component.GetTargetName();
 	const int type = component.GetType();
 	decString subString;
 	
 	string.Empty();
 	
-	if( component.GetNegate() ){
-		string.AppendCharacter( pSymbolNegate );
+	if(component.GetNegate()){
+		string.AppendCharacter(pSymbolNegate);
 		grouping = true;
 	}
-	if( component.GetCurState() && type == igdeTriggerExpressionComponent::ectTarget ){
-		string.AppendCharacter( pSymbolCurState );
+	if(component.GetCurState() && type == igdeTriggerExpressionComponent::ectTarget){
+		string.AppendCharacter(pSymbolCurState);
 		grouping = true;
 	}
 	
-	switch( type ){
+	switch(type){
 	case igdeTriggerExpressionComponent::ectTarget:
-		QuoteTriggerName( subString, targetName );
+		QuoteTriggerName(subString, targetName);
 		string += subString;
 		break;
 		
@@ -452,18 +452,18 @@ const igdeTriggerExpressionComponent &component, bool grouping ) const{
 		const int count = component.GetChildCount();
 		int i;
 		
-		if( grouping ){
-			string.AppendCharacter( pSymbolGroupStart );
+		if(grouping){
+			string.AppendCharacter(pSymbolGroupStart);
 		}
-		for( i=0; i<count; i++ ){
-			if( i > 0 ){
-				string.AppendCharacter( pSymbolAnd );
+		for(i=0; i<count; i++){
+			if(i > 0){
+				string.AppendCharacter(pSymbolAnd);
 			}
-			ExpressionComponentToString( subString, *component.GetChildAt( i ), true );
+			ExpressionComponentToString(subString, *component.GetChildAt(i), true);
 			string += subString;
 		}
-		if( grouping ){
-			string.AppendCharacter( pSymbolGroupEnd );
+		if(grouping){
+			string.AppendCharacter(pSymbolGroupEnd);
 		}
 		
 		}break;
@@ -472,18 +472,18 @@ const igdeTriggerExpressionComponent &component, bool grouping ) const{
 		const int count = component.GetChildCount();
 		int i;
 		
-		if( grouping ){
-			string.AppendCharacter( pSymbolGroupStart );
+		if(grouping){
+			string.AppendCharacter(pSymbolGroupStart);
 		}
-		for( i=0; i<count; i++ ){
-			if( i > 0 ){
-				string.AppendCharacter( pSymbolOr );
+		for(i=0; i<count; i++){
+			if(i > 0){
+				string.AppendCharacter(pSymbolOr);
 			}
-			ExpressionComponentToString( subString, *component.GetChildAt( i ), true );
+			ExpressionComponentToString(subString, *component.GetChildAt(i), true);
 			string += subString;
 		}
-		if( grouping ){
-			string.AppendCharacter( pSymbolGroupEnd );
+		if(grouping){
+			string.AppendCharacter(pSymbolGroupEnd);
 		}
 		
 		}break;
@@ -493,11 +493,11 @@ const igdeTriggerExpressionComponent &component, bool grouping ) const{
 	}
 }
 
-void igdeTriggerExpressionParser::QuoteTriggerName( decString &string, const decString &name ) const{
-	if( name.Find( pRequiresQuoteCharacters ) == -1 ){
+void igdeTriggerExpressionParser::QuoteTriggerName(decString &string, const decString &name) const{
+	if(name.Find(pRequiresQuoteCharacters) == -1){
 		string = name;
 		
 	}else{
-		string.Format( "%c%s%c", pSymbolQuote, name.GetReplacedString( "\"", "\\\"" ).GetString(), pSymbolQuote );
+		string.Format("%c%s%c", pSymbolQuote, name.GetReplacedString("\"", "\\\"").GetString(), pSymbolQuote);
 	}
 }

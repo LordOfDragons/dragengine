@@ -90,7 +90,7 @@ public:
 	deInputDeviceFeedback();
 	
 	/** \brief Create copy of input device feedback. */
-	deInputDeviceFeedback( const deInputDeviceFeedback &feedback );
+	deInputDeviceFeedback(const deInputDeviceFeedback &feedback);
 	
 	/** \brief Clean up input device feedback. */
 	~deInputDeviceFeedback();
@@ -111,7 +111,7 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/**
 	 * \brief Display name.
@@ -122,13 +122,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set Display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Feedback type. */
 	inline eFeedbackTypes GetType() const{ return pType; }
 	
 	/** \brief Feedback type. */
-	void SetType( eFeedbackTypes type );
+	void SetType(eFeedbackTypes type);
 	
 	/**
 	 * \brief Identifier of component or empty string.
@@ -140,7 +140,7 @@ public:
 	 * \brief Set identifier of component or empty string.
 	 * \version 1.6
 	 */
-	void SetComponent( const char *component );
+	void SetComponent(const char *component);
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.
@@ -154,7 +154,7 @@ public:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	void SetDisplayImage( deImage *image );
+	void SetDisplayImage(deImage *image);
 	
 	/** \brief Count of icons representing the feedback in bindings. */
 	int GetDisplayIconCount() const;
@@ -164,20 +164,20 @@ public:
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	deImage *GetDisplayIconAt( int index ) const;
+	deImage *GetDisplayIconAt(int index) const;
 	
 	/**
 	 * \brief Add icon representing the feedback in bindings.
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	void AddDisplayIcon( deImage *image );
+	void AddDisplayIcon(deImage *image);
 	
 	/** \brief Text to display centered across display image or icon. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set text to display centered across display image or icon. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	/*@}*/
 	
 	
@@ -185,7 +185,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy input device feedback. */
-	deInputDeviceFeedback &operator=( const deInputDeviceFeedback &feedback );
+	deInputDeviceFeedback &operator=(const deInputDeviceFeedback &feedback);
 	/*@}*/
 };
 

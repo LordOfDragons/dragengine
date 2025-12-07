@@ -38,16 +38,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPMicrosoftMixedRealityMotionController::deoxrDPMicrosoftMixedRealityMotionController( deoxrInstance &instance ) :
-deoxrDPBaseTwoHandController( instance,
-	deoxrPath( instance, "/interaction_profiles/microsoft/motion_controller" ),
-	"Microsoft Mixed Reality Motion Controller" )
+deoxrDPMicrosoftMixedRealityMotionController::deoxrDPMicrosoftMixedRealityMotionController(deoxrInstance &instance) :
+deoxrDPBaseTwoHandController(instance,
+	deoxrPath(instance, "/interaction_profiles/microsoft/motion_controller"),
+	"Microsoft Mixed Reality Motion Controller")
 {
 }
 
 deoxrDPMicrosoftMixedRealityMotionController::deoxrDPMicrosoftMixedRealityMotionController(
-	deoxrInstance &instance, const deoxrPath &path, const char *name ) :
-deoxrDPBaseTwoHandController( instance, path, name ){
+	deoxrInstance &instance, const deoxrPath &path, const char *name) :
+deoxrDPBaseTwoHandController(instance, path, name){
 }
 
 deoxrDPMicrosoftMixedRealityMotionController::~deoxrDPMicrosoftMixedRealityMotionController(){
@@ -79,70 +79,70 @@ void deoxrDPMicrosoftMixedRealityMotionController::pSuggestBindings(){
 	// - /output/haptic
 	
 	const int bindingCount = 12 * 2;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
+	const decString basePathList[2] = {"/user/hand/left", "/user/hand/right"};
 	int i;
 	
-	for( i=0; i<2; i++ ){
-		const decString &basePath = basePathList[ i ];
+	for(i=0; i<2; i++){
+		const decString &basePath = basePathList[i];
 		
-		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
-		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd(b, pPoseAction(i == 0), basePath + "/input/grip/pose");
+		pAdd(b, pPoseAction2(i == 0), basePath + "/input/aim/pose");
 		
-		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
+		pAdd(b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click");
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/value" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
+		pAdd(b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/value");
+		pAdd(b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value");
 		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		
-		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick" );
-		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
+		pAdd(b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick");
+		pAdd(b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click");
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
-		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
-		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+		pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
+		pAdd(b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click");
+		pAdd(b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch");
 		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
 	}
 	
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 }
 
 const char *deoxrDPMicrosoftMixedRealityMotionController::pDeviceIdPrefix() const{
 	return "mmrmc_";
 }
 
-void deoxrDPMicrosoftMixedRealityMotionController::pAddDevice( bool left ){
+void deoxrDPMicrosoftMixedRealityMotionController::pAddDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if( device ){
+	if(device){
 		return;
 	}
 	
-	pCreateDevice( device, left, pDeviceIdPrefix(), true );
+	pCreateDevice(device, left, pDeviceIdPrefix(), true);
 	
-	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
-	pAddAxisTrigger( device, trigger );
-	pAddButtonTrigger( device, trigger, false ); // has to be button 0
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
+	pAddAxisTrigger(device, trigger);
+	pAddButtonTrigger(device, trigger, false); // has to be button 0
 	
-	pAddButton( device, ebaPrimary, eblHome, false ); // has to be button 1
+	pAddButton(device, ebaPrimary, eblHome, false); // has to be button 1
 	
-	deoxrDeviceComponent * const joystick = pAddComponentJoystick( device );
-	pAddAxesJoystick( device, joystick );
-	pAddButtonJoystick( device, joystick, true, false );
+	deoxrDeviceComponent * const joystick = pAddComponentJoystick(device);
+	pAddAxesJoystick(device, joystick);
+	pAddButtonJoystick(device, joystick, true, false);
 	
-	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad( device );
-	pAddAxesTrackpad( device, trackpad );
-	pAddButtonTrackpad( device, trackpad, true, true );
+	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad(device);
+	pAddAxesTrackpad(device, trackpad);
+	pAddButtonTrackpad(device, trackpad, true, true);
 	
-	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddButtonGrip( device, grip, false );
+	deoxrDeviceComponent * const grip = pAddComponentGrip(device);
+	pAddButtonGrip(device, grip, false);
 	
 	pAddHandTracker(device, left, true);
 	
-	GetInstance().GetOxr().GetDevices().Add( device );
+	GetInstance().GetOxr().GetDevices().Add(device);
 }

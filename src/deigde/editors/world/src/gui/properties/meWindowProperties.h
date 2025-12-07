@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	meWindowProperties( meWindowMain &windowMain );
+	meWindowProperties(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -78,7 +78,7 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief World path changed. */
 	void OnWorldPathChanged();

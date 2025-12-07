@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create animator system. */
-	deAnimatorSystem( deEngine *engine );
+	deAnimatorSystem(deEngine *engine);
 	
 	/** \brief Clean up animator system. */
 	virtual ~deAnimatorSystem();
@@ -66,16 +66,16 @@ public:
 	inline deBaseAnimatorModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Create and assign peer for animator using the active module. */
-	void LoadAnimator( deAnimator *animator );
+	void LoadAnimator(deAnimator *animator);
 	
 	/** \brief Create and assign peer for animator instance using the active module. */
-	void LoadAnimatorInstance( deAnimatorInstance *instance );
+	void LoadAnimatorInstance(deAnimatorInstance *instance);
 	
 	/** \brief Create and assign peer for animation using the active module. */
-	void LoadAnimation( deAnimation *animation );
+	void LoadAnimation(deAnimation *animation);
 	
 	/** \brief Create and assign peer for component using the active module. */
-	void LoadComponent( deComponent *component );
+	void LoadComponent(deComponent *component);
 	/*@}*/
 	
 	
@@ -87,7 +87,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

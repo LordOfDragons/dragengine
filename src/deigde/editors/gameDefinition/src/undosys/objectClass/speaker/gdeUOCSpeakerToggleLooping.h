@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerToggleLooping( gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
+	gdeUOCSpeakerToggleLooping(gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
 	
 protected:
 	/** \brief Clean up undo action. */

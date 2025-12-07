@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleTrackTo( aeWPRule &wpRule );
+	aeWPAPanelRuleTrackTo(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

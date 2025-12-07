@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game manager. */
-	dealGameManager( dealLauncher &launcher );
+	dealGameManager(dealLauncher &launcher);
 	
 	/** \brief Clean up game manager. */
 	~dealGameManager();
@@ -79,7 +79,7 @@ public:
 	void ApplyProfileChanges();
 	
 	/** \brief Load game from a disk file. */
-	dealGame *LoadGameFromDisk( const char *path );
+	dealGame *LoadGameFromDisk(const char *path);
 	
 	/** \brief Profile list. */
 	inline dealGameProfileList &GetProfileList(){ return pProfileList; }
@@ -89,7 +89,7 @@ public:
 	inline dealGameProfile *GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile or \em NULL if none is active. */
-	void SetActiveProfile( dealGameProfile *profile );
+	void SetActiveProfile(dealGameProfile *profile);
 	
 	/** \brief Default profile. */
 	inline dealGameProfile *GetDefaultProfile() const{ return pDefaultProfile; }

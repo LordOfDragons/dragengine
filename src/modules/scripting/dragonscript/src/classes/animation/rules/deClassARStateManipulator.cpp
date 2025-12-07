@@ -67,42 +67,42 @@ struct sARStaMNatDat{
 /////////////////////
 
 // public func new()
-deClassARStateManipulator::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsARStaM,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassARStateManipulator::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsARStaM,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassARStateManipulator::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+void deClassARStateManipulator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
 	
 	// clear ( important )
 	nd.animator = NULL;
 	nd.rule = NULL;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = ( deClassAnimatorRule* )GetOwnerClass()->GetBaseClass();
-	baseClass->CallBaseClassConstructor( rt, myself, baseClass->GetFirstConstructor(), 0 );
+	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
 	nd.rule = new deAnimatorRuleStateManipulator;
-	baseClass->AssignRule( myself->GetRealObject(), nd.rule );
+	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
 // public func destructor()
-deClassARStateManipulator::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsARStaM,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassARStateManipulator::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsARStaM,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassARStateManipulator::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassARStateManipulator::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->FreeReference();
 		nd.animator = NULL;
 	}
 	
-	if( nd.rule ){
+	if(nd.rule){
 		nd.rule->FreeReference();
 		nd.rule = NULL;
 	}
@@ -112,61 +112,61 @@ void deClassARStateManipulator::nfDestructor::RunFunction( dsRunTime *rt, dsValu
 
 
 // public func void setEnablePosition( bool enabled )
-deClassARStateManipulator::nfSetEnablePosition::nfSetEnablePosition( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setEnablePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARStateManipulator::nfSetEnablePosition::nfSetEnablePosition(const sInitData &init) : dsFunction(init.clsARStaM,
+"setEnablePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARStateManipulator::nfSetEnablePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+void deClassARStateManipulator::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnablePosition( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableOrientation( bool enabled )
-deClassARStateManipulator::nfSetEnableOrientation::nfSetEnableOrientation( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setEnableOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARStateManipulator::nfSetEnableOrientation::nfSetEnableOrientation(const sInitData &init) : dsFunction(init.clsARStaM,
+"setEnableOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARStateManipulator::nfSetEnableOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+void deClassARStateManipulator::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableRotation( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableRotation(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableSize( bool enabled )
-deClassARStateManipulator::nfSetEnableSize::nfSetEnableSize( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setEnableSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARStateManipulator::nfSetEnableSize::nfSetEnableSize(const sInitData &init) : dsFunction(init.clsARStaM,
+"setEnableSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARStateManipulator::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+void deClassARStateManipulator::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableSize( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableVertexPositionSet( bool enabled )
-deClassARStateManipulator::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
-dsFunction( init.clsARStaM, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARStateManipulator::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet(const sInitData &init) :
+dsFunction(init.clsARStaM, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARStateManipulator::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+void deClassARStateManipulator::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -174,145 +174,145 @@ void deClassARStateManipulator::nfSetEnableVertexPositionSet::RunFunction( dsRun
 
 
 // public func void setMinimumPosition( Vector position )
-deClassARStateManipulator::nfSetMinimumPosition::nfSetMinimumPosition( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setMinimumPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // position
+deClassARStateManipulator::nfSetMinimumPosition::nfSetMinimumPosition(const sInitData &init) : dsFunction(init.clsARStaM,
+"setMinimumPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // position
 }
-void deClassARStateManipulator::nfSetMinimumPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateManipulator &clsARStaM = *( ( deClassARStateManipulator* )GetOwnerClass() );
+void deClassARStateManipulator::nfSetMinimumPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
-	const decVector &vector = clsVec.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
 	
-	nd.rule->SetMinimumPosition( vector );
+	nd.rule->SetMinimumPosition(vector);
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setMaximumPosition( Vector position )
-deClassARStateManipulator::nfSetMaximumPosition::nfSetMaximumPosition( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setMaximumPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // position
+deClassARStateManipulator::nfSetMaximumPosition::nfSetMaximumPosition(const sInitData &init) : dsFunction(init.clsARStaM,
+"setMaximumPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // position
 }
-void deClassARStateManipulator::nfSetMaximumPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateManipulator &clsARStaM = *( ( deClassARStateManipulator* )GetOwnerClass() );
+void deClassARStateManipulator::nfSetMaximumPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
-	const decVector &vector = clsVec.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
 	
-	nd.rule->SetMaximumPosition( vector );
+	nd.rule->SetMaximumPosition(vector);
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setMinimumRotation( Vector rotation )
-deClassARStateManipulator::nfSetMinimumRotation::nfSetMinimumRotation( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setMinimumRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // rotation
+deClassARStateManipulator::nfSetMinimumRotation::nfSetMinimumRotation(const sInitData &init) : dsFunction(init.clsARStaM,
+"setMinimumRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // rotation
 }
-void deClassARStateManipulator::nfSetMinimumRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateManipulator &clsARStaM = *( ( deClassARStateManipulator* )GetOwnerClass() );
+void deClassARStateManipulator::nfSetMinimumRotation::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
-	const decVector &vector = clsVec.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
 	
-	nd.rule->SetMinimumRotation( vector * DEG2RAD );
+	nd.rule->SetMinimumRotation(vector * DEG2RAD);
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setMaximumRotation( Vector rotation )
-deClassARStateManipulator::nfSetMaximumRotation::nfSetMaximumRotation( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setMaximumRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // rotation
+deClassARStateManipulator::nfSetMaximumRotation::nfSetMaximumRotation(const sInitData &init) : dsFunction(init.clsARStaM,
+"setMaximumRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // rotation
 }
-void deClassARStateManipulator::nfSetMaximumRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateManipulator &clsARStaM = *( ( deClassARStateManipulator* )GetOwnerClass() );
+void deClassARStateManipulator::nfSetMaximumRotation::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
-	const decVector &vector = clsVec.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
 	
-	nd.rule->SetMaximumRotation( vector * DEG2RAD );
+	nd.rule->SetMaximumRotation(vector * DEG2RAD);
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setMinimumSize( Vector size )
-deClassARStateManipulator::nfSetMinimumSize::nfSetMinimumSize( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setMinimumSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // size
+deClassARStateManipulator::nfSetMinimumSize::nfSetMinimumSize(const sInitData &init) : dsFunction(init.clsARStaM,
+"setMinimumSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // size
 }
-void deClassARStateManipulator::nfSetMinimumSize::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateManipulator &clsARStaM = *( ( deClassARStateManipulator* )GetOwnerClass() );
+void deClassARStateManipulator::nfSetMinimumSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
-	const decVector &vector = clsVec.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
 	
-	nd.rule->SetMinimumSize( vector );
+	nd.rule->SetMinimumSize(vector);
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setMaximumSize( Vector size )
-deClassARStateManipulator::nfSetMaximumSize::nfSetMaximumSize( const sInitData &init ) : dsFunction( init.clsARStaM,
-"setMaximumSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // size
+deClassARStateManipulator::nfSetMaximumSize::nfSetMaximumSize(const sInitData &init) : dsFunction(init.clsARStaM,
+"setMaximumSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // size
 }
-void deClassARStateManipulator::nfSetMaximumSize::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateManipulator &clsARStaM = *( ( deClassARStateManipulator* )GetOwnerClass() );
+void deClassARStateManipulator::nfSetMaximumSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
-	const decVector &vector = clsVec.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
 	
-	nd.rule->SetMaximumSize( vector );
+	nd.rule->SetMaximumSize(vector);
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setMinimumVertexPositionSet(float weight)
-deClassARStateManipulator::nfSetMinimumVertexPositionSet::nfSetMinimumVertexPositionSet( const sInitData &init ) :
-dsFunction( init.clsARStaM, "setMinimumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // weight
+deClassARStateManipulator::nfSetMinimumVertexPositionSet::nfSetMinimumVertexPositionSet(const sInitData &init) :
+dsFunction(init.clsARStaM, "setMinimumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // weight
 }
-void deClassARStateManipulator::nfSetMinimumVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+void deClassARStateManipulator::nfSetMinimumVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetMinimumVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	nd.rule->SetMinimumVertexPositionSet(rt->GetValue(0)->GetFloat());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setMaximumVertexPositionSet(float weight)
-deClassARStateManipulator::nfSetMaximumVertexPositionSet::nfSetMaximumVertexPositionSet( const sInitData &init ) :
-dsFunction( init.clsARStaM, "setMaximumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // weight
+deClassARStateManipulator::nfSetMaximumVertexPositionSet::nfSetMaximumVertexPositionSet(const sInitData &init) :
+dsFunction(init.clsARStaM, "setMaximumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // weight
 }
-void deClassARStateManipulator::nfSetMaximumVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
+void deClassARStateManipulator::nfSetMaximumVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetMaximumVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	nd.rule->SetMaximumVertexPositionSet(rt->GetValue(0)->GetFloat());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -320,68 +320,68 @@ void deClassARStateManipulator::nfSetMaximumVertexPositionSet::RunFunction( dsRu
 
 
 // public func void targetAddLink( ARStateManipulatorTarget target, int link )
-deClassARStateManipulator::nfTargetAddLink::nfTargetAddLink( const sInitData &init ) : dsFunction( init.clsARStaM,
-"targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsARStateManipulatorTarget ); // target
-	p_AddParameter( init.clsInt ); // link
+deClassARStateManipulator::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunction(init.clsARStaM,
+"targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsARStateManipulatorTarget); // target
+	p_AddParameter(init.clsInt); // link
 }
-void deClassARStateManipulator::nfTargetAddLink::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassARStateManipulator::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateManipulator::eTargets target = ( deClassARStateManipulator::eTargets )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	const deClassARStateManipulator::eTargets target = (deClassARStateManipulator::eTargets)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
-	const int link = rt->GetValue( 1 )->GetInt();
+	const int link = rt->GetValue(1)->GetInt();
 	
-	switch( target ){
+	switch(target){
 	case deClassARStateManipulator::etBlendFactor:
-		nd.rule->GetTargetBlendFactor().AddLink( link );
+		nd.rule->GetTargetBlendFactor().AddLink(link);
 		break;
 		
 	case deClassARStateManipulator::etPosition:
-		nd.rule->GetTargetPosition().AddLink( link );
+		nd.rule->GetTargetPosition().AddLink(link);
 		break;
 		
 	case deClassARStateManipulator::etOrientation:
-		nd.rule->GetTargetRotation().AddLink( link );
+		nd.rule->GetTargetRotation().AddLink(link);
 		break;
 		
 	case deClassARStateManipulator::etSize:
-		nd.rule->GetTargetSize().AddLink( link );
+		nd.rule->GetTargetSize().AddLink(link);
 		break;
 		
 	case deClassARStateManipulator::etVertexPositionSet:
-		nd.rule->GetTargetVertexPositionSet().AddLink( link );
+		nd.rule->GetTargetVertexPositionSet().AddLink(link);
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void targetRemoveAllLinks( ARStateManipulatorTarget target )
-deClassARStateManipulator::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks( const sInitData &init ) : dsFunction( init.clsARStaM,
-"targetRemoveAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsARStateManipulatorTarget ); // target
+deClassARStateManipulator::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &init) : dsFunction(init.clsARStaM,
+"targetRemoveAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsARStateManipulatorTarget); // target
 }
-void deClassARStateManipulator::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassARStateManipulator::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateManipulator::eTargets target = ( deClassARStateManipulator::eTargets )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	const deClassARStateManipulator::eTargets target = (deClassARStateManipulator::eTargets)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	switch( target ){
+	switch(target){
 	case deClassARStateManipulator::etBlendFactor:
 		nd.rule->GetTargetBlendFactor().RemoveAllLinks();
 		break;
@@ -403,10 +403,10 @@ void deClassARStateManipulator::nfTargetRemoveAllLinks::RunFunction( dsRunTime *
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -419,13 +419,13 @@ void deClassARStateManipulator::nfTargetRemoveAllLinks::RunFunction( dsRunTime *
 // Constructor
 ////////////////
 
-deClassARStateManipulator::deClassARStateManipulator( deScriptingDragonScript &ds ) :
-dsClass( "ARStateManipulator", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds ){
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "AnimatorRule" );
+deClassARStateManipulator::deClassARStateManipulator(deScriptingDragonScript &ds) :
+dsClass("ARStateManipulator", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds){
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("AnimatorRule");
 	
-	p_SetNativeDataSize( sizeof( sARStaMNatDat ) );
+	p_SetNativeDataSize(sizeof(sARStaMNatDat));
 }
 
 deClassARStateManipulator::~deClassARStateManipulator(){
@@ -436,8 +436,8 @@ deClassARStateManipulator::~deClassARStateManipulator(){
 // Management
 ///////////////
 
-void deClassARStateManipulator::CreateClassMembers( dsEngine *engine ){
-	pClsARStateManipulatorTarget = engine->GetClass( "Dragengine.Scenery.ARStateManipulatorTarget" );
+void deClassARStateManipulator::CreateClassMembers(dsEngine *engine){
+	pClsARStateManipulatorTarget = engine->GetClass("Dragengine.Scenery.ARStateManipulatorTarget");
 	
 	sInitData init;
 	init.clsARStaM = this;
@@ -455,94 +455,94 @@ void deClassARStateManipulator::CreateClassMembers( dsEngine *engine ){
 	init.clsARStateManipulatorTarget = pClsARStateManipulatorTarget;
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfSetEnablePosition( init ) );
-	AddFunction( new nfSetEnableOrientation( init ) );
-	AddFunction( new nfSetEnableSize( init ) );
-	AddFunction( new nfSetEnableVertexPositionSet( init ) );
+	AddFunction(new nfSetEnablePosition(init));
+	AddFunction(new nfSetEnableOrientation(init));
+	AddFunction(new nfSetEnableSize(init));
+	AddFunction(new nfSetEnableVertexPositionSet(init));
 	
-	AddFunction( new nfSetMinimumPosition( init ) );
-	AddFunction( new nfSetMaximumPosition( init ) );
-	AddFunction( new nfSetMinimumRotation( init ) );
-	AddFunction( new nfSetMaximumRotation( init ) );
-	AddFunction( new nfSetMinimumSize( init ) );
-	AddFunction( new nfSetMaximumSize( init ) );
-	AddFunction( new nfSetMinimumVertexPositionSet( init ) );
-	AddFunction( new nfSetMaximumVertexPositionSet( init ) );
+	AddFunction(new nfSetMinimumPosition(init));
+	AddFunction(new nfSetMaximumPosition(init));
+	AddFunction(new nfSetMinimumRotation(init));
+	AddFunction(new nfSetMaximumRotation(init));
+	AddFunction(new nfSetMinimumSize(init));
+	AddFunction(new nfSetMaximumSize(init));
+	AddFunction(new nfSetMinimumVertexPositionSet(init));
+	AddFunction(new nfSetMaximumVertexPositionSet(init));
 	
-	AddFunction( new nfTargetAddLink( init ) );
-	AddFunction( new nfTargetRemoveAllLinks( init ) );
+	AddFunction(new nfTargetAddLink(init));
+	AddFunction(new nfTargetRemoveAllLinks(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deAnimatorRuleStateManipulator *deClassARStateManipulator::GetRule( dsRealObject *myself ) const{
-	if( ! myself ){
+deAnimatorRuleStateManipulator *deClassARStateManipulator::GetRule(dsRealObject *myself) const{
+	if(!myself){
 		return NULL;
 	}
 	
-	return ( ( sARStaMNatDat* )p_GetNativeData( myself->GetBuffer() ) )->rule;
+	return ((sARStaMNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARStateManipulator::AssignAnimator( dsRealObject *myself, deAnimator *animator ){
-	if( ! myself ){
-		DSTHROW( dueInvalidParam );
+void deClassARStateManipulator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+	if(!myself){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	pDS.GetClassAnimatorRule()->AssignAnimator( myself, animator );
+	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( myself->GetBuffer() ) );
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself->GetBuffer()));
 	
-	if( animator == nd.animator ){
+	if(animator == nd.animator){
 		return;
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->FreeReference();
 	}
 	
 	nd.animator = animator;
 	
-	if( animator ){
+	if(animator){
 		animator->AddReference();
 	}
 }
 
-void deClassARStateManipulator::PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateManipulator *rule ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassARStateManipulator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateManipulator *rule){
+	if(!rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! rule ){
-		rt->PushObject( NULL, this );
+	if(!rule){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = ( deClassAnimatorRule* )GetBaseClass();
-	rt->CreateObjectNakedOnStack( this );
-	sARStaMNatDat &nd = *( ( sARStaMNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	rt->CreateObjectNakedOnStack(this);
+	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.rule = NULL;
 	
 	try{
-		baseClass->CallBaseClassConstructor( rt, rt->GetValue( 0 ), baseClass->GetFirstConstructor(), 0 );
+		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if( animator ){
+		if(animator){
 			animator->AddReference();
 		}
 		
 		nd.rule = rule;
 		rule->AddReference();
 		
-		baseClass->AssignRule( rt->GetValue( 0 )->GetRealObject(), rule );
-		baseClass->AssignAnimator( rt->GetValue( 0 )->GetRealObject(), animator );
+		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
+		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		
-	}catch( ... ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(...){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

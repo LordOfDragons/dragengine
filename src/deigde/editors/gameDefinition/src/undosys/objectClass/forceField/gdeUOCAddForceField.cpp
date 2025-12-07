@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddForceField::gdeUOCAddForceField( gdeObjectClass *objectClass, gdeOCForceField *forceField ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCAddForceField::gdeUOCAddForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add force field" );
+	SetShortInfo("Add force field");
 	
 	pForceField = forceField;
 	forceField->AddReference();
@@ -59,10 +59,10 @@ pForceField( NULL )
 }
 
 gdeUOCAddForceField::~gdeUOCAddForceField(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddForceField::~gdeUOCAddForceField(){
 
 void gdeUOCAddForceField::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCForceField() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCForceField()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCForceField( NULL );
+		gameDefinition->SetActiveOCForceField(NULL);
 	}
 	
-	pObjectClass->GetForceFields().Remove( pForceField );
+	pObjectClass->GetForceFields().Remove(pForceField);
 	pObjectClass->NotifyForceFieldsChanged();
 }
 
 void gdeUOCAddForceField::Redo(){
-	pObjectClass->GetForceFields().Add( pForceField );
+	pObjectClass->GetForceFields().Add(pForceField);
 	pObjectClass->NotifyForceFieldsChanged();
 }

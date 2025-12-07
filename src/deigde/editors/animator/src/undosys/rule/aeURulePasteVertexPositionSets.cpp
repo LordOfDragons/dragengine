@@ -35,10 +35,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURulePasteVertexPositionSets::aeURulePasteVertexPositionSets( aeRule* rule, const decStringSet &newValue ) :
-aeUSetRuleVertexPositionSets( rule, newValue )
+aeURulePasteVertexPositionSets::aeURulePasteVertexPositionSets(aeRule* rule, const decStringSet &newValue) :
+aeUSetRuleVertexPositionSets(rule, newValue)
 {
-	SetShortInfo( "Rule paste all vertex position sets" );
+	SetShortInfo("Rule paste all vertex position sets");
 }
 
 aeURulePasteVertexPositionSets::~aeURulePasteVertexPositionSets(){

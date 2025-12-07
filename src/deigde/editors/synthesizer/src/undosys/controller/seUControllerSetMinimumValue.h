@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	seUControllerSetMinimumValue( seController *controller, float newValue );
+	seUControllerSetMinimumValue(seController *controller, float newValue);
 	
 protected:
 	/** \brief Clean up undo object. */

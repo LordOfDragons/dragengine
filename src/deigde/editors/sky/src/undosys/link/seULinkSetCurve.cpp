@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetCurve::seULinkSetCurve( seLink *link, const decCurveBezier &newCurve ) :
-pLink( NULL ),
-pNewCurve( newCurve )
+seULinkSetCurve::seULinkSetCurve(seLink *link, const decCurveBezier &newCurve) :
+pLink(NULL),
+pNewCurve(newCurve)
 {
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Link Curve" );
+	SetShortInfo("Set Link Curve");
 	
 	pOldCurve = link->GetCurve();
 	
@@ -56,7 +56,7 @@ pNewCurve( newCurve )
 }
 
 seULinkSetCurve::~seULinkSetCurve(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -66,7 +66,7 @@ seULinkSetCurve::~seULinkSetCurve(){
 // Management
 ///////////////
 
-void seULinkSetCurve::SetNewCurve( const decCurveBezier &curve ){
+void seULinkSetCurve::SetNewCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }
 

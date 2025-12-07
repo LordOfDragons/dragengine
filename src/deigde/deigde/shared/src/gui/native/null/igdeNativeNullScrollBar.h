@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullScrollBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullScrollBar* CreateNativeWidget( igdeScrollBar &owner );
+	static igdeNativeNullScrollBar* CreateNativeWidget(igdeScrollBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

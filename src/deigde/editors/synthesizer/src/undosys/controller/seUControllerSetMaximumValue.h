@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	seUControllerSetMaximumValue( seController *controller, float newValue );
+	seUControllerSetMaximumValue(seController *controller, float newValue);
 	
 protected:
 	/** \brief Clean up undo object. */

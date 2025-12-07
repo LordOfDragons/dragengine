@@ -81,28 +81,28 @@ public:
 	inline int GetVolumeCount() const{ return pVolumeCount; }
 	
 	/** \brief Volume at index. */
-	decConvexVolume *GetVolumeAt( int index ) const;
+	decConvexVolume *GetVolumeAt(int index) const;
 	
 	/** \brief Volume is present. */
-	bool HasVolume( decConvexVolume *volume ) const;
+	bool HasVolume(decConvexVolume *volume) const;
 	
 	/** \brief Index of volume or -1 if absent. */
-	int IndexOfVolume( decConvexVolume *volume ) const;
+	int IndexOfVolume(decConvexVolume *volume) const;
 	
 	/** \brief Add volume. */
-	void AddVolume( decConvexVolume *volume );
+	void AddVolume(decConvexVolume *volume);
 	
 	/** \brief Remove volume. */
-	void RemoveVolume( decConvexVolume *volume );
+	void RemoveVolume(decConvexVolume *volume);
 	
 	/** \brief Remove volume at index. */
-	void RemoveVolumeAt( int index );
+	void RemoveVolumeAt(int index);
 	
 	/** \brief Remove volume without deleting itt. */
-	void ExtractVolume( decConvexVolume *volume );
+	void ExtractVolume(decConvexVolume *volume);
 	
 	/** \brief Remove volume at index without deleting it. */
-	void ExtractVolumeAt( int index );
+	void ExtractVolumeAt(int index);
 	
 	/** \brief Remove all volumes. */
 	void RemoveAllVolumes();
@@ -113,10 +113,10 @@ public:
 	/** \name Operations */
 	/*@{*/
 	/** \brief Remove all volumes and add a new one set to a cube. */
-	void SetToCube( const decVector &halfSize );
+	void SetToCube(const decVector &halfSize);
 	
 	/** \brief Move all volumes. */
-	void Move( const decVector &direction );
+	void Move(const decVector &direction);
 	
 	/**
 	 * \brief Split volumes using split plane.
@@ -125,8 +125,8 @@ public:
 	 * optional face used only to init the new cut faces and does not have to
 	 * be part of any volume.
 	 */
-	void SplitByPlane( const decVector &splitNormal, const decVector &splitPosition,
-		bool deleteBackVolume, decConvexVolumeFace *cutFaceInit );
+	void SplitByPlane(const decVector &splitNormal, const decVector &splitPosition,
+		bool deleteBackVolume, decConvexVolumeFace *cutFaceInit);
 	
 	/**
 	 * \brief Split volumes using convex face.
@@ -134,7 +134,7 @@ public:
 	 * All newly created volumes are added to the list. The face has not to be
 	 * part of the convex volume list.
 	 */
-	void SplitByFace( const decConvexVolume &volume, int face );
+	void SplitByFace(const decConvexVolume &volume, int face);
 	
 	/**
 	 * \brief Split volumes using convex volume.
@@ -142,7 +142,7 @@ public:
 	 * All newly created volumes are added to the list. The volume has not to be
 	 * part of the convex volume list.
 	 */
-	void SplitByVolume( const decConvexVolume &volume );
+	void SplitByVolume(const decConvexVolume &volume);
 	/*@}*/
 	
 	
@@ -158,7 +158,7 @@ public:
 	 * of a clip plane and is only used if a volume has been specified. The
 	 * default implementation creates a convex volume of type decConvexVolume.
 	 */
-	virtual decConvexVolume *CreateVolume( decConvexVolume *volume, bool front );
+	virtual decConvexVolume *CreateVolume(decConvexVolume *volume, bool front);
 	
 	/**
 	 * \brief Create convex volume face similar to another face.
@@ -170,19 +170,19 @@ public:
 	 * 
 	 * The default implementation creates a convex volume face of type decConvexVolumeFace.
 	 */
-	virtual decConvexVolumeFace *CreateVolumeFace( decConvexVolumeFace *face );
+	virtual decConvexVolumeFace *CreateVolumeFace(decConvexVolumeFace *face);
 	/*@}*/
 	
 	
 	
 private:
-	int pTestByVolume( int volume, const decConvexVolume &splitVolume ) const;
-	bool pTestByFace( int volume, const decConvexVolume &splitVolume,
-		const decConvexVolumeFace &splitFace ) const;
-	int pTestByPlane( int volume, const decVector &splitNormal, float splitDot ) const;
-	int pSplitByPlane( int volume, const decVector &splitNormal, float splitDot,
-		bool deleteBackVolume, decConvexVolumeFace *face );
-	int pSplitByVolume( int volume, const decConvexVolume &splitVolume );
+	int pTestByVolume(int volume, const decConvexVolume &splitVolume) const;
+	bool pTestByFace(int volume, const decConvexVolume &splitVolume,
+		const decConvexVolumeFace &splitFace) const;
+	int pTestByPlane(int volume, const decVector &splitNormal, float splitDot) const;
+	int pSplitByPlane(int volume, const decVector &splitNormal, float splitDot,
+		bool deleteBackVolume, decConvexVolumeFace *face);
+	int pSplitByVolume(int volume, const decConvexVolume &splitVolume);
 };
 
 #endif

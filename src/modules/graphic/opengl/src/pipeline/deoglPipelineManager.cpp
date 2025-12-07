@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPipelineManager::deoglPipelineManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pState( renderThread ){
+deoglPipelineManager::deoglPipelineManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pState(renderThread){
 }
 
 deoglPipelineManager::~deoglPipelineManager(){
@@ -52,31 +52,31 @@ deoglPipelineManager::~deoglPipelineManager(){
 // Management
 ///////////////
 
-const deoglPipeline *deoglPipelineManager::GetWithRTSIndex( int index ){
-	const deMutexGuard guard( pMutex );
-	return ( const deoglPipeline* )pRTSPipelines.GetAt( index );
+const deoglPipeline *deoglPipelineManager::GetWithRTSIndex(int index){
+	const deMutexGuard guard(pMutex);
+	return (const deoglPipeline*)pRTSPipelines.GetAt(index);
 }
 
 const deoglPipeline *deoglPipelineManager::GetWith(
-const deoglPipelineConfiguration &configuration, bool assignRTSIndex ){
-	const deMutexGuard guard( pMutex );
+const deoglPipelineConfiguration &configuration, bool assignRTSIndex){
+	const deMutexGuard guard(pMutex);
 	const int count = pPipelines.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglPipeline * const pipeline = ( deoglPipeline* )pPipelines.GetAt( i );
-		if( pipeline->GetConfiguration() == configuration ){
+	for(i=0; i<count; i++){
+		deoglPipeline * const pipeline = (deoglPipeline*)pPipelines.GetAt(i);
+		if(pipeline->GetConfiguration() == configuration){
 			return pipeline;
 		}
 	}
 	
-	const deoglPipeline::Ref pipeline( deoglPipeline::Ref::New(
-		new deoglPipeline( pRenderThread, configuration ) ) );
-	pPipelines.Add( pipeline );
+	const deoglPipeline::Ref pipeline(deoglPipeline::Ref::New(
+		new deoglPipeline(pRenderThread, configuration)));
+	pPipelines.Add(pipeline);
 	
-	if( assignRTSIndex ){
-		pipeline->SetRTSIndex( pRTSPipelines.GetCount() );
-		pRTSPipelines.Add( pipeline );
+	if(assignRTSIndex){
+		pipeline->SetRTSIndex(pRTSPipelines.GetCount());
+		pRTSPipelines.Add(pipeline);
 	}
 	
 	return pipeline; // caller does not hold reference

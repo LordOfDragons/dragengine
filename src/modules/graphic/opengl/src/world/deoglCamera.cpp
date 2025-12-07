@@ -52,47 +52,47 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCamera::deoglCamera( deGraphicOpenGl &ogl, const deCamera &camera ) :
-pOgl( ogl ),
-pCamera( camera ),
-pRCamera( NULL ),
+deoglCamera::deoglCamera(deGraphicOpenGl &ogl, const deCamera &camera) :
+pOgl(ogl),
+pCamera(camera),
+pRCamera(NULL),
 
-pParentWorld( NULL ),
+pParentWorld(NULL),
 
-pNextSyncUpdateTime( 0.0f ),
+pNextSyncUpdateTime(0.0f),
 
-pDirtyGeometry( true ),
-pDirtyMatrices( true ),
-pDirtyAdaptionParams( true ),
-pDirtyLayerMask( true ),
-pDirtyPlanCamParams( true ),
-pDirtyPropFields( true ),
-pDirtyEffects( true ),
-pResetAdaptedIntensity( true ),
-pDirtyVR( true ),
-pEnableVR( false )
+pDirtyGeometry(true),
+pDirtyMatrices(true),
+pDirtyAdaptionParams(true),
+pDirtyLayerMask(true),
+pDirtyPlanCamParams(true),
+pDirtyPropFields(true),
+pDirtyEffects(true),
+pResetAdaptedIntensity(true),
+pDirtyVR(true),
+pEnableVR(false)
 {
 	try{
-		pRCamera = new deoglRCamera( ogl.GetRenderThread() );
+		pRCamera = new deoglRCamera(ogl.GetRenderThread());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
 deoglCamera::~deoglCamera(){
-	if( pRCamera ){
+	if(pRCamera){
 		// add camera for delayed clean up if properly contructred. breaks reference loop
 		// camera -> world -> component -> dynamic skin -> canvas or camera -> camera
 		// which would cause leaking of render thread resources. this is only required for
 		// a proper destructor call since during a failed constructor call no reference
 		// loop can be produced yet. doing this would be superfluous
-		pOgl.GetRenderThread().GetDelayedOperations().AddCleanUpCamera( pRCamera );
+		pOgl.GetRenderThread().GetDelayedOperations().AddCleanUpCamera(pRCamera);
 	}
 	
-	if( pOgl.GetVRCamera() == this ){
-		pOgl.SetVRCamera( nullptr );
+	if(pOgl.GetVRCamera() == this){
+		pOgl.SetVRCamera(nullptr);
 	}
 	
 	pCleanUp();
@@ -103,8 +103,8 @@ deoglCamera::~deoglCamera(){
 // Management
 ///////////////
 
-void deoglCamera::SetParentWorld( deoglWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void deoglCamera::SetParentWorld(deoglWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
@@ -114,7 +114,7 @@ void deoglCamera::SetParentWorld( deoglWorld *parentWorld ){
 
 
 
-void deoglCamera::Update( float elapsed ){
+void deoglCamera::Update(float elapsed){
 	pNextSyncUpdateTime += elapsed;
 	
 	// updating is the only event causing owners to be notified about the need to sync
@@ -125,61 +125,61 @@ void deoglCamera::Update( float elapsed ){
 
 void deoglCamera::SyncToRender(){
 // 		decTimer timer;
-	if( pParentWorld ){
+	if(pParentWorld){
 		pParentWorld->SyncToRender();
-		pRCamera->SetParentWorld( pParentWorld->GetRWorld() );
+		pRCamera->SetParentWorld(pParentWorld->GetRWorld());
 // 			pOgl.LogInfoFormat( "Camera.Sync world: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 		
 	}else{
-		pRCamera->SetParentWorld( NULL );
+		pRCamera->SetParentWorld(NULL);
 	}
 	
-	if( pDirtyGeometry ){
-		pRCamera->SetPosition( pCamera.GetPosition() );
+	if(pDirtyGeometry){
+		pRCamera->SetPosition(pCamera.GetPosition());
 		pDirtyGeometry = false;
 		pDirtyMatrices = true;
 // 			pOgl.LogInfoFormat( "Camera.Sync geometry: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	if( pDirtyMatrices ){
-		const decDMatrix rotMat( decDMatrix::CreateFromQuaternion( pCamera.GetOrientation() ) );
-		const decDMatrix matrix( decDMatrix::CreateCamera( pCamera.GetPosition(), rotMat.TransformView(), rotMat.TransformUp() ) );
-		pRCamera->SetCameraMatrices( matrix );
-		pRCamera->GetPlan().SetCameraMatrix( matrix );
+	if(pDirtyMatrices){
+		const decDMatrix rotMat(decDMatrix::CreateFromQuaternion(pCamera.GetOrientation()));
+		const decDMatrix matrix(decDMatrix::CreateCamera(pCamera.GetPosition(), rotMat.TransformView(), rotMat.TransformUp()));
+		pRCamera->SetCameraMatrices(matrix);
+		pRCamera->GetPlan().SetCameraMatrix(matrix);
 		pDirtyMatrices = false;
 // 			pOgl.LogInfoFormat( "Camera.Sync matrices: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	if( pDirtyAdaptionParams ){
-		pRCamera->SetExposure( pCamera.GetExposure() );
-		pRCamera->SetLowestIntensity( pCamera.GetLowestIntensity() );
-		pRCamera->SetHighestIntensity( pCamera.GetHighestIntensity() );
-		pRCamera->SetAdaptionTime( pCamera.GetAdaptionTime() );
-		pRCamera->SetWhiteIntensity( pCamera.GetWhiteIntensity() );
-		pRCamera->SetBloomIntensity( pCamera.GetBloomIntensity() );
-		pRCamera->SetBloomStrength( pCamera.GetBloomStrength() );
-		pRCamera->SetBloomBlend( pCamera.GetBloomBlend() );
-		pRCamera->SetBloomSize( pCamera.GetBloomSize() );
-		pRCamera->SetToneMapCurve( pCamera.GetToneMapCurve() );
+	if(pDirtyAdaptionParams){
+		pRCamera->SetExposure(pCamera.GetExposure());
+		pRCamera->SetLowestIntensity(pCamera.GetLowestIntensity());
+		pRCamera->SetHighestIntensity(pCamera.GetHighestIntensity());
+		pRCamera->SetAdaptionTime(pCamera.GetAdaptionTime());
+		pRCamera->SetWhiteIntensity(pCamera.GetWhiteIntensity());
+		pRCamera->SetBloomIntensity(pCamera.GetBloomIntensity());
+		pRCamera->SetBloomStrength(pCamera.GetBloomStrength());
+		pRCamera->SetBloomBlend(pCamera.GetBloomBlend());
+		pRCamera->SetBloomSize(pCamera.GetBloomSize());
+		pRCamera->SetToneMapCurve(pCamera.GetToneMapCurve());
 		pDirtyAdaptionParams = false;
 // 			pOgl.LogInfoFormat( "Camera.Sync adaption params: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	if( pDirtyLayerMask ){
-		pRCamera->GetPlan().SetLayerMask( pCamera.GetLayerMask() );
-		pRCamera->GetPlan().SetUseLayerMask( pCamera.GetLayerMask().IsNotEmpty() );
+	if(pDirtyLayerMask){
+		pRCamera->GetPlan().SetLayerMask(pCamera.GetLayerMask());
+		pRCamera->GetPlan().SetUseLayerMask(pCamera.GetLayerMask().IsNotEmpty());
 		pDirtyLayerMask = false;
 // 			pOgl.LogInfoFormat( "Camera.Sync layer mask: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	if( pDirtyPropFields ){
-		if( pParentWorld ){
+	if(pDirtyPropFields){
+		if(pParentWorld){
 			const decDVector &position = pCamera.GetPosition();
 			dePropField *propField = pParentWorld->GetWorld().GetRootPropField();
-			while( propField ){
-				deoglPropField * const oglPropField = ( deoglPropField* )propField->GetPeerGraphic();
-				if( oglPropField ){
-					oglPropField->TestLODLevel( position );
+			while(propField){
+				deoglPropField * const oglPropField = (deoglPropField*)propField->GetPeerGraphic();
+				if(oglPropField){
+					oglPropField->TestLODLevel(position);
 				}
 				propField = propField->GetLLWorldNext();
 			}
@@ -189,49 +189,49 @@ void deoglCamera::SyncToRender(){
 // 			pOgl.LogInfoFormat( "Camera.Sync prop fields: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	if( pDirtyPlanCamParams ){
-		if( ! pEnableVR ){
-			pRCamera->GetPlan().SetCameraParameters( pCamera.GetFov(), pCamera.GetFovRatio(),
-				pCamera.GetImageDistance(), pCamera.GetViewDistance() );
+	if(pDirtyPlanCamParams){
+		if(!pEnableVR){
+			pRCamera->GetPlan().SetCameraParameters(pCamera.GetFov(), pCamera.GetFovRatio(),
+				pCamera.GetImageDistance(), pCamera.GetViewDistance());
 		}
-		pRCamera->SetEnableHDRR( pCamera.GetEnableHDRR() );
-		pRCamera->SetEnableGI( pCamera.GetEnableGI() );
+		pRCamera->SetEnableHDRR(pCamera.GetEnableHDRR());
+		pRCamera->SetEnableGI(pCamera.GetEnableGI());
 		pDirtyPlanCamParams = false;
 // 			pOgl.LogInfoFormat( "Camera.Sync plan cam params: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	pRCamera->GetPlan().GetDirectEnvMapFader().Update( pNextSyncUpdateTime );
-	pRCamera->SetElapsedToneMapAdaption( pRCamera->GetElapsedToneMapAdaption() + pNextSyncUpdateTime );
+	pRCamera->GetPlan().GetDirectEnvMapFader().Update(pNextSyncUpdateTime);
+	pRCamera->SetElapsedToneMapAdaption(pRCamera->GetElapsedToneMapAdaption() + pNextSyncUpdateTime);
 	pNextSyncUpdateTime = 0.0f;
 	
-	if( pResetAdaptedIntensity ){
+	if(pResetAdaptedIntensity){
 		pResetAdaptedIntensity = false;
-		pRCamera->SetForceToneMapAdaption( true );
+		pRCamera->SetForceToneMapAdaption(true);
 	}
 	
 	// effects
 	const int effectCount = pCamera.GetEffectCount();
 	int i;
 	
-	if( pDirtyEffects ){
+	if(pDirtyEffects){
 		pRCamera->RemoveAllEffects();
-		for( i=0; i<effectCount; i++ ){
-			pRCamera->AddEffect( ( ( deoglEffect* )pCamera.GetEffectAt( i )->GetPeerGraphic() )->GetREffect() );
+		for(i=0; i<effectCount; i++){
+			pRCamera->AddEffect(((deoglEffect*)pCamera.GetEffectAt(i)->GetPeerGraphic())->GetREffect());
 		}
 		pDirtyEffects = false;
 // 			pOgl.LogInfoFormat( "Camera.Sync effects structure: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
-	for( i=0; i<effectCount; i++ ){
-		( ( deoglEffect* )pCamera.GetEffectAt( i )->GetPeerGraphic() )->SyncToRender();
+	for(i=0; i<effectCount; i++){
+		((deoglEffect*)pCamera.GetEffectAt(i)->GetPeerGraphic())->SyncToRender();
 	}
 // 		pOgl.LogInfoFormat( "Camera.Sync effects sync: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	
 	// vr
-	if( pDirtyVR ){
-		pRCamera->EnableVR( pEnableVR );
-		if( ! pEnableVR && pOgl.GetVRCamera() == this ){
-			pOgl.SetVRCamera( nullptr );
+	if(pDirtyVR){
+		pRCamera->EnableVR(pEnableVR);
+		if(!pEnableVR && pOgl.GetVRCamera() == this){
+			pOgl.SetVRCamera(nullptr);
 		}
 		pDirtyVR = false;
 	}
@@ -270,11 +270,11 @@ void deoglCamera::ResetAdaptedIntensity(){
 
 
 
-void deoglCamera::EffectAdded( int index, deEffect *effect ){
+void deoglCamera::EffectAdded(int index, deEffect *effect){
 	pDirtyEffects = true;
 }
 
-void deoglCamera::EffectRemoved( int index, deEffect *effect ){
+void deoglCamera::EffectRemoved(int index, deEffect *effect){
 	pDirtyEffects = true;
 }
 
@@ -291,7 +291,7 @@ void deoglCamera::AllEffectsRemoved(){
 void deoglCamera::VRAssignedToHMD(){
 	pDirtyVR = true;
 	pEnableVR = true;
-	pOgl.SetVRCamera( this );
+	pOgl.SetVRCamera(this);
 }
 
 void deoglCamera::VRResignedFromHMD(){
@@ -311,9 +311,9 @@ void deoglCamera::VRRenderParametersChanged(){
 //////////////////////
 
 void deoglCamera::pCleanUp(){
-	SetParentWorld( NULL );
+	SetParentWorld(NULL);
 	
-	if( pRCamera ){
+	if(pRCamera){
 		pRCamera->FreeReference();
 	}
 	
@@ -321,24 +321,24 @@ void deoglCamera::pCleanUp(){
 	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this
 	// case they can not use the old pointer to remove themselves from the dynamic skin
 	int i, count = pNotifyRenderables.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglDSRenderableCamera* )pNotifyRenderables.GetAt( i ) )->DropCamera();
+	for(i=0; i<count; i++){
+		((deoglDSRenderableCamera*)pNotifyRenderables.GetAt(i))->DropCamera();
 	}
 	
 	count = pNotifyCanvas.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglCanvasRenderWorld* )pNotifyCanvas.GetAt( i ) )->DropCamera();
+	for(i=0; i<count; i++){
+		((deoglCanvasRenderWorld*)pNotifyCanvas.GetAt(i))->DropCamera();
 	}
 }
 
 void deoglCamera::pRequiresSync(){
 	int i, count = pNotifyRenderables.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglDSRenderableCamera* )pNotifyRenderables.GetAt( i ) )->CameraRequiresSync();
+	for(i=0; i<count; i++){
+		((deoglDSRenderableCamera*)pNotifyRenderables.GetAt(i))->CameraRequiresSync();
 	}
 	
 	count = pNotifyCanvas.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglCanvasRenderWorld* )pNotifyCanvas.GetAt( i ) )->CameraRequiresSync();
+	for(i=0; i<count; i++){
+		((deoglCanvasRenderWorld*)pNotifyCanvas.GetAt(i))->CameraRequiresSync();
 	}
 }

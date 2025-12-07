@@ -42,28 +42,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxAnimationEvaluateCurve::fbxAnimationEvaluateCurve( const fbxAnimationMove &move,
-const fbxAnimationCurve *curve, float defaultValue ) :
-pMove( move ),
-pPropertyTime( NULL ),
-pPropertyValue( NULL ),
-pLastKeyIndex( -1 ),
-pKeyIndex( 0 ),
-pPrevKeyTime( 0.0f ),
-pPrevKeyValue( defaultValue ),
-pNextKeyTime( 0.0f ),
-pNextKeyValue( defaultValue ),
-pNextFrame( 0 )
+fbxAnimationEvaluateCurve::fbxAnimationEvaluateCurve(const fbxAnimationMove &move,
+const fbxAnimationCurve *curve, float defaultValue) :
+pMove(move),
+pPropertyTime(NULL),
+pPropertyValue(NULL),
+pLastKeyIndex(-1),
+pKeyIndex(0),
+pPrevKeyTime(0.0f),
+pPrevKeyValue(defaultValue),
+pNextKeyTime(0.0f),
+pNextKeyValue(defaultValue),
+pNextFrame(0)
 {
-	if( ! curve || curve->GetPropertyTime().GetValueCount() == 0 ){
+	if(!curve || curve->GetPropertyTime().GetValueCount() == 0){
 		return;
 	}
 	
 	pPropertyTime = &curve->GetPropertyTime();
 	pPropertyValue = &curve->GetPropertyValue();
 	pLastKeyIndex = pPropertyTime->GetValueCount() - 1;
-	pPrevKeyTime = fbxAnimation::ConvTime( pPropertyTime->GetValueAtAsLong( 0 ) );
-	pPrevKeyValue = pPropertyValue->GetValueAtAsFloat( 0 );
+	pPrevKeyTime = fbxAnimation::ConvTime(pPropertyTime->GetValueAtAsLong(0));
+	pPrevKeyValue = pPropertyValue->GetValueAtAsFloat(0);
 	pNextKeyTime = pPrevKeyTime;
 	pNextKeyValue = pPrevKeyValue;
 }
@@ -77,15 +77,15 @@ fbxAnimationEvaluateCurve::~fbxAnimationEvaluateCurve(){
 ///////////////
 
 float fbxAnimationEvaluateCurve::NextValue(){
-	const float time = pMove.FrameToTime( pNextFrame++ );
+	const float time = pMove.FrameToTime(pNextFrame++);
 	
-	while( time >= pNextKeyTime && pKeyIndex < pLastKeyIndex ){
+	while(time >= pNextKeyTime && pKeyIndex < pLastKeyIndex){
 		pKeyIndex++;
 		pPrevKeyTime = pNextKeyTime;
 		pPrevKeyValue = pNextKeyValue;
-		pNextKeyTime = fbxAnimation::ConvTime( pPropertyTime->GetValueAtAsLong( pKeyIndex ) );
-		pNextKeyValue = pPropertyValue->GetValueAtAsFloat( pKeyIndex );
+		pNextKeyTime = fbxAnimation::ConvTime(pPropertyTime->GetValueAtAsLong(pKeyIndex));
+		pNextKeyValue = pPropertyValue->GetValueAtAsFloat(pKeyIndex);
 	}
 	
-	return decMath::linearStep( time, pPrevKeyTime, pNextKeyTime, pPrevKeyValue, pNextKeyValue );
+	return decMath::linearStep(time, pPrevKeyTime, pNextKeyTime, pPrevKeyValue, pNextKeyValue);
 }

@@ -58,14 +58,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSOEnvMapProbe::igdeWOSOEnvMapProbe( igdeWObject &wrapper,
-	const igdeGDCEnvMapProbe &gdEnvMapProbe, const decString &prefix ) :
-igdeWOSubObject( wrapper, prefix ),
-pGDEnvMapProbe( gdEnvMapProbe ),
-pAddedToWorld( false ),
-pAttachment( NULL )
+igdeWOSOEnvMapProbe::igdeWOSOEnvMapProbe(igdeWObject &wrapper,
+	const igdeGDCEnvMapProbe &gdEnvMapProbe, const decString &prefix) :
+igdeWOSubObject(wrapper, prefix),
+pGDEnvMapProbe(gdEnvMapProbe),
+pAddedToWorld(false),
+pAttachment(NULL)
 {
-	wrapper.SubObjectFinishedLoading( *this, true );
+	wrapper.SubObjectFinishedLoading(*this, true);
 }
 
 igdeWOSOEnvMapProbe::~igdeWOSOEnvMapProbe(){
@@ -78,12 +78,12 @@ igdeWOSOEnvMapProbe::~igdeWOSOEnvMapProbe(){
 ///////////////
 
 void igdeWOSOEnvMapProbe::UpdateParameters(){
-	GetWrapper().SubObjectFinishedLoading( *this, true );
+	GetWrapper().SubObjectFinishedLoading(*this, true);
 }
 
 void igdeWOSOEnvMapProbe::UpdateLayerMasks(){
-	if( pEnvMapProbe ){
-		pEnvMapProbe->SetLayerMask( LayerMaskFromInt( GetWrapper().GetRenderEnvMapMask() ) );
+	if(pEnvMapProbe){
+		pEnvMapProbe->SetLayerMask(LayerMaskFromInt(GetWrapper().GetRenderEnvMapMask()));
 	}
 }
 
@@ -91,8 +91,8 @@ void igdeWOSOEnvMapProbe::OnAllSubObjectsFinishedLoading(){
 	pUpdateEnvMapProbe();
 }
 
-void igdeWOSOEnvMapProbe::Visit( igdeWOSOVisitor &visitor ){
-	visitor.VisitEnvMapProbe( *this );
+void igdeWOSOEnvMapProbe::Visit(igdeWOSOVisitor &visitor){
+	visitor.VisitEnvMapProbe(*this);
 }
 
 
@@ -101,10 +101,10 @@ void igdeWOSOEnvMapProbe::Visit( igdeWOSOVisitor &visitor ){
 //////////////////////
 
 void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
-	if( ! pEnvMapProbe ){
-		pEnvMapProbe.TakeOver( GetEngine().GetEnvMapProbeManager()->CreateEnvMapProbe() );
+	if(!pEnvMapProbe){
+		pEnvMapProbe.TakeOver(GetEngine().GetEnvMapProbeManager()->CreateEnvMapProbe());
 		
-		pEnvMapProbe->SetScaling( pGDEnvMapProbe.GetScaling() );
+		pEnvMapProbe->SetScaling(pGDEnvMapProbe.GetScaling());
 		
 		UpdateLayerMasks();
 	}
@@ -113,16 +113,16 @@ void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 	decShapeList shapeList;
 	decString value;
 	
-	pEnvMapProbe->SetInfluencePriority( GetIntProperty(
-		pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epInfluencePriority ),
-		pGDEnvMapProbe.GetInfluencePriority() ) );
-	pEnvMapProbe->SetInfluenceBorderSize( GetFloatProperty(
-		pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epInfluenceBorderSize ),
-		pGDEnvMapProbe.GetInfluenceBorderSize() ) );
+	pEnvMapProbe->SetInfluencePriority(GetIntProperty(
+		pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epInfluencePriority),
+		pGDEnvMapProbe.GetInfluencePriority()));
+	pEnvMapProbe->SetInfluenceBorderSize(GetFloatProperty(
+		pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epInfluenceBorderSize),
+		pGDEnvMapProbe.GetInfluenceBorderSize()));
 	
 	// influence area property
-	if( GetPropertyValue( pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epInfluenceArea ), value ) ){
-		codec.DecodeShapeList( value, pEnvMapProbe->GetShapeListInfluence() );
+	if(GetPropertyValue(pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epInfluenceArea), value)){
+		codec.DecodeShapeList(value, pEnvMapProbe->GetShapeListInfluence());
 		
 	}else{
 		pEnvMapProbe->GetShapeListInfluence() = pGDEnvMapProbe.GetShapeListInfluence();
@@ -130,52 +130,52 @@ void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 	pEnvMapProbe->NotifyShapeListInfluenceChanged();
 	
 	// reflection shape
-	if( GetPropertyValue( pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epReflectionShape ), value ) ){
-		codec.DecodeShapeList( value, shapeList );
+	if(GetPropertyValue(pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epReflectionShape), value)){
+		codec.DecodeShapeList(value, shapeList);
 		
-		if( shapeList.GetCount() == 0 ){
-			pEnvMapProbe->SetShapeReflection( NULL );
+		if(shapeList.GetCount() == 0){
+			pEnvMapProbe->SetShapeReflection(NULL);
 			
 		}else{
-			pEnvMapProbe->SetShapeReflection( shapeList.GetAt( 0 )->Copy() );
+			pEnvMapProbe->SetShapeReflection(shapeList.GetAt(0)->Copy());
 		}
 		
 	}else{
-		if( pGDEnvMapProbe.GetShapeReflection() ){
-			pEnvMapProbe->SetShapeReflection( pGDEnvMapProbe.GetShapeReflection()->Copy() );
+		if(pGDEnvMapProbe.GetShapeReflection()){
+			pEnvMapProbe->SetShapeReflection(pGDEnvMapProbe.GetShapeReflection()->Copy());
 			
 		}else{
-			pEnvMapProbe->SetShapeReflection( NULL );
+			pEnvMapProbe->SetShapeReflection(NULL);
 		}
 	}
 	
 	// reflection mask property
-	if( GetPropertyValue( pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epReflectionMask ), value ) ){
-		codec.DecodeShapeList( value, pEnvMapProbe->GetShapeListReflectionMask() );
+	if(GetPropertyValue(pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epReflectionMask), value)){
+		codec.DecodeShapeList(value, pEnvMapProbe->GetShapeListReflectionMask());
 		
 	}else{
 		pEnvMapProbe->GetShapeListReflectionMask() = pGDEnvMapProbe.GetShapeListReflectionMask();
 	}
 	pEnvMapProbe->NotifyShapeReflectionChanged();
 	
-	if( ! pAddedToWorld ){
-		GetWrapper().GetWorld()->AddEnvMapProbe( pEnvMapProbe );
+	if(!pAddedToWorld){
+		GetWrapper().GetWorld()->AddEnvMapProbe(pEnvMapProbe);
 		pAddedToWorld = true;
 	}
-	if( pAddedToWorld && ! pAttachedToCollider ){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 }
 
 void igdeWOSOEnvMapProbe::pDestroyEnvMapProbe(){
-	if( ! pEnvMapProbe ){
+	if(!pEnvMapProbe){
 		return;
 	}
 	
 	DetachFromCollider();
 	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveEnvMapProbe( pEnvMapProbe );
+	if(pAddedToWorld){
+		GetWrapper().GetWorld()->RemoveEnvMapProbe(pEnvMapProbe);
 	}
 	
 	pEnvMapProbe = NULL;
@@ -185,7 +185,7 @@ void igdeWOSOEnvMapProbe::pDestroyEnvMapProbe(){
 void igdeWOSOEnvMapProbe::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pEnvMapProbe ){
+	if(!pEnvMapProbe){
 		return;
 	}
 	
@@ -194,28 +194,28 @@ void igdeWOSOEnvMapProbe::AttachToCollider(){
 	deColliderAttachment *attachment = NULL;
 	
 	try{
-		attachment = new deColliderAttachment( pEnvMapProbe );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( GetVectorProperty(
-			pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epAttachPosition ),
-			pGDEnvMapProbe.GetPosition() ) );
-		attachment->SetOrientation( GetRotationProperty(
-			pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epAttachRotation ),
-			pGDEnvMapProbe.GetOrientation() ) );
+		attachment = new deColliderAttachment(pEnvMapProbe);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
+		attachment->SetPosition(GetVectorProperty(
+			pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epAttachPosition),
+			pGDEnvMapProbe.GetPosition()));
+		attachment->SetOrientation(GetRotationProperty(
+			pGDEnvMapProbe.GetPropertyName(igdeGDCEnvMapProbe::epAttachRotation),
+			pGDEnvMapProbe.GetOrientation()));
 		
-		if( colliderComponent ){
-			colliderComponent->AddAttachment( attachment );
+		if(colliderComponent){
+			colliderComponent->AddAttachment(attachment);
 			pAttachedToCollider = colliderComponent;
 			
 		}else{
-			colliderFallback->AddAttachment( attachment );
+			colliderFallback->AddAttachment(attachment);
 			pAttachedToCollider = colliderFallback;
 		}
 		
 		pAttachment = attachment;
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			delete attachment;
 		}
 		throw;
@@ -223,11 +223,11 @@ void igdeWOSOEnvMapProbe::AttachToCollider(){
 }
 
 void igdeWOSOEnvMapProbe::DetachFromCollider(){
-	if( ! pAttachedToCollider ){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
-	pAttachedToCollider->RemoveAttachment( pAttachment );
+	pAttachedToCollider->RemoveAttachment(pAttachment);
 	pAttachment = NULL;
 	pAttachedToCollider = NULL;
 }

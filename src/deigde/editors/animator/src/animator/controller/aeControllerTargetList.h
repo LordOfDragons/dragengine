@@ -45,7 +45,7 @@ public:
 	aeControllerTargetList();
 	
 	/** Create copy of a controller target list. */
-	aeControllerTargetList( const aeControllerTargetList &copy );
+	aeControllerTargetList(const aeControllerTargetList &copy);
 	
 	/** Clean up controller target list. */
 	~aeControllerTargetList();
@@ -60,32 +60,32 @@ public:
 	 * Controller target at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	aeControllerTarget *GetAt( int index ) const;
+	aeControllerTarget *GetAt(int index) const;
 	
 	/**
 	 * Index of controller target or -1 if not present in the list.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
-	int IndexOf( aeControllerTarget *target ) const;
+	int IndexOf(aeControllerTarget *target) const;
 	
 	/**
 	 * Determine if a controller target is present in the list.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
-	bool Has( aeControllerTarget *target ) const;
+	bool Has(aeControllerTarget *target) const;
 	
 	/**
 	 * Add controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
-	void Add( aeControllerTarget *target );
+	void Add(aeControllerTarget *target);
 	
 	/**
 	 * Insert controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	void Insert( aeControllerTarget *target, int index );
+	void Insert(aeControllerTarget *target, int index);
 	
 	/**
 	 * Move controller target.
@@ -93,14 +93,14 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
-	void Move( aeControllerTarget *target, int index );
+	void Move(aeControllerTarget *target, int index);
 	
 	/**
 	 * Remove controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em target is not present in the list.
 	 */
-	void Remove( aeControllerTarget *target );
+	void Remove(aeControllerTarget *target);
 	
 	/** Remove all controller targets. */
 	void RemoveAll();
@@ -109,7 +109,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy controller target list to this controller target list. */
-	aeControllerTargetList &operator=( const aeControllerTargetList &list );
+	aeControllerTargetList &operator=(const aeControllerTargetList &list);
 	/*@}*/
 };
 

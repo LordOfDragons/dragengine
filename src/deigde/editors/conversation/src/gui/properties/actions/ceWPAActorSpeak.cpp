@@ -81,12 +81,12 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cComboActorID( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	cComboActorID(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetActor() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetActor()){
 			return;
 		}
 		
@@ -99,12 +99,12 @@ class cTextTextBoxText : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cTextTextBoxText( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	cTextTextBoxText(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetTextBoxText().ToUTF8() ){
+		if(!topic || !action || textField->GetText() == action->GetTextBoxText().ToUTF8()){
 			return;
 		}
 		
@@ -118,22 +118,22 @@ class cActionEditTextBoxText : public igdeAction {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionEditTextBoxText( ceWPAActorSpeak &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	cActionEditTextBoxText(ceWPAActorSpeak &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"Edit command in larger dialog"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
-		decString text( action->GetTextBoxText().ToUTF8() );
-		if( ! igdeCommonDialogs::GetMultilineString(
+		decString text(action->GetTextBoxText().ToUTF8());
+		if(!igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Text Box Text", "Text:", text )
-		|| text == action->GetTextBoxText().ToUTF8() ){
+			"Edit Text Box Text", "Text:", text)
+		|| text == action->GetTextBoxText().ToUTF8()){
 			return;
 		}
 		
@@ -147,12 +147,12 @@ class cTextTextBoxTextTranslate : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cTextTextBoxTextTranslate( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	cTextTextBoxTextTranslate(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetTextBoxTextTranslate() ){
+		if(!topic || !action || textField->GetText() == action->GetTextBoxTextTranslate()){
 			return;
 		}
 		
@@ -165,59 +165,59 @@ class cActionTbt2TranslationEntry : public igdeAction{
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionTbt2TranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Text to translation entry...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongRight ),
-		"Move text box text to language pack translation entry" ), pPanel( panel ){}
+	cActionTbt2TranslationEntry(ceWPAActorSpeak &panel) : igdeAction("Text to translation entry...",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
+		"Move text box text to language pack translation entry"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! conversation || ! action ){
+		if(!topic || !conversation || !action){
 			return;
 		}
 		
 		ceLangPack * const langpack = conversation->GetLanguagePack();
-		if( ! langpack ){
+		if(!langpack){
 			return;
 		}
 		
 		decStringList existingNames;
-		langpack->GetEntryNames( existingNames );
+		langpack->GetEntryNames(existingNames);
 		
-		decString name( conversation->GetLangPackEntryName() );
-		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Move to translation entry",
-		"Name:", name, existingNames ) ){
+		decString name(conversation->GetLangPackEntryName());
+		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Move to translation entry",
+		"Name:", name, existingNames)){
 			return;
 		}
 		
-		conversation->SetLangPackEntryName( name );
+		conversation->SetLangPackEntryName(name);
 		
 		igdeUndo::Ref undo;
 		
-		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( name ) );
-		if( entry ){
-			if( igdeCommonDialogs::QuestionFormat( pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
+		ceLangPackEntry::Ref entry(langpack->GetEntryNamed(name));
+		if(entry){
+			if(igdeCommonDialogs::QuestionFormat(pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
 			"Move to translation entry", "Translation entry '%s' exists. Replace entry?",
-			name.GetString() ) == igdeCommonDialogs::ebNo ){
+			name.GetString()) == igdeCommonDialogs::ebNo){
 				return;
 			}
 			
-			undo.TakeOver( new ceUCAASpeakMoveTbt2Translation( topic, action, entry, false, action->GetTextBoxText() ) );
+			undo.TakeOver(new ceUCAASpeakMoveTbt2Translation(topic, action, entry, false, action->GetTextBoxText()));
 			
 		}else{
-			entry.TakeOver( new ceLangPackEntry );
-			entry->SetName( name );
-			entry->SetText( action->GetTextBoxText() );
-			undo.TakeOver( new ceUCAASpeakMoveTbt2Translation( topic, action, entry, true, action->GetTextBoxText() ) );
+			entry.TakeOver(new ceLangPackEntry);
+			entry->SetName(name);
+			entry->SetText(action->GetTextBoxText());
+			undo.TakeOver(new ceUCAASpeakMoveTbt2Translation(topic, action, entry, true, action->GetTextBoxText()));
 		}
 		
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(undo);
 	}
 	
 	virtual void Update(){
 		const ceConversation *conversation = pPanel.GetParentPanel().GetConversation();
-		SetEnabled( conversation && conversation->GetLanguagePack() );
+		SetEnabled(conversation && conversation->GetLanguagePack());
 	}
 };
 
@@ -225,25 +225,25 @@ class cActionTbtFromTranslationEntry : public igdeAction{
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionTbtFromTranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Text from translation entry...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongLeft ),
-		"Set text box text from language pack translation entry" ), pPanel( panel ){}
+	cActionTbtFromTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("Text from translation entry...",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
+		"Set text box text from language pack translation entry"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! conversation || ! action ){
+		if(!topic || !conversation || !action){
 			return;
 		}
 		
 		ceLangPack * const langpack = conversation->GetLanguagePack();
-		if( ! langpack ){
+		if(!langpack){
 			return;
 		}
 		
-		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( action->GetTextBoxTextTranslate() ) );
-		if( ! entry || action->GetTextBoxText() == entry->GetText() ){
+		ceLangPackEntry::Ref entry(langpack->GetEntryNamed(action->GetTextBoxTextTranslate()));
+		if(!entry || action->GetTextBoxText() == entry->GetText()){
 			return;
 		}
 		
@@ -253,7 +253,7 @@ public:
 	
 	virtual void Update(){
 		const ceConversation *conversation = pPanel.GetParentPanel().GetConversation();
-		SetEnabled( conversation && conversation->GetLanguagePack() );
+		SetEnabled(conversation && conversation->GetLanguagePack());
 	}
 };
 
@@ -261,33 +261,33 @@ class cActionShowTranslationEntry : public igdeAction{
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionShowTranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Show translation entry...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongLeft ),
-		"Show language pack translation entry" ), pPanel( panel ){}
+	cActionShowTranslationEntry(ceWPAActorSpeak &panel) : igdeAction("Show translation entry...",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
+		"Show language pack translation entry"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! conversation || ! action ){
+		if(!topic || !conversation || !action){
 			return;
 		}
 		
 		ceLangPack * const langpack = conversation->GetLanguagePack();
-		if( ! langpack ){
+		if(!langpack){
 			return;
 		}
 		
-		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( action->GetTextBoxTextTranslate() ) );
-		if( entry ){
-			igdeCommonDialogs::Information( pPanel.GetParentWindow(),
-				"Translation Entry", entry->GetText().ToUTF8().GetString() );
+		ceLangPackEntry::Ref entry(langpack->GetEntryNamed(action->GetTextBoxTextTranslate()));
+		if(entry){
+			igdeCommonDialogs::Information(pPanel.GetParentWindow(),
+				"Translation Entry", entry->GetText().ToUTF8().GetString());
 		}
 	}
 	
 	virtual void Update(){
 		const ceConversation *conversation = pPanel.GetParentPanel().GetConversation();
-		SetEnabled( conversation && conversation->GetLanguagePack() );
+		SetEnabled(conversation && conversation->GetLanguagePack());
 	}
 };
 
@@ -295,17 +295,17 @@ class cActionTextBoxTextTranslateMenu : public igdeActionContextMenu{
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionTextBoxTextTranslateMenu( ceWPAActorSpeak &panel ) : igdeActionContextMenu( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Show Text Box Text Translate Menu" ), pPanel( panel ){}
+	cActionTextBoxTextTranslateMenu(ceWPAActorSpeak &panel) : igdeActionContextMenu("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"Show Text Box Text Translate Menu"), pPanel(panel){}
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( contextMenu, new cActionTbt2TranslationEntry( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionTbtFromTranslationEntry( pPanel ), true );
-		helper.MenuSeparator( contextMenu );
-		helper.MenuCommand( contextMenu, new cActionShowTranslationEntry( pPanel ), true );
+		helper.MenuCommand(contextMenu, new cActionTbt2TranslationEntry(pPanel), true);
+		helper.MenuCommand(contextMenu, new cActionTbtFromTranslationEntry(pPanel), true);
+		helper.MenuSeparator(contextMenu);
+		helper.MenuCommand(contextMenu, new cActionShowTranslationEntry(pPanel), true);
 	}
 };
 
@@ -313,12 +313,12 @@ class cTextTextBoxStyle : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cTextTextBoxStyle( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	cTextTextBoxStyle(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetTextBoxTextStyle() ){
+		if(!topic || !action || textField->GetText() == action->GetTextBoxTextStyle()){
 			return;
 		}
 		
@@ -331,12 +331,12 @@ class cTextMovement : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cTextMovement( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	cTextMovement(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetMovement() ){
+		if(!topic || !action || textField->GetText() == action->GetMovement()){
 			return;
 		}
 		
@@ -349,12 +349,12 @@ class cPathSound : public igdeEditPathListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cPathSound( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	cPathSound(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! action || editPath->GetPath() == action->GetPathSound() ){
+		if(!topic || !action || editPath->GetPath() == action->GetPathSound()){
 			return;
 		}
 		
@@ -367,13 +367,13 @@ class cTextMinSpeechTime : public igdeTextFieldListener {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cTextMinSpeechTime( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	cTextMinSpeechTime(ceWPAActorSpeak &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
 		const float time = textField->GetFloat();
-		if( ! topic || ! action || fabsf( time - action->GetMinSpeechTime() ) < FLOAT_SAFE_EPSILON ){
+		if(!topic || !action || fabsf(time - action->GetMinSpeechTime()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -386,13 +386,13 @@ class cActionUseSpeechAnimation : public igdeAction {
 	ceWPAActorSpeak &pPanel;
 	
 public:
-	cActionUseSpeechAnimation( ceWPAActorSpeak &panel ) : igdeAction( "Use Speech Animation",
-		NULL, "Speech animation is played back or not (for example thinking)" ), pPanel( panel ){ }
+	cActionUseSpeechAnimation(ceWPAActorSpeak &panel) : igdeAction("Use Speech Animation",
+		NULL, "Speech animation is played back or not (for example thinking)"), pPanel(panel){ }
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorSpeak * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
@@ -411,40 +411,40 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAActorSpeak::ceWPAActorSpeak( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAActorSpeak::ceWPAActorSpeak(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Actor:", true, "ID of the actor speaking",
-		pCBActorID, new cComboActorID( *this ) );
+	helper.ComboBox(*this, "Actor:", true, "ID of the actor speaking",
+		pCBActorID, new cComboActorID(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst( *this, "Text Box Text:", "Text to display in the text box", formLine );
-	helper.EditString( formLine, "Text to display in the text box",
-		pEditTextBoxText, new cTextTextBoxText( *this ) );
-	helper.Button( formLine, pBtnTextBoxText, new cActionEditTextBoxText( *this ), true );
+	helper.FormLineStretchFirst(*this, "Text Box Text:", "Text to display in the text box", formLine);
+	helper.EditString(formLine, "Text to display in the text box",
+		pEditTextBoxText, new cTextTextBoxText(*this));
+	helper.Button(formLine, pBtnTextBoxText, new cActionEditTextBoxText(*this), true);
 	
-	helper.FormLineStretchFirst( *this, "Translated:", "Translated text to display in the text box", formLine );
-	helper.EditString( formLine, "Translation 'name' from active language pack to use as text box text."
-		" Replaces static text if not empty.", pEditTextBoxTextTranslate, new cTextTextBoxTextTranslate( *this ) );
-	cActionTextBoxTextTranslateMenu * const actionTbtt = new cActionTextBoxTextTranslateMenu( *this );
-	helper.Button( formLine, pBtnTextBoxTextTranslate, actionTbtt, true );
-	actionTbtt->SetWidget( pBtnTextBoxTextTranslate );
+	helper.FormLineStretchFirst(*this, "Translated:", "Translated text to display in the text box", formLine);
+	helper.EditString(formLine, "Translation 'name' from active language pack to use as text box text."
+		" Replaces static text if not empty.", pEditTextBoxTextTranslate, new cTextTextBoxTextTranslate(*this));
+	cActionTextBoxTextTranslateMenu * const actionTbtt = new cActionTextBoxTextTranslateMenu(*this);
+	helper.Button(formLine, pBtnTextBoxTextTranslate, actionTbtt, true);
+	actionTbtt->SetWidget(pBtnTextBoxTextTranslate);
 	
-	helper.EditString( *this, "", "Language pack translation entry", pEditShowTranslation, nullptr );
-	pEditShowTranslation->SetEditable( false );
+	helper.EditString(*this, "", "Language pack translation entry", pEditShowTranslation, nullptr);
+	pEditShowTranslation->SetEditable(false);
 	
-	helper.EditString( *this, "Text Style:", "Name of style to use for the text box text",
-		pEditTextBoxTextStyle, new cTextTextBoxStyle( *this ) );
-	helper.EditString( *this, "Movement:", "Name of the actor movement to use or empty to not change",
-		pEditMovement, new cTextMovement( *this ) );
-	helper.EditPath( *this, "Path Sound:", "Sound file to play or empty to not use a sound file",
-		igdeEnvironment::efpltSound, pEditPathSound, new cPathSound( *this ) );
-	helper.EditFloat( *this, "Min Speech Time:", "Minimum time the actor is speaking",
-		pEditMinSpeechTime, new cTextMinSpeechTime( *this ) );
-	helper.CheckBox( *this, pChkUseSpeechAnimation, new cActionUseSpeechAnimation( *this ), true );
+	helper.EditString(*this, "Text Style:", "Name of style to use for the text box text",
+		pEditTextBoxTextStyle, new cTextTextBoxStyle(*this));
+	helper.EditString(*this, "Movement:", "Name of the actor movement to use or empty to not change",
+		pEditMovement, new cTextMovement(*this));
+	helper.EditPath(*this, "Path Sound:", "Sound file to play or empty to not use a sound file",
+		igdeEnvironment::efpltSound, pEditPathSound, new cPathSound(*this));
+	helper.EditFloat(*this, "Min Speech Time:", "Minimum time the actor is speaking",
+		pEditMinSpeechTime, new cTextMinSpeechTime(*this));
+	helper.CheckBox(*this, pChkUseSpeechAnimation, new cActionUseSpeechAnimation(*this), true);
 }
 
 ceWPAActorSpeak::~ceWPAActorSpeak(){
@@ -458,8 +458,8 @@ ceWPAActorSpeak::~ceWPAActorSpeak(){
 ceCAActorSpeak *ceWPAActorSpeak::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatActorSpeak ){
-		return ( ceCAActorSpeak* )action;
+	if(action && action->GetType() == ceConversationAction::eatActorSpeak){
+		return (ceCAActorSpeak*)action;
 		
 	}else{
 		return NULL;
@@ -469,11 +469,11 @@ ceCAActorSpeak *ceWPAActorSpeak::GetAction() const{
 void ceWPAActorSpeak::OnConversationPathChanged(){
 	ceConversation * const conversation = GetParentPanel().GetConversation();
 	
-	if( conversation ){
-		pEditPathSound->SetBasePath( conversation->GetDirectoryPath() );
+	if(conversation){
+		pEditPathSound->SetBasePath(conversation->GetDirectoryPath());
 		
 	}else{
-		pEditPathSound->SetBasePath( "" );
+		pEditPathSound->SetBasePath("");
 	}
 }
 
@@ -482,28 +482,28 @@ void ceWPAActorSpeak::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBActorID->SetText( action->GetActor() );
-		pEditTextBoxText->SetText( action->GetTextBoxText().ToUTF8() );
-		pEditTextBoxTextTranslate->SetText( action->GetTextBoxTextTranslate() );
-		pEditTextBoxTextStyle->SetText( action->GetTextBoxTextStyle() );
-		pEditMovement->SetText( action->GetMovement() );
-		pEditPathSound->SetPath( action->GetPathSound() );
-		pEditMinSpeechTime->SetFloat( action->GetMinSpeechTime() );
-		pChkUseSpeechAnimation->SetChecked( action->GetUseSpeechAnimation() );
+	if(action){
+		pCBActorID->SetText(action->GetActor());
+		pEditTextBoxText->SetText(action->GetTextBoxText().ToUTF8());
+		pEditTextBoxTextTranslate->SetText(action->GetTextBoxTextTranslate());
+		pEditTextBoxTextStyle->SetText(action->GetTextBoxTextStyle());
+		pEditMovement->SetText(action->GetMovement());
+		pEditPathSound->SetPath(action->GetPathSound());
+		pEditMinSpeechTime->SetFloat(action->GetMinSpeechTime());
+		pChkUseSpeechAnimation->SetChecked(action->GetUseSpeechAnimation());
 		
 		ceConversation * const conversation = GetParentPanel().GetConversation();
 		ceLangPackEntry::Ref entry;
 		
-		if( conversation && action ){
+		if(conversation && action){
 			const ceLangPack * const langpack = conversation->GetLanguagePack();
-			if( langpack ){
-				entry = langpack->GetEntryNamed( action->GetTextBoxTextTranslate() );
+			if(langpack){
+				entry = langpack->GetEntryNamed(action->GetTextBoxTextTranslate());
 			}
 		}
 		
-		if( entry ){
-			pEditShowTranslation->SetText( entry->GetText().ToUTF8().GetString() );
+		if(entry){
+			pEditShowTranslation->SetText(entry->GetText().ToUTF8().GetString());
 			
 		}else{
 			pEditShowTranslation->ClearText();
@@ -519,7 +519,7 @@ void ceWPAActorSpeak::UpdateAction(){
 		pEditMovement->ClearText();
 		pEditPathSound->ClearPath();
 		pEditMinSpeechTime->ClearText();
-		pChkUseSpeechAnimation->SetChecked( false );
+		pChkUseSpeechAnimation->SetChecked(false);
 	}
 	
 	pBtnTextBoxTextTranslate->GetAction()->Update();
@@ -529,5 +529,5 @@ void ceWPAActorSpeak::UpdateAction(){
 
 void ceWPAActorSpeak::UpdateActorIDLists(){
 	ceWPAction::UpdateActorIDLists();
-	UpdateComboBoxWithActorIDList( pCBActorID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
 }

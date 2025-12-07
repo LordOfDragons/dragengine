@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPPatternList( igdeUIHelper &helper, int rows, const char *description );
+	gdeWPPatternList(igdeUIHelper &helper, int rows, const char *description);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -76,13 +76,13 @@ public:
 	inline const decStringSet *GetPatternList() const{ return pPatternList; }
 	
 	/** \brief Set pattern list to edit. */
-	void SetPatternList( const decStringSet *patternList );
+	void SetPatternList(const decStringSet *patternList);
 	
 	/** \brief Undo system or NULL. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	
@@ -93,7 +93,7 @@ public:
 	void UpdateList();
 	
 	/** \brief Select pattern. */
-	void SelectPattern( const decString &pattern );
+	void SelectPattern(const decString &pattern);
 	
 	
 	
@@ -107,7 +107,7 @@ public:
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet( const decStringSet &patterns ) = 0;
+	virtual igdeUndo *UndoSet(const decStringSet &patterns) = 0;
 	/*@}*/
 	
 	

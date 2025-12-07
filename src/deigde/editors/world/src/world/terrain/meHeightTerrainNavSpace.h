@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates height terrain navigation space. */
-	meHeightTerrainNavSpace( deEngine &engine, const char *name = "" );
+	meHeightTerrainNavSpace(deEngine &engine, const char *name = "");
 	
 	/** \brief Clean up height terrain navigation space. */
 	virtual ~meHeightTerrainNavSpace();
@@ -97,7 +97,7 @@ public:
 	inline deHeightTerrainNavSpace *GetEngineNavSpace() const{ return pEngNavSpace; }
 	
 	/** \brief Set engine navigation space or \em NULL. */
-	void SetEngineNavSpace( deHeightTerrainNavSpace *navspace );
+	void SetEngineNavSpace(deHeightTerrainNavSpace *navspace);
 	
 	/** \brief Create engine resource. */
 	deHeightTerrainNavSpace *CreateEngineNavSpace() const;
@@ -108,7 +108,7 @@ public:
 	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
 	/** \brief Set parent height terrain sector or \em NULL. */
-	void SetHTSector( meHeightTerrainSector *sector );
+	void SetHTSector(meHeightTerrainSector *sector);
 	
 	
 	
@@ -116,7 +116,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
@@ -124,13 +124,13 @@ public:
 	inline deNavigationSpace::eSpaceTypes GetSpaceType() const{ return pSpaceType; }
 	
 	/** \brief Set navigation space type. */
-	void SetSpaceType( deNavigationSpace::eSpaceTypes type );
+	void SetSpaceType(deNavigationSpace::eSpaceTypes type);
 	
 	/** \brief Navigation layer number. */
 	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set navigation layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	
 	
 	
@@ -144,7 +144,7 @@ public:
 	 * \brief Set snap distance in meters up to which edges are linked to neighbor spaces.
 	 * \details The default snap distance is 0.001 (1mm).
 	 */
-	void SetSnapDistance( float distance );
+	void SetSnapDistance(float distance);
 	
 	/**
 	 * \brief Snap angle in radians up to which edges are linked to neighbor spaces.
@@ -156,7 +156,7 @@ public:
 	 * \brief Set snap angle in radians up to which edges are linked to neighbor spaces.
 	 * \details The default snap angle is 180° in radians.
 	 */
-	void SetSnapAngle( float angle );
+	void SetSnapAngle(float angle);
 	
 	
 	
@@ -177,10 +177,10 @@ public:
 	void HeightTerrainHeightParametersChanged();
 	
 	/** \brief Add to game world. */
-	void AddDDToWorld( deWorld &world );
+	void AddDDToWorld(deWorld &world);
 	
 	/** \brief Remove from game world. */
-	void RemoveDDFromWorld( deWorld &world );
+	void RemoveDDFromWorld(deWorld &world);
 	
 	/** \brief Height image of sector changed. */
 	void InvalidateHeights();
@@ -194,7 +194,7 @@ public:
 	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if navigation space is active. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	/*@}*/
 	
 	
@@ -205,28 +205,28 @@ public:
 	int GetTypeCount() const;
 	
 	/** \brief Type at index. */
-	meHeightTerrainNavSpaceType *GetTypeAt( int index ) const;
+	meHeightTerrainNavSpaceType *GetTypeAt(int index) const;
 	
 	/** \brief Named type or \em NULL if absent. */
-	meHeightTerrainNavSpaceType *GetTypeNamed( const char *name ) const;
+	meHeightTerrainNavSpaceType *GetTypeNamed(const char *name) const;
 	
 	/** \brief Named type is present. */
-	bool HasTypeNamed( const char *name ) const;
+	bool HasTypeNamed(const char *name) const;
 	
 	/** \brief Index of the type or -1 if absent. */
-	int IndexOfType( meHeightTerrainNavSpaceType *type ) const;
+	int IndexOfType(meHeightTerrainNavSpaceType *type) const;
 	
 	/** \brief Index of named type or -1 if absent. */
-	int IndexOfTypeNamed( const char *name ) const;
+	int IndexOfTypeNamed(const char *name) const;
 	
 	/** \brief Type is present. */
-	bool HasType( meHeightTerrainNavSpaceType *type ) const;
+	bool HasType(meHeightTerrainNavSpaceType *type) const;
 	
 	/** \brief Add type. */
-	void AddType( meHeightTerrainNavSpaceType *type );
+	void AddType(meHeightTerrainNavSpaceType *type);
 	
 	/** \brief Remove type. */
-	void RemoveType( meHeightTerrainNavSpaceType *type );
+	void RemoveType(meHeightTerrainNavSpaceType *type);
 	
 	/** \brief Remove all types. */
 	void RemoveAllTypes();
@@ -235,7 +235,7 @@ public:
 	inline meHeightTerrainNavSpaceType *GetActiveType() const{ return pActiveType; }
 	
 	/** \brief Set active type or \em NULL. */
-	void SetActiveType( meHeightTerrainNavSpaceType *type );
+	void SetActiveType(meHeightTerrainNavSpaceType *type);
 	
 	/** \brief Type faces debug drawer for use by types only. */
 	inline deDebugDrawer *GetDDTypeFaces() const{ return pDDTypeFaces; }
@@ -252,19 +252,19 @@ public:
 	inline const decString &GetPathNavSpace() const{ return pPathNavSpace; }
 	
 	/** \brief Set nav-space file path. */
-	void SetPathNavSpace( const char *path, bool load );
+	void SetPathNavSpace(const char *path, bool load);
 	
 	/** \brief Nav-space file changed. */
 	inline bool GetNavSpaceChanged() const{ return pNavSpaceChanged; }
 	
 	/** \brief Set if nav-space file changed. */
-	void SetNavSpaceChanged( bool changed );
+	void SetNavSpaceChanged(bool changed);
 	
 	/** \brief Nav-space file has been saved. */
 	inline bool GetNavSpaceSaved() const{ return pNavSpaceSaved; }
 	
 	/** \brief Set if nav-space file has been saved. */
-	void SetNavSpaceSaved( bool saved );
+	void SetNavSpaceSaved(bool saved);
 	
 	/** \brief Update engine nav-space corners and faces. */
 	void UpdateNavSpaceFaces();

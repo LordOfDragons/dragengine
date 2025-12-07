@@ -57,8 +57,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-projTestRunLauncher::projTestRunLauncher( projTestRunProcess &process ) :
-pProcess( process ){
+projTestRunLauncher::projTestRunLauncher(projTestRunProcess &process) :
+pProcess(process){
 }
 
 projTestRunLauncher::~projTestRunLauncher(){
@@ -77,54 +77,54 @@ void projTestRunLauncher::LocatePath(){
 	// can be changed at runtime using an environment parameter.
 	pPathConfigSystem = LAUNCHER_CONFIG_PATH;
 #ifdef OS_W32
-	const decString pathEngineBase( deOSWindows().GetPathEngineBase() );
+	const decString pathEngineBase(deOSWindows().GetPathEngineBase());
 	
 	//pPathConfigSystem = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
 	//	"PathLauncherConfig", pPathConfigSystem );
 	pPathConfigSystem = pathEngineBase + "\\Launchers\\Config";
 #endif
 	
-	value = getenv( "DELAUNCHER_SYS_CONFIG" );
-	if( value ){
+	value = getenv("DELAUNCHER_SYS_CONFIG");
+	if(value){
 		pPathConfigSystem = value;
 	}
 #ifdef OS_W32
-	pPathConfigSystem = deOSWindows::ParseNativePath( pPathConfigSystem );
+	pPathConfigSystem = deOSWindows::ParseNativePath(pPathConfigSystem);
 #endif
 	
 #ifdef OS_W32
 	pPathConfigUser = "@RoamingAppData\\DELaunchers\\Config";
 	
-#elif defined( OS_BEOS )
+#elif defined(OS_BEOS)
 	pPathConfigUser = "/boot/home/config/settings/delauncher";
 	
 #else
 	// the user configuration directory is located under the user home directory.
 	// can be changed at runtime using an environment parameter.
-	value = getenv( "HOME" );
-	if( value ){
-		path.SetFromNative( value );
+	value = getenv("HOME");
+	if(value){
+		path.SetFromNative(value);
 		
 	}else{
-		value = getenv( "USER" );
+		value = getenv("USER");
 		
-		if( value ){
-			path.SetFromNative( "/home" );
-			path.AddComponent( value );
+		if(value){
+			path.SetFromNative("/home");
+			path.AddComponent(value);
 			
 		}else{
-			value = getenv( "LOGUSER" );
+			value = getenv("LOGUSER");
 			
-			if( value ){
-				path.SetFromNative( "/home" );
-				path.AddComponent( value );
+			if(value){
+				path.SetFromNative("/home");
+				path.AddComponent(value);
 			}
 		}
 	}
 	
-	if( path.GetComponentCount() > 0 ){
-		path.AddComponent( ".config" );
-		path.AddComponent( "delauncher" );
+	if(path.GetComponentCount() > 0){
+		path.AddComponent(".config");
+		path.AddComponent("delauncher");
 		pPathConfigUser = path.GetPathNative();
 	}
 #endif
@@ -138,12 +138,12 @@ void projTestRunLauncher::LocatePath(){
 		}
 	}
 	
-	value = getenv( "DELAUNCHER_USER_CONFIG" );
-	if( value ){
+	value = getenv("DELAUNCHER_USER_CONFIG");
+	if(value){
 		pPathConfigUser = value;
 	}
 #ifdef OS_W32
-	pPathConfigUser = deOSWindows::ParseNativePath( pPathConfigUser );
+	pPathConfigUser = deOSWindows::ParseNativePath(pPathConfigUser);
 #endif
 	
 	// the shares directory is hard coded at compile time. can be changed at runtime
@@ -155,53 +155,53 @@ void projTestRunLauncher::LocatePath(){
 	pPathShares = pathEngineBase + "\\Launchers\\Share";
 #endif
 	
-	value = getenv( "DELAUNCHER_SHARES" );
-	if( value ){
+	value = getenv("DELAUNCHER_SHARES");
+	if(value){
 		pPathShares = value;
 	}
 #ifdef OS_W32
-	pPathShares = deOSWindows::ParseNativePath( pPathShares );
+	pPathShares = deOSWindows::ParseNativePath(pPathShares);
 #endif
 	
 	// the logs directory is located right under the user configuration directory.
 	// can be changed at runtime using an environment parameter. for test running logs
 	// will be written to the project so this path is not used
 	
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "System config path = '%s'",
-		pPathConfigSystem.GetString() );
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "User config path = '%s'",
-		pPathConfigUser.GetString() );
-	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "Shares path = '%s'",
-		pPathShares.GetString() );
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "System config path = '%s'",
+		pPathConfigSystem.GetString());
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "User config path = '%s'",
+		pPathConfigUser.GetString());
+	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "Shares path = '%s'",
+		pPathShares.GetString());
 }
 
 void projTestRunLauncher::CreateVFS(){
 	deVFSContainer::Ref container;
 	decPath pathRootDir, pathDiskDir;
 	
-	pVFS.TakeOver( new deVirtualFileSystem );
+	pVFS.TakeOver(new deVirtualFileSystem);
 	
 	// add configuration containers
-	if( ! pPathConfigSystem.IsEmpty() ){
-		pathRootDir.SetFromUnix( "/config/system" );
-		pathDiskDir.SetFromNative( pPathConfigSystem.GetString() );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-		pVFS->AddContainer( container );
+	if(!pPathConfigSystem.IsEmpty()){
+		pathRootDir.SetFromUnix("/config/system");
+		pathDiskDir.SetFromNative(pPathConfigSystem.GetString());
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
+		pVFS->AddContainer(container);
 	}
 	
-	if( ! pPathConfigUser.IsEmpty() ){
-		pathRootDir.SetFromUnix( "/config/user" );
-		pathDiskDir.SetFromNative( pPathConfigUser.GetString() );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		pVFS->AddContainer( container );
+	if(!pPathConfigUser.IsEmpty()){
+		pathRootDir.SetFromUnix("/config/user");
+		pathDiskDir.SetFromNative(pPathConfigUser.GetString());
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		pVFS->AddContainer(container);
 	}
 	
 	// add data directory which is the engine share directory
-	if( ! pPathShares.IsEmpty() ){
-		pathRootDir.SetFromUnix( "/data" );
-		pathDiskDir.SetFromNative( pPathShares.GetString() );
-		container.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		pVFS->AddContainer( container );
+	if(!pPathShares.IsEmpty()){
+		pathRootDir.SetFromUnix("/data");
+		pathDiskDir.SetFromNative(pPathShares.GetString());
+		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
+		pVFS->AddContainer(container);
 	}
 }

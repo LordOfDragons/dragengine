@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listbox. */
-	igdeListBox( igdeEnvironment &environment, int rows, const char *description = "" );
+	igdeListBox(igdeEnvironment &environment, int rows, const char *description = "");
 	
 	
 	
@@ -100,19 +100,19 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible rows. */
 	inline int GetRows() const{ return pRows; }
 	
 	/** \brief Set visible rows. */
-	void SetRows( int rows );
+	void SetRows(int rows);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -123,57 +123,57 @@ public:
 	int GetItemCount() const;
 	
 	/** \brief Item at index. */
-	igdeListItem *GetItemAt( int index ) const;
+	igdeListItem *GetItemAt(int index) const;
 	
 	/** \brief Item with data or NULL if not found. */
-	igdeListItem *GetItemWithData( void *data ) const;
+	igdeListItem *GetItemWithData(void *data) const;
 	
 	/** \brief Item is present. */
-	bool HasItem( igdeListItem *item ) const;
+	bool HasItem(igdeListItem *item) const;
 	
 	/** \brief Item with text is present. */
-	bool HasItem( const char *item ) const;
+	bool HasItem(const char *item) const;
 	
 	/** \brief Item with data is present. */
-	bool HasItemWithData( void *data ) const;
+	bool HasItemWithData(void *data) const;
 	
 	/** \brief Index of item or -1 if absent. */
-	int IndexOfItem( igdeListItem *item ) const;
+	int IndexOfItem(igdeListItem *item) const;
 	
 	/** \brief Index of item with text or -1 if absent. */
-	int IndexOfItem( const char *item ) const;
+	int IndexOfItem(const char *item) const;
 	
 	/** \brief Index of item with data or -1 if absent. */
-	int IndexOfItemWithData( void *data ) const;
+	int IndexOfItemWithData(void *data) const;
 	
 	/** \brief Add item. */
-	void AddItem( igdeListItem *item );
+	void AddItem(igdeListItem *item);
 	
 	/** \brief Add item of type igdeListItem with text. */
-	void AddItem( const char *text, igdeIcon *icon = NULL, void *data = NULL );
+	void AddItem(const char *text, igdeIcon *icon = NULL, void *data = NULL);
 	
-	void AddItem( igdeListItem::Ref &item, const char *text, igdeIcon *icon = NULL, void *data = NULL );
+	void AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon = NULL, void *data = NULL);
 	
 	/** \brief Insert item at index. */
-	void InsertItem( int index, igdeListItem *item );
+	void InsertItem(int index, igdeListItem *item);
 	
 	/** \brief Insert item of type igdeListItem with text at index. */
-	void InsertItem( int index, const char *text, igdeIcon *icon = NULL, void *data = NULL );
+	void InsertItem(int index, const char *text, igdeIcon *icon = NULL, void *data = NULL);
 	
-	void InsertItem( igdeListItem::Ref &item, int index, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL );
+	void InsertItem(igdeListItem::Ref &item, int index, const char *text,
+		igdeIcon *icon = NULL, void *data = NULL);
 	
 	/** \brief Move item. */
-	void MoveItem( int fromIndex, int toIndex );
+	void MoveItem(int fromIndex, int toIndex);
 	
 	/** \brief Remove item from index. */
-	void RemoveItem( int index );
+	void RemoveItem(int index);
 	
 	/** \brief Remove all items. */
 	void RemoveAllItems();
 	
 	/** \brief Item modified. */
-	void ItemChangedAt( int index );
+	void ItemChangedAt(int index);
 	
 	
 	
@@ -181,7 +181,7 @@ public:
 	inline igdeListItemSorter *GetSorter() const{ return pSorter; }
 	
 	/** \brief Set sorter or NULL. */
-	void SetSorter( igdeListItemSorter *sorter );
+	void SetSorter(igdeListItemSorter *sorter);
 	
 	/** \brief Set default sorter sorting items ascending lexicographically by their text. */
 	void SetDefaultSorter();
@@ -195,7 +195,7 @@ public:
 	inline eSelectionMode GetSelectionMode() const{ return pSelectionMode; }
 	
 	/** \brief Set selection mode. */
-	void SetSelectionMode( eSelectionMode mode );
+	void SetSelectionMode(eSelectionMode mode);
 	
 	/** \brief Index of selected item or -1. */
 	inline int GetSelection() const{ return pSelection; }
@@ -207,55 +207,55 @@ public:
 	void *GetSelectedItemData() const;
 	
 	/** \brief Set index of selected item or -1. */
-	void SetSelection( int selection );
+	void SetSelection(int selection);
 	
 	/**
 	 * \brief Set selected item matching data.
 	 * 
 	 * Short-cut for calling SetSelection(IndexOfItemWithData(data)).
 	 */
-	void SetSelectionWithData( void *data );
+	void SetSelectionWithData(void *data);
 	
 	/** \brief Add item to the selection range if absent. */
-	void SelectItem( int index );
+	void SelectItem(int index);
 	
 	/** \brief Select all items. */
 	void SelectAllItems();
 	
 	/** \brief Remove item from selection range if present. */
-	void DeselectItem( int index );
+	void DeselectItem(int index);
 	
 	/** \brief Deselect all items. */
 	void DeselectAllItems();
 	
 	/** \brief Make item visible. */
-	void MakeItemVisible( int index );
+	void MakeItemVisible(int index);
 	
 	/** \brief Make selection visible if any selection is present. */
 	void MakeSelectionVisible();
 	
 	/** \brief Show context menu at position. */
-	void ShowContextMenu( const decPoint &position );
+	void ShowContextMenu(const decPoint &position);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeListBoxListener *listener );
+	void AddListener(igdeListBoxListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeListBoxListener *listener );
+	void RemoveListener(igdeListBoxListener *listener);
 	
 	/** \brief Notify listeners selection changed. */
 	virtual void NotifySelectionChanged();
 	
 	/** \brief Notify listeners item selected. */
-	virtual void NotifyItemSelected( int index );
+	virtual void NotifyItemSelected(int index);
 	
 	/** \brief Notify listeners item deselected. */
-	virtual void NotifyItemDeselected( int index );
+	virtual void NotifyItemDeselected(int index);
 	
 	/** \brief Notify listeners double clicked on item. */
-	virtual void NotifyDoubleClickItem( int index );
+	virtual void NotifyDoubleClickItem(int index);
 	/*@}*/
 	
 	
@@ -281,19 +281,19 @@ public:
 	
 protected:
 	/** \brief Item added. */
-	virtual void OnItemAdded( int index );
+	virtual void OnItemAdded(int index);
 	
 	/** \brief Item removed. */
-	virtual void OnItemRemoved( int index );
+	virtual void OnItemRemoved(int index);
 	
 	/** \brief All items removed. */
 	virtual void OnAllItemsRemoved();
 	
 	/** \brief Item changed. */
-	virtual void OnItemChanged( int index );
+	virtual void OnItemChanged(int index);
 	
 	/** \brief Item moved. */
-	virtual void OnItemMoved( int fromIndex, int toIndex );
+	virtual void OnItemMoved(int fromIndex, int toIndex);
 	
 	/** \brief Items sorted. */
 	virtual void OnItemsSorted();

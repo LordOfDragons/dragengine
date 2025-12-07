@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new ai module. */
-	deDEAIModule( deLoadableModule &loadableModule );
+	deDEAIModule(deLoadableModule &loadableModule);
 	/** \brief Cleans up the ai module. */
 	virtual ~deDEAIModule();
 	/*@}*/
@@ -61,19 +61,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create peer for a world object. */
-	virtual deBaseAIWorld *CreateWorld( deWorld *world );
+	virtual deBaseAIWorld *CreateWorld(deWorld *world);
 	
 	/** \brief Create peer for a navigation space object. */
-	virtual deBaseAINavigationSpace *CreateNavigationSpace( deNavigationSpace *navspace );
+	virtual deBaseAINavigationSpace *CreateNavigationSpace(deNavigationSpace *navspace);
 	
 	/** \brief Create peer for a navigation blocker object. */
-	virtual deBaseAINavigationBlocker *CreateNavigationBlocker( deNavigationBlocker *blocker );
+	virtual deBaseAINavigationBlocker *CreateNavigationBlocker(deNavigationBlocker *blocker);
 	
 	/** \brief Create peer for a navigator object. */
-	virtual deBaseAINavigator *CreateNavigator( deNavigator *navigator );
+	virtual deBaseAINavigator *CreateNavigator(deNavigator *navigator);
 	
 	/** \brief Create peer for height terrain. */
-	virtual deBaseAIHeightTerrain *CreateHeightTerrain( deHeightTerrain &heightTerrain );
+	virtual deBaseAIHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain);
 	
 	/** \brief Retrieves the developer mode. */
 	inline dedaiDeveloperMode &GetDeveloperMode() const{ return *pDeveloperMode; }
@@ -90,7 +90,7 @@ public:
 	 * \param[in] command The command to send to the module as a list of arguments.
 	 * \param[out] answer Unicode string to hold the answer returned from the module.
 	 */
-	virtual void SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 };
 

@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalPropertyRemoveFromSelected( const meDecalList &list, const char *key );
+	meUDecalPropertyRemoveFromSelected(const meDecalList &list, const char *key);
 	
 protected:
 	/** \brief Clean up undo decal. */

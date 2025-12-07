@@ -74,8 +74,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new skin object with the given resource manager and filename. */
-	deSkin( deSkinManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deSkin(deSkinManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -96,13 +96,13 @@ public:
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** \brief Adds the given texture. */
-	void AddTexture( deSkinTexture *tex );
+	void AddTexture(deSkinTexture *tex);
 	
 	/** \brief Texture with the given index. */
-	deSkinTexture *GetTextureAt( int index ) const;
+	deSkinTexture *GetTextureAt(int index) const;
 	
 	/** \brief Index of the texture with the given name or -1 if not found. */
-	int IndexOfTextureNamed( const char *name ) const;
+	int IndexOfTextureNamed(const char *name) const;
 	/*@}*/
 	
 	
@@ -113,25 +113,25 @@ public:
 	int GetMappedCount() const;
 	
 	/** \brief Mapped value at index. */
-	deSkinMapped *GetMappedAt( int index ) const;
+	deSkinMapped *GetMappedAt(int index) const;
 	
 	/** \brief Named mapped value or nullptr. */
-	deSkinMapped *GetMappedNamed( const char *name ) const;
+	deSkinMapped *GetMappedNamed(const char *name) const;
 	
 	/** \brief Index of mapped value or -1 if absent. */
-	int IndexOfMapped( deSkinMapped *mapped ) const;
+	int IndexOfMapped(deSkinMapped *mapped) const;
 	
 	/** \brief Index of named mapped value or -1 if absent. */
-	int IndexOfMappedNamed( const char *name ) const;
+	int IndexOfMappedNamed(const char *name) const;
 	
 	/** \brief Mapped value is present. */
-	bool HasMapped( deSkinMapped *mapped ) const;
+	bool HasMapped(deSkinMapped *mapped) const;
 	
 	/** \brief Named mapped value is present. */
-	bool HasMappedNamed( const char *name ) const;
+	bool HasMappedNamed(const char *name) const;
 	
 	/** \brief Add mapped value. */
-	void AddMapped( deSkinMapped *mapped );
+	void AddMapped(deSkinMapped *mapped);
 	/*@}*/
 	
 	
@@ -142,19 +142,19 @@ public:
 	inline deBaseGraphicSkin *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
-	void SetPeerGraphic( deBaseGraphicSkin *peer );
+	void SetPeerGraphic(deBaseGraphicSkin *peer);
 	
 	/** \brief Audio system peer object. */
 	inline deBaseAudioSkin *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer object. */
-	void SetPeerAudio( deBaseAudioSkin *peer );
+	void SetPeerAudio(deBaseAudioSkin *peer);
 	
 	/** \brief Physics system peer object. */
 	inline deBasePhysicsSkin *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
-	void SetPeerPhysics( deBasePhysicsSkin *peer );
+	void SetPeerPhysics(deBasePhysicsSkin *peer);
 	/*@}*/
 	
 	

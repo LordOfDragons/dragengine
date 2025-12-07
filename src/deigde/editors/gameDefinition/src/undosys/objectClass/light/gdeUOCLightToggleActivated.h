@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightToggleActivated( gdeObjectClass *objectClass, gdeOCLight *light );
+	gdeUOCLightToggleActivated(gdeObjectClass *objectClass, gdeOCLight *light);
 	
 protected:
 	/** \brief Clean up undo action. */

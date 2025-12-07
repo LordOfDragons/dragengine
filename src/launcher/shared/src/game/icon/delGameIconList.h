@@ -57,16 +57,16 @@ public:
 	int GetCount() const;
 	
 	/** \brief Icon at index. */
-	delGameIcon *GetAt( int index ) const;
+	delGameIcon *GetAt(int index) const;
 	
 	/** \brief Icon with size or nullptr if absent. */
-	delGameIcon *GetWithSize( int size ) const;
+	delGameIcon *GetWithSize(int size) const;
 	
 	/** \brief Icon with larges size less than or equal or nullptr if absent. */
-	delGameIcon *GetLargest( int size ) const;
+	delGameIcon *GetLargest(int size) const;
 	
 	/** \brief Icon with smallest size larger than or equal or nullptr if absent. */
-	delGameIcon *GetSmallest( int size ) const;
+	delGameIcon *GetSmallest(int size) const;
 	
 	/** \brief Icon with larges size or nullptr if absent. */
 	delGameIcon *GetLargest() const;
@@ -75,22 +75,22 @@ public:
 	delGameIcon *GetSmallest() const;
 	
 	/** \brief Icon is present. */
-	bool Has( delGameIcon *icon ) const;
+	bool Has(delGameIcon *icon) const;
 	
 	/** \brief Icon with size. */
-	bool HasWithSize( int size ) const;
+	bool HasWithSize(int size) const;
 	
 	/** \brief Index of icon or -1 if absent. */
-	int IndexOf( delGameIcon *icon ) const;
+	int IndexOf(delGameIcon *icon) const;
 	
 	/** \brief Index of icon with size or -1 if absent. */
-	int IndexOfWithSize( int size ) const;
+	int IndexOfWithSize(int size) const;
 	
 	/** \brief Add icon. */
-	void Add( delGameIcon *icon );
+	void Add(delGameIcon *icon);
 	
 	/** \brief Remove icon. */
-	void Remove( delGameIcon *icon );
+	void Remove(delGameIcon *icon);
 	
 	/** \brief Remove all icons. */
 	void RemoveAll();

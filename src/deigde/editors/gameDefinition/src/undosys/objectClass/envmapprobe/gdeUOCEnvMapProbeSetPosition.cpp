@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetPosition::gdeUOCEnvMapProbeSetPosition( gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decVector &newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCEnvMapProbeSetPosition::gdeUOCEnvMapProbeSetPosition(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
+pObjectClass(NULL),
+pEnvMapProbe(NULL)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set position" );
+	SetShortInfo("Env-map probe set position");
 	
 	pOldValue = envMapProbe->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pEnvMapProbe( NULL )
 }
 
 gdeUOCEnvMapProbeSetPosition::~gdeUOCEnvMapProbeSetPosition(){
-	if( pEnvMapProbe ){
+	if(pEnvMapProbe){
 		pEnvMapProbe->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCEnvMapProbeSetPosition::~gdeUOCEnvMapProbeSetPosition(){
 ///////////////
 
 void gdeUOCEnvMapProbeSetPosition::Undo(){
-	pEnvMapProbe->SetPosition( pOldValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetPosition(pOldValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetPosition::Redo(){
-	pEnvMapProbe->SetPosition( pNewValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetPosition(pNewValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

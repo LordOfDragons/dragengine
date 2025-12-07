@@ -37,7 +37,7 @@ class igdeGuiTheme;
  * \brief FOX toolkit Native NodeView Node.
  */
 class igdeNativeFoxNVNode : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxNVNode )
+	FXDECLARE(igdeNativeFoxNVNode)
 protected:
 	   igdeNativeFoxNVNode();
 	
@@ -73,13 +73,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxNVNode( igdeNVNode &owner, FXComposite *parent, const igdeGuiTheme &guitheme );
+	igdeNativeFoxNVNode(igdeNVNode &owner, FXComposite *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxNVNode();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxNVNode* CreateNativeWidget( igdeNVNode &owner );
+	static igdeNativeFoxNVNode* CreateNativeWidget(igdeNVNode &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -120,24 +120,24 @@ public:
 	virtual decPoint GetSize();
 	
 	
-	static int NVNodeFlags( const igdeNVNode &owner );
-	static igdeFont *NVNodeFont( const igdeNVNode &owner, const igdeGuiTheme &guitheme );
-	static int NVNodePadLeft( const igdeGuiTheme &guitheme );
-	static int NVNodePadRight( const igdeGuiTheme &guitheme );
-	static int NVNodePadTop( const igdeGuiTheme &guitheme );
-	static int NVNodePadBottom( const igdeGuiTheme &guitheme );
+	static int NVNodeFlags(const igdeNVNode &owner);
+	static igdeFont *NVNodeFont(const igdeNVNode &owner, const igdeGuiTheme &guitheme);
+	static int NVNodePadLeft(const igdeGuiTheme &guitheme);
+	static int NVNodePadRight(const igdeGuiTheme &guitheme);
+	static int NVNodePadTop(const igdeGuiTheme &guitheme);
+	static int NVNodePadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onTitleLeftMouseDown( FXObject*, FXSelector, void* );
-	long onTitleLeftMouseUp( FXObject*, FXSelector, void* );
-	long onTitleMouseMove( FXObject*, FXSelector, void* );
-	long onRightMousePress( FXObject*, FXSelector, void* );
-	long onRightMouseRelease( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onTitleLeftMouseDown(FXObject*, FXSelector, void*);
+	long onTitleLeftMouseUp(FXObject*, FXSelector, void*);
+	long onTitleMouseMove(FXObject*, FXSelector, void*);
+	long onRightMousePress(FXObject*, FXSelector, void*);
+	long onRightMouseRelease(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

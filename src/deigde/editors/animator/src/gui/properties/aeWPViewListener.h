@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWPViewListener( aeWPView &panel );
+	aeWPViewListener(aeWPView &panel);
 	
 	/** Clean up listener. */
 	virtual ~aeWPViewListener();
@@ -55,43 +55,43 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Rig changed. */
-	virtual void RigChanged( aeAnimator *animator );
+	virtual void RigChanged(aeAnimator *animator);
 	
 	/** Animator changed. */
-	virtual void AnimatorChanged( aeAnimator *animator );
+	virtual void AnimatorChanged(aeAnimator *animator);
 	
 	/** Model changed. */
-	virtual void ModelChanged( aeAnimator *animator );
+	virtual void ModelChanged(aeAnimator *animator);
 	
 	/** The environment component changed. */
-	virtual void EnvObjectChanged( aeAnimator *animator );
+	virtual void EnvObjectChanged(aeAnimator *animator);
 	
 	/** Sky changed. */
-	virtual void SkyChanged( aeAnimator *animator );
+	virtual void SkyChanged(aeAnimator *animator);
 	
 	/** Animation changed. */
-	virtual void AnimationChanged( aeAnimator *animator );
+	virtual void AnimationChanged(aeAnimator *animator);
 	
 	/** Playback changed. */
-	virtual void PlaybackChanged( aeAnimator *animator );
+	virtual void PlaybackChanged(aeAnimator *animator);
 	
 	/** View changed. */
-	virtual void ViewChanged( aeAnimator *animator );
+	virtual void ViewChanged(aeAnimator *animator);
 	
 	/** Camera changed. */
-	virtual void CameraChanged( aeAnimator *animator );
+	virtual void CameraChanged(aeAnimator *animator);
 	
 	/** Camera view changed. */
-	virtual void CameraViewChanged( aeAnimator *animator );
+	virtual void CameraViewChanged(aeAnimator *animator);
 	
 	/** Active attachment changed. */
-	virtual void ActiveAttachmentChanged( aeAnimator *animator, aeAttachment *attachment );
+	virtual void ActiveAttachmentChanged(aeAnimator *animator, aeAttachment *attachment);
 	
 	/** Attachment changed. */
-	virtual void AttachmentChanged( aeAnimator *animator, aeAttachment *attachment );
+	virtual void AttachmentChanged(aeAnimator *animator, aeAttachment *attachment);
 	
 	/** Attachment count changed added. */
-	virtual void AttachmentStructureChanged( aeAnimator *animator );
+	virtual void AttachmentStructureChanged(aeAnimator *animator);
 	/*@}*/
 };
 

@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseArchiveModule( deLoadableModule &loadableModule );
+	deBaseArchiveModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseArchiveModule();
@@ -52,7 +52,7 @@ public:
 	
 	/** \name Management */
 	/** \brief Create container peer. */
-	virtual deBaseArchiveContainer *CreateContainer( decBaseFileReader *reader ) = 0;
+	virtual deBaseArchiveContainer *CreateContainer(decBaseFileReader *reader) = 0;
 	/*@}*/
 };
 

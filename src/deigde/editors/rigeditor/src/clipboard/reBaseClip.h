@@ -45,7 +45,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new base clipboard clip. */
-	reBaseClip( int type );
+	reBaseClip(int type);
 	/** Cleans up the clipboard clip. */
 	virtual ~reBaseClip();
 	/*@}*/

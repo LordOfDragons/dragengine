@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupMoveRuleUp( aeRuleGroup *group, aeRule *rule );
+	aeURuleGroupMoveRuleUp(aeRuleGroup *group, aeRule *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleGroupMoveRuleUp();

@@ -41,37 +41,37 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deErrorTracePoint::deErrorTracePoint( const char *sourceFunc, int sourceLine ) :
-pSourceModule( nullptr ),
-pSourceFunc( sourceFunc ),
-pSourceLine( sourceLine ),
-pValues( nullptr ),
-pValueCount( 0 ),
-pValueSize( 0 )
+deErrorTracePoint::deErrorTracePoint(const char *sourceFunc, int sourceLine) :
+pSourceModule(nullptr),
+pSourceFunc(sourceFunc),
+pSourceLine(sourceLine),
+pValues(nullptr),
+pValueCount(0),
+pValueSize(0)
 {
-	if( pSourceFunc.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pSourceFunc.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-deErrorTracePoint::deErrorTracePoint( deLoadableModule *module, const char *sourceFunc, int sourceLine ) :
-pSourceModule( module ),
-pSourceFunc( sourceFunc ),
-pSourceLine( sourceLine ),
-pValues( nullptr ),
-pValueCount( 0 ),
-pValueSize( 0 )
+deErrorTracePoint::deErrorTracePoint(deLoadableModule *module, const char *sourceFunc, int sourceLine) :
+pSourceModule(module),
+pSourceFunc(sourceFunc),
+pSourceLine(sourceLine),
+pValues(nullptr),
+pValueCount(0),
+pValueSize(0)
 {
-	if( pSourceFunc.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pSourceFunc.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
-	if( pSourceModule ) pSourceModule->AddReference();
+	if(pSourceModule) pSourceModule->AddReference();
 }
 
 deErrorTracePoint::~deErrorTracePoint(){
 	RemoveAllValues();
-	if( pValues ) delete [] pValues;
-	if( pSourceModule ) pSourceModule->FreeReference();
+	if(pValues) delete [] pValues;
+	if(pSourceModule) pSourceModule->FreeReference();
 }
 
 
@@ -79,41 +79,41 @@ deErrorTracePoint::~deErrorTracePoint(){
 // Trace Value Management
 ///////////////////////////
 
-deErrorTraceValue *deErrorTracePoint::GetValue( int index ) const{
-	if( index < 0 || index >= pValueCount ) DETHROW( deeInvalidParam );
-	return pValues[ index ];
+deErrorTraceValue *deErrorTracePoint::GetValue(int index) const{
+	if(index < 0 || index >= pValueCount) DETHROW(deeInvalidParam);
+	return pValues[index];
 }
 
-deErrorTraceValue *deErrorTracePoint::FindValue( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+deErrorTraceValue *deErrorTracePoint::FindValue(const char *name) const{
+	if(!name) DETHROW(deeInvalidParam);
 	int i;
-	for( i=0; i<pValueCount; i++ ){
-		if( strcmp( name, pValues[ i ]->GetName() ) == 0 ) return pValues[ i ];
+	for(i=0; i<pValueCount; i++){
+		if(strcmp(name, pValues[i]->GetName()) == 0) return pValues[i];
 	}
 	return NULL;
 }
 
-void deErrorTracePoint::AddValue( deErrorTraceValue *value ){
-	if( ! value || FindValue( value->GetName() ) ) DETHROW( deeInvalidParam );
-	if( pValueCount == pValueSize ){
+void deErrorTracePoint::AddValue(deErrorTraceValue *value){
+	if(!value || FindValue(value->GetName())) DETHROW(deeInvalidParam);
+	if(pValueCount == pValueSize){
 		int i, newSize = pValueSize * 3 / 2 + 1;
-		deErrorTraceValue **newArray = new deErrorTraceValue*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pValues ){
-			for( i=0; i<pValueCount; i++ ) newArray[ i ] = pValues[ i ];
+		deErrorTraceValue **newArray = new deErrorTraceValue*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pValues){
+			for(i=0; i<pValueCount; i++) newArray[i] = pValues[i];
 			delete [] pValues;
 		}
 		pValues = newArray;
 		pValueSize = newSize;
 	}
-	pValues[ pValueCount ] = value;
+	pValues[pValueCount] = value;
 	pValueCount++;
 }
 
 void deErrorTracePoint::RemoveAllValues(){
 	int i;
-	for( i=0; i<pValueCount; i++ ){
-		if( pValues[ i ] ) delete pValues[ i ];
+	for(i=0; i<pValueCount; i++){
+		if(pValues[i]) delete pValues[i];
 	}
 	pValueCount = 0;
 }
@@ -123,69 +123,69 @@ void deErrorTracePoint::RemoveAllValues(){
 // Convenience Functions
 //////////////////////////
 
-deErrorTraceValue *deErrorTracePoint::AddValue( const char *name, const char *value ){
+deErrorTraceValue *deErrorTracePoint::AddValue(const char *name, const char *value){
 	deErrorTraceValue *newValue = NULL;
 	try{
-		newValue = new deErrorTraceValue( name, value );
-		if( ! newValue ) DETHROW( deeOutOfMemory );
-		AddValue( newValue );
-	}catch( const deException & ){
-		if( newValue ) delete newValue;
+		newValue = new deErrorTraceValue(name, value);
+		if(!newValue) DETHROW(deeOutOfMemory);
+		AddValue(newValue);
+	}catch(const deException &){
+		if(newValue) delete newValue;
 		throw;
 	}
 	return newValue;
 }
 
-deErrorTraceValue *deErrorTracePoint::AddValueInt( const char *name, int value ){
+deErrorTraceValue *deErrorTracePoint::AddValueInt(const char *name, int value){
 	deErrorTraceValue *newValue = NULL;
-	char buffer[ 20 ];
+	char buffer[20];
 	#ifdef _MSC_VER
-		sprintf_s( ( char* )&buffer, 20, "%i", value );
+		sprintf_s((char*)&buffer, 20, "%i", value);
 	#else
-		sprintf( ( char* )&buffer, "%i", value );
+		sprintf((char*)&buffer, "%i", value);
 	#endif
 	try{
-		newValue = new deErrorTraceValue( name, buffer );
-		if( ! newValue ) DETHROW( deeOutOfMemory );
-		AddValue( newValue );
-	}catch( const deException & ){
-		if( newValue ) delete newValue;
+		newValue = new deErrorTraceValue(name, buffer);
+		if(!newValue) DETHROW(deeOutOfMemory);
+		AddValue(newValue);
+	}catch(const deException &){
+		if(newValue) delete newValue;
 		throw;
 	}
 	return newValue;
 }
 
-deErrorTraceValue *deErrorTracePoint::AddValueFloat( const char *name, float value ){
+deErrorTraceValue *deErrorTracePoint::AddValueFloat(const char *name, float value){
 	deErrorTraceValue *newValue = NULL;
-	char buffer[ 20 ];
+	char buffer[20];
 	#ifdef _MSC_VER
-		sprintf_s( ( char* )&buffer, 20, "%g", value );
+		sprintf_s((char*)&buffer, 20, "%g", value);
 	#else
-		sprintf( ( char* )&buffer, "%g", value );
+		sprintf((char*)&buffer, "%g", value);
 	#endif
 	try{
-		newValue = new deErrorTraceValue( name, buffer );
-		if( ! newValue ) DETHROW( deeOutOfMemory );
-		AddValue( newValue );
-	}catch( const deException & ){
-		if( newValue ) delete newValue;
+		newValue = new deErrorTraceValue(name, buffer);
+		if(!newValue) DETHROW(deeOutOfMemory);
+		AddValue(newValue);
+	}catch(const deException &){
+		if(newValue) delete newValue;
 		throw;
 	}
 	return newValue;
 }
 
-deErrorTraceValue *deErrorTracePoint::AddValueBool( const char *name, bool value ){
+deErrorTraceValue *deErrorTracePoint::AddValueBool(const char *name, bool value){
 	deErrorTraceValue *newValue = NULL;
 	try{
-		if( value ){
-			newValue = new deErrorTraceValue( name, "True" );
+		if(value){
+			newValue = new deErrorTraceValue(name, "True");
 		}else{
-			newValue = new deErrorTraceValue( name, "False" );
+			newValue = new deErrorTraceValue(name, "False");
 		}		
-		if( ! newValue ) DETHROW( deeOutOfMemory );
-		AddValue( newValue );
-	}catch( const deException & ){
-		if( newValue ) delete newValue;
+		if(!newValue) DETHROW(deeOutOfMemory);
+		AddValue(newValue);
+	}catch(const deException &){
+		if(newValue) delete newValue;
 		throw;
 	}
 	return newValue;

@@ -86,7 +86,7 @@ deoglShaderCompiled &deoglPipeline::GetShader() const{
 }
 #endif
 
-void deoglPipeline::SetRTSIndex( int index ){
+void deoglPipeline::SetRTSIndex(int index){
 	pRTSIndex = index;
 }
 

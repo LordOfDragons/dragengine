@@ -55,28 +55,28 @@ int cePropList::GetCount() const{
 	return pProps.GetCount();
 }
 
-ceProp *cePropList::GetAt( int index ) const{
-	return ( ceProp* )pProps.GetAt( index );
+ceProp *cePropList::GetAt(int index) const{
+	return (ceProp*)pProps.GetAt(index);
 }
 
-int cePropList::IndexOf( ceProp *prop ) const{
-	return pProps.IndexOf( prop );
+int cePropList::IndexOf(ceProp *prop) const{
+	return pProps.IndexOf(prop);
 }
 
-bool cePropList::Has( ceProp *prop ) const{
-	return pProps.Has( prop );
+bool cePropList::Has(ceProp *prop) const{
+	return pProps.Has(prop);
 }
 
-void cePropList::Add( ceProp *prop ){
-	if( ! prop ){
-		DETHROW( deeInvalidParam );
+void cePropList::Add(ceProp *prop){
+	if(!prop){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProps.Add( prop );
+	pProps.Add(prop);
 }
 
-void cePropList::Remove( ceProp *prop ){
-	pProps.Remove( prop );
+void cePropList::Remove(ceProp *prop){
+	pProps.Remove(prop);
 }
 
 void cePropList::RemoveAll(){
@@ -85,7 +85,7 @@ void cePropList::RemoveAll(){
 
 
 
-cePropList &cePropList::operator=( const cePropList &list ){
+cePropList &cePropList::operator=(const cePropList &list){
 	pProps = list.pProps;
 	return *this;
 }

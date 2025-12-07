@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullLabel();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullLabel* CreateNativeWidget( igdeLabel &owner );
+	static igdeNativeNullLabel* CreateNativeWidget(igdeLabel &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

@@ -84,7 +84,7 @@ public:
 	inline const deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
-	void SetVAO( const deoglRenderTaskSharedVAO *vao );
+	void SetVAO(const deoglRenderTaskSharedVAO *vao);
 	
 	
 	
@@ -92,14 +92,14 @@ public:
 	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
 	/** Render task instance at index. */
-	deoglRenderTaskInstance *GetInstanceAt( int index ) const;
+	deoglRenderTaskInstance *GetInstanceAt(int index) const;
 	
 	/** Add render task instance. */
-	deoglRenderTaskInstance *AddInstance( const deoglRenderTaskSharedInstance *instance );
+	deoglRenderTaskInstance *AddInstance(const deoglRenderTaskSharedInstance *instance);
 	
 	/** Sort instances by distance. */
-	void SortInstancesByDistance( deoglQuickSorter &sorter, const decDVector &position,
-		const decDVector &direction, double posDotDir );
+	void SortInstancesByDistance(deoglQuickSorter &sorter, const decDVector &position,
+		const decDVector &direction, double posDotDir);
 	/*@}*/
 };
 

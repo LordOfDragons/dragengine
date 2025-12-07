@@ -51,7 +51,7 @@ public:
 	 * \brief Create a new event queue.
 	 * \throws deeInvalidParam \em queueSize is less than 1.
 	 */
-	deInputEventQueue( int queueSize );
+	deInputEventQueue(int queueSize);
 	
 	/** \brief Clean up the event queue. */
 	~deInputEventQueue();
@@ -71,7 +71,7 @@ public:
 	 * \brief Event by index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetEventCount()-1.
 	 */
-	const deInputEvent &GetEventAt( int index ) const;
+	const deInputEvent &GetEventAt(int index) const;
 	
 	/**
 	 * \brief Add a copy of an event to the end of the queue.
@@ -80,7 +80,7 @@ public:
 	 * 
 	 * \returns true if the event has been added otherwise false.
 	 */
-	bool AddEvent( const deInputEvent &event );
+	bool AddEvent(const deInputEvent &event);
 	
 	/** \brief Remove all events from the queue. */
 	void RemoveAllEvents();

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCombineSetY::meUHTVRuleCombineSetY( meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float ny ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleCombineSetY::meUHTVRuleCombineSetY(meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float ny){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;
 	
-	SetShortInfo( "Vegetation Layer Rule Combine Set Y" );
-	SetMemoryConsumption( sizeof( meUHTVRuleCombineSetY ) );
+	SetShortInfo("Vegetation Layer Rule Combine Set Y");
+	SetMemoryConsumption(sizeof(meUHTVRuleCombineSetY));
 	
 	pOldY = rule->GetY();
 	pNewY = ny;
@@ -59,8 +59,8 @@ meUHTVRuleCombineSetY::meUHTVRuleCombineSetY( meHTVegetationLayer *vlayer, meHTV
 }
 
 meUHTVRuleCombineSetY::~meUHTVRuleCombineSetY(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +69,11 @@ meUHTVRuleCombineSetY::~meUHTVRuleCombineSetY(){
 ///////////////
 
 void meUHTVRuleCombineSetY::Undo(){
-	pRule->SetY( pOldY );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetY(pOldY);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleCombineSetY::Redo(){
-	pRule->SetY( pNewY );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetY(pNewY);
+	pVLayer->NotifyRuleChanged(pRule);
 }

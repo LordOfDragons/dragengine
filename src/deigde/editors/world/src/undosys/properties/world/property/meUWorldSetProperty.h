@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUWorldSetProperty( meWorld *world, const char *key, const char *oldValue, const char *newValue );
+	meUWorldSetProperty(meWorld *world, const char *key, const char *oldValue, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new value. */
-	void SetNewValue( const char *value );
+	void SetNewValue(const char *value);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

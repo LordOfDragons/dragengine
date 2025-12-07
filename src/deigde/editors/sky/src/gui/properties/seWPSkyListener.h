@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPSkyListener( seWPSky &panel );
+	seWPSkyListener(seWPSky &panel);
 	
 protected:
 	/** \brief Clean up listener. */
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky parameters changed. */
-	virtual void SkyChanged( seSky *sky );
+	virtual void SkyChanged(seSky *sky);
 	/*@}*/
 };
 

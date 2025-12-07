@@ -46,38 +46,38 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRSkyInstance::deoglRSkyInstance( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pParentWorld( NULL ),
-pRSky( NULL ),
-pOrder( 0 ),
+deoglRSkyInstance::deoglRSkyInstance(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pParentWorld(NULL),
+pRSky(NULL),
+pOrder(0),
 pPassthroughTransparency(0.0f),
-pControllerStates( NULL ),
-pControllerStateCount( 0 ),
-pLayers( NULL ),
-pLayerCount( 0 ),
-pEnvMapTimer( 0.0f ),
-pSkyNeedsUpdate( false ),
-pWorldMarkedRemove( false )
+pControllerStates(NULL),
+pControllerStateCount(0),
+pLayers(NULL),
+pLayerCount(0),
+pEnvMapTimer(0.0f),
+pSkyNeedsUpdate(false),
+pWorldMarkedRemove(false)
 {
-	LEAK_CHECK_CREATE( renderThread, SkyInstance );
+	LEAK_CHECK_CREATE(renderThread, SkyInstance);
 }
 
 deoglRSkyInstance::~deoglRSkyInstance(){
-	LEAK_CHECK_FREE( pRenderThread, SkyInstance );
+	LEAK_CHECK_FREE(pRenderThread, SkyInstance);
 	
-	if( pLayers ){
-		while( pLayerCount > 0 ){
-			delete pLayers[ --pLayerCount ];
+	if(pLayers){
+		while(pLayerCount > 0){
+			delete pLayers[--pLayerCount];
 		}
 		delete [] pLayers;
 	}
 	
-	if( pControllerStates ){
+	if(pControllerStates){
 		delete [] pControllerStates;
 	}
 	
-	if( pRSky ){
+	if(pRSky){
 		pRSky->FreeReference();
 	}
 }
@@ -87,8 +87,8 @@ deoglRSkyInstance::~deoglRSkyInstance(){
 // Management
 ///////////////
 
-void deoglRSkyInstance::SetParentWorld( deoglRWorld *world ){
-	if( world == pParentWorld ){
+void deoglRSkyInstance::SetParentWorld(deoglRWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
@@ -101,19 +101,19 @@ void deoglRSkyInstance::SetParentWorld( deoglRWorld *world ){
 
 
 
-void deoglRSkyInstance::SetRSky( deoglRSky *rsky ){
+void deoglRSkyInstance::SetRSky(deoglRSky *rsky){
 	// called during synchronization time
-	if( rsky == pRSky ){
+	if(rsky == pRSky){
 		return;
 	}
 	
-	if( pRSky ){
+	if(pRSky){
 		pRSky->FreeReference();
 	}
 	
 	pRSky = rsky;
 	
-	if( rsky ){
+	if(rsky){
 		rsky->AddReference();
 	}
 	
@@ -122,19 +122,19 @@ void deoglRSkyInstance::SetRSky( deoglRSky *rsky ){
 
 
 
-void deoglRSkyInstance::SetOrder( int order ){
-	if( order == pOrder ){
+void deoglRSkyInstance::SetOrder(int order){
+	if(order == pOrder){
 		return;
 	}
 	
 	pOrder = order;
 	
-	if( pParentWorld ){
+	if(pParentWorld){
 		pParentWorld->MarkSkyOrderDirty();
 	}
 }
 
-void deoglRSkyInstance::SetLayerMask( const decLayerMask &layerMask ){
+void deoglRSkyInstance::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
@@ -143,77 +143,77 @@ void deoglRSkyInstance::SetPassthroughTransparency(float transparency){
 }
 
 
-float deoglRSkyInstance::GetControllerStateAt( int index ) const{
-	if( index < 0 || index >= pControllerStateCount ){
-		DETHROW( deeInvalidParam );
+float deoglRSkyInstance::GetControllerStateAt(int index) const{
+	if(index < 0 || index >= pControllerStateCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pControllerStates[ index ];
+	return pControllerStates[index];
 }
 
-void deoglRSkyInstance::UpdateControllerStates( const deSkyInstance &instance ){
+void deoglRSkyInstance::UpdateControllerStates(const deSkyInstance &instance){
 	const int count = instance.GetControllerCount();
 	
-	if( count != pControllerStateCount ){
-		if( pControllerStates ){
+	if(count != pControllerStateCount){
+		if(pControllerStates){
 			delete [] pControllerStates;
 			pControllerStates = NULL;
 			pControllerStateCount = 0;
 		}
 		
-		if( count > 0 ){
-			pControllerStates = new float[ count ];
+		if(count > 0){
+			pControllerStates = new float[count];
 			pControllerStateCount = count;
 		}
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		const deSkyController &controller = instance.GetControllerAt( i );
+	for(i=0; i<count; i++){
+		const deSkyController &controller = instance.GetControllerAt(i);
 		const float minimum = controller.GetMinimumValue();
 		const float range = controller.GetMaximumValue() - minimum;
 		
-		if( range > FLOAT_SAFE_EPSILON ){
-			pControllerStates[ i ] = ( controller.GetCurrentValue() - minimum ) / range;
+		if(range > FLOAT_SAFE_EPSILON){
+			pControllerStates[i] = (controller.GetCurrentValue() - minimum) / range;
 			
 		}else{
-			pControllerStates[ i ] = minimum;
+			pControllerStates[i] = minimum;
 		}
 	}
 }
 
 
 
-deoglRSkyInstanceLayer &deoglRSkyInstance::GetLayerAt( int index ) const{
-	if( index < 0 || index >= pLayerCount ){
-		DETHROW( deeInvalidParam );
+deoglRSkyInstanceLayer &deoglRSkyInstance::GetLayerAt(int index) const{
+	if(index < 0 || index >= pLayerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return *pLayers[ index ];
+	return *pLayers[index];
 }
 
 void deoglRSkyInstance::RebuildLayers(){
 	pSkyNeedsUpdate = true;
 	
-	if( pLayers ){
-		while( pLayerCount > 0 ){
-			delete pLayers[ --pLayerCount ];
+	if(pLayers){
+		while(pLayerCount > 0){
+			delete pLayers[--pLayerCount];
 		}
 		delete [] pLayers;
 		pLayers = NULL;
 		pLayerCount = 0;
 	}
 	
-	if( ! pRSky ){
+	if(!pRSky){
 		return;
 	}
 	
 	const int layerCount = pRSky->GetLayerCount();
-	if( layerCount == 0 ){
+	if(layerCount == 0){
 		return;
 	}
 	
-	pLayers = new deoglRSkyInstanceLayer*[ layerCount ];
-	for( pLayerCount=0; pLayerCount<layerCount; pLayerCount++ ){
-		pLayers[ pLayerCount ] = new deoglRSkyInstanceLayer( *this, pLayerCount );
+	pLayers = new deoglRSkyInstanceLayer*[layerCount];
+	for(pLayerCount=0; pLayerCount<layerCount; pLayerCount++){
+		pLayers[pLayerCount] = new deoglRSkyInstanceLayer(*this, pLayerCount);
 	}
 }
 
@@ -224,32 +224,32 @@ void deoglRSkyInstance::UpdateLayers(){
 	pTotalSkyAmbientIntensity = 0.0f;
 	pTotalSkyLightColor.SetZero();
 	
-	for( i=0; i<pLayerCount; i++ ){
-		pLayers[ i ]->Update();
+	for(i=0; i<pLayerCount; i++){
+		pLayers[i]->Update();
 		
-		const float ambientIntensity = pLayers[ i ]->GetAmbientIntensity();
-		const float lightIntensity = ambientIntensity + pLayers[ i ]->GetLightIntensity();
+		const float ambientIntensity = pLayers[i]->GetAmbientIntensity();
+		const float lightIntensity = ambientIntensity + pLayers[i]->GetLightIntensity();
 		
 		pTotalSkyLightIntensity += lightIntensity;
 		pTotalSkyAmbientIntensity += ambientIntensity;
-		pTotalSkyLightColor += pLayers[ i ]->GetLightColor() * lightIntensity;
+		pTotalSkyLightColor += pLayers[i]->GetLightColor() * lightIntensity;
 		
-		pSkyNeedsUpdate |= pLayers[ i ]->GetSkyNeedsUpdate();
+		pSkyNeedsUpdate |= pLayers[i]->GetSkyNeedsUpdate();
 	}
 	
-	if( pTotalSkyLightIntensity > FLOAT_SAFE_EPSILON ){
+	if(pTotalSkyLightIntensity > FLOAT_SAFE_EPSILON){
 		pTotalSkyLightColor /= pTotalSkyLightIntensity;
 		pTotalSkyLightColor.a = 1.0f;
 	}
 	
-	for( i=0; i<pLayerCount; i++ ){
-		pLayers[ i ]->UpdateWithModifiers();
+	for(i=0; i<pLayerCount; i++){
+		pLayers[i]->UpdateWithModifiers();
 	}
 }
 
 
 
-void deoglRSkyInstance::SetEnvironmentMapTimer( float timer ){
+void deoglRSkyInstance::SetEnvironmentMapTimer(float timer){
 	pEnvMapTimer = timer;
 }
 
@@ -262,24 +262,24 @@ void deoglRSkyInstance::PrepareForRender(){
 
 
 void deoglRSkyInstance::NotifySkyChanged(){
-	if( pSkyNeedsUpdate && pParentWorld ){
+	if(pSkyNeedsUpdate && pParentWorld){
 		pParentWorld->EnvMapsNotifySkyChanged();
 	}
 	
 	pSkyNeedsUpdate = false;
 }
 
-void deoglRSkyInstance::DropGIState( const deoglGIState *giState ){
+void deoglRSkyInstance::DropGIState(const deoglGIState *giState){
 	int i;
-	for( i=0; i<pLayerCount; i++ ){
-		pLayers[ i ]->RemoveAllGICascades( *giState );
+	for(i=0; i<pLayerCount; i++){
+		pLayers[i]->RemoveAllGICascades(*giState);
 	}
 }
 
 void deoglRSkyInstance::DropAllGIStates(){
 	int i;
-	for( i=0; i<pLayerCount; i++ ){
-		pLayers[ i ]->RemoveAllGICascades();
+	for(i=0; i<pLayerCount; i++){
+		pLayers[i]->RemoveAllGICascades();
 	}
 }
 
@@ -289,10 +289,10 @@ void deoglRSkyInstance::PrepareQuickDispose(){
 	pParentWorld = NULL;
 }
 
-void deoglRSkyInstance::NotifyUpdateStaticComponent( deoglRComponent *component ){
+void deoglRSkyInstance::NotifyUpdateStaticComponent(deoglRComponent *component){
 	int i;
-	for( i=0; i<pLayerCount; i++ ){
-		pLayers[ i ]->NotifyUpdateStaticComponent( component );
+	for(i=0; i<pLayerCount; i++){
+		pLayers[i]->NotifyUpdateStaticComponent(component);
 	}
 }
 
@@ -301,6 +301,6 @@ void deoglRSkyInstance::NotifyUpdateStaticComponent( deoglRComponent *component 
 // Render world usage
 ///////////////////////
 
-void deoglRSkyInstance::SetWorldMarkedRemove( bool marked ){
+void deoglRSkyInstance::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }

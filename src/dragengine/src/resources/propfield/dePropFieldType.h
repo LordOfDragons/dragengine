@@ -83,40 +83,40 @@ public:
 	inline deModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model or NULL it not set. */
-	void SetModel( deModel *model );
+	void SetModel(deModel *model);
 	
 	/** \brief Skin or NULL if not set. */
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Rotation per force. */
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	
 	/** \brief Set rotation per force. */
-	void SetRotationPerForce( float rotation );
+	void SetRotationPerForce(float rotation);
 	
 	/** \brief Restitution. */
 	inline float GetRestitution() const{ return pRestitution; }
 	
 	/** \brief Set restitution. */
-	void SetRestitution( float restitution );
+	void SetRestitution(float restitution);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &collisionFilter );
+	void SetCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	/** \brief Number of instances. */
 	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
 	/** \brief Set number of instances. */
-	void SetInstanceCount( int count );
+	void SetInstanceCount(int count);
 	
 	/** \brief Instance at the given index. */
-	dePropFieldInstance &GetInstanceAt( int index ) const;
+	dePropFieldInstance &GetInstanceAt(int index) const;
 	
 	/**
 	 * Retrieves the list of instances. Be careful with this method call as it is
@@ -132,10 +132,10 @@ public:
 	inline int GetBendStateCount() const{ return pBendStateCount; }
 	
 	/** \brief Set number of bend states. */
-	void SetBendStateCount( int count );
+	void SetBendStateCount(int count);
 	
 	/** \brief Bend state at the given index. */
-	dePropFieldBendState &GetBendStateAt( int index ) const;
+	dePropFieldBendState &GetBendStateAt(int index) const;
 	
 	/**
 	 * \brief List of bend states.

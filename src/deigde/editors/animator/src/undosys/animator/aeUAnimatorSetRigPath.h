@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAnimatorSetRigPath( aeAnimator *rule, const char *newValue );
+	aeUAnimatorSetRigPath(aeAnimator *rule, const char *newValue);
 	
 protected:
 	/** Clean up undo. */

@@ -52,24 +52,24 @@ public:
 	/** Retrieves the number of options. */
 	int GetCount() const;
 	/** Retrieves the option at the given position. */
-	cePCBOption *GetAt( int index ) const;
+	cePCBOption *GetAt(int index) const;
 	/** Retrieves the index of the given option or -1 if not found. */
-	int IndexOf( cePCBOption *option ) const;
+	int IndexOf(cePCBOption *option) const;
 	/** Determines if a option exists. */
-	bool Has( cePCBOption *option ) const;
+	bool Has(cePCBOption *option) const;
 	/** Adds a option. */
-	void Add( cePCBOption *option );
+	void Add(cePCBOption *option);
 	/** Inserts a new option. */
-	void InsertAt( cePCBOption *option, int index );
+	void InsertAt(cePCBOption *option, int index);
 	/** Moves a option to a new position. */
-	void MoveTo( cePCBOption *option, int index );
+	void MoveTo(cePCBOption *option, int index);
 	/** Removes a option. */
-	void Remove( cePCBOption *option );
+	void Remove(cePCBOption *option);
 	/** Removes all options. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	cePCBOptionList &operator=( const cePCBOptionList &list );
+	cePCBOptionList &operator=(const cePCBOptionList &list);
 	/*@}*/
 };
 

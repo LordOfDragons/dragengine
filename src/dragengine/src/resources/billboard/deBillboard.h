@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new billboard. */
-	deBillboard( deBillboardManager *manager );
+	deBillboard(deBillboardManager *manager);
 	
 protected:
 	/**
@@ -108,67 +108,67 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Axis. */
 	inline const decVector &GetAxis() const{ return pAxis; }
 	
 	/** \brief Set axis. */
-	void SetAxis( const decVector &axis );
+	void SetAxis(const decVector &axis);
 	
 	/** \brief Size. */
 	inline const decVector2 &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
-	void SetSize( const decVector2 &size );
+	void SetSize(const decVector2 &size);
 	
 	/** \brief Offset. */
 	inline const decVector2 &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset. */
-	void SetOffset( const decVector2 &offset );
+	void SetOffset(const decVector2 &offset);
 	
 	/** \brief Skin or NULL if not assigned. */
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Dynamic skin or NULL if not assigned. */
 	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin. */
-	void SetDynamicSkin( deDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Billboard is locked. */
 	inline bool GetLocked() const{ return pLocked; }
 	
 	/** \brief Set billboard is locked. */
-	void SetLocked( bool locked );
+	void SetLocked(bool locked);
 	
 	/** \brief Billboard is spherical. */
 	inline bool GetSpherical() const{ return pSpherical; }
 	
 	/** \brief Set if billboard is spherical. */
-	void SetSpherical( bool spherical );
+	void SetSpherical(bool spherical);
 	
 	/** \brief Billboard size is fixed to the screen size. */
 	inline bool GetSizeFixedToScreen() const{ return pSizeFixedToScreen; }
 	
 	/** \brief Set if billboard size is fixed to the screen size. */
-	void SetSizeFixedToScreen( bool sizeFixedToScreen );
+	void SetSizeFixedToScreen(bool sizeFixedToScreen);
 	
 	/** \brief Billboard is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if billboard is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	/*@}*/
 	
 	
@@ -179,7 +179,7 @@ public:
 	inline deBaseGraphicBillboard *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer or NULL if not set. */
-	void SetPeerGraphic( deBaseGraphicBillboard *peer );
+	void SetPeerGraphic(deBaseGraphicBillboard *peer);
 	/*@}*/
 	
 	
@@ -190,19 +190,19 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous billboard in the parent world linked list. */
 	inline deBillboard *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next billboard in the parent world linked list. */
-	void SetLLWorldPrev( deBillboard *billboard );
+	void SetLLWorldPrev(deBillboard *billboard);
 	
 	/** \brief Next billboard in the parent world linked list. */
 	inline deBillboard *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next billboard in the parent world linked list. */
-	void SetLLWorldNext( deBillboard *billboard );
+	void SetLLWorldNext(deBillboard *billboard);
 	/*@}*/
 };
 

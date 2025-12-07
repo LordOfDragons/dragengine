@@ -71,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	meLSXMLHeightTerrain( meLoadSaveSystem *lssys );
+	meLSXMLHeightTerrain(meLoadSaveSystem *lssys);
 	/** Cleans up the object. */
 	virtual ~meLSXMLHeightTerrain();
 	/*@}*/
@@ -79,65 +79,65 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Loads a height terrain. */
-	virtual void LoadFromFile( meHeightTerrain &heightTerrain, decBaseFileReader &file );
+	virtual void LoadFromFile(meHeightTerrain &heightTerrain, decBaseFileReader &file);
 	/** Saves the height terrain. */
-	virtual void SaveToFile( meHeightTerrain &heightTerrain, decBaseFileWriter &file );
+	virtual void SaveToFile(meHeightTerrain &heightTerrain, decBaseFileWriter &file);
 	/*@}*/
 	
 private:
-	void pSaveHeightTerrain( decXmlWriter &writer, meHeightTerrain &heightTerrain );
-	void pSaveSector( decXmlWriter &writer, meHeightTerrainSector &sector );
-	void pSaveTexture( decXmlWriter &writer, const meHeightTerrainTexture &texture );
-	void pSaveNavSpace( decXmlWriter &writer, const meHeightTerrainNavSpace &navspace );
-	void pSaveNavSpaceType( decXmlWriter &writer, const meHeightTerrainNavSpaceType &navtype );
-	void pSaveVLayer( decXmlWriter &writer, const meHTVegetationLayer &vlayer );
-	void pSaveVLayerVariation( decXmlWriter &writer, const meHTVVariation &variation );
-	void pSaveVLayerRule( decXmlWriter &writer, const meHTVRule &rule );
-	void pSaveVLayerRuleClosestProp( decXmlWriter &writer, const meHTVRuleClosestProp &rule );
-	void pSaveVLayerRuleClosestVegetation( decXmlWriter &writer, const meHTVRuleClosestVegetation &rule );
-	void pSaveVLayerRuleCombine( decXmlWriter &writer, const meHTVRuleCombine &rule );
-	void pSaveVLayerRuleComponents( decXmlWriter &writer, const meHTVRuleComponents &rule );
-	void pSaveVLayerRuleCurve( decXmlWriter &writer, const meHTVRuleCurve &rule );
-	void pSaveVLayerRuleGeometry( decXmlWriter &writer, const meHTVRuleGeometry &rule );
-	void pSaveVLayerRuleMapping( decXmlWriter &writer, const meHTVRuleMapping &rule );
-	void pSaveVLayerRuleMath( decXmlWriter &writer, const meHTVRuleMath &rule );
-	void pSaveVLayerRuleMultiMath( decXmlWriter &writer, const meHTVRuleMultiMath &rule );
-	void pSaveVLayerRuleRandom( decXmlWriter &writer, const meHTVRuleRandom &rule );
-	void pSaveVLayerRuleResult( decXmlWriter &writer, const meHTVRuleResult &rule );
-	void pSaveVLayerRuleVectorMath( decXmlWriter &writer, const meHTVRuleVectorMath &rule );
-	void pSaveVLayerRuleConstant( decXmlWriter &writer, const meHTVRuleConstant &rule );
-	void pSaveVLayerRulePropCount( decXmlWriter &writer, const meHTVRulePropCount &rule );
-	void pSaveVLayerLink( decXmlWriter &writer, const meHTVegetationLayer &vlayer, const meHTVRLink &link );
+	void pSaveHeightTerrain(decXmlWriter &writer, meHeightTerrain &heightTerrain);
+	void pSaveSector(decXmlWriter &writer, meHeightTerrainSector &sector);
+	void pSaveTexture(decXmlWriter &writer, const meHeightTerrainTexture &texture);
+	void pSaveNavSpace(decXmlWriter &writer, const meHeightTerrainNavSpace &navspace);
+	void pSaveNavSpaceType(decXmlWriter &writer, const meHeightTerrainNavSpaceType &navtype);
+	void pSaveVLayer(decXmlWriter &writer, const meHTVegetationLayer &vlayer);
+	void pSaveVLayerVariation(decXmlWriter &writer, const meHTVVariation &variation);
+	void pSaveVLayerRule(decXmlWriter &writer, const meHTVRule &rule);
+	void pSaveVLayerRuleClosestProp(decXmlWriter &writer, const meHTVRuleClosestProp &rule);
+	void pSaveVLayerRuleClosestVegetation(decXmlWriter &writer, const meHTVRuleClosestVegetation &rule);
+	void pSaveVLayerRuleCombine(decXmlWriter &writer, const meHTVRuleCombine &rule);
+	void pSaveVLayerRuleComponents(decXmlWriter &writer, const meHTVRuleComponents &rule);
+	void pSaveVLayerRuleCurve(decXmlWriter &writer, const meHTVRuleCurve &rule);
+	void pSaveVLayerRuleGeometry(decXmlWriter &writer, const meHTVRuleGeometry &rule);
+	void pSaveVLayerRuleMapping(decXmlWriter &writer, const meHTVRuleMapping &rule);
+	void pSaveVLayerRuleMath(decXmlWriter &writer, const meHTVRuleMath &rule);
+	void pSaveVLayerRuleMultiMath(decXmlWriter &writer, const meHTVRuleMultiMath &rule);
+	void pSaveVLayerRuleRandom(decXmlWriter &writer, const meHTVRuleRandom &rule);
+	void pSaveVLayerRuleResult(decXmlWriter &writer, const meHTVRuleResult &rule);
+	void pSaveVLayerRuleVectorMath(decXmlWriter &writer, const meHTVRuleVectorMath &rule);
+	void pSaveVLayerRuleConstant(decXmlWriter &writer, const meHTVRuleConstant &rule);
+	void pSaveVLayerRulePropCount(decXmlWriter &writer, const meHTVRulePropCount &rule);
+	void pSaveVLayerLink(decXmlWriter &writer, const meHTVegetationLayer &vlayer, const meHTVRLink &link);
 	
-	void pLoadHeightTerrain( decXmlElementTag &root, meHeightTerrain &heightTerrain );
-	void pLoadSector( decXmlElementTag &root, meHeightTerrainSector &sector );
-	void pLoadTexture( decXmlElementTag &root, meHeightTerrainSector &sector );
-	void pLoadNavSpace( decXmlElementTag &root, meHeightTerrainSector &sector );
-	void pLoadNavSpaceType( decXmlElementTag &root, meHeightTerrainNavSpace &navspace );
-	void pLoadVLayer( decXmlElementTag &root, meHeightTerrain &heightTerrain );
-	void pLoadVLayerVariation( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRules( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	bool pLoadVLayerRule( decXmlElementTag &root, meHTVRule &rule );
-	void pLoadVLayerRuleClosestProp( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleClosestVegetation( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleCombine( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleComponents( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleCurve( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleGeometry( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleMapping( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleMath( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleMultiMath( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleRandom( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleResult( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleVectorMath( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRuleConstant( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerRulePropCount( decXmlElementTag &root, meHTVegetationLayer &vlayer );
-	void pLoadVLayerLink( decXmlElementTag &root, meHTVegetationLayer &vlayer );
+	void pLoadHeightTerrain(decXmlElementTag &root, meHeightTerrain &heightTerrain);
+	void pLoadSector(decXmlElementTag &root, meHeightTerrainSector &sector);
+	void pLoadTexture(decXmlElementTag &root, meHeightTerrainSector &sector);
+	void pLoadNavSpace(decXmlElementTag &root, meHeightTerrainSector &sector);
+	void pLoadNavSpaceType(decXmlElementTag &root, meHeightTerrainNavSpace &navspace);
+	void pLoadVLayer(decXmlElementTag &root, meHeightTerrain &heightTerrain);
+	void pLoadVLayerVariation(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRules(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	bool pLoadVLayerRule(decXmlElementTag &root, meHTVRule &rule);
+	void pLoadVLayerRuleClosestProp(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleClosestVegetation(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleCombine(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleComponents(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleCurve(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleGeometry(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleMapping(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleMath(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleMultiMath(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleRandom(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleResult(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleVectorMath(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRuleConstant(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerRulePropCount(decXmlElementTag &root, meHTVegetationLayer &vlayer);
+	void pLoadVLayerLink(decXmlElementTag &root, meHTVegetationLayer &vlayer);
 	
-	const char *pSlotInputNameForNumber( int ruleType, int slot ) const;
-	const char *pSlotOutputNameForNumber( int ruleType, int slot ) const;
-	int pSlotInputNumberForName( int ruleType, const char *name ) const;
-	int pSlotOutputNumberForName( int ruleType, const char *name ) const;
+	const char *pSlotInputNameForNumber(int ruleType, int slot) const;
+	const char *pSlotOutputNameForNumber(int ruleType, int slot) const;
+	int pSlotInputNumberForName(int ruleType, const char *name) const;
+	int pSlotOutputNumberForName(int ruleType, const char *name) const;
 };
 
 // end of include only once

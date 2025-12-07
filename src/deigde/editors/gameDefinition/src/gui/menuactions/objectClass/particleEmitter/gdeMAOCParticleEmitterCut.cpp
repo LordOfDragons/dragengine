@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCParticleEmitterCut::gdeMAOCParticleEmitterCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Particle Emitter",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class particle emitter" )
+gdeMAOCParticleEmitterCut::gdeMAOCParticleEmitterCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Cut Object Class Particle Emitter",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"Cut object class particle emitter")
 {
 }
 
@@ -61,13 +61,13 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Particle Emitter",
 ///////////////
 
 igdeUndo *gdeMAOCParticleEmitterCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCParticleEmitter ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCParticleEmitter){
 		return NULL;
 	}
 	
 	gdeOCParticleEmitter * const particleEmitter = gameDefinition.GetActiveOCParticleEmitter();
-	if( ! particleEmitter ){
+	if(!particleEmitter){
 		return NULL;
 	}
 	
@@ -75,12 +75,12 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	pWindowMain.GetClipboard().Set(gdeClipboardDataOCParticleEmitter::Ref::NewWith(clipOCParticleEmitter));
 	
-	return new gdeUOCRemoveParticleEmitter( &objectClass, particleEmitter );
+	return new gdeUOCRemoveParticleEmitter(&objectClass, particleEmitter);
 }
 
 void gdeMAOCParticleEmitterCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter
-		&& gameDefinition->GetActiveOCParticleEmitter() != NULL );
+		&& gameDefinition->GetActiveOCParticleEmitter() != NULL);
 }

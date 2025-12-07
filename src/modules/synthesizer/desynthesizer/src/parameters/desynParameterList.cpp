@@ -55,12 +55,12 @@ int desynParameterList::GetParameterCount() const{
 	return pParameters.GetCount();
 }
 
-int desynParameterList::IndexOfParameterNamed( const char *name ) const{
+int desynParameterList::IndexOfParameterNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( desynParameter* )pParameters.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((desynParameter*)pParameters.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -68,37 +68,37 @@ int desynParameterList::IndexOfParameterNamed( const char *name ) const{
 	return -1;
 }
 
-desynParameter &desynParameterList::GetParameterAt( int index ) const{
-	return *( ( desynParameter* )pParameters.GetAt( index ) );
+desynParameter &desynParameterList::GetParameterAt(int index) const{
+	return *((desynParameter*)pParameters.GetAt(index));
 }
 
-desynParameter &desynParameterList::GetParameterNamed( const char *name ) const{
+desynParameter &desynParameterList::GetParameterNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		desynParameter &parameter = *( ( desynParameter* )pParameters.GetAt( i ) );
-		if( parameter.GetName() == name ){
+	for(i=0; i<count; i++){
+		desynParameter &parameter = *((desynParameter*)pParameters.GetAt(i));
+		if(parameter.GetName() == name){
 			return parameter;
 		}
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void desynParameterList::AddParameter( desynParameter *parameter ){
-	if( ! parameter || IndexOfParameterNamed( parameter->GetName() ) != -1 ){
-		DETHROW( deeInvalidParam );
+void desynParameterList::AddParameter(desynParameter *parameter){
+	if(!parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
+		DETHROW(deeInvalidParam);
 	}
-	pParameters.Add( parameter );
+	pParameters.Add(parameter);
 }
 
 void desynParameterList::RemoveAllParameters(){
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( desynParameter* )pParameters.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (desynParameter*)pParameters.GetAt(i);
 	}
 	pParameters.RemoveAll();
 }

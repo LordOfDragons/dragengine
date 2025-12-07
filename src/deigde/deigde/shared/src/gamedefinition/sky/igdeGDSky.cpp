@@ -40,31 +40,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDSky::igdeGDSky( const char *path, const char *name ) :
-pPath( path ),
-pName( name ){
+igdeGDSky::igdeGDSky(const char *path, const char *name) :
+pPath(path),
+pName(name){
 }
 
-igdeGDSky::igdeGDSky( const igdeGDSky &sky ) :
-pPath( sky.pPath ),
-pName( sky.pName ),
-pDescription( sky.pDescription ),
-pCategory( sky.pCategory )
+igdeGDSky::igdeGDSky(const igdeGDSky &sky) :
+pPath(sky.pPath),
+pName(sky.pName),
+pDescription(sky.pDescription),
+pCategory(sky.pCategory)
 {
 	const int controllerCount = sky.GetControllerCount();
 	igdeGDSkyController *controller = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<controllerCount; i++ ){
-			controller = new igdeGDSkyController( *sky.GetControllerAt( i ) );
-			pControllers.Add( controller );
+		for(i=0; i<controllerCount; i++){
+			controller = new igdeGDSkyController(*sky.GetControllerAt(i));
+			pControllers.Add(controller);
 			controller->FreeReference();
 			controller = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( controller ){
+	}catch(const deException &){
+		if(controller){
 			controller->FreeReference();
 		}
 		throw;
@@ -79,23 +79,23 @@ igdeGDSky::~igdeGDSky(){
 // Management
 ///////////////
 
-void igdeGDSky::SetPath( const char *path ){
+void igdeGDSky::SetPath(const char *path){
 	pPath = path;
 }
 
-void igdeGDSky::SetName( const char *name ){
+void igdeGDSky::SetName(const char *name){
 	pName = name;
 }
 
-void igdeGDSky::SetDescription( const char *description ){
+void igdeGDSky::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void igdeGDSky::SetCategory( const char *category ){
+void igdeGDSky::SetCategory(const char *category){
 	pCategory = category;
 }
 
-void igdeGDSky::SetPreviewImage( deImage *image ){
+void igdeGDSky::SetPreviewImage(deImage *image){
 	pPreviewImage = image;
 }
 
@@ -108,15 +108,15 @@ int igdeGDSky::GetControllerCount() const{
 	return pControllers.GetCount();
 }
 
-igdeGDSkyController *igdeGDSky::GetControllerAt( int index ) const{
-	return ( igdeGDSkyController* )pControllers.GetAt( index );
+igdeGDSkyController *igdeGDSky::GetControllerAt(int index) const{
+	return (igdeGDSkyController*)pControllers.GetAt(index);
 }
 
-void igdeGDSky::AddController( igdeGDSkyController *controller ){
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+void igdeGDSky::AddController(igdeGDSkyController *controller){
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 }
 
 void igdeGDSky::RemoveAllControllers(){

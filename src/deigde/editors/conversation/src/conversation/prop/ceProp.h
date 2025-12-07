@@ -68,28 +68,28 @@ public:
 	/** \brief Retrieves the parent conversation. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	/** \brief Sets the parent conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** \brief Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** \brief Retrieves the object class. */
 	inline const decString &GetObjectClass() const{ return pObjectClass; }
 	/** \brief Sets the object class. */
-	void SetObjectClass( const char *objectClass );
+	void SetObjectClass(const char *objectClass);
 	/** \brief Retrieves the position of the prop. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	/** \brief Sets the position of the prop. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** \brief Retrieves the orientation of the prop. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	/** \brief Sets the orientation of the prop. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	/** \brief Determines if the prop is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	/** \brief Sets if the prop is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Retrieves the object wrapper. */
 	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pObjectWrapper; }

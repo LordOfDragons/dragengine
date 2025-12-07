@@ -53,13 +53,13 @@ public:
 	/** Retrieves the count of weight sets. */
 	int GetCount() const;
 	/** Retrieves the weight set at the given index. */
-	deoccmWeightSet *GetAt( int index ) const;
+	deoccmWeightSet *GetAt(int index) const;
 	/** Adds a weight set. */
-	void Add( deoccmWeightSet *weightSet );
+	void Add(deoccmWeightSet *weightSet);
 	/** Remove all weight sets. */
 	void RemoveAll();
 	/** Retrieves the index of the weight set which is equal to the given weight set or -1 if not found. */
-	int IndexOfEqual( const deoccmWeightSet &weightSet ) const;
+	int IndexOfEqual(const deoccmWeightSet &weightSet) const;
 	/** Retrieves the largest number of weights in all of the weight sets. */
 	int GetLargestWeightCount() const;
 	/*@}*/

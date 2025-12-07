@@ -42,22 +42,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleMath::meHTVRuleMath() : meHTVRule( ertMath, 3 ){
+meHTVRuleMath::meHTVRuleMath() : meHTVRule(ertMath, 3){
 	pValueA = 0.5f;
 	pValueB = 0.5f;
 	pOperator = eopAdd;
 	
-	GetSlotAt( eisValueA ).SetIsInput( true );
-	GetSlotAt( eisValueB ).SetIsInput( true );
+	GetSlotAt(eisValueA).SetIsInput(true);
+	GetSlotAt(eisValueB).SetIsInput(true);
 	
-	GetSlotAt( eosResult ).SetIsInput( false );
+	GetSlotAt(eosResult).SetIsInput(false);
 }
 
-meHTVRuleMath::meHTVRuleMath( const meHTVRuleMath &rule ) :
-meHTVRule( rule ),
-pValueA( rule.pValueA ),
-pValueB( rule.pValueB ),
-pOperator( rule.pOperator ){
+meHTVRuleMath::meHTVRuleMath(const meHTVRuleMath &rule) :
+meHTVRule(rule),
+pValueA(rule.pValueA),
+pValueB(rule.pValueB),
+pOperator(rule.pOperator){
 }
 
 meHTVRuleMath::~meHTVRuleMath(){
@@ -68,42 +68,42 @@ meHTVRuleMath::~meHTVRuleMath(){
 // Management
 ///////////////
 
-void meHTVRuleMath::SetValueA( float value ){
+void meHTVRuleMath::SetValueA(float value){
 	pValueA = value;
 }
 
-void meHTVRuleMath::SetValueB( float value ){
+void meHTVRuleMath::SetValueB(float value){
 	pValueB = value;
 }
 
-void meHTVRuleMath::SetOperator( eOperators oper ){
+void meHTVRuleMath::SetOperator(eOperators oper){
 	pOperator = oper;
 }
 
 
 
-float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != eosResult ) DETHROW( deeInvalidParam );
+float meHTVRuleMath::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != eosResult) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &inputValueA = GetSlotAt( eisValueA );
-	meHTVRSlot &inputValueB = GetSlotAt( eisValueB );
+	meHTVRSlot &inputValueA = GetSlotAt(eisValueA);
+	meHTVRSlot &inputValueB = GetSlotAt(eisValueB);
 	
 	float valueA = pValueA;
 	float valueB = pValueB;
 	
-	if( inputValueA.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputValueA.GetLinkAt( 0 );
+	if(inputValueA.GetLinkCount() > 0){
+		meHTVRLink &link = *inputValueA.GetLinkAt(0);
 		
-		valueA = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		valueA = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if( inputValueB.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputValueB.GetLinkAt( 0 );
+	if(inputValueB.GetLinkCount() > 0){
+		meHTVRLink &link = *inputValueB.GetLinkAt(0);
 		
-		valueB = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+		valueB = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	switch( pOperator ){
+	switch(pOperator){
 	case eopAdd:
 		return valueA + valueB;
 		
@@ -114,7 +114,7 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		return valueA * valueB;
 		
 	case eopDivide:
-		if( valueB == 0.0f ){
+		if(valueB == 0.0f){
 			return 0.0f;
 			
 		}else{
@@ -122,34 +122,34 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		}
 		
 	case eopSine:
-		return sinf( valueA * DEG2RAD );
+		return sinf(valueA * DEG2RAD);
 		
 	case eopCosine:
-		return cosf( valueA * DEG2RAD );
+		return cosf(valueA * DEG2RAD);
 		
 	case eopTangent:
-		return tanf( valueA * DEG2RAD );
+		return tanf(valueA * DEG2RAD);
 		
 	case eopArcSine:
-		return asinf( valueA ) / DEG2RAD;
+		return asinf(valueA) * RAD2DEG;
 		
 	case eopArcCosine:
-		return acosf( valueA ) / DEG2RAD;
+		return acosf(valueA) * RAD2DEG;
 		
 	case eopArcTangent:
-		return atanf( valueA ) / DEG2RAD;
+		return atanf(valueA) * RAD2DEG;
 		
 	case eopPower:
-		return powf( valueA, valueB );
+		return powf(valueA, valueB);
 		
 	case eopExponential:
-		return expf( valueA );
+		return expf(valueA);
 		
 	case eopLogarithm:
-		return logf( valueA );
+		return logf(valueA);
 		
 	case eopMinimum:
-		if( valueA < valueB ){
+		if(valueA < valueB){
 			return valueA;
 			
 		}else{
@@ -157,7 +157,7 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		}
 		
 	case eopMaximum:
-		if( valueA > valueB ){
+		if(valueA > valueB){
 			return valueA;
 			
 		}else{
@@ -165,17 +165,17 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		}
 		
 	case eopRound:
-		if( valueB < 1e-5f ){
+		if(valueB < 1e-5f){
 			return valueA;
 			
 		}else{
 			// dirty and not that precise but should do the trick for what we need it
 			float halfStep = valueB * 0.5f;
-			return valueA - ( fmodf( valueA + halfStep, valueB ) - halfStep );
+			return valueA - (fmodf(valueA + halfStep, valueB) - halfStep);
 		}
 		
 	case eopLessThan:
-		if( valueA <= valueB ){
+		if(valueA <= valueB){
 			return 1.0f;
 			
 		}else{
@@ -183,7 +183,7 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		}
 		
 	case eopGreaterThan:
-		if( valueA >= valueB ){
+		if(valueA >= valueB){
 			return 1.0f;
 			
 		}else{
@@ -191,7 +191,7 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		}
 		
 	case eopEqual:
-		if( fabsf( valueA - valueB ) < 1e-5f ){
+		if(fabsf(valueA - valueB) < 1e-5f){
 			return 1.0f;
 			
 		}else{
@@ -199,7 +199,7 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		}
 		
 	case eopNotEqual:
-		if( fabsf( valueA - valueB ) > 1e-5f ){
+		if(fabsf(valueA - valueB) > 1e-5f){
 			return 1.0f;
 			
 		}else{
@@ -207,19 +207,19 @@ float meHTVRuleMath::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment 
 		}
 		
 	case eopAverage:
-		return ( valueA + valueB ) * 0.5f;
+		return (valueA + valueB) * 0.5f;
 		
 	default:
 		return 0.0f;
 	}
 }
 
-decVector meHTVRuleMath::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	float value = GetOutputSlotValueAt( slot, evalEnv );
+decVector meHTVRuleMath::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	float value = GetOutputSlotValueAt(slot, evalEnv);
 	
-	return decVector( value, value, value );
+	return decVector(value, value, value);
 }
 
 meHTVRule *meHTVRuleMath::Copy() const{
-	return new meHTVRuleMath( *this );
+	return new meHTVRuleMath(*this);
 }

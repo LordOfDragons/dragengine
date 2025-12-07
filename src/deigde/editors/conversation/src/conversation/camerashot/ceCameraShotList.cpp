@@ -55,19 +55,19 @@ int ceCameraShotList::GetCount() const{
 	return pShots.GetCount();
 }
 
-ceCameraShot *ceCameraShotList::GetAt( int index ) const{
-	return ( ceCameraShot* )pShots.GetAt( index );
+ceCameraShot *ceCameraShotList::GetAt(int index) const{
+	return (ceCameraShot*)pShots.GetAt(index);
 }
 
-ceCameraShot *ceCameraShotList::GetNamed( const char *name ) const{
+ceCameraShot *ceCameraShotList::GetNamed(const char *name) const{
 	const int count = pShots.GetCount();
 	ceCameraShot *cameraShot;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		cameraShot = ( ceCameraShot* )pShots.GetAt( i );
+	for(i=0; i<count; i++){
+		cameraShot = (ceCameraShot*)pShots.GetAt(i);
 		
-		if( cameraShot->GetName().Equals( name ) ){
+		if(cameraShot->GetName().Equals(name)){
 			return cameraShot;
 		}
 	}
@@ -75,16 +75,16 @@ ceCameraShot *ceCameraShotList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int ceCameraShotList::IndexOf( ceCameraShot *cameraShot ) const{
-	return pShots.IndexOf( cameraShot );
+int ceCameraShotList::IndexOf(ceCameraShot *cameraShot) const{
+	return pShots.IndexOf(cameraShot);
 }
 
-int ceCameraShotList::IndexOfNamed( const char *name ) const{
+int ceCameraShotList::IndexOfNamed(const char *name) const{
 	const int count = pShots.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceCameraShot* )pShots.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceCameraShot*)pShots.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int ceCameraShotList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool ceCameraShotList::Has( ceCameraShot *cameraShot ) const{
-	return pShots.Has( cameraShot );
+bool ceCameraShotList::Has(ceCameraShot *cameraShot) const{
+	return pShots.Has(cameraShot);
 }
 
-bool ceCameraShotList::HasNamed( const char *name ) const{
+bool ceCameraShotList::HasNamed(const char *name) const{
 	const int count = pShots.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceCameraShot* )pShots.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceCameraShot*)pShots.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool ceCameraShotList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void ceCameraShotList::Add( ceCameraShot *cameraShot ){
-	if( ! cameraShot || HasNamed( cameraShot->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void ceCameraShotList::Add(ceCameraShot *cameraShot){
+	if(!cameraShot || HasNamed(cameraShot->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pShots.Add( cameraShot );
+	pShots.Add(cameraShot);
 }
 
-void ceCameraShotList::Remove( ceCameraShot *cameraShot ){
-	pShots.Remove( cameraShot );
+void ceCameraShotList::Remove(ceCameraShot *cameraShot){
+	pShots.Remove(cameraShot);
 }
 
 void ceCameraShotList::RemoveAll(){
@@ -125,12 +125,12 @@ void ceCameraShotList::RemoveAll(){
 
 
 
-ceCameraShotList &ceCameraShotList::operator=( const ceCameraShotList &list ){
+ceCameraShotList &ceCameraShotList::operator=(const ceCameraShotList &list){
 	pShots = list.pShots;
 	return *this;
 }
 
-ceCameraShotList &ceCameraShotList::operator+=( const ceCameraShotList &list ){
+ceCameraShotList &ceCameraShotList::operator+=(const ceCameraShotList &list){
 	pShots += list.pShots;
 	return *this;
 }

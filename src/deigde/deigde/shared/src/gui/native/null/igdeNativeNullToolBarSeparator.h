@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullToolBarSeparator();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullToolBarSeparator* CreateNativeWidget( igdeToolBarSeparator &owner );
+	static igdeNativeNullToolBarSeparator* CreateNativeWidget(igdeToolBarSeparator &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

@@ -57,9 +57,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delGameConfigXML::delGameConfigXML( delLauncher &launcher ) :
-delSharedConfigXML( launcher.GetLogger(), launcher.GetLogSource() ),
-pLauncher( launcher ){
+delGameConfigXML::delGameConfigXML(delLauncher &launcher) :
+delSharedConfigXML(launcher.GetLogger(), launcher.GetLogSource()),
+pLauncher(launcher){
 }
 
 delGameConfigXML::~delGameConfigXML(){
@@ -70,26 +70,26 @@ delGameConfigXML::~delGameConfigXML(){
 // Management
 ///////////////
 
-void delGameConfigXML::ReadFromFile( decBaseFileReader &reader, delGame &game ){
+void delGameConfigXML::ReadFromFile(decBaseFileReader &reader, delGame &game){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "gameConfig" ){
-		DETHROW_INFO( deeInvalidParam, "missing root tag 'gameConfig'" );
+	if(!root || root->GetName() != "gameConfig"){
+		DETHROW_INFO(deeInvalidParam, "missing root tag 'gameConfig'");
 	}
 	
-	pReadConfig( *root, game );
+	pReadConfig(*root, game);
 }
 
-void delGameConfigXML::WriteToFile( decBaseFileWriter &writer, const delGame &game ){
-	decXmlWriter xmlWriter( &writer );
+void delGameConfigXML::WriteToFile(decBaseFileWriter &writer, const delGame &game){
+	decXmlWriter xmlWriter(&writer);
 	xmlWriter.WriteXMLDeclaration();
-	pWriteConfig( xmlWriter, game );
+	pWriteConfig(xmlWriter, game);
 }
 
 
@@ -97,63 +97,63 @@ void delGameConfigXML::WriteToFile( decBaseFileWriter &writer, const delGame &ga
 // Private Functions
 //////////////////////
 
-void delGameConfigXML::pWriteConfig( decXmlWriter &writer, const delGame &game ){
-	writer.WriteOpeningTag( "gameConfig", false, true );
+void delGameConfigXML::pWriteConfig(decXmlWriter &writer, const delGame &game){
+	writer.WriteOpeningTag("gameConfig", false, true);
 	
-	if( game.GetCustomProfile() ){
-		WriteProfile( writer, *game.GetCustomProfile(), "customProfile" );
-	}
-	
-	if( game.GetActiveProfile() ){
-		writer.WriteDataTagString( "activeProfile", game.GetActiveProfile()->GetName() );
+	if(game.GetCustomProfile()){
+		WriteProfile(writer, *game.GetCustomProfile(), "customProfile");
 	}
 	
-	if( ! game.GetRunArguments().IsEmpty() ){
-		writer.WriteDataTagString( "runArguments", game.GetRunArguments() );
+	if(game.GetActiveProfile()){
+		writer.WriteDataTagString("activeProfile", game.GetActiveProfile()->GetName());
 	}
 	
-	writer.WriteDataTagBool( "useLatestPatch", game.GetUseLatestPatch() );
-	if( game.GetUseCustomPatch() ){
-		writer.WriteDataTagString( "useCustomPatch", game.GetUseCustomPatch().ToHexString( false ) );
+	if(!game.GetRunArguments().IsEmpty()){
+		writer.WriteDataTagString("runArguments", game.GetRunArguments());
 	}
 	
-	if( ! game.GetDelgaFile().IsEmpty() ){
-		writer.WriteDataTagString( "delgaFile", game.GetDelgaFile() );
-	}
-	if( ! game.GetAliasIdentifier().IsEmpty() ){
-		writer.WriteDataTagString( "aliasIdentifier", game.GetAliasIdentifier() );
-	}
-	if( ! game.GetTitle().IsEmpty() ){
-		writer.WriteDataTagString( "title", game.GetTitle().ToUTF8() );
+	writer.WriteDataTagBool("useLatestPatch", game.GetUseLatestPatch());
+	if(game.GetUseCustomPatch()){
+		writer.WriteDataTagString("useCustomPatch", game.GetUseCustomPatch().ToHexString(false));
 	}
 	
-	if( game.GetIcons().GetCount() > 0 ){
+	if(!game.GetDelgaFile().IsEmpty()){
+		writer.WriteDataTagString("delgaFile", game.GetDelgaFile());
+	}
+	if(!game.GetAliasIdentifier().IsEmpty()){
+		writer.WriteDataTagString("aliasIdentifier", game.GetAliasIdentifier());
+	}
+	if(!game.GetTitle().IsEmpty()){
+		writer.WriteDataTagString("title", game.GetTitle().ToUTF8());
+	}
+	
+	if(game.GetIcons().GetCount() > 0){
 		const delGameIcon * const icon = game.GetIcons().GetLargest();
 		
-		if( icon->GetContent() ){
-			const int indexExt = icon->GetPath().FindReverse( '.' );
-			decString filenameIcon( "icon" );
-			if( indexExt != -1 ){
-				filenameIcon += icon->GetPath().GetMiddle( indexExt );
+		if(icon->GetContent()){
+			const int indexExt = icon->GetPath().FindReverse('.');
+			decString filenameIcon("icon");
+			if(indexExt != -1){
+				filenameIcon += icon->GetPath().GetMiddle(indexExt);
 			}
 			
 			decPath pathIcon;
-			pathIcon.SetFromUnix( "/config/user/games" );
-			pathIcon.AddComponent( game.GetIdentifier().ToHexString( false ) );
-			pathIcon.AddComponent( filenameIcon );
+			pathIcon.SetFromUnix("/config/user/games");
+			pathIcon.AddComponent(game.GetIdentifier().ToHexString(false));
+			pathIcon.AddComponent(filenameIcon);
 			
 			try{
-				decBaseFileWriter::Ref::New( pLauncher.GetVFS()->OpenFileForWriting( pathIcon ) )
-					->Write( icon->GetContent()->GetPointer(), icon->GetContent()->GetLength() );
+				decBaseFileWriter::Ref::New(pLauncher.GetVFS()->OpenFileForWriting(pathIcon))
+					->Write(icon->GetContent()->GetPointer(), icon->GetContent()->GetLength());
 				
-				writer.WriteOpeningTagStart( "icon" );
-				writer.WriteAttributeInt( "size", icon->GetSize() );
-				writer.WriteOpeningTagEnd( false, false );
-				writer.WriteTextString( filenameIcon );
-				writer.WriteClosingTag( "icon", false );
+				writer.WriteOpeningTagStart("icon");
+				writer.WriteAttributeInt("size", icon->GetSize());
+				writer.WriteOpeningTagEnd(false, false);
+				writer.WriteTextString(filenameIcon);
+				writer.WriteClosingTag("icon", false);
 				
-			}catch( const deException &e ){
-				GetLogger()->LogException( GetLoggerSource(), e );
+			}catch(const deException &e){
+				GetLogger()->LogException(GetLoggerSource(), e);
 			}
 		}
 	}
@@ -175,98 +175,98 @@ void delGameConfigXML::pWriteConfig( decXmlWriter &writer, const delGame &game )
 		}
 	}
 	
-	writer.WriteClosingTag( "gameConfig", true );
+	writer.WriteClosingTag("gameConfig", true);
 }
 
 
 
-void delGameConfigXML::pReadConfig( const decXmlElementTag &root, delGame &game ){
+void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "customProfile" ){
-			delGameProfile::Ref profile( delGameProfile::Ref::New( game.GetLauncher().CreateGameProfile() ) );
-			ReadProfile( *tag, profile );
-			profile->SetName( "" );
+		if(tagName == "customProfile"){
+			delGameProfile::Ref profile(delGameProfile::Ref::New(game.GetLauncher().CreateGameProfile()));
+			ReadProfile(*tag, profile);
+			profile->SetName("");
 			
-			game.SetCustomProfile( profile );
+			game.SetCustomProfile(profile);
 			
-		}else if( tagName == "activeProfile" ){
-			const decString &name = GetCDataString( *tag );
-			if( name.IsEmpty() ){
-				game.SetActiveProfile( game.GetCustomProfile() );
+		}else if(tagName == "activeProfile"){
+			const decString &name = GetCDataString(*tag);
+			if(name.IsEmpty()){
+				game.SetActiveProfile(game.GetCustomProfile());
 				
 			}else{
-				game.SetActiveProfile( pLauncher.GetGameManager().GetProfiles().GetNamed ( name ) );
-				if( ! game.GetActiveProfile() ){
-					GetLogger()->LogWarnFormat( GetLoggerSource(), "%s(%i:%i): Profile '%s' does not exist",
-						tag->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(), name.GetString() );
+				game.SetActiveProfile(pLauncher.GetGameManager().GetProfiles().GetNamed (name));
+				if(!game.GetActiveProfile()){
+					GetLogger()->LogWarnFormat(GetLoggerSource(), "%s(%i:%i): Profile '%s' does not exist",
+						tag->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(), name.GetString());
 				}
 			}
 			
-		}else if( tagName == "runArguments" ){
-			game.SetRunArguments( GetCDataString( *tag ) );
+		}else if(tagName == "runArguments"){
+			game.SetRunArguments(GetCDataString(*tag));
 			
-		}else if( tagName == "useLatestPatch" ){
-			game.SetUseLatestPatch( GetCDataBool( *tag ) );
+		}else if(tagName == "useLatestPatch"){
+			game.SetUseLatestPatch(GetCDataBool(*tag));
 			
-		}else if( tagName == "useCustomPatch" ){
-			const decString &value = GetCDataString( *tag );
-			game.SetUseCustomPatch( ! value.IsEmpty() ? decUuid( value, false ) : decUuid() );
+		}else if(tagName == "useCustomPatch"){
+			const decString &value = GetCDataString(*tag);
+			game.SetUseCustomPatch(!value.IsEmpty() ? decUuid(value, false) : decUuid());
 			
-		}else if( tagName == "delgaFile" ){
+		}else if(tagName == "delgaFile"){
 			// do not replace if present. this is fallback information
-			if( game.GetDelgaFile().IsEmpty() ){
-				game.SetDelgaFile( GetCDataString( *tag ) );
+			if(game.GetDelgaFile().IsEmpty()){
+				game.SetDelgaFile(GetCDataString(*tag));
 			}
 			
-		}else if( tagName == "aliasIdentifier" ){
+		}else if(tagName == "aliasIdentifier"){
 			// do not replace if present. this is fallback information
-			if( game.GetAliasIdentifier().IsEmpty() ){
-				game.SetAliasIdentifier( GetCDataString( *tag ) );
+			if(game.GetAliasIdentifier().IsEmpty()){
+				game.SetAliasIdentifier(GetCDataString(*tag));
 			}
 			
-		}else if( tagName == "title" ){
+		}else if(tagName == "title"){
 			// do not replace if present. this is fallback information
-			if( game.GetTitle().IsEmpty() ){
-				game.SetTitle( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
+			if(game.GetTitle().IsEmpty()){
+				game.SetTitle(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 			}
 			
-		}else if( tagName == "icon" ){
+		}else if(tagName == "icon"){
 			// do not replace if present. this is fallback information
-			if( game.GetIcons().GetCount() == 0 ){
-				const decString filenameIcon( GetCDataString( *tag ) );
-				const int size = GetAttributeInt( *tag, "size" );
+			if(game.GetIcons().GetCount() == 0){
+				const decString filenameIcon(GetCDataString(*tag));
+				const int size = GetAttributeInt(*tag, "size");
 				
-				const delGameIcon::Ref icon( delGameIcon::Ref::New(
-					pLauncher.CreateGameIcon( size, filenameIcon ) ) );
+				const delGameIcon::Ref icon(delGameIcon::Ref::New(
+					pLauncher.CreateGameIcon(size, filenameIcon)));
 				
-				const decMemoryFile::Ref content( decMemoryFile::Ref::NewWith(filenameIcon) );
+				const decMemoryFile::Ref content(decMemoryFile::Ref::NewWith(filenameIcon));
 				
 				decPath pathIcon;
-				pathIcon.SetFromUnix( "/config/user/games" );
-				pathIcon.AddComponent( game.GetIdentifier().ToHexString( false ) );
-				pathIcon.AddComponent( filenameIcon );
+				pathIcon.SetFromUnix("/config/user/games");
+				pathIcon.AddComponent(game.GetIdentifier().ToHexString(false));
+				pathIcon.AddComponent(filenameIcon);
 				
 				try{
-					const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
-						pLauncher.GetVFS()->OpenFileForReading( pathIcon ) ) );
+					const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+						pLauncher.GetVFS()->OpenFileForReading(pathIcon)));
 					const int length = reader->GetLength();
-					content->Resize( length );
-					reader->Read( content->GetPointer(), length );
+					content->Resize(length);
+					reader->Read(content->GetPointer(), length);
 					
-					icon->SetContent( content );
-					game.GetIcons().Add( icon );
+					icon->SetContent(content);
+					game.GetIcons().Add(icon);
 					
-				}catch( const deException &e ){
-					GetLogger()->LogException( GetLoggerSource(), e );
+				}catch(const deException &e){
+					GetLogger()->LogException(GetLoggerSource(), e);
 				}
 			}
 			

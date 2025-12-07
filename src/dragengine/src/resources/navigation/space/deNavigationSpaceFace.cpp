@@ -49,10 +49,10 @@ deNavigationSpaceFace::~deNavigationSpaceFace(){
 // Management
 ///////////////
 
-void deNavigationSpaceFace::SetCornerCount( unsigned short count ){
+void deNavigationSpaceFace::SetCornerCount(unsigned short count){
 	pCornerCount = count;
 }
 
-void deNavigationSpaceFace::SetType( unsigned short type ){
+void deNavigationSpaceFace::SetType(unsigned short type){
 	pType = type;
 }

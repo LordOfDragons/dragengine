@@ -59,16 +59,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-meObjectSnapPoint::meObjectSnapPoint( meObject *object, igdeGDCSnapPoint *snapPoint ) :
-pWorld( NULL ),
-pObject( object ),
-pSnapPoint( snapPoint ),
-pDDShape( NULL ),
-pCollider( NULL ),
-pColliderOwner( this )
+meObjectSnapPoint::meObjectSnapPoint(meObject *object, igdeGDCSnapPoint *snapPoint) :
+pWorld(NULL),
+pObject(object),
+pSnapPoint(snapPoint),
+pDDShape(NULL),
+pCollider(NULL),
+pColliderOwner(this)
 {
-	if( ! object || ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!object || !snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deEngine * const engine = object->GetEnvironment()->GetEngineController()->GetEngine();
@@ -76,47 +76,47 @@ pColliderOwner( this )
 	try{
 		// create collider
 		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmSnapPoint );
+		collisionCategory.SetBit(meWorld::eclmSnapPoint);
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
+		collisionFilter.SetBit(meWorld::eclmEditing);
 		
 		pCollider = engine->GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertStatic );
-		pCollider->SetUseLocalGravity( true );
-		pCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+		pCollider->SetEnabled(true);
+		pCollider->SetResponseType(deCollider::ertStatic);
+		pCollider->SetUseLocalGravity(true);
+		pCollider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 		
 		decShapeList colliderShape;
-		colliderShape.Add( new decShapeSphere( snapPoint->GetSnapDistance() ) );
-		pCollider->SetShapes( colliderShape );
+		colliderShape.Add(new decShapeSphere(snapPoint->GetSnapDistance()));
+		pCollider->SetShapes(colliderShape);
 		
-		object->GetEnvironment()->SetColliderUserPointer( pCollider, &pColliderOwner );
+		object->GetEnvironment()->SetColliderUserPointer(pCollider, &pColliderOwner);
 		
-		deColliderAttachment * const attachment = new deColliderAttachment( pCollider );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( snapPoint->GetPosition() );
-		attachment->SetOrientation( decQuaternion::CreateFromEuler(
-			snapPoint->GetRotation() * DEG2RAD ) );
-		object->GetColDetCollider()->AddAttachment( attachment );
+		deColliderAttachment * const attachment = new deColliderAttachment(pCollider);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
+		attachment->SetPosition(snapPoint->GetPosition());
+		attachment->SetOrientation(decQuaternion::CreateFromEuler(
+			snapPoint->GetRotation() * DEG2RAD));
+		object->GetColDetCollider()->AddAttachment(attachment);
 		
 		// create debug drawer shape
 		pDDShape = new igdeWDebugDrawerShape;
-		pDDShape->SetVisible( true );
-		pDDShape->SetEdgeColor( decColor( 0.0f, 0.5f, 0.0f, 0.5f ) );
-		pDDShape->SetFillColor( decColor( 0.0f, 0.5f, 0.0f, 0.1f ) );
-		pDDShape->SetPosition( snapPoint->GetPosition() );
-		pDDShape->SetOrientation( decQuaternion::CreateFromEuler(
-			snapPoint->GetRotation() * DEG2RAD ) );
-		pDDShape->SetParentDebugDrawer( object->GetDebugDrawer() );
+		pDDShape->SetVisible(true);
+		pDDShape->SetEdgeColor(decColor(0.0f, 0.5f, 0.0f, 0.5f));
+		pDDShape->SetFillColor(decColor(0.0f, 0.5f, 0.0f, 0.1f));
+		pDDShape->SetPosition(snapPoint->GetPosition());
+		pDDShape->SetOrientation(decQuaternion::CreateFromEuler(
+			snapPoint->GetRotation() * DEG2RAD));
+		pDDShape->SetParentDebugDrawer(object->GetDebugDrawer());
 		
 		const float r1 = snapPoint->GetSnapDistance();
 		const float r2 = r1 * 0.025f;
-		pDDShape->AddBoxShape( decVector( r1, r2, r2 ), decVector(), decQuaternion() );
-		pDDShape->AddBoxShape( decVector( r2, r1, r2 ), decVector(), decQuaternion() );
-		pDDShape->AddBoxShape( decVector( r2, r2, r1 ), decVector(), decQuaternion() );
+		pDDShape->AddBoxShape(decVector(r1, r2, r2), decVector(), decQuaternion());
+		pDDShape->AddBoxShape(decVector(r2, r1, r2), decVector(), decQuaternion());
+		pDDShape->AddBoxShape(decVector(r2, r2, r1), decVector(), decQuaternion());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -131,19 +131,19 @@ meObjectSnapPoint::~meObjectSnapPoint(){
 // Management
 ///////////////
 
-void meObjectSnapPoint::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meObjectSnapPoint::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pWorld ){
-		pWorld->GetEngineWorld()->RemoveCollider( pCollider );
+	if(pWorld){
+		pWorld->GetEngineWorld()->RemoveCollider(pCollider);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->GetEngineWorld()->AddCollider( pCollider );
+	if(world){
+		world->GetEngineWorld()->AddCollider(pCollider);
 	}
 }
 
@@ -153,23 +153,23 @@ void meObjectSnapPoint::SetWorld( meWorld *world ){
 //////////////////////
 
 void meObjectSnapPoint::pCleanUp(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
-	if( pObject && pCollider ){
+	if(pObject && pCollider){
 		deColliderAttachment * const attachment =
-			pObject->GetColDetCollider()->GetAttachmentWith( pCollider );
-		if( attachment ){
-			pObject->GetColDetCollider()->RemoveAttachment( attachment );
+			pObject->GetColDetCollider()->GetAttachmentWith(pCollider);
+		if(attachment){
+			pObject->GetColDetCollider()->RemoveAttachment(attachment);
 		}
 		
-		pObject->GetEnvironment()->SetColliderUserPointer( pCollider, NULL );
+		pObject->GetEnvironment()->SetColliderUserPointer(pCollider, NULL);
 	}
 	
-	if( pCollider ){
+	if(pCollider){
 		pCollider->FreeReference();
 	}
 	
-	if( pDDShape ){
+	if(pDDShape){
 		delete pDDShape;
 	}
 }

@@ -45,7 +45,7 @@ public:
 	virtual ~igdeNativeNullWindow();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullWindow* CreateNativeWidget( igdeWindow &owner );
+	static igdeNativeNullWindow* CreateNativeWidget(igdeWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -67,7 +67,7 @@ public:
 	
 	virtual void OnFrameUpdate();
 	inline bool GetIsClosed() const{ return pIsClosed; }
-	void SetIsClosed( bool isClosed );
+	void SetIsClosed(bool isClosed);
 	/*@}*/
 };
 

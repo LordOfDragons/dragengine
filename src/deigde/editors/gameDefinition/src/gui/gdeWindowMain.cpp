@@ -157,18 +157,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWindowMain::gdeWindowMain( igdeEditorModule &module ) :
-igdeEditorWindow( module ),
+gdeWindowMain::gdeWindowMain(igdeEditorModule &module) :
+igdeEditorWindow(module),
 
-pListener( NULL ),
+pListener(NULL),
 
-pConfiguration( NULL ),
-pLoadSaveSystem( NULL ),
+pConfiguration(NULL),
+pLoadSaveSystem(NULL),
 
-pViewActiveObject( NULL ),
-pWindowProperties( NULL ),
+pViewActiveObject(NULL),
+pWindowProperties(NULL),
 
-pActiveGameDefinition( NULL )
+pActiveGameDefinition(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -177,9 +177,9 @@ pActiveGameDefinition( NULL )
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new gdeWindowMainListener( *this );
-	pLoadSaveSystem = new gdeLoadSaveSystem( *this );
-	pConfiguration = new gdeConfiguration( *this );
+	pListener = new gdeWindowMainListener(*this);
+	pLoadSaveSystem = new gdeLoadSaveSystem(*this);
+	pConfiguration = new gdeConfiguration(*this);
 	
 	pConfiguration->LoadConfiguration();
 	
@@ -189,39 +189,39 @@ pActiveGameDefinition( NULL )
 	
 	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(350)));
-	AddChild( splitted );
+	AddChild(splitted);
 	
-	pWindowProperties = new gdeWindowProperties( *this );
-	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
+	pWindowProperties = new gdeWindowProperties(*this);
+	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewActiveObject = new gdeViewActiveObject( *this );
-	splitted->AddChild( pViewActiveObject, igdeContainerSplitted::eaCenter );
+	pViewActiveObject = new gdeViewActiveObject(*this);
+	splitted->AddChild(pViewActiveObject, igdeContainerSplitted::eaCenter);
 	
 	CreateNewGameDefinition();
 	ResetViews();
 }
 
 gdeWindowMain::~gdeWindowMain(){
-	if( pConfiguration ){
+	if(pConfiguration){
 		pConfiguration->SaveConfiguration();
 	}
 	
-	SetActiveGameDefinition( NULL );
+	SetActiveGameDefinition(NULL);
 	
-	if( pWindowProperties ){
+	if(pWindowProperties){
 		pWindowProperties->FreeReference();
 	}
-	if( pViewActiveObject ){
+	if(pViewActiveObject){
 		pViewActiveObject->FreeReference();
 	}
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		delete pConfiguration;
 	}
-	if( pLoadSaveSystem ){
+	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
 	}
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -241,113 +241,113 @@ void gdeWindowMain::ResetViews(){
 
 
 
-void gdeWindowMain::SetActiveGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pActiveGameDefinition ){
+void gdeWindowMain::SetActiveGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pActiveGameDefinition){
 		return;
 	}
 	
-	pViewActiveObject->SetGameDefinition( NULL );
-	pWindowProperties->SetGameDefinition( NULL );
-	pActionEditUndo->SetUndoSystem( NULL );
-	pActionEditRedo->SetUndoSystem( NULL );
+	pViewActiveObject->SetGameDefinition(NULL);
+	pWindowProperties->SetGameDefinition(NULL);
+	pActionEditUndo->SetUndoSystem(NULL);
+	pActionEditRedo->SetUndoSystem(NULL);
 	
-	if( pActiveGameDefinition ){
-		pActiveGameDefinition->RemoveListener( pListener );
+	if(pActiveGameDefinition){
+		pActiveGameDefinition->RemoveListener(pListener);
 		pActiveGameDefinition->FreeReference();
 	}
 	
 	pActiveGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
+	if(gameDefinition){
 		gameDefinition->AddReference();
-		gameDefinition->AddListener( pListener );
+		gameDefinition->AddListener(pListener);
 		
-		pActionEditUndo->SetUndoSystem( gameDefinition->GetUndoSystem() );
-		pActionEditRedo->SetUndoSystem( gameDefinition->GetUndoSystem() );
+		pActionEditUndo->SetUndoSystem(gameDefinition->GetUndoSystem());
+		pActionEditRedo->SetUndoSystem(gameDefinition->GetUndoSystem());
 	}
 	
-	pViewActiveObject->SetGameDefinition( gameDefinition );
-	pWindowProperties->SetGameDefinition( gameDefinition );
+	pViewActiveObject->SetGameDefinition(gameDefinition);
+	pWindowProperties->SetGameDefinition(gameDefinition);
 }
 
 void gdeWindowMain::CreateNewGameDefinition(){
 	SetActiveGameDefinition(gdeGameDefinition::Ref::NewWith(&GetEnvironment()));
 }
 
-void gdeWindowMain::LoadGameProject( bool silentErrors ){
-	if( ! pViewActiveObject->GetCanRender() ){
+void gdeWindowMain::LoadGameProject(bool silentErrors){
+	if(!pViewActiveObject->GetCanRender()){
 		return;
 	}
 	
 	// load game definition
 	const igdeGameProject * const project = GetEnvironment().GetGameProject();
-	if( ! project ){
+	if(!project){
 		return;
 	}
 	
 	decPath path;
-	path.SetFromNative( project->GetDirectoryPath() );
-	path.AddUnixPath( project->GetPathProjectGameDefinition() );
+	path.SetFromNative(project->GetDirectoryPath());
+	path.AddUnixPath(project->GetPathProjectGameDefinition());
 	
-	GetEditorModule().LogInfoFormat( "Loading Game Definition %s", path.GetPathNative().GetString() );
+	GetEditorModule().LogInfoFormat("Loading Game Definition %s", path.GetPathNative().GetString());
 	gdeGameDefinition *gameDefinition;
 	
 	try{
-		gameDefinition = pLoadSaveSystem->LoadGameDefinition( path.GetPathNative() );
+		gameDefinition = pLoadSaveSystem->LoadGameDefinition(path.GetPathNative());
 		
-	}catch( const deException &e ){
-		if( ! silentErrors ){
-			DisplayException( e );
+	}catch(const deException &e){
+		if(!silentErrors){
+			DisplayException(e);
 		}
 		return;
 	}
 	
-	gameDefinition->SetIsProjectGameDef( true );
+	gameDefinition->SetIsProjectGameDef(true);
 	
 	// set active game definition
-	SetActiveGameDefinition( gameDefinition );
+	SetActiveGameDefinition(gameDefinition);
 	gameDefinition->FreeReference();
 	
 	// store information
-	gameDefinition->SetFilePath( path.GetPathNative() );
-	gameDefinition->SetChanged( false );
-	gameDefinition->SetSaved( true );
+	gameDefinition->SetFilePath(path.GetPathNative());
+	gameDefinition->SetChanged(false);
+	gameDefinition->SetSaved(true);
 	
 	pLastPathGameDef = gameDefinition->GetFilePath();
 	
 	// this is a big of a hack but it works. the game definition file gets the project
 	// base game definitions set as soon at it is loaded. not nice but it works
-	if( project->GetBaseGameDefinitionIDList() != gameDefinition->GetBaseGameDefinitionIDList() ){
+	if(project->GetBaseGameDefinitionIDList() != gameDefinition->GetBaseGameDefinitionIDList()){
 		try{
-			gameDefinition->SetBaseGameDefinitionIDList( project->GetBaseGameDefinitionIDList() );
-			gameDefinition->UpdateBaseGameDefinitions( *pLoadSaveSystem );
+			gameDefinition->SetBaseGameDefinitionIDList(project->GetBaseGameDefinitionIDList());
+			gameDefinition->UpdateBaseGameDefinitions(*pLoadSaveSystem);
 			
-		}catch( const deException &e ){
-			if( ! silentErrors ){
-				DisplayException( e );
+		}catch(const deException &e){
+			if(!silentErrors){
+				DisplayException(e);
 			}
 		}
 	}
 }
 
-void gdeWindowMain::SaveGameDefinition( const char *filename ){
-	if( ! pActiveGameDefinition ){
-		DETHROW( deeInvalidParam );
+void gdeWindowMain::SaveGameDefinition(const char *filename){
+	if(!pActiveGameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	GetEditorModule().LogInfoFormat( "Saving game definition %s", filename );
-	pLoadSaveSystem->SaveGameDefinition( *pActiveGameDefinition, filename );
+	GetEditorModule().LogInfoFormat("Saving game definition %s", filename);
+	pLoadSaveSystem->SaveGameDefinition(*pActiveGameDefinition, filename);
 	
-	pActiveGameDefinition->SetFilePath( filename );
-	pActiveGameDefinition->SetChanged( false );
-	pActiveGameDefinition->SetSaved( true );
+	pActiveGameDefinition->SetFilePath(filename);
+	pActiveGameDefinition->SetChanged(false);
+	pActiveGameDefinition->SetSaved(true);
 	
 	pLastPathGameDef = filename;
 }
 
 
 
-void gdeWindowMain::SetLastPathGameDef( const char *path ){
+void gdeWindowMain::SetLastPathGameDef(const char *path){
 	pLastPathGameDef = path;
 }
 
@@ -371,37 +371,37 @@ void gdeWindowMain::OnAfterEngineStop(){
 
 void gdeWindowMain::OnActivate(){
 	igdeEditorWindow::OnActivate();
-	pViewActiveObject->SetEnableRendering( true );
+	pViewActiveObject->SetEnableRendering(true);
 }
 
 void gdeWindowMain::OnDeactivate(){
-	pViewActiveObject->SetEnableRendering( false );
+	pViewActiveObject->SetEnableRendering(false);
 	igdeEditorWindow::OnDeactivate();
 }
 
 
 
-void gdeWindowMain::OnFrameUpdate( float elapsed ){
-	if( ! GetActiveModule() ){
+void gdeWindowMain::OnFrameUpdate(float elapsed){
+	if(!GetActiveModule()){
 		return;
 	}
 	
-	pViewActiveObject->OnFrameUpdate( elapsed );
+	pViewActiveObject->OnFrameUpdate(elapsed);
 }
 
 
 
-void gdeWindowMain::GetChangedDocuments( decStringList &list ){
-	if( pActiveGameDefinition && pActiveGameDefinition->GetChanged() ){
-		list.Add( pActiveGameDefinition->GetFilePath() );
+void gdeWindowMain::GetChangedDocuments(decStringList &list){
+	if(pActiveGameDefinition && pActiveGameDefinition->GetChanged()){
+		list.Add(pActiveGameDefinition->GetFilePath());
 	}
 }
 
-bool gdeWindowMain::SaveDocument( const char *filename ){
-	if( ! pActiveGameDefinition ){
+bool gdeWindowMain::SaveDocument(const char *filename){
+	if(!pActiveGameDefinition){
 		return false;
 	}
-	if( pActiveGameDefinition->GetFilePath() != filename ){
+	if(pActiveGameDefinition->GetFilePath() != filename){
 		return false;
 	}
 	
@@ -420,7 +420,7 @@ void gdeWindowMain::OnGameProjectChanged(){
 }
 
 igdeStepableTask *gdeWindowMain::OnGameDefinitionChanged(){
-	return new gdeTaskSyncGameDefinition( *this );
+	return new gdeTaskSyncGameDefinition(*this);
 }
 
 
@@ -435,30 +435,30 @@ protected:
 	gdeWindowMain &pWindow;
 	
 public:
-	cActionBase( gdeWindowMain &window, const char *text, igdeIcon *icon, const char *description,
+	cActionBase(gdeWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	igdeAction( text, icon, description, mnemonic, igdeHotKey( modifiers, keyCode ) ),
-	pWindow( window ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	igdeAction(text, icon, description, mnemonic, igdeHotKey(modifiers, keyCode)),
+	pWindow(window){}
 	
-	cActionBase( gdeWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	igdeAction( text, icon, description, mnemonic ),
-	pWindow( window ){}
+	cActionBase(gdeWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	igdeAction(text, icon, description, mnemonic),
+	pWindow(window){}
 };
 
 
 class cActionGameDefNew : public cActionBase{
 public:
-	cActionGameDefNew( gdeWindowMain &window ) : cActionBase( window, "New",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ), "Creates a new game definition",
-		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN ){}
+	cActionGameDefNew(gdeWindowMain &window) : cActionBase(window, "New",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates a new game definition",
+		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	virtual void OnAction(){
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if( gamedef && gamedef->GetChanged() ){
-			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Game Definition",
-			"Creating a new game definition discards changes in the current one. Is that ok?" ) != igdeCommonDialogs::ebYes ){
+		if(gamedef && gamedef->GetChanged()){
+			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Game Definition",
+			"Creating a new game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
 				return;
 			}
 		}
@@ -469,120 +469,120 @@ public:
 
 class cActionGameDefOpen : public cActionBase{
 public:
-	cActionGameDefOpen( gdeWindowMain &window ) : cActionBase( window, "Open...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Opens game definition from file" ){}
+	cActionGameDefOpen(gdeWindowMain &window) : cActionBase(window, "Open...",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens game definition from file"){}
 	
 	virtual void OnAction(){
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if( gamedef && gamedef->GetChanged() ){
-			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Game Definition",
-			"Loading game definition discards changes in the current one. Is that ok?" ) != igdeCommonDialogs::ebYes ){
+		if(gamedef && gamedef->GetChanged()){
+			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Game Definition",
+			"Loading game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
 				return;
 			}
 		}
 		
-		decString filename( pWindow.GetLastPathGameDef() );
-		if( filename.IsEmpty() ){
+		decString filename(pWindow.GetLastPathGameDef());
+		if(filename.IsEmpty()){
 			const igdeGameProject &gameProject = *pWindow.GetEnvironment().GetGameProject();
-			decPath path( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
-			path.AddUnixPath( gameProject.GetPathProjectGameDefinition() );
+			decPath path(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
+			path.AddUnixPath(gameProject.GetPathProjectGameDefinition());
 			filename = path.GetPathNative();
 		}
 		
-		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Game Definition",
-		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename ) ){
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Game Definition",
+		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename)){
 			return;
 		}
 		
 		// load game definition
-		pWindow.GetEditorModule().LogInfoFormat( "Loading Game Definition %s", filename.GetString() );
-		gdeGameDefinition * const gameDefinition = pWindow.GetLoadSaveSystem().LoadGameDefinition( filename );
+		pWindow.GetEditorModule().LogInfoFormat("Loading Game Definition %s", filename.GetString());
+		gdeGameDefinition * const gameDefinition = pWindow.GetLoadSaveSystem().LoadGameDefinition(filename);
 		
 		// set active game definition
-		pWindow.SetActiveGameDefinition( gameDefinition );
+		pWindow.SetActiveGameDefinition(gameDefinition);
 		gameDefinition->FreeReference();
 		
 		// store information
-		gameDefinition->SetFilePath( filename );
-		gameDefinition->SetChanged( false );
-		gameDefinition->SetSaved( true );
+		gameDefinition->SetFilePath(filename);
+		gameDefinition->SetChanged(false);
+		gameDefinition->SetSaved(true);
 	}
 };
 
 class cActionGameDefOpenProject : public cActionBase{
 public:
-	cActionGameDefOpenProject( gdeWindowMain &window ) : cActionBase( window, "Open Project",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Open project game definition",
-		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO ){}
+	cActionGameDefOpenProject(gdeWindowMain &window) : cActionBase(window, "Open Project",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Open project game definition",
+		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
 	virtual void OnAction(){
 		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if( gamedef && gamedef->GetChanged() ){
-			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Project Game Definition",
-			"Loading project game definition discards changes in the current one. Is that ok?" ) != igdeCommonDialogs::ebYes ){
+		if(gamedef && gamedef->GetChanged()){
+			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Project Game Definition",
+			"Loading project game definition discards changes in the current one. Is that ok?") != igdeCommonDialogs::ebYes){
 				return;
 			}
 		}
 		
-		pWindow.LoadGameProject( false );
+		pWindow.LoadGameProject(false);
 	}
 };
 
 
 class cActionGameDefSaveAs : public cActionBase{
 public:
-	cActionGameDefSaveAs( gdeWindowMain &window ) : cActionBase( window, "Save As...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
-		"Saves the game definition under a differen file", deInputEvent::ekcA ){}
+	cActionGameDefSaveAs(gdeWindowMain &window) : cActionBase(window, "Save As...",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+		"Saves the game definition under a differen file", deInputEvent::ekcA){}
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if( ! gamedef ){
+		if(!gamedef){
 			return;
 		}
 		
 		decString filename;
 		
-		if( gamedef->GetSaved() ){
+		if(gamedef->GetSaved()){
 			filename = gamedef->GetFilePath();
 			
 		}else{
 			const igdeGameProject &gameProject = *pWindow.GetEnvironment().GetGameProject();
-			decPath path( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
-			path.AddUnixPath( gameProject.GetPathProjectGameDefinition() );
+			decPath path(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
+			path.AddUnixPath(gameProject.GetPathProjectGameDefinition());
 			filename = path.GetPathNative().GetString();
 		}
 		
-		if( ! igdeCommonDialogs::GetFileSave( &pWindow, "Save Game Definition",
-		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename ) ){
+		if(!igdeCommonDialogs::GetFileSave(&pWindow, "Save Game Definition",
+		pWindow.GetLoadSaveSystem().GetGameDefFilePatterns(), filename)){
 			return;
 		}
 		
-		pWindow.SaveGameDefinition( filename );
+		pWindow.SaveGameDefinition(filename);
 	}
 };
 
 
 class cActionGameDefSave : public cActionGameDefSaveAs{
 public:
-	cActionGameDefSave( gdeWindowMain &window ) : cActionGameDefSaveAs( window ){
-		SetText( "Save" );
-		SetDescription( "Save game definition to file" );
-		SetHotKey( igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcS ) );
-		SetMnemonic( deInputEvent::ekcS );
-		SetIcon( window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ) );
+	cActionGameDefSave(gdeWindowMain &window) : cActionGameDefSaveAs(window){
+		SetText("Save");
+		SetDescription("Save game definition to file");
+		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
+		SetMnemonic(deInputEvent::ekcS);
+		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
 	}
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if( ! gamedef ){
+		if(!gamedef){
 			return;
 		}
 		
-		if( gamedef->GetSaved() ){
-			if( gamedef->GetChanged() ){
-				pWindow.SaveGameDefinition( gamedef->GetFilePath() );
-				if( gamedef->GetIsProjectGameDef() ){
+		if(gamedef->GetSaved()){
+			if(gamedef->GetChanged()){
+				pWindow.SaveGameDefinition(gamedef->GetFilePath());
+				if(gamedef->GetIsProjectGameDef()){
 					pWindow.GetEnvironment().ProjecGameDefinitionChanged();
 				}
 			}
@@ -593,7 +593,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pWindow.GetActiveGameDefinition() && pWindow.GetActiveGameDefinition()->GetChanged() );
+		SetEnabled(pWindow.GetActiveGameDefinition() && pWindow.GetActiveGameDefinition()->GetChanged());
 	}
 };
 
@@ -601,104 +601,104 @@ public:
 
 class cActionEditCut : public cActionBase{
 public:
-	cActionEditCut( gdeWindowMain &window ) : cActionBase( window,
-		"Cut", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
+	cActionEditCut(gdeWindowMain &window) : cActionBase(window,
+		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcX, deInputEvent::ekcT ){}
+		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	virtual void OnAction(){
 	}
 	
 	virtual void Update(){
-		SetEnabled( false );
+		SetEnabled(false);
 	}
 };
 
 
 class cActionEditCopy : public cActionBase{
 public:
-	cActionEditCopy( gdeWindowMain &window ) : cActionBase( window,
-		"Copy", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+	cActionEditCopy(gdeWindowMain &window) : cActionBase(window,
+		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copies selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcC, deInputEvent::ekcC ){}
+		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	virtual void OnAction(){
 	}
 	
 	virtual void Update(){
-		SetEnabled( false );
+		SetEnabled(false);
 	}
 };
 
 
 class cActionEditPaste : public cActionBase{
 public:
-	cActionEditPaste( gdeWindowMain &window ) : cActionBase( window,
-		"Paste", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+	cActionEditPaste(gdeWindowMain &window) : cActionBase(window,
+		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste objects", deInputEvent::esmControl,
-		deInputEvent::ekcV, deInputEvent::ekcP ){}
+		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	virtual void OnAction(){
 	}
 	
 	virtual void Update(){
-		SetEnabled( false /*pWindow.GetClipboard().HasClip()*/ );
+		SetEnabled(false /*pWindow.GetClipboard().HasClip()*/);
 	}
 };
 
 
 class cActionEditFind : public cActionBase{
 public:
-	cActionEditFind( gdeWindowMain &window ) : cActionBase( window,
-		"Find...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSearch ),
+	cActionEditFind(gdeWindowMain &window) : cActionBase(window,
+		"Find...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
 		"Find objects", deInputEvent::esmControl,
-		deInputEvent::ekcF, deInputEvent::ekcF ){}
+		deInputEvent::ekcF, deInputEvent::ekcF){}
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
-		if( ! gamedef ){
+		if(!gamedef){
 			return;
 		}
 		
 		decString text;
-		if( igdeCommonDialogs::GetString( &pWindow, "Find", "Text:", text ) ){
-			pWindow.GetWindowProperties().GetPanelSelection().Find( text );
+		if(igdeCommonDialogs::GetString(&pWindow, "Find", "Text:", text)){
+			pWindow.GetWindowProperties().GetPanelSelection().Find(text);
 		}
 	}
 	
 	virtual void Update(){
-		SetEnabled( pWindow.GetActiveGameDefinition() );
+		SetEnabled(pWindow.GetActiveGameDefinition());
 	}
 };
 
 
 class cActionViewShowEnvMapProbes : public cActionBase{
 public:
-	cActionViewShowEnvMapProbes( gdeWindowMain &window ) : cActionBase( window,
+	cActionViewShowEnvMapProbes(gdeWindowMain &window) : cActionBase(window,
 		"Show Environment Map Probes", window.GetIconShowEnvMapProbes(),
-		"Show all environment map probes", deInputEvent::ekcE ){}
+		"Show all environment map probes", deInputEvent::ekcE){}
 	
 	virtual void OnAction(){
-		pWindow.GetViewActiveObject().SetShowEnvMapProbes( ! pWindow.GetViewActiveObject().GetShowEnvMapProbes() );
+		pWindow.GetViewActiveObject().SetShowEnvMapProbes(!pWindow.GetViewActiveObject().GetShowEnvMapProbes());
 	}
 	
 	virtual void Update(){
-		SetSelected( pWindow.GetViewActiveObject().GetShowEnvMapProbes() );
+		SetSelected(pWindow.GetViewActiveObject().GetShowEnvMapProbes());
 	}
 };
 
 class cActionViewShowNavBlockers : public cActionBase{
 public:
-	cActionViewShowNavBlockers( gdeWindowMain &window ) : cActionBase( window,
+	cActionViewShowNavBlockers(gdeWindowMain &window) : cActionBase(window,
 		"Show Navigation Blockers", window.GetIconShowNavBlockers(),
-		"Show all navigation blockers", deInputEvent::ekcL ){}
+		"Show all navigation blockers", deInputEvent::ekcL){}
 	
 	virtual void OnAction(){
-		pWindow.GetViewActiveObject().SetShowNavBlockers( ! pWindow.GetViewActiveObject().GetShowNavBlockers() );
+		pWindow.GetViewActiveObject().SetShowNavBlockers(!pWindow.GetViewActiveObject().GetShowNavBlockers());
 	}
 	
 	virtual void Update(){
-		SetSelected( pWindow.GetViewActiveObject().GetShowNavBlockers() );
+		SetSelected(pWindow.GetViewActiveObject().GetShowNavBlockers());
 	}
 };
 
@@ -710,106 +710,106 @@ public:
 //////////////////////
 
 void gdeWindowMain::pLoadIcons(){
-	pIconShowEnvMapProbes.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/showEnvMapProbes.png" ) );
-	pIconShowNavBlockers.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/showNavBlockers.png" ) );
+	pIconShowEnvMapProbes.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/showEnvMapProbes.png"));
+	pIconShowNavBlockers.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/showNavBlockers.png"));
 }
 
 void gdeWindowMain::pCreateActions(){
-	pActionGDNew.TakeOver( new cActionGameDefNew( *this ) );
-	pActionGDOpen.TakeOver( new cActionGameDefOpen( *this ) );
-	pActionGDOpenProject.TakeOver( new cActionGameDefOpenProject( *this ) );
-	pActionGDSave.TakeOver( new cActionGameDefSave( *this ) );
-	pActionGDSaveAs.TakeOver( new cActionGameDefSaveAs( *this ) );
-	pActionEditUndo.TakeOver( new igdeActionUndo( GetEnvironment() ) );
-	pActionEditRedo.TakeOver( new igdeActionRedo( GetEnvironment() ) );
-	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
-	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
-	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
-	pActionEditFind.TakeOver( new cActionEditFind( *this ) );
-	pActionViewShowEnvMapProbes.TakeOver( new cActionViewShowEnvMapProbes( *this ) );
-	pActionViewShowNavBlockers.TakeOver( new cActionViewShowNavBlockers( *this ) );
+	pActionGDNew.TakeOver(new cActionGameDefNew(*this));
+	pActionGDOpen.TakeOver(new cActionGameDefOpen(*this));
+	pActionGDOpenProject.TakeOver(new cActionGameDefOpenProject(*this));
+	pActionGDSave.TakeOver(new cActionGameDefSave(*this));
+	pActionGDSaveAs.TakeOver(new cActionGameDefSaveAs(*this));
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditCut.TakeOver(new cActionEditCut(*this));
+	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
+	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionEditFind.TakeOver(new cActionEditFind(*this));
+	pActionViewShowEnvMapProbes.TakeOver(new cActionViewShowEnvMapProbes(*this));
+	pActionViewShowNavBlockers.TakeOver(new cActionViewShowNavBlockers(*this));
 	
-	pActionCategoryAdd.TakeOver( new gdeMACategoryAdd( *this ) );
-	pActionCategoryRemove.TakeOver( new gdeMACategoryRemove( *this ) );
-	pActionCategoryObjectClassAdd.TakeOver( new gdeMACategoryObjectClassAdd( *this ) );
-	pActionCategoryParticleEmitterAdd.TakeOver( new gdeMACategoryParticleEmitterAdd( *this ) );
-	pActionCategorySkinAdd.TakeOver( new gdeMACategorySkinAdd( *this ) );
-	pActionCategorySkyAdd.TakeOver( new gdeMACategorySkyAdd( *this ) );
+	pActionCategoryAdd.TakeOver(new gdeMACategoryAdd(*this));
+	pActionCategoryRemove.TakeOver(new gdeMACategoryRemove(*this));
+	pActionCategoryObjectClassAdd.TakeOver(new gdeMACategoryObjectClassAdd(*this));
+	pActionCategoryParticleEmitterAdd.TakeOver(new gdeMACategoryParticleEmitterAdd(*this));
+	pActionCategorySkinAdd.TakeOver(new gdeMACategorySkinAdd(*this));
+	pActionCategorySkyAdd.TakeOver(new gdeMACategorySkyAdd(*this));
 	
-	pActionObjectClassAdd.TakeOver( new gdeMAObjectClassAdd( *this ) );
-	pActionObjectClassRemove.TakeOver( new gdeMAObjectClassRemove( *this ) );
-	pActionObjectClassCopy.TakeOver( new gdeMAObjectClassCopy( *this ) );
-	pActionObjectClassCut.TakeOver( new gdeMAObjectClassCut( *this ) );
-	pActionObjectClassPaste.TakeOver( new gdeMAObjectClassPaste( *this ) );
-	pActionObjectClassExportXmlEClass.TakeOver( new gdeMAObjectClassExportXmlEClass( *this ) );
-	pActionObjectClassDuplicate.TakeOver( new gdeMAObjectClassDuplicate( *this ) );
-	pActionObjectClassSubclass.TakeOver( new gdeMAObjectClassSubclass( *this ) );
+	pActionObjectClassAdd.TakeOver(new gdeMAObjectClassAdd(*this));
+	pActionObjectClassRemove.TakeOver(new gdeMAObjectClassRemove(*this));
+	pActionObjectClassCopy.TakeOver(new gdeMAObjectClassCopy(*this));
+	pActionObjectClassCut.TakeOver(new gdeMAObjectClassCut(*this));
+	pActionObjectClassPaste.TakeOver(new gdeMAObjectClassPaste(*this));
+	pActionObjectClassExportXmlEClass.TakeOver(new gdeMAObjectClassExportXmlEClass(*this));
+	pActionObjectClassDuplicate.TakeOver(new gdeMAObjectClassDuplicate(*this));
+	pActionObjectClassSubclass.TakeOver(new gdeMAObjectClassSubclass(*this));
 	
-	pActionOCBillboardAdd.TakeOver( new gdeMAOCBillboardAdd( *this ) );
-	pActionOCBillboardRemove.TakeOver( new gdeMAOCBillboardRemove( *this ) );
-	pActionOCBillboardCopy.TakeOver( new gdeMAOCBillboardCopy( *this ) );
-	pActionOCBillboardCut.TakeOver( new gdeMAOCBillboardCut( *this ) );
-	pActionOCBillboardPaste.TakeOver( new gdeMAOCBillboardPaste( *this ) );
+	pActionOCBillboardAdd.TakeOver(new gdeMAOCBillboardAdd(*this));
+	pActionOCBillboardRemove.TakeOver(new gdeMAOCBillboardRemove(*this));
+	pActionOCBillboardCopy.TakeOver(new gdeMAOCBillboardCopy(*this));
+	pActionOCBillboardCut.TakeOver(new gdeMAOCBillboardCut(*this));
+	pActionOCBillboardPaste.TakeOver(new gdeMAOCBillboardPaste(*this));
 	
-	pActionOCCameraAdd.TakeOver( new gdeMAOCCameraAdd( *this ) );
-	pActionOCCameraRemove.TakeOver( new gdeMAOCCameraRemove( *this ) );
-	pActionOCCameraCopy.TakeOver( new gdeMAOCCameraCopy( *this ) );
-	pActionOCCameraCut.TakeOver( new gdeMAOCCameraCut( *this ) );
-	pActionOCCameraPaste.TakeOver( new gdeMAOCCameraPaste( *this ) );
+	pActionOCCameraAdd.TakeOver(new gdeMAOCCameraAdd(*this));
+	pActionOCCameraRemove.TakeOver(new gdeMAOCCameraRemove(*this));
+	pActionOCCameraCopy.TakeOver(new gdeMAOCCameraCopy(*this));
+	pActionOCCameraCut.TakeOver(new gdeMAOCCameraCut(*this));
+	pActionOCCameraPaste.TakeOver(new gdeMAOCCameraPaste(*this));
 	
-	pActionOCComponentAdd.TakeOver( new gdeMAOCComponentAdd( *this ) );
-	pActionOCComponentRemove.TakeOver( new gdeMAOCComponentRemove( *this ) );
-	pActionOCComponentCopy.TakeOver( new gdeMAOCComponentCopy( *this ) );
-	pActionOCComponentCut.TakeOver( new gdeMAOCComponentCut( *this ) );
-	pActionOCComponentPaste.TakeOver( new gdeMAOCComponentPaste( *this ) );
+	pActionOCComponentAdd.TakeOver(new gdeMAOCComponentAdd(*this));
+	pActionOCComponentRemove.TakeOver(new gdeMAOCComponentRemove(*this));
+	pActionOCComponentCopy.TakeOver(new gdeMAOCComponentCopy(*this));
+	pActionOCComponentCut.TakeOver(new gdeMAOCComponentCut(*this));
+	pActionOCComponentPaste.TakeOver(new gdeMAOCComponentPaste(*this));
 	
-	pActionOCEnvMapProbeAdd.TakeOver( new gdeMAOCEnvMapProbeAdd( *this ) );
-	pActionOCEnvMapProbeRemove.TakeOver( new gdeMAOCEnvMapProbeRemove( *this ) );
-	pActionOCEnvMapProbeCopy.TakeOver( new gdeMAOCEnvMapProbeCopy( *this ) );
-	pActionOCEnvMapProbeCut.TakeOver( new gdeMAOCEnvMapProbeCut( *this ) );
-	pActionOCEnvMapProbePaste.TakeOver( new gdeMAOCEnvMapProbePaste( *this ) );
+	pActionOCEnvMapProbeAdd.TakeOver(new gdeMAOCEnvMapProbeAdd(*this));
+	pActionOCEnvMapProbeRemove.TakeOver(new gdeMAOCEnvMapProbeRemove(*this));
+	pActionOCEnvMapProbeCopy.TakeOver(new gdeMAOCEnvMapProbeCopy(*this));
+	pActionOCEnvMapProbeCut.TakeOver(new gdeMAOCEnvMapProbeCut(*this));
+	pActionOCEnvMapProbePaste.TakeOver(new gdeMAOCEnvMapProbePaste(*this));
 	
-	pActionOCLightAdd.TakeOver( new gdeMAOCLightAdd( *this ) );
-	pActionOCLightRemove.TakeOver( new gdeMAOCLightRemove( *this ) );
-	pActionOCLightCopy.TakeOver( new gdeMAOCLightCopy( *this ) );
-	pActionOCLightCut.TakeOver( new gdeMAOCLightCut( *this ) );
-	pActionOCLightPaste.TakeOver( new gdeMAOCLightPaste( *this ) );
+	pActionOCLightAdd.TakeOver(new gdeMAOCLightAdd(*this));
+	pActionOCLightRemove.TakeOver(new gdeMAOCLightRemove(*this));
+	pActionOCLightCopy.TakeOver(new gdeMAOCLightCopy(*this));
+	pActionOCLightCut.TakeOver(new gdeMAOCLightCut(*this));
+	pActionOCLightPaste.TakeOver(new gdeMAOCLightPaste(*this));
 	
-	pActionOCNavBlockerAdd.TakeOver( new gdeMAOCNavBlockerAdd( *this ) );
-	pActionOCNavBlockerRemove.TakeOver( new gdeMAOCNavBlockerRemove( *this ) );
-	pActionOCNavBlockerCopy.TakeOver( new gdeMAOCNavBlockerCopy( *this ) );
-	pActionOCNavBlockerCut.TakeOver( new gdeMAOCNavBlockerCut( *this ) );
-	pActionOCNavBlockerPaste.TakeOver( new gdeMAOCNavBlockerPaste( *this ) );
+	pActionOCNavBlockerAdd.TakeOver(new gdeMAOCNavBlockerAdd(*this));
+	pActionOCNavBlockerRemove.TakeOver(new gdeMAOCNavBlockerRemove(*this));
+	pActionOCNavBlockerCopy.TakeOver(new gdeMAOCNavBlockerCopy(*this));
+	pActionOCNavBlockerCut.TakeOver(new gdeMAOCNavBlockerCut(*this));
+	pActionOCNavBlockerPaste.TakeOver(new gdeMAOCNavBlockerPaste(*this));
 	
-	pActionOCNavSpaceAdd.TakeOver( new gdeMAOCNavSpaceAdd( *this ) );
-	pActionOCNavSpaceRemove.TakeOver( new gdeMAOCNavSpaceRemove( *this ) );
-	pActionOCNavSpaceCopy.TakeOver( new gdeMAOCNavSpaceCopy( *this ) );
-	pActionOCNavSpaceCut.TakeOver( new gdeMAOCNavSpaceCut( *this ) );
-	pActionOCNavSpacePaste.TakeOver( new gdeMAOCNavSpacePaste( *this ) );
+	pActionOCNavSpaceAdd.TakeOver(new gdeMAOCNavSpaceAdd(*this));
+	pActionOCNavSpaceRemove.TakeOver(new gdeMAOCNavSpaceRemove(*this));
+	pActionOCNavSpaceCopy.TakeOver(new gdeMAOCNavSpaceCopy(*this));
+	pActionOCNavSpaceCut.TakeOver(new gdeMAOCNavSpaceCut(*this));
+	pActionOCNavSpacePaste.TakeOver(new gdeMAOCNavSpacePaste(*this));
 	
-	pActionOCParticleEmitterAdd.TakeOver( new gdeMAOCParticleEmitterAdd( *this ) );
-	pActionOCParticleEmitterRemove.TakeOver( new gdeMAOCParticleEmitterRemove( *this ) );
-	pActionOCParticleEmitterCopy.TakeOver( new gdeMAOCParticleEmitterCopy( *this ) );
-	pActionOCParticleEmitterCut.TakeOver( new gdeMAOCParticleEmitterCut( *this ) );
-	pActionOCParticleEmitterPaste.TakeOver( new gdeMAOCParticleEmitterPaste( *this ) );
+	pActionOCParticleEmitterAdd.TakeOver(new gdeMAOCParticleEmitterAdd(*this));
+	pActionOCParticleEmitterRemove.TakeOver(new gdeMAOCParticleEmitterRemove(*this));
+	pActionOCParticleEmitterCopy.TakeOver(new gdeMAOCParticleEmitterCopy(*this));
+	pActionOCParticleEmitterCut.TakeOver(new gdeMAOCParticleEmitterCut(*this));
+	pActionOCParticleEmitterPaste.TakeOver(new gdeMAOCParticleEmitterPaste(*this));
 	
-	pActionOCForceFieldAdd.TakeOver( new gdeMAOCForceFieldAdd( *this ) );
-	pActionOCForceFieldRemove.TakeOver( new gdeMAOCForceFieldRemove( *this ) );
-	pActionOCForceFieldCopy.TakeOver( new gdeMAOCForceFieldCopy( *this ) );
-	pActionOCForceFieldCut.TakeOver( new gdeMAOCForceFieldCut( *this ) );
-	pActionOCForceFieldPaste.TakeOver( new gdeMAOCForceFieldPaste( *this ) );
+	pActionOCForceFieldAdd.TakeOver(new gdeMAOCForceFieldAdd(*this));
+	pActionOCForceFieldRemove.TakeOver(new gdeMAOCForceFieldRemove(*this));
+	pActionOCForceFieldCopy.TakeOver(new gdeMAOCForceFieldCopy(*this));
+	pActionOCForceFieldCut.TakeOver(new gdeMAOCForceFieldCut(*this));
+	pActionOCForceFieldPaste.TakeOver(new gdeMAOCForceFieldPaste(*this));
 	
-	pActionOCSnapPointAdd.TakeOver( new gdeMAOCSnapPointAdd( *this ) );
-	pActionOCSnapPointRemove.TakeOver( new gdeMAOCSnapPointRemove( *this ) );
-	pActionOCSnapPointCopy.TakeOver( new gdeMAOCSnapPointCopy( *this ) );
-	pActionOCSnapPointCut.TakeOver( new gdeMAOCSnapPointCut( *this ) );
-	pActionOCSnapPointPaste.TakeOver( new gdeMAOCSnapPointPaste( *this ) );
+	pActionOCSnapPointAdd.TakeOver(new gdeMAOCSnapPointAdd(*this));
+	pActionOCSnapPointRemove.TakeOver(new gdeMAOCSnapPointRemove(*this));
+	pActionOCSnapPointCopy.TakeOver(new gdeMAOCSnapPointCopy(*this));
+	pActionOCSnapPointCut.TakeOver(new gdeMAOCSnapPointCut(*this));
+	pActionOCSnapPointPaste.TakeOver(new gdeMAOCSnapPointPaste(*this));
 	
-	pActionOCSpeakerAdd.TakeOver( new gdeMAOCSpeakerAdd( *this ) );
-	pActionOCSpeakerRemove.TakeOver( new gdeMAOCSpeakerRemove( *this ) );
-	pActionOCSpeakerCopy.TakeOver( new gdeMAOCSpeakerCopy( *this ) );
-	pActionOCSpeakerCut.TakeOver( new gdeMAOCSpeakerCut( *this ) );
-	pActionOCSpeakerPaste.TakeOver( new gdeMAOCSpeakerPaste( *this ) );
+	pActionOCSpeakerAdd.TakeOver(new gdeMAOCSpeakerAdd(*this));
+	pActionOCSpeakerRemove.TakeOver(new gdeMAOCSpeakerRemove(*this));
+	pActionOCSpeakerCopy.TakeOver(new gdeMAOCSpeakerCopy(*this));
+	pActionOCSpeakerCut.TakeOver(new gdeMAOCSpeakerCut(*this));
+	pActionOCSpeakerPaste.TakeOver(new gdeMAOCSpeakerPaste(*this));
 	
 	pActionOCWorldAdd.TakeOver(new gdeMAOCWorldAdd(*this));
 	pActionOCWorldRemove.TakeOver(new gdeMAOCWorldRemove(*this));
@@ -817,111 +817,111 @@ void gdeWindowMain::pCreateActions(){
 	pActionOCWorldCut.TakeOver(new gdeMAOCWorldCut(*this));
 	pActionOCWorldPaste.TakeOver(new gdeMAOCWorldPaste(*this));
 	
-	pActionParticleEmitterAdd.TakeOver( new gdeMAParticleEmitterAdd( *this ) );
-	pActionParticleEmitterRemove.TakeOver( new gdeMAParticleEmitterRemove( *this ) );
+	pActionParticleEmitterAdd.TakeOver(new gdeMAParticleEmitterAdd(*this));
+	pActionParticleEmitterRemove.TakeOver(new gdeMAParticleEmitterRemove(*this));
 	
-	pActionSkinAdd.TakeOver( new gdeMASkinAdd( *this ) );
-	pActionSkinRemove.TakeOver( new gdeMASkinRemove( *this ) );
+	pActionSkinAdd.TakeOver(new gdeMASkinAdd(*this));
+	pActionSkinRemove.TakeOver(new gdeMASkinRemove(*this));
 	
-	pActionSkyAdd.TakeOver( new gdeMASkyAdd( *this ) );
-	pActionSkyRemove.TakeOver( new gdeMASkyRemove( *this ) );
+	pActionSkyAdd.TakeOver(new gdeMASkyAdd(*this));
+	pActionSkyRemove.TakeOver(new gdeMASkyRemove(*this));
 	
 	
 	// register for updating
-	AddUpdateAction( pActionGDNew );
-	AddUpdateAction( pActionGDOpen );
-	AddUpdateAction( pActionGDOpenProject );
-	AddUpdateAction( pActionGDSave );
-	AddUpdateAction( pActionGDSaveAs );
-	AddUpdateAction( pActionEditUndo );
-	AddUpdateAction( pActionEditRedo );
-	AddUpdateAction( pActionEditCut );
-	AddUpdateAction( pActionEditCopy );
-	AddUpdateAction( pActionEditPaste );
-	AddUpdateAction( pActionEditFind );
-	AddUpdateAction( pActionViewShowEnvMapProbes );
-	AddUpdateAction( pActionViewShowNavBlockers );
+	AddUpdateAction(pActionGDNew);
+	AddUpdateAction(pActionGDOpen);
+	AddUpdateAction(pActionGDOpenProject);
+	AddUpdateAction(pActionGDSave);
+	AddUpdateAction(pActionGDSaveAs);
+	AddUpdateAction(pActionEditUndo);
+	AddUpdateAction(pActionEditRedo);
+	AddUpdateAction(pActionEditCut);
+	AddUpdateAction(pActionEditCopy);
+	AddUpdateAction(pActionEditPaste);
+	AddUpdateAction(pActionEditFind);
+	AddUpdateAction(pActionViewShowEnvMapProbes);
+	AddUpdateAction(pActionViewShowNavBlockers);
 	
-	AddUpdateAction( pActionCategoryAdd );
-	AddUpdateAction( pActionCategoryObjectClassAdd );
-	AddUpdateAction( pActionCategoryParticleEmitterAdd );
-	AddUpdateAction( pActionCategorySkinAdd );
-	AddUpdateAction( pActionCategorySkyAdd );
+	AddUpdateAction(pActionCategoryAdd);
+	AddUpdateAction(pActionCategoryObjectClassAdd);
+	AddUpdateAction(pActionCategoryParticleEmitterAdd);
+	AddUpdateAction(pActionCategorySkinAdd);
+	AddUpdateAction(pActionCategorySkyAdd);
 	
-	AddUpdateAction( pActionObjectClassAdd );
-	AddUpdateAction( pActionObjectClassRemove );
-	AddUpdateAction( pActionObjectClassCopy );
-	AddUpdateAction( pActionObjectClassCut );
-	AddUpdateAction( pActionObjectClassPaste );
-	AddUpdateAction( pActionObjectClassExportXmlEClass );
-	AddUpdateAction( pActionObjectClassDuplicate );
-	AddUpdateAction( pActionObjectClassSubclass );
+	AddUpdateAction(pActionObjectClassAdd);
+	AddUpdateAction(pActionObjectClassRemove);
+	AddUpdateAction(pActionObjectClassCopy);
+	AddUpdateAction(pActionObjectClassCut);
+	AddUpdateAction(pActionObjectClassPaste);
+	AddUpdateAction(pActionObjectClassExportXmlEClass);
+	AddUpdateAction(pActionObjectClassDuplicate);
+	AddUpdateAction(pActionObjectClassSubclass);
 	
-	AddUpdateAction( pActionOCBillboardAdd );
-	AddUpdateAction( pActionOCBillboardRemove );
-	AddUpdateAction( pActionOCBillboardCopy );
-	AddUpdateAction( pActionOCBillboardCut );
-	AddUpdateAction( pActionOCBillboardPaste );
+	AddUpdateAction(pActionOCBillboardAdd);
+	AddUpdateAction(pActionOCBillboardRemove);
+	AddUpdateAction(pActionOCBillboardCopy);
+	AddUpdateAction(pActionOCBillboardCut);
+	AddUpdateAction(pActionOCBillboardPaste);
 	
-	AddUpdateAction( pActionOCCameraAdd );
-	AddUpdateAction( pActionOCCameraRemove );
-	AddUpdateAction( pActionOCCameraCopy );
-	AddUpdateAction( pActionOCCameraCut );
-	AddUpdateAction( pActionOCCameraPaste );
+	AddUpdateAction(pActionOCCameraAdd);
+	AddUpdateAction(pActionOCCameraRemove);
+	AddUpdateAction(pActionOCCameraCopy);
+	AddUpdateAction(pActionOCCameraCut);
+	AddUpdateAction(pActionOCCameraPaste);
 	
-	AddUpdateAction( pActionOCComponentAdd );
-	AddUpdateAction( pActionOCComponentRemove );
-	AddUpdateAction( pActionOCComponentCopy );
-	AddUpdateAction( pActionOCComponentCut );
-	AddUpdateAction( pActionOCComponentPaste );
+	AddUpdateAction(pActionOCComponentAdd);
+	AddUpdateAction(pActionOCComponentRemove);
+	AddUpdateAction(pActionOCComponentCopy);
+	AddUpdateAction(pActionOCComponentCut);
+	AddUpdateAction(pActionOCComponentPaste);
 	
-	AddUpdateAction( pActionOCEnvMapProbeAdd );
-	AddUpdateAction( pActionOCEnvMapProbeRemove );
-	AddUpdateAction( pActionOCEnvMapProbeCopy );
-	AddUpdateAction( pActionOCEnvMapProbeCut );
-	AddUpdateAction( pActionOCEnvMapProbePaste );
+	AddUpdateAction(pActionOCEnvMapProbeAdd);
+	AddUpdateAction(pActionOCEnvMapProbeRemove);
+	AddUpdateAction(pActionOCEnvMapProbeCopy);
+	AddUpdateAction(pActionOCEnvMapProbeCut);
+	AddUpdateAction(pActionOCEnvMapProbePaste);
 	
-	AddUpdateAction( pActionOCLightAdd );
-	AddUpdateAction( pActionOCLightRemove );
-	AddUpdateAction( pActionOCLightCopy );
-	AddUpdateAction( pActionOCLightCut );
-	AddUpdateAction( pActionOCLightPaste );
+	AddUpdateAction(pActionOCLightAdd);
+	AddUpdateAction(pActionOCLightRemove);
+	AddUpdateAction(pActionOCLightCopy);
+	AddUpdateAction(pActionOCLightCut);
+	AddUpdateAction(pActionOCLightPaste);
 	
-	AddUpdateAction( pActionOCNavBlockerAdd );
-	AddUpdateAction( pActionOCNavBlockerRemove );
-	AddUpdateAction( pActionOCNavBlockerCopy );
-	AddUpdateAction( pActionOCNavBlockerCut );
-	AddUpdateAction( pActionOCNavBlockerPaste );
+	AddUpdateAction(pActionOCNavBlockerAdd);
+	AddUpdateAction(pActionOCNavBlockerRemove);
+	AddUpdateAction(pActionOCNavBlockerCopy);
+	AddUpdateAction(pActionOCNavBlockerCut);
+	AddUpdateAction(pActionOCNavBlockerPaste);
 	
-	AddUpdateAction( pActionOCNavSpaceAdd );
-	AddUpdateAction( pActionOCNavSpaceRemove );
-	AddUpdateAction( pActionOCNavSpaceCopy );
-	AddUpdateAction( pActionOCNavSpaceCut );
-	AddUpdateAction( pActionOCNavSpacePaste );
+	AddUpdateAction(pActionOCNavSpaceAdd);
+	AddUpdateAction(pActionOCNavSpaceRemove);
+	AddUpdateAction(pActionOCNavSpaceCopy);
+	AddUpdateAction(pActionOCNavSpaceCut);
+	AddUpdateAction(pActionOCNavSpacePaste);
 	
-	AddUpdateAction( pActionOCParticleEmitterAdd );
-	AddUpdateAction( pActionOCParticleEmitterRemove );
-	AddUpdateAction( pActionOCParticleEmitterCopy );
-	AddUpdateAction( pActionOCParticleEmitterCut );
-	AddUpdateAction( pActionOCParticleEmitterPaste );
+	AddUpdateAction(pActionOCParticleEmitterAdd);
+	AddUpdateAction(pActionOCParticleEmitterRemove);
+	AddUpdateAction(pActionOCParticleEmitterCopy);
+	AddUpdateAction(pActionOCParticleEmitterCut);
+	AddUpdateAction(pActionOCParticleEmitterPaste);
 	
-	AddUpdateAction( pActionOCForceFieldAdd );
-	AddUpdateAction( pActionOCForceFieldRemove );
-	AddUpdateAction( pActionOCForceFieldCopy );
-	AddUpdateAction( pActionOCForceFieldCut );
-	AddUpdateAction( pActionOCForceFieldPaste );
+	AddUpdateAction(pActionOCForceFieldAdd);
+	AddUpdateAction(pActionOCForceFieldRemove);
+	AddUpdateAction(pActionOCForceFieldCopy);
+	AddUpdateAction(pActionOCForceFieldCut);
+	AddUpdateAction(pActionOCForceFieldPaste);
 	
-	AddUpdateAction( pActionOCSnapPointAdd );
-	AddUpdateAction( pActionOCSnapPointRemove );
-	AddUpdateAction( pActionOCSnapPointCopy );
-	AddUpdateAction( pActionOCSnapPointCut );
-	AddUpdateAction( pActionOCSnapPointPaste );
+	AddUpdateAction(pActionOCSnapPointAdd);
+	AddUpdateAction(pActionOCSnapPointRemove);
+	AddUpdateAction(pActionOCSnapPointCopy);
+	AddUpdateAction(pActionOCSnapPointCut);
+	AddUpdateAction(pActionOCSnapPointPaste);
 	
-	AddUpdateAction( pActionOCSpeakerAdd );
-	AddUpdateAction( pActionOCSpeakerRemove );
-	AddUpdateAction( pActionOCSpeakerCopy );
-	AddUpdateAction( pActionOCSpeakerCut );
-	AddUpdateAction( pActionOCSpeakerPaste );
+	AddUpdateAction(pActionOCSpeakerAdd);
+	AddUpdateAction(pActionOCSpeakerRemove);
+	AddUpdateAction(pActionOCSpeakerCopy);
+	AddUpdateAction(pActionOCSpeakerCut);
+	AddUpdateAction(pActionOCSpeakerPaste);
 	
 	AddUpdateAction(pActionOCWorldAdd);
 	AddUpdateAction(pActionOCWorldRemove);
@@ -929,122 +929,122 @@ void gdeWindowMain::pCreateActions(){
 	AddUpdateAction(pActionOCWorldCut);
 	AddUpdateAction(pActionOCWorldPaste);
 	
-	AddUpdateAction( pActionParticleEmitterAdd );
-	AddUpdateAction( pActionParticleEmitterRemove );
+	AddUpdateAction(pActionParticleEmitterAdd);
+	AddUpdateAction(pActionParticleEmitterRemove);
 	
-	AddUpdateAction( pActionSkinAdd );
-	AddUpdateAction( pActionSkinRemove );
+	AddUpdateAction(pActionSkinAdd);
+	AddUpdateAction(pActionSkinRemove);
 	
-	AddUpdateAction( pActionSkyAdd );
-	AddUpdateAction( pActionSkyRemove );
+	AddUpdateAction(pActionSkyAdd);
+	AddUpdateAction(pActionSkyRemove);
 }
 
 void gdeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
-	helper.ToolBarButton( pTBFile, pActionGDNew );
-	helper.ToolBarButton( pTBFile, pActionGDOpenProject );
-	helper.ToolBarButton( pTBFile, pActionGDSave );
+	helper.ToolBarButton(pTBFile, pActionGDNew);
+	helper.ToolBarButton(pTBFile, pActionGDOpenProject);
+	helper.ToolBarButton(pTBFile, pActionGDSave);
 	
-	AddSharedToolBar( pTBFile );
+	AddSharedToolBar(pTBFile);
 }
 
 void gdeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
-	helper.ToolBarButton( pTBEdit, pActionEditUndo );
-	helper.ToolBarButton( pTBEdit, pActionEditRedo );
+	helper.ToolBarButton(pTBEdit, pActionEditUndo);
+	helper.ToolBarButton(pTBEdit, pActionEditRedo);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarButton( pTBEdit, pActionEditCut );
-	helper.ToolBarButton( pTBEdit, pActionEditCopy );
-	helper.ToolBarButton( pTBEdit, pActionEditPaste );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarButton(pTBEdit, pActionEditCut);
+	helper.ToolBarButton(pTBEdit, pActionEditCopy);
+	helper.ToolBarButton(pTBEdit, pActionEditPaste);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarButton( pTBEdit, pActionEditFind );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarButton(pTBEdit, pActionEditFind);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarToggleButton( pTBEdit, pActionViewShowEnvMapProbes );
-	helper.ToolBarToggleButton( pTBEdit, pActionViewShowNavBlockers );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarToggleButton(pTBEdit, pActionViewShowEnvMapProbes);
+	helper.ToolBarToggleButton(pTBEdit, pActionViewShowNavBlockers);
 	
-	AddSharedToolBar( pTBEdit );
+	AddSharedToolBar(pTBEdit);
 }
 
 void gdeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Game-Definition", deInputEvent::ekcG ) );
-	pCreateMenuGameDef( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "Game-Definition", deInputEvent::ekcG));
+	pCreateMenuGameDef(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Edit", deInputEvent::ekcE ) );
-	pCreateMenuEdit( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	pCreateMenuEdit(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "View", deInputEvent::ekcV ) );
-	pCreateMenuView( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	pCreateMenuView(cascade);
+	AddSharedMenu(cascade);
 }
 
-void gdeWindowMain::pCreateMenuGameDef( igdeMenuCascade &menu ){
+void gdeWindowMain::pCreateMenuGameDef(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionGDNew );
-	helper.MenuCommand( menu, pActionGDOpen );
-	helper.MenuCommand( menu, pActionGDOpenProject );
-	helper.MenuCommand( menu, pActionGDSave );
-	helper.MenuCommand( menu, pActionGDSaveAs );
+	helper.MenuCommand(menu, pActionGDNew);
+	helper.MenuCommand(menu, pActionGDOpen);
+	helper.MenuCommand(menu, pActionGDOpenProject);
+	helper.MenuCommand(menu, pActionGDSave);
+	helper.MenuCommand(menu, pActionGDSaveAs);
 }
 
-void gdeWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
+void gdeWindowMain::pCreateMenuEdit(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionEditUndo );
-	helper.MenuCommand( menu, pActionEditRedo );
+	helper.MenuCommand(menu, pActionEditUndo);
+	helper.MenuCommand(menu, pActionEditRedo);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditCut );
-	helper.MenuCommand( menu, pActionEditCopy );
-	helper.MenuCommand( menu, pActionEditPaste );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditCut);
+	helper.MenuCommand(menu, pActionEditCopy);
+	helper.MenuCommand(menu, pActionEditPaste);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditFind );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditFind);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionCategoryAdd );
-	helper.MenuCommand( menu, pActionCategoryObjectClassAdd );
-	helper.MenuCommand( menu, pActionCategoryParticleEmitterAdd );
-	helper.MenuCommand( menu, pActionCategorySkinAdd );
-	helper.MenuCommand( menu, pActionCategorySkyAdd );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionCategoryAdd);
+	helper.MenuCommand(menu, pActionCategoryObjectClassAdd);
+	helper.MenuCommand(menu, pActionCategoryParticleEmitterAdd);
+	helper.MenuCommand(menu, pActionCategorySkinAdd);
+	helper.MenuCommand(menu, pActionCategorySkyAdd);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionObjectClassAdd );
-	helper.MenuCommand( menu, pActionOCBillboardAdd );
-	helper.MenuCommand( menu, pActionOCCameraAdd );
-	helper.MenuCommand( menu, pActionOCComponentAdd );
-	helper.MenuCommand( menu, pActionOCEnvMapProbeAdd );
-	helper.MenuCommand( menu, pActionOCLightAdd );
-	helper.MenuCommand( menu, pActionOCNavBlockerAdd );
-	helper.MenuCommand( menu, pActionOCNavSpaceAdd );
-	helper.MenuCommand( menu, pActionOCParticleEmitterAdd );
-	helper.MenuCommand( menu, pActionOCForceFieldAdd );
-	helper.MenuCommand( menu, pActionOCSnapPointAdd );
-	helper.MenuCommand( menu, pActionOCSpeakerAdd );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionObjectClassAdd);
+	helper.MenuCommand(menu, pActionOCBillboardAdd);
+	helper.MenuCommand(menu, pActionOCCameraAdd);
+	helper.MenuCommand(menu, pActionOCComponentAdd);
+	helper.MenuCommand(menu, pActionOCEnvMapProbeAdd);
+	helper.MenuCommand(menu, pActionOCLightAdd);
+	helper.MenuCommand(menu, pActionOCNavBlockerAdd);
+	helper.MenuCommand(menu, pActionOCNavSpaceAdd);
+	helper.MenuCommand(menu, pActionOCParticleEmitterAdd);
+	helper.MenuCommand(menu, pActionOCForceFieldAdd);
+	helper.MenuCommand(menu, pActionOCSnapPointAdd);
+	helper.MenuCommand(menu, pActionOCSpeakerAdd);
 	helper.MenuCommand(menu, pActionOCWorldAdd);
 	
-	helper.MenuCommand( menu, pActionParticleEmitterAdd );
-	helper.MenuCommand( menu, pActionSkinAdd );
-	helper.MenuCommand( menu, pActionSkyAdd );
+	helper.MenuCommand(menu, pActionParticleEmitterAdd);
+	helper.MenuCommand(menu, pActionSkinAdd);
+	helper.MenuCommand(menu, pActionSkyAdd);
 }
 
-void gdeWindowMain::pCreateMenuView( igdeMenuCascade &menu ){
+void gdeWindowMain::pCreateMenuView(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCheck( menu, pActionViewShowEnvMapProbes );
-	helper.MenuCheck( menu, pActionViewShowNavBlockers );
+	helper.MenuCheck(menu, pActionViewShowEnvMapProbes);
+	helper.MenuCheck(menu, pActionViewShowNavBlockers);
 }

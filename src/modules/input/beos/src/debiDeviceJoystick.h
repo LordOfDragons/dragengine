@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	debiDeviceJoystick( deBeOSInput &module, const char *name );
+	debiDeviceJoystick(deBeOSInput &module, const char *name);
 	
 	
 	

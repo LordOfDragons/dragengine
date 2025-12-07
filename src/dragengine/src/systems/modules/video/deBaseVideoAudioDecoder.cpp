@@ -36,11 +36,11 @@
 // Class deBaseVideoAudioDecoder
 //////////////////////////////////
 
-deBaseVideoAudioDecoder::deBaseVideoAudioDecoder( decBaseFileReader *file ) :
-pFile( file )
+deBaseVideoAudioDecoder::deBaseVideoAudioDecoder(decBaseFileReader *file) :
+pFile(file)
 {
-	if( ! file ){
-		DETHROW( deeInvalidParam );
+	if(!file){
+		DETHROW(deeInvalidParam);
 	}
 }
 

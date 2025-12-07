@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassSkyController( deScriptingDragonScript &ds );
+	deClassSkyController(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassSkyController();
@@ -61,13 +61,13 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push controller. */
-	void PushController( dsRunTime *rt, deSky *sky, int index );
+	void PushController(dsRunTime *rt, deSky *sky, int index);
 	
 	/** \brief Push controller. */
-	void PushController( dsRunTime *rt, deSkyInstance *instance, int index );
+	void PushController(dsRunTime *rt, deSkyInstance *instance, int index);
 	/*@}*/
 	
 	
@@ -87,37 +87,37 @@ private:
 		dsClass *clsSkyInst;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetSky );
-	DEF_NATFUNC( nfGetSkyInstance );
-	DEF_NATFUNC( nfGetControllerIndex );
+	DEF_NATFUNC(nfGetSky);
+	DEF_NATFUNC(nfGetSkyInstance);
+	DEF_NATFUNC(nfGetControllerIndex);
 	
-	DEF_NATFUNC( nfGetName );
-	DEF_NATFUNC( nfSetName );
-	DEF_NATFUNC( nfGetLower );
-	DEF_NATFUNC( nfGetUpper );
-	DEF_NATFUNC( nfSetRange );
-	DEF_NATFUNC( nfGetValue );
-	DEF_NATFUNC( nfSetValue );
-	DEF_NATFUNC( nfGetFrozen );
-	DEF_NATFUNC( nfSetFrozen );
-	DEF_NATFUNC( nfGetClamp );
-	DEF_NATFUNC( nfSetClamp );
+	DEF_NATFUNC(nfGetName);
+	DEF_NATFUNC(nfSetName);
+	DEF_NATFUNC(nfGetLower);
+	DEF_NATFUNC(nfGetUpper);
+	DEF_NATFUNC(nfSetRange);
+	DEF_NATFUNC(nfGetValue);
+	DEF_NATFUNC(nfSetValue);
+	DEF_NATFUNC(nfGetFrozen);
+	DEF_NATFUNC(nfSetFrozen);
+	DEF_NATFUNC(nfGetClamp);
+	DEF_NATFUNC(nfSetClamp);
 	
-	DEF_NATFUNC( nfIncrement );
-	DEF_NATFUNC( nfSetToLower );
-	DEF_NATFUNC( nfSetToUpper );
-	DEF_NATFUNC( nfIsAtLower );
-	DEF_NATFUNC( nfIsAtUpper );
+	DEF_NATFUNC(nfIncrement);
+	DEF_NATFUNC(nfSetToLower);
+	DEF_NATFUNC(nfSetToUpper);
+	DEF_NATFUNC(nfIsAtLower);
+	DEF_NATFUNC(nfIsAtUpper);
 	
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

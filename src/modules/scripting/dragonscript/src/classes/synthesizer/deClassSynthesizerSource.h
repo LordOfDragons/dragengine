@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSynthesizerSource( deScriptingDragonScript &ds );
+	deClassSynthesizerSource(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSynthesizerSource();
@@ -69,22 +69,22 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Source or \em NULL if deleted or myself is \em NULL. */
-	deSynthesizerSource *GetSource( dsRealObject *myself ) const;
+	deSynthesizerSource *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns source or \em NULL. */
-	void AssignSource( dsRealObject *myself, deSynthesizerSource *source );
+	void AssignSource(dsRealObject *myself, deSynthesizerSource *source);
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer( dsRealObject *myself, deSynthesizer *synthesizer );
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/**
 	 * \brief Pushes a source.
 	 * \details Delegates the call to the matching source script class.
 	 */
-	void PushSource( dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSource *source );
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSource *source);
 	
 	inline dsClass *GetClassSynthesizerSourceMix() const{ return pClsSynthesizerSourceMix; }
 	/*@}*/
@@ -106,26 +106,26 @@ private:
 		dsClass *clsSynthesizerSourceMix;
 	};
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetEnabled );
-	DEF_NATFUNC( nfSetMixMode );
-	DEF_NATFUNC( nfSetBlendFactor );
+	DEF_NATFUNC(nfSetEnabled);
+	DEF_NATFUNC(nfSetMixMode);
+	DEF_NATFUNC(nfSetBlendFactor);
 	
-	DEF_NATFUNC( nfSetMinVolume );
-	DEF_NATFUNC( nfSetMaxVolume );
-	DEF_NATFUNC( nfSetMinPanning );
-	DEF_NATFUNC( nfSetMaxPanning );
+	DEF_NATFUNC(nfSetMinVolume);
+	DEF_NATFUNC(nfSetMaxVolume);
+	DEF_NATFUNC(nfSetMinPanning);
+	DEF_NATFUNC(nfSetMaxPanning);
 	
-	DEF_NATFUNC( nfAddEffect );
-	DEF_NATFUNC( nfRemoveEffect );
-	DEF_NATFUNC( nfRemoveAllEffects );
+	DEF_NATFUNC(nfAddEffect);
+	DEF_NATFUNC(nfRemoveEffect);
+	DEF_NATFUNC(nfRemoveAllEffects);
 #undef DEF_NATFUNC
 };
 

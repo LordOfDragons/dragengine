@@ -62,8 +62,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create textfield. */
-	igdeSpinTextField( igdeEnvironment &environment, int lower, int upper,
-		int columns, const char *description = "" );
+	igdeSpinTextField(igdeEnvironment &environment, int lower, int upper,
+		int columns, const char *description = "");
 	
 	
 	
@@ -86,7 +86,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit field. */
 	inline int GetColumns() const{ return pColumns; }
@@ -95,7 +95,7 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -106,7 +106,7 @@ public:
 	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief Range lower value. */
 	inline int GetLower() const{ return pLower; }
@@ -115,15 +115,15 @@ public:
 	inline int GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range. */
-	void SetRange( int lower, int upper );
+	void SetRange(int lower, int upper);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeSpinTextFieldListener *listener );
+	void AddListener(igdeSpinTextFieldListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeSpinTextFieldListener *listener );
+	void RemoveListener(igdeSpinTextFieldListener *listener);
 	
 	/** \brief Notify listeners value changed. */
 	virtual void NotifyValueChanged();

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video image decoder. */
-	deBaseVideoDecoder( decBaseFileReader *file );
+	deBaseVideoDecoder(decBaseFileReader *file);
 	
 	/** \brief Clean up video image decoder. */
 	virtual ~deBaseVideoDecoder();
@@ -65,7 +65,7 @@ public:
 	virtual int GetPosition() = 0;
 	
 	/** \brief Set file position in frames from the beginning. */
-	virtual void SetPosition( int position ) = 0;
+	virtual void SetPosition(int position) = 0;
 	
 	/**
 	 * \brief Decode next frame into buffer and advances file position.
@@ -78,7 +78,7 @@ public:
 	 * has been decoded successfully. Otherwise \em fals is returned and an error
 	 * is signaled using the engine error signaling.
 	 */
-	virtual bool DecodeFrame( void *buffer, int size ) = 0;
+	virtual bool DecodeFrame(void *buffer, int size) = 0;
 	/*@}*/
 };
 

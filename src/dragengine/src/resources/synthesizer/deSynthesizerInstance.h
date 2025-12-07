@@ -90,7 +90,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer instance. */
-	deSynthesizerInstance( deSynthesizerInstanceManager *manager );
+	deSynthesizerInstance(deSynthesizerInstanceManager *manager);
 	
 protected:
 	/**
@@ -111,7 +111,7 @@ public:
 	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL to clear. */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	
 	
@@ -119,7 +119,7 @@ public:
 	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples to create. */
-	void SetSampleCount( int sampleCount );
+	void SetSampleCount(int sampleCount);
 	
 	
 	
@@ -130,13 +130,13 @@ public:
 	 * \brief Controller at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater or equal than GetControllerCount().
 	 */
-	deSynthesizerController *GetControllerAt( int index ) const;
+	deSynthesizerController *GetControllerAt(int index) const;
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	/** \brief Notify peer controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	/*@}*/
 	
 	
@@ -164,7 +164,7 @@ public:
 	 * \throws EInvalidParam \em buffer is NULL.
 	 * \throws EInvalidParam Assigned synthesizer object changed while in use.
 	 */
-	void GenerateSound( void *buffer, int bufferSize, int offset, int samples );
+	void GenerateSound(void *buffer, int bufferSize, int offset, int samples);
 	/*@}*/
 	
 	
@@ -175,13 +175,13 @@ public:
 	inline deBaseSynthesizerSynthesizerInstance *GetPeerSynthesizer() const{ return pPeerSynthesizer; }
 	
 	/** \brief Set synthesizer peer or NULL if not set. */
-	void SetPeerSynthesizer( deBaseSynthesizerSynthesizerInstance *peer );
+	void SetPeerSynthesizer(deBaseSynthesizerSynthesizerInstance *peer);
 	
 	/** \brief Audio peer or NULL if not set. */
 	inline deBaseAudioSynthesizerInstance *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio peer or NULL if not set. */
-	void SetPeerAudio( deBaseAudioSynthesizerInstance *peer );
+	void SetPeerAudio(deBaseAudioSynthesizerInstance *peer);
 	/*@}*/
 	
 	

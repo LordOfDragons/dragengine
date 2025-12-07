@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create world octree. */
-	deoalWorldOctree( const decDVector &center, const decDVector &halfSize );
+	deoalWorldOctree(const decDVector &center, const decDVector &halfSize);
 	
 	/** \brief Clean up world octree. */
 	~deoalWorldOctree() override;
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create octree for octant. */
-	deoalDOctree *CreateOctree( int octant ) const override;
+	deoalDOctree *CreateOctree(int octant) const override;
 	
 	/** \brief Clear content of node. */
 	void ClearNodeContent() override;
@@ -91,19 +91,19 @@ public:
 	void ClearAll();
 	
 	/** \brief Add component into octree. */
-	void InsertComponentIntoTree( deoalAComponent *component, int maxDepth );
+	void InsertComponentIntoTree(deoalAComponent *component, int maxDepth);
 	
 	/** \brief Add speaker into octree. */
-	void InsertSpeakerIntoTree( deoalASpeaker *speaker, int maxDepth );
+	void InsertSpeakerIntoTree(deoalASpeaker *speaker, int maxDepth);
 	
 	/** \brief Add microphone into octree. */
-	void InsertMicrophoneIntoTree( deoalAMicrophone *microphone, int maxDepth );
+	void InsertMicrophoneIntoTree(deoalAMicrophone *microphone, int maxDepth);
 	
 	/** \brief Add environment probe into octree. */
-	void InsertEnvProbeIntoTree( deoalEnvProbe *envProbe, int maxDepth );
+	void InsertEnvProbeIntoTree(deoalEnvProbe *envProbe, int maxDepth);
 	
 	/** \brief Add sound level meter into octree. */
-	void InsertSoundLevelMeterIntoTree( deoalASoundLevelMeter *soundLevelMeter, int maxDepth );
+	void InsertSoundLevelMeterIntoTree(deoalASoundLevelMeter *soundLevelMeter, int maxDepth);
 	/*@}*/
 	
 	
@@ -114,16 +114,16 @@ public:
 	int GetComponentCount() const;
 	
 	/** \brief Component at index. */
-	deoalAComponent *GetComponentAt( int index ) const;
+	deoalAComponent *GetComponentAt(int index) const;
 	
 	/** \brief Index of component or -1 if absent. */
-	int IndexOfComponent( deoalAComponent *component ) const;
+	int IndexOfComponent(deoalAComponent *component) const;
 	
 	/** \brief Add component. */
-	void AddComponent( deoalAComponent *component );
+	void AddComponent(deoalAComponent *component);
 	
 	/** \brief Remove component. */
-	void RemoveComponent( deoalAComponent *component );
+	void RemoveComponent(deoalAComponent *component);
 	
 	/** \brief Remove all components. */
 	void RemoveAllComponents();
@@ -137,16 +137,16 @@ public:
 	int GetSpeakerCount() const;
 	
 	/** \brief Speaker at index. */
-	deoalASpeaker *GetSpeakerAt( int index ) const;
+	deoalASpeaker *GetSpeakerAt(int index) const;
 	
 	/** \brief Index of speaker or -1 if absent. */
-	int IndexOfSpeaker( deoalASpeaker *speaker ) const;
+	int IndexOfSpeaker(deoalASpeaker *speaker) const;
 	
 	/** \brief Add speaker. */
-	void AddSpeaker( deoalASpeaker *speaker );
+	void AddSpeaker(deoalASpeaker *speaker);
 	
 	/** \brief Remove speaker. */
-	void RemoveSpeaker( deoalASpeaker *speaker );
+	void RemoveSpeaker(deoalASpeaker *speaker);
 	
 	/** \brief Remove all speakers. */
 	void RemoveAllSpeakers();
@@ -160,16 +160,16 @@ public:
 	int GetMicrophoneCount() const;
 	
 	/** \brief Microphone at index. */
-	deoalAMicrophone *GetMicrophoneAt( int index ) const;
+	deoalAMicrophone *GetMicrophoneAt(int index) const;
 	
 	/** \brief Index of microphone or -1 if absent. */
-	int IndexOfMicrophone( deoalAMicrophone *microphone ) const;
+	int IndexOfMicrophone(deoalAMicrophone *microphone) const;
 	
 	/** \brief Add microphone. */
-	void AddMicrophone( deoalAMicrophone *microphone );
+	void AddMicrophone(deoalAMicrophone *microphone);
 	
 	/** \brief Remove microphone. */
-	void RemoveMicrophone( deoalAMicrophone *microphone );
+	void RemoveMicrophone(deoalAMicrophone *microphone);
 	
 	/** \brief Remove all microphones. */
 	void RemoveAllMicrophones();
@@ -183,16 +183,16 @@ public:
 	int GetEnvProbeCount() const;
 	
 	/** \brief EnvProbe at index. */
-	deoalEnvProbe *GetEnvProbeAt( int index ) const;
+	deoalEnvProbe *GetEnvProbeAt(int index) const;
 	
 	/** \brief Index of environment probe or -1 if absent. */
-	int IndexOfEnvProbe( deoalEnvProbe *microphone ) const;
+	int IndexOfEnvProbe(deoalEnvProbe *microphone) const;
 	
 	/** \brief Add environment probe. */
-	void AddEnvProbe( deoalEnvProbe *microphone );
+	void AddEnvProbe(deoalEnvProbe *microphone);
 	
 	/** \brief Remove environment probe. */
-	void RemoveEnvProbe( deoalEnvProbe *microphone );
+	void RemoveEnvProbe(deoalEnvProbe *microphone);
 	
 	/** \brief Remove all environment probes. */
 	void RemoveAllEnvProbes();
@@ -206,16 +206,16 @@ public:
 	int GetSoundLevelMeterCount() const;
 	
 	/** \brief Sound level meter at index. */
-	deoalASoundLevelMeter *GetSoundLevelMeterAt( int index ) const;
+	deoalASoundLevelMeter *GetSoundLevelMeterAt(int index) const;
 	
 	/** \brief Index of sound level meter or -1 if absent. */
-	int IndexOfSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter ) const;
+	int IndexOfSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter) const;
 	
 	/** \brief Add sound level meter. */
-	void AddSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
+	void AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	
 	/** \brief Remove sound level meter. */
-	void RemoveSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
+	void RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	
 	/** \brief Remove all sound level meters. */
 	void RemoveAllSoundLevelMeters();
@@ -224,8 +224,8 @@ public:
 	
 	
 private:
-	deoalWorldOctree *pGetNodeFor( const decDVector &center, const decDVector &halfSize, int maxDepth );
-	deoalWorldOctree *pGetNodeFor( const decDVector &position, int maxDepth );
+	deoalWorldOctree *pGetNodeFor(const decDVector &center, const decDVector &halfSize, int maxDepth);
+	deoalWorldOctree *pGetNodeFor(const decDVector &position, int maxDepth);
 };
 
 #endif

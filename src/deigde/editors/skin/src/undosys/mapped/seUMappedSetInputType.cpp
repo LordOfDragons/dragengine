@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetInputType::seUMappedSetInputType( seMapped *mapped, deSkinMapped::eInputTypes newInputType ) :
-pMapped( mapped ),
-pOldInputType( mapped ? mapped->GetInputType() : deSkinMapped::eitTime ),
-pNewInputType( newInputType )
+seUMappedSetInputType::seUMappedSetInputType(seMapped *mapped, deSkinMapped::eInputTypes newInputType) :
+pMapped(mapped),
+pOldInputType(mapped ? mapped->GetInputType() : deSkinMapped::eitTime),
+pNewInputType(newInputType)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Input Type" );
+	SetShortInfo("Set Mapped Input Type");
 }
 
 seUMappedSetInputType::~seUMappedSetInputType(){
@@ -53,9 +53,9 @@ seUMappedSetInputType::~seUMappedSetInputType(){
 ///////////////
 
 void seUMappedSetInputType::Undo(){
-	pMapped->SetInputType( pOldInputType );
+	pMapped->SetInputType(pOldInputType);
 }
 
 void seUMappedSetInputType::Redo(){
-	pMapped->SetInputType( pNewInputType );
+	pMapped->SetInputType(pNewInputType);
 }

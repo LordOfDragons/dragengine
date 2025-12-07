@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveCamera::gdeUOCRemoveCamera( gdeObjectClass *objectClass, gdeOCCamera *camera ) :
-pObjectClass( NULL ),
-pCamera( NULL )
+gdeUOCRemoveCamera::gdeUOCRemoveCamera(gdeObjectClass *objectClass, gdeOCCamera *camera) :
+pObjectClass(NULL),
+pCamera(NULL)
 {
-	if( ! objectClass || ! camera ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !camera){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetCameras().Has( camera ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetCameras().Has(camera)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove camera" );
+	SetShortInfo("Remove camera");
 	
 	pCamera = camera;
 	camera->AddReference();
@@ -63,10 +63,10 @@ pCamera( NULL )
 }
 
 gdeUOCRemoveCamera::~gdeUOCRemoveCamera(){
-	if( pCamera ){
+	if(pCamera){
 		pCamera->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -77,19 +77,19 @@ gdeUOCRemoveCamera::~gdeUOCRemoveCamera(){
 ///////////////
 
 void gdeUOCRemoveCamera::Undo(){
-	pObjectClass->GetCameras().Add( pCamera );
+	pObjectClass->GetCameras().Add(pCamera);
 	pObjectClass->NotifyCamerasChanged();
 }
 
 void gdeUOCRemoveCamera::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCCamera() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCCamera()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCCamera( NULL );
+		gameDefinition->SetActiveOCCamera(NULL);
 	}
 	
-	pObjectClass->GetCameras().Remove( pCamera );
+	pObjectClass->GetCameras().Remove(pCamera);
 	pObjectClass->NotifyCamerasChanged();
 }

@@ -51,8 +51,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-ceConfigurationXML::ceConfigurationXML( deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ){
+ceConfigurationXML::ceConfigurationXML(deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource){
 }
 
 ceConfigurationXML::~ceConfigurationXML(){
@@ -63,28 +63,28 @@ ceConfigurationXML::~ceConfigurationXML(){
 // Management
 ///////////////
 
-void ceConfigurationXML::ReadFromFile( decBaseFileReader &reader, ceConfiguration &config ){
+void ceConfigurationXML::ReadFromFile(decBaseFileReader &reader, ceConfiguration &config){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "conversationEditor" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "conversationEditor") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void ceConfigurationXML::WriteToFile( decBaseFileWriter &writer, const ceConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void ceConfigurationXML::WriteToFile(decBaseFileWriter &writer, const ceConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -92,47 +92,47 @@ void ceConfigurationXML::WriteToFile( decBaseFileWriter &writer, const ceConfigu
 // Private Functions
 //////////////////////
 
-void ceConfigurationXML::pWriteConfig( decXmlWriter &writer, const ceConfiguration &config ){
-	writer.WriteOpeningTag( "conversationEditor", false, true );
+void ceConfigurationXML::pWriteConfig(decXmlWriter &writer, const ceConfiguration &config){
+	writer.WriteOpeningTag("conversationEditor", false, true);
 	
-	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
-	config.GetWindowMain().GetRecentFilesCTS().WriteToXml( writer, "recentFilesCTS" );
-	config.GetWindowMain().GetRecentFilesCTA().WriteToXml( writer, "recentFilesCTA" );
-	config.GetWindowMain().GetRecentFilesCTGS().WriteToXml( writer, "recentFilesCTGS" );
-	config.GetWindowMain().GetRecentFilesLangPack().WriteToXml( writer, "recentFilesLangPack" );
+	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
+	config.GetWindowMain().GetRecentFilesCTS().WriteToXml(writer, "recentFilesCTS");
+	config.GetWindowMain().GetRecentFilesCTA().WriteToXml(writer, "recentFilesCTA");
+	config.GetWindowMain().GetRecentFilesCTGS().WriteToXml(writer, "recentFilesCTGS");
+	config.GetWindowMain().GetRecentFilesLangPack().WriteToXml(writer, "recentFilesLangPack");
 	
-	writer.WriteClosingTag( "conversationEditor", true );
+	writer.WriteClosingTag("conversationEditor", true);
 }
 
 
 
-void ceConfigurationXML::pReadConfig( const decXmlElementTag &root, ceConfiguration &config ){
+void ceConfigurationXML::pReadConfig(const decXmlElementTag &root, ceConfiguration &config){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "recentFiles" ){
-			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+		if(tag->GetName() == "recentFiles"){
+			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
 			
-		}else if( tag->GetName() == "recentFilesCTS" ){
-			config.GetWindowMain().GetRecentFilesCTS().ReadFromXml( *tag );
+		}else if(tag->GetName() == "recentFilesCTS"){
+			config.GetWindowMain().GetRecentFilesCTS().ReadFromXml(*tag);
 			
-		}else if( tag->GetName() == "recentFilesCTA" ){
-			config.GetWindowMain().GetRecentFilesCTA().ReadFromXml( *tag );
+		}else if(tag->GetName() == "recentFilesCTA"){
+			config.GetWindowMain().GetRecentFilesCTA().ReadFromXml(*tag);
 			
-		}else if( tag->GetName() == "recentFilesCTGS" ){
-			config.GetWindowMain().GetRecentFilesCTGS().ReadFromXml( *tag );
+		}else if(tag->GetName() == "recentFilesCTGS"){
+			config.GetWindowMain().GetRecentFilesCTGS().ReadFromXml(*tag);
 			
-		}else if( tag->GetName() == "recentFilesLangPack" ){
-			config.GetWindowMain().GetRecentFilesLangPack().ReadFromXml( *tag );
+		}else if(tag->GetName() == "recentFilesLangPack"){
+			config.GetWindowMain().GetRecentFilesLangPack().ReadFromXml(*tag);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

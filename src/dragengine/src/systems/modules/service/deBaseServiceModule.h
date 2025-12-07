@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseServiceModule( deLoadableModule &loadableModule );
+	deBaseServiceModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseServiceModule();
@@ -60,13 +60,13 @@ public:
 	 * 
 	 * If service name is not supported nullptr is returned.
 	 */
-	virtual deBaseServiceService *CreateService( deService *service,
-		const char *name, const deServiceObject::Ref &data ) = 0;
+	virtual deBaseServiceService *CreateService(deService *service,
+		const char *name, const deServiceObject::Ref &data) = 0;
 	
 	/**
 	 * \brief Frame update.
 	 */
-	virtual void FrameUpdate( float elapsed ) = 0;
+	virtual void FrameUpdate(float elapsed) = 0;
 	
 	/**
 	 * \brief Make module add stage specific VFS containers.
@@ -87,7 +87,7 @@ public:
 	 *   The user overlay directory is always aded after this stage. Hence user
 	 *   overlay content is always used first before any other content.
 	 */
-	virtual void AddVFSContainers( deVirtualFileSystem &vfs, const char *stage );
+	virtual void AddVFSContainers(deVirtualFileSystem &vfs, const char *stage);
 	/*@}*/
 };
 

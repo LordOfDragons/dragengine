@@ -64,7 +64,7 @@ public:
 	 * Update dynamic parts of scene like the skins.
 	 * \param elapsed Seconds elapsed since last update
 	 */
-	virtual void Update( float elapsed );
+	virtual void Update(float elapsed);
 	
 	/** \brief Size changed. */
 	virtual void SizeChanged();
@@ -76,100 +76,100 @@ public:
 	virtual void LightingChanged();
 	
 	/** \brief Sky has been added. */
-	virtual void SkyAdded( deSkyInstance *sky );
+	virtual void SkyAdded(deSkyInstance *sky);
 	
 	/** \brief Sky has been removed. */
-	virtual void SkyRemoved( deSkyInstance *sky );
+	virtual void SkyRemoved(deSkyInstance *sky);
 	
 	/** \brief All skies have been removed. */
 	virtual void AllSkiesRemoved();
 	
 	/** \brief Billboard has been added. */
-	virtual void BillboardAdded( deBillboard *billboard );
+	virtual void BillboardAdded(deBillboard *billboard);
 	
 	/** \brief Billboard has been removed. */
-	virtual void BillboardRemoved( deBillboard *billboard );
+	virtual void BillboardRemoved(deBillboard *billboard);
 	
 	/** \brief All billboards have been removed. */
 	virtual void AllBillboardsRemoved();
 	
 	/** \brief Camera has been added. */
-	virtual void CameraAdded( deCamera *camera );
+	virtual void CameraAdded(deCamera *camera);
 	
 	/** \brief Camera has been removed. */
-	virtual void CameraRemoved( deCamera *camera );
+	virtual void CameraRemoved(deCamera *camera);
 	
 	/** \brief All cameras have been removed. */
 	virtual void AllCamerasRemoved();
 	
 	/** \brief Component has been added. */
-	virtual void ComponentAdded( deComponent *component );
+	virtual void ComponentAdded(deComponent *component);
 	
 	/** \brief Component has been removed. */
-	virtual void ComponentRemoved( deComponent *component );
+	virtual void ComponentRemoved(deComponent *component);
 	
 	/** \brief All components have been removed. */
 	virtual void AllComponentsRemoved();
 	
 	/** \brief DebugDrawer has been added. */
-	virtual void DebugDrawerAdded( deDebugDrawer *debugDrawer );
+	virtual void DebugDrawerAdded(deDebugDrawer *debugDrawer);
 	
 	/** \brief DebugDrawer has been removed. */
-	virtual void DebugDrawerRemoved( deDebugDrawer *debugDrawer );
+	virtual void DebugDrawerRemoved(deDebugDrawer *debugDrawer);
 	
 	/** \brief All debugDrawers have been removed. */
 	virtual void AllDebugDrawersRemoved();
 	
 	/** \brief Environment map probe has been added. */
-	virtual void EnvMapProbeAdded( deEnvMapProbe *envMapProbe );
+	virtual void EnvMapProbeAdded(deEnvMapProbe *envMapProbe);
 	
 	/** \brief Environment map probe has been removed. */
-	virtual void EnvMapProbeRemoved( deEnvMapProbe *envMapProbe );
+	virtual void EnvMapProbeRemoved(deEnvMapProbe *envMapProbe);
 	
 	/** \brief All environment map probes have been removed. */
 	virtual void AllEnvMapProbesRemoved();
 	
 	/** \brief Light has been added. */
-	virtual void LightAdded( deLight *light );
+	virtual void LightAdded(deLight *light);
 	
 	/** \brief Light has been removed. */
-	virtual void LightRemoved( deLight *light );
+	virtual void LightRemoved(deLight *light);
 	
 	/** \brief All lights have been removed. */
 	virtual void AllLightsRemoved();
 	
 	/** \brief Lumimeter has been added. */
-	virtual void LumimeterAdded( deLumimeter *lumimeter );
+	virtual void LumimeterAdded(deLumimeter *lumimeter);
 	
 	/** \brief Lumimeter has been removed. */
-	virtual void LumimeterRemoved( deLumimeter *lumimeter );
+	virtual void LumimeterRemoved(deLumimeter *lumimeter);
 	
 	/** \brief All lumimeters have been removed. */
 	virtual void AllLumimetersRemoved();
 	
 	/** \brief Particle emitter has been added. */
-	virtual void ParticleEmitterAdded( deParticleEmitterInstance *emitter );
+	virtual void ParticleEmitterAdded(deParticleEmitterInstance *emitter);
 	
 	/** \brief Particle emitter has been removed. */
-	virtual void ParticleEmitterRemoved( deParticleEmitterInstance *emitter );
+	virtual void ParticleEmitterRemoved(deParticleEmitterInstance *emitter);
 	
 	/** \brief All particle emitters have been removed. */
 	virtual void AllParticleEmittersRemoved();
 	
 	/** \brief Prop Field has been added. */
-	virtual void PropFieldAdded( dePropField *propField );
+	virtual void PropFieldAdded(dePropField *propField);
 	
 	/** \brief Prop Field has been removed. */
-	virtual void PropFieldRemoved( dePropField *propField );
+	virtual void PropFieldRemoved(dePropField *propField);
 	
 	/** \brief All Prop Fields have been removed. */
 	virtual void AllPropFieldsRemoved();
 	
 	/** \brief Smoke Emitter has been added. */
-	virtual void SmokeEmitterAdded( deSmokeEmitter *smokeEmitter );
+	virtual void SmokeEmitterAdded(deSmokeEmitter *smokeEmitter);
 	
 	/** \brief Smoke Emitter has been removed. */
-	virtual void SmokeEmitterRemoved( deSmokeEmitter *smokeEmitter );
+	virtual void SmokeEmitterRemoved(deSmokeEmitter *smokeEmitter);
 	
 	/** \brief All Smoke Emitters have been removed. */
 	virtual void AllSmokeEmittersRemoved();

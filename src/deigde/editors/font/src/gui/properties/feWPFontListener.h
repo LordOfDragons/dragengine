@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feWPFontListener( feWPFont &panel );
+	feWPFontListener(feWPFont &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~feWPFontListener();
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font parameters changed. */
-	virtual void FontChanged( feFont *font );
+	virtual void FontChanged(feFont *font);
 	
 	/** \brief An image changed. */
-    virtual void ImageChanged( feFont *font, feFontImage *image );
+    virtual void ImageChanged(feFont *font, feFontImage *image);
 	/*@}*/
 };
 

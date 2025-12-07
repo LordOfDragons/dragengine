@@ -76,7 +76,7 @@ public:
 	inline int GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( int type );
+	void SetType(int type);
 	
 	/** \brief Source. */
 	inline const decString &GetSource() const{ return pSource; }

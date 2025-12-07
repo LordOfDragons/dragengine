@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxObjectMap::fbxObjectMap( int expectedCount ) :
-pBuckets( NULL ),
-pBucketCount( 0 )
+fbxObjectMap::fbxObjectMap(int expectedCount) :
+pBuckets(NULL),
+pBucketCount(0)
 {
-	if( expectedCount < 1 ){
-		DETHROW( deeInvalidParam );
+	if(expectedCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = decMath::max( ( int )( ( float )expectedCount * 0.75f ), 1 );
-	pBuckets = new sBucket[ count ];
+	const int count = decMath::max((int)((float)expectedCount * 0.75f), 1);
+	pBuckets = new sBucket[count];
 	pBucketCount = count;
 }
 
 fbxObjectMap::~fbxObjectMap(){
-	if( pBuckets ){
+	if(pBuckets){
 		delete [] pBuckets;
 	}
 }
@@ -63,22 +63,22 @@ fbxObjectMap::~fbxObjectMap(){
 // Management
 ///////////////
 
-void fbxObjectMap::Add( fbxNode *node ){
-	if( ! node || node->GetID() == 0 ){
-		DETHROW( deeInvalidParam );
+void fbxObjectMap::Add(fbxNode *node){
+	if(!node || node->GetID() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pBuckets[ node->GetID() % pBucketCount ].objects.Add( node );
+	pBuckets[node->GetID() % pBucketCount].objects.Add(node);
 }
 
-fbxNode *fbxObjectMap::GetAt( int64_t id ) const{
-	const decPointerList &objects = pBuckets[ id % pBucketCount ].objects;
+fbxNode *fbxObjectMap::GetAt(int64_t id) const{
+	const decPointerList &objects = pBuckets[id % pBucketCount].objects;
 	const int count = objects.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		fbxNode * const node = ( fbxNode* )objects.GetAt( i );
-		if( node->GetID() == id ){
+	for(i=0; i<count; i++){
+		fbxNode * const node = (fbxNode*)objects.GetAt(i);
+		if(node->GetID() == id){
 			return node;
 		}
 	}

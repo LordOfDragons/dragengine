@@ -55,11 +55,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meASubclassAsEClass::meASubclassAsEClass( meWindowMain &window ) :
-igdeAction( "Subclass As EClass...",
-	window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
-	"Create Subclass of selected object saved as XML Element Class" ),
-pWindow( window )
+meASubclassAsEClass::meASubclassAsEClass(meWindowMain &window) :
+igdeAction("Subclass As EClass...",
+	window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+	"Create Subclass of selected object saved as XML Element Class"),
+pWindow(window)
 {
 }
 
@@ -69,41 +69,41 @@ pWindow( window )
 ///////////////
 
 void meASubclassAsEClass::OnAction(){
-	if( ! pWindow.GetWorld() ){
+	if(!pWindow.GetWorld()){
 		return;
 	}
 	meWorld &world = *pWindow.GetWorld();
 	
-	if( ! world.GetGameDefinition() || ! world.GetSelectionObject().HasActive() ){
+	if(!world.GetGameDefinition() || !world.GetSelectionObject().HasActive()){
 		return;
 	}
 	const igdeGameDefinition &gamedefinition = *world.GetGameDefinition();
 	meObject &object = *world.GetSelectionObject().GetActive();
 	
-	if( ! object.GetGDClass() ){
+	if(!object.GetGDClass()){
 		return;
 	}
 	const igdeGDClass &gdclass = *object.GetGDClass();
 	
 	// ask for class name to use
 	const char * const dialogTitle = "Subclass As EClass";
-	decString classname( gdclass.GetName() );
-	if( ! igdeCommonDialogs::GetString( &pWindow, dialogTitle, "Object Class:", classname ) ){
+	decString classname(gdclass.GetName());
+	if(!igdeCommonDialogs::GetString(&pWindow, dialogTitle, "Object Class:", classname)){
 		return;
 	}
 	
-	if( gamedefinition.GetClassManager()->HasNamed( classname ) ){
-		igdeCommonDialogs::Error( &pWindow, dialogTitle, "Object class exists already" );
+	if(gamedefinition.GetClassManager()->HasNamed(classname)){
+		igdeCommonDialogs::Error(&pWindow, dialogTitle, "Object class exists already");
 		return;
 	}
 	
 	// ask for filename to save element class to
 	igdeFilePatternList filePatterns;
-	filePatterns.AddFilePattern( new igdeFilePattern( "XML Element Class", "*.deeclass", ".deeclass" ) );
+	filePatterns.AddFilePattern(new igdeFilePattern("XML Element Class", "*.deeclass", ".deeclass"));
 	
-	decString filename( classname + ".deeclass" );
+	decString filename(classname + ".deeclass");
 	
-	if( ! igdeCommonDialogs::GetFileSave( &pWindow, dialogTitle,
+	if(!igdeCommonDialogs::GetFileSave(&pWindow, dialogTitle,
 	*pWindow.GetEnvironment().GetFileSystemGame(), filePatterns, filename ) ){
 		return;
 	}
@@ -114,12 +114,12 @@ void meASubclassAsEClass::OnAction(){
 	// path. all parent directory path are kept absolute. this is the best choice in
 	// most situations leaving the edge cases for the user to edit manually
 	decPath pathParentDir;
-	pathParentDir.SetFromUnix( filename );
+	pathParentDir.SetFromUnix(filename);
 	pathParentDir.RemoveLastComponent();
 	
-	decString basePath( pathParentDir.GetPathUnix() );
+	decString basePath(pathParentDir.GetPathUnix());
 	
-	if( basePath[ basePath.GetLength() - 1 ] != decPath::PathSeparator() ){
+	if(basePath[basePath.GetLength() - 1] != decPath::PathSeparator()){
 		// ensures the path ends with a path separator. this way simple string compare
 		// is enough to check if the path in question is in the same directory or below
 		basePath += decPath::PathSeparatorString();
@@ -130,7 +130,7 @@ void meASubclassAsEClass::OnAction(){
 	decXmlWriter xmlWriter(decBaseFileWriter::Ref::New(
 		pWindow.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix(filename))));
-	WriteEClass( object, gdclass, classname, xmlWriter, basePath );
+	WriteEClass(object, gdclass, classname, xmlWriter, basePath);
 	}
 	
 	// trigger reloading XML element classes
@@ -138,8 +138,8 @@ void meASubclassAsEClass::OnAction(){
 }
 
 void meASubclassAsEClass::Update(){
-	SetEnabled( pWindow.GetWorld() && pWindow.GetWorld()->GetSelectionObject().HasActive()
-		&& pWindow.GetWorld()->GetSelectionObject().GetActive()->GetGDClass() );
+	SetEnabled(pWindow.GetWorld() && pWindow.GetWorld()->GetSelectionObject().HasActive()
+		&& pWindow.GetWorld()->GetSelectionObject().GetActive()->GetGDClass());
 }
 
 
@@ -147,153 +147,153 @@ void meASubclassAsEClass::Update(){
 // Protected Functions
 ////////////////////////
 
-void meASubclassAsEClass::WriteEClass( const meObject &object, const igdeGDClass &gdclass,
-const decString &classname, decXmlWriter &writer, const decString &basePath ){
+void meASubclassAsEClass::WriteEClass(const meObject &object, const igdeGDClass &gdclass,
+const decString &classname, decXmlWriter &writer, const decString &basePath){
 	writer.WriteXMLDeclaration();
 	
-	writer.WriteOpeningTagStart( "elementClass" );
-	writer.WriteAttributeString( "name", classname );
-	writer.WriteAttributeString( "class", gdclass.GetName() );
+	writer.WriteOpeningTagStart("elementClass");
+	writer.WriteAttributeString("name", classname);
+	writer.WriteAttributeString("class", gdclass.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	if( object.GetProperties().GetCount() > 0 ){
-		WriteEClassProperties( object, gdclass, writer, basePath );
+	if(object.GetProperties().GetCount() > 0){
+		WriteEClassProperties(object, gdclass, writer, basePath);
 	}
 	
-	if( object.GetTextureCount() > 0 ){
-		WriteEClassTextureReplacements( object, writer, basePath );
+	if(object.GetTextureCount() > 0){
+		WriteEClassTextureReplacements(object, writer, basePath);
 	}
 	
-	writer.WriteClosingTag( "elementClass" );
+	writer.WriteClosingTag("elementClass");
 }
 
-void meASubclassAsEClass::WriteEClassProperties( const meObject &object,
-const igdeGDClass &gdclass, decXmlWriter &writer, const decString &basePath ){
+void meASubclassAsEClass::WriteEClassProperties(const meObject &object,
+const igdeGDClass &gdclass, decXmlWriter &writer, const decString &basePath){
 	const decStringDictionary &properties = object.GetProperties();
-	const decStringList keys( properties.GetKeys() );
+	const decStringList keys(properties.GetKeys());
 	const int propertyCount = keys.GetCount();
 	int i;
 	
-	for( i=0; i<propertyCount; i++ ){
-		const decString &key = keys.GetAt( i );
-		const decString &value = properties.GetAt( key );
-		WriteEClassProperty( key, value, gdclass.GetPropertyNamed( key ), writer, basePath );
+	for(i=0; i<propertyCount; i++){
+		const decString &key = keys.GetAt(i);
+		const decString &value = properties.GetAt(key);
+		WriteEClassProperty(key, value, gdclass.GetPropertyNamed(key), writer, basePath);
 	}
 }
 
-void meASubclassAsEClass::WriteEClassProperty( const decString &property, const decString &value,
-const igdeGDProperty *gdProperty, decXmlWriter &writer, const decString &basePath ){
+void meASubclassAsEClass::WriteEClassProperty(const decString &property, const decString &value,
+const igdeGDProperty *gdProperty, decXmlWriter &writer, const decString &basePath){
 	igdeGDProperty::ePropertyTypes gdPropertyType = gdProperty
 		? gdProperty->GetType() : igdeGDProperty::eptString;
 	
-	switch( gdPropertyType ){
+	switch(gdPropertyType){
 	case igdeGDProperty::eptInteger:
-		writer.WriteOpeningTagStart( "integer" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextString( value );
-		writer.WriteClosingTag( "integer", false );
+		writer.WriteOpeningTagStart("integer");
+		writer.WriteAttributeString("name", property);
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextString(value);
+		writer.WriteClosingTag("integer", false);
 		break;
 		
 	case igdeGDProperty::eptPoint2:{
-		int values[ 2 ] = { 0, 0 };
-		pCodec.DecodeFixedIntList( value, &values[ 0 ], 2 );
-		writer.WriteOpeningTagStart( "point" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteAttributeInt( "x", values[ 0 ] );
-		writer.WriteAttributeInt( "y", values[ 1 ] );
-		writer.WriteOpeningTagEnd( true );
+		int values[2] = {0, 0};
+		pCodec.DecodeFixedIntList(value, &values[0], 2);
+		writer.WriteOpeningTagStart("point");
+		writer.WriteAttributeString("name", property);
+		writer.WriteAttributeInt("x", values[0]);
+		writer.WriteAttributeInt("y", values[1]);
+		writer.WriteOpeningTagEnd(true);
 		}break;
 		
 	case igdeGDProperty::eptPoint3:{
-		int values[ 3 ] = { 0, 0, 0 };
-		pCodec.DecodeFixedIntList( value, &values[ 0 ], 3 );
-		writer.WriteOpeningTagStart( "point3" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteAttributeInt( "x", values[ 0 ] );
-		writer.WriteAttributeInt( "y", values[ 1 ] );
-		writer.WriteAttributeInt( "z", values[ 2 ] );
-		writer.WriteOpeningTagEnd( true );
+		int values[3] = {0, 0, 0};
+		pCodec.DecodeFixedIntList(value, &values[0], 3);
+		writer.WriteOpeningTagStart("point3");
+		writer.WriteAttributeString("name", property);
+		writer.WriteAttributeInt("x", values[0]);
+		writer.WriteAttributeInt("y", values[1]);
+		writer.WriteAttributeInt("z", values[2]);
+		writer.WriteOpeningTagEnd(true);
 		}break;
 		
 	case igdeGDProperty::eptFloat:
 	case igdeGDProperty::eptRange:
-		writer.WriteOpeningTagStart( "float" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextString( value );
-		writer.WriteClosingTag( "float", false );
+		writer.WriteOpeningTagStart("float");
+		writer.WriteAttributeString("name", property);
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextString(value);
+		writer.WriteClosingTag("float", false);
 		break;
 		
 	case igdeGDProperty::eptVector2:{
-		float values[ 2 ] = { 0.0f, 0.0f };
-		pCodec.DecodeFixedFloatList( value, &values[ 0 ], 2 );
-		writer.WriteOpeningTagStart( "vector2" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteAttributeFloat( "x", values[ 0 ] );
-		writer.WriteAttributeFloat( "y", values[ 1 ] );
-		writer.WriteOpeningTagEnd( true );
+		float values[2] = {0.0f, 0.0f};
+		pCodec.DecodeFixedFloatList(value, &values[0], 2);
+		writer.WriteOpeningTagStart("vector2");
+		writer.WriteAttributeString("name", property);
+		writer.WriteAttributeFloat("x", values[0]);
+		writer.WriteAttributeFloat("y", values[1]);
+		writer.WriteOpeningTagEnd(true);
 		}break;
 		
 	case igdeGDProperty::eptVector3:{
-		float values[ 3 ] = { 0.0f, 0.0f, 0.0f };
-		pCodec.DecodeFixedFloatList( value, &values[ 0 ], 3 );
-		writer.WriteOpeningTagStart( "vector" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteAttributeFloat( "x", values[ 0 ] );
-		writer.WriteAttributeFloat( "y", values[ 1 ] );
-		writer.WriteAttributeFloat( "z", values[ 2 ] );
-		writer.WriteOpeningTagEnd( true );
+		float values[3] = {0.0f, 0.0f, 0.0f};
+		pCodec.DecodeFixedFloatList(value, &values[0], 3);
+		writer.WriteOpeningTagStart("vector");
+		writer.WriteAttributeString("name", property);
+		writer.WriteAttributeFloat("x", values[0]);
+		writer.WriteAttributeFloat("y", values[1]);
+		writer.WriteAttributeFloat("z", values[2]);
+		writer.WriteOpeningTagEnd(true);
 		}break;
 		
 	case igdeGDProperty::eptColor:{
-		float values[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		const int parsedCount = pCodec.DecodeFixedFloatList( value, &values[ 0 ], 4 );
-		writer.WriteOpeningTagStart( "color" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteAttributeFloat( "r", values[ 0 ] );
-		writer.WriteAttributeFloat( "g", values[ 1 ] );
-		writer.WriteAttributeFloat( "b", values[ 2 ] );
-		if( parsedCount > 3 ){
-			writer.WriteAttributeFloat( "a", values[ 3 ] );
+		float values[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+		const int parsedCount = pCodec.DecodeFixedFloatList(value, &values[0], 4);
+		writer.WriteOpeningTagStart("color");
+		writer.WriteAttributeString("name", property);
+		writer.WriteAttributeFloat("r", values[0]);
+		writer.WriteAttributeFloat("g", values[1]);
+		writer.WriteAttributeFloat("b", values[2]);
+		if(parsedCount > 3){
+			writer.WriteAttributeFloat("a", values[3]);
 		}
-		writer.WriteOpeningTagEnd( true );
+		writer.WriteOpeningTagEnd(true);
 		}break;
 		
 	case igdeGDProperty::eptBoolean:
-		writer.WriteOpeningTagStart( "boolean" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextString( value );
-		writer.WriteClosingTag( "boolean", false );
+		writer.WriteOpeningTagStart("boolean");
+		writer.WriteAttributeString("name", property);
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextString(value);
+		writer.WriteClosingTag("boolean", false);
 		break;
 		
 	case igdeGDProperty::eptList:{
-		const decStringList list( value.Split( "," ) );
+		const decStringList list(value.Split(","));
 		const int count = list.GetCount();
 		int i;
 		
-		writer.WriteOpeningTagStart( "list" );
-		writer.WriteAttributeString( "name", property );
+		writer.WriteOpeningTagStart("list");
+		writer.WriteAttributeString("name", property);
 		writer.WriteOpeningTagEnd();
 		
-		for( i=0; i<count; i++ ){
-			writer.WriteDataTagString( "string", list.GetAt( i ) );
+		for(i=0; i<count; i++){
+			writer.WriteDataTagString("string", list.GetAt(i));
 		}
 		
-		writer.WriteClosingTag( "list" );
+		writer.WriteClosingTag("list");
 		}break;
 		
 	case igdeGDProperty::eptPath:
-		writer.WriteOpeningTagStart( "string" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteOpeningTagEnd( false, false );
+		writer.WriteOpeningTagStart("string");
+		writer.WriteAttributeString("name", property);
+		writer.WriteOpeningTagEnd(false, false);
 		
 		// relative path for all path in or below base directory is safe and useful
-		writer.WriteTextString( value.BeginsWith( basePath )
-			? value.GetMiddle( basePath.GetLength() ) : value );
+		writer.WriteTextString(value.BeginsWith(basePath)
+			? value.GetMiddle(basePath.GetLength()) : value);
 		
-		writer.WriteClosingTag( "string", false );
+		writer.WriteClosingTag("string", false);
 		break;
 		
 	case igdeGDProperty::eptString:
@@ -304,97 +304,97 @@ const igdeGDProperty *gdProperty, decXmlWriter &writer, const decString &basePat
 	case igdeGDProperty::eptShape:
 	case igdeGDProperty::eptShapeList:
 	default:
-		writer.WriteOpeningTagStart( "string" );
-		writer.WriteAttributeString( "name", property );
-		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextString( value );
-		writer.WriteClosingTag( "string", false );
+		writer.WriteOpeningTagStart("string");
+		writer.WriteAttributeString("name", property);
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextString(value);
+		writer.WriteClosingTag("string", false);
 		break;
 	}
 }
 
-void meASubclassAsEClass::WriteEClassTextureReplacements( const meObject &object,
-decXmlWriter &writer, const decString &basePath ){
+void meASubclassAsEClass::WriteEClassTextureReplacements(const meObject &object,
+decXmlWriter &writer, const decString &basePath){
 	const int count = object.GetTextureCount();
 	int i;
 	
-	writer.WriteOpeningTagStart( "map" );
-	writer.WriteAttributeString( "name", "component.textureReplacements" );
+	writer.WriteOpeningTagStart("map");
+	writer.WriteAttributeString("name", "component.textureReplacements");
 	writer.WriteOpeningTagEnd();
 	
-	for( i=0; i<count; i++ ){
-		WriteEClassTextureReplacements( *object.GetTextureAt( i ), writer, basePath );
+	for(i=0; i<count; i++){
+		WriteEClassTextureReplacements(*object.GetTextureAt(i), writer, basePath);
 	}
 	
-	writer.WriteClosingTag( "map" );
+	writer.WriteClosingTag("map");
 }
 
-void meASubclassAsEClass::WriteEClassTextureReplacements( const meObjectTexture &texture,
-decXmlWriter &writer, const decString &basePath ){
-	writer.WriteOpeningTagStart( "map" );
-	writer.WriteAttributeString( "key", texture.GetName() );
+void meASubclassAsEClass::WriteEClassTextureReplacements(const meObjectTexture &texture,
+decXmlWriter &writer, const decString &basePath){
+	writer.WriteOpeningTagStart("map");
+	writer.WriteAttributeString("key", texture.GetName());
 	writer.WriteOpeningTagEnd();
 	
 	const decString &pathSkin = texture.GetSkinPath();
-	if( ! pathSkin.IsEmpty() ){
-		writer.WriteOpeningTagStart( "string" );
-		writer.WriteAttributeString( "key", "skin" );
-		writer.WriteOpeningTagEnd( false, false );
+	if(!pathSkin.IsEmpty()){
+		writer.WriteOpeningTagStart("string");
+		writer.WriteAttributeString("key", "skin");
+		writer.WriteOpeningTagEnd(false, false);
 		
 		// relative path for skin path in or below base directory is safe and useful
-		writer.WriteTextString( pathSkin.BeginsWith( basePath )
-			? pathSkin.GetMiddle( basePath.GetLength() ) : pathSkin );
+		writer.WriteTextString(pathSkin.BeginsWith(basePath)
+			? pathSkin.GetMiddle(basePath.GetLength()) : pathSkin);
 		
-		writer.WriteClosingTag( "string", false );
+		writer.WriteClosingTag("string", false);
 	}
 	
 	const decColor &colorTint = texture.GetColorTint();
-	if( ! colorTint.IsEqualTo( decColor( 1.0f, 1.0f, 1.0f ) ) ){
-		writer.WriteOpeningTagStart( "color" );
-		writer.WriteAttributeString( "key", "tint" );
-		writer.WriteAttributeFloat( "r", colorTint.r );
-		writer.WriteAttributeFloat( "g", colorTint.g );
-		writer.WriteAttributeFloat( "b", colorTint.b );
-		writer.WriteOpeningTagEnd( true );
+	if(!colorTint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f))){
+		writer.WriteOpeningTagStart("color");
+		writer.WriteAttributeString("key", "tint");
+		writer.WriteAttributeFloat("r", colorTint.r);
+		writer.WriteAttributeFloat("g", colorTint.g);
+		writer.WriteAttributeFloat("b", colorTint.b);
+		writer.WriteOpeningTagEnd(true);
 	}
 	
 	const decVector2 &tcoffset = texture.GetTexCoordOffset();
 	const float tcrotation = texture.GetTexCoordRotation();
 	const decVector2 &tcscaling = texture.GetTexCoordScaling();
-	const bool hasTCOffset = ! tcoffset.IsEqualTo( decVector2() );
-	const bool hasTCRotation = fabsf( tcrotation ) > FLOAT_SAFE_EPSILON;
-	const bool hasTCScaling = ! tcscaling.IsEqualTo( decVector2( 1.0f, 1.0f ) );
-	if( hasTCOffset || hasTCRotation || hasTCScaling ){
-		writer.WriteOpeningTagStart( "map" );
-		writer.WriteAttributeString( "key", "transform" );
+	const bool hasTCOffset = !tcoffset.IsEqualTo(decVector2());
+	const bool hasTCRotation = fabsf(tcrotation) > FLOAT_SAFE_EPSILON;
+	const bool hasTCScaling = !tcscaling.IsEqualTo(decVector2(1.0f, 1.0f));
+	if(hasTCOffset || hasTCRotation || hasTCScaling){
+		writer.WriteOpeningTagStart("map");
+		writer.WriteAttributeString("key", "transform");
 		writer.WriteOpeningTagEnd();
 		
-		if( hasTCOffset ){
-			writer.WriteOpeningTagStart( "vector2" );
-			writer.WriteAttributeString( "key", "translate" );
-			writer.WriteAttributeFloat( "x", tcoffset.x );
-			writer.WriteAttributeFloat( "y", tcoffset.y );
-			writer.WriteOpeningTagEnd( true );
+		if(hasTCOffset){
+			writer.WriteOpeningTagStart("vector2");
+			writer.WriteAttributeString("key", "translate");
+			writer.WriteAttributeFloat("x", tcoffset.x);
+			writer.WriteAttributeFloat("y", tcoffset.y);
+			writer.WriteOpeningTagEnd(true);
 		}
 		
-		if( hasTCRotation ){
-			writer.WriteOpeningTagStart( "float" );
-			writer.WriteAttributeString( "key", "rotate" );
-			writer.WriteOpeningTagEnd( false, false );
-			writer.WriteTextFloat( tcrotation );
-			writer.WriteClosingTag( "float", false );
+		if(hasTCRotation){
+			writer.WriteOpeningTagStart("float");
+			writer.WriteAttributeString("key", "rotate");
+			writer.WriteOpeningTagEnd(false, false);
+			writer.WriteTextFloat(tcrotation);
+			writer.WriteClosingTag("float", false);
 		}
 		
-		if( hasTCScaling ){
-			writer.WriteOpeningTagStart( "vector2" );
-			writer.WriteAttributeString( "key", "scale" );
-			writer.WriteAttributeFloat( "x", tcscaling.x );
-			writer.WriteAttributeFloat( "y", tcscaling.y );
-			writer.WriteOpeningTagEnd( true );
+		if(hasTCScaling){
+			writer.WriteOpeningTagStart("vector2");
+			writer.WriteAttributeString("key", "scale");
+			writer.WriteAttributeFloat("x", tcscaling.x);
+			writer.WriteAttributeFloat("y", tcscaling.y);
+			writer.WriteOpeningTagEnd(true);
 		}
 		
-		writer.WriteClosingTag( "map" );
+		writer.WriteClosingTag("map");
 	}
 	
-	writer.WriteClosingTag( "map" );
+	writer.WriteClosingTag("map");
 }

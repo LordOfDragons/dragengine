@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerSetMinimumValue::aeUControllerSetMinimumValue( aeController *controller, float newValue ) :
-pController( controller ),
-pNewValue( newValue )
+aeUControllerSetMinimumValue::aeUControllerSetMinimumValue(aeController *controller, float newValue) :
+pController(controller),
+pNewValue(newValue)
 {
-	if( ! controller || ! controller->GetAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(!controller || !controller->GetAnimator()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = controller->GetMinimumValue();
-	SetShortInfo( "Set controller minimum value" );
+	SetShortInfo("Set controller minimum value");
 }
 
 aeUControllerSetMinimumValue::~aeUControllerSetMinimumValue(){
@@ -61,9 +61,9 @@ aeUControllerSetMinimumValue::~aeUControllerSetMinimumValue(){
 ///////////////
 
 void aeUControllerSetMinimumValue::Undo(){
-	( ( aeController& )( deObject& )pController ).SetMinimumValue( pOldValue );
+	((aeController&)(deObject&)pController).SetMinimumValue(pOldValue);
 }
 
 void aeUControllerSetMinimumValue::Redo(){
-	( ( aeController& )( deObject& )pController ).SetMinimumValue( pNewValue );
+	((aeController&)(deObject&)pController).SetMinimumValue(pNewValue);
 }

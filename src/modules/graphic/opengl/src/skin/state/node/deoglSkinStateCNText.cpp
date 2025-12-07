@@ -40,33 +40,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinStateCNText::deoglSkinStateCNText( deSkinPropertyNodeText &node ) :
-deoglSkinStateConstructedNode( node, etText ),
+deoglSkinStateCNText::deoglSkinStateCNText(deSkinPropertyNodeText &node) :
+deoglSkinStateConstructedNode(node, etText),
 pFont(node.GetFont() && node.GetFont()->GetPeerGraphic()
 	? ((deoglFont*)node.GetFont()->GetPeerGraphic())->GetRFont() : nullptr),
 pFontSize(pFont ? ((deoglFont*)node.GetFont()->GetPeerGraphic())->GetFontSizeFor(
 	(int)(node.GetFontSize() + 0.5f)) : nullptr),
-pTextSize( node.GetFontSize() ),
-pText( node.GetText() ),
-pColor( node.GetColor() )
+pTextSize(node.GetFontSize()),
+pText(node.GetText()),
+pColor(node.GetColor())
 {
 	int i;
-	for( i=0; i<deSkinPropertyNodeText::TextMappedCount; i++ ){
-		pTextMapped[ i ] = node.GetTextMappedFor( ( deSkinPropertyNodeText::eTextMapped )i );
+	for(i=0; i<deSkinPropertyNodeText::TextMappedCount; i++){
+		pTextMapped[i] = node.GetTextMappedFor((deSkinPropertyNodeText::eTextMapped)i);
 	}
 }
 
-deoglSkinStateCNText::deoglSkinStateCNText( const deoglSkinStateCNText &node ) :
-deoglSkinStateConstructedNode( node ),
+deoglSkinStateCNText::deoglSkinStateCNText(const deoglSkinStateCNText &node) :
+deoglSkinStateConstructedNode(node),
 pFont(node.pFont),
 pFontSize(node.pFontSize),
-pTextSize( node.pTextSize ),
-pText( node.pText ),
-pColor( node.pColor )
+pTextSize(node.pTextSize),
+pText(node.pText),
+pColor(node.pColor)
 {
 	int i;
-	for( i=0; i<deSkinPropertyNodeText::TextMappedCount; i++ ){
-		pTextMapped[ i ] = node.pTextMapped[ i ];
+	for(i=0; i<deSkinPropertyNodeText::TextMappedCount; i++){
+		pTextMapped[i] = node.pTextMapped[i];
 	}
 }
 
@@ -78,44 +78,44 @@ deoglSkinStateCNText::~deoglSkinStateCNText(){
 // Management
 ///////////////
 
-int deoglSkinStateCNText::GetTextMappedFor( deSkinPropertyNodeText::eTextMapped type ) const{
-	return pTextMapped[ type ];
+int deoglSkinStateCNText::GetTextMappedFor(deSkinPropertyNodeText::eTextMapped type) const{
+	return pTextMapped[type];
 }
 
 
 
-void deoglSkinStateCNText::Update( deoglSkinState &state ){
+void deoglSkinStateCNText::Update(deoglSkinState &state){
 	if(pText.IsEmpty() || !pFont || pTextSize <= 0.01f){
 		return;
 	}
 	
-	deoglSkinStateConstructedNode::Update( state );
+	deoglSkinStateConstructedNode::Update(state);
 	
-	if( pTextMapped[ deSkinPropertyNodeText::etmFontSize ] != -1 ){
-		pTextSize = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmFontSize ] ).GetValue();
+	if(pTextMapped[deSkinPropertyNodeText::etmFontSize] != -1){
+		pTextSize = state.GetMappedAt(pTextMapped[deSkinPropertyNodeText::etmFontSize]).GetValue();
 	}
-	if( pTextMapped[ deSkinPropertyNodeText::etmColorRed ] != -1 ){
-		pColor.r = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmColorRed ] ).GetValue();
+	if(pTextMapped[deSkinPropertyNodeText::etmColorRed] != -1){
+		pColor.r = state.GetMappedAt(pTextMapped[deSkinPropertyNodeText::etmColorRed]).GetValue();
 	}
-	if( pTextMapped[ deSkinPropertyNodeText::etmColorGreen ] != -1 ){
-		pColor.g = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmColorGreen ] ).GetValue();
+	if(pTextMapped[deSkinPropertyNodeText::etmColorGreen] != -1){
+		pColor.g = state.GetMappedAt(pTextMapped[deSkinPropertyNodeText::etmColorGreen]).GetValue();
 	}
-	if( pTextMapped[ deSkinPropertyNodeText::etmColorBlue ] != -1 ){
-		pColor.b = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmColorBlue ] ).GetValue();
+	if(pTextMapped[deSkinPropertyNodeText::etmColorBlue] != -1){
+		pColor.b = state.GetMappedAt(pTextMapped[deSkinPropertyNodeText::etmColorBlue]).GetValue();
 	}
 }
 
-void deoglSkinStateCNText::Render( deoglSkinState &state, const deoglRenderCanvasContext &context ){
+void deoglSkinStateCNText::Render(deoglSkinState &state, const deoglRenderCanvasContext &context){
 	if(pText.IsEmpty() || !pFont || pTextSize <= 0.01f){
 		return;
 	}
 	
-	deoglSkinStateConstructedNode::Render( state, context );
+	deoglSkinStateConstructedNode::Render(state, context);
 	
-	const deoglRenderCanvasContext textContext( context, *this );
-	state.GetRenderThread().GetRenderers().GetConstructed().DrawNodeText( textContext, *this );
+	const deoglRenderCanvasContext textContext(context, *this);
+	state.GetRenderThread().GetRenderers().GetConstructed().DrawNodeText(textContext, *this);
 }
 
 deoglSkinStateConstructedNode::Ref deoglSkinStateCNText::Copy() const{
-	return deoglSkinStateConstructedNode::Ref::New( new deoglSkinStateCNText( *this ) );
+	return deoglSkinStateConstructedNode::Ref::New(new deoglSkinStateCNText(*this));
 }

@@ -45,7 +45,7 @@ public:
 	virtual ~igdeNativeNullIconListBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullIconListBox* CreateNativeWidget( igdeIconListBox &owner );
+	static igdeNativeNullIconListBox* CreateNativeWidget(igdeIconListBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -60,10 +60,10 @@ public:
 	/*@{*/
 	virtual void BuildHeader();
 	virtual void BuildList();
-	virtual void InsertItem( int index, igdeListItem &item );
-	virtual void UpdateItem( int index );
-	virtual void MoveItem( int fromIndex, int toIndex );
-	virtual void RemoveItem( int index );
+	virtual void InsertItem(int index, igdeListItem &item);
+	virtual void UpdateItem(int index);
+	virtual void MoveItem(int fromIndex, int toIndex);
+	virtual void RemoveItem(int index);
 	virtual void UpdateSelection();
 	virtual void UpdateHeader();
 	virtual void UpdateStyles();
@@ -71,7 +71,7 @@ public:
 	virtual void UpdateEnabled();
 	virtual void UpdateMinimumSize();
 	virtual void Focus();
-	virtual void MakeItemVisible( int index );
+	virtual void MakeItemVisible(int index);
 	virtual void RemoveAllItems();
 	/*@}*/
 };

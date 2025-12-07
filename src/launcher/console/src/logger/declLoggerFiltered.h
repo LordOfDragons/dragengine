@@ -65,63 +65,63 @@ public:
 	inline const deLogger::Ref &GetLoggerInfo() const{ return pLoggerInfo; }
 	
 	/** Set logger to pass information to or NULL to ignore them. */
-	void SetLoggerInfo( deLogger *logger );
+	void SetLoggerInfo(deLogger *logger);
 	
 	/** Logger to pass warnings to or NULL to ignore them. */
 	inline const deLogger::Ref &GetLoggerWarning() const{ return pLoggerWarn; }
 	
 	/** Set logger to pass warnings to or NULL to ignore them. */
-	void SetLoggerWarning( deLogger *logger );
+	void SetLoggerWarning(deLogger *logger);
 	
 	/** Logger to pass errors to or NULL to ignore them. */
 	inline const deLogger::Ref &GetLoggerError() const{ return pLoggerError; }
 	
 	/** Set logger to pass errors to or NULL to ignore them. */
-	void SetLoggerError( deLogger *logger );
+	void SetLoggerError(deLogger *logger);
 	
 	
 	
 	/** Log an information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** Log a formated information message. */
-	virtual void LogInfoFormat( const char *source, const char *message, ... )
+	virtual void LogInfoFormat(const char *source, const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
 		;
 	
 	/** Log a formated information message. */
-	virtual void LogInfoFormatUsing( const char *source, const char *message, va_list args );
+	virtual void LogInfoFormatUsing(const char *source, const char *message, va_list args);
 	
 	/** Log a warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** Log a formated warning message. */
-	virtual void LogWarnFormat( const char *source, const char *message, ... )
+	virtual void LogWarnFormat(const char *source, const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
 		;
 		
 	/** Log a formated warning message. */
-	virtual void LogWarnFormatUsing( const char *source, const char *message, va_list args );
+	virtual void LogWarnFormatUsing(const char *source, const char *message, va_list args);
 	
 	/** Log an error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	
 	/** Log a formated error message. */
-	virtual void LogErrorFormat( const char *source, const char *message, ... )
+	virtual void LogErrorFormat(const char *source, const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
 		;
 		
 	/** Log a formated error message. */
-	virtual void LogErrorFormatUsing( const char *source, const char *message, va_list args );
+	virtual void LogErrorFormatUsing(const char *source, const char *message, va_list args);
 	
 	/** Log an exception as error message. */
-	virtual void LogException( const char *source, const deException &exception );
+	virtual void LogException(const char *source, const deException &exception);
 	/*@}*/
 };
 

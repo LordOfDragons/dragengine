@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPAdd( meWindowProperties &windowProperties );
+	meWPAdd(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -80,7 +80,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Update parameters. */
 	void UpdateParameters();

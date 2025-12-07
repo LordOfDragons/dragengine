@@ -39,15 +39,15 @@
 ////////////////////////////
 
 seUPropertyNodeSetCombineMode::seUPropertyNodeSetCombineMode(
-	sePropertyNode *node, deSkinPropertyNode::eCombineModes newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+	sePropertyNode *node, deSkinPropertyNode::eCombineModes newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set combine mode" );
+	SetShortInfo("Node set combine mode");
 	
 	pOldValue = node->GetCombineMode();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetCombineMode::~seUPropertyNodeSetCombineMode(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUPropertyNodeSetCombineMode::~seUPropertyNodeSetCombineMode(){
 ///////////////
 
 void seUPropertyNodeSetCombineMode::Undo(){
-	pNode->SetCombineMode( pOldValue );
+	pNode->SetCombineMode(pOldValue);
 }
 
 void seUPropertyNodeSetCombineMode::Redo(){
-	pNode->SetCombineMode( pNewValue );
+	pNode->SetCombineMode(pNewValue);
 }

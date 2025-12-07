@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPAPanelSourceChain( seWPSource &wpSource );
+	seWPAPanelSourceChain(seWPSource &wpSource);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -89,7 +89,7 @@ public:
 	int GetSelectedSoundInList() const;
 	
 	/** \brief Select sound in list. */
-	void SelectSoundInList( int index );
+	void SelectSoundInList(int index);
 	
 	
 	

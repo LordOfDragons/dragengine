@@ -49,7 +49,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassParticleEmitter( deScriptingDragonScript *ds );
+	deClassParticleEmitter(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassParticleEmitter();
 	/*@}*/
@@ -59,12 +59,12 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Retrieves the prop field or NULL if myself is NULL. */
-	deParticleEmitter *GetParticleEmitter( dsRealObject *myself ) const;
+	deParticleEmitter *GetParticleEmitter(dsRealObject *myself) const;
 	/** Pushes the prop field which can be NULL. */
-	void PushParticleEmitter( dsRunTime *rt, deParticleEmitter *emitter );
+	void PushParticleEmitter(dsRunTime *rt, deParticleEmitter *emitter);
 	
 	inline dsClass *GetClassParticleEmitterParameter() const{ return pClsParticleEmitterParameter; }
 	inline dsClass *GetClassParticleEmitterEmitController() const{ return pClsParticleEmitterEmitController; }
@@ -85,65 +85,65 @@ private:
 		dsClass *clsParticleEmitterSimulation;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetControllerCount );
-	DEF_NATFUNC( nfSetControllerCount );
-	DEF_NATFUNC( nfGetControllerAt );
-	DEF_NATFUNC( nfGetControllerNamed );
-	DEF_NATFUNC( nfIndexOfControllerNamed );
+	DEF_NATFUNC(nfGetControllerCount);
+	DEF_NATFUNC(nfSetControllerCount);
+	DEF_NATFUNC(nfGetControllerAt);
+	DEF_NATFUNC(nfGetControllerNamed);
+	DEF_NATFUNC(nfIndexOfControllerNamed);
 	
-	DEF_NATFUNC( nfGetBurstLifetime );
-	DEF_NATFUNC( nfSetBurstLifetime );
-	DEF_NATFUNC( nfGetEmitBurst );
-	DEF_NATFUNC( nfSetEmitBurst );
+	DEF_NATFUNC(nfGetBurstLifetime);
+	DEF_NATFUNC(nfSetBurstLifetime);
+	DEF_NATFUNC(nfGetEmitBurst);
+	DEF_NATFUNC(nfSetEmitBurst);
 	
-	DEF_NATFUNC( nfGetTypeCount );
-	DEF_NATFUNC( nfSetTypeCount );
-	DEF_NATFUNC( nfGetTypeSkin );
-	DEF_NATFUNC( nfSetTypeSkin );
-	DEF_NATFUNC( nfGetTypeModel );
-	DEF_NATFUNC( nfSetTypeModel );
-	DEF_NATFUNC( nfGetTypeModelSkin );
-	DEF_NATFUNC( nfSetTypeModelSkin );
-	DEF_NATFUNC( nfGetTypeCastFrom );
-	DEF_NATFUNC( nfSetTypeCastFrom );
-	DEF_NATFUNC( nfGetTypeSimulationType );
-	DEF_NATFUNC( nfSetTypeSimulationType );
-	DEF_NATFUNC( nfGetTypeIntervalAsDistance );
-	DEF_NATFUNC( nfSetTypeIntervalAsDistance );
-	DEF_NATFUNC( nfGetTypeTrailEmitter );
-	DEF_NATFUNC( nfSetTypeTrailEmitter );
-	DEF_NATFUNC( nfGetTypeTrailController );
-	DEF_NATFUNC( nfSetTypeTrailController );
-	DEF_NATFUNC( nfGetTypePhysicsSize );
-	DEF_NATFUNC( nfSetTypePhysicsSize );
-	DEF_NATFUNC( nfGetTypeCollisionResponse );
-	DEF_NATFUNC( nfSetTypeCollisionResponse );
-	DEF_NATFUNC( nfGetTypeCollisionEmitter );
-	DEF_NATFUNC( nfSetTypeCollisionEmitter );
-	DEF_NATFUNC( nfGetTypeEmitMinImpulse );
-	DEF_NATFUNC( nfSetTypeEmitMinImpulse );
-	DEF_NATFUNC( nfGetTypeEmitController );
-	DEF_NATFUNC( nfSetTypeEmitController );
+	DEF_NATFUNC(nfGetTypeCount);
+	DEF_NATFUNC(nfSetTypeCount);
+	DEF_NATFUNC(nfGetTypeSkin);
+	DEF_NATFUNC(nfSetTypeSkin);
+	DEF_NATFUNC(nfGetTypeModel);
+	DEF_NATFUNC(nfSetTypeModel);
+	DEF_NATFUNC(nfGetTypeModelSkin);
+	DEF_NATFUNC(nfSetTypeModelSkin);
+	DEF_NATFUNC(nfGetTypeCastFrom);
+	DEF_NATFUNC(nfSetTypeCastFrom);
+	DEF_NATFUNC(nfGetTypeSimulationType);
+	DEF_NATFUNC(nfSetTypeSimulationType);
+	DEF_NATFUNC(nfGetTypeIntervalAsDistance);
+	DEF_NATFUNC(nfSetTypeIntervalAsDistance);
+	DEF_NATFUNC(nfGetTypeTrailEmitter);
+	DEF_NATFUNC(nfSetTypeTrailEmitter);
+	DEF_NATFUNC(nfGetTypeTrailController);
+	DEF_NATFUNC(nfSetTypeTrailController);
+	DEF_NATFUNC(nfGetTypePhysicsSize);
+	DEF_NATFUNC(nfSetTypePhysicsSize);
+	DEF_NATFUNC(nfGetTypeCollisionResponse);
+	DEF_NATFUNC(nfSetTypeCollisionResponse);
+	DEF_NATFUNC(nfGetTypeCollisionEmitter);
+	DEF_NATFUNC(nfSetTypeCollisionEmitter);
+	DEF_NATFUNC(nfGetTypeEmitMinImpulse);
+	DEF_NATFUNC(nfSetTypeEmitMinImpulse);
+	DEF_NATFUNC(nfGetTypeEmitController);
+	DEF_NATFUNC(nfSetTypeEmitController);
 	
-	DEF_NATFUNC( nfSetTypeParameterValue );
-	DEF_NATFUNC( nfSetTypeParameterSpread );
-	DEF_NATFUNC( nfSetTypeParameterControllerValue );
-	DEF_NATFUNC( nfSetTypeParameterCurveValue );
-	DEF_NATFUNC( nfSetTypeParameterControllerSpread );
-	DEF_NATFUNC( nfSetTypeParameterCurveSpread );
-	DEF_NATFUNC( nfSetTypeParameterCurveProgress );
-	DEF_NATFUNC( nfSetTypeParameterCurveBeam );
+	DEF_NATFUNC(nfSetTypeParameterValue);
+	DEF_NATFUNC(nfSetTypeParameterSpread);
+	DEF_NATFUNC(nfSetTypeParameterControllerValue);
+	DEF_NATFUNC(nfSetTypeParameterCurveValue);
+	DEF_NATFUNC(nfSetTypeParameterControllerSpread);
+	DEF_NATFUNC(nfSetTypeParameterCurveSpread);
+	DEF_NATFUNC(nfSetTypeParameterCurveProgress);
+	DEF_NATFUNC(nfSetTypeParameterCurveBeam);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

@@ -59,7 +59,7 @@ public:
 	 * \brief Create new pseudo random number generator.
 	 * \param[in] seed The seed to use.
 	 */
-	decPRNG( unsigned int seed );
+	decPRNG(unsigned int seed);
 	
 	/** \brief Clean up pseudo random number generator. */
 	~decPRNG();
@@ -73,7 +73,7 @@ public:
 	void Reset();
 	
 	/** \brief Resets the pseudo random number generator with a new seed. */
-	void Reset( unsigned int seed );
+	void Reset(unsigned int seed);
 	
 	/**
 	 * \brief Next random number as integer value.
@@ -88,7 +88,7 @@ public:
 	 *                  lower upper is considered to be equal to lower.
 	 * \returns Random number as integer value in the range from lower to upper.
 	 */
-	int RandomInt( int lower, int upper );
+	int RandomInt(int lower, int upper);
 	
 	/**
 	 * \brief Next random number as float value.
@@ -103,7 +103,7 @@ public:
 	 *                  lower upper is considered to be equal to lower.
 	 * \returns Random number as float value in the range from lower to upper.
 	 */
-	float RandomFloat( float lower, float upper );
+	float RandomFloat(float lower, float upper);
 	
 	/**
 	 * \brief Next random number as double value.
@@ -118,7 +118,7 @@ public:
 	 *                  lower upper is considered to be equal to lower.
 	 * \returns Random number as double value in the range from lower to upper.
 	 */
-	double RandomDouble( double lower, double upper );
+	double RandomDouble(double lower, double upper);
 	/*@}*/
 	
 	

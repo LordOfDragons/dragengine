@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create properties panel. */
-	seWPLink( seViewSynthesizer &viewSynthesizer );
+	seWPLink(seViewSynthesizer &viewSynthesizer);
 	
 protected:
 	/** \brief Clean up properties panel. */
@@ -87,7 +87,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	/** \brief Link or \em NULL if not set. */
 	seLink *GetLink() const;

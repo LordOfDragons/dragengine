@@ -52,9 +52,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-declConfiguration::declConfiguration( declLauncher &launcher ) :
-pLauncher( launcher ),
-pCanSave( false ){
+declConfiguration::declConfiguration(declLauncher &launcher) :
+pLauncher(launcher),
+pCanSave(false){
 }
 
 declConfiguration::~declConfiguration(){
@@ -66,70 +66,70 @@ declConfiguration::~declConfiguration(){
 ///////////////
 
 void declConfiguration::LoadConfiguration(){
-	declConfigXML configXML( pLauncher.GetLogger(), LOGSOURCE );
+	declConfigXML configXML(pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	decPath pathFile;
 	
 	// read the system wide config file if existing
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_SYSTEM );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_SYSTEM);
 	
-	if( vfs.ExistsFile( pathFile ) ){
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfo( LOGSOURCE, "Reading system configuration file" );
-			configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), *this );
+	if(vfs.ExistsFile(pathFile)){
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			logger.LogInfo(LOGSOURCE, "Reading system configuration file");
+			configXML.ReadFromFile(decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 			
 		}else{
-			logger.LogError( LOGSOURCE, "System configuration file is not a regular file" );
-			DETHROW( deeInvalidParam );
+			logger.LogError(LOGSOURCE, "System configuration file is not a regular file");
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		logger.LogInfo( LOGSOURCE, "System configuration file not found, skipped" );
+		logger.LogInfo(LOGSOURCE, "System configuration file not found, skipped");
 	}
 	
 	// read the user config file if existing
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_USER );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_USER);
 	
-	if( vfs.ExistsFile( pathFile ) ){
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfo( LOGSOURCE, "Reading user configuration file" );
-			configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), *this );
+	if(vfs.ExistsFile(pathFile)){
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			logger.LogInfo(LOGSOURCE, "Reading user configuration file");
+			configXML.ReadFromFile(decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 			
 		}else{
-			logger.LogError( LOGSOURCE, "User configuration file is not a regular file" );
-			DETHROW( deeInvalidParam );
+			logger.LogError(LOGSOURCE, "User configuration file is not a regular file");
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		logger.LogInfo( LOGSOURCE, "User configuration file not found, will be created upon exiting" );
+		logger.LogInfo(LOGSOURCE, "User configuration file not found, will be created upon exiting");
 	}
 	
 	pCanSave = true;
 }
 
 void declConfiguration::SaveConfiguration(){
-	if( ! pCanSave ){
+	if(!pCanSave){
 		return;
 	}
 	
-	declConfigXML configXML( pLauncher.GetLogger(), LOGSOURCE );
+	declConfigXML configXML(pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	decPath pathFile;
 	
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_USER );
-	if( vfs.CanWriteFile( pathFile ) ){
-		logger.LogInfo( LOGSOURCE, "Writing user configuration file" );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_USER);
+	if(vfs.CanWriteFile(pathFile)){
+		logger.LogInfo(LOGSOURCE, "Writing user configuration file");
 		
 		try{
-			configXML.WriteToFile( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathFile ) ), *this );
+			configXML.WriteToFile(decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathFile)), *this);
 			
-		}catch( const deException & ){
-			logger.LogError( LOGSOURCE, "Failed to write user configuration file (file permission problem)" );
+		}catch(const deException &){
+			logger.LogError(LOGSOURCE, "Failed to write user configuration file (file permission problem)");
 		}
 		
 	}else{
-		logger.LogError( LOGSOURCE, "Failed to write user configuration file (file writing problem)" );
+		logger.LogError(LOGSOURCE, "Failed to write user configuration file (file writing problem)");
 	}
 }

@@ -109,21 +109,21 @@ private:
 	igdeWObject *pObject;
 	
 public:
-	igdeWObjectColliderListener( igdeWObject *object ){
+	igdeWObjectColliderListener(igdeWObject *object){
 		pObject = object;
 	}
 	
 	virtual ~igdeWObjectColliderListener(){
 	}
 	
-	virtual void CollisionResponse( deCollider*, deCollisionInfo* ){
+	virtual void CollisionResponse(deCollider*, deCollisionInfo*){
 	}
 	
-	virtual bool CanHitCollider( deCollider*, deCollider* ){
+	virtual bool CanHitCollider(deCollider*, deCollider*){
 		return true;
 	}
 	
-	virtual void ColliderChanged( deCollider* ){
+	virtual void ColliderChanged(deCollider*){
 		pObject->OnColliderChanged();
 	}
 };
@@ -141,10 +141,10 @@ protected:
 	}
 	
 public:
-	igdeWObjectTriggerListener( igdeWObject &wrapper ) : pWrapper( wrapper ){
+	igdeWObjectTriggerListener(igdeWObject &wrapper) : pWrapper(wrapper){
 	}
 	
-	virtual void TriggerTargetChanged( igdeTriggerTarget* ){
+	virtual void TriggerTargetChanged(igdeTriggerTarget*){
 		pWrapper.UpdateTriggerableProperties();
 	}
 };
@@ -174,44 +174,44 @@ void igdeWObject::cAsyncLoadFinished::ExtendsChanged(igdeWObject&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeWObject::igdeWObject( igdeEnvironment &environment ) :
-pEnvironment( environment ),
+igdeWObject::igdeWObject(igdeEnvironment &environment) :
+pEnvironment(environment),
 pColliderUserPointer(nullptr),
-pScaling( 1.0f, 1.0f, 1.0f ),
-pRenderLayerMask( 0x1 ),
-pRenderEnvMapMask( 0x2 ),
-pAudioLayerMask( 0x4 ),
-pDynamicCollider( false ),
-pVisible( true ),
-pPartiallyHidden( false ),
-pListenerCollider( NULL ),
-pTriggerTable( NULL ),
-pHasBoxExtends( false ),
-pDirtyExtends( false ),
-pDirtyFallbackColliderShape( false ),
-pOutlineColor( 1.0f, 0.0f, 0.0f ),
-pAsyncLoadFinished( NULL ),
-pAsyncLoadCounter( 0 ),
+pScaling(1.0f, 1.0f, 1.0f),
+pRenderLayerMask(0x1),
+pRenderEnvMapMask(0x2),
+pAudioLayerMask(0x4),
+pDynamicCollider(false),
+pVisible(true),
+pPartiallyHidden(false),
+pListenerCollider(NULL),
+pTriggerTable(NULL),
+pHasBoxExtends(false),
+pDirtyExtends(false),
+pDirtyFallbackColliderShape(false),
+pOutlineColor(1.0f, 0.0f, 0.0f),
+pAsyncLoadFinished(NULL),
+pAsyncLoadCounter(0),
 pAnyContentVisible(false)
 {
 	try{
-		pTriggerListener.TakeOver( new igdeWObjectTriggerListener( *this ) );
+		pTriggerListener.TakeOver(new igdeWObjectTriggerListener(*this));
 		
 		// create collider
-		pColliderFallback.TakeOver( environment.GetEngineController()->GetEngine()
-			->GetColliderManager()->CreateColliderVolume() );
-		pColliderFallback->SetEnabled( true );
-		pColliderFallback->SetResponseType( deCollider::ertStatic );
-		pColliderFallback->SetUseLocalGravity( true );
+		pColliderFallback.TakeOver(environment.GetEngineController()->GetEngine()
+			->GetColliderManager()->CreateColliderVolume());
+		pColliderFallback->SetEnabled(true);
+		pColliderFallback->SetResponseType(deCollider::ertStatic);
+		pColliderFallback->SetUseLocalGravity(true);
 		decShapeList shapeList;
-		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
-		pColliderFallback->SetShapes( shapeList );
-		pColliderFallback->SetMass( 5.0f );
+		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
+		pColliderFallback->SetShapes(shapeList);
+		pColliderFallback->SetMass(5.0f);
 		
-		pListenerCollider = new igdeWObjectColliderListener( this );
-		environment.SetColliderDelegee( pColliderFallback, pListenerCollider );
+		pListenerCollider = new igdeWObjectColliderListener(this);
+		environment.SetColliderDelegee(pColliderFallback, pListenerCollider);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -226,32 +226,32 @@ igdeWObject::~igdeWObject(){
 // Management
 ///////////////
 
-void igdeWObject::SetWorld( deWorld *world ){
-	if( world == pWorld ){
+void igdeWObject::SetWorld(deWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
 	pDestroySubObjects();
 	DetachCollider();
-	if( pWorld ){
-		pWorld->RemoveCollider( pColliderFallback );
+	if(pWorld){
+		pWorld->RemoveCollider(pColliderFallback);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddCollider( pColliderFallback );
+	if(world){
+		world->AddCollider(pColliderFallback);
 	}
 	
 	pUpdateVisiblity();
 	
-	if( world ){
+	if(world){
 		pCreateSubObjects();
 	}
 }
 
-void igdeWObject::SetCamera( deCamera *camera ){
-	if( camera == pCamera ){
+void igdeWObject::SetCamera(deCamera *camera){
+	if(camera == pCamera){
 		return;
 	}
 	
@@ -259,13 +259,13 @@ void igdeWObject::SetCamera( deCamera *camera ){
 	
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->CameraChanged();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->CameraChanged();
 	}
 }
 
-void igdeWObject::SetGDClass( igdeGDClass *gdClass ){
-	if( pGDClass == gdClass ){
+void igdeWObject::SetGDClass(igdeGDClass *gdClass){
+	if(pGDClass == gdClass){
 		return;
 	}
 	
@@ -282,7 +282,7 @@ void igdeWObject::SetGDClass( igdeGDClass *gdClass ){
 	
 	UpdateTriggerTargets();
 	
-	if( pWorld ){
+	if(pWorld){
 		pCreateSubObjects();
 		
 		pSubObjectsInitTriggers();
@@ -290,12 +290,12 @@ void igdeWObject::SetGDClass( igdeGDClass *gdClass ){
 	}
 }
 
-void igdeWObject::SetGDClassName( const char *gdClassName ){
-	SetGDClass( pEnvironment.GetGameProject()->GetGameDefinition()->GetClassManager()->GetNamed( gdClassName ) );
+void igdeWObject::SetGDClassName(const char *gdClassName){
+	SetGDClass(pEnvironment.GetGameProject()->GetGameDefinition()->GetClassManager()->GetNamed(gdClassName));
 }
 
-void igdeWObject::SetTriggerTable( igdeTriggerTargetList *triggerTable ){
-	if( triggerTable == pTriggerTable ){
+void igdeWObject::SetTriggerTable(igdeTriggerTargetList *triggerTable){
+	if(triggerTable == pTriggerTable){
 		return;
 	}
 	
@@ -352,8 +352,8 @@ void igdeWObject::SetScaling(const decVector &scaling){
 
 
 
-void igdeWObject::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void igdeWObject::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
@@ -361,8 +361,8 @@ void igdeWObject::SetVisible( bool visible ){
 	pUpdateVisiblity();
 }
 
-void igdeWObject::SetPartiallyHidden( bool partiallyHidden ){
-	if( partiallyHidden == pPartiallyHidden ){
+void igdeWObject::SetPartiallyHidden(bool partiallyHidden){
+	if(partiallyHidden == pPartiallyHidden){
 		return;
 	}
 	
@@ -372,8 +372,8 @@ void igdeWObject::SetPartiallyHidden( bool partiallyHidden ){
 
 
 
-void igdeWObject::SetRenderLayerMask( int mask ){
-	if( mask == pRenderLayerMask ){
+void igdeWObject::SetRenderLayerMask(int mask){
+	if(mask == pRenderLayerMask){
 		return;
 	}
 	
@@ -381,8 +381,8 @@ void igdeWObject::SetRenderLayerMask( int mask ){
 	pSubObjectsUpdateLayerMasks();
 }
 
-void igdeWObject::SetRenderEnvMapMask( int mask ){
-	if( mask == pRenderEnvMapMask ){
+void igdeWObject::SetRenderEnvMapMask(int mask){
+	if(mask == pRenderEnvMapMask){
 		return;
 	}
 	
@@ -390,8 +390,8 @@ void igdeWObject::SetRenderEnvMapMask( int mask ){
 	pSubObjectsUpdateLayerMasks();
 }
 
-void igdeWObject::SetAudioLayerMask( int mask ){
-	if( mask == pAudioLayerMask ){
+void igdeWObject::SetAudioLayerMask(int mask){
+	if(mask == pAudioLayerMask){
 		return;
 	}
 	
@@ -414,8 +414,8 @@ bool igdeWObject::GetHasBoxExtends(){
 	return pHasBoxExtends;
 }
 
-void igdeWObject::SetCollisionFilter( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilter ){
+void igdeWObject::SetCollisionFilter(const decCollisionFilter &collisionFilter){
+	if(collisionFilter == pCollisionFilter){
 		return;
 	}
 	
@@ -423,8 +423,8 @@ void igdeWObject::SetCollisionFilter( const decCollisionFilter &collisionFilter 
 	pSubObjectsUpdateCollisionFilter();
 }
 
-void igdeWObject::SetCollisionFilterParticles( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilterParticles ){
+void igdeWObject::SetCollisionFilterParticles(const decCollisionFilter &collisionFilter){
+	if(collisionFilter == pCollisionFilterParticles){
 		return;
 	}
 	
@@ -432,8 +432,8 @@ void igdeWObject::SetCollisionFilterParticles( const decCollisionFilter &collisi
 	pSubObjectsUpdateCollisionFilter();
 }
 
-void igdeWObject::SetCollisionFilterForceFields( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilterForceField ){
+void igdeWObject::SetCollisionFilterForceFields(const decCollisionFilter &collisionFilter){
+	if(collisionFilter == pCollisionFilterForceField){
 		return;
 	}
 	
@@ -441,19 +441,19 @@ void igdeWObject::SetCollisionFilterForceFields( const decCollisionFilter &colli
 	pSubObjectsUpdateCollisionFilter();
 }
 
-void igdeWObject::SetCollisionFilterFallback( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilterFallback ){
+void igdeWObject::SetCollisionFilterFallback(const decCollisionFilter &collisionFilter){
+	if(collisionFilter == pCollisionFilterFallback){
 		return;
 	}
 	
 	pCollisionFilterFallback = collisionFilter;
 	
-	pColliderFallback->SetCollisionFilter( pCollisionFilterFallback );
+	pColliderFallback->SetCollisionFilter(pCollisionFilterFallback);
 	pSubObjectsUpdateCollisionFilter();
 }
 
-void igdeWObject::SetCollisionFilterInteract( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilterInteract ){
+void igdeWObject::SetCollisionFilterInteract(const decCollisionFilter &collisionFilter){
+	if(collisionFilter == pCollisionFilterInteract){
 		return;
 	}
 	
@@ -462,8 +462,8 @@ void igdeWObject::SetCollisionFilterInteract( const decCollisionFilter &collisio
 	pSubObjectsUpdateCollisionFilter();
 }
 
-void igdeWObject::SetDynamicCollider( bool dynamic ){
-	if( dynamic == pDynamicCollider ){
+void igdeWObject::SetDynamicCollider(bool dynamic){
+	if(dynamic == pDynamicCollider){
 		return;
 	}
 	
@@ -473,11 +473,11 @@ void igdeWObject::SetDynamicCollider( bool dynamic ){
 
 
 
-void igdeWObject::Update( float elapsed ){
+void igdeWObject::Update(float elapsed){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->Update( elapsed );
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->Update(elapsed);
 	}
 	
 	pUpdateColliderShapes();
@@ -486,28 +486,28 @@ void igdeWObject::Update( float elapsed ){
 void igdeWObject::ResetComponentTextures(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->ResetComponentTextures();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->ResetComponentTextures();
 	}
 }
 
 void igdeWObject::ResetPhysics(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->ResetPhysics();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->ResetPhysics();
 	}
 }
 
-void igdeWObject::VisitSubObjects( igdeWOSOVisitor &visitor ){
+void igdeWObject::VisitSubObjects(igdeWOSOVisitor &visitor){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->Visit( visitor );
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->Visit(visitor);
 	}
 }
 
-void igdeWObject::SetAsyncLoadFinished( cAsyncLoadFinished *listener ){
+void igdeWObject::SetAsyncLoadFinished(cAsyncLoadFinished *listener){
 	pAsyncLoadFinished = listener;
 }
 
@@ -529,55 +529,55 @@ bool igdeWObject::AllSubObjectsFinishedLoading() const{
 
 
 void igdeWObject::OnGameDefinitionChanged(){
-	if( pGDClass ){
-		SetGDClassName( pGDClass->GetName() );
+	if(pGDClass){
+		SetGDClassName(pGDClass->GetName());
 	}
 }
 
-void igdeWObject::SetOutlineSkin( deSkin *skin ){
-	if( pOutlineSkin == skin ){
+void igdeWObject::SetOutlineSkin(deSkin *skin){
+	if(pOutlineSkin == skin){
 		return;
 	}
 	
 	pOutlineSkin = skin;
 	
-	if( skin && ! pOutlineDynamicSkin ){
-		pOutlineDynamicSkin.TakeOver( pEnvironment.GetEngineController()->GetEngine()->
-			GetDynamicSkinManager()->CreateDynamicSkin() );
+	if(skin && !pOutlineDynamicSkin){
+		pOutlineDynamicSkin.TakeOver(pEnvironment.GetEngineController()->GetEngine()->
+			GetDynamicSkinManager()->CreateDynamicSkin());
 		
-		deDSRenderableColor * const renderableColor = new deDSRenderableColor( "color" );
-		renderableColor->SetColor( pOutlineColor );
-		pOutlineDynamicSkin->AddRenderable( renderableColor );
+		deDSRenderableColor * const renderableColor = new deDSRenderableColor("color");
+		renderableColor->SetColor(pOutlineColor);
+		pOutlineDynamicSkin->AddRenderable(renderableColor);
 		
-		deDSRenderableValue * const renderableThickess = new deDSRenderableValue( "thickness" );
-		renderableThickess->SetValue( 0.005f );
-		pOutlineDynamicSkin->AddRenderable( renderableThickess );
+		deDSRenderableValue * const renderableThickess = new deDSRenderableValue("thickness");
+		renderableThickess->SetValue(0.005f);
+		pOutlineDynamicSkin->AddRenderable(renderableThickess);
 	}
 	
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->OutlineSkinChanged();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->OutlineSkinChanged();
 	}
 }
 
 void igdeWObject::SetOutlineSkinSharedEditing(){
-	SetOutlineSkin( pEnvironment.GetStockSkin( igdeEnvironment::essEditOutline ) );
+	SetOutlineSkin(pEnvironment.GetStockSkin(igdeEnvironment::essEditOutline));
 }
 
-void igdeWObject::SetOutlineColor( const decColor &color ){
-	if( color.IsEqualTo( pOutlineColor ) ){
+void igdeWObject::SetOutlineColor(const decColor &color){
+	if(color.IsEqualTo(pOutlineColor)){
 		return;
 	}
 	
 	pOutlineColor = color;
 	
-	if( ! pOutlineDynamicSkin ){
+	if(!pOutlineDynamicSkin){
 		return;
 	}
 	
-	( ( deDSRenderableColor* )pOutlineDynamicSkin->GetRenderableAt( 0 ) )->SetColor( color );
-	pOutlineDynamicSkin->NotifyRenderableChanged( 0 );
+	((deDSRenderableColor*)pOutlineDynamicSkin->GetRenderableAt(0))->SetColor(color);
+	pOutlineDynamicSkin->NotifyRenderableChanged(0);
 }
 
 
@@ -585,25 +585,25 @@ void igdeWObject::SetOutlineColor( const decColor &color ){
 // Properties
 ///////////////
 
-void igdeWObject::SetProperty( const char *key, const char *value ){
-	pProperties.SetAt( key, value );
+void igdeWObject::SetProperty(const char *key, const char *value){
+	pProperties.SetAt(key, value);
 	pUpdateProperties();
 }
 
-void igdeWObject::SetPropertiesFrom( const decStringDictionary &list ){
+void igdeWObject::SetPropertiesFrom(const decStringDictionary &list){
 	pProperties = list;
 	pUpdateProperties();
 }
 
-void igdeWObject::RemoveProperty( const char *key ){
-	if( pProperties.Has( key ) ){
-		pProperties.Remove( key );
+void igdeWObject::RemoveProperty(const char *key){
+	if(pProperties.Has(key)){
+		pProperties.Remove(key);
 		pUpdateProperties();
 	}
 }
 
 void igdeWObject::RemoveAllProperties(){
-	if( pProperties.GetCount() > 0 ){
+	if(pProperties.GetCount() > 0){
 		pProperties.RemoveAll();
 		pUpdateProperties();
 	}
@@ -615,28 +615,28 @@ bool igdeWObject::IsAttachedCollider() const{
 	return pParentCollider;
 }
 
-void igdeWObject::AttachColliderRig( deColliderComponent *parentCollider ){
-	if( ! parentCollider ){
-		DETHROW( deeInvalidParam );
+void igdeWObject::AttachColliderRig(deColliderComponent *parentCollider){
+	if(!parentCollider){
+		DETHROW(deeInvalidParam);
 	}
 	
 	DetachCollider();
 	
 	deColliderAttachment *attachment = NULL;
 	try{
-		if( pColliderComponent ){
-			attachment = new deColliderAttachment( pColliderComponent );
-			attachment->SetAttachType( deColliderAttachment::eatRig );
-			parentCollider->AddAttachment( attachment );
+		if(pColliderComponent){
+			attachment = new deColliderAttachment(pColliderComponent);
+			attachment->SetAttachType(deColliderAttachment::eatRig);
+			parentCollider->AddAttachment(attachment);
 			attachment = NULL;
 		}
 		
-		attachment = new deColliderAttachment( pColliderFallback );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		parentCollider->AddAttachment( attachment );
+		attachment = new deColliderAttachment(pColliderFallback);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
+		parentCollider->AddAttachment(attachment);
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			delete attachment;
 		}
 		throw;
@@ -645,36 +645,36 @@ void igdeWObject::AttachColliderRig( deColliderComponent *parentCollider ){
 	pParentCollider = parentCollider;
 }
 
-void igdeWObject::AttachColliderBone( deColliderComponent *parentCollider, const char *bone,
-const decVector &position, const decQuaternion &orientation ){
-	if( ! parentCollider || ! bone ){
-		DETHROW( deeInvalidParam );
+void igdeWObject::AttachColliderBone(deColliderComponent *parentCollider, const char *bone,
+const decVector &position, const decQuaternion &orientation){
+	if(!parentCollider || !bone){
+		DETHROW(deeInvalidParam);
 	}
 	
 	DetachCollider();
 	
-	if( strlen( bone ) > 0 ){
+	if(strlen(bone) > 0){
 		deColliderAttachment *attachment = NULL;
 		try{
-			if( pColliderComponent ){
-				attachment = new deColliderAttachment( pColliderComponent );
-				attachment->SetAttachType( deColliderAttachment::eatBone );
-				attachment->SetTrackBone( bone );
-				attachment->SetPosition( position );
-				attachment->SetOrientation( orientation );
-				parentCollider->AddAttachment( attachment );
+			if(pColliderComponent){
+				attachment = new deColliderAttachment(pColliderComponent);
+				attachment->SetAttachType(deColliderAttachment::eatBone);
+				attachment->SetTrackBone(bone);
+				attachment->SetPosition(position);
+				attachment->SetOrientation(orientation);
+				parentCollider->AddAttachment(attachment);
 				attachment = NULL;
 			}
 			
-			attachment = new deColliderAttachment( pColliderFallback );
-			attachment->SetAttachType( deColliderAttachment::eatBone );
-			attachment->SetTrackBone( bone );
-			attachment->SetPosition( position );
-			attachment->SetOrientation( orientation );
-			parentCollider->AddAttachment( attachment );
+			attachment = new deColliderAttachment(pColliderFallback);
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(bone);
+			attachment->SetPosition(position);
+			attachment->SetOrientation(orientation);
+			parentCollider->AddAttachment(attachment);
 			
-		}catch( const deException & ){
-			if( attachment ){
+		}catch(const deException &){
+			if(attachment){
 				delete attachment;
 			}
 			throw;
@@ -687,19 +687,19 @@ const decVector &position, const decQuaternion &orientation ){
 }
 
 void igdeWObject::DetachCollider(){
-	if( ! pParentCollider ){
+	if(!pParentCollider){
 		return;
 	}
 	
-	deColliderAttachment *attachment = pParentCollider->GetAttachmentWith( pColliderFallback );
-	if( attachment ){
-		pParentCollider->RemoveAttachment( attachment );
+	deColliderAttachment *attachment = pParentCollider->GetAttachmentWith(pColliderFallback);
+	if(attachment){
+		pParentCollider->RemoveAttachment(attachment);
 	}
 	
-	if( pColliderComponent ){
-		attachment = pParentCollider->GetAttachmentWith( pColliderComponent );
-		if( attachment ){
-			pParentCollider->RemoveAttachment( attachment );
+	if(pColliderComponent){
+		attachment = pParentCollider->GetAttachmentWith(pColliderComponent);
+		if(attachment){
+			pParentCollider->RemoveAttachment(attachment);
 		}
 	}
 	
@@ -707,14 +707,14 @@ void igdeWObject::DetachCollider(){
 	pAttachToBone.Empty();
 	
 	// reset position and orientation otherwise our state and the collider state are out of sync
-	pColliderFallback->SetPosition( pPosition );
-	pColliderFallback->SetOrientation( pOrientation );
+	pColliderFallback->SetPosition(pPosition);
+	pColliderFallback->SetOrientation(pOrientation);
 	
 	pSubObjectsUpdateGeometry();
 }
 
 deCollider *igdeWObject::GetCollider() const{
-	if( pColliderComponent ){
+	if(pColliderComponent){
 		return pColliderComponent;
 		
 	}else{
@@ -753,7 +753,7 @@ void igdeWObject::OnColliderChanged(){
 
 void igdeWObject::UpdateTriggerTargets(){
 	pListTriggerTarget.RemoveAll();
-	if( ! pTriggerTable || ! pGDClass ){
+	if(!pTriggerTable || !pGDClass){
 		return;
 	}
 	
@@ -761,16 +761,16 @@ void igdeWObject::UpdateTriggerTargets(){
 	const int keyCount = keys.GetCount();
 	int i;
 	
-	for( i=0; i<keyCount; i++ ){
-		const decString &key = keys.GetAt( i );
-		const decString &value = pProperties.GetAt( key );
-		if( value.IsEmpty() ){
+	for(i=0; i<keyCount; i++){
+		const decString &key = keys.GetAt(i);
+		const decString &value = pProperties.GetAt(key);
+		if(value.IsEmpty()){
 			continue;
 		}
 		
-		igdeGDProperty * const gdproperty = pGDClass->GetPropertyNamed( key );
-		if( gdproperty && gdproperty->GetType() == igdeGDProperty::eptTriggerTarget ){
-			pListTriggerTarget.Add( pTriggerTable->GetNamedAddIfMissing( value ) );
+		igdeGDProperty * const gdproperty = pGDClass->GetPropertyNamed(key);
+		if(gdproperty && gdproperty->GetType() == igdeGDProperty::eptTriggerTarget){
+			pListTriggerTarget.Add(pTriggerTable->GetNamedAddIfMissing(value));
 		}
 	}
 }
@@ -781,7 +781,7 @@ void igdeWObject::UpdateTriggerableProperties(){
 
 
 
-void igdeWObject::SubObjectFinishedLoading( igdeWOSubObject&, bool ){
+void igdeWObject::SubObjectFinishedLoading(igdeWOSubObject&, bool){
 	pAsyncLoadCounter--;
 	pCheckAsyncLoadFinished();
 }
@@ -795,56 +795,56 @@ void igdeWObject::SubObjectExtendsDirty(){
 	}
 }
 
-void igdeWObject::SetInteractCollider( deColliderComponent *collider ){
-	if( pColliderComponent ){
-		pEnvironment.SetColliderDelegee( pColliderComponent, nullptr );
-		pEnvironment.SetColliderUserPointer( pColliderComponent, nullptr );
+void igdeWObject::SetInteractCollider(deColliderComponent *collider){
+	if(pColliderComponent){
+		pEnvironment.SetColliderDelegee(pColliderComponent, nullptr);
+		pEnvironment.SetColliderUserPointer(pColliderComponent, nullptr);
 		pColliderComponent = nullptr;
-		pColliderFallback->SetEnabled( pVisible && ! pPartiallyHidden );
+		pColliderFallback->SetEnabled(pVisible && !pPartiallyHidden);
 	}
 	
 	const int count = pCollidersInteraction.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		deCollider * const colliderInteract = ( deCollider* ) pCollidersInteraction.GetAt( i );
-		pEnvironment.SetColliderDelegee( colliderInteract, nullptr );
-		pEnvironment.SetColliderUserPointer( colliderInteract, nullptr );
+	for(i=0; i<count; i++){
+		deCollider * const colliderInteract = (deCollider*) pCollidersInteraction.GetAt(i);
+		pEnvironment.SetColliderDelegee(colliderInteract, nullptr);
+		pEnvironment.SetColliderUserPointer(colliderInteract, nullptr);
 	}
 	
-	if( ! collider ){
+	if(!collider){
 		return;
 	}
 	
-	void * const userPointer = pEnvironment.GetColliderUserPointer( pColliderFallback );
+	void * const userPointer = pEnvironment.GetColliderUserPointer(pColliderFallback);
 	
-	pColliderFallback->SetEnabled( false );
+	pColliderFallback->SetEnabled(false);
 	pColliderComponent = collider;
-	pEnvironment.SetColliderDelegee( collider, pListenerCollider );
-	pEnvironment.SetColliderUserPointer( collider, userPointer );
+	pEnvironment.SetColliderDelegee(collider, pListenerCollider);
+	pEnvironment.SetColliderUserPointer(collider, userPointer);
 	
-	for( i=0; i<count; i++ ){
-		deCollider * const colliderInteract = ( deCollider* ) pCollidersInteraction.GetAt( i );
-		pEnvironment.SetColliderDelegee( colliderInteract, pListenerCollider );
-		pEnvironment.SetColliderUserPointer( colliderInteract, userPointer );
+	for(i=0; i<count; i++){
+		deCollider * const colliderInteract = (deCollider*) pCollidersInteraction.GetAt(i);
+		pEnvironment.SetColliderDelegee(colliderInteract, pListenerCollider);
+		pEnvironment.SetColliderUserPointer(colliderInteract, userPointer);
 	}
 }
 
-void igdeWObject::AddInteractionCollider( deCollider *collider ){
-	DEASSERT_NOTNULL( collider )
+void igdeWObject::AddInteractionCollider(deCollider *collider){
+	DEASSERT_NOTNULL(collider)
 	
-	pCollidersInteraction.Add( collider );
+	pCollidersInteraction.Add(collider);
 	
-	pEnvironment.SetColliderDelegee( collider, pListenerCollider );
-	pEnvironment.SetColliderUserPointer( collider, pEnvironment.GetColliderUserPointer( pColliderFallback ) );
+	pEnvironment.SetColliderDelegee(collider, pListenerCollider);
+	pEnvironment.SetColliderUserPointer(collider, pEnvironment.GetColliderUserPointer(pColliderFallback));
 }
 
-void igdeWObject::RemoveInteractionCollider( deCollider *collider ){
-	DEASSERT_NOTNULL( collider );
+void igdeWObject::RemoveInteractionCollider(deCollider *collider){
+	DEASSERT_NOTNULL(collider);
 	
-	pEnvironment.SetColliderDelegee( collider, nullptr );
-	pEnvironment.SetColliderUserPointer( collider, nullptr );
+	pEnvironment.SetColliderDelegee(collider, nullptr);
+	pEnvironment.SetColliderUserPointer(collider, nullptr);
 	
-	pCollidersInteraction.Remove( collider );
+	pCollidersInteraction.Remove(collider);
 }
 
 void igdeWObject::UpdateAnyContentVisibile(){
@@ -877,19 +877,19 @@ void igdeWObject::UpdateAnyContentVisibile(){
 void igdeWObject::pCleanUp(){
 	DetachCollider();
 	pDestroySubObjects();
-	SetWorld( nullptr );
+	SetWorld(nullptr);
 	
 	const int count = pCollidersInteraction.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pEnvironment.SetColliderUserPointer( ( deCollider* ) pCollidersInteraction.GetAt( i ), nullptr );
+	for(i=0; i<count; i++){
+		pEnvironment.SetColliderUserPointer((deCollider*) pCollidersInteraction.GetAt(i), nullptr);
 	}
 	
-	if( pColliderFallback ){
-		pEnvironment.SetColliderDelegee( pColliderFallback, nullptr );
+	if(pColliderFallback){
+		pEnvironment.SetColliderDelegee(pColliderFallback, nullptr);
 		pColliderFallback = nullptr;
 	}
-	if( pListenerCollider ){
+	if(pListenerCollider){
 		delete pListenerCollider;
 	}
 }
@@ -897,8 +897,8 @@ void igdeWObject::pCleanUp(){
 
 
 void igdeWObject::pUpdateVisiblity(){
-	const bool partiallyVisible = ( pVisible && ! pPartiallyHidden );
-	pColliderFallback->SetEnabled( ! pColliderComponent && partiallyVisible );
+	const bool partiallyVisible = (pVisible && !pPartiallyHidden);
+	pColliderFallback->SetEnabled(!pColliderComponent && partiallyVisible);
 	
 	pSubObjectsUpdateVisibility();
 }
@@ -908,156 +908,156 @@ void igdeWObject::pUpdateVisiblity(){
 void igdeWObject::pCreateSubObjects(){
 	pAsyncLoadCounter = 1;
 	
-	if( pGDClass && pWorld ){
-		pCreateSubObjects( "", pGDClass, igdeGDClass::FilterSubObjectsAll );
+	if(pGDClass && pWorld){
+		pCreateSubObjects("", pGDClass, igdeGDClass::FilterSubObjectsAll);
 	}
 	
 	pAsyncLoadCounter--;
 	pCheckAsyncLoadFinished();
 }
 
-void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclass, int filter ){
+void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &gdclass, int filter){
 	int i;
 	
 	// components
-	if( ( filter & igdeGDClass::efsoComponents ) != 0 ){
+	if((filter & igdeGDClass::efsoComponents) != 0){
 		const igdeGDCComponentList &components = gdclass.GetComponentList();
 		const int componentCount = components.GetCount();
-		for( i=0; i<componentCount; i++ ){
+		for(i=0; i<componentCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSOComponent::Ref::NewWith(*this, *components.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
 	}
 	
 	// billboards
-	if( ( filter & igdeGDClass::efsoBillboards ) != 0 ){
+	if((filter & igdeGDClass::efsoBillboards) != 0){
 		const igdeGDCBillboardList &billboards = gdclass.GetBillboardList();
 		const int billboardCount = billboards.GetCount();
-		for( i=0; i<billboardCount; i++ ){
+		for(i=0; i<billboardCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSOBillboard::Ref::NewWith(*this, *billboards.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
 	}
 	
 	// lights
-	if( ( filter & igdeGDClass::efsoLights ) != 0 ){
+	if((filter & igdeGDClass::efsoLights) != 0){
 		const igdeGDCLightList &lights = gdclass.GetLightList();
 		const int lightCount = lights.GetCount();
-		for( i=0; i<lightCount; i++ ){
+		for(i=0; i<lightCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSOLight::Ref::NewWith(*this, *lights.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
 	}
 	
 	// speakers
-	if( ( filter & igdeGDClass::efsoSpeakers ) != 0 ){
+	if((filter & igdeGDClass::efsoSpeakers) != 0){
 		const igdeGDCSpeakerList &speakers = gdclass.GetSpeakerList();
 		const int speakerCount = speakers.GetCount();
-		for( i=0; i<speakerCount; i++ ){
+		for(i=0; i<speakerCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSOSpeaker::Ref::NewWith(*this, *speakers.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
 	}
 	
 	// particle emitters
-	if( ( filter & igdeGDClass::efsoParticleEmitters ) != 0 ){
+	if((filter & igdeGDClass::efsoParticleEmitters) != 0){
 		const igdeGDCParticleEmitterList &particleEmitters = gdclass.GetParticleEmitterList();
 		const int particleEmitterCount = particleEmitters.GetCount();
-		for( i=0; i<particleEmitterCount; i++ ){
+		for(i=0; i<particleEmitterCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSOParticleEmitter::Ref::NewWith(*this, *particleEmitters.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
 	}
 	
 	// force fields
-	if( ( filter & igdeGDClass::efsoForceFields ) != 0 ){
+	if((filter & igdeGDClass::efsoForceFields) != 0){
 		const igdeGDCForceFieldList &forceFields = gdclass.GetForceFieldList();
 		const int forceFieldCount = forceFields.GetCount();
-		for( i=0; i<forceFieldCount; i++ ){
+		for(i=0; i<forceFieldCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSOForceField::Ref::NewWith(*this, *forceFields.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
 	}
 	
 	// envMapProbes
-	if( ( filter & igdeGDClass::efsoEnvMapProbes ) != 0 ){
+	if((filter & igdeGDClass::efsoEnvMapProbes) != 0){
 		const igdeGDCEnvMapProbeList &envMapProbes = gdclass.GetEnvironmentMapProbeList();
 		const int envMapProbeCount = envMapProbes.GetCount();
-		for( i=0; i<envMapProbeCount; i++ ){
+		for(i=0; i<envMapProbeCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSOEnvMapProbe::Ref::NewWith(*this, *envMapProbes.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
 	}
 	
 	// navigation spaces
-	if( ( filter & igdeGDClass::efsoNavigationSpaces ) != 0 ){
+	if((filter & igdeGDClass::efsoNavigationSpaces) != 0){
 		const igdeGDCNavigationSpaceList &navigationSpaces = gdclass.GetNavigationSpaceList();
 		const int navigationSpaceCount = navigationSpaces.GetCount();
-		for( i=0; i<navigationSpaceCount; i++ ){
+		for(i=0; i<navigationSpaceCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSONavigationSpace::Ref::NewWith(*this, *navigationSpaces.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
 	}
 	
 	// navigation blockers
-	if( ( filter & igdeGDClass::efsoNavigationBlockers ) != 0 ){
+	if((filter & igdeGDClass::efsoNavigationBlockers) != 0){
 		const igdeGDCNavigationBlockerList &navigationBlockers = gdclass.GetNavigationBlockerList();
 		const int navigationBlockerCount = navigationBlockers.GetCount();
-		for( i=0; i<navigationBlockerCount; i++ ){
+		for(i=0; i<navigationBlockerCount; i++){
 			pAsyncLoadCounter++;
 			try{
 				pSubObjects.Add(igdeWOSONavigationBlocker::Ref::NewWith(*this, *navigationBlockers.GetAt(i), prefix));
 				
-			}catch( const deException &e ){
-				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}
@@ -1083,10 +1083,10 @@ void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass 
 	const int inheritCount = gdclass.GetInheritClassCount();
 	filter &= gdclass.GetInheritSubObjects();
 	
-	for( i=0; i<inheritCount; i++ ){
-		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
-		if( inherit.GetClass() ){
-			pCreateSubObjects( prefix + inherit.GetPropertyPrefix(), *inherit.GetClass(), filter );
+	for(i=0; i<inheritCount; i++){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
+		if(inherit.GetClass()){
+			pCreateSubObjects(prefix + inherit.GetPropertyPrefix(), *inherit.GetClass(), filter);
 		}
 	}
 }
@@ -1098,56 +1098,56 @@ void igdeWObject::pDestroySubObjects(){
 void igdeWObject::pSubObjectsReattachToColliders(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->ReattachToColliders();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->ReattachToColliders();
 	}
 }
 
 void igdeWObject::pSubObjectsInitTriggers(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->InitTriggers();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->InitTriggers();
 	}
 }
 
 void igdeWObject::pSubObjectsUpdateGeometry(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->UpdateGeometry();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateGeometry();
 	}
 }
 
 void igdeWObject::pSubObjectsUpdateTriggers(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->UpdateTriggers();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateTriggers();
 	}
 }
 
 void igdeWObject::pSubObjectsUpdateVisibility(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->UpdateVisibility();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateVisibility();
 	}
 }
 
 void igdeWObject::pSubObjectsUpdateLayerMasks(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->UpdateLayerMasks();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateLayerMasks();
 	}
 }
 
 void igdeWObject::pSubObjectsUpdateCollisionFilter(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->UpdateCollisionFilter();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateCollisionFilter();
 	}
 }
 
@@ -1162,8 +1162,8 @@ void igdeWObject::pSubObjectsColliderUserPointerChanged(){
 void igdeWObject::pSubObjectsAllFinishedLoading(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->OnAllSubObjectsFinishedLoading();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->OnAllSubObjectsFinishedLoading();
 	}
 }
 
@@ -1185,7 +1185,7 @@ void igdeWObject::pCheckAsyncLoadFinished(){
 void igdeWObject::pUpdateProperties(){
 	UpdateTriggerTargets();
 	
-	if( ! pWorld ){
+	if(!pWorld){
 		return;
 	}
 	
@@ -1193,13 +1193,13 @@ void igdeWObject::pUpdateProperties(){
 	
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		pAsyncLoadCounter++;
 		try{
-			( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->UpdateParameters();
+			((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateParameters();
 			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 			pAsyncLoadCounter--;
 		}
 	}
@@ -1214,27 +1214,27 @@ void igdeWObject::pUpdateProperties(){
 void igdeWObject::pUpdateColliderResponseType(){
 	const int count = pSubObjects.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->UpdateColliderResponseType();
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateColliderResponseType();
 	}
 	
 	deCollider::eResponseType responseType;
-	if( pColliderComponent ){
+	if(pColliderComponent){
 		responseType = pColliderComponent->GetResponseType();
 		
-	}else if( pDynamicCollider ){
+	}else if(pDynamicCollider){
 		responseType = deCollider::ertDynamic;
 		
 	}else{
 		responseType = deCollider::ertKinematic;
 	}
 	
-	pColliderFallback->SetResponseType( responseType );
-	pColliderFallback->SetUseLocalGravity( responseType != deCollider::ertDynamic );
+	pColliderFallback->SetResponseType(responseType);
+	pColliderFallback->SetUseLocalGravity(responseType != deCollider::ertDynamic);
 }
 
 void igdeWObject::pUpdateColliderShapes(){
-	if( ! pDirtyFallbackColliderShape ){
+	if(!pDirtyFallbackColliderShape){
 		return;
 	}
 	
@@ -1243,16 +1243,16 @@ void igdeWObject::pUpdateColliderShapes(){
 	const int count = pSubObjects.GetCount();
 	decShapeList shapeList;
 	int i;
-	for( i=0; i<count; i++ ){
-		const igdeWOSubObject &subObject = *( ( igdeWOSubObject* )pSubObjects.GetAt( i ) );
-		if( ! subObject.HasBoxExtends() ){
+	for(i=0; i<count; i++){
+		const igdeWOSubObject &subObject = *((igdeWOSubObject*)pSubObjects.GetAt(i));
+		if(!subObject.HasBoxExtends()){
 			continue;
 		}
 		
 		const decVector &boxMinExtend = subObject.GetBoxMinExtends();
 		const decVector &boxMaxExtend = subObject.GetBoxMaxExtends();
-		decVector boxSize( ( boxMaxExtend - boxMinExtend ) * 0.5f );
-		decVector boxCenter( ( boxMinExtend + boxMaxExtend ) * 0.5f );
+		decVector boxSize((boxMaxExtend - boxMinExtend) * 0.5f);
+		decVector boxCenter((boxMinExtend + boxMaxExtend) * 0.5f);
 		
 		boxSize.x *= pScaling.x;
 		boxSize.y *= pScaling.y;
@@ -1261,19 +1261,19 @@ void igdeWObject::pUpdateColliderShapes(){
 		boxCenter.y *= pScaling.y;
 		boxCenter.z *= pScaling.z;
 		
-		shapeList.Add( new decShapeBox( boxSize, boxCenter ) );
+		shapeList.Add(new decShapeBox(boxSize, boxCenter));
 	}
 	
-	if( shapeList.GetCount() == 0 ){
+	if(shapeList.GetCount() == 0){
 		// ensure the user can still select the object
-		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
+		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
 	}
 	
-	pColliderFallback->SetShapes( shapeList );
+	pColliderFallback->SetShapes(shapeList);
 }
 
 void igdeWObject::pPrepareExtends(){
-	if( ! pDirtyExtends ){
+	if(!pDirtyExtends){
 		return;
 	}
 	
@@ -1284,15 +1284,15 @@ void igdeWObject::pPrepareExtends(){
 	pBoxMinExtend.SetZero();
 	pBoxMaxExtend.SetZero();
 	
-	for( i=0; i<count; i++ ){
-		const igdeWOSubObject &subObject = *( ( igdeWOSubObject* )pSubObjects.GetAt( i ) );
-		if( ! subObject.HasBoxExtends() ){
+	for(i=0; i<count; i++){
+		const igdeWOSubObject &subObject = *((igdeWOSubObject*)pSubObjects.GetAt(i));
+		if(!subObject.HasBoxExtends()){
 			continue;
 		}
 		
-		if( pHasBoxExtends ){
-			pBoxMinExtend.SetSmallest( subObject.GetBoxMinExtends() );
-			pBoxMaxExtend.SetLargest( subObject.GetBoxMaxExtends() );
+		if(pHasBoxExtends){
+			pBoxMinExtend.SetSmallest(subObject.GetBoxMinExtends());
+			pBoxMaxExtend.SetLargest(subObject.GetBoxMaxExtends());
 			
 		}else{
 			pBoxMinExtend = subObject.GetBoxMinExtends();
@@ -1301,17 +1301,17 @@ void igdeWObject::pPrepareExtends(){
 		}
 	}
 	
-	if( pHasBoxExtends ){
-		const decVector boxSize( pBoxMaxExtend - pBoxMinExtend );
-		if( boxSize.x < 0.001f ){
+	if(pHasBoxExtends){
+		const decVector boxSize(pBoxMaxExtend - pBoxMinExtend);
+		if(boxSize.x < 0.001f){
 			pBoxMinExtend.x -= 0.0005f;
 			pBoxMaxExtend.x += 0.0005f;
 		}
-		if( boxSize.y < 0.001f ){
+		if(boxSize.y < 0.001f){
 			pBoxMinExtend.y -= 0.0005f;
 			pBoxMaxExtend.y += 0.0005f;
 		}
-		if( boxSize.z < 0.001f ){
+		if(boxSize.z < 0.001f){
 			pBoxMinExtend.z -= 0.0005f;
 			pBoxMaxExtend.z += 0.0005f;
 		}

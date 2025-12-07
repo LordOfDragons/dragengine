@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPShadowMapOffsetScale::deoglPShadowMapOffsetScale( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPShadowMapOffsetScale::deoglPShadowMapOffsetScale(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "shadowMapOffsetScale" );
-	SetDescription( "Sets the scaling factor of the shadow map offset." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Shadow Map Offset Scale" );
-	SetDefaultValue( "1.1" );
+	SetName("shadowMapOffsetScale");
+	SetDescription("Sets the scaling factor of the shadow map offset.");
+	SetCategory(ecExpert);
+	SetDisplayName("Shadow Map Offset Scale");
+	SetDefaultValue("1.1");
 }
 
 deoglPShadowMapOffsetScale::~deoglPShadowMapOffsetScale(){
@@ -61,6 +61,6 @@ float deoglPShadowMapOffsetScale::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetShadowMapOffsetScale();
 }
 
-void deoglPShadowMapOffsetScale::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetShadowMapOffsetScale( value );
+void deoglPShadowMapOffsetScale::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetShadowMapOffsetScale(value);
 }

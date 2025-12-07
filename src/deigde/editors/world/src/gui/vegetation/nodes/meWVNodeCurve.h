@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeCurve( meWindowVegetation &windowVegetation, meHTVRuleCurve *rule );
+	meWVNodeCurve(meWindowVegetation &windowVegetation, meHTVRuleCurve *rule);
 	
 protected:
 	/** \brief Clean up object. */

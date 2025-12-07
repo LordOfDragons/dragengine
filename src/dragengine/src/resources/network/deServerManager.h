@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create server resource manager linked to the given engine. */
-	deServerManager( deEngine *engine );
+	deServerManager(deEngine *engine);
 	
 	/** \brief Clean up server resource manager and reports leaking resources. */
 	virtual ~deServerManager();
@@ -94,7 +94,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Removes the given resource from the manager without freeing it. */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

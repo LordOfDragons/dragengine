@@ -55,19 +55,19 @@ public:
 	/** Retrieves the number of messages. */
 	inline int GetMessageCount() const{ return pMessageCount; }
 	/** Retrieves the message at the given index. */
-	debnMessage *GetMessageAt( int index ) const;
+	debnMessage *GetMessageAt(int index) const;
 	/** Retrieves the index of the message with the given number or -1 if not found. */
-	int IndexOfMessageWithNumber( int number ) const;
+	int IndexOfMessageWithNumber(int number) const;
 	/** Retrieves the index of the message or -1 if not found. */
-	int IndexOfMessage( debnMessage *message ) const;
+	int IndexOfMessage(debnMessage *message) const;
 	/** Determines if the message exists. */
-	bool HasMessage( debnMessage *message ) const;
+	bool HasMessage(debnMessage *message) const;
 	/** Adds a message. */
-	void AddMessage( debnMessage *message );
+	void AddMessage(debnMessage *message);
 	/** Removes a message. */
-	void RemoveMessage( debnMessage *message );
+	void RemoveMessage(debnMessage *message);
 	/** Removes the message at the given index. */
-	void RemoveMessageAt( int index );
+	void RemoveMessageAt(int index);
 	/** Removes all messages. */
 	void RemoveAllMessages();
 	/*@}*/

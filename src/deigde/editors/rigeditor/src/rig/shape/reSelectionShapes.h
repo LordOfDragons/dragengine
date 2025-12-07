@@ -50,7 +50,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig shape selection. */
-	reSelectionShapes( reRig *rig );
+	reSelectionShapes(reRig *rig);
 	/** Cleans up the rig shape selection. */
 	~reSelectionShapes();
 	/*@}*/
@@ -63,17 +63,17 @@ public:
 	/** Retrieves the number of selected shapes. */
 	inline int GetShapeCount() const{ return pShapeCount; }
 	/** Retrieves the shape at the given index. */
-	reRigShape *GetShapeAt( int index ) const;
+	reRigShape *GetShapeAt(int index) const;
 	/** Determines if the given shape exists. */
-	bool HasShape( reRigShape *shape ) const;
+	bool HasShape(reRigShape *shape) const;
 	/** Retrieves the index of the given shape or -1 if not found. */
-	int IndexOfShape( reRigShape *shape ) const;
+	int IndexOfShape(reRigShape *shape) const;
 	/** Retrieves the index of the shape with the given collider or -1 if not found. */
-	int IndexOfShapeWith( deColliderVolume *collider ) const;
+	int IndexOfShapeWith(deColliderVolume *collider) const;
 	/** Adds a shape if not existing already. */
-	void AddShape( reRigShape *shape );
+	void AddShape(reRigShape *shape);
 	/** Removes a shape if existing. */
-	void RemoveShape( reRigShape *shape );
+	void RemoveShape(reRigShape *shape);
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	
@@ -82,13 +82,13 @@ public:
 	/** Determines if an active shape exists. */
 	bool HasActiveShape() const;
 	/** Sets the acitve shape or NULL. */
-	void SetActiveShape( reRigShape *shape );
+	void SetActiveShape(reRigShape *shape);
 	
 	/** Removes all shapes and sets the active shape to NULL. */
 	void Reset();
 	
 	/** Adds all selected and visible shapes to the given list. */
-	void AddVisibleShapesTo( reRigShapeList &list ) const;
+	void AddVisibleShapesTo(reRigShapeList &list) const;
 	/*@}*/
 };
 

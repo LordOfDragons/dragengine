@@ -50,23 +50,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadModel::deRLTaskReadModel( deEngine &engine, deResourceLoader &resourceLoader,
-deVirtualFileSystem *vfs, const char *path, deModel *model ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertModel ),
-pSucceeded( false )
+deRLTaskReadModel::deRLTaskReadModel(deEngine &engine, deResourceLoader &resourceLoader,
+deVirtualFileSystem *vfs, const char *path, deModel *model) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertModel),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	// if already loaded set finished
-	if( model ){
+	if(model){
 		pModel = model;
-		SetResource( model );
-		SetState( esSucceeded );
+		SetResource(model);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
 	}
 	
-	pModel.TakeOver( new deModel( engine.GetModelManager(), vfs, path, 0 ) );
+	pModel.TakeOver(new deModel(engine.GetModelManager(), vfs, path, 0));
 	LogCreateExit();
 }
 
@@ -80,26 +80,26 @@ deRLTaskReadModel::~deRLTaskReadModel(){
 
 void deRLTaskReadModel::Run(){
 	LogRunEnter();
-	deBaseModelModule * const module = ( deBaseModelModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtModel, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseModelModule * const module = (deBaseModelModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtModel, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
-	pModel->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-	pModel->SetAsynchron( true );
+	pModel->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+	pModel->SetAsynchron(true);
 	module->LoadModel(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pModel);
 	
-	if( ! pModel->Verify() ){
-		DETHROW( deeInvalidParam );
+	if(!pModel->Verify()){
+		DETHROW(deeInvalidParam);
 	}
 	pModel->Prepare();
 	
-	GetEngine().GetGraphicSystem()->LoadModel( pModel );
-	GetEngine().GetPhysicsSystem()->LoadModel( pModel );
-	GetEngine().GetAudioSystem()->LoadModel( pModel );
+	GetEngine().GetGraphicSystem()->LoadModel(pModel);
+	GetEngine().GetPhysicsSystem()->LoadModel(pModel);
+	GetEngine().GetAudioSystem()->LoadModel(pModel);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -107,29 +107,29 @@ void deRLTaskReadModel::Run(){
 
 void deRLTaskReadModel::Finished(){
 	LogFinishedEnter();
-	if( ! pSucceeded ){
-		SetState( esFailed );
+	if(!pSucceeded){
+		SetState(esFailed);
 		pModel = NULL;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deModelManager &modelManager = *GetEngine().GetModelManager();
-	deModel * const checkModel = modelManager.GetModelWith( GetPath() );
+	deModel * const checkModel = modelManager.GetModelWith(GetPath());
 	
-	if( checkModel ){
-		SetResource( checkModel );
+	if(checkModel){
+		SetResource(checkModel);
 		
 	}else{
-		pModel->SetAsynchron( false );
-		modelManager.AddLoadedModel( pModel );
-		SetResource( pModel );
+		pModel->SetAsynchron(false);
+		modelManager.AddLoadedModel(pModel);
+		SetResource(pModel);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

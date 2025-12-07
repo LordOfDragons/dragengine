@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create persistent render task pipeline. */
-	deoglPersistentRenderTaskPipeline( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTaskPipeline(deoglPersistentRenderTaskPool &pool);
 	
 	/** Clean up persistent render task pipeline. */
 	~deoglPersistentRenderTaskPipeline();
@@ -84,31 +84,31 @@ public:
 	inline deoglPersistentRenderTask *GetParentTask() const{ return pParentTask; }
 	
 	/** Set parent task. */
-	void SetParentTask( deoglPersistentRenderTask *task );
+	void SetParentTask(deoglPersistentRenderTask *task);
 	
 	/** Pipeline. */
 	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
 	/** Set pipeline. */
-	void SetPipeline( const deoglPipeline *pipeline );
+	void SetPipeline(const deoglPipeline *pipeline);
 	
 	/** Pipeline parameter block or \em NULL if not used. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set pipeline parameter block or \em NULL if not used. */
-	void SetParameterBlock( deoglSPBlockUBO *block );
+	void SetParameterBlock(deoglSPBlockUBO *block);
 	
 	/** Pipeline parameter index of pSPBInstanceIndexBase or -1. */
 	inline int GetSPBInstanceIndexBase() const{ return pSPBInstanceIndexBase; }
 	
 	/** Set pipeline parameter index of pSPBInstanceIndexBase or -1. */
-	void SetSPBInstanceIndexBase( int parameter );
+	void SetSPBInstanceIndexBase(int parameter);
 	
 	/** Pipeline parameter index of pDrawIDOffset or -1. */
 	inline int GetDrawIDOffset() const{ return pDrawIDOffset; }
 	
 	/** Set pipeline parameter index of pDrawIDOffset or -1. */
-	void SetDrawIDOffset( int parameter );
+	void SetDrawIDOffset(int parameter);
 	
 	
 	
@@ -119,13 +119,13 @@ public:
 	decPointerLinkedList::cListEntry *GetRootTexture() const;
 	
 	/** Texture with TUC or NULL. */
-	deoglPersistentRenderTaskTexture *GetTextureWith( const deoglTexUnitsConfig *tuc ) const;
+	deoglPersistentRenderTaskTexture *GetTextureWith(const deoglTexUnitsConfig *tuc) const;
 	
 	/** Add texture. */
-	deoglPersistentRenderTaskTexture *AddTexture( const deoglTexUnitsConfig *tuc );
+	deoglPersistentRenderTaskTexture *AddTexture(const deoglTexUnitsConfig *tuc);
 	
 	/** Remove texture. */
-	void RemoveTexture( deoglPersistentRenderTaskTexture *texture );
+	void RemoveTexture(deoglPersistentRenderTaskTexture *texture);
 	
 	/** Remove all textuures. */
 	void RemoveAllTextures();

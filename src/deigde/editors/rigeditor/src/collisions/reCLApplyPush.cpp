@@ -47,12 +47,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCLApplyPush::reCLApplyPush( reRig *rig ){
-	if( ! rig ) DETHROW( deeInvalidParam );
+reCLApplyPush::reCLApplyPush(reRig *rig){
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
 	
-	pPush.Set( 0.0f, 0.0f, 1.0f );
+	pPush.Set(0.0f, 0.0f, 1.0f);
 	pCollider = NULL;
 }
 
@@ -64,16 +64,16 @@ reCLApplyPush::~reCLApplyPush(){
 // Management
 ///////////////
 
-void reCLApplyPush::SetRay( const decDVector &position, const decVector &direction ){
+void reCLApplyPush::SetRay(const decDVector &position, const decVector &direction){
 	pRayPosition = position;
 	pRayDirection = direction;
 }
 
-void reCLApplyPush::SetPush( const decVector &push ){
+void reCLApplyPush::SetPush(const decVector &push){
 	pPush = push;
 }
 
-void reCLApplyPush::SetCollider( deCollider *collider ){
+void reCLApplyPush::SetCollider(deCollider *collider){
 	pCollider = collider;
 }
 
@@ -86,27 +86,27 @@ void reCLApplyPush::Reset(){
 }
 
 void reCLApplyPush::ApplyPush(){
-	if( pClosestCollider ){
-		const decDVector hitPoint = pRayPosition + pRayDirection * ( double )pClosestDistance;
-		const decDMatrix matrix = decDMatrix::CreateWorld( pClosestCollider->GetPosition(),
-			pClosestCollider->GetOrientation() ).Invert();
+	if(pClosestCollider){
+		const decDVector hitPoint = pRayPosition + pRayDirection * (double)pClosestDistance;
+		const decDMatrix matrix = decDMatrix::CreateWorld(pClosestCollider->GetPosition(),
+			pClosestCollider->GetOrientation()).Invert();
 		deColliderVisitorIdentify identify;
 		
-		pClosestCollider->Visit( identify );
+		pClosestCollider->Visit(identify);
 		
-		if( identify.IsVolume() ){
+		if(identify.IsVolume()){
 			deColliderVolume &colliderVolume = identify.CastToVolume();
-			colliderVolume.ApplyImpulsAt( pPush, ( matrix * hitPoint ).ToVector() );
+			colliderVolume.ApplyImpulsAt(pPush, (matrix * hitPoint).ToVector());
 			
-		}else if( identify.IsComponent() ){
+		}else if(identify.IsComponent()){
 			deColliderComponent &colliderComponent = identify.CastToComponent();
 			
-			if( pClosestBone == -1 ){
-				colliderComponent.ApplyImpulsAt( pPush, ( matrix * hitPoint ).ToVector() );
+			if(pClosestBone == -1){
+				colliderComponent.ApplyImpulsAt(pPush, (matrix * hitPoint).ToVector());
 				
 			}else{
-				const decDMatrix boneInvMatrix = colliderComponent.GetBoneAt( pClosestBone ).GetInverseMatrix();
-				colliderComponent.ApplyBoneImpulsAt( pClosestBone, pPush, ( boneInvMatrix * hitPoint ).ToVector() );
+				const decDMatrix boneInvMatrix = colliderComponent.GetBoneAt(pClosestBone).GetInverseMatrix();
+				colliderComponent.ApplyBoneImpulsAt(pClosestBone, pPush, (boneInvMatrix * hitPoint).ToVector());
 			}
 		}
 	}
@@ -114,9 +114,9 @@ void reCLApplyPush::ApplyPush(){
 
 
 
-void reCLApplyPush::ApplyPushIn( deBasePhysicsWorld &phyWorld, const decLayerMask &layerMask ){
+void reCLApplyPush::ApplyPushIn(deBasePhysicsWorld &phyWorld, const decLayerMask &layerMask){
 	Reset();
-	phyWorld.RayHits( pRayPosition, pRayDirection.ToVector(), this, layerMask );
+	phyWorld.RayHits(pRayPosition, pRayDirection.ToVector(), this, layerMask);
 	ApplyPush();
 }
 
@@ -125,9 +125,9 @@ void reCLApplyPush::ApplyPushIn( deBasePhysicsWorld &phyWorld, const decLayerMas
 // Notifications
 //////////////////
 
-void reCLApplyPush::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( info->IsCollider() ){
-		if( ! pClosestCollider || info->GetDistance() < pClosestDistance ){
+void reCLApplyPush::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(info->IsCollider()){
+		if(!pClosestCollider || info->GetDistance() < pClosestDistance){
 			pClosestCollider = info->GetCollider();
 			pClosestBone = info->GetBone();
 			pClosestDistance = info->GetDistance();
@@ -135,9 +135,9 @@ void reCLApplyPush::CollisionResponse( deCollider *owner, deCollisionInfo *info 
 	}
 }
 
-bool reCLApplyPush::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool reCLApplyPush::CanHitCollider(deCollider *owner, deCollider *collider){
 	return collider == pCollider;
 }
 
-void reCLApplyPush::ColliderChanged( deCollider *owner ){
+void reCLApplyPush::ColliderChanged(deCollider *owner){
 }

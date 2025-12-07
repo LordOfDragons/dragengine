@@ -49,40 +49,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTaskSyncGameDefinition::igdeTaskSyncGameDefinition( igdeWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pOldProjectGameDef( NULL ),
-pOldGameDef( NULL ),
-pState( esReloadProjectGameDef ),
-pTaskIndex( 0 ),
-pLastProgress( -1.0f ),
-pBaseProgress( 0.0f ),
-pProgressFactor( 0.0f ),
-pReloadXMLElementClasses( false )
+igdeTaskSyncGameDefinition::igdeTaskSyncGameDefinition(igdeWindowMain &windowMain) :
+pWindowMain(windowMain),
+pOldProjectGameDef(NULL),
+pOldGameDef(NULL),
+pState(esReloadProjectGameDef),
+pTaskIndex(0),
+pLastProgress(-1.0f),
+pBaseProgress(0.0f),
+pProgressFactor(0.0f),
+pReloadXMLElementClasses(false)
 {
 	try{
-		SetMessage( "Reloading Project Game Definition" );
+		SetMessage("Reloading Project Game Definition");
 		
-		windowMain.SetProgressVisible( true );
-		windowMain.SetProgress( 0.0f );
-		windowMain.SetProgressText( GetMessage() );
+		windowMain.SetProgressVisible(true);
+		windowMain.SetProgress(0.0f);
+		windowMain.SetProgressText(GetMessage());
 		
 		// NOTE looks like a bug in FOX but disable() seems to have no effect. No idea how
 		//      to solve this problem
-		windowMain.SetEnabled( false );
+		windowMain.SetEnabled(false);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
 igdeTaskSyncGameDefinition::~igdeTaskSyncGameDefinition(){
-	pWindowMain.SetEnabled( true );
+	pWindowMain.SetEnabled(true);
 	
-	pWindowMain.SetProgressVisible( false);
-	pWindowMain.SetProgress( 0.0f );
-	pWindowMain.SetProgressText( "" );
+	pWindowMain.SetProgressVisible(false);
+	pWindowMain.SetProgress(0.0f);
+	pWindowMain.SetProgressText("");
 	
 	pCleanUp();
 }
@@ -92,12 +92,12 @@ igdeTaskSyncGameDefinition::~igdeTaskSyncGameDefinition(){
 // Management
 ///////////////
 
-void igdeTaskSyncGameDefinition::SetReloadXMLElementClasses( bool reloadXMLElementClasses ){
+void igdeTaskSyncGameDefinition::SetReloadXMLElementClasses(bool reloadXMLElementClasses){
 	pReloadXMLElementClasses = reloadXMLElementClasses;
 }
 
 bool igdeTaskSyncGameDefinition::Step(){
-	switch( pState ){
+	switch(pState){
 	case esReloadProjectGameDef:{
 		igdeGameProject &project = *pWindowMain.GetGameProject();
 		
@@ -107,7 +107,7 @@ bool igdeTaskSyncGameDefinition::Step(){
 		pOldGameDef = project.GetGameDefinition();
 		pOldGameDef->AddReference();
 		
-		if( ! pReloadXMLElementClasses ){
+		if(!pReloadXMLElementClasses){
 			pLoadProjectGameDefinition();
 		}
 		
@@ -116,14 +116,14 @@ bool igdeTaskSyncGameDefinition::Step(){
 		
 		pCreateEditorTasks();
 		
-		if( pEditorTasks.GetCount() == 0 ){
+		if(pEditorTasks.GetCount() == 0){
 			pState = esFinished;
 			return false;
 		}
 		
-		pProgressFactor = 1.0f / ( float )( pEditorTasks.GetCount() + 1 );
+		pProgressFactor = 1.0f / (float)(pEditorTasks.GetCount() + 1);
 		pBaseProgress = pProgressFactor;
-		pUpdateProgress( true );
+		pUpdateProgress(true);
 		
 		pState = esEditorUpdateTasks;
 		break;
@@ -132,28 +132,28 @@ bool igdeTaskSyncGameDefinition::Step(){
 	case esEditorUpdateTasks:{
 		// step 2..2+N: process module update tasks
 		const int taskCount = pEditorTasks.GetCount();
-		if( pTaskIndex == taskCount ){
+		if(pTaskIndex == taskCount){
 			pState = esFinished;
 			return false;
 		}
 		
-		igdeStepableTask &activeTask = *( ( igdeStepableTask* )pEditorTasks.GetAt( pTaskIndex ) );
-		if( activeTask.Step() ){
-			pUpdateProgress( false );
+		igdeStepableTask &activeTask = *((igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex));
+		if(activeTask.Step()){
+			pUpdateProgress(false);
 			break;
 		}
 		
-		delete ( igdeStepableTask* )pEditorTasks.GetAt( pTaskIndex );
-		pEditorTasks.SetAt( pTaskIndex, NULL );
+		delete (igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex);
+		pEditorTasks.SetAt(pTaskIndex, NULL);
 		
 		pTaskIndex++;
-		if( pTaskIndex == taskCount ){
+		if(pTaskIndex == taskCount){
 			pState = esFinished;
 			return false;
 		}
 		
-		pBaseProgress = ( float )( pTaskIndex + 1 ) / ( float )( taskCount + 1 );
-		pUpdateProgress( true );
+		pBaseProgress = (float)(pTaskIndex + 1) / (float)(taskCount + 1);
+		pUpdateProgress(true);
 		break;
 		}
 		
@@ -162,8 +162,8 @@ bool igdeTaskSyncGameDefinition::Step(){
 		return false;
 	}
 	
-	pWindowMain.SetProgress( GetProgress() );
-	pWindowMain.SetProgressText( GetMessage() );
+	pWindowMain.SetProgress(GetProgress());
+	pWindowMain.SetProgressText(GetMessage());
 	
 	return true;
 }
@@ -176,29 +176,29 @@ bool igdeTaskSyncGameDefinition::Step(){
 void igdeTaskSyncGameDefinition::pCleanUp(){
 	const int taskCount = pEditorTasks.GetCount();
 	
-	while( pTaskIndex<taskCount ){
-		delete ( igdeStepableTask* )pEditorTasks.GetAt( pTaskIndex++ );
+	while(pTaskIndex<taskCount){
+		delete (igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex++);
 	}
 	
-	if( pOldGameDef ){
+	if(pOldGameDef){
 		pOldGameDef->FreeReference();
 	}
-	if( pOldProjectGameDef ){
+	if(pOldProjectGameDef){
 		pOldProjectGameDef->FreeReference();
 	}
 }
 
-void igdeTaskSyncGameDefinition::pUpdateProgress( bool force ){
-	const igdeStepableTask &task = *( ( const igdeStepableTask* )pEditorTasks.GetAt( pTaskIndex ) );
+void igdeTaskSyncGameDefinition::pUpdateProgress(bool force){
+	const igdeStepableTask &task = *((const igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex));
 	
-	if( force || fabsf( task.GetProgress() - pLastProgress ) > 0.1f ){
+	if(force || fabsf(task.GetProgress() - pLastProgress) > 0.1f){
 		pLastProgress = task.GetProgress();
-		SetProgress( pBaseProgress + pProgressFactor * pLastProgress );
+		SetProgress(pBaseProgress + pProgressFactor * pLastProgress);
 	}
 	
-	if( force || task.GetMessage() != pLastMessage ){
+	if(force || task.GetMessage() != pLastMessage){
 		pLastMessage = task.GetMessage();
-		SetMessage( pLastMessage );
+		SetMessage(pLastMessage);
 	}
 }
 
@@ -209,25 +209,25 @@ void igdeTaskSyncGameDefinition::pLoadProjectGameDefinition(){
 	decPath path;
 	
 	try{
-		path.SetFromNative( project.GetDirectoryPath() );
-		path.AddUnixPath( project.GetPathProjectGameDefinition() );
-		reader = new decDiskFileReader( path.GetPathNative() );
+		path.SetFromNative(project.GetDirectoryPath());
+		path.AddUnixPath(project.GetPathProjectGameDefinition());
+		reader = new decDiskFileReader(path.GetPathNative());
 		
-		gamedef = new igdeGameDefinition( pWindowMain.GetEnvironment() );
-		gamedef->SetFilename( path.GetPathNative() );
+		gamedef = new igdeGameDefinition(pWindowMain.GetEnvironment());
+		gamedef->SetFilename(path.GetPathNative());
 		
-		igdeXMLGameDefinition( pWindowMain.GetEnvironment(), pWindowMain.GetLogger() ).Load( *reader, *gamedef );
+		igdeXMLGameDefinition(pWindowMain.GetEnvironment(), pWindowMain.GetLogger()).Load(*reader, *gamedef);
 		
-		project.SetProjectGameDefinition( gamedef );
+		project.SetProjectGameDefinition(gamedef);
 		
 		reader->FreeReference();
 		gamedef->FreeReference();
 		
-	}catch( const deException & ){
-		if( reader ){
+	}catch(const deException &){
+		if(reader){
 			reader->FreeReference();
 		}
-		if( gamedef ){
+		if(gamedef){
 			gamedef->FreeReference();
 		}
 		throw;
@@ -241,28 +241,28 @@ void igdeTaskSyncGameDefinition::pCreateEditorTasks(){
 	int i;
 	
 	try{
-		for( i=0; i<editorCount; i++ ){
-			const igdeEditorModuleDefinition &editorDefinition = *moduleManager.GetModuleAt( i );
-			if( ! editorDefinition.IsModuleRunning() ){
+		for(i=0; i<editorCount; i++){
+			const igdeEditorModuleDefinition &editorDefinition = *moduleManager.GetModuleAt(i);
+			if(!editorDefinition.IsModuleRunning()){
 				continue;
 			}
 			
 			igdeEditorModule * const editor = editorDefinition.GetModule();
-			if( ! editor ){
+			if(!editor){
 				continue;
 			}
 			
 			editorTask = editor->OnGameDefinitionChanged();
-			if( ! editorTask ){
+			if(!editorTask){
 				continue;
 			}
 			
-			pEditorTasks.Add( editorTask );
+			pEditorTasks.Add(editorTask);
 			editorTask = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( editorTask ){
+	}catch(const deException &){
+		if(editorTask){
 			delete editorTask;
 		}
 		throw;

@@ -39,7 +39,7 @@ igdeNativeNullScrollBar::igdeNativeNullScrollBar(){
 igdeNativeNullScrollBar::~igdeNativeNullScrollBar(){
 }
 
-igdeNativeNullScrollBar *igdeNativeNullScrollBar::CreateNativeWidget( igdeScrollBar& ){
+igdeNativeNullScrollBar *igdeNativeNullScrollBar::CreateNativeWidget(igdeScrollBar&){
 	return new igdeNativeNullScrollBar;
 }
 

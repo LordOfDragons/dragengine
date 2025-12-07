@@ -88,8 +88,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerFlow( igdeEnvironment &environment, eAxis axis,
-		eStretching stretching = esNone, int spacing = 0 );
+	igdeContainerFlow(igdeEnvironment &environment, eAxis axis,
+		eStretching stretching = esNone, int spacing = 0);
 	
 	
 	
@@ -120,7 +120,7 @@ public:
 	
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	/*@}*/
 	
 	

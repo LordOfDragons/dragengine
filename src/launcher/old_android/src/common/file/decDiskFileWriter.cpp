@@ -37,19 +37,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-decDiskFileWriter::decDiskFileWriter( const char *filename, bool append ) :
-pFilename( filename ),
-pFile( NULL )
+decDiskFileWriter::decDiskFileWriter(const char *filename, bool append) :
+pFilename(filename),
+pFile(NULL)
 {
-	pFile = fopen( filename, append ? "ab" : "wb" );
-	if( ! pFile ){
-		DETHROW( deeFileNotFound );
+	pFile = fopen(filename, append ? "ab" : "wb");
+	if(!pFile){
+		DETHROW(deeFileNotFound);
 	}
 }
 
 decDiskFileWriter::~decDiskFileWriter(){
-	if( pFile ){
-		fclose( pFile );
+	if(pFile){
+		fclose(pFile);
 	}
 }
 
@@ -68,24 +68,24 @@ const char *decDiskFileWriter::GetFilename(){
 ////////////
 
 int decDiskFileWriter::GetPosition(){
-	return ( int )ftell( pFile );
+	return (int)ftell(pFile);
 }
 
-void decDiskFileWriter::SetPosition( int position ){
-	if( fseek( pFile, position, SEEK_SET ) ){
-		DETHROW( deeReadFile );
+void decDiskFileWriter::SetPosition(int position){
+	if(fseek(pFile, position, SEEK_SET)){
+		DETHROW(deeReadFile);
 	}
 }
 
-void decDiskFileWriter::MovePosition( int offset ){
-	if( fseek( pFile, offset, SEEK_CUR ) ){
-		DETHROW( deeReadFile );
+void decDiskFileWriter::MovePosition(int offset){
+	if(fseek(pFile, offset, SEEK_CUR)){
+		DETHROW(deeReadFile);
 	}
 }
 
-void decDiskFileWriter::SetPositionEnd( int position ){
-	if( fseek( pFile, position, SEEK_END ) ){
-		DETHROW( deeReadFile );
+void decDiskFileWriter::SetPositionEnd(int position){
+	if(fseek(pFile, position, SEEK_END)){
+		DETHROW(deeReadFile);
 	}
 }
 
@@ -94,12 +94,12 @@ void decDiskFileWriter::SetPositionEnd( int position ){
 // Reading
 ////////////
 
-void decDiskFileWriter::Write( const void *buffer, int size ){
-	if( size == 0 ){
+void decDiskFileWriter::Write(const void *buffer, int size){
+	if(size == 0){
 		return;
 	}
 	
-	if( fwrite( buffer, size, 1, pFile ) != 1 ){
-		DETHROW( deeWriteFile );
+	if(fwrite(buffer, size, 1, pFile) != 1){
+		DETHROW(deeWriteFile);
 	}
 }

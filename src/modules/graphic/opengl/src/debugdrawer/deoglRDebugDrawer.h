@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render debug drawer. */
-	deoglRDebugDrawer( deoglRenderThread &renderThread );
+	deoglRDebugDrawer(deoglRenderThread &renderThread);
 	
 	/** Cleans up render debug drawer. */
 	virtual ~deoglRDebugDrawer();
@@ -98,7 +98,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	
 	
@@ -106,24 +106,24 @@ public:
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Set matrix. */
-	void SetMatrix( const decDMatrix &matrix );
+	void SetMatrix(const decDMatrix &matrix);
 	
 	/** Debug drawer is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set if debug drawer is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** Debug drawer is rendered in x-ray mode. */
 	inline bool GetXRay() const{ return pXRay; }
 	
 	/** Set debug drawer is rendered in x-ray mode. */
-	void SetXRay( bool xray );
+	void SetXRay(bool xray);
 	
 	
 	
 	/** Update shapes. */
-	void UpdateShapes( const deDebugDrawer &debugDrawer );
+	void UpdateShapes(const deDebugDrawer &debugDrawer);
 	
 	/** Determines if the debug drawer has shapes. */
 	inline bool GetHasShapes() const{ return pHasShapes; }
@@ -135,7 +135,7 @@ public:
 	inline int GetShapeCount() const{ return pShapeCount; }
 	
 	/** Retrieves a shape. */
-	deoglDebugDrawerShape &GetShapeAt( int index ) const;
+	deoglDebugDrawerShape &GetShapeAt(int index) const;
 	
 	
 	
@@ -165,12 +165,12 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 	
 private:
-	void pUpdateHasFlags( const deDebugDrawer &debugDrawer );
-	void pWriteVBOData( const deDebugDrawer &debugDrawer );
+	void pUpdateHasFlags(const deDebugDrawer &debugDrawer);
+	void pWriteVBOData(const deDebugDrawer &debugDrawer);
 };
 
 #endif

@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCSnapPointToggleSnapToRotation::gdeUOCSnapPointToggleSnapToRotation(
-gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint ) :
-pObjectClass( NULL ),
-pSnapPoint( NULL )
+gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
+pObjectClass(NULL),
+pSnapPoint(NULL)
 {
-	if( ! objectClass || ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Snap point toggle snap to rotation" );
+	SetShortInfo("Snap point toggle snap to rotation");
 	
 	pSnapPoint = snapPoint;
 	snapPoint->AddReference();
@@ -59,10 +59,10 @@ pSnapPoint( NULL )
 }
 
 gdeUOCSnapPointToggleSnapToRotation::~gdeUOCSnapPointToggleSnapToRotation(){
-	if( pSnapPoint ){
+	if(pSnapPoint){
 		pSnapPoint->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCSnapPointToggleSnapToRotation::~gdeUOCSnapPointToggleSnapToRotation(){
 ///////////////
 
 void gdeUOCSnapPointToggleSnapToRotation::Undo(){
-	pSnapPoint->SetSnapToRotation( ! pSnapPoint->GetSnapToRotation() );
-	pObjectClass->NotifySnapPointChanged( pSnapPoint );
+	pSnapPoint->SetSnapToRotation(!pSnapPoint->GetSnapToRotation());
+	pObjectClass->NotifySnapPointChanged(pSnapPoint);
 }
 
 void gdeUOCSnapPointToggleSnapToRotation::Redo(){

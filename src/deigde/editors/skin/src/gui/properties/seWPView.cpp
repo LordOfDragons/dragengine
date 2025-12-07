@@ -80,16 +80,16 @@ protected:
 	seWPView &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPView &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPView &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seSkin * const skin = pPanel.GetSkin();
-		if( skin ){
-			OnChanged( *textField, *skin );
+		if(skin){
+			OnChanged(*textField, *skin);
 		}
 	}
 	
-	virtual void OnChanged( igdeTextField &textField, seSkin &skin ) = 0;
+	virtual void OnChanged(igdeTextField &textField, seSkin &skin) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -97,33 +97,33 @@ protected:
 	seWPView &pPanel;
 	
 public:
-	cBaseAction( seWPView &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPView &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		seSkin * const skin = pPanel.GetSkin();
-		if( skin ){
-			OnAction( *skin );
+		if(skin){
+			OnAction(*skin);
 		}
 	}
 	
-	virtual void OnAction( seSkin &skin ) = 0;
+	virtual void OnAction(seSkin &skin) = 0;
 	
 	virtual void Update(){
 		seSkin * const skin = pPanel.GetSkin();
-		if( skin ){
-			Update( *skin );
+		if(skin){
+			Update(*skin);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const seSkin & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const seSkin &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -132,16 +132,16 @@ protected:
 	seWPView &pPanel;
 	
 public:
-	cBaseEditPathListener( seWPView &panel ) : pPanel( panel ){ }
+	cBaseEditPathListener(seWPView &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		seSkin * const skin = pPanel.GetSkin();
-		if( skin ){
-			OnChanged( *editPath, *skin );
+		if(skin){
+			OnChanged(*editPath, *skin);
 		}
 	}
 	
-	virtual void OnChanged( igdeEditPath &editPath, seSkin &skin ) = 0;
+	virtual void OnChanged(igdeEditPath &editPath, seSkin &skin) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -149,119 +149,119 @@ protected:
 	seWPView &pPanel;
 	
 public:
-	cBaseComboBoxListener( seWPView &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(seWPView &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSkin * const skin = pPanel.GetSkin();
-		if( skin ){
-			OnChanged( *comboBox, *skin );
+		if(skin){
+			OnChanged(*comboBox, *skin);
 		}
 	}
 	
-	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ) = 0;
+	virtual void OnChanged(igdeComboBox &comboBox, seSkin &skin) = 0;
 };
 
 
 
 class cComboPreviewMode : public cBaseComboBoxListener{
 public:
-	cComboPreviewMode( seWPView &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboPreviewMode(seWPView &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ){
-		if( comboBox.GetSelectedItem() ){
-			skin.SetPreviewMode( ( seSkin::ePreviewMode )( intptr_t )comboBox.GetSelectedItem()->GetData() );
+	virtual void OnChanged(igdeComboBox &comboBox, seSkin &skin){
+		if(comboBox.GetSelectedItem()){
+			skin.SetPreviewMode((seSkin::ePreviewMode)(intptr_t)comboBox.GetSelectedItem()->GetData());
 		}
 	}
 };
 
 class cEditModelPath : public cBaseEditPathListener{
 public:
-	cEditModelPath( seWPView &panel ) : cBaseEditPathListener( panel ){ }
+	cEditModelPath(seWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged( igdeEditPath &editPath, seSkin &skin ){
-		skin.SetModelPath( editPath.GetPath() );
+	virtual void OnChanged(igdeEditPath &editPath, seSkin &skin){
+		skin.SetModelPath(editPath.GetPath());
 	}
 };
 
 class cEditRigPath : public cBaseEditPathListener{
 public:
-	cEditRigPath( seWPView &panel ) : cBaseEditPathListener( panel ){ }
+	cEditRigPath(seWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged( igdeEditPath &editPath, seSkin &skin ){
-		skin.SetRigPath( editPath.GetPath() );
+	virtual void OnChanged(igdeEditPath &editPath, seSkin &skin){
+		skin.SetRigPath(editPath.GetPath());
 	}
 };
 
 class cEditAnimationPath : public cBaseEditPathListener{
 public:
-	cEditAnimationPath( seWPView &panel ) : cBaseEditPathListener( panel ){ }
+	cEditAnimationPath(seWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged( igdeEditPath &editPath, seSkin &skin ){
-		skin.SetAnimationPath( editPath.GetPath() );
+	virtual void OnChanged(igdeEditPath &editPath, seSkin &skin){
+		skin.SetAnimationPath(editPath.GetPath());
 	}
 };
 
 class cComboMove : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 public:
-	cComboMove( seWPView &panel, bool &preventUpdate ) :
-	cBaseComboBoxListener( panel ), pPreventUpdate( preventUpdate ){ }
+	cComboMove(seWPView &panel, bool &preventUpdate) :
+	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ){
-		if( ! pPreventUpdate ){
-			skin.SetMoveName( comboBox.GetText() );
+	virtual void OnChanged(igdeComboBox &comboBox, seSkin &skin){
+		if(!pPreventUpdate){
+			skin.SetMoveName(comboBox.GetText());
 		}
 	}
 };
 
 class cActionPlayback : public cBaseAction{
 public:
-	cActionPlayback( seWPView &panel ) : cBaseAction( panel, "Play back animation",
-		NULL, "Animation is played back" ){ }
+	cActionPlayback(seWPView &panel) : cBaseAction(panel, "Play back animation",
+		NULL, "Animation is played back"){}
 	
-	virtual void OnAction( seSkin &skin ){
-		skin.SetPlayback( ! skin.GetPlayback() );
+	virtual void OnAction(seSkin &skin){
+		skin.SetPlayback(!skin.GetPlayback());
 	}
 	
-	virtual void Update( const seSkin &skin ){
-		SetEnabled( true );
-		SetSelected( skin.GetPlayback() );
+	virtual void Update(const seSkin &skin){
+		SetEnabled(true);
+		SetSelected(skin.GetPlayback());
 	}
 };
 
 class cActionRewind : public cBaseAction{
 public:
-	cActionRewind( seWPView &panel ) : cBaseAction( panel, "Rewind Textures", NULL,
-		"Rewind all textures to the initial state as if added to the game world" ){ }
+	cActionRewind(seWPView &panel) : cBaseAction(panel, "Rewind Textures", NULL,
+		"Rewind all textures to the initial state as if added to the game world"){ }
 	
-	virtual void OnAction( seSkin &skin ){
+	virtual void OnAction(seSkin &skin){
 		skin.RewindTextures();
 	}
 };
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	cActionCameraChanged( seWPView &panel ) : cBaseAction( panel, "", NULL, "" ){ }
+	cActionCameraChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction( seSkin &skin ){
+	virtual void OnAction(seSkin &skin){
 		skin.NotifyCameraChanged();
 	}
 };
 
 class cActionSkyChanged : public cBaseAction{
 public:
-	cActionSkyChanged( seWPView &panel ) : cBaseAction( panel, "", NULL, "" ){ }
+	cActionSkyChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction( seSkin &skin ){
+	virtual void OnAction(seSkin &skin){
 		skin.NotifySkyChanged();
 	}
 };
 
 class cActionEnvObjChanged : public cBaseAction{
 public:
-	cActionEnvObjChanged( seWPView &panel ) : cBaseAction( panel, "", NULL, "" ){ }
+	cActionEnvObjChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction( seSkin &skin ){
+	virtual void OnAction(seSkin &skin){
 		skin.NotifyEnvObjectChanged();
 	}
 };
@@ -276,56 +276,56 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPView::seWPView( seWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pPreventUpdate( false ),
-pSkin( NULL )
+seWPView::seWPView(seWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
+pPreventUpdate(false),
+pSkin(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPViewListener( *this );
+	pListener = new seWPViewListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	
 	// resources
-	helper.GroupBox( content, groupBox, "Preview:" );
+	helper.GroupBox(content, groupBox, "Preview:");
 	
-	helper.ComboBox( groupBox, "Mode:", "Preview mode.", pCBPreviewMode, new cComboPreviewMode( *this ) );
-	pCBPreviewMode->AddItem( "Model", NULL, ( void* )( intptr_t )seSkin::epmModel );
-	pCBPreviewMode->AddItem( "Light", NULL, ( void* )( intptr_t )seSkin::epmLight );
+	helper.ComboBox(groupBox, "Mode:", "Preview mode.", pCBPreviewMode, new cComboPreviewMode(*this));
+	pCBPreviewMode->AddItem("Model", NULL, (void*)(intptr_t)seSkin::epmModel);
+	pCBPreviewMode->AddItem("Light", NULL, (void*)(intptr_t)seSkin::epmLight);
 	
-	helper.EditPath( groupBox, "Model:", "Path to the model resource to use.",
-		igdeEnvironment::efpltModel, pEditModelPath, new cEditModelPath( *this ) );
-	helper.EditPath( groupBox, "Rig:", "Path to the rig resource to use.",
-		igdeEnvironment::efpltRig, pEditRigPath, new cEditRigPath( *this ) );
-	helper.EditPath( groupBox, "Animation:", "Path to the animation resource to use.",
-		igdeEnvironment::efpltAnimation, pEditAnimPath, new cEditAnimationPath( *this ) );
+	helper.EditPath(groupBox, "Model:", "Path to the model resource to use.",
+		igdeEnvironment::efpltModel, pEditModelPath, new cEditModelPath(*this));
+	helper.EditPath(groupBox, "Rig:", "Path to the rig resource to use.",
+		igdeEnvironment::efpltRig, pEditRigPath, new cEditRigPath(*this));
+	helper.EditPath(groupBox, "Animation:", "Path to the animation resource to use.",
+		igdeEnvironment::efpltAnimation, pEditAnimPath, new cEditAnimationPath(*this));
 	
-	helper.ComboBoxFilter( groupBox, "Move:", true, "Name of the animation move to play.",
-		pCBAnimMoves, new cComboMove( *this, pPreventUpdate ) );
+	helper.ComboBoxFilter(groupBox, "Move:", true, "Name of the animation move to play.",
+		pCBAnimMoves, new cComboMove(*this, pPreventUpdate));
 	pCBAnimMoves->SetDefaultSorter();
 	
-	helper.CheckBox( groupBox, pChkPlayback, new cActionPlayback( *this ), true );
+	helper.CheckBox(groupBox, pChkPlayback, new cActionPlayback(*this), true);
 	
-	helper.FormLine( groupBox, "", "", formLine );
-	helper.Button( formLine, pBtnRewindTextures, new cActionRewind( *this ), true );
+	helper.FormLine(groupBox, "", "", formLine);
+	helper.Button(formLine, pBtnRewindTextures, new cActionRewind(*this), true);
 	
 	// property panels
-	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ), "Sky:" );
-	helper.WPWObject( content, pWPEnvObject, new cActionEnvObjChanged( *this ), "Environment Object:" );
-	helper.WPCamera( content, pWPCamera, new cActionCameraChanged( *this ), "Camera:" );
+	helper.WPSky(content, pWPSky, new cActionSkyChanged(*this), "Sky:");
+	helper.WPWObject(content, pWPEnvObject, new cActionEnvObjChanged(*this), "Environment Object:");
+	helper.WPCamera(content, pWPCamera, new cActionCameraChanged(*this), "Camera:");
 }
 
 seWPView::~seWPView(){
-	SetSkin( NULL );
+	SetSkin(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -335,17 +335,17 @@ seWPView::~seWPView(){
 // Management
 ///////////////
 
-void seWPView::SetSkin( seSkin *skin ){
-	if( skin == pSkin ){
+void seWPView::SetSkin(seSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
 	pWPEnvObject->SetObject(nullptr);
-	pWPSky->SetSky( NULL );
-	pWPCamera->SetCamera( NULL );
+	pWPSky->SetSky(NULL);
+	pWPCamera->SetCamera(NULL);
 	
-	if( pSkin ){
-		pSkin->RemoveListener( pListener );
+	if(pSkin){
+		pSkin->RemoveListener(pListener);
 		pSkin->FreeReference();
 		pSkin = NULL;
 	}
@@ -354,20 +354,20 @@ void seWPView::SetSkin( seSkin *skin ){
 	
 	decString defaultPath;
 	
-	if( skin ){
-		skin->AddListener( pListener );
+	if(skin){
+		skin->AddListener(pListener);
 		skin->AddReference();
 		
-		pWPSky->SetSky( skin->GetSky() );
+		pWPSky->SetSky(skin->GetSky());
 		pWPEnvObject->SetObject(skin->GetEnvObject());
-		pWPCamera->SetCamera( skin->GetCamera() );
+		pWPCamera->SetCamera(skin->GetCamera());
 		
 		defaultPath = skin->GetDirectoryPath();
 	}
 	
-	pEditModelPath->SetDefaultPath( defaultPath );
-	pEditRigPath->SetDefaultPath( defaultPath );
-	pEditAnimPath->SetDefaultPath( defaultPath );
+	pEditModelPath->SetDefaultPath(defaultPath);
+	pEditRigPath->SetDefaultPath(defaultPath);
+	pEditAnimPath->SetDefaultPath(defaultPath);
 	
 	UpdateMoveList();
 	UpdateView();
@@ -379,15 +379,15 @@ void seWPView::SetSkin( seSkin *skin ){
 
 
 void seWPView::UpdateView(){
-	if( pSkin ){
-		pCBPreviewMode->SetSelectionWithData( ( void* )( intptr_t )pSkin->GetPreviewMode() );
-		pEditModelPath->SetPath( pSkin->GetModelPath() );
-		pEditRigPath->SetPath( pSkin->GetRigPath() );
-		pEditAnimPath->SetPath( pSkin->GetAnimationPath() );
-		pCBAnimMoves->SetText( pSkin->GetMoveName() );
+	if(pSkin){
+		pCBPreviewMode->SetSelectionWithData((void*)(intptr_t)pSkin->GetPreviewMode());
+		pEditModelPath->SetPath(pSkin->GetModelPath());
+		pEditRigPath->SetPath(pSkin->GetRigPath());
+		pEditAnimPath->SetPath(pSkin->GetAnimationPath());
+		pCBAnimMoves->SetText(pSkin->GetMoveName());
 		
 	}else{
-		pCBPreviewMode->SetSelectionWithData( ( void* )( intptr_t )seSkin::epmModel );
+		pCBPreviewMode->SetSelectionWithData((void*)(intptr_t)seSkin::epmModel);
 		pEditModelPath->ClearPath();
 		pEditRigPath->ClearPath();
 		pEditAnimPath->ClearPath();
@@ -395,11 +395,11 @@ void seWPView::UpdateView(){
 	}
 	
 	const bool enabled = pSkin;
-	pCBPreviewMode->SetEnabled( enabled );
-	pEditModelPath->SetEnabled( enabled );
-	pEditRigPath->SetEnabled( enabled );
-	pEditAnimPath->SetEnabled( enabled );
-	pCBAnimMoves->SetEnabled( enabled );
+	pCBPreviewMode->SetEnabled(enabled);
+	pEditModelPath->SetEnabled(enabled);
+	pEditRigPath->SetEnabled(enabled);
+	pEditAnimPath->SetEnabled(enabled);
+	pCBAnimMoves->SetEnabled(enabled);
 	
 	pBtnRewindTextures->GetAction()->Update();
 	pChkPlayback->GetAction()->Update();
@@ -407,20 +407,20 @@ void seWPView::UpdateView(){
 
 void seWPView::UpdateMoveList(){
 	const deAnimator * const engAnimator = pSkin ? pSkin->GetEngineAnimator() : NULL;
-	const decString selection( pCBAnimMoves->GetText() );
+	const decString selection(pCBAnimMoves->GetText());
 	
 	pPreventUpdate = true;
 	
 	try{
 		pCBAnimMoves->RemoveAllItems();
 		
-		if( engAnimator ){
+		if(engAnimator){
 			const deAnimation * const animation = engAnimator->GetAnimation();
-			if( animation ){
+			if(animation){
 				const int count = animation->GetMoveCount();
 				int i;
-				for( i=0; i<count; i++ ){
-					pCBAnimMoves->AddItem( animation->GetMove( i )->GetName() );
+				for(i=0; i<count; i++){
+					pCBAnimMoves->AddItem(animation->GetMove(i)->GetName());
 				}
 			}
 			
@@ -428,10 +428,10 @@ void seWPView::UpdateMoveList(){
 			pCBAnimMoves->StoreFilterItems();
 		}
 		
-		pCBAnimMoves->SetText( selection );
+		pCBAnimMoves->SetText(selection);
 		pPreventUpdate = false;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}

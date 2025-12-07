@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin image property. */
-	deSkinPropertyImage( const char *type );
+	deSkinPropertyImage(const char *type);
 	
 	/** \brief Clean up skin property. */
 	virtual ~deSkinPropertyImage();
@@ -58,13 +58,13 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set image path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Image. */
 	inline deImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	/*@}*/
 	
 	
@@ -72,7 +72,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	virtual void Visit(deSkinPropertyVisitor &visitor);
 	/*@}*/
 };
 

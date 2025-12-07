@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, const char *newName ){
-	if( ! topic || ! playerChoice || ! newName ){
-		DETHROW( deeInvalidParam );
+ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, const char *newName){
+	if(!topic || !playerChoice || !newName){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -50,7 +50,7 @@ ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName( ceConversationTopic *topic, ceCA
 	pOldName = playerChoice->GetVariableName();
 	pNewName = newName;
 	
-	SetShortInfo( "Player Choice Set Variable Name" );
+	SetShortInfo("Player Choice Set Variable Name");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -60,10 +60,10 @@ ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName( ceConversationTopic *topic, ceCA
 }
 
 ceUCAPChoiceSetVarName::~ceUCAPChoiceSetVarName(){
-	if( pPlayerChoice ){
+	if(pPlayerChoice){
 		pPlayerChoice->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -74,11 +74,11 @@ ceUCAPChoiceSetVarName::~ceUCAPChoiceSetVarName(){
 ///////////////
 
 void ceUCAPChoiceSetVarName::Undo(){
-	pPlayerChoice->SetVariableName( pOldName.GetString() );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pPlayerChoice->SetVariableName(pOldName.GetString());
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }
 
 void ceUCAPChoiceSetVarName::Redo(){
-	pPlayerChoice->SetVariableName( pNewName.GetString() );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pPlayerChoice->SetVariableName(pNewName.GetString());
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }

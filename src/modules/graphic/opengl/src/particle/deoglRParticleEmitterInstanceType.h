@@ -85,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create type. */
-	deoglRParticleEmitterInstanceType( deoglRParticleEmitterInstance &instance, int index );
+	deoglRParticleEmitterInstanceType(deoglRParticleEmitterInstance &instance, int index);
 	
 	/** Clean up type. */
 	virtual ~deoglRParticleEmitterInstanceType();
@@ -107,25 +107,25 @@ public:
 	inline int GetFirstParticle() const{ return pFirstParticle; }
 	
 	/** Set first particle. */
-	void SetFirstParticle( int first );
+	void SetFirstParticle(int first);
 	
 	/** Particle count. */
 	inline int GetParticleCount() const{ return pParticleCount; }
 	
 	/** Set particle count. */
-	void SetParticleCount( int count );
+	void SetParticleCount(int count);
 	
 	/** First index. */
 	inline int GetFirstIndex() const{ return pFirstIndex; }
 	
 	/** Set first index. */
-	void SetFirstIndex( int index );
+	void SetFirstIndex(int index);
 	
 	/** Index count. */
 	inline int GetIndexCount() const{ return pIndexCount; }
 	
 	/** Set index count. */
-	void SetIndexCount( int count );
+	void SetIndexCount(int count);
 	
 	
 	
@@ -133,13 +133,13 @@ public:
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
-	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Skin to use. */
 	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
 	
 	/** Set skin to use. */
-	void SetUseSkin( deoglRSkin *skin );
+	void SetUseSkin(deoglRSkin *skin);
 	
 	/** Skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
@@ -159,7 +159,7 @@ public:
 	const deoglSPBlockUBO::Ref &GetParamBlock();
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForPipelineType ( deoglSkinTexturePipelines::eTypes type );
+	deoglTexUnitsConfig *GetTUCForPipelineType (deoglSkinTexturePipelines::eTypes type);
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -189,7 +189,7 @@ public:
 	 * Texture units configuration for a shader type.
 	 * \details Bare call not to be used directly.
 	 */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const;
 	
 	
 	
@@ -203,7 +203,7 @@ public:
 	void MarkTUCsDirty();
 	
 	/** Update instance parameter shader parameter block. */
-	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
+	void UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader);
 	
 	/** Light instance parameter block. */
 	const deoglSPBlockUBO::Ref &GetLightInstanceParameterBlock();

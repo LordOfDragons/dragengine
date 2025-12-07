@@ -68,7 +68,7 @@ public:
 	/**
 	 * \brief EditSliderText value changed and has been accepted by user.
 	 */
-	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText );
+	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText);
 	
 	/**
 	 * \brief EditSliderText value is changing and has net been accepted by user.
@@ -76,7 +76,7 @@ public:
 	 * This is used for dragging the slider to allow continuous tracking. Once the user
 	 * finishes an OnSliderTextValueChanged() will be send with the final value.
 	 */
-	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText );
+	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText);
 	/*@}*/
 };
 

@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddNavBlocker::gdeUOCAddNavBlocker( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCAddNavBlocker::gdeUOCAddNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
+pObjectClass(NULL),
+pNavBlocker(NULL)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add navblocker" );
+	SetShortInfo("Add navblocker");
 	
 	pNavBlocker = navblocker;
 	navblocker->AddReference();
@@ -59,10 +59,10 @@ pNavBlocker( NULL )
 }
 
 gdeUOCAddNavBlocker::~gdeUOCAddNavBlocker(){
-	if( pNavBlocker ){
+	if(pNavBlocker){
 		pNavBlocker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddNavBlocker::~gdeUOCAddNavBlocker(){
 
 void gdeUOCAddNavBlocker::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCNavigationBlocker() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCNavigationBlocker()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCNavigationBlocker( NULL );
+		gameDefinition->SetActiveOCNavigationBlocker(NULL);
 	}
 	
-	pObjectClass->GetNavigationBlockers().Remove( pNavBlocker );
+	pObjectClass->GetNavigationBlockers().Remove(pNavBlocker);
 	pObjectClass->NotifyNavigationBlockersChanged();
 }
 
 void gdeUOCAddNavBlocker::Redo(){
-	pObjectClass->GetNavigationBlockers().Add( pNavBlocker );
+	pObjectClass->GetNavigationBlockers().Add(pNavBlocker);
 	pObjectClass->NotifyNavigationBlockersChanged();
 }

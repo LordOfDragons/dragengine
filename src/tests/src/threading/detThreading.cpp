@@ -20,10 +20,10 @@ private:
 	detThreading *pThreading;
 	
 public:
-	cThreadSimple( detThreading *threading ){
+	cThreadSimple(detThreading *threading){
 		pThreading = threading;
 	}
-	virtual ~cThreadSimple(){ }
+	virtual ~cThreadSimple(){}
 	virtual void Run(){
 		pThreading->mutex1->Lock();
 		pThreading->testValue = 1;
@@ -66,7 +66,7 @@ void detThreading::Prepare(){
 	mutex1 = NULL;
 	semaphore1 = NULL;
 	
-	for( i=0; i<DETT_THREAD_COUNT; i++ ) threads[ i ] = NULL;
+	for(i=0; i<DETT_THREAD_COUNT; i++) threads[i] = NULL;
 }
 
 void detThreading::Run(){
@@ -76,18 +76,18 @@ void detThreading::Run(){
 void detThreading::CleanUp(){
 	int i;
 	
-	for( i=0; i<DETT_THREAD_COUNT; i++ ){
-		if( threads[ i ] ){
-			threads[ i ]->Stop();
-			delete threads[ i ];
+	for(i=0; i<DETT_THREAD_COUNT; i++){
+		if(threads[i]){
+			threads[i]->Stop();
+			delete threads[i];
 		}
 	}
 	
-	if( semaphore1 ) delete semaphore1;
-	if( mutex1 ) delete mutex1;
+	if(semaphore1) delete semaphore1;
+	if(mutex1) delete mutex1;
 }
 
-const char *detThreading::GetTestName(){ return "Threading"; }
+const char *detThreading::GetTestName(){return "Threading";}
 
 
 
@@ -95,80 +95,80 @@ const char *detThreading::GetTestName(){ return "Threading"; }
 //////////
 
 void detThreading::TestThread(){
-	SetSubTestNum( 0 );
+	SetSubTestNum(0);
 	
 	mutex1 = new deMutex;
-	if( ! mutex1 ) DETHROW( deeOutOfMemory );
+	if(!mutex1) DETHROW(deeOutOfMemory);
 	
 	semaphore1 = new deSemaphore;
-	if( ! semaphore1 ) DETHROW( deeOutOfMemory );
+	if(!semaphore1) DETHROW(deeOutOfMemory);
 	
 	testValue = 0;
 	
-	threads[ 0 ] = new cThreadSimple( this );
-	if( ! threads[ 0 ] ) DETHROW( deeOutOfMemory );
-	ASSERT_FALSE( threads[ 0 ]->IsRunning() );
+	threads[0] = new cThreadSimple(this);
+	if(!threads[0]) DETHROW(deeOutOfMemory);
+	ASSERT_FALSE(threads[0]->IsRunning());
 	
-	Sleep( 0.2 );
-	ASSERT_FALSE( threads[ 0 ]->IsRunning() );
+	Sleep(0.2);
+	ASSERT_FALSE(threads[0]->IsRunning());
 	
 	mutex1->Lock();
 	try{
-		ASSERT_TRUE( testValue == 0 );
+		ASSERT_TRUE(testValue == 0);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		mutex1->Unlock();
 		throw;
 	}
 	mutex1->Unlock();
-	ASSERT_FALSE( threads[ 0 ]->IsRunning() );
+	ASSERT_FALSE(threads[0]->IsRunning());
 	
 	mutex1->Lock();
 	try{
-		threads[ 0 ]->Start();
-		ASSERT_TRUE( threads[ 0 ]->IsRunning() );
+		threads[0]->Start();
+		ASSERT_TRUE(threads[0]->IsRunning());
 		
-		Sleep( 0.2 );
+		Sleep(0.2);
 		
-		ASSERT_TRUE( testValue == 0 );
+		ASSERT_TRUE(testValue == 0);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		mutex1->Unlock();
 		throw;
 	}
 	mutex1->Unlock();
 	
-	Sleep( 0.2 );
-	ASSERT_TRUE( threads[ 0 ]->IsRunning() );
+	Sleep(0.2);
+	ASSERT_TRUE(threads[0]->IsRunning());
 	
 	mutex1->Lock();
 	try{
-		ASSERT_TRUE( testValue == 1 );
+		ASSERT_TRUE(testValue == 1);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		mutex1->Unlock();
 		throw;
 	}
 	mutex1->Unlock();
-	ASSERT_TRUE( threads[ 0 ]->IsRunning() );
+	ASSERT_TRUE(threads[0]->IsRunning());
 	
 	semaphore1->SignalAll();
 	
-	Sleep( 0.2 );
-	ASSERT_FALSE( threads[ 0 ]->IsRunning() );
+	Sleep(0.2);
+	ASSERT_FALSE(threads[0]->IsRunning());
 	
 	mutex1->Lock();
 	try{
-		ASSERT_TRUE( testValue == 2 );
+		ASSERT_TRUE(testValue == 2);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		mutex1->Unlock();
 		throw;
 	}
 	mutex1->Unlock();
 	
-	delete threads[ 0 ];
-	threads[ 0 ] = NULL;
+	delete threads[0];
+	threads[0] = NULL;
 	
 	delete semaphore1;
 	semaphore1 = NULL;
@@ -177,10 +177,10 @@ void detThreading::TestThread(){
 	mutex1 = NULL;
 }
 
-void detThreading::Sleep( float seconds ){
+void detThreading::Sleep(float seconds){
 	decTimer timer;
 	
-	while( seconds > 0.0f ){
+	while(seconds > 0.0f){
 		seconds -= timer.GetElapsedTime();
 	}
 }

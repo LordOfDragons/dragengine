@@ -10,17 +10,17 @@ namespace DragonScript{
 // class HighlightingInstance
 ///////////////////////////////
 
-HighlightingInstance::HighlightingInstance( const Highlighting *highlighting ) :
-CodeHighlightingInstance( highlighting ){
+HighlightingInstance::HighlightingInstance(const Highlighting *highlighting) :
+CodeHighlightingInstance(highlighting){
 	qDebug() << "HighlightingInstance: constructor";
 }
 
-void HighlightingInstance::highlightUse( DUContext *context, int index, const QColor &color ){
-	CodeHighlightingInstance::highlightUse( context, index, color );
+void HighlightingInstance::highlightUse(DUContext *context, int index, const QColor &color){
+	CodeHighlightingInstance::highlightUse(context, index, color);
 }
 
-bool HighlightingInstance::useRainbowColor( Declaration *dec ) const{
-	return CodeHighlightingInstance::useRainbowColor( dec );
+bool HighlightingInstance::useRainbowColor(Declaration *dec) const{
+	return CodeHighlightingInstance::useRainbowColor(dec);
 }
 
 
@@ -28,12 +28,12 @@ bool HighlightingInstance::useRainbowColor( Declaration *dec ) const{
 // class Highlighting
 ///////////////////////
 
-Highlighting::Highlighting( QObject *parent ) :
-CodeHighlighting( parent ){
+Highlighting::Highlighting(QObject *parent) :
+CodeHighlighting(parent){
 }
 
 HighlightingInstance *Highlighting::createInstance() const{
-	return new HighlightingInstance( this );
+	return new HighlightingInstance(this);
 }
 
 }

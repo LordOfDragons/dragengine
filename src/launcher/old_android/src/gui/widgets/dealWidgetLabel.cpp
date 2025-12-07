@@ -44,34 +44,34 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetLabel::dealWidgetLabel( dealDisplay &display, const char *text ) :
-dealWidget( display ),
-pFont( NULL ),
-pFontSize( 0 ),
-pText( text ),
-pColor( 0.0f, 0.0f, 0.0f ),
-pAlignment( eaCenter | eaMiddle ),
-pMaxLineWidth( GetDisplay().GetWidth() / 2 ),
-pDirtyTextSize( true )
+dealWidgetLabel::dealWidgetLabel(dealDisplay &display, const char *text) :
+dealWidget(display),
+pFont(NULL),
+pFontSize(0),
+pText(text),
+pColor(0.0f, 0.0f, 0.0f),
+pAlignment(eaCenter | eaMiddle),
+pMaxLineWidth(GetDisplay().GetWidth() / 2),
+pDirtyTextSize(true)
 {
 }
 
-dealWidgetLabel::dealWidgetLabel( dealDisplay &display, dealFont *font, int fontSize, const char *text ) :
-dealWidget( display ),
-pFont( NULL ),
-pFontSize( 0 ),
-pText( text ),
-pColor( 0.0f, 0.0f, 0.0f ),
-pAlignment( eaCenter | eaMiddle ),
-pMaxLineWidth( GetDisplay().GetWidth() / 2 ),
-pDirtyTextSize( true )
+dealWidgetLabel::dealWidgetLabel(dealDisplay &display, dealFont *font, int fontSize, const char *text) :
+dealWidget(display),
+pFont(NULL),
+pFontSize(0),
+pText(text),
+pColor(0.0f, 0.0f, 0.0f),
+pAlignment(eaCenter | eaMiddle),
+pMaxLineWidth(GetDisplay().GetWidth() / 2),
+pDirtyTextSize(true)
 {
-	SetFont( font );
-	SetFontSize( fontSize );
+	SetFont(font);
+	SetFontSize(fontSize);
 }
 
 dealWidgetLabel::~dealWidgetLabel(){
-	if( pFont ){
+	if(pFont){
 		pFont->FreeReference();
 	}
 }
@@ -81,18 +81,18 @@ dealWidgetLabel::~dealWidgetLabel(){
 // Management
 ///////////////
 
-void dealWidgetLabel::SetFont( dealFont *font ){
-	if( font == pFont ){
+void dealWidgetLabel::SetFont(dealFont *font){
+	if(font == pFont){
 		return;
 	}
 	
-	if( pFont ){
+	if(pFont){
 		pFont->FreeReference();
 	}
 	
 	pFont = font;
 	
-	if( font ){
+	if(font){
 		font->AddReference();
 	}
 	
@@ -100,19 +100,19 @@ void dealWidgetLabel::SetFont( dealFont *font ){
 	DirtyParentLayout();
 }
 
-void dealWidgetLabel::SetFontSize( int fontSize ){
-	if( fontSize == pFontSize ){
+void dealWidgetLabel::SetFontSize(int fontSize){
+	if(fontSize == pFontSize){
 		return;
 	}
 	
-	pFontSize = decMath::max( fontSize, 0 );
+	pFontSize = decMath::max(fontSize, 0);
 	
 	pDirtyTextSize = true;
 	DirtyParentLayout();
 }
 
-void dealWidgetLabel::SetText( const char *text ){
-	if( pText == text ){
+void dealWidgetLabel::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -122,8 +122,8 @@ void dealWidgetLabel::SetText( const char *text ){
 	DirtyParentLayout();
 }
 
-void dealWidgetLabel::SetColor( const decColor &color ){
-	if( pColor.IsEqualTo( color ) ){
+void dealWidgetLabel::SetColor(const decColor &color){
+	if(pColor.IsEqualTo(color)){
 		return;
 	}
 	
@@ -133,8 +133,8 @@ void dealWidgetLabel::SetColor( const decColor &color ){
 	DirtyParentLayout();
 }
 
-void dealWidgetLabel::SetAlignment( eAlignments alignment ){
-	if( pAlignment == alignment ){
+void dealWidgetLabel::SetAlignment(eAlignments alignment){
+	if(pAlignment == alignment){
 		return;
 	}
 	
@@ -144,9 +144,9 @@ void dealWidgetLabel::SetAlignment( eAlignments alignment ){
 	DirtyParentLayout();
 }
 
-void dealWidgetLabel::SetMaxLineWidth( int lineWidth ){
-	if( lineWidth < 0 ){
-		DETHROW( deeInvalidParam );
+void dealWidgetLabel::SetMaxLineWidth(int lineWidth){
+	if(lineWidth < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMaxLineWidth = lineWidth;
@@ -158,18 +158,18 @@ void dealWidgetLabel::SetMaxLineWidth( int lineWidth ){
 
 
 decPoint dealWidgetLabel::GetMinimumSize(){
-	if( GetHasExplicitMinimumSize() ){
+	if(GetHasExplicitMinimumSize()){
 		return GetExplicitMinimumSize();
 	}
 	
 	UpdateTextSize();
 	
-	return pTextSize + decPoint( GetPaddingLeft() + GetPaddingRight(), GetPaddingTop() + GetPaddingBottom() );
+	return pTextSize + decPoint(GetPaddingLeft() + GetPaddingRight(), GetPaddingTop() + GetPaddingBottom());
 }
 
 
 
-void dealWidgetLabel::RenderContent( const sRenderContext &context ){
+void dealWidgetLabel::RenderContent(const sRenderContext &context){
 	dealShader &shader = *GetDisplay().GetTexturedShapeShader();
 	const decPoint &size = GetSize();
 	
@@ -177,7 +177,7 @@ void dealWidgetLabel::RenderContent( const sRenderContext &context ){
 	
 	decPoint position;
 	
-	switch( pAlignment & 0xf0 ){
+	switch(pAlignment & 0xf0){
 	case eaTop:
 		position.y = GetPaddingTop();
 		break;
@@ -187,36 +187,36 @@ void dealWidgetLabel::RenderContent( const sRenderContext &context ){
 		break;
 		
 	default: // eaMiddle
-		position.y = GetPaddingTop() + ( size.y - GetPaddingTop() - GetPaddingBottom() - pTextSize.y ) / 2;
+		position.y = GetPaddingTop() + (size.y - GetPaddingTop() - GetPaddingBottom() - pTextSize.y) / 2;
 	}
 	
-	if( GetEnabled() ){
-		ShaderSetColorMatrix( shader, pColor );
+	if(GetEnabled()){
+		ShaderSetColorMatrix(shader, pColor);
 		
 	}else{
-		ShaderSetColorMatrixDisabled( shader, pColor );
+		ShaderSetColorMatrixDisabled(shader, pColor);
 	}
 	
-	ShaderSetGamma( shader, 1.0f );
-	ShaderSetClipRect( context, shader );
-	ShaderSetTCClamp( shader );
+	ShaderSetGamma(shader, 1.0f);
+	ShaderSetClipRect(context, shader);
+	ShaderSetTCClamp(shader);
 	
 	dealFont &font = pFont ? *pFont : *GetDisplay().GetDefaultFont();
 	const int fontSize = pFontSize > 0 ? pFontSize : GetDisplay().GetDefaultFontSize();
-	const float scaleFactor = ( float )fontSize / ( float )font.GetLineHeight();
-	const float pixelSizeU = 1.0f / ( float )font.GetImage()->GetWidth();
-	const float pixelSizeV = 1.0f / ( float )font.GetImage()->GetHeight();
-	const float lineSizeV = pixelSizeV * ( float )font.GetLineHeight();
+	const float scaleFactor = (float)fontSize / (float)font.GetLineHeight();
+	const float pixelSizeU = 1.0f / (float)font.GetImage()->GetWidth();
+	const float pixelSizeV = 1.0f / (float)font.GetImage()->GetHeight();
+	const float lineSizeV = pixelSizeV * (float)font.GetLineHeight();
 	const int availWidth = size.x - GetPaddingLeft() - GetPaddingRight();
-	decPoint glyphSize( 0, fontSize );
+	decPoint glyphSize(0, fontSize);
 	decTexMatrix2 tcmatrix;
 	decUTF8Decoder decoder;
 	
-	BindTexture( 0, *font.GetImage(), true, false );
+	BindTexture(0, *font.GetImage(), true, false);
 	
-	decoder.SetString( pText );
+	decoder.SetString(pText);
 	
-	while( ! decoder.HasReachedEnd() ){
+	while(!decoder.HasReachedEnd()){
 		const int lineStart = decoder.GetPosition();
 		int lineEnd = lineStart;
 		
@@ -225,16 +225,16 @@ void dealWidgetLabel::RenderContent( const sRenderContext &context ){
 		int wordStart = -1;
 		int wordWidth = 0;
 		
-		while( true ){
-			if( wordStart == -1 ){
+		while(true){
+			if(wordStart == -1){
 				wordStart = decoder.GetPosition();
 			}
 			
 			const int character = decoder.DecodeNextCharacter();
 			
-			if( character == ' ' || character == '\t' || character == '-'
-			|| character == '/' || character == '\\' || character == '\n' || character == -1 ){
-				if( lineWidth > 0 && lineWidth + wordWidth > availWidth ){
+			if(character == ' ' || character == '\t' || character == '-'
+			|| character == '/' || character == '\\' || character == '\n' || character == -1){
+				if(lineWidth > 0 && lineWidth + wordWidth > availWidth){
 					lineEnd = wordStart;
 					break;
 				}
@@ -244,16 +244,16 @@ void dealWidgetLabel::RenderContent( const sRenderContext &context ){
 				wordWidth = 0;
 			}
 			
-			if( character == '\n' || character == -1 ){
+			if(character == '\n' || character == -1){
 				lineEnd = decoder.GetPosition();
 				break;
 			}
 			
-			wordWidth += ( int )( ( float )font.GetGlyphFor( character ).advance * scaleFactor );
+			wordWidth += (int)((float)font.GetGlyphFor(character).advance * scaleFactor);
 		}
 		
 		// align line
-		switch( pAlignment & 0x0f ){
+		switch(pAlignment & 0x0f){
 		case eaLeft:
 			position.x = GetPaddingLeft();
 			break;
@@ -263,58 +263,58 @@ void dealWidgetLabel::RenderContent( const sRenderContext &context ){
 			break;
 			
 		default: // eaCenter
-			position.x = GetPaddingLeft() + ( size.x - GetPaddingLeft() - GetPaddingRight() - lineWidth ) / 2;
+			position.x = GetPaddingLeft() + (size.x - GetPaddingLeft() - GetPaddingRight() - lineWidth) / 2;
 		}
 		
 		// render line
-		decoder.SetPosition( lineStart );
+		decoder.SetPosition(lineStart);
 		
-		while( decoder.GetPosition() < lineEnd ){
-			const dealFont::sGlyph &glyph = font.GetGlyphFor( decoder.DecodeNextCharacter() );
+		while(decoder.GetPosition() < lineEnd){
+			const dealFont::sGlyph &glyph = font.GetGlyphFor(decoder.DecodeNextCharacter());
 			
-			glyphSize.x = ( int )( ( float )glyph.width * scaleFactor );
-			ShaderSetTransform( context, shader, position, glyphSize );
+			glyphSize.x = (int)((float)glyph.width * scaleFactor);
+			ShaderSetTransform(context, shader, position, glyphSize);
 			
-			tcmatrix.SetST( pixelSizeU * ( float )glyph.width, lineSizeV,
-				pixelSizeU * ( float )glyph.u, pixelSizeV * ( float )glyph.v );
-			ShaderSetTCTransform( shader, tcmatrix );
+			tcmatrix.SetST(pixelSizeU * (float)glyph.width, lineSizeV,
+				pixelSizeU * (float)glyph.u, pixelSizeV * (float)glyph.v);
+			ShaderSetTCTransform(shader, tcmatrix);
 			
 			DrawRectangle();
 			
-			position.x += ( int )( ( float )glyph.advance * scaleFactor );
+			position.x += (int)((float)glyph.advance * scaleFactor);
 		}
 		
 		position.y += fontSize;
 	}
 	
-	OGL_CHECK( GetDisplay().GetLauncher(), glBindTexture( GL_TEXTURE_2D, 0 ) );
+	OGL_CHECK(GetDisplay().GetLauncher(), glBindTexture(GL_TEXTURE_2D, 0));
 }
 
 
 
 void dealWidgetLabel::UpdateTextSize(){
-	if( ! pDirtyTextSize ){
+	if(!pDirtyTextSize){
 		return;
 	}
 	
 	const dealFont &font = pFont ? *pFont : *GetDisplay().GetDefaultFont();
 	const int fontSize = pFontSize > 0 ? pFontSize : GetDisplay().GetDefaultFontSize();
-	const float scaleFactor = ( float )fontSize / ( float )font.GetLineHeight();
+	const float scaleFactor = (float)fontSize / (float)font.GetLineHeight();
 	decUTF8Decoder decoder;
 	int lineWidth = 0;
 	int wordWidth = 0;
 	
-	pTextSize.Set( 0, 0 );
+	pTextSize.Set(0, 0);
 	
-	decoder.SetString( pText );
+	decoder.SetString(pText);
 	
-	while( true ){
+	while(true){
 		const int character = decoder.DecodeNextCharacter();
 		
-		if( character == ' ' || character == '\t' || character == '-'
-		|| character == '/' || character == '\\' || character == '\n' || character == -1 ){
-			if( lineWidth > 0 && lineWidth + wordWidth > pMaxLineWidth ){
-				pTextSize.x = decMath::max( pTextSize.x, lineWidth );
+		if(character == ' ' || character == '\t' || character == '-'
+		|| character == '/' || character == '\\' || character == '\n' || character == -1){
+			if(lineWidth > 0 && lineWidth + wordWidth > pMaxLineWidth){
+				pTextSize.x = decMath::max(pTextSize.x, lineWidth);
 				pTextSize.y += fontSize;
 				lineWidth = 0;
 				
@@ -325,22 +325,22 @@ void dealWidgetLabel::UpdateTextSize(){
 			wordWidth = 0;
 		}
 		
-		if( character == '\n' || character == -1 ){
-			pTextSize.x = decMath::max( pTextSize.x, lineWidth + wordWidth );
+		if(character == '\n' || character == -1){
+			pTextSize.x = decMath::max(pTextSize.x, lineWidth + wordWidth);
 			pTextSize.y += fontSize;
 			lineWidth = 0;
 			wordWidth = 0;
 		}
 		
-		if( character == '\n' ){
+		if(character == '\n'){
 			continue;
 			
-		}else if( character == -1 ){
+		}else if(character == -1){
 			break;
 		}
 		
-		const dealFont::sGlyph &glyph = font.GetGlyphFor( character );
-		const int charWidth = ( int )( ( float )glyph.advance * scaleFactor );
+		const dealFont::sGlyph &glyph = font.GetGlyphFor(character);
+		const int charWidth = (int)((float)glyph.advance * scaleFactor);
 		wordWidth += charWidth;
 	}
 	

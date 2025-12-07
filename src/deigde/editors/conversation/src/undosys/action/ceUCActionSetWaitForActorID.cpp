@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionSetWaitForActorID::ceUCActionSetWaitForActorID( ceConversationTopic *topic,
-ceConversationAction *action, const char *newID ) :
-pNewID( newID )
+ceUCActionSetWaitForActorID::ceUCActionSetWaitForActorID(ceConversationTopic *topic,
+ceConversationAction *action, const char *newID) :
+pNewID(newID)
 {
-	if( ! topic ){
-		DETHROW( deeInvalidParam );
+	if(!topic){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pAction = NULL;
 	pOldID = action->GetWaitForActorID();
 	
-	SetShortInfo( "Action Set Wait For Actor ID " );
+	SetShortInfo("Action Set Wait For Actor ID ");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -63,10 +63,10 @@ pNewID( newID )
 }
 
 ceUCActionSetWaitForActorID::~ceUCActionSetWaitForActorID(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -77,11 +77,11 @@ ceUCActionSetWaitForActorID::~ceUCActionSetWaitForActorID(){
 ///////////////
 
 void ceUCActionSetWaitForActorID::Undo(){
-	pAction->SetWaitForActorID( pOldID );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetWaitForActorID(pOldID);
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCActionSetWaitForActorID::Redo(){
-	pAction->SetWaitForActorID( pNewID );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetWaitForActorID(pNewID);
+	pTopic->NotifyActionChanged(pAction);
 }

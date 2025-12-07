@@ -40,33 +40,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceDialogEditStringWithList::ceDialogEditStringWithList( igdeEnvironment &environment,
-const char *windowTitle, const char *textLabel, const char *value, const decStringList &choices ) :
-igdeDialog( environment, windowTitle )
+ceDialogEditStringWithList::ceDialogEditStringWithList(igdeEnvironment &environment,
+const char *windowTitle, const char *textLabel, const char *value, const decStringList &choices) :
+igdeDialog(environment, windowTitle)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(environment));
-	helper.ComboBoxFilter( content, textLabel, true, "", pCBString, NULL );
+	helper.ComboBoxFilter(content, textLabel, true, "", pCBString, NULL);
 	pCBString->SetDefaultSorter();
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar( buttonBar, "Accept", "Cancel" );
+	CreateButtonBar(buttonBar, "Accept", "Cancel");
 	
-	AddContent( content, buttonBar );
+	AddContent(content, buttonBar);
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 150)));
 	
 	// init list
 	const int count = choices.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pCBString->AddItem( choices.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pCBString->AddItem(choices.GetAt(i));
 	}
 	pCBString->SortItems();
 	pCBString->StoreFilterItems();
 	
-	pCBString->SetText( value );
+	pCBString->SetText(value);
 }
 
 ceDialogEditStringWithList::~ceDialogEditStringWithList(){

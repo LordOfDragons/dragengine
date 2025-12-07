@@ -39,20 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDSkin::igdeGDSkin( const char *path, const char *name ) :
-pPath( path ),
-pName(name )
+igdeGDSkin::igdeGDSkin(const char *path, const char *name) :
+pPath(path),
+pName(name)
 {
-	if( pPath.IsEmpty() || pName.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pPath.IsEmpty() || pName.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeGDSkin::igdeGDSkin( const igdeGDSkin &skin ) :
-pPath( skin.pPath ),
-pName( skin.pName ),
-pDescription( skin.pDescription ),
-pCategory( skin.pCategory ){
+igdeGDSkin::igdeGDSkin(const igdeGDSkin &skin) :
+pPath(skin.pPath),
+pName(skin.pName),
+pDescription(skin.pDescription),
+pCategory(skin.pCategory){
 }
 
 igdeGDSkin::~igdeGDSkin(){
@@ -63,14 +63,14 @@ igdeGDSkin::~igdeGDSkin(){
 // Management
 ///////////////
 
-void igdeGDSkin::SetDescription( const char *description ){
+void igdeGDSkin::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void igdeGDSkin::SetCategory( const char *category ){
+void igdeGDSkin::SetCategory(const char *category){
 	pCategory = category;
 }
 
-void igdeGDSkin::SetPreviewImage( deImage *image ){
+void igdeGDSkin::SetPreviewImage(deImage *image){
 	pPreviewImage = image;
 }

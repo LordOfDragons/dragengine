@@ -37,7 +37,7 @@ public:
 	pRequestId(requestId),
 	pVFS(deVirtualFileSystem::Ref::NewWith()
 	{
-		SetEmptyRun( true );
+		SetEmptyRun(true);
 
 		const deVFSMemoryFiles::Ref container(deVFSMemoryFiles::Ref::NewWith(decPath::CreatePathUnix("/")));
 		container->AddMemoryFile(memoryFile);
@@ -96,7 +96,7 @@ public:
 
 	void FinishRequest(deFileResource *resource)
 	{
-		if(!resource )
+		if(!resource)
 		{
 			pService.FailRequest(pRequestId, deeInvalidAction(__FILE__, __LINE__, "Failed loading image"));
 			return;
@@ -137,7 +137,7 @@ deMTLoadUserResource::deMTLoadUserResource(deMsgdkServiceMsgdk &service,
 	const decUniqueID &id, const deServiceObject &request) :
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
-pUrl(request.GetChildAt( "url" )->GetString()),
+pUrl(request.GetChildAt("url")->GetString()),
 pRequestId(id)
 {
 	GetGamerPicture();

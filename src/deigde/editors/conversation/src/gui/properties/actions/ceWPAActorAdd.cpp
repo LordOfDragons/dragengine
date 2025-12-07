@@ -68,12 +68,12 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPAActorAdd &pPanel;
 	
 public:
-	cComboActorID( ceWPAActorAdd &panel ) : pPanel( panel ){ }
+	cComboActorID(ceWPAActorAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorAdd * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetID() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetID()){
 			return;
 		}
 		
@@ -86,12 +86,12 @@ class cComboAliasID : public igdeComboBoxListener {
 	ceWPAActorAdd &pPanel;
 	
 public:
-	cComboAliasID( ceWPAActorAdd &panel ) : pPanel( panel ){ }
+	cComboAliasID(ceWPAActorAdd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorAdd * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetAliasID() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetAliasID()){
 			return;
 		}
 		
@@ -110,17 +110,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAActorAdd::ceWPAActorAdd( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAActorAdd::ceWPAActorAdd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Actor:", true, "ID of the actor to add to conversation",
-		pCBActorID, new cComboActorID( *this ) );
+	helper.ComboBox(*this, "Actor:", true, "ID of the actor to add to conversation",
+		pCBActorID, new cComboActorID(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.ComboBox( *this, "Alias:", true, "Optional alias ID to set for the added actor",
-		pCBAliasID, new cComboAliasID( *this ) );
+	helper.ComboBox(*this, "Alias:", true, "Optional alias ID to set for the added actor",
+		pCBAliasID, new cComboAliasID(*this));
 	pCBAliasID->SetDefaultSorter();
 }
 
@@ -135,8 +135,8 @@ ceWPAActorAdd::~ceWPAActorAdd(){
 ceCAActorAdd *ceWPAActorAdd::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatActorAdd ){
-		return ( ceCAActorAdd* )action;
+	if(action && action->GetType() == ceConversationAction::eatActorAdd){
+		return (ceCAActorAdd*)action;
 		
 	}else{
 		return NULL;
@@ -148,9 +148,9 @@ void ceWPAActorAdd::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBActorID->SetText( action->GetID() );
-		pCBAliasID->SetText( action->GetAliasID() );
+	if(action){
+		pCBActorID->SetText(action->GetID());
+		pCBAliasID->SetText(action->GetAliasID());
 		
 	}else{
 		pCBActorID->ClearText();
@@ -162,6 +162,6 @@ void ceWPAActorAdd::UpdateAction(){
 
 void ceWPAActorAdd::UpdateActorIDLists(){
 	ceWPAction::UpdateActorIDLists();
-	UpdateComboBoxWithActorIDList( pCBActorID );
-	UpdateComboBoxWithActorIDList( pCBAliasID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
+	UpdateComboBoxWithActorIDList(pCBAliasID);
 }

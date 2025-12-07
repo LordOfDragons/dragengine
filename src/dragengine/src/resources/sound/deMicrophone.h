@@ -93,7 +93,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create microphone. */
-	deMicrophone( deMicrophoneManager *manager );
+	deMicrophone(deMicrophoneManager *manager);
 	
 protected:
 	/**
@@ -114,43 +114,43 @@ public:
 	inline eMicrophoneType GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( eMicrophoneType type );
+	void SetType(eMicrophoneType type);
 	
 	/** \brief Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Linear velocity in m/s. */
 	inline const decVector &GetVelocity() const{ return pVelocity; }
 	
 	/** \brief Set velocity in m/s. */
-	void SetVelocity( const decVector &velocity );
+	void SetVelocity(const decVector &velocity);
 	
 	/** \brief Microphone is muted. */
 	inline bool GetMuted() const{ return pMuted; }
 	
 	/** \brief Set if microphone is muted. */
-	void SetMuted( bool muted );
+	void SetMuted(bool muted);
 	
 	/** \brief Volume. */
 	inline float GetVolume() const{ return pVolume; }
 	
 	/** \brief Set volume. */
-	void SetVolume( float volume );
+	void SetVolume(float volume);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/**
 	 * \brief Gain to multiply all speakers with.
@@ -162,7 +162,7 @@ public:
 	 * \brief Set gain to multiply all speakers with.
 	 * \version 1.16
 	 */
-	void SetSpeakerGain( float gain );
+	void SetSpeakerGain(float gain);
 	
 	/**
 	 * \brief Enable auralization if supported.
@@ -174,7 +174,7 @@ public:
 	 * \brief Set to enable auralization if supported.
 	 * \version 1.23
 	 */
-	void SetEnableAuralization( bool enable );
+	void SetEnableAuralization(bool enable);
 	/*@}*/
 	
 	
@@ -192,14 +192,14 @@ public:
 	 * \throws deeInvalidParam \em speaker is NULL.
 	 * \throws deeInvalidParam \em speaker has a parent world.
 	 */
-	void AddSpeaker( deSpeaker *speaker );
+	void AddSpeaker(deSpeaker *speaker);
 	
 	/**
 	 * \brief Remove speaker.
 	 * \throws deeInvalidParam \em speaker is NULL.
 	 * \throws deeInvalidParam Parent world of \em speaker is not this world.
 	 */
-	void RemoveSpeaker( deSpeaker *speaker );
+	void RemoveSpeaker(deSpeaker *speaker);
 	
 	/** \brief Remove all speakers. */
 	void RemoveAllSpeakers();
@@ -213,7 +213,7 @@ public:
 	inline deBaseAudioMicrophone *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer. */
-	void SetPeerAudio( deBaseAudioMicrophone *peer );
+	void SetPeerAudio(deBaseAudioMicrophone *peer);
 	/*@}*/
 	
 	
@@ -224,19 +224,19 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous microphone in the parent world linked list. */
 	inline deMicrophone *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next microphone in the parent world linked list. */
-	void SetLLWorldPrev( deMicrophone *microphone );
+	void SetLLWorldPrev(deMicrophone *microphone);
 	
 	/** \brief Next microphone in the parent world linked list. */
 	inline deMicrophone *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next microphone in the parent world linked list. */
-	void SetLLWorldNext( deMicrophone *microphone );
+	void SetLLWorldNext(deMicrophone *microphone);
 	/*@}*/
 	
 	

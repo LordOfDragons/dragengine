@@ -40,7 +40,7 @@ private:
 	ceConversationCondition::Ref pCondition;
 	
 public:
-	static const ceConversationCondition::eConditionTypes ListAddMenuConditions[ 8 ];
+	static const ceConversationCondition::eConditionTypes ListAddMenuConditions[8];
 	static const int ListAddMenuConditionsCount;
 	
 	
@@ -49,9 +49,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCondition( ceWindowMain &windowMain, eTypes type,
+	ceWPTTIMCondition(ceWindowMain &windowMain, eTypes type,
 		ceConversation &conversation, ceConversationAction &action,
-		ceConversationCondition *condition );
+		ceConversationCondition *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -70,13 +70,13 @@ public:
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Deep find condition. */
-	virtual ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition );
+	virtual ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition);
 	
 	/** \brief Update condition. */
 	virtual void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Get condition owning this model if any. */
 	virtual ceConversationCondition *GetOwnerCondition() const;

@@ -29,7 +29,7 @@ private:
 
         void LogInfo(const char *source, const char *message) override;
         void LogWarn(const char *source, const char *message) override;
-        void LogError( const char *source, const char *message ) override;
+        void LogError(const char *source, const char *message) override;
     };
 
     ClientLogger::Ref pLogger;

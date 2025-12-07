@@ -84,10 +84,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void VisitEffect( deSynthesizerEffect &effect );
+	virtual void VisitEffect(deSynthesizerEffect &effect);
 	
 	/** \brief Visit stretch effect. */
-	virtual void VisitStretch( deSynthesizerEffectStretch &effect );
+	virtual void VisitStretch(deSynthesizerEffectStretch &effect);
 	/*@}*/
 };
 

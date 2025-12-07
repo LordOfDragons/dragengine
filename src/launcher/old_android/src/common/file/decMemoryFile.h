@@ -54,7 +54,7 @@ public:
 	 * \brief Create memory file.
 	 * \throws deeInvalidParam \em filename is NULL.
 	 */
-	decMemoryFile( const char *filename );
+	decMemoryFile(const char *filename);
 	
 protected:
 	/**
@@ -81,7 +81,7 @@ public:
 	inline TIME_SYSTEM GetModificationTime() const{ return pModificationTime; }
 	
 	/** \brief Set modification time. */
-	void SetModificationTime( TIME_SYSTEM time );
+	void SetModificationTime(TIME_SYSTEM time);
 	
 	/** \brief Pointer to file data. */
 	inline char *GetPointer() const{ return pData; }
@@ -93,7 +93,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em size is less than 0.
 	 */
-	void Resize( int size, bool compact = true );
+	void Resize(int size, bool compact = true);
 	
 	/** \brief Touch file setting the modification time to the current system time. */
 	void Touch();

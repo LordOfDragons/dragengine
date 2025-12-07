@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deWebpModule( deLoadableModule &loadableModule );
+	deWebpModule(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
 	virtual ~deWebpModule();
@@ -47,13 +47,13 @@ public:
 	
 	/** \name Management */
 	/** Quick check if the file can be loaded by this module. */
-	virtual deBaseImageInfo *InitLoadImage( decBaseFileReader &reader );
+	virtual deBaseImageInfo *InitLoadImage(decBaseFileReader &reader);
 	
 	/** Load image. */
-	virtual void LoadImage( decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos );
+	virtual void LoadImage(decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos);
 	
 	/** Save image. */
-	virtual void SaveImage( decBaseFileWriter &writer, const deImage &image );
+	virtual void SaveImage(decBaseFileWriter &writer, const deImage &image);
 	/*@}*/
 };
 

@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	deainpDeviceMouse( deAndroidInput &module );
+	deainpDeviceMouse(deAndroidInput &module);
 	
 protected:
 	/** \brief Clean up device. */

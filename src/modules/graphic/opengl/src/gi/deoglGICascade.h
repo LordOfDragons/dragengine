@@ -44,21 +44,21 @@ public:
 		epfSmoothUpdate = 0x1,
 		epfDisabled = 0x2,
 		epfNearGeometry = 0x4,
-		epfValid = 0x8, //<! Probe has been updated at least once
-		epfRayCacheValid = 0x10, //<! Ray-Tracing ray cache is valid
+		epfValid = 0x8, //!< Probe has been updated at least once
+		epfRayCacheValid = 0x10, //!< Ray-Tracing ray cache is valid
 		epfInsideView = 0x20,
 		epfDynamicDisable = 0x40
 	};
 	
 	/** Probe parameters. */
 	struct sProbe{
-		decPoint3 coord; //<! Grid coordinates
+		decPoint3 coord; //!< Grid coordinates
 		decPoint3 shiftedCoord;
 		decVector position;
 		decVector offset;
 		decVector minExtend;
 		decVector maxExtend;
-		uint16_t index; //<! Grid index
+		uint16_t index; //!< Grid index
 		uint8_t flags;
 		uint8_t countOffsetMoved;
 	};
@@ -110,8 +110,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination cascade. */
-	deoglGICascade( deoglGIState &giState, int index, const decVector &probeSpacing,
-		const decVector &offset );
+	deoglGICascade(deoglGIState &giState, int index, const decVector &probeSpacing,
+		const decVector &offset);
 	
 	/** Clean up global illumination cascade. */
 	~deoglGICascade();
@@ -161,46 +161,46 @@ public:
 	inline bool GetFillUpUpdatesWithExpensiveProbes() const{ return pFillUpUpdatesWithExpensiveProbes; }
 	
 	/** Fill up update slots with expensive probes on large position changes. */
-	void SetFillUpUpdatesWithExpensiveProbes( bool fillUp );
+	void SetFillUpUpdatesWithExpensiveProbes(bool fillUp);
 	
 	/** Index of cascade to use for sky shadow casting. */
 	inline int GetSkyShadowCascade() const{ return pSkyShadowCascade; }
 	
 	/** Set index of cascade to use for sky shadow casting. */
-	void SetSkyShadowCascade( int cascade );
+	void SetSkyShadowCascade(int cascade);
 	
 	
 	
 	/** Grid coordinates for probe index. */
-	decPoint3 ProbeIndex2GridCoord( int index ) const;
+	decPoint3 ProbeIndex2GridCoord(int index) const;
 	
 	/** Probe index for grid coordinates. */
-	int GridCoord2ProbeIndex( const decPoint3 &coord ) const;
+	int GridCoord2ProbeIndex(const decPoint3 &coord) const;
 	
 	/** Probe index for grid coordinates. */
-	decVector Grid2Local( const decPoint3 &coord ) const;
+	decVector Grid2Local(const decPoint3 &coord) const;
 	
 	
 	
 	/** Grid coordinates closest to world position unclamped. */
-	decPoint3 World2Grid( const decDVector &position ) const;
+	decPoint3 World2Grid(const decDVector &position) const;
 	
 	/** World position closest to grid. */
-	decDVector Grid2World( const decPoint3 &grid ) const;
+	decDVector Grid2World(const decPoint3 &grid) const;
 	
 	/** World coordinate of closest grid location. */
-	decDVector WorldClosestGrid( const decDVector &position ) const;
+	decDVector WorldClosestGrid(const decDVector &position) const;
 	
 	/** Local grid coordinates to shifted grid coordinates. */
-	decPoint3 LocalGrid2ShiftedGrid( const decPoint3 &coord ) const;
+	decPoint3 LocalGrid2ShiftedGrid(const decPoint3 &coord) const;
 	
 	/** Shifted grid coordinates to local grid coordinates. */
-	decPoint3 ShiftedGrid2LocalGrid( const decPoint3 &coord ) const;
+	decPoint3 ShiftedGrid2LocalGrid(const decPoint3 &coord) const;
 	
 	
 	
 	/** Probe position. */
-	decVector ProbePosition( int index ) const;
+	decVector ProbePosition(int index) const;
 	
 	
 	
@@ -211,7 +211,7 @@ public:
 	inline bool GetRequiresFullUpdateInsideView() const{ return pRequiresFullUpdateInsideView; }
 	
 	/** Set if cascade requires full update of all inside view probes. */
-	void SetRequiresFullUpdateInsideView( bool requiresUpdate );
+	void SetRequiresFullUpdateInsideView(bool requiresUpdate);
 	
 	
 	
@@ -222,7 +222,7 @@ public:
 	inline bool HasClearProbes() const{ return pHasClearProbes; }
 	
 	/** Prepare clear probes UBO. */
-	void PrepareUBOClearProbes( deoglSPBlockUBO &ubo ) const;
+	void PrepareUBOClearProbes(deoglSPBlockUBO &ubo) const;
 	
 	
 	
@@ -230,7 +230,7 @@ public:
 	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
 	
 	/** Index of probe if in list of update probes otherwise -1. */
-	int IndexOfUpdateProbe( int probeIndex ) const;
+	int IndexOfUpdateProbe(int probeIndex) const;
 	
 	/** Count of probes to ray cache update. */
 	inline int GetRayCacheProbeCount() const{ return pRayCacheProbeCount; }
@@ -241,10 +241,10 @@ public:
 	void Invalidate();
 	
 	/** Invalidate area. */
-	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend, bool hard );
+	void InvalidateArea(const decDVector &minExtend, const decDVector &maxExtend, bool hard);
 	
 	/** Dynamic area changed. */
-	void TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend );
+	void TouchDynamicArea(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** Validate ray caches marked for update. */
 	void ValidatedRayCaches();
@@ -253,10 +253,10 @@ public:
 	void InvalidateAllRayCaches();
 	
 	/** Update position. */
-	void UpdatePosition( const decDVector &position );
+	void UpdatePosition(const decDVector &position);
 	
 	/** Find probes to update. */
-	void FindProbesToUpdate( const deoglDCollisionFrustum &frustum );
+	void FindProbesToUpdate(const deoglDCollisionFrustum &frustum);
 	
 	/** Prepare ray cache probes. */
 	void PrepareRayCacheProbes();
@@ -267,25 +267,25 @@ public:
 	float CalcUBOSelfShadowBias() const;
 	
 	/** Update parameters UBO. */
-	void UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount, const deoglGIBVH &bvh ) const;
+	void UpdateUBOParameters(deoglSPBlockUBO &ubo, int probeCount, const deoglGIBVH &bvh) const;
 	
 	/** Update probe positions UBO. */
-	void UpdateUBOProbePosition( deoglSPBlockUBO &ubo ) const;
+	void UpdateUBOProbePosition(deoglSPBlockUBO &ubo) const;
 	
 	/** Update probe indices UBO. */
-	void UpdateUBOProbeIndices( deoglSPBlockUBO &ubo ) const;
+	void UpdateUBOProbeIndices(deoglSPBlockUBO &ubo) const;
 	
 	/** Update probe indices UBO from ray cache indices. */
-	void UpdateUBOProbeIndicesRayCache( deoglSPBlockUBO &ubo ) const;
+	void UpdateUBOProbeIndicesRayCache(deoglSPBlockUBO &ubo) const;
 	
 	/** Update probe positions UBO from ray cache indices. */
-	void UpdateUBOProbePositionRayCache( deoglSPBlockUBO &ubo ) const;
+	void UpdateUBOProbePositionRayCache(deoglSPBlockUBO &ubo) const;
 	
 	/** Update probe offsets from probe offset shader result. */
-	void UpdateProbeOffsetFromShader( const char *data );
+	void UpdateProbeOffsetFromShader(const char *data);
 	
 	/** Update probe extends from probe extend shader result. */
-	void UpdateProbeExtendsFromShader( const char *data );
+	void UpdateProbeExtendsFromShader(const char *data);
 	/*@}*/
 	
 	
@@ -295,10 +295,10 @@ private:
 	void pInitProbes();
 	void pFindProbesToUpdateFullUpdateInsideView();
 	void pFindProbesToUpdateRegular();
-	void pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
-		int &remainingMatchCount, int maxUpdateCount );
-	void pUpdateUBOProbePosition( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const;
-	void pUpdateUBOProbeIndices( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const;
+	void pAddUpdateProbes(uint8_t mask, uint8_t flags, int &lastIndex,
+		int &remainingMatchCount, int maxUpdateCount);
+	void pUpdateUBOProbePosition(deoglSPBlockUBO &ubo, const uint16_t *indices, int count) const;
+	void pUpdateUBOProbeIndices(deoglSPBlockUBO &ubo, const uint16_t *indices, int count) const;
 	void pUpdateHasProbeFlags();
 };
 

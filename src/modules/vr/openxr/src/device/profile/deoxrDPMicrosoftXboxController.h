@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPMicrosoftXboxController( deoxrInstance &instance );
+	deoxrDPMicrosoftXboxController(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */

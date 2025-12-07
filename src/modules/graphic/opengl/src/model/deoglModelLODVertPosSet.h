@@ -63,7 +63,7 @@ public:
 	inline int GetVBOOffset() const{ return pVBOOffset; }
 	
 	/** Set VBO offset. */
-	void SetVBOOffset( int offset );
+	void SetVBOOffset(int offset);
 	
 	/** Positions. */
 	inline sPosition *GetPositions() const{ return pPositions; }
@@ -72,7 +72,7 @@ public:
 	inline int GetPositionCount() const{ return pPositionCount; }
 	
 	/** Set count of positions. */
-	void SetPositionCount( int count );
+	void SetPositionCount(int count);
 	/*@}*/
 	
 	

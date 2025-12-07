@@ -42,8 +42,8 @@
 ////////////////////////////
 
 deSkinPropertyNodeVisitorIdentify::deSkinPropertyNodeVisitorIdentify() :
-pNode( NULL ),
-pType( entUnknown ){
+pNode(NULL),
+pType(entUnknown){
 }
 
 deSkinPropertyNodeVisitorIdentify::~deSkinPropertyNodeVisitorIdentify(){
@@ -55,31 +55,31 @@ deSkinPropertyNodeVisitorIdentify::~deSkinPropertyNodeVisitorIdentify(){
 ///////////////
 
 deSkinPropertyNodeGroup &deSkinPropertyNodeVisitorIdentify::CastToGroup() const{
-	if( pType != entGroup ){
-		DETHROW( deeInvalidParam );
+	if(pType != entGroup){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSkinPropertyNodeGroup* )pNode );
+	return *((deSkinPropertyNodeGroup*)pNode);
 }
 
 deSkinPropertyNodeImage &deSkinPropertyNodeVisitorIdentify::CastToImage() const{
-	if( pType != entImage ){
-		DETHROW( deeInvalidParam );
+	if(pType != entImage){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSkinPropertyNodeImage* )pNode );
+	return *((deSkinPropertyNodeImage*)pNode);
 }
 
 deSkinPropertyNodeShape &deSkinPropertyNodeVisitorIdentify::CastToShape() const{
-	if( pType != entShape ){
-		DETHROW( deeInvalidParam );
+	if(pType != entShape){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSkinPropertyNodeShape* )pNode );
+	return *((deSkinPropertyNodeShape*)pNode);
 }
 
 deSkinPropertyNodeText &deSkinPropertyNodeVisitorIdentify::CastToText() const{
-	if( pType != entText ){
-		DETHROW( deeInvalidParam );
+	if(pType != entText){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSkinPropertyNodeText* )pNode );
+	return *((deSkinPropertyNodeText*)pNode);
 }
 
 
@@ -94,27 +94,27 @@ void deSkinPropertyNodeVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deSkinPropertyNodeVisitorIdentify::VisitNode( deSkinPropertyNode &node ){
+void deSkinPropertyNodeVisitorIdentify::VisitNode(deSkinPropertyNode &node){
 	pNode = &node;
 	pType = entUnknown;
 }
 
-void deSkinPropertyNodeVisitorIdentify::VisitGroup( deSkinPropertyNodeGroup &node ){
+void deSkinPropertyNodeVisitorIdentify::VisitGroup(deSkinPropertyNodeGroup &node){
 	pNode = &node;
 	pType = entGroup;
 }
 
-void deSkinPropertyNodeVisitorIdentify::VisitImage( deSkinPropertyNodeImage &node ){
+void deSkinPropertyNodeVisitorIdentify::VisitImage(deSkinPropertyNodeImage &node){
 	pNode = &node;
 	pType = entImage;
 }
 
-void deSkinPropertyNodeVisitorIdentify::VisitShape( deSkinPropertyNodeShape &node ){
+void deSkinPropertyNodeVisitorIdentify::VisitShape(deSkinPropertyNodeShape &node){
 	pNode = &node;
 	pType = entShape;
 }
 
-void deSkinPropertyNodeVisitorIdentify::VisitText( deSkinPropertyNodeText &node ){
+void deSkinPropertyNodeVisitorIdentify::VisitText(deSkinPropertyNodeText &node){
 	pNode = &node;
 	pType = entText;
 }

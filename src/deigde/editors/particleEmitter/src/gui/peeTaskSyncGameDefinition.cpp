@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeTaskSyncGameDefinition::peeTaskSyncGameDefinition( peeWindowMain &windowMain ) :
-pWindowMain( windowMain )
+peeTaskSyncGameDefinition::peeTaskSyncGameDefinition(peeWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	SetMessage( "Particle Emitter Editor: Synchronize Game Definition" );
+	SetMessage("Particle Emitter Editor: Synchronize Game Definition");
 }
 
 peeTaskSyncGameDefinition::~peeTaskSyncGameDefinition(){
@@ -60,7 +60,7 @@ peeTaskSyncGameDefinition::~peeTaskSyncGameDefinition(){
 ///////////////
 
 bool peeTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetEmitter() ){
+	if(!pWindowMain.GetEmitter()){
 		return false;
 	}
 	

@@ -62,8 +62,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerSourceSound( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSourceSound &source );
+	desynSynthesizerSourceSound(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSourceSound &source);
 	
 	/** \brief Clean up synthesizer source. */
 	virtual ~desynSynthesizerSourceSound();
@@ -87,10 +87,10 @@ public:
 	
 	
 	/** \brief Speed target. */
-	float GetSpeed( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetSpeed(const desynSynthesizerInstance &instance, int sample) const;
 	
 	/** \brief Play from target. */
-	float GetPlay( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetPlay(const desynSynthesizerInstance &instance, int sample) const;
 	
 	
 	
@@ -99,10 +99,10 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource( int offset );
+	virtual int StateDataSizeSource(int offset);
 	
 	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource( char *stateData );
+	virtual void InitStateDataSource(char *stateData);
 	
 	/**
 	 * \brief Generate sound using source.
@@ -112,8 +112,8 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	virtual void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Generate mono sound.
@@ -121,8 +121,8 @@ public:
 	 * \param[in] offset Offset in samples to start producing sound at.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSoundMono( const desynSynthesizerInstance &instance, char *stateData, float *buffer,
-		int samples, float curveOffset, float curveFactor );
+	void GenerateSoundMono(const desynSynthesizerInstance &instance, char *stateData, float *buffer,
+		int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Generate mono sound.
@@ -130,8 +130,8 @@ public:
 	 * \param[in] offset Offset in samples to start producing sound at.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSoundLoopingMono( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSoundLoopingMono(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Generate stereo sound.
@@ -139,8 +139,8 @@ public:
 	 * \param[in] offset Offset in samples to start producing sound at.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSoundStereo( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSoundStereo(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Generate stereo sound.
@@ -148,8 +148,8 @@ public:
 	 * \param[in] offset Offset in samples to start producing sound at.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSoundLoopingStereo( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSoundLoopingStereo(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Skip sound.
@@ -158,8 +158,8 @@ public:
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor );
+	virtual void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor);
 	/*@}*/
 };
 

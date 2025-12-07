@@ -87,23 +87,23 @@
 #include <dragengine/common/shape/decShapeBox.h>
 static decTimer timer;
 #define DEBUG_RESET_TIMERS				timer.Reset();
-#define DEBUG_PRINT_TIMER(what)			pOgl->LogInfoFormat( "%s = %iys", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )
+#define DEBUG_PRINT_TIMER(what)			pOgl->LogInfoFormat("%s = %iys", what, (int)(timer.GetElapsedTime() * 1000000.0))
 
 
 
 // Class deoglRLight::WorldComputeElement
 ///////////////////////////////////////////
 
-deoglRLight::WorldComputeElement::WorldComputeElement( deoglRLight &light ) :
-deoglWorldComputeElement( eetLight, &light ),
-pLight( light ){
+deoglRLight::WorldComputeElement::WorldComputeElement(deoglRLight &light) :
+deoglWorldComputeElement(eetLight, &light),
+pLight(light){
 }
 
-void deoglRLight::WorldComputeElement::UpdateData( sDataElement &data ) const {
+void deoglRLight::WorldComputeElement::UpdateData(sDataElement &data) const {
 	const decDVector &refpos = GetReferencePosition();
-	data.SetExtends( pLight.GetMinimumExtend() - refpos, pLight.GetMaximumExtend() - refpos );
-	data.SetLayerMask( pLight.GetLayerMask() );
-	data.flags = ( uint32_t )deoglWorldCompute::eefLight;
+	data.SetExtends(pLight.GetMinimumExtend() - refpos, pLight.GetMaximumExtend() - refpos);
+	data.SetLayerMask(pLight.GetLayerMask());
+	data.flags = (uint32_t)deoglWorldCompute::eefLight;
 }
 
 
@@ -114,41 +114,41 @@ void deoglRLight::WorldComputeElement::UpdateData( sDataElement &data ) const {
 // Constructor, destructor
 ////////////////////////////
 
-deoglRLight::deoglRLight( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglRLight::deoglRLight(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pParentWorld( NULL ),
-pOctreeNode( NULL ),
+pParentWorld(NULL),
+pOctreeNode(NULL),
 pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
 
-pActive( false ),
-pLightType( deLight::eltPoint ),
-pCastShadows( false ),
-pSpotAngle( DEG2RAD * 30.0f ),
-pSpotRatio( 1.0f ),
-pSpotSmoothness( 1.0f ),
-pSpotExponent( 1.0f ),
-pHintMovement( deLight::emhStationary ),
-pHintShadowImportance( 100 ),
-pIntensity( 0.0f ),
-pAmbientRatio( 0.0f ),
-pColor( 1.0f, 1.0f, 1.0f ),
-pLightSkin( NULL ),
-pLightCanvas( NULL ),
-pDynamicSkin( NULL ),
-pSkinState( NULL ),
-pUseSkinTexture( NULL ),
-pDirtyPrepareSkinStateRenderables( true ),
-pDirtyRenderSkinStateRenderables( true ),
-pDirtyPrepareLightCanvas( true ),
+pActive(false),
+pLightType(deLight::eltPoint),
+pCastShadows(false),
+pSpotAngle(DEG2RAD * 30.0f),
+pSpotRatio(1.0f),
+pSpotSmoothness(1.0f),
+pSpotExponent(1.0f),
+pHintMovement(deLight::emhStationary),
+pHintShadowImportance(100),
+pIntensity(0.0f),
+pAmbientRatio(0.0f),
+pColor(1.0f, 1.0f, 1.0f),
+pLightSkin(NULL),
+pLightCanvas(NULL),
+pDynamicSkin(NULL),
+pSkinState(NULL),
+pUseSkinTexture(NULL),
+pDirtyPrepareSkinStateRenderables(true),
+pDirtyRenderSkinStateRenderables(true),
+pDirtyPrepareLightCanvas(true),
 
-pCSOctreeIndex( 0 ),
+pCSOctreeIndex(0),
 
-pWorldMarkedRemove( false ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ),
+pWorldMarkedRemove(false),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL),
 
-pLLPrepareForRenderWorld( this )
+pLLPrepareForRenderWorld(this)
 {
 	pDirtyColVol = true;
 	pDirtyConvexVolumeList = true;
@@ -173,18 +173,18 @@ pLLPrepareForRenderWorld( this )
 	
 	try{
 		pConvexVolumeList = new decConvexVolumeList;
-		pShadowCaster = new deoglShadowCaster( renderThread );
-		pLightVolume = new deoglLightVolume( renderThread );
+		pShadowCaster = new deoglShadowCaster(renderThread);
+		pLightVolume = new deoglLightVolume(renderThread);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
-	LEAK_CHECK_CREATE( renderThread, Light );
+	LEAK_CHECK_CREATE(renderThread, Light);
 }
 
 deoglRLight::~deoglRLight(){
-	LEAK_CHECK_FREE( pRenderThread, Light );
+	LEAK_CHECK_FREE(pRenderThread, Light);
 	pCleanUp();
 }
 
@@ -193,8 +193,8 @@ deoglRLight::~deoglRLight(){
 // Management
 ///////////////
 
-void deoglRLight::SetParentWorld( deoglRWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void deoglRLight::SetParentWorld(deoglRWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
@@ -204,8 +204,8 @@ void deoglRLight::SetParentWorld( deoglRWorld *parentWorld ){
 	
 	RemoveAllComponents();
 	
-	if( pOctreeNode ){
-		pOctreeNode->RemoveLight( this );
+	if(pOctreeNode){
+		pOctreeNode->RemoveLight(this);
 		pOctreeNode = NULL;
 	}
 	
@@ -214,212 +214,212 @@ void deoglRLight::SetParentWorld( deoglRWorld *parentWorld ){
 
 
 
-void deoglRLight::SetOctreeNode( deoglWorldOctree *octreeNode ){
+void deoglRLight::SetOctreeNode(deoglWorldOctree *octreeNode){
 	pOctreeNode = octreeNode;
 }
 
 void deoglRLight::UpdateOctreeNode(){
 	// WARNING called from main thread during synchronization
 	
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
 	
-	if( pActive ){
+	if(pActive){
 		pUpdateExtends(); // required or we might end up in the wrong octree
-		pParentWorld->GetOctree().InsertLightIntoTree( this );
+		pParentWorld->GetOctree().InsertLightIntoTree(this);
 		
-		if( pWorldComputeElement->GetWorldCompute() ){
+		if(pWorldComputeElement->GetWorldCompute()){
 			pWorldComputeElement->ComputeUpdateElement();
 			
 		}else{
-			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+			pParentWorld->GetCompute().AddElement(pWorldComputeElement);
 		}
 		
 	}else{
 		pWorldComputeElement->RemoveFromCompute();
-		if( pOctreeNode ){
-			pOctreeNode->RemoveLight( this );
+		if(pOctreeNode){
+			pOctreeNode->RemoveLight(this);
 			pOctreeNode = NULL;
 		}
 	}
 }
 
-void deoglRLight::UpdateSkin( float elapsed ){
-	if( pSkinState ){
-		pSkinState->AdvanceTime( elapsed );
+void deoglRLight::UpdateSkin(float elapsed){
+	if(pSkinState){
+		pSkinState->AdvanceTime(elapsed);
 	}
 }
 
 
 
-void deoglRLight::SetActive( bool active ){
-	if( active == pActive ){
+void deoglRLight::SetActive(bool active){
+	if(active == pActive){
 		return;
 	}
 	
 	pActive = active;
 	
-	if( active ){
+	if(active){
 		pRequiresPrepareForRender();
 	}
 }
 
-void deoglRLight::SetLightType( deLight::eLightTypes type ){
+void deoglRLight::SetLightType(deLight::eLightTypes type){
 	pLightType = type;
 }
 
-void deoglRLight::SetCastShadows( bool castShadows ){
+void deoglRLight::SetCastShadows(bool castShadows){
 	pCastShadows = castShadows;
 }
 
-void deoglRLight::SetSpotAngle( float angle ){
+void deoglRLight::SetSpotAngle(float angle){
 	pSpotAngle = angle;
 }
 
-void deoglRLight::SetSpotRatio( float ratio ){
+void deoglRLight::SetSpotRatio(float ratio){
 	pSpotRatio = ratio;
 }
 
-void deoglRLight::SetSpotSmoothness( float smoothness ){
+void deoglRLight::SetSpotSmoothness(float smoothness){
 	pSpotSmoothness = smoothness;
 }
 
-void deoglRLight::SetSpotExponent( float exponent ){
+void deoglRLight::SetSpotExponent(float exponent){
 	pSpotExponent = exponent;
 }
 
-void deoglRLight::SetHintMovement( deLight::eMovementHints movement ){
+void deoglRLight::SetHintMovement(deLight::eMovementHints movement){
 	pHintMovement = movement;
 }
 
-void deoglRLight::SetHintShadowImportance( int importance ){
+void deoglRLight::SetHintShadowImportance(int importance){
 	pHintShadowImportance = importance;
 }
 
-void deoglRLight::SetIntensity( float intensity ){
+void deoglRLight::SetIntensity(float intensity){
 	pIntensity = intensity;
 }
 
-void deoglRLight::SetAmbientRatio( float ratio ){
+void deoglRLight::SetAmbientRatio(float ratio){
 	pAmbientRatio = ratio;
 }
 
 
 
-void deoglRLight::SetLightSkin( deoglRSkin *skin ){
-	if( skin == pLightSkin ){
+void deoglRLight::SetLightSkin(deoglRSkin *skin){
+	if(skin == pLightSkin){
 		return;
 	}
 	
 	pUseSkinTexture = NULL;
 	
-	if( pLightSkin ){
+	if(pLightSkin){
 		pLightSkin->FreeReference();
 	}
 	
 	pLightSkin = skin;
 	
-	if( ! skin ){
+	if(!skin){
 		return;
 	}
 	
 	skin->AddReference();
 	
-	if( skin->GetTextureCount() > 0 ){
-		pUseSkinTexture = &skin->GetTextureAt( 0 );
+	if(skin->GetTextureCount() > 0){
+		pUseSkinTexture = &skin->GetTextureAt(0);
 	}
 	
-	if( ! pSkinState ){
-		pSkinState = new deoglSkinState( pRenderThread, *this );
+	if(!pSkinState){
+		pSkinState = new deoglSkinState(pRenderThread, *this);
 	}
 }
 
-void deoglRLight::SetLightCanvas( deoglRCanvasView *canvas ){
-	if( canvas == pLightCanvas ){
+void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
+	if(canvas == pLightCanvas){
 		return;
 	}
 	
-	if( pLightCanvas ){
+	if(pLightCanvas){
 		pLightCanvas->FreeReference();
 	}
 	
 	pLightCanvas = canvas;
 	
-	if( canvas ){
+	if(canvas){
 		canvas->AddReference();
 	}
 	
 	   pRequiresPrepareForRender();
 }
 
-void deoglRLight::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
-	if( dynamicSkin == pDynamicSkin ){
+void deoglRLight::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
+	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
 	
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
 	
 	pDynamicSkin = dynamicSkin;
 	
-	if( dynamicSkin ){
+	if(dynamicSkin){
 		dynamicSkin->AddReference();
 	}
 }
 
-void deoglRLight::SetTransform( const decTexMatrix2 &matrix ){
+void deoglRLight::SetTransform(const decTexMatrix2 &matrix){
 	pTransform = matrix;
 }
 
 
 
-void deoglRLight::SetColor( const decColor &color ){
+void deoglRLight::SetColor(const decColor &color){
 	pColor = color;
 }
 
-void deoglRLight::SetLayerMask( const decLayerMask &layerMask ){
+void deoglRLight::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
-void deoglRLight::SetLayerMaskShadow( const decLayerMask &layerMask ){
+void deoglRLight::SetLayerMaskShadow(const decLayerMask &layerMask){
 	pLayerMaskShadow = layerMask;
 }
 
 void deoglRLight::RemoveAllShadowIgnoreComponents(){
-	if( pShadowIgnoreComponents.GetCount() == 0 ){
+	if(pShadowIgnoreComponents.GetCount() == 0){
 		return;
 	}
 	
-	const decObjectSet components( pShadowIgnoreComponents );
+	const decObjectSet components(pShadowIgnoreComponents);
 	
 	pShadowIgnoreComponents.RemoveAll();
 	
 	// test all components since they can now be potentially in shadow maps
 	const int count = components.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		TestComponent( ( deoglRComponent* )components.GetAt( i ) );
+	for(i=0; i<count; i++){
+		TestComponent((deoglRComponent*)components.GetAt(i));
 	}
 }
 
-void deoglRLight::AddShadowIgnoreComponent( deoglRComponent *component ){
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+void deoglRLight::AddShadowIgnoreComponent(deoglRComponent *component){
+	if(!component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pShadowIgnoreComponents.Add( component );
+	pShadowIgnoreComponents.Add(component);
 	
 	// remove component in case it is enlisted for the static or dynamic shadow map
-	RemoveComponent( component );
+	RemoveComponent(component);
 }
 
-bool deoglRLight::HasShadowIgnoreComponent( deoglRComponent *component ) const{
-	return pShadowIgnoreComponents.Has( component );
+bool deoglRLight::HasShadowIgnoreComponent(deoglRComponent *component) const{
+	return pShadowIgnoreComponents.Has(component);
 }
 
-bool deoglRLight::StaticMatchesCamera( const decLayerMask &layerMask ) const{
+bool deoglRLight::StaticMatchesCamera(const decLayerMask &layerMask) const{
 	// if layer mask restriction is used dynamic only shadows have to be used to filter properly.
 	// the logic is this. lights filter scene elements to be included in their shadow maps by
 	// matching the element "layer mask" against the "shadow layer mask". if the camera restricts
@@ -432,24 +432,24 @@ bool deoglRLight::StaticMatchesCamera( const decLayerMask &layerMask ) const{
 	// all bits the "camera layer mask" then this would be enough to still fullfil the
 	// requirement to use the static shadow maps.
 	// TODO check if this special filter check should be added or not
-	if( pLayerMaskShadow.IsEmpty() || pLayerMaskShadow.IsFull() ){
+	if(pLayerMaskShadow.IsEmpty() || pLayerMaskShadow.IsFull()){
 		return layerMask.IsEmpty() || layerMask.IsFull();
 		
 	}else{
-		return layerMask.IsEmpty() || ( pLayerMaskShadow & layerMask ) == pLayerMaskShadow;
+		return layerMask.IsEmpty() || (pLayerMaskShadow & layerMask) == pLayerMaskShadow;
 	}
 }
 
 
 
 void deoglRLight::InitSkinStateStates(){
-	if( pSkinState ){
+	if(pSkinState){
 		pSkinState->InitAll();
 	}
 }
 
 void deoglRLight::UpdateSkinStateStates(){
-	if( pSkinState ){
+	if(pSkinState){
 		pSkinState->UpdateAll();
 	}
 }
@@ -460,20 +460,20 @@ void deoglRLight::DirtyPrepareSkinStateRenderables(){
 	pRequiresPrepareForRender();
 }
 
-void deoglRLight::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
-	if( pSkinState ){
-		pSkinState->PrepareRenderables( pLightSkin, pDynamicSkin, renderPlanMask );
+void deoglRLight::PrepareSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask){
+	if(pSkinState){
+		pSkinState->PrepareRenderables(pLightSkin, pDynamicSkin, renderPlanMask);
 	}
 }
 
-void deoglRLight::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
-	if( pSkinState ){
-		pSkinState->RenderRenderables( pLightSkin, pDynamicSkin, renderPlanMask );
+void deoglRLight::RenderSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask){
+	if(pSkinState){
+		pSkinState->RenderRenderables(pLightSkin, pDynamicSkin, renderPlanMask);
 	}
 }
 
 void deoglRLight::PrepareSkinStateConstructed(){
-	if( pSkinState ){
+	if(pSkinState){
 		pSkinState->PrepareConstructedProperties();
 	}
 }
@@ -488,14 +488,14 @@ void deoglRLight::DynamicSkinRenderablesChanged(){
 }
 
 void deoglRLight::UpdateRenderableMapping(){
-	if( ! pSkinState ){
+	if(!pSkinState){
 		return;
 	}
 	
 	// udpate mappings of dynamic skin of component itself
 	pSkinState->RemoveAllRenderables();
-	if( pLightSkin && pDynamicSkin ){
-		pSkinState->AddRenderables( *pLightSkin, *pDynamicSkin );
+	if(pLightSkin && pDynamicSkin){
+		pSkinState->AddRenderables(*pLightSkin, *pDynamicSkin);
 	}
 	
 // 	MarkParamBlocksDirty();
@@ -510,7 +510,7 @@ void deoglRLight::DirtyPrepareLightCanvas(){
 
 
 
-void deoglRLight::SetMatrix( const decDMatrix &matrix ){
+void deoglRLight::SetMatrix(const decDMatrix &matrix){
 	pMatrix = matrix;
 	pInverseMatrix = matrix.QuickInvert();
 }
@@ -561,7 +561,7 @@ void deoglRLight::SetDirtyCollideLists(){
 void deoglRLight::SetLightVolumeDirty(){
 	pDirtyConvexVolumeList = true; // HACK until the problem is solved
 	
-	if( pOptimizer ){
+	if(pOptimizer){
 		pOptimizer->ResetAllOptimizations();
 	}else{
 		// we have to create one... TODO
@@ -572,12 +572,12 @@ void deoglRLight::SetLightVolumeDirty(){
 
 
 
-void deoglRLight::SetLightVolumeCropBox( decShapeBox *box ){
-	if( box == pLightVolumeCropBox ){
+void deoglRLight::SetLightVolumeCropBox(decShapeBox *box){
+	if(box == pLightVolumeCropBox){
 		return;
 	}
 	
-	if( pLightVolumeCropBox ){
+	if(pLightVolumeCropBox){
 		delete pLightVolumeCropBox;
 	}
 	
@@ -589,56 +589,56 @@ void deoglRLight::SetLightVolumeCropBox( decShapeBox *box ){
 
 
 deoglShadowCaster *deoglRLight::GetShadowCaster(){
-	if( pDirtyStaticShadows || pDirtyDynamicShadows ){
-		if( pCastShadows ){
-			if( pHintMovement == deLight::emhStationary ){
-				if( pHintShadowImportance >= 75 ){
-					if( pDynamicComponentList.GetCount() > 0 ){
-						if( pStaticComponentList.GetCount() > 0 ){
-							pShadowCaster->SetShadowType( deoglShadowCaster::estStaticAndDynamic );
+	if(pDirtyStaticShadows || pDirtyDynamicShadows){
+		if(pCastShadows){
+			if(pHintMovement == deLight::emhStationary){
+				if(pHintShadowImportance >= 75){
+					if(pDynamicComponentList.GetCount() > 0){
+						if(pStaticComponentList.GetCount() > 0){
+							pShadowCaster->SetShadowType(deoglShadowCaster::estStaticAndDynamic);
 							
 						}else{
-							pShadowCaster->SetShadowType( deoglShadowCaster::estDynamicOnly );
+							pShadowCaster->SetShadowType(deoglShadowCaster::estDynamicOnly);
 						}
 						
-					}else if( pStaticComponentList.GetCount() > 0 ){
-						pShadowCaster->SetShadowType( deoglShadowCaster::estStaticOnly );
+					}else if(pStaticComponentList.GetCount() > 0){
+						pShadowCaster->SetShadowType(deoglShadowCaster::estStaticOnly);
 						
 					}else{
-						pShadowCaster->SetShadowType( deoglShadowCaster::estNoShadows );
+						pShadowCaster->SetShadowType(deoglShadowCaster::estNoShadows);
 					}
 					
 				}else{
-					if( pStaticComponentList.GetCount() > 0 ){
-						pShadowCaster->SetShadowType( deoglShadowCaster::estStaticOnly );
+					if(pStaticComponentList.GetCount() > 0){
+						pShadowCaster->SetShadowType(deoglShadowCaster::estStaticOnly);
 						
 					}else{
-						pShadowCaster->SetShadowType( deoglShadowCaster::estNoShadows );
+						pShadowCaster->SetShadowType(deoglShadowCaster::estNoShadows);
 					}
 				}
 				
 			}else{
-				if( pDynamicComponentList.GetCount() > 0 || pStaticComponentList.GetCount() > 0 ){
-					pShadowCaster->SetShadowType( deoglShadowCaster::estDynamicOnly );
+				if(pDynamicComponentList.GetCount() > 0 || pStaticComponentList.GetCount() > 0){
+					pShadowCaster->SetShadowType(deoglShadowCaster::estDynamicOnly);
 					
 				}else{
-					pShadowCaster->SetShadowType( deoglShadowCaster::estNoShadows );
+					pShadowCaster->SetShadowType(deoglShadowCaster::estNoShadows);
 				}
 			}
 			
 		}else{
-			pShadowCaster->SetShadowType( deoglShadowCaster::estNoShadows );
+			pShadowCaster->SetShadowType(deoglShadowCaster::estNoShadows);
 		}
 	}
 	
-	if( pDirtyStaticShadows ){
+	if(pDirtyStaticShadows){
 		pShadowCaster->Clear();
-		pShadowCaster->SetStaticParams( 0.01f, pRange );
+		pShadowCaster->SetStaticParams(0.01f, pRange);
 		pDirtyStaticShadows = false;
 	}
 	
-	if( pDirtyDynamicShadows ){
-		pShadowCaster->SetDynamicParams( 0.01f, pRange );
+	if(pDirtyDynamicShadows){
+		pShadowCaster->SetDynamicParams(0.01f, pRange);
 		pDirtyDynamicShadows = false;
 	}
 	
@@ -656,17 +656,17 @@ void deoglRLight::ShadowCasterRequiresPrepare(){
 
 
 
-void deoglRLight::UpdateAttenuation( float range, float halfIntensityDistance ){
-	if( range < 0.001f ){
+void deoglRLight::UpdateAttenuation(float range, float halfIntensityDistance){
+	if(range < 0.001f){
 		range = 0.001f;
 	}
 	
-	pAttenCoeff = ( 1.0f / ( halfIntensityDistance * halfIntensityDistance ) - 2.0f ) / ( range * range );
+	pAttenCoeff = (1.0f / (halfIntensityDistance * halfIntensityDistance) - 2.0f) / (range * range);
 	pRange = range;
 	
-	const float rangeNormInt = 1.0f / ( 1.0f + pAttenCoeff * range * range );
+	const float rangeNormInt = 1.0f / (1.0f + pAttenCoeff * range * range);
 	
-	pDampCoeff = 1.0f / ( 1.0f - rangeNormInt );
+	pDampCoeff = 1.0f / (1.0f - rangeNormInt);
 	pDampThreshold = -rangeNormInt * pDampCoeff;
 }
 
@@ -685,18 +685,18 @@ void deoglRLight::EarlyPrepareForRender(){
 	pUpdateCollisionVolume();
 }
 
-void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
-	if( pDirtyPrepareLightCanvas ){
-		if( pLightCanvas ){
-			pLightCanvas->PrepareForRender( renderPlanMask );
+void deoglRLight::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+	if(pDirtyPrepareLightCanvas){
+		if(pLightCanvas){
+			pLightCanvas->PrepareForRender(renderPlanMask);
 		}
 		pDirtyPrepareLightCanvas = false;
 	}
 	
 	PrepareSkinStateConstructed();
 	
-	if( pDirtyPrepareSkinStateRenderables ){
-		PrepareSkinStateRenderables( renderPlanMask );
+	if(pDirtyPrepareSkinStateRenderables){
+		PrepareSkinStateRenderables(renderPlanMask);
 		pDirtyPrepareSkinStateRenderables = false;
 		pDirtyRenderSkinStateRenderables = true;
 	}
@@ -709,19 +709,19 @@ void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask 
 	//pShadowCaster->GetSolid().DropDynamic();
 	
 	// update light volume vbo if existing. has to be done here. see UpdateLightVolume()
-	if( pLightVolume ){
+	if(pLightVolume){
 		pLightVolume->UpdateVBO();
 	}
 	
 	// force update next frame if required
-	if( pShadowCaster->RequiresUpdate() ){
+	if(pShadowCaster->RequiresUpdate()){
 		pRequiresPrepareForRender();
 	}
 }
 
-void deoglRLight::PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask ){
-	if( pDirtyRenderSkinStateRenderables ){
-		RenderSkinStateRenderables( renderPlanMask );
+void deoglRLight::PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask){
+	if(pDirtyRenderSkinStateRenderables){
+		RenderSkinStateRenderables(renderPlanMask);
 		pDirtyRenderSkinStateRenderables = false;
 	}
 }
@@ -754,24 +754,24 @@ deoglLightPipelines &deoglRLight::GetPipelines(){
 }
 
 const deoglSPBlockUBO::Ref &deoglRLight::GetLightParameterBlock(){
-	if( ! pParamBlockLight ){
+	if(!pParamBlockLight){
 		pParamBlockLight = GetPipelines().GetWithRef(
-			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
+			deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBLightParam();
 	}
 	return pParamBlockLight;
 }
 
 const deoglSPBlockUBO::Ref &deoglRLight::GetInstanceParameterBlock(){
-	if( ! pParamBlockInstance ){
+	if(!pParamBlockInstance){
 		pParamBlockInstance = GetPipelines().GetWithRef(
-			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
+			deoglLightPipelines::etNoShadow, 0).GetShader()->CreateSPBInstParam();
 	}
 	return pParamBlockInstance;
 }
 
 const deoglSPBlockUBO::Ref &deoglRLight::GetOccQueryParameterBlock(){
-	if( ! pParamBlockOccQuery ){
-		pParamBlockOccQuery = deoglLightShader::CreateSPBOccQueryParam( pRenderThread );
+	if(!pParamBlockOccQuery){
+		pParamBlockOccQuery = deoglLightShader::CreateSPBOccQueryParam(pRenderThread);
 	}
 	return pParamBlockOccQuery;
 }
@@ -791,14 +791,14 @@ void deoglRLight::SetDirtyTouching(){
 }
 
 void deoglRLight::EnvMapNotifyLightChanged(){
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
 	
 	pUpdateExtends();
 	
-	deoglNotifyEnvMapLightChanged visitor( *this );
-	pParentWorld->VisitRegion( pMinExtend, pMaxExtend, visitor );
+	deoglNotifyEnvMapLightChanged visitor(*this);
+	pParentWorld->VisitRegion(pMinExtend, pMaxExtend, visitor);
 }
 
 
@@ -815,41 +815,41 @@ void deoglRLight::PrepareQuickDispose(){
 // Components
 ///////////////
 
-void deoglRLight::AddComponent( deoglRComponent *component ){
-	if( component->GetRenderStatic() && pHintMovement == deLight::emhStationary ){
-		if( pStaticComponentList.AddIfMissing( component ) ){
+void deoglRLight::AddComponent(deoglRComponent *component){
+	if(component->GetRenderStatic() && pHintMovement == deLight::emhStationary){
+		if(pStaticComponentList.AddIfMissing(component)){
 			pDirtyStaticShadows = true;
 			pDirtyCollideLists = true;
-			SetLightVolumeCropBox( NULL );
+			SetLightVolumeCropBox(NULL);
 			
-			if( component->GetOcclusionMesh() ){
+			if(component->GetOcclusionMesh()){
 				SetLightVolumeDirty();
 			}
 		}
 		
 	}else{
-		if( pDynamicComponentList.AddIfMissing( component ) ){
+		if(pDynamicComponentList.AddIfMissing(component)){
 			pDirtyDynamicShadows = true;
 			pDirtyCollideLists = true;
 		}
 	}
 }
 
-void deoglRLight::RemoveComponent( deoglRComponent *component ){
-	if( pStaticComponentList.RemoveIfExisting( component ) ){
+void deoglRLight::RemoveComponent(deoglRComponent *component){
+	if(pStaticComponentList.RemoveIfExisting(component)){
 		pDirtyCollideLists = true;
 		
-		if( pUpdateOnRemoveComponent ){
+		if(pUpdateOnRemoveComponent){
 			pDirtyStaticShadows = true;
-			SetLightVolumeCropBox( NULL );
+			SetLightVolumeCropBox(NULL);
 			
-			if( component->GetOcclusionMesh() ){
+			if(component->GetOcclusionMesh()){
 				SetLightVolumeDirty();
 			}
 		}
 	}
 	
-	if( pDynamicComponentList.RemoveIfExisting( component ) ){
+	if(pDynamicComponentList.RemoveIfExisting(component)){
 		pDirtyDynamicShadows = true;
 		pDirtyCollideLists = true;
 	}
@@ -859,20 +859,20 @@ void deoglRLight::RemoveAllComponents(){
 	int i, count;
 	
 	count = pStaticComponentList.GetCount();
-	if( count > 0 ){
-		for( i=0; i<count; i++ ){
-			pStaticComponentList.GetAt( i )->GetLightList().RemoveIfExisting( this );
+	if(count > 0){
+		for(i=0; i<count; i++){
+			pStaticComponentList.GetAt(i)->GetLightList().RemoveIfExisting(this);
 		}
 		pStaticComponentList.RemoveAll();
 		pDirtyStaticShadows = true;
 		pDirtyCollideLists = true;
-		SetLightVolumeCropBox( NULL );
+		SetLightVolumeCropBox(NULL);
 	}
 	
 	count = pDynamicComponentList.GetCount();
-	if( count > 0 ){
-		for( i=0; i<count; i++ ){
-			pDynamicComponentList.GetAt( i )->GetLightList().RemoveIfExisting( this );
+	if(count > 0){
+		for(i=0; i<count; i++){
+			pDynamicComponentList.GetAt(i)->GetLightList().RemoveIfExisting(this);
 		}
 		pDynamicComponentList.RemoveAll();
 		pDirtyDynamicShadows = true;
@@ -882,17 +882,17 @@ void deoglRLight::RemoveAllComponents(){
 	//DirtyLightVolume();
 }
 
-void deoglRLight::TestComponent( deoglRComponent *component ){
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+void deoglRLight::TestComponent(deoglRComponent *component){
+	if(!component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pShadowIgnoreComponents.Has( component ) ){
+	if(pShadowIgnoreComponents.Has(component)){
 		return;
 	}
 	
-	if( pLayerMaskShadow.IsNotEmpty() && component->GetLayerMask().IsNotEmpty()
-	&& pLayerMaskShadow.MatchesNot( component->GetLayerMask() ) ){
+	if(pLayerMaskShadow.IsNotEmpty() && component->GetLayerMask().IsNotEmpty()
+	&& pLayerMaskShadow.MatchesNot(component->GetLayerMask())){
 		return;
 	}
 	
@@ -900,28 +900,28 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 	
 	pUpdateExtends();
 	
-	if( component->GetMaximumExtend() >= pMinExtend && component->GetMinimumExtend() <= pMaxExtend ){
+	if(component->GetMaximumExtend() >= pMinExtend && component->GetMinimumExtend() <= pMaxExtend){
 		touchesLight = true;
 		
-		switch( pLightType ){
+		switch(pLightType){
 		case deLight::eltSpot:{
 			// cone-sphere collision test after geometrictools.com . the problem here is that
 			// the cone can be squashed. to solve this the radius used for the final test is
 			// adjusted depending on where the sphere center is located before being ratio
 			// corrected. this is a good enough
-			decVector sphereCenter( pInverseMatrix * component->GetCullSphereCenter() );
+			decVector sphereCenter(pInverseMatrix * component->GetCullSphereCenter());
 			
 			
 			const float sphereRadiusX = component->GetCullSphereRadius();
 			const float sphereRadiusY = sphereRadiusX * pSpotRatio;
 			
-			const float srAngle = atan2f( sphereCenter.y, sphereCenter.x );
-			const float srConeSin = sinf( srAngle );
-			const float srConeCos = cosf( srAngle );
+			const float srAngle = atan2f(sphereCenter.y, sphereCenter.x);
+			const float srConeSin = sinf(srAngle);
+			const float srConeCos = cosf(srAngle);
 			
 			const float sphereRadius = sphereRadiusX * sphereRadiusY / sqrtf(
 				sphereRadiusX * sphereRadiusX * srConeCos * srConeCos
-				+ sphereRadiusY * sphereRadiusY * srConeSin * srConeSin );
+				+ sphereRadiusY * sphereRadiusY * srConeSin * srConeSin);
 			const float sphereRadiusSquared = sphereRadius * sphereRadius;
 			
 			sphereCenter.y *= pSpotRatio;
@@ -932,26 +932,26 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 			
 			// from here on it is the geometrictools.com version simply modified with V=zero
 			// and D=(0,0,1)
-			const float coneSin = sinf( pSpotAngle * 0.5f );
-			const float coneCos = cosf( pSpotAngle * 0.5f );
+			const float coneSin = sinf(pSpotAngle * 0.5f);
+			const float coneCos = cosf(pSpotAngle * 0.5f);
 			const float coneSinSquared = coneSin * coneSin;
 			const float coneCosSquared = coneCos * coneCos;
 			const float coneSinReci = 1.0f / coneSin;
 			
 			touchesLight = false;
 			
-			const decVector d( sphereCenter.x, sphereCenter.y,
-				sphereCenter.z + sphereRadius * coneSinReci );
+			const decVector d(sphereCenter.x, sphereCenter.y,
+				sphereCenter.z + sphereRadius * coneSinReci);
 			
-			if( d.z <= 0.0 || d.z * d.z < d.LengthSquared() * coneCosSquared ){
+			if(d.z <= 0.0 || d.z * d.z < d.LengthSquared() * coneCosSquared){
 				break;
 			}
 			
 			const float dsquared = sphereCenter.LengthSquared();
 			const float e = -sphereCenter.z;
 			
-			if( e > 0.0 && e * e >= dsquared * coneSinSquared ){
-				touchesLight = ( dsquared <= sphereRadiusSquared );
+			if(e > 0.0 && e * e >= dsquared * coneSinSquared){
+				touchesLight = (dsquared <= sphereRadiusSquared);
 				
 			}else{
 				touchesLight = true;
@@ -965,10 +965,10 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 			const decDVector &sphereCenter = component->GetCullSphereCenter();
 			const float sphereRadius = component->GetCullSphereRadius();
 			const float sphereRadiusSquared = sphereRadius * sphereRadius;
-			const decDVector coneCenter( pMatrix.GetPosition() );
-			const decDVector coneAxis( pMatrix.TransformView() );
-			const float coneSin = sinf( pSpotAngles.y * 0.5f );
-			const float coneCos = cosf( pSpotAngles.y * 0.5f );
+			const decDVector coneCenter(pMatrix.GetPosition());
+			const decDVector coneAxis(pMatrix.TransformView());
+			const float coneSin = sinf(pSpotAngles.y * 0.5f);
+			const float coneCos = cosf(pSpotAngles.y * 0.5f);
 			const float coneCosSquared = coneCos * coneCos;
 			const float coneSinSquared = coneSin * coneSin;
 			const float coneSinReci = 1.0f / coneSin;
@@ -977,18 +977,18 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 			
 			touchesLight = false;
 			
-			u = coneCenter - coneAxis * ( double )( sphereRadius * coneSinReci );
+			u = coneCenter - coneAxis * (double)(sphereRadius * coneSinReci);
 			d = sphereCenter - u;
 			dsquared = d * d;
 			e = coneAxis * d;
 			
-			if( e > 0.0 && e * e >= dsquared * ( double )coneCosSquared ){
+			if(e > 0.0 && e * e >= dsquared * (double)coneCosSquared){
 				d = sphereCenter - coneCenter;
 				dsquared = d * d;
-				e = -( coneAxis * d );
+				e = -(coneAxis * d);
 				
-				if( e > 0.0 && e * e >= dsquared * ( double )coneSinSquared ){
-					touchesLight = ( dsquared <= ( double )sphereRadiusSquared );
+				if(e > 0.0 && e * e >= dsquared * (double)coneSinSquared){
+					touchesLight = (dsquared <= (double)sphereRadiusSquared);
 					
 				}else{
 					touchesLight = true;
@@ -1005,13 +1005,13 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 		}
 	}
 	
-	if( touchesLight ){
-		AddComponent( component );
-		component->GetLightList().AddIfMissing( this );
+	if(touchesLight){
+		AddComponent(component);
+		component->GetLightList().AddIfMissing(this);
 		
 	}else{
-		RemoveComponent( component );
-		component->GetLightList().RemoveIfExisting( this );
+		RemoveComponent(component);
+		component->GetLightList().RemoveIfExisting(this);
 	}
 }
 
@@ -1030,16 +1030,16 @@ void deoglRLight::LightVolumeImproved(){
 	pRequiresPrepareForRender();
 }
 
-void deoglRLight::ReplaceLightVolume( decConvexVolumeList *list ){
-	if( ! list ) DETHROW( deeInvalidParam );
-	if( pConvexVolumeList ) delete pConvexVolumeList;
+void deoglRLight::ReplaceLightVolume(decConvexVolumeList *list){
+	if(!list) DETHROW(deeInvalidParam);
+	if(pConvexVolumeList) delete pConvexVolumeList;
 	pConvexVolumeList = list;
 	LightVolumeImproved();
 }
 
-void deoglRLight::ReplaceShadowCaster( deoglShadowCaster *shadowCaster ){
-	if( ! shadowCaster ) DETHROW( deeInvalidParam );
-	if( pShadowCaster ) delete pShadowCaster;
+void deoglRLight::ReplaceShadowCaster(deoglShadowCaster *shadowCaster){
+	if(!shadowCaster) DETHROW(deeInvalidParam);
+	if(pShadowCaster) delete pShadowCaster;
 	pShadowCaster = shadowCaster;
 	//pCalcShadowCasterParams();
 	pDirtyStaticShadows = true;
@@ -1058,15 +1058,15 @@ void deoglRLight::ReplaceShadowCaster( deoglShadowCaster *shadowCaster ){
 // Render world usage
 ///////////////////////
 
-void deoglRLight::SetWorldMarkedRemove( bool marked ){
+void deoglRLight::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
-void deoglRLight::SetLLWorldPrev( deoglRLight *light ){
+void deoglRLight::SetLLWorldPrev(deoglRLight *light){
 	pLLWorldPrev = light;
 }
 
-void deoglRLight::SetLLWorldNext( deoglRLight *light ){
+void deoglRLight::SetLLWorldNext(deoglRLight *light){
 	pLLWorldNext = light;
 }
 
@@ -1076,12 +1076,12 @@ void deoglRLight::SetLLWorldNext( deoglRLight *light ){
 //////////////////////
 
 void deoglRLight::pCleanUp(){
-	SetParentWorld( NULL );
+	SetParentWorld(NULL);
 	
-	if( pDynamicCollideList ){
+	if(pDynamicCollideList){
 		delete pDynamicCollideList;
 	}
-	if( pStaticCollideList ){
+	if(pStaticCollideList){
 		delete pStaticCollideList;
 	}
 	
@@ -1089,48 +1089,48 @@ void deoglRLight::pCleanUp(){
 	
 	RemoveAllComponents();
 	
-	if( pOptimizer ){
-		pRenderThread.GetOptimizerManager().RemoveOptimizer( pOptimizer );
+	if(pOptimizer){
+		pRenderThread.GetOptimizerManager().RemoveOptimizer(pOptimizer);
 	}
-	if( pLightVolumeCropBox ){
+	if(pLightVolumeCropBox){
 		delete pLightVolumeCropBox;
 	}
-	if( pConvexVolumeList ){
+	if(pConvexVolumeList){
 		delete pConvexVolumeList;
 	}
-	if( pColVol ){
+	if(pColVol){
 		delete pColVol;
 	}
 	
-	if( pLightCanvas ){
+	if(pLightCanvas){
 		pLightCanvas->FreeReference();
 	}
-	if( pLightSkin ){
+	if(pLightSkin){
 		pLightSkin->FreeReference();
 	}
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
 	
-	if( pLightVolume ){
+	if(pLightVolume){
 		delete pLightVolume;
 	}
-	if( pShadowCaster ){
+	if(pShadowCaster){
 		delete pShadowCaster;
 	}
-	if( pSkinState ){
+	if(pSkinState){
 		delete pSkinState;
 	}
 }
 
 void deoglRLight::pUpdateFullExtends(){
-	if( ! pDirtyFullExtends ){
+	if(!pDirtyFullExtends){
 		return;
 	}
 	
-	const decDVector lightPosition( pMatrix.GetPosition() );
+	const decDVector lightPosition(pMatrix.GetPosition());
 	
-	switch( pLightType ){
+	switch(pLightType){
 	case deLight::eltPoint:
 		// set extends from a box around the light sphere
 		pFullMinExtend.x = lightPosition.x - pRange;
@@ -1174,39 +1174,39 @@ void deoglRLight::pUpdateFullExtends(){
 		pFullMaxExtend.z = lightPosition.z + pRange;
 		
 		/*
-		const decDVector normal( pMatrix.TransformView() );
-		const decDVector center = lightPosition + normal * ( double )pRange;
+		const decDVector normal(pMatrix.TransformView());
+		const decDVector center = lightPosition + normal * (double)pRange;
 		const int resolution = 12;
-		const float circleAngleStep = PI * 2.0f / ( float )resolution;
-		const float circleRadius = pRange * tanf( pSpotAngles.y * 0.5f ) / cosf( circleAngleStep * 0.5f );
+		const float circleAngleStep = PI * 2.0f / (float)resolution;
+		const float circleRadius = pRange * tanf(pSpotAngles.y * 0.5f) / cosf(circleAngleStep * 0.5f);
 		decDVector halfExtend;
 		
-		halfExtend.x = sqrt( 1.0 - normal.x * normal.x ) * ( double )circleRadius;
-		halfExtend.y = sqrt( 1.0 - normal.y * normal.y ) * ( double )circleRadius;
-		halfExtend.z = sqrt( 1.0 - normal.z * normal.z ) * ( double )circleRadius;
+		halfExtend.x = sqrt(1.0 - normal.x * normal.x) * (double)circleRadius;
+		halfExtend.y = sqrt(1.0 - normal.y * normal.y) * (double)circleRadius;
+		halfExtend.z = sqrt(1.0 - normal.z * normal.z) * (double)circleRadius;
 		
 		pFullMinExtend = center - halfExtend;
 		pFullMaxExtend = center + halfExtend;
 		
 		// add the cone base to the boundary box
-		if( lightPosition.x < pFullMinExtend.x ){
+		if(lightPosition.x < pFullMinExtend.x){
 			pFullMinExtend.x = lightPosition.x;
 			
-		}else if( lightPosition.x > pFullMaxExtend.x ){
+		}else if(lightPosition.x > pFullMaxExtend.x){
 			pFullMaxExtend.x = lightPosition.x;
 		}
 		
-		if( lightPosition.y < pFullMinExtend.y ){
+		if(lightPosition.y < pFullMinExtend.y){
 			pFullMinExtend.y = lightPosition.y;
 			
-		}else if( lightPosition.y > pFullMaxExtend.y ){
+		}else if(lightPosition.y > pFullMaxExtend.y){
 			pFullMaxExtend.y = lightPosition.y;
 		}
 		
-		if( lightPosition.z < pFullMinExtend.z ){
+		if(lightPosition.z < pFullMinExtend.z){
 			pFullMinExtend.z = lightPosition.z;
 			
-		}else if( lightPosition.z > pFullMaxExtend.z ){
+		}else if(lightPosition.z > pFullMaxExtend.z){
 			pFullMaxExtend.z = lightPosition.z;
 		}
 		*/
@@ -1232,7 +1232,7 @@ void deoglRLight::pUpdateFullExtends(){
 }
 
 void deoglRLight::pUpdateExtends(){
-	if( ! pDirtyExtends ){
+	if(!pDirtyExtends){
 		return;
 	}
 	
@@ -1244,29 +1244,29 @@ void deoglRLight::pUpdateExtends(){
 	pUpdateLightVolume();
 	
 	// if the light casts shadows determine a matching box using the light volume if existing
-	if( pCastShadows ){
+	if(pCastShadows){
 		//if( pLight->GetType() == deLight::eltSpot )
 		deoglLightVolumeBuilder builder;
-		builder.GetTransformedVolumeExtends( *pConvexVolumeList, pMatrix, pMinExtend, pMaxExtend );
+		builder.GetTransformedVolumeExtends(*pConvexVolumeList, pMatrix, pMinExtend, pMaxExtend);
 	}
 	
 	pDirtyExtends = false;
 }
 
 void deoglRLight::pUpdateCollideLists(){
-	if( ! pDirtyCollideLists ) return;
+	if(!pDirtyCollideLists) return;
 	
 	int i, count;
 	
 	// create collide lists if not existng or clear them if existing
-	if( pStaticCollideList ){
+	if(pStaticCollideList){
 		pStaticCollideList->Clear();
 		
 	}else{
 		pStaticCollideList = new deoglCollideList;
 	}
 	
-	if( pDynamicCollideList ){
+	if(pDynamicCollideList){
 		pDynamicCollideList->Clear();
 		
 	}else{
@@ -1275,14 +1275,14 @@ void deoglRLight::pUpdateCollideLists(){
 	
 	// update static collide list
 	count = pStaticComponentList.GetCount();
-	for( i=0; i<count; i++ ){
-		pStaticCollideList->AddComponent( pStaticComponentList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pStaticCollideList->AddComponent(pStaticComponentList.GetAt(i));
 	}
 	
 	// update dynamic collide list
 	count = pDynamicComponentList.GetCount();
-	for( i=0; i<count; i++ ){
-		pDynamicCollideList->AddComponent( pDynamicComponentList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pDynamicCollideList->AddComponent(pDynamicComponentList.GetAt(i));
 	}
 	
 	// no more dirty
@@ -1290,7 +1290,7 @@ void deoglRLight::pUpdateCollideLists(){
 }
 
 void deoglRLight::pCheckTouching(){
-	if( ! pDirtyTouching ){
+	if(!pDirtyTouching){
 		return;
 	}
 	
@@ -1298,16 +1298,16 @@ void deoglRLight::pCheckTouching(){
 	
 	//if( pLight->GetHintMovement() == deLight::emhStationary ){
 	
-	pStaticComponentList.MarkAll( true );
-	pDynamicComponentList.MarkAll( true );
+	pStaticComponentList.MarkAll(true);
+	pDynamicComponentList.MarkAll(true);
 	
-	if( pActive && pParentWorld ){
+	if(pActive && pParentWorld){
 		pUpdateExtends();
 		pDirtyTouching = false; // pUpdateExtends potentially sets pDirtyTouching to true
 		
-		deoglLightTestForTouch visitor( *this );
+		deoglLightTestForTouch visitor(*this);
 		pUpdateOnRemoveComponent = false;
-		pParentWorld->VisitRegion( pMinExtend, pMaxExtend, visitor );
+		pParentWorld->VisitRegion(pMinExtend, pMaxExtend, visitor);
 		pUpdateOnRemoveComponent = true;
 	}
 	
@@ -1319,64 +1319,64 @@ void deoglRLight::pCheckTouching(){
 	const int staticComponentCount = pStaticComponentList.GetCount();
 	int i;
 	
-	for( i=0; i<staticComponentCount; i++ ){
-		deoglRComponent &component = *pStaticComponentList.GetAt( i );
-		if( component.GetMarked() ){
-			component.GetLightList().RemoveIfExisting( this );
+	for(i=0; i<staticComponentCount; i++){
+		deoglRComponent &component = *pStaticComponentList.GetAt(i);
+		if(component.GetMarked()){
+			component.GetLightList().RemoveIfExisting(this);
 		}
 	}
 	
-	for( i=0; i<dynamicComponentCount; i++ ){
-		deoglRComponent &component = *pDynamicComponentList.GetAt( i );
-		if( component.GetMarked() ){
-			component.GetLightList().RemoveIfExisting( this );
+	for(i=0; i<dynamicComponentCount; i++){
+		deoglRComponent &component = *pDynamicComponentList.GetAt(i);
+		if(component.GetMarked()){
+			component.GetLightList().RemoveIfExisting(this);
 		}
 	}
 	
 	// now the components can be safely removed in an efficient way
-	pStaticComponentList.RemoveAllMarked( true );
-	pDynamicComponentList.RemoveAllMarked( true );
+	pStaticComponentList.RemoveAllMarked(true);
+	pDynamicComponentList.RemoveAllMarked(true);
 }
 
 void deoglRLight::pUpdateCollisionVolume(){
-	if( ! pDirtyColVol ){
+	if(!pDirtyColVol){
 		return;
 	}
 	
-	const decDVector lightPosition( pMatrix.GetPosition() );
+	const decDVector lightPosition(pMatrix.GetPosition());
 	deoglDCollisionVolume *newColVol = NULL;
 	
 	try{
 		// if there exists no light volume yet create a default collision volume
-		if( pConvexVolumeList->GetVolumeCount() == 0 ){
-			switch( pLightType ){
+		if(pConvexVolumeList->GetVolumeCount() == 0){
+			switch(pLightType){
 			case deLight::eltPoint:
 				// create a sphere enclosing the point light
-				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
+				newColVol = new deoglDCollisionSphere(lightPosition, pRange);
 				break;
 				
 			default:
 				// create a sphere around the spot light. a frustum would be the best
 				// solution but currently the frustum is not able to test for collisions
 				// with another frustum
-				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
+				newColVol = new deoglDCollisionSphere(lightPosition, pRange);
 			}
 			
 		// otherwise calculate a box around the light volume list
 		}else{
 			pUpdateExtends();
-			const decDVector halfSize( ( pMaxExtend - pMinExtend ) * 0.5f );
-			newColVol = new deoglDCollisionBox( pMinExtend + halfSize, halfSize );
+			const decDVector halfSize((pMaxExtend - pMinExtend) * 0.5f);
+			newColVol = new deoglDCollisionBox(pMinExtend + halfSize, halfSize);
 		}
 		
 		// replace old collision volumes
-		if( pColVol ){
+		if(pColVol){
 			delete pColVol;
 		}
 		pColVol = newColVol;
 		
-	}catch( const deException & ){
-		if( newColVol ){
+	}catch(const deException &){
+		if(newColVol){
 			delete newColVol;
 		}
 		throw;
@@ -1388,7 +1388,7 @@ void deoglRLight::pUpdateCollisionVolume(){
 void deoglRLight::pUpdateLightVolume(){
 	// NOTE Can be called indirectly from main thread during synchronization.
 	
-	if( ! pDirtyConvexVolumeList ){
+	if(!pDirtyConvexVolumeList){
 		return;
 	}
 	
@@ -1403,70 +1403,70 @@ void deoglRLight::pUpdateLightVolume(){
 	
 //	builder.GetTransformedVolumeExtends( *pConvexVolumeList, pMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
 	
-	switch( pLightType ){
+	switch(pLightType){
 	case deLight::eltPoint:
-		builder.BuildSphere( *pConvexVolumeList, decVector(), pRange );
+		builder.BuildSphere(*pConvexVolumeList, decVector(), pRange);
 		break;
 		
 	case deLight::eltSpot:
-		builder.BuildCone( *pConvexVolumeList, decMatrix(), pRange,
-			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f, 12 );
+		builder.BuildCone(*pConvexVolumeList, decMatrix(), pRange,
+			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f, 12);
 		break;
 		
 	case deLight::eltProjector:
-		builder.BuildFrustum( *pConvexVolumeList, decMatrix(), pRange,
-			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f );
+		builder.BuildFrustum(*pConvexVolumeList, decMatrix(), pRange,
+			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f);
 		break;
 	}
 	
-	if( pLightVolumeCropBox ){
-		const decDVector minExtend( pLightVolumeCropBox->GetPosition()
-			- pLightVolumeCropBox->GetHalfExtends() );
-		const decDVector maxExtend( pLightVolumeCropBox->GetPosition()
-			+ pLightVolumeCropBox->GetHalfExtends() );
+	if(pLightVolumeCropBox){
+		const decDVector minExtend(pLightVolumeCropBox->GetPosition()
+			- pLightVolumeCropBox->GetHalfExtends());
+		const decDVector maxExtend(pLightVolumeCropBox->GetPosition()
+			+ pLightVolumeCropBox->GetHalfExtends());
 		
-		builder.CropByBoundingBox( *pConvexVolumeList,
-			pInverseMatrix.GetRotationMatrix(), minExtend, maxExtend );
+		builder.CropByBoundingBox(*pConvexVolumeList,
+			pInverseMatrix.GetRotationMatrix(), minExtend, maxExtend);
 	}
 	
 //	builder.CropByBoundingBox( *pConvexVolumeList, invLightMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
 	
 	// optimizer stuff
 #if 0
-	if( ! pOptimizer ){
+	if(!pOptimizer){
 		try{
-			pOptimizer = new deoglOptimizerLight( this, oglWorld );
-			if( ! pOptimizer ) DETHROW( deeOutOfMemory );
+			pOptimizer = new deoglOptimizerLight(this, oglWorld);
+			if(!pOptimizer) DETHROW(deeOutOfMemory);
 			
-			if( lightType == deLight::eltPoint ){
-				pOptimizer->SetOptimizeShadowCaster( false );
+			if(lightType == deLight::eltPoint){
+				pOptimizer->SetOptimizeShadowCaster(false);
 			}else{
-				pOptimizer->SetOptimizeShadowCaster( true );
+				pOptimizer->SetOptimizeShadowCaster(true);
 			}
 			
-			if( pLight->GetHintMovement() == deLight::emhStationary ){
-				pOptimizer->SetInitialWarmUpTime( 100 );
-				if( lightType == deLight::eltPoint ){
-					pOptimizer->SetMaximalVolumeCount( 200 );
+			if(pLight->GetHintMovement() == deLight::emhStationary){
+				pOptimizer->SetInitialWarmUpTime(100);
+				if(lightType == deLight::eltPoint){
+					pOptimizer->SetMaximalVolumeCount(200);
 				}else{
-					pOptimizer->SetMaximalVolumeCount( 50 );
+					pOptimizer->SetMaximalVolumeCount(50);
 				}
 				
 			}else{
-				pOptimizer->SetInitialWarmUpTime( 500 );
-				if( lightType == deLight::eltPoint ){
-					pOptimizer->SetMaximalVolumeCount( 100 );
+				pOptimizer->SetInitialWarmUpTime(500);
+				if(lightType == deLight::eltPoint){
+					pOptimizer->SetMaximalVolumeCount(100);
 				}else{
-					pOptimizer->SetMaximalVolumeCount( 25 );
+					pOptimizer->SetMaximalVolumeCount(25);
 				}
 			}
 			
 			pOptimizer->ResetAllOptimizations();
 			
-			pOgl->GetOptimizerManager()->AddOptimizer( pOptimizer );
+			pOgl->GetOptimizerManager()->AddOptimizer(pOptimizer);
 			
-		}catch( const deException & ){
-			if( pOptimizer ) delete pOptimizer;
+		}catch(const deException &){
+			if(pOptimizer) delete pOptimizer;
 			throw;
 		}
 	}
@@ -1474,14 +1474,14 @@ void deoglRLight::pUpdateLightVolume(){
 	
 	// sanity check. if there is not a single volume in the list the chance is high the light volume
 	// becomes concave. we only write a warning here for the case we experiment during debugging
-	if( pConvexVolumeList->GetVolumeCount() > 1 ){
-		const decDVector position( pMatrix.GetPosition() );
-		pRenderThread.GetLogger().LogWarnFormat( "Light at (%g,%g,%g) has a light volume with %i volumes (potentially concave)",
-			position.x, position.y, position.z, pConvexVolumeList->GetVolumeCount() );
+	if(pConvexVolumeList->GetVolumeCount() > 1){
+		const decDVector position(pMatrix.GetPosition());
+		pRenderThread.GetLogger().LogWarnFormat("Light at (%g,%g,%g) has a light volume with %i volumes (potentially concave)",
+			position.x, position.y, position.z, pConvexVolumeList->GetVolumeCount());
 	}
 	
 	// rebuild the light volume using the convex volume list
-	pLightVolume->CreateFrom( *pConvexVolumeList );
+	pLightVolume->CreateFrom(*pConvexVolumeList);
 	// we can not update the VBO here because this metho can be potentially called by the
 	// main thread during synchronization over detours
 	
@@ -1497,7 +1497,7 @@ void deoglRLight::pUpdateLightVolume(){
 }
 
 void deoglRLight::pRequiresPrepareForRender(){
-	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
-		pParentWorld->AddPrepareForRenderLight( this );
+	if(!pLLPrepareForRenderWorld.GetList() && pParentWorld){
+		pParentWorld->AddPrepareForRenderLight(this);
 	}
 }

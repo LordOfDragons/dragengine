@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deLangPackModule( deLoadableModule &loadableModule );
+	deLangPackModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deLangPackModule();
@@ -52,20 +52,20 @@ public:
 	
 	/** \name Management */
 	/** \brief Load  language pack. */
-	virtual void LoadLanguagePack( decBaseFileReader &reader, deLanguagePack &languagePack );
+	virtual void LoadLanguagePack(decBaseFileReader &reader, deLanguagePack &languagePack);
 	
 	/** \brief Save language pack. */
-	virtual void SaveLanguagePack( decBaseFileWriter &writer, const deLanguagePack &languagePack );
+	virtual void SaveLanguagePack(decBaseFileWriter &writer, const deLanguagePack &languagePack);
 	/*@}*/
 	
 private:
-	const decXmlAttValue *pFindAttribute( const decXmlElementTag &tag, const char *name );
-	const char *pGetAttributeString( const decXmlElementTag &tag, const char *name );
+	const decXmlAttValue *pFindAttribute(const decXmlElementTag &tag, const char *name);
+	const char *pGetAttributeString(const decXmlElementTag &tag, const char *name);
 	
-	void pParseLangPack( const decXmlElementTag &root, deLanguagePack &languagePack );
+	void pParseLangPack(const decXmlElementTag &root, deLanguagePack &languagePack);
 	
-	void pWriteLangPack( decXmlWriter &writer, const deLanguagePack &languagePack );
-	void pWriteLangPackEntry( decXmlWriter &writer, const deLanguagePackEntry &entry );
+	void pWriteLangPack(decXmlWriter &writer, const deLanguagePack &languagePack);
+	void pWriteLangPackEntry(decXmlWriter &writer, const deLanguagePackEntry &entry);
 };
 
 #endif

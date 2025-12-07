@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCBillboardToggleSpherical::gdeUOCBillboardToggleSpherical(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+pObjectClass(NULL),
+pBillboard(NULL)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard toggle spherical" );
+	SetShortInfo("Billboard toggle spherical");
 	
 	pBillboard = billboard;
 	billboard->AddReference();
@@ -59,10 +59,10 @@ pBillboard( NULL )
 }
 
 gdeUOCBillboardToggleSpherical::~gdeUOCBillboardToggleSpherical(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCBillboardToggleSpherical::~gdeUOCBillboardToggleSpherical(){
 ///////////////
 
 void gdeUOCBillboardToggleSpherical::Undo(){
-	pBillboard->SetSpherical( ! pBillboard->GetSpherical() );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetSpherical(!pBillboard->GetSpherical());
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardToggleSpherical::Redo(){

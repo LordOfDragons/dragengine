@@ -43,8 +43,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadSound( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deSound *sound );
+	deRLTaskReadSound(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deSound *sound);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskReadSound();

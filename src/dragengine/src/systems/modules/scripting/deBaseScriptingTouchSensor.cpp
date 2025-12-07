@@ -43,8 +43,8 @@ deBaseScriptingTouchSensor::~deBaseScriptingTouchSensor(){
 // Notifications
 //////////////////
 
-void deBaseScriptingTouchSensor::ColliderEntered( deCollider *collider ){
+void deBaseScriptingTouchSensor::ColliderEntered(deCollider *collider){
 }
 
-void deBaseScriptingTouchSensor::ColliderLeft( deCollider *collider ){
+void deBaseScriptingTouchSensor::ColliderLeft(deCollider *collider){
 }

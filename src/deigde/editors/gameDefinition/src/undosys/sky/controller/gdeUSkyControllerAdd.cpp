@@ -40,19 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUSkyControllerAdd::gdeUSkyControllerAdd( gdeSky *sky, gdeSkyController *controller ) :
-pSky( NULL ),
-pController( NULL )
+gdeUSkyControllerAdd::gdeUSkyControllerAdd(gdeSky *sky, gdeSkyController *controller) :
+pSky(NULL),
+pController(NULL)
 {
-	if( ! sky || ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!sky || !controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( sky->GetControllers().Has( controller ) ){
-		DETHROW( deeInvalidParam );
+	if(sky->GetControllers().Has(controller)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add sky controller" );
+	SetShortInfo("Add sky controller");
 	
 	pSky = sky;
 	sky->AddReference();
@@ -62,10 +62,10 @@ pController( NULL )
 }
 
 gdeUSkyControllerAdd::~gdeUSkyControllerAdd(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -76,9 +76,9 @@ gdeUSkyControllerAdd::~gdeUSkyControllerAdd(){
 ///////////////
 
 void gdeUSkyControllerAdd::Undo(){
-	pSky->RemoveController( pController );
+	pSky->RemoveController(pController);
 }
 
 void gdeUSkyControllerAdd::Redo(){
-	pSky->AddController( pController );
+	pSky->AddController(pController);
 }

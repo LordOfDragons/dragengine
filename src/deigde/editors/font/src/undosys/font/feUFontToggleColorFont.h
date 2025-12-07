@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontToggleColorFont( feFont *font );
+	feUFontToggleColorFont(feFont *font);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -54,8 +54,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetApplicationType( gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, deForceField::eApplicationTypes newValue );
+	gdeUOCForceFieldSetApplicationType(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, deForceField::eApplicationTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

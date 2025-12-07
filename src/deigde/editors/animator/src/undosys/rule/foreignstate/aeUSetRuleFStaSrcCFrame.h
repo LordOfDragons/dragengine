@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaSrcCFrame( aeRuleForeignState *rule, deAnimatorRuleForeignState::eCoordinateFrames newCFrame );
+	aeUSetRuleFStaSrcCFrame(aeRuleForeignState *rule, deAnimatorRuleForeignState::eCoordinateFrames newCFrame);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaSrcCFrame();

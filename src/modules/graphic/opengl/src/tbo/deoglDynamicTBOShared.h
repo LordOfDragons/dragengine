@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared dynamic TBO. */
-	deoglDynamicTBOShared( deoglDynamicTBO *tbo, int stride, deoglDynamicTBO *tbo2 = NULL, int stride2 = 1 );
+	deoglDynamicTBOShared(deoglDynamicTBO *tbo, int stride, deoglDynamicTBO *tbo2 = NULL, int stride2 = 1);
 	
 	/** Cleans up shared dynamic TBO. */
 	virtual ~deoglDynamicTBOShared();
@@ -94,24 +94,24 @@ public:
 	int GetBlockCount() const;
 	
 	/** Block at index. */
-	deoglDynamicTBOBlock *GetBlockAt( int index ) const;
+	deoglDynamicTBOBlock *GetBlockAt(int index) const;
 	
 	/** Add block. Returns block or NULL if not enough space. */
-	deoglDynamicTBOBlock *AddBlock( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL );
+	deoglDynamicTBOBlock *AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL);
 	
 	/** Remove block returning the space to the pool of free space. */
-	void RemoveBlock( deoglDynamicTBOBlock *block );
+	void RemoveBlock(deoglDynamicTBOBlock *block);
 	
 	/**
 	 * Index of first empty block TBO fits in or NULL if not found. If the only empty block
 	 * is the last block the TBO is considered to always fit.
 	 */
-	int FirstMatchingBlock( deoglDynamicTBO *tbo );
+	int FirstMatchingBlock(deoglDynamicTBO *tbo);
 	
 	
 	
 	/** Debug print. */
-	void DebugPrint( deoglRTLogger &logger ) const;
+	void DebugPrint(deoglRTLogger &logger) const;
 	/*@}*/
 	
 	

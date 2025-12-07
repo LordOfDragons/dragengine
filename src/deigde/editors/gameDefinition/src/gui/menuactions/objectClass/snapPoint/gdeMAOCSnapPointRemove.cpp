@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSnapPointRemove::gdeMAOCSnapPointRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Snap Point",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class snap point" )
+gdeMAOCSnapPointRemove::gdeMAOCSnapPointRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Snap Point",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class snap point")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Snap Point",
 ///////////////
 
 igdeUndo *gdeMAOCSnapPointRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSnapPoint ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSnapPoint){
 		return NULL;
 	}
 	
 	gdeOCSnapPoint * const snapPoint = gameDefinition.GetActiveOCSnapPoint();
-	if( ! snapPoint ){
+	if(!snapPoint){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveSnapPoint( &objectClass, snapPoint );
+	return new gdeUOCRemoveSnapPoint(&objectClass, snapPoint);
 }
 
 void gdeMAOCSnapPointRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint
-		&& gameDefinition->GetActiveOCSnapPoint() != NULL );
+		&& gameDefinition->GetActiveOCSnapPoint() != NULL);
 }

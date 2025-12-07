@@ -45,34 +45,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSPBlockUBO::deoglSPBlockUBO( deoglRenderThread &renderThread ) :
-deoglShaderParameterBlock( renderThread ),
-pUBO( 0 ),
-pBindingPoint( 0 ),
-pCompact( true ),
-pAllocateBuffer( true ),
-pWriteBuffer( NULL ),
-pWriteBufferCapacity( 0 ),
-pWriteBufferUsed( false ){
+deoglSPBlockUBO::deoglSPBlockUBO(deoglRenderThread &renderThread) :
+deoglShaderParameterBlock(renderThread),
+pUBO(0),
+pBindingPoint(0),
+pCompact(true),
+pAllocateBuffer(true),
+pWriteBuffer(NULL),
+pWriteBufferCapacity(0),
+pWriteBufferUsed(false){
 }
 
-deoglSPBlockUBO::deoglSPBlockUBO( const deoglSPBlockUBO &paramBlock ) :
-deoglShaderParameterBlock( paramBlock ),
-pUBO( 0 ),
-pBindingPoint( paramBlock.pBindingPoint ),
-pCompact( paramBlock.pCompact ),
-pAllocateBuffer( true ),
-pWriteBuffer( NULL ),
-pWriteBufferCapacity( 0 ),
-pWriteBufferUsed( false ){
+deoglSPBlockUBO::deoglSPBlockUBO(const deoglSPBlockUBO &paramBlock) :
+deoglShaderParameterBlock(paramBlock),
+pUBO(0),
+pBindingPoint(paramBlock.pBindingPoint),
+pCompact(paramBlock.pCompact),
+pAllocateBuffer(true),
+pWriteBuffer(NULL),
+pWriteBufferCapacity(0),
+pWriteBufferUsed(false){
 }
 
 deoglSPBlockUBO::~deoglSPBlockUBO(){
-	if( IsBufferMapped() ){
+	if(IsBufferMapped()){
 		pClearMapped(); // done by delete
 	}
-	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pUBO );
-	if( pWriteBuffer ){
+	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer(pUBO);
+	if(pWriteBuffer){
 		delete [] pWriteBuffer;
 	}
 }
@@ -82,53 +82,53 @@ deoglSPBlockUBO::~deoglSPBlockUBO(){
 // Management
 ///////////////
 
-void deoglSPBlockUBO::SetBindingPoint( int bindingPoint ){
+void deoglSPBlockUBO::SetBindingPoint(int bindingPoint){
 	pBindingPoint = bindingPoint;
 }
 
-void deoglSPBlockUBO::SetCompact( bool compact ){
-	DEASSERT_FALSE( IsBufferMapped() )
+void deoglSPBlockUBO::SetCompact(bool compact){
+	DEASSERT_FALSE(IsBufferMapped())
 	
 	pCompact = compact;
 }
 
 void deoglSPBlockUBO::Activate() const{
-	DEASSERT_NOTNULL( pUBO )
-	DEASSERT_FALSE( IsBufferMapped() )
+	DEASSERT_NOTNULL(pUBO)
+	DEASSERT_FALSE(IsBufferMapped())
 	
-	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPoint, pUBO ) );
+	OGL_CHECK(GetRenderThread(), pglBindBufferBase(GL_UNIFORM_BUFFER, pBindingPoint, pUBO));
 }
 
-void deoglSPBlockUBO::Activate( int bindingPoint ) const{
-	DEASSERT_NOTNULL( pUBO )
-	DEASSERT_FALSE( IsBufferMapped() )
+void deoglSPBlockUBO::Activate(int bindingPoint) const{
+	DEASSERT_NOTNULL(pUBO)
+	DEASSERT_FALSE(IsBufferMapped())
 	
-	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, pUBO ) );
+	OGL_CHECK(GetRenderThread(), pglBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, pUBO));
 }
 
 void deoglSPBlockUBO::Deactivate() const{
-	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPoint, 0 ) );
+	OGL_CHECK(GetRenderThread(), pglBindBufferBase(GL_UNIFORM_BUFFER, pBindingPoint, 0));
 }
 
-void deoglSPBlockUBO::Deactivate( int bindingPoint ) const{
-	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, 0 ) );
+void deoglSPBlockUBO::Deactivate(int bindingPoint) const{
+	OGL_CHECK(GetRenderThread(), pglBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, 0));
 }
 
 void deoglSPBlockUBO::MapBuffer(){
-	DEASSERT_FALSE( IsBufferMapped()  )
-	DEASSERT_TRUE( GetBufferSize() > 0 )
+	DEASSERT_FALSE(IsBufferMapped())
+	DEASSERT_TRUE(GetBufferSize() > 0)
 	
-	if( false ){ // use mapped
-		if( ! pUBO ){
-			OGL_CHECK( GetRenderThread(), pglGenBuffers( 1, &pUBO ) );
-			if( ! pUBO ){
-				DETHROW( deeOutOfMemory );
+	if(false){ // use mapped
+		if(!pUBO){
+			OGL_CHECK(GetRenderThread(), pglGenBuffers(1, &pUBO));
+			if(!pUBO){
+				DETHROW(deeOutOfMemory);
 			}
 		}
 		
-		OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_UNIFORM_BUFFER, pUBO ) );
-		OGL_CHECK( GetRenderThread(), pglBufferData( GL_UNIFORM_BUFFER,
-			GetBufferSize(), NULL, GL_DYNAMIC_DRAW ) );
+		OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_UNIFORM_BUFFER, pUBO));
+		OGL_CHECK(GetRenderThread(), pglBufferData(GL_UNIFORM_BUFFER,
+			GetBufferSize(), NULL, GL_DYNAMIC_DRAW));
 				// clear using old clear method
 		pAllocateBuffer = false;
 		
@@ -138,94 +138,94 @@ void deoglSPBlockUBO::MapBuffer(){
 		try{
 			char *data;
 			
-			if( pglMapBuffer ){
-				OGL_CHECK( GetRenderThread(), data = ( char* )pglMapBuffer(
-					GL_UNIFORM_BUFFER, GL_WRITE_ONLY ) );
+			if(pglMapBuffer){
+				OGL_CHECK(GetRenderThread(), data = (char*)pglMapBuffer(
+					GL_UNIFORM_BUFFER, GL_WRITE_ONLY));
 				
 			}else{
-				OGL_CHECK( GetRenderThread(), data = ( char* )pglMapBufferRange( GL_UNIFORM_BUFFER,
-					0, GetBufferSize(), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT ) );
+				OGL_CHECK(GetRenderThread(), data = (char*)pglMapBufferRange(GL_UNIFORM_BUFFER,
+					0, GetBufferSize(), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT));
 			}
 			
-			if( ! data ){
-				DETHROW( deeInvalidParam );
+			if(!data){
+				DETHROW(deeInvalidParam);
 			}
-			pSetMapped( data );
+			pSetMapped(data);
 			
-		}catch( const deException & ){
-			OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_UNIFORM_BUFFER, 0 ) );
+		}catch(const deException &){
+			OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_UNIFORM_BUFFER, 0));
 			throw;
 		}
 		
 	}else{
-		pGrowWriteBuffer( GetBufferSize() );
+		pGrowWriteBuffer(GetBufferSize());
 		pWriteBufferUsed = true;
-		pSetMapped( pWriteBuffer );
+		pSetMapped(pWriteBuffer);
 	}
 }
 
-void deoglSPBlockUBO::MapBuffer( int element ){
-	MapBuffer( element, 1 );
+void deoglSPBlockUBO::MapBuffer(int element){
+	MapBuffer(element, 1);
 }
 
-void deoglSPBlockUBO::MapBuffer( int element, int count ){
-	DEASSERT_FALSE( IsBufferMapped()  )
-	DEASSERT_TRUE( GetBufferSize() > 0 )
-	DEASSERT_TRUE( element >= 0 )
-	DEASSERT_TRUE( count > 0 )
-	DEASSERT_TRUE( element + count <= GetElementCount() )
+void deoglSPBlockUBO::MapBuffer(int element, int count){
+	DEASSERT_FALSE(IsBufferMapped())
+	DEASSERT_TRUE(GetBufferSize() > 0)
+	DEASSERT_TRUE(element >= 0)
+	DEASSERT_TRUE(count > 0)
+	DEASSERT_TRUE(element + count <= GetElementCount())
 	
-	if( false ){ // use mapped
-		if( ! pUBO ){
-			OGL_CHECK( GetRenderThread(), pglGenBuffers( 1, &pUBO ) );
-			if( ! pUBO ){
-				DETHROW( deeOutOfMemory );
+	if(false){ // use mapped
+		if(!pUBO){
+			OGL_CHECK(GetRenderThread(), pglGenBuffers(1, &pUBO));
+			if(!pUBO){
+				DETHROW(deeOutOfMemory);
 			}
 			pAllocateBuffer = true;
 		}
 		
-		OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_UNIFORM_BUFFER, pUBO ) );
+		OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_UNIFORM_BUFFER, pUBO));
 		
-		if( pAllocateBuffer ){
-			OGL_CHECK( GetRenderThread(), pglBufferData( GL_UNIFORM_BUFFER,
-				GetBufferSize(), NULL, GL_DYNAMIC_DRAW ) );
+		if(pAllocateBuffer){
+			OGL_CHECK(GetRenderThread(), pglBufferData(GL_UNIFORM_BUFFER,
+				GetBufferSize(), NULL, GL_DYNAMIC_DRAW));
 			pAllocateBuffer = false;
 		}
 		
 		try{
 			char *data;
 			
-			OGL_CHECK( GetRenderThread(), data = ( char* )pglMapBufferRange( GL_UNIFORM_BUFFER,
+			OGL_CHECK(GetRenderThread(), data = (char*)pglMapBufferRange(GL_UNIFORM_BUFFER,
 				GetElementStride() * element, GetElementStride() * count,
-				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT ) );
+				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT));
 			
-			if( ! data ){
-				DETHROW( deeInvalidParam );
+			if(!data){
+				DETHROW(deeInvalidParam);
 			}
-			pSetMapped( data, element, count );
+			pSetMapped(data, element, count);
 			
-		}catch( const deException & ){
-			OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_UNIFORM_BUFFER, 0 ) );
+		}catch(const deException &){
+			OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_UNIFORM_BUFFER, 0));
 			throw;
 		}
 		
 	}else{
-		pGrowWriteBuffer( GetElementStride() * count );
+		pGrowWriteBuffer(GetElementStride() * count);
 		pWriteBufferUsed = true;
-		pSetMapped( pWriteBuffer, element, count );
+		pSetMapped(pWriteBuffer, element, count);
 	}
 }
 
 void deoglSPBlockUBO::UnmapBuffer(){
-	DEASSERT_TRUE( IsBufferMapped() )
+	DEASSERT_TRUE(IsBufferMapped())
 	
-	if( pWriteBufferUsed ){
-		OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
+	if(pWriteBufferUsed){
+		OGL_IF_CHECK(deoglRenderThread &renderThread = GetRenderThread();)
 		
-		if( ! pUBO ){
-			OGL_CHECK( renderThread, pglGenBuffers( 1, &pUBO ) );
-			if( ! pUBO ){
-				DETHROW( deeOutOfMemory );
+		if(!pUBO){
+			OGL_CHECK(renderThread, pglGenBuffers(1, &pUBO));
+			if(!pUBO){
+				DETHROW(deeOutOfMemory);
 			}
 			pAllocateBuffer = true;
 		}
@@ -235,32 +235,32 @@ void deoglSPBlockUBO::UnmapBuffer(){
 		const int upper = pGetElementUpper();
 		
 		const int offset = stride * lower;
-		const int size = stride * ( upper - lower + 1 );
+		const int size = stride * (upper - lower + 1);
 		
-		if( pAllocateBuffer ){
-			OGL_CHECK( renderThread, pglBindBuffer( GL_UNIFORM_BUFFER, pUBO ) );
-			OGL_CHECK( renderThread, pglBufferData( GL_UNIFORM_BUFFER,
-				GetBufferSize(), NULL, GL_DYNAMIC_DRAW ) );
+		if(pAllocateBuffer){
+			OGL_CHECK(renderThread, pglBindBuffer(GL_UNIFORM_BUFFER, pUBO));
+			OGL_CHECK(renderThread, pglBufferData(GL_UNIFORM_BUFFER,
+				GetBufferSize(), NULL, GL_DYNAMIC_DRAW));
 			pAllocateBuffer = false;
 			
 		}else{
-			if( pglBindBufferRange ){
-				OGL_CHECK( renderThread, pglBindBufferRange( GL_UNIFORM_BUFFER, 0, pUBO, offset, size ) );
+			if(pglBindBufferRange){
+				OGL_CHECK(renderThread, pglBindBufferRange(GL_UNIFORM_BUFFER, 0, pUBO, offset, size));
 				
 			}else{
-				OGL_CHECK( renderThread, pglBindBuffer( GL_UNIFORM_BUFFER, pUBO ) );
+				OGL_CHECK(renderThread, pglBindBuffer(GL_UNIFORM_BUFFER, pUBO));
 			}
 		}
 		
-		OGL_CHECK( renderThread, pglBufferSubData( GL_UNIFORM_BUFFER, offset, size, pWriteBuffer ) );
+		OGL_CHECK(renderThread, pglBufferSubData(GL_UNIFORM_BUFFER, offset, size, pWriteBuffer));
 		pWriteBufferUsed = false;
 		
 	}else{
-		OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_UNIFORM_BUFFER, pUBO ) );
-		OGL_CHECK( GetRenderThread(), pglUnmapBuffer( GL_UNIFORM_BUFFER ) );
+		OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_UNIFORM_BUFFER, pUBO));
+		OGL_CHECK(GetRenderThread(), pglUnmapBuffer(GL_UNIFORM_BUFFER));
 	}
 	
-	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_UNIFORM_BUFFER, 0 ) );
+	OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_UNIFORM_BUFFER, 0));
 	pClearMapped();
 }
 
@@ -269,30 +269,30 @@ int deoglSPBlockUBO::GetAlignmentRequirements() const{
 }
 
 deoglShaderParameterBlock *deoglSPBlockUBO::Copy() const{
-	return new deoglSPBlockUBO( *this );
+	return new deoglSPBlockUBO(*this);
 }
 
 
 
-void deoglSPBlockUBO::DebugPrintConfig( const char *name ){
-	const char * const valueTypeNames[ 3 ] = { "float", "int", "bool" };
+void deoglSPBlockUBO::DebugPrintConfig(const char *name){
+	const char * const valueTypeNames[3] = {"float", "int", "bool"};
 	int i;
 	
-	GetRenderThread().GetLogger().LogInfoFormat( "Shader Parameter Block '%s' (%p):"
+	GetRenderThread().GetLogger().LogInfoFormat("Shader Parameter Block '%s' (%p):"
 		" parameters=%d ubo=%u binding=%u elementCount=%d elementStride=%d"
 		" offsetPadding=%d size=%d %s", name, this, GetParameterCount(), pUBO, pBindingPoint,
 		GetElementCount(), GetElementStride(), GetOffsetPadding(), GetBufferSize(),
-		GetRowMajor() ? "rowMajor" : "colMajor" );
+		GetRowMajor() ? "rowMajor" : "colMajor");
 	
-	for( i=0; i<GetParameterCount(); i++ ){
-		const deoglSPBParameter &parameter = GetParameterAt( i );
-		GetRenderThread().GetLogger().LogInfoFormat( "- Parameter %i: %s%ix%i[%i]"
+	for(i=0; i<GetParameterCount(); i++){
+		const deoglSPBParameter &parameter = GetParameterAt(i);
+		GetRenderThread().GetLogger().LogInfoFormat("- Parameter %i: %s%ix%i[%i]"
 			" offset=%u stride=%u arraystride=%i size=%u", i,
-				valueTypeNames[ parameter.GetValueType() ],
+				valueTypeNames[parameter.GetValueType()],
 				parameter.GetComponentCount(), parameter.GetVectorCount(),
 				parameter.GetArrayCount(), parameter.GetOffset(),
 				parameter.GetStride(), parameter.GetArrayStride(),
-				parameter.GetDataSize() );
+				parameter.GetDataSize());
 	}
 }
 
@@ -311,16 +311,16 @@ void deoglSPBlockUBO::pUpdateBufferSize(){
 // Private Functions
 //////////////////////
 
-void deoglSPBlockUBO::pGrowWriteBuffer( int size ){
-	if( size <= pWriteBufferCapacity ){
+void deoglSPBlockUBO::pGrowWriteBuffer(int size){
+	if(size <= pWriteBufferCapacity){
 		return;
 	}
 	
-	char * const newBuffer = new char[ size ];
+	char * const newBuffer = new char[size];
 	
-	if( pWriteBuffer ){
-		if( pWriteBufferCapacity > 0 ){
-			memcpy( newBuffer, pWriteBuffer, pWriteBufferCapacity );
+	if(pWriteBuffer){
+		if(pWriteBufferCapacity > 0){
+			memcpy(newBuffer, pWriteBuffer, pWriteBufferCapacity);
 		}
 		
 		delete [] pWriteBuffer;

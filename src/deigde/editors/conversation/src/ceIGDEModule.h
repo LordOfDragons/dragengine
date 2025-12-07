@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	ceIGDEModule( igdeEnvironment &environment );
+	ceIGDEModule(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up editor module. */

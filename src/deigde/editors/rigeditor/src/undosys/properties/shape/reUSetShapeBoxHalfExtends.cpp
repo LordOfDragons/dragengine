@@ -34,15 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeBoxHalfExtends::reUSetShapeBoxHalfExtends( reRigShapeBox *shape, const decVector &halfExtends ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeBoxHalfExtends::reUSetShapeBoxHalfExtends(reRigShapeBox *shape, const decVector &halfExtends){
+	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	
 	pOldHalfExtends = shape->GetHalfExtends();
 	pNewHalfExtends = halfExtends;
 	
-	SetShortInfo( "Set Box Shape HalfExtends" );
+	SetShortInfo("Set Box Shape HalfExtends");
 	
 	pShape->AddReference();
 }
@@ -57,9 +57,9 @@ reUSetShapeBoxHalfExtends::~reUSetShapeBoxHalfExtends(){
 ///////////////
 
 void reUSetShapeBoxHalfExtends::Undo(){
-	pShape->SetHalfExtends( pOldHalfExtends );
+	pShape->SetHalfExtends(pOldHalfExtends);
 }
 
 void reUSetShapeBoxHalfExtends::Redo(){
-	pShape->SetHalfExtends( pNewHalfExtends );
+	pShape->SetHalfExtends(pNewHalfExtends);
 }

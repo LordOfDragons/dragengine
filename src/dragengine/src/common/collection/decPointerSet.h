@@ -51,10 +51,10 @@ public:
 	 * \brief Create a new set with initial capacity.
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	decPointerSet( int capacity );
+	decPointerSet(int capacity);
 	
 	/** \brief Create copy of a set. */
-	decPointerSet( const decPointerSet &set );
+	decPointerSet(const decPointerSet &set);
 	
 	/** \brief Clean up the set. */
 	~decPointerSet();
@@ -71,34 +71,34 @@ public:
 	 * \brief Pointer at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void *GetAt( int position ) const;
+	void *GetAt(int position) const;
 	
 	/** \brief Determine if pointer exists in the list. */
-	bool Has( void *pointer ) const;
+	bool Has(void *pointer) const;
 	
 	/**
 	 * \brief Add pointer.
 	 * \throws deeInvalidParam \em object is present in the set.
 	 */
-	void Add( void *pointer );
+	void Add(void *pointer);
 	
 	/** \brief Add pointer if absent from the set. */
-	void AddIfAbsent( void *pointer );
+	void AddIfAbsent(void *pointer);
 	
 	/**
 	 * \brief Remove pointer.
 	 * \throws deeInvalidParam \em object is is absent from the set.
 	 */
-	void Remove( void *pointer );
+	void Remove(void *pointer);
 	
 	/** \brief Remove pointer if present in the set. */
-	void RemoveIfPresent( void *pointer );
+	void RemoveIfPresent(void *pointer);
 	
 	/** \brief Remove all pointers. */
 	void RemoveAll();
 	
 	/** \brief Determine if this set is equal to another set. */
-	bool Equals( const decPointerSet &set ) const;
+	bool Equals(const decPointerSet &set) const;
 	
 	
 	
@@ -111,7 +111,7 @@ public:
 	 */
 	void Visit(decPointerVisitor &visitor, int from, int to = -1, int step = 1) const;
 	
-	inline void Visit(decPointerVisitor &visitor) const{ Visit(visitor, 0, pPointerCount); }
+	inline void Visit(decPointerVisitor &visitor) const{Visit(visitor, 0, pPointerCount);}
 	
 	/**
 	 * \brief Find pointer.
@@ -150,7 +150,7 @@ public:
 	 */
 	void RemoveIf(decPointerEvaluator &evaluator, int from, int to = -1, int step = 1);
 	
-	inline void RemoveIf(decPointerEvaluator &evaluator){ RemoveIf(evaluator, 0, pPointerCount); }
+	inline void RemoveIf(decPointerEvaluator &evaluator){RemoveIf(evaluator, 0, pPointerCount);}
 	/*@}*/
 	
 	
@@ -158,29 +158,29 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if this set is equal to another set. */
-	bool operator==( const decPointerSet &set ) const;
+	bool operator==(const decPointerSet &set) const;
 	
 	/** \brief New set containing all objects of this set followed by all objects of another set. */
-	decPointerSet operator+( const decPointerSet &set ) const;
+	decPointerSet operator+(const decPointerSet &set) const;
 	
 	/**
 	 * \brief Object at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void *operator[]( int position ) const;
+	void *operator[](int position) const;
 	
 	/** \brief Copy set to this set. */
-	decPointerSet &operator=( const decPointerSet &set );
+	decPointerSet &operator=(const decPointerSet &set);
 	
 	/** \brief Append objects of set to this set. */
-	decPointerSet &operator+=( const decPointerSet &set );
+	decPointerSet &operator+=(const decPointerSet &set);
 	/*@}*/
 	
 	
 	
 private:
 	/** \brief Index of the first occurance of a pointer or -1 if not found. */
-	int pIndexOf( void *pointer ) const;
+	int pIndexOf(void *pointer) const;
 };
 
 #endif

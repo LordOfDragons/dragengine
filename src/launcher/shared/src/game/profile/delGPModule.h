@@ -55,10 +55,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game profile module. */
-	delGPModule( const char *name = "" );
+	delGPModule(const char *name = "");
 	
 	/** \brief Create copy of game profile module. */
-	delGPModule( const delGPModule &module );
+	delGPModule(const delGPModule &module);
 	
 protected:
 	/** \brief Clean up game profile. */
@@ -74,7 +74,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set module name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Parameters. */
 	inline delGPMParameterList &GetParameters(){ return pParameters; }
@@ -86,8 +86,8 @@ public:
 	 * Invalid parameters are silently ignored and do not cause an exception.
 	 * Version has to be set to the module version to operate on.
 	 */
-	void ApplyParameters( const char *version, delLauncher &launcher,
-		delEngineInstance &engineInstance ) const;
+	void ApplyParameters(const char *version, delLauncher &launcher,
+		delEngineInstance &engineInstance) const;
 	/*@}*/
 	
 	
@@ -95,7 +95,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy module. */
-	delGPModule &operator=( const delGPModule &module );
+	delGPModule &operator=(const delGPModule &module);
 	/*@}*/
 };
 

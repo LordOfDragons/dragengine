@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCAInConvoSetActor( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorInConversation *condition, const char *newID );
+	ceUCCAInConvoSetActor(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorInConversation *condition, const char *newID);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCCAInConvoSetActor();

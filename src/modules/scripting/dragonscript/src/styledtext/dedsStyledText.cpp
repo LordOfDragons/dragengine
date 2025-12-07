@@ -44,7 +44,7 @@ dedsStyledText::dedsStyledText(){
 	pRootNode = NULL;
 	
 	pRootNode = new dedsSTNParagraph;
-	if( ! pRootNode ) DSTHROW( dueInvalidParam );
+	if(!pRootNode) DSTHROW(dueInvalidParam);
 }
 
 
@@ -58,10 +58,10 @@ dedsStyledText::~dedsStyledText(){
 ///////////////
 
 
-void dedsStyledText::SetRootNode( dedsStyledTextNode* node ){
-	if( ! node ) DSTHROW( dueInvalidParam );
+void dedsStyledText::SetRootNode(dedsStyledTextNode* node){
+	if(!node) DSTHROW(dueInvalidParam);
 	
-	if( node != pRootNode ){
+	if(node != pRootNode){
 		pRootNode->FreeReference();
 		pRootNode = node;
 		node->AddReference();
@@ -75,5 +75,5 @@ void dedsStyledText::SetRootNode( dedsStyledTextNode* node ){
 
 
 void dedsStyledText::pCleanUp(){
-	if( pRootNode ) pRootNode->FreeReference();
+	if(pRootNode) pRootNode->FreeReference();
 }

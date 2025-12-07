@@ -36,8 +36,8 @@
 /////////////////////////////////
 
 dearComponentBoneState::dearComponentBoneState() :
-pScale( 1.0f, 1.0f, 1.0f ),
-pParent( NULL ){
+pScale(1.0f, 1.0f, 1.0f),
+pParent(NULL){
 }
 
 dearComponentBoneState::~dearComponentBoneState(){
@@ -48,28 +48,28 @@ dearComponentBoneState::~dearComponentBoneState(){
 // Management
 ///////////////
 
-void dearComponentBoneState::SetPosition( const decVector &position ){
+void dearComponentBoneState::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void dearComponentBoneState::SetRotation( const decQuaternion &rotation ){
+void dearComponentBoneState::SetRotation(const decQuaternion &rotation){
 	pRotation = rotation;
 }
 
-void dearComponentBoneState::SetScale( const decVector &scale ){
+void dearComponentBoneState::SetScale(const decVector &scale){
 	pScale = scale;
 }
 
 
 
-void dearComponentBoneState::SetParent( dearComponentBoneState *parent ){
+void dearComponentBoneState::SetParent(dearComponentBoneState *parent){
 	pParent = parent;
 }
 
-void dearComponentBoneState::SetOriginalMatrix( const decMatrix &matrix ){
+void dearComponentBoneState::SetOriginalMatrix(const decMatrix &matrix){
 	pOriginalMatrix = matrix;
 }
 
-void dearComponentBoneState::SetMatrix( const decMatrix &matrix ){
+void dearComponentBoneState::SetMatrix(const decMatrix &matrix){
 	pMatrix = matrix;
 }

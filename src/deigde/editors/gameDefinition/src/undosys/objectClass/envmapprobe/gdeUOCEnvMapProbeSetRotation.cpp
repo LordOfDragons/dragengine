@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetRotation::gdeUOCEnvMapProbeSetRotation( gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decVector &newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCEnvMapProbeSetRotation::gdeUOCEnvMapProbeSetRotation(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
+pObjectClass(NULL),
+pEnvMapProbe(NULL)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set position" );
+	SetShortInfo("Env-map probe set position");
 	
 	pOldValue = envMapProbe->GetRotation();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pEnvMapProbe( NULL )
 }
 
 gdeUOCEnvMapProbeSetRotation::~gdeUOCEnvMapProbeSetRotation(){
-	if( pEnvMapProbe ){
+	if(pEnvMapProbe){
 		pEnvMapProbe->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCEnvMapProbeSetRotation::~gdeUOCEnvMapProbeSetRotation(){
 ///////////////
 
 void gdeUOCEnvMapProbeSetRotation::Undo(){
-	pEnvMapProbe->SetRotation( pOldValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetRotation(pOldValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetRotation::Redo(){
-	pEnvMapProbe->SetRotation( pNewValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetRotation(pNewValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

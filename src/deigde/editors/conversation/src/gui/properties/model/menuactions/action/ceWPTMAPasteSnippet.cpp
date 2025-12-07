@@ -49,11 +49,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPasteSnippet::ceWPTMAPasteSnippet( ceWindowMain &windowMain,
-ceConversation &conversation ) :
-ceWPTMenuAction( windowMain, "Paste Conversation Snippet...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ) ),
-pConversation( &conversation ){
+ceWPTMAPasteSnippet::ceWPTMAPasteSnippet(ceWindowMain &windowMain,
+ceConversation &conversation) :
+ceWPTMenuAction(windowMain, "Paste Conversation Snippet...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
+pConversation(&conversation){
 }
 
 
@@ -63,18 +63,18 @@ pConversation( &conversation ){
 
 void ceWPTMAPasteSnippet::OnAction(){
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceDialogPasteSnippet::Ref dialog(ceDialogPasteSnippet::Ref::NewWith(
 		GetWindowMain().GetEnvironment(), pConversation));
 	
-	if( ! dialog->Run( &GetWindowMain() ) || dialog->GetActions().GetCount() == 0 ){
+	if(!dialog->Run(&GetWindowMain()) || dialog->GetActions().GetCount() == 0){
 		return;
 	}
 	
-	igdeUndo::Ref undo(igdeUndo::Ref::New( CreateUndo( dialog->GetActions() ) ));
+	igdeUndo::Ref undo(igdeUndo::Ref::New(CreateUndo(dialog->GetActions())));
 	//undo->SetShortInfo( "Paste Conversation Snippet" );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(undo);
 }

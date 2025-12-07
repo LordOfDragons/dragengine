@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Delete objects. */
-	virtual void DeleteObjects( deoalAudioThread &audioThread ) = 0;
+	virtual void DeleteObjects(deoalAudioThread &audioThread) = 0;
 	/*@}*/
 	
 	
@@ -68,13 +68,13 @@ public:
 	inline deoalDelayedDeletion *GetLLPrev() const{ return pLLPrev; }
 	
 	/** \brief Set previous entry in the linked list or \em NULL. */
-	void SetLLPrev( deoalDelayedDeletion *prev );
+	void SetLLPrev(deoalDelayedDeletion *prev);
 	
 	/** \brief Next entry in the linked list or \em NULL. */
 	inline deoalDelayedDeletion *GetLLNext() const{ return pLLNext; }
 	
 	/** \brief Set next entry in the linked list or \em NULL. */
-	void SetLLNext( deoalDelayedDeletion *next );
+	void SetLLNext(deoalDelayedDeletion *next);
 	/*@}*/
 };
 

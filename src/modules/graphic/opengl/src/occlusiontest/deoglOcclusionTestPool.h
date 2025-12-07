@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create ooclusion mpa manager. */
-	deoglOcclusionTestPool( deoglRenderThread &renderThread );
+	deoglOcclusionTestPool(deoglRenderThread &renderThread);
 	
 	/** Clean up occlusion test manager. */
 	~deoglOcclusionTestPool();
@@ -59,7 +59,7 @@ public:
 	deoglOcclusionTest *Get();
 	
 	/** Return occlusion test. */
-	void Return( deoglOcclusionTest *occlusionTest );
+	void Return(deoglOcclusionTest *occlusionTest);
 	/*@}*/
 };
 

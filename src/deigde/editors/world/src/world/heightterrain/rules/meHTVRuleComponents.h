@@ -66,7 +66,7 @@ public:
 	meHTVRuleComponents();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleComponents( const meHTVRuleComponents &rule );
+	meHTVRuleComponents(const meHTVRuleComponents &rule);
 	
 	/** Cleans up the rule. */
 	virtual ~meHTVRuleComponents();
@@ -77,12 +77,12 @@ public:
 	/** Retrieves the vector to use if there is no input vector. */
 	inline const decVector &GetVector() const{ return pVector; }
 	/** Sets the vector to use if there is no input vector. */
-	void SetVector( const decVector &vector );
+	void SetVector(const decVector &vector);
 	
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const;

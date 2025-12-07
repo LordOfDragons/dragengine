@@ -56,25 +56,25 @@ public:
 	/** Retrieves the face normal. */
 	inline const decDVector &GetNormal() const{ return pNormal; }
 	/** Sets the face normal. */
-	void SetNormal( const decDVector &normal );
+	void SetNormal(const decDVector &normal);
 	
 	/** Retrieves the number of vertices. */
 	inline int GetVertexCount() const{ return pVertexCount; }
 	/** Retrieves the the vertex at the given position. */
-	const decDVector &GetVertexAt( int position ) const;
+	const decDVector &GetVertexAt(int position) const;
 	/** Determines if the given vertex exists. */
-	bool HasVertex( const decDVector &vertex ) const;
+	bool HasVertex(const decDVector &vertex) const;
 	/** Retrieves the index of the given vertex or -1 if not found. */
-	int IndexOfVertex( const decDVector &vertex ) const;
+	int IndexOfVertex(const decDVector &vertex) const;
 	/** Adds a vertex. */
-	void AddVertex( const decDVector &vertex );
+	void AddVertex(const decDVector &vertex);
 	/** Removes all vertices. */
 	void RemoveAllVertices();
 	
 	/** Clips the face by the given plane. */
-	void ClipByPlane( const decDVector &planeNormal, const decDVector &planePosition );
+	void ClipByPlane(const decDVector &planeNormal, const decDVector &planePosition);
 	/** Transforms the face using a matrix. */
-	void Transform( const decDMatrix &matrix );
+	void Transform(const decDMatrix &matrix);
 	/*@}*/
 };
 

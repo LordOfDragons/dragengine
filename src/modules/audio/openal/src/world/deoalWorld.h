@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create world peer. */
-	deoalWorld( deAudioOpenAL &oal, deWorld &world );
+	deoalWorld(deAudioOpenAL &oal, deWorld &world);
 	
 	/** \brief Clean up world peer. */
 	virtual ~deoalWorld();
@@ -100,34 +100,34 @@ public:
 	
 	
 	/** \brief Add component as require sync if not present. */
-	void AddSyncComponent( deoalComponent *component );
+	void AddSyncComponent(deoalComponent *component);
 	
 	/** \brief Remove component as require sync if present. */
-	void RemoveSyncComponent( deoalComponent *component );
+	void RemoveSyncComponent(deoalComponent *component);
 	
 	
 	
 	/** \brief Add speaker as require sync if not present. */
-	void AddSyncSpeaker( deoalSpeaker *speaker );
+	void AddSyncSpeaker(deoalSpeaker *speaker);
 	
 	/** \brief Remove speaker as require sync if present. */
-	void RemoveSyncSpeaker( deoalSpeaker *speaker );
+	void RemoveSyncSpeaker(deoalSpeaker *speaker);
 	
 	
 	
 	/** \brief Add microphone as require sync if not present. */
-	void AddSyncMicrophone( deoalMicrophone *microphone );
+	void AddSyncMicrophone(deoalMicrophone *microphone);
 	
 	/** \brief Remove microphone as require sync if present. */
-	void RemoveSyncMicrophone( deoalMicrophone *microphone );
+	void RemoveSyncMicrophone(deoalMicrophone *microphone);
 	
 	
 	
 	/** \brief Add sound level meter as require sync if not present. */
-	void AddSyncSoundLevelMeter( deoalSoundLevelMeter *soundLevelMeter );
+	void AddSyncSoundLevelMeter(deoalSoundLevelMeter *soundLevelMeter);
 	
 	/** \brief Remove sound level meter as require sync if present. */
-	void RemoveSyncSoundLevelMeter( deoalSoundLevelMeter *soundLevelMeter );
+	void RemoveSyncSoundLevelMeter(deoalSoundLevelMeter *soundLevelMeter);
 	/*@}*/
 	
 	
@@ -135,7 +135,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Update world. */
-	virtual void Update( float elapsed );
+	virtual void Update(float elapsed);
 	
 	/** \brief Size changed. */
 	virtual void SizeChanged();
@@ -149,10 +149,10 @@ public:
 	
 	
 	/** \brief Speaker has been added. */
-	virtual void SpeakerAdded( deSpeaker *speaker );
+	virtual void SpeakerAdded(deSpeaker *speaker);
 	/** \brief Speaker has been removed. */
 	
-	virtual void SpeakerRemoved( deSpeaker *speaker );
+	virtual void SpeakerRemoved(deSpeaker *speaker);
 	
 	/** \brief All speakers have been removed. */
 	virtual void AllSpeakersRemoved();
@@ -160,10 +160,10 @@ public:
 	
 	
 	/** \brief Microphone has been added. */
-	virtual void MicrophoneAdded( deMicrophone *microphone );
+	virtual void MicrophoneAdded(deMicrophone *microphone);
 	
 	/** \brief Microphone has been removed. */
-	virtual void MicrophoneRemoved( deMicrophone *microphone );
+	virtual void MicrophoneRemoved(deMicrophone *microphone);
 	
 	/** \brief All microphones have been removed. */
 	virtual void AllMicrophonesRemoved();
@@ -171,10 +171,10 @@ public:
 	
 	
 	/** \brief Component has been added. */
-	virtual void ComponentAdded( deComponent *component );
+	virtual void ComponentAdded(deComponent *component);
 	
 	/** \brief Component has been removed. */
-	virtual void ComponentRemoved( deComponent *component );
+	virtual void ComponentRemoved(deComponent *component);
 	
 	/** \brief All components have been removed. */
 	virtual void AllComponentsRemoved();
@@ -182,10 +182,10 @@ public:
 	
 	
 	/** \brief Sound level meter has been added. */
-	virtual void SoundLevelMeterAdded( deSoundLevelMeter *soundLevelMeter );
+	virtual void SoundLevelMeterAdded(deSoundLevelMeter *soundLevelMeter);
 	
 	/** \brief Sound level meter has been removed. */
-	virtual void SoundLevelMeterRemoved( deSoundLevelMeter *soundLevelMeter );
+	virtual void SoundLevelMeterRemoved(deSoundLevelMeter *soundLevelMeter);
 	
 	/** \brief All sound level meters have been removed. */
 	virtual void AllSoundLevelMetersRemoved();

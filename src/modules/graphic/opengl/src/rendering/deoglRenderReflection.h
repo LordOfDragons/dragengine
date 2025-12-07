@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
-	deoglRenderReflection( deoglRenderThread &renderThread );
+	deoglRenderReflection(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
 	virtual ~deoglRenderReflection();
 	/*@}*/
@@ -104,39 +104,39 @@ public:
 	/** Retrieves the environment equi map. */
 	inline deoglTexture *GetEnvMapEqui() const{ return pEnvMapEqui; }
 	/** Update environment map suitable for a render plan. */
-	void UpdateEnvMap( deoglRenderPlan &plan );
+	void UpdateEnvMap(deoglRenderPlan &plan);
 	
 	/** Convert cubemap into an equimap. */
-	void ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deoglTexture *equimap );
+	void ConvertCubeMap2EquiMap(deoglCubeMap &cubemap, deoglTexture *equimap);
 	/** Render environment map mask from mask shapes into the alpha component the currently active framebuffer object. */
-	void RenderEnvMapMask( deoglRenderPlan &plan, deoglEnvironmentMap &envmap, int cubeMapFace );
+	void RenderEnvMapMask(deoglRenderPlan &plan, deoglEnvironmentMap &envmap, int cubeMapFace);
 	
 	/** Render reflections. */
-	void RenderReflections( deoglRenderPlan &plan );
+	void RenderReflections(deoglRenderPlan &plan);
 	
 	/** Update environment map slots. */
-	void UpdateEnvMapSlots( deoglRenderPlan &plan );
+	void UpdateEnvMapSlots(deoglRenderPlan &plan);
 	/** Prepare render shader parameter block matching the environment map slots. */
-	void UpdateRenderParameterBlock( deoglRenderPlan &plan );
+	void UpdateRenderParameterBlock(deoglRenderPlan &plan);
 	
 	
 	/** Render depth min-max mip-map texture for use with screen space reflections. */
-	void RenderDepthMinMaxMipMap( deoglRenderPlan &plan );
+	void RenderDepthMinMaxMipMap(deoglRenderPlan &plan);
 	
 	/** Copy color texture to temporary1 texture and create mip-map levels. */
-	void CopyColorToTemporary1( deoglRenderPlan &plan );
+	void CopyColorToTemporary1(deoglRenderPlan &plan);
 	
 	/** Copy material. */
-	void CopyMaterial( deoglRenderPlan &plan, bool solid );
+	void CopyMaterial(deoglRenderPlan &plan, bool solid);
 	
 	/** Render GI lit environment maps. */
-	void RenderGIEnvMaps( deoglRenderPlan &plan );
+	void RenderGIEnvMaps(deoglRenderPlan &plan);
 	
 	/** Copy environment map. */
-	void CopyEnvMap( deoglArrayTexture &source, deoglCubeMap &target );
+	void CopyEnvMap(deoglArrayTexture &source, deoglCubeMap &target);
 	
 	/** Render screen space reflections. */
-	void RenderScreenSpace( deoglRenderPlan &plan );
+	void RenderScreenSpace(deoglRenderPlan &plan);
 	/*@}*/
 	
 private:

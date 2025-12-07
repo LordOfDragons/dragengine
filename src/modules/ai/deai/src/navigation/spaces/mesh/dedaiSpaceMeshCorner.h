@@ -31,8 +31,8 @@
  * \brief No-cost table entry.
  * \details Special entry used for split edges to be excluded from cost look-up.
  */
-#define CORNER_NO_COST		( ( unsigned short )~0 )
-#define CORNER_NO_LINK		( ( short )-1 )
+#define CORNER_NO_COST		((unsigned short)~0)
+#define CORNER_NO_LINK		((short)-1)
 
 
 
@@ -70,31 +70,31 @@ public:
 	inline unsigned short GetVertex() const{ return pVertex; }
 	
 	/** \brief Set index of vertex. */
-	void SetVertex( unsigned short vertex );
+	void SetVertex(unsigned short vertex);
 	
 	/** \brief Index of edge. */
 	inline unsigned short GetEdge() const{ return pEdge; }
 	
 	/** \brief Set index of edge. */
-	void SetEdge( unsigned short edge );
+	void SetEdge(unsigned short edge);
 	
 	/** \brief Type number to cross edge. */
 	inline unsigned short GetTypeNumber() const{ return pTypeNumber; }
 	
 	/** \brief Set type number to cross edge. */
-	void SetTypeNumber( unsigned short typeNumber );
+	void SetTypeNumber(unsigned short typeNumber);
 	
 	/** \brief Link index or -1 if edge is not linked. */
 	inline short GetLink() const{ return pLink; }
 	
 	/** \brief Set link index or -1 if edge is not linked. */
-	void SetLink( short link );
+	void SetLink(short link);
 	
 	/** \brief Corner is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if corner is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	/*@}*/
 	
 	
@@ -102,7 +102,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brier Copy corner. */
-	dedaiSpaceMeshCorner &operator=( const dedaiSpaceMeshCorner &corner );
+	dedaiSpaceMeshCorner &operator=(const dedaiSpaceMeshCorner &corner);
 	/*@}*/
 };
 

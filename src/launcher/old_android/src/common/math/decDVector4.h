@@ -44,13 +44,13 @@ public:
 	/** Creates a new vector initialized to ( 0,0,0,1 ). */
 	decDVector4();
 	/** Creates a new vector with the given values. */
-	decDVector4( double nx, double ny, double nz );
+	decDVector4(double nx, double ny, double nz);
 	/** Creates a new vector with the given values. */
-	decDVector4( double nx, double ny, double nz, double nw );
+	decDVector4(double nx, double ny, double nz, double nw);
 	/** Creates a new vector with the values of another vector. */
-	decDVector4( const decDVector4 &v );
+	decDVector4(const decDVector4 &v);
 	/** Creates a new vector with the values of another vector. */
-	decDVector4( const decVector4 &v );
+	decDVector4(const decVector4 &v);
 	/*@}*/
 	
 	/** @name Management */
@@ -66,7 +66,7 @@ public:
 	/** Sets all components to 0. */
 	void SetZero();
 	/** Sets the components to the given values. */
-	void Set( double nx, double ny, double nz, double nw );
+	void Set(double nx, double ny, double nz, double nw);
 	/** Convert to a single precision vector with possible loss of precision. */
 	decVector4 ToVector4() const;
 	/*@}*/
@@ -76,34 +76,34 @@ public:
 	/** Retrieves the negation of this vector. */
 	decDVector4 operator-();
 	/** Sets the components of this vector to the values of another one. */
-	decDVector4 &operator=( const decDVector4 &v );
+	decDVector4 &operator=(const decDVector4 &v);
 	/** Adds the components of another vector to this one. */
-	decDVector4 &operator+=( const decDVector4 &v );
+	decDVector4 &operator+=(const decDVector4 &v);
 	/** Subtracts the components of another vector from this vector. */
-	decDVector4 &operator-=( const decDVector4 &v );
+	decDVector4 &operator-=(const decDVector4 &v);
 	/** Multiplies the components of this vector with a value k. */
-	decDVector4 &operator*=( double k );
+	decDVector4 &operator*=(double k);
 	/** Divides the components of this vector by a value k. If the value k is 0 an exception is thrown. */
 	decDVector4 &operator/=(double k);
 	/** Retrieves a new vector with the sum of this vector with another one. */
-	decDVector4 operator+( const decDVector4 &v ) const;
+	decDVector4 operator+(const decDVector4 &v) const;
 	/** Retrieves a new vector with the difference of this vector to another one. */
-	decDVector4 operator-( const decDVector4 &v ) const;
+	decDVector4 operator-(const decDVector4 &v) const;
 	/** Retrieves a new vector with this vector scaled by k. */
-	decDVector4 operator*( double k ) const;
+	decDVector4 operator*(double k) const;
 	/** Calculates the dor product of this vector with another one. */
-	double operator*( const decDVector4 &v ) const;
+	double operator*(const decDVector4 &v) const;
 	/** Retrieves a new vector with this vector divided by k. If k is 0 an exception is thrown. */
-	decDVector4 operator/( double k ) const;
+	decDVector4 operator/(double k) const;
 	/** Retrieves a new vector with the cross producr of this vector with another one. */
-	decDVector4 operator%( const decDVector4 &v ) const;
+	decDVector4 operator%(const decDVector4 &v) const;
 	/** Determines if all the components of this vector are less then the components of another one. */
-	bool operator<( const decDVector4 &v ) const;
+	bool operator<(const decDVector4 &v) const;
 	/** Determines if all the components of this vector are greater then the components of another one. */
-	bool operator>( const decDVector4 &v ) const;
+	bool operator>(const decDVector4 &v) const;
 	/** Determines if all the components of this vector are less then or equal to the components of another one. */
-	bool operator<=( const decDVector4 &v ) const;
+	bool operator<=(const decDVector4 &v) const;
 	/** Determines if all the components of this vector are greater then or equal to the components of another one. */
-	bool operator>=( const decDVector4 &v ) const;
+	bool operator>=(const decDVector4 &v) const;
 	/*@}*/
 };

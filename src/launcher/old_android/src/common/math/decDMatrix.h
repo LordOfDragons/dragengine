@@ -45,9 +45,9 @@ public:
 	/** Creates a new matrix initialized to identity. */
 	decDMatrix();
 	/** Creates a copy of a matrix. */
-	decDMatrix( const decDMatrix &m );
+	decDMatrix(const decDMatrix &m);
 	/** Creates a copy of a float matrix. */
-	decDMatrix( const decMatrix &m );
+	decDMatrix(const decMatrix &m);
 	/*@}*/
 	
 	/** @name Matrix Creation */
@@ -55,33 +55,33 @@ public:
 	/** Creates a new identity matrix. */
 	static decDMatrix CreateIdentity();
 	/** Creates a new translation matrix. */
-	static decDMatrix CreateTranslation( double x, double y, double z );
+	static decDMatrix CreateTranslation(double x, double y, double z);
 	/** Creates a new translation matrix. */
-	static decDMatrix CreateTranslation( const decDVector &t );
+	static decDMatrix CreateTranslation(const decDVector &t);
 	/** Creates a new scaling matrix. */
-	static decDMatrix CreateScale( double sx, double sy, double sz );
+	static decDMatrix CreateScale(double sx, double sy, double sz);
 	/** Creates a new scaling matrix. */
-	static decDMatrix CreateScale( const decDVector &s );
+	static decDMatrix CreateScale(const decDVector &s);
 	/** Creates a new rotation around the x axis matrix. */
-	static decDMatrix CreateRotationX( double arc );
+	static decDMatrix CreateRotationX(double arc);
 	/** Creates a new rotation around the y axis matrix. */
-	static decDMatrix CreateRotationY( double arc );
+	static decDMatrix CreateRotationY(double arc);
 	/** Creates a new rotation around the z axis matrix. */
-	static decDMatrix CreateRotationZ( double arc );
+	static decDMatrix CreateRotationZ(double arc);
 	/**
 	 * Creates a new rotation around the all three axes matrix.
 	 * This matrix is the same as first applying a z axis roation,
 	 * then an x axis rotation and then an y axis rotation.
 	 */
-	static decDMatrix CreateRotation( double rx, double ry, double rz );
+	static decDMatrix CreateRotation(double rx, double ry, double rz);
 	/**
 	 * Creates a new rotation around the all three axes matrix.
 	 * This matrix is the same as first applying a z axis roation,
 	 * then an x axis rotation and then an y axis rotation.
 	 */
-	static decDMatrix CreateRotation( const decDVector &r );
+	static decDMatrix CreateRotation(const decDVector &r);
 	/** Creates a new rotation around an arbitrary axis matrix. */
-	static decDMatrix CreateRotationAxis( const decDVector &axis, double angle );
+	static decDMatrix CreateRotationAxis(const decDVector &axis, double angle);
 	/**
 	 * Creates a new world space matrix. A world matrix is used
 	 * to transform coordinates from the coordinate system of
@@ -90,7 +90,7 @@ public:
 	 * @param view View vector of object not necessary normalized
 	 * @param up Up vector of object not necessary normalized
 	 */
-	static decDMatrix CreateWorld( const decDVector &pos, const decDVector &view, const decDVector &up );
+	static decDMatrix CreateWorld(const decDVector &pos, const decDVector &view, const decDVector &up);
 	/**
 	 * Creates a new world space matrix. A world matrix is used
 	 * to transform coordinates from the coordinate system of
@@ -98,13 +98,13 @@ public:
 	 * @param pos Position of object
 	 * @param orientation Orientation
 	 */
-	static decDMatrix CreateWorld( const decDVector &pos, const decQuaternion &orientation );
+	static decDMatrix CreateWorld(const decDVector &pos, const decQuaternion &orientation);
 	/**
 	 * \brief Create world space matrix.
 	 * \details A world matrix is used to transform coordinates from the object local
 	 *          coordinate system to the world coordinate system.
 	 */
-	static decDMatrix CreateWorld( const decDVector &pos, const decQuaternion &orientation, const decDVector &scale );
+	static decDMatrix CreateWorld(const decDVector &pos, const decQuaternion &orientation, const decDVector &scale);
 	/**
 	 * Creates a new camera space matrix. A camera space matrix
 	 * is different from a world space matrix in that it does
@@ -122,7 +122,7 @@ public:
 	 * @param view View vector of camera not necessary normalized
 	 * @param up Up vector of camera not necessary normalized
 	 */
-	static decDMatrix CreateCamera( const decDVector &pos, const decDVector &view, const decDVector &up );
+	static decDMatrix CreateCamera(const decDVector &pos, const decDVector &view, const decDVector &up);
 	/**
 	 * Creates a projection matrix based on a finite view frustum.
 	 * The width and height are used to derive the aspect ratio from.
@@ -136,7 +136,7 @@ public:
 	 * @param znear Distance to near cliping plane
 	 * @param zfar Distance to far cliping plane
 	 */
-	static decDMatrix CreateProjection( int width, int height, double fov, double fovRatio, double znear, double zfar );
+	static decDMatrix CreateProjection(int width, int height, double fov, double fovRatio, double znear, double zfar);
 	/**
 	 * Creates a projection matrix based on a infinite view frustum.
 	 * The width and height are used to derive the aspect ratio from.
@@ -149,7 +149,7 @@ public:
 	 *                 field of view.
 	 * @param znear Distance to near cliping plane
 	 */
-	static decDMatrix CreateProjectionInfinite( int width, int height, double fov, double fovRatio, double znear );
+	static decDMatrix CreateProjectionInfinite(int width, int height, double fov, double fovRatio, double znear);
 	/**
 	 * Creates an orthogonal projection matrix.
 	 * @param left Left cliping plane position
@@ -159,7 +159,7 @@ public:
 	 * @param znear Distance to near cliping plane
 	 * @param zfar Distance to far cliping plane
 	 */
-	static decDMatrix CreateOrtho( int left, int right, int top, int bottom, int znear, int zfar );
+	static decDMatrix CreateOrtho(int left, int right, int top, int bottom, int znear, int zfar);
 	/**
 	 * Creates a matrix to transform a projection matrix into cliping space.
 	 * In cliping space the view frustum turns into a cube.
@@ -176,11 +176,11 @@ public:
 	 * @param rot Rotation vector
 	 * @param pos Translation vector
 	 */
-	static decDMatrix CreateRT( const decDVector &rot, const decDVector &pos );
+	static decDMatrix CreateRT(const decDVector &rot, const decDVector &pos);
 	/**
 	 * Creates a scale-translation matrix. This is the same as first doing a scaling and then a translation.
 	 */
-	static decDMatrix CreateST( const decDVector &scale, const decDVector &translate );
+	static decDMatrix CreateST(const decDVector &scale, const decDVector &translate);
 	/**
 	 * Creates a scale-rotation-translation matrix. This is the same
 	 * as first doing a scaling, then a 3-axis rotation and then
@@ -189,7 +189,7 @@ public:
 	 * @param rot Rotation vector
 	 * @param pos Translation vector
 	 */
-	static decDMatrix CreateSRT( const decDVector &scale, const decDVector &rot, const decDVector &pos );
+	static decDMatrix CreateSRT(const decDVector &scale, const decDVector &rot, const decDVector &pos);
 	/**
 	 * Creates a scale-view-up-translation matrix. This is the same
 	 * as first doing a scaling, then a world space matrix.
@@ -198,23 +198,23 @@ public:
 	 * @param up Up vector
 	 * @param pos Translation vector
 	 */
-	static decDMatrix CreateSVUT( const decDVector &scale, const decDVector &view, const decDVector &up, const decDVector &pos );
+	static decDMatrix CreateSVUT(const decDVector &scale, const decDVector &view, const decDVector &up, const decDVector &pos);
 	/**
 	 * Creates a view-up matrix. This is the same as doing a world
 	 * space matrix but with the zero vector as position.
 	 * @param view View vector
 	 * @param up Up vector
 	 */
-	static decDMatrix CreateVU( const decDVector &view, const decDVector &up );
+	static decDMatrix CreateVU(const decDVector &view, const decDVector &up);
 	/**
 	 * Creates a rotation matrix from a quaternion.
 	 * @param q Rotation quaternion
 	 */
-	static decDMatrix CreateFromQuaternion( const decQuaternion &q );
+	static decDMatrix CreateFromQuaternion(const decQuaternion &q);
 	/**
 	 * Creates a rotation matrix from a quaternion.
 	 */
-	static decDMatrix CreateFromQuaternion( const decQuaternion &q, const decDVector &pivot );
+	static decDMatrix CreateFromQuaternion(const decQuaternion &q, const decDVector &pivot);
 	/*@}*/
 	
 	/** @name Management */
@@ -222,33 +222,33 @@ public:
 	/** Sets identity matrix. */
 	void SetIdentity();
 	/** Sets translation matrix. */
-	void SetTranslation( double x, double y, double z );
+	void SetTranslation(double x, double y, double z);
 	/** Sets translation matrix. */
-	void SetTranslation( const decDVector &t );
+	void SetTranslation(const decDVector &t);
 	/** Sets scaling matrix. */
-	void SetScale( double sx, double sy, double sz );
+	void SetScale(double sx, double sy, double sz);
 	/** Sets scaling matrix. */
-	void SetScale( const decDVector &s );
+	void SetScale(const decDVector &s);
 	/** Sets rotation around the x axis matrix. */
-	void SetRotationX( double arc );
+	void SetRotationX(double arc);
 	/** Sets rotation around the y axis matrix. */
-	void SetRotationY( double arc );
+	void SetRotationY(double arc);
 	/** Sets rotation around the z axis matrix. */
-	void SetRotationZ( double arc );
+	void SetRotationZ(double arc);
 	/**
 	 * Sets rotation around the all three axes matrix.
 	 * This matrix is the same as first applying a z axis roation,
 	 * then an x axis rotation and then an y axis rotation.
 	 */
-	void SetRotation( double rx, double ry, double rz );
+	void SetRotation(double rx, double ry, double rz);
 	/**
 	 * Sets rotation around the all three axes matrix.
 	 * This matrix is the same as first applying a z axis roation,
 	 * then an x axis rotation and then an y axis rotation.
 	 */
-	void SetRotation( const decDVector &r );
+	void SetRotation(const decDVector &r);
 	/** Sets rotation around an arbitrary axis matrix. */
-	void SetRotationAxis( const decDVector &axis, double angle );
+	void SetRotationAxis(const decDVector &axis, double angle);
 	/**
 	 * Sets world space matrix. A world matrix is used
 	 * to transform coordinates from the coordinate system of
@@ -257,7 +257,7 @@ public:
 	 * @param view View vector of object not necessary normalized
 	 * @param up Up vector of object not necessary normalized
 	 */
-	void SetWorld( const decDVector &pos, const decDVector &view, const decDVector &up );
+	void SetWorld(const decDVector &pos, const decDVector &view, const decDVector &up);
 	/**
 	 * Sets world space matrix. A world matrix is used
 	 * to transform coordinates from the coordinate system of
@@ -265,13 +265,13 @@ public:
 	 * @param pos Position of object
 	 * @param orientation Orientation
 	 */
-	void SetWorld( const decDVector &pos, const decQuaternion &orientation );
+	void SetWorld(const decDVector &pos, const decQuaternion &orientation);
 	/**
 	 * \brief Set world space matrix.
 	 * \details A world matrix is used to transform coordinates from the object local
 	 *          coordinate system to the world coordinate system.
 	 */
-	void SetWorld( const decDVector &pos, const decQuaternion &orientation, const decDVector &scale );
+	void SetWorld(const decDVector &pos, const decQuaternion &orientation, const decDVector &scale);
 	/**
 	 * Sets camera space matrix. A camera space matrix
 	 * is different from a world space matrix in that it does
@@ -289,7 +289,7 @@ public:
 	 * @param view View vector of camera not necessary normalized
 	 * @param up Up vector of camera not necessary normalized
 	 */
-	void SetCamera( const decDVector &pos, const decDVector &view, const decDVector &up );
+	void SetCamera(const decDVector &pos, const decDVector &view, const decDVector &up);
 	/**
 	 * Sets projection matrix based on a finite view frustum.
 	 * The width and height are used to derive the aspect ratio from.
@@ -303,7 +303,7 @@ public:
 	 * @param znear Distance to near cliping plane
 	 * @param zfar Distance to far cliping plane
 	 */
-	void SetProjection( int width, int height, double fov, double fovRatio, double znear, double zfar );
+	void SetProjection(int width, int height, double fov, double fovRatio, double znear, double zfar);
 	/**
 	 * Sets projection matrix based on a infinite view frustum.
 	 * The width and height are used to derive the aspect ratio from.
@@ -316,7 +316,7 @@ public:
 	 *                 field of view.
 	 * @param znear Distance to near cliping plane
 	 */
-	void SetProjectionInfinite( int width, int height, double fov, double fovRatio, double znear );
+	void SetProjectionInfinite(int width, int height, double fov, double fovRatio, double znear);
 	/**
 	 * Sets orthogonal projection matrix.
 	 * @param left Left cliping plane position
@@ -326,7 +326,7 @@ public:
 	 * @param znear Distance to near cliping plane
 	 * @param zfar Distance to far cliping plane
 	 */
-	void SetOrtho( int left, int right, int top, int bottom, int znear, int zfar );
+	void SetOrtho(int left, int right, int top, int bottom, int znear, int zfar);
 	/**
 	 * Sets matrix to transform a projection matrix into cliping space.
 	 * In cliping space the view frustum turns into a cube.
@@ -343,11 +343,11 @@ public:
 	 * @param rot Rotation vector
 	 * @param pos Translation vector
 	 */
-	void SetRT( const decDVector &rot, const decDVector &pos );
+	void SetRT(const decDVector &rot, const decDVector &pos);
 	/**
 	 * Set scale-translation matrix. This is the same as first doing a scaling and then a translation.
 	 */
-	void SetST( const decDVector &scale, const decDVector &translate );
+	void SetST(const decDVector &scale, const decDVector &translate);
 	/**
 	 * Sets scale-rotation-translation matrix. This is the same
 	 * as first doing a scaling, then a 3-axis rotation and then
@@ -356,7 +356,7 @@ public:
 	 * @param rot Rotation vector
 	 * @param pos Translation vector
 	 */
-	void SetSRT( const decDVector &scale, const decDVector &rot, const decDVector &pos );
+	void SetSRT(const decDVector &scale, const decDVector &rot, const decDVector &pos);
 	/**
 	 * Sets scale-view-up-translation matrix. This is the same
 	 * as first doing a scaling, then a world space matrix.
@@ -365,25 +365,25 @@ public:
 	 * @param up Up vector
 	 * @param pos Translation vector
 	 */
-	void SetSVUT( const decDVector &scale, const decDVector &view, const decDVector &up, const decDVector &pos );
+	void SetSVUT(const decDVector &scale, const decDVector &view, const decDVector &up, const decDVector &pos);
 	/**
 	 * Sets view-up matrix. This is the same as doing a world
 	 * space matrix but with the zero vector as position.
 	 * @param view View vector
 	 * @param up Up vector
 	 */
-	void SetVU( const decDVector &view, const decDVector &up );
+	void SetVU(const decDVector &view, const decDVector &up);
 	/**
 	 * Sets rotation matrix from a quaternion.
 	 * @param q Rotation quaternion
 	 */
-	void SetFromQuaternion( const decQuaternion &q );
+	void SetFromQuaternion(const decQuaternion &q);
 	/**
 	 * Sets rotation matrix from a quaternion.
 	 */
-	void SetFromQuaternion( const decQuaternion &q, const decDVector &pivot );
+	void SetFromQuaternion(const decQuaternion &q, const decDVector &pivot);
 	/** Set matrix from a single precision matrix. */
-	void Set( const decMatrix &matrix );
+	void Set(const decMatrix &matrix);
 	
 	/** Calculates the determinant of the matrix. */
 	double Determinant() const;
@@ -437,12 +437,12 @@ public:
 	 * Transforms a normal by this matrix. This is the same as
 	 * transforming the normal by only the rotation part of it.
 	 */
-	decDVector TransformNormal( const decDVector &normal ) const;
+	decDVector TransformNormal(const decDVector &normal) const;
 	/** Transforms a vector. */
-	decDVector Transform( double x, double y, double z ) const;
-	decDVector4 Transform( double x, double y, double z, double w ) const;
-	void Transform( decDVector &result, double x, double y, double z ) const;
-	void Transform( decDVector4 &result, double x, double y, double z, double w ) const;
+	decDVector Transform(double x, double y, double z) const;
+	decDVector4 Transform(double x, double y, double z, double w) const;
+	void Transform(decDVector &result, double x, double y, double z) const;
+	void Transform(decDVector4 &result, double x, double y, double z, double w) const;
 	/**
 	 * Retrieves the rotation part of the matrix. The result is a
 	 * 4x4 identity matrix with the upper left 3x3 copied from
@@ -452,7 +452,7 @@ public:
 	/**
 	 * Determines if this matrix is cell wise equal to anither one in respect to a threshold.
 	 */
-	bool IsEqualTo( const decDMatrix &matrix, double threshold = DVECTOR_THRESHOLD ) const;
+	bool IsEqualTo(const decDMatrix &matrix, double threshold = DVECTOR_THRESHOLD) const;
 	/*@}*/
 	
 	/**
@@ -470,15 +470,15 @@ public:
 	 */
 	/*@{*/
 	/** Quick multiplies this matrix with another one. */
-	decDMatrix QuickMultiply( const decDMatrix &matrix ) const;
+	decDMatrix QuickMultiply(const decDMatrix &matrix) const;
 	/** Quick multiplies this matrix with a value k. */
-	decDMatrix QuickMultiply( double k ) const;
+	decDMatrix QuickMultiply(double k) const;
 	/** Quick calculates the determinant of this matrix. */
 	double QuickDeterminant() const;
 	/** Quick calculates the inverse of this matrix. */
 	decDMatrix QuickInvert() const;
 	/** Quick cell wise adds another matrix to this matrix. */
-	decDMatrix &QuickAddTo( const decDMatrix &m );
+	decDMatrix &QuickAddTo(const decDMatrix &m);
 	
 	/** Converts to a single precision matrix with possible loss of precision. */
 	decMatrix ToMatrix() const;
@@ -487,33 +487,33 @@ public:
 	/** @name Operators */
 	/*@{*/
 	/** Sets the cells of this matrix to the values of another one. */
-	decDMatrix &operator=( const decDMatrix &m );
+	decDMatrix &operator=(const decDMatrix &m);
 	/** Adds the cells of another matrix to this one. */
-	decDMatrix &operator+=( const decDMatrix &m );
+	decDMatrix &operator+=(const decDMatrix &m);
 	/** Subtracts the cells of another matrix from this vector. */
-	decDMatrix &operator-=( const decDMatrix &m );
+	decDMatrix &operator-=(const decDMatrix &m);
 	/** Multiplies the cells of this matrix with a value k. */
-	decDMatrix &operator*=( double k );
+	decDMatrix &operator*=(double k);
 	/**
 	 * Divides the cells of this matrix by a value k. If the value k
 	 * is 0 an exception is thrown.
 	 */
-	decDMatrix &operator/=( double k );
+	decDMatrix &operator/=(double k);
 	/** Multiplies this matrix with another one. */
-	decDMatrix &operator*=( const decDMatrix &m );
+	decDMatrix &operator*=(const decDMatrix &m);
 	/** Retrieves a new matrix with the sum of this matrix with another one. */
-	decDMatrix operator+( const decDMatrix &m ) const;
+	decDMatrix operator+(const decDMatrix &m) const;
 	/** Retrieves a new matrix with the difference of this matrix to another one. */
-	decDMatrix operator-( const decDMatrix &m ) const;
+	decDMatrix operator-(const decDMatrix &m) const;
 	/** Retrieves a new matrix with this matrix scaled by k. */
-	decDMatrix operator*( double k ) const;
+	decDMatrix operator*(double k) const;
 	/** Retrieves a new matrix with this matrix divided by k. If k is 0 an exception is thrown. */
-	decDMatrix operator/( double k ) const;
+	decDMatrix operator/(double k) const;
 	/** Retrieves a new matrix with this matrix multiplied with another one. */
-	decDMatrix operator*( const decDMatrix &m ) const;
+	decDMatrix operator*(const decDMatrix &m) const;
 	/** Transforms vector by this matrix. */
-	decDVector operator*( const decDVector &v ) const;
+	decDVector operator*(const decDVector &v) const;
 	/** Transforms 4 component vector by this matrix. */
-	decDVector4 operator*( const decDVector4 &v ) const;
+	decDVector4 operator*(const decDVector4 &v) const;
 	/*@}*/
 };

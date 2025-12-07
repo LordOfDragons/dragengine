@@ -39,13 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGuiTheme::igdeGuiTheme( const char *name ) :
-pName( name ){
+igdeGuiTheme::igdeGuiTheme(const char *name) :
+pName(name){
 }
 
-igdeGuiTheme::igdeGuiTheme( const char *name, const igdeGuiTheme &guitheme ) :
-pName( name ),
-pProperties( guitheme.pProperties ){
+igdeGuiTheme::igdeGuiTheme(const char *name, const igdeGuiTheme &guitheme) :
+pName(name),
+pProperties(guitheme.pProperties){
 }
 
 igdeGuiTheme::~igdeGuiTheme(){
@@ -60,28 +60,28 @@ int igdeGuiTheme::GetPropertyCount() const{
 	return pProperties.GetCount();
 }
 
-igdeGuiThemeProperty *igdeGuiTheme::GetProperty( const char *name ) const{
+igdeGuiThemeProperty *igdeGuiTheme::GetProperty(const char *name) const{
 	deObject *property = NULL;
-	return pProperties.GetAt( name, &property ) ? ( igdeGuiThemeProperty* )property : NULL;
+	return pProperties.GetAt(name, &property) ? (igdeGuiThemeProperty*)property : NULL;
 }
 
-bool igdeGuiTheme::HasProperty( const char *property ) const{
-	return pProperties.Has( property );
+bool igdeGuiTheme::HasProperty(const char *property) const{
+	return pProperties.Has(property);
 }
 
-void igdeGuiTheme::SetProperty( igdeGuiThemeProperty *property ){
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+void igdeGuiTheme::SetProperty(igdeGuiThemeProperty *property){
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
-	pProperties.SetAt( property->GetName(), property );
+	pProperties.SetAt(property->GetName(), property);
 }
 
-void igdeGuiTheme::RemoveProperty( const char *name ){
-	pProperties.Remove( name );
+void igdeGuiTheme::RemoveProperty(const char *name){
+	pProperties.Remove(name);
 }
 
-void igdeGuiTheme::RemovePropertyIfPresent( const char *name ){
-	pProperties.RemoveIfPresent( name );
+void igdeGuiTheme::RemovePropertyIfPresent(const char *name){
+	pProperties.RemoveIfPresent(name);
 }
 
 void igdeGuiTheme::RemoveAllProperties(){
@@ -94,56 +94,56 @@ decStringList igdeGuiTheme::GetPropertyNames() const{
 
 
 
-int igdeGuiTheme::GetIntProperty( const char *name, int defaultValue ) const{
-	const igdeGuiThemeProperty * const property = GetProperty( name );
+int igdeGuiTheme::GetIntProperty(const char *name, int defaultValue) const{
+	const igdeGuiThemeProperty * const property = GetProperty(name);
 	return property ? property->GetInt() : defaultValue;
 }
 
-float igdeGuiTheme::GetFloatProperty( const char *name, float defaultValue ) const{
-	const igdeGuiThemeProperty * const property = GetProperty( name );
+float igdeGuiTheme::GetFloatProperty(const char *name, float defaultValue) const{
+	const igdeGuiThemeProperty * const property = GetProperty(name);
 	return property ? property->GetFloat() : defaultValue;
 }
 
-const decPoint &igdeGuiTheme::GetPointProperty( const char *name, const decPoint &defaultValue ) const{
-	const igdeGuiThemeProperty * const property = GetProperty( name );
+const decPoint &igdeGuiTheme::GetPointProperty(const char *name, const decPoint &defaultValue) const{
+	const igdeGuiThemeProperty * const property = GetProperty(name);
 	return property ? property->GetPoint() : defaultValue;
 }
 
-const decColor &igdeGuiTheme::GetColorProperty( const char *name, const decColor &defaultValue ) const{
-	const igdeGuiThemeProperty * const property = GetProperty( name );
+const decColor &igdeGuiTheme::GetColorProperty(const char *name, const decColor &defaultValue) const{
+	const igdeGuiThemeProperty * const property = GetProperty(name);
 	return property ? property->GetColor() : defaultValue;
 }
 
-const decString &igdeGuiTheme::GetStringProperty( const char *name, const decString &defaultValue ) const{
-	const igdeGuiThemeProperty * const property = GetProperty( name );
+const decString &igdeGuiTheme::GetStringProperty(const char *name, const decString &defaultValue) const{
+	const igdeGuiThemeProperty * const property = GetProperty(name);
 	return property ? property->GetString() : defaultValue;
 }
 
 
 
-void igdeGuiTheme::SetIntProperty( const char *name, int value ){
+void igdeGuiTheme::SetIntProperty(const char *name, int value){
 	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
 }
 
-void igdeGuiTheme::SetFloatProperty( const char *name, float value ){
+void igdeGuiTheme::SetFloatProperty(const char *name, float value){
 	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
 }
 
-void igdeGuiTheme::SetPointProperty( const char *name, const decPoint &value ){
+void igdeGuiTheme::SetPointProperty(const char *name, const decPoint &value){
 	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
 }
 
-void igdeGuiTheme::SetColorProperty( const char *name, const decColor &value ){
+void igdeGuiTheme::SetColorProperty(const char *name, const decColor &value){
 	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
 }
 
-void igdeGuiTheme::SetStringProperty( const char *name, const decString &value ){
+void igdeGuiTheme::SetStringProperty(const char *name, const decString &value){
 	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
 }
 
 
 
-igdeGuiTheme &igdeGuiTheme::operator=( const igdeGuiTheme &guitheme ){
+igdeGuiTheme &igdeGuiTheme::operator=(const igdeGuiTheme &guitheme){
 	pProperties = guitheme.pProperties;
 	return *this;
 }

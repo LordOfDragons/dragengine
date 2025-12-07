@@ -55,22 +55,22 @@ int projTRProfileList::GetCount() const{
 	return pProfiles.GetCount();
 }
 
-projTRProfile *projTRProfileList::GetAt( int index ) const{
-	return ( projTRProfile* )pProfiles.GetAt( index );
+projTRProfile *projTRProfileList::GetAt(int index) const{
+	return (projTRProfile*)pProfiles.GetAt(index);
 }
 
-projTRProfile *projTRProfileList::GetNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+projTRProfile *projTRProfileList::GetNamed(const char *name) const{
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pProfiles.GetCount();
 	projTRProfile *profile;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		profile = ( projTRProfile* )pProfiles.GetAt( i );
-		if( profile->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		profile = (projTRProfile*)pProfiles.GetAt(i);
+		if(profile->GetName().Equals(name)){
 			return profile;
 		}
 	}
@@ -78,28 +78,28 @@ projTRProfile *projTRProfileList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-bool projTRProfileList::Has( projTRProfile *profile ) const{
-	return pProfiles.Has( profile );
+bool projTRProfileList::Has(projTRProfile *profile) const{
+	return pProfiles.Has(profile);
 }
 
-bool projTRProfileList::HasNamed( const char *name ) const{
-	return GetNamed( name ) != NULL;
+bool projTRProfileList::HasNamed(const char *name) const{
+	return GetNamed(name) != NULL;
 }
 
-int projTRProfileList::IndexOf( projTRProfile *profile ) const{
-	return pProfiles.IndexOf( profile );
+int projTRProfileList::IndexOf(projTRProfile *profile) const{
+	return pProfiles.IndexOf(profile);
 }
 
-int projTRProfileList::IndexOfNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+int projTRProfileList::IndexOfNamed(const char *name) const{
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pProfiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( projTRProfile* )pProfiles.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((projTRProfile*)pProfiles.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -107,33 +107,33 @@ int projTRProfileList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-void projTRProfileList::Add( projTRProfile *profile ){
-	if( ! profile || HasNamed( profile->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void projTRProfileList::Add(projTRProfile *profile){
+	if(!profile || HasNamed(profile->GetName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProfiles.Add( profile );
+	pProfiles.Add(profile);
 }
 
-void projTRProfileList::Remove( projTRProfile *profile ){
-	const int index = IndexOf( profile );
+void projTRProfileList::Remove(projTRProfile *profile){
+	const int index = IndexOf(profile);
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProfiles.RemoveFrom( index );
+	pProfiles.RemoveFrom(index);
 }
 
 void projTRProfileList::RemoveAll(){
 	pProfiles.RemoveAll();
 }
 
-void projTRProfileList::ValidateProfiles( deEngine &engine ){
+void projTRProfileList::ValidateProfiles(deEngine &engine){
 	const int count = pProfiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projTRProfile* )pProfiles.GetAt( i ) )->Verify( engine );
+	for(i=0; i<count; i++){
+		((projTRProfile*)pProfiles.GetAt(i))->Verify(engine);
 	}
 }

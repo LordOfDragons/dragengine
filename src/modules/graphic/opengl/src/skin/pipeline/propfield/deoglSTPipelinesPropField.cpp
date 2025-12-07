@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesPropField::deoglSTPipelinesPropField( const deoglSkinTexture &texture ) :
-deoglSkinTexturePipelines( texture ){
+deoglSTPipelinesPropField::deoglSTPipelinesPropField(const deoglSkinTexture &texture) :
+deoglSkinTexturePipelines(texture){
 }
 
 deoglSTPipelinesPropField::~deoglSTPipelinesPropField(){
@@ -60,23 +60,23 @@ const char *deoglSTPipelinesPropField::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesPropField::pPreparePipelines( const ChannelInfo &cinfo,
-deoglBatchedShaderLoading &batched ){
+void deoglSTPipelinesPropField::pPreparePipelines(const ChannelInfo &cinfo,
+deoglBatchedShaderLoading &batched){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmPropField );
+	baseShaderConfig.SetGeometryMode(deoglSkinShaderConfig::egmPropField);
 	
-	pPrepareGeometry( baseShaderConfig, cinfo, batched);
+	pPrepareGeometry(baseShaderConfig, cinfo, batched);
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
-	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
-	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth(baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter(baseShaderConfig, cinfo, batched);
 	// pPrepareMask( baseShaderConfig, cinfo, batched);
-	pPrepareAllShadow( baseShaderConfig, cinfo, batched);
+	pPrepareAllShadow(baseShaderConfig, cinfo, batched);
 	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);
 	// pPrepareLuminance( baseShaderConfig, cinfo, batched);
 	// pPrepareGIMaterial( baseShaderConfig, cinfo, batched);
 }
 
-void deoglSTPipelinesPropField::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &,
-deoglSkinShaderConfig &, const ChannelInfo &, deoglBatchedShaderLoading & ){
+void deoglSTPipelinesPropField::pPrepareShadowOrthogonalCascaded(deoglPipelineConfiguration &,
+deoglSkinShaderConfig &, const ChannelInfo &, deoglBatchedShaderLoading &){
 	// not supported
 }

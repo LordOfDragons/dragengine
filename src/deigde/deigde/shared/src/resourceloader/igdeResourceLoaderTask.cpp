@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeResourceLoaderTask::igdeResourceLoaderTask( const char *filename,
-	deResourceLoader::eResourceType resourceType ) :
-pFilename( filename ),
-pResourceType( resourceType ){
+igdeResourceLoaderTask::igdeResourceLoaderTask(const char *filename,
+	deResourceLoader::eResourceType resourceType) :
+pFilename(filename),
+pResourceType(resourceType){
 }
 
 igdeResourceLoaderTask::~igdeResourceLoaderTask(){
@@ -54,49 +54,49 @@ igdeResourceLoaderTask::~igdeResourceLoaderTask(){
 // Listeners
 //////////////
 
-void igdeResourceLoaderTask::AddListener( igdeResourceLoaderListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeResourceLoaderTask::AddListener(igdeResourceLoaderListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.AddIfAbsent( listener );
+	pListeners.AddIfAbsent(listener);
 }
 
-void igdeResourceLoaderTask::RemoveListener( igdeResourceLoaderListener *listener ){
-	pListeners.RemoveIfPresent( listener );
+void igdeResourceLoaderTask::RemoveListener(igdeResourceLoaderListener *listener){
+	pListeners.RemoveIfPresent(listener);
 }
 
-void igdeResourceLoaderTask::NotifyLoadingFinished( deLogger &logger, deFileResource *resource ){
-	if( ! resource ){
-		DETHROW( deeInvalidParam );
+void igdeResourceLoaderTask::NotifyLoadingFinished(deLogger &logger, deFileResource *resource){
+	if(!resource){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		igdeResourceLoaderListener &listener = *( ( igdeResourceLoaderListener* )pListeners.GetAt( i ) );
+	for(i=0; i<count; i++){
+		igdeResourceLoaderListener &listener = *((igdeResourceLoaderListener*)pListeners.GetAt(i));
 		
 		try{
-			listener.LoadingFinished( *this, resource );
+			listener.LoadingFinished(*this, resource);
 			
-		}catch( const deException &e ){
-			logger.LogException( "IGDE", e );
+		}catch(const deException &e){
+			logger.LogException("IGDE", e);
 		}
 	}
 	
 	pListeners.RemoveAll();
 }
 
-void igdeResourceLoaderTask::NotifyLoadingFailed( deLogger &logger ){
+void igdeResourceLoaderTask::NotifyLoadingFailed(deLogger &logger){
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		igdeResourceLoaderListener &listener = *( ( igdeResourceLoaderListener* )pListeners.GetAt( i ) );
+	for(i=0; i<count; i++){
+		igdeResourceLoaderListener &listener = *((igdeResourceLoaderListener*)pListeners.GetAt(i));
 		
 		try{
-			listener.LoadingFailed( *this );
+			listener.LoadingFailed(*this);
 			
-		}catch( const deException &e ){
-			logger.LogException( "IGDE", e );
+		}catch(const deException &e){
+			logger.LogException("IGDE", e);
 		}
 	}
 	

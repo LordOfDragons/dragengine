@@ -58,24 +58,24 @@ namespace {
 class cTextHalfHeight : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
-	cTextHalfHeight( reWPPanelShapeCapsule &panel ) : pPanel( panel ){ }
+	cTextHalfHeight(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeCapsule * const capsule = ( reRigShapeCapsule* )pPanel.GetShape();
-		if( ! rig || ! capsule ){
+		reRigShapeCapsule * const capsule = (reRigShapeCapsule*)pPanel.GetShape();
+		if(!rig || !capsule){
 			return;
 		}
 		
 		const float value = textField->GetFloat();
-		if( fabsf( value - capsule->GetHalfHeight() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - capsule->GetHalfHeight()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		reUSetShapeCapsuleHalfHeight::Ref undo(reUSetShapeCapsuleHalfHeight::Ref::NewWith(
 			capsule, value));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -83,23 +83,23 @@ public:
 class cTextTopRadius : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
-	cTextTopRadius( reWPPanelShapeCapsule &panel ) : pPanel( panel ){ }
+	cTextTopRadius(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeCapsule * const capsule = ( reRigShapeCapsule* )pPanel.GetShape();
-		if( ! rig || ! capsule ){
+		reRigShapeCapsule * const capsule = (reRigShapeCapsule*)pPanel.GetShape();
+		if(!rig || !capsule){
 			return;
 		}
 		
 		const float value = textField->GetFloat();
-		if( fabsf( value - capsule->GetTopRadius() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - capsule->GetTopRadius()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		reUSetShapeCapsuleTopRadius::Ref undo(reUSetShapeCapsuleTopRadius::Ref::NewWith(capsule, value));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -107,24 +107,24 @@ public:
 class cTextBottomRadius : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
-	cTextBottomRadius( reWPPanelShapeCapsule &panel ) : pPanel( panel ){ }
+	cTextBottomRadius(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeCapsule * const capsule = ( reRigShapeCapsule* )pPanel.GetShape();
-		if( ! rig || ! capsule ){
+		reRigShapeCapsule * const capsule = (reRigShapeCapsule*)pPanel.GetShape();
+		if(!rig || !capsule){
 			return;
 		}
 		
 		const float value = textField->GetFloat();
-		if( fabsf( value - capsule->GetBottomRadius() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - capsule->GetBottomRadius()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		reUSetShapeCapsuleBottomRadius::Ref undo(reUSetShapeCapsuleBottomRadius::Ref::NewWith(
 			capsule, value));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -139,8 +139,8 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reWPPanelShapeCapsule::reWPPanelShapeCapsule( reWPShape &wpShapes ) :
-reWPPanelShape( wpShapes, reRigShape::estCapsule )
+reWPPanelShapeCapsule::reWPPanelShapeCapsule(reWPShape &wpShapes) :
+reWPPanelShape(wpShapes, reRigShape::estCapsule)
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
 	igdeContainer::Ref groupBox;
@@ -148,22 +148,22 @@ reWPPanelShape( wpShapes, reRigShape::estCapsule )
 	
 	
 	
-	helper.GroupBox( *this, groupBox, "Capsule Parameters:" );
+	helper.GroupBox(*this, groupBox, "Capsule Parameters:");
 	
-	helper.EditVector( groupBox, "Position:", "Position of the sphere relative to the parent bone.",
-		pEditPosition, new cEditPosition( *this ) );
+	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
+		pEditPosition, new cEditPosition(*this));
 	
-	helper.EditVector( groupBox, "Rotation:", "Rotation of the capsule.",
-		pEditRotation, new cEditRotation( *this ) );
+	helper.EditVector(groupBox, "Rotation:", "Rotation of the capsule.",
+		pEditRotation, new cEditRotation(*this));
 	
-	helper.EditString( groupBox, "Half Height:", "Half height of the capsule.",
-		pEditHalfHeight, new cTextHalfHeight( *this ) );
+	helper.EditString(groupBox, "Half Height:", "Half height of the capsule.",
+		pEditHalfHeight, new cTextHalfHeight(*this));
 	
-	helper.EditString( groupBox, "Top Radius:", "Top radius in meters.",
-		pEditTopRadius, new cTextTopRadius( *this ) );
+	helper.EditString(groupBox, "Top Radius:", "Top radius in meters.",
+		pEditTopRadius, new cTextTopRadius(*this));
 	
-	helper.EditString( groupBox, "Bottom Radius:", "Bottom radius in meters.",
-		pEditBottomRadius, new cTextBottomRadius( *this ) );
+	helper.EditString(groupBox, "Bottom Radius:", "Bottom radius in meters.",
+		pEditBottomRadius, new cTextBottomRadius(*this));
 }
 
 reWPPanelShapeCapsule::~reWPPanelShapeCapsule(){
@@ -175,20 +175,20 @@ reWPPanelShapeCapsule::~reWPPanelShapeCapsule(){
 ///////////////
 
 void reWPPanelShapeCapsule::UpdateShape(){
-	const reRigShapeCapsule * const capsule = ( reRigShapeCapsule* )GetShape();
+	const reRigShapeCapsule * const capsule = (reRigShapeCapsule*)GetShape();
 	
 	reWPPanelShape::UpdateShape();
 	
-	if( capsule ){
-		pEditPosition->SetVector( capsule->GetPosition() );
-		pEditRotation->SetVector( capsule->GetOrientation() );
-		pEditHalfHeight->SetFloat( capsule->GetHalfHeight() );
-		pEditTopRadius->SetFloat( capsule->GetTopRadius() );
-		pEditBottomRadius->SetFloat( capsule->GetBottomRadius() );
+	if(capsule){
+		pEditPosition->SetVector(capsule->GetPosition());
+		pEditRotation->SetVector(capsule->GetOrientation());
+		pEditHalfHeight->SetFloat(capsule->GetHalfHeight());
+		pEditTopRadius->SetFloat(capsule->GetTopRadius());
+		pEditBottomRadius->SetFloat(capsule->GetBottomRadius());
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
 		pEditHalfHeight->ClearText();
 		pEditTopRadius->ClearText();
 		pEditBottomRadius->ClearText();

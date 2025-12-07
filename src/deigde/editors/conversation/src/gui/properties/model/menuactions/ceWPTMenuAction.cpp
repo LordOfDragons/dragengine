@@ -35,7 +35,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMenuAction::ceWPTMenuAction( ceWindowMain &windowMain, const char *text, igdeIcon *icon ) :
-igdeAction( text, icon ),
-pWindowMain( &windowMain ){
+ceWPTMenuAction::ceWPTMenuAction(ceWindowMain &windowMain, const char *text, igdeIcon *icon) :
+igdeAction(text, icon),
+pWindowMain(&windowMain){
 }

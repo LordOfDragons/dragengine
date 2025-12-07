@@ -39,15 +39,15 @@
 ////////////////////////////
 
 ceCConditionActorInConversation::ceCConditionActorInConversation() :
-ceConversationCondition( ectActorInConversation ),
-pNegate( false ){
+ceConversationCondition(ectActorInConversation),
+pNegate(false){
 }
 
 ceCConditionActorInConversation::ceCConditionActorInConversation(
-const ceCConditionActorInConversation &condition ) :
-ceConversationCondition( condition ),
-pActor( condition.pActor ),
-pNegate( condition.pNegate ){
+const ceCConditionActorInConversation &condition) :
+ceConversationCondition(condition),
+pActor(condition.pActor),
+pNegate(condition.pNegate){
 }
 
 ceCConditionActorInConversation::~ceCConditionActorInConversation(){
@@ -58,14 +58,14 @@ ceCConditionActorInConversation::~ceCConditionActorInConversation(){
 // Management
 ///////////////
 
-void ceCConditionActorInConversation::SetActor( const char *id ){
+void ceCConditionActorInConversation::SetActor(const char *id){
 	pActor = id;
 }
 
-void ceCConditionActorInConversation::SetNegate( bool negate ){
+void ceCConditionActorInConversation::SetNegate(bool negate){
 	pNegate = negate;
 }
 
 ceConversationCondition *ceCConditionActorInConversation::CreateCopy() const{
-	return new ceCConditionActorInConversation( *this );
+	return new ceCConditionActorInConversation(*this);
 }

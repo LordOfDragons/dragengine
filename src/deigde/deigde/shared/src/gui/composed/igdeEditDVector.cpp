@@ -44,22 +44,22 @@
 // Class igdeEditDVector::cListener
 /////////////////////////////////////
 
-igdeEditDVector::cListener::cListener( igdeEditDVector &editDVector,
-	igdeTextField *textX, igdeTextField *textY, igdeTextField *textZ ) :
-pEditDVector( editDVector ),
-pTextX( textX ),
-pTextY( textY ),
-pTextZ( textZ ){
+igdeEditDVector::cListener::cListener(igdeEditDVector &editDVector,
+	igdeTextField *textX, igdeTextField *textY, igdeTextField *textZ) :
+pEditDVector(editDVector),
+pTextX(textX),
+pTextY(textY),
+pTextZ(textZ){
 }
 
 igdeEditDVector::cListener::~cListener(){
 }
 
-void igdeEditDVector::cListener::OnTextChanged( igdeTextField* ){
-	pEditDVector.SetDVector( decDVector( pTextX->GetDouble(), pTextY->GetDouble(), pTextZ->GetDouble() ) );
+void igdeEditDVector::cListener::OnTextChanged(igdeTextField*){
+	pEditDVector.SetDVector(decDVector(pTextX->GetDouble(), pTextY->GetDouble(), pTextZ->GetDouble()));
 }
 
-void igdeEditDVector::cListener::OnTextChanging( igdeTextField* ){
+void igdeEditDVector::cListener::OnTextChanging(igdeTextField*){
 }
 
 
@@ -70,36 +70,36 @@ void igdeEditDVector::cListener::OnTextChanging( igdeTextField* ){
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditDVector::igdeEditDVector( igdeUIHelper &helper, int columns, int precision,
-	const char *description ) :
-igdeContainerBoxAlternate( helper.GetEnvironment(), igdeContainerBox::eaX, true, 2 ),
-pEnabled( true ),
-pEditable( true ),
-pDescription( description ),
-pColumns( columns ),
-pPrecision( precision ),
-pPreventUpdate( false )
+igdeEditDVector::igdeEditDVector(igdeUIHelper &helper, int columns, int precision,
+	const char *description) :
+igdeContainerBoxAlternate(helper.GetEnvironment(), igdeContainerBox::eaX, true, 2),
+pEnabled(true),
+pEditable(true),
+pDescription(description),
+pColumns(columns),
+pPrecision(precision),
+pPreventUpdate(false)
 {
-	if( columns < 1 || precision < 0 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1 || precision < 0){
+		DETHROW(deeInvalidParam);
 	}
-	pCreateContent( helper );
+	pCreateContent(helper);
 }
 
-igdeEditDVector::igdeEditDVector( igdeUIHelper &helper, int columns, int precision,
-	bool editable, const char *description ) :
-igdeContainerBoxAlternate( helper.GetEnvironment(), igdeContainerBox::eaX, true, 2 ),
-pEnabled( true ),
-pEditable( editable ),
-pDescription( description ),
-pColumns( columns ),
-pPrecision( precision ),
-pPreventUpdate( false )
+igdeEditDVector::igdeEditDVector(igdeUIHelper &helper, int columns, int precision,
+	bool editable, const char *description) :
+igdeContainerBoxAlternate(helper.GetEnvironment(), igdeContainerBox::eaX, true, 2),
+pEnabled(true),
+pEditable(editable),
+pDescription(description),
+pColumns(columns),
+pPrecision(precision),
+pPreventUpdate(false)
 {
-	if( columns < 1 || precision < 0 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1 || precision < 0){
+		DETHROW(deeInvalidParam);
 	}
-	pCreateContent( helper );
+	pCreateContent(helper);
 }
 
 igdeEditDVector::~igdeEditDVector(){
@@ -111,8 +111,8 @@ igdeEditDVector::~igdeEditDVector(){
 // Management
 ///////////////
 
-void igdeEditDVector::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeEditDVector::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -120,8 +120,8 @@ void igdeEditDVector::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeEditDVector::SetEditable( bool editable ){
-	if( pEditable == editable ){
+void igdeEditDVector::SetEditable(bool editable){
+	if(pEditable == editable){
 		return;
 	}
 	
@@ -129,8 +129,8 @@ void igdeEditDVector::SetEditable( bool editable ){
 	OnEditableChanged();
 }
 
-void igdeEditDVector::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeEditDVector::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -138,8 +138,8 @@ void igdeEditDVector::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeEditDVector::SetDVector( const decDVector &vector ){
-	if( pPreventUpdate || vector.IsEqualTo( pDVector ) ){
+void igdeEditDVector::SetDVector(const decDVector &vector){
+	if(pPreventUpdate || vector.IsEqualTo(pDVector)){
 		return;
 	}
 	
@@ -148,9 +148,9 @@ void igdeEditDVector::SetDVector( const decDVector &vector ){
 	NotifyDVectorChanged();
 }
 
-void igdeEditDVector::SetPrecision( int precision ){
-	if( precision < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeEditDVector::SetPrecision(int precision){
+	if(precision < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPrecision = precision;
@@ -163,24 +163,24 @@ void igdeEditDVector::Focus(){
 
 
 
-void igdeEditDVector::AddListener( igdeEditDVectorListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeEditDVector::AddListener(igdeEditDVectorListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeEditDVector::RemoveListener( igdeEditDVectorListener *listener ){
-	pListeners.Remove( listener );
+void igdeEditDVector::RemoveListener(igdeEditDVectorListener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeEditDVector::NotifyDVectorChanged(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeEditDVectorListener* )listeners.GetAt( i ) )->OnDVectorChanged( this );
+	for(i=0; i<count; i++){
+		((igdeEditDVectorListener*)listeners.GetAt(i))->OnDVectorChanged(this);
 	}
 }
 
@@ -190,66 +190,66 @@ void igdeEditDVector::OnDVectorChanged(){
 	pPreventUpdate = true;
 	try{
 // 		if( fabsf( pDVector.x - pTextX->GetDouble() ) > DOUBLE_SAFE_EPSILON ){
-		pTextX->SetDouble( pDVector.x );
+		pTextX->SetDouble(pDVector.x);
 // 		}
 // 		if( fabsf( pDVector.y - pTextY->GetDouble() ) > DOUBLE_SAFE_EPSILON ){
-		pTextY->SetDouble( pDVector.y );
+		pTextY->SetDouble(pDVector.y);
 // 		}
 // 		if( fabsf( pDVector.z - pTextY->GetDouble() ) > DOUBLE_SAFE_EPSILON ){
-		pTextZ->SetDouble( pDVector.z );
+		pTextZ->SetDouble(pDVector.z);
 // 		}
 		pPreventUpdate = false;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}
 }
 
 void igdeEditDVector::OnEnabledChanged(){
-	pTextX->SetEnabled( pEnabled );
-	pTextY->SetEnabled( pEnabled );
-	pTextZ->SetEnabled( pEnabled );
+	pTextX->SetEnabled(pEnabled);
+	pTextY->SetEnabled(pEnabled);
+	pTextZ->SetEnabled(pEnabled);
 }
 
 void igdeEditDVector::OnEditableChanged(){
-	pTextX->SetEditable( pEditable );
-	pTextY->SetEditable( pEditable );
-	pTextZ->SetEditable( pEditable );
+	pTextX->SetEditable(pEditable);
+	pTextY->SetEditable(pEditable);
+	pTextZ->SetEditable(pEditable);
 }
 
 void igdeEditDVector::OnDescriptionChanged(){
-	pTextX->SetDescription( pDescription );
-	pTextY->SetDescription( pDescription );
-	pTextZ->SetDescription( pDescription );
+	pTextX->SetDescription(pDescription);
+	pTextY->SetDescription(pDescription);
+	pTextZ->SetDescription(pDescription);
 }
 
 void igdeEditDVector::OnPrecisionChanged(){
-	pTextX->SetPrecision( pPrecision );
-	pTextY->SetPrecision( pPrecision );
-	pTextZ->SetPrecision( pPrecision );
+	pTextX->SetPrecision(pPrecision);
+	pTextY->SetPrecision(pPrecision);
+	pTextZ->SetPrecision(pPrecision);
 }
 
 
 
-void igdeEditDVector::pCreateContent( igdeUIHelper &helper ){
+void igdeEditDVector::pCreateContent(igdeUIHelper &helper){
 	// create widgets
-	helper.Label( *this, "(" );
-	helper.EditFloat( *this, pDescription, pColumns, pPrecision, pTextX, NULL );
-	helper.Label( *this, "," );
-	helper.EditFloat( *this, pDescription, pColumns, pPrecision, pTextY, NULL );
-	helper.Label( *this, "," );
-	helper.EditFloat( *this, pDescription, pColumns, pPrecision, pTextZ, NULL );
-	helper.Label( *this, ")" );
+	helper.Label(*this, "(");
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextX, NULL);
+	helper.Label(*this, ",");
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextY, NULL);
+	helper.Label(*this, ",");
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextZ, NULL);
+	helper.Label(*this, ")");
 	
 	// set values
-	pTextX->SetDouble( pDVector.x );
-	pTextY->SetDouble( pDVector.y );
-	pTextZ->SetDouble( pDVector.z );
+	pTextX->SetDouble(pDVector.x);
+	pTextY->SetDouble(pDVector.y);
+	pTextZ->SetDouble(pDVector.z);
 	
 	// add listener
 	cListener::Ref listener(cListener::Ref::NewWith(*this, pTextX, pTextY, pTextZ));
-	pTextX->AddListener( listener );
-	pTextY->AddListener( listener );
-	pTextZ->AddListener( listener );
+	pTextX->AddListener(listener);
+	pTextY->AddListener(listener);
+	pTextZ->AddListener(listener);
 }

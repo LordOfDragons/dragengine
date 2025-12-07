@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation action property window. */
-	ceWPAStopTopic( ceWPTopic &parentPanel );
+	ceWPAStopTopic(ceWPTopic &parentPanel);
 	
 	/** \brief Clean up conversation action property window. */
 	virtual ~ceWPAStopTopic();

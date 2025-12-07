@@ -55,19 +55,19 @@ int cePlaybackVariableList::GetCount() const{
 	return pVariables.GetCount();
 }
 
-cePlaybackVariable *cePlaybackVariableList::GetAt( int index ) const{
-	return ( cePlaybackVariable* )pVariables.GetAt( index );
+cePlaybackVariable *cePlaybackVariableList::GetAt(int index) const{
+	return (cePlaybackVariable*)pVariables.GetAt(index);
 }
 
-cePlaybackVariable *cePlaybackVariableList::GetNamed( const char *name ) const{
+cePlaybackVariable *cePlaybackVariableList::GetNamed(const char *name) const{
 	const int count = pVariables.GetCount();
 	cePlaybackVariable *variable;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		variable = ( cePlaybackVariable* )pVariables.GetAt( i );
+	for(i=0; i<count; i++){
+		variable = (cePlaybackVariable*)pVariables.GetAt(i);
 		
-		if( variable->GetName().Equals( name ) ){
+		if(variable->GetName().Equals(name)){
 			return variable;
 		}
 	}
@@ -75,16 +75,16 @@ cePlaybackVariable *cePlaybackVariableList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int cePlaybackVariableList::IndexOf( cePlaybackVariable *variable ) const{
-	return pVariables.IndexOf( variable );
+int cePlaybackVariableList::IndexOf(cePlaybackVariable *variable) const{
+	return pVariables.IndexOf(variable);
 }
 
-int cePlaybackVariableList::IndexOfNamed( const char *name ) const{
+int cePlaybackVariableList::IndexOfNamed(const char *name) const{
 	const int count = pVariables.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( cePlaybackVariable* )pVariables.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((cePlaybackVariable*)pVariables.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int cePlaybackVariableList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool cePlaybackVariableList::Has( cePlaybackVariable *variable ) const{
-	return pVariables.Has( variable );
+bool cePlaybackVariableList::Has(cePlaybackVariable *variable) const{
+	return pVariables.Has(variable);
 }
 
-bool cePlaybackVariableList::HasNamed( const char *name ) const{
+bool cePlaybackVariableList::HasNamed(const char *name) const{
 	const int count = pVariables.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( cePlaybackVariable* )pVariables.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((cePlaybackVariable*)pVariables.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,22 +109,22 @@ bool cePlaybackVariableList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void cePlaybackVariableList::Set( const char *name, int value ){
-	cePlaybackVariable *variable = GetNamed( name );
+void cePlaybackVariableList::Set(const char *name, int value){
+	cePlaybackVariable *variable = GetNamed(name);
 	
-	if( variable ){
-		variable->SetValue( value );
+	if(variable){
+		variable->SetValue(value);
 		
 	}else{
-		variable = new cePlaybackVariable( name, value );
+		variable = new cePlaybackVariable(name, value);
 		
-		pVariables.Add( variable );
+		pVariables.Add(variable);
 		variable->FreeReference();
 	}
 }
 
-void cePlaybackVariableList::Remove( cePlaybackVariable *variable ){
-	pVariables.Remove( variable );
+void cePlaybackVariableList::Remove(cePlaybackVariable *variable){
+	pVariables.Remove(variable);
 }
 
 void cePlaybackVariableList::RemoveAll(){
@@ -133,7 +133,7 @@ void cePlaybackVariableList::RemoveAll(){
 
 
 
-cePlaybackVariableList &cePlaybackVariableList::operator=( const cePlaybackVariableList &list ){
+cePlaybackVariableList &cePlaybackVariableList::operator=(const cePlaybackVariableList &list){
 	pVariables = list.pVariables;
 	return *this;
 }

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetPosition::gdeUOCComponentSetPosition( gdeObjectClass *objectClass,
-gdeOCComponent *component, const decVector &newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetPosition::gdeUOCComponentSetPosition(gdeObjectClass *objectClass,
+gdeOCComponent *component, const decVector &newValue) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set position" );
+	SetShortInfo("Component set position");
 	
 	pOldValue = component->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentSetPosition::~gdeUOCComponentSetPosition(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCComponentSetPosition::~gdeUOCComponentSetPosition(){
 ///////////////
 
 void gdeUOCComponentSetPosition::Undo(){
-	pComponent->SetPosition( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPosition(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetPosition::Redo(){
-	pComponent->SetPosition( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPosition(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

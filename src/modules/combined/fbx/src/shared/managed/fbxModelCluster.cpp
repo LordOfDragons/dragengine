@@ -45,11 +45,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxModelCluster::fbxModelCluster( fbxModel &model, fbxNode &nodeCluster ) :
-pModel( model ),
-pNodeCluster( nodeCluster ),
-pNodeClusterID( nodeCluster.GetID() ),
-pRigBone( NULL ){
+fbxModelCluster::fbxModelCluster(fbxModel &model, fbxNode &nodeCluster) :
+pModel(model),
+pNodeCluster(nodeCluster),
+pNodeClusterID(nodeCluster.GetID()),
+pRigBone(NULL){
 }
 
 fbxModelCluster::~fbxModelCluster(){
@@ -60,7 +60,7 @@ fbxModelCluster::~fbxModelCluster(){
 // Management
 ///////////////
 
-void fbxModelCluster::SetRigBone( fbxRigBone *rigBone ){
+void fbxModelCluster::SetRigBone(fbxRigBone *rigBone){
 	pRigBone = rigBone;
 }
 
@@ -71,7 +71,7 @@ void fbxModelCluster::Prepare(){
 
 
 
-void fbxModelCluster::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose) const{
-	module.LogInfoFormat( "%sCluster '%s'", prefix.GetString(),
-		pNodeCluster.GetPropertyAt( 1 )->CastString().GetValue().GetString() );
+void fbxModelCluster::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
+	module.LogInfoFormat("%sCluster '%s'", prefix.GetString(),
+		pNodeCluster.GetPropertyAt(1)->CastString().GetValue().GetString());
 }

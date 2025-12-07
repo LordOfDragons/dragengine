@@ -73,9 +73,9 @@
 ////////////////////////////
 
 deoglAddToRenderTaskGIMaterial::deoglAddToRenderTaskGIMaterial(
-	deoglRenderThread &renderThread, deoglRenderTask &renderTask ) :
-pRenderThread( renderThread  ),
-pRenderTask( renderTask  )
+	deoglRenderThread &renderThread, deoglRenderTask &renderTask) :
+pRenderThread(renderThread),
+pRenderTask(renderTask)
 {
 	Reset();
 }
@@ -88,7 +88,7 @@ deoglAddToRenderTaskGIMaterial::~deoglAddToRenderTaskGIMaterial(){
 // Management
 ///////////////
 
-void deoglAddToRenderTaskGIMaterial::SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type ){
+void deoglAddToRenderTaskGIMaterial::SetSkinPipelineType(deoglSkinTexturePipelines::eTypes type){
 	pSkinPipelineType = type;
 }
 
@@ -96,9 +96,9 @@ void deoglAddToRenderTaskGIMaterial::Reset(){
 	pSkinPipelineType = deoglSkinTexturePipelines::etGIMaterial;
 }
 
-deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deoglRComponentLOD &lod, int texture ){
-	deoglRComponentTexture &componentTexture = lod.GetComponent().GetTextureAt( texture );
-	if( componentTexture.GetIsRendered() ){
+deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture(deoglRComponentLOD &lod, int texture){
+	deoglRComponentTexture &componentTexture = lod.GetComponent().GetTextureAt(texture);
+	if(componentTexture.GetIsRendered()){
 		// NOTE for this to work we have to recast the ray into the direction of the direct
 		//      rendering camera. this is though quite complex to achieve fast in a ray
 		//      tracer. for this reason this is skipped
@@ -106,16 +106,16 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deo
 	}
 	
 	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
-	if( ! skinTexture ){
+	if(!skinTexture){
 		return NULL;
 	}
 	
-	if( pFilterReject( skinTexture ) ){
+	if(pFilterReject(skinTexture)){
 		return NULL;
 	}
 	
 	// obtain render task texture
-	return pGetTaskTexture( skinTexture, componentTexture.GetTUCForPipelineType( pSkinPipelineType ) );
+	return pGetTaskTexture(skinTexture, componentTexture.GetTUCForPipelineType(pSkinPipelineType));
 }
 
 
@@ -123,38 +123,38 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deo
 // Private Functions
 //////////////////////
 
-bool deoglAddToRenderTaskGIMaterial::pFilterReject( const deoglSkinTexture *skinTexture ) const{
-	if( ! skinTexture ){
+bool deoglAddToRenderTaskGIMaterial::pFilterReject(const deoglSkinTexture *skinTexture) const{
+	if(!skinTexture){
 		return true;
 	}
-	if( /*skinTexture->GetHasSolidity() ||*/ skinTexture->GetHasTransparency() ){
+	if(/*skinTexture->GetHasSolidity() ||*/ skinTexture->GetHasTransparency()){
 		return true;
 	}
 	return false;
 }
 
 deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::pGetTaskTexture(
-deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
+deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc){
 	// retrieve the shader and texture units configuration to use
 	const deoglPipeline *pipeline = nullptr;
 	
-	if( ! pipeline ){
-		pipeline = skinTexture->GetPipelines().GetAt( deoglSkinTexturePipelinesList::eptComponent ).
-			GetWithRef( pSkinPipelineType ).GetPipeline();
+	if(!pipeline){
+		pipeline = skinTexture->GetPipelines().GetAt(deoglSkinTexturePipelinesList::eptComponent).
+			GetWithRef(pSkinPipelineType).GetPipeline();
 	}
 	
-	DEASSERT_NOTNULL( pipeline )
+	DEASSERT_NOTNULL(pipeline)
 	
-	if( ! tuc ){
+	if(!tuc){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
 	// obtain render task texture
-	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline( pipeline );
-	deoglRenderTaskTexture &rttexture = *rtpipeline.AddTexture( tuc->GetRTSTexture() );
+	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline(pipeline);
+	deoglRenderTaskTexture &rttexture = *rtpipeline.AddTexture(tuc->GetRTSTexture());
 	
-	if( tuc->GetMaterialIndex() == -1 ){
-		pRenderThread.GetGI().GetMaterials().AddTUC( tuc );
+	if(tuc->GetMaterialIndex() == -1){
+		pRenderThread.GetGI().GetMaterials().AddTUC(tuc);
 	}
 	
 	return &rttexture;

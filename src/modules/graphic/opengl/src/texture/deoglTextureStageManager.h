@@ -79,13 +79,13 @@ private:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	sStage pStages[ OGL_MAX_TEXTURE_STAGES ];
+	sStage pStages[OGL_MAX_TEXTURE_STAGES];
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create texture stage manager. */
-	deoglTextureStageManager( deoglRenderThread &renderThread );
+	deoglTextureStageManager(deoglRenderThread &renderThread);
 	
 	/** Clean up texture stage manager. */
 	~deoglTextureStageManager();
@@ -99,7 +99,7 @@ public:
 	int GetEnabledStageCount() const;
 	
 	/** Type of texture bound to stage. */
-	GLenum GetStageType( int stage ) const;
+	GLenum GetStageType(int stage) const;
 	
 	/**
 	 * Enable stage and bind array texture.
@@ -107,46 +107,46 @@ public:
 	 *          bound only for manipulating opengl states and is unbound
 	 *          immediately afterwards.
 	 */
-	void EnableBareArrayTexture( int stage, const deoglArrayTexture &texture );
+	void EnableBareArrayTexture(int stage, const deoglArrayTexture &texture);
 	
 	/**
 	 * Enable stage and bind texture
 	 * \details Sets no texture parameters. Useful if a texture has to be bound only
 	 *          for manipulating opengl states and is unbound immediately afterwards.
 	 */
-	void EnableBareTexture( int stage, const deoglTexture &texture );
+	void EnableBareTexture(int stage, const deoglTexture &texture);
 	
 	/**
 	 * Enable stage and bind cube map.
 	 * \details Sets no texture parameters. Useful if a cube map has to be bound only
 	 *          for manipulating opengl states and is unbound immediately afterwards.
 	 */
-	void EnableBareCubeMap( int stage, const deoglCubeMap &cubemap );
+	void EnableBareCubeMap(int stage, const deoglCubeMap &cubemap);
 	
 	/**
 	 * Enable stage and bind tbo without sampler.
 	 * \details Sets no texture paramters. Useful if a tbo has to be bound for for
 	 *          manipulating opegl states and is unbound immediately afterwards.
 	 */
-	void EnableBareTBO( int stage, GLuint tbo );
+	void EnableBareTBO(int stage, GLuint tbo);
 	
 	
 	
 	/** Enable stage and bind texture setting texture properties. */
-	void EnableTexture( int stage, const deoglTexture &texture, deoglTexSamplerConfig &samplerConfig );
+	void EnableTexture(int stage, const deoglTexture &texture, deoglTexSamplerConfig &samplerConfig);
 	
 	/** Enable stage and bind cube map setting texture properties. */
-	void EnableCubeMap( int stage, const deoglCubeMap &cubemap, deoglTexSamplerConfig &samplerConfig );
+	void EnableCubeMap(int stage, const deoglCubeMap &cubemap, deoglTexSamplerConfig &samplerConfig);
 	
 	/** Enable stage and bind cube map face setting texture properties. */
-	void EnableCubeMapFace( int stage, const deoglCubeMap &cubemap,
-		deoglCubeMap::eFaces face, deoglTexSamplerConfig &samplerConfig );
+	void EnableCubeMapFace(int stage, const deoglCubeMap &cubemap,
+		deoglCubeMap::eFaces face, deoglTexSamplerConfig &samplerConfig);
 	
 	/** Enable stage and bind array texture setting texture properties. */
-	void EnableArrayTexture( int stage, const deoglArrayTexture &texture, deoglTexSamplerConfig &samplerConfig );
+	void EnableArrayTexture(int stage, const deoglArrayTexture &texture, deoglTexSamplerConfig &samplerConfig);
 	
 	/** Enable given stage and bind texture buffer object. */
-	void EnableTBO( int stage, GLuint tbo, deoglTexSamplerConfig &samplerConfig );
+	void EnableTBO(int stage, GLuint tbo, deoglTexSamplerConfig &samplerConfig);
 	
 	/**
 	 * Enable stage and bind texture channel from a skin.
@@ -155,14 +155,14 @@ public:
 	 *          is for some reason invalid the given default texture is used. Should this also
 	 *          fail the stage will be disabled.
 	 */
-	void EnableSkin( int stage, const deoglRSkin &skin, int texture,
+	void EnableSkin(int stage, const deoglRSkin &skin, int texture,
 		deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture,
-		deoglTexSamplerConfig &samplerConfig );
+		deoglTexSamplerConfig &samplerConfig);
 	
 	
 	
 	/** Disable stage. */
-	void DisableStage( int stage );
+	void DisableStage(int stage);
 	
 	/**
 	 * Disable all stages above stage.
@@ -170,7 +170,7 @@ public:
 	 *          2 and 3 then you have to call this function with the stage of the last
 	 *          stage to remain enabled thus 1 in this case.
 	 */
-	void DisableStagesAbove( int stage );
+	void DisableStagesAbove(int stage);
 	
 	/** Disable all stages. */
 	void DisableAllStages();
@@ -181,13 +181,13 @@ public:
 	 * Activate stage and bind texture if not bound already.
 	 * \details Keeps the currently bound texture sampler configuration the same.
 	 */
-	void BindTexture( int stage, GLuint texture, GLenum type );
+	void BindTexture(int stage, GLuint texture, GLenum type);
 	
 	/**
 	 * Activate stage and bind texture if not bound already.
 	 * \details Binds also the texture sampler configuration if different than the current one.
 	 */
-	void BindTexture( int stage, GLuint texture, GLenum type, GLuint samplerConfig );
+	void BindTexture(int stage, GLuint texture, GLenum type, GLuint samplerConfig);
 	
 	
 	

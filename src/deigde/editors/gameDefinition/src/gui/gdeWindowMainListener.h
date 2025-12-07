@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWindowMainListener( gdeWindowMain &window );
+	gdeWindowMainListener(gdeWindowMain &window);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWindowMainListener();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( gdeGameDefinition *gameDefinition );
+	virtual void StateChanged(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( gdeGameDefinition *gameDefinition );
+	virtual void UndoChanged(gdeGameDefinition *gameDefinition);
 	
 	/** \brief View properties changed. */
-	virtual void ViewChanged( gdeGameDefinition *gameDefinition );
+	virtual void ViewChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

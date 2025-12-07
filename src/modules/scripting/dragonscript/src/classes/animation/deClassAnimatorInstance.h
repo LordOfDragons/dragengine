@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	deClassAnimatorInstance( deScriptingDragonScript &ds );
+	deClassAnimatorInstance(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassAnimatorInstance();
@@ -54,17 +54,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
 	inline deScriptingDragonScript &GetDS(){ return pDS; }
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Animator instance for object or \em NULL if object is \em NULL. */
-	deAnimatorInstance *GetAnimatorInstance( dsRealObject *object ) const;
+	deAnimatorInstance *GetAnimatorInstance(dsRealObject *object) const;
 	
 	/** \brief Push animator instance or NULL on the stack. */
-	void PushAnimatorInstance( dsRunTime *rt, deAnimatorInstance *instance );
+	void PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance *instance);
 	
 	inline dsClass *GetClassAnimatorRuleBlendMode() const{ return pClsAnimatorRuleBlendMode; }
 	/*@}*/
@@ -85,46 +85,46 @@ private:
 		dsClass *clsAnimatorRuleBlendMode;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetAnimator );
-	DEF_NATFUNC( nfSetAnimator );
-	DEF_NATFUNC( nfSetAnimator2 );
-	DEF_NATFUNC( nfGetComponent );
-	DEF_NATFUNC( nfSetComponent );
-	DEF_NATFUNC( nfGetAnimation );
-	DEF_NATFUNC( nfSetAnimation );
+	DEF_NATFUNC(nfGetAnimator);
+	DEF_NATFUNC(nfSetAnimator);
+	DEF_NATFUNC(nfSetAnimator2);
+	DEF_NATFUNC(nfGetComponent);
+	DEF_NATFUNC(nfSetComponent);
+	DEF_NATFUNC(nfGetAnimation);
+	DEF_NATFUNC(nfSetAnimation);
 	
-	DEF_NATFUNC( nfGetBlendMode );
-	DEF_NATFUNC( nfSetBlendMode );
-	DEF_NATFUNC( nfGetBlendFactor );
-	DEF_NATFUNC( nfSetBlendFactor );
-	DEF_NATFUNC( nfGetEnableRetargeting );
-	DEF_NATFUNC( nfSetEnableRetargeting );
-	DEF_NATFUNC( nfGetProtectDynamicBones );
-	DEF_NATFUNC( nfSetProtectDynamicBones );
+	DEF_NATFUNC(nfGetBlendMode);
+	DEF_NATFUNC(nfSetBlendMode);
+	DEF_NATFUNC(nfGetBlendFactor);
+	DEF_NATFUNC(nfSetBlendFactor);
+	DEF_NATFUNC(nfGetEnableRetargeting);
+	DEF_NATFUNC(nfSetEnableRetargeting);
+	DEF_NATFUNC(nfGetProtectDynamicBones);
+	DEF_NATFUNC(nfSetProtectDynamicBones);
 	
-	DEF_NATFUNC( nfGetControllerCount );
-	DEF_NATFUNC( nfGetControllerAt );
-	DEF_NATFUNC( nfGetControllerNamed );
-	DEF_NATFUNC( nfIndexOfControllerNamed );
-	DEF_NATFUNC( nfCopyControllerStates );
-	DEF_NATFUNC( nfCopyControllerStates2 );
-	DEF_NATFUNC( nfCopyNamedControllerStates );
+	DEF_NATFUNC(nfGetControllerCount);
+	DEF_NATFUNC(nfGetControllerAt);
+	DEF_NATFUNC(nfGetControllerNamed);
+	DEF_NATFUNC(nfIndexOfControllerNamed);
+	DEF_NATFUNC(nfCopyControllerStates);
+	DEF_NATFUNC(nfCopyControllerStates2);
+	DEF_NATFUNC(nfCopyNamedControllerStates);
 	
-	DEF_NATFUNC( nfApply );
-	DEF_NATFUNC( nfApplyDirect );
-	DEF_NATFUNC( nfCaptureState );
-	DEF_NATFUNC( nfStoreFrame );
+	DEF_NATFUNC(nfApply);
+	DEF_NATFUNC(nfApplyDirect);
+	DEF_NATFUNC(nfCaptureState);
+	DEF_NATFUNC(nfStoreFrame);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

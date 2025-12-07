@@ -39,8 +39,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeBaseMAOCSubObject( gdeWindowMain &windowMain, const char *text,
-		igdeIcon *icon, const char *description );
+	gdeBaseMAOCSubObject(gdeWindowMain &windowMain, const char *text,
+		igdeIcon *icon, const char *description);
 	/*@}*/
 	
 	
@@ -48,11 +48,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	virtual igdeUndo *OnAction(gdeGameDefinition &gameDefinition);
 	
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnActionSubObject( gdeGameDefinition &gameDefinition,
-		gdeObjectClass &objectClass ) = 0;
+	virtual igdeUndo *OnActionSubObject(gdeGameDefinition &gameDefinition,
+		gdeObjectClass &objectClass) = 0;
 	
 	/** \brief Request update of action parameters if required. */
 	virtual void Update();

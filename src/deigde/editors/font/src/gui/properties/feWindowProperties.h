@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	feWindowProperties( feWindowMain &windowMain );
+	feWindowProperties(feWindowMain &windowMain);
 	
 	/** \brief Clean up window. */
 	virtual ~feWindowProperties();
@@ -63,7 +63,7 @@ public:
 	inline feWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set font to monitor. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	/*@}*/
 };
 

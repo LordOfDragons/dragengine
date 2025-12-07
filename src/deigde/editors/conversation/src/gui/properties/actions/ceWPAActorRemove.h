@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAActorRemove( ceWPTopic &parentPanel );
+	ceWPAActorRemove(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */

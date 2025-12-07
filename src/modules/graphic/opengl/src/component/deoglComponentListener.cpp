@@ -43,38 +43,38 @@ deoglComponentListener::~deoglComponentListener(){
 // Notifications
 //////////////////
 
-void deoglComponentListener::ComponentDestroyed( deoglRComponent& ){
+void deoglComponentListener::ComponentDestroyed(deoglRComponent&){
 }
 
-void deoglComponentListener::ParentWorldChanged( deoglRComponent& ){
+void deoglComponentListener::ParentWorldChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::LayerMaskChanged( deoglRComponent& ){
+void deoglComponentListener::LayerMaskChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::RenderStaticChanged( deoglRComponent& ){
+void deoglComponentListener::RenderStaticChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::BoundariesChanged( deoglRComponent& ){
+void deoglComponentListener::BoundariesChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::OcclusionMeshChanged( deoglRComponent& ){
+void deoglComponentListener::OcclusionMeshChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::TexturesChanged( deoglRComponent& ){
+void deoglComponentListener::TexturesChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::TUCChanged( deoglRComponent& ){
+void deoglComponentListener::TUCChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::MovementHintChanged( deoglRComponent& ){
+void deoglComponentListener::MovementHintChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::GIImportanceChanged( deoglRComponent& ){
+void deoglComponentListener::GIImportanceChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::VisibilityChanged( deoglRComponent& ){
+void deoglComponentListener::VisibilityChanged(deoglRComponent&){
 }
 
-void deoglComponentListener::ModelChanged( deoglRComponent& ){
+void deoglComponentListener::ModelChanged(deoglRComponent&){
 }

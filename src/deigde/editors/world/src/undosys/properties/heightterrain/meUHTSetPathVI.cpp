@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetPathVI::meUHTSetPathVI( meWorld *world, meHeightTerrainSector *sector, const char *newPath ){
-	if( ! world || ! sector || ! newPath ) DETHROW( deeInvalidParam );
+meUHTSetPathVI::meUHTSetPathVI(meWorld *world, meHeightTerrainSector *sector, const char *newPath){
+	if(!world || !sector || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
@@ -50,13 +50,13 @@ meUHTSetPathVI::meUHTSetPathVI( meWorld *world, meHeightTerrainSector *sector, c
 	pOldPath = sector->GetPathVisibilityImage().GetString();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Set Height Terrain Visibility Image Path" );
+	SetShortInfo("Set Height Terrain Visibility Image Path");
 	
 	world->AddReference();
 }
 
 meUHTSetPathVI::~meUHTSetPathVI(){
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -66,9 +66,9 @@ meUHTSetPathVI::~meUHTSetPathVI(){
 
 
 void meUHTSetPathVI::Undo(){
-	pSector->SetPathVisibilityImage( pOldPath.GetString() );
+	pSector->SetPathVisibilityImage(pOldPath.GetString());
 }
 
 void meUHTSetPathVI::Redo(){
-	pSector->SetPathVisibilityImage( pNewPath.GetString() );
+	pSector->SetPathVisibilityImage(pNewPath.GetString());
 }

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new terrain height image wrapper. */
-	meTerrainHeightImage( deImage *image );
+	meTerrainHeightImage(deImage *image);
 	/** Cleans up the terrain height image wrapper. */
 	~meTerrainHeightImage();
 	/*@}*/
@@ -66,22 +66,22 @@ public:
 	 * Retrieves the height at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.
 	 */
-	float GetHeightAt( int x, int y ) const;
+	float GetHeightAt(int x, int y) const;
 	/**
 	 * Retrieves the height at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.
 	 */
-	float GetHeightAt( int index ) const;
+	float GetHeightAt(int index) const;
 	/**
 	 * Sets the height at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.
 	 */
-	void SetHeightAt( int x, int y, float value );
+	void SetHeightAt(int x, int y, float value);
 	/**
 	 * Sets the height at the given position. No checking is done on
 	 * the parameters so make sure they are inside the boundaries.
 	 */
-	void SetHeightAt( int index, float value );
+	void SetHeightAt(int index, float value);
 	/*@}*/
 };
 

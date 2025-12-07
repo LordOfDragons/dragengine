@@ -55,32 +55,32 @@ debnStateLinkManager::~debnStateLinkManager(){
 // Management
 ///////////////
 
-debnStateLink *debnStateLinkManager::GetLinkWithIdentifier( int identifier ) const{
+debnStateLink *debnStateLinkManager::GetLinkWithIdentifier(int identifier) const{
 	debnStateLink *link = pHeadLink;
 	
-	while( link && identifier != link->GetIdentifier() ){
+	while(link && identifier != link->GetIdentifier()){
 		link = link->GetNextLink();
 	}
 	
 	return link;
 }
 
-debnStateLink *debnStateLinkManager::GetLinkWithNetworkState( debnState *networkState ) const{
+debnStateLink *debnStateLinkManager::GetLinkWithNetworkState(debnState *networkState) const{
 	debnStateLink *link = pHeadLink;
 	
-	while( link && networkState != link->GetState() ){
+	while(link && networkState != link->GetState()){
 		link = link->GetNextLink();
 	}
 	
 	return link;
 }
 
-void debnStateLinkManager::AddLink( debnStateLink *link ){
-	if( ! link ) DETHROW( deeInvalidParam );
+void debnStateLinkManager::AddLink(debnStateLink *link){
+	if(!link) DETHROW(deeInvalidParam);
 	
-	if( pTailLink ){
-		pTailLink->SetNextLink( link );
-		link->SetPreviousLink( pTailLink );
+	if(pTailLink){
+		pTailLink->SetNextLink(link);
+		link->SetPreviousLink(pTailLink);
 		pTailLink = link;
 		
 	}else{
@@ -89,23 +89,23 @@ void debnStateLinkManager::AddLink( debnStateLink *link ){
 	}
 }
 
-void debnStateLinkManager::RemoveLink( debnStateLink *link ){
-	if( ! link ) DETHROW( deeInvalidParam );
+void debnStateLinkManager::RemoveLink(debnStateLink *link){
+	if(!link) DETHROW(deeInvalidParam);
 	debnStateLink *previous = link->GetPreviousLink();
 	debnStateLink *next = link->GetNextLink();
 	
-	if( ! previous && link != pHeadLink ) DETHROW( deeInvalidParam );
-	if( ! next && link != pTailLink ) DETHROW( deeInvalidParam );
+	if(!previous && link != pHeadLink) DETHROW(deeInvalidParam);
+	if(!next && link != pTailLink) DETHROW(deeInvalidParam);
 	
-	if( previous ){
-		previous->SetNextLink( next );
+	if(previous){
+		previous->SetNextLink(next);
 		
 	}else{
 		pHeadLink = next;
 	}
 	
-	if( next ){
-		next->SetPreviousLink( previous );
+	if(next){
+		next->SetPreviousLink(previous);
 		
 	}else{
 		pTailLink = previous;
@@ -117,7 +117,7 @@ void debnStateLinkManager::RemoveLink( debnStateLink *link ){
 void debnStateLinkManager::RemoveAllLinks(){
 	debnStateLink *link;
 	
-	while( pHeadLink ){
+	while(pHeadLink){
 		link = pHeadLink;
 		
 		pHeadLink = link->GetNextLink();
@@ -132,9 +132,9 @@ void debnStateLinkManager::RemoveAllLinks(){
 int debnStateLinkManager::GetFreeIdentifier(){
 	int lastIdentifier = pNextIdentifier;
 	
-	while( GetLinkWithIdentifier( pNextIdentifier ) ){
-		pNextIdentifier = ( pNextIdentifier + 1 ) % 65535;
-		if( pNextIdentifier == lastIdentifier ) return -1;
+	while(GetLinkWithIdentifier(pNextIdentifier)){
+		pNextIdentifier = (pNextIdentifier + 1) % 65535;
+		if(pNextIdentifier == lastIdentifier) return -1;
 	}
 	
 	return pNextIdentifier;

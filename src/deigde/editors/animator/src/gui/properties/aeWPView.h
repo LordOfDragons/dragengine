@@ -92,7 +92,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPView( aeWindowProperties &windowProperties );
+	aeWPView(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -111,7 +111,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Attachment. */
 	aeAttachment *GetAttachment() const;

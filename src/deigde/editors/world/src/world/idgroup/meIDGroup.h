@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create id group. */
-	meIDGroup( const char *name );
+	meIDGroup(const char *name);
 	
 	/** \brief Clean up id group. */
 	virtual ~meIDGroup();
@@ -72,16 +72,16 @@ public:
 	decStringList GetIDList() const;
 	
 	/** \brief Get identifier usage count or 0 if absent. */
-	int GetUsageCountFor( const char *id ) const;
+	int GetUsageCountFor(const char *id) const;
 	
 	/** \brief Identifier is present. */
-	bool Has( const char *id ) const;
+	bool Has(const char *id) const;
 	
 	/** \brief Increase usage count of identifier adding it if absent. */
-	void Add( const char *id );
+	void Add(const char *id);
 	
 	/** \brief Decrease usage count of identifier removing it if dropping to 0. */
-	void Remove( const char *id );
+	void Remove(const char *id);
 	
 	/** \brief Remove all identifiers. */
 	void RemoveAll();

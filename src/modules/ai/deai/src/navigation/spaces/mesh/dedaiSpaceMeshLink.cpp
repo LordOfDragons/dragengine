@@ -39,9 +39,9 @@
 /////////////////////////////////
 
 dedaiSpaceMeshLink::dedaiSpaceMeshLink() :
-pMesh( NULL ),
-pFace( 0 ),
-pCorner( 0 ){
+pMesh(NULL),
+pFace(0),
+pCorner(0){
 }
 
 dedaiSpaceMeshLink::~dedaiSpaceMeshLink(){
@@ -52,30 +52,30 @@ dedaiSpaceMeshLink::~dedaiSpaceMeshLink(){
 // Management
 ///////////////
 
-void dedaiSpaceMeshLink::SetMesh( dedaiSpaceMesh *mesh ){
+void dedaiSpaceMeshLink::SetMesh(dedaiSpaceMesh *mesh){
 	pMesh = mesh;
 }
 
-void dedaiSpaceMeshLink::SetFace( unsigned short face ){
+void dedaiSpaceMeshLink::SetFace(unsigned short face){
 	pFace = face;
 }
 
-void dedaiSpaceMeshLink::SetCorner( unsigned short corner ){
+void dedaiSpaceMeshLink::SetCorner(unsigned short corner){
 	pCorner = corner;
 }
 
-void dedaiSpaceMeshLink::SetTransform( const decMatrix &transform ){
+void dedaiSpaceMeshLink::SetTransform(const decMatrix &transform){
 	pTransform = transform;
 }
 
 
 
-bool dedaiSpaceMeshLink::Matches( dedaiSpaceMesh *mesh, unsigned short face, unsigned short corner ) const{
+bool dedaiSpaceMeshLink::Matches(dedaiSpaceMesh *mesh, unsigned short face, unsigned short corner) const{
 	return pMesh == mesh && pFace == face && pCorner == corner;
 }
 
 dedaiSpaceMeshLink &dedaiSpaceMeshLink::GetForeignLink() const{
-	return pMesh->GetLinkWith( *this );
+	return pMesh->GetLinkWith(*this);
 }
 
 
@@ -83,7 +83,7 @@ dedaiSpaceMeshLink &dedaiSpaceMeshLink::GetForeignLink() const{
 // Operators
 //////////////
 
-dedaiSpaceMeshLink &dedaiSpaceMeshLink::operator=( const dedaiSpaceMeshLink &link ){
+dedaiSpaceMeshLink &dedaiSpaceMeshLink::operator=(const dedaiSpaceMeshLink &link){
 	pMesh = link.pMesh;
 	pFace = link.pFace;
 	pCorner = link.pCorner;

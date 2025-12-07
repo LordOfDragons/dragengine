@@ -41,27 +41,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURemovePush::reURemovePush( reRigPushList &list ){
+reURemovePush::reURemovePush(reRigPushList &list){
 	int pushCount = list.GetPushCount();
 	
-	if( pushCount == 0 ) DETHROW( deeInvalidParam );
+	if(pushCount == 0) DETHROW(deeInvalidParam);
 	
 	pPushes = NULL;
 	pPushCount = 0;
 	
 	try{
-		pPushes = new reRigPush*[ pushCount ];
-		if( ! pPushes ) DETHROW( deeOutOfMemory );
+		pPushes = new reRigPush*[pushCount];
+		if(!pPushes) DETHROW(deeOutOfMemory);
 		
-		while( pPushCount < pushCount ){
-			pPushes[ pPushCount ] = list.GetPushAt( pPushCount );
-			pPushes[ pPushCount ]->AddReference();
+		while(pPushCount < pushCount){
+			pPushes[pPushCount] = list.GetPushAt(pPushCount);
+			pPushes[pPushCount]->AddReference();
 			pPushCount++;
 		}
 		
-		SetShortInfo( "Remove Pushes" );
+		SetShortInfo("Remove Pushes");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -77,35 +77,35 @@ reURemovePush::~reURemovePush(){
 ///////////////
 
 void reURemovePush::Undo(){
-	reRig *rig = pPushes[ 0 ]->GetRig();
-	if( ! rig ) DETHROW( deeInvalidParam );
+	reRig *rig = pPushes[0]->GetRig();
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	reSelectionPushes *selection = rig->GetSelectionPushes();
 	int p;
 	
 	selection->RemoveAllPushes();
 	
-	for( p=0; p<pPushCount; p++ ){
-		rig->AddPush( pPushes[ p ] );
+	for(p=0; p<pPushCount; p++){
+		rig->AddPush(pPushes[p]);
 		
-		selection->AddPush( pPushes[ p ] );
+		selection->AddPush(pPushes[p]);
 	}
 	
 }
 
 void reURemovePush::Redo(){
-	reRig *rig = pPushes[ 0 ]->GetRig();
-	if( ! rig ) DETHROW( deeInvalidParam );
+	reRig *rig = pPushes[0]->GetRig();
+	if(!rig) DETHROW(deeInvalidParam);
 	
 	reSelectionPushes *selection = rig->GetSelectionPushes();
 	int p;
 	
-	for( p=0; p<pPushCount; p++ ){
-		if( pPushes[ p ]->GetSelected() ){
-			selection->RemovePush( pPushes[ p ] );
+	for(p=0; p<pPushCount; p++){
+		if(pPushes[p]->GetSelected()){
+			selection->RemovePush(pPushes[p]);
 		}
 		
-		rig->RemovePush( pPushes[ p ] );
+		rig->RemovePush(pPushes[p]);
 	}
 }
 
@@ -115,10 +115,10 @@ void reURemovePush::Redo(){
 //////////////////////
 
 void reURemovePush::pCleanUp(){
-	if( pPushes ){
-		while( pPushCount > 0 ){
+	if(pPushes){
+		while(pPushCount > 0){
 			pPushCount--;
-			pPushes[ pPushCount ]->FreeReference();
+			pPushes[pPushCount]->FreeReference();
 		}
 		
 		delete [] pPushes;

@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeShapeSetLineColor( sePropertyNodeShape *node, const decColor &newValue );
+	seUPropertyNodeShapeSetLineColor(sePropertyNodeShape *node, const decColor &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

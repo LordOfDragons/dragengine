@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUSetRuleRemoveAllVertexPositionSets( aeRule *rule );
+	aeUSetRuleRemoveAllVertexPositionSets(aeRule *rule);
 	
 protected:
 	/** Clean up undo. */

@@ -46,16 +46,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACLogicCutCondition::ceWPTMACLogicCutCondition( ceWindowMain &windowMain,
+ceWPTMACLogicCutCondition::ceWPTMACLogicCutCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceConversationAction &action, ceCConditionLogic &logic,
-ceConversationCondition *condition ) :
-ceWPTMACopyCondition( windowMain, condition, "Logic: Cut Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pAction( &action ),
-pLogic( &logic ){
+ceConversationCondition *condition) :
+ceWPTMACopyCondition(windowMain, condition, "Logic: Cut Condition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
+pConversation(&conversation),
+pTopic(&topic),
+pAction(&action),
+pLogic(&logic){
 }
 
 
@@ -68,6 +68,6 @@ void ceWPTMACLogicCutCondition::OnAction(){
 	
 	ceUCCLogicRemove::Ref undo(ceUCCLogicRemove::Ref::NewWith(
 		pTopic, pAction, pLogic, GetCondition()));
-	undo->SetShortInfo( "Cut Condition" );
-	pConversation->GetUndoSystem()->Add( undo );
+	undo->SetShortInfo("Cut Condition");
+	pConversation->GetUndoSystem()->Add(undo);
 }

@@ -59,7 +59,7 @@ public:
 	ceCAIfElse();
 	
 	/** \brief Create copy of if-else conversation action. */
-	ceCAIfElse( const ceCAIfElse &action );
+	ceCAIfElse(const ceCAIfElse &action);
 	
 	/** \brief Clean up if-else conversation action. */
 	virtual ~ceCAIfElse();
@@ -89,13 +89,13 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Else tree list item expanded state. */
 	inline bool GetTIMElseExpanded() const{ return pTIMElseExpanded; }
 	
 	/** \brief Set else tree list item expanded state. */
-	void SetTIMElseExpanded( bool expanded );
+	void SetTIMElseExpanded(bool expanded);
 	/*@}*/
 };
 

@@ -74,16 +74,16 @@ public:
 	virtual int GetBitCount();
 	
 	/** \brief Load header. */
-	virtual bool LoadHeader( decBaseFileReader &reader ) = 0;
+	virtual bool LoadHeader(decBaseFileReader &reader) = 0;
 	
 	/** \brief Load file. */
-	virtual void LoadFile( unsigned short *pixels ) = 0;
+	virtual void LoadFile(unsigned short *pixels) = 0;
 	/*@}*/
 	
 	
 	
 protected:
-	void pReadLines( decBaseFileReader &reader );
+	void pReadLines(decBaseFileReader &reader);
 };
 
 #endif

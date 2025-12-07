@@ -41,18 +41,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPropertyRemove::gdeUOCPropertyRemove( gdeObjectClass *objectClass, gdeProperty *property ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPropertyRemove::gdeUOCPropertyRemove(gdeObjectClass *objectClass, gdeProperty *property) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! objectClass->GetProperties().Has( property ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetProperties().Has(property)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class remove property" );
+	SetShortInfo("Object class remove property");
 	
 	pObjectClass = objectClass;
 	objectClass->AddReference();
@@ -62,10 +62,10 @@ pProperty( NULL )
 }
 
 gdeUOCPropertyRemove::~gdeUOCPropertyRemove(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,13 +76,13 @@ gdeUOCPropertyRemove::~gdeUOCPropertyRemove(){
 ///////////////
 
 void gdeUOCPropertyRemove::Undo(){
-	pObjectClass->GetProperties().Add( pProperty );
+	pObjectClass->GetProperties().Add(pProperty);
 	pObjectClass->NotifyPropertiesChanged();
 	pObjectClass->GetGameDefinition()->UpdateDefinedUsedIDs();
 }
 
 void gdeUOCPropertyRemove::Redo(){
-	pObjectClass->GetProperties().Remove( pProperty );
+	pObjectClass->GetProperties().Remove(pProperty);
 	pObjectClass->NotifyPropertiesChanged();
 	pObjectClass->GetGameDefinition()->UpdateDefinedUsedIDs();
 }

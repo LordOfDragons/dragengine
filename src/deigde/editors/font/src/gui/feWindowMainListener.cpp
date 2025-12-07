@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feWindowMainListener::feWindowMainListener( feWindowMain &window ) :
-pWindow( window ){
+feWindowMainListener::feWindowMainListener(feWindowMain &window) :
+pWindow(window){
 }
 
 feWindowMainListener::~feWindowMainListener(){
@@ -54,15 +54,15 @@ feWindowMainListener::~feWindowMainListener(){
 // Management
 ///////////////
 
-void feWindowMainListener::ModeChanged( feFont *font ){
+void feWindowMainListener::ModeChanged(feFont *font){
 	// update actions related to modes
 }
 
-void feWindowMainListener::StateChanged( feFont *font ){
+void feWindowMainListener::StateChanged(feFont *font){
 	pWindow.GetActionFontSave()->Update();
 }
 
-void feWindowMainListener::UndoChanged( feFont *font ){
+void feWindowMainListener::UndoChanged(feFont *font){
 	pWindow.GetActionEditUndo()->Update();
 	pWindow.GetActionEditRedo()->Update();
 }

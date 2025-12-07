@@ -54,32 +54,32 @@ meFilterListObjects::~meFilterListObjects(){
 // Management
 ///////////////
 
-void meFilterListObjects::SetAcceptAny( bool acceptAny ){
+void meFilterListObjects::SetAcceptAny(bool acceptAny){
 	pAcceptAny = acceptAny;
 }
 
 
 
-void meFilterListObjects::AddFilter( meFilterObjects *filter ){
-	if( ! filter ) DETHROW( deeInvalidParam );
+void meFilterListObjects::AddFilter(meFilterObjects *filter){
+	if(!filter) DETHROW(deeInvalidParam);
 	
-	meFilterObjects **newArray = new meFilterObjects*[ pFilterCount + 1 ];
-	if( ! newArray ) DETHROW( deeOutOfMemory );
-	if( pFilters ){
-		memcpy( newArray, pFilters, sizeof( meFilterObjects* ) * pFilterCount );
+	meFilterObjects **newArray = new meFilterObjects*[pFilterCount + 1];
+	if(!newArray) DETHROW(deeOutOfMemory);
+	if(pFilters){
+		memcpy(newArray, pFilters, sizeof(meFilterObjects*) * pFilterCount);
 		delete [] pFilters;
 	}
 	pFilters = newArray;
 	
-	pFilters[ pFilterCount ] = filter;
+	pFilters[pFilterCount] = filter;
 	pFilterCount++;
 }
 
 void meFilterListObjects::RemoveAllFilters(){
-	if( pFilters ){
-		while( pFilterCount > 0 ){
+	if(pFilters){
+		while(pFilterCount > 0){
 			pFilterCount--;
-			delete pFilters[ pFilterCount ];
+			delete pFilters[pFilterCount];
 		}
 		
 		delete [] pFilters;
@@ -89,14 +89,14 @@ void meFilterListObjects::RemoveAllFilters(){
 
 
 
-bool meFilterListObjects::AcceptObject( meObject *object ) const{
-	if( ! object ) DETHROW( deeInvalidParam );
+bool meFilterListObjects::AcceptObject(meObject *object) const{
+	if(!object) DETHROW(deeInvalidParam);
 	
 	int f;
 	
-	if( pAcceptAny ){
-		for( f=0; f<pFilterCount; f++ ){
-			if( pFilters[ f ]->AcceptObject( object ) ){
+	if(pAcceptAny){
+		for(f=0; f<pFilterCount; f++){
+			if(pFilters[f]->AcceptObject(object)){
 				return true;
 			}
 		}
@@ -104,8 +104,8 @@ bool meFilterListObjects::AcceptObject( meObject *object ) const{
 		return false;
 		
 	}else{
-		for( f=0; f<pFilterCount; f++ ){
-			if( ! pFilters[ f ]->AcceptObject( object ) ){
+		for(f=0; f<pFilterCount; f++){
+			if(!pFilters[f]->AcceptObject(object)){
 				return false;
 			}
 		}

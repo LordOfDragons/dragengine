@@ -40,12 +40,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleRemove::meUHTVRuleRemove( meHTVegetationLayer *vlayer, meHTVRule *rule ) :
-pVLayer( vlayer ),
-pRule( rule )
+meUHTVRuleRemove::meUHTVRuleRemove(meHTVegetationLayer *vlayer, meHTVRule *rule) :
+pVLayer(vlayer),
+pRule(rule)
 {
-	SetShortInfo( "Vegetation layer remove rule" );
-	SetMemoryConsumption( sizeof( meUHTVRuleRemove ) );
+	SetShortInfo("Vegetation layer remove rule");
+	SetMemoryConsumption(sizeof(meUHTVRuleRemove));
 }
 
 meUHTVRuleRemove::~meUHTVRuleRemove(){
@@ -57,9 +57,9 @@ meUHTVRuleRemove::~meUHTVRuleRemove(){
 ///////////////
 
 void meUHTVRuleRemove::Undo(){
-	( ( meHTVegetationLayer& )( deObject& )pVLayer ).AddRule( ( meHTVRule* )( deObject* )pRule );
+	((meHTVegetationLayer&)(deObject&)pVLayer).AddRule((meHTVRule*)(deObject*)pRule);
 }
 
 void meUHTVRuleRemove::Redo(){
-	( ( meHTVegetationLayer& )( deObject& )pVLayer ).RemoveRule( ( meHTVRule* )( deObject* )pRule );
+	((meHTVegetationLayer&)(deObject&)pVLayer).RemoveRule((meHTVRule*)(deObject*)pRule);
 }

@@ -46,7 +46,7 @@ feUGlyphSetHeight::feUGlyphSetHeight(feFontGlyph *glyph, int newValue){
 }
 
 feUGlyphSetHeight::~feUGlyphSetHeight(){
-	if( pGlyph ) pGlyph->FreeReference();
+	if(pGlyph) pGlyph->FreeReference();
 }
 
 

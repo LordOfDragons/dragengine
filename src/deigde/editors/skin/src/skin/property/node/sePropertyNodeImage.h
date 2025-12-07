@@ -49,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	sePropertyNodeImage( deEngine &engine );
+	sePropertyNodeImage(deEngine &engine);
 	
 	/** \brief Create copy of node. */
-	sePropertyNodeImage( const sePropertyNodeImage &node );
+	sePropertyNodeImage(const sePropertyNodeImage &node);
 	
 	/** \brief Clean up node. */
 	virtual ~sePropertyNodeImage();
@@ -66,7 +66,7 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set image path or empty path if not set. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Image or \em NULL if not set. */
 	inline deImage *GetImage() const{ return pImage; }
@@ -81,7 +81,7 @@ public:
 	 * \brief Set repeat count.
 	 * \throws deeInvalidParam One or more components of \em count are less than 1.
 	 */
-	void SetRepeat( const decPoint &repeat );
+	void SetRepeat(const decPoint &repeat);
 	
 	
 	

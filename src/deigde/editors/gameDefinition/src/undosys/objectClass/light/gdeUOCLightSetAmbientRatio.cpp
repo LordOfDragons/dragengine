@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetAmbientRatio::gdeUOCLightSetAmbientRatio( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetAmbientRatio::gdeUOCLightSetAmbientRatio(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set ambient ratio" );
+	SetShortInfo("Light set ambient ratio");
 	
 	pOldValue = light->GetAmbientRatio();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetAmbientRatio::~gdeUOCLightSetAmbientRatio(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetAmbientRatio::~gdeUOCLightSetAmbientRatio(){
 ///////////////
 
 void gdeUOCLightSetAmbientRatio::Undo(){
-	pLight->SetAmbientRatio( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetAmbientRatio(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetAmbientRatio::Redo(){
-	pLight->SetAmbientRatio( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetAmbientRatio(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

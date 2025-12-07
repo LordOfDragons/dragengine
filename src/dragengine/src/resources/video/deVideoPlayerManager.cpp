@@ -47,8 +47,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deVideoPlayerManager::deVideoPlayerManager( deEngine *engine ) : deResourceManager( engine, ertVideoPlayer ){
-	SetLoggingName( "video player" );
+deVideoPlayerManager::deVideoPlayerManager(deEngine *engine) : deResourceManager(engine, ertVideoPlayer){
+	SetLoggingName("video player");
 }
 
 deVideoPlayerManager::~deVideoPlayerManager(){
@@ -65,23 +65,23 @@ int deVideoPlayerManager::GetVideoPlayerCount() const{
 }
 
 deVideoPlayer *deVideoPlayerManager::GetRootVideoPlayer() const{
-	return ( deVideoPlayer* )pVideoPlayers.GetRoot();
+	return (deVideoPlayer*)pVideoPlayers.GetRoot();
 }
 
 deVideoPlayer *deVideoPlayerManager::CreateVideoPlayer(){
 	deVideoPlayer *videoPlayer = NULL;
 	
 	try{
-		videoPlayer = new deVideoPlayer( this );
-		if( ! videoPlayer ) DETHROW( deeOutOfMemory );
+		videoPlayer = new deVideoPlayer(this);
+		if(!videoPlayer) DETHROW(deeOutOfMemory);
 		
-		GetGraphicSystem()->LoadVideoPlayer( videoPlayer );
-		GetAudioSystem()->LoadVideoPlayer( videoPlayer );
+		GetGraphicSystem()->LoadVideoPlayer(videoPlayer);
+		GetAudioSystem()->LoadVideoPlayer(videoPlayer);
 		
-		pVideoPlayers.Add( videoPlayer );
+		pVideoPlayers.Add(videoPlayer);
 		
-	}catch( const deException & ){
-		if( videoPlayer ){
+	}catch(const deException &){
+		if(videoPlayer){
 			videoPlayer->FreeReference();
 		}
 		throw;
@@ -95,8 +95,8 @@ deVideoPlayer *deVideoPlayerManager::CreateVideoPlayer(){
 void deVideoPlayerManager::ReleaseLeakingResources(){
 	int count = GetVideoPlayerCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking video players", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking video players", count);
 		pVideoPlayers.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -107,49 +107,49 @@ void deVideoPlayerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deVideoPlayerManager::SystemAudioLoad(){
-	deVideoPlayer *videoPlayer = ( deVideoPlayer* )pVideoPlayers.GetRoot();
+	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	deAudioSystem &system = *GetAudioSystem();
 	
-	while( videoPlayer ){
-		if( ! videoPlayer->GetPeerAudio() ){
-			system.LoadVideoPlayer( videoPlayer );
+	while(videoPlayer){
+		if(!videoPlayer->GetPeerAudio()){
+			system.LoadVideoPlayer(videoPlayer);
 		}
 		
-		videoPlayer = ( deVideoPlayer* )videoPlayer->GetLLManagerNext();
+		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
 	}
 }
 
 void deVideoPlayerManager::SystemAudioUnload(){
-	deVideoPlayer *videoPlayer = ( deVideoPlayer* )pVideoPlayers.GetRoot();
+	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	
-	while( videoPlayer ){
-		videoPlayer->SetPeerAudio( NULL );
-		videoPlayer = ( deVideoPlayer* )videoPlayer->GetLLManagerNext();
+	while(videoPlayer){
+		videoPlayer->SetPeerAudio(NULL);
+		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
 	}
 }
 
 void deVideoPlayerManager::SystemGraphicLoad(){
-	deVideoPlayer *videoPlayer = ( deVideoPlayer* )pVideoPlayers.GetRoot();
+	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
-	while( videoPlayer ){
-		if( ! videoPlayer->GetPeerGraphic() ){
-			grasys.LoadVideoPlayer( videoPlayer );
+	while(videoPlayer){
+		if(!videoPlayer->GetPeerGraphic()){
+			grasys.LoadVideoPlayer(videoPlayer);
 		}
 		
-		videoPlayer = ( deVideoPlayer* )videoPlayer->GetLLManagerNext();
+		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
 	}
 }
 
 void deVideoPlayerManager::SystemGraphicUnload(){
-	deVideoPlayer *videoPlayer = ( deVideoPlayer* )pVideoPlayers.GetRoot();
+	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	
-	while( videoPlayer ){
-		videoPlayer->SetPeerGraphic( NULL );
-		videoPlayer = ( deVideoPlayer* )videoPlayer->GetLLManagerNext();
+	while(videoPlayer){
+		videoPlayer->SetPeerGraphic(NULL);
+		videoPlayer = (deVideoPlayer*)videoPlayer->GetLLManagerNext();
 	}
 }
 
-void deVideoPlayerManager::RemoveResource( deResource *resource ){
-	pVideoPlayers.RemoveIfPresent( resource );
+void deVideoPlayerManager::RemoveResource(deResource *resource){
+	pVideoPlayers.RemoveIfPresent(resource);
 }

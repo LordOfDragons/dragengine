@@ -103,7 +103,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game. */
-	dealGame( dealLauncher &launcher );
+	dealGame(dealLauncher &launcher);
 	
 	/** \brief Clean up game. */
 	virtual ~dealGame();
@@ -117,31 +117,31 @@ public:
 	inline const decString &GetIdentifier() const{ return pIdentifier; }
 	
 	/** \brief Set identifier. */
-	void SetIdentifier( const char *identifier );
+	void SetIdentifier(const char *identifier);
 	
 	/** \brief Game title. */
 	inline const decUnicodeString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set game title. */
-	void SetTitle( const decUnicodeString &title );
+	void SetTitle(const decUnicodeString &title);
 	
 	/** \brief Description. */
 	inline const decUnicodeString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const decUnicodeString &description );
+	void SetDescription(const decUnicodeString &description);
 	
 	/** \brief Creator. */
 	inline const decUnicodeString &GetCreator() const{ return pCreator; }
 	
 	/** \brief Set creator. */
-	void SetCreator( const decUnicodeString &creator );
+	void SetCreator(const decUnicodeString &creator);
 	
 	/** \brief Homepage. */
 	inline const decString &GetHomepage() const{ return pHomepage; }
 	
 	/** \brief Set homepage. */
-	void SetHomepage( const char *homepage );
+	void SetHomepage(const char *homepage);
 	
 	
 	
@@ -149,31 +149,31 @@ public:
 	inline const decString &GetGameDirectory() const{ return pGameDirectory; }
 	
 	/** \brief Set game directory. */
-	void SetGameDirectory( const char *directory );
+	void SetGameDirectory(const char *directory);
 	
 	/** \brief Data directory relative to game directory. */
 	inline const decString &GetDataDirectory() const{ return pDataDirectory; }
 	
 	/** \brief Set data directory relative to game directory. */
-	void SetDataDirectory( const char *directory );
+	void SetDataDirectory(const char *directory);
 	
 	/** \brief Script directory relative to data directory. */
 	inline const decString &GetScriptDirectory() const{ return pScriptDirectory; }
 	
 	/** \brief Set script directory relative to data directory. */
-	void SetScriptDirectory( const char *directory );
+	void SetScriptDirectory(const char *directory);
 	
 	/** \brief Game object. */
 	inline const decString &GetGameObject() const{ return pGameObject; }
 	
 	/** \brief Set game object. */
-	void SetGameObject( const char *gameObject );
+	void SetGameObject(const char *gameObject);
 	
 	/** \brief Script module to use. */
 	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	
 	/** \brief Set script module. */
-	void SetScriptModule( const char *module );
+	void SetScriptModule(const char *module);
 	
 	/** \brief File format list. */
 	inline dealFileFormatList &GetFileFormatList(){ return pFileFormatList; }
@@ -183,19 +183,19 @@ public:
 	inline const decString &GetPathConfig() const{ return pPathConfig; }
 	
 	/** \brief Set virtual file system path where the game configuration container is placed at. */
-	void SetPathConfig( const char *path );
+	void SetPathConfig(const char *path);
 	
 	/** \brief Virtual file system path where the game capture container is placed at. */
 	inline const decString &GetPathCapture() const{ return pPathCapture; }
 	
 	/** \brief Set virtual file system path where the game capture container is placed at. */
-	void SetPathCapture( const char *path );
+	void SetPathCapture(const char *path);
 	
 	/** \brief Window size or 0 to run fullscreen if possible. */
 	inline const decPoint &GetWindowSize() const{ return pWindowSize; }
 	
 	/** \brief Set window size or 0 to run fullscreen if possible. */
-	void SetWindowSize( const decPoint &size );
+	void SetWindowSize(const decPoint &size);
 	
 	
 	
@@ -206,25 +206,25 @@ public:
 	inline bool GetAllFormatsSupported() const{ return pAllFormatsSupported; }
 	
 	/** \brief Set if all file formats are supported. */
-	void SetAllFormatsSupported( bool supported );
+	void SetAllFormatsSupported(bool supported);
 	
 	/** \brief Script module is found. */
 	inline bool GetScriptModuleFound() const{ return pScriptModuleFound; }
 	
 	/** \brief Set if script module is found. */
-	void SetScriptModuleFound( bool found );
+	void SetScriptModuleFound(bool found);
 	
 	/** \brief Game is up to date. */
 	inline bool GetGameUpToDate() const{ return pGameUpToDate; }
 	
 	/** \brief Set if game is up to date. */
-	void SetGameUpToDate( bool upToDate );
+	void SetGameUpToDate(bool upToDate);
 	
 	/** \brief Game can be run. */
 	inline bool GetCanRun() const{ return pCanRun; }
 	
 	/** \brief Set if game can be run. */
-	void SetCanRun( bool canRun );
+	void SetCanRun(bool canRun);
 	
 	
 	
@@ -236,13 +236,13 @@ public:
 	inline dealGameProfile *GetGlobalProfile() const{ return pGlobalProfile; }
 	
 	/** \brief Set global profile or \em NULL if not selected. */
-	void SetGlobalProfile( dealGameProfile *profile );
+	void SetGlobalProfile(dealGameProfile *profile);
 	
 	/** \brief Game profile or \em NULL if not selected. */
 	inline dealGameProfile *GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile or \em NULL if not selected. */
-	void SetGameProfile( dealGameProfile *profile );
+	void SetGameProfile(dealGameProfile *profile);
 	
 	
 	
@@ -250,7 +250,7 @@ public:
 	inline const decString &GetRunArguments() const{ return pRunArguments; }
 	
 	/** \brief Set run arguments. */
-	void SetRunArguments( const char *arguments );
+	void SetRunArguments(const char *arguments);
 	
 	
 	

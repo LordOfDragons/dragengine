@@ -118,16 +118,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void VisitCollider( deCollider &collider );
+	virtual void VisitCollider(deCollider &collider);
 	
 	/** \brief Visit volume collider. */
-	virtual void VisitVolume( deColliderVolume &collider );
+	virtual void VisitVolume(deColliderVolume &collider);
 	
 	/** \brief Visit rig collider. */
-	virtual void VisitRig( deColliderRig &collider );
+	virtual void VisitRig(deColliderRig &collider);
 	
 	/** \brief Visit component collider. */
-	virtual void VisitComponent( deColliderComponent &collider );
+	virtual void VisitComponent(deColliderComponent &collider);
 	/*@}*/
 };
 

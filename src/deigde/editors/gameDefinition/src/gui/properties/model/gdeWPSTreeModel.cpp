@@ -78,12 +78,12 @@ namespace {
 
 class cSorter : public igdeTreeItemSorter{
 public:
-	cSorter(){ }
+	cSorter(){}
 	
-	virtual bool Precedes( const igdeTreeItem &item1, const igdeTreeItem &item2 ){
-		const gdeWPSTreeItemModel &wpsItem1 = ( const gdeWPSTreeItemModel & )item1;
-		const gdeWPSTreeItemModel &wpsItem2 = ( const gdeWPSTreeItemModel & )item2;
-		return wpsItem1.Compare( wpsItem2 ) <= 0;
+	virtual bool Precedes(const igdeTreeItem &item1, const igdeTreeItem &item2){
+		const gdeWPSTreeItemModel &wpsItem1 = (const gdeWPSTreeItemModel &)item1;
+		const gdeWPSTreeItemModel &wpsItem2 = (const gdeWPSTreeItemModel &)item2;
+		return wpsItem1.Compare(wpsItem2) <= 0;
 	}
 };
 
@@ -94,23 +94,23 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTreeModel::gdeWPSTreeModel( igdeTreeList &treeList, gdeWindowMain &windowMain,
-	gdeGameDefinition *gameDefinition ) :
-pTreeList( treeList ),
-pWindowMain( windowMain ),
-pGameDefinition( NULL ),
-pListener( NULL ),
+gdeWPSTreeModel::gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMain,
+	gdeGameDefinition *gameDefinition) :
+pTreeList(treeList),
+pWindowMain(windowMain),
+pGameDefinition(NULL),
+pListener(NULL),
 
-pCategories( NULL ),
-pObjectClasses( NULL ),
-pParticleEmitters( NULL ),
-pSkins( NULL ),
-pSkies( NULL ),
+pCategories(NULL),
+pObjectClasses(NULL),
+pParticleEmitters(NULL),
+pSkins(NULL),
+pSkies(NULL),
 
-pIgnoreSelectionChange( false )
+pIgnoreSelectionChange(false)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
 	treeList.RemoveAllItems();
@@ -126,36 +126,36 @@ pIgnoreSelectionChange( false )
 		// add items
 		igdeTreeItem::Ref item;
 		
-		item.TakeOver( new gdeWPSTIMCategories( *this ) );
-		treeList.AppendItem( NULL, item );
-		pCategories = ( gdeWPSTIMCategories* )( igdeTreeItem* )item;
+		item.TakeOver(new gdeWPSTIMCategories(*this));
+		treeList.AppendItem(NULL, item);
+		pCategories = (gdeWPSTIMCategories*)(igdeTreeItem*)item;
 		pCategories->OnAddedToTree();
 		
-		item.TakeOver( new gdeWPSTIMObjectClasses( *this ) );
-		treeList.AppendItem( NULL, item );
-		pObjectClasses = ( gdeWPSTIMObjectClasses* )( igdeTreeItem* )item;
+		item.TakeOver(new gdeWPSTIMObjectClasses(*this));
+		treeList.AppendItem(NULL, item);
+		pObjectClasses = (gdeWPSTIMObjectClasses*)(igdeTreeItem*)item;
 		pObjectClasses->OnAddedToTree();
 		
-		item.TakeOver( new gdeWPSTIMParticleEmitters( *this ) );
-		treeList.AppendItem( NULL, item );
-		pParticleEmitters = ( gdeWPSTIMParticleEmitters* )( igdeTreeItem* )item;
+		item.TakeOver(new gdeWPSTIMParticleEmitters(*this));
+		treeList.AppendItem(NULL, item);
+		pParticleEmitters = (gdeWPSTIMParticleEmitters*)(igdeTreeItem*)item;
 		pParticleEmitters->OnAddedToTree();
 		
-		item.TakeOver( new gdeWPSTIMSkins( *this ) );
-		treeList.AppendItem( NULL, item );
-		pSkins = ( gdeWPSTIMSkins* )( igdeTreeItem* )item;
+		item.TakeOver(new gdeWPSTIMSkins(*this));
+		treeList.AppendItem(NULL, item);
+		pSkins = (gdeWPSTIMSkins*)(igdeTreeItem*)item;
 		pSkins->OnAddedToTree();
 		
-		item.TakeOver( new gdeWPSTIMSkies( *this ) );
-		treeList.AppendItem( NULL, item );
-		pSkies = ( gdeWPSTIMSkies* )( igdeTreeItem* )item;
+		item.TakeOver(new gdeWPSTIMSkies(*this));
+		treeList.AppendItem(NULL, item);
+		pSkies = (gdeWPSTIMSkies*)(igdeTreeItem*)item;
 		pSkies->OnAddedToTree();
 		
 		// add listener
-		pListener = new gdeWPSTreeModelListener( *this );
-		gameDefinition->AddListener( pListener );
+		pListener = new gdeWPSTreeModelListener(*this);
+		gameDefinition->AddListener(pListener);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -171,13 +171,13 @@ gdeWPSTreeModel::~gdeWPSTreeModel(){
 ///////////////
 
 void gdeWPSTreeModel::ClearCurrentItem(){
-	pTreeList.SetSelection( NULL );
+	pTreeList.SetSelection(NULL);
 }
 
 void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 	gdeWPSTIMObjectClass *modelObjectClass = NULL;
 	
-	switch( pGameDefinition->GetSelectedObjectType() ){
+	switch(pGameDefinition->GetSelectedObjectType()){
 	case gdeGameDefinition::eotObjectClass:
 	case gdeGameDefinition::eotOCBillboard:
 	case gdeGameDefinition::eotOCCamera:
@@ -191,10 +191,10 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 	case gdeGameDefinition::eotOCSnapPoint:
 	case gdeGameDefinition::eotOCSpeaker:
 	case gdeGameDefinition::eotOCWorld:
-		if( ! pGameDefinition->GetActiveObjectClass() ){
+		if(!pGameDefinition->GetActiveObjectClass()){
 			break;
 		}
-		modelObjectClass = pObjectClasses->GetChildWith( pGameDefinition->GetActiveObjectClass() );
+		modelObjectClass = pObjectClasses->GetChildWith(pGameDefinition->GetActiveObjectClass());
 		break;
 		
 	default:
@@ -203,28 +203,28 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 	
 	gdeWPSTreeItemModel *model = NULL;
 	
-	switch( pGameDefinition->GetSelectedObjectType() ){
+	switch(pGameDefinition->GetSelectedObjectType()){
 	case gdeGameDefinition::eotCategoryObjectClass:
-		if( pGameDefinition->GetActiveCategory() ){
-			model = pCategories->GetObjectClass().GetChildWith( pGameDefinition->GetActiveCategory(), true );
+		if(pGameDefinition->GetActiveCategory()){
+			model = pCategories->GetObjectClass().GetChildWith(pGameDefinition->GetActiveCategory(), true);
 		}
 		break;
 		
 	case gdeGameDefinition::eotCategoryParticleEmitter:
-		if( pGameDefinition->GetActiveCategory() ){
-			model = pCategories->GetParticleEmitter().GetChildWith( pGameDefinition->GetActiveCategory(), true );
+		if(pGameDefinition->GetActiveCategory()){
+			model = pCategories->GetParticleEmitter().GetChildWith(pGameDefinition->GetActiveCategory(), true);
 		}
 		break;
 		
 	case gdeGameDefinition::eotCategorySkin:
-		if( pGameDefinition->GetActiveCategory() ){
-			model = pCategories->GetSkin().GetChildWith( pGameDefinition->GetActiveCategory(), true );
+		if(pGameDefinition->GetActiveCategory()){
+			model = pCategories->GetSkin().GetChildWith(pGameDefinition->GetActiveCategory(), true);
 		}
 		break;
 		
 	case gdeGameDefinition::eotCategorySky:
-		if( pGameDefinition->GetActiveCategory() ){
-			model = pCategories->GetSky().GetChildWith( pGameDefinition->GetActiveCategory(), true );
+		if(pGameDefinition->GetActiveCategory()){
+			model = pCategories->GetSky().GetChildWith(pGameDefinition->GetActiveCategory(), true);
 		}
 		break;
 		
@@ -233,68 +233,68 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 		break;
 		
 	case gdeGameDefinition::eotOCBillboard:
-		if( modelObjectClass && pGameDefinition->GetActiveOCBillboard() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCBillboard() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCBillboard()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCBillboard());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCCamera:
-		if( modelObjectClass && pGameDefinition->GetActiveOCCamera() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCCamera() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCCamera()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCCamera());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCComponent:
-		if( modelObjectClass && pGameDefinition->GetActiveOCComponent() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCComponent() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCComponent()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCComponent());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCEnvMapProbe:
-		if( modelObjectClass && pGameDefinition->GetActiveOCEnvMapProbe() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCEnvMapProbe() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCEnvMapProbe()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCEnvMapProbe());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCLight:
-		if( modelObjectClass && pGameDefinition->GetActiveOCLight() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCLight() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCLight()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCLight());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCNavigationBlocker:
-		if( modelObjectClass && pGameDefinition->GetActiveOCNavigationBlocker() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCNavigationBlocker() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCNavigationBlocker()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCNavigationBlocker());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCNavigationSpace:
-		if( modelObjectClass && pGameDefinition->GetActiveOCNavigationSpace() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCNavigationSpace() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCNavigationSpace()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCNavigationSpace());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCParticleEmitter:
-		if( modelObjectClass && pGameDefinition->GetActiveOCParticleEmitter() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCParticleEmitter() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCParticleEmitter()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCParticleEmitter());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCForceField:
-		if( modelObjectClass && pGameDefinition->GetActiveOCForceField() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCForceField() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCForceField()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCForceField());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCSnapPoint:
-		if( modelObjectClass && pGameDefinition->GetActiveOCSnapPoint() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCSnapPoint() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCSnapPoint()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCSnapPoint());
 		}
 		break;
 		
 	case gdeGameDefinition::eotOCSpeaker:
-		if( modelObjectClass && pGameDefinition->GetActiveOCSpeaker() ){
-			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCSpeaker() );
+		if(modelObjectClass && pGameDefinition->GetActiveOCSpeaker()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCSpeaker());
 		}
 		break;
 		
@@ -305,20 +305,20 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 		break;
 		
 	case gdeGameDefinition::eotParticleEmitter:
-		if( pGameDefinition->GetActiveParticleEmitter() ){
-			model = pParticleEmitters->GetChildWith( pGameDefinition->GetActiveParticleEmitter() );
+		if(pGameDefinition->GetActiveParticleEmitter()){
+			model = pParticleEmitters->GetChildWith(pGameDefinition->GetActiveParticleEmitter());
 		}
 		break;
 		
 	case gdeGameDefinition::eotSkin:
-		if( pGameDefinition->GetActiveSkin() ){
-			model = pSkins->GetChildWith( pGameDefinition->GetActiveSkin() );
+		if(pGameDefinition->GetActiveSkin()){
+			model = pSkins->GetChildWith(pGameDefinition->GetActiveSkin());
 		}
 		break;
 		
 	case gdeGameDefinition::eotSky:
-		if( pGameDefinition->GetActiveSky() ){
-			model = pSkies->GetChildWith( pGameDefinition->GetActiveSky() );
+		if(pGameDefinition->GetActiveSky()){
+			model = pSkies->GetChildWith(pGameDefinition->GetActiveSky());
 		}
 		break;
 		
@@ -327,7 +327,7 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 		break;
 	}
 	
-	if( model ){
+	if(model){
 		model->SetAsCurrentItem();
 		
 	}else{
@@ -338,37 +338,37 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 
 
 
-void gdeWPSTreeModel::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTreeModel::OnContextMenu(igdeMenuCascade &contextMenu){
 	igdeUIHelper &helper = pWindowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, pWindowMain.GetActionCategoryObjectClassAdd() );
-	helper.MenuCommand( contextMenu, pWindowMain.GetActionCategoryParticleEmitterAdd() );
-	helper.MenuCommand( contextMenu, pWindowMain.GetActionCategorySkinAdd() );
-	helper.MenuCommand( contextMenu, pWindowMain.GetActionCategorySkyAdd() );
+	helper.MenuCommand(contextMenu, pWindowMain.GetActionCategoryObjectClassAdd());
+	helper.MenuCommand(contextMenu, pWindowMain.GetActionCategoryParticleEmitterAdd());
+	helper.MenuCommand(contextMenu, pWindowMain.GetActionCategorySkinAdd());
+	helper.MenuCommand(contextMenu, pWindowMain.GetActionCategorySkyAdd());
 	
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, pWindowMain.GetActionParticleEmitterAdd() );
-	helper.MenuCommand( contextMenu, pWindowMain.GetActionSkinAdd() );
-	helper.MenuCommand( contextMenu, pWindowMain.GetActionSkyAdd() );
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, pWindowMain.GetActionParticleEmitterAdd());
+	helper.MenuCommand(contextMenu, pWindowMain.GetActionSkinAdd());
+	helper.MenuCommand(contextMenu, pWindowMain.GetActionSkyAdd());
 }
 
-void gdeWPSTreeModel::SelectBestMatching( const char * ){
+void gdeWPSTreeModel::SelectBestMatching(const char *){
 }
 
 
 
-void gdeWPSTreeModel::SetIgnoreSelectionChange( bool ignore ){
+void gdeWPSTreeModel::SetIgnoreSelectionChange(bool ignore){
 	pIgnoreSelectionChange = ignore;
 }
 
-gdeWPSTreeModel::HelperIgnoreSelection::HelperIgnoreSelection( gdeWPSTreeModel &tree ) :
-pTree( tree )
+gdeWPSTreeModel::HelperIgnoreSelection::HelperIgnoreSelection(gdeWPSTreeModel &tree) :
+pTree(tree)
 {
-	tree.SetIgnoreSelectionChange( true );
+	tree.SetIgnoreSelectionChange(true);
 }
 
 gdeWPSTreeModel::HelperIgnoreSelection::~HelperIgnoreSelection(){
-	pTree.SetIgnoreSelectionChange( false );
+	pTree.SetIgnoreSelectionChange(false);
 }
 
 
@@ -377,16 +377,16 @@ gdeWPSTreeModel::HelperIgnoreSelection::~HelperIgnoreSelection(){
 //////////////////////
 
 void gdeWPSTreeModel::pCleanUp(){
-	if( pListener ){
-		if( pGameDefinition ){
-			pGameDefinition->RemoveListener( pListener );
+	if(pListener){
+		if(pGameDefinition){
+			pGameDefinition->RemoveListener(pListener);
 		}
 		delete pListener;
 	}
 	
 	pTreeList.RemoveAllItems();
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }

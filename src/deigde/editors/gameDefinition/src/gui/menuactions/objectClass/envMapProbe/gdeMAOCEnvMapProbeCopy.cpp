@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCEnvMapProbeCopy::gdeMAOCEnvMapProbeCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Environment Map Probe",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class environment map probe" )
+gdeMAOCEnvMapProbeCopy::gdeMAOCEnvMapProbeCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Environment Map Probe",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class environment map probe")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Environment Map Probe",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbeCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCEnvMapProbe ){
+igdeUndo *gdeMAOCEnvMapProbeCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCEnvMapProbe){
 		return NULL;
 	}
 	
 	gdeOCEnvMapProbe * const envMapProbe = gameDefinition.GetActiveOCEnvMapProbe();
-	if( ! envMapProbe ){
+	if(!envMapProbe){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCEnvMapProbeCopy::OnActionSubObject( gdeGameDefinition &gameDefi
 
 void gdeMAOCEnvMapProbeCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
-		&& gameDefinition->GetActiveOCEnvMapProbe() != NULL );
+		&& gameDefinition->GetActiveOCEnvMapProbe() != NULL);
 }

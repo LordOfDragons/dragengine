@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglParticleEmitter( deGraphicOpenGl &ogl, const deParticleEmitter &emitter );
+	deoglParticleEmitter(deGraphicOpenGl &ogl, const deParticleEmitter &emitter);
 	
 	/** Clean up peer. */
 	virtual ~deoglParticleEmitter();
@@ -85,7 +85,7 @@ public:
 	inline int GetTypeCount() const{ return pTypeCount; }
 	
 	/** Type at index. */
-	deoglParticleEmitterType &GetTypeAt( int index ) const;
+	deoglParticleEmitterType &GetTypeAt(int index) const;
 	
 	/** Update parameter samples if required. */
 	void UpdateParameterSamples();
@@ -99,13 +99,13 @@ public:
 	virtual void ControllerCountChanged();
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	virtual void ControllerChanged(int controller);
 	
 	/** Type count changed. */
 	virtual void TypeCountChanged();
 	
 	/** Type changed. */
-	virtual void TypeChanged( int type );
+	virtual void TypeChanged(int type);
 	/*@}*/
 	
 private:

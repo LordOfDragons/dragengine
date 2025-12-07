@@ -73,13 +73,13 @@ public:
 	inline th_setup_info *GetSetupInfo() const{ return pSetupInfo; }
 	
 	/** \brief Set setup pointer. */
-	void SetSetupInfo( th_setup_info *info );
+	void SetSetupInfo(th_setup_info *info);
 	
 	/** \brief Header finished reading. */
 	inline bool GetHeaderFinished() const{ return pHeaderFinished; }
 	
 	/** \brief Set if header finished reading. */
-	void SetHeaderFinished( bool headerFinished );
+	void SetHeaderFinished(bool headerFinished);
 	
 	
 	
@@ -93,7 +93,7 @@ public:
 	inline bool GetAudioHeaderFinished() const{ return pAudioHeaderFinished; }
 	
 	/** \brief Set if audio header finished reading. */
-	void SetAudioHeaderFinished( bool headerFinished );
+	void SetAudioHeaderFinished(bool headerFinished);
 	/*@}*/
 };
 

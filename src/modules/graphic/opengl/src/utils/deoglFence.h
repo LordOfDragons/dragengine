@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create fence. */
-	deoglFence( deoglRenderThread &renderThread );
+	deoglFence(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up fence. */

@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create logger history. */
-	delLoggerHistory( int size = 250 );
+	delLoggerHistory(int size = 250);
 	
 protected:
 	/** \brief Clean up logger history. */
@@ -90,14 +90,14 @@ public:
 	 * 
 	 * \note This call does an implicit mutex lock.
 	 */
-	void SetHistorySize( int size );
+	void SetHistorySize(int size);
 	
 	/** \brief Count of history entries. */
 	inline int GetEntryCount() const{ return pEntryCount; }
 	
 	/** \brief Entry at index. */
-	delLoggerHistoryEntry &GetEntryAt( int index );
-	const delLoggerHistoryEntry &GetEntryAt( int index ) const;
+	delLoggerHistoryEntry &GetEntryAt(int index);
+	const delLoggerHistoryEntry &GetEntryAt(int index) const;
 	
 	/**
 	 * \brief Add entry to history.
@@ -113,33 +113,33 @@ public:
 	void Clear();
 	
 	/** \brief Message can be added. */
-	bool CanAddMessage( int type, const char *source );
+	bool CanAddMessage(int type, const char *source);
 	
 	/**
 	 * \brief Add listener.
 	 * \note Mutex is internally locked.
 	 */
-	void AddListener( delLoggerHistoryListener *listener );
+	void AddListener(delLoggerHistoryListener *listener);
 	
 	/**
 	 * \brief Remove listener.
 	 * \note Mutex is internally locked.
 	 */
-	void RemoveListener( delLoggerHistoryListener *listener );
+	void RemoveListener(delLoggerHistoryListener *listener);
 	
 	/** \brief Notify listeners message has been added. */
-	void NotifyMessageAdded( const delLoggerHistoryEntry &entry );
+	void NotifyMessageAdded(const delLoggerHistoryEntry &entry);
 	
 	
 	
 	/** \brief Log an information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** \brief Log a warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** \brief Log an error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	/*@}*/
 };
 

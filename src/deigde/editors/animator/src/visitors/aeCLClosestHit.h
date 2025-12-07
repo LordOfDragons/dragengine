@@ -87,7 +87,7 @@ public:
 	
 	
 	/** Identify hit element. */
-	void IdentifyHitElement( igdeEnvironment &environment );
+	void IdentifyHitElement(igdeEnvironment &environment);
 	
 	/** Hit gizmo or nullptr. */
 	inline igdeGizmo *GetHitGizmo() const{ return pHitGizmo; }
@@ -97,16 +97,16 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info ) override;
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider ) override;
-	virtual void ColliderChanged( deCollider *owner ) override;
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider) override;
+	virtual void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void VisitGizmo( igdeGizmo *gizmo ) override;
+	virtual void VisitGizmo(igdeGizmo *gizmo) override;
 	/*@}*/
 };
 

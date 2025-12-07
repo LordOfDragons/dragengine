@@ -47,17 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskWriteOcclusionMesh::deRLTaskWriteOcclusionMesh( deEngine &engine,
+deRLTaskWriteOcclusionMesh::deRLTaskWriteOcclusionMesh(deEngine &engine,
 deResourceLoader &resourceLoader, deOcclusionMesh *occlusionMesh,
-deVirtualFileSystem *vfs, const char *path ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertOcclusionMesh ),
-pOcclusionMesh( occlusionMesh ),
-pSucceeded( false )
+deVirtualFileSystem *vfs, const char *path) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertOcclusionMesh),
+pOcclusionMesh(occlusionMesh),
+pSucceeded(false)
 {
-	if( ! occlusionMesh ){
-		DETHROW( deeInvalidParam );
+	if(!occlusionMesh){
+		DETHROW(deeInvalidParam);
 	}
-	SetType( etWrite );
+	SetType(etWrite);
 }
 
 deRLTaskWriteOcclusionMesh::~deRLTaskWriteOcclusionMesh(){
@@ -70,14 +70,14 @@ deRLTaskWriteOcclusionMesh::~deRLTaskWriteOcclusionMesh(){
 
 void deRLTaskWriteOcclusionMesh::Run(){
 	LogRunEnter();
-	deBaseOcclusionMeshModule * const module = ( deBaseOcclusionMeshModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtOcclusionMesh, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseOcclusionMeshModule * const module = (deBaseOcclusionMeshModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtOcclusionMesh, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decPath path;
-	path.SetFromUnix( GetPath() );
+	path.SetFromUnix(GetPath());
 	
 	module->SaveOcclusionMesh(decBaseFileWriter::Ref::New(
 		GetVFS()->OpenFileForWriting(path)), pOcclusionMesh);
@@ -88,16 +88,16 @@ void deRLTaskWriteOcclusionMesh::Run(){
 
 void deRLTaskWriteOcclusionMesh::Finished(){
 	LogFinishedEnter();
-	if( pSucceeded ){
-		SetResource( pOcclusionMesh );
-		SetState( esSucceeded );
+	if(pSucceeded){
+		SetResource(pOcclusionMesh);
+		SetState(esSucceeded);
 		
 	}else{
 		pOcclusionMesh = NULL;
-		SetState( esFailed );
+		SetState(esFailed);
 	}
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky layer GI Cascade. */
-	deoglSkyLayerGICascade( deoglRSkyInstanceLayer &layer, const deoglGICascade &cascade );
+	deoglSkyLayerGICascade(deoglRSkyInstanceLayer &layer, const deoglGICascade &cascade);
 	
 	/** Clean up sky layer GI Cascade. */
 	~deoglSkyLayerGICascade();
@@ -93,7 +93,7 @@ public:
 	void ClearDirtyStaticShadow();
 	
 	/** Notify render static component changed requiring updates. */
-	void NotifyUpdateStaticComponent( deoglRComponent *component );
+	void NotifyUpdateStaticComponent(deoglRComponent *component);
 	/*@}*/
 	
 	

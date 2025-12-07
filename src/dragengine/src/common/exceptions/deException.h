@@ -52,7 +52,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deException( const char *name, const char *description, const char *file, int line );
+	deException(const char *name, const char *description, const char *file, int line);
 	
 	/**
 	 * \brief Clean up exception object.
@@ -85,7 +85,7 @@ public:
 	/** \name Tests */
 	/*@{*/
 	/** \brief Test if the exception has the given name. */
-	bool IsNamed( const char *name ) const;
+	bool IsNamed(const char *name) const;
 	/*@}*/
 	
 	

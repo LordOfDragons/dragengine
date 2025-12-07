@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetTransMin( aeRuleBoneTransformator *rule, const decVector &newMin );
+	aeURuleBTransSetTransMin(aeRuleBoneTransformator *rule, const decVector &newMin);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleBTransSetTransMin();

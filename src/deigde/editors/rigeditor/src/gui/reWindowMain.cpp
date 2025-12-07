@@ -103,19 +103,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWindowMain::reWindowMain( reIGDEModule &module ) :
-igdeEditorWindow( module ),
+reWindowMain::reWindowMain(reIGDEModule &module) :
+igdeEditorWindow(module),
 
-pListener( NULL ),
+pListener(NULL),
 
-pConfiguration( NULL ),
-pClipboard( NULL ),
-pLoadSaveSystem( NULL ),
+pConfiguration(NULL),
+pClipboard(NULL),
+pLoadSaveSystem(NULL),
 
-pView3D( NULL ),
-pWindowProperties( NULL ),
+pView3D(NULL),
+pWindowProperties(NULL),
 
-pRig( NULL )
+pRig(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -123,9 +123,9 @@ pRig( NULL )
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new reWindowMainListener( *this );
-	pLoadSaveSystem = new reLoadSaveSystem( *this );
-	pConfiguration = new reConfiguration( *this );
+	pListener = new reWindowMainListener(*this);
+	pLoadSaveSystem = new reLoadSaveSystem(*this);
+	pConfiguration = new reConfiguration(*this);
 	pClipboard = new reClipboard;
 	
 	pConfiguration->LoadConfiguration();
@@ -136,44 +136,44 @@ pRig( NULL )
 	
 	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
-	AddChild( splitted );
+	AddChild(splitted);
 	
-	pWindowProperties = new reWindowProperties( *this );
-	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
+	pWindowProperties = new reWindowProperties(*this);
+	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D = new reView3D( *this );
-	splitted->AddChild( pView3D, igdeContainerSplitted::eaCenter );
+	pView3D = new reView3D(*this);
+	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewRig();
 	ResetViews();
 }
 
 reWindowMain::~reWindowMain(){
-	if( pConfiguration ){
+	if(pConfiguration){
 		pConfiguration->SaveConfiguration();
 	}
-	if( pClipboard ){
+	if(pClipboard){
 		delete pClipboard;
 	}
 	
-	SetRig( NULL );
+	SetRig(NULL);
 	
-	if( pWindowProperties ){
+	if(pWindowProperties){
 		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
-	if( pView3D ){
+	if(pView3D){
 		pView3D->FreeReference();
 		pView3D = NULL;
 	}
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		delete pConfiguration;
 	}
-	if( pLoadSaveSystem ){
+	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
 	}
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -193,53 +193,53 @@ void reWindowMain::ResetViews(){
 
 
 
-void reWindowMain::SetRig( reRig *rig ){
-	if( rig == pRig ){
+void reWindowMain::SetRig(reRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
-	pWindowProperties->SetRig( NULL );
-	pView3D->SetRig( NULL );
-	pActionEditUndo->SetUndoSystem( NULL );
-	pActionEditRedo->SetUndoSystem( NULL );
+	pWindowProperties->SetRig(NULL);
+	pView3D->SetRig(NULL);
+	pActionEditUndo->SetUndoSystem(NULL);
+	pActionEditRedo->SetUndoSystem(NULL);
 	
-	if( pRig ){
-		pRig->RemoveNotifier( pListener );
+	if(pRig){
+		pRig->RemoveNotifier(pListener);
 		pRig->Dispose();
 		pRig->FreeReference();
 	}
 	
 	pRig = rig;
 	
-	if( rig ){
+	if(rig){
 		rig->AddReference();
-		rig->AddNotifier( pListener );
+		rig->AddNotifier(pListener);
 		
-		pActionEditUndo->SetUndoSystem( rig->GetUndoSystem() );
-		pActionEditRedo->SetUndoSystem( rig->GetUndoSystem() );
+		pActionEditUndo->SetUndoSystem(rig->GetUndoSystem());
+		pActionEditRedo->SetUndoSystem(rig->GetUndoSystem());
 	}
 	
-	pView3D->SetRig( rig );
-	pWindowProperties->SetRig( rig );
+	pView3D->SetRig(rig);
+	pWindowProperties->SetRig(rig);
 	
-	if( rig && GetEngineController().GetRunning() ){
+	if(rig && GetEngineController().GetRunning()){
 		rig->InitDelegates();
 	}
 }
 
 void reWindowMain::CreateNewRig(){
 	const reRig::Ref refRig(reRig::Ref::NewWith(&GetEnvironment()));
-	reRig * const rig = ( reRig* )refRig.operator->();
+	reRig * const rig = (reRig*)refRig.operator->();
 	
-	SetRig( rig );
+	SetRig(rig);
 }
 
-void reWindowMain::SaveRig( const char *filename ){
-	pLoadSaveSystem->SaveRig( pRig, filename );
-	pRig->SetFilePath( filename );
-	pRig->SetChanged( false );
-	pRig->SetSaved( true );
-	GetRecentFiles().AddFile( filename );
+void reWindowMain::SaveRig(const char *filename){
+	pLoadSaveSystem->SaveRig(pRig, filename);
+	pRig->SetFilePath(filename);
+	pRig->SetChanged(false);
+	pRig->SetSaved(true);
+	GetRecentFiles().AddFile(filename);
 }
 
 
@@ -251,7 +251,7 @@ void reWindowMain::OnAfterEngineStart(){
 	pView3D->OnAfterEngineStart();
 	pLoadSaveSystem->UpdateLSRigs();
 	
-	if( pRig ){
+	if(pRig){
 		pRig->InitDelegates();
 	}
 }
@@ -266,44 +266,44 @@ void reWindowMain::OnAfterEngineStop(){
 
 void reWindowMain::OnActivate(){
 	igdeEditorWindow::OnActivate();
-	pView3D->SetEnableRendering( true );
+	pView3D->SetEnableRendering(true);
 }
 
 void reWindowMain::OnDeactivate(){
-	pView3D->SetEnableRendering( false );
+	pView3D->SetEnableRendering(false);
 	igdeEditorWindow::OnDeactivate();
 }
 
-void reWindowMain::OnFrameUpdate( float elapsed ){
-	if( ! GetActiveModule() ){
+void reWindowMain::OnFrameUpdate(float elapsed){
+	if(!GetActiveModule()){
 		return;
 	}
 	
-	pView3D->OnFrameUpdate( elapsed );
+	pView3D->OnFrameUpdate(elapsed);
 }
 
 
 
-void reWindowMain::GetChangedDocuments( decStringList &list ){
-	if( pRig && pRig->GetChanged() ){
-		list.Add( pRig->GetFilePath() );
+void reWindowMain::GetChangedDocuments(decStringList &list){
+	if(pRig && pRig->GetChanged()){
+		list.Add(pRig->GetFilePath());
 	}
 }
 
-void reWindowMain::LoadDocument( const char *filename ){
-	if( pRig && pRig->GetChanged() ){
-		if( igdeCommonDialogs::Question( this, igdeCommonDialogs::ebsYesNo, "Open Rig",
-		"Open rig discards changes. Is this ok?" ) == igdeCommonDialogs::ebNo ){
+void reWindowMain::LoadDocument(const char *filename){
+	if(pRig && pRig->GetChanged()){
+		if(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNo, "Open Rig",
+		"Open rig discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 			return;
 		}
 	}
 	
 	SetRig(reRig::Ref::New(pLoadSaveSystem->LoadRig(filename)));
-	GetRecentFiles().AddFile( filename );
+	GetRecentFiles().AddFile(filename);
 }
 
-bool reWindowMain::SaveDocument( const char *filename ){
-	if( pRig && pRig->GetFilePath().Equals( filename ) ){
+bool reWindowMain::SaveDocument(const char *filename){
+	if(pRig && pRig->GetFilePath().Equals(filename)){
 		pActionFileSave->OnAction();
 		return true; // TODO better implement this so failure can be detected
 	}
@@ -321,7 +321,7 @@ void reWindowMain::OnGameProjectChanged(){
 }
 
 igdeStepableTask *reWindowMain::OnGameDefinitionChanged(){
-	return new reTaskSyncGameDefinition( *this );
+	return new reTaskSyncGameDefinition(*this);
 }
 
 
@@ -336,65 +336,65 @@ protected:
 	reWindowMain &pWindow;
 	
 public:
-	cActionBase( reWindowMain &window, const char *text, igdeIcon *icon, const char *description,
+	cActionBase(reWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	igdeAction( text, icon, description, mnemonic, igdeHotKey( modifiers, keyCode ) ),
-	pWindow( window ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	igdeAction(text, icon, description, mnemonic, igdeHotKey(modifiers, keyCode)),
+	pWindow(window){}
 	
-	cActionBase( reWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	igdeAction( text, icon, description, mnemonic ),
-	pWindow( window ){}
+	cActionBase(reWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	igdeAction(text, icon, description, mnemonic),
+	pWindow(window){}
 	
 	virtual void OnAction(){
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetRig() ) ));
-		if( undo ){
-			pWindow.GetRig()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetRig())));
+		if(undo){
+			pWindow.GetRig()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( reRig *rig ) = 0;
+	virtual igdeUndo *OnAction(reRig *rig) = 0;
 	
 	virtual void Update(){
-		if( pWindow.GetRig() ){
-			Update( *pWindow.GetRig() );
+		if(pWindow.GetRig()){
+			Update(*pWindow.GetRig());
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const reRig & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const reRig &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
 class cActionBaseBone : public cActionBase{
 public:
-	cActionBaseBone( reWindowMain &window, const char *text, igdeIcon *icon, const char *description,
+	cActionBaseBone(reWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	cActionBase( window, text, icon, description, modifiers, keyCode, mnemonic ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	cActionBase(window, text, icon, description, modifiers, keyCode, mnemonic){}
 	
-	cActionBaseBone( reWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, mnemonic ){}
+	cActionBaseBone(reWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
+	virtual igdeUndo *OnAction(reRig *rig){
 		reRigBone * const bone = rig->GetSelectionBones()->GetActiveBone();
-		if( ! bone ){
+		if(!bone){
 			return NULL;
 		}
-		return OnActionBone( rig, bone );
+		return OnActionBone(rig, bone);
 	}
 	
-	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ) = 0;
+	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone) = 0;
 	
 	virtual void Update(){
-		SetEnabled( pWindow.GetRig()->GetSelectionBones()->GetActiveBone() != NULL );
+		SetEnabled(pWindow.GetRig()->GetSelectionBones()->GetActiveBone() != NULL);
 	}
 };
 
@@ -403,14 +403,14 @@ public:
 class cActionFileNew : public igdeAction{
 	reWindowMain &pWindow;
 public:
-	cActionFileNew( reWindowMain &window ) : igdeAction( "New",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ), "Creates a new rig",
-		deInputEvent::ekcN, igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcN ) ), pWindow( window ){}
+	cActionFileNew(reWindowMain &window) : igdeAction("New",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates a new rig",
+		deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)), pWindow(window){}
 	
 	virtual void OnAction(){
-		if( ! pWindow.GetRig() || ! pWindow.GetRig()->GetChanged()
-		|| igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
-		"Creating a new rig discarding the current one is that ok?" ) == igdeCommonDialogs::ebYes ){
+		if(!pWindow.GetRig() || !pWindow.GetRig()->GetChanged()
+		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
+		"Creating a new rig discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewRig();
 		}
 	}
@@ -419,43 +419,43 @@ public:
 class cActionFileOpen : public igdeAction{
 	reWindowMain &pWindow;
 public:
-	cActionFileOpen( reWindowMain &window ) : igdeAction( "Open...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Opens a rig from file",
-		deInputEvent::ekcO, igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcO ) ), pWindow( window ){}
+	cActionFileOpen(reWindowMain &window) : igdeAction("Open...",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens a rig from file",
+		deInputEvent::ekcO, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcO)), pWindow(window){}
 	
 	virtual void OnAction(){
-		if( pWindow.GetRig() && pWindow.GetRig()->GetChanged() ){
-			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Rig",
-			"Open rig discards changes. Is this ok?" ) == igdeCommonDialogs::ebNo ){
+		if(pWindow.GetRig() && pWindow.GetRig()->GetChanged()){
+			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Rig",
+			"Open rig discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
 				return;
 			}
 		}
 		
-		decString filename( pWindow.GetRig() ? pWindow.GetRig()->GetFilePath()
-			: pWindow.GetGameProject()->GetPathData() );
-		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Rig",
+		decString filename(pWindow.GetRig() ? pWindow.GetRig()->GetFilePath()
+			: pWindow.GetGameProject()->GetPathData());
+		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Rig",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltRig ), filename ) ){
 			return;
 		}
 		
 		pWindow.SetRig(reRig::Ref::New(pWindow.GetLoadSaveSystem().LoadRig(filename)));
-		pWindow.GetRecentFiles().AddFile( filename );
+		pWindow.GetRecentFiles().AddFile(filename);
 	}
 };
 
 class cActionFileSaveAs : public cActionBase{
 public:
-	cActionFileSaveAs( reWindowMain &window ) : cActionBase( window,
-		"Save As...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ),
-		"Saves rig under a differen file", deInputEvent::ekcA ){}
+	cActionFileSaveAs(reWindowMain &window) : cActionBase(window,
+		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"Saves rig under a differen file", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		decString filename( rig->GetFilePath() );
-		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Rig",
+	virtual igdeUndo *OnAction(reRig *rig){
+		decString filename(rig->GetFilePath());
+		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Rig",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltRig ), filename ) ){
-			pWindow.SaveRig( filename );
+			pWindow.SaveRig(filename);
 		}
 		return NULL;
 	}
@@ -463,77 +463,77 @@ public:
 
 class cActionFileSave : public cActionFileSaveAs{
 public:
-	cActionFileSave( reWindowMain &window ) : cActionFileSaveAs( window ){
-		SetText( "Save" );
-		SetIcon( window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ) );
-		SetDescription( "Saves rig to file" );
-		SetHotKey( igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcS ) );
-		SetMnemonic( deInputEvent::ekcS );
+	cActionFileSave(reWindowMain &window) : cActionFileSaveAs(window){
+		SetText("Save");
+		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs));
+		SetDescription("Saves rig to file");
+		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
+		SetMnemonic(deInputEvent::ekcS);
 	}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		if( rig->GetSaved() ){
-			if( rig->GetChanged() ){
-				pWindow.SaveRig( rig->GetFilePath() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		if(rig->GetSaved()){
+			if(rig->GetChanged()){
+				pWindow.SaveRig(rig->GetFilePath());
 			}
 			
 		}else{
-			cActionFileSaveAs::OnAction( rig );
+			cActionFileSaveAs::OnAction(rig);
 		}
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetEnabled( rig.GetChanged() );
+	virtual void Update(const reRig &rig){
+		SetEnabled(rig.GetChanged());
 	}
 };
 
 
 class cActionEditCut : public cActionBase{
 public:
-	cActionEditCut( reWindowMain &window ) : cActionBase( window,
-		"Cut", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
+	cActionEditCut(reWindowMain &window) : cActionBase(window,
+		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcX, deInputEvent::ekcT ){}
+		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
-	virtual igdeUndo *OnAction( reRig* ){
+	virtual igdeUndo *OnAction(reRig*){
 		return NULL;
 	}
 	
-	virtual void Update( const reRig & ){
-		SetEnabled( false );
+	virtual void Update(const reRig &){
+		SetEnabled(false);
 	}
 };
 
 class cActionEditCopy : public cActionBase{
 public:
-	cActionEditCopy( reWindowMain &window ) : cActionBase( window,
-		"Copy", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+	cActionEditCopy(reWindowMain &window) : cActionBase(window,
+		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copies selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcC, deInputEvent::ekcC ){}
+		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
-	virtual igdeUndo *OnAction( reRig* ){
+	virtual igdeUndo *OnAction(reRig*){
 		return NULL;
 	}
 	
-	virtual void Update( const reRig & ){
-		SetEnabled( false );
+	virtual void Update(const reRig &){
+		SetEnabled(false);
 	}
 };
 
 class cActionEditPaste : public cActionBase{
 public:
-	cActionEditPaste( reWindowMain &window ) : cActionBase( window,
-		"Paste", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+	cActionEditPaste(reWindowMain &window) : cActionBase(window,
+		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste objects", deInputEvent::esmControl,
-		deInputEvent::ekcV, deInputEvent::ekcP ){}
+		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
-	virtual igdeUndo *OnAction( reRig* ){
+	virtual igdeUndo *OnAction(reRig*){
 		return NULL;
 	}
 	
-	virtual void Update( const reRig & ){
-		SetEnabled( pWindow.GetClipboard().HasClip() );
+	virtual void Update(const reRig &){
+		SetEnabled(pWindow.GetClipboard().HasClip());
 	}
 };
 
@@ -544,19 +544,19 @@ protected:
 	const reRig::eElementModes pMode;
 	
 public:
-	cActionEditElementMode( reWindowMain &window, reRig::eElementModes mode, const char *text,
+	cActionEditElementMode(reWindowMain &window, reRig::eElementModes mode, const char *text,
 		igdeIcon *icon, const char *description, int modifiers,
-		deInputEvent::eKeyCodes keyCode, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, modifiers, keyCode, mnemonic ),
-	pMode( mode ){}
+		deInputEvent::eKeyCodes keyCode, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, modifiers, keyCode, mnemonic),
+	pMode(mode){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetElementMode( pMode );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetElementMode(pMode);
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetElementMode() == pMode );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetElementMode() == pMode);
 	}
 };
 
@@ -565,189 +565,189 @@ protected:
 	const reRig::eWorkModes pMode;
 	
 public:
-	cActionEditWorkMode( reWindowMain &window, reRig::eWorkModes mode, const char *text,
+	cActionEditWorkMode(reWindowMain &window, reRig::eWorkModes mode, const char *text,
 		igdeIcon *icon, const char *description, int modifiers,
-		deInputEvent::eKeyCodes keyCode, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, modifiers, keyCode, mnemonic ),
-	pMode( mode ){}
+		deInputEvent::eKeyCodes keyCode, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, modifiers, keyCode, mnemonic),
+	pMode(mode){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetWorkMode( pMode );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetWorkMode(pMode);
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetWorkMode() == pMode );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetWorkMode() == pMode);
 	}
 };
 
 class cActionEditLockAxisX : public cActionBase{
 public:
-	cActionEditLockAxisX( reWindowMain &window ) : cActionBase( window,
+	cActionEditLockAxisX(reWindowMain &window) : cActionBase(window,
 		"Lock X-Axis", window.GetIconEditLockAxisX(), "Lock X coordinates during editing",
-		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcX ){}
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcX){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetLockAxisX( ! rig->GetLockAxisX() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetLockAxisX(!rig->GetLockAxisX());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetLockAxisX() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetLockAxisX());
 	}
 };
 
 class cActionEditLockAxisY : public cActionBase{
 public:
-	cActionEditLockAxisY( reWindowMain &window ) : cActionBase( window,
+	cActionEditLockAxisY(reWindowMain &window) : cActionBase(window,
 		"Lock Y-Axis", window.GetIconEditLockAxisY(), "Lock Y coordinates during editing",
-		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcY ){}
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcY){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetLockAxisY( ! rig->GetLockAxisY() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetLockAxisY(!rig->GetLockAxisY());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetLockAxisY() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetLockAxisY());
 	}
 };
 
 class cActionEditLockAxisZ : public cActionBase{
 public:
-	cActionEditLockAxisZ( reWindowMain &window ) : cActionBase( window,
+	cActionEditLockAxisZ(reWindowMain &window) : cActionBase(window,
 		"Lock Z-Axis", window.GetIconEditLockAxisZ(), "Lock Z coordinates during editing",
-		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcZ ){}
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcZ){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetLockAxisZ( ! rig->GetLockAxisZ() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetLockAxisZ(!rig->GetLockAxisZ());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetLockAxisZ() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetLockAxisZ());
 	}
 };
 
 class cActionEditLockLocal : public cActionBase{
 public:
-	cActionEditLockLocal( reWindowMain &window ) : cActionBase( window,
+	cActionEditLockLocal(reWindowMain &window) : cActionBase(window,
 		"Use local coordinates", window.GetIconEditLockLocal(),
 		"Uses local coordinates for editing instead of world coordinates",
-		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcL ){}
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcL){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetUseLocal( ! rig->GetUseLocal() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetUseLocal(!rig->GetUseLocal());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetUseLocal() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetUseLocal());
 	}
 };
 
 class cActionEditSelectAll : public cActionBase{
 public:
-	cActionEditSelectAll( reWindowMain &window ) : cActionBase( window,
+	cActionEditSelectAll(reWindowMain &window) : cActionBase(window,
 		"Select All", NULL, "Selects all elements",
-		deInputEvent::esmControl, deInputEvent::ekcA, deInputEvent::ekcA ){}
+		deInputEvent::esmControl, deInputEvent::ekcA, deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		switch( rig->GetElementMode() ){
+	virtual igdeUndo *OnAction(reRig *rig){
+		switch(rig->GetElementMode()){
 		case reRig::eemBone:
-			SelectAllBones( *pWindow.GetRig() );
+			SelectAllBones(*pWindow.GetRig());
 			break;
 			
 		case reRig::eemShape:
-			SelectAllShapes( *pWindow.GetRig() );
+			SelectAllShapes(*pWindow.GetRig());
 			break;
 			
 		case reRig::eemConstraint:
-			SelectAllConstraints( *pWindow.GetRig() );
+			SelectAllConstraints(*pWindow.GetRig());
 			break;
 			
 		case reRig::eemPush:
-			SelectAllPushes( *pWindow.GetRig() );
+			SelectAllPushes(*pWindow.GetRig());
 			break;
 		}
 		return NULL;
 	}
 	
-	void SelectAllBones( reRig &rig ){
+	void SelectAllBones(reRig &rig){
 		reSelectionBones &selection = *rig.GetSelectionBones();
 		const int count = rig.GetBoneCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			reRigBone * const bone = rig.GetBoneAt( i );
-			if( ! bone->GetSelected() ){
-				selection.AddBone( bone );
+		for(i=0; i<count; i++){
+			reRigBone * const bone = rig.GetBoneAt(i);
+			if(!bone->GetSelected()){
+				selection.AddBone(bone);
 			}
 		}
 	}
 	
-	void SelectAllShapes( reRig &rig ){
+	void SelectAllShapes(reRig &rig){
 		reSelectionShapes &selection = *rig.GetSelectionShapes();
 		const int boneCount = rig.GetBoneCount();
 		int i, j;
 		
-		for( i=0; i<boneCount; i++ ){
-			const reRigBone &bone = *rig.GetBoneAt( i );
+		for(i=0; i<boneCount; i++){
+			const reRigBone &bone = *rig.GetBoneAt(i);
 			const int shapeCount = bone.GetShapeCount();
 			
-			for( j=0; j<shapeCount; j++ ){
-				reRigShape * const shape = bone.GetShapeAt( j );
-				if( ! shape->GetSelected() && shape->IsVisible() ){
-					selection.AddShape( shape );
+			for(j=0; j<shapeCount; j++){
+				reRigShape * const shape = bone.GetShapeAt(j);
+				if(!shape->GetSelected() && shape->IsVisible()){
+					selection.AddShape(shape);
 				}
 			}
 		}
 		
 		const int shapeCount = rig.GetShapeCount();
-		for( i=0; i<shapeCount; i++ ){
-			reRigShape * const shape = rig.GetShapeAt( i );
-			if( ! shape->GetSelected() && shape->IsVisible() ){
-				selection.AddShape( shape );
+		for(i=0; i<shapeCount; i++){
+			reRigShape * const shape = rig.GetShapeAt(i);
+			if(!shape->GetSelected() && shape->IsVisible()){
+				selection.AddShape(shape);
 			}
 		}
 	}
 	
-	void SelectAllConstraints( reRig &rig ){
+	void SelectAllConstraints(reRig &rig){
 		reSelectionConstraints &selection = *rig.GetSelectionConstraints();
 		const int boneCount = rig.GetBoneCount();
 		int i;
 		
-		for( i=0; i<boneCount; i++ ){
-			const reRigBone &bone = *rig.GetBoneAt( i );
+		for(i=0; i<boneCount; i++){
+			const reRigBone &bone = *rig.GetBoneAt(i);
 			const int constraintCount = bone.GetConstraintCount();
 			int j;
 			
-			for( j=0; j<constraintCount; j++ ){
-				reRigConstraint * const constraint = bone.GetConstraintAt( j );
-				if( ! constraint->GetSelected() && constraint->IsVisible() ){
-					selection.AddConstraint( constraint );
+			for(j=0; j<constraintCount; j++){
+				reRigConstraint * const constraint = bone.GetConstraintAt(j);
+				if(!constraint->GetSelected() && constraint->IsVisible()){
+					selection.AddConstraint(constraint);
 				}
 			}
 		}
 		
 		const int constraintCount = rig.GetConstraintCount();
-		for( i=0; i<constraintCount; i++ ){
-			reRigConstraint * const constraint = rig.GetConstraintAt( i );
-			if( ! constraint->GetSelected() && constraint->IsVisible() ){
-				selection.AddConstraint( constraint );
+		for(i=0; i<constraintCount; i++){
+			reRigConstraint * const constraint = rig.GetConstraintAt(i);
+			if(!constraint->GetSelected() && constraint->IsVisible()){
+				selection.AddConstraint(constraint);
 			}
 		}
 	}
 	
-	void SelectAllPushes( reRig &rig ){
+	void SelectAllPushes(reRig &rig){
 		reSelectionPushes &selection = *rig.GetSelectionPushes();
 		const int count = rig.GetPushCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			reRigPush * const push = rig.GetPushAt( i );
-			if( ! push->GetSelected() && push->IsVisible() ){
-				selection.AddPush( push );
+		for(i=0; i<count; i++){
+			reRigPush * const push = rig.GetPushAt(i);
+			if(!push->GetSelected() && push->IsVisible()){
+				selection.AddPush(push);
 			}
 		}
 	}
@@ -755,12 +755,12 @@ public:
 
 class cActionEditSelectAllWithShapes : public cActionBase{
 public:
-	cActionEditSelectAllWithShapes( reWindowMain &window ) : cActionBase( window,
+	cActionEditSelectAllWithShapes(reWindowMain &window) : cActionBase(window,
 		"Select All With Shapes", NULL, "Selects all bones with shapes",
-		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekcS ){}
+		deInputEvent::esmNone, deInputEvent::ekcUndefined, deInputEvent::ekcS){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		if( rig->GetElementMode() != reRig::eemBone ){
+	virtual igdeUndo *OnAction(reRig *rig){
+		if(rig->GetElementMode() != reRig::eemBone){
 			return NULL;
 		}
 		
@@ -768,28 +768,28 @@ public:
 		const int count = rig->GetBoneCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			reRigBone * const bone = rig->GetBoneAt( i );
-			if( ! bone->GetSelected() && bone->GetShapeCount() > 0 ){
-				selection.AddBone( bone );
+		for(i=0; i<count; i++){
+			reRigBone * const bone = rig->GetBoneAt(i);
+			if(!bone->GetSelected() && bone->GetShapeCount() > 0){
+				selection.AddBone(bone);
 			}
 		}
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetEnabled( rig.GetElementMode() == reRig::eemBone );
+	virtual void Update(const reRig &rig){
+		SetEnabled(rig.GetElementMode() == reRig::eemBone);
 	}
 };
 
 class cActionEditSelectNone : public cActionBase{
 public:
-	cActionEditSelectNone( reWindowMain &window ) : cActionBase( window,
+	cActionEditSelectNone(reWindowMain &window) : cActionBase(window,
 		"Select None", NULL, "Unselects all elements",
-		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcA, deInputEvent::ekcN ){}
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcA, deInputEvent::ekcN){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		switch( rig->GetElementMode() ){
+	virtual igdeUndo *OnAction(reRig *rig){
+		switch(rig->GetElementMode()){
 		case reRig::eemBone:
 			rig->GetSelectionBones()->RemoveAllBones();
 			break;
@@ -812,83 +812,83 @@ public:
 
 class cActionEditDelete : public cActionBase{
 public:
-	cActionEditDelete( reWindowMain &window ) : cActionBase( window,
+	cActionEditDelete(reWindowMain &window) : cActionBase(window,
 		"Delete Selection", NULL, "Deletes the selected objects",
-		deInputEvent::esmNone, deInputEvent::ekcDelete, deInputEvent::ekcD ){}
+		deInputEvent::esmNone, deInputEvent::ekcDelete, deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		switch( rig->GetElementMode() ){
+	virtual igdeUndo *OnAction(reRig *rig){
+		switch(rig->GetElementMode()){
 		case reRig::eemBone:
-			return DeleteBones( rig );
+			return DeleteBones(rig);
 			
 		case reRig::eemShape:
-			return DeleteShapes( rig );
+			return DeleteShapes(rig);
 			
 		case reRig::eemConstraint:
-			return DeleteConstranits( rig );
+			return DeleteConstranits(rig);
 			
 		case reRig::eemPush:
-			return DeletePushes( rig );
+			return DeletePushes(rig);
 		}
 		return NULL;
 	}
 	
-	igdeUndo *DeleteBones( reRig *rig ){
+	igdeUndo *DeleteBones(reRig *rig){
 		return NULL;
 	}
 	
-	igdeUndo *DeleteShapes( reRig *rig ){
+	igdeUndo *DeleteShapes(reRig *rig){
 		reRigShapeList list;
-		rig->GetSelectionShapes()->AddVisibleShapesTo( list );
-		if( list.GetShapeCount() == 0 ){
+		rig->GetSelectionShapes()->AddVisibleShapesTo(list);
+		if(list.GetShapeCount() == 0){
 			return NULL;
 		}
-		return new reURemoveShape( list );
+		return new reURemoveShape(list);
 	}
 	
-	igdeUndo *DeleteConstranits( reRig *rig ){
+	igdeUndo *DeleteConstranits(reRig *rig){
 		reRigConstraintList list;
-		rig->GetSelectionConstraints()->AddVisibleConstraintsTo( list );
-		if( list.GetConstraintCount() == 0 ){
+		rig->GetSelectionConstraints()->AddVisibleConstraintsTo(list);
+		if(list.GetConstraintCount() == 0){
 			return NULL;
 		}
-		return new reURemoveConstraint( list );
+		return new reURemoveConstraint(list);
 	}
 	
-	igdeUndo *DeletePushes( reRig *rig ){
+	igdeUndo *DeletePushes(reRig *rig){
 		reRigPushList list;
-		rig->GetSelectionPushes()->AddVisiblePushesTo( list );
-		if( list.GetPushCount() == 0 ){
+		rig->GetSelectionPushes()->AddVisiblePushesTo(list);
+		if(list.GetPushCount() == 0){
 			return NULL;
 		}
-		return new reURemovePush( list );
+		return new reURemovePush(list);
 	}
 	
-	virtual void Update( const reRig &rig ){
+	virtual void Update(const reRig &rig){
 		bool enabled = false;
-		switch( rig.GetElementMode() ){
+		switch(rig.GetElementMode()){
 		case reRig::eemBone:
 			break;
 			
 		case reRig::eemShape:{
 			reRigShapeList list;
-			rig.GetSelectionShapes()->AddVisibleShapesTo( list );
+			rig.GetSelectionShapes()->AddVisibleShapesTo(list);
 			enabled = list.GetShapeCount() > 0;
 			}break;
 			
 		case reRig::eemConstraint:{
 			reRigConstraintList list;
-			rig.GetSelectionConstraints()->AddVisibleConstraintsTo( list );
+			rig.GetSelectionConstraints()->AddVisibleConstraintsTo(list);
 			enabled = list.GetConstraintCount() > 0;
 			}break;
 			
 		case reRig::eemPush:{
 			reRigPushList list;
-			rig.GetSelectionPushes()->AddVisiblePushesTo( list );
+			rig.GetSelectionPushes()->AddVisiblePushesTo(list);
 			enabled = list.GetPushCount() > 0;
 			}break;
 		}
-		SetEnabled( enabled );
+		SetEnabled(enabled);
 	}
 };
 
@@ -896,11 +896,11 @@ public:
 
 class cActionRigAddShape : public cActionBase{
 public:
-	cActionRigAddShape( reWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, mnemonic ){}
+	cActionRigAddShape(reWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
+	virtual igdeUndo *OnAction(reRig *rig){
 		return new reUAddShape(rig, nullptr, reRigShape::Ref::New(CreateShape()));
 	}
 	
@@ -909,108 +909,108 @@ public:
 
 class cActionRigAddSphere : public cActionRigAddShape{
 public:
-	cActionRigAddSphere( reWindowMain &window ) : cActionRigAddShape( window,
-		"Add Sphere Shape", NULL, "Adds a sphere shape", deInputEvent::ekcS ){}
+	cActionRigAddSphere(reWindowMain &window) : cActionRigAddShape(window,
+		"Add Sphere Shape", NULL, "Adds a sphere shape", deInputEvent::ekcS){}
 	
 	reRigShape *CreateShape(){
-		return new reRigShapeSphere( pWindow.GetEngineController().GetEngine() );
+		return new reRigShapeSphere(pWindow.GetEngineController().GetEngine());
 	}
 };
 
 class cActionRigAddBox : public cActionRigAddShape{
 public:
-	cActionRigAddBox( reWindowMain &window ) : cActionRigAddShape( window,
-		"Add Box Shape", NULL, "Adds a box shape", deInputEvent::ekcB ){}
+	cActionRigAddBox(reWindowMain &window) : cActionRigAddShape(window,
+		"Add Box Shape", NULL, "Adds a box shape", deInputEvent::ekcB){}
 	
 	reRigShape *CreateShape(){
-		return new reRigShapeBox( pWindow.GetEngineController().GetEngine() );
+		return new reRigShapeBox(pWindow.GetEngineController().GetEngine());
 	}
 };
 
 class cActionRigAddCylinder : public cActionRigAddShape{
 public:
-	cActionRigAddCylinder( reWindowMain &window ) : cActionRigAddShape( window,
-		"Add Cylinder Shape", NULL, "Adds a cylinder shape", deInputEvent::ekcC ){}
+	cActionRigAddCylinder(reWindowMain &window) : cActionRigAddShape(window,
+		"Add Cylinder Shape", NULL, "Adds a cylinder shape", deInputEvent::ekcC){}
 	
 	reRigShape *CreateShape(){
-		return new reRigShapeCylinder( pWindow.GetEngineController().GetEngine() );
+		return new reRigShapeCylinder(pWindow.GetEngineController().GetEngine());
 	}
 };
 
 class cActionRigAddCapsule : public cActionRigAddShape{
 public:
-	cActionRigAddCapsule( reWindowMain &window ) : cActionRigAddShape( window,
-		"Add Capsule Shape", NULL, "Adds a capsule shape", deInputEvent::ekcA ){}
+	cActionRigAddCapsule(reWindowMain &window) : cActionRigAddShape(window,
+		"Add Capsule Shape", NULL, "Adds a capsule shape", deInputEvent::ekcA){}
 	
 	reRigShape *CreateShape(){
-		return new reRigShapeCapsule( pWindow.GetEngineController().GetEngine() );
+		return new reRigShapeCapsule(pWindow.GetEngineController().GetEngine());
 	}
 };
 
 class cActionRigAddConstraint : public cActionBase{
 public:
-	cActionRigAddConstraint( reWindowMain &window ) : cActionBase( window,
-		"Add Constraint", NULL, "Add a constraint", deInputEvent::ekcC ){}
+	cActionRigAddConstraint(reWindowMain &window) : cActionBase(window,
+		"Add Constraint", NULL, "Add a constraint", deInputEvent::ekcC){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
+	virtual igdeUndo *OnAction(reRig *rig){
 		const reRigConstraint::Ref constraint(reRigConstraint::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
-		return new reUAddConstraint( rig, NULL, ( reRigConstraint* )constraint.operator->() );
+		return new reUAddConstraint(rig, NULL, (reRigConstraint*)constraint.operator->());
 	}
 };
 
 class cActionRigAddPush : public cActionBase{
 public:
-	cActionRigAddPush( reWindowMain &window ) : cActionBase( window,
-		"Add Push", NULL, "Add a push", deInputEvent::ekcP ){}
+	cActionRigAddPush(reWindowMain &window) : cActionBase(window,
+		"Add Push", NULL, "Add a push", deInputEvent::ekcP){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
+	virtual igdeUndo *OnAction(reRig *rig){
 		const reRigPush::Ref push(reRigPush::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
-		return new reUAddPush( rig, ( reRigPush* )push.operator->() );
+		return new reUAddPush(rig, (reRigPush*)push.operator->());
 	}
 };
 
 class cActionRigShowShapes : public cActionBase{
 public:
-	cActionRigShowShapes( reWindowMain &window ) : cActionBase( window,
-		"Show Rig Shapes", NULL, "Show shapes of the entire rig" ){}
+	cActionRigShowShapes(reWindowMain &window) : cActionBase(window,
+		"Show Rig Shapes", NULL, "Show shapes of the entire rig"){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetShowRigShapes( ! rig->GetShowRigShapes() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetShowRigShapes(!rig->GetShowRigShapes());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetShowRigShapes() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetShowRigShapes());
 	}
 };
 
 class cActionRigShowConstraints : public cActionBase{
 public:
-	cActionRigShowConstraints( reWindowMain &window ) : cActionBase( window,
-		"Show Rig Constraints", NULL, "Show constraints of the entire rig" ){}
+	cActionRigShowConstraints(reWindowMain &window) : cActionBase(window,
+		"Show Rig Constraints", NULL, "Show constraints of the entire rig"){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetShowRigConstraints( ! rig->GetShowRigConstraints() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetShowRigConstraints(!rig->GetShowRigConstraints());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetShowRigConstraints() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetShowRigConstraints());
 	}
 };
 
 class cActionRigShowPushes : public cActionBase{
 public:
-	cActionRigShowPushes( reWindowMain &window ) : cActionBase( window,
-		"Show Rig Pushs", NULL, "Show pushes of the entire rig" ){}
+	cActionRigShowPushes(reWindowMain &window) : cActionBase(window,
+		"Show Rig Pushs", NULL, "Show pushes of the entire rig"){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetShowRigPushes( ! rig->GetShowRigPushes() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetShowRigPushes(!rig->GetShowRigPushes());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetShowRigPushes() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetShowRigPushes());
 	}
 };
 
@@ -1018,22 +1018,22 @@ public:
 
 class cActionBoneAdd : public cActionBase{
 public:
-	cActionBoneAdd( reWindowMain &window ) : cActionBase( window,
-		"Add", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ),
-		"Add bone", deInputEvent::ekcA ){}
+	cActionBoneAdd(reWindowMain &window) : cActionBase(window,
+		"Add", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"Add bone", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
+	virtual igdeUndo *OnAction(reRig *rig){
 		return NULL;
 	}
 };
 
 class cActionBoneAddShape : public cActionBaseBone{
 public:
-	cActionBoneAddShape( reWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBaseBone( window, text, icon, description, mnemonic ){}
+	cActionBoneAddShape(reWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	cActionBaseBone(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
+	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone){
 		return new reUAddShape(nullptr, bone, reRigShape::Ref::New(CreateShape()));
 	}
 	
@@ -1042,131 +1042,131 @@ public:
 
 class cActionBoneAddSphere : public cActionBoneAddShape{
 public:
-	cActionBoneAddSphere( reWindowMain &window ) : cActionBoneAddShape( window,
-		"Add Sphere Shape", NULL, "Adds a sphere shape", deInputEvent::ekcS ){}
+	cActionBoneAddSphere(reWindowMain &window) : cActionBoneAddShape(window,
+		"Add Sphere Shape", NULL, "Adds a sphere shape", deInputEvent::ekcS){}
 	
 	reRigShape *CreateShape(){
-		return new reRigShapeSphere( pWindow.GetEngineController().GetEngine() );
+		return new reRigShapeSphere(pWindow.GetEngineController().GetEngine());
 	}
 };
 
 class cActionBoneAddBox : public cActionBoneAddShape{
 public:
-	cActionBoneAddBox( reWindowMain &window ) : cActionBoneAddShape( window,
-		"Add Box Shape", NULL, "Adds a box shape", deInputEvent::ekcB ){}
+	cActionBoneAddBox(reWindowMain &window) : cActionBoneAddShape(window,
+		"Add Box Shape", NULL, "Adds a box shape", deInputEvent::ekcB){}
 	
 	reRigShape *CreateShape(){
-		return new reRigShapeBox( pWindow.GetEngineController().GetEngine() );
+		return new reRigShapeBox(pWindow.GetEngineController().GetEngine());
 	}
 };
 
 class cActionBoneAddCylinder : public cActionBoneAddShape{
 public:
-	cActionBoneAddCylinder( reWindowMain &window ) : cActionBoneAddShape( window,
-		"Add Cylinder Shape", NULL, "Adds a cylinder shape", deInputEvent::ekcC ){}
+	cActionBoneAddCylinder(reWindowMain &window) : cActionBoneAddShape(window,
+		"Add Cylinder Shape", NULL, "Adds a cylinder shape", deInputEvent::ekcC){}
 	
 	reRigShape *CreateShape(){
-		return new reRigShapeCylinder( pWindow.GetEngineController().GetEngine() );
+		return new reRigShapeCylinder(pWindow.GetEngineController().GetEngine());
 	}
 };
 
 class cActionBoneAddCapsule : public cActionBoneAddShape{
 public:
-	cActionBoneAddCapsule( reWindowMain &window ) : cActionBoneAddShape( window,
-		"Add Capsule Shape", NULL, "Adds a capsule shape", deInputEvent::ekcA ){}
+	cActionBoneAddCapsule(reWindowMain &window) : cActionBoneAddShape(window,
+		"Add Capsule Shape", NULL, "Adds a capsule shape", deInputEvent::ekcA){}
 	
 	reRigShape *CreateShape(){
-		return new reRigShapeCapsule( pWindow.GetEngineController().GetEngine() );
+		return new reRigShapeCapsule(pWindow.GetEngineController().GetEngine());
 	}
 };
 
 class cActionBoneAddConstraint : public cActionBaseBone{
 public:
-	cActionBoneAddConstraint( reWindowMain &window ) : cActionBaseBone( window,
-		"Add Constraint", NULL, "Add a constraint", deInputEvent::ekcC ){}
+	cActionBoneAddConstraint(reWindowMain &window) : cActionBaseBone(window,
+		"Add Constraint", NULL, "Add a constraint", deInputEvent::ekcC){}
 	
-	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
+	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone){
 		const reRigConstraint::Ref constraint(reRigConstraint::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
-		return new reUAddConstraint( NULL, bone, ( reRigConstraint* )constraint.operator->() );
+		return new reUAddConstraint(NULL, bone, (reRigConstraint*)constraint.operator->());
 	}
 };
 
 class cActionBoneShowBones : public cActionBase{
 public:
-	cActionBoneShowBones( reWindowMain &window ) : cActionBase( window,
-		"Show Bones", NULL, "Show bones" ){}
+	cActionBoneShowBones(reWindowMain &window) : cActionBase(window,
+		"Show Bones", NULL, "Show bones"){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetShowBones( ! rig->GetShowBones() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetShowBones(!rig->GetShowBones());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetShowBones() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetShowBones());
 	}
 };
 
 class cActionBoneShowShapes : public cActionBase{
 public:
-	cActionBoneShowShapes( reWindowMain &window ) : cActionBase( window,
+	cActionBoneShowShapes(reWindowMain &window) : cActionBase(window,
 		"Show All Bone Shapes", NULL,
-		"Show shapes of the bones not just the selected one" ){}
+		"Show shapes of the bones not just the selected one"){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetShowAllBoneShapes( ! rig->GetShowAllBoneShapes() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetShowAllBoneShapes(!rig->GetShowAllBoneShapes());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetShowAllBoneShapes() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetShowAllBoneShapes());
 	}
 };
 
 class cActionBoneShowConstraints : public cActionBase{
 public:
-	cActionBoneShowConstraints( reWindowMain &window ) : cActionBase( window,
+	cActionBoneShowConstraints(reWindowMain &window) : cActionBase(window,
 		"Show All Bone Constraints", NULL,
-		"Show constraints of the bones not just the selected one" ){}
+		"Show constraints of the bones not just the selected one"){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetShowAllBoneConstraints( ! rig->GetShowAllBoneConstraints() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetShowAllBoneConstraints(!rig->GetShowAllBoneConstraints());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetShowAllBoneConstraints() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetShowAllBoneConstraints());
 	}
 };
 
 class cActionBoneMirror : public cActionBaseBone{
 public:
-	cActionBoneMirror( reWindowMain &window ) : cActionBaseBone( window,
-		"Mirror", NULL, "Mirror the selected bones", deInputEvent::ekcM ){}
+	cActionBoneMirror(reWindowMain &window) : cActionBaseBone(window,
+		"Mirror", NULL, "Mirror the selected bones", deInputEvent::ekcM){}
 	
-	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
-		return new reUBoneMirror( rig );
+	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone){
+		return new reUBoneMirror(rig);
 	}
 };
 
 class cActionBoneImport : public cActionBaseBone{
 public:
-	cActionBoneImport( reWindowMain &window ) : cActionBaseBone( window,
-		"Import", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
-		"Import the selected bones from file", deInputEvent::ekcI ){}
+	cActionBoneImport(reWindowMain &window) : cActionBaseBone(window,
+		"Import", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"Import the selected bones from file", deInputEvent::ekcI){}
 	
-	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
+	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone){
 		const reDialogImportBone::Ref dialog(reDialogImportBone::Ref::NewWith(pWindow));
-		if( ! dialog->Run( &pWindow ) ){
+		if(!dialog->Run(&pWindow)){
 			return NULL;
 		}
 		
 		const reUBoneImportFromFile::Ref undo(reUBoneImportFromFile::Ref::NewWith(
 			rig, reRig::Ref::New(pWindow.GetLoadSaveSystem().LoadRig(dialog->GetPath()))));
 		
-		undo->SetScale( dialog->GetScaling() );
-		undo->SetImportBoneProperties( dialog->GetImportBoneProperties() );
-		undo->SetImportShapes( dialog->GetImportShapes() );
-		undo->SetImportConstraints( dialog->GetImportConstraints() );
+		undo->SetScale(dialog->GetScaling());
+		undo->SetImportBoneProperties(dialog->GetImportBoneProperties());
+		undo->SetImportShapes(dialog->GetImportShapes());
+		undo->SetImportConstraints(dialog->GetImportConstraints());
 		
 		undo->AddReference();
 		return undo;
@@ -1175,50 +1175,50 @@ public:
 
 class cActionBoneScaleMass : public cActionBaseBone{
 public:
-	cActionBoneScaleMass( reWindowMain &window ) : cActionBaseBone( window,
-		"Scale Mass", NULL, "Scale total mass of the selected bones", deInputEvent::ekcS ){}
+	cActionBoneScaleMass(reWindowMain &window) : cActionBaseBone(window,
+		"Scale Mass", NULL, "Scale total mass of the selected bones", deInputEvent::ekcS){}
 	
-	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
+	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone){
 		const reSelectionBones &selection = *rig->GetSelectionBones();
 		const int count = selection.GetBoneCount();
 		decObjectOrderedSet list;
 		float oldMass = 0.0f;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			reRigBone * const bone2 = selection.GetBoneAt( i );
-			if( bone2->GetShapeCount() > 0 ){
+		for(i=0; i<count; i++){
+			reRigBone * const bone2 = selection.GetBoneAt(i);
+			if(bone2->GetShapeCount() > 0){
 				oldMass += bone2->GetMass();
-				list.Add( bone2 );
+				list.Add(bone2);
 			}
 		}
 		
-		if( list.GetCount() == 0 ){
-			igdeCommonDialogs::Error( &pWindow, "Scale Mass", "No bones selected with shapes" );
+		if(list.GetCount() == 0){
+			igdeCommonDialogs::Error(&pWindow, "Scale Mass", "No bones selected with shapes");
 			return NULL;
 		}
 		
 		float newMass = oldMass;
-		if( ! igdeCommonDialogs::GetFloat( &pWindow, "Scale Mass", "New total mass:", newMass ) ){
+		if(!igdeCommonDialogs::GetFloat(&pWindow, "Scale Mass", "New total mass:", newMass)){
 			return NULL;
 		}
-		if( fabs( newMass - oldMass ) < FLOAT_SAFE_EPSILON ){
+		if(fabs(newMass - oldMass) < FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
 		
-		return new reUBoneScaleMass( rig, list, newMass );
+		return new reUBoneScaleMass(rig, list, newMass);
 	}
 };
 
 class cActionBoneMassFromVolume : public cActionBaseBone{
 public:
-	cActionBoneMassFromVolume( reWindowMain &window ) : cActionBaseBone( window,
+	cActionBoneMassFromVolume(reWindowMain &window) : cActionBaseBone(window,
 		"Mass From Volume", NULL, "Set the mass of the bone from the shape volumes",
-		deInputEvent::ekcV ){}
+		deInputEvent::ekcV){}
 	
-	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
+	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone){
 		float density = 1.0f;
-		if( ! igdeCommonDialogs::GetFloat( &pWindow, "Mass From Volume", "Density:", density ) ){
+		if(!igdeCommonDialogs::GetFloat(&pWindow, "Mass From Volume", "Density:", density)){
 			return NULL;
 		}
 		
@@ -1227,11 +1227,11 @@ public:
 		decObjectOrderedSet list;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			list.Add( selection.GetBoneAt( i ) );
+		for(i=0; i<count; i++){
+			list.Add(selection.GetBoneAt(i));
 		}
 		
-		return new reUBoneMassFromVolume( rig, list, density );
+		return new reUBoneMassFromVolume(rig, list, density);
 	}
 };
 
@@ -1239,16 +1239,16 @@ public:
 
 class cActionViewShapeXRay : public cActionBase{
 public:
-	cActionViewShapeXRay( reWindowMain &window ) : cActionBase( window,
-		"X-Ray Shapes", NULL, "Sets if shapes are visible through geometry" ){}
+	cActionViewShapeXRay(reWindowMain &window) : cActionBase(window,
+		"X-Ray Shapes", NULL, "Sets if shapes are visible through geometry"){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetShapeXRay( ! rig->GetShapeXRay() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetShapeXRay(!rig->GetShapeXRay());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetShapeXRay() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetShapeXRay());
 	}
 };
 
@@ -1256,17 +1256,17 @@ public:
 
 class cActionSimRun: public cActionBase{
 public:
-	cActionSimRun( reWindowMain &window ) : cActionBase( window,
+	cActionSimRun(reWindowMain &window) : cActionBase(window,
 		"Run Simulation", NULL, "Starts and stops the simulation",
-		deInputEvent::esmControl, deInputEvent::ekcQ, deInputEvent::ekcS ){}
+		deInputEvent::esmControl, deInputEvent::ekcQ, deInputEvent::ekcS){}
 	
-	virtual igdeUndo *OnAction( reRig *rig ){
-		rig->SetSimulationRunning( ! rig->GetSimulationRunning() );
+	virtual igdeUndo *OnAction(reRig *rig){
+		rig->SetSimulationRunning(!rig->GetSimulationRunning());
 		return NULL;
 	}
 	
-	virtual void Update( const reRig &rig ){
-		SetSelected( rig.GetSimulationRunning() );
+	virtual void Update(const reRig &rig){
+		SetSelected(rig.GetSimulationRunning());
 	}
 };
 
@@ -1278,344 +1278,344 @@ public:
 //////////////////////
 
 void reWindowMain::pLoadIcons(){
-	pIconEditBone.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_bone.png" ) );
-	pIconEditShape.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_shape.png" ) );
-	pIconEditConstraint.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_constraint.png" ) );
-	pIconEditPush.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_push.png" ) );
-	pIconEditSelect.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_select.png" ) );
-	pIconEditMove.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_move.png" ) );
-	pIconEditScale.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_scale.png" ) );
-	pIconEditRotate.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_rotate.png" ) );
+	pIconEditBone.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_bone.png"));
+	pIconEditShape.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_shape.png"));
+	pIconEditConstraint.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_constraint.png"));
+	pIconEditPush.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_push.png"));
+	pIconEditSelect.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_select.png"));
+	pIconEditMove.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_move.png"));
+	pIconEditScale.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_scale.png"));
+	pIconEditRotate.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_rotate.png"));
 // 	pIconEdit3DCursor.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_3d_cursor.png" ) );
-	pIconEditLockAxisX.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_x.png" ) );
-	pIconEditLockAxisY.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_y.png" ) );
-	pIconEditLockAxisZ.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_z.png" ) );
-	pIconEditLockLocal.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_use_local.png" ) );
+	pIconEditLockAxisX.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_lock_axis_x.png"));
+	pIconEditLockAxisY.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_lock_axis_y.png"));
+	pIconEditLockAxisZ.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_lock_axis_z.png"));
+	pIconEditLockLocal.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_use_local.png"));
 }
 
 void reWindowMain::pCreateActions(){
-	pActionFileNew.TakeOver( new cActionFileNew( *this ) );
-	pActionFileOpen.TakeOver( new cActionFileOpen( *this ) );
-	pActionFileSave.TakeOver( new cActionFileSave( *this ) );
-	pActionFileSaveAs.TakeOver( new cActionFileSaveAs( *this ) );
+	pActionFileNew.TakeOver(new cActionFileNew(*this));
+	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
+	pActionFileSave.TakeOver(new cActionFileSave(*this));
+	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOver( new igdeActionUndo( GetEnvironment() ) );
-	pActionEditRedo.TakeOver( new igdeActionRedo( GetEnvironment() ) );
-	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
-	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
-	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditCut.TakeOver(new cActionEditCut(*this));
+	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
+	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
 	
-	pActionEditBoneMode.TakeOver( new cActionEditElementMode( *this, reRig::eemBone,
+	pActionEditBoneMode.TakeOver(new cActionEditElementMode(*this, reRig::eemBone,
 		"Bone Mode", pIconEditBone, "Bone mode",
-		deInputEvent::esmControl, deInputEvent::ekc1, deInputEvent::ekcB ) );
+		deInputEvent::esmControl, deInputEvent::ekc1, deInputEvent::ekcB));
 	
-	pActionEditShapeMode.TakeOver( new cActionEditElementMode( *this, reRig::eemShape,
+	pActionEditShapeMode.TakeOver(new cActionEditElementMode(*this, reRig::eemShape,
 		"Shape Mode", pIconEditShape, "Shape mode",
-		deInputEvent::esmControl, deInputEvent::ekc2, deInputEvent::ekcS ) );
+		deInputEvent::esmControl, deInputEvent::ekc2, deInputEvent::ekcS));
 	
-	pActionEditConstraintMode.TakeOver( new cActionEditElementMode( *this, reRig::eemConstraint,
+	pActionEditConstraintMode.TakeOver(new cActionEditElementMode(*this, reRig::eemConstraint,
 		"Constraint Mode", pIconEditConstraint, "Constraint mode",
-		deInputEvent::esmControl, deInputEvent::ekc3, deInputEvent::ekcC ) );
+		deInputEvent::esmControl, deInputEvent::ekc3, deInputEvent::ekcC));
 	
-	pActionEditPushMode.TakeOver( new cActionEditElementMode( *this, reRig::eemPush,
+	pActionEditPushMode.TakeOver(new cActionEditElementMode(*this, reRig::eemPush,
 		"Push Mode", pIconEditPush, "Push mode",
-		deInputEvent::esmControl, deInputEvent::ekc4, deInputEvent::ekcP ) );
+		deInputEvent::esmControl, deInputEvent::ekc4, deInputEvent::ekcP));
 	
-	pActionEditSelectMode.TakeOver( new cActionEditWorkMode( *this, reRig::ewmSelect,
+	pActionEditSelectMode.TakeOver(new cActionEditWorkMode(*this, reRig::ewmSelect,
 		"Select Mode", pIconEditSelect, "Select mode",
-		deInputEvent::esmNone, deInputEvent::ekc1, deInputEvent::ekcE ) );
+		deInputEvent::esmNone, deInputEvent::ekc1, deInputEvent::ekcE));
 	
-	pActionEditMoveMode.TakeOver( new cActionEditWorkMode( *this, reRig::ewmMove,
+	pActionEditMoveMode.TakeOver(new cActionEditWorkMode(*this, reRig::ewmMove,
 		"Move Mode", pIconEditMove, "Move mode",
-		deInputEvent::esmNone, deInputEvent::ekc2, deInputEvent::ekcM ) );
+		deInputEvent::esmNone, deInputEvent::ekc2, deInputEvent::ekcM));
 	
-	pActionEditScaleMode.TakeOver( new cActionEditWorkMode( *this, reRig::ewmScale,
+	pActionEditScaleMode.TakeOver(new cActionEditWorkMode(*this, reRig::ewmScale,
 		"Scale Mode", pIconEditScale, "Scale mode",
-		deInputEvent::esmNone, deInputEvent::ekc3, deInputEvent::ekcA ) );
+		deInputEvent::esmNone, deInputEvent::ekc3, deInputEvent::ekcA));
 	
-	pActionEditRotateMode.TakeOver( new cActionEditWorkMode( *this, reRig::ewmRotate,
+	pActionEditRotateMode.TakeOver(new cActionEditWorkMode(*this, reRig::ewmRotate,
 		"Rotate Mode", pIconEditRotate, "Rotate mode",
-		deInputEvent::esmNone, deInputEvent::ekc4, deInputEvent::ekcR ) );
+		deInputEvent::esmNone, deInputEvent::ekc4, deInputEvent::ekcR));
 	
 // 	pActionEdit3DCursorMode.TakeOver( new cActionEditWorkMode( *this, reRig::ewm3DCursor,
 // 		"3D-Cursor Mode", pIconEdit3DCursor, "3D-Cursor mode",
 // 		deInputEvent::esmNone, deInputEvent::ekc5, deInputEvent::ekcU ) );
 	
-	pActionEditSelectAll.TakeOver( new cActionEditSelectAll( *this ) );
-	pActionEditSelectAllWithShapes.TakeOver( new cActionEditSelectAllWithShapes( *this ) );
-	pActionEditSelectNone.TakeOver( new cActionEditSelectNone( *this ) );
-	pActionEditDelete.TakeOver( new cActionEditDelete( *this ) );
-	pActionEditLockAxisX.TakeOver( new cActionEditLockAxisX( *this ) );
-	pActionEditLockAxisY.TakeOver( new cActionEditLockAxisY( *this ) );
-	pActionEditLockAxisZ.TakeOver( new cActionEditLockAxisZ( *this ) );
-	pActionEditLockLocal.TakeOver( new cActionEditLockLocal( *this ) );
+	pActionEditSelectAll.TakeOver(new cActionEditSelectAll(*this));
+	pActionEditSelectAllWithShapes.TakeOver(new cActionEditSelectAllWithShapes(*this));
+	pActionEditSelectNone.TakeOver(new cActionEditSelectNone(*this));
+	pActionEditDelete.TakeOver(new cActionEditDelete(*this));
+	pActionEditLockAxisX.TakeOver(new cActionEditLockAxisX(*this));
+	pActionEditLockAxisY.TakeOver(new cActionEditLockAxisY(*this));
+	pActionEditLockAxisZ.TakeOver(new cActionEditLockAxisZ(*this));
+	pActionEditLockLocal.TakeOver(new cActionEditLockLocal(*this));
 	
-	pActionRigAddSphere.TakeOver( new cActionRigAddSphere( *this ) );
-	pActionRigAddBox.TakeOver( new cActionRigAddBox( *this ) );
-	pActionRigAddCylinder.TakeOver( new cActionRigAddCylinder( *this ) );
-	pActionRigAddCapsule.TakeOver( new cActionRigAddCapsule( *this ) );
-	pActionRigAddConstraint.TakeOver( new cActionRigAddConstraint( *this ) );
-	pActionRigAddPush.TakeOver( new cActionRigAddPush( *this ) );
-	pActionRigShowShapes.TakeOver( new cActionRigShowShapes( *this ) );
-	pActionRigShowConstraints.TakeOver( new cActionRigShowConstraints( *this ) );
-	pActionRigShowPushes.TakeOver( new cActionRigShowPushes( *this ) );
+	pActionRigAddSphere.TakeOver(new cActionRigAddSphere(*this));
+	pActionRigAddBox.TakeOver(new cActionRigAddBox(*this));
+	pActionRigAddCylinder.TakeOver(new cActionRigAddCylinder(*this));
+	pActionRigAddCapsule.TakeOver(new cActionRigAddCapsule(*this));
+	pActionRigAddConstraint.TakeOver(new cActionRigAddConstraint(*this));
+	pActionRigAddPush.TakeOver(new cActionRigAddPush(*this));
+	pActionRigShowShapes.TakeOver(new cActionRigShowShapes(*this));
+	pActionRigShowConstraints.TakeOver(new cActionRigShowConstraints(*this));
+	pActionRigShowPushes.TakeOver(new cActionRigShowPushes(*this));
 	
-	pActionBoneAdd.TakeOver( new cActionBoneAdd( *this ) );
-	pActionBoneAddSphere.TakeOver( new cActionBoneAddSphere( *this ) );
-	pActionBoneAddBox.TakeOver( new cActionBoneAddBox( *this ) );
-	pActionBoneAddCylinder.TakeOver( new cActionBoneAddCylinder( *this ) );
-	pActionBoneAddCapsule.TakeOver( new cActionBoneAddCapsule( *this ) );
-	pActionBoneAddConstraint.TakeOver( new cActionBoneAddConstraint( *this ) );
-	pActionBoneShowBones.TakeOver( new cActionBoneShowBones( *this ) );
-	pActionBoneShowAllShapes.TakeOver( new cActionBoneShowShapes( *this ) );
-	pActionBoneShowAllConstraints.TakeOver( new cActionBoneShowConstraints( *this ) );
-	pActionBoneMirror.TakeOver( new cActionBoneMirror( *this ) );
-	pActionBoneImport.TakeOver( new cActionBoneImport( *this ) );
-	pActionBoneScaleMass.TakeOver( new cActionBoneScaleMass( *this ) );
-	pActionBoneMassFromVolume.TakeOver( new cActionBoneMassFromVolume( *this ) );
+	pActionBoneAdd.TakeOver(new cActionBoneAdd(*this));
+	pActionBoneAddSphere.TakeOver(new cActionBoneAddSphere(*this));
+	pActionBoneAddBox.TakeOver(new cActionBoneAddBox(*this));
+	pActionBoneAddCylinder.TakeOver(new cActionBoneAddCylinder(*this));
+	pActionBoneAddCapsule.TakeOver(new cActionBoneAddCapsule(*this));
+	pActionBoneAddConstraint.TakeOver(new cActionBoneAddConstraint(*this));
+	pActionBoneShowBones.TakeOver(new cActionBoneShowBones(*this));
+	pActionBoneShowAllShapes.TakeOver(new cActionBoneShowShapes(*this));
+	pActionBoneShowAllConstraints.TakeOver(new cActionBoneShowConstraints(*this));
+	pActionBoneMirror.TakeOver(new cActionBoneMirror(*this));
+	pActionBoneImport.TakeOver(new cActionBoneImport(*this));
+	pActionBoneScaleMass.TakeOver(new cActionBoneScaleMass(*this));
+	pActionBoneMassFromVolume.TakeOver(new cActionBoneMassFromVolume(*this));
 	
-	pActionViewShapeXRay.TakeOver( new cActionViewShapeXRay( *this ) );
+	pActionViewShapeXRay.TakeOver(new cActionViewShapeXRay(*this));
 	
-	pActionSimulationRun.TakeOver( new cActionSimRun( *this ) );
+	pActionSimulationRun.TakeOver(new cActionSimRun(*this));
 	
 	
 	// register for updating
-	AddUpdateAction( pActionFileNew );
-	AddUpdateAction( pActionFileOpen );
-	AddUpdateAction( pActionFileSave );
-	AddUpdateAction( pActionFileSaveAs );
+	AddUpdateAction(pActionFileNew);
+	AddUpdateAction(pActionFileOpen);
+	AddUpdateAction(pActionFileSave);
+	AddUpdateAction(pActionFileSaveAs);
 	
-	AddUpdateAction( pActionEditUndo );
-	AddUpdateAction( pActionEditRedo );
-	AddUpdateAction( pActionEditCut );
-	AddUpdateAction( pActionEditCopy );
-	AddUpdateAction( pActionEditPaste );
-	AddUpdateAction( pActionEditBoneMode );
-	AddUpdateAction( pActionEditShapeMode );
-	AddUpdateAction( pActionEditConstraintMode );
-	AddUpdateAction( pActionEditPushMode );
-	AddUpdateAction( pActionEditSelectMode );
-	AddUpdateAction( pActionEditMoveMode );
-	AddUpdateAction( pActionEditScaleMode );
-	AddUpdateAction( pActionEditRotateMode );
+	AddUpdateAction(pActionEditUndo);
+	AddUpdateAction(pActionEditRedo);
+	AddUpdateAction(pActionEditCut);
+	AddUpdateAction(pActionEditCopy);
+	AddUpdateAction(pActionEditPaste);
+	AddUpdateAction(pActionEditBoneMode);
+	AddUpdateAction(pActionEditShapeMode);
+	AddUpdateAction(pActionEditConstraintMode);
+	AddUpdateAction(pActionEditPushMode);
+	AddUpdateAction(pActionEditSelectMode);
+	AddUpdateAction(pActionEditMoveMode);
+	AddUpdateAction(pActionEditScaleMode);
+	AddUpdateAction(pActionEditRotateMode);
 // 	AddUpdateAction( pActionEdit3DCursorMode );
-	AddUpdateAction( pActionEditSelectAll );
-	AddUpdateAction( pActionEditSelectAllWithShapes );
-	AddUpdateAction( pActionEditSelectNone );
-	AddUpdateAction( pActionEditDelete );
-	AddUpdateAction( pActionEditLockAxisX );
-	AddUpdateAction( pActionEditLockAxisY );
-	AddUpdateAction( pActionEditLockAxisZ );
-	AddUpdateAction( pActionEditLockLocal );
+	AddUpdateAction(pActionEditSelectAll);
+	AddUpdateAction(pActionEditSelectAllWithShapes);
+	AddUpdateAction(pActionEditSelectNone);
+	AddUpdateAction(pActionEditDelete);
+	AddUpdateAction(pActionEditLockAxisX);
+	AddUpdateAction(pActionEditLockAxisY);
+	AddUpdateAction(pActionEditLockAxisZ);
+	AddUpdateAction(pActionEditLockLocal);
 	
-	AddUpdateAction( pActionRigAddSphere );
-	AddUpdateAction( pActionRigAddBox );
-	AddUpdateAction( pActionRigAddCylinder );
-	AddUpdateAction( pActionRigAddCapsule );
-	AddUpdateAction( pActionRigAddConstraint );
-	AddUpdateAction( pActionRigAddPush );
-	AddUpdateAction( pActionRigShowShapes );
-	AddUpdateAction( pActionRigShowConstraints );
-	AddUpdateAction( pActionRigShowPushes );
+	AddUpdateAction(pActionRigAddSphere);
+	AddUpdateAction(pActionRigAddBox);
+	AddUpdateAction(pActionRigAddCylinder);
+	AddUpdateAction(pActionRigAddCapsule);
+	AddUpdateAction(pActionRigAddConstraint);
+	AddUpdateAction(pActionRigAddPush);
+	AddUpdateAction(pActionRigShowShapes);
+	AddUpdateAction(pActionRigShowConstraints);
+	AddUpdateAction(pActionRigShowPushes);
 	
-	AddUpdateAction( pActionBoneAdd );
-	AddUpdateAction( pActionBoneAddSphere );
-	AddUpdateAction( pActionBoneAddBox );
-	AddUpdateAction( pActionBoneAddCylinder );
-	AddUpdateAction( pActionBoneAddCapsule );
-	AddUpdateAction( pActionBoneAddConstraint );
-	AddUpdateAction( pActionBoneShowBones );
-	AddUpdateAction( pActionBoneShowAllShapes );
-	AddUpdateAction( pActionBoneShowAllConstraints );
-	AddUpdateAction( pActionBoneMirror );
-	AddUpdateAction( pActionBoneImport );
-	AddUpdateAction( pActionBoneScaleMass );
-	AddUpdateAction( pActionBoneMassFromVolume );
+	AddUpdateAction(pActionBoneAdd);
+	AddUpdateAction(pActionBoneAddSphere);
+	AddUpdateAction(pActionBoneAddBox);
+	AddUpdateAction(pActionBoneAddCylinder);
+	AddUpdateAction(pActionBoneAddCapsule);
+	AddUpdateAction(pActionBoneAddConstraint);
+	AddUpdateAction(pActionBoneShowBones);
+	AddUpdateAction(pActionBoneShowAllShapes);
+	AddUpdateAction(pActionBoneShowAllConstraints);
+	AddUpdateAction(pActionBoneMirror);
+	AddUpdateAction(pActionBoneImport);
+	AddUpdateAction(pActionBoneScaleMass);
+	AddUpdateAction(pActionBoneMassFromVolume);
 	
-	AddUpdateAction( pActionViewShapeXRay );
+	AddUpdateAction(pActionViewShapeXRay);
 	
-	AddUpdateAction( pActionSimulationRun );
+	AddUpdateAction(pActionSimulationRun);
 }
 
 void reWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
-	helper.ToolBarButton( pTBFile, pActionFileNew );
-	helper.ToolBarButton( pTBFile, pActionFileOpen );
-	helper.ToolBarButton( pTBFile, pActionFileSave );
+	helper.ToolBarButton(pTBFile, pActionFileNew);
+	helper.ToolBarButton(pTBFile, pActionFileOpen);
+	helper.ToolBarButton(pTBFile, pActionFileSave);
 	
-	AddSharedToolBar( pTBFile );
+	AddSharedToolBar(pTBFile);
 }
 
 void reWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
-	helper.ToolBarButton( pTBEdit, pActionEditUndo );
-	helper.ToolBarButton( pTBEdit, pActionEditRedo );
+	helper.ToolBarButton(pTBEdit, pActionEditUndo);
+	helper.ToolBarButton(pTBEdit, pActionEditRedo);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarButton( pTBEdit, pActionEditCut );
-	helper.ToolBarButton( pTBEdit, pActionEditCopy );
-	helper.ToolBarButton( pTBEdit, pActionEditPaste );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarButton(pTBEdit, pActionEditCut);
+	helper.ToolBarButton(pTBEdit, pActionEditCopy);
+	helper.ToolBarButton(pTBEdit, pActionEditPaste);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditBoneMode );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditShapeMode );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditConstraintMode );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditPushMode );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditBoneMode);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditShapeMode);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditConstraintMode);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditPushMode);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditSelectMode );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditMoveMode );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditScaleMode );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditRotateMode );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditSelectMode);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditMoveMode);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditScaleMode);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditRotateMode);
 // 	helper.ToolBarToggleButton( pTBEdit, pActionEdit3DCursorMode );
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditLockAxisX );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditLockAxisY );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditLockAxisZ );
-	helper.ToolBarToggleButton( pTBEdit, pActionEditLockLocal );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditLockAxisX);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditLockAxisY);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditLockAxisZ);
+	helper.ToolBarToggleButton(pTBEdit, pActionEditLockLocal);
 	
-	AddSharedToolBar( pTBEdit );
+	AddSharedToolBar(pTBEdit);
 }
 
 void reWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
-	pCreateMenuFile( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	pCreateMenuFile(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Edit", deInputEvent::ekcE ) );
-	pCreateMenuEdit( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	pCreateMenuEdit(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Rig", deInputEvent::ekcR ) );
-	pCreateMenuRig( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "Rig", deInputEvent::ekcR));
+	pCreateMenuRig(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Bone", deInputEvent::ekcB ) );
-	pCreateMenuBone( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "Bone", deInputEvent::ekcB));
+	pCreateMenuBone(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "View", deInputEvent::ekcV ) );
-	pCreateMenuView( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	pCreateMenuView(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Simulation", deInputEvent::ekcS ) );
-	pCreateMenuSimulation( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "Simulation", deInputEvent::ekcS));
+	pCreateMenuSimulation(cascade);
+	AddSharedMenu(cascade);
 }
 
-void reWindowMain::pCreateMenuFile( igdeMenuCascade &menu ){
+void reWindowMain::pCreateMenuFile(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionFileNew );
-	helper.MenuCommand( menu, pActionFileOpen );
-	helper.MenuRecentFiles( menu, GetRecentFiles() );
-	helper.MenuCommand( menu, pActionFileSave );
-	helper.MenuCommand( menu, pActionFileSaveAs );
+	helper.MenuCommand(menu, pActionFileNew);
+	helper.MenuCommand(menu, pActionFileOpen);
+	helper.MenuRecentFiles(menu, GetRecentFiles());
+	helper.MenuCommand(menu, pActionFileSave);
+	helper.MenuCommand(menu, pActionFileSaveAs);
 }
 
-void reWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
+void reWindowMain::pCreateMenuEdit(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionEditUndo );
-	helper.MenuCommand( menu, pActionEditRedo );
+	helper.MenuCommand(menu, pActionEditUndo);
+	helper.MenuCommand(menu, pActionEditRedo);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditCut );
-	helper.MenuCommand( menu, pActionEditCopy );
-	helper.MenuCommand( menu, pActionEditPaste );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditCut);
+	helper.MenuCommand(menu, pActionEditCopy);
+	helper.MenuCommand(menu, pActionEditPaste);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuOption( menu, pActionEditSelectMode );
-	helper.MenuOption( menu, pActionEditMoveMode );
-	helper.MenuOption( menu, pActionEditScaleMode );
-	helper.MenuOption( menu, pActionEditRotateMode );
+	helper.MenuSeparator(menu);
+	helper.MenuOption(menu, pActionEditSelectMode);
+	helper.MenuOption(menu, pActionEditMoveMode);
+	helper.MenuOption(menu, pActionEditScaleMode);
+	helper.MenuOption(menu, pActionEditRotateMode);
 // 	helper.MenuOption( menu, pActionEdit3DCursorMode );
 	
-	helper.MenuSeparator( menu );
-	helper.MenuOption( menu, pActionEditBoneMode );
-	helper.MenuOption( menu, pActionEditShapeMode );
-	helper.MenuOption( menu, pActionEditConstraintMode );
-	helper.MenuOption( menu, pActionEditPushMode );
+	helper.MenuSeparator(menu);
+	helper.MenuOption(menu, pActionEditBoneMode);
+	helper.MenuOption(menu, pActionEditShapeMode);
+	helper.MenuOption(menu, pActionEditConstraintMode);
+	helper.MenuOption(menu, pActionEditPushMode);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditSelectAll );
-	helper.MenuCommand( menu, pActionEditSelectAllWithShapes );
-	helper.MenuCommand( menu, pActionEditSelectNone );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditSelectAll);
+	helper.MenuCommand(menu, pActionEditSelectAllWithShapes);
+	helper.MenuCommand(menu, pActionEditSelectNone);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditDelete );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditDelete);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCheck( menu, pActionEditLockAxisX );
-	helper.MenuCheck( menu, pActionEditLockAxisY );
-	helper.MenuCheck( menu, pActionEditLockAxisZ );
-	helper.MenuCheck( menu, pActionEditLockLocal );
+	helper.MenuSeparator(menu);
+	helper.MenuCheck(menu, pActionEditLockAxisX);
+	helper.MenuCheck(menu, pActionEditLockAxisY);
+	helper.MenuCheck(menu, pActionEditLockAxisZ);
+	helper.MenuCheck(menu, pActionEditLockLocal);
 }
 
-void reWindowMain::pCreateMenuRig( igdeMenuCascade &menu ){
+void reWindowMain::pCreateMenuRig(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionRigAddSphere );
-	helper.MenuCommand( menu, pActionRigAddBox );
-	helper.MenuCommand( menu, pActionRigAddCylinder );
-	helper.MenuCommand( menu, pActionRigAddCapsule );
+	helper.MenuCommand(menu, pActionRigAddSphere);
+	helper.MenuCommand(menu, pActionRigAddBox);
+	helper.MenuCommand(menu, pActionRigAddCylinder);
+	helper.MenuCommand(menu, pActionRigAddCapsule);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionRigAddConstraint );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionRigAddConstraint);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionRigAddPush );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionRigAddPush);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCheck( menu, pActionRigShowShapes );
-	helper.MenuCheck( menu, pActionRigShowConstraints );
-	helper.MenuCheck( menu, pActionRigShowPushes );
+	helper.MenuSeparator(menu);
+	helper.MenuCheck(menu, pActionRigShowShapes);
+	helper.MenuCheck(menu, pActionRigShowConstraints);
+	helper.MenuCheck(menu, pActionRigShowPushes);
 }
 
-void reWindowMain::pCreateMenuBone( igdeMenuCascade &menu ){
+void reWindowMain::pCreateMenuBone(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionBoneAdd );
+	helper.MenuCommand(menu, pActionBoneAdd);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionBoneMirror );
-	helper.MenuCommand( menu, pActionBoneImport );
-	helper.MenuCommand( menu, pActionBoneMassFromVolume );
-	helper.MenuCommand( menu, pActionBoneScaleMass );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionBoneMirror);
+	helper.MenuCommand(menu, pActionBoneImport);
+	helper.MenuCommand(menu, pActionBoneMassFromVolume);
+	helper.MenuCommand(menu, pActionBoneScaleMass);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionBoneAddSphere );
-	helper.MenuCommand( menu, pActionBoneAddBox );
-	helper.MenuCommand( menu, pActionBoneAddCylinder );
-	helper.MenuCommand( menu, pActionBoneAddCapsule );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionBoneAddSphere);
+	helper.MenuCommand(menu, pActionBoneAddBox);
+	helper.MenuCommand(menu, pActionBoneAddCylinder);
+	helper.MenuCommand(menu, pActionBoneAddCapsule);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionBoneAddConstraint );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionBoneAddConstraint);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCheck( menu, pActionBoneShowBones );
-	helper.MenuCheck( menu, pActionBoneShowAllShapes );
-	helper.MenuCheck( menu, pActionBoneShowAllConstraints );
+	helper.MenuSeparator(menu);
+	helper.MenuCheck(menu, pActionBoneShowBones);
+	helper.MenuCheck(menu, pActionBoneShowAllShapes);
+	helper.MenuCheck(menu, pActionBoneShowAllConstraints);
 }
 
-void reWindowMain::pCreateMenuView( igdeMenuCascade &menu ){
+void reWindowMain::pCreateMenuView(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCheck( menu, pActionViewShapeXRay );
+	helper.MenuCheck(menu, pActionViewShapeXRay);
 }
 
-void reWindowMain::pCreateMenuSimulation( igdeMenuCascade &menu ){
+void reWindowMain::pCreateMenuSimulation(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCheck( menu, pActionSimulationRun );
+	helper.MenuCheck(menu, pActionSimulationRun);
 }

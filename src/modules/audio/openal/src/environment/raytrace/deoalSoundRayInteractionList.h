@@ -60,7 +60,7 @@ public:
 	inline int GetCount() const{ return pCount; }
 	
 	/** \brief Element at index. */
-	const deoalSoundRayInteraction &GetAt( int index ) const;
+	const deoalSoundRayInteraction &GetAt(int index) const;
 	
 	/** \brief Add element. */
 	deoalSoundRayInteraction &Add();
@@ -69,7 +69,7 @@ public:
 	void RemoveAll();
 	
 	/** \brief Reserve space in the array to make future Add() more efficient. */
-	void ReserveSize( int size );
+	void ReserveSize(int size);
 	/*@}*/
 	
 	
@@ -77,10 +77,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Assign. */
-	deoalSoundRayInteractionList &operator=( const deoalSoundRayInteractionList &list );
+	deoalSoundRayInteractionList &operator=(const deoalSoundRayInteractionList &list);
 	
 	/** \brief Append. */
-	deoalSoundRayInteractionList &operator+=( const deoalSoundRayInteractionList &list );
+	deoalSoundRayInteractionList &operator+=(const deoalSoundRayInteractionList &list);
 	/*@}*/
 };
 

@@ -57,20 +57,20 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiNavBlocker::dedaiNavBlocker( deDEAIModule &deai, const deNavigationBlocker &blocker ) :
-pDEAI( deai ),
-pNavBlocker( blocker ),
+dedaiNavBlocker::dedaiNavBlocker(deDEAIModule &deai, const deNavigationBlocker &blocker) :
+pDEAI(deai),
+pNavBlocker(blocker),
 
-pParentWorld( NULL ),
+pParentWorld(NULL),
 
-pDirtyMatrix( true ),
-pDirtyExtends( true ),
-pDirtyShape( true ),
+pDirtyMatrix(true),
+pDirtyExtends(true),
+pDirtyShape(true),
 
-pLayer( NULL ),
+pLayer(NULL),
 
-pDebugDrawer( NULL ),
-pDDSBlocker( NULL )
+pDebugDrawer(NULL),
+pDDSBlocker(NULL)
 {
 	ShapeChanged();
 }
@@ -84,22 +84,22 @@ dedaiNavBlocker::~dedaiNavBlocker(){
 // Management
 ///////////////
 
-void dedaiNavBlocker::SetParentWorld( dedaiWorld *world ){
-	if( world == pParentWorld ){
+void dedaiNavBlocker::SetParentWorld(dedaiWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
 	pInvalidateLayerBlocking();
-	if( pParentWorld && pDebugDrawer ){
-		pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+	if(pParentWorld && pDebugDrawer){
+		pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 	}
 	
 	pParentWorld = world;
 	
-	if( world ){
-		pLayer = world->GetLayer( pNavBlocker.GetLayer() );
-		if( pDebugDrawer ){
-			world->GetWorld().AddDebugDrawer( pDebugDrawer );
+	if(world){
+		pLayer = world->GetLayer(pNavBlocker.GetLayer());
+		if(pDebugDrawer){
+			world->GetWorld().AddDebugDrawer(pDebugDrawer);
 		}
 		
 	}else{
@@ -115,7 +115,7 @@ void dedaiNavBlocker::SetParentWorld( dedaiWorld *world ){
 
 
 const decDMatrix &dedaiNavBlocker::GetMatrix(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		pUpdateMatrices();
 	}
 	
@@ -123,7 +123,7 @@ const decDMatrix &dedaiNavBlocker::GetMatrix(){
 }
 
 const decDMatrix &dedaiNavBlocker::GetInverseMatrix(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		pUpdateMatrices();
 	}
 	
@@ -131,7 +131,7 @@ const decDMatrix &dedaiNavBlocker::GetInverseMatrix(){
 }
 
 const decDVector &dedaiNavBlocker::GetMinimumExtends(){
-	if( pDirtyExtends ){
+	if(pDirtyExtends){
 		pUpdateExtends();
 	}
 	
@@ -139,7 +139,7 @@ const decDVector &dedaiNavBlocker::GetMinimumExtends(){
 }
 
 const decDVector &dedaiNavBlocker::GetMaximumExtends(){
-	if( pDirtyExtends ){
+	if(pDirtyExtends){
 		pUpdateExtends();
 	}
 	
@@ -149,7 +149,7 @@ const decDVector &dedaiNavBlocker::GetMaximumExtends(){
 
 
 void dedaiNavBlocker::Prepare(){
-	if( ! pParentWorld || ! pDirtyShape ){
+	if(!pParentWorld || !pDirtyShape){
 		return;
 	}
 	
@@ -163,43 +163,43 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 	// check if the developer mode is enabled and navigation spaces have to be shown
 	const dedaiDeveloperMode &devmode = pDEAI.GetDeveloperMode();
 	
-	if( devmode.GetEnabled() && devmode.GetShowBlockers() && pNavBlocker.GetEnabled() ){
+	if(devmode.GetEnabled() && devmode.GetShowBlockers() && pNavBlocker.GetEnabled()){
 		// ensure the debug drawer exists
-		if( ! pDebugDrawer ){
+		if(!pDebugDrawer){
 			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
-			pDebugDrawer->SetXRay( true );
+			pDebugDrawer->SetXRay(true);
 			
-			if( pParentWorld ){
-				pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
+			if(pParentWorld){
+				pParentWorld->GetWorld().AddDebugDrawer(pDebugDrawer);
 			}
 		}
 		
 		// update the position and orientation of the debug drawer
-		pDebugDrawer->SetPosition( pNavBlocker.GetPosition() );
-		pDebugDrawer->SetOrientation( pNavBlocker.GetOrientation() );
-		pDebugDrawer->SetScale( pNavBlocker.GetScaling() );
+		pDebugDrawer->SetPosition(pNavBlocker.GetPosition());
+		pDebugDrawer->SetOrientation(pNavBlocker.GetOrientation());
+		pDebugDrawer->SetScale(pNavBlocker.GetScaling());
 		
 		// ensure the debug drawer shapes exists
 		bool updateShapes = false;
 		
-		if( ! pDDSBlocker ){
+		if(!pDDSBlocker){
 			pDDSBlocker = new deDebugDrawerShape;
-			pDDSBlocker->SetFillColor( decColor( 0.0f, 0.5f, 1.0f, 0.1f ) );
-			pDDSBlocker->SetEdgeColor( decColor( 0.0f, 0.5f, 1.0f, 0.8f ) );
-			pDebugDrawer->AddShape( pDDSBlocker );
+			pDDSBlocker->SetFillColor(decColor(0.0f, 0.5f, 1.0f, 0.1f));
+			pDDSBlocker->SetEdgeColor(decColor(0.0f, 0.5f, 1.0f, 0.8f));
+			pDebugDrawer->AddShape(pDDSBlocker);
 			updateShapes = true;
 		}
 		
 		// update the shapes if required
-		if( updateShapes ){
+		if(updateShapes){
 			UpdateDDSBlockerShape();
 		}
 		
 	}else{
 		// if the debug drawer exists remove it
-		if( pDebugDrawer ){
-			if( pParentWorld ){
-				pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+		if(pDebugDrawer){
+			if(pParentWorld){
+				pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 			}
 			
 			pDDSBlocker = NULL;
@@ -211,7 +211,7 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 }
 
 void dedaiNavBlocker::UpdateDDSBlockerShape(){
-	if( ! pDDSBlocker ){
+	if(!pDDSBlocker){
 		return;
 	}
 	
@@ -221,19 +221,19 @@ void dedaiNavBlocker::UpdateDDSBlockerShape(){
 	pDDSBlocker->RemoveAllFaces();
 	pDDSBlocker->GetShapeList().RemoveAll();
 	
-	if( count > 0 ){
+	if(count > 0){
 		decShape *shape = NULL;
 		int i;
 		
 		try{
-			for( i=0; i<count; i++ ){
-				shape = shapeList.GetAt( i )->Copy();
-				pDDSBlocker->GetShapeList().Add( shape );
+			for(i=0; i<count; i++){
+				shape = shapeList.GetAt(i)->Copy();
+				pDDSBlocker->GetShapeList().Add(shape);
 				shape = NULL;
 			}
 			
-		}catch( const deException & ){
-			if( shape ){
+		}catch(const deException &){
+			if(shape){
 				delete shape;
 			}
 			throw;
@@ -254,8 +254,8 @@ void dedaiNavBlocker::PositionChanged(){
 	
 	pInvalidateLayerBlocking();
 	
-	if( pDebugDrawer ){
-		pDebugDrawer->SetPosition( pNavBlocker.GetPosition() );
+	if(pDebugDrawer){
+		pDebugDrawer->SetPosition(pNavBlocker.GetPosition());
 	}
 	
 	// TODO
@@ -294,8 +294,8 @@ void dedaiNavBlocker::OrientationChanged(){
 	
 	pInvalidateLayerBlocking();
 	
-	if( pDebugDrawer ){
-		pDebugDrawer->SetOrientation( pNavBlocker.GetOrientation() );
+	if(pDebugDrawer){
+		pDebugDrawer->SetOrientation(pNavBlocker.GetOrientation());
 	}
 }
 
@@ -305,18 +305,18 @@ void dedaiNavBlocker::ScalingChanged(){
 	
 	pInvalidateLayerBlocking();
 	
-	if( pDebugDrawer ){
-		pDebugDrawer->SetScale( pNavBlocker.GetScaling() );
+	if(pDebugDrawer){
+		pDebugDrawer->SetScale(pNavBlocker.GetScaling());
 	}
 }
 
 void dedaiNavBlocker::LayerChanged(){
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
 	
 	pInvalidateLayerBlocking();
-	pLayer = pParentWorld->GetLayer( pNavBlocker.GetLayer() );
+	pLayer = pParentWorld->GetLayer(pNavBlocker.GetLayer());
 	pInvalidateLayerBlocking();
 }
 
@@ -347,15 +347,15 @@ void dedaiNavBlocker::BlockingPriorityChanged(){
 //////////////////////
 
 void dedaiNavBlocker::pCleanUp(){
-	SetParentWorld( NULL );
+	SetParentWorld(NULL);
 	
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
 }
 
 void dedaiNavBlocker::pUpdateMatrices(){
-	pMatrix.SetWorld( pNavBlocker.GetPosition(), pNavBlocker.GetOrientation() );
+	pMatrix.SetWorld(pNavBlocker.GetPosition(), pNavBlocker.GetOrientation());
 	pInvMatrix = pMatrix.Invert();
 	pDirtyMatrix = false;
 }
@@ -364,43 +364,43 @@ void dedaiNavBlocker::pUpdateExtends(){
 	const int volumeCount = pConvexVolumeList.GetVolumeCount();
 	bool first = true;
 	
-	if( volumeCount > 0 ){
+	if(volumeCount > 0){
 		const decDMatrix &matrix = GetMatrix();
 		int i, j, k;
 		
-		for( i=0; i< volumeCount; i++ ){
-			const decConvexVolume &volume = *pConvexVolumeList.GetVolumeAt( i );
+		for(i=0; i< volumeCount; i++){
+			const decConvexVolume &volume = *pConvexVolumeList.GetVolumeAt(i);
 			const int faceCount = volume.GetFaceCount();
 			
-			for( j=0; j<faceCount; j++ ){
-				const decConvexVolumeFace &face = *volume.GetFaceAt( j );
+			for(j=0; j<faceCount; j++){
+				const decConvexVolumeFace &face = *volume.GetFaceAt(j);
 				const int vertexCount = face.GetVertexCount();
 				
-				for( k=0; k<vertexCount; k++ ){
-					const decDVector position = matrix * decDVector( volume.GetVertexAt( face.GetVertexAt( k ) ) );
+				for(k=0; k<vertexCount; k++){
+					const decDVector position = matrix * decDVector(volume.GetVertexAt(face.GetVertexAt(k)));
 					
-					if( first ){
+					if(first){
 						pMinExtends = position;
 						pMaxExtends = position;
 						first = false;
 						
 					}else{
-						pMinExtends.SetSmallest( position );
-						pMaxExtends.SetLargest( position );
+						pMinExtends.SetSmallest(position);
+						pMaxExtends.SetLargest(position);
 					}
 				}
 			}
 		}
 	}
 	
-	if( first ){
+	if(first){
 		pMinExtends = pNavBlocker.GetPosition();
 		pMaxExtends = pMinExtends;
 	}
 }
 
 void dedaiNavBlocker::pUpdateBlocker(){
-	if( ! pDDSBlocker ){
+	if(!pDDSBlocker){
 		return;
 	}
 	
@@ -409,7 +409,7 @@ void dedaiNavBlocker::pUpdateBlocker(){
 
 void dedaiNavBlocker::pUpdateConvexVolumeList(){
 	dedaiShapeToConvexVolume visitor;
-	visitor.SetList( &pConvexVolumeList );
+	visitor.SetList(&pConvexVolumeList);
 	
 	pConvexVolumeList.RemoveAllVolumes();
 	
@@ -417,15 +417,15 @@ void dedaiNavBlocker::pUpdateConvexVolumeList(){
 	const int shapeCount = shapeList.GetCount();
 	int i;
 	
-	for( i=0; i<shapeCount; i++ ){
-		shapeList.GetAt( i )->Visit( visitor );
+	for(i=0; i<shapeCount; i++){
+		shapeList.GetAt(i)->Visit(visitor);
 	}
 }
 
 void dedaiNavBlocker::pInvalidateLayerBlocking(){
-	if( ! pLayer ){
+	if(!pLayer){
 		return;
 	}
 	
-	pLayer->InvalidateBlocking( pNavBlocker.GetSpaceType(), GetMinimumExtends(), GetMaximumExtends() );
+	pLayer->InvalidateBlocking(pNavBlocker.GetSpaceType(), GetMinimumExtends(), GetMaximumExtends());
 }

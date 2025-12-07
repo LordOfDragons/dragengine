@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world peer. */
-	deoglWorld( deGraphicOpenGl &ogl, const deWorld &world );
+	deoglWorld(deGraphicOpenGl &ogl, const deWorld &world);
 	
 	/** Clean up world peer. */
 	virtual ~deoglWorld();
@@ -100,7 +100,7 @@ public:
 	inline deoglHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Update dynamic parts of world like the skins. */
-	virtual void Update( float elapsed );
+	virtual void Update(float elapsed);
 	
 	/** Shared video player list. */
 	inline deoglSharedVideoPlayerList &GetSharedVideoPlayerList() const{ return *pSharedVideoPlayerList; }
@@ -113,16 +113,16 @@ public:
 	
 	
 	/** Add component as require sync if not present. */
-	void AddSyncComponent( deoglComponent *component );
+	void AddSyncComponent(deoglComponent *component);
 	
 	/** Remove component as require sync if present. */
-	void RemoveSyncComponent( deoglComponent *component );
+	void RemoveSyncComponent(deoglComponent *component);
 	
 	/** Add billboard as require sync if not present. */
-	void AddSyncBillboard( deoglBillboard *billboard );
+	void AddSyncBillboard(deoglBillboard *billboard);
 	
 	/** Remove billboard as require sync if present. */
-	void RemoveSyncBillboard( deoglBillboard *billboard );
+	void RemoveSyncBillboard(deoglBillboard *billboard);
 	/*@}*/
 	
 	
@@ -138,72 +138,72 @@ public:
 	virtual void LightingChanged();
 	
 	/** Sky has been added. */
-	virtual void SkyAdded( deSkyInstance *sky );
+	virtual void SkyAdded(deSkyInstance *sky);
 	/** Sky has been removed. */
-	virtual void SkyRemoved( deSkyInstance *sky );
+	virtual void SkyRemoved(deSkyInstance *sky);
 	/** All skys have been removed. */
 	virtual void AllSkiesRemoved();
 	
 	/** Billboard has been added. */
-	virtual void BillboardAdded( deBillboard *billboard );
+	virtual void BillboardAdded(deBillboard *billboard);
 	/** Billboard has been removed. */
-	virtual void BillboardRemoved( deBillboard *billboard );
+	virtual void BillboardRemoved(deBillboard *billboard);
 	/** All billboards have been removed. */
 	virtual void AllBillboardsRemoved();
 	
 	/** Camera has been added. */
-	virtual void CameraAdded( deCamera *camera );
+	virtual void CameraAdded(deCamera *camera);
 	/** Camera has been removed. */
-	virtual void CameraRemoved( deCamera *camera );
+	virtual void CameraRemoved(deCamera *camera);
 	/** All cameras have been removed. */
 	virtual void AllCamerasRemoved();
 	
 	/** Component has been added. */
-	virtual void ComponentAdded( deComponent *component );
+	virtual void ComponentAdded(deComponent *component);
 	/** Component has been removed. */
-	virtual void ComponentRemoved( deComponent *component );
+	virtual void ComponentRemoved(deComponent *component);
 	/** All components have been removed. */
 	virtual void AllComponentsRemoved();
 	
 	/** Environment map probe has been added. */
-	virtual void EnvMapProbeAdded( deEnvMapProbe *envMapProbe );
+	virtual void EnvMapProbeAdded(deEnvMapProbe *envMapProbe);
 	/** Environment map probe has been removed. */
-	virtual void EnvMapProbeRemoved( deEnvMapProbe *envMapProbe );
+	virtual void EnvMapProbeRemoved(deEnvMapProbe *envMapProbe);
 	/** All environment map probes have been removed. */
 	virtual void AllEnvMapProbesRemoved();
 	
 	/** Light has been added. */
-	virtual void LightAdded( deLight *light );
+	virtual void LightAdded(deLight *light);
 	/** Light has been removed. */
-	virtual void LightRemoved( deLight *light );
+	virtual void LightRemoved(deLight *light);
 	/** All lights have been removed. */
 	virtual void AllLightsRemoved();
 	
 	/** Lumimeter has been added. */
-	virtual void LumimeterAdded( deLumimeter *lumimeter );
+	virtual void LumimeterAdded(deLumimeter *lumimeter);
 	/** Lumimeter has been removed. */
-	virtual void LumimeterRemoved( deLumimeter *lumimeter );
+	virtual void LumimeterRemoved(deLumimeter *lumimeter);
 	/** All lumimeters have been removed. */
 	virtual void AllLumimetersRemoved();
 	
 	/** Particle emitter has been added. */
-	virtual void ParticleEmitterAdded( deParticleEmitterInstance *emitter );
+	virtual void ParticleEmitterAdded(deParticleEmitterInstance *emitter);
 	/** Particle emitter has been removed. */
-	virtual void ParticleEmitterRemoved( deParticleEmitterInstance *emitter );
+	virtual void ParticleEmitterRemoved(deParticleEmitterInstance *emitter);
 	/** All particle emitters have been removed. */
 	virtual void AllParticleEmittersRemoved();
 	
 	/** PropField has been added. */
-	virtual void PropFieldAdded( dePropField *propField );
+	virtual void PropFieldAdded(dePropField *propField);
 	/** PropField has been removed. */
-	virtual void PropFieldRemoved( dePropField *propField );
+	virtual void PropFieldRemoved(dePropField *propField);
 	/** All propFields have been removed. */
 	virtual void AllPropFieldsRemoved();
 	
 	/** DebugDrawer has been added. */
-	virtual void DebugDrawerAdded( deDebugDrawer *debugDrawer );
+	virtual void DebugDrawerAdded(deDebugDrawer *debugDrawer);
 	/** DebugDrawer has been removed. */
-	virtual void DebugDrawerRemoved( deDebugDrawer *debugDrawer );
+	virtual void DebugDrawerRemoved(deDebugDrawer *debugDrawer);
 	/** All debugDrawers have been removed. */
 	virtual void AllDebugDrawersRemoved();
 	/*@}*/

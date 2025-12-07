@@ -38,7 +38,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedPaste( seSkin *skin, const seClipboardDataMapped &data  );
+	seUMappedPaste(seSkin *skin, const seClipboardDataMapped &data);
 	/*@}*/
 };
 

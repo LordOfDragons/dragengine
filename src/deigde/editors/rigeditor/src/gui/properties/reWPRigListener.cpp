@@ -36,8 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPRigListener::reWPRigListener( reWPRig &panel ) :
-pPanel( panel ){
+reWPRigListener::reWPRigListener(reWPRig &panel) :
+pPanel(panel){
 }
 
 reWPRigListener::~reWPRigListener(){
@@ -49,14 +49,14 @@ reWPRigListener::~reWPRigListener(){
 ///////////////
 
 
-void reWPRigListener::RigChanged( reRig *rig ){
+void reWPRigListener::RigChanged(reRig *rig){
 	pPanel.UpdateRig();
 }
 
-void reWPRigListener::BoneCountChanged( reRig *rig ){
+void reWPRigListener::BoneCountChanged(reRig *rig){
 	pPanel.UpdateRig();
 }
 
-void reWPRigListener::BoneChanged( reRig *rig, reRigBone *bone ){
+void reWPRigListener::BoneChanged(reRig *rig, reRigBone *bone){
 	pPanel.UpdateRig();
 }

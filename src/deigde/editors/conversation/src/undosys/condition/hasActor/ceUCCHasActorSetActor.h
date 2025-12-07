@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCHasActorSetActor( ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor, const char *newID );
+	ceUCCHasActorSetActor(ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor, const char *newID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCHasActorSetActor();

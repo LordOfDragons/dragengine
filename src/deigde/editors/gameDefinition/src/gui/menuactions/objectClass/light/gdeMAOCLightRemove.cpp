@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCLightRemove::gdeMAOCLightRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Light",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class light" )
+gdeMAOCLightRemove::gdeMAOCLightRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Light",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class light")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Light",
 ///////////////
 
 igdeUndo *gdeMAOCLightRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight){
 		return NULL;
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
-	if( ! light ){
+	if(!light){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveLight( &objectClass, light );
+	return new gdeUOCRemoveLight(&objectClass, light);
 }
 
 void gdeMAOCLightRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight
-		&& gameDefinition->GetActiveOCLight() != NULL );
+		&& gameDefinition->GetActiveOCLight() != NULL);
 }

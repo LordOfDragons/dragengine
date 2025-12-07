@@ -36,14 +36,14 @@ class delEngineModule;
  * Engine Panel.
  */
 class deglPanelEngine : public FXVerticalFrame{
-	FXDECLARE( deglPanelEngine )
+	FXDECLARE(deglPanelEngine)
 protected:
 	deglPanelEngine();
 	
 public:
 	/** Icon list extended to send header click to enable sorting. */
 	class ExtIconList : public FXIconList{
-		FXDECLARE( ExtIconList )
+		FXDECLARE(ExtIconList)
 	protected:
 		ExtIconList();
 		
@@ -52,13 +52,13 @@ public:
 			SEL_HEADER_CLICKED = SEL_LAST
 		};
 		
-		ExtIconList( FXComposite *p, FXObject *tgt = nullptr, FXSelector sel = 0,
+		ExtIconList(FXComposite *p, FXObject *tgt = nullptr, FXSelector sel = 0,
 			FXuint opts = ICONLIST_NORMAL, FXint x = 0, FXint y = 0,
-			FXint w = 0, FXint h = 0 );
+			FXint w = 0, FXint h = 0);
 		
 		~ExtIconList();
 		
-		long onHeaderClicked( FXObject *sender, FXSelector selector, void *data );
+		long onHeaderClicked(FXObject *sender, FXSelector selector, void *data);
 	};
 	
 	
@@ -96,7 +96,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	deglPanelEngine( deglWindowMain *windowMain, FXComposite *container );
+	deglPanelEngine(deglWindowMain *windowMain, FXComposite *container);
 	
 	/** Clean up panel. */
 	virtual ~deglPanelEngine();
@@ -116,33 +116,33 @@ public:
 	void UpdateModuleList();
 	
 	/** Sorts module list by the name. */
-	static FXint SortModulesByNameAsc( const FXIconItem *item1, const FXIconItem *item2 );
-	static FXint SortModulesByNameDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint SortModulesByNameAsc(const FXIconItem *item1, const FXIconItem *item2);
+	static FXint SortModulesByNameDesc(const FXIconItem *item1, const FXIconItem *item2);
 	
 	/** Sorts module list by the type. */
-	static FXint SortModulesByTypeAsc( const FXIconItem *item1, const FXIconItem *item2 );
-	static FXint SortModulesByTypeDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint SortModulesByTypeAsc(const FXIconItem *item1, const FXIconItem *item2);
+	static FXint SortModulesByTypeDesc(const FXIconItem *item1, const FXIconItem *item2);
 	
 	/** Sorts module list by the version. */
-	static FXint SortModulesByVersionAsc( const FXIconItem *item1, const FXIconItem *item2 );
-	static FXint SortModulesByVersionDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint SortModulesByVersionAsc(const FXIconItem *item1, const FXIconItem *item2);
+	static FXint SortModulesByVersionDesc(const FXIconItem *item1, const FXIconItem *item2);
 	
 	/** Sorts module list by the status. */
-	static FXint SortModulesByStatusAsc( const FXIconItem *item1, const FXIconItem *item2 );
-	static FXint SortModulesByStatusDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint SortModulesByStatusAsc(const FXIconItem *item1, const FXIconItem *item2);
+	static FXint SortModulesByStatusDesc(const FXIconItem *item1, const FXIconItem *item2);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onListModulesChanged( FXObject *sender, FXSelector selector, void *data );
-	long onListModulesRDown( FXObject *sender, FXSelector selector, void *data );
-	long onListModulesRUp( FXObject *sender, FXSelector selector, void *data );
-	long onListModulesDblClick( FXObject *sender, FXSelector selector, void *data );
-	long onListModulesHeaderClicked( FXObject *sender, FXSelector selector, void *data );
+	long onListModulesChanged(FXObject *sender, FXSelector selector, void *data);
+	long onListModulesRDown(FXObject *sender, FXSelector selector, void *data);
+	long onListModulesRUp(FXObject *sender, FXSelector selector, void *data);
+	long onListModulesDblClick(FXObject *sender, FXSelector selector, void *data);
+	long onListModulesHeaderClicked(FXObject *sender, FXSelector selector, void *data);
 	
-	long onPUModuleProps( FXObject *sender, FXSelector selector, void *data );
+	long onPUModuleProps(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 };
 

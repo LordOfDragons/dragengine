@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state renderable. */
-	deoglSkinStateRenderable( deoglSkinState &skinState, int index );
+	deoglSkinStateRenderable(deoglSkinState &skinState, int index);
 	
 	/** Clean up skin state renderable. */
 	~deoglSkinStateRenderable();
@@ -67,19 +67,19 @@ public:
 	inline int GetHostRenderable() const{ return pHostRenderable; }
 	
 	/** Set host renderable index or -1 if not used. */
-	void SetHostRenderable( int hostRenderable );
+	void SetHostRenderable(int hostRenderable);
 	
 	/** Render plan or NULL if not using masked rendering. */
 	inline deoglRenderPlan *GetPlan() const{ return pPlan; }
 	
 	/** Set render plan or NULL if not using masked rendering. */
-	void SetPlan( deoglRenderPlan *plan );
+	void SetPlan(deoglRenderPlan *plan);
 	
 	/** Temporary texture or NULL if not existing. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set temporary texture or NULL if not existing. */
-	void SetTexture( deoglTexture *texture );
+	void SetTexture(deoglTexture *texture);
 	
 	/** Clear renderable to be used for another one. */
 	void Clear();
@@ -87,7 +87,7 @@ public:
 	
 	
 	/** Add render plans. */
-	void AddRenderPlans( deoglRenderPlan &plan );
+	void AddRenderPlans(deoglRenderPlan &plan);
 	/*@}*/
 };
 

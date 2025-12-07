@@ -124,22 +124,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void VisitSource( deSynthesizerSource &source );
+	virtual void VisitSource(deSynthesizerSource &source);
 	
 	/** \brief Visit sound source. */
-	virtual void VisitSound( deSynthesizerSourceSound &source );
+	virtual void VisitSound(deSynthesizerSourceSound &source);
 	
 	/** \brief Visit wave generator source. */
-	virtual void VisitWave( deSynthesizerSourceWave &source );
+	virtual void VisitWave(deSynthesizerSourceWave &source);
 	
 	/** \brief Visit chain source. */
-	virtual void VisitChain( deSynthesizerSourceChain &source );
+	virtual void VisitChain(deSynthesizerSourceChain &source);
 	
 	/** \brief Visit synthesizer source. */
-	virtual void VisitSynthesizer( deSynthesizerSourceSynthesizer &source );
+	virtual void VisitSynthesizer(deSynthesizerSourceSynthesizer &source);
 	
 	/** \brief Visit group source. */
-	virtual void VisitGroup( deSynthesizerSourceGroup &source );
+	virtual void VisitGroup(deSynthesizerSourceGroup &source);
 	/*@}*/
 };
 

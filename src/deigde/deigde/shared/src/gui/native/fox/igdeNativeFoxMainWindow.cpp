@@ -42,18 +42,18 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxMainWindow ) igdeNativeFoxMainWindowMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, igdeNativeFoxMainWindow::onConfigure ),
-	FXMAPFUNC( SEL_MAP, 0, igdeNativeFoxMainWindow::onMap ),
-	FXMAPFUNC( SEL_CLOSE, 0, igdeNativeFoxMainWindow::onClose ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxMainWindow::onChildLayoutFlags ),
-	FXMAPFUNC( SEL_MINIMIZE, 0, igdeNativeFoxMainWindow::onMinimized ),
-	FXMAPFUNC( SEL_RESTORE, 0, igdeNativeFoxMainWindow::onRestored ),
-	FXMAPFUNC( SEL_MAXIMIZE, 0, igdeNativeFoxMainWindow::onMaximized )
+FXDEFMAP(igdeNativeFoxMainWindow) igdeNativeFoxMainWindowMap[] = {
+	FXMAPFUNC(SEL_CONFIGURE, 0, igdeNativeFoxMainWindow::onConfigure),
+	FXMAPFUNC(SEL_MAP, 0, igdeNativeFoxMainWindow::onMap),
+	FXMAPFUNC(SEL_CLOSE, 0, igdeNativeFoxMainWindow::onClose),
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxMainWindow::onChildLayoutFlags),
+	FXMAPFUNC(SEL_MINIMIZE, 0, igdeNativeFoxMainWindow::onMinimized),
+	FXMAPFUNC(SEL_RESTORE, 0, igdeNativeFoxMainWindow::onRestored),
+	FXMAPFUNC(SEL_MAXIMIZE, 0, igdeNativeFoxMainWindow::onMaximized)
 };
 
-FXIMPLEMENT( igdeNativeFoxMainWindow, FXMainWindow,
-	igdeNativeFoxMainWindowMap, ARRAYNUMBER( igdeNativeFoxMainWindowMap ) )
+FXIMPLEMENT(igdeNativeFoxMainWindow, FXMainWindow,
+	igdeNativeFoxMainWindowMap, ARRAYNUMBER(igdeNativeFoxMainWindowMap))
 
 
 
@@ -66,14 +66,14 @@ FXIMPLEMENT( igdeNativeFoxMainWindow, FXMainWindow,
 igdeNativeFoxMainWindow::igdeNativeFoxMainWindow(){
 }
 
-igdeNativeFoxMainWindow::igdeNativeFoxMainWindow( igdeMainWindow &powner ) :
-FXMainWindow( FXApp::instance(), powner.GetTitle().GetString(),
-	powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL,
-	powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL,
+igdeNativeFoxMainWindow::igdeNativeFoxMainWindow(igdeMainWindow &powner) :
+FXMainWindow(FXApp::instance(), powner.GetTitle().GetString(),
+	powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL,
+	powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL,
 	DECOR_ALL, 0, 0, 800, 600),
-pOwner( &powner )
+pOwner(&powner)
 {
-	if( ! pOwner->GetVisible() ){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
 }
@@ -81,8 +81,8 @@ pOwner( &powner )
 igdeNativeFoxMainWindow::~igdeNativeFoxMainWindow(){
 }
 
-igdeNativeFoxMainWindow *igdeNativeFoxMainWindow::CreateNativeWidget( igdeMainWindow &powner ){
-	return new igdeNativeFoxMainWindow( powner );
+igdeNativeFoxMainWindow *igdeNativeFoxMainWindow::CreateNativeWidget(igdeMainWindow &powner){
+	return new igdeNativeFoxMainWindow(powner);
 }
 
 void igdeNativeFoxMainWindow::PostCreateNativeWidget(){
@@ -112,7 +112,7 @@ void igdeNativeFoxMainWindow::PostCreateNativeWidget(){
 void igdeNativeFoxMainWindow::DestroyNativeWidget(){
 	// we use close() on purpose instead of delete because fox requires this
 	//delete ( igdeNativeFoxMainWindow* )GetNativeWidget();
-	close( false );
+	close(false);
 }
 
 
@@ -138,64 +138,64 @@ void igdeNativeFoxMainWindow::destroy(){
 
 
 
-decColor igdeNativeFoxMainWindow::GetSystemColor( igdeEnvironment::eSystemColors color ) const{
-	switch( color ){
+decColor igdeNativeFoxMainWindow::GetSystemColor(igdeEnvironment::eSystemColors color) const{
+	switch(color){
 	case igdeEnvironment::escWindowBackground:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getBackColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getBackColor());
 		
 	case igdeEnvironment::escWindowForeground:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getForeColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getForeColor());
 		
 	case igdeEnvironment::escWidgetBackground:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getBaseColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getBaseColor());
 		
 	case igdeEnvironment::escWidgetForeground:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getForeColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getForeColor());
 		
 	case igdeEnvironment::escWidgetHighlight:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getHiliteColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getHiliteColor());
 		
 	case igdeEnvironment::escWidgetShadow:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getShadowColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getShadowColor());
 		
 	case igdeEnvironment::escWidgetSelectedBackground:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getSelbackColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getSelbackColor());
 		
 	case igdeEnvironment::escWidgetSelectedForeground:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getSelforeColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getSelforeColor());
 		
 	default:
-		return igdeUIFoxHelper::ConvertColor( getApp()->getBackColor() );
+		return igdeUIFoxHelper::ConvertColor(getApp()->getBackColor());
 	}
 }
 
 
 
 void igdeNativeFoxMainWindow::UpdateWindowState(){
-	switch( pOwner->GetWindowState() ){
+	switch(pOwner->GetWindowState()){
 	case igdeMainWindow::ewsNormal:
-		if( ! isMinimized() && ! isMaximized() ){
+		if(!isMinimized() && !isMaximized()){
 			break;
 		}
-		if( ! restore() ){
+		if(!restore()){
 			SetWindowState();
 		}
 		break;
 		
 	case igdeMainWindow::ewsMinimized:
-		if( isMinimized() ){
+		if(isMinimized()){
 			break;
 		}
-		if( ! minimize() ){
+		if(!minimize()){
 			SetWindowState();
 		}
 		break;
 		
 	case igdeMainWindow::ewsMaximized:
-		if( isMaximized() ){
+		if(isMaximized()){
 			break;
 		}
-		if( ! maximize() ){
+		if(!maximize()){
 			SetWindowState();
 		}
 		break;
@@ -206,7 +206,7 @@ void igdeNativeFoxMainWindow::UpdateWindowState(){
 }
 
 void igdeNativeFoxMainWindow::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -226,13 +226,13 @@ void igdeNativeFoxMainWindow::UpdatePosition(){
 }
 
 void igdeNativeFoxMainWindow::UpdateIcon(){
-	FXIcon * const iicon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
-	setIcon( iicon );
-	setMiniIcon( iicon );
+	FXIcon * const iicon = pOwner->GetIcon() ? (FXIcon*)pOwner->GetIcon()->GetNativeIcon() : NULL;
+	setIcon(iicon);
+	setMiniIcon(iicon);
 }
 
 void igdeNativeFoxMainWindow::UpdateTitle(){
-	setTitle( pOwner->GetTitle().GetString() );
+	setTitle(pOwner->GetTitle().GetString());
 }
 
 void igdeNativeFoxMainWindow::UpdateSize(){
@@ -247,21 +247,21 @@ void igdeNativeFoxMainWindow::UpdateSize(){
 }
 
 void igdeNativeFoxMainWindow::SetWindowState(){
-	if( isMaximized() ){
-		pOwner->SetWindowState( igdeMainWindow::ewsMaximized );
+	if(isMaximized()){
+		pOwner->SetWindowState(igdeMainWindow::ewsMaximized);
 		
-	}else if( isMinimized() ){
-		pOwner->SetWindowState( igdeMainWindow::ewsMinimized );
+	}else if(isMinimized()){
+		pOwner->SetWindowState(igdeMainWindow::ewsMinimized);
 		
 	}else{
-		pOwner->SetWindowState( igdeMainWindow::ewsNormal );
+		pOwner->SetWindowState(igdeMainWindow::ewsNormal);
 	}
 }
 
-void igdeNativeFoxMainWindow::GetAppFontConfig( igdeFont::sConfiguration &config ){
+void igdeNativeFoxMainWindow::GetAppFontConfig(igdeFont::sConfiguration &config){
 	const FXFont &font = *FXApp::instance()->getNormalFont();
 	config.name = font.getName().text();
-	config.size = ( float )font.getSize() * 0.1f; // fox fonts are in 1/10pt
+	config.size = (float)font.getSize() * 0.1f; // fox fonts are in 1/10pt
 	config.bold = font.getActualWeight() > FXFont::Normal;
 	config.italic = font.getActualSlant() == FXFont::Italic;
 	config.underline = false;
@@ -294,36 +294,36 @@ long igdeNativeFoxMainWindow::onConfigure(FXObject *sender, FXSelector selector,
 	return result;
 }
 
-long igdeNativeFoxMainWindow::onMap( FXObject*, FXSelector, void* ){
+long igdeNativeFoxMainWindow::onMap(FXObject*, FXSelector, void*){
 	pOwner->GetEngineController().InitEngine();
 	pOwner->StartEngine();
 	return 1;
 }
 
-long igdeNativeFoxMainWindow::onClose( FXObject*, FXSelector, void* ){
-	if( pOwner->CloseWindow() ){
+long igdeNativeFoxMainWindow::onClose(FXObject*, FXSelector, void*){
+	if(pOwner->CloseWindow()){
 		pOwner->Close();
 	}
 	return 1;
 }
 
-long igdeNativeFoxMainWindow::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxMainWindow::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }
 
-long igdeNativeFoxMainWindow::onMinimized( FXObject*, FXSelector, void* ){
+long igdeNativeFoxMainWindow::onMinimized(FXObject*, FXSelector, void*){
 	SetWindowState();
 	return 0;
 }
 
-long igdeNativeFoxMainWindow::onRestored( FXObject*, FXSelector, void* ){
+long igdeNativeFoxMainWindow::onRestored(FXObject*, FXSelector, void*){
 	SetWindowState();
 	return 0;
 }
 
-long igdeNativeFoxMainWindow::onMaximized( FXObject*, FXSelector, void* ){
+long igdeNativeFoxMainWindow::onMaximized(FXObject*, FXSelector, void*){
 	// NOTE listening to minimize/maximize event is not enough since FOX has a bug when
 	//      uses on multi-desktop. switching the desktop causes the minimzed window to
 	//      get the maximize event send twice although it is still minimized. by checking

@@ -52,10 +52,10 @@ public:
 	gdeFilePattern();
 	
 	/** \brief Create file pattern. */
-	gdeFilePattern( const char *name, const char *pattern, const char *defaultExtension );
+	gdeFilePattern(const char *name, const char *pattern, const char *defaultExtension);
 	
 	/** \brief Create copy of file pattern. */
-	gdeFilePattern( const gdeFilePattern &filePattern );
+	gdeFilePattern(const gdeFilePattern &filePattern);
 	
 	/** \brief Clean up file pattern. */
 	virtual ~gdeFilePattern();
@@ -69,19 +69,19 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default extension. */
 	inline const decString &GetDefaultExtension() const{ return pDefExtension; }
 	
 	/** \brief Set default extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	/*@}*/
 };
 

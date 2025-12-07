@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video resource manager. */
-	deVideoManager( deEngine *engine );
+	deVideoManager(deEngine *engine);
 	
 	/** \brief Clean up video resource manager and reports leaking resources. */
 	virtual ~deVideoManager();
@@ -74,37 +74,37 @@ public:
 	deVideo *GetRootVideo() const;
 	
 	/** \brief Video with filename or NULL if not loaded yet. */
-	deVideo *GetVideoWith( const char *filename ) const;
+	deVideo *GetVideoWith(const char *filename) const;
 	
 	/** \brief Video with filename or NULL if not loaded yet. */
-	deVideo *GetVideoWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deVideo *GetVideoWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Load video from file relative to base path. */
-	deVideo *LoadVideo( const char *filename, const char *basePath, bool asynchron );
+	deVideo *LoadVideo(const char *filename, const char *basePath, bool asynchron);
 	
 	/** \brief Load video from file relative to base path. */
-	deVideo *LoadVideo( deVirtualFileSystem *vfs, const char *filename,
-		const char *basePath, bool asynchron );
+	deVideo *LoadVideo(deVirtualFileSystem *vfs, const char *filename,
+		const char *basePath, bool asynchron);
 	
 	/** \brief Save video to file. */
-	void SaveVideo( deVideo *video, const char *filename );
+	void SaveVideo(deVideo *video, const char *filename);
 	
 	/** \brief Save video to file. */
-	void SaveVideo( deVirtualFileSystem *vfs, deVideo *video, const char *filename );
+	void SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const char *filename);
 	
 	/**
 	 * \brief Add loaded video.
 	 * \warning This method is to be used only by the resource loader!
 	 */
-	void AddLoadedVideo( deVideo *video );
+	void AddLoadedVideo(deVideo *video);
 	
 	
 	
 	/** \brief Create video decoder. */
-	deVideoDecoder *CreateDecoder( deVideo *video );
+	deVideoDecoder *CreateDecoder(deVideo *video);
 	
 	/** \brief Create audio decoder or NULL if video has no audio. */
-	deVideoAudioDecoder *CreateAudioDecoder( deVideo *video );
+	deVideoAudioDecoder *CreateAudioDecoder(deVideo *video);
 	
 	
 	
@@ -128,9 +128,9 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	virtual void RemoveResource( deResource *resource );
-	void RemoveDecoder( deVideoDecoder *decoder );
-	void RemoveAudioDecoder( deVideoAudioDecoder *decoder );
+	virtual void RemoveResource(deResource *resource);
+	void RemoveDecoder(deVideoDecoder *decoder);
+	void RemoveAudioDecoder(deVideoAudioDecoder *decoder);
 	/*@}*/
 };
 

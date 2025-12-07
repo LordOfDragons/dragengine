@@ -56,10 +56,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicRemoveCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicRemoveCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceConversationAction &action, ceCConditionLogic &logic,
-		ceConversationCondition *condition );
+		ceConversationCondition *condition);
 	/*@}*/
 	
 	

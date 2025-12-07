@@ -41,26 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintDofSetUpperLimit::reUConstraintDofSetUpperLimit( reRigConstraint *constraint,
-deColliderConstraint::eDegreesOfFreedom dof, float newValue ){
-	if( ! constraint || ! constraint->GetRig()
-	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
+reUConstraintDofSetUpperLimit::reUConstraintDofSetUpperLimit(reRigConstraint *constraint,
+deColliderConstraint::eDegreesOfFreedom dof, float newValue){
+	if(!constraint || !constraint->GetRig()
+	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
 	pDof = dof;
 	
-	pOldValue = constraint->GetDof( dof ).GetUpperLimit();
+	pOldValue = constraint->GetDof(dof).GetUpperLimit();
 	pNewValue = newValue;
 	
-	SetShortInfo( "Constraint DOF set upper limit" );
+	SetShortInfo("Constraint DOF set upper limit");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintDofSetUpperLimit::~reUConstraintDofSetUpperLimit(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -71,9 +71,9 @@ reUConstraintDofSetUpperLimit::~reUConstraintDofSetUpperLimit(){
 ///////////////
 
 void reUConstraintDofSetUpperLimit::Undo(){
-	pConstraint->GetDof( pDof ).SetUpperLimit( pOldValue );
+	pConstraint->GetDof(pDof).SetUpperLimit(pOldValue);
 }
 
 void reUConstraintDofSetUpperLimit::Redo(){
-	pConstraint->GetDof( pDof ).SetUpperLimit( pNewValue );
+	pConstraint->GetDof(pDof).SetUpperLimit(pNewValue);
 }

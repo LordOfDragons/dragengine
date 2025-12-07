@@ -41,21 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPVRRenderScale::deoglPVRRenderScale( deGraphicOpenGl &ogl ) :
-deoglParameter( ogl )
+deoglPVRRenderScale::deoglPVRRenderScale(deGraphicOpenGl &ogl) :
+deoglParameter(ogl)
 {
-	SetName( "vrRenderScale" );
-	SetDescription( "Percentage scale of VR Rendering relative to size requested by VR System."
+	SetName("vrRenderScale");
+	SetDescription("Percentage scale of VR Rendering relative to size requested by VR System."
 		" Down scaling improves performance at the cost of quality."
 		" You can adjust scaling in VR Systems (like SteamVR)."
 		" This parameter allows to dynamically adjust render scale.");
-	SetType( eptRanged );
-	SetCategory( ecBasic );
-	SetDisplayName( "VR Render Scale" );
-	SetMinimumValue( 50.0f ); // 50%
-	SetMaximumValue( 100.0f ); // 100% (beyond not possible with VR systems)
-	SetValueStepSize( 5.0f ); // 5%
-	SetDefaultValue( "100" );
+	SetType(eptRanged);
+	SetCategory(ecBasic);
+	SetDisplayName("VR Render Scale");
+	SetMinimumValue(50.0f); // 50%
+	SetMaximumValue(100.0f); // 100% (beyond not possible with VR systems)
+	SetValueStepSize(5.0f); // 5%
+	SetDefaultValue("100");
 }
 
 deoglPVRRenderScale::~deoglPVRRenderScale(){
@@ -68,10 +68,10 @@ deoglPVRRenderScale::~deoglPVRRenderScale(){
 
 decString deoglPVRRenderScale::GetParameterValue(){
 	decString value;
-	value.Format( "%.0f", pOgl.GetConfiguration().GetVRRenderScale() * 100.0f + 0.01f );
+	value.Format("%.0f", pOgl.GetConfiguration().GetVRRenderScale() * 100.0f + 0.01f);
 	return value;
 }
 
-void deoglPVRRenderScale::SetParameterValue( const char *value ){
-	pOgl.GetConfiguration().SetVRRenderScale( 0.01f * ( float )( decString( value ).ToInt() ) );
+void deoglPVRRenderScale::SetParameterValue(const char *value){
+	pOgl.GetConfiguration().SetVRRenderScale(0.01f * (float)(decString(value).ToInt()));
 }

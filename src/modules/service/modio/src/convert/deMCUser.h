@@ -39,10 +39,10 @@ private:
 	
 public:
 	/** Convert identifier list. */
-	static std::vector<Modio::UserID> UserIDList( const deServiceObject &so );
+	static std::vector<Modio::UserID> UserIDList(const deServiceObject &so);
 	
 	/** Convert user. */
-	static deServiceObject::Ref User( const Modio::User &user );
+	static deServiceObject::Ref User(const Modio::User &user);
 	/*@}*/
 };
 

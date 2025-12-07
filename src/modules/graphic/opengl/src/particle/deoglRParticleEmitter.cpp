@@ -47,19 +47,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRParticleEmitter::deoglRParticleEmitter( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pVBOLayoutShared( NULL ),
-pVBOLayoutLocal( NULL ){
-	LEAK_CHECK_CREATE( renderThread, ParticleEmitter );
+deoglRParticleEmitter::deoglRParticleEmitter(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pVBOLayoutShared(NULL),
+pVBOLayoutLocal(NULL){
+	LEAK_CHECK_CREATE(renderThread, ParticleEmitter);
 }
 
 deoglRParticleEmitter::~deoglRParticleEmitter(){
-	LEAK_CHECK_FREE( pRenderThread, ParticleEmitter );
-	if( pVBOLayoutLocal ){
+	LEAK_CHECK_FREE(pRenderThread, ParticleEmitter);
+	if(pVBOLayoutLocal){
 		delete pVBOLayoutLocal;
 	}
-	if( pVBOLayoutShared ){
+	if(pVBOLayoutShared){
 		delete pVBOLayoutShared;
 	}
 }
@@ -70,7 +70,7 @@ deoglRParticleEmitter::~deoglRParticleEmitter(){
 ///////////////
 
 deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutShared(){
-	if( ! pVBOLayoutShared ){
+	if(!pVBOLayoutShared){
 		pVBOLayoutShared = new deoglVBOLayout;
 		
 		// name        | offset | type  | components
@@ -79,51 +79,51 @@ deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutShared(){
 		// attribute 1 |     16 | float | linearVelocity, angularVelocity, castSize, castEmissivity
 		// attribute 2 |     32 | uchar | linearDirection.x, linearDirection.y, linearDirection.z, rotation
 		// attribute 3 |     36 | uchar | castRed, castGreen, castBlue, castTransparency
-		pVBOLayoutShared->SetAttributeCount( 4 );
-		pVBOLayoutShared->SetStride( 40 ); // best performance with multiple of 32/64?
-		pVBOLayoutShared->SetSize( 0 );
-		pVBOLayoutShared->SetIndexType( deoglVBOLayout::eitUnsignedShort );
+		pVBOLayoutShared->SetAttributeCount(4);
+		pVBOLayoutShared->SetStride(40); // best performance with multiple of 32/64?
+		pVBOLayoutShared->SetSize(0);
+		pVBOLayoutShared->SetIndexType(deoglVBOLayout::eitUnsignedShort);
 		
-		deoglVBOAttribute &attribute0 = pVBOLayoutShared->GetAttributeAt( 0 );
-		attribute0.SetComponentCount( 4 );
-		attribute0.SetDataType( deoglVBOAttribute::edtFloat );
-		attribute0.SetOffset( 0 );
+		deoglVBOAttribute &attribute0 = pVBOLayoutShared->GetAttributeAt(0);
+		attribute0.SetComponentCount(4);
+		attribute0.SetDataType(deoglVBOAttribute::edtFloat);
+		attribute0.SetOffset(0);
 		
-		deoglVBOAttribute &attribute1 = pVBOLayoutShared->GetAttributeAt( 1 );
-		attribute1.SetComponentCount( 4 );
-		attribute1.SetDataType( deoglVBOAttribute::edtFloat );
-		attribute1.SetOffset( 16 );
+		deoglVBOAttribute &attribute1 = pVBOLayoutShared->GetAttributeAt(1);
+		attribute1.SetComponentCount(4);
+		attribute1.SetDataType(deoglVBOAttribute::edtFloat);
+		attribute1.SetOffset(16);
 		
-		deoglVBOAttribute &attribute2 = pVBOLayoutShared->GetAttributeAt( 2 );
-		attribute2.SetComponentCount( 4 );
-		attribute2.SetDataType( deoglVBOAttribute::edtUByte );
-		attribute2.SetOffset( 32 );
+		deoglVBOAttribute &attribute2 = pVBOLayoutShared->GetAttributeAt(2);
+		attribute2.SetComponentCount(4);
+		attribute2.SetDataType(deoglVBOAttribute::edtUByte);
+		attribute2.SetOffset(32);
 		
-		deoglVBOAttribute &attribute3 = pVBOLayoutShared->GetAttributeAt( 3 );
-		attribute3.SetComponentCount( 4 );
-		attribute3.SetDataType( deoglVBOAttribute::edtUByte );
-		attribute3.SetOffset( 36 );
+		deoglVBOAttribute &attribute3 = pVBOLayoutShared->GetAttributeAt(3);
+		attribute3.SetComponentCount(4);
+		attribute3.SetDataType(deoglVBOAttribute::edtUByte);
+		attribute3.SetOffset(36);
 	}
 	
 	return pVBOLayoutShared;
 }
 
 deoglVBOLayout *deoglRParticleEmitter::GetVBOLayoutLocal(){
-	if( ! pVBOLayoutLocal ){
+	if(!pVBOLayoutLocal){
 		pVBOLayoutLocal = new deoglVBOLayout;
 		
 		// name        | offset | type  | components
 		// ------------+--------+-------+------------------------------------------------------------------
 		// attribute 0 |      0 | float | beamLocation
-		pVBOLayoutLocal->SetAttributeCount( 1 );
-		pVBOLayoutLocal->SetStride( 4 );
-		pVBOLayoutLocal->SetSize( 0 );
-		pVBOLayoutLocal->SetIndexType( deoglVBOLayout::eitUnsignedShort );
+		pVBOLayoutLocal->SetAttributeCount(1);
+		pVBOLayoutLocal->SetStride(4);
+		pVBOLayoutLocal->SetSize(0);
+		pVBOLayoutLocal->SetIndexType(deoglVBOLayout::eitUnsignedShort);
 		
-		deoglVBOAttribute &attribute0 = pVBOLayoutLocal->GetAttributeAt( 0 );
-		attribute0.SetComponentCount( 1 );
-		attribute0.SetDataType( deoglVBOAttribute::edtFloat );
-		attribute0.SetOffset( 0 );
+		deoglVBOAttribute &attribute0 = pVBOLayoutLocal->GetAttributeAt(0);
+		attribute0.SetComponentCount(1);
+		attribute0.SetDataType(deoglVBOAttribute::edtFloat);
+		attribute0.SetOffset(0);
 	}
 	
 	return pVBOLayoutLocal;
@@ -133,8 +133,8 @@ void deoglRParticleEmitter::PrepareForRender(){
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRParticleEmitterType* )pTypes.GetAt( i ) )->PrepareForRender();
+	for(i=0; i<count; i++){
+		((deoglRParticleEmitterType*)pTypes.GetAt(i))->PrepareForRender();
 	}
 }
 
@@ -144,17 +144,17 @@ int deoglRParticleEmitter::GetTypeCount() const{
 	return pTypes.GetCount();
 }
 
-deoglRParticleEmitterType &deoglRParticleEmitter::GetTypeAt( int index ) const{
-	return *( ( deoglRParticleEmitterType* )pTypes.GetAt( index ) );
+deoglRParticleEmitterType &deoglRParticleEmitter::GetTypeAt(int index) const{
+	return *((deoglRParticleEmitterType*)pTypes.GetAt(index));
 }
 
 void deoglRParticleEmitter::RemoveAllTypes(){
 	pTypes.RemoveAll();
 }
 
-void deoglRParticleEmitter::AddType( deoglRParticleEmitterType *type ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+void deoglRParticleEmitter::AddType(deoglRParticleEmitterType *type){
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
-	pTypes.Add( type );
+	pTypes.Add(type);
 }

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetVolume::gdeUOCSpeakerSetVolume( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, float newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetVolume::gdeUOCSpeakerSetVolume(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, float newValue) :
+pObjectClass(NULL),
+pSpeaker(NULL)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set volume" );
+	SetShortInfo("Speaker set volume");
 	
 	pOldValue = speaker->GetVolume();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pSpeaker( NULL )
 }
 
 gdeUOCSpeakerSetVolume::~gdeUOCSpeakerSetVolume(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCSpeakerSetVolume::~gdeUOCSpeakerSetVolume(){
 ///////////////
 
 void gdeUOCSpeakerSetVolume::Undo(){
-	pSpeaker->SetVolume( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetVolume(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetVolume::Redo(){
-	pSpeaker->SetVolume( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetVolume(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

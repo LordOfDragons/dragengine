@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCGameCommand::ceWPTTIMCGameCommand( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionGameCommand *condition ) :
-ceWPTTIMCondition( windowMain, etConditionGameCommand, conversation, action, condition )
+ceWPTTIMCGameCommand::ceWPTTIMCGameCommand(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionGameCommand *condition) :
+ceWPTTIMCondition(windowMain, etConditionGameCommand, conversation, action, condition)
 {
-	SetIcon( windowMain.GetIconConditionCommand() );
+	SetIcon(windowMain.GetIconConditionCommand());
 	Update();
 }
 
@@ -61,20 +61,20 @@ void ceWPTTIMCGameCommand::Update(){
 	const ceCConditionGameCommand &condition = *GetConditionGameCommand();
 	decString text;
 	
-	if( ! condition.GetCommand().IsEmpty() ){
-		const decString lineCommand( condition.GetCommand().Split( '\n' ).GetAt( 0 ) );
+	if(!condition.GetCommand().IsEmpty()){
+		const decString lineCommand(condition.GetCommand().Split('\n').GetAt(0));
 		
-		if( condition.GetNegate() ){
+		if(condition.GetNegate()){
 			text += "[not] ";
 		}
 		
-		if( lineCommand.GetLength() > 40 ){
-			text += lineCommand.GetLeft( 40 ) + "...";
+		if(lineCommand.GetLength() > 40){
+			text += lineCommand.GetLeft(40) + "...";
 			
 		}else{
 			text += lineCommand;
 		}
 	}
 	
-	SetText( text );
+	SetText(text);
 }

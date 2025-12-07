@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUEffectTargetAddLink( seEffect *effect, seControllerTarget *target, seLink *link );
+	seUEffectTargetAddLink(seEffect *effect, seControllerTarget *target, seLink *link);
 	
 protected:
 	/** \brief Clean up undo action. */

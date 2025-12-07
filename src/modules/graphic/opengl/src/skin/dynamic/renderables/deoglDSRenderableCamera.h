@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableCamera( deoglDynamicSkin &dynamicSkin, const deDSRenderableCamera &renderable );
+	deoglDSRenderableCamera(deoglDynamicSkin &dynamicSkin, const deDSRenderableCamera &renderable);
 	
 	/** Clean up peer. */
 	virtual ~deoglDSRenderableCamera();

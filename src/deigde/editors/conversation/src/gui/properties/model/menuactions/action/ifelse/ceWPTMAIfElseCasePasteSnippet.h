@@ -53,9 +53,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCasePasteSnippet( ceWindowMain &windowMain,
+	ceWPTMAIfElseCasePasteSnippet(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index );
+		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index);
 	/*@}*/
 	
 	
@@ -75,7 +75,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
 	/*@}*/
 };
 

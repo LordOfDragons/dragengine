@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview manager. */
-	igdeGDPreviewManager( igdeEnvironment &environment );
+	igdeGDPreviewManager(igdeEnvironment &environment);
 	
 	/** \brief Clean up preview manager. */
 	~igdeGDPreviewManager();
@@ -93,25 +93,25 @@ public:
 	inline const decString &GetPathCache() const{ return pPathCache; }
 	
 	/** \brief Set path to cache directory. */
-	void SetPathCache( const char *path );
+	void SetPathCache(const char *path);
 	
 	/** \brief Directory name for object classes. */
 	inline const decString &GetDirectoryObjectClass() const{ return pDirObjectClass; }
 	
 	/** \brief Set directory name for object classes. */
-	void SetDirectoryObjectClass( const char *directory );
+	void SetDirectoryObjectClass(const char *directory);
 	
 	/** \brief Directory name for skins. */
 	inline const decString &GetDirectorySkin() const{ return pDirSkin; }
 	
 	/** \brief Set directory name for skins. */
-	void SetDirectorySkin( const char *directory );
+	void SetDirectorySkin(const char *directory);
 	
 	/** \brief Directory name for skies. */
 	inline const decString &GetDirectorySky() const{ return pDirSky; }
 	
 	/** \brief Set directory name for skies. */
-	void SetDirectorySky( const char *directory );
+	void SetDirectorySky(const char *directory);
 	
 	
 	
@@ -142,13 +142,13 @@ public:
 	 * \brief Get preview image for object class loading it from cache if required.
 	 * \returns NULL if preview image needs to be created.
 	 */
-	deImage *GetPreviewObjectClass( igdeGDClass *gdclass ) const;
+	deImage *GetPreviewObjectClass(igdeGDClass *gdclass) const;
 	
 	/** \brief Create preview image for object class. */
-	void CreatePreviewObjectClass( igdeGDClass *gdclass, igdeGDPreviewListener *listener );
+	void CreatePreviewObjectClass(igdeGDClass *gdclass, igdeGDPreviewListener *listener);
 	
 	/** \brief Clear preview image for object class. */
-	void ClearPreviewObjectClass( igdeGDClass *gdclass );
+	void ClearPreviewObjectClass(igdeGDClass *gdclass);
 	
 	
 	
@@ -156,13 +156,13 @@ public:
 	 * \brief Get preview image for skin loading it from cache if required.
 	 * \returns NULL if preview image needs to be created.
 	 */
-	deImage *GetPreviewSkin( igdeGDSkin *gdskin ) const;
+	deImage *GetPreviewSkin(igdeGDSkin *gdskin) const;
 	
 	/** \brief Create preview image for skin. */
-	void CreatePreviewSkin( igdeGDSkin *gdskin, igdeGDPreviewListener *listener );
+	void CreatePreviewSkin(igdeGDSkin *gdskin, igdeGDPreviewListener *listener);
 	
 	/** \brief Clear preview image for skin. */
-	void ClearPreviewSkin( igdeGDSkin *gdskin );
+	void ClearPreviewSkin(igdeGDSkin *gdskin);
 	
 	
 	
@@ -170,21 +170,21 @@ public:
 	 * \brief Get preview image for sky loading it from cache if required.
 	 * \returns NULL if preview image needs to be created.
 	 */
-	deImage *GetPreviewSky( igdeGDSky *gdsky ) const;
+	deImage *GetPreviewSky(igdeGDSky *gdsky) const;
 	
 	/** \brief Create preview image for sky. */
-	void CreatePreviewSky( igdeGDSky *gdsky, igdeGDPreviewListener *listener );
+	void CreatePreviewSky(igdeGDSky *gdsky, igdeGDPreviewListener *listener);
 	
 	/** \brief Clear preview image for sky. */
-	void ClearPreviewSky( igdeGDSky *gdsky );
+	void ClearPreviewSky(igdeGDSky *gdsky);
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadFromFile( deImage::Ref &image, const decString &typedir, const decString &filename ) const;
-	void pSaveToFile( deImage *image, const decString &typedir, const decString &filename ) const;
-	void pDeleteFile( const decString &typedir, const decString &filename ) const;
+	void pLoadFromFile(deImage::Ref &image, const decString &typedir, const decString &filename) const;
+	void pSaveToFile(deImage *image, const decString &typedir, const decString &filename) const;
+	void pDeleteFile(const decString &typedir, const decString &filename) const;
 };
 
 #endif

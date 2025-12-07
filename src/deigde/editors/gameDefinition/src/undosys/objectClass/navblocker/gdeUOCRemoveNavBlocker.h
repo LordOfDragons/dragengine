@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveNavBlocker( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker );
+	gdeUOCRemoveNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker);
 	
 protected:
 	/** \brief Clean up undo action. */

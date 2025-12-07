@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetOrientation::seULayerSetOrientation( seLayer *layer, const decVector &newOrientation ) :
-pLayer( NULL ),
-pNewOrientation( newOrientation )
+seULayerSetOrientation::seULayerSetOrientation(seLayer *layer, const decVector &newOrientation) :
+pLayer(NULL),
+pNewOrientation(newOrientation)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Layer Orientation" );
+	SetShortInfo("Set Layer Orientation");
 	
 	pOldOrientation = layer->GetOrientation();
 	
@@ -56,7 +56,7 @@ pNewOrientation( newOrientation )
 }
 
 seULayerSetOrientation::~seULayerSetOrientation(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seULayerSetOrientation::~seULayerSetOrientation(){
 ///////////////
 
 void seULayerSetOrientation::Undo(){
-	pLayer->SetOrientation( pOldOrientation );
+	pLayer->SetOrientation(pOldOrientation);
 }
 
 void seULayerSetOrientation::Redo(){
-	pLayer->SetOrientation( pNewOrientation );
+	pLayer->SetOrientation(pNewOrientation);
 }

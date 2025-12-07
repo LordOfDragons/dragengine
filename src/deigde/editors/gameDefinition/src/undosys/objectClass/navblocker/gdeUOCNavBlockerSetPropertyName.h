@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetPropertyName( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker,
-		gdeOCNavigationBlocker::eProperties property, const char *newValue );
+	gdeUOCNavBlockerSetPropertyName(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker,
+		gdeOCNavigationBlocker::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

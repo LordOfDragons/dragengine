@@ -40,7 +40,7 @@
 // Event map
 //////////////
 
-FXIMPLEMENT( igdeNativeFoxSpacer, FXFrame, nullptr, 0 )
+FXIMPLEMENT(igdeNativeFoxSpacer, FXFrame, nullptr, 0)
 
 
 
@@ -53,33 +53,33 @@ FXIMPLEMENT( igdeNativeFoxSpacer, FXFrame, nullptr, 0 )
 igdeNativeFoxSpacer::igdeNativeFoxSpacer(){
 }
 
-igdeNativeFoxSpacer::igdeNativeFoxSpacer( igdeSpacer &powner, FXComposite *pparent, int childFlags ) :
-FXFrame( pparent, LayoutFlags( childFlags ), 0, 0, powner.GetSize().x, powner.GetSize().y ),
-pOwner( &powner ),
-pWidth( width ),
-pHeight( height ){
+igdeNativeFoxSpacer::igdeNativeFoxSpacer(igdeSpacer &powner, FXComposite *pparent, int childFlags) :
+FXFrame(pparent, LayoutFlags(childFlags), 0, 0, powner.GetSize().x, powner.GetSize().y),
+pOwner(&powner),
+pWidth(width),
+pHeight(height){
 }
 
 igdeNativeFoxSpacer::~igdeNativeFoxSpacer(){
 	pOwner = NULL;
 }
 
-igdeNativeFoxSpacer *igdeNativeFoxSpacer::CreateNativeWidget( igdeSpacer &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxSpacer *igdeNativeFoxSpacer::CreateNativeWidget(igdeSpacer &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxSpacer( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxSpacer(powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxSpacer::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -93,10 +93,10 @@ void igdeNativeFoxSpacer::DestroyNativeWidget(){
 // Management
 ///////////////
 
-void igdeNativeFoxSpacer::SetSize( int wwidth, int hheight ){
+void igdeNativeFoxSpacer::SetSize(int wwidth, int hheight){
 	pWidth = wwidth;
 	pHeight = hheight;
-	resize( wwidth, hheight );
+	resize(wwidth, hheight);
 }
 
 int igdeNativeFoxSpacer::getDefaultWidth(){
@@ -107,8 +107,8 @@ int igdeNativeFoxSpacer::getDefaultHeight(){
 	return pHeight;
 }
 
-int igdeNativeFoxSpacer::LayoutFlags( int childFlags ){
-	childFlags &= ~( LAYOUT_FILL_COLUMN | LAYOUT_FILL_ROW );
+int igdeNativeFoxSpacer::LayoutFlags(int childFlags){
+	childFlags &= ~(LAYOUT_FILL_COLUMN | LAYOUT_FILL_ROW);
 	childFlags &= ~LAYOUT_FILL;
 	childFlags |= LAYOUT_FIX_WIDTH | LAYOUT_FIX_HEIGHT;
 	return childFlags;

@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetCurve( seSkyLayer *layer, seProperty *property );
+	seUPropertySetCurve(seSkyLayer *layer, seProperty *property);
 	/** \brief Clean up undo. */
 	virtual ~seUPropertySetCurve();
 	/*@}*/
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sets the new curve. */
-	void SetNewCurve( const decCurveBezier &curve );
+	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

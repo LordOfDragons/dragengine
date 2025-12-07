@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo history panel. */
-	ceWPUndoHistory( igdeEnvironment &environment );
+	ceWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up undo history panel. */
@@ -62,7 +62,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	/*@}*/
 };
 

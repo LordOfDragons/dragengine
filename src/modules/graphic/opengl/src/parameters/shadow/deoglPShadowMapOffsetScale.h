@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPShadowMapOffsetScale( deGraphicOpenGl &ogl );
+	deoglPShadowMapOffsetScale(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
 	virtual ~deoglPShadowMapOffsetScale();
 	/*@}*/
@@ -47,7 +47,7 @@ public:
 	/** Retrieves the current value. */
 	virtual float GetParameterFloat();
 	/** Sets the current value. */
-	virtual void SetParameterFloat( float value );
+	virtual void SetParameterFloat(float value);
 	/*@}*/
 };
 

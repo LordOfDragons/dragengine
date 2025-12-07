@@ -54,18 +54,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDPCSky::igdeGDPCSky( igdeEnvironment &environment, igdeGDSky *gdsky, const decPoint &size ) :
-igdeGDPreviewCreator( environment, size ),
-pGDSky( gdsky ),
-pSky( NULL )
+igdeGDPCSky::igdeGDPCSky(igdeEnvironment &environment, igdeGDSky *gdsky, const decPoint &size) :
+igdeGDPreviewCreator(environment, size),
+pGDSky(gdsky),
+pSky(NULL)
 {
-	if( ! gdsky ){
-		DETHROW( deeInvalidParam );
+	if(!gdsky){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 igdeGDPCSky::~igdeGDPCSky(){
-	if( pSky ){
+	if(pSky){
 		delete pSky;
 	}
 }
@@ -76,7 +76,7 @@ igdeGDPCSky::~igdeGDPCSky(){
 ///////////////
 
 decString igdeGDPCSky::DebugPrefix(){
-	return decString( "GDPCSky(" ) + ( pGDSky ? pGDSky->GetName() : decString( "?" ) ) + ")";
+	return decString("GDPCSky(") + (pGDSky ? pGDSky->GetName() : decString("?")) + ")";
 }
 
 void igdeGDPCSky::PrepareCanvasForRender(){
@@ -84,40 +84,40 @@ void igdeGDPCSky::PrepareCanvasForRender(){
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
 	// create world
-	pWorld.TakeOver( engine.GetWorldManager()->CreateWorld() );
+	pWorld.TakeOver(engine.GetWorldManager()->CreateWorld());
 	
 	// create camera
-	pCamera.TakeOver( engine.GetCameraManager()->CreateCamera() );
-	pCamera->SetFov( 45.0f * DEG2RAD );
-	pCamera->SetFovRatio( 1.0f );
-	pCamera->SetImageDistance( 0.01f );
-	pCamera->SetViewDistance( 500.0f );
-	pCamera->SetExposure( 1.0f );
-	pCamera->SetAdaptionTime( 0.0f );
-	pWorld->AddCamera( pCamera );
+	pCamera.TakeOver(engine.GetCameraManager()->CreateCamera());
+	pCamera->SetFov(45.0f * DEG2RAD);
+	pCamera->SetFovRatio(1.0f);
+	pCamera->SetImageDistance(0.01f);
+	pCamera->SetViewDistance(500.0f);
+	pCamera->SetExposure(1.0f);
+	pCamera->SetAdaptionTime(0.0f);
+	pWorld->AddCamera(pCamera);
 	
 	// create sky
-	pSky = new igdeWSky( environment );
-	pSky->SetWorld( pWorld );
-	pSky->SetGDSky( pGDSky );
+	pSky = new igdeWSky(environment);
+	pSky->SetWorld(pWorld);
+	pSky->SetGDSky(pGDSky);
 	
 	// adjust camera parameters to fit the sky lighting
-	pCamera->SetLowestIntensity( pSky->GetMaxLightIntensity() );
-	pCamera->SetHighestIntensity( pSky->GetMaxLightIntensity() );
+	pCamera->SetLowestIntensity(pSky->GetMaxLightIntensity());
+	pCamera->SetHighestIntensity(pSky->GetMaxLightIntensity());
 	
 	// create render world canvas
 	deCanvasView &container = *GetCanvas();
-	pCanvasRenderWorld.TakeOver( engine.GetCanvasManager()->CreateCanvasRenderWorld() );
-	pCanvasRenderWorld->SetCamera( pCamera );
-	pCanvasRenderWorld->SetSize( container.GetSize() );
-	container.AddCanvas( pCanvasRenderWorld );
+	pCanvasRenderWorld.TakeOver(engine.GetCanvasManager()->CreateCanvasRenderWorld());
+	pCanvasRenderWorld->SetCamera(pCamera);
+	pCanvasRenderWorld->SetSize(container.GetSize());
+	container.AddCanvas(pCanvasRenderWorld);
 }
 
 bool igdeGDPCSky::IsCanvasReadyForRender(){
-	pWorld->Update( 0.0f );
+	pWorld->Update(0.0f);
 	return true;
 }
 
-void igdeGDPCSky::UpdateCanvasForRender( float elapsed ){
-	pWorld->Update( elapsed );
+void igdeGDPCSky::UpdateCanvasForRender(float elapsed){
+	pWorld->Update(elapsed);
 }

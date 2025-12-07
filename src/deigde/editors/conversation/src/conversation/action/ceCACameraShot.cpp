@@ -38,11 +38,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCACameraShot::ceCACameraShot() : ceConversationAction( eatCameraShot ){
+ceCACameraShot::ceCACameraShot() : ceConversationAction(eatCameraShot){
 	pDuration = 5.0f;
 }
 
-ceCACameraShot::ceCACameraShot( const ceCACameraShot &action ) : ceConversationAction( action ){
+ceCACameraShot::ceCACameraShot(const ceCACameraShot &action) : ceConversationAction(action){
 	pName = action.GetName();
 	pDuration = action.GetDuration();
 	pCameraTarget = action.GetCameraTarget();
@@ -57,27 +57,27 @@ ceCACameraShot::~ceCACameraShot(){
 // Management
 ///////////////
 
-void ceCACameraShot::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+void ceCACameraShot::SetName(const char *name){
+	if(!name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }
 
-void ceCACameraShot::SetDuration( float duration ){
+void ceCACameraShot::SetDuration(float duration){
 	pDuration = duration;
 }
 
-void ceCACameraShot::SetCameraTarget( const char *target ){
-	if( ! target ){
-		DETHROW( deeInvalidParam );
+void ceCACameraShot::SetCameraTarget(const char *target){
+	if(!target){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pCameraTarget = target;
 }
 
-void ceCACameraShot::SetLookAtTarget( const char *target ){
-	if( ! target ){
-		DETHROW( deeInvalidParam );
+void ceCACameraShot::SetLookAtTarget(const char *target){
+	if(!target){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLookAtTarget = target;
@@ -86,5 +86,5 @@ void ceCACameraShot::SetLookAtTarget( const char *target ){
 
 
 ceConversationAction *ceCACameraShot::CreateCopy() const{
-	return new ceCACameraShot( *this );
+	return new ceCACameraShot(*this);
 }

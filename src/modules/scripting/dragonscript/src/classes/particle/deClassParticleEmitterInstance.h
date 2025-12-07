@@ -44,7 +44,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassParticleEmitterInstance( deScriptingDragonScript *ds );
+	deClassParticleEmitterInstance(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassParticleEmitterInstance();
 	/*@}*/
@@ -54,12 +54,12 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Retrieves the instance or NULL if myself is NULL. */
-	deParticleEmitterInstance *GetInstance( dsRealObject *myself ) const;
+	deParticleEmitterInstance *GetInstance(dsRealObject *myself) const;
 	/** Pushes the instance which can be NULL. */
-	void PushInstance( dsRunTime *rt, deParticleEmitterInstance *instance );
+	void PushInstance(dsRunTime *rt, deParticleEmitterInstance *instance);
 	/*@}*/
 	
 private:
@@ -73,65 +73,65 @@ private:
 		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetEmitter );
-	DEF_NATFUNC( nfSetEmitter );
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetEnableCasting );
-	DEF_NATFUNC( nfSetEnableCasting );
-	DEF_NATFUNC( nfGetRemoveAfterLastParticleDied );
-	DEF_NATFUNC( nfSetRemoveAfterLastParticleDied );
-	DEF_NATFUNC( nfGetTimeScale );
-	DEF_NATFUNC( nfSetTimeScale );
-	DEF_NATFUNC( nfGetWarmUpTime );
-	DEF_NATFUNC( nfSetWarmUpTime );
-	DEF_NATFUNC( nfGetBurstTime );
-	DEF_NATFUNC( nfSetBurstTime );
+	DEF_NATFUNC(nfGetEmitter);
+	DEF_NATFUNC(nfSetEmitter);
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetEnableCasting);
+	DEF_NATFUNC(nfSetEnableCasting);
+	DEF_NATFUNC(nfGetRemoveAfterLastParticleDied);
+	DEF_NATFUNC(nfSetRemoveAfterLastParticleDied);
+	DEF_NATFUNC(nfGetTimeScale);
+	DEF_NATFUNC(nfSetTimeScale);
+	DEF_NATFUNC(nfGetWarmUpTime);
+	DEF_NATFUNC(nfSetWarmUpTime);
+	DEF_NATFUNC(nfGetBurstTime);
+	DEF_NATFUNC(nfSetBurstTime);
 	DEF_NATFUNC(nfGetParentWorld);
 	
-	DEF_NATFUNC( nfGetControllerCount );
-	DEF_NATFUNC( nfGetControllerAt );
-	DEF_NATFUNC( nfGetControllerNamed );
-	DEF_NATFUNC( nfIndexOfControllerNamed );
-	DEF_NATFUNC( nfCopyControllerStates );
-	DEF_NATFUNC( nfCopyControllerStates2 );
-	DEF_NATFUNC( nfCopyNamedControllerStates );
+	DEF_NATFUNC(nfGetControllerCount);
+	DEF_NATFUNC(nfGetControllerAt);
+	DEF_NATFUNC(nfGetControllerNamed);
+	DEF_NATFUNC(nfIndexOfControllerNamed);
+	DEF_NATFUNC(nfCopyControllerStates);
+	DEF_NATFUNC(nfCopyControllerStates2);
+	DEF_NATFUNC(nfCopyNamedControllerStates);
 	
-	DEF_NATFUNC( nfGetLayerMask );
-	DEF_NATFUNC( nfSetLayerMask );
-	DEF_NATFUNC( nfGetCollisionFilter );
-	DEF_NATFUNC( nfSetCollisionFilter );
+	DEF_NATFUNC(nfGetLayerMask);
+	DEF_NATFUNC(nfSetLayerMask);
+	DEF_NATFUNC(nfGetCollisionFilter);
+	DEF_NATFUNC(nfSetCollisionFilter);
 	
-	DEF_NATFUNC( nfGetTypeComponent );
-	DEF_NATFUNC( nfSetTypeComponent );
-	DEF_NATFUNC( nfGetTypeDynamicSkin );
-	DEF_NATFUNC( nfSetTypeDynamicSkin );
+	DEF_NATFUNC(nfGetTypeComponent);
+	DEF_NATFUNC(nfSetTypeComponent);
+	DEF_NATFUNC(nfGetTypeDynamicSkin);
+	DEF_NATFUNC(nfSetTypeDynamicSkin);
 	
-	DEF_NATFUNC( nfResetBurst );
-	DEF_NATFUNC( nfKillAllParticles );
+	DEF_NATFUNC(nfResetBurst);
+	DEF_NATFUNC(nfKillAllParticles);
 	
-	DEF_NATFUNC( nfGetListener );
-	DEF_NATFUNC( nfSetListener );
+	DEF_NATFUNC(nfGetListener);
+	DEF_NATFUNC(nfSetListener);
 	
-	DEF_NATFUNC( nfGetIgnoreColliderCount );
-	DEF_NATFUNC( nfGetIgnoreColliderAt );
-	DEF_NATFUNC( nfHasIgnoreCollider );
-	DEF_NATFUNC( nfAddIgnoreCollider );
-	DEF_NATFUNC( nfRemoveIgnoreCollider );
-	DEF_NATFUNC( nfRemoveAllIgnoreColliders );
+	DEF_NATFUNC(nfGetIgnoreColliderCount);
+	DEF_NATFUNC(nfGetIgnoreColliderAt);
+	DEF_NATFUNC(nfHasIgnoreCollider);
+	DEF_NATFUNC(nfAddIgnoreCollider);
+	DEF_NATFUNC(nfRemoveIgnoreCollider);
+	DEF_NATFUNC(nfRemoveAllIgnoreColliders);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

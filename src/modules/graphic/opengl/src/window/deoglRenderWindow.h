@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRenderWindow( deGraphicOpenGl &ogl, deRenderWindow &renderWindow );
+	deoglRenderWindow(deGraphicOpenGl &ogl, deRenderWindow &renderWindow);
 	
 	/** Clean up peer. */
 	~deoglRenderWindow() override;

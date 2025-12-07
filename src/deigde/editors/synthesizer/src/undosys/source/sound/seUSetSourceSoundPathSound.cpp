@@ -39,24 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceSoundPathSound::seUSetSourceSoundPathSound( seSourceSound *source, const char *newPath ) :
-pSource( NULL )
+seUSetSourceSoundPathSound::seUSetSourceSoundPathSound(seSourceSound *source, const char *newPath) :
+pSource(NULL)
 {
-	if( ! source || ! newPath ){
-		DETHROW( deeInvalidParam );
+	if(!source || !newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldPath = source->GetPathSound();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Set sound source path sound" );
+	SetShortInfo("Set sound source path sound");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSetSourceSoundPathSound::~seUSetSourceSoundPathSound(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSetSourceSoundPathSound::~seUSetSourceSoundPathSound(){
 ///////////////
 
 void seUSetSourceSoundPathSound::Undo(){
-	pSource->SetPathSound( pOldPath );
+	pSource->SetPathSound(pOldPath);
 }
 
 void seUSetSourceSoundPathSound::Redo(){
-	pSource->SetPathSound( pNewPath );
+	pSource->SetPathSound(pNewPath);
 }

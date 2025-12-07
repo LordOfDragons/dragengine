@@ -36,37 +36,37 @@
 // Constructors, destructors
 //////////////////////////////
 
-decShapeBox::decShapeBox( const decVector &halfExtends ){
-	SetHalfExtends( halfExtends );
-	pTapering.Set( 1.0f, 1.0f );
+decShapeBox::decShapeBox(const decVector &halfExtends){
+	SetHalfExtends(halfExtends);
+	pTapering.Set(1.0f, 1.0f);
 }
 
-decShapeBox::decShapeBox( const decVector &halfExtends, const decVector &position ) : decShape( position ){
-	SetHalfExtends( halfExtends );
-	pTapering.Set( 1.0f, 1.0f );
+decShapeBox::decShapeBox(const decVector &halfExtends, const decVector &position) : decShape(position){
+	SetHalfExtends(halfExtends);
+	pTapering.Set(1.0f, 1.0f);
 }
 
-decShapeBox::decShapeBox( const decVector &halfExtends, const decVector &position,
-const decQuaternion &orientation ) : decShape( position, orientation ){
-	SetHalfExtends( halfExtends );
-	pTapering.Set( 1.0f, 1.0f );
+decShapeBox::decShapeBox(const decVector &halfExtends, const decVector &position,
+const decQuaternion &orientation) : decShape(position, orientation){
+	SetHalfExtends(halfExtends);
+	pTapering.Set(1.0f, 1.0f);
 }
 
-decShapeBox::decShapeBox( const decVector &halfExtends, const decVector2 &tapering ){
-	SetHalfExtends( halfExtends );
-	SetTapering( tapering );
+decShapeBox::decShapeBox(const decVector &halfExtends, const decVector2 &tapering){
+	SetHalfExtends(halfExtends);
+	SetTapering(tapering);
 }
 
-decShapeBox::decShapeBox( const decVector &halfExtends, const decVector2 &tapering,
-const decVector &position ) : decShape( position ){
-	SetHalfExtends( halfExtends );
-	SetTapering( tapering );
+decShapeBox::decShapeBox(const decVector &halfExtends, const decVector2 &tapering,
+const decVector &position) : decShape(position){
+	SetHalfExtends(halfExtends);
+	SetTapering(tapering);
 }
 
-decShapeBox::decShapeBox( const decVector &halfExtends, const decVector2 &tapering,
-const decVector &position, const decQuaternion &orientation ) : decShape( position, orientation ){
-	SetHalfExtends( halfExtends );
-	SetTapering( tapering );
+decShapeBox::decShapeBox(const decVector &halfExtends, const decVector2 &tapering,
+const decVector &position, const decQuaternion &orientation) : decShape(position, orientation){
+	SetHalfExtends(halfExtends);
+	SetTapering(tapering);
 }
 
 decShapeBox::~decShapeBox(){
@@ -77,18 +77,18 @@ decShapeBox::~decShapeBox(){
 // Management
 ///////////////
 
-void decShapeBox::SetHalfExtends( const decVector &halfExtends ){
-	pHalfExtends = halfExtends.Largest( decVector( 0.0f, 0.0f, 0.0f ) );
+void decShapeBox::SetHalfExtends(const decVector &halfExtends){
+	pHalfExtends = halfExtends.Largest(decVector(0.0f, 0.0f, 0.0f));
 }
 
-void decShapeBox::SetTapering( const decVector2 &tapering ){
-	pTapering = tapering.Largest( decVector2( 0.0f, 0.0f ) );
+void decShapeBox::SetTapering(const decVector2 &tapering){
+	pTapering = tapering.Largest(decVector2(0.0f, 0.0f));
 }
 
 
 
 decShape *decShapeBox::Copy() const{
-	return new decShapeBox( pHalfExtends, pTapering, GetPosition(), GetOrientation() );
+	return new decShapeBox(pHalfExtends, pTapering, GetPosition(), GetOrientation());
 }
 
 
@@ -96,6 +96,6 @@ decShape *decShapeBox::Copy() const{
 // Visiting
 /////////////
 
-void decShapeBox::Visit( decShapeVisitor &visitor ){
-	visitor.VisitShapeBox( *this );
+void decShapeBox::Visit(decShapeVisitor &visitor){
+	visitor.VisitShapeBox(*this);
 }

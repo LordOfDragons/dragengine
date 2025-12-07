@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new boundary map. */
-	deoglLightBoundaryMap( deoglRenderThread &renderThread, int size );
+	deoglLightBoundaryMap(deoglRenderThread &renderThread, int size);
 	/** Cleans up the boundary map. */
 	~deoglLightBoundaryMap();
 	/*@}*/
@@ -70,7 +70,7 @@ public:
 	/** Retrieves the level count. */
 	inline int GetLevelCount() const{ return pLevelCount; }
 	/** Retrieves the base level for the given size. */
-	int GetBaseLevel( int baseSize );
+	int GetBaseLevel(int baseSize);
 	
 	/** Retrieves the minimum texture. */
 	inline deoglTexture *GetTextureMin() const{ return pTextureMin; }
@@ -80,7 +80,7 @@ public:
 	deoglFramebuffer *GetFBOAt(int level);
 	
 	/** Retrieve the result. */
-	void GetResult( decVector &boundaryMin, decVector &boundaryMax );
+	void GetResult(decVector &boundaryMin, decVector &boundaryMax);
 	/*@}*/
 	
 private:

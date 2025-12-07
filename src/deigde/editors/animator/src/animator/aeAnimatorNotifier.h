@@ -57,70 +57,70 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( aeAnimator *animator );
+	virtual void StateChanged(aeAnimator *animator);
 	/** Undos changed. */
-	virtual void UndoChanged( aeAnimator *animator );
+	virtual void UndoChanged(aeAnimator *animator);
 	/** Animator changed. */
-	virtual void AnimatorChanged( aeAnimator *animator );
+	virtual void AnimatorChanged(aeAnimator *animator);
 	/** View changed. */
-	virtual void ViewChanged( aeAnimator *animator );
+	virtual void ViewChanged(aeAnimator *animator);
 	/** Model changed. */
-	virtual void ModelChanged( aeAnimator *animator );
+	virtual void ModelChanged(aeAnimator *animator);
 	/** Sky changed. */
-	virtual void SkyChanged( aeAnimator *animator );
+	virtual void SkyChanged(aeAnimator *animator);
 	/** The environment object changed. */
-	virtual void EnvObjectChanged( aeAnimator *animator );
+	virtual void EnvObjectChanged(aeAnimator *animator);
 	
 	/** Rig changed. */
-	virtual void RigChanged( aeAnimator *animator );
+	virtual void RigChanged(aeAnimator *animator);
 	
 	/** Animation changed. */
-	virtual void AnimationChanged( aeAnimator *animator );
+	virtual void AnimationChanged(aeAnimator *animator);
 	/** Playback changed. */
-	virtual void PlaybackChanged( aeAnimator *animator );
+	virtual void PlaybackChanged(aeAnimator *animator);
 	/** Locomotion changed. */
-	virtual void LocomotionChanged( aeAnimator *animator );
+	virtual void LocomotionChanged(aeAnimator *animator);
 	
 	/** Active controller changed. */
-	virtual void ActiveControllerChanged( aeAnimator *animator, aeController *controller );
+	virtual void ActiveControllerChanged(aeAnimator *animator, aeController *controller);
 	/** Controller changed. */
-	virtual void ControllerChanged( aeAnimator *animator, aeController *controller );
+	virtual void ControllerChanged(aeAnimator *animator, aeController *controller);
 	/** Controller name changed. */
-	virtual void ControllerNameChanged( aeAnimator *animator, aeController *controller );
+	virtual void ControllerNameChanged(aeAnimator *animator, aeController *controller);
 	/** Controller value changed. */
-	virtual void ControllerValueChanged( aeAnimator *animator, aeController *controller );
+	virtual void ControllerValueChanged(aeAnimator *animator, aeController *controller);
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged( aeAnimator *animator );
+	virtual void ControllerStructureChanged(aeAnimator *animator);
 	
 	/** Active link changed. */
-	virtual void ActiveLinkChanged( aeAnimator *animator, aeLink *link );
+	virtual void ActiveLinkChanged(aeAnimator *animator, aeLink *link);
 	/** Link changed. */
-	virtual void LinkChanged( aeAnimator *animator, aeLink *link );
+	virtual void LinkChanged(aeAnimator *animator, aeLink *link);
 	/** Link name changed. */
-	virtual void LinkNameChanged( aeAnimator *animator, aeLink *link );
+	virtual void LinkNameChanged(aeAnimator *animator, aeLink *link);
 	/** Link count or order changed. */
-	virtual void LinkStructureChanged( aeAnimator *animator );
+	virtual void LinkStructureChanged(aeAnimator *animator);
 	
 	/** Active rule changed. */
-	virtual void ActiveRuleChanged( aeAnimator *animator, aeRule *rule );
+	virtual void ActiveRuleChanged(aeAnimator *animator, aeRule *rule);
 	/** Rule changed. */
-	virtual void RuleChanged( aeAnimator *animator, aeRule *rule );
+	virtual void RuleChanged(aeAnimator *animator, aeRule *rule);
 	/** Rule name changed. */
-	virtual void RuleNameChanged( aeAnimator *animator, aeRule *rule );
+	virtual void RuleNameChanged(aeAnimator *animator, aeRule *rule);
 	/** Rule count or order changed. */
-	virtual void RuleStructureChanged( aeAnimator *animator );
+	virtual void RuleStructureChanged(aeAnimator *animator);
 	
 	/** Active attachment changed. */
-	virtual void ActiveAttachmentChanged( aeAnimator *animator, aeAttachment *attachment );
+	virtual void ActiveAttachmentChanged(aeAnimator *animator, aeAttachment *attachment);
 	/** Attachment changed. */
-	virtual void AttachmentChanged( aeAnimator *animator, aeAttachment *attachment );
+	virtual void AttachmentChanged(aeAnimator *animator, aeAttachment *attachment);
 	/** Attachment count changed added. */
-	virtual void AttachmentStructureChanged( aeAnimator *animator );
+	virtual void AttachmentStructureChanged(aeAnimator *animator);
 	
 	/** Camera changed. */
-	virtual void CameraChanged( aeAnimator *animator );
+	virtual void CameraChanged(aeAnimator *animator);
 	/** Camera view changed. */
-	virtual void CameraViewChanged( aeAnimator *animator );
+	virtual void CameraViewChanged(aeAnimator *animator);
 	/*@}*/
 };
 

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetMaxValue( gdeGameDefinition *gamedef, gdeProperty *property, float newValue );
+	gdeUGDDPSetMaxValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

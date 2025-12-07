@@ -39,27 +39,27 @@ const char * const seClipboardDataPropertyNode::TYPE_NAME = "property-node";
 // Constructor, destructor
 ////////////////////////////
 
-seClipboardDataPropertyNode::seClipboardDataPropertyNode( const sePropertyNodeList &nodes ) :
-igdeClipboardData( TYPE_NAME )
+seClipboardDataPropertyNode::seClipboardDataPropertyNode(const sePropertyNodeList &nodes) :
+igdeClipboardData(TYPE_NAME)
 {
 	const int count = nodes.GetCount();
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
+	if(count == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	sePropertyNode *node = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			node = nodes.GetAt( i )->Copy();
-			pNodes.Add( node );
+		for(i=0; i<count; i++){
+			node = nodes.GetAt(i)->Copy();
+			pNodes.Add(node);
 			node->FreeReference();
 			node = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( node ){
+	}catch(const deException &){
+		if(node){
 			node->FreeReference();
 		}
 		pNodes.RemoveAll();
@@ -79,6 +79,6 @@ int seClipboardDataPropertyNode::GetCount() const{
 	return pNodes.GetCount();
 }
 
-const sePropertyNode &seClipboardDataPropertyNode::GetAt( int index ) const{
-	return *( ( const sePropertyNode * )pNodes.GetAt( index ) );
+const sePropertyNode &seClipboardDataPropertyNode::GetAt(int index) const{
+	return *((const sePropertyNode *)pNodes.GetAt(index));
 }

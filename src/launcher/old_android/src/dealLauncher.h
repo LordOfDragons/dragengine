@@ -132,7 +132,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create launcher. */
-	dealLauncher( android_app &androidApp );
+	dealLauncher(android_app &androidApp);
 	
 	/** \brief Clean up launcher. */
 	~dealLauncher();
@@ -186,7 +186,7 @@ public:
 	 * \param[in] filename Filename relative to asset root without leading slash.
 	 * \param[out] memoryFile Memory file to write asset data to.
 	 */
-	void LoadAsset( const char *filename, decMemoryFile &memoryFile );
+	void LoadAsset(const char *filename, decMemoryFile &memoryFile);
 	
 	
 	
@@ -247,7 +247,7 @@ public:
 	bool FrameLoop();
 	
 	/** \brief Process input event. */
-	void ProcessInputEvent( const AInputEvent &event );
+	void ProcessInputEvent(const AInputEvent &event);
 	
 	/** \brief Focused. */
 	inline bool Focused() const{ return pFocused; }
@@ -298,9 +298,9 @@ private:
 	void pLocateProfile();
 	void pPrintGameProblems() const;
 	void pPrintProfileProblems() const;
-	void pPrintModuleProblem( const char *moduleName, dealEngineModule::eModuleTypes moduleType ) const;
-	void pReadState( decBaseFileReader &reader );
-	void pWriteState( decBaseFileWriter &writer );
+	void pPrintModuleProblem(const char *moduleName, dealEngineModule::eModuleTypes moduleType) const;
+	void pReadState(decBaseFileReader &reader);
+	void pWriteState(decBaseFileWriter &writer);
 };
 
 #endif

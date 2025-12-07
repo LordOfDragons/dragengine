@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerAdd::seULayerAdd( seSky *sky, seLayer *layer ) :
-pSky( NULL ),
-pLayer( NULL )
+seULayerAdd::seULayerAdd(seSky *sky, seLayer *layer) :
+pSky(NULL),
+pLayer(NULL)
 {
-	if( ! sky || ! layer ){
-		DETHROW( deeInvalidParam );
+	if(!sky || !layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add Layer" );
+	SetShortInfo("Add Layer");
 	
 	pSky = sky;
 	sky->AddReference();
@@ -58,10 +58,10 @@ pLayer( NULL )
 }
 
 seULayerAdd::~seULayerAdd(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -72,10 +72,10 @@ seULayerAdd::~seULayerAdd(){
 ///////////////
 
 void seULayerAdd::Undo(){
-	pSky->RemoveLayer( pLayer );
+	pSky->RemoveLayer(pLayer);
 }
 
 void seULayerAdd::Redo(){
-	pSky->AddLayer( pLayer );
-	pSky->SetActiveLayer( pLayer );
+	pSky->AddLayer(pLayer);
+	pSky->SetActiveLayer(pLayer);
 }

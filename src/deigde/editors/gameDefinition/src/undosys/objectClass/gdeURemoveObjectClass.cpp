@@ -40,19 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeURemoveObjectClass::gdeURemoveObjectClass( gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass ) :
-pGameDefinition( NULL ),
-pObjectClass( NULL )
+gdeURemoveObjectClass::gdeURemoveObjectClass(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) :
+pGameDefinition(NULL),
+pObjectClass(NULL)
 {
-	if( ! gameDefinition || ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition || !objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! gameDefinition->GetObjectClasses().Has( objectClass ) ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition->GetObjectClasses().Has(objectClass)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove object class" );
+	SetShortInfo("Remove object class");
 	
 	pObjectClass = objectClass;
 	objectClass->AddReference();
@@ -62,10 +62,10 @@ pObjectClass( NULL )
 }
 
 gdeURemoveObjectClass::~gdeURemoveObjectClass(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -76,9 +76,9 @@ gdeURemoveObjectClass::~gdeURemoveObjectClass(){
 ///////////////
 
 void gdeURemoveObjectClass::Undo(){
-	pGameDefinition->AddObjectClass( pObjectClass );
+	pGameDefinition->AddObjectClass(pObjectClass);
 }
 
 void gdeURemoveObjectClass::Redo(){
-	pGameDefinition->RemoveObjectClass( pObjectClass );
+	pGameDefinition->RemoveObjectClass(pObjectClass);
 }

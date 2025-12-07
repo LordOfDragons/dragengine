@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSREnable::deoglPSSREnable( deGraphicOpenGl &ogl ) :
-deoglParameterBool( ogl )
+deoglPSSREnable::deoglPSSREnable(deGraphicOpenGl &ogl) :
+deoglParameterBool(ogl)
 {
-	SetName( "ssrEnable" );
-	SetDescription( "Enables Screen Space Reflections (SSR)."
+	SetName("ssrEnable");
+	SetDescription("Enables Screen Space Reflections (SSR)."
 		" This adds higher quality reflections between objects but only for objects visible on screen."
-		" Enabling SSR is expensive. Disable SSR to improve performance." );
-	SetCategory( ecBasic );
-	SetDisplayName( "SSR" );
-	SetDefaultValue( "1" );
+		" Enabling SSR is expensive. Disable SSR to improve performance.");
+	SetCategory(ecBasic);
+	SetDisplayName("SSR");
+	SetDefaultValue("1");
 }
 
 deoglPSSREnable::~deoglPSSREnable(){
@@ -64,6 +64,6 @@ bool deoglPSSREnable::GetParameterBool(){
 	return pOgl.GetConfiguration().GetSSREnable();
 }
 
-void deoglPSSREnable::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetSSREnable( value );
+void deoglPSSREnable::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetSSREnable(value);
 }

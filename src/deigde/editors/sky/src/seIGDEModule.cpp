@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seIGDEModule::seIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+seIGDEModule::seIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 seIGDEModule::~seIGDEModule(){
@@ -48,7 +48,7 @@ seIGDEModule::~seIGDEModule(){
 ///////////////
 
 void seIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new seWindowMain( *this ) );
+	if(!GetEditorWindow()){
+		SetEditorWindow(new seWindowMain(*this));
 	}
 }

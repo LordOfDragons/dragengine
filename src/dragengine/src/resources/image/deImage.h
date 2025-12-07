@@ -174,9 +174,9 @@ public:
 	 * \param[in] components Number of components (1 to 4 inclusive).
 	 * \param[in] bitCount Bit Count of each component (8, 16 or 32).
 	 */
-	deImage( deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	deImage(deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
 		TIME_SYSTEM modificationTime, int width, int height, int depth,
-		int componentCount, int bitCount );
+		int componentCount, int bitCount);
 	
 	/**
 	 * \brief Create image object from XPM image.
@@ -185,15 +185,15 @@ public:
 	 * \param[in] filename Filename of the image.
 	 * \param[in] image Image data.
 	 */
-	deImage( deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime, decXpmImage *image );
+	deImage(deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime, decXpmImage *image);
 	
 	/**
 	 * \brief Create image for internal loading.
 	 * \warning This is a special internal constructor. Never ever call this on your own!
 	 */
-	deImage( deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deImage(deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -374,7 +374,7 @@ public:
 	inline deBaseGraphicImage *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicImage *peer );
+	void SetPeerGraphic(deBaseGraphicImage *peer);
 	/*@}*/
 	
 	
@@ -385,7 +385,7 @@ public:
 	 * \brief Finalize construction for internal loading.
 	 * \warning This is a special internal constructor. Never ever call this on your own!
 	 */
-	void FinalizeConstruction( int width, int height, int depth, int componentCount, int bitCount );
+	void FinalizeConstruction(int width, int height, int depth, int componentCount, int bitCount);
 	
 	/**
 	 * \brief Retain image data for peers requiring it.

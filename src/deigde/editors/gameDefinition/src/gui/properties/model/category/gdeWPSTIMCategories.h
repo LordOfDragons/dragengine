@@ -49,7 +49,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategories( gdeWPSTreeModel &tree );
+	gdeWPSTIMCategories(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -79,7 +79,7 @@ public:
 	virtual void OnAddedToTree();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

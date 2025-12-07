@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogStartUp( igdeWindowMain &windowMain );
+	igdeDialogStartUp(igdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */

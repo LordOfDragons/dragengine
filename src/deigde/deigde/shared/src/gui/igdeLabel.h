@@ -75,19 +75,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create label. */
-	igdeLabel( igdeEnvironment &environment, const char *text, int alignment = eaCenter | eaMiddle );
+	igdeLabel(igdeEnvironment &environment, const char *text, int alignment = eaCenter | eaMiddle);
 	
 	/** \brief Create label. */
-	igdeLabel( igdeEnvironment &environment, const char *text, const char *description,
-		int alignment = eaCenter | eaMiddle );
+	igdeLabel(igdeEnvironment &environment, const char *text, const char *description,
+		int alignment = eaCenter | eaMiddle);
 	
 	/** \brief Create label. */
-	igdeLabel( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		int alignment = eaCenter | eaMiddle );
+	igdeLabel(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		int alignment = eaCenter | eaMiddle);
 	
 	/** \brief Create label. */
-	igdeLabel( igdeEnvironment &environment, const char *text, const char *description,
-		igdeIcon *icon, int alignment = eaCenter | eaMiddle );
+	igdeLabel(igdeEnvironment &environment, const char *text, const char *description,
+		igdeIcon *icon, int alignment = eaCenter | eaMiddle);
 	
 	
 	
@@ -110,25 +110,25 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Alignment. */
 	inline int GetAlignment() const{ return pAlignment; }
 	
 	/** \brief Set alignment. */
-	void SetAlignment( int alignment );
+	void SetAlignment(int alignment);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
 	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	void SetIcon(igdeIcon *icon);
 	/*@}*/
 	
 	

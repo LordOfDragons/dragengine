@@ -20,7 +20,7 @@ public:
 	const char *GetTestName();
 	
 private:
-	void pInitMatrix( decTexMatrix2 &matrix, float base );
+	void pInitMatrix(decTexMatrix2 &matrix, float base);
 	void pTestInitial();
 	void pTestCreation();
 	void pTestSet();

@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new base system linked to the given engine. */
-	deBaseSystem( deEngine *engine, const char *systemName, int requiredModuleType );
+	deBaseSystem(deEngine *engine, const char *systemName, int requiredModuleType);
 	
 	/** \brief Clean up base system. */
 	virtual ~deBaseSystem();
@@ -109,7 +109,7 @@ public:
 	virtual bool CanStart();
 	
 	/** \brief Set if system has failed. */
-	void SetHasFailed( bool hasFailed );
+	void SetHasFailed(bool hasFailed);
 	
 	/** \brief Start system and the active loadable module. */
 	virtual void Start();
@@ -118,7 +118,7 @@ public:
 	virtual void Stop();
 	
 	/** \brief Check if at least one module is working and select the first one. */
-	void CheckAndActivateFirst( deModuleSystem::eModuleTypes type );
+	void CheckAndActivateFirst(deModuleSystem::eModuleTypes type);
 	/*@}*/
 	
 	
@@ -130,7 +130,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.
@@ -151,46 +151,46 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Output information message on the console. */
-	void LogInfo( const char *message );
+	void LogInfo(const char *message);
 	
 	/** \brief Output formated information message on the console. */
-	void LogInfoFormat( const char *message, ... )
+	void LogInfoFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 		
 	/** \brief Output formated information message on the console. */
-	void LogInfoFormatUsing( const char *message, va_list args );
+	void LogInfoFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output warning message on the console. */
-	void LogWarn( const char *message );
+	void LogWarn(const char *message);
 	
 	/** \brief Output formated warning message on the console. */
-	void LogWarnFormat( const char *message, ... )
+	void LogWarnFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 		
 	/** \brief Output formated warning message on the console. */
-	void LogWarnFormatUsing( const char *message, va_list args );
+	void LogWarnFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output error message on the console. */
-	void LogError( const char *message );
+	void LogError(const char *message);
 	
 	/** \brief Output formated error message on the console. */
-	void LogErrorFormat( const char *message, ... )
+	void LogErrorFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 		
 	/** \brief Output formated error message on the console. */
-	void LogErrorFormatUsing( const char *message, va_list args );
+	void LogErrorFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output exception as error message on the console. */
-	void LogException( const deException &exception );
+	void LogException(const deException &exception);
 	/*@}*/
 };
 

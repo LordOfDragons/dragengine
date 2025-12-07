@@ -45,10 +45,10 @@
 ////////////////////////////
 
 ceWPTTIMConditionContainer::ceWPTTIMConditionContainer(
-ceWindowMain &windowMain, ceConversation &conversation, ceConversationAction &action, eTypes type ) :
-ceWPTTreeItemModel( windowMain, conversation, type ),
-pAction( &action ),
-pChildCondition( NULL ){
+ceWindowMain &windowMain, ceConversation &conversation, ceConversationAction &action, eTypes type) :
+ceWPTTreeItemModel(windowMain, conversation, type),
+pAction(&action),
+pChildCondition(NULL){
 }
 
 ceWPTTIMConditionContainer::~ceWPTTIMConditionContainer(){
@@ -59,54 +59,54 @@ ceWPTTIMConditionContainer::~ceWPTTIMConditionContainer(){
 // Management
 ///////////////
 
-void ceWPTTIMConditionContainer::SetCondition( ceConversationCondition *condition ){
-	if( pCondition == condition ){
+void ceWPTTIMConditionContainer::SetCondition(ceConversationCondition *condition){
+	if(pCondition == condition){
 		return;
 	}
 	
-	if( pChildCondition ){
-		RemoveChild( pChildCondition );
+	if(pChildCondition){
+		RemoveChild(pChildCondition);
 		pChildCondition = NULL;
 	}
 	
 	pCondition = condition;
 	
-	if( ! condition ){
+	if(!condition){
 		return;
 	}
 	
 	ceWPTTIMCondition *child = NULL;
 	try{
-		child = ceWPTTIMConditions::CreateConditionModel( GetWindowMain(),
-			GetConversation(), GetAction(), condition );
-		AddChild( child );
+		child = ceWPTTIMConditions::CreateConditionModel(GetWindowMain(),
+			GetConversation(), GetAction(), condition);
+		AddChild(child);
 		pChildCondition = child;
 		child->FreeReference(); // held by superclass child list
 		
-	}catch( const deException & ){
-		if( child ){
+	}catch(const deException &){
+		if(child){
 			child->FreeReference();
 		}
 		throw;
 	}
 }
 
-void ceWPTTIMConditionContainer::SetOrUpdateCondition( ceConversationCondition *condition ){
-	if( pCondition == condition ){
-		if( pChildCondition ){
+void ceWPTTIMConditionContainer::SetOrUpdateCondition(ceConversationCondition *condition){
+	if(pCondition == condition){
+		if(pChildCondition){
 			pChildCondition->Update();
 		}
 		
 	}else{
-		SetCondition( condition );
+		SetCondition(condition);
 	}
 }
 
 
 
-ceWPTTIMCondition *ceWPTTIMConditionContainer::DeepFindCondition( ceConversationCondition *condition ){
-	if( pChildCondition ){
-		return pChildCondition->DeepFindCondition( condition );
+ceWPTTIMCondition *ceWPTTIMConditionContainer::DeepFindCondition(ceConversationCondition *condition){
+	if(pChildCondition){
+		return pChildCondition->DeepFindCondition(condition);
 		
 	}else{
 		return NULL;

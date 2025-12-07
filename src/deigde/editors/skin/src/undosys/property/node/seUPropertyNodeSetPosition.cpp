@@ -39,15 +39,15 @@
 ////////////////////////////
 
 seUPropertyNodeSetPosition::seUPropertyNodeSetPosition(
-sePropertyNode *node, const decPoint3 &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNode *node, const decPoint3 &newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set position" );
+	SetShortInfo("Node set position");
 	
 	pOldValue = node->GetPosition();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetPosition::~seUPropertyNodeSetPosition(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUPropertyNodeSetPosition::~seUPropertyNodeSetPosition(){
 ///////////////
 
 void seUPropertyNodeSetPosition::Undo(){
-	pNode->SetPosition( pOldValue );
+	pNode->SetPosition(pOldValue);
 }
 
 void seUPropertyNodeSetPosition::Redo(){
-	pNode->SetPosition( pNewValue );
+	pNode->SetPosition(pNewValue);
 }

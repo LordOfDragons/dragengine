@@ -47,13 +47,13 @@ private:
 	
 public:
 	// constructor
-	deClassServer( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassServer(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassServer();
 	
 	// internal functions
-	void CreateClassMembers( dsEngine *engine );
-	deServer *GetServer( dsRealObject *myself ) const;
-	void PushServer( dsRunTime *rt, deServer *server );
+	void CreateClassMembers(dsEngine *engine);
+	deServer *GetServer(dsRealObject *myself) const;
+	void PushServer(dsRunTime *rt, deServer *server);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
@@ -64,24 +64,24 @@ private:
 		dsClass *clsSvr, *clsVoid, *clsInt, *clsBool, *clsStr, *clsObj, *clsSvrL;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetAddress );
+	DEF_NATFUNC(nfGetAddress);
 	
-	DEF_NATFUNC( nfListenOn );
-	DEF_NATFUNC( nfStopListening );
+	DEF_NATFUNC(nfListenOn);
+	DEF_NATFUNC(nfStopListening);
 	
-	DEF_NATFUNC( nfGetServerListener );
-	DEF_NATFUNC( nfSetServerListener );
+	DEF_NATFUNC(nfGetServerListener);
+	DEF_NATFUNC(nfSetServerListener);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

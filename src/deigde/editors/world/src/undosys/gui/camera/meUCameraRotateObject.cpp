@@ -64,7 +64,7 @@ void meUCameraRotateObject::SetNewRotation(const decVector &rotation){
 }
 
 bool meUCameraRotateObject::HasChanged() const{
-	return ! pNewRotation.IsEqualTo(pOldRotation);
+	return !pNewRotation.IsEqualTo(pOldRotation);
 }
 
 void meUCameraRotateObject::Undo(){

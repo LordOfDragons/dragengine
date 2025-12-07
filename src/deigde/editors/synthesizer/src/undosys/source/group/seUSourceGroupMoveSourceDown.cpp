@@ -39,17 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupMoveSourceDown::seUSourceGroupMoveSourceDown( seSourceGroup *group, seSource *source ) :
-pGroup( NULL ),
-pSource( NULL )
+seUSourceGroupMoveSourceDown::seUSourceGroupMoveSourceDown(seSourceGroup *group, seSource *source) :
+pGroup(NULL),
+pSource(NULL)
 {
-	if( ! group || ! source ){
-		DETHROW( deeInvalidParam );
+	if(!group || !source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pIndex = group->GetSources().IndexOf( source );
-	if( pIndex == -1 || pIndex == group->GetSources().GetCount() - 1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = group->GetSources().IndexOf(source);
+	if(pIndex == -1 || pIndex == group->GetSources().GetCount() - 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGroup = group;
@@ -60,10 +60,10 @@ pSource( NULL )
 }
 
 seUSourceGroupMoveSourceDown::~seUSourceGroupMoveSourceDown(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
-	if( pGroup ){
+	if(pGroup){
 		pGroup->FreeReference();
 	}
 }
@@ -74,9 +74,9 @@ seUSourceGroupMoveSourceDown::~seUSourceGroupMoveSourceDown(){
 ///////////////
 
 void seUSourceGroupMoveSourceDown::Undo(){
-	pGroup->MoveSourceTo( pSource, pIndex );
+	pGroup->MoveSourceTo(pSource, pIndex);
 }
 
 void seUSourceGroupMoveSourceDown::Redo(){
-	pGroup->MoveSourceTo( pSource, pIndex + 1 );
+	pGroup->MoveSourceTo(pSource, pIndex + 1);
 }

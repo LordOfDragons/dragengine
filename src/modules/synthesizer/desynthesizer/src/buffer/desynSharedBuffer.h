@@ -62,7 +62,7 @@ public:
 	 * \brief Set buffer size.
 	 * \details Resizes buffer to fit new size.
 	 */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/** \brief Buffer is in use. */
 	inline bool GetInUse() const{ return pInUse; }
@@ -72,7 +72,7 @@ public:
 	 * \details For use by desynSharedBufferList only. Use desynSharedBuffer::ReleaseBuffer
 	 *          to return the buffer to the list of available shared buffers.
 	 */
-	void SetInUse( bool inUse );
+	void SetInUse(bool inUse);
 	/*@}*/
 };
 

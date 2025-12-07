@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	meHeightTerrainTexture( deEngine *engine, const char *name );
+	meHeightTerrainTexture(deEngine *engine, const char *name);
 	/** Cleans up the object. */
 	virtual ~meHeightTerrainTexture();
 	/*@}*/
@@ -89,52 +89,52 @@ public:
 	/** Creates an engine texture based on the settings in this texture. */
 	deHeightTerrainTexture *CreateEngineTexture() const;
 	/** Sets the texture or NULL. */
-	void SetEngineTexture( deHeightTerrainTexture *engTexture );
+	void SetEngineTexture(deHeightTerrainTexture *engTexture);
 	
 	/** Retrieves the parent height terrain sector or NULL. */
 	inline meHeightTerrainSector *GetSector() const{ return pSector; }
 	/** Sets the parent height terrain sector or NULL. */
-	void SetSector( meHeightTerrainSector *sector );
+	void SetSector(meHeightTerrainSector *sector);
 	
 	/** Retrieves the name of the texture. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name of the texture. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the type number. */
 	inline int GetTypeNumber() const{ return pTypeNumber; }
 	/** Sets the type number. */
-	void SetTypeNumber( int typeNumber );
+	void SetTypeNumber(int typeNumber);
 	
 	/** Retrieves the skin file path. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin file path. */
-	void SetPathSkin( const char *path );
+	void SetPathSkin(const char *path);
 	
 	/** Retrieves the projection offset in u direction. */
 	inline float GetProjectionOffsetU() const{ return pProjOffset.x; }
 	/** Sets the projection offset in u direction. */
-	void SetProjectionOffsetU( float offset );
+	void SetProjectionOffsetU(float offset);
 	/** Retrieves the projection offset in v direction. */
 	inline float GetProjectionOffsetV() const{ return pProjOffset.y; }
 	/** Sets the projection offset in v direction. */
-	void SetProjectionOffsetV( float offset );
+	void SetProjectionOffsetV(float offset);
 	/** Retrieves the projection scaling in u direction. */
 	inline float GetProjectionScalingU() const{ return pProjScaling.x; }
 	/** Sets the projection scaling in u direction. */
-	void SetProjectionScalingU( float scaling );
+	void SetProjectionScalingU(float scaling);
 	/** Retrieves the projection scaling in v direction. */
 	inline float GetProjectionScalingV() const{ return pProjScaling.y; }
 	/** Sets the projection scaling in v direction. */
-	void SetProjectionScalingV( float scaling );
+	void SetProjectionScalingV(float scaling);
 	/** Retrieves the projection rotation. */
 	inline float GetProjectionRotation() const{ return pProjRotation; }
 	/** Sets the projection rotation. */
-	void SetProjectionRotation( float rotation );
+	void SetProjectionRotation(float rotation);
 	
 	/** Retrieves the mask path. */
 	inline const decString &GetPathMask() const{ return pPathMask; }
 	/** Sets the mask path. */
-	void SetPathMask( const char *path, bool load );
+	void SetPathMask(const char *path, bool load);
 	/** Retrieves the mask image. */
 	inline deImage *GetMaskImage() const{ return pMaskImage; }
 	
@@ -142,18 +142,18 @@ public:
 	deImage *GetOrAddMaskImage();
 	
 	/** Sets the mask image. */
-	void SetMaskImage( deImage *image );
+	void SetMaskImage(deImage *image);
 	/** Loads the mask image using the mask path. */
 	void LoadMaskImage();
 	
 	/** Determines if the mask changed. */
 	inline bool GetMaskChanged() const{ return pMaskChanged; }
 	/** Sets if the mask changed. */
-	void SetMaskChanged( bool changed );
+	void SetMaskChanged(bool changed);
 	/** Determines if the mask has been saved. */
 	inline bool GetMaskSaved() const{ return pMaskSaved; }
 	/** Sets if the mask has been saved. */
-	void SetMaskSaved( bool saved );
+	void SetMaskSaved(bool saved);
 	
 	/** Notifies that the texture changed. */
 	void NotifyTextureChanged();

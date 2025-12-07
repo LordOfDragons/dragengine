@@ -35,13 +35,13 @@
 ////////////////////////////
 
 deVFSContainer::deVFSContainer() :
-pRootPath( decPath::CreatePathUnix( "/" ) ),
-pHidden( false ){
+pRootPath(decPath::CreatePathUnix("/")),
+pHidden(false){
 }
 
-deVFSContainer::deVFSContainer( const decPath &rootPath ) :
-pRootPath( rootPath ),
-pHidden( false ){
+deVFSContainer::deVFSContainer(const decPath &rootPath) :
+pRootPath(rootPath),
+pHidden(false){
 }
 
 deVFSContainer::~deVFSContainer(){
@@ -52,7 +52,7 @@ deVFSContainer::~deVFSContainer(){
 // Management
 ///////////////
 
-void deVFSContainer::SetHidden( bool hidden ){
+void deVFSContainer::SetHidden(bool hidden){
 	pHidden = hidden;
 }
 
@@ -60,31 +60,31 @@ int deVFSContainer::GetHiddenPathCount() const{
 	return pHiddenPath.GetCount();
 }
 
-const decPath &deVFSContainer::GetHiddenPathAt( int index ) const{
-	return pHiddenPath.GetAt( index );
+const decPath &deVFSContainer::GetHiddenPathAt(int index) const{
+	return pHiddenPath.GetAt(index);
 }
 
-bool deVFSContainer::HasHiddenPath( const decPath &path ) const{
-	return pHiddenPath.Has( path );
+bool deVFSContainer::HasHiddenPath(const decPath &path) const{
+	return pHiddenPath.Has(path);
 }
 
-void deVFSContainer::AddHiddenPath( const decPath &path ){
-	pHiddenPath.AddIfAbsent( path );
+void deVFSContainer::AddHiddenPath(const decPath &path){
+	pHiddenPath.AddIfAbsent(path);
 }
 
-void deVFSContainer::RemoveHiddenPath( const decPath &path ){
-	pHiddenPath.RemoveIfPresent( path );
+void deVFSContainer::RemoveHiddenPath(const decPath &path){
+	pHiddenPath.RemoveIfPresent(path);
 }
 
 void deVFSContainer::RemoveAllHiddenPath(){
 	pHiddenPath.RemoveAll();
 }
 
-bool deVFSContainer::IsPathHiddenBelow( const decPath &path ){
+bool deVFSContainer::IsPathHiddenBelow(const decPath &path){
 	const int count = pHiddenPath.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( pHiddenPath.GetAt( i ).IsEqualOrParentOf( path ) ){
+	for(i=0; i<count; i++){
+		if(pHiddenPath.GetAt(i).IsEqualOrParentOf(path)){
 			return true;
 		}
 	}

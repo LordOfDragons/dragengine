@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAActorRemove::ceWPTTIMAActorRemove( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAActorRemove *action ) :
-ceWPTTIMAction( windowMain, etActionActorRemove, conversation, action )
+ceWPTTIMAActorRemove::ceWPTTIMAActorRemove(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAActorRemove *action) :
+ceWPTTIMAction(windowMain, etActionActorRemove, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionActorRemove() );
+	SetIcon(windowMain.GetIconActionActorRemove());
 	Update();
 }
 
@@ -61,6 +61,6 @@ void ceWPTTIMAActorRemove::Update(){
 	const ceCAActorRemove &action = *GetActionActorRemove();
 	decString text;
 	
-	text.Format( "Actor Remove (%s)", action.GetActor().GetString() );
-	SetText( text );
+	text.Format("Actor Remove (%s)", action.GetActor().GetString());
+	SetText(text);
 }

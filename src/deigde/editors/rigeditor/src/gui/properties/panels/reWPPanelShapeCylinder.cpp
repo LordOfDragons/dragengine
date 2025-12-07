@@ -59,24 +59,24 @@ namespace {
 class cTextHalfHeight : public igdeTextFieldListener{
 	reWPPanelShapeCylinder &pPanel;
 public:
-	cTextHalfHeight( reWPPanelShapeCylinder &panel ) : pPanel( panel ){ }
+	cTextHalfHeight(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeCylinder * const cylinder = ( reRigShapeCylinder* )pPanel.GetShape();
-		if( ! rig || ! cylinder ){
+		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
+		if(!rig || !cylinder){
 			return;
 		}
 		
 		const float value = textField->GetFloat();
-		if( fabsf( value - cylinder->GetHalfHeight() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - cylinder->GetHalfHeight()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		reUSetShapeCylinderHalfHeight::Ref undo(reUSetShapeCylinderHalfHeight::Ref::NewWith(
 			cylinder, value));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -84,24 +84,24 @@ public:
 class cTextTopRadius : public igdeTextFieldListener{
 	reWPPanelShapeCylinder &pPanel;
 public:
-	cTextTopRadius( reWPPanelShapeCylinder &panel ) : pPanel( panel ){ }
+	cTextTopRadius(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeCylinder * const cylinder = ( reRigShapeCylinder* )pPanel.GetShape();
-		if( ! rig || ! cylinder ){
+		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
+		if(!rig || !cylinder){
 			return;
 		}
 		
 		const float value = textField->GetFloat();
-		if( fabsf( value - cylinder->GetTopRadius() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - cylinder->GetTopRadius()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		reUSetShapeCylinderTopRadius::Ref undo(reUSetShapeCylinderTopRadius::Ref::NewWith(
 			cylinder, value));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -109,24 +109,24 @@ public:
 class cTextBottomRadius : public igdeTextFieldListener{
 	reWPPanelShapeCylinder &pPanel;
 public:
-	cTextBottomRadius( reWPPanelShapeCylinder &panel ) : pPanel( panel ){ }
+	cTextBottomRadius(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeCylinder * const cylinder = ( reRigShapeCylinder* )pPanel.GetShape();
-		if( ! rig || ! cylinder ){
+		reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)pPanel.GetShape();
+		if(!rig || !cylinder){
 			return;
 		}
 		
 		const float value = textField->GetFloat();
-		if( fabsf( value - cylinder->GetBottomRadius() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - cylinder->GetBottomRadius()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		reUSetShapeCylinderBottomRadius::Ref undo(reUSetShapeCylinderBottomRadius::Ref::NewWith(
 			cylinder, value));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -141,8 +141,8 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reWPPanelShapeCylinder::reWPPanelShapeCylinder( reWPShape &wpShapes ) :
-reWPPanelShape( wpShapes, reRigShape::estCylinder )
+reWPPanelShapeCylinder::reWPPanelShapeCylinder(reWPShape &wpShapes) :
+reWPPanelShape(wpShapes, reRigShape::estCylinder)
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
 	igdeContainer::Ref groupBox;
@@ -150,22 +150,22 @@ reWPPanelShape( wpShapes, reRigShape::estCylinder )
 	
 	
 	
-	helper.GroupBox( *this, groupBox, "Cylinder Parameters:" );
+	helper.GroupBox(*this, groupBox, "Cylinder Parameters:");
 	
-	helper.EditVector( groupBox, "Position:", "Position of the sphere relative to the parent bone.",
-		pEditPosition, new cEditPosition( *this ) );
+	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
+		pEditPosition, new cEditPosition(*this));
 	
-	helper.EditVector( groupBox, "Rotation:", "Rotation of the cylinder.",
-		pEditRotation, new cEditRotation( *this ) );
+	helper.EditVector(groupBox, "Rotation:", "Rotation of the cylinder.",
+		pEditRotation, new cEditRotation(*this));
 	
-	helper.EditString( groupBox, "Half Height:", "Half height of the cylinder.",
-		pEditHalfHeight, new cTextHalfHeight( *this ) );
+	helper.EditString(groupBox, "Half Height:", "Half height of the cylinder.",
+		pEditHalfHeight, new cTextHalfHeight(*this));
 	
-	helper.EditString( groupBox, "Top Radius:", "Top radius in meters.",
-		pEditTopRadius, new cTextTopRadius( *this ) );
+	helper.EditString(groupBox, "Top Radius:", "Top radius in meters.",
+		pEditTopRadius, new cTextTopRadius(*this));
 	
-	helper.EditString( groupBox, "Bottom Radius:", "Bottom radius in meters.",
-		pEditBottomRadius, new cTextBottomRadius( *this ) );
+	helper.EditString(groupBox, "Bottom Radius:", "Bottom radius in meters.",
+		pEditBottomRadius, new cTextBottomRadius(*this));
 }
 
 reWPPanelShapeCylinder::~reWPPanelShapeCylinder(){
@@ -177,20 +177,20 @@ reWPPanelShapeCylinder::~reWPPanelShapeCylinder(){
 ///////////////
 
 void reWPPanelShapeCylinder::UpdateShape(){
-	const reRigShapeCylinder * const cylinder = ( reRigShapeCylinder* )GetShape();
+	const reRigShapeCylinder * const cylinder = (reRigShapeCylinder*)GetShape();
 	
 	reWPPanelShape::UpdateShape();
 	
-	if( cylinder ){
-		pEditPosition->SetVector( cylinder->GetPosition() );
-		pEditRotation->SetVector( cylinder->GetOrientation() );
-		pEditHalfHeight->SetFloat( cylinder->GetHalfHeight() );
-		pEditTopRadius->SetFloat( cylinder->GetTopRadius() );
-		pEditBottomRadius->SetFloat( cylinder->GetBottomRadius() );
+	if(cylinder){
+		pEditPosition->SetVector(cylinder->GetPosition());
+		pEditRotation->SetVector(cylinder->GetOrientation());
+		pEditHalfHeight->SetFloat(cylinder->GetHalfHeight());
+		pEditTopRadius->SetFloat(cylinder->GetTopRadius());
+		pEditBottomRadius->SetFloat(cylinder->GetBottomRadius());
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
 		pEditHalfHeight->ClearText();
 		pEditTopRadius->ClearText();
 		pEditBottomRadius->ClearText();

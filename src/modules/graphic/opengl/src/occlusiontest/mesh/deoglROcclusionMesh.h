@@ -94,7 +94,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render occlusion mesh. */
-	deoglROcclusionMesh( deoglRenderThread &renderThread, const deOcclusionMesh &occlusionMesh );
+	deoglROcclusionMesh(deoglRenderThread &renderThread, const deOcclusionMesh &occlusionMesh);
 	
 	/** Clean up render occlusion mesh. */
 	virtual ~deoglROcclusionMesh();
@@ -193,7 +193,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pBuildArrays( const deOcclusionMesh &occlusionMesh );
+	void pBuildArrays(const deOcclusionMesh &occlusionMesh);
 	void pWriteVBOData();
 };
 

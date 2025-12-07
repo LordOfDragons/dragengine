@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetRange::gdeUOCLightSetRange( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetRange::gdeUOCLightSetRange(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set range" );
+	SetShortInfo("Light set range");
 	
 	pOldValue = light->GetRange();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetRange::~gdeUOCLightSetRange(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetRange::~gdeUOCLightSetRange(){
 ///////////////
 
 void gdeUOCLightSetRange::Undo(){
-	pLight->SetRange( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetRange(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetRange::Redo(){
-	pLight->SetRange( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetRange(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

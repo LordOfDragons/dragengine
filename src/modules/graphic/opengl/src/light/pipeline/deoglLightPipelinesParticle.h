@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipelinesParticle( const deoglRParticleEmitterType &emitter );
+	deoglLightPipelinesParticle(const deoglRParticleEmitterType &emitter);
 	
 	/** Clean up light pipeline. */
 	virtual ~deoglLightPipelinesParticle();
@@ -67,7 +67,7 @@ private:
 	void pPrepareNoShadow(deoglPipelineConfiguration &basePipelineConfig,
 		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pSetNonGI( deoglLightShaderConfig &shaconf );
+	void pSetNonGI(deoglLightShaderConfig &shaconf);
 };
 
 #endif

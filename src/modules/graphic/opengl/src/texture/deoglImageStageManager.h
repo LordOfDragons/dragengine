@@ -66,13 +66,13 @@ private:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	sStage pStages[ OGL_MAX_IMAGE_STAGES ];
+	sStage pStages[OGL_MAX_IMAGE_STAGES];
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image stage manager. */
-	deoglImageStageManager( deoglRenderThread &renderThread );
+	deoglImageStageManager(deoglRenderThread &renderThread);
 	
 	/** Clean up image stage manager. */
 	~deoglImageStageManager();
@@ -86,43 +86,43 @@ public:
 	int GetEnabledStageCount() const;
 	
 	/** Type of imagebound to stage. */
-	GLenum GetStageType( int stage ) const;
+	GLenum GetStageType(int stage) const;
 	
 	/** Enable stage and bind image. */
-	void Enable( int stage, const deoglTexture &texture, int level, eAccess access );
+	void Enable(int stage, const deoglTexture &texture, int level, eAccess access);
 	
 	/** Enable stage and bind cube map. */
-	void Enable( int stage, const deoglCubeMap &cubemap, int level, eAccess access );
+	void Enable(int stage, const deoglCubeMap &cubemap, int level, eAccess access);
 	
 	/** Enable stage and bind cube map face. */
-	void Enable( int stage, const deoglCubeMap &cubemap, int level, int face, eAccess access );
+	void Enable(int stage, const deoglCubeMap &cubemap, int level, int face, eAccess access);
 	
 	/** Enable stage and bind array texture. */
-	void Enable( int stage, const deoglArrayTexture &texture, int level, eAccess access );
+	void Enable(int stage, const deoglArrayTexture &texture, int level, eAccess access);
 	
 	/** Enable stage and bind array texture layer. */
-	void Enable( int stage, const deoglArrayTexture &texture, int level, int layer, eAccess access );
+	void Enable(int stage, const deoglArrayTexture &texture, int level, int layer, eAccess access);
 	
 	/** Enable stage and bind texture buffer object. */
-	void EnableTBO( int stage, GLuint tbo, eAccess access, GLenum format );
+	void EnableTBO(int stage, GLuint tbo, eAccess access, GLenum format);
 	
 	/** Enable stage and bind texture channel from a skin. */
-	void EnableSkin( int stage, const deoglRSkin &skin, int texture,
+	void EnableSkin(int stage, const deoglRSkin &skin, int texture,
 		deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture,
-		eAccess access );
+		eAccess access);
 	
 	/** Enable render doc debug texture if debug mode contains flag. */
 	void EnableRenderDocDebug(int stage, int flag);
 	
 	/** Disable stage. */
-	void DisableStage( int stage );
+	void DisableStage(int stage);
 	
 	/**
 	 * Disable all stages above stage. If you have for example 4 enabled stages and you want
 	 * to disable stages 2 and 3 then you have to call this function with the stage of the
 	 * last stage to remain enabled thus 1 in this case.
 	 */
-	void DisableStagesAbove( int stage );
+	void DisableStagesAbove(int stage);
 	
 	/** Disable all stages. */
 	void DisableAllStages();
@@ -130,8 +130,8 @@ public:
 	
 	
 	/** Activate stage and bind texture if not bound already. */
-	void BindImage( int stage, GLuint texture, GLenum type, int level, int layer,
-		eAccess access, bool layered, GLenum format );
+	void BindImage(int stage, GLuint texture, GLenum type, int level, int layer,
+		eAccess access, bool layered, GLenum format);
 	
 	
 	

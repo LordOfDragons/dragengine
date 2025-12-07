@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPUndoHistoryListener( reWPUndoHistory &panel );
+	reWPUndoHistoryListener(reWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~reWPUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged( reRig *rig );
+	virtual void UndoChanged(reRig *rig);
 	/*@}*/
 };
 

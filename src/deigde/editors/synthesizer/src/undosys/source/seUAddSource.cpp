@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUAddSource::seUAddSource( seSynthesizer *synthesizer, seSource *source, int index ) :
-pSynthesizer( NULL ),
-pSource( NULL ),
-pIndex( index )
+seUAddSource::seUAddSource(seSynthesizer *synthesizer, seSource *source, int index) :
+pSynthesizer(NULL),
+pSource(NULL),
+pIndex(index)
 {
-	if( ! synthesizer || ! source ){
-		DETHROW( deeInvalidParam );
+	if(!synthesizer || !source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSynthesizer = synthesizer;
@@ -66,11 +66,11 @@ seUAddSource::~seUAddSource(){
 ///////////////
 
 void seUAddSource::Undo(){
-	pSynthesizer->RemoveSource( pSource );
+	pSynthesizer->RemoveSource(pSource);
 }
 
 void seUAddSource::Redo(){
-	pSynthesizer->InsertSourceAt( pSource, pIndex );
+	pSynthesizer->InsertSourceAt(pSource, pIndex);
 }
 
 
@@ -79,10 +79,10 @@ void seUAddSource::Redo(){
 //////////////////////
 
 void seUAddSource::pCleanUp(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }

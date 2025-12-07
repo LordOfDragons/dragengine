@@ -66,19 +66,19 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Button is pressed. */
 	inline bool GetPressed() const{ return pPressed; }
 	
 	/** \brief Set if button is presssed. */
-	void SetPressed( bool pressed );
+	void SetPressed(bool pressed);
 	
     
     
@@ -86,30 +86,30 @@ public:
     inline int GetMOCode() const{ return pMOCode; }
     
     /** \brief Set MacOS specific code. */
-    void SetMOCode( int code );
+    void SetMOCode(int code);
     
     /** \brief MacOS specific character for matching. */
     inline int GetMOChar() const{ return pMOChar; }
     
     /** \brief Set MacOS specific character for matching. */
-    void SetMOChar( int character );
+    void SetMOChar(int character);
 
     /** \brief Input event code. */
     inline deInputEvent::eKeyCodes GetKeyCode() const{ return pKeyCode; }
     
     /** \brief Set input event code. */
-    void SetKeyCode( deInputEvent::eKeyCodes keyCode );
+    void SetKeyCode(deInputEvent::eKeyCodes keyCode);
     
     /** \brief Match priority. */
     inline int GetMatchPriority() const{ return pMatchPriority; }
     
     /** \brief Set match priority. */
-    void SetMatchPriority( int priority );
+    void SetMatchPriority(int priority);
     
 	
 	
 	/** \brief Update engine input device information button. */
-	void GetInfo( deInputDeviceButton &info ) const;
+	void GetInfo(deInputDeviceButton &info) const;
 	/*@}*/
 };
 

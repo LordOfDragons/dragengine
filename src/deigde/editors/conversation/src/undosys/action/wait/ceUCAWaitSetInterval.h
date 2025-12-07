@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitSetInterval( ceConversationTopic *topic, ceCAWait *wait, float newInterval );
+	ceUCAWaitSetInterval(ceConversationTopic *topic, ceCAWait *wait, float newInterval);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAWaitSetInterval();

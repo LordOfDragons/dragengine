@@ -46,41 +46,41 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiHeightTerrainNavSpace::dedaiHeightTerrainNavSpace( dedaiHeightTerrainSector &sector,
-	const deHeightTerrainNavSpace &navigationSpace ) :
-pSector( sector ),
-pNavigationSpace( navigationSpace ),
+dedaiHeightTerrainNavSpace::dedaiHeightTerrainNavSpace(dedaiHeightTerrainSector &sector,
+	const deHeightTerrainNavSpace &navigationSpace) :
+pSector(sector),
+pNavigationSpace(navigationSpace),
 
-pVertices( NULL ),
-pVertexCount( 0 ),
-pVertexSize( 0 ),
+pVertices(NULL),
+pVertexCount(0),
+pVertexSize(0),
 
-pEdges( NULL ),
+pEdges(NULL),
 
-pCorners( NULL ),
-pCornerCount( 0 ),
-pCornerSize( 0 ),
+pCorners(NULL),
+pCornerCount(0),
+pCornerSize(0),
 
-pFaces( NULL ),
-pFaceCount( 0 ),
-pFaceSize( 0 ),
+pFaces(NULL),
+pFaceCount(0),
+pFaceSize(0),
 
-pSpace( NULL )
+pSpace(NULL)
 {
 	try{
 		pUpdateCorners();
 		pUpdateEdges();
 		
-		pSpace = new dedaiSpace( sector.GetHeightTerrain().GetDEAI() );
-		pSpace->SetOwnerHTNavSpace( this );
-		pSpace->SetParentWorld( sector.GetHeightTerrain().GetParentWorld() );
-		pSpace->SetPosition( sector.GetPosition() );
-		pSpace->SetLayerNumber( navigationSpace.GetLayer() );
-		pSpace->SetType( navigationSpace.GetType() );
-		pSpace->SetSnapDistance( navigationSpace.GetSnapDistance() );
-		pSpace->SetSnapAngle( navigationSpace.GetSnapAngle() );
+		pSpace = new dedaiSpace(sector.GetHeightTerrain().GetDEAI());
+		pSpace->SetOwnerHTNavSpace(this);
+		pSpace->SetParentWorld(sector.GetHeightTerrain().GetParentWorld());
+		pSpace->SetPosition(sector.GetPosition());
+		pSpace->SetLayerNumber(navigationSpace.GetLayer());
+		pSpace->SetType(navigationSpace.GetType());
+		pSpace->SetSnapDistance(navigationSpace.GetSnapDistance());
+		pSpace->SetSnapAngle(navigationSpace.GetSnapAngle());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -101,26 +101,26 @@ dedaiHeightTerrainNavSpace::~dedaiHeightTerrainNavSpace(){
 //////////////////
 
 void dedaiHeightTerrainNavSpace::ParentWorldChanged(){
-	pSpace->SetParentWorld( pSector.GetHeightTerrain().GetParentWorld() );
+	pSpace->SetParentWorld(pSector.GetHeightTerrain().GetParentWorld());
 }
 
-void dedaiHeightTerrainNavSpace::HeightChanged( const decPoint &from, const decPoint &to ){
+void dedaiHeightTerrainNavSpace::HeightChanged(const decPoint &from, const decPoint &to){
 	pSpace->OwnerLayoutChanged();
 }
 
 void dedaiHeightTerrainNavSpace::LayerChanged(){
-	pSpace->SetLayerNumber( pNavigationSpace.GetLayer() );
+	pSpace->SetLayerNumber(pNavigationSpace.GetLayer());
 }
 
 void dedaiHeightTerrainNavSpace::TypeChanged(){
 	pUpdateCorners();
 	pUpdateEdges();
-	pSpace->SetType( pNavigationSpace.GetType() );
+	pSpace->SetType(pNavigationSpace.GetType());
 }
 
 void dedaiHeightTerrainNavSpace::SnappingChanged(){
-	pSpace->SetSnapDistance( pNavigationSpace.GetSnapDistance() );
-	pSpace->SetSnapAngle( pNavigationSpace.GetSnapAngle() );
+	pSpace->SetSnapDistance(pNavigationSpace.GetSnapDistance());
+	pSpace->SetSnapAngle(pNavigationSpace.GetSnapAngle());
 }
 
 void dedaiHeightTerrainNavSpace::LayoutChanged(){
@@ -135,25 +135,25 @@ void dedaiHeightTerrainNavSpace::LayoutChanged(){
 //////////////////////
 
 void dedaiHeightTerrainNavSpace::pCleanUp(){
-	if( pSpace ){
+	if(pSpace){
 		delete pSpace;
 	}
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
-	if( pCorners ){
+	if(pCorners){
 		delete [] pCorners;
 	}
-	if( pEdges ){
+	if(pEdges){
 		delete [] pEdges;
 	}
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
 }
 
 void dedaiHeightTerrainNavSpace::pUpdateCorners(){
-	if( pNavigationSpace.GetType() != deNavigationSpace::estMesh ){
+	if(pNavigationSpace.GetType() != deNavigationSpace::estMesh){
 		return;
 	}
 	
@@ -165,7 +165,7 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	
 #if 0
 	const int faceCount = pNavigationSpace.GetFaceCount();
-	if( faceCount == 0 ){
+	if(faceCount == 0){
 		return;
 	}
 	
@@ -178,61 +178,61 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	//      with corner count size avoids re-allocating the array multiple times. after
 	//      the real count is determined the array could be shrunk
 	// NOTE caching this data is possible. this would also provide the shrinking
-	if( cornerCount > pVertexSize ){
-		if( pVertices ){
+	if(cornerCount > pVertexSize){
+		if(pVertices){
 			delete [] pVertices;
 			pVertices = NULL;
 			pVertexSize = 0;
 		}
 		
-		pVertices = new unsigned int[ cornerCount ];
+		pVertices = new unsigned int[cornerCount];
 		pVertexSize = cornerCount;
 	}
 	
-	if( cornerCount > pCornerSize ){
-		if( pCorners ){
+	if(cornerCount > pCornerSize){
+		if(pCorners){
 			delete [] pCorners;
 			pCorners = NULL;
 			pCornerSize = 0;
 		}
 		
-		pCorners = new unsigned short[ cornerCount ];
+		pCorners = new unsigned short[cornerCount];
 		pCornerSize = cornerCount;
 	}
 	
-	if( faceCount > pFaceSize ){
-		if( pFaces ){
+	if(faceCount > pFaceSize){
+		if(pFaces){
 			delete [] pFaces;
 			pFaces = NULL;
 			pFaceSize = 0;
 		}
 		
-		pFaces = new deNavigationSpaceFace[ faceCount ];
+		pFaces = new deNavigationSpaceFace[faceCount];
 		pFaceSize = faceCount;
 	}
 	
 	// add corners and shared vertices
-	for( i=0; i<cornerCount; i++ ){
-		const unsigned int navpoint = corners[ i ];
+	for(i=0; i<cornerCount; i++){
+		const unsigned int navpoint = corners[i];
 		
-		for( j=0; j<pVertexCount; j++ ){
-			if( pVertices[ j ] == navpoint ){
+		for(j=0; j<pVertexCount; j++){
+			if(pVertices[j] == navpoint){
 				break;
 			}
 		}
 		
-		if( j == pVertexCount ){
-			pVertices[ j ] = navpoint;
+		if(j == pVertexCount){
+			pVertices[j] = navpoint;
 			pVertexCount++;
 		}
 		
-		pCorners[ i ] = ( unsigned short )j;
+		pCorners[i] = (unsigned short)j;
 	}
 	pCornerCount = cornerCount;
 	
-	for( i=0; i<faceCount; i++ ){
-		pFaces[ i ].SetType( faces[ i ].GetType() );
-		pFaces[ i ].SetCornerCount( faces[ i ].GetCornerCount() );
+	for(i=0; i<faceCount; i++){
+		pFaces[i].SetType(faces[i].GetType());
+		pFaces[i].SetCornerCount(faces[i].GetCornerCount());
 	}
 	pFaceCount = faceCount;
 #endif
@@ -241,7 +241,7 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	
 	
 	const int orgFaceCount = pNavigationSpace.GetFaceCount();
-	if( orgFaceCount == 0 ){
+	if(orgFaceCount == 0){
 		return;
 	}
 	
@@ -258,105 +258,105 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 	int faceCount = 0;
 	int i, j, k;
 	
-	for( i=0; i<orgFaceCount; i++ ){
-		if( faces[ i ].GetCornerCount() < 3 ){
+	for(i=0; i<orgFaceCount; i++){
+		if(faces[i].GetCornerCount() < 3){
 			continue;
 		}
 		
-		faceCount += faces[ i ].GetCornerCount() - 2;
-		cornerCount += ( faces[ i ].GetCornerCount() - 2 ) * 3;
+		faceCount += faces[i].GetCornerCount() - 2;
+		cornerCount += (faces[i].GetCornerCount() - 2) * 3;
 	}
 	
 	// NOTE vertices array is usually less than corners but never larger. allocating it
 	//      with corner count size avoids re-allocating the array multiple times. after
 	//      the real count is determined the array could be shrunk
 	// NOTE caching this data is possible. this would also provide the shrinking
-	if( cornerCount > pVertexSize ){
-		if( pVertices ){
+	if(cornerCount > pVertexSize){
+		if(pVertices){
 			delete [] pVertices;
 			pVertices = NULL;
 			pVertexSize = 0;
 		}
 		
-		pVertices = new unsigned int[ cornerCount ];
+		pVertices = new unsigned int[cornerCount];
 		pVertexSize = cornerCount;
 	}
 	
-	if( cornerCount > pCornerSize ){
-		if( pCorners ){
+	if(cornerCount > pCornerSize){
+		if(pCorners){
 			delete [] pCorners;
 			pCorners = NULL;
 			pCornerSize = 0;
 		}
 		
-		pCorners = new unsigned short[ cornerCount ];
+		pCorners = new unsigned short[cornerCount];
 		pCornerSize = cornerCount;
 	}
 	
-	if( faceCount > pFaceSize ){
-		if( pFaces ){
+	if(faceCount > pFaceSize){
+		if(pFaces){
 			delete [] pFaces;
 			pFaces = NULL;
 			pFaceSize = 0;
 		}
 		
-		pFaces = new deNavigationSpaceFace[ faceCount ];
+		pFaces = new deNavigationSpaceFace[faceCount];
 		pFaceSize = faceCount;
 	}
 	
 	// add corners, faces and shared vertices.
 	int firstCorner = 0;
 	
-	for( i=0; i<orgFaceCount; i++ ){
-		const deNavigationSpaceFace &face = faces[ i ];
+	for(i=0; i<orgFaceCount; i++){
+		const deNavigationSpaceFace &face = faces[i];
 		
 		const int faceCornerCount = face.GetCornerCount();
-		if( faceCornerCount < 3 ){
+		if(faceCornerCount < 3){
 			firstCorner += faceCornerCount;
 			continue;
 		}
 		
-		const unsigned int navpointFirst = corners[ firstCorner ];
-		for( j=0; j<pVertexCount; j++ ){
-			if( pVertices[ j ] == navpointFirst ){
+		const unsigned int navpointFirst = corners[firstCorner];
+		for(j=0; j<pVertexCount; j++){
+			if(pVertices[j] == navpointFirst){
 				break;
 			}
 		}
-		if( j == pVertexCount ){
-			pVertices[ pVertexCount++ ] = navpointFirst;
+		if(j == pVertexCount){
+			pVertices[pVertexCount++] = navpointFirst;
 		}
-		const unsigned short vertexFirst = ( unsigned short )j;
+		const unsigned short vertexFirst = (unsigned short)j;
 		
-		const unsigned int navpointSecond = corners[ firstCorner + 1 ];
-		for( j=0; j<pVertexCount; j++ ){
-			if( pVertices[ j ] == navpointSecond ){
+		const unsigned int navpointSecond = corners[firstCorner + 1];
+		for(j=0; j<pVertexCount; j++){
+			if(pVertices[j] == navpointSecond){
 				break;
 			}
 		}
-		if( j == pVertexCount ){
-			pVertices[ pVertexCount++ ] = navpointSecond;
+		if(j == pVertexCount){
+			pVertices[pVertexCount++] = navpointSecond;
 		}
-		unsigned short vertexLast = ( unsigned short )j;
+		unsigned short vertexLast = (unsigned short)j;
 		
-		for( j=2; j<faceCornerCount; j++ ){
-			const unsigned int navpoint = corners[ firstCorner + j ];
+		for(j=2; j<faceCornerCount; j++){
+			const unsigned int navpoint = corners[firstCorner + j];
 			
-			for( k=0; k<pVertexCount; k++ ){
-				if( pVertices[ k ] == navpoint ){
+			for(k=0; k<pVertexCount; k++){
+				if(pVertices[k] == navpoint){
 					break;
 				}
 			}
-			if( k == pVertexCount ){
-				pVertices[ pVertexCount++ ] = navpoint;
+			if(k == pVertexCount){
+				pVertices[pVertexCount++] = navpoint;
 			}
 			
-			pCorners[ pCornerCount++ ] = vertexFirst;
-			pCorners[ pCornerCount++ ] = vertexLast;
-			vertexLast = ( unsigned short )k;
-			pCorners[ pCornerCount++ ] = vertexLast;
+			pCorners[pCornerCount++] = vertexFirst;
+			pCorners[pCornerCount++] = vertexLast;
+			vertexLast = (unsigned short)k;
+			pCorners[pCornerCount++] = vertexLast;
 			
-			pFaces[ pFaceCount ].SetType( face.GetType() );
-			pFaces[ pFaceCount ].SetCornerCount( 3 );
+			pFaces[pFaceCount].SetType(face.GetType());
+			pFaces[pFaceCount].SetCornerCount(3);
 			pFaceCount++;
 		}
 		
@@ -365,18 +365,18 @@ void dedaiHeightTerrainNavSpace::pUpdateCorners(){
 }
 
 void dedaiHeightTerrainNavSpace::pUpdateEdges(){
-	if( pNavigationSpace.GetType() != deNavigationSpace::estGrid ){
+	if(pNavigationSpace.GetType() != deNavigationSpace::estGrid){
 		return;
 	}
 	
-	if( pEdges ){
+	if(pEdges){
 		delete [] pEdges;
 		pEdges = NULL;
 	}
 	pVertexCount = 0;
 	
 	const int edgeCount = pNavigationSpace.GetEdgeCount();
-	if( edgeCount == 0 ){
+	if(edgeCount == 0){
 		return;
 	}
 	
@@ -387,47 +387,47 @@ void dedaiHeightTerrainNavSpace::pUpdateEdges(){
 	//      allocating it with 2 times edge count size avoids re-allocating the array
 	//      multiple times. after the real count is determined the array could be shrunk
 	// NOTE caching this data is possible. this would also provide the shrinking
-	pEdges = new sEdge[ edgeCount ];
+	pEdges = new sEdge[edgeCount];
 	
 	const int maxVertexCount = edgeCount * 2;
-	if( maxVertexCount > pVertexSize ){
-		if( pVertices ){
+	if(maxVertexCount > pVertexSize){
+		if(pVertices){
 			delete [] pVertices;
 			pVertices = NULL;
 			pVertexSize = 0;
 		}
 		
-		pVertices = new unsigned int[ maxVertexCount ];
+		pVertices = new unsigned int[maxVertexCount];
 		pVertexSize = maxVertexCount;
 	}
 	
 	// add edges and shared vertices
-	for( i=0; i< edgeCount; i++ ){
-		const unsigned int navpoint1 = edges[ i ].GetPoint1();
-		const unsigned int navpoint2 = edges[ i ].GetPoint2();
+	for(i=0; i< edgeCount; i++){
+		const unsigned int navpoint1 = edges[i].GetPoint1();
+		const unsigned int navpoint2 = edges[i].GetPoint2();
 		
 		// vertex 1
-		for( j=0; j<pVertexCount; j++ ){
-			if( pVertices[ j ] == navpoint1 ){
+		for(j=0; j<pVertexCount; j++){
+			if(pVertices[j] == navpoint1){
 				break;
 			}
 		}
-		if( j == pVertexCount ){
-			pVertices[ j ] = navpoint1;
+		if(j == pVertexCount){
+			pVertices[j] = navpoint1;
 			pVertexCount++;
 		}
-		pEdges[ i ].vertex1 = ( unsigned short )j;
+		pEdges[i].vertex1 = (unsigned short)j;
 		
 		// vertex 2
-		for( j=0; j<pVertexCount; j++ ){
-			if( pVertices[ j ] == navpoint2 ){
+		for(j=0; j<pVertexCount; j++){
+			if(pVertices[j] == navpoint2){
 				break;
 			}
 		}
-		if( j == pVertexCount ){
-			pVertices[ j ] = navpoint2;
+		if(j == pVertexCount){
+			pVertices[j] = navpoint2;
 			pVertexCount++;
 		}
-		pEdges[ i ].vertex2 = ( unsigned short )j;
+		pEdges[i].vertex2 = (unsigned short)j;
 	}
 }

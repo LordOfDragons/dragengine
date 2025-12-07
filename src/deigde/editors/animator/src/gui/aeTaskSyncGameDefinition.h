@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	aeTaskSyncGameDefinition( aeWindowMain &windowMain );
+	aeTaskSyncGameDefinition(aeWindowMain &windowMain);
 	
 	/** Clean up task. */
 	virtual ~aeTaskSyncGameDefinition();

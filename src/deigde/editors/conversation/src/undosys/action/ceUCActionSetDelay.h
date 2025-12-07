@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionSetDelay( ceConversationTopic *topic, ceConversationAction *action, float newDelay );
+	ceUCActionSetDelay(ceConversationTopic *topic, ceConversationAction *action, float newDelay);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionSetDelay();

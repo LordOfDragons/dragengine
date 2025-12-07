@@ -40,18 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglTimerQuery::deoglTimerQuery( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pQuery( 0 )
+deoglTimerQuery::deoglTimerQuery(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pQuery(0)
 {
-	OGL_CHECK( renderThread, pglGenQueries( 1, &pQuery ) );
-	if( ! pQuery ){
-		DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, pglGenQueries(1, &pQuery));
+	if(!pQuery){
+		DETHROW(deeOutOfMemory);
 	}
 }
 
 deoglTimerQuery::~deoglTimerQuery(){
-	pRenderThread.GetDelayedOperations().DeleteOpenGLQuery( pQuery );
+	pRenderThread.GetDelayedOperations().DeleteOpenGLQuery(pQuery);
 }
 
 
@@ -60,17 +60,17 @@ deoglTimerQuery::~deoglTimerQuery(){
 ///////////////
 
 void deoglTimerQuery::BeginQuery(){
-	OGL_CHECK( pRenderThread, pglBeginQuery( GL_TIME_ELAPSED, pQuery ) );
+	OGL_CHECK(pRenderThread, pglBeginQuery(GL_TIME_ELAPSED, pQuery));
 }
 
 void deoglTimerQuery::EndQuery(){
-	OGL_CHECK( pRenderThread, pglEndQuery( GL_TIME_ELAPSED ) );
+	OGL_CHECK(pRenderThread, pglEndQuery(GL_TIME_ELAPSED));
 }
 
 bool deoglTimerQuery::HasResult() const{
 	GLuint result;
 	
-	OGL_CHECK( pRenderThread, pglGetQueryObjectuiv( pQuery, GL_QUERY_RESULT_AVAILABLE, &result ) );
+	OGL_CHECK(pRenderThread, pglGetQueryObjectuiv(pQuery, GL_QUERY_RESULT_AVAILABLE, &result));
 	
 	return result == GL_TRUE;
 }
@@ -78,7 +78,7 @@ bool deoglTimerQuery::HasResult() const{
 unsigned int deoglTimerQuery::GetResult() const{
 	GLuint result;
 	
-	OGL_CHECK( pRenderThread, pglGetQueryObjectuiv( pQuery, GL_QUERY_RESULT, &result ) );
+	OGL_CHECK(pRenderThread, pglGetQueryObjectuiv(pQuery, GL_QUERY_RESULT, &result));
 	
-	return ( unsigned int )result;
+	return (unsigned int)result;
 }

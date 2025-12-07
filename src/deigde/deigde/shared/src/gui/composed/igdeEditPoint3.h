@@ -60,12 +60,12 @@ protected:
 	public:
 		typedef deTObjectReference<cListener> Ref;
 		
-		cListener( igdeEditPoint3 &editPoint3, igdeTextField *textX,
-			igdeTextField *textY, igdeTextField *textZ );
+		cListener(igdeEditPoint3 &editPoint3, igdeTextField *textX,
+			igdeTextField *textY, igdeTextField *textZ);
 		
 		virtual ~cListener();
-		virtual void OnTextChanged( igdeTextField *textField );
-		virtual void OnTextChanging( igdeTextField *textField );
+		virtual void OnTextChanged(igdeTextField *textField);
+		virtual void OnTextChanging(igdeTextField *textField);
 	};
 	
 	
@@ -90,10 +90,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit point. */
-	igdeEditPoint3( igdeUIHelper &helper, int columns, const char *description = "" );
+	igdeEditPoint3(igdeUIHelper &helper, int columns, const char *description = "");
 	
-	igdeEditPoint3( igdeUIHelper &helper, int columns, bool editable,
-		const char *description = "" );
+	igdeEditPoint3(igdeUIHelper &helper, int columns, bool editable,
+		const char *description = "");
 	
 	
 	
@@ -116,7 +116,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit fields. */
 	inline int GetColumns() const{ return pColumns; }
@@ -125,13 +125,13 @@ public:
 	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if widget is editable. */
-	void SetEditable( bool editable );
+	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -142,15 +142,15 @@ public:
 	inline const decPoint3 &GetPoint3() const{ return pPoint3; }
 	
 	/** \brief Set point. */
-	void SetPoint3( const decPoint3 &point );
+	void SetPoint3(const decPoint3 &point);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditPoint3Listener *listener );
+	void AddListener(igdeEditPoint3Listener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditPoint3Listener *listener );
+	void RemoveListener(igdeEditPoint3Listener *listener);
 	
 	/** \brief Notify listeners point changed. */
 	virtual void NotifyPoint3Changed();
@@ -180,7 +180,7 @@ protected:
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper );
+	void pCreateContent(igdeUIHelper &helper);
 };
 
 #endif

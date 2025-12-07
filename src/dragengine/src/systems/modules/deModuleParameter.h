@@ -123,7 +123,7 @@ public:
 	deModuleParameter();
 	
 	/** \brief Create copy of module parameter. */
-	deModuleParameter( const deModuleParameter &parameter );
+	deModuleParameter(const deModuleParameter &parameter);
 	
 	/** \brief Clean up module parameter. */
 	~deModuleParameter();
@@ -137,52 +137,52 @@ public:
 	inline eParameterTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( eParameterTypes type );
+	void SetType(eParameterTypes type);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Minimum value. */
 	inline float GetMinimumValue() const{ return pMinValue; }
 	
 	/** \brief Set minimum value. */
-	void SetMinimumValue( float minValue );
+	void SetMinimumValue(float minValue);
 	
 	/** \brief Maximum value. */
 	inline float GetMaximumValue() const{ return pMaxValue; }
 	
 	/** \brief Set maximum value. */
-	void SetMaximumValue( float maxValue );
+	void SetMaximumValue(float maxValue);
 	
 	/** \brief Value step size. */
 	inline float GetValueStepSize() const{ return pValueStepSize; }
 	
 	/** \brief Set value step size. */
-	void SetValueStepSize( float valueStepSize );
+	void SetValueStepSize(float valueStepSize);
 	
 	/** \brief Count of selection entries. */
 	inline int GetSelectionEntryCount() const{ return pSelectionEntryCount; }
 	
 	/** \brief Selection entry at index. */
-	const SelectionEntry &GetSelectionEntryAt( int index ) const;
+	const SelectionEntry &GetSelectionEntryAt(int index) const;
 	
 	/** \brief Index of selection entry with value or -1 if absent. */
-	int IndexOfSelectionEntryWithValue( const char *value ) const;
+	int IndexOfSelectionEntryWithValue(const char *value) const;
 	
 	/** \brief Add selection entry. */
-	void AddSelectionEntry( const SelectionEntry &entry );
+	void AddSelectionEntry(const SelectionEntry &entry);
 	
 	/** \brief Add selection entries. */
-	void AddSelectionEntries( const SelectionEntry *entries, int entryCount );
+	void AddSelectionEntries(const SelectionEntry *entries, int entryCount);
 	
 	/** \brief Remove all selection entries. */
 	void RemoveAllSelectionEntries();
@@ -191,13 +191,13 @@ public:
 	inline eCategory GetCategory() const{ return pCategory; }
 	
 	/** \brief Set category. */
-	void SetCategory( eCategory category );
+	void SetCategory(eCategory category);
 	
 	/** \brief Display name for use in configuration dialogs. */
 	inline const decString &GetDisplayName() const{ return pDisplayName; }
 	
 	/** \brief Set display name for use in configuration dialogs. */
-	void SetDisplayName( const char *displayName );
+	void SetDisplayName(const char *displayName);
 	
 	/**
 	 * \brief Default value.
@@ -209,7 +209,7 @@ public:
 	 * \brief Set default value.
 	 * \version 1.7
 	 */
-	void SetDefaultValue( const decString &defaultValue );
+	void SetDefaultValue(const decString &defaultValue);
 	
 	/** \brief Reset to default values. */
 	void Reset();
@@ -220,7 +220,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set from another parameter. */
-	deModuleParameter &operator=( const deModuleParameter &parameter );
+	deModuleParameter &operator=(const deModuleParameter &parameter);
 	/*@}*/
 };
 

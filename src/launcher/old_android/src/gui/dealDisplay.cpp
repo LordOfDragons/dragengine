@@ -54,26 +54,26 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealDisplay::dealDisplay( dealLauncher &launcher ) :
-pLauncher( launcher ),
+dealDisplay::dealDisplay(dealLauncher &launcher) :
+pLauncher(launcher),
 
-pDisplay( EGL_NO_DISPLAY ),
-pSurface( EGL_NO_SURFACE ),
-pContext( EGL_NO_CONTEXT ),
-pWidth( 0 ),
-pHeight( 0 ),
+pDisplay(EGL_NO_DISPLAY),
+pSurface(EGL_NO_SURFACE),
+pContext(EGL_NO_CONTEXT),
+pWidth(0),
+pHeight(0),
 
-pVBOShapes( 0 ),
+pVBOShapes(0),
 
-pDefaultGuiTheme( NULL ),
-pFontDefault( NULL ),
-pFontSizeDefault( 0 ),
-pShaderShape( NULL ),
-pShaderShapeTex( NULL ),
+pDefaultGuiTheme(NULL),
+pFontDefault(NULL),
+pFontSizeDefault(0),
+pShaderShape(NULL),
+pShaderShapeTex(NULL),
 
-pContent( NULL ),
-pDialog( NULL ),
-pCaptureWidget( NULL ){
+pContent(NULL),
+pDialog(NULL),
+pCaptureWidget(NULL){
 }
 
 dealDisplay::~dealDisplay(){
@@ -92,7 +92,7 @@ bool dealDisplay::Ready() const{
 
 
 void dealDisplay::Init(){
-	if( pSurface != EGL_NO_SURFACE ){
+	if(pSurface != EGL_NO_SURFACE){
 		return;
 	}
 	
@@ -112,22 +112,22 @@ void dealDisplay::Init(){
 	//   hide status bars and alike
 //	ANativeActivity_setWindowFlags( pLauncher.GetAndroidApp().activity,
 //		0, AWINDOW_FLAG_KEEP_SCREEN_ON | AWINDOW_FLAG_FULLSCREEN);
-	ANativeActivity_setWindowFlags( pLauncher.GetAndroidApp().activity,
+	ANativeActivity_setWindowFlags(pLauncher.GetAndroidApp().activity,
 		AWINDOW_FLAG_FULLSCREEN, AWINDOW_FLAG_KEEP_SCREEN_ON);
 	
 	// check if context bound data has to be loaded
-	const bool loadDefaultResources = ( pDisplay == EGL_NO_DISPLAY );
+	const bool loadDefaultResources = (pDisplay == EGL_NO_DISPLAY);
 	
 	// initialize display
-	if( pDisplay == EGL_NO_DISPLAY ){
-		pLauncher.GetLogger().LogInfo( LOGSOURCE, "Init display" );
-		pDisplay = eglGetDisplay( EGL_DEFAULT_DISPLAY );
-		if( pDisplay == EGL_NO_DISPLAY ){
-			DETHROW( deeInvalidParam );
+	if(pDisplay == EGL_NO_DISPLAY){
+		pLauncher.GetLogger().LogInfo(LOGSOURCE, "Init display");
+		pDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+		if(pDisplay == EGL_NO_DISPLAY){
+			DETHROW(deeInvalidParam);
 		}
 		
-		if( ! eglInitialize( pDisplay, 0, 0 ) ){
-			DETHROW( deeInvalidParam );
+		if(!eglInitialize(pDisplay, 0, 0)){
+			DETHROW(deeInvalidParam);
 		}
 		
 		// choose configuration
@@ -142,80 +142,80 @@ void dealDisplay::Init(){
 			EGL_NONE
 		};
 		EGLint configCount;
-		if( ! eglChooseConfig( pDisplay, attribs, &pConfig, 1, &configCount ) ){
-			DETHROW( deeInvalidParam );
+		if(!eglChooseConfig(pDisplay, attribs, &pConfig, 1, &configCount)){
+			DETHROW(deeInvalidParam);
 		}
-		if( configCount == 0 ){
-			DETHROW( deeInvalidParam );
+		if(configCount == 0){
+			DETHROW(deeInvalidParam);
 		}
 		
-		pLauncher.GetLogger().LogInfo( LOGSOURCE, "EGL Configuration:" );
+		pLauncher.GetLogger().LogInfo(LOGSOURCE, "EGL Configuration:");
 		GLint value;
-		EGLB_CHECK( pLauncher, eglGetConfigAttrib( pDisplay, pConfig, EGL_RED_SIZE, &value ) );
-		pLauncher.GetLogger().LogInfoFormat( LOGSOURCE, "- Red: %d", value );
-		EGLB_CHECK( pLauncher, eglGetConfigAttrib( pDisplay, pConfig, EGL_GREEN_SIZE, &value ) );
-		pLauncher.GetLogger().LogInfoFormat( LOGSOURCE, "- Green: %d", value );
-		EGLB_CHECK( pLauncher, eglGetConfigAttrib( pDisplay, pConfig, EGL_BLUE_SIZE, &value ) );
-		pLauncher.GetLogger().LogInfoFormat( LOGSOURCE, "- Blue: %d", value );
-		EGLB_CHECK( pLauncher, eglGetConfigAttrib( pDisplay, pConfig, EGL_ALPHA_SIZE, &value ) );
-		pLauncher.GetLogger().LogInfoFormat( LOGSOURCE, "- Alpha: %d", value );
-		EGLB_CHECK( pLauncher, eglGetConfigAttrib( pDisplay, pConfig, EGL_DEPTH_SIZE, &value ) );
-		pLauncher.GetLogger().LogInfoFormat( LOGSOURCE, "- Depth: %d", value );
+		EGLB_CHECK(pLauncher, eglGetConfigAttrib(pDisplay, pConfig, EGL_RED_SIZE, &value));
+		pLauncher.GetLogger().LogInfoFormat(LOGSOURCE, "- Red: %d", value);
+		EGLB_CHECK(pLauncher, eglGetConfigAttrib(pDisplay, pConfig, EGL_GREEN_SIZE, &value));
+		pLauncher.GetLogger().LogInfoFormat(LOGSOURCE, "- Green: %d", value);
+		EGLB_CHECK(pLauncher, eglGetConfigAttrib(pDisplay, pConfig, EGL_BLUE_SIZE, &value));
+		pLauncher.GetLogger().LogInfoFormat(LOGSOURCE, "- Blue: %d", value);
+		EGLB_CHECK(pLauncher, eglGetConfigAttrib(pDisplay, pConfig, EGL_ALPHA_SIZE, &value));
+		pLauncher.GetLogger().LogInfoFormat(LOGSOURCE, "- Alpha: %d", value);
+		EGLB_CHECK(pLauncher, eglGetConfigAttrib(pDisplay, pConfig, EGL_DEPTH_SIZE, &value));
+		pLauncher.GetLogger().LogInfoFormat(LOGSOURCE, "- Depth: %d", value);
 		
 		// set buffer geometry
 		EGLint format;
-		if( ! eglGetConfigAttrib( pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format ) ){
-			DETHROW( deeInvalidParam );
+		if(!eglGetConfigAttrib(pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format)){
+			DETHROW(deeInvalidParam);
 		}
-		if( ANativeWindow_setBuffersGeometry( pLauncher.GetAndroidApp().window, 0, 0, format) ){
-			DETHROW( deeInvalidParam );
+		if(ANativeWindow_setBuffersGeometry(pLauncher.GetAndroidApp().window, 0, 0, format)){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
 	// create surface
-	pSurface = eglCreateWindowSurface( pDisplay, pConfig, pLauncher.GetAndroidApp().window, NULL );
-	if( pSurface == EGL_NO_SURFACE ){
-		DETHROW( deeInvalidParam );
+	pSurface = eglCreateWindowSurface(pDisplay, pConfig, pLauncher.GetAndroidApp().window, NULL);
+	if(pSurface == EGL_NO_SURFACE){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// create context if not existing. it can be kept around while frozen
-	if( pContext == EGL_NO_CONTEXT ){
+	if(pContext == EGL_NO_CONTEXT){
 		const EGLint eglAttribList[] = {
 			EGL_CONTEXT_CLIENT_VERSION, 2,
 			EGL_NONE
 		};
-		pContext = eglCreateContext( pDisplay, pConfig, NULL, eglAttribList );
-		if( pContext == EGL_NO_CONTEXT ){
-			DETHROW( deeInvalidParam );
+		pContext = eglCreateContext(pDisplay, pConfig, NULL, eglAttribList);
+		if(pContext == EGL_NO_CONTEXT){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
 	// make surface current. we have to make it current each render loop
-	if( eglMakeCurrent( pDisplay, pSurface, pSurface, pContext ) == EGL_FALSE ){
-		DETHROW( deeInvalidParam );
+	if(eglMakeCurrent(pDisplay, pSurface, pSurface, pContext) == EGL_FALSE){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// query display parameters
-	if( ! eglQuerySurface( pDisplay, pSurface, EGL_WIDTH, &pWidth ) ){
-		DETHROW( deeInvalidParam );
+	if(!eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &pWidth)){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! eglQuerySurface( pDisplay, pSurface, EGL_HEIGHT, &pHeight ) ){
-		DETHROW( deeInvalidParam );
+	if(!eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &pHeight)){
+		DETHROW(deeInvalidParam);
 	}
-	pLauncher.GetLogger().LogInfoFormat( LOGSOURCE, "Display size %ix%i", pWidth, pHeight );
+	pLauncher.GetLogger().LogInfoFormat(LOGSOURCE, "Display size %ix%i", pWidth, pHeight);
 	
 	// set some default opengl states
-	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST );
-	OGL_CHECK( pLauncher, glEnable( GL_CULL_FACE ) );
-	OGL_CHECK( pLauncher, glShadeModel( GL_SMOOTH ) );
-	OGL_CHECK( pLauncher, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( pLauncher, glEnable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( pLauncher, glEnable( GL_BLEND ) );
-	OGL_CHECK( pLauncher, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	pLauncher.GetLogger().LogInfo( LOGSOURCE, "Display ready" );
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+	OGL_CHECK(pLauncher, glEnable(GL_CULL_FACE));
+	OGL_CHECK(pLauncher, glShadeModel(GL_SMOOTH));
+	OGL_CHECK(pLauncher, glDisable(GL_DEPTH_TEST));
+	OGL_CHECK(pLauncher, glEnable(GL_SCISSOR_TEST));
+	OGL_CHECK(pLauncher, glEnable(GL_BLEND));
+	OGL_CHECK(pLauncher, glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	pLauncher.GetLogger().LogInfo(LOGSOURCE, "Display ready");
 	
 	// load default resources (for the time being)
-	if( loadDefaultResources ){
+	if(loadDefaultResources){
 		pCreateShapesVBO();
 		pLoadDefaultAssets();
 		pCreateShapeShader();
@@ -223,26 +223,26 @@ void dealDisplay::Init(){
 	}
 	
 	// create content widget
-	if( ! pContent ){
-		pContent = new dealWidgetLayout( *this );
-		pContent->SetSize( decPoint( pWidth, pHeight ) );
-		pContent->SetBackgroundColor( decColor() );
+	if(!pContent){
+		pContent = new dealWidgetLayout(*this);
+		pContent->SetSize(decPoint(pWidth, pHeight));
+		pContent->SetBackgroundColor(decColor());
 	}
 }
 
 void dealDisplay::Close(){
-	if( pDisplay == EGL_NO_DISPLAY ){
+	if(pDisplay == EGL_NO_DISPLAY){
 		return;
 	}
 	
-	if( pSurface == EGL_NO_SURFACE ){
+	if(pSurface == EGL_NO_SURFACE){
 		return;
 	}
 	
-	pLauncher.GetLogger().LogInfo( LOGSOURCE, "Close window" );
-	EGLB_CHECK( pLauncher, eglMakeCurrent( pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) );
+	pLauncher.GetLogger().LogInfo(LOGSOURCE, "Close window");
+	EGLB_CHECK(pLauncher, eglMakeCurrent(pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT));
 	
-	EGLB_CHECK( pLauncher, eglDestroySurface( pDisplay, pSurface ) );
+	EGLB_CHECK(pLauncher, eglDestroySurface(pDisplay, pSurface));
 	pSurface = EGL_NO_SURFACE;
 }
 
@@ -251,39 +251,39 @@ void dealDisplay::ConfigChanged(){
 
 
 
-void dealDisplay::SetDialog( dealDialog *dialog ){
-	if( pDialog == dialog ){
+void dealDisplay::SetDialog(dealDialog *dialog){
+	if(pDialog == dialog){
 		return;
 	}
 	
-	SetCaptureWidget( NULL );
+	SetCaptureWidget(NULL);
 	
-	if( pDialog ){
+	if(pDialog){
 		pDialog->OnDeactivate();
 		pDialog->FreeReference();
 	}
 	
 	pDialog = dialog;
 	
-	if( dialog ){
+	if(dialog){
 		dialog->AddReference();
-		dialog->GetContent()->SetSize( decPoint( pWidth, pHeight ) );
+		dialog->GetContent()->SetSize(decPoint(pWidth, pHeight));
 		dialog->OnActivate();
 	}
 }
 
-void dealDisplay::SetCaptureWidget( dealWidget *widget ){
-	if( widget == pCaptureWidget ){
+void dealDisplay::SetCaptureWidget(dealWidget *widget){
+	if(widget == pCaptureWidget){
 		return;
 	}
 	
-	if( pCaptureWidget ){
+	if(pCaptureWidget){
 		pCaptureWidget->FreeReference();
 	}
 	
 	pCaptureWidget = widget;
 	
-	if( widget ){
+	if(widget){
 		widget->AddReference();
 	}
 }
@@ -291,79 +291,79 @@ void dealDisplay::SetCaptureWidget( dealWidget *widget ){
 
 
 void dealDisplay::Paint(){
-	if( pDisplay == EGL_NO_DISPLAY || pSurface == EGL_NO_SURFACE ){
+	if(pDisplay == EGL_NO_DISPLAY || pSurface == EGL_NO_SURFACE){
 		return;
 	}
 	
 	// make surface current. we have to make it current each render loop
-	EGLB_CHECK( pLauncher, eglMakeCurrent( pDisplay, pSurface, pSurface, pContext ) );
+	EGLB_CHECK(pLauncher, eglMakeCurrent(pDisplay, pSurface, pSurface, pContext));
 	
 	// check if screen size is still the same. listening to config changed is not going to
 	// work since android delays screen changes for an undefinite time.
 	int width = 0;
 	int height = 0;
-	EGLB_CHECK( pLauncher, eglQuerySurface( pDisplay, pSurface, EGL_WIDTH, &width ) );
-	EGLB_CHECK( pLauncher, eglQuerySurface( pDisplay, pSurface, EGL_HEIGHT, &height ) );
+	EGLB_CHECK(pLauncher, eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &width));
+	EGLB_CHECK(pLauncher, eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &height));
 	
-	if( width != pWidth || height != pHeight ){
-		pLauncher.GetLogger().LogInfoFormat( LOGSOURCE, "Screen size changed: %ix%i -> %ix%i",
-			pWidth, pHeight, width, height );
+	if(width != pWidth || height != pHeight){
+		pLauncher.GetLogger().LogInfoFormat(LOGSOURCE, "Screen size changed: %ix%i -> %ix%i",
+			pWidth, pHeight, width, height);
 		pWidth = width;
 		pHeight = height;
 		ScreenOrientationChanged();
 	}
 	
 	// render
-	OGL_CHECK( pLauncher, glViewport( 0, 0, pWidth, pHeight ) );
-	OGL_CHECK( pLauncher, glScissor( 0, 0, pWidth, pHeight ) );
+	OGL_CHECK(pLauncher, glViewport(0, 0, pWidth, pHeight));
+	OGL_CHECK(pLauncher, glScissor(0, 0, pWidth, pHeight));
 	
-	OGL_CHECK( pLauncher, glClearColor( 0.0f, 0.0f, 0.0f, 1.0f ) );
-	OGL_CHECK( pLauncher, glClear( GL_COLOR_BUFFER_BIT ) );
+	OGL_CHECK(pLauncher, glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+	OGL_CHECK(pLauncher, glClear(GL_COLOR_BUFFER_BIT));
 	
 	ActivateVBOShapes();
 	
 	dealWidget *widget = pContent;
-	if( pDialog ){
+	if(pDialog){
 		widget = pDialog->GetContent();
 	}
 	
-	if( widget){
+	if(widget){
 		dealWidget::sRenderContext context;
 		
 		context.transform = decTexMatrix::CreateScale(
-			2.0f / ( float )( pWidth - 1 ), -2.0f / ( float )( pHeight - 1 ) )
+			2.0f / (float)(pWidth - 1), -2.0f / (float)(pHeight - 1))
 				* decTexMatrix::CreateTranslation( -1.0f, 1.0f );
-		context.color.Set( 1.0f, 1.0f, 1.0f, 1.0f );
-		context.screenPosition.Set( 0, 0 );
-		context.clipBaseScreenY = ( float )( pHeight - 1 );
-		context.viewFrom.Set( 0, 0 );
-		context.viewTo.Set( pWidth - 1, pHeight - 1 );
+		context.color.Set(1.0f, 1.0f, 1.0f, 1.0f);
+		context.screenPosition.Set(0, 0);
+		context.clipBaseScreenY = (float)(pHeight - 1);
+		context.viewFrom.Set(0, 0);
+		context.viewTo.Set(pWidth - 1, pHeight - 1);
 		
-		widget->Render( context );
+		widget->Render(context);
 	}
 	
 	// swap buffers
-	EGLB_CHECK( pLauncher, eglSwapBuffers( pDisplay, pSurface ) );
+	EGLB_CHECK(pLauncher, eglSwapBuffers(pDisplay, pSurface));
 }
 
 void dealDisplay::ActivateVBOShapes(){
-	if( ! pVBOShapes ){
-		DETHROW( deeInvalidParam );
+	if(!pVBOShapes){
+		DETHROW(deeInvalidParam);
 	}
 	
-	OGL_CHECK( pLauncher, glEnableVertexAttribArray( 0 ) );
-	OGL_CHECK( pLauncher, glBindBuffer( GL_ARRAY_BUFFER, pVBOShapes ) );
-	OGL_CHECK( pLauncher, glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, ( const GLvoid * )0 ) );
+	OGL_CHECK(pLauncher, glEnableVertexAttribArray(0));
+	OGL_CHECK(pLauncher, glBindBuffer(GL_ARRAY_BUFFER, pVBOShapes));
+	OGL_CHECK(pLauncher, glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (const GLvoid *)0));
 }
 
 void dealDisplay::ScreenOrientationChanged(){
 	// resize content if active
-	if( pContent ){
-		pContent->SetSize( decPoint( pWidth, pHeight ) );
+	if(pContent){
+		pContent->SetSize(decPoint(pWidth, pHeight));
 	}
 	
-	if( pDialog ){
-		pDialog->GetContent()->SetSize( decPoint( pWidth, pHeight ) );
+	if(pDialog){
+		pDialog->GetContent()->SetSize(decPoint(pWidth, pHeight));
 	}
 }
 
@@ -375,127 +375,127 @@ void dealDisplay::ScreenOrientationChanged(){
 void dealDisplay::pCleanUp(){
 	Close();
 	
-	if( pDialog ){
+	if(pDialog){
 		pDialog->OnDeactivate();
 		pDialog->FreeReference();
 	}
-	if( pContent ){
+	if(pContent){
 		pContent->FreeReference();
 	}
 	
-	if( pFontDefault ){
+	if(pFontDefault){
 		pFontDefault->FreeReference();
 	}
-	if( pDefaultGuiTheme ){
+	if(pDefaultGuiTheme){
 		pDefaultGuiTheme->FreeReference();
 	}
 	
-	if( pShaderShapeTex ){
+	if(pShaderShapeTex){
 		pShaderShapeTex->FreeReference();
 	}
-	if( pShaderShape ){
+	if(pShaderShape){
 		pShaderShape->FreeReference();
 	}
 	
-	if( pVBOShapes ){
-		glDeleteBuffers( 1, &pVBOShapes );
+	if(pVBOShapes){
+		glDeleteBuffers(1, &pVBOShapes);
 	}
 	
-	if( pDisplay != EGL_NO_DISPLAY ){
-		EGLB_CHECK( pLauncher, eglMakeCurrent( pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) );
+	if(pDisplay != EGL_NO_DISPLAY){
+		EGLB_CHECK(pLauncher, eglMakeCurrent(pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT));
 		
-		if( pContext != EGL_NO_CONTEXT ){
-			EGLB_CHECK( pLauncher, eglDestroyContext( pDisplay, pContext ) );
+		if(pContext != EGL_NO_CONTEXT){
+			EGLB_CHECK(pLauncher, eglDestroyContext(pDisplay, pContext));
 			pContext = EGL_NO_CONTEXT;
 		}
 		
-		EGLB_CHECK( pLauncher, eglTerminate( pDisplay ) );
+		EGLB_CHECK(pLauncher, eglTerminate(pDisplay));
 		pDisplay = EGL_NO_DISPLAY;
 	}
 }
 
 void dealDisplay::pLoadDefaultAssets(){
-	pFontDefault = new dealFont( *this, "fonts/nimbus_sans_30.xml" );
+	pFontDefault = new dealFont(*this, "fonts/nimbus_sans_30.xml");
 	//pFontDefault = new dealFont( *this, "fonts/nimbus_sans_30_bold.xml" );
 	//pFontDefault = new dealFont( *this, "fonts/nimbus_sans_30_border.xml" );
-	pFontSizeDefault = ( int )( ( float )decMath::min( pWidth, pHeight ) / 15.0f );
+	pFontSizeDefault = (int)((float)decMath::min(pWidth, pHeight) / 15.0f);
 	
-	pDefaultGuiTheme = new dealGuiTheme( *this );
+	pDefaultGuiTheme = new dealGuiTheme(*this);
 }
 
 void dealDisplay::pCreateShapesVBO(){
-	if( pVBOShapes ){
+	if(pVBOShapes){
 		return;
 	}
 	
-	GLfloat vbodata[ 14 ];
+	GLfloat vbodata[14];
 	
 	// the actual geometry points are obtain by calculating x'=x*scale+offset.
 	
 	// set up vbo data for a point shape
-	vbodata[ 0 ] = 0.0f; // p1.x = x
-	vbodata[ 1 ] = 0.0f; // p1.y = y
+	vbodata[0] = 0.0f; // p1.x = x
+	vbodata[1] = 0.0f; // p1.y = y
 	
 	// set up vbo data for a line shape
-	vbodata[ 2 ] = 0.0f; // p1.x = x1
-	vbodata[ 3 ] = 0.0f; // p1.y = y1
+	vbodata[2] = 0.0f; // p1.x = x1
+	vbodata[3] = 0.0f; // p1.y = y1
 	
-	vbodata[ 4 ] = 1.0f; // p2.x = x2
-	vbodata[ 5 ] = 1.0f; // p2.y = y2
+	vbodata[4] = 1.0f; // p2.x = x2
+	vbodata[5] = 1.0f; // p2.y = y2
 	
 	// set up vbo data for a rectangular shape
-	vbodata[ 6 ] = 0.0f; // p1.x = x1
-	vbodata[ 7 ] = 0.0f; // p1.y = y1
+	vbodata[6] = 0.0f; // p1.x = x1
+	vbodata[7] = 0.0f; // p1.y = y1
 	
-	vbodata[ 8 ] = 0.0f; // p2.x = x1
-	vbodata[ 9 ] = 1.0f; // p2.y = y2
+	vbodata[8] = 0.0f; // p2.x = x1
+	vbodata[9] = 1.0f; // p2.y = y2
 	
-	vbodata[ 10 ] = 1.0f; // p3.x = x2
-	vbodata[ 11 ] = 1.0f; // p3.y = y2
+	vbodata[10] = 1.0f; // p3.x = x2
+	vbodata[11] = 1.0f; // p3.y = y2
 	
-	vbodata[ 12 ] = 1.0f; // p4.x = x2
-	vbodata[ 13 ] = 0.0f; // p4.y = y1
+	vbodata[12] = 1.0f; // p4.x = x2
+	vbodata[13] = 0.0f; // p4.y = y1
 	
 	// create vbo
-	OGL_CHECK( pLauncher, glGenBuffers( 1, &pVBOShapes ) );
-	if( ! pVBOShapes ){
-		DETHROW( deeOutOfMemory );
+	OGL_CHECK(pLauncher, glGenBuffers(1, &pVBOShapes));
+	if(!pVBOShapes){
+		DETHROW(deeOutOfMemory);
 	}
-	OGL_CHECK( pLauncher, glBindBuffer( GL_ARRAY_BUFFER, pVBOShapes ) );
-	OGL_CHECK( pLauncher, glBufferData( GL_ARRAY_BUFFER, sizeof( vbodata ),
-		( const GLvoid * )&vbodata, GL_STATIC_DRAW ) );
-	OGL_CHECK( pLauncher, glBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+	OGL_CHECK(pLauncher, glBindBuffer(GL_ARRAY_BUFFER, pVBOShapes));
+	OGL_CHECK(pLauncher, glBufferData(GL_ARRAY_BUFFER, sizeof(vbodata),
+		(const GLvoid *)&vbodata, GL_STATIC_DRAW));
+	OGL_CHECK(pLauncher, glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
 void dealDisplay::pCreateShapeShader(){
-	pShaderShape = new dealShader( *this );
-	pShaderShape->CompileVertexProgramAsset( "shaders/shape/vertex.glsl" );
-	pShaderShape->CompileFragmentProgramAsset( "shaders/shape/fragment.glsl" );
-	pShaderShape->BindAttributeLocation( "inPosition", 0 );
+	pShaderShape = new dealShader(*this);
+	pShaderShape->CompileVertexProgramAsset("shaders/shape/vertex.glsl");
+	pShaderShape->CompileFragmentProgramAsset("shaders/shape/fragment.glsl");
+	pShaderShape->BindAttributeLocation("inPosition", 0);
 	pShaderShape->Link();
 	pShaderShape->Activate();
-	pShaderShape->ResolveParameter( "pTransform" ); // espsTransform
-	pShaderShape->ResolveParameter( "pTCTransform" ); // espsTCTransform, unused in this shader
-	pShaderShape->ResolveParameter( "pColorTransform" ); // espsColorTransform
-	pShaderShape->ResolveParameter( "pColorTransform2" ); // espsColorTransform2
-	pShaderShape->ResolveParameter( "pGamma" ); // espsGamma
-	pShaderShape->ResolveParameter( "pClipRect" ); // espsClipRect
-	pShaderShape->ResolveParameter( "pTCClamp" ); // espsTCClamp
+	pShaderShape->ResolveParameter("pTransform"); // espsTransform
+	pShaderShape->ResolveParameter("pTCTransform"); // espsTCTransform, unused in this shader
+	pShaderShape->ResolveParameter("pColorTransform"); // espsColorTransform
+	pShaderShape->ResolveParameter("pColorTransform2"); // espsColorTransform2
+	pShaderShape->ResolveParameter("pGamma"); // espsGamma
+	pShaderShape->ResolveParameter("pClipRect"); // espsClipRect
+	pShaderShape->ResolveParameter("pTCClamp"); // espsTCClamp
 }
 
 void dealDisplay::pCreateShapeTexShader(){
-	pShaderShapeTex = new dealShader( *this );
-	pShaderShapeTex->CompileVertexProgramAsset( "shaders/shapetex/vertex.glsl" );
-	pShaderShapeTex->CompileFragmentProgramAsset( "shaders/shapetex/fragment.glsl" );
-	pShaderShapeTex->BindAttributeLocation( "inPosition", 0 );
+	pShaderShapeTex = new dealShader(*this);
+	pShaderShapeTex->CompileVertexProgramAsset("shaders/shapetex/vertex.glsl");
+	pShaderShapeTex->CompileFragmentProgramAsset("shaders/shapetex/fragment.glsl");
+	pShaderShapeTex->BindAttributeLocation("inPosition", 0);
 	pShaderShapeTex->Link();
 	pShaderShapeTex->Activate();
-	pShaderShapeTex->BindTextureUnitLocation( "texColor", 0 );
-	pShaderShapeTex->ResolveParameter( "pTransform" ); // espsTransform
-	pShaderShapeTex->ResolveParameter( "pTCTransform" ); // espsTCTransform
-	pShaderShapeTex->ResolveParameter( "pColorTransform" ); // espsColorTransform
-	pShaderShapeTex->ResolveParameter( "pColorTransform2" ); // espsColorTransform2
-	pShaderShapeTex->ResolveParameter( "pGamma" ); // espsGamma
-	pShaderShapeTex->ResolveParameter( "pClipRect" ); // espsClipRect
-	pShaderShapeTex->ResolveParameter( "pTCClamp" ); // espsTCClamp
+	pShaderShapeTex->BindTextureUnitLocation("texColor", 0);
+	pShaderShapeTex->ResolveParameter("pTransform"); // espsTransform
+	pShaderShapeTex->ResolveParameter("pTCTransform"); // espsTCTransform
+	pShaderShapeTex->ResolveParameter("pColorTransform"); // espsColorTransform
+	pShaderShapeTex->ResolveParameter("pColorTransform2"); // espsColorTransform2
+	pShaderShapeTex->ResolveParameter("pGamma"); // espsGamma
+	pShaderShapeTex->ResolveParameter("pClipRect"); // espsClipRect
+	pShaderShapeTex->ResolveParameter("pTCClamp"); // espsTCClamp
 }

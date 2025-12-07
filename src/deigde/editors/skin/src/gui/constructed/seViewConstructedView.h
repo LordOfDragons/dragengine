@@ -118,7 +118,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create constructed property view. */
-	seViewConstructedView( seWindowMain &windowMain );
+	seViewConstructedView(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up constructed property view. */
@@ -137,7 +137,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or \em NULL. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	
 	
@@ -145,13 +145,13 @@ public:
 	inline int GetZoom() const{ return pZoom; }
 	
 	/** \brief Set zoom factor in percentage. */
-	void SetZoom( int zoom );
+	void SetZoom(int zoom);
 	
 	/** \brief Offset in pixels. */
 	inline const decPoint &GetOffset() const{ return pOffset; }
 	
 	/** \brief Set offset pixels. */
-	void SetOffset( const decPoint &offset );
+	void SetOffset(const decPoint &offset);
 	
 	/** \brief Size of content. */
 	decPoint GetContentSize() const;
@@ -174,7 +174,7 @@ public:
 	sePropertyNodeGroup *GetActiveNodeGroup() const;
 	
 	/** \brief Node at coordinates or \em NULL. */
-	sePropertyNode *NodeAtPosition( const decPoint &position ) const;
+	sePropertyNode *NodeAtPosition(const decPoint &position) const;
 	
 	
 	
@@ -205,10 +205,10 @@ public:
 	virtual void OnResize();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Get selection boundaries. */
-	void GetSelectionBoundary( const sePropertyNodeList &list, decVector2 &minBounds, decVector2 &maxBounds );
+	void GetSelectionBoundary(const sePropertyNodeList &list, decVector2 &minBounds, decVector2 &maxBounds);
 	
 	
 	
@@ -258,11 +258,11 @@ public:
 	
 	
 private:
-	void pCreateMarkerCanvas( deCanvasImage::Ref &canvas, const char *pathImage, float order ) const;
-	void pCreateDarkeningCanvas( deCanvasPaint::Ref &canvas, float order ) const;
+	void pCreateMarkerCanvas(deCanvasImage::Ref &canvas, const char *pathImage, float order) const;
+	void pCreateDarkeningCanvas(deCanvasPaint::Ref &canvas, float order) const;
 	
-	void pRecreateContentCanvas( const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView );
-	void pUpdateContentCanvasParams( const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView );
+	void pRecreateContentCanvas(const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView);
+	void pUpdateContentCanvasParams(const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView);
 };
 
 #endif

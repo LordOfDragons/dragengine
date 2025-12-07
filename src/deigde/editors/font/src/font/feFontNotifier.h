@@ -57,24 +57,24 @@ public:
 	/** @name Notifications */
 	/*@{*/
 	/** Element or work mode changed. */
-	virtual void ModeChanged( feFont *font );
+	virtual void ModeChanged(feFont *font);
 	/** Changed or saved state changed. */
-	virtual void StateChanged( feFont *font );
+	virtual void StateChanged(feFont *font);
 	/** Undos changed. */
-	virtual void UndoChanged( feFont *font );
+	virtual void UndoChanged(feFont *font);
 	
 	/** Font parameters changed. */
-	virtual void FontChanged( feFont *font );
+	virtual void FontChanged(feFont *font);
 	/** An image changed. */
-	virtual void ImageChanged( feFont *font, feFontImage *image );
+	virtual void ImageChanged(feFont *font, feFontImage *image);
 	/** Glyphs have been added or removed. */
-	virtual void GlyphStructureChanged ( feFont *font );
+	virtual void GlyphStructureChanged (feFont *font);
 	/** A glyph changed. */
-	virtual void GlyphChanged( feFont *font, feFontGlyph *glyph );
+	virtual void GlyphChanged(feFont *font, feFontGlyph *glyph);
 	/** Glyph selection changed. */
-	virtual void GlyphSelectionChanged( feFont *font );
+	virtual void GlyphSelectionChanged(feFont *font);
 	/** Active glyph changed. */
-	virtual void ActiveGlyphChanged( feFont *font );
+	virtual void ActiveGlyphChanged(feFont *font);
 	/*@}*/
 };
 

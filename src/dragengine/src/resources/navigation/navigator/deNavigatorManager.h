@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new manager. */
-	deNavigatorManager( deEngine *engine );
+	deNavigatorManager(deEngine *engine);
 	
 	/** \brief Clean up manager. */
 	virtual ~deNavigatorManager();
@@ -86,7 +86,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

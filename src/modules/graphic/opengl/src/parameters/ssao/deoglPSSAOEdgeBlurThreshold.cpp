@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSAOEdgeBlurThreshold::deoglPSSAOEdgeBlurThreshold( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPSSAOEdgeBlurThreshold::deoglPSSAOEdgeBlurThreshold(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "ssaoEdgeBlurThreshold" );
-	SetDescription( "Sets the depth threshold for the blur pass of the screen space ambient occlusion."
+	SetName("ssaoEdgeBlurThreshold");
+	SetDescription("Sets the depth threshold for the blur pass of the screen space ambient occlusion."
 		" Screen space ambient occlusion is a stochastic algorithm introducing noise into the result "
 		" due to taking less samples than required to cover the entire sampling range for spead reason."
 		" To hide the noise a blur pass is applied to the calculated ambient occlusion."
@@ -54,10 +54,10 @@ deoglParameterFloat( ogl )
 		" which can cause light bleeding."
 		" Larger values reduce the blur on the noise resulting in a sharper image but with more"
 		" noise especially in the distance."
-		" The default value is 5 which equals a depth difference of 0.2m at 1m distance from the camera." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSAO Edge Blur Threshold" );
-	SetDefaultValue( "5" );
+		" The default value is 5 which equals a depth difference of 0.2m at 1m distance from the camera.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSAO Edge Blur Threshold");
+	SetDefaultValue("5");
 }
 
 deoglPSSAOEdgeBlurThreshold::~deoglPSSAOEdgeBlurThreshold(){
@@ -72,6 +72,6 @@ float deoglPSSAOEdgeBlurThreshold::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSAOEdgeBlurThreshold();
 }
 
-void deoglPSSAOEdgeBlurThreshold::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSAOEdgeBlurThreshold( value );
+void deoglPSSAOEdgeBlurThreshold::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSAOEdgeBlurThreshold(value);
 }

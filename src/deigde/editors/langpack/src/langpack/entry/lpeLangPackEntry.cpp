@@ -40,18 +40,18 @@
 ////////////////////////////
 
 lpeLangPackEntry::lpeLangPackEntry() :
-pLangPack( nullptr ),
-pName( "Entry" ),
-pSelected( false ),
-pActive( false ){
+pLangPack(nullptr),
+pName("Entry"),
+pSelected(false),
+pActive(false){
 }
 
-lpeLangPackEntry::lpeLangPackEntry( const lpeLangPackEntry &entry ) :
-pLangPack( nullptr ),
-pName( entry.pName ),
-pText( entry.pText ),
-pSelected( false ),
-pActive( false ){
+lpeLangPackEntry::lpeLangPackEntry(const lpeLangPackEntry &entry) :
+pLangPack(nullptr),
+pName(entry.pName),
+pText(entry.pText),
+pSelected(false),
+pActive(false){
 }
 
 lpeLangPackEntry::~lpeLangPackEntry(){
@@ -62,14 +62,14 @@ lpeLangPackEntry::~lpeLangPackEntry(){
 // Management
 ///////////////
 
-void lpeLangPackEntry::SetLangPack( lpeLangPack *langpack ){
+void lpeLangPackEntry::SetLangPack(lpeLangPack *langpack){
 	pLangPack = langpack;
 }
 
 
 
-void lpeLangPackEntry::SetName( const char *name ){
-	if( pName.Equals( name ) ){
+void lpeLangPackEntry::SetName(const char *name){
+	if(pName.Equals(name)){
 		return;
 	}
 	
@@ -77,8 +77,8 @@ void lpeLangPackEntry::SetName( const char *name ){
 	NotifyNameChanged();
 }
 
-void lpeLangPackEntry::SetText( const decUnicodeString &text ){
-	if( pText == text ){
+void lpeLangPackEntry::SetText(const decUnicodeString &text){
+	if(pText == text){
 		return;
 	}
 	
@@ -86,24 +86,24 @@ void lpeLangPackEntry::SetText( const decUnicodeString &text ){
 	NotifyChanged();
 }
 
-void lpeLangPackEntry::SetSelected( bool selected ){
+void lpeLangPackEntry::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void lpeLangPackEntry::SetActive( bool active ){
+void lpeLangPackEntry::SetActive(bool active){
 	pActive = active;
 }
 
 
 
 void lpeLangPackEntry::NotifyChanged(){
-	if( pLangPack ){
-		pLangPack->NotifyEntryChanged( this );
+	if(pLangPack){
+		pLangPack->NotifyEntryChanged(this);
 	}
 }
 
 void lpeLangPackEntry::NotifyNameChanged(){
-	if( pLangPack ){
-		pLangPack->NotifyEntryNameChanged( this );
+	if(pLangPack){
+		pLangPack->NotifyEntryNameChanged(this);
 	}
 }

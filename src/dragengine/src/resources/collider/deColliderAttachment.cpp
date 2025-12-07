@@ -40,21 +40,21 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deColliderAttachment::deColliderAttachment( deResource *resource ) :
-pAttachType( eatStatic ),
-pResource( resource ),
-pScaling( 1.0f, 1.0f, 1.0f ),
-pNoScaling( false ),
-pWeights( NULL ),
-pWeightCount( 0 )
+deColliderAttachment::deColliderAttachment(deResource *resource) :
+pAttachType(eatStatic),
+pResource(resource),
+pScaling(1.0f, 1.0f, 1.0f),
+pNoScaling(false),
+pWeights(NULL),
+pWeightCount(0)
 {
-	if( ! resource || ! CanAttachResource( *resource ) ){
-		DETHROW( deeInvalidParam );
+	if(!resource || !CanAttachResource(*resource)){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 deColliderAttachment::~deColliderAttachment(){
-	if( pWeights ){
+	if(pWeights){
 		delete [] pWeights;
 	}
 }
@@ -64,44 +64,44 @@ deColliderAttachment::~deColliderAttachment(){
 // Management
 ///////////////
 
-void deColliderAttachment::SetAttachType( deColliderAttachment::eAttachType attachType ){
+void deColliderAttachment::SetAttachType(deColliderAttachment::eAttachType attachType){
 	pAttachType = attachType;
 }
 
-void deColliderAttachment::SetPosition( const decVector &position ){
+void deColliderAttachment::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deColliderAttachment::SetOrientation( const decQuaternion &orientation ){
+void deColliderAttachment::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void deColliderAttachment::SetScaling( const decVector &scaling ){
+void deColliderAttachment::SetScaling(const decVector &scaling){
 	pScaling = scaling;
 }
 
-void deColliderAttachment::SetNoScaling( bool noScaling ){
+void deColliderAttachment::SetNoScaling(bool noScaling){
 	pNoScaling = noScaling;
 }
 
-void deColliderAttachment::SetTrackBone( const char *bone ){
+void deColliderAttachment::SetTrackBone(const char *bone){
 	pTrackBone = bone;
 }
 
 
 
-void deColliderAttachment::SetWeightCount( int count ){
-	if( count == pWeightCount ){
+void deColliderAttachment::SetWeightCount(int count){
+	if(count == pWeightCount){
 		return;
 	}
 	
 	sWeight *newArray = NULL;
 	
-	if( count > 0 ){
-		newArray = new sWeight[ count ];
+	if(count > 0){
+		newArray = new sWeight[count];
 	}
 	
-	if( pWeights ){
+	if(pWeights){
 		delete [] pWeights;
 	}
 	
@@ -111,8 +111,8 @@ void deColliderAttachment::SetWeightCount( int count ){
 
 
 
-bool deColliderAttachment::CanAttachResource( const deResource &resource ){
-	switch( resource.GetResourceManager()->GetResourceType() ){
+bool deColliderAttachment::CanAttachResource(const deResource &resource){
+	switch(resource.GetResourceManager()->GetResourceType()){
 	case deResourceManager::ertCollider:
 	case deResourceManager::ertBillboard:
 	case deResourceManager::ertCamera:

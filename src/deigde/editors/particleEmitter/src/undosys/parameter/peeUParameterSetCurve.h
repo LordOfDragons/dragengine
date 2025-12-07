@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	peeUParameterSetCurve( peeType *type, peeParameter *parameter, const decCurveBezier &newCurve );
+	peeUParameterSetCurve(peeType *type, peeParameter *parameter, const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new curve. */
-	void SetNewCurve( const decCurveBezier &curve );
+	void SetNewCurve(const decCurveBezier &curve);
 	/*@}*/
 };
 

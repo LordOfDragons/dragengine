@@ -45,10 +45,10 @@ ceLangPackEntry::~ceLangPackEntry(){
 // Management
 ///////////////
 
-void ceLangPackEntry::SetName( const char *name ){
+void ceLangPackEntry::SetName(const char *name){
 	pName = name;
 }
 
-void ceLangPackEntry::SetText( const decUnicodeString &text ){
+void ceLangPackEntry::SetText(const decUnicodeString &text){
 	pText = text;
 }

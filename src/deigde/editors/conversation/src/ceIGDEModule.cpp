@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceIGDEModule::ceIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+ceIGDEModule::ceIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 ceIGDEModule::~ceIGDEModule(){
@@ -51,7 +51,7 @@ ceIGDEModule::~ceIGDEModule(){
 ///////////////
 
 void ceIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new ceWindowMain( *this ) );
+	if(!GetEditorWindow()){
+		SetEditorWindow(new ceWindowMain(*this));
 	}
 }

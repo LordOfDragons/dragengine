@@ -45,23 +45,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMSky::gdeWPSTIMSky( gdeWPSTreeModel &tree, gdeSky *sky ) :
-gdeWPSTreeItemModel( tree, etSky ),
-pSky( NULL )
+gdeWPSTIMSky::gdeWPSTIMSky(gdeWPSTreeModel &tree, gdeSky *sky) :
+gdeWPSTreeItemModel(tree, etSky),
+pSky(NULL)
 {
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetText( sky->GetName() );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText(sky->GetName());
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pSky = sky;
 	sky->AddReference();
 }
 
 gdeWPSTIMSky::~gdeWPSTIMSky(){
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -72,32 +72,32 @@ gdeWPSTIMSky::~gdeWPSTIMSky(){
 ///////////////
 
 void gdeWPSTIMSky::NameChanged(){
-	SetText( pSky->GetName() );
+	SetText(pSky->GetName());
 	ParentSortItems();
 }
 
 
 
-int gdeWPSTIMSky::Compare( const gdeWPSTreeItemModel &item ) const{
-	const gdeWPSTIMSky &other = ( const gdeWPSTIMSky & )item;
-	return pSky->GetName().Compare( other.GetSky()->GetName() );
+int gdeWPSTIMSky::Compare(const gdeWPSTreeItemModel &item) const{
+	const gdeWPSTIMSky &other = (const gdeWPSTIMSky &)item;
+	return pSky->GetName().Compare(other.GetSky()->GetName());
 }
 
 void gdeWPSTIMSky::OnSelected(){
-	GetGameDefinition().SetActiveSky( pSky );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotSky );
+	GetGameDefinition().SetActiveSky(pSky);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotSky);
 }
 
-void gdeWPSTIMSky::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMSky::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionSkyAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionSkyRemove() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionSkyAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionSkyRemove());
 }
 
-void gdeWPSTIMSky::SelectBestMatching( const char *string ){
-	if( GetParent() ){
-		( ( gdeWPSTreeItemModel* )GetParent() )->SelectBestMatching( string );
+void gdeWPSTIMSky::SelectBestMatching(const char *string){
+	if(GetParent()){
+		((gdeWPSTreeItemModel*)GetParent())->SelectBestMatching(string);
 	}
 }

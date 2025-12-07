@@ -50,7 +50,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new load/save system object. */
-	lpeLoadSaveSystem( lpeWindowMain *windowMain );
+	lpeLoadSaveSystem(lpeWindowMain *windowMain);
 	/** Cleans up the load/save system object. */
 	~lpeLoadSaveSystem();
 	/*@}*/
@@ -63,26 +63,26 @@ public:
 	/** Retrieves the number of load save langpacks. */
 	inline int GetLSLangPackCount() const{ return pLSLangPackCount; }
 	/** Retrieves the load save langpack at the given index. */
-	lpeLoadSaveLangPack *GetLSLangPackAt( int index ) const;
+	lpeLoadSaveLangPack *GetLSLangPackAt(int index) const;
 	/** Retrieves the index of the load save langpack. */
-	int IndexOfLSLangPack( lpeLoadSaveLangPack *lsLangPack ) const;
+	int IndexOfLSLangPack(lpeLoadSaveLangPack *lsLangPack) const;
 	/** Determines if the save langpack exists. */
-	bool HasLSLangPack( lpeLoadSaveLangPack *lsLangPack ) const;
+	bool HasLSLangPack(lpeLoadSaveLangPack *lsLangPack) const;
 	/** Retrieves the index of the load save langpack matching the given filename. */
-	int IndexOfLSLangPackMatching( const char *filename );
+	int IndexOfLSLangPackMatching(const char *filename);
 	/** Adds a load save langpack. */
-	void AddLSLangPack( lpeLoadSaveLangPack *lsLangPack );
+	void AddLSLangPack(lpeLoadSaveLangPack *lsLangPack);
 	/** Removes a load save langpack. */
-	void RemoveLSLangPack( lpeLoadSaveLangPack *lsLangPack );
+	void RemoveLSLangPack(lpeLoadSaveLangPack *lsLangPack);
 	/** Removes all load save langpacks. */
 	void RemoveAllLSLangPacks();
 	/** Updates the load save langpack list from the engine. */
 	void UpdateLSLangPacks();
 	
 	/** Loads the langpack from file if possible. */
-	lpeLangPack *LoadLangPack( const char *filename );
+	lpeLangPack *LoadLangPack(const char *filename);
 	/** Saves the langpack to file if possible. */
-	void SaveLangPack( lpeLangPack *langpack, const char *filename );
+	void SaveLangPack(lpeLangPack *langpack, const char *filename);
 	
 	/** \brief File pattern list. */
 	inline const igdeFilePatternList &GetLangPackFPList() const{ return pFPListLangPack; }

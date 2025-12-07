@@ -35,7 +35,7 @@
  * The receiver is responsible to resize according to the dragged distance.
  */
 class igdeNativeFoxResizer : public FXWindow{
-	FXDECLARE( igdeNativeFoxResizer )
+	FXDECLARE(igdeNativeFoxResizer)
 protected:
 	   igdeNativeFoxResizer();
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resizer. */
-	igdeNativeFoxResizer( FXComposite *parent, FXObject *target, FXSelector selector );
+	igdeNativeFoxResizer(FXComposite *parent, FXObject *target, FXSelector selector);
 	
 	/** \brief Clean up resizer. */
 	virtual ~igdeNativeFoxResizer();
@@ -66,19 +66,19 @@ public:
 	virtual FXint getDefaultHeight();
 	
 	/** \brief Dragged distance from SEL_COMMAND event data object. */
-	static int SelCommandDraggedDistance( void *data );
+	static int SelCommandDraggedDistance(void *data);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject*, FXSelector, void* );
-	long onEnter( FXObject*, FXSelector, void* );
-	long onLeave( FXObject*, FXSelector, void* );
-	long onLeftMouseDown( FXObject*, FXSelector, void* );
-	long onLeftMouseUp( FXObject*, FXSelector, void* );
-	long onMouseMoved( FXObject*, FXSelector, void* );
+	long onPaint(FXObject*, FXSelector, void*);
+	long onEnter(FXObject*, FXSelector, void*);
+	long onLeave(FXObject*, FXSelector, void*);
+	long onLeftMouseDown(FXObject*, FXSelector, void*);
+	long onLeftMouseUp(FXObject*, FXSelector, void*);
+	long onMouseMoved(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAGameCommand::ceCAGameCommand() : ceConversationAction( eatGameCommand ){
+ceCAGameCommand::ceCAGameCommand() : ceConversationAction(eatGameCommand){
 }
 
-ceCAGameCommand::ceCAGameCommand( const ceCAGameCommand &action ) : ceConversationAction( action ){
+ceCAGameCommand::ceCAGameCommand(const ceCAGameCommand &action) : ceConversationAction(action){
 	pCommand = action.GetCommand();
 }
 
@@ -53,12 +53,12 @@ ceCAGameCommand::~ceCAGameCommand(){
 // Management
 ///////////////
 
-void ceCAGameCommand::SetCommand( const char *command ){
+void ceCAGameCommand::SetCommand(const char *command){
 	pCommand = command;
 }
 
 
 
 ceConversationAction *ceCAGameCommand::CreateCopy() const{
-	return new ceCAGameCommand( *this );
+	return new ceCAGameCommand(*this);
 }

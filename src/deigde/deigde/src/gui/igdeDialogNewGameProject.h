@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogNewGameProject( igdeWindowMain &windowMain );
+	igdeDialogNewGameProject(igdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */

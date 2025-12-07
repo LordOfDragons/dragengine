@@ -47,8 +47,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadFontInternal2( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deFont *font );
+	deRLTaskReadFontInternal2(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deFont *font);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskReadFontInternal2();

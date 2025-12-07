@@ -41,12 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetMinimumValue::seUControllerSetMinimumValue( seController *controller, float newValue ) :
-pController( controller ),
-pNewValue( newValue )
+seUControllerSetMinimumValue::seUControllerSetMinimumValue(seController *controller, float newValue) :
+pController(controller),
+pNewValue(newValue)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetMinimumValue();
 }
@@ -60,9 +60,9 @@ seUControllerSetMinimumValue::~seUControllerSetMinimumValue(){
 ///////////////
 
 void seUControllerSetMinimumValue::Undo(){
-	( ( seController& )( deObject& )pController ).SetMinimumValue( pOldValue );
+	((seController&)(deObject&)pController).SetMinimumValue(pOldValue);
 }
 
 void seUControllerSetMinimumValue::Redo(){
-	( ( seController& )( deObject& )pController ).SetMinimumValue( pNewValue );
+	((seController&)(deObject&)pController).SetMinimumValue(pNewValue);
 }

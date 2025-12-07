@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create window. */
-	lpeWindowMain( igdeEditorModule &module );
+	lpeWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** Clean up window. */
@@ -134,33 +134,33 @@ public:
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
 	/** Set language pack. */
-	void SetLangPack( lpeLangPack *langpack );
+	void SetLangPack(lpeLangPack *langpack);
 	
 	/** Create new language pack. */
 	void CreateNewLangPack();
 	
 	/** Save language pack under the given file. */
-	void SaveLangPack( const char *filename );
+	void SaveLangPack(const char *filename);
 	
 	/** Get reference language pack. */
 	lpeLangPack *GetReferenceLangPack() const;
 	
 	/** Set reference language pack. */
-	void SetReferenceLangPack( lpeLangPack *langpack );
+	void SetReferenceLangPack(lpeLangPack *langpack);
 	
 	/** Select next missing language pack entry. */
 	void SelectNextMissingEntry();
 	
 	/** List of unsaved open documents. */
-	void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/** Request document to be saved. */
-	bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename);
 	
 	/**
 	 * Recent files changed.
@@ -179,9 +179,9 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuLangPack( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuEntry( igdeMenuCascade &menu );
+	void pCreateMenuLangPack(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuEntry(igdeMenuCascade &menu);
 };
 
 #endif

@@ -35,20 +35,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUToggleBoneIKLocked::reUToggleBoneIKLocked( reRigBone *bone, int axis ) :
-pAxis( axis )
+reUToggleBoneIKLocked::reUToggleBoneIKLocked(reRigBone *bone, int axis) :
+pAxis(axis)
 {
-	if( ! bone ) DETHROW( deeInvalidParam );
+	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();
 	
 	try{
 		decString text;
-		text.Format( "Toggle Bone IK Locked %c", 'X' + axis );
-		SetShortInfo( text );
+		text.Format("Toggle Bone IK Locked %c", 'X' + axis);
+		SetShortInfo(text);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -64,11 +64,11 @@ reUToggleBoneIKLocked::~reUToggleBoneIKLocked(){
 ///////////////
 
 void reUToggleBoneIKLocked::Undo(){
-	pBone->SetIKLocked( pAxis, ! pBone->GetIKLocked( pAxis ) );
+	pBone->SetIKLocked(pAxis, !pBone->GetIKLocked(pAxis));
 }
 
 void reUToggleBoneIKLocked::Redo(){
-	pBone->SetIKLocked( pAxis, ! pBone->GetIKLocked( pAxis ) );
+	pBone->SetIKLocked(pAxis, !pBone->GetIKLocked(pAxis));
 }
 
 
@@ -77,5 +77,5 @@ void reUToggleBoneIKLocked::Redo(){
 //////////////////////
 
 void reUToggleBoneIKLocked::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
+	if(pBone) pBone->FreeReference();
 }

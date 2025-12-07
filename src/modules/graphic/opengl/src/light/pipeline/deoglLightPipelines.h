@@ -44,18 +44,18 @@ public:
 	
 	/** Type. */
 	enum eTypes{
-		etNoShadow, //<! No shadow casting.
-		etAmbient, //<! Ambient light only.
-		etSolid1, //<! Single solid no transparent shadow.
-		etSolid1Transp1, //<! Single solid and transparent shadow.
-		etSolid2, //<! Double solid no transparent shadow.
-		etSolid2Transp1, //<! Double solid and single transparent shadow.
-		etSolid2Transp2, //<! Double solid and transparent shadow.
-		etLumSolid1, //<! Luminance only single solid (unused).
-		etLumSolid2, //<! Luminance only double solid (unused).
-		etGIRayNoShadow, //<! GI rays no shadow casting.
-		etGIRaySolid1, //<! GI rays single solid shadow.
-		etGIRaySolid2 //<! GI rays double solid shadow.
+		etNoShadow, //!< No shadow casting.
+		etAmbient, //!< Ambient light only.
+		etSolid1, //!< Single solid no transparent shadow.
+		etSolid1Transp1, //!< Single solid and transparent shadow.
+		etSolid2, //!< Double solid no transparent shadow.
+		etSolid2Transp1, //!< Double solid and single transparent shadow.
+		etSolid2Transp2, //!< Double solid and transparent shadow.
+		etLumSolid1, //!< Luminance only single solid (unused).
+		etLumSolid2, //!< Luminance only double solid (unused).
+		etGIRayNoShadow, //!< GI rays no shadow casting.
+		etGIRaySolid1, //!< GI rays single solid shadow.
+		etGIRaySolid2 //!< GI rays double solid shadow.
 	};
 	
 	static const deoglDebugNamesEnum DebugNamesTypes;
@@ -96,7 +96,7 @@ protected:
 	const static int ModifiersPerType = emCameraInside << 1;
 	
 	deoglRenderThread &pRenderThread;
-	deoglLightPipeline::Ref pPipelines[ TypeCount ][ ModifiersPerType ];
+	deoglLightPipeline::Ref pPipelines[TypeCount][ModifiersPerType];
 	bool pPrepared;
 	
 	
@@ -105,7 +105,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipelines( deoglRenderThread &renderThread );
+	deoglLightPipelines(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up light pipeline. */
@@ -118,10 +118,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pipeline with type and modifiers or nullptr. */
-	const deoglLightPipeline *GetWith( eTypes type, int modifiers ) const;
+	const deoglLightPipeline *GetWith(eTypes type, int modifiers) const;
 	
 	/** Pipeline with type and modifiers throwing exception it nullptr. */
-	const deoglLightPipeline &GetWithRef( eTypes type, int modifiers ) const;
+	const deoglLightPipeline &GetWithRef(eTypes type, int modifiers) const;
 	
 	/** Prepare pipelines. */
 	void Prepare(deoglBatchedShaderLoading &batched);

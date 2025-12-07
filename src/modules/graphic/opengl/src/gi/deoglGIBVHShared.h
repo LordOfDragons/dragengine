@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination BVH. */
-	deoglGIBVHShared( deoglRenderThread &renderThread );
+	deoglGIBVHShared(deoglRenderThread &renderThread);
 	
 	/** Clean up global illumination BVH. */
 	~deoglGIBVHShared();

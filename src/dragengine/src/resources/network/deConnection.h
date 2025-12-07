@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection object. */
-	deConnection( deConnectionManager *manager );
+	deConnection(deConnectionManager *manager);
 	
 protected:
 	/**
@@ -90,7 +90,7 @@ public:
 	 * 
 	 * Intended to be used by the network module only so do not call it otherwise.
 	 */
-	void SetLocalAddress( const char *address );
+	void SetLocalAddress(const char *address);
 	
 	/** \brief Remote address. */
 	inline const decString &GetRemoteAddress() const{ return pRemoteAddress; }
@@ -100,7 +100,7 @@ public:
 	 * 
 	 * Intended to be used by the network module only so do not call otherwise.
 	 */
-	void SetRemoteAddress( const char *address );
+	void SetRemoteAddress(const char *address);
 	
 	/** \brief Connection to a remote host is established. */
 	inline bool GetConnected() const{ return pConnected; }
@@ -110,7 +110,7 @@ public:
 	 * 
 	 * Intended to be used by the network module only so do not call otherwise.
 	 */
-	void SetConnected( bool connected );
+	void SetConnected(bool connected);
 	
 	/**
 	 * \brief Connect to connection object on host at address.
@@ -120,7 +120,7 @@ public:
 	 * scripting peer. The format of the address is specific to the network
 	 * module.
 	 */
-	bool ConnectTo( const char *address );
+	bool ConnectTo(const char *address);
 	
 	/**
 	 * \brief Disconnect from remote connection if connected.
@@ -135,7 +135,7 @@ public:
 	 * The message is send unreliable and it is acceptable for the message to get
 	 * lost due to transmission failure.
 	 */
-	void SendMessage( deNetworkMessage *message, int maxDelay );
+	void SendMessage(deNetworkMessage *message, int maxDelay);
 	
 	/**
 	 * \brief Send reliable message to remote connection if connected.
@@ -144,7 +144,7 @@ public:
 	 * soon as possible. Reliable messages always arrive in the same order
 	 * they have been queued.
 	 */
-	void SendReliableMessage( deNetworkMessage *message );
+	void SendReliableMessage(deNetworkMessage *message);
 	
 	/**
 	 * \brief Link network state to remote network state.
@@ -154,7 +154,7 @@ public:
 	 * is considered the master state and the remote state the slave state.
 	 * By default only the master state can apply changes.
 	 */
-	void LinkState( deNetworkMessage *message, deNetworkState *state, bool readOnly );
+	void LinkState(deNetworkMessage *message, deNetworkState *state, bool readOnly);
 	/*@}*/
 	
 	
@@ -165,13 +165,13 @@ public:
 	inline deBaseNetworkConnection *GetPeerNetwork() const{ return pPeerNetwork; }
 	
 	/** \brief Set network system peer object. */
-	void SetPeerNetwork( deBaseNetworkConnection *peer );
+	void SetPeerNetwork(deBaseNetworkConnection *peer);
 	
 	/** \brief Scripting system peer object. */
 	inline deBaseScriptingConnection *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
-	void SetPeerScripting( deBaseScriptingConnection *peer );
+	void SetPeerScripting(deBaseScriptingConnection *peer);
 	/*@}*/
 };
 

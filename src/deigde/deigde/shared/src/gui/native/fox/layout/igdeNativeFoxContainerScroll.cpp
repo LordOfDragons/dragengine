@@ -34,9 +34,9 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxContainerScroll ) igdeNativeFoxContainerScrollMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, igdeNativeFoxContainerScroll::onResize ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerScroll::onChildLayoutFlags )
+FXDEFMAP(igdeNativeFoxContainerScroll) igdeNativeFoxContainerScrollMap[] = {
+	FXMAPFUNC(SEL_CONFIGURE, 0, igdeNativeFoxContainerScroll::onResize),
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerScroll::onChildLayoutFlags)
 };
 
 
@@ -44,47 +44,47 @@ FXDEFMAP( igdeNativeFoxContainerScroll ) igdeNativeFoxContainerScrollMap[] = {
 // Class igdeNativeFoxContainerScroll
 ///////////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxContainerScroll, FXScrollWindow,
-	igdeNativeFoxContainerScrollMap, ARRAYNUMBER( igdeNativeFoxContainerScrollMap ) )
+FXIMPLEMENT(igdeNativeFoxContainerScroll, FXScrollWindow,
+	igdeNativeFoxContainerScrollMap, ARRAYNUMBER(igdeNativeFoxContainerScrollMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxContainerScroll::igdeNativeFoxContainerScroll(){ }
+igdeNativeFoxContainerScroll::igdeNativeFoxContainerScroll(){}
 
-igdeNativeFoxContainerScroll::igdeNativeFoxContainerScroll( igdeContainerScroll &powner,
-	FXComposite *pparent, int layoutFlags ) :
-FXScrollWindow( pparent, layoutFlags, 0, 0, 0, 0 ),
-pOwner( &powner ){
+igdeNativeFoxContainerScroll::igdeNativeFoxContainerScroll(igdeContainerScroll &powner,
+	FXComposite *pparent, int layoutFlags) :
+FXScrollWindow(pparent, layoutFlags, 0, 0, 0, 0),
+pOwner(&powner){
 }
 
 igdeNativeFoxContainerScroll::~igdeNativeFoxContainerScroll(){
 }
 
-igdeNativeFoxContainerScroll *igdeNativeFoxContainerScroll::CreateNativeWidget( igdeContainerScroll &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxContainerScroll *igdeNativeFoxContainerScroll::CreateNativeWidget(igdeContainerScroll &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( &powner ) | SCROLLERS_NORMAL | SCROLLERS_TRACK;
-	if( ! powner.GetCanScrollX() ){
+	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags(&powner) | SCROLLERS_NORMAL | SCROLLERS_TRACK;
+	if(!powner.GetCanScrollX()){
 		layoutFlags |= HSCROLLING_OFF;
 	}
-	if( ! powner.GetCanScrollY() ){
+	if(!powner.GetCanScrollY()){
 		layoutFlags |= VSCROLLING_OFF;
 	}
 	
-	return new igdeNativeFoxContainerScroll( powner, pparent, layoutFlags );
+	return new igdeNativeFoxContainerScroll(powner, pparent, layoutFlags);
 }
 
 void igdeNativeFoxContainerScroll::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -98,13 +98,13 @@ void igdeNativeFoxContainerScroll::DestroyNativeWidget(){
 // Events
 ///////////
 
-long igdeNativeFoxContainerScroll::onResize( FXObject*, FXSelector, void* ){
+long igdeNativeFoxContainerScroll::onResize(FXObject*, FXSelector, void*){
 	pOwner->OnResize();
 	return 1;
 }
 
-long igdeNativeFoxContainerScroll::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxContainerScroll::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_SIDE_TOP;
 	
 	//if( ! pOwner->GetCanScrollX() ){

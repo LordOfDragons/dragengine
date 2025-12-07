@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create microphone. */
-	deoalMicrophone( deAudioOpenAL &oal, const deMicrophone &microphone );
+	deoalMicrophone(deAudioOpenAL &oal, const deMicrophone &microphone);
 	
 	/** \brief Clean up microphone. */
 	~deoalMicrophone() override;
@@ -94,7 +94,7 @@ public:
 	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if mocrophone is active. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	
 	
@@ -102,7 +102,7 @@ public:
 	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deoalWorld *world );
+	void SetParentWorld(deoalWorld *world);
 	
 	
 	
@@ -115,10 +115,10 @@ public:
 	
 	
 	/** \brief Add speaker as require sync if not present. */
-	void AddSyncSpeaker( deoalSpeaker *speaker );
+	void AddSyncSpeaker(deoalSpeaker *speaker);
 	
 	/** \brief Remove speaker as require sync if present. */
-	void RemoveSyncSpeaker( deoalSpeaker *speaker );
+	void RemoveSyncSpeaker(deoalSpeaker *speaker);
 	/*@}*/
 	
 	
@@ -153,10 +153,10 @@ public:
 	void EnableAuralizationChanged() override;
 	
 	/** \brief Speaker has been added. */
-	void SpeakerAdded( deSpeaker *speaker ) override;
+	void SpeakerAdded(deSpeaker *speaker) override;
 	
 	/** \brief Speaker has been removed. */
-	void SpeakerRemoved( deSpeaker *speaker ) override;
+	void SpeakerRemoved(deSpeaker *speaker) override;
 	
 	/** \brief All speakers have been removed. */
 	void AllSpeakersRemoved() override;

@@ -42,23 +42,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLAMove::ceUCAASpeakEyesLAMove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *eyesLookAt, int newIndex ){
-	if( ! topic || ! actorSpeak || ! eyesLookAt ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakEyesLAMove::ceUCAASpeakEyesLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *eyesLookAt, int newIndex){
+	if(!topic || !actorSpeak || !eyesLookAt){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pEyesLA = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetEyesLookAtList().IndexOf( eyesLookAt );
+	pOldIndex = actorSpeak->GetEyesLookAtList().IndexOf(eyesLookAt);
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= actorSpeak->GetEyesLookAtList().GetCount() ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetEyesLookAtList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move EyesLookAt" );
+	SetShortInfo("Move EyesLookAt");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -71,13 +71,13 @@ ceStrip *eyesLookAt, int newIndex ){
 }
 
 ceUCAASpeakEyesLAMove::~ceUCAASpeakEyesLAMove(){
-	if( pEyesLA ){
+	if(pEyesLA){
 		pEyesLA->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -88,11 +88,11 @@ ceUCAASpeakEyesLAMove::~ceUCAASpeakEyesLAMove(){
 ///////////////
 
 void ceUCAASpeakEyesLAMove::Undo(){
-	pActorSpeak->GetEyesLookAtList().MoveTo( pEyesLA, pOldIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetEyesLookAtList().MoveTo(pEyesLA, pOldIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakEyesLAMove::Redo(){
-	pActorSpeak->GetEyesLookAtList().MoveTo( pEyesLA, pNewIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetEyesLookAtList().MoveTo(pEyesLA, pNewIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

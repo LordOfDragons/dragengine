@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetInputType( seMapped *mapped, deSkinMapped::eInputTypes newInputType );
+	seUMappedSetInputType(seMapped *mapped, deSkinMapped::eInputTypes newInputType);
 	
 protected:
 	/** Clean up undo. */

@@ -43,9 +43,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMConditions( ceWindowMain &windowMain, eTypes type, ceConversation &conversation,
+	ceWPTTIMConditions(ceWindowMain &windowMain, eTypes type, ceConversation &conversation,
 		ceConversationAction &action, ceConversationCondition *condition,
-		const ceConversationConditionList &conditions );
+		const ceConversationConditionList &conditions);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -58,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Model with condition or \em NULL. */
-	ceWPTTIMCondition *GetChildWith( ceConversationCondition *condition ) const;
+	ceWPTTIMCondition *GetChildWith(ceConversationCondition *condition) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -72,14 +72,14 @@ public:
 	virtual void UpdateConditions();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	
 	
 	/** \brief Create condition model. */
-	static ceWPTTIMCondition *CreateConditionModel( ceWindowMain &windowMain,
+	static ceWPTTIMCondition *CreateConditionModel(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationAction &action,
-		ceConversationCondition *condition );
+		ceConversationCondition *condition);
 	/*@}*/
 };
 

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create launcher simulation. */
-	projTestRunLauncher( projTestRunProcess &process );
+	projTestRunLauncher(projTestRunProcess &process);
 	
 	/** \brief Clean up launcher simulation. */
 	~projTestRunLauncher();

@@ -121,7 +121,7 @@ public:
 	
 	
 	virtual void BuildFont(deFont *engFont){
-		if(! engFont){
+		if(!engFont){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -195,7 +195,7 @@ private:
 			
 			// process characters
 			for(c=pFirstCode; c<=pLastCode; c++){
-				if(! nativeFont->hasChar(c)){
+				if(!nativeFont->hasChar(c)){
 					continue;
 				}
 				
@@ -451,7 +451,7 @@ FXIMPLEMENT(igdeNativeFoxFont, FXFont, nullptr, 0)
 ////////////////////////////
 
 
-igdeNativeFoxFont::igdeNativeFoxFont(){ }
+igdeNativeFoxFont::igdeNativeFoxFont(){}
 
 igdeNativeFoxFont::igdeNativeFoxFont(igdeFont &powner) :
 // WARNING the documentation in fox is inconsistent. for both FXFontDesc and the FXFont

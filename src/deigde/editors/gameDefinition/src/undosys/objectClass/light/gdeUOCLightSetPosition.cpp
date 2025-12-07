@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetPosition::gdeUOCLightSetPosition( gdeObjectClass *objectClass,
-gdeOCLight *light, const decVector &newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetPosition::gdeUOCLightSetPosition(gdeObjectClass *objectClass,
+gdeOCLight *light, const decVector &newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set position" );
+	SetShortInfo("Light set position");
 	
 	pOldValue = light->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetPosition::~gdeUOCLightSetPosition(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetPosition::~gdeUOCLightSetPosition(){
 ///////////////
 
 void gdeUOCLightSetPosition::Undo(){
-	pLight->SetPosition( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetPosition(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetPosition::Redo(){
-	pLight->SetPosition( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetPosition(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

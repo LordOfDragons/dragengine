@@ -45,8 +45,8 @@ private:
 	const deoglModelLOD &pModelLOD;
 	deoglTriangleSorter &pTriangleSorter;
 	
-	decVector pPlaneNormal[ 6 ];
-	float pPlaneDistance[ 6 ];
+	decVector pPlaneNormal[6];
+	float pPlaneDistance[6];
 	
 	
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create model octree visitor. */
-	deoglMOVDecalCollect( const deoglModelLOD &modelLOD, deoglTriangleSorter &triangleSorter );
+	deoglMOVDecalCollect(const deoglModelLOD &modelLOD, deoglTriangleSorter &triangleSorter);
 	
 	/** Clean up model octree visitor. */
 	virtual ~deoglMOVDecalCollect();
@@ -73,10 +73,10 @@ public:
 	 * 
 	 * Faces are added to triangle sorter and sorted front to back.
 	 */
-	void CollectFaces( const decMatrix &matrix, const decVector &size );
+	void CollectFaces(const decMatrix &matrix, const decVector &size);
 	
 	/** Visits an octree node. */
-	virtual void VisitNode( deoglOctree *node, int intersection );
+	virtual void VisitNode(deoglOctree *node, int intersection);
 	/*@}*/
 };
 

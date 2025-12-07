@@ -39,7 +39,7 @@ igdeNativeNullLabel::igdeNativeNullLabel(){
 igdeNativeNullLabel::~igdeNativeNullLabel(){
 }
 
-igdeNativeNullLabel *igdeNativeNullLabel::CreateNativeWidget( igdeLabel& ){
+igdeNativeNullLabel *igdeNativeNullLabel::CreateNativeWidget(igdeLabel&){
 	return new igdeNativeNullLabel;
 }
 

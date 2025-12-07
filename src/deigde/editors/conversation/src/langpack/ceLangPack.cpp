@@ -35,9 +35,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceLangPack::ceLangPack( const char *path ) :
-pPath( path ),
-pChanged( false ){
+ceLangPack::ceLangPack(const char *path) :
+pPath(path),
+pChanged(false){
 }
 
 ceLangPack::~ceLangPack(){
@@ -48,23 +48,23 @@ ceLangPack::~ceLangPack(){
 // Management
 ///////////////
 
-void ceLangPack::SetIdentifier( const char *identifier ){
+void ceLangPack::SetIdentifier(const char *identifier){
 	pIdentifier = identifier;
 }
 
-void ceLangPack::SetName( const decUnicodeString &name ){
+void ceLangPack::SetName(const decUnicodeString &name){
 	pName = name;
 }
 
-void ceLangPack::SetDescription( const decUnicodeString &description ){
+void ceLangPack::SetDescription(const decUnicodeString &description){
 	pDescription = description;
 }
 
-void ceLangPack::SetMissingText( const decUnicodeString &missingText ){
+void ceLangPack::SetMissingText(const decUnicodeString &missingText){
 	pMissingText = missingText;
 }
 
-void ceLangPack::SetChanged( bool changed ){
+void ceLangPack::SetChanged(bool changed){
 	pChanged = changed;
 }
 
@@ -77,17 +77,17 @@ int ceLangPack::GetEntryCount() const{
 	return pEntries.GetCount();
 }
 
-ceLangPackEntry *ceLangPack::GetEntryAt( int index ) const{
-	return ( ceLangPackEntry* )pEntries.GetAt( index );
+ceLangPackEntry *ceLangPack::GetEntryAt(int index) const{
+	return (ceLangPackEntry*)pEntries.GetAt(index);
 }
 
-ceLangPackEntry *ceLangPack::GetEntryNamed ( const char *name ) const{
+ceLangPackEntry *ceLangPack::GetEntryNamed (const char *name) const{
 	const int count = pEntries.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		ceLangPackEntry * const entry = ( ceLangPackEntry* )pEntries.GetAt( i );
-		if( entry->GetName() == name ){
+	for(i=0; i<count; i++){
+		ceLangPackEntry * const entry = (ceLangPackEntry*)pEntries.GetAt(i);
+		if(entry->GetName() == name){
 			return entry;
 		}
 	}
@@ -95,26 +95,26 @@ ceLangPackEntry *ceLangPack::GetEntryNamed ( const char *name ) const{
 	return nullptr;
 }
 
-void ceLangPack::AddEntry( ceLangPackEntry *entry ){
-	DEASSERT_NOTNULL( entry )
-	pEntries.Add( entry );
+void ceLangPack::AddEntry(ceLangPackEntry *entry){
+	DEASSERT_NOTNULL(entry)
+	pEntries.Add(entry);
 }
 
-void ceLangPack::RemoveEntry( ceLangPackEntry *entry ){
-	pEntries.Remove( entry );
+void ceLangPack::RemoveEntry(ceLangPackEntry *entry){
+	pEntries.Remove(entry);
 }
 
 void ceLangPack::RemoveAllEntries(){
 	pEntries.RemoveAll();
 }
 
-void ceLangPack::GetEntryNames( decStringList &list ) const{
+void ceLangPack::GetEntryNames(decStringList &list) const{
 	const int count = pEntries.GetCount();
 	int i;
 	
 	list.RemoveAll();
-	for( i=0; i<count; i++ ){
-		list.Add( ( ( ceLangPackEntry* )pEntries.GetAt( i ) )->GetName() );
+	for(i=0; i<count; i++){
+		list.Add(((ceLangPackEntry*)pEntries.GetAt(i))->GetName());
 	}
 	list.SortAscending();
 }

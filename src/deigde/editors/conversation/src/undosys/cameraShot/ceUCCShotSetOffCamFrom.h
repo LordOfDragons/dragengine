@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetOffCamFrom( ceCameraShot *cameraShot, const decVector &newPos );
+	ceUCCShotSetOffCamFrom(ceCameraShot *cameraShot, const decVector &newPos);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetOffCamFrom();

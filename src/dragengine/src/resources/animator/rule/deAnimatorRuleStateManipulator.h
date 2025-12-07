@@ -90,73 +90,73 @@ public:
 	inline const decVector &GetMinimumPosition() const{ return pMinPosition; }
 	
 	/** \brief Set minimum position. */
-	void SetMinimumPosition( const decVector &position );
+	void SetMinimumPosition(const decVector &position);
 	
 	/** \brief Maximum position. */
 	inline const decVector &GetMaximumPosition() const{ return pMaxPosition; }
 	
 	/** \brief Set maximum position. */
-	void SetMaximumPosition( const decVector &position );
+	void SetMaximumPosition(const decVector &position);
 	
 	/** \brief Minimum rotation. */
 	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
 	
 	/** \brief Set minimum rotation. */
-	void SetMinimumRotation( const decVector &rotation );
+	void SetMinimumRotation(const decVector &rotation);
 	
 	/** \brief Maximum rotation. */
 	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
 	
 	/** \brief Set maximum rotation. */
-	void SetMaximumRotation( const decVector &rotation );
+	void SetMaximumRotation(const decVector &rotation);
 	
 	/** \brief Minimum size. */
 	inline const decVector &GetMinimumSize() const{ return pMinSize; }
 	
 	/** \brief Set minimum size. */
-	void SetMinimumSize( const decVector &size );
+	void SetMinimumSize(const decVector &size);
 	
 	/** \brief Maximum size. */
 	inline const decVector &GetMaximumSize() const{ return pMaxSize; }
 	
 	/** \brief Set maximum size. */
-	void SetMaximumSize( const decVector &size );
+	void SetMaximumSize(const decVector &size);
 	
 	/** \brief Minimum vertex position set. */
 	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
 	
 	/** \brief Set minimum vertex position set. */
-	void SetMinimumVertexPositionSet( float weight );
+	void SetMinimumVertexPositionSet(float weight);
 	
 	/** \brief Maximum vertex position set. */
 	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
 	
 	/** \brief Set maximum vertex position set. */
-	void SetMaximumVertexPositionSet( float weight );
+	void SetMaximumVertexPositionSet(float weight);
 	
 	/** \brief Determines if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if rotation manipulation is enabled. */
 	inline bool GetEnableRotation() const{ return pEnableRotation; }
 	
 	/** \brief Sets if rotation manipulation is enabled. */
-	void SetEnableRotation( bool enabled );
+	void SetEnableRotation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** \brief Position target. */
 	inline deAnimatorControllerTarget &GetTargetPosition(){ return pTargetPosition; }
@@ -180,7 +180,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	virtual void Visit(deAnimatorRuleVisitor &visitor);
 	/*@}*/
 };
 

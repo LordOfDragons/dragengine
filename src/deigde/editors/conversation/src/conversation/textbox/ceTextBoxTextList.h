@@ -52,24 +52,24 @@ public:
 	/** Retrieves the number of texts. */
 	int GetCount() const;
 	/** Retrieves the text at the given position. */
-	ceTextBoxText *GetAt( int index ) const;
+	ceTextBoxText *GetAt(int index) const;
 	/** Retrieves the index of the given text or -1 if not found. */
-	int IndexOf( ceTextBoxText *text ) const;
+	int IndexOf(ceTextBoxText *text) const;
 	/** Determines if a text exists. */
-	bool Has( ceTextBoxText *text ) const;
+	bool Has(ceTextBoxText *text) const;
 	/** Adds a text. */
-	void Add( ceTextBoxText *text );
+	void Add(ceTextBoxText *text);
 	/** Inserts a new text. */
-	void InsertAt( ceTextBoxText *text, int index );
+	void InsertAt(ceTextBoxText *text, int index);
 	/** Moves a text to a new position. */
-	void MoveTo( ceTextBoxText *text, int index );
+	void MoveTo(ceTextBoxText *text, int index);
 	/** Removes a text. */
-	void Remove( ceTextBoxText *text );
+	void Remove(ceTextBoxText *text);
 	/** Removes all texts. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceTextBoxTextList &operator=( const ceTextBoxTextList &list );
+	ceTextBoxTextList &operator=(const ceTextBoxTextList &list);
 	/*@}*/
 };
 

@@ -52,11 +52,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMConditions::ceWPTTIMConditions( ceWindowMain &windowMain, eTypes type,
+ceWPTTIMConditions::ceWPTTIMConditions(ceWindowMain &windowMain, eTypes type,
 ceConversation &conversation, ceConversationAction &action, ceConversationCondition *condition,
-const ceConversationConditionList &conditions ) :
-ceWPTTIMCondition( windowMain, type, conversation, action, condition ),
-pConditions( conditions ){
+const ceConversationConditionList &conditions) :
+ceWPTTIMCondition(windowMain, type, conversation, action, condition),
+pConditions(conditions){
 }
 
 ceWPTTIMConditions::~ceWPTTIMConditions(){
@@ -67,13 +67,13 @@ ceWPTTIMConditions::~ceWPTTIMConditions(){
 // Management
 ///////////////
 
-ceWPTTIMCondition *ceWPTTIMConditions::GetChildWith( ceConversationCondition *condition ) const{
+ceWPTTIMCondition *ceWPTTIMConditions::GetChildWith(ceConversationCondition *condition) const{
 	const int count = GetChildCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		ceWPTTIMCondition * const child = ( ceWPTTIMCondition* )GetChildAt( i );
-		if( child->GetCondition() == condition ){
+	for(i=0; i<count; i++){
+		ceWPTTIMCondition * const child = (ceWPTTIMCondition*)GetChildAt(i);
+		if(child->GetCondition() == condition){
 			return child;
 		}
 	}
@@ -95,15 +95,15 @@ void ceWPTTIMConditions::UpdateConditions(){
 	const int count = pConditions.GetCount();
 	int i, j;
 	
-	for( i=0; i<count; i++ ){
-		ceConversationCondition * const condition = pConditions.GetAt( i );
+	for(i=0; i<count; i++){
+		ceConversationCondition * const condition = pConditions.GetAt(i);
 		
 		// find item matching condition if present
 		ceWPTTIMCondition *model = NULL;
 		const int childCount = GetChildCount();
-		for( j=i; j<childCount; j++ ){
-			ceWPTTIMCondition * const child = ( ceWPTTIMCondition* )GetChildAt( j );
-			if( child->GetCondition() == condition ){
+		for(j=i; j<childCount; j++){
+			ceWPTTIMCondition * const child = (ceWPTTIMCondition*)GetChildAt(j);
+			if(child->GetCondition() == condition){
 				model = child;
 				break;
 			}
@@ -111,21 +111,21 @@ void ceWPTTIMConditions::UpdateConditions(){
 		
 		// if model exists move it to the right location if required and update it.
 		// if model does not exist create it and add it at the current location.
-		if( model ){
-			if( j != i ){
-				MoveChild( j, i );
+		if(model){
+			if(j != i){
+				MoveChild(j, i);
 			}
 			model->Update();
 			
 		}else{
-			model = CreateConditionModel( GetWindowMain(), GetConversation(),
-				GetAction(), condition );
+			model = CreateConditionModel(GetWindowMain(), GetConversation(),
+				GetAction(), condition);
 			
 			try{
-				InsertChild( model, i );
+				InsertChild(model, i);
 				model->Update();
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				model->FreeReference();
 				throw;
 			}
@@ -135,59 +135,59 @@ void ceWPTTIMConditions::UpdateConditions(){
 	}
 	
 	// remove non-matching nodes
-	while( GetChildCount() > count ){
-		RemoveChild( GetChildAt( GetChildCount() - 1 ) );
+	while(GetChildCount() > count){
+		RemoveChild(GetChildAt(GetChildCount() - 1));
 	}
 }
 
-void ceWPTTIMConditions::OnContextMenu( igdeMenuCascade &contextMenu ){
-	ceWPTTIMCondition::OnContextMenu( contextMenu );
+void ceWPTTIMConditions::OnContextMenu(igdeMenuCascade &contextMenu){
+	ceWPTTIMCondition::OnContextMenu(contextMenu);
 }
 
 
 
-ceWPTTIMCondition *ceWPTTIMConditions::CreateConditionModel( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceConversationCondition *condition ){
-	if( ! condition ){
-		DETHROW( deeInvalidParam );
+ceWPTTIMCondition *ceWPTTIMConditions::CreateConditionModel(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceConversationCondition *condition){
+	if(!condition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	switch( condition->GetType() ){
+	switch(condition->GetType()){
 	case ceConversationCondition::ectLogic:
-		return new ceWPTTIMCLogic( windowMain, conversation, action,
-			( ceCConditionLogic* )condition );
+		return new ceWPTTIMCLogic(windowMain, conversation, action,
+			(ceCConditionLogic*)condition);
 		
 	case ceConversationCondition::ectHasActor:
-		return new ceWPTTIMCHasActor( windowMain, conversation, action,
-			( ceCConditionHasActor* )condition );
+		return new ceWPTTIMCHasActor(windowMain, conversation, action,
+			(ceCConditionHasActor*)condition);
 		
 	case ceConversationCondition::ectActorInConversation:
-		return new ceWPTTIMCActorInConversation( windowMain, conversation, action,
-			( ceCConditionActorInConversation* )condition );
+		return new ceWPTTIMCActorInConversation(windowMain, conversation, action,
+			(ceCConditionActorInConversation*)condition);
 		
 	case ceConversationCondition::ectVariable:
-		return new ceWPTTIMCVariable( windowMain, conversation, action,
-			( ceCConditionVariable* )condition );
+		return new ceWPTTIMCVariable(windowMain, conversation, action,
+			(ceCConditionVariable*)condition);
 		
 	case ceConversationCondition::ectActorParameter:
-		return new ceWPTTIMCActorParameter( windowMain, conversation, action,
-			( ceCConditionActorParameter* )condition );
+		return new ceWPTTIMCActorParameter(windowMain, conversation, action,
+			(ceCConditionActorParameter*)condition);
 		
 	case ceConversationCondition::ectActorCommand:
-		return new ceWPTTIMCActorCommand( windowMain, conversation, action,
-			( ceCConditionActorCommand* )condition );
+		return new ceWPTTIMCActorCommand(windowMain, conversation, action,
+			(ceCConditionActorCommand*)condition);
 		
 	case ceConversationCondition::ectGameCommand:
-		return new ceWPTTIMCGameCommand( windowMain, conversation, action,
-			( ceCConditionGameCommand* )condition );
+		return new ceWPTTIMCGameCommand(windowMain, conversation, action,
+			(ceCConditionGameCommand*)condition);
 		
 	case ceConversationCondition::ectTrigger:
-		return new ceWPTTIMCTrigger( windowMain, conversation, action,
-			( ceCConditionTrigger* )condition );
+		return new ceWPTTIMCTrigger(windowMain, conversation, action,
+			(ceCConditionTrigger*)condition);
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

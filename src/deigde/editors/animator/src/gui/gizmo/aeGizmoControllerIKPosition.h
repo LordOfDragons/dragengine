@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create gizmo. */
-	aeGizmoControllerIKPosition( igdeEnvironment &environment, aeController &controller );
+	aeGizmoControllerIKPosition(igdeEnvironment &environment, aeController &controller);
 	
 protected:
 	/** Clean up gizmo. */
@@ -64,14 +64,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	virtual decDVector GetObjectPosition() override;
-	virtual void SetObjectPosition( const decDVector &position ) override;
+	virtual void SetObjectPosition(const decDVector &position) override;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void VisitElement( aeElementVisitor &visitor ) override;
+	virtual void VisitElement(aeElementVisitor &visitor) override;
 	/*@}*/
 };
 

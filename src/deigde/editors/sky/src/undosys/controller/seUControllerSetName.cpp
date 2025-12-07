@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetName::seUControllerSetName( seController *controller, const char *newName ) :
-pController( NULL ),
-pNewName( newName )
+seUControllerSetName::seUControllerSetName(seController *controller, const char *newName) :
+pController(NULL),
+pNewName(newName)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Controller Name" );
+	SetShortInfo("Set Controller Name");
 	
 	pOldName = controller->GetName();
 	
@@ -56,7 +56,7 @@ pNewName( newName )
 }
 
 seUControllerSetName::~seUControllerSetName(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUControllerSetName::~seUControllerSetName(){
 ///////////////
 
 void seUControllerSetName::Undo(){
-	pController->SetName( pOldName );
+	pController->SetName(pOldName);
 }
 
 void seUControllerSetName::Redo(){
-	pController->SetName( pNewName );
+	pController->SetName(pNewName);
 }

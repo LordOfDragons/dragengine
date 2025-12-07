@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTBuildRTsGeometry( deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask );
+	deoglRPTBuildRTsGeometry(deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTBuildRTsGeometry();
@@ -79,10 +79,10 @@ public:
 	
 private:
 	void pInitPipelineModifier();
-	void pSolid( bool xray );
-	void pSolidTerrain( bool xray );
-	void pSolidOutline( bool xray );
-	void pSolidDecals( bool xray );
+	void pSolid(bool xray);
+	void pSolidTerrain(bool xray);
+	void pSolidOutline(bool xray);
+	void pSolidDecals(bool xray);
 };
 
 #endif

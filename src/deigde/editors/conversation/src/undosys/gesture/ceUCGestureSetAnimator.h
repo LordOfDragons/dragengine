@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCGestureSetAnimator( ceGesture *file, const char *newAnimator );
+	ceUCGestureSetAnimator(ceGesture *file, const char *newAnimator);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCGestureSetAnimator();

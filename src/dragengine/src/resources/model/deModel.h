@@ -81,8 +81,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new model object with the given resource manager and filename. */
-	deModel( deModelManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deModel(deModelManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -123,16 +123,16 @@ public:
 	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** \brief Bone at the given index. */
-	deModelBone *GetBoneAt( int index ) const;
+	deModelBone *GetBoneAt(int index) const;
 	
 	/** \brief Index of the bone with the given name or -1 if not found. */
-	int IndexOfBoneNamed( const char *name ) const;
+	int IndexOfBoneNamed(const char *name) const;
 	
 	/** \brief Determiens if a bone with the given name exists. */
-	bool HasBoneNamed( const char *name ) const;
+	bool HasBoneNamed(const char *name) const;
 	
 	/** \brief Adds a new bone with the given name. */
-	void AddBone( deModelBone *bone );
+	void AddBone(deModelBone *bone);
 	/*@}*/
 	
 	
@@ -143,16 +143,16 @@ public:
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** \brief Texture at the given index. */
-	deModelTexture *GetTextureAt( int index ) const;
+	deModelTexture *GetTextureAt(int index) const;
 	
 	/** \brief Index of the texture with the given name or -1 if not found. */
-	int IndexOfTextureNamed( const char *name ) const;
+	int IndexOfTextureNamed(const char *name) const;
 	
 	/** \brief Determiens if a texture with the given name exists. */
-	bool HasTextureNamed( const char *name ) const;
+	bool HasTextureNamed(const char *name) const;
 	
 	/** \brief Adds a new texture with the given name and size. */
-	void AddTexture( deModelTexture *texture );
+	void AddTexture(deModelTexture *texture);
 	/*@}*/
 	
 	
@@ -163,10 +163,10 @@ public:
 	inline int GetLODCount() const{ return pLODCount; }
 	
 	/** \brief LOD mesh at the given index. */
-	deModelLOD *GetLODAt( int index ) const;
+	deModelLOD *GetLODAt(int index) const;
 	
 	/** \brief Adds a new LOD mesh. */
-	void AddLOD( deModelLOD *lod );
+	void AddLOD(deModelLOD *lod);
 	/*@}*/
 	
 	
@@ -177,16 +177,16 @@ public:
 	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
 	
 	/** \brief Vertex position set at index. */
-	deModelVertexPositionSet *GetVertexPositionSetAt( int index ) const;
+	deModelVertexPositionSet *GetVertexPositionSetAt(int index) const;
 	
 	/** \brief Index of named vertex position set with name or -1 if absent. */
-	int IndexOfVertexPositionSetNamed( const char *name ) const;
+	int IndexOfVertexPositionSetNamed(const char *name) const;
 	
 	/** \brief Named vertex position set is present. */
-	bool HasVertexPositionSetNamed( const char *name ) const;
+	bool HasVertexPositionSetNamed(const char *name) const;
 	
 	/** \brief Add vertex position set. */
-	void AddVertexPositionSet( deModelVertexPositionSet *set );
+	void AddVertexPositionSet(deModelVertexPositionSet *set);
 	/*@}*/
 	
 	
@@ -197,19 +197,19 @@ public:
 	inline deBaseGraphicModel *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicModel *peer );
+	void SetPeerGraphic(deBaseGraphicModel *peer);
 	
 	/** \brief Physics system peer. */
 	inline deBaseAudioModel *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set physics system peer. */
-	void SetPeerAudio ( deBaseAudioModel *peer );
+	void SetPeerAudio (deBaseAudioModel *peer);
 	
 	/** \brief Physics system peer. */
 	inline deBasePhysicsModel *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
-	void SetPeerPhysics( deBasePhysicsModel *peer );
+	void SetPeerPhysics(deBasePhysicsModel *peer);
 	/*@}*/
 	
 	

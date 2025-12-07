@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new clipboard data. */
-	ceClipboardDataAction( const ceConversationActionList &actions );
+	ceClipboardDataAction(const ceConversationActionList &actions);
 	
 protected:
 	/**

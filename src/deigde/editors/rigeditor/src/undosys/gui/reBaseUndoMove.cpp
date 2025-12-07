@@ -46,13 +46,13 @@ reBaseUndoMove::~reBaseUndoMove(){
 // Management
 ///////////////
 
-void reBaseUndoMove::SetDistance( const decVector &distance ){
+void reBaseUndoMove::SetDistance(const decVector &distance){
 	decString info;
 	
 	pDist = distance;
 	
-	info.Format( "distance (%g,%g,%g)", distance.x, distance.y, distance.z );
-	SetLongInfo( info.GetString() );
+	info.Format("distance (%g,%g,%g)", distance.x, distance.y, distance.z);
+	SetLongInfo(info.GetString());
 }
 
 

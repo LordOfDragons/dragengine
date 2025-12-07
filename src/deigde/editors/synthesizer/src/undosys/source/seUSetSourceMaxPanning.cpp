@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceMaxPanning::seUSetSourceMaxPanning( seSource *source, float newValue ) :
-pSource( NULL )
+seUSetSourceMaxPanning::seUSetSourceMaxPanning(seSource *source, float newValue) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = source->GetMaxPanning();
@@ -53,9 +53,9 @@ pSource( NULL )
 		pSource = source;
 		pSource->AddReference();
 		
-		SetShortInfo( "Source set maximum panning" );
+		SetShortInfo("Source set maximum panning");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ seUSetSourceMaxPanning::~seUSetSourceMaxPanning(){
 ///////////////
 
 void seUSetSourceMaxPanning::Undo(){
-	pSource->SetMaxPanning( pOldValue );
+	pSource->SetMaxPanning(pOldValue);
 }
 
 void seUSetSourceMaxPanning::Redo(){
-	pSource->SetMaxPanning( pNewValue );
+	pSource->SetMaxPanning(pNewValue);
 }
 
 
@@ -84,7 +84,7 @@ void seUSetSourceMaxPanning::Redo(){
 //////////////////////
 
 void seUSetSourceMaxPanning::pCleanUp(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }

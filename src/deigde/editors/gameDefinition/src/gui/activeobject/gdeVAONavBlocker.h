@@ -56,8 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAONavBlocker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCNavigationBlocker *occomponent );
+	gdeVAONavBlocker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCNavigationBlocker *occomponent);
 	
 protected:
 	/**

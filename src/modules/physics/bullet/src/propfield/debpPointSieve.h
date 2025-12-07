@@ -56,7 +56,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sieve. */
-	debpPointSieve( int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ );
+	debpPointSieve(int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ);
 	/** Cleans up the sieve. */
 	~debpPointSieve();
 	/*@}*/
@@ -75,14 +75,14 @@ public:
 	/** Retrieves the number of buckets. */
 	inline int GetBucketCount() const{ return pBucketCount; }
 	/** Retrieves the bucket at the given index. */
-	debpPointSieveBucket &GetBucketAt( int index ) const;
+	debpPointSieveBucket &GetBucketAt(int index) const;
 	/** Retrieves the bucket at the given index. */
-	debpPointSieveBucket &GetBucketWith( int x, int z ) const;
+	debpPointSieveBucket &GetBucketWith(int x, int z) const;
 	/** Retrieves the bucket containing the given position. */
-	debpPointSieveBucket &GetBucketContaining( float x, float z ) const;
+	debpPointSieveBucket &GetBucketContaining(float x, float z) const;
 	
 	/** Drops a point into the sieve. */
-	void DropPoint( float x, float z, int index );
+	void DropPoint(float x, float z, int index);
 	
 	/** Clears the sieve. */
 	void Clear();

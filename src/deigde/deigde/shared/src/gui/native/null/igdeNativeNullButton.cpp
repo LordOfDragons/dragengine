@@ -39,7 +39,7 @@ igdeNativeNullButton::igdeNativeNullButton(){
 igdeNativeNullButton::~igdeNativeNullButton(){
 }
 
-igdeNativeNullButton *igdeNativeNullButton::CreateNativeWidget( igdeButton& ){
+igdeNativeNullButton *igdeNativeNullButton::CreateNativeWidget(igdeButton&){
 	return new igdeNativeNullButton;
 }
 

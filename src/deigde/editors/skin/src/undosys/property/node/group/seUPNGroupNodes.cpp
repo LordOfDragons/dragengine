@@ -39,90 +39,90 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupNodes::seUPNGroupNodes( const sePropertyNodeList &nodes ) :
-pParentGroup( NULL ),
-pNodeGroup( NULL ),
-pNodeCount( 0 ),
-pNodes( NULL )
+seUPNGroupNodes::seUPNGroupNodes(const sePropertyNodeList &nodes) :
+pParentGroup(NULL),
+pNodeGroup(NULL),
+pNodeCount(0),
+pNodes(NULL)
 {
 	const int count = nodes.GetCount();
 	int i;
 	
-	sePropertyNodeGroup * const parentGroup = nodes.GetAt( 0 )->GetParent();
-	if( ! parentGroup || ! parentGroup->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	sePropertyNodeGroup * const parentGroup = nodes.GetAt(0)->GetParent();
+	if(!parentGroup || !parentGroup->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( i=0; i<count; i++ ){
-		if( nodes.GetAt( i )->GetParent() != parentGroup ){
-			DETHROW( deeInvalidParam );
+	for(i=0; i<count; i++){
+		if(nodes.GetAt(i)->GetParent() != parentGroup){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	SetShortInfo( "Group nodes" );
+	SetShortInfo("Group nodes");
 	
 	decVector2 minBounds;
 	decVector2 maxBounds;
-	for( i=0; i<count; i++ ){
-		const sePropertyNode &childNode = *nodes.GetAt( i );
-		const decTexMatrix2 childTransform( childNode.CreateParentTransformMatrix() );
+	for(i=0; i<count; i++){
+		const sePropertyNode &childNode = *nodes.GetAt(i);
+		const decTexMatrix2 childTransform(childNode.CreateParentTransformMatrix());
 		const decPoint3 &childSize = childNode.GetSize();
-		const decVector2 absSize( ( float )abs( childSize.x ), ( float )abs( childSize.y ) );
+		const decVector2 absSize((float)abs(childSize.x), (float)abs(childSize.y));
 		
-		const decVector2 p1( childTransform.GetPosition() );
-		const decVector2 p2( childTransform * decVector2( absSize.x, 0.0f ) );
-		const decVector2 p3( childTransform * decVector2( 0.0f, absSize.y ) );
-		const decVector2 p4( childTransform * absSize );
+		const decVector2 p1(childTransform.GetPosition());
+		const decVector2 p2(childTransform * decVector2(absSize.x, 0.0f));
+		const decVector2 p3(childTransform * decVector2(0.0f, absSize.y));
+		const decVector2 p4(childTransform * absSize);
 		
-		const decVector2 smallest( p1.Smallest( p2 ).Smallest( p3 ).Smallest( p4 ) );
-		const decVector2 largest( p1.Largest( p2 ).Largest( p3 ).Largest( p4 ) );
+		const decVector2 smallest(p1.Smallest(p2).Smallest(p3).Smallest(p4));
+		const decVector2 largest(p1.Largest(p2).Largest(p3).Largest(p4));
 		
-		if( i == 0 ){
+		if(i == 0){
 			minBounds = smallest;
 			maxBounds = largest;
 			
 		}else{
-			minBounds.SetSmallest( smallest );
-			maxBounds.SetLargest( largest );
+			minBounds.SetSmallest(smallest);
+			maxBounds.SetLargest(largest);
 		}
 	}
 	
-	pOffset.Set( minBounds.x, minBounds.y, 0.0f );
+	pOffset.Set(minBounds.x, minBounds.y, 0.0f);
 	
 	try{
 		// store nodes sorted by index in the parent group
-		pNodes = new sNode[ count ];
-		for( pNodeCount=0; pNodeCount<count; pNodeCount++ ){
-			sePropertyNode * const node = nodes.GetAt( pNodeCount );
-			pNodes[ pNodeCount ].position = node->GetPosition();
-			pNodes[ pNodeCount ].index = parentGroup->IndexOfNode( node );
-			pNodes[ pNodeCount ].node = node;
+		pNodes = new sNode[count];
+		for(pNodeCount=0; pNodeCount<count; pNodeCount++){
+			sePropertyNode * const node = nodes.GetAt(pNodeCount);
+			pNodes[pNodeCount].position = node->GetPosition();
+			pNodes[pNodeCount].index = parentGroup->IndexOfNode(node);
+			pNodes[pNodeCount].node = node;
 			node->AddReference();
 		}
 		
-		for( i=1; i<pNodeCount; i++ ){
-			if( pNodes[ i ].index >= pNodes[ i - 1 ].index ){
+		for(i=1; i<pNodeCount; i++){
+			if(pNodes[i].index >= pNodes[i - 1].index){
 				continue;
 			}
 			
-			const sNode temp( pNodes[ i - 1 ] );
-			pNodes[ i - 1 ] = pNodes[ i ];
-			pNodes[ i ] = temp;
+			const sNode temp(pNodes[i - 1]);
+			pNodes[i - 1] = pNodes[i];
+			pNodes[i] = temp;
 			
-			if( i > 1 ){
+			if(i > 1){
 				i -= 2;
 			}
 		}
 		
 		// create node group
-		pNodeGroup = new sePropertyNodeGroup( parentGroup->GetEngine() );
-		decPoint rounded( minBounds.Round() );
-		pNodeGroup->SetPosition( decPoint3( rounded.x, rounded.y, parentGroup->GetPosition().z ) );
+		pNodeGroup = new sePropertyNodeGroup(parentGroup->GetEngine());
+		decPoint rounded(minBounds.Round());
+		pNodeGroup->SetPosition(decPoint3(rounded.x, rounded.y, parentGroup->GetPosition().z));
 		
-		rounded = ( maxBounds - minBounds ).Round();
-		pNodeGroup->SetSize( decPoint3( rounded.x, rounded.y, 1 ) );
+		rounded = (maxBounds - minBounds).Round();
+		pNodeGroup->SetSize(decPoint3(rounded.x, rounded.y, 1));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -145,13 +145,13 @@ void seUPNGroupNodes::Undo(){
 	selection.RemoveAll();
 	
 	pNodeGroup->RemoveAllNodes();
-	pParentGroup->RemoveNode( pNodeGroup );
+	pParentGroup->RemoveNode(pNodeGroup);
 	
 	int i;
-	for( i=0; i<pNodeCount; i++ ){
-		pNodes[ i ].node->SetPosition( pNodes[ i ].position );
-		pParentGroup->InsertNode( pNodes[ i ].index, pNodes[ i ].node );
-		selection.Add( pNodes[ i ].node );
+	for(i=0; i<pNodeCount; i++){
+		pNodes[i].node->SetPosition(pNodes[i].position);
+		pParentGroup->InsertNode(pNodes[i].index, pNodes[i].node);
+		selection.Add(pNodes[i].node);
 	}
 }
 
@@ -160,15 +160,15 @@ void seUPNGroupNodes::Redo(){
 	selection.RemoveAll();
 	
 	int i;
-	for( i=0; i<pNodeCount; i++ ){
-		pParentGroup->RemoveNode( pNodes[ i ].node );
-		pNodes[ i ].node->SetPosition( ( decVector( pNodes[ i ].position ) - pOffset ).Round() );
-		pNodeGroup->AddNode( pNodes[ i ].node );
+	for(i=0; i<pNodeCount; i++){
+		pParentGroup->RemoveNode(pNodes[i].node);
+		pNodes[i].node->SetPosition((decVector(pNodes[i].position) - pOffset).Round());
+		pNodeGroup->AddNode(pNodes[i].node);
 	}
 	
-	pParentGroup->AddNode( pNodeGroup );
+	pParentGroup->AddNode(pNodeGroup);
 	
-	selection.Add( pNodeGroup );
+	selection.Add(pNodeGroup);
 }
 
 
@@ -177,16 +177,16 @@ void seUPNGroupNodes::Redo(){
 //////////////////////
 
 void seUPNGroupNodes::pCleanUp(){
-	if( pNodeGroup ){
+	if(pNodeGroup){
 		pNodeGroup->FreeReference();
 	}
-	if( pParentGroup ){
+	if(pParentGroup){
 		pParentGroup->FreeReference();
 	}
-	if( pNodes ){
+	if(pNodes){
 		int i;
-		for( i=0; i<pNodeCount; i++ ){
-			pNodes[ i ].node->FreeReference();
+		for(i=0; i<pNodeCount; i++){
+			pNodes[i].node->FreeReference();
 		}
 		delete [] pNodes;
 	}

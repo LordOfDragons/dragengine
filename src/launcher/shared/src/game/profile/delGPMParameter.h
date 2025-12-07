@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game profile module parameter. */
-	delGPMParameter( const char *name = "", const char *value = "" );
+	delGPMParameter(const char *name = "", const char *value = "");
 	
 	/** \brief Create game profile module parameter. */
-	delGPMParameter( const delGPMParameter &parameter );
+	delGPMParameter(const delGPMParameter &parameter);
 	
 protected:
 	/** \brief Clean up game profile. */
@@ -67,13 +67,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set parameter name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Parameter value. */
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set parameter value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	/*@}*/
 	
 	
@@ -81,7 +81,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy parameter. */
-	delGPMParameter &operator=( const delGPMParameter &parameter );
+	delGPMParameter &operator=(const delGPMParameter &parameter);
 	/*@}*/
 };
 

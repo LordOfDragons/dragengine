@@ -34,13 +34,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetVertexPositionSet::saeUPhonemeSetVertexPositionSet( saePhoneme *phoneme, const char *newName ) :
-pPhoneme( nullptr ),
-pNewName( newName )
+saeUPhonemeSetVertexPositionSet::saeUPhonemeSetVertexPositionSet(saePhoneme *phoneme, const char *newName) :
+pPhoneme(nullptr),
+pNewName(newName)
 {
-	DEASSERT_NOTNULL( phoneme )
+	DEASSERT_NOTNULL(phoneme)
 	
-	SetShortInfo( "Phoneme Set Move Name" );
+	SetShortInfo("Phoneme Set Move Name");
 	
 	pOldName = phoneme->GetVertexPositionSet();
 	
@@ -49,7 +49,7 @@ pNewName( newName )
 }
 
 saeUPhonemeSetVertexPositionSet::~saeUPhonemeSetVertexPositionSet(){
-	if( pPhoneme ){
+	if(pPhoneme){
 		pPhoneme->FreeReference();
 	}
 }
@@ -60,9 +60,9 @@ saeUPhonemeSetVertexPositionSet::~saeUPhonemeSetVertexPositionSet(){
 ///////////////
 
 void saeUPhonemeSetVertexPositionSet::Undo(){
-	pPhoneme->SetVertexPositionSet( pOldName );
+	pPhoneme->SetVertexPositionSet(pOldName);
 }
 
 void saeUPhonemeSetVertexPositionSet::Redo(){
-	pPhoneme->SetVertexPositionSet( pNewName );
+	pPhoneme->SetVertexPositionSet(pNewName);
 }

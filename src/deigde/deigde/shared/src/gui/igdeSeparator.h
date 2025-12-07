@@ -60,7 +60,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeSeparator( igdeEnvironment &environment, eOrientation orientation );
+	igdeSeparator(igdeEnvironment &environment, eOrientation orientation);
 	
 	
 	

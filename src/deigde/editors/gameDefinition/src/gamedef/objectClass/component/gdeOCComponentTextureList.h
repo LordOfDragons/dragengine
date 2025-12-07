@@ -47,7 +47,7 @@ public:
 	gdeOCComponentTextureList();
 	
 	/** \brief Create copy of object class component texture list. */
-	gdeOCComponentTextureList( const gdeOCComponentTextureList &list );
+	gdeOCComponentTextureList(const gdeOCComponentTextureList &list);
 	
 	/** \brief Clean up object class component texture list. */
 	~gdeOCComponentTextureList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class at position. */
-	gdeOCComponentTexture *GetAt( int index ) const;
+	gdeOCComponentTexture *GetAt(int index) const;
 	
 	/** \brief Named object class component texture or \em NULL if absent. */
-	gdeOCComponentTexture *GetNamed( const char *name ) const;
+	gdeOCComponentTexture *GetNamed(const char *name) const;
 	
 	/** \brief Index of named object class component texture or -1 if absent. */
-	int IndexOf( gdeOCComponentTexture *texture ) const;
+	int IndexOf(gdeOCComponentTexture *texture) const;
 	
 	/** \brief Index of named object class component texture or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Object class is present. */
-	bool Has( gdeOCComponentTexture *texture ) const;
+	bool Has(gdeOCComponentTexture *texture) const;
 	
 	/** \brief Named object class component texture is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add object class component texture. */
-	void Add( gdeOCComponentTexture *texture );
+	void Add(gdeOCComponentTexture *texture);
 	
 	/** \brief Remove object class component texture. */
-	void Remove( gdeOCComponentTexture *texture );
+	void Remove(gdeOCComponentTexture *texture);
 	
 	/** \brief Remove all object class component texturees. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class component texture list. */
-	gdeOCComponentTextureList &operator=( const gdeOCComponentTextureList &list );
+	gdeOCComponentTextureList &operator=(const gdeOCComponentTextureList &list);
 	/*@}*/
 };
 

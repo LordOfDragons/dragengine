@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create window. */
-	saeWindowMain( saeIGDEModule &module );
+	saeWindowMain(saeIGDEModule &module);
 	
 protected:
 	/** Cleanup window. */
@@ -133,13 +133,13 @@ public:
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Create new speech animation. */
 	void CreateNewSAnimation();
 	
 	/** Save speech animation to file. */
-	void SaveSAnimation( const char *filename );
+	void SaveSAnimation(const char *filename);
 	
 	
 	
@@ -162,7 +162,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -173,12 +173,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * Requests a document to be saved.
@@ -188,7 +188,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * Recent files changed.
@@ -228,11 +228,11 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
-	void pCreateMenuPhoneme( igdeMenuCascade &menu );
-	void pCreateMenuWord( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
+	void pCreateMenuPhoneme(igdeMenuCascade &menu);
+	void pCreateMenuWord(igdeMenuCascade &menu);
 };
 
 #endif

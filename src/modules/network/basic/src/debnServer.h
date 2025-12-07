@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create server. */
-	debnServer( deNetworkBasic *netBasic, deServer *server );
+	debnServer(deNetworkBasic *netBasic, deServer *server);
 	
 	/** \brief Clean up server object. */
 	virtual ~debnServer();
@@ -70,12 +70,12 @@ public:
 	inline debnSocket *GetSocket() const{ return pSocket; }
 	
 	/** \brief Process connection request. */
-	void ProcessConnectionRequest( debnAddress &address, decBaseFileReader &reader );
+	void ProcessConnectionRequest(debnAddress &address, decBaseFileReader &reader);
 	
 	/**
 	 * \brief Start listening on address for incoming connections.
 	 */
-	virtual bool ListenOn( const char *address );
+	virtual bool ListenOn(const char *address);
 	
 	/** \brief Stop listening. */
 	virtual void StopListening();
@@ -89,19 +89,19 @@ public:
 	inline debnServer *GetPreviousServer() const{ return pPreviousServer; }
 	
 	/** \brief Set previous server. */
-	void SetPreviousServer( debnServer *server );
+	void SetPreviousServer(debnServer *server);
 	
 	/** \brief Next server. */
 	inline debnServer *GetNextServer() const{ return pNextServer; }
 	
 	/** \brief Set next server. */
-	void SetNextServer( debnServer *server );
+	void SetNextServer(debnServer *server);
 	
 	/** \brief Server is registered. */
 	inline bool GetIsRegistered() const{ return pIsRegistered; }
 	
 	/** \brief Set if server is registered. */
-	void SetIsRegistered( bool isRegistered );
+	void SetIsRegistered(bool isRegistered);
 	/*@}*/
 	
 	

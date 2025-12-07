@@ -47,7 +47,7 @@ public:
 	igdeGDCComponentList();
 	
 	/** \brief Create copy of a component list. */
-	igdeGDCComponentList( const igdeGDCComponentList &list );
+	igdeGDCComponentList(const igdeGDCComponentList &list);
 	
 	/** \brief Clean up list. */
 	~igdeGDCComponentList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Component by index. */
-	igdeGDCComponent *GetAt( int index ) const;
+	igdeGDCComponent *GetAt(int index) const;
 	
 	/** \brief Index of an component or -1 if not found. */
-	int IndexOf( igdeGDCComponent *component ) const;
+	int IndexOf(igdeGDCComponent *component) const;
 	
 	/** \brief Determines if an component exists. */
-	bool Has( igdeGDCComponent *component ) const;
+	bool Has(igdeGDCComponent *component) const;
 	
 	/** \brief Adds an component. */
-	void Add( igdeGDCComponent *component );
+	void Add(igdeGDCComponent *component);
 	
 	/** \brief Inserts a new component. */
-	void InsertAt( igdeGDCComponent *component, int index );
+	void InsertAt(igdeGDCComponent *component, int index);
 	
 	/** \brief Moves an component to a new position. */
-	void MoveTo( igdeGDCComponent *component, int index );
+	void MoveTo(igdeGDCComponent *component, int index);
 	
 	/** \brief Removes an component. */
-	void Remove( igdeGDCComponent *component );
+	void Remove(igdeGDCComponent *component);
 	
 	/** \brief Removes all components. */
 	void RemoveAll();
 	
 	/** \brief Set this list to a deep copy of another list. */
-	void SetToDeepCopyFrom( const igdeGDCComponentList &list );
+	void SetToDeepCopyFrom(const igdeGDCComponentList &list);
 	
 	/** \brief Set list from another list. */
-	igdeGDCComponentList &operator=( const igdeGDCComponentList &list );
+	igdeGDCComponentList &operator=(const igdeGDCComponentList &list);
 	/*@}*/
 };
 

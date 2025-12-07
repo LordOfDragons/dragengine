@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassARBoneTransformator( deScriptingDragonScript &ds );
+	deClassARBoneTransformator(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassARBoneTransformator();
@@ -78,16 +78,16 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
-	deAnimatorRuleBoneTransformator *GetRule( dsRealObject *myself ) const;
+	deAnimatorRuleBoneTransformator *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator( dsRealObject *myself, deAnimator *animator );
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleBoneTransformator *rule );
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleBoneTransformator *rule);
 	
 	inline dsClass *GetClassARBoneTransformatorTarget() const{ return pClsARBoneTransformatorTarget; }
 	inline dsClass *GetClassARBoneTransformatorCFrame() const{ return pClsARBoneTransformatorCFrame; }
@@ -103,35 +103,35 @@ private:
 		dsClass *clsARBoneTransformatorInputSource;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetMinimumTranslation );
-	DEF_NATFUNC( nfSetMaximumTranslation );
-	DEF_NATFUNC( nfSetMinimumRotation );
-	DEF_NATFUNC( nfSetMaximumRotation );
-	DEF_NATFUNC( nfSetMinimumScaling );
-	DEF_NATFUNC( nfSetMaximumScaling );
-	DEF_NATFUNC( nfSetAxis );
-	DEF_NATFUNC( nfSetMinimumAngle );
-	DEF_NATFUNC( nfSetMaximumAngle );
-	DEF_NATFUNC( nfSetUseAxis );
-	DEF_NATFUNC( nfSetCoordinateFrame );
-	DEF_NATFUNC( nfSetTargetBone );
+	DEF_NATFUNC(nfSetMinimumTranslation);
+	DEF_NATFUNC(nfSetMaximumTranslation);
+	DEF_NATFUNC(nfSetMinimumRotation);
+	DEF_NATFUNC(nfSetMaximumRotation);
+	DEF_NATFUNC(nfSetMinimumScaling);
+	DEF_NATFUNC(nfSetMaximumScaling);
+	DEF_NATFUNC(nfSetAxis);
+	DEF_NATFUNC(nfSetMinimumAngle);
+	DEF_NATFUNC(nfSetMaximumAngle);
+	DEF_NATFUNC(nfSetUseAxis);
+	DEF_NATFUNC(nfSetCoordinateFrame);
+	DEF_NATFUNC(nfSetTargetBone);
 	DEF_NATFUNC(nfSetInputBone);
 	DEF_NATFUNC(nfSetInputSource);
 	
-	DEF_NATFUNC( nfSetEnablePosition );
-	DEF_NATFUNC( nfSetEnableOrientation );
-	DEF_NATFUNC( nfSetEnableSize );
+	DEF_NATFUNC(nfSetEnablePosition);
+	DEF_NATFUNC(nfSetEnableOrientation);
+	DEF_NATFUNC(nfSetEnableSize);
 #undef DEF_NATFUNC
 };
 

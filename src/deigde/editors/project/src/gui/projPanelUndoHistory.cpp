@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-projPanelUndoHistory::projPanelUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pProject( NULL ),
-pListener( new projPanelUndoHistoryListener( *this ) ){
+projPanelUndoHistory::projPanelUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pProject(NULL),
+pListener(new projPanelUndoHistoryListener(*this)){
 }
 
 projPanelUndoHistory::~projPanelUndoHistory(){
-	SetProject( NULL );
+	SetProject(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -59,24 +59,24 @@ projPanelUndoHistory::~projPanelUndoHistory(){
 // Management
 ///////////////
 
-void projPanelUndoHistory::SetProject( projProject *project ){
-	if( project == pProject ){
+void projPanelUndoHistory::SetProject(projProject *project){
+	if(project == pProject){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(NULL);
 	
-	if( pProject ){
-		pProject->RemoveListener( pListener );
+	if(pProject){
+		pProject->RemoveListener(pListener);
 		pProject->FreeReference();
 	}
 	
 	pProject = project;
 	
-	if( project ){
+	if(project){
 		project->AddReference();
-		project->AddListener( pListener );
+		project->AddListener(pListener);
 		
-		SetUndoSystem( project->GetUndoSystem() );
+		SetUndoSystem(project->GetUndoSystem());
 	}
 }

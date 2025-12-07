@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetEnablePos::aeURuleBTransSetEnablePos( aeRuleBoneTransformator *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetEnablePos::aeURuleBTransSetEnablePos(aeRuleBoneTransformator *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	
-	SetShortInfo( "Bone transformator toggle enable position" );
+	SetShortInfo("Bone transformator toggle enable position");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleBTransSetEnablePos::~aeURuleBTransSetEnablePos(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -68,5 +68,5 @@ void aeURuleBTransSetEnablePos::Undo(){
 }
 
 void aeURuleBTransSetEnablePos::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }

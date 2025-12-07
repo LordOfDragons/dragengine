@@ -245,7 +245,7 @@ void deoxrDPMndxDevSpace::pAddDeviceTracker(XrXDevListMNDX list, const Device::R
 	device->device->SetName(device->name);
 	
 	decString id;
-	id.Format("%sxds_%s", OXR_DEVID_PREFIX, pSanitizedSerial(device->serial).GetString() );
+	id.Format("%sxds_%s", OXR_DEVID_PREFIX, pSanitizedSerial(device->serial).GetString());
 	device->device->SetID(id);
 	
 	XrCreateXDevSpaceInfoMNDX createSpaceInfo{XR_TYPE_CREATE_XDEV_SPACE_INFO_MNDX};

@@ -120,7 +120,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCComponent( gdeWindowProperties &windowMain );
+	gdeWPSOCComponent(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -136,7 +136,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
@@ -198,7 +198,7 @@ public:
 	 * Marks the list dirty if the path changed. List will be update only when
 	 * PrepareEngineModelPath() is called to keep performance up.
 	 */
-	void SetEngineModelPath( const char *path );
+	void SetEngineModelPath(const char *path);
 	
 	/**
 	 * \brief Prepare engine model texture list if dirty.

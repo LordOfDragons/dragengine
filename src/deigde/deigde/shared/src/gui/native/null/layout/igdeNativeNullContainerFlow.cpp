@@ -36,21 +36,21 @@ igdeNativeNullContainerFlow::igdeNativeNullContainerFlow(){
 igdeNativeNullContainerFlow::~igdeNativeNullContainerFlow(){
 }
 
-void *igdeNativeNullContainerFlow::CreateNativeWidget( igdeContainerFlow& ){
+void *igdeNativeNullContainerFlow::CreateNativeWidget(igdeContainerFlow&){
 	return new igdeNativeNullContainerFlow;
 }
 
-void igdeNativeNullContainerFlow::PostCreateNativeWidget( igdeContainerFlow&, void* ){
+void igdeNativeNullContainerFlow::PostCreateNativeWidget(igdeContainerFlow&, void*){
 }
 
-void igdeNativeNullContainerFlow::DestroyNativeWidget( igdeContainerFlow&, void *native ){
-	delete ( igdeNativeNullContainerFlow* )native;
+void igdeNativeNullContainerFlow::DestroyNativeWidget(igdeContainerFlow&, void *native){
+	delete (igdeNativeNullContainerFlow*)native;
 }
 
-void igdeNativeNullContainerFlow::ChildRemoved( igdeContainerFlow&, void* ){
+void igdeNativeNullContainerFlow::ChildRemoved(igdeContainerFlow&, void*){
 }
 
-void *igdeNativeNullContainerFlow::GetNativeContainer( const igdeContainerFlow &, void *native ){
+void *igdeNativeNullContainerFlow::GetNativeContainer(const igdeContainerFlow &, void *native){
 	return native;
 }
 

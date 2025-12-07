@@ -72,7 +72,7 @@ public:
 	inline deoglRenderPlan *GetPlan() const{ return pPlan; }
 	
 	/** Set render plan. */
-	void SetPlan( deoglRenderPlan *plan );
+	void SetPlan(deoglRenderPlan *plan);
 	
 	/** Component or nuullptr. */
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
@@ -81,49 +81,49 @@ public:
 	inline int GetComponentTexture() const{ return pComponentTexture; }
 	
 	/** Set component and texture or nullptr if unused. */
-	void SetComponent( deoglRComponent *component, int texture );
+	void SetComponent(deoglRComponent *component, int texture);
 	
 	/** Clip plane is used. */
 	inline bool GetUseClipPlane() const{ return pUseClipPlane; }
 	
 	/** Set if clip plane is used. */
-	void SetUseClipPlane( bool useClipPlane );
+	void SetUseClipPlane(bool useClipPlane);
 	
 	/** Clipping plane normal. */
 	inline const decVector &GetClipNormal() const{ return pClipNormal; }
 	
 	/** Set clipping plane normal. */
-	void SetClipNormal( const decVector &normal );
+	void SetClipNormal(const decVector &normal);
 	
 	/** Clipping plane distance. */
 	inline float GetClipDistance() const{ return pClipDistance; }
 	
 	/** Set clipping plane distance. */
-	void SetClipDistance( float distance );
+	void SetClipDistance(float distance);
 	
 	/** Stereo clipping plane normal. */
 	inline const decVector &GetClipNormalStereo() const{ return pClipNormalStereo; }
 	
 	/** Set stereo clipping plane normal. */
-	void SetClipNormalStereo( const decVector &normal );
+	void SetClipNormalStereo(const decVector &normal);
 	
 	/** Stereo clipping plane distance. */
 	inline float GetClipDistanceStereo() const{ return pClipDistanceStereo; }
 	
 	/** Set stereo clipping plane distance. */
-	void SetClipDistanceStereo( float distance );
+	void SetClipDistanceStereo(float distance);
 	
 	/** Stencil mask. */
 	inline int GetStencilMask() const{ return pStencilMask; }
 	
 	/** Set stencil mask. */
-	void SetStencilMask( int mask );
+	void SetStencilMask(int mask);
 	
 	/** Parent stencil mask. */
 	inline int GetParentStencilMask() const{ return pParentStencilMask; }
 	
 	/** Set parent stencil mask. */
-	void SetParentStencilMask( int mask );
+	void SetParentStencilMask(int mask);
 	/*@}*/
 };
 

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedAdd( seSkin *skin, seMapped *mapped );
+	seUMappedAdd(seSkin *skin, seMapped *mapped);
 	
 protected:
 	/** Clean up undo. */

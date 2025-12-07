@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSkySetBgColor( seSky *sky, const decColor &newColor );
+	seUSkySetBgColor(seSky *sky, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo action. */

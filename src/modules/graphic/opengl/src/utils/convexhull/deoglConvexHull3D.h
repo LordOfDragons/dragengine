@@ -60,10 +60,10 @@ public:
 	inline int GetPointCount() const{ return pPointCount; }
 	
 	/** Point by index. */
-	const decVector &GetPointAt( int index ) const;
+	const decVector &GetPointAt(int index) const;
 	
 	/** Add point. */
-	void AddPoint( const decVector &point );
+	void AddPoint(const decVector &point);
 	
 	/** Remove all points. */
 	void RemoveAllPoints();

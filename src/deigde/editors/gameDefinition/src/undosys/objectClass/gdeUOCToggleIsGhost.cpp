@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCToggleIsGhost::gdeUOCToggleIsGhost( gdeObjectClass *objectClass ) :
-pObjectClass( NULL )
+gdeUOCToggleIsGhost::gdeUOCToggleIsGhost(gdeObjectClass *objectClass) :
+pObjectClass(NULL)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class toggle is ghost" );
+	SetShortInfo("Object class toggle is ghost");
 	
 	pObjectClass = objectClass;
 	objectClass->AddReference();
 }
 
 gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -64,7 +64,7 @@ gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
 ///////////////
 
 void gdeUOCToggleIsGhost::Undo(){
-	pObjectClass->SetIsGhost( ! pObjectClass->GetIsGhost() );
+	pObjectClass->SetIsGhost(!pObjectClass->GetIsGhost());
 }
 
 void gdeUOCToggleIsGhost::Redo(){

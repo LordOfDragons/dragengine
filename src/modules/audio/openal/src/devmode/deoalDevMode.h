@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create developer mode. */
-	deoalDevMode( deAudioOpenAL &audioThread );
+	deoalDevMode(deAudioOpenAL &audioThread);
 	
 	/** Clean up developer mode. */
 	~deoalDevMode();
@@ -121,25 +121,25 @@ public:
 	
 	
 	/** Run command. */
-	bool ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	bool ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 	
 	
 	
 private:
-	void pCmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdEnable(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdLogCalcEnvProbe( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowModuleInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowSpeakerEnvInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowSpeakerEnvInfoAt( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowSpeakerEnvInfoClosest( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowActiveMicInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdCaptureMicRays( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowAudioModels( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdVisualizeAudibleSpeakers( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdCaptureSpeakerDirectClosest( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdLogCalcEnvProbe(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowModuleInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowSpeakerEnvInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowSpeakerEnvInfoAt(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowSpeakerEnvInfoClosest(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowActiveMicInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdCaptureMicRays(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowAudioModels(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdVisualizeAudibleSpeakers(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdCaptureSpeakerDirectClosest(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	void pActiveWorldNotifyDevModeChanged();
 };

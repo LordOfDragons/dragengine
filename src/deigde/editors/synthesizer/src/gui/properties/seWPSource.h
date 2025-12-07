@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPSource( seViewSynthesizer &viewSynthesizer );
+	seWPSource(seViewSynthesizer &viewSynthesizer);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -96,7 +96,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	/** \brief Source or \em NULL if not set. */
 	seSource *GetSource() const;
@@ -119,7 +119,7 @@ public:
 	void UpdateSourceTree();
 	
 	/** \brief Update item in the source tree. */
-	void UpdateSourceTreeItem( igdeTreeItem *item, seSource *source );
+	void UpdateSourceTreeItem(igdeTreeItem *item, seSource *source);
 	
 	/** \brief Select active source. */
 	void SelectActiveSource();

@@ -76,39 +76,39 @@ public:
 	 * to add entries to the context menu without affecting others. If entries are already
 	 * present the listener should also add a separator first.
 	 */
-	virtual void AddContextMenuEntries( igdeNVBoard *board, igdeMenuCascade &menu, const decPoint &position );
+	virtual void AddContextMenuEntries(igdeNVBoard *board, igdeMenuCascade &menu, const decPoint &position);
 	
 	/**
 	 * \brief Link between slots can be created.
 	 * 
 	 * Default implementation returns true.
 	 */
-	virtual bool CanLink( igdeNVBoard *board, igdeNVSlot *source, igdeNVSlot *target );
+	virtual bool CanLink(igdeNVBoard *board, igdeNVSlot *source, igdeNVSlot *target);
 	
 	/**
 	 * \brief Link added.
 	 */
-	virtual void OnLinkAdded( igdeNVBoard *board, igdeNVLink *link );
+	virtual void OnLinkAdded(igdeNVBoard *board, igdeNVLink *link);
 	
 	/**
 	 * \brief Link removed.
 	 */
-	virtual void OnLinkRemoved( igdeNVBoard *board, igdeNVSlot *source, igdeNVSlot *target );
+	virtual void OnLinkRemoved(igdeNVBoard *board, igdeNVSlot *source, igdeNVSlot *target);
 	
 	/**
 	 * \brief All links removed.
 	 */
-	virtual void OnAllLinksRemoved( igdeNVBoard *board );
+	virtual void OnAllLinksRemoved(igdeNVBoard *board);
 	
 	/**
 	 * \brief Offset changed.
 	 */
-	virtual void OnOffsetChanged( igdeNVBoard *board );
+	virtual void OnOffsetChanged(igdeNVBoard *board);
 	
 	/**
 	 * \brief Size changed.
 	 */
-	virtual void OnSizeChanged( igdeNVBoard *board );
+	virtual void OnSizeChanged(igdeNVBoard *board);
 	/*@}*/
 };
 

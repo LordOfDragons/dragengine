@@ -40,22 +40,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meBitArray::meBitArray( int colons, int rows ){
-	if( colons < 1 || rows < 1 ) DETHROW( deeInvalidParam );
+meBitArray::meBitArray(int colons, int rows){
+	if(colons < 1 || rows < 1) DETHROW(deeInvalidParam);
 	
 	pColons = colons;
 	pRows = rows;
 	
-	pByteCount = ( ( colons * rows - 1 ) >> 3 ) + 1;
+	pByteCount = ((colons * rows - 1) >> 3) + 1;
 	
-	pBytes = new unsigned char[ pByteCount ];
-	if( ! pBytes ) DETHROW( deeOutOfMemory );
+	pBytes = new unsigned char[pByteCount];
+	if(!pBytes) DETHROW(deeOutOfMemory);
 	
-	memset( pBytes, 255, pByteCount );
+	memset(pBytes, 255, pByteCount);
 }
 
 meBitArray::~meBitArray(){
-	if( pBytes ) delete [] pBytes;
+	if(pBytes) delete [] pBytes;
 }
 
 
@@ -63,38 +63,38 @@ meBitArray::~meBitArray(){
 // Management
 ///////////////
 
-bool meBitArray::GetValueAt( int x, int y ) const{
-	if( x < 0 || x >= pColons || y < 0 || y >= pRows ) DETHROW( deeInvalidParam );
+bool meBitArray::GetValueAt(int x, int y) const{
+	if(x < 0 || x >= pColons || y < 0 || y >= pRows) DETHROW(deeInvalidParam);
 	
 	int bitOffset = pColons * y + x;
 	
-	return ( pBytes[ bitOffset >> 3 ] & ( 1 << ( bitOffset & 0x7 ) ) ) != 0;
+	return (pBytes[bitOffset >> 3] & (1 << (bitOffset & 0x7))) != 0;
 }
 
-void meBitArray::SetValueAt( int x, int y, bool value ){
-	if( x < 0 || x >= pColons || y < 0 || y >= pRows ) DETHROW( deeInvalidParam );
+void meBitArray::SetValueAt(int x, int y, bool value){
+	if(x < 0 || x >= pColons || y < 0 || y >= pRows) DETHROW(deeInvalidParam);
 	
 	int bitOffset = pColons * y + x;
 	
-	if( value ){
-		pBytes[ bitOffset >> 3 ] |= ( unsigned char )( 1 << ( bitOffset & 0x7 ) );
+	if(value){
+		pBytes[bitOffset >> 3] |= (unsigned char)(1 << (bitOffset & 0x7));
 		
 	}else{
-		pBytes[ bitOffset >> 3 ] &= ~( ( unsigned char )( 1 << ( bitOffset & 0x7 ) ) );
+		pBytes[bitOffset >> 3] &= ~((unsigned char)(1 << (bitOffset & 0x7)));
 	}
 }
 
-void meBitArray::CopyTo( meBitArray &bitArray ) const{
-	if( bitArray.pColons != pColons || bitArray.pRows != pRows ) DETHROW( deeInvalidParam );
+void meBitArray::CopyTo(meBitArray &bitArray) const{
+	if(bitArray.pColons != pColons || bitArray.pRows != pRows) DETHROW(deeInvalidParam);
 	
-	memcpy( bitArray.pBytes, pBytes, pByteCount );
+	memcpy(bitArray.pBytes, pBytes, pByteCount);
 }
 
-void meBitArray::ClearTo( bool value ){
-	if( value ){
-		memset( pBytes, 255, pByteCount );
+void meBitArray::ClearTo(bool value){
+	if(value){
+		memset(pBytes, 255, pByteCount);
 		
 	}else{
-		memset( pBytes, 0, pByteCount );
+		memset(pBytes, 0, pByteCount);
 	}
 }

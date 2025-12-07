@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetBlockerShapeList::gdeUOCNavSpaceSetBlockerShapeList( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, const decShapeList &newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetBlockerShapeList::gdeUOCNavSpaceSetBlockerShapeList(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, const decShapeList &newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set shapes" );
+	SetShortInfo("Nav-space set shapes");
 	
 	pOldValue = navspace->GetBlockerShapeList();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCNavSpaceSetBlockerShapeList::~gdeUOCNavSpaceSetBlockerShapeList(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -77,10 +77,10 @@ gdeUOCNavSpaceSetBlockerShapeList::~gdeUOCNavSpaceSetBlockerShapeList(){
 
 void gdeUOCNavSpaceSetBlockerShapeList::Undo(){
 	pNavSpace->GetBlockerShapeList() = pOldValue;
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetBlockerShapeList::Redo(){
 	pNavSpace->GetBlockerShapeList() = pNewValue;
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

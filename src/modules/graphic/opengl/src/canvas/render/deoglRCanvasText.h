@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasText( deoglRenderThread &renderThread );
+	deoglRCanvasText(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
 	virtual ~deoglRCanvasText();
@@ -78,19 +78,19 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** Text color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** Set text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	/*@}*/
 	
 	
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	virtual void Render(const deoglRenderCanvasContext &context);
 	/*@}*/
 };
 

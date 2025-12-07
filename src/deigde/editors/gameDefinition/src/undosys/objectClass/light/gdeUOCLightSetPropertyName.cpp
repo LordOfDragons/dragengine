@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName( gdeObjectClass *objectClass,
-gdeOCLight *light, gdeOCLight::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pLight( NULL ),
-pProperty( property )
+gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName(gdeObjectClass *objectClass,
+gdeOCLight *light, gdeOCLight::eProperties property, const char *newValue) :
+pObjectClass(NULL),
+pLight(NULL),
+pProperty(property)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set property name" );
+	SetShortInfo("Light set property name");
 	
-	pOldValue = light->GetPropertyName( property );
+	pOldValue = light->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pLight = light;
@@ -62,10 +62,10 @@ pProperty( property )
 }
 
 gdeUOCLightSetPropertyName::~gdeUOCLightSetPropertyName(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetPropertyName::~gdeUOCLightSetPropertyName(){
 ///////////////
 
 void gdeUOCLightSetPropertyName::Undo(){
-	pLight->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetPropertyName::Redo(){
-	pLight->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

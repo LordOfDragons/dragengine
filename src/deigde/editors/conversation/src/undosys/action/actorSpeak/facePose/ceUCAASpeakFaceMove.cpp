@@ -42,23 +42,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceMove::ceUCAASpeakFaceMove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *facePose, int newIndex ){
-	if( ! topic || ! actorSpeak || ! facePose ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakFaceMove::ceUCAASpeakFaceMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *facePose, int newIndex){
+	if(!topic || !actorSpeak || !facePose){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pFacePose = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetFacePoseList().IndexOf( facePose );
+	pOldIndex = actorSpeak->GetFacePoseList().IndexOf(facePose);
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= actorSpeak->GetFacePoseList().GetCount() ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetFacePoseList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move Face Pose" );
+	SetShortInfo("Move Face Pose");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -71,13 +71,13 @@ ceStrip *facePose, int newIndex ){
 }
 
 ceUCAASpeakFaceMove::~ceUCAASpeakFaceMove(){
-	if( pFacePose ){
+	if(pFacePose){
 		pFacePose->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -88,11 +88,11 @@ ceUCAASpeakFaceMove::~ceUCAASpeakFaceMove(){
 ///////////////
 
 void ceUCAASpeakFaceMove::Undo(){
-	pActorSpeak->GetFacePoseList().MoveTo( pFacePose, pOldIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetFacePoseList().MoveTo(pFacePose, pOldIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakFaceMove::Redo(){
-	pActorSpeak->GetFacePoseList().MoveTo( pFacePose, pNewIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetFacePoseList().MoveTo(pFacePose, pNewIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

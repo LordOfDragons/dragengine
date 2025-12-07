@@ -39,35 +39,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNUngroupNodes::seUPNUngroupNodes( sePropertyNodeGroup *nodeGroup ) :
-pParentGroup( NULL ),
-pNodeGroup( NULL ),
-pIndex( 0 ),
-pNodeCount( 0 ),
-pNodes( 0 )
+seUPNUngroupNodes::seUPNUngroupNodes(sePropertyNodeGroup *nodeGroup) :
+pParentGroup(NULL),
+pNodeGroup(NULL),
+pIndex(0),
+pNodeCount(0),
+pNodes(0)
 {
-	if( ! nodeGroup ){
-		DETHROW( deeInvalidParam );
+	if(!nodeGroup){
+		DETHROW(deeInvalidParam);
 	}
 	
 	sePropertyNodeGroup * const parentGroup = nodeGroup->GetParent();
-	if( ! parentGroup ){
-		DETHROW( deeInvalidParam );
+	if(!parentGroup){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Ungroup nodes" );
+	SetShortInfo("Ungroup nodes");
 	
-	pIndex = parentGroup->IndexOfNode( nodeGroup );
+	pIndex = parentGroup->IndexOfNode(nodeGroup);
 	
 	const int count = nodeGroup->GetNodeCount();
-	pNodes = new sNode[ count ];
-	for( pNodeCount=0; pNodeCount<count; pNodeCount++ ){
-		sePropertyNode * const node = nodeGroup->GetNodeAt( pNodeCount);
-		pNodes[ pNodeCount ].position = node->GetPosition();
-		pNodes[ pNodeCount ].size = node->GetSize();
-		pNodes[ pNodeCount ].rotation = node->GetRotation();
-		pNodes[ pNodeCount ].shearing = node->GetShearing();
-		pNodes[ pNodeCount ].node = node;
+	pNodes = new sNode[count];
+	for(pNodeCount=0; pNodeCount<count; pNodeCount++){
+		sePropertyNode * const node = nodeGroup->GetNodeAt(pNodeCount);
+		pNodes[pNodeCount].position = node->GetPosition();
+		pNodes[pNodeCount].size = node->GetSize();
+		pNodes[pNodeCount].rotation = node->GetRotation();
+		pNodes[pNodeCount].shearing = node->GetShearing();
+		pNodes[pNodeCount].node = node;
 		node->AddReference();
 	}
 	
@@ -79,16 +79,16 @@ pNodes( 0 )
 }
 
 seUPNUngroupNodes::~seUPNUngroupNodes(){
-	if( pNodeGroup ){
+	if(pNodeGroup){
 		pNodeGroup->FreeReference();
 	}
-	if( pParentGroup ){
+	if(pParentGroup){
 		pParentGroup->FreeReference();
 	}
-	if( pNodes ){
+	if(pNodes){
 		int i;
-		for( i=0; i<pNodeCount; i++ ){
-			pNodes[ i ].node->FreeReference();
+		for(i=0; i<pNodeCount; i++){
+			pNodes[i].node->FreeReference();
 		}
 		delete [] pNodes;
 	}
@@ -104,34 +104,34 @@ void seUPNUngroupNodes::Undo(){
 	selection.RemoveAll();
 	
 	int i;
-	for( i=0; i<pNodeCount; i++ ){
-		pParentGroup->RemoveNode( pNodes[ i ].node );
-		pNodes[ i ].node->SetPosition( pNodes[ i ].position );
-		pNodes[ i ].node->SetSize( pNodes[ i ].size );
-		pNodes[ i ].node->SetRotation( pNodes[ i ].rotation );
-		pNodes[ i ].node->SetShearing( pNodes[ i ].shearing );
-		pNodeGroup->AddNode( pNodes[ i ].node );
+	for(i=0; i<pNodeCount; i++){
+		pParentGroup->RemoveNode(pNodes[i].node);
+		pNodes[i].node->SetPosition(pNodes[i].position);
+		pNodes[i].node->SetSize(pNodes[i].size);
+		pNodes[i].node->SetRotation(pNodes[i].rotation);
+		pNodes[i].node->SetShearing(pNodes[i].shearing);
+		pNodeGroup->AddNode(pNodes[i].node);
 	}
 	
-	pParentGroup->InsertNode( pIndex, pNodeGroup );
+	pParentGroup->InsertNode(pIndex, pNodeGroup);
 	
-	selection.Add( pNodeGroup );
+	selection.Add(pNodeGroup);
 }
 
 void seUPNUngroupNodes::Redo(){
 	sePropertyNodeSelection &selection = pParentGroup->GetProperty()->GetNodeSelection();
 	selection.RemoveAll();
 	
-	const decTexMatrix2 matrix( pNodeGroup->CreateParentTransformMatrix() );
+	const decTexMatrix2 matrix(pNodeGroup->CreateParentTransformMatrix());
 	
-	pParentGroup->RemoveNode( pNodeGroup );
+	pParentGroup->RemoveNode(pNodeGroup);
 	pNodeGroup->RemoveAllNodes();
 	
 	int i;
-	for( i=0; i<pNodeCount; i++ ){
-		pNodes[ i ].node->SetFromMatrix( pNodes[ i ].node->CreateParentTransformMatrix() * matrix,
-			pNodes[ i ].size, pNodes[ i ].rotation );
-		pParentGroup->AddNode( pNodes[ i ].node );
-		selection.Add( pNodes[ i ].node );
+	for(i=0; i<pNodeCount; i++){
+		pNodes[i].node->SetFromMatrix(pNodes[i].node->CreateParentTransformMatrix() * matrix,
+			pNodes[i].size, pNodes[i].rotation);
+		pParentGroup->AddNode(pNodes[i].node);
+		selection.Add(pNodes[i].node);
 	}
 }

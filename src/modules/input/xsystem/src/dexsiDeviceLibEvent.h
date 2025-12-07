@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	dexsiDeviceLibEvent( deXSystemInput &module, const char *pathDevice );
+	dexsiDeviceLibEvent(deXSystemInput &module, const char *pathDevice);
 	
 protected:
 	/** \brief Clean up device. */

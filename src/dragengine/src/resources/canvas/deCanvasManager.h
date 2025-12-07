@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas resource manager. */
-	deCanvasManager( deEngine *engine );
+	deCanvasManager(deEngine *engine);
 	
 	/** \brief Clean up canvas resource manager and reports leaking resources. */
 	virtual ~deCanvasManager();
@@ -113,7 +113,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

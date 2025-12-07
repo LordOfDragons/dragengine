@@ -40,15 +40,15 @@
 ////////////////////////////
 
 seUPNGroupAddNode::seUPNGroupAddNode(
-sePropertyNodeGroup *node, sePropertyNode *child ) :
-pNode( NULL ),
-pChild( NULL )
+sePropertyNodeGroup *node, sePropertyNode *child) :
+pNode(NULL),
+pChild(NULL)
 {
-	if( ! node || ! node->GetProperty() || ! child || child->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty() || !child || child->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node group add node" );
+	SetShortInfo("Node group add node");
 	
 	pNode = node;
 	node->AddReference();
@@ -58,10 +58,10 @@ pChild( NULL )
 }
 
 seUPNGroupAddNode::~seUPNGroupAddNode(){
-	if( pChild ){
+	if(pChild){
 		pChild->FreeReference();
 	}
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -72,12 +72,12 @@ seUPNGroupAddNode::~seUPNGroupAddNode(){
 ///////////////
 
 void seUPNGroupAddNode::Undo(){
-	pNode->RemoveNode( pChild );
+	pNode->RemoveNode(pChild);
 }
 
 void seUPNGroupAddNode::Redo(){
-	pNode->AddNode( pChild );
+	pNode->AddNode(pChild);
 	
 	pNode->GetProperty()->GetNodeSelection().RemoveAll();
-	pNode->GetProperty()->GetNodeSelection().Add( pChild );
+	pNode->GetProperty()->GetNodeSelection().Add(pChild);
 }

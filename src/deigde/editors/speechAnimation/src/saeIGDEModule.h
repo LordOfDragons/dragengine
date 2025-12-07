@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	saeIGDEModule( igdeEnvironment *environment );
+	saeIGDEModule(igdeEnvironment *environment);
 	
 	/** Clean up module. */
 	virtual ~saeIGDEModule();

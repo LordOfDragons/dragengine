@@ -36,7 +36,7 @@ igdeNativeNullNVSlot::igdeNativeNullNVSlot(){
 igdeNativeNullNVSlot::~igdeNativeNullNVSlot(){
 }
 
-igdeNativeNullNVSlot *igdeNativeNullNVSlot::CreateNativeWidget( igdeNVSlot& ){
+igdeNativeNullNVSlot *igdeNativeNullNVSlot::CreateNativeWidget(igdeNVSlot&){
 	return new igdeNativeNullNVSlot;
 }
 

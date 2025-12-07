@@ -41,25 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitPaste::ceUCAWaitPaste( ceConversationTopic *topic, ceCAWait *wait,
-const ceConversationActionList &actions, int index ) :
-ceUCActionPaste( topic, actions, index )
+ceUCAWaitPaste::ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait *wait,
+const ceConversationActionList &actions, int index) :
+ceUCActionPaste(topic, actions, index)
 {
-	if( ! wait || actions.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+	if(!wait || actions.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < 0 || index > wait->GetActions().GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index > wait->GetActions().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWait = NULL;
 	
-	if( actions.GetCount() == 1 ){
-		SetShortInfo( "Action Wait Paset Action" );
+	if(actions.GetCount() == 1){
+		SetShortInfo("Action Wait Paset Action");
 		
 	}else{
-		SetShortInfo( "Action Wait Paste Actions" );
+		SetShortInfo("Action Wait Paste Actions");
 	}
 	
 	pWait = wait;
@@ -67,7 +67,7 @@ ceUCActionPaste( topic, actions, index )
 }
 
 ceUCAWaitPaste::~ceUCAWaitPaste(){
-	if( pWait ){
+	if(pWait){
 		pWait->FreeReference();
 	}
 }
@@ -78,17 +78,17 @@ ceUCAWaitPaste::~ceUCAWaitPaste(){
 ///////////////
 
 void ceUCAWaitPaste::Undo(){
-	ceConversationAction * const activateAction = ActivateActionAfterRemove( pWait->GetActions() );
+	ceConversationAction * const activateAction = ActivateActionAfterRemove(pWait->GetActions());
 	
-	pRemoveActions( pWait->GetActions() );
-	GetTopic().NotifyActionStructureChanged( pWait );
+	pRemoveActions(pWait->GetActions());
+	GetTopic().NotifyActionStructureChanged(pWait);
 	
-	GetTopic().SetActive( activateAction ? activateAction : pWait, NULL );
+	GetTopic().SetActive(activateAction ? activateAction : pWait, NULL);
 }
 
 void ceUCAWaitPaste::Redo(){
-	pInsertActions( pWait->GetActions() );
-	GetTopic().NotifyActionStructureChanged( pWait );
+	pInsertActions(pWait->GetActions());
+	GetTopic().NotifyActionStructureChanged(pWait);
 	
 	pSelectInserted();
 }

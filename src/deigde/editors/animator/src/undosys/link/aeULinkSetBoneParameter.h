@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkSetBoneParameter( aeLink *link, deAnimatorLink::eBoneParameter newValue );
+	aeULinkSetBoneParameter(aeLink *link, deAnimatorLink::eBoneParameter newValue);
 	
 protected:
 	/** Clean up undo. */

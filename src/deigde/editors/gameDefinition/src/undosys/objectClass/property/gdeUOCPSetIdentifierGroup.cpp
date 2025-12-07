@@ -42,15 +42,15 @@
 ////////////////////////////
 
 gdeUOCPSetIdentifierGroup::gdeUOCPSetIdentifierGroup(
-gdeObjectClass *objectClass, gdeProperty *property, const char *newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeObjectClass *objectClass, gdeProperty *property, const char *newValue) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set identifier group" );
+	SetShortInfo("Object class property set identifier group");
 	
 	pOldValue = property->GetIdentifierGroup();
 	pNewValue = newValue;
@@ -63,10 +63,10 @@ pProperty( NULL )
 }
 
 gdeUOCPSetIdentifierGroup::~gdeUOCPSetIdentifierGroup(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -77,13 +77,13 @@ gdeUOCPSetIdentifierGroup::~gdeUOCPSetIdentifierGroup(){
 ///////////////
 
 void gdeUOCPSetIdentifierGroup::Undo(){
-	pProperty->SetIdentifierGroup( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetIdentifierGroup(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 	pObjectClass->GetGameDefinition()->UpdateUsedTagsObjectClass();
 }
 
 void gdeUOCPSetIdentifierGroup::Redo(){
-	pProperty->SetIdentifierGroup( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetIdentifierGroup(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 	pObjectClass->GetGameDefinition()->UpdateUsedTagsObjectClass();
 }

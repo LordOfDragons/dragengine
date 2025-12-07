@@ -52,10 +52,10 @@ public:
 	 * \brief Create memory file reader for the given memory file.
 	 * \throws deeInvalidParam \em memoryFile is NULL.
 	 */
-	decMemoryFileReader( decMemoryFile *memoryFile );
+	decMemoryFileReader(decMemoryFile *memoryFile);
 	
 private:
-	decMemoryFileReader( const decMemoryFileReader &reader );
+	decMemoryFileReader(const decMemoryFileReader &reader);
 	
 protected:
 	/**
@@ -89,21 +89,21 @@ public:
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger than GetLength().
 	 */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/**
 	 * \brief Move file position by the given offset.
 	 * \throws deeInvalidParam GetPosition() + \em position is less than 0.
 	 * \throws deeInvalidParam GetPosition() + \em position is larger than GetLength().
 	 */
-	virtual void MovePosition( int offset );
+	virtual void MovePosition(int offset);
 	
 	/**
 	 * \brief Set file position to the given position measured from the end of the file.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger than GetLength().
 	 */
-	virtual void SetPositionEnd( int position );
+	virtual void SetPositionEnd(int position);
 	
 	/**
 	 * \brief Read \em size bytes into \em buffer and advances the file pointer.
@@ -111,7 +111,7 @@ public:
 	 * \throws deeInvalidParam \em size is less than 1.
 	 * \throws deeInvalidParam GetPosition() + \em size is larger than GetLength().
 	 */
-	virtual void Read( void *buffer, int size );
+	virtual void Read(void *buffer, int size);
 	
 	/** \brief Duplicate file reader. */
 	virtual decBaseFileReader::Ref Duplicate();

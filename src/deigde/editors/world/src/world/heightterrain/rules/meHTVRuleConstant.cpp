@@ -41,16 +41,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleConstant::meHTVRuleConstant() : meHTVRule( ertConstant, 4 ){
-	GetSlotAt( eosVector ).SetIsInput( false );
-	GetSlotAt( eosX ).SetIsInput( false );
-	GetSlotAt( eosY ).SetIsInput( false );
-	GetSlotAt( eosZ ).SetIsInput( false );
+meHTVRuleConstant::meHTVRuleConstant() : meHTVRule(ertConstant, 4){
+	GetSlotAt(eosVector).SetIsInput(false);
+	GetSlotAt(eosX).SetIsInput(false);
+	GetSlotAt(eosY).SetIsInput(false);
+	GetSlotAt(eosZ).SetIsInput(false);
 }
 
-meHTVRuleConstant::meHTVRuleConstant( const meHTVRuleConstant &rule ) :
-meHTVRule( rule ),
-pVector( rule.pVector ){
+meHTVRuleConstant::meHTVRuleConstant(const meHTVRuleConstant &rule) :
+meHTVRule(rule),
+pVector(rule.pVector){
 }
 
 meHTVRuleConstant::~meHTVRuleConstant(){
@@ -61,22 +61,22 @@ meHTVRuleConstant::~meHTVRuleConstant(){
 // Management
 ///////////////
 
-void meHTVRuleConstant::SetVector( const decVector &vector ){
+void meHTVRuleConstant::SetVector(const decVector &vector){
 	pVector = vector;
 }
 
 
 
-float meHTVRuleConstant::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot < 0 || slot > 3 ) DETHROW( deeInvalidParam );
+float meHTVRuleConstant::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot < 0 || slot > 3) DETHROW(deeInvalidParam);
 	
-	if( slot == eosVector ){ // incorrect usage, use x value
+	if(slot == eosVector){ // incorrect usage, use x value
 		return pVector.x;
 		
-	}else if( slot == eosX ){
+	}else if(slot == eosX){
 		return pVector.x;
 		
-	}else if( slot == eosY ){
+	}else if(slot == eosY){
 		return pVector.y;
 		
 	}else{ // slot == eosZ
@@ -84,23 +84,23 @@ float meHTVRuleConstant::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironm
 	}
 }
 
-decVector meHTVRuleConstant::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot < 0 || slot > 3 ) DETHROW( deeInvalidParam );
+decVector meHTVRuleConstant::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot < 0 || slot > 3) DETHROW(deeInvalidParam);
 	
-	if( slot == eosVector ){
+	if(slot == eosVector){
 		return pVector;
 		
-	}else if( slot == eosX ){
-		return decVector( pVector.x, pVector.x, pVector.x );
+	}else if(slot == eosX){
+		return decVector(pVector.x, pVector.x, pVector.x);
 		
-	}else if( slot == eosY ){
-		return decVector( pVector.y, pVector.y, pVector.y );
+	}else if(slot == eosY){
+		return decVector(pVector.y, pVector.y, pVector.y);
 		
 	}else{ // slot == eosZ
-		return decVector( pVector.z, pVector.z, pVector.z );
+		return decVector(pVector.z, pVector.z, pVector.z);
 	}
 }
 
 meHTVRule *meHTVRuleConstant::Copy() const{
-	return new meHTVRuleConstant( *this );
+	return new meHTVRuleConstant(*this);
 }

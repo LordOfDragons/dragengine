@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetMask( sePropertyNode *node, sePropertyNode *mask );
+	seUPropertyNodeSetMask(sePropertyNode *node, sePropertyNode *mask);
 	
 protected:
 	/** \brief Clean up undo. */

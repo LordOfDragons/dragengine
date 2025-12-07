@@ -212,19 +212,19 @@ deBaseModule *VulkanCreateModule(deLoadableModule *loadableModule)
 // Constructor, destructor
 ////////////////////////////
 
-deGraphicOpenGl::deGraphicOpenGl( deLoadableModule &loadableModule ) :
-deBaseGraphicModule( loadableModule ),
+deGraphicOpenGl::deGraphicOpenGl(deLoadableModule &loadableModule) :
+deBaseGraphicModule(loadableModule),
 
-pCommandExecuter( *this ),
+pCommandExecuter(*this),
 
-pRenderWindowList( *this ),
-pCaptureCanvasList( *this ),
+pRenderWindowList(*this),
+pCaptureCanvasList(*this),
 
-pRenderThread( nullptr ),
-pCaches( nullptr ),
-pDebugOverlay( *this ),
-pResources( nullptr ),
-pVRCamera( nullptr )
+pRenderThread(nullptr),
+pCaches(nullptr),
+pDebugOverlay(*this),
+pResources(nullptr),
+pVRCamera(nullptr)
 {
 	pCreateParameters();
 	pLoadConfig();
@@ -239,33 +239,33 @@ deGraphicOpenGl::~deGraphicOpenGl(){
 // Management
 ///////////////
 
-bool deGraphicOpenGl::Init( deRenderWindow *renderWindow ){
-	if( ! renderWindow ){
+bool deGraphicOpenGl::Init(deRenderWindow *renderWindow){
+	if(!renderWindow){
 		return false;
 	}
 	
-	if( pConfiguration.GetDoLogInfo() ){
-		LogInfo( "Init" );
+	if(pConfiguration.GetDoLogInfo()){
+		LogInfo("Init");
 	}
 	
 	#ifdef OGL_THREAD_CHECK
-	LogWarn( "OpenGL calls only in render thread check enabled. Disable for production builds." );
+	LogWarn("OpenGL calls only in render thread check enabled. Disable for production builds.");
 	#endif
 	#ifdef OGL_CHECKCOMMANDS
-	LogWarn( "OpenGL command failure check enabled. Disable for production builds." );
+	LogWarn("OpenGL command failure check enabled. Disable for production builds.");
 	#endif
 	
 	try{
-		pCaches = new deoglCaches( *this );
-		pResources = new deoglResources( *this );
+		pCaches = new deoglCaches(*this);
+		pResources = new deoglResources(*this);
 		
-		pRenderThread = new deoglRenderThread( *this ); // make this a permanently existing object just with Init/CleanUp
-		pRenderThread->Init( renderWindow );
+		pRenderThread = new deoglRenderThread(*this); // make this a permanently existing object just with Init/CleanUp
+		pRenderThread->Init(renderWindow);
 		
-		pOverlay.TakeOver( GetGameEngine()->GetCanvasManager()->CreateCanvasView() );
-		pShaderCompilingInfo.TakeOver( new deoglShaderCompilingInfo( *this ) );
+		pOverlay.TakeOver(GetGameEngine()->GetCanvasManager()->CreateCanvasView());
+		pShaderCompilingInfo.TakeOver(new deoglShaderCompilingInfo(*this));
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return false;
 	}
@@ -274,33 +274,33 @@ bool deGraphicOpenGl::Init( deRenderWindow *renderWindow ){
 }
 
 void deGraphicOpenGl::CleanUp(){
-	if( pConfiguration.GetDoLogInfo() ){
-		LogInfo( "CleanUp" );
+	if(pConfiguration.GetDoLogInfo()){
+		LogInfo("CleanUp");
 	}
 	
-	if( pRenderThread ){
+	if(pRenderThread){
 		pRenderThread->CleanUp();
 		delete pRenderThread;
 		pRenderThread = NULL;
 	}
 	
-	SetVRCamera( nullptr );
+	SetVRCamera(nullptr);
 	
-	deoglLSConfiguration saveConfig( *this );
-	saveConfig.SaveConfig( pConfiguration );
+	deoglLSConfiguration saveConfig(*this);
+	saveConfig.SaveConfig(pConfiguration);
 	
 	pShaderCompilingInfo = nullptr;
 	pOverlay = nullptr;
-	if( pCaches ){
+	if(pCaches){
 		delete pCaches;
 		pCaches = NULL;
 	}
-	if( pResources ){
+	if(pResources){
 		delete pResources;
 		pResources = nullptr;
 	}
 	
-	LogInfo( "Done CleanUp" );
+	LogInfo("Done CleanUp");
 }
 
 void deGraphicOpenGl::InputOverlayCanvasChanged(){
@@ -309,20 +309,20 @@ void deGraphicOpenGl::InputOverlayCanvasChanged(){
 #ifdef WITH_OPENGLES
 /** Application window has been created. */
 void deGraphicOpenGl::InitAppWindow(){
-	if( pConfiguration.GetDoLogInfo() ){
-		LogInfo( "InitAppWindow" );
+	if(pConfiguration.GetDoLogInfo()){
+		LogInfo("InitAppWindow");
 	}
-	if( pRenderThread ){
+	if(pRenderThread){
 		pRenderThread->InitAppWindow();
 	}
 }
 
 /** Application window has been closed. */
 void deGraphicOpenGl::TerminateAppWindow(){
-	if( pConfiguration.GetDoLogInfo() ){
-		LogInfo( "TerminateAppWindow" );
+	if(pConfiguration.GetDoLogInfo()){
+		LogInfo("TerminateAppWindow");
 	}
-	if( pRenderThread ){
+	if(pRenderThread){
 		pRenderThread->TerminateAppWindow();
 	}
 }
@@ -341,14 +341,14 @@ void deGraphicOpenGl::RenderWindows(){
 	// rendering is finished soon enough to wait for this event or to skip synchronization
 	// and running another game frame update
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
-	if( ! pRenderThread->MainThreadWaitFinishRendering() ){
+	if(!pRenderThread->MainThreadWaitFinishRendering()){
 // 		LogInfoFormat( "RenderWindows() %d", __LINE__ );
 		return; // enough time left to run another game frame update
 	}
 // 		LogInfoFormat( "RenderWindows: MainThreadWaitFinishRendering = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	
 #ifdef WITH_OPENGLES
-	pRenderThread->DebugMemoryUsage( "deGraphicOpenGl::RenderWindows ENTER" );
+	pRenderThread->DebugMemoryUsage("deGraphicOpenGl::RenderWindows ENTER");
 #endif
 	// finalize asynchronously loaded resources
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
@@ -362,20 +362,20 @@ void deGraphicOpenGl::RenderWindows(){
 	
 	// update overlay
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-	if( renderWindow ){
-		pOverlay->SetSize( decPoint( renderWindow->GetWidth(), renderWindow->GetHeight() ) );
+	if(renderWindow){
+		pOverlay->SetSize(decPoint(renderWindow->GetWidth(), renderWindow->GetHeight()));
 	}
 	
-	pShaderCompilingInfo->Update( GetGameEngine()->GetElapsedTime() );
-	pRenderThread->SetVRDebugPanelMatrix( pVRDebugPanelMatrix );
+	pShaderCompilingInfo->Update(GetGameEngine()->GetElapsedTime());
+	pRenderThread->SetVRDebugPanelMatrix(pVRDebugPanelMatrix);
 	
-	if( renderWindow ){
-		deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )pOverlay->GetPeerGraphic() );
+	if(renderWindow){
+		deoglCanvasView &oglCanvas = *((deoglCanvasView*)pOverlay->GetPeerGraphic());
 		oglCanvas.SyncToRender();
-		pRenderThread->SetCanvasOverlay( oglCanvas.GetRCanvasView() );
+		pRenderThread->SetCanvasOverlay(oglCanvas.GetRCanvasView());
 		
 	}else{
-		pRenderThread->SetCanvasOverlay( nullptr );
+		pRenderThread->SetCanvasOverlay(nullptr);
 	}
 	
 	// synchronize capture canvas. this creates images from pixel buffers for finished
@@ -390,19 +390,19 @@ void deGraphicOpenGl::RenderWindows(){
 // 		LogInfoFormat( "RenderWindows: RenderWindowList.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	
 	// synchronize VR
-	if( pVRCamera ){
+	if(pVRCamera){
 		pVRCamera->SyncToRender();
 	}
 	
 	// synchronize overlay canvas view if present
 	deCanvasView * const inputOverlayCanvas = GetGameEngine()->GetGraphicSystem()->GetInputOverlayCanvas();
-	if( inputOverlayCanvas ){
-		deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )inputOverlayCanvas->GetPeerGraphic() );
+	if(inputOverlayCanvas){
+		deoglCanvasView &oglCanvas = *((deoglCanvasView*)inputOverlayCanvas->GetPeerGraphic());
 		oglCanvas.SyncToRender();
-		pRenderThread->SetCanvasInputOverlay( oglCanvas.GetRCanvasView() );
+		pRenderThread->SetCanvasInputOverlay(oglCanvas.GetRCanvasView());
 	}
 	
-	pDebugOverlay.PrepareOverlay( *GetGameEngine()->GetGraphicSystem()->GetDebugOverlayCanvas() );
+	pDebugOverlay.PrepareOverlay(*GetGameEngine()->GetGraphicSystem()->GetDebugOverlayCanvas());
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 	
 	// synchronize render thread and trigger next render cycle
@@ -411,7 +411,7 @@ void deGraphicOpenGl::RenderWindows(){
 // 		LogInfoFormat( "RenderWindows: RenderThread.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 // 		timerInBetween.Reset();
 #ifdef WITH_OPENGLES
-	pRenderThread->DebugMemoryUsage( "deGraphicOpenGl::RenderWindows EXIT" );
+	pRenderThread->DebugMemoryUsage("deGraphicOpenGl::RenderWindows EXIT");
 #endif
 }
 
@@ -419,177 +419,177 @@ int deGraphicOpenGl::GetFPSRate(){
 	return pRenderThread->GetFPSRate();
 }
 
-void deGraphicOpenGl::SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation ){
-	pVRDebugPanelMatrix.SetWorld( position, orientation );
+void deGraphicOpenGl::SetVRDebugPanelPosition(const decDVector &position, const decQuaternion &orientation){
+	pVRDebugPanelMatrix.SetWorld(position, orientation);
 }
 
 
 
-deBaseGraphicBillboard *deGraphicOpenGl::CreateBillboard( deBillboard *billboard ){
-	return new deoglBillboard( *this, *billboard );
+deBaseGraphicBillboard *deGraphicOpenGl::CreateBillboard(deBillboard *billboard){
+	return new deoglBillboard(*this, *billboard);
 }
 
-deBaseGraphicCanvas *deGraphicOpenGl::CreateCanvas( deCanvas *canvas ){
+deBaseGraphicCanvas *deGraphicOpenGl::CreateCanvas(deCanvas *canvas){
 	deCanvasVisitorIdentify identify;
-	canvas->Visit( identify );
+	canvas->Visit(identify);
 	
-	switch( identify.GetType() ){
+	switch(identify.GetType()){
 	case deCanvasVisitorIdentify::ectImage:
-		return new deoglCanvasImage( *this, identify.CastToImage() );
+		return new deoglCanvasImage(*this, identify.CastToImage());
 		
 	case deCanvasVisitorIdentify::ectPaint:
-		return new deoglCanvasPaint( *this, identify.CastToPaint() );
+		return new deoglCanvasPaint(*this, identify.CastToPaint());
 		
 	case deCanvasVisitorIdentify::ectCanvasView:
-		return new deoglCanvasCanvasView( *this, identify.CastToCanvasView() );
+		return new deoglCanvasCanvasView(*this, identify.CastToCanvasView());
 		
 	case deCanvasVisitorIdentify::ectRenderWorld:
-		return new deoglCanvasRenderWorld( *this, identify.CastToRenderWorld() );
+		return new deoglCanvasRenderWorld(*this, identify.CastToRenderWorld());
 		
 	case deCanvasVisitorIdentify::ectText:
-		return new deoglCanvasText( *this, identify.CastToText() );
+		return new deoglCanvasText(*this, identify.CastToText());
 		
 	case deCanvasVisitorIdentify::ectVideoPlayer:
-		return new deoglCanvasVideoPlayer( *this, identify.CastToVideoPlayer() );
+		return new deoglCanvasVideoPlayer(*this, identify.CastToVideoPlayer());
 		
 	case deCanvasVisitorIdentify::ectView:
-		return new deoglCanvasView( *this, identify.CastToView() );
+		return new deoglCanvasView(*this, identify.CastToView());
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-deBaseGraphicCaptureCanvas *deGraphicOpenGl::CreateCaptureCanvas( deCaptureCanvas *captureCanvas ){
-	return new deoglCaptureCanvas( *this, *captureCanvas );
+deBaseGraphicCaptureCanvas *deGraphicOpenGl::CreateCaptureCanvas(deCaptureCanvas *captureCanvas){
+	return new deoglCaptureCanvas(*this, *captureCanvas);
 }
 
-deBaseGraphicCamera *deGraphicOpenGl::CreateCamera( deCamera *camera ){
-	return new deoglCamera( *this, *camera );
+deBaseGraphicCamera *deGraphicOpenGl::CreateCamera(deCamera *camera){
+	return new deoglCamera(*this, *camera);
 }
 
-deBaseGraphicComponent *deGraphicOpenGl::CreateComponent( deComponent *component ){
-	return new deoglComponent( *this, *component );
+deBaseGraphicComponent *deGraphicOpenGl::CreateComponent(deComponent *component){
+	return new deoglComponent(*this, *component);
 }
 
-deBaseGraphicDebugDrawer *deGraphicOpenGl::CreateDebugDrawer( deDebugDrawer *debugDrawer ){
-	return new deoglDebugDrawer( *this, *debugDrawer );
+deBaseGraphicDebugDrawer *deGraphicOpenGl::CreateDebugDrawer(deDebugDrawer *debugDrawer){
+	return new deoglDebugDrawer(*this, *debugDrawer);
 }
 
-deBaseGraphicDecal *deGraphicOpenGl::CreateDecal( deDecal *decal ){
-	return new deoglDecal( *this, *decal );
+deBaseGraphicDecal *deGraphicOpenGl::CreateDecal(deDecal *decal){
+	return new deoglDecal(*this, *decal);
 }
 
-deBaseGraphicDynamicSkin *deGraphicOpenGl::CreateDynamicSkin( deDynamicSkin *dynamicSkin ){
-	return new deoglDynamicSkin( *this, *dynamicSkin );
+deBaseGraphicDynamicSkin *deGraphicOpenGl::CreateDynamicSkin(deDynamicSkin *dynamicSkin){
+	return new deoglDynamicSkin(*this, *dynamicSkin);
 }
 
-deBaseGraphicEffect *deGraphicOpenGl::CreateEffect( deEffect *effect ){
+deBaseGraphicEffect *deGraphicOpenGl::CreateEffect(deEffect *effect){
 	deEffectVisitorIdentify identify;
 	
-	effect->Visit( identify );
+	effect->Visit(identify);
 	
-	switch( identify.GetType() ){
+	switch(identify.GetType()){
 	case deEffectVisitorIdentify::eetColorMatrix:
-		return new deoglEffectColorMatrix( *this, identify.CastToColorMatrix() );
+		return new deoglEffectColorMatrix(*this, identify.CastToColorMatrix());
 		
 	case deEffectVisitorIdentify::eetDistortImage:
-		return new deoglEffectDistortImage( *this, identify.CastToDistortImage() );
+		return new deoglEffectDistortImage(*this, identify.CastToDistortImage());
 		
 	case deEffectVisitorIdentify::eetFilterKernel:
-		return new deoglEffectFilterKernel( *this, identify.CastToFilterKernel() );
+		return new deoglEffectFilterKernel(*this, identify.CastToFilterKernel());
 		
 	case deEffectVisitorIdentify::eetOverlayImage:
-		return new deoglEffectOverlayImage( *this, identify.CastToOverlayImage() );
+		return new deoglEffectOverlayImage(*this, identify.CastToOverlayImage());
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-deBaseGraphicEnvMapProbe *deGraphicOpenGl::CreateEnvMapProbe( deEnvMapProbe *envMapProbe ){
-	return new deoglEnvMapProbe( *this, *envMapProbe );
+deBaseGraphicEnvMapProbe *deGraphicOpenGl::CreateEnvMapProbe(deEnvMapProbe *envMapProbe){
+	return new deoglEnvMapProbe(*this, *envMapProbe);
 }
 
-deBaseGraphicFont *deGraphicOpenGl::CreateFont( deFont *font ){
-	return new deoglFont( *this, *font );
+deBaseGraphicFont *deGraphicOpenGl::CreateFont(deFont *font){
+	return new deoglFont(*this, *font);
 }
 
-deBaseGraphicHeightTerrain *deGraphicOpenGl::CreateHeightTerrain( deHeightTerrain *heightTerrain ){
-	return new deoglHeightTerrain( *this, *heightTerrain );
+deBaseGraphicHeightTerrain *deGraphicOpenGl::CreateHeightTerrain(deHeightTerrain *heightTerrain){
+	return new deoglHeightTerrain(*this, *heightTerrain);
 }
 
 deBaseGraphicImage *deGraphicOpenGl::CreateImage(deImage *image){
-	return new deoglImage( *this, *image );
+	return new deoglImage(*this, *image);
 }
 
-deBaseGraphicLight *deGraphicOpenGl::CreateLight( deLight *light ){
-	return new deoglLight( *this, *light );
+deBaseGraphicLight *deGraphicOpenGl::CreateLight(deLight *light){
+	return new deoglLight(*this, *light);
 }
 
-deBaseGraphicLumimeter *deGraphicOpenGl::CreateLumimeter( deLumimeter *lumimeter ){
-	return new deoglLumimeter( *this, *lumimeter );
+deBaseGraphicLumimeter *deGraphicOpenGl::CreateLumimeter(deLumimeter *lumimeter){
+	return new deoglLumimeter(*this, *lumimeter);
 }
 
-deBaseGraphicModel *deGraphicOpenGl::CreateModel( deModel *model ){
-	return new deoglModel( *this, *model );
+deBaseGraphicModel *deGraphicOpenGl::CreateModel(deModel *model){
+	return new deoglModel(*this, *model);
 }
 
-deBaseGraphicOcclusionMesh *deGraphicOpenGl::CreateOcclusionMesh( deOcclusionMesh *occmesh ){
-	return new deoglOcclusionMesh( *this, *occmesh );
+deBaseGraphicOcclusionMesh *deGraphicOpenGl::CreateOcclusionMesh(deOcclusionMesh *occmesh){
+	return new deoglOcclusionMesh(*this, *occmesh);
 }
 
-deBaseGraphicParticleEmitter *deGraphicOpenGl::CreateParticleEmitter( deParticleEmitter *emitter ){
-	return new deoglParticleEmitter( *this, *emitter );
+deBaseGraphicParticleEmitter *deGraphicOpenGl::CreateParticleEmitter(deParticleEmitter *emitter){
+	return new deoglParticleEmitter(*this, *emitter);
 }
 
-deBaseGraphicParticleEmitterInstance *deGraphicOpenGl::CreateParticleEmitterInstance( deParticleEmitterInstance *instance ){ 
-	return new deoglParticleEmitterInstance( *this, *instance );
+deBaseGraphicParticleEmitterInstance *deGraphicOpenGl::CreateParticleEmitterInstance(deParticleEmitterInstance *instance){
+	return new deoglParticleEmitterInstance(*this, *instance);
 }
 
-deBaseGraphicPropField *deGraphicOpenGl::CreatePropField( dePropField *propField ){
-	return new deoglPropField( *this, *propField );
+deBaseGraphicPropField *deGraphicOpenGl::CreatePropField(dePropField *propField){
+	return new deoglPropField(*this, *propField);
 }
 
-deBaseGraphicRenderWindow *deGraphicOpenGl::CreateRenderWindow( deRenderWindow *renderWindow ){
-	return new deoglRenderWindow( *this, *renderWindow );
+deBaseGraphicRenderWindow *deGraphicOpenGl::CreateRenderWindow(deRenderWindow *renderWindow){
+	return new deoglRenderWindow(*this, *renderWindow);
 }
 
-deBaseGraphicSkin *deGraphicOpenGl::CreateSkin( deSkin *skin ){
-	return new deoglSkin( *this, *skin );
+deBaseGraphicSkin *deGraphicOpenGl::CreateSkin(deSkin *skin){
+	return new deoglSkin(*this, *skin);
 }
 
-deBaseGraphicSky *deGraphicOpenGl::CreateSky( deSky *sky ){
-	return new deoglSky( *this, *sky );
+deBaseGraphicSky *deGraphicOpenGl::CreateSky(deSky *sky){
+	return new deoglSky(*this, *sky);
 }
 
-deBaseGraphicSkyInstance *deGraphicOpenGl::CreateSkyInstance( deSkyInstance *instance ){
-	return new deoglSkyInstance( *this, *instance );
+deBaseGraphicSkyInstance *deGraphicOpenGl::CreateSkyInstance(deSkyInstance *instance){
+	return new deoglSkyInstance(*this, *instance);
 }
 
-deBaseGraphicSmokeEmitter *deGraphicOpenGl::CreateSmokeEmitter( deSmokeEmitter *smokeEmitter ){
-	return new deoglSmokeEmitter( this, smokeEmitter );
+deBaseGraphicSmokeEmitter *deGraphicOpenGl::CreateSmokeEmitter(deSmokeEmitter *smokeEmitter){
+	return new deoglSmokeEmitter(this, smokeEmitter);
 }
 
-deBaseGraphicVideo *deGraphicOpenGl::CreateVideo( deVideo *video ){
-	return new deoglVideo( *this, *video );
+deBaseGraphicVideo *deGraphicOpenGl::CreateVideo(deVideo *video){
+	return new deoglVideo(*this, *video);
 }
 
-deBaseGraphicVideoPlayer *deGraphicOpenGl::CreateVideoPlayer( deVideoPlayer *videoPlayer ){
-	return new deoglVideoPlayer( *this, *videoPlayer );
+deBaseGraphicVideoPlayer *deGraphicOpenGl::CreateVideoPlayer(deVideoPlayer *videoPlayer){
+	return new deoglVideoPlayer(*this, *videoPlayer);
 }
 
-deBaseGraphicWorld *deGraphicOpenGl::CreateWorld( deWorld *world ){
-	return new deoglWorld( *this, *world );
+deBaseGraphicWorld *deGraphicOpenGl::CreateWorld(deWorld *world){
+	return new deoglWorld(*this, *world);
 }
 
-void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection ){
+void deGraphicOpenGl::GetGraphicApiConnection(sGraphicApiConnection &connection){
 	// WARNING should be only called from callback triggered by render thread in other modules
 	OGL_ON_RENDER_THREAD
 	
 	connection.opengl = {};
 	
-	if( ! pRenderThread->HasContext() ){
+	if(!pRenderThread->HasContext()){
 		return;
 	}
 	
@@ -613,7 +613,7 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	connection.opengl.glxFBConfig = context.GetBestFBConfig();
 	connection.opengl.glxContext = context.GetContext();
 	
-	if( context.GetActiveRRenderWindow() ){
+	if(context.GetActiveRRenderWindow()){
 		connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
 	}
 	
@@ -630,7 +630,7 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	
 	connection.opengl.hGLRC = context.GetContext();
 	
-	if( context.GetActiveRRenderWindow() ){
+	if(context.GetActiveRRenderWindow()){
 		connection.opengl.hDC = context.GetActiveRRenderWindow()->GetWindowDC();
 	}
 	#endif
@@ -646,34 +646,34 @@ int deGraphicOpenGl::GetParameterCount() const{
 	return pParameters.GetParameterCount();
 }
 
-void deGraphicOpenGl::GetParameterInfo( int index, deModuleParameter &info ) const{
-	info = pParameters.GetParameterAt( index );
+void deGraphicOpenGl::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameters.GetParameterAt(index);
 }
 
-int deGraphicOpenGl::IndexOfParameterNamed( const char *name ) const{
-	return pParameters.IndexOfParameterNamed( name );
+int deGraphicOpenGl::IndexOfParameterNamed(const char *name) const{
+	return pParameters.IndexOfParameterNamed(name);
 }
 
-decString deGraphicOpenGl::GetParameterValue( const char *name ) const{
-	return pParameters.GetParameterNamed( name ).GetParameterValue();
+decString deGraphicOpenGl::GetParameterValue(const char *name) const{
+	return pParameters.GetParameterNamed(name).GetParameterValue();
 }
 
-void deGraphicOpenGl::SetParameterValue( const char *name, const char *value ){
-	pParameters.GetParameterNamed( name ).SetParameterValue( value );
+void deGraphicOpenGl::SetParameterValue(const char *name, const char *value){
+	pParameters.GetParameterNamed(name).SetParameterValue(value);
 }
 
 
 
 void deGraphicOpenGl::PauseParallelProcessingUpdate(){
-	if( ! pRenderThread ){
+	if(!pRenderThread){
 		return;
 	}
 	
 	pRenderThread->FinalizeAsyncResLoading();
 }
 
-void deGraphicOpenGl::SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	pCommandExecuter.ExecuteCommand( command, answer );
+void deGraphicOpenGl::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	pCommandExecuter.ExecuteCommand(command, answer);
 }
 
 
@@ -685,7 +685,7 @@ bool deGraphicOpenGl::HasRenderThread() const{
 	return pRenderThread != NULL;
 }
 
-void deGraphicOpenGl::SetVRCamera( deoglCamera *camera ){
+void deGraphicOpenGl::SetVRCamera(deoglCamera *camera){
 	pVRCamera = camera;
 }
 
@@ -695,76 +695,76 @@ void deGraphicOpenGl::SetVRCamera( deoglCamera *camera ){
 //////////////////////
 
 void deGraphicOpenGl::pLoadConfig(){
-	deoglLSConfiguration loadConfig( *this );
-	loadConfig.LoadConfig( pConfiguration );
+	deoglLSConfiguration loadConfig(*this);
+	loadConfig.LoadConfig(pConfiguration);
 	
 	#ifdef WITH_OPENGLES
-	pConfiguration.SetLogLevel( deoglConfiguration::ellDebug );
+	pConfiguration.SetLogLevel(deoglConfiguration::ellDebug);
 	#endif
 }
 
 void deGraphicOpenGl::pCreateParameters() {
-	pParameters.AddParameter( new deoglPLogLevel( *this ) );
-	pParameters.AddParameter( new deoglPFrameRateLimit( *this ) );
-	pParameters.AddParameter( new deoglPAsyncRenderSkipSyncTimeRatio( *this ) );
+	pParameters.AddParameter(new deoglPLogLevel(*this));
+	pParameters.AddParameter(new deoglPFrameRateLimit(*this));
+	pParameters.AddParameter(new deoglPAsyncRenderSkipSyncTimeRatio(*this));
 	
-	pParameters.AddParameter( new deoglPGammaCorrection( *this ) );
-	pParameters.AddParameter( new deoglPContrast( *this ) );
-	pParameters.AddParameter( new deoglPBrightness( *this ) );
-	pParameters.AddParameter( new deoglPRenderDownScale( *this ) );
+	pParameters.AddParameter(new deoglPGammaCorrection(*this));
+	pParameters.AddParameter(new deoglPContrast(*this));
+	pParameters.AddParameter(new deoglPBrightness(*this));
+	pParameters.AddParameter(new deoglPRenderDownScale(*this));
 	
-	pParameters.AddParameter( new deoglPLODMaxPixelError( *this ) );
+	pParameters.AddParameter(new deoglPLODMaxPixelError(*this));
 	
-	pParameters.AddParameter( new deoglPNorRougCorrStrength( *this ) );
+	pParameters.AddParameter(new deoglPNorRougCorrStrength(*this));
 	
-	pParameters.AddParameter( new deoglPSSREnable( *this ) );
-	pParameters.AddParameter( new deoglPSSRStepCount( *this ) );
-	pParameters.AddParameter( new deoglPSSRMaxRayLength( *this ) );
-	pParameters.AddParameter( new deoglPSSRReduction( *this ) );
-	pParameters.AddParameter( new deoglPSSRCoverageEdgeSize( *this ) );
-	pParameters.AddParameter( new deoglPSSRCoveragePowerEdge( *this ) );
-	pParameters.AddParameter( new deoglPSSRCoveragePowerRayLength( *this ) );
+	pParameters.AddParameter(new deoglPSSREnable(*this));
+	pParameters.AddParameter(new deoglPSSRStepCount(*this));
+	pParameters.AddParameter(new deoglPSSRMaxRayLength(*this));
+	pParameters.AddParameter(new deoglPSSRReduction(*this));
+	pParameters.AddParameter(new deoglPSSRCoverageEdgeSize(*this));
+	pParameters.AddParameter(new deoglPSSRCoveragePowerEdge(*this));
+	pParameters.AddParameter(new deoglPSSRCoveragePowerRayLength(*this));
 	
-	pParameters.AddParameter( new deoglPAOSelfShadowEnable( *this ) );
-	pParameters.AddParameter( new deoglPAOSelfShadowSmoothAngle( *this ) );
+	pParameters.AddParameter(new deoglPAOSelfShadowEnable(*this));
+	pParameters.AddParameter(new deoglPAOSelfShadowSmoothAngle(*this));
 	
-	pParameters.AddParameter( new deoglPSSAOEnable( *this ) );
-	pParameters.AddParameter( new deoglPSSAOTapCount( *this ) );
-	pParameters.AddParameter( new deoglPSSAORadius( *this ) );
-	pParameters.AddParameter( new deoglPSSAOSelfOcclusionAngle( *this ) );
-	pParameters.AddParameter( new deoglPSSAOEdgeBlurThreshold( *this ) );
-	pParameters.AddParameter( new deoglPSSAORadiusLimit( *this ) );
-	pParameters.AddParameter( new deoglPSSAOMipMapBase( *this ) );
-	pParameters.AddParameter( new deoglPSSAOTurnCount( *this ) );
+	pParameters.AddParameter(new deoglPSSAOEnable(*this));
+	pParameters.AddParameter(new deoglPSSAOTapCount(*this));
+	pParameters.AddParameter(new deoglPSSAORadius(*this));
+	pParameters.AddParameter(new deoglPSSAOSelfOcclusionAngle(*this));
+	pParameters.AddParameter(new deoglPSSAOEdgeBlurThreshold(*this));
+	pParameters.AddParameter(new deoglPSSAORadiusLimit(*this));
+	pParameters.AddParameter(new deoglPSSAOMipMapBase(*this));
+	pParameters.AddParameter(new deoglPSSAOTurnCount(*this));
 	
-	pParameters.AddParameter( new deoglPGIQuality( *this ) );
-	pParameters.AddParameter( new deoglPGIUpdateSpeed( *this ) );
+	pParameters.AddParameter(new deoglPGIQuality(*this));
+	pParameters.AddParameter(new deoglPGIUpdateSpeed(*this));
 	
-	pParameters.AddParameter( new deoglPLightCutOffIntensity( *this ) );
-	pParameters.AddParameter( new deoglPShadowQuality( *this ) );
-	pParameters.AddParameter( new deoglPShadowMapOffsetScale( *this ) );
-	pParameters.AddParameter( new deoglPShadowMapOffsetBias( *this ) );
-	pParameters.AddParameter( new deoglPShadowCubePCFSize( *this ) );
+	pParameters.AddParameter(new deoglPLightCutOffIntensity(*this));
+	pParameters.AddParameter(new deoglPShadowQuality(*this));
+	pParameters.AddParameter(new deoglPShadowMapOffsetScale(*this));
+	pParameters.AddParameter(new deoglPShadowMapOffsetBias(*this));
+	pParameters.AddParameter(new deoglPShadowCubePCFSize(*this));
 	
-	pParameters.AddParameter( new deoglPHDRRMaximumIntensity( *this ) );
-	pParameters.AddParameter( new deoglPDefRenSizeLimit( *this ) );
-	pParameters.AddParameter( new deoglPTranspLayerLimit( *this ) );
+	pParameters.AddParameter(new deoglPHDRRMaximumIntensity(*this));
+	pParameters.AddParameter(new deoglPDefRenSizeLimit(*this));
+	pParameters.AddParameter(new deoglPTranspLayerLimit(*this));
 	
-	pParameters.AddParameter( new deoglPVSyncMode( *this ) );
+	pParameters.AddParameter(new deoglPVSyncMode(*this));
 	
-	pParameters.AddParameter( new deoglPVRRenderScale( *this ) );
-	pParameters.AddParameter( new deoglPVRForceFrameRate( *this ) );
+	pParameters.AddParameter(new deoglPVRRenderScale(*this));
+	pParameters.AddParameter(new deoglPVRForceFrameRate(*this));
 	
 #if defined WITH_DEBUG || defined WITH_DEBUG_CONTEXT
-	pParameters.AddParameter( new deoglPDebugContext( *this ) );
-	pParameters.AddParameter( new deoglPDebugNoMessages( *this ) );
+	pParameters.AddParameter(new deoglPDebugContext(*this));
+	pParameters.AddParameter(new deoglPDebugNoMessages(*this));
 #endif
 #ifdef WITH_DEBUG
-	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
-	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
-	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );
-	pParameters.AddParameter( new deoglPShowLightCB( *this ) );
-	pParameters.AddParameter( new deoglPWireframeMode( *this ) );
+	pParameters.AddParameter(new deoglPDebugNoCulling(*this));
+	pParameters.AddParameter(new deoglPDebugShowCB(*this));
+	pParameters.AddParameter(new deoglPOcclusionReduction(*this));
+	pParameters.AddParameter(new deoglPShowLightCB(*this));
+	pParameters.AddParameter(new deoglPWireframeMode(*this));
 #endif
 }
 

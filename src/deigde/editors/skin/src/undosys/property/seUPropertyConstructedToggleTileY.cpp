@@ -38,21 +38,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedToggleTileY::seUPropertyConstructedToggleTileY( seProperty *property ) :
-pProperty( NULL )
+seUPropertyConstructedToggleTileY::seUPropertyConstructedToggleTileY(seProperty *property) :
+pProperty(NULL)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed tile Y" );
+	SetShortInfo("Property constructed tile Y");
 	
 	pProperty = property;
 	property->AddReference();
 }
 
 seUPropertyConstructedToggleTileY::~seUPropertyConstructedToggleTileY(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -63,9 +63,9 @@ seUPropertyConstructedToggleTileY::~seUPropertyConstructedToggleTileY(){
 ///////////////
 
 void seUPropertyConstructedToggleTileY::Undo(){
-	pProperty->SetNodeTileY( ! pProperty->GetNodeTileY() );
+	pProperty->SetNodeTileY(!pProperty->GetNodeTileY());
 }
 
 void seUPropertyConstructedToggleTileY::Redo(){
-	pProperty->SetNodeTileY( ! pProperty->GetNodeTileY() );
+	pProperty->SetNodeTileY(!pProperty->GetNodeTileY());
 }

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectClonePropertiesToSelected( const meObjectList &list, const decStringDictionary &properties );
+	meUObjectClonePropertiesToSelected(const meObjectList &list, const decStringDictionary &properties);
 	
 protected:
 	/** \brief Clean up undo object. */

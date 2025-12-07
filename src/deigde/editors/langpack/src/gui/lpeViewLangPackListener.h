@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	lpeViewLangPackListener( lpeViewLangPack &window );
+	lpeViewLangPackListener(lpeViewLangPack &window);
 	
 	/** \brief Clean up listener. */
 	~lpeViewLangPackListener();
@@ -55,24 +55,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Language pack parameters changed. */
-	virtual void LangPackChanged( lpeLangPack *langpack );
+	virtual void LangPackChanged(lpeLangPack *langpack);
 	
 	
 	
 	/** \brief Entries have been added or removed. */
-	virtual void EntryStructureChanged ( lpeLangPack *langpack );
+	virtual void EntryStructureChanged (lpeLangPack *langpack);
 	
 	/** \brief An entry changed. */
-	virtual void EntryChanged( lpeLangPack *langpack, lpeLangPackEntry *entry );
+	virtual void EntryChanged(lpeLangPack *langpack, lpeLangPackEntry *entry);
 	
 	/** \brief An entry name changed. */
-	virtual void EntryNameChanged( lpeLangPack *langpack, lpeLangPackEntry *entry );
+	virtual void EntryNameChanged(lpeLangPack *langpack, lpeLangPackEntry *entry);
 	
 	/** \brief Selection of one or mote entries changed. */
-	virtual void EntrySelectionChanged( lpeLangPack *langpack );
+	virtual void EntrySelectionChanged(lpeLangPack *langpack);
 	
 	/** \brief Active entry changed. */
-	virtual void ActiveEntryChanged( lpeLangPack *langpack );
+	virtual void ActiveEntryChanged(lpeLangPack *langpack);
 	/*@}*/
 };
 

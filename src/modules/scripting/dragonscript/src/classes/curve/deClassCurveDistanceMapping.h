@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassCurveDistanceMapping( deScriptingDragonScript &ds );
+	deClassCurveDistanceMapping(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassCurveDistanceMapping();
@@ -57,13 +57,13 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Distance mapping. */
-	decCurveDistanceMapping &GetMapping( dsRealObject *myself ) const;
+	decCurveDistanceMapping &GetMapping(dsRealObject *myself) const;
 	
 	/** \brief Push curve. */
-	void PushMapping( dsRunTime *rt, const decCurveDistanceMapping &mapping );
+	void PushMapping(dsRunTime *rt, const decCurveDistanceMapping &mapping);
 	/*@}*/
 	
 	
@@ -80,25 +80,25 @@ private:
 		dsClass *clsCBezier3D;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetResolution );
-	DEF_NATFUNC( nfGetLength );
-	DEF_NATFUNC( nfMap );
-	DEF_NATFUNC( nfClear );
-	DEF_NATFUNC( nfInit );
-	DEF_NATFUNC( nfInit2 );
+	DEF_NATFUNC(nfGetResolution);
+	DEF_NATFUNC(nfGetLength);
+	DEF_NATFUNC(nfMap);
+	DEF_NATFUNC(nfClear);
+	DEF_NATFUNC(nfInit);
+	DEF_NATFUNC(nfInit2);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

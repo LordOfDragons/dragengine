@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	seTaskSyncGameDefinition( seWindowMain &windowMain );
+	seTaskSyncGameDefinition(seWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	virtual ~seTaskSyncGameDefinition();

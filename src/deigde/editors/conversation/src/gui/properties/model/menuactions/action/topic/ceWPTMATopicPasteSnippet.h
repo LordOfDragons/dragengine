@@ -49,8 +49,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMATopicPasteSnippet( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, int index );
+	ceWPTMATopicPasteSnippet(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, int index);
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
 	/*@}*/
 };
 

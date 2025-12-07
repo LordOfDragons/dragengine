@@ -48,7 +48,7 @@ public:
 	delPatchList();
 	
 	/** \brief Create copy of game patch list. */
-	delPatchList( const delPatchList &list );
+	delPatchList(const delPatchList &list);
 	
 	/** \brief Clean up game patch list. */
 	~delPatchList();
@@ -62,34 +62,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Patch at index. */
-	delPatch *GetAt( int index ) const;
+	delPatch *GetAt(int index) const;
 	
 	/** \brief Patch with identifier or nullptr if absent. */
-	delPatch *GetWithID( const decUuid &id ) const;
+	delPatch *GetWithID(const decUuid &id) const;
 	
 	/** \brief Patch is present. */
-	bool Has( delPatch *patch ) const;
+	bool Has(delPatch *patch) const;
 	
 	/** \brief Patch with identifier is present. */
-	bool HasWithID( const decUuid &id ) const;
+	bool HasWithID(const decUuid &id) const;
 	
 	/** \brief Index of patch or -1 if absent. */
-	int IndexOf( delPatch *patch ) const;
+	int IndexOf(delPatch *patch) const;
 	
 	/** \brief Index of patch with identifier or -1 if absent. */
-	int IndexOfWithID( const decUuid &id ) const;
+	int IndexOfWithID(const decUuid &id) const;
 	
 	/** \brief Add patch. */
-	void Add( delPatch *patch );
+	void Add(delPatch *patch);
 	
 	/**
 	 * \brief Add patches.
 	 * \version 1.13
 	 */
-	void AddAll( const delPatchList &list );
+	void AddAll(const delPatchList &list);
 	
 	/** \brief Remove patch. */
-	void Remove( delPatch *patch );
+	void Remove(delPatch *patch);
 	
 	/** \brief Remove patches. */
 	void RemoveAll();

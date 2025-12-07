@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	fbxSkinModule( deLoadableModule &loadableModule );
+	fbxSkinModule(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
 	virtual ~fbxSkinModule();
@@ -56,20 +56,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load skin. */
-	virtual void LoadSkin( decBaseFileReader &reader, deSkin &skin );
+	virtual void LoadSkin(decBaseFileReader &reader, deSkin &skin);
 	
 	/** Save skin. */
-	virtual void SaveSkin( decBaseFileWriter &writer, const deSkin &skin );
+	virtual void SaveSkin(decBaseFileWriter &writer, const deSkin &skin);
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadSkin( deSkin &skin, fbxScene &scene );
-	void pLoadMaterial( deSkin &skin, fbxScene &scene, const fbxMaterial &material );
-	void pAddPropertyValue( deSkinTexture &texture, const char *name, float value );
-	void pAddPropertyColor( deSkinTexture &texture, const char *name, const decColor &color );
-	void pAddPropertyImage( deSkinTexture &texture, const char *name, const fbxTexture &fbxtex );
+	void pLoadSkin(deSkin &skin, fbxScene &scene);
+	void pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMaterial &material);
+	void pAddPropertyValue(deSkinTexture &texture, const char *name, float value);
+	void pAddPropertyColor(deSkinTexture &texture, const char *name, const decColor &color);
+	void pAddPropertyImage(deSkinTexture &texture, const char *name, const fbxTexture &fbxtex);
 };
 
 #endif

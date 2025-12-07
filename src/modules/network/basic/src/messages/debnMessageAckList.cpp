@@ -44,7 +44,7 @@ debnMessageAckList::debnMessageAckList(){
 }
 
 debnMessageAckList::~debnMessageAckList(){
-	if( pAcks ) delete [] pAcks;
+	if(pAcks) delete [] pAcks;
 }
 
 
@@ -52,26 +52,26 @@ debnMessageAckList::~debnMessageAckList(){
 // Management
 ///////////////
 
-int debnMessageAckList::GetAckAt( int index ) const{
-	if( index < 0 || index >= pAckCount ) DETHROW( deeInvalidParam );
+int debnMessageAckList::GetAckAt(int index) const{
+	if(index < 0 || index >= pAckCount) DETHROW(deeInvalidParam);
 	
-	return pAcks[ index ];
+	return pAcks[index];
 }
 
-void debnMessageAckList::AddAck( int number ){
-	if( pAckCount == pAckSize ){
+void debnMessageAckList::AddAck(int number){
+	if(pAckCount == pAckSize){
 		int newSize = pAckSize * 3 / 2 + 1;
-		int *newArray = new int[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pAcks ){
-			memcpy( newArray, pAcks, sizeof( int ) * pAckSize );
+		int *newArray = new int[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pAcks){
+			memcpy(newArray, pAcks, sizeof(int) * pAckSize);
 			delete [] pAcks;
 		}
 		pAcks = newArray;
 		pAckSize = newSize;
 	}
 	
-	pAcks[ pAckCount ] = number;
+	pAcks[pAckCount] = number;
 	pAckCount++;
 }
 

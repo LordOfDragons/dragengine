@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeOCWorldList::gdeOCWorldList(const gdeOCWorldList &list) :
-pWorlds( list.pWorlds ){
+pWorlds(list.pWorlds){
 }
 
 

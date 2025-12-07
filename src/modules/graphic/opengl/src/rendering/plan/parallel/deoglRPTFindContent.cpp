@@ -53,12 +53,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRPTFindContent::deoglRPTFindContent( deoglRenderPlan &plan ) :
-deParallelTask( &plan.GetRenderThread().GetOgl() ),
-pPlan( plan ),
-pElapsedTime( 0.0f )
+deoglRPTFindContent::deoglRPTFindContent(deoglRenderPlan &plan) :
+deParallelTask(&plan.GetRenderThread().GetOgl()),
+pPlan(plan),
+pElapsedTime(0.0f)
 {
-	SetMarkFinishedAfterRun( true );
+	SetMarkFinishedAfterRun(true);
 }
 
 deoglRPTFindContent::~deoglRPTFindContent(){
@@ -80,7 +80,7 @@ deoglRPTFindContent::~deoglRPTFindContent(){
 #endif
 
 void deoglRPTFindContent::Run(){
-	if( IsCancelled() ){
+	if(IsCancelled()){
 		return;
 	}
 	
@@ -94,15 +94,15 @@ void deoglRPTFindContent::Run(){
 		int i;
 		
 		// visit for content
-		deoglRPVisitorFindContent visitor( pPlan );
-		visitor.SetCullPixelSize( 1.0f ); // has to come before Init() call
-		visitor.SetCullDynamicComponents( pPlan.GetIgnoreDynamicComponents() );
-		visitor.SetCullLayerMask( pPlan.GetUseLayerMask() );
-		visitor.SetLayerMask( pPlan.GetLayerMask() );
-		visitor.Init( frustum );
+		deoglRPVisitorFindContent visitor(pPlan);
+		visitor.SetCullPixelSize(1.0f); // has to come before Init() call
+		visitor.SetCullDynamicComponents(pPlan.GetIgnoreDynamicComponents());
+		visitor.SetCullLayerMask(pPlan.GetUseLayerMask());
+		visitor.SetLayerMask(pPlan.GetLayerMask());
+		visitor.Init(frustum);
 		
 		const deoglGIState * const gistate = pPlan.GetUpdateGIState();
-		if( gistate ){
+		if(gistate){
 			// correctly we would have to use here the cascade position but during this
 			// parallel task run at an unknown time the cascade position is updated.
 			// so instead we use the camera position which is the base for the cascade
@@ -111,11 +111,11 @@ void deoglRPTFindContent::Run(){
 			// probe spacing can be added to the extends
 			const deoglGICascade &cascade = gistate->GetActiveCascade();
 			const decDVector &position = pPlan.GetCameraPosition();
-			const decDVector halfExtend( cascade.GetDetectionBox() );
-			visitor.EnableGIBox( position - halfExtend, position + halfExtend );
+			const decDVector halfExtend(cascade.GetDetectionBox());
+			visitor.EnableGIBox(position - halfExtend, position + halfExtend);
 		}
 		
-		visitor.VisitWorldOctree( world.GetOctree() );
+		visitor.VisitWorldOctree(world.GetOctree());
 		SPECIAL_TIMER_PRINT("Octree")
 		
 		// NOTE there is no code anymore requiring components to be sorted. spare ourself the time
@@ -124,14 +124,14 @@ void deoglRPTFindContent::Run(){
 		//SPECIAL_TIMER_PRINT("Sort Components")
 		
 		const int lightCount = collideList.GetLightCount();
-		for( i=0; i<lightCount; i++ ){
-			deoglCollideListLight &cllight = *collideList.GetLightAt( i );
-			cllight.TestInside( pPlan );
+		for(i=0; i<lightCount; i++){
+			deoglCollideListLight &cllight = *collideList.GetLightAt(i);
+			cllight.TestInside(pPlan);
 		}
 		SPECIAL_TIMER_PRINT("Lights")
 		
-		if( pPlan.GetHeightTerrainView() ){
-			collideList.AddHTSectorsColliding( pPlan.GetHeightTerrainView(), frustum );
+		if(pPlan.GetHeightTerrainView()){
+			collideList.AddHTSectorsColliding(pPlan.GetHeightTerrainView(), frustum);
 				/*{
 				const int sc = collideList.GetHTSectorCount();
 				for(i=0; i<sc; i++){
@@ -145,36 +145,36 @@ void deoglRPTFindContent::Run(){
 			SPECIAL_TIMER_PRINT("HTSector")
 		}
 		
-		collideList.AddPropFieldsColliding( world, *frustum );
+		collideList.AddPropFieldsColliding(world, *frustum);
 		SPECIAL_TIMER_PRINT("PropField")
 		
 		
 		
 		// HACK: add environment maps using a simple hack until we have something better
 		const deoglEnvironmentMapList &envMapList = world.GetEnvMapList();
-		deoglDCollisionSphere envMapSphere( decDVector(), 20.0 );
+		deoglDCollisionSphere envMapSphere(decDVector(), 20.0);
 		const int envMapCount = envMapList.GetCount();
 		deoglEnvironmentMap *envMap;
 		int envMapIndex;
 		
-		for( envMapIndex=0; envMapIndex<envMapCount; envMapIndex++ ){
-			envMap = envMapList.GetAt( envMapIndex );
+		for(envMapIndex=0; envMapIndex<envMapCount; envMapIndex++){
+			envMap = envMapList.GetAt(envMapIndex);
 			
-			if( envMap->GetSkyOnly() ){
+			if(envMap->GetSkyOnly()){
 				//pCollideList.GetEnvironmentMapList().Add( envMap );
 				
 			}else{
-				envMapSphere.SetCenter( envMap->GetPosition() );
+				envMapSphere.SetCenter(envMap->GetPosition());
 				
-				if( frustum->SphereHitsFrustum( &envMapSphere ) ){
-					collideList.GetEnvironmentMapList().Add( envMap );
+				if(frustum->SphereHitsFrustum(&envMapSphere)){
+					collideList.GetEnvironmentMapList().Add(envMap);
 				}
 			}
 		}
 		SPECIAL_TIMER_PRINT("EnvMap")
 		
-	}catch( const deException &e ){
-		pPlan.GetRenderThread().GetLogger().LogException( e );
+	}catch(const deException &e){
+		pPlan.GetRenderThread().GetLogger().LogException(e);
 		pSemaphore.Signal();
 		throw;
 	}

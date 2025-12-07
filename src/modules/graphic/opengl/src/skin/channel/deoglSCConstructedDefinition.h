@@ -50,8 +50,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglSCConstructedDefinition( const deEngine &engine, decMemoryFile *definition,
-		decMemoryFile *verify, const deSkinPropertyConstructed &property );
+	deoglSCConstructedDefinition(const deEngine &engine, decMemoryFile *definition,
+		decMemoryFile *verify, const deSkinPropertyConstructed &property);
 	
 	/** Clean up visitor. */
 	virtual ~deoglSCConstructedDefinition();
@@ -70,24 +70,24 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit group node. */
-	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
+	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
 	
 	/** Visit image node. */
-	virtual void VisitImage( deSkinPropertyNodeImage &node );
+	virtual void VisitImage(deSkinPropertyNodeImage &node);
 	
 	/** Visit shape node. */
-	virtual void VisitShape( deSkinPropertyNodeShape &node );
+	virtual void VisitShape(deSkinPropertyNodeShape &node);
 	
 	/** Visit text node. */
-	virtual void VisitText( deSkinPropertyNodeText &node );
+	virtual void VisitText(deSkinPropertyNodeText &node);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteBasicProperties( const deSkinPropertyNode &node );
-	void pWriteFloat( float value, float rounding );
-	void pWriteColor( const decColor &color );
+	void pWriteBasicProperties(const deSkinPropertyNode &node);
+	void pWriteFloat(float value, float rounding);
+	void pWriteColor(const decColor &color);
 };
 
 #endif

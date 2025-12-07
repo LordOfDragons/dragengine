@@ -40,12 +40,12 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCanvasRenderWorld::deCanvasRenderWorld( deCanvasManager *manager ) :
-deCanvas( manager ){
+deCanvasRenderWorld::deCanvasRenderWorld(deCanvasManager *manager) :
+deCanvas(manager){
 }
 
 deCanvasRenderWorld::~deCanvasRenderWorld(){
-	SetCamera( NULL );
+	SetCamera(NULL);
 }
 
 
@@ -53,8 +53,8 @@ deCanvasRenderWorld::~deCanvasRenderWorld(){
 // Management
 ///////////////
 
-void deCanvasRenderWorld::SetCamera( deCamera *camera ){
-	if( camera == pCamera ){
+void deCanvasRenderWorld::SetCamera(deCamera *camera){
+	if(camera == pCamera){
 		return;
 	}
 	
@@ -68,6 +68,6 @@ void deCanvasRenderWorld::SetCamera( deCamera *camera ){
 // Visiting
 /////////////
 
-void deCanvasRenderWorld::Visit( deCanvasVisitor &visitor ){
-	visitor.VisitRenderWorld( *this );
+void deCanvasRenderWorld::Visit(deCanvasVisitor &visitor){
+	visitor.VisitRenderWorld(*this);
 }

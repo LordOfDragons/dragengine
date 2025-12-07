@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetName::peeUTypeSetName( peeType *type, const char *newName ){
-	if( ! type || ! newName ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetName::peeUTypeSetName(peeType *type, const char *newName){
+	if(!type || !newName){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = NULL;
 	
-	SetShortInfo( "Set Type Name" );
+	SetShortInfo("Set Type Name");
 	
 	pOldName = type->GetName();
 	pNewName = newName;
@@ -56,7 +56,7 @@ peeUTypeSetName::peeUTypeSetName( peeType *type, const char *newName ){
 }
 
 peeUTypeSetName::~peeUTypeSetName(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ peeUTypeSetName::~peeUTypeSetName(){
 ///////////////
 
 void peeUTypeSetName::Undo(){
-	pType->SetName( pOldName.GetString() );
+	pType->SetName(pOldName.GetString());
 }
 
 void peeUTypeSetName::Redo(){
-	pType->SetName( pNewName.GetString() );
+	pType->SetName(pNewName.GetString());
 }

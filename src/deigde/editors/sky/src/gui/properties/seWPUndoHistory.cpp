@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPUndoHistory::seWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pListener( new seWPUndoHistoryListener( *this ) ),
-pSky( NULL ){
+seWPUndoHistory::seWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(new seWPUndoHistoryListener(*this)),
+pSky(NULL){
 }
 
 seWPUndoHistory::~seWPUndoHistory(){
-	SetSky( NULL );
+	SetSky(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -59,24 +59,24 @@ seWPUndoHistory::~seWPUndoHistory(){
 // Management
 ///////////////
 
-void seWPUndoHistory::SetSky( seSky *sky ){
-	if( sky == pSky ){
+void seWPUndoHistory::SetSky(seSky *sky){
+	if(sky == pSky){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(NULL);
 	
-	if( pSky ){
-		pSky->RemoveListener( pListener );
+	if(pSky){
+		pSky->RemoveListener(pListener);
 		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
-	if( sky ){
-		sky->AddListener( pListener );
+	if(sky){
+		sky->AddListener(pListener);
 		sky->AddReference();
 		
-		SetUndoSystem( sky->GetUndoSystem() );
+		SetUndoSystem(sky->GetUndoSystem());
 	}
 }

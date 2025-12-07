@@ -36,14 +36,14 @@ class deoglPGIUpdateSpeed : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	deoglPGIUpdateSpeed( deGraphicOpenGl &ogl );
+	deoglPGIUpdateSpeed(deGraphicOpenGl &ogl);
 	virtual ~deoglPGIUpdateSpeed();
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	virtual decString GetParameterValue();
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

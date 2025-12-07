@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerPaste::aeUControllerPaste( aeAnimator *animator, const aeControllerList &controllerList ) :
-pAnimator( animator )
+aeUControllerPaste::aeUControllerPaste(aeAnimator *animator, const aeControllerList &controllerList) :
+pAnimator(animator)
 {
-	DEASSERT_NOTNULL( animator )
+	DEASSERT_NOTNULL(animator)
 	const int controllerCount = controllerList.GetCount();
-	DEASSERT_TRUE( controllerCount > 0 )
+	DEASSERT_TRUE(controllerCount > 0)
 	
 	int i;
-	for( i=0; i<controllerCount; i++ ){
-		pControllerList.Add( aeController::Ref::NewWith(*controllerList.GetAt( i )) );
+	for(i=0; i<controllerCount; i++){
+		pControllerList.Add(aeController::Ref::NewWith(*controllerList.GetAt(i)));
 	}
 	
 	pIndex = animator->GetControllers().GetCount();
@@ -66,8 +66,8 @@ void aeUControllerPaste::Undo(){
 	const int controllerCount = pControllerList.GetCount();
 	int i;
 	
-	for( i=0; i<controllerCount; i++ ){
-		pAnimator->RemoveController( pControllerList.GetAt( i ) );
+	for(i=0; i<controllerCount; i++){
+		pAnimator->RemoveController(pControllerList.GetAt(i));
 	}
 }
 
@@ -76,18 +76,18 @@ void aeUControllerPaste::Redo(){
 	const int controllerCount = pControllerList.GetCount();
 	int i;
 	
-	for( i=0; i<controllerCount; i++ ){
-		aeController * const controller = pControllerList.GetAt( i );
+	for(i=0; i<controllerCount; i++){
+		aeController * const controller = pControllerList.GetAt(i);
 		
-		decString name( controller->GetName() );
+		decString name(controller->GetName());
 		int number = 2;
-		while( controllers.HasNamed( name ) ){
-			name.Format( "%s #%d", controller->GetName().GetString(), number++ );
+		while(controllers.HasNamed(name)){
+			name.Format("%s #%d", controller->GetName().GetString(), number++);
 		}
-		controller->SetName( name );
+		controller->SetName(name);
 		
-		pAnimator->InsertControllerAt( controller, pIndex + i );
+		pAnimator->InsertControllerAt(controller, pIndex + i);
 	}
 	
-	pAnimator->SetActiveController( pControllerList.GetAt( controllerCount - 1 ) );
+	pAnimator->SetActiveController(pControllerList.GetAt(controllerCount - 1));
 }

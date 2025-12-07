@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new decal resource manager linked to the given engine. */
-	deDecalManager( deEngine *engine );
+	deDecalManager(deEngine *engine);
 	
 	/** \brief Clean up decal resource manager and reports leaking resources. */
 	virtual ~deDecalManager();
@@ -89,7 +89,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

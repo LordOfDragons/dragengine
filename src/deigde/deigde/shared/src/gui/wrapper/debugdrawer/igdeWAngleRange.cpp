@@ -42,21 +42,21 @@
 ////////////////////////////
 
 igdeWAngleRange::igdeWAngleRange(){
-	pColorDiskLine.Set( 1.0f, 0.0f, 0.0f, 1.0f );
-	pColorDiskArea.Set( 1.0f, 0.0f, 0.0f, 0.2f );
+	pColorDiskLine.Set(1.0f, 0.0f, 0.0f, 1.0f);
+	pColorDiskArea.Set(1.0f, 0.0f, 0.0f, 0.2f);
 	pLower = 0.0f;
 	pUpper = 90.0f;
 	pRadius = 0.5f;
 	pVisible = true;
 	
-	pDDSDisk.SetEdgeColor( pColorDiskLine );
-	pDDSDisk.SetFillColor( pColorDiskArea );
+	pDDSDisk.SetEdgeColor(pColorDiskLine);
+	pDDSDisk.SetFillColor(pColorDiskArea);
 	
 	pRebuildShape();
 }
 
 igdeWAngleRange::~igdeWAngleRange(){
-	SetParentDebugDrawer( NULL );
+	SetParentDebugDrawer(NULL);
 }
 
 
@@ -64,65 +64,65 @@ igdeWAngleRange::~igdeWAngleRange(){
 // Management
 ///////////////
 
-void igdeWAngleRange::SetParentDebugDrawer( deDebugDrawer *debugDrawer ){
-	pDDSDisk.SetParentDebugDrawer( debugDrawer );
+void igdeWAngleRange::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
+	pDDSDisk.SetParentDebugDrawer(debugDrawer);
 }
 
 
 
-void igdeWAngleRange::SetPosition( const decVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void igdeWAngleRange::SetPosition(const decVector &position){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
-		pDDSDisk.SetPosition( position );
+		pDDSDisk.SetPosition(position);
 	}
 }
 
-void igdeWAngleRange::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void igdeWAngleRange::SetOrientation(const decQuaternion &orientation){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
-		pDDSDisk.SetOrientation( orientation );
+		pDDSDisk.SetOrientation(orientation);
 	}
 }
 
 
 
-void igdeWAngleRange::SetDiskLineColor( const decColor &color ){
-	if( ! color.IsEqualTo( pColorDiskLine ) ){
+void igdeWAngleRange::SetDiskLineColor(const decColor &color){
+	if(!color.IsEqualTo(pColorDiskLine)){
 		pColorDiskLine = color;
-		pDDSDisk.SetEdgeColor( pColorDiskLine );
+		pDDSDisk.SetEdgeColor(pColorDiskLine);
 	}
 }
 
-void igdeWAngleRange::SetDiskAreaColor( const decColor &color ){
-	if( ! color.IsEqualTo( pColorDiskArea ) ){
+void igdeWAngleRange::SetDiskAreaColor(const decColor &color){
+	if(!color.IsEqualTo(pColorDiskArea)){
 		pColorDiskArea = color;
-		pDDSDisk.SetFillColor( pColorDiskArea );
+		pDDSDisk.SetFillColor(pColorDiskArea);
 	}
 }
 
 
 
-void igdeWAngleRange::SetRange( float lower, float upper ){
-	if( upper < lower ){
+void igdeWAngleRange::SetRange(float lower, float upper){
+	if(upper < lower){
 		upper = lower;
 	}
-	if( upper - lower > 360.0f ){
+	if(upper - lower > 360.0f){
 		upper = lower + 360.0f;
 	}
 	
-	if( fabsf( lower - pLower ) > 1e-5f || fabsf( upper - pUpper ) > 1e-5f ){
+	if(fabsf(lower - pLower) > 1e-5f || fabsf(upper - pUpper) > 1e-5f){
 		pLower = lower;
 		pUpper = upper;
 		pRebuildShape();
 	}
 }
 
-void igdeWAngleRange::SetRadius( float radius ){
-	if( radius < 0.001f ){
+void igdeWAngleRange::SetRadius(float radius){
+	if(radius < 0.001f){
 		radius = 0.001f;
 	}
 	
-	if( fabsf( radius - pRadius ) > 1e-5f ){
+	if(fabsf(radius - pRadius) > 1e-5f){
 		pRadius = radius;
 		pRebuildShape();
 	}
@@ -130,10 +130,10 @@ void igdeWAngleRange::SetRadius( float radius ){
 
 
 
-void igdeWAngleRange::SetVisible( bool visible ){
-	if( visible != pVisible ){
+void igdeWAngleRange::SetVisible(bool visible){
+	if(visible != pVisible){
 		pVisible = visible;
-		pDDSDisk.SetVisible( visible );
+		pDDSDisk.SetVisible(visible);
 	}
 }
 
@@ -158,36 +158,36 @@ void igdeWAngleRange::pRebuildShape(){
 	// determine the number of points to use for the disk
 	circumfence = angleDiff * DEG2RAD;
 	
-	pointCount = ( int )ceilf( circumfence / meterPerPoint );
+	pointCount = (int)ceilf(circumfence / meterPerPoint);
 	
 	// create the disk
 	pDDSDisk.RemoveAllFaces();
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;
-		if( ! ddFace ) DETHROW( deeOutOfMemory );
+		if(!ddFace) DETHROW(deeOutOfMemory);
 		
-		ddFace->SetNormal( decVector( 0.0f, 0.0f, 1.0f ) );
+		ddFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 		
-		if( useDisk ){
-			ddFace->AddVertex( decVector() );
+		if(useDisk){
+			ddFace->AddVertex(decVector());
 		}
 		
-		for( p=0; p<=pointCount; p++ ){
-			angle = ( pLower + angleDiff * ( ( float )p / ( float )pointCount ) ) * DEG2RAD;
+		for(p=0; p<=pointCount; p++){
+			angle = (pLower + angleDiff * ((float)p / (float)pointCount)) * DEG2RAD;
 			
-			ddFace->AddVertex( decVector( sinf( angle ) * pRadius, cosf( angle ) * pRadius, 0.0f ) );
+			ddFace->AddVertex(decVector(sinf(angle) * pRadius, cosf(angle) * pRadius, 0.0f));
 		}
 		
-		if( useDisk ){
-			ddFace->AddVertex( decVector() );
+		if(useDisk){
+			ddFace->AddVertex(decVector());
 		}
 		
-		pDDSDisk.AddFace( ddFace );
+		pDDSDisk.AddFace(ddFace);
 		ddFace = NULL;
 		
-	}catch( const deException & ){
-		if( ddFace ){
+	}catch(const deException &){
+		if(ddFace){
 			delete ddFace;
 		}
 		throw;

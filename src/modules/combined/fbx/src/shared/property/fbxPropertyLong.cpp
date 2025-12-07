@@ -45,13 +45,13 @@
 ////////////////////////////
 
 fbxPropertyLong::fbxPropertyLong() :
-fbxProperty( etLong ),
-pValue( 0 ){
+fbxProperty(etLong),
+pValue(0){
 }
 
-fbxPropertyLong::fbxPropertyLong( decBaseFileReader &reader ) :
-fbxProperty( etLong ),
-pValue( reader.ReadLong() ){
+fbxPropertyLong::fbxPropertyLong(decBaseFileReader &reader) :
+fbxProperty(etLong),
+pValue(reader.ReadLong()){
 }
 
 fbxPropertyLong::~fbxPropertyLong(){
@@ -62,7 +62,7 @@ fbxPropertyLong::~fbxPropertyLong(){
 // Loading and Saving
 ///////////////////////
 
-void fbxPropertyLong::SetValue( int64_t value ){
+void fbxPropertyLong::SetValue(int64_t value){
 	pValue = value;
 }
 
@@ -75,7 +75,7 @@ bool fbxPropertyLong::GetValueAsBool() const{
 }
 
 int fbxPropertyLong::GetValueAsInt() const{
-	return ( int )pValue;
+	return (int)pValue;
 }
 
 int64_t fbxPropertyLong::GetValueAsLong() const{
@@ -83,24 +83,24 @@ int64_t fbxPropertyLong::GetValueAsLong() const{
 }
 
 float fbxPropertyLong::GetValueAsFloat() const{
-	return ( float )pValue;
+	return (float)pValue;
 }
 
 double fbxPropertyLong::GetValueAsDouble() const{
-	return ( double )pValue;
+	return (double)pValue;
 }
 
 
 
-void fbxPropertyLong::Save(decBaseFileWriter &writer ){
+void fbxPropertyLong::Save(decBaseFileWriter &writer){
 }
 
-void fbxPropertyLong::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
+void fbxPropertyLong::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
 #if defined __MINGW32__ || defined __MINGW64__
 	#ifdef PRId64
 		#undef PRId64
 	#endif
 	#define PRId64 "I64u"
 #endif
-	module.LogInfoFormat( "%sProperty Long: %" PRId64, prefix.GetString(), pValue );
+	module.LogInfoFormat("%sProperty Long: %" PRId64, prefix.GetString(), pValue);
 }

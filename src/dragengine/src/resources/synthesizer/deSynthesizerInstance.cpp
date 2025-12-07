@@ -44,13 +44,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSynthesizerInstance::deSynthesizerInstance( deSynthesizerInstanceManager *manager ) :
-deResource( manager ),
+deSynthesizerInstance::deSynthesizerInstance(deSynthesizerInstanceManager *manager) :
+deResource(manager),
 
-pSampleCount( 0 ),
+pSampleCount(0),
 
-pPeerSynthesizer( NULL ),
-pPeerAudio( NULL ){
+pPeerSynthesizer(NULL),
+pPeerAudio(NULL){
 }
 
 deSynthesizerInstance::~deSynthesizerInstance(){
@@ -62,14 +62,14 @@ deSynthesizerInstance::~deSynthesizerInstance(){
 // Management
 ///////////////
 
-void deSynthesizerInstance::SetSynthesizer( deSynthesizer *synthesizer ){
-	if( pSynthesizer == synthesizer ){
+void deSynthesizerInstance::SetSynthesizer(deSynthesizer *synthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
 	pSynthesizer = synthesizer;
 	
-	if( synthesizer ){
+	if(synthesizer){
 		pSampleCount = synthesizer->GetSampleCount();
 		
 	}else{
@@ -78,29 +78,29 @@ void deSynthesizerInstance::SetSynthesizer( deSynthesizer *synthesizer ){
 	
 	pUpdateControllers();
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->SynthesizerChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->SynthesizerChanged();
 	}
 }
 
 
 
-void deSynthesizerInstance::SetSampleCount( int sampleCount ){
-	sampleCount = decMath::max( sampleCount, 0 );
+void deSynthesizerInstance::SetSampleCount(int sampleCount){
+	sampleCount = decMath::max(sampleCount, 0);
 	
-	if( sampleCount == pSampleCount ){
+	if(sampleCount == pSampleCount){
 		return;
 	}
 	
 	pSampleCount = sampleCount;
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		pPeerSynthesizer->PlayTimeChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PlayTimeChanged();
 	}
 }
@@ -111,16 +111,16 @@ int deSynthesizerInstance::GetControllerCount() const{
 	return pControllers.GetCount();
 }
 
-deSynthesizerController *deSynthesizerInstance::GetControllerAt( int index ) const{
-	return ( deSynthesizerController* )pControllers.GetAt( index );
+deSynthesizerController *deSynthesizerInstance::GetControllerAt(int index) const{
+	return (deSynthesizerController*)pControllers.GetAt(index);
 }
 
-int deSynthesizerInstance::IndexOfControllerNamed( const char *name ) const{
+int deSynthesizerInstance::IndexOfControllerNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deSynthesizerController* )pControllers.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((deSynthesizerController*)pControllers.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -128,30 +128,30 @@ int deSynthesizerInstance::IndexOfControllerNamed( const char *name ) const{
 	return -1;
 }
 
-void deSynthesizerInstance::NotifyControllerChangedAt( int index ){
-	if( index < 0 || index >= pControllers.GetCount() ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerInstance::NotifyControllerChangedAt(int index){
+	if(index < 0 || index >= pControllers.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerSynthesizer ){
-		pPeerSynthesizer->ControllerChanged( index );
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ControllerChanged(index);
 	}
 }
 
 
 
 void deSynthesizerInstance::Reset(){
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		return pPeerSynthesizer->Reset();
 	}
 }
 
-void deSynthesizerInstance::GenerateSound( void *buffer, int bufferSize, int offset, int samples ){
-	if( ! pPeerSynthesizer ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerInstance::GenerateSound(void *buffer, int bufferSize, int offset, int samples){
+	if(!pPeerSynthesizer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPeerSynthesizer->GenerateSound( buffer, bufferSize, offset, samples );
+	pPeerSynthesizer->GenerateSound(buffer, bufferSize, offset, samples);
 }
 
 
@@ -159,24 +159,24 @@ void deSynthesizerInstance::GenerateSound( void *buffer, int bufferSize, int off
 // System Peers
 /////////////////
 
-void deSynthesizerInstance::SetPeerSynthesizer( deBaseSynthesizerSynthesizerInstance *peer ){
-	if( peer == pPeerSynthesizer ){
+void deSynthesizerInstance::SetPeerSynthesizer(deBaseSynthesizerSynthesizerInstance *peer){
+	if(peer == pPeerSynthesizer){
 		return;
 	}
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		delete pPeerSynthesizer;
 	}
 	
 	pPeerSynthesizer = peer;
 }
 
-void deSynthesizerInstance::SetPeerAudio( deBaseAudioSynthesizerInstance *peer ){
-	if( peer == pPeerAudio ){
+void deSynthesizerInstance::SetPeerAudio(deBaseAudioSynthesizerInstance *peer){
+	if(peer == pPeerAudio){
 		return;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 	
@@ -189,11 +189,11 @@ void deSynthesizerInstance::SetPeerAudio( deBaseAudioSynthesizerInstance *peer )
 /////////////////////
 
 void deSynthesizerInstance::pCleanUp(){
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 		pPeerAudio = NULL;
 	}
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		delete pPeerSynthesizer;
 		pPeerSynthesizer = NULL;
 	}
@@ -202,7 +202,7 @@ void deSynthesizerInstance::pCleanUp(){
 void deSynthesizerInstance::pUpdateControllers(){
 	pControllers.RemoveAll();
 	
-	if( ! pSynthesizer ){
+	if(!pSynthesizer){
 		return;
 	}
 	
@@ -211,15 +211,15 @@ void deSynthesizerInstance::pUpdateControllers(){
 	int i;
 	
 	try{
-		for( i=0; i<controllerCount; i++ ){
-			controller = new deSynthesizerController( *pSynthesizer->GetControllerAt( i ) );
-			pControllers.Add( controller );
+		for(i=0; i<controllerCount; i++){
+			controller = new deSynthesizerController(*pSynthesizer->GetControllerAt(i));
+			pControllers.Add(controller);
 			controller->FreeReference();
 			controller = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( controller ){
+	}catch(const deException &){
+		if(controller){
 			controller->FreeReference();
 		}
 		throw;

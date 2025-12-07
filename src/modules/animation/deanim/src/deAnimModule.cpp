@@ -64,7 +64,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -75,11 +75,11 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimCreateModule( deLoadableModule *loadabl
 // Entry function
 ///////////////////
 
-deBaseModule *DEAnimCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *DEAnimCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new deAnimModule( *loadableModule );
+		return new deAnimModule(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return nullptr;
 	}
 }
@@ -92,8 +92,8 @@ deBaseModule *DEAnimCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deAnimModule::deAnimModule( deLoadableModule &loadableModule ) :
-deBaseAnimationModule( loadableModule ){
+deAnimModule::deAnimModule(deLoadableModule &loadableModule) :
+deBaseAnimationModule(loadableModule){
 }
 
 deAnimModule::~deAnimModule(){
@@ -104,119 +104,119 @@ deAnimModule::~deAnimModule(){
 // Management
 ///////////////
 
-void deAnimModule::LoadAnimation( decBaseFileReader &reader, deAnimation &animation ){
+void deAnimModule::LoadAnimation(decBaseFileReader &reader, deAnimation &animation){
 	const char * const headerSig = "Drag[en]gine Animation  ";
-	char checkSig[ 24 ];
+	char checkSig[24];
 	
-	reader.Read( &checkSig, 24 );
-	if( strncmp( checkSig, headerSig, 24 ) != 0 ){
-		DETHROW( deeInvalidFormat );
+	reader.Read(&checkSig, 24);
+	if(strncmp(checkSig, headerSig, 24) != 0){
+		DETHROW(deeInvalidFormat);
 	}
 	
 	sInfo info;
-	memset( &info, 0, sizeof( info ) );
+	memset(&info, 0, sizeof(info));
 	
 	info.version = reader.ReadByte();
 	info.flags = reader.ReadByte();
 	
-	switch( info.version ){
+	switch(info.version){
 	case 1:
-		info.deprOldFormat = ( info.flags & 0xf0 ) == 0;
-		pReadBones( reader, animation, info );
-		pReadMoves( reader, animation, info );
+		info.deprOldFormat = (info.flags & 0xf0) == 0;
+		pReadBones(reader, animation, info);
+		pReadMoves(reader, animation, info);
 		break;
 		
 	case 2:
-		pReadBones( reader, animation, info );
-		pReadVertexPositionSets( reader, animation, info );
-		pReadMoves( reader, animation, info );
+		pReadBones(reader, animation, info);
+		pReadVertexPositionSets(reader, animation, info);
+		pReadMoves(reader, animation, info);
 		break;
 		
 	default:
-		DETHROW( deeInvalidFormat );
+		DETHROW(deeInvalidFormat);
 	}
 }
 
-void deAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation &animation ){
+void deAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &animation){
 	const char * const headerSig = "Drag[en]gine Animation  ";
 	int i, j, k;
 	
 	// write header
-	writer.Write( headerSig, 24 );
-	writer.WriteByte( 2 ); // version
-	writer.WriteByte( 0 ); // flags
+	writer.Write(headerSig, 24);
+	writer.WriteByte(2); // version
+	writer.WriteByte(0); // flags
 	
 	// write bones
 	const int boneCount = animation.GetBoneCount();
-	writer.WriteUShort( boneCount );
+	writer.WriteUShort(boneCount);
 	
-	for( i=0; i<boneCount; i++ ){
-		writer.WriteString8( animation.GetBone( i )->GetName() );
+	for(i=0; i<boneCount; i++){
+		writer.WriteString8(animation.GetBone(i)->GetName());
 	}
 	
 	// write vertex position sets
 	const decStringList &vertexPositionSets = animation.GetVertexPositionSets();
 	const int vertexPositionSetCount = vertexPositionSets.GetCount();
-	writer.WriteUShort( vertexPositionSetCount );
+	writer.WriteUShort(vertexPositionSetCount);
 	
-	for( i=0; i< vertexPositionSetCount; i++ ){
-		writer.WriteString8( vertexPositionSets.GetAt( i ) );
+	for(i=0; i< vertexPositionSetCount; i++){
+		writer.WriteString8(vertexPositionSets.GetAt(i));
 	}
 	
 	// write moves
 	const int moveCount = animation.GetMoveCount();
-	writer.WriteUShort( moveCount );
+	writer.WriteUShort(moveCount);
 	
-	for( i=0; i<moveCount; i++ ){
-		const deAnimationMove &move = *animation.GetMove( i );
+	for(i=0; i<moveCount; i++){
+		const deAnimationMove &move = *animation.GetMove(i);
 		const int kflCount = move.GetKeyframeListCount();
 		const int kflvpsCount = move.GetVertexPositionSetKeyframeListCount();
 		
-		writer.WriteString8( move.GetName() );
+		writer.WriteString8(move.GetName());
 		
 		const float playtime = move.GetPlaytime();
-		writer.WriteFloat( playtime );
+		writer.WriteFloat(playtime);
 		
 		int playtimeFrames = 0;
 		
-		for( j=0; j<kflCount; j++ ){
-			const deAnimationKeyframeList &kfl = *move.GetKeyframeList( j );
+		for(j=0; j<kflCount; j++){
+			const deAnimationKeyframeList &kfl = *move.GetKeyframeList(j);
 			const int keyframeCount = kfl.GetKeyframeCount();
 			const float fps = move.GetFPS();
 			int realKeyframeCount = 0;
 			int lastFrame = -1;
 			
-			for( k=0; k<keyframeCount; k++ ){
-				const int frame = ( int )( fps * kfl.GetKeyframe( k )->GetTime() + 0.5f );
-				if( frame != lastFrame ){
+			for(k=0; k<keyframeCount; k++){
+				const int frame = (int)(fps * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+				if(frame != lastFrame){
 					lastFrame = frame;
 					realKeyframeCount++;
 				}
 			}
 			
-			playtimeFrames = decMath::max( playtimeFrames, realKeyframeCount );
+			playtimeFrames = decMath::max(playtimeFrames, realKeyframeCount);
 		}
 		
-		for( j=0; j<kflvpsCount; j++ ){
-			const deAnimationKeyframeVertexPositionSetList &kfl = *move.GetVertexPositionSetKeyframeList( j );
+		for(j=0; j<kflvpsCount; j++){
+			const deAnimationKeyframeVertexPositionSetList &kfl = *move.GetVertexPositionSetKeyframeList(j);
 			const int keyframeCount = kfl.GetKeyframeCount();
 			const float fps = move.GetFPS();
 			int realKeyframeCount = 0;
 			int lastFrame = -1;
 			
-			for( k=0; k<keyframeCount; k++ ){
-				const int frame = ( int )( fps * kfl.GetKeyframe( k )->GetTime() + 0.5f );
-				if( frame != lastFrame ){
+			for(k=0; k<keyframeCount; k++){
+				const int frame = (int)(fps * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+				if(frame != lastFrame){
 					lastFrame = frame;
 					realKeyframeCount++;
 				}
 			}
 			
-			playtimeFrames = decMath::max( playtimeFrames, realKeyframeCount );
+			playtimeFrames = decMath::max(playtimeFrames, realKeyframeCount);
 		}
 		
-		const int realPlaytimeFrames = decMath::max( playtimeFrames - 1, 0 );
-		writer.WriteUShort( realPlaytimeFrames );
+		const int realPlaytimeFrames = decMath::max(playtimeFrames - 1, 0);
+		writer.WriteUShort(realPlaytimeFrames);
 		
 		// the time factor is calculated by the loader from playtime and real keyframe count.
 		// we have to do the same calculation here (just reversed) to get the correct result.
@@ -224,13 +224,13 @@ void deAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation &
 		// the one stored in the move is for use by the application. this framerate calculated
 		// here is used to store times as frames. the application never gets to see those numbers
 		float timeFactor = move.GetFPS();
-		if( playtime > 0.001f ){
-			timeFactor = ( float )realPlaytimeFrames / playtime;
+		if(playtime > 0.001f){
+			timeFactor = (float)realPlaytimeFrames / playtime;
 		}
 		
 		// write bones
-		for( j=0; j<boneCount; j++ ){
-			const deAnimationKeyframeList &kfl = *move.GetKeyframeList( j );
+		for(j=0; j<boneCount; j++){
+			const deAnimationKeyframeList &kfl = *move.GetKeyframeList(j);
 			const int keyframeCount = kfl.GetKeyframeCount();
 			
 			// TODO optimize writing using flags
@@ -243,100 +243,100 @@ void deAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation &
 			config.formatFloat = true;
 			
 			int flags = 0;
-			if( config.hasVarPos ){
+			if(config.hasVarPos){
 				flags |= FLAG_KF_HAS_VAR_POS;
 			}
-			if( config.hasVarRot ){
+			if(config.hasVarRot){
 				flags |= FLAG_KF_HAS_VAR_ROT;
 			}
-			if( config.hasVarScale ){
+			if(config.hasVarScale){
 				flags |= FLAG_KF_HAS_VAR_SCALE;
 			}
-			if( config.fewKeyframes ){
+			if(config.fewKeyframes){
 				flags |= FLAG_KF_HAS_FEW_KEYFRAMES;
 			}
-			if( config.ignoreBone ){
+			if(config.ignoreBone){
 				flags |= FLAG_KF_IGNORE_BONE;
 			}
-			if( config.formatFloat ){
+			if(config.formatFloat){
 				flags |= FLAG_KF_FORMAT_FLOAT;
 			}
-			writer.WriteByte( flags );
+			writer.WriteByte(flags);
 			
 			// write keyframes if required
-			if( ! config.ignoreBone && ( config.hasVarPos || config.hasVarRot || config.hasVarScale ) ){
-				if( config.fewKeyframes ){
+			if(!config.ignoreBone && (config.hasVarPos || config.hasVarRot || config.hasVarScale)){
+				if(config.fewKeyframes){
 					// we have to calculate first the real keyframe count. this is required since
 					// due to sampling two keyframes can fall on the same frame number. in this
 					// case the first one is used and the second one skipped which drops the count
 					int realKeyframeCount = 0;
 					int lastFrame = -1;
 					
-					for( k=0; k<keyframeCount; k++ ){
-						const int frame = ( int )( timeFactor * kfl.GetKeyframe( k )->GetTime() + 0.5f );
-						if( frame != lastFrame ){
+					for(k=0; k<keyframeCount; k++){
+						const int frame = (int)(timeFactor * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+						if(frame != lastFrame){
 							lastFrame = frame;
 							realKeyframeCount++;
 						}
 					}
 					
-					writer.WriteUShort( realKeyframeCount );
+					writer.WriteUShort(realKeyframeCount);
 				}
 				
-				if( config.fewKeyframes ){
+				if(config.fewKeyframes){
 					int lastFrame = -1;
 					
-					for( k=0; k<keyframeCount; k++ ){
-						const deAnimationKeyframe &keyframe = *kfl.GetKeyframe( k );
+					for(k=0; k<keyframeCount; k++){
+						const deAnimationKeyframe &keyframe = *kfl.GetKeyframe(k);
 						
-						const int frame = ( int )( timeFactor * kfl.GetKeyframe( k )->GetTime() + 0.5f );
-						if( frame == lastFrame ){
+						const int frame = (int)(timeFactor * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+						if(frame == lastFrame){
 							continue;
 						}
 						
 						lastFrame = frame;
-						writer.WriteUShort( ( unsigned short )frame );
+						writer.WriteUShort((unsigned short)frame);
 						
-						pWriteKeyframeData( writer, config, keyframe );
+						pWriteKeyframeData(writer, config, keyframe);
 					}
 					
-				}else if( keyframeCount > 1 ){
+				}else if(keyframeCount > 1){
 					const int endFrameIndex = playtimeFrames - 1;
 					
 					int lastFrame = 0;
-					pWriteKeyframeData( writer, config, *kfl.GetKeyframe( 0 ) );
+					pWriteKeyframeData(writer, config, *kfl.GetKeyframe(0));
 					
-					for( k=1; k<keyframeCount-1; k++ ){
-						const deAnimationKeyframe &keyframe = *kfl.GetKeyframe( k );
+					for(k=1; k<keyframeCount-1; k++){
+						const deAnimationKeyframe &keyframe = *kfl.GetKeyframe(k);
 						
-						const int frame = decMath::clamp( ( int )( timeFactor
+						const int frame = decMath::clamp((int)(timeFactor
 							* kfl.GetKeyframe( k )->GetTime() + 0.5f ), 0, endFrameIndex );
-						if( frame == lastFrame ){
+						if(frame == lastFrame){
 							continue;
 						}
 						
-						pWriteKeyframeDataInterpolate( writer, config,
+						pWriteKeyframeDataInterpolate(writer, config,
 							*kfl.GetKeyframe( k - 1 ), keyframe, frame - lastFrame );
 						lastFrame = frame;
 					}
 					
-					if( lastFrame < endFrameIndex ){
-						pWriteKeyframeDataInterpolate( writer, config,
+					if(lastFrame < endFrameIndex){
+						pWriteKeyframeDataInterpolate(writer, config,
 							*kfl.GetKeyframe( keyframeCount - 2 ),
 							*kfl.GetKeyframe( keyframeCount - 1 ), endFrameIndex - lastFrame );
 					}
 					
-				}else if( keyframeCount == 1 ){
-					for( k=0; k<playtimeFrames; k++ ){
-						pWriteKeyframeData( writer, config, *kfl.GetKeyframe( 0 ) );
+				}else if(keyframeCount == 1){
+					for(k=0; k<playtimeFrames; k++){
+						pWriteKeyframeData(writer, config, *kfl.GetKeyframe(0));
 					}
 				}
 			}
 		}
 		
 		// write vertex position sets
-		for( j=0; j<vertexPositionSetCount; j++ ){
-			const deAnimationKeyframeVertexPositionSetList &kfl = *move.GetVertexPositionSetKeyframeList( j );
+		for(j=0; j<vertexPositionSetCount; j++){
+			const deAnimationKeyframeVertexPositionSetList &kfl = *move.GetVertexPositionSetKeyframeList(j);
 			const int keyframeCount = kfl.GetKeyframeCount();
 			
 			sConfig2 config;
@@ -346,86 +346,86 @@ void deAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation &
 			config.formatFloat = true;
 			
 			int flags = 0;
-			if( config.hasVarWeight ){
+			if(config.hasVarWeight){
 				flags |= FLAG_KFVPS_HAS_VAR_WEIGHT;
 			}
-			if( config.fewKeyframes ){
+			if(config.fewKeyframes){
 				flags |= FLAG_KFVPS_HAS_FEW_KEYFRAMES;
 			}
-			if( config.ignoreSet ){
+			if(config.ignoreSet){
 				flags |= FLAG_KFVPS_IGNORE_SET;
 			}
-			if( config.formatFloat ){
+			if(config.formatFloat){
 				flags |= FLAG_KFVPS_FORMAT_FLOAT;
 			}
-			writer.WriteByte( flags );
+			writer.WriteByte(flags);
 			
 			// write keyframes if required
-			if( ! config.ignoreSet && config.hasVarWeight ){
-				if( config.fewKeyframes ){
+			if(!config.ignoreSet && config.hasVarWeight){
+				if(config.fewKeyframes){
 					// we have to calculate first the real keyframe count. this is required since
 					// due to sampling two keyframes can fall on the same frame number. in this
 					// case the first one is used and the second one skipped which drops the count
 					int realKeyframeCount = 0;
 					int lastFrame = -1;
 					
-					for( k=0; k<keyframeCount; k++ ){
-						const int frame = ( int )( timeFactor * kfl.GetKeyframe( k )->GetTime() + 0.5f );
-						if( frame != lastFrame ){
+					for(k=0; k<keyframeCount; k++){
+						const int frame = (int)(timeFactor * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+						if(frame != lastFrame){
 							lastFrame = frame;
 							realKeyframeCount++;
 						}
 					}
 					
-					writer.WriteUShort( realKeyframeCount );
+					writer.WriteUShort(realKeyframeCount);
 				}
 				
-				if( config.fewKeyframes ){
+				if(config.fewKeyframes){
 					int lastFrame = -1;
 					
-					for( k=0; k<keyframeCount; k++ ){
-						const deAnimationKeyframeVertexPositionSet &keyframe = *kfl.GetKeyframe( k );
+					for(k=0; k<keyframeCount; k++){
+						const deAnimationKeyframeVertexPositionSet &keyframe = *kfl.GetKeyframe(k);
 						
-						const int frame = ( int )( timeFactor * kfl.GetKeyframe( k )->GetTime() + 0.5f );
-						if( frame == lastFrame ){
+						const int frame = (int)(timeFactor * kfl.GetKeyframe(k)->GetTime() + 0.5f);
+						if(frame == lastFrame){
 							continue;
 						}
 						
 						lastFrame = frame;
-						writer.WriteUShort( ( unsigned short )frame );
+						writer.WriteUShort((unsigned short)frame);
 						
-						pWriteKeyframeData( writer, config, keyframe );
+						pWriteKeyframeData(writer, config, keyframe);
 					}
 					
-				}else if( keyframeCount > 1 ){
+				}else if(keyframeCount > 1){
 					const int endFrameIndex = playtimeFrames - 1;
 					
 					int lastFrame = 0;
-					pWriteKeyframeData( writer, config, *kfl.GetKeyframe( 0 ) );
+					pWriteKeyframeData(writer, config, *kfl.GetKeyframe(0));
 					
-					for( k=1; k<keyframeCount-1; k++ ){
-						const deAnimationKeyframeVertexPositionSet &keyframe = *kfl.GetKeyframe( k );
+					for(k=1; k<keyframeCount-1; k++){
+						const deAnimationKeyframeVertexPositionSet &keyframe = *kfl.GetKeyframe(k);
 						
-						const int frame = decMath::clamp( ( int )( timeFactor
+						const int frame = decMath::clamp((int)(timeFactor
 							* kfl.GetKeyframe( k )->GetTime() + 0.5f ), 0, endFrameIndex );
-						if( frame == lastFrame ){
+						if(frame == lastFrame){
 							continue;
 						}
 						
-						pWriteKeyframeDataInterpolate( writer, config,
+						pWriteKeyframeDataInterpolate(writer, config,
 							*kfl.GetKeyframe( k - 1 ), keyframe, frame - lastFrame );
 						lastFrame = frame;
 					}
 					
-					if( lastFrame < endFrameIndex ){
-						pWriteKeyframeDataInterpolate( writer, config,
+					if(lastFrame < endFrameIndex){
+						pWriteKeyframeDataInterpolate(writer, config,
 							*kfl.GetKeyframe( keyframeCount - 2 ),
 							*kfl.GetKeyframe( keyframeCount - 1 ), endFrameIndex - lastFrame );
 					}
 					
-				}else if( keyframeCount == 1 ){
-					for( k=0; k<playtimeFrames; k++ ){
-						pWriteKeyframeData( writer, config, *kfl.GetKeyframe( 0 ) );
+				}else if(keyframeCount == 1){
+					for(k=0; k<playtimeFrames; k++){
+						pWriteKeyframeData(writer, config, *kfl.GetKeyframe(0));
 					}
 				}
 			}
@@ -438,8 +438,8 @@ void deAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation &
 // Private Functions
 //////////////////////
 
-void deAnimModule::pReadBones( decBaseFileReader &reader, deAnimation &animation, sInfo &info ){
-	if( info.version == 1 ){
+void deAnimModule::pReadBones(decBaseFileReader &reader, deAnimation &animation, sInfo &info){
+	if(info.version == 1){
 		info.boneCount = reader.ReadByte();
 		
 	}else{
@@ -447,22 +447,22 @@ void deAnimModule::pReadBones( decBaseFileReader &reader, deAnimation &animation
 	}
 	
 	int i;
-	for( i=0; i<info.boneCount; i++ ){
+	for(i=0; i<info.boneCount; i++){
 		deAnimationBone * const bone = new deAnimationBone;
 		
 		try{
-			bone->SetName( reader.ReadString8() );
-			animation.AddBone( bone );
+			bone->SetName(reader.ReadString8());
+			animation.AddBone(bone);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			delete bone;
 			throw;
 		}
 	}
 }
 
-void deAnimModule::pReadVertexPositionSets( decBaseFileReader &reader, deAnimation &animation, sInfo &info ){
-	if( info.version == 1 ){
+void deAnimModule::pReadVertexPositionSets(decBaseFileReader &reader, deAnimation &animation, sInfo &info){
+	if(info.version == 1){
 		info.vertexPositionSetCount = reader.ReadByte();
 		
 	}else{
@@ -472,50 +472,50 @@ void deAnimModule::pReadVertexPositionSets( decBaseFileReader &reader, deAnimati
 	decStringList &list = animation.GetVertexPositionSets();
 	int i;
 	
-	for( i=0; i<info.vertexPositionSetCount; i++ ){
-		const decString name( reader.ReadString8() );
-		if( list.Has( name ) ){
-			DETHROW( deeInvalidFormat );
+	for(i=0; i<info.vertexPositionSetCount; i++){
+		const decString name(reader.ReadString8());
+		if(list.Has(name)){
+			DETHROW(deeInvalidFormat);
 		}
-		list.Add( name );
+		list.Add(name);
 	}
 }
 
-void deAnimModule::pReadMoves( decBaseFileReader &reader, deAnimation &animation, sInfo &info ){
+void deAnimModule::pReadMoves(decBaseFileReader &reader, deAnimation &animation, sInfo &info){
 	info.moveCount = reader.ReadUShort();
 	
 	int i;
-	for( i=0; i<info.moveCount; i++ ){
+	for(i=0; i<info.moveCount; i++){
 		deAnimationMove * const move = new deAnimationMove;
 		
 		try{
-			move->SetName( reader.ReadString8() );
+			move->SetName(reader.ReadString8());
 			
-			pReadMoveFps( reader, *move, info );
-			pReadMoveBones( reader, *move, info );
+			pReadMoveFps(reader, *move, info);
+			pReadMoveBones(reader, *move, info);
 			
-			if( info.version > 1 ){
-				pReadMoveVertexPositionSets( reader, *move, info );
+			if(info.version > 1){
+				pReadMoveVertexPositionSets(reader, *move, info);
 			}
 			
-			animation.AddMove( move );
+			animation.AddMove(move);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			delete move;
 			throw;
 		}
 	}
 }
 
-void deAnimModule::pReadMoveFps( decBaseFileReader &reader, deAnimationMove &move, sInfo &info ){
-	if( info.deprOldFormat ){
+void deAnimModule::pReadMoveFps(decBaseFileReader &reader, deAnimationMove &move, sInfo &info){
+	if(info.deprOldFormat){
 		const int fps = reader.ReadByte();
-		info.timeFactor = 1.0f / ( float )fps;
+		info.timeFactor = 1.0f / (float)fps;
 		
 		info.playtimeFrames = reader.ReadUShort();
 		
-		move.SetFPS( ( float )fps );
-		move.SetPlaytime( info.timeFactor * ( float )info.playtimeFrames );
+		move.SetFPS((float)fps);
+		move.SetPlaytime(info.timeFactor * (float)info.playtimeFrames);
 		
 	}else{
 		const float playtimeSeconds = reader.ReadFloat();
@@ -523,8 +523,8 @@ void deAnimModule::pReadMoveFps( decBaseFileReader &reader, deAnimationMove &mov
 		
 		info.playtimeFrames = reader.ReadUShort();
 		
-		if( info.playtimeFrames > 0 ){
-			info.timeFactor = playtimeSeconds / ( float )info.playtimeFrames;
+		if(info.playtimeFrames > 0){
+			info.timeFactor = playtimeSeconds / (float)info.playtimeFrames;
 			fps = 1.0f / info.timeFactor;
 			
 		}else{
@@ -532,60 +532,60 @@ void deAnimModule::pReadMoveFps( decBaseFileReader &reader, deAnimationMove &mov
 			fps = 50.0f;
 		}
 		
-		move.SetFPS( fps );
-		move.SetPlaytime( playtimeSeconds );
+		move.SetFPS(fps);
+		move.SetPlaytime(playtimeSeconds);
 	}
 }
 
-void deAnimModule::pReadMoveBones( decBaseFileReader &reader, deAnimationMove &move, sInfo &info ){
+void deAnimModule::pReadMoveBones(decBaseFileReader &reader, deAnimationMove &move, sInfo &info){
 	int i;
 	
-	for( i=0; i<info.boneCount; i++ ){
+	for(i=0; i<info.boneCount; i++){
 		deAnimationKeyframeList * const list = new deAnimationKeyframeList;
 		
 		try{
 			info.boneFlags = reader.ReadByte();
-			info.hasVarPos = ( info.boneFlags & FLAG_KF_HAS_VAR_POS ) == FLAG_KF_HAS_VAR_POS;
-			info.hasVarRot = ( info.boneFlags & FLAG_KF_HAS_VAR_ROT ) == FLAG_KF_HAS_VAR_ROT;
-			info.hasVarScale = ( info.boneFlags & FLAG_KF_HAS_VAR_SCALE ) == FLAG_KF_HAS_VAR_SCALE;
-			info.fewKeyframes = ( info.boneFlags & FLAG_KF_HAS_FEW_KEYFRAMES ) == FLAG_KF_HAS_FEW_KEYFRAMES;
-			info.ignoreBone = ( info.boneFlags & FLAG_KF_IGNORE_BONE ) == FLAG_KF_IGNORE_BONE;
-			info.formatFloat = ( info.boneFlags & FLAG_KF_FORMAT_FLOAT ) == FLAG_KF_FORMAT_FLOAT;
+			info.hasVarPos = (info.boneFlags & FLAG_KF_HAS_VAR_POS) == FLAG_KF_HAS_VAR_POS;
+			info.hasVarRot = (info.boneFlags & FLAG_KF_HAS_VAR_ROT) == FLAG_KF_HAS_VAR_ROT;
+			info.hasVarScale = (info.boneFlags & FLAG_KF_HAS_VAR_SCALE) == FLAG_KF_HAS_VAR_SCALE;
+			info.fewKeyframes = (info.boneFlags & FLAG_KF_HAS_FEW_KEYFRAMES) == FLAG_KF_HAS_FEW_KEYFRAMES;
+			info.ignoreBone = (info.boneFlags & FLAG_KF_IGNORE_BONE) == FLAG_KF_IGNORE_BONE;
+			info.formatFloat = (info.boneFlags & FLAG_KF_FORMAT_FLOAT) == FLAG_KF_FORMAT_FLOAT;
 			
-			if( ! info.ignoreBone && ( info.hasVarPos || info.hasVarRot || info.hasVarScale ) ){
-				pReadKeyframes( reader, *list, info );
+			if(!info.ignoreBone && (info.hasVarPos || info.hasVarRot || info.hasVarScale)){
+				pReadKeyframes(reader, *list, info);
 			}
 			
-			if( list->GetKeyframeCount() == 0 ){
+			if(list->GetKeyframeCount() == 0){
 				// if there is no keyframe add a dummy one
 				deAnimationKeyframe * const keyframe = new deAnimationKeyframe;
 				
 				try{
-					list->AddKeyframe( keyframe );
+					list->AddKeyframe(keyframe);
 					
-				}catch( const deException & ){
+				}catch(const deException &){
 					delete keyframe;
 					throw;
 				}
 			}
 			
-			move.AddKeyframeList( list );
+			move.AddKeyframeList(list);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			delete list;
 			throw;
 		}
 	}
 }
 
-void deAnimModule::pReadKeyframes( decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info ){
+void deAnimModule::pReadKeyframes(decBaseFileReader &reader, deAnimationKeyframeList &list, sInfo &info){
 	int i, keyframeCount;
 	
-	if( info.fewKeyframes ){
+	if(info.fewKeyframes){
 		keyframeCount = reader.ReadUShort();
 		
 	}else{
-		if( info.deprOldFormat ){
+		if(info.deprOldFormat){
 			keyframeCount = info.playtimeFrames;
 			
 		}else{
@@ -593,287 +593,287 @@ void deAnimModule::pReadKeyframes( decBaseFileReader &reader, deAnimationKeyfram
 		}
 	}
 	
-	for( i=0; i<keyframeCount; i++ ){
-		pReadKeyframe( reader, list, info, i );
+	for(i=0; i<keyframeCount; i++){
+		pReadKeyframe(reader, list, info, i);
 	}
 }
 
-void deAnimModule::pReadKeyframe( decBaseFileReader &reader, deAnimationKeyframeList &list,
-sInfo &info, int frameNumber ){
+void deAnimModule::pReadKeyframe(decBaseFileReader &reader, deAnimationKeyframeList &list,
+sInfo &info, int frameNumber){
 	deAnimationKeyframe * const keyframe = new deAnimationKeyframe;
 	
 	try{
 		// read time if we have few keyframes
-		if( info.fewKeyframes ){
-			keyframe->SetTime( info.timeFactor * ( float )reader.ReadUShort() );
-			if( keyframe->GetTime() < 0 ){
-				DETHROW( deeInvalidFormat );
+		if(info.fewKeyframes){
+			keyframe->SetTime(info.timeFactor * (float)reader.ReadUShort());
+			if(keyframe->GetTime() < 0){
+				DETHROW(deeInvalidFormat);
 			}
 			
 		}else{
-			keyframe->SetTime( info.timeFactor * ( float )frameNumber );
+			keyframe->SetTime(info.timeFactor * (float)frameNumber);
 		}
 		
-		if( info.hasVarPos ){
+		if(info.hasVarPos){
 			decVector position;
 			
-			if( info.formatFloat ){
+			if(info.formatFloat){
 				position.x = reader.ReadFloat();
 				position.y = reader.ReadFloat();
 				position.z = reader.ReadFloat();
 				
 			}else{
-				position.x = 0.001f * ( float )reader.ReadShort();
-				position.y = 0.001f * ( float )reader.ReadShort();
-				position.z = 0.001f * ( float )reader.ReadShort();
+				position.x = 0.001f * (float)reader.ReadShort();
+				position.y = 0.001f * (float)reader.ReadShort();
+				position.z = 0.001f * (float)reader.ReadShort();
 			}
 			
-			keyframe->SetPosition( position );
+			keyframe->SetPosition(position);
 		}
 		
-		if( info.hasVarRot ){
+		if(info.hasVarRot){
 			decVector rotation;
 			
-			if( info.formatFloat ){
+			if(info.formatFloat){
 				rotation.x = reader.ReadFloat();
 				rotation.y = reader.ReadFloat();
 				rotation.z = reader.ReadFloat();
 				
 			}else{
-				rotation.x = ( 0.01f * ( float )reader.ReadShort() ) * DEG2RAD;
-				rotation.y = ( 0.01f * ( float )reader.ReadShort() ) * DEG2RAD;
-				rotation.z = ( 0.01f * ( float )reader.ReadShort() ) * DEG2RAD;
+				rotation.x = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
+				rotation.y = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
+				rotation.z = (0.01f * (float)reader.ReadShort()) * DEG2RAD;
 			}
 			
-			keyframe->SetRotation( rotation );
+			keyframe->SetRotation(rotation);
 		}
 		
-		if( info.hasVarScale ){
+		if(info.hasVarScale){
 			decVector scale;
 			
-			if( info.formatFloat ){
+			if(info.formatFloat){
 				scale.x = reader.ReadFloat();
 				scale.y = reader.ReadFloat();
 				scale.z = reader.ReadFloat();
 				
 			}else{
-				scale.x = 0.01f * ( float )reader.ReadShort();
-				scale.y = 0.01f * ( float )reader.ReadShort();
-				scale.z = 0.01f * ( float )reader.ReadShort();
+				scale.x = 0.01f * (float)reader.ReadShort();
+				scale.y = 0.01f * (float)reader.ReadShort();
+				scale.z = 0.01f * (float)reader.ReadShort();
 			}
 			
-			keyframe->SetScale( scale );
+			keyframe->SetScale(scale);
 		}
 		
-		list.AddKeyframe( keyframe );
+		list.AddKeyframe(keyframe);
 		
-	}catch( const deException & ){
-		if( keyframe ){
+	}catch(const deException &){
+		if(keyframe){
 			delete keyframe;
 		}
 		throw;
 	}
 }
 
-void deAnimModule::pReadMoveVertexPositionSets( decBaseFileReader &reader, deAnimationMove &move, sInfo &info ){
+void deAnimModule::pReadMoveVertexPositionSets(decBaseFileReader &reader, deAnimationMove &move, sInfo &info){
 	int i;
 	
-	for( i=0; i<info.vertexPositionSetCount; i++ ){
+	for(i=0; i<info.vertexPositionSetCount; i++){
 		deAnimationKeyframeVertexPositionSetList * const list = new deAnimationKeyframeVertexPositionSetList;
 		
 		try{
 			info.vertexPositionSetFlags = reader.ReadByte();
-			info.hasVarWeight = ( info.vertexPositionSetFlags & FLAG_KFVPS_HAS_VAR_WEIGHT ) == FLAG_KFVPS_HAS_VAR_WEIGHT;
-			info.fewKeyframes = ( info.vertexPositionSetFlags & FLAG_KFVPS_HAS_FEW_KEYFRAMES ) == FLAG_KFVPS_HAS_FEW_KEYFRAMES;
-			info.ignoreSet = ( info.vertexPositionSetFlags & FLAG_KFVPS_IGNORE_SET ) == FLAG_KFVPS_IGNORE_SET;
-			info.formatFloat = ( info.vertexPositionSetFlags & FLAG_KFVPS_FORMAT_FLOAT ) == FLAG_KFVPS_FORMAT_FLOAT;
+			info.hasVarWeight = (info.vertexPositionSetFlags & FLAG_KFVPS_HAS_VAR_WEIGHT) == FLAG_KFVPS_HAS_VAR_WEIGHT;
+			info.fewKeyframes = (info.vertexPositionSetFlags & FLAG_KFVPS_HAS_FEW_KEYFRAMES) == FLAG_KFVPS_HAS_FEW_KEYFRAMES;
+			info.ignoreSet = (info.vertexPositionSetFlags & FLAG_KFVPS_IGNORE_SET) == FLAG_KFVPS_IGNORE_SET;
+			info.formatFloat = (info.vertexPositionSetFlags & FLAG_KFVPS_FORMAT_FLOAT) == FLAG_KFVPS_FORMAT_FLOAT;
 			
-			if( ! info.ignoreSet && info.hasVarWeight ){
-				pReadKeyframes( reader, *list, info );
+			if(!info.ignoreSet && info.hasVarWeight){
+				pReadKeyframes(reader, *list, info);
 			}
 			
-			if( list->GetKeyframeCount() == 0 ){
+			if(list->GetKeyframeCount() == 0){
 				// if there is no keyframe add a dummy one
 				deAnimationKeyframeVertexPositionSet * const keyframe = new deAnimationKeyframeVertexPositionSet;
 				
 				try{
-					list->AddKeyframe( keyframe );
+					list->AddKeyframe(keyframe);
 					
-				}catch( const deException & ){
+				}catch(const deException &){
 					delete keyframe;
 					throw;
 				}
 			}
 			
-			move.AddVertexPositionSetKeyframeList( list );
+			move.AddVertexPositionSetKeyframeList(list);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			delete list;
 			throw;
 		}
 	}
 }
 
-void deAnimModule::pReadKeyframes( decBaseFileReader &reader,
-deAnimationKeyframeVertexPositionSetList &list, sInfo &info ){
+void deAnimModule::pReadKeyframes(decBaseFileReader &reader,
+deAnimationKeyframeVertexPositionSetList &list, sInfo &info){
 	int i, keyframeCount;
 	
-	if( info.fewKeyframes ){
+	if(info.fewKeyframes){
 		keyframeCount = reader.ReadUShort();
 		
 	}else{
 		keyframeCount = info.playtimeFrames + 1;
 	}
 	
-	for( i=0; i<keyframeCount; i++ ){
-		pReadKeyframe( reader, list, info, i );
+	for(i=0; i<keyframeCount; i++){
+		pReadKeyframe(reader, list, info, i);
 	}
 }
 
-void deAnimModule::pReadKeyframe( decBaseFileReader &reader,
-deAnimationKeyframeVertexPositionSetList &list, sInfo &info, int frameNumber ){
+void deAnimModule::pReadKeyframe(decBaseFileReader &reader,
+deAnimationKeyframeVertexPositionSetList &list, sInfo &info, int frameNumber){
 	deAnimationKeyframeVertexPositionSet * const keyframe = new deAnimationKeyframeVertexPositionSet;
 	
 	try{
 		// read time if we have few keyframes
-		if( info.fewKeyframes ){
-			keyframe->SetTime( info.timeFactor * ( float )reader.ReadUShort() );
-			if( keyframe->GetTime() < 0 ){
-				DETHROW( deeInvalidFormat );
+		if(info.fewKeyframes){
+			keyframe->SetTime(info.timeFactor * (float)reader.ReadUShort());
+			if(keyframe->GetTime() < 0){
+				DETHROW(deeInvalidFormat);
 			}
 			
 		}else{
-			keyframe->SetTime( info.timeFactor * ( float )frameNumber );
+			keyframe->SetTime(info.timeFactor * (float)frameNumber);
 		}
 		
-		if( info.hasVarWeight ){
-			if( info.formatFloat ){
-				keyframe->SetWeight( reader.ReadFloat() );
+		if(info.hasVarWeight){
+			if(info.formatFloat){
+				keyframe->SetWeight(reader.ReadFloat());
 				
 			}else{
-				keyframe->SetWeight( 0.001f * ( float )reader.ReadShort() );
+				keyframe->SetWeight(0.001f * (float)reader.ReadShort());
 			}
 		}
 		
-		list.AddKeyframe( keyframe );
+		list.AddKeyframe(keyframe);
 		
-	}catch( const deException & ){
-		if( keyframe ){
+	}catch(const deException &){
+		if(keyframe){
 			delete keyframe;
 		}
 		throw;
 	}
 }
 
-void deAnimModule::pWriteKeyframeData( decBaseFileWriter &writer, const sConfig &config,
-const deAnimationKeyframe &keyframe ){
-	if( config.hasVarPos ){
-		pWriteKeyframePosition( writer, config, keyframe.GetPosition() );
+void deAnimModule::pWriteKeyframeData(decBaseFileWriter &writer, const sConfig &config,
+const deAnimationKeyframe &keyframe){
+	if(config.hasVarPos){
+		pWriteKeyframePosition(writer, config, keyframe.GetPosition());
 	}
-	if( config.hasVarRot ){
-		pWriteKeyframeRotation( writer, config, keyframe.GetRotation() );
+	if(config.hasVarRot){
+		pWriteKeyframeRotation(writer, config, keyframe.GetRotation());
 	}
-	if( config.hasVarScale ){
-		pWriteKeyframeScale( writer, config, keyframe.GetScale() );
+	if(config.hasVarScale){
+		pWriteKeyframeScale(writer, config, keyframe.GetScale());
 	}
 }
 
-void deAnimModule::pWriteKeyframeDataInterpolate( decBaseFileWriter &writer,
+void deAnimModule::pWriteKeyframeDataInterpolate(decBaseFileWriter &writer,
 const sConfig &config, const deAnimationKeyframe &keyframePrev,
-const deAnimationKeyframe &keyframeNext, int frameSteps ){
+const deAnimationKeyframe &keyframeNext, int frameSteps){
 	int i;
-	for( i=1; i<frameSteps; i++ ){
-		const float blend = ( float )i / ( float )frameSteps;
+	for(i=1; i<frameSteps; i++){
+		const float blend = (float)i / (float)frameSteps;
 		
-		if( config.hasVarPos ){
-			pWriteKeyframePosition( writer, config,
-				keyframePrev.GetPosition().Mix( keyframeNext.GetPosition(), blend ) );
+		if(config.hasVarPos){
+			pWriteKeyframePosition(writer, config,
+				keyframePrev.GetPosition().Mix(keyframeNext.GetPosition(), blend));
 		}
-		if( config.hasVarRot ){
-			pWriteKeyframeRotation( writer, config,
-				keyframePrev.GetRotation().Mix( keyframeNext.GetRotation(), blend ) );
+		if(config.hasVarRot){
+			pWriteKeyframeRotation(writer, config,
+				keyframePrev.GetRotation().Mix(keyframeNext.GetRotation(), blend));
 		}
-		if( config.hasVarScale ){
-			pWriteKeyframeScale( writer, config,
-				keyframePrev.GetScale().Mix( keyframeNext.GetScale(), blend ) );
+		if(config.hasVarScale){
+			pWriteKeyframeScale(writer, config,
+				keyframePrev.GetScale().Mix(keyframeNext.GetScale(), blend));
 		}
 	}
 	
-	pWriteKeyframeData( writer, config, keyframeNext );
+	pWriteKeyframeData(writer, config, keyframeNext);
 }
 
-void deAnimModule::pWriteKeyframePosition( decBaseFileWriter &writer,
-const sConfig &config, const decVector &position ){
-	if( config.formatFloat ){
-		writer.WriteFloat( position.x );
-		writer.WriteFloat( position.y );
-		writer.WriteFloat( position.z );
+void deAnimModule::pWriteKeyframePosition(decBaseFileWriter &writer,
+const sConfig &config, const decVector &position){
+	if(config.formatFloat){
+		writer.WriteFloat(position.x);
+		writer.WriteFloat(position.y);
+		writer.WriteFloat(position.z);
 		
 	}else{
-		writer.WriteShort( ( short )( position.x * 1000.0f + 0.5f ) );
-		writer.WriteShort( ( short )( position.y * 1000.0f + 0.5f ) );
-		writer.WriteShort( ( short )( position.z * 1000.0f + 0.5f ) );
+		writer.WriteShort((short)(position.x * 1000.0f + 0.5f));
+		writer.WriteShort((short)(position.y * 1000.0f + 0.5f));
+		writer.WriteShort((short)(position.z * 1000.0f + 0.5f));
 	}
 }
 
-void deAnimModule::pWriteKeyframeRotation( decBaseFileWriter &writer,
-const sConfig &config, const decVector &rotation ){
-	if( config.formatFloat ){
-		writer.WriteFloat( rotation.x );
-		writer.WriteFloat( rotation.y );
-		writer.WriteFloat( rotation.z );
+void deAnimModule::pWriteKeyframeRotation(decBaseFileWriter &writer,
+const sConfig &config, const decVector &rotation){
+	if(config.formatFloat){
+		writer.WriteFloat(rotation.x);
+		writer.WriteFloat(rotation.y);
+		writer.WriteFloat(rotation.z);
 		
 	}else{
-		writer.WriteShort( ( short )( rotation.x * RAD2DEG * 100.0f + 0.5f ) );
-		writer.WriteShort( ( short )( rotation.y * RAD2DEG * 100.0f + 0.5f ) );
-		writer.WriteShort( ( short )( rotation.z * RAD2DEG * 100.0f + 0.5f ) );
+		writer.WriteShort((short)(rotation.x * RAD2DEG * 100.0f + 0.5f));
+		writer.WriteShort((short)(rotation.y * RAD2DEG * 100.0f + 0.5f));
+		writer.WriteShort((short)(rotation.z * RAD2DEG * 100.0f + 0.5f));
 	}
 }
 
-void deAnimModule::pWriteKeyframeScale( decBaseFileWriter &writer,
-const sConfig &config, const decVector &scale ){
-	if( config.formatFloat ){
-		writer.WriteFloat( scale.x );
-		writer.WriteFloat( scale.y );
-		writer.WriteFloat( scale.z );
+void deAnimModule::pWriteKeyframeScale(decBaseFileWriter &writer,
+const sConfig &config, const decVector &scale){
+	if(config.formatFloat){
+		writer.WriteFloat(scale.x);
+		writer.WriteFloat(scale.y);
+		writer.WriteFloat(scale.z);
 		
 	}else{
-		writer.WriteShort( ( short )( scale.x * 100.0f + 0.5f ) );
-		writer.WriteShort( ( short )( scale.y * 100.0f + 0.5f ) );
-		writer.WriteShort( ( short )( scale.z * 100.0f + 0.5f ) );
+		writer.WriteShort((short)(scale.x * 100.0f + 0.5f));
+		writer.WriteShort((short)(scale.y * 100.0f + 0.5f));
+		writer.WriteShort((short)(scale.z * 100.0f + 0.5f));
 	}
 }
 
-void deAnimModule::pWriteKeyframeData( decBaseFileWriter &writer, const sConfig2 &config,
-const deAnimationKeyframeVertexPositionSet &keyframe ){
-	if( config.hasVarWeight ){
-		pWriteKeyframeWeight( writer, config, keyframe.GetWeight() );
+void deAnimModule::pWriteKeyframeData(decBaseFileWriter &writer, const sConfig2 &config,
+const deAnimationKeyframeVertexPositionSet &keyframe){
+	if(config.hasVarWeight){
+		pWriteKeyframeWeight(writer, config, keyframe.GetWeight());
 	}
 }
 
-void deAnimModule::pWriteKeyframeDataInterpolate( decBaseFileWriter &writer,
+void deAnimModule::pWriteKeyframeDataInterpolate(decBaseFileWriter &writer,
 const sConfig2 &config, const deAnimationKeyframeVertexPositionSet &keyframePrev,
-const deAnimationKeyframeVertexPositionSet &keyframeNext, int frameSteps ) {
+const deAnimationKeyframeVertexPositionSet &keyframeNext, int frameSteps) {
 	int i;
-	for( i=1; i<frameSteps; i++ ){
-		const float blend = ( float )i / ( float )frameSteps;
+	for(i=1; i<frameSteps; i++){
+		const float blend = (float)i / (float)frameSteps;
 		
-		if( config.hasVarWeight ){
+		if(config.hasVarWeight){
 			const float a = keyframePrev.GetWeight();
 			const float b = keyframeNext.GetWeight();
-			pWriteKeyframeWeight( writer, config, a * ( 1.0f - blend ) + b * blend );
+			pWriteKeyframeWeight(writer, config, a * (1.0f - blend) + b * blend);
 		}
 	}
 	
-	pWriteKeyframeData( writer, config, keyframeNext );
+	pWriteKeyframeData(writer, config, keyframeNext);
 }
 
-void deAnimModule::pWriteKeyframeWeight( decBaseFileWriter &writer, const sConfig2 &config, float weight ){
-	if( config.formatFloat ){
-		writer.WriteFloat( weight );
+void deAnimModule::pWriteKeyframeWeight(decBaseFileWriter &writer, const sConfig2 &config, float weight){
+	if(config.formatFloat){
+		writer.WriteFloat(weight);
 		
 	}else{
-		writer.WriteShort( ( short )( weight * 1000.0f + 0.5f ) );
+		writer.WriteShort((short)(weight * 1000.0f + 0.5f));
 	}
 }
 

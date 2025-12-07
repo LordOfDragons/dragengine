@@ -61,8 +61,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCLMaskPaint::meCLMaskPaint( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meCLMaskPaint::meCLMaskPaint(meWorld *world){
+	if(!world) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = NULL;
@@ -74,7 +74,7 @@ meCLMaskPaint::meCLMaskPaint( meWorld *world ){
 }
 
 meCLMaskPaint::~meCLMaskPaint(){
-	if( pOldValues ) delete [] pOldValues;
+	if(pOldValues) delete [] pOldValues;
 }
 
 
@@ -82,12 +82,12 @@ meCLMaskPaint::~meCLMaskPaint(){
 // Management
 ///////////////
 
-void meCLMaskPaint::SetTexture( meHeightTerrainSector *sector, meHeightTerrainTexture *texture ){
+void meCLMaskPaint::SetTexture(meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
 	pSector = sector;
 	pTexture = texture;
 }
 
-void meCLMaskPaint::SetRay( const decDVector &origin, const decVector &direction ){
+void meCLMaskPaint::SetRay(const decDVector &origin, const decVector &direction){
 	pRayOrigin = origin;
 	pRayDirection = direction;
 }
@@ -97,7 +97,7 @@ bool meCLMaskPaint::CanPaint() const{
 }
 
 void meCLMaskPaint::BeginSession(){
-	if( pOldValues ){
+	if(pOldValues){
 		delete [] pOldValues;
 		pOldValues = NULL;
 	}
@@ -110,7 +110,7 @@ void meCLMaskPaint::BeginSession(){
 }
 
 void meCLMaskPaint::PreparePaint(){
-	if( ! pSector || ! pTexture ) return;
+	if(!pSector || !pTexture) return;
 	
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	float sectorDim = hterrain->GetSectorSize();
@@ -120,17 +120,17 @@ void meCLMaskPaint::PreparePaint(){
 	pDrawMode = guiparams.GetMPDrawMode();
 	
 	//pRadius = pWorld->GetHPRadius();
-	pRadius = guiparams.GetMPRadius() * ( float )imageDim / sectorDim;
+	pRadius = guiparams.GetMPRadius() * (float)imageDim / sectorDim;
 	
-	pPaintRadius = ( float )imageDim * pRadius / sectorDim;
-	pPaintInverseScale = sectorDim / ( float )imageDim;
+	pPaintRadius = (float)imageDim * pRadius / sectorDim;
+	pPaintInverseScale = sectorDim / (float)imageDim;
 	
 	pHitDistance = 0.0f;
 	pHasHit = false;
 }
 
 void meCLMaskPaint::Paint(){
-	if( pHasHit && pSector && pTexture ){
+	if(pHasHit && pSector && pTexture){
 		const decPoint &scoord = pSector->GetCoordinates();
 		meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 		float sectorDim = hterrain->GetSectorSize();
@@ -141,27 +141,27 @@ void meCLMaskPaint::Paint(){
 		divX = pHitPoint.x / sectorDim + 0.5;
 		divZ = 0.5 - pHitPoint.z / sectorDim;
 		
-		pPaintGrid.x = ( float )( ( divX - ( double )scoord.x ) * ( double )( imageDim + 1 ) );
-		if( pPaintGrid.x < 0.0f ) pPaintGrid.x += sectorDim;
-		pPaintGrid.y = ( float )( ( divZ - ( double )scoord.y ) * ( double )( imageDim + 1 ) );
-		if( pPaintGrid.y < 0.0f ) pPaintGrid.y += sectorDim;
+		pPaintGrid.x = (float)((divX - (double)scoord.x) * (double)(imageDim + 1));
+		if(pPaintGrid.x < 0.0f) pPaintGrid.x += sectorDim;
+		pPaintGrid.y = (float)((divZ - (double)scoord.y) * (double)(imageDim + 1));
+		if(pPaintGrid.y < 0.0f) pPaintGrid.y += sectorDim;
 		
 		// update the old heights
-		if( ! pOldValues ){
-			pSessionGrid.x = ( int )pPaintGrid.x;
-			if( pSessionGrid.x < 0 ) pSessionGrid.x = 0;
-			if( pSessionGrid.x >= imageDim ) pSessionGrid.x = imageDim - 1;
+		if(!pOldValues){
+			pSessionGrid.x = (int)pPaintGrid.x;
+			if(pSessionGrid.x < 0) pSessionGrid.x = 0;
+			if(pSessionGrid.x >= imageDim) pSessionGrid.x = imageDim - 1;
 			
-			pSessionGrid.y = ( int )pPaintGrid.y;
-			if( pSessionGrid.y < 0 ) pSessionGrid.y = 0;
-			if( pSessionGrid.y >= imageDim ) pSessionGrid.y = imageDim - 1;
+			pSessionGrid.y = (int)pPaintGrid.y;
+			if(pSessionGrid.y < 0) pSessionGrid.y = 0;
+			if(pSessionGrid.y >= imageDim) pSessionGrid.y = imageDim - 1;
 			
 //pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLMaskPaint::Paint] session: s=(%i,%i) g=(%i,%i)\n", pSessionSector.x, pSessionSector.y, pSessionGrid.x, pSessionGrid.y );
 		}
 		
-		pUpdateOldValues( pPaintGrid, decVector2( pPaintRadius, pPaintRadius ) );
+		pUpdateOldValues(pPaintGrid, decVector2(pPaintRadius, pPaintRadius));
 		
-		if( pDrawMode == meWorldGuiParameters::empdmDraw ){
+		if(pDrawMode == meWorldGuiParameters::empdmDraw){
 			pPaintDraw();
 			
 		}else{
@@ -175,14 +175,14 @@ void meCLMaskPaint::Paint(){
 
 void meCLMaskPaint::EndSession(){
 	// check if we have any changes at all
-	if( pOldValues ){
+	if(pOldValues){
 		pWorld->GetUndoSystem()->Add(meUHTPaintMask::Ref::NewWith(pDrawMode, pWorld,
 			pSector, pTexture, decPoint(pAreaGrid.x1, pAreaGrid.y1),
 			decPoint(pModifyWidth, pModifyHeight), pOldValues), false);
 	}
 	
 	// clean up
-	if( pOldValues ){
+	if(pOldValues){
 		delete [] pOldValues;
 		pOldValues = NULL;
 	}
@@ -198,15 +198,15 @@ void meCLMaskPaint::EndSession(){
 // Notifications
 //////////////////
 
-void meCLMaskPaint::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( ! pSector || ! pTexture ){
+void meCLMaskPaint::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(!pSector || !pTexture){
 		return;
 	}
 	
-	if( info->IsHTSector() ){
+	if(info->IsHTSector()){
 		const float distance = info->GetDistance();
 		
-		if( ! pHasHit || distance < pHitDistance ){
+		if(!pHasHit || distance < pHitDistance){
 			pHasHit = true;
 			pHitPoint = pRayOrigin + pRayDirection * distance;
 			pHitDistance = distance;
@@ -214,11 +214,11 @@ void meCLMaskPaint::CollisionResponse( deCollider *owner, deCollisionInfo *info 
 	}
 }
 
-bool meCLMaskPaint::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool meCLMaskPaint::CanHitCollider(deCollider *owner, deCollider *collider){
 	return false;
 }
 
-void meCLMaskPaint::ColliderChanged( deCollider *owner ){
+void meCLMaskPaint::ColliderChanged(deCollider *owner){
 }
 
 
@@ -241,30 +241,30 @@ void meCLMaskPaint::pPaintDraw(){
 	region.x2 = pAreaModifyGrid.x2;
 	region.y2 = pAreaModifyGrid.y2;
 	
-	if( region.x2 >= 0 && region.y2 >= 0 && region.x1 < imageDim && region.y1 < imageDim ){
-		meTerrainMaskImage tmi( mask );
+	if(region.x2 >= 0 && region.y2 >= 0 && region.x1 < imageDim && region.y1 < imageDim){
+		meTerrainMaskImage tmi(mask);
 		
-		if( region.x1 < 0 ) region.x1 = 0;
-		if( region.y1 < 0 ) region.y1 = 0;
-		if( region.x2 >= imageDim ) region.x2 = imageDim - 1;
-		if( region.y2 >= imageDim ) region.y2 = imageDim - 1;
+		if(region.x1 < 0) region.x1 = 0;
+		if(region.y1 < 0) region.y1 = 0;
+		if(region.x2 >= imageDim) region.x2 = imageDim - 1;
+		if(region.y2 >= imageDim) region.y2 = imageDim - 1;
 		
 		center.x = pPaintGrid.x;
 		center.y = pPaintGrid.y;
 		
-		for( y=region.y1; y<=region.y2; y++ ){
+		for(y=region.y1; y<=region.y2; y++){
 			base = imageDim * y;
 			
-			for( x=region.x1; x<=region.x2; x++ ){
-				rx = ( float )x - center.x;
-				ry = ( float )y - center.y;
-				if( rx * rx + ry * ry <= doubleRadius ){
-					tmi.SetMaskValueAt( base + x, 255 );
+			for(x=region.x1; x<=region.x2; x++){
+				rx = (float)x - center.x;
+				ry = (float)y - center.y;
+				if(rx * rx + ry * ry <= doubleRadius){
+					tmi.SetMaskValueAt(base + x, 255);
 				}
 			}
 		}
 		
-		pTexture->SetMaskChanged( true );
+		pTexture->SetMaskChanged(true);
 		pTexture->NotifyTextureMaskChanged();
 	}
 }
@@ -284,38 +284,38 @@ void meCLMaskPaint::pPaintErase(){
 	region.x2 = pAreaModifyGrid.x2;
 	region.y2 = pAreaModifyGrid.y2;
 	
-	if( region.x2 >= 0 && region.y2 >= 0 && region.x1 < imageDim && region.y1 < imageDim ){
-		meTerrainMaskImage tmi( mask );
+	if(region.x2 >= 0 && region.y2 >= 0 && region.x1 < imageDim && region.y1 < imageDim){
+		meTerrainMaskImage tmi(mask);
 		
-		if( region.x1 < 0 ) region.x1 = 0;
-		if( region.y1 < 0 ) region.y1 = 0;
-		if( region.x2 >= imageDim ) region.x2 = imageDim - 1;
-		if( region.y2 >= imageDim ) region.y2 = imageDim - 1;
+		if(region.x1 < 0) region.x1 = 0;
+		if(region.y1 < 0) region.y1 = 0;
+		if(region.x2 >= imageDim) region.x2 = imageDim - 1;
+		if(region.y2 >= imageDim) region.y2 = imageDim - 1;
 		
 		center.x = pPaintGrid.x;
 		center.y = pPaintGrid.y;
 		
-		for( y=region.y1; y<=region.y2; y++ ){
+		for(y=region.y1; y<=region.y2; y++){
 			base = imageDim * y;
 			
-			for( x=region.x1; x<=region.x2; x++ ){
-				rx = ( float )x - center.x;
-				ry = ( float )y - center.y;
-				if( rx * rx + ry * ry <= doubleRadius ){
-					tmi.SetMaskValueAt( base + x, 0 );
+			for(x=region.x1; x<=region.x2; x++){
+				rx = (float)x - center.x;
+				ry = (float)y - center.y;
+				if(rx * rx + ry * ry <= doubleRadius){
+					tmi.SetMaskValueAt(base + x, 0);
 				}
 			}
 		}
 		
-		pTexture->SetMaskChanged( true );
+		pTexture->SetMaskChanged(true);
 		pTexture->NotifyTextureMaskChanged();
 	}
 }
 
 
 
-void meCLMaskPaint::pUpdateOldValues( const decVector2 &grid, const decVector2 &size ){
-	meTerrainMaskImage tmi( pTexture->GetOrAddMaskImage() );
+void meCLMaskPaint::pUpdateOldValues(const decVector2 &grid, const decVector2 &size){
+	meTerrainMaskImage tmi(pTexture->GetOrAddMaskImage());
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	const int imageDim = hterrain->GetSectorResolution();
 	decBoundary growMargins;
@@ -324,37 +324,37 @@ void meCLMaskPaint::pUpdateOldValues( const decVector2 &grid, const decVector2 &
 	
 //pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLMaskPaint::pGrowHeights] se=(%i,%i) gr=(%g,%g) si=(%g,%g)\n", sector.x, sector.y, grid.x, grid.y, size.x, size.y );
 	// determine the covered area
-	pAreaModifyGrid.x1 = ( int )floor( grid.x - size.x );
-	if( pAreaModifyGrid.x1 < 0 ) pAreaModifyGrid.x1 = 0;
+	pAreaModifyGrid.x1 = (int)floor(grid.x - size.x);
+	if(pAreaModifyGrid.x1 < 0) pAreaModifyGrid.x1 = 0;
 	
-	pAreaModifyGrid.y1 = ( int )floor( grid.y - size.y );
-	if( pAreaModifyGrid.y1 < 0 ) pAreaModifyGrid.y1 = 0;
+	pAreaModifyGrid.y1 = (int)floor(grid.y - size.y);
+	if(pAreaModifyGrid.y1 < 0) pAreaModifyGrid.y1 = 0;
 	
-	pAreaModifyGrid.x2 = ( int )ceil( grid.x + size.x );
-	if( pAreaModifyGrid.x2 >= imageDim ) pAreaModifyGrid.x2 = imageDim - 1;
+	pAreaModifyGrid.x2 = (int)ceil(grid.x + size.x);
+	if(pAreaModifyGrid.x2 >= imageDim) pAreaModifyGrid.x2 = imageDim - 1;
 	
-	pAreaModifyGrid.y2 = ( int )ceil( grid.y + size.y );
-	if( pAreaModifyGrid.y2 >= imageDim ) pAreaModifyGrid.y2 = imageDim - 1;
+	pAreaModifyGrid.y2 = (int)ceil(grid.y + size.y);
+	if(pAreaModifyGrid.y2 >= imageDim) pAreaModifyGrid.y2 = imageDim - 1;
 	
 	// determine the grow parameters
 //pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLMaskPaint::pGrowHeights] as=(%i,%i,%i,%i) ag=(%i,%i,%i,%i)\n", pAreaModifySector.x1, pAreaModifySector.y1, pAreaModifySector.x2, pAreaModifySector.y2, pAreaModifyGrid.x1, pAreaModifyGrid.y1, pAreaModifyGrid.x2, pAreaModifyGrid.y2 );
-	if( pOldValues ){
-		if( pAreaModifyGrid.x1 < pAreaGrid.x1 ){
+	if(pOldValues){
+		if(pAreaModifyGrid.x1 < pAreaGrid.x1){
 			growMargins.x1 = pAreaGrid.x1 - pAreaModifyGrid.x1;
 			pAreaGrid.x1 = pAreaModifyGrid.x1;
 		}
 		
-		if( pAreaModifyGrid.y1 < pAreaGrid.y1 ){
+		if(pAreaModifyGrid.y1 < pAreaGrid.y1){
 			growMargins.y1 = pAreaGrid.y1 - pAreaModifyGrid.y1;
 			pAreaGrid.y1 = pAreaModifyGrid.y1;
 		}
 		
-		if( pAreaModifyGrid.x2 > pAreaGrid.x2 ){
+		if(pAreaModifyGrid.x2 > pAreaGrid.x2){
 			growMargins.x2 = pAreaModifyGrid.x2 - pAreaGrid.x2;
 			pAreaGrid.x2 = pAreaModifyGrid.x2;
 		}
 		
-		if( pAreaModifyGrid.y2 > pAreaGrid.y2 ){
+		if(pAreaModifyGrid.y2 > pAreaGrid.y2){
 			growMargins.y2 = pAreaModifyGrid.y2 - pAreaGrid.y2;
 			pAreaGrid.y2 = pAreaModifyGrid.y2;
 		}
@@ -373,7 +373,7 @@ void meCLMaskPaint::pUpdateOldValues( const decVector2 &grid, const decVector2 &
 	
 //pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLMaskPaint::pGrowHeights] gm=(%i,%i,%i,%i) gb=(%i,%i)\n", growMargins.x1, growMargins.y1, growMargins.x2, growMargins.y2, growBy.x, growBy.y );
 	// grow if required preserving the old height values
-	if( growBy.x > 0 || growBy.y > 0 ){
+	if(growBy.x > 0 || growBy.y > 0){
 		int y, newHeight = pModifyHeight + growBy.y;
 		int x, newWidth = pModifyWidth + growBy.x;
 		unsigned char *oldValues = NULL;
@@ -386,29 +386,29 @@ void meCLMaskPaint::pUpdateOldValues( const decVector2 &grid, const decVector2 &
 		retain.y2 = growMargins.y1 + pModifyHeight;
 		
 		try{
-			oldValues = new unsigned char[ newWidth * newHeight ];
-			if( ! oldValues ) DETHROW( deeOutOfMemory );
+			oldValues = new unsigned char[newWidth * newHeight];
+			if(!oldValues) DETHROW(deeOutOfMemory);
 			
-			for( y=0; y<newHeight; y++ ){
-				for( x=0; x<newWidth; x++ ){
-					if( x>=retain.x1 && y>=retain.y1 && x<retain.x2 && y<retain.y2 ){
-						oldValues[ y * newWidth + x ] = pOldValues[ ( y - retain.y1 ) * pModifyWidth + ( x - retain.x1 ) ];
+			for(y=0; y<newHeight; y++){
+				for(x=0; x<newWidth; x++){
+					if(x>=retain.x1 && y>=retain.y1 && x<retain.x2 && y<retain.y2){
+						oldValues[y * newWidth + x] = pOldValues[(y - retain.y1) * pModifyWidth + (x - retain.x1)];
 						
 					}else{
 						sgx = pAreaGrid.x1 + x;
 						sgy = pAreaGrid.y1 + y;
 						
-						oldValues[ y * newWidth + x ] = tmi.GetMaskValueAt( sgy * imageDim + sgx );
+						oldValues[y * newWidth + x] = tmi.GetMaskValueAt(sgy * imageDim + sgx);
 					}
 				}
 			}
 			
-		}catch( const deException & ){
-			if( oldValues ) delete [] oldValues;
+		}catch(const deException &){
+			if(oldValues) delete [] oldValues;
 			throw;
 		}
 		
-		if( pOldValues ) delete [] pOldValues;
+		if(pOldValues) delete [] pOldValues;
 		pOldValues = oldValues;
 		
 		pModifyWidth = newWidth;

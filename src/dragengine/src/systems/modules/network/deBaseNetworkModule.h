@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseNetworkModule( deLoadableModule &loadableModule );
+	deBaseNetworkModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseNetworkModule();
@@ -86,16 +86,16 @@ public:
 	/** \name Frame Management */
 	/*@{*/
 	/** \brief Create peer for world. */
-	virtual deBaseNetworkWorld *CreateWorld( deWorld *world ) = 0;
+	virtual deBaseNetworkWorld *CreateWorld(deWorld *world) = 0;
 	
 	/** \brief Create peer for server. */
-	virtual deBaseNetworkServer *CreateServer( deServer *server ) = 0;
+	virtual deBaseNetworkServer *CreateServer(deServer *server) = 0;
 	
 	/** \brief Create peer for connection. */
-	virtual deBaseNetworkConnection *CreateConnection( deConnection *connection ) = 0;
+	virtual deBaseNetworkConnection *CreateConnection(deConnection *connection) = 0;
 	
 	/** \brief Create peer for state. */
-	virtual deBaseNetworkState *CreateState( deNetworkState *state ) = 0;
+	virtual deBaseNetworkState *CreateState(deNetworkState *state) = 0;
 	/*@}*/
 };
 

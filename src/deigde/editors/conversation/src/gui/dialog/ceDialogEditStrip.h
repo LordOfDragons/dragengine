@@ -50,7 +50,7 @@ public:
 	
 	
 		Listener();
-		virtual float DefaultDuration(  const decString &id );
+		virtual float DefaultDuration(const decString &id);
 		
 	protected:
 		virtual ~Listener();
@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	ceDialogEditStrip( igdeEnvironment &environment, const char *windowTitle, const char *textLabel );
+	ceDialogEditStrip(igdeEnvironment &environment, const char *windowTitle, const char *textLabel);
 	
 protected:
 	/** Clean up dialog. */
@@ -83,28 +83,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set entries in list of possible identifiers to select. */
-	void SetIDList( const decStringList &list );
+	void SetIDList(const decStringList &list);
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Set pause. */
-	void SetPause( float pause );
+	void SetPause(float pause);
 	
 	/** Set duration. */
-	void SetDuration( float duration );
+	void SetDuration(float duration);
 	
 	/** Set from strip. */
-	void SetFromStrip( const ceStrip &strip );
+	void SetFromStrip(const ceStrip &strip);
 	
 	/** Update strip. */
-	void UpdateStrip( ceStrip &strip ) const;
+	void UpdateStrip(ceStrip &strip) const;
 	
 	/** Create new strip from data. */
 	ceStrip *CreateStrip() const;
 	
 	/** Set listener or nullptr. */
-	void SetListener( const Listener::Ref &listener );
+	void SetListener(const Listener::Ref &listener);
 	
 	/** Reset duration to default duration. */
 	void ResetDuration();
@@ -113,7 +113,7 @@ public:
 	inline bool GetAutoResetDuration() const{ return pAutoResetDuration; }
 	
 	/** Set automatically reset duraation on changing identifier. */
-	void SetAutoResetDuration( bool autoResetDuration );
+	void SetAutoResetDuration(bool autoResetDuration);
 	
 	
 	

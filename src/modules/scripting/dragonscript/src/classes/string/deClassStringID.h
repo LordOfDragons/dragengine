@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassStringID( deScriptingDragonScript &ds );
+	deClassStringID(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassStringID();
@@ -68,7 +68,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	
 	
@@ -76,10 +76,10 @@ public:
 	int GetStringCount() const;
 	
 	/** \brief String index. */
-	int GetStringID( dsRealObject *myself );
+	int GetStringID(dsRealObject *myself);
 	
 	/** \brief Push string id with index. */
-	void PushStringID( dsRunTime *rt, int index );
+	void PushStringID(dsRunTime *rt, int index);
 	
 	/**
 	 * \brief Get index for string.
@@ -87,10 +87,10 @@ public:
 	 * If string is absent from mapping table inserts the string first. The returned
 	 * index stays valid for the entire lifetime of the script module.
 	 */
-	int InsertString( const char *string );
+	int InsertString(const char *string);
 	
 	/** \brief String at index. */
-	const decString &GetStringAt( int index ) const;
+	const decString &GetStringAt(int index) const;
 	/*@}*/
 	
 	
@@ -109,24 +109,24 @@ private:
 		dsClass *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNew2 );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNew2);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetString );
+	DEF_NATFUNC(nfGetString);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfToString);
 #undef DEF_NATFUNC
 };
 

@@ -125,8 +125,8 @@ private:
 	deLight::eParameterHints pHintParameter;
 	decString pLightSkinPath;
 	
-	decString pPropertyNames[ epAttachRotation + 1 ];
-	decString pTriggerNames[ etActivated + 1 ];
+	decString pPropertyNames[epAttachRotation + 1];
+	decString pTriggerNames[etActivated + 1];
 	
 	
 	
@@ -137,7 +137,7 @@ public:
 	gdeOCLight();
 	
 	/** \brief Create copy of light. */
-	gdeOCLight( const gdeOCLight &light );
+	gdeOCLight(const gdeOCLight &light);
 	
 	/** \brief Clean up light. */
 	virtual ~gdeOCLight();
@@ -151,7 +151,7 @@ public:
 	inline deLight::eLightTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( deLight::eLightTypes type );
+	void SetType(deLight::eLightTypes type);
 	
 	
 	
@@ -159,31 +159,31 @@ public:
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Intensity. */
 	inline float GetIntensity() const{ return pIntensity; }
 	
 	/** \brief Set intensity. */
-	void SetIntensity( float intensity );
+	void SetIntensity(float intensity);
 	
 	/** \brief Light range in meters. */
 	inline float GetRange() const{ return pRange; }
 	
 	/** \brief Set light range in meters. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Half intensity distance in meters. */
 	inline float GetHalfIntensityDistance() const{ return pHalfIntensityDistance; }
 	
 	/** \brief Set half intensity distance in meters. */
-	void SetHalfIntensityDistance( float distance );
+	void SetHalfIntensityDistance(float distance);
 	
 	/** \brief Ratio of ambient light in relation to the total intensity. */
 	inline float GetAmbientRatio() const{ return pAmbientRatio; }
 	
 	/** \brief Set ratio of ambient light in relation to the total intensity. */
-	void SetAmbientRatio( float ratio );
+	void SetAmbientRatio(float ratio);
 	
 	
 	
@@ -191,13 +191,13 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Sets position relative to parent object. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation relative to parent object. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation relative to parent object. */
-	void SetRotation( const decVector &orientation );
+	void SetRotation(const decVector &orientation);
 	
 	
 	
@@ -205,7 +205,7 @@ public:
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set name of the bone to attach to or empty string. */
-	void SetBoneName( const char *boneName );
+	void SetBoneName(const char *boneName);
 	
 	
 	
@@ -213,25 +213,25 @@ public:
 	inline float GetSpotAngle() const{ return pSpotAngle; }
 	
 	/** \brief Set outer spot angle. */
-	void SetSpotAngle( float angle );
+	void SetSpotAngle(float angle);
 	
 	/** \brief Spot ratio as height divided by width. */
 	inline float GetSpotRatio() const{ return pSpotRatio; }
 	
 	/** \brief Set spot ratio as height divided by width. */
-	void SetSpotRatio( float ratio );
+	void SetSpotRatio(float ratio);
 	
 	/** \brief Spot smoothness. */
 	inline float GetSpotSmoothness() const{ return pSpotSmoothness; }
 	
 	/** \brief Set spot smoothness. */
-	void SetSpotSmoothness( float smoothness );
+	void SetSpotSmoothness(float smoothness);
 	
 	/** \brief Spot exponent. */
 	inline float GetSpotExponent() const{ return pSpotExponent; }
 	
 	/** \brief Set spot exponent. */
-	void SetSpotExponent( float exponent );
+	void SetSpotExponent(float exponent);
 	
 	
 	
@@ -239,25 +239,25 @@ public:
 	inline int GetHintLightImportance() const{ return pHintLightImportance; }
 	
 	/** \brief Set light importance hint. */
-	void SetHintLightImportance( int importance );
+	void SetHintLightImportance(int importance);
 	
 	/** \brief Shadow importance hint. */
 	inline int GetHintShadowImportance() const{ return pHintShadowImportance; }
 	
 	/** \brief Set shadow importance hint. */
-	void SetHintShadowImportance( int importance );
+	void SetHintShadowImportance(int importance);
 	
 	/** \brief Movement hint. */
 	inline deLight::eMovementHints GetHintMovement() const{ return pHintMovement; }
 	
 	/** \brief Set movement hint. */
-	void SetHintMovement( deLight::eMovementHints hint );
+	void SetHintMovement(deLight::eMovementHints hint);
 	
 	/** \brief Parameter hint. */
 	inline deLight::eParameterHints GetHintParameter() const{ return pHintParameter; }
 	
 	/** \brief Set parameter hint. */
-	void SetHintParameter( deLight::eParameterHints hint );
+	void SetHintParameter(deLight::eParameterHints hint);
 	
 	
 	
@@ -265,13 +265,13 @@ public:
 	inline bool GetActivated() const{ return pActivated; }
 	
 	/** \brief Set if light is activated emitting light. */
-	void SetActivated( bool activated );
+	void SetActivated(bool activated);
 	
 	/** \brief Light casts shadows. */
 	inline bool GetCastShadows() const{ return pCastShadows; }
 	
 	/** \brief Set if light casts shadows. */
-	void SetCastShadows( bool castShadows );
+	void SetCastShadows(bool castShadows);
 	
 	
 	
@@ -279,32 +279,32 @@ public:
 	inline const decString &GetLightSkinPath() const{ return pLightSkinPath; }
 	
 	/** \brief Set light skin path. */
-	void SetLightSkinPath( const char *path );
+	void SetLightSkinPath(const char *path);
 	
 	
 	
 	/** \brief Property name is set. */
-	bool IsPropertySet( eProperties property ) const;
+	bool IsPropertySet(eProperties property) const;
 	
 	/** \brief Name of property. */
-	const decString &GetPropertyName( eProperties property ) const;
+	const decString &GetPropertyName(eProperties property) const;
 	
 	/** \brief Set name of property. */
-	void SetPropertyName( eProperties property, const char *name );
+	void SetPropertyName(eProperties property, const char *name);
 	
 	/** \brief One or more properties use a name. */
-	bool HasPropertyWithName( const char *name ) const;
+	bool HasPropertyWithName(const char *name) const;
 	
 	
 	
 	/** \brief Trigger name is set. */
-	bool IsTriggerSet( eTriggers trigger ) const;
+	bool IsTriggerSet(eTriggers trigger) const;
 	
 	/** \brief Name of trigger. */
-	const decString &GetTriggerName( eTriggers trigger ) const;
+	const decString &GetTriggerName(eTriggers trigger) const;
 	
 	/** \brief Set name of trigger. */
-	void SetTriggerName( eTriggers trigger, const char *name );
+	void SetTriggerName(eTriggers trigger, const char *name);
 	/*@}*/
 };
 

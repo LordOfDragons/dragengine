@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveComponent( gdeObjectClass *objectClass, gdeOCComponent *component );
+	gdeUOCRemoveComponent(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 protected:
 	/** \brief Clean up undo action. */

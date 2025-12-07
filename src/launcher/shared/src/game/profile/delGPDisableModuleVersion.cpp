@@ -41,14 +41,14 @@
 delGPDisableModuleVersion::delGPDisableModuleVersion(){
 }
 
-delGPDisableModuleVersion::delGPDisableModuleVersion( const char *name, const char *version ) :
-pName( name ),
-pVersion( version ){
+delGPDisableModuleVersion::delGPDisableModuleVersion(const char *name, const char *version) :
+pName(name),
+pVersion(version){
 }
 
-delGPDisableModuleVersion::delGPDisableModuleVersion( const delGPDisableModuleVersion &copy ) :
-pName( copy.pName ),
-pVersion( copy.pVersion ){
+delGPDisableModuleVersion::delGPDisableModuleVersion(const delGPDisableModuleVersion &copy) :
+pName(copy.pName),
+pVersion(copy.pVersion){
 }
 
 delGPDisableModuleVersion::~delGPDisableModuleVersion(){
@@ -59,11 +59,11 @@ delGPDisableModuleVersion::~delGPDisableModuleVersion(){
 // Management
 ///////////////
 
-void delGPDisableModuleVersion::SetName( const char *name ){
+void delGPDisableModuleVersion::SetName(const char *name){
 	pName = name;
 }
 
-void delGPDisableModuleVersion::SetVersion( const char *version ){
+void delGPDisableModuleVersion::SetVersion(const char *version){
 	pVersion = version;
 }
 
@@ -72,15 +72,15 @@ void delGPDisableModuleVersion::SetVersion( const char *version ){
 // Operators
 //////////////
 
-bool delGPDisableModuleVersion::operator==( const delGPDisableModuleVersion &other ) const{
+bool delGPDisableModuleVersion::operator==(const delGPDisableModuleVersion &other) const{
 	return pName == other.pName && pVersion == other.pVersion;
 }
 
-bool delGPDisableModuleVersion::operator!=( const delGPDisableModuleVersion &other ) const{
+bool delGPDisableModuleVersion::operator!=(const delGPDisableModuleVersion &other) const{
 	return pName != other.pName || pVersion != other.pVersion;
 }
 
-delGPDisableModuleVersion &delGPDisableModuleVersion::operator=( const delGPDisableModuleVersion &other ){
+delGPDisableModuleVersion &delGPDisableModuleVersion::operator=(const delGPDisableModuleVersion &other){
 	pName = other.pName;
 	pVersion = other.pVersion;
 	return *this;

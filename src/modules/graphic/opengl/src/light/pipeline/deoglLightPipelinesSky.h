@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipelinesSky( const deoglRSkyInstanceLayer &layer );
+	deoglLightPipelinesSky(const deoglRSkyInstanceLayer &layer);
 	
 	/** Clean up light pipeline. */
 	virtual ~deoglLightPipelinesSky();
@@ -64,26 +64,26 @@ protected:
 	
 	
 private:
-	void pPrepareNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareNoShadow(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareAmbient( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareAmbient(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareSolid1( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareSolid1(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareGIRayNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareGIRayNoShadow(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareGIRaySolid1( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareGIRaySolid1(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareGIRaySolid2( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareGIRaySolid2(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pSetGI( deoglLightShaderConfig &shaconf );
-	void pSetNonGI( deoglLightShaderConfig &shaconf );
+	void pSetGI(deoglLightShaderConfig &shaconf);
+	void pSetNonGI(deoglLightShaderConfig &shaconf);
 };
 
 #endif

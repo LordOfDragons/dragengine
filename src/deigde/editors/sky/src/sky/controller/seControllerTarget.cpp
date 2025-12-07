@@ -44,8 +44,8 @@
 seControllerTarget::seControllerTarget(){
 }
 
-seControllerTarget::seControllerTarget( const seControllerTarget &copy ) :
-pLinks( copy.pLinks ){
+seControllerTarget::seControllerTarget(const seControllerTarget &copy) :
+pLinks(copy.pLinks){
 }
 
 seControllerTarget::~seControllerTarget(){
@@ -57,15 +57,15 @@ seControllerTarget::~seControllerTarget(){
 // Management
 ///////////////
 
-void seControllerTarget::AddLink( seLink *link ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+void seControllerTarget::AddLink(seLink *link){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Add( link );
+	pLinks.Add(link);
 }
 
-void seControllerTarget::RemoveLink( seLink *link ){
-	pLinks.Remove( link );
+void seControllerTarget::RemoveLink(seLink *link){
+	pLinks.Remove(link);
 }
 
 void seControllerTarget::RemoveAllLinks(){
@@ -77,7 +77,7 @@ void seControllerTarget::RemoveAllLinks(){
 // Operators
 //////////////
 
-seControllerTarget &seControllerTarget::operator=( const seControllerTarget &copy ){
+seControllerTarget &seControllerTarget::operator=(const seControllerTarget &copy){
 	pLinks = copy.pLinks;
 	return *this;
 }

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCPSetRadius::meUHTVRuleCPSetRadius( meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, float nradius ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleCPSetRadius::meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, float nradius){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;
 	
-	SetShortInfo( "Vegetation Layer Rule Closest Prop Set Class" );
-	SetMemoryConsumption( sizeof( meUHTVRuleCPSetRadius ) );
+	SetShortInfo("Vegetation Layer Rule Closest Prop Set Class");
+	SetMemoryConsumption(sizeof(meUHTVRuleCPSetRadius));
 	
 	pOldRadius = rule->GetSearchRadius();
 	pNewRadius = nradius;
@@ -59,8 +59,8 @@ meUHTVRuleCPSetRadius::meUHTVRuleCPSetRadius( meHTVegetationLayer *vlayer, meHTV
 }
 
 meUHTVRuleCPSetRadius::~meUHTVRuleCPSetRadius(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +69,11 @@ meUHTVRuleCPSetRadius::~meUHTVRuleCPSetRadius(){
 ///////////////
 
 void meUHTVRuleCPSetRadius::Undo(){
-	pRule->SetSearchRadius( pOldRadius );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetSearchRadius(pOldRadius);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleCPSetRadius::Redo(){
-	pRule->SetSearchRadius( pNewRadius );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetSearchRadius(pNewRadius);
+	pVLayer->NotifyRuleChanged(pRule);
 }

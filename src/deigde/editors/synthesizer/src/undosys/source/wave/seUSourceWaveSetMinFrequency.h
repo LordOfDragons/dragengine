@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceWaveSetMinFrequency( seSourceWave *source, float newFrequency );
+	seUSourceWaveSetMinFrequency(seSourceWave *source, float newFrequency);
 	
 protected:
 	/** \brief Clean up undo action. */

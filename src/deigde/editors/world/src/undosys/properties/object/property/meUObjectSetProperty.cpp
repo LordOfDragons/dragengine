@@ -39,17 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSetProperty::meUObjectSetProperty( meObject *object, const char *key, const char *oldValue, const char *newValue ){
-	if( ! object || ! key || ! oldValue || ! newValue ){
-		DETHROW( deeInvalidParam );
+meUObjectSetProperty::meUObjectSetProperty(meObject *object, const char *key, const char *oldValue, const char *newValue){
+	if(!object || !key || !oldValue || !newValue){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Change object property" );
+	SetShortInfo("Change object property");
 	
 	pObject = NULL;
 	
@@ -70,18 +70,18 @@ meUObjectSetProperty::~meUObjectSetProperty(){
 // Management
 ///////////////
 
-void meUObjectSetProperty::SetNewValue( const char *value ){
+void meUObjectSetProperty::SetNewValue(const char *value){
 	pNewValue = value;
 }
 
 
 
 void meUObjectSetProperty::Undo(){
-	pObject->SetProperty( pKey.GetString(), pOldValue.GetString() );
+	pObject->SetProperty(pKey.GetString(), pOldValue.GetString());
 }
 
 void meUObjectSetProperty::Redo(){
-	pObject->SetProperty( pKey.GetString(), pNewValue.GetString() );
+	pObject->SetProperty(pKey.GetString(), pNewValue.GetString());
 }
 
 void meUObjectSetProperty::ProgressiveRedo(){
@@ -94,7 +94,7 @@ void meUObjectSetProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUObjectSetProperty::pCleanUp(){
-	if( pObject ){
+	if(pObject){
 		pObject->FreeReference();
 	}
 }

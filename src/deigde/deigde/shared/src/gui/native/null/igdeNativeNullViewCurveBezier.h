@@ -75,7 +75,7 @@ public:
 	virtual ~igdeNativeNullViewCurveBezier();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullViewCurveBezier* CreateNativeWidget( igdeViewCurveBezier &owner );
+	static igdeNativeNullViewCurveBezier* CreateNativeWidget(igdeViewCurveBezier &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

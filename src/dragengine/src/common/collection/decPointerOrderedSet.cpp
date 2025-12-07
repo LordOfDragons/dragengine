@@ -39,50 +39,50 @@
 ////////////////////////////
 
 decPointerOrderedSet::decPointerOrderedSet() :
-pPointers( NULL ),
-pPointerCount( 0 ),
-pPointerSize( 0 ){
+pPointers(NULL),
+pPointerCount(0),
+pPointerSize(0){
 }
 
-decPointerOrderedSet::decPointerOrderedSet( int capacity ) :
-pPointers( NULL ),
-pPointerCount( 0 ),
-pPointerSize( 0 )
+decPointerOrderedSet::decPointerOrderedSet(int capacity) :
+pPointers(NULL),
+pPointerCount(0),
+pPointerSize(0)
 {
-	if( capacity < 0 ){
-		DETHROW( deeInvalidParam );
+	if(capacity < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( capacity == 0 ){
+	if(capacity == 0){
 		return;
 	}
 	
-	pPointers = new void*[ capacity ];
+	pPointers = new void*[capacity];
 	pPointerSize = capacity;
 }
 
-decPointerOrderedSet::decPointerOrderedSet( const decPointerOrderedSet &set ) :
-pPointers( NULL ),
-pPointerCount( 0 ),
-pPointerSize( 0 )
+decPointerOrderedSet::decPointerOrderedSet(const decPointerOrderedSet &set) :
+pPointers(NULL),
+pPointerCount(0),
+pPointerSize(0)
 {
 	const int count = set.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pPointers = new void*[ count ];
+	pPointers = new void*[count];
 	pPointerSize = count;
 	
-	for( pPointerCount=0; pPointerCount<count; pPointerCount++ ){
-		pPointers[ pPointerCount ] = set.pPointers[ pPointerCount ];
+	for(pPointerCount=0; pPointerCount<count; pPointerCount++){
+		pPointers[pPointerCount] = set.pPointers[pPointerCount];
 	}
 }
 
 decPointerOrderedSet::~decPointerOrderedSet(){
 	RemoveAll();
 	
-	if( pPointers ){
+	if(pPointers){
 		delete [] pPointers;
 	}
 }
@@ -92,19 +92,19 @@ decPointerOrderedSet::~decPointerOrderedSet(){
 // Management
 ///////////////
 
-void *decPointerOrderedSet::GetAt( int index ) const{
-	if( index < 0 || index >= pPointerCount ){
-		DETHROW( deeInvalidParam );
+void *decPointerOrderedSet::GetAt(int index) const{
+	if(index < 0 || index >= pPointerCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pPointers[ index ];
+	return pPointers[index];
 }
 
-int decPointerOrderedSet::IndexOf( void *pointer ) const{
+int decPointerOrderedSet::IndexOf(void *pointer) const{
 	int p;
 	
-	for( p=0; p<pPointerCount; p++ ){
-		if( pointer == pPointers[ p ] ){
+	for(p=0; p<pPointerCount; p++){
+		if(pointer == pPointers[p]){
 			return p;
 		}
 	}
@@ -112,11 +112,11 @@ int decPointerOrderedSet::IndexOf( void *pointer ) const{
 	return -1;
 }
 
-bool decPointerOrderedSet::Has( void *pointer ) const{
+bool decPointerOrderedSet::Has(void *pointer) const{
 	int p;
 	
-	for( p=0; p<pPointerCount; p++ ){
-		if( pointer == pPointers[ p ] ){
+	for(p=0; p<pPointerCount; p++){
+		if(pointer == pPointers[p]){
 			return true;
 		}
 	}
@@ -124,128 +124,128 @@ bool decPointerOrderedSet::Has( void *pointer ) const{
 	return false;
 }
 
-void decPointerOrderedSet::Add( void *pointer ){
-	if( Has( pointer ) ){
-		DETHROW( deeInvalidParam );
+void decPointerOrderedSet::Add(void *pointer){
+	if(Has(pointer)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPointerCount == pPointerSize ){
+	if(pPointerCount == pPointerSize){
 		int newSize = pPointerSize * 3 / 2 + 1;
-		void **newArray = new void*[ newSize ];
-		if( pPointers ){
-			memcpy( newArray, pPointers, sizeof( void* ) * pPointerSize );
+		void **newArray = new void*[newSize];
+		if(pPointers){
+			memcpy(newArray, pPointers, sizeof(void*) * pPointerSize);
 			delete [] pPointers;
 		}
 		pPointers = newArray;
 		pPointerSize = newSize;
 	}
 	
-	pPointers[ pPointerCount ] = pointer;
+	pPointers[pPointerCount] = pointer;
 	pPointerCount++;
 }
 
-void decPointerOrderedSet::AddIfAbsent( void *pointer ){
-	if( Has( pointer ) ){
+void decPointerOrderedSet::AddIfAbsent(void *pointer){
+	if(Has(pointer)){
 		return;
 	}
 	
-	if( pPointerCount == pPointerSize ){
+	if(pPointerCount == pPointerSize){
 		int newSize = pPointerSize * 3 / 2 + 1;
-		void **newArray = new void*[ newSize ];
-		if( pPointers ){
-			memcpy( newArray, pPointers, sizeof( void* ) * pPointerSize );
+		void **newArray = new void*[newSize];
+		if(pPointers){
+			memcpy(newArray, pPointers, sizeof(void*) * pPointerSize);
 			delete [] pPointers;
 		}
 		pPointers = newArray;
 		pPointerSize = newSize;
 	}
 	
-	pPointers[ pPointerCount ] = pointer;
+	pPointers[pPointerCount] = pointer;
 	pPointerCount++;
 }
 
-void decPointerOrderedSet::Insert( void *pointer, int index ){
-	if( Has( pointer ) || index < 0 || index > pPointerCount ){
-		DETHROW( deeInvalidParam );
+void decPointerOrderedSet::Insert(void *pointer, int index){
+	if(Has(pointer) || index < 0 || index > pPointerCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	if( pPointerCount == pPointerSize ){
+	if(pPointerCount == pPointerSize){
 		int newSize = pPointerSize * 3 / 2 + 1;
-		void **newArray = new void*[ newSize ];
-		if( pPointers ){
-			memcpy( newArray, pPointers, sizeof( void* ) * pPointerSize );
+		void **newArray = new void*[newSize];
+		if(pPointers){
+			memcpy(newArray, pPointers, sizeof(void*) * pPointerSize);
 			delete [] pPointers;
 		}
 		pPointers = newArray;
 		pPointerSize = newSize;
 	}
 	
-	for( i=pPointerCount; i>index; i-- ){
-		pPointers[ i ] = pPointers[ i - 1 ];
+	for(i=pPointerCount; i>index; i--){
+		pPointers[i] = pPointers[i - 1];
 	}
-	pPointers[ index ] = pointer;
+	pPointers[index] = pointer;
 	pPointerCount++;
 }
 
-void decPointerOrderedSet::Move( void *pointer, int to ){
-	const int from = IndexOf( pointer );
-	if( from == -1 || to < 0 || to >= pPointerCount ){
-		DETHROW( deeInvalidParam );
+void decPointerOrderedSet::Move(void *pointer, int to){
+	const int from = IndexOf(pointer);
+	if(from == -1 || to < 0 || to >= pPointerCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	void * const tempPointer = pPointers[ from ];
+	void * const tempPointer = pPointers[from];
 	int i;
 	
-	if( to < from ){
-		for( i=from; i>to; i-- ){
-			pPointers[ i ] = pPointers[ i - 1 ];
+	if(to < from){
+		for(i=from; i>to; i--){
+			pPointers[i] = pPointers[i - 1];
 		}
 		
-	}else if( to > from ){
-		for( i=from; i<to; i++ ){
-			pPointers[ i ] = pPointers[ i + 1 ];
+	}else if(to > from){
+		for(i=from; i<to; i++){
+			pPointers[i] = pPointers[i + 1];
 		}
 	}
 	
-	pPointers[ to ] = tempPointer;
+	pPointers[to] = tempPointer;
 }
 
-void decPointerOrderedSet::Remove( void *pointer ){
-	int p, position = IndexOf( pointer );
+void decPointerOrderedSet::Remove(void *pointer){
+	int p, position = IndexOf(pointer);
 	
-	if( position == -1 ){
-		DETHROW( deeInvalidParam );
+	if(position == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( p=position+1; p<pPointerCount; p++ ){
-		pPointers[ p - 1 ] = pPointers[ p ];
+	for(p=position+1; p<pPointerCount; p++){
+		pPointers[p - 1] = pPointers[p];
 	}
 	pPointerCount--;
 }
 
-void decPointerOrderedSet::RemoveIfPresent( void *pointer ){
-	int p, position = IndexOf( pointer );
+void decPointerOrderedSet::RemoveIfPresent(void *pointer){
+	int p, position = IndexOf(pointer);
 	
-	if( position == -1 ){
+	if(position == -1){
 		return;
 	}
 	
-	for( p=position+1; p<pPointerCount; p++ ){
-		pPointers[ p - 1 ] = pPointers[ p ];
+	for(p=position+1; p<pPointerCount; p++){
+		pPointers[p - 1] = pPointers[p];
 	}
 	pPointerCount--;
 }
 
-void decPointerOrderedSet::RemoveFrom( int index ){
-	if( index < 0 || index >= pPointerCount ){
-		DETHROW( deeInvalidParam );
+void decPointerOrderedSet::RemoveFrom(int index){
+	if(index < 0 || index >= pPointerCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
-	for( i=index+1; i<pPointerCount; i++ ){
-		pPointers[ i - 1 ] = pPointers[ i ];
+	for(i=index+1; i<pPointerCount; i++){
+		pPointers[i - 1] = pPointers[i];
 	}
 	pPointerCount--;
 }
@@ -256,15 +256,15 @@ void decPointerOrderedSet::RemoveAll(){
 
 
 
-bool decPointerOrderedSet::Equals( const decPointerOrderedSet &set ) const{
+bool decPointerOrderedSet::Equals(const decPointerOrderedSet &set) const{
 	int p;
 	
-	if( set.pPointerCount != pPointerCount ){
+	if(set.pPointerCount != pPointerCount){
 		return false;
 	}
 	
-	for( p=0; p<pPointerCount; p++ ){
-		if( ! set.Has( pPointers[ p ] ) ){
+	for(p=0; p<pPointerCount; p++){
+		if(!set.Has(pPointers[p])){
 			return false;
 		}
 	}
@@ -272,83 +272,83 @@ bool decPointerOrderedSet::Equals( const decPointerOrderedSet &set ) const{
 	return true;
 }
 
-decPointerOrderedSet decPointerOrderedSet::GetHead( int count ) const{
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+decPointerOrderedSet decPointerOrderedSet::GetHead(int count) const{
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count > pPointerCount ){
+	if(count > pPointerCount){
 		count = pPointerCount;
 	}
-	if( count == 0 ){
+	if(count == 0){
 		return decPointerOrderedSet();
 	}
 	
-	decPointerOrderedSet set( count );
-	for( set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++ ){
-		set.pPointers[ set.pPointerCount ] = pPointers[ set.pPointerCount ];
+	decPointerOrderedSet set(count);
+	for(set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++){
+		set.pPointers[set.pPointerCount] = pPointers[set.pPointerCount];
 	}
 	
 	return set;
 }
 
-void decPointerOrderedSet::GetHead( decPointerOrderedSet &set, int count ) const{
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void decPointerOrderedSet::GetHead(decPointerOrderedSet &set, int count) const{
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count > pPointerCount ){
+	if(count > pPointerCount){
 		count = pPointerCount;
 	}
 	
-	if( count > set.pPointerSize ){
-		void **newArray = new void*[ count ];
-		if( set.pPointers ){
+	if(count > set.pPointerSize){
+		void **newArray = new void*[count];
+		if(set.pPointers){
 			delete [] set.pPointers;
 		}
 		set.pPointers = newArray;
 		set.pPointerSize = count;
 	}
 	
-	for( set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++ ){
-		set.pPointers[ set.pPointerCount ] = pPointers[ set.pPointerCount ];
+	for(set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++){
+		set.pPointers[set.pPointerCount] = pPointers[set.pPointerCount];
 	}
 }
 
-decPointerOrderedSet decPointerOrderedSet::GetTail( int count ) const{
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+decPointerOrderedSet decPointerOrderedSet::GetTail(int count) const{
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count > pPointerCount ){
+	if(count > pPointerCount){
 		count = pPointerCount;
 	}
-	if( count == 0 ){
+	if(count == 0){
 		return decPointerOrderedSet();
 	}
 	
-	decPointerOrderedSet set( count );
+	decPointerOrderedSet set(count);
 	int from = pPointerCount - count;
 	
-	for( set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++ ){
-		set.pPointers[ set.pPointerCount ] = pPointers[ from + set.pPointerCount ];
+	for(set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++){
+		set.pPointers[set.pPointerCount] = pPointers[from + set.pPointerCount];
 	}
 	
 	return set;
 }
 
-void decPointerOrderedSet::GetTail( decPointerOrderedSet &set, int count ) const{
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void decPointerOrderedSet::GetTail(decPointerOrderedSet &set, int count) const{
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count > pPointerCount ){
+	if(count > pPointerCount){
 		count = pPointerCount;
 	}
 	
-	if( count > set.pPointerSize ){
-		void **newArray = new void*[ count ];
-		if( set.pPointers ){
+	if(count > set.pPointerSize){
+		void **newArray = new void*[count];
+		if(set.pPointers){
 			delete [] set.pPointers;
 		}
 		set.pPointers = newArray;
@@ -357,66 +357,66 @@ void decPointerOrderedSet::GetTail( decPointerOrderedSet &set, int count ) const
 	
 	int from = pPointerCount - count;
 	
-	for( set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++ ){
-		set.pPointers[ set.pPointerCount ] = pPointers[ from + set.pPointerCount ];
+	for(set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++){
+		set.pPointers[set.pPointerCount] = pPointers[from + set.pPointerCount];
 	}
 }
 
-decPointerOrderedSet decPointerOrderedSet::GetMiddle( int from, int to ) const{
-	if( from < 0 || to < from ){
-		DETHROW( deeInvalidParam );
+decPointerOrderedSet decPointerOrderedSet::GetMiddle(int from, int to) const{
+	if(from < 0 || to < from){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int count = to - from + 1;
-	if( count > pPointerCount ){
+	if(count > pPointerCount){
 		count = pPointerCount - from;
 	}
-	if( count == 0 ){
+	if(count == 0){
 		return decPointerOrderedSet();
 	}
 	
-	decPointerOrderedSet set( count );
+	decPointerOrderedSet set(count);
 	
-	for( set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++ ){
-		set.pPointers[ set.pPointerCount ] = pPointers[ from + set.pPointerCount ];
+	for(set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++){
+		set.pPointers[set.pPointerCount] = pPointers[from + set.pPointerCount];
 	}
 	
 	return set;
 	
 }
 
-void decPointerOrderedSet::GetMiddle( decPointerOrderedSet &set, int from, int to ) const{
-	if( from < 0 || to < from ){
-		DETHROW( deeInvalidParam );
+void decPointerOrderedSet::GetMiddle(decPointerOrderedSet &set, int from, int to) const{
+	if(from < 0 || to < from){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int count = to - from + 1;
-	if( count > pPointerCount ){
+	if(count > pPointerCount){
 		count = pPointerCount - from;
 	}
 	
-	if( count > set.pPointerSize ){
-		void **newArray = new void*[ count ];
-		if( set.pPointers ){
+	if(count > set.pPointerSize){
+		void **newArray = new void*[count];
+		if(set.pPointers){
 			delete [] set.pPointers;
 		}
 		set.pPointers = newArray;
 		set.pPointerSize = count;
 	}
 	
-	for( set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++ ){
-		set.pPointers[ set.pPointerCount ] = pPointers[ from + set.pPointerCount ];
+	for(set.pPointerCount=0; set.pPointerCount<count; set.pPointerCount++){
+		set.pPointers[set.pPointerCount] = pPointers[from + set.pPointerCount];
 	}
 }
 
-decPointerOrderedSet decPointerOrderedSet::GetSliced( int from, int to, int step ) const{
+decPointerOrderedSet decPointerOrderedSet::GetSliced(int from, int to, int step) const{
 	// temporary hack: same as middle
-	return GetMiddle( from, to );
+	return GetMiddle(from, to);
 }
 
-void decPointerOrderedSet::GetSliced( decPointerOrderedSet &set, int from, int to, int step ) const{
+void decPointerOrderedSet::GetSliced(decPointerOrderedSet &set, int from, int to, int step) const{
 	// temporary hack: same as middle
-	GetMiddle( set, from, to );
+	GetMiddle(set, from, to);
 }
 
 
@@ -584,70 +584,70 @@ decPointerOrderedSet decPointerOrderedSet::GetSorted(decPointerComparator &compa
 // Operators
 //////////////
 
-bool decPointerOrderedSet::operator==( const decPointerOrderedSet &set ) const{
-	return Equals( set );
+bool decPointerOrderedSet::operator==(const decPointerOrderedSet &set) const{
+	return Equals(set);
 }
 
-decPointerOrderedSet decPointerOrderedSet::operator+( const decPointerOrderedSet &set ) const{
-	decPointerOrderedSet nset( pPointerCount + set.pPointerCount );
+decPointerOrderedSet decPointerOrderedSet::operator+(const decPointerOrderedSet &set) const{
+	decPointerOrderedSet nset(pPointerCount + set.pPointerCount);
 	int i;
 	
-	for( i=0; i<pPointerCount; i++ ){
-		nset.pPointers[ i ] = pPointers[ i ];
+	for(i=0; i<pPointerCount; i++){
+		nset.pPointers[i] = pPointers[i];
 	}
 	
-	for( i=0; i<set.pPointerCount; i++ ){
-		nset.AddIfAbsent( set.pPointers[ i ] );
+	for(i=0; i<set.pPointerCount; i++){
+		nset.AddIfAbsent(set.pPointers[i]);
 	}
 	
 	return nset;
 }
 
-void *decPointerOrderedSet::operator[]( int index ) const{
-	return GetAt( index );
+void *decPointerOrderedSet::operator[](int index) const{
+	return GetAt(index);
 }
 
 
 
-decPointerOrderedSet &decPointerOrderedSet::operator=( const decPointerOrderedSet &set ){
-	if( &set == this ){
+decPointerOrderedSet &decPointerOrderedSet::operator=(const decPointerOrderedSet &set){
+	if(&set == this){
 		return *this;
 	}
 	
 	RemoveAll();
 	
-	if( set.pPointerCount > pPointerSize ){
-		void **newArray = new void*[ set.pPointerCount ];
-		if( pPointers ){
+	if(set.pPointerCount > pPointerSize){
+		void **newArray = new void*[set.pPointerCount];
+		if(pPointers){
 			delete [] pPointers;
 		}
 		pPointers = newArray;
 		pPointerSize = set.pPointerCount;
 	}
 	
-	for( pPointerCount=0; pPointerCount<set.pPointerCount; pPointerCount++ ){
-		pPointers[ pPointerCount ] = set.pPointers[ pPointerCount ];
+	for(pPointerCount=0; pPointerCount<set.pPointerCount; pPointerCount++){
+		pPointers[pPointerCount] = set.pPointers[pPointerCount];
 	}
 	
 	return *this;
 }
 
-decPointerOrderedSet &decPointerOrderedSet::operator+=( const decPointerOrderedSet &set ){
-	if( set.pPointerCount > 0 ){
+decPointerOrderedSet &decPointerOrderedSet::operator+=(const decPointerOrderedSet &set){
+	if(set.pPointerCount > 0){
 		int i, count = pPointerCount + set.pPointerCount;
 		
-		if( count > pPointerSize ){
-			void **newArray = new void*[ count ];
-			if( pPointers ){
-				memcpy( newArray, pPointers, sizeof( void* ) * pPointerSize );
+		if(count > pPointerSize){
+			void **newArray = new void*[count];
+			if(pPointers){
+				memcpy(newArray, pPointers, sizeof(void*) * pPointerSize);
 				delete [] pPointers;
 			}
 			pPointers = newArray;
 			pPointerSize = count;
 		}
 		
-		for( i=0; i<set.pPointerCount; i++ ){
-			AddIfAbsent( set.pPointers[ i ] );
+		for(i=0; i<set.pPointerCount; i++){
+			AddIfAbsent(set.pPointers[i]);
 		}
 	}
 	

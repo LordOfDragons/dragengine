@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetPosMax::aeURuleLimitSetPosMax( aeRuleLimit *rule, const decVector &newMax ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetPosMax::aeURuleLimitSetPosMax(aeRuleLimit *rule, const decVector &newMax){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -53,9 +53,9 @@ aeURuleLimitSetPosMax::aeURuleLimitSetPosMax( aeRuleLimit *rule, const decVector
 		pOldMax = rule->GetMaximumPosition();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Limit Set maximum translation" );
+		SetShortInfo("Limit Set maximum translation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ aeURuleLimitSetPosMax::~aeURuleLimitSetPosMax(){
 ///////////////
 
 void aeURuleLimitSetPosMax::Undo(){
-	pRule->SetMaximumPosition( pOldMax );
+	pRule->SetMaximumPosition(pOldMax);
 }
 
 void aeURuleLimitSetPosMax::Redo(){
-	pRule->SetMaximumPosition( pNewMax );
+	pRule->SetMaximumPosition(pNewMax);
 }
 
 
@@ -84,7 +84,7 @@ void aeURuleLimitSetPosMax::Redo(){
 //////////////////////
 
 void aeURuleLimitSetPosMax::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

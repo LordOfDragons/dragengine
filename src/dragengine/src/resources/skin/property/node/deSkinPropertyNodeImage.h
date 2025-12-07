@@ -59,13 +59,13 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set image path or empty path if not set. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Image or nullptr if not set. */
 	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or nullptr if not set. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	/** \brief Repeat count. */
 	inline const decPoint &GetRepeat() const{ return pRepeat; }
@@ -74,7 +74,7 @@ public:
 	 * \brief Set repeat count.
 	 * \throws deeInvalidParam One or more components of \em count are less than 1.
 	 */
-	void SetRepeat( const decPoint &count );
+	void SetRepeat(const decPoint &count);
 	/*@}*/
 	
 	
@@ -82,7 +82,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits node. */
-	virtual void Visit( deSkinPropertyNodeVisitor &visitor );
+	virtual void Visit(deSkinPropertyNodeVisitor &visitor);
 	/*@}*/
 };
 

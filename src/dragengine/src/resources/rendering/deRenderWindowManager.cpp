@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRenderWindowManager::deRenderWindowManager( deEngine *engine ) :
-deResourceManager( engine,ertRenderWindow ){
-	SetLoggingName( "render window" );
+deRenderWindowManager::deRenderWindowManager(deEngine *engine) :
+deResourceManager(engine,ertRenderWindow){
+	SetLoggingName("render window");
 }
 
 deRenderWindowManager::~deRenderWindowManager(){
@@ -58,19 +58,19 @@ int deRenderWindowManager::GetRenderWindowCount() const{
 }
 
 deRenderWindow *deRenderWindowManager::GetRootRenderWindow() const{
-	return ( deRenderWindow* )pRenderWindows.GetRoot();
+	return (deRenderWindow*)pRenderWindows.GetRoot();
 }
 
 deRenderWindow *deRenderWindowManager::CreateRenderWindow(){
 	deRenderWindow *renderWindow = NULL;
 	
 	try{
-		renderWindow = new deRenderWindow( this );
-		GetGraphicSystem()->LoadRenderWindow( renderWindow );
-		pRenderWindows.Add( renderWindow );
+		renderWindow = new deRenderWindow(this);
+		GetGraphicSystem()->LoadRenderWindow(renderWindow);
+		pRenderWindows.Add(renderWindow);
 		
-	}catch( const deException & ){
-		if( renderWindow ){
+	}catch(const deException &){
+		if(renderWindow){
 			renderWindow->FreeReference();
 		}
 		throw;
@@ -105,13 +105,13 @@ deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(HWND window)
 	deRenderWindow *renderWindow = nullptr;
 	
 	try{
-		renderWindow = new deRenderWindow( this );
-		renderWindow->SetHostWindow( window ); // tells graphic module to created hosted window
-		GetGraphicSystem()->LoadRenderWindow( renderWindow );
-		pRenderWindows.Add( renderWindow );
+		renderWindow = new deRenderWindow(this);
+		renderWindow->SetHostWindow(window); // tells graphic module to created hosted window
+		GetGraphicSystem()->LoadRenderWindow(renderWindow);
+		pRenderWindows.Add(renderWindow);
 		
-	}catch( const deException & ){
-		if( renderWindow ){
+	}catch(const deException &){
+		if(renderWindow){
 			renderWindow->FreeReference();
 		}
 		throw;
@@ -124,8 +124,8 @@ deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(HWND window)
 
 
 void deRenderWindowManager::ReleaseLeakingResources(){
-	if( GetRenderWindowCount() > 0 ){
-		LogWarnFormat( "%i leaking render windows", GetRenderWindowCount() );
+	if(GetRenderWindowCount() > 0){
+		LogWarnFormat("%i leaking render windows", GetRenderWindowCount());
 		pRenderWindows.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -136,26 +136,26 @@ void deRenderWindowManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deRenderWindowManager::SystemGraphicLoad(){
-	deRenderWindow *renderWindow = ( deRenderWindow* )pRenderWindows.GetRoot();
+	deRenderWindow *renderWindow = (deRenderWindow*)pRenderWindows.GetRoot();
 	
-	while( renderWindow ){
-		if( ! renderWindow->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadRenderWindow( renderWindow );
+	while(renderWindow){
+		if(!renderWindow->GetPeerGraphic()){
+			GetGraphicSystem()->LoadRenderWindow(renderWindow);
 		}
 		
-		renderWindow = ( deRenderWindow* )renderWindow->GetLLManagerNext();
+		renderWindow = (deRenderWindow*)renderWindow->GetLLManagerNext();
 	}
 }
 
 void deRenderWindowManager::SystemGraphicUnload(){
-	deRenderWindow *renderWindow = ( deRenderWindow* )pRenderWindows.GetRoot();
+	deRenderWindow *renderWindow = (deRenderWindow*)pRenderWindows.GetRoot();
 	
-	while( renderWindow ){
-		renderWindow->SetPeerGraphic( NULL );
-		renderWindow = ( deRenderWindow* )renderWindow->GetLLManagerNext();
+	while(renderWindow){
+		renderWindow->SetPeerGraphic(NULL);
+		renderWindow = (deRenderWindow*)renderWindow->GetLLManagerNext();
 	}
 }
 
-void deRenderWindowManager::RemoveResource( deResource *resource ){
-	pRenderWindows.RemoveIfPresent( resource );
+void deRenderWindowManager::RemoveResource(deResource *resource){
+	pRenderWindows.RemoveIfPresent(resource);
 }

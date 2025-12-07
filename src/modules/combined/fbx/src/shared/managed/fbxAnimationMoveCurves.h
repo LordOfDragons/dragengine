@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create move. */
-	fbxAnimationMoveCurves( fbxAnimationMove &move, fbxNode &nodeCurves );
+	fbxAnimationMoveCurves(fbxAnimationMove &move, fbxNode &nodeCurves);
 	
 protected:
 	/** \brief Clean up move. */
@@ -115,19 +115,19 @@ public:
 	inline eTargetProperty GetTargetProperty() const{ return pTargetProperty; }
 	
 	/** \brief Set target property. */
-	void SetTargetProperty( eTargetProperty targetProperty );
+	void SetTargetProperty(eTargetProperty targetProperty);
 	
 	/** \brief Bone name. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
 	/** \brief Set bone name. */
-	void SetBoneName( const char *name );
+	void SetBoneName(const char *name);
 	
 	/** \brief Rig bone or NULL. */
 	inline fbxRigBone *GetRigBone() const{ return pRigBone; }
 	
 	/** \brief Set rig bone or NULL. */
-	void SetRigBone( fbxRigBone *bone );
+	void SetRigBone(fbxRigBone *bone);
 	
 	/** \brief Curves or NULL. */
 	inline const fbxAnimationCurve::Ref &GetCurveX() const{ return pCurveX; }
@@ -138,7 +138,7 @@ public:
 	inline const decVector &GetDefaultValue() const{ return pDefaultValue; }
 	
 	/** \brief Set default value. */
-	void SetDefaultValue( const decVector &defaultValue );
+	void SetDefaultValue(const decVector &defaultValue);
 	
 	
 	
@@ -146,7 +146,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

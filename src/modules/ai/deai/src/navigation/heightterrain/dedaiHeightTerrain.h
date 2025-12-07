@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedaiHeightTerrain( deDEAIModule &deai, const deHeightTerrain &heightTerrain );
+	dedaiHeightTerrain(deDEAIModule &deai, const deHeightTerrain &heightTerrain);
 	
 	/** \brief Clean up peer. */
 	virtual ~dedaiHeightTerrain();
@@ -75,7 +75,7 @@ public:
 	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL. */
-	void SetParentWorld( dedaiWorld *world );
+	void SetParentWorld(dedaiWorld *world);
 	/*@}*/
 	
 	
@@ -86,7 +86,7 @@ public:
 	int GetSectorCount() const;
 	
 	/** \brief Sector at index. */
-	dedaiHeightTerrainSector *GetSectorAt( int index ) const;
+	dedaiHeightTerrainSector *GetSectorAt(int index) const;
 	/*@}*/
 	
 	
@@ -97,45 +97,45 @@ public:
 	virtual void ParametersChanged();
 	
 	/** \brief Sector added. */
-	virtual void SectorAdded( deHeightTerrainSector *sector );
+	virtual void SectorAdded(deHeightTerrainSector *sector);
 	
 	/** \brief Sector removed. */
-	virtual void SectorRemoved( int index );
+	virtual void SectorRemoved(int index);
 	
 	/** \brief All sector removed. */
 	virtual void AllSectorsRemoved();
 	
 	/** \brief Sector changed. */
-	virtual void SectorChanged( int index );
+	virtual void SectorChanged(int index);
 	
 	
 	
 	/** \brief Sector heights changed. */
-	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates );
+	virtual void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates);
 	
 	
 	
 	/** \brief Navigation space added. */
-	virtual void NavSpaceAdded( int sector, deHeightTerrainNavSpace *navspace );
+	virtual void NavSpaceAdded(int sector, deHeightTerrainNavSpace *navspace);
 	
 	/** \brief Navigation space removed. */
-	virtual void NavSpaceRemoved( int sector, int index );
+	virtual void NavSpaceRemoved(int sector, int index);
 	
 	/** \brief All navigation spaces removed. */
-	virtual void AllNavSpacesRemoved( int sector );
+	virtual void AllNavSpacesRemoved(int sector);
 	
 	/** \brief Navigation space layer changed. */
-	virtual void NavSpaceLayerChanged( int sector, int index );
+	virtual void NavSpaceLayerChanged(int sector, int index);
 	
 	/** \brief Navigation space type changed. */
-	virtual void NavSpaceTypeChanged( int sector, int index );
+	virtual void NavSpaceTypeChanged(int sector, int index);
 	
 	/** \brief Navigation space snapping parameters changed. */
-	virtual void NavSpaceSnappingChanged( int sector, int index );
+	virtual void NavSpaceSnappingChanged(int sector, int index);
 	
 	/** \brief Navigation space layout changed. */
-	virtual void NavSpaceLayoutChanged( int sector, int index );
+	virtual void NavSpaceLayoutChanged(int sector, int index);
 	/*@}*/
 	
 	

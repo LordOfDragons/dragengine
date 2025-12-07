@@ -42,9 +42,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglModelLODVisitor::deoglModelLODVisitor( deoglModelLOD &modelLOD ) :
-pModelLOD( modelLOD ),
-pMinLODDistance( 0.0f ){
+deoglModelLODVisitor::deoglModelLODVisitor(deoglModelLOD &modelLOD) :
+pModelLOD(modelLOD),
+pMinLODDistance(0.0f){
 }
 
 deoglModelLODVisitor::~deoglModelLODVisitor(){
@@ -55,16 +55,16 @@ deoglModelLODVisitor::~deoglModelLODVisitor(){
 // Management
 ///////////////
 
-void deoglModelLODVisitor::SetBoxExtends( const decVector &minExtend, const decVector &maxExtend ){
+void deoglModelLODVisitor::SetBoxExtends(const decVector &minExtend, const decVector &maxExtend){
 	pBoxMinExtend = minExtend;
 	pBoxMaxExtend = maxExtend;
 }
 
-void deoglModelLODVisitor::SetLODPoint( const decVector &lodPoint ){
+void deoglModelLODVisitor::SetLODPoint(const decVector &lodPoint){
 	pLODPoint = lodPoint;
 }
 
-void deoglModelLODVisitor::SetMinLODDistance( float distance ){
+void deoglModelLODVisitor::SetMinLODDistance(float distance){
 	pMinLODDistance = distance;
 }
 
@@ -73,9 +73,9 @@ void deoglModelLODVisitor::SetMinLODDistance( float distance ){
 // Visiting
 /////////////
 
-void deoglModelLODVisitor::VisitNode( deoglOctree *node, int intersection ){
-	const bool nodeInside = ( intersection == deoglCollisionDetection::eirInside );
-	const deoglModelOctree &monode = *( ( deoglModelOctree* )node );
+void deoglModelLODVisitor::VisitNode(deoglOctree *node, int intersection){
+	const bool nodeInside = (intersection == deoglCollisionDetection::eirInside);
+	const deoglModelOctree &monode = *((deoglModelOctree*)node);
 	const oglModelPosition * positions = pModelLOD.GetPositions();
 	const oglModelVertex * vertices = pModelLOD.GetVertices();
 	const deoglModelFaceList &list = monode.GetFaceList();
@@ -83,16 +83,16 @@ void deoglModelLODVisitor::VisitNode( deoglOctree *node, int intersection ){
 	float distance;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deoglModelFace &face = *list.GetAt( i );
+	for(i=0; i<count; i++){
+		const deoglModelFace &face = *list.GetAt(i);
 		
-		if( nodeInside || deoglCollisionDetection::AABoxHitsAABox( face.GetMinExtend(), face.GetMaxExtend(), pBoxMinExtend, pBoxMaxExtend ) ){
-			const decVector &vpos1 = positions[ vertices[ face.GetVertex1() ].position ].position;
-			const decVector &vpos2 = positions[ vertices[ face.GetVertex2() ].position ].position;
-			const decVector &vpos3 = positions[ vertices[ face.GetVertex3() ].position ].position;
+		if(nodeInside || deoglCollisionDetection::AABoxHitsAABox(face.GetMinExtend(), face.GetMaxExtend(), pBoxMinExtend, pBoxMaxExtend)){
+			const decVector &vpos1 = positions[vertices[face.GetVertex1()].position].position;
+			const decVector &vpos2 = positions[vertices[face.GetVertex2()].position].position;
+			const decVector &vpos3 = positions[vertices[face.GetVertex3()].position].position;
 			
-			distance = ( deoglCollisionDetection::ClosestPointOnTriangle( vpos1, vpos2, vpos3, pLODPoint ) - pLODPoint ).Length();
-			if( distance < pMinLODDistance ){
+			distance = (deoglCollisionDetection::ClosestPointOnTriangle(vpos1, vpos2, vpos3, pLODPoint) - pLODPoint).Length();
+			if(distance < pMinLODDistance){
 				pMinLODDistance = distance;
 			}
 		}

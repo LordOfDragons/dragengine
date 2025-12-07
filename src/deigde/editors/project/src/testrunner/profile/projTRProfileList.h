@@ -59,28 +59,28 @@ public:
 	int GetCount() const;
 	
 	/** \brief Profile at index. */
-	projTRProfile *GetAt( int index ) const;
+	projTRProfile *GetAt(int index) const;
 	
 	/** \brief Named profile or \em NULL if absent. */
-	projTRProfile *GetNamed( const char *name ) const;
+	projTRProfile *GetNamed(const char *name) const;
 	
 	/** \brief Profile is present. */
-	bool Has( projTRProfile *profile ) const;
+	bool Has(projTRProfile *profile) const;
 	
 	/** \brief Named profile is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Index of profile or -1 if absent. */
-	int IndexOf( projTRProfile *profile ) const;
+	int IndexOf(projTRProfile *profile) const;
 	
 	/** \brief Index of named profile or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Add profile. */
-	void Add( projTRProfile *profile );
+	void Add(projTRProfile *profile);
 	
 	/** \brief Remove profile. */
-	void Remove( projTRProfile *profile );
+	void Remove(projTRProfile *profile);
 	
 	/** \brief Remove all profiles. */
 	void RemoveAll();
@@ -88,7 +88,7 @@ public:
 	
 	
 	/** \brief Validate profiles. */
-	void ValidateProfiles( deEngine &engine );
+	void ValidateProfiles(deEngine &engine);
 	/*@}*/
 };
 

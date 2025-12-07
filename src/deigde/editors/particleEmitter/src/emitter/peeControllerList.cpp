@@ -55,19 +55,19 @@ int peeControllerList::GetCount() const{
 	return pControllers.GetCount();
 }
 
-peeController *peeControllerList::GetAt( int index ) const{
-	return ( peeController* )pControllers.GetAt( index );
+peeController *peeControllerList::GetAt(int index) const{
+	return (peeController*)pControllers.GetAt(index);
 }
 
-peeController *peeControllerList::GetNamed( const char *name ) const{
+peeController *peeControllerList::GetNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	peeController *controller;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		controller = ( peeController* )pControllers.GetAt( p );
+	for(p=0; p<count; p++){
+		controller = (peeController*)pControllers.GetAt(p);
 		
-		if( controller->GetName().Equals( name ) ){
+		if(controller->GetName().Equals(name)){
 			return controller;
 		}
 	}
@@ -75,16 +75,16 @@ peeController *peeControllerList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int peeControllerList::IndexOf( peeController *controller ) const{
-	return pControllers.IndexOf( controller );
+int peeControllerList::IndexOf(peeController *controller) const{
+	return pControllers.IndexOf(controller);
 }
 
-int peeControllerList::IndexOfNamed( const char *name ) const{
+int peeControllerList::IndexOfNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( peeController* )pControllers.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((peeController*)pControllers.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -92,16 +92,16 @@ int peeControllerList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool peeControllerList::Has( peeController *controller ) const{
-	return pControllers.Has( controller );
+bool peeControllerList::Has(peeController *controller) const{
+	return pControllers.Has(controller);
 }
 
-bool peeControllerList::HasNamed( const char *name ) const{
+bool peeControllerList::HasNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( peeController* )pControllers.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((peeController*)pControllers.GetAt(p))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,24 +109,24 @@ bool peeControllerList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void peeControllerList::Add( peeController *controller ){
-	if( ! controller || HasNamed( controller->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void peeControllerList::Add(peeController *controller){
+	if(!controller || HasNamed(controller->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 }
 
-void peeControllerList::InsertAt( peeController *controller, int index ){
-	if( ! controller || HasNamed( controller->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void peeControllerList::InsertAt(peeController *controller, int index){
+	if(!controller || HasNamed(controller->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pControllers.Insert( controller, index );
+	pControllers.Insert(controller, index);
 }
 
-void peeControllerList::MoveTo( peeController *controller, int index ){
-	pControllers.Move( controller, index );
+void peeControllerList::MoveTo(peeController *controller, int index){
+	pControllers.Move(controller, index);
 }
 
-void peeControllerList::Remove( peeController *controller ){
-	pControllers.Remove( controller );
+void peeControllerList::Remove(peeController *controller){
+	pControllers.Remove(controller);
 }
 
 void peeControllerList::RemoveAll(){
@@ -135,7 +135,7 @@ void peeControllerList::RemoveAll(){
 
 
 
-peeControllerList &peeControllerList::operator=( const peeControllerList &list ){
+peeControllerList &peeControllerList::operator=(const peeControllerList &list){
 	pControllers = list.pControllers;
 	return *this;
 }

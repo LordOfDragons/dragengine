@@ -54,7 +54,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig texture. */
-	reRigTexture( deEngine *engine, const char *name );
+	reRigTexture(deEngine *engine, const char *name);
 	/** Cleans up the rig texture. */
 	~reRigTexture();
 	/*@}*/
@@ -69,7 +69,7 @@ public:
 	/** Retrieves the skin file path. */
 	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	/** Sets the skin file path. */
-	void SetSkinPath( const char *skinPath );
+	void SetSkinPath(const char *skinPath);
 	/** Loads the skin. */
 	void LoadSkin();
 	/** Retrieves the engine skin or NULL if not found. */

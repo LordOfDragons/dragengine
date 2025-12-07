@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionRemove::ceUCAPChoiceOptionRemove( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option ){
-	if( ! topic || ! playerChoice || ! option ) DETHROW( deeInvalidParam );
+ceUCAPChoiceOptionRemove::ceUCAPChoiceOptionRemove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option){
+	if(!topic || !playerChoice || !option) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pPlayerChoice = NULL;
 	pOption = NULL;
-	pIndex = playerChoice->GetOptions().IndexOf( option );
+	pIndex = playerChoice->GetOptions().IndexOf(option);
 	
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Player Choice Remove Option" );
+	SetShortInfo("Player Choice Remove Option");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -66,13 +66,13 @@ ceUCAPChoiceOptionRemove::ceUCAPChoiceOptionRemove( ceConversationTopic *topic, 
 }
 
 ceUCAPChoiceOptionRemove::~ceUCAPChoiceOptionRemove(){
-	if( pOption ){
+	if(pOption){
 		pOption->FreeReference();
 	}
-	if( pPlayerChoice ){
+	if(pPlayerChoice){
 		pPlayerChoice->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -83,11 +83,11 @@ ceUCAPChoiceOptionRemove::~ceUCAPChoiceOptionRemove(){
 ///////////////
 
 void ceUCAPChoiceOptionRemove::Undo(){
-	pPlayerChoice->GetOptions().InsertAt( pOption, pIndex );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pPlayerChoice->GetOptions().InsertAt(pOption, pIndex);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }
 
 void ceUCAPChoiceOptionRemove::Redo(){
-	pPlayerChoice->GetOptions().Remove( pOption );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pPlayerChoice->GetOptions().Remove(pOption);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }

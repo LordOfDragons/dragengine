@@ -60,7 +60,7 @@ void dearClosestHit::Reset(){
 	pHasHit = false;
 }
 
-void dearClosestHit::SetListener( deBaseScriptingCollider *listener ){
+void dearClosestHit::SetListener(deBaseScriptingCollider *listener){
 	pListener = listener;
 }
 
@@ -69,20 +69,20 @@ void dearClosestHit::SetListener( deBaseScriptingCollider *listener ){
 // Notifications
 //////////////////
 
-void dearClosestHit::CollisionResponse( deCollider*, deCollisionInfo *info ){
+void dearClosestHit::CollisionResponse(deCollider*, deCollisionInfo *info){
 	float distance = info->GetDistance();
 	
 	/*
-	if( info->GetHTSector() ){
-		printf( "hit height terrain: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0 );
-	}else if( info->GetCollider() ){
-		printf( "hit collider: c=%p cd=%f bd=%f hh=%i\n", info->GetCollider(), distance, pHitDistance, pHasHit ? 1 : 0 );
+	if(info->GetHTSector()){
+		printf("hit height terrain: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0);
+	}else if(info->GetCollider()){
+		printf("hit collider: c=%p cd=%f bd=%f hh=%i\n", info->GetCollider(), distance, pHitDistance, pHasHit ? 1 : 0);
 	}else{
-		printf( "hit something else: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0 );
+		printf("hit something else: cd=%f bd=%f hh=%i\n", distance, pHitDistance, pHasHit ? 1 : 0);
 	}
 	*/
 	
-	if( pHasHit && distance >= pHitDistance ) return;
+	if(pHasHit && distance >= pHitDistance) return;
 	
 	pHitDistance = distance;
 	pHitNormal = info->GetNormal();
@@ -90,9 +90,9 @@ void dearClosestHit::CollisionResponse( deCollider*, deCollisionInfo *info ){
 	pHasHit = true;
 }
 
-bool dearClosestHit::CanHitCollider( deCollider *owner, deCollider *collider ){
-	return pListener == NULL || pListener->CanHitCollider( owner, collider );
+bool dearClosestHit::CanHitCollider(deCollider *owner, deCollider *collider){
+	return pListener == NULL || pListener->CanHitCollider(owner, collider);
 }
 
-void dearClosestHit::ColliderChanged( deCollider* ){
+void dearClosestHit::ColliderChanged(deCollider*){
 }

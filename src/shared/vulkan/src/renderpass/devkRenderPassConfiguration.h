@@ -53,7 +53,7 @@ public:
 	
 	/** Sub pass configuration. */
 	struct sSubPass{
-		int colorAttachments[ 8 ];
+		int colorAttachments[8];
 		int depthStencilAttachment;
 	};
 	
@@ -75,7 +75,7 @@ public:
 	devkRenderPassConfiguration();
 	
 	/** Create copy of render pass configuration. */
-	devkRenderPassConfiguration( const devkRenderPassConfiguration &configuration );
+	devkRenderPassConfiguration(const devkRenderPassConfiguration &configuration);
 	
 	/** Clean up render pass configuration. */
 	~devkRenderPassConfiguration();
@@ -89,30 +89,30 @@ public:
 	inline int GetAttachmentCount() const{ return pAttachmentCount; }
 	
 	/** Set attachment count. */
-	void SetAttachmentCount( int count );
+	void SetAttachmentCount(int count);
 	
 	/** Attachment at index. */
-	const VkAttachmentDescription &GetAttachmentAt( int index ) const;
+	const VkAttachmentDescription &GetAttachmentAt(int index) const;
 	
 	/** Set attachment at index. */
-	void SetAttachmentAt( int index, const VkAttachmentDescription &attachment );
+	void SetAttachmentAt(int index, const VkAttachmentDescription &attachment);
 	
 	/** Set color attachment at index. */
-	void SetColorAttachmentAt( int index, VkFormat format, pInType in, eOutType out );
+	void SetColorAttachmentAt(int index, VkFormat format, pInType in, eOutType out);
 	
 	/** Clear value at index. */
-	const VkClearValue &GetClearValueAt( int index ) const;
+	const VkClearValue &GetClearValueAt(int index) const;
 	
 	/** Set clear value at index. */
-	void SetClearValueAt( int index, const VkClearValue &clearValue );
+	void SetClearValueAt(int index, const VkClearValue &clearValue);
 	
 	/** Set color clear value at index. */
-	void SetClearValueColorFloatAt( int index, float red, float green, float blue, float alpha );
-	void SetClearValueColorIntAt( int index, int red, int green, int blue, int alpha );
-	void SetClearValueColorUIntAt( int index, int red, int green, int blue, int alpha );
+	void SetClearValueColorFloatAt(int index, float red, float green, float blue, float alpha);
+	void SetClearValueColorIntAt(int index, int red, int green, int blue, int alpha);
+	void SetClearValueColorUIntAt(int index, int red, int green, int blue, int alpha);
 	
 	/** Set depth/stencil clear value at index. */
-	void SetClearValueDepthAt( int index, float depth, int stencil );
+	void SetClearValueDepthAt(int index, float depth, int stencil);
 	
 	/** Internal use only. */
 	inline const VkAttachmentDescription *GetAttachments() const{ return pAttachments; }
@@ -124,18 +124,18 @@ public:
 	inline int GetSubPassCount() const{ return pSubPassCount; }
 	
 	/** Set sub pass count. */
-	void SetSubPassCount( int count );
+	void SetSubPassCount(int count);
 	
 	/** Sub pass at index. */
-	const sSubPass &GetSubPassAt( int index ) const;
+	const sSubPass &GetSubPassAt(int index) const;
 	
 	/** Set sub pass at index. */
-	void SetSubPassAt( int index, const sSubPass &subpass );
+	void SetSubPassAt(int index, const sSubPass &subpass);
 	
 	/** Set sub pass at index. */
-	void SetSubPassAt( int index, int depthStencil, int color1 = -1, int color2 = -1,
+	void SetSubPassAt(int index, int depthStencil, int color1 = -1, int color2 = -1,
 		int color3 = -1, int color4 = -1, int color5 = -1, int color6 = -1,
-		int color7 = -1, int color8 = -1 );
+		int color7 = -1, int color8 = -1);
 	/*@}*/
 	
 	
@@ -143,10 +143,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Configurations are equal. */
-	bool operator==( const devkRenderPassConfiguration &configuration ) const;
+	bool operator==(const devkRenderPassConfiguration &configuration) const;
 	
 	/** Copy configuration. */
-	devkRenderPassConfiguration &operator=( const devkRenderPassConfiguration &configuration );
+	devkRenderPassConfiguration &operator=(const devkRenderPassConfiguration &configuration);
 	/*@}*/
 };
 

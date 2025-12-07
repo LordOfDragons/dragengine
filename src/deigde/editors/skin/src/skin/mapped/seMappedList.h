@@ -58,34 +58,34 @@ public:
 	int GetCount() const;
 	
 	/** Mapped at index. */
-	seMapped *GetAt( int index ) const;
+	seMapped *GetAt(int index) const;
 	
 	/** Named mapped or nullptr if absent. */
-	seMapped *GetNamed( const char *name ) const;
+	seMapped *GetNamed(const char *name) const;
 	
 	/** Index of mapped or -1 if absent. */
-	int IndexOf( seMapped *mapped ) const;
+	int IndexOf(seMapped *mapped) const;
 	
 	/** Index of named mapped or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** Mapped is present. */
-	bool Has( seMapped *mapped ) const;
+	bool Has(seMapped *mapped) const;
 	
 	/** Named mapped is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** Add mapped. */
-	void Add( seMapped *mapped );
+	void Add(seMapped *mapped);
 	
 	/** Remove mapped. */
-	void Remove( seMapped *mapped );
+	void Remove(seMapped *mapped);
 	
 	/** Remove all mapped. */
 	void RemoveAll();
 	
 	/** Set list from another list. */
-	seMappedList &operator=( const seMappedList &list );
+	seMappedList &operator=(const seMappedList &list);
 	/*@}*/
 };
 

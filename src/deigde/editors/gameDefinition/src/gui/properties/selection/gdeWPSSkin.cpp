@@ -76,18 +76,18 @@ class cEditPath : public igdeEditPathListener {
 	gdeWPSSkin &pPanel;
 	
 public:
-	cEditPath( gdeWPSSkin &panel ) : pPanel( panel ){ }
+	cEditPath(gdeWPSSkin &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if( ! skin || skin->GetPath() == editPath->GetPath() ){
+		if(!skin || skin->GetPath() == editPath->GetPath()){
 			return;
 		}
 		
-		if( pPanel.GetGameDefinition()->GetSkins().HasWithPath( editPath->GetPath() ) ){
-			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Change skin emitter path",
-				"A skin emitter with this path exists already." );
-			editPath->SetPath( skin->GetPath() );
+		if(pPanel.GetGameDefinition()->GetSkins().HasWithPath(editPath->GetPath())){
+			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change skin emitter path",
+				"A skin emitter with this path exists already.");
+			editPath->SetPath(skin->GetPath());
 			return;
 		}
 		
@@ -100,11 +100,11 @@ class cTextName : public igdeTextFieldListener {
 	gdeWPSSkin &pPanel;
 	
 public:
-	cTextName( gdeWPSSkin &panel ) : pPanel( panel ){ }
+	cTextName(gdeWPSSkin &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if( ! skin || skin->GetName() == textField->GetText() ){
+		if(!skin || skin->GetName() == textField->GetText()){
 			return;
 		}
 		
@@ -117,11 +117,11 @@ class cTextDescription : public igdeTextAreaListener {
 	gdeWPSSkin &pPanel;
 	
 public:
-	cTextDescription( gdeWPSSkin &panel ) : pPanel( panel ){ }
+	cTextDescription(gdeWPSSkin &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextArea *textArea ){
+	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if( ! skin || skin->GetDescription() == textArea->GetDescription() ){
+		if(!skin || skin->GetDescription() == textArea->GetDescription()){
 			return;
 		}
 		
@@ -134,11 +134,11 @@ class cComboCategory : public igdeComboBoxListener {
 	gdeWPSSkin &pPanel;
 	
 public:
-	cComboCategory( gdeWPSSkin &panel ) : pPanel( panel ){ }
+	cComboCategory(gdeWPSSkin &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if( ! skin || skin->GetCategory() == comboBox->GetText() ){
+		if(!skin || skin->GetCategory() == comboBox->GetText()){
 			return;
 		}
 		
@@ -151,30 +151,30 @@ class cActionJumpToCategory : public igdeAction {
 	gdeWPSSkin &pPanel;
 	
 public:
-	cActionJumpToCategory( gdeWPSSkin &panel ) : 
-	igdeAction( "", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallStrongRight ),
-		"Jump to Category" ),
-	pPanel( panel ){ }
+	cActionJumpToCategory(gdeWPSSkin &panel) : 
+	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
+		"Jump to Category"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		gdeSkin * const skin = pPanel.GetSkin();
-		if( ! skin ){
+		if(!skin){
 			return;
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
 		gdeCategory * const category = gameDefinition.GetCategoriesSkin()
-			.GetWithPath( skin->GetCategory() );
-		if( ! category ){
+			.GetWithPath(skin->GetCategory());
+		if(!category){
 			return;
 		}
 		
-		gameDefinition.SetActiveCategory( category );
-		gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotCategorySkin );
+		gameDefinition.SetActiveCategory(category);
+		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategorySkin);
 	}
 	
 	virtual void Update(){
-		SetEnabled( pPanel.GetSkin() );
+		SetEnabled(pPanel.GetSkin());
 	}
 };
 
@@ -188,41 +188,41 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSSkin::gdeWPSSkin( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pGameDefinition( NULL )
+gdeWPSSkin::gdeWPSSkin(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
+pGameDefinition(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSSkinListener( *this );
+	pListener = new gdeWPSSkinListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	// skin
-	helper.GroupBox( content, groupBox, "Skin:" );
-	helper.EditPath( groupBox, "Path:", "Path to skin emitter",
-		igdeEnvironment::efpltSkin, pEditPath, new cEditPath( *this ) );
-	helper.EditString( groupBox, "Name:", "Skin name", pEditName, new cTextName( *this ) );
-	helper.EditString( groupBox, "Description:", "Skin description",
-		pEditDescription, 15, 5, new cTextDescription( *this ) );
+	helper.GroupBox(content, groupBox, "Skin:");
+	helper.EditPath(groupBox, "Path:", "Path to skin emitter",
+		igdeEnvironment::efpltSkin, pEditPath, new cEditPath(*this));
+	helper.EditString(groupBox, "Name:", "Skin name", pEditName, new cTextName(*this));
+	helper.EditString(groupBox, "Description:", "Skin description",
+		pEditDescription, 15, 5, new cTextDescription(*this));
 	
-	helper.FormLineStretchFirst( groupBox, "Category: ", "Category", frameLine );
-	helper.ComboBoxFilter( frameLine, true, "Category", pCBCategory, new cComboCategory( *this ) );
-	pCBCategory->SetEditable( true );
+	helper.FormLineStretchFirst(groupBox, "Category: ", "Category", frameLine);
+	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, new cComboCategory(*this));
+	pCBCategory->SetEditable(true);
 	pCBCategory->SetDefaultSorter();
-	pCBCategory->SetFilterCaseInsentive( true );
-	helper.Button( frameLine, pBtnJumpToCategory, new cActionJumpToCategory( *this ), true );
+	pCBCategory->SetFilterCaseInsentive(true);
+	helper.Button(frameLine, pBtnJumpToCategory, new cActionJumpToCategory(*this), true);
 }
 
 gdeWPSSkin::~gdeWPSSkin(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -232,20 +232,20 @@ gdeWPSSkin::~gdeWPSSkin(){
 // Management
 ///////////////
 
-void gdeWPSSkin::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPSSkin::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 		gameDefinition->AddReference();
 	}
 	
@@ -263,36 +263,36 @@ gdeSkin *gdeWPSSkin::GetSkin() const{
 
 
 void gdeWPSSkin::UpdateCategoryList(){
-	const decString selection( pCBCategory->GetText() );
+	const decString selection(pCBCategory->GetText());
 	
 	pCBCategory->RemoveAllItems();
 	
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		const gdeCategoryList &categories = pGameDefinition->GetCategoriesSkin();
-		if( categories.GetCount() > 0 ){
-			UpdateCategoryList( categories, "" );
+		if(categories.GetCount() > 0){
+			UpdateCategoryList(categories, "");
 		}
 		
 		pCBCategory->SortItems();
 		pCBCategory->StoreFilterItems();
 	}
 	
-	pCBCategory->SetText( selection );
-	pCBCategory->SetInvalidValue( ! pCBCategory->GetText().IsEmpty() && ! pCBCategory->GetSelectedItem() );
+	pCBCategory->SetText(selection);
+	pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty() && !pCBCategory->GetSelectedItem());
 }
 
-void gdeWPSSkin::UpdateCategoryList( const gdeCategoryList &list, const char *prefix ){
+void gdeWPSSkin::UpdateCategoryList(const gdeCategoryList &list, const char *prefix){
 	const int count = list.GetCount();
 	decString text;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const gdeCategory &category = *list.GetAt( i );
-		text.Format( "%s%s", prefix, category.GetName().GetString() );
-		pCBCategory->AddItem( text );
-		if( category.GetCategories().GetCount() > 0 ){
-			text.AppendCharacter( '/' );
-			UpdateCategoryList( category.GetCategories(), text );
+	for(i=0; i<count; i++){
+		const gdeCategory &category = *list.GetAt(i);
+		text.Format("%s%s", prefix, category.GetName().GetString());
+		pCBCategory->AddItem(text);
+		if(category.GetCategories().GetCount() > 0){
+			text.AppendCharacter('/');
+			UpdateCategoryList(category.GetCategories(), text);
 		}
 	}
 }
@@ -302,25 +302,25 @@ void gdeWPSSkin::UpdateCategoryList( const gdeCategoryList &list, const char *pr
 void gdeWPSSkin::UpdateSkin(){
 	const gdeSkin * const skin = GetSkin();
 	
-	if( skin ){
-		pEditPath->SetPath( skin->GetPath() );
-		pEditName->SetText( skin->GetName() );
-		pEditDescription->SetText( skin->GetDescription() );
-		pCBCategory->SetText( skin->GetCategory() );
-		pCBCategory->SetInvalidValue( ! pCBCategory->GetText().IsEmpty()
-			&& ! pCBCategory->GetSelectedItem() );
+	if(skin){
+		pEditPath->SetPath(skin->GetPath());
+		pEditName->SetText(skin->GetName());
+		pEditDescription->SetText(skin->GetDescription());
+		pCBCategory->SetText(skin->GetCategory());
+		pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty()
+			&& !pCBCategory->GetSelectedItem());
 		
 	}else{
 		pEditPath->ClearPath();
 		pEditName->ClearText();
 		pEditDescription->ClearText();
 		pCBCategory->ClearText();
-		pCBCategory->SetInvalidValue( false );
+		pCBCategory->SetInvalidValue(false);
 	}
 	
 	const bool enabled = skin != NULL;
-	pEditPath->SetEnabled( enabled );
-	pEditName->SetEnabled( enabled );
-	pEditDescription->SetEnabled( enabled );
-	pCBCategory->SetEnabled( enabled );
+	pEditPath->SetEnabled(enabled);
+	pEditName->SetEnabled(enabled);
+	pEditDescription->SetEnabled(enabled);
+	pCBCategory->SetEnabled(enabled);
 }

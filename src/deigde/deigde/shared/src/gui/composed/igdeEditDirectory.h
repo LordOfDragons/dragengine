@@ -59,9 +59,9 @@ protected:
 		igdeEditDirectory &pEditDirectory;
 		
 	public:
-		cListenerTextField( igdeEditDirectory &editDirectory );
+		cListenerTextField(igdeEditDirectory &editDirectory);
 		virtual ~cListenerTextField();
-		virtual void OnTextChanged( igdeTextField *textField );
+		virtual void OnTextChanged(igdeTextField *textField);
 	};
 	
 	/** \brief Button action. */
@@ -70,7 +70,7 @@ protected:
 		igdeEditDirectory &pEditDirectory;
 		
 	public:
-		cActionButton( igdeEditDirectory &editDirectory, igdeTextField &textField, const char *description );
+		cActionButton(igdeEditDirectory &editDirectory, igdeTextField &textField, const char *description);
 		virtual ~cActionButton();
 		virtual decString DefaultDirectory();
 		virtual void Update();
@@ -96,7 +96,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit directory. */
-	igdeEditDirectory( igdeUIHelper &helper, const char *description = "", bool useGameVFS = true );
+	igdeEditDirectory(igdeUIHelper &helper, const char *description = "", bool useGameVFS = true);
 	
 	
 	
@@ -123,7 +123,7 @@ public:
 	 * 
 	 * Validates directory if changed.
 	 */
-	void SetDirectory( const char *directory );
+	void SetDirectory(const char *directory);
 	
 	/** \brief Clear path. */
 	void ClearDirectory();
@@ -132,19 +132,19 @@ public:
 	bool GetEnabled() const;
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Description shown in tool tips. */
 	const decString &GetDescription() const;
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Default path. */
 	inline const decString &GetDefaultDirectory() const{ return pDefaultDirectory; }
 	
 	/** \brief Set default path. */
-	void SetDefaultDirectory( const char *path );
+	void SetDefaultDirectory(const char *path);
 	
 	/** \brief Directory is valid. */
 	bool IsDirectoryValid() const;
@@ -153,7 +153,7 @@ public:
 	inline bool GetAutoValidateDirectory() const{ return pAutoValidateDirectory; }
 	
 	/** \brief Set if path is auto validated if changed. */
-	void SetAutoValidateDirectory( bool autoValidateDirectory );
+	void SetAutoValidateDirectory(bool autoValidateDirectory);
 	
 	/** \brief Validate path. */
 	void ValidateDirectory();
@@ -167,10 +167,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditDirectoryListener *listener );
+	void AddListener(igdeEditDirectoryListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditDirectoryListener *listener );
+	void RemoveListener(igdeEditDirectoryListener *listener);
 	
 	/** \brief Notify listeners path changed. */
 	virtual void NotifyEditDirectoryChanged();

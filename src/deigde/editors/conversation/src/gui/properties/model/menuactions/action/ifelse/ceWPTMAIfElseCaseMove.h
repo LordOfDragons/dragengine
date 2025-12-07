@@ -54,10 +54,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseMove( ceWindowMain &windowMain,
+	ceWPTMAIfElseCaseMove(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index,
-		const char *text, igdeIcon *icon );
+		const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	

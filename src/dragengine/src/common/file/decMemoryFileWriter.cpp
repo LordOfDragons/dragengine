@@ -38,37 +38,37 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decMemoryFileWriter::decMemoryFileWriter( decMemoryFile *memoryFile, bool append ) :
-pFile( NULL ),
-pPosition( 0 )
+decMemoryFileWriter::decMemoryFileWriter(decMemoryFile *memoryFile, bool append) :
+pFile(NULL),
+pPosition(0)
 {
-	if( ! memoryFile ){
-		DETHROW( deeInvalidParam );
+	if(!memoryFile){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFile = memoryFile;
 	
-	if( append ){
+	if(append){
 		pPosition = memoryFile->GetLength();
 		
 	}else{
-		memoryFile->Resize( 0, false );
+		memoryFile->Resize(0, false);
 	}
 	
 	memoryFile->Touch();
 	memoryFile->AddReference();
 }
 
-decMemoryFileWriter::decMemoryFileWriter( const decMemoryFileWriter &writer ) :
-pFile( writer.pFile ),
-pPosition( writer.pPosition )
+decMemoryFileWriter::decMemoryFileWriter(const decMemoryFileWriter &writer) :
+pFile(writer.pFile),
+pPosition(writer.pPosition)
 {
 	pFile->Touch();
 	pFile->AddReference();
 }
 
 decMemoryFileWriter::~decMemoryFileWriter(){
-	if( pFile ){
+	if(pFile){
 		pFile->Touch();
 		pFile->FreeReference();
 	}
@@ -83,24 +83,24 @@ int decMemoryFileWriter::GetPosition(){
 	return pPosition;
 }
 
-void decMemoryFileWriter::SetPosition( int position ){
-	if( position < 0 || position > pFile->GetLength() ){
-		DETHROW( deeOutOfBoundary );
+void decMemoryFileWriter::SetPosition(int position){
+	if(position < 0 || position > pFile->GetLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = position;
 }
 
-void decMemoryFileWriter::MovePosition( int offset ){
+void decMemoryFileWriter::MovePosition(int offset){
 	const int newPos = pPosition + offset;
-	if( newPos < 0 || newPos > pFile->GetLength() ){
-		DETHROW( deeOutOfBoundary );
+	if(newPos < 0 || newPos > pFile->GetLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = newPos;
 }
 
-void decMemoryFileWriter::SetPositionEnd( int position ){
-	if( position < 0 || position > pFile->GetLength() ){
-		DETHROW( deeOutOfBoundary );
+void decMemoryFileWriter::SetPositionEnd(int position){
+	if(position < 0 || position > pFile->GetLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = pFile->GetLength() - position;
 }
@@ -114,22 +114,22 @@ const char *decMemoryFileWriter::GetFilename(){
 	return pFile->GetFilename();
 }
 
-void decMemoryFileWriter::Write( const void *buffer, int size ){
-	if( size == 0 ){
+void decMemoryFileWriter::Write(const void *buffer, int size){
+	if(size == 0){
 		return;
 	}
 	
-	if( ! buffer || size < 0 ){
-		DETHROW( deeInvalidParam );
+	if(!buffer || size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPosition + size > pFile->GetLength() ){
-		pFile->Resize( pPosition + size, false );
+	if(pPosition + size > pFile->GetLength()){
+		pFile->Resize(pPosition + size, false);
 	}
-	memcpy( pFile->GetPointer() + pPosition, buffer, size );
+	memcpy(pFile->GetPointer() + pPosition, buffer, size);
 	pPosition += size;
 }
 
 decBaseFileWriter::Ref decMemoryFileWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New( new decMemoryFileWriter( *this ) );
+	return decBaseFileWriter::Ref::New(new decMemoryFileWriter(*this));
 }

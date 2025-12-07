@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetVarSetValue( ceConversationTopic *topic, ceCASetVariable *action, int newValue );
+	ceUCASetVarSetValue(ceConversationTopic *topic, ceCASetVariable *action, int newValue);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCASetVarSetValue();

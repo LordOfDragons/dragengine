@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speaker peer. */
-	deoalFakeSpeaker( deoalAudioThread &audioThread );
+	deoalFakeSpeaker(deoalAudioThread &audioThread);
 	
 protected:
 	/** Clean up speaker peer. */

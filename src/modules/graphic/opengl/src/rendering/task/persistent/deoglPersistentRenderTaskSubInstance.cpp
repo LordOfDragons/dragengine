@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPersistentRenderTaskSubInstance::deoglPersistentRenderTaskSubInstance( deoglPersistentRenderTaskPool &pool ) :
-pPool( pool ),
-pLLInstance( this ),
-pParentInstance( NULL ),
-pIndexInstance( 0 ),
-pFlags( 0 )
+deoglPersistentRenderTaskSubInstance::deoglPersistentRenderTaskSubInstance(deoglPersistentRenderTaskPool &pool) :
+pPool(pool),
+pLLInstance(this),
+pParentInstance(NULL),
+pIndexInstance(0),
+pFlags(0)
 {
 	(void)pPool; // silence compiler warning
 }
@@ -57,15 +57,15 @@ deoglPersistentRenderTaskSubInstance::~deoglPersistentRenderTaskSubInstance(){
 // Management
 ///////////////
 
-void deoglPersistentRenderTaskSubInstance::SetParentInstance( deoglPersistentRenderTaskInstance *instance ){
+void deoglPersistentRenderTaskSubInstance::SetParentInstance(deoglPersistentRenderTaskInstance *instance){
 	pParentInstance = instance;
 }
 
-void deoglPersistentRenderTaskSubInstance::SetIndexInstance( int indexInstance ){
+void deoglPersistentRenderTaskSubInstance::SetIndexInstance(int indexInstance){
 	pIndexInstance = indexInstance;
 }
 
-void deoglPersistentRenderTaskSubInstance::SetFlags( int flags ){
+void deoglPersistentRenderTaskSubInstance::SetFlags(int flags){
 	pFlags = flags;
 }
 

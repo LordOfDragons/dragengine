@@ -38,13 +38,13 @@
 /////////////////////////////////
 
 dedaiSpaceGridEdge::dedaiSpaceGridEdge() :
-pGrid( NULL ),
-pIndex( 0 ),
-pVertex1( 0 ),
-pVertex2( 0 ),
-pTypeNumber1( 0 ),
-pTypeNumber2( 0 ),
-pLength( 0.0f ){
+pGrid(NULL),
+pIndex(0),
+pVertex1(0),
+pVertex2(0),
+pTypeNumber1(0),
+pTypeNumber2(0),
+pLength(0.0f){
 }
 
 dedaiSpaceGridEdge::~dedaiSpaceGridEdge(){
@@ -55,30 +55,30 @@ dedaiSpaceGridEdge::~dedaiSpaceGridEdge(){
 // Management
 ///////////////
 
-void dedaiSpaceGridEdge::SetGrid( dedaiSpaceGrid *grid ){
+void dedaiSpaceGridEdge::SetGrid(dedaiSpaceGrid *grid){
 	pGrid = grid;
 }
 
-void dedaiSpaceGridEdge::SetIndex( unsigned short index ){
+void dedaiSpaceGridEdge::SetIndex(unsigned short index){
 	pIndex = index;
 }
 
-void dedaiSpaceGridEdge::SetVertex1( unsigned short vertex ){
+void dedaiSpaceGridEdge::SetVertex1(unsigned short vertex){
 	pVertex1 = vertex;
 }
 
-void dedaiSpaceGridEdge::SetVertex2( unsigned short vertex ){
+void dedaiSpaceGridEdge::SetVertex2(unsigned short vertex){
 	pVertex2 = vertex;
 }
 
-void dedaiSpaceGridEdge::SetTypeNumber1( unsigned short typeNumber ){
+void dedaiSpaceGridEdge::SetTypeNumber1(unsigned short typeNumber){
 	pTypeNumber1 = typeNumber;
 }
 
-void dedaiSpaceGridEdge::SetTypeNumber2( unsigned short typeNumber ){
+void dedaiSpaceGridEdge::SetTypeNumber2(unsigned short typeNumber){
 	pTypeNumber2 = typeNumber;
 }
 
-void dedaiSpaceGridEdge::SetLength( float length ){
+void dedaiSpaceGridEdge::SetLength(float length){
 	pLength = length;
 }

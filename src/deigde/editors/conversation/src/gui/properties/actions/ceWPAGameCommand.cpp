@@ -68,12 +68,12 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPAGameCommand &pPanel;
 	
 public:
-	cTextCommand( ceWPAGameCommand &panel ) : pPanel( panel ){ }
+	cTextCommand(ceWPAGameCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAGameCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetCommand() ){
+		if(!topic || !action || textField->GetText() == action->GetCommand()){
 			return;
 		}
 		
@@ -86,22 +86,22 @@ class cActionEditCommand : public igdeAction {
 	ceWPAGameCommand &pPanel;
 	
 public:
-	cActionEditCommand( ceWPAGameCommand &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	cActionEditCommand(ceWPAGameCommand &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"Edit command in larger dialog"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAGameCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
-		decString text( action->GetCommand() );
-		if( ! igdeCommonDialogs::GetMultilineString(
+		decString text(action->GetCommand());
+		if(!igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text )
-		|| text == action->GetCommand() ){
+			"Edit Command", "Command:", text)
+		|| text == action->GetCommand()){
 			return;
 		}
 		
@@ -120,15 +120,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAGameCommand::ceWPAGameCommand( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAGameCommand::ceWPAGameCommand(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.FormLineStretchFirst( *this, "Command:", "Command to send", formLine );
-	helper.EditString( formLine, "Command to send", pEditCommand, new cTextCommand( *this ) );
-	helper.Button( formLine, pBtnCommand, new cActionEditCommand( *this ), true );
+	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
+	helper.EditString(formLine, "Command to send", pEditCommand, new cTextCommand(*this));
+	helper.Button(formLine, pBtnCommand, new cActionEditCommand(*this), true);
 }
 
 ceWPAGameCommand::~ceWPAGameCommand(){
@@ -142,8 +142,8 @@ ceWPAGameCommand::~ceWPAGameCommand(){
 ceCAGameCommand *ceWPAGameCommand::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatGameCommand ){
-		return ( ceCAGameCommand* )action;
+	if(action && action->GetType() == ceConversationAction::eatGameCommand){
+		return (ceCAGameCommand*)action;
 		
 	}else{
 		return NULL;
@@ -155,8 +155,8 @@ void ceWPAGameCommand::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pEditCommand->SetText( action->GetCommand() );
+	if(action){
+		pEditCommand->SetText(action->GetCommand());
 		
 	}else{
 		pEditCommand->ClearText();

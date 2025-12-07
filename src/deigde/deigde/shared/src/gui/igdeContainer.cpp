@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeContainer::igdeContainer( igdeEnvironment &environment ) :
-igdeWidget( environment ){
+igdeContainer::igdeContainer(igdeEnvironment &environment) :
+igdeWidget(environment){
 }
 
 igdeContainer::~igdeContainer(){
@@ -62,16 +62,16 @@ int igdeContainer::GetChildCount() const{
 	return pChildren.GetCount();
 }
 
-igdeWidget *igdeContainer::GetChildAt( int index ) const{
-	return ( igdeWidget* )pChildren.GetAt( index );
+igdeWidget *igdeContainer::GetChildAt(int index) const{
+	return (igdeWidget*)pChildren.GetAt(index);
 }
 
-int igdeContainer::IndexOfChild( igdeWidget *widget ) const{
+int igdeContainer::IndexOfChild(igdeWidget *widget) const{
 	const int count = pChildren.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( igdeWidget* )pChildren.GetAt( i ) == widget ){
+	for(i=0; i<count; i++){
+		if((igdeWidget*)pChildren.GetAt(i) == widget){
 			return i;
 		}
 	}
@@ -79,37 +79,37 @@ int igdeContainer::IndexOfChild( igdeWidget *widget ) const{
 	return -1;
 }
 
-void igdeContainer::AddChild( igdeWidget *child ){
-	if( ! child || child->GetParent() ){
-		DETHROW( deeInvalidParam );
+void igdeContainer::AddChild(igdeWidget *child){
+	if(!child || child->GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Add( child );
-	child->SetParent( this );
-	if( GetNativeContainer() ){
+	pChildren.Add(child);
+	child->SetParent(this);
+	if(GetNativeContainer()){
 		child->CreateNativeWidget();
 	}
 }
 
-void igdeContainer::RemoveChild( igdeWidget *child ){
-	if( ! child || child->GetParent() != this || ! pChildren.Has( child ) ){
-		DETHROW( deeInvalidParam );
+void igdeContainer::RemoveChild(igdeWidget *child){
+	if(!child || child->GetParent() != this || !pChildren.Has(child)){
+		DETHROW(deeInvalidParam);
 	}
 	
 	child->DestroyNativeWidget();
-	child->SetParent( NULL );
-	pChildren.Remove( child );
+	child->SetParent(NULL);
+	pChildren.Remove(child);
 }
 
 void igdeContainer::RemoveAllChildren(){
-	while( pChildren.GetCount() > 0 ){
+	while(pChildren.GetCount() > 0){
 		const int index = pChildren.GetCount() - 1;
-		igdeWidget &child = *( ( igdeWidget* )pChildren.GetAt( index ) );
+		igdeWidget &child = *((igdeWidget*)pChildren.GetAt(index));
 		
 		child.DestroyNativeWidget();
-		child.SetParent( NULL );
+		child.SetParent(NULL);
 		
-		pChildren.RemoveFrom( index );
+		pChildren.RemoveFrom(index);
 	}
 }
 
@@ -119,8 +119,8 @@ void igdeContainer::DropNativeWidget(){
 	const int count = pChildren.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeWidget* )pChildren.GetAt( i ) )->DropNativeWidget();
+	for(i=0; i<count; i++){
+		((igdeWidget*)pChildren.GetAt(i))->DropNativeWidget();
 	}
 	
 	igdeWidget::DropNativeWidget();
@@ -130,8 +130,8 @@ void igdeContainer::CreateChildWidgetNativeWidgets(){
 	const int count = pChildren.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeWidget* )pChildren.GetAt( i ) )->CreateNativeWidget();
+	for(i=0; i<count; i++){
+		((igdeWidget*)pChildren.GetAt(i))->CreateNativeWidget();
 	}
 }
 
@@ -145,9 +145,9 @@ void igdeContainer::NotifyChildrenGuiThemeChanged(){
 	const int count = pChildren.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		igdeWidget * const widget = ( igdeWidget* )pChildren.GetAt( i );
-		if( widget->GetGuiTheme() != guitheme ){
+	for(i=0; i<count; i++){
+		igdeWidget * const widget = (igdeWidget*)pChildren.GetAt(i);
+		if(widget->GetGuiTheme() != guitheme){
 			widget->OnGuiThemeChanged();
 		}
 	}

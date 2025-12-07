@@ -51,14 +51,14 @@ struct csEngineClass : public csClassObject{
 // Constructor, destructor
 ////////////////////////////
 
-stClassEngine::stClassEngine( ScriptingSmalltalk &st ) :
-pST( st ){
-	gst_define_cfunc( "DEEngine.quit", ( void* )ccQuit );
-	gst_define_cfunc( "DEEngine.getElapsedTime", ( void* )ccElapsedTime );
-	gst_define_cfunc( "DEEngine.resetTimers", ( void* )ccResetTimers );
-	gst_define_cfunc( "DEEngine.getGame", ( void* )ccGame );
-	gst_define_cfunc( "DEEngine.getFPSRate", ( void* )ccFPSRate );
-	gst_define_cfunc( "DEEngine.getArguments", ( void* )ccArguments );
+stClassEngine::stClassEngine(ScriptingSmalltalk &st) :
+pST(st){
+	gst_define_cfunc("DEEngine.quit", (void*)ccQuit);
+	gst_define_cfunc("DEEngine.getElapsedTime", (void*)ccElapsedTime);
+	gst_define_cfunc("DEEngine.resetTimers", (void*)ccResetTimers);
+	gst_define_cfunc("DEEngine.getGame", (void*)ccGame);
+	gst_define_cfunc("DEEngine.getFPSRate", (void*)ccFPSRate);
+	gst_define_cfunc("DEEngine.getArguments", (void*)ccArguments);
 }
 
 stClassEngine::~stClassEngine(){
@@ -70,12 +70,12 @@ stClassEngine::~stClassEngine(){
 ///////////////
 
 void stClassEngine::SetUpLinks(){
-	OOP oopClass = gst_class_name_to_oop( "DEEngine" );
-	if( ! oopClass ){
-		DETHROW( deeInvalidParam );
+	OOP oopClass = gst_class_name_to_oop("DEEngine");
+	if(!oopClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	csEngineClass &csclass = *( ( csEngineClass* )OOP_TO_OBJ( oopClass ) );
+	csEngineClass &csclass = *((csEngineClass*)OOP_TO_OBJ(oopClass));
 	csclass.scripting = pST.GetClassScripting()->GetSingleton();
 }
 
@@ -84,44 +84,44 @@ void stClassEngine::SetUpLinks(){
 // cCall Methods
 //////////////////
 
-void stClassEngine::ccQuit( OOP self ){
-	csEngineClass &csclass = *( ( csEngineClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+void stClassEngine::ccQuit(OOP self){
+	csEngineClass &csclass = *((csEngineClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	
 	st.GetGameEngine()->Quit();
 }
 
-float stClassEngine::ccElapsedTime( OOP self ){
-	csEngineClass &csclass = *( ( csEngineClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+float stClassEngine::ccElapsedTime(OOP self){
+	csEngineClass &csclass = *((csEngineClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	
 	return st.GetGameEngine()->GetElapsedTime();
 }
 
-void stClassEngine::ccResetTimers( OOP self ){
-	csEngineClass &csclass = *( ( csEngineClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+void stClassEngine::ccResetTimers(OOP self){
+	csEngineClass &csclass = *((csEngineClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	
 	st.GetGameEngine()->ResetTimers();
 }
 
-OOP stClassEngine::ccGame( OOP self ){
-	csEngineClass &csclass = *( ( csEngineClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+OOP stClassEngine::ccGame(OOP self){
+	csEngineClass &csclass = *((csEngineClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	
 	return st.GetObjectGame();
 }
 
-int stClassEngine::ccFPSRate( OOP self ){
-	csEngineClass &csclass = *( ( csEngineClass* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+int stClassEngine::ccFPSRate(OOP self){
+	csEngineClass &csclass = *((csEngineClass*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	
 	return st.GetGameEngine()->GetFPSRate();
 }
 
-OOP stClassEngine::ccArguments( OOP self ){
-	csEngineClass &csclass = *( ( csEngineClass* )OOP_TO_OBJ( self ) );
-	ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+OOP stClassEngine::ccArguments(OOP self){
+	csEngineClass &csclass = *((csEngineClass*)OOP_TO_OBJ(self));
+	ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	
 	const deCmdLineArgs &args = *st.GetGameEngine()->GetArguments();
 	OOP selectorAdd = st.GetSelectorAdd();
@@ -129,18 +129,18 @@ OOP stClassEngine::ccArguments( OOP self ){
 	OOP oopArgs = NULL;
 	
 	try{
-		oopArgs = st.CreateNewObject( st.GetClassOrderedCollection() );
-		gst_register_oop( oopArgs );
+		oopArgs = st.CreateNewObject(st.GetClassOrderedCollection());
+		gst_register_oop(oopArgs);
 		
-		for( a=0; a<acount; a++ ){
-			gst_perform_with( oopArgs, selectorAdd, gst_string_to_oop( args.GetArgument( a ) ) );
+		for(a=0; a<acount; a++){
+			gst_perform_with(oopArgs, selectorAdd, gst_string_to_oop(args.GetArgument(a)));
 		}
 		
-		gst_unregister_oop( oopArgs );
+		gst_unregister_oop(oopArgs);
 		
-	}catch( const deException &e ){
-		if( oopArgs ){
-			gst_unregister_oop( oopArgs );
+	}catch(const deException &e){
+		if(oopArgs){
+			gst_unregister_oop(oopArgs);
 		}
 		e.PrintError();
 		return st.GetNil();

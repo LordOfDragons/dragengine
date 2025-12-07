@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create face tracker. */
-	deoxrFaceTracker( deoxrSession &session );
+	deoxrFaceTracker(deoxrSession &session);
 	
 protected:
 	/** Clean up face tracker. */
@@ -103,15 +103,15 @@ public:
 	inline int GetFaceExpressionCount() const{ return pFaceExpressionCount; }
 	
 	/** Face expression at index. */
-	float GetFaceExpressionAt( int index );
+	float GetFaceExpressionAt(int index);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pSetEyeMapping( int index, deInputDevice::eFaceExpressions to, XrEyeExpressionHTC from );
-	void pSetLipMapping( int index, deInputDevice::eFaceExpressions to, XrLipExpressionHTC from );
+	void pSetEyeMapping(int index, deInputDevice::eFaceExpressions to, XrEyeExpressionHTC from);
+	void pSetLipMapping(int index, deInputDevice::eFaceExpressions to, XrLipExpressionHTC from);
 };
 
 #endif

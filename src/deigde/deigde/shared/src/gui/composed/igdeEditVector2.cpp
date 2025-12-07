@@ -44,21 +44,21 @@
 // Class igdeEditVector2::cListener
 /////////////////////////////////////
 
-igdeEditVector2::cListener::cListener( igdeEditVector2 &editVector2,
-	igdeTextField *textX, igdeTextField *textY ) :
-pEditVector2( editVector2 ),
-pTextX( textX ),
-pTextY( textY ){
+igdeEditVector2::cListener::cListener(igdeEditVector2 &editVector2,
+	igdeTextField *textX, igdeTextField *textY) :
+pEditVector2(editVector2),
+pTextX(textX),
+pTextY(textY){
 }
 
 igdeEditVector2::cListener::~cListener(){
 }
 
-void igdeEditVector2::cListener::OnTextChanged( igdeTextField* ){
-	pEditVector2.SetVector2( decVector2( pTextX->GetFloat(), pTextY->GetFloat() ) );
+void igdeEditVector2::cListener::OnTextChanged(igdeTextField*){
+	pEditVector2.SetVector2(decVector2(pTextX->GetFloat(), pTextY->GetFloat()));
 }
 
-void igdeEditVector2::cListener::OnTextChanging( igdeTextField* ){
+void igdeEditVector2::cListener::OnTextChanging(igdeTextField*){
 }
 
 
@@ -69,36 +69,36 @@ void igdeEditVector2::cListener::OnTextChanging( igdeTextField* ){
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditVector2::igdeEditVector2( igdeUIHelper &helper, int columns, int precision,
-	const char *description ) :
-igdeContainerBoxAlternate( helper.GetEnvironment(), igdeContainerBox::eaX, true, 2 ),
-pEnabled( true ),
-pColumns( columns ),
-pEditable( true ),
-pDescription( description ),
-pPrecision( precision ),
-pPreventUpdate( false )
+igdeEditVector2::igdeEditVector2(igdeUIHelper &helper, int columns, int precision,
+	const char *description) :
+igdeContainerBoxAlternate(helper.GetEnvironment(), igdeContainerBox::eaX, true, 2),
+pEnabled(true),
+pColumns(columns),
+pEditable(true),
+pDescription(description),
+pPrecision(precision),
+pPreventUpdate(false)
 {
-	if( columns < 1 || precision < 0 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1 || precision < 0){
+		DETHROW(deeInvalidParam);
 	}
-	pCreateContent( helper );
+	pCreateContent(helper);
 }
 
-igdeEditVector2::igdeEditVector2( igdeUIHelper &helper, int columns, int precision,
-	bool editable, const char *description ) :
-igdeContainerBoxAlternate( helper.GetEnvironment(), igdeContainerBox::eaX, true, 2 ),
-pEnabled( true ),
-pColumns( columns ),
-pEditable( editable ),
-pDescription( description ),
-pPrecision( precision ),
-pPreventUpdate( false )
+igdeEditVector2::igdeEditVector2(igdeUIHelper &helper, int columns, int precision,
+	bool editable, const char *description) :
+igdeContainerBoxAlternate(helper.GetEnvironment(), igdeContainerBox::eaX, true, 2),
+pEnabled(true),
+pColumns(columns),
+pEditable(editable),
+pDescription(description),
+pPrecision(precision),
+pPreventUpdate(false)
 {
-	if( columns < 1 || precision < 0 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1 || precision < 0){
+		DETHROW(deeInvalidParam);
 	}
-	pCreateContent( helper );
+	pCreateContent(helper);
 }
 
 igdeEditVector2::~igdeEditVector2(){
@@ -110,8 +110,8 @@ igdeEditVector2::~igdeEditVector2(){
 // Management
 ///////////////
 
-void igdeEditVector2::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeEditVector2::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -119,8 +119,8 @@ void igdeEditVector2::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeEditVector2::SetEditable( bool editable ){
-	if( pEditable == editable ){
+void igdeEditVector2::SetEditable(bool editable){
+	if(pEditable == editable){
 		return;
 	}
 	
@@ -128,8 +128,8 @@ void igdeEditVector2::SetEditable( bool editable ){
 	OnEditableChanged();
 }
 
-void igdeEditVector2::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeEditVector2::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -137,8 +137,8 @@ void igdeEditVector2::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeEditVector2::SetVector2( const decVector2 &vector ){
-	if( pPreventUpdate || vector.IsEqualTo( pVector2 ) ){
+void igdeEditVector2::SetVector2(const decVector2 &vector){
+	if(pPreventUpdate || vector.IsEqualTo(pVector2)){
 		return;
 	}
 	
@@ -147,9 +147,9 @@ void igdeEditVector2::SetVector2( const decVector2 &vector ){
 	NotifyVector2Changed();
 }
 
-void igdeEditVector2::SetPrecision( int precision ){
-	if( precision < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeEditVector2::SetPrecision(int precision){
+	if(precision < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPrecision = precision;
@@ -162,24 +162,24 @@ void igdeEditVector2::Focus(){
 
 
 
-void igdeEditVector2::AddListener( igdeEditVector2Listener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeEditVector2::AddListener(igdeEditVector2Listener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeEditVector2::RemoveListener( igdeEditVector2Listener *listener ){
-	pListeners.Remove( listener );
+void igdeEditVector2::RemoveListener(igdeEditVector2Listener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeEditVector2::NotifyVector2Changed(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeEditVector2Listener* )listeners.GetAt( i ) )->OnVector2Changed( this );
+	for(i=0; i<count; i++){
+		((igdeEditVector2Listener*)listeners.GetAt(i))->OnVector2Changed(this);
 	}
 }
 
@@ -189,55 +189,55 @@ void igdeEditVector2::OnVector2Changed(){
 	pPreventUpdate = true;
 	try{
 // 		if( fabsf( pVector2.x - pTextX->GetFloat() ) > FLOAT_SAFE_EPSILON ){
-			pTextX->SetFloat( pVector2.x );
+			pTextX->SetFloat(pVector2.x);
 // 		}
 // 		if( fabsf( pVector2.y - pTextY->GetFloat() ) > FLOAT_SAFE_EPSILON ){
-			pTextY->SetFloat( pVector2.y );
+			pTextY->SetFloat(pVector2.y);
 // 		}
 		pPreventUpdate = false;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}
 }
 
 void igdeEditVector2::OnEnabledChanged(){
-	pTextX->SetEnabled( pEnabled );
-	pTextY->SetEnabled( pEnabled );
+	pTextX->SetEnabled(pEnabled);
+	pTextY->SetEnabled(pEnabled);
 }
 
 void igdeEditVector2::OnEditableChanged(){
-	pTextX->SetEditable( pEditable );
-	pTextY->SetEditable( pEditable );
+	pTextX->SetEditable(pEditable);
+	pTextY->SetEditable(pEditable);
 }
 
 void igdeEditVector2::OnDescriptionChanged(){
-	pTextX->SetDescription( pDescription );
-	pTextY->SetDescription( pDescription );
+	pTextX->SetDescription(pDescription);
+	pTextY->SetDescription(pDescription);
 }
 
 void igdeEditVector2::OnPrecisionChanged(){
-	pTextX->SetPrecision( pPrecision );
-	pTextY->SetPrecision( pPrecision );
+	pTextX->SetPrecision(pPrecision);
+	pTextY->SetPrecision(pPrecision);
 }
 
 
 
-void igdeEditVector2::pCreateContent( igdeUIHelper &helper ){
+void igdeEditVector2::pCreateContent(igdeUIHelper &helper){
 	// create widgets
-	helper.Label( *this, "(" );
-	helper.EditFloat( *this, pDescription, pColumns, pPrecision, pTextX, NULL );
-	helper.Label( *this, "," );
-	helper.EditFloat( *this, pDescription, pColumns, pPrecision, pTextY, NULL );
-	helper.Label( *this, ")" );
+	helper.Label(*this, "(");
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextX, NULL);
+	helper.Label(*this, ",");
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextY, NULL);
+	helper.Label(*this, ")");
 	
 	// set values
-	pTextX->SetFloat( pVector2.x );
-	pTextY->SetFloat( pVector2.y );
+	pTextX->SetFloat(pVector2.x);
+	pTextY->SetFloat(pVector2.y);
 	
 	// add listener
 	cListener::Ref listener(cListener::Ref::NewWith(*this, pTextX, pTextY));
-	pTextX->AddListener( listener );
-	pTextY->AddListener( listener );
+	pTextX->AddListener(listener);
+	pTextY->AddListener(listener);
 }

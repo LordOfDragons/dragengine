@@ -51,13 +51,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Renderable added. */
-	virtual void RenderableAdded( int index, deDSRenderable *renderable );
+	virtual void RenderableAdded(int index, deDSRenderable *renderable);
 	
 	/** \brief Renderable changed. */
-	virtual void RenderableChanged( int index, deDSRenderable *renderable );
+	virtual void RenderableChanged(int index, deDSRenderable *renderable);
 	
 	/** \brief Renderable removed. */
-	virtual void RenderableRemoved( int index, deDSRenderable *renderable );
+	virtual void RenderableRemoved(int index, deDSRenderable *renderable);
 	
 	/** \brief All renderables removed. */
 	virtual void AllRenderablesRemoved();

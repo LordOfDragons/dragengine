@@ -52,30 +52,30 @@ public:
 	/** Retrieves the number of types. */
 	int GetCount() const;
 	/** Retrieves the type at the given position. */
-	peeType *GetAt( int index ) const;
+	peeType *GetAt(int index) const;
 	/** Retrieves the type with the given name or NULL if not found. */
-	peeType *GetNamed( const char *name ) const;
+	peeType *GetNamed(const char *name) const;
 	/** Retrieves the index of the given type or -1 if not found. */
-	int IndexOf( peeType *type ) const;
+	int IndexOf(peeType *type) const;
 	/** Retrieves the index of the type with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a type exists. */
-	bool Has( peeType *type ) const;
+	bool Has(peeType *type) const;
 	/** Determines if a type with the given name exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a type. */
-	void Add( peeType *type );
+	void Add(peeType *type);
 	/** Inserts a new type. */
-	void InsertAt( peeType *type, int index );
+	void InsertAt(peeType *type, int index);
 	/** Moves a type to a new position. */
-	void MoveTo( peeType *type, int index );
+	void MoveTo(peeType *type, int index);
 	/** Removes a type. */
-	void Remove( peeType *type );
+	void Remove(peeType *type);
 	/** Removes all types. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	peeTypeList &operator=( const peeTypeList &list );
+	peeTypeList &operator=(const peeTypeList &list);
 	/*@}*/
 };
 

@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveComponent::gdeUOCRemoveComponent( gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCRemoveComponent::gdeUOCRemoveComponent(gdeObjectClass *objectClass, gdeOCComponent *component) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetComponents().Has( component ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetComponents().Has(component)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove component" );
+	SetShortInfo("Remove component");
 	
 	pComponent = component;
 	component->AddReference();
@@ -63,10 +63,10 @@ pComponent( NULL )
 }
 
 gdeUOCRemoveComponent::~gdeUOCRemoveComponent(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -77,19 +77,19 @@ gdeUOCRemoveComponent::~gdeUOCRemoveComponent(){
 ///////////////
 
 void gdeUOCRemoveComponent::Undo(){
-	pObjectClass->GetComponents().Add( pComponent );
+	pObjectClass->GetComponents().Add(pComponent);
 	pObjectClass->NotifyComponentsChanged();
 }
 
 void gdeUOCRemoveComponent::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCComponent() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCComponent()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCComponent( NULL );
+		gameDefinition->SetActiveOCComponent(NULL);
 	}
 	
-	pObjectClass->GetComponents().Remove( pComponent );
+	pObjectClass->GetComponents().Remove(pComponent);
 	pObjectClass->NotifyComponentsChanged();
 }

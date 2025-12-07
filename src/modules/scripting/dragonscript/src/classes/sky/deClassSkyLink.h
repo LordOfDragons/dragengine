@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassSkyLink( deScriptingDragonScript &ds );
+	deClassSkyLink(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassSkyLink();
@@ -61,10 +61,10 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push link. */
-	void PushLink( dsRunTime *rt, deSky *sky, int index );
+	void PushLink(dsRunTime *rt, deSky *sky, int index);
 	/*@}*/
 	
 	
@@ -84,25 +84,25 @@ private:
 		dsClass *clsCurveBezier;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetSky );
-	DEF_NATFUNC( nfGetLinkIndex );
+	DEF_NATFUNC(nfGetSky);
+	DEF_NATFUNC(nfGetLinkIndex);
 	
-	DEF_NATFUNC( nfGetController );
-	DEF_NATFUNC( nfSetController );
-	DEF_NATFUNC( nfGetCurve );
-	DEF_NATFUNC( nfSetCurve );
-	DEF_NATFUNC( nfGetRepeat );
-	DEF_NATFUNC( nfSetRepeat );
+	DEF_NATFUNC(nfGetController);
+	DEF_NATFUNC(nfSetController);
+	DEF_NATFUNC(nfGetCurve);
+	DEF_NATFUNC(nfSetCurve);
+	DEF_NATFUNC(nfGetRepeat);
+	DEF_NATFUNC(nfSetRepeat);
 	
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

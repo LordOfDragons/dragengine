@@ -73,10 +73,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new collision tester. */
-	dedsCollisionTester( deScriptingDragonScript &ds );
+	dedsCollisionTester(deScriptingDragonScript &ds);
 	
 	/** \brief Create copy of a collision tester. */
-	dedsCollisionTester( const dedsCollisionTester &collisionTester );
+	dedsCollisionTester(const dedsCollisionTester &collisionTester);
 	
 	/** \brief Clean up the collision tester. */
 	virtual ~dedsCollisionTester();
@@ -88,13 +88,13 @@ public:
 	inline deWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world to use for collision testing or null if not set. */
-	void SetWorld( deWorld *world );
+	void SetWorld(deWorld *world);
 	
 	/** \brief Touch sensor to use for testing collisions or null if not set. */
 	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
 	
 	/** \brief Set touch sensor to use for testing collisions or null if not set. */
-	void SetTouchSensor( deTouchSensor *touchSensor );
+	void SetTouchSensor(deTouchSensor *touchSensor);
 	
 	
 	
@@ -102,7 +102,7 @@ public:
 	void SetCollisionRay();
 	
 	/** \brief Set collision testing to use a collision volume. */
-	void SetCollisionShape( const decShapeList &shapeList );
+	void SetCollisionShape(const decShapeList &shapeList);
 	
 	/** \brief Collider or null if not set. */
 	inline deCollider *GetCollider() const{ return pCollider; }
@@ -111,13 +111,13 @@ public:
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &filter );
+	void SetCollisionFilter(const decCollisionFilter &filter);
 	
 	/** \brief Collider listener used to customize can hit collider or null if not used. */
 	dsRealObject *GetColliderListener() const;
 	
 	/** \brief Set collider listener used to customize can hit collider or null if not used. */
-	void SetColliderListener( dsRealObject *object );
+	void SetColliderListener(dsRealObject *object);
 	
 	/** \brief List of colliders to ignore. */
 	inline decObjectOrderedSet &GetListIgnoreColliders(){ return pListIgnoreColliders; }
@@ -149,35 +149,35 @@ public:
 	void Reset();
 	
 	/** \brief Test ray collision. */
-	void RayHits( const decDVector &position, const decVector &direction );
+	void RayHits(const decDVector &position, const decVector &direction);
 	
 	/** \brief Test collider hits collision. */
-	void ColliderHits( const decDVector &position );
+	void ColliderHits(const decDVector &position);
 	
 	/** \brief Test collider hits collision. */
-	void ColliderHits( const decDVector &position, const decQuaternion &orientation );
+	void ColliderHits(const decDVector &position, const decQuaternion &orientation);
 	
 	/** \brief Test collider move hits collision. */
-	void ColliderMoveHits( const decDVector &position, const decVector &direction );
+	void ColliderMoveHits(const decDVector &position, const decVector &direction);
 	
 	/** \brief Test collider move hits collision. */
-	void ColliderMoveHits( const decDVector &position, const decQuaternion &orientation,
-	const decVector &direction );
+	void ColliderMoveHits(const decDVector &position, const decQuaternion &orientation,
+	const decVector &direction);
 	
 	/** \brief Test collider rotate hits collision. */
-	void ColliderRotateHits( const decDVector &position, const decVector &rotation );
+	void ColliderRotateHits(const decDVector &position, const decVector &rotation);
 	
 	/** \brief Test collider rotate hits collision. */
-	void ColliderRotateHits( const decDVector &position, const decQuaternion &orientation,
-	const decVector &rotation );
+	void ColliderRotateHits(const decDVector &position, const decQuaternion &orientation,
+	const decVector &rotation);
 	
 	/** \brief Test collider move rotate hits collision. */
-	void ColliderMoveRotateHits( const decDVector &position, const decVector &direction,
-	const decVector &rotation );
+	void ColliderMoveRotateHits(const decDVector &position, const decVector &direction,
+	const decVector &rotation);
 	
 	/** \brief Test collider move rotate hits collision. */
-	void ColliderMoveRotateHits( const decDVector &position, const decQuaternion &orientation,
-	const decVector &direction, const decVector &rotation );
+	void ColliderMoveRotateHits(const decDVector &position, const decQuaternion &orientation,
+	const decVector &direction, const decVector &rotation);
 	/*@}*/
 	
 	/** \name Notifications */
@@ -187,7 +187,7 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
@@ -198,12 +198,12 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	void pCopyCollider( deCollider *collider );
+	void pCopyCollider(deCollider *collider);
 };
 
 #endif

@@ -58,19 +58,19 @@ class cActionAppend : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionAppend ( gdeWPPatternList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox ) : 
-	igdeAction( "Add", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add pattern" ),
-	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
+	cActionAppend (gdeWPPatternList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
+	igdeAction("Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add pattern"),
+	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetPatternList() || ! pPanel.GetUndoSystem() ){
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
 		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
-			 pPanel.UndoSet( *pPanel.GetPatternList() + pEditPath->GetPath() ) ));
+			 pPanel.UndoSet(*pPanel.GetPatternList() + pEditPath->GetPath())));
 		
-		pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
+		pListBox->SetSelection(pListBox->IndexOfItem(pEditPath->GetPath()));
 	}
 };
 
@@ -79,22 +79,22 @@ class cActionRemove : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionRemove( gdeWPPatternList &panel, igdeListBox::Ref &listBox ) :
-	igdeAction( "Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove pattern" ), pPanel( panel ), pListBox( listBox ){ }
+	cActionRemove(gdeWPPatternList &panel, igdeListBox::Ref &listBox) :
+	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Remove pattern"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetPatternList() || ! pPanel.GetUndoSystem() ){
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
-		decStringSet patterns( *pPanel.GetPatternList() );
-		patterns.Remove( pListBox->GetSelectedItem()->GetText() );
+		decStringSet patterns(*pPanel.GetPatternList());
+		patterns.Remove(pListBox->GetSelectedItem()->GetText());
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( patterns ) ));
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(patterns)));
 		
-		if( pListBox->GetItemCount() > 0 ){
-			pListBox->SetSelection( 0 );
+		if(pListBox->GetItemCount() > 0){
+			pListBox->SetSelection(0);
 		}
 	}
 };
@@ -104,15 +104,15 @@ class cActionClear : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClear( gdeWPPatternList &panel, igdeListBox::Ref &listBox ) :
-	igdeAction( "Clear", NULL, "Clear pattern" ), pPanel( panel ), pListBox( listBox ){ }
+	cActionClear(gdeWPPatternList &panel, igdeListBox::Ref &listBox) :
+	igdeAction("Clear", NULL, "Clear pattern"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetPatternList() || ! pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0 ){
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
 			return;
 		}
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( decStringSet() ) ));
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(decStringSet())));
 	}
 };
 
@@ -120,16 +120,16 @@ class cListPatterns : public igdeListBoxListener {
 	gdeWPPatternList &pListBox;
 	
 public:
-	cListPatterns( gdeWPPatternList &listBox ) : pListBox( listBox ){ }
+	cListPatterns(gdeWPPatternList &listBox) : pListBox(listBox){}
 	
-	virtual void OnSelectionChanged( igdeListBox* ){
+	virtual void OnSelectionChanged(igdeListBox*){
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = pListBox.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( menu, pListBox.GetActionAdd() );
-		helper.MenuCommand( menu, pListBox.GetActionRemove() );
-		helper.MenuCommand( menu, pListBox.GetActionClear() );
+		helper.MenuCommand(menu, pListBox.GetActionAdd());
+		helper.MenuCommand(menu, pListBox.GetActionRemove());
+		helper.MenuCommand(menu, pListBox.GetActionClear());
 	}
 };
 
@@ -143,19 +143,19 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPPatternList::gdeWPPatternList( igdeUIHelper &helper, int rows, const char *description ) :
-igdeContainerFlow( helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esNone ),
-pPatternList( NULL ),
-pUndoSystem( NULL )
+gdeWPPatternList::gdeWPPatternList(igdeUIHelper &helper, int rows, const char *description) :
+igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esNone),
+pPatternList(NULL),
+pUndoSystem(NULL)
 {
-	pActionAdd.TakeOver( new cActionAppend ( *this, pEditPath, pListBox ) );
-	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
-	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
+	pActionAdd.TakeOver(new cActionAppend (*this, pEditPath, pListBox));
+	pActionRemove.TakeOver(new cActionRemove(*this, pListBox));
+	pActionClear.TakeOver(new cActionClear(*this, pListBox));
 	
-	helper.EditPath( *this, description, igdeEnvironment::efpltAll, pEditPath, NULL );
-	pEditPath->SetAutoValidatePath( false );
+	helper.EditPath(*this, description, igdeEnvironment::efpltAll, pEditPath, NULL);
+	pEditPath->SetAutoValidatePath(false);
 	
-	helper.ListBox( *this, rows, description, pListBox, new cListPatterns( *this ) );
+	helper.ListBox(*this, rows, description, pListBox, new cListPatterns(*this));
 	pListBox->SetDefaultSorter();
 }
 
@@ -167,8 +167,8 @@ gdeWPPatternList::~gdeWPPatternList(){
 // Management
 ///////////////
 
-void gdeWPPatternList::SetPatternList( const decStringSet *tagList ){
-	if( tagList == pPatternList ){
+void gdeWPPatternList::SetPatternList(const decStringSet *tagList){
+	if(tagList == pPatternList){
 		return;
 	}
 	
@@ -177,14 +177,14 @@ void gdeWPPatternList::SetPatternList( const decStringSet *tagList ){
 	UpdateList();
 }
 
-void gdeWPPatternList::SetUndoSystem( igdeUndoSystem *undoSystem ){
+void gdeWPPatternList::SetUndoSystem(igdeUndoSystem *undoSystem){
 	pUndoSystem = undoSystem;
 }
 
 
 
 const decString &gdeWPPatternList::GetSelectedPattern() const{
-	if( pListBox->GetSelectedItem() != NULL ){
+	if(pListBox->GetSelectedItem() != NULL){
 		return pListBox->GetSelectedItem()->GetText();
 		
 	}else{
@@ -194,26 +194,26 @@ const decString &gdeWPPatternList::GetSelectedPattern() const{
 }
 
 void gdeWPPatternList::UpdateList(){
-	const decString selection( GetSelectedPattern() );
+	const decString selection(GetSelectedPattern());
 	
 	pListBox->RemoveAllItems();
 	
-	if( pPatternList ){
+	if(pPatternList){
 		const int count = pPatternList->GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pListBox->AddItem( pPatternList->GetAt( i ) );
+		for(i=0; i<count; i++){
+			pListBox->AddItem(pPatternList->GetAt(i));
 		}
 		
 		pListBox->SortItems();
 	}
 	
-	SelectPattern( selection );
+	SelectPattern(selection);
 }
 
-void gdeWPPatternList::SelectPattern( const decString &tag ){
-	if( pPatternList ){
-		pListBox->SetSelection( pListBox->IndexOfItem( tag ) );
+void gdeWPPatternList::SelectPattern(const decString &tag){
+	if(pPatternList){
+		pListBox->SetSelection(pListBox->IndexOfItem(tag));
 	}
 }

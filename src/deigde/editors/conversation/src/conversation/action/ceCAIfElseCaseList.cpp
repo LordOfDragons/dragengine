@@ -55,40 +55,40 @@ int ceCAIfElseCaseList::GetCount() const{
 	return pCases.GetCount();
 }
 
-ceCAIfElseCase *ceCAIfElseCaseList::GetAt( int index ) const{
-	return ( ceCAIfElseCase* )pCases.GetAt( index );
+ceCAIfElseCase *ceCAIfElseCaseList::GetAt(int index) const{
+	return (ceCAIfElseCase*)pCases.GetAt(index);
 }
 
-int ceCAIfElseCaseList::IndexOf( ceCAIfElseCase *ifcase ) const{
-	return pCases.IndexOf( ifcase );
+int ceCAIfElseCaseList::IndexOf(ceCAIfElseCase *ifcase) const{
+	return pCases.IndexOf(ifcase);
 }
 
-bool ceCAIfElseCaseList::Has( ceCAIfElseCase *ifcase ) const{
-	return pCases.Has( ifcase );
+bool ceCAIfElseCaseList::Has(ceCAIfElseCase *ifcase) const{
+	return pCases.Has(ifcase);
 }
 
-void ceCAIfElseCaseList::Add( ceCAIfElseCase *ifcase ){
-	if( ! ifcase ){
-		DETHROW( deeInvalidParam );
+void ceCAIfElseCaseList::Add(ceCAIfElseCase *ifcase){
+	if(!ifcase){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCases.Add( ifcase );
+	pCases.Add(ifcase);
 }
 
-void ceCAIfElseCaseList::InsertAt( ceCAIfElseCase *ifcase, int index ){
-	if( ! ifcase ){
-		DETHROW( deeInvalidParam );
+void ceCAIfElseCaseList::InsertAt(ceCAIfElseCase *ifcase, int index){
+	if(!ifcase){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCases.Insert( ifcase, index );
+	pCases.Insert(ifcase, index);
 }
 
-void ceCAIfElseCaseList::MoveTo( ceCAIfElseCase *ifcase, int index ){
-	pCases.Move( ifcase, index );
+void ceCAIfElseCaseList::MoveTo(ceCAIfElseCase *ifcase, int index){
+	pCases.Move(ifcase, index);
 }
 
-void ceCAIfElseCaseList::Remove( ceCAIfElseCase *ifcase ){
-	pCases.Remove( ifcase );
+void ceCAIfElseCaseList::Remove(ceCAIfElseCase *ifcase){
+	pCases.Remove(ifcase);
 }
 
 void ceCAIfElseCaseList::RemoveAll(){
@@ -97,7 +97,7 @@ void ceCAIfElseCaseList::RemoveAll(){
 
 
 
-ceCAIfElseCaseList &ceCAIfElseCaseList::operator=( const ceCAIfElseCaseList &list ){
+ceCAIfElseCaseList &ceCAIfElseCaseList::operator=(const ceCAIfElseCaseList &list){
 	pCases = list.pCases;
 	return *this;
 }

@@ -103,7 +103,7 @@ public:
 	/**
 	 * \brief Run action returning result immediately.
 	 */
-	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	deServiceObject::Ref RunAction(const deServiceObject &action) override;
 	
 	/**
 	 * \brief Frame update.
@@ -126,7 +126,7 @@ public:
 	inline const XUserLocalId &GetUserLocalId() const{ return pUserLocalId; }
 	void SetUser(XUserHandle user);
 	
-	inline XblContextHandle GetXblContext() const{return pXblContext;}
+	inline XblContextHandle GetXblContext() const{ return pXblContext; }
 	
 	deMsgdkPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);

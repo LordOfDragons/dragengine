@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	debpPSimulatePropFields( dePhysicsBullet &bullet );
+	debpPSimulatePropFields(dePhysicsBullet &bullet);
 	
 	/** \brief Clean up parameter. */
 	virtual ~debpPSimulatePropFields();
@@ -51,7 +51,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

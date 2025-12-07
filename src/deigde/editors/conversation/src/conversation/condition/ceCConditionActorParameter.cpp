@@ -39,19 +39,19 @@
 ////////////////////////////
 
 ceCConditionActorParameter::ceCConditionActorParameter() :
-ceConversationCondition( ectActorParameter ),
-pParameter( "Parameter" ),
-pOperator( eopEqual ),
-pTestValue( 0 ){
+ceConversationCondition(ectActorParameter),
+pParameter("Parameter"),
+pOperator(eopEqual),
+pTestValue(0){
 }
 
-ceCConditionActorParameter::ceCConditionActorParameter( const ceCConditionActorParameter &condition ) :
-ceConversationCondition( condition ),
-pActor( condition.pActor ),
-pParameter( condition.pParameter ),
-pOperator( condition.pOperator ),
-pTestValue( condition.pTestValue ),
-pTestVariable( condition.pTestVariable ){
+ceCConditionActorParameter::ceCConditionActorParameter(const ceCConditionActorParameter &condition) :
+ceConversationCondition(condition),
+pActor(condition.pActor),
+pParameter(condition.pParameter),
+pOperator(condition.pOperator),
+pTestValue(condition.pTestValue),
+pTestVariable(condition.pTestVariable){
 }
 
 ceCConditionActorParameter::~ceCConditionActorParameter(){
@@ -62,28 +62,28 @@ ceCConditionActorParameter::~ceCConditionActorParameter(){
 // Management
 ///////////////
 
-void ceCConditionActorParameter::SetActor( const char *id ){
+void ceCConditionActorParameter::SetActor(const char *id){
 	pActor = id;
 }
 
-void ceCConditionActorParameter::SetParameter( const char *name ){
+void ceCConditionActorParameter::SetParameter(const char *name){
 	pParameter = name;
 }
 
-void ceCConditionActorParameter::SetOperator( eOperators aOperator ){
+void ceCConditionActorParameter::SetOperator(eOperators aOperator){
 	pOperator = aOperator;
 }
 
-void ceCConditionActorParameter::SetTestValue( int value ){
+void ceCConditionActorParameter::SetTestValue(int value){
 	pTestValue = value;
 }
 
-void ceCConditionActorParameter::SetTestVariable( const char * variable ){
+void ceCConditionActorParameter::SetTestVariable(const char * variable){
 	pTestVariable = variable;
 }
 
 
 
 ceConversationCondition *ceCConditionActorParameter::CreateCopy() const{
-	return new ceCConditionActorParameter( *this );
+	return new ceCConditionActorParameter(*this);
 }

@@ -39,13 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCasePasteCondition::ceWPTMAIfElseCasePasteCondition( ceWindowMain &windowMain,
+ceWPTMAIfElseCasePasteCondition::ceWPTMAIfElseCasePasteCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase ) :
-ceWPTMAPasteCondition( windowMain, conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase ){
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase) :
+ceWPTMAPasteCondition(windowMain, conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase){
 }
 
 
@@ -53,10 +53,10 @@ pIfCase( &ifCase ){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseCasePasteCondition::CreateUndo( const ceConversationConditionList &conditions ){
-	if( conditions.GetCount() != 1 ){
+igdeUndo *ceWPTMAIfElseCasePasteCondition::CreateUndo(const ceConversationConditionList &conditions){
+	if(conditions.GetCount() != 1){
 		//DETHROW( deeInvalidParam );
 	}
 	
-	return new ceUCAIfElseCasePasteCondition( pTopic, pIfElse, pIfCase, conditions.GetAt( 0 ) );
+	return new ceUCAIfElseCasePasteCondition(pTopic, pIfElse, pIfCase, conditions.GetAt(0));
 }

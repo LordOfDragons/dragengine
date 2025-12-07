@@ -51,16 +51,16 @@ deoglModelOctreeVisitor::~deoglModelOctreeVisitor(){
 // Visiting
 /////////////
 
-void deoglModelOctreeVisitor::VisitNode( deoglOctree *node, int intersection ){
-	const deoglModelOctree &psonode = *( ( deoglModelOctree* )node );
+void deoglModelOctreeVisitor::VisitNode(deoglOctree *node, int intersection){
+	const deoglModelOctree &psonode = *((deoglModelOctree*)node);
 	const deoglModelFaceList &list = psonode.GetFaceList();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		VisitFace( list.GetAt( i ) );
+	for(i=0; i<count; i++){
+		VisitFace(list.GetAt(i));
 	}
 }
 
-void deoglModelOctreeVisitor::VisitFace( deoglModelFace *face ){
+void deoglModelOctreeVisitor::VisitFace(deoglModelFace *face){
 }

@@ -37,8 +37,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinProperty::deSkinProperty( const char *type ) :
-pType( type ){
+deSkinProperty::deSkinProperty(const char *type) :
+pType(type){
 }
 
 deSkinProperty::~deSkinProperty(){
@@ -49,15 +49,15 @@ deSkinProperty::~deSkinProperty(){
 // Management
 ///////////////
 
-void deSkinProperty::SetTexCoordSet( const char *name ){
+void deSkinProperty::SetTexCoordSet(const char *name){
 	pTexCoordSet = name;
 }
 
-void deSkinProperty::SetRenderable( const char *renderable ){
+void deSkinProperty::SetRenderable(const char *renderable){
 	pRenderable = renderable;
 }
 
-void deSkinProperty::SetBone( const char *bone ){
+void deSkinProperty::SetBone(const char *bone){
 	pBone = bone;
 }
 
@@ -66,6 +66,6 @@ void deSkinProperty::SetBone( const char *bone ){
 // Visiting
 /////////////
 
-void deSkinProperty::Visit( deSkinPropertyVisitor &visitor ){
-	visitor.VisitProperty( *this );
+void deSkinProperty::Visit(deSkinPropertyVisitor &visitor){
+	visitor.VisitProperty(*this);
 }

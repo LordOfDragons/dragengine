@@ -84,52 +84,52 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglLight::deoglLight( deGraphicOpenGl &ogl, const deLight &light ) :
-pOgl( ogl ),
-pLight( light ),
-pRLight( NULL ),
-pSkinStateController( NULL ),
-pParentWorld( NULL ),
-pDynamicSkin( NULL ),
-pLightSkin( NULL ),
-pLightCanvas( NULL ),
+deoglLight::deoglLight(deGraphicOpenGl &ogl, const deLight &light) :
+pOgl(ogl),
+pLight(light),
+pRLight(NULL),
+pSkinStateController(NULL),
+pParentWorld(NULL),
+pDynamicSkin(NULL),
+pLightSkin(NULL),
+pLightCanvas(NULL),
 
-pAccumUpdate( 0.0f ),
+pAccumUpdate(0.0f),
 
-pDirtyAttenuation( true ),
-pDirtyCollideLists( true ),
-pDirtyColVol( true ),
-pDirtyConvexVolumeList( true ),
-pDirtyExtends( true ),
-pDirtyFullExtends( true ),
-pDirtyLight( true ),
-pDirtyLightParameters( true ),
-pDirtyMatrices( true ),
-pDirtyOctree( true ),
-pDirtyShadowParameters( true ),
-pDirtyShadows( true ),
-pDirtySource( true ),
-pDirtyDynamicSkin( false ),
-pDirtyTouching( true ),
-pDirtyTransform( true ),
-pDirtyType( true ),
-pDirtyEnvMapNotifyLightChanged( true ),
+pDirtyAttenuation(true),
+pDirtyCollideLists(true),
+pDirtyColVol(true),
+pDirtyConvexVolumeList(true),
+pDirtyExtends(true),
+pDirtyFullExtends(true),
+pDirtyLight(true),
+pDirtyLightParameters(true),
+pDirtyMatrices(true),
+pDirtyOctree(true),
+pDirtyShadowParameters(true),
+pDirtyShadows(true),
+pDirtySource(true),
+pDirtyDynamicSkin(false),
+pDirtyTouching(true),
+pDirtyTransform(true),
+pDirtyType(true),
+pDirtyEnvMapNotifyLightChanged(true),
 
-pDirtyRenderableMapping( true ),
-pDirtySkinStateController( true ),
-pDirtySkinStateStates( true ),
-pSkinStatePrepareRenderables( true ),
-pDynamicSkinRenderablesChanged( true ),
-pDynamicSkinRequiresSync( false ),
-pLightCanvasRequiresSync( false ),
-pRequiresUpdateEverySync( false ),
+pDirtyRenderableMapping(true),
+pDirtySkinStateController(true),
+pDirtySkinStateStates(true),
+pSkinStatePrepareRenderables(true),
+pDynamicSkinRenderablesChanged(true),
+pDynamicSkinRequiresSync(false),
+pLightCanvasRequiresSync(false),
+pRequiresUpdateEverySync(false),
 
-pLLSyncWorld( this )
+pLLSyncWorld(this)
 {
 	try{
-		pRLight = new deoglRLight( ogl.GetRenderThread() );
+		pRLight = new deoglRLight(ogl.GetRenderThread());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -144,12 +144,12 @@ deoglLight::~deoglLight(){
 // Management
 ///////////////
 
-void deoglLight::SetParentWorld( deoglWorld *world ){
-	if( world == pParentWorld ){
+void deoglLight::SetParentWorld(deoglWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
-	if( pSkinStateController ){
+	if(pSkinStateController){
 		pSkinStateController->Clear();
 	}
 	
@@ -160,174 +160,174 @@ void deoglLight::SetParentWorld( deoglWorld *world ){
 }
 
 void deoglLight::SyncToRender(){
-	if( pDirtyLight ){
-		pRLight->SetActive( pLight.GetActivated() );
-		pRLight->SetSpotAngle( pLight.GetSpotAngle() );
-		pRLight->SetSpotRatio( pLight.GetSpotRatio() );
-		pRLight->SetHintMovement( pLight.GetHintMovement() );
-		pRLight->SetHintShadowImportance( pLight.GetHintShadowImportance() );
+	if(pDirtyLight){
+		pRLight->SetActive(pLight.GetActivated());
+		pRLight->SetSpotAngle(pLight.GetSpotAngle());
+		pRLight->SetSpotRatio(pLight.GetSpotRatio());
+		pRLight->SetHintMovement(pLight.GetHintMovement());
+		pRLight->SetHintShadowImportance(pLight.GetHintShadowImportance());
 		
 		pDirtyLight = false;
-		if( pLight.GetHintMovement() != deLight::emhDynamic ){
+		if(pLight.GetHintMovement() != deLight::emhDynamic){
 			pDirtyEnvMapNotifyLightChanged = true;
 		}
 		// TODO use parameter hint
 	}
 	
-	if( pDirtyType ){
-		pRLight->SetLightType( pLight.GetType() );
+	if(pDirtyType){
+		pRLight->SetLightType(pLight.GetType());
 		pRLight->DropPipelines();
 		
 		pDirtyType = false;
-		if( pLight.GetHintMovement() != deLight::emhDynamic ){
+		if(pLight.GetHintMovement() != deLight::emhDynamic){
 			pDirtyEnvMapNotifyLightChanged = true;
 		}
 	}
 	
-	if( pDirtyLightParameters ){
-		pRLight->SetIntensity( pLight.GetIntensity() );
-		pRLight->SetAmbientRatio( pLight.GetAmbientRatio() );
-		pRLight->SetColor( pLight.GetColor() );
-		pRLight->SetSpotSmoothness( pLight.GetSpotSmoothness() );
-		pRLight->SetSpotExponent( pLight.GetSpotExponent() );
-		pRLight->SetLayerMask( pLight.GetLayerMask() );
+	if(pDirtyLightParameters){
+		pRLight->SetIntensity(pLight.GetIntensity());
+		pRLight->SetAmbientRatio(pLight.GetAmbientRatio());
+		pRLight->SetColor(pLight.GetColor());
+		pRLight->SetSpotSmoothness(pLight.GetSpotSmoothness());
+		pRLight->SetSpotExponent(pLight.GetSpotExponent());
+		pRLight->SetLayerMask(pLight.GetLayerMask());
 		
 		pDirtyLightParameters = false;
-		if( pLight.GetHintMovement() == deLight::emhStationary ){
+		if(pLight.GetHintMovement() == deLight::emhStationary){
 			//pDirtyEnvMapNotifyLightChanged = true; // track if changed enough
 		}
 		// TODO use parameter hint
 	}
 	
-	if( pDirtyShadowParameters ){
-		pRLight->SetCastShadows( pLight.GetCastShadows() );
-		pRLight->SetLayerMaskShadow( pLight.GetLayerMaskShadow() );
+	if(pDirtyShadowParameters){
+		pRLight->SetCastShadows(pLight.GetCastShadows());
+		pRLight->SetLayerMaskShadow(pLight.GetLayerMaskShadow());
 		
 		pRLight->RemoveAllShadowIgnoreComponents();
 		const int ignoreCount = pLight.GetShadowIgnoreComponentCount();
 		int i;
-		for( i=0; i<ignoreCount; i++ ){
-			pRLight->AddShadowIgnoreComponent( ( ( deoglComponent* )pLight.
-				GetShadowIgnoreComponentAt( i )->GetPeerGraphic() )->GetRComponent() );
+		for(i=0; i<ignoreCount; i++){
+			pRLight->AddShadowIgnoreComponent(((deoglComponent*)pLight.
+				GetShadowIgnoreComponentAt(i)->GetPeerGraphic())->GetRComponent());
 		}
 		
 		pDirtyShadowParameters = false;
-		if( pLight.GetHintMovement() != deLight::emhDynamic ){
+		if(pLight.GetHintMovement() != deLight::emhDynamic){
 			pDirtyEnvMapNotifyLightChanged = true;
 		}
 	}
 	
-	if( pDirtyAttenuation ){
-		pRLight->UpdateAttenuation( pLight.GetRange(), pLight.GetHalfIntensityDistance() );
+	if(pDirtyAttenuation){
+		pRLight->UpdateAttenuation(pLight.GetRange(), pLight.GetHalfIntensityDistance());
 		
 		pDirtyAttenuation = false;
-		if( pLight.GetHintMovement() != deLight::emhDynamic ){
+		if(pLight.GetHintMovement() != deLight::emhDynamic){
 			pDirtyEnvMapNotifyLightChanged = true;
 		}
 	}
 	
-	if( pDirtyTransform ){
-		pRLight->SetTransform( pLight.GetTransform() );
+	if(pDirtyTransform){
+		pRLight->SetTransform(pLight.GetTransform());
 		pDirtyTransform = false;
 	}
 	
 	pSyncSource();
 	
-	if( pDirtyRenderableMapping ){
+	if(pDirtyRenderableMapping){
 		pRLight->UpdateRenderableMapping();
 		pDirtyRenderableMapping = false;
 	}
 	
-	if( pDirtySkinStateController ){
-		if( pSkinStateController && pRLight->GetSkinState() ){
-			pSkinStateController->Init( *pRLight->GetSkinState(), pRLight->GetLightSkin(), pParentWorld );
+	if(pDirtySkinStateController){
+		if(pSkinStateController && pRLight->GetSkinState()){
+			pSkinStateController->Init(*pRLight->GetSkinState(), pRLight->GetLightSkin(), pParentWorld);
 		}
 		
 		pDirtySkinStateController = false;
 	}
 	
-	if( pAccumUpdate > 0.0f ){
-		if( pSkinStateController ){
-			pSkinStateController->AdvanceTime( pAccumUpdate );
+	if(pAccumUpdate > 0.0f){
+		if(pSkinStateController){
+			pSkinStateController->AdvanceTime(pAccumUpdate);
 			pSkinStateController->SyncToRender();
 		}
 		
-		pRLight->UpdateSkin( pAccumUpdate );
+		pRLight->UpdateSkin(pAccumUpdate);
 		
 		pAccumUpdate = 0.0f;
 	}
 	
 	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
 	// and pRComponent->UpdateSkin()
-	if( pDirtySkinStateStates ){
+	if(pDirtySkinStateStates){
 		pRLight->InitSkinStateStates();
 		pDirtySkinStateStates = false;
 	}
 	
-	if( pSkinStatePrepareRenderables ){
+	if(pSkinStatePrepareRenderables){
 		pRLight->DirtyPrepareSkinStateRenderables();
 		pSkinStatePrepareRenderables = false;
 	}
 	
 	pRLight->UpdateSkinStateStates(); // has to be done better. only some need this
 	
-	if( pDirtyMatrices ){
-		pRLight->SetMatrix( decDMatrix::CreateWorld( pLight.GetPosition(), pLight.GetOrientation() ) );
+	if(pDirtyMatrices){
+		pRLight->SetMatrix(decDMatrix::CreateWorld(pLight.GetPosition(), pLight.GetOrientation()));
 		pDirtyMatrices = false;
 		
-		if( pLight.GetHintMovement() == deLight::emhStationary ){ // jitter: if change is large enough?
+		if(pLight.GetHintMovement() == deLight::emhStationary){ // jitter: if change is large enough?
 			pDirtyEnvMapNotifyLightChanged = true;
 		}
 	}
 	
-	if( pDirtyFullExtends ){
+	if(pDirtyFullExtends){
 		pRLight->SetDirtyFullExtends();
 		pDirtyFullExtends = false;
 	}
 	
-	if( pDirtyExtends ){
+	if(pDirtyExtends){
 		pRLight->SetDirtyExtends();
 		pDirtyExtends = false;
 	}
 	
-	if( pDirtyCollideLists ){
+	if(pDirtyCollideLists){
 		pRLight->SetDirtyCollideLists();
 		pDirtyCollideLists = false;
 	}
 	
-	if( pDirtyColVol ){
+	if(pDirtyColVol){
 		pRLight->SetDirtyCollisionVolume();
 		pDirtyColVol = false;
 	}
 	
-	if( pDirtyConvexVolumeList ){
-		pRLight->SetLightVolumeCropBox( NULL );
+	if(pDirtyConvexVolumeList){
+		pRLight->SetLightVolumeCropBox(NULL);
 		pRLight->SetLightVolumeDirty();
 		pDirtyConvexVolumeList = false;
 	}
 	
-	if( pDirtyShadows ){
+	if(pDirtyShadows){
 		pRLight->SetDirtyShadows();
 		pDirtyShadows = false;
 	}
 	
-	if( pDirtyTouching ){
+	if(pDirtyTouching){
 		pRLight->SetDirtyTouching();
 		pDirtyTouching = false;
 	}
 	
-	if( pDirtyOctree ){
+	if(pDirtyOctree){
 		pRLight->UpdateOctreeNode();
 		pDirtyOctree = false;
 	}
 	
-	if( pDirtyEnvMapNotifyLightChanged ){
+	if(pDirtyEnvMapNotifyLightChanged){
 		pRLight->EnvMapNotifyLightChanged();
 		pDirtyEnvMapNotifyLightChanged = false;
 	}
 }
 
-void deoglLight::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
+void deoglLight::DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable){
 	pDynamicSkinRequiresSync = true;
 	pSkinStatePrepareRenderables = true;
 	
@@ -357,7 +357,7 @@ void deoglLight::DynamicSkinRenderablesChanged(){
 	pRequiresSync();
 }
 
-void deoglLight::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+void deoglLight::DynamicSkinRenderableChanged(deoglDSRenderable&){
 	pDynamicSkinRenderablesChanged = true;
 	pDynamicSkinRequiresSync = true;
 	pSkinStatePrepareRenderables = true;
@@ -513,17 +513,17 @@ void deoglLight::OrientationChanged(){
 
 void deoglLight::SourceChanged(){
 	deoglDynamicSkin * const dynamicSkin = pLight.GetDynamicSkin()
-		? ( deoglDynamicSkin* )pLight.GetDynamicSkin()->GetPeerGraphic() : NULL;
+		? (deoglDynamicSkin*)pLight.GetDynamicSkin()->GetPeerGraphic() : NULL;
 	
-	if( dynamicSkin != pDynamicSkin ){
-		if( pDynamicSkin ){
-			pDynamicSkin->RemoveListener( this );
+	if(dynamicSkin != pDynamicSkin){
+		if(pDynamicSkin){
+			pDynamicSkin->RemoveListener(this);
 		}
 		
 		pDynamicSkin = dynamicSkin;
 		
-		if( dynamicSkin ){
-			dynamicSkin->AddListener( this );
+		if(dynamicSkin){
+			dynamicSkin->AddListener(this);
 		}
 		
 		pDirtyDynamicSkin = true;
@@ -536,26 +536,26 @@ void deoglLight::SourceChanged(){
 	
 	// light skin
 	deoglSkin * const lightSkin = pLight.GetLightSkin()
-		? ( deoglSkin* )pLight.GetLightSkin()->GetPeerGraphic() : NULL;
+		? (deoglSkin*)pLight.GetLightSkin()->GetPeerGraphic() : NULL;
 	
-	if( lightSkin != pLightSkin ){
+	if(lightSkin != pLightSkin){
 		pLightSkin = lightSkin;
 		pDirtySkinStateStates = true;
 	}
 	
 	// light canvas
 	deoglCanvasView * const lightCanvas = pLight.GetLightCanvas()
-		? ( deoglCanvasView* )pLight.GetLightCanvas()->GetPeerGraphic() : NULL;
+		? (deoglCanvasView*)pLight.GetLightCanvas()->GetPeerGraphic() : NULL;
 	
-	if( lightCanvas != pLightCanvas ){
-		if( pLightCanvas ){
-			pLightCanvas->RemoveListener( this );
+	if(lightCanvas != pLightCanvas){
+		if(pLightCanvas){
+			pLightCanvas->RemoveListener(this);
 		}
 		
 		pLightCanvas = lightCanvas;
 		
-		if( lightCanvas ){
-			lightCanvas->AddListener( this );
+		if(lightCanvas){
+			lightCanvas->AddListener(this);
 		}
 		
 		pLightCanvasRequiresSync = true;
@@ -593,60 +593,60 @@ void deoglLight::HintChanged(){
 //////////////////////
 
 void deoglLight::pCleanUp(){
-	if( pSkinStateController ){
+	if(pSkinStateController){
 		delete pSkinStateController;
 	}
 	
-	if( pRLight ){
+	if(pRLight){
 		pRLight->FreeReference();
 	}
 	
-	if( pLightCanvas ){
-		pLightCanvas->RemoveListener( this );
+	if(pLightCanvas){
+		pLightCanvas->RemoveListener(this);
 	}
-	if( pDynamicSkin ){
-		pDynamicSkin->RemoveListener( this );
+	if(pDynamicSkin){
+		pDynamicSkin->RemoveListener(this);
 	}
 }
 
 void deoglLight::pSyncSource(){
-	if( ! pDirtySource ){
+	if(!pDirtySource){
 		return;
 	}
 	
 	// light skin
-	if( pLightSkin ){
-		pRLight->SetLightSkin( pLightSkin->GetRSkin() );
+	if(pLightSkin){
+		pRLight->SetLightSkin(pLightSkin->GetRSkin());
 		
-		if( ! pSkinStateController ){
+		if(!pSkinStateController){
 			pSkinStateController = new deoglSkinStateController;
 		}
 		
 	}else{
-		pRLight->SetLightSkin( NULL );
+		pRLight->SetLightSkin(NULL);
 	}
 	
 	// dynamic skin
-	pRLight->SetDynamicSkin( pDynamicSkin ? pDynamicSkin->GetRDynamicSkin() : NULL );
+	pRLight->SetDynamicSkin(pDynamicSkin ? pDynamicSkin->GetRDynamicSkin() : NULL);
 	
-	if( pDynamicSkinRenderablesChanged ){
+	if(pDynamicSkinRenderablesChanged){
 		pDynamicSkinRenderablesChanged = false;
 		pRLight->DynamicSkinRenderablesChanged();
 	}
 	
-	if( pDynamicSkinRequiresSync ){
+	if(pDynamicSkinRequiresSync){
 		pDynamicSkinRequiresSync = false;
-		if( pDynamicSkin ){
+		if(pDynamicSkin){
 			pDynamicSkin->SyncToRender();
 		}
 	}
 	
 	// light canvas
-	pRLight->SetLightCanvas( pLightCanvas ? pLightCanvas->GetRCanvasView() : NULL );
+	pRLight->SetLightCanvas(pLightCanvas ? pLightCanvas->GetRCanvasView() : NULL);
 	
-	if( pLightCanvasRequiresSync ){
+	if(pLightCanvasRequiresSync){
 		pLightCanvasRequiresSync = false;
-		if( pLightCanvas ){
+		if(pLightCanvas){
 			pLightCanvas->SyncToRender();
 		}
 	}
@@ -656,15 +656,15 @@ void deoglLight::pSyncSource(){
 	
 	pDirtySource = false;
 	
-	if( pLight.GetHintMovement() != deLight::emhDynamic ){
+	if(pLight.GetHintMovement() != deLight::emhDynamic){
 		pDirtyEnvMapNotifyLightChanged = true;
 	}
 }
 
 void deoglLight::pCheckRequiresUpdateEverySync(){
-	if( pSkinStateController->RequiresSyncEveryFrameUpdate() ){
+	if(pSkinStateController->RequiresSyncEveryFrameUpdate()){
 		pRequiresUpdateEverySync = true;
-		if( pSkinStateController->RequiresPrepareRenderables() ){
+		if(pSkinStateController->RequiresPrepareRenderables()){
 			pRLight->DirtyPrepareSkinStateRenderables();
 		}
 	}

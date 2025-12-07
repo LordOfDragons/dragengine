@@ -41,29 +41,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableDepthArrayTexture::deoglRenderableDepthArrayTexture( deoglRenderThread &renderThread,
-	int width, int height, int layerCount, bool withStencil, bool useFloat ) :
-pWidth( width ),
-pHeight( height ),
-pLayerCount( layerCount ),
-pWithStencil( withStencil ),
-pUseFloat( useFloat ),
-pInUse( false ),
-pArrayTexture( NULL ),
-pMemoryUsageGPU( 0 )
+deoglRenderableDepthArrayTexture::deoglRenderableDepthArrayTexture(deoglRenderThread &renderThread,
+	int width, int height, int layerCount, bool withStencil, bool useFloat) :
+pWidth(width),
+pHeight(height),
+pLayerCount(layerCount),
+pWithStencil(withStencil),
+pUseFloat(useFloat),
+pInUse(false),
+pArrayTexture(NULL),
+pMemoryUsageGPU(0)
 {
-	if( width < 1 || height < 1 || layerCount < 1 ){
-		DETHROW( deeInvalidParam );
+	if(width < 1 || height < 1 || layerCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		pArrayTexture = new deoglArrayTexture( renderThread );
-		pArrayTexture->SetSize( width, height, layerCount );
-		pArrayTexture->SetDepthFormat( withStencil, useFloat );
+		pArrayTexture = new deoglArrayTexture(renderThread);
+		pArrayTexture->SetSize(width, height, layerCount);
+		pArrayTexture->SetDepthFormat(withStencil, useFloat);
 		pArrayTexture->CreateTexture();
 		UpdateMemoryUsage();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -79,19 +79,19 @@ deoglRenderableDepthArrayTexture::~deoglRenderableDepthArrayTexture(){
 // Management
 ///////////////
 
-bool deoglRenderableDepthArrayTexture::Matches( int width, int height, int layerCount,
-bool withStencil, bool useFloat ) const{
+bool deoglRenderableDepthArrayTexture::Matches(int width, int height, int layerCount,
+bool withStencil, bool useFloat) const{
 	return width == pWidth && height == pHeight && pLayerCount == layerCount
 		&& withStencil == pWithStencil && useFloat == pUseFloat;
 }
 
-void deoglRenderableDepthArrayTexture::SetInUse( bool inUse ){
+void deoglRenderableDepthArrayTexture::SetInUse(bool inUse){
 	pInUse = inUse;
 }
 
 void deoglRenderableDepthArrayTexture::UpdateMemoryUsage(){
-	if( pArrayTexture ){
-		pMemoryUsageGPU = ( int )pArrayTexture->GetMemoryConsumption().Total();
+	if(pArrayTexture){
+		pMemoryUsageGPU = (int)pArrayTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;
@@ -104,7 +104,7 @@ void deoglRenderableDepthArrayTexture::UpdateMemoryUsage(){
 //////////////////////
 
 void deoglRenderableDepthArrayTexture::pCleanUp(){
-	if( pArrayTexture ){
+	if(pArrayTexture){
 		delete pArrayTexture;
 	}
 }

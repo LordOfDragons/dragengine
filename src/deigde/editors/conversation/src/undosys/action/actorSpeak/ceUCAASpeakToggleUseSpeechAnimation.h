@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakToggleUseSpeechAnimation( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakToggleUseSpeechAnimation(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakToggleUseSpeechAnimation();
 	/*@}*/

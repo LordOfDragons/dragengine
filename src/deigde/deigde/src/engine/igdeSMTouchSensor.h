@@ -55,7 +55,7 @@ public:
 	/** Retrieves the delegee or NULL. */
 	inline deBaseScriptingTouchSensor *GetDelegee() const{ return pDelegee; }
 	/** Sets the delegee or NULL. */
-	void SetDelegee( deBaseScriptingTouchSensor *delegee );
+	void SetDelegee(deBaseScriptingTouchSensor *delegee);
 	/*@}*/
 	
 	/** @name Notifications */
@@ -64,13 +64,13 @@ public:
 	 * \brief Notify scripting module peer collider entered touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderEntered( deCollider *collider );
+	virtual void ColliderEntered(deCollider *collider);
 	
 	/**
 	 * \brief Notify scripting module peer collider left touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderLeft( deCollider *collider );
+	virtual void ColliderLeft(deCollider *collider);
 	/*@}*/
 };
 

@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetTiltFrom::ceUCCShotSetTiltFrom( ceCameraShot *cameraShot, float newTilt ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetTiltFrom::ceUCCShotSetTiltFrom(ceCameraShot *cameraShot, float newTilt){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Set Start Tilt" );
+	SetShortInfo("Camera Shot Set Start Tilt");
 	
 	pOldTilt = cameraShot->GetTiltFrom();
 	pNewTilt = newTilt;
@@ -54,7 +54,7 @@ ceUCCShotSetTiltFrom::ceUCCShotSetTiltFrom( ceCameraShot *cameraShot, float newT
 }
 
 ceUCCShotSetTiltFrom::~ceUCCShotSetTiltFrom(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ ceUCCShotSetTiltFrom::~ceUCCShotSetTiltFrom(){
 ///////////////
 
 void ceUCCShotSetTiltFrom::Undo(){
-	pCameraShot->SetTiltFrom( pOldTilt );
+	pCameraShot->SetTiltFrom(pOldTilt);
 }
 
 void ceUCCShotSetTiltFrom::Redo(){
-	pCameraShot->SetTiltFrom( pNewTilt );
+	pCameraShot->SetTiltFrom(pNewTilt);
 }

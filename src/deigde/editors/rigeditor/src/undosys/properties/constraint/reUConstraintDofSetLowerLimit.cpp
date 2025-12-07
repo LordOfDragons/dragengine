@@ -41,26 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintDofSetLowerLimit::reUConstraintDofSetLowerLimit( reRigConstraint *constraint,
-deColliderConstraint::eDegreesOfFreedom dof, float newValue ){
-	if( ! constraint || ! constraint->GetRig()
-	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
+reUConstraintDofSetLowerLimit::reUConstraintDofSetLowerLimit(reRigConstraint *constraint,
+deColliderConstraint::eDegreesOfFreedom dof, float newValue){
+	if(!constraint || !constraint->GetRig()
+	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
 	pDof = dof;
 	
-	pOldValue = constraint->GetDof( dof ).GetLowerLimit();
+	pOldValue = constraint->GetDof(dof).GetLowerLimit();
 	pNewValue = newValue;
 	
-	SetShortInfo( "Constraint DOF set lower limit" );
+	SetShortInfo("Constraint DOF set lower limit");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintDofSetLowerLimit::~reUConstraintDofSetLowerLimit(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -71,9 +71,9 @@ reUConstraintDofSetLowerLimit::~reUConstraintDofSetLowerLimit(){
 ///////////////
 
 void reUConstraintDofSetLowerLimit::Undo(){
-	pConstraint->GetDof( pDof ).SetLowerLimit( pOldValue );
+	pConstraint->GetDof(pDof).SetLowerLimit(pOldValue);
 }
 
 void reUConstraintDofSetLowerLimit::Redo(){
-	pConstraint->GetDof( pDof ).SetLowerLimit( pNewValue );
+	pConstraint->GetDof(pDof).SetLowerLimit(pNewValue);
 }

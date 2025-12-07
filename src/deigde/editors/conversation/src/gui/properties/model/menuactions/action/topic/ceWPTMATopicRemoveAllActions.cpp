@@ -37,12 +37,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMATopicRemoveAllActions::ceWPTMATopicRemoveAllActions( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationTopic &topic ) :
-ceWPTMARemoveAllActions( windowMain, conversation ),
-pTopic( &topic )
+ceWPTMATopicRemoveAllActions::ceWPTMATopicRemoveAllActions(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationTopic &topic) :
+ceWPTMARemoveAllActions(windowMain, conversation),
+pTopic(&topic)
 {
-	SetEnabled( topic.GetActionList().GetCount() > 0 );
+	SetEnabled(topic.GetActionList().GetCount() > 0);
 }
 
 
@@ -51,5 +51,5 @@ pTopic( &topic )
 ///////////////
 
 igdeUndo *ceWPTMATopicRemoveAllActions::CreateUndo(){
-	return new ceUCActionRemoveAll( pTopic );
+	return new ceUCActionRemoveAll(pTopic);
 }

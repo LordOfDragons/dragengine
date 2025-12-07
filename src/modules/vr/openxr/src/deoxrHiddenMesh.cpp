@@ -49,11 +49,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrHiddenMesh::deoxrHiddenMesh( deoxrSession &session,
-	XrViewConfigurationType viewConfig, uint32_t viewIndex ) :
-pSession( session ),
-pViewConfig( viewConfig ),
-pViewIndex( viewIndex ){
+deoxrHiddenMesh::deoxrHiddenMesh(deoxrSession &session,
+	XrViewConfigurationType viewConfig, uint32_t viewIndex) :
+pSession(session),
+pViewConfig(viewConfig),
+pViewIndex(viewIndex){
 }
 
 deoxrHiddenMesh::~deoxrHiddenMesh(){
@@ -64,7 +64,7 @@ deoxrHiddenMesh::~deoxrHiddenMesh(){
 // Management
 ///////////////
 
-void deoxrHiddenMesh::SetFov( XrFovf fov ){
+void deoxrHiddenMesh::SetFov(XrFovf fov){
 	pFov = fov;
 }
 
@@ -75,66 +75,66 @@ private:
 	const XrVisibilityMaskKHR &pMask;
 	
 public:
-	deoxrHiddenMesh_BuildModel( const XrVisibilityMaskKHR &mask ) : pMask( mask ){}
+	deoxrHiddenMesh_BuildModel(const XrVisibilityMaskKHR &mask) : pMask(mask){}
 	
-	virtual void BuildModel( deModel *model ){
+	virtual void BuildModel(deModel *model){
 		deModelLOD * const lod = new deModelLOD;
-		model->AddLOD( lod );
+		model->AddLOD(lod);
 		
-		model->AddTexture( new deModelTexture( "material", 256, 256 ) );
-		model->GetTextureAt( 0 )->SetDoubleSided( true );
+		model->AddTexture(new deModelTexture("material", 256, 256));
+		model->GetTextureAt(0)->SetDoubleSided(true);
 		
 		// add vertices
 		int i;
-		const int vertexCount = ( int )pMask.vertexCountOutput;
+		const int vertexCount = (int)pMask.vertexCountOutput;
 		
-		lod->SetVertexCount( vertexCount );
+		lod->SetVertexCount(vertexCount);
 		deModelVertex * const vertices = lod->GetVertices();
 		
-		for( i=0; i<vertexCount; i++ ){
-			const XrVector2f &p = pMask.vertices[ i ];
-			vertices[ i ].SetPosition( decVector( p.x, p.y, 0.0f ) );
+		for(i=0; i<vertexCount; i++){
+			const XrVector2f &p = pMask.vertices[i];
+			vertices[i].SetPosition(decVector(p.x, p.y, 0.0f));
 		}
 		
-		lod->SetNormalCount( 1 );
-		lod->SetTangentCount( 1 );
+		lod->SetNormalCount(1);
+		lod->SetTangentCount(1);
 		
 		// add faces
-		const int faceCount = ( int )( pMask.indexCountOutput / 3 );
+		const int faceCount = (int)(pMask.indexCountOutput / 3);
 		
-		lod->SetFaceCount( faceCount );
+		lod->SetFaceCount(faceCount);
 		deModelFace * const faces = lod->GetFaces();
 		
-		for( i=0; i<faceCount; i++ ){
-			faces[ i ].SetTexture( 0 );
+		for(i=0; i<faceCount; i++){
+			faces[i].SetTexture(0);
 			
-			faces[ i ].SetVertex1( ( int )pMask.indices[ i * 3 ] );
-			faces[ i ].SetVertex2( ( int )pMask.indices[ i * 3 + 1 ] );
-			faces[ i ].SetVertex3( ( int )pMask.indices[ i * 3 + 2 ] );
+			faces[i].SetVertex1((int)pMask.indices[i * 3]);
+			faces[i].SetVertex2((int)pMask.indices[i * 3 + 1]);
+			faces[i].SetVertex3((int)pMask.indices[i * 3 + 2]);
 			
-			faces[ i ].SetNormal1( 0 );
-			faces[ i ].SetNormal2( 0 );
-			faces[ i ].SetNormal3( 0 );
+			faces[i].SetNormal1(0);
+			faces[i].SetNormal2(0);
+			faces[i].SetNormal3(0);
 			
-			faces[ i ].SetTangent1( 0 );
-			faces[ i ].SetTangent2( 0 );
-			faces[ i ].SetTangent3( 0 );
+			faces[i].SetTangent1(0);
+			faces[i].SetTangent2(0);
+			faces[i].SetTangent3(0);
 			
-			faces[ i ].SetTextureCoordinates1( 0 );
-			faces[ i ].SetTextureCoordinates2( 0 );
-			faces[ i ].SetTextureCoordinates3( 0 );
+			faces[i].SetTextureCoordinates1(0);
+			faces[i].SetTextureCoordinates2(0);
+			faces[i].SetTextureCoordinates3(0);
 		}
 		
 		// add texture coordinates
-		model->GetTextureCoordinatesSetList().Add( "default" );
+		model->GetTextureCoordinatesSetList().Add("default");
 		
-		lod->SetTextureCoordinatesCount( 1 );
+		lod->SetTextureCoordinatesCount(1);
 		
-		lod->SetTextureCoordinatesSetCount( 1 );
-		deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSetAt( 0 );
+		lod->SetTextureCoordinatesSetCount(1);
+		deModelTextureCoordinatesSet &tcset = lod->GetTextureCoordinatesSetAt(0);
 		
-		tcset.SetTextureCoordinatesCount( 1 );
-		tcset.SetTextureCoordinatesAt( 0, decVector2() );
+		tcset.SetTextureCoordinatesCount(1);
+		tcset.SetTextureCoordinatesAt(0, decVector2());
 	}
 };
 
@@ -143,35 +143,35 @@ void deoxrHiddenMesh::UpdateModel(){
 	
 	deVROpenXR &oxr = pSession.GetSystem().GetInstance().GetOxr();
 	
-	oxr.LogInfoFormat( "Loading hidden mesh for view config %d for view %d", pViewConfig, pViewIndex );
+	oxr.LogInfoFormat("Loading hidden mesh for view config %d for view %d", pViewConfig, pViewIndex);
 	
 	XrVisibilityMaskKHR mask;
-	memset( &mask, 0, sizeof( mask ) );
+	memset(&mask, 0, sizeof(mask));
 	mask.type = XR_TYPE_VISIBILITY_MASK_KHR;
 	
 	try{
 		// fetch and process mask
-		pFetchData( mask );
+		pFetchData(mask);
 		
-		if( mask.vertexCountOutput == 0 || mask.indexCountOutput == 0 ){
+		if(mask.vertexCountOutput == 0 || mask.indexCountOutput == 0){
 			return;
 		}
 		
-		pProjectVertices( mask );
-		pMapVerticesToWindow( mask );
-		pFitVertices( mask );
+		pProjectVertices(mask);
+		pMapVerticesToWindow(mask);
+		pFitVertices(mask);
 		
 		// create model
 		decString path;
-		path.Format( "/openxr/hiddenMesh/config%d_view%d.demodel", pViewConfig, pViewIndex );
+		path.Format("/openxr/hiddenMesh/config%d_view%d.demodel", pViewConfig, pViewIndex);
 		
-		deoxrHiddenMesh_BuildModel builder( mask );
-		pModel.TakeOver( oxr.GetGameEngine()->GetModelManager()->CreateModel( path, builder ) );
+		deoxrHiddenMesh_BuildModel builder(mask);
+		pModel.TakeOver(oxr.GetGameEngine()->GetModelManager()->CreateModel(path, builder));
 		
 		delete [] mask.vertices;
 		delete [] mask.indices;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		delete [] mask.vertices;
 		delete [] mask.indices;
 		throw;
@@ -183,29 +183,29 @@ void deoxrHiddenMesh::UpdateModel(){
 // Private Functions
 //////////////////////
 
-void deoxrHiddenMesh::pFetchData( XrVisibilityMaskKHR &mask ) const{
+void deoxrHiddenMesh::pFetchData(XrVisibilityMaskKHR &mask) const{
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
 	// get counts
-	OXR_CHECK( instance.xrGetVisibilityMaskKHR( pSession.GetSession(),
-		pViewConfig, pViewIndex, XR_VISIBILITY_MASK_TYPE_HIDDEN_TRIANGLE_MESH_KHR, &mask ) );
+	OXR_CHECK(instance.xrGetVisibilityMaskKHR(pSession.GetSession(),
+		pViewConfig, pViewIndex, XR_VISIBILITY_MASK_TYPE_HIDDEN_TRIANGLE_MESH_KHR, &mask));
 	
-	if( mask.vertexCountOutput == 0 || mask.indexCountOutput == 0 ){
+	if(mask.vertexCountOutput == 0 || mask.indexCountOutput == 0){
 		return;
 	}
 	
 	// allocate temporary memory and get data
-	mask.vertices = new XrVector2f[ mask.vertexCountOutput ];
-	mask.indices = new uint32_t[ mask.indexCountOutput ];
+	mask.vertices = new XrVector2f[mask.vertexCountOutput];
+	mask.indices = new uint32_t[mask.indexCountOutput];
 	
 	mask.vertexCapacityInput = mask.vertexCountOutput;
 	mask.indexCapacityInput = mask.indexCountOutput;
 	
-	OXR_CHECK( instance.xrGetVisibilityMaskKHR( pSession.GetSession(),
-		pViewConfig, pViewIndex, XR_VISIBILITY_MASK_TYPE_HIDDEN_TRIANGLE_MESH_KHR, &mask ) );
+	OXR_CHECK(instance.xrGetVisibilityMaskKHR(pSession.GetSession(),
+		pViewConfig, pViewIndex, XR_VISIBILITY_MASK_TYPE_HIDDEN_TRIANGLE_MESH_KHR, &mask));
 }
 
-void deoxrHiddenMesh::pProjectVertices( XrVisibilityMaskKHR &mask ) const{
+void deoxrHiddenMesh::pProjectVertices(XrVisibilityMaskKHR &mask) const{
 	// calculate scaling. according to specification the returned triangle mesh
 	// is an actual 3d mesh with the implicit z coordinate -1 . the graphic module
 	// expects the mesh though in image space. we have to calculate the projection
@@ -232,69 +232,69 @@ void deoxrHiddenMesh::pProjectVertices( XrVisibilityMaskKHR &mask ) const{
 	// 
 	// no idea why they made it so complicated. it is a view hidden mesh. a 2d mesh
 	// would have been more than enough
-	const float projLeft = tanf( pFov.angleLeft );
-	const float projRight = tanf( pFov.angleRight );
-	const float projTop = tanf( -pFov.angleUp );
-	const float projBottom = tanf( -pFov.angleDown );
+	const float projLeft = tanf(pFov.angleLeft);
+	const float projRight = tanf(pFov.angleRight);
+	const float projTop = tanf(-pFov.angleUp);
+	const float projBottom = tanf(-pFov.angleDown);
 	
-	const float idx = 1.0f / ( projRight - projLeft );
-	const float idy = 1.0f / ( projBottom - projTop );
+	const float idx = 1.0f / (projRight - projLeft);
+	const float idy = 1.0f / (projBottom - projTop);
 	const float sx = projRight + projLeft;
 	const float sy = projBottom + projTop;
 	
-	const decVector2 scale( 2.0f * idx, 2.0f * idy );
-	const decVector2 offset( -sx * idx, -sy * idy );
+	const decVector2 scale(2.0f * idx, 2.0f * idy);
+	const decVector2 offset(-sx * idx, -sy * idy);
 	
 	// project vertices
 	uint32_t i;
-	for( i=0; i<mask.vertexCountOutput; i++ ){
-		XrVector2f &p = mask.vertices[ i ];
+	for(i=0; i<mask.vertexCountOutput; i++){
+		XrVector2f &p = mask.vertices[i];
 		p.x = p.x * scale.x + offset.x;
 		p.y = p.y * scale.y + offset.y;
 	}
 }
 
-void deoxrHiddenMesh::pMapVerticesToWindow( XrVisibilityMaskKHR &mask ) const{
+void deoxrHiddenMesh::pMapVerticesToWindow(XrVisibilityMaskKHR &mask) const{
 	uint32_t i;
-	for( i=0; i<mask.vertexCountOutput; i++ ){
-		XrVector2f &p = mask.vertices[ i ];
+	for(i=0; i<mask.vertexCountOutput; i++){
+		XrVector2f &p = mask.vertices[i];
 		p.x = p.x * 0.5f + 0.5f;
 		p.y = p.y * 0.5f + 0.5f;
 	}
 }
 
-void deoxrHiddenMesh::pFitVertices( XrVisibilityMaskKHR &mask ) const{
+void deoxrHiddenMesh::pFitVertices(XrVisibilityMaskKHR &mask) const{
 	// hidden mask returned by openxr are often slightly off by a pixel or two.
 	// this leaves small gaps which are rendered which is suboptimal.
 	// stretch the mask to fit tightly into the window.
 	float minX = 0.5f, maxX = 0.5f, minY = 0.5f, maxY = 0.5f;
 	uint32_t i;
 	
-	for( i=0; i<mask.vertexCountOutput; i++ ){
-		const XrVector2f &p = mask.vertices[ i ];
+	for(i=0; i<mask.vertexCountOutput; i++){
+		const XrVector2f &p = mask.vertices[i];
 		
-		if( p.x < minX ){
+		if(p.x < minX){
 			minX = p.x;
 			
-		}else if( p.x > maxX ){
+		}else if(p.x > maxX){
 			maxX = p.x;
 		}
 		
-		if( p.y < minY ){
+		if(p.y < minY){
 			minY = p.y;
 			
-		}else if( p.y > maxY ){
+		}else if(p.y > maxY){
 			maxY = p.y;
 		}
 	}
 	
-	const float scaleX = 1.0f / ( maxX - minX );
-	const float scaleY = 1.0f / ( maxY - minY );
+	const float scaleX = 1.0f / (maxX - minX);
+	const float scaleY = 1.0f / (maxY - minY);
 	const float offsetX = scaleX * minX;
 	const float offsetY = scaleY * minY;
 	
-	for( i=0; i<mask.vertexCountOutput; i++ ){
-		XrVector2f &p = mask.vertices[ i ];
+	for(i=0; i<mask.vertexCountOutput; i++){
+		XrVector2f &p = mask.vertices[i];
 		p.x = p.x * scaleX - offsetX;
 		p.y = p.y * scaleY - offsetY;
 	}

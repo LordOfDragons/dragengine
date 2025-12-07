@@ -68,7 +68,7 @@ public:
 	/**
 	 * \brief EditPath path changed.
 	 */
-	virtual void OnEditPathChanged( igdeEditPath *editPath );
+	virtual void OnEditPathChanged(igdeEditPath *editPath);
 	/*@}*/
 };
 

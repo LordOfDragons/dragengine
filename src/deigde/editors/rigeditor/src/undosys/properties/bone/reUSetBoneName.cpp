@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneName::reUSetBoneName( reRigBone *bone, const char *newName ){
-	if( ! bone || ! newName ) DETHROW( deeInvalidParam );
+reUSetBoneName::reUSetBoneName(reRigBone *bone, const char *newName){
+	if(!bone || !newName) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();
@@ -48,7 +48,7 @@ reUSetBoneName::reUSetBoneName( reRigBone *bone, const char *newName ){
 	pOldName = bone->GetName();
 	pNewName = newName;
 	
-	SetShortInfo( "Set Bone Name" );
+	SetShortInfo("Set Bone Name");
 }
 
 reUSetBoneName::~reUSetBoneName(){
@@ -61,11 +61,11 @@ reUSetBoneName::~reUSetBoneName(){
 ///////////////
 
 void reUSetBoneName::Undo(){
-	pBone->SetName( pOldName.GetString() );
+	pBone->SetName(pOldName.GetString());
 }
 
 void reUSetBoneName::Redo(){
-	pBone->SetName( pNewName.GetString() );
+	pBone->SetName(pNewName.GetString());
 }
 
 
@@ -74,5 +74,5 @@ void reUSetBoneName::Redo(){
 //////////////////////
 
 void reUSetBoneName::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
+	if(pBone) pBone->FreeReference();
 }

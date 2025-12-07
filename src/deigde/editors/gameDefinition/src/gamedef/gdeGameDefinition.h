@@ -226,7 +226,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create game definition. */
-	gdeGameDefinition( igdeEnvironment *environment );
+	gdeGameDefinition(igdeEnvironment *environment);
 	
 	/** Clean up speech animation. */
 	virtual ~gdeGameDefinition();
@@ -246,7 +246,7 @@ public:
 	inline float GetViewRatio() const{ return pViewRatio; }
 	
 	/** Set view ratio used to properly align camera on preview objects. */
-	void SetViewRatio( float viewRatio );
+	void SetViewRatio(float viewRatio);
 	
 	/** Sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
@@ -258,7 +258,7 @@ public:
 	inline bool GetIsProjectGameDef() const{ return pIsProjectGameDef; }
 	
 	/** Set if this is project game definition. */
-	void SetIsProjectGameDef( bool isProjectGameDef );
+	void SetIsProjectGameDef(bool isProjectGameDef);
 	
 	
 	
@@ -266,31 +266,31 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** Get base path. */
 	inline const decString &GetBasePath() const{ return pBasePath; }
 	
 	/** Set base path. */
-	void SetBasePath( const char *path );
+	void SetBasePath(const char *path);
 	
 	/** Get vfs path. */
 	inline const decString &GetVFSPath() const{ return pVFSPath; }
 	
 	/** Set vfs path. */
-	void SetVFSPath( const char *path );
+	void SetVFSPath(const char *path);
 	
 	/** Script module this game definition is compatible with. */
 	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	
 	/** Set script module this game definition is compatible with. */
-	void SetScriptModule( const char *identifier );
+	void SetScriptModule(const char *identifier);
 	
 	
 	
@@ -298,16 +298,16 @@ public:
 	inline const decStringList &GetBaseGameDefinitionIDList() const{ return pBaseGameDefinitionIDList; }
 	
 	/** Set base game definition id list. */
-	void SetBaseGameDefinitionIDList( const decStringList &ids );
+	void SetBaseGameDefinitionIDList(const decStringList &ids);
 	
 	/** Update list of base game definitions. */
-	void UpdateBaseGameDefinitions( gdeLoadSaveSystem &loadSaveSystem );
+	void UpdateBaseGameDefinitions(gdeLoadSaveSystem &loadSaveSystem);
 	
 	/** Number of base game definitions. */
 	int GetBaseGameDefinitionCount() const;
 	
 	/** Get base game definition at index. */
-	const gdeGameDefinition &GetBaseGameDefinitionAt( int index ) const;
+	const gdeGameDefinition &GetBaseGameDefinitionAt(int index) const;
 	
 	
 	
@@ -315,19 +315,19 @@ public:
 	inline const decString &GetDefaultObjectClass() const{ return pDefaultObjectClass; }
 	
 	/** Set path to object class. */
-	void SetDefaultObjectClass( const char *objectClass );
+	void SetDefaultObjectClass(const char *objectClass);
 	
 	/** Path to skin. */
 	inline const decString &GetDefaultSkin() const{ return pDefaultSkin; }
 	
 	/** Set path to skin. */
-	void SetDefaultSkin( const char *skin );
+	void SetDefaultSkin(const char *skin);
 	
 	/** Path to sky. */
 	inline const decString &GetDefaultSky() const{ return pDefaultSky; }
 	
 	/** Set path to sky. */
-	void SetDefaultSky( const char *sky );
+	void SetDefaultSky(const char *sky);
 	
 	
 	
@@ -336,7 +336,7 @@ public:
 	inline const gdeCategoryList &GetCategoriesObjectClass() const{ return pCategoriesObjectClass; }
 	
 	/** Find object class category with path or \em NULL if absent. */
-	const gdeCategory *FindCategoryObjectClass( const char *path ) const;
+	const gdeCategory *FindCategoryObjectClass(const char *path) const;
 	
 	/** Object classes category names. */
 	const decStringSet &GetObjectClassCategoryNameList();
@@ -357,7 +357,7 @@ public:
 	inline gdeCategory *GetActiveCategory() const{ return pActiveCategory; }
 	
 	/** Set active category or \em NULL if not set. */
-	void SetActiveCategory( gdeCategory *category );
+	void SetActiveCategory(gdeCategory *category);
 	
 	
 	
@@ -378,10 +378,10 @@ public:
 	void NotifyWorldPropertiesChanged();
 	
 	/** Notify listeners world property changed. */
-	void NotifyWorldPropertyChanged( gdeProperty *property );
+	void NotifyWorldPropertyChanged(gdeProperty *property);
 	
 	/** Notify listeners world property name changed. */
-	void NotifyWorldPropertyNameChanged( gdeProperty *property );
+	void NotifyWorldPropertyNameChanged(gdeProperty *property);
 	
 	
 	
@@ -393,10 +393,10 @@ public:
 	void NotifyDecalPropertiesChanged();
 	
 	/** Notify listeners decal property changed. */
-	void NotifyDecalPropertyChanged( gdeProperty *property );
+	void NotifyDecalPropertyChanged(gdeProperty *property);
 	
 	/** Notify listeners decal property name changed. */
-	void NotifyDecalPropertyNameChanged( gdeProperty *property );
+	void NotifyDecalPropertyNameChanged(gdeProperty *property);
 	
 	
 	
@@ -404,7 +404,7 @@ public:
 	inline const decStringList &GetAutoFindPathObjectClasses() const{ return pAutoFindPathObjectClasses; }
 	
 	/** Set auto find path for object classes. */
-	void SetAutoFindPathObjectClasses( const decStringList &list );
+	void SetAutoFindPathObjectClasses(const decStringList &list);
 	
 	/** Notify listeners auto find path for object classes changed. */
 	void NotifyAutoFindPathObjectClassesChanged();
@@ -413,7 +413,7 @@ public:
 	inline const decStringList &GetAutoFindPathSkins() const{ return pAutoFindPathSkins; }
 	
 	/** Set auto find path for skins. */
-	void SetAutoFindPathSkins( const decStringList &list );
+	void SetAutoFindPathSkins(const decStringList &list);
 	
 	/** Notify listeners auto find path for skins changed. */
 	void NotifyAutoFindPathSkinsChanged();
@@ -422,7 +422,7 @@ public:
 	inline const decStringList &GetAutoFindPathSkies() const{ return pAutoFindPathSkies; }
 	
 	/** Set auto find path for skies. */
-	void SetAutoFindPathSkies( const decStringList &list );
+	void SetAutoFindPathSkies(const decStringList &list);
 	
 	/** Notify listeners auto find path for skies changed. */
 	void NotifyAutoFindPathSkiesChanged();
@@ -433,7 +433,7 @@ public:
 	inline eObjectTypes GetSelectedObjectType() const{ return pSelectedObjectType; }
 	
 	/** Set selected object type. */
-	void SetSelectedObjectType( eObjectTypes objectType );
+	void SetSelectedObjectType(eObjectTypes objectType);
 	
 	
 	
@@ -449,7 +449,7 @@ public:
 	
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -472,16 +472,16 @@ public:
 	inline const gdeObjectClassList &GetObjectClasses() const{ return pObjectClasses; }
 	
 	/** Add object class. */
-	void AddObjectClass( gdeObjectClass *objectClass );
+	void AddObjectClass(gdeObjectClass *objectClass);
 	
 	/** Remove object class. */
-	void RemoveObjectClass( gdeObjectClass *objectClass );
+	void RemoveObjectClass(gdeObjectClass *objectClass);
 	
 	/** Remove all object classes. */
 	void RemoveAllObjectClasses();
 	
 	/** Find object class in game definition and all base game definitions. */
-	const gdeObjectClass * const FindObjectClass( const char *name ) const;
+	const gdeObjectClass * const FindObjectClass(const char *name) const;
 	
 	/** Class name list. */
 	const decStringSet &GetClassNameList();
@@ -492,7 +492,7 @@ public:
 	inline gdeObjectClass *GetActiveObjectClass() const{ return pActiveObjectClass; }
 	
 	/** Set active object class or \em NULL if none is active. */
-	void SetActiveObjectClass( gdeObjectClass *objectClass );
+	void SetActiveObjectClass(gdeObjectClass *objectClass);
 	
 	/** Active object class is set. */
 	bool HasActiveObjectClass() const;
@@ -503,7 +503,7 @@ public:
 	inline gdeOCBillboard *GetActiveOCBillboard() const{ return pActiveOCBillboard; }
 	
 	/** Set active object class billboard or \em NULL if none is active. */
-	void SetActiveOCBillboard( gdeOCBillboard *billboard );
+	void SetActiveOCBillboard(gdeOCBillboard *billboard);
 	
 	/** Active object class billboard is set. */
 	bool HasActiveOCBillboard() const;
@@ -514,7 +514,7 @@ public:
 	inline gdeOCCamera *GetActiveOCCamera() const{ return pActiveOCCamera; }
 	
 	/** Set active object class camera or \em NULL if none is active. */
-	void SetActiveOCCamera( gdeOCCamera *camera );
+	void SetActiveOCCamera(gdeOCCamera *camera);
 	
 	/** Active object class camera is set. */
 	bool HasActiveOCCamera() const;
@@ -525,7 +525,7 @@ public:
 	inline gdeOCComponent *GetActiveOCComponent() const{ return pActiveOCComponent; }
 	
 	/** Set active object class component or \em NULL if none is active. */
-	void SetActiveOCComponent( gdeOCComponent *component );
+	void SetActiveOCComponent(gdeOCComponent *component);
 	
 	/** Active object class component is set. */
 	bool HasActiveOCComponent() const;
@@ -536,7 +536,7 @@ public:
 	inline gdeOCEnvMapProbe *GetActiveOCEnvMapProbe() const{ return pActiveOCEnvMapProbe; }
 	
 	/** Set active object class environment map probe or \em NULL if none is active. */
-	void SetActiveOCEnvMapProbe( gdeOCEnvMapProbe *envMapProbe );
+	void SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe);
 	
 	/** Active object class environment map probe is set. */
 	bool HasActiveOCEnvMapProbe() const;
@@ -547,7 +547,7 @@ public:
 	inline gdeOCLight *GetActiveOCLight() const{ return pActiveOCLight; }
 	
 	/** Set active object class light or \em NULL if none is active. */
-	void SetActiveOCLight( gdeOCLight *light );
+	void SetActiveOCLight(gdeOCLight *light);
 	
 	/** Active object class light is set. */
 	bool HasActiveOCLight() const;
@@ -558,7 +558,7 @@ public:
 	inline gdeOCNavigationBlocker *GetActiveOCNavigationBlocker() const{ return pActiveOCNavigationBlocker; }
 	
 	/** Set active object class navigation blocker or \em NULL if none is active. */
-	void SetActiveOCNavigationBlocker( gdeOCNavigationBlocker *navblocker );
+	void SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *navblocker);
 	
 	/** Active object class navigation blocker is set. */
 	bool HasActiveOCNavigationBlocker() const;
@@ -569,7 +569,7 @@ public:
 	inline gdeOCNavigationSpace *GetActiveOCNavigationSpace() const{ return pActiveOCNavigationSpace; }
 	
 	/** Set active object class navigation space or \em NULL if none is active. */
-	void SetActiveOCNavigationSpace( gdeOCNavigationSpace *navspace );
+	void SetActiveOCNavigationSpace(gdeOCNavigationSpace *navspace);
 	
 	/** Active object class navigation space is set. */
 	bool HasActiveOCNavigationSpace() const;
@@ -580,7 +580,7 @@ public:
 	inline gdeOCParticleEmitter *GetActiveOCParticleEmitter() const{ return pActiveOCParticleEmitter; }
 	
 	/** Set active object class particle emitter or \em NULL if none is active. */
-	void SetActiveOCParticleEmitter( gdeOCParticleEmitter *emitter );
+	void SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter);
 	
 	/** Active object class particle emitter is set. */
 	bool HasActiveOCParticleEmitter() const;
@@ -591,7 +591,7 @@ public:
 	inline gdeOCForceField *GetActiveOCForceField() const{ return pActiveOCForceField; }
 	
 	/** Set active object class force field or \em NULL if none is active. */
-	void SetActiveOCForceField( gdeOCForceField *field );
+	void SetActiveOCForceField(gdeOCForceField *field);
 	
 	/** Active object class force field is set. */
 	bool HasActiveOCForceField() const;
@@ -602,7 +602,7 @@ public:
 	inline gdeOCSnapPoint *GetActiveOCSnapPoint() const{ return pActiveOCSnapPoint; }
 	
 	/** Set active object class snap point or \em NULL if none is active. */
-	void SetActiveOCSnapPoint( gdeOCSnapPoint *snappoint );
+	void SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint);
 	
 	/** Active object class snap point is set. */
 	bool HasActiveOCSnapPoint() const;
@@ -613,7 +613,7 @@ public:
 	inline gdeOCSpeaker *GetActiveOCSpeaker() const{ return pActiveOCSpeaker; }
 	
 	/** Set active object class speaker or \em NULL if none is active. */
-	void SetActiveOCSpeaker( gdeOCSpeaker *speaker );
+	void SetActiveOCSpeaker(gdeOCSpeaker *speaker);
 	
 	/** Active object class speaker is set. */
 	bool HasActiveOCSpeaker() const;
@@ -639,10 +639,10 @@ public:
 	inline const gdeParticleEmitterList &GetParticleEmitters() const{ return pParticleEmitters; }
 	
 	/** Add particle emitter. */
-	void AddParticleEmitter( gdeParticleEmitter *particleEmitter );
+	void AddParticleEmitter(gdeParticleEmitter *particleEmitter);
 	
 	/** Remove particle emitter. */
-	void RemoveParticleEmitter( gdeParticleEmitter *particleEmitter );
+	void RemoveParticleEmitter(gdeParticleEmitter *particleEmitter);
 	
 	/** Remove all particle emitters. */
 	void RemoveAllParticleEmitters();
@@ -651,7 +651,7 @@ public:
 	inline gdeParticleEmitter *GetActiveParticleEmitter() const{ return pActiveParticleEmitter; }
 	
 	/** Set active particle emitter or \em NULL if none is active. */
-	void SetActiveParticleEmitter( gdeParticleEmitter *particleEmitter );
+	void SetActiveParticleEmitter(gdeParticleEmitter *particleEmitter);
 	
 	/** Active particle emitter is set. */
 	bool HasActiveParticleEmitter() const;
@@ -666,10 +666,10 @@ public:
 	inline const gdeSkinList &GetSkins() const{ return pSkins; }
 	
 	/** Add skin. */
-	void AddSkin( gdeSkin *skin );
+	void AddSkin(gdeSkin *skin);
 	
 	/** Remove skin. */
-	void RemoveSkin( gdeSkin *skin );
+	void RemoveSkin(gdeSkin *skin);
 	
 	/** Remove all skins. */
 	void RemoveAllSkins();
@@ -678,7 +678,7 @@ public:
 	inline gdeSkin *GetActiveSkin() const{ return pActiveSkin; }
 	
 	/** Set active skin or \em NULL if none is active. */
-	void SetActiveSkin( gdeSkin *skin );
+	void SetActiveSkin(gdeSkin *skin);
 	
 	/** Active skin is set. */
 	bool HasActiveSkin() const;
@@ -693,10 +693,10 @@ public:
 	inline const gdeSkyList &GetSkies() const{ return pSkies; }
 	
 	/** Add sky. */
-	void AddSky( gdeSky *sky );
+	void AddSky(gdeSky *sky);
 	
 	/** Remove sky. */
-	void RemoveSky( gdeSky *sky );
+	void RemoveSky(gdeSky *sky);
 	
 	/** Remove all skies. */
 	void RemoveAllSkies();
@@ -705,7 +705,7 @@ public:
 	inline gdeSky *GetActiveSky() const{ return pActiveSky; }
 	
 	/** Set active sky or \em NULL if none is active. */
-	void SetActiveSky( gdeSky *sky );
+	void SetActiveSky(gdeSky *sky);
 	
 	/** Active sky is set. */
 	bool HasActiveSky() const;
@@ -716,10 +716,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add listener. */
-	void AddListener( gdeGameDefinitionListener *listener );
+	void AddListener(gdeGameDefinitionListener *listener);
 	
 	/** Remove listener. */
-	void RemoveListener( gdeGameDefinitionListener *listener );
+	void RemoveListener(gdeGameDefinitionListener *listener);
 	
 	
 	
@@ -784,121 +784,121 @@ public:
 	void NotifyObjectClassStructureChanged();
 	
 	/** Notify listeners object class changed. */
-	void NotifyObjectClassChanged( gdeObjectClass *objectClass );
+	void NotifyObjectClassChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class name changed. */
-	void NotifyObjectClassNameChanged( gdeObjectClass *objectClass );
+	void NotifyObjectClassNameChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class property changed. */
-	void NotifyOCPropertyChanged( gdeObjectClass *objectClass, gdeProperty *property );
+	void NotifyOCPropertyChanged(gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Notify listeners object class property name changed. */
-	void NotifyOCPropertyNameChanged( gdeObjectClass *objectClass, gdeProperty *property );
+	void NotifyOCPropertyNameChanged(gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Notify listeners object class properties changed. */
-	void NotifyOCPropertiesChanged( gdeObjectClass *objectClass );
+	void NotifyOCPropertiesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class property values changed. */
-	void NotifyOCPropertyValuesChanged( gdeObjectClass *objectClass );
+	void NotifyOCPropertyValuesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class texture property changed. */
-	void NotifyOCTexturePropertyChanged( gdeObjectClass *objectClass, gdeProperty *property );
+	void NotifyOCTexturePropertyChanged(gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Notify listeners object class texture property name changed. */
-	void NotifyOCTexturePropertyNameChanged( gdeObjectClass *objectClass, gdeProperty *property );
+	void NotifyOCTexturePropertyNameChanged(gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Notify listeners object class texture properties changed. */
-	void NotifyOCTexturePropertiesChanged( gdeObjectClass *objectClass );
+	void NotifyOCTexturePropertiesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class inherit changed. */
-	void NotifyOCInheritChanged( gdeObjectClass *objectClass, gdeOCInherit *inherit );
+	void NotifyOCInheritChanged(gdeObjectClass *objectClass, gdeOCInherit *inherit);
 	
 	/** Notify listeners object class inherits changed. */
-	void NotifyOCInheritsChanged( gdeObjectClass *objectClass );
+	void NotifyOCInheritsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class billboards changed. */
-	void NotifyOCBillboardsChanged( gdeObjectClass *objectClass );
+	void NotifyOCBillboardsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class billboard changed. */
-	void NotifyOCBillboardChanged( gdeObjectClass *objectClass, gdeOCBillboard *billboard );
+	void NotifyOCBillboardChanged(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
 	
 	/** Notify listeners object class cameras changed. */
-	void NotifyOCCamerasChanged( gdeObjectClass *objectClass );
+	void NotifyOCCamerasChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class camera changed. */
-	void NotifyOCCameraChanged( gdeObjectClass *objectClass, gdeOCCamera *camera );
+	void NotifyOCCameraChanged(gdeObjectClass *objectClass, gdeOCCamera *camera);
 	
 	/** Notify listeners object class components changed. */
-	void NotifyOCComponentsChanged( gdeObjectClass *objectClass );
+	void NotifyOCComponentsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class component changed. */
-	void NotifyOCComponentChanged( gdeObjectClass *objectClass, gdeOCComponent *component );
+	void NotifyOCComponentChanged(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 	/** Notify listeners object class component active texture changed. */
-	void NotifyOCComponentActiveTextureChanged( gdeObjectClass *objectClass, gdeOCComponent *component );
+	void NotifyOCComponentActiveTextureChanged(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 	/** Notify listeners object class component texture changed. */
-	void NotifyOCComponentTextureChanged( gdeObjectClass *objectClass,
-		gdeOCComponent *component, gdeOCComponentTexture *texture );
+	void NotifyOCComponentTextureChanged(gdeObjectClass *objectClass,
+		gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 	/** Notify listeners object class component texture name changed. */
-	void NotifyOCComponentTextureNameChanged( gdeObjectClass *objectClass,
-		gdeOCComponent *component, gdeOCComponentTexture *texture );
+	void NotifyOCComponentTextureNameChanged(gdeObjectClass *objectClass,
+		gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 	/** Notify listeners object class component texture properties changed. */
-	void NotifyOCComponentTexturePropertiesChanged( gdeObjectClass *objectClass,
-		gdeOCComponent *component, gdeOCComponentTexture *texture );
+	void NotifyOCComponentTexturePropertiesChanged(gdeObjectClass *objectClass,
+		gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 	/** Notify listeners object class environment map probes changed. */
-	void NotifyOCEnvMapProbesChanged( gdeObjectClass *objectClass );
+	void NotifyOCEnvMapProbesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class environment map probe changed. */
-	void NotifyOCEnvMapProbeChanged( gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe );
+	void NotifyOCEnvMapProbeChanged(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe);
 	
 	/** Notify listeners object class lights changed. */
-	void NotifyOCLightsChanged( gdeObjectClass *objectClass );
+	void NotifyOCLightsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class light changed. */
-	void NotifyOCLightChanged( gdeObjectClass *objectClass, gdeOCLight *light );
+	void NotifyOCLightChanged(gdeObjectClass *objectClass, gdeOCLight *light);
 	
 	/** Notify listeners object class navigation blockers changed. */
-	void NotifyOCNavigationBlockersChanged( gdeObjectClass *objectClass );
+	void NotifyOCNavigationBlockersChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class navigation blocker changed. */
-	void NotifyOCNavigationBlockerChanged( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker );
+	void NotifyOCNavigationBlockerChanged(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker);
 	
 	/** Notify listeners object class navigation spaces changed. */
-	void NotifyOCNavigationSpacesChanged( gdeObjectClass *objectClass );
+	void NotifyOCNavigationSpacesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class navigation space changed. */
-	void NotifyOCNavigationSpaceChanged( gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace );
+	void NotifyOCNavigationSpaceChanged(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace);
 	
 	/** Notify listeners object class particle emitters changed. */
-	void NotifyOCParticleEmittersChanged( gdeObjectClass *objectClass );
+	void NotifyOCParticleEmittersChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class particle emitter changed. */
-	void NotifyOCParticleEmitterChanged( gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter );
+	void NotifyOCParticleEmitterChanged(gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter);
 	
 	/** Notify listeners object class force fields changed. */
-	void NotifyOCForceFieldsChanged( gdeObjectClass *objectClass );
+	void NotifyOCForceFieldsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class force field changed. */
-	void NotifyOCForceFieldChanged( gdeObjectClass *objectClass, gdeOCForceField *field );
+	void NotifyOCForceFieldChanged(gdeObjectClass *objectClass, gdeOCForceField *field);
 	
 	/** Notify listeners object class snap points changed. */
-	void NotifyOCSnapPointsChanged( gdeObjectClass *objectClass );
+	void NotifyOCSnapPointsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class snap point changed. */
-	void NotifyOCSnapPointChanged( gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint );
+	void NotifyOCSnapPointChanged(gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint);
 	
 	/** Notify listeners object class snap point name changed. */
-	void NotifyOCSnapPointNameChanged( gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint );
+	void NotifyOCSnapPointNameChanged(gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint);
 	
 	/** Notify listeners object class speakers changed. */
-	void NotifyOCSpeakersChanged( gdeObjectClass *objectClass );
+	void NotifyOCSpeakersChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class speaker changed. */
-	void NotifyOCSpeakerChanged( gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
+	void NotifyOCSpeakerChanged(gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
 	
 	/** Notify listeners object class world changed. */
 	void NotifyOCWorldsChanged(gdeObjectClass *objectClass);
@@ -907,13 +907,13 @@ public:
 	void NotifyOCWorldChanged(gdeObjectClass *objectClass, gdeOCWorld *world);
 	
 	/** Notify listeners object class textures changed. */
-	void NotifyOCTexturesChanged( gdeObjectClass *objectClass );
+	void NotifyOCTexturesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class texture changed. */
-	void NotifyOCTextureChanged( gdeObjectClass *objectClass, gdeOCComponentTexture *texture );
+	void NotifyOCTextureChanged(gdeObjectClass *objectClass, gdeOCComponentTexture *texture);
 	
 	/** Notify listeners object class active texture changed. */
-	void NotifyOCActiveTextureChanged( gdeObjectClass *objectClass );
+	void NotifyOCActiveTextureChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners active object class changed. */
 	void NotifyActiveObjectClassChanged();
@@ -960,10 +960,10 @@ public:
 	void NotifyParticleEmitterStructureChanged();
 	
 	/** Notify listeners particle emitter changed. */
-	void NotifyParticleEmitterChanged( gdeParticleEmitter *particleEmitter );
+	void NotifyParticleEmitterChanged(gdeParticleEmitter *particleEmitter);
 	
 	/** Notify listeners particle emitter name changed. */
-	void NotifyParticleEmitterNameChanged( gdeParticleEmitter *particleEmitter );
+	void NotifyParticleEmitterNameChanged(gdeParticleEmitter *particleEmitter);
 	
 	/** Notify listeners active particle emitter changed. */
 	void NotifyActiveParticleEmitterChanged();
@@ -974,10 +974,10 @@ public:
 	void NotifySkinStructureChanged();
 	
 	/** Notify listeners skin changed. */
-	void NotifySkinChanged( gdeSkin *skin );
+	void NotifySkinChanged(gdeSkin *skin);
 	
 	/** Notify listeners skin name changed. */
-	void NotifySkinNameChanged( gdeSkin *skin );
+	void NotifySkinNameChanged(gdeSkin *skin);
 	
 	/** Notify listeners active skin changed. */
 	void NotifyActiveSkinChanged();
@@ -988,19 +988,19 @@ public:
 	void NotifySkyStructureChanged();
 	
 	/** Notify listeners sky changed. */
-	void NotifySkyChanged( gdeSky *sky );
+	void NotifySkyChanged(gdeSky *sky);
 	
 	/** Notify listeners sky name changed. */
-	void NotifySkyNameChanged( gdeSky *sky );
+	void NotifySkyNameChanged(gdeSky *sky);
 	
 	/** Notify listeners active sky changed. */
 	void NotifyActiveSkyChanged();
 	
 	/** Notify listeners sky controller count or order changed. */
-	void NotifySkyControllerStructureChanged( gdeSky *sky );
+	void NotifySkyControllerStructureChanged(gdeSky *sky);
 	
 	/** Notify listeners sky controller changed. */
-	void NotifySkyControllerChanged( gdeSky *sky, gdeSkyController *controller );
+	void NotifySkyControllerChanged(gdeSky *sky, gdeSkyController *controller);
 	/*@}*/
 	
 	

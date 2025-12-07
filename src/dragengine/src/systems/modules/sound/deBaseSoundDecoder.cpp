@@ -36,11 +36,11 @@
 // Class deBaseSoundDecoder
 /////////////////////////////
 
-deBaseSoundDecoder::deBaseSoundDecoder( decBaseFileReader *file ) :
-pFile( NULL )
+deBaseSoundDecoder::deBaseSoundDecoder(decBaseFileReader *file) :
+pFile(NULL)
 {
-	if( ! file ){
-		DETHROW( deeInvalidParam );
+	if(!file){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFile = file;
@@ -48,7 +48,7 @@ pFile( NULL )
 }
 
 deBaseSoundDecoder::~deBaseSoundDecoder(){
-	if( pFile ){
+	if(pFile){
 		pFile->FreeReference();
 	}
 }

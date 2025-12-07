@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build animation into the provided animation object. */
-	virtual void BuildAnimation( deAnimation *animation ) = 0;
+	virtual void BuildAnimation(deAnimation *animation) = 0;
 	/*@}*/
 };
 

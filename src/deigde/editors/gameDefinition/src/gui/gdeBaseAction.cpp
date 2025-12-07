@@ -45,20 +45,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeBaseAction::gdeBaseAction( gdeWindowMain &windowMain, const char *text, const char *description ) :
-igdeAction( text, description ),
-pWindowMain( windowMain ){
+gdeBaseAction::gdeBaseAction(gdeWindowMain &windowMain, const char *text, const char *description) :
+igdeAction(text, description),
+pWindowMain(windowMain){
 }
 
-gdeBaseAction::gdeBaseAction( gdeWindowMain &windowMain, igdeIcon *icon, const char *description ) :
-igdeAction( "", icon, description ),
-pWindowMain( windowMain ){
+gdeBaseAction::gdeBaseAction(gdeWindowMain &windowMain, igdeIcon *icon, const char *description) :
+igdeAction("", icon, description),
+pWindowMain(windowMain){
 }
 
-gdeBaseAction::gdeBaseAction( gdeWindowMain &windowMain, const char *text,
-	igdeIcon *icon, const char *description ) :
-igdeAction( text, icon, description ),
-pWindowMain( windowMain ){
+gdeBaseAction::gdeBaseAction(gdeWindowMain &windowMain, const char *text,
+	igdeIcon *icon, const char *description) :
+igdeAction(text, icon, description),
+pWindowMain(windowMain){
 }
 
 
@@ -68,16 +68,16 @@ pWindowMain( windowMain ){
 
 void gdeBaseAction::OnAction(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
+	if(!gameDefinition){
 		return;
 	}
 	
-	igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( *gameDefinition ) ));
-	if( undo ){
-		gameDefinition->GetUndoSystem()->Add( undo );
+	igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(*gameDefinition)));
+	if(undo){
+		gameDefinition->GetUndoSystem()->Add(undo);
 	}
 }
 
 void gdeBaseAction::Update(){
-	SetEnabled( pWindowMain.GetActiveGameDefinition() != NULL );
+	SetEnabled(pWindowMain.GetActiveGameDefinition() != NULL);
 }

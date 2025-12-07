@@ -54,19 +54,19 @@ int igdeTexturePropertyList::GetCount() const{
 	return pProperties.GetCount();
 }
 
-const igdeTextureProperty *igdeTexturePropertyList::GetAt( int index ) const{
-	return ( const igdeTextureProperty * )pProperties.GetAt( index );
+const igdeTextureProperty *igdeTexturePropertyList::GetAt(int index) const{
+	return (const igdeTextureProperty *)pProperties.GetAt(index);
 }
 
-const igdeTextureProperty *igdeTexturePropertyList::GetNamed( const char *name ) const{
+const igdeTextureProperty *igdeTexturePropertyList::GetNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	const igdeTextureProperty *texture;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		texture = ( const igdeTextureProperty * )pProperties.GetAt( p );
+	for(p=0; p<count; p++){
+		texture = (const igdeTextureProperty *)pProperties.GetAt(p);
 		
-		if( texture->GetName().Equals( name ) ){
+		if(texture->GetName().Equals(name)){
 			return texture;
 		}
 	}
@@ -74,16 +74,16 @@ const igdeTextureProperty *igdeTexturePropertyList::GetNamed( const char *name )
 	return NULL;
 }
 
-int igdeTexturePropertyList::IndexOf( const igdeTextureProperty * texture ) const{
-	return pProperties.IndexOf( ( void* )texture );
+int igdeTexturePropertyList::IndexOf(const igdeTextureProperty * texture) const{
+	return pProperties.IndexOf((void*)texture);
 }
 
-int igdeTexturePropertyList::IndexOfNamed( const char *name ) const{
+int igdeTexturePropertyList::IndexOfNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( const igdeTextureProperty * )pProperties.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((const igdeTextureProperty *)pProperties.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -91,16 +91,16 @@ int igdeTexturePropertyList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool igdeTexturePropertyList::Has( const igdeTextureProperty * texture ) const{
-	return pProperties.Has( ( void* )texture );
+bool igdeTexturePropertyList::Has(const igdeTextureProperty * texture) const{
+	return pProperties.Has((void*)texture);
 }
 
-bool igdeTexturePropertyList::HasNamed( const char *name ) const{
+bool igdeTexturePropertyList::HasNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( const igdeTextureProperty * )pProperties.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((const igdeTextureProperty *)pProperties.GetAt(p))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -108,14 +108,14 @@ bool igdeTexturePropertyList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void igdeTexturePropertyList::Add( igdeTextureProperty *texture ){
-	if( ! texture || HasNamed( texture->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void igdeTexturePropertyList::Add(igdeTextureProperty *texture){
+	if(!texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pProperties.Add( texture );
+	pProperties.Add(texture);
 }
 
-void igdeTexturePropertyList::Remove( const igdeTextureProperty *texture ){
-	pProperties.RemoveFrom( IndexOf( texture ) );
+void igdeTexturePropertyList::Remove(const igdeTextureProperty *texture){
+	pProperties.RemoveFrom(IndexOf(texture));
 	delete texture;
 }
 
@@ -123,8 +123,8 @@ void igdeTexturePropertyList::RemoveAll(){
 	const int count = pProperties.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		delete ( igdeTextureProperty* )pProperties.GetAt( p );
+	for(p=0; p<count; p++){
+		delete (igdeTextureProperty*)pProperties.GetAt(p);
 	}
 	
 	pProperties.RemoveAll();

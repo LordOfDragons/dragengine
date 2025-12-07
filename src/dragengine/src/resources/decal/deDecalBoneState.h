@@ -62,19 +62,19 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
 	inline const decQuaternion &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set rotation. */
-	void SetRotation( const decQuaternion &rotation );
+	void SetRotation(const decQuaternion &rotation);
 	
 	/** \brief Size. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
-	void SetSize( const decVector &size );
+	void SetSize(const decVector &size);
 };
 
 #endif

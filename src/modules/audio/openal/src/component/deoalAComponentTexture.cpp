@@ -41,24 +41,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalAComponentTexture::deoalAComponentTexture( deoalAComponent &component, int index ) :
-pComponent( component ),
-pIndex( index ),
-pSkin( NULL ),
-pUseSkin( NULL ),
-pUseTexture( NULL ),
+deoalAComponentTexture::deoalAComponentTexture(deoalAComponent &component, int index) :
+pComponent(component),
+pIndex(index),
+pSkin(NULL),
+pUseSkin(NULL),
+pUseTexture(NULL),
 
-pAffectsSound( false ),
-pAbsorptionLow( 0.0f ),
-pAbsorptionMedium( 0.0f ),
-pAbsorptionHigh( 0.0f ),
-pTransmissionLow( 1.0f ),
-pTransmissionMedium( 1.0f ),
-pTransmissionHigh( 1.0f ){
+pAffectsSound(false),
+pAbsorptionLow(0.0f),
+pAbsorptionMedium(0.0f),
+pAbsorptionHigh(0.0f),
+pTransmissionLow(1.0f),
+pTransmissionMedium(1.0f),
+pTransmissionHigh(1.0f){
 }
 
 deoalAComponentTexture::~deoalAComponentTexture(){
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 }
@@ -68,18 +68,18 @@ deoalAComponentTexture::~deoalAComponentTexture(){
 // Management
 ///////////////
 
-void deoalAComponentTexture::SetSkin( deoalASkin *skin ){
-	if( skin == pSkin ){
+void deoalAComponentTexture::SetSkin(deoalASkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
-	if( skin ){
+	if(skin){
 		skin->AddReference();
 	}
 }
@@ -91,22 +91,22 @@ void deoalAComponentTexture::UpdateUseTexture(){
 	pUseTexture = NULL;
 	pAffectsSound = false;
 	
-	if( pSkin ){
+	if(pSkin){
 		const int textureIndex = 0; // can be set by user in deComponentTexture but not used yet
-		if( textureIndex >= 0 && textureIndex < pSkin->GetTextureCount() ){
+		if(textureIndex >= 0 && textureIndex < pSkin->GetTextureCount()){
 			pUseSkin = pSkin;
-			pUseTexture = &pSkin->GetTextureAt( textureIndex );
+			pUseTexture = &pSkin->GetTextureAt(textureIndex);
 			pAffectsSound = pUseTexture->GetAffectsSound();
 		}
 		return;
 	}
 	
 	deoalASkin * const skin = pComponent.GetSkin();
-	if( skin ){
-		const int mappedTexture = pComponent.GetTextureSkinMappings().GetAt( pIndex );
-		if( mappedTexture != -1 ){
+	if(skin){
+		const int mappedTexture = pComponent.GetTextureSkinMappings().GetAt(pIndex);
+		if(mappedTexture != -1){
 			pUseSkin = skin;
-			pUseTexture = &skin->GetTextureAt( mappedTexture );
+			pUseTexture = &skin->GetTextureAt(mappedTexture);
 			pAffectsSound = pUseTexture->GetAffectsSound();
 		}
 	}
@@ -115,7 +115,7 @@ void deoalAComponentTexture::UpdateUseTexture(){
 void deoalAComponentTexture::UpdateSoundParameters(){
 	pAffectsSound = false;
 	
-	if( ! pUseTexture || pUseTexture->GetNoSound() ){
+	if(!pUseTexture || pUseTexture->GetNoSound()){
 		return;
 	}
 	

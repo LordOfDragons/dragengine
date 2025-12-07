@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPViewListener::seWPViewListener( seWPView &panel ) :
-pPanel( panel ){
+seWPViewListener::seWPViewListener(seWPView &panel) :
+pPanel(panel){
 }
 
 seWPViewListener::~seWPViewListener(){
@@ -51,14 +51,14 @@ seWPViewListener::~seWPViewListener(){
 // Management
 ///////////////
 
-void seWPViewListener::EnvObjectChanged( seSky* ){
+void seWPViewListener::EnvObjectChanged(seSky*){
 	pPanel.UpdateEnvObject();
 }
 
-void seWPViewListener::ViewChanged( seSky* ){
+void seWPViewListener::ViewChanged(seSky*){
 	pPanel.UpdateView();
 }
 
-void seWPViewListener::CameraChanged( seSky* ){
+void seWPViewListener::CameraChanged(seSky*){
 	pPanel.UpdateCamera();
 }

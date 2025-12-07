@@ -39,16 +39,16 @@
 
 
 
-FXIMPLEMENT( igdeNativeFoxTreeItem, FXTreeItem, NULL, 0 )
+FXIMPLEMENT(igdeNativeFoxTreeItem, FXTreeItem, NULL, 0)
 
 
 // class igdeNativeFoxTreeItem
 ////////////////////////////////
 
-igdeNativeFoxTreeItem::igdeNativeFoxTreeItem(){ }
+igdeNativeFoxTreeItem::igdeNativeFoxTreeItem(){}
 
-igdeNativeFoxTreeItem::igdeNativeFoxTreeItem( igdeTreeItem &powner ) :
-pOwner( &powner )
+igdeNativeFoxTreeItem::igdeNativeFoxTreeItem(igdeTreeItem &powner) :
+pOwner(&powner)
 {
 }
 

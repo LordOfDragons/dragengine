@@ -49,8 +49,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnLoadConfiguration::debnLoadConfiguration( deNetworkBasic &network ) :
-pNetwork( network ){
+debnLoadConfiguration::debnLoadConfiguration(deNetworkBasic &network) :
+pNetwork(network){
 }
 
 debnLoadConfiguration::~debnLoadConfiguration(){
@@ -61,97 +61,97 @@ debnLoadConfiguration::~debnLoadConfiguration(){
 // Management
 ///////////////
 
-void debnLoadConfiguration::LoadConfig( debnConfiguration &configuration ){
+void debnLoadConfiguration::LoadConfig(debnConfiguration &configuration){
 	deVirtualFileSystem& vfs = pNetwork.GetVFS();
 	
-	const decPath path( decPath::CreatePathUnix( "/config/config.xml" ) );
-	if( ! vfs.ExistsFile( path ) ){
-		pNetwork.LogInfo( "Configuration file 'config.xml' not found. Using defaults." );
+	const decPath path(decPath::CreatePathUnix("/config/config.xml"));
+	if(!vfs.ExistsFile(path)){
+		pNetwork.LogInfo("Configuration file 'config.xml' not found. Using defaults.");
 		return;
 	}
 	
-	pNetwork.LogInfo( "Loading configuration file 'config.xml'" );
-	pLoadConfiguration( configuration, decBaseFileReader::Ref::New( vfs.OpenFileForReading( path ) ) );
+	pNetwork.LogInfo("Loading configuration file 'config.xml'");
+	pLoadConfiguration(configuration, decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
 }
 
 
 // Private Functions
 //////////////////////
 
-void debnLoadConfiguration::pLoadConfiguration( debnConfiguration &configuration, decBaseFileReader &reader ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::NewWith() );
-	decXmlParser( pNetwork.GetGameEngine()->GetLogger() ).ParseXml( &reader, xmlDoc );
+void debnLoadConfiguration::pLoadConfiguration(debnConfiguration &configuration, decBaseFileReader &reader){
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlParser(pNetwork.GetGameEngine()->GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "config" ){
-		DETHROW_INFO( deeInvalidParam, "root tag not named 'config'" );
+	if(!root || root->GetName() != "config"){
+		DETHROW_INFO(deeInvalidParam, "root tag not named 'config'");
 	}
 	
 	const int elementCount = root->GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		decXmlElementTag * const tag = pGetTagAt( root, i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		decXmlElementTag * const tag = pGetTagAt(root, i);
+		if(!tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "property" ){
-			const decString &name = pGetAttributeString( tag, "name" );
+		if(tagName == "property"){
+			const decString &name = pGetAttributeString(tag, "name");
 			
-			if( name == "logLevel" ){
-				DEASSERT_NOTNULL( tag->GetFirstData() )
+			if(name == "logLevel"){
+				DEASSERT_NOTNULL(tag->GetFirstData())
 				const decString &value = tag->GetFirstData()->GetData();
-				if( value == "error" ){
-					configuration.SetLogLevel( debnConfiguration::ellError );
+				if(value == "error"){
+					configuration.SetLogLevel(debnConfiguration::ellError);
 					
-				}else if( value == "warning" ){
-					configuration.SetLogLevel( debnConfiguration::ellWarning );
+				}else if(value == "warning"){
+					configuration.SetLogLevel(debnConfiguration::ellWarning);
 					
-				}else if( value == "info" ){
-					configuration.SetLogLevel( debnConfiguration::ellInfo );
+				}else if(value == "info"){
+					configuration.SetLogLevel(debnConfiguration::ellInfo);
 					
-				}else if( value == "debug" ){
-					configuration.SetLogLevel( debnConfiguration::ellDebug );
+				}else if(value == "debug"){
+					configuration.SetLogLevel(debnConfiguration::ellDebug);
 					
 				}else{
-					pNetwork.LogWarnFormat( "config.xml %s(%i:%i): Invalid value '%s' for property %s.",
+					pNetwork.LogWarnFormat("config.xml %s(%i:%i): Invalid value '%s' for property %s.",
 						tagName.GetString(), tag->GetLineNumber(), tag->GetPositionNumber(),
-						value.GetString(), name.GetString() );
+						value.GetString(), name.GetString());
 				}
 				
-			}else if( name == "connectResendInterval" ){
-				DEASSERT_NOTNULL( tag->GetFirstData() )
-				configuration.SetConnectResendInterval( strtof( tag->GetFirstData()->GetData(), nullptr ) );
+			}else if(name == "connectResendInterval"){
+				DEASSERT_NOTNULL(tag->GetFirstData())
+				configuration.SetConnectResendInterval(strtof(tag->GetFirstData()->GetData(), nullptr));
 				
-			}else if( name == "connectTimeout" ){
-				DEASSERT_NOTNULL( tag->GetFirstData() )
-				configuration.SetConnectTimeout( strtof( tag->GetFirstData()->GetData(), nullptr ) );
+			}else if(name == "connectTimeout"){
+				DEASSERT_NOTNULL(tag->GetFirstData())
+				configuration.SetConnectTimeout(strtof(tag->GetFirstData()->GetData(), nullptr));
 				
-			}else if( name == "reliableResendInterval" ){
-				DEASSERT_NOTNULL( tag->GetFirstData() )
-				configuration.SetReliableResendInterval( strtof( tag->GetFirstData()->GetData(), nullptr ) );
+			}else if(name == "reliableResendInterval"){
+				DEASSERT_NOTNULL(tag->GetFirstData())
+				configuration.SetReliableResendInterval(strtof(tag->GetFirstData()->GetData(), nullptr));
 				
-			}else if( name == "reliableTimeout" ){
-				DEASSERT_NOTNULL( tag->GetFirstData() )
-				configuration.SetReliableTimeout( strtof( tag->GetFirstData()->GetData(), nullptr ) );
+			}else if(name == "reliableTimeout"){
+				DEASSERT_NOTNULL(tag->GetFirstData())
+				configuration.SetReliableTimeout(strtof(tag->GetFirstData()->GetData(), nullptr));
 			}
 			
 		}else{
-			pNetwork.LogWarnFormat( "config.xml %s(%i:%i): Unknown Tag %s.",
+			pNetwork.LogWarnFormat("config.xml %s(%i:%i): Unknown Tag %s.",
 				root->GetName().GetString(), tag->GetLineNumber(),
-				tag->GetPositionNumber(), tag->GetName().GetString() );
+				tag->GetPositionNumber(), tag->GetName().GetString());
 		}
 	}
 }
 
-decXmlElementTag *debnLoadConfiguration::pGetTagAt( decXmlElementTag *tag, int index ){
-	decXmlElement * const element = tag->GetElementAt( index );
-	if( element->CanCastToElementTag() ){
+decXmlElementTag *debnLoadConfiguration::pGetTagAt(decXmlElementTag *tag, int index){
+	decXmlElement * const element = tag->GetElementAt(index);
+	if(element->CanCastToElementTag()){
 		return element->CastToElementTag();
 		
 	}else{
@@ -159,13 +159,13 @@ decXmlElementTag *debnLoadConfiguration::pGetTagAt( decXmlElementTag *tag, int i
 	}
 }
 
-decXmlAttValue *debnLoadConfiguration::pFindAttribute( decXmlElementTag *tag, const char *name ){
+decXmlAttValue *debnLoadConfiguration::pFindAttribute(decXmlElementTag *tag, const char *name){
 	int i;
-	for( i=0; i<tag->GetElementCount(); i++ ){
-		decXmlElement &element = *tag->GetElementAt( i );
-		if( element.CanCastToAttValue() ){
+	for(i=0; i<tag->GetElementCount(); i++){
+		decXmlElement &element = *tag->GetElementAt(i);
+		if(element.CanCastToAttValue()){
 			decXmlAttValue * const value = element.CastToAttValue();
-			if( value->GetName() == name ){
+			if(value->GetName() == name){
 				return value;
 			}
 		}
@@ -173,32 +173,32 @@ decXmlAttValue *debnLoadConfiguration::pFindAttribute( decXmlElementTag *tag, co
 	return nullptr;
 }
 
-const decString &debnLoadConfiguration::pGetAttributeString( decXmlElementTag *tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
-	if( value ){
+const decString &debnLoadConfiguration::pGetAttributeString(decXmlElementTag *tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
+	if(value){
 		return value->GetValue();
 	}
 	
-	pNetwork.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.", name, tag->GetName().GetString() );
-	DETHROW_INFO( deeInvalidParam, "Missing attribute" );
+	pNetwork.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name, tag->GetName().GetString());
+	DETHROW_INFO(deeInvalidParam, "Missing attribute");
 }
 
-int debnLoadConfiguration::pGetAttributeInt( decXmlElementTag *tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
-	if( value ){
-		return (int)strtol( value->GetValue(), nullptr, 10 );
+int debnLoadConfiguration::pGetAttributeInt(decXmlElementTag *tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
+	if(value){
+		return (int)strtol(value->GetValue(), nullptr, 10);
 	}
 	
-	pNetwork.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.", name, tag->GetName().GetString() );
-	DETHROW_INFO( deeInvalidParam, "Missing attribute" );
+	pNetwork.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name, tag->GetName().GetString());
+	DETHROW_INFO(deeInvalidParam, "Missing attribute");
 }
 
-float debnLoadConfiguration::pGetAttributeFloat( decXmlElementTag *tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
-	if( value ){
-		return strtof( value->GetValue(), nullptr );
+float debnLoadConfiguration::pGetAttributeFloat(decXmlElementTag *tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
+	if(value){
+		return strtof(value->GetValue(), nullptr);
 	}
 	
-	pNetwork.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.", name, tag->GetName().GetString() );
-	DETHROW_INFO( deeInvalidParam, "Missing attribute" );
+	pNetwork.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name, tag->GetName().GetString());
+	DETHROW_INFO(deeInvalidParam, "Missing attribute");
 }

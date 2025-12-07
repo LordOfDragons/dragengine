@@ -43,8 +43,8 @@ igdeSliderListener::~igdeSliderListener(){
 // Events
 ///////////
 
-void igdeSliderListener::OnValueChanged( igdeSlider *slider ){
+void igdeSliderListener::OnValueChanged(igdeSlider *slider){
 }
 
-void igdeSliderListener::OnValueChanging( igdeSlider *slider ){
+void igdeSliderListener::OnValueChanging(igdeSlider *slider){
 }

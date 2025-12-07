@@ -77,10 +77,10 @@ public:
 	fbxNode();
 	
 	/** \brief Load node. */
-	fbxNode( fbxScene &scene, decBaseFileReader &reader );
+	fbxNode(fbxScene &scene, decBaseFileReader &reader);
 	
 	/** \brief Load node with already read end offset. */
-	fbxNode( fbxScene &scene, decBaseFileReader &reader, int endOffset );
+	fbxNode(fbxScene &scene, decBaseFileReader &reader, int endOffset);
 	
 protected:
 	/** \brief Clean up node. */
@@ -96,7 +96,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
@@ -104,35 +104,35 @@ public:
 	int GetPropertyCount() const;
 	
 	/** \brief Property at index. */
-	fbxProperty *GetPropertyAt( int index ) const;
+	fbxProperty *GetPropertyAt(int index) const;
 	
 	/** \brief Get named object property value. */
-	bool GetPropertyBoolIf( const char *name, bool &value ) const;
-	bool GetPropertyIntIf( const char *name, int &value ) const;
-	bool GetPropertyLongIf( const char *name, int64_t &value ) const;
-	bool GetPropertyFloatIf( const char *name, float &value ) const;
-	bool GetPropertyDoubleIf( const char *name, double &value ) const;
-	bool GetPropertyStringIf( const char *name, decString &value ) const;
-	bool GetPropertyVectorIf( const char *name, decVector &value ) const;
-	bool GetPropertyColorIf( const char *name, decColor &value ) const;
+	bool GetPropertyBoolIf(const char *name, bool &value) const;
+	bool GetPropertyIntIf(const char *name, int &value) const;
+	bool GetPropertyLongIf(const char *name, int64_t &value) const;
+	bool GetPropertyFloatIf(const char *name, float &value) const;
+	bool GetPropertyDoubleIf(const char *name, double &value) const;
+	bool GetPropertyStringIf(const char *name, decString &value) const;
+	bool GetPropertyVectorIf(const char *name, decVector &value) const;
+	bool GetPropertyColorIf(const char *name, decColor &value) const;
 	
-	bool GetPropertyBool( const char *name ) const;
-	int GetPropertyInt( const char *name ) const;
-	int64_t GetPropertyLong( const char *name ) const;
-	float GetPropertyFloat( const char *name ) const;
-	double GetPropertyDouble( const char *name ) const;
-	const decString &GetPropertyString( const char *name ) const;
-	decVector GetPropertyVector( const char *name ) const;
-	decColor GetPropertyColor( const char *name ) const;
+	bool GetPropertyBool(const char *name) const;
+	int GetPropertyInt(const char *name) const;
+	int64_t GetPropertyLong(const char *name) const;
+	float GetPropertyFloat(const char *name) const;
+	double GetPropertyDouble(const char *name) const;
+	const decString &GetPropertyString(const char *name) const;
+	decVector GetPropertyVector(const char *name) const;
+	decColor GetPropertyColor(const char *name) const;
 	
-	bool GetPropertyBool( const char *name, bool defaultValue ) const;
-	int GetPropertyInt( const char *name, int defaultValue ) const;
-	int64_t GetPropertyLong( const char *name, int64_t defaultValue ) const;
-	float GetPropertyFloat( const char *name, float defaultValue ) const;
-	double GetPropertyDouble( const char *name, double defaultValue ) const;
-	const decString &GetPropertyString( const char *name, const decString &defaultValue ) const;
-	decVector GetPropertyVector( const char *name, const decVector &defaultValue ) const;
-	decColor GetPropertyColor( const char *name, const decColor &defaultValue ) const;
+	bool GetPropertyBool(const char *name, bool defaultValue) const;
+	int GetPropertyInt(const char *name, int defaultValue) const;
+	int64_t GetPropertyLong(const char *name, int64_t defaultValue) const;
+	float GetPropertyFloat(const char *name, float defaultValue) const;
+	double GetPropertyDouble(const char *name, double defaultValue) const;
+	const decString &GetPropertyString(const char *name, const decString &defaultValue) const;
+	decVector GetPropertyVector(const char *name, const decVector &defaultValue) const;
+	decColor GetPropertyColor(const char *name, const decColor &defaultValue) const;
 	
 	/** \brief Transformation. */
 	const decVector &GetLocalTranslation();
@@ -145,7 +145,7 @@ public:
 	inline int64_t GetID() const{ return pID; }
 	
 	/** \brief Set object ID or 0 if this is not an object node. */
-	void SetID( int64_t id );
+	void SetID(int64_t id);
 	
 	
 	
@@ -153,42 +153,42 @@ public:
 	int GetNodeCount() const;
 	
 	/** \brief Node at index. */
-	fbxNode *GetNodeAt( int index ) const;
+	fbxNode *GetNodeAt(int index) const;
 	
 	/** \brief Add node. */
-	void AddNode( fbxNode *node );
+	void AddNode(fbxNode *node);
 	
 	/** \brief First node matching name or NULL if absent. */
-	fbxNode *FirstNodeNamed( const char *name ) const;
+	fbxNode *FirstNodeNamed(const char *name) const;
 	
 	/** \brief First node matching name or NULL if absent. */
-	fbxNode *FirstNodeNamedOrNull( const char *name ) const;
+	fbxNode *FirstNodeNamedOrNull(const char *name) const;
 	
 	/** \brief Find all nodes matching name. */
-	void FindNodesNamed( decPointerList &list, const char *name ) const;
+	void FindNodesNamed(decPointerList &list, const char *name) const;
 	
 	/** \brief Names of all nodes. */
-	void GetNodeNames( decStringSet &list ) const;
+	void GetNodeNames(decStringSet &list) const;
 	
 	
 	
 	/** \brief Prepare after reading. */
-	void Prepare( deBaseModule &module );
+	void Prepare(deBaseModule &module);
 	
 	
 	
 	/** \brief Save to file. */
-	void Save( decBaseFileWriter &writer );
+	void Save(decBaseFileWriter &writer);
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset );
-	fbxNode *pProp70Named( const char *name ) const;
+	void pRead(fbxScene &scene, decBaseFileReader &reader, int endOffset);
+	fbxNode *pProp70Named(const char *name) const;
 	void pInitID();
 	void pPrepareTransformation();
 };

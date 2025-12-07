@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTFindContent( deoglRenderPlan &plan );
+	deoglRPTFindContent(deoglRenderPlan &plan);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTFindContent();

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new word. */
-	ceSAWord( const char *name );
+	ceSAWord(const char *name);
 	/** Cleans up the word. */
 	virtual ~ceSAWord();
 	/*@}*/
@@ -59,7 +59,7 @@ public:
 	/** Retrieves the phonetics. */
 	inline const decUnicodeString &GetPhonetics() const{ return pPhonetics; }
 	/** Sets the phonetics. */
-	void SetPhonetics( const decUnicodeString &phonetics );
+	void SetPhonetics(const decUnicodeString &phonetics);
 	/*@}*/
 };
 

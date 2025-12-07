@@ -34,8 +34,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSubAnimToggleEnableVertexPositionSet::aeURuleSubAnimToggleEnableVertexPositionSet( aeRuleSubAnimator *rule ){
-	DEASSERT_NOTNULL( rule )
+aeURuleSubAnimToggleEnableVertexPositionSet::aeURuleSubAnimToggleEnableVertexPositionSet(aeRuleSubAnimator *rule){
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
@@ -43,9 +43,9 @@ aeURuleSubAnimToggleEnableVertexPositionSet::aeURuleSubAnimToggleEnableVertexPos
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule sub animator toggle enable vertex position set" );
+		SetShortInfo("Rule sub animator toggle enable vertex position set");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -61,11 +61,11 @@ aeURuleSubAnimToggleEnableVertexPositionSet::~aeURuleSubAnimToggleEnableVertexPo
 ///////////////
 
 void aeURuleSubAnimToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleSubAnimToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 
@@ -74,7 +74,7 @@ void aeURuleSubAnimToggleEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeURuleSubAnimToggleEnableVertexPositionSet::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

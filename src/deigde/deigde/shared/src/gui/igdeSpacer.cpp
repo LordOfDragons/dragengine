@@ -42,12 +42,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeSpacer::igdeSpacer( igdeEnvironment &environment, const decPoint &size ) :
-igdeWidget( environment ),
-pSize( size )
+igdeSpacer::igdeSpacer(igdeEnvironment &environment, const decPoint &size) :
+igdeWidget(environment),
+pSize(size)
 {
-	if( ! ( size >= decPoint() ) ){
-		DETHROW( deeInvalidParam );
+	if(!(size >= decPoint())){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -60,13 +60,13 @@ igdeSpacer::~igdeSpacer(){
 // Management
 ///////////////
 
-void igdeSpacer::SetSize( const decPoint &size ){
-	if( size == pSize ){
+void igdeSpacer::SetSize(const decPoint &size){
+	if(size == pSize){
 		return;
 	}
 	
-	if( ! ( size >= decPoint() ) ){
-		DETHROW( deeInvalidParam );
+	if(!(size >= decPoint())){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSize = size;
@@ -76,28 +76,28 @@ void igdeSpacer::SetSize( const decPoint &size ){
 
 
 void igdeSpacer::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeSpacer * const native = igdeNativeSpacer::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeSpacer * const native = igdeNativeSpacer::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeSpacer::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeSpacer* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeSpacer*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeSpacer::OnSizeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeSpacer* )GetNativeWidget() )->SetSize( pSize.x, pSize.y );
+	if(GetNativeWidget()){
+		((igdeNativeSpacer*)GetNativeWidget())->SetSize(pSize.x, pSize.y);
 	}
 }

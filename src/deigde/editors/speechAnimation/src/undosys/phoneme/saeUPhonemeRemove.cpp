@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeRemove::saeUPhonemeRemove( saePhoneme *phoneme ){
-	if( ! phoneme ) DETHROW( deeInvalidParam );
+saeUPhonemeRemove::saeUPhonemeRemove(saePhoneme *phoneme){
+	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	saeSAnimation *sanimation = phoneme->GetSAnimation();
-	if( ! sanimation ) DETHROW( deeInvalidParam );
+	if(!sanimation) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
 	pPhoneme = NULL;
 	
-	SetShortInfo( "Remove Phoneme" );
+	SetShortInfo("Remove Phoneme");
 	
 	pSAnimation = sanimation;
 	sanimation->AddReference();
@@ -59,10 +59,10 @@ saeUPhonemeRemove::saeUPhonemeRemove( saePhoneme *phoneme ){
 }
 
 saeUPhonemeRemove::~saeUPhonemeRemove(){
-	if( pPhoneme ){
+	if(pPhoneme){
 		pPhoneme->FreeReference();
 	}
-	if( pSAnimation ){
+	if(pSAnimation){
 		pSAnimation->FreeReference();
 	}
 }
@@ -73,9 +73,9 @@ saeUPhonemeRemove::~saeUPhonemeRemove(){
 ///////////////
 
 void saeUPhonemeRemove::Undo(){
-	pSAnimation->AddPhoneme( pPhoneme );
+	pSAnimation->AddPhoneme(pPhoneme);
 }
 
 void saeUPhonemeRemove::Redo(){
-	pSAnimation->RemovePhoneme( pPhoneme );
+	pSAnimation->RemovePhoneme(pPhoneme);
 }

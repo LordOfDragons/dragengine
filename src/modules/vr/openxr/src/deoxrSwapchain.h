@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create space. */
-	deoxrSwapchain( deoxrSession &session, const decPoint &size, eType type );
+	deoxrSwapchain(deoxrSession &session, const decPoint &size, eType type);
 	
 protected:
 	/** Clean up space. */
@@ -110,7 +110,7 @@ public:
 	inline int GetImageCount() const{ return pImageCount; }
 	
 	/** Image at index. */
-	const sImage &GetImageAt( int index ) const;
+	const sImage &GetImageAt(int index) const;
 	
 	/** Acquire image. */
 	void AcquireImage();

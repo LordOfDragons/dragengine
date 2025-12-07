@@ -49,8 +49,8 @@ protected:
 		int index2;
 		float blend1;
 		float blend2;
-		void Set( int index );
-		void Set( int index, float blend );
+		void Set(int index);
+		void Set(int index, float blend);
 	};
 	
 	enum ePhotometricType{
@@ -123,16 +123,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load header. */
-	virtual bool LoadHeader( decBaseFileReader &reader );
+	virtual bool LoadHeader(decBaseFileReader &reader);
 	
 	/** \brief Load file. */
-	virtual void LoadFile( unsigned short *pixels );
+	virtual void LoadFile(unsigned short *pixels);
 	/*@}*/
 	
 	
 	
 protected:
-	void pReadValues( decStringList &values, int count );
+	void pReadValues(decStringList &values, int count);
 	bool pFindTilt();
 	void pReadTilt();
 	void pReadLampConfig();
@@ -146,15 +146,15 @@ protected:
 	void pSanitizeCandelaValues();
 	void pGammaCorrectCandelaValues();
 	void pCreateSamplePoints();
-	bool pIsAngle( float angle, float requiredAngle );
-	void pFillSamples( int index, sSamplePoint *samples, int sampleCount );
-	void pSample( const float *angles, int angleCount, sSamplePoint *samples, int sampleCount );
-	void pMirrorSamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount );
-	void pCopySamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount );
-	void pSetPixelsEquirect( unsigned short *pixels );
-	void pSetPixelsCubemap( unsigned short *pixels );
-	void pSetPixelsCubemapFace( unsigned short *pixels, const decMatrix &matrix );
-	void pGetMatrixForFace( decMatrix &matrix, int face );
+	bool pIsAngle(float angle, float requiredAngle);
+	void pFillSamples(int index, sSamplePoint *samples, int sampleCount);
+	void pSample(const float *angles, int angleCount, sSamplePoint *samples, int sampleCount);
+	void pMirrorSamples(const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount);
+	void pCopySamples(const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount);
+	void pSetPixelsEquirect(unsigned short *pixels);
+	void pSetPixelsCubemap(unsigned short *pixels);
+	void pSetPixelsCubemapFace(unsigned short *pixels, const decMatrix &matrix);
+	void pGetMatrixForFace(decMatrix &matrix, int face);
 };
 
 #endif

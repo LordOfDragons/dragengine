@@ -52,42 +52,42 @@ public:
 	/** \brief Retrieves the number of actors. */
 	int GetCount() const;
 	/** \brief Retrieves the actor at the given position. */
-	ceConversationActor *GetAt( int index ) const;
+	ceConversationActor *GetAt(int index) const;
 	/** \brief Retrieves the actor with the given id or NULL if not found. */
-	ceConversationActor *GetWithID( const char *id ) const;
+	ceConversationActor *GetWithID(const char *id) const;
 	/** \brief Retrieves the actor with the given alias id or NULL if not found. */
-	ceConversationActor *GetWithAliasID( const char *id ) const;
+	ceConversationActor *GetWithAliasID(const char *id) const;
 	/** \brief Retrieves the actor with the given id or alias id or NULL if not found. */
-	ceConversationActor *GetWithIDOrAliasID( const char *id ) const;
+	ceConversationActor *GetWithIDOrAliasID(const char *id) const;
 	/** \brief Retrieves the index of the given actor or -1 if not found. */
-	int IndexOf( ceConversationActor *actor ) const;
+	int IndexOf(ceConversationActor *actor) const;
 	/** \brief Retrieves the index of the actor with the given id or -1 if not found. */
-	int IndexWithID( const char *id ) const;
+	int IndexWithID(const char *id) const;
 	/** \brief Retrieves the index of the actor with the given alias id or -1 if not found. */
-	int IndexWithAliasID( const char *id ) const;
+	int IndexWithAliasID(const char *id) const;
 	/** \brief Retrieves the index of the actor with the given id or alias id or -1 if not found. */
-	int IndexWithIDOrAliasID( const char *id ) const;
+	int IndexWithIDOrAliasID(const char *id) const;
 	/** \brief Determines if a actor exists. */
-	bool Has( ceConversationActor *actor ) const;
+	bool Has(ceConversationActor *actor) const;
 	/** \brief Determines if an actor with the given id exists. */
-	bool HasWithID( const char *id ) const;
+	bool HasWithID(const char *id) const;
 	/** \brief Determines if an actor with the given alias id exists. */
-	bool HasWithAliasID( const char *id ) const;
+	bool HasWithAliasID(const char *id) const;
 	/** \brief Determines if an actor with the given id or alias id exists. */
-	bool HasWithIDOrAliasID( const char *id ) const;
+	bool HasWithIDOrAliasID(const char *id) const;
 	/** \brief Adds a actor. */
-	void Add( ceConversationActor *actor );
+	void Add(ceConversationActor *actor);
 	/** \brief Inserts a new actor. */
-	void InsertAt( ceConversationActor *actor, int index );
+	void InsertAt(ceConversationActor *actor, int index);
 	/** \brief Moves a actor to a new position. */
-	void MoveTo( ceConversationActor *actor, int index );
+	void MoveTo(ceConversationActor *actor, int index);
 	/** \brief Removes a actor. */
-	void Remove( ceConversationActor *actor );
+	void Remove(ceConversationActor *actor);
 	/** \brief Removes all actors. */
 	void RemoveAll();
 	
 	/** \brief Sets the list from another list. */
-	ceConversationActorList &operator=( const ceConversationActorList &list );
+	ceConversationActorList &operator=(const ceConversationActorList &list);
 	/*@}*/
 };
 

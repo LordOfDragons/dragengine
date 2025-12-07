@@ -221,7 +221,7 @@ void igdeWOSOWorld::LoadXmlWorld::pReadObject(const decXmlElementTag &root, Chil
 		if(tagName == "classname"){
 			wo.SetGDClassName(GetCDataString(*tag));
 			
-		}else if(tagName == "position" ){
+		}else if(tagName == "position"){
 			decDVector vector;
 			ReadDVector(*tag, vector);
 			wo.SetPosition(vector);

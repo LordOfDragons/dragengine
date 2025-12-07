@@ -47,12 +47,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVBO::deoglSharedVBO( deoglSharedVBOList *parentList, int size, int indexSize ) :
-pMemUseVBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.vboShared ),
-pMemUseIBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.iboShared )
+deoglSharedVBO::deoglSharedVBO(deoglSharedVBOList *parentList, int size, int indexSize) :
+pMemUseVBO(parentList->GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.vboShared),
+pMemUseIBO(parentList->GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.iboShared)
 {
-	if( ! parentList || size < 1 || indexSize < 0 ){
-		DETHROW( deeInvalidParam );
+	if(!parentList || size < 1 || indexSize < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deoglVBOLayout &layout = parentList->GetLayout();
@@ -71,31 +71,31 @@ pMemUseIBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bu
 	pDirty = true;
 	
 	try{
-		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBO ) );
+		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBO));
 		
-		if( indexSize > 0 ){
-			OGL_CHECK( renderThread, pglGenBuffers( 1, &pIBO ) );
+		if(indexSize > 0){
+			OGL_CHECK(renderThread, pglGenBuffers(1, &pIBO));
 		}
 		
 		// create vao
-		pVAO = new deoglVAO( parentList->GetRenderThread() );
-		pVAO->SetIndexType( parentList->GetLayout().GetIndexType() );
-		OGL_CHECK( renderThread, pglBindVertexArray( pVAO->GetVAO() ) );
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-		for( i=0; i<attributeCount; i++ ){
-			layout.SetVAOAttributeAt( renderThread, i, i );
+		pVAO = new deoglVAO(parentList->GetRenderThread());
+		pVAO->SetIndexType(parentList->GetLayout().GetIndexType());
+		OGL_CHECK(renderThread, pglBindVertexArray(pVAO->GetVAO()));
+		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
+		for(i=0; i<attributeCount; i++){
+			layout.SetVAOAttributeAt(renderThread, i, i);
 		}
 		
-		if( pIBO ){
-			OGL_CHECK( renderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pIBO ) );
+		if(pIBO){
+			OGL_CHECK(renderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pIBO));
 		}
 		
-		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+		OGL_CHECK(renderThread, pglBindVertexArray(0));
 		
 		// add empty block for the entire vbo space
 		pBlocks.Add(deoglSharedVBOBlock::Ref::NewWith(this, 0, size, 0, indexSize));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -111,7 +111,7 @@ deoglSharedVBO::~deoglSharedVBO(){
 ///////////////
 
 void deoglSharedVBO::Prepare(){
-	if( ! pDirty ){
+	if(!pDirty){
 		return;
 	}
 	
@@ -124,28 +124,28 @@ void deoglSharedVBO::Prepare(){
 	int i;
 	
 	// update vertex buffer
-	OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pVBO ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, NULL, drawType ) );
+	OGL_CHECK(renderThread, pglBindBuffer(GL_SHADER_STORAGE_BUFFER, pVBO));
+	OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, NULL, drawType));
 	
-	if( pUsedSize > 0 ){
+	if(pUsedSize > 0){
 		// another way which does not require a memory copy is to write the data blocks in ascending
 		// order using glBufferSubData. according to the Internet this should not be slower than
 		// glBufferData for a newly created buffer.
 		try{
-			vboData = new unsigned char[ stride * pUsedSize ];
+			vboData = new unsigned char[stride * pUsedSize];
 			
-			for( i=0; i<blockCount; i++ ){
-				const deoglSharedVBOBlock &block = *( ( deoglSharedVBOBlock* )pBlocks.GetAt( i ) );
-				if( ! block.GetEmpty() ){
-					memcpy( vboData + stride * block.GetOffset(), block.GetData(), stride * block.GetSize() );
+			for(i=0; i<blockCount; i++){
+				const deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
+				if(!block.GetEmpty()){
+					memcpy(vboData + stride * block.GetOffset(), block.GetData(), stride * block.GetSize());
 				}
 			}
 			
-			OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, vboData, drawType ) );
+			OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, stride * pUsedSize, vboData, drawType));
 			delete [] vboData;
 			
-		}catch( const deException & ){
-			if( vboData ){
+		}catch(const deException &){
+			if(vboData){
 				delete [] vboData;
 			}
 			throw;
@@ -153,11 +153,11 @@ void deoglSharedVBO::Prepare(){
 	}
 	
 	// update index buffer. works differently depending on the presence of base-vertex support
-	if( pIBO ){
-		OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pIBO ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, NULL, drawType ) );
+	if(pIBO){
+		OGL_CHECK(renderThread, pglBindBuffer(GL_SHADER_STORAGE_BUFFER, pIBO));
+		OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, NULL, drawType));
 		
-		if( pIndexUsedSize > 0 ){
+		if(pIndexUsedSize > 0){
 			const bool useBaseVertex = renderThread.GetChoices().GetSharedVBOUseBaseVertex();
 
 			// another way which does not require a memory copy is to write the data blocks in ascending
@@ -166,40 +166,40 @@ void deoglSharedVBO::Prepare(){
 			vboData = NULL;
 			
 			try{
-				vboData = new unsigned char[ indexSize * pIndexUsedSize ];
+				vboData = new unsigned char[indexSize * pIndexUsedSize];
 				
-				for( i=0; i<blockCount; i++ ){
-					const deoglSharedVBOBlock &block = *( ( deoglSharedVBOBlock* )pBlocks.GetAt( i ) );
-					if( block.GetEmpty() || block.GetIndexCount() == 0 ){
+				for(i=0; i<blockCount; i++){
+					const deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
+					if(block.GetEmpty() || block.GetIndexCount() == 0){
 						continue;
 					}
 					
-					if( useBaseVertex ){
-						memcpy( vboData + indexSize * block.GetIndexOffset(),
-							block.GetIndexData(), indexSize * block.GetIndexCount() );
+					if(useBaseVertex){
+						memcpy(vboData + indexSize * block.GetIndexOffset(),
+							block.GetIndexData(), indexSize * block.GetIndexCount());
 						
 					}else{
-						if( pParentList->GetLayout().GetIndexType() != deoglVBOLayout::eitUnsignedInt ){
-							DETHROW( deeInvalidParam );
+						if(pParentList->GetLayout().GetIndexType() != deoglVBOLayout::eitUnsignedInt){
+							DETHROW(deeInvalidParam);
 						}
 						
 						const int indexCount = block.GetIndexCount();
 						const int firstPoint = block.GetOffset();
 						int j;
 						
-						unsigned int *dest = ( unsigned int * )( vboData + indexSize * block.GetIndexOffset() );
-						unsigned int *source = ( unsigned int * )block.GetIndexData();
-						for( j=0; j<indexCount; j++ ){
-							dest[ j ] = ( unsigned int )( source[ j ] + firstPoint );
+						unsigned int *dest = (unsigned int *)(vboData + indexSize * block.GetIndexOffset());
+						unsigned int *source = (unsigned int *)block.GetIndexData();
+						for(j=0; j<indexCount; j++){
+							dest[j] = (unsigned int)(source[j] + firstPoint);
 						}
 					}
 				}
 				
-				OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, vboData, drawType ) );
+				OGL_CHECK(renderThread, pglBufferData(GL_SHADER_STORAGE_BUFFER, indexSize * pIndexUsedSize, vboData, drawType));
 				delete [] vboData;
 				
-			}catch( const deException & ){
-				if( vboData ){
+			}catch(const deException &){
+				if(vboData){
 					delete [] vboData;
 				}
 				throw;
@@ -208,7 +208,7 @@ void deoglSharedVBO::Prepare(){
 	}
 	
 	// done
-	OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
+	OGL_CHECK(renderThread, pglBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
 	pDirty = false;
 	
 	pMemUseVBO = stride * pUsedSize;
@@ -222,9 +222,9 @@ void deoglSharedVBO::UpdateUsedSizes(){
 	// calculate the required size for the vertex buffer
 	pUsedSize = 0;
 	
-	for( i=count-1; i>=0; i-- ){
-		const deoglSharedVBOBlock &block = *( ( deoglSharedVBOBlock* )pBlocks.GetAt( i ) );
-		if( ! block.GetEmpty() ){
+	for(i=count-1; i>=0; i--){
+		const deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
+		if(!block.GetEmpty()){
 			pUsedSize = block.GetOffset() + block.GetSize();
 			break;
 		}
@@ -233,9 +233,9 @@ void deoglSharedVBO::UpdateUsedSizes(){
 	// calculate the required size for the index buffer
 	pIndexUsedSize = 0;
 	
-	for( i=count-1; i>=0; i-- ){
-		deoglSharedVBOBlock &block = *( ( deoglSharedVBOBlock* )pBlocks.GetAt( i ) );
-		if( ! block.GetEmpty() ){
+	for(i=count-1; i>=0; i--){
+		deoglSharedVBOBlock &block = *((deoglSharedVBOBlock*)pBlocks.GetAt(i));
+		if(!block.GetEmpty()){
 			pIndexUsedSize = block.GetIndexOffset() + block.GetIndexCount();
 			break;
 		}
@@ -255,64 +255,64 @@ int deoglSharedVBO::GetBlockCount() const{
 	return pBlocks.GetCount();
 }
 
-deoglSharedVBOBlock *deoglSharedVBO::GetBlockAt( int index ) const{
-	return ( deoglSharedVBOBlock* )pBlocks.GetAt( index );
+deoglSharedVBOBlock *deoglSharedVBO::GetBlockAt(int index) const{
+	return (deoglSharedVBOBlock*)pBlocks.GetAt(index);
 }
 
-deoglSharedVBOBlock *deoglSharedVBO::AddBlock( int size, int indexCount ){
-	if( size < 1 || size > pSize || indexCount < 0 || indexCount > pIndexSize ){
+deoglSharedVBOBlock *deoglSharedVBO::AddBlock(int size, int indexCount){
+	if(size < 1 || size > pSize || indexCount < 0 || indexCount > pIndexSize){
 		return NULL;
 	}
 	
-	const int index = IndexOfEmptyBlockWithMinSize( size, indexCount );
+	const int index = IndexOfEmptyBlockWithMinSize(size, indexCount);
 	deoglSharedVBOBlock *block = NULL;
 	
-	if( index != -1 ){
-		block = ( deoglSharedVBOBlock* )pBlocks.GetAt( index );
+	if(index != -1){
+		block = (deoglSharedVBOBlock*)pBlocks.GetAt(index);
 		
 		// if empty block is larger than requested size add empty block with remaining empty
 		// space right after this block
-		if( block->GetSize() > size || block->GetIndexCount() > indexCount ){
+		if(block->GetSize() > size || block->GetIndexCount() > indexCount){
 			const deoglSharedVBOBlock::Ref emptyBlock(deoglSharedVBOBlock::Ref::NewWith(this,
 				block->GetOffset() + size, block->GetSize() - size,
 				block->GetIndexOffset() + indexCount, block->GetIndexCount() - indexCount));
-			pBlocks.Insert( emptyBlock, index + 1 );
+			pBlocks.Insert(emptyBlock, index + 1);
 		}
 		
 		// turn the block into a non-empty block with the requested size
-		block->SetSize( size );
-		block->SetIndexCount( indexCount );
-		block->SetEmpty( false );
+		block->SetSize(size);
+		block->SetIndexCount(indexCount);
+		block->SetEmpty(false);
 		
 		UpdateUsedSizes();
 		pDirty = true;
 	}
 	
-	if( block ){
+	if(block){
 		block->AddReference();
 	}
 	
 	return block;
 }
 
-void deoglSharedVBO::RemoveBlock( deoglSharedVBOBlock *block ){
-	int index = pBlocks.IndexOf( block );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void deoglSharedVBO::RemoveBlock(deoglSharedVBOBlock *block){
+	int index = pBlocks.IndexOf(block);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// turn the block into an empty block
-	block->SetEmpty( true );
+	block->SetEmpty(true);
 	
 	// if the previous block is empty merge this block with the previous block
-	if( index > 0 ){
-		deoglSharedVBOBlock * const mergeBlock = ( deoglSharedVBOBlock* )pBlocks.GetAt( index - 1 );
-		if( mergeBlock->GetEmpty() ){
-			mergeBlock->SetSize( mergeBlock->GetSize() + block->GetSize() );
-			mergeBlock->SetIndexCount( mergeBlock->GetIndexCount() + block->GetIndexCount() );
+	if(index > 0){
+		deoglSharedVBOBlock * const mergeBlock = (deoglSharedVBOBlock*)pBlocks.GetAt(index - 1);
+		if(mergeBlock->GetEmpty()){
+			mergeBlock->SetSize(mergeBlock->GetSize() + block->GetSize());
+			mergeBlock->SetIndexCount(mergeBlock->GetIndexCount() + block->GetIndexCount());
 			
 			block->DropVBO();
-			pBlocks.RemoveFrom( index );
+			pBlocks.RemoveFrom(index);
 			
 			block = mergeBlock;
 			index--;
@@ -320,14 +320,14 @@ void deoglSharedVBO::RemoveBlock( deoglSharedVBOBlock *block ){
 	}
 	
 	// if the next block is empty merge the next block with this block
-	if( index < pBlocks.GetCount() - 1 ){
-		deoglSharedVBOBlock * const mergeBlock = ( deoglSharedVBOBlock* )pBlocks.GetAt( index + 1 );
-		if( mergeBlock->GetEmpty() ){
-			block->SetSize( block->GetSize() + mergeBlock->GetSize() );
-			block->SetIndexCount( block->GetIndexCount() + mergeBlock->GetIndexCount() );
+	if(index < pBlocks.GetCount() - 1){
+		deoglSharedVBOBlock * const mergeBlock = (deoglSharedVBOBlock*)pBlocks.GetAt(index + 1);
+		if(mergeBlock->GetEmpty()){
+			block->SetSize(block->GetSize() + mergeBlock->GetSize());
+			block->SetIndexCount(block->GetIndexCount() + mergeBlock->GetIndexCount());
 			
 			mergeBlock->DropVBO();
-			pBlocks.RemoveFrom( index + 1 );
+			pBlocks.RemoveFrom(index + 1);
 		}
 	}
 	
@@ -335,13 +335,13 @@ void deoglSharedVBO::RemoveBlock( deoglSharedVBOBlock *block ){
 	pDirty = true;
 }
 
-int deoglSharedVBO::IndexOfEmptyBlockWithMinSize( int size, int indexCount ){
+int deoglSharedVBO::IndexOfEmptyBlockWithMinSize(int size, int indexCount){
 	const int count = pBlocks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglSharedVBOBlock * const block = ( deoglSharedVBOBlock* )pBlocks.GetAt( i );
-		if( block->GetEmpty() && block->GetSize() >= size && block->GetIndexCount() >= indexCount ){
+	for(i=0; i<count; i++){
+		deoglSharedVBOBlock * const block = (deoglSharedVBOBlock*)pBlocks.GetAt(i);
+		if(block->GetEmpty() && block->GetSize() >= size && block->GetIndexCount() >= indexCount){
 			return i;
 		}
 	}
@@ -357,16 +357,16 @@ int deoglSharedVBO::IndexOfEmptyBlockWithMinSize( int size, int indexCount ){
 void deoglSharedVBO::pCleanUp(){
 	const int count = pBlocks.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglSharedVBOBlock* )pBlocks.GetAt( i ) )->DropVBO();
+	for(i=0; i<count; i++){
+		((deoglSharedVBOBlock*)pBlocks.GetAt(i))->DropVBO();
 	}
 	pBlocks.RemoveAll();
 	
-	if( pVAO ){
+	if(pVAO){
 		delete pVAO;
 	}
 	
 	deoglDelayedOperations &dops = pParentList->GetRenderThread().GetDelayedOperations();
-	dops.DeleteOpenGLBuffer( pVBO );
-	dops.DeleteOpenGLBuffer( pIBO );
+	dops.DeleteOpenGLBuffer(pVBO);
+	dops.DeleteOpenGLBuffer(pIBO);
 }

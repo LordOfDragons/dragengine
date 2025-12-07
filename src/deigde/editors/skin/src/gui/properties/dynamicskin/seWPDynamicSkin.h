@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPDynamicSkin( seWindowProperties &windowProperties );
+	seWPDynamicSkin(seWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -98,7 +98,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Active renderable. */
 	seDynamicSkinRenderable *GetRenderable() const;

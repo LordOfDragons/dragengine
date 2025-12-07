@@ -53,18 +53,18 @@
 	// TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 	igdeContainerFlow::Ref nvnode(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
 	igdeNVSlot::Ref nvslot1, nvslot2, nvslot3, nvslot4;
-	nvslot1.TakeOver( new igdeNVSlot( env, "Input 1", "This is a test input", true ) );
-	nvnode->AddChild( nvslot1 );
-	nvslot2.TakeOver( new igdeNVSlot( env, "Input 2", "This is a test input", true ) );
-	nvslot2->SetColor( decColor( 1.0f, 0.0f, 0.0f ) );
-	nvnode->AddChild( nvslot2 );
-	nvslot3.TakeOver( new igdeNVSlot( env, "Output 1", "This is a test output", false ) );
-	nvnode->AddChild( nvslot3 );
-	nvslot4.TakeOver( new igdeNVSlot( env, "Output 2", "This is a test output", false ) );
-	nvslot4->SetColor( decColor( 0.0f, 0.0f, 1.0f ) );
-	nvnode->AddChild( nvslot4 );
-	nvslot2->AddLink( nvslot4 );
-	sidePanel->AddChild( nvnode );
+	nvslot1.TakeOver(new igdeNVSlot(env, "Input 1", "This is a test input", true));
+	nvnode->AddChild(nvslot1);
+	nvslot2.TakeOver(new igdeNVSlot(env, "Input 2", "This is a test input", true));
+	nvslot2->SetColor(decColor(1.0f, 0.0f, 0.0f));
+	nvnode->AddChild(nvslot2);
+	nvslot3.TakeOver(new igdeNVSlot(env, "Output 1", "This is a test output", false));
+	nvnode->AddChild(nvslot3);
+	nvslot4.TakeOver(new igdeNVSlot(env, "Output 2", "This is a test output", false));
+	nvslot4->SetColor(decColor(0.0f, 0.0f, 1.0f));
+	nvnode->AddChild(nvslot4);
+	nvslot2->AddLink(nvslot4);
+	sidePanel->AddChild(nvnode);
 	// TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 
 */
@@ -76,23 +76,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNVSlot::igdeNVSlot( igdeEnvironment &environment, const char *text, bool isInput ) :
-igdeContainer( environment ),
-pText( text ),
-pEnabled( true ),
-pIsInput( isInput ),
-pColor( 0.0f, 0.0f, 0.0f ),
-pOwnerNode( NULL ){
+igdeNVSlot::igdeNVSlot(igdeEnvironment &environment, const char *text, bool isInput) :
+igdeContainer(environment),
+pText(text),
+pEnabled(true),
+pIsInput(isInput),
+pColor(0.0f, 0.0f, 0.0f),
+pOwnerNode(NULL){
 }
 
-igdeNVSlot::igdeNVSlot( igdeEnvironment &environment, const char *text, const char *description, bool isInput ) :
-igdeContainer( environment ),
-pText( text ),
-pDescription( description ),
-pEnabled( true ),
-pIsInput( isInput ),
-pColor( 0.0f, 0.0f, 0.0f ),
-pOwnerNode( NULL ){
+igdeNVSlot::igdeNVSlot(igdeEnvironment &environment, const char *text, const char *description, bool isInput) :
+igdeContainer(environment),
+pText(text),
+pDescription(description),
+pEnabled(true),
+pIsInput(isInput),
+pColor(0.0f, 0.0f, 0.0f),
+pOwnerNode(NULL){
 }
 
 igdeNVSlot::~igdeNVSlot(){
@@ -105,8 +105,8 @@ igdeNVSlot::~igdeNVSlot(){
 // Management
 ///////////////
 
-void igdeNVSlot::SetText( const char *text ){
-	if( pText == text ){
+void igdeNVSlot::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -114,8 +114,8 @@ void igdeNVSlot::SetText( const char *text ){
 	OnTextChanged();
 }
 
-void igdeNVSlot::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeNVSlot::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -123,8 +123,8 @@ void igdeNVSlot::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeNVSlot::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeNVSlot::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -132,8 +132,8 @@ void igdeNVSlot::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeNVSlot::SetColor( const decColor &color ){
-	if( color.IsEqualTo( pColor ) ){
+void igdeNVSlot::SetColor(const decColor &color){
+	if(color.IsEqualTo(pColor)){
 		return;
 	}
 	
@@ -141,7 +141,7 @@ void igdeNVSlot::SetColor( const decColor &color ){
 	OnColorChanged();
 }
 
-void igdeNVSlot::SetOwnerNode( igdeNVNode *node ){
+void igdeNVSlot::SetOwnerNode(igdeNVNode *node){
 	pOwnerNode = node;
 }
 
@@ -151,25 +151,25 @@ int igdeNVSlot::GetLinkCount() const{
 	return pLinks.GetCount();
 }
 
-igdeNVLink *igdeNVSlot::GetLinkAt( int index ) const{
-	return ( igdeNVLink* )pLinks.GetAt( index );
+igdeNVLink *igdeNVSlot::GetLinkAt(int index) const{
+	return (igdeNVLink*)pLinks.GetAt(index);
 }
 
-bool igdeNVSlot::HasLink( igdeNVLink *link ) const{
-	return pLinks.Has( link );
+bool igdeNVSlot::HasLink(igdeNVLink *link) const{
+	return pLinks.Has(link);
 }
 
-void igdeNVSlot::AddLink( igdeNVLink *link ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+void igdeNVSlot::AddLink(igdeNVLink *link){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLinks.AddIfAbsent( link );
+	pLinks.AddIfAbsent(link);
 	OnLinksChanged();
 }
 
-void igdeNVSlot::RemoveLink( igdeNVLink *link ){
-	pLinks.RemoveIfPresent( link );
+void igdeNVSlot::RemoveLink(igdeNVLink *link){
+	pLinks.RemoveIfPresent(link);
 	OnLinksChanged();
 }
 
@@ -181,114 +181,114 @@ void igdeNVSlot::RemoveAllLinks(){
 
 
 decPoint igdeNVSlot::GetCenter() const{
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
-	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetCenter();
+	return ((igdeNativeNVSlot*)GetNativeWidget())->GetCenter();
 }
 
 decPoint igdeNVSlot::GetCenterNode() const{
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
-	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetCenterNode();
+	return ((igdeNativeNVSlot*)GetNativeWidget())->GetCenterNode();
 }
 
 decPoint igdeNVSlot::GetCenterBoard() const{
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
-	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetCenterBoard();
+	return ((igdeNativeNVSlot*)GetNativeWidget())->GetCenterBoard();
 }
 
 decPoint igdeNVSlot::GetConnector() const{
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
-	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetConnector();
+	return ((igdeNativeNVSlot*)GetNativeWidget())->GetConnector();
 }
 
 decPoint igdeNVSlot::GetConnectorNode() const{
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
-	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetConnectorNode();
+	return ((igdeNativeNVSlot*)GetNativeWidget())->GetConnectorNode();
 }
 
 decPoint igdeNVSlot::GetConnectorBoard() const{
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return decPoint();
 	}
 	
-	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetConnectorBoard();
+	return ((igdeNativeNVSlot*)GetNativeWidget())->GetConnectorBoard();
 }
 
 
 
 void igdeNVSlot::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeNVSlot * const native = igdeNativeNVSlot::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeNVSlot * const native = igdeNativeNVSlot::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeNVSlot::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeNVSlot* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeNVSlot*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeNVSlot::OnTextChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateText();
+	((igdeNativeNVSlot*)GetNativeWidget())->UpdateText();
 }
 
 void igdeNVSlot::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateDescription();
+	((igdeNativeNVSlot*)GetNativeWidget())->UpdateDescription();
 }
 
 void igdeNVSlot::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateEnabled();
+	((igdeNativeNVSlot*)GetNativeWidget())->UpdateEnabled();
 }
 
 void igdeNVSlot::OnColorChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateColor();
+	((igdeNativeNVSlot*)GetNativeWidget())->UpdateColor();
 }
 
 void igdeNVSlot::OnLinksChanged(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateLinkedState();
+	((igdeNativeNVSlot*)GetNativeWidget())->UpdateLinkedState();
 }

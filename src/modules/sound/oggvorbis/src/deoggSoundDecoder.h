@@ -55,7 +55,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new ogg sound stream object. */
-	deoggSoundDecoder( deSoundOGG *module, decBaseFileReader *file );
+	deoggSoundDecoder(deSoundOGG *module, decBaseFileReader *file);
 	/** Cleans up the ogg sound stream object. */
 	virtual ~deoggSoundDecoder();
 	/*@}*/
@@ -65,7 +65,7 @@ public:
 	/** Retrieves the position in samples. */
 	virtual int GetPosition();
 	/** Sets the position in samples from the beginning. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	/**
 	 * Reads a chunk of sound data from the file. Reads the given number
 	 * of sample bytes into the provided buffer and advances the position.
@@ -73,7 +73,7 @@ public:
 	 * than the requested amount if the end of file has been reached. An
 	 * error is signaled using the engine error signaling and 0 returned.
 	 */
-	virtual int ReadSamples( void *buffer, int size );
+	virtual int ReadSamples(void *buffer, int size);
 	/*@}*/
 };
 

@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavBlockerAdd::gdeMAOCNavBlockerAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Blocker...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class navigation blocker" )
+gdeMAOCNavBlockerAdd::gdeMAOCNavBlockerAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Navigation Blocker...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class navigation blocker")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Blocker...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavBlockerAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCNavBlockerAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddNavBlocker(&objectClass, gdeOCNavigationBlocker::Ref::NewWith());
 }
 
 void gdeMAOCNavBlockerAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

@@ -36,27 +36,27 @@ typedef uint16_t HALF_FLOAT;
  * Converts a 32-bit float value to a 16-bit float value suitable for OpenGL 16-bit textures.
  * The conversion is a safe conversion properly converting NaN and Inf values.
  */
-HALF_FLOAT convertFloatToHalf( float f );
+HALF_FLOAT convertFloatToHalf(float f);
 
 /**
  * Converts a 16-bit float value to a 32-bit float value as used in OpenGL 16-bit textures.
  * The conversion is a safe conversion properly converting NaN and Inf values.
  */
-float convertHalfToFloat( HALF_FLOAT h );
+float convertHalfToFloat(HALF_FLOAT h);
 
 /**
  * Converts a 32-bit float value to a 16-bit float value suitable for OpenGL 16-bit textures.
  * The conversion is a quick conversion not converting NaN and Inf values. The input value
  * has to be inside the range of a non-NaN/non-Inf 16-bit float value or the result is incorrect.
  */
-inline HALF_FLOAT quickConvertFloatToHalf( float f ){
+inline HALF_FLOAT quickConvertFloatToHalf(float f){
 	const float * const keepCompilerHappy = &f;
-	const unsigned int x = *( ( unsigned int * )keepCompilerHappy );
-	const unsigned short sign = ( unsigned short )( x >> 31 );
+	const unsigned int x = *((unsigned int *)keepCompilerHappy);
+	const unsigned short sign = (unsigned short)(x >> 31);
 	const unsigned int mantissa = x & 0x7fffff;
 	const unsigned int exp = x & 0x7f800000;
 	
-	if( exp <= 0x38000000 ){
+	if(exp <= 0x38000000){
 		return (((HALF_FLOAT)sign) << 15) | (HALF_FLOAT)(mantissa >> (14 + ((0x38000000 - exp) >> 23)));
 		
 	}else{
@@ -69,14 +69,14 @@ inline HALF_FLOAT quickConvertFloatToHalf( float f ){
  * The conversion is a quick conversion not converting NaN and Inf values. The input value
  * has to be inside the range of a non-NaN/non-Inf 16-bit float value or the result is incorrect.
  */
-inline float quickConvertHalfToFloat( HALF_FLOAT h ){
-	const unsigned int sign = ( unsigned int )( h >> 15 );
-	const unsigned int mantissa = ( unsigned int )( h & 0x3ff ) << 13;
-	const unsigned int exp = ( ( unsigned int )( h & 0x47800000 ) << 13 ) + 0x38000000;
-	const unsigned int f = ( sign << 31 ) | exp | mantissa;
+inline float quickConvertHalfToFloat(HALF_FLOAT h){
+	const unsigned int sign = (unsigned int)(h >> 15);
+	const unsigned int mantissa = (unsigned int)(h & 0x3ff) << 13;
+	const unsigned int exp = ((unsigned int)(h & 0x47800000) << 13) + 0x38000000;
+	const unsigned int f = (sign << 31) | exp | mantissa;
 	const unsigned int * const keepCompilerHappy = &f;
 	
-	return *( ( float* )keepCompilerHappy );
+	return *((float*)keepCompilerHappy);
 }
 
 #endif

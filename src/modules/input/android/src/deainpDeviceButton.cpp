@@ -39,11 +39,11 @@
 ////////////////////////////
 
 deainpDeviceButton::deainpDeviceButton() :
-pPressed( false ),
-pAICode( 0 ),
-pAIChar( 0 ),
-pKeyCode( deInputEvent::ekcUndefined ),
-pMatchPriority( 10 ){
+pPressed(false),
+pAICode(0),
+pAIChar(0),
+pKeyCode(deInputEvent::ekcUndefined),
+pMatchPriority(10){
 }
 
 deainpDeviceButton::~deainpDeviceButton(){
@@ -54,37 +54,37 @@ deainpDeviceButton::~deainpDeviceButton(){
 // Management
 ///////////////
 
-void deainpDeviceButton::SetID( const char *id ){
+void deainpDeviceButton::SetID(const char *id){
 	pID = id;
 }
 
-void deainpDeviceButton::SetName( const char *name ){
+void deainpDeviceButton::SetName(const char *name){
 	pName = name;
 }
  
-void deainpDeviceButton::SetPressed( bool pressed ){
+void deainpDeviceButton::SetPressed(bool pressed){
 	pPressed = pressed;
 }
 
-void deainpDeviceButton::SetAICode( int code ){
+void deainpDeviceButton::SetAICode(int code){
 	pAICode = code;
 }
 
-void deainpDeviceButton::SetAIChar( int character ){
+void deainpDeviceButton::SetAIChar(int character){
 	pAIChar = character;
 }
 
-void deainpDeviceButton::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
+void deainpDeviceButton::SetKeyCode(deInputEvent::eKeyCodes keyCode){
 	pKeyCode = keyCode;
 }
 
-void deainpDeviceButton::SetMatchPriority( int priority ){
+void deainpDeviceButton::SetMatchPriority(int priority){
 	pMatchPriority = priority;
 }
 
 
 
-void deainpDeviceButton::GetInfo( deInputDeviceButton &info ) const{
-	info.SetID( pID );
-	info.SetName( pName );
+void deainpDeviceButton::GetInfo(deInputDeviceButton &info) const{
+	info.SetID(pID);
+	info.SetName(pName);
 }

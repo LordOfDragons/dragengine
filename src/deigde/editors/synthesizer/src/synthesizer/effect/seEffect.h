@@ -68,10 +68,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer effect. */
-	seEffect( deSynthesizerEffectVisitorIdentify::eEffectTypes type );
+	seEffect(deSynthesizerEffectVisitorIdentify::eEffectTypes type);
 	
 	/** \brief Create a copy of an synthesizer effect. */
-	seEffect( const seEffect &copy );
+	seEffect(const seEffect &copy);
 	
 	/** \brief Clean up the synthesizer effect. */
 	virtual ~seEffect();
@@ -90,13 +90,13 @@ public:
 	inline deSynthesizerEffect *GetEngineEffect() const{ return pEngEffect; }
 	
 	/** \brief Set the engine synthesizer effect or \em NULL. */
-	void SetEngineEffect( deSynthesizerEffect *effect );
+	void SetEngineEffect(deSynthesizerEffect *effect);
 	
 	/** \brief Create an engine synthesizer effect. */
 	virtual deSynthesizerEffect *CreateEngineEffect() = 0;
 	
 	/** \brief Init the given engine effect with the default effect properties. */
-	void InitEngineEffect( deSynthesizerEffect *engEffect ) const;
+	void InitEngineEffect(deSynthesizerEffect *engEffect) const;
 	
 	/** \brief Retrieve the effect type. */
 	inline deSynthesizerEffectVisitorIdentify::eEffectTypes GetType() const{ return pType; }
@@ -105,7 +105,7 @@ public:
 	inline seSource *GetParentSource() const{ return pParentSource; }
 	
 	/** \brief Set the parent source or \em NULL if there is none. */
-	void SetParentSource( seSource *source );
+	void SetParentSource(seSource *source);
 	
 	
 	
@@ -113,13 +113,13 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if effect is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Strength. */
 	inline float GetStrength() const{ return pStrength; }
 	
 	/** \brief Set strength. */
-	void SetStrength( float strength );
+	void SetStrength(float strength);
 	
 	
 	
@@ -127,10 +127,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** \brief Number of targets using link. */
-	virtual int CountLinkUsage( seLink *link ) const;
+	virtual int CountLinkUsage(seLink *link) const;
 	
 	/** \brief Remove link from all targets using it. */
-	virtual void RemoveLinkFromTargets( seLink *link );
+	virtual void RemoveLinkFromTargets(seLink *link);
 	
 	/** \brief Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -140,7 +140,7 @@ public:
 	inline const seControllerTarget &GetTargetStrength() const{ return pTargetStrength; }
 	
 	/** \brief List all links of all effect targets. */
-	virtual void ListLinks( seLinkList& list );
+	virtual void ListLinks(seLinkList& list);
 	
 	/** \brief Notify engine and listeners that the effect changed. */
 	void NotifyEffectChanged();
@@ -163,7 +163,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another synthesizer effect to this synthesizer effect. */
-	seEffect &operator=( const seEffect &copy );
+	seEffect &operator=(const seEffect &copy);
 	/*@}*/
 	
 	
@@ -171,7 +171,7 @@ public:
 	/** \name Helper */
 	/*@{*/
 	/** \brief Create a new effect from a effect type. */
-	static seEffect *CreateEffectFromType( deEngine *engine, deSynthesizerEffectVisitorIdentify::eEffectTypes type );
+	static seEffect *CreateEffectFromType(deEngine *engine, deSynthesizerEffectVisitorIdentify::eEffectTypes type);
 	/*@}*/
 };
 

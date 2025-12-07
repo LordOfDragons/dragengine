@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPASetVariable( ceWPTopic &parentPanel );
+	ceWPASetVariable(ceWPTopic &parentPanel);
 	
 protected:
 	/** Clean up panel. */

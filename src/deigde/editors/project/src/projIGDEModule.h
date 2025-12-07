@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	projIGDEModule( igdeEnvironment &environment );
+	projIGDEModule(igdeEnvironment &environment);
 	
 	/** \brief Clean up module. */
 	virtual ~projIGDEModule();
@@ -59,7 +59,7 @@ public:
 	 * wishes to close the application it has to return false. Return true to continue
 	 * processing command line arguments.
 	 */
-	virtual bool ProcessCommandLine( decUnicodeStringList &arguments );
+	virtual bool ProcessCommandLine(decUnicodeStringList &arguments);
 	/*@}*/
 };
 

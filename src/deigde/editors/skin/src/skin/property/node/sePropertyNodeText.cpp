@@ -45,19 +45,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNodeText::sePropertyNodeText( deEngine &engine ) :
-sePropertyNode( entText, engine, TextMappedCount ),
-pTextSize( 10.0f ){
+sePropertyNodeText::sePropertyNodeText(deEngine &engine) :
+sePropertyNode(entText, engine, TextMappedCount),
+pTextSize(10.0f){
 }
 
-sePropertyNodeText::sePropertyNodeText( const sePropertyNodeText &node ) :
-sePropertyNode( node ),
-pPath( node.pPath ),
+sePropertyNodeText::sePropertyNodeText(const sePropertyNodeText &node) :
+sePropertyNode(node),
+pPath(node.pPath),
 pFont(node.pFont),
 pFontSize(node.pFontSize),
-pTextSize( node.pTextSize ),
-pText( node.pText ),
-pColor( node.pColor ){
+pTextSize(node.pTextSize),
+pText(node.pText),
+pColor(node.pColor){
 }
 
 sePropertyNodeText::~sePropertyNodeText(){
@@ -68,7 +68,7 @@ sePropertyNodeText::~sePropertyNodeText(){
 // Management
 ///////////////
 
-void sePropertyNodeText::SetPath( const char *path ){
+void sePropertyNodeText::SetPath(const char *path){
 	if(pPath == path){
 		return;
 	}
@@ -79,7 +79,7 @@ void sePropertyNodeText::SetPath( const char *path ){
 	NotifyChanged();
 }
 
-void sePropertyNodeText::SetTextSize( float size ){
+void sePropertyNodeText::SetTextSize(float size){
 	size = decMath::max(size, 0.0f);
 	if(fabsf(size - pTextSize) < FLOAT_SAFE_EPSILON){
 		return;
@@ -120,8 +120,8 @@ void sePropertyNodeText::UpdateFontSize(){
 	}
 }
 
-void sePropertyNodeText::SetText( const char *text ){
-	if( pText == text ){
+void sePropertyNodeText::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -129,8 +129,8 @@ void sePropertyNodeText::SetText( const char *text ){
 	NotifyChanged();
 }
 
-void sePropertyNodeText::SetColor( const decColor &color ){
-	if( color.IsEqualTo( pColor ) ){
+void sePropertyNodeText::SetColor(const decColor &color){
+	if(color.IsEqualTo(pColor)){
 		return;
 	}
 	
@@ -141,7 +141,7 @@ void sePropertyNodeText::SetColor( const decColor &color ){
 
 
 sePropertyNode *sePropertyNodeText::Copy() const{
-	return new sePropertyNodeText( *this );
+	return new sePropertyNodeText(*this);
 }
 
 void sePropertyNodeText::UpdateResources(){

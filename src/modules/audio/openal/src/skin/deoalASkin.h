@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin peer. */
-	deoalASkin( deoalAudioThread &audioThread, const deSkin &skin );
+	deoalASkin(deoalAudioThread &audioThread, const deSkin &skin);
 	
 protected:
 	/** \brief Clean up skin peer. */
@@ -82,7 +82,7 @@ public:
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** \brief Texture at index. */
-	const deoalSkinTexture &GetTextureAt( int index ) const;
+	const deoalSkinTexture &GetTextureAt(int index) const;
 	
 	
 	
@@ -94,7 +94,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCreateTextures( const deSkin &skin );
+	void pCreateTextures(const deSkin &skin);
 };
 
 #endif

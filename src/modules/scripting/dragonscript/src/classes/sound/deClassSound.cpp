@@ -55,59 +55,59 @@ struct sSndNatDat{
 //////////////////////////////
 
 // public func new( String filename )
-deClassSound::nfNew::nfNew( const sInitData &init ) :
-dsFunction( init.clsSound, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // filename
+deClassSound::nfNew::nfNew(const sInitData &init) :
+dsFunction(init.clsSound, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsString); // filename
 }
-void deClassSound::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sSndNatDat &nd = *( ( sSndNatDat* )p_GetNativeData( myself ) );
+void deClassSound::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sSndNatDat &nd = *((sSndNatDat*)p_GetNativeData(myself));
 	
 	// prepare
 	nd.sound = NULL;
 	
 	// load sound
-	deScriptingDragonScript &ds = ( ( deClassSound* )GetOwnerClass() )->GetDS();
+	deScriptingDragonScript &ds = ((deClassSound*)GetOwnerClass())->GetDS();
 	deSoundManager &sndMgr = *ds.GetGameEngine()->GetSoundManager();
 	
-	const char * const filename = rt->GetValue( 0 )->GetString();
+	const char * const filename = rt->GetValue(0)->GetString();
 	
-	nd.sound = sndMgr.LoadSound( filename, "/", false );
+	nd.sound = sndMgr.LoadSound(filename, "/", false);
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
-deClassSound::nfLoadAsynchron::nfLoadAsynchron( const sInitData &init ) :
-dsFunction( init.clsSound, "loadAsynchron", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsString ); // filename
-	p_AddParameter( init.clsResNot ); // listener
+deClassSound::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) :
+dsFunction(init.clsSound, "loadAsynchron", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsString); // filename
+	p_AddParameter(init.clsResNot); // listener
 }
-void deClassSound::nfLoadAsynchron::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deScriptingDragonScript &ds = ( ( deClassSound* )GetOwnerClass() )->GetDS();
+void deClassSound::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
+	deScriptingDragonScript &ds = ((deClassSound*)GetOwnerClass())->GetDS();
 	
-	const char * const filename = rt->GetValue( 0 )->GetString();
-	dsRealObject * const listener = rt->GetValue( 1 )->GetRealObject();
+	const char * const filename = rt->GetValue(0)->GetString();
+	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
 	
-	if( ! listener ){
-		DSTHROW( dueInvalidParam );
+	if(!listener){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	ds.GetResourceLoader()->AddRequest( filename, deResourceLoader::ertSound, listener );
+	ds.GetResourceLoader()->AddRequest(filename, deResourceLoader::ertSound, listener);
 }
 
 // public func destructor()
-deClassSound::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsSound, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSound::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsSound, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSound::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassSound::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSndNatDat &nd = *( ( sSndNatDat* )p_GetNativeData( myself ) );
+	sSndNatDat &nd = *((sSndNatDat*)p_GetNativeData(myself));
 	
-	if( nd.sound ){
+	if(nd.sound){
 		nd.sound->FreeReference();
 		nd.sound = NULL;
 	}
@@ -119,69 +119,69 @@ void deClassSound::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
 ///////////////
 
 // public func String getFilename()
-deClassSound::nfGetFilename::nfGetFilename( const sInitData &init ) :
-dsFunction( init.clsSound, "getFilename", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassSound::nfGetFilename::nfGetFilename(const sInitData &init) :
+dsFunction(init.clsSound, "getFilename", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassSound::nfGetFilename::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSound &sound = *( ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound );
+void deClassSound::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
 	
-	rt->PushString( sound.GetFilename() );
+	rt->PushString(sound.GetFilename());
 }
 
 // public func int getBytesPerSample()
 deClassSound::nfGetBytesPerSample::nfGetBytesPerSample(const sInitData &init) :
-dsFunction( init.clsSound, "getBytesPerSample", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+dsFunction(init.clsSound, "getBytesPerSample", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassSound::nfGetBytesPerSample::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSound &sound = *( ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound );
+void deClassSound::nfGetBytesPerSample::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
 	
-	rt->PushInt( sound.GetBytesPerSample() );
+	rt->PushInt(sound.GetBytesPerSample());
 }
 
 // public func int getSampleCount()
 deClassSound::nfGetSampleCount::nfGetSampleCount(const sInitData &init) :
-dsFunction( init.clsSound, "getSampleCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+dsFunction(init.clsSound, "getSampleCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassSound::nfGetSampleCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSound &sound = *( ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound );
+void deClassSound::nfGetSampleCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
 	
-	rt->PushInt( sound.GetSampleCount() );
+	rt->PushInt(sound.GetSampleCount());
 }
 
 // public func int getChannelCount()
 deClassSound::nfGetChannelCount::nfGetChannelCount(const sInitData &init) :
-dsFunction( init.clsSound, "getChannelCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+dsFunction(init.clsSound, "getChannelCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassSound::nfGetChannelCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSound &sound = *( ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound );
+void deClassSound::nfGetChannelCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
 	
-	rt->PushInt( sound.GetChannelCount() );
+	rt->PushInt(sound.GetChannelCount());
 }
 
 // public func int getSampleRate()
 deClassSound::nfGetSampleRate::nfGetSampleRate(const sInitData &init) :
-dsFunction( init.clsSound, "getSampleRate", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+dsFunction(init.clsSound, "getSampleRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassSound::nfGetSampleRate::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSound &sound = *( ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound );
+void deClassSound::nfGetSampleRate::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
 	
-	rt->PushInt( sound.GetSampleRate() );
+	rt->PushInt(sound.GetSampleRate());
 }
 
 // public func float getPlayTime()
 deClassSound::nfGetPlayTime::nfGetPlayTime(const sInitData &init) :
-dsFunction( init.clsSound, "getPlayTime", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+dsFunction(init.clsSound, "getPlayTime", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassSound::nfGetPlayTime::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSound &sound = *( ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound );
+void deClassSound::nfGetPlayTime::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
 	
-	rt->PushFloat( sound.GetPlayTime() );
+	rt->PushFloat(sound.GetPlayTime());
 }
 
 
@@ -190,35 +190,35 @@ void deClassSound::nfGetPlayTime::RunFunction( dsRunTime *rt, dsValue *myself ){
 ///////////
 
 // public func int hashCode()
-deClassSound::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsSound, "hashCode", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassSound::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsSound, "hashCode", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
-void deClassSound::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSound * const sound = ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound;
+void deClassSound::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSound * const sound = ((sSndNatDat*)p_GetNativeData(myself))->sound;
 	
-	rt->PushInt( ( int )( intptr_t )sound );
+	rt->PushInt((int)(intptr_t)sound);
 }
 
 // public func bool equals( Object object )
-deClassSound::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsSound, "equals", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObject ); // object
+deClassSound::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsSound, "equals", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObject); // object
 }
-void deClassSound::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSound * const sound = ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound;
-	deClassSound * const clsSound = ( deClassSound* )GetOwnerClass();
-	dsValue * const object = rt->GetValue( 0 );
+void deClassSound::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSound * const sound = ((sSndNatDat*)p_GetNativeData(myself))->sound;
+	deClassSound * const clsSound = (deClassSound*)GetOwnerClass();
+	dsValue * const object = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( object, clsSound ) ){
-		rt->PushBool( false );
+	if(!p_IsObjOfType(object, clsSound)){
+		rt->PushBool(false);
 		
 	}else{
-		deSound * const otherSound = ( ( sSndNatDat* )p_GetNativeData( object ) )->sound;
+		deSound * const otherSound = ((sSndNatDat*)p_GetNativeData(object))->sound;
 		
-		rt->PushBool( sound == otherSound );
+		rt->PushBool(sound == otherSound);
 	}
 }
 
@@ -230,14 +230,14 @@ void deClassSound::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 // Constructor, Destructor
 ////////////////////////////
 
-deClassSound::deClassSound( deScriptingDragonScript &ds ) :
-dsClass( "Sound", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassSound::deClassSound(deScriptingDragonScript &ds) :
+dsClass("Sound", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sSndNatDat ) );
+	p_SetNativeDataSize(sizeof(sSndNatDat));
 }
 
 deClassSound::~deClassSound(){
@@ -248,7 +248,7 @@ deClassSound::~deClassSound(){
 // Management
 ///////////////
 
-void deClassSound::CreateClassMembers( dsEngine *engine ){
+void deClassSound::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	init.clsSound = this;
@@ -262,40 +262,40 @@ void deClassSound::CreateClassMembers( dsEngine *engine ){
 	
 	init.clsResNot = pDS.GetClassResourceListener();
 	
-	AddFunction( new nfNew ( init ) );
-	AddFunction( new nfLoadAsynchron( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew (init));
+	AddFunction(new nfLoadAsynchron(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetFilename( init ) );
-	AddFunction( new nfGetBytesPerSample( init ) );
-	AddFunction( new nfGetSampleRate( init ) );
-	AddFunction( new nfGetChannelCount( init ) );
-	AddFunction( new nfGetSampleCount( init ) );
-	AddFunction( new nfGetPlayTime( init ) );
+	AddFunction(new nfGetFilename(init));
+	AddFunction(new nfGetBytesPerSample(init));
+	AddFunction(new nfGetSampleRate(init));
+	AddFunction(new nfGetChannelCount(init));
+	AddFunction(new nfGetSampleCount(init));
+	AddFunction(new nfGetPlayTime(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 }
 
-deSound *deClassSound::GetSound( dsRealObject *myself ) const{
-	if( ! myself ){
+deSound *deClassSound::GetSound(dsRealObject *myself) const{
+	if(!myself){
 		return NULL;
 	}
 	
-	return ( ( sSndNatDat* )p_GetNativeData( myself->GetBuffer() ) )->sound;
+	return ((sSndNatDat*)p_GetNativeData(myself->GetBuffer()))->sound;
 }
 
-void deClassSound::PushSound( dsRunTime *rt, deSound *sound ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassSound::PushSound(dsRunTime *rt, deSound *sound){
+	if(!rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! sound ){
-		rt->PushObject( NULL, this );
+	if(!sound){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	( ( sSndNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->sound = sound;
+	rt->CreateObjectNakedOnStack(this);
+	((sSndNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->sound = sound;
 	sound->AddReference();
 }

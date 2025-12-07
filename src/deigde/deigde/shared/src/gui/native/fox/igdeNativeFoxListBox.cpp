@@ -46,51 +46,51 @@
 
 
 
-FXDEFMAP( igdeNativeFoxListBox ) cNativeIgdeListBoxMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxListBox::ID_LISTBOX,
-		igdeNativeFoxListBox::onListCommand ),
+FXDEFMAP(igdeNativeFoxListBox) cNativeIgdeListBoxMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxListBox::ID_LISTBOX,
+		igdeNativeFoxListBox::onListCommand),
 	
-	FXMAPFUNC( SEL_CHANGED, igdeNativeFoxListBox::ID_LISTBOX,
-		igdeNativeFoxListBox::onListChanged ),
+	FXMAPFUNC(SEL_CHANGED, igdeNativeFoxListBox::ID_LISTBOX,
+		igdeNativeFoxListBox::onListChanged),
 	
-	FXMAPFUNC( SEL_SELECTED, igdeNativeFoxListBox::ID_LISTBOX,
-		igdeNativeFoxListBox::onListSelected ),
+	FXMAPFUNC(SEL_SELECTED, igdeNativeFoxListBox::ID_LISTBOX,
+		igdeNativeFoxListBox::onListSelected),
 	
-	FXMAPFUNC( SEL_DESELECTED, igdeNativeFoxListBox::ID_LISTBOX,
-		igdeNativeFoxListBox::onListDeselected ),
+	FXMAPFUNC(SEL_DESELECTED, igdeNativeFoxListBox::ID_LISTBOX,
+		igdeNativeFoxListBox::onListDeselected),
 	
-	FXMAPFUNC( SEL_RIGHTBUTTONPRESS, igdeNativeFoxListBox::ID_LISTBOX,
-		igdeNativeFoxListBox::onListRightMouseDown ),
+	FXMAPFUNC(SEL_RIGHTBUTTONPRESS, igdeNativeFoxListBox::ID_LISTBOX,
+		igdeNativeFoxListBox::onListRightMouseDown),
 	
-	FXMAPFUNC( SEL_RIGHTBUTTONRELEASE, igdeNativeFoxListBox::ID_LISTBOX,
-		igdeNativeFoxListBox::onListRightMouseUp ),
+	FXMAPFUNC(SEL_RIGHTBUTTONRELEASE, igdeNativeFoxListBox::ID_LISTBOX,
+		igdeNativeFoxListBox::onListRightMouseUp),
 	
-	FXMAPFUNC( SEL_DOUBLECLICKED, igdeNativeFoxListBox::ID_LISTBOX,
-		igdeNativeFoxListBox::onListDoubleClicked ),
+	FXMAPFUNC(SEL_DOUBLECLICKED, igdeNativeFoxListBox::ID_LISTBOX,
+		igdeNativeFoxListBox::onListDoubleClicked),
 	
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxListBox::ID_RESIZER,
-		igdeNativeFoxListBox::onResizerDrag )
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxListBox::ID_RESIZER,
+		igdeNativeFoxListBox::onResizerDrag)
 };
 
 
-FXIMPLEMENT( igdeNativeFoxListBox, FXVerticalFrame,
-	cNativeIgdeListBoxMap, ARRAYNUMBER( cNativeIgdeListBoxMap ) )
+FXIMPLEMENT(igdeNativeFoxListBox, FXVerticalFrame,
+	cNativeIgdeListBoxMap, ARRAYNUMBER(cNativeIgdeListBoxMap))
 
-#define MASK_FLAGS_LIST ( LIST_SINGLESELECT | LIST_BROWSESELECT | LIST_MULTIPLESELECT | LIST_AUTOSELECT )
+#define MASK_FLAGS_LIST (LIST_SINGLESELECT | LIST_BROWSESELECT | LIST_MULTIPLESELECT | LIST_AUTOSELECT)
 
 
 // class igdeNativeFoxListBox
 ///////////////////////////////
 
-igdeNativeFoxListBox::igdeNativeFoxListBox(){ }
+igdeNativeFoxListBox::igdeNativeFoxListBox(){}
 
-igdeNativeFoxListBox::igdeNativeFoxListBox( igdeListBox &powner, FXComposite *pparent,
-	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme ) :
-FXVerticalFrame( pparent, layoutFlags.flags | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &powner ),
-pFont( ListBoxFont( powner, guitheme ) ),
-pListBox( new FXList( this, this, ID_LISTBOX, LAYOUT_FILL | ListBoxFlags( powner ) ) ),
-pResizer( NULL )
+igdeNativeFoxListBox::igdeNativeFoxListBox(igdeListBox &powner, FXComposite *pparent,
+	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme) :
+FXVerticalFrame(pparent, layoutFlags.flags | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+pOwner(&powner),
+pFont(ListBoxFont(powner, guitheme)),
+pListBox(new FXList(this, this, ID_LISTBOX, LAYOUT_FILL | ListBoxFlags(powner))),
+pResizer(NULL)
 {
 	#ifndef OS_W32_VS
 	(void)ListBoxPadLeft;
@@ -99,47 +99,47 @@ pResizer( NULL )
 	(void)ListBoxPadBottom;
 	#endif
 	
-	if( ! pOwner->GetVisible() ){
+	if(!pOwner->GetVisible()){
 		hide();
 	}
-	pListBox->setFont( (FXFont*)pFont->GetNativeFont() );
+	pListBox->setFont((FXFont*)pFont->GetNativeFont());
 	
-	pListBox->setNumVisible( powner.GetRows() );
-	if( ! powner.GetEnabled() ){
+	pListBox->setNumVisible(powner.GetRows());
+	if(!powner.GetEnabled()){
 		pListBox->disable();
 	}
 	
 	//setTipText( owner.GetDescription().GetString() ); // nto supported
-	pListBox->setHelpText( powner.GetDescription().GetString() );
+	pListBox->setHelpText(powner.GetDescription().GetString());
 	
 	BuildList();
-	pListBox->setCurrentItem( powner.GetSelection() );
+	pListBox->setCurrentItem(powner.GetSelection());
 	
-	if( layoutFlags.canResizeVertical || ( layoutFlags.flags & LAYOUT_FILL_Y ) == 0 ){
-		pResizer = new igdeNativeFoxResizer( this, this, ID_RESIZER );
+	if(layoutFlags.canResizeVertical || (layoutFlags.flags & LAYOUT_FILL_Y) == 0){
+		pResizer = new igdeNativeFoxResizer(this, this, ID_RESIZER);
 	}
 }
 
 igdeNativeFoxListBox::~igdeNativeFoxListBox(){
 }
 
-igdeNativeFoxListBox *igdeNativeFoxListBox::CreateNativeWidget( igdeListBox &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxListBox *igdeNativeFoxListBox::CreateNativeWidget(igdeListBox &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxListBox( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( &powner ), *powner.GetGuiTheme() );
+	return new igdeNativeFoxListBox(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll(&powner), *powner.GetGuiTheme());
 }
 
 void igdeNativeFoxListBox::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -159,61 +159,61 @@ void igdeNativeFoxListBox::BuildList(){
 	
 	pListBox->clearItems();
 	
-	for( i=0; i<count; i++ ){
-		const igdeListItem &item = *pOwner->GetItemAt( i );
-		pListBox->appendItem( item.GetText().GetString(),
-			item.GetIcon() ? ( FXIcon* )item.GetIcon()->GetNativeIcon() : NULL );
+	for(i=0; i<count; i++){
+		const igdeListItem &item = *pOwner->GetItemAt(i);
+		pListBox->appendItem(item.GetText().GetString(),
+			item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : NULL);
 	}
 	
 	UpdateSelection();
 }
 
-void igdeNativeFoxListBox::UpdateItem( int index ){
-	const igdeListItem &item = *pOwner->GetItemAt( index );
-	pListBox->setItemText( index, item.GetText().GetString() );
+void igdeNativeFoxListBox::UpdateItem(int index){
+	const igdeListItem &item = *pOwner->GetItemAt(index);
+	pListBox->setItemText(index, item.GetText().GetString());
 	
-	if( item.GetIcon() ){
-		pListBox->setItemIcon( index, ( FXIcon* )item.GetIcon()->GetNativeIcon() );
+	if(item.GetIcon()){
+		pListBox->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		
 	}else{
-		pListBox->setItemIcon( index, NULL );
+		pListBox->setItemIcon(index, NULL);
 	}
 	
-	if( item.GetSelected() ){
-		pListBox->selectItem( index );
+	if(item.GetSelected()){
+		pListBox->selectItem(index);
 		
 	}else{
-		pListBox->deselectItem( index );
+		pListBox->deselectItem(index);
 	}
 }
 
 void igdeNativeFoxListBox::UpdateStyles(){
-	pListBox->setListStyle( ListBoxFlags( *pOwner ) & MASK_FLAGS_LIST );
+	pListBox->setListStyle(ListBoxFlags(*pOwner) & MASK_FLAGS_LIST);
 }
 
 void igdeNativeFoxListBox::UpdateSelection(){
-	pListBox->setCurrentItem( pOwner->GetSelection() );
-	if( pListBox->getCurrentItem() != -1 ){
-		pListBox->makeItemVisible( pListBox->getCurrentItem() );
+	pListBox->setCurrentItem(pOwner->GetSelection());
+	if(pListBox->getCurrentItem() != -1){
+		pListBox->makeItemVisible(pListBox->getCurrentItem());
 	}
 	
-	if( pOwner->GetSelectionMode() == igdeListBox::esmMultiple ){
+	if(pOwner->GetSelectionMode() == igdeListBox::esmMultiple){
 		const int count = pListBox->getNumItems();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			const bool selected = pOwner->GetItemAt( i )->GetSelected();
-			FXListItem &item = *pListBox->getItem( i );
+		for(i=0; i<count; i++){
+			const bool selected = pOwner->GetItemAt(i)->GetSelected();
+			FXListItem &item = *pListBox->getItem(i);
 			
-			if( selected == item.isSelected() ){
+			if(selected == item.isSelected()){
 				continue;
 			}
 			
-			if( selected ){
-				pListBox->selectItem( i );
+			if(selected){
+				pListBox->selectItem(i);
 				
 			}else{
-				pListBox->deselectItem( i );
+				pListBox->deselectItem(i);
 			}
 		}
 	}
@@ -223,30 +223,30 @@ void igdeNativeFoxListBox::Focus(){
 	pListBox->setFocus();
 }
 
-void igdeNativeFoxListBox::MakeItemVisible( int index ){
-	pListBox->makeItemVisible( index );
+void igdeNativeFoxListBox::MakeItemVisible(int index){
+	pListBox->makeItemVisible(index);
 }
 
-void igdeNativeFoxListBox::InsertItem( int index ){
-	const igdeListItem &item = *pOwner->GetItemAt( index );
-	pListBox->insertItem( index, item.GetText().GetString(),
-		item.GetIcon() ? ( FXIcon* )item.GetIcon()->GetNativeIcon() : NULL );
+void igdeNativeFoxListBox::InsertItem(int index){
+	const igdeListItem &item = *pOwner->GetItemAt(index);
+	pListBox->insertItem(index, item.GetText().GetString(),
+		item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : NULL);
 }
 
-void igdeNativeFoxListBox::RemoveItem( int index ){
-	pListBox->removeItem( index );
+void igdeNativeFoxListBox::RemoveItem(int index){
+	pListBox->removeItem(index);
 }
 
 void igdeNativeFoxListBox::RemoveAllItems(){
 	pListBox->clearItems();
 }
 
-void igdeNativeFoxListBox::MoveItem( int fromIndex, int toIndex ){
-	pListBox->moveItem( toIndex, fromIndex );
+void igdeNativeFoxListBox::MoveItem(int fromIndex, int toIndex){
+	pListBox->moveItem(toIndex, fromIndex);
 }
 
 void igdeNativeFoxListBox::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		pListBox->enable();
 		
 	}else{
@@ -255,21 +255,21 @@ void igdeNativeFoxListBox::UpdateEnabled(){
 }
 
 void igdeNativeFoxListBox::UpdateRowCount(){
-	pListBox->setNumVisible( pOwner->GetRows() );
+	pListBox->setNumVisible(pOwner->GetRows());
 }
 
 void igdeNativeFoxListBox::UpdateDescription(){
 	const char * const description = pOwner->GetDescription();
 	//pListBox->setTipText( description ); // not supported
-	pListBox->setHelpText( description );
+	pListBox->setHelpText(description);
 }
 
 
 
-int igdeNativeFoxListBox::ListBoxFlags( const igdeListBox &powner ){
+int igdeNativeFoxListBox::ListBoxFlags(const igdeListBox &powner){
 	int fflags = FRAME_SUNKEN;
 	
-	switch( powner.GetSelectionMode() ){
+	switch(powner.GetSelectionMode()){
 	case igdeListBox::esmSingle:
 		fflags |= LIST_BROWSESELECT;
 		break;
@@ -285,44 +285,44 @@ int igdeNativeFoxListBox::ListBoxFlags( const igdeListBox &powner ){
 	return fflags;
 }
 
-igdeFont *igdeNativeFoxListBox::ListBoxFont( const igdeListBox &powner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxListBox::ListBoxFont(const igdeListBox &powner, const igdeGuiTheme &guitheme){
 	igdeFont::sConfiguration configuration;
-	powner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::listBoxFontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::listBoxFontSizeAbsolute, 0 );
+	if(guitheme.HasProperty(igdeGuiThemePropertyNames::listBoxFontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::listBoxFontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::listBoxFontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::listBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::listBoxFontSize, 1.0f );
+			igdeGuiThemePropertyNames::listBoxFontSize, 1.0f);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
+			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
 	
-	return powner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont(configuration);
 }
 
-int igdeNativeFoxListBox::ListBoxPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::listBoxPaddingLeft, DEFAULT_PAD );
+int igdeNativeFoxListBox::ListBoxPadLeft(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::listBoxPaddingLeft, DEFAULT_PAD);
 }
 
-int igdeNativeFoxListBox::ListBoxPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::listBoxPaddingRight, DEFAULT_PAD );
+int igdeNativeFoxListBox::ListBoxPadRight(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::listBoxPaddingRight, DEFAULT_PAD);
 }
 
-int igdeNativeFoxListBox::ListBoxPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::listBoxPaddingTop, DEFAULT_PAD );
+int igdeNativeFoxListBox::ListBoxPadTop(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::listBoxPaddingTop, DEFAULT_PAD);
 }
 
-int igdeNativeFoxListBox::ListBoxPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::listBoxPaddingBottom, DEFAULT_PAD );
+int igdeNativeFoxListBox::ListBoxPadBottom(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::listBoxPaddingBottom, DEFAULT_PAD);
 }
 
 
@@ -330,107 +330,107 @@ int igdeNativeFoxListBox::ListBoxPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxListBox::onListCommand( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() || pOwner->GetSelection() == pListBox->getCurrentItem() ){
+long igdeNativeFoxListBox::onListCommand(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled() || pOwner->GetSelection() == pListBox->getCurrentItem()){
 		return 1;
 	}
 	
 	try{
-		pOwner->SetSelection( pListBox->getCurrentItem() );
+		pOwner->SetSelection(pListBox->getCurrentItem());
 		pOwner->NotifySelectionChanged();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 	}
 	return 1;
 }
 
-long igdeNativeFoxListBox::onListChanged( FXObject *sender, FXSelector selector, void *pdata ){
-	return onListCommand( sender, selector, pdata );
+long igdeNativeFoxListBox::onListChanged(FXObject *sender, FXSelector selector, void *pdata){
+	return onListCommand(sender, selector, pdata);
 }
 
-long igdeNativeFoxListBox::onListSelected( FXObject*, FXSelector, void *pdata ){
-	const int index = ( int )( intptr_t )pdata;
-	if( index < 0 || index >= pOwner->GetItemCount() ){
+long igdeNativeFoxListBox::onListSelected(FXObject*, FXSelector, void *pdata){
+	const int index = (int)(intptr_t)pdata;
+	if(index < 0 || index >= pOwner->GetItemCount()){
 		return 1;
 	}
 	
 	try{
-		pOwner->GetItemAt( index )->SetSelected( true );
-		pOwner->NotifyItemSelected( index );
+		pOwner->GetItemAt(index)->SetSelected(true);
+		pOwner->NotifyItemSelected(index);
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 	}
 	return 1;
 }
 
-long igdeNativeFoxListBox::onListDeselected( FXObject*, FXSelector, void *pdata ){
-	const int index = ( int )( intptr_t )pdata;
-	if( index < 0 || index >= pOwner->GetItemCount() ){
+long igdeNativeFoxListBox::onListDeselected(FXObject*, FXSelector, void *pdata){
+	const int index = (int)(intptr_t)pdata;
+	if(index < 0 || index >= pOwner->GetItemCount()){
 		return 1;
 	}
 	
 	try{
-		pOwner->GetItemAt( index )->SetSelected( false );
-		pOwner->NotifyItemDeselected( index );
+		pOwner->GetItemAt(index)->SetSelected(false);
+		pOwner->NotifyItemDeselected(index);
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 	}
 	return 1;
 }
 
-long igdeNativeFoxListBox::onListRightMouseDown( FXObject*, FXSelector, void *pdata ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxListBox::onListRightMouseDown(FXObject*, FXSelector, void *pdata){
+	if(!pOwner->GetEnabled()){
 		return 1;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )pdata );
+	const FXEvent &event = *((FXEvent*)pdata);
 	
-	const int index = pListBox->getItemAt( event.win_x, event.win_y );
-	if( index != -1 ){
-		pListBox->selectItem( index, true );
-		pListBox->setCurrentItem( index, true ); // changes selected state only in browse mode
+	const int index = pListBox->getItemAt(event.win_x, event.win_y);
+	if(index != -1){
+		pListBox->selectItem(index, true);
+		pListBox->setCurrentItem(index, true); // changes selected state only in browse mode
 	}
 	
-	pOwner->ShowContextMenu( decPoint( event.win_x, event.win_y ) );
+	pOwner->ShowContextMenu(decPoint(event.win_x, event.win_y));
 	return 1;
 }
 
-long igdeNativeFoxListBox::onListRightMouseUp( FXObject*, FXSelector, void* ){
+long igdeNativeFoxListBox::onListRightMouseUp(FXObject*, FXSelector, void*){
 	return 1;
 }
 
-long igdeNativeFoxListBox::onListDoubleClicked( FXObject*, FXSelector, void *pdata ){
-	const int index = ( int )( intptr_t )pdata;
-	if( index < 0 || index >= pOwner->GetItemCount() ){
+long igdeNativeFoxListBox::onListDoubleClicked(FXObject*, FXSelector, void *pdata){
+	const int index = (int)(intptr_t)pdata;
+	if(index < 0 || index >= pOwner->GetItemCount()){
 		return 1;
 	}
 	
 	try{
-		pOwner->NotifyDoubleClickItem( index );
+		pOwner->NotifyDoubleClickItem(index);
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 	}
 	return 1;
 }
 
 
 
-long igdeNativeFoxListBox::onResizerDrag( FXObject*, FXSelector, void *pdata ){
-	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( pdata );
+long igdeNativeFoxListBox::onResizerDrag(FXObject*, FXSelector, void *pdata){
+	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance(pdata);
 	const int newHeight = getHeight() + distance;
 	
 	const int LINE_SPACING = 4;  // hard coded in FXList
 	const int itemHeight = LINE_SPACING + pListBox->getFont()->getFontHeight();
 	
-	pOwner->SetRows( decMath::max( ( newHeight + itemHeight / 2 ) / itemHeight, 1 ) );
+	pOwner->SetRows(decMath::max((newHeight + itemHeight / 2) / itemHeight, 1));
 	
 	return 0;
 }

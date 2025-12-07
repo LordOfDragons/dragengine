@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination dynamic BVH. */
-	deoglGIBVHDynamic( deoglGIBVHLocal &bvhLocal );
+	deoglGIBVHDynamic(deoglGIBVHLocal &bvhLocal);
 	
 	/** Clean up global illumination dynamic BVH. */
 	~deoglGIBVHDynamic();
@@ -100,10 +100,10 @@ public:
 	void UpdateBVHExtends();
 	
 	/** Update vertex positions. */
-	void UpdateVertices( const oglModelPosition *positions, int count );
+	void UpdateVertices(const oglModelPosition *positions, int count);
 	
 	/** Update vertex positions. */
-	void UpdateVertices( const oglVector3 *positions, int count );
+	void UpdateVertices(const oglVector3 *positions, int count);
 	
 	
 	
@@ -132,8 +132,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCalcNodeExtends( const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend );
-	void pWriteNodeExtends( int index, const decVector &minExtend, const decVector &maxExtend );
+	void pCalcNodeExtends(const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend);
+	void pWriteNodeExtends(int index, const decVector &minExtend, const decVector &maxExtend);
 };
 
 #endif

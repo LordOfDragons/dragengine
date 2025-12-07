@@ -56,7 +56,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path);
 	
 	/**
 	 * \brief Visit directory.
@@ -65,7 +65,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path);
 	
 	/**
 	 * \brief Visit special.
@@ -74,7 +74,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitSpecial( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path);
 	/*@}*/
 };
 

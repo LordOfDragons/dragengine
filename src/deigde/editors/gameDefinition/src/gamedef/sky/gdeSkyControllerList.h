@@ -47,7 +47,7 @@ public:
 	gdeSkyControllerList();
 	
 	/** \brief Create copy of controller list. */
-	gdeSkyControllerList( const gdeSkyControllerList &list );
+	gdeSkyControllerList(const gdeSkyControllerList &list);
 	
 	/** \brief Clean up controller list. */
 	~gdeSkyControllerList();
@@ -61,31 +61,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Controller at position. */
-	gdeSkyController *GetAt( int index ) const;
+	gdeSkyController *GetAt(int index) const;
 	
 	/** \brief Named controller or \em NULL. */
-	gdeSkyController *GetNamed( const char *name ) const;
+	gdeSkyController *GetNamed(const char *name) const;
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOf( gdeSkyController *controller ) const;
+	int IndexOf(gdeSkyController *controller) const;
 	
 	/** \brief Controller is present. */
-	bool Has( gdeSkyController *controller ) const;
+	bool Has(gdeSkyController *controller) const;
 	
 	/** \brief Named controller is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add controller. */
-	void Add( gdeSkyController *controller );
+	void Add(gdeSkyController *controller);
 	
 	/** \brief Remove controller. */
-	void Remove( gdeSkyController *controller );
+	void Remove(gdeSkyController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAll();
 	
 	/** \brief Set from another controller list. */
-	gdeSkyControllerList &operator=( const gdeSkyControllerList &list );
+	gdeSkyControllerList &operator=(const gdeSkyControllerList &list);
 	/*@}*/
 };
 

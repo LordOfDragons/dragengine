@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new space partition tree. */
-	deoglSPTree( const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount );
+	deoglSPTree(const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount);
 	/** Cleans up the space partition tree. */
 	~deoglSPTree();
 	/*@}*/
@@ -77,17 +77,17 @@ public:
 	/** Retrieves the number of nodes. */
 	inline const decPoint3 &GetNodeCount() const{ return pNodeCount; }
 	/** Determines if the index is inside the valid range. */
-	bool IsIndexValid( const decPoint3 &index ) const;
+	bool IsIndexValid(const decPoint3 &index) const;
 	/**
 	 * Retrieves the index of the node containing the given point in space.
 	 * If the point is located outside the tree boundary box all components
 	 * of index are set to -1.
 	 */
-	void IndexOfNodeAt( decPoint3 &index, const decVector &position ) const;
+	void IndexOfNodeAt(decPoint3 &index, const decVector &position) const;
 	/** Retrieves the node at the given index or NULL if empty. */
-	deoglSPTreeNode *GetNodeAt( const decPoint3 &index ) const;
+	deoglSPTreeNode *GetNodeAt(const decPoint3 &index) const;
 	/** Sets the node at the given index or NULL to set it empty. */
-	void SetNodeAt( const decPoint3 &index, deoglSPTreeNode *node );
+	void SetNodeAt(const decPoint3 &index, deoglSPTreeNode *node);
 	/** Clears all nodes. */
 	void ClearAllNodes();
 	/*@}*/

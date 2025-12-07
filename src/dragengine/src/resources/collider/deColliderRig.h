@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rig collider. */
-	deColliderRig( deColliderManager *manager );
+	deColliderRig(deColliderManager *manager);
 	
 protected:
 	/**
@@ -86,7 +86,7 @@ public:
 	inline deRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig or NULL if not set. */
-	void SetRig( deRig *rig );
+	void SetRig(deRig *rig);
 	
 	
 	
@@ -97,7 +97,7 @@ public:
 	 * \brief Bone at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	deColliderBone &GetBoneAt( int index ) const;
+	deColliderBone &GetBoneAt(int index) const;
 	
 	
 	
@@ -106,24 +106,24 @@ public:
 	 * 
 	 * The rigs do not have to match. Only matching bones are copied.
 	 */
-	void CopyStatesFromColliderRig( const deColliderRig &collider );
+	void CopyStatesFromColliderRig(const deColliderRig &collider);
 	
 	/**
 	 * \brief Copy a bone state from a collider rig bone if set.
 	 * 
 	 * The rigs do not have to match. Only if matching the bone state is copied.
 	 */
-	void CopyStateFromColliderRig( int bone, const deColliderRig &collider );
+	void CopyStateFromColliderRig(int bone, const deColliderRig &collider);
 	
 	/**
 	 * \brief Copy a bone state from a collider rig bone if set.
 	 * 
 	 * The rigs do not have to match. Allows to copy staes between arbitrary bones.
 	 */
-	void CopyStateFromColliderRig( int boneFrom, int boneTo, const deColliderRig &collider );
+	void CopyStateFromColliderRig(int boneFrom, int boneTo, const deColliderRig &collider);
 	
 	/** \brief Enable or disable a bone constraint. */
-	void EnableBoneConstraint( int bone, int constraint, bool enable );
+	void EnableBoneConstraint(int bone, int constraint, bool enable);
 	
 	/**
 	 * \brief Replace a bone constraint.
@@ -131,7 +131,7 @@ public:
 	 * The provided rig constraint only serves as source to copy the
 	 * new parameters. It has to be freed by the called afterwards.
 	 */
-	void ReplaceBoneConstraint( int bone, int constraint, const deRigConstraint &replacement );
+	void ReplaceBoneConstraint(int bone, int constraint, const deRigConstraint &replacement);
 	/*@}*/
 	
 	
@@ -145,7 +145,7 @@ public:
 	 * 
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	void ApplyBoneImpuls( int bone, const decVector &impuls );
+	void ApplyBoneImpuls(int bone, const decVector &impuls);
 	
 	/**
 	 * \brief Apply impuls relative to bone position.
@@ -154,7 +154,7 @@ public:
 	 * 
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	void ApplyBoneImpulsAt( int bone, const decVector &impuls, const decVector &point );
+	void ApplyBoneImpulsAt(int bone, const decVector &impuls, const decVector &point);
 	
 	/**
 	 * \brief Apply torque impuls at center mass point of bone.
@@ -163,7 +163,7 @@ public:
 	 * 
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	void ApplyBoneTorqueImpuls( int bone, const decVector &torqueImpuls );
+	void ApplyBoneTorqueImpuls(int bone, const decVector &torqueImpuls);
 	
 	/**
 	 * \brief Apply force at center mass point of bone.
@@ -173,7 +173,7 @@ public:
 	 * 
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	void ApplyBoneForce( int bone, const decVector &force );
+	void ApplyBoneForce(int bone, const decVector &force);
 	
 	/**
 	 * \brief Apply force relative to bone position.
@@ -183,7 +183,7 @@ public:
 	 * 
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	void ApplyBoneForceAt( int bone, const decVector &force, const decVector &point );
+	void ApplyBoneForceAt(int bone, const decVector &force, const decVector &point);
 	
 	/**
 	 * \brief Apply torque force at center mass point of bone.
@@ -193,7 +193,7 @@ public:
 	 * 
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	void ApplyBoneTorque( int bone, const decVector &torque );
+	void ApplyBoneTorque(int bone, const decVector &torque);
 	/*@}*/
 	
 	
@@ -201,7 +201,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit the collider. */
-	virtual void Visit( deColliderVisitor &visitor );
+	virtual void Visit(deColliderVisitor &visitor);
 	/*@}*/
 };
 

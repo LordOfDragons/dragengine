@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetImagePath::seUPropertySetImagePath( seProperty *property, const char *newPath ){
-	if( ! property || ! newPath ) DETHROW( deeInvalidParam );
+seUPropertySetImagePath::seUPropertySetImagePath(seProperty *property, const char *newPath){
+	if(!property || !newPath) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	
-	SetShortInfo( "Property Set Image Path" );
+	SetShortInfo("Property Set Image Path");
 	
 	pOldPath = property->GetImagePath();
 	pNewPath = newPath;
@@ -53,7 +53,7 @@ seUPropertySetImagePath::seUPropertySetImagePath( seProperty *property, const ch
 }
 
 seUPropertySetImagePath::~seUPropertySetImagePath(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -64,9 +64,9 @@ seUPropertySetImagePath::~seUPropertySetImagePath(){
 ///////////////
 
 void seUPropertySetImagePath::Undo(){
-	pProperty->SetImagePath( pOldPath.GetString() );
+	pProperty->SetImagePath(pOldPath.GetString());
 }
 
 void seUPropertySetImagePath::Redo(){
-	pProperty->SetImagePath( pNewPath.GetString() );
+	pProperty->SetImagePath(pNewPath.GetString());
 }

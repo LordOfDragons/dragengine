@@ -49,12 +49,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACopyCondition( ceWindowMain &windowMain,
-		ceConversationCondition *condition );
+	ceWPTMACopyCondition(ceWindowMain &windowMain,
+		ceConversationCondition *condition);
 	
 	/** \brief Crete menu action. */
-	ceWPTMACopyCondition( ceWindowMain &windowMain,
-		ceConversationCondition *condition, const char *text, igdeIcon *icon );
+	ceWPTMACopyCondition(ceWindowMain &windowMain,
+		ceConversationCondition *condition, const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	

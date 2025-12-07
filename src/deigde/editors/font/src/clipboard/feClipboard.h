@@ -57,7 +57,7 @@ public:
 	/** Retrieves the clip or NULL if not set. */
 	inline feBaseClip *GetClip() const{ return pClip; }
 	/** Sets the held clip replacing the old one if existing. */
-	void SetClip( feBaseClip *clip );
+	void SetClip(feBaseClip *clip);
 	/*@}*/
 };
 

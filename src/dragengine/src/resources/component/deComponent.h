@@ -136,7 +136,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new component. */
-	deComponent( deComponentManager *manager, deModel *model, deSkin *skin );
+	deComponent(deComponentManager *manager, deModel *model, deSkin *skin);
 	
 protected:
 	/**
@@ -157,19 +157,19 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &pos );
+	void SetPosition(const decDVector &pos);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
 	inline const decVector &GetScaling() const{ return pScale; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( const decVector &scale );
+	void SetScaling(const decVector &scale);
 	
 	/** \brief Model or NULL if not assigned. */
 	inline deModel *GetModel() const{ return pModel; }
@@ -179,7 +179,7 @@ public:
 	 * 
 	 * Textures are reset. To keep textures use setModelKeepTextures.
 	 */
-	void SetModel( deModel *model );
+	void SetModel(deModel *model);
 	
 	/**
 	 * \brief Set model or NULL if not set while keeping textures.
@@ -189,28 +189,28 @@ public:
 	 * and the new model is similar enough to match. Textures not existing anymore
 	 * are not restored.
 	 */
-	void SetModelKeepTextures( deModel *model );
+	void SetModelKeepTextures(deModel *model);
 	
 	/** \brief Skin or NULL if not assigned. */
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not assigned. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Rig or NULL if not assigned. */
 	inline deRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig or NULL if not assigned. */
-	void SetRig( deRig *rig );
+	void SetRig(deRig *rig);
 	
 	/** \brief Set model and skin at the same time. Either one can be NULL. */
-	void SetModelAndSkin( deModel *model, deSkin *skin );
+	void SetModelAndSkin(deModel *model, deSkin *skin);
 	
 	/** \brief Occlusion mesh or NULL if not assigned. */
 	inline deOcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** \brief Set occlusion mesh or NULL if not assigned. */
-	void SetOcclusionMesh( deOcclusionMesh *occmesh );
+	void SetOcclusionMesh(deOcclusionMesh *occmesh);
 	
 	/** \brief Audio model or NULL if not used. */
 	inline deModel *GetAudioModel() const{ return pAudioModel; }
@@ -220,25 +220,25 @@ public:
 	 * 
 	 * Shares textures with assigned model.
 	 */
-	void SetAudioModel( deModel *model );
+	void SetAudioModel(deModel *model);
 	
 	/** \brief Component is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if component is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Movement hint. */
 	inline eMovementHints GetHintMovement() const{ return pHintMovement; }
 	
 	/** \brief Set movement hint. */
-	void SetHintMovement( eMovementHints hint );
+	void SetHintMovement(eMovementHints hint);
 	
 	/** \brief Enable GI in graphic module if supported. */
 	bool GetEnableGI() const{ return pEnableGI; }
 	
 	/** \brief Set if enabled for GI in graphic module if supported. */
-	void SetEnableGI( bool enable );
+	void SetEnableGI(bool enable);
 	
 	/**
 	 * \brief GI important hint.
@@ -256,7 +256,7 @@ public:
 	 * can be used by the graphic module to improve performance by excluding components
 	 * with a GI important below a user chosen threshold.
 	 */
-	void SetHintGIImportance( int importance );
+	void SetHintGIImportance(int importance);
 	
 	/** \brief Component matrix. */
 	const decDMatrix &GetMatrix();
@@ -268,10 +268,10 @@ public:
 	inline int GetBoneCount() const{ return pBoneCount; }
 	
 	/** \brief Bone at index. */
-	deComponentBone &GetBoneAt( int index ) const;
+	deComponentBone &GetBoneAt(int index) const;
 	
 	/** \brief Updates the given bone. */
-	void UpdateBoneAt( int index );
+	void UpdateBoneAt(int index);
 	
 	/**
 	 * \brief Mark bones dirty.
@@ -295,10 +295,10 @@ public:
 	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
 	
 	/** \brief Vertex position set weight. */
-	float GetVertexPositionSetWeightAt( int index ) const;
+	float GetVertexPositionSetWeightAt(int index) const;
 	
 	/** \brief Set vertex position set weight. */
-	void SetVertexPositionSetWeightAt( int index, float weight );
+	void SetVertexPositionSetWeightAt(int index, float weight);
 	
 	/** \brief Mark mesh dirty. */
 	void InvalidateMesh();
@@ -307,25 +307,25 @@ public:
 	void InvalidateExtends();
 	
 	/** \brief Copy bone states to matching bones states of another component. */
-	void CopyBonesToComponent( deComponent& component );
+	void CopyBonesToComponent(deComponent& component);
 	
 	/** \brief Dynamic skin or null if not used. */
 	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or null if not used. */
-	void SetDynamicSkin( deDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Render only animator or NULL to use none. */
 	inline deAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** \brief Set render only animator or NULL to use none. */
-	void SetAnimator( deAnimator *animator );
+	void SetAnimator(deAnimator *animator);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Prepare matrices. */
 	void PrepareMatrix();
@@ -359,7 +359,7 @@ public:
 	 * is called (or a function using it) the animator task is waited on to finish
 	 * before continueing. Only Animator Modules use this function.
 	 */
-	void SetAnimatorTask( deParallelTask *task );
+	void SetAnimatorTask(deParallelTask *task);
 	
 	/**
 	 * \brief Ensure animator task has finished if present.
@@ -377,13 +377,13 @@ public:
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** \brief Texture with the given index. */
-	deComponentTexture &GetTextureAt( int index ) const;
+	deComponentTexture &GetTextureAt(int index) const;
 	
 	/** \brief Retrieve index of the texture of the face closest to a position or -1 if not found. */
-	int IndexOfTextureClosestTo( const decVector &position, float radius ) const;
+	int IndexOfTextureClosestTo(const decVector &position, float radius) const;
 	
 	/** \brief Notifies the peers that a texture changed. */
-	void NotifyTextureChanged( int index ) const;
+	void NotifyTextureChanged(int index) const;
 	/*@}*/
 	
 	
@@ -401,14 +401,14 @@ public:
 	 * \throws deeInvalidParam \em decal is NULL.
 	 * \throws deeInvalidParam \em decal has a parent world.
 	 */
-	void AddDecal( deDecal *decal );
+	void AddDecal(deDecal *decal);
 	
 	/**
 	 * \brief Remove decal.
 	 * \throws deeInvalidParam \em decal is NULL.
 	 * \throws deeInvalidParam Parent world of \em decal is not this world.
 	 */
-	void RemoveDecal( deDecal *decal );
+	void RemoveDecal(deDecal *decal);
 	
 	/** \brief Remove all decals. */
 	void RemoveAllDecals();
@@ -427,7 +427,7 @@ public:
 	 * \param[in] point Point on the surface to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsAt( const decVector &point, deDecalList &list ) const;
+	void FindDecalsAt(const decVector &point, deDecalList &list) const;
 	
 	/**
 	 * \brief Collect decals in contact with shape.
@@ -437,7 +437,7 @@ public:
 	 * \param[in] shape Shape to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	void FindDecalsTouching( decShape *shape, deDecalList &list ) const;
+	void FindDecalsTouching(decShape *shape, deDecalList &list) const;
 	/*@}*/
 	
 	
@@ -448,25 +448,25 @@ public:
 	inline deBaseGraphicComponent *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic System Peer. */
-	void SetPeerGraphic( deBaseGraphicComponent *peer );
+	void SetPeerGraphic(deBaseGraphicComponent *peer);
 	
 	/** \brief Physics System Peer. */
 	inline deBasePhysicsComponent *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics System Peer. */
-	void SetPeerPhysics( deBasePhysicsComponent *peer );
+	void SetPeerPhysics(deBasePhysicsComponent *peer);
 	
 	/** \brief Audio System Peer. */
 	inline deBaseAudioComponent *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio System Peer. */
-	void SetPeerAudio( deBaseAudioComponent *peer );
+	void SetPeerAudio(deBaseAudioComponent *peer);
 	
 	/** \brief Animator peer or NULL if not set. */
 	inline deBaseAnimatorComponent *GetPeerAnimator() const{ return pPeerAnimator; }
 	
 	/** \brief Set animator peer or NULL if not set. */
-	void SetPeerAnimator( deBaseAnimatorComponent *peer );
+	void SetPeerAnimator(deBaseAnimatorComponent *peer);
 	/*@}*/
 	
 	
@@ -477,28 +477,28 @@ public:
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous component in the parent world linked list. */
 	inline deComponent *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
 	/** \brief Set next component in the parent world linked list. */
-	void SetLLWorldPrev( deComponent *component );
+	void SetLLWorldPrev(deComponent *component);
 	
 	/** \brief Next component in the parent world linked list. */
 	inline deComponent *GetLLWorldNext() const{ return pLLWorldNext; }
 	
 	/** \brief Set next component in the parent world linked list. */
-	void SetLLWorldNext( deComponent *component );
+	void SetLLWorldNext(deComponent *component);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pUpdateBoneAt( int bone );
-	void pChangeModel( deModel *model );
-	void pChangeRig( deRig *rig );
+	void pUpdateBoneAt(int bone);
+	void pChangeModel(deModel *model);
+	void pChangeRig(deRig *rig);
 };
 
 #endif

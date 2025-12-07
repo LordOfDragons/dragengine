@@ -52,13 +52,13 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit object class. */
-	virtual void VisitObjectClass( igdeGDClass *gdclass );
+	virtual void VisitObjectClass(igdeGDClass *gdclass);
 	
 	/** \brief Visit skin. */
-	virtual void VisitSkin( igdeGDSkin *gdskin );
+	virtual void VisitSkin(igdeGDSkin *gdskin);
 	
 	/** \brief Visit sky. */
-	virtual void VisitSky( igdeGDSky *gdsky );
+	virtual void VisitSky(igdeGDSky *gdsky);
 	/*@}*/
 };
 

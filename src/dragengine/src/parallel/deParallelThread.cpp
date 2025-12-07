@@ -49,14 +49,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deParallelThread::deParallelThread( deParallelProcessing &parallelProcessing,
-	int number, bool takeLowPriorityTasks ) :
-pParallelProcessing( parallelProcessing ),
-pNumber( number ),
-pTakeLowPriorityTasks( takeLowPriorityTasks ),
-pExitThread( false ),
-pWaiting( false ),
-pTask( NULL ){
+deParallelThread::deParallelThread(deParallelProcessing &parallelProcessing,
+	int number, bool takeLowPriorityTasks) :
+pParallelProcessing(parallelProcessing),
+pNumber(number),
+pTakeLowPriorityTasks(takeLowPriorityTasks),
+pExitThread(false),
+pWaiting(false),
+pTask(NULL){
 }
 
 deParallelThread::~deParallelThread(){
@@ -68,26 +68,26 @@ deParallelThread::~deParallelThread(){
 ///////////////
 
 bool deParallelThread::IsWaiting(){
-	const deMutexGuard lock( pMutexWaiting );
+	const deMutexGuard lock(pMutexWaiting);
 	return pWaiting;
 }
 
 void deParallelThread::RequestExit(){
-	if( ! IsRunning() ){
+	if(!IsRunning()){
 		return;
 	}
 	
-	const deMutexGuard lock( pMutexWaiting );
+	const deMutexGuard lock(pMutexWaiting);
 	pExitThread = true;
 }
 
 deParallelTask *deParallelThread::GetTask(){
-	const deMutexGuard lock( pMutexTask );
+	const deMutexGuard lock(pMutexTask);
 	return pTask;
 }
 
 void deParallelThread::Run(){
-	while( true ){
+	while(true){
 		// get the next task to process if there is any
 		// 
 		// NOTE potential dead-lock:
@@ -99,66 +99,66 @@ void deParallelThread::Run(){
 		//      this situation should not be possible to happen. to prevent any possibility
 		//      of a dead-lock the task is first acquired unlocked then written locked.
 		{
-		deParallelTask * const task = pParallelProcessing.NextPendingTask( pTakeLowPriorityTasks );
+		deParallelTask * const task = pParallelProcessing.NextPendingTask(pTakeLowPriorityTasks);
 		
-		const deMutexGuard lock( pMutexTask );
+		const deMutexGuard lock(pMutexTask);
 		pTask = task;
 		
-		if( pParallelProcessing.GetOutputDebugMessages() ){
-			if( pTask ){
-				const decString debugName( pTask->GetDebugName() );
-				const decString debugDetails( pTask->GetDebugDetails() );
-				pParallelProcessing.GetEngine().GetLogger()->LogInfoFormat( LOGSOURCE,
+		if(pParallelProcessing.GetOutputDebugMessages()){
+			if(pTask){
+				const decString debugName(pTask->GetDebugName());
+				const decString debugDetails(pTask->GetDebugDetails());
+				pParallelProcessing.GetEngine().GetLogger()->LogInfoFormat(LOGSOURCE,
 					"Thread %i: Assign [%s] %s", pNumber,
-					debugName.GetString(), debugDetails.GetString() );
+					debugName.GetString(), debugDetails.GetString());
 				
 			}else{
-				pParallelProcessing.GetEngine().GetLogger()->LogInfoFormat( LOGSOURCE,
-					"Thread %i: No task, going to sleep", pNumber );
+				pParallelProcessing.GetEngine().GetLogger()->LogInfoFormat(LOGSOURCE,
+					"Thread %i: No task, going to sleep", pNumber);
 			}
 		}
 		}
 		
 		// if there is a task process it
-		if( pTask ){
+		if(pTask){
 			try{
 				pTask->Run();
 				
-			}catch( const deException &exception ){
-				const decString debugName( pTask->GetDebugName() );
-				const decString debugDetails( pTask->GetDebugDetails() );
-				pParallelProcessing.GetEngine().GetLogger()->LogErrorFormat( LOGSOURCE,
+			}catch(const deException &exception){
+				const decString debugName(pTask->GetDebugName());
+				const decString debugDetails(pTask->GetDebugDetails());
+				pParallelProcessing.GetEngine().GetLogger()->LogErrorFormat(LOGSOURCE,
 					"Thread %i: Task failed [%s] %s.\n", pNumber,
-					debugName.GetString(), debugDetails.GetString() );
-				pParallelProcessing.GetEngine().GetLogger()->LogException( LOGSOURCE, exception );
+					debugName.GetString(), debugDetails.GetString());
+				pParallelProcessing.GetEngine().GetLogger()->LogException(LOGSOURCE, exception);
 				pTask->Cancel();  // tell task it failed
 			}
 			
 			// send the finished task back
-			if( pParallelProcessing.GetOutputDebugMessages() ){
-				const decString debugName( pTask->GetDebugName() );
-				const decString debugDetails( pTask->GetDebugDetails() );
-				pParallelProcessing.GetEngine().GetLogger()->LogInfoFormat( LOGSOURCE,
+			if(pParallelProcessing.GetOutputDebugMessages()){
+				const decString debugName(pTask->GetDebugName());
+				const decString debugDetails(pTask->GetDebugDetails());
+				pParallelProcessing.GetEngine().GetLogger()->LogInfoFormat(LOGSOURCE,
 					"Thread %i: Finished Task [%s] %s.", pNumber,
-					debugName.GetString(), debugDetails.GetString() );
+					debugName.GetString(), debugDetails.GetString());
 			}
 			
 			{
 			deParallelTask *task;
 			{
-			const deMutexGuard lock( pMutexTask );
+			const deMutexGuard lock(pMutexTask);
 			task = pTask;
 			pTask = nullptr;
 			}
-			pParallelProcessing.AddFinishedTask( task );
+			pParallelProcessing.AddFinishedTask(task);
 			}
 			
 		// otherwise go to sleep until new tasks become available
 		}else{
 			{
-			const deMutexGuard lock( pMutexWaiting );
+			const deMutexGuard lock(pMutexWaiting);
 			pWaiting = true;
-			if( pExitThread ){
+			if(pExitThread){
 				break;
 			}
 			}
@@ -166,9 +166,9 @@ void deParallelThread::Run(){
 			pParallelProcessing.WaitOnNewTasksSemaphore();
 			
 			{
-			const deMutexGuard lock( pMutexWaiting );
+			const deMutexGuard lock(pMutexWaiting);
 			pWaiting = false;
-			if( pExitThread ){
+			if(pExitThread){
 				break;
 			}
 			}

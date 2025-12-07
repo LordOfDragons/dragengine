@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUTextureAdd( seSkin *skin, seTexture *texture );
+	seUTextureAdd(seSkin *skin, seTexture *texture);
 	
 protected:
 	/** \brief Clean up undo. */

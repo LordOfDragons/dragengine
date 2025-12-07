@@ -59,96 +59,96 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( seSkin *skin );
+	virtual void StateChanged(seSkin *skin);
 	
 	/** Undo changed. */
-	virtual void UndoChanged( seSkin *skin );
+	virtual void UndoChanged(seSkin *skin);
 	
 	/** Skin parameters changed. */
-	virtual void SkinChanged( seSkin *skin );
+	virtual void SkinChanged(seSkin *skin);
 	
 	/** The sky changed. */
-	virtual void SkyChanged( seSkin *skin );
+	virtual void SkyChanged(seSkin *skin);
 	
 	/** The environment object changed. */
-	virtual void EnvObjectChanged( seSkin *skin );
+	virtual void EnvObjectChanged(seSkin *skin);
 	
 	/** The view changed. */
-	virtual void ViewChanged( seSkin *skin );
+	virtual void ViewChanged(seSkin *skin);
 	
 	/** The camera changed. */
-	virtual void CameraChanged( seSkin *skin );
+	virtual void CameraChanged(seSkin *skin);
 	
 	
 	
 	/** Mapped have been added or removed. */
-	virtual void MappedStructureChanged( seSkin *skin );
+	virtual void MappedStructureChanged(seSkin *skin);
 	
 	/** Mapped changed. */
-	virtual void MappedChanged( seSkin *skin, seMapped *mapped );
+	virtual void MappedChanged(seSkin *skin, seMapped *mapped);
 	
 	/** Mapped name changed. */
-	virtual void MappedNameChanged( seSkin *skin, seMapped *mapped );
+	virtual void MappedNameChanged(seSkin *skin, seMapped *mapped);
 	
 	/** Active mapped changed. */
-	virtual void ActiveMappedChanged( seSkin *skin );
+	virtual void ActiveMappedChanged(seSkin *skin);
 	
 	
 	
 	/** Textures have been added or removed. */
-	virtual void TextureStructureChanged( seSkin *skin );
+	virtual void TextureStructureChanged(seSkin *skin);
 	
 	/** Texture changed. */
-	virtual void TextureChanged( seSkin *skin, seTexture *texture );
+	virtual void TextureChanged(seSkin *skin, seTexture *texture);
 	
 	/** Texture name changed. */
-	virtual void TextureNameChanged( seSkin *skin, seTexture *texture );
+	virtual void TextureNameChanged(seSkin *skin, seTexture *texture);
 	
 	/** Active texture changed. */
-	virtual void ActiveTextureChanged( seSkin *skin );
+	virtual void ActiveTextureChanged(seSkin *skin);
 	
 	
 	
 	/** Properties have been added or removed. */
-	virtual void PropertyStructureChanged ( seSkin *skin, seTexture *texture );
+	virtual void PropertyStructureChanged (seSkin *skin, seTexture *texture);
 	
 	/** Property changed. */
-	virtual void PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	/** Active property changed. */
-	virtual void ActivePropertyChanged( seSkin *skin, seTexture *texture );
+	virtual void ActivePropertyChanged(seSkin *skin, seTexture *texture);
 	
 	/** Property node structre changed. */
-	virtual void PropertyNodeStructureChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyNodeStructureChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	/** Property node changed. */
-	virtual void PropertyNodeChanged( seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node );
+	virtual void PropertyNodeChanged(seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node);
 	
 	/** Active property node changed. */
-	virtual void PropertyActiveNodeChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyActiveNodeChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	/** Property selected nodes changed. */
-	virtual void PropertyNodeSelectionChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyNodeSelectionChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	/** Active property node group changed. */
-	virtual void PropertyActiveNodeGroupChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyActiveNodeGroupChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	/** Active property node layer changed. */
-	virtual void PropertyActiveNodeLayerChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyActiveNodeLayerChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	
 	
 	/** Dynamic skin renderables have been added or removed. */
-	virtual void DynamicSkinRenderableStructureChanged ( seSkin *skin );
+	virtual void DynamicSkinRenderableStructureChanged (seSkin *skin);
 	
 	/** Dynamic skin renderable changed. */
-	virtual void DynamicSkinRenderableChanged( seSkin *skin, seDynamicSkinRenderable *renderable );
+	virtual void DynamicSkinRenderableChanged(seSkin *skin, seDynamicSkinRenderable *renderable);
 	
 	/** Dynamic skin renderable name changed. */
-	virtual void DynamicSkinRenderableNameChanged( seSkin *skin, seDynamicSkinRenderable *renderable );
+	virtual void DynamicSkinRenderableNameChanged(seSkin *skin, seDynamicSkinRenderable *renderable);
 	
 	/** Active dynamic skin renderable changed. */
-	virtual void DynamicSkinActiveRenderableChanged( seSkin *skin );
+	virtual void DynamicSkinActiveRenderableChanged(seSkin *skin);
 	/*@}*/
 };
 

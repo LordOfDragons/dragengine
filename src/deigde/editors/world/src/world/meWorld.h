@@ -223,7 +223,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new world object linked to the given engine. */
-	meWorld( meWindowMain &windowMain, igdeEnvironment *environment );
+	meWorld(meWindowMain &windowMain, igdeEnvironment *environment);
 	
 protected:
 	/** Cleans up the world object. */
@@ -277,7 +277,7 @@ public:
 	inline const decUniqueID &GetNextObjectID() const { return pNextObjectID; }
 	
 	/** Set next object ID. */
-	void SetNextObjectID( const decUniqueID &id );
+	void SetNextObjectID(const decUniqueID &id);
 	
 	/** Next object ID and increment. */
 	decUniqueID NextObjectID();
@@ -296,11 +296,11 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** Tests for collisions of a box. */
-	void CollisionTestBox( const decDVector &position, const decQuaternion &orientation, const decVector &halfExtends,
-		deBaseScriptingCollider *listener, const decCollisionFilter &filter );
+	void CollisionTestBox(const decDVector &position, const decQuaternion &orientation, const decVector &halfExtends,
+		deBaseScriptingCollider *listener, const decCollisionFilter &filter);
 	
-	void CollisionTestBox( const decDVector &position, const decVector &minExtend, const decVector &maxExtend,
-		const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCollisionFilter &filter );
+	void CollisionTestBox(const decDVector &position, const decVector &minExtend, const decVector &maxExtend,
+		const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCollisionFilter &filter);
 	/*@}*/
 	
 	/** \name Editing */
@@ -308,7 +308,7 @@ public:
 	/** Determines if a world dependency has changed. */
 	inline bool GetDepChanged() const{ return pDepChanged; }
 	/** Sets if a world dependency has changed. */
-	void SetDepChanged( bool changed );
+	void SetDepChanged(bool changed);
 	
 	/** World changed or world dependency changed. */
 	inline bool GetAnyChanged() const{ return GetChanged() || pDepChanged; }
@@ -319,7 +319,7 @@ public:
 	void CheckDepChanged();
 	
 	/** Forces an update of the vegetation. */
-	void ForceUpdateVegetation( bool fullUpdate );
+	void ForceUpdateVegetation(bool fullUpdate);
 	/** Clears vegetation. */
 	void ClearVegetation();
 	
@@ -351,10 +351,10 @@ public:
 	inline const meObjectList &GetObjects() const{ return pObjects; }
 	
 	/** Add object. */
-	void AddObject( meObject *object );
+	void AddObject(meObject *object);
 	
 	/** Remove object. */
-	void RemoveObject( meObject *object );
+	void RemoveObject(meObject *object);
 	
 	/** Remove all objects. */
 	void RemoveAllObjects();
@@ -363,10 +363,10 @@ public:
 	void ReassignObjectIDs();
 	
 	/** Object by ID or \em NULL if absent. */
-	meObject *GetObjectWithID( const decUniqueID &id ) const;
+	meObject *GetObjectWithID(const decUniqueID &id) const;
 	
 	/** Object by ID in hex format or \em NULL if absent. */
-	meObject *GetObjectWithID( const char *hexID ) const;
+	meObject *GetObjectWithID(const char *hexID) const;
 	/*@}*/
 	
 	
@@ -377,10 +377,10 @@ public:
 	inline const meDecalList &GetDecals() const{ return pDecals; }
 	
 	/** Add decal. */
-	void AddDecal( meDecal *decal );
+	void AddDecal(meDecal *decal);
 	
 	/** Remove decal. */
-	void RemoveDecal( meDecal *decal );
+	void RemoveDecal(meDecal *decal);
 	
 	/** Remove all decals. */
 	void RemoveAllDecals();
@@ -394,10 +394,10 @@ public:
 	inline const meNavigationSpaceList &GetNavSpaces() const{ return pNavSpaces; }
 	
 	/** Add navigation space. */
-	void AddNavSpace( meNavigationSpace *navspace );
+	void AddNavSpace(meNavigationSpace *navspace);
 	
 	/** Remove navigation space. */
-	void RemoveNavSpace( meNavigationSpace *navspace );
+	void RemoveNavSpace(meNavigationSpace *navspace);
 	
 	/** Remove all navigation spaces. */
 	void RemoveAllNavSpaces();
@@ -412,18 +412,18 @@ public:
 	inline const decDVector &GetSize() const{ return pSize; }
 	
 	/** Set size of world in meters. */
-	void SetSize( const decDVector &size );
+	void SetSize(const decDVector &size);
 	
 	/** World gravity. */
 	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/** Set world gravity. */
-	void SetGravity( const decVector &gravity );
+	void SetGravity(const decVector &gravity);
 	
 	/** Determines if the world is rendered in full bright mode. */
 	inline bool GetFullBright() const{ return pFullBright; }
 	/** Sets if the world is rendered in full bright mode. */
-	void SetFullBright( bool fullBright );
+	void SetFullBright(bool fullBright);
 	/*@}*/
 	
 	
@@ -434,13 +434,13 @@ public:
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** Set property. */
-	void SetProperty( const char *key, const char *value );
+	void SetProperty(const char *key, const char *value);
 	
 	/** Set properties. */
-	void SetProperties( const decStringDictionary &properties );
+	void SetProperties(const decStringDictionary &properties);
 	
 	/** Remove property if present. */
-	void RemoveProperty( const char *key );
+	void RemoveProperty(const char *key);
 	
 	/** Removes all properties. */
 	void RemoveAllProperties();
@@ -449,7 +449,7 @@ public:
 	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
 	/** Set active property. */
-	void SetActiveProperty( const char *property );
+	void SetActiveProperty(const char *property);
 	/*@}*/
 	
 	
@@ -479,7 +479,7 @@ public:
 	/** Retrieves the active camera. */
 	inline meCamera *GetActiveCamera() const{ return pActiveCamera; }
 	/** Sets the active camera. */
-	void SetActiveCamera( meCamera *camera );
+	void SetActiveCamera(meCamera *camera);
 	/*@}*/
 	
 	/** \name Sensors */
@@ -497,7 +497,7 @@ public:
 	/** Retrieves the last path used for loading/saving navigation test files. */
 	inline const decString &GetPathNavTest() const{ return pPathNavTest; }
 	/** Sets the last path used for loading/saving navigation test files. */
-	void SetPathNavTest( const char *path );
+	void SetPathNavTest(const char *path);
 	
 	/** Music testing. */
 	inline meMusic &GetMusic() const{ return pMusic; }
@@ -506,7 +506,7 @@ public:
 	/** Activate microphone. */
 	void ActivateMicrophone();
 	
-	void UpdateDEWorld( float elapsed );
+	void UpdateDEWorld(float elapsed);
 	
 	/** Game definition. */
 	void GameDefChanged();
@@ -516,15 +516,15 @@ public:
 	/** Retrieves the number of notifiers. */
 	inline int GetNotifierCount() const{ return pNotifierCount; }
 	/** Retrieves the notifier at the given index. */
-	meWorldNotifier *GetNotifierAt( int index ) const;
+	meWorldNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier( meWorldNotifier *notifier ) const;
+	int IndexOfNotifier(meWorldNotifier *notifier) const;
 	/** Determines if the notifier exists. */
-	bool HasNotifier( meWorldNotifier *notifier ) const;
+	bool HasNotifier(meWorldNotifier *notifier) const;
 	/** Adds a new notifier. */
-	void AddNotifier( meWorldNotifier *notifier );
+	void AddNotifier(meWorldNotifier *notifier);
 	/** Removes the given notifier. */
-	void RemoveNotifier( meWorldNotifier *notifier );
+	void RemoveNotifier(meWorldNotifier *notifier);
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	
@@ -579,19 +579,19 @@ public:
 	/** Notifies all that a height terrain sector state ( changed, saved, filename ) changed. */
 	void NotifyHTStateChanged();
 	/** Notifies all that a height terrain sector changed. */
-	void NotifyHTSChanged( meHeightTerrainSector *sector );
+	void NotifyHTSChanged(meHeightTerrainSector *sector);
 	/** Notifies all that a height terrain sector height changed. */
-	void NotifyHTSHeightChanged( meHeightTerrainSector *sector );
+	void NotifyHTSHeightChanged(meHeightTerrainSector *sector);
 	/** Notifies all that a height terrain sector visibility changed. */
-	void NotifyHTSVisibilityChanged( meHeightTerrainSector *sector );
+	void NotifyHTSVisibilityChanged(meHeightTerrainSector *sector);
 	/** Notifies all that a height terrain sector texture count changed. */
-	void NotifyHTSTextureCountChanged( meHeightTerrainSector *sector );
+	void NotifyHTSTextureCountChanged(meHeightTerrainSector *sector);
 	/** Notifies all that a height terrain sector active texture changed. */
-	void NotifyHTSActiveTextureChanged( meHeightTerrainSector *sector );
+	void NotifyHTSActiveTextureChanged(meHeightTerrainSector *sector);
 	/** Notifies all that a height terrain sector texture changed. */
-	void NotifyHTSTextureChanged( meHeightTerrainSector *sector, meHeightTerrainTexture *texture );
+	void NotifyHTSTextureChanged(meHeightTerrainSector *sector, meHeightTerrainTexture *texture);
 	/** Notifies all that a height terrain sector texture mask changed. */
-	void NotifyHTSTextureMaskChanged( meHeightTerrainSector *sector, meHeightTerrainTexture *texture );
+	void NotifyHTSTextureMaskChanged(meHeightTerrainSector *sector, meHeightTerrainTexture *texture);
 	
 	/** Notify listener height terrain navigation space count changed. */
 	void NotifyHTNavSpaceCountChanged();
@@ -600,72 +600,72 @@ public:
 	void NotifyHTActiveNavSpaceChanged();
 	
 	/** Notify listeners height terrain navigation space changed. */
-	void NotifyHTNavSpaceChanged( meHeightTerrainNavSpace *navspace );
+	void NotifyHTNavSpaceChanged(meHeightTerrainNavSpace *navspace);
 	
 	/** Height terrain navigation space type count changed. */
-	void NotifyHTNavSpaceTypeCountChanged( meHeightTerrainNavSpace *navspace );
+	void NotifyHTNavSpaceTypeCountChanged(meHeightTerrainNavSpace *navspace);
 	
 	/** Height terrain navigation space active type changed. */
-	void NotifyHTNavSpaceActiveTypeChanged( meHeightTerrainNavSpace *navspace );
+	void NotifyHTNavSpaceActiveTypeChanged(meHeightTerrainNavSpace *navspace);
 	
 	/** Notify listeners height terrain navigation space type changed. */
-	void NotifyHTNavSpaceTypeChanged( meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type );
+	void NotifyHTNavSpaceTypeChanged(meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type);
 	
 	/** Notify listeners height terrain navigation space faces changed. */
-	void NotifyHTNavSpaceFacesChanged( meHeightTerrainNavSpace *navspace );
+	void NotifyHTNavSpaceFacesChanged(meHeightTerrainNavSpace *navspace);
 	
 	/** Height terrain selected navigation space points changed. */
 	void NotifyHTNavSpaceSelectedPointsChanged();
 	
 	/** Notifies all that a height terrain sector prop field count changed. */
-	void NotifyHTSPropFieldCountChanged( meHeightTerrainSector *sector );
+	void NotifyHTSPropFieldCountChanged(meHeightTerrainSector *sector);
 	/** Notifies all that a height terrain sector active prop field changed. */
-	void NotifyHTSActivePropFieldChanged( meHeightTerrainSector *sector );
+	void NotifyHTSActivePropFieldChanged(meHeightTerrainSector *sector);
 	/** Notifies all that a height terrain sector prop field changed. */
-	void NotifyHTSPropFieldChanged( meHeightTerrainSector *sector, meHeightTerrainPropField *propField );
+	void NotifyHTSPropFieldChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField);
 	/** Notifies all that a height terrain sector prop field mask changed. */
-	void NotifyHTSPropFieldMaskChanged( meHeightTerrainSector *sector, meHeightTerrainPropField *propField );
+	void NotifyHTSPropFieldMaskChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField);
 	
 	/** Notifies all that a height terrain sector prop field type count changed. */
-	void NotifyHTSPFTypeCountChanged( meHeightTerrainSector *sector, meHeightTerrainPropField *propField );
+	void NotifyHTSPFTypeCountChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField);
 	/** Notifies all that a height terrain sector prop field type changed. */
-	void NotifyHTSPFTypeChanged( meHeightTerrainSector *sector, meHeightTerrainPropField *propField, meHeightTerrainPFType *type );
+	void NotifyHTSPFTypeChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField, meHeightTerrainPFType *type);
 	
 	/** Notifies all that a height terrain sector vegetation layer count changed. */
 	void NotifyHTVLayerCountChanged();
 	/** Notifies all that a height terrain sector active vegetation layer changed. */
 	void NotifyHTActiveVLayerChanged();
 	/** Notifies all that a height terrain sector vegetation layer changed. */
-	void NotifyHTVLayerChanged( meHTVegetationLayer *vlayer );
+	void NotifyHTVLayerChanged(meHTVegetationLayer *vlayer);
 	/** Notifies all that a height terrain sector vegetation layer variation count changed. */
-	void NotifyHTVLVariationCountChanged( meHTVegetationLayer *vlayer );
+	void NotifyHTVLVariationCountChanged(meHTVegetationLayer *vlayer);
 	/** Notifies all that a height terrain sector active vegetation layer variation changed. */
-	void NotifyHTVLActiveVariationChanged( meHTVegetationLayer *vlayer );
+	void NotifyHTVLActiveVariationChanged(meHTVegetationLayer *vlayer);
 	/** Notifies all that a height terrain sector vegetation layer variation changed. */
-	void NotifyHTVLVariationChanged( meHTVegetationLayer *vlayer, meHTVVariation *variation );
+	void NotifyHTVLVariationChanged(meHTVegetationLayer *vlayer, meHTVVariation *variation);
 	/** Notifies all that a height terrain sector vegetation layer rule count changed. */
-	void NotifyHTVLRuleCountChanged( meHTVegetationLayer *vlayer );
+	void NotifyHTVLRuleCountChanged(meHTVegetationLayer *vlayer);
 	/** Notifies all that a height terrain sector active vegetation layer rule changed. */
-	void NotifyHTVLActiveRuleChanged( meHTVegetationLayer *vlayer );
+	void NotifyHTVLActiveRuleChanged(meHTVegetationLayer *vlayer);
 	/** Notifies all that a height terrain sector vegetation layer rule changed. */
-	void NotifyHTVLRuleChanged( meHTVegetationLayer *vlayer, meHTVRule *rule );
+	void NotifyHTVLRuleChanged(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	/** Notifies all that a height terrain sector vegetation layer rule moved. */
-	void NotifyHTVLRuleMoved( meHTVegetationLayer *vlayer, meHTVRule *rule );
+	void NotifyHTVLRuleMoved(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	/** Notifies all that a height terrain sector vegetation layer link count changed. */
-	void NotifyHTVLLinkCountChanged( meHTVegetationLayer *vlayer );
+	void NotifyHTVLLinkCountChanged(meHTVegetationLayer *vlayer);
 	
 	/** Notifies all that the object selection changed. */
 	void NotifyObjectSelectionChanged();
 	/** Notifies all that an object has changed. */
-	void NotifyObjectChanged( meObject *object );
+	void NotifyObjectChanged(meObject *object);
 	/** Notifies all that an object changed class. */
-	void NotifyObjectClassChanged( meObject *object );
+	void NotifyObjectClassChanged(meObject *object);
 	/** Notifies all that an object changed geometry. */
-	void NotifyObjectGeometryChanged( meObject *object );
+	void NotifyObjectGeometryChanged(meObject *object);
 	/** Notifies all that an object changed properties. */
-	void NotifyObjectPropertiesChanged( meObject *object );
+	void NotifyObjectPropertiesChanged(meObject *object);
 	/** Notifies all that a object active property changed. */
-	void NotifyObjectActivePropertyChanged( meObject *object );
+	void NotifyObjectActivePropertyChanged(meObject *object);
 	
 	/** Notify all object attach behaviors changed. */
 	void NotifyObjectAttachBehaviorsChanged(meObject *object);
@@ -674,19 +674,19 @@ public:
 	void NotifyObjectActiveAttachBehaviorChanged(meObject *object);
 	
 	/** Notifies all that an object has been added. */
-	void NotifyObjectAdded( meObject *object );
+	void NotifyObjectAdded(meObject *object);
 	/** Notifies all that an object has been removed. */
-	void NotifyObjectRemoved( meObject *object );
+	void NotifyObjectRemoved(meObject *object);
 	/** Notifies all that a object texture count changed. */
-	void NotifyObjectTextureCountChanged( meObject *object );
+	void NotifyObjectTextureCountChanged(meObject *object);
 	/** Notifies all that a object active texture changed. */
-	void NotifyObjectActiveTextureChanged( meObject *object );
+	void NotifyObjectActiveTextureChanged(meObject *object);
 	/** Notifies all that a object texture changed. */
-	void NotifyObjectTextureChanged( meObject *object, meObjectTexture *texture );
+	void NotifyObjectTextureChanged(meObject *object, meObjectTexture *texture);
 	/** Notifies all that an object texture changed properties. */
-	void NotifyObjectTexturePropertiesChanged( meObject *object, meObjectTexture *texture );
+	void NotifyObjectTexturePropertiesChanged(meObject *object, meObjectTexture *texture);
 	/** Notifies all that an object texture active property changed. */
-	void NotifyObjectTextureActivePropertyChanged( meObject *object, meObjectTexture *texture );
+	void NotifyObjectTextureActivePropertyChanged(meObject *object, meObjectTexture *texture);
 	
 	/** Notifies all that the object shape list changed. */
 	void NotifyObjectShapeListChanged();
@@ -698,42 +698,42 @@ public:
 	/** Notifies all that the decal count changed. */
 	void NotifyDecalCountChanged();
 	/** Notifies all that an decal has changed. */
-	void NotifyDecalChanged( meDecal *decal );
+	void NotifyDecalChanged(meDecal *decal);
 	/** Notifies all that a decal geometry changed. */
-	void NotifyDecalGeometryChanged( meDecal *decal );
+	void NotifyDecalGeometryChanged(meDecal *decal);
 	/** Notifies all that an decal changed properties. */
-	void NotifyDecalPropertiesChanged( meDecal *decal );
+	void NotifyDecalPropertiesChanged(meDecal *decal);
 	/** Notifies all that a decal active property changed. */
-	void NotifyDecalActivePropertyChanged( meDecal *decal );
+	void NotifyDecalActivePropertyChanged(meDecal *decal);
 	
 	/** Notifies all that the navigation space selection changed. */
 	void NotifyNavSpaceSelectionChanged();
 	/** Notifies all that the navigation space count changed. */
 	void NotifyNavSpaceCountChanged();
 	/** Notifies all that an navigation space has changed. */
-	void NotifyNavSpaceChanged( meNavigationSpace *navspace );
+	void NotifyNavSpaceChanged(meNavigationSpace *navspace);
 	/** Notifies all that a navigation space geometry changed. */
-	void NotifyNavSpaceGeometryChanged( meNavigationSpace *navspace );
+	void NotifyNavSpaceGeometryChanged(meNavigationSpace *navspace);
 	/** Notifies all that a navigation space used cost types changed. */
-	void NotifyNavSpaceUsedCostTypesChanged( meNavigationSpace *navspace );
+	void NotifyNavSpaceUsedCostTypesChanged(meNavigationSpace *navspace);
 	
 	/** Notifies all that the prop field selection changed. */
 	void NotifyPFSelectionChanged();
 	/** Notifies all that the prop field count changed. */
 	void NotifyPFCountChanged();
 	/** Notifies all that a prop field changed. */
-	void NotifyPFChanged( mePropField *field );
+	void NotifyPFChanged(mePropField *field);
 	/** Notifies all that a prop field type count changed. */
-	void NotifyPFTypeCountChanged( mePropField *field );
+	void NotifyPFTypeCountChanged(mePropField *field);
 	/** Notifies all that a prop field active type changed. */
-	void NotifyPFActiveTypeChanged( mePropField *field );
+	void NotifyPFActiveTypeChanged(mePropField *field);
 	/** Notifies all that a prop field type changed. */
-	void NotifyPFTypeChanged( mePropField *field, mePropFieldType *type );
+	void NotifyPFTypeChanged(mePropField *field, mePropFieldType *type);
 	
 	/** Notifies all that the active camera changed. */
 	void NotifyActiveCameraChanged();
 	/** Notifies all that the camera parameters changed. */
-	void NotifyCameraChanged( meCamera *camera );
+	void NotifyCameraChanged(meCamera *camera);
 	/*@}*/
 	
 private:

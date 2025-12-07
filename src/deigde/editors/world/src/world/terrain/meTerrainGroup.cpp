@@ -38,13 +38,13 @@
 // constructor, destructor
 ////////////////////////////
 
-meTerrainGroup::meTerrainGroup( const char *name ){
+meTerrainGroup::meTerrainGroup(const char *name){
 	pObjects = NULL;
 	pObjectCount = 0;
 	pObjectSize = 0;
 	try{
-		SetName( name );
-	}catch( const deException & ){
+		SetName(name);
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -59,9 +59,9 @@ meTerrainGroup::~meTerrainGroup(){
 // management
 ///////////////
 
-void meTerrainGroup::SetName( const char *name ){
-	DEASSERT_NOTNULL( name )
-	DEASSERT_NOTNULL( name[ 0 ] )
+void meTerrainGroup::SetName(const char *name){
+	DEASSERT_NOTNULL(name)
+	DEASSERT_NOTNULL(name[0])
 	pName = name;
 }
 
@@ -70,46 +70,46 @@ void meTerrainGroup::SetName( const char *name ){
 // onj management
 ///////////////////////
 
-meObject *meTerrainGroup::GetObject( int index ) const{
-	if( index < 0 || index >= pObjectCount ) DETHROW( deeOutOfBoundary );
-	return pObjects[ index ];
+meObject *meTerrainGroup::GetObject(int index) const{
+	if(index < 0 || index >= pObjectCount) DETHROW(deeOutOfBoundary);
+	return pObjects[index];
 }
 
-int meTerrainGroup::FindObject( meObject *onj ) const{
-	if( ! onj ) return -1;
+int meTerrainGroup::FindObject(meObject *onj) const{
+	if(!onj) return -1;
 	int i;
-	for( i=0; i<pObjectCount; i++ ){
-		if( pObjects[ i ] == onj ) return i;
+	for(i=0; i<pObjectCount; i++){
+		if(pObjects[i] == onj) return i;
 	}
 	return -1;
 }
 
-bool meTerrainGroup::HasObject( meObject *onj ) const{
-	return FindObject( onj ) != -1;
+bool meTerrainGroup::HasObject(meObject *onj) const{
+	return FindObject(onj) != -1;
 }
 
-void meTerrainGroup::AddObject( meObject *onj ){
-	if( ! onj ) DETHROW( deeInvalidParam );
-	if( HasObject( onj ) ) return;
-	if( pObjectCount == pObjectSize ){
+void meTerrainGroup::AddObject(meObject *onj){
+	if(!onj) DETHROW(deeInvalidParam);
+	if(HasObject(onj)) return;
+	if(pObjectCount == pObjectSize){
 		int i, newSize = pObjectCount * 3 / 2 + 1;
-		meObject **newArray = new meObject*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pObjects ){
-			for( i=0; i<pObjectCount; i++ ) newArray[ i ] = pObjects[ i ];
+		meObject **newArray = new meObject*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pObjects){
+			for(i=0; i<pObjectCount; i++) newArray[i] = pObjects[i];
 			delete [] pObjects;
 		}
 		pObjects = newArray;
 		pObjectSize = newSize;
 	}
-	pObjects[ pObjectCount ] = onj;
+	pObjects[pObjectCount] = onj;
 	pObjectCount++;
 }
 
-void meTerrainGroup::RemoveObject( meObject *onj ){
-	int i, index = FindObject( onj );
-	if( index == -1 ) return;
-	for( i=index+1; i<pObjectCount; i++ ) pObjects[ i - 1 ] = pObjects[ i ];
+void meTerrainGroup::RemoveObject(meObject *onj){
+	int i, index = FindObject(onj);
+	if(index == -1) return;
+	for(i=index+1; i<pObjectCount; i++) pObjects[i - 1] = pObjects[i];
 	pObjectCount--;
 }
 
@@ -124,5 +124,5 @@ void meTerrainGroup::RemoveAllObjects(){
 
 void meTerrainGroup::pCleanUp(){
 	RemoveAllObjects();
-	if( pObjects ) delete [] pObjects;
+	if(pObjects) delete [] pObjects;
 }

@@ -46,12 +46,12 @@
 /////////////////////////////////
 
 decConvexFace::decConvexFace() :
-pVertices( NULL ),
-pVertexCount( 0 ),
-pMarker( 0 ){
+pVertices(NULL),
+pVertexCount(0),
+pMarker(0){
 }
 
-decConvexFace::decConvexFace( const decConvexFace &face ){
+decConvexFace::decConvexFace(const decConvexFace &face){
 	const int vertexCount = face.pVertexCount;
 	
 	pVertices = NULL;
@@ -59,14 +59,14 @@ decConvexFace::decConvexFace( const decConvexFace &face ){
 	pMarker = face.pMarker;
 	pNormal = face.pNormal;
 	
-	if( vertexCount > 0 ){
-		pVertices = new int[ vertexCount ];
-		memcpy( pVertices, face.pVertices, sizeof( int ) * vertexCount );
+	if(vertexCount > 0){
+		pVertices = new int[vertexCount];
+		memcpy(pVertices, face.pVertices, sizeof(int) * vertexCount);
 	}
 }
 
 decConvexFace::~decConvexFace(){
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
 }
@@ -76,33 +76,33 @@ decConvexFace::~decConvexFace(){
 // Management
 ///////////////
 
-void decConvexFace::SetNormal( const decVector &normal ){
+void decConvexFace::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
-void decConvexFace::SetMarker( int marker ){
+void decConvexFace::SetMarker(int marker){
 	pMarker = marker;
 }
 
-int decConvexFace::GetVertexAt( int index ) const{
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+int decConvexFace::GetVertexAt(int index) const{
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pVertices[ index ];
+	return pVertices[index];
 }
 
-void decConvexFace::SetVertexAt( int index, int vertex ){
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+void decConvexFace::SetVertexAt(int index, int vertex){
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
-	pVertices[ index ] = vertex;
+	pVertices[index] = vertex;
 }
 
-bool decConvexFace::HasVertex( int vertex ) const{
+bool decConvexFace::HasVertex(int vertex) const{
 	int i;
 	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex == pVertices[ i ] ){
+	for(i=0; i<pVertexCount; i++){
+		if(vertex == pVertices[i]){
 			return true;
 		}
 	}
@@ -110,11 +110,11 @@ bool decConvexFace::HasVertex( int vertex ) const{
 	return false;
 }
 
-int decConvexFace::IndexOfVertex( int vertex ) const{
+int decConvexFace::IndexOfVertex(int vertex) const{
 	int i;
 	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex == pVertices[ i ] ){
+	for(i=0; i<pVertexCount; i++){
+		if(vertex == pVertices[i]){
 			return i;
 		}
 	}
@@ -122,53 +122,53 @@ int decConvexFace::IndexOfVertex( int vertex ) const{
 	return -1;
 }
 
-void decConvexFace::AddVertex( int vertex ){
-	int * const newArray = new int[ pVertexCount + 1 ];
-	if( pVertices ){
-		memcpy( newArray, pVertices, sizeof( int ) * pVertexCount );
+void decConvexFace::AddVertex(int vertex){
+	int * const newArray = new int[pVertexCount + 1];
+	if(pVertices){
+		memcpy(newArray, pVertices, sizeof(int) * pVertexCount);
 		delete [] pVertices;
 	}
 	pVertices = newArray;
-	pVertices[ pVertexCount ] = vertex;
+	pVertices[pVertexCount] = vertex;
 	pVertexCount++;
 }
 
-void decConvexFace::InsertVertex( int index, int vertex ){
-	if( index < 0 || index > pVertexCount ){
-		DETHROW( deeInvalidParam );
+void decConvexFace::InsertVertex(int index, int vertex){
+	if(index < 0 || index > pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int * const newArray = new int[ pVertexCount + 1 ];
-	if( pVertices ){
-		if( index > 0 ){
-			memcpy( newArray, pVertices, sizeof( int ) * index );
+	int * const newArray = new int[pVertexCount + 1];
+	if(pVertices){
+		if(index > 0){
+			memcpy(newArray, pVertices, sizeof(int) * index);
 		}
-		if( index < pVertexCount ){
-			memcpy( newArray + index + 1, pVertices + index,
-				sizeof( int ) * ( pVertexCount - index ) );
+		if(index < pVertexCount){
+			memcpy(newArray + index + 1, pVertices + index,
+				sizeof(int) * (pVertexCount - index));
 		}
 		delete [] pVertices;
 	}
 	pVertices = newArray;
-	pVertices[ index ] = vertex;
+	pVertices[index] = vertex;
 	pVertexCount++;
 }
 
-void decConvexFace::RemoveVertexFrom( int index ){
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+void decConvexFace::RemoveVertexFrom(int index){
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=index+1; i<pVertexCount; i++ ){
-		pVertices[ i - 1 ] = pVertices[ i ];
+	for(i=index+1; i<pVertexCount; i++){
+		pVertices[i - 1] = pVertices[i];
 	}
 	pVertexCount--;
 }
 
 void decConvexFace::RemoveAllVertices(){
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 		pVertices = NULL;
 	}
@@ -177,23 +177,23 @@ void decConvexFace::RemoveAllVertices(){
 
 
 
-decVector decConvexFace::CalculateCenter( const decConvexFaceList &convexFaceList ) const{
+decVector decConvexFace::CalculateCenter(const decConvexFaceList &convexFaceList) const{
 	decVector center;
 	
-	if( pVertexCount > 0 ){
+	if(pVertexCount > 0){
 		int i;
 		
-		for( i=0; i<pVertexCount; i++ ){
-			center += convexFaceList.GetVertexAt( pVertices[ i ] );
+		for(i=0; i<pVertexCount; i++){
+			center += convexFaceList.GetVertexAt(pVertices[i]);
 		}
 		
-		center /= ( float )pVertexCount;
+		center /= (float)pVertexCount;
 	}
 	
 	return center;
 }
 
-void decConvexFace::SortVertices( const decConvexFaceList &convexFaceList ){
+void decConvexFace::SortVertices(const decConvexFaceList &convexFaceList){
 	// sort vertices clockwise around the face normal. for this the dot product of all vertices is
 	// calculated with the direction from the center to the first vertex. the vertex with the
 	// largest dot product wins. this is the vertex with the smallest angle relative to the vector
@@ -205,54 +205,54 @@ void decConvexFace::SortVertices( const decConvexFaceList &convexFaceList ){
 	// it is important to normalize the vectors. this is unfortunately required since otherwise
 	// the result can be falsified by vertices located nearly at the same location in space
 	// causing an additional loop around the face resulting in an incorrect ordering.
-	if( pVertexCount < 3 ){
+	if(pVertexCount < 3){
 		return;
 	}
 	
 	int i, j;
 	
-	const decVector center = CalculateCenter( convexFaceList );
+	const decVector center = CalculateCenter(convexFaceList);
 	
-	const decVector referenceDirection = ( convexFaceList.GetVertexAt( pVertices[ 0 ] ) - center ).Normalized();
+	const decVector referenceDirection = (convexFaceList.GetVertexAt(pVertices[0]) - center).Normalized();
 	const decVector windingDirection = pNormal % referenceDirection;
 	const float windingDot = windingDirection * center - FLOAT_SAFE_EPSILON;
 	
-	for( i=1; i<pVertexCount-1; i++ ){
+	for(i=1; i<pVertexCount-1; i++){
 		int nextVertex = -1;
 		float nextDot = 0.0f;
 		
-		for( j=i; j<pVertexCount; j++ ){
-			const decVector &testVertex = convexFaceList.GetVertexAt( pVertices[ j ] );
+		for(j=i; j<pVertexCount; j++){
+			const decVector &testVertex = convexFaceList.GetVertexAt(pVertices[j]);
 			
-			float testDot = ( testVertex - center ).Normalized() * referenceDirection;
-			if( testVertex * windingDirection < windingDot ){
+			float testDot = (testVertex - center).Normalized() * referenceDirection;
+			if(testVertex * windingDirection < windingDot){
 				testDot = -2.0f - testDot;
 			}
 			
-			if( nextVertex == -1 || testDot > nextDot ){
+			if(nextVertex == -1 || testDot > nextDot){
 				nextVertex = j;
 				nextDot = testDot;
 			}
 		}
 		
-		if( nextVertex != -1 ){
-			const int exchange = pVertices[ i ];
-			pVertices[ i ] = pVertices[ nextVertex ];
-			pVertices[ nextVertex ] = exchange;
+		if(nextVertex != -1){
+			const int exchange = pVertices[i];
+			pVertices[i] = pVertices[nextVertex];
+			pVertices[nextVertex] = exchange;
 		}
 	}
 }
 
-bool decConvexFace::IsTooSmall( const decConvexFaceList &convexFaceList ) const{
-	if( pVertexCount < 3 ){
+bool decConvexFace::IsTooSmall(const decConvexFaceList &convexFaceList) const{
+	if(pVertexCount < 3){
 		return true;
 	}
 	
-	const decVector center = CalculateCenter( convexFaceList );
+	const decVector center = CalculateCenter(convexFaceList);
 	int i;
 	
-	for( i=0; i<pVertexCount; i++ ){
-		if( ( convexFaceList.GetVertexAt( pVertices[ i ] ) - center ).Length() < FLOAT_SAFE_EPSILON ){
+	for(i=0; i<pVertexCount; i++){
+		if((convexFaceList.GetVertexAt(pVertices[i]) - center).Length() < FLOAT_SAFE_EPSILON){
 			return true;
 		}
 	}
@@ -265,22 +265,22 @@ bool decConvexFace::IsTooSmall( const decConvexFaceList &convexFaceList ) const{
 // Operators
 //////////////
 
-decConvexFace &decConvexFace::operator=( const decConvexFace &face ){
+decConvexFace &decConvexFace::operator=(const decConvexFace &face){
 	const int vertexCount = face.pVertexCount;
 	
 	pMarker = face.pMarker;
 	pNormal = face.pNormal;
 	
-	if( vertexCount != pVertexCount ){
-		if( pVertices ){
+	if(vertexCount != pVertexCount){
+		if(pVertices){
 			delete [] pVertices;
 			pVertices = NULL;
 			pVertexCount = 0;
 		}
 		
-		if( vertexCount > 0 ){
-			pVertices = new int[ vertexCount ];
-			memcpy( pVertices, face.pVertices, sizeof( int ) * vertexCount );
+		if(vertexCount > 0){
+			pVertices = new int[vertexCount];
+			memcpy(pVertices, face.pVertices, sizeof(int) * vertexCount);
 		}
 		
 		pVertexCount = vertexCount;

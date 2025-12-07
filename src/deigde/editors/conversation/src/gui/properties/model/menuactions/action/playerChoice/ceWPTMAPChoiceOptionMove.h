@@ -54,10 +54,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionMove( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionMove(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option, int index,
-		const char *text, igdeIcon *icon );
+		const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	

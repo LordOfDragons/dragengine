@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	projLauncherEngineConfig( deLogger *logger, const char *loggerSource );
+	projLauncherEngineConfig(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up loader. */
 	virtual ~projLauncherEngineConfig();
@@ -56,21 +56,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read launcher engine config. */
-	void ReadFromFile( decBaseFileReader &reader, projTestRunner &testRunner );
+	void ReadFromFile(decBaseFileReader &reader, projTestRunner &testRunner);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadConfig( const decXmlElementTag &root, projTestRunner &testRunner );
-	void pReadProfiles( const decXmlElementTag &root, projTestRunner &testRunner );
-	void pReadProfile( const decXmlElementTag &root, projTestRunner &testRunner );
-	void pReadProfileSystems( const decXmlElementTag &root, projTRProfile &profile );
-	void pReadProfileModules( const decXmlElementTag &root, projTRProfile &profile );
-	void pReadProfileModule( const decXmlElementTag &root, projTRProfile &profile );
-	void pReadProfileModuleParameters( const decXmlElementTag &root,
-		projTRProfile &profile, const char *module );
-	void pReadProfileWindow( const decXmlElementTag &root, projTRProfile &profile );
+	void pReadConfig(const decXmlElementTag &root, projTestRunner &testRunner);
+	void pReadProfiles(const decXmlElementTag &root, projTestRunner &testRunner);
+	void pReadProfile(const decXmlElementTag &root, projTestRunner &testRunner);
+	void pReadProfileSystems(const decXmlElementTag &root, projTRProfile &profile);
+	void pReadProfileModules(const decXmlElementTag &root, projTRProfile &profile);
+	void pReadProfileModule(const decXmlElementTag &root, projTRProfile &profile);
+	void pReadProfileModuleParameters(const decXmlElementTag &root,
+		projTRProfile &profile, const char *module);
+	void pReadProfileWindow(const decXmlElementTag &root, projTRProfile &profile);
 };
 
 #endif

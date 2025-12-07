@@ -64,21 +64,21 @@ protected:
 	seWPAPanelSourceSound &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPAPanelSourceSound &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPAPanelSourceSound &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
-		seSourceSound * const source = ( seSourceSound* )pPanel.GetSource();
-		if( ! source ){
+	virtual void OnTextChanged(igdeTextField *textField){
+		seSourceSound * const source = (seSourceSound*)pPanel.GetSource();
+		if(!source){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, source ) ));
-		if( undo ){
-			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, source)));
+		if(undo){
+			source->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSourceSound *source ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSourceSound *source) = 0;
 };
 
 
@@ -86,11 +86,11 @@ class cPathSound : public igdeEditPathListener{
 	seWPAPanelSourceSound &pPanel;
 	
 public:
-	cPathSound( seWPAPanelSourceSound &panel ) : pPanel( panel ){ }
+	cPathSound(seWPAPanelSourceSound &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath * editPath ){
-		seSourceSound * const source = ( seSourceSound* )pPanel.GetSource();
-		if( ! source || source->GetPathSound() == editPath->GetPath() ){
+	virtual void OnEditPathChanged(igdeEditPath * editPath){
+		seSourceSound * const source = (seSourceSound*)pPanel.GetSource();
+		if(!source || source->GetPathSound() == editPath->GetPath()){
 			return;
 		}
 		
@@ -101,23 +101,23 @@ public:
 
 class cTextMinSpeed : public cBaseTextFieldListener {
 public:
-	cTextMinSpeed( seWPAPanelSourceSound &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMinSpeed(seWPAPanelSourceSound &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSourceSound *source ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSourceSound *source){
 		const float value = textField->GetFloat();
-		return fabsf( value - source->GetMinSpeed() ) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceSoundMinSpeed( source, value ) : NULL;
+		return fabsf(value - source->GetMinSpeed()) > FLOAT_SAFE_EPSILON
+			? new seUSetSourceSoundMinSpeed(source, value) : NULL;
 	}
 };
 
 class cTextMaxSpeed : public cBaseTextFieldListener {
 public:
-	cTextMaxSpeed( seWPAPanelSourceSound &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMaxSpeed(seWPAPanelSourceSound &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged( igdeTextField *textField, seSourceSound *source ){
+	virtual igdeUndo * OnChanged(igdeTextField *textField, seSourceSound *source){
 		const float value = textField->GetFloat();
-		return fabsf( value - source->GetMaxSpeed() ) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceSoundMaxSpeed( source, value ) : NULL;
+		return fabsf(value - source->GetMaxSpeed()) > FLOAT_SAFE_EPSILON
+			? new seUSetSourceSoundMaxSpeed(source, value) : NULL;
 	}
 };
 
@@ -125,12 +125,12 @@ class cActionLooping : public igdeAction {
 	seWPAPanelSourceSound &pPanel;
 	
 public:
-	cActionLooping( seWPAPanelSourceSound &panel ) : igdeAction( "Looping",
-		NULL, "Sound is played back looping" ), pPanel( panel ){ }
+	cActionLooping(seWPAPanelSourceSound &panel) : igdeAction("Looping",
+		NULL, "Sound is played back looping"), pPanel(panel){}
 	
 	virtual void OnAction(){
-		seSourceSound * const source = ( seSourceSound* )pPanel.GetSource();
-		if( ! source ){
+		seSourceSound * const source = (seSourceSound*)pPanel.GetSource();
+		if(!source){
 			return;
 		}
 		
@@ -149,29 +149,29 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPAPanelSourceSound::seWPAPanelSourceSound( seWPSource &wpSource ) :
-seWPAPanelSource( wpSource, deSynthesizerSourceVisitorIdentify::estSound )
+seWPAPanelSourceSound::seWPAPanelSourceSound(seWPSource &wpSource) :
+seWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estSound)
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Sound:" );
-	helper.EditPath( groupBox, "Sound:", "Sound file to use", igdeEnvironment::efpltSound,
-		pEditPathSound, new cPathSound( *this ) );
+	helper.GroupBox(*this, groupBox, "Sound:");
+	helper.EditPath(groupBox, "Sound:", "Sound file to use", igdeEnvironment::efpltSound,
+		pEditPathSound, new cPathSound(*this));
 	
-	helper.EditString( groupBox, "", "", pLabSoundInfo, NULL );
-	pLabSoundInfo->SetEditable( false );
+	helper.EditString(groupBox, "", "", pLabSoundInfo, NULL);
+	pLabSoundInfo->SetEditable(false);
 	
-	helper.EditFloat( groupBox, "Minimum Speed:",
+	helper.EditFloat(groupBox, "Minimum Speed:",
 		"Minimum play speed in percentage of normal playback speed. Use negative values to play backwards.",
-		pEditMinSpeed, new cTextMinSpeed( *this ) );
-	helper.EditFloat( groupBox, "Maximum Speed:",
+		pEditMinSpeed, new cTextMinSpeed(*this));
+	helper.EditFloat(groupBox, "Maximum Speed:",
 		"Maximum play speed in percentage of normal playback speed. Use negative values to play backwards.",
-		pEditMaxSpeed, new cTextMaxSpeed( *this ) );
+		pEditMaxSpeed, new cTextMaxSpeed(*this));
 	
-	helper.CheckBox( groupBox, pChkLooping, new cActionLooping( *this ), true );
+	helper.CheckBox(groupBox, pChkLooping, new cActionLooping(*this), true);
 }
 
 seWPAPanelSourceSound::~seWPAPanelSourceSound(){
@@ -188,36 +188,36 @@ void seWPAPanelSourceSound::UpdateSynthesizer(){
 
 void seWPAPanelSourceSound::OnSynthesizerPathChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
-		pEditPathSound->SetBasePath( synthesizer->GetDirectoryPath() );
+	if(synthesizer){
+		pEditPathSound->SetBasePath(synthesizer->GetDirectoryPath());
 		
 	}else{
-		pEditPathSound->SetBasePath( "" );
+		pEditPathSound->SetBasePath("");
 	}
 }
 
 void seWPAPanelSourceSound::UpdateSource(){
 	seWPAPanelSource::UpdateSource();
 	
-	const seSourceSound * const source = ( seSourceSound* )GetSource();
-	if( source ){
-		pEditPathSound->SetPath( source->GetPathSound() );
-		pEditMinSpeed->SetFloat( source->GetMinSpeed() );
-		pEditMaxSpeed->SetFloat( source->GetMaxSpeed() );
-		pChkLooping->SetChecked( source->GetLooping() );
+	const seSourceSound * const source = (seSourceSound*)GetSource();
+	if(source){
+		pEditPathSound->SetPath(source->GetPathSound());
+		pEditMinSpeed->SetFloat(source->GetMinSpeed());
+		pEditMaxSpeed->SetFloat(source->GetMaxSpeed());
+		pChkLooping->SetChecked(source->GetLooping());
 		
 	}else{
 		pEditPathSound->ClearPath();
 		pEditMinSpeed->ClearText();
 		pEditMaxSpeed->ClearText();
-		pChkLooping->SetChecked( false );
+		pChkLooping->SetChecked(false);
 	}
 	
 	const bool enabled = source;
-	pEditPathSound->SetEnabled( enabled );
-	pEditMinSpeed->SetEnabled( enabled );
-	pEditMaxSpeed->SetEnabled( enabled );
-	pChkLooping->SetEnabled( enabled );
+	pEditPathSound->SetEnabled(enabled);
+	pEditMinSpeed->SetEnabled(enabled);
+	pEditMaxSpeed->SetEnabled(enabled);
+	pChkLooping->SetEnabled(enabled);
 	
 	UpdateSoundInfo();
 }
@@ -225,48 +225,48 @@ void seWPAPanelSourceSound::UpdateSource(){
 void seWPAPanelSourceSound::UpdateTargetList(){
 	seWPAPanelSource::UpdateTargetList();
 	
-	seSourceSound * const source = ( seSourceSound* )GetSource();
-	if( source ){
-		AddTarget( "Speed", &source->GetTargetSpeed() );
-		AddTarget( "Play", &source->GetTargetPlay() );
+	seSourceSound * const source = (seSourceSound*)GetSource();
+	if(source){
+		AddTarget("Speed", &source->GetTargetSpeed());
+		AddTarget("Play", &source->GetTargetPlay());
 	}
 }
 
 void seWPAPanelSourceSound::UpdateSoundInfo(){
-	const seSourceSound * const source = ( seSourceSound* )GetSource();
+	const seSourceSound * const source = (seSourceSound*)GetSource();
 	
-	if( source && source->GetSound() ){
+	if(source && source->GetSound()){
 		const deSound &sound = *source->GetSound();
 		decString text, description;
 		bool invalidValue = false;
 		
-		text.Format( "%d Channels, %dHz, %d-bit, %d samples (%.2fs)",
+		text.Format("%d Channels, %dHz, %d-bit, %d samples (%.2fs)",
 			sound.GetChannelCount(), sound.GetSampleRate(), sound.GetBytesPerSample() * 8,
-			sound.GetSampleCount(), ( float )sound.GetSampleCount() / ( float )sound.GetSampleRate() );
+			sound.GetSampleCount(), (float)sound.GetSampleCount() / (float)sound.GetSampleRate());
 		
-		if( GetSynthesizer()->GetChannelCount() < sound.GetChannelCount() ){
-			if( ! description.IsEmpty() ){
-				description.AppendCharacter( '\n' );
+		if(GetSynthesizer()->GetChannelCount() < sound.GetChannelCount()){
+			if(!description.IsEmpty()){
+				description.AppendCharacter('\n');
 			}
 			description += "Sound has more channels than synthesizer!";
 			invalidValue = true;
 		}
 		
-		if( GetSynthesizer()->GetSampleRate() != sound.GetSampleRate() ){
-			if( ! description.IsEmpty() ){
-				description.AppendCharacter( '\n' );
+		if(GetSynthesizer()->GetSampleRate() != sound.GetSampleRate()){
+			if(!description.IsEmpty()){
+				description.AppendCharacter('\n');
 			}
 			description += "Sound sample rate differs synthesizer!";
 			invalidValue = true;
 		}
 		
-		pLabSoundInfo->SetText( text );
-		pLabSoundInfo->SetDescription( description );
-		pLabSoundInfo->SetInvalidValue( invalidValue );
+		pLabSoundInfo->SetText(text);
+		pLabSoundInfo->SetDescription(description);
+		pLabSoundInfo->SetInvalidValue(invalidValue);
 		
 	}else{
 		pLabSoundInfo->ClearText();
-		pLabSoundInfo->SetDescription( "" );
-		pLabSoundInfo->SetInvalidValue( false );
+		pLabSoundInfo->SetDescription("");
+		pLabSoundInfo->SetInvalidValue(false);
 	}
 }

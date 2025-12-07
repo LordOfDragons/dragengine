@@ -56,104 +56,104 @@ debpShapeTransform::~debpShapeTransform(){
 // Management
 ///////////////
 
-const debpDCollisionVolume &debpShapeTransform::TransformBase( const debpShape *shape, const decDMatrix &transformation ){
-	switch( ( debpShape::eShapeTypes )shape->GetType() ){
+const debpDCollisionVolume &debpShapeTransform::TransformBase(const debpShape *shape, const decDMatrix &transformation){
+	switch((debpShape::eShapeTypes)shape->GetType()){
 	case debpShape::estSphere:
-		return TransformShapeSphere( *( ( ( debpShapeSphere* )shape )->GetShapeSphere() ), transformation );
+		return TransformShapeSphere(*(((debpShapeSphere*)shape)->GetShapeSphere()), transformation);
 		
 	case debpShape::estBox:
-		return TransformShapeBox( *( ( ( debpShapeBox* )shape )->GetShapeBox() ), transformation );
+		return TransformShapeBox(*(((debpShapeBox*)shape)->GetShapeBox()), transformation);
 		
 	case debpShape::estCylinder:
-		return TransformShapeCylinder( *( ( ( debpShapeCylinder* )shape )->GetShapeCylinder() ), transformation );
+		return TransformShapeCylinder(*(((debpShapeCylinder*)shape)->GetShapeCylinder()), transformation);
 		
 	case debpShape::estCapsule:
-		return TransformShapeCapsule( *( ( ( debpShapeCapsule* )shape )->GetShapeCapsule() ), transformation );
+		return TransformShapeCapsule(*(((debpShapeCapsule*)shape)->GetShapeCapsule()), transformation);
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-const debpDCollisionVolume& debpShapeTransform::TransformCurrent( const debpShape *shape, const decDMatrix &transformation ){
-	switch( ( debpShape::eShapeTypes )shape->GetType() ){
+const debpDCollisionVolume& debpShapeTransform::TransformCurrent(const debpShape *shape, const decDMatrix &transformation){
+	switch((debpShape::eShapeTypes)shape->GetType()){
 	case debpShape::estSphere:
-		return TransformCollisionSphere( ( ( debpShapeSphere* )shape )->GetCollisionSphere(), transformation );
+		return TransformCollisionSphere(((debpShapeSphere*)shape)->GetCollisionSphere(), transformation);
 		
 	case debpShape::estBox:
-		return TransformCollisionBox( ( ( debpShapeBox* )shape )->GetCollisionBox(), transformation );
+		return TransformCollisionBox(((debpShapeBox*)shape)->GetCollisionBox(), transformation);
 		
 	case debpShape::estCylinder:
-		return TransformCollisionCylinder( ( ( debpShapeCylinder* )shape )->GetCollisionCylinder(), transformation );
+		return TransformCollisionCylinder(((debpShapeCylinder*)shape)->GetCollisionCylinder(), transformation);
 		
 	case debpShape::estCapsule:
-		return TransformCollisionCapsule( ( ( debpShapeCapsule* )shape )->GetCollisionCapsule(), transformation );
+		return TransformCollisionCapsule(((debpShapeCapsule*)shape)->GetCollisionCapsule(), transformation);
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 
 
-const debpDCollisionSphere &debpShapeTransform::TransformShapeSphere( const decShapeSphere &sphere, const decDMatrix &transformation ){
-	pSphere.SetCenter( transformation * sphere.GetPosition() );
-	pSphere.SetRadius( sphere.GetRadius() );
+const debpDCollisionSphere &debpShapeTransform::TransformShapeSphere(const decShapeSphere &sphere, const decDMatrix &transformation){
+	pSphere.SetCenter(transformation * sphere.GetPosition());
+	pSphere.SetRadius(sphere.GetRadius());
 	return pSphere;
 }
 
-const debpDCollisionBox &debpShapeTransform::TransformShapeBox( const decShapeBox &box, const decDMatrix &transformation ){
-	pBox.SetCenter( transformation * box.GetPosition() );
-	pBox.SetOrientation( box.GetOrientation() * transformation.ToQuaternion() );
-	pBox.SetHalfSize( box.GetHalfExtends() );
+const debpDCollisionBox &debpShapeTransform::TransformShapeBox(const decShapeBox &box, const decDMatrix &transformation){
+	pBox.SetCenter(transformation * box.GetPosition());
+	pBox.SetOrientation(box.GetOrientation() * transformation.ToQuaternion());
+	pBox.SetHalfSize(box.GetHalfExtends());
 	return pBox;
 }
 
-const debpDCollisionCylinder &debpShapeTransform::TransformShapeCylinder( const decShapeCylinder &cylinder, const decDMatrix &transformation ){
-	pCylinder.SetPosition( transformation * cylinder.GetPosition() );
-	pCylinder.SetOrientation( cylinder.GetOrientation() * transformation.ToQuaternion() );
-	pCylinder.SetHalfHeight( cylinder.GetHalfHeight() );
-	pCylinder.SetTopRadius( cylinder.GetTopRadius() );
-	pCylinder.SetBottomRadius( cylinder.GetBottomRadius() );
+const debpDCollisionCylinder &debpShapeTransform::TransformShapeCylinder(const decShapeCylinder &cylinder, const decDMatrix &transformation){
+	pCylinder.SetPosition(transformation * cylinder.GetPosition());
+	pCylinder.SetOrientation(cylinder.GetOrientation() * transformation.ToQuaternion());
+	pCylinder.SetHalfHeight(cylinder.GetHalfHeight());
+	pCylinder.SetTopRadius(cylinder.GetTopRadius());
+	pCylinder.SetBottomRadius(cylinder.GetBottomRadius());
 	return pCylinder;
 }
 
-const debpDCollisionCapsule &debpShapeTransform::TransformShapeCapsule( const decShapeCapsule &capsule, const decDMatrix &transformation ){
-	pCapsule.SetPosition( transformation * capsule.GetPosition() );
-	pCapsule.SetOrientation( capsule.GetOrientation() * transformation.ToQuaternion() );
-	pCapsule.SetHalfHeight( capsule.GetHalfHeight() );
-	pCapsule.SetTopRadius( capsule.GetTopRadius() );
-	pCapsule.SetBottomRadius( capsule.GetBottomRadius() );
+const debpDCollisionCapsule &debpShapeTransform::TransformShapeCapsule(const decShapeCapsule &capsule, const decDMatrix &transformation){
+	pCapsule.SetPosition(transformation * capsule.GetPosition());
+	pCapsule.SetOrientation(capsule.GetOrientation() * transformation.ToQuaternion());
+	pCapsule.SetHalfHeight(capsule.GetHalfHeight());
+	pCapsule.SetTopRadius(capsule.GetTopRadius());
+	pCapsule.SetBottomRadius(capsule.GetBottomRadius());
 	return pCapsule;
 }
 
 
 
-const debpDCollisionSphere &debpShapeTransform::TransformCollisionSphere( const debpDCollisionSphere &sphere, const decDMatrix &transformation ){
-	pSphere.SetCenter( transformation * sphere.GetCenter() );
-	pSphere.SetRadius( sphere.GetRadius() );
+const debpDCollisionSphere &debpShapeTransform::TransformCollisionSphere(const debpDCollisionSphere &sphere, const decDMatrix &transformation){
+	pSphere.SetCenter(transformation * sphere.GetCenter());
+	pSphere.SetRadius(sphere.GetRadius());
 	return pSphere;
 }
 
-const debpDCollisionBox &debpShapeTransform::TransformCollisionBox( const debpDCollisionBox &box, const decDMatrix &transformation ){
-	pBox.SetCenter( transformation * box.GetCenter() );
-	pBox.SetOrientation( box.GetOrientation() * transformation.ToQuaternion() );
-	pBox.SetHalfSize( box.GetHalfSize() );
+const debpDCollisionBox &debpShapeTransform::TransformCollisionBox(const debpDCollisionBox &box, const decDMatrix &transformation){
+	pBox.SetCenter(transformation * box.GetCenter());
+	pBox.SetOrientation(box.GetOrientation() * transformation.ToQuaternion());
+	pBox.SetHalfSize(box.GetHalfSize());
 	return pBox;
 }
 
-const debpDCollisionCylinder &debpShapeTransform::TransformCollisionCylinder( const debpDCollisionCylinder &cylinder, const decDMatrix &transformation ){
-	pCylinder.SetPosition( transformation * cylinder.GetPosition() );
-	pCylinder.SetOrientation( cylinder.GetOrientation() * transformation.ToQuaternion() );
-	pCylinder.SetHalfHeight( cylinder.GetHalfHeight() );
-	pCylinder.SetTopRadius( cylinder.GetTopRadius() );
-	pCylinder.SetBottomRadius( cylinder.GetBottomRadius() );
+const debpDCollisionCylinder &debpShapeTransform::TransformCollisionCylinder(const debpDCollisionCylinder &cylinder, const decDMatrix &transformation){
+	pCylinder.SetPosition(transformation * cylinder.GetPosition());
+	pCylinder.SetOrientation(cylinder.GetOrientation() * transformation.ToQuaternion());
+	pCylinder.SetHalfHeight(cylinder.GetHalfHeight());
+	pCylinder.SetTopRadius(cylinder.GetTopRadius());
+	pCylinder.SetBottomRadius(cylinder.GetBottomRadius());
 	return pCylinder;
 }
 
-const debpDCollisionCapsule &debpShapeTransform::TransformCollisionCapsule( const debpDCollisionCapsule &capsule, const decDMatrix &transformation ){
-	pCapsule.SetPosition( transformation * capsule.GetPosition() );
-	pCapsule.SetOrientation( capsule.GetOrientation() * transformation.ToQuaternion() );
-	pCapsule.SetHalfHeight( capsule.GetHalfHeight() );
-	pCapsule.SetTopRadius( capsule.GetTopRadius() );
-	pCapsule.SetBottomRadius( capsule.GetBottomRadius() );
+const debpDCollisionCapsule &debpShapeTransform::TransformCollisionCapsule(const debpDCollisionCapsule &capsule, const decDMatrix &transformation){
+	pCapsule.SetPosition(transformation * capsule.GetPosition());
+	pCapsule.SetOrientation(capsule.GetOrientation() * transformation.ToQuaternion());
+	pCapsule.SetHalfHeight(capsule.GetHalfHeight());
+	pCapsule.SetTopRadius(capsule.GetTopRadius());
+	pCapsule.SetBottomRadius(capsule.GetBottomRadius());
 	return pCapsule;
 }

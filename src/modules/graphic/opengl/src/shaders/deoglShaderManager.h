@@ -106,7 +106,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
-	deoglShaderManager( deoglRenderThread &renderThread );
+	deoglShaderManager(deoglRenderThread &renderThread);
 	
 	/** Cleans up the shader manager object. */
 	~deoglShaderManager();
@@ -160,10 +160,10 @@ public:
 	int GetSourcesCount() const;
 	
 	/** Named shader sources is exists. */
-	bool HasSourcesNamed( const char *name ) const;
+	bool HasSourcesNamed(const char *name) const;
 	
 	/** Named shader sources or nullptr. */
-	const deoglShaderSources *GetSourcesNamed( const char *name );
+	const deoglShaderSources *GetSourcesNamed(const char *name);
 	
 	/** Shader sources as list for debugging. */
 	decObjectList GetSourcesAsList() const;
@@ -230,7 +230,7 @@ private:
 	
 	void pLoadUnitSourceCodesIn(const char *directory);
 	void pLoadIncludableSourcesIn(const char *directory);
-	void pLoadSourcesIn( const char *directory );
+	void pLoadSourcesIn(const char *directory);
 };
 
 #endif

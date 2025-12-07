@@ -45,7 +45,7 @@ public:
 	aeControllerList();
 	
 	/** Create copy of a controller list. */
-	aeControllerList( const aeControllerList &copy );
+	aeControllerList(const aeControllerList &copy);
 	
 	/** Clean up controller list. */
 	~aeControllerList();
@@ -60,47 +60,47 @@ public:
 	 * Controller at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	aeController *GetAt( int index ) const;
+	aeController *GetAt(int index) const;
 	
 	/** Named controller. */
-	aeController *GetNamed( const char *name ) const;
+	aeController *GetNamed(const char *name) const;
 	
 	/**
 	 * Index of controller or -1 if not present in the list.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	int IndexOf( aeController *controller ) const;
+	int IndexOf(aeController *controller) const;
 	
 	/**
 	 * Index of named controller or -1 if not present in the list.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/**
 	 * Determine if a controller is present in the list.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	bool Has( aeController *controller ) const;
+	bool Has(aeController *controller) const;
 	
 	/**
 	 * Determine if named controller is present in the list.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/**
 	 * Add controller.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	void Add( aeController *controller );
+	void Add(aeController *controller);
 	
 	/**
 	 * Insert controller.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	void Insert( aeController *controller, int index );
+	void Insert(aeController *controller, int index);
 	
 	/**
 	 * Move controller.
@@ -108,14 +108,14 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
-	void Move( aeController *controller, int index );
+	void Move(aeController *controller, int index);
 	
 	/**
 	 * Remove controller.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 * \throws deeInvalidParam \em controller is not present in the list.
 	 */
-	void Remove( aeController *controller );
+	void Remove(aeController *controller);
 	
 	/** Remove all controllers. */
 	void RemoveAll();
@@ -124,10 +124,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy controller list to this controller list. */
-	aeControllerList &operator=( const aeControllerList &list );
+	aeControllerList &operator=(const aeControllerList &list);
 	
 	/** Add controllers from controller list if not present in this controller list. */
-	aeControllerList &operator+=( const aeControllerList &list );
+	aeControllerList &operator+=(const aeControllerList &list);
 	/*@}*/
 };
 

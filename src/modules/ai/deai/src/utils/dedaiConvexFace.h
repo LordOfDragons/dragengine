@@ -57,7 +57,7 @@ public:
 	dedaiConvexFace();
 	
 	/** \brief Create copy of convex face. */
-	dedaiConvexFace( const dedaiConvexFace &face );
+	dedaiConvexFace(const dedaiConvexFace &face);
 	
 	/** \brief Clean up convex face. */
 	virtual ~dedaiConvexFace();
@@ -71,13 +71,13 @@ public:
 	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set face normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	/** \brief Marker. */
 	inline int GetMarker() const{ return pMarker; }
 	
 	/** \brief Set marker. */
-	void SetMarker( int marker );
+	void SetMarker(int marker);
 	
 	
 	
@@ -85,25 +85,25 @@ public:
 	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	/** \brief Vertex at index. */
-	int GetVertexAt( int index ) const;
+	int GetVertexAt(int index) const;
 	
 	/** \brief Set vertex at index. */
-	void SetVertexAt( int index, int vertex );
+	void SetVertexAt(int index, int vertex);
 	
 	/** \brief Vertex is present. */
-	bool HasVertex( int vertex ) const;
+	bool HasVertex(int vertex) const;
 	
 	/** \brief Index of vertex or -1 if absent. */
-	int IndexOfVertex( int vertex ) const;
+	int IndexOfVertex(int vertex) const;
 	
 	/** \brief Add vertex. */
-	void AddVertex( int vertex );
+	void AddVertex(int vertex);
 	
 	/** \brief Insert vertex at index. */
-	void InsertVertex( int index, int vertex );
+	void InsertVertex(int index, int vertex);
 	
 	/** \brief Remove vertex from index. */
-	void RemoveVertexFrom( int index );
+	void RemoveVertexFrom(int index);
 	
 	/** \brief Remove all vertices. */
 	void RemoveAllVertices();
@@ -111,13 +111,13 @@ public:
 	
 	
 	/** \brief Calculate the center of the face. */
-	decVector CalculateCenter( const dedaiConvexFaceList &convexFaceList ) const;
+	decVector CalculateCenter(const dedaiConvexFaceList &convexFaceList) const;
 	
 	/** \brief Sort vertices in clockwise order around the face normal. */
-	void SortVertices( const dedaiConvexFaceList &convexFaceList );
+	void SortVertices(const dedaiConvexFaceList &convexFaceList);
 	
 	/** \brief Triangle is too small. */
-	bool IsTooSmall( const dedaiConvexFaceList &convexFaceList ) const;
+	bool IsTooSmall(const dedaiConvexFaceList &convexFaceList) const;
 	/*@}*/
 	
 	
@@ -125,7 +125,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy face. */
-	virtual dedaiConvexFace &operator=( const dedaiConvexFace &face );
+	virtual dedaiConvexFace &operator=(const dedaiConvexFace &face);
 	/*@}*/
 };
 

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	seUControllerSetName( seController *controller, const char *newValue );
+	seUControllerSetName(seController *controller, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo object. */

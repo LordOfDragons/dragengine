@@ -56,7 +56,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceSpeechAnimationXML::ceSpeechAnimationXML( deLogger *logger, const char *loggerSource ) : igdeBaseXML( logger, loggerSource ){
+ceSpeechAnimationXML::ceSpeechAnimationXML(deLogger *logger, const char *loggerSource) : igdeBaseXML(logger, loggerSource){
 }
 
 
@@ -64,29 +64,29 @@ ceSpeechAnimationXML::ceSpeechAnimationXML( deLogger *logger, const char *logger
 // Loading and saving
 ///////////////////////
 
-void ceSpeechAnimationXML::ReadFromFile( const decString &pathSAnimation, decBaseFileReader &reader, ceSpeechAnimation &sanimation ){
+void ceSpeechAnimationXML::ReadFromFile(const decString &pathSAnimation, decBaseFileReader &reader, ceSpeechAnimation &sanimation){
 	decPath basePath;
-	basePath.SetFromUnix( pathSAnimation.GetString() );
-	if( basePath.GetComponentCount() > 1 ){
+	basePath.SetFromUnix(pathSAnimation.GetString());
+	if(basePath.GetComponentCount() > 1){
 		basePath.RemoveLastComponent();
 		
 	}else{
-		basePath.SetFromUnix( "/" );
+		basePath.SetFromUnix("/");
 	}
 	
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "speechAnimation" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(!root || strcmp(root->GetName(), "speechAnimation") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadSAnimation( *root, basePath.GetPathUnix(), sanimation );
+	pReadSAnimation(*root, basePath.GetPathUnix(), sanimation);
 }
 
 
@@ -94,64 +94,64 @@ void ceSpeechAnimationXML::ReadFromFile( const decString &pathSAnimation, decBas
 // Private Functions
 //////////////////////
 
-void ceSpeechAnimationXML::pReadSAnimation( const decXmlElementTag &root, const char *basePath, ceSpeechAnimation &sanimation ){
+void ceSpeechAnimationXML::pReadSAnimation(const decXmlElementTag &root, const char *basePath, ceSpeechAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	deAnimation *animation = NULL;
 	deRig *rig = NULL;
 	int i;
 	
-	for( i=0; i <elementCount; i++ ){
-		tag = root.GetElementIfTag( i );
+	for(i=0; i <elementCount; i++){
+		tag = root.GetElementIfTag(i);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "display" ) == 0 ){
+		if(tag){
+			if(strcmp(tag->GetName(), "display") == 0){
 				
-			}else if( strcmp( tag->GetName(), "rig" ) == 0 ){
-				if( strlen( GetCDataString( *tag ) ) > 0 ){
+			}else if(strcmp(tag->GetName(), "rig") == 0){
+				if(strlen(GetCDataString(*tag)) > 0){
 					rig = NULL;
 					
 					try{
-						rig = sanimation.GetEngine()->GetRigManager()->LoadRig( GetCDataString( *tag ), basePath );
-						sanimation.GetEngineAnimator()->SetRig( rig );
+						rig = sanimation.GetEngine()->GetRigManager()->LoadRig(GetCDataString(*tag), basePath);
+						sanimation.GetEngineAnimator()->SetRig(rig);
 						rig->FreeReference();
 						
-					}catch( const deException & ){
-						if( rig ){
+					}catch(const deException &){
+						if(rig){
 							rig->FreeReference();
 						}
-						LogWarnGenericProblemTag( root, tag->GetName(), "Failed loading resource file" );
+						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
 				
-			}else if( strcmp( tag->GetName(), "animation" ) == 0 ){
-				if( strlen( GetCDataString( *tag ) ) > 0 ){
+			}else if(strcmp(tag->GetName(), "animation") == 0){
+				if(strlen(GetCDataString(*tag)) > 0){
 					animation = NULL;
 					
 					try{
-						animation = sanimation.GetEngine()->GetAnimationManager()->LoadAnimation( GetCDataString( *tag ), basePath );
-						sanimation.GetEngineAnimator()->SetAnimation( animation );
+						animation = sanimation.GetEngine()->GetAnimationManager()->LoadAnimation(GetCDataString(*tag), basePath);
+						sanimation.GetEngineAnimator()->SetAnimation(animation);
 						animation->FreeReference();
 						
-					}catch( const deException & ){
-						if( animation ){
+					}catch(const deException &){
+						if(animation){
 							animation->FreeReference();
 						}
-						LogWarnGenericProblemTag( root, tag->GetName(), "Failed loading resource file" );
+						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
 				
-			}else if( strcmp( tag->GetName(), "neutralMoveName" ) == 0 ){
-				sanimation.SetNeutralMoveName( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "neutralMoveName") == 0){
+				sanimation.SetNeutralMoveName(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "neutralVertexPositionSet" ) == 0 ){
-				sanimation.GetNeutralVertexPositionSets().Add( GetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "neutralVertexPositionSet") == 0){
+				sanimation.GetNeutralVertexPositionSets().Add(GetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "phoneme" ) == 0 ){
-				pReadPhoneme( *tag, sanimation );
+			}else if(strcmp(tag->GetName(), "phoneme") == 0){
+				pReadPhoneme(*tag, sanimation);
 				
-			}else if( strcmp( tag->GetName(), "word" ) == 0 ){
-				pReadWord( *tag, sanimation );
+			}else if(strcmp(tag->GetName(), "word") == 0){
+				pReadWord(*tag, sanimation);
 			}
 		}
 	}
@@ -159,7 +159,7 @@ void ceSpeechAnimationXML::pReadSAnimation( const decXmlElementTag &root, const 
 	sanimation.CreateAnimator();
 }
 
-void ceSpeechAnimationXML::pReadPhoneme( const decXmlElementTag &root, ceSpeechAnimation &sanimation ){
+void ceSpeechAnimationXML::pReadPhoneme(const decXmlElementTag &root, ceSpeechAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	ceSAPhoneme *phoneme = NULL;
@@ -167,36 +167,36 @@ void ceSpeechAnimationXML::pReadPhoneme( const decXmlElementTag &root, ceSpeechA
 	int e;
 	
 	try{
-		phoneme = new ceSAPhoneme( GetAttributeInt( root, "ipa" ) );
+		phoneme = new ceSAPhoneme(GetAttributeInt(root, "ipa"));
 		
-		if( sanimation.GetPhonemeList().HasIPA( phoneme->GetIPA() ) ){
-			text.Format( "%i", phoneme->GetIPA() );
-			LogErrorGenericProblemValue( root, text.GetString(), "Duplicate Phoneme" );
+		if(sanimation.GetPhonemeList().HasIPA(phoneme->GetIPA())){
+			text.Format("%i", phoneme->GetIPA());
+			LogErrorGenericProblemValue(root, text.GetString(), "Duplicate Phoneme");
 		}
 		
-		for( e=0; e<elementCount; e++ ){
-			tag = root.GetElementIfTag( e );
+		for(e=0; e<elementCount; e++){
+			tag = root.GetElementIfTag(e);
 			
-			if( tag ){
-				if( strcmp( tag->GetName(), "sampleText" ) == 0 ){
-					phoneme->SetSampleText( GetCDataString( *tag ) );
+			if(tag){
+				if(strcmp(tag->GetName(), "sampleText") == 0){
+					phoneme->SetSampleText(GetCDataString(*tag));
 					
-				}else if( strcmp( tag->GetName(), "moveName" ) == 0 ){
-					phoneme->SetMoveName( GetCDataString( *tag ) );
+				}else if(strcmp(tag->GetName(), "moveName") == 0){
+					phoneme->SetMoveName(GetCDataString(*tag));
 					
-				}else if( strcmp( tag->GetName(), "vertexPositionSet" ) == 0 ){
-					phoneme->SetVertexPositionSet( GetCDataString( *tag ) );
+				}else if(strcmp(tag->GetName(), "vertexPositionSet") == 0){
+					phoneme->SetVertexPositionSet(GetCDataString(*tag));
 					
-				}else if( strcmp( tag->GetName(), "length" ) == 0 ){
-					phoneme->SetLength( GetCDataFloat( *tag ) );
+				}else if(strcmp(tag->GetName(), "length") == 0){
+					phoneme->SetLength(GetCDataFloat(*tag));
 				}
 			}
 		}
 		
-		sanimation.GetPhonemeList().Add( phoneme );
+		sanimation.GetPhonemeList().Add(phoneme);
 		
-	}catch( const deException & ){
-		if( phoneme ){
+	}catch(const deException &){
+		if(phoneme){
 			phoneme->FreeReference();
 		}
 		
@@ -204,33 +204,33 @@ void ceSpeechAnimationXML::pReadPhoneme( const decXmlElementTag &root, ceSpeechA
 	}
 }
 
-void ceSpeechAnimationXML::pReadWord( const decXmlElementTag &root, ceSpeechAnimation &sanimation ){
+void ceSpeechAnimationXML::pReadWord(const decXmlElementTag &root, ceSpeechAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	ceSAWord *word = NULL;
 	int e;
 	
 	try{
-		word = new ceSAWord( GetAttributeString( root, "name" ) );
+		word = new ceSAWord(GetAttributeString(root, "name"));
 		
-		if( sanimation.GetWordList().HasNamed( word->GetName().GetString() ) ){
-			LogErrorGenericProblemValue( root, word->GetName().GetString(), "Duplicate Word" );
+		if(sanimation.GetWordList().HasNamed(word->GetName().GetString())){
+			LogErrorGenericProblemValue(root, word->GetName().GetString(), "Duplicate Word");
 		}
 		
-		for( e=0; e<elementCount; e++ ){
-			tag = root.GetElementIfTag( e );
+		for(e=0; e<elementCount; e++){
+			tag = root.GetElementIfTag(e);
 			
-			if( tag ){
-				if( strcmp( tag->GetName(), "phonetics" ) == 0 ){
-					word->SetPhonetics( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
+			if(tag){
+				if(strcmp(tag->GetName(), "phonetics") == 0){
+					word->SetPhonetics(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 				}
 			}
 		}
 		
-		sanimation.GetWordList().Add( word );
+		sanimation.GetWordList().Add(word);
 		
-	}catch( const deException & ){
-		if( word ){
+	}catch(const deException &){
+		if(word){
 			word->FreeReference();
 		}
 		

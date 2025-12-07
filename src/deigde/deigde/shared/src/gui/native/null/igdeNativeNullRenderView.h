@@ -44,7 +44,7 @@ public:
 	virtual ~igdeNativeNullRenderView();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullRenderView* CreateNativeWidget( igdeViewRenderWindow &owner );
+	static igdeNativeNullRenderView* CreateNativeWidget(igdeViewRenderWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

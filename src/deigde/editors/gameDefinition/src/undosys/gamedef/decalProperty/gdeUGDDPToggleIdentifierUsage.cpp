@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUGDDPToggleIdentifierUsage::gdeUGDDPToggleIdentifierUsage(
-gdeGameDefinition *gamedef, gdeProperty *property ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeGameDefinition *gamedef, gdeProperty *property) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property toggle identifier usage" );
+	SetShortInfo("Game definition property toggle identifier usage");
 	
 	pGameDefinition = gamedef;
 	gamedef->AddReference();
@@ -59,10 +59,10 @@ pProperty( NULL )
 }
 
 gdeUGDDPToggleIdentifierUsage::~gdeUGDDPToggleIdentifierUsage(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ gdeUGDDPToggleIdentifierUsage::~gdeUGDDPToggleIdentifierUsage(){
 ///////////////
 
 void gdeUGDDPToggleIdentifierUsage::Undo(){
-	pProperty->SetIdentifierUsage( ! pProperty->GetIdentifierUsage() );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPToggleIdentifierUsage::Redo(){
-	pProperty->SetIdentifierUsage( ! pProperty->GetIdentifierUsage() );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

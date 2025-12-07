@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWindowMainListener::seWindowMainListener( seWindowMain &windowMain ) :
-pWindowMain( windowMain ){
+seWindowMainListener::seWindowMainListener(seWindowMain &windowMain) :
+pWindowMain(windowMain){
 }
 
 seWindowMainListener::~seWindowMainListener(){
@@ -53,42 +53,42 @@ seWindowMainListener::~seWindowMainListener(){
 // Notifications
 //////////////////
 
-void seWindowMainListener::StateChanged( seSynthesizer* ){
+void seWindowMainListener::StateChanged(seSynthesizer*){
 	pWindowMain.UpdateAllActions();
 }
 
-void seWindowMainListener::UndoChanged( seSynthesizer* ){
+void seWindowMainListener::UndoChanged(seSynthesizer*){
 	pWindowMain.UpdateAllActions();
 }
 
-void seWindowMainListener::SynthesizerChanged( seSynthesizer* ){
-	pWindowMain.UpdateAllActions();
-}
-
-
-
-void seWindowMainListener::ControllerChanged( seSynthesizer*, seController* ){
-	pWindowMain.UpdateAllActions();
-}
-
-void seWindowMainListener::ControllerStructureChanged( seSynthesizer* ){
+void seWindowMainListener::SynthesizerChanged(seSynthesizer*){
 	pWindowMain.UpdateAllActions();
 }
 
 
 
-void seWindowMainListener::ActiveSourceChanged( seSynthesizer*, seSource* ){
+void seWindowMainListener::ControllerChanged(seSynthesizer*, seController*){
 	pWindowMain.UpdateAllActions();
 }
 
-void seWindowMainListener::SourceChanged( seSynthesizer*, seSource* ){
+void seWindowMainListener::ControllerStructureChanged(seSynthesizer*){
 	pWindowMain.UpdateAllActions();
 }
 
-void seWindowMainListener::SourceNameChanged( seSynthesizer*, seSource* ){
+
+
+void seWindowMainListener::ActiveSourceChanged(seSynthesizer*, seSource*){
 	pWindowMain.UpdateAllActions();
 }
 
-void seWindowMainListener::SourceStructureChanged( seSynthesizer* ){
+void seWindowMainListener::SourceChanged(seSynthesizer*, seSource*){
+	pWindowMain.UpdateAllActions();
+}
+
+void seWindowMainListener::SourceNameChanged(seSynthesizer*, seSource*){
+	pWindowMain.UpdateAllActions();
+}
+
+void seWindowMainListener::SourceStructureChanged(seSynthesizer*){
 	pWindowMain.UpdateAllActions();
 }

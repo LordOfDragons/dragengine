@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUMoveControllerDown( seSynthesizer *synthesizer, seController *controller );
+	seUMoveControllerDown(seSynthesizer *synthesizer, seController *controller);
 	
 protected:
 	/** \brief Clean up action. */

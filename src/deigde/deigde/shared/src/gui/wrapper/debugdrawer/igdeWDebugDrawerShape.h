@@ -90,43 +90,43 @@ public:
 	inline deDebugDrawer *GetParentDebugDrawer() const{ return pEngDebugDrawer; }
 	
 	/** \brief Set parent debug drawer or NULL. */
-	void SetParentDebugDrawer( deDebugDrawer *debugDrawer );
+	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
 	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Set scale. */
-	void SetScale( const decVector &scale );
+	void SetScale(const decVector &scale);
 	
 	/** \brief Edge color. */
 	inline const decColor &GetEdgeColor() const{ return pColorEdge; }
 	
 	/** \brief Set edge color. */
-	void SetEdgeColor( const decColor &color );
+	void SetEdgeColor(const decColor &color);
 	
 	/** \brief Fill color. */
 	inline const decColor &GetFillColor() const{ return pColorFill; }
 	
 	/** \brief Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	/** \brief Determines if the debug drawer shape is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Sets if the debug drawer shape is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	/*@}*/
 	
 	
@@ -134,46 +134,46 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Add shape. */
-	void AddShape( decShape *shape );
+	void AddShape(decShape *shape);
 	
 	/** \brief Add shapes. */
-	void AddShapes( const decShapeList &shapes );
+	void AddShapes(const decShapeList &shapes);
 	
 	/** \brief Adds a sphere shape. */
-	void AddSphereShape( float radius, const decVector &position );
+	void AddSphereShape(float radius, const decVector &position);
 	
 	/** \brief Adds a sphere shape. */
-	void AddSphereShape( float radius, const decVector2 &axisScaling, const decVector &position );
+	void AddSphereShape(float radius, const decVector2 &axisScaling, const decVector &position);
 	
 	/** \brief Adds a box shape using the given parameters. */
-	void AddBoxShape( const decVector &halfExtends, const decVector &position,
-		const decQuaternion &orientation );
+	void AddBoxShape(const decVector &halfExtends, const decVector &position,
+		const decQuaternion &orientation);
 	
 	/** \brief Adds a box shape using the given parameters. */
-	void AddBoxShape( const decVector &halfExtends, const decVector2 &axiscaling,
-		const decVector &position, const decQuaternion &orientation );
+	void AddBoxShape(const decVector &halfExtends, const decVector2 &axiscaling,
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a cylinder shape using the given parameters. */
-	void AddCylinderShape( float halfHeight, float topRadius, float bottomRadius,
-		const decVector &position, const decQuaternion &orientation );
+	void AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a cylinder shape using the given parameters. */
-	void AddCylinderShape( float halfHeight, float topRadius, float bottomRadius,
+	void AddCylinderShape(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
-		const decVector &position, const decQuaternion &orientation );
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a capsule shape using the given parameters. */
-	void AddCapsuleShape( float halfHeight, float topRadius, float bottomRadius,
-		const decVector &position, const decQuaternion &orientation );
+	void AddCapsuleShape(float halfHeight, float topRadius, float bottomRadius,
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Adds a capsule shape using the given parameters. */
-	void AddCapsuleShape( float halfHeight, float topRadius, float bottomRadius,
+	void AddCapsuleShape(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
-		const decVector &position, const decQuaternion &orientation );
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Add hull shape. */
-	void AddHullShape( const decVector &position, const decQuaternion &orientation,
-		int pointCount, const decVector *points );
+	void AddHullShape(const decVector &position, const decQuaternion &orientation,
+		int pointCount, const decVector *points);
 	
 	/** \brief Clears the list of shapes. */
 	void RemoveAllShapes();
@@ -184,16 +184,16 @@ public:
 	/** \name Faces */
 	/*@{*/
 	/** \brief Adds a face. */
-	void AddFace( deDebugDrawerShapeFace *face );
+	void AddFace(deDebugDrawerShapeFace *face);
 	
 	/** \brief Adds faces from an occlusion mesh. */
-	void AddOcclusionMeshFaces( const deOcclusionMesh &occlusionMesh );
+	void AddOcclusionMeshFaces(const deOcclusionMesh &occlusionMesh);
 	
 	/** \brief Adds faces from a navigation space. */
-	void AddNavSpaceFaces( const deNavigationSpace &navSpace );
+	void AddNavSpaceFaces(const deNavigationSpace &navSpace);
 	
 	/** \brief Adds faces from a navigation space for a certain type only. */
-	void AddNavSpaceFaces( const deNavigationSpace &navSpace, int type );
+	void AddNavSpaceFaces(const deNavigationSpace &navSpace, int type);
 	
 	/** \brief Removes all faces. */
 	void RemoveAllFaces();
@@ -208,8 +208,8 @@ private:
 	void pRebuildFaces();
 	void pBareRebuildFaces();
 	
-	void pAddNavGrid( const deNavigationSpace &navSpace, bool filterType, int type );
-	void pAddNavMesh( const deNavigationSpace &navSpace, bool filterType, int type );
+	void pAddNavGrid(const deNavigationSpace &navSpace, bool filterType, int type);
+	void pAddNavMesh(const deNavigationSpace &navSpace, bool filterType, int type);
 };
 
 #endif

@@ -74,13 +74,13 @@ public:
 	inline deNavigationSpace::eSpaceTypes GetType() const{ return pType; }
 	
 	/** \brief Set navigation space type. */
-	void SetType( deNavigationSpace::eSpaceTypes type );
+	void SetType(deNavigationSpace::eSpaceTypes type);
 	
 	/** \brief Navigation layer number. */
 	inline int GetLayer() const{ return pLayer; }
 	
 	/** \brief Set navigation layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	
 	
 	
@@ -96,7 +96,7 @@ public:
 	 * 
 	 * The default snap distance is 0.001 (1mm).
 	 */
-	void SetSnapDistance( float distance );
+	void SetSnapDistance(float distance);
 	
 	/**
 	 * \brief Snap angle in radians up to which edges are linked to neighbor spaces.
@@ -110,7 +110,7 @@ public:
 	 * 
 	 * The default snap angle is 180° in radians.
 	 */
-	void SetSnapAngle( float angle );
+	void SetSnapAngle(float angle);
 	/*@}*/
 	
 	
@@ -121,13 +121,13 @@ public:
 	inline int GetCornerCount() const{ return pCornerCount; }
 	
 	/** \brief Set number of corners. */
-	void SetCornerCount( int count );
+	void SetCornerCount(int count);
 	
 	/** \brief Corner at index . */
-	unsigned int GetCornerAt( int index ) const;
+	unsigned int GetCornerAt(int index) const;
 	
 	/** \brief Set corner at index . */
-	void SetCornerAt( int index, unsigned int corner );
+	void SetCornerAt(int index, unsigned int corner);
 	
 	/** \brief Pointer to corners. */
 	inline unsigned int *GetCorners() const{ return pCorners; }
@@ -141,10 +141,10 @@ public:
 	inline int GetEdgeCount() const{ return pEdgeCount; }
 	
 	/** \brief Set number edges. */
-	void SetEdgeCount( int count );
+	void SetEdgeCount(int count);
 	
 	/** \brief Edge at the given position. */
-	deHeightTerrainNavSpaceEdge &GetEdgeAt( int index ) const;
+	deHeightTerrainNavSpaceEdge &GetEdgeAt(int index) const;
 	
 	/** \brief Pointer to the edges. */
 	inline deHeightTerrainNavSpaceEdge *GetEdges() const{ return pEdges; }
@@ -158,10 +158,10 @@ public:
 	inline int GetFaceCount() const{ return pFaceCount; }
 	
 	/** \brief Set number faces. */
-	void SetFaceCount( int count );
+	void SetFaceCount(int count);
 	
 	/** \brief Face at the given position. */
-	deNavigationSpaceFace &GetFaceAt( int index ) const;
+	deNavigationSpaceFace &GetFaceAt(int index) const;
 	
 	/** \brief Pointer to the faces. */
 	inline deNavigationSpaceFace *GetFaces() const{ return pFaces; }

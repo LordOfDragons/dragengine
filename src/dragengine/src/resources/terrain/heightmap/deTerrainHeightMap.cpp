@@ -54,8 +54,8 @@
 ////////////////////////////
 
 deTerrainHeightMap::deTerrainHeightMap(){
-	pPointCount.Set( 2, 2 );
-	pSize.Set( 1.0f, 1.0f );
+	pPointCount.Set(2, 2);
+	pSize.Set(1.0f, 1.0f);
 	pScaling = 1.0f;
 	
 	pHeightImage = NULL;
@@ -65,9 +65,9 @@ deTerrainHeightMap::deTerrainHeightMap(){
 }
 
 deTerrainHeightMap::~deTerrainHeightMap(){
-	if( pVisibleFaces ) delete [] pVisibleFaces;
+	if(pVisibleFaces) delete [] pVisibleFaces;
 	
-	if( pHeightImage ) pHeightImage->FreeReference();
+	if(pHeightImage) pHeightImage->FreeReference();
 }
 
 
@@ -75,106 +75,106 @@ deTerrainHeightMap::~deTerrainHeightMap(){
 // Management
 ///////////////
 
-void deTerrainHeightMap::SetPointCount( const decPoint &pointCount ){
-	if( pointCount.x < 2 || pointCount.y < 2 ) DETHROW( deeInvalidParam );
+void deTerrainHeightMap::SetPointCount(const decPoint &pointCount){
+	if(pointCount.x < 2 || pointCount.y < 2) DETHROW(deeInvalidParam);
 	
-	if( pointCount != pPointCount ){
-		if( pVisibleFaces ){
+	if(pointCount != pPointCount){
+		if(pVisibleFaces){
 			delete [] pVisibleFaces;
 			pVisibleFaces = NULL;
 			pVFByteCount = 0;
 		}
 		
-		SetHeightImage( NULL );
+		SetHeightImage(NULL);
 		
 		pPointCount = pointCount;
 	}
 }
 
-void deTerrainHeightMap::SetSize( const decVector2 &size ){
-	if( size.x < 1e-5f || size.y < 1e-5f ) DETHROW( deeInvalidParam );
+void deTerrainHeightMap::SetSize(const decVector2 &size){
+	if(size.x < 1e-5f || size.y < 1e-5f) DETHROW(deeInvalidParam);
 	
 	pSize = size;
 }
 
-void deTerrainHeightMap::SetScaling( float scaling ){
-	if( scaling < 1e-5f ) DETHROW( deeInvalidParam );
+void deTerrainHeightMap::SetScaling(float scaling){
+	if(scaling < 1e-5f) DETHROW(deeInvalidParam);
 	
 	pScaling = scaling;
 }
 
 
 
-void deTerrainHeightMap::SetPathHeightImage( const char *path ){
+void deTerrainHeightMap::SetPathHeightImage(const char *path){
 	pPathHeightImage = path;
 }
 
-void deTerrainHeightMap::SetHeightImage( deImage *heightImage ){
-	if( heightImage ){
-		if( heightImage->GetWidth() != pPointCount.x ){
-			DETHROW( deeInvalidParam );
+void deTerrainHeightMap::SetHeightImage(deImage *heightImage){
+	if(heightImage){
+		if(heightImage->GetWidth() != pPointCount.x){
+			DETHROW(deeInvalidParam);
 		}
-		if( heightImage->GetHeight() != pPointCount.y ){
-			DETHROW( deeInvalidParam );
+		if(heightImage->GetHeight() != pPointCount.y){
+			DETHROW(deeInvalidParam);
 		}
-		if( heightImage->GetComponentCount() != 1 ){
-			DETHROW( deeInvalidParam );
+		if(heightImage->GetComponentCount() != 1){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	if( heightImage == pHeightImage ){
+	if(heightImage == pHeightImage){
 		return;
 	}
 	
 	// note: calculate extends requires image data to be retained. thing is
 	//       deprecated anyways and should be done by physics module
-	if( pHeightImage ){
+	if(pHeightImage){
 		pHeightImage->ReleaseImageData();
 		pHeightImage->FreeReference();
 	}
 	
 	pHeightImage = heightImage;
 	
-	if( heightImage ){
+	if(heightImage){
 		heightImage->AddReference();
 		heightImage->RetainImageData();
 	}
 }
 
-void deTerrainHeightMap::CalculateExtends( decVector &minExtend, decVector &maxExtend ){
+void deTerrainHeightMap::CalculateExtends(decVector &minExtend, decVector &maxExtend){
 	int i, size = pPointCount.x * pPointCount.y;
 	float curHeight, scaling;
 	float minHeight = 0.0f;
 	float maxHeight = 0.0f;
 	float compare;
 	
-	if( pHeightImage ){
-		if( pHeightImage->GetBitCount() == 8 ){
+	if(pHeightImage){
+		if(pHeightImage->GetBitCount() == 8){
 			sGrayscale8 *imageData = pHeightImage->GetDataGrayscale8();
 			scaling = pScaling * THM_8BIT_PTOH;
 			
-			for( i=0; i<size; i++ ){
-				curHeight = ( imageData[ i ].value - THM_8BIT_BASE ) * scaling;
+			for(i=0; i<size; i++){
+				curHeight = (imageData[i].value - THM_8BIT_BASE) * scaling;
 				
-				if( curHeight < minHeight ){
+				if(curHeight < minHeight){
 					minHeight = curHeight;
 					
-				}else if( curHeight > maxHeight ){
+				}else if(curHeight > maxHeight){
 					maxHeight = curHeight;
 				}
 			}
 			
-		}else if( pHeightImage->GetBitCount() == 16 ){
+		}else if(pHeightImage->GetBitCount() == 16){
 			sGrayscale16 *imageData = pHeightImage->GetDataGrayscale16();
 			scaling = pScaling * THM_16BIT_PTOH;
 			
-			for( i=0; i<size; i++ ){
-				curHeight = ( imageData[ i ].value - THM_16BIT_BASE ) * scaling;
+			for(i=0; i<size; i++){
+				curHeight = (imageData[i].value - THM_16BIT_BASE) * scaling;
 				
-				if( curHeight < minHeight ){
+				if(curHeight < minHeight){
 					minHeight = curHeight;
 					
-				}else if( curHeight > maxHeight ){
+				}else if(curHeight > maxHeight){
 					maxHeight = curHeight;
 				}
 			}
@@ -182,13 +182,13 @@ void deTerrainHeightMap::CalculateExtends( decVector &minExtend, decVector &maxE
 		}else{
 			sGrayscale32 *imageData = pHeightImage->GetDataGrayscale32();
 			
-			for( i=0; i<size; i++ ){
-				curHeight = imageData[ i ].value * pScaling;
+			for(i=0; i<size; i++){
+				curHeight = imageData[i].value * pScaling;
 				
-				if( curHeight < minHeight ){
+				if(curHeight < minHeight){
 					minHeight = curHeight;
 					
-				}else if( curHeight > maxHeight ){
+				}else if(curHeight > maxHeight){
 					maxHeight = curHeight;
 				}
 			}
@@ -196,15 +196,15 @@ void deTerrainHeightMap::CalculateExtends( decVector &minExtend, decVector &maxE
 	}
 	
 	compare = pSize.x * 0.5f;
-	if( -compare < minExtend.x ) minExtend.x = -compare;
-	if( compare > maxExtend.x ) maxExtend.x = compare;
+	if(-compare < minExtend.x) minExtend.x = -compare;
+	if(compare > maxExtend.x) maxExtend.x = compare;
 	
-	if( minHeight < minExtend.y ) minExtend.y = minHeight;
-	if( maxHeight > maxExtend.y ) maxExtend.y = maxHeight;
+	if(minHeight < minExtend.y) minExtend.y = minHeight;
+	if(maxHeight > maxExtend.y) maxExtend.y = maxHeight;
 	
 	compare = pSize.y * 0.5f;
-	if( -compare < minExtend.z ) minExtend.z = -compare;
-	if( compare > maxExtend.z ) maxExtend.z = compare;
+	if(-compare < minExtend.z) minExtend.z = -compare;
+	if(compare > maxExtend.z) maxExtend.z = compare;
 }
 
 
@@ -212,41 +212,41 @@ void deTerrainHeightMap::CalculateExtends( decVector &minExtend, decVector &maxE
 // Face Visibility
 ////////////////////
 
-void deTerrainHeightMap::SetPathVisibilityImage( const char *path ){
+void deTerrainHeightMap::SetPathVisibilityImage(const char *path){
 	pPathVisImage = path;
 }
 
-bool deTerrainHeightMap::GetFaceVisibleAt( int x, int y ){
-	if( x < 0 || x >= pPointCount.x - 1 || y < 0 || y >= pPointCount.y - 1 ) DETHROW( deeInvalidParam );
+bool deTerrainHeightMap::GetFaceVisibleAt(int x, int y){
+	if(x < 0 || x >= pPointCount.x - 1 || y < 0 || y >= pPointCount.y - 1) DETHROW(deeInvalidParam);
 	
-	if( pVisibleFaces ){
-		int bitOffset = ( pPointCount.x - 1 ) * y + x;
+	if(pVisibleFaces){
+		int bitOffset = (pPointCount.x - 1) * y + x;
 		
-		return ( pVisibleFaces[ bitOffset >> 3 ] & ( 1 << ( bitOffset & 0x7 ) ) ) != 0;
+		return (pVisibleFaces[bitOffset >> 3] & (1 << (bitOffset & 0x7))) != 0;
 		
 	}else{
 		return true;
 	}
 }
 
-void deTerrainHeightMap::SetFaceVisibleAt( int x, int y, bool visible ){
-	if( x < 0 || x >= pPointCount.x - 1 || y < 0 || y >= pPointCount.y - 1 ) DETHROW( deeInvalidParam );
+void deTerrainHeightMap::SetFaceVisibleAt(int x, int y, bool visible){
+	if(x < 0 || x >= pPointCount.x - 1 || y < 0 || y >= pPointCount.y - 1) DETHROW(deeInvalidParam);
 	
 	pCreateVisibleFaces();
 	
-	int bitOffset = ( pPointCount.x - 1 ) * y + x;
+	int bitOffset = (pPointCount.x - 1) * y + x;
 	
-	if( visible ){
-		pVisibleFaces[ bitOffset >> 3 ] |= ( unsigned char )( 1 << ( bitOffset & 0x7 ) );
+	if(visible){
+		pVisibleFaces[bitOffset >> 3] |= (unsigned char)(1 << (bitOffset & 0x7));
 		
 	}else{
-		pVisibleFaces[ bitOffset >> 3 ] &= ~( ( unsigned char )( 1 << ( bitOffset & 0x7 ) ) );
+		pVisibleFaces[bitOffset >> 3] &= ~((unsigned char)(1 << (bitOffset & 0x7)));
 	}
 }
 
-void deTerrainHeightMap::SetAllFacesVisible( bool visible ){
-	if( visible ){
-		if( pVisibleFaces ){
+void deTerrainHeightMap::SetAllFacesVisible(bool visible){
+	if(visible){
+		if(pVisibleFaces){
 			delete [] pVisibleFaces;
 			pVisibleFaces = NULL;
 		}
@@ -254,7 +254,7 @@ void deTerrainHeightMap::SetAllFacesVisible( bool visible ){
 	}else{
 		pCreateVisibleFaces();
 		
-		memset( pVisibleFaces, 0, pVFByteCount );
+		memset(pVisibleFaces, 0, pVFByteCount);
 	}
 }
 
@@ -264,13 +264,13 @@ void deTerrainHeightMap::SetAllFacesVisible( bool visible ){
 //////////////////////
 
 void deTerrainHeightMap::pCreateVisibleFaces(){
-	if( ! pVisibleFaces ){
-		int byteCount = ( ( ( pPointCount.x - 1 ) * ( pPointCount.y - 1 ) - 1 ) >> 3 ) + 1;
+	if(!pVisibleFaces){
+		int byteCount = (((pPointCount.x - 1) * (pPointCount.y - 1) - 1) >> 3) + 1;
 		
-		pVisibleFaces = new unsigned char[ byteCount ];
-		if( ! pVisibleFaces ) DETHROW( deeOutOfMemory );
+		pVisibleFaces = new unsigned char[byteCount];
+		if(!pVisibleFaces) DETHROW(deeOutOfMemory);
 		
-		memset( pVisibleFaces, 255, byteCount );
+		memset(pVisibleFaces, 255, byteCount);
 		
 		pVFByteCount = byteCount;
 	}

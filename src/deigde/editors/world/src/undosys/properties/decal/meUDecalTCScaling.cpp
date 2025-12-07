@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalTCScaling::meUDecalTCScaling( meDecal *decal, const decVector2 &newScaling ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+meUDecalTCScaling::meUDecalTCScaling(meDecal *decal, const decVector2 &newScaling){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Decal Texture Scaling" );
+	SetShortInfo("Decal Texture Scaling");
 	
 	pDecal = NULL;
 	
@@ -63,7 +63,7 @@ meUDecalTCScaling::meUDecalTCScaling( meDecal *decal, const decVector2 &newScali
 }
 
 meUDecalTCScaling::~meUDecalTCScaling(){
-	if( pDecal ){
+	if(pDecal){
 		pDecal->FreeReference();
 	}
 }
@@ -74,11 +74,11 @@ meUDecalTCScaling::~meUDecalTCScaling(){
 ///////////////
 
 void meUDecalTCScaling::Undo(){
-	pDecal->SetTexCoordScaling( pOldScaling );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetTexCoordScaling(pOldScaling);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalTCScaling::Redo(){
-	pDecal->SetTexCoordScaling( pNewScaling );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetTexCoordScaling(pNewScaling);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }

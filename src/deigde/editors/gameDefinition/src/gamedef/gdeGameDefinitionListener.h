@@ -76,256 +76,256 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( gdeGameDefinition *gameDefinition );
+	virtual void StateChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Undo system changed. */
-	virtual void UndoChanged( gdeGameDefinition *gameDefinition );
+	virtual void UndoChanged(gdeGameDefinition *gameDefinition);
 	
 	/** View properties changed. */
-	virtual void ViewChanged( gdeGameDefinition *gameDefinition );
+	virtual void ViewChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Game definition changed. */
-	virtual void GameDefinitionChanged( gdeGameDefinition *gameDefinition );
+	virtual void GameDefinitionChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Base path changed. */
-	virtual void BasePathChanged( gdeGameDefinition *gameDefinition );
+	virtual void BasePathChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Base game definitions changed. */
-	virtual void BaseGameDefinitionsChanged( gdeGameDefinition *gameDefinition );
+	virtual void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Sky changed. */
-	virtual void SkyChanged( gdeGameDefinition *gameDefinition );
+	virtual void SkyChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Environment object changed. */
-	virtual void EnvObjectChanged( gdeGameDefinition *gameDefinition );
+	virtual void EnvObjectChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Camera changed. */
-	virtual void CameraChanged( gdeGameDefinition *gameDefinition );
+	virtual void CameraChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Selected object changed. */
-	virtual void SelectedObjectChanged( gdeGameDefinition *gameDefinition );
+	virtual void SelectedObjectChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** World properties changed. */
-	virtual void WorldPropertiesChanged( gdeGameDefinition *gameDefinition );
+	virtual void WorldPropertiesChanged(gdeGameDefinition *gameDefinition);
 	
 	/** World changed. */
-	virtual void WorldPropertyChanged( gdeGameDefinition *gameDefinition,
-		gdeProperty *property );
+	virtual void WorldPropertyChanged(gdeGameDefinition *gameDefinition,
+		gdeProperty *property);
 	
 	/** World name changed. */
-	virtual void WorldPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeProperty *property );
+	virtual void WorldPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeProperty *property);
 	
 	
 	
 	/** Decal properties changed. */
-	virtual void DecalPropertiesChanged( gdeGameDefinition *gameDefinition );
+	virtual void DecalPropertiesChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Decal changed. */
-	virtual void DecalPropertyChanged( gdeGameDefinition *gameDefinition,
-		gdeProperty *property );
+	virtual void DecalPropertyChanged(gdeGameDefinition *gameDefinition,
+		gdeProperty *property);
 	
 	/** Decal name changed. */
-	virtual void DecalPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeProperty *property );
+	virtual void DecalPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeProperty *property);
 	
 	
 	
 	/** Auto find path object classes changed. */
-	virtual void AutoFindPathObjectClassesChanged( gdeGameDefinition *gameDefinition );
+	virtual void AutoFindPathObjectClassesChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Auto find path skins changed. */
-	virtual void AutoFindPathSkinsChanged( gdeGameDefinition *gameDefinition );
+	virtual void AutoFindPathSkinsChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Auto find path skies changed. */
-	virtual void AutoFindPathSkiesChanged( gdeGameDefinition *gameDefinition );
+	virtual void AutoFindPathSkiesChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** Object class categories changed. */
-	virtual void ObjectClassCategoriesChanged( gdeGameDefinition *gameDefinition );
+	virtual void ObjectClassCategoriesChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Skin categories changed. */
-	virtual void SkinCategoriesChanged( gdeGameDefinition *gameDefinition );
+	virtual void SkinCategoriesChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Sky categories changed. */
-	virtual void SkyCategoriesChanged( gdeGameDefinition *gameDefinition );
+	virtual void SkyCategoriesChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Particle emitter categories changed. */
-	virtual void ParticleEmitterCategoriesChanged( gdeGameDefinition *gameDefinition );
+	virtual void ParticleEmitterCategoriesChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active category changed. */
-	virtual void ActiveCategoryChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveCategoryChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** Object class used tags changed. */
-	virtual void ObjectClassUsedTagsChanged( gdeGameDefinition *gameDefinition );
+	virtual void ObjectClassUsedTagsChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Defined and used identifiers changed. */
-	virtual void DefinedUsedIDsChanged( gdeGameDefinition *gameDefinition );
+	virtual void DefinedUsedIDsChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** Object class count or order changed. */
-	virtual void ObjectClassStructureChanged( gdeGameDefinition *gameDefinition );
+	virtual void ObjectClassStructureChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Object class changed. */
-	virtual void ObjectClassChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void ObjectClassChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class name changed. */
-	virtual void ObjectClassNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void ObjectClassNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object property changed. */
-	virtual void OCPropertyChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	virtual void OCPropertyChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Object property name changed. */
-	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Object properties changed. */
-	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object property values changed. */
-	virtual void OCPropertyValuesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCPropertyValuesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object texture property changed. */
-	virtual void OCTexturePropertyChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	virtual void OCTexturePropertyChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Object texture property name changed. */
-	virtual void OCTexturePropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	virtual void OCTexturePropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Object texture properties changed. */
-	virtual void OCTexturePropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCTexturePropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object inherit changed. */
-	virtual void OCInheritChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCInherit *inherit );
+	virtual void OCInheritChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCInherit *inherit);
 	
 	/** Object inherit structure changed. */
-	virtual void OCInheritsChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCInheritsChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class billboards changed. */
-	virtual void OCBillboardsChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCBillboardsChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class billboard changed. */
-	virtual void OCBillboardChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCBillboard *billboard );
+	virtual void OCBillboardChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCBillboard *billboard);
 	
 	/** Object class cameras changed. */
-	virtual void OCCamerasChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCCamerasChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class camera changed. */
-	virtual void OCCameraChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCCamera *camera );
+	virtual void OCCameraChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCCamera *camera);
 	
 	/** Object class components changed. */
-	virtual void OCComponentsChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCComponentsChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class component changed. */
-	virtual void OCComponentChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponent *component );
+	virtual void OCComponentChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 	/** Object class component active texture changed. */
-	virtual void OCComponentActiveTextureChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponent *component );
+	virtual void OCComponentActiveTextureChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 	/** Object class component texture changed. */
-	virtual void OCComponentTextureChanged( gdeGameDefinition *gameDefinition,
+	virtual void OCComponentTextureChanged(gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture );
+		gdeOCComponentTexture *texture);
 	
 	/** Object class component texture name changed. */
-	virtual void OCComponentTextureNameChanged( gdeGameDefinition *gameDefinition,
+	virtual void OCComponentTextureNameChanged(gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture );
+		gdeOCComponentTexture *texture);
 	
 	/** Object class component texture properties changed. */
-	virtual void OCComponentTexturePropertiesChanged( gdeGameDefinition *gameDefinition,
+	virtual void OCComponentTexturePropertiesChanged(gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture );
+		gdeOCComponentTexture *texture);
 	
 	/** Object class environment map probes changed. */
-	virtual void OCEnvMapProbesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCEnvMapProbesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class environment map probe changed. */
-	virtual void OCEnvMapProbeChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe );
+	virtual void OCEnvMapProbeChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe);
 	
 	/** Object class lights changed. */
-	virtual void OCLightsChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCLightsChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class light changed. */
-	virtual void OCLightChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCLight *light );
+	virtual void OCLightChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCLight *light);
 	
 	/** Object class navigation blockers changed. */
-	virtual void OCNavigationBlockersChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCNavigationBlockersChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class navigation blocker changed. */
-	virtual void OCNavigationBlockerChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker );
+	virtual void OCNavigationBlockerChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker);
 	
 	/** Object class navigation spaces changed. */
-	virtual void OCNavigationSpacesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCNavigationSpacesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class navigation space changed. */
-	virtual void OCNavigationSpaceChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace );
+	virtual void OCNavigationSpaceChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace);
 	
 	/** Object class particle emitters changed. */
-	virtual void OCParticleEmittersChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCParticleEmittersChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class particle emitter changed. */
-	virtual void OCParticleEmitterChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter );
+	virtual void OCParticleEmitterChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter);
 	
 	/** Object class force fields changed. */
-	virtual void OCForceFieldsChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCForceFieldsChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class force field changed. */
-	virtual void OCForceFieldChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCForceField *field );
+	virtual void OCForceFieldChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCForceField *field);
 	
 	/** Object class snap points changed. */
-	virtual void OCSnapPointsChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCSnapPointsChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class snap point changed. */
-	virtual void OCSnapPointChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint );
+	virtual void OCSnapPointChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint);
 	
 	/** Object class snap point name changed. */
-	virtual void OCSnapPointNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint );
+	virtual void OCSnapPointNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint);
 	
 	/** Object class speakers changed. */
-	virtual void OCSpeakersChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCSpeakersChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class speaker changed. */
-	virtual void OCSpeakerChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
+	virtual void OCSpeakerChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
 		
 	/** Object class worlds changed. */
 	virtual void OCWorldsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
@@ -335,52 +335,52 @@ public:
 		gdeObjectClass *objectClass, gdeOCWorld *world);
 	
 	/** Object class textures changed. */
-	virtual void OCTexturesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCTexturesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Object class tzexture changed. */
-	virtual void OCTextureChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponentTexture *texture );
+	virtual void OCTextureChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponentTexture *texture);
 	
 	/** Object class active texture changed. */
-	virtual void OCActiveTextureChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCActiveTextureChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** Active object class changed. */
-	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class billboard changed. */
-	virtual void ActiveOCBillboardChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCBillboardChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class camera changed. */
-	virtual void ActiveOCCameraChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCCameraChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class component changed. */
-	virtual void ActiveOCComponentChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCComponentChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class environment map probe changed. */
-	virtual void ActiveOCEnvMapProbeChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCEnvMapProbeChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class light changed. */
-	virtual void ActiveOCLightChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCLightChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class navigation blocker changed. */
-	virtual void ActiveOCNavigationBlockerChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCNavigationBlockerChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class navigation space changed. */
-	virtual void ActiveOCNavigationSpaceChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCNavigationSpaceChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class particle emitter changed. */
-	virtual void ActiveOCParticleEmitterChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCParticleEmitterChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class force field changed. */
-	virtual void ActiveOCForceFieldChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCForceFieldChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class snap point changed. */
-	virtual void ActiveOCSnapPointChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCSnapPointChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class speaker changed. */
-	virtual void ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCSpeakerChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Active object class world changed. */
 	virtual void ActiveOCWorldChanged(gdeGameDefinition *gameDefinition);
@@ -388,53 +388,53 @@ public:
 	
 	
 	/** Particle emitter count or order changed. */
-	virtual void ParticleEmitterStructureChanged( gdeGameDefinition *gameDefinition );
+	virtual void ParticleEmitterStructureChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Particle emitter changed. */
-	virtual void ParticleEmitterChanged( gdeGameDefinition *gameDefinition,
-		gdeParticleEmitter *particleEmitter );
+	virtual void ParticleEmitterChanged(gdeGameDefinition *gameDefinition,
+		gdeParticleEmitter *particleEmitter);
 	
 	/** Particle emitter name changed. */
-	virtual void ParticleEmitterNameChanged( gdeGameDefinition *gameDefinition,
-		gdeParticleEmitter *particleEmitter );
+	virtual void ParticleEmitterNameChanged(gdeGameDefinition *gameDefinition,
+		gdeParticleEmitter *particleEmitter);
 	
 	/** Active particle emitter changed. */
-	virtual void ActiveParticleEmitterChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveParticleEmitterChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** Skin count or order changed. */
-	virtual void SkinStructureChanged( gdeGameDefinition *gameDefinition );
+	virtual void SkinStructureChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Skin changed. */
-	virtual void SkinChanged( gdeGameDefinition *gameDefinition, gdeSkin *skin );
+	virtual void SkinChanged(gdeGameDefinition *gameDefinition, gdeSkin *skin);
 	
 	/** Skin name changed. */
-	virtual void SkinNameChanged( gdeGameDefinition *gameDefinition, gdeSkin *skin );
+	virtual void SkinNameChanged(gdeGameDefinition *gameDefinition, gdeSkin *skin);
 	
 	/** Active skin changed. */
-	virtual void ActiveSkinChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveSkinChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** Sky count or order changed. */
-	virtual void SkyStructureChanged( gdeGameDefinition *gameDefinition );
+	virtual void SkyStructureChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Sky changed. */
-	virtual void SkyChanged( gdeGameDefinition *gameDefinition, gdeSky *sky );
+	virtual void SkyChanged(gdeGameDefinition *gameDefinition, gdeSky *sky);
 	
 	/** Sky name changed. */
-	virtual void SkyNameChanged( gdeGameDefinition *gameDefinition, gdeSky *sky );
+	virtual void SkyNameChanged(gdeGameDefinition *gameDefinition, gdeSky *sky);
 	
 	/** Active sky changed. */
-	virtual void ActiveSkyChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveSkyChanged(gdeGameDefinition *gameDefinition);
 	
 	/** Sky controller count or order changed. */
-	virtual void SkyControllerStructureChanged( gdeGameDefinition *gameDefinition, gdeSky *sky );
+	virtual void SkyControllerStructureChanged(gdeGameDefinition *gameDefinition, gdeSky *sky);
 	
 	/** Sky changed. */
-	virtual void SkyControllerChanged( gdeGameDefinition *gameDefinition,
-		gdeSky *sky, gdeSkyController *controller );
+	virtual void SkyControllerChanged(gdeGameDefinition *gameDefinition,
+		gdeSky *sky, gdeSkyController *controller);
 	/*@}*/
 };
 

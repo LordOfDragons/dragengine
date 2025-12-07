@@ -69,12 +69,12 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPAActorCmd &pPanel;
 	
 public:
-	cComboActor( ceWPAActorCmd &panel ) : pPanel( panel ){ }
+	cComboActor(ceWPAActorCmd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetActor() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetActor()){
 			return;
 		}
 		
@@ -87,12 +87,12 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPAActorCmd &pPanel;
 	
 public:
-	cTextCommand( ceWPAActorCmd &panel ) : pPanel( panel ){ }
+	cTextCommand(ceWPAActorCmd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetCommand() ){
+		if(!topic || !action || textField->GetText() == action->GetCommand()){
 			return;
 		}
 		
@@ -105,22 +105,22 @@ class cActionEditCommand : public igdeAction {
 	ceWPAActorCmd &pPanel;
 	
 public:
-	cActionEditCommand( ceWPAActorCmd &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	cActionEditCommand(ceWPAActorCmd &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"Edit command in larger dialog"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
-		decString text( action->GetCommand() );
-		if( ! igdeCommonDialogs::GetMultilineString(
+		decString text(action->GetCommand());
+		if(!igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text )
-		|| text == action->GetCommand() ){
+			"Edit Command", "Command:", text)
+		|| text == action->GetCommand()){
 			return;
 		}
 		
@@ -138,18 +138,18 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAActorCmd::ceWPAActorCmd( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAActorCmd::ceWPAActorCmd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Actor ID:", true, "Actor to send command to", pCBActorID, new cComboActor( *this ) );
+	helper.ComboBox(*this, "Actor ID:", true, "Actor to send command to", pCBActorID, new cComboActor(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst( *this, "Command:", "Command to send", formLine );
-	helper.EditString( formLine, "Command to send", pEditCommand, new cTextCommand( *this ) );
-	helper.Button( formLine, pBtnCommand, new cActionEditCommand( *this ), true );
+	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
+	helper.EditString(formLine, "Command to send", pEditCommand, new cTextCommand(*this));
+	helper.Button(formLine, pBtnCommand, new cActionEditCommand(*this), true);
 }
 
 ceWPAActorCmd::~ceWPAActorCmd(){
@@ -163,8 +163,8 @@ ceWPAActorCmd::~ceWPAActorCmd(){
 ceCAActorCommand *ceWPAActorCmd::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatActorCommand ){
-		return ( ceCAActorCommand* )action;
+	if(action && action->GetType() == ceConversationAction::eatActorCommand){
+		return (ceCAActorCommand*)action;
 		
 	}else{
 		return NULL;
@@ -176,9 +176,9 @@ void ceWPAActorCmd::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBActorID->SetText( action->GetActor() );
-		pEditCommand->SetText( action->GetCommand() );
+	if(action){
+		pCBActorID->SetText(action->GetActor());
+		pEditCommand->SetText(action->GetCommand());
 		
 	}else{
 		pCBActorID->ClearText();
@@ -190,5 +190,5 @@ void ceWPAActorCmd::UpdateAction(){
 
 void ceWPAActorCmd::UpdateActorIDLists(){
 	ceWPAction::UpdateActorIDLists();
-	UpdateComboBoxWithActorIDList( pCBActorID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
 }

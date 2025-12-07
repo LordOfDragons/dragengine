@@ -115,22 +115,22 @@ protected:
 	seWPLayer &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPLayer &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if( ! sky || ! layer ){
+		if(!sky || !layer){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, sky, layer ) ));
-		if( undo ){
-			sky->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, sky, layer)));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSky *sky, seLayer *layer ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -138,22 +138,22 @@ protected:
 	seWPLayer &pPanel;
 	
 public:
-	cBaseEditVectorListener( seWPLayer &panel ) : pPanel( panel ){ }
+	cBaseEditVectorListener(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if( ! sky || ! layer ){
+		if(!sky || !layer){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), sky, layer ) ));
-		if( undo ){
-			sky->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editVector->GetVector(), sky, layer)));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, seSky *sky, seLayer *layer ) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBaseEditVector2Listener : public igdeEditVector2Listener{
@@ -161,22 +161,22 @@ protected:
 	seWPLayer &pPanel;
 	
 public:
-	cBaseEditVector2Listener( seWPLayer &panel ) : pPanel( panel ){ }
+	cBaseEditVector2Listener(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnVector2Changed( igdeEditVector2 *editVector2 ){
+	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if( ! sky || ! layer ){
+		if(!sky || !layer){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector2->GetVector2(), sky, layer ) ));
-		if( undo ){
-			sky->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editVector2->GetVector2(), sky, layer)));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector2 &vector, seSky *sky, seLayer *layer ) = 0;
+	virtual igdeUndo *OnChanged(const decVector2 &vector, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBaseColorBoxListener : public igdeColorBoxListener{
@@ -184,22 +184,22 @@ protected:
 	seWPLayer &pPanel;
 	
 public:
-	cBaseColorBoxListener( seWPLayer &panel ) : pPanel( panel ){ }
+	cBaseColorBoxListener(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnColorChanged( igdeColorBox *colorBox ){
+	virtual void OnColorChanged(igdeColorBox *colorBox){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if( ! sky || ! layer ){
+		if(!sky || !layer){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( colorBox->GetColor(), sky, layer ) ));
-		if( undo ){
-			sky->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(colorBox->GetColor(), sky, layer)));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decColor &color, seSky *sky, seLayer *layer ) = 0;
+	virtual igdeUndo *OnChanged(const decColor &color, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBasePathListener : public igdeEditPathListener{
@@ -207,22 +207,22 @@ protected:
 	seWPLayer &pPanel;
 	
 public:
-	cBasePathListener( seWPLayer &panel ) : pPanel( panel ){ }
+	cBasePathListener(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if( ! sky || ! layer ){
+		if(!sky || !layer){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editPath->GetPath(), sky, layer ) ));
-		if( undo ){
-			sky->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editPath->GetPath(), sky, layer)));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decString &path, seSky *sky, seLayer *layer ) = 0;
+	virtual igdeUndo *OnChanged(const decString &path, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -230,82 +230,82 @@ protected:
 	seWPLayer &pPanel;
 	
 public:
-	cBaseAction( seWPLayer &panel, const char *text, const char *description ) :
-	igdeAction( text, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPLayer &panel, const char *text, const char *description) :
+	igdeAction(text, description),
+	pPanel(panel){}
 	
-	cBaseAction( seWPLayer &panel, igdeIcon *icon, const char *description ) :
-	igdeAction( "", icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPLayer &panel, igdeIcon *icon, const char *description) :
+	igdeAction("", icon, description),
+	pPanel(panel){}
 	
-	cBaseAction( seWPLayer &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPLayer &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		seSky * const sky = pPanel.GetSky();
-		if( ! sky ){
+		if(!sky){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( sky ) ));
-		if( undo ){
-			sky->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(sky)));
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( seSky *sky ) = 0;
+	virtual igdeUndo *OnAction(seSky *sky) = 0;
 	
 	virtual void Update(){
 		seSky * const sky = pPanel.GetSky();
-		if( sky ){
-			UpdateSky( *sky );
+		if(sky){
+			UpdateSky(*sky);
 			
 		}else{
-			SetEnabled( false );
+			SetEnabled(false);
 		}
 	}
 	
-	virtual void UpdateSky( const seSky & ){
-		SetEnabled( true );
+	virtual void UpdateSky(const seSky &){
+		SetEnabled(true);
 	}
 };
 
 class cBaseActionLayer : public cBaseAction{
 public:
-	cBaseActionLayer( seWPLayer &panel, const char *text, const char *description ) :
-	cBaseAction( panel, text, description ){ }
+	cBaseActionLayer(seWPLayer &panel, const char *text, const char *description) :
+	cBaseAction(panel, text, description){}
 	
-	cBaseActionLayer( seWPLayer &panel, igdeIcon *icon, const char *description ) :
-	cBaseAction( panel, icon, description ){ }
+	cBaseActionLayer(seWPLayer &panel, igdeIcon *icon, const char *description) :
+	cBaseAction(panel, icon, description){}
 	
-	cBaseActionLayer( seWPLayer &panel, const char *text, igdeIcon *icon, const char *description ) :
-	cBaseAction( panel, text, icon, description ){ }
+	cBaseActionLayer(seWPLayer &panel, const char *text, igdeIcon *icon, const char *description) :
+	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction( seSky *sky ){
+	virtual igdeUndo *OnAction(seSky *sky){
 		seLayer * const layer = pPanel.GetLayer();
-		if( layer ){
-			return OnActionLayer( sky, layer );
+		if(layer){
+			return OnActionLayer(sky, layer);
 			
 		}else{
 			return NULL;
 		}
 	}
 	
-	virtual igdeUndo *OnActionLayer( seSky *sky, seLayer *layer ) = 0;
+	virtual igdeUndo *OnActionLayer(seSky *sky, seLayer *layer) = 0;
 	
-	virtual void UpdateSky ( const seSky &sky ){
+	virtual void UpdateSky (const seSky &sky){
 		seLayer * const layer = pPanel.GetLayer();
-		if( layer ){
-			UpdateLayer( sky, *layer );
+		if(layer){
+			UpdateLayer(sky, *layer);
 			
 		}else{
-			SetEnabled( false );
+			SetEnabled(false);
 		}
 	}
 	
-	virtual void UpdateLayer( const seSky &, const seLayer & ){
-		SetEnabled( true );
+	virtual void UpdateLayer(const seSky &, const seLayer &){
+		SetEnabled(true);
 	}
 };
 
@@ -314,82 +314,82 @@ public:
 class cListLayers : public igdeListBoxListener{
 	seWPLayer &pPanel;
 public:
-	cListLayers( seWPLayer &panel ) : pPanel( panel ){ }
+	cListLayers(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSky * const sky = pPanel.GetSky();
-		if( ! sky ){
+		if(!sky){
 			return;
 		}
 		
 		const igdeListItem * const selection = listBox->GetSelectedItem();
-		sky->SetActiveLayer( selection ? ( seLayer* )selection->GetData() : NULL );
+		sky->SetActiveLayer(selection ? (seLayer*)selection->GetData() : NULL);
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		helper.MenuCommand( menu, pPanel.GetActionLayerAdd() );
-		helper.MenuCommand( menu, pPanel.GetActionLayerRemove() );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, pPanel.GetActionLayerUp() );
-		helper.MenuCommand( menu, pPanel.GetActionLayerDown() );
+		helper.MenuCommand(menu, pPanel.GetActionLayerAdd());
+		helper.MenuCommand(menu, pPanel.GetActionLayerRemove());
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, pPanel.GetActionLayerUp());
+		helper.MenuCommand(menu, pPanel.GetActionLayerDown());
 	}
 };
 
 class cActionLayerAdd : public cBaseAction{
 public:
-	cActionLayerAdd( seWPLayer &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add a layer to the end of the list." ){ }
+	cActionLayerAdd(seWPLayer &panel) : cBaseAction(panel, "Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"Add a layer to the end of the list."){}
 	
-	virtual igdeUndo *OnAction( seSky *sky ){
+	virtual igdeUndo *OnAction(seSky *sky){
 		const seLayer::Ref layer(seLayer::Ref::NewWith(pPanel.GetEnvironment()));
-		return new seULayerAdd( sky, layer );
+		return new seULayerAdd(sky, layer);
 	}
 };
 
 class cActionLayerRemove : public cBaseActionLayer{
 public:
-	cActionLayerRemove( seWPLayer &panel ) : cBaseActionLayer( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove the selected layer." ){ }
+	cActionLayerRemove(seWPLayer &panel) : cBaseActionLayer(panel, "Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Remove the selected layer."){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
-		return new seULayerRemove( layer );
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
+		return new seULayerRemove(layer);
 	}
 };
 
 class cActionLayerUp : public cBaseActionLayer{
 	igdeListBox &pListBox;
 public:
-	cActionLayerUp( seWPLayer &panel, igdeListBox &listBox ) : cBaseActionLayer( panel,
-		"Move Up", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ),
-		"Move layer up in the list." ),
-	pListBox( listBox ){ }
+	cActionLayerUp(seWPLayer &panel, igdeListBox &listBox) : cBaseActionLayer(panel,
+		"Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"Move layer up in the list."),
+	pListBox(listBox){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
-		return new seULayerMoveUp( layer );
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
+		return new seULayerMoveUp(layer);
 	}
 	
-	virtual void UpdateLayer( const seSky &, const seLayer & ){
-		SetEnabled( pListBox.GetSelection() > 0 );
+	virtual void UpdateLayer(const seSky &, const seLayer &){
+		SetEnabled(pListBox.GetSelection() > 0);
 	}
 };
 
 class cActionLayerDown : public cBaseActionLayer{
 	igdeListBox &pListBox;
 public:
-	cActionLayerDown( seWPLayer &panel, igdeListBox &listBox ) : cBaseActionLayer( panel,
-		"Move Down", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiDown ),
-		"Move layer down in the list." ),
-	pListBox( listBox ){ }
+	cActionLayerDown(seWPLayer &panel, igdeListBox &listBox) : cBaseActionLayer(panel,
+		"Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"Move layer down in the list."),
+	pListBox(listBox){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
-		return new seULayerMoveDown( layer );
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
+		return new seULayerMoveDown(layer);
 	}
 	
-	virtual void UpdateLayer( const seSky &, const seLayer & ){
-		SetEnabled( pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItemCount() - 1 );
+	virtual void UpdateLayer(const seSky &, const seLayer &){
+		SetEnabled(pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItemCount() - 1);
 	}
 };
 
@@ -397,74 +397,74 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	cTextName( seWPLayer &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextName(seWPLayer &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSky*, seLayer *layer ){
-		if( textField->GetText() == layer->GetName() ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seLayer *layer){
+		if(textField->GetText() == layer->GetName()){
 			return NULL;
 		}
-		return new seULayerSetName( layer, textField->GetText() );
+		return new seULayerSetName(layer, textField->GetText());
 	}
 };
 
 class cPathSkin : public cBasePathListener{
 public:
-	cPathSkin( seWPLayer &panel ) : cBasePathListener( panel ){ }
+	cPathSkin(seWPLayer &panel) : cBasePathListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decString &path, seSky*, seLayer *layer ){
-		if( layer->GetSkinPath() == path ){
+	virtual igdeUndo *OnChanged(const decString &path, seSky*, seLayer *layer){
+		if(layer->GetSkinPath() == path){
 			return NULL;
 		}
-		return new seULayerSetSkin( layer, path );
+		return new seULayerSetSkin(layer, path);
 	}
 };
 
 class cEditOffset : public cBaseEditVectorListener{
 public:
-	cEditOffset( seWPLayer &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditOffset(seWPLayer &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, seSky*, seLayer *layer ){
-		if( layer->GetOffset().IsEqualTo( vector ) ){
+	virtual igdeUndo *OnChanged(const decVector &vector, seSky*, seLayer *layer){
+		if(layer->GetOffset().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new seULayerSetOffset( layer, vector );
+		return new seULayerSetOffset(layer, vector);
 	}
 };
 
 class cEditOrientation : public cBaseEditVectorListener{
 public:
-	cEditOrientation( seWPLayer &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditOrientation(seWPLayer &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, seSky*, seLayer *layer ){
-		if( layer->GetOrientation().IsEqualTo( vector ) ){
+	virtual igdeUndo *OnChanged(const decVector &vector, seSky*, seLayer *layer){
+		if(layer->GetOrientation().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new seULayerSetOrientation( layer, vector );
+		return new seULayerSetOrientation(layer, vector);
 	}
 };
 
 class cEditColor : public cBaseColorBoxListener{
 public:
-	cEditColor( seWPLayer &panel ) : cBaseColorBoxListener( panel ){ }
+	cEditColor(seWPLayer &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decColor &color, seSky*, seLayer *layer ){
-		if( layer->GetColor().IsEqualTo( color ) ){
+	virtual igdeUndo *OnChanged(const decColor &color, seSky*, seLayer *layer){
+		if(layer->GetColor().IsEqualTo(color)){
 			return NULL;
 		}
-		return new seULayerSetColor( layer, color );
+		return new seULayerSetColor(layer, color);
 	}
 };
 
 class cTextIntensity : public cBaseTextFieldListener{
 public:
-	cTextIntensity( seWPLayer &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextIntensity(seWPLayer &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSky*, seLayer *layer ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seLayer *layer){
 		const float value = textField->GetFloat();
-		if( fabsf( layer->GetIntensity() - value ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(layer->GetIntensity() - value) < FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new seULayerSetIntensity( layer, value );
+		return new seULayerSetIntensity(layer, value);
 	}
 };
 
@@ -472,105 +472,105 @@ class cSliderTransparency : public igdeEditSliderTextListener{
 	seWPLayer &pPanel;
 	igdeUndo::Ref pUndo;
 public:
-	cSliderTransparency( seWPLayer &panel ) : pPanel( panel ){ }
+	cSliderTransparency(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText ){
+	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
 		seSky * const sky = pPanel.GetSky();
 		seLayer * const layer = pPanel.GetLayer();
-		if( ! sky || ! layer ){
+		if(!sky || !layer){
 			return;
 		}
 		
-		if( pUndo ){
-			( ( seULayerSetTransparency& )( igdeUndo& )pUndo ).SetNewTransparency( sliderText->GetValue() );
+		if(pUndo){
+			((seULayerSetTransparency&)(igdeUndo&)pUndo).SetNewTransparency(sliderText->GetValue());
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOver( new seULayerSetTransparency( layer, sliderText->GetValue() ) );
-			sky->GetUndoSystem()->Add( pUndo );
+			pUndo.TakeOver(new seULayerSetTransparency(layer, sliderText->GetValue()));
+			sky->GetUndoSystem()->Add(pUndo);
 		}
 	}
 	
-	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText ){
-		if( ! pUndo ){
+	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
+		if(!pUndo){
 			return;
 		}
 		
-		igdeUndo::Ref undo( pUndo );
+		igdeUndo::Ref undo(pUndo);
 		pUndo = NULL;
 		
-		( ( seULayerSetTransparency& )( igdeUndo& )undo ).SetNewTransparency( sliderText->GetValue() );
+		((seULayerSetTransparency&)(igdeUndo&)undo).SetNewTransparency(sliderText->GetValue());
 		undo->Redo();
 	}
 };
 
 class cActionMulBySkyLight : public cBaseActionLayer{
 public:
-	cActionMulBySkyLight( seWPLayer &panel ) : cBaseActionLayer( panel, "Multiply By Sky Light",
-		"Determines if the layer intensity is multiplied by the sky light intensity" ){ }
+	cActionMulBySkyLight(seWPLayer &panel) : cBaseActionLayer(panel, "Multiply By Sky Light",
+		"Determines if the layer intensity is multiplied by the sky light intensity"){ }
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
-		return new seULayerToggleMulBySkyLight( layer );
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
+		return new seULayerToggleMulBySkyLight(layer);
 	}
 };
 
 class cActionMulBySkyColor : public cBaseActionLayer{
 public:
-	cActionMulBySkyColor( seWPLayer &panel ) : cBaseActionLayer( panel, "Multiply By Sky Color",
-		"Determines if the layer color is multiplied by the sky light color" ){ }
+	cActionMulBySkyColor(seWPLayer &panel) : cBaseActionLayer(panel, "Multiply By Sky Color",
+		"Determines if the layer color is multiplied by the sky light color"){ }
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
-		return new seULayerToggleMulBySkyColor( layer );
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
+		return new seULayerToggleMulBySkyColor(layer);
 	}
 };
 
 class cEditLightColor : public cBaseColorBoxListener{
 public:
-	cEditLightColor( seWPLayer &panel ) : cBaseColorBoxListener( panel ){ }
+	cEditLightColor(seWPLayer &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decColor &color, seSky*, seLayer *layer ){
-		if( layer->GetLightColor().IsEqualTo( color ) ){
+	virtual igdeUndo *OnChanged(const decColor &color, seSky*, seLayer *layer){
+		if(layer->GetLightColor().IsEqualTo(color)){
 			return NULL;
 		}
-		return new seULayerSetLightColor( layer, color );
+		return new seULayerSetLightColor(layer, color);
 	}
 };
 
 class cTextLightIntensity : public cBaseTextFieldListener{
 public:
-	cTextLightIntensity( seWPLayer &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextLightIntensity(seWPLayer &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSky*, seLayer *layer ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seLayer *layer){
 		const float value = textField->GetFloat();
-		if( fabsf( layer->GetLightIntensity() - value ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(layer->GetLightIntensity() - value) < FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new seULayerSetLightIntensity( layer, value );
+		return new seULayerSetLightIntensity(layer, value);
 	}
 };
 
 class cTextAmbientIntensity : public cBaseTextFieldListener{
 public:
-	cTextAmbientIntensity( seWPLayer &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextAmbientIntensity(seWPLayer &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSky*, seLayer *layer ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seLayer *layer){
 		const float value = textField->GetFloat();
-		if( fabsf( layer->GetAmbientIntensity() - value ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(layer->GetAmbientIntensity() - value) < FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new seULayerSetAmbientIntensity( layer, value );
+		return new seULayerSetAmbientIntensity(layer, value);
 	}
 };
 
 class cEditLightOrientation : public cBaseEditVectorListener{
 public:
-	cEditLightOrientation( seWPLayer &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditLightOrientation(seWPLayer &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, seSky*, seLayer *layer ){
-		if( layer->GetLightOrientation().IsEqualTo( vector ) ){
+	virtual igdeUndo *OnChanged(const decVector &vector, seSky*, seLayer *layer){
+		if(layer->GetLightOrientation().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new seULayerSetLightOrientation( layer, vector );
+		return new seULayerSetLightOrientation(layer, vector);
 	}
 };
 
@@ -578,21 +578,21 @@ public:
 class cSpinBody : public igdeSpinTextFieldListener{
 	seWPLayer &pPanel;
 public:
-	cSpinBody( seWPLayer &panel ) : pPanel( panel ){ }
+	cSpinBody(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged( igdeSpinTextField *textField ){
+	virtual void OnValueChanged(igdeSpinTextField *textField){
 		seLayer * const layer = pPanel.GetLayer();
-		if( ! layer ){
+		if(!layer){
 			return;
 		}
 		
 		const int index = textField->GetValue();
 		
-		if( index == -1 ){
-			layer->SetActiveBody( NULL );
+		if(index == -1){
+			layer->SetActiveBody(NULL);
 			
 		}else{
-			layer->SetActiveBody( layer->GetBodies().GetAt( index ) );
+			layer->SetActiveBody(layer->GetBodies().GetAt(index));
 		}
 	}
 };
@@ -600,148 +600,148 @@ public:
 class cActionBody : public cBaseActionLayer{
 	igdeButton::Ref &pButton;
 public:
-	cActionBody( seWPLayer &panel, igdeButton::Ref &button ) :
-	cBaseActionLayer( panel, "...", "Body menu" ), pButton( button ){ }
+	cActionBody(seWPLayer &panel, igdeButton::Ref &button) :
+	cBaseActionLayer(panel, "...", "Body menu"), pButton(button){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer* ){
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer*){
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
 		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(pPanel.GetEnvironment()));
-		helper.MenuCommand( menu, pPanel.GetActionBodyAdd() );
-		helper.MenuCommand( menu, pPanel.GetActionBodyRemove() );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, pPanel.GetActionBodyUp() );
-		helper.MenuCommand( menu, pPanel.GetActionBodyDown() );
-		menu->PopupBottom( pButton );
+		helper.MenuCommand(menu, pPanel.GetActionBodyAdd());
+		helper.MenuCommand(menu, pPanel.GetActionBodyRemove());
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, pPanel.GetActionBodyUp());
+		helper.MenuCommand(menu, pPanel.GetActionBodyDown());
+		menu->PopupBottom(pButton);
 		return NULL;
 	}
 };
 
 class cActionBodyAdd : public cBaseActionLayer{
 public:
-	cActionBodyAdd( seWPLayer &panel ) : cBaseActionLayer( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add body to end of list" ){ }
+	cActionBodyAdd(seWPLayer &panel) : cBaseActionLayer(panel, "Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"Add body to end of list"){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
 		const seBody::Ref refBody(seBody::Ref::NewWith(pPanel.GetEngine()));
-		return new seUBodyAdd( layer, ( seBody* )refBody.operator->() );
+		return new seUBodyAdd(layer, (seBody*)refBody.operator->());
 	}
 };
 
 class cActionBodyRemove : public cBaseActionLayer{
 public:
-	cActionBodyRemove( seWPLayer &panel ) : cBaseActionLayer( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove selected body from list" ){ }
+	cActionBodyRemove(seWPLayer &panel) : cBaseActionLayer(panel, "Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Remove selected body from list"){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer* ){
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
-		if( ! body ){
+		if(!body){
 			return NULL;
 		}
-		return new seUBodyRemove( body );
+		return new seUBodyRemove(body);
 	}
 	
-	void UpdateLayer( const seSky &, const seLayer & ){
-		SetEnabled( pPanel.GetBody() );
+	void UpdateLayer(const seSky &, const seLayer &){
+		SetEnabled(pPanel.GetBody());
 	}
 };
 
 class cActionBodyUp : public cBaseActionLayer{
 	igdeSpinTextField &pSpinTextField;
 public:
-	cActionBodyUp( seWPLayer &panel, igdeSpinTextField &spinTextField ) :
-	cBaseActionLayer( panel, "Move Up",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ),
-		"Move body up in the list" ),
-	pSpinTextField( spinTextField ){ }
+	cActionBodyUp(seWPLayer &panel, igdeSpinTextField &spinTextField) :
+	cBaseActionLayer(panel, "Move Up",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"Move body up in the list"),
+	pSpinTextField(spinTextField){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer* ){
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
 		const int index = pSpinTextField.GetValue();
-		if( body && index == pSpinTextField.GetLower() ){
+		if(body && index == pSpinTextField.GetLower()){
 			return NULL;
 		}
-		return new seUBodyMoveUp( body );
+		return new seUBodyMoveUp(body);
 	}
 	
-	void UpdateLayer( const seSky &, const seLayer & ){
-		SetEnabled( pSpinTextField.GetValue() > pSpinTextField.GetLower() );
+	void UpdateLayer(const seSky &, const seLayer &){
+		SetEnabled(pSpinTextField.GetValue() > pSpinTextField.GetLower());
 	}
 };
 
 class cActionBodyDown : public cBaseActionLayer{
 	igdeSpinTextField &pSpinTextField;
 public:
-	cActionBodyDown( seWPLayer &panel, igdeSpinTextField &spinTextField ) :
-	cBaseActionLayer( panel, "Move Down",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiDown ),
-		"Move body down in the list" ),
-	pSpinTextField( spinTextField ){ }
+	cActionBodyDown(seWPLayer &panel, igdeSpinTextField &spinTextField) :
+	cBaseActionLayer(panel, "Move Down",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"Move body down in the list"),
+	pSpinTextField(spinTextField){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer* ){
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
 		const int index = pSpinTextField.GetValue();
-		if( body && index == pSpinTextField.GetUpper() ){
+		if(body && index == pSpinTextField.GetUpper()){
 			return NULL;
 		}
-		return new seUBodyMoveDown( body );
+		return new seUBodyMoveDown(body);
 	}
 	
-	void UpdateLayer( const seSky &, const seLayer & ){
-		SetEnabled( pSpinTextField.GetValue() < pSpinTextField.GetUpper() );
+	void UpdateLayer(const seSky &, const seLayer &){
+		SetEnabled(pSpinTextField.GetValue() < pSpinTextField.GetUpper());
 	}
 };
 
 class cPathBodySkin : public cBasePathListener{
 public:
-	cPathBodySkin( seWPLayer &panel ) : cBasePathListener( panel ){ }
+	cPathBodySkin(seWPLayer &panel) : cBasePathListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decString &path, seSky*, seLayer* ){
+	virtual igdeUndo *OnChanged(const decString &path, seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
-		if( ! body || body->GetSkinPath() == path ){
+		if(!body || body->GetSkinPath() == path){
 			return NULL;
 		}
-		return new seUBodySetSkin( body, path );
+		return new seUBodySetSkin(body, path);
 	}
 };
 
 class cEditBodyOrientation : public cBaseEditVectorListener{
 public:
-	cEditBodyOrientation( seWPLayer &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditBodyOrientation(seWPLayer &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, seSky*, seLayer* ){
+	virtual igdeUndo *OnChanged(const decVector &vector, seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
-		if( ! body || body->GetOrientation().IsEqualTo( vector ) ){
+		if(!body || body->GetOrientation().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new seUBodySetOrientation( body, vector );
+		return new seUBodySetOrientation(body, vector);
 	}
 };
 
 class cEditBodySize : public cBaseEditVector2Listener{
 public:
-	cEditBodySize( seWPLayer &panel ) : cBaseEditVector2Listener( panel ){ }
+	cEditBodySize(seWPLayer &panel) : cBaseEditVector2Listener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector2 &vector, seSky*, seLayer* ){
+	virtual igdeUndo *OnChanged(const decVector2 &vector, seSky*, seLayer*){
 		seBody * const body = pPanel.GetBody();
-		if( ! body || body->GetSize().IsEqualTo( vector ) ){
+		if(!body || body->GetSize().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new seUBodySetSize( body, vector );
+		return new seUBodySetSize(body, vector);
 	}
 };
 
 class cEditBodyColor : public cBaseColorBoxListener{
 public:
-	cEditBodyColor( seWPLayer &panel ) : cBaseColorBoxListener( panel ){ }
+	cEditBodyColor(seWPLayer &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decColor &color, seSky*, seLayer *layer ){
+	virtual igdeUndo *OnChanged(const decColor &color, seSky*, seLayer *layer){
 		seBody * const body = pPanel.GetBody();
-		if( layer->GetColor().IsEqualTo( color ) ){
+		if(layer->GetColor().IsEqualTo(color)){
 			return NULL;
 		}
-		return new seUBodySetColor( body, color );
+		return new seUBodySetColor(body, color);
 	}
 };
 
@@ -749,12 +749,12 @@ public:
 class cComboTarget : public igdeComboBoxListener{
 	seWPLayer &pPanel;
 public:
-	cComboTarget( seWPLayer &panel ) : pPanel( panel ){ }
+	cComboTarget(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( pPanel.GetLayer() && comboBox->GetSelectedItem() ){
-			pPanel.GetLayer()->SetActiveTarget( ( deSkyLayer::eTargets )( intptr_t )
-				comboBox->GetSelectedItem()->GetData() );
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(pPanel.GetLayer() && comboBox->GetSelectedItem()){
+			pPanel.GetLayer()->SetActiveTarget((deSkyLayer::eTargets)(intptr_t)
+				comboBox->GetSelectedItem()->GetData());
 		}
 	}
 };
@@ -762,67 +762,67 @@ public:
 class cListLinks : public igdeListBoxListener{
 	seWPLayer &pPanel;
 public:
-	cListLinks( seWPLayer &panel ) : pPanel( panel ){ }
+	cListLinks(seWPLayer &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		helper.MenuCommand( menu, pPanel.GetActionLinkRemove() );
+		helper.MenuCommand(menu, pPanel.GetActionLinkRemove());
 	}
 };
 
 class cActionLinkAdd : public cBaseActionLayer{
 	igdeComboBox &pComboLinks;
 public:
-	cActionLinkAdd( seWPLayer &panel, igdeComboBox &comboLinks ) : cBaseActionLayer( panel,
-		"", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallPlus ),
-		"Add link to target if not present" ),
-	pComboLinks( comboLinks ){ }
+	cActionLinkAdd(seWPLayer &panel, igdeComboBox &comboLinks) : cBaseActionLayer(panel,
+		"", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
+		"Add link to target if not present"),
+	pComboLinks(comboLinks){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
 		const igdeListItem * const selection = pComboLinks.GetSelectedItem();
-		if( ! selection ){
+		if(!selection){
 			return NULL;
 		}
 		
 		const deSkyLayer::eTargets target = layer->GetActiveTarget();
-		seLink * const link = ( seLink* )selection->GetData();
-		if( layer->GetTarget( target ).GetLinks().Has( link ) ){
+		seLink * const link = (seLink*)selection->GetData();
+		if(layer->GetTarget(target).GetLinks().Has(link)){
 			return NULL;
 		}
 		
-		return new seUTargetAddLink( layer, target, link );
+		return new seUTargetAddLink(layer, target, link);
 	}
 	
-	virtual void UpdateLayer( const seSky &, const seLayer & ){
-		SetEnabled( pComboLinks.GetSelectedItem() );
+	virtual void UpdateLayer(const seSky &, const seLayer &){
+		SetEnabled(pComboLinks.GetSelectedItem());
 	}
 };
 
 class cActionLinkRemove : public cBaseActionLayer{
 	igdeListBox &pListLinks;
 public:
-	cActionLinkRemove( seWPLayer &panel, igdeListBox &listLinks ) : cBaseActionLayer( panel,
-		"Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove selected link from target" ),
-	pListLinks( listLinks ){ }
+	cActionLinkRemove(seWPLayer &panel, igdeListBox &listLinks) : cBaseActionLayer(panel,
+		"Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Remove selected link from target"),
+	pListLinks(listLinks){}
 	
-	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
+	virtual igdeUndo *OnActionLayer(seSky*, seLayer *layer){
 		const igdeListItem * const selection = pListLinks.GetSelectedItem();
-		if( ! selection ){
+		if(!selection){
 			return NULL;
 		}
 		
 		const deSkyLayer::eTargets target = layer->GetActiveTarget();
-		seLink * const link = ( seLink* )selection->GetData();
-		if( ! layer->GetTarget( target ).GetLinks().Has( link ) ){
+		seLink * const link = (seLink*)selection->GetData();
+		if(!layer->GetTarget(target).GetLinks().Has(link)){
 			return NULL;
 		}
 		
-		return new seUTargetRemoveLink( layer, target, link );
+		return new seUTargetRemoveLink(layer, target, link);
 	}
 	
-	virtual void UpdateLayer( const seSky &, const seLayer &layer ){
-		SetEnabled( layer.GetTarget( layer.GetActiveTarget() ).GetLinks().GetCount() > 0 );
+	virtual void UpdateLayer(const seSky &, const seLayer &layer){
+		SetEnabled(layer.GetTarget(layer.GetActiveTarget()).GetLinks().GetCount() > 0);
 	}
 };
 
@@ -836,133 +836,133 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPLayer::seWPLayer( seWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pSky( NULL )
+seWPLayer::seWPLayer(seWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
+pSky(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine, frameLine2;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPLayerListener( *this );
+	pListener = new seWPLayerListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	// layer list
-	helper.GroupBoxFlow( content, groupBox, "Layers:" );
-	helper.ListBox( groupBox, 8, "Layers", pListLayer, new cListLayers( *this ) );
+	helper.GroupBoxFlow(content, groupBox, "Layers:");
+	helper.ListBox(groupBox, 8, "Layers", pListLayer, new cListLayers(*this));
 	
-	pActionLayerAdd.TakeOver( new cActionLayerAdd( *this ) );
-	pActionLayerRemove.TakeOver( new cActionLayerRemove( *this ) );
-	pActionLayerUp.TakeOver( new cActionLayerUp( *this, pListLayer ) );
-	pActionLayerDown.TakeOver( new cActionLayerDown( *this, pListLayer ) );
+	pActionLayerAdd.TakeOver(new cActionLayerAdd(*this));
+	pActionLayerRemove.TakeOver(new cActionLayerRemove(*this));
+	pActionLayerUp.TakeOver(new cActionLayerUp(*this, pListLayer));
+	pActionLayerDown.TakeOver(new cActionLayerDown(*this, pListLayer));
 	
 	// layer settings
-	helper.GroupBox( content, groupBox, "Layer Settings:" );
-	helper.EditString( groupBox, "Name:", "Name of the layer", pEditName, new cTextName( *this ) );
-	helper.EditPath( groupBox, "Skin:", "Background skin of the layer",
-		igdeEnvironment::efpltSkin, pEditSkin, new cPathSkin( *this ) );
-	helper.EditVector( groupBox, "Offset:", "Offset of the layer", pEditOffset,
-		new cEditOffset( *this ) );
-	helper.EditVector( groupBox, "Orientation:", "Orientation of the layer", pEditOrientation,
-		new cEditOrientation( *this ) );
+	helper.GroupBox(content, groupBox, "Layer Settings:");
+	helper.EditString(groupBox, "Name:", "Name of the layer", pEditName, new cTextName(*this));
+	helper.EditPath(groupBox, "Skin:", "Background skin of the layer",
+		igdeEnvironment::efpltSkin, pEditSkin, new cPathSkin(*this));
+	helper.EditVector(groupBox, "Offset:", "Offset of the layer", pEditOffset,
+		new cEditOffset(*this));
+	helper.EditVector(groupBox, "Orientation:", "Orientation of the layer", pEditOrientation,
+		new cEditOrientation(*this));
 	
-	helper.FormLine( groupBox, "Color:",
-		"Color and intensity the content layer is multiplied with", frameLine );
-	helper.ColorBox( frameLine, "Color or layer content", pClrLayer, new cEditColor( *this ) );
-	helper.EditFloat( frameLine, "Intensity of the layer content", pEditIntensity,
-		new cTextIntensity( *this ) );
+	helper.FormLine(groupBox, "Color:",
+		"Color and intensity the content layer is multiplied with", frameLine);
+	helper.ColorBox(frameLine, "Color or layer content", pClrLayer, new cEditColor(*this));
+	helper.EditFloat(frameLine, "Intensity of the layer content", pEditIntensity,
+		new cTextIntensity(*this));
 	
-	helper.EditSliderText( groupBox, "Transparency:", "Transparency of the layer",
-		0.0f, 1.0f, 3, 3, 0.1f, pSldTransparency, new cSliderTransparency( *this ) );
+	helper.EditSliderText(groupBox, "Transparency:", "Transparency of the layer",
+		0.0f, 1.0f, 3, 3, 0.1f, pSldTransparency, new cSliderTransparency(*this));
 	
-	helper.CheckBox( groupBox, pChkMulBySkyLight, new cActionMulBySkyLight( *this ), true );
-	helper.CheckBox( groupBox, pChkMulBySkyColor, new cActionMulBySkyColor( *this ), true );
+	helper.CheckBox(groupBox, pChkMulBySkyLight, new cActionMulBySkyLight(*this), true);
+	helper.CheckBox(groupBox, pChkMulBySkyColor, new cActionMulBySkyColor(*this), true);
 	
 	// light settings
-	helper.GroupBox( content, groupBox, "Light Settings:" );
+	helper.GroupBox(content, groupBox, "Light Settings:");
 	
-	helper.FormLine( groupBox, "Light:", "Light color, intensity and ambient intensity", frameLine );
-	helper.ColorBox( frameLine, "Color or layer light", pClrLight, new cEditLightColor( *this ) );
-	helper.EditFloat( frameLine, "Intensity of the layer light", pEditLightIntensity,
-		new cTextLightIntensity( *this ) );
-	helper.EditFloat( frameLine, "Ambient intensity of the layer light", pEditAmbientIntensity,
-		new cTextAmbientIntensity( *this ) );
+	helper.FormLine(groupBox, "Light:", "Light color, intensity and ambient intensity", frameLine);
+	helper.ColorBox(frameLine, "Color or layer light", pClrLight, new cEditLightColor(*this));
+	helper.EditFloat(frameLine, "Intensity of the layer light", pEditLightIntensity,
+		new cTextLightIntensity(*this));
+	helper.EditFloat(frameLine, "Ambient intensity of the layer light", pEditAmbientIntensity,
+		new cTextAmbientIntensity(*this));
 	
-	helper.EditVector( groupBox, "Orientation:", "Orientation of the light relative to the layer",
-		pEditLightOrientation, new cEditLightOrientation( *this ) );
+	helper.EditVector(groupBox, "Orientation:", "Orientation of the light relative to the layer",
+		pEditLightOrientation, new cEditLightOrientation(*this));
 	
 	// bodies
-	helper.GroupBox( content, groupBox, "Bodies:" );
+	helper.GroupBox(content, groupBox, "Bodies:");
 	
-	helper.FormLine( groupBox, "Body:", "Body to edit", frameLine );
-	helper.EditSpinInteger( frameLine, "Body to edit", 0, 0, pSpinBody, new cSpinBody( *this ) );
+	helper.FormLine(groupBox, "Body:", "Body to edit", frameLine);
+	helper.EditSpinInteger(frameLine, "Body to edit", 0, 0, pSpinBody, new cSpinBody(*this));
 	
-	pActionBodyAdd.TakeOver( new cActionBodyAdd( *this ) );
-	pActionBodyRemove.TakeOver( new cActionBodyRemove( *this ) );
-	pActionBodyUp.TakeOver( new cActionBodyUp( *this, pSpinBody ) );
-	pActionBodyDown.TakeOver( new cActionBodyDown( *this, pSpinBody ) );
+	pActionBodyAdd.TakeOver(new cActionBodyAdd(*this));
+	pActionBodyRemove.TakeOver(new cActionBodyRemove(*this));
+	pActionBodyUp.TakeOver(new cActionBodyUp(*this, pSpinBody));
+	pActionBodyDown.TakeOver(new cActionBodyDown(*this, pSpinBody));
 	
-	helper.Button( frameLine, pBtnBody, new cActionBody( *this, pBtnBody ), true );
+	helper.Button(frameLine, pBtnBody, new cActionBody(*this, pBtnBody), true);
 	
-	helper.EditPath( groupBox, "Skin:", "Skin for body",
-		igdeEnvironment::efpltSkin, pEditBodySkin, new cPathBodySkin( *this ) );
-	helper.EditVector( groupBox, "Orientation:", "Orientation of the body",
-		pEditBodyOrienation, new cEditBodyOrientation( *this ) );
-	helper.EditVector2( groupBox, "Size:", "Size of the body in degrees",
-		pEditBodySize, new cEditBodySize( *this ) );
-	helper.ColorBox( groupBox, "Color:", "Color the content body is multiplied with",
-		pClrBody, new cEditBodyColor( *this ) );
+	helper.EditPath(groupBox, "Skin:", "Skin for body",
+		igdeEnvironment::efpltSkin, pEditBodySkin, new cPathBodySkin(*this));
+	helper.EditVector(groupBox, "Orientation:", "Orientation of the body",
+		pEditBodyOrienation, new cEditBodyOrientation(*this));
+	helper.EditVector2(groupBox, "Size:", "Size of the body in degrees",
+		pEditBodySize, new cEditBodySize(*this));
+	helper.ColorBox(groupBox, "Color:", "Color the content body is multiplied with",
+		pClrBody, new cEditBodyColor(*this));
 	
 	// targets
-	helper.GroupBoxFlow( content, groupBox, "Targets:" );
+	helper.GroupBoxFlow(content, groupBox, "Targets:");
 	
-	frameLine.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( frameLine );
+	frameLine.TakeOver(new igdeContainerForm(env));
+	groupBox->AddChild(frameLine);
 	
-	helper.ComboBox( frameLine, "Target:", "Select target to edit", pCBTarget, new cComboTarget( *this ) );
-	pCBTarget->AddItem( "Offset X", NULL, ( void* )( intptr_t )deSkyLayer::etOffsetX );
-	pCBTarget->AddItem( "Offset Y", NULL, ( void* )( intptr_t )deSkyLayer::etOffsetY );
-	pCBTarget->AddItem( "Offset Z", NULL, ( void* )( intptr_t )deSkyLayer::etOffsetZ );
-	pCBTarget->AddItem( "Orientation X", NULL, ( void* )( intptr_t )deSkyLayer::etOrientationX );
-	pCBTarget->AddItem( "Orientation Y", NULL, ( void* )( intptr_t )deSkyLayer::etOrientationY );
-	pCBTarget->AddItem( "Orientation Z", NULL, ( void* )( intptr_t )deSkyLayer::etOrientationZ );
-	pCBTarget->AddItem( "Rotation X", NULL, ( void* )( intptr_t )deSkyLayer::etRotationX );
-	pCBTarget->AddItem( "Rotation Y", NULL, ( void* )( intptr_t )deSkyLayer::etRotationY );
-	pCBTarget->AddItem( "Rotation Z", NULL, ( void* )( intptr_t )deSkyLayer::etRotationZ );
-	pCBTarget->AddItem( "Color Red", NULL, ( void* )( intptr_t )deSkyLayer::etColorR );
-	pCBTarget->AddItem( "Color Green", NULL, ( void* )( intptr_t )deSkyLayer::etColorG );
-	pCBTarget->AddItem( "Color Blue", NULL, ( void* )( intptr_t )deSkyLayer::etColorB );
-	pCBTarget->AddItem( "Intensity", NULL, ( void* )( intptr_t )deSkyLayer::etIntensity );
-	pCBTarget->AddItem( "Transparency", NULL, ( void* )( intptr_t )deSkyLayer::etTransparency );
-	pCBTarget->AddItem( "Light Color Red", NULL, ( void* )( intptr_t )deSkyLayer::etLightColorR );
-	pCBTarget->AddItem( "Light Color Green", NULL, ( void* )( intptr_t )deSkyLayer::etLightColorG );
-	pCBTarget->AddItem( "Light Color Blue", NULL, ( void* )( intptr_t )deSkyLayer::etLightColorB );
-	pCBTarget->AddItem( "Light Intensity", NULL, ( void* )( intptr_t )deSkyLayer::etLightIntensity );
-	pCBTarget->AddItem( "Light Ambient Intensity", NULL, ( void* )( intptr_t )deSkyLayer::etAmbientIntensity );
+	helper.ComboBox(frameLine, "Target:", "Select target to edit", pCBTarget, new cComboTarget(*this));
+	pCBTarget->AddItem("Offset X", NULL, (void*)(intptr_t)deSkyLayer::etOffsetX);
+	pCBTarget->AddItem("Offset Y", NULL, (void*)(intptr_t)deSkyLayer::etOffsetY);
+	pCBTarget->AddItem("Offset Z", NULL, (void*)(intptr_t)deSkyLayer::etOffsetZ);
+	pCBTarget->AddItem("Orientation X", NULL, (void*)(intptr_t)deSkyLayer::etOrientationX);
+	pCBTarget->AddItem("Orientation Y", NULL, (void*)(intptr_t)deSkyLayer::etOrientationY);
+	pCBTarget->AddItem("Orientation Z", NULL, (void*)(intptr_t)deSkyLayer::etOrientationZ);
+	pCBTarget->AddItem("Rotation X", NULL, (void*)(intptr_t)deSkyLayer::etRotationX);
+	pCBTarget->AddItem("Rotation Y", NULL, (void*)(intptr_t)deSkyLayer::etRotationY);
+	pCBTarget->AddItem("Rotation Z", NULL, (void*)(intptr_t)deSkyLayer::etRotationZ);
+	pCBTarget->AddItem("Color Red", NULL, (void*)(intptr_t)deSkyLayer::etColorR);
+	pCBTarget->AddItem("Color Green", NULL, (void*)(intptr_t)deSkyLayer::etColorG);
+	pCBTarget->AddItem("Color Blue", NULL, (void*)(intptr_t)deSkyLayer::etColorB);
+	pCBTarget->AddItem("Intensity", NULL, (void*)(intptr_t)deSkyLayer::etIntensity);
+	pCBTarget->AddItem("Transparency", NULL, (void*)(intptr_t)deSkyLayer::etTransparency);
+	pCBTarget->AddItem("Light Color Red", NULL, (void*)(intptr_t)deSkyLayer::etLightColorR);
+	pCBTarget->AddItem("Light Color Green", NULL, (void*)(intptr_t)deSkyLayer::etLightColorG);
+	pCBTarget->AddItem("Light Color Blue", NULL, (void*)(intptr_t)deSkyLayer::etLightColorB);
+	pCBTarget->AddItem("Light Intensity", NULL, (void*)(intptr_t)deSkyLayer::etLightIntensity);
+	pCBTarget->AddItem("Light Ambient Intensity", NULL, (void*)(intptr_t)deSkyLayer::etAmbientIntensity);
 	
-	helper.FormLineStretchFirst( frameLine, "Link:", "Links", frameLine2 );
-	helper.ComboBox( frameLine2, "Links", pCBLinks, NULL );
-	pActionLinkAdd.TakeOver( new cActionLinkAdd( *this, pCBLinks ) );
-	helper.Button( frameLine2, pBtnLinkAdd, pActionLinkAdd );
+	helper.FormLineStretchFirst(frameLine, "Link:", "Links", frameLine2);
+	helper.ComboBox(frameLine2, "Links", pCBLinks, NULL);
+	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this, pCBLinks));
+	helper.Button(frameLine2, pBtnLinkAdd, pActionLinkAdd);
 	
-	helper.ListBox( groupBox, 8, "Links", pListLinks, new cListLinks( *this ) );
+	helper.ListBox(groupBox, 8, "Links", pListLinks, new cListLinks(*this));
 	pListLinks->SetDefaultSorter();
 	
-	pActionLinkRemove.TakeOver( new cActionLinkRemove( *this, pListLinks ) );
+	pActionLinkRemove.TakeOver(new cActionLinkRemove(*this, pListLinks));
 }
 
 seWPLayer::~seWPLayer(){
-	if( pSky ){
-		pSky->RemoveListener( pListener );
+	if(pSky){
+		pSky->RemoveListener(pListener);
 		pSky->FreeReference();
 		pSky = NULL;
 	}
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -972,20 +972,20 @@ seWPLayer::~seWPLayer(){
 // Management
 ///////////////
 
-void seWPLayer::SetSky( seSky *sky ){
-	if( sky == pSky ){
+void seWPLayer::SetSky(seSky *sky){
+	if(sky == pSky){
 		return;
 	}
 	
-	if( pSky ){
-		pSky->RemoveListener( pListener );
+	if(pSky){
+		pSky->RemoveListener(pListener);
 		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
-	if( sky ){
-		sky->AddListener( pListener );
+	if(sky){
+		sky->AddListener(pListener);
 		sky->AddReference();
 	}
 	
@@ -995,13 +995,13 @@ void seWPLayer::SetSky( seSky *sky ){
 }
 
 void seWPLayer::OnSkyPathChanged(){
-	if( pSky ){
-		pEditSkin->SetBasePath( pSky->GetDirectoryPath() );
-		pEditBodySkin->SetBasePath( pSky->GetDirectoryPath() );
+	if(pSky){
+		pEditSkin->SetBasePath(pSky->GetDirectoryPath());
+		pEditBodySkin->SetBasePath(pSky->GetDirectoryPath());
 		
 	}else{
-		pEditSkin->SetBasePath( "" );
-		pEditBodySkin->SetBasePath( "" );
+		pEditSkin->SetBasePath("");
+		pEditBodySkin->SetBasePath("");
 	}
 }
 
@@ -1017,16 +1017,16 @@ seBody *seWPLayer::GetBody() const{
 void seWPLayer::UpdateLayerList(){
 	pListLayer->RemoveAllItems();
 	
-	if( pSky ){
+	if(pSky){
 		const seLayerList &layers = pSky->GetLayers();
 		const int count = layers.GetCount();
 		decString text;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			seLayer * const layer = layers.GetAt( i );
-			text.Format( "%d: %s", i, layer->GetName().GetString() );
-			pListLayer->AddItem( text, NULL, layer );
+		for(i=0; i<count; i++){
+			seLayer * const layer = layers.GetAt(i);
+			text.Format("%d: %s", i, layer->GetName().GetString());
+			pListLayer->AddItem(text, NULL, layer);
 		}
 	}
 	
@@ -1035,11 +1035,11 @@ void seWPLayer::UpdateLayerList(){
 
 void seWPLayer::SelectActiveLayer(){
 	seLayer * const layer = GetLayer();
-	const int selection = pListLayer->IndexOfItemWithData( layer );
+	const int selection = pListLayer->IndexOfItemWithData(layer);
 	
-	pListLayer->SetSelection( selection );
-	if( selection != -1 ){
-		pListLayer->MakeItemVisible( selection );
+	pListLayer->SetSelection(selection);
+	if(selection != -1){
+		pListLayer->MakeItemVisible(selection);
 	}
 	
 	UpdateLayer();
@@ -1048,54 +1048,54 @@ void seWPLayer::SelectActiveLayer(){
 void seWPLayer::UpdateLayer(){
 	const seLayer * const layer = GetLayer();
 	
-	if( layer ){
-		pEditName->SetText( layer->GetName() );
-		pEditSkin->SetPath( layer->GetSkinPath() );
-		pEditOffset->SetVector( layer->GetOffset() );
-		pEditOrientation->SetVector( layer->GetOrientation() );
-		pClrLayer->SetColor( layer->GetColor() );
-		pEditIntensity->SetFloat( layer->GetIntensity() );
-		pSldTransparency->SetValue( layer->GetTransparency() );
-		pChkMulBySkyLight->SetChecked( layer->GetMuliplyBySkyLight() );
-		pChkMulBySkyColor->SetChecked( layer->GetMuliplyBySkyColor() );
+	if(layer){
+		pEditName->SetText(layer->GetName());
+		pEditSkin->SetPath(layer->GetSkinPath());
+		pEditOffset->SetVector(layer->GetOffset());
+		pEditOrientation->SetVector(layer->GetOrientation());
+		pClrLayer->SetColor(layer->GetColor());
+		pEditIntensity->SetFloat(layer->GetIntensity());
+		pSldTransparency->SetValue(layer->GetTransparency());
+		pChkMulBySkyLight->SetChecked(layer->GetMuliplyBySkyLight());
+		pChkMulBySkyColor->SetChecked(layer->GetMuliplyBySkyColor());
 		
-		pClrLight->SetColor( layer->GetLightColor() );
-		pEditLightIntensity->SetFloat( layer->GetLightIntensity() );
-		pEditAmbientIntensity->SetFloat( layer->GetAmbientIntensity() );
-		pEditLightOrientation->SetVector( layer->GetLightOrientation() );
+		pClrLight->SetColor(layer->GetLightColor());
+		pEditLightIntensity->SetFloat(layer->GetLightIntensity());
+		pEditAmbientIntensity->SetFloat(layer->GetAmbientIntensity());
+		pEditLightOrientation->SetVector(layer->GetLightOrientation());
 		
 	}else{
 		pEditName->ClearText();
 		pEditSkin->ClearPath();
-		pEditOffset->SetVector( decVector() );
-		pEditOrientation->SetVector( decVector() );
-		pClrLayer->SetColor( decColor() );
+		pEditOffset->SetVector(decVector());
+		pEditOrientation->SetVector(decVector());
+		pClrLayer->SetColor(decColor());
 		pEditIntensity->ClearText();
-		pSldTransparency->SetValue( 0.0 );
-		pChkMulBySkyLight->SetChecked( false );
-		pChkMulBySkyColor->SetChecked( false );
+		pSldTransparency->SetValue(0.0);
+		pChkMulBySkyLight->SetChecked(false);
+		pChkMulBySkyColor->SetChecked(false);
 		
-		pClrLight->SetColor( decColor() );
+		pClrLight->SetColor(decColor());
 		pEditLightIntensity->ClearText();
 		pEditAmbientIntensity->ClearText();
-		pEditLightOrientation->SetVector( decVector() );
+		pEditLightOrientation->SetVector(decVector());
 	}
 	
 	const bool enabled = layer != NULL;
-	pEditName->SetEnabled( enabled );
-	pEditSkin->SetEnabled( enabled );
-	pEditOffset->SetEnabled( enabled );
-	pEditOrientation->SetEnabled( enabled );
-	pClrLayer->SetEnabled( enabled );
-	pEditIntensity->SetEnabled( enabled );
-	pSldTransparency->SetEnabled( enabled );
-	pChkMulBySkyLight->SetEnabled( enabled );
-	pChkMulBySkyColor->SetEnabled( enabled );
+	pEditName->SetEnabled(enabled);
+	pEditSkin->SetEnabled(enabled);
+	pEditOffset->SetEnabled(enabled);
+	pEditOrientation->SetEnabled(enabled);
+	pClrLayer->SetEnabled(enabled);
+	pEditIntensity->SetEnabled(enabled);
+	pSldTransparency->SetEnabled(enabled);
+	pChkMulBySkyLight->SetEnabled(enabled);
+	pChkMulBySkyColor->SetEnabled(enabled);
 	
-	pClrLight->SetEnabled( enabled );
-	pEditLightIntensity->SetEnabled( enabled );
-	pEditAmbientIntensity->SetEnabled( enabled );
-	pEditLightOrientation->SetEnabled( enabled );
+	pClrLight->SetEnabled(enabled);
+	pEditLightIntensity->SetEnabled(enabled);
+	pEditAmbientIntensity->SetEnabled(enabled);
+	pEditLightOrientation->SetEnabled(enabled);
 	
 	UpdateBodyList();
 	SelectActiveTarget();
@@ -1104,15 +1104,15 @@ void seWPLayer::UpdateLayer(){
 void seWPLayer::UpdateBodyList(){
 	seLayer * const layer = GetLayer();
 	
-	if( layer ){
-		pSpinBody->SetRange( 0, layer->GetBodies().GetCount() - 1 );
+	if(layer){
+		pSpinBody->SetRange(0, layer->GetBodies().GetCount() - 1);
 		
 	}else{
-		pSpinBody->SetRange( 0, 0 );
+		pSpinBody->SetRange(0, 0);
 	}
 	
 	const bool enabled = layer != NULL;
-	pSpinBody->SetEnabled( enabled );
+	pSpinBody->SetEnabled(enabled);
 	
 	pActionBodyAdd->Update();
 	pActionBodyRemove->Update();
@@ -1123,13 +1123,13 @@ void seWPLayer::UpdateBodyList(){
 void seWPLayer::SelectActiveBody(){
 	seBody * const body = GetBody();
 	
-	if( body ){
+	if(body){
 		seLayer &layer = *body->GetLayer();
-		const int index = layer.GetBodies().IndexOf( body );
-		pSpinBody->SetValue( index );
+		const int index = layer.GetBodies().IndexOf(body);
+		pSpinBody->SetValue(index);
 		
 	}else{
-		pSpinBody->SetValue( 0 );
+		pSpinBody->SetValue(0);
 	}
 	
 	pActionBodyUp->Update();
@@ -1141,37 +1141,37 @@ void seWPLayer::SelectActiveBody(){
 void seWPLayer::UpdateBody(){
 	seBody * const body = GetBody();
 	
-	if( body ){
-		pEditBodySkin->SetPath( body->GetSkinPath() );
-		pEditBodyOrienation->SetVector( body->GetOrientation() );
-		pEditBodySize->SetVector2( body->GetSize() );
-		pClrBody->SetColor( body->GetColor() );
+	if(body){
+		pEditBodySkin->SetPath(body->GetSkinPath());
+		pEditBodyOrienation->SetVector(body->GetOrientation());
+		pEditBodySize->SetVector2(body->GetSize());
+		pClrBody->SetColor(body->GetColor());
 		
 	}else{
 		pEditBodySkin->ClearPath();
-		pEditBodyOrienation->SetVector( decVector() );
-		pEditBodySize->SetVector2( decVector2( 1.0f, 1.0f ) );
-		pClrBody->SetColor( decColor() );
+		pEditBodyOrienation->SetVector(decVector());
+		pEditBodySize->SetVector2(decVector2(1.0f, 1.0f));
+		pClrBody->SetColor(decColor());
 	}
 	
 	const bool enabled = body != NULL;
-	pEditBodySkin->SetEnabled( enabled );
-	pEditBodyOrienation->SetEnabled( enabled );
-	pEditBodySize->SetEnabled( enabled );
-	pClrBody->SetEnabled( enabled );
+	pEditBodySkin->SetEnabled(enabled);
+	pEditBodyOrienation->SetEnabled(enabled);
+	pEditBodySize->SetEnabled(enabled);
+	pClrBody->SetEnabled(enabled);
 }
 
 void seWPLayer::UpdateLinkList(){
 	pCBLinks->RemoveAllItems();
 	
-	if( pSky ){
+	if(pSky){
 		const seLinkList &links = pSky->GetLinks();
 		const int count = links.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			seLink * const link = links.GetAt( i );
-			pCBLinks->AddItem( link->GetName(), NULL, link );
+		for(i=0; i<count; i++){
+			seLink * const link = links.GetAt(i);
+			pCBLinks->AddItem(link->GetName(), NULL, link);
 		}
 	}
 	
@@ -1181,11 +1181,11 @@ void seWPLayer::UpdateLinkList(){
 void seWPLayer::SelectActiveTarget(){
 	seLayer * const layer = GetLayer();
 	int selection = 4;
-	if( layer ){
-		selection = pCBTarget->IndexOfItemWithData( ( void* )( intptr_t )layer->GetActiveTarget() );
+	if(layer){
+		selection = pCBTarget->IndexOfItemWithData((void*)(intptr_t)layer->GetActiveTarget());
 	}
 	
-	pCBTarget->SetSelection( selection );
+	pCBTarget->SetSelection(selection);
 	
 	UpdateTarget();
 }
@@ -1193,17 +1193,17 @@ void seWPLayer::SelectActiveTarget(){
 void seWPLayer::UpdateTarget(){
 	seLayer * const layer = GetLayer();
 	
-	if( layer ){
-		const seControllerTarget &target = layer->GetTarget( layer->GetActiveTarget() );
+	if(layer){
+		const seControllerTarget &target = layer->GetTarget(layer->GetActiveTarget());
 		const seLinkList &links = target.GetLinks();
 		const int linkCount = links.GetCount();
 		int i;
 		
 		pListLinks->RemoveAllItems();
 		
-		for( i=0; i<linkCount; i++ ){
-			seLink * const link = links.GetAt( i );
-			pListLinks->AddItem( link->GetName(), NULL, link );
+		for(i=0; i<linkCount; i++){
+			seLink * const link = links.GetAt(i);
+			pListLinks->AddItem(link->GetName(), NULL, link);
 		}
 		
 		pListLinks->SortItems();
@@ -1213,6 +1213,6 @@ void seWPLayer::UpdateTarget(){
 	}
 	
 	const bool enabled = layer != NULL;
-	pListLinks->SetEnabled( enabled );
-	pBtnLinkAdd->SetEnabled( enabled );
+	pListLinks->SetEnabled(enabled);
+	pBtnLinkAdd->SetEnabled(enabled);
 }

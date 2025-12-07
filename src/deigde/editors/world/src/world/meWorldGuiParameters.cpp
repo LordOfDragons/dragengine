@@ -40,46 +40,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWorldGuiParameters::meWorldGuiParameters( meWorld &world ) :
-pWorld( world ),
+meWorldGuiParameters::meWorldGuiParameters(meWorld &world) :
+pWorld(world),
 
-pElementMode( eemObject ),
-pWorkMode( ewmSelect ),
-pLockAxisX( false ),
-pLockAxisY( false ),
-pLockAxisZ( false ),
-pUseLocal( false ),
-pSnapToSnapPoints( true ),
+pElementMode(eemObject),
+pWorkMode(ewmSelect),
+pLockAxisX(false),
+pLockAxisY(false),
+pLockAxisZ(false),
+pUseLocal(false),
+pSnapToSnapPoints(true),
 
-pShowOcclusionMeshes( false ),
-pShowOcclusionMeshesSelected( false ),
-pShowNavigationSpaces( false ),
-pShowNavigationSpacesSelected( false ),
+pShowOcclusionMeshes(false),
+pShowOcclusionMeshesSelected(false),
+pShowNavigationSpaces(false),
+pShowNavigationSpacesSelected(false),
 pShowShapes(false),
 pShowShapesSelected(false),
 
-pHPDrawMode( ehpdmRaise ),
-pHPRadius( 2.5f ),
-pHPDrawStrength( 0.2f ),
-pHPLevelStrength( 0.5f ),
-pHPSmoothStrength( 0.5f ),
+pHPDrawMode(ehpdmRaise),
+pHPRadius(2.5f),
+pHPDrawStrength(0.2f),
+pHPLevelStrength(0.5f),
+pHPSmoothStrength(0.5f),
 
-pMPDrawMode( empdmDraw ),
-pMPRadius( 10.0f ),
+pMPDrawMode(empdmDraw),
+pMPRadius(10.0f),
 
-pVPDrawMode( evpdmInvisible ),
-pVPRadius( 10.0f ),
+pVPDrawMode(evpdmInvisible),
+pVPRadius(10.0f),
 
-pRotationPivotCenter( erpcActive ),
+pRotationPivotCenter(erpcActive),
 
-pAutoUpdateVegetation( false ),
+pAutoUpdateVegetation(false),
 
-pAddFilterObjectInclusive( false ),
+pAddFilterObjectInclusive(false),
 pAddRandomizeYAxis(false),
 
-pRectSelDistance( 100.0f ),
-pRectSelDistanceStep( 1.0f ),
-pRectSelDragThreshold( 5 ){
+pRectSelDistance(100.0f),
+pRectSelDistanceStep(1.0f),
+pRectSelDragThreshold(5){
 }
 
 meWorldGuiParameters::~meWorldGuiParameters(){
@@ -90,8 +90,8 @@ meWorldGuiParameters::~meWorldGuiParameters(){
 // Editing
 ////////////
 
-void meWorldGuiParameters::SetElementMode( eElementModes mode ){
-	if( mode == pElementMode ){
+void meWorldGuiParameters::SetElementMode(eElementModes mode){
+	if(mode == pElementMode){
 		return;
 	}
 	
@@ -99,8 +99,8 @@ void meWorldGuiParameters::SetElementMode( eElementModes mode ){
 	pWorld.ElementModeChanged();
 }
 
-void meWorldGuiParameters::SetWorkMode( eWorkModes mode ){
-	if( mode == pWorkMode ){
+void meWorldGuiParameters::SetWorkMode(eWorkModes mode){
+	if(mode == pWorkMode){
 		return;
 	}
 	
@@ -110,8 +110,8 @@ void meWorldGuiParameters::SetWorkMode( eWorkModes mode ){
 
 
 
-void meWorldGuiParameters::SetLockAxisX( bool lock ){
-	if( lock == pLockAxisX ){
+void meWorldGuiParameters::SetLockAxisX(bool lock){
+	if(lock == pLockAxisX){
 		return;
 	}
 	
@@ -119,8 +119,8 @@ void meWorldGuiParameters::SetLockAxisX( bool lock ){
 	pWorld.NotifyEditingChanged();
 }
 
-void meWorldGuiParameters::SetLockAxisY( bool lock ){
-	if( lock == pLockAxisY ){
+void meWorldGuiParameters::SetLockAxisY(bool lock){
+	if(lock == pLockAxisY){
 		return;
 	}
 	
@@ -128,8 +128,8 @@ void meWorldGuiParameters::SetLockAxisY( bool lock ){
 	pWorld.NotifyEditingChanged();
 }
 
-void meWorldGuiParameters::SetLockAxisZ( bool lock ){
-	if( lock == pLockAxisZ ){
+void meWorldGuiParameters::SetLockAxisZ(bool lock){
+	if(lock == pLockAxisZ){
 		return;
 	}
 	
@@ -137,8 +137,8 @@ void meWorldGuiParameters::SetLockAxisZ( bool lock ){
 	pWorld.NotifyEditingChanged();
 }
 
-void meWorldGuiParameters::SetUseLocal( bool useLocal ){
-	if( useLocal == pUseLocal ){
+void meWorldGuiParameters::SetUseLocal(bool useLocal){
+	if(useLocal == pUseLocal){
 		return;
 	}
 	
@@ -146,8 +146,8 @@ void meWorldGuiParameters::SetUseLocal( bool useLocal ){
 	pWorld.NotifyEditingChanged();
 }
 
-void meWorldGuiParameters::SetRotationPivotCenter( eRotationPivotCenters pivotCenter ){
-	if( pivotCenter == pRotationPivotCenter ){
+void meWorldGuiParameters::SetRotationPivotCenter(eRotationPivotCenters pivotCenter){
+	if(pivotCenter == pRotationPivotCenter){
 		return;
 	}
 	
@@ -157,8 +157,8 @@ void meWorldGuiParameters::SetRotationPivotCenter( eRotationPivotCenters pivotCe
 
 
 
-void meWorldGuiParameters::SetSnapToSnapPoints( bool snapToSnapPoints ){
-	if( snapToSnapPoints == pSnapToSnapPoints ){
+void meWorldGuiParameters::SetSnapToSnapPoints(bool snapToSnapPoints){
+	if(snapToSnapPoints == pSnapToSnapPoints){
 		return;
 	}
 	
@@ -168,9 +168,9 @@ void meWorldGuiParameters::SetSnapToSnapPoints( bool snapToSnapPoints ){
 
 
 
-void meWorldGuiParameters::SetRectSelDistance( float distance ){
-	distance = decMath::max( distance, 0.01f );
-	if( fabsf( distance - pRectSelDistance ) <= FLOAT_EPSILON ){
+void meWorldGuiParameters::SetRectSelDistance(float distance){
+	distance = decMath::max(distance, 0.01f);
+	if(fabsf(distance - pRectSelDistance) <= FLOAT_EPSILON){
 		return;
 	}
 	
@@ -178,9 +178,9 @@ void meWorldGuiParameters::SetRectSelDistance( float distance ){
 	pWorld.NotifyEditingChanged();
 }
 
-void meWorldGuiParameters::SetRectSelDistanceStep( float step ){
-	step = decMath::max( step, 0.001f );
-	if( fabsf( step - pRectSelDistanceStep ) <= FLOAT_EPSILON ){
+void meWorldGuiParameters::SetRectSelDistanceStep(float step){
+	step = decMath::max(step, 0.001f);
+	if(fabsf(step - pRectSelDistanceStep) <= FLOAT_EPSILON){
 		return;
 	}
 	
@@ -188,9 +188,9 @@ void meWorldGuiParameters::SetRectSelDistanceStep( float step ){
 	pWorld.NotifyEditingChanged();
 }
 
-void meWorldGuiParameters::SetRectSelDragThreshold( int threshold ){
-	threshold = decMath::max( threshold, 1 );
-	if( threshold == pRectSelDragThreshold ){
+void meWorldGuiParameters::SetRectSelDragThreshold(int threshold){
+	threshold = decMath::max(threshold, 1);
+	if(threshold == pRectSelDragThreshold){
 		return;
 	}
 	
@@ -200,8 +200,8 @@ void meWorldGuiParameters::SetRectSelDragThreshold( int threshold ){
 
 
 
-void meWorldGuiParameters::SetShowOcclusionMeshes( bool show ){
-	if( show == pShowOcclusionMeshes ){
+void meWorldGuiParameters::SetShowOcclusionMeshes(bool show){
+	if(show == pShowOcclusionMeshes){
 		return;
 	}
 	
@@ -209,8 +209,8 @@ void meWorldGuiParameters::SetShowOcclusionMeshes( bool show ){
 	pWorld.ElementVisibilityChanged();
 }
 
-void meWorldGuiParameters::SetShowOcclusionMeshesSelected( bool show ){
-	if( show == pShowOcclusionMeshesSelected ){
+void meWorldGuiParameters::SetShowOcclusionMeshesSelected(bool show){
+	if(show == pShowOcclusionMeshesSelected){
 		return;
 	}
 	
@@ -218,8 +218,8 @@ void meWorldGuiParameters::SetShowOcclusionMeshesSelected( bool show ){
 	pWorld.ElementVisibilityChanged();
 }
 
-void meWorldGuiParameters::SetShowNavigationSpaces( bool show ){
-	if( show == pShowNavigationSpaces ){
+void meWorldGuiParameters::SetShowNavigationSpaces(bool show){
+	if(show == pShowNavigationSpaces){
 		return;
 	}
 	
@@ -227,8 +227,8 @@ void meWorldGuiParameters::SetShowNavigationSpaces( bool show ){
 	pWorld.ElementVisibilityChanged();
 }
 
-void meWorldGuiParameters::SetShowNavigationSpacesSelected( bool show ){
-	if( show == pShowNavigationSpacesSelected ){
+void meWorldGuiParameters::SetShowNavigationSpacesSelected(bool show){
+	if(show == pShowNavigationSpacesSelected){
 		return;
 	}
 	
@@ -259,12 +259,12 @@ void meWorldGuiParameters::SetShowShapesSelected(bool show){
 // Painting
 /////////////
 
-void meWorldGuiParameters::SetHPDrawMode( eHPDrawModes mode ){
-	if( mode < ehpdmRaise || mode > ehpdmSmooth ){
-		DETHROW( deeInvalidParam );
+void meWorldGuiParameters::SetHPDrawMode(eHPDrawModes mode){
+	if(mode < ehpdmRaise || mode > ehpdmSmooth){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( mode == pHPDrawMode ){
+	if(mode == pHPDrawMode){
 		return;
 	}
 	
@@ -272,9 +272,9 @@ void meWorldGuiParameters::SetHPDrawMode( eHPDrawModes mode ){
 	pWorld.NotifyHeightPaintChanged();
 }
 
-void meWorldGuiParameters::SetHPRadius( float radius ){
-	radius = decMath::clamp( radius, 0.1f, 100.0f );
-	if( fabsf( radius - pHPRadius ) <= FLOAT_SAFE_EPSILON ){
+void meWorldGuiParameters::SetHPRadius(float radius){
+	radius = decMath::clamp(radius, 0.1f, 100.0f);
+	if(fabsf(radius - pHPRadius) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -282,9 +282,9 @@ void meWorldGuiParameters::SetHPRadius( float radius ){
 	pWorld.NotifyHeightPaintChanged();
 }
 
-void meWorldGuiParameters::SetHPDrawStrength( float strength ){
-	strength = decMath::clamp( strength, 0.01f, 10.0f );
-	if( fabsf( strength - pHPDrawStrength ) <= FLOAT_SAFE_EPSILON ){
+void meWorldGuiParameters::SetHPDrawStrength(float strength){
+	strength = decMath::clamp(strength, 0.01f, 10.0f);
+	if(fabsf(strength - pHPDrawStrength) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -292,9 +292,9 @@ void meWorldGuiParameters::SetHPDrawStrength( float strength ){
 	pWorld.NotifyHeightPaintChanged();
 }
 
-void meWorldGuiParameters::SetHPLevelStrength( float strength ){
-	strength = decMath::clamp( strength, 0.01f, 1.0f );
-	if( fabsf( strength - pHPLevelStrength ) <= FLOAT_SAFE_EPSILON ){
+void meWorldGuiParameters::SetHPLevelStrength(float strength){
+	strength = decMath::clamp(strength, 0.01f, 1.0f);
+	if(fabsf(strength - pHPLevelStrength) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -302,9 +302,9 @@ void meWorldGuiParameters::SetHPLevelStrength( float strength ){
 	pWorld.NotifyHeightPaintChanged();
 }
 
-void meWorldGuiParameters::SetHPSmoothStrength( float strength ){
-	strength = decMath::clamp( strength, 0.01f, 1.0f );
-	if( fabsf( strength - pHPSmoothStrength ) <= FLOAT_SAFE_EPSILON ){
+void meWorldGuiParameters::SetHPSmoothStrength(float strength){
+	strength = decMath::clamp(strength, 0.01f, 1.0f);
+	if(fabsf(strength - pHPSmoothStrength) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -314,8 +314,8 @@ void meWorldGuiParameters::SetHPSmoothStrength( float strength ){
 
 
 
-void meWorldGuiParameters::SetMPDrawMode( eMPDrawModes mode ){
-	if( mode == pMPDrawMode ){
+void meWorldGuiParameters::SetMPDrawMode(eMPDrawModes mode){
+	if(mode == pMPDrawMode){
 		return;
 	}
 	
@@ -323,9 +323,9 @@ void meWorldGuiParameters::SetMPDrawMode( eMPDrawModes mode ){
 	pWorld.NotifyMaskPaintChanged();
 }
 
-void meWorldGuiParameters::SetMPRadius( float radius ){
-	radius = decMath::clamp( radius, 0.1f, 100.0f );
-	if( fabsf( radius - pMPRadius ) <= FLOAT_SAFE_EPSILON ){
+void meWorldGuiParameters::SetMPRadius(float radius){
+	radius = decMath::clamp(radius, 0.1f, 100.0f);
+	if(fabsf(radius - pMPRadius) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -335,8 +335,8 @@ void meWorldGuiParameters::SetMPRadius( float radius ){
 
 
 
-void meWorldGuiParameters::SetVPDrawMode( eVPDrawModes mode ){
-	if( mode == pVPDrawMode ){
+void meWorldGuiParameters::SetVPDrawMode(eVPDrawModes mode){
+	if(mode == pVPDrawMode){
 		return;
 	}
 	
@@ -344,9 +344,9 @@ void meWorldGuiParameters::SetVPDrawMode( eVPDrawModes mode ){
 	pWorld.NotifyVisibilityPaintChanged();
 }
 
-void meWorldGuiParameters::SetVPRadius( float radius ){
-	radius = decMath::clamp( radius, 0.1f, 100.0f );
-	if( fabsf( radius - pVPRadius ) <= FLOAT_SAFE_EPSILON ){
+void meWorldGuiParameters::SetVPRadius(float radius){
+	radius = decMath::clamp(radius, 0.1f, 100.0f);
+	if(fabsf(radius - pVPRadius) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -359,8 +359,8 @@ void meWorldGuiParameters::SetVPRadius( float radius ){
 // Vegetation
 ///////////////
 
-void meWorldGuiParameters::SetAutoUpdateVegetation( bool autoUpdate ){
-	if( autoUpdate == pAutoUpdateVegetation ){
+void meWorldGuiParameters::SetAutoUpdateVegetation(bool autoUpdate){
+	if(autoUpdate == pAutoUpdateVegetation){
 		return;
 	}
 	
@@ -373,8 +373,8 @@ void meWorldGuiParameters::SetAutoUpdateVegetation( bool autoUpdate ){
 // Browsing
 /////////////
 
-void meWorldGuiParameters::SetBrowseClass( const char *name ){
-	if( pBrowseClass == name ){
+void meWorldGuiParameters::SetBrowseClass(const char *name){
+	if(pBrowseClass == name){
 		return;
 	}
 	
@@ -382,8 +382,8 @@ void meWorldGuiParameters::SetBrowseClass( const char *name ){
 	pWorld.NotifyEditingChanged(); // new notify please: NotifyBrowseChanged
 }
 
-void meWorldGuiParameters::SetBrowseSkin( const char *name ){
-	if( pBrowseSkin == name ){
+void meWorldGuiParameters::SetBrowseSkin(const char *name){
+	if(pBrowseSkin == name){
 		return;
 	}
 	
@@ -396,13 +396,13 @@ void meWorldGuiParameters::SetBrowseSkin( const char *name ){
 // Adding
 ///////////
 
-void meWorldGuiParameters::SetAddFilterObjectSet( const decStringSet &set ){
+void meWorldGuiParameters::SetAddFilterObjectSet(const decStringSet &set){
 	pAddFilterObjectSet = set;
 	pWorld.NotifyEditingChanged();
 }
 
-void meWorldGuiParameters::SetAddFilterObjectInclusive( bool inclusive ){
-	if( inclusive == pAddFilterObjectInclusive ){
+void meWorldGuiParameters::SetAddFilterObjectInclusive(bool inclusive){
+	if(inclusive == pAddFilterObjectInclusive){
 		return;
 	}
 	

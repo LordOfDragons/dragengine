@@ -56,28 +56,28 @@ public:
 	int GetCount() const;
 	
 	/** \brief Game at the given position. */
-	dealGame *GetAt( int index ) const;
+	dealGame *GetAt(int index) const;
 	
 	/** \brief Game with the given identifier or \em NULL if not found. */
-	dealGame *GetWithID( const char *id ) const;
+	dealGame *GetWithID(const char *id) const;
 	
 	/** \brief Game exists. */
-	bool Has( dealGame *game ) const;
+	bool Has(dealGame *game) const;
 	
 	/** \brief Game with the given identifier eixsts. */
-	bool HasWithID( const char *id ) const;
+	bool HasWithID(const char *id) const;
 	
 	/** \brief Index of a game or -1 if not found. */
-	int IndexOf( dealGame *game ) const;
+	int IndexOf(dealGame *game) const;
 	
 	/** \brief Index of the game with the given identifier or -1 if not found. */
-	int IndexOfWithID( const char *id ) const;
+	int IndexOfWithID(const char *id) const;
 	
 	/** \brief Add game. */
-	void Add( dealGame *game );
+	void Add(dealGame *game);
 	
 	/** \brief Remove game. */
-	void Remove( dealGame *game );
+	void Remove(dealGame *game);
 	
 	/** \brief Removes all games. */
 	void RemoveAll();

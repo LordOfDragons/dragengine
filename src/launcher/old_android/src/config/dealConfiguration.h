@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration. */
-	dealConfiguration( dealLauncher &launcher );
+	dealConfiguration(dealLauncher &launcher);
 	
 	/** \brief Clean up configuration. */
 	~dealConfiguration();
@@ -70,25 +70,25 @@ public:
 	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
 	
 	/** \brief Set system config path. */
-	void SetPathConfigSystem( const char *path );
+	void SetPathConfigSystem(const char *path);
 	
 	/** \brief User config path. */
 	inline const decString &GetPathConfigUser() const{ return pPathConfigUser; }
 	
 	/** \brief Set user config path. */
-	void SetPathConfigUser( const char *path );
+	void SetPathConfigUser(const char *path);
 	
 	/** \brief Shares path. */
 	inline const decString &GetPathShares() const{ return pPathShares; }
 	
 	/** \brief Set shares path. */
-	void SetPathShares( const char *path );
+	void SetPathShares(const char *path);
 	
 	/** \brief Logs path. */
 	inline const decString &GetPathLogs() const{ return pPathLogs; }
 	
 	/** \brief Set logs path. */
-	void SetPathLogs( const char *path );
+	void SetPathLogs(const char *path);
 	
 	
 	

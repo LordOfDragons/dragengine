@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feWPUndoHistoryListener( feWPUndoHistory &panel );
+	feWPUndoHistoryListener(feWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~feWPUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged( feFont *font );
+	virtual void UndoChanged(feFont *font);
 	/*@}*/
 };
 

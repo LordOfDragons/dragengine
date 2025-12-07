@@ -43,9 +43,9 @@
 ////////////
 
 igdeUIFoxHelper::sChildLayoutFlags::sChildLayoutFlags() :
-flags( 0 ),
-canResizeVertical( false ),
-canResizeHorizontal( false ){
+flags(0),
+canResizeVertical(false),
+canResizeHorizontal(false){
 }
 
 
@@ -60,29 +60,29 @@ igdeUIFoxHelper::igdeUIFoxHelper(){}
 // Functions
 //////////////
 
-FXString igdeUIFoxHelper::AccelString( const igdeHotKey &hotKey ){
+FXString igdeUIFoxHelper::AccelString(const igdeHotKey &hotKey){
 	const deInputEvent::eKeyCodes keyCode = hotKey.GetKeyCode();
-	if( keyCode == deInputEvent::ekcUndefined ){
+	if(keyCode == deInputEvent::ekcUndefined){
 		return "";
 	}
 	
-	const bool shift = ( hotKey.GetModifiers() & deInputEvent::esmShift ) == deInputEvent::esmShift;
-	const bool control = ( hotKey.GetModifiers() & deInputEvent::esmControl ) == deInputEvent::esmControl;
-	const bool alt = ( hotKey.GetModifiers() & deInputEvent::esmAlt ) == deInputEvent::esmAlt;
+	const bool shift = (hotKey.GetModifiers() & deInputEvent::esmShift) == deInputEvent::esmShift;
+	const bool control = (hotKey.GetModifiers() & deInputEvent::esmControl) == deInputEvent::esmControl;
+	const bool alt = (hotKey.GetModifiers() & deInputEvent::esmAlt) == deInputEvent::esmAlt;
 	
 	FXString string;
 	
-	if( alt ){
+	if(alt){
 		string += "Alt-";
 	}
-	if( control ){
+	if(control){
 		string += "Ctl-";
 	}
-	if( shift ){
+	if(shift){
 		string += "Shift-";
 	}
 	
-	switch( keyCode ){
+	switch(keyCode){
 	case deInputEvent::ekcSpace:
 		string += "Space";
 		break;
@@ -150,14 +150,14 @@ FXString igdeUIFoxHelper::AccelString( const igdeHotKey &hotKey ){
 	default:{
 		FXString key;
 		
-		if( keyCode >= deInputEvent::ekcA && keyCode <= deInputEvent::ekcZ ){
-			key.format( "%c", 'A' + ( keyCode - deInputEvent::ekcA ) );
+		if(keyCode >= deInputEvent::ekcA && keyCode <= deInputEvent::ekcZ){
+			key.format("%c", 'A' + (keyCode - deInputEvent::ekcA));
 			
-		}else if( keyCode >= deInputEvent::ekc0 && keyCode <= deInputEvent::ekc9 ){
-			key.format( "%d", keyCode - deInputEvent::ekc0 );
+		}else if(keyCode >= deInputEvent::ekc0 && keyCode <= deInputEvent::ekc9){
+			key.format("%d", keyCode - deInputEvent::ekc0);
 			
-		}else if( keyCode >= deInputEvent::ekcF1 && keyCode <= deInputEvent::ekcF12 ){
-			key.format( "F%d", keyCode - deInputEvent::ekcF1 + 1 );
+		}else if(keyCode >= deInputEvent::ekcF1 && keyCode <= deInputEvent::ekcF12){
+			key.format("F%d", keyCode - deInputEvent::ekcF1 + 1);
 			
 		}else{
 			key = "?";
@@ -170,53 +170,53 @@ FXString igdeUIFoxHelper::AccelString( const igdeHotKey &hotKey ){
 	return string;
 }
 
-FXuchar igdeUIFoxHelper::MnemonicKey( deInputEvent::eKeyCodes keyCode ){
-	if( keyCode >= deInputEvent::ekcA && keyCode <= deInputEvent::ekcZ ){
-		return 'a' + ( keyCode - deInputEvent::ekcA );
+FXuchar igdeUIFoxHelper::MnemonicKey(deInputEvent::eKeyCodes keyCode){
+	if(keyCode >= deInputEvent::ekcA && keyCode <= deInputEvent::ekcZ){
+		return 'a' + (keyCode - deInputEvent::ekcA);
 		
-	}else if( keyCode >= deInputEvent::ekc0 && keyCode <= deInputEvent::ekc9 ){
-		return '0' + ( keyCode - deInputEvent::ekc0 );
+	}else if(keyCode >= deInputEvent::ekc0 && keyCode <= deInputEvent::ekc9){
+		return '0' + (keyCode - deInputEvent::ekc0);
 		
 	}else{
 		return 0;
 	}
 }
 
-FXString igdeUIFoxHelper::MnemonizeString( const char* string, deInputEvent::eKeyCodes keyCode ){
-	const FXuchar key = igdeUIFoxHelper::MnemonicKey( keyCode );
-	if( key == 0 ){
-		return FXString( string );
+FXString igdeUIFoxHelper::MnemonizeString(const char* string, deInputEvent::eKeyCodes keyCode){
+	const FXuchar key = igdeUIFoxHelper::MnemonicKey(keyCode);
+	if(key == 0){
+		return FXString(string);
 	}
 	
-	FXString lowercased( string );
+	FXString lowercased(string);
 	lowercased.lower();
 	
-	const int index = lowercased.find( key );
-	if( index == -1 ){
-		return FXString( string );
+	const int index = lowercased.find(key);
+	if(index == -1){
+		return FXString(string);
 	}
 	
-	return FXString( string, index ) + "&" + ( string + index );
+	return FXString(string, index) + "&" + (string + index);
 }
 
-deInputEvent::eKeyCodes igdeUIFoxHelper::KeyCodeFromEvent( const FXEvent &event ){
-	if( event.code >= KEY_A && event.code <= KEY_Z ){
-		return ( deInputEvent::eKeyCodes )( deInputEvent::ekcA + ( event.code - KEY_A ) );
+deInputEvent::eKeyCodes igdeUIFoxHelper::KeyCodeFromEvent(const FXEvent &event){
+	if(event.code >= KEY_A && event.code <= KEY_Z){
+		return (deInputEvent::eKeyCodes)(deInputEvent::ekcA + (event.code - KEY_A));
 		
-	}else if( event.code >= KEY_a && event.code <= KEY_z ){
-		return ( deInputEvent::eKeyCodes )( deInputEvent::ekcA + ( event.code - KEY_a ) );
+	}else if(event.code >= KEY_a && event.code <= KEY_z){
+		return (deInputEvent::eKeyCodes)(deInputEvent::ekcA + (event.code - KEY_a));
 		
-	}else if( event.code >= KEY_0 && event.code <= KEY_9 ){
-		return ( deInputEvent::eKeyCodes )( deInputEvent::ekc0 + ( event.code - KEY_0 ) );
+	}else if(event.code >= KEY_0 && event.code <= KEY_9){
+		return (deInputEvent::eKeyCodes)(deInputEvent::ekc0 + (event.code - KEY_0));
 		
-	}else if( event.code >= KEY_KP_0 && event.code <= KEY_KP_9 ){
-		return ( deInputEvent::eKeyCodes )( deInputEvent::ekc0 + ( event.code - KEY_KP_0 ) );
+	}else if(event.code >= KEY_KP_0 && event.code <= KEY_KP_9){
+		return (deInputEvent::eKeyCodes)(deInputEvent::ekc0 + (event.code - KEY_KP_0));
 		
-	}else if( event.code >= KEY_F1 && event.code <= KEY_F12 ){
-		return ( deInputEvent::eKeyCodes )( deInputEvent::ekcF1 + ( event.code - KEY_F1 ) );
+	}else if(event.code >= KEY_F1 && event.code <= KEY_F12){
+		return (deInputEvent::eKeyCodes)(deInputEvent::ekcF1 + (event.code - KEY_F1));
 	}
 	
-	switch( event.code ){
+	switch(event.code){
 	case KEY_space:
 		return deInputEvent::ekcSpace;
 		
@@ -302,174 +302,174 @@ deInputEvent::eKeyCodes igdeUIFoxHelper::KeyCodeFromEvent( const FXEvent &event 
 	}
 }
 
-int igdeUIFoxHelper::ModifiersFromEvent( const FXEvent &event ){
+int igdeUIFoxHelper::ModifiersFromEvent(const FXEvent &event){
 	int modifiers = 0;
 	
-	if( ( event.state & SHIFTMASK ) == SHIFTMASK ){
+	if((event.state & SHIFTMASK) == SHIFTMASK){
 		modifiers |= deInputEvent::esmShift;
 	}
-	if( ( event.state & CONTROLMASK ) == CONTROLMASK ){
+	if((event.state & CONTROLMASK) == CONTROLMASK){
 		modifiers |= deInputEvent::esmControl;
 	}
-	if( ( event.state & ALTMASK ) == ALTMASK ){
+	if((event.state & ALTMASK) == ALTMASK){
 		modifiers |= deInputEvent::esmAlt;
 	}
-	if( ( event.state & METAMASK ) == METAMASK ){
+	if((event.state & METAMASK) == METAMASK){
 		modifiers |= deInputEvent::esmMeta;
 	}
 	
 	return modifiers;
 }
 
-FXString igdeUIFoxHelper::FilePatternListToFOX( const igdeFilePatternList &filePatterns ){
+FXString igdeUIFoxHelper::FilePatternListToFOX(const igdeFilePatternList &filePatterns){
 	const int count = filePatterns.GetFilePatternCount();
 	decString foxString;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeFilePattern &pattern = *filePatterns.GetFilePatternAt( i );
+	for(i=0; i<count; i++){
+		const igdeFilePattern &pattern = *filePatterns.GetFilePatternAt(i);
 		
-		if( i > 0 ){
-			foxString.AppendCharacter( '\n' );
+		if(i > 0){
+			foxString.AppendCharacter('\n');
 		}
 		
-		foxString.AppendFormat( "%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString() );
+		foxString.AppendFormat("%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString());
 	}
 	
 	//foxString.Append( "\nAll Files (*)" );
-	return FXString( foxString.GetString() );
+	return FXString(foxString.GetString());
 }
 
 
 
-int igdeUIFoxHelper::GetChildLayoutFlags( igdeWidget *widget, int defaultFlags ){
-	return GetChildLayoutFlagsAll( widget, defaultFlags ).flags;
+int igdeUIFoxHelper::GetChildLayoutFlags(igdeWidget *widget, int defaultFlags){
+	return GetChildLayoutFlagsAll(widget, defaultFlags).flags;
 }
 
 igdeUIFoxHelper::sChildLayoutFlags igdeUIFoxHelper::GetChildLayoutFlagsAll(
-igdeWidget *widget, int defaultFlags ){
-	if( ! widget ){
-		DETHROW( deeInvalidParam );
+igdeWidget *widget, int defaultFlags){
+	if(!widget){
+		DETHROW(deeInvalidParam);
 	}
 	
 	igdeContainer * const pparent = widget->GetParent();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const foxContainer = ( FXComposite* ) pparent->GetNativeContainer();
-	if( ! foxContainer ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const foxContainer = (FXComposite*) pparent->GetNativeContainer();
+	if(!foxContainer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	sChildLayoutFlags clflags;
 	clflags.widget = widget;
 	clflags.flags = defaultFlags;
 	
-	foxContainer->handle( foxContainer, FXSEL( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0 ), &clflags );
+	foxContainer->handle(foxContainer, FXSEL(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0), &clflags);
 	
 	return clflags;
 }
 
-void igdeUIFoxHelper::UpdateLayoutFlags( igdeWidget *widget ){
-	if( ! widget ){
-		DETHROW( deeInvalidParam );
+void igdeUIFoxHelper::UpdateLayoutFlags(igdeWidget *widget){
+	if(!widget){
+		DETHROW(deeInvalidParam);
 	}
 	
 	igdeContainer * const pparent = widget->GetParent();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const foxContainer = ( FXComposite* ) pparent->GetNativeContainer();
-	if( ! foxContainer ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const foxContainer = (FXComposite*) pparent->GetNativeContainer();
+	if(!foxContainer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	sChildLayoutFlags clflags;
 	
 	clflags.widget = widget;
-	FXWindow * const foxWidget = ( FXWindow* )widget->GetNativeWidget();
-	if( ! foxWidget ){
-		DETHROW( deeInvalidParam );
+	FXWindow * const foxWidget = (FXWindow*)widget->GetNativeWidget();
+	if(!foxWidget){
+		DETHROW(deeInvalidParam);
 	}
 	
-	foxContainer->handle( foxContainer, FXSEL( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0 ), &clflags );
+	foxContainer->handle(foxContainer, FXSEL(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0), &clflags);
 	
-	foxWidget->setLayoutHints( clflags.flags & 0xfff );
+	foxWidget->setLayoutHints(clflags.flags & 0xfff);
 }
 
-void igdeUIFoxHelper::UpdateLayoutFlagsChildren( igdeContainer *container ){
-	if( ! container ){
-		DETHROW( deeInvalidParam );
+void igdeUIFoxHelper::UpdateLayoutFlagsChildren(igdeContainer *container){
+	if(!container){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const foxContainer = ( FXComposite* )container->GetNativeContainer();
-	if( ! foxContainer ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const foxContainer = (FXComposite*)container->GetNativeContainer();
+	if(!foxContainer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = container->GetChildCount();
 	sChildLayoutFlags clflags;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		clflags.widget = container->GetChildAt( i );
-		FXWindow * const foxWidget = ( FXWindow* )clflags.widget->GetNativeWidget();
-		if( ! foxWidget ){
-			DETHROW( deeInvalidParam );
+	for(i=0; i<count; i++){
+		clflags.widget = container->GetChildAt(i);
+		FXWindow * const foxWidget = (FXWindow*)clflags.widget->GetNativeWidget();
+		if(!foxWidget){
+			DETHROW(deeInvalidParam);
 		}
 		
-		foxContainer->handle( foxContainer, FXSEL( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0 ), &clflags );
+		foxContainer->handle(foxContainer, FXSEL(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0), &clflags);
 		
-		foxWidget->setLayoutHints( clflags.flags & 0xfff );
+		foxWidget->setLayoutHints(clflags.flags & 0xfff);
 	}
 }
 
-FXColor igdeUIFoxHelper::BlendColor( FXColor color1, FXColor color2, float factor ){
-	const float c1r = ( float )FXREDVAL( color1 ) / 255.f;
-	const float c1g = ( float )FXGREENVAL( color1 ) / 255.f;
-	const float c1b = ( float )FXBLUEVAL( color1 ) / 255.f;
+FXColor igdeUIFoxHelper::BlendColor(FXColor color1, FXColor color2, float factor){
+	const float c1r = (float)FXREDVAL(color1) / 255.f;
+	const float c1g = (float)FXGREENVAL(color1) / 255.f;
+	const float c1b = (float)FXBLUEVAL(color1) / 255.f;
 	
-	const float c2r = ( float )FXREDVAL( color2 ) / 255.f;
-	const float c2g = ( float )FXGREENVAL( color2 ) / 255.f;
-	const float c2b = ( float )FXBLUEVAL( color2 ) / 255.f;
+	const float c2r = (float)FXREDVAL(color2) / 255.f;
+	const float c2g = (float)FXGREENVAL(color2) / 255.f;
+	const float c2b = (float)FXBLUEVAL(color2) / 255.f;
 	
-	const int c3r = decMath::clamp( ( int )( decMath::mix( c1r, c2r, factor ) * 255.0f ), 0, 255 );
-	const int c3g = decMath::clamp( ( int )( decMath::mix( c1g, c2g, factor ) * 255.0f ), 0, 255 );
-	const int c3b = decMath::clamp( ( int )( decMath::mix( c1b, c2b, factor ) * 255.0f ), 0, 255 );
+	const int c3r = decMath::clamp((int)(decMath::mix(c1r, c2r, factor) * 255.0f), 0, 255);
+	const int c3g = decMath::clamp((int)(decMath::mix(c1g, c2g, factor) * 255.0f), 0, 255);
+	const int c3b = decMath::clamp((int)(decMath::mix(c1b, c2b, factor) * 255.0f), 0, 255);
 	
-	return FXRGB( c3r, c3g, c3b );
+	return FXRGB(c3r, c3g, c3b);
 }
 
-FXColor igdeUIFoxHelper::ConvertColor( const decColor &color ){
-	const int r = decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 );
-	const int g = decMath::clamp( ( int )( color.g * 255.0f ), 0, 255 );
-	const int b = decMath::clamp( ( int )( color.b * 255.0f ), 0, 255 );
-	return FXRGB( r, g, b );
+FXColor igdeUIFoxHelper::ConvertColor(const decColor &color){
+	const int r = decMath::clamp((int)(color.r * 255.0f), 0, 255);
+	const int g = decMath::clamp((int)(color.g * 255.0f), 0, 255);
+	const int b = decMath::clamp((int)(color.b * 255.0f), 0, 255);
+	return FXRGB(r, g, b);
 }
 
-decColor igdeUIFoxHelper::ConvertColor( FX::FXColor color ){
-	return decColor( ( float )FXREDVAL( color ) / 255.f,
-		( float )FXGREENVAL( color ) / 255.f, ( float )FXBLUEVAL( color ) / 255.f );
+decColor igdeUIFoxHelper::ConvertColor(FX::FXColor color){
+	return decColor((float)FXREDVAL(color) / 255.f,
+		(float)FXGREENVAL(color) / 255.f, (float)FXBLUEVAL(color) / 255.f);
 }
 
-FXColor igdeUIFoxHelper::BrighterColor( FXColor color, int amount ){
-	const int r = decMath::min( FXREDVAL( color ) + amount, 255 );
-	const int g = decMath::min( FXGREENVAL( color ) + amount, 255 );
-	const int b = decMath::min( FXBLUEVAL( color ) + amount, 255 );
-	return FXRGB( r, g, b );
+FXColor igdeUIFoxHelper::BrighterColor(FXColor color, int amount){
+	const int r = decMath::min(FXREDVAL(color) + amount, 255);
+	const int g = decMath::min(FXGREENVAL(color) + amount, 255);
+	const int b = decMath::min(FXBLUEVAL(color) + amount, 255);
+	return FXRGB(r, g, b);
 }
 
-int igdeUIFoxHelper::DebugCountWindows( FXWindow *rootWindow ){
-	if( ! rootWindow ){
+int igdeUIFoxHelper::DebugCountWindows(FXWindow *rootWindow){
+	if(!rootWindow){
 		rootWindow = FXApp::instance()->getRootWindow();
 	}
 	
 	FXWindow *w = rootWindow->getFirst();
 	int count = 0;
-	while( w ){
-		count += 1 + DebugCountWindows( w );
+	while(w){
+		count += 1 + DebugCountWindows(w);
 		w = w->getNext();
 	}
 	return count;

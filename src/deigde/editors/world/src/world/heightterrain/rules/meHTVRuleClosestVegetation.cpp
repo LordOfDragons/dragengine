@@ -48,22 +48,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleClosestVegetation::meHTVRuleClosestVegetation() : meHTVRule( ertClosestVegetation, 2 ){
+meHTVRuleClosestVegetation::meHTVRuleClosestVegetation() : meHTVRule(ertClosestVegetation, 2){
 	pSearchRadius = 1.0f;
 	
-	GetSlotAt( eosDirection ).SetIsInput( false );
-	GetSlotAt( eosDistance ).SetIsInput( false );
+	GetSlotAt(eosDirection).SetIsInput(false);
+	GetSlotAt(eosDistance).SetIsInput(false);
 	
 	Reset();
 }
 
-meHTVRuleClosestVegetation::meHTVRuleClosestVegetation( const meHTVRuleClosestVegetation &rule ) :
-meHTVRule( rule ),
-pVegetationType( rule.pVegetationType ),
-pSearchRadius( rule.pSearchRadius ),
-pDistance( rule.pDistance ),
-pDirection( rule.pDirection ),
-pDirty( false ){
+meHTVRuleClosestVegetation::meHTVRuleClosestVegetation(const meHTVRuleClosestVegetation &rule) :
+meHTVRule(rule),
+pVegetationType(rule.pVegetationType),
+pSearchRadius(rule.pSearchRadius),
+pDistance(rule.pDistance),
+pDirection(rule.pDirection),
+pDirty(false){
 }
 
 meHTVRuleClosestVegetation::~meHTVRuleClosestVegetation(){
@@ -74,22 +74,22 @@ meHTVRuleClosestVegetation::~meHTVRuleClosestVegetation(){
 // Management
 ///////////////
 
-void meHTVRuleClosestVegetation::SetVegetationType( const char *vegetationType ){
-	if( ! vegetationType ) DETHROW( deeInvalidParam );
+void meHTVRuleClosestVegetation::SetVegetationType(const char *vegetationType){
+	if(!vegetationType) DETHROW(deeInvalidParam);
 	
 	pVegetationType = vegetationType;
 	
 	Reset();
 }
 
-void meHTVRuleClosestVegetation::SetSearchRadius( float searchRadius ){
+void meHTVRuleClosestVegetation::SetSearchRadius(float searchRadius){
 	pSearchRadius = searchRadius;
 	
 	Reset();
 }
 
-void meHTVRuleClosestVegetation::UpdateResult( meHTVEvaluationEnvironment &evalEnv ){
-	if( ! pDirty ){
+void meHTVRuleClosestVegetation::UpdateResult(meHTVEvaluationEnvironment &evalEnv){
+	if(!pDirty){
 		return;
 	}
 	
@@ -101,7 +101,7 @@ void meHTVRuleClosestVegetation::UpdateResult( meHTVEvaluationEnvironment &evalE
 #if 0
 	meHeightTerrainSector *htsector = evalEnv.GetHTSector();
 	
-	if( htsector && htsector->GetHeightTerrain() && false ){
+	if(htsector && htsector->GetHeightTerrain() && false){
 		const decDVector &ipos = evalEnv.GetPosition();
 		meHeightTerrainPropField *htpf;
 		int i, pfiCount = 0;
@@ -111,22 +111,22 @@ void meHTVRuleClosestVegetation::UpdateResult( meHTVEvaluationEnvironment &evalE
 		decVector posDiff;
 		float pfDropDist;
 		
-		pfDropDist = htsector->GetHeightTerrain()->GetSectorSize() / ( float )htsector->GetPropFieldCellCount();
+		pfDropDist = htsector->GetHeightTerrain()->GetSectorSize() / (float)htsector->GetPropFieldCellCount();
 		pfCount = htsector->GetPropFieldCount();
 		
-		for( p=0; p<pfCount; p++ ){
-			htpf = htsector->GetPropFieldAt( p );
-			if( htpf->GetEnginePropField() ){
-				testIPos = ( ipos - htpf->GetEnginePropField()->GetPosition() ).ToVector();
+		for(p=0; p<pfCount; p++){
+			htpf = htsector->GetPropFieldAt(p);
+			if(htpf->GetEnginePropField()){
+				testIPos = (ipos - htpf->GetEnginePropField()->GetPosition()).ToVector();
 				
-				if( testIPos.x >= -pfDropDist && testIPos.x <= pfDropDist && testIPos.z >= -pfDropDist && testIPos.z <= pfDropDist ){
+				if(testIPos.x >= -pfDropDist && testIPos.x <= pfDropDist && testIPos.z >= -pfDropDist && testIPos.z <= pfDropDist){
 					pfiCount = htpf->GetVInstanceCount();
 					
-					for( i=0; i<pfiCount; i++ ){
-						posDiff = htpf->GetVInstanceAt( i ).GetPosition() - testIPos;
+					for(i=0; i<pfiCount; i++){
+						posDiff = htpf->GetVInstanceAt(i).GetPosition() - testIPos;
 						distSquared = posDiff * posDiff;
 						
-						if( distSquared < bestDistSquared ){
+						if(distSquared < bestDistSquared){
 							bestDistSquared = distSquared;
 						}
 					}
@@ -136,7 +136,7 @@ void meHTVRuleClosestVegetation::UpdateResult( meHTVEvaluationEnvironment &evalE
 	}
 #endif
 	
-	pDistance = sqrtf( bestDistSquared );
+	pDistance = sqrtf(bestDistSquared);
 	
 	// no more dirty
 	pDirty = false;
@@ -145,24 +145,24 @@ void meHTVRuleClosestVegetation::UpdateResult( meHTVEvaluationEnvironment &evalE
 
 
 void meHTVRuleClosestVegetation::Reset(){
-	if( pSearchRadius < 0.001f ){
+	if(pSearchRadius < 0.001f){
 		pDistance = 1.0f;
-		pDirection.Set( 0.0f, 0.0f, 1.0f );
+		pDirection.Set(0.0f, 0.0f, 1.0f);
 		pDirty = false;
 		
 	}else{
 		pDistance = pSearchRadius;
-		pDirection.Set( 0.0f, 0.0f, 1.0f );
+		pDirection.Set(0.0f, 0.0f, 1.0f);
 		pDirty = true;
 	}
 }
 
-float meHTVRuleClosestVegetation::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot < 0 || slot > 1 ) DETHROW( deeInvalidParam );
+float meHTVRuleClosestVegetation::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot < 0 || slot > 1) DETHROW(deeInvalidParam);
 	
-	UpdateResult( evalEnv );
+	UpdateResult(evalEnv);
 	
-	if( slot == eosDistance ){
+	if(slot == eosDistance){
 		return pDistance;
 		
 	}else{ // slot == eosDirection // invalid usage. in this case we return the y coordinate
@@ -170,13 +170,13 @@ float meHTVRuleClosestVegetation::GetOutputSlotValueAt( int slot, meHTVEvaluatio
 	}
 }
 
-decVector meHTVRuleClosestVegetation::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot < 0 || slot > 1 ) DETHROW( deeInvalidParam );
+decVector meHTVRuleClosestVegetation::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot < 0 || slot > 1) DETHROW(deeInvalidParam);
 	
-	UpdateResult( evalEnv );
+	UpdateResult(evalEnv);
 	
-	if( slot == eosDistance ){
-		return decVector( pDistance, pDistance, pDistance );
+	if(slot == eosDistance){
+		return decVector(pDistance, pDistance, pDistance);
 		
 	}else{ // slot == eosDirection
 		return pDirection;
@@ -184,5 +184,5 @@ decVector meHTVRuleClosestVegetation::GetOutputSlotVectorAt( int slot, meHTVEval
 }
 
 meHTVRule *meHTVRuleClosestVegetation::Copy() const{
-	return new meHTVRuleClosestVegetation( *this );
+	return new meHTVRuleClosestVegetation(*this);
 }

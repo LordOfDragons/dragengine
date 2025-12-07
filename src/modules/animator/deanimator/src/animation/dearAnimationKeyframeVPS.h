@@ -69,14 +69,14 @@ public:
 	inline float GetWeightStep() const{ return pWeightStep; }
 	
 	/** Interpolated position. Has to be interpolationTime - keyframeTime. No range checking is done. */
-	float InterpolateWeight( float time ) const;
+	float InterpolateWeight(float time) const;
 	
 	/** Set keyframe without interpolation data. */
-	void Set( const deAnimationKeyframeVertexPositionSet &keyframe );
+	void Set(const deAnimationKeyframeVertexPositionSet &keyframe);
 	
 	/** Set keyframe with interpolation data. */
-	void Set( const deAnimationKeyframeVertexPositionSet &keyframe,
-		const deAnimationKeyframeVertexPositionSet &nextKeyframe );
+	void Set(const deAnimationKeyframeVertexPositionSet &keyframe,
+		const deAnimationKeyframeVertexPositionSet &nextKeyframe);
 	/*@}*/
 };
 

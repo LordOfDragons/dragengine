@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataObject::meUndoDataObject( meObject *object ) :
-pObject( object )
+meUndoDataObject::meUndoDataObject(meObject *object) :
+pObject(object)
 {
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldPosition = object->GetPosition();
@@ -60,6 +60,6 @@ meUndoDataObject::~meUndoDataObject(){
 // Management
 ///////////////
 
-void meUndoDataObject::SetAttachedTo( meObject *object ){
+void meUndoDataObject::SetAttachedTo(meObject *object){
 	pAttachedTo = object;
 }

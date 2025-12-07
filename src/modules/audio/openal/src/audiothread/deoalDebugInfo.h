@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread debugging information. */
-	deoalDebugInfo( deoalAudioThread &audioThread );
+	deoalDebugInfo(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread debugging information. */
 	~deoalDebugInfo();
@@ -95,7 +95,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	void ResetTimersMainThread();
-	void StoreTimeThreadMain( float time );
+	void StoreTimeThreadMain(float time);
 	void StoreTimeThreadMainWaitFinish();
 	void StoreTimeThreadMainSynchronize();
 	void ResetTimersAudioThread();
@@ -106,8 +106,8 @@ public:
 	void StoreTimeAudioThreadWorldProcess();
 	void StoreTimeAudioThreadSpeakersProcess();
 	void StoreTimeAudioThreadEffectsProcess();
-	void StoreTimeFrameLimiter( const decTimeHistory &main, const decTimeHistory &audio,
-		const decTimeHistory &audioEstimated );
+	void StoreTimeFrameLimiter(const decTimeHistory &main, const decTimeHistory &audio,
+		const decTimeHistory &audioEstimated);
 	
 	
 	
@@ -127,13 +127,13 @@ public:
 	void HideDISpeakerAtPosition();
 	void UpdateDISpeakerAtPosition();
 	
-	void PrepareDIClosestSpeakers( int count );
+	void PrepareDIClosestSpeakers(int count);
 	void UpdateDIClosestSpeakers();
 	
-	void PrepareDDClosestSpeakersDirect( int count );
+	void PrepareDDClosestSpeakersDirect(int count);
 	void CaptureDDClosestSpeakersDirect();
 	
-	void VisAudSpeakers( int mode );
+	void VisAudSpeakers(int mode);
 	void UpdateVisAudSpeakers();
 	
 	void UpdateDebugInfo();

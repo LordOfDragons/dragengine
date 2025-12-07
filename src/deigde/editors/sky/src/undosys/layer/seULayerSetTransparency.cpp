@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetTransparency::seULayerSetTransparency( seLayer *layer, float newTransparency ) :
-pLayer( NULL ),
-pNewTransparency( newTransparency )
+seULayerSetTransparency::seULayerSetTransparency(seLayer *layer, float newTransparency) :
+pLayer(NULL),
+pNewTransparency(newTransparency)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Layer Transparency" );
+	SetShortInfo("Set Layer Transparency");
 	
 	pOldTransparency = layer->GetTransparency();
 	
@@ -56,7 +56,7 @@ pNewTransparency( newTransparency )
 }
 
 seULayerSetTransparency::~seULayerSetTransparency(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -66,16 +66,16 @@ seULayerSetTransparency::~seULayerSetTransparency(){
 // Management
 ///////////////
 
-void seULayerSetTransparency::SetNewTransparency( float transparency ){
+void seULayerSetTransparency::SetNewTransparency(float transparency){
 	pNewTransparency = transparency;
 }
 
 
 
 void seULayerSetTransparency::Undo(){
-	pLayer->SetTransparency( pOldTransparency );
+	pLayer->SetTransparency(pOldTransparency);
 }
 
 void seULayerSetTransparency::Redo(){
-	pLayer->SetTransparency( pNewTransparency );
+	pLayer->SetTransparency(pNewTransparency);
 }

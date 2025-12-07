@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeCylinderBottomRadius( reRigShapeCylinder *shape, float bottomRadius );
+	reUSetShapeCylinderBottomRadius(reRigShapeCylinder *shape, float bottomRadius);
 	
 protected:
 	/** \brief Clean up undo. */

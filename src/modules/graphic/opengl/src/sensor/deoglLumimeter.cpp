@@ -42,20 +42,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglLumimeter::deoglLumimeter( deGraphicOpenGl &ogl, const deLumimeter &lumimeter ) :
-pOgl( ogl ),
-pLumimeter( lumimeter ),
-pRLumimeter( NULL ),
+deoglLumimeter::deoglLumimeter(deGraphicOpenGl &ogl, const deLumimeter &lumimeter) :
+pOgl(ogl),
+pLumimeter(lumimeter),
+pRLumimeter(NULL),
 
-pLuminance( 0.0f ),
+pLuminance(0.0f),
 
-pDirtyLumimeter( true ),
-pDirtyOctree( true )
+pDirtyLumimeter(true),
+pDirtyOctree(true)
 {
 	try{
-		pRLumimeter = new deoglRLumimeter( ogl.GetRenderThread() );
+		pRLumimeter = new deoglRLumimeter(ogl.GetRenderThread());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,12 +71,12 @@ deoglLumimeter::~deoglLumimeter(){
 ///////////////
 
 void deoglLumimeter::SyncToRender(){
-	if( pDirtyLumimeter ){
-		pRLumimeter->SetPosition( pLumimeter.GetPosition() );
+	if(pDirtyLumimeter){
+		pRLumimeter->SetPosition(pLumimeter.GetPosition());
 		pDirtyLumimeter = false;
 	}
 	
-	if( pDirtyOctree ){
+	if(pDirtyOctree){
 		pRLumimeter->UpdateOctreeNode();
 		pDirtyOctree = false;
 	}
@@ -123,7 +123,7 @@ decColor deoglLumimeter::MeasureColor(){
 //////////////////////
 
 void deoglLumimeter::pCleanUp(){
-	if( pRLumimeter ){
+	if(pRLumimeter){
 		pRLumimeter->FreeReference();
 	}
 }

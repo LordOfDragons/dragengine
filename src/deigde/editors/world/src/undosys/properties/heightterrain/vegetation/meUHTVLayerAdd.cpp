@@ -41,13 +41,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLayerAdd::meUHTVLayerAdd( meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer ){
-	if( ! world || ! heightTerrain || ! vlayer ) DETHROW( deeInvalidParam );
+meUHTVLayerAdd::meUHTVLayerAdd(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer){
+	if(!world || !heightTerrain || !vlayer) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pHeightTerrain = heightTerrain;
 	
-	SetShortInfo( "Add Height Terrain Vegetation Layer" );
+	SetShortInfo("Add Height Terrain Vegetation Layer");
 	
 	world->AddReference();
 	
@@ -56,8 +56,8 @@ meUHTVLayerAdd::meUHTVLayerAdd( meWorld *world, meHeightTerrain *heightTerrain, 
 }
 
 meUHTVLayerAdd::~meUHTVLayerAdd(){
-	if( pVLayer ) pVLayer->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -66,10 +66,10 @@ meUHTVLayerAdd::~meUHTVLayerAdd(){
 ///////////////
 
 void meUHTVLayerAdd::Undo(){
-	pHeightTerrain->RemoveVLayer( pVLayer );
+	pHeightTerrain->RemoveVLayer(pVLayer);
 }
 
 void meUHTVLayerAdd::Redo(){
-	pHeightTerrain->AddVLayer( pVLayer );
-	pHeightTerrain->SetActiveVLayer( pVLayer );
+	pHeightTerrain->AddVLayer(pVLayer);
+	pHeightTerrain->SetActiveVLayer(pVLayer);
 }

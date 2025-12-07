@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component texture. */
-	deoglComponentTexture( deoglComponent &component, int index );
+	deoglComponentTexture(deoglComponent &component, int index);
 	
 	/** Clean up component texture. */
 	~deoglComponentTexture();
@@ -89,7 +89,7 @@ public:
 	void SyncToRender();
 	
 	inline bool GetDynamicSkinRenderablesChanged() const{ return pDynamicSkinRenderablesChanged; }
-	void SetDynamicSkinRenderablesChanged( bool changed );
+	void SetDynamicSkinRenderablesChanged(bool changed);
 	
 	void DirtyRenderableMapping();
 	
@@ -98,7 +98,7 @@ public:
 	void InitSkinState();
 	
 	/** Advance time. */
-	void AdvanceTime( float timeStep );
+	void AdvanceTime(float timeStep);
 	
 	/** Clear skin state controller. */
 	void ClearSkinStateController();
@@ -110,8 +110,8 @@ public:
 	/*@{*/
 	virtual void DynamicSkinDestroyed();
 	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
+	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 	
 	
@@ -119,7 +119,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Texture changed. */
-	void TextureChanged( const deComponentTexture &texture );
+	void TextureChanged(const deComponentTexture &texture);
 	/*@}*/
 	
 private:

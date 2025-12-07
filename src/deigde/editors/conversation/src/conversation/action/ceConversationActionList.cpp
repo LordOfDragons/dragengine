@@ -55,36 +55,36 @@ int ceConversationActionList::GetCount() const{
 	return pActions.GetCount();
 }
 
-ceConversationAction *ceConversationActionList::GetAt( int index ) const{
-	return ( ceConversationAction* )pActions.GetAt( index );
+ceConversationAction *ceConversationActionList::GetAt(int index) const{
+	return (ceConversationAction*)pActions.GetAt(index);
 }
 
-int ceConversationActionList::IndexOf( ceConversationAction *action ) const{
-	return pActions.IndexOf( action );
+int ceConversationActionList::IndexOf(ceConversationAction *action) const{
+	return pActions.IndexOf(action);
 }
 
-bool ceConversationActionList::Has( ceConversationAction *action ) const{
-	return pActions.Has( action );
+bool ceConversationActionList::Has(ceConversationAction *action) const{
+	return pActions.Has(action);
 }
 
-void ceConversationActionList::Add( ceConversationAction *action ){
-	if( ! action ) DETHROW( deeInvalidParam );
+void ceConversationActionList::Add(ceConversationAction *action){
+	if(!action) DETHROW(deeInvalidParam);
 	
-	pActions.Add( action );
+	pActions.Add(action);
 }
 
-void ceConversationActionList::InsertAt( ceConversationAction *action, int index ){
-	if( ! action ) DETHROW( deeInvalidParam );
+void ceConversationActionList::InsertAt(ceConversationAction *action, int index){
+	if(!action) DETHROW(deeInvalidParam);
 	
-	pActions.Insert( action, index );
+	pActions.Insert(action, index);
 }
 
-void ceConversationActionList::MoveTo( ceConversationAction *action, int index ){
-	pActions.Move( action, index );
+void ceConversationActionList::MoveTo(ceConversationAction *action, int index){
+	pActions.Move(action, index);
 }
 
-void ceConversationActionList::Remove( ceConversationAction *action ){
-	pActions.Remove( action );
+void ceConversationActionList::Remove(ceConversationAction *action){
+	pActions.Remove(action);
 }
 
 void ceConversationActionList::RemoveAll(){
@@ -93,7 +93,7 @@ void ceConversationActionList::RemoveAll(){
 
 
 
-ceConversationActionList &ceConversationActionList::operator=( const ceConversationActionList &list ){
+ceConversationActionList &ceConversationActionList::operator=(const ceConversationActionList &list){
 	pActions = list.pActions;
 	return *this;
 }

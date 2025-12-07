@@ -114,7 +114,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader preprocessor. */
-	deoglShaderPreprocessor( deoglRenderThread &renderThread );
+	deoglShaderPreprocessor(deoglRenderThread &renderThread);
 	
 	/** Clean up shader preprocessor. */
 	~deoglShaderPreprocessor();
@@ -149,17 +149,17 @@ public:
 	inline const decObjectList &GetSourceLocations() const{ return pSourceLocations; }
 	
 	/** Append to sources. */
-	void SourcesAppend( const char *text, bool mapLines );
+	void SourcesAppend(const char *text, bool mapLines);
 	
 	/** Append to sources. */
-	void SourcesAppend( const char *text, int length, bool mapLines );
+	void SourcesAppend(const char *text, int length, bool mapLines);
 	
 	/** Process source code. */
-	void SourcesAppendProcessed( const char *sourceCode );
+	void SourcesAppendProcessed(const char *sourceCode);
 	
 	/** Process source code. */
-	void SourcesAppendProcessed( const char *sourceCode, const char *inputFile,
-		bool resetState = false );
+	void SourcesAppendProcessed(const char *sourceCode, const char *inputFile,
+		bool resetState = false);
 	/*@}*/
 	
 	
@@ -173,16 +173,16 @@ public:
 	decStringList GetSymbolNames() const;
 	
 	/** Named symbol is present. */
-	bool HasSymbolNamed( const char *name ) const;
+	bool HasSymbolNamed(const char *name) const;
 	
 	/** Named symbol or \em NULL if absent. */
-	deoglShaderPreprocessorSymbol *GetSymbolNamed( const char *name ) const;
+	deoglShaderPreprocessorSymbol *GetSymbolNamed(const char *name) const;
 	
 	/** Set symbol. */
-	void SetSymbol( deoglShaderPreprocessorSymbol *symbol );
+	void SetSymbol(deoglShaderPreprocessorSymbol *symbol);
 	
 	/** Set symbol. */
-	void SetSymbol( const char *name, const char *value );
+	void SetSymbol(const char *name, const char *value);
 	
 	/** Named macro symbol is present. */
 	bool HasMacroSymbolNamed(const char *name) const;
@@ -194,13 +194,13 @@ public:
 	bool HasAnySymbolNamed(const char *name) const;
 	
 	/** Clear symbol. */
-	void ClearSymbol( const char *name );
+	void ClearSymbol(const char *name);
 	
 	/** Clear all symbols. */
 	void ClearAllSymbols();
 	
 	/** Set symbols from defines. */
-	void SetSymbolsFromDefines( const deoglShaderDefines &defines );
+	void SetSymbolsFromDefines(const deoglShaderDefines &defines);
 	
 	/** Set debug log parsing. */
 	void SetDebugLogParsing(bool enable);
@@ -220,32 +220,32 @@ private:
 	void pProcessSources();
 	void pProcessSingleLineComment();
 	void pProcessMultiLineComment();
-	void pProcessDirective( const char *beginLine );
+	void pProcessDirective(const char *beginLine);
 	void pProcessDirectiveInclude();
-	void pProcessDirectiveDefine( const char *beginLine );
-	void pProcessDirectiveUndefine( const char *beginLine );
+	void pProcessDirectiveDefine(const char *beginLine);
+	void pProcessDirectiveUndefine(const char *beginLine);
 	void pProcessDirectiveIfDef();
 	void pProcessDirectiveIfNotDef();
 	void pProcessDirectiveIf();
 	void pProcessDirectiveElseIf();
 	void pProcessDirectiveElse();
 	void pProcessDirectiveEndIf();
-	bool pProcessDirectiveCondition( const char *directive, bool groupOpen );
+	bool pProcessDirectiveCondition(const char *directive, bool groupOpen);
 	
-	eDirectiveTokens pParseDirectiveToken( sToken &token );
-	void pExpectDirectiveToken( sToken &token, eDirectiveTokens expectedType, const char *directive );
-	void pExpectDirectiveToken( eDirectiveTokens expectedType, const char *directive );
-	bool pParseDirectiveAnything( sToken &token );
-	decString pDirectiveTokenString( const sToken &token ) const;
-	void pErrorInvalidToken( const sToken &token, const char *directive ) const;
+	eDirectiveTokens pParseDirectiveToken(sToken &token);
+	void pExpectDirectiveToken(sToken &token, eDirectiveTokens expectedType, const char *directive);
+	void pExpectDirectiveToken(eDirectiveTokens expectedType, const char *directive);
+	bool pParseDirectiveAnything(sToken &token);
+	decString pDirectiveTokenString(const sToken &token) const;
+	void pErrorInvalidToken(const sToken &token, const char *directive) const;
 	
-	void pResolveString( const char *text, int length );
-	void pResolveBufferAppend( const char *text, int length );
-	void pSetResolveSymbolName( const char *name, int length );
+	void pResolveString(const char *text, int length);
+	void pResolveBufferAppend(const char *text, int length);
+	void pSetResolveSymbolName(const char *name, int length);
 	
-	bool pIsSymbol( int character ) const;
-	bool pIsSymbolBegin( int character ) const;
-	bool pIsNumber( int character ) const;
+	bool pIsSymbol(int character) const;
+	bool pIsSymbolBegin(int character) const;
+	bool pIsNumber(int character) const;
 };
 
 #endif

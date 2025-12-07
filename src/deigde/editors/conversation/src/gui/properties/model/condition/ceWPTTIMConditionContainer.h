@@ -51,8 +51,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMConditionContainer( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, eTypes type );
+	ceWPTTIMConditionContainer(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, eTypes type);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -75,7 +75,7 @@ public:
 	 * 
 	 * Updates the child not if condition changed.
 	 */
-	void SetCondition( ceConversationCondition *condition );
+	void SetCondition(ceConversationCondition *condition);
 	
 	/**
 	 * \brief Set condition in container or updat it.
@@ -83,7 +83,7 @@ public:
 	 * Convenience call for container subclass. If \em condition is the same as the condition
 	 * currently set this calls Update() on child condition. Otherwise this calls SetCondition().
 	 */
-	void SetOrUpdateCondition( ceConversationCondition *condition );
+	void SetOrUpdateCondition(ceConversationCondition *condition);
 	
 	/** \brief Model with child condition or \em NULL. */
 	inline ceWPTTIMCondition *GetChildCondition() const{ return pChildCondition; }
@@ -91,7 +91,7 @@ public:
 	
 	
 	/** \brief Deep find action. */
-	virtual ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition );
+	virtual ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition);
 	/*@}*/
 };
 

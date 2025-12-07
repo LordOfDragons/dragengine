@@ -55,9 +55,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */
-	ceWPTMAIfElseElseMoveAction( ceWindowMain &windowMain,
+	ceWPTMAIfElseElseMoveAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse,
-		ceConversationAction *action, int index, const char *text, igdeIcon *icon );
+		ceConversationAction *action, int index, const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	

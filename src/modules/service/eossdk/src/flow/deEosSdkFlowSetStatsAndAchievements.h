@@ -41,21 +41,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create flow. */
-	deEosSdkFlowSetStatsAndAchievements( deEosSdkServiceEos &service, const decUniqueID &id,
-		const deServiceObject &request );
+	deEosSdkFlowSetStatsAndAchievements(deEosSdkServiceEos &service, const decUniqueID &id,
+		const deServiceObject &request);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	void IngestStat( const deServiceObject &request );
-	void UnlockAchievements( const deServiceObject &request );
+	void IngestStat(const deServiceObject &request);
+	void UnlockAchievements(const deServiceObject &request);
 	
-	void OnIngestStatCompleted( const EOS_Stats_IngestStatCompleteCallbackInfo &data );
+	void OnIngestStatCompleted(const EOS_Stats_IngestStatCompleteCallbackInfo &data);
 	
 	void OnUnlockAchievementsCompleted(
-		const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo &data );
+		const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo &data);
 	
 	void CheckFinished();
 	/*@}*/

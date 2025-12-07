@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeULinkRemove( aeLink *link );
+	aeULinkRemove(aeLink *link);
 protected:
 	/** Clean up undo. */
 	virtual ~aeULinkRemove();
@@ -75,8 +75,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pAddTargets( int targetCount, aeLink *link, aeRule *rule );
-	void pAddTarget( int targetCount, aeRule *rule, aeControllerTarget *target );
+	void pAddTargets(int targetCount, aeLink *link, aeRule *rule);
+	void pAddTarget(int targetCount, aeRule *rule, aeControllerTarget *target);
 };
 
 #endif

@@ -42,32 +42,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-seController::seController( const char *name ) :
-pSynthesizer( NULL ),
-pEngControllerIndex( -1 ),
+seController::seController(const char *name) :
+pSynthesizer(NULL),
+pEngControllerIndex(-1),
 
-pName( name ),
+pName(name),
 
-pMinValue( 0.0f ),
-pMaxValue( 1.0f ),
-pClamp( true ),
+pMinValue(0.0f),
+pMaxValue(1.0f),
+pClamp(true),
 
-pEditConstantValue( 0.0f ){
+pEditConstantValue(0.0f){
 }
 
-seController::seController( const seController &copy ) :
-pSynthesizer( NULL ),
-pEngControllerIndex( -1 ),
+seController::seController(const seController &copy) :
+pSynthesizer(NULL),
+pEngControllerIndex(-1),
 
-pName( copy.pName ),
+pName(copy.pName),
 
-pMinValue( copy.pMinValue ),
-pMaxValue( copy.pMaxValue ),
-pClamp( copy.pClamp ),
+pMinValue(copy.pMinValue),
+pMaxValue(copy.pMaxValue),
+pClamp(copy.pClamp),
 
-pCurve( copy.pCurve ),
+pCurve(copy.pCurve),
 
-pEditConstantValue( copy.pEditConstantValue ){
+pEditConstantValue(copy.pEditConstantValue){
 }
 
 seController::~seController(){
@@ -79,8 +79,8 @@ seController::~seController(){
 // Management
 ///////////////
 
-void seController::SetSynthesizer( seSynthesizer *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void seController::SetSynthesizer(seSynthesizer *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
@@ -88,48 +88,48 @@ void seController::SetSynthesizer( seSynthesizer *synthesizer ){
 	pEngControllerIndex = -1;
 }
 
-void seController::SetEngineControllerIndex( int index ){
-	if( index == pEngControllerIndex ){
+void seController::SetEngineControllerIndex(int index){
+	if(index == pEngControllerIndex){
 		return;
 	}
 	
 	pEngControllerIndex = index;
-	if( index == -1 ){
+	if(index == -1){
 		return;
 	}
 	
 	deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-	deSynthesizerController &controller = *instance.GetControllerAt( index );
+	deSynthesizerController &controller = *instance.GetControllerAt(index);
 	
-	controller.SetValueRange( pMinValue, pMaxValue );
-	controller.SetClamp( pClamp );
-	controller.SetCurve( pCurve );
+	controller.SetValueRange(pMinValue, pMaxValue);
+	controller.SetClamp(pClamp);
+	controller.SetCurve(pCurve);
 	
-	instance.NotifyControllerChangedAt( index );
+	instance.NotifyControllerChangedAt(index);
 }
 
 
 
-void seController::SetName( const char *name ){
-	if( pName == name ){
+void seController::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
 	
-	if( pSynthesizer ){
-		pSynthesizer->NotifyControllerNameChanged( this );
+	if(pSynthesizer){
+		pSynthesizer->NotifyControllerNameChanged(this);
 	}
 }
 
 
 
-void seController::SetMinimumValue( float value ){
-	if( fabsf( value - pMinValue ) <= FLOAT_SAFE_EPSILON ){
+void seController::SetMinimumValue(float value){
+	if(fabsf(value - pMinValue) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
-	if( value > pMaxValue ){
+	if(value > pMaxValue){
 		pMinValue = value;
 		pMaxValue = value;
 		
@@ -137,26 +137,26 @@ void seController::SetMinimumValue( float value ){
 		pMinValue = value;
 	}
 	
-	if( pEngControllerIndex != -1 ){
+	if(pEngControllerIndex != -1){
 		deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-		deSynthesizerController &controller = *instance.GetControllerAt( pEngControllerIndex );
+		deSynthesizerController &controller = *instance.GetControllerAt(pEngControllerIndex);
 		
-		controller.SetValueRange( pMinValue, pMaxValue );
+		controller.SetValueRange(pMinValue, pMaxValue);
 		
-		instance.NotifyControllerChangedAt( pEngControllerIndex );
+		instance.NotifyControllerChangedAt(pEngControllerIndex);
 	}
 	
-	if( pSynthesizer ){
-		pSynthesizer->NotifyControllerRangeChanged( this );
+	if(pSynthesizer){
+		pSynthesizer->NotifyControllerRangeChanged(this);
 	}
 }
 
-void seController::SetMaximumValue( float value ){
-	if( fabsf( value - pMaxValue ) <= FLOAT_SAFE_EPSILON ){
+void seController::SetMaximumValue(float value){
+	if(fabsf(value - pMaxValue) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
-	if( value < pMinValue ){
+	if(value < pMinValue){
 		pMinValue = value;
 		pMaxValue = value;
 		
@@ -164,63 +164,63 @@ void seController::SetMaximumValue( float value ){
 		pMaxValue = value;
 	}
 	
-	if( pEngControllerIndex != -1 ){
+	if(pEngControllerIndex != -1){
 		deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-		deSynthesizerController &controller = *instance.GetControllerAt( pEngControllerIndex );
+		deSynthesizerController &controller = *instance.GetControllerAt(pEngControllerIndex);
 		
-		controller.SetValueRange( pMinValue, pMaxValue );
+		controller.SetValueRange(pMinValue, pMaxValue);
 		
-		instance.NotifyControllerChangedAt( pEngControllerIndex );
+		instance.NotifyControllerChangedAt(pEngControllerIndex);
 	}
 	
-	if( pSynthesizer ){
-		pSynthesizer->NotifyControllerRangeChanged( this );
+	if(pSynthesizer){
+		pSynthesizer->NotifyControllerRangeChanged(this);
 	}
 }
 
-void seController::SetClamp( bool clamp ){
-	if( clamp == pClamp ){
+void seController::SetClamp(bool clamp){
+	if(clamp == pClamp){
 		return;
 	}
 	
 	pClamp = clamp;
 	
-	if( pEngControllerIndex != -1 ){
+	if(pEngControllerIndex != -1){
 		deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-		deSynthesizerController &controller = *instance.GetControllerAt( pEngControllerIndex );
+		deSynthesizerController &controller = *instance.GetControllerAt(pEngControllerIndex);
 		
-		controller.SetClamp( clamp );
+		controller.SetClamp(clamp);
 		
-		instance.NotifyControllerChangedAt( pEngControllerIndex );
+		instance.NotifyControllerChangedAt(pEngControllerIndex);
 	}
 	
-	if( pSynthesizer ){
-		pSynthesizer->NotifyControllerChanged( this );
+	if(pSynthesizer){
+		pSynthesizer->NotifyControllerChanged(this);
 	}
 }
 
-void seController::SetCurve( const decCurveBezier &curve ){
-	if( curve == pCurve ){
+void seController::SetCurve(const decCurveBezier &curve){
+	if(curve == pCurve){
 		return;
 	}
 	
 	pCurve = curve;
 	
-	if( pEngControllerIndex != -1 ){
+	if(pEngControllerIndex != -1){
 		deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-		deSynthesizerController &controller = *instance.GetControllerAt( pEngControllerIndex );
+		deSynthesizerController &controller = *instance.GetControllerAt(pEngControllerIndex);
 		
-		controller.SetCurve( curve );
+		controller.SetCurve(curve);
 		
-		instance.NotifyControllerChangedAt( pEngControllerIndex );
+		instance.NotifyControllerChangedAt(pEngControllerIndex);
 	}
 	
-	if( pSynthesizer ){
-		pSynthesizer->NotifyControllerCurveChanged( this );
+	if(pSynthesizer){
+		pSynthesizer->NotifyControllerCurveChanged(this);
 	}
 }
 
-void seController::SetEditConstantValue( float value ){
+void seController::SetEditConstantValue(float value){
 	pEditConstantValue = value;
 }
 
@@ -229,13 +229,13 @@ void seController::SetEditConstantValue( float value ){
 // Operators
 //////////////
 
-seController &seController::operator=( const seController &controller ){
-	SetName( controller.pName );
-	SetMinimumValue( controller.pMinValue );
-	SetMaximumValue( controller.pMaxValue );
-	SetClamp( controller.pClamp );
-	SetCurve( controller.pCurve );
-	SetEditConstantValue( controller.pEditConstantValue );
+seController &seController::operator=(const seController &controller){
+	SetName(controller.pName);
+	SetMinimumValue(controller.pMinValue);
+	SetMaximumValue(controller.pMaxValue);
+	SetClamp(controller.pClamp);
+	SetCurve(controller.pCurve);
+	SetEditConstantValue(controller.pEditConstantValue);
 	return *this;
 }
 
@@ -245,5 +245,5 @@ seController &seController::operator=( const seController &controller ){
 //////////////////////
 
 void seController::pCleanUp(){
-	SetSynthesizer( NULL );
+	SetSynthesizer(NULL);
 }

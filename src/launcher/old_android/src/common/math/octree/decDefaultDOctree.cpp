@@ -37,7 +37,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-decDefaultDOctree::decDefaultDOctree( const decDVector &center, const decDVector &halfSize ) : decDOctree( center, halfSize ){
+decDefaultDOctree::decDefaultDOctree(const decDVector &center, const decDVector &halfSize) : decDOctree(center, halfSize){
 	pElements = NULL;
 	pElementCount = 0;
 	pElementSize = 0;
@@ -45,7 +45,7 @@ decDefaultDOctree::decDefaultDOctree( const decDVector &center, const decDVector
 
 decDefaultDOctree::~decDefaultDOctree(){
 	RemoveAllElements();
-	if( pElements ) delete [] pElements;
+	if(pElements) delete [] pElements;
 }
 
 
@@ -53,32 +53,32 @@ decDefaultDOctree::~decDefaultDOctree(){
 // Management
 ///////////////
 
-decDOctree *decDefaultDOctree::CreateOctree( int octant ) const{
+decDOctree *decDefaultDOctree::CreateOctree(int octant) const{
 	decDVector halfSize = GetHalfSize() * 0.5f;
 	const decDVector &center = GetCenter();
-	decDOctree *node = ( decDefaultDOctree* )NULL;
+	decDOctree *node = (decDefaultDOctree*)NULL;
 	decDVector nc;
 	
 	// determine the smallest and largest coordinates
-	if( ( octant & 4 ) == 4 ){
+	if((octant & 4) == 4){
 		nc.x = center.x + halfSize.x;
 	}else{
 		nc.x = center.x - halfSize.x;
 	}
-	if( ( octant & 2 ) == 2 ){
+	if((octant & 2) == 2){
 		nc.y = center.y + halfSize.y;
 	}else{
 		nc.y = center.y - halfSize.y;
 	}
-	if( ( octant & 1 ) == 1 ){
+	if((octant & 1) == 1){
 		nc.z = center.z + halfSize.z;
 	}else{
 		nc.z = center.z - halfSize.z;
 	}
 	
 	// create child node
-	node = ( decDefaultDOctree* )new decDefaultDOctree( nc, halfSize );
-	if( ! node ) DETHROW( deeOutOfMemory );
+	node = (decDefaultDOctree*)new decDefaultDOctree(nc, halfSize);
+	if(!node) DETHROW(deeOutOfMemory);
 	return node;
 }
 
@@ -86,19 +86,19 @@ void decDefaultDOctree::ClearNodeContent(){
 	RemoveAllElements();
 }
 
-decDefaultDOctree *decDefaultDOctree::InsertIntoTree( void *element, const decDVector &boxCenter, const decDVector &boxHalfSize, int maxDepth ){
+decDefaultDOctree *decDefaultDOctree::InsertIntoTree(void *element, const decDVector &boxCenter, const decDVector &boxHalfSize, int maxDepth){
 	decDOctree *curNode = this;
 	decDOctree *nextNode;
 	int d;
 	
-	for( d=0; d<maxDepth; d++ ){
-		nextNode = curNode->GetNodeAtBox( boxCenter, boxHalfSize );
-		if( ! nextNode ) break;
+	for(d=0; d<maxDepth; d++){
+		nextNode = curNode->GetNodeAtBox(boxCenter, boxHalfSize);
+		if(!nextNode) break;
 		curNode = nextNode;
 	}
 	
-	( ( decDefaultDOctree* )curNode )->AddElement( element );
-	return ( decDefaultDOctree* )curNode;
+	((decDefaultDOctree*)curNode)->AddElement(element);
+	return (decDefaultDOctree*)curNode;
 }
 
 
@@ -106,44 +106,44 @@ decDefaultDOctree *decDefaultDOctree::InsertIntoTree( void *element, const decDV
 // Elements
 /////////////
 
-void *decDefaultDOctree::GetElementAt( int index ) const{
-	if( index < 0 || index >= pElementCount ) DETHROW( deeInvalidParam );
-	return pElements[ index ];
+void *decDefaultDOctree::GetElementAt(int index) const{
+	if(index < 0 || index >= pElementCount) DETHROW(deeInvalidParam);
+	return pElements[index];
 }
 
-int decDefaultDOctree::IndexOfElement( void *element ) const{
+int decDefaultDOctree::IndexOfElement(void *element) const{
 	int i;
-	for( i=0; i<pElementCount; i++ ){
-		if( pElements[ i ] == element ) return i;
+	for(i=0; i<pElementCount; i++){
+		if(pElements[i] == element) return i;
 	}
 	return -1;
 }
 
-void decDefaultDOctree::AddElement( void *element ){
-	if( ! element ) DETHROW( deeInvalidParam );
+void decDefaultDOctree::AddElement(void *element){
+	if(!element) DETHROW(deeInvalidParam);
 	
-	if( pElementCount == pElementSize ){
+	if(pElementCount == pElementSize){
 		int i, newSize = pElementSize * 3 / 2 + 1;
-		void **newArray = new void*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pElements ){
-			for( i=0; i<pElementSize; i++ ) newArray[ i ] = pElements[ i ];
+		void **newArray = new void*[newSize];
+		if(!newArray) DETHROW(deeOutOfMemory);
+		if(pElements){
+			for(i=0; i<pElementSize; i++) newArray[i] = pElements[i];
 			delete [] pElements;
 		}
 		pElements = newArray;
 		pElementSize = newSize;
 	}
 	
-	pElements[ pElementCount ] = element;
+	pElements[pElementCount] = element;
 	pElementCount++;
 }
 
-void decDefaultDOctree::RemoveElement( void *element ){
-	int i, index = IndexOfElement( element );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void decDefaultDOctree::RemoveElement(void *element){
+	int i, index = IndexOfElement(element);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pElementCount; i++ ) pElements[ i - 1 ] = pElements[ i ];
-	pElements[ pElementCount - 1 ] = NULL;
+	for(i=index+1; i<pElementCount; i++) pElements[i - 1] = pElements[i];
+	pElements[pElementCount - 1] = NULL;
 	pElementCount--;
 }
 

@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new class. */
-	deClassRuntimeMeter( deScriptingDragonScript *ds );
+	deClassRuntimeMeter(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
 	virtual ~deClassRuntimeMeter();
 	/*@}*/
@@ -51,7 +51,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Retrieves the scripting module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
@@ -62,27 +62,27 @@ private:
 		dsClass *clsRTM, *clsVoid, *clsInt, *clsFlt, *clsStr, *clsObj, *clsBool;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfReset );
-	DEF_NATFUNC( nfReset2 );
-	DEF_NATFUNC( nfElapsed );
-	DEF_NATFUNC( nfElapsedMicroSec );
+	DEF_NATFUNC(nfReset);
+	DEF_NATFUNC(nfReset2);
+	DEF_NATFUNC(nfElapsed);
+	DEF_NATFUNC(nfElapsedMicroSec);
 	
-	DEF_NATFUNC( nfCounterReset );
-	DEF_NATFUNC( nfCounterReset2 );
-	DEF_NATFUNC( nfCounterAdd );
-	DEF_NATFUNC( nfCounterTime );
-	DEF_NATFUNC( nfCounterTimeSeconds );
-	DEF_NATFUNC( nfCounterUpdates );
-	DEF_NATFUNC( nfCounterAverageTime );
-	DEF_NATFUNC( nfCounterAverageTimeSeconds );
+	DEF_NATFUNC(nfCounterReset);
+	DEF_NATFUNC(nfCounterReset2);
+	DEF_NATFUNC(nfCounterAdd);
+	DEF_NATFUNC(nfCounterTime);
+	DEF_NATFUNC(nfCounterTimeSeconds);
+	DEF_NATFUNC(nfCounterUpdates);
+	DEF_NATFUNC(nfCounterAverageTime);
+	DEF_NATFUNC(nfCounterAverageTimeSeconds);
 #undef DEF_NATFUNC
 };
 

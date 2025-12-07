@@ -73,7 +73,7 @@ class cMouseListener : public igdeMouseDragListener {
 	eDragModes pDragMode;
 	
 public:
-	cMouseListener( ceWDSVAPreview &lane ) : pVAPreview( lane ), pDragMode( edmNone ){ }
+	cMouseListener(ceWDSVAPreview &lane) : pVAPreview(lane), pDragMode(edmNone){}
 	
 	virtual bool OnDragBegin(){
 		ceCAActorSpeak * const actionSpeak = pVAPreview.GetWindow().GetActionASpeak();
@@ -81,14 +81,14 @@ public:
 		
 		pDragMode = edmNone;
 		
-		if( actionSpeak ){
-			if( GetControl() ){
-				pVAPreview.GetWindow().GetConversation()->GetPlayback()->PlaySingleAction( actionSpeak, 0.0f );
+		if(actionSpeak){
+			if(GetControl()){
+				pVAPreview.GetWindow().GetConversation()->GetPlayback()->PlaySingleAction(actionSpeak, 0.0f);
 				
 			}else{
-				pVAPreview.SetCurTime( pVAPreview.GetWindow().GetTimeForX( GetDragOrigin().x ) );
+				pVAPreview.SetCurTime(pVAPreview.GetWindow().GetTimeForX(GetDragOrigin().x));
 				
-				if( GetShift() ){
+				if(GetShift()){
 					pVAPreview.PlayVoiceAudio();
 					
 				}else{
@@ -97,9 +97,9 @@ public:
 				}
 			}
 			
-		}else if( action ){
-			if( GetControl() ){
-				pVAPreview.GetWindow().GetConversation()->GetPlayback()->PlaySingleAction( action, 0.0f );
+		}else if(action){
+			if(GetControl()){
+				pVAPreview.GetWindow().GetConversation()->GetPlayback()->PlaySingleAction(action, 0.0f);
 			}
 		}
 		
@@ -107,9 +107,9 @@ public:
 	}
 	
 	virtual void OnDragUpdate(){
-		switch( pDragMode ){
+		switch(pDragMode){
 		case edmTime:
-			pVAPreview.SetCurTime( pVAPreview.GetWindow().GetTimeForX( GetDragPosition().x ) );
+			pVAPreview.SetCurTime(pVAPreview.GetWindow().GetTimeForX(GetDragPosition().x));
 			break;
 			
 		default:
@@ -117,17 +117,17 @@ public:
 		}
 	}
 	
-	virtual void OnDragFinish( bool ){
+	virtual void OnDragFinish(bool){
 		pDragMode = edmNone;
 	}
 	
-	virtual void OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &change, int ){
+	virtual void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int){
 		// maybe use this to "skip" back or ahead?
 	}
 	
-	virtual void OnButtonPress( igdeWidget *widget, int button, const decPoint &position, int modifiers ){
-		if( button != deInputEvent::embcRight ){
-			igdeMouseDragListener::OnButtonPress( widget, button, position, modifiers );
+	virtual void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers){
+		if(button != deInputEvent::embcRight){
+			igdeMouseDragListener::OnButtonPress(widget, button, position, modifiers);
 			return;
 		}
 		
@@ -137,7 +137,7 @@ public:
 		
 		// TODO
 		
-		contextMenu->Popup( pVAPreview.GetWindow(), position );
+		contextMenu->Popup(pVAPreview.GetWindow(), position);
 		*/
 	}
 };
@@ -152,17 +152,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWDSVAPreview::ceWDSVAPreview( ceWindowDopeSheet &dopeSheet ) :
-pWindow( dopeSheet ),
-pCurTime( 0.0f ),
-pDirtyPreview( true ),
-pPreviewSamples( NULL )
+ceWDSVAPreview::ceWDSVAPreview(ceWindowDopeSheet &dopeSheet) :
+pWindow(dopeSheet),
+pCurTime(0.0f),
+pDirtyPreview(true),
+pPreviewSamples(NULL)
 {
-	pMouseKeyListener.TakeOver( new cMouseListener( *this ) );
+	pMouseKeyListener.TakeOver(new cMouseListener(*this));
 }
 
 ceWDSVAPreview::~ceWDSVAPreview(){
-	if( pPreviewSamples ){
+	if(pPreviewSamples){
 		delete [] pPreviewSamples;
 	}
 }
@@ -172,28 +172,28 @@ ceWDSVAPreview::~ceWDSVAPreview(){
 // Management
 ///////////////
 
-void ceWDSVAPreview::SetCurTime( float time ){
-	if( fabsf( time - pCurTime ) < FLOAT_SAFE_EPSILON ){
+void ceWDSVAPreview::SetCurTime(float time){
+	if(fabsf(time - pCurTime) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pCurTime = time;
 	
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->Stop();
 		
 		const deSound * const sound = pSpeaker->GetSound();
-		if( sound ){
-			pSpeaker->SetPlayPosition( ( int )( pCurTime * ( float )sound->GetSampleRate() ),
-				( int )( ( pCurTime + 1.0f ) * ( float )sound->GetSampleRate() ) );
+		if(sound){
+			pSpeaker->SetPlayPosition((int)(pCurTime * (float)sound->GetSampleRate()),
+				(int)((pCurTime + 1.0f) * (float)sound->GetSampleRate()));
 		}
 	}
 	
 	pWindow.OnTimeChanged();
 }
 
-void ceWDSVAPreview::SetSpeaker( deSpeaker *speaker ){
-	if( pSpeaker == speaker ){
+void ceWDSVAPreview::SetSpeaker(deSpeaker *speaker){
+	if(pSpeaker == speaker){
 		return;
 	}
 	
@@ -205,7 +205,7 @@ void ceWDSVAPreview::SetSpeaker( deSpeaker *speaker ){
 
 
 void ceWDSVAPreview::PlayVoiceAudio(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->Play();
 	}
 }
@@ -217,9 +217,9 @@ void ceWDSVAPreview::OnResize(){
 }
 
 void ceWDSVAPreview::OnActionChanged(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		ceCAActorSpeak * const action = pWindow.GetActionASpeak();
-		pSpeaker->SetSound( action ? action->GetEngineSound() : NULL );
+		pSpeaker->SetSound(action ? action->GetEngineSound() : NULL);
 	}
 	
 	InvalidatePreview();
@@ -227,7 +227,7 @@ void ceWDSVAPreview::OnActionChanged(){
 }
 
 void ceWDSVAPreview::InvalidatePreview(){
-	if( pPreviewSamples ){
+	if(pPreviewSamples){
 		delete [] pPreviewSamples;
 		pPreviewSamples = NULL;
 	}
@@ -238,37 +238,37 @@ void ceWDSVAPreview::InvalidatePreview(){
 
 void ceWDSVAPreview::CreateCanvas(){
 	deCanvasManager &canvasManager = *pWindow.GetEngine()->GetCanvasManager();
-	pCanvas.TakeOver( canvasManager.CreateCanvasView() );
+	pCanvas.TakeOver(canvasManager.CreateCanvasView());
 	
-	pCanvasPreview.TakeOver( canvasManager.CreateCanvasImage() );
-	pCanvasPreview->SetOrder( ( float )pCanvas->GetCanvasCount() );
-	pCanvas->AddCanvas( pCanvasPreview );
+	pCanvasPreview.TakeOver(canvasManager.CreateCanvasImage());
+	pCanvasPreview->SetOrder((float)pCanvas->GetCanvasCount());
+	pCanvas->AddCanvas(pCanvasPreview);
 }
 
 void ceWDSVAPreview::UpdateCanvas(){
-	if( ! pCanvas ){
+	if(!pCanvas){
 		return;
 	}
 	
 }
 
 void ceWDSVAPreview::RebuildCanvas(){
-	if( ! pCanvas ){
+	if(!pCanvas){
 		return;
 	}
 	
-	decPoint sizeDopeSheet( pWindow.GetSizeDopeSheet() );
+	decPoint sizeDopeSheet(pWindow.GetSizeDopeSheet());
 	const int previewHeight = pWindow.GetVAPreviewHeight();
 	const int width = sizeDopeSheet.x;
 	
-	pCanvas->SetPosition( decPoint( 0, 0 ) );
-	pCanvas->SetSize( decPoint( width, previewHeight ) );
+	pCanvas->SetPosition(decPoint(0, 0));
+	pCanvas->SetSize(decPoint(width, previewHeight));
 	
 	// preview image
-	pCanvasPreview->SetImage( NULL );
-	pImagePreview.TakeOver( pWindow.GetEngine()->GetImageManager()->CreateImage( width, previewHeight, 1, 3, 8 ) );
+	pCanvasPreview->SetImage(NULL);
+	pImagePreview.TakeOver(pWindow.GetEngine()->GetImageManager()->CreateImage(width, previewHeight, 1, 3, 8));
 	UpdateVAPreviewImage();
-	pCanvasPreview->SetImage( pImagePreview );
+	pCanvasPreview->SetImage(pImagePreview);
 }
 
 
@@ -280,42 +280,42 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 	const int width = pImagePreview->GetWidth();
 	const int height = pImagePreview->GetHeight();
 	const int silenceLine = height / 2;
-	const sRGB8 colorBackground = { 255, 255, 255 };
-	const sRGB8 colorWaveform = { 0, 0, 255 };
-	const sRGB8 colorSilence = { 0, 0, 255 };
+	const sRGB8 colorBackground = {255, 255, 255};
+	const sRGB8 colorWaveform = {0, 0, 255};
+	const sRGB8 colorSilence = {0, 0, 255};
 	sRGB8 * const pixels = pImagePreview->GetDataRGB8();
 	
 	// clear image
 	const int pixelCount = width * height;
 	int i;
-	for( i=0; i<pixelCount; i++ ){
-		pixels[ i ] = colorBackground;
+	for(i=0; i<pixelCount; i++){
+		pixels[i] = colorBackground;
 	}
 	
 	// silence line
 	sRGB8 * const pixelsSilenceLine = pixels + width * silenceLine;
-	for( i=0; i<width; i++ ){
-		pixelsSilenceLine[ i ] = colorSilence;
+	for(i=0; i<width; i++){
+		pixelsSilenceLine[i] = colorSilence;
 	}
 	
 	// wave form
 	deSound * const sound = pSpeaker->GetSound();
-	if( sound ){
+	if(sound){
 		const int bytesPerSample = sound->GetBytesPerSample();
 		const int sampleCount = sound->GetSampleCount();
 		const int sampleRate = sound->GetSampleRate();
 		
 		// TODO we should do this asynchronous
-		if( ! pPreviewSamples ){
+		if(!pPreviewSamples){
 			const int bufferSize = sampleCount * bytesPerSample * sound->GetChannelCount();
-			pPreviewSamples = new char[ bufferSize ];
+			pPreviewSamples = new char[bufferSize];
 			deSoundDecoder::Ref decoder;
 			
 			try{
-				decoder.TakeOver( pWindow.GetEngine()->GetSoundManager()->CreateDecoder( sound ) );
-				decoder->ReadSamples( pPreviewSamples, bufferSize );
+				decoder.TakeOver(pWindow.GetEngine()->GetSoundManager()->CreateDecoder(sound));
+				decoder->ReadSamples(pPreviewSamples, bufferSize);
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				// nothing we can do. leave the values in chaos
 			}
 		}
@@ -323,63 +323,63 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 		const int lastSampleIndex = sampleCount - 1;
 		int x;
 		
-		if( bytesPerSample == 1 ){
-			const char * const samples = ( const char * )pPreviewSamples;
-			const float factor = ( float )height / 255.0f;
+		if(bytesPerSample == 1){
+			const char * const samples = (const char *)pPreviewSamples;
+			const float factor = (float)height / 255.0f;
 			
-			for( x=0; i<width; i++ ){
-				const int sampleFrom = decMath::max( ( int )( pWindow.GetTimeForX( x ) * sampleRate + 0.5f ), 0 );
-				const int sampleTo = decMath::min( ( int )( pWindow.GetTimeForX( x + 1 ) * sampleRate + 0.5f ), lastSampleIndex );
+			for(x=0; i<width; i++){
+				const int sampleFrom = decMath::max((int)(pWindow.GetTimeForX(x) * sampleRate + 0.5f), 0);
+				const int sampleTo = decMath::min((int)(pWindow.GetTimeForX(x + 1) * sampleRate + 0.5f), lastSampleIndex);
 				
 				int lowerValue = 0;
 				int upperValue = 0;
 				
-				for( i=sampleFrom; i<sampleTo; i++ ){
-					const int value = ( int )( factor * ( float )samples[ i ] );
+				for(i=sampleFrom; i<sampleTo; i++){
+					const int value = (int)(factor * (float)samples[i]);
 					
-					if( value < lowerValue ){
+					if(value < lowerValue){
 						lowerValue = value;
 						
-					}else if( value > upperValue ){
+					}else if(value > upperValue){
 						upperValue = value;
 					}
 				}
 				
-				const int fromY = decMath::clamp( silenceLine + lowerValue, 0, height - 1 );
-				const int toY = decMath::clamp( silenceLine + upperValue, 0, height - 1 );
+				const int fromY = decMath::clamp(silenceLine + lowerValue, 0, height - 1);
+				const int toY = decMath::clamp(silenceLine + upperValue, 0, height - 1);
 				sRGB8 * const basePixels = pixels + x;
-				for( i=fromY; i<=toY; i++ ){
-					basePixels[ width * i ] = colorWaveform;
+				for(i=fromY; i<=toY; i++){
+					basePixels[width * i] = colorWaveform;
 				}
 			}
 			
-		}else if( bytesPerSample == 2 ){
-			const short * const samples = ( const short * )pPreviewSamples;
-			const float factor = ( float )height / 65536.0f;
+		}else if(bytesPerSample == 2){
+			const short * const samples = (const short *)pPreviewSamples;
+			const float factor = (float)height / 65536.0f;
 			
-			for( x=0; i<width; i++ ){
-				const int sampleFrom = decMath::max( ( int )( pWindow.GetTimeForX( x ) * sampleRate + 0.5f ), 0 );
-				const int sampleTo = decMath::min( ( int )( pWindow.GetTimeForX( x + 1 ) * sampleRate + 0.5f ), lastSampleIndex );
+			for(x=0; i<width; i++){
+				const int sampleFrom = decMath::max((int)(pWindow.GetTimeForX(x) * sampleRate + 0.5f), 0);
+				const int sampleTo = decMath::min((int)(pWindow.GetTimeForX(x + 1) * sampleRate + 0.5f), lastSampleIndex);
 				
 				int lowerValue = 0;
 				int upperValue = 0;
 				
-				for( i=sampleFrom; i<sampleTo; i++ ){
-					const int value = ( int )( factor * ( float )samples[ i ] );
+				for(i=sampleFrom; i<sampleTo; i++){
+					const int value = (int)(factor * (float)samples[i]);
 					
-					if( value < lowerValue ){
+					if(value < lowerValue){
 						lowerValue = value;
 						
-					}else if( value > upperValue ){
+					}else if(value > upperValue){
 						upperValue = value;
 					}
 				}
 				
-				const int fromY = decMath::clamp( silenceLine + lowerValue, 0, height - 1 );
-				const int toY = decMath::clamp( silenceLine + upperValue, 0, height - 1 );
+				const int fromY = decMath::clamp(silenceLine + lowerValue, 0, height - 1);
+				const int toY = decMath::clamp(silenceLine + upperValue, 0, height - 1);
 				sRGB8 * const basePixels = pixels + x;
-				for( i=fromY; i<=toY; i++ ){
-					basePixels[ width * i ] = colorWaveform;
+				for(i=fromY; i<=toY; i++){
+					basePixels[width * i] = colorWaveform;
 				}
 			}
 		}

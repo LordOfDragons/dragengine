@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTargetRemoveLink( aeRule *rule, aeControllerTarget *target, aeLink *link );
+	aeURuleTargetRemoveLink(aeRule *rule, aeControllerTarget *target, aeLink *link);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleTargetRemoveLink();

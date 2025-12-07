@@ -60,25 +60,25 @@ public:
 	inline float GetBendX() const{ return pBendX; }
 	
 	/** \brief Set bending around the X axis. */
-	void SetBendX( float bend );
+	void SetBendX(float bend);
 	
 	/** \brief Bending around the Z axis. */
 	inline float GetBendZ() const{ return pBendZ; }
 	
 	/** \brief Set bending around the Z axis. */
-	void SetBendZ( float bend );
+	void SetBendZ(float bend);
 	
 	/** \brief Bending velocity around the X axis. */
 	inline float GetVelocityX() const{ return pVeloX; }
 	
 	/** \brief Set bending velocity around the X axis. */
-	void SetVelocityX( float bend );
+	void SetVelocityX(float bend);
 	
 	/** \brief Bending velocity around the Z axis. */
 	inline float GetVelocityZ() const{ return pVeloZ; }
 	
 	/** \brief Set bending velocity around the Z axis. */
-	void SetVelocityZ( float bend );
+	void SetVelocityZ(float bend);
 	/*@}*/
 };
 

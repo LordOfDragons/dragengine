@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPBoneListener::reWPBoneListener( reWPBone &panel ) :
-pPanel( panel ){
+reWPBoneListener::reWPBoneListener(reWPBone &panel) :
+pPanel(panel){
 }
 
 reWPBoneListener::~reWPBoneListener(){
@@ -52,18 +52,18 @@ reWPBoneListener::~reWPBoneListener(){
 // Notifications
 //////////////////
 
-void reWPBoneListener::BoneChanged( reRig *rig, reRigBone *bone ){
-	if( bone != pPanel.GetBone() ){
+void reWPBoneListener::BoneChanged(reRig *rig, reRigBone *bone){
+	if(bone != pPanel.GetBone()){
 		return;
 	}
 	
 	pPanel.UpdateBone();
 }
 
-void reWPBoneListener::ActiveBoneChanged( reRig *rig ){
-	if( rig != pPanel.GetRig() ){
+void reWPBoneListener::ActiveBoneChanged(reRig *rig){
+	if(rig != pPanel.GetRig()){
 		return;
 	}
 	
-	pPanel.SetBone( rig->GetSelectionBones()->GetActiveBone() );
+	pPanel.SetBone(rig->GetSelectionBones()->GetActiveBone());
 }

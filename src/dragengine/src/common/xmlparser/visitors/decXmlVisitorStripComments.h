@@ -47,7 +47,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit container. */
-	virtual void VisitContainer( decXmlContainer &container );
+	virtual void VisitContainer(decXmlContainer &container);
 	/*@}*/
 };
 

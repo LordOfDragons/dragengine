@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHTCHandInteraction( deoxrInstance &instance );
+	deoxrDPHTCHandInteraction(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
@@ -47,7 +47,7 @@ protected:
 protected:
 	bool pProfileEnabled() const override;
 	void pSuggestBindings() override;
-	void pAddDevice( bool left ) override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

@@ -41,42 +41,42 @@
 ////////////////////////////
 
 meUDecalPropertyCopyToSelected::meUDecalPropertyCopyToSelected(
-const meDecalList &list, const char *key, const char *value ){
+const meDecalList &list, const char *key, const char *value){
 	meUndoDataDecalProperty *undoData = NULL;
 	const int count = list.GetCount();
 	meDecal *decal;
 	int i;
 	
-	if( ! key || ! value || count < 1 ){
-		DETHROW( deeInvalidParam );
+	if(!key || !value || count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		SetShortInfo( "Copy decal property to selected" );
+		SetShortInfo("Copy decal property to selected");
 		pKey = key;
 		pValue = value;
 		
-		for( i=0; i<count; i++ ){
-			decal = list.GetAt( i );
-			if( ! decal->GetWorld() ){
-				DETHROW( deeInvalidParam );
+		for(i=0; i<count; i++){
+			decal = list.GetAt(i);
+			if(!decal->GetWorld()){
+				DETHROW(deeInvalidParam);
 			}
 			
 			const decStringDictionary &properties = decal->GetProperties();
 			
-			undoData = new meUndoDataDecalProperty( decal );
-			undoData->SetPropertyExists( properties.Has( key ) );
-			if( undoData->GetPropertyExists() ){
-				undoData->SetOldValue( properties.GetAt( key ) );
+			undoData = new meUndoDataDecalProperty(decal);
+			undoData->SetPropertyExists(properties.Has(key));
+			if(undoData->GetPropertyExists()){
+				undoData->SetOldValue(properties.GetAt(key));
 			}
 			
-			pList.Add( undoData );
+			pList.Add(undoData);
 			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( undoData ){
+	}catch(const deException &){
+		if(undoData){
 			undoData->FreeReference();
 		}
 		pCleanUp();
@@ -93,7 +93,7 @@ meUDecalPropertyCopyToSelected::~meUDecalPropertyCopyToSelected(){
 // Management
 ///////////////
 
-void meUDecalPropertyCopyToSelected::SetValue( const char *value ){
+void meUDecalPropertyCopyToSelected::SetValue(const char *value){
 	pValue = value;
 }
 
@@ -103,14 +103,14 @@ void meUDecalPropertyCopyToSelected::Undo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataDecalProperty &undoData = *( ( meUndoDataDecalProperty* )pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataDecalProperty &undoData = *((meUndoDataDecalProperty*)pList.GetAt(i));
 		
-		if( undoData.GetPropertyExists() ){
-			undoData.GetDecal()->SetProperty( pKey, undoData.GetOldValue() );
+		if(undoData.GetPropertyExists()){
+			undoData.GetDecal()->SetProperty(pKey, undoData.GetOldValue());
 			
 		}else{
-			undoData.GetDecal()->RemoveProperty( pKey );
+			undoData.GetDecal()->RemoveProperty(pKey);
 		}
 	}
 }
@@ -119,10 +119,10 @@ void meUDecalPropertyCopyToSelected::Redo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataDecalProperty &undoData = *( ( meUndoDataDecalProperty* )pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataDecalProperty &undoData = *((meUndoDataDecalProperty*)pList.GetAt(i));
 		
-		undoData.GetDecal()->SetProperty( pKey, pValue );
+		undoData.GetDecal()->SetProperty(pKey, pValue);
 	}
 }
 

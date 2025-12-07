@@ -46,26 +46,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIMaterials::deoglGIMaterials( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread  ),
-pMaxMaterialMapSize( 64 ),
-pMaxMaterialsPerRow( 32 ),
-pMaxRowsPerImage( 32 ),
-pMaterialMapSize( pMaxMaterialMapSize ),
-pMaterialsPerRow( pMaxMaterialsPerRow ),
-pRowsPerImage( pMaxRowsPerImage ),
-pMaxMaterialCount( pMaxMaterialsPerRow * pMaxRowsPerImage ),
-pTexDiffuse( NULL ),
-pTexReflectivity( NULL ),
-pTexEmissivity( NULL ),
+deoglGIMaterials::deoglGIMaterials(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pMaxMaterialMapSize(64),
+pMaxMaterialsPerRow(32),
+pMaxRowsPerImage(32),
+pMaterialMapSize(pMaxMaterialMapSize),
+pMaterialsPerRow(pMaxMaterialsPerRow),
+pRowsPerImage(pMaxRowsPerImage),
+pMaxMaterialCount(pMaxMaterialsPerRow * pMaxRowsPerImage),
+pTexDiffuse(NULL),
+pTexReflectivity(NULL),
+pTexEmissivity(NULL),
 pFBOMaterial(deoglFramebuffer::Ref::NewWith(renderThread, false))
 {
 	try{
-		pTUCs.Add( NULL ); // index 0 is fallback
+		pTUCs.Add(NULL); // index 0 is fallback
 		
 		pCreateFBOMaterial();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -80,48 +80,48 @@ deoglGIMaterials::~deoglGIMaterials(){
 // Management
 ///////////////
 
-void deoglGIMaterials::AddTUC( deoglTexUnitsConfig *tuc ){
-	if( ! tuc || tuc->GetMaterialIndex() != -1 || tuc->GetUsageCount() == 0 ){
-		DETHROW( deeInvalidParam );
+void deoglGIMaterials::AddTUC(deoglTexUnitsConfig *tuc){
+	if(!tuc || tuc->GetMaterialIndex() != -1 || tuc->GetUsageCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int index = pFirstUnusedMaterial();
-	if( index != -1 ){
-		deoglTexUnitsConfig &unusedTuc = *( ( deoglTexUnitsConfig* )pTUCs.GetAt( index ) );
-		unusedTuc.SetMaterialIndex( -1 );
+	if(index != -1){
+		deoglTexUnitsConfig &unusedTuc = *((deoglTexUnitsConfig*)pTUCs.GetAt(index));
+		unusedTuc.SetMaterialIndex(-1);
 		unusedTuc.RemoveUsage(); // potentially deleted now
 		
-		pTUCs.SetAt( index, tuc );
-		tuc->SetMaterialIndex( index );
+		pTUCs.SetAt(index, tuc);
+		tuc->SetMaterialIndex(index);
 		tuc->AddUsage();
 		return;
 	}
 	
 	index = pTUCs.GetCount();
-	if( index > 16383 ){
+	if(index > 16383){
 		// fallback. not nice but better than causing troubles
-		tuc->SetMaterialIndex( 0 );
+		tuc->SetMaterialIndex(0);
 		return;
 	}
 	
-	pTUCs.Add( tuc );
-	tuc->SetMaterialIndex( index );
+	pTUCs.Add(tuc);
+	tuc->SetMaterialIndex(index);
 	tuc->AddUsage();
 	
-	if( ( pTUCs.GetCount() - 1 ) % 10 == 0 ){
-		pRenderThread.GetLogger().LogInfoFormat( "GIMaterials: Reached %d materials", pTUCs.GetCount() - 1 );
+	if((pTUCs.GetCount() - 1) % 10 == 0){
+		pRenderThread.GetLogger().LogInfoFormat("GIMaterials: Reached %d materials", pTUCs.GetCount() - 1);
 	}
 	
-	if( pTUCs.GetCount() > pMaxMaterialCount ){
+	if(pTUCs.GetCount() > pMaxMaterialCount){
 		pEnlarge();
 	}
 }
 
-deoglTexUnitsConfig *deoglGIMaterials::GetTUC( int materialIndex ) const{
-	if( materialIndex < 1 || materialIndex >= pTUCs.GetCount() ){
+deoglTexUnitsConfig *deoglGIMaterials::GetTUC(int materialIndex) const{
+	if(materialIndex < 1 || materialIndex >= pTUCs.GetCount()){
 		return NULL;
 	}
-	return ( deoglTexUnitsConfig* )pTUCs.GetAt( materialIndex );
+	return (deoglTexUnitsConfig*)pTUCs.GetAt(materialIndex);
 }
 
 
@@ -132,26 +132,26 @@ deoglTexUnitsConfig *deoglGIMaterials::GetTUC( int materialIndex ) const{
 void deoglGIMaterials::pCleanUp(){
 	const int count = pTUCs.GetCount();
 	int i;
-	for( i=1; i<count; i++ ){
-		deoglTexUnitsConfig &tuc = *( ( deoglTexUnitsConfig* )pTUCs.GetAt( i ) );
-		tuc.SetMaterialIndex( -1 );
+	for(i=1; i<count; i++){
+		deoglTexUnitsConfig &tuc = *((deoglTexUnitsConfig*)pTUCs.GetAt(i));
+		tuc.SetMaterialIndex(-1);
 		tuc.RemoveUsage(); // potentially deleted now
 	}
 	
-	if( pTexDiffuse ){
+	if(pTexDiffuse){
 		delete pTexDiffuse;
 	}
-	if( pTexReflectivity ){
+	if(pTexReflectivity){
 		delete pTexReflectivity;
 	}
-	if( pTexEmissivity ){
+	if(pTexEmissivity){
 		delete pTexEmissivity;
 	}
 }
 
 void deoglGIMaterials::pCreateFBOMaterial(){
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
-	const GLenum buffers[ 3 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	const deoglRestoreFramebuffer restoreFbo(pRenderThread);
+	const GLenum buffers[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 	
 	const int size = pMaterialMapSize * pRowsPerImage;
 	
@@ -160,25 +160,25 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	// - reflectivity: 16M
 	// - emissivity: 32M
 	// total: 67M
-	if( ! pTexDiffuse ){
-		pTexDiffuse = new deoglTexture( pRenderThread );
+	if(!pTexDiffuse){
+		pTexDiffuse = new deoglTexture(pRenderThread);
 	}
-	pTexDiffuse->SetFBOFormat( 4, false );
-	pTexDiffuse->SetSize( size, size );
+	pTexDiffuse->SetFBOFormat(4, false);
+	pTexDiffuse->SetSize(size, size);
 	pTexDiffuse->CreateTexture();
 	
-	if( ! pTexReflectivity ){
-		pTexReflectivity = new deoglTexture( pRenderThread );
+	if(!pTexReflectivity){
+		pTexReflectivity = new deoglTexture(pRenderThread);
 	}
-	pTexReflectivity->SetFBOFormat( 4, false );
-	pTexReflectivity->SetSize( size, size );
+	pTexReflectivity->SetFBOFormat(4, false);
+	pTexReflectivity->SetSize(size, size);
 	pTexReflectivity->CreateTexture();
 	
-	if( ! pTexEmissivity ){
-		pTexEmissivity = new deoglTexture( pRenderThread );
+	if(!pTexEmissivity){
+		pTexEmissivity = new deoglTexture(pRenderThread);
 	}
-	pTexEmissivity->SetFBOFormat( 4, true );
-	pTexEmissivity->SetSize( size, size );
+	pTexEmissivity->SetFBOFormat(4, true);
+	pTexEmissivity->SetSize(size, size);
 	pTexEmissivity->CreateTexture();
 	
 	pRenderThread.GetRenderers().GetLight().GetRenderGI().GetPipelineClearBuffers()->Activate();
@@ -191,18 +191,18 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 	pFBOMaterial->Verify();
 	
-	const GLfloat clearDiffTintMask[ 4 ] = { 0.85f, 0.85f, 0.85f, 1.0f };
-	const GLfloat clearReflRough[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.5f };
-	const GLfloat clearEmiss[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	const GLfloat clearDiffTintMask[4] = {0.85f, 0.85f, 0.85f, 1.0f};
+	const GLfloat clearReflRough[4] = {0.0f, 0.0f, 0.0f, 0.5f};
+	const GLfloat clearEmiss[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 	
-	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDiffTintMask[ 0 ] ) );
-	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 1, &clearReflRough[ 0 ] ) );
-	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 2, &clearEmiss[ 0 ] ) );
+	OGL_CHECK(pRenderThread, pglClearBufferfv(GL_COLOR, 0, &clearDiffTintMask[0]));
+	OGL_CHECK(pRenderThread, pglClearBufferfv(GL_COLOR, 1, &clearReflRough[0]));
+	OGL_CHECK(pRenderThread, pglClearBufferfv(GL_COLOR, 2, &clearEmiss[0]));
 }
 
 void deoglGIMaterials::pEnlarge(){
-	if( pMaxMaterialCount >= 16383 ){
-		DETHROW( deeInvalidParam ); // we should never end up here
+	if(pMaxMaterialCount >= 16383){
+		DETHROW(deeInvalidParam); // we should never end up here
 	}
 	
 	const int mapsPerRows = pMaterialsPerRow;
@@ -227,7 +227,7 @@ void deoglGIMaterials::pEnlarge(){
 		pRenderThread.GetRenderers().GetLight().GetRenderGI().ResizeMaterials(
 			*texDiffuse, *texReflectivity, *texEmissivity, mapsPerRows, rowsPerImage );
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		delete texDiffuse;
 		delete texReflectivity;
 		delete texEmissivity;
@@ -251,8 +251,8 @@ int deoglGIMaterials::pFirstUnusedMaterial() const{
 	const int count = pTUCs.GetCount();
 	int i;
 	
-	for( i=1; i<count; i++ ){
-		if( ( ( deoglTexUnitsConfig* )pTUCs.GetAt( i ) )->GetUsageCount() == 1 ){
+	for(i=1; i<count; i++){
+		if(((deoglTexUnitsConfig*)pTUCs.GetAt(i))->GetUsageCount() == 1){
 			return i;
 		}
 	}
@@ -262,9 +262,9 @@ int deoglGIMaterials::pFirstUnusedMaterial() const{
 	// content but not in use by GI instances. by doing this only if no free slots are
 	// available instances moving in and out of GI states quickly do not cause TUCs to
 	// be re-added quickly. this favors filling up slots first before reusing such TUCs
-	if( pTUCs.GetCount() < pMaxMaterialCount ){
-		for( i=1; i<count; i++ ){
-			if( ( ( deoglTexUnitsConfig* )pTUCs.GetAt( i ) )->GetMaterialUsageCount() == 0 ){
+	if(pTUCs.GetCount() < pMaxMaterialCount){
+		for(i=1; i<count; i++){
+			if(((deoglTexUnitsConfig*)pTUCs.GetAt(i))->GetMaterialUsageCount() == 0){
 				return i;
 			}
 		}

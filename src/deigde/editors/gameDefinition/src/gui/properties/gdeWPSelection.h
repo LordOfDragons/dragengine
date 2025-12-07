@@ -78,7 +78,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new panel. */
-	gdeWPSelection( gdeWindowProperties &windowProperties );
+	gdeWPSelection(gdeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -97,7 +97,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not present. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Tree model or NULL. */
 	inline gdeWPSTreeModel *GetModelTreeObjects() const{ return pModelTreeObjects; }
@@ -108,7 +108,7 @@ public:
 	void SelectedObjectChanged();
 	
 	/** \brief Find object. */
-	void Find( const char *text );
+	void Find(const char *text);
 	/*@}*/
 };
 

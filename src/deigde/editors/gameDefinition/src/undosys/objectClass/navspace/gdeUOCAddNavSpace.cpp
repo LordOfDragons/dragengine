@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddNavSpace::gdeUOCAddNavSpace( gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCAddNavSpace::gdeUOCAddNavSpace(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add navspace" );
+	SetShortInfo("Add navspace");
 	
 	pNavSpace = navspace;
 	navspace->AddReference();
@@ -59,10 +59,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCAddNavSpace::~gdeUOCAddNavSpace(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddNavSpace::~gdeUOCAddNavSpace(){
 
 void gdeUOCAddNavSpace::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCNavigationSpace() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCNavigationSpace()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCNavigationSpace( NULL );
+		gameDefinition->SetActiveOCNavigationSpace(NULL);
 	}
 	
-	pObjectClass->GetNavigationSpaces().Remove( pNavSpace );
+	pObjectClass->GetNavigationSpaces().Remove(pNavSpace);
 	pObjectClass->NotifyNavigationSpacesChanged();
 }
 
 void gdeUOCAddNavSpace::Redo(){
-	pObjectClass->GetNavigationSpaces().Add( pNavSpace );
+	pObjectClass->GetNavigationSpaces().Add(pNavSpace);
 	pObjectClass->NotifyNavigationSpacesChanged();
 }

@@ -94,7 +94,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	meWPView( meWindowProperties &windowProperties );
+	meWPView(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up view. */
@@ -113,7 +113,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Selected camera object. */
 	meCamera *GetSelectedCameraObject() const;

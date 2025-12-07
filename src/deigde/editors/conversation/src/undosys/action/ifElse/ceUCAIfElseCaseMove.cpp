@@ -41,9 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseCaseMove::ceUCAIfElseCaseMove( ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase, int newIndex ){
-	if( ! topic || ! ifelse || ! ifcase ){
-		DETHROW( deeInvalidParam );
+ceUCAIfElseCaseMove::ceUCAIfElseCaseMove(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase, int newIndex){
+	if(!topic || !ifelse || !ifcase){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int count = ifelse->GetCases().GetCount();
@@ -52,19 +52,19 @@ ceUCAIfElseCaseMove::ceUCAIfElseCaseMove( ceConversationTopic *topic, ceCAIfElse
 	pIfElse = NULL;
 	pCase = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = ifelse->GetCases().IndexOf( ifcase );
+	pOldIndex = ifelse->GetCases().IndexOf(ifcase);
 	
-	if( pOldIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	if(pOldIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
-	if( pNewIndex < 0 || pNewIndex >= count ){
-		DETHROW( deeInvalidParam );
+	if(pNewIndex < 0 || pNewIndex >= count){
+		DETHROW(deeInvalidParam);
 	}
-	if( pNewIndex == pOldIndex ){
-		DETHROW( deeInvalidParam );
+	if(pNewIndex == pOldIndex){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "If-else move case" );
+	SetShortInfo("If-else move case");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -77,13 +77,13 @@ ceUCAIfElseCaseMove::ceUCAIfElseCaseMove( ceConversationTopic *topic, ceCAIfElse
 }
 
 ceUCAIfElseCaseMove::~ceUCAIfElseCaseMove(){
-	if( pCase ){
+	if(pCase){
 		pCase->FreeReference();
 	}
-	if( pIfElse ){
+	if(pIfElse){
 		pIfElse->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -94,11 +94,11 @@ ceUCAIfElseCaseMove::~ceUCAIfElseCaseMove(){
 ///////////////
 
 void ceUCAIfElseCaseMove::Undo(){
-	pIfElse->GetCases().MoveTo( pCase, pOldIndex );
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pIfElse->GetCases().MoveTo(pCase, pOldIndex);
+	pTopic->NotifyActionStructureChanged(pIfElse);
 }
 
 void ceUCAIfElseCaseMove::Redo(){
-	pIfElse->GetCases().MoveTo( pCase, pNewIndex );
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pIfElse->GetCases().MoveTo(pCase, pNewIndex);
+	pTopic->NotifyActionStructureChanged(pIfElse);
 }

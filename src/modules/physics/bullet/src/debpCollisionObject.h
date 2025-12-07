@@ -67,19 +67,19 @@ public:
 	inline int GetOwnerBone() const{ return pOwnerBone; }
 	
 	/** \brief Set owner collider. */
-	void SetOwnerCollider( debpCollider *collider, int bone );
+	void SetOwnerCollider(debpCollider *collider, int bone);
 	
 	/** \brief Owner height terrain sector or \em NULL if not owned by a height terrain sector. */
 	inline debpHTSector *GetOwnerHTSector() const{ return pOwnerHTSector; }
 	
 	/** \brief Set owner height terrain sector or \em NULL if not owned by a height terrain sector. */
-	void SetOwnerHTSector( debpHTSector *htsector );
+	void SetOwnerHTSector(debpHTSector *htsector);
 	
 	/** \brief Owner touch sensor or \em NULL if not owned by a touch sensor. */
 	inline debpTouchSensor *GetOwnerTouchSensor() const{ return pOwnerTouchSensor; }
 	
 	/** \brief Set owner touch sensor or \em NULL if not owned by a touch sensor. */
-	void SetOwnerTouchSensor( debpTouchSensor *touchSensorShape );
+	void SetOwnerTouchSensor(debpTouchSensor *touchSensorShape);
 	
 	
 	
@@ -104,7 +104,7 @@ public:
 	 * \brief Set if AABB is dirty.
 	 * \details Used by debpCollisionWorld for optimizing inter-frame updates.
 	 */
-	void SetDirtyAABB( bool dirty );
+	void SetDirtyAABB(bool dirty);
 	
 	
 	
@@ -112,8 +112,8 @@ public:
 	 * \brief Calculate friction and restitution between two collision objects.
 	 * \details Special static method required until bullet provides a proper virtual implementation.
 	 */
-	static bool CallbackAddContact( btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap,
-	int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1 );
+	static bool CallbackAddContact(btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap,
+	int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1);
 	
 	/**
 	 * \brief Fix shape and triangle parameters.
@@ -124,8 +124,8 @@ public:
 	 * index0 and index1. These values are though not correct for our use. Adjust the parameters
 	 * so we can use them properly.
 	 */
-	static void CallbackAddContactFixParameters( btManifoldPoint &cp,
-	const btCollisionObjectWrapper &colObj0Wrap, const btCollisionObjectWrapper &colObj1Wrap );
+	static void CallbackAddContactFixParameters(btManifoldPoint &cp,
+	const btCollisionObjectWrapper &colObj0Wrap, const btCollisionObjectWrapper &colObj1Wrap);
 	/*@}*/
 };
 

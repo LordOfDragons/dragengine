@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetMinimumValue( aeController *controller, float newValue );
+	aeUControllerSetMinimumValue(aeController *controller, float newValue);
 	
 protected:
 	/** Clean up undo. */

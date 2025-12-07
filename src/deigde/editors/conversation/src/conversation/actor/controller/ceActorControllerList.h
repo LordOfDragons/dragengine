@@ -47,7 +47,7 @@ public:
 	ceActorControllerList();
 	
 	/** Create copy of controller list. */
-	ceActorControllerList( const ceActorControllerList &list );
+	ceActorControllerList(const ceActorControllerList &list);
 	
 	/** Clean up controller list. */
 	~ceActorControllerList();
@@ -61,31 +61,31 @@ public:
 	int GetCount() const;
 	
 	/** Controller at index. */
-	ceActorController *GetAt( int index ) const;
+	ceActorController *GetAt(int index) const;
 	
 	/** Named controller or nullptr. */
-	ceActorController *GetNamed( const char *name ) const;
+	ceActorController *GetNamed(const char *name) const;
 	
 	/** Index of controller or -1 if absent. */
-	int IndexOf( ceActorController *controller ) const;
+	int IndexOf(ceActorController *controller) const;
 	
 	/** Controller is present. */
-	bool Has( ceActorController *controller ) const;
+	bool Has(ceActorController *controller) const;
 	
 	/** Named controller is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** Add controller. */
-	void Add( ceActorController *controller );
+	void Add(ceActorController *controller);
 	
 	/** Remove controller. */
-	void Remove( ceActorController *controller );
+	void Remove(ceActorController *controller);
 	
 	/** Remove all controller. */
 	void RemoveAll();
 	
 	/** Set from another list. */
-	ceActorControllerList &operator=( const ceActorControllerList &list );
+	ceActorControllerList &operator=(const ceActorControllerList &list);
 	/*@}*/
 };
 

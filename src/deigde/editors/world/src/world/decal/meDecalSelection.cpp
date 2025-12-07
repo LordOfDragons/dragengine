@@ -54,30 +54,30 @@ meDecalSelection::~meDecalSelection(){
 // Management
 ///////////////
 
-void meDecalSelection::Add( meDecal *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+void meDecalSelection::Add(meDecal *object){
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
-	object->SetSelected( true );
-	pSelection.AddIfAbsent( object );
+	object->SetSelected(true);
+	pSelection.AddIfAbsent(object);
 }
 
-void meDecalSelection::Remove( meDecal *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+void meDecalSelection::Remove(meDecal *object){
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
-	object->SetSelected( false );
-	pSelection.RemoveIfPresent( object );
+	object->SetSelected(false);
+	pSelection.RemoveIfPresent(object);
 }
 
 void meDecalSelection::RemoveAll(){
 	const int count = pSelection.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSelection.GetAt( i )->SetSelected( false );
+	for(i=0; i<count; i++){
+		pSelection.GetAt(i)->SetSelected(false);
 	}
 	
 	pSelection.RemoveAll();
@@ -89,17 +89,17 @@ bool meDecalSelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void meDecalSelection::SetActive( meDecal *object ){
-	if( pActive ){
-		pActive->SetActive( false );
+void meDecalSelection::SetActive(meDecal *object){
+	if(pActive){
+		pActive->SetActive(false);
 		pActive->FreeReference();
 	}
 	
 	pActive = object;
 	
-	if( object ){
+	if(object){
 		object->AddReference();
-		object->SetActive( true );
+		object->SetActive(true);
 	}
 }
 
@@ -108,17 +108,17 @@ void meDecalSelection::ActivateNext(){
 	meDecal *next = NULL;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pActive != pSelection.GetAt( i ) ){
-			next = pSelection.GetAt( i );
+	for(i=0; i<count; i++){
+		if(pActive != pSelection.GetAt(i)){
+			next = pSelection.GetAt(i);
 			break;
 		}
 	}
 	
-	SetActive( next );
+	SetActive(next);
 }
 
 void meDecalSelection::Reset(){
 	RemoveAll();
-	SetActive( NULL );
+	SetActive(NULL);
 }

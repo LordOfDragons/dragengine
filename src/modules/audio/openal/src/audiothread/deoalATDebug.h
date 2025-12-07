@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread debugging. */
-	deoalATDebug( deoalAudioThread &audioThread );
+	deoalATDebug(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread renderers. */
 	~deoalATDebug();

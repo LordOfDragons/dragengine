@@ -188,7 +188,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread context. */
-	deoglRTContext( deoglRenderThread &renderThread );
+	deoglRTContext(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread context. */
 	~deoglRTContext();
@@ -199,16 +199,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Initialize phase 1 called in main thread. */
-	void InitPhase1( deRenderWindow *renderWindow );
+	void InitPhase1(deRenderWindow *renderWindow);
 	
 	/** Initialize phase 2 called in render thread. */
-	void InitPhase2( deRenderWindow *renderWindow );
+	void InitPhase2(deRenderWindow *renderWindow);
 	
 	/** Initialize phase 3 called in main thread. */
-	void InitPhase3( deRenderWindow *renderWindow );
+	void InitPhase3(deRenderWindow *renderWindow);
 	
 	/** Initialize phase 4 called in render thread. */
-	void InitPhase4( deRenderWindow *renderWindow );
+	void InitPhase4(deRenderWindow *renderWindow);
 	
 	/** Clean up. Separate call to make sure everything is fine before deleting. */
 	void CleanUp();
@@ -219,7 +219,7 @@ public:
 	inline deoglRRenderWindow *GetActiveRRenderWindow() const{ return pActiveRRenderWindow; }
 	
 	/** Active render render window current. */
-	void ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, bool forceIfNull = false );
+	void ActivateRRenderWindow(deoglRRenderWindow *rrenderWindow, bool forceIfNull = false);
 	
 	/**
 	 * User requests quit.
@@ -233,7 +233,7 @@ public:
 	
 #ifdef BACKEND_OPENGL
 	/** Special call for module to get a function pointer before extensions can be properly initialized. */
-	void *GetFunctionPointer( const char *funcName );
+	void *GetFunctionPointer(const char *funcName);
 #endif
 	
 	/** Count of compile contexts. */
@@ -407,7 +407,7 @@ public:
 	/** Compile context or NULL. */
 	inline HGLRC GetCompileContextAt(int index) const{ return pCompileContext[index]; }
 	
-	LRESULT ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam );
+	LRESULT ProcessWindowMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 #endif
 	/*@}*/
 	
@@ -448,7 +448,7 @@ private:
 	
 #elif defined OS_MACOS
 	void pCreateContext();
-	void pContextMakeCurrent( NSView *view );
+	void pContextMakeCurrent(NSView *view);
 	void pFreeContext();
 #endif
 };

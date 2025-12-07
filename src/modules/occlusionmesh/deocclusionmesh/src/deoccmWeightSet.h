@@ -55,26 +55,26 @@ public:
 	/** Retrieves the number of of weights. */
 	inline int GetCount() const{ return pCount; }
 	/** Retrieves the bone index for the given weight. */
-	int GetBoneAt( int index ) const;
+	int GetBoneAt(int index) const;
 	/** Retrieves the factor for the given weight. */
-	float GetWeightAt( int index ) const;
+	float GetWeightAt(int index) const;
 	/** Retrieves the factor for the given bone index or 0 if not found. */
-	float GetWeightFor( int bone ) const;
+	float GetWeightFor(int bone) const;
 	/**
 	 * Sets the factor for a given bone. If the bone index
 	 * does not exist it is added otherwise the factor changed.
 	 */
-	void Set( int bone, float weight );
+	void Set(int bone, float weight);
 	/** Retrieves the grouped index. */
 	inline int GetGroupedIndex() const{ return pGroupedIndex; }
 	/** Sets the grouped index. */
-	void SetGroupedIndex( int index );
+	void SetGroupedIndex(int index);
 	/** Removes all weights. */
 	void RemoveAll();
 	/** Normalizes the weights alike that all weight factors summed up equal 1.0 */
 	void Normalize();
 	/** Determines if this weight set is equal to another one. */
-	bool Equals( const deoccmWeightSet &weight ) const;
+	bool Equals(const deoccmWeightSet &weight) const;
 	/*@}*/
 };
 

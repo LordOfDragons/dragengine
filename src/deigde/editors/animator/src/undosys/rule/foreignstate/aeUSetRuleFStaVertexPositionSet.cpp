@@ -35,22 +35,22 @@
 ////////////////////////////
 
 aeUSetRuleFStaVertexPositionSet::aeUSetRuleFStaVertexPositionSet(
-	aeRuleForeignState *rule, const char *newName ) :
-pRule( nullptr ),
-pNewName( newName )
+	aeRuleForeignState *rule, const char *newName) :
+pRule(nullptr),
+pNewName(newName)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
 	pOldName = rule->GetForeignVertexPositionSet();
 	
-	SetShortInfo( "Set foreign state rule vertex position set" );
+	SetShortInfo("Set foreign state rule vertex position set");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeUSetRuleFStaVertexPositionSet::~aeUSetRuleFStaVertexPositionSet(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -61,9 +61,9 @@ aeUSetRuleFStaVertexPositionSet::~aeUSetRuleFStaVertexPositionSet(){
 ///////////////
 
 void aeUSetRuleFStaVertexPositionSet::Undo(){
-	pRule->SetForeignVertexPositionSet( pOldName );
+	pRule->SetForeignVertexPositionSet(pOldName);
 }
 
 void aeUSetRuleFStaVertexPositionSet::Redo(){
-	pRule->SetForeignVertexPositionSet( pNewName );
+	pRule->SetForeignVertexPositionSet(pNewName);
 }
