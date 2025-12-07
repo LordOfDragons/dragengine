@@ -72,11 +72,11 @@ dewiDevice( module, esWindows )
 	const dewiDeviceAxis::Ref axisY(dewiDeviceAxis::Ref::NewWith(module));
 	AddAxis(axisY);
 	axisY->SetIndex( 1 );
-	axisY.SetAbsolute( false );
-	axisY.SetID( "y" );
-	axisY.SetName( "Y" );
-	axisY.SetType( deInputDeviceAxis::eatMouse );
-	axisY.SetDisplayImages( "mouseY" );
+	axisY->SetAbsolute( false );
+	axisY->SetID( "y" );
+	axisY->SetName( "Y" );
+	axisY->SetType( deInputDeviceAxis::eatMouse );
+	axisY->SetDisplayImages( "mouseY" );
 	
 	const dewiDeviceAxis::Ref wheelY(dewiDeviceAxis::Ref::NewWith(module));
 	AddAxis(wheelY);
