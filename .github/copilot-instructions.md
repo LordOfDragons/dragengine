@@ -57,7 +57,7 @@ scons -h
    /*
     * MIT License
     *
-    * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+    * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
     *
     * [Standard MIT license text]
     */
@@ -65,27 +65,58 @@ scons -h
 
 2. **Include Guards**: Use `#ifndef _CLASSNAME_H_` pattern for header files
 
-3. **Naming Conventions**:
+3. **Line Breaks**:
+   - Max 100 characters per line
+   - Keep code readable with appropriate line breaks
+
+4. **Naming Conventions**:
    - Classes: PascalCase with prefix (e.g., `deObjectDebug`, `igdeEnvironment`)
      - `de` prefix for engine core classes
      - `igde` prefix for IGDE classes
    - Private members: `p` prefix (e.g., `pRefCount`, `pLogName`)
+   - Protected members: `p` prefix (e.g., `pWidth`, `pHeight`)
    - Methods: PascalCase (e.g., `AddReference`, `FreeReference`)
    - Constants: Not standardized, use context-appropriate style
 
-4. **Indentation**: Use tabs for indentation
+5. **Indentation**:
+   - Use tabs for indentation
 
-5. **Braces**: Opening brace on same line for methods, control structures
+6. **Braces**:
+   - Opening brace on same line for methods, control structures
+   - No whitespace around braces
 
-6. **Comments**:
+7. **Comments**:
    - Use `//` for single-line comments
    - Use `/* */` for multi-line comments
    - Doxygen-style comments with `\brief` for class/method documentation
+   - Group related functions with doxygen-style `\name` blocks
+      - Constructors/destructors in group named "Constructors and Destructors"
+      - Functions for development purpose only in group named "Internal Use Only"
+      - Other methods in group named "Management"
 
-7. **Memory Management**:
-   - Reference counting is used extensively
-   - Implement `AddReference()` and `FreeReference()` methods where appropriate
-   - Delete objects when reference count reaches zero
+8. **Memory Management**:
+   - Classes required to be reference counted have to subclass directly or indirectly `deObject` or `deThreadSafeObject`
+      - Destructors must be protected or private to prevent direct deletion
+   - Use `A::Ref` typedef smart pointers for storing references
+      - If class is missing public Ref typedef add it
+   - For functions creating new objects, return `A::Ref` smart pointers
+   - Create objects of type `A` for variable with type `A::Ref` using `A::Ref::NewWith(...)`
+   - Create objects of type `A` for variable with type `B::Ref` using `B::Ref(new A(...))`
+   - Assigning directly created objects of type `A` to variable of type `A::Ref` using `TakeOverNew(...)`
+   - Assigning directly created objects of type `A` to variable of type `B::Ref` using `TakeOver(new A(...))`
+
+9. **Member Ordering**:
+   - First public declarations like typedefs, enums, inner classes or constants
+   - Then private variables
+   - Then constructors and destructors
+   - Then public methods
+   - Then protected declarations like typedefs, enums, inner classes or constants
+   - Then protected methods
+   - Then protected variables
+   - Then private declarations like typedefs, enums, inner classes or constants
+   - Then private methods
+   - Then private variables
+   - Static members before instance members
 
 ### Python Style
 
