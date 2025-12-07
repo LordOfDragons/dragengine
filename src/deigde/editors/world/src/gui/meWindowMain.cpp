@@ -1156,7 +1156,7 @@ public:
 class cActionObjectReassignIDs : public cActionBase{
 public:
 	cActionObjectReassignIDs(meWindowMain &window) : cActionBase(window, "Reassign Object IDs",
-		NULL, "Reassign Object IDs (WARNING!Dangerous Operation!)"){}
+		NULL, "Reassign Object IDs (WARNING! Dangerous Operation!)"){}
 	
 	virtual igdeUndo *OnAction(meWorld *world){
 		if(igdeCommonDialogs::QuestionFormat(&pWindow, igdeCommonDialogs::ebsYesNo, "Reassign Object IDs",

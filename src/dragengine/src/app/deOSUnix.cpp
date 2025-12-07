@@ -473,12 +473,12 @@ void deOSUnix::SetWindow(Window wnd){
 		int result = XGrabPointer(p_Display, p_CurWindow, True, 0, GrabModeAsync,
 			GrabModeAsync, p_CurWindow, None, CurrentTime);
 		if(result != GrabSuccess){
-			printf("[AppDisplay] Cannot Grab the MousePointer!(%i)\n", result);
+			printf("[AppDisplay] Cannot Grab the MousePointer! (%i)\n", result);
 		}
 		result = XGrabKeyboard(p_Display, p_CurWindow, False, GrabModeAsync, GrabModeAsync,
 			CurrentTime);
 		if(result != GrabSuccess){
-			printf("[AppDisplay] Cannot Grab the Keyboard!(%i)\n", result);
+			printf("[AppDisplay] Cannot Grab the Keyboard! (%i)\n", result);
 		}
 		*/
 	}

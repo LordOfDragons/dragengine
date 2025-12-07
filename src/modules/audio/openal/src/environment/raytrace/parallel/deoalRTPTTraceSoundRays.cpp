@@ -835,12 +835,12 @@ const sTraceAbsorptionSum &absorptionSum){
 			if(!hitElement
 			|| e1->GetForwardFacing() != hitElement->GetForwardFacing()
 			|| !e1->GetPoint().IsEqualTo(hitElement->GetPoint(), 1e3f)){
-				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(+) Not Matching!(maxThick=%.3f)",
+				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(+) Not Matching! (maxThick=%.3f)",
 					pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 				matching = false;
 			}
 		}else if(hitElement){
-			pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(-) Not Matching!(maxThick=%.3f)",
+			pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(-) Not Matching! (maxThick=%.3f)",
 				pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 			matching = false;
 		}
@@ -850,12 +850,12 @@ const sTraceAbsorptionSum &absorptionSum){
 				if(!hitElementBack
 				|| e2->GetForwardFacing() != hitElementBack->GetForwardFacing()
 				|| !e2->GetPoint().IsEqualTo(hitElementBack->GetPoint(), 1e3f)){
-					pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(+) Not Matching!(maxThick=%.3f)",
+					pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(+) Not Matching! (maxThick=%.3f)",
 						pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 					matching = false;
 				}
 			}else if(hitElementBack){
-				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(-) Not Matching!(maxThick=%.3f)",
+				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(-) Not Matching! (maxThick=%.3f)",
 					pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 				matching = false;
 			}

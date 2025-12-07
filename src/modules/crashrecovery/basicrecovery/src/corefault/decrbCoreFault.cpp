@@ -330,26 +330,26 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 	// some infos
 	if(infos->si_code == SEGV_MAPERR){
 		if(module){
-			module->LogErrorFormat("Segmentation Fault!Tried to access not allocated memory at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault! Tried to access not allocated memory at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault!Tried to access not allocated memory at %p.\n", infos->si_addr);
+			printf("Segmentation Fault! Tried to access not allocated memory at %p.\n", infos->si_addr);
 		}
 		
 	}else if(infos->si_code == SEGV_ACCERR){
 		if(module){
-			module->LogErrorFormat("Segmentation Fault!Permission denied accessing memory at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault! Permission denied accessing memory at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault!Permission denied accessing memory at %p.\n", infos->si_addr);
+			printf("Segmentation Fault! Permission denied accessing memory at %p.\n", infos->si_addr);
 		}
 		
 	}else{
 		if(module){
-			module->LogErrorFormat("Segmentation Fault!Unknown memory error at %p.", infos->si_addr);
+			module->LogErrorFormat("Segmentation Fault! Unknown memory error at %p.", infos->si_addr);
 			
 		}else{
-			printf("Segmentation Fault!Unknown memory error at %p.\n", infos->si_addr);
+			printf("Segmentation Fault! Unknown memory error at %p.\n", infos->si_addr);
 		}
 	}
 	
