@@ -138,7 +138,7 @@ public:
 	deSkinMapped (const char *name);
 	
 	/** \brief Clean up skin property color. */
-	virtual ~deSkinMapped();
+	~deSkinMapped() override;
 	/*@}*/
 	
 	

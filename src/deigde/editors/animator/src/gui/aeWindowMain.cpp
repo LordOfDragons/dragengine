@@ -579,7 +579,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(animator.GetChanged());
 	}
 };
@@ -641,7 +641,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetSelected(animator.GetLocomotion().GetEnabled());
 	}
 };
@@ -666,7 +666,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetSelected(animator.GetWakeboard().GetEnabled());
 	}
 };
@@ -681,7 +681,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetSelected(animator.GetShowBones());
 	}
 };
@@ -720,7 +720,7 @@ public:
 	
 	virtual igdeUndo *OnActionController(aeAnimator *animator, aeController *controller) = 0;
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		if(animator.GetActiveController()){
 			UpdateController(animator, *animator.GetActiveController());
 			
@@ -826,7 +826,7 @@ public:
 			? new aeUMoveControllerUp(animator, controller) : NULL;
 	}
 	
-	virtual void UpdateController(const aeAnimator &animator, const aeController &controller){
+	void UpdateController(const aeAnimator &animator, const aeController &controller) override{
 		SetEnabled(animator.GetControllers().IndexOf((aeController*)&controller) > 0);
 	}
 };
@@ -842,7 +842,7 @@ public:
 			? new aeUMoveControllerDown(animator, controller) : NULL;
 	}
 	
-	virtual void UpdateController(const aeAnimator &animator, const aeController &controller){
+	void UpdateController(const aeAnimator &animator, const aeController &controller) override{
 		SetEnabled(animator.GetControllers().IndexOf((aeController*)&controller)
 			< animator.GetControllers().GetCount() - 1);
 	}
@@ -868,7 +868,7 @@ public:
 	
 	virtual igdeUndo *OnActionLink(aeAnimator *animator, aeLink *link) = 0;
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		if(animator.GetActiveLink()){
 			UpdateLink(animator, *animator.GetActiveLink());
 			
@@ -974,7 +974,7 @@ public:
 	
 	virtual igdeUndo *OnActionRule(aeAnimator *animator, aeRule *rule) = 0;
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		if(animator.GetActiveRule()){
 			UpdateRule(animator, *animator.GetActiveRule());
 			
@@ -1019,7 +1019,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void UpdateRule(const aeAnimator & , const aeRule &rule){
+	void UpdateRule(const aeAnimator & , const aeRule &rule) override{
 		SetEnabled(rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup);
 	}
 };
@@ -1061,7 +1061,7 @@ public:
 		}
 	}
 	
-	virtual void UpdateRule(const aeAnimator &animator, const aeRule &rule){
+	void UpdateRule(const aeAnimator &animator, const aeRule &rule) override{
 		const aeRuleGroup * const parentGroup = rule.GetParentGroup();
 		
 		if(parentGroup){
@@ -1092,7 +1092,7 @@ public:
 		}
 	}
 	
-	virtual void UpdateRule(const aeAnimator &animator, const aeRule &rule){
+	void UpdateRule(const aeAnimator &animator, const aeRule &rule) override{
 		const aeRuleGroup * const pg = rule.GetParentGroup();
 		
 		if(pg){

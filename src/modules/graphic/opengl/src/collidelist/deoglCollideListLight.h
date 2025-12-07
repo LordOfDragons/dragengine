@@ -58,7 +58,7 @@ public:
 	deoglCollideListLight();
 	
 	/** Clean up collide list light. */
-	~deoglCollideListLight();
+	~deoglCollideListLight() override;
 	/*@}*/
 	
 	
@@ -95,7 +95,7 @@ public:
 	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
+	void OcclusionTestInvisible() override;
 	
 	/** Has occlusion query. */
 	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != nullptr; }

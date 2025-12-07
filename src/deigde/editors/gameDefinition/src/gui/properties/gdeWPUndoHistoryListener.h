@@ -47,7 +47,7 @@ public:
 	gdeWPUndoHistoryListener(gdeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPUndoHistoryListener();
+	~gdeWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged(gdeGameDefinition *gameDefinition);
+	void UndoChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

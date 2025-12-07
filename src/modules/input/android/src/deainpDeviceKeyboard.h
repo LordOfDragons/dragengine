@@ -43,7 +43,7 @@ public:
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~deainpDeviceKeyboard();
+	~deainpDeviceKeyboard() override;
 	/*@}*/
 	
 	

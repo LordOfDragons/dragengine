@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up shader parameter block. */
-	virtual ~deoglSPBlockMemory();
+	~deoglSPBlockMemory() override;
 	/*@}*/
 	
 	
@@ -66,19 +66,19 @@ public:
 	inline char *GetBuffer() const{ return pBuffer; }
 	
 	/** Always throws an exception. */
-	virtual void Activate() const;
+	void Activate() const override;
 	
 	/** Activate buffer overriding binding point. */
-	virtual void Activate(int bindingPoint) const;
+	void Activate(int bindingPoint) const override;
 	
 	/** Always throws an exception. */
-	virtual void Deactivate() const;
+	void Deactivate() const override;
 	
 	/** Deactivate buffer overriding binding point. */
-	virtual void Deactivate(int bindingPoint) const;
+	void Deactivate(int bindingPoint) const override;
 	
 	/** Map buffer discarding content. */
-	virtual void MapBuffer();
+	void MapBuffer() override;
 	
 	/**
 	 * Map buffer for specific element discarding content.
@@ -86,7 +86,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer(int element);
+	void MapBuffer(int element) override;
 	
 	/**
 	 * Map buffer for specific elements discarding content.
@@ -94,13 +94,13 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer(int element, int count);
+	void MapBuffer(int element, int count) override;
 	
 	/** Has no effect. */
-	virtual void UnmapBuffer();
+	void UnmapBuffer() override;
 	
 	/** Create copy of shader parameter block. */
-	virtual deoglShaderParameterBlock *Copy() const;
+	deoglShaderParameterBlock *Copy() const override;
 	/*@}*/
 	
 	

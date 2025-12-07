@@ -47,7 +47,7 @@ public:
 	reWPUndoHistoryListener(reWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPUndoHistoryListener();
+	~reWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged(reRig *rig);
+	void UndoChanged(reRig *rig) override;
 	/*@}*/
 };
 

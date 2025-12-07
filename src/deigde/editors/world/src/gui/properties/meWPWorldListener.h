@@ -76,7 +76,7 @@ public:
 	void ObjectPropertiesChanged(meWorld *world, meObject *object) override;
 	
 	/** Object texture properties changed. */
-	virtual void ObjectTexturePropertiesChanged(meWorld *world, meObject *object,
+	void ObjectTexturePropertiesChanged(meWorld *world, meObject *object,
 		meObjectTexture *texture) override;
 	/*@}*/
 };

@@ -34,13 +34,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	deoglPVSyncMode(deGraphicOpenGl &ogl);
-	virtual ~deoglPVSyncMode();
+	~deoglPVSyncMode() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	virtual decString GetParameterValue();
-	virtual void SetParameterValue(const char *value);
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

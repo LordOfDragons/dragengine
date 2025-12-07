@@ -47,7 +47,7 @@ public:
 	reWindowMainListener(reWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	~reWindowMainListener();
+	~reWindowMainListener() override;
 	/*@}*/
 	
 	
@@ -55,66 +55,66 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged(reRig *rig);
+	void ModeChanged(reRig *rig) override;
 	
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(reRig *rig);
+	void StateChanged(reRig *rig) override;
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged(reRig *rig);
+	void UndoChanged(reRig *rig) override;
 	
 	
 	
 	/** \brief A bone changed selection state. */
-	virtual void BoneSelectedChanged(reRig *rig, reRigBone *bone);
+	void BoneSelectedChanged(reRig *rig, reRigBone *bone) override;
 	
 	/** \brief All bones have been deselected. */
-	virtual void AllBonesDeselected(reRig *rig);
+	void AllBonesDeselected(reRig *rig) override;
 	
 	/** \brief The active bone changed. */
-	virtual void ActiveBoneChanged(reRig *rig);
+	void ActiveBoneChanged(reRig *rig) override;
 	
 	
 	
 	/** \brief Shape count changed. */
-	virtual void ShapeCountChanged(reRig *rig);
+	void ShapeCountChanged(reRig *rig) override;
 	
 	/** \brief A shape changed selection state. */
-	virtual void ShapeSelectedChanged(reRig *rig, reRigShape *shape);
+	void ShapeSelectedChanged(reRig *rig, reRigShape *shape) override;
 	
 	/** \brief All shapes have been deselected. */
-	virtual void AllShapesDeselected(reRig *rig);
+	void AllShapesDeselected(reRig *rig) override;
 	
 	/** \brief The active shape changed. */
-	virtual void ActiveShapeChanged(reRig *rig);
+	void ActiveShapeChanged(reRig *rig) override;
 	
 	
 	
 	/** \brief Constraint count changed. */
-	virtual void ConstraintCountChanged(reRig *rig);
+	void ConstraintCountChanged(reRig *rig) override;
 	
 	/** \brief A constraint changed selection state. */
-	virtual void ConstraintSelectedChanged(reRig *rig, reRigConstraint *constraint);
+	void ConstraintSelectedChanged(reRig *rig, reRigConstraint *constraint) override;
 	
 	/** \brief All constraints have been deselected. */
-	virtual void AllConstraintsDeselected(reRig *rig);
+	void AllConstraintsDeselected(reRig *rig) override;
 	
 	/** \brief The active constraint changed. */
-	virtual void ActiveConstraintChanged(reRig *rig);
+	void ActiveConstraintChanged(reRig *rig) override;
 	
 	
 	
 	/** \brief Push count changed. */
-	virtual void PushCountChanged(reRig *rig);
+	void PushCountChanged(reRig *rig) override;
 	
 	/** \brief A push changed selection state. */
-	virtual void PushSelectedChanged(reRig *rig, reRigPush *push);
+	void PushSelectedChanged(reRig *rig, reRigPush *push) override;
 	
 	/** \brief All pushes have been deselected. */
-	virtual void AllPushesDeselected(reRig *rig);
+	void AllPushesDeselected(reRig *rig) override;
 	
 	/** \brief The active push changed. */
-	virtual void ActivePushChanged(reRig *rig);
+	void ActivePushChanged(reRig *rig) override;
 	/*@}*/
 };
 

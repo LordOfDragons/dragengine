@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeConstant();
+	~meWVNodeConstant() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	inline meHTVRuleConstant *GetRuleConstant() const{ return pRuleConstant; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

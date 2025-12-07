@@ -50,7 +50,7 @@ public:
 	/** Creates a new default bsp tree object. */
 	decDefaultBSPTree(const decVector &normal, float distance);
 	/** Cleans up the default bsp tree object. */
-	virtual ~decDefaultBSPTree();
+	~decDefaultBSPTree() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -60,11 +60,11 @@ public:
 	 * to create a new bsp tree of your own type. Do not set the parent of
 	 * bsp tree. The caller is responsible for this action if applicable.
 	 */
-	virtual decBSPTree *CreateBSPTree(const decVector &normal, float distance) const;
+	decBSPTree *CreateBSPTree(const decVector &normal, float distance) const override;
 	/** Clears the content of this node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	/** Add face as a coplanar face for this node. */
-	virtual void AddCoplanarFace(const decBSPTreeFace &face);
+	void AddCoplanarFace(const decBSPTreeFace &face) override;
 	/*@}*/
 	
 	/** @name Faces */

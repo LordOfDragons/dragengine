@@ -47,7 +47,7 @@ public:
 	gdeWPSObjectClassListener(gdeWPSObjectClass &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSObjectClassListener();
+	~gdeWPSObjectClassListener() override;
 	/*@}*/
 	
 	
@@ -55,82 +55,82 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object class used tags changed. */
-	virtual void ObjectClassUsedTagsChanged(gdeGameDefinition *gameDefinition);
+	void ObjectClassUsedTagsChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Object class categories changed. */
-	virtual void ObjectClassCategoriesChanged(gdeGameDefinition *gameDefinition);
+	void ObjectClassCategoriesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Base path changed. */
-	virtual void BasePathChanged(gdeGameDefinition *gameDefinition);
+	void BasePathChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Base game definitions changed. */
-	virtual void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition);
+	void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Defined and used identifiers changed. */
-	virtual void DefinedUsedIDsChanged(gdeGameDefinition *gameDefinition);
+	void DefinedUsedIDsChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** Object class count or order changed. */
-	virtual void ObjectClassStructureChanged(gdeGameDefinition *gameDefinition);
+	void ObjectClassStructureChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Object class changed. */
-	virtual void ObjectClassChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void ObjectClassChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class name changed. */
-	virtual void ObjectClassNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void ObjectClassNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object property changed. */
-	virtual void OCPropertyChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCPropertyChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object property values changed. */
-	virtual void OCPropertyValuesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCPropertyValuesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object texture property changed. */
-	virtual void OCTexturePropertyChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCTexturePropertyChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object texture property name changed. */
-	virtual void OCTexturePropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCTexturePropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object texture properties changed. */
-	virtual void OCTexturePropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCTexturePropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Object class inherits changed. */
-	virtual void OCInheritsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	void OCInheritsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class inherit changed. */
-	virtual void OCInheritChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCInherit *inherit);
+	void OCInheritChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCInherit *inherit) override;
 	
 	/** Object class textures changed. */
-	virtual void OCTexturesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCTexturesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** Object class tzexture changed. */
-	virtual void OCTextureChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponentTexture *texture);
+	void OCTextureChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponentTexture *texture) override;
 	
 	/** Object class active texture changed. */
-	virtual void OCActiveTextureChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCActiveTextureChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	/*@}*/
 };
 

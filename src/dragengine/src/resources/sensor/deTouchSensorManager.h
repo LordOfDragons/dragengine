@@ -50,7 +50,7 @@ public:
 	deTouchSensorManager(deEngine *engine);
 	
 	/** \brief Clean up touch sensor resource manager and reports leaking resources. */
-	virtual ~deTouchSensorManager();
+	~deTouchSensorManager() override;
 	/*@}*/
 	
 	
@@ -67,17 +67,17 @@ public:
 	deTouchSensor *CreateTouchSensor();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	virtual void SystemPhysicsLoad();
-	virtual void SystemPhysicsUnload();
-	virtual void SystemScriptingLoad();
-	virtual void SystemScriptingUnload();
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
+	void SystemScriptingLoad() override;
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -88,7 +88,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

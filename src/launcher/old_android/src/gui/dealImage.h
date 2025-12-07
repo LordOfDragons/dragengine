@@ -56,7 +56,7 @@ public:
 	dealImage(dealDisplay &display, const char *filename);
 	
 	/** \brief Clean up image. */
-	virtual ~dealImage();
+	~dealImage() override;
 	/*@}*/
 	
 	

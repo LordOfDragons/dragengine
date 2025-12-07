@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** Clean up listener. */
-	virtual ~aeWPLinkListener();
+	~aeWPLinkListener() override;
 	/*@}*/
 	
 	
@@ -57,28 +57,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Model changed. */
-	virtual void ModelChanged(aeAnimator *animator);
+	void ModelChanged(aeAnimator *animator) override;
 	
 	/** Rig changed. */
-	virtual void RigChanged(aeAnimator *animator);
+	void RigChanged(aeAnimator *animator) override;
 	
 	/** Controller name changed. */
-	virtual void ControllerNameChanged(aeAnimator *animator, aeController *controller);
+	void ControllerNameChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged(aeAnimator *animator);
+	void ControllerStructureChanged(aeAnimator *animator) override;
 	
 	/** Active link changed. */
-	virtual void ActiveLinkChanged(aeAnimator *animator, aeLink *link);
+	void ActiveLinkChanged(aeAnimator *animator, aeLink *link) override;
 	
 	/** Link changed. */
-	virtual void LinkChanged(aeAnimator *animator, aeLink *link);
+	void LinkChanged(aeAnimator *animator, aeLink *link) override;
 	
 	/** Link name changed. */
-	virtual void LinkNameChanged(aeAnimator *animator, aeLink *link);
+	void LinkNameChanged(aeAnimator *animator, aeLink *link) override;
 	
 	/** Link count or order changed. */
-	virtual void LinkStructureChanged(aeAnimator *animator);
+	void LinkStructureChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

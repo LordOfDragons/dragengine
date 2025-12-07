@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeClosestVegetation();
+	~meWVNodeClosestVegetation() override;
 	/*@}*/
 	
 	
@@ -67,7 +67,7 @@ public:
 	inline meHTVRuleClosestVegetation *GetRuleClosestVegetation() const{ return pRuleCV; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

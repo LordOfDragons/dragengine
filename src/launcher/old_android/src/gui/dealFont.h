@@ -75,7 +75,7 @@ public:
 	dealFont(dealDisplay &display, const char *filename);
 	
 	/** \brief Clean up font. */
-	virtual ~dealFont();
+	~dealFont() override;
 	/*@}*/
 	
 	

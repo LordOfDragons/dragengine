@@ -81,23 +81,23 @@ public:
 	 */
 	deoalCollisionCapsule(const decVector &position, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation);
 	/** Cleans up the collision Capsule. */
-	virtual ~deoalCollisionCapsule();
+	~deoalCollisionCapsule() override;
 	/*@}*/
 	
 	/** @name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume(deoalCollisionVolume *volume);
+	bool VolumeHitsVolume(deoalCollisionVolume *volume) override;
 	virtual float VolumeMoveHitsVolume(deoalCollisionVolume *volume, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume(deoalCollisionSphere *sphere);
-	virtual bool CylinderHitsVolume(deoalCollisionCylinder *cylinder);
-	virtual bool CapsuleHitsVolume(deoalCollisionCapsule *capsule);
-	virtual bool BoxHitsVolume(deoalCollisionBox *box);
-	virtual bool TriangleHitsVolume(deoalCollisionTriangle *triangle);
-	virtual bool FrustumHitsVolume(deoalCollisionFrustum *frustum);
+	bool SphereHitsVolume(deoalCollisionSphere *sphere) override;
+	bool CylinderHitsVolume(deoalCollisionCylinder *cylinder) override;
+	bool CapsuleHitsVolume(deoalCollisionCapsule *capsule) override;
+	bool BoxHitsVolume(deoalCollisionBox *box) override;
+	bool TriangleHitsVolume(deoalCollisionTriangle *triangle) override;
+	bool FrustumHitsVolume(deoalCollisionFrustum *frustum) override;
 	virtual float SphereMoveHitsVolume(deoalCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	virtual float CylinderMoveHitsVolume(deoalCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
 	virtual float CapsuleMoveHitsVolume(deoalCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
@@ -109,8 +109,8 @@ public:
 	
 	/** @name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere(deoalCollisionSphere *sphere);
-	virtual void GetEnclosingBox(deoalCollisionBox *box);
+	void GetEnclosingSphere(deoalCollisionSphere *sphere) override;
+	void GetEnclosingBox(deoalCollisionBox *box) override;
 	/*@}*/
 	
 	/** @name Miscelanous Functions */
@@ -142,7 +142,7 @@ public:
 	
 	/** @name Visiting */
 	/*{*/
-	virtual void Visit(deoalCollisionVolumeVisitor *visitor);
+	void Visit(deoalCollisionVolumeVisitor *visitor) override;
 	/*}*/
 	
 	/** @name Collision Routines */

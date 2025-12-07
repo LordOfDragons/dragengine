@@ -70,7 +70,7 @@ private:
 public:
 	cTaskPrepareTexturePipelines(deoglRSkin &skin) : pSkin(skin){}
 	
-	virtual void Run(){
+	void Run() override{
 		pSkin.PrepareTexturePipelines();
 	}
 };

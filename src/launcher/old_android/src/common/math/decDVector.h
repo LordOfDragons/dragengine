@@ -47,7 +47,7 @@ public:
 	/** Creatses a new vector with the values of another vector. */
 	decDVector(const decDVector &v);
 	/** Creatses a new vector with the values of another vector. */
-	decDVector(const decVector &v);
+	decDVector(const decDVector &v);
 	/*@}*/
 	
 	/** @name Management */
@@ -77,7 +77,7 @@ public:
 	/** Sets the components to the given vector. */
 	void Set(const decDVector &v);
 	/** Sets the components to the given vector. */
-	void Set(const decVector &v);
+	void Set(const decDVector &v);
 	/** Negates the vector. */
 	void Negate();
 	/** \brief Set each component to the smallest value of this vector and another vector. */
@@ -93,7 +93,7 @@ public:
 	/** \brief Retrieves vector with each component clamped to the provided range. */
 	decDVector Clamped(const decDVector &minValue, const decDVector &maxValue) const;
 	/** Concerts to a normal precision vector with possible precision loss. */
-	decVector ToVector() const;
+	decDVector ToVector() const;
 	/*@}*/
 	
 	/** @name Operators */

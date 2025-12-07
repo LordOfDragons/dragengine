@@ -66,7 +66,7 @@ public:
 	
 protected:
 	/** \brief Clean up game data. */
-	virtual ~dealGameData();
+	~dealGameData() override;
 	/*@}*/
 	
 	

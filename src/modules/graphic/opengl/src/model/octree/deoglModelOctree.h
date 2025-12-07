@@ -47,7 +47,7 @@ public:
 	/** Creates a new octree. */
 	deoglModelOctree(const decVector &center, const decVector &halfExtend);
 	/** Cleans up the octree. */
-	virtual ~deoglModelOctree();
+	~deoglModelOctree() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -57,9 +57,9 @@ public:
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual deoglOctree *CreateOctree(int octant) const;
+	deoglOctree *CreateOctree(int octant) const override;
 	/** Clears the content of this node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	/** Clears all faces from the tree. */
 	void ClearFaces();
 	/** Adds a face into the octree. */

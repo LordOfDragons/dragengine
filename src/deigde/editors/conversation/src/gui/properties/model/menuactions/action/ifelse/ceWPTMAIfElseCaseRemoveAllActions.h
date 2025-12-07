@@ -71,7 +71,7 @@ public:
 	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	igdeUndo *CreateUndo() override;
 	/*@}*/
 };
 

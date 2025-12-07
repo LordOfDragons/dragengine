@@ -48,7 +48,7 @@ public:
 	deSynthesizerInstanceManager(deEngine *engine);
 	
 	/** \brief Clean up synthesizer instance resource manager and report leaking resources. */
-	virtual ~deSynthesizerInstanceManager();
+	~deSynthesizerInstanceManager() override;
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	deSynthesizerInstance *CreateSynthesizerInstance();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -73,16 +73,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Synthesizer system peers of all stored resources have to be created. */
-	virtual void SystemSynthesizerLoad();
+	void SystemSynthesizerLoad() override;
 	
 	/** \brief Synthesizer system peers of all stored resources have to be freed. */
-	virtual void SystemSynthesizerUnload();
+	void SystemSynthesizerUnload() override;
 	
 	/** \brief Audio system peers of all stored resources have to be created. */
-	virtual void SystemAudioLoad();
+	void SystemAudioLoad() override;
 	
 	/** \brief Audio system peers of all stored resources have to be freed. */
-	virtual void SystemAudioUnload();
+	void SystemAudioUnload() override;
 	/*@}*/
 	
 	
@@ -92,7 +92,7 @@ public:
 	 * \brief Those functions are only for resource objects and should never be called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

@@ -23,11 +23,11 @@ private:
 	
 public:
 	detZFile();
-	~detZFile();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detZFile() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void pTestZFile();

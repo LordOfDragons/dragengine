@@ -48,7 +48,7 @@ public:
 	deoglREffectColorMatrix(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
-	virtual ~deoglREffectColorMatrix();
+	~deoglREffectColorMatrix() override;
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	const deoglPipeline *GetPipelineStereo();
 	
 	/** Render effect. */
-	virtual void Render(deoglRenderPlan &plan);
+	void Render(deoglRenderPlan &plan) override;
 };
 
 #endif

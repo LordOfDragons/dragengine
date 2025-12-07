@@ -87,7 +87,7 @@ public:
 	decTexMatrix Invert() const;
 	
 	/** \brief Convert to 3x2 texture matrix dropping the last row. */
-	decTexMatrix2 ToTexMatrix2() const;
+	decTexMatrix ToTexMatrix2() const;
 	/*@}*/
 	
 	/** @name Operators */

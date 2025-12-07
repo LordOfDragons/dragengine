@@ -55,7 +55,7 @@ public:
 	dealWidgetTaskStatus(dealDisplay &display);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetTaskStatus();
+	~dealWidgetTaskStatus() override;
 	/*@}*/
 	
 	

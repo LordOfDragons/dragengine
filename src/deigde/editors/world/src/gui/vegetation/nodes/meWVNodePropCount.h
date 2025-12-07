@@ -59,7 +59,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodePropCount();
+	~meWVNodePropCount() override;
 	/*@}*/
 	
 	
@@ -71,10 +71,10 @@ public:
 	inline meHTVRulePropCount *GetRulePropCount() const{ return pRulePC; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update class lists. */
-	virtual void UpdateClassLists();
+	void UpdateClassLists() override;
 	/*@}*/
 };
 

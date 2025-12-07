@@ -57,7 +57,7 @@ public:
 	deoglMOVDecalCollect(const deoglModelLOD &modelLOD, deoglTriangleSorter &triangleSorter);
 	
 	/** Clean up model octree visitor. */
-	virtual ~deoglMOVDecalCollect();
+	~deoglMOVDecalCollect() override;
 	/*@}*/
 	
 	
@@ -76,7 +76,7 @@ public:
 	void CollectFaces(const decMatrix &matrix, const decVector &size);
 	
 	/** Visits an octree node. */
-	virtual void VisitNode(deoglOctree *node, int intersection);
+	void VisitNode(deoglOctree *node, int intersection) override;
 	/*@}*/
 };
 

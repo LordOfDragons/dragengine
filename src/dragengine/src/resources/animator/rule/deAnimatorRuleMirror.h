@@ -109,7 +109,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deAnimatorRuleMirror();
+	~deAnimatorRuleMirror() override;
 	/*@}*/
 	
 	
@@ -171,7 +171,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit(deAnimatorRuleVisitor &visitor);
+	void Visit(deAnimatorRuleVisitor &visitor) override;
 	/*@}*/
 };
 

@@ -43,7 +43,7 @@ public:
 	deBaseRigModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseRigModule();
+	~deBaseRigModule() override;
 	/*@}*/
 	
 	

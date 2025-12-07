@@ -47,7 +47,7 @@ public:
 	meView3DListener(meView3D &view3D);
 	
 	/** \brief Clean up listener. */
-	virtual ~meView3DListener();
+	~meView3DListener() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged(meWorld *world);
+	void ModeChanged(meWorld *world) override;
 	
 	/** \brief Active camera changed. */
-	virtual void ActiveCameraChanged(meWorld *world);
+	void ActiveCameraChanged(meWorld *world) override;
 	/*@}*/
 };
 

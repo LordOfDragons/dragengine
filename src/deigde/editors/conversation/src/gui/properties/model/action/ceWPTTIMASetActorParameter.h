@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMASetActorParameter();
+	~ceWPTTIMASetActorParameter() override;
 	/*@}*/
 	
 	
@@ -57,7 +57,7 @@ public:
 	static const char *GetOperatorText(ceCASetActorParameter::eOperators anOperator);
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

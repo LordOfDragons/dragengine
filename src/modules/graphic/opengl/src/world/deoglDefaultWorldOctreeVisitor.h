@@ -53,7 +53,7 @@ public:
 	deoglDefaultWorldOctreeVisitor();
 	
 	/** Clean up world octree visitor. */
-	virtual ~deoglDefaultWorldOctreeVisitor();
+	~deoglDefaultWorldOctreeVisitor() override;
 	/*@}*/
 	
 	
@@ -99,7 +99,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit octree node. */
-	virtual void VisitNode(deoglDOctree *node, int intersection);
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	
 	/** Visit billboard. */
 	virtual void VisitBillboard(deoglRBillboard *billboard);

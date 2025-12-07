@@ -49,7 +49,7 @@ public:
 	deoglRCanvasText(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
-	virtual ~deoglRCanvasText();
+	~deoglRCanvasText() override;
 	/*@}*/
 	
 	
@@ -90,7 +90,7 @@ public:
 	
 	
 	/** Render. */
-	virtual void Render(const deoglRenderCanvasContext &context);
+	void Render(const deoglRenderCanvasContext &context) override;
 	/*@}*/
 };
 

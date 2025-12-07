@@ -50,7 +50,7 @@ public:
 	/** Creates a new vector with the values of another vector. */
 	decDVector4(const decDVector4 &v);
 	/** Creates a new vector with the values of another vector. */
-	decDVector4(const decVector4 &v);
+	decDVector4(const decDVector4 &v);
 	/*@}*/
 	
 	/** @name Management */
@@ -68,7 +68,7 @@ public:
 	/** Sets the components to the given values. */
 	void Set(double nx, double ny, double nz, double nw);
 	/** Convert to a single precision vector with possible loss of precision. */
-	decVector4 ToVector4() const;
+	decDVector4 ToVector4() const;
 	/*@}*/
 	
 	/** @name Operators */

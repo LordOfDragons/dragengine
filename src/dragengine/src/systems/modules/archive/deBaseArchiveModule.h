@@ -45,7 +45,7 @@ public:
 	deBaseArchiveModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseArchiveModule();
+	~deBaseArchiveModule() override;
 	/*@}*/
 	
 	

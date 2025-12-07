@@ -40,7 +40,7 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakWordSetName(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, const char *newName);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakWordSetName();
+	~ceUCAASpeakWordSetName() override;
 	/*@}*/
 };
 

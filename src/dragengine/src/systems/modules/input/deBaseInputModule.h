@@ -80,7 +80,7 @@ public:
 	deBaseInputModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseInputModule();
+	~deBaseInputModule() override;
 	/*@}*/
 	
 	

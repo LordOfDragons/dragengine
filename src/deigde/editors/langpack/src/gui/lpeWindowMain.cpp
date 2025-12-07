@@ -372,7 +372,7 @@ public:
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.GetLangPack()){
 			return;
 		}
@@ -389,7 +389,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetLangPack() && pWindow.GetLangPack()->GetChanged());
 	}
 };

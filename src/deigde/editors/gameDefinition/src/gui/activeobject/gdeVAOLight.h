@@ -74,7 +74,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOLight();
+	~gdeVAOLight() override;
 	/*@}*/
 	
 	
@@ -89,7 +89,7 @@ public:
 	void Update(float elapsed);
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Reattach resources. */
 	void AttachResources();
@@ -98,7 +98,7 @@ public:
 	void DetachResources();
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Ignore component during shadow casting. */
 	void ShadowIgnoreComponent(deComponent *component);

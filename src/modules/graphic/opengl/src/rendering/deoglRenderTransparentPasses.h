@@ -52,7 +52,7 @@ public:
 	deoglRenderTransparentPasses(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderTransparentPasses();
+	~deoglRenderTransparentPasses() override;
 	/*@}*/
 	
 	

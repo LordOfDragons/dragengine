@@ -258,14 +258,14 @@ public:
 		SetIcon(window.GetIconGameSave());
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeGameProject * const project = pWindow.GetGameProject();
 		if(project->GetChanged()){
 			pWindow.SaveGameProject(project->GetFilePath());
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetGameProject() && pWindow.GetGameProject()->GetChanged());
 	}
 };

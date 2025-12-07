@@ -45,7 +45,7 @@ public:
 	feViewFontImageListener(feViewFontImage &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~feViewFontImageListener();
+	~feViewFontImageListener() override;
 	/*@}*/
 	
 	
@@ -53,22 +53,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font parameters changed. */
-	virtual void FontChanged(feFont *font);
+	void FontChanged(feFont *font) override;
 	
 	/** \brief An image changed. */
-    virtual void ImageChanged(feFont *font, feFontImage *image);
+    void ImageChanged(feFont *font, feFontImage *image) override;
 	
 	/** \brief Glyphs have been added or removed. */
-	virtual void GlyphStructureChanged (feFont *font);
+	void GlyphStructureChanged (feFont *font) override;
 	
 	/** \brief A glyph changed. */
-	virtual void GlyphChanged(feFont *font, feFontGlyph *glyph);
+	void GlyphChanged(feFont *font, feFontGlyph *glyph) override;
 	
 	/** \brief Glyph selection changed. */
-	virtual void GlyphSelectionChanged(feFont *font);
+	void GlyphSelectionChanged(feFont *font) override;
 	
 	/** \brief Active glyph changed. */
-	virtual void ActiveGlyphChanged(feFont *font);
+	void ActiveGlyphChanged(feFont *font) override;
 	/*@}*/
 };
 

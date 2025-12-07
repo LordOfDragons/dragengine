@@ -44,14 +44,14 @@ protected:
 		deoxrInstance &instance, const deoxrPath &path, const char *name);
 	
 	/** Clean up device profile. */
-	virtual ~deoxrDPMicrosoftMixedRealityMotionController();
+	~deoxrDPMicrosoftMixedRealityMotionController() override;
 	/*@}*/
 	
 	
 protected:
 	virtual const char *pDeviceIdPrefix() const;
-	virtual void pSuggestBindings();
-	virtual void pAddDevice(bool left);
+	void pSuggestBindings() override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

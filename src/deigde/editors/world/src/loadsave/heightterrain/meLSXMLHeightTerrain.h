@@ -73,15 +73,15 @@ public:
 	/** Creates a object. */
 	meLSXMLHeightTerrain(meLoadSaveSystem *lssys);
 	/** Cleans up the object. */
-	virtual ~meLSXMLHeightTerrain();
+	~meLSXMLHeightTerrain() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Loads a height terrain. */
-	virtual void LoadFromFile(meHeightTerrain &heightTerrain, decBaseFileReader &file);
+	void LoadFromFile(meHeightTerrain &heightTerrain, decBaseFileReader &file) override;
 	/** Saves the height terrain. */
-	virtual void SaveToFile(meHeightTerrain &heightTerrain, decBaseFileWriter &file);
+	void SaveToFile(meHeightTerrain &heightTerrain, decBaseFileWriter &file) override;
 	/*@}*/
 	
 private:

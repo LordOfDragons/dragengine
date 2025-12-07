@@ -44,7 +44,7 @@ public:
 	dealGameXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up game xml read. */
-	virtual ~dealGameXML();
+	~dealGameXML() override;
 	/*@}*/
 	
 	

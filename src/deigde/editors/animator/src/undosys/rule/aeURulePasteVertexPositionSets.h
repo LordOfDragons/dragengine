@@ -40,7 +40,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURulePasteVertexPositionSets();
+	~aeURulePasteVertexPositionSets() override;
 	/*@}*/
 };
 

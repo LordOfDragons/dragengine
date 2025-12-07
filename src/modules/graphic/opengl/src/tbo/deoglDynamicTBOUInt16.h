@@ -43,7 +43,7 @@ public:
 	
 protected:
 	/** Clean up dynamic tbo. */
-	virtual ~deoglDynamicTBOUInt16();
+	~deoglDynamicTBOUInt16() override;
 	/*@}*/
 	
 	
@@ -94,7 +94,7 @@ public:
 	void SetVec4At(int offset, uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4);
 	
 	/** Debug print. */
-	virtual void DebugPrint();
+	void DebugPrint() override;
 	
 	/** TBO format. */
 	virtual GLenum GetTBOFormat();

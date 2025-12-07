@@ -47,7 +47,7 @@ public:
 	deoglRDSRenderableColor(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin value renderable. */
-	virtual ~deoglRDSRenderableColor();
+	~deoglRDSRenderableColor() override;
 	/*@}*/
 	
 	
@@ -58,7 +58,7 @@ public:
 	void SetColor(const decColor &color);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get color if support or default color.
@@ -70,7 +70,7 @@ public:
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 };
 

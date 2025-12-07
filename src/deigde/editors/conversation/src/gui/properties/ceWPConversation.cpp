@@ -303,7 +303,7 @@ public:
 			.GetLoadSaveSystem(), pPanel.GetConversation(), list);
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(!pPanel.GetImportConvo().IsEmpty());
 	}
 };
@@ -330,7 +330,7 @@ public:
 			.GetLoadSaveSystem(), pPanel.GetConversation(), list);
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		const int index = conversation.GetImportConversationPath().IndexOf(pPanel.GetImportConvo());
 		SetEnabled(!pPanel.GetImportConvo().IsEmpty() && index > 0);
 	}
@@ -358,7 +358,7 @@ public:
 			.GetLoadSaveSystem(), pPanel.GetConversation(), list);
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		const decStringList &list = conversation.GetImportConversationPath();
 		const int index = list.IndexOf(pPanel.GetImportConvo());
 		SetEnabled(!pPanel.GetImportConvo().IsEmpty() && index != -1 && index < list.GetCount() - 1);
@@ -376,7 +376,7 @@ public:
 				.GetLoadSaveSystem(), pPanel.GetConversation(), decStringList()) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetConversation() && pPanel.GetConversation()->GetImportConversationPath().GetCount() > 0);
 	}
 };
@@ -437,7 +437,7 @@ public:
 		return pPanel.GetTarget() ? new ceUCTargetRemove(pPanel.GetTarget()) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetTarget());
 	}
 };
@@ -466,7 +466,7 @@ public:
 		return new ceUCTargetSetName(target, name);
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetTarget());
 	}
 };
@@ -579,7 +579,7 @@ public:
 		return pPanel.GetCameraShot() ? new ceUCCShotRemove(pPanel.GetCameraShot()) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetCameraShot());
 	}
 };
@@ -608,7 +608,7 @@ public:
 		return new ceUCCShotSetName(cameraShot, name);
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetCameraShot());
 	}
 };
@@ -638,7 +638,7 @@ public:
 		return new ceUCCShotAdd(conversation, duplicate);
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetCameraShot());
 	}
 };
@@ -885,7 +885,7 @@ public:
 		return cameraShot ? new ceUCCShotToggleAlignTargets(cameraShot) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		SetEnabled(cameraShot);
 		SetSelected(cameraShot && cameraShot->GetAlignTargets());
@@ -902,7 +902,7 @@ public:
 		return cameraShot ? new ceUCCShotToggleLockUpAxis(cameraShot) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		SetEnabled(cameraShot);
 		SetSelected(cameraShot && cameraShot->GetLockUpAxis());
@@ -919,7 +919,7 @@ public:
 		return cameraShot ? new ceUCCShotToggleRelativeToLookAt(cameraShot) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		SetEnabled(cameraShot);
 		SetSelected(cameraShot && cameraShot->GetRelativeToLookAt());
@@ -936,7 +936,7 @@ public:
 		return cameraShot ? new ceUCCShotToggleLockCameraTarget(cameraShot) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		SetEnabled(cameraShot);
 		SetSelected(cameraShot && cameraShot->GetLockCameraTarget());
@@ -953,7 +953,7 @@ public:
 		return cameraShot ? new ceUCCShotToggleLockLookAtTarget(cameraShot) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		SetEnabled(cameraShot);
 		SetSelected(cameraShot && cameraShot->GetLockLookAtTarget());
@@ -1002,7 +1002,7 @@ public:
 		return pPanel.GetGesture() ? new ceUCGestureRemove(pPanel.GetGesture()) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetGesture());
 	}
 };
@@ -1031,7 +1031,7 @@ public:
 		return new ceUCGestureSetName(gesture, name);
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetGesture());
 	}
 };
@@ -1069,7 +1069,7 @@ public:
 		return gesture ? new ceUCGestureToggleHold(gesture) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		ceGesture * const gesture = pPanel.GetGesture();
 		SetEnabled(gesture);
 		SetSelected(gesture && gesture->GetHold());
@@ -1130,7 +1130,7 @@ public:
 		return pPanel.GetFacePose() ? new ceUCFacePoseRemove(pPanel.GetFacePose()) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetFacePose());
 	}
 };
@@ -1159,7 +1159,7 @@ public:
 		return new ceUCFacePoseSetName(facePose, name);
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetFacePose());
 	}
 };
@@ -1220,7 +1220,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetFacePose());
 	}
 };
@@ -1236,7 +1236,7 @@ public:
 		return facePose && controller ? new ceUCFPControllerRemove(facePose, controller) : NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetFacePoseController());
 	}
 };

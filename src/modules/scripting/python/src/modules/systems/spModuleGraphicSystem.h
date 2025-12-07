@@ -40,7 +40,7 @@ public:
 	/** \brief Creates a new module. */
 	spModuleGraphicSystem(ScriptingPython &sp);
 	/** \brief Cleans up the module. */
-	virtual ~spModuleGraphicSystem();
+	~spModuleGraphicSystem() override;
 	/*@}*/
 	
 	/** \name Management */

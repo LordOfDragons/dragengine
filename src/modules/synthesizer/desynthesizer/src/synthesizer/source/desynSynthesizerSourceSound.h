@@ -66,7 +66,7 @@ public:
 		const deSynthesizerSourceSound &source);
 	
 	/** \brief Clean up synthesizer source. */
-	virtual ~desynSynthesizerSourceSound();
+	~desynSynthesizerSourceSound() override;
 	/*@}*/
 	
 	
@@ -99,10 +99,10 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource(int offset);
+	int StateDataSizeSource(int offset) override;
 	
 	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource(char *stateData);
+	void InitStateDataSource(char *stateData) override;
 	
 	/**
 	 * \brief Generate sound using source.
@@ -112,8 +112,8 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor);
+	void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor) override;
 	
 	/**
 	 * \brief Generate mono sound.
@@ -158,8 +158,8 @@ public:
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor);
+	void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor) override;
 	/*@}*/
 };
 

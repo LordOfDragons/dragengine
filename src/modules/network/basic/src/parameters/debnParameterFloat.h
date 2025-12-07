@@ -48,7 +48,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue(const char *value);
+	void SetParameterValue(const char *value) override;
 	
 	/** Current value. */
 	virtual float GetParameterFloat() = 0;

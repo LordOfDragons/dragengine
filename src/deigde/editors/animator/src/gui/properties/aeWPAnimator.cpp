@@ -174,7 +174,7 @@ public:
 			? new aeUAnimatorAddBone(animator, name) : nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		const decString &name = pPanel.GetCBRigBoneText();
 		SetEnabled(!name.IsEmpty() && !animator.GetListBones().Has(name));
 	}
@@ -191,7 +191,7 @@ public:
 			? new aeUAnimatorRemoveBone(animator, name) : nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		const decString &name = pPanel.GetCBRigBoneText();
 		SetEnabled(!name.IsEmpty() && animator.GetListBones().Has(name));
 	}
@@ -207,7 +207,7 @@ public:
 		return new aeUAnimatorMirrorBones(animator);
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(animator.GetListBones().GetCount() > 0);
 	}
 };
@@ -242,7 +242,7 @@ public:
 		return undo;
 	}
 	
-	virtual void Update(const aeAnimator &){
+	void Update(const aeAnimator &) override{
 		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
 			HasWithTypeName(aeClipboardDataBones::TYPE_NAME));
 	}
@@ -268,7 +268,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(animator.GetListBones().GetCount() > 0);
 	}
 };
@@ -349,7 +349,7 @@ public:
 			? new aeUAnimatorAddVertexPositionSet(animator, name) : nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
 		SetEnabled(!name.IsEmpty() && !animator.GetListVertexPositionSets().Has(name));
 	}
@@ -366,7 +366,7 @@ public:
 			? new aeUAnimatorRemoveVertexPositionSet(animator, name) : nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
 		SetEnabled(!name.IsEmpty() && animator.GetListVertexPositionSets().Has(name));
 	}
@@ -382,7 +382,7 @@ public:
 		return new aeUAnimatorMirrorVertexPositionSets(animator);
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(animator.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
@@ -417,7 +417,7 @@ public:
 		return undo;
 	}
 	
-	virtual void Update(const aeAnimator &){
+	void Update(const aeAnimator &) override{
 		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
 			HasWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME));
 	}
@@ -443,7 +443,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(animator.GetListVertexPositionSets().GetCount() > 0);
 	}
 };

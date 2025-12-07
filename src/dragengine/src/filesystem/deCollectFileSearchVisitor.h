@@ -54,7 +54,7 @@ public:
 	deCollectFileSearchVisitor(const char *pattern, bool recursive = false);
 	
 	/** \brief Clean up file search visitor. */
-	virtual ~deCollectFileSearchVisitor();
+	~deCollectFileSearchVisitor() override;
 	/*@}*/
 	
 	
@@ -90,7 +90,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path);
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override;
 	
 	/**
 	 * \brief Visit directory.
@@ -99,7 +99,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path);
+	bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path) override;
 	
 	/**
 	 * \brief Visit special.
@@ -108,7 +108,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path);
+	bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path) override;
 	/*@}*/
 };
 

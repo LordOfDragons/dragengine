@@ -67,7 +67,7 @@ public:
 	deoglRenderSky(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	~deoglRenderSky();
+	~deoglRenderSky() override;
 	/*@}*/
 	
 	

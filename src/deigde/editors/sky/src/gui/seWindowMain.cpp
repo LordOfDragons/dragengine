@@ -414,7 +414,7 @@ public:
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSky &sky = *pWindow.GetSky();
 		
 		if(sky.GetSaved()){

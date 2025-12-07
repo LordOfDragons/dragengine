@@ -65,7 +65,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deVFSCacheDiskDirectory();
+	~deVFSCacheDiskDirectory() override;
 	/*@}*/
 	
 	
@@ -112,14 +112,14 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
+	decBaseFileWriter *OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile(const decPath &path);
+	void DeleteFile(const decPath &path) override;
 	/*@}*/
 };
 

@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml character data. */
-	virtual ~decXmlCharReference();
+	~decXmlCharReference() override;
 	/*@}*/
 	
 	
@@ -94,15 +94,15 @@ public:
 	
 	
 	/** \name Visiting */
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToCharReference() const;
-	virtual decXmlCharReference *CastToCharReference();
+	bool CanCastToCharReference() const override;
+	decXmlCharReference *CastToCharReference() override;
 	/*@}*/
 };
 

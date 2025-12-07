@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged(lpeLangPack *langpack);
+	void UndoChanged(lpeLangPack *langpack) override;
 	/*@}*/
 };
 

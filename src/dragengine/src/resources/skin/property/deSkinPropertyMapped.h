@@ -71,7 +71,7 @@ public:
 	deSkinPropertyMapped(const char *type);
 	
 	/** \brief Clean up skin property color. */
-	virtual ~deSkinPropertyMapped();
+	~deSkinPropertyMapped() override;
 	/*@}*/
 	
 	
@@ -114,7 +114,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit(deSkinPropertyVisitor &visitor);
+	void Visit(deSkinPropertyVisitor &visitor) override;
 	/*@}*/
 };
 

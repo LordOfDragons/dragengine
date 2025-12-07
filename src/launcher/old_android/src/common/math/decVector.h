@@ -48,7 +48,7 @@ public:
 	/** Creates a copy of a vector. */
 	decVector(const decVector &v);
 	/** Creates a copy of a double vector. */
-	decVector(const decDVector &v);
+	decVector(const decVector &v);
 	/*@}*/
 	
 	/** @name Management */

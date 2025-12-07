@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** \brief Clean up node. */
-	virtual ~meWVNodeClosestProp();
+	~meWVNodeClosestProp() override;
 	/*@}*/
 	
 	
@@ -74,10 +74,10 @@ public:
 	
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update class lists. */
-	virtual void UpdateClassLists();
+	void UpdateClassLists() override;
 	/*@}*/
 };
 

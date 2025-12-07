@@ -342,7 +342,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetProp());
 	}
 };
@@ -479,7 +479,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActor());
 	}
 };
@@ -627,7 +627,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActor());
 		SetSelected(pPanel.GetActor() && pPanel.GetActor()->GetWaiting());
 	}
@@ -701,7 +701,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActorPose());
 	}
 };
@@ -733,7 +733,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActorPose());
 	}
 };
@@ -802,7 +802,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActorPose());
 	}
 };
@@ -820,7 +820,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActorPoseController());
 	}
 };
@@ -838,7 +838,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActorPose() && pPanel.GetActorPose()->GetControllers().GetCount() > 0);
 	}
 };
@@ -869,7 +869,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActorPoseController());
 	}
 };
@@ -998,7 +998,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActorGesture());
 	}
 };
@@ -1030,7 +1030,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActorGesture());
 	}
 };
@@ -1102,7 +1102,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActor() && pListBox.GetSelectedItem());
 	}
 };
@@ -1123,7 +1123,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActor() && pListBox.GetItemCount() > 0);
 	}
 };
@@ -1199,7 +1199,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActor() && pListBox.GetSelectedItem());
 	}
 };
@@ -1217,7 +1217,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetActor() && pPanel.GetActor()->GetParameters().GetCount() > 0);
 	}
 };
@@ -1289,7 +1289,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetCoordSys());
 	}
 };
@@ -1378,7 +1378,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pPanel.GetSelectedPlaybackTopic());
 	}
 };
@@ -1404,7 +1404,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(conversation.GetPlayback()->GetTopic());
 		SetSelected(conversation.GetPlayback()->GetRunning());
 	}
@@ -1420,7 +1420,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(conversation.GetPlayback()->GetTopic());
 		SetSelected(conversation.GetPlayback()->GetPaused());
 	}
@@ -1436,7 +1436,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(true);
 		SetSelected(conversation.GetPlayback()->GetAutoAdvanceCommands());
 	}
@@ -1493,7 +1493,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pListBox.GetSelectedItem());
 	}
 };
@@ -1514,7 +1514,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pListBox.GetItemCount() > 0);
 	}
 };
@@ -1586,7 +1586,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pListBox.GetSelectedItem());
 	}
 };
@@ -1608,7 +1608,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pListBox.GetSelectedItem());
 	}
 };
@@ -1629,7 +1629,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pListBox.GetItemCount() > 0);
 	}
 };

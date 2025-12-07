@@ -53,14 +53,14 @@ public:
 	/** \brief Create new undo. */
 	meUDecalMove(meWorld *world);
 	/** \brief Clean up undo. */
-	virtual ~meUDecalMove();
+	~meUDecalMove() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	virtual void Undo();
 	virtual void Redo();
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 	/*@}*/
 	
 private:

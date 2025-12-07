@@ -55,7 +55,7 @@ public:
 	dealWidgetOptionBox(dealDisplay &display, dealImage *image = NULL, const char *label = "");
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetOptionBox();
+	~dealWidgetOptionBox() override;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set widget from gui theme. */
-	virtual void SetFromGuiTheme(const dealGuiTheme &guitheme);
+	void SetFromGuiTheme(const dealGuiTheme &guitheme) override;
 	
 	
 	
@@ -110,7 +110,7 @@ public:
 	
 	
 	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
+	void OnEnabledChanged() override;
 	
 	/** \brief State changed. */
 	virtual void OnStateChanged();
@@ -121,19 +121,19 @@ public:
 	 * \brief Key has been pressed down.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyPress(int keycode);
+	void OnKeyPress(int keycode) override;
 	
 	/**
 	 * \brief Key has been released.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyRelease(int keycode);
+	void OnKeyRelease(int keycode) override;
 	
 	/**
 	 * \brief Mouse button press / finger press.
 	* \param[in] buttons Buttons pressed while pressing screen. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMousePress(int buttons, const decPoint &position);
+	void OnMousePress(int buttons, const decPoint &position) override;
 	/*@}*/
 	
 	

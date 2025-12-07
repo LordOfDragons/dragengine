@@ -86,7 +86,7 @@ public:
 	deoglRenderCompute(deoglRenderThread &renderThread);
 	
 	/** \brief Clean up renderer. */
-	virtual ~deoglRenderCompute();
+	~deoglRenderCompute() override;
 	/*@}*/
 	
 	

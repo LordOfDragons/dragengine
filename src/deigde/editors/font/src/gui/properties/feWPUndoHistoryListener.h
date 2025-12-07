@@ -47,7 +47,7 @@ public:
 	feWPUndoHistoryListener(feWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~feWPUndoHistoryListener();
+	~feWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged(feFont *font);
+	void UndoChanged(feFont *font) override;
 	/*@}*/
 };
 

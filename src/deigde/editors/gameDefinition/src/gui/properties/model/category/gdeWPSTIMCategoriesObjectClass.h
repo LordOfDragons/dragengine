@@ -43,7 +43,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMCategoriesObjectClass();
+	~gdeWPSTIMCategoriesObjectClass() override;
 	/*@}*/
 	
 	
@@ -60,13 +60,13 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching(const char *string);
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

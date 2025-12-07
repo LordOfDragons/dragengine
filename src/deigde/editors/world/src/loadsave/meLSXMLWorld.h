@@ -49,12 +49,12 @@ private:
 public:
 	// constructor, destructor
 	meLSXMLWorld(meLoadSaveSystem *lssys);
-	virtual ~meLSXMLWorld();
+	~meLSXMLWorld() override;
 	// loading and saving
-	virtual void SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file);
+	void SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file) override;
 	
 	/** Creates a stepable loader. */
-	virtual igdeStepableTask *CreateLoadTask(meWorld *world, decBaseFileReader *file);
+	igdeStepableTask *CreateLoadTask(meWorld *world, decBaseFileReader *file) override;
 	
 	
 	

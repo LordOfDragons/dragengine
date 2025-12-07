@@ -55,7 +55,7 @@ public:
 	deDSRenderableCanvas(const char *name);
 	
 	/** \brief Clean up renderable. */
-	virtual ~deDSRenderableCanvas();
+	~deDSRenderableCanvas() override;
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit the renderable. */
-	virtual void Visit(deDSRenderableVisitor &visitor);
+	void Visit(deDSRenderableVisitor &visitor) override;
 };
 
 #endif

@@ -72,7 +72,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOParticleEmitter();
+	~gdeVAOParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -84,7 +84,7 @@ public:
 	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{ return pOCParticleEmitter; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Reattach resources. */
 	void AttachResources();
@@ -93,7 +93,7 @@ public:
 	void DetachResources();
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	

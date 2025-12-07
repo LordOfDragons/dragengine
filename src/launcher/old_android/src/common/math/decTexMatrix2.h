@@ -141,7 +141,7 @@ public:
 	float Determinant() const;
 	
 	/** \brief Inverse of matrix. */
-	decTexMatrix Invert() const;
+	decTexMatrix2 Invert() const;
 	
 	/** \brief Convert to 3x3 texture matrix. */
 	decTexMatrix ToTexMatrix() const;

@@ -39,7 +39,7 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakGestureSetName(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, const char *newName);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakGestureSetName();
+	~ceUCAASpeakGestureSetName() override;
 	/*@}*/
 };
 

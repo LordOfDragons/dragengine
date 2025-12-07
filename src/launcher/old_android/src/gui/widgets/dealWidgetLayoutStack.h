@@ -49,7 +49,7 @@ public:
 	dealWidgetLayoutStack(dealDisplay &display, bool fullSize);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetLayoutStack();
+	~dealWidgetLayoutStack() override;
 	/*@}*/
 	
 	
@@ -65,10 +65,10 @@ public:
 	
 	
 	/** \brief Minimum size of widget. */
-	virtual decPoint GetMinimumSize();
+	decPoint GetMinimumSize() override;
 	
 	/** \brief Layout child widgets. */
-	virtual void LayoutWidgets();
+	void LayoutWidgets() override;
 	
 	
 	

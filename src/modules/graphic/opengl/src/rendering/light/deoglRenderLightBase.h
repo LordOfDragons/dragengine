@@ -50,7 +50,7 @@ public:
 	deoglRenderLightBase(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderLightBase();
+	~deoglRenderLightBase() override;
 	/*@}*/
 	
 	

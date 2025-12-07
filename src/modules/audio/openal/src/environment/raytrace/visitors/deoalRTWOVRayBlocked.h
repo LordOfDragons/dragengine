@@ -73,7 +73,7 @@ public:
 	deoalRTWOVRayBlocked();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalRTWOVRayBlocked();
+	~deoalRTWOVRayBlocked() override;
 	/*@}*/
 	
 	
@@ -95,7 +95,7 @@ public:
 	void VisitNode(const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node);
 	
 	/** \brief Visit component. */
-	void VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent);
+	void VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent) override;
 	/*@}*/
 };
 

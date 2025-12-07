@@ -50,7 +50,7 @@ public:
 	/** Creates a new engine module parameter. */
 	dealEMParameter();
 	/** Cleans up the engine module parameter. */
-	virtual ~dealEMParameter();
+	~dealEMParameter() override;
 	/*@}*/
 	
 	/** @name Management */

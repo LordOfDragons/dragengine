@@ -52,7 +52,7 @@ public:
 	deArchiveManager(deEngine *engine);
 	
 	/** \brief Clean up archive resource manager and report leaking resources. */
-	virtual ~deArchiveManager();
+	~deArchiveManager() override;
 	/*@}*/
 	
 	
@@ -82,7 +82,7 @@ public:
 		deArchive *archive, const decPath &archivePath);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -98,7 +98,7 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	virtual void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	void RemoveContainer(deArchiveContainer *container);
 	/*@}*/
 };

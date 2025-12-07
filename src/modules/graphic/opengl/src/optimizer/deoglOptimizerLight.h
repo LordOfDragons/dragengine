@@ -83,7 +83,7 @@ public:
 	/** Creates a new optimizer. */
 	deoglOptimizerLight(deoglRLight *light, deoglWorld *world);
 	/** Cleans up the optimizer. */
-	virtual ~deoglOptimizerLight();
+	~deoglOptimizerLight() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -91,7 +91,7 @@ public:
 	/** Retrieves the light to optimize. */
 	inline deoglRLight *GetLight() const{ return pLight; }
 	/** Runs optimizer until the given time slice has elapsed. */
-	virtual bool Run(int timeSlice);
+	bool Run(int timeSlice) override;
 	
 	/** Retrieves the initial warm up time in ms. */
 	inline int GetInitialWarmUpTime() const{ return pInitWarmUpTime; }

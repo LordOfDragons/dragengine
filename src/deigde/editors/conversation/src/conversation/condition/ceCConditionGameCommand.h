@@ -51,7 +51,7 @@ public:
 	/** \brief Creates a new conversation condition. */
 	ceCConditionGameCommand(const ceCConditionGameCommand &condition);
 	/** \brief Cleans up the conversation condition. */
-	virtual ~ceCConditionGameCommand();
+	~ceCConditionGameCommand() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -66,7 +66,7 @@ public:
 	void SetNegate(bool negate);
 	
 	/** \brief Create a copy of this condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition *CreateCopy() const override;
 	/*@}*/
 };
 

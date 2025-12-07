@@ -58,7 +58,7 @@ public:
 	/** Creates a new conversation action. */
 	ceCAActorCommand(const ceCAActorCommand &action);
 	/** Cleans up the conversation action. */
-	virtual ~ceCAActorCommand();
+	~ceCAActorCommand() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -73,7 +73,7 @@ public:
 	void SetCommand(const char *command);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

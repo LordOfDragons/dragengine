@@ -67,7 +67,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deEffectDistortImage();
+	~deEffectDistortImage() override;
 	/*@}*/
 	
 public:
@@ -103,7 +103,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit(deEffectVisitor &visitor);
+	void Visit(deEffectVisitor &visitor) override;
 	/*@}*/
 };
 

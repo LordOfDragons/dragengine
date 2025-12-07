@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMACoordSystemRemove();
+	~ceWPTTIMACoordSystemRemove() override;
 	/*@}*/
 	
 	
@@ -54,7 +54,7 @@ public:
 	inline ceCACoordSystemRemove *GetActionCoordSystemRemove() const{ return (ceCACoordSystemRemove*)GetAction(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

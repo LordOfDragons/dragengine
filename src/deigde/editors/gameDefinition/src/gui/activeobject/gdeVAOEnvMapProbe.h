@@ -70,7 +70,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOEnvMapProbe();
+	~gdeVAOEnvMapProbe() override;
 	/*@}*/
 	
 	
@@ -82,10 +82,10 @@ public:
 	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{ return pOCEnvMapProbe; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Update debug drawer visibility. */
 	void UpdateDDVisibility();

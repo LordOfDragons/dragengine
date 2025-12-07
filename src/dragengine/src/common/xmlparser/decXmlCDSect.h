@@ -45,7 +45,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml cd section. */
-	virtual ~decXmlCDSect();
+	~decXmlCDSect() override;
 	/*@}*/
 	
 	
@@ -59,15 +59,15 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToCDSect() const;
-	virtual decXmlCDSect *CastToCDSect();
+	bool CanCastToCDSect() const override;
+	decXmlCDSect *CastToCDSect() override;
 	/*@}*/
 };
 

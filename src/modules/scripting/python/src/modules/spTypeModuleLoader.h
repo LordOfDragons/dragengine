@@ -41,7 +41,7 @@ public:
 	/** \brief Creates a new module. */
 	spTypeModuleLoader(ScriptingPython &sp);
 	/** \brief Cleans up the module. */
-	virtual ~spTypeModuleLoader();
+	~spTypeModuleLoader() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -50,7 +50,7 @@ public:
 	void ParseImportPath(const char *path, const char *fullname, decPath &vfsPath) const;
 	
 	/** \brief Python create. */
-	virtual void PythonCreate();
+	void PythonCreate() override;
 	/*@}*/
 	
 	/** @name Functions */

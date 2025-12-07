@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeCombine();
+	~meWVNodeCombine() override;
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	inline meHTVRuleCombine *GetRuleCombine() const{ return pRuleCombine; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

@@ -48,7 +48,7 @@ public:
 	debpModelOctree(const decDVector &center, const decDVector &halfSize);
 	debpModelOctree(const decVector &center, const decVector &halfSize);
 	/** Cleans up the model object. */
-	virtual ~debpModelOctree();
+	~debpModelOctree() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -58,9 +58,9 @@ public:
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual debpDOctree *CreateOctree(int octant) const;
+	debpDOctree *CreateOctree(int octant) const override;
 	/** Clears the content of this node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	
 	/** Clears all faces from the entire octree. */
 	void ClearFaces();

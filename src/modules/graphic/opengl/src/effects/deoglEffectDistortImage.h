@@ -51,7 +51,7 @@ public:
 	deoglEffectDistortImage(deGraphicOpenGl &ogl, const deEffectDistortImage &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffectDistortImage();
+	~deoglEffectDistortImage() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	

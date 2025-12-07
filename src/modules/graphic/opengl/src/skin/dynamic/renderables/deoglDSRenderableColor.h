@@ -51,7 +51,7 @@ public:
 	deoglDSRenderableColor(deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableColor();
+	~deoglDSRenderableColor() override;
 	/*@}*/
 	
 	
@@ -62,13 +62,13 @@ public:
 	inline const deDSRenderableColor &GetRenderableColor() const{ return pRenderableColor; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 private:

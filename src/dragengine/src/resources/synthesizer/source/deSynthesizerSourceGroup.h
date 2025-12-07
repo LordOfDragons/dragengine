@@ -87,7 +87,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerSourceGroup();
+	~deSynthesizerSourceGroup() override;
 	/*@}*/
 	
 	
@@ -134,7 +134,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the source. */
-	virtual void Visit(deSynthesizerSourceVisitor &visitor);
+	void Visit(deSynthesizerSourceVisitor &visitor) override;
 	/*@}*/
 };
 

@@ -46,16 +46,16 @@ public:
 		const ceConversationActionList &actions, int index);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAWaitPaste();
+	~ceUCAWaitPaste() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

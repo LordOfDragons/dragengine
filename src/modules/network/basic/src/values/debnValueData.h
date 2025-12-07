@@ -50,7 +50,7 @@ public:
 	debnValueData(deNetworkValueData &valueData);
 	
 	/** \brief Clean up network value. */
-	virtual ~debnValueData();
+	~debnValueData() override;
 	/*@}*/
 	
 	
@@ -67,13 +67,13 @@ public:
 	 * \brief Update value.
 	 * \returns true if value needs to by synchronized otherwise false if not changed enough.
 	 */
-	virtual bool UpdateValue(bool force);
+	bool UpdateValue(bool force) override;
 	
 	/** \brief Read value from message. */
-	virtual void ReadValue(decBaseFileReader &reader);
+	void ReadValue(decBaseFileReader &reader) override;
 	
 	/** \brief Write value to message. */
-	virtual void WriteValue(decBaseFileWriter &writer);
+	void WriteValue(decBaseFileWriter &writer) override;
 	/*@}*/
 };
 

@@ -163,7 +163,7 @@ public:
 		}
 	}
 	
-	virtual bool OnDragBegin(reRig &rig){
+	bool OnDragBegin(reRig &rig) override{
 		if(!rig.GetSimulationRunning()){
 			return false;
 		}
@@ -249,7 +249,7 @@ class cSelectInteraction : public cBaseInteraction {
 public:
 	cSelectInteraction(reView3D &view) : cBaseInteraction(view){}
 	
-	virtual bool OnDragBegin(reRig &rig){
+	bool OnDragBegin(reRig &rig) override{
 		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmSelect){
 			return false;
 		}
@@ -306,7 +306,7 @@ private:
 public:
 	cMoveInteraction(reView3D &view) : cBaseInteraction(view){}
 	
-	virtual bool OnDragBegin(reRig &rig){
+	bool OnDragBegin(reRig &rig) override{
 		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmMove){
 			return false;
 		}
@@ -416,7 +416,7 @@ class cScaleInteraction : public cBaseInteraction {
 public:
 	cScaleInteraction(reView3D &view) : cBaseInteraction(view){}
 	
-	virtual bool OnDragBegin(reRig &rig){
+	bool OnDragBegin(reRig &rig) override{
 		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmScale){
 			return false;
 		}
@@ -445,7 +445,7 @@ private:
 public:
 	cRotateInteraction(reView3D &view) : cBaseInteraction(view), pNullAngle(0.0f){}
 	
-	virtual bool OnDragBegin(reRig &rig){
+	bool OnDragBegin(reRig &rig) override{
 		if(rig.GetSimulationRunning() || rig.GetWorkMode() != reRig::ewmRotate){
 			return false;
 		}

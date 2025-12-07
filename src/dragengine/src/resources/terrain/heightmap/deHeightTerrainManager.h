@@ -48,7 +48,7 @@ public:
 	deHeightTerrainManager(deEngine *engine);
 	
 	/** \brief Clean up resource manager and reports leaking resources. */
-	virtual ~deHeightTerrainManager();
+	~deHeightTerrainManager() override;
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	deHeightTerrain *CreateHeightTerrain(float sectorSize, int heightImageSize);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -73,28 +73,28 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic System Peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic System Peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	
 	/** \brief Physics System Peers of all stored resources have to be created. */
-	virtual void SystemPhysicsLoad();
+	void SystemPhysicsLoad() override;
 	
 	/** \brief Physics System Peers of all stored resources have to be freed. */
-	virtual void SystemPhysicsUnload();
+	void SystemPhysicsUnload() override;
 	
 	/** \brief AI System Peers of all stored resources have to be created. */
-	virtual void SystemAILoad();
+	void SystemAILoad() override;
 	
 	/** \brief AI System Peers of all stored resources have to be freed. */
-	virtual void SystemAIUnload();
+	void SystemAIUnload() override;
 	
 	/** \brief Audio system peers of all stored resources have to be created. */
-	virtual void SystemAudioLoad();
+	void SystemAudioLoad() override;
 	
 	/** \brief Audio system peers of all stored resources have to be freed. */
-	virtual void SystemAudioUnload();
+	void SystemAudioUnload() override;
 	/*@}*/
 	
 	
@@ -105,7 +105,7 @@ public:
 	 * For use by resource objects only. Do not call directly.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

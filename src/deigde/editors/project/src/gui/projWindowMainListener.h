@@ -55,19 +55,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(projProject *project);
+	void StateChanged(projProject *project) override;
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged(projProject *project);
+	void UndoChanged(projProject *project) override;
 	
 	/** \brief Project changed. */
-	virtual void ProjectChanged(projProject *project);
+	void ProjectChanged(projProject *project) override;
 	
 	/** \brief Profile count or order changed. */
-	virtual void ProfileStructureChanged(projProject *project);
+	void ProfileStructureChanged(projProject *project) override;
 	
 	/** \brief Active profile changed. */
-	virtual void ActiveProfileChanged(projProject *project);
+	void ActiveProfileChanged(projProject *project) override;
 	/*@}*/
 };
 

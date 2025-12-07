@@ -60,7 +60,7 @@ public:
 	/*@{*/
 	virtual void Undo();
 	virtual void Redo();
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 	/*@}*/
 	
 private:

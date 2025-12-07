@@ -41,7 +41,7 @@ class deoglRDynamicSkin;
  */
 class deoglSkinStateRenderable{
 private:
-	deoglSkinState &pSkinState;
+	deoalSkinState &pSkinState;
 	int pIndex;
 	int pHostRenderable;
 	deoglRenderPlan *pPlan;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state renderable. */
-	deoglSkinStateRenderable(deoglSkinState &skinState, int index);
+	deoglSkinStateRenderable(deoalSkinState &skinState, int index);
 	
 	/** Clean up skin state renderable. */
 	~deoglSkinStateRenderable();

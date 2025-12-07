@@ -406,11 +406,11 @@ public:
 	cActionLocoShowShapes(aeWPPlayground &panel) : cBaseAction(panel,
 		"Show Shapes", NULL, "Determines if shapes are shown"){ }
 	
-	virtual void OnAction(aeAnimator &animator){
+	void OnAction(aeAnimator &animator) override{
 		animator.GetLocomotion().SetShowShapes(!animator.GetLocomotion().GetShowShapes());
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(true);
 		SetSelected(animator.GetLocomotion().GetShowShapes());
 	}
@@ -421,11 +421,11 @@ public:
 	cActionLocoUseFoGIK(aeWPPlayground &panel) : cBaseAction(panel,
 		"Use Feet-On-Ground IK", NULL, "Determines the feet-on-ground IK is used"){}
 	
-	virtual void OnAction(aeAnimator &animator){
+	void OnAction(aeAnimator &animator) override{
 		animator.GetLocomotion().SetUseFoGIK(!animator.GetLocomotion().GetUseFoGIK());
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(true);
 		SetSelected(animator.GetLocomotion().GetUseFoGIK());
 	}

@@ -208,7 +208,7 @@ public:
 		return gdProperty ? gdProperty->GetDefaultValue() : vEmptyString;
 	}
 	
-	virtual const igdeGDProperty *GetGDProperty(const char *key) const{
+	const igdeGDProperty *GetGDProperty(const char *key) const override{
 		const meWorld * const world = pPanel.GetWorld();
 		return world ? world->GetGameDefinition()->GetListWorldProperties().GetNamed(key) : NULL;
 	}
@@ -290,7 +290,7 @@ public:
 	cActionPFTStartPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
 		"Set", NULL, "Set start position from camera position"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo *OnAction(meWorld *world) override{
 		world->GetPathFindTest()->SetStartPosition(world->GetActiveCamera()->GetPosition());
 		return NULL;
 	}
@@ -311,7 +311,7 @@ public:
 	cActionPFTGoalPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
 		"Set", NULL, "Set goal position from camera position"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo *OnAction(meWorld *world) override{
 		world->GetPathFindTest()->SetGoalPosition(world->GetActiveCamera()->GetPosition());
 		return NULL;
 	}
@@ -355,7 +355,7 @@ public:
 	cActionPFTShowPath(meWPWorld &panel) : cBaseAction(panel,
 		"Show Path", NULL, "Show path"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo *OnAction(meWorld *world) override{
 		world->GetPathFindTest()->SetShowPath(!world->GetPathFindTest()->GetShowPath());
 		return NULL;
 	}
@@ -377,7 +377,7 @@ public:
 	cActionPFTTypeAdd(meWPWorld &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add type"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo *OnAction(meWorld *world) override{
 		mePathFindTestTypeList &list = world->GetPathFindTest()->GetTypeList();
 		const int count = list.GetCount();
 		int i, newValue = 0;
@@ -411,7 +411,7 @@ public:
 	cActionPFTTypeRemove(meWPWorld &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove type"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo *OnAction(meWorld *world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		if(type){
 			world->GetPathFindTest()->GetTypeList().Remove(type);
@@ -430,7 +430,7 @@ public:
 	cActionPFTTypeClear(meWPWorld &panel) : cBaseAction(panel, "Clear",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all types"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo *OnAction(meWorld *world) override{
 		if(world->GetPathFindTest()->GetTypeList().GetCount() > 0){
 			world->GetPathFindTest()->GetTypeList().RemoveAll();
 			world->GetPathFindTest()->NotifyTypesChanged();

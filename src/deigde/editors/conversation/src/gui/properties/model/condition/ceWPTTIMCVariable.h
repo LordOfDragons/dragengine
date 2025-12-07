@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMCVariable();
+	~ceWPTTIMCVariable() override;
 	/*@}*/
 	
 	
@@ -59,7 +59,7 @@ public:
 	static const char *GetOperatorText(ceCConditionVariable::eOperators anOperator);
 	
 	/** \brief Update condition. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

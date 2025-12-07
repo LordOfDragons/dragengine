@@ -47,7 +47,7 @@ public:
 	ceWindowMainListener(ceWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	~ceWindowMainListener();
+	~ceWindowMainListener() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(ceConversation *conversation);
+	void StateChanged(ceConversation *conversation) override;
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged(ceConversation *conversation);
+	void UndoChanged(ceConversation *conversation) override;
 	
 	/** \brief View properties changed. */
-	virtual void ViewChanged(ceConversation *conversation);
+	void ViewChanged(ceConversation *conversation) override;
 	/*@}*/
 };
 

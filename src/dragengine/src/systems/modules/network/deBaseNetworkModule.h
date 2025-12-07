@@ -48,7 +48,7 @@ public:
 	deBaseNetworkModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseNetworkModule();
+	~deBaseNetworkModule() override;
 	/*@}*/
 	
 	

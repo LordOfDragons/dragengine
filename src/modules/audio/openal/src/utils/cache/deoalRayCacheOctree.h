@@ -49,7 +49,7 @@ public:
 	deoalRayCacheOctree(const decVector &center, const decVector &halfSize);
 	
 	/** \brief Clean up world octree. */
-	virtual ~deoalRayCacheOctree();
+	~deoalRayCacheOctree() override;
 	/*@}*/
 	
 	
@@ -57,10 +57,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create octree for octant. */
-	virtual deoalOctree *CreateOctree(int octant) const;
+	deoalOctree *CreateOctree(int octant) const override;
 	
 	/** \brief Clear content of node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	
 	/** \brief Clear all rays from tree. */
 	void ClearRays();

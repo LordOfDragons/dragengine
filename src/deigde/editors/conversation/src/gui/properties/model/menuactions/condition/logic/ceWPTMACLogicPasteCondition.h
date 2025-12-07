@@ -70,7 +70,7 @@ public:
 	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);
+	igdeUndo *CreateUndo(const ceConversationConditionList &conditions) override;
 	/*@}*/
 };
 

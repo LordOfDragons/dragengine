@@ -51,7 +51,7 @@ public:
 	/** \brief Create new undo object. */
 	meUObjectShapeMove(meObject *object, const char *property, const meObjectShapeList &list);
 	/** \brief Clean up undo object. */
-	virtual ~meUObjectShapeMove();
+	~meUObjectShapeMove() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -61,7 +61,7 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/** Progressive redo the action. */
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 };
 
 #endif

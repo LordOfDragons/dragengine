@@ -44,7 +44,7 @@ private:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCPropertyValuesFromSubObjects();
+	~gdeUOCPropertyValuesFromSubObjects() override;
 	
 	
 	

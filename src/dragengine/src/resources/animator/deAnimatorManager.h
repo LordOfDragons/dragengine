@@ -49,7 +49,7 @@ public:
 	deAnimatorManager(deEngine *engine);
 	
 	/** \brief Clean up animator resource manager and reports leaking resources. */
-	~deAnimatorManager();
+	~deAnimatorManager() override;
 	/*@}*/
 	
 	
@@ -66,15 +66,15 @@ public:
 	deAnimator *CreateAnimator();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemAnimatorLoad();
-	void SystemAnimatorUnload();
+	void SystemAnimatorLoad() override;
+	void SystemAnimatorUnload() override;
 	/*@}*/
 	
 	
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

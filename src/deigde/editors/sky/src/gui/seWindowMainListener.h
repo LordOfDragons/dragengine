@@ -47,7 +47,7 @@ public:
 	seWindowMainListener(seWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWindowMainListener();
+	~seWindowMainListener() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(seSky *sky);
+	void StateChanged(seSky *sky) override;
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged(seSky *sky);
+	void UndoChanged(seSky *sky) override;
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged(seSky *sky);
+	void ViewChanged(seSky *sky) override;
 	/*@}*/
 };
 

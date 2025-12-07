@@ -802,10 +802,10 @@ public:
 	source(0){
 	}
 	
-	virtual ~deoalASpeakerDeletion(){
+	~deoalASpeakerDeletion() override{
 	}
 	
-	virtual void DeleteObjects(deoalAudioThread &audioThread){
+	void DeleteObjects(deoalAudioThread &audioThread) override{
 		if(source && source->GetOwner() == this){
 			audioThread.GetSourceManager().UnbindSource(source);
 		}

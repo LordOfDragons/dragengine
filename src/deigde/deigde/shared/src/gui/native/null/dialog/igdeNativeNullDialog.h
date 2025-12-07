@@ -46,32 +46,32 @@ public:
 	igdeNativeNullDialog(igdeDialog &owner);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeNullDialog();
+	~igdeNativeNullDialog() override;
 	
 	/** \brief Create native widget. */
 	static igdeNativeNullDialog* CreateNativeWidget(igdeDialog &owner, igdeWidget *ownerOwner);
 	
 	/** \brief Post create native widget. */
-	virtual void PostCreateNativeWidget();
+	void PostCreateNativeWidget() override;
 	
 	/** \brief Destroy native widget. */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdatePosition();
-	virtual void UpdateIcon();
-	virtual void UpdateTitle();
-	virtual void UpdateSize();
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
 	virtual void ShowDialog();
 	
 	virtual void CloseDialog(bool accepted);
 	
-	virtual void OnFrameUpdate();
+	void OnFrameUpdate() override;
 	
 	static int DialogPadContent(const igdeGuiTheme &guitheme);
 	static int DialogPadButtons(const igdeGuiTheme &guitheme);

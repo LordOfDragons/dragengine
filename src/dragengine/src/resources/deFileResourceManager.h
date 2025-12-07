@@ -54,7 +54,7 @@ public:
 	deFileResourceManager(deEngine *engine, eResourceType type);
 	
 	/** \brief Clean up resource manager. */
-	virtual ~deFileResourceManager();
+	~deFileResourceManager() override;
 	/*@}*/
 	
 	

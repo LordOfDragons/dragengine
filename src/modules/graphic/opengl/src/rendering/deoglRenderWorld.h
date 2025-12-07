@@ -68,7 +68,7 @@ public:
 	deoglRenderWorld(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderWorld();
+	~deoglRenderWorld() override;
 	/*@}*/
 	
 	
@@ -128,10 +128,10 @@ public:
 	
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfo();
+	void AddTopLevelDebugInfo() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	

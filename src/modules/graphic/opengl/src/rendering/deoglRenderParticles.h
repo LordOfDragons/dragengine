@@ -44,7 +44,7 @@ public:
 	/** Creates a new renderer. */
 	deoglRenderParticles(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
-	virtual ~deoglRenderParticles();
+	~deoglRenderParticles() override;
 	/*@}*/
 	
 	/** \name Rendering */

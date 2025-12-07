@@ -47,7 +47,7 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCAActorRemove(const ceCAActorRemove &action);
 	/** \brief Cleans up the conversation action. */
-	virtual ~ceCAActorRemove();
+	~ceCAActorRemove() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -58,7 +58,7 @@ public:
 	void SetActor(const char *id);
 	
 	/** \brief Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

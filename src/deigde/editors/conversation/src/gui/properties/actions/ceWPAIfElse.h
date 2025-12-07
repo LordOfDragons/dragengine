@@ -44,7 +44,7 @@ public:
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~ceWPAIfElse();
+	~ceWPAIfElse() override;
 	/*@}*/
 	
 	

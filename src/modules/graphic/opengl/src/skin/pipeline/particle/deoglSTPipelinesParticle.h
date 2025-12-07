@@ -40,7 +40,7 @@ public:
 	
 protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesParticle();
+	~deoglSTPipelinesParticle() override;
 	/*@}*/
 	
 	
@@ -49,13 +49,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
+	void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) override;
 	
 	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
 	virtual void pPipelineConfigGeometryDepthTest(deoglPipelineConfiguration &config);
@@ -74,11 +74,11 @@ protected:
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
 		deoglBatchedShaderLoading &batched);
 	
-	virtual void pSetTypeGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
-	virtual void pSetTexturesGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	void pSetTypeGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
+	void pSetTexturesGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
 	
 	virtual void pSetDynamicsGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
-	virtual void pSetDynamicsGeometryLuminance(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	void pSetDynamicsGeometryLuminance(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
 	virtual void pSetDynamicsDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 };
 

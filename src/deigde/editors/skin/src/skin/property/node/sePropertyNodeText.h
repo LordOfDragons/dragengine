@@ -71,7 +71,7 @@ public:
 	sePropertyNodeText(const sePropertyNodeText &node);
 	
 	/** \brief Clean up node. */
-	virtual ~sePropertyNodeText();
+	~sePropertyNodeText() override;
 	/*@}*/
 	
 	
@@ -120,10 +120,10 @@ public:
 	
 	
 	/** \brief Create copy of node. */
-	virtual sePropertyNode *Copy() const;
+	sePropertyNode *Copy() const override;
 	
 	/** \brief Update resources. */
-	virtual void UpdateResources();
+	void UpdateResources() override;
 	/*@}*/
 };
 

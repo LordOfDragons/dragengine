@@ -51,7 +51,7 @@ public:
 	deoglCollideListPropFieldCluster();
 	
 	/** Clean up cluster. */
-	~deoglCollideListPropFieldCluster();
+	~deoglCollideListPropFieldCluster() override;
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decVector &offset);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
+	void OcclusionTestInvisible() override;
 	/*@}*/
 };
 

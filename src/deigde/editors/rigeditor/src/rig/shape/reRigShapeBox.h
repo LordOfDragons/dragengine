@@ -45,7 +45,7 @@ public:
 	/** Creates a new rig box shape. */
 	reRigShapeBox(deEngine *engine);
 	/** Cleans up the rig shape shape. */
-	virtual ~reRigShapeBox();
+	~reRigShapeBox() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -56,12 +56,12 @@ public:
 	void SetHalfExtends(const decVector &halfExtends);
 	
 	/** Creates a copy of this shape. */
-	virtual reRigShape *Duplicate() const;
+	reRigShape *Duplicate() const override;
 	/** Uniformly scale shape. */
-	virtual void Scale(float scale);
+	void Scale(float scale) override;
 	
 	/** Creates shape. */
-	virtual decShape *CreateShape();
+	decShape *CreateShape() override;
 	/*@}*/
 };
 

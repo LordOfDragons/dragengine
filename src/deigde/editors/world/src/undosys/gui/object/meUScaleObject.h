@@ -48,7 +48,7 @@ public:
 	// undo and redo operations
 	virtual void Undo();
 	virtual void Redo();
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 	
 private:
 	void pCleanUp();

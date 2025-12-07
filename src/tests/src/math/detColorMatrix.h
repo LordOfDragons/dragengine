@@ -12,11 +12,11 @@
 class detColorMatrix : public detCase{
 public:
 	detColorMatrix();
-	~detColorMatrix();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detColorMatrix() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void pRandomInitMatrix(decColorMatrix &matrix);

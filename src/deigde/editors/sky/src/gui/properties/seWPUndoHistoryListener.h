@@ -47,7 +47,7 @@ public:
 	seWPUndoHistoryListener(seWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPUndoHistoryListener();
+	~seWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged(seSky *sky);
+	void UndoChanged(seSky *sky) override;
 	/*@}*/
 };
 

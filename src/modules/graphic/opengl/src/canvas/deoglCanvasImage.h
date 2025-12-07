@@ -50,7 +50,7 @@ public:
 	deoglCanvasImage(deGraphicOpenGl &ogl, deCanvasImage &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvasImage();
+	~deoglCanvasImage() override;
 	/*@}*/
 	
 	
@@ -58,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Drop render canvas if not \em NULL. */
-	virtual void DropRCanvas();
+	void DropRCanvas() override;
 	
 	/**
 	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
-	virtual void SyncContentToRender();
+	void SyncContentToRender() override;
 	
 	/** Image requires sync. */
 	void ImageRequiresSync();
@@ -73,14 +73,14 @@ public:
 	void DropImage();
 	
 	/** Content changed. */
-	virtual void ContentChanged();
+	void ContentChanged() override;
 	/*@}*/
 	
 	
 	
 protected:
 	/** Create render canvas. Subclass responsibility. */
-	virtual deoglRCanvas *CreateRCanvas();
+	deoglRCanvas *CreateRCanvas() override;
 };
 
 #endif

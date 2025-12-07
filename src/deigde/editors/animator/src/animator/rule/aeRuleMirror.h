@@ -87,7 +87,7 @@ public:
 	
 protected:
 	/** Clean up rule. */
-	virtual ~aeRuleMirror();
+	~aeRuleMirror() override;
 	/*@}*/
 	
 	
@@ -161,10 +161,10 @@ public:
 	
 	
 	/** Create engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule *CreateEngineRule() override;
 	
 	/** Create copy of rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule *CreateCopy() const override;
 	/*@}*/
 	
 	

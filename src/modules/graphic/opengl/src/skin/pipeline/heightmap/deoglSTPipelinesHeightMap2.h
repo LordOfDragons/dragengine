@@ -41,7 +41,7 @@ public:
 	
 protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesHeightMap2();
+	~deoglSTPipelinesHeightMap2() override;
 	/*@}*/
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	/*@}*/
 	
 	

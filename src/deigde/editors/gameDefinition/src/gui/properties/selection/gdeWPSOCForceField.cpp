@@ -397,7 +397,7 @@ public:
 		return new gdeUOCForceFieldToggleEnabled(objectClass, forceField);
 	}
 	
-	virtual void Update(const gdeObjectClass &, const gdeOCForceField &forceField){
+	void Update(const gdeObjectClass &, const gdeOCForceField &forceField) override{
 		SetEnabled(true);
 		SetSelected(forceField.GetEnabled());
 	}

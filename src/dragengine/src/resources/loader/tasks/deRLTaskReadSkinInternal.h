@@ -64,7 +64,7 @@ public:
 		cInternalTask(deSkinPropertyImage *propertyImage, deResourceLoaderTask *task);
 		cInternalTask(deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task);
 		cInternalTask(deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task);
-		virtual ~cInternalTask();
+		~cInternalTask() override;
 		
 		inline deSkinPropertyImage *GetPropertyImage() const{ return pPropertyImage; }
 		inline deSkinPropertyNodeImage *GetNodeImage() const{ return pNodeImage; }
@@ -88,7 +88,7 @@ public:
 		deVirtualFileSystem *vfs, const char *path);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadSkinInternal();
+	~deRLTaskReadSkinInternal() override;
 	/*@}*/
 	
 	
@@ -96,10 +96,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** \brief Skin. */
 	inline deSkin *GetSkin() const{ return pSkin; }
@@ -117,7 +117,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 	
 	

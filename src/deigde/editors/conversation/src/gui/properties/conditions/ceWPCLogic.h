@@ -51,7 +51,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCLogic();
+	~ceWPCLogic() override;
 	/*@}*/
 	
 	

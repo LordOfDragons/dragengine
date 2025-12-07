@@ -64,7 +64,7 @@ public:
 	inline ceCAWait *GetWait() const{ return pWait; }
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);
+	igdeUndo *CreateUndo(const ceConversationConditionList &conditions) override;
 	/*@}*/
 };
 

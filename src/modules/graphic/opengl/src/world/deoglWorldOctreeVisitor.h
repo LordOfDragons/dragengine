@@ -42,7 +42,7 @@ public:
 	deoglWorldOctreeVisitor();
 	
 	/** Clean up world octree visitor. */
-	virtual ~deoglWorldOctreeVisitor();
+	~deoglWorldOctreeVisitor() override;
 	/*@}*/
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit octree node. */
-	virtual void VisitNode(deoglDOctree *node, int intersection);
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	/*@}*/
 };
 

@@ -146,7 +146,7 @@ public:
 	/** Creates a new engine module. */
 	dealEngineModule();
 	/** Cleans up the engine module. */
-	~dealEngineModule();
+	~dealEngineModule() override;
 	/*@}*/
 	
 	/** @name Management */

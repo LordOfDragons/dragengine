@@ -45,7 +45,7 @@ public:
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~dexsiDeviceCoreMouse();
+	~dexsiDeviceCoreMouse() override;
 	/*@}*/
 	
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Update device state. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

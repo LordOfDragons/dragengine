@@ -57,7 +57,7 @@ bool decWeakFileReader::IsValid() const{
 }
 
 void decWeakFileReader::DropReader(){
-	pReader = NULL;
+	pReader = 0;
 }
 
 

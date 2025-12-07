@@ -58,7 +58,7 @@ public:
 	dealWidgetButton(dealDisplay &display, dealImage *image = NULL, const char *label = "");
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetButton();
+	~dealWidgetButton() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set widget from gui theme. */
-	virtual void SetFromGuiTheme(const dealGuiTheme &guitheme);
+	void SetFromGuiTheme(const dealGuiTheme &guitheme) override;
 	
 	
 	
@@ -137,15 +137,15 @@ public:
 	
 	
 	/** \brief Render background. */
-	virtual void RenderBackground(const sRenderContext &context);
+	void RenderBackground(const sRenderContext &context) override;
 	
 	
 	
 	/** \brief Size changed. */
-	virtual void OnSizeChanged();
+	void OnSizeChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
+	void OnEnabledChanged() override;
 	
 	/** \brief Button state changed. */
 	virtual void OnStateChanged();
@@ -159,31 +159,31 @@ public:
 	 * \brief Key has been pressed down.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyPress(int keycode);
+	void OnKeyPress(int keycode) override;
 	
 	/**
 	 * \brief Key has been released.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyRelease(int keycode);
+	void OnKeyRelease(int keycode) override;
 	
 	/**
 	 * \brief Mouse button press / finger press.
 	* \param[in] buttons Buttons pressed while pressing screen. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMousePress(int buttons, const decPoint &position);
+	void OnMousePress(int buttons, const decPoint &position) override;
 	
 	/**
 	 * \brief Mouse button release / finger release.
 	 * \param[in] buttons Buttons pressed while releasing screen. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMouseRelease(int buttons, const decPoint &position);
+	void OnMouseRelease(int buttons, const decPoint &position) override;
 	
 	/**
 	 * \brief Mouse/finger moved while pressing display.
 	 * \param[in] buttons Buttons pressed while moving. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMouseMove(int buttons, const decPoint &position);
+	void OnMouseMove(int buttons, const decPoint &position) override;
 	/*@}*/
 	
 	

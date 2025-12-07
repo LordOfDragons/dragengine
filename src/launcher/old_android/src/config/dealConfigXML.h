@@ -49,7 +49,7 @@ public:
 	dealConfigXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up configuration xml read/save. */
-	virtual ~dealConfigXML();
+	~dealConfigXML() override;
 	/*@}*/
 	
 	

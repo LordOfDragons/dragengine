@@ -44,10 +44,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass);
+	igdeUndo *OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass) override;
 	
 	/** \brief Request update of action parameters if required. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

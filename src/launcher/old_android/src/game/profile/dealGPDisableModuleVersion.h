@@ -55,7 +55,7 @@ public:
 	dealGPDisableModuleVersion(const dealGPDisableModuleVersion &copy);
 	
 	/** \brief Clean up disabled module version. */
-	virtual ~dealGPDisableModuleVersion();
+	~dealGPDisableModuleVersion() override;
 	/*@}*/
 	
 	

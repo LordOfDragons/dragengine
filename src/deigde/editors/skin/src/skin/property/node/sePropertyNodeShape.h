@@ -70,7 +70,7 @@ public:
 	sePropertyNodeShape(const sePropertyNodeShape &node);
 	
 	/** \brief Clean up node. */
-	virtual ~sePropertyNodeShape();
+	~sePropertyNodeShape() override;
 	/*@}*/
 	
 	
@@ -104,7 +104,7 @@ public:
 	
 	
 	/** \brief Create copy of node. */
-	virtual sePropertyNode *Copy() const;
+	sePropertyNode *Copy() const override;
 	/*@}*/
 };
 

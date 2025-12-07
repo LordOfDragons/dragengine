@@ -14,7 +14,7 @@ public:
 	float pHitDistance;
 	
 	ConvexResultCallback(){}
-	virtual bool needsCollision(btBroadphaseProxy *proxy0) const{
+	bool needsCollision(btBroadphaseProxy *proxy0) const override{
 		return true;
 	}
 	virtual btScalar addSingleResult(btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace){

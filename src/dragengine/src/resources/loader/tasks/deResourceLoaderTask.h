@@ -94,7 +94,7 @@ protected:
 		deResourceLoader::eResourceType resourceType);
 	
 	/** \brief Clean up task. */
-	virtual ~deResourceLoaderTask();
+	~deResourceLoaderTask() override;
 	/*@}*/
 	
 	
@@ -133,10 +133,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** \brief Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 	
 	

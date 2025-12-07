@@ -39,15 +39,15 @@ public:
 	/** Creates a new parameter. */
 	deoglPOcclusionReduction(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPOcclusionReduction();
+	~deoglPOcclusionReduction() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual int GetParameterInt();
+	int GetParameterInt() override;
 	/** Sets the current value. */
-	virtual void SetParameterInt(int value);
+	void SetParameterInt(int value) override;
 	/*@}*/
 };
 

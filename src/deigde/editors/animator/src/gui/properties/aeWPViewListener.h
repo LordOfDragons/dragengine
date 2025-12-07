@@ -47,7 +47,7 @@ public:
 	aeWPViewListener(aeWPView &panel);
 	
 	/** Clean up listener. */
-	virtual ~aeWPViewListener();
+	~aeWPViewListener() override;
 	/*@}*/
 	
 	
@@ -55,43 +55,43 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Rig changed. */
-	virtual void RigChanged(aeAnimator *animator);
+	void RigChanged(aeAnimator *animator) override;
 	
 	/** Animator changed. */
-	virtual void AnimatorChanged(aeAnimator *animator);
+	void AnimatorChanged(aeAnimator *animator) override;
 	
 	/** Model changed. */
-	virtual void ModelChanged(aeAnimator *animator);
+	void ModelChanged(aeAnimator *animator) override;
 	
 	/** The environment component changed. */
-	virtual void EnvObjectChanged(aeAnimator *animator);
+	void EnvObjectChanged(aeAnimator *animator) override;
 	
 	/** Sky changed. */
-	virtual void SkyChanged(aeAnimator *animator);
+	void SkyChanged(aeAnimator *animator) override;
 	
 	/** Animation changed. */
-	virtual void AnimationChanged(aeAnimator *animator);
+	void AnimationChanged(aeAnimator *animator) override;
 	
 	/** Playback changed. */
-	virtual void PlaybackChanged(aeAnimator *animator);
+	void PlaybackChanged(aeAnimator *animator) override;
 	
 	/** View changed. */
-	virtual void ViewChanged(aeAnimator *animator);
+	void ViewChanged(aeAnimator *animator) override;
 	
 	/** Camera changed. */
-	virtual void CameraChanged(aeAnimator *animator);
+	void CameraChanged(aeAnimator *animator) override;
 	
 	/** Camera view changed. */
-	virtual void CameraViewChanged(aeAnimator *animator);
+	void CameraViewChanged(aeAnimator *animator) override;
 	
 	/** Active attachment changed. */
-	virtual void ActiveAttachmentChanged(aeAnimator *animator, aeAttachment *attachment);
+	void ActiveAttachmentChanged(aeAnimator *animator, aeAttachment *attachment) override;
 	
 	/** Attachment changed. */
-	virtual void AttachmentChanged(aeAnimator *animator, aeAttachment *attachment);
+	void AttachmentChanged(aeAnimator *animator, aeAttachment *attachment) override;
 	
 	/** Attachment count changed added. */
-	virtual void AttachmentStructureChanged(aeAnimator *animator);
+	void AttachmentStructureChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

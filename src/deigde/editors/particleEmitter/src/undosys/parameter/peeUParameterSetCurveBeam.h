@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up the undo action. */
-	virtual ~peeUParameterSetCurveBeam();
+	~peeUParameterSetCurveBeam() override;
 	/*@}*/
 	
 	

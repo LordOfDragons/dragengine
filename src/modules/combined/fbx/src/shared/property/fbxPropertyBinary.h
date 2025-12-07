@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~fbxPropertyBinary();
+	~fbxPropertyBinary() override;
 	/*@}*/
 	
 	
@@ -70,12 +70,12 @@ public:
 	void SetValue(const uint8_t *value, int length);
 	
 	/** \brief Casting throwing exception if wrong type. */
-	virtual fbxPropertyBinary &CastBinary();
+	fbxPropertyBinary &CastBinary() override;
 	
 	
 	
 	/** \brief Save to file. */
-	virtual void Save(decBaseFileWriter &writer);
+	void Save(decBaseFileWriter &writer) override;
 	
 	/** \brief Debug print property structure. */
 	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;

@@ -52,7 +52,7 @@ public:
 	inline int GetFaceCount() const{ return pFaceCount; }
 	inline bool IsEmpty() const{ return pNodeCount == 0 || pFaceCount == 0; }
 	
-	virtual void VisitNode(deoalOctree *node, int /*intersection*/){
+	void VisitNode(deoalOctree *node, int /*intersection*/) override{
 		pNodeCount++;
 		pFaceCount += ((deoalModelOctree*)node)->GetFaceCount();
 	}

@@ -70,7 +70,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);
+	igdeUndo *CreateUndo(const ceConversationConditionList &conditions) override;
 	/*@}*/
 };
 

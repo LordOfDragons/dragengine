@@ -63,7 +63,7 @@ public:
 		int firstLink, const deAnimatorRuleStateSnapshot &rule);
 	
 	/** Clean up animator. */
-	virtual ~dearRuleStateSnapshot();
+	~dearRuleStateSnapshot() override;
 	/*@}*/
 	
 	
@@ -74,19 +74,19 @@ public:
 	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void CaptureStateInto(int identifier);
+	void CaptureStateInto(int identifier) override;
 	
 	/**
 	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
+	void StoreFrameInto(int identifier, const char *moveName, float moveTime) override;
 	
 	/** Apply to animator. */
-	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

@@ -12,11 +12,11 @@
 class detStringSet : public detCase{
 public:
 	detStringSet();
-	~detStringSet();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detStringSet() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestModify();

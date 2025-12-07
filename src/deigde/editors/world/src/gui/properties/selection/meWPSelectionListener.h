@@ -47,7 +47,7 @@ public:
 	meWPSelectionListener(meWPSelection &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPSelectionListener();
+	~meWPSelectionListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged(meWorld *world);
+	void ModeChanged(meWorld *world) override;
 	/*@}*/
 };
 

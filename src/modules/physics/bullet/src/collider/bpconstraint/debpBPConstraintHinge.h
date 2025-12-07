@@ -43,7 +43,7 @@ public:
 	/** Creates a new constraint. */
 	debpBPConstraintHinge(btRigidBody &rbA, const btTransform &rbAFrame, const btTransform &rbBFrame);
 	/** Cleans up the constraint. */
-	virtual ~debpBPConstraintHinge();
+	~debpBPConstraintHinge() override;
 	
 	/** @name Management */
 	/*@{*/

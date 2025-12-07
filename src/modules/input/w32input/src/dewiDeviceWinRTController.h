@@ -72,7 +72,7 @@ public:
 	
 protected:
 	/** Clean up device. */
-	virtual ~dewiDeviceWinRTController();
+	~dewiDeviceWinRTController() override;
 	/*@}*/
 	
 	
@@ -84,7 +84,7 @@ public:
 	inline const wrgi::RawGameController &GetController() const{ return pController; }
 
 	/** Update device state. */
-	virtual void Update();
+	void Update() override;
 
 	/** Axis reading. */
 	double GetReadingAxis(int index) const;

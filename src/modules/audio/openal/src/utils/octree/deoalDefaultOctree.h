@@ -48,7 +48,7 @@ public:
 	/** Creates a new generic octree object. */
 	deoalDefaultOctree(const decVector &center, const decVector &halfSize);
 	/** Cleans up the generic octree object. */
-	virtual ~deoalDefaultOctree();
+	~deoalDefaultOctree() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -58,9 +58,9 @@ public:
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual deoalOctree *CreateOctree(int octant) const;
+	deoalOctree *CreateOctree(int octant) const override;
 	/** Clears the content of this node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	/**
 	 * Adds a new object to the octree. The object is placed in the node
 	 * which hosts the specified box. Returns the node where the element

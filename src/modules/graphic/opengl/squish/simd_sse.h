@@ -62,7 +62,7 @@ public:
 	
 	Vec4(float x, float y, float z, float w) : m_v(_mm_setr_ps(x, y, z, w)) {}
 	
-	Vec3 GetVec3() const
+	Vec4 GetVec3() const
 	{
 #ifdef __GNUC__
 		__attribute__ ((__aligned__ (16))) float c[4];
@@ -70,7 +70,7 @@ public:
 		__declspec(align(16)) float c[4];
 #endif
 		_mm_store_ps(c, m_v);
-		return Vec3(c[0], c[1], c[2]);
+		return Vec4(c[0], c[1], c[2]);
 	}
 	
 	Vec4 SplatX() const { return Vec4(_mm_shuffle_ps(m_v, m_v, SQUISH_SSE_SPLAT(0))); }

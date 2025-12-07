@@ -68,7 +68,7 @@ public:
 	deBaseScriptingModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseScriptingModule();
+	~deBaseScriptingModule() override;
 	/*@}*/
 	
 	

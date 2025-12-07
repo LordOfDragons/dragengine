@@ -58,7 +58,7 @@ public:
 		int firstLink, const deAnimatorRuleBoneTransformator &rule);
 	
 	/** Clean up rule. */
-	virtual ~dearRuleBoneTransformator();
+	~dearRuleBoneTransformator() override;
 	/*@}*/
 	
 	
@@ -71,10 +71,10 @@ public:
 	
 	
 	/** Apply to animator. */
-	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

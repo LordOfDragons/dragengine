@@ -64,7 +64,7 @@ public:
 	deoalWOVPrepareRayTrace();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVPrepareRayTrace();
+	~deoalWOVPrepareRayTrace() override;
 	/*@}*/
 	
 	
@@ -108,7 +108,7 @@ public:
 	
 	
 	/** \brief Visits components affecting sound hit by ray. */
-	virtual void VisitNode(deoalDOctree *node, int intersection);
+	void VisitNode(deoalDOctree *node, int intersection) override;
 	/*@}*/
 	
 	

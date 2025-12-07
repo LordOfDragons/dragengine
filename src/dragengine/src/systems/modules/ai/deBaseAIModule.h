@@ -52,7 +52,7 @@ public:
 	deBaseAIModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up AI module. */
-	virtual ~deBaseAIModule();
+	~deBaseAIModule() override;
 	/*@}*/
 	
 	

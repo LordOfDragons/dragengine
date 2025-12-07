@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** Cleans up the panel. */
-	virtual ~reWPPanelShapeCylinder();
+	~reWPPanelShapeCylinder() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update shape. */
-	virtual void UpdateShape();
+	void UpdateShape() override;
 	/*@}*/
 };
 

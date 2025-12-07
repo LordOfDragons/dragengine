@@ -59,7 +59,7 @@ public:
 	decShapeSphere(float radius, const decVector2 &axisScaling, const decVector &position);
 	
 	/** \brief Clean up sphere shape. */
-	virtual ~decShapeSphere();
+	~decShapeSphere() override;
 	/*@}*/
 	
 	
@@ -81,7 +81,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	virtual decShape *Copy() const;
+	decShape *Copy() const override;
 	/*@}*/
 	
 	
@@ -89,7 +89,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit(decShapeVisitor &visitor);
+	void Visit(decShapeVisitor &visitor) override;
 	/*@}*/
 };
 

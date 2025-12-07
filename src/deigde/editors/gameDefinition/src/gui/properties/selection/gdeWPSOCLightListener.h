@@ -47,7 +47,7 @@ public:
 	gdeWPSOCLightListener(gdeWPSOCLight &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCLightListener();
+	~gdeWPSOCLightListener() override;
 	/*@}*/
 	
 	
@@ -55,28 +55,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class lights changed. */
-	virtual void OCLightsChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCLightsChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class light changed. */
-	virtual void OCLightChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCLight *light);
+	void OCLightChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCLight *light) override;
 	
 	/** \brief Active object class light changed. */
-	virtual void ActiveOCLightChanged(gdeGameDefinition *gameDefinition);
+	void ActiveOCLightChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

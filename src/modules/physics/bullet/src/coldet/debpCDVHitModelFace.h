@@ -64,7 +64,7 @@ public:
 	/** Creates a new CLASS. */
 	debpCDVHitModelFace(debpCollisionDetection *coldet);
 	/** Cleans up the CLASS. */
-	virtual ~debpCDVHitModelFace();
+	~debpCDVHitModelFace() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -87,7 +87,7 @@ public:
 	/** @name Visiting */
 	/*@{*/
 	/** Visit a node. */
-	virtual void VisitNode(debpDOctree *node, int intersection);
+	void VisitNode(debpDOctree *node, int intersection) override;
 	/*@}*/
 };
 

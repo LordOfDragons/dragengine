@@ -119,7 +119,7 @@ public:
 	meHTVRuleMath(const meHTVRuleMath &rule);
 	
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleMath();
+	~meHTVRuleMath() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -138,12 +138,12 @@ public:
 	void SetOperator(eOperators oper);
 	
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule *Copy() const override;
 	/*@}*/
 };
 

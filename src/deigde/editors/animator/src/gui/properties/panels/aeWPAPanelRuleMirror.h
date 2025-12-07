@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleMirror();
+	~aeWPAPanelRuleMirror() override;
 	/*@}*/
 	
 	
@@ -67,10 +67,10 @@ public:
 	aeRuleMirror::cMatchName *GetSelectedMatchBone() const;
 	
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	/*@}*/
 };
 

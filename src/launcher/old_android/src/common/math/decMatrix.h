@@ -53,7 +53,7 @@ public:
 	/** Creates a copy of a matrix. */
 	decMatrix(const decMatrix &m);
 	/** Creates a copy of a double matrix. */
-	decMatrix(const decDMatrix &m);
+	decMatrix(const decMatrix &m);
 	/*@}*/
 	
 	/** @name Matrix Creation */

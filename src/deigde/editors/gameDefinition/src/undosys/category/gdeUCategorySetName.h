@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUCategorySetName();
+	~gdeUCategorySetName() override;
 	/*@}*/
 	
 	

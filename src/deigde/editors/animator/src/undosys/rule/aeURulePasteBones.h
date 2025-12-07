@@ -40,7 +40,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURulePasteBones();
+	~aeURulePasteBones() override;
 	/*@}*/
 };
 

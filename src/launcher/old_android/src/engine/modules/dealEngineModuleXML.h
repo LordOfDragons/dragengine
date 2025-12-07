@@ -44,7 +44,7 @@ public:
 	/** Creates a new engine module xml read. */
 	dealEngineModuleXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the engine module xml read. */
-	virtual ~dealEngineModuleXML();
+	~dealEngineModuleXML() override;
 	/*@}*/
 	
 	/** @name Management */

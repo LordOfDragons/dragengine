@@ -51,7 +51,7 @@ public:
 	deoglREffectFilterKernel(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
-	virtual ~deoglREffectFilterKernel();
+	~deoglREffectFilterKernel() override;
 	/*@}*/
 	
 	
@@ -90,7 +90,7 @@ public:
 	const deoglPipeline *GetPipelineDownsampleStereo();
 	
 	/** Render effect. */
-	virtual void Render(deoglRenderPlan &plan);
+	void Render(deoglRenderPlan &plan) override;
 };
 
 #endif

@@ -47,7 +47,7 @@ public:
 	seWindowMainListener(seWindowMain &windowMain);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWindowMainListener();
+	~seWindowMainListener() override;
 	/*@}*/
 	
 	
@@ -55,35 +55,35 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(seSynthesizer *synthesizer);
+	void StateChanged(seSynthesizer *synthesizer) override;
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged(seSynthesizer *synthesizer);
+	void UndoChanged(seSynthesizer *synthesizer) override;
 	
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged(seSynthesizer *synthesizer);
+	void SynthesizerChanged(seSynthesizer *synthesizer) override;
 	
 	
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged(seSynthesizer *synthesizer, seController *controller);
+	void ControllerChanged(seSynthesizer *synthesizer, seController *controller) override;
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged(seSynthesizer *synthesizer);
+	void ControllerStructureChanged(seSynthesizer *synthesizer) override;
 	
 	
 	
 	/** \brief Active source changed. */
-	virtual void ActiveSourceChanged(seSynthesizer *synthesizer, seSource *source);
+	void ActiveSourceChanged(seSynthesizer *synthesizer, seSource *source) override;
 	
 	/** \brief Source changed. */
-	virtual void SourceChanged(seSynthesizer *synthesizer, seSource *source);
+	void SourceChanged(seSynthesizer *synthesizer, seSource *source) override;
 	
 	/** \brief Source name changed. */
-	virtual void SourceNameChanged(seSynthesizer *synthesizer, seSource *source);
+	void SourceNameChanged(seSynthesizer *synthesizer, seSource *source) override;
 	
 	/** \brief Source count or order changed. */
-	virtual void SourceStructureChanged(seSynthesizer *synthesizer);
+	void SourceStructureChanged(seSynthesizer *synthesizer) override;
 	/*@}*/
 };
 

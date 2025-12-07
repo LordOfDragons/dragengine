@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~ceWPUndoHistoryListener();
+	~ceWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged(ceConversation *conversation);
+	void UndoChanged(ceConversation *conversation) override;
 	/*@}*/
 };
 

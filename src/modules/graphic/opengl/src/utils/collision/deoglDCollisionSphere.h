@@ -53,23 +53,23 @@ public:
 	 */
 	deoglDCollisionSphere(const decDVector &center, double radius);
 	/** Cleans up the collision sphere. */
-	~deoglDCollisionSphere();
+	~deoglDCollisionSphere() override;
 	/*@}*/
 	
 	/** \name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume(deoglDCollisionVolume *volume);
+	bool VolumeHitsVolume(deoglDCollisionVolume *volume) override;
 	virtual double VolumeMoveHitsVolume(deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** \name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume(deoglDCollisionSphere *sphere);
-	virtual bool CylinderHitsVolume(deoglDCollisionCylinder *cylinder);
-	virtual bool CapsuleHitsVolume(deoglDCollisionCapsule *capsule);
-	virtual bool BoxHitsVolume(deoglDCollisionBox *box);
-	virtual bool TriangleHitsVolume(deoglDCollisionTriangle *triangle);
-	virtual bool FrustumHitsVolume(deoglDCollisionFrustum *frustum);
+	bool SphereHitsVolume(deoglDCollisionSphere *sphere) override;
+	bool CylinderHitsVolume(deoglDCollisionCylinder *cylinder) override;
+	bool CapsuleHitsVolume(deoglDCollisionCapsule *capsule) override;
+	bool BoxHitsVolume(deoglDCollisionBox *box) override;
+	bool TriangleHitsVolume(deoglDCollisionTriangle *triangle) override;
+	bool FrustumHitsVolume(deoglDCollisionFrustum *frustum) override;
 	virtual double SphereMoveHitsVolume(deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal);
 	virtual double CylinderMoveHitsVolume(deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal);
 	virtual double CapsuleMoveHitsVolume(deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal);
@@ -81,8 +81,8 @@ public:
 	
 	/** \name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere(deoglDCollisionSphere *sphere);
-	virtual void GetEnclosingBox(deoglDCollisionBox *box);
+	void GetEnclosingSphere(deoglDCollisionSphere *sphere) override;
+	void GetEnclosingBox(deoglDCollisionBox *box) override;
 	/*@}*/
 	
 	/** \name Miscelanous Functions */
@@ -114,7 +114,7 @@ public:
 	
 	/** \name Visiting */
 	/*{*/
-	virtual void Visit(deoglDCollisionVolumeVisitor *visitor);
+	void Visit(deoglDCollisionVolumeVisitor *visitor) override;
 	/*}*/
 	
 	/** \name Collision Routines */

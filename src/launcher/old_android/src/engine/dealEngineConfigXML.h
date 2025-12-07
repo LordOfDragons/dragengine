@@ -47,7 +47,7 @@ public:
 	dealEngineConfigXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up engine config xml read/save. */
-	virtual ~dealEngineConfigXML();
+	~dealEngineConfigXML() override;
 	/*@}*/
 	
 	

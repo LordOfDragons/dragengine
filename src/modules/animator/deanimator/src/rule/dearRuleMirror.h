@@ -72,7 +72,7 @@ public:
 		int firstLink, const deAnimatorRuleMirror &rule);
 	
 	/** Clean up rule. */
-	virtual ~dearRuleMirror();
+	~dearRuleMirror() override;
 	/*@}*/
 	
 	
@@ -80,10 +80,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 	

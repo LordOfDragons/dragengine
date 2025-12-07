@@ -46,7 +46,7 @@ public:
 		int borderTop = 0, int borderRight = 0, int borderBottom = 0);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetBorderImage();
+	~dealWidgetBorderImage() override;
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	
 	
 	/** \brief Render content. */
-	virtual void RenderContent(const sRenderContext &context);
+	void RenderContent(const sRenderContext &context) override;
 	/*@}*/
 };
 

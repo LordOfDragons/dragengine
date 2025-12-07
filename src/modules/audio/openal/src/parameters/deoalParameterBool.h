@@ -39,7 +39,7 @@ public:
 	deoalParameterBool(deAudioOpenAL &oal);
 	
 	/** \brief Clean up parameter. */
-	virtual ~deoalParameterBool();
+	~deoalParameterBool() override;
 	/*@}*/
 	
 	
@@ -50,7 +50,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue(const char *value);
+	void SetParameterValue(const char *value) override;
 	
 	/** \brief Current value. */
 	virtual bool GetParameterBool() = 0;

@@ -53,7 +53,7 @@ public:
 	deoalWOVSLMFindSpeakers(const deoalASoundLevelMeter &soundLevelMeter, deoalSpeakerList &list);
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVSLMFindSpeakers();
+	~deoalWOVSLMFindSpeakers() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	
 	
 	/** \brief Visits components affecting sound hit by ray. */
-	virtual void VisitNode(deoalDOctree *node, int intersection);
+	void VisitNode(deoalDOctree *node, int intersection) override;
 	/*@}*/
 };
 

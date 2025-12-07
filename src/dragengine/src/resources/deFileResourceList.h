@@ -44,7 +44,7 @@ public:
 	deFileResourceList();
 	
 	/** \brief Clean up resource list. */
-	virtual ~deFileResourceList();
+	~deFileResourceList() override;
 	/*@}*/
 	
 	

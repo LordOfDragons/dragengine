@@ -65,18 +65,18 @@ public:
 	meHTVRuleGeometry(const meHTVRuleGeometry &rule);
 	
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleGeometry();
+	~meHTVRuleGeometry() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule *Copy() const override;
 	/*@}*/
 };
 

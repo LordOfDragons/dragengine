@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMConditionContainer();
+	~ceWPTTIMConditionContainer() override;
 	/*@}*/
 	
 	
@@ -91,7 +91,7 @@ public:
 	
 	
 	/** \brief Deep find action. */
-	virtual ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition);
+	ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition) override;
 	/*@}*/
 };
 

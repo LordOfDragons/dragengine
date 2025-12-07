@@ -304,7 +304,7 @@ public:
 		SetDescription("Cut selected property");
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const decString property(pPanel.GetProperty());
 		if(property.IsEmpty() || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
 			return;
@@ -318,7 +318,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard());
 	}
 };
@@ -331,7 +331,7 @@ public:
 		SetDescription("Cut all properties");
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(pPanel.GetProperties().GetCount() == 0 || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
 			return;
 		}
@@ -344,7 +344,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetProperties().GetCount() > 0 && pPanel.GetUndoSystem() && pPanel.GetClipboard());
 	}
 };

@@ -47,7 +47,7 @@ public:
 	reWPConstraintListener(reWPConstraint &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPConstraintListener();
+	~reWPConstraintListener() override;
 	/*@}*/
 	
 	
@@ -55,20 +55,20 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Bone count changed. */
-	virtual void BoneCountChanged(reRig *rig);
+	void BoneCountChanged(reRig *rig) override;
 	
 	/** \brief A bone changed. */
-	virtual void BoneChanged(reRig *rig, reRigBone *bone);
+	void BoneChanged(reRig *rig, reRigBone *bone) override;
 	
 	/** \brief A constraint changed. */
-	virtual void ConstraintChanged(reRig *rig, reRigConstraint *constraint);
+	void ConstraintChanged(reRig *rig, reRigConstraint *constraint) override;
 	
 	/** \brief A constraint degree of freedom changed. */
 	virtual void ConstraintDofChanged(reRig *rig, reRigConstraint *constraint,
 		deColliderConstraint::eDegreesOfFreedom dof);
 	
 	/** \brief The active constraint changed. */
-	virtual void ActiveConstraintChanged(reRig *rig);
+	void ActiveConstraintChanged(reRig *rig) override;
 	/*@}*/
 };
 

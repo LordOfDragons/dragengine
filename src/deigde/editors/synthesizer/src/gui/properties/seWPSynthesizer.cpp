@@ -229,7 +229,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		SetEnabled(synthesizer.GetStopped());
 	}
 };
@@ -245,7 +245,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		SetEnabled(synthesizer.GetPlaying());
 	}
 };
@@ -261,7 +261,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		SetEnabled(!synthesizer.GetStopped());
 	}
 };

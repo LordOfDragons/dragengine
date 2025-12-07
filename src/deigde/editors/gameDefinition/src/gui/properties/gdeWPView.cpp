@@ -74,7 +74,7 @@ class cActionCameraChanged : public cBaseAction{
 public:
 	cActionCameraChanged(gdeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(gdeGameDefinition &gameDefinition){
+	void OnAction(gdeGameDefinition &gameDefinition) override{
 		gameDefinition.NotifyCameraChanged();
 	}
 };
@@ -83,7 +83,7 @@ class cActionSkyChanged : public cBaseAction{
 public:
 	cActionSkyChanged(gdeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(gdeGameDefinition &gameDefinition){
+	void OnAction(gdeGameDefinition &gameDefinition) override{
 		gameDefinition.NotifySkyChanged();
 	}
 };

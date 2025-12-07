@@ -52,7 +52,7 @@ public:
 	deoglRDSRenderableCanvas(deoglRDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable);
 	
 	/** Clean up render dynamic skin canvas  renderable. */
-	virtual ~deoglRDSRenderableCanvas();
+	~deoglRDSRenderableCanvas() override;
 	/*@}*/
 	
 	
@@ -69,16 +69,16 @@ public:
 	void SetBitCount(int bitCount);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Render. */
-	virtual void Render(const deoglRenderPlanMasked *renderPlanMask);
+	void Render(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 };
 

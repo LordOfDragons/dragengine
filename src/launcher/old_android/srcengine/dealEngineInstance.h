@@ -71,7 +71,7 @@ public:
 	dealEngineInstance(android_app &androidApp);
 	
 	/** \brief Clean up engine. */
-	virtual ~dealEngineInstance();
+	~dealEngineInstance() override;
 	/*@}*/
 	
 	
@@ -84,58 +84,58 @@ public:
 	
 	
 	/** Determines if the engine is running. */
-	virtual bool IsRunning() const;
+	bool IsRunning() const override;
 	
 	/**
 	 * \brief Start engine.
 	 * \returns \em true if successful or \em false if an exception happened.
 	 */
-	virtual bool Start(const char *logfile, const char *cacheAppID);
+	bool Start(const char *logfile, const char *cacheAppID) override;
 	
 	/**
 	 * \brief Stop engine.
 	 * \returns \em true if successful or \em false if an exception happened.
 	 */
-	virtual bool Stop();
+	bool Stop() override;
 	
 	/** \brief Process input event. */
-	virtual void ProcessInputEvent(const AInputEvent &event);
+	void ProcessInputEvent(const AInputEvent &event) override;
 	
 	/** \brief Frame update. */
-	virtual bool FrameUpdate(bool &keepRunning);
+	bool FrameUpdate(bool &keepRunning) override;
 	
 	
 	
 	/** \brief Get module status. */
-	virtual bool GetModuleStatus(const char *moduleName, const char *moduleVersion, int &status);
+	bool GetModuleStatus(const char *moduleName, const char *moduleVersion, int &status) override;
 	
 	/** \brief Number of module parameters. */
-	virtual bool GetModuleParameterCount(const char *moduleName, const char *moduleVersion,
-		int &parameterCount);
+	bool GetModuleParameterCount(const char *moduleName, const char *moduleVersion,
+		int &parameterCount) override;
 	
 	/** \brief Module parameter information. */
-	virtual bool GetModuleParameterData(const char *moduleName, const char *moduleVersion,
+	bool GetModuleParameterData(const char *moduleName, const char *moduleVersion,
 		int parameter, const char *&parameterName, const char *&parameterDescription,
-		const char*&parameterValue);
+		const char*&parameterValue) override;
 	
 	/** \brief Set module parameter value. */
-	virtual bool SetModuleParameterValue(const char *moduleName, const char *moduleVersion,
-		const char *parameter, const char *value);
+	bool SetModuleParameterValue(const char *moduleName, const char *moduleVersion,
+		const char *parameter, const char *value) override;
 	
 	/** \brief Engine property. */
-	virtual bool GetProperty(int property, const char *&value);
+	bool GetProperty(int property, const char *&value) override;
 	
 	/** \brief Activate module. */
-	virtual bool ActivateModule(const char *moduleName, const char *moduleVersion);
+	bool ActivateModule(const char *moduleName, const char *moduleVersion) override;
 	
 	/** \brief Enable or disable module. */
-	virtual bool EnableModule(const char *moduleName, const char *moduleVersion, bool enable);
+	bool EnableModule(const char *moduleName, const char *moduleVersion, bool enable) override;
 	
 	/** \brief Set command line arguments. */
-	virtual bool SetCmdLineArgs(const char *arguments) const;
+	bool SetCmdLineArgs(const char *arguments) const override;
 	
 	/** \brief Set data directory. */
-	virtual bool SetDataDirectory(const char *directory);
+	bool SetDataDirectory(const char *directory) override;
 	
 	
 	
@@ -151,15 +151,15 @@ public:
 	 * \param[in] fileOffset Offset in bytes where the content begins. Required for asset files.
 	 * \param[in] fileLength Length of content in bytes. Required for asset files.
 	 */
-	virtual bool OpenDelga(int fileDescriptor, long fileOffset, long fileLength);
+	bool OpenDelga(int fileDescriptor, long fileOffset, long fileLength) override;
 	
 	
 	
 	/** \brief Add disk directory to virtual file system. */
-	virtual bool VFSAddDiskDir(const char *vfsRoot, const char *nativeDirectory, bool readOnly);
+	bool VFSAddDiskDir(const char *vfsRoot, const char *nativeDirectory, bool readOnly) override;
 	
 	/** \brief Add virtual file system container for module shared data. */
-	virtual bool VFSAddScriptSharedDataDir();
+	bool VFSAddScriptSharedDataDir() override;
 	
 	/**
 	 * \brief Add virtual file system container referenceing path in DELGA file.
@@ -167,50 +167,50 @@ public:
 	 * \param[in] vfsRoot Path to show content at in virtual file system.
 	 * \param[in] vfsBase Base path relative to zip archive to show in virtual file system.
 	 */
-	virtual bool VFSAddDelga(const char *vfsRoot, const char *vfsBase);
+	bool VFSAddDelga(const char *vfsRoot, const char *vfsBase) override;
 	
 	/** \brief Add redirect directory to virtual file system. */
-	virtual bool VFSAddRedirect(const char *root, const char *redirect);
+	bool VFSAddRedirect(const char *root, const char *redirect) override;
 	
 	/**
 	 * \brief Make modules add stage specific containers to virtual file system.
 	 * \version 1.23
 	 */
-	virtual bool ModulesAddVFSContainers(const char *stage);
+	bool ModulesAddVFSContainers(const char *stage) override;
 	
 	
 	
 	/** \brief Create render window. */
-	virtual bool CreateRenderWindow(int width, int height, bool fullScreen, const char *windowTitle);
+	bool CreateRenderWindow(int width, int height, bool fullScreen, const char *windowTitle) override;
 	
 	/** \brief Start game. */
-	virtual bool StartGame(const char *scriptDirectory, const char *gameObject);
+	bool StartGame(const char *scriptDirectory, const char *gameObject) override;
 	
 	/** \brief Stop game. */
-	virtual bool StopGame();
+	bool StopGame() override;
 	
 	/** \brief Determines if the game is still running. */
-	virtual int IsGameRunning();
+	int IsGameRunning() override;
 	
 	
 	
 	/** \brief Focus gained. */
-	virtual bool FocusGained();
+	bool FocusGained() override;
 	
 	/** \brief Focus lost. */
-	virtual bool FocusLost();
+	bool FocusLost() override;
 	
 	/** \brief Freeze application. */
-	virtual bool Freeze();
+	bool Freeze() override;
 	
 	/** \brief Thaw application. */
-	virtual bool Thaw();
+	bool Thaw() override;
 	
 	/** \brief Application window has been created. */
-	virtual bool InitAppWindow();
+	bool InitAppWindow() override;
 	
 	/** \brief Application window has been closed. */
-	virtual bool TerminateAppWindow();
+	bool TerminateAppWindow() override;
 	/*@}*/
 	
 private:

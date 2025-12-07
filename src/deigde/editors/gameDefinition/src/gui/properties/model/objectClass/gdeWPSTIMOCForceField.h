@@ -47,7 +47,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCForceField();
+	~gdeWPSTIMOCForceField() override;
 	/*@}*/
 	
 	
@@ -62,18 +62,18 @@ public:
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

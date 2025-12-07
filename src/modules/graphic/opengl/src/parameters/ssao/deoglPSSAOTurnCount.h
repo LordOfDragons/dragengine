@@ -38,15 +38,15 @@ public:
 	/** Creates a new parameter. */
 	deoglPSSAOTurnCount(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPSSAOTurnCount();
+	~deoglPSSAOTurnCount() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual float GetParameterFloat();
+	float GetParameterFloat() override;
 	/** Sets the current value. */
-	virtual void SetParameterFloat(float value);
+	void SetParameterFloat(float value) override;
 	/*@}*/
 };
 

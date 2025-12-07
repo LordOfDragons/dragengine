@@ -47,7 +47,7 @@ public:
 	gdeWPSOCParticleEmitterListener(gdeWPSOCParticleEmitter &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCParticleEmitterListener();
+	~gdeWPSOCParticleEmitterListener() override;
 	/*@}*/
 	
 	
@@ -55,27 +55,27 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class particle emitters changed. */
-	virtual void OCParticleEmittersChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	void OCParticleEmittersChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class particle emitter changed. */
-	virtual void OCParticleEmitterChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter);
+	void OCParticleEmitterChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter) override;
 	
 	/** \brief Active object class particle emitter changed. */
-	virtual void ActiveOCParticleEmitterChanged(gdeGameDefinition *gameDefinition);
+	void ActiveOCParticleEmitterChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

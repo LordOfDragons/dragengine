@@ -55,9 +55,9 @@ public:
 	{
 	}
 	
-	Vec3 GetVec3() const
+	Vec4 GetVec3() const
 	{
-		return Vec3(m_x, m_y, m_z);
+		return Vec4(m_x, m_y, m_z);
 	}
 	
 	Vec4 SplatX() const { return Vec4(m_x); }

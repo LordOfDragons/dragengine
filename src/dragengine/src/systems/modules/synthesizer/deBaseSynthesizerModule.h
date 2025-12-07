@@ -47,7 +47,7 @@ public:
 	deBaseSynthesizerModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseSynthesizerModule();
+	~deBaseSynthesizerModule() override;
 	/*@}*/
 	
 	

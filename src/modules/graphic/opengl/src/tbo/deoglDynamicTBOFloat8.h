@@ -44,7 +44,7 @@ public:
 	
 protected:
 	/** Clean up dynamic tbo. */
-	virtual ~deoglDynamicTBOFloat8();
+	~deoglDynamicTBOFloat8() override;
 	/*@}*/
 	
 	
@@ -99,7 +99,7 @@ public:
 	void SetVec4At(int offset, const decColor &value);
 	
 	/** Debug print. */
-	virtual void DebugPrint();
+	void DebugPrint() override;
 	
 	/** TBO format. */
 	virtual GLenum GetTBOFormat();

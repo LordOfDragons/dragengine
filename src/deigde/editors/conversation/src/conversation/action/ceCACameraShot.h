@@ -56,7 +56,7 @@ public:
 	/** Creates a new camera shot conversation action. */
 	ceCACameraShot(const ceCACameraShot &action);
 	/** Cleans up the camera shot conversation action. */
-	virtual ~ceCACameraShot();
+	~ceCACameraShot() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -79,7 +79,7 @@ public:
 	void SetLookAtTarget(const char *target);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

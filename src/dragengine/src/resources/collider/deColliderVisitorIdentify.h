@@ -63,7 +63,7 @@ public:
 	deColliderVisitorIdentify();
 	
 	/** \brief Clean up identify collider visitor. */
-	virtual ~deColliderVisitorIdentify();
+	~deColliderVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -118,16 +118,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void VisitCollider(deCollider &collider);
+	void VisitCollider(deCollider &collider) override;
 	
 	/** \brief Visit volume collider. */
-	virtual void VisitVolume(deColliderVolume &collider);
+	void VisitVolume(deColliderVolume &collider) override;
 	
 	/** \brief Visit rig collider. */
-	virtual void VisitRig(deColliderRig &collider);
+	void VisitRig(deColliderRig &collider) override;
 	
 	/** \brief Visit component collider. */
-	virtual void VisitComponent(deColliderComponent &collider);
+	void VisitComponent(deColliderComponent &collider) override;
 	/*@}*/
 };
 

@@ -40,13 +40,13 @@ public:
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPGoogleDaydreamController();
+	~deoxrDPGoogleDaydreamController() override;
 	/*@}*/
 	
 	
 protected:
-	virtual void pAddDevice(bool left);
-	virtual void pSuggestBindings();
+	void pAddDevice(bool left) override;
+	void pSuggestBindings() override;
 };
 
 #endif

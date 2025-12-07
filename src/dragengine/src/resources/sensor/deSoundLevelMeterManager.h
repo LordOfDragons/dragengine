@@ -48,7 +48,7 @@ public:
 	deSoundLevelMeterManager(deEngine *engine);
 	
 	/** \brief Clean up sound level meter resource manager and report leaking resources. */
-	virtual ~deSoundLevelMeterManager();
+	~deSoundLevelMeterManager() override;
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	deSoundLevelMeter *CreateSoundLevelMeter();
 	
 	/** \brief Report and release leaking resources. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -73,16 +73,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Audio System Peers of all stored resources have to be created. */
-	virtual void SystemAudioLoad();
+	void SystemAudioLoad() override;
 	
 	/** \brief Audio System Peers of all stored resources have to be freed. */
-	virtual void SystemAudioUnload();
+	void SystemAudioUnload() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be created. */
-	virtual void SystemScriptingLoad();
+	void SystemScriptingLoad() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be freed. */
-	virtual void SystemScriptingUnload();
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -92,7 +92,7 @@ public:
 	 * \warning Only for use by deSoundLevelMeter. Never be call directly.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

@@ -52,7 +52,7 @@ public:
 	deNetworkValueFloat(eValueFormats format, double value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueFloat();
+	~deNetworkValueFloat() override;
 	/*@}*/
 	
 	
@@ -80,7 +80,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit(deNetworkValueVisitor &visitor);
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

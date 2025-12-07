@@ -49,7 +49,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMConditions();
+	~ceWPTTIMConditions() override;
 	/*@}*/
 	
 	
@@ -66,13 +66,13 @@ public:
 	
 	
 	/** \brief Update condition. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update conditions. */
 	virtual void UpdateConditions();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	
 	

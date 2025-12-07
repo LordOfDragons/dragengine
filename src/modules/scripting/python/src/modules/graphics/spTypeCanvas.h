@@ -42,7 +42,7 @@ public:
 	spTypeCanvas(ScriptingPython &sp);
 	
 	/** \brief Clean up module. */
-	virtual ~spTypeCanvas();
+	~spTypeCanvas() override;
 	/*@}*/
 	
 	

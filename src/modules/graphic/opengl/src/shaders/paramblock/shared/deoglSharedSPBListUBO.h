@@ -50,7 +50,7 @@ public:
 	
 	
 protected:
-	deoglShaderParameterBlock::Ref pCreateBlock() const;
+	deoglShaderParameterBlock::Ref pCreateBlock() const override;
 };
 
 #endif

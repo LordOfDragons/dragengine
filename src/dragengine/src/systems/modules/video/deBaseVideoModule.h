@@ -46,7 +46,7 @@ public:
 	deBaseVideoModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseVideoModule();
+	~deBaseVideoModule() override;
 	/*@}*/
 	
 	

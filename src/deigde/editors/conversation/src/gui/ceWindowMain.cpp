@@ -618,7 +618,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(conversation.GetChanged());
 	}
 };
@@ -800,7 +800,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(true);
 		SetSelected(conversation.GetShowRuleOfThirdsAid());
 	}

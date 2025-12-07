@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeComponents();
+	~meWVNodeComponents() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	inline meHTVRuleComponents *GetRuleComponents() const{ return pRuleComponents; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

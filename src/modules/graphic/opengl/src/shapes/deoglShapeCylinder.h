@@ -41,7 +41,7 @@ public:
 	/** Creates a new shape. */
 	deoglShapeCylinder(deoglRenderThread &renderThread);
 	/** Cleans up the shape. */
-	virtual ~deoglShapeCylinder();
+	~deoglShapeCylinder() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -51,9 +51,9 @@ public:
 	const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius);
 	
 	/** Add lines data. */
-	virtual void AddVBOLines(sVBOData *data);
+	void AddVBOLines(sVBOData *data) override;
 	/** Add faces data. */
-	virtual void AddVBOFaces(sVBOData *data);
+	void AddVBOFaces(sVBOData *data) override;
 	/*@}*/
 };
 

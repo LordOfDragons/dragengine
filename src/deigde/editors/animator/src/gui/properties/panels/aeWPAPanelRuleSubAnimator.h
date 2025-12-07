@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleSubAnimator();
+	~aeWPAPanelRuleSubAnimator() override;
 	/*@}*/
 	
 	
@@ -69,13 +69,13 @@ public:
 	void UpdateConnectionList();
 	
 	/** Animator path changed. */
-	virtual void OnAnimatorPathChanged();
+	void OnAnimatorPathChanged() override;
 	
 	/** Update controller list. */
-	virtual void UpdateControllerList();
+	void UpdateControllerList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update connection. */
 	virtual void UpdateConnection();

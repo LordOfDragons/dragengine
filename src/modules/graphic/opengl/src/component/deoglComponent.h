@@ -110,7 +110,7 @@ public:
 	deoglComponent(deGraphicOpenGl &ogl, deComponent &component);
 	
 	/** Clean up component peer. */
-	virtual ~deoglComponent();
+	~deoglComponent() override;
 	/*@}*/
 	
 	
@@ -182,10 +182,10 @@ public:
 	
 	/** \name Dynamic skin listener */
 	/*@{*/
-	virtual void DynamicSkinDestroyed();
-	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
-	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
+	void DynamicSkinDestroyed() override;
+	void DynamicSkinRenderablesChanged() override;
+	void DynamicSkinRenderableChanged(deoglDSRenderable &renderable) override;
+	void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable) override;
 	/*@}*/
 	
 	

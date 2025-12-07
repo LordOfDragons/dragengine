@@ -60,7 +60,7 @@ public:
 	btScalar *vertices, int *faces, int vertexCount, int faceCount);
 	
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
-	virtual ~debpBulletShapeModel();
+	~debpBulletShapeModel() override;
 	/*@}*/
 	
 	

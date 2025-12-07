@@ -81,7 +81,7 @@ public:
 	/** Creates a new renderer. */
 	deoglRenderOcclusion(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
-	virtual ~deoglRenderOcclusion();
+	~deoglRenderOcclusion() override;
 	/*@}*/
 	
 	/** \name Rendering */

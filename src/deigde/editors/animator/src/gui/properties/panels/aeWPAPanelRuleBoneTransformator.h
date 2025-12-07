@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleBoneTransformator();
+	~aeWPAPanelRuleBoneTransformator() override;
 	/*@}*/
 	
 	
@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

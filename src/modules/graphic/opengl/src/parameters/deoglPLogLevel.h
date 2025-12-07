@@ -38,7 +38,7 @@ public:
 	/** Creates a new parameter. */
 	deoglPLogLevel(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPLogLevel();
+	~deoglPLogLevel() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
@@ -47,7 +47,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue(const char *value);
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

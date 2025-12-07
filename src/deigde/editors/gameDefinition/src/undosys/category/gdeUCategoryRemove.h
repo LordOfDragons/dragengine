@@ -49,7 +49,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUCategoryRemove();
+	~gdeUCategoryRemove() override;
 	/*@}*/
 	
 	

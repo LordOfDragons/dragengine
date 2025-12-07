@@ -75,7 +75,7 @@ public:
 	/** Creates a new renderer. */
 	deoglRenderToneMap(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
-	virtual ~deoglRenderToneMap();
+	~deoglRenderToneMap() override;
 	/*@}*/
 	
 	/** \name Rendering */

@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUCategorySetAutoCategorizePattern();
+	~gdeUCategorySetAutoCategorizePattern() override;
 	/*@}*/
 	
 	

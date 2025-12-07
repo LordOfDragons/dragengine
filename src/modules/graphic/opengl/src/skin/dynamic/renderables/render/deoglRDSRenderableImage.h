@@ -45,7 +45,7 @@ public:
 	deoglRDSRenderableImage(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin image renderable. */
-	virtual ~deoglRDSRenderableImage();
+	~deoglRDSRenderableImage() override;
 	/*@}*/
 	
 	
@@ -59,13 +59,13 @@ public:
 	void SetImage(deoglRImage *image);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 };
 

@@ -188,10 +188,10 @@ public:
 	buffer(0){
 	}
 	
-	virtual ~deoalASoundDeletion(){
+	~deoalASoundDeletion() override{
 	}
 	
-	virtual void DeleteObjects(deoalAudioThread&){
+	void DeleteObjects(deoalAudioThread&) override{
 		if(buffer){
 			alDeleteBuffers(1, &buffer);
 		}

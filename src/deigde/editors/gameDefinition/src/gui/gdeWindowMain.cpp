@@ -573,7 +573,7 @@ public:
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
 		if(!gamedef){
 			return;

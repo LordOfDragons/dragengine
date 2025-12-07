@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCHasActor();
+	~ceWPCHasActor() override;
 	/*@}*/
 	
 	

@@ -55,18 +55,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(lpeLangPack *langpack);
+	void StateChanged(lpeLangPack *langpack) override;
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged(lpeLangPack *langpack);
+	void UndoChanged(lpeLangPack *langpack) override;
 	
 	
 	
 	/** \brief Entries have been added or removed. */
-	virtual void EntryStructureChanged (lpeLangPack *langpack);
+	void EntryStructureChanged (lpeLangPack *langpack) override;
 	
 	/** \brief Selection of one or mote entries changed. */
-	virtual void EntrySelectionChanged(lpeLangPack *langpack);
+	void EntrySelectionChanged(lpeLangPack *langpack) override;
 	/*@}*/
 };
 

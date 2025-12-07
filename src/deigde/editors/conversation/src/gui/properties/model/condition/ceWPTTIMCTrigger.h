@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMCTrigger();
+	~ceWPTTIMCTrigger() override;
 	/*@}*/
 	
 	
@@ -57,7 +57,7 @@ public:
 	static const char *GetTestModeText(ceCConditionTrigger::eTestModes testMode);
 	
 	/** \brief Update condition. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

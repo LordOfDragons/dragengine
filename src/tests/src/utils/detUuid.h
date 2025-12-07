@@ -10,11 +10,11 @@
 class detUuid : public detCase{
 public:
 	detUuid();
-	~detUuid();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detUuid() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 private:
 	void TestInit();
 	void TestCompare();

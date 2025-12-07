@@ -70,7 +70,7 @@ dealGameConfigXML::~dealGameConfigXML(){
 ///////////////
 
 void dealGameConfigXML::ReadFromFile(decBaseFileReader &reader, dealGame &game){
-	decXmlDocument::Ref xmldoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmldoc((decXmlDocument::Ref::NewWith()));
 	
 	decXmlParser parser(GetLogger());
 	

@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPAActorRemove();
+	~ceWPAActorRemove() override;
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	void UpdateAction();
 	
 	/** \brief Update actor id lists. */
-	virtual void UpdateActorIDLists();
+	void UpdateActorIDLists() override;
 	/*@}*/
 };
 

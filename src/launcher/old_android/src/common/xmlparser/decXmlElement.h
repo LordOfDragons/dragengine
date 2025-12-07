@@ -83,7 +83,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml element. */
-	virtual ~decXmlElement();
+	~decXmlElement() override;
 	/*@}*/
 	
 	

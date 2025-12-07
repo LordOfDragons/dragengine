@@ -49,7 +49,7 @@ public:
 	deSpeakerManager(deEngine *engine);
 	
 	/** \brief Clean up speaker resource manager and reports leaking resources. */
-	~deSpeakerManager();
+	~deSpeakerManager() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	deSpeaker *CreateSpeaker();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -74,16 +74,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Audio System Peers of all stored resources have to be created. */
-	virtual void SystemAudioLoad();
+	void SystemAudioLoad() override;
 	
 	/** \brief Audio System Peers of all stored resources have to be freed. */
-	virtual void SystemAudioUnload();
+	void SystemAudioUnload() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be created. */
-	virtual void SystemScriptingLoad();
+	void SystemScriptingLoad() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be freed. */
-	virtual void SystemScriptingUnload();
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -94,7 +94,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

@@ -50,7 +50,7 @@ public:
 	deFontManager(deEngine *engine);
 	
 	/** \brief Clean up font resource manager and reports leaking resources. */
-	virtual ~deFontManager();
+	~deFontManager() override;
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	deFontSize *LoadFontSize(deFont &font, int size);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -109,10 +109,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Create graphic system peers. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Free graphic system peers. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -124,7 +124,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	virtual void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 	
 	

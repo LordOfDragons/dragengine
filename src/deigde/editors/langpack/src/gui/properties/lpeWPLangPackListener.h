@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Language pack parameters changed. */
-	virtual void LangPackChanged(lpeLangPack *langpack);
+	void LangPackChanged(lpeLangPack *langpack) override;
 	/*@}*/
 };
 

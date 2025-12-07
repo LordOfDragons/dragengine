@@ -39,7 +39,7 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakWordSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, float newDuration);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakWordSetDuration();
+	~ceUCAASpeakWordSetDuration() override;
 	/*@}*/
 };
 

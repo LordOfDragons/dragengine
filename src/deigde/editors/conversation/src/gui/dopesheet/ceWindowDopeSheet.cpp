@@ -127,14 +127,14 @@ public:
 		window.GetWindowMain().GetIconPlayAction(), "Play selected action"){
 	}
 	
-	virtual void OnAction(ceConversation &conversation){
+	void OnAction(ceConversation &conversation) override{
 		ceConversationAction * const action = pWindow.GetAction();
 		if(action){
 			conversation.GetPlayback()->PlaySingleAction(action, 0.0f);
 		}
 	}
 	
-	virtual void Update(const ceConversation &){
+	void Update(const ceConversation &) override{
 		SetEnabled(pWindow.GetAction());
 	}
 };
@@ -145,11 +145,11 @@ public:
 		window.GetWindowMain().GetIconPlayFromHere(), "Play onwards from selected action"){
 	}
 	
-	virtual void OnAction(ceConversation &){
+	void OnAction(ceConversation &) override{
 		pWindow.GetWindowMain().GetWindowProperties().GetPanelTopic().PlayActionFromHere();
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty());
 	}
 };
@@ -160,13 +160,13 @@ public:
 		window.GetWindowMain().GetIconPlayPause(), "Pause/Resume playing"){
 	}
 	
-	virtual void OnAction(ceConversation &conversation){
+	void OnAction(ceConversation &conversation) override{
 		if(pWindow.GetTopic()){
 			conversation.GetPlayback()->SetPaused(!conversation.GetPlayback()->GetPaused());
 		}
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty());
 		SetSelected(conversation.GetPlayback()->GetPaused());
 	}
@@ -178,7 +178,7 @@ public:
 		window.GetWindowMain().GetIconPlaySelectCurAction(), "Select currently played back action"){
 	}
 	
-	virtual void OnAction(ceConversation &conversation){
+	void OnAction(ceConversation &conversation) override{
 		const cePlayback &playback = *conversation.GetPlayback();
 		ceConversationAction * const action = playback.GetLastPlayedAction();
 		ceConversationTopic * const topic = playback.GetLastPlayedActionTopic();
@@ -197,7 +197,7 @@ public:
 		pWindow.GetWindowMain().GetWindowProperties().GetPanelTopic().LocateAction(action);
 	}
 	
-	virtual void Update(const ceConversation &conversation){
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty());
 	}
 };

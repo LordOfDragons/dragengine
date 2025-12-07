@@ -87,7 +87,7 @@ public:
 	dealWidget(dealDisplay &display, const decPoint &position, const decPoint &size);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidget();
+	~dealWidget() override;
 	/*@}*/
 	
 	

@@ -47,7 +47,7 @@ public:
 	gdeWindowMainListener(gdeWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWindowMainListener();
+	~gdeWindowMainListener() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(gdeGameDefinition *gameDefinition);
+	void StateChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged(gdeGameDefinition *gameDefinition);
+	void UndoChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief View properties changed. */
-	virtual void ViewChanged(gdeGameDefinition *gameDefinition);
+	void ViewChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

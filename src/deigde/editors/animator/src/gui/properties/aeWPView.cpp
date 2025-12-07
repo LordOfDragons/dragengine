@@ -217,11 +217,11 @@ public:
 	cActionResetState(aeWPView &panel) : cBaseAction(panel, "Reset Animation State", NULL,
 		"Animation state is reset before each frame update for testing relative animators"){ }
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		animator->SetResetState(!animator->GetResetState());
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(true);
 		SetSelected(animator.GetResetState());
 	}
@@ -232,7 +232,7 @@ class cEditSky : public cBaseAction{
 public:
 	cEditSky(aeWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		animator->NotifySkyChanged();
 	}
 };
@@ -241,7 +241,7 @@ class cEditEnvObject : public cBaseAction{
 public:
 	cEditEnvObject(aeWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		animator->NotifyEnvObjectChanged();
 	}
 };
@@ -250,7 +250,7 @@ class cEditCamera : public cBaseAction{
 public:
 	cEditCamera(aeWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		animator->NotifyCameraChanged();
 	}
 };
@@ -261,11 +261,11 @@ public:
 	cActionCamAttach(aeWPView &panel) : cBaseAction(panel, "Attach camera to a bone", NULL,
 		"Attaches the camera to a bone instead of roaming around freely"){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		animator->GetCamera()->SetAttachToBone(!animator->GetCamera()->GetAttachToBone());
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(true);
 		SetSelected(animator.GetCamera()->GetAttachToBone());
 	}
@@ -331,7 +331,7 @@ public:
 	cActionFrameStep(aeWPView &panel, igdeIcon *icon, const char *description, float factor) :
 		cBaseAction(panel, "", icon, description), pFactor(factor){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		const aeControllerList &list = animator->GetControllers();
 		const float timeStep = animator->GetTimeStep() * pFactor;
 		const int count = list.GetCount();
@@ -361,11 +361,11 @@ class cActionPaused : public cBaseAction{
 public:
 	cActionPaused(aeWPView &panel) : cBaseAction(panel, "Pause", NULL, "Paus animation playback"){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		animator->SetPaused(!animator->GetPaused());
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(true);
 		SetSelected(animator.GetPaused());
 	}
@@ -375,7 +375,7 @@ class cActionReset : public cBaseAction{
 public:
 	cActionReset(aeWPView &panel) : cBaseAction(panel, "Reset", NULL, "Reset animation"){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		const aeControllerList &list = animator->GetControllers();
 		const int count = list.GetCount();
 		int i;
@@ -402,7 +402,7 @@ public:
 	cActionAttachmentAdd(aeWPView &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add attachment"){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		const decString baseName("Attachment");
 		decString name(baseName);
 		int number = 1;
@@ -421,7 +421,7 @@ public:
 	cActionAttachmentRemove(aeWPView &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove attachment"){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		aeAttachment * const attachment = pPanel.GetAttachment();
 		if(!attachment){
 			return;
@@ -433,7 +433,7 @@ public:
 		}
 	}
 	
-	virtual void Update(const aeAnimator &){
+	void Update(const aeAnimator &) override{
 		SetEnabled(pPanel.GetAttachment());
 	}
 };
@@ -443,13 +443,13 @@ public:
 	cActionAttachmentClear(aeWPView &panel) : cBaseAction(panel, "Clear",
 		NULL, "Remove all attachment"){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		if(animator->GetAttachmentCount() > 0){
 			animator->RemoveAllAttachments();
 		}
 	}
 	
-	virtual void Update(const aeAnimator &animator){
+	void Update(const aeAnimator &animator) override{
 		SetEnabled(animator.GetAttachmentCount() > 0);
 	}
 };
@@ -459,7 +459,7 @@ public:
 	cActionAttachmentLoadConfig(aeWPView &panel) : cBaseAction(panel, "Load configuration...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Load configuration"){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		aeLoadSaveSystem &lssys = pPanel.GetWindowProperties().GetWindowMain().GetLoadSaveSystem();
 		decString filename(animator->GetPathAttachmentConfig());
 		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Open Attachment Configuration",
@@ -477,7 +477,7 @@ public:
 	cActionAttachmentSaveConfig(aeWPView &panel) : cBaseAction(panel, "Save configuration...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave), "Save configuration"){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		aeLoadSaveSystem &lssys = pPanel.GetWindowProperties().GetWindowMain().GetLoadSaveSystem();
 		decString filename(animator->GetPathAttachmentConfig());
 		if(!igdeCommonDialogs::GetFileSave(&pPanel, "Save Attachment Configuration",
@@ -560,7 +560,7 @@ class cEditAttachmentObject : public cBaseAction{
 public:
 	cEditAttachmentObject(aeWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction(aeAnimator *animator){
+	void OnAction(aeAnimator *animator) override{
 		if(pPanel.GetAttachment()){
 			animator->NotifyAttachmentChanged(pPanel.GetAttachment());
 		}

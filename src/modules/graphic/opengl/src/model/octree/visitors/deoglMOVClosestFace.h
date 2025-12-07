@@ -60,7 +60,7 @@ public:
 	/** Creates a new model octree visitor. */
 	deoglMOVClosestFace(const deoglModelLOD &modelLOD);
 	/** Cleans up the model octree visitor. */
-	virtual ~deoglMOVClosestFace();
+	~deoglMOVClosestFace() override;
 	/*@}*/
 	
 	/** \name Visiting */
@@ -85,7 +85,7 @@ public:
 	int FindClosestFace(const decVector &testPoint, float maxRadius);
 	
 	/** Visits an octree node. */
-	virtual void VisitNode(deoglOctree *node, int intersection);
+	void VisitNode(deoglOctree *node, int intersection) override;
 	/*@}*/
 };
 

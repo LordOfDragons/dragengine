@@ -67,7 +67,7 @@ public:
 	meHTVRuleResult(const meHTVRuleResult &rule);
 	
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleResult();
+	~meHTVRuleResult() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -82,10 +82,10 @@ public:
 	void SetVariation(int variation);
 	
 	/** Evaluate rule. */
-	virtual void Evaluate(meHTVEvaluationEnvironment &evalEnv);
+	void Evaluate(meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule *Copy() const override;
 	/*@}*/
 };
 

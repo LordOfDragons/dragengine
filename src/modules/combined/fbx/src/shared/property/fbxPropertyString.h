@@ -51,7 +51,7 @@ public:
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~fbxPropertyString();
+	~fbxPropertyString() override;
 	/*@}*/
 	
 	
@@ -66,12 +66,12 @@ public:
 	void SetValue(const char *value);
 	
 	/** \brief Casting throwing exception if wrong type. */
-	virtual fbxPropertyString &CastString();
+	fbxPropertyString &CastString() override;
 	
 	
 	
 	/** \brief Save to file. */
-	virtual void Save(decBaseFileWriter &writer);
+	void Save(decBaseFileWriter &writer) override;
 	
 	/** \brief Debug print property structure. */
 	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;

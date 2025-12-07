@@ -79,7 +79,7 @@ public:
 	deoalWOVRayHitsElement();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVRayHitsElement();
+	~deoalWOVRayHitsElement() override;
 	/*@}*/
 	
 	
@@ -99,7 +99,7 @@ public:
 	
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent(deoalAComponent *component);
+	void VisitComponent(deoalAComponent *component) override;
 	/*@}*/
 	
 	

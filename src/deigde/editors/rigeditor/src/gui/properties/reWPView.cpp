@@ -281,11 +281,11 @@ class cSliderMoveTime : public cBaseSliderListener{
 public:
 	cSliderMoveTime(reWPView &panel) : cBaseSliderListener(panel){}
 	
-	virtual void OnChanging(float value, reRig &rig){
+	void OnChanging(float value, reRig &rig) override{
 		rig.SetMoveTime(value);
 	}
 	
-	virtual void OnChanged(float value, reRig &rig){
+	void OnChanged(float value, reRig &rig) override{
 		rig.SetMoveTime(value);
 	}
 };
@@ -295,7 +295,7 @@ public:
 	cCheckUseRestPose(reWPView &panel) : cBaseAction(panel,
 		"Use rest pose", "Displays the rest pose instead of the animation frame"){}
 	
-	virtual void OnAction(reRig &rig){
+	void OnAction(reRig &rig) override{
 		rig.SetUseRestPose(!rig.GetUseRestPose());
 	}
 };
@@ -305,7 +305,7 @@ public:
 	cCheckPlaybackMove(reWPView &panel) : cBaseAction(panel,
 		"Playback", "Determines if the animation move is played back"){ }
 	
-	virtual void OnAction(reRig &rig){
+	void OnAction(reRig &rig) override{
 		rig.SetPlaybackMove(!rig.GetPlaybackMove());
 	}
 };
@@ -333,11 +333,11 @@ class cSliderSlowMotion : public cBaseSliderListener{
 public:
 	cSliderSlowMotion(reWPView &panel) : cBaseSliderListener(panel){}
 	
-	virtual void OnChanging(float value, reRig &rig){
+	void OnChanging(float value, reRig &rig) override{
 		rig.SetSlowmotion(value);
 	}
 	
-	virtual void OnChanged(float value, reRig &rig){
+	void OnChanged(float value, reRig &rig) override{
 		rig.SetSlowmotion(value);
 	}
 };
@@ -361,7 +361,7 @@ class cCheckSnapToGrid : public cBaseAction{
 public:
 	cCheckSnapToGrid(reWPView &panel) : cBaseAction(panel, "Snap", "Snap to grid"){}
 	
-	virtual void OnAction(reRig &rig){
+	void OnAction(reRig &rig) override{
 		reConfiguration &config = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
 		config.SetSnapToGrid(!config.GetSnapToGrid());
 		rig.NotifyViewChanged();
@@ -479,7 +479,7 @@ public:
 	cCheckCameraAttach(reWPView &panel) : cBaseAction(panel, "Attach camera to a bone",
 		"Attaches the camera to a bone instead of roaming around freely"){}
 	
-	virtual void OnAction(reRig &rig){
+	void OnAction(reRig &rig) override{
 		reCamera &camera = *rig.GetCamera();
 		camera.SetAttachToBone(!camera.GetAttachToBone());
 	}
@@ -522,7 +522,7 @@ class cActionSkyChanged : public cBaseAction{
 public:
 	cActionSkyChanged(reWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(reRig &rig){
+	void OnAction(reRig &rig) override{
 		rig.NotifySkyChanged();
 	}
 };
@@ -531,7 +531,7 @@ class cActionEnvObjChanged : public cBaseAction{
 public:
 	cActionEnvObjChanged(reWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(reRig &rig){
+	void OnAction(reRig &rig) override{
 		rig.NotifyEnvObjectChanged();
 	}
 };

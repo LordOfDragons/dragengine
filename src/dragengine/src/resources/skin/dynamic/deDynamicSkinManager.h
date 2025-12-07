@@ -49,7 +49,7 @@ public:
 	deDynamicSkinManager(deEngine *engine);
 	
 	/** \brief Clean up manager. */
-	virtual ~deDynamicSkinManager();
+	~deDynamicSkinManager() override;
 	/*@}*/
 	
 	
@@ -66,15 +66,15 @@ public:
 	deDynamicSkin *CreateDynamicSkin();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

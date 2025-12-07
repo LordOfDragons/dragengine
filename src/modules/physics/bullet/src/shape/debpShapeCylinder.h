@@ -55,7 +55,7 @@ public:
 	/** Creates a new shape. */
 	debpShapeCylinder(decShapeCylinder *shape);
 	/** Cleans up the shape. */
-	virtual ~debpShapeCylinder();
+	~debpShapeCylinder() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -68,7 +68,7 @@ public:
 	/** Updates the collision volume using a transformation matrix. */
 	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);
 	/** Prints out on the console some debugging information about the shape. */
-	virtual void PrintDebug(dePhysicsBullet &module);
+	void PrintDebug(dePhysicsBullet &module) override;
 	/*@}*/
 };
 

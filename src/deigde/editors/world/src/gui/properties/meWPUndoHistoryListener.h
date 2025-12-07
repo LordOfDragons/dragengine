@@ -47,7 +47,7 @@ public:
 	meWPUndoHistoryListener(meWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPUndoHistoryListener();
+	~meWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged(meWorld *world);
+	void UndoChanged(meWorld *world) override;
 	/*@}*/
 };
 

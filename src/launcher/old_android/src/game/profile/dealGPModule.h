@@ -59,7 +59,7 @@ public:
 	dealGPModule(const dealGPModule &module);
 	
 	/** \brief Clean up game profile. */
-	virtual ~dealGPModule();
+	~dealGPModule() override;
 	/*@}*/
 	
 	

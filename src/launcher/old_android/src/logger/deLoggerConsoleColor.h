@@ -90,7 +90,7 @@ public:
 	
 protected:
 	/** \brief Clean up console color logger. */
-	virtual ~deLoggerConsoleColor();
+	~deLoggerConsoleColor() override;
 	/*@}*/
 	
 	
@@ -159,13 +159,13 @@ public:
 	
 	
 	/** \brief Log information message. */
-	virtual void LogInfo(const char *source, const char *message);
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn(const char *source, const char *message);
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log error message. */
-	virtual void LogError(const char *source, const char *message);
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 	
 	

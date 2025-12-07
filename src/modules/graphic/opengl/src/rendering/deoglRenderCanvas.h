@@ -108,7 +108,7 @@ public:
 	deoglRenderCanvas(deoglRenderThread &renderThread);
 	
 	/** Clean up canvas renderer. */
-	virtual ~deoglRenderCanvas();
+	~deoglRenderCanvas() override;
 	/*@}*/
 	
 	
@@ -176,10 +176,10 @@ public:
 	
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfo();
+	void AddTopLevelDebugInfo() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	

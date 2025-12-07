@@ -54,7 +54,7 @@ public:
 	deoglDSRenderableCanvas(deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableCanvas();
+	~deoglDSRenderableCanvas() override;
 	/*@}*/
 	
 	
@@ -65,21 +65,21 @@ public:
 	inline const deDSRenderableCanvas &GetRenderableCanvas() const{ return pRenderableCanvas; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	
 	
 	/** \name Canvas view listener */
 	/*@{*/
-	virtual void CanvasViewDestroyed();
-	virtual void CanvasViewRequiresSync();
+	void CanvasViewDestroyed() override;
+	void CanvasViewRequiresSync() override;
 	/*@}*/
 	
 	

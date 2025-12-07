@@ -44,10 +44,10 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** Current value. */
-	virtual float GetParameterFloat();
+	float GetParameterFloat() override;
 	
 	/** Set current value. */
-	virtual void SetParameterFloat(float value);
+	void SetParameterFloat(float value) override;
 	/*@}*/
 };
 

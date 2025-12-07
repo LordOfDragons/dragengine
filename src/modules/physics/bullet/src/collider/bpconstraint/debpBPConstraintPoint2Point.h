@@ -53,7 +53,7 @@ public:
 		const btVector3 &pivotInA, const btVector3 &pivotInB);
 	
 	/** \brief Clean up constraint. */
-	virtual ~debpBPConstraintPoint2Point();
+	~debpBPConstraintPoint2Point() override;
 	/*@}*/
 	
 	

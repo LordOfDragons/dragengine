@@ -147,7 +147,7 @@ public:
 		return new aeUSetRuleSnapUseLast(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleStateSnapshot &rule){
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetUseLastState());
 	}
@@ -172,7 +172,7 @@ public:
 		return new aeURuleSnapToggleEnablePosition(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleStateSnapshot &rule){
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnablePosition());
 	}
@@ -187,7 +187,7 @@ public:
 		return new aeURuleSnapToggleEnableRotation(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleStateSnapshot &rule){
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableOrientation());
 	}
@@ -202,7 +202,7 @@ public:
 		return new aeURuleSnapToggleEnableSize(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleStateSnapshot &rule){
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableSize());
 	}
@@ -218,7 +218,7 @@ public:
 		return new aeURuleSnapToggleEnableVertexPositionSet(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleStateSnapshot &rule){
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableVertexPositionSet());
 	}
@@ -252,7 +252,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRuleStateSnapshot &){
+	void Update(const aeAnimator &, const aeRuleStateSnapshot &) override{
 		SetEnabled(!pPanel.GetCBMoveNameText().IsEmpty());
 	}
 };

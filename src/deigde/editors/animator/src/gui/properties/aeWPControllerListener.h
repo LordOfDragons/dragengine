@@ -47,7 +47,7 @@ public:
 	aeWPControllerListener(aeWPController &panel);
 	
 	/** Clean up listener. */
-	virtual ~aeWPControllerListener();
+	~aeWPControllerListener() override;
 	/*@}*/
 	
 	
@@ -55,19 +55,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Active controller changed. */
-	virtual void ActiveControllerChanged(aeAnimator *animator, aeController *controller);
+	void ActiveControllerChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged(aeAnimator *animator, aeController *controller);
+	void ControllerChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller name changed. */
-	virtual void ControllerNameChanged(aeAnimator *animator, aeController *controller);
+	void ControllerNameChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller value changed. */
-	virtual void ControllerValueChanged(aeAnimator *animator, aeController *controller);
+	void ControllerValueChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged(aeAnimator *animator);
+	void ControllerStructureChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

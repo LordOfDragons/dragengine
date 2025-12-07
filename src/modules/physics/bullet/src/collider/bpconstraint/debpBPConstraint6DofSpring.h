@@ -57,7 +57,7 @@ public:
 		const btTransform &frameInA, const btTransform &frameInB);
 	
 	/** \brief Clean up constraint. */
-	virtual ~debpBPConstraint6DofSpring();
+	~debpBPConstraint6DofSpring() override;
 	
 	
 	

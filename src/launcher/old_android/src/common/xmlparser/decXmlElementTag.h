@@ -49,7 +49,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml element tag. */
-	virtual ~decXmlElementTag();
+	~decXmlElementTag() override;
 	/*@}*/
 	
 	
@@ -88,13 +88,13 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToElementTag() const;
-	virtual decXmlElementTag *CastToElementTag();
+	bool CanCastToElementTag() const override;
+	decXmlElementTag *CastToElementTag() override;
 	/*@}*/
 };
 

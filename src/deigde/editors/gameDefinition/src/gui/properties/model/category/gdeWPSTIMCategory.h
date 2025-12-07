@@ -47,7 +47,7 @@ protected:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMCategory();
+	~gdeWPSTIMCategory() override;
 	/*@}*/
 	
 	
@@ -62,10 +62,10 @@ public:
 	
 	/** \brief Compare this item with another for sorting.
 	 */
-	virtual int Compare(const gdeWPSTreeItemModel &item) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

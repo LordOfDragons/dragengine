@@ -47,7 +47,7 @@ public:
 	deoglRDSRenderableCamera(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin camera renderable. */
-	virtual ~deoglRDSRenderableCamera();
+	~deoglRDSRenderableCamera() override;
 	/*@}*/
 	
 	
@@ -58,13 +58,13 @@ public:
 	void SetCamera(deoglRCamera *camera);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get render plan to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglRenderPlan *GetRenderPlan() const;
+	deoglRenderPlan *GetRenderPlan() const override;
 	/*@}*/
 	
 private:

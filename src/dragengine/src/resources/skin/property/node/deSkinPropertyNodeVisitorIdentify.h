@@ -66,7 +66,7 @@ public:
 	deSkinPropertyNodeVisitorIdentify();
 	
 	/** \brief Clean up skin constructed property node identify visitor. */
-	virtual ~deSkinPropertyNodeVisitorIdentify();
+	~deSkinPropertyNodeVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -118,19 +118,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit node. */
-	virtual void VisitNode(deSkinPropertyNode &node);
+	void VisitNode(deSkinPropertyNode &node) override;
 	
 	/** \brief Visit group node. */
-	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
+	void VisitGroup(deSkinPropertyNodeGroup &node) override;
 	
 	/** \brief Visit image node. */
-	virtual void VisitImage(deSkinPropertyNodeImage &node);
+	void VisitImage(deSkinPropertyNodeImage &node) override;
 	
 	/** \brief Visit shape node. */
-	virtual void VisitShape(deSkinPropertyNodeShape &node);
+	void VisitShape(deSkinPropertyNodeShape &node) override;
 	
 	/** \brief Visit text node. */
-	virtual void VisitText(deSkinPropertyNodeText &node);
+	void VisitText(deSkinPropertyNodeText &node) override;
 	/*@}*/
 };
 

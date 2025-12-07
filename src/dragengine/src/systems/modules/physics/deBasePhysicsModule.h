@@ -70,7 +70,7 @@ public:
 	deBasePhysicsModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBasePhysicsModule();
+	~deBasePhysicsModule() override;
 	/*@}*/
 	
 	

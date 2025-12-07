@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up view property window. */
-	virtual ~ceWPCAParam();
+	~ceWPCAParam() override;
 	/*@}*/
 	
 	

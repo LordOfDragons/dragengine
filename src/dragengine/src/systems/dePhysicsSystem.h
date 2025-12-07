@@ -63,7 +63,7 @@ public:
 	dePhysicsSystem(deEngine *engine);
 	
 	/** \brief Clean up physics system. */
-	~dePhysicsSystem();
+	~dePhysicsSystem() override;
 	/*@}*/
 	
 	
@@ -124,20 +124,20 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule(deLoadableModule *module);
+	void SetActiveModule(deLoadableModule *module) override;
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void ClearPermanents();
+	void ClearPermanents() override;
 	
 	/** \brief Carry out here actions right after the system started up. */
-	virtual void PostStart();
+	void PostStart() override;
 	
 	/** \brief Carry out here actions right before the system shuts down. */
-	virtual void PreStop();
+	void PreStop() override;
 	/*@}*/
 };
 

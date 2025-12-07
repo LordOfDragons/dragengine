@@ -166,17 +166,17 @@ public:
 	deVFSRedirectFSVisitor(deContainerFileSearch &searcher) : pSearcher(searcher){
 	}
 	
-	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
 		pSearcher.Add(path.GetLastComponent(), deVFSContainer::eftRegularFile);
 		return true;
 	}
 	
-	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path) override{
 		pSearcher.Add(path.GetLastComponent(), deVFSContainer::eftDirectory);
 		return true;
 	}
 	
-	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path) override{
 		pSearcher.Add(path.GetLastComponent(), deVFSContainer::eftSpecial);
 		return true;
 	}

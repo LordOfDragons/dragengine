@@ -49,7 +49,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAWaitCondition();
+	~ceWPTTIMAWaitCondition() override;
 	/*@}*/
 	
 	
@@ -67,13 +67,13 @@ public:
 	void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief User requests context menu for selected child condition. */
-	virtual void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition);
+	void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition) override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

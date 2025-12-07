@@ -91,7 +91,7 @@ public:
 	deoglRenderGI(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderGI();
+	~deoglRenderGI() override;
 	/*@}*/
 	
 	
@@ -144,10 +144,10 @@ public:
 	void ResetDebugInfo();
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfo();
+	void AddTopLevelDebugInfo() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	

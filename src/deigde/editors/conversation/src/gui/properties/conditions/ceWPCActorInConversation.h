@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up view property window. */
-	virtual ~ceWPCActorInConversation();
+	~ceWPCActorInConversation() override;
 	/*@}*/
 	
 	

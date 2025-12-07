@@ -47,7 +47,7 @@ public:
 	gdeWPSOCNavigationSpaceListener(gdeWPSOCNavigationSpace &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCNavigationSpaceListener();
+	~gdeWPSOCNavigationSpaceListener() override;
 	/*@}*/
 	
 	
@@ -55,28 +55,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class navigation spaces changed. */
-	virtual void OCNavigationSpacesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCNavigationSpacesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class navigation space changed. */
-	virtual void OCNavigationSpaceChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace);
+	void OCNavigationSpaceChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace) override;
 	
 	/** \brief Active object class navigation space changed. */
-	virtual void ActiveOCNavigationSpaceChanged(gdeGameDefinition *gameDefinition);
+	void ActiveOCNavigationSpaceChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

@@ -40,14 +40,14 @@ public:
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPSamsungOdysseyController();
+	~deoxrDPSamsungOdysseyController() override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual bool pProfileEnabled() const;
-	virtual const char *pDeviceIdPrefix() const;
+	bool pProfileEnabled() const override;
+	const char *pDeviceIdPrefix() const override;
 };
 
 #endif

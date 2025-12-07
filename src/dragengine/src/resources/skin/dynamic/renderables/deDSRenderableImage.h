@@ -47,7 +47,7 @@ public:
 	deDSRenderableImage(const char *name);
 	
 	/** \brief Clean up renderable. */
-	virtual ~deDSRenderableImage();
+	~deDSRenderableImage() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit(deDSRenderableVisitor &visitor);
+	void Visit(deDSRenderableVisitor &visitor) override;
 };
 
 #endif

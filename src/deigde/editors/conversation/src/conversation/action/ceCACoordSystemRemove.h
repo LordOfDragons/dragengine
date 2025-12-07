@@ -47,7 +47,7 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCACoordSystemRemove(const ceCACoordSystemRemove &action);
 	/** \brief Cleans up the conversation action. */
-	virtual ~ceCACoordSystemRemove();
+	~ceCACoordSystemRemove() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -58,7 +58,7 @@ public:
 	void SetCoordSystemID(const char *id);
 	
 	/** \brief Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

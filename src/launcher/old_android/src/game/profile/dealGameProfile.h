@@ -89,7 +89,7 @@ public:
 	dealGameProfile(const dealGameProfile &profile);
 	
 	/** \brief Clean up the game profile. */
-	virtual ~dealGameProfile();
+	~dealGameProfile() override;
 	/*@}*/
 	
 	

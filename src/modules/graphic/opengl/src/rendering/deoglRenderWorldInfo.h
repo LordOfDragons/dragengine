@@ -83,7 +83,7 @@ public:
 	deoglRenderWorldInfo(deoglRenderThread &renderThread);
 	
 	/** Clean up info. */
-	virtual ~deoglRenderWorldInfo();
+	~deoglRenderWorldInfo() override;
 	/*@}*/
 	
 	
@@ -94,10 +94,10 @@ public:
 	void ClearAll();
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfo();
+	void AddTopLevelDebugInfo() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	

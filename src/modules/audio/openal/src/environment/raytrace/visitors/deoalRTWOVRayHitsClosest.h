@@ -78,7 +78,7 @@ public:
 	deoalRTWOVRayHitsClosest();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalRTWOVRayHitsClosest();
+	~deoalRTWOVRayHitsClosest() override;
 	/*@}*/
 	
 	
@@ -113,7 +113,7 @@ public:
 	void VisitBVH(const deoalRTWorldBVH &bvh);
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent);
+	void VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent) override;
 	/*@}*/
 	
 	

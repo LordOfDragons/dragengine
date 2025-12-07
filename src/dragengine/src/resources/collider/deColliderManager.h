@@ -52,7 +52,7 @@ public:
 	deColliderManager(deEngine *engine);
 	
 	/** \brief Clean up world collider resource manager and reports leaking resources. */
-	virtual ~deColliderManager();
+	~deColliderManager() override;
 	/*@}*/
 	
 	
@@ -75,17 +75,17 @@ public:
 	deColliderComponent *CreateColliderComponent();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemPhysicsLoad();
-	void SystemPhysicsUnload();
-	void SystemScriptingLoad();
-	void SystemScriptingUnload();
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
+	void SystemScriptingLoad() override;
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -96,7 +96,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

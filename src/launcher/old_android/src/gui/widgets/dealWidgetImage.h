@@ -46,7 +46,7 @@ public:
 	dealWidgetImage(dealDisplay &display, dealImage *image = NULL);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetImage();
+	~dealWidgetImage() override;
 	/*@}*/
 	
 	
@@ -74,11 +74,11 @@ public:
 	
 	
 	/** \brief Minimum size of widget. */
-	virtual decPoint GetMinimumSize();
+	decPoint GetMinimumSize() override;
 	
 	
 	/** \brief Render content. */
-	virtual void RenderContent(const sRenderContext &context);
+	void RenderContent(const sRenderContext &context) override;
 	/*@}*/
 };
 

@@ -415,7 +415,7 @@ public:
 		SetMnemonic(deInputEvent::ekcS);
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		saeSAnimation &sanimation = *pWindow.GetSAnimation();
 		if(sanimation.GetSaved()){
 			if(sanimation.GetChanged()){
@@ -427,7 +427,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged());
 	}
 };

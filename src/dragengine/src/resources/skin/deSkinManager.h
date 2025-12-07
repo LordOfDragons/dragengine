@@ -53,7 +53,7 @@ public:
 	deSkinManager(deEngine *engine);
 	
 	/** \brief Clean up skin resource manager and reports leaking resources. */
-	~deSkinManager();
+	~deSkinManager() override;
 	/*@}*/
 	
 	
@@ -99,19 +99,19 @@ public:
 	void LoadPropertyResources(deSkin &skin);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
-	void SystemAudioLoad();
-	void SystemAudioUnload();
-	void SystemPhysicsLoad();
-	void SystemPhysicsUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
+	void SystemAudioLoad() override;
+	void SystemAudioUnload() override;
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
 	/*@}*/
 	
 	
@@ -122,7 +122,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

@@ -59,7 +59,7 @@ public:
 	dewmVPXTrackCallback(deVideoWebm &module);
 	
 	/** Clean up callback. */
-	virtual ~dewmVPXTrackCallback();
+	~dewmVPXTrackCallback() override;
 	/*@}*/
 	
 	

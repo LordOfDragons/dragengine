@@ -68,7 +68,7 @@ public:
 	deoalWOVRayTrace();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVRayTrace();
+	~deoalWOVRayTrace() override;
 	/*@}*/
 	
 	
@@ -127,10 +127,10 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode(deoalWorldOctree &node);
+	void VisitNode(deoalWorldOctree &node) override;
 	
 	/** \brief Visits components affecting sound hit by ray. */
-	virtual void VisitNode(deoalDOctree *node, int intersection);
+	void VisitNode(deoalDOctree *node, int intersection) override;
 	/*@}*/
 	
 	

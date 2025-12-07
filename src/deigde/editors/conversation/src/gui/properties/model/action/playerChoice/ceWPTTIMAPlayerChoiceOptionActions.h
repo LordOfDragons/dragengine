@@ -45,7 +45,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAPlayerChoiceOptionActions();
+	~ceWPTTIMAPlayerChoiceOptionActions() override;
 	/*@}*/
 	
 	
@@ -62,16 +62,16 @@ public:
 	
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief User requests context menu for selected child action. */
-	virtual void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action);
+	void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action) override;
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

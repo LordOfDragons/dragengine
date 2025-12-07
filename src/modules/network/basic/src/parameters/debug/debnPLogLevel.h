@@ -39,7 +39,7 @@ public:
 	debnPLogLevel(deNetworkBasic &network);
 	
 	/** Cleans up parameter. */
-	virtual ~debnPLogLevel();
+	~debnPLogLevel() override;
 	/*@}*/
 	
 	
@@ -50,7 +50,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue(const char *value);
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

@@ -52,7 +52,7 @@ public:
 	sePropertyNodeGroup(const sePropertyNodeGroup &node);
 	
 	/** \brief Clean up node. */
-	virtual ~sePropertyNodeGroup();
+	~sePropertyNodeGroup() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent property or \em NULL if not present. */
-	virtual seProperty *GetProperty() const;
+	seProperty *GetProperty() const override;
 	
 	/** \brief Set parent property or \em NULL. */
 	void SetProperty(seProperty *property);
@@ -103,10 +103,10 @@ public:
 	
 	
 	/** \brief Create copy of node. */
-	virtual sePropertyNode *Copy() const;
+	sePropertyNode *Copy() const override;
 	
 	/** \brief Update resources. */
-	virtual void UpdateResources();
+	void UpdateResources() override;
 	/*@}*/
 };
 

@@ -51,7 +51,7 @@ public:
 	ceCConditionActorInConversation(const ceCConditionActorInConversation &condition);
 	
 	/** \brief Clean up conversation condition. */
-	virtual ~ceCConditionActorInConversation();
+	~ceCConditionActorInConversation() override;
 	/*@}*/
 	
 	
@@ -71,7 +71,7 @@ public:
 	void SetNegate(bool negate);
 	
 	/** \brief Create copy of condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition *CreateCopy() const override;
 	/*@}*/
 };
 

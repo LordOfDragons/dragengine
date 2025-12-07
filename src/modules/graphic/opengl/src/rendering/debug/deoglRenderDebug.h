@@ -74,7 +74,7 @@ public:
 	deoglRenderDebug(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderDebug();
+	~deoglRenderDebug() override;
 	/*@}*/
 	
 	

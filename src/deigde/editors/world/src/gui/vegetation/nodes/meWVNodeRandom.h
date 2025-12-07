@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeRandom();
+	~meWVNodeRandom() override;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ protected:
 	inline meHTVRuleRandom *GetRuleRandom() const{ return pRuleRandom; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

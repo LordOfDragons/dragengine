@@ -48,7 +48,7 @@ public:
 	dealWidgetLayout(dealDisplay &display, const decPoint &position, const decPoint &size);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetLayout();
+	~dealWidgetLayout() override;
 	/*@}*/
 	
 	
@@ -73,10 +73,10 @@ public:
 	
 	
 	/** \brief Widget position in dialog coordinates. */
-	virtual decPoint GetDialogPosition() const;
+	decPoint GetDialogPosition() const override;
 	
 	/** \brief Widget containing position or \em null if not found. */
-	virtual dealWidget *WidgetAtPosition(const decPoint &point) const;
+	dealWidget *WidgetAtPosition(const decPoint &point) const override;
 	
 	
 	
@@ -95,18 +95,18 @@ public:
 	
 	
 	/** \brief Render content. */
-	virtual void RenderContent(const sRenderContext &context);
+	void RenderContent(const sRenderContext &context) override;
 	
 	
 	
 	/** \brief Position changed. */
-	virtual void OnPositionChanged();
+	void OnPositionChanged() override;
 	
 	/** \brief Size changed. */
-	virtual void OnSizeChanged();
+	void OnSizeChanged() override;
 	
 	/** \brief Padding changed. */
-	virtual void OnPaddingChanged();
+	void OnPaddingChanged() override;
 	/*@}*/
 };
 

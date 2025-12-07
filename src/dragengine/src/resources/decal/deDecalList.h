@@ -57,7 +57,7 @@ public:
 	deDecalList();
 	
 	/** \brief Clean up decal list object. */
-	virtual ~deDecalList();
+	~deDecalList() override;
 	/*@}*/
 	
 	

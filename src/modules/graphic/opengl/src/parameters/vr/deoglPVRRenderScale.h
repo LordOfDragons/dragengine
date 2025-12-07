@@ -37,7 +37,7 @@ public:
 	deoglPVRRenderScale(deGraphicOpenGl &ogl);
 	
 	/** Clean up parameter. */
-	virtual ~deoglPVRRenderScale();
+	~deoglPVRRenderScale() override;
 	/*@}*/
 	
 	
@@ -48,7 +48,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue(const char *value);
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

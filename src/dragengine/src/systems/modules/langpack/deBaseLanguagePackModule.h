@@ -43,7 +43,7 @@ public:
 	deBaseLanguagePackModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseLanguagePackModule();
+	~deBaseLanguagePackModule() override;
 	/*@}*/
 	
 	

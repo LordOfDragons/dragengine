@@ -78,7 +78,7 @@ public:
 	deBaseVRModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseVRModule();
+	~deBaseVRModule() override;
 	/*@}*/
 	
 	

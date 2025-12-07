@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeMapping();
+	~meWVNodeMapping() override;
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	inline meHTVRuleMapping *GetRuleMapping() const{ return pRuleMapping; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

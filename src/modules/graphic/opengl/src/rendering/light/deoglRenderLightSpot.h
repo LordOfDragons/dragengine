@@ -135,7 +135,7 @@ public:
 	deoglRenderLightSpot(deoglRenderThread &renderThread, deoglRTRenderers &renderers);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderLightSpot();
+	~deoglRenderLightSpot() override;
 	/*@}*/
 	
 	
@@ -189,13 +189,13 @@ public:
 	void ResetDebugInfo();
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfoSolid();
+	void AddTopLevelDebugInfoSolid() override;
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfoTransparent();
+	void AddTopLevelDebugInfoTransparent() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	

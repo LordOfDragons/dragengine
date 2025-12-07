@@ -47,7 +47,7 @@ public:
 	deoglCanvasText(deGraphicOpenGl &ogl, deCanvasText &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvasText();
+	~deoglCanvasText() override;
 	/*@}*/
 	
 	
@@ -55,18 +55,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Drop render canvas if not \em NULL. */
-	virtual void DropRCanvas();
+	void DropRCanvas() override;
 	
 	/**
 	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
-	virtual void SyncContentToRender();
+	void SyncContentToRender() override;
 	/*@}*/
 	
 protected:
 	/** Create render canvas. Subclass responsibility. */
-	virtual deoglRCanvas *CreateRCanvas();
+	deoglRCanvas *CreateRCanvas() override;
 };
 
 #endif

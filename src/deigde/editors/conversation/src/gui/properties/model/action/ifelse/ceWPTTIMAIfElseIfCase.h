@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAIfElseIfCase();
+	~ceWPTTIMAIfElseIfCase() override;
 	/*@}*/
 	
 	
@@ -88,10 +88,10 @@ public:
 	void UpdateActionLists();
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 	
 	

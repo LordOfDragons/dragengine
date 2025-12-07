@@ -47,7 +47,7 @@ public:
 	feWPGlyphListener(feWPGlyph &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~feWPGlyphListener();
+	~feWPGlyphListener() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
     /** \brief Glyphs have been added or removed. */
-    virtual void GlyphStructureChanged (feFont *font);
+    void GlyphStructureChanged (feFont *font) override;
 	
 	/** \brief A glyph changed. */
-    virtual void GlyphChanged(feFont *font, feFontGlyph *glyph);
+    void GlyphChanged(feFont *font, feFontGlyph *glyph) override;
 	
 	/** \brief Active glyph changed. */
-	virtual void ActiveGlyphChanged(feFont *font);
+	void ActiveGlyphChanged(feFont *font) override;
 	/*@}*/
 };
 

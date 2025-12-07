@@ -55,7 +55,7 @@ public:
 	deoglRenderVR(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	~deoglRenderVR();
+	~deoglRenderVR() override;
 	/*@}*/
 	
 	

@@ -40,8 +40,8 @@ public:
 	RangeFit(ColourSet const* colours, int flags);
 	
 private:
-	virtual void Compress3(void* block);
-	virtual void Compress4(void* block);
+	void Compress3(void* block) override;
+	void Compress4(void* block) override;
 	
 	Vec3 m_metric;
 	Vec3 m_start;

@@ -55,7 +55,7 @@ public:
 	deNetworkValueVector3(eValueFormats format, const decDVector &value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueVector3();
+	~deNetworkValueVector3() override;
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit(deNetworkValueVisitor &visitor);
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

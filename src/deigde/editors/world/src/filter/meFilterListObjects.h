@@ -55,7 +55,7 @@ public:
 	/** Creates a new filter list. */
 	meFilterListObjects();
 	/** Cleans up the filter list. */
-	virtual ~meFilterListObjects();
+	~meFilterListObjects() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -73,7 +73,7 @@ public:
 	/**
 	 * Determines if the given object is accepted by the filter.
 	 */
-	virtual bool AcceptObject(meObject *object) const;
+	bool AcceptObject(meObject *object) const override;
 	/*@}*/
 };
 

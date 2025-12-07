@@ -90,7 +90,7 @@ public:
 		int firstLink, const deAnimatorRuleInverseKinematic &rule);
 	
 	/** Clean up rule. */
-	virtual ~dearRuleInverseKinematic();
+	~dearRuleInverseKinematic() override;
 	/*@}*/
 	
 	
@@ -103,10 +103,10 @@ public:
 	
 	
 	/** Apply to animator. */
-	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

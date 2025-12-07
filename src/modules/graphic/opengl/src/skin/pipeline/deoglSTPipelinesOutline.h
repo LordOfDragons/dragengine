@@ -40,7 +40,7 @@ public:
 	
 protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesOutline();
+	~deoglSTPipelinesOutline() override;
 	/*@}*/
 	
 	
@@ -49,23 +49,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched);
+	void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) override;
 	
 	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
 	virtual void pPipelineConfigDepth(deoglPipelineConfiguration &config);
 	virtual void pPipelineConfigDepthReversed(deoglPipelineConfiguration &config);
 	virtual void pPipelineConfigCounter(deoglPipelineConfiguration &config);
 	
-	virtual void pSetBase(deoglSkinShaderConfig &config);
-	virtual void pSetGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
-	virtual void pSetDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
-	virtual void pSetCounter(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
+	void pSetBase(deoglSkinShaderConfig &config) override;
+	void pSetGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
+	void pSetDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
+	void pSetCounter(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
 };
 
 #endif

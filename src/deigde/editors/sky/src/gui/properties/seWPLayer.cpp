@@ -294,7 +294,7 @@ public:
 	
 	virtual igdeUndo *OnActionLayer(seSky *sky, seLayer *layer) = 0;
 	
-	virtual void UpdateSky (const seSky &sky){
+	void UpdateSky (const seSky &sky) override{
 		seLayer * const layer = pPanel.GetLayer();
 		if(layer){
 			UpdateLayer(sky, *layer);
@@ -371,7 +371,7 @@ public:
 		return new seULayerMoveUp(layer);
 	}
 	
-	virtual void UpdateLayer(const seSky &, const seLayer &){
+	void UpdateLayer(const seSky &, const seLayer &) override{
 		SetEnabled(pListBox.GetSelection() > 0);
 	}
 };
@@ -388,7 +388,7 @@ public:
 		return new seULayerMoveDown(layer);
 	}
 	
-	virtual void UpdateLayer(const seSky &, const seLayer &){
+	void UpdateLayer(const seSky &, const seLayer &) override{
 		SetEnabled(pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItemCount() - 1);
 	}
 };
@@ -642,7 +642,7 @@ public:
 		return new seUBodyRemove(body);
 	}
 	
-	void UpdateLayer(const seSky &, const seLayer &){
+	void UpdateLayer(const seSky &, const seLayer &) override{
 		SetEnabled(pPanel.GetBody());
 	}
 };
@@ -665,7 +665,7 @@ public:
 		return new seUBodyMoveUp(body);
 	}
 	
-	void UpdateLayer(const seSky &, const seLayer &){
+	void UpdateLayer(const seSky &, const seLayer &) override{
 		SetEnabled(pSpinTextField.GetValue() > pSpinTextField.GetLower());
 	}
 };
@@ -688,7 +688,7 @@ public:
 		return new seUBodyMoveDown(body);
 	}
 	
-	void UpdateLayer(const seSky &, const seLayer &){
+	void UpdateLayer(const seSky &, const seLayer &) override{
 		SetEnabled(pSpinTextField.GetValue() < pSpinTextField.GetUpper());
 	}
 };
@@ -793,7 +793,7 @@ public:
 		return new seUTargetAddLink(layer, target, link);
 	}
 	
-	virtual void UpdateLayer(const seSky &, const seLayer &){
+	void UpdateLayer(const seSky &, const seLayer &) override{
 		SetEnabled(pComboLinks.GetSelectedItem());
 	}
 };
@@ -821,7 +821,7 @@ public:
 		return new seUTargetRemoveLink(layer, target, link);
 	}
 	
-	virtual void UpdateLayer(const seSky &, const seLayer &layer){
+	void UpdateLayer(const seSky &, const seLayer &layer) override{
 		SetEnabled(layer.GetTarget(layer.GetActiveTarget()).GetLinks().GetCount() > 0);
 	}
 };

@@ -47,7 +47,7 @@ public:
 	seWPSourceListener(seWPSource &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPSourceListener();
+	~seWPSourceListener() override;
 	/*@}*/
 	
 	
@@ -55,37 +55,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged(seSynthesizer *synthesizer);
+	void SynthesizerChanged(seSynthesizer *synthesizer) override;
 	
 	
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged(seSynthesizer *synthesizer, seController *controller);
+	void ControllerNameChanged(seSynthesizer *synthesizer, seController *controller) override;
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged(seSynthesizer *synthesizer);
+	void ControllerStructureChanged(seSynthesizer *synthesizer) override;
 	
 	
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged(seSynthesizer *synthesizer, seLink *link);
+	void LinkNameChanged(seSynthesizer *synthesizer, seLink *link) override;
 	
 	/** \brief Link count or order changed. */
-	virtual void LinkStructureChanged(seSynthesizer *synthesizer);
+	void LinkStructureChanged(seSynthesizer *synthesizer) override;
 	
 	
 	
 	/** \brief Active source changed. */
-	virtual void ActiveSourceChanged(seSynthesizer *synthesizer, seSource *source);
+	void ActiveSourceChanged(seSynthesizer *synthesizer, seSource *source) override;
 	
 	/** \brief Source changed. */
-	virtual void SourceChanged(seSynthesizer *synthesizer, seSource *source);
+	void SourceChanged(seSynthesizer *synthesizer, seSource *source) override;
 	
 	/** \brief Source name changed. */
-	virtual void SourceNameChanged(seSynthesizer *synthesizer, seSource *source);
+	void SourceNameChanged(seSynthesizer *synthesizer, seSource *source) override;
 	
 	/** \brief Source count or order changed. */
-	virtual void SourceStructureChanged(seSynthesizer *synthesizer);
+	void SourceStructureChanged(seSynthesizer *synthesizer) override;
 	/*@}*/
 };
 

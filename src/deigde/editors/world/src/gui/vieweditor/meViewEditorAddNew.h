@@ -60,7 +60,7 @@ public:
 	meViewEditorAddNew(meView3D &view);
 	
 	/** \brief Clean up view editor. */
-	virtual ~meViewEditorAddNew();
+	~meViewEditorAddNew() override;
 	/*@}*/
 	
 	

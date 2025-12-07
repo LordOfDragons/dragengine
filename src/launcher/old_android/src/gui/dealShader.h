@@ -76,7 +76,7 @@ public:
 	dealShader(dealDisplay &display);
 	
 	/** \brief Clean up shader. */
-	virtual ~dealShader();
+	~dealShader() override;
 	/*@}*/
 	
 	

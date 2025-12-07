@@ -59,7 +59,7 @@ public:
 	deoalWorldOctreeVisitor();
 	
 	/** \brief Clean up world octree visitor. */
-	virtual ~deoalWorldOctreeVisitor();
+	~deoalWorldOctreeVisitor() override;
 	/*@}*/
 	
 	
@@ -121,7 +121,7 @@ public:
 	 * 
 	 * Visits all elements marked as to be visited using the respective functions.
 	 */
-	virtual void VisitNode(deoalDOctree *node, int intersection);
+	void VisitNode(deoalDOctree *node, int intersection) override;
 	
 	/** \brief Visit microphone. */
 	virtual void VisitMicrophone(deoalAMicrophone *microphone);

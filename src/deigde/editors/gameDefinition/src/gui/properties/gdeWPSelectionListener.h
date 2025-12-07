@@ -47,7 +47,7 @@ public:
 	gdeWPSelectionListener(gdeWPSelection &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSelectionListener();
+	~gdeWPSelectionListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Selected object changed. */
-	virtual void SelectedObjectChanged(gdeGameDefinition *gameDefinition);
+	void SelectedObjectChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

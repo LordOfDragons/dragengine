@@ -46,48 +46,48 @@ public:
 	/** Creates a new listener. */
 	ceWPConversationListener(ceWPConversation &panel);
 	/** Cleans up the listener. */
-	virtual ~ceWPConversationListener();
+	~ceWPConversationListener() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Conversation changed. */
-	virtual void ConversationChanged(ceConversation *conversation);
+	void ConversationChanged(ceConversation *conversation) override;
 	
 	/** Target count or order changed. */
-	virtual void TargetStructureChanged(ceConversation *conversation);
+	void TargetStructureChanged(ceConversation *conversation) override;
 	/** Target changed. */
-	virtual void TargetChanged(ceConversation *conversation, ceTarget *target);
+	void TargetChanged(ceConversation *conversation, ceTarget *target) override;
 	/** Active target changed. */
-	virtual void ActiveTargetChanged(ceConversation *conversation);
+	void ActiveTargetChanged(ceConversation *conversation) override;
 	
 	/** Camera shot count or order changed. */
-	virtual void CameraShotStructureChanged(ceConversation *conversation);
+	void CameraShotStructureChanged(ceConversation *conversation) override;
 	/** Camera shot changed. */
-	virtual void CameraShotChanged(ceConversation *conversation, ceCameraShot *cameraShot);
+	void CameraShotChanged(ceConversation *conversation, ceCameraShot *cameraShot) override;
 	/** Active camera shot changed. */
-	virtual void ActiveCameraShotChanged(ceConversation *conversation);
+	void ActiveCameraShotChanged(ceConversation *conversation) override;
 	
 	/** Gesture count or order changed. */
-	virtual void GestureStructureChanged(ceConversation *conversation);
+	void GestureStructureChanged(ceConversation *conversation) override;
 	/** Gesture changed. */
-	virtual void GestureChanged(ceConversation *conversation, ceGesture *gesture);
+	void GestureChanged(ceConversation *conversation, ceGesture *gesture) override;
 	/** Active gesture changed. */
-	virtual void ActiveGestureChanged(ceConversation *conversation);
+	void ActiveGestureChanged(ceConversation *conversation) override;
 	
 	/** Face pose controller names changed. */
-	virtual void FacePoseControllerNamesChanged(ceConversation *conversation);
+	void FacePoseControllerNamesChanged(ceConversation *conversation) override;
 	/** Face pose count or order changed. */
-	virtual void FacePoseStructureChanged(ceConversation *conversation);
+	void FacePoseStructureChanged(ceConversation *conversation) override;
 	/** Face pose changed. */
-	virtual void FacePoseChanged(ceConversation *conversation, ceFacePose *facePose);
+	void FacePoseChanged(ceConversation *conversation, ceFacePose *facePose) override;
 	/** Active face pose changed. */
-	virtual void ActiveFacePoseChanged(ceConversation *conversation);
+	void ActiveFacePoseChanged(ceConversation *conversation) override;
 	
 	/** Actor count or order changed. */
-	virtual void ActorStructureChanged(ceConversation *conversation);
+	void ActorStructureChanged(ceConversation *conversation) override;
 	/** Actor changed. */
-	virtual void ActorChanged(ceConversation *conversation, ceConversationActor *actor);
+	void ActorChanged(ceConversation *conversation, ceConversationActor *actor) override;
 	/*@}*/
 };
 

@@ -47,7 +47,7 @@ public:
 	gdeWPSSkyListener(gdeWPSSky &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSSkyListener();
+	~gdeWPSSkyListener() override;
 	/*@}*/
 	
 	
@@ -55,15 +55,15 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object class categories changed. */
-	virtual void SkyCategoriesChanged(gdeGameDefinition *gameDefinition);
+	void SkyCategoriesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class changed. */
-	virtual void SkyChanged(gdeGameDefinition *gameDefinition, gdeSky *sky);
+	void SkyChanged(gdeGameDefinition *gameDefinition, gdeSky *sky) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveSkyChanged(gdeGameDefinition *gameDefinition);
+	void ActiveSkyChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

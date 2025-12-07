@@ -41,7 +41,7 @@ public:
 	/** \brief Creates a new module. */
 	spTypeWorld(ScriptingPython &sp);
 	/** \brief Cleans up the module. */
-	virtual ~spTypeWorld();
+	~spTypeWorld() override;
 	/*@}*/
 	
 	/** \name Management */

@@ -42,7 +42,7 @@ public:
 	ceWPAStopTopic(ceWPTopic &parentPanel);
 	
 	/** \brief Clean up conversation action property window. */
-	virtual ~ceWPAStopTopic();
+	~ceWPAStopTopic() override;
 	/*@}*/
 	
 	

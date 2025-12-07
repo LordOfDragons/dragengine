@@ -53,7 +53,7 @@ public:
 	deEffectManager(deEngine *engine);
 	
 	/** \brief Clean up effect resource manager and reports leaking resources. */
-	virtual ~deEffectManager();
+	~deEffectManager() override;
 	/*@}*/
 	
 	
@@ -79,15 +79,15 @@ public:
 	deEffectDistortImage *CreateEffectDistortImage();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
 	//void SystemPhysicsLoad();
 	//void SystemPhysicsUnload();
 	/*@}*/
@@ -100,7 +100,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

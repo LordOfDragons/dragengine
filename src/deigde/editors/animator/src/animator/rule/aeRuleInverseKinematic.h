@@ -68,7 +68,7 @@ public:
 	aeRuleInverseKinematic(const aeRuleInverseKinematic &copy);
 	
 	/** Clean up the animator rule. */
-	virtual ~aeRuleInverseKinematic();
+	~aeRuleInverseKinematic() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -167,27 +167,27 @@ public:
 	
 	
 	/** Create engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule *CreateEngineRule() override;
 	
 	/** Update targets. */
-	virtual void UpdateTargets();
+	void UpdateTargets() override;
 	
 	/** Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage(aeLink *link) const;
+	int CountLinkUsage(aeLink *link) const override;
 	
 	/** Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets(aeLink *link);
+	void RemoveLinkFromTargets(aeLink *link) override;
 	
 	/** Remove all links from all targets. */
-	virtual void RemoveLinksFromAllTargets();
+	void RemoveLinksFromAllTargets() override;
 	
 	
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule *CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks(aeLinkList& list);
+	void ListLinks(aeLinkList& list) override;
 	/*@}*/
 	
 	/** \name Operators */

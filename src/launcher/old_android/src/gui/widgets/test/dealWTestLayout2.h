@@ -42,7 +42,7 @@ public:
 	dealWTestLayout2(dealDisplay &display);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWTestLayout2();
+	~dealWTestLayout2() override;
 	/*@}*/
 	
 	

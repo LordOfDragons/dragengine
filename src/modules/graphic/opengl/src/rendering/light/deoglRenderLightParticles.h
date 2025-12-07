@@ -51,7 +51,7 @@ public:
 	/** Creates a new renderer. */
 	deoglRenderLightParticles(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
-	~deoglRenderLightParticles();
+	~deoglRenderLightParticles() override;
 	/*@}*/
 	
 	/** \name Rendering */

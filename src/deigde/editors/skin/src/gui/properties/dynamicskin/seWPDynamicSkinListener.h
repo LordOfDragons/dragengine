@@ -45,7 +45,7 @@ public:
 	seWPDynamicSkinListener(seWPDynamicSkin &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPDynamicSkinListener();
+	~seWPDynamicSkinListener() override;
 	/*@}*/
 	
 	
@@ -53,16 +53,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Dynamic skin renderables have been added or removed. */
-	virtual void DynamicSkinRenderableStructureChanged (seSkin *skin);
+	void DynamicSkinRenderableStructureChanged (seSkin *skin) override;
 	
 	/** \brief A dynamic skin renderable changed. */
-	virtual void DynamicSkinRenderableChanged(seSkin *skin, seDynamicSkinRenderable *renderable);
+	void DynamicSkinRenderableChanged(seSkin *skin, seDynamicSkinRenderable *renderable) override;
 	
 	/** \brief A dynamic skin renderable name changed. */
-	virtual void DynamicSkinRenderableNameChanged(seSkin *skin, seDynamicSkinRenderable *renderable);
+	void DynamicSkinRenderableNameChanged(seSkin *skin, seDynamicSkinRenderable *renderable) override;
 	
 	/** \brief Active dynamic skin renderable changed. */
-	virtual void DynamicSkinActiveRenderableChanged(seSkin *skin);
+	void DynamicSkinActiveRenderableChanged(seSkin *skin) override;
 	/*@}*/
 };
 

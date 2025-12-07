@@ -393,7 +393,7 @@ public:
 	
 	virtual igdeUndo *OnActionBone(reRig *rig, reRigBone *bone) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetRig()->GetSelectionBones()->GetActiveBone() != NULL);
 	}
 };
@@ -483,7 +483,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetEnabled(rig.GetChanged());
 	}
 };
@@ -500,7 +500,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &){
+	void Update(const reRig &) override{
 		SetEnabled(false);
 	}
 };
@@ -516,7 +516,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &){
+	void Update(const reRig &) override{
 		SetEnabled(false);
 	}
 };
@@ -532,7 +532,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &){
+	void Update(const reRig &) override{
 		SetEnabled(pWindow.GetClipboard().HasClip());
 	}
 };
@@ -555,7 +555,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetElementMode() == pMode);
 	}
 };
@@ -576,7 +576,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetWorkMode() == pMode);
 	}
 };
@@ -592,7 +592,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetLockAxisX());
 	}
 };
@@ -608,7 +608,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetLockAxisY());
 	}
 };
@@ -624,7 +624,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetLockAxisZ());
 	}
 };
@@ -641,7 +641,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetUseLocal());
 	}
 };
@@ -777,7 +777,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetEnabled(rig.GetElementMode() == reRig::eemBone);
 	}
 };
@@ -864,7 +864,7 @@ public:
 		return new reURemovePush(list);
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		bool enabled = false;
 		switch(rig.GetElementMode()){
 		case reRig::eemBone:
@@ -912,7 +912,7 @@ public:
 	cActionRigAddSphere(reWindowMain &window) : cActionRigAddShape(window,
 		"Add Sphere Shape", NULL, "Adds a sphere shape", deInputEvent::ekcS){}
 	
-	reRigShape *CreateShape(){
+	reRigShape *CreateShape() override{
 		return new reRigShapeSphere(pWindow.GetEngineController().GetEngine());
 	}
 };
@@ -922,7 +922,7 @@ public:
 	cActionRigAddBox(reWindowMain &window) : cActionRigAddShape(window,
 		"Add Box Shape", NULL, "Adds a box shape", deInputEvent::ekcB){}
 	
-	reRigShape *CreateShape(){
+	reRigShape *CreateShape() override{
 		return new reRigShapeBox(pWindow.GetEngineController().GetEngine());
 	}
 };
@@ -932,7 +932,7 @@ public:
 	cActionRigAddCylinder(reWindowMain &window) : cActionRigAddShape(window,
 		"Add Cylinder Shape", NULL, "Adds a cylinder shape", deInputEvent::ekcC){}
 	
-	reRigShape *CreateShape(){
+	reRigShape *CreateShape() override{
 		return new reRigShapeCylinder(pWindow.GetEngineController().GetEngine());
 	}
 };
@@ -942,7 +942,7 @@ public:
 	cActionRigAddCapsule(reWindowMain &window) : cActionRigAddShape(window,
 		"Add Capsule Shape", NULL, "Adds a capsule shape", deInputEvent::ekcA){}
 	
-	reRigShape *CreateShape(){
+	reRigShape *CreateShape() override{
 		return new reRigShapeCapsule(pWindow.GetEngineController().GetEngine());
 	}
 };
@@ -979,7 +979,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetShowRigShapes());
 	}
 };
@@ -994,7 +994,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetShowRigConstraints());
 	}
 };
@@ -1009,7 +1009,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetShowRigPushes());
 	}
 };
@@ -1045,7 +1045,7 @@ public:
 	cActionBoneAddSphere(reWindowMain &window) : cActionBoneAddShape(window,
 		"Add Sphere Shape", NULL, "Adds a sphere shape", deInputEvent::ekcS){}
 	
-	reRigShape *CreateShape(){
+	reRigShape *CreateShape() override{
 		return new reRigShapeSphere(pWindow.GetEngineController().GetEngine());
 	}
 };
@@ -1055,7 +1055,7 @@ public:
 	cActionBoneAddBox(reWindowMain &window) : cActionBoneAddShape(window,
 		"Add Box Shape", NULL, "Adds a box shape", deInputEvent::ekcB){}
 	
-	reRigShape *CreateShape(){
+	reRigShape *CreateShape() override{
 		return new reRigShapeBox(pWindow.GetEngineController().GetEngine());
 	}
 };
@@ -1065,7 +1065,7 @@ public:
 	cActionBoneAddCylinder(reWindowMain &window) : cActionBoneAddShape(window,
 		"Add Cylinder Shape", NULL, "Adds a cylinder shape", deInputEvent::ekcC){}
 	
-	reRigShape *CreateShape(){
+	reRigShape *CreateShape() override{
 		return new reRigShapeCylinder(pWindow.GetEngineController().GetEngine());
 	}
 };
@@ -1075,7 +1075,7 @@ public:
 	cActionBoneAddCapsule(reWindowMain &window) : cActionBoneAddShape(window,
 		"Add Capsule Shape", NULL, "Adds a capsule shape", deInputEvent::ekcA){}
 	
-	reRigShape *CreateShape(){
+	reRigShape *CreateShape() override{
 		return new reRigShapeCapsule(pWindow.GetEngineController().GetEngine());
 	}
 };
@@ -1101,7 +1101,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetShowBones());
 	}
 };
@@ -1117,7 +1117,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetShowAllBoneShapes());
 	}
 };
@@ -1133,7 +1133,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetShowAllBoneConstraints());
 	}
 };
@@ -1247,7 +1247,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetShapeXRay());
 	}
 };
@@ -1265,7 +1265,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const reRig &rig){
+	void Update(const reRig &rig) override{
 		SetSelected(rig.GetSimulationRunning());
 	}
 };

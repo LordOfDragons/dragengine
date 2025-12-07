@@ -61,7 +61,7 @@ public:
 		deEngine &engine, deVirtualFileSystem *vfs, const char *basePath);
 	
 	/** \brief Clean up visitor. */
-	virtual ~deRLTaskReadSkinPropertyNode();
+	~deRLTaskReadSkinPropertyNode() override;
 	/*@}*/
 	
 	
@@ -69,16 +69,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit node. */
-	virtual void VisitNode(deSkinPropertyNode &node);
+	void VisitNode(deSkinPropertyNode &node) override;
 	
 	/** \brief Visit group node. */
-	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
+	void VisitGroup(deSkinPropertyNodeGroup &node) override;
 	
 	/** \brief Visit image node. */
-	virtual void VisitImage(deSkinPropertyNodeImage &node);
+	void VisitImage(deSkinPropertyNodeImage &node) override;
 	
 	/** \brief Visit text node. */
-	virtual void VisitText(deSkinPropertyNodeText &node);
+	void VisitText(deSkinPropertyNodeText &node) override;
 	/*@}*/
 };
 

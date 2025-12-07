@@ -47,7 +47,7 @@ public:
 	seWPViewListener(seWPView &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPViewListener();
+	~seWPViewListener() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment component changed. */
-	virtual void EnvObjectChanged(seSky *sky);
+	void EnvObjectChanged(seSky *sky) override;
 	
 	/** \brief View changed. */
-	virtual void ViewChanged(seSky *sky);
+	void ViewChanged(seSky *sky) override;
 	
 	/** \brief Camera changed. */
-	virtual void CameraChanged(seSky *sky);
+	void CameraChanged(seSky *sky) override;
 	/*@}*/
 };
 

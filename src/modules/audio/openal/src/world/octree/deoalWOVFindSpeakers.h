@@ -57,7 +57,7 @@ public:
 		deoalSpeakerList &speakerList);
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVFindSpeakers();
+	~deoalWOVFindSpeakers() override;
 	/*@}*/
 	
 	
@@ -82,7 +82,7 @@ public:
 	
 	
 	/** \brief Visit speaker. */
-	virtual void VisitSpeaker(deoalASpeaker *speaker);
+	void VisitSpeaker(deoalASpeaker *speaker) override;
 	/*@}*/
 };
 

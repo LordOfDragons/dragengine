@@ -46,7 +46,7 @@ public:
 	seWindowCurvesListener(seWindowCurves &window);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWindowCurvesListener();
+	~seWindowCurvesListener() override;
 	/*@}*/
 	
 	
@@ -54,16 +54,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Link added or removed. */
-	virtual void LinkStructureChanged (seSky *sky);
+	void LinkStructureChanged (seSky *sky) override;
 	
 	/** \brief Link changed. */
-	virtual void LinkChanged(seSky *sky, seLink *link);
+	void LinkChanged(seSky *sky, seLink *link) override;
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged(seSky *sky, seLink *link);
+	void LinkNameChanged(seSky *sky, seLink *link) override;
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveLinkChanged(seSky *sky);
+	void ActiveLinkChanged(seSky *sky) override;
 	/*@}*/
 };
 

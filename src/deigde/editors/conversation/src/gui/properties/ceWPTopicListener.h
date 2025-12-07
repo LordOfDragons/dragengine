@@ -47,7 +47,7 @@ public:
 	ceWPTopicListener(ceWPTopic &panel);
 	
 	/** Clean up listener. */
-	virtual ~ceWPTopicListener();
+	~ceWPTopicListener() override;
 	/*@}*/
 	
 	
@@ -55,99 +55,99 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Conversation changed. */
-	virtual void ConversationChanged(ceConversation *conversation);
+	void ConversationChanged(ceConversation *conversation) override;
 	
 	/** Target count or order changed. */
-	virtual void TargetStructureChanged(ceConversation *conversation);
+	void TargetStructureChanged(ceConversation *conversation) override;
 	
 	/** Target changed. */
-	virtual void TargetChanged(ceConversation *conversation, ceTarget *target);
+	void TargetChanged(ceConversation *conversation, ceTarget *target) override;
 	
 	
 	
 	/** Camera shot count or order changed. */
-	virtual void CameraShotStructureChanged(ceConversation *conversation);
+	void CameraShotStructureChanged(ceConversation *conversation) override;
 	
 	/** Camera shot changed. */
-	virtual void CameraShotChanged(ceConversation *conversation, ceCameraShot *cameraShot);
+	void CameraShotChanged(ceConversation *conversation, ceCameraShot *cameraShot) override;
 	
 	
 	
 	/** Gesture count or order changed. */
-	virtual void GestureStructureChanged(ceConversation *conversation);
+	void GestureStructureChanged(ceConversation *conversation) override;
 	
 	/** Gesture changed. */
-	virtual void GestureChanged(ceConversation *conversation, ceGesture *gesture);
+	void GestureChanged(ceConversation *conversation, ceGesture *gesture) override;
 	
 	
 	
 	/** Face pose count or order changed. */
-	virtual void FacePoseStructureChanged(ceConversation *conversation);
+	void FacePoseStructureChanged(ceConversation *conversation) override;
 	
 	/** Face pose changed. */
-	virtual void FacePoseChanged(ceConversation *conversation, ceFacePose *facePose);
+	void FacePoseChanged(ceConversation *conversation, ceFacePose *facePose) override;
 	
 	
 	
 	/** File count or order changed. */
-	virtual void FileStructureChanged(ceConversation *conversation);
+	void FileStructureChanged(ceConversation *conversation) override;
 	
 	/** File changed. */
-	virtual void FileChanged(ceConversation *conversation, ceConversationFile *file);
+	void FileChanged(ceConversation *conversation, ceConversationFile *file) override;
 	
 	/** Active file changed. */
-	virtual void ActiveFileChanged(ceConversation *conversation);
+	void ActiveFileChanged(ceConversation *conversation) override;
 	
 	
 	
 	/** Topic count or order changed. */
-	virtual void TopicStructureChanged(ceConversation *conversation, ceConversationFile *file);
+	void TopicStructureChanged(ceConversation *conversation, ceConversationFile *file) override;
 	
 	/** Topic changed. */
-	virtual void TopicChanged(ceConversation *conversation, ceConversationFile *file,
-		ceConversationTopic *topic);
+	void TopicChanged(ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic) override;
 	
 	/** Active topic changed. */
-	virtual void ActiveTopicChanged(ceConversation *conversation, ceConversationFile *file);
+	void ActiveTopicChanged(ceConversation *conversation, ceConversationFile *file) override;
 	
 	
 	
 	/** Action count or order changed. */
-	virtual void ActionStructureChanged(ceConversation *conversation, ceConversationFile *file,
-		ceConversationTopic *topic, ceConversationAction *action);
+	void ActionStructureChanged(ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action) override;
 	
 	/** Action changed. */
-	virtual void ActionChanged(ceConversation *conversation, ceConversationFile *file,
-		ceConversationTopic *topic, ceConversationAction *action);
+	void ActionChanged(ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action) override;
 	
 	/** Condition count or order changed. */
-	virtual void ConditionStructureChanged(ceConversation *conversation,
-		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action);
+	void ConditionStructureChanged(ceConversation *conversation,
+		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action) override;
 	
 	/** Condition changed. */
-	virtual void ConditionChanged(ceConversation *conversation, ceConversationFile *file,
-		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition);
+	void ConditionChanged(ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition) override;
 	
 	
 	
 	/** Actor count or order changed. */
-	virtual void ActorStructureChanged(ceConversation *conversation);
+	void ActorStructureChanged(ceConversation *conversation) override;
 	
 	/** Actor changed. */
-	virtual void ActorChanged(ceConversation *conversation, ceConversationActor *actor);
+	void ActorChanged(ceConversation *conversation, ceConversationActor *actor) override;
 	
 	
 	
 	/** Coordinate system count or order changed. */
-	virtual void CoordSystemStructureChanged(ceConversation *conversation);
+	void CoordSystemStructureChanged(ceConversation *conversation) override;
 	
 	/** Coordinate system changed. */
-	virtual void CoordSystemChanged(ceConversation *conversation, ceCoordSystem *coordSystem);
+	void CoordSystemChanged(ceConversation *conversation, ceCoordSystem *coordSystem) override;
 	
 	
 	
 	/** Language pack changed. */
-	virtual void LanguagePackChanged(ceConversation *conversation);
+	void LanguagePackChanged(ceConversation *conversation) override;
 	/*@}*/
 };
 

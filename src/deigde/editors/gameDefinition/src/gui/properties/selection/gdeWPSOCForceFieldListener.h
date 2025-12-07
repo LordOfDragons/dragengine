@@ -47,7 +47,7 @@ public:
 	gdeWPSOCForceFieldListener(gdeWPSOCForceField &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCForceFieldListener();
+	~gdeWPSOCForceFieldListener() override;
 	/*@}*/
 	
 	
@@ -55,27 +55,27 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class force fields changed. */
-	virtual void OCForceFieldsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	void OCForceFieldsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class force field changed. */
-	virtual void OCForceFieldChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCForceField *field);
+	void OCForceFieldChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCForceField *field) override;
 	
 	/** \brief Active object class force field changed. */
-	virtual void ActiveOCForceFieldChanged(gdeGameDefinition *gameDefinition);
+	void ActiveOCForceFieldChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

@@ -40,8 +40,8 @@ public:
 	SingleColourFit(ColourSet const* colours, int flags);
 	
 private:
-	virtual void Compress3(void* block);
-	virtual void Compress4(void* block);
+	void Compress3(void* block) override;
+	void Compress4(void* block) override;
 	
 	void ComputeEndPoints(SingleColourLookup const* const* lookups);
 	

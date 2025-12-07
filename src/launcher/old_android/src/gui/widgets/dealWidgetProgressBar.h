@@ -53,7 +53,7 @@ public:
 	dealWidgetProgressBar(dealDisplay &display, int minProgress, int maxProgress);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetProgressBar();
+	~dealWidgetProgressBar() override;
 	/*@}*/
 	
 	
@@ -81,10 +81,10 @@ public:
 	
 	
 	/** \brief Size changed. */
-	virtual void OnSizeChanged();
+	void OnSizeChanged() override;
 	
 	/** \brief Padding changed. */
-	virtual void OnPaddingChanged();
+	void OnPaddingChanged() override;
 	/*@}*/
 	
 	

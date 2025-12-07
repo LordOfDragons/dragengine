@@ -381,7 +381,7 @@ public:
 		return new gdeUOCComponentToggleDoNotScale(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionStatic : public cBaseAction{
@@ -393,7 +393,7 @@ public:
 		return new gdeUOCComponentToggleStatic(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionRenderEnvMap : public cBaseAction{
@@ -405,7 +405,7 @@ public:
 		return new gdeUOCComponentToggleRenderEnvMap(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionAffectsAudio : public cBaseAction{
@@ -417,7 +417,7 @@ public:
 		return new gdeUOCComponentToggleAffectsAudio(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionLightShadowIgnore : public cBaseAction{
@@ -429,7 +429,7 @@ public:
 		return new gdeUOCComponentToggleLightShadowIgnore(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionPartialHide : public cBaseAction{
@@ -441,7 +441,7 @@ public:
 		return new gdeUOCComponentTogglePartialHide(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionAttachTarget : public cBaseAction{
@@ -453,7 +453,7 @@ public:
 		return new gdeUOCComponentToggleAttachTarget(objectClass, component);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cComboCollisionResponseType : public cBaseComboBoxListener{
@@ -579,7 +579,7 @@ public:
 	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass,
 		gdeOCComponent *component, gdeOCComponentTexture *texture) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetTexture());
 	}
 };
@@ -677,7 +677,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const gdeOCComponent * const component = pPanel.GetComponent();
 		SetEnabled(component && (pTextureName.IsEmpty() || !component->GetTextures().HasNamed(pTextureName)));
 	}
@@ -852,7 +852,7 @@ public:
 		return new gdeUOCCTextureSetProperties(objectClass, component, texture, values);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetTexture() && !pPanel.GetTexturePropertyKey().IsEmpty());
 	}
 };
@@ -874,7 +874,7 @@ public:
 		return new gdeUOCCTextureSetProperties(objectClass, component, texture, values);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
 		const char * const key = pPanel.GetTexturePropertyValue();
 		SetEnabled(texture && key && texture->GetProperties().Has(key));
@@ -894,7 +894,7 @@ public:
 		return new gdeUOCCTextureSetProperties(objectClass, component, texture, decStringDictionary());
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
 		SetEnabled(texture && texture->GetProperties().GetCount() > 0);
 	}

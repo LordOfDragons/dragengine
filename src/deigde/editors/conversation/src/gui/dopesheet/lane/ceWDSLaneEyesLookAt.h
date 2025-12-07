@@ -45,7 +45,7 @@ public:
 	
 protected:
 	/** \brief Clean up dope sheet lane. */
-	virtual ~ceWDSLaneEyesLookAt();
+	~ceWDSLaneEyesLookAt() override;
 	/*@}*/
 	
 	
@@ -59,34 +59,34 @@ public:
 	
 	
 	/** \brief Strip list. */
-	virtual const ceStripList &GetStripList() const;
+	const ceStripList &GetStripList() const override;
 	
 	/** \brief Fill ID list. */
-	virtual void FillIDList(decStringList &list);
+	void FillIDList(decStringList &list) override;
 	
 	/** \brief Create add strip undo action. */
-	virtual igdeUndo *UndoStripAdd(ceStrip *strip, int index);
+	igdeUndo *UndoStripAdd(ceStrip *strip, int index) override;
 	
 	/** \brief Create remove strip undo action. */
-	virtual igdeUndo *UndoStripRemove(ceStrip *strip);
+	igdeUndo *UndoStripRemove(ceStrip *strip) override;
 	
 	/** \brief Create remove all strip undo action. */
-	virtual igdeUndo *UndoStripRemoveAll();
+	igdeUndo *UndoStripRemoveAll() override;
 	
 	/** \brief Create replace strip undo action. */
-	virtual igdeUndo *UndoStripReplace(ceStrip *strip, ceStrip *withStrip);
+	igdeUndo *UndoStripReplace(ceStrip *strip, ceStrip *withStrip) override;
 	
 	/** \brief Create move strip undo action. */
-	virtual igdeUndo *UndoStripMove(ceStrip *strip, int toIndex);
+	igdeUndo *UndoStripMove(ceStrip *strip, int toIndex) override;
 	
 	/** \brief Create strip set pause undo action. */
-	virtual ceUCAASpeakStripSetPause *UndoStripSetPause(ceStrip *strip, float pause);
+	ceUCAASpeakStripSetPause *UndoStripSetPause(ceStrip *strip, float pause) override;
 	
 	/** \brief Create strip set duration undo action. */
-	virtual ceUCAASpeakStripSetDuration *UndoStripSetDuration(ceStrip *strip, float duration);
+	ceUCAASpeakStripSetDuration *UndoStripSetDuration(ceStrip *strip, float duration) override;
 	
 	/** \brief Create scale strips undo action. */
-	virtual ceUCAASpeakStripsScale *UndoScaleStrips();
+	ceUCAASpeakStripsScale *UndoScaleStrips() override;
 	/*@}*/
 };
 

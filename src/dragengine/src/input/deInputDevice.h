@@ -446,7 +446,7 @@ public:
 	
 protected:
 	/** \brief Clean up input device. */
-	virtual ~deInputDevice();
+	~deInputDevice() override;
 	/*@}*/
 	
 	

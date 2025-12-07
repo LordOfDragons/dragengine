@@ -48,7 +48,7 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCACoordSystemAdd(const ceCACoordSystemAdd &action);
 	/** \brief Cleans up the conversation action. */
-	virtual ~ceCACoordSystemAdd();
+	~ceCACoordSystemAdd() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -63,7 +63,7 @@ public:
 	void SetAliasID(const char *id);
 	
 	/** \brief Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

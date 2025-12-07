@@ -39,7 +39,7 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakHeadLASetName(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, const char *newName);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakHeadLASetName();
+	~ceUCAASpeakHeadLASetName() override;
 	/*@}*/
 };
 

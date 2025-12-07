@@ -274,7 +274,7 @@ public:
 		SetDescription("Paste source from clipboard into group");
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSource * const source = pPanel.GetSource();
 		if(!source || source->GetType() != deSynthesizerSourceVisitorIdentify::estGroup){
 			return;
@@ -293,7 +293,7 @@ public:
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const seSource * const source = pPanel.GetSource();
 		SetSelected(source && source->GetType() == deSynthesizerSourceVisitorIdentify::estGroup
 			&& pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().HasWithTypeName(

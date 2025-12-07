@@ -53,7 +53,7 @@ public:
 	deoglCanvasVideoPlayer(deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvasVideoPlayer();
+	~deoglCanvasVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Drop render canvas if not \em NULL. */
-	virtual void DropRCanvas();
+	void DropRCanvas() override;
 	
 	/**
 	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
-	virtual void SyncContentToRender();
+	void SyncContentToRender() override;
 	
 	/** Video player requires sync. */
 	void VideoPlayerRequiresSync();
@@ -81,14 +81,14 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Content changed. */
-	virtual void ContentChanged();
+	void ContentChanged() override;
 	/*@}*/
 	
 	
 	
 protected:
 	/** Create render canvas. Subclass responsibility. */
-	virtual deoglRCanvas *CreateRCanvas();
+	deoglRCanvas *CreateRCanvas() override;
 };
 
 #endif

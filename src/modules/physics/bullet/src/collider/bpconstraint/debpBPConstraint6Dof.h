@@ -67,7 +67,7 @@ public:
 		const btTransform &frameInA, const btTransform &frameInB);
 	
 	/** Clean up constraint. */
-	virtual ~debpBPConstraint6Dof();
+	~debpBPConstraint6Dof() override;
 	/*@}*/
 	
 	
@@ -96,7 +96,7 @@ public:
 	 * Prepare constraint for next simulation step.
 	 * \details From debpBPConstraintBase.
 	 */
-	virtual void PrepareForStep();
+	void PrepareForStep() override;
 	
 	
 	
@@ -106,7 +106,7 @@ public:
 	 * This call is used by subclasses of constraint solvers to add constraint friction. This composes
 	 * of static and kinematic joint friction.
 	 */
-	virtual int GetConstraintFrictionCount();
+	int GetConstraintFrictionCount() override;
 	
 	/**
 	 * Get constraint friction forces.
