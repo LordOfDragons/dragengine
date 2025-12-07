@@ -92,9 +92,10 @@ scons -h
 5. **Indentation**:
    - Use tabs for indentation
 
-6. **Braces**:
+6. **Braces, Parenthesis and Brackets**:
    - Opening brace on same line for methods, control structures
    - No whitespace around braces except for control structures
+   - No whitespace around parenthsis and brackets
 
 7. **Comments**:
    - Use `//` for single-line comments
