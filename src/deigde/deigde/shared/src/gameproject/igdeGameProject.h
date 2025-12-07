@@ -66,10 +66,10 @@ private:
 	decStringList pBaseGameDefinitionIDList;
 	decString pPathProjectGameDefinition;
 	igdeGameDefinitionList pBaseGameDefinitionList;
-	igdeGameDefinition *pProjectGameDefinition;
-	igdeGameDefinition *pXMLEClassGameDefinition;
-	igdeGameDefinition *pFoundGameDefinition;
-	igdeGameDefinition *pGameDefinition;
+	igdeGameDefinition::Ref pProjectGameDefinition;
+	igdeGameDefinition::Ref pXMLEClassGameDefinition;
+	igdeGameDefinition::Ref pFoundGameDefinition;
+	igdeGameDefinition::Ref pGameDefinition;
 	
 	decString pScriptModule;
 	decString pScriptModuleVersion;
@@ -154,7 +154,7 @@ public:
 	 * \note Make sure a valid game definition is set before using this object in the editors.
 	 *       If the game definition path is not found set it to a default game definition instead.
 	 */
-	inline igdeGameDefinition *GetProjectGameDefinition() const{ return pProjectGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetProjectGameDefinition() const{ return pProjectGameDefinition; }
 	
 	/**
 	 * \brief Set project game definition.
@@ -172,12 +172,12 @@ public:
 	 * mappers to explicitly define object classes with specific extra parameters like snap
 	 * points for example. The XML Element Class will then overwrite the regular parameters.
 	 */
-	inline igdeGameDefinition *GetXMLEClassGameDefinition() const{ return pXMLEClassGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetXMLEClassGameDefinition() const{ return pXMLEClassGameDefinition; }
 	
 	/**
 	 * \brief Found file resources game definition.
 	 */
-	inline igdeGameDefinition *GetFoundGameDefinition() const{ return pFoundGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetFoundGameDefinition() const{ return pFoundGameDefinition; }
 	
 	/**
 	 * \brief Merged game definition.
@@ -187,7 +187,7 @@ public:
 	 * game definition with all the content of the respective game definitions has been
 	 * created. If possible use this game definition.
 	 */
-	inline igdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/**
 	 * \brief Update merged game definition.
