@@ -106,7 +106,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGizmoMove() override;
+	~igdeGizmoMove() override;
 	/*@}*/
 	
 	
@@ -204,10 +204,10 @@ protected:
 	 * 
 	 * Called by StopEditing() after a prior to an OnStartEditing() call returning true.
 	 */
-	virtual void OnStopEditing(bool cancel) override;
+	void OnStopEditing(bool cancel) override;
 	
 	/** \brief Added to world. */
-	virtual void OnAddToWorld() override;
+	void OnAddToWorld() override;
 };
 
 #endif

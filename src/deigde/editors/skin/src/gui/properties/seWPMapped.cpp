@@ -89,7 +89,7 @@ public:
 	cBaseActionSkin(seWPMapped &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description), pPanel(panel){}
 	
-	virtual void OnAction() override{
+	void OnAction() override{
 		seSkin * const skin = pPanel.GetSkin();
 		if(!skin){
 			return;
@@ -103,7 +103,7 @@ public:
 	
 	virtual igdeUndo *OnAction(seSkin *skin) = 0;
 	
-	virtual void Update() override{
+	void Update() override{
 		seSkin * const skin = pPanel.GetSkin();
 		if(skin){
 			Update(*skin);
@@ -125,14 +125,14 @@ public:
 	cBaseActionMapped(seWPMapped &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseActionSkin(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin) override{
+	igdeUndo *OnAction(seSkin *skin) override{
 		seMapped * const mapped = pPanel.GetMapped();
 		return mapped ? OnActionMapped(skin, mapped) : nullptr;
 	}
 	
 	virtual igdeUndo *OnActionMapped(seSkin *skin, seMapped *mapped) = 0;
 	
-	virtual void Update(const seSkin &skin) override{
+	void Update(const seSkin &skin) override{
 		seMapped * const mapped = pPanel.GetMapped();
 		if(mapped){
 			UpdateMapped(skin, *mapped);
@@ -155,7 +155,7 @@ protected:
 public:
 	cBaseTextFieldListener(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField) override{
+	void OnTextChanged(igdeTextField *textField) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
 		if(!skin || !mapped){
@@ -177,7 +177,7 @@ public:
 	cActionCopy(seWPMapped &panel) : cBaseActionMapped (panel, "Copy Mapped",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy mapped"){}
 	
-	virtual igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
+	igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
 		igdeClipboardData::Ref data;
 		seMappedList list;
 		list.Add(mapped);
@@ -193,7 +193,7 @@ public:
 	cActionCut(seWPMapped &panel) : cBaseActionMapped (panel, "Cut Mapped",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut mapped"){}
 	
-	virtual igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
+	igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
 		igdeClipboardData::Ref data;
 		seMappedList list;
 		list.Add(mapped);
@@ -220,14 +220,14 @@ public:
 	cActionPaste(seWPMapped &panel) : cBaseActionSkin(panel, "Paste Mapped",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "Paste mapped"){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin) override{
+	igdeUndo *OnAction(seSkin *skin) override{
 		const seClipboardDataMapped * const data = (seClipboardDataMapped*)
 			pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
 			GetWithTypeName(seClipboardDataMapped::TYPE_NAME);
 		return data ? new seUMappedPaste(skin, *data) : nullptr;
 	}
 	
-	virtual void Update(const seSkin &) override{
+	void Update(const seSkin &) override{
 		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
 			HasWithTypeName(seClipboardDataMapped::TYPE_NAME));
 	}
@@ -238,7 +238,7 @@ public:
 	cActionDuplicate(seWPMapped &panel) : cBaseActionMapped(panel, "Duplicate Mapped",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "Duplicate mapped"){}
 	
-	virtual igdeUndo *OnActionMapped(seSkin *skin, seMapped *mapped) override{
+	igdeUndo *OnActionMapped(seSkin *skin, seMapped *mapped) override{
 		return new seUMappedDuplicate(skin, *mapped);
 	}
 };
@@ -248,7 +248,7 @@ class cListMapped : public igdeListBoxListener{
 public:
 	cListMapped(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged(igdeListBox *listBox) override{
+	void OnSelectionChanged(igdeListBox *listBox) override{
 		seSkin * const skin = pPanel.GetSkin();
 		if(skin){
 			skin->SetActiveMapped(listBox->GetSelectedItem()
@@ -256,7 +256,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		seWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
 		igdeEnvironment &env = menu.GetEnvironment();
 		igdeUIHelper &helper = env.GetUIHelper();
@@ -279,7 +279,7 @@ class cTextName : public igdeTextFieldListener{
 public:
 	cTextName(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField) override{
+	void OnTextChanged(igdeTextField *textField) override{
 		seMapped * const mapped = pPanel.GetMapped();
 		const decString &value = textField->GetText();
 		if(!mapped || mapped->GetName() == value){
@@ -301,7 +301,7 @@ class cComboInputType : public igdeComboBoxListener{
 public:
 	cComboInputType(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox) override{
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
 		if(!skin || !mapped || !comboBox->GetSelectedItem()){
@@ -325,7 +325,7 @@ class cEditCurve : public igdeViewCurveBezierListener{
 public:
 	cEditCurve(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
 		if(!skin || !mapped){
@@ -346,7 +346,7 @@ public:
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
 		if(!skin || !mapped){
@@ -370,7 +370,7 @@ class cTextInputLower : public cBaseTextFieldListener{
 public:
 	cTextInputLower(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
+	igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const float value = textField.GetFloat();
 		return fabsf(value - mapped->GetInputLower()) > FLOAT_SAFE_EPSILON
 			? new seUMappedSetInputLower(mapped, value) : nullptr;
@@ -381,7 +381,7 @@ class cTextInputUpper : public cBaseTextFieldListener{
 public:
 	cTextInputUpper(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
+	igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const float value = textField.GetFloat();
 		return fabsf(value - mapped->GetInputUpper()) > FLOAT_SAFE_EPSILON
 			? new seUMappedSetInputUpper(mapped, value) : nullptr;
@@ -393,11 +393,11 @@ public:
 	cActionInputClamped(seWPMapped &panel) : cBaseActionMapped (panel,
 		"Input Clamped:", nullptr, "Input value is clamperd to input range instead od wrapping around"){}
 	
-	virtual igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
+	igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
 		return new seUMappedToggleInputClamped(mapped);
 	}
 	
-	virtual void UpdateMapped(const seSkin &skin, const seMapped &mapped) override{
+	void UpdateMapped(const seSkin &skin, const seMapped &mapped) override{
 		cBaseActionMapped::UpdateMapped(skin, mapped);
 		SetSelected(mapped.GetInputClamped());
 	}
@@ -407,7 +407,7 @@ class cTextOutputLower : public cBaseTextFieldListener{
 public:
 	cTextOutputLower(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
+	igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const float value = textField.GetFloat();
 		return fabsf(value - mapped->GetOutputLower()) > FLOAT_SAFE_EPSILON
 			? new seUMappedSetOutputLower(mapped, value) : nullptr;
@@ -418,7 +418,7 @@ class cTextOutputUpper : public cBaseTextFieldListener{
 public:
 	cTextOutputUpper(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
+	igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const float value = textField.GetFloat();
 		return fabsf(value - mapped->GetOutputUpper()) > FLOAT_SAFE_EPSILON
 			? new seUMappedSetOutputUpper(mapped, value) : nullptr;
@@ -429,7 +429,7 @@ class cTextBone : public cBaseTextFieldListener{
 public:
 	cTextBone(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
+	igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const decString &bone = textField.GetText();
 		return bone != mapped->GetBone() ? new seUMappedSetBone(mapped, bone) : nullptr;
 	}
@@ -439,7 +439,7 @@ class cTextRenderable : public cBaseTextFieldListener{
 public:
 	cTextRenderable(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
+	igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const decString &renderable = textField.GetText();
 		return renderable != mapped->GetRenderable() ? new seUMappedSetRenderable(mapped, renderable) : nullptr;
 	}
@@ -450,7 +450,7 @@ class cComboRenderableComponent : public igdeComboBoxListener{
 public:
 	cComboRenderableComponent(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox) override{
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
 		if(!skin || !mapped || !comboBox->GetSelectedItem()){

@@ -63,7 +63,7 @@ public:
 	lpeLangPack(igdeEnvironment *environment);
 	
 	/** Cleans up the skin. */
-	virtual ~lpeLangPack() override;
+	~lpeLangPack() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -111,9 +111,9 @@ public:
 	void RemoveListener(lpeLangPackListener *listener);
 	
 	/** Notifies all listeners that the changed or saved state changed. */
-	virtual void NotifyStateChanged() override;
+	void NotifyStateChanged() override;
 	/** Notifies all listeners that the undo system changed. */
-	virtual void NotifyUndoChanged() override;
+	void NotifyUndoChanged() override;
 	
 	/** Notifies all that a language pack parameter changed. */
 	void NotifyLangPackChanged();

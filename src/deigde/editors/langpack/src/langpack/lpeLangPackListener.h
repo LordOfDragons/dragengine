@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** Cleans up the listener. */
-	virtual ~lpeLangPackListener() override;
+	~lpeLangPackListener() override;
 	/*@}*/
 	
 	

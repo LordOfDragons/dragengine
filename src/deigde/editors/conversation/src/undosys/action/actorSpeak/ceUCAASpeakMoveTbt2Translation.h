@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~ceUCAASpeakMoveTbt2Translation() override;
+	~ceUCAASpeakMoveTbt2Translation() override;
 	/*@}*/
 	
 	
@@ -71,10 +71,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo() override;
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo() override;
+	void Redo() override;
 	/*@}*/
 };
 

@@ -370,7 +370,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
 		"Find ID. Activates object if found."), pPanel(panel){}
 	
-	virtual void OnAction() override{
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world){
 			return;
@@ -427,7 +427,7 @@ public:
 			"Find ID", "ID '%s' not found", value.GetString());
 	}
 	
-	virtual void Update() override{
+	void Update() override{
 		SetEnabled(pPanel.GetWorld() != nullptr);
 	}
 };

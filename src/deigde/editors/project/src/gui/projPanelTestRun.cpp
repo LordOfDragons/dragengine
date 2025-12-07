@@ -170,7 +170,7 @@ class cEditRemoteAddress : public igdeTextFieldListener{
 public:
 	cEditRemoteAddress(projPanelTestRun &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeTextField *textField) override{
+	void OnTextChanged(igdeTextField *textField) override{
 		pPanel.GetWindowMain().GetConfiguration().SetRemoteAddress(textField->GetText());
 		pPanel.GetWindowMain().GetConfiguration().SaveConfiguration();
 	}

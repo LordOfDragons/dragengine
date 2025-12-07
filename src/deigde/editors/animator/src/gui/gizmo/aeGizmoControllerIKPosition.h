@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** Clean up gizmo. */
-	virtual ~aeGizmoControllerIKPosition() override;
+	~aeGizmoControllerIKPosition() override;
 	/*@}*/
 	
 	
@@ -63,15 +63,15 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	virtual decDVector GetObjectPosition() override;
-	virtual void SetObjectPosition(const decDVector &position) override;
+	decDVector GetObjectPosition() override;
+	void SetObjectPosition(const decDVector &position) override;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void VisitElement(aeElementVisitor &visitor) override;
+	void VisitElement(aeElementVisitor &visitor) override;
 	/*@}*/
 };
 

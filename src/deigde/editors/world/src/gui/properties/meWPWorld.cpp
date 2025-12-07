@@ -536,7 +536,7 @@ class cEditMusicPath : public igdeEditPathListener{
 public:
 	cEditMusicPath(meWPWorld &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged(igdeEditPath *editPath) override{
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		if(pPanel.GetWorld()){
 			pPanel.GetWorld()->GetMusic().SetPath(editPath->GetPath());
 		}
@@ -548,7 +548,7 @@ class cEditMusicVolume : public igdeEditSliderTextListener{
 public:
 	cEditMusicVolume(meWPWorld &panel) : pPanel(panel){}
 	
-	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
 		if(pPanel.GetWorld()){
 			pPanel.GetWorld()->GetMusic().SetVolume(sliderText->GetValue());
 		}
@@ -559,12 +559,12 @@ class cActionMusicPlay : public cBaseAction{
 public:
 	cActionMusicPlay(meWPWorld &panel) : cBaseAction(panel, "Play", nullptr, "Play"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld *world) override{
 		world->GetMusic().Play();
 		return nullptr;
 	}
 	
-	virtual void Update() override{
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 	}
 };
@@ -573,12 +573,12 @@ class cActionMusicPause : public cBaseAction{
 public:
 	cActionMusicPause(meWPWorld &panel) : cBaseAction(panel, "Pause", nullptr, "Pause"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld *world) override{
 		world->GetMusic().Pause();
 		return nullptr;
 	}
 	
-	virtual void Update() override{
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 	}
 };
@@ -587,12 +587,12 @@ class cActionMusicStop : public cBaseAction{
 public:
 	cActionMusicStop(meWPWorld &panel) : cBaseAction(panel, "Stop", nullptr, "Stop"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld *world) override{
 		world->GetMusic().Stop();
 		return nullptr;
 	}
 	
-	virtual void Update() override{
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 	}
 };

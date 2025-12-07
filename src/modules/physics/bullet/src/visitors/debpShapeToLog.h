@@ -50,7 +50,7 @@ public:
 	debpShapeToLog();
 	
 	/** \brief Clean up visitor. */
-	virtual ~debpShapeToLog() override;
+	~debpShapeToLog() override;
 	/*@}*/
 	
 	
@@ -67,19 +67,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere(decShapeSphere &sphere) override;
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox(decShapeBox &box) override;
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder(decShapeCylinder &cylinder) override;
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule(decShapeCapsule &capsule) override;
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull(decShapeHull &hull) override;
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 };
 

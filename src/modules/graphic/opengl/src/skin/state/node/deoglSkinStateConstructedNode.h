@@ -89,7 +89,7 @@ protected:
 	deoglSkinStateConstructedNode(const deoglSkinStateConstructedNode &node);
 	
 	/** Clean up skin state mapped. */
-	virtual ~deoglSkinStateConstructedNode() override;
+	~deoglSkinStateConstructedNode() override;
 	/*@}*/
 	
 	

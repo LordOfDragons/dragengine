@@ -44,7 +44,7 @@ public:
 	deoglSCConstructedDynamic();
 	
 	/** Clean up visitor. */
-	virtual ~deoglSCConstructedDynamic() override;
+	~deoglSCConstructedDynamic() override;
 	/*@}*/
 	
 	
@@ -63,19 +63,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit node. */
-	virtual void VisitNode(deSkinPropertyNode &node) override;
+	void VisitNode(deSkinPropertyNode &node) override;
 	
 	/** Visit group node. */
-	virtual void VisitGroup(deSkinPropertyNodeGroup &node) override;
+	void VisitGroup(deSkinPropertyNodeGroup &node) override;
 	
 	/** Visit image node. */
-	virtual void VisitImage(deSkinPropertyNodeImage &node) override;
+	void VisitImage(deSkinPropertyNodeImage &node) override;
 	
 	/** Visit shape node. */
-	virtual void VisitShape(deSkinPropertyNodeShape &node) override;
+	void VisitShape(deSkinPropertyNodeShape &node) override;
 	
 	/** Visit text node. */
-	virtual void VisitText(deSkinPropertyNodeText &node) override;
+	void VisitText(deSkinPropertyNodeText &node) override;
 	/*@}*/
 };
 

@@ -391,7 +391,7 @@ class cTextPropertyBone : public cBaseTextFieldListener{
 public:
 	cTextPropertyBone(seWPTexture &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*, seProperty *property) override{
+	igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*, seProperty *property) override{
 		return property->GetBoneName() != textField.GetText()
 			? new seUPropertySetBoneName(property, textField.GetText()) : nullptr;
 	}

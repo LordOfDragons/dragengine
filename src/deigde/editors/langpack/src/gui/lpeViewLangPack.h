@@ -70,7 +70,7 @@ public:
 	
 protected:
 	/** Cleanup view. */
-	virtual ~lpeViewLangPack() override;
+	~lpeViewLangPack() override;
 	/*@}*/
 	
 	

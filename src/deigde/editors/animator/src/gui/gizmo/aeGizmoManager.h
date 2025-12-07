@@ -39,7 +39,7 @@ public:
 	aeGizmoManager();
 	
 	/** Clean up gizmo manager. */
-	virtual ~aeGizmoManager() override;
+	~aeGizmoManager() override;
 	/*@}*/
 	
 	
@@ -47,7 +47,7 @@ public:
 public:
 	/** \name Management */
 	/*@{*/
-	virtual igdeGizmo *GizmoFromColliderUserPointer(void *userPointer) override;
+	igdeGizmo *GizmoFromColliderUserPointer(void *userPointer) override;
 	/*@}*/
 };
 

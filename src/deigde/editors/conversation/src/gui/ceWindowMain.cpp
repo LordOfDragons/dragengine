@@ -814,7 +814,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load language pack attaching it to conversation"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation) override{
+	igdeUndo *OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetLangPackPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -832,7 +832,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Detach language pack from conversation"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation) override{
+	igdeUndo *OnAction(ceConversation *conversation) override{
 		ceLangPack * const langpack = conversation->GetLanguagePack();
 		if(!langpack){
 			return nullptr;
@@ -858,7 +858,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const ceConversation &conversation) override{
+	void Update(const ceConversation &conversation) override{
 		SetEnabled(conversation.GetLanguagePack() != nullptr);
 	}
 };
@@ -868,7 +868,7 @@ public:
 	cActionViewMissingWords(ceWindowMain &window) : cActionBase(window, "Missing Words...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch), "Show missing words"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation) override{
+	igdeUndo *OnAction(ceConversation *conversation) override{
 		decStringSet missingWords;
 		const ceConversationFileList &groups = conversation->GetFileList();
 		const int groupCount = groups.GetCount();

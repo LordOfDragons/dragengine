@@ -50,22 +50,22 @@ public:
 	seWPMappedListener(seWPMapped &panel);
 	
 	/** Clean up listener. */
-	virtual ~seWPMappedListener() override;
+	~seWPMappedListener() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Mapped added or removed. */
-	virtual void MappedStructureChanged(seSkin *skin) override;
+	void MappedStructureChanged(seSkin *skin) override;
 	
 	/** Mapped changed. */
-	virtual void MappedChanged(seSkin *skin, seMapped *mapped) override;
+	void MappedChanged(seSkin *skin, seMapped *mapped) override;
 	
 	/** Mapped name changed. */
-	virtual void MappedNameChanged(seSkin *skin, seMapped *mapped) override;
+	void MappedNameChanged(seSkin *skin, seMapped *mapped) override;
 	
 	/** Active mapped changed. */
-	virtual void ActiveMappedChanged(seSkin *skin) override;
+	void ActiveMappedChanged(seSkin *skin) override;
 	/*@}*/
 };
 

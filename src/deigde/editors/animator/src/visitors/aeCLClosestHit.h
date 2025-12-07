@@ -56,7 +56,7 @@ public:
 	aeCLClosestHit();
 	
 	/** Clean up visitor. */
-	virtual ~aeCLClosestHit() override;
+	~aeCLClosestHit() override;
 	/*@}*/
 	
 	
@@ -97,16 +97,16 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
-	virtual bool CanHitCollider(deCollider *owner, deCollider *collider) override;
-	virtual void ColliderChanged(deCollider *owner) override;
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void VisitGizmo(igdeGizmo *gizmo) override;
+	void VisitGizmo(igdeGizmo *gizmo) override;
 	/*@}*/
 };
 

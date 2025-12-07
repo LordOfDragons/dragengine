@@ -312,7 +312,7 @@ class cEditMove : public igdeTextFieldListener{
 public:
 	cEditMove(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged (igdeTextField *textField) override{
+	void OnTextChanged (igdeTextField *textField) override{
 		gdeOCComponent * const component = pPanel.GetComponent();
 		if(!component || component->GetMove() == textField->GetText()){
 			return;
