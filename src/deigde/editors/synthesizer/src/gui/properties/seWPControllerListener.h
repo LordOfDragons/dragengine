@@ -47,7 +47,7 @@ public:
 	seWPControllerListener(seWPController &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPControllerListener();
+	~seWPControllerListener() override;
 	/*@}*/
 	
 	
@@ -55,27 +55,27 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged(seSynthesizer *synthesizer);
+	void SynthesizerChanged(seSynthesizer *synthesizer) override;
 	
 	
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged(seSynthesizer *synthesizer, seController *controller);
+	void ActiveControllerChanged(seSynthesizer *synthesizer, seController *controller) override;
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged(seSynthesizer *synthesizer, seController *controller);
+	void ControllerChanged(seSynthesizer *synthesizer, seController *controller) override;
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged(seSynthesizer *synthesizer, seController *controller);
+	void ControllerNameChanged(seSynthesizer *synthesizer, seController *controller) override;
 	
 	/** \brief Controller range changed. */
-	virtual void ControllerRangeChanged(seSynthesizer *synthesizer, seController *controller);
+	void ControllerRangeChanged(seSynthesizer *synthesizer, seController *controller) override;
 	
 	/** \brief Controller curve changed. */
-	virtual void ControllerCurveChanged(seSynthesizer *synthesizer, seController *controller);
+	void ControllerCurveChanged(seSynthesizer *synthesizer, seController *controller) override;
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged(seSynthesizer *synthesizer);
+	void ControllerStructureChanged(seSynthesizer *synthesizer) override;
 	/*@}*/
 };
 

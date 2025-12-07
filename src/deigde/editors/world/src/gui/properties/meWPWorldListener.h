@@ -47,7 +47,7 @@ public:
 	meWPWorldListener(meWPWorld &panel);
 	
 	/** Clean up listener. */
-	virtual ~meWPWorldListener() override;
+	~meWPWorldListener() override;
 	/*@}*/
 	
 	
@@ -55,28 +55,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** World parameters changed. */
-	virtual void WorldParametersChanged(meWorld *world) override;
+	void WorldParametersChanged(meWorld *world) override;
 	
 	/** Lighting parameters changed. */
-	virtual void LightingChanged(meWorld *world) override;
+	void LightingChanged(meWorld *world) override;
 	
 	/** Path find test changed. */
-	virtual void PathFindTestChanged(meWorld *world) override;
+	void PathFindTestChanged(meWorld *world) override;
 	
 	/** Music changed. */
-	virtual void MusicChanged(meWorld *world) override;
+	void MusicChanged(meWorld *world) override;
 	
 	/** World properties changed. */
-	virtual void PropertiesChanged(meWorld *world) override;
+	void PropertiesChanged(meWorld *world) override;
 	
 	/** World active property changed. */
-	virtual void ActivePropertyChanged(meWorld *world) override;
+	void ActivePropertyChanged(meWorld *world) override;
 	
 	/** Object properties changed. */
-	virtual void ObjectPropertiesChanged(meWorld *world, meObject *object) override;
+	void ObjectPropertiesChanged(meWorld *world, meObject *object) override;
 	
 	/** Object texture properties changed. */
-	virtual void ObjectTexturePropertiesChanged(meWorld *world, meObject *object,
+	void ObjectTexturePropertiesChanged(meWorld *world, meObject *object,
 		meObjectTexture *texture) override;
 	/*@}*/
 };

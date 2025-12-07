@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMCondition();
+	~ceWPTTIMCondition() override;
 	/*@}*/
 	
 	
@@ -70,16 +70,16 @@ public:
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Deep find condition. */
-	virtual ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition);
+	ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition) override;
 	
 	/** \brief Update condition. */
 	virtual void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Get condition owning this model if any. */
-	virtual ceConversationCondition *GetOwnerCondition() const;
+	ceConversationCondition *GetOwnerCondition() const override;
 	/*@}*/
 };
 

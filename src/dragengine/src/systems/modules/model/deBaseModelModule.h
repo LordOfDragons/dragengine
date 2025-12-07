@@ -43,7 +43,7 @@ public:
 	deBaseModelModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseModelModule();
+	~deBaseModelModule() override;
 	/*@}*/
 	
 	

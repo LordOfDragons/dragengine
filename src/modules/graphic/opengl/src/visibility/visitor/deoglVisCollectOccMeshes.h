@@ -52,7 +52,7 @@ public:
 	/** Creates a new visitor. */
 	deoglVisCollectOccMeshes();
 	/** Cleans up the visitor. */
-	virtual ~deoglVisCollectOccMeshes();
+	~deoglVisCollectOccMeshes() override;
 	/*@}*/
 	
 	/** \name Visiting */
@@ -75,7 +75,7 @@ public:
 	void Reset();
 	
 	/** Visits an octree node. */
-	virtual void VisitNode(deoglDOctree *node, int intersection);
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	
 	/** Add occlusion mesh to triangle sorter. */
 	void AddOcclusionMesh(deoglRComponent &component);

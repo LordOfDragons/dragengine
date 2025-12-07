@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMACameraShot();
+	~ceWPTTIMACameraShot() override;
 	/*@}*/
 	
 	
@@ -54,7 +54,7 @@ public:
 	inline ceCACameraShot *GetActionCameraShot() const{ return (ceCACameraShot*)GetAction(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

@@ -51,7 +51,7 @@ public:
 	
 protected:
 	/** \brief Cleans up the property window. */
-	virtual ~ceWPATrigger();
+	~ceWPATrigger() override;
 	/*@}*/
 	
 	

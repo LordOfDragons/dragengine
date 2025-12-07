@@ -100,7 +100,7 @@ public:
 	
 protected:
 	/** Clean up shader storage buffer object. */
-	virtual ~deoglSPBlockSSBO();
+	~deoglSPBlockSSBO() override;
 	/*@}*/
 	
 	
@@ -139,16 +139,16 @@ public:
 	void SetCompact(bool compact);
 	
 	/** Activate buffer. */
-	virtual void Activate() const;
+	void Activate() const override;
 	
 	/** Activate buffer overriding binding point. */
-	virtual void Activate(int bindingPoint) const;
+	void Activate(int bindingPoint) const override;
 	
 	/** Deactivate buffer. */
-	virtual void Deactivate() const;
+	void Deactivate() const override;
 	
 	/** Deactivate buffer overriding binding point. */
-	virtual void Deactivate(int bindingPoint) const;
+	void Deactivate(int bindingPoint) const override;
 	
 	/** Activate buffer as UBO. */
 	void ActivateUBO() const;
@@ -175,7 +175,7 @@ public:
 	void DeactivateDispatchIndirect() const;
 	
 	/** Map buffer discarding content. */
-	virtual void MapBuffer();
+	void MapBuffer() override;
 	
 	/**
 	 * Map buffer for specific element discarding content.
@@ -183,7 +183,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer(int element);
+	void MapBuffer(int element) override;
 	
 	/**
 	 * Map buffer for specific elements discarding content.
@@ -191,13 +191,13 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer(int element, int count);
+	void MapBuffer(int element, int count) override;
 	
 	/** Unmap buffer uploading data to GPU. */
-	virtual void UnmapBuffer();
+	void UnmapBuffer() override;
 	
 	/** Ensure buffer exists. */
-	virtual void EnsureBuffer();
+	void EnsureBuffer() override;
 	
 	/** Clear buffer. */
 	void ClearDataUInt(uint32_t value);
@@ -229,10 +229,10 @@ public:
 	void UnmapBufferRead();
 	
 	/** Get platform alignment requirements. */
-	virtual int GetAlignmentRequirements() const;
+	int GetAlignmentRequirements() const override;
 	
 	/** Create copy of shader parameter block. */
-	virtual deoglShaderParameterBlock *Copy() const;
+	deoglShaderParameterBlock *Copy() const override;
 	
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
@@ -249,7 +249,7 @@ public:
 	
 	
 protected:
-	virtual void pUpdateBufferSize();
+	void pUpdateBufferSize() override;
 	
 	
 	

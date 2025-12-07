@@ -111,7 +111,7 @@ public:
 	deLibraryModule(deModuleSystem *system, const char *xmlDefFilename);
 	
 	/** \brief Clean up loadable module. */
-	virtual ~deLibraryModule();
+	~deLibraryModule() override;
 	/*@}*/
 	
 	
@@ -141,10 +141,10 @@ public:
 	 * Sets the error code in both the case of success and failure and stored the module
 	 * for later retrieval.
 	 */
-	virtual void LoadModule();
+	void LoadModule() override;
 	
 	/** \brief Unloads the module. Sets the module to NULL and clears the error code. */
-	virtual void UnloadModule();
+	void UnloadModule() override;
 	/*@}*/
 	
 	
@@ -152,10 +152,10 @@ public:
 	/** \name Type Testing and Safe Casting */
 	/*@{*/
 	/** \brief Determines if this is a library loaded module. */
-	virtual bool IsLibraryModule() const;
+	bool IsLibraryModule() const override;
 	
 	/** \brief Cast to a library loaded rule. */
-	virtual deLibraryModule *CastToLibraryModule();
+	deLibraryModule *CastToLibraryModule() override;
 	/*@}*/
 	
 	
@@ -163,7 +163,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit module. */
-	virtual void Visit(deLoadableModuleVisitor &visitor);
+	void Visit(deLoadableModuleVisitor &visitor) override;
 	/*@}*/
 	
 	

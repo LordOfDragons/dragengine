@@ -17,11 +17,11 @@ class decConvexVolumeList;
 class detConvexVolume : public detCase{
 public:
 	detConvexVolume();
-	~detConvexVolume();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detConvexVolume() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestVolumeAddVertices();

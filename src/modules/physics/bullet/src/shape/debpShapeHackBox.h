@@ -42,7 +42,7 @@ public:
 	debpShapeHackBox(decShapeBox *shape);
 	
 	/** \brief Clean up shape. */
-	virtual ~debpShapeHackBox();
+	~debpShapeHackBox() override;
 	/*@}*/
 };
 

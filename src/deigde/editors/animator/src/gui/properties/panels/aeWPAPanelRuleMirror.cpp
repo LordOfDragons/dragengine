@@ -253,7 +253,7 @@ public:
 			rule->IndexOfMatchName(matchName), edited) : nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRuleMirror &){
+	void Update(const aeAnimator &, const aeRuleMirror &) override{
 		SetEnabled(pPanel.GetSelectedMatchBone());
 	}
 };
@@ -268,7 +268,7 @@ public:
 		return matchName ? new aeURuleMirrorRemoveMatchName(rule, matchName) : nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRuleMirror &){
+	void Update(const aeAnimator &, const aeRuleMirror &) override{
 		SetEnabled(pPanel.GetSelectedMatchBone());
 	}
 };
@@ -282,7 +282,7 @@ public:
 		return rule->GetMatchNameCount() > 0 ? new aeURuleMirrorRemoveAllMatchNames(rule) : nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRuleMirror &rule){
+	void Update(const aeAnimator &, const aeRuleMirror &rule) override{
 		SetEnabled(rule.GetMatchNameCount() > 0);
 	}
 };
@@ -330,7 +330,7 @@ public:
 		return new aeURuleMirrorSetEnablePosition(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleMirror &rule){
+	void Update(const aeAnimator & , const aeRuleMirror &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnablePosition());
 	}
@@ -346,7 +346,7 @@ public:
 		return new aeURuleMirrorSetEnableRotation(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleMirror &rule){
+	void Update(const aeAnimator & , const aeRuleMirror &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableOrientation());
 	}
@@ -362,7 +362,7 @@ public:
 		return new aeURuleMirrorSetEnableSize(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleMirror &rule){
+	void Update(const aeAnimator & , const aeRuleMirror &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableSize());
 	}
@@ -378,7 +378,7 @@ public:
 		return new aeURuleMirrorSetEnableVertexPositionSet(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleMirror &rule){
+	void Update(const aeAnimator & , const aeRuleMirror &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableVertexPositionSet());
 	}

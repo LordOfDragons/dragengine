@@ -51,7 +51,7 @@ public:
 	debpBulletCompoundShape(btCompoundShape *shape);
 	
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
-	virtual ~debpBulletCompoundShape();
+	~debpBulletCompoundShape() override;
 	/*@}*/
 	
 	

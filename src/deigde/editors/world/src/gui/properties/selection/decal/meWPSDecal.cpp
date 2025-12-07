@@ -260,7 +260,7 @@ class cActionVisible : public cBaseAction{
 public:
 	cActionVisible(meWPSDecal &panel) : cBaseAction(panel, "Visible", NULL, "Decal is initially visible"){}
 	
-	virtual igdeUndo *OnAction(meDecal *decal){
+	igdeUndo *OnAction(meDecal *decal) override{
 		return new meUDecalVisible(decal);
 	}
 };
@@ -352,7 +352,7 @@ public:
 		return gdProperty ? gdProperty->GetDefaultValue() : vEmptyString;
 	}
 	
-	virtual const igdeGDProperty *GetGDProperty(const char *key) const{
+	const igdeGDProperty *GetGDProperty(const char *key) const override{
 		return pPanel.GetWorld() ? pPanel.GetWorld()->GetGameDefinition()->GetListDecalProperties().GetNamed(key) : NULL;
 	}
 	
@@ -369,7 +369,7 @@ public:
 		return keys;
 	}
 	
-	virtual void AddContextMenuEntries(igdeUIHelper &helper, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeUIHelper &helper, igdeMenuCascade &menu) override{
 		helper.MenuSeparator(menu);
 		helper.MenuCommand(menu, pPanel.GetActionPropCopyToSel());
 		helper.MenuCommand(menu, pPanel.GetActionPropCloneToSel());
@@ -403,7 +403,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 			"Copy property from active decal to all selected decals"){}
 	
-	virtual igdeUndo *OnAction(meDecal *decal){
+	igdeUndo *OnAction(meDecal *decal) override{
 		meDecalList list(pPanel.GetWorld()->GetSelectionDecal().GetSelected());
 		const decString &property = pPanel.GetActiveProperty();
 		list.RemoveIfPresent(decal);
@@ -423,7 +423,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 			"Remove property from all selected decals"){}
 	
-	virtual igdeUndo *OnAction(meDecal*){
+	igdeUndo *OnAction(meDecal*) override{
 		const meDecalList &list = pPanel.GetWorld()->GetSelectionDecal().GetSelected();
 		const decString &property = pPanel.GetActiveProperty();
 		return !property.IsEmpty() && list.GetCount() > 0 ?
@@ -442,7 +442,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 			"Clone all properties from active decal to all selected decals"){}
 	
-	virtual igdeUndo *OnAction(meDecal *decal){
+	igdeUndo *OnAction(meDecal *decal) override{
 		meDecalList list(pPanel.GetWorld()->GetSelectionDecal().GetSelected());
 		list.RemoveIfPresent(decal);
 		return list.GetCount() > 0 ? new meUDecalClonePropertiesToSelected(list, decal->GetProperties()) : NULL;

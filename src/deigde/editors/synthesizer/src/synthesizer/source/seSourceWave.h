@@ -55,7 +55,7 @@ public:
 	seSourceWave(const seSourceWave &copy);
 	
 	/** \brief Clean up source. */
-	virtual ~seSourceWave();
+	~seSourceWave() override;
 	/*@}*/
 	
 	
@@ -94,22 +94,22 @@ public:
 	virtual deSynthesizerSource *CreateEngineSource();
 	
 	/** \brief Update targets. */
-	virtual void UpdateTargets();
+	void UpdateTargets() override;
 	
 	/** \brief Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage(seLink *link) const;
+	int CountLinkUsage(seLink *link) const override;
 	
 	/** \brief Removes a link from all targets using it. */
-	virtual void RemoveLinkFromTargets(seLink *link);
+	void RemoveLinkFromTargets(seLink *link) override;
 	
 	/** \brief Removes all links from all targets. */
-	virtual void RemoveLinksFromAllTargets();
+	void RemoveLinksFromAllTargets() override;
 	
 	/** \brief Create a copy of this source. */
-	virtual seSource *CreateCopy() const;
+	seSource *CreateCopy() const override;
 	
 	/** \brief List all links of all source targets. */
-	virtual void ListLinks(seLinkList& list);
+	void ListLinks(seLinkList& list) override;
 	/*@}*/
 	
 	

@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAActorCommand();
+	~ceWPTTIMAActorCommand() override;
 	/*@}*/
 	
 	
@@ -56,7 +56,7 @@ public:
 	}
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

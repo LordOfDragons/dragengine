@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMATrigger();
+	~ceWPTTIMATrigger() override;
 	/*@}*/
 	
 	
@@ -57,7 +57,7 @@ public:
 	static const char *GetActionText(ceCATrigger::eActions action);
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

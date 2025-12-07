@@ -44,7 +44,7 @@ public:
 	deBaseAnimationModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseAnimationModule();
+	~deBaseAnimationModule() override;
 	/*@}*/
 	
 	

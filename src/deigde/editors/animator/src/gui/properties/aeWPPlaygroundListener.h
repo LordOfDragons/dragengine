@@ -47,7 +47,7 @@ public:
 	aeWPPlaygroundListener(aeWPPlayground &panel);
 	
 	/** Clean up listener. */
-	virtual ~aeWPPlaygroundListener();
+	~aeWPPlaygroundListener() override;
 	/*@}*/
 	
 	
@@ -55,19 +55,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Locomotion changed. */
-	virtual void LocomotionChanged(aeAnimator *animator);
+	void LocomotionChanged(aeAnimator *animator) override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged(aeAnimator *animator, aeController *controller);
+	void ControllerChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller name changed. */
-	virtual void ControllerNameChanged(aeAnimator *animator, aeController *controller);
+	void ControllerNameChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller value changed. */
-	virtual void ControllerValueChanged(aeAnimator *animator, aeController *controller);
+	void ControllerValueChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged(aeAnimator *animator);
+	void ControllerStructureChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

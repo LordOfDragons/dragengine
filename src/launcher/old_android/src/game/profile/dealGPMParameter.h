@@ -55,7 +55,7 @@ public:
 	dealGPMParameter(const dealGPMParameter &parameter);
 	
 	/** \brief Clean up game profile. */
-	virtual ~dealGPMParameter();
+	~dealGPMParameter() override;
 	/*@}*/
 	
 	

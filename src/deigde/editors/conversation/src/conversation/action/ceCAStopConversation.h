@@ -46,13 +46,13 @@ public:
 	/** Creates a new stop conversation conversation action. */
 	ceCAStopConversation(const ceCAStopConversation &action);
 	/** Cleans up the stop conversation conversation action. */
-	virtual ~ceCAStopConversation();
+	~ceCAStopConversation() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

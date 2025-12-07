@@ -66,7 +66,7 @@ public:
 	/** Creates a new visitor. */
 	debpCDVMoveHitModelFace(debpCollisionDetection *coldet);
 	/** Cleans up the visitor. */
-	virtual ~debpCDVMoveHitModelFace();
+	~debpCDVMoveHitModelFace() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -89,7 +89,7 @@ public:
 	/** @name Visiting */
 	/*@{*/
 	/** Visit a node. */
-	virtual void VisitNode(debpDOctree *node, int intersection);
+	void VisitNode(debpDOctree *node, int intersection) override;
 	/*@}*/
 };
 

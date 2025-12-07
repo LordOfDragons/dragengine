@@ -39,7 +39,7 @@ public:
 	/** \brief Creates a new module. */
 	spModuleEngine(ScriptingPython &sp);
 	/** \brief Cleans up the module. */
-	virtual ~spModuleEngine();
+	~spModuleEngine() override;
 	/*@}*/
 	
 	/** \name Management */

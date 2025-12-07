@@ -47,7 +47,7 @@ public:
 	gdeWPSOCEnvMapProbeListener(gdeWPSOCEnvMapProbe &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCEnvMapProbeListener();
+	~gdeWPSOCEnvMapProbeListener() override;
 	/*@}*/
 	
 	
@@ -55,27 +55,27 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class envMapProbes changed. */
-	virtual void OCEnvMapProbesChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	void OCEnvMapProbesChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class envMapProbe changed. */
-	virtual void OCEnvMapProbeChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe);
+	void OCEnvMapProbeChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe) override;
 	
 	/** \brief Active object class envMapProbe changed. */
-	virtual void ActiveOCEnvMapProbeChanged(gdeGameDefinition *gameDefinition);
+	void ActiveOCEnvMapProbeChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

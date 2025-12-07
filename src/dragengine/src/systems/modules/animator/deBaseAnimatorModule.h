@@ -49,7 +49,7 @@ public:
 	deBaseAnimatorModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseAnimatorModule();
+	~deBaseAnimatorModule() override;
 	/*@}*/
 	
 	

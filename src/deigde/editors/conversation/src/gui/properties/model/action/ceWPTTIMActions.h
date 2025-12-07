@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMActions();
+	~ceWPTTIMActions() override;
 	/*@}*/
 	
 	
@@ -73,7 +73,7 @@ public:
 	virtual void UpdateActions();
 	
 	/** \brief Build playback continuing from here. */
-	virtual void BuildPlaybackFromHere() const;
+	void BuildPlaybackFromHere() const override;
 	
 	
 	

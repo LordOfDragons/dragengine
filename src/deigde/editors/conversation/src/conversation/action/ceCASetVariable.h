@@ -70,7 +70,7 @@ public:
 	ceCASetVariable(const ceCASetVariable &action);
 	
 	/** \brief Clean up conversation action. */
-	virtual ~ceCASetVariable();
+	~ceCASetVariable() override;
 	/*@}*/
 	
 	
@@ -104,7 +104,7 @@ public:
 	
 	
 	/** \brief Create copy of action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

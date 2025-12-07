@@ -68,7 +68,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deArchiveContainer();
+	~deArchiveContainer() override;
 	/*@}*/
 	
 	
@@ -89,7 +89,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile(const decPath &path);
+	bool ExistsFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be read.
@@ -98,7 +98,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile(const decPath &path);
+	bool CanReadFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be written.
@@ -110,14 +110,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile(const decPath &path);
+	bool CanWriteFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile(const decPath &path);
+	bool CanDeleteFile(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for reading.
@@ -130,7 +130,7 @@ public:
 	 * wrapping the actual file reader to be able to safely drop it when the module is
 	 * unloaded while the reader is still held by somebody.
 	 */
-	virtual decBaseFileReader *OpenFileForReading(const decPath &path);
+	decBaseFileReader *OpenFileForReading(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for writing.
@@ -145,41 +145,41 @@ public:
 	 * wrapping the actual file writer to be able to safely drop it when the module is
 	 * unloaded while the writer is still held by somebody.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
+	decBaseFileWriter *OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile(const decPath &path);
+	void DeleteFile(const decPath &path) override;
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile(const decPath &path);
+	void TouchFile(const decPath &path) override;
 	
 	/** \brief Search files. */
-	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher);
+	void SearchFiles(const decPath &directory, deContainerFileSearch &searcher) override;
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual eFileTypes GetFileType(const decPath &path);
+	eFileTypes GetFileType(const decPath &path) override;
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize(const decPath &path);
+	uint64_t GetFileSize(const decPath &path) override;
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path);
+	TIME_SYSTEM GetFileModificationTime(const decPath &path) override;
 	/*@}*/
 	
 	

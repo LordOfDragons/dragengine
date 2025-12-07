@@ -47,7 +47,7 @@ public:
 	meWPSDecalListener(meWPSDecal &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPSDecalListener();
+	~meWPSDecalListener() override;
 	/*@}*/
 	
 	
@@ -55,19 +55,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Decal selection changed. */
-	virtual void DecalSelectionChanged(meWorld *world);
+	void DecalSelectionChanged(meWorld *world) override;
 	
 	/** \brief Decal changed. */
-	virtual void DecalChanged(meWorld *world, meDecal *decal);
+	void DecalChanged(meWorld *world, meDecal *decal) override;
 	
 	/** \brief Decal geometry changed. */
-	virtual void DecalGeometryChanged(meWorld *world, meDecal *decal);
+	void DecalGeometryChanged(meWorld *world, meDecal *decal) override;
 	
 	/** \brief Decal properties changed. */
-	virtual void DecalPropertiesChanged(meWorld *world, meDecal *decal);
+	void DecalPropertiesChanged(meWorld *world, meDecal *decal) override;
 	
 	/** \brief Decal active property changed. */
-	virtual void DecalActivePropertyChanged(meWorld *world, meDecal *decal);
+	void DecalActivePropertyChanged(meWorld *world, meDecal *decal) override;
 	/*@}*/
 };
 

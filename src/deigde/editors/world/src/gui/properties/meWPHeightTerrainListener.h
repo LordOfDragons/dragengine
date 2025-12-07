@@ -47,7 +47,7 @@ public:
 	meWPHeightTerrainListener(meWPHeightTerrain &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPHeightTerrainListener();
+	~meWPHeightTerrainListener() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Height paint parameters changed. */
-	virtual void HeightPaintChanged(meWorld *world);
+	void HeightPaintChanged(meWorld *world) override;
 	
 	/** \brief Mask paint parameters changed. */
-	virtual void MaskPaintChanged(meWorld *world);
+	void MaskPaintChanged(meWorld *world) override;
 	
 	/** \brief Visibility paint parameters changed. */
-	virtual void VisibilityPaintChanged(meWorld *world);
+	void VisibilityPaintChanged(meWorld *world) override;
 	
 	
 	
@@ -71,84 +71,84 @@ public:
 	
 	
 	/** \brief Height terrain sector state ( changed, saved, filename ) changed. */
-	virtual void HTStateChanged(meWorld *world);
+	void HTStateChanged(meWorld *world) override;
 	
 	/** \brief Height terrain changed. */
-	virtual void HTChanged(meWorld *world);
+	void HTChanged(meWorld *world) override;
 	
 	/** \brief Height terrain sector changed. */
-	virtual void HTSChanged(meWorld *world, meHeightTerrainSector *sector);
+	void HTSChanged(meWorld *world, meHeightTerrainSector *sector) override;
 	
 	/** \brief Height terrain sector height changed. */
-	virtual void HTSHeightChanged(meWorld *world, meHeightTerrainSector *sector);
+	void HTSHeightChanged(meWorld *world, meHeightTerrainSector *sector) override;
 	
 	/** \brief Height terrain sector visibility changed. */
-	virtual void HTSVisibilityChanged(meWorld *world, meHeightTerrainSector *sector);
+	void HTSVisibilityChanged(meWorld *world, meHeightTerrainSector *sector) override;
 	
 	
 	
 	/** \brief Height terrain sector texture count changed. */
-	virtual void HTSTextureCountChanged(meWorld *world, meHeightTerrainSector *sector);
+	void HTSTextureCountChanged(meWorld *world, meHeightTerrainSector *sector) override;
 	
 	/** \brief Height terrain sector active texture changed. */
-	virtual void HTSActiveTextureChanged(meWorld *world, meHeightTerrainSector *sector);
+	void HTSActiveTextureChanged(meWorld *world, meHeightTerrainSector *sector) override;
 	
 	/** \brief Height terrain sector texture changed. */
-	virtual void HTSTextureChanged(meWorld *world, meHeightTerrainSector *sector,
-		meHeightTerrainTexture *texture);
+	void HTSTextureChanged(meWorld *world, meHeightTerrainSector *sector,
+		meHeightTerrainTexture *texture) override;
 	
 	/** \brief Height terrain sector texture mask changed. */
-	virtual void HTSTextureMaskChanged(meWorld *world, meHeightTerrainSector *sector,
-		meHeightTerrainTexture *texture);
+	void HTSTextureMaskChanged(meWorld *world, meHeightTerrainSector *sector,
+		meHeightTerrainTexture *texture) override;
 	
 	
 	
 	/** \brief Height terrain navigation space count changed. */
-	virtual void HTNavSpaceCountChanged(meWorld *world);
+	void HTNavSpaceCountChanged(meWorld *world) override;
 	
 	/** \brief Height terrain active navigation space changed. */
-	virtual void HTActiveNavSpaceChanged(meWorld *world);
+	void HTActiveNavSpaceChanged(meWorld *world) override;
 	
 	/** \brief Notify listeners height terrain navigation space changed. */
-	virtual void HTNavSpaceChanged(meWorld *world, meHeightTerrainNavSpace *navspace);
+	void HTNavSpaceChanged(meWorld *world, meHeightTerrainNavSpace *navspace) override;
 	
 	/** \brief Height terrain navigation space type count changed. */
-	virtual void HTNavSpaceTypeCountChanged(meWorld *world, meHeightTerrainNavSpace *navspace);
+	void HTNavSpaceTypeCountChanged(meWorld *world, meHeightTerrainNavSpace *navspace) override;
 	
 	/** \brief Height terrain navigation space active type changed. */
-	virtual void HTNavSpaceActiveTypeChanged(meWorld *world, meHeightTerrainNavSpace *navspace);
+	void HTNavSpaceActiveTypeChanged(meWorld *world, meHeightTerrainNavSpace *navspace) override;
 	
 	/** \brief Notify listeners height terrain navigation space type changed. */
-	virtual void HTNavSpaceTypeChanged(meWorld *world, meHeightTerrainNavSpace *navspace,
-		meHeightTerrainNavSpaceType *type);
+	void HTNavSpaceTypeChanged(meWorld *world, meHeightTerrainNavSpace *navspace,
+		meHeightTerrainNavSpaceType *type) override;
 	
 	/** \brief Notify listeners height terrain navigation space faces changed. */
-	virtual void HTNavSpaceFacesChanged(meWorld *world, meHeightTerrainNavSpace *navspace);
+	void HTNavSpaceFacesChanged(meWorld *world, meHeightTerrainNavSpace *navspace) override;
 	
 	/** \brief Height terrain selected navigation space points changed. */
-	virtual void HTNavSpaceSelectedPointsChanged(meWorld *world);
+	void HTNavSpaceSelectedPointsChanged(meWorld *world) override;
 	
 	
 	
 	/** \brief Height terrain sector vegetation layer count changed. */
-	virtual void HTVLayerCountChanged(meWorld *world);
+	void HTVLayerCountChanged(meWorld *world) override;
 	
 	/** \brief Height terrain sector active vegetation layer changed. */
-	virtual void HTActiveVLayerChanged(meWorld *world);
+	void HTActiveVLayerChanged(meWorld *world) override;
 	
 	/** \brief Height terrain sector vegetation layer changed. */
-	virtual void HTVLayerChanged(meWorld *world, meHTVegetationLayer *vlayer);
+	void HTVLayerChanged(meWorld *world, meHTVegetationLayer *vlayer) override;
 	
 	
 	
 	/** \brief Height terrain sector vegetation layer variation count changed. */
-	virtual void HTVLVariationCountChanged(meWorld *world, meHTVegetationLayer *vlayer);
+	void HTVLVariationCountChanged(meWorld *world, meHTVegetationLayer *vlayer) override;
 	
 	/** \brief Height terrain sector active vegetation layer variation changed. */
-	virtual void HTVLActiveVariationChanged(meWorld *world, meHTVegetationLayer *vlayer);
+	void HTVLActiveVariationChanged(meWorld *world, meHTVegetationLayer *vlayer) override;
 	
 	/** \brief Height terrain sector vegetation layer variation changed. */
-	virtual void HTVLVariationChanged(meWorld *world, meHTVegetationLayer *vlayer, meHTVVariation *variation);
+	void HTVLVariationChanged(meWorld *world, meHTVegetationLayer *vlayer, meHTVVariation *variation) override;
 	/*@}*/
 };
 

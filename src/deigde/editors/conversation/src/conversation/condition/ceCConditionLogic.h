@@ -60,7 +60,7 @@ public:
 	/** Creates a new conversation condition. */
 	ceCConditionLogic(const ceCConditionLogic &condition);
 	/** Cleans up the conversation condition. */
-	virtual ~ceCConditionLogic();
+	~ceCConditionLogic() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -74,7 +74,7 @@ public:
 	inline const ceConversationConditionList &GetConditions() const { return pConditions; }
 	
 	/** Create a copy of this condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition *CreateCopy() const override;
 	/*@}*/
 	
 	

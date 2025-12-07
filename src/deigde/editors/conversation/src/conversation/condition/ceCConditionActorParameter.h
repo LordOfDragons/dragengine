@@ -76,7 +76,7 @@ public:
 	ceCConditionActorParameter(const ceCConditionActorParameter &condition);
 	
 	/** \brief Clean up conversation condition. */
-	virtual ~ceCConditionActorParameter();
+	~ceCConditionActorParameter() override;
 	/*@}*/
 	
 	
@@ -116,7 +116,7 @@ public:
 	
 	
 	/** \brief Create copy of condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition *CreateCopy() const override;
 	/*@}*/
 };
 

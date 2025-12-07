@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCVariable();
+	~ceWPCVariable() override;
 	/*@}*/
 	
 	

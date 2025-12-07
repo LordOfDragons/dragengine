@@ -79,7 +79,7 @@ public:
 	dealWidgetLabel(dealDisplay &display, dealFont *font, int fontSize, const char *text);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetLabel();
+	~dealWidgetLabel() override;
 	/*@}*/
 	
 	
@@ -127,12 +127,12 @@ public:
 	
 	
 	/** \brief Minimum size of widget. */
-	virtual decPoint GetMinimumSize();
+	decPoint GetMinimumSize() override;
 	
 	
 	
 	/** \brief Render content. */
-	virtual void RenderContent(const sRenderContext &context);
+	void RenderContent(const sRenderContext &context) override;
 	
 	
 	

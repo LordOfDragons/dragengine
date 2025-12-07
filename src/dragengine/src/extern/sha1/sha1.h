@@ -45,9 +45,9 @@ class DE_DLL_EXPORT SHA1
         /*
          * Provide input to SHA1
          */
-        void Input(const unsigned char *message_array,
+        void Input( const unsigned char *message_array,
                     unsigned            length);
-        void Input(const char  *message_array,
+        void Input( const char  *message_array,
                     unsigned    length);
         void Input(unsigned char message_element);
         void Input(char message_element);

@@ -47,7 +47,7 @@ public:
 	gdeWPSOCComponentListener(gdeWPSOCComponent &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCComponentListener();
+	~gdeWPSOCComponentListener() override;
 	/*@}*/
 	
 	
@@ -55,60 +55,60 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Base path changed. */
-	virtual void BasePathChanged(gdeGameDefinition *gameDefinition);
+	void BasePathChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Base game definitions changed. */
-	virtual void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition);
+	void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object texture property name changed. */
-	virtual void OCTexturePropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property);
+	void OCTexturePropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object texture properties changed. */
-	virtual void OCTexturePropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCTexturePropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class components changed. */
-	virtual void OCComponentsChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass);
+	void OCComponentsChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class component changed. */
-	virtual void OCComponentChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponent *component);
+	void OCComponentChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponent *component) override;
 	
 	/** \brief Object class component active texture changed. */
-	virtual void OCComponentActiveTextureChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponent *component);
+	void OCComponentActiveTextureChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponent *component) override;
 	
 	/** \brief Object class component texture changed. */
-	virtual void OCComponentTextureChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture);
+	void OCComponentTextureChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture) override;
 	
 	/** \brief Object class component texture name changed. */
-	virtual void OCComponentTextureNameChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture);
+	void OCComponentTextureNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture) override;
 	
 	/** \brief Object class component texture properties changed. */
-	virtual void OCComponentTexturePropertiesChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture);
+	void OCComponentTexturePropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture) override;
 	
 	/** \brief Active object class component changed. */
-	virtual void ActiveOCComponentChanged(gdeGameDefinition *gameDefinition);
+	void ActiveOCComponentChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

@@ -277,11 +277,11 @@ public:
 	cActionIsGhost(gdeWPSObjectClass &panel) : cBaseAction(panel, "Ghost", NULL,
 		"Object is not touched by other objects during placements"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return new gdeUOCToggleIsGhost(objectClass);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionCanInstantiate : public cBaseAction {
@@ -289,11 +289,11 @@ public:
 	cActionCanInstantiate(gdeWPSObjectClass &panel) : cBaseAction(panel, "Can Instantiate", NULL,
 		"Object can be instantiated (visible in browser and usable). Disable for classes only inherited from."){ }
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return new gdeUOCToggleCanInstantiate(objectClass);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 class cActionIsAttachableBehavior : public cBaseAction {
@@ -314,7 +314,7 @@ public:
 	cActionInheritSubObjects(gdeWPSObjectClass &panel, int mask, const char *text,
 	const char *description) : cBaseAction(panel, text, nullptr, description), pMask(mask){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		int filter = objectClass->GetInheritSubObjects();
 		if((filter & pMask) == pMask){
 			filter &= ~pMask;
@@ -325,7 +325,7 @@ public:
 		return new gdeUOCSetInheritSubObjects(objectClass, filter);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 
@@ -338,15 +338,15 @@ public:
 		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
-	virtual igdeUndo *UndoAdd(gdeProperty *property){
+	igdeUndo *UndoAdd(gdeProperty *property) override{
 		return new gdeUOCPropertyAdd(pPanel.GetObjectClass(), property);
 	}
 	
-	virtual igdeUndo *UndoRemove(gdeProperty *property){
+	igdeUndo *UndoRemove(gdeProperty *property) override{
 		return new gdeUOCPropertyRemove(pPanel.GetObjectClass(), property);
 	}
 	
-	virtual igdeUndo *UndoPaste(gdeProperty *property){
+	igdeUndo *UndoPaste(gdeProperty *property) override{
 		gdeUOCPropertyAdd * const undo = new gdeUOCPropertyAdd(pPanel.GetObjectClass(), property);
 		undo->SetShortInfo("Paste property");
 		return undo;
@@ -360,15 +360,15 @@ public:
 		return new gdeUOCPSetDescription(pPanel.GetObjectClass(), property, description);
 	}
 	
-	virtual igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type){
+	igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type) override{
 		return new gdeUOCPSetType(pPanel.GetObjectClass(), property, type);
 	}
 	
-	virtual igdeUndo *UndoMinimumValue(gdeProperty *property, float value){
+	igdeUndo *UndoMinimumValue(gdeProperty *property, float value) override{
 		return new gdeUOCPSetMinValue(pPanel.GetObjectClass(), property, value);
 	}
 	
-	virtual igdeUndo *UndoMaximumValue(gdeProperty *property, float value){
+	igdeUndo *UndoMaximumValue(gdeProperty *property, float value) override{
 		return new gdeUOCPSetMaxValue(pPanel.GetObjectClass(), property, value);
 	}
 	
@@ -380,7 +380,7 @@ public:
 		return new gdeUOCPSetOptions(pPanel.GetObjectClass(), property, options);
 	}
 	
-	virtual igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type){
+	igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type) override{
 		return new gdeUOCPSetPathPatternType(pPanel.GetObjectClass(), property, type);
 	}
 	
@@ -388,15 +388,15 @@ public:
 		return new gdeUOCPSetIdentifierGroup(pPanel.GetObjectClass(), property, identifier);
 	}
 	
-	virtual igdeUndo *UndoIdentifierUsage(gdeProperty *property){
+	igdeUndo *UndoIdentifierUsage(gdeProperty *property) override{
 		return new gdeUOCPToggleIdentifierUsage(pPanel.GetObjectClass(), property);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern){
+	igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern) override{
 		return new gdeUOCPCFPAdd(pPanel.GetObjectClass(), property, filePattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern){
+	igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern) override{
 		return new gdeUOCPCFPRemove(pPanel.GetObjectClass(), property, filePattern);
 	}
 	
@@ -425,15 +425,15 @@ public:
 		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
-	virtual igdeUndo *UndoAdd(gdeProperty *property){
+	igdeUndo *UndoAdd(gdeProperty *property) override{
 		return new gdeUOCTexPropertyAdd(pPanel.GetObjectClass(), property);
 	}
 	
-	virtual igdeUndo *UndoRemove(gdeProperty *property){
+	igdeUndo *UndoRemove(gdeProperty *property) override{
 		return new gdeUOCTexPropertyRemove(pPanel.GetObjectClass(), property);
 	}
 	
-	virtual igdeUndo *UndoPaste(gdeProperty *property){
+	igdeUndo *UndoPaste(gdeProperty *property) override{
 		gdeUOCTexPropertyAdd * const undo = new gdeUOCTexPropertyAdd(pPanel.GetObjectClass(), property);
 		undo->SetShortInfo("Paste property");
 		return undo;
@@ -447,15 +447,15 @@ public:
 		return new gdeUOCTPSetDescription(pPanel.GetObjectClass(), property, description);
 	}
 	
-	virtual igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type){
+	igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type) override{
 		return new gdeUOCTPSetType(pPanel.GetObjectClass(), property, type);
 	}
 	
-	virtual igdeUndo *UndoMinimumValue(gdeProperty *property, float value){
+	igdeUndo *UndoMinimumValue(gdeProperty *property, float value) override{
 		return new gdeUOCTPSetMinValue(pPanel.GetObjectClass(), property, value);
 	}
 	
-	virtual igdeUndo *UndoMaximumValue(gdeProperty *property, float value){
+	igdeUndo *UndoMaximumValue(gdeProperty *property, float value) override{
 		return new gdeUOCTPSetMaxValue(pPanel.GetObjectClass(), property, value);
 	}
 	
@@ -467,7 +467,7 @@ public:
 		return new gdeUOCTPSetOptions(pPanel.GetObjectClass(), property, options);
 	}
 	
-	virtual igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type){
+	igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type) override{
 		return new gdeUOCTPSetPathPatternType(pPanel.GetObjectClass(), property, type);
 	}
 	
@@ -475,15 +475,15 @@ public:
 		return new gdeUOCTPSetIdentifierGroup(pPanel.GetObjectClass(), property, identifier);
 	}
 	
-	virtual igdeUndo *UndoIdentifierUsage(gdeProperty *property){
+	igdeUndo *UndoIdentifierUsage(gdeProperty *property) override{
 		return new gdeUOCTPToggleIdentifierUsage(pPanel.GetObjectClass(), property);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern){
+	igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern) override{
 		return new gdeUOCTPCFPAdd(pPanel.GetObjectClass(), property, filePattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern){
+	igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern) override{
 		return new gdeUOCTPCFPRemove(pPanel.GetObjectClass(), property, filePattern);
 	}
 	
@@ -528,7 +528,7 @@ public:
 	cActionInheritAdd(gdeWPSObjectClass &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add inherit"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		const decStringSet &classNames = pPanel.GetGameDefinition()->GetClassNameList();
 		const int count = classNames.GetCount();
 		decStringList proposals;
@@ -576,12 +576,12 @@ public:
 	cActionInheritRemove(gdeWPSObjectClass &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove inherit"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		gdeOCInherit * const inherit = pPanel.GetInherit();
 		return inherit ? new gdeUOCRemoveInherit(objectClass, inherit) : NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetInherit() != NULL);
 	}
 };
@@ -591,11 +591,11 @@ public:
 	cActionInheritRemoveAll(gdeWPSObjectClass &panel) : cBaseAction(panel, "Remove All",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all inherits"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return objectClass->GetInherits().GetCount() > 0 ? new gdeUOCRemoveAllInherits(objectClass) : NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetInherit() != NULL);
 	}
 };
@@ -644,7 +644,7 @@ public:
 	cActionInheritResetPropertyPrefix(gdeWPSObjectClass &panel) : cBaseAction(panel, "R", NULL,
 		"Reset property prefix to default property prefix of inherited object class"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		gdeOCInherit * const inherit = pPanel.GetInherit();
 		if(inherit){
 			const gdeObjectClass * const ioc = pPanel.GetGameDefinition()->FindObjectClass(inherit->GetName());
@@ -664,7 +664,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
 		"Jump to Class"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass*){
+	igdeUndo *OnActionObjectClass(gdeObjectClass*) override{
 		const gdeOCInherit * const inherit = pPanel.GetInherit();
 		if(!inherit){
 			return NULL;
@@ -699,7 +699,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
 		"Jump to Category"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
 		gdeCategory * const category = gameDefinition.GetCategoriesObjectClass()
 			.GetWithPath(objectClass->GetCategory());
@@ -720,7 +720,7 @@ public:
 	cListHideTags(gdeWPSObjectClass &panel, igdeUIHelper &helper) :
 	gdeWPTagList(helper, 5, "Hide Tags"), pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet(const decStringSet &tags){
+	igdeUndo *UndoSet(const decStringSet &tags) override{
 		return new gdeUOCSetHideTags(pPanel.GetObjectClass(), tags);
 	}
 };
@@ -732,7 +732,7 @@ public:
 	cListPartialHideTags(gdeWPSObjectClass &panel, igdeUIHelper &helper) :
 	gdeWPTagList(helper, 5, "Partial Hide Tags"), pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet(const decStringSet &tags){
+	igdeUndo *UndoSet(const decStringSet &tags) override{
 		return new gdeUOCSetPartialHideTags(pPanel.GetObjectClass(), tags);
 	}
 };
@@ -743,7 +743,7 @@ public:
 	cActionPropertyValueSet(gdeWPSObjectClass &panel) : cBaseAction(panel, "Set",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Set property value"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		const decString &key = pPanel.GetPropertyKey();
 		if(!objectClass || key.IsEmpty()){
 			return NULL;
@@ -760,7 +760,7 @@ public:
 		return new gdeUOCSetPropertyValues(objectClass, values);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetObjectClass() && !pPanel.GetPropertyKey().IsEmpty());
 	}
 };
@@ -770,7 +770,7 @@ public:
 	cActionPropertyValueRemove(gdeWPSObjectClass &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove property value"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		const char * const key = pPanel.GetPropertyValue();
 		if(!key || !objectClass->GetPropertyValues().Has(key)){
 			return NULL;
@@ -781,7 +781,7 @@ public:
 		return new gdeUOCSetPropertyValues(objectClass, values);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		gdeObjectClass * const objectClass = pPanel.GetObjectClass();
 		const char * const key = pPanel.GetPropertyValue();
 		SetEnabled(objectClass && key && objectClass->GetPropertyValues().Has(key));
@@ -793,14 +793,14 @@ public:
 	cActionPropertyValueClear(gdeWPSObjectClass &panel) : cBaseAction(panel, "Clear",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all property values"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		if(objectClass->GetPropertyValues().GetCount() == 0){
 			return NULL;
 		}
 		return new gdeUOCSetPropertyValues(objectClass, decStringDictionary());
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		gdeObjectClass * const objectClass = pPanel.GetObjectClass();
 		SetEnabled(objectClass && objectClass->GetPropertyValues().GetCount() > 0);
 	}
@@ -811,11 +811,11 @@ public:
 	cActionPropertyValuesFromSubObjects(gdeWPSObjectClass &panel) : cBaseAction(panel,
 		"Set from sub objects", NULL, "Set property values from sub objects links"){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		return gdeUOCPropertyValuesFromSubObjects::Create(objectClass);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetObjectClass());
 	}
 };
@@ -876,14 +876,14 @@ public:
 	cBaseActionTexture(gdeWPSObjectClass &panel, const char *text, igdeIcon *icon, const char *description) :
 		cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
 		return texture ? OnActionTexture(objectClass, texture) : NULL;
 	}
 	
 	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetTexture());
 	}
 };
@@ -948,7 +948,7 @@ public:
 	cActionTextureAdd(gdeWPSObjectClass &panel, const decString &textureName) :
 		cBaseAction(panel, textureName, NULL, "Add texture"), pTextureName(textureName){}
 	
-	virtual igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass){
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
 		decString name(pTextureName);
 		
 		if(name.IsEmpty()){
@@ -978,7 +978,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const gdeObjectClass * const objectClass = pPanel.GetObjectClass();
 		SetEnabled(objectClass && (pTextureName.IsEmpty() || !objectClass->GetTextures().HasNamed(pTextureName)));
 	}
@@ -989,7 +989,7 @@ public:
 	cActionTextureRemove(gdeWPSObjectClass &panel) : cBaseActionTexture(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove selected texture"){}
 	
-	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture){
+	igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) override{
 		return new gdeUOCRemoveTexture(objectClass, texture);
 	}
 };

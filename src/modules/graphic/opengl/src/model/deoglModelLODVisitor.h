@@ -53,7 +53,7 @@ public:
 	/** Creates a new model octree visitor. */
 	deoglModelLODVisitor(deoglModelLOD &modelLOD);
 	/** Cleans up the model octree visitor. */
-	virtual ~deoglModelLODVisitor();
+	~deoglModelLODVisitor() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -81,7 +81,7 @@ public:
 	 * Visits an octree node. The default implementation is to visit all
 	 * world elements stored in the node.
 	 */
-	virtual void VisitNode(deoglOctree *node, int intersection);
+	void VisitNode(deoglOctree *node, int intersection) override;
 	/*@}*/
 };
 

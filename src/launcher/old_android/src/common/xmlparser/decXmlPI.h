@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml process instruction. */
-	virtual ~decXmlPI();
+	~decXmlPI() override;
 	/*@}*/
 	
 	
@@ -73,15 +73,15 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToPI() const;
-	virtual decXmlPI *CastToPI();
+	bool CanCastToPI() const override;
+	decXmlPI *CastToPI() override;
 	/*@}*/
 };
 

@@ -131,7 +131,7 @@ public:
 	cActionMoveSnap(meWPView &panel) :
 	cBaseAction(panel, "Snap Move", nullptr, "Snap moving distance"){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
 		configuration.SetMoveSnap(!configuration.GetMoveSnap());
 		world.NotifyEditingChanged();
@@ -157,7 +157,7 @@ public:
 	cActionRotateSnap(meWPView &panel) :
 	cBaseAction(panel, "Snap Rotate", nullptr, "Snap rotation angle"){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
 		configuration.SetRotateSnap(!configuration.GetRotateSnap());
 		world.NotifyEditingChanged();
@@ -183,7 +183,7 @@ public:
 	cActionScaleSnap(meWPView &panel) :
 	cBaseAction(panel, "Snap Scale", nullptr, "Snap scaling factor"){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
 		configuration.SetScaleSnap(!configuration.GetScaleSnap());
 		world.NotifyEditingChanged();
@@ -286,7 +286,7 @@ public:
 	cActionAutoUpdate(meWPView &panel) :
 	cBaseAction(panel, "Enable Auto Updating", nullptr, "Automatically update the screen"){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
 		configuration.SetAutoUpdate(!configuration.GetAutoUpdate());
 		world.NotifyEditingChanged();
@@ -302,7 +302,7 @@ public:
 	cBaseAction(panel, "", nullptr, "Hide classes matching one or more tags"),
 	pToggleTags(toggleTags){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		world.GetGuiParameters().GetTagsHideClass() = pToggleTags->GetEnabledTags();
 		world.NotifyClassHideTagsChanged();
 	}
@@ -316,7 +316,7 @@ public:
 	cBaseAction(panel, "", nullptr, "Partially hide classes matching one or more tags"),
 	pToggleTags(toggleTags){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		world.GetGuiParameters().GetTagsPartialHideClass() = pToggleTags->GetEnabledTags();
 		world.NotifyClassHideTagsChanged();
 	}
@@ -328,7 +328,7 @@ public:
 	cActionCameraFreeRoaming(meWPView &panel) :
 	cBaseAction(panel, "Free Roaming", nullptr, "Select free roaming camera"){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		world.SetActiveCamera(world.GetFreeRoamingCamera());
 	}
 };
@@ -338,7 +338,7 @@ public:
 	cActionCameraPlayer(meWPView &panel) :
 	cBaseAction(panel, "Player", nullptr, "Select player camera"){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		world.SetActiveCamera(world.GetPlayerCamera());
 	}
 };
@@ -348,7 +348,7 @@ public:
 	cActionCameraObject(meWPView &panel) :
 	cBaseAction(panel, "Object", nullptr, "Select object camera"){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		meCamera * const camera = pPanel.GetSelectedCameraObject();
 		if(camera){
 			world.SetActiveCamera(camera);
@@ -385,7 +385,7 @@ public:
 	cBaseAction(panel, "Enable Auralization", nullptr,
 		"Enable auralization if supported by audio module"){ }
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
 		configuration.SetEnableAuralization(!configuration.GetEnableAuralization());
 		world.NotifyEditingChanged();
@@ -397,7 +397,7 @@ class cActionSkyChanged : public cBaseAction{
 public:
 	cActionSkyChanged(meWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		world.NotifySkyChanged();
 	}
 };
@@ -406,7 +406,7 @@ class cEditBgObject : public cBaseAction{
 public:
 	cEditBgObject(meWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		world.NotifyBgObjectChanged();
 	}
 };
@@ -510,7 +510,7 @@ class cActionCameraChanged : public cBaseAction{
 public:
 	cActionCameraChanged(meWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		meCamera * const camera = world.GetActiveCamera();
 		if(camera){
 			pPanel.GetWindowProperties().GetWindowMain().GetConfiguration().SetEnableGI(camera->GetEnableGI());
@@ -523,7 +523,7 @@ class cActionTriggerTable : public cBaseAction{
 public:
 	cActionTriggerTable(meWPView &panel) : cBaseAction(panel, "", nullptr, "Trigger table"){}
 	
-	virtual void OnAction(meWorld &world){
+	void OnAction(meWorld &world) override{
 		world.NotifyTriggerTableChanged();
 	}
 };

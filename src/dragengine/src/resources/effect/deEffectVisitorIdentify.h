@@ -62,7 +62,7 @@ public:
 	deEffectVisitorIdentify();
 	
 	/** \brief Clean up animator effect visitor identify. */
-	virtual ~deEffectVisitorIdentify();
+	~deEffectVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -108,19 +108,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void VisitEffect(deEffect &effect);
+	void VisitEffect(deEffect &effect) override;
 	
 	/** \brief Visit effect filter kernel. */
-	virtual void VisitFilterKernel(deEffectFilterKernel &effect);
+	void VisitFilterKernel(deEffectFilterKernel &effect) override;
 	
 	/** \brief Visit overlay image effect. */
-	virtual void VisitOverlayImage(deEffectOverlayImage &effect);
+	void VisitOverlayImage(deEffectOverlayImage &effect) override;
 	
 	/** \brief Visit color matrix effect. */
-	virtual void VisitColorMatrix(deEffectColorMatrix &effect);
+	void VisitColorMatrix(deEffectColorMatrix &effect) override;
 	
 	/** \brief Visit pixel matrix effect. */
-	virtual void VisitDistortImage(deEffectDistortImage &effect);
+	void VisitDistortImage(deEffectDistortImage &effect) override;
 	/*@}*/
 };
 

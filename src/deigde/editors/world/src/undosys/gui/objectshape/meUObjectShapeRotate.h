@@ -61,7 +61,7 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/** Progressive redo the action. */
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 };
 
 #endif

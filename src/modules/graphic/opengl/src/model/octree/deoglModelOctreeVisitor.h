@@ -41,7 +41,7 @@ public:
 	/** Creates a new model octree visitor. */
 	deoglModelOctreeVisitor();
 	/** Cleans up the model octree visitor. */
-	virtual ~deoglModelOctreeVisitor();
+	~deoglModelOctreeVisitor() override;
 	/*@}*/
 	
 	/** \name Visiting */
@@ -50,7 +50,7 @@ public:
 	 * Visits an octree node.
 	 * \details The default implementation is to visit all faces stored in the node.
 	 */
-	virtual void VisitNode(deoglOctree *node, int intersection);
+	void VisitNode(deoglOctree *node, int intersection) override;
 	/** Visits a face. */
 	virtual void VisitFace(deoglModelFace *face);
 	/*@}*/

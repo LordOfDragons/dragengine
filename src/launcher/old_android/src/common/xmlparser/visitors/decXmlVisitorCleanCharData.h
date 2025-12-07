@@ -46,7 +46,7 @@ public:
 	decXmlVisitorCleanCharData();
 	
 	/** \brief Clean up visitor. */
-	virtual ~decXmlVisitorCleanCharData();
+	~decXmlVisitorCleanCharData() override;
 	/*@}*/
 	
 	
@@ -54,10 +54,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit container. */
-	virtual void VisitContainer(decXmlContainer &container);
+	void VisitContainer(decXmlContainer &container) override;
 	
 	/** \brief Visit element character data. */
-	virtual void VisitCharacterData(decXmlCharacterData &data);
+	void VisitCharacterData(decXmlCharacterData &data) override;
 	/*@}*/
 	
 	

@@ -271,7 +271,7 @@ public:
 		return new aeUSetRuleFStaEnablePos(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleForeignState &rule){
+	void Update(const aeAnimator & , const aeRuleForeignState &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnablePosition());
 	}
@@ -286,7 +286,7 @@ public:
 		return new aeUSetRuleFStaEnableRot(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleForeignState &rule){
+	void Update(const aeAnimator & , const aeRuleForeignState &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableOrientation());
 	}
@@ -301,7 +301,7 @@ public:
 		return new aeUSetRuleFStaEnableSize(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleForeignState &rule){
+	void Update(const aeAnimator & , const aeRuleForeignState &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableSize());
 	}
@@ -317,7 +317,7 @@ public:
 		return new aeUSetRuleFStaEnableVertexPositionSet(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleForeignState &rule){
+	void Update(const aeAnimator & , const aeRuleForeignState &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableVertexPositionSet());
 	}

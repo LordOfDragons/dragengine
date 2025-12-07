@@ -73,9 +73,9 @@ void dealRemoveDirTree::Remove(const char *path){
 	diskPath.RemoveLastComponent();
 	
 	// create container for base directory
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+	deVirtualFileSystem::Ref vfs((deVirtualFileSystem::Ref::NewWith()));
 	
-	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(diskPath));
+	deVFSDiskDirectory::Ref container((deVFSDiskDirectory::Ref::NewWith(diskPath)));
 	container->SetReadOnly(false);
 	vfs->AddContainer(container);
 	

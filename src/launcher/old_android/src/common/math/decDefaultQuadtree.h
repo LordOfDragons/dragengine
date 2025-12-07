@@ -51,7 +51,7 @@ public:
 	/** Creates a new generic quadtree object. */
 	decDefaultQuadtree(const decVector2 &center, const decVector2 &halfSize);
 	/** Cleans up the generic quadtree object. */
-	virtual ~decDefaultQuadtree();
+	~decDefaultQuadtree() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -61,9 +61,9 @@ public:
 	 * to create a new quadtree of your own type. Do not set the parent of
 	 * quadtree. The caller is responsible for this action if applicable.
 	 */
-	virtual decQuadtree *CreateQuadtree(int quadrant) const;
+	decQuadtree *CreateQuadtree(int quadrant) const override;
 	/** Clears the content of this node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	/**
 	 * Adds a new object to the quadtree. The object is placed in the node
 	 * which hosts the specified box. Returns the node where the element

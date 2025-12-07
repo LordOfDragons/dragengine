@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCGameCommand();
+	~ceWPCGameCommand() override;
 	/*@}*/
 	
 	

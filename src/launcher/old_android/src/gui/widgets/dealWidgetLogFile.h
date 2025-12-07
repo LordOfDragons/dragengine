@@ -71,7 +71,7 @@ private:
 		LogEntry(eLogTypes type, const char *source, const char *message);
 		
 		/** \brief Clean up log entry. */
-		virtual ~LogEntry();
+		~LogEntry() override;
 		
 		/** \brief Type. */
 		inline eLogTypes GetType() const{ return pType; }
@@ -109,7 +109,7 @@ public:
 	dealWidgetLogFile(dealDisplay &display);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetLogFile();
+	~dealWidgetLogFile() override;
 	/*@}*/
 	
 	
@@ -142,10 +142,10 @@ public:
 	
 	
 	/** \brief Minimum size of widget. */
-	virtual decPoint GetMinimumSize();
+	decPoint GetMinimumSize() override;
 	
 	/** \brief Render content. */
-	virtual void RenderContent(const sRenderContext &context);
+	void RenderContent(const sRenderContext &context) override;
 	/*@}*/
 };
 

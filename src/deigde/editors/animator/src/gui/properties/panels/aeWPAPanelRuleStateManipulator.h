@@ -60,7 +60,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleStateManipulator();
+	~aeWPAPanelRuleStateManipulator() override;
 	/*@}*/
 	
 	
@@ -69,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

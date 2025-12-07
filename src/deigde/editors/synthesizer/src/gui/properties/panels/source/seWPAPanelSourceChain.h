@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~seWPAPanelSourceChain();
+	~seWPAPanelSourceChain() override;
 	/*@}*/
 	
 	
@@ -65,16 +65,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update synthesizer. */
-	virtual void UpdateSynthesizer();
+	void UpdateSynthesizer() override;
 	
 	/** \brief Synthesizer path changed. */
-	virtual void OnSynthesizerPathChanged();
+	void OnSynthesizerPathChanged() override;
 	
 	/** \brief Update source. */
-	virtual void UpdateSource();
+	void UpdateSource() override;
 	
 	/** \brief Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	
 	/** \brief Update sound list. */
 	void UpdateSoundList();

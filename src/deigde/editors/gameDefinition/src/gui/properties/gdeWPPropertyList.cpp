@@ -209,7 +209,7 @@ public:
 		SetDescription("Cut selected property");
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeProperty * const property = pPanel.GetProperty();
 		if(!property || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
 			return;
@@ -505,7 +505,7 @@ public:
 	cActionOptionAdd(gdeWPPropertyList &panel) : cBaseAction(panel, "Add Option...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add option"){}
 	
-	virtual igdeUndo *OnActionUndo(gdeProperty *property){
+	igdeUndo *OnActionUndo(gdeProperty *property) override{
 		decString option("Option");
 		
 		while(igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Option", "Option:", option)){
@@ -528,7 +528,7 @@ public:
 	cActionOptionRemove(gdeWPPropertyList &panel) : cBaseAction(panel, "Remove Option",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove option"){}
 	
-	virtual igdeUndo *OnActionUndo(gdeProperty *property){
+	igdeUndo *OnActionUndo(gdeProperty *property) override{
 		const decString option(pPanel.GetOption());
 		if(option.IsEmpty()){
 			return NULL;
@@ -625,7 +625,7 @@ public:
 	cActionCustomPatternRemove(gdeWPPropertyList &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove custom pattern"){}
 	
-	virtual igdeUndo *OnActionUndo(gdeProperty *property){
+	igdeUndo *OnActionUndo(gdeProperty *property) override{
 		gdeFilePattern * const filePattern = pPanel.GetCustomPattern();
 		if(!filePattern){
 			return NULL;
@@ -703,11 +703,11 @@ public:
 	cActionIdentifierUsage(gdeWPPropertyList &panel) : cBaseAction(panel,
 		"Defines Identifier", NULL, "Property defines identifier"){}
 	
-	virtual igdeUndo *OnActionUndo(gdeProperty *property){
+	igdeUndo *OnActionUndo(gdeProperty *property) override{
 		return pPanel.UndoIdentifierUsage(property);
 	}
 	
-	virtual void Update(){/* empty on purpose!*/}
+	void Update() override{/* empty on purpose!*/}
 };
 
 }

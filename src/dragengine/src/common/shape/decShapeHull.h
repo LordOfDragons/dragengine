@@ -57,7 +57,7 @@ public:
 	decShapeHull(const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Clean up hull shape. */
-	virtual ~decShapeHull();
+	~decShapeHull() override;
 	/*@}*/
 	
 	
@@ -95,7 +95,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	virtual decShape *Copy() const;
+	decShape *Copy() const override;
 	/*@}*/
 	
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit(decShapeVisitor &visitor);
+	void Visit(decShapeVisitor &visitor) override;
 	/*@}*/
 };
 

@@ -50,7 +50,7 @@ public:
 	deoglREffectOverlayImage(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
-	virtual ~deoglREffectOverlayImage();
+	~deoglREffectOverlayImage() override;
 	/*@}*/
 	
 	
@@ -76,10 +76,10 @@ public:
 	const deoglPipeline *GetPipelineStereo();
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender();
+	void PrepareForRender() override;
 	
 	/** Render effect. */
-	virtual void Render(deoglRenderPlan &plan);
+	void Render(deoglRenderPlan &plan) override;
 };
 
 #endif

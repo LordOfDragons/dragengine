@@ -64,7 +64,7 @@ public:
 	pFoundRay(NULL){
 	}
 	
-	virtual ~deoalRayCacheFindRayVisitor(){
+	~deoalRayCacheFindRayVisitor() override{
 	}
 	
 	inline deoalRayCacheRay *FoundRay() const{ return pFoundRay; }

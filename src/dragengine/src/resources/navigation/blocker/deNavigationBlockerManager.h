@@ -47,7 +47,7 @@ public:
 	deNavigationBlockerManager(deEngine *engine);
 	
 	/** \brief Clean up manager. */
-	virtual ~deNavigationBlockerManager();
+	~deNavigationBlockerManager() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	deNavigationBlocker *CreateNavigationBlocker();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -72,10 +72,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief AI System Peers of all stored resources have to be created. */
-	virtual void SystemAILoad();
+	void SystemAILoad() override;
 	
 	/** \brief AI System Peers of all stored resources have to be freed. */
-	virtual void SystemAIUnload();
+	void SystemAIUnload() override;
 	/*@}*/
 	
 	
@@ -86,7 +86,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

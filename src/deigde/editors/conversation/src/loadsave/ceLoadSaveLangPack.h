@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** Clean up load/save object. */
-	virtual ~ceLoadSaveLangPack() override;
+	~ceLoadSaveLangPack() override;
 	/*@}*/
 	
 	

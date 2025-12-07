@@ -65,8 +65,8 @@ private:
 		deoglRBillboard &pBillboard;
 	public:
 		WorldComputeElement(deoglRBillboard &billboard);
-		virtual void UpdateData(sDataElement &data) const;
-		virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
+		void UpdateData(sDataElement &data) const override;
+		void UpdateDataGeometries(sDataElementGeometry *data) const override;
 	};
 	
 	
@@ -146,7 +146,7 @@ public:
 	deoglRBillboard(deoglRenderThread &renderThread);
 	
 	/** Clean up render decal. */
-	virtual ~deoglRBillboard();
+	~deoglRBillboard() override;
 	/*@}*/
 	
 	
@@ -398,7 +398,7 @@ public:
 	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
+	void OcclusionTestInvisible() override;
 	
 	/** Render visible. */
 	inline bool GetRenderVisible() const{ return pRenderVisible; }

@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reURotateShape();
+	~reURotateShape() override;
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	virtual void Redo();
 	
 	/** \brief Progressive redo. */
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 	/*@}*/
 	
 	

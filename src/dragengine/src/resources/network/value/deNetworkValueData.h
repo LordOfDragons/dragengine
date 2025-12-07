@@ -57,7 +57,7 @@ public:
 	deNetworkValueData(int length);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueData();
+	~deNetworkValueData() override;
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit(deNetworkValueVisitor &visitor);
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

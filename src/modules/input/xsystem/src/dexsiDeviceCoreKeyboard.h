@@ -47,7 +47,7 @@ public:
 	
 protected:
 	/** Clean up device. */
-	virtual ~dexsiDeviceCoreKeyboard();
+	~dexsiDeviceCoreKeyboard() override;
 	/*@}*/
 	
 	

@@ -50,7 +50,7 @@ public:
 	deComponentManager(deEngine *engine);
 	
 	/** \brief Clean up scene component resource manager and reports leaking resources. */
-	virtual ~deComponentManager();
+	~deComponentManager() override;
 	/*@}*/
 	
 	
@@ -67,25 +67,25 @@ public:
 	deComponent *CreateComponent(deModel *model = NULL, deSkin *skin = NULL);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
-	void SystemPhysicsLoad();
-	void SystemPhysicsUnload();
-	void SystemAudioLoad();
-	void SystemAudioUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
+	void SystemAudioLoad() override;
+	void SystemAudioUnload() override;
 	
 	/** \brief Animator system peers of all stored resources have to be created. */
-	virtual void SystemAnimatorLoad();
+	void SystemAnimatorLoad() override;
 	
 	/** \brief Animator system seers of all stored resources have to be freed. */
-	virtual void SystemAnimatorUnload();
+	void SystemAnimatorUnload() override;
 	/*@}*/
 	
 	
@@ -96,7 +96,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

@@ -71,7 +71,7 @@ public:
 	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo(ceConversationCondition *action);
+	igdeUndo *CreateUndo(ceConversationCondition *action) override;
 	/*@}*/
 };
 

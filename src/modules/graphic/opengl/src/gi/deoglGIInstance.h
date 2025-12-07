@@ -98,10 +98,10 @@ private:
 		typedef deTObjectReference<cDecalListener> Ref;
 		
 		cDecalListener(deoglGIInstance &instance);
-		virtual void DecalDestroyed(deoglRDecal &decal);
-		virtual void GeometryChanged(deoglRDecal &decal);
-		virtual void TextureChanged(deoglRDecal &decal);
-		virtual void TUCChanged(deoglRDecal &decal);
+		void DecalDestroyed(deoglRDecal &decal) override;
+		void GeometryChanged(deoglRDecal &decal) override;
+		void TextureChanged(deoglRDecal &decal) override;
+		void TUCChanged(deoglRDecal &decal) override;
 	};
 	
 	class cDecalComponentListener : public deoglComponentListener{
@@ -112,9 +112,9 @@ private:
 		typedef deTObjectReference<cDecalComponentListener> Ref;
 		
 		cDecalComponentListener(deoglGIInstance &instance);
-		virtual void BoundariesChanged(deoglRComponent &component);
-		virtual void RenderStaticChanged(deoglRComponent &component);
-		virtual void MovementHintChanged(deoglRComponent &component);
+		void BoundariesChanged(deoglRComponent &component) override;
+		void RenderStaticChanged(deoglRComponent &component) override;
+		void MovementHintChanged(deoglRComponent &component) override;
 	};
 	
 	

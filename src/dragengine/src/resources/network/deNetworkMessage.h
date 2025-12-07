@@ -73,7 +73,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deNetworkMessage();
+	~deNetworkMessage() override;
 	/*@}*/
 	
 	

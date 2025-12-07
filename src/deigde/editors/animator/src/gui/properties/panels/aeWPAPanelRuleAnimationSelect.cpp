@@ -129,7 +129,7 @@ public:
 		return new aeURuleAnimSelectSetMoves(rule, moves, "Animation select add move");
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleAnimationSelect &){
+	void Update(const aeAnimator & , const aeRuleAnimationSelect &) override{
 		SetEnabled(!pPanel.GetCBMovesText().IsEmpty());
 	}
 };
@@ -150,7 +150,7 @@ public:
 		return new aeURuleAnimSelectSetMoves(rule, moves, "Animation select remove move");
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleAnimationSelect &){
+	void Update(const aeAnimator & , const aeRuleAnimationSelect &) override{
 		SetEnabled(pPanel.GetListMovesSelection() != -1);
 	}
 };
@@ -171,7 +171,7 @@ public:
 		return new aeURuleAnimSelectSetMoves(rule, moves, "Animation select move move up");
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleAnimationSelect &){
+	void Update(const aeAnimator & , const aeRuleAnimationSelect &) override{
 		SetEnabled(pPanel.GetListMovesSelection() > 0);
 	}
 };
@@ -192,7 +192,7 @@ public:
 		return new aeURuleAnimSelectSetMoves(rule, moves, "Animation select move move down");
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleAnimationSelect &rule){
+	void Update(const aeAnimator & , const aeRuleAnimationSelect &rule) override{
 		const int selection = pPanel.GetListMovesSelection();
 		SetEnabled(selection != -1 && selection < rule.GetMoves().GetCount() - 1);
 	}
@@ -225,7 +225,7 @@ public:
 		return new aeURuleAnimSelectToggleEnablePosition(rule);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRuleAnimationSelect &rule){
+	void Update(const aeAnimator &, const aeRuleAnimationSelect &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnablePosition());
 	}
@@ -240,7 +240,7 @@ public:
 		return new aeURuleAnimSelectToggleEnableRotation(rule);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRuleAnimationSelect &rule){
+	void Update(const aeAnimator &, const aeRuleAnimationSelect &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableOrientation());
 	}
@@ -255,7 +255,7 @@ public:
 		return new aeURuleAnimSelectToggleEnableSize(rule);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRuleAnimationSelect &rule){
+	void Update(const aeAnimator &, const aeRuleAnimationSelect &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableSize());
 	}
@@ -271,7 +271,7 @@ public:
 		return new aeURuleAnimSelectToggleEnableVertexPositionSet(rule);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRuleAnimationSelect &rule){
+	void Update(const aeAnimator &, const aeRuleAnimationSelect &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableVertexPositionSet());
 	}

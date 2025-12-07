@@ -44,7 +44,7 @@ public:
 	
 protected:
 	/** Clean up dynamic tbo. */
-	virtual ~deoglDynamicTBOFloat16();
+	~deoglDynamicTBOFloat16() override;
 	/*@}*/
 	
 	
@@ -119,7 +119,7 @@ public:
 	void SetMat3x2At(int offset, const decMatrix &value);
 	
 	/** Debug print. */
-	virtual void DebugPrint();
+	void DebugPrint() override;
 	
 	/** TBO format. */
 	virtual GLenum GetTBOFormat();

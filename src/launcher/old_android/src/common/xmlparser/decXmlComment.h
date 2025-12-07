@@ -47,7 +47,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml comment. */
-	virtual ~decXmlComment();
+	~decXmlComment() override;
 	/*@}*/
 	
 	
@@ -66,13 +66,13 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToComment() const;
-	virtual decXmlComment *CastToComment();
+	bool CanCastToComment() const override;
+	decXmlComment *CastToComment() override;
 	/*@}*/
 };
 

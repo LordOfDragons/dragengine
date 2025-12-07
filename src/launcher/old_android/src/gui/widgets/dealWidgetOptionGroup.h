@@ -49,7 +49,7 @@ public:
 	dealWidgetOptionGroup();
 	
 	/** \brief Clean up option group. */
-	virtual ~dealWidgetOptionGroup();
+	~dealWidgetOptionGroup() override;
 	/*@}*/
 	
 	

@@ -31,10 +31,10 @@
 
 namespace squish {
 
-void WriteColourBlock3(Vec3::Arg start, Vec3::Arg end, u8 const* indices, void* block);
-void WriteColourBlock4(Vec3::Arg start, Vec3::Arg end, u8 const* indices, void* block);
+void WriteColourBlock3( Vec3::Arg start, Vec3::Arg end, u8 const* indices, void* block );
+void WriteColourBlock4( Vec3::Arg start, Vec3::Arg end, u8 const* indices, void* block );
 
-void DecompressColour(u8* rgba, void const* block, bool isDxt1);
+void DecompressColour( u8* rgba, void const* block, bool isDxt1 );
 
 } // namespace squish
 

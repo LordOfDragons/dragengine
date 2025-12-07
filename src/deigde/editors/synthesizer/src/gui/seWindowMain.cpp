@@ -527,7 +527,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		SetEnabled(synthesizer.GetChanged());
 	}
 };
@@ -568,7 +568,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &){
+	void Update(const seSynthesizer &) override{
 		SetEnabled(false);
 	}
 };
@@ -603,7 +603,7 @@ public:
 		return new seURemoveController(synthesizer, synthesizer->GetActiveController());
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		SetEnabled(synthesizer.GetActiveController());
 	}
 };
@@ -618,7 +618,7 @@ public:
 		return new seUMoveControllerUp(synthesizer, synthesizer->GetActiveController());
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		SetEnabled(synthesizer.GetControllers().IndexOf(synthesizer.GetActiveController()) > 0);
 	}
 };
@@ -633,7 +633,7 @@ public:
 		return new seUMoveControllerDown(synthesizer, synthesizer->GetActiveController());
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		SetEnabled(synthesizer.GetActiveController() && synthesizer.GetControllers()
 			.IndexOf(synthesizer.GetActiveController()) < synthesizer.GetControllers().GetCount() - 1);
 	}
@@ -653,7 +653,7 @@ public:
 	
 	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source) = 0;
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		if(synthesizer.GetActiveSource()){
 			UpdateSource(synthesizer, *synthesizer.GetActiveSource());
 			
@@ -703,7 +703,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer){
+	void Update(const seSynthesizer &synthesizer) override{
 		SetEnabled(synthesizer.GetActiveSource()
 			&& synthesizer.GetActiveSource()->GetType() == deSynthesizerSourceVisitorIdentify::estGroup);
 	}
@@ -740,7 +740,7 @@ public:
 		}
 	}
 	
-	virtual void UpdateSource(const seSynthesizer &synthesizer, const seSource &source){
+	void UpdateSource(const seSynthesizer &synthesizer, const seSource &source) override{
 		const seSourceList &list = source.GetParentGroup()
 			? source.GetParentGroup()->GetSources() : synthesizer.GetSources();
 		SetEnabled(list.IndexOf((seSource*)&source) > 0);
@@ -762,7 +762,7 @@ public:
 		}
 	}
 	
-	virtual void UpdateSource(const seSynthesizer &synthesizer, const seSource &source){
+	void UpdateSource(const seSynthesizer &synthesizer, const seSource &source) override{
 		const seSourceList &list = source.GetParentGroup()
 			? source.GetParentGroup()->GetSources() : synthesizer.GetSources();
 		SetEnabled(list.IndexOf((seSource*)&source) < list.GetCount() - 1);
@@ -784,7 +784,7 @@ public:
 	
 	virtual igdeUndo *OnActionEffect(seSynthesizer *synthesizer, seSource *source, seEffect *effect) = 0;
 	
-	virtual void UpdateSource(const seSynthesizer &synthesizer, const seSource &source){
+	void UpdateSource(const seSynthesizer &synthesizer, const seSource &source) override{
 		if(source.GetActiveEffect()){
 			UpdateEffect(synthesizer, source, *source.GetActiveEffect());
 			
@@ -837,7 +837,7 @@ public:
 		return new seUSourceMoveEffectUp(source, effect);
 	}
 	
-	virtual void UpdateEffect(const seSynthesizer &, const seSource &source, const seEffect &effect){
+	void UpdateEffect(const seSynthesizer &, const seSource &source, const seEffect &effect) override{
 		SetEnabled(source.GetEffects().IndexOf((seEffect*)&effect) > 0);
 	}
 };
@@ -852,7 +852,7 @@ public:
 		return new seUSourceMoveEffectDown(source, effect);
 	}
 	
-	virtual void UpdateEffect(const seSynthesizer &, const seSource &source, const seEffect &effect){
+	void UpdateEffect(const seSynthesizer &, const seSource &source, const seEffect &effect) override{
 		SetEnabled(source.GetEffects().IndexOf((seEffect*)&effect) < source.GetEffects().GetCount() - 1);
 	}
 };

@@ -47,7 +47,7 @@ public:
 	ceWPViewListener(ceWPView &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~ceWPViewListener();
+	~ceWPViewListener() override;
 	/*@}*/
 	
 	
@@ -55,90 +55,90 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Conversation changed. */
-	virtual void ConversationChanged(ceConversation *conversation);
+	void ConversationChanged(ceConversation *conversation) override;
 	
 	/** \brief The sky changed. */
-	virtual void SkyChanged(ceConversation *conversation);
+	void SkyChanged(ceConversation *conversation) override;
 	
 	/** \brief The environment component changed. */
-	virtual void EnvObjectChanged(ceConversation *conversation);
+	void EnvObjectChanged(ceConversation *conversation) override;
 	
 	/** \brief Camera changed. */
-	virtual void CameraChanged(ceConversation *conversation);
+	void CameraChanged(ceConversation *conversation) override;
 	
 	/** \brief File count or order changed. */
-	virtual void FileStructureChanged(ceConversation *conversation);
+	void FileStructureChanged(ceConversation *conversation) override;
 	
 	/** \brief File changed. */
-	virtual void FileChanged(ceConversation *conversation, ceConversationFile *file);
+	void FileChanged(ceConversation *conversation, ceConversationFile *file) override;
 	
 	/** \brief Topic count or order changed. */
-	virtual void TopicStructureChanged(ceConversation *conversation, ceConversationFile *file);
+	void TopicStructureChanged(ceConversation *conversation, ceConversationFile *file) override;
 	
 	/** \brief Topic changed. */
-	virtual void TopicChanged(ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic);
+	void TopicChanged(ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic) override;
 	
 	
 	
 	/** \brief Actor count or order changed. */
-	virtual void ActorStructureChanged(ceConversation *conversation);
+	void ActorStructureChanged(ceConversation *conversation) override;
 	
 	/** \brief Actor changed. */
-	virtual void ActorChanged(ceConversation *conversation, ceConversationActor *actor);
+	void ActorChanged(ceConversation *conversation, ceConversationActor *actor) override;
 	
 	/** \brief Actor active pose changed. */
-	virtual void ActorActivePoseChanged(ceConversation *conversation, ceConversationActor *actor);
+	void ActorActivePoseChanged(ceConversation *conversation, ceConversationActor *actor) override;
 	
 	/** \brief Actor poses changed. */
-	virtual void ActorPosesChanged(ceConversation *conversation, ceConversationActor *actor);
+	void ActorPosesChanged(ceConversation *conversation, ceConversationActor *actor) override;
 	
 	/** \brief Actor active pose gestures changed. */
-	virtual void ActorPoseGesturesChanged(ceConversation *conversation,
-		ceConversationActor *actor, ceActorPose *pose);
+	void ActorPoseGesturesChanged(ceConversation *conversation,
+		ceConversationActor *actor, ceActorPose *pose) override;
 	
 	/** \brief Actor commands changed. */
-	virtual void ActorCommandsChanged(ceConversation *conversation, ceConversationActor *actor);
+	void ActorCommandsChanged(ceConversation *conversation, ceConversationActor *actor) override;
 	
 	/** \brief Actor parameters changed. */
-	virtual void ActorParametersChanged(ceConversation *conversation, ceConversationActor *actor);
+	void ActorParametersChanged(ceConversation *conversation, ceConversationActor *actor) override;
 	
 	/** \brief Active actor changed. */
-	virtual void ActiveActorChanged(ceConversation *conversation);
+	void ActiveActorChanged(ceConversation *conversation) override;
 	
 	
 	
 	/** \brief Coordinate system count or order changed. */
-	virtual void CoordSystemStructureChanged(ceConversation *conversation);
+	void CoordSystemStructureChanged(ceConversation *conversation) override;
 	
 	/** \brief Coordinate system changed. */
-	virtual void CoordSystemChanged(ceConversation *conversation, ceCoordSystem *coordSystem);
+	void CoordSystemChanged(ceConversation *conversation, ceCoordSystem *coordSystem) override;
 	
 	/** \brief Active coordinate system changed. */
-	virtual void ActiveCoordSystemChanged(ceConversation *conversation);
+	void ActiveCoordSystemChanged(ceConversation *conversation) override;
 	
 	/** \brief Prop count or order changed. */
-	virtual void PropStructureChanged(ceConversation *conversation);
+	void PropStructureChanged(ceConversation *conversation) override;
 	
 	/** \brief Prop changed. */
-	virtual void PropChanged(ceConversation *conversation, ceProp *prop);
+	void PropChanged(ceConversation *conversation, ceProp *prop) override;
 	
 	/** \brief Active prop changed. */
-	virtual void ActivePropChanged(ceConversation *conversation);
+	void ActivePropChanged(ceConversation *conversation) override;
 	
 	/** \brief Playback parameters changed. */
-	virtual void PlaybackChanged(ceConversation *conversation);
+	void PlaybackChanged(ceConversation *conversation) override;
 	
 	/** \brief Playback info list changed. */
-	virtual void PlaybackCommandListChanged(ceConversation *conversation);
+	void PlaybackCommandListChanged(ceConversation *conversation) override;
 	
 	/** \brief Playback variable list changed. */
-	virtual void PlaybackVarListChanged(ceConversation *conversation);
+	void PlaybackVarListChanged(ceConversation *conversation) override;
 	
 	/** \brief Playback trigger table changed. */
-	virtual void PlaybackTriggerTableChanged(ceConversation *conversation);
+	void PlaybackTriggerTableChanged(ceConversation *conversation) override;
 	
 	/** \brief Playback missing words changed. */
-	virtual void PlaybackMissingWordsChanged(ceConversation *conversation);
+	void PlaybackMissingWordsChanged(ceConversation *conversation) override;
 	/*@}*/
 };
 

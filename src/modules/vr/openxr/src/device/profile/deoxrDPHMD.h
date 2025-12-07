@@ -46,7 +46,7 @@ public:
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPHMD();
+	~deoxrDPHMD() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Check attached. */
-	virtual void CheckAttached();
+	void CheckAttached() override;
 	
 	/** Suggest bindings. */
-	virtual void SuggestBindings();
+	void SuggestBindings() override;
 	
 	/** Clear actions. */
-	virtual void ClearActions();
+	void ClearActions() override;
 	/*@}*/
 	
 	

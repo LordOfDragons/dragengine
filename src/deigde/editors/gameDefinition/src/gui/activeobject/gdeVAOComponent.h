@@ -71,7 +71,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOComponent();
+	~gdeVAOComponent() override;
 	/*@}*/
 	
 	
@@ -92,13 +92,13 @@ public:
 	void Update(float elapsed);
 	
 	/** \brief Rebuild resources. */
-	virtual void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Update texture. */
 	void UpdateTexture(gdeOCComponentTexture *texture);
 	
 	/** \brief Selected object changed. */
-	virtual void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Extends. */
 	virtual void GetExtends(decVector &minExtend, decVector &maxExtend) const;

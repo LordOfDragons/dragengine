@@ -151,7 +151,7 @@ public:
 	virtual igdeUndo *OnActionProperty(seSkin *skin, seTexture *texture, seProperty *property) = 0;
 	
 	
-	virtual void Update(const seSkin &skin, const seTexture &texture){
+	void Update(const seSkin &skin, const seTexture &texture) override{
 		seProperty * const property = pPanel.GetProperty();
 		if(property){
 			UpdateProperty(skin, texture, *property);
@@ -391,7 +391,7 @@ class cTextPropertyBone : public cBaseTextFieldListener{
 public:
 	cTextPropertyBone(seWPTexture &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*, seProperty *property) override{
+	igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*, seProperty *property) override{
 		return property->GetBoneName() != textField.GetText()
 			? new seUPropertySetBoneName(property, textField.GetText()) : nullptr;
 	}
@@ -451,7 +451,7 @@ public:
 		return new seUPropertyToggleVideoSharedTime(property);
 	}
 	
-	virtual void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property){
+	void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property) override{
 		SetEnabled(true);
 		SetSelected(property.GetVideoSharedTime());
 	}
@@ -535,7 +535,7 @@ public:
 		return new seUPropertyConstructedToggleTileX(property);
 	}
 	
-	virtual void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property){
+	void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property) override{
 		SetEnabled(true);
 		SetSelected(property.GetNodeTileX());
 	}
@@ -550,7 +550,7 @@ public:
 		return new seUPropertyConstructedToggleTileY(property);
 	}
 	
-	virtual void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property){
+	void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property) override{
 		SetEnabled(true);
 		SetSelected(property.GetNodeTileY());
 	}

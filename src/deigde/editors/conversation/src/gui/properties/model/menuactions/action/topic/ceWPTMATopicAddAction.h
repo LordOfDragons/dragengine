@@ -65,7 +65,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo(ceConversationAction *action);
+	igdeUndo *CreateUndo(ceConversationAction *action) override;
 	/*@}*/
 };
 

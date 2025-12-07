@@ -66,7 +66,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAONavBlocker();
+	~gdeVAONavBlocker() override;
 	/*@}*/
 	
 	
@@ -78,10 +78,10 @@ public:
 	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pOCNavBlocker; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Update debug drawer visibility. */
 	void UpdateDDVisibility();

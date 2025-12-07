@@ -48,7 +48,7 @@ public:
 	/** Creates a new conversation condition. */
 	ceCConditionHasActor(const ceCConditionHasActor &condition);
 	/** Cleans up the conversation condition. */
-	virtual ~ceCConditionHasActor();
+	~ceCConditionHasActor() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -63,7 +63,7 @@ public:
 	void SetNegate(bool negate);
 	
 	/** Create a copy of this condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition *CreateCopy() const override;
 	/*@}*/
 };
 

@@ -60,7 +60,7 @@ public:
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	igdeUndo *CreateUndo() override;
 	/*@}*/
 };
 

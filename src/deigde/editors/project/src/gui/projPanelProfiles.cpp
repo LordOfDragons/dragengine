@@ -508,7 +508,7 @@ public:
 		return new projUProfileSetIcons(profile, icons);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const projProject * const project = pPanel.GetProject();
 		SetEnabled(project && project->GetActiveProfile() && pListIcons.GetSelectedItem());
 	}
@@ -556,7 +556,7 @@ public:
 		return new projUProfileSetExcludePatterns(profile, patterns);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const projProject * const project = pPanel.GetProject();
 		SetEnabled(project && project->GetActiveProfile() && pListPatterns.GetSelectedItem());
 	}
@@ -604,7 +604,7 @@ public:
 		return new projUProfileSetRequiredExtensions(profile, patterns);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const projProject * const project = pPanel.GetProject();
 		SetEnabled(project && project->GetActiveProfile() && pListPatterns.GetSelectedItem());
 	}

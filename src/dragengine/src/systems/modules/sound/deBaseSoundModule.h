@@ -45,7 +45,7 @@ public:
 	deBaseSoundModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseSoundModule();
+	~deBaseSoundModule() override;
 	/*@}*/
 	
 	

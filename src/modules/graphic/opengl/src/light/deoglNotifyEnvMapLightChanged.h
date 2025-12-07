@@ -54,7 +54,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit environment maps. */
-	virtual void VisitEnvMaps(deoglEnvironmentMap *envmap);
+	void VisitEnvMaps(deoglEnvironmentMap *envmap) override;
 	/*@}*/
 };
 

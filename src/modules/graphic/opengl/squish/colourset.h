@@ -36,14 +36,14 @@ namespace squish {
 class ColourSet
 {
 public:
-	ColourSet(u8 const* rgba, int mask, int flags);
+	ColourSet( u8 const* rgba, int mask, int flags );
 
 	int GetCount() const { return m_count; }
 	Vec3 const* GetPoints() const { return m_points; }
 	float const* GetWeights() const { return m_weights; }
 	bool IsTransparent() const { return m_transparent; }
 
-	void RemapIndices(u8 const* source, u8* target) const;
+	void RemapIndices( u8 const* source, u8* target ) const;
 
 private:
 	int m_count;

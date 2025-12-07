@@ -49,7 +49,7 @@ public:
 	deDSRenderableCamera(const char *name);
 	
 	/** \brief Clean up renderable. */
-	virtual ~deDSRenderableCamera();
+	~deDSRenderableCamera() override;
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit(deDSRenderableVisitor &visitor);
+	void Visit(deDSRenderableVisitor &visitor) override;
 };
 
 #endif

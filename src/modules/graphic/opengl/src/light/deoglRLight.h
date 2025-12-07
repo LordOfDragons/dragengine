@@ -75,7 +75,7 @@ private:
 
 
 		WorldComputeElement(deoglRLight &light);
-		virtual void UpdateData(sDataElement &data) const;
+		void UpdateData(sDataElement &data) const override;
 	};
 	
 	

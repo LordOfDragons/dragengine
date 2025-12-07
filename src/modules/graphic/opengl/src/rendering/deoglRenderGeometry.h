@@ -79,7 +79,7 @@ public:
 	/** Creates a new renderer. */
 	deoglRenderGeometry(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
-	~deoglRenderGeometry();
+	~deoglRenderGeometry() override;
 	/*@}*/
 	
 	/** \name Management */

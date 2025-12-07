@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeMultiMath();
+	~meWVNodeMultiMath() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	inline meHTVRuleMultiMath *GetRuleMultiMath() const{ return pRuleMultiMath; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

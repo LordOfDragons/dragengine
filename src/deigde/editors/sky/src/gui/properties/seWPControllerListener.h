@@ -46,7 +46,7 @@ public:
 	seWPControllerListener(seWPController &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPControllerListener();
+	~seWPControllerListener() override;
 	/*@}*/
 	
 	
@@ -54,19 +54,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Controller added or removed. */
-	virtual void ControllerStructureChanged (seSky *sky);
+	void ControllerStructureChanged (seSky *sky) override;
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged(seSky *sky, seController *controller);
+	void ControllerChanged(seSky *sky, seController *controller) override;
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged(seSky *sky, seController *controller);
+	void ControllerNameChanged(seSky *sky, seController *controller) override;
 	
 	/** \brief Controller changed value. */
-	virtual void ControllerValueChanged(seSky *sky, seController *controller);
+	void ControllerValueChanged(seSky *sky, seController *controller) override;
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged(seSky *sky);
+	void ActiveControllerChanged(seSky *sky) override;
 	/*@}*/
 };
 

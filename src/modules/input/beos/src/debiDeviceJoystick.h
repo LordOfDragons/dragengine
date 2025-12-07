@@ -56,7 +56,7 @@ public:
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~debiDeviceJoystick();
+	~debiDeviceJoystick() override;
 	/*@}*/
 	
 	
@@ -73,7 +73,7 @@ public:
 	
 	
 	/** \brief Update device state. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 	
 	

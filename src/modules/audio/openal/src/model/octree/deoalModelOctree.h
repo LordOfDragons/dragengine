@@ -55,7 +55,7 @@ public:
 	deoalModelOctree(const decVector &center, const decVector &halfExtend);
 	
 	/** \brief Clean up octree. */
-	virtual ~deoalModelOctree();
+	~deoalModelOctree() override;
 	/*@}*/
 	
 	
@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create octree for octant. */
-	virtual deoalOctree *CreateOctree(int octant) const;
+	deoalOctree *CreateOctree(int octant) const override;
 	
 	/** \brief Clear content of node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	
 	/** \brief Clear all faces from tree. */
 	void ClearFaces();

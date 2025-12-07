@@ -78,23 +78,23 @@ public:
 	 */
 	debpCollisionCylinder(const decVector &position, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation);
 	/** Cleans up the collision Cylinder. */
-	virtual ~debpCollisionCylinder();
+	~debpCollisionCylinder() override;
 	/*@}*/
 	
 	/** @name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume(debpCollisionVolume *volume);
+	bool VolumeHitsVolume(debpCollisionVolume *volume) override;
 	virtual float VolumeMoveHitsVolume(debpCollisionVolume *volume, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume(debpCollisionSphere *sphere);
-	virtual bool CylinderHitsVolume(debpCollisionCylinder *Cylinder);
-	virtual bool CapsuleHitsVolume(debpCollisionCapsule *capsule);
-	virtual bool BoxHitsVolume(debpCollisionBox *box);
-	virtual bool TriangleHitsVolume(debpCollisionTriangle *triangle);
-	virtual bool FrustumHitsVolume(debpCollisionFrustum *frustum);
+	bool SphereHitsVolume(debpCollisionSphere *sphere) override;
+	bool CylinderHitsVolume(debpCollisionCylinder *Cylinder) override;
+	bool CapsuleHitsVolume(debpCollisionCapsule *capsule) override;
+	bool BoxHitsVolume(debpCollisionBox *box) override;
+	bool TriangleHitsVolume(debpCollisionTriangle *triangle) override;
+	bool FrustumHitsVolume(debpCollisionFrustum *frustum) override;
 	virtual float SphereMoveHitsVolume(debpCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	virtual float CylinderMoveHitsVolume(debpCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal);
 	virtual float CapsuleMoveHitsVolume(debpCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
@@ -106,8 +106,8 @@ public:
 	
 	/** @name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere(debpCollisionSphere *sphere);
-	virtual void GetEnclosingBox(debpCollisionBox *box);
+	void GetEnclosingSphere(debpCollisionSphere *sphere) override;
+	void GetEnclosingBox(debpCollisionBox *box) override;
 	/*@}*/
 	
 	/** @name Miscelanous Functions */
@@ -139,7 +139,7 @@ public:
 	
 	/** @name Visiting */
 	/*{*/
-	virtual void Visit(debpCollisionVolumeVisitor *visitor);
+	void Visit(debpCollisionVolumeVisitor *visitor) override;
 	/*}*/
 	
 	/** @name Collision Routines */

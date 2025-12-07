@@ -49,7 +49,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deVFSNull();
+	~deVFSNull() override;
 	/*@}*/
 	
 	
@@ -61,25 +61,25 @@ public:
 	 * \brief File exists.
 	 * \returns false.
 	 */
-	virtual bool ExistsFile(const decPath &path);
+	bool ExistsFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be read from.
 	 * \returns false.
 	 */
-	virtual bool CanReadFile(const decPath &path);
+	bool CanReadFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be written to.
 	 * \returns true.
 	 */
-	virtual bool CanWriteFile(const decPath &path);
+	bool CanWriteFile(const decPath &path) override;
 	
 	/**
 	 * \brief File can be deleted.
 	 * \returns true.
 	 */
-	virtual bool CanDeleteFile(const decPath &path);
+	bool CanDeleteFile(const decPath &path) override;
 	
 	
 	
@@ -88,53 +88,53 @@ public:
 	 * 
 	 * Throws file not found exception.
 	 */
-	virtual decBaseFileReader *OpenFileForReading(const decPath &path);
+	decBaseFileReader *OpenFileForReading(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for writing.
 	 * \returns Null writer.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
+	decBaseFileWriter *OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Does nothing.
 	 */
-	virtual void DeleteFile(const decPath &path);
+	void DeleteFile(const decPath &path) override;
 	
 	/**
 	 * \brief Touch file setting the modification time to the current time.
 	 * 
 	 * Does nothing.
 	 */
-	virtual void TouchFile(const decPath &path);
+	void TouchFile(const decPath &path) override;
 	
 	/**
 	 * \brief Search for all files and directories.
 	 */
-	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher);
+	void SearchFiles(const decPath &directory, deContainerFileSearch &searcher) override;
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * Throws file not found exception.
 	 */
-	virtual eFileTypes GetFileType(const decPath &path);
+	eFileTypes GetFileType(const decPath &path) override;
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * Throws file not found exception.
 	 */
-	virtual uint64_t GetFileSize(const decPath &path);
+	uint64_t GetFileSize(const decPath &path) override;
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * Throws file not found exception.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path);
+	TIME_SYSTEM GetFileModificationTime(const decPath &path) override;
 	/*@}*/
 };
 

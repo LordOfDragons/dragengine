@@ -54,7 +54,7 @@ public:
 	deNetworkValuePoint2(eValueFormats format, const decPoint &value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValuePoint2();
+	~deNetworkValuePoint2() override;
 	/*@}*/
 	
 	
@@ -76,7 +76,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit(deNetworkValueVisitor &visitor);
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

@@ -64,7 +64,7 @@ public:
 	/** Create a copy of a sub animator rule. */
 	aeRuleSubAnimator(const aeRuleSubAnimator &copy);
 	/** Clean up the sub animator rule. */
-	virtual ~aeRuleSubAnimator();
+	~aeRuleSubAnimator() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -109,19 +109,19 @@ public:
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Create an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule *CreateEngineRule() override;
 	
 	/** Update Component and Animation. */
-	virtual void UpdateCompAnim();
+	void UpdateCompAnim() override;
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule *CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks(aeLinkList& list);
+	void ListLinks(aeLinkList& list) override;
 	
 	/** Parent animator changed. */
-	virtual void OnParentAnimatorChanged();
+	void OnParentAnimatorChanged() override;
 	/*@}*/
 	
 	/** \name Operators */

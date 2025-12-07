@@ -39,15 +39,15 @@ public:
 	/** Creates a new parameter. */
 	deoglPShadowMapOffsetBias(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPShadowMapOffsetBias();
+	~deoglPShadowMapOffsetBias() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual float GetParameterFloat();
+	float GetParameterFloat() override;
 	/** Sets the current value. */
-	virtual void SetParameterFloat(float value);
+	void SetParameterFloat(float value) override;
 	/*@}*/
 };
 

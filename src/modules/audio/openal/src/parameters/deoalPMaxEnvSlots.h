@@ -39,7 +39,7 @@ public:
 	deoalPMaxEnvSlots(deAudioOpenAL &oal);
 	
 	/** Clean up parameter. */
-	virtual ~deoalPMaxEnvSlots() override;
+	~deoalPMaxEnvSlots() override;
 	/*@}*/
 	
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** \brief Current value. */
-	virtual int GetParameterInt() override;
+	int GetParameterInt() override;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterInt(int value) override;
+	void SetParameterInt(int value) override;
 	/*@}*/
 };
 

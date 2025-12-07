@@ -65,7 +65,7 @@ public:
 	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
 
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	igdeUndo *CreateUndo() override;
 	/*@}*/
 };
 

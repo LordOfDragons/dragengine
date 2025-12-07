@@ -62,7 +62,7 @@ public:
 	/** \brief Creates a new trigger conversation action. */
 	ceCATrigger(const ceCATrigger &action);
 	/** \brief Cleans up the trigger conversation action. */
-	virtual ~ceCATrigger();
+	~ceCATrigger() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -77,7 +77,7 @@ public:
 	void SetAction(eActions action);
 	
 	/** \brief Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

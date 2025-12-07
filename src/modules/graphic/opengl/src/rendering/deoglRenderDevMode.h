@@ -58,7 +58,7 @@ public:
 	/** Creates a new renderer. */
 	deoglRenderDevMode(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
-	~deoglRenderDevMode();
+	~deoglRenderDevMode() override;
 	/*@}*/
 	
 	/** \name Rendering */

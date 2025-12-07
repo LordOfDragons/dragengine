@@ -55,7 +55,7 @@ public:
 	deNetworkValueString(const char *value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueString();
+	~deNetworkValueString() override;
 	/*@}*/
 	
 	
@@ -74,7 +74,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit(deNetworkValueVisitor &visitor);
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

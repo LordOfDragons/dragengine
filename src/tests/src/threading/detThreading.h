@@ -26,11 +26,11 @@ public:
 	
 public:
 	detThreading();
-	~detThreading();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detThreading() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestThread();

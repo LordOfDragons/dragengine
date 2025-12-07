@@ -77,7 +77,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerSourceChain();
+	~deSynthesizerSourceChain() override;
 	/*@}*/
 	
 	
@@ -164,7 +164,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit(deSynthesizerSourceVisitor &visitor);
+	void Visit(deSynthesizerSourceVisitor &visitor) override;
 	/*@}*/
 };
 

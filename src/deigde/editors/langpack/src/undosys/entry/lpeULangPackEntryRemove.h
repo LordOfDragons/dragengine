@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~lpeULangPackEntryRemove() override;
+	~lpeULangPackEntryRemove() override;
 	/*@}*/
 	
 	
@@ -64,10 +64,10 @@ public:
 	/** \description Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo() override;
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo() override;
+	void Redo() override;
 	/*@}*/
 };
 

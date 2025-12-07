@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPAActorSpeak();
+	~ceWPAActorSpeak() override;
 	/*@}*/
 	
 	
@@ -78,10 +78,10 @@ public:
 	void UpdateAction();
 	
 	/** \brief Update actor id lists. */
-	virtual void UpdateActorIDLists();
+	void UpdateActorIDLists() override;
 	
 	/** \brief Conversation path changed. */
-	virtual void OnConversationPathChanged();
+	void OnConversationPathChanged() override;
 	/*@}*/
 };
 

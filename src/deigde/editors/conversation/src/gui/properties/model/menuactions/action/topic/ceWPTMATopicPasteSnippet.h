@@ -61,7 +61,7 @@ public:
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
+	ceUCActionPaste *CreateUndo(const ceConversationActionList &actions) override;
 	/*@}*/
 };
 

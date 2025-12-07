@@ -41,7 +41,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPNGroupNodesDown();
+	~seUPNGroupNodesDown() override;
 	/*@}*/
 	
 	

@@ -102,7 +102,7 @@ public:
 	deoglLight(deGraphicOpenGl &ogl, const deLight &light);
 	
 	/** Clean up light peer. */
-	virtual ~deoglLight();
+	~deoglLight() override;
 	/*@}*/
 	
 	
@@ -144,18 +144,18 @@ public:
 	
 	/** \name Dynamic skin listener */
 	/*@{*/
-	virtual void DynamicSkinDestroyed();
-	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
-	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
+	void DynamicSkinDestroyed() override;
+	void DynamicSkinRenderablesChanged() override;
+	void DynamicSkinRenderableChanged(deoglDSRenderable &renderable) override;
+	void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable) override;
 	/*@}*/
 	
 	
 	
 	/** \name Canvas view listener */
 	/*@{*/
-	virtual void CanvasViewDestroyed();
-	virtual void CanvasViewRequiresSync();
+	void CanvasViewDestroyed() override;
+	void CanvasViewRequiresSync() override;
 	/*@}*/
 	
 	

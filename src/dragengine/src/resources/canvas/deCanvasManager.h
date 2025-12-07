@@ -55,7 +55,7 @@ public:
 	deCanvasManager(deEngine *engine);
 	
 	/** \brief Clean up canvas resource manager and reports leaking resources. */
-	virtual ~deCanvasManager();
+	~deCanvasManager() override;
 	/*@}*/
 	
 	
@@ -90,7 +90,7 @@ public:
 	deCanvasView *CreateCanvasView();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -98,10 +98,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic system peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic system peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -113,7 +113,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

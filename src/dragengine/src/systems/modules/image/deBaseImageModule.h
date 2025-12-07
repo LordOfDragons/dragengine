@@ -44,7 +44,7 @@ public:
 	deBaseImageModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseImageModule();
+	~deBaseImageModule() override;
 	/*@}*/
 	
 	

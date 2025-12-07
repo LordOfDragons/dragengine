@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeCurve();
+	~meWVNodeCurve() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	inline meHTVRuleCurve *GetRuleCurve() const{ return pRuleCurve; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

@@ -54,7 +54,7 @@ public:
 	deoalWOVCollectElements();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVCollectElements();
+	~deoalWOVCollectElements() override;
 	/*@}*/
 	
 	
@@ -87,7 +87,7 @@ public:
 	
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent(deoalAComponent *component);
+	void VisitComponent(deoalAComponent *component) override;
 	/*@}*/
 };
 

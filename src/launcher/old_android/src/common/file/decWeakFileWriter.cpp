@@ -57,7 +57,7 @@ bool decWeakFileWriter::IsValid() const{
 }
 
 void decWeakFileWriter::DropWriter(){
-	pWriter = NULL;
+	pWriter = 0;
 }
 
 

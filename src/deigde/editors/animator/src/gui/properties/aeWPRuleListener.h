@@ -47,7 +47,7 @@ public:
 	aeWPRuleListener(aeWPRule &panel);
 	
 	/** Clean up listener. */
-	virtual ~aeWPRuleListener();
+	~aeWPRuleListener() override;
 	/*@}*/
 	
 	
@@ -55,37 +55,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Model changed. */
-	virtual void ModelChanged(aeAnimator *animator);
+	void ModelChanged(aeAnimator *animator) override;
 	
 	/** Rig changed. */
-	virtual void RigChanged(aeAnimator *animator);
+	void RigChanged(aeAnimator *animator) override;
 	
 	/** Animation changed. */
-	virtual void AnimationChanged(aeAnimator *animator);
+	void AnimationChanged(aeAnimator *animator) override;
 	
 	/** Controller named changed. */
-	virtual void ControllerNameChanged(aeAnimator *animator, aeController *controller);
+	void ControllerNameChanged(aeAnimator *animator, aeController *controller) override;
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged(aeAnimator *animator);
+	void ControllerStructureChanged(aeAnimator *animator) override;
 	
 	/** Link name changed. */
-	virtual void LinkNameChanged(aeAnimator *animator, aeLink *link);
+	void LinkNameChanged(aeAnimator *animator, aeLink *link) override;
 	
 	/** Link count or order changed. */
-	virtual void LinkStructureChanged(aeAnimator *animator);
+	void LinkStructureChanged(aeAnimator *animator) override;
 	
 	/** Active rule changed. */
-	virtual void ActiveRuleChanged(aeAnimator *animator, aeRule *rule);
+	void ActiveRuleChanged(aeAnimator *animator, aeRule *rule) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged(aeAnimator *animator, aeRule *rule);
+	void RuleChanged(aeAnimator *animator, aeRule *rule) override;
 	
 	/** Rule name changed. */
-	virtual void RuleNameChanged(aeAnimator *animator, aeRule *rule);
+	void RuleNameChanged(aeAnimator *animator, aeRule *rule) override;
 	
 	/** Rule count or order changed. */
-	virtual void RuleStructureChanged(aeAnimator *animator);
+	void RuleStructureChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

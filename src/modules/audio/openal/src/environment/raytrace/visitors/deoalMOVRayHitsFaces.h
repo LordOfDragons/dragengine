@@ -85,7 +85,7 @@ public:
 	deoalMOVRayHitsFaces(deoalAComponent &component, const deoalAModel &model);
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalMOVRayHitsFaces();
+	~deoalMOVRayHitsFaces() override;
 	/*@}*/
 	
 	
@@ -136,10 +136,10 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode(deoalModelOctree &node);
+	void VisitNode(deoalModelOctree &node) override;
 	
 	/** \brief Visit octree node. */
-	virtual void VisitNode(deoalOctree *node, int intersection);
+	void VisitNode(deoalOctree *node, int intersection) override;
 	
 	/** \brief Visit optimized ray-trace octree node. */
 	void VisitOctree(const deoalModelRTOctree &octree);

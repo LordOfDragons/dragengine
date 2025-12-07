@@ -43,7 +43,7 @@ public:
 	deBaseSkinModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseSkinModule();
+	~deBaseSkinModule() override;
 	/*@}*/
 	
 	

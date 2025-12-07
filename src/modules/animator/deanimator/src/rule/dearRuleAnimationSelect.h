@@ -65,7 +65,7 @@ public:
 		int firstLink, const deAnimatorRuleAnimationSelect &rule);
 	
 	/** Clean up animator. */
-	virtual ~dearRuleAnimationSelect();
+	~dearRuleAnimationSelect() override;
 	/*@}*/
 	
 	
@@ -73,10 +73,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

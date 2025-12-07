@@ -45,7 +45,7 @@ public:
 	peeWPUndoHistoryListener(peeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~peeWPUndoHistoryListener();
+	~peeWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged(peeEmitter *emitter);
+	void UndoChanged(peeEmitter *emitter) override;
 	/*@}*/
 };
 

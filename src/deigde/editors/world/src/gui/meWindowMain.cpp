@@ -564,7 +564,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetAnyChanged());
 	}
 };
@@ -657,7 +657,7 @@ public:
 		}
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		switch(world.GetGuiParameters().GetElementMode()){
 		case meWorldGuiParameters::eemObject:
 			SetEnabled(pWindow.GetClipboard().HasWithTypeName(meClipboardDataObject::TYPE_NAME));
@@ -695,7 +695,7 @@ public:
 		}
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		switch(world.GetGuiParameters().GetElementMode()){
 		case meWorldGuiParameters::eemObject:
 			SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 0);
@@ -743,7 +743,7 @@ public:
 		}
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		switch(world.GetGuiParameters().GetElementMode()){
 		case meWorldGuiParameters::eemObject:
 			SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 0);
@@ -778,7 +778,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetElementMode() == pMode);
 	}
@@ -799,7 +799,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetWorkMode() == pMode);
 	}
@@ -816,7 +816,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetLockAxisX());
 	}
@@ -833,7 +833,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetLockAxisY());
 	}
@@ -850,7 +850,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetLockAxisZ());
 	}
@@ -867,7 +867,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetUseLocal());
 	}
@@ -900,7 +900,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetSnapToSnapPoints());
 	}
@@ -920,7 +920,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetRotationPivotCenter() == pRPC);
 	}
@@ -937,7 +937,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(pWindow.GetUse3DCursor());
 	}
@@ -1002,7 +1002,7 @@ public:
 		return new meUObjectDropToGround(world, list);
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 0);
 	}
 };
@@ -1021,7 +1021,7 @@ public:
 		return new meUObjectSnapToGrid(world, list, pWindow.GetConfiguration().GetMoveStep());
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 0);
 	}
 };
@@ -1043,7 +1043,7 @@ public:
 	
 	virtual igdeUndo *OnActionCopy(meWorld *world) = 0;
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 1);
 	}
 	
@@ -1099,7 +1099,7 @@ public:
 		return new meUObjectAttachTo(world, list, active);
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().HasActive()
 			&& world.GetSelectionObject().GetSelected().GetCount() > 0);
 	}
@@ -1119,7 +1119,7 @@ public:
 		return new meUObjectAttachTo(world, list, NULL);
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 0);
 	}
 };
@@ -1148,7 +1148,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().HasActive());
 	}
 };
@@ -1253,7 +1253,7 @@ public:
 		return undo;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().HasActive());
 	}
 };
@@ -1275,7 +1275,7 @@ public:
 			world, listSelected, pRandomizeX, pRandomizeY, pRandomizeZ) : nullptr;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 0);
 	}
 };
@@ -1299,7 +1299,7 @@ public:
 		}
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		decString propertyName;
 		SetEnabled(ActivatePropName(world, propertyName));
 	}
@@ -1339,7 +1339,7 @@ public:
 	
 	virtual igdeUndo *OnActionShape(meWorld *world, meObject *object, const char *property) = 0;
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(ActivatePropName(world));
 	}
 	
@@ -1394,7 +1394,7 @@ public:
 	cActionObjectShapeAddSphere(meWindowMain &window) : cActionObjectShapeAdd(window,
 		"Add Sphere Shape", NULL, "Add sphere shape", deInputEvent::ekcS){}
 	
-	virtual decShape *CreateShape(){
+	decShape *CreateShape() override{
 		return new decShapeSphere(0.5f);
 	}
 };
@@ -1404,7 +1404,7 @@ public:
 	cActionObjectShapeAddBox(meWindowMain &window) : cActionObjectShapeAdd(window,
 		"Add Box Shape", NULL, "Add box shape", deInputEvent::ekcB){}
 	
-	virtual decShape *CreateShape(){
+	decShape *CreateShape() override{
 		return new decShapeBox(decVector(0.5f, 0.5f, 0.5f));
 	}
 };
@@ -1414,7 +1414,7 @@ public:
 	cActionObjectShapeAddCylinder(meWindowMain &window) : cActionObjectShapeAdd(window,
 		"Add Cylinder Shape", NULL, "Add cylinder shape", deInputEvent::ekcC){}
 	
-	virtual decShape *CreateShape(){
+	decShape *CreateShape() override{
 		return new decShapeCylinder(0.5f, 0.25f);
 	}
 };
@@ -1424,7 +1424,7 @@ public:
 	cActionObjectShapeAddCapsule(meWindowMain &window) : cActionObjectShapeAdd(window,
 		"Add Capsule Shape", NULL, "Add capsule shape", deInputEvent::ekcP){}
 	
-	virtual decShape *CreateShape(){
+	decShape *CreateShape() override{
 		return new decShapeCapsule(0.5f, 0.25f, 0.25f);
 	}
 };
@@ -1452,7 +1452,7 @@ public:
 		return new meUDeleteDecal(world);
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		SetEnabled(world.GetSelectionDecal().GetSelected().GetCount() > 0);
 	}
 };
@@ -1478,7 +1478,7 @@ public:
 		return OnActionDecal(world, decal);
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		meDecal * const decal = world.GetSelectionDecal().GetActive();
 		if(decal){
 			const meObject * const object = decal->GetParentObject();
@@ -1499,7 +1499,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp),
 		"Raise decal to the top", deInputEvent::ekcT){}
 	
-	virtual bool CanReorder(const meObject &, int index){
+	bool CanReorder(const meObject &, int index) override{
 		return index > 0;
 	}
 	
@@ -1514,7 +1514,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Raise decal by one level", deInputEvent::ekcR){}
 	
-	virtual bool CanReorder(const meObject &, int index){
+	bool CanReorder(const meObject &, int index) override{
 		return index > 0;
 	}
 	
@@ -1529,7 +1529,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Lower decal by one level", deInputEvent::ekcL){}
 	
-	virtual bool CanReorder(const meObject &object, int index){
+	bool CanReorder(const meObject &object, int index) override{
 		return index < object.GetDecalCount() - 1;
 	}
 	
@@ -1544,7 +1544,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown),
 		"Lower decal to the bottom", deInputEvent::ekcB){}
 	
-	virtual bool CanReorder(const meObject &object, int index){
+	bool CanReorder(const meObject &object, int index) override{
 		return index < object.GetDecalCount() - 1;
 	}
 	
@@ -1565,7 +1565,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetFullBright());
 	}
@@ -1582,7 +1582,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetMicrophone()->GetMuted());
 	}
@@ -1599,7 +1599,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetShowOcclusionMeshes());
 	}
@@ -1616,7 +1616,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetShowOcclusionMeshesSelected());
 	}
@@ -1633,7 +1633,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetShowNavigationSpaces());
 	}
@@ -1650,7 +1650,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const meWorld &world){
+	void Update(const meWorld &world) override{
 		cActionBase::Update(world);
 		SetSelected(world.GetGuiParameters().GetShowNavigationSpacesSelected());
 	}

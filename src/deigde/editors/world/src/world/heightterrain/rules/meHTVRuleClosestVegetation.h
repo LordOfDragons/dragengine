@@ -76,7 +76,7 @@ public:
 	meHTVRuleClosestVegetation(const meHTVRuleClosestVegetation &rule);
 	
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleClosestVegetation();
+	~meHTVRuleClosestVegetation() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -94,14 +94,14 @@ public:
 	void UpdateResult(meHTVEvaluationEnvironment &evalEnv);
 	
 	/** Resets the rule state. */
-	virtual void Reset();
+	void Reset() override;
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule *Copy() const override;
 	/*@}*/
 };
 

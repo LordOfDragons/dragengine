@@ -13,11 +13,11 @@
 class detTexMatrix2 : public detCase{
 public:
 	detTexMatrix2();
-	~detTexMatrix2();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detTexMatrix2() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void pInitMatrix(decTexMatrix2 &matrix, float base);

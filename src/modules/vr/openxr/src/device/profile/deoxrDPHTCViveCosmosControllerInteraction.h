@@ -40,14 +40,14 @@ public:
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPHTCViveCosmosControllerInteraction();
+	~deoxrDPHTCViveCosmosControllerInteraction() override;
 	/*@}*/
 	
 	
 protected:
-	virtual bool pProfileEnabled() const;
-	virtual void pSuggestBindings();
-	virtual void pAddDevice(bool left);
+	bool pProfileEnabled() const override;
+	void pSuggestBindings() override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

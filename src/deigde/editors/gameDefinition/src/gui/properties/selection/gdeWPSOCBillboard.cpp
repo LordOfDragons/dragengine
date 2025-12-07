@@ -255,7 +255,7 @@ public:
 		return new gdeUOCBillboardToggleLocked(objectClass, billboard);
 	}
 	
-	virtual void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard){
+	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
 		cBaseAction::UpdateBillboard(objectClass, billboard);
 		SetSelected(billboard.GetLocked());
 	}
@@ -270,7 +270,7 @@ public:
 		return new gdeUOCBillboardToggleSpherical(objectClass, billboard);
 	}
 	
-	virtual void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard){
+	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
 		cBaseAction::UpdateBillboard(objectClass, billboard);
 		SetSelected(billboard.GetSpherical());
 	}
@@ -285,7 +285,7 @@ public:
 		return new gdeUOCBillboardToggleSizeFixedToScreen(objectClass, billboard);
 	}
 	
-	virtual void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard){
+	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
 		cBaseAction::UpdateBillboard(objectClass, billboard);
 		SetSelected(billboard.GetSizeFixedToScreen());
 	}
@@ -300,7 +300,7 @@ public:
 		return new gdeUOCBillboardToggleDoNotScale(objectClass, billboard);
 	}
 	
-	virtual void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard){
+	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
 		cBaseAction::UpdateBillboard(objectClass, billboard);
 		SetSelected(billboard.GetDoNotScale());
 	}
@@ -315,7 +315,7 @@ public:
 		return new gdeUOCBillboardToggleRenderEnvMap(objectClass, billboard);
 	}
 	
-	virtual void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard){
+	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
 		cBaseAction::UpdateBillboard(objectClass, billboard);
 		SetSelected(billboard.GetRenderEnvMap());
 	}
@@ -330,7 +330,7 @@ public:
 		return new gdeUOCBillboardTogglePartialHide(objectClass, billboard);
 	}
 	
-	virtual void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard){
+	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
 		cBaseAction::UpdateBillboard(objectClass, billboard);
 		SetSelected(billboard.GetPartialHide());
 	}

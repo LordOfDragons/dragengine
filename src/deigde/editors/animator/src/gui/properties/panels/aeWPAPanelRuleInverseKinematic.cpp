@@ -238,7 +238,7 @@ public:
 		return new aeURuleIKSetAdjustOrientation(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleInverseKinematic &rule){
+	void Update(const aeAnimator & , const aeRuleInverseKinematic &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetAdjustOrientation());
 	}
@@ -264,7 +264,7 @@ public:
 		return new aeURuleIKSetUseSolverBone(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleInverseKinematic &rule){
+	void Update(const aeAnimator & , const aeRuleInverseKinematic &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetUseSolverBone());
 	}

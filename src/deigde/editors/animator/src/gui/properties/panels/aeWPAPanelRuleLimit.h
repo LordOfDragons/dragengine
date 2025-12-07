@@ -77,7 +77,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleLimit();
+	~aeWPAPanelRuleLimit() override;
 	/*@}*/
 	
 	
@@ -86,10 +86,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Updates the rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	/*@}*/
 };
 

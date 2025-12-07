@@ -92,7 +92,7 @@ public:
 	
 protected:
 	/** \brief Clean up task. */
-	virtual ~deParallelTask();
+	~deParallelTask() override;
 	/*@}*/
 	
 	

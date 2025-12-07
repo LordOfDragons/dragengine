@@ -80,7 +80,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
+	ceUCActionPaste *CreateUndo(const ceConversationActionList &actions) override;
 	/*@}*/
 };
 

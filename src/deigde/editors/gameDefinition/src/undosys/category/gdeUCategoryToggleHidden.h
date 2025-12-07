@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUCategoryToggleHidden();
+	~gdeUCategoryToggleHidden() override;
 	/*@}*/
 	
 	

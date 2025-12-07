@@ -211,7 +211,7 @@ public:
 		return new aeURuleAnimDiffToggleEnablePosition(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleAnimationDifference &rule){
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnablePosition());
 	}
@@ -226,7 +226,7 @@ public:
 		return new aeURuleAnimDiffToggleEnableRotation(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleAnimationDifference &rule){
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableOrientation());
 	}
@@ -241,7 +241,7 @@ public:
 		return new aeURuleAnimDiffToggleEnableSize(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleAnimationDifference &rule){
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableSize());
 	}
@@ -257,7 +257,7 @@ public:
 		return new aeURuleAnimDiffToggleEnableVertexPositionSet(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleAnimationDifference &rule){
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableVertexPositionSet());
 	}

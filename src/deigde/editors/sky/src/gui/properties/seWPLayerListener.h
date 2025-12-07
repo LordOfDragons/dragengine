@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~seWPLayerListener();
+	~seWPLayerListener() override;
 	/*@}*/
 	
 	
@@ -57,35 +57,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Link added or removed. */
-	virtual void LinkStructureChanged (seSky *sky);
+	void LinkStructureChanged (seSky *sky) override;
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged(seSky *sky, seLink *link);
+	void LinkNameChanged(seSky *sky, seLink *link) override;
 	
 	
 	
 	/** \brief Layer added or removed. */
-	virtual void LayerStructureChanged (seSky *sky);
+	void LayerStructureChanged (seSky *sky) override;
 	
 	/** \brief Layer changed. */
-	virtual void LayerChanged(seSky *sky, seLayer *layer);
+	void LayerChanged(seSky *sky, seLayer *layer) override;
 	
 	/** \brief Layer name changed. */
-	virtual void LayerNameChanged(seSky *sky, seLayer *layer);
+	void LayerNameChanged(seSky *sky, seLayer *layer) override;
 	
 	/** \brief Active layer changed. */
-	virtual void ActiveLayerChanged(seSky *sky);
+	void ActiveLayerChanged(seSky *sky) override;
 	
 	
 	
 	/** \brief Body added or removed. */
-	virtual void BodyStructureChanged (seSky *sky, seLayer *layer);
+	void BodyStructureChanged (seSky *sky, seLayer *layer) override;
 	
 	/** \brief Body changed. */
-	virtual void BodyChanged(seSky *sky, seLayer *layer, seBody *body);
+	void BodyChanged(seSky *sky, seLayer *layer, seBody *body) override;
 	
 	/** \brief Active body changed. */
-	virtual void ActiveBodyChanged(seSky *sky, seLayer *layer);
+	void ActiveBodyChanged(seSky *sky, seLayer *layer) override;
 	
 	
 	
@@ -93,7 +93,7 @@ public:
     virtual void TargetChanged(seSky *sky, seLayer *layer, deSkyLayer::eTargets target);
 	
 	/** \brief Active target changed. */
-	virtual void ActiveTargetChanged(seSky *sky, seLayer *layer);
+	void ActiveTargetChanged(seSky *sky, seLayer *layer) override;
 	/*@}*/
 };
 

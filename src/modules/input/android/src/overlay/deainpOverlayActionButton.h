@@ -61,7 +61,7 @@ public:
 	deainpOverlayActionButton(deAndroidInput &androidInput);
 	
 	/** \brief Clean up overlay action button. */
-	virtual ~deainpOverlayActionButton();
+	~deainpOverlayActionButton() override;
 	/*@}*/
 	
 	
@@ -119,10 +119,10 @@ public:
 	
 	
 	/** \brief Update binding indices. */
-	virtual void UpdateBindingIndices();
+	void UpdateBindingIndices() override;
 	
 	/** \brief Update canvas content. */
-	virtual void UpdateContent();
+	void UpdateContent() override;
 	
 	/**
 	 * \brief Touch event.
@@ -140,7 +140,7 @@ public:
 	virtual void OnMove(const decPoint &position);
 	
 	/** \brief Release. */
-	virtual void OnRelease();
+	void OnRelease() override;
 	/*@}*/
 	
 private:

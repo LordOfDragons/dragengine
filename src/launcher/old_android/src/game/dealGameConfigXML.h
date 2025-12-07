@@ -50,7 +50,7 @@ public:
 	dealGameConfigXML(deLogger *logger, const char *loggingSource, dealGameManager &gameManager);
 	
 	/** \brief Clean up game config xml read/save. */
-	virtual ~dealGameConfigXML();
+	~dealGameConfigXML() override;
 	/*@}*/
 	
 	

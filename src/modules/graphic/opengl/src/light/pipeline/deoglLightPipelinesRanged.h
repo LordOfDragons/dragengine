@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** Clean up light pipeline. */
-	virtual ~deoglLightPipelinesRanged();
+	~deoglLightPipelinesRanged() override;
 	/*@}*/
 	
 	

@@ -47,7 +47,7 @@ public:
 	reWPShapeListener(reWPShape &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPShapeListener();
+	~reWPShapeListener() override;
 	/*@}*/
 	
 	
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief A shape changed. */
-	virtual void ShapeChanged(reRig *rig, reRigShape *shape);
+	void ShapeChanged(reRig *rig, reRigShape *shape) override;
 	
 	/** \brief A shape changed selection state. */
-	virtual void ShapeSelectedChanged(reRig *rig, reRigShape *shape);
+	void ShapeSelectedChanged(reRig *rig, reRigShape *shape) override;
 	
 	/** \brief All shapes have been deselected. */
-	virtual void AllShapesDeselected(reRig *rig);
+	void AllShapesDeselected(reRig *rig) override;
 	
 	/** \brief The active shape changed. */
-	virtual void ActiveShapeChanged(reRig *rig);
+	void ActiveShapeChanged(reRig *rig) override;
 	/*@}*/
 };
 

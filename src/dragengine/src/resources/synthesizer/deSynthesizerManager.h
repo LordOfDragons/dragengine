@@ -48,7 +48,7 @@ public:
 	deSynthesizerManager(deEngine *engine);
 	
 	/** \brief Clean up synthesizer resource manager and report leaking resources. */
-	~deSynthesizerManager();
+	~deSynthesizerManager() override;
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	deSynthesizer *CreateSynthesizer();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -73,10 +73,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Synthesizer system peers of all stored resources have to be created. */
-	virtual void SystemSynthesizerLoad();
+	void SystemSynthesizerLoad() override;
 	
 	/** \brief Synthesizer system peers of all stored resources have to be freed. */
-	virtual void SystemSynthesizerUnload();
+	void SystemSynthesizerUnload() override;
 	/*@}*/
 	
 	
@@ -88,7 +88,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

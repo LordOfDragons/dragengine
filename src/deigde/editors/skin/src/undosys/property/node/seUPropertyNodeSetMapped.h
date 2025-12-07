@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUPropertyNodeSetMapped() override;
+	~seUPropertyNodeSetMapped() override;
 	/*@}*/
 	
 	
@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo() override;
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo() override;
+	void Redo() override;
 	/*@}*/
 };
 

@@ -313,7 +313,7 @@ public:
 	cActionClassBrowse(meWPSObject &panel) : cBaseAction(panel,
 		"Browse Class", NULL, "Show class in class browser"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		if(object->GetGDClass()){
 			pPanel.GetWPSelection().GetWindowProperties().SwitchToBrowser();
 			pPanel.GetWPSelection().GetWindowProperties().GetBrowser().SelectObjectClass(object->GetGDClass());
@@ -321,7 +321,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject());
 	}
 };
@@ -331,14 +331,14 @@ public:
 	cActionClassEdit(meWPSObject &panel) : cBaseAction(panel,
 		"Edit Class", NULL, "Edit class in Game Definition Editor"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		if(object->GetGDClass()){
 			// TODO
 		}
 		return NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject());
 	}
 };
@@ -370,7 +370,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
 		"Find ID. Activates object if found."), pPanel(panel){}
 	
-	virtual void OnAction() override{
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world){
 			return;
@@ -427,7 +427,7 @@ public:
 			"Find ID", "ID '%s' not found", value.GetString());
 	}
 	
-	virtual void Update() override{
+	void Update() override{
 		SetEnabled(pPanel.GetWorld() != nullptr);
 	}
 };
@@ -449,7 +449,7 @@ class cActionResetPosition : public cBaseAction{
 public:
 	cActionResetPosition(meWPSObject &panel) : cBaseAction(panel, "Reset Position", NULL, "Reset position to 0"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		return !object->GetPosition().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
 			? new meUSetObjectPosition(object, decVector()) : NULL;
 	}
@@ -499,7 +499,7 @@ class cActionResetRotation : public cBaseAction{
 public:
 	cActionResetRotation(meWPSObject &panel) : cBaseAction(panel, "Reset Rotation", NULL, "Reset rotation to 0"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		return !object->GetRotation().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
 			? new meUSetObjectRotation(object, decVector()) : NULL;
 	}
@@ -619,7 +619,7 @@ class cActionResetScaling : public cBaseAction{
 public:
 	cActionResetScaling(meWPSObject &panel) : cBaseAction(panel, "Reset Scaling", NULL, "Reset scaling to 1"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		return !object->GetScaling().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))
 			? new meUObjectSetScaling(object, decVector(1.0f, 1.0f, 1.0f)) : NULL;
 	}
@@ -655,7 +655,7 @@ public:
 	cBaseActionTexture(meWPSObject &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		meObjectTexture * const texture = object->GetActiveTexture();
 		return texture ? OnActionTexture(object, texture) : NULL;
 	}
@@ -718,7 +718,7 @@ public:
 	cActionTextureAddModel(meWPSObject &panel, const char *name) :
 	cBaseAction(panel, name, NULL, "Add model texture"), pTextureName(name){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		meObjectTexture::Ref texture;
 		meHelpers::CreateTexture(texture, object, pTextureName);
 		
@@ -728,7 +728,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject() && !pPanel.GetActiveObject()->HasTextureNamed(pTextureName));
 	}
 };
@@ -740,11 +740,11 @@ public:
 	cActionTextureRemoveModel(meWPSObject &panel, const char *name) :
 	cBaseAction(panel, name, NULL, "Remove model texture"), pTextureName(name){}
 	
-	virtual igdeUndo *OnAction(meObject*){
+	igdeUndo *OnAction(meObject*) override{
 		return NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject() && pPanel.GetActiveObject()->HasTextureNamed(pTextureName));
 	}
 };
@@ -814,7 +814,7 @@ public:
 	cActionTextureAddCustom(meWPSObject &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add texture"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		decString name;
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Texture", "Name:", name)){
 			if(object->HasTextureNamed(name)){
@@ -832,7 +832,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject());
 	}
 };
@@ -842,7 +842,7 @@ public:
 	cActionTextureAddAllModel(meWPSObject &panel) : cBaseAction(panel, "Add All From Model",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add all textures from model"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		meUObjectAddUsedTextures * const undo = new meUObjectAddUsedTextures(object);
 		if(undo->GetTextureNameList().GetCount() == 0){
 			undo->FreeReference();
@@ -851,7 +851,7 @@ public:
 		return undo;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const meObject * const object = pPanel.GetActiveObject();
 		bool enabled = false;
 		
@@ -878,11 +878,11 @@ public:
 	cActionTextureRemove(meWPSObject &panel) : cBaseActionTexture(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove texture"){}
 	
-	virtual igdeUndo *OnActionTexture(meObject*, meObjectTexture *texture){
+	igdeUndo *OnActionTexture(meObject*, meObjectTexture *texture) override{
 		return new meUObjectRemoveTexture(texture);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveTexture());
 	}
 };
@@ -892,11 +892,11 @@ public:
 	cActionTextureRemoveAll(meWPSObject &panel) : cBaseAction(panel, "Remove All",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all textures"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		return object->GetTextureCount() > 0 ? new meUObjectRemoveAllTextures(object) : NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject() && pPanel.GetActiveObject()->GetTextureCount() > 0);
 	}
 };
@@ -906,11 +906,11 @@ public:
 	cActionTextureRemoveAllNotModel(meWPSObject &panel) : cBaseAction(panel, "Remove All Not From Model",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all textures not from model"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		return new meUObjectRemoveUnusedTextures(object);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const meObject * const object = pPanel.GetActiveObject();
 		bool enabled = false;
 		
@@ -938,12 +938,12 @@ public:
 		"Copy To Selected", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 			"Copy texture from active object to selected objects"){}
 	
-	virtual igdeUndo *OnActionTexture(meObject*, meObjectTexture *texture){
+	igdeUndo *OnActionTexture(meObject*, meObjectTexture *texture) override{
 		const meObjectList &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
 		return list.GetCount() > 0 ? new meUObjectTextureCopyToSelected(list, texture) : NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveTexture() && pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 1);
 	}
 };
@@ -954,7 +954,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 			"Clone textures from active object to selected objects"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		meObjectList list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
 		list.RemoveIfPresent(object);
 		if(list.GetCount() == 0){
@@ -971,7 +971,7 @@ public:
 		return new meUObjectCloneTexturesToSelected(list, textures);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject() && pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 1);
 	}
 };
@@ -992,7 +992,7 @@ public:
 		return value;
 	}
 	
-	virtual const igdeGDProperty *GetGDProperty(const char *key) const{
+	const igdeGDProperty *GetGDProperty(const char *key) const override{
 		const meObject * const object = pPanel.GetActiveObject();
 		if(!object || !object->GetGDClass()){
 			return nullptr;
@@ -1052,7 +1052,7 @@ public:
 		pPanel.UpdateIdentifierLists();
 	}
 	
-	virtual void AddContextMenuEntries(igdeUIHelper &helper, igdeMenuCascade &menu){
+	void AddContextMenuEntries(igdeUIHelper &helper, igdeMenuCascade &menu) override{
 		helper.MenuSeparator(menu);
 		helper.MenuCommand(menu, pPanel.GetActionPropCopyToSel());
 		helper.MenuCommand(menu, pPanel.GetActionPropCloneToSel());
@@ -1086,7 +1086,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 			"Copy property from active object to all selected objects"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		meObjectList list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
 		const decString &property = pPanel.GetActiveProperty();
 		list.RemoveIfPresent(object);
@@ -1094,7 +1094,7 @@ public:
 			list, property, object->GetProperties().GetAt(property)) : NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject() && !pPanel.GetActiveProperty().IsEmpty()
 			&& pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 1);
 	}
@@ -1106,14 +1106,14 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 			"Remove property from all selected objects"){}
 	
-	virtual igdeUndo *OnAction(meObject*){
+	igdeUndo *OnAction(meObject*) override{
 		const meObjectList &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
 		const decString &property = pPanel.GetActiveProperty();
 		return !property.IsEmpty() && list.GetCount() > 0 ?
 			new meUObjectPropertyRemoveFromSelected(list, property) : NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject() && !pPanel.GetActiveProperty().IsEmpty()
 			&& pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 0);
 	}
@@ -1125,13 +1125,13 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 			"Clone all properties from active object to all selected objects"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		meObjectList list(pPanel.GetWorld()->GetSelectionObject().GetSelected());
 		list.RemoveIfPresent(object);
 		return list.GetCount() > 0 ? new meUObjectClonePropertiesToSelected(list, object->GetProperties()) : NULL;
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveObject() && pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 1);
 	}
 };
@@ -1311,7 +1311,7 @@ public:
 	cActionShowMissingTextures(meWPSObject &panel) : cBaseAction(panel, "Show Missing Textures",
 		NULL, "Show mising textures using placeholder texture"){}
 	
-	virtual igdeUndo *OnAction(meObject *object){
+	igdeUndo *OnAction(meObject *object) override{
 		object->SetShowMissingTextures(!object->GetShowMissingTextures());
 		return NULL;
 	}
@@ -1333,7 +1333,7 @@ public:
 		return value;
 	}
 	
-	virtual const igdeGDProperty *GetGDProperty(const char *key) const{
+	const igdeGDProperty *GetGDProperty(const char *key) const override{
 		const meObjectTexture * const texture = pPanel.GetActiveTexture();
 		return texture && texture->GetObject()->GetGDClass()
 			? texture->GetObject()->GetGDClass()->GetTexturePropertyNamed(key) : NULL;

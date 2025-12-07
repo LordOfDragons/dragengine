@@ -47,7 +47,7 @@ public:
 	meWindowMainListener(meWindowMain &windowMain);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWindowMainListener();
+	~meWindowMainListener() override;
 	/*@}*/
 	
 	
@@ -55,34 +55,34 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged(meWorld *world);
+	void ModeChanged(meWorld *world) override;
 	
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(meWorld *world);
+	void StateChanged(meWorld *world) override;
 	
 	/** \brief Height terrain state changed. */
-	virtual void HTStateChanged(meWorld *world);
+	void HTStateChanged(meWorld *world) override;
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged(meWorld *world);
+	void UndoChanged(meWorld *world) override;
 	
 	/** \brief Lighting parameters changed. */
-	virtual void LightingChanged(meWorld *world);
+	void LightingChanged(meWorld *world) override;
 	
 	/** \brief Editing parameters changed. */
-	virtual void EditingChanged(meWorld *world);
+	void EditingChanged(meWorld *world) override;
 	
 	/** \brief Object selection changed. */
-	virtual void ObjectSelectionChanged(meWorld *world);
+	void ObjectSelectionChanged(meWorld *world) override;
 	
 	/** \brief Object changed. */
-	virtual void ObjectChanged(meWorld *world, meObject *object);
+	void ObjectChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Decal selection changed. */
-	virtual void DecalSelectionChanged(meWorld *world);
+	void DecalSelectionChanged(meWorld *world) override;
 	
 	/** \brief Decal changed. */
-	virtual void DecalChanged(meWorld *world, meDecal *decal);
+	void DecalChanged(meWorld *world, meDecal *decal) override;
 	/*@}*/
 };
 

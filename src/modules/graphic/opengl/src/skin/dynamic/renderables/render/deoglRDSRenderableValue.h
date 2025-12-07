@@ -47,7 +47,7 @@ public:
 	deoglRDSRenderableValue(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin value renderable. */
-	virtual ~deoglRDSRenderableValue();
+	~deoglRDSRenderableValue() override;
 	/*@}*/
 	
 	
@@ -58,13 +58,13 @@ public:
 	void SetValue(float value);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get value if support or default value.
 	 * \details Default implementation returns default value.
 	 */
-	virtual float GetRenderValue(float defaultValue);
+	float GetRenderValue(float defaultValue) override;
 	
 	/**
 	 * Get color if support or default color.
@@ -76,7 +76,7 @@ public:
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 };
 

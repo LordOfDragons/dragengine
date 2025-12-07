@@ -46,7 +46,7 @@ public:
 	/** Creates a new point with the values of another point. */
 	decPoint3(const decPoint3 &p);
 	/** Creates a new point with the values from a 2-component point augmented with a third value. */
-	decPoint3(const decPoint &p, int nz);
+	decPoint3(const decPoint3 &p, int nz);
 	/** Creates a new point with the values of a 3-component vector discarding fractional parts of all components. */
 	decPoint3(const decVector &p);
 	/** Creates a new point with the values of a 3-component vector discarding fractional parts of all components. */

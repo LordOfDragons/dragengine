@@ -58,7 +58,7 @@ public:
 	dealDialog(dealDisplay &display, const char *title);
 	
 	/** \brief Clean up dialog. */
-	virtual ~dealDialog();
+	~dealDialog() override;
 	/*@}*/
 	
 	

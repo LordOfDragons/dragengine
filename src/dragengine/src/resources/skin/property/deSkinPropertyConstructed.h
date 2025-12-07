@@ -55,7 +55,7 @@ public:
 	deSkinPropertyConstructed(const char *type);
 	
 	/** \brief Clean up constructed property. */
-	virtual ~deSkinPropertyConstructed();
+	~deSkinPropertyConstructed() override;
 	/*@}*/
 	
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit(deSkinPropertyVisitor &visitor);
+	void Visit(deSkinPropertyVisitor &visitor) override;
 	/*@}*/
 };
 

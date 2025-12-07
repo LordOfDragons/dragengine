@@ -47,7 +47,7 @@ public:
 	reWPPushListener(reWPPush &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPPushListener();
+	~reWPPushListener() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief A push changed. */
-	void PushChanged(reRig *rig, reRigPush *push);
+	void PushChanged(reRig *rig, reRigPush *push) override;
 	
 	/** \brief The active push changed. */
-	void ActivePushChanged(reRig *rig);
+	void ActivePushChanged(reRig *rig) override;
 	/*@}*/
 };
 

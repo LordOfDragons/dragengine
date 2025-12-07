@@ -47,19 +47,19 @@ public:
 	deoglLightPipelinesParticle(const deoglRParticleEmitterType &emitter);
 	
 	/** Clean up light pipeline. */
-	virtual ~deoglLightPipelinesParticle();
+	~deoglLightPipelinesParticle() override;
 	/*@}*/
 	
 	
 	
 public:
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	
 	
 	
 protected:
-	virtual void pPreparePipelines(deoglBatchedShaderLoading &batched);
+	void pPreparePipelines(deoglBatchedShaderLoading &batched) override;
 	
 	
 	

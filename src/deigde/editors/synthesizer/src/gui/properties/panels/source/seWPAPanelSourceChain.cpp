@@ -198,7 +198,7 @@ public:
 		return selection != -1 ? new seUSourceChainPathSoundRemove(source, selection) : NULL;
 	}
 	
-	virtual void Update(const seSourceChain &){
+	void Update(const seSourceChain &) override{
 		SetEnabled(pPanel.GetSelectedSoundInList() != -1);
 	}
 };
@@ -213,7 +213,7 @@ public:
 		return selection > 0 ? new seUSourceChainPathSoundMoveUp(source, selection) : NULL;
 	}
 	
-	virtual void Update(const seSourceChain &){
+	void Update(const seSourceChain &) override{
 		SetEnabled(pPanel.GetSelectedSoundInList() > 0);
 	}
 };
@@ -228,7 +228,7 @@ public:
 		return selection > 0 ? new seUSourceChainPathSoundMoveUp(source, selection) : NULL;
 	}
 	
-	virtual void Update(const seSourceChain &source){
+	void Update(const seSourceChain &source) override{
 		const int selection = pPanel.GetSelectedSoundInList();
 		SetEnabled(selection != -1 && selection < source.GetPathSounds().GetCount() - 1);
 	}

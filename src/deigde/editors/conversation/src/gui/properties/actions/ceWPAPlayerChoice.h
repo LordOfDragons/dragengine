@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~ceWPAPlayerChoice();
+	~ceWPAPlayerChoice() override;
 	/*@}*/
 	
 	

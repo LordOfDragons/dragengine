@@ -76,7 +76,7 @@ class cActionSkyChanged : public cBaseAction{
 public:
 	cActionSkyChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(peeEmitter &emitter){
+	void OnAction(peeEmitter &emitter) override{
 		emitter.NotifySkyChanged();
 	}
 };
@@ -85,7 +85,7 @@ class cActionCameraChanged : public cBaseAction{
 public:
 	cActionCameraChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(peeEmitter &emitter){
+	void OnAction(peeEmitter &emitter) override{
 		emitter.NotifyCameraChanged();
 	}
 };
@@ -94,7 +94,7 @@ class cActionEnvObjChanged : public cBaseAction{
 public:
 	cActionEnvObjChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(peeEmitter &emitter){
+	void OnAction(peeEmitter &emitter) override{
 		emitter.NotifyEnvObjectChanged();
 	}
 };
@@ -156,7 +156,7 @@ public:
 	cActionEnableCasting(peeWPView &panel) :
 	cBaseAction(panel, "Enable Casting", "Determines if casting is enabled"){ }
 	
-	virtual void OnAction(peeEmitter &emitter){
+	void OnAction(peeEmitter &emitter) override{
 		emitter.SetEnableCasting(!emitter.GetEnableCasting());
 	}
 };

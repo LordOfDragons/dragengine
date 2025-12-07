@@ -52,7 +52,7 @@ public:
 	/** Creates a new visitor. */
 	deoglFindBestEnvMap();
 	/** Cleans up the visitor. */
-	virtual ~deoglFindBestEnvMap();
+	~deoglFindBestEnvMap() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -80,7 +80,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
-	virtual void VisitNode(deoglDOctree *node, int intersection);
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	
 	/** Test all environment maps in a list of environment maps. */
 	void VisitList(const deoglEnvironmentMapList &list);

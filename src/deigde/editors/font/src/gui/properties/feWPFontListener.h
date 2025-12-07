@@ -47,7 +47,7 @@ public:
 	feWPFontListener(feWPFont &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~feWPFontListener();
+	~feWPFontListener() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font parameters changed. */
-	virtual void FontChanged(feFont *font);
+	void FontChanged(feFont *font) override;
 	
 	/** \brief An image changed. */
-    virtual void ImageChanged(feFont *font, feFontImage *image);
+    void ImageChanged(feFont *font, feFontImage *image) override;
 	/*@}*/
 };
 

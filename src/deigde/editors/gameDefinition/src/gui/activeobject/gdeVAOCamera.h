@@ -66,7 +66,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOCamera();
+	~gdeVAOCamera() override;
 	/*@}*/
 	
 	
@@ -78,10 +78,10 @@ public:
 	inline gdeOCCamera *GetOCCamera() const{ return pOCCamera; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	

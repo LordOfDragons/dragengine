@@ -62,7 +62,7 @@ public:
 	ceCAIfElse(const ceCAIfElse &action);
 	
 	/** \brief Clean up if-else conversation action. */
-	virtual ~ceCAIfElse();
+	~ceCAIfElse() override;
 	/*@}*/
 	
 	
@@ -78,7 +78,7 @@ public:
 	inline const ceConversationActionList &GetElseActions() const{ return pElseActions; }
 	
 	/** \brief Create copy of action. */
-	virtual ceConversationAction *CreateCopy() const;
+	ceConversationAction *CreateCopy() const override;
 	/*@}*/
 	
 	

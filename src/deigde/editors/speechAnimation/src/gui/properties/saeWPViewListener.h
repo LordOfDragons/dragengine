@@ -47,7 +47,7 @@ public:
 	saeWPViewListener(saeWPView &panel);
 	
 	/** Clean up listener. */
-	virtual ~saeWPViewListener();
+	~saeWPViewListener() override;
 	/*@}*/
 	
 	
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Speech animation changed. */
-	virtual void SAnimationChanged(saeSAnimation *sanimation);
+	void SAnimationChanged(saeSAnimation *sanimation) override;
 	
 	/** Model changed. */
-	virtual void ModelChanged(saeSAnimation *sanimation);
+	void ModelChanged(saeSAnimation *sanimation) override;
 	
 	/** Sky changed. */
-	virtual void SkyChanged(saeSAnimation *sanimation);
+	void SkyChanged(saeSAnimation *sanimation) override;
 	
 	/** Camera changed. */
-	virtual void CameraChanged(saeSAnimation *sanimation);
+	void CameraChanged(saeSAnimation *sanimation) override;
 	/*@}*/
 };
 

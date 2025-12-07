@@ -70,7 +70,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMObjectClass();
+	~gdeWPSTIMObjectClass() override;
 	/*@}*/
 	
 	
@@ -142,19 +142,19 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief Compare this item with another for sorting. */
-	virtual int Compare(const gdeWPSTreeItemModel &item) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching(const char *string);
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 	
 	

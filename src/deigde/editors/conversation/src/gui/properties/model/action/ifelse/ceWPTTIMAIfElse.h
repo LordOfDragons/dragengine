@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAIfElse();
+	~ceWPTTIMAIfElse() override;
 	/*@}*/
 	
 	
@@ -68,16 +68,16 @@ public:
 	inline ceWPTTIMAIfElseElse *GetElseChild() const{ return pElse; }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update action lists if present. */
-	virtual void UpdateActionLists();
+	void UpdateActionLists() override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 	
 	

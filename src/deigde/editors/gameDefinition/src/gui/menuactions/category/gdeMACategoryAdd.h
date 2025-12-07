@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction(gdeGameDefinition &gameDefinition);
+	igdeUndo *OnAction(gdeGameDefinition &gameDefinition) override;
 	
 	/** \brief Add category. */
 	igdeUndo *AddCategory(gdeGameDefinition &gameDefinition,

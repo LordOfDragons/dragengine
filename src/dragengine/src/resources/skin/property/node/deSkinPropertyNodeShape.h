@@ -76,7 +76,7 @@ public:
 	deSkinPropertyNodeShape();
 	
 	/** \brief Clean up constructed property node. */
-	virtual ~deSkinPropertyNodeShape();
+	~deSkinPropertyNodeShape() override;
 	/*@}*/
 	
 	
@@ -121,7 +121,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits node. */
-	virtual void Visit(deSkinPropertyNodeVisitor &visitor);
+	void Visit(deSkinPropertyNodeVisitor &visitor) override;
 	/*@}*/
 };
 

@@ -43,7 +43,7 @@ public:
 	/** Creates a new constraint. */
 	debpBPConstraintConeTwist(btRigidBody &rbA,const btTransform &rbAFrame, const btTransform &rbBFrame);
 	/** Cleans up the constraint. */
-	virtual ~debpBPConstraintConeTwist();
+	~debpBPConstraintConeTwist() override;
 	
 	/** @name Management */
 	/*@{*/

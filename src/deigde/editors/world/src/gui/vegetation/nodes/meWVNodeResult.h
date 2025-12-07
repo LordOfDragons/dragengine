@@ -55,7 +55,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeResult();
+	~meWVNodeResult() override;
 	/*@}*/
 	
 	
@@ -67,13 +67,13 @@ public:
 	inline meHTVRuleResult *GetRuleResult() const{ return pRuleResult; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Can delete node. */
-	virtual bool CanDelete() const;
+	bool CanDelete() const override;
 	
 	/** \brief Can duplicate node. */
-	virtual bool CanDuplicate() const;
+	bool CanDuplicate() const override;
 	/*@}*/
 };
 

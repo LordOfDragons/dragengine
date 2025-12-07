@@ -60,7 +60,7 @@ public:
 	deVideoManager(deEngine *engine);
 	
 	/** \brief Clean up video resource manager and reports leaking resources. */
-	virtual ~deVideoManager();
+	~deVideoManager() override;
 	/*@}*/
 	
 	
@@ -109,15 +109,15 @@ public:
 	
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	virtual void SystemGraphicLoad();
-	virtual void SystemGraphicUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -128,7 +128,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	virtual void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	void RemoveDecoder(deVideoDecoder *decoder);
 	void RemoveAudioDecoder(deVideoAudioDecoder *decoder);
 	/*@}*/

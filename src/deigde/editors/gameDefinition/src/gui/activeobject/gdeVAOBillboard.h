@@ -63,7 +63,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOBillboard();
+	~gdeVAOBillboard() override;
 	/*@}*/
 	
 	
@@ -78,10 +78,10 @@ public:
 	inline deCollider *GetCollider() const{ return pCollider; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Extends. */
 	void GetExtends(decVector &minExtend, decVector &maxExtend) const;

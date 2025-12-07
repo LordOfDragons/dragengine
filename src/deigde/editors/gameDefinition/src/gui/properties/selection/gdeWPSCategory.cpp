@@ -121,7 +121,7 @@ public:
 		panel.GetEnvironment().GetUIHelper(), 3, "Auto Categorize Pattern"),
 		pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet(const decStringSet &patterns){
+	igdeUndo *UndoSet(const decStringSet &patterns) override{
 		gdeCategory * const category = pPanel.GetCategory();
 		if(!category || category->GetAutoCategorizePattern() == patterns){
 			return NULL;

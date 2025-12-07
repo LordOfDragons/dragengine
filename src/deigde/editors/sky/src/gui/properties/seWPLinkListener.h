@@ -46,7 +46,7 @@ public:
 	seWPLinkListener(seWPLink &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPLinkListener();
+	~seWPLinkListener() override;
 	/*@}*/
 	
 	
@@ -54,22 +54,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Controller added or removed. */
-	virtual void ControllerStructureChanged (seSky *sky);
+	void ControllerStructureChanged (seSky *sky) override;
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged(seSky *sky, seController *controller);
+	void ControllerNameChanged(seSky *sky, seController *controller) override;
 	
 	/** \brief Link added or removed. */
-	virtual void LinkStructureChanged (seSky *sky);
+	void LinkStructureChanged (seSky *sky) override;
 	
 	/** \brief Link changed. */
-	virtual void LinkChanged(seSky *sky, seLink *link);
+	void LinkChanged(seSky *sky, seLink *link) override;
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged(seSky *sky, seLink *link);
+	void LinkNameChanged(seSky *sky, seLink *link) override;
 	
 	/** \brief Active link changed. */
-	virtual void ActiveLinkChanged(seSky *sky);
+	void ActiveLinkChanged(seSky *sky) override;
 	/*@}*/
 };
 

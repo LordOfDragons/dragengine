@@ -50,7 +50,7 @@ public:
 	deoglEffectColorMatrix(deGraphicOpenGl &ogl, const deEffectColorMatrix &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffectColorMatrix();
+	~deoglEffectColorMatrix() override;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	

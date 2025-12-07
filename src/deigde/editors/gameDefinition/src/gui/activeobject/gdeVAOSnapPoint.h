@@ -68,7 +68,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOSnapPoint();
+	~gdeVAOSnapPoint() override;
 	/*@}*/
 	
 	
@@ -80,10 +80,10 @@ public:
 	inline gdeOCSnapPoint *GetOCSnapPoint() const{ return pOCSnapPoint; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	

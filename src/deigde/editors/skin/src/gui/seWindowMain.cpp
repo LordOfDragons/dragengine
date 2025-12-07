@@ -634,7 +634,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const seSkin &skin){
+	void Update(const seSkin &skin) override{
 		SetEnabled(skin.GetChanged());
 	}
 };
@@ -689,7 +689,7 @@ public:
 	
 	virtual igdeUndo *OnActionMapped(seSkin *skin, seMapped *mapped) = 0;
 	
-	virtual void Update(const seSkin &skin){
+	void Update(const seSkin &skin) override{
 		if(skin.GetActiveMapped()){
 			UpdateMapped(skin, *skin.GetActiveMapped());
 			
@@ -758,7 +758,7 @@ public:
 	
 	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture) = 0;
 	
-	virtual void Update(const seSkin &skin){
+	void Update(const seSkin &skin) override{
 		if(skin.GetActiveTexture()){
 			UpdateTexture(skin, *skin.GetActiveTexture());
 			
@@ -967,7 +967,7 @@ public:
 	
 	virtual igdeUndo *OnActionProperty(seSkin *skin, seTexture *texture, seProperty *property) = 0;
 	
-	virtual void UpdateTexture(const seSkin &skin, const seTexture &texture){
+	void UpdateTexture(const seSkin &skin, const seTexture &texture) override{
 		if(texture.GetActiveProperty()){
 			UpdateProperty(skin, texture, *texture.GetActiveProperty());
 			

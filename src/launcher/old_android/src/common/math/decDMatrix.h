@@ -47,7 +47,7 @@ public:
 	/** Creates a copy of a matrix. */
 	decDMatrix(const decDMatrix &m);
 	/** Creates a copy of a float matrix. */
-	decDMatrix(const decMatrix &m);
+	decDMatrix(const decDMatrix &m);
 	/*@}*/
 	
 	/** @name Matrix Creation */

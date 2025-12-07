@@ -57,7 +57,7 @@ public:
 	deSynthesizerSourceVisitorIdentify();
 	
 	/** \brief Clean up identify synthesizer source visitor. */
-	virtual ~deSynthesizerSourceVisitorIdentify();
+	~deSynthesizerSourceVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -124,22 +124,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void VisitSource(deSynthesizerSource &source);
+	void VisitSource(deSynthesizerSource &source) override;
 	
 	/** \brief Visit sound source. */
-	virtual void VisitSound(deSynthesizerSourceSound &source);
+	void VisitSound(deSynthesizerSourceSound &source) override;
 	
 	/** \brief Visit wave generator source. */
-	virtual void VisitWave(deSynthesizerSourceWave &source);
+	void VisitWave(deSynthesizerSourceWave &source) override;
 	
 	/** \brief Visit chain source. */
-	virtual void VisitChain(deSynthesizerSourceChain &source);
+	void VisitChain(deSynthesizerSourceChain &source) override;
 	
 	/** \brief Visit synthesizer source. */
-	virtual void VisitSynthesizer(deSynthesizerSourceSynthesizer &source);
+	void VisitSynthesizer(deSynthesizerSourceSynthesizer &source) override;
 	
 	/** \brief Visit group source. */
-	virtual void VisitGroup(deSynthesizerSourceGroup &source);
+	void VisitGroup(deSynthesizerSourceGroup &source) override;
 	/*@}*/
 };
 

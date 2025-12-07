@@ -39,7 +39,7 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakBodyLASetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, float newPause);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakBodyLASetPause();
+	~ceUCAASpeakBodyLASetPause() override;
 	/*@}*/
 };
 

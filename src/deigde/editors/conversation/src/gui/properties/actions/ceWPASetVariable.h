@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~ceWPASetVariable();
+	~ceWPASetVariable() override;
 	/*@}*/
 	
 	

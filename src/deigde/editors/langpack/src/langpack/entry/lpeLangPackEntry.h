@@ -63,7 +63,7 @@ public:
 	
 protected:
 	/** Cleans up the entry. */
-	virtual ~lpeLangPackEntry() override;
+	~lpeLangPackEntry() override;
 	/*@}*/
 	
 	

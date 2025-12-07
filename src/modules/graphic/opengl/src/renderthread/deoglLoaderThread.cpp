@@ -52,7 +52,7 @@ public:
 	inline deSemaphore &Semaphore(){ return pSemaphore; }
 	inline bool GetSuccess() const{ return pSuccess; }
 	
-	virtual void Run(){
+	void Run() override{
 		try{
 			pTask->Run();
 			

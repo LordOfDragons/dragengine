@@ -45,7 +45,7 @@ public:
 	ceViewConversationListener(ceViewConversation &view);
 	
 	/** \brief Clean up listener. */
-	virtual ~ceViewConversationListener();
+	~ceViewConversationListener() override;
 	/*@}*/
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief View properties changed. */
-	virtual void ViewChanged(ceConversation *conversation);
+	void ViewChanged(ceConversation *conversation) override;
 	/*@}*/
 };
 

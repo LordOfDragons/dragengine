@@ -60,7 +60,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCanvasText();
+	~deCanvasText() override;
 	/*@}*/
 	
 	
@@ -102,7 +102,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit(deCanvasVisitor &visitor);
+	void Visit(deCanvasVisitor &visitor) override;
 	/*@}*/
 };
 

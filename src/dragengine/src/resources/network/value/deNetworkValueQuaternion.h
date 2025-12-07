@@ -55,7 +55,7 @@ public:
 	deNetworkValueQuaternion(eValueFormats format, const decQuaternion &value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueQuaternion();
+	~deNetworkValueQuaternion() override;
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit(deNetworkValueVisitor &visitor);
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

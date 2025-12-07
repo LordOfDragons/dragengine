@@ -77,7 +77,7 @@ public:
 	deCanvasVisitorIdentify();
 	
 	/** \brief Clean up canvas identify visitor. */
-	virtual ~deCanvasVisitorIdentify();
+	~deCanvasVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -162,28 +162,28 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void VisitCanvas(deCanvas &canvas);
+	void VisitCanvas(deCanvas &canvas) override;
 	
 	/** \brief Visit image canvas. */
-	virtual void VisitImage(deCanvasImage &canvas);
+	void VisitImage(deCanvasImage &canvas) override;
 	
 	/** \brief Visit paint canvas. */
-	virtual void VisitPaint(deCanvasPaint &canvas);
+	void VisitPaint(deCanvasPaint &canvas) override;
 	
 	/** \brief Visit canvas view canvas. */
-	virtual void VisitCanvasView(deCanvasCanvasView &canvas);
+	void VisitCanvasView(deCanvasCanvasView &canvas) override;
 	
 	/** \brief Visit render world canvas. */
-	virtual void VisitRenderWorld(deCanvasRenderWorld &canvas);
+	void VisitRenderWorld(deCanvasRenderWorld &canvas) override;
 	
 	/** \brief Visit text canvas. */
-	virtual void VisitText(deCanvasText &canvas);
+	void VisitText(deCanvasText &canvas) override;
 	
 	/** \brief Visit video player canvas. */
-	virtual void VisitVideoPlayer(deCanvasVideoPlayer &canvas);
+	void VisitVideoPlayer(deCanvasVideoPlayer &canvas) override;
 	
 	/** \brief Visit view canvas. */
-	virtual void VisitView(deCanvasView &canvas);
+	void VisitView(deCanvasView &canvas) override;
 	/*@}*/
 };
 

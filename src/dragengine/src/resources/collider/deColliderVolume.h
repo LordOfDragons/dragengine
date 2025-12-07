@@ -65,7 +65,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deColliderVolume();
+	~deColliderVolume() override;
 	/*@}*/
 	
 	
@@ -85,7 +85,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit(deColliderVisitor &visitor);
+	void Visit(deColliderVisitor &visitor) override;
 	/*@}*/
 };
 

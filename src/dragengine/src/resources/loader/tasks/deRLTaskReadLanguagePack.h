@@ -47,7 +47,7 @@ public:
 		deVirtualFileSystem *vfs, const char *path, deLanguagePack *languagePack);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadLanguagePack();
+	~deRLTaskReadLanguagePack() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

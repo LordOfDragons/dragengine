@@ -42,7 +42,7 @@ public:
 	deoglRenderGeometryPass(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderGeometryPass();
+	~deoglRenderGeometryPass() override;
 	/*@}*/
 	
 	

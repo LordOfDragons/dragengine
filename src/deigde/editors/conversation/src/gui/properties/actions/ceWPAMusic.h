@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~ceWPAMusic();
+	~ceWPAMusic() override;
 	/*@}*/
 	
 	

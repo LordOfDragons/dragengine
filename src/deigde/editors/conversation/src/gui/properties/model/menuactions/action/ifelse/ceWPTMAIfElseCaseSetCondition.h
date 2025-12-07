@@ -70,7 +70,7 @@ public:
 	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo(ceConversationCondition *condition);
+	igdeUndo *CreateUndo(ceConversationCondition *condition) override;
 	/*@}*/
 };
 

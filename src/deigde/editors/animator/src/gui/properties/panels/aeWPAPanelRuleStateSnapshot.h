@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleStateSnapshot();
+	~aeWPAPanelRuleStateSnapshot() override;
 	/*@}*/
 	
 	
@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update animation move list. */
-	virtual void UpdateAnimMoveList();
+	void UpdateAnimMoveList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Move combo box text. */
 	const decString &GetCBMoveNameText() const;

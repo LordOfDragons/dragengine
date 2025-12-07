@@ -78,7 +78,7 @@ public:
 	/** Creates a new actor speak conversation action. */
 	ceCAActorSpeak(const ceCAActorSpeak &action);
 	/** Cleans up the actor speak conversation action. */
-	virtual ~ceCAActorSpeak();
+	~ceCAActorSpeak() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -149,7 +149,7 @@ public:
 	void SetUseSpeechAnimation(bool useSpeechAnimation);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 	
 private:

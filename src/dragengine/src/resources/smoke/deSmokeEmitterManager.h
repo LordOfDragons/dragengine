@@ -50,7 +50,7 @@ public:
 	deSmokeEmitterManager(deEngine *engine);
 	
 	/** \brief Clean up resource manager and reports leaking resources. */
-	virtual ~deSmokeEmitterManager();
+	~deSmokeEmitterManager() override;
 	/*@}*/
 	
 	
@@ -67,7 +67,7 @@ public:
 	deSmokeEmitter *CreateSmokeEmitter();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -75,16 +75,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic System Peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic System Peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	
 	/** \brief Physics System Peers of all stored resources have to be created. */
-	virtual void SystemPhysicsLoad();
+	void SystemPhysicsLoad() override;
 	
 	/** \brief Physics System Peers of all stored resources have to be freed. */
-	virtual void SystemPhysicsUnload();
+	void SystemPhysicsUnload() override;
 	/*@}*/
 	
 	
@@ -95,7 +95,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

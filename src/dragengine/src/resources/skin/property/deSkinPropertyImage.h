@@ -47,7 +47,7 @@ public:
 	deSkinPropertyImage(const char *type);
 	
 	/** \brief Clean up skin property. */
-	virtual ~deSkinPropertyImage();
+	~deSkinPropertyImage() override;
 	/*@}*/
 	
 	
@@ -72,7 +72,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit(deSkinPropertyVisitor &visitor);
+	void Visit(deSkinPropertyVisitor &visitor) override;
 	/*@}*/
 };
 

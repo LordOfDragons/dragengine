@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAGameCommand();
+	~ceWPTTIMAGameCommand() override;
 	/*@}*/
 	
 	
@@ -54,7 +54,7 @@ public:
 	inline ceCAGameCommand *GetActionGameCommand() const{ return (ceCAGameCommand*)GetAction(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

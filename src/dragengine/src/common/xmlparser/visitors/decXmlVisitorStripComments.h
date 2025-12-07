@@ -39,7 +39,7 @@ public:
 	decXmlVisitorStripComments();
 	
 	/** \brief Clean up visitor. */
-	virtual ~decXmlVisitorStripComments();
+	~decXmlVisitorStripComments() override;
 	/*@}*/
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit container. */
-	virtual void VisitContainer(decXmlContainer &container);
+	void VisitContainer(decXmlContainer &container) override;
 	/*@}*/
 };
 

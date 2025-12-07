@@ -127,7 +127,7 @@ public:
 	
 protected:
 	/** \brief Clean up service object. */
-	~deServiceObject();
+	~deServiceObject() override;
 	/*@}*/
 	
 	

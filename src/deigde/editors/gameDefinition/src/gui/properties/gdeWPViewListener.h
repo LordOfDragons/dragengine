@@ -47,7 +47,7 @@ public:
 	gdeWPViewListener(gdeWPView &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPViewListener();
+	~gdeWPViewListener() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition changed. */
-	virtual void GameDefinitionChanged(gdeGameDefinition *gameDefinition);
+	void GameDefinitionChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Sky changed. */
-	virtual void SkyChanged(gdeGameDefinition *gameDefinition);
+	void SkyChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Camera changed. */
-	virtual void CameraChanged(gdeGameDefinition *gameDefinition);
+	void CameraChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

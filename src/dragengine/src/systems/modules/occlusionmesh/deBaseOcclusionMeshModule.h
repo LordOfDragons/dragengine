@@ -43,7 +43,7 @@ public:
 	deBaseOcclusionMeshModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseOcclusionMeshModule();
+	~deBaseOcclusionMeshModule() override;
 	/*@}*/
 	
 	

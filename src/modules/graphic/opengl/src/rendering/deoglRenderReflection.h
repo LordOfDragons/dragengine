@@ -86,7 +86,7 @@ public:
 	/** Creates a new renderer. */
 	deoglRenderReflection(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
-	virtual ~deoglRenderReflection();
+	~deoglRenderReflection() override;
 	/*@}*/
 	
 	/** \name Rendering */

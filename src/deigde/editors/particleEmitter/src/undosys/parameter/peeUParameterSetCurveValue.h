@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~peeUParameterSetCurveValue();
+	~peeUParameterSetCurveValue() override;
 	/*@}*/
 	
 	

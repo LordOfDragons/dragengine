@@ -106,7 +106,7 @@ public:
 	dealGame(dealLauncher &launcher);
 	
 	/** \brief Clean up game. */
-	virtual ~dealGame();
+	~dealGame() override;
 	/*@}*/
 	
 	

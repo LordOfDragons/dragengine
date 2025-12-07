@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** Clean up speaker peer. */
-	virtual ~deoalFakeSpeaker() override;
+	~deoalFakeSpeaker() override;
 	/*@}*/
 	
 	

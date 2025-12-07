@@ -56,7 +56,7 @@ public:
 		deVirtualFileSystem *vfs, const char *path, deRLTaskReadFont *parentTask);
 	
 	/** \brief Clean up task. */
-	virtual ~deRLTaskReadFontInternal();
+	~deRLTaskReadFontInternal() override;
 	/*@}*/
 	
 	
@@ -64,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Synchronous processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** \brief Font. */
 	inline deFont *GetFont() const{ return pFont; }
@@ -84,7 +84,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	/*@}*/
 };
 

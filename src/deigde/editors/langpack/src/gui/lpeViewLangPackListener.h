@@ -55,24 +55,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Language pack parameters changed. */
-	virtual void LangPackChanged(lpeLangPack *langpack);
+	void LangPackChanged(lpeLangPack *langpack) override;
 	
 	
 	
 	/** \brief Entries have been added or removed. */
-	virtual void EntryStructureChanged (lpeLangPack *langpack);
+	void EntryStructureChanged (lpeLangPack *langpack) override;
 	
 	/** \brief An entry changed. */
-	virtual void EntryChanged(lpeLangPack *langpack, lpeLangPackEntry *entry);
+	void EntryChanged(lpeLangPack *langpack, lpeLangPackEntry *entry) override;
 	
 	/** \brief An entry name changed. */
-	virtual void EntryNameChanged(lpeLangPack *langpack, lpeLangPackEntry *entry);
+	void EntryNameChanged(lpeLangPack *langpack, lpeLangPackEntry *entry) override;
 	
 	/** \brief Selection of one or mote entries changed. */
-	virtual void EntrySelectionChanged(lpeLangPack *langpack);
+	void EntrySelectionChanged(lpeLangPack *langpack) override;
 	
 	/** \brief Active entry changed. */
-	virtual void ActiveEntryChanged(lpeLangPack *langpack);
+	void ActiveEntryChanged(lpeLangPack *langpack) override;
 	/*@}*/
 };
 

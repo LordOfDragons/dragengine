@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** Clean up entry. */
-	virtual ~ceLangPackEntry() override;
+	~ceLangPackEntry() override;
 	/*@}*/
 	
 	

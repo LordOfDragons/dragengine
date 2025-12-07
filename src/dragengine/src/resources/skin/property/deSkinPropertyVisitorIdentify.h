@@ -76,7 +76,7 @@ public:
 	deSkinPropertyVisitorIdentify();
 	
 	/** \brief Clean up animator property visitor identify. */
-	virtual ~deSkinPropertyVisitorIdentify();
+	~deSkinPropertyVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -134,25 +134,25 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void VisitProperty(deSkinProperty &property);
+	void VisitProperty(deSkinProperty &property) override;
 	
 	/** \brief Visit single value property. */
-	virtual void VisitValue(deSkinPropertyValue &property);
+	void VisitValue(deSkinPropertyValue &property) override;
 	
 	/** \brief Visit uniform color property. */
-	virtual void VisitColor(deSkinPropertyColor &property);
+	void VisitColor(deSkinPropertyColor &property) override;
 	
 	/** \brief Visit image property. */
-	virtual void VisitImage(deSkinPropertyImage &property);
+	void VisitImage(deSkinPropertyImage &property) override;
 	
 	/** \brief Visit video property. */
-	virtual void VisitVideo(deSkinPropertyVideo &property);
+	void VisitVideo(deSkinPropertyVideo &property) override;
 	
 	/** \brief Visit constructed property. */
-	virtual void VisitConstructed(deSkinPropertyConstructed &property);
+	void VisitConstructed(deSkinPropertyConstructed &property) override;
 	
 	/** \brief Visit mapped property. */
-	virtual void VisitMapped(deSkinPropertyMapped &property);
+	void VisitMapped(deSkinPropertyMapped &property) override;
 	/*@}*/
 };
 

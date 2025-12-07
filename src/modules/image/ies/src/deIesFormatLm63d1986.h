@@ -115,7 +115,7 @@ public:
 	deIesFormatLm63d1986();
 	
 	/** \brief Clean up image information. */
-	virtual ~deIesFormatLm63d1986();
+	~deIesFormatLm63d1986() override;
 	/*@}*/
 	
 	
@@ -123,10 +123,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load header. */
-	virtual bool LoadHeader(decBaseFileReader &reader);
+	bool LoadHeader(decBaseFileReader &reader) override;
 	
 	/** \brief Load file. */
-	virtual void LoadFile(unsigned short *pixels);
+	void LoadFile(unsigned short *pixels) override;
 	/*@}*/
 	
 	

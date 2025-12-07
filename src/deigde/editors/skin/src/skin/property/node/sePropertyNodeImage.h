@@ -55,7 +55,7 @@ public:
 	sePropertyNodeImage(const sePropertyNodeImage &node);
 	
 	/** \brief Clean up node. */
-	virtual ~sePropertyNodeImage();
+	~sePropertyNodeImage() override;
 	/*@}*/
 	
 	
@@ -86,10 +86,10 @@ public:
 	
 	
 	/** \brief Create copy of node. */
-	virtual sePropertyNode *Copy() const;
+	sePropertyNode *Copy() const override;
 	
 	/** \brief Update resources. */
-	virtual void UpdateResources();
+	void UpdateResources() override;
 	/*@}*/
 };
 

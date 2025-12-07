@@ -51,7 +51,7 @@ public:
 	deoglEffectOverlayImage(deGraphicOpenGl &ogl, const deEffectOverlayImage &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffectOverlayImage();
+	~deoglEffectOverlayImage() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	

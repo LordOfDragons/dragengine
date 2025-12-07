@@ -48,14 +48,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction(gdeGameDefinition &gameDefinition);
+	igdeUndo *OnAction(gdeGameDefinition &gameDefinition) override;
 	
 	/** \brief Run action if game definition is not NULL. */
 	virtual igdeUndo *OnActionSubObject(gdeGameDefinition &gameDefinition,
 		gdeObjectClass &objectClass) = 0;
 	
 	/** \brief Request update of action parameters if required. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Get active object class if present. */
 	gdeObjectClass *GetActiveObjectClass() const;

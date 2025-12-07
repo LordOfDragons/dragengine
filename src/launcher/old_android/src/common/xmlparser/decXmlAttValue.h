@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml attribute value. */
-	~decXmlAttValue();
+	~decXmlAttValue() override;
 	/*@}*/
 	
 	
@@ -81,13 +81,13 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToAttValue() const;
-	virtual decXmlAttValue *CastToAttValue();
+	bool CanCastToAttValue() const override;
+	decXmlAttValue *CastToAttValue() override;
 	/*@}*/
 };
 

@@ -50,7 +50,7 @@ public:
 	dealDialogMain(dealDisplay &display);
 	
 	/** \brief Clean up dialog. */
-	virtual ~dealDialogMain();
+	~dealDialogMain() override;
 	/*@}*/
 	
 	
@@ -63,10 +63,10 @@ public:
 	
 	
 	/** \brief Dialog has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** \brief Dialog has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	
 	

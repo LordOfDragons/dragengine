@@ -53,7 +53,7 @@ public:
 	
 protected:
 	/** \brief Clean up rig shape shape. */
-	virtual ~reRigShapeHull();
+	~reRigShapeHull() override;
 	/*@}*/
 	
 	
@@ -85,13 +85,13 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	virtual reRigShape *Duplicate() const;
+	reRigShape *Duplicate() const override;
 	
 	/** \brief Uniformly scale shape. */
-	virtual void Scale(float scale);
+	void Scale(float scale) override;
 	
 	/** \brief Create shape. */
-	virtual decShape *CreateShape();
+	decShape *CreateShape() override;
 	/*@}*/
 };
 

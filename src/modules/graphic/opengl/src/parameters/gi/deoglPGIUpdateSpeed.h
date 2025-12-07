@@ -37,13 +37,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	deoglPGIUpdateSpeed(deGraphicOpenGl &ogl);
-	virtual ~deoglPGIUpdateSpeed();
+	~deoglPGIUpdateSpeed() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	virtual decString GetParameterValue();
-	virtual void SetParameterValue(const char *value);
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

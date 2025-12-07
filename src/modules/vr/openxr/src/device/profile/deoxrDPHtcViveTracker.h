@@ -78,7 +78,7 @@ public:
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPHtcViveTracker();
+	~deoxrDPHtcViveTracker() override;
 	/*@}*/
 	
 	
@@ -87,22 +87,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** On session state changed. */
-	virtual void OnSessionStateChanged();
+	void OnSessionStateChanged() override;
 	
 	/** On actions synced. */
-	virtual void OnActionsSynced();
+	void OnActionsSynced() override;
 	
 	/** Check attached. */
-	virtual void CheckAttached();
+	void CheckAttached() override;
 	
 	/** Create actions for action set. */
-	virtual void CreateActions(deoxrActionSet &actionSet);
+	void CreateActions(deoxrActionSet &actionSet) override;
 	
 	/** Suggest bindings. */
-	virtual void SuggestBindings();
+	void SuggestBindings() override;
 	
 	/** Clear actions. */
-	virtual void ClearActions();
+	void ClearActions() override;
 	/*@}*/
 	
 	

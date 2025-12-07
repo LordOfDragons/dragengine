@@ -39,7 +39,7 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakGestureSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, float newDuration);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakGestureSetDuration();
+	~ceUCAASpeakGestureSetDuration() override;
 	/*@}*/
 };
 

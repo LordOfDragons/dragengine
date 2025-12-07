@@ -51,7 +51,7 @@ public:
 	
 protected:
 	/** Cleans up the text node. */
-	virtual ~dedsSTNText();
+	~dedsSTNText() override;
 	/*@}*/
 	
 

@@ -77,7 +77,7 @@ public:
 	ceCConditionVariable(const ceCConditionVariable &condition);
 	
 	/** \brief Clean up conversation condition. */
-	virtual ~ceCConditionVariable();
+	~ceCConditionVariable() override;
 	/*@}*/
 	
 	
@@ -111,7 +111,7 @@ public:
 	
 	
 	/** \brief Create copy of condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition *CreateCopy() const override;
 	/*@}*/
 };
 

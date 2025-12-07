@@ -47,7 +47,7 @@ public:
 	aeWPUndoHistoryListener(aeWPUndoHistory &panel);
 	
 	/** Clean up listener. */
-	virtual ~aeWPUndoHistoryListener();
+	~aeWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Undos changed. */
-	virtual void UndoChanged(aeAnimator *animator);
+	void UndoChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~fbxPropertyArrayFloat();
+	~fbxPropertyArrayFloat() override;
 	/*@}*/
 	
 	
@@ -68,15 +68,15 @@ public:
 	void AddValue(float value);
 	
 	/** \brief Casting throwing exception if wrong type. */
-	virtual fbxPropertyArrayFloat &CastArrayFloat();
+	fbxPropertyArrayFloat &CastArrayFloat() override;
 	
 	/** \brief Get values as specific type if possible. */
-	virtual int GetValueCount() const;
-	virtual bool GetValueAtAsBool(int index) const;
-	virtual int GetValueAtAsInt(int index) const;
-	virtual int64_t GetValueAtAsLong(int index) const;
-	virtual float GetValueAtAsFloat(int index) const;
-	virtual double GetValueAtAsDouble(int index) const;
+	int GetValueCount() const override;
+	bool GetValueAtAsBool(int index) const override;
+	int GetValueAtAsInt(int index) const override;
+	int64_t GetValueAtAsLong(int index) const override;
+	float GetValueAtAsFloat(int index) const override;
+	double GetValueAtAsDouble(int index) const override;
 	
 	/** \brief Read sequence of values as composed type. */
 	virtual decVector2 GetValueAtAsVector2(int index) const;
@@ -86,7 +86,7 @@ public:
 	
 	
 	/** \brief Save to file. */
-	virtual void Save(decBaseFileWriter &writer);
+	void Save(decBaseFileWriter &writer) override;
 	
 	/** \brief Debug print property structure. */
 	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;

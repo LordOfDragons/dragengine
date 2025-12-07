@@ -49,7 +49,7 @@ public:
 	decXmlVisitorWriter();
 	
 	/** \brief Clean up visitor. */
-	virtual ~decXmlVisitorWriter();
+	~decXmlVisitorWriter() override;
 	/*@}*/
 	
 	
@@ -74,31 +74,31 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit comment. */
-	virtual void VisitComment(decXmlComment &comment);
+	void VisitComment(decXmlComment &comment) override;
 	
 	/** \brief Visit processing instructions. */
-	virtual void VisitPI(decXmlPI &pi);
+	void VisitPI(decXmlPI &pi) override;
 	
 	/** \brief Visit element tag. */
-	virtual void VisitElementTag(decXmlElementTag &tag);
+	void VisitElementTag(decXmlElementTag &tag) override;
 	
 	/** \brief Visit element character data. */
-	virtual void VisitCharacterData(decXmlCharacterData &data);
+	void VisitCharacterData(decXmlCharacterData &data) override;
 	
 	/** \brief Visit element entity reference. */
-	virtual void VisitEntityReference(decXmlEntityReference &ref);
+	void VisitEntityReference(decXmlEntityReference &ref) override;
 	
 	/** \brief Visit character reference. */
-	virtual void VisitCharReference(decXmlCharReference &ref);
+	void VisitCharReference(decXmlCharReference &ref) override;
 	
 	/** \brief Visit character data section. */
-	virtual void VisitCDSect(decXmlCDSect &cdsect);
+	void VisitCDSect(decXmlCDSect &cdsect) override;
 	
 	/** \brief Visit attribute value. */
-	virtual void VisitAttValue(decXmlAttValue &value);
+	void VisitAttValue(decXmlAttValue &value) override;
 	
 	/** \brief Visit namespace. */
-	virtual void VisitNamespace(decXmlNamespace &ns);
+	void VisitNamespace(decXmlNamespace &ns) override;
 	/*@}*/
 };
 

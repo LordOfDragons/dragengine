@@ -414,7 +414,7 @@ public:
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		peeEmitter &emitter = *pWindow.GetEmitter();
 		
 		if(emitter.GetSaved()){
@@ -427,7 +427,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetEmitter() && pWindow.GetEmitter()->GetChanged());
 	}
 };

@@ -54,7 +54,7 @@ public:
 	igdeGizmoMouseKeyListener(igdeGizmoManager &gizmoManager, igdeViewRenderWindow &view);
 	
 	/** \brief Clean up gizmo mouse key listener. */
-	virtual ~igdeGizmoMouseKeyListener() override;
+	~igdeGizmoMouseKeyListener() override;
 	/*@}*/
 	
 	
@@ -82,7 +82,7 @@ public:
 	 * \param[in] keyCode Engine key code or deInputEvent::ekcUndefined if not mapped.
 	 * \param[in] key Native OS key.
 	 */
-	virtual void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
+	void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 	
 	/**
 	 * \brief User released down key while view is focused.
@@ -91,7 +91,7 @@ public:
 	 * \param[in] keyCode Engine key code or deInputEvent::ekcUndefined if not mapped.
 	 * \param[in] key Native OS key.
 	 */
-	virtual void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
+	void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 	
 	/**
 	 * \brief User pressed down mouse button.
@@ -103,7 +103,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of press. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User released mouse button.
@@ -115,7 +115,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
+	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User moved mouse.
@@ -125,7 +125,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override;
+	void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User wheeled mouse.
@@ -136,7 +136,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers) override;
+	void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers) override;
 	/*@}*/
 };
 

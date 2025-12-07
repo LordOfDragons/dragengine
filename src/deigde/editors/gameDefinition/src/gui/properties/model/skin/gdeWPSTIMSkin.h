@@ -46,7 +46,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMSkin();
+	~gdeWPSTIMSkin() override;
 	/*@}*/
 	
 	
@@ -67,16 +67,16 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare(const gdeWPSTreeItemModel &item) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching(const char *string);
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

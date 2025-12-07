@@ -71,7 +71,7 @@ public:
 	deoglRCanvasPaint(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
-	virtual ~deoglRCanvasPaint();
+	~deoglRCanvasPaint() override;
 	/*@}*/
 	
 	
@@ -221,10 +221,10 @@ public:
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Render. */
-	virtual void Render(const deoglRenderCanvasContext &context);
+	void Render(const deoglRenderCanvasContext &context) override;
 	/*@}*/
 	
 	

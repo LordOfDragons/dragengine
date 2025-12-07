@@ -50,7 +50,7 @@ public:
 	meUMoveObject(meWorld *world, const meObjectList &objects);
 	
 	/** \brief Clean up undo action. */
-	virtual ~meUMoveObject();
+	~meUMoveObject() override;
 	/*@}*/
 	
 	
@@ -59,7 +59,7 @@ public:
 	/*@{*/
 	virtual void Undo();
 	virtual void Redo();
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 	/*@}*/
 	
 	

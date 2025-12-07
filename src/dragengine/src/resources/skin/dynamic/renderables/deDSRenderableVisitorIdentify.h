@@ -78,7 +78,7 @@ public:
 	deDSRenderableVisitorIdentify();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deDSRenderableVisitorIdentify();
+	~deDSRenderableVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -160,25 +160,25 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit renderable. */
-	virtual void VisitRenderable(deDSRenderable &renderable);
+	void VisitRenderable(deDSRenderable &renderable) override;
 	
 	/** \brief Visit value renderable. */
-	virtual void VisitValue(deDSRenderableValue &renderable);
+	void VisitValue(deDSRenderableValue &renderable) override;
 	
 	/** \brief Visit color renderable. */
-	virtual void VisitColor(deDSRenderableColor &renderable);
+	void VisitColor(deDSRenderableColor &renderable) override;
 	
 	/** \brief Visit image renderable. */
-	virtual void VisitImage(deDSRenderableImage &renderable);
+	void VisitImage(deDSRenderableImage &renderable) override;
 	
 	/** \brief Visit canvas renderable. */
-	virtual void VisitCanvas(deDSRenderableCanvas &renderable);
+	void VisitCanvas(deDSRenderableCanvas &renderable) override;
 	
 	/** \brief Visit video frame renderable. */
-	virtual void VisitVideoFrame(deDSRenderableVideoFrame &renderable);
+	void VisitVideoFrame(deDSRenderableVideoFrame &renderable) override;
 	
 	/** \brief Visit camera renderable. */
-	virtual void VisitCamera(deDSRenderableCamera &renderable);
+	void VisitCamera(deDSRenderableCamera &renderable) override;
 	/*@}*/
 };
 

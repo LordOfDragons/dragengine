@@ -59,7 +59,7 @@ public:
 	/** \brief Creates a new bullet ghost object. */
 	debpGhostObject();
 	/** \brief Cleans up the bullet ghost object. */
-	virtual ~debpGhostObject();
+	~debpGhostObject() override;
 	/*@}*/
 	
 	/** \name Management */

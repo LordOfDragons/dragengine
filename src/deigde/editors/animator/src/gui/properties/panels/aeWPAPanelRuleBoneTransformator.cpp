@@ -314,7 +314,7 @@ public:
 		return new aeURuleBTransSetEnablePos(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleBoneTransformator &rule){
+	void Update(const aeAnimator & , const aeRuleBoneTransformator &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnablePosition());
 	}
@@ -329,7 +329,7 @@ public:
 		return new aeURuleBTransSetEnableOrien(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleBoneTransformator &rule){
+	void Update(const aeAnimator & , const aeRuleBoneTransformator &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableOrientation());
 	}
@@ -344,7 +344,7 @@ public:
 		return new aeURuleBTransSetEnableSize(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleBoneTransformator &rule){
+	void Update(const aeAnimator & , const aeRuleBoneTransformator &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnableSize());
 	}
@@ -359,7 +359,7 @@ public:
 		return new aeURuleBTransSetUseAxis(rule);
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRuleBoneTransformator &rule){
+	void Update(const aeAnimator & , const aeRuleBoneTransformator &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetUseAxis());
 	}

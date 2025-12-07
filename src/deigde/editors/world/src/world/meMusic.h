@@ -53,7 +53,7 @@ public:
 	meMusic(meWorld &world);
 	
 	/** Clean up music. */
-	virtual ~meMusic() override;
+	~meMusic() override;
 	/*@}*/
 	
 	

@@ -47,7 +47,7 @@ public:
 	gdeWPSCategoryListener(gdeWPSCategory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSCategoryListener();
+	~gdeWPSCategoryListener() override;
 	/*@}*/
 	
 	
@@ -55,27 +55,27 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object class categories changed. */
-	virtual void ObjectClassCategoriesChanged(gdeGameDefinition *gameDefinition);
+	void ObjectClassCategoriesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Skin categories changed. */
-	virtual void SkinCategoriesChanged(gdeGameDefinition *gameDefinition);
+	void SkinCategoriesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Sky categories changed. */
-	virtual void SkyCategoriesChanged(gdeGameDefinition *gameDefinition);
+	void SkyCategoriesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Particle emitter categories changed. */
-	virtual void ParticleEmitterCategoriesChanged(gdeGameDefinition *gameDefinition);
+	void ParticleEmitterCategoriesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Active category changed. */
-	virtual void ActiveCategoryChanged(gdeGameDefinition *gameDefinition);
+	void ActiveCategoryChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** Object class count or order changed. */
-	virtual void ObjectClassStructureChanged(gdeGameDefinition *gameDefinition);
+	void ObjectClassStructureChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Object class name changed. */
-	virtual void ObjectClassNameChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	void ObjectClassNameChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) override;
 	/*@}*/
 };
 

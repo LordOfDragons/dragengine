@@ -52,7 +52,7 @@ public:
 	seWPAPanelSourceSynthesizer(seWPSource &wpSources);
 	
 	/** \brief Clean up panel. */
-	virtual ~seWPAPanelSourceSynthesizer();
+	~seWPAPanelSourceSynthesizer() override;
 	/*@}*/
 	
 	
@@ -66,13 +66,13 @@ public:
 	int GetCBControllerTarget() const;
 	
 	/** \brief Synthesizer path changed. */
-	virtual void OnSynthesizerPathChanged();
+	void OnSynthesizerPathChanged() override;
 	
 	/** \brief Update controller list. */
-	virtual void UpdateControllerList();
+	void UpdateControllerList() override;
 	
 	/** \brief Update source. */
-	virtual void UpdateSource();
+	void UpdateSource() override;
 	
 	/** \brief Update connection. */
 	virtual void UpdateConnection();

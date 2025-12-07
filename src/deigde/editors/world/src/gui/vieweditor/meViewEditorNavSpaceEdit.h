@@ -51,7 +51,7 @@ public:
 	meViewEditorNavSpaceEdit(meView3D &view);
 	
 	/** \brief Clean up view editor. */
-	virtual ~meViewEditorNavSpaceEdit();
+	~meViewEditorNavSpaceEdit() override;
 	/*@}*/
 	
 	
@@ -65,19 +65,19 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** \brief View size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief Left mouse button has been pressed. */
-	virtual void OnLeftMouseButtonPress(int x, int y, bool shift, bool control);
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	
 	/** \brief Left mouse button has been released. */
-	virtual void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control);
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	
 	/** \brief Mouse has been moved. */
-	virtual void OnMouseMove(int x, int y, bool shift, bool control);
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	
 	/** \brief The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
-	virtual void OnMouseWheel(int steps, bool shift, bool control);
+	void OnMouseWheel(int steps, bool shift, bool control) override;
 	/*@}*/
 	
 	

@@ -12,11 +12,11 @@
 class detUnicodeStringDictionary : public detCase{
 public:
 	detUnicodeStringDictionary();
-	~detUnicodeStringDictionary();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detUnicodeStringDictionary() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestDictionary();

@@ -49,7 +49,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~seWPAPanelEffectStretch();
+	~seWPAPanelEffectStretch() override;
 	/*@}*/
 	
 	
@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update effect. */
-	virtual void UpdateEffect();
+	void UpdateEffect() override;
 	
 	/** \brief Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

@@ -47,7 +47,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~seWPSkyListener();
+	~seWPSkyListener() override;
 	/*@}*/
 	
 	
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky parameters changed. */
-	virtual void SkyChanged(seSky *sky);
+	void SkyChanged(seSky *sky) override;
 	/*@}*/
 };
 

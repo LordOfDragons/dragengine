@@ -63,7 +63,7 @@ public:
 	seSourceSynthesizer(const seSourceSynthesizer &copy);
 	
 	/** \brief Clean up source. */
-	virtual ~seSourceSynthesizer();
+	~seSourceSynthesizer() override;
 	/*@}*/
 	
 	
@@ -110,16 +110,16 @@ public:
 	virtual deSynthesizerSource *CreateEngineSource();
 	
 	/** \brief Create a copy of this source. */
-	virtual seSource *CreateCopy() const;
+	seSource *CreateCopy() const override;
 	
 	/** \brief List all links of all source targets. */
-	virtual void ListLinks(seLinkList& list);
+	void ListLinks(seLinkList& list) override;
 	
 	/** \brief Parent synthesizer changed. */
-	virtual void SynthesizerChanged();
+	void SynthesizerChanged() override;
 	
 	/** \brief Synthesizer directory changed. */
-	virtual void SynthesizerDirectoryChanged();
+	void SynthesizerDirectoryChanged() override;
 	/*@}*/
 	
 	

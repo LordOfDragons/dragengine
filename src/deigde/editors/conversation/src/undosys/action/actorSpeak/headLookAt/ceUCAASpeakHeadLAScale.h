@@ -39,7 +39,7 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakHeadLAScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakHeadLAScale();
+	~ceUCAASpeakHeadLAScale() override;
 	/*@}*/
 };
 

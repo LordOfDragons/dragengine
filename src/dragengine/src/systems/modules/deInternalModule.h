@@ -52,7 +52,7 @@ public:
 	deInternalModule(deModuleSystem *system);
 	
 	/** \brief Clean up loadable module. */
-	virtual ~deInternalModule();
+	~deInternalModule() override;
 	/*@}*/
 	
 	
@@ -75,14 +75,14 @@ public:
 	 * the module. The subclass just has to overwrite CreateModule to produce
 	 * the module and this function takes care of the rest.
 	 */
-	virtual void LoadModule();
+	void LoadModule() override;
 	
 	/**
 	 * \brief Unload module.
 	 * 
 	 * Simply frees the module and sets it to NULL.
 	 */
-	virtual void UnloadModule();
+	void UnloadModule() override;
 	/*@}*/
 	
 	
@@ -90,10 +90,10 @@ public:
 	/** \name Type Testing and Safe Casting */
 	/*@{*/
 	/** \brief Determines if this is an internal module. */
-	virtual bool IsInternalModule() const;
+	bool IsInternalModule() const override;
 	
 	/** \brief Cast to an internal module. */
-	virtual deInternalModule *CastToInternalModule();
+	deInternalModule *CastToInternalModule() override;
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit module. */
-	virtual void Visit(deLoadableModuleVisitor &visitor);
+	void Visit(deLoadableModuleVisitor &visitor) override;
 	/*@}*/
 };
 

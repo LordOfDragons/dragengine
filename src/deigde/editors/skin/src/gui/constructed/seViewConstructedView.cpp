@@ -142,7 +142,7 @@ public:
 	
 	virtual igdeUndo *OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node) = 0;
 	
-	virtual void Update(const seSkin &skin, const seProperty &property){
+	void Update(const seSkin &skin, const seProperty &property) override{
 		sePropertyNode * const node = pView.GetActiveNode();
 		if(node && node->GetParent()){
 			UpdateNode(skin, property, *node);
@@ -196,7 +196,7 @@ public:
 	cActionAddShape(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Shape",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add shape node"){}
 	
-	virtual sePropertyNode *CreateNode(seSkin &, seProperty &){
+	sePropertyNode *CreateNode(seSkin &, seProperty &) override{
 		return new sePropertyNodeShape(*pView.GetEngine());
 	}
 };
@@ -206,7 +206,7 @@ public:
 	cActionAddImage(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Image ...",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add image node"){}
 	
-	virtual sePropertyNode *CreateNode(seSkin &skin, seProperty &){
+	sePropertyNode *CreateNode(seSkin &skin, seProperty &) override{
 		igdeEnvironment &env = pView.GetEnvironment();
 		decString path(skin.GetDirectoryPath());
 		if(!igdeCommonDialogs::GetFileOpen(&pView, "Select Image", *env.GetFileSystemGame(),
@@ -236,7 +236,7 @@ public:
 	cActionAddText(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Text",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add text node"){}
 	
-	virtual sePropertyNode *CreateNode(seSkin &, seProperty &){
+	sePropertyNode *CreateNode(seSkin &, seProperty &) override{
 		const sePropertyNodeText::Ref node(sePropertyNodeText::Ref::NewWith(*pView.GetEngine()));
 		node->SetPath("/igde/fonts/regular_67px.defont");
 		node->SetTextSize(67.0f);
@@ -295,7 +295,7 @@ public:
 			property->GetActiveNodeLayer(), *data) : NULL;
 	}
 	
-	virtual void Update(const seSkin &, const seProperty &){
+	void Update(const seSkin &, const seProperty &) override{
 		SetEnabled(pView.GetWindowMain().GetClipboard().HasWithTypeName(seClipboardDataPropertyNode::TYPE_NAME));
 	}
 };
@@ -313,7 +313,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node){
+	void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node) override{
 		SetEnabled(node.GetNodeType() == sePropertyNode::entGroup);
 	}
 };
@@ -340,7 +340,7 @@ public:
 		return NULL;
 	}
 	
-	virtual void Update(const seSkin &, const seProperty &property){
+	void Update(const seSkin &, const seProperty &property) override{
 		SetEnabled(property.GetActiveNodeGroup());
 	}
 };
@@ -355,7 +355,7 @@ public:
 			? new seUPNGroupNodes(property->GetNodeSelection().GetSelected()) : NULL;
 	}
 	
-	virtual void Update(const seSkin &, const seProperty &property){
+	void Update(const seSkin &, const seProperty &property) override{
 		SetEnabled(property.GetNodeSelection().GetSelected().GetCount() > 1);
 	}
 };
@@ -370,7 +370,7 @@ public:
 			? new seUPNUngroupNodes((sePropertyNodeGroup*)node) : NULL;
 	}
 	
-	virtual void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node){
+	void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node) override{
 		SetEnabled(node.GetNodeType() == sePropertyNode::entGroup);
 	}
 };
@@ -400,7 +400,7 @@ public:
 	cActionMoveNodesTop(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Top",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp), "Move node to top"){}
 	
-	virtual seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node){
+	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return new seUPNGroupNodesTop(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -410,7 +410,7 @@ public:
 	cActionMoveNodesUp(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Up",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move node up"){}
 	
-	virtual seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node){
+	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return new seUPNGroupNodesUp(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -420,7 +420,7 @@ public:
 	cActionMoveNodesDown(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Down",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "Move node down"){}
 	
-	virtual seUPNGroupNodesDown *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node){
+	seUPNGroupNodesDown *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return new seUPNGroupNodesDown(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -430,7 +430,7 @@ public:
 	cActionMoveNodesBottom(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Bottom",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown), "Move node to bottom"){}
 	
-	virtual seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node){
+	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
 		return new seUPNGroupNodesBottom(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -453,7 +453,7 @@ public:
 		}
 	}
 	
-	virtual void UpdateNode(const seSkin &, const seProperty &property, const sePropertyNode &node){
+	void UpdateNode(const seSkin &, const seProperty &property, const sePropertyNode &node) override{
 		SetEnabled(!node.GetMask() && property.GetNodeSelection().GetSelected().GetCount() == 2);
 	}
 };
@@ -467,7 +467,7 @@ public:
 		return node->GetMask() ? new seUPropertyNodeRemoveMask(node) : NULL;
 	}
 	
-	virtual void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node){
+	void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node) override{
 		SetEnabled(node.GetMask());
 	}
 };
@@ -483,7 +483,7 @@ public:
 			? new seUPropertyNodeImageSizeFromImage((sePropertyNodeImage*)node) : NULL;
 	}
 	
-	virtual void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node){
+	void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node) override{
 		SetEnabled(node.GetNodeType() == sePropertyNode::entImage && ((sePropertyNodeImage&)node).GetImage());
 	}
 };

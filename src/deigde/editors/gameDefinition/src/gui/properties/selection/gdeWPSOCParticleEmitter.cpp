@@ -247,7 +247,7 @@ public:
 		return new gdeUOCParticleEmitterToggleCasting(objectClass, particleEmitter);
 	}
 	
-	virtual void Update(const gdeObjectClass &, const gdeOCParticleEmitter &particleEmitter){
+	void Update(const gdeObjectClass &, const gdeOCParticleEmitter &particleEmitter) override{
 		SetEnabled(true);
 		SetSelected(particleEmitter.GetCasting());
 	}

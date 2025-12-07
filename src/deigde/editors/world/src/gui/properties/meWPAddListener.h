@@ -47,7 +47,7 @@ public:
 	meWPAddListener(meWPAdd &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPAddListener();
+	~meWPAddListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Editing parameters changed. */
-	virtual void EditingChanged(meWorld *world);
+	void EditingChanged(meWorld *world) override;
 	/*@}*/
 };
 

@@ -61,7 +61,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerEffectStretch();
+	~deSynthesizerEffectStretch() override;
 	/*@}*/
 	
 	
@@ -109,7 +109,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit(deSynthesizerEffectVisitor &visitor);
+	void Visit(deSynthesizerEffectVisitor &visitor) override;
 	/*@}*/
 };
 

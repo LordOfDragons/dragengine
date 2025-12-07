@@ -47,7 +47,7 @@ public:
 	gdeWPSOCSnapPointListener(gdeWPSOCSnapPoint &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCSnapPointListener();
+	~gdeWPSOCSnapPointListener() override;
 	/*@}*/
 	
 	
@@ -55,14 +55,14 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object class snap points changed. */
-	virtual void OCSnapPointsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	void OCSnapPointsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class snap point changed. */
-	virtual void OCSnapPointChanged(gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint);
+	void OCSnapPointChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint) override;
 	
 	/** \brief Active object class snap point changed. */
-	virtual void ActiveOCSnapPointChanged(gdeGameDefinition *gameDefinition);
+	void ActiveOCSnapPointChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

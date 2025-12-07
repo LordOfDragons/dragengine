@@ -40,14 +40,14 @@ public:
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPHTCViveFocus3ControllerInteraction();
+	~deoxrDPHTCViveFocus3ControllerInteraction() override;
 	/*@}*/
 	
 	
 protected:
-	virtual bool pProfileEnabled() const;
-	virtual void pSuggestBindings();
-	virtual void pAddDevice(bool left);
+	bool pProfileEnabled() const override;
+	void pSuggestBindings() override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

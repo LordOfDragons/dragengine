@@ -64,7 +64,7 @@ public:
 	
 protected:
 	/** \brief Clean up rule. */
-	virtual ~meHTVRuleCurve();
+	~meHTVRuleCurve() override;
 	/*@}*/
 	
 	
@@ -79,13 +79,13 @@ public:
 	void SetCurve(const decCurveBezier &curve);
 	
 	/** \brief Value of output slot. */
-	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Vector of output slot. */
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule *Copy() const override;
 	/*@}*/
 };
 

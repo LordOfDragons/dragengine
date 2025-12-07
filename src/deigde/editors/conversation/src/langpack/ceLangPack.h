@@ -62,7 +62,7 @@ public:
 	
 protected:
 	/** Cleans up language pack. */
-	virtual ~ceLangPack() override;
+	~ceLangPack() override;
 	/*@}*/
 	
 	

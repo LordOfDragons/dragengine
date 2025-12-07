@@ -48,7 +48,7 @@ public:
 	ceCAStopTopic(const ceCAStopTopic &action);
 	
 	/** \brief Clean up stop conversation conversation action. */
-	virtual ~ceCAStopTopic();
+	~ceCAStopTopic() override;
 	/*@}*/
 	
 	
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create copy action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

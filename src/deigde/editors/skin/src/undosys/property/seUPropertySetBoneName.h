@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertySetBoneName() override;
+	~seUPropertySetBoneName() override;
 	/*@}*/
 	
 	
@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo() override;
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo() override;
+	void Redo() override;
 	/*@}*/
 };
 

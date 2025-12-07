@@ -55,7 +55,7 @@ public:
 	deoglRenderDebugDrawer(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderDebugDrawer();
+	~deoglRenderDebugDrawer() override;
 	/*@}*/
 	
 	

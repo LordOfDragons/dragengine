@@ -65,7 +65,7 @@ public:
 	deSkinPropertyNodeText();
 	
 	/** \brief Clean up constructed property node. */
-	virtual ~deSkinPropertyNodeText();
+	~deSkinPropertyNodeText() override;
 	/*@}*/
 	
 	
@@ -120,7 +120,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits node. */
-	virtual void Visit(deSkinPropertyNodeVisitor &visitor);
+	void Visit(deSkinPropertyNodeVisitor &visitor) override;
 	/*@}*/
 };
 

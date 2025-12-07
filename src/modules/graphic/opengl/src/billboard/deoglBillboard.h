@@ -84,7 +84,7 @@ public:
 	deoglBillboard(deGraphicOpenGl &ogl, const deBillboard &billboard);
 	
 	/** Clean up peer. */
-	virtual ~deoglBillboard();
+	~deoglBillboard() override;
 	/*@}*/
 	
 	
@@ -136,10 +136,10 @@ public:
 	
 	/** \name Dynamic skin listener */
 	/*@{*/
-	virtual void DynamicSkinDestroyed();
-	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
-	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
+	void DynamicSkinDestroyed() override;
+	void DynamicSkinRenderablesChanged() override;
+	void DynamicSkinRenderableChanged(deoglDSRenderable &renderable) override;
+	void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable) override;
 	/*@}*/
 	
 	

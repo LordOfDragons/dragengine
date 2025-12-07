@@ -174,7 +174,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit an octree node. */
-	virtual void VisitNode(deoglDOctree *node, int intersection);
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	
 	/** Test axis aligned box for visibility. */
 	bool TestAxisAlignedBox(const decDVector &minExtend, const decDVector &maxExtend);

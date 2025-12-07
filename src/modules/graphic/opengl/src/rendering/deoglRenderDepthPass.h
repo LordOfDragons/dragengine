@@ -51,7 +51,7 @@ public:
 	deoglRenderDepthPass(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderDepthPass();
+	~deoglRenderDepthPass() override;
 	/*@}*/
 	
 	

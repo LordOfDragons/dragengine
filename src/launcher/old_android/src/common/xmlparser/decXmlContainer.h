@@ -49,7 +49,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml container. */
-	virtual ~decXmlContainer();
+	~decXmlContainer() override;
 	/*@}*/
 	
 	
@@ -89,15 +89,15 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToContainer() const;
-	virtual decXmlContainer *CastToContainer();
+	bool CanCastToContainer() const override;
+	decXmlContainer *CastToContainer() override;
 	/*@}*/
 };
 

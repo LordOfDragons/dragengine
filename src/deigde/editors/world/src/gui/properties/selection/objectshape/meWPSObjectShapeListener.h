@@ -47,7 +47,7 @@ public:
 	meWPSObjectShapeListener(meWPSObjectShape &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPSObjectShapeListener();
+	~meWPSObjectShapeListener() override;
 	/*@}*/
 	
 	
@@ -55,25 +55,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object selection changed. */
-	virtual void ObjectSelectionChanged(meWorld *world);
+	void ObjectSelectionChanged(meWorld *world) override;
 	
 	/** \brief Object class changed. */
-	virtual void ObjectClassChanged(meWorld *world, meObject *object);
+	void ObjectClassChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object geometry changed. */
-	virtual void ObjectGeometryChanged(meWorld *world, meObject *object);
+	void ObjectGeometryChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object properties changed. */
-	virtual void ObjectPropertiesChanged(meWorld *world, meObject *object);
+	void ObjectPropertiesChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object active property changed. */
-	virtual void ObjectActivePropertyChanged(meWorld *world, meObject *object);
+	void ObjectActivePropertyChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object shape list changed. */
-	virtual void ObjectShapeListChanged(meWorld *world);
+	void ObjectShapeListChanged(meWorld *world) override;
 	
 	/** \brief Object shape selection changed. */
-	virtual void ObjectShapeSelectionChanged(meWorld *world);
+	void ObjectShapeSelectionChanged(meWorld *world) override;
 	/*@}*/
 };
 

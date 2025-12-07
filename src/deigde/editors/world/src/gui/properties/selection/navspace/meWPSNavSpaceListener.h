@@ -47,7 +47,7 @@ public:
 	meWPSNavSpaceListener(meWPSNavSpace &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPSNavSpaceListener();
+	~meWPSNavSpaceListener() override;
 	/*@}*/
 	
 	
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space selection changed. */
-	virtual void NavSpaceSelectionChanged(meWorld *world);
+	void NavSpaceSelectionChanged(meWorld *world) override;
 	
 	/** \brief Navigation space changed. */
-	virtual void NavSpaceChanged(meWorld *world, meNavigationSpace *navspace);
+	void NavSpaceChanged(meWorld *world, meNavigationSpace *navspace) override;
 	
 	/** \brief Navigation space geometry changed. */
-	virtual void NavSpaceGeometryChanged(meWorld *world, meNavigationSpace *navspace);
+	void NavSpaceGeometryChanged(meWorld *world, meNavigationSpace *navspace) override;
 	
 	/** \brief Navigation space used cost types changed. */
-	virtual void NavSpaceUsedCostTypesChanged(meWorld *world, meNavigationSpace *navspace);
+	void NavSpaceUsedCostTypesChanged(meWorld *world, meNavigationSpace *navspace) override;
 	/*@}*/
 };
 

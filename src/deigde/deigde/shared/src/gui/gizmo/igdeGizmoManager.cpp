@@ -63,7 +63,7 @@ public:
 		shape = -1;
 	}
 	
-	virtual void CollisionResponse(deCollider*, deCollisionInfo *info) override{
+	void CollisionResponse(deCollider*, deCollisionInfo *info) override{
 		if(!info->GetCollider()){
 			return;
 		}
@@ -88,11 +88,11 @@ public:
 		shape = info->GetShape();
 	}
 	
-	virtual bool CanHitCollider(deCollider*, deCollider*) override{
+	bool CanHitCollider(deCollider*, deCollider*) override{
 		return true;
 	}
 	
-	virtual void ColliderChanged(deCollider*) override{}
+	void ColliderChanged(deCollider*) override{}
 };
 
 

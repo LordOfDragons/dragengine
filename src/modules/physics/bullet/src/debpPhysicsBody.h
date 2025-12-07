@@ -100,7 +100,7 @@ public:
 	debpPhysicsBody();
 	
 	/** \brief Clean up physics body. */
-	virtual ~debpPhysicsBody();
+	~debpPhysicsBody() override;
 	/*@}*/
 	
 	

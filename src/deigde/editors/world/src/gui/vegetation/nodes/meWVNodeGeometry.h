@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeGeometry();
+	~meWVNodeGeometry() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	inline meHTVRuleGeometry *GetRuleGeometry() const{ return pRuleGeometry; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

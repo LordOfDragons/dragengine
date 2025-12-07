@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged(projProject *project);
+	void UndoChanged(projProject *project) override;
 	/*@}*/
 };
 

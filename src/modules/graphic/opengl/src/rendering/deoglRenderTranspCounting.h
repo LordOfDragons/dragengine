@@ -57,7 +57,7 @@ public:
 	deoglRenderTranspCounting(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderTranspCounting();
+	~deoglRenderTranspCounting() override;
 	/*@}*/
 	
 	

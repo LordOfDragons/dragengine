@@ -52,7 +52,7 @@ public:
 	dealFileFormat();
 	
 	/** \brief Clean up file format. */
-	virtual ~dealFileFormat();
+	~dealFileFormat() override;
 	/*@}*/
 	
 	

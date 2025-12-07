@@ -219,11 +219,11 @@ public:
 	cActionPlayback(seWPView &panel) : cBaseAction(panel, "Play back animation",
 		NULL, "Animation is played back"){}
 	
-	virtual void OnAction(seSkin &skin){
+	void OnAction(seSkin &skin) override{
 		skin.SetPlayback(!skin.GetPlayback());
 	}
 	
-	virtual void Update(const seSkin &skin){
+	void Update(const seSkin &skin) override{
 		SetEnabled(true);
 		SetSelected(skin.GetPlayback());
 	}
@@ -234,7 +234,7 @@ public:
 	cActionRewind(seWPView &panel) : cBaseAction(panel, "Rewind Textures", NULL,
 		"Rewind all textures to the initial state as if added to the game world"){ }
 	
-	virtual void OnAction(seSkin &skin){
+	void OnAction(seSkin &skin) override{
 		skin.RewindTextures();
 	}
 };
@@ -243,7 +243,7 @@ class cActionCameraChanged : public cBaseAction{
 public:
 	cActionCameraChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction(seSkin &skin){
+	void OnAction(seSkin &skin) override{
 		skin.NotifyCameraChanged();
 	}
 };
@@ -252,7 +252,7 @@ class cActionSkyChanged : public cBaseAction{
 public:
 	cActionSkyChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction(seSkin &skin){
+	void OnAction(seSkin &skin) override{
 		skin.NotifySkyChanged();
 	}
 };
@@ -261,7 +261,7 @@ class cActionEnvObjChanged : public cBaseAction{
 public:
 	cActionEnvObjChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
 	
-	virtual void OnAction(seSkin &skin){
+	void OnAction(seSkin &skin) override{
 		skin.NotifyEnvObjectChanged();
 	}
 };

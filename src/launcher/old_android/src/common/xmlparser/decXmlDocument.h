@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml document. */
-	virtual ~decXmlDocument();
+	~decXmlDocument() override;
 	/*@}*/
 	
 	
@@ -104,7 +104,7 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
@@ -122,8 +122,8 @@ public:
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToDocument() const;
-	virtual decXmlDocument *CastToDocument();
+	bool CanCastToDocument() const override;
+	decXmlDocument *CastToDocument() override;
 	/*@}*/
 };
 

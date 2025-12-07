@@ -51,7 +51,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml namespace. */
-	virtual ~decXmlNamespace();
+	~decXmlNamespace() override;
 	/*@}*/
 	
 	
@@ -76,13 +76,13 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToNamespace() const;
-	virtual decXmlNamespace *CastToNamespace();
+	bool CanCastToNamespace() const override;
+	decXmlNamespace *CastToNamespace() override;
 	/*@}*/
 };
 

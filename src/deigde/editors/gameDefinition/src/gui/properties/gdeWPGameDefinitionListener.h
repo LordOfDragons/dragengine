@@ -47,7 +47,7 @@ public:
 	gdeWPGameDefinitionListener(gdeWPGameDefinition &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPGameDefinitionListener();
+	~gdeWPGameDefinitionListener() override;
 	/*@}*/
 	
 	
@@ -55,50 +55,50 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Game definition changed. */
-	virtual void GameDefinitionChanged(gdeGameDefinition *gameDefinition);
+	void GameDefinitionChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Base path changed. */
-	virtual void BasePathChanged(gdeGameDefinition *gameDefinition);
+	void BasePathChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Base game definitions changed. */
-	virtual void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition);
+	void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief World properties changed. */
-	virtual void WorldPropertiesChanged(gdeGameDefinition *gameDefinition);
+	void WorldPropertiesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief World changed. */
-	virtual void WorldPropertyChanged(gdeGameDefinition *gameDefinition,
-		gdeProperty *property);
+	void WorldPropertyChanged(gdeGameDefinition *gameDefinition,
+		gdeProperty *property) override;
 	
 	/** \brief World name changed. */
-	virtual void WorldPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeProperty *property);
+	void WorldPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeProperty *property) override;
 	
 	
 	
 	/** \brief Decal properties changed. */
-	virtual void DecalPropertiesChanged(gdeGameDefinition *gameDefinition);
+	void DecalPropertiesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Decal changed. */
-	virtual void DecalPropertyChanged(gdeGameDefinition *gameDefinition,
-		gdeProperty *property);
+	void DecalPropertyChanged(gdeGameDefinition *gameDefinition,
+		gdeProperty *property) override;
 	
 	/** \brief Decal name changed. */
-	virtual void DecalPropertyNameChanged(gdeGameDefinition *gameDefinition,
-		gdeProperty *property);
+	void DecalPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeProperty *property) override;
 	
 	
 	
 	/** \brief Auto find path object classes changed. */
-	virtual void AutoFindPathObjectClassesChanged(gdeGameDefinition *gameDefinition);
+	void AutoFindPathObjectClassesChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Auto find path skins changed. */
-	virtual void AutoFindPathSkinsChanged(gdeGameDefinition *gameDefinition);
+	void AutoFindPathSkinsChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Auto find path skies changed. */
-	virtual void AutoFindPathSkiesChanged(gdeGameDefinition *gameDefinition);
+	void AutoFindPathSkiesChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

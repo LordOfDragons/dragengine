@@ -87,7 +87,7 @@ public:
 	dealGuiTheme(const dealGuiTheme &copy);
 	
 	/** \brief Clean up gui theme. */
-	virtual ~dealGuiTheme();
+	~dealGuiTheme() override;
 	/*@}*/
 	
 	

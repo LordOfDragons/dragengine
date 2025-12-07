@@ -85,7 +85,7 @@ public:
 	/** Create a copy of a limit rule. */
 	aeRuleLimit(const aeRuleLimit &copy);
 	/** Clean up the limit rule. */
-	virtual ~aeRuleLimit();
+	~aeRuleLimit() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -230,13 +230,13 @@ public:
 	void SetTargetBone(const char *boneName);
 	
 	/** Creates an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule();
+	deAnimatorRule *CreateEngineRule() override;
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const;
+	aeRule *CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks(aeLinkList& list);
+	void ListLinks(aeLinkList& list) override;
 	/*@}*/
 	
 	/** \name Operators */

@@ -78,7 +78,7 @@ public:
 		eLayoutTypes layoutX, eLayoutTypes layoutY);
 	
 	/** \brief Clean up widget. */
-	virtual ~dealWidgetLayoutFlow();
+	~dealWidgetLayoutFlow() override;
 	/*@}*/
 	
 	
@@ -112,10 +112,10 @@ public:
 	
 	
 	/** \brief Minimum size of widget. */
-	virtual decPoint GetMinimumSize();
+	decPoint GetMinimumSize() override;
 	
 	/** \brief Layout child widgets. */
-	virtual void LayoutWidgets();
+	void LayoutWidgets() override;
 	
 	
 	

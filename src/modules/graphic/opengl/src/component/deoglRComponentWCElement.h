@@ -47,7 +47,7 @@ public:
 	
 protected:
 	/** Clean up render component. */
-	virtual ~deoglRComponentWCElement();
+	~deoglRComponentWCElement() override;
 	/*@}*/
 	
 	
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update element data. */
-	virtual void UpdateData(sDataElement &data) const;
+	void UpdateData(sDataElement &data) const override;
 	
 	/** Update geometries data. */
-	virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
+	void UpdateDataGeometries(sDataElementGeometry *data) const override;
 };
 
 #endif

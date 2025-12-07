@@ -29,7 +29,7 @@ class deoglRenderPlan;
 class deoglRenderThread;
 class deoglTexture;
 class deoglRSkin;
-class deoalSkinState;
+class deoglSkinState;
 class deoglRDynamicSkin;
 
 

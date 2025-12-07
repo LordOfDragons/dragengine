@@ -49,7 +49,7 @@ public:
 	deServerManager(deEngine *engine);
 	
 	/** \brief Clean up server resource manager and reports leaking resources. */
-	virtual ~deServerManager();
+	~deServerManager() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	deServer *CreateServer();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -74,16 +74,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Network System Peers of all stored resources have to be created. */
-	virtual void SystemNetworkLoad();
+	void SystemNetworkLoad() override;
 	
 	/** \brief Network System Peers of all stored resources have to be freed. */
-	virtual void SystemNetworkUnload();
+	void SystemNetworkUnload() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be created. */
-	virtual void SystemScriptingLoad();
+	void SystemScriptingLoad() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be freed. */
-	virtual void SystemScriptingUnload();
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -94,7 +94,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Removes the given resource from the manager without freeing it. */
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

@@ -40,7 +40,7 @@ public:
 	deoglPTranspLayerLimit(deGraphicOpenGl &ogl);
 	
 	/** Clean up parameter. */
-	virtual ~deoglPTranspLayerLimit();
+	~deoglPTranspLayerLimit() override;
 	/*@}*/
 	
 	
@@ -48,10 +48,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Current value. */
-	virtual int GetParameterInt();
+	int GetParameterInt() override;
 	
 	/** Set current value. */
-	virtual void SetParameterInt(int value);
+	void SetParameterInt(int value) override;
 	/*@}*/
 };
 

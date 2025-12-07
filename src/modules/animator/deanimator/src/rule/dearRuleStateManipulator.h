@@ -66,7 +66,7 @@ public:
 		int firstLink, const deAnimatorRuleStateManipulator &rule);
 	
 	/** Clean up animator. */
-	virtual ~dearRuleStateManipulator();
+	~dearRuleStateManipulator() override;
 	/*@}*/
 	
 	
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	/*@}*/
 };
 

@@ -52,7 +52,7 @@ public:
 	deoglDSRenderableCamera(deoglDynamicSkin &dynamicSkin, const deDSRenderableCamera &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableCamera();
+	~deoglDSRenderableCamera() override;
 	/*@}*/
 	
 	
@@ -63,13 +63,13 @@ public:
 	inline const deDSRenderableCamera &GetRenderableCamera() const{ return pRenderableCamera; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	
 	/** Camera requires sync. */
 	void CameraRequiresSync();

@@ -67,7 +67,7 @@ public:
 	deNetworkValueVisitorIdentify();
 	
 	/** \brief Clean up value visitor identify. */
-	virtual ~deNetworkValueVisitorIdentify();
+	~deNetworkValueVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -143,34 +143,34 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void VisitValue(deNetworkValue *value);
+	void VisitValue(deNetworkValue *value) override;
 	
 	/** \brief Visit integer network value. */
-	virtual void VisitInteger(deNetworkValueInteger *value);
+	void VisitInteger(deNetworkValueInteger *value) override;
 	
 	/** \brief Visit float network value. */
-	virtual void VisitFloat(deNetworkValueFloat *value);
+	void VisitFloat(deNetworkValueFloat *value) override;
 	
 	/** \brief Visit string network value. */
-	virtual void VisitString(deNetworkValueString *value);
+	void VisitString(deNetworkValueString *value) override;
 	
 	/** \brief Visit data network value. */
-	virtual void VisitData(deNetworkValueData *value);
+	void VisitData(deNetworkValueData *value) override;
 	
 	/** \brief Visit point-2 network value. */
-	virtual void VisitPoint2(deNetworkValuePoint2 *value);
+	void VisitPoint2(deNetworkValuePoint2 *value) override;
 	
 	/** \brief Visit point-3 network value. */
-	virtual void VisitPoint3(deNetworkValuePoint3 *value);
+	void VisitPoint3(deNetworkValuePoint3 *value) override;
 	
 	/** \brief Visit vector-2 network value. */
-	virtual void VisitVector2(deNetworkValueVector2 *value);
+	void VisitVector2(deNetworkValueVector2 *value) override;
 	
 	/** \brief Visit vector-3 network value. */
-	virtual void VisitVector3(deNetworkValueVector3 *value);
+	void VisitVector3(deNetworkValueVector3 *value) override;
 	
 	/** \brief Visit quaternion network value. */
-	virtual void VisitQuaternion(deNetworkValueQuaternion *value);
+	void VisitQuaternion(deNetworkValueQuaternion *value) override;
 	/*@}*/
 };
 

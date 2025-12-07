@@ -49,7 +49,7 @@ public:
 	/** Creates a new container node. */
 	dedsSTNParagraph();
 	/** Cleans up the styled text node. */
-	virtual ~dedsSTNParagraph();
+	~dedsSTNParagraph() override;
 	/*@}*/
 	
 	/** @name Management */

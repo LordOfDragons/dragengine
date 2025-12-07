@@ -244,7 +244,7 @@ public:
 	cActionRemoveRenderable(seWPDynamicSkin &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove renderable"){}
 	
-	virtual void OnAction(seSkin *skin, seDynamicSkinRenderable *renderable){
+	void OnAction(seSkin *skin, seDynamicSkinRenderable *renderable) override{
 		skin->GetDynamicSkin().RemoveRenderable(renderable);
 	}
 };

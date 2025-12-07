@@ -38,15 +38,15 @@ public:
 	/** Creates a new parameter. */
 	deoglPSSAOSelfOcclusionAngle(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPSSAOSelfOcclusionAngle();
+	~deoglPSSAOSelfOcclusionAngle() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Retrieves the current value. */
-	virtual float GetParameterFloat();
+	float GetParameterFloat() override;
 	/** Sets the current value. */
-	virtual void SetParameterFloat(float value);
+	void SetParameterFloat(float value) override;
 	/*@}*/
 };
 

@@ -13,11 +13,11 @@ class decPath;
 class detPath : public detCase{
 public:
 	detPath();
-	~detPath();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detPath() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void pTestCreatePath(int testNumber);

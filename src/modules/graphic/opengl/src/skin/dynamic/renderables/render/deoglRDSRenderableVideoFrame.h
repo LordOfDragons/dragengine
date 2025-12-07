@@ -47,7 +47,7 @@ public:
 	deoglRDSRenderableVideoFrame(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin image renderable. */
-	virtual ~deoglRDSRenderableVideoFrame();
+	~deoglRDSRenderableVideoFrame() override;
 	/*@}*/
 	
 	
@@ -61,13 +61,13 @@ public:
 	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 	
 private:

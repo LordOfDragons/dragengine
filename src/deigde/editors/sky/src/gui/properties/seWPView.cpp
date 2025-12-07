@@ -72,7 +72,7 @@ class cActionCameraChanged : public cBaseAction{
 public:
 	cActionCameraChanged(seWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(seSky &sky){
+	void OnAction(seSky &sky) override{
 		sky.NotifyCameraChanged();
 	}
 };
@@ -81,7 +81,7 @@ class cActionEnvObjChanged : public cBaseAction{
 public:
 	cActionEnvObjChanged(seWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(seSky &sky){
+	void OnAction(seSky &sky) override{
 		sky.NotifyEnvObjectChanged();
 	}
 };

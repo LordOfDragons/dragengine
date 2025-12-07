@@ -34,12 +34,12 @@
 
 namespace squish {
 
-Sym3x3 ComputeWeightedCovariance(int n, Vec3 const* points, float const* weights)
+Sym3x3 ComputeWeightedCovariance( int n, Vec3 const* points, float const* weights )
 {
 	// compute the centroid
 	float total = 0.0f;
-	Vec3 centroid(0.0f);
-	for(int i = 0; i < n; ++i)
+	Vec3 centroid( 0.0f );
+	for( int i = 0; i < n; ++i )
 	{
 		total += weights[i];
 		centroid += weights[i]*points[i];
@@ -47,8 +47,8 @@ Sym3x3 ComputeWeightedCovariance(int n, Vec3 const* points, float const* weights
 	centroid /= total;
 
 	// accumulate the covariance matrix
-	Sym3x3 covariance(0.0f);
-	for(int i = 0; i < n; ++i)
+	Sym3x3 covariance( 0.0f );
+	for( int i = 0; i < n; ++i )
 	{
 		Vec3 a = points[i] - centroid;
 		Vec3 b = weights[i]*a;
@@ -65,7 +65,7 @@ Sym3x3 ComputeWeightedCovariance(int n, Vec3 const* points, float const* weights
 	return covariance;
 }
 
-static Vec3 GetMultiplicity1Evector(Sym3x3 const& matrix, float evalue)
+static Vec3 GetMultiplicity1Evector( Sym3x3 const& matrix, float evalue )
 {
 	// compute M
 	Sym3x3 m;
@@ -86,12 +86,12 @@ static Vec3 GetMultiplicity1Evector(Sym3x3 const& matrix, float evalue)
 	u[5] = m[0]*m[3] - m[1]*m[1];
 
 	// find the largest component
-	float mc = std::fabs(u[0]);
+	float mc = std::fabs( u[0] );
 	int mi = 0;
-	for(int i = 1; i < 6; ++i)
+	for( int i = 1; i < 6; ++i )
 	{
-		float c = std::fabs(u[i]);
-		if(c > mc)
+		float c = std::fabs( u[i] );
+		if( c > mc )
 		{
 			mc = c;
 			mi = i;
@@ -99,21 +99,21 @@ static Vec3 GetMultiplicity1Evector(Sym3x3 const& matrix, float evalue)
 	}
 
 	// pick the column with this component
-	switch(mi)
+	switch( mi )
 	{
 	case 0:
-		return Vec3(u[0], u[1], u[2]);
+		return Vec3( u[0], u[1], u[2] );
 
 	case 1:
 	case 3:
-		return Vec3(u[1], u[3], u[4]);
+		return Vec3( u[1], u[3], u[4] );
 
 	default:
-		return Vec3(u[2], u[4], u[5]);
+		return Vec3( u[2], u[4], u[5] );
 	}
 }
 
-static Vec3 GetMultiplicity2Evector(Sym3x3 const& matrix, float evalue)
+static Vec3 GetMultiplicity2Evector( Sym3x3 const& matrix, float evalue )
 {
 	// compute M
 	Sym3x3 m;
@@ -125,12 +125,12 @@ static Vec3 GetMultiplicity2Evector(Sym3x3 const& matrix, float evalue)
 	m[5] = matrix[5] - evalue;
 
 	// find the largest component
-	float mc = std::fabs(m[0]);
+	float mc = std::fabs( m[0] );
 	int mi = 0;
-	for(int i = 1; i < 6; ++i)
+	for( int i = 1; i < 6; ++i )
 	{
-		float c = std::fabs(m[i]);
-		if(c > mc)
+		float c = std::fabs( m[i] );
+		if( c > mc )
 		{
 			mc = c;
 			mi = i;
@@ -138,25 +138,25 @@ static Vec3 GetMultiplicity2Evector(Sym3x3 const& matrix, float evalue)
 	}
 
 	// pick the first eigenvector based on this index
-	switch(mi)
+	switch( mi )
 	{
 	case 0:
 	case 1:
-		return Vec3(-m[1], m[0], 0.0f);
+		return Vec3( -m[1], m[0], 0.0f );
 
 	case 2:
-		return Vec3(m[2], 0.0f, -m[0]);
+		return Vec3( m[2], 0.0f, -m[0] );
 
 	case 3:
 	case 4:
-		return Vec3(0.0f, -m[4], m[3]);
+		return Vec3( 0.0f, -m[4], m[3] );
 
 	default:
-		return Vec3(0.0f, -m[5], m[4]);
+		return Vec3( 0.0f, -m[5], m[4] );
 	}
 }
 
-Vec3 ComputePrincipleComponent(Sym3x3 const& matrix)
+Vec3 ComputePrincipleComponent( Sym3x3 const& matrix )
 {
 	// compute the cubic coefficients
 	float c0 = matrix[0]*matrix[3]*matrix[5] 
@@ -169,58 +169,58 @@ Vec3 ComputePrincipleComponent(Sym3x3 const& matrix)
 	float c2 = matrix[0] + matrix[3] + matrix[5];
 
 	// compute the quadratic coefficients
-	float a = c1 - (1.0f/3.0f)*c2*c2;
-	float b = (-2.0f/27.0f)*c2*c2*c2 + (1.0f/3.0f)*c1*c2 - c0;
+	float a = c1 - ( 1.0f/3.0f )*c2*c2;
+	float b = ( -2.0f/27.0f )*c2*c2*c2 + ( 1.0f/3.0f )*c1*c2 - c0;
 
 	// compute the root count check
-	float Q = 0.25f*b*b + (1.0f/27.0f)*a*a*a;
+	float Q = 0.25f*b*b + ( 1.0f/27.0f )*a*a*a;
 
 	// test the multiplicity
-	if(FLT_EPSILON < Q)
+	if( FLT_EPSILON < Q )
 	{
 		// only one root, which implies we have a multiple of the identity
-        return Vec3(1.0f);
+        return Vec3( 1.0f );
 	}
-	else if(Q < -FLT_EPSILON)
+	else if( Q < -FLT_EPSILON )
 	{
 		// three distinct roots
-		float theta = std::atan2(std::sqrt(-Q), -0.5f*b);
-		float rho = std::sqrt(0.25f*b*b - Q);
+		float theta = std::atan2( std::sqrt( -Q ), -0.5f*b );
+		float rho = std::sqrt( 0.25f*b*b - Q );
 
-		float rt = std::pow(rho, 1.0f/3.0f);
-		float ct = std::cos(theta/3.0f);
-		float st = std::sin(theta/3.0f);
+		float rt = std::pow( rho, 1.0f/3.0f );
+		float ct = std::cos( theta/3.0f );
+		float st = std::sin( theta/3.0f );
 
-		float l1 = (1.0f/3.0f)*c2 + 2.0f*rt*ct;
-		float l2 = (1.0f/3.0f)*c2 - rt*(ct + (float)sqrt(3.0f)*st);
-		float l3 = (1.0f/3.0f)*c2 - rt*(ct - (float)sqrt(3.0f)*st);
+		float l1 = ( 1.0f/3.0f )*c2 + 2.0f*rt*ct;
+		float l2 = ( 1.0f/3.0f )*c2 - rt*( ct + ( float )sqrt( 3.0f )*st );
+		float l3 = ( 1.0f/3.0f )*c2 - rt*( ct - ( float )sqrt( 3.0f )*st );
 
 		// pick the larger
-		if(std::fabs(l2) > std::fabs(l1))
+		if( std::fabs( l2 ) > std::fabs( l1 ) )
 			l1 = l2;
-		if(std::fabs(l3) > std::fabs(l1))
+		if( std::fabs( l3 ) > std::fabs( l1 ) )
 			l1 = l3;
 
 		// get the eigenvector
-		return GetMultiplicity1Evector(matrix, l1);
+		return GetMultiplicity1Evector( matrix, l1 );
 	}
-	else // if(-FLT_EPSILON <= Q && Q <= FLT_EPSILON)
+	else // if( -FLT_EPSILON <= Q && Q <= FLT_EPSILON )
 	{
 		// two roots
 		float rt;
-		if(b < 0.0f)
-			rt = -std::pow(-0.5f*b, 1.0f/3.0f);
+		if( b < 0.0f )
+			rt = -std::pow( -0.5f*b, 1.0f/3.0f );
 		else
-			rt = std::pow(0.5f*b, 1.0f/3.0f);
+			rt = std::pow( 0.5f*b, 1.0f/3.0f );
 		
-		float l1 = (1.0f/3.0f)*c2 + rt;		// repeated
-		float l2 = (1.0f/3.0f)*c2 - 2.0f*rt;
+		float l1 = ( 1.0f/3.0f )*c2 + rt;		// repeated
+		float l2 = ( 1.0f/3.0f )*c2 - 2.0f*rt;
 		
 		// get the eigenvector
-		if(std::fabs(l1) > std::fabs(l2))
-			return GetMultiplicity2Evector(matrix, l1);
+		if( std::fabs( l1 ) > std::fabs( l2 ) )
+			return GetMultiplicity2Evector( matrix, l1 );
 		else
-			return GetMultiplicity1Evector(matrix, l2);
+			return GetMultiplicity1Evector( matrix, l2 );
 	}
 }
 

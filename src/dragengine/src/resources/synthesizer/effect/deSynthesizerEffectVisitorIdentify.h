@@ -53,7 +53,7 @@ public:
 	deSynthesizerEffectVisitorIdentify();
 	
 	/** \brief Clean up identify synthesizer effect visitor. */
-	virtual ~deSynthesizerEffectVisitorIdentify();
+	~deSynthesizerEffectVisitorIdentify() override;
 	/*@}*/
 	
 	
@@ -84,10 +84,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void VisitEffect(deSynthesizerEffect &effect);
+	void VisitEffect(deSynthesizerEffect &effect) override;
 	
 	/** \brief Visit stretch effect. */
-	virtual void VisitStretch(deSynthesizerEffectStretch &effect);
+	void VisitStretch(deSynthesizerEffectStretch &effect) override;
 	/*@}*/
 };
 

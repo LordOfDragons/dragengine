@@ -47,7 +47,7 @@ public:
 	deBaseCrashRecoveryModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseCrashRecoveryModule();
+	~deBaseCrashRecoveryModule() override;
 	/*@}*/
 	
 	

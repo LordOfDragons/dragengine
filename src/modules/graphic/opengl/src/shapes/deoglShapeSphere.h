@@ -41,7 +41,7 @@ public:
 	/** Creates a new shape. */
 	deoglShapeSphere(deoglRenderThread &renderThread);
 	/** Cleans up the shape. */
-	virtual ~deoglShapeSphere();
+	~deoglShapeSphere() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -50,9 +50,9 @@ public:
 	void CalcMatrix(decMatrix &matrix, const decVector &position, float radius);
 	
 	/** Add lines data. */
-	virtual void AddVBOLines(sVBOData *data);
+	void AddVBOLines(sVBOData *data) override;
 	/** Add faces data. */
-	virtual void AddVBOFaces(sVBOData *data);
+	void AddVBOFaces(sVBOData *data) override;
 	/*@}*/
 };
 

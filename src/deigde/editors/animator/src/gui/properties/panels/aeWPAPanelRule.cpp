@@ -232,7 +232,7 @@ public:
 		return new aeUToggleRuleInvertBlendFactor(rule);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetInvertBlendFactor());
 	}
@@ -247,7 +247,7 @@ public:
 		return new aeUSetRuleEnabled(rule);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(true);
 		SetSelected(rule.GetEnabled());
 	}
@@ -265,7 +265,7 @@ public:
 			? new aeUSetRuleAddBone(rule, name) : NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		const decString &name = pPanel.GetCBBoneText();
 		SetEnabled(!name.IsEmpty() && !rule.GetListBones().Has(name));
 	}
@@ -291,7 +291,7 @@ public:
 		}
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(!pPanel.GetCBBoneText().IsEmpty());
 	}
 };
@@ -306,7 +306,7 @@ public:
 			? new aeUSetRuleRemoveAllBones(rule) : NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(rule.GetListBones().GetCount() > 0);
 	}
 };
@@ -321,7 +321,7 @@ public:
 		return name ? new aeUSetRuleRemoveBone(rule, name) : NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(pPanel.GetListBoneSelection());
 	}
 };
@@ -336,7 +336,7 @@ public:
 		return new aeURuleMirrorBones(rule);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(rule.GetListBones().GetCount() > 0);
 	}
 };
@@ -370,7 +370,7 @@ public:
 		return undo;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &){
+	void Update(const aeAnimator &, const aeRule &) override{
 		SetEnabled(pPanel.GetWindowMain().GetClipboard().HasWithTypeName(aeClipboardDataBones::TYPE_NAME));
 	}
 };
@@ -395,7 +395,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(rule.GetListBones().GetCount() > 0);
 	}
 };
@@ -477,7 +477,7 @@ public:
 			? new aeUSetRuleAddVertexPositionSet(rule, name) : NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		const decString &name = pPanel.GetCBVertexPositionSetText();
 		SetEnabled(!name.IsEmpty() && !rule.GetListVertexPositionSets().Has(name));
 	}
@@ -503,7 +503,7 @@ public:
 		}
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(!pPanel.GetCBVertexPositionSetText().IsEmpty());
 	}
 };
@@ -518,7 +518,7 @@ public:
 			? new aeUSetRuleRemoveAllVertexPositionSets(rule) : NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(rule.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
@@ -534,7 +534,7 @@ public:
 		return name ? new aeUSetRuleRemoveVertexPositionSet(rule, name) : NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(pPanel.GetListVertexPositionSetSelection());
 	}
 };
@@ -549,7 +549,7 @@ public:
 		return new aeURuleMirrorVertexPositionSets(rule);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(rule.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
@@ -584,7 +584,7 @@ public:
 		return undo;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &){
+	void Update(const aeAnimator &, const aeRule &) override{
 		SetEnabled(pPanel.GetWindowMain().GetClipboard().HasWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME));
 	}
 };
@@ -609,7 +609,7 @@ public:
 		return nullptr;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &rule){
+	void Update(const aeAnimator &, const aeRule &rule) override{
 		SetEnabled(rule.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
@@ -698,7 +698,7 @@ public:
 			? new aeURuleTargetAddLink(rule, target, link) : NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &){
+	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetCBLinkSelection();
 		SetEnabled(target && link && !target->HasLink(link));
@@ -717,7 +717,7 @@ public:
 			? new aeURuleTargetRemoveLink(rule, target, link) : NULL;
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &){
+	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetListLinkSelection();
 		SetEnabled(target && link && target->HasLink(link));
@@ -744,7 +744,7 @@ public:
 		return new aeURuleTargetRemoveAllLinks(rule, target, list);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &){
+	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
 		SetEnabled(target && target->GetLinkCount() > 0);
 	}

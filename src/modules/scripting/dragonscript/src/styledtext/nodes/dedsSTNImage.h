@@ -52,7 +52,7 @@ public:
 	/** Creates a new image node with the given image. */
 	dedsSTNImage(deImage *image);
 	/** Cleans up the image node. */
-	virtual ~dedsSTNImage();
+	~dedsSTNImage() override;
 	/*@}*/
 	
 	/** @name Management */

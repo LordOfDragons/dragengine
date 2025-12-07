@@ -47,7 +47,7 @@ public:
 	/** Creates a new music conversation action. */
 	ceCAMusic(const ceCAMusic &action);
 	/** Cleans up the music conversation action. */
-	virtual ~ceCAMusic();
+	~ceCAMusic() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -58,7 +58,7 @@ public:
 	void SetName(const char *name);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

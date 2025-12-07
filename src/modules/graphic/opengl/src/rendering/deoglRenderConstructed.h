@@ -63,7 +63,7 @@ public:
 	deoglRenderConstructed(deoglRenderThread &renderThread);
 	
 	/** Clean up canvas renderer. */
-	virtual ~deoglRenderConstructed() override;
+	~deoglRenderConstructed() override;
 	/*@}*/
 	
 	

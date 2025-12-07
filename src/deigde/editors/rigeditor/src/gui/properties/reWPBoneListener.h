@@ -47,7 +47,7 @@ public:
 	reWPBoneListener(reWPBone &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPBoneListener();
+	~reWPBoneListener() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief A bone changed. */
-	void BoneChanged(reRig *rig, reRigBone *bone);
+	void BoneChanged(reRig *rig, reRigBone *bone) override;
 	
 	/** \brief The active bone changed. */
-	void ActiveBoneChanged(reRig *rig);
+	void ActiveBoneChanged(reRig *rig) override;
 	/*@}*/
 };
 

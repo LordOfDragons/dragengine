@@ -126,7 +126,7 @@ public:
 	cActionAddClosestProp(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Closest Prop", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleClosestProp;
 	}
 };
@@ -136,7 +136,7 @@ public:
 	cActionAddClosestVegetation(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Closest Vegetation", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleClosestVegetation;
 	}
 };
@@ -146,7 +146,7 @@ public:
 	cActionAddCombine(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Combine", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleCombine;
 	}
 };
@@ -156,7 +156,7 @@ public:
 	cActionAddComponents(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Components", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleComponents;
 	}
 };
@@ -166,7 +166,7 @@ public:
 	cActionAddCurve(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Curve", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleCurve;
 	}
 };
@@ -176,7 +176,7 @@ public:
 	cActionAddGeometry(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Geometry", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleGeometry;
 	}
 };
@@ -186,7 +186,7 @@ public:
 	cActionAddMapping(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Mapping", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleMapping;
 	}
 };
@@ -196,7 +196,7 @@ public:
 	cActionAddMath(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Math", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleMath;
 	}
 };
@@ -206,7 +206,7 @@ public:
 	cActionAddMultiMath(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Multi-Math", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleMultiMath;
 	}
 };
@@ -216,7 +216,7 @@ public:
 	cActionAddVectorMath(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Vector Math", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleVectorMath;
 	}
 };
@@ -226,7 +226,7 @@ public:
 	cActionAddRandom(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Random", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleRandom;
 	}
 };
@@ -236,7 +236,7 @@ public:
 	cActionAddConstant(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Constant", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRuleConstant;
 	}
 };
@@ -246,7 +246,7 @@ public:
 	cActionAddPropCount(meWindowVegetation &view, const decVector2 &position) :
 	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Prop Count", NULL){}
 	
-	virtual meHTVRule * CreateRule(){
+	meHTVRule * CreateRule() override{
 		return new meHTVRulePropCount;
 	}
 };

@@ -86,7 +86,7 @@ public:
 	
 protected:
 	/** Cleans up the animator controller. */
-	virtual ~aeController() override;
+	~aeController() override;
 	/*@}*/
 	
 	

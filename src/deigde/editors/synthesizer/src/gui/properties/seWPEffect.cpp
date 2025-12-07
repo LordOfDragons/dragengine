@@ -209,7 +209,7 @@ public:
 		SetDescription("Paste effect from clipboard");
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pPanel.GetSource()){
 			return;
 		}

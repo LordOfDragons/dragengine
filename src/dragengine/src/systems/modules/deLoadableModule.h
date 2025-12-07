@@ -103,7 +103,7 @@ public:
 	
 protected:
 	/** \brief Clean up loadable module. */
-	virtual ~deLoadableModule();
+	~deLoadableModule() override;
 	/*@}*/
 	
 	

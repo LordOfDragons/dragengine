@@ -46,7 +46,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~seWPAPanelSourceGroup();
+	~seWPAPanelSourceGroup() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update source. */
-	virtual void UpdateSource();
+	void UpdateSource() override;
 	
 	/** \brief Updates target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

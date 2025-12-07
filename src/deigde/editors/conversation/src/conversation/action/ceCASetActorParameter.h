@@ -73,7 +73,7 @@ public:
 	ceCASetActorParameter(const ceCASetActorParameter &action);
 	
 	/** \brief Clean up conversation action. */
-	virtual ~ceCASetActorParameter();
+	~ceCASetActorParameter() override;
 	/*@}*/
 	
 	
@@ -113,7 +113,7 @@ public:
 	
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

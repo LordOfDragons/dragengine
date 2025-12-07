@@ -43,7 +43,7 @@ public:
 	/** Creates a new constraint. */
 	debpBPConstraintSlider(btRigidBody &rbA, const btTransform &frameInA, const btTransform &frameInB);
 	/** Cleans up the constraint. */
-	virtual ~debpBPConstraintSlider();
+	~debpBPConstraintSlider() override;
 	
 	/** @name Management */
 	/*@{*/

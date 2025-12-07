@@ -43,7 +43,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPAStopConversation();
+	~ceWPAStopConversation() override;
 	/*@}*/
 	
 	

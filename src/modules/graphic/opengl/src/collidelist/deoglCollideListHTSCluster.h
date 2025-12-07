@@ -54,7 +54,7 @@ public:
 	deoglCollideListHTSCluster();
 	
 	/** Clean up cluster. */
-	~deoglCollideListHTSCluster();
+	~deoglCollideListHTSCluster() override;
 	/*@}*/
 	
 	
@@ -94,7 +94,7 @@ public:
 	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decVector &offset);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
+	void OcclusionTestInvisible() override;
 	/*@}*/
 };
 

@@ -70,8 +70,8 @@ private:
 
 
 		WorldComputeElement(deoglRDecal &decal);
-		virtual void UpdateData(sDataElement &data) const;
-		virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
+		void UpdateData(sDataElement &data) const override;
+		void UpdateDataGeometries(sDataElementGeometry *data) const override;
 	};
 	
 	

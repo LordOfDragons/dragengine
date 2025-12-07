@@ -42,7 +42,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAMusic();
+	~ceWPTTIMAMusic() override;
 	/*@}*/
 	
 	
@@ -54,7 +54,7 @@ public:
 	inline ceCAMusic *GetActionMusic() const{ return (ceCAMusic*)GetAction(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

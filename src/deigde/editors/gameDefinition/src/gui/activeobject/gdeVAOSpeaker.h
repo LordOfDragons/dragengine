@@ -67,7 +67,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOSpeaker();
+	~gdeVAOSpeaker() override;
 	/*@}*/
 	
 	
@@ -79,10 +79,10 @@ public:
 	inline gdeOCSpeaker *GetOCSpeaker() const{ return pOCSpeaker; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	

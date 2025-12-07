@@ -51,7 +51,7 @@ public:
 	/** \brief Creates a copy of a conversation action. */
 	ceCAComment(const ceCAComment &action);
 	/** \brief Cleans up the conversation action. */
-	virtual ~ceCAComment();
+	~ceCAComment() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -62,7 +62,7 @@ public:
 	void SetComment(const char *comment);
 	
 	/** \brief Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

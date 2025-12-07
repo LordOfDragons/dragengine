@@ -71,7 +71,7 @@ public:
 	deoglWorldOctree(const decDVector &center, const decDVector &halfSize, int insertDepth);
 	
 	/** Clean up world octree. */
-	virtual ~deoglWorldOctree();
+	~deoglWorldOctree() override;
 	/*@}*/
 	
 	
@@ -79,12 +79,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Create octree for octant. */
-	virtual deoglDOctree *CreateOctree(int octant) const;
+	deoglDOctree *CreateOctree(int octant) const override;
 	
 	
 	
 	/** Clear content of this node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	
 	/** Clear all billboards from the tree. */
 	void ClearBillboards();

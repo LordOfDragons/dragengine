@@ -57,7 +57,7 @@ public:
 	/** Creates a new player choice conversation action. */
 	ceCAPlayerChoice(const ceCAPlayerChoice &action);
 	/** Cleans up the player choice conversation action. */
-	virtual ~ceCAPlayerChoice();
+	~ceCAPlayerChoice() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -69,7 +69,7 @@ public:
 	inline ceConversationActionList &GetActions(){ return pActions; }
 	inline const ceConversationActionList &GetActions() const{ return pActions; }
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/** Retrieves the variable name. */
 	inline const decString &GetVariableName() const{ return pVariableName; }
 	/** Sets the variable name. */

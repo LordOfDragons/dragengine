@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleForeignState();
+	~aeWPAPanelRuleForeignState() override;
 	/*@}*/
 	
 	
@@ -66,16 +66,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Update model vertex position set list. */
-	virtual void UpdateModelVertexPositionSetList();
+	void UpdateModelVertexPositionSetList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

@@ -50,7 +50,7 @@ public:
 	deoglEffectFilterKernel(deGraphicOpenGl &ogl, const deEffectFilterKernel &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffectFilterKernel();
+	~deoglEffectFilterKernel() override;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	

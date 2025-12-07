@@ -45,7 +45,7 @@ public:
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkPipelineCompute();
+	~devkPipelineCompute() override;
 	/*@}*/
 	
 	

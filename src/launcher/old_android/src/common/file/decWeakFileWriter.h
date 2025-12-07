@@ -61,7 +61,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~decWeakFileWriter();
+	~decWeakFileWriter() override;
 	/*@}*/
 	
 	
@@ -82,7 +82,7 @@ public:
 	
 	
 	/** \brief Name of the file. */
-	virtual const char *GetFilename();
+	const char *GetFilename() override;
 	
 	/**
 	 * \brief Write \em size bytes from \em buffer and advances the file pointer.
@@ -90,7 +90,7 @@ public:
 	 * \throws deeInvalidParam \em size is less than 0.
 	 * \throws deeInvalidParam Error compressing data.
 	 */
-	virtual void Write(const void *buffer, int size);
+	void Write(const void *buffer, int size) override;
 	/*@}*/
 };
 

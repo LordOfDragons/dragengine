@@ -181,7 +181,7 @@ public:
 		}
 	}
 	
-	virtual void Update(const aeAnimator &, const aeRule &){
+	void Update(const aeAnimator &, const aeRule &) override{
 		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
 			.GetWithTypeName(aeClipboardDataRule::TYPE_NAME));
 	}
@@ -219,7 +219,7 @@ public:
 		return new aeURuleGroupPasteRule(group, cdata->GetRules(), list.GetCount());
 	}
 	
-	virtual void Update(const aeAnimator & , const aeRule &rule){
+	void Update(const aeAnimator & , const aeRule &rule) override{
 		SetEnabled(rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup
 			&& pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
 				.GetWithTypeName(aeClipboardDataRule::TYPE_NAME));

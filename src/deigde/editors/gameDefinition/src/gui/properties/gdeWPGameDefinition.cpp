@@ -210,7 +210,7 @@ public:
 	cBaseAction(panel, "...", NULL, "Base path to project data files"),
 	pTextField(textField){}
 	
-	virtual igdeUndo *OnActionGameDefinition(gdeGameDefinition *gameDefinition){
+	igdeUndo *OnActionGameDefinition(gdeGameDefinition *gameDefinition) override{
 		decString basePath(gameDefinition->GetBasePath());
 		if(igdeCommonDialogs::GetDirectory(pPanel.GetParentWindow(), "Select Project Data Directory", basePath)){
 			pTextField.SetText(basePath);
@@ -254,15 +254,15 @@ public:
 		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
-	virtual igdeUndo *UndoAdd(gdeProperty *property){
+	igdeUndo *UndoAdd(gdeProperty *property) override{
 		return new gdeUGDWPropertyAdd(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoRemove(gdeProperty *property){
+	igdeUndo *UndoRemove(gdeProperty *property) override{
 		return new gdeUGDWPropertyRemove(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoPaste(gdeProperty *property){
+	igdeUndo *UndoPaste(gdeProperty *property) override{
 		gdeUGDWPropertyAdd * const undo = new gdeUGDWPropertyAdd(pPanel.GetGameDefinition(), property);
 		undo->SetShortInfo("Paste property");
 		return undo;
@@ -276,15 +276,15 @@ public:
 		return new gdeUGDWPSetDescription(pPanel.GetGameDefinition(), property, description);
 	}
 	
-	virtual igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type){
+	igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type) override{
 		return new gdeUGDWPSetType(pPanel.GetGameDefinition(), property, type);
 	}
 	
-	virtual igdeUndo *UndoMinimumValue(gdeProperty *property, float value){
+	igdeUndo *UndoMinimumValue(gdeProperty *property, float value) override{
 		return new gdeUGDWPSetMinValue(pPanel.GetGameDefinition(), property, value);
 	}
 	
-	virtual igdeUndo *UndoMaximumValue(gdeProperty *property, float value){
+	igdeUndo *UndoMaximumValue(gdeProperty *property, float value) override{
 		return new gdeUGDWPSetMaxValue(pPanel.GetGameDefinition(), property, value);
 	}
 	
@@ -292,11 +292,11 @@ public:
 		return new gdeUGDWPSetDefaultValue(pPanel.GetGameDefinition(), property, newValue, oldValue);
 	}
 	
-	virtual igdeUndo *UndoOptions(gdeProperty *property, const decStringList &options){
+	igdeUndo *UndoOptions(gdeProperty *property, const decStringList &options) override{
 		return new gdeUGDWPSetOptions(pPanel.GetGameDefinition(), property, options);
 	}
 	
-	virtual igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type){
+	igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type) override{
 		return new gdeUGDWPSetPathPatternType(pPanel.GetGameDefinition(), property, type);
 	}
 	
@@ -304,15 +304,15 @@ public:
 		return new gdeUGDWPSetIdentifierGroup(pPanel.GetGameDefinition(), property, identifier);
 	}
 	
-	virtual igdeUndo *UndoIdentifierUsage(gdeProperty *property){
+	igdeUndo *UndoIdentifierUsage(gdeProperty *property) override{
 		return new gdeUGDWPToggleIdentifierUsage(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern){
+	igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern) override{
 		return new gdeUGDWPCFPAdd(pPanel.GetGameDefinition(), property, filePattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern){
+	igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern) override{
 		return new gdeUGDWPCFPRemove(pPanel.GetGameDefinition(), property, filePattern);
 	}
 	
@@ -342,15 +342,15 @@ public:
 		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
-	virtual igdeUndo *UndoAdd(gdeProperty *property){
+	igdeUndo *UndoAdd(gdeProperty *property) override{
 		return new gdeUGDDPropertyAdd(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoRemove(gdeProperty *property){
+	igdeUndo *UndoRemove(gdeProperty *property) override{
 		return new gdeUGDDPropertyRemove(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoPaste(gdeProperty *property){
+	igdeUndo *UndoPaste(gdeProperty *property) override{
 		gdeUGDDPropertyAdd * const undo = new gdeUGDDPropertyAdd(pPanel.GetGameDefinition(), property);
 		undo->SetShortInfo("Paste property");
 		return undo;
@@ -364,15 +364,15 @@ public:
 		return new gdeUGDDPSetDescription(pPanel.GetGameDefinition(), property, description);
 	}
 	
-	virtual igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type){
+	igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type) override{
 		return new gdeUGDDPSetType(pPanel.GetGameDefinition(), property, type);
 	}
 	
-	virtual igdeUndo *UndoMinimumValue(gdeProperty *property, float value){
+	igdeUndo *UndoMinimumValue(gdeProperty *property, float value) override{
 		return new gdeUGDDPSetMinValue(pPanel.GetGameDefinition(), property, value);
 	}
 	
-	virtual igdeUndo *UndoMaximumValue(gdeProperty *property, float value){
+	igdeUndo *UndoMaximumValue(gdeProperty *property, float value) override{
 		return new gdeUGDDPSetMaxValue(pPanel.GetGameDefinition(), property, value);
 	}
 	
@@ -380,11 +380,11 @@ public:
 		return new gdeUGDDPSetDefaultValue(pPanel.GetGameDefinition(), property, newValue, oldValue);
 	}
 	
-	virtual igdeUndo *UndoOptions(gdeProperty *property, const decStringList &options){
+	igdeUndo *UndoOptions(gdeProperty *property, const decStringList &options) override{
 		return new gdeUGDDPSetOptions(pPanel.GetGameDefinition(), property, options);
 	}
 	
-	virtual igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type){
+	igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type) override{
 		return new gdeUGDDPSetPathPatternType(pPanel.GetGameDefinition(), property, type);
 	}
 	
@@ -392,15 +392,15 @@ public:
 		return new gdeUGDDPSetIdentifierGroup(pPanel.GetGameDefinition(), property, identifier);
 	}
 	
-	virtual igdeUndo *UndoIdentifierUsage(gdeProperty *property){
+	igdeUndo *UndoIdentifierUsage(gdeProperty *property) override{
 		return new gdeUGDDPToggleIdentifierUsage(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern){
+	igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern) override{
 		return new gdeUGDDPCFPAdd(pPanel.GetGameDefinition(), property, filePattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern){
+	igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern) override{
 		return new gdeUGDDPCFPRemove(pPanel.GetGameDefinition(), property, filePattern);
 	}
 	
@@ -429,7 +429,7 @@ public:
 	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Object Classes"),
 	pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet(const decStringList &paths){
+	igdeUndo *UndoSet(const decStringList &paths) override{
 		return new gdeUGDSetAutoFindPathObjectClasses(pPanel.GetGameDefinition(), paths);
 	}
 };
@@ -442,7 +442,7 @@ public:
 	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path SkinsClasses"),
 	pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet(const decStringList &paths){
+	igdeUndo *UndoSet(const decStringList &paths) override{
 		return new gdeUGDSetAutoFindPathSkins(pPanel.GetGameDefinition(), paths);
 	}
 };
@@ -455,7 +455,7 @@ public:
 	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Skies"),
 	pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet(const decStringList &paths){
+	igdeUndo *UndoSet(const decStringList &paths) override{
 		return new gdeUGDSetAutoFindPathSkies(pPanel.GetGameDefinition(), paths);
 	}
 };

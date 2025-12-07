@@ -57,7 +57,7 @@ public:
 	deoglCollideListComponent();
 	
 	/** Clean up collide list component. */
-	~deoglCollideListComponent();
+	~deoglCollideListComponent() override;
 	/*@}*/
 	
 	
@@ -124,7 +124,7 @@ public:
 	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &referencePosition);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
+	void OcclusionTestInvisible() override;
 	/*@}*/
 };
 

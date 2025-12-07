@@ -104,7 +104,7 @@ public:
 	deBaseGraphicModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseGraphicModule();
+	~deBaseGraphicModule() override;
 	/*@}*/
 	
 	

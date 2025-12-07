@@ -52,7 +52,7 @@ public:
 	/** \brief Creates a new conversation condition. */
 	ceCConditionActorCommand(const ceCConditionActorCommand &condition);
 	/** \brief Cleans up the conversation condition. */
-	virtual ~ceCConditionActorCommand();
+	~ceCConditionActorCommand() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -71,7 +71,7 @@ public:
 	void SetNegate(bool negate);
 	
 	/** \brief Create a copy of this condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition *CreateCopy() const override;
 	/*@}*/
 };
 

@@ -702,7 +702,7 @@ class cComboMappedType : public igdeComboBoxListener{
 public:
 	cComboMappedType(seWPNode &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox*) override{
+	void OnTextChanged(igdeComboBox*) override{
 		pPanel.UpdateMapped();
 	}
 };
@@ -714,7 +714,7 @@ public:
 	cComboMappedTarget(seWPNode &panel, bool &preventUpdate) :
 	pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox) override{
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		if(pPreventUpdate){
 			return;
 		}

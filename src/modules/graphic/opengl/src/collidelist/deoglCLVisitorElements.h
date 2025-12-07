@@ -59,7 +59,7 @@ public:
 	 * Visits an octree node. The default implementation is to visit all
 	 * world elements stored in the node.
 	 */
-	virtual void VisitNode(deoglDOctree *node, int intersection);
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	/*@}*/
 };
 

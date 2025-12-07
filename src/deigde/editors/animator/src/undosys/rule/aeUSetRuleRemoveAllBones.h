@@ -41,7 +41,7 @@ public:
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleRemoveAllBones();
+	~aeUSetRuleRemoveAllBones() override;
 	/*@}*/
 };
 

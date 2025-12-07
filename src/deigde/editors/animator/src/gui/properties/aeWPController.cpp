@@ -364,7 +364,7 @@ public:
 		return new aeUControllerToggleClamp(controller);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeController &controller){
+	void Update(const aeAnimator &, const aeController &controller) override{
 		SetEnabled(true);
 		SetSelected(controller.GetClamp());
 	}
@@ -379,7 +379,7 @@ public:
 		return new aeUControllerToggleFrozen(controller);
 	}
 	
-	virtual void Update(const aeAnimator &, const aeController &controller){
+	void Update(const aeAnimator &, const aeController &controller) override{
 		SetEnabled(true);
 		SetSelected(controller.GetFrozen());
 	}

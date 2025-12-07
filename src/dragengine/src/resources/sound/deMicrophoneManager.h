@@ -49,7 +49,7 @@ public:
 	deMicrophoneManager(deEngine *engine);
 	
 	/** \brief Clean up microphone resource manager and reports leaking resources. */
-	~deMicrophoneManager();
+	~deMicrophoneManager() override;
 	/*@}*/
 	
 	
@@ -66,15 +66,15 @@ public:
 	deMicrophone *CreateMicrophone();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemAudioLoad();
-	void SystemAudioUnload();
+	void SystemAudioLoad() override;
+	void SystemAudioUnload() override;
 	/*@}*/
 	
 	
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

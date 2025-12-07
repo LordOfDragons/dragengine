@@ -71,7 +71,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	igdeUndo *CreateUndo() override;
 	/*@}*/
 };
 

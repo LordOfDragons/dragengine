@@ -50,7 +50,7 @@ public:
 	deRenderWindowManager(deEngine *engine);
 	
 	/** \brief Clean up render window resource manager and reports leaking resources. */
-	virtual ~deRenderWindowManager();
+	~deRenderWindowManager() override;
 	/*@}*/
 	
 	
@@ -84,7 +84,7 @@ public:
 	#endif
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -92,10 +92,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic System Peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic System Peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -107,7 +107,7 @@ public:
 	 * 
 	 * For use by deRenderWindow only.
 	 */
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

@@ -99,7 +99,7 @@ class cActionCameraChanged : public cBaseAction{
 public:
 	cActionCameraChanged(saeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(saeSAnimation &sanimation){
+	void OnAction(saeSAnimation &sanimation) override{
 		sanimation.NotifyCameraChanged();
 	}
 };
@@ -108,7 +108,7 @@ class cActionSkyChanged : public cBaseAction{
 public:
 	cActionSkyChanged(saeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction(saeSAnimation &sanimation){
+	void OnAction(saeSAnimation &sanimation) override{
 		sanimation.NotifySkyChanged();
 	}
 };

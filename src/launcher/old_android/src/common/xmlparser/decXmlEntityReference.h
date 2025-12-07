@@ -47,7 +47,7 @@ public:
 	
 protected:
 	/** \brief Clean up xml entity refernece. */
-	virtual ~decXmlEntityReference();
+	~decXmlEntityReference() override;
 	/*@}*/
 	
 	
@@ -66,13 +66,13 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit(decXmlVisitor &visitor);
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToEntityReference() const;
-	virtual decXmlEntityReference *CastToEntityReference();
+	bool CanCastToEntityReference() const override;
+	decXmlEntityReference *CastToEntityReference() override;
 	/*@}*/
 };
 

@@ -557,7 +557,7 @@ public:
 		return new aeULinkToggleWrapY(link);
 	}
 	
-	virtual void Update(const aeAnimator &animator, const aeLink &link){
+	void Update(const aeAnimator &animator, const aeLink &link) override{
 		cBaseAction::Update(animator, link);
 		SetSelected(link.GetWrapY());
 	}

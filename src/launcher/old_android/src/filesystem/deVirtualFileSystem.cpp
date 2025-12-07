@@ -265,7 +265,7 @@ public:
 		return pSpecials;
 	}
 	
-	virtual void Add(const char *name, deVFSContainer::eFileTypes type){
+	void Add(const char *name, deVFSContainer::eFileTypes type) override{
 		switch(type){
 		case deVFSContainer::eftRegularFile:
 			pFiles.Add(name);
@@ -281,7 +281,7 @@ public:
 		}
 	}
 	
-	virtual void Remove(const char *name){
+	void Remove(const char *name) override{
 		pDirectories.Remove(name);
 		pFiles.Remove(name);
 		pSpecials.Remove(name);

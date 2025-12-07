@@ -48,7 +48,7 @@ public:
 	/** Creates a new view editor. */
 	meViewEditorRotate(meView3D &view);
 	/** Cleans up the view editor. */
-	virtual ~meViewEditorRotate();
+	~meViewEditorRotate() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -62,11 +62,11 @@ public:
 	/** A key on the keyboard has been pressed. Return true if handled. */
 	virtual bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control);
 	/** The left mouse button has been pressed. Return true if handled. */
-	virtual void OnLeftMouseButtonPress(int x, int y, bool shift, bool control);
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	/** The left mouse button has been released. Return true if handled. */
-	virtual void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control);
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	/** The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove(int x, int y, bool shift, bool control);
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	/*@}*/
 };
 

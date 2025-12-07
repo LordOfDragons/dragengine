@@ -47,7 +47,7 @@ public:
 	meWindowChangelogListener(meWindowChangelog &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~meWindowChangelogListener();
+	~meWindowChangelogListener() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(meWorld *world);
+	void StateChanged(meWorld *world) override;
 	
 	/** \brief Height terrain sector state ( changed, saved, filename ) changed. */
-	virtual void HTStateChanged(meWorld *world);
+	void HTStateChanged(meWorld *world) override;
 	/*@}*/
 };
 

@@ -52,7 +52,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPanelShapeBox();
+	~reWPPanelShapeBox() override;
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update . */
-	virtual void UpdateShape();
+	void UpdateShape() override;
 	/*@}*/
 };
 

@@ -47,7 +47,7 @@ public:
 	seWPSynthesizerListener(seWPSynthesizer &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPSynthesizerListener();
+	~seWPSynthesizerListener() override;
 	/*@}*/
 	
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged(seSynthesizer *synthesizer);
+	void SynthesizerChanged(seSynthesizer *synthesizer) override;
 	
 	/** \brief Playback properties changed. */
-	virtual void PlaybackChanged(seSynthesizer *synthesizer);
+	void PlaybackChanged(seSynthesizer *synthesizer) override;
 	/*@}*/
 };
 

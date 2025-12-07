@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Cleans up the property window. */
-	virtual ~ceWPAComment();
+	~ceWPAComment() override;
 	/*@}*/
 	
 	

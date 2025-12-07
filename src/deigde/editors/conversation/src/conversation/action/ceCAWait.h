@@ -65,7 +65,7 @@ public:
 	/** Creates a new wait conversation action. */
 	ceCAWait(const ceCAWait &action);
 	/** Cleans up the wait conversation action. */
-	virtual ~ceCAWait();
+	~ceCAWait() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -83,7 +83,7 @@ public:
 	void SetInterval(float interval);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction *CreateCopy() const override;
 	/*@}*/
 	
 	

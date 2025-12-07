@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPACoordSystemRemove();
+	~ceWPACoordSystemRemove() override;
 	/*@}*/
 	
 	

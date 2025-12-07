@@ -57,7 +57,7 @@ public:
 		int firstLink, const deAnimatorRuleTrackTo &rule);
 	
 	/** Clean up rule. */
-	virtual ~dearRuleTrackTo();
+	~dearRuleTrackTo() override;
 	/*@}*/
 	
 	
@@ -70,10 +70,10 @@ public:
 	
 	
 	/** Apply to animator. */
-	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

@@ -41,7 +41,7 @@ public:
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~deainpDeviceMouse();
+	~deainpDeviceMouse() override;
 	/*@}*/
 	
 	

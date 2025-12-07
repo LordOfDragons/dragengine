@@ -108,7 +108,7 @@ class cSaveLangPackLoader : public deLanguagePackBuilder{
 public:
 	cSaveLangPackLoader(const ceLangPack &langpack) : pLangPack(langpack){}
 	
-	virtual void BuildLanguagePack(deLanguagePack &langPack) override{
+	void BuildLanguagePack(deLanguagePack &langPack) override{
 		const int entryCount = pLangPack.GetEntryCount();
 		int i;
 		

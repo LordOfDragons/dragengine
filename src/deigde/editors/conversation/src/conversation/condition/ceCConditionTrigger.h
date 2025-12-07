@@ -69,7 +69,7 @@ public:
 	ceCConditionTrigger(const ceCConditionTrigger &condition);
 	
 	/** \brief Cleans up the conversation condition. */
-	virtual ~ceCConditionTrigger();
+	~ceCConditionTrigger() override;
 	/*@}*/
 	
 	
@@ -89,7 +89,7 @@ public:
 	void SetTestMode(eTestModes testMode);
 	
 	/** \brief Create copy of condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition *CreateCopy() const override;
 	/*@}*/
 };
 

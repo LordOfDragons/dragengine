@@ -48,7 +48,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCSubObject();
+	~gdeWPSTIMOCSubObject() override;
 	/*@}*/
 	
 	
@@ -75,10 +75,10 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare(const gdeWPSTreeItemModel &item) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching(const char *string);
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

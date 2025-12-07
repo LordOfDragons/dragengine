@@ -47,36 +47,36 @@ public:
 	peeWPTypeListener(peeWPType &panel);
 	
 	/** \brief Clean up the listener. */
-	virtual ~peeWPTypeListener();
+	~peeWPTypeListener() override;
 	/*@}*/
 	
 	/** \name Management */
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged(peeEmitter *emitter);
+	void ControllerStructureChanged(peeEmitter *emitter) override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged(peeEmitter *emitter, peeController *controller);
+	void ControllerChanged(peeEmitter *emitter, peeController *controller) override;
 	
 	/** Type count or order changed. */
-	virtual void TypeStructureChanged(peeEmitter *emitter);
+	void TypeStructureChanged(peeEmitter *emitter) override;
 	
 	/** Type changed. */
-	virtual void TypeChanged(peeEmitter *emitter, peeType *type);
+	void TypeChanged(peeEmitter *emitter, peeType *type) override;
 	
 	/** Active type active trail controller changed. */
-	virtual void TypeActiveTrailControllerChanged(peeEmitter *emitter, peeType *type);
+	void TypeActiveTrailControllerChanged(peeEmitter *emitter, peeType *type) override;
 	
 	/** Active type active emit controller changed. */
-	virtual void TypeActiveEmitControllerChanged(peeEmitter *emitter, peeType *type);
+	void TypeActiveEmitControllerChanged(peeEmitter *emitter, peeType *type) override;
 	
 	/** A type parameter changed. */
-	virtual void TypeParameterChanged(peeEmitter *emitter, peeType *type, peeParameter *parameter);
+	void TypeParameterChanged(peeEmitter *emitter, peeType *type, peeParameter *parameter) override;
 	
 	/** Active type parameter changed. */
-	virtual void ActiveTypeParameterChanged(peeEmitter *emitter, peeType *type);
+	void ActiveTypeParameterChanged(peeEmitter *emitter, peeType *type) override;
 	
 	/** Active type changed. */
-	virtual void ActiveTypeChanged(peeEmitter *emitter);
+	void ActiveTypeChanged(peeEmitter *emitter) override;
 	/*@}*/
 };
 

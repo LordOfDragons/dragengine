@@ -61,7 +61,7 @@ public:
 	
 protected:
 	/** Clean up skin state mapped. */
-	virtual ~deoglSkinStateCNText() override;
+	~deoglSkinStateCNText() override;
 	/*@}*/
 	
 	
@@ -93,13 +93,13 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update(deoglSkinState &state) override;
+	void Update(deoglSkinState &state) override;
 	
 	/** Render. */
-	virtual void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
+	void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
 	
 	/** Create copy. */
-	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
+	deoglSkinStateConstructedNode::Ref Copy() const override;
 	/*@}*/
 };
 

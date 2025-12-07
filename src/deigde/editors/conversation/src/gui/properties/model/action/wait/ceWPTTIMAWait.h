@@ -50,7 +50,7 @@ public:
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAWait();
+	~ceWPTTIMAWait() override;
 	/*@}*/
 	
 	
@@ -68,13 +68,13 @@ public:
 	inline ceWPTTIMAWaitActions *GetChildActions() const{ return pActions; }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update action lists if present. */
-	virtual void UpdateActionLists();
+	void UpdateActionLists() override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

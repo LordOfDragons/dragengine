@@ -41,7 +41,7 @@ public:
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~demoiDeviceMouse();
+	~demoiDeviceMouse() override;
 	/*@}*/
 	
 	

@@ -54,7 +54,7 @@ public:
 	
 protected:
 	/** Clean up panel. */
-	virtual ~ceWPASetAParam();
+	~ceWPASetAParam() override;
 	/*@}*/
 	
 	
@@ -69,7 +69,7 @@ public:
 	void UpdateAction();
 	
 	/** \brief Update actor id lists. */
-	virtual void UpdateActorIDLists();
+	void UpdateActorIDLists() override;
 	/*@}*/
 };
 

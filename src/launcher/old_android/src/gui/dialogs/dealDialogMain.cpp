@@ -60,7 +60,7 @@ public:
 	}
 	
 	/** \brief Button action. */
-	virtual void OnAction(){
+	void OnAction() override{
 		try{
 			GetDisplay().GetLauncher().LaunchGame();
 			

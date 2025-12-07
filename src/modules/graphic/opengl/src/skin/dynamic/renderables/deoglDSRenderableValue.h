@@ -49,7 +49,7 @@ public:
 	deoglDSRenderableValue(deoglDynamicSkin &dynamicSkin, const deDSRenderableValue &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableValue();
+	~deoglDSRenderableValue() override;
 	/*@}*/
 	
 	
@@ -60,13 +60,13 @@ public:
 	inline const deDSRenderableValue &GetRenderableValue() const{ return pRenderableValue; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 private:

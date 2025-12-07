@@ -47,7 +47,7 @@ public:
 	feWindowMainListener(feWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	virtual ~feWindowMainListener();
+	~feWindowMainListener() override;
 	/*@}*/
 	
 	
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged(feFont *font);
+	void ModeChanged(feFont *font) override;
 	
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged(feFont *font);
+	void StateChanged(feFont *font) override;
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged(feFont *font);
+	void UndoChanged(feFont *font) override;
 	/*@}*/
 };
 

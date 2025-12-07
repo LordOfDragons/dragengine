@@ -58,7 +58,7 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeVectorMath();
+	~meWVNodeVectorMath() override;
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	inline meHTVRuleVectorMath *GetRuleVectorMath() const{ return pRuleVectorMath; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

@@ -57,7 +57,7 @@ public:
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPanelShapeHull();
+	~reWPPanelShapeHull() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update . */
-	virtual void UpdateShape();
+	void UpdateShape() override;
 	
 	/** \brief Selected point of -1. */
 	int GetSelectedPoint() const;

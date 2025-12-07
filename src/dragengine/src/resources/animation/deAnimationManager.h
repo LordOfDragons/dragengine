@@ -50,7 +50,7 @@ public:
 	deAnimationManager(deEngine *engine);
 	
 	/** \brief Clean up animation resource manager and reports leaking resources. */
-	virtual ~deAnimationManager();
+	~deAnimationManager() override;
 	/*@}*/
 	
 	
@@ -102,7 +102,7 @@ public:
 	void AddLoadedAnimation(deAnimation *animation);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -110,16 +110,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic System Peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic System Peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	
 	/** \brief Animator System Peers of all stored resources have to be created. */
-	virtual void SystemAnimatorLoad();
+	void SystemAnimatorLoad() override;
 	
 	/** \brief Animator System Peers of all stored resources have to be freed. */
-	virtual void SystemAnimatorUnload();
+	void SystemAnimatorUnload() override;
 	/*@}*/
 	/*@}*/
 	
@@ -131,7 +131,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

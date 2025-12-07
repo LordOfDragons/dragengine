@@ -47,7 +47,7 @@ public:
 	aeWPAnimatorListener(aeWPAnimator &panel);
 	
 	/** Clean up listener. */
-	virtual ~aeWPAnimatorListener();
+	~aeWPAnimatorListener() override;
 	/*@}*/
 	
 	
@@ -55,16 +55,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Animator changed. */
-	virtual void AnimatorChanged(aeAnimator *animator);
+	void AnimatorChanged(aeAnimator *animator) override;
 	
 	/** Model changed. */
-	virtual void ModelChanged(aeAnimator *animator);
+	void ModelChanged(aeAnimator *animator) override;
 	
 	/** Rig changed. */
-	virtual void RigChanged(aeAnimator *animator);
+	void RigChanged(aeAnimator *animator) override;
 	
 	/** Animation changed. */
-	virtual void AnimationChanged(aeAnimator *animator);
+	void AnimationChanged(aeAnimator *animator) override;
 	/*@}*/
 };
 

@@ -53,7 +53,7 @@ public:
 	deoglDSRenderableVideoFrame(deoglDynamicSkin &dynamicSkin, const deDSRenderableVideoFrame &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableVideoFrame();
+	~deoglDSRenderableVideoFrame() override;
 	/*@}*/
 	
 	
@@ -64,13 +64,13 @@ public:
 	inline const deDSRenderableVideoFrame &GetRenderableVideoFrame() const{ return pRenderableVideoFrame; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	
 	/** Video player requires sync. */
 	void VideoPlayerRequiresSync();

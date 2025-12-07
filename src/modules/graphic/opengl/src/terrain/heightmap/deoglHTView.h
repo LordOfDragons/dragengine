@@ -49,7 +49,7 @@ private:
 		
 	public:
 		HTListener(deoglHTView &htview);
-		virtual void SectorsChanged(deoglRHeightTerrain &heightTerrain);
+		void SectorsChanged(deoglRHeightTerrain &heightTerrain) override;
 	};
 	
 	
@@ -73,7 +73,7 @@ public:
 	
 protected:
 	/** Clean up view. */
-	virtual ~deoglHTView();
+	~deoglHTView() override;
 	/*@}*/
 	
 	
@@ -118,7 +118,7 @@ public:
 	
 	
 	/** Sectors changed. */
-	virtual void SectorsChanged(deoglRHeightTerrain &heightTerrain);
+	void SectorsChanged(deoglRHeightTerrain &heightTerrain) override;
 	/*@}*/
 	
 	
