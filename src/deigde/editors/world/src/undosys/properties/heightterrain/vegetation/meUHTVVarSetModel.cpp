@@ -53,6 +53,7 @@ meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation *variation, const char *newP
 }
 
 meUHTVVarSetModel::~meUHTVVarSetModel(){
+	if(pVariation) pVariation->FreeReference();
 }
 
 

@@ -57,6 +57,8 @@ meUHTAddTexture::meUHTAddTexture(meWorld *world, meHeightTerrainSector *sector, 
 }
 
 meUHTAddTexture::~meUHTAddTexture(){
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 

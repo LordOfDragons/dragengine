@@ -154,6 +154,9 @@ void desynSound::LoadEntireSound(){
 		decoder->FreeReference();
 		
 	}catch(const deException &){
+		if(decoder){
+			decoder->FreeReference();
+		}
 		throw;
 	}
 }

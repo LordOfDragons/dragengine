@@ -109,6 +109,9 @@ pActiveEffect(NULL)
 		}
 		
 	}catch(const deException &){
+		if(effect){
+			effect->FreeReference();
+		}
 		throw;
 	}
 }
@@ -187,6 +190,9 @@ void seSource::InitEngineSource(deSynthesizerSource *engSource) const{
 		}
 		
 	}catch(const deException &){
+		if(engEffect){
+			engEffect->FreeReference();
+		}
 		throw;
 	}
 }
@@ -581,6 +587,9 @@ seSource &seSource::operator=(const seSource &copy){
 		}
 		
 	}catch(const deException &){
+		if(effect){
+			effect->FreeReference();
+		}
 		throw;
 	}
 	

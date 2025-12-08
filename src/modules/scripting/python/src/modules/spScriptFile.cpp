@@ -214,6 +214,9 @@ void spScriptFile::pLoadFile(){
 		reader->FreeReference();
 		
 	}catch(const deException &e){
+		if(reader){
+			reader->FreeReference();
+		}
 		throw;
 	}
 	

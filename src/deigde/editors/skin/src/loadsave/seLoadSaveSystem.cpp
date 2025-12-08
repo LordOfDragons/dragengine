@@ -214,6 +214,10 @@ seSkin *seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gam
 		fileReader->FreeReference();
 	
 	}catch(const deException &){
+		if(fileReader){
+			fileReader->FreeReference();
+		}
+		if(skin) skin->FreeReference();
 		throw;
 	}
 	
@@ -245,6 +249,9 @@ void seLoadSaveSystem::SaveSkin(seSkin *skin, const char *filename){
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
+		if(fileWriter){
+			fileWriter->FreeReference();
+		}
 		throw;
 	}
 	

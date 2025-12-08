@@ -56,6 +56,8 @@ meUHTVRuleAdd::meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule){
 }
 
 meUHTVRuleAdd::~meUHTVRuleAdd(){
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 

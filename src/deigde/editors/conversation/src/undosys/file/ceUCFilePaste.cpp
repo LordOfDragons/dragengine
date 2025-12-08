@@ -76,6 +76,9 @@ pConversation(NULL){
 		}
 		
 	}catch(const deException &){
+		if(newFile){
+			newFile->FreeReference();
+		}
 		throw;
 	}
 	

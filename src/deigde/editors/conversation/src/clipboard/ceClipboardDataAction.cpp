@@ -58,6 +58,9 @@ igdeClipboardData(TYPE_NAME)
 		}
 		
 	}catch(const deException &){
+		if(action){
+			action->FreeReference();
+		}
 		throw;
 	}
 }

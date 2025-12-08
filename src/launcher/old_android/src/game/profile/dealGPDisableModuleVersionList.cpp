@@ -154,6 +154,9 @@ dealGPDisableModuleVersionList &dealGPDisableModuleVersionList::operator=(const 
 		}
 		
 	}catch(const deException &){
+		if(entry){
+			entry->FreeReference();
+		}
 		throw;
 	}
 	

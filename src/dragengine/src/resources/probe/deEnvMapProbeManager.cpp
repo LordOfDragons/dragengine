@@ -72,6 +72,9 @@ deEnvMapProbe *deEnvMapProbeManager::CreateEnvMapProbe(){
 		pEnvMapProbes.Add(envMapProbe);
 		
 	}catch(const deException &){
+		if(envMapProbe){
+			envMapProbe->FreeReference();
+		}
 		throw;
 	}
 	

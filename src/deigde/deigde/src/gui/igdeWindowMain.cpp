@@ -866,6 +866,9 @@ igdeGameDefinition *igdeWindowMain::CreateNewGameDefinition(){
 		igdeXMLGameDefinition(pEnvironmentIGDE, GetLogger()).Load(reader, *gamedef);
 		
 	}catch(const deException &){
+		if(gamedef){
+			gamedef->FreeReference();
+		}
 		throw;
 	}
 	

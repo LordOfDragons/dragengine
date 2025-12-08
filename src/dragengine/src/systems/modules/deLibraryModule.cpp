@@ -308,6 +308,9 @@ void deLibraryModule::pLoadXML(const char* filename){
 		reader->FreeReference();
 		
 	}catch(const deException &){
+		if(reader){
+			reader->FreeReference();
+		}
 		throw;
 	}
 	

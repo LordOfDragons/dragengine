@@ -216,6 +216,9 @@ void ceLoadSaveCTA::ReadActor(const decXmlElementTag &root, ceConversationActor 
 				command->FreeReference();
 				
 			}catch(const deException &){
+				if(command){
+					command->FreeReference();
+				}
 				throw;
 			}
 			
@@ -369,6 +372,9 @@ void ceLoadSaveCTA::pReadPose(const decXmlElementTag &root, ceConversationActor 
 					gesture->FreeReference();
 					
 				}catch(const deException &){
+					if(gesture){
+						gesture->FreeReference();
+					}
 					throw;
 				}
 				
@@ -381,6 +387,9 @@ void ceLoadSaveCTA::pReadPose(const decXmlElementTag &root, ceConversationActor 
 		pose->FreeReference();
 		
 	}catch(const deException &){
+		if(pose){
+			pose->FreeReference();
+		}
 		throw;
 	}
 }

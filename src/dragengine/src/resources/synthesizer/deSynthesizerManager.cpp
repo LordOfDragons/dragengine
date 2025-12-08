@@ -78,6 +78,9 @@ deSynthesizer *deSynthesizerManager::CreateSynthesizer(){
 		pSynthesizers.Add(synthesizer);
 		
 	}catch(const deException &){
+		if(synthesizer){
+			synthesizer->FreeReference();
+		}
 		throw;
 	}
 	

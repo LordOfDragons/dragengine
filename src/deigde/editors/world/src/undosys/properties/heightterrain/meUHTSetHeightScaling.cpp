@@ -57,6 +57,7 @@ meUHTSetHeightScaling::meUHTSetHeightScaling(meWorld *world, meHeightTerrain *he
 }
 
 meUHTSetHeightScaling::~meUHTSetHeightScaling(){
+	if(pWorld) pWorld->FreeReference();
 }
 
 

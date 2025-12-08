@@ -50,6 +50,7 @@ feUGlyphSetV::feUGlyphSetV(feFontGlyph *glyph, int newV){
 }
 
 feUGlyphSetV::~feUGlyphSetV(){
+	if(pGlyph) pGlyph->FreeReference();
 }
 
 

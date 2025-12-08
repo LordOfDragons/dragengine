@@ -78,6 +78,9 @@ void ceWPTMAIfElseCaseAdd::OnAction(){
 		pConversation->GetUndoSystem()->Add(undo);
 		
 	}catch(const deException &){
+		if(ifCase){
+			ifCase->FreeReference();
+		}
 		throw;
 	}
 	

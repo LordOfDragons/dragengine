@@ -572,6 +572,9 @@ void igdeConfiguration::LoadConfiguration(){
 				reader->FreeReference();
 				
 			}catch(const deException &){
+				if(reader){
+					reader->FreeReference();
+				}
 				throw;
 			}
 			
@@ -599,6 +602,9 @@ void igdeConfiguration::LoadConfiguration(){
 				reader->FreeReference();
 				
 			}catch(const deException &){
+				if(reader){
+					reader->FreeReference();
+				}
 				throw;
 			}
 			
@@ -630,6 +636,9 @@ void igdeConfiguration::SaveConfiguration(){
 			writer->FreeReference();
 			
 		}catch(const deException &){
+			if(writer){
+				writer->FreeReference();
+			}
 			logger.LogError(LOGSOURCE, "Failed to write user configuration file (file permission problem)");
 			// DIALOG BOX
 			// "User configuration can not be written!\n"

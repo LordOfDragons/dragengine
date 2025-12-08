@@ -104,6 +104,9 @@ void ceUCAASpeakWordFromText::SetWordsFromText(const decUnicodeString &text, flo
 		}
 		
 	}catch(const deException &){
+		if(entry){
+			entry->FreeReference();
+		}
 		throw;
 	}
 }

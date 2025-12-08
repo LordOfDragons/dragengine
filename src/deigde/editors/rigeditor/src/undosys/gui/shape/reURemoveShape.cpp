@@ -141,6 +141,7 @@ void reURemoveShape::pCleanUp(){
 			
 			bone = pEntries[pEntryCount].bone;
 			
+			if(bone) bone->FreeReference();
 			pEntries[pEntryCount].shape->FreeReference();
 		}
 		

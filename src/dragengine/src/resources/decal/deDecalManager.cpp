@@ -77,6 +77,9 @@ deDecal *deDecalManager::CreateDecal(){
 		pDecals.Add(decal);
 		
 	}catch(const deException &){
+		if(decal){
+			decal->FreeReference();
+		}
 		throw;
 	}
 	

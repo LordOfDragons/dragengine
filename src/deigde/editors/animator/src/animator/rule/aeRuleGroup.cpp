@@ -80,6 +80,9 @@ pTreeListExpanded(copy.pTreeListExpanded)
 		}
 		
 	}catch(const deException &){
+		if(rule){
+			rule->FreeReference();
+		}
 		throw;
 	}
 }
@@ -363,6 +366,12 @@ deAnimatorRule *aeRuleGroup::CreateEngineRule(){
 		pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
 		
 	}catch(const deException &){
+		if(subEngRule){
+			subEngRule->FreeReference();
+		}
+		if(engRule){
+			engRule->FreeReference();
+		}
 		throw;
 	}
 	
@@ -435,6 +444,9 @@ aeRuleGroup &aeRuleGroup::operator=(const aeRuleGroup &copy){
 		}
 		
 	}catch(const deException &){
+		if(rule){
+			rule->FreeReference();
+		}
 		throw;
 	}
 	

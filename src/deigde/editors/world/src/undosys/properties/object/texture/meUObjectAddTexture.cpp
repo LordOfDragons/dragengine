@@ -60,6 +60,8 @@ pTexture(NULL)
 }
 
 meUObjectAddTexture::~meUObjectAddTexture(){
+	if(pTexture) pTexture->FreeReference();
+	if(pObject) pObject->FreeReference();
 }
 
 

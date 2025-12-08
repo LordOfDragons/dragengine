@@ -74,4 +74,5 @@ void aeUSetRuleFStaEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableVertexPositionSet::pCleanUp(){
+	if(pRule) pRule->FreeReference();
 }

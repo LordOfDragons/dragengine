@@ -95,6 +95,9 @@ void sePropertyNodeImage::UpdateImage(){
 	}
 	
 	if(pImage == image){
+		if(image){
+			image->FreeReference();
+		}
 		return;
 	}
 	

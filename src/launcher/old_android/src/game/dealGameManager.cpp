@@ -132,6 +132,12 @@ void dealGameManager::LoadGameList(){
 				
 			}catch(const deException &){
 				logger.LogError(LOGSOURCE, "Failed to read game file");
+				if(game){
+					game->FreeReference();
+				}
+				if(reader){
+					reader->FreeReference();
+				}
 			}
 		}
 	}
@@ -195,6 +201,12 @@ dealGame *dealGameManager::LoadGameFromDisk(const char *path){
 		
 	}catch(const deException &){
 		logger.LogError(LOGSOURCE, "Failed to read game file");
+		if(game){
+			game->FreeReference();
+		}
+		if(reader){
+			reader->FreeReference();
+		}
 		throw;
 	}
 	

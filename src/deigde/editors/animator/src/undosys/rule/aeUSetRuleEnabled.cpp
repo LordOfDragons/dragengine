@@ -78,4 +78,5 @@ void aeUSetRuleEnabled::Redo(){
 //////////////////////
 
 void aeUSetRuleEnabled::pCleanUp(){
+	if(pRule) pRule->FreeReference();
 }

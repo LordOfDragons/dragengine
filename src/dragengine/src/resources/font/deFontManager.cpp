@@ -126,6 +126,9 @@ deFontBuilder &builder){
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating font '%s' failed", filename);
+		if(font){
+			font->FreeReference();
+		}
 		throw;
 	}
 	
@@ -195,6 +198,12 @@ const char *basePath){
 	}catch(const deException &){
 		LogErrorFormat("Loading font '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
+		if(font){
+			font->FreeReference();
+		}
+		if(fileReader){
+			fileReader->FreeReference();
+		}
 		throw;
 	}
 	
@@ -450,6 +459,9 @@ deFont *deFontManager::LoadDebugFont(){
 		pFonts.Add(font);
 		
 	}catch(const deException &){
+		if(font){
+			font->FreeReference();
+		}
 		throw;
 	}
 	
@@ -571,6 +583,9 @@ void deFontManager::pLoadFontSources(deFont *font){
 		}
 		
 	}catch(const deException &){
+		if(newImage){
+			newImage->FreeReference();
+		}
 		throw;
 	}
 }

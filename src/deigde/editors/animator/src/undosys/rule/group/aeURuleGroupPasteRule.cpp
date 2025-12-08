@@ -63,6 +63,9 @@ pIndex(index){
 		}
 		
 	}catch(const deException &){
+		if(rule){
+			rule->FreeReference();
+		}
 		throw;
 	}
 	

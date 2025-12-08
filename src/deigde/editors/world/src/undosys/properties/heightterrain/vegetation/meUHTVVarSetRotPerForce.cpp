@@ -53,6 +53,7 @@ meUHTVVarSetRotPerForce::meUHTVVarSetRotPerForce(meHTVVariation *variation, floa
 }
 
 meUHTVVarSetRotPerForce::~meUHTVVarSetRotPerForce(){
+	if(pVariation) pVariation->FreeReference();
 }
 
 

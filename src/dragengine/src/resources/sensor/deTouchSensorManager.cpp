@@ -75,6 +75,9 @@ deTouchSensor *deTouchSensorManager::CreateTouchSensor(){
 		pTouchSensors.Add(touchSensor);
 		
 	}catch(const deException &){
+		if(touchSensor){
+			touchSensor->FreeReference();
+		}
 		throw;
 	}
 	

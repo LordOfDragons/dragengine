@@ -194,6 +194,9 @@ void ceUCFacePoseSetName::pAddActions(ceConversationTopic *topic, const ceConver
 		}
 		
 	}catch(const deException &){
+		if(undoCAction){
+			undoCAction->FreeReference();
+		}
 		throw;
 	}
 }

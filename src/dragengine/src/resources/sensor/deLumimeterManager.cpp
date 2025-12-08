@@ -73,6 +73,9 @@ deLumimeter *deLumimeterManager::CreateLumimeter(){
 		pLumimeters.Add(lumimeter);
 		
 	}catch(const deException &){
+		if(lumimeter){
+			lumimeter->FreeReference();
+		}
 		throw;
 	}
 	

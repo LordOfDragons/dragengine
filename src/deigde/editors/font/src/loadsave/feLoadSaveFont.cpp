@@ -138,6 +138,7 @@ public:
 			}
 			
 		}catch(const deException &){
+			if(image) image->FreeReference();
 			throw;
 		}
 	}
@@ -196,6 +197,12 @@ void feLoadSaveFont::LoadFont(const char *virtualPath, feFont *font, decBaseFile
 		
 	}catch(const deException &e){
 		e.PrintError();
+		if(glyph){
+			glyph->FreeReference();
+		}
+		if(engFont){
+			engFont->FreeReference();
+		}
 		throw;
 	}
 }

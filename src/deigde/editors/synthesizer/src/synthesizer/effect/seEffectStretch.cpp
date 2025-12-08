@@ -188,6 +188,9 @@ deSynthesizerEffect *seEffectStretch::CreateEngineEffect(){
 		pTargetPitch.UpdateEngineTarget(GetSynthesizer(), engEffect->GetTargetPitch());
 		
 	}catch(const deException &){
+		if(engEffect){
+			engEffect->FreeReference();
+		}
 		throw;
 	}
 	

@@ -75,4 +75,5 @@ void reUSetBoneIKResistance::Redo(){
 //////////////////////
 
 void reUSetBoneIKResistance::pCleanUp(){
+	if(pBone) pBone->FreeReference();
 }

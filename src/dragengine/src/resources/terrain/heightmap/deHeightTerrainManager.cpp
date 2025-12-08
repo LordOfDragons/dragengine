@@ -88,6 +88,9 @@ deHeightTerrain *deHeightTerrainManager::CreateHeightTerrain(float sectorSize, i
 		pTerrains.Add(heightTerrain);
 		
 	}catch(const deException &){
+		if(heightTerrain){
+			heightTerrain->FreeReference();
+		}
 		throw;
 	}
 	

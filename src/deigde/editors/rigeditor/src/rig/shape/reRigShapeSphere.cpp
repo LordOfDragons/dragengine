@@ -79,6 +79,7 @@ reRigShape *reRigShapeSphere::Duplicate() const{
 		shape->SetRadius(GetRadius());
 		
 	}catch(const deException &){
+		if(shape) shape->FreeReference();
 		throw;
 	}
 	

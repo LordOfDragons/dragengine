@@ -168,6 +168,9 @@ deSynthesizerSource *seSourceWave::CreateEngineSource(){
 		pTargetFrequency.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetFrequency());
 		
 	}catch(const deException &){
+		if(engSource){
+			engSource->FreeReference();
+		}
 		throw;
 	}
 	

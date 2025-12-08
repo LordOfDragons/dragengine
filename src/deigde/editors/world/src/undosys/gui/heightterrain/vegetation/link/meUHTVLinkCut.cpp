@@ -65,6 +65,7 @@ meUHTVLinkCut::~meUHTVLinkCut(){
 		delete [] pLinks;
 	}
 	
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 

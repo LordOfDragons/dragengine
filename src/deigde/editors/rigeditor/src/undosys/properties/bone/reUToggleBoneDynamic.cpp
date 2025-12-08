@@ -72,4 +72,5 @@ void reUToggleBoneDynamic::Redo(){
 //////////////////////
 
 void reUToggleBoneDynamic::pCleanUp(){
+	if(pBone) pBone->FreeReference();
 }

@@ -61,6 +61,8 @@ meUHTSetTexUVScaling::meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector
 }
 
 meUHTSetTexUVScaling::~meUHTSetTexUVScaling(){
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 

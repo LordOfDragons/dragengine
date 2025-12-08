@@ -369,6 +369,9 @@ void meNavigationSpace::LoadFromFile(){
 				fileReader->FreeReference();
 				
 			}catch(const deException &e){
+				if(fileReader){
+					fileReader->FreeReference();
+				}
 				
 				pEngNavSpace->SetRoomCount(0);
 				pEngNavSpace->SetWallCount(0);
@@ -476,6 +479,9 @@ void meNavigationSpace::SaveToFile(){
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
+		if(fileWriter){
+			fileWriter->FreeReference();
+		}
 		throw;
 	}
 }
@@ -567,6 +573,12 @@ void meNavigationSpace::pUpdateShapes(){
 			pEngColComponent->SetRig(pEngRig);
 			
 		}catch(const deException &){
+			if(skin){
+				skin->FreeReference();
+			}
+			if(model){
+				model->FreeReference();
+			}
 			throw;
 		}
 		

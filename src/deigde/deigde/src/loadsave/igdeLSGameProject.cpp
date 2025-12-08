@@ -163,6 +163,12 @@ void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, dec
 		gameDef = NULL;
 		
 	}catch(const deException &){
+		if(gameDefReader){
+			gameDefReader->FreeReference();
+		}
+		if(gameDef){
+			gameDef->FreeReference();
+		}
 		throw;
 	}
 }

@@ -265,6 +265,12 @@ void reUBoneImportFromFile::Redo(){
 		}
 		
 	}catch(const deException &){
+		if(shape){
+			shape->FreeReference();
+		}
+		if(constraint){
+			constraint->FreeReference();
+		}
 		throw;
 	}
 }

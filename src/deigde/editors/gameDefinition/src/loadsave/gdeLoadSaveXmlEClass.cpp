@@ -166,6 +166,9 @@ gdeObjectClass *gdeLoadSaveXmlEClass::pReadElementClass(const decXmlElementTag &
 		}
 		
 	}catch(const deException &){
+		if(objectClass){
+			objectClass->FreeReference();
+		}
 		throw;
 	}
 	

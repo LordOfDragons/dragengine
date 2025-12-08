@@ -68,6 +68,9 @@ deCaptureCanvas *deCaptureCanvasManager::CreateCaptureCanvas(){
 		pCaptureCanvas.Add(captureCanvas);
 		
 	}catch(const deException &){
+		if(captureCanvas){
+			captureCanvas->FreeReference();
+		}
 		throw;
 	}
 	

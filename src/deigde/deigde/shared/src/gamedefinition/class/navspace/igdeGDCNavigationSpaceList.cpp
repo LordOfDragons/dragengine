@@ -115,6 +115,9 @@ void igdeGDCNavigationSpaceList::SetToDeepCopyFrom(const igdeGDCNavigationSpaceL
 		}
 		
 	}catch(const deException &){
+		if(navSpace){
+			navSpace->FreeReference();
+		}
 		throw;
 	}
 }

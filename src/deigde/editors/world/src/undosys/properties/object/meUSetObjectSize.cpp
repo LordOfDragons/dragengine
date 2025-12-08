@@ -52,6 +52,7 @@ meUSetObjectSize::meUSetObjectSize(meObject *object, const decVector &newSize){
 }
 
 meUSetObjectSize::~meUSetObjectSize(){
+	if(pObject) pObject->FreeReference();
 }
 
 

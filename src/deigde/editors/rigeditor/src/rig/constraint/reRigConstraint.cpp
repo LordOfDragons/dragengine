@@ -650,6 +650,9 @@ reRigConstraint *reRigConstraint::Duplicate() const{
 		constraint->SetConstraintBone(pConstraintBone);
 		
 	}catch(const deException &){
+		if(constraint){
+			constraint->FreeReference();
+		}
 		throw;
 	}
 	

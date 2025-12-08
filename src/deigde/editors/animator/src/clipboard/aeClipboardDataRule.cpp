@@ -53,6 +53,9 @@ igdeClipboardData(TYPE_NAME)
 		copyRule->FreeReference();
 		
 	}catch(const deException &){
+		if(copyRule){
+			copyRule->FreeReference();
+		}
 		throw;
 	}
 }
@@ -73,6 +76,9 @@ igdeClipboardData(TYPE_NAME)
 		}
 		
 	}catch(const deException &){
+		if(rule){
+			rule->FreeReference();
+		}
 		throw;
 	}
 }

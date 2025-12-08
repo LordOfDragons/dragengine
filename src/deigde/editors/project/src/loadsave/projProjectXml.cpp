@@ -278,6 +278,9 @@ void projProjectXml::pReadProfile(const decXmlElementTag &root, projProject &pro
 		profile->FreeReference();
 		
 	}catch(const deException &){
+		if(profile){
+			profile->FreeReference();
+		}
 		throw;
 	}
 }

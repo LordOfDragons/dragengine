@@ -79,6 +79,9 @@ void ceWPTMAPChoiceOptionAdd::OnAction(){
 		pConversation->GetUndoSystem()->Add(undo);
 		
 	}catch(const deException &){
+		if(option){
+			option->FreeReference();
+		}
 		throw;
 	}
 	

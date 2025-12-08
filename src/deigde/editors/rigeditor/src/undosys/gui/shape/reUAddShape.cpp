@@ -115,6 +115,9 @@ void reUAddShape::Redo(){
 //////////////////////
 
 void reUAddShape::pCleanUp(){
+	if(pShape) pShape->FreeReference();
+	if(pBone) pBone->FreeReference();
+	if(pRig) pRig->FreeReference();
 }
 
 reRig *reUAddShape::pGetRig(){

@@ -283,6 +283,9 @@ deAnimatorRule *aeRuleForeignState::CreateEngineRule(){
 		pTargetVertexPositionSet.UpdateEngineTarget(GetAnimator(), engRule->GetTargetVertexPositionSet());
 		
 	}catch(const deException &){
+		if(engRule){
+			engRule->FreeReference();
+		}
 		throw;
 	}
 	

@@ -57,6 +57,7 @@ meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTe
 }
 
 meUHTSetBaseHeight::~meUHTSetBaseHeight(){
+	if(pWorld) pWorld->FreeReference();
 }
 
 

@@ -64,6 +64,9 @@ pCategory(sky.pCategory)
 		}
 		
 	}catch(const deException &){
+		if(controller){
+			controller->FreeReference();
+		}
 		throw;
 	}
 }

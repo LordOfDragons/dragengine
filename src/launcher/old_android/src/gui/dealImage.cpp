@@ -102,6 +102,12 @@ void dealImage::pLoadImage(const char *filename){
 		if(tgaImage){
 			delete tgaImage;
 		}
+		if(tgaImageRader){
+			tgaImageRader->FreeReference();
+		}
+		if(memoryFileImage){
+			memoryFileImage->FreeReference();
+		}
 		throw;
 	}
 }

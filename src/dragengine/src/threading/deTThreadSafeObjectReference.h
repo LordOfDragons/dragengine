@@ -75,6 +75,9 @@ public:
 	 * Releases reference if object is not nullptr.
 	 */
 	~deTThreadSafeObjectReference(){
+		if(pObject){
+			pObject->FreeReference();
+		}
 	}
 	/*@}*/
 	
@@ -102,11 +105,17 @@ public:
 			return;
 		}
 		
+		if(pObject){
+			pObject->FreeReference();
+		}
 		pObject = object;
 	}
 	
 	/** \brief Move reference. */
 	void TakeOver(deTThreadSafeObjectReference &reference){
+		if(pObject){
+			pObject->FreeReference();
+		}
 		
 		pObject = reference.pObject;
 		reference.pObject = nullptr;
@@ -225,6 +234,9 @@ public:
 			return *this;
 		}
 		
+		if(pObject){
+			pObject->FreeReference();
+		}
 		
 		pObject = object;
 		

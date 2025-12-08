@@ -231,6 +231,10 @@ lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
 		fileReader->FreeReference();
 	
 	}catch(const deException &){
+		if(fileReader){
+			fileReader->FreeReference();
+		}
+		if(langpack) langpack->FreeReference();
 		throw;
 	}
 	
@@ -261,6 +265,9 @@ void lpeLoadSaveSystem::SaveLangPack(lpeLangPack *langpack, const char *filename
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
+		if(fileWriter){
+			fileWriter->FreeReference();
+		}
 		throw;
 	}
 	

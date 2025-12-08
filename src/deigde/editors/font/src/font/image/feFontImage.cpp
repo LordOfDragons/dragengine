@@ -119,6 +119,7 @@ void feFontImage::SetSize(int width, int height){
 		engImage->RetainImageData();
 		
 	}catch(const deException &){
+		if(engImage) engImage->FreeReference();
 		throw;
 	}
 	

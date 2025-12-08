@@ -228,6 +228,18 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 			GetSynthesizer()->GetEnvironment()->GetLogger()->LogInfoFormat("Synthesizer Editor",
 				"Failed to load child synthesizer '%s' (base directory '%s')", pPathSynthesizer.GetString(), basePath.GetString());
 			
+			if(engSource){
+				engSource->FreeReference();
+			}
+			if(engLink){
+				engLink->FreeReference();
+			}
+			if(engController){
+				engController->FreeReference();
+			}
+			if(synthesizer){
+				synthesizer->FreeReference();
+			}
 		}
 	}
 	
@@ -345,6 +357,9 @@ deSynthesizerSource *seSourceSynthesizer::CreateEngineSource(){
 		pUpdateConnections(*engSource);
 		
 	}catch(const deException &){
+		if(engSource){
+			engSource->FreeReference();
+		}
 		throw;
 	}
 	

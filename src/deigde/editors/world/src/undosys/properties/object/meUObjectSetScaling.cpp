@@ -56,6 +56,7 @@ meUObjectSetScaling::meUObjectSetScaling(meObject *object, const decVector &nsca
 }
 
 meUObjectSetScaling::~meUObjectSetScaling(){
+	if(pObject) pObject->FreeReference();
 }
 
 

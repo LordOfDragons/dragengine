@@ -60,6 +60,8 @@ meUHTSetTexSkin::meUHTSetTexSkin(meWorld *world, meHeightTerrainSector *sector, 
 }
 
 meUHTSetTexSkin::~meUHTSetTexSkin(){
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 

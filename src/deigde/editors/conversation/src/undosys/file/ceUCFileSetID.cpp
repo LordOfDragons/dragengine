@@ -164,6 +164,9 @@ const ceConversationActionList &actions){
 					undoCAction = NULL;
 					
 				}catch(const deException &){
+					if(undoCAction){
+						undoCAction->FreeReference();
+					}
 					throw;
 				}
 			}

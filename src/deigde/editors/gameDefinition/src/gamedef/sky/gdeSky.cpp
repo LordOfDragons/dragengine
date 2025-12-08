@@ -73,6 +73,9 @@ pTags(sky.pTags)
 		}
 		
 	}catch(const deException &){
+		if(controller){
+			controller->FreeReference();
+		}
 		throw;
 	}
 }

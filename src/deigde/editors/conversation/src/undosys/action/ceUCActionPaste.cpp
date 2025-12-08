@@ -71,6 +71,9 @@ ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversatio
 		}
 		
 	}catch(const deException &){
+		if(newAction){
+			newAction->FreeReference();
+		}
 		throw;
 	}
 }

@@ -93,6 +93,9 @@ static struct NullLogger{
 		pNullLogger = new deLoggerConsole;
 	}
 	~NullLogger(){
+		if(pNullLogger){
+			pNullLogger->FreeReference();
+		}
 	}
 } vNullLogger;
 

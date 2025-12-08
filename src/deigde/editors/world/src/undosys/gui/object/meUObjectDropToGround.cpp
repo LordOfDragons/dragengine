@@ -252,4 +252,5 @@ void meUObjectDropToGround::pCleanUp(){
 		delete [] pObjects;
 	}
 	
+	if(pWorld) pWorld->FreeReference();
 }

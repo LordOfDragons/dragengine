@@ -177,4 +177,5 @@ void meUObjDuplicate::Redo(){
 //////////////////////
 
 void meUObjDuplicate::pCleanUp(){
+	if(pWorld) pWorld->FreeReference();
 }

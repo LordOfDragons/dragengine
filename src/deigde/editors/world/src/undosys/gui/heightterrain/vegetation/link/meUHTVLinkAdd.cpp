@@ -58,6 +58,8 @@ meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link){
 }
 
 meUHTVLinkAdd::~meUHTVLinkAdd(){
+	if(pLink) pLink->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 

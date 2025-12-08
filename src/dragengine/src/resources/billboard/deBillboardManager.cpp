@@ -73,6 +73,9 @@ deBillboard *deBillboardManager::CreateBillboard(){
 		pBillboards.Add(billboard);
 		
 	}catch(const deException &){
+		if(billboard){
+			billboard->FreeReference();
+		}
 		throw;
 	}
 	

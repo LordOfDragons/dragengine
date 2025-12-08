@@ -59,6 +59,8 @@ seUPropertyRemove::seUPropertyRemove(seProperty *property){
 }
 
 seUPropertyRemove::~seUPropertyRemove(){
+	if(pTexture) pTexture->FreeReference();
+	if(pProperty) pProperty->FreeReference();
 }
 
 

@@ -110,6 +110,9 @@ const char *filename, deLanguagePackBuilder &builder){
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating language pack '%s' failed", filename);
+		if(langPack){
+			langPack->FreeReference();
+		}
 		throw;
 	}
 	
@@ -175,6 +178,12 @@ const char *filename, const char *basePath){
 	}catch(const deException &){
 		LogErrorFormat("Loading language pack '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
+		if(fileReader){
+			fileReader->FreeReference();
+		}
+		if(langPack){
+			langPack->FreeReference();
+		}
 		throw;
 	}
 	

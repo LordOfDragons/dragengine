@@ -229,6 +229,9 @@ void debiDeviceManager::pCreateJoystickDevices(){
 			joystick->FreeReference();
 			
 		}catch(const deException &){
+			if(joystick){
+				joystick->FreeReference();
+			}
 			throw;
 		}
 	}

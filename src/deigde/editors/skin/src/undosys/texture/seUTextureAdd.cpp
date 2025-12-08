@@ -56,6 +56,8 @@ seUTextureAdd::seUTextureAdd(seSkin *skin, seTexture *texture){
 }
 
 seUTextureAdd::~seUTextureAdd(){
+	if(pTexture) pTexture->FreeReference();
+	if(pSkin) pSkin->FreeReference();
 }
 
 

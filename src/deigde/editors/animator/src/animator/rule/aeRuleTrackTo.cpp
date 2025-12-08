@@ -235,6 +235,9 @@ deAnimatorRule *aeRuleTrackTo::CreateEngineRule(){
 		pTargetUp.UpdateEngineTarget(animator, engRule->GetTargetUp());
 		
 	}catch(const deException &){
+		if(engRule){
+			engRule->FreeReference();
+		}
 		throw;
 	}
 	

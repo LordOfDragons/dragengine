@@ -59,6 +59,8 @@ seUTextureRemove::seUTextureRemove(seTexture *texture){
 }
 
 seUTextureRemove::~seUTextureRemove(){
+	if(pSkin) pSkin->FreeReference();
+	if(pTexture) pTexture->FreeReference();
 }
 
 

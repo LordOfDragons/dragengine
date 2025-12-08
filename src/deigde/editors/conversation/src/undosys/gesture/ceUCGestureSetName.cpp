@@ -194,6 +194,9 @@ void ceUCGestureSetName::pAddActions(ceConversationTopic *topic, const ceConvers
 		}
 		
 	}catch(const deException &){
+		if(undoCAction){
+			undoCAction->FreeReference();
+		}
 		throw;
 	}
 }

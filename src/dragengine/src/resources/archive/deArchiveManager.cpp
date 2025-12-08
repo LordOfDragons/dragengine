@@ -131,8 +131,14 @@ const char *basePath){
 	}catch(const deException &){
 		LogErrorFormat("Open archive '%s' (base path '%s') failed", filename,
 			basePath ? basePath : "");
+		if(archive){
+			archive->FreeReference();
+		}
 		if(peer){
 			delete peer;
+		}
+		if(fileReader){
+			fileReader->FreeReference();
 		}
 		throw;
 	}

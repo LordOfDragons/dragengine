@@ -93,6 +93,9 @@ void meIDGroup::Add(const char *id){
 		groupID->FreeReference();
 		
 	}catch(const deException &){
+		if(groupID){
+			groupID->FreeReference();
+		}
 		throw;
 	}
 }

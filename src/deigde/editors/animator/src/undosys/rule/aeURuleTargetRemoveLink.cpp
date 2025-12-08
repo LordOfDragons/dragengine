@@ -58,6 +58,8 @@ aeURuleTargetRemoveLink::aeURuleTargetRemoveLink(aeRule *rule, aeControllerTarge
 }
 
 aeURuleTargetRemoveLink::~aeURuleTargetRemoveLink(){
+	if(pLink) pLink->FreeReference();
+	if(pRule) pRule->FreeReference();
 }
 
 

@@ -178,6 +178,9 @@ void ceUCCShotSetName::pAddActions(ceConversationTopic *topic, const ceConversat
 		}
 		
 	}catch(const deException &){
+		if(undoCAction){
+			undoCAction->FreeReference();
+		}
 		throw;
 	}
 }

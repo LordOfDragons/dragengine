@@ -76,6 +76,9 @@ pFile(NULL){
 		}
 		
 	}catch(const deException &){
+		if(newTopic){
+			newTopic->FreeReference();
+		}
 		throw;
 	}
 	

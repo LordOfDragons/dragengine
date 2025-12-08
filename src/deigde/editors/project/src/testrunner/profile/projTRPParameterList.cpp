@@ -148,6 +148,9 @@ void projTRPParameterList::Set(const char *module, const char *name, const char 
 		parameter->FreeReference();
 		
 	}catch(const deException &){
+		if(parameter){
+			parameter->FreeReference();
+		}
 		throw;
 	}
 }

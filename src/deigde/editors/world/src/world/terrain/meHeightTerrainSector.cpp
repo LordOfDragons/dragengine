@@ -1841,6 +1841,9 @@ void meHeightTerrainSector::pCreateDDEdges(){
 		if(ddshape){
 			delete ddshape;
 		}
+		if(debugDrawer){
+			debugDrawer->FreeReference();
+		}
 		throw;
 	}
 	

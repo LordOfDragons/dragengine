@@ -280,6 +280,10 @@ void dealEngine::CheckModules(){
 			}
 			
 		}catch(const deException &e){
+			if(parameter){
+				parameter->FreeReference();
+				parameter = NULL;
+			}
 			
 			pLauncher.GetLogger().LogErrorFormat(LOGSOURCE,
 				"Engine.CheckModules failed with exception (module=%s)",
@@ -339,6 +343,12 @@ void dealEngine::AddModulesFrom(const char *directory, int type){
 			}catch(const deException &e){
 				logger.LogErrorFormat(LOGSOURCE, "Engine.AddModulesFrom failed reading module file with exception (dir=%s,type=%i)", directory, type);
 				logger.LogException(LOGSOURCE, e);
+				if(module){
+					module->FreeReference();
+				}
+				if(reader){
+					reader->FreeReference();
+				}
 			}
 		}
 	}
@@ -455,6 +465,9 @@ void dealEngine::PutEngineIntoVFS(){
 	}catch(const deException &e){
 		logger.LogError(LOGSOURCE, "Engine.PutEngineIntoVFS failed with exception:");
 		logger.LogException(LOGSOURCE, e);
+		if(diskDir){
+			diskDir->FreeReference();
+		}
 		throw;
 	}
 }
@@ -551,6 +564,9 @@ void dealEngine::LoadConfig(){
 				reader->FreeReference();
 				
 			}catch(const deException &){
+				if(reader){
+					reader->FreeReference();
+				}
 				throw;
 			}
 			
@@ -583,6 +599,9 @@ void dealEngine::SaveConfig(){
 			writer->FreeReference();
 			
 		}catch(const deException &e){
+			if(writer){
+				writer->FreeReference();
+			}
 			logger.LogErrorFormat(LOGSOURCE, "Failed to write engine configuration file (file permission problem)");
 			logger.LogException(LOGSOURCE, e);
 			// DIALOG BOX

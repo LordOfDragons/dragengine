@@ -64,6 +64,9 @@ pActiveTopic(NULL)
 		}
 		
 	}catch(const deException &){
+		if(topic){
+			topic->FreeReference();
+		}
 		RemoveAllTopics();
 		throw;
 	}

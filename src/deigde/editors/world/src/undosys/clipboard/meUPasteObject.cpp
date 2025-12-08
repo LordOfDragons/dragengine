@@ -79,6 +79,9 @@ meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
 		}
 		
 	}catch(const deException &){
+		if(object){
+			object->FreeReference();
+		}
 		pCleanUp();
 		throw;
 	}

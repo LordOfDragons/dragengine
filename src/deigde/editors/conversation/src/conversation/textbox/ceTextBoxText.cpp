@@ -126,6 +126,9 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 		canvasText = NULL;
 		
 	}catch(const deException &){
+		if(canvasText){
+			canvasText->FreeReference();
+		}
 		throw;
 	}
 }

@@ -81,4 +81,5 @@ void aeURuleIKSetSolverBone::Redo(){
 //////////////////////
 
 void aeURuleIKSetSolverBone::pCleanUp(){
+	if(pRule) pRule->FreeReference();
 }

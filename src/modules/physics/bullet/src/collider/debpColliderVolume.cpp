@@ -1531,8 +1531,14 @@ void debpColliderVolume::pUpdateBPShape(){
 			shape = pCreateBPShape(); // take over reference
 		}
 		pPhyBody->SetShape(shape);
+		if(shape){
+			shape->FreeReference();
+		}
 		
 	}catch(const deException &){
+		if(shape){
+			shape->FreeReference();
+		}
 		throw;
 	}
 	

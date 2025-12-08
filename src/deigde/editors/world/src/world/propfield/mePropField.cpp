@@ -76,6 +76,7 @@ mePropField::mePropField(deEngine *engine){
 		pftype = NULL;
 		
 	}catch(const deException &){
+		if(pftype) pftype->FreeReference();
 		pCleanUp();
 		throw;
 	}
@@ -225,5 +226,6 @@ void mePropField::pCleanUp(){
 	RemoveAllTypes();
 	if(pTypes) delete [] pTypes;
 	
+	if(pEngPF) pEngPF->FreeReference();
 }
 

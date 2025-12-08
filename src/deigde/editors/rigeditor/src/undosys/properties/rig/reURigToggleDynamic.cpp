@@ -48,6 +48,7 @@ reURigToggleDynamic::reURigToggleDynamic(reRig *rig){
 }
 
 reURigToggleDynamic::~reURigToggleDynamic(){
+	if(pRig) pRig->FreeReference();
 }
 
 

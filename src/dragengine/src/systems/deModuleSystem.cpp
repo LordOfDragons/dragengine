@@ -905,12 +905,19 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 					module = NULL;
 					
 				}catch(const deException &e){
+					if(module){
+						module->FreeReference();
+						module = NULL;
+					}
 					logger.LogException(LOGSOURCE, e);
 				}
 			}
 		}
 		
 	}catch(const deException &e){
+		if(module){
+			module->FreeReference();
+		}
 		logger.LogException(LOGSOURCE, e);
 	}
 }

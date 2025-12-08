@@ -77,6 +77,9 @@ deAnimator *deAnimatorManager::CreateAnimator(){
 		// add animator
 		pAnimators.Add(animator);
 	}catch(const deException &){
+		if(animator){
+			animator->FreeReference();
+		}
 		throw;
 	}
 	// finished

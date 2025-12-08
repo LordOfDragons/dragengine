@@ -62,6 +62,9 @@ deSky *deSkyManager::CreateSky(){
 		GetGraphicSystem()->LoadSky(sky);
 		pSkies.Add(sky);
 	}catch(const deException &){
+		if(sky){
+			sky->FreeReference();
+		}
 		throw;
 	}
 	// finished

@@ -122,6 +122,9 @@ void ceActorGesture::pLoadAnimator(){
 		pEngAnimator = animator;
 		
 	}catch(const deException &e){
+		if(animator){
+			animator->FreeReference();
+		}
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development

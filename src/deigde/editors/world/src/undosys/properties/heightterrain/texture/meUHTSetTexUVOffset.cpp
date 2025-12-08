@@ -61,6 +61,8 @@ meUHTSetTexUVOffset::meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *
 }
 
 meUHTSetTexUVOffset::~meUHTSetTexUVOffset(){
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 

@@ -77,4 +77,6 @@ void aeUAddController::Redo(){
 //////////////////////
 
 void aeUAddController::pCleanUp(){
+	if(pController) pController->FreeReference();
+	if(pAnimator) pAnimator->FreeReference();
 }

@@ -126,6 +126,9 @@ void dealShader::CompileVertexProgramAsset(const char *filename){
 		memoryFileSource->FreeReference();
 		
 	}catch(const deException &){
+		if(memoryFileSource){
+			memoryFileSource->FreeReference();
+		}
 		throw;
 	}
 }
@@ -191,6 +194,9 @@ void dealShader::CompileFragmentProgramAsset(const char *filename){
 		memoryFileSource->FreeReference();
 		
 	}catch(const deException &){
+		if(memoryFileSource){
+			memoryFileSource->FreeReference();
+		}
 		throw;
 	}
 }

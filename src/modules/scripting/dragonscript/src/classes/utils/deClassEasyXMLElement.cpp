@@ -489,6 +489,9 @@ void deClassEasyXMLElement::nfSetAttributeString::RunFunction(dsRunTime *rt, dsV
 		attribute->FreeReference();
 		
 	}catch(...){
+		if(attribute){
+			attribute->FreeReference();
+		}
 		throw;
 	}
 }
@@ -535,6 +538,9 @@ void deClassEasyXMLElement::nfSetAttributeInteger::RunFunction(dsRunTime *rt, ds
 		attribute->FreeReference();
 		
 	}catch(...){
+		if(attribute){
+			attribute->FreeReference();
+		}
 		throw;
 	}
 }
@@ -581,6 +587,9 @@ void deClassEasyXMLElement::nfSetAttributeFloat::RunFunction(dsRunTime *rt, dsVa
 		attribute->FreeReference();
 		
 	}catch(...){
+		if(attribute){
+			attribute->FreeReference();
+		}
 		throw;
 	}
 }
@@ -624,6 +633,9 @@ void deClassEasyXMLElement::nfSetAttributeBool::RunFunction(dsRunTime *rt, dsVal
 		attribute->FreeReference();
 		
 	}catch(...){
+		if(attribute){
+			attribute->FreeReference();
+		}
 		throw;
 	}
 }
@@ -938,6 +950,9 @@ void deClassEasyXMLElement::nfAddTag::RunFunction(dsRunTime *rt, dsValue *myself
 		tag->FreeReference();
 		
 	}catch(...){
+		if(tag){
+			tag->FreeReference();
+		}
 		throw;
 	}
 }
@@ -971,6 +986,12 @@ void deClassEasyXMLElement::nfAddDataTagString::RunFunction(dsRunTime *rt, dsVal
 		tag->FreeReference();
 		
 	}catch(...){
+		if(cdata){
+			cdata->FreeReference();
+		}
+		if(tag){
+			tag->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1007,6 +1028,12 @@ void deClassEasyXMLElement::nfAddDataTagInteger::RunFunction(dsRunTime *rt, dsVa
 		tag->FreeReference();
 		
 	}catch(...){
+		if(cdata){
+			cdata->FreeReference();
+		}
+		if(tag){
+			tag->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1043,6 +1070,12 @@ void deClassEasyXMLElement::nfAddDataTagFloat::RunFunction(dsRunTime *rt, dsValu
 		tag->FreeReference();
 		
 	}catch(...){
+		if(cdata){
+			cdata->FreeReference();
+		}
+		if(tag){
+			tag->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1076,6 +1109,12 @@ void deClassEasyXMLElement::nfAddDataTagBool::RunFunction(dsRunTime *rt, dsValue
 		tag->FreeReference();
 		
 	}catch(...){
+		if(cdata){
+			cdata->FreeReference();
+		}
+		if(tag){
+			tag->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1117,6 +1156,9 @@ void deClassEasyXMLElement::nfAddComment::RunFunction(dsRunTime *rt, dsValue *my
 		comment->FreeReference();
 		
 	}catch(...){
+		if(comment){
+			comment->FreeReference();
+		}
 		throw;
 	}
 }

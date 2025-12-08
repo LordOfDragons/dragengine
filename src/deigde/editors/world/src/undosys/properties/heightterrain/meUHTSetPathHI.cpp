@@ -56,6 +56,7 @@ meUHTSetPathHI::meUHTSetPathHI(meWorld *world, meHeightTerrainSector *sector, co
 }
 
 meUHTSetPathHI::~meUHTSetPathHI(){
+	if(pWorld) pWorld->FreeReference();
 }
 
 

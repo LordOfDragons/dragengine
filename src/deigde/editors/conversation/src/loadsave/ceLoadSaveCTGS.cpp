@@ -173,6 +173,9 @@ void ceLoadSaveCTGS::ReadGameState(const decXmlElementTag &root, cePlayback &pla
 				command->FreeReference();
 				
 			}catch(const deException &){
+				if(command){
+					command->FreeReference();
+				}
 				throw;
 			}
 			
@@ -190,6 +193,9 @@ void ceLoadSaveCTGS::ReadGameState(const decXmlElementTag &root, cePlayback &pla
 				trigger->FreeReference();
 				
 			}catch(const deException &){
+				if(trigger){
+					trigger->FreeReference();
+				}
 				throw;
 			}
 			

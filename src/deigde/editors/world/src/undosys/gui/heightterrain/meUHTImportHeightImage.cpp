@@ -125,6 +125,7 @@ void meUHTImportHeightImage::pCleanUp(){
 	if(pNewHeights) delete [] pNewHeights;
 	if(pOldHeights) delete [] pOldHeights;
 	
+	if(pWorld) pWorld->FreeReference();
 }
 
 void meUHTImportHeightImage::pDoIt(float *heights){

@@ -81,4 +81,5 @@ void aeURuleIKSetGoalPosition::Redo(){
 //////////////////////
 
 void aeURuleIKSetGoalPosition::pCleanUp(){
+	if(pRule) pRule->FreeReference();
 }

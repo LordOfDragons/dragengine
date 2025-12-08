@@ -523,6 +523,9 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 		memoryFile->FreeReference();
 		
 	}catch(const deException &){
+		if(memoryFileWriter){
+			memoryFileWriter->FreeReference();
+		}
 		if(rows) delete [] rows;
 		throw;
 	}

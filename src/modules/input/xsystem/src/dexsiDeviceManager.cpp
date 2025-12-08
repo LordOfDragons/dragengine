@@ -396,6 +396,9 @@ mode is XIModeRelative, this device sends relative coordinates.
 		}
 		
 	}catch(const deException &){
+		if(device){
+			device->FreeReference();
+		}
 		if(xdevices){
 			XFreeDeviceList(xdevices);
 		}

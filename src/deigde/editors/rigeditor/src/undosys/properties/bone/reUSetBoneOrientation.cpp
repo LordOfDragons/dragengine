@@ -75,4 +75,5 @@ void reUSetBoneOrientation::Redo(){
 //////////////////////
 
 void reUSetBoneOrientation::pCleanUp(){
+	if(pBone) pBone->FreeReference();
 }

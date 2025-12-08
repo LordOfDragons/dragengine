@@ -78,4 +78,5 @@ void aeUSetRuleSModEnablePos::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnablePos::pCleanUp(){
+	if(pRule) pRule->FreeReference();
 }

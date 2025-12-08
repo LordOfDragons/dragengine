@@ -113,6 +113,9 @@ void igdeGDCForceFieldList::SetToDeepCopyFrom(const igdeGDCForceFieldList &list)
 		}
 		
 	}catch(const deException &){
+		if(field){
+			field->FreeReference();
+		}
 		throw;
 	}
 }

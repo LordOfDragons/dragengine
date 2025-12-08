@@ -327,6 +327,9 @@ deoglSkinTexture &texture, deoglWorld &world){
 						videoPlayer->FreeReference();
 						
 					}catch(const deException &){
+						if(videoPlayer){
+							videoPlayer->FreeReference();
+						}
 						throw;
 					}
 					

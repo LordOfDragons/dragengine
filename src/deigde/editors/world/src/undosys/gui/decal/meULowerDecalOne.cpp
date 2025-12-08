@@ -52,6 +52,7 @@ meULowerDecalOne::meULowerDecalOne(meWorld *world, meDecal *decal){
 }
 
 meULowerDecalOne::~meULowerDecalOne(){
+	if(pDecal) pDecal->FreeReference();
 }
 
 

@@ -59,6 +59,9 @@ aeULinkSetController::aeULinkSetController(aeLink *link, aeController *newContro
 }
 
 aeULinkSetController::~aeULinkSetController(){
+	if(pNewController) pNewController->FreeReference();
+	if(pOldController) pOldController->FreeReference();
+	if(pLink) pLink->FreeReference();
 }
 
 

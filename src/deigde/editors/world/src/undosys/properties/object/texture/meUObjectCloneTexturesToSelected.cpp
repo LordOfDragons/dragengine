@@ -79,6 +79,9 @@ const meObjectList &list, const meObjectTextureList &textureList){
 		}
 		
 	}catch(const deException &){
+		if(undoData){
+			undoData->FreeReference();
+		}
 		pCleanUp();
 		throw;
 	}
@@ -136,6 +139,9 @@ void meUObjectCloneTexturesToSelected::Redo(){
 				}
 				
 			}catch(const deException &){
+				if(texture){
+					texture->FreeReference();
+				}
 				throw;
 			}
 		}

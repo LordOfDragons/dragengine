@@ -214,6 +214,9 @@ void ceUCTargetSetName::pAddActions(ceConversationTopic *topic, const ceConversa
 		}
 		
 	}catch(const deException &){
+		if(undoCAction){
+			undoCAction->FreeReference();
+		}
 		throw;
 	}
 }

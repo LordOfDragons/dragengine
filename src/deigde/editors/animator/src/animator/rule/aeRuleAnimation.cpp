@@ -196,6 +196,9 @@ deAnimatorRule *aeRuleAnimation::CreateEngineRule(){
 		pTargetMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
 		
 	}catch(const deException &){
+		if(engRule){
+			engRule->FreeReference();
+		}
 		throw;
 	}
 	

@@ -55,6 +55,7 @@ meURaiseDecalTop::meURaiseDecalTop(meWorld *world, meDecal *decal){
 }
 
 meURaiseDecalTop::~meURaiseDecalTop(){
+	if(pDecal) pDecal->FreeReference();
 }
 
 

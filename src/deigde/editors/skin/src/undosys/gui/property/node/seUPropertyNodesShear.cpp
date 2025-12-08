@@ -180,6 +180,9 @@ void seUPropertyNodesShear::pAddNodes(sePropertyNode *node){
 		}
 		
 	}catch(const deException &){
+		if(data){
+			data->FreeReference();
+		}
 		throw;
 	}
 }

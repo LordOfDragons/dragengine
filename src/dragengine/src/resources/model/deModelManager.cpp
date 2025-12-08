@@ -124,6 +124,9 @@ deModelBuilder &builder){
 		pModels.Add(model);
 		
 	}catch(const deException &e){
+		if(model){
+			model->FreeReference();
+		}
 		LogErrorFormat("Creating model '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -203,6 +206,12 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 		}
 		
 	}catch(const deException &e){
+		if(fileReader){
+			fileReader->FreeReference();
+		}
+		if(model){
+			model->FreeReference();
+		}
 		LogErrorFormat("Loading model '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		LogException(e);
 		throw;

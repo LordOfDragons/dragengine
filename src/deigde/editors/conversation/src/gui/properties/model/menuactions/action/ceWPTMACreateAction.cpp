@@ -125,6 +125,12 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 			ifCase->FreeReference();
 			
 		}catch(const deException &){
+			if(ifCase){
+				ifCase->FreeReference();
+			}
+			if(ifElse){
+				ifElse->FreeReference();
+			}
 			throw;
 		}
 		
@@ -142,6 +148,12 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 			option->FreeReference();
 			
 		}catch(const deException &){
+			if(option){
+				option->FreeReference();
+			}
+			if(playerChoice){
+				playerChoice->FreeReference();
+			}
 			throw;
 		}
 		

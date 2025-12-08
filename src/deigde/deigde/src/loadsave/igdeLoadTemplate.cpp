@@ -110,6 +110,9 @@ void igdeLoadTemplate::pReadTemplate(const decXmlElementTag &root, igdeTemplate 
 				file->FreeReference();
 				
 			}catch(const deException &){
+				if(file){
+					file->FreeReference();
+				}
 				throw;
 			}
 			
@@ -161,6 +164,9 @@ void igdeLoadTemplate::pReadFile(const decXmlElementTag &root, igdeTemplateFile 
 				replace->FreeReference();
 				
 			}catch(const deException &){
+				if(replace){
+					replace->FreeReference();
+				}
 				throw;
 			}
 			

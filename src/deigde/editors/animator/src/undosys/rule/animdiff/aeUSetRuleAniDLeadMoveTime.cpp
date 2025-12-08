@@ -81,4 +81,5 @@ void aeUSetRuleAniDLeadMoveTime::Redo(){
 //////////////////////
 
 void aeUSetRuleAniDLeadMoveTime::pCleanUp(){
+	if(pRule) pRule->FreeReference();
 }

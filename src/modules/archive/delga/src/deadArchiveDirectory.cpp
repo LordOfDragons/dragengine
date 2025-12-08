@@ -99,6 +99,9 @@ deadArchiveDirectory *deadArchiveDirectory::GetOrAddDirectoryNamed(const char *f
 		directory->FreeReference();
 		
 	}catch(const deException &){
+		if(directory){
+			directory->FreeReference();
+		}
 		throw;
 	}
 	return directory;

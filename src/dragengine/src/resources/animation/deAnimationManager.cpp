@@ -111,6 +111,9 @@ const char *filename, deAnimationBuilder &builder){
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating of animation '%s' failed", filename);
+		if(anim){
+			anim->FreeReference();
+		}
 		throw;
 	}
 	
@@ -169,6 +172,12 @@ const char *filename, const char *basePath){
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading animation '%s' (base path '%s') failed", filename, basePath ? basePath : "");
+		if(fileReader){
+			fileReader->FreeReference();
+		}
+		if(anim){
+			anim->FreeReference();
+		}
 		throw;
 	}
 	

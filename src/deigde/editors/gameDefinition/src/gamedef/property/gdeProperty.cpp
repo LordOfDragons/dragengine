@@ -81,6 +81,9 @@ pIdentifierUsage(property.pIdentifierUsage)
 		}
 		
 	}catch(const deException &){
+		if(filePattern){
+			filePattern->FreeReference();
+		}
 		throw;
 	}
 }
@@ -164,6 +167,9 @@ gdeProperty &gdeProperty::operator=(const gdeProperty &property){
 		}
 		
 	}catch(const deException &){
+		if(filePattern){
+			filePattern->FreeReference();
+		}
 		throw;
 	}
 	

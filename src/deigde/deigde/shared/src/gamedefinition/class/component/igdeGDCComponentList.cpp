@@ -115,6 +115,9 @@ void igdeGDCComponentList::SetToDeepCopyFrom(const igdeGDCComponentList &list){
 		}
 		
 	}catch(const deException &){
+		if(component){
+			component->FreeReference();
+		}
 		throw;
 	}
 }

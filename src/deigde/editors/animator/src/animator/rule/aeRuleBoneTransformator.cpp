@@ -427,6 +427,9 @@ deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
 		pTargetScaling.UpdateEngineTarget(GetAnimator(), engRule->GetTargetScaling());
 		
 	}catch(const deException &){
+		if(engRule){
+			engRule->FreeReference();
+		}
 		throw;
 	}
 	

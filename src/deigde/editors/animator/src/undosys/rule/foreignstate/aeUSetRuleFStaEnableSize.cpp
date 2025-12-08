@@ -78,4 +78,5 @@ void aeUSetRuleFStaEnableSize::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableSize::pCleanUp(){
+	if(pRule) pRule->FreeReference();
 }

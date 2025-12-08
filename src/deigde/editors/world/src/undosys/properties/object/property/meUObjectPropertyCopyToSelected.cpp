@@ -75,6 +75,9 @@ meUObjectPropertyCopyToSelected::meUObjectPropertyCopyToSelected(const meObjectL
 		}
 		
 	}catch(const deException &){
+		if(undoData){
+			undoData->FreeReference();
+		}
 		pCleanUp();
 		throw;
 	}

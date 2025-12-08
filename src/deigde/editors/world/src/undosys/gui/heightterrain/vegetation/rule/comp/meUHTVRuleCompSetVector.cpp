@@ -59,6 +59,8 @@ meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, me
 }
 
 meUHTVRuleCompSetVector::~meUHTVRuleCompSetVector(){
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 

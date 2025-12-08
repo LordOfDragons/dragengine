@@ -113,6 +113,9 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 		pRigs.Add(rig);
 		
 	}catch(const deException &e){
+		if(rig){
+			rig->FreeReference();
+		}
 		LogErrorFormat("Creating rig '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -179,6 +182,12 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading rig '%s' (base path '%s') failed", filename, basePath ? basePath : "");
+		if(fileReader){
+			fileReader->FreeReference();
+		}
+		if(rig){
+			rig->FreeReference();
+		}
 		throw;
 	}
 	

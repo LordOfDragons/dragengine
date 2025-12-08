@@ -76,6 +76,9 @@ deAnimatorInstance *deAnimatorInstanceManager::CreateAnimatorInstance(){
 		pInstances.Add(instance);
 		
 	}catch(const deException &){
+		if(instance){
+			instance->FreeReference();
+		}
 		
 		throw;
 	}

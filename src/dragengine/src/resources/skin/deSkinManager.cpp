@@ -130,6 +130,9 @@ deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating skin '%s' failed", filename);
+		if(skin){
+			skin->FreeReference();
+		}
 		throw;
 	}
 	
@@ -203,6 +206,12 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading skin '%s' (base path '%s') failed", filename, basePath ? basePath : "");
+		if(fileReader){
+			fileReader->FreeReference();
+		}
+		if(skin){
+			skin->FreeReference();
+		}
 		throw;
 	}
 	
@@ -262,6 +271,9 @@ deSkin *deSkinManager::LoadDefault(){
 		}
 		if(skinTex){
 			delete skinTex;
+		}
+		if(skin){
+			skin->FreeReference();
 		}
 		throw;
 	}

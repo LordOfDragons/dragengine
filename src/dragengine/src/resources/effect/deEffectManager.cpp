@@ -75,6 +75,9 @@ deEffectFilterKernel *deEffectManager::CreateEffectFilterKernel(){
 		pEffects.Add(effect);
 		
 	}catch(const deException &){
+		if(effect){
+			effect->FreeReference();
+		}
 		throw;
 	}
 	// finished
@@ -91,6 +94,9 @@ deEffectOverlayImage *deEffectManager::CreateEffectOverlayImage(){
 		pEffects.Add(effect);
 		
 	}catch(const deException &){
+		if(effect){
+			effect->FreeReference();
+		}
 		throw;
 	}
 	// finished
@@ -107,6 +113,9 @@ deEffectColorMatrix *deEffectManager::CreateEffectColorMatrix(){
 		pEffects.Add(effect);
 		
 	}catch(const deException &){
+		if(effect){
+			effect->FreeReference();
+		}
 		throw;
 	}
 	// finished
@@ -124,6 +133,9 @@ deEffectDistortImage *deEffectManager::CreateEffectDistortImage(){
 		pEffects.Add(effect);
 		
 	}catch(const deException &){
+		if(effect){
+			effect->FreeReference();
+		}
 		throw;
 	}
 	

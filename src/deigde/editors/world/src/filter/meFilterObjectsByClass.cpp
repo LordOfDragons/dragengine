@@ -48,6 +48,7 @@ meFilterObjectsByClass::meFilterObjectsByClass(){
 }
 
 meFilterObjectsByClass::~meFilterObjectsByClass(){
+	if(pRejectObject) pRejectObject->FreeReference();
 	RemoveAllClassNames();
 }
 
@@ -66,6 +67,7 @@ void meFilterObjectsByClass::SetRejectGhosts(bool rejectGhosts){
 
 void meFilterObjectsByClass::SetRejectObject(meObject *object){
 	if(object != pRejectObject){
+		if(pRejectObject) pRejectObject->FreeReference();
 		
 		pRejectObject = object;
 		

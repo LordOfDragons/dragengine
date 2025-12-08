@@ -74,6 +74,9 @@ meUObjectPropertyRemoveFromSelected::meUObjectPropertyRemoveFromSelected(const m
 		}
 		
 	}catch(const deException &){
+		if(undoData){
+			undoData->FreeReference();
+		}
 		pCleanUp();
 		throw;
 	}

@@ -49,6 +49,7 @@ feUGlyphSetU::feUGlyphSetU(feFontGlyph *glyph, int newU){
 }
 
 feUGlyphSetU::~feUGlyphSetU(){
+	if(pGlyph) pGlyph->FreeReference();
 }
 
 

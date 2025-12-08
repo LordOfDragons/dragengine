@@ -56,6 +56,8 @@ meUHTVLayerAdd::meUHTVLayerAdd(meWorld *world, meHeightTerrain *heightTerrain, m
 }
 
 meUHTVLayerAdd::~meUHTVLayerAdd(){
+	if(pVLayer) pVLayer->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 

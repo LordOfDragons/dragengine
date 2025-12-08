@@ -114,6 +114,7 @@ void feUFontImportImage::pCleanUp(){
 	if(pNewColor) delete [] pNewColor;
 	if(pOldColor) delete [] pOldColor;
 	
+	if(pImage) pImage->FreeReference();
 }
 
 void feUFontImportImage::pStoreColors(deImage &image, decColor *colors){

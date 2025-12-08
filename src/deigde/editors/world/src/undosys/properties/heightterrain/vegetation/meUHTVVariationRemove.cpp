@@ -56,6 +56,8 @@ meUHTVVariationRemove::meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVV
 }
 
 meUHTVVariationRemove::~meUHTVVariationRemove(){
+	if(pVariation) pVariation->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 

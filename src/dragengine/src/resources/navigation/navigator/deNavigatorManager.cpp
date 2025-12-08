@@ -79,6 +79,9 @@ deNavigator *deNavigatorManager::CreateNavigator(){
 		pNavigators.Add(navigator);
 		
 	}catch(const deException &){
+		if(navigator){
+			navigator->FreeReference();
+		}
 		throw;
 	}
 	

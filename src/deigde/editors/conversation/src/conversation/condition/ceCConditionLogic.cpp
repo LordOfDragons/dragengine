@@ -63,6 +63,9 @@ pTIMExpanded(condition.pTIMExpanded)
 		}
 		
 	}catch(const deException &){
+		if(newCondition){
+			newCondition->FreeReference();
+		}
 		pConditions.RemoveAll();
 		throw;
 	}

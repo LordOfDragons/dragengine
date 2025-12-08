@@ -201,6 +201,9 @@ bool meLoadXMLWorldTask::Step(){
 				object->FreeReference();
 				
 			}catch(const deException &){
+				if(object){
+					object->FreeReference();
+				}
 				throw;
 			}
 			
@@ -213,6 +216,9 @@ bool meLoadXMLWorldTask::Step(){
 				decal->FreeReference();
 				
 			}catch(const deException &){
+				if(decal){
+					decal->FreeReference();
+				}
 				throw;
 			}
 			
@@ -225,6 +231,9 @@ bool meLoadXMLWorldTask::Step(){
 				navspace->FreeReference();
 				
 			}catch(const deException &){
+				if(navspace){
+					navspace->FreeReference();
+				}
 				throw;
 			}
 			
@@ -403,6 +412,9 @@ void meLoadXMLWorldTask::pLoadObject(const decXmlElementTag &root, meObject &obj
 					object.AddTexture(texture);
 					
 				}catch(const deException &){
+					if(texture){
+						texture->FreeReference();
+					}
 					throw;
 				}
 			}

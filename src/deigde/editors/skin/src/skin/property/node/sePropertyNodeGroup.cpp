@@ -68,6 +68,9 @@ pActiveGroup(false)
 		}
 		
 	}catch(const deException &){
+		if(childNode){
+			childNode->FreeReference();
+		}
 		pNodes.RemoveAll();
 		throw;
 	}

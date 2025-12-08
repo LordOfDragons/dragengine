@@ -75,4 +75,5 @@ void reUSetBoneMass::Redo(){
 //////////////////////
 
 void reUSetBoneMass::pCleanUp(){
+	if(pBone) pBone->FreeReference();
 }

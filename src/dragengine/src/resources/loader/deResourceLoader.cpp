@@ -216,6 +216,9 @@ const char *path, eResourceType resourceType){
 		}
 		
 	}catch(const deException &e){
+		if(freeResource){
+			freeResource->FreeReference();
+		}
 		pEngine.GetLogger()->LogException(LOGSOURCE, e);
 		throw;
 	}

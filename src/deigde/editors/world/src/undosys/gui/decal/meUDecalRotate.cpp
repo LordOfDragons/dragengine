@@ -143,4 +143,5 @@ void meUDecalRotate::pCleanUp(){
 		delete [] pDecals;
 	}
 	
+	if(pWorld) pWorld->FreeReference();
 }

@@ -79,6 +79,9 @@ deServer *deServerManager::CreateServer(){
 		pServers.Add(server);
 		
 	}catch(const deException &){
+		if(server){
+			server->FreeReference();
+		}
 		throw;
 	}
 	

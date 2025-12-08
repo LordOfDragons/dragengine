@@ -111,6 +111,9 @@ seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const cha
 		synthesizer->SetSaved(true);
 		
 	}catch(const deException &){
+		if(synthesizer){
+			synthesizer->FreeReference();
+		}
 		throw;
 	}
 	
@@ -134,6 +137,9 @@ void seLoadSaveSystem::SaveSynthesizer(seSynthesizer *synthesizer, const char *f
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
+		if(fileWriter){
+			fileWriter->FreeReference();
+		}
 		throw;
 	}
 }

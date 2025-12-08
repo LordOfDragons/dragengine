@@ -112,6 +112,9 @@ void deRLTaskReadSkinPropertyNode::VisitImage(deSkinPropertyNodeImage &node){
 		internalTask->FreeReference();
 		
 	}catch(const deException &){
+		if(internalTask){
+			internalTask->FreeReference();
+		}
 		throw;
 	}
 }
@@ -144,6 +147,9 @@ void deRLTaskReadSkinPropertyNode::VisitText(deSkinPropertyNodeText &node){
 		internalTask->FreeReference();
 		
 	}catch(const deException &){
+		if(internalTask){
+			internalTask->FreeReference();
+		}
 		throw;
 	}
 }

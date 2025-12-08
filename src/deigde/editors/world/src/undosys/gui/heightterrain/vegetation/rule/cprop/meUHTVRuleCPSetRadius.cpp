@@ -59,6 +59,8 @@ meUHTVRuleCPSetRadius::meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVR
 }
 
 meUHTVRuleCPSetRadius::~meUHTVRuleCPSetRadius(){
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 

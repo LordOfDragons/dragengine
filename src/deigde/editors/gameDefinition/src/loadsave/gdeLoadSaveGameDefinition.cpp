@@ -1894,6 +1894,9 @@ const decXmlElementTag &root, gdeFilePatternList &list){
 				pattern->FreeReference();
 				
 			}catch(const deException &){
+				if(pattern){
+					pattern->FreeReference();
+				}
 				throw;
 			}
 			
@@ -2069,6 +2072,9 @@ void gdeLoadSaveGameDefinition::pReadSky(const decXmlElementTag &root, gdeGameDe
 				controller->FreeReference();
 				
 			}catch(const deException &){
+				if(controller){
+					controller->FreeReference();
+				}
 				throw;
 			}
 			

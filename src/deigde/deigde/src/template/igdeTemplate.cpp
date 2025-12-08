@@ -63,6 +63,9 @@ pBaseGameDefinitions(atemplate.pBaseGameDefinitions)
 		}
 		
 	}catch(const deException &){
+		if(file){
+			file->FreeReference();
+		}
 		throw;
 	}
 }

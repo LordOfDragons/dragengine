@@ -127,6 +127,9 @@ void dealWidgetLogFile::CheckFile(){
 			reader->FreeReference();
 			
 		}catch(const deException &){
+			if(reader){
+				reader->FreeReference();
+			}
 		}
 		
 		const decStringList lines = data.Split('\n');
@@ -178,6 +181,9 @@ void dealWidgetLogFile::AddLogLine(const decString &line){
 		logEntry->FreeReference();
 		
 	}catch(const deException &){
+		if(logEntry){
+			logEntry->FreeReference();
+		}
 	}
 }
 
@@ -229,6 +235,9 @@ void dealWidgetLogFile::UpdateContent(){
 		}
 		
 	}catch(const deException &){
+		if(label){
+			label->FreeReference();
+		}
 	}
 }
 

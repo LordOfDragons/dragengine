@@ -1910,6 +1910,9 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 		pCacheMutex.Unlock();
 		
 	}catch(const deException &){
+		if(cacheReader){
+			cacheReader->FreeReference();
+		}
 		pCacheTCSorter->Delete(cacheID);
 		pCacheMutex.Unlock();
 		LogInfoFormat("Cache file '%s' damaged, discarding", cacheID.GetString());
@@ -1997,6 +2000,9 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 		pCacheMutex.Unlock();
 		
 	}catch(const deException &e){
+		if(cacheWriter){
+			cacheWriter->FreeReference();
+		}
 		pCacheTCSorter->Delete(cacheID);
 		pCacheMutex.Unlock();
 		LogInfoFormat("Writing cache file '%s' failed, deleted", cacheID.GetString());

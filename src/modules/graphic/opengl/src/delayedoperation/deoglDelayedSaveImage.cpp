@@ -98,6 +98,12 @@ void deoglDelayedSaveImage::SaveImage(deGraphicOpenGl &ogl, deVirtualFileSystem 
 		image->FreeReference();
 		
 	}catch(const deException &){
+		if(fileWriter){
+			fileWriter->FreeReference();
+		}
+		if(image){
+			image->FreeReference();
+		}
 		throw;
 	}
 }

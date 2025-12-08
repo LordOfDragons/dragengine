@@ -96,6 +96,9 @@ deImage *deImageManager::CreateImage(int width, int height, int depth, int compo
 		pImages.Add(image);
 		
 	}catch(const deException &){
+		if(image){
+			image->FreeReference();
+		}
 		throw;
 	}
 	return image;
@@ -165,6 +168,12 @@ deImage *deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filenam
 	}catch(const deException &){
 		LogErrorFormat("Loading image '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		//LogException( e );
+		if(fileReader){
+			fileReader->FreeReference();
+		}
+		if(image){
+			image->FreeReference();
+		}
 		if(imageInfos) delete imageInfos;
 		throw;
 	}
@@ -206,6 +215,9 @@ deImage *deImageManager::LoadDefault(){
 		}
 		
 	}catch(const deException &){
+		if(image){
+			image->FreeReference();
+		}
 		if(xpmImage) delete xpmImage;
 		throw;
 	}

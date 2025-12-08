@@ -82,6 +82,9 @@ void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		
 	}catch(const deException &e){
 		((deClassEasyXML*)GetOwnerClass())->GetDS().LogException(e);
+		if(root){
+			root->FreeReference();
+		}
 		if(nd.document){
 			nd.document->FreeReference();
 			nd.document = NULL;
@@ -89,6 +92,9 @@ void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		throw;
 		
 	}catch(...){
+		if(root){
+			root->FreeReference();
+		}
 		if(nd.document){
 			nd.document->FreeReference();
 			nd.document = NULL;

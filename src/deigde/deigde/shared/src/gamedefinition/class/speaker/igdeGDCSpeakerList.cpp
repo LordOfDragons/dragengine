@@ -115,6 +115,9 @@ void igdeGDCSpeakerList::SetToDeepCopyFrom(const igdeGDCSpeakerList &list){
 		}
 		
 	}catch(const deException &){
+		if(speaker){
+			speaker->FreeReference();
+		}
 		throw;
 	}
 }

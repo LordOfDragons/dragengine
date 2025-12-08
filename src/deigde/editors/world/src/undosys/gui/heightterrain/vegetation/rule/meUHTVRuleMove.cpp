@@ -62,6 +62,8 @@ meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule){
 }
 
 meUHTVRuleMove::~meUHTVRuleMove(){
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
