@@ -46,7 +46,7 @@ class deLogger;
  */
 class DE_DLL_EXPORT igdeBaseXML{
 private:
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	decString pLoggerSource;
 	
 	
